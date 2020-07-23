@@ -142,37 +142,37 @@ struct spellpower_data_t
 
 struct spelleffect_data_t
 {
-  unsigned         _id;              // 1 Effect id
-  unsigned         _spell_id;        // 3 Spell this effect belongs to
-  unsigned         _index;           // 4 Effect index for the spell
-  unsigned         _type;            // 5 Effect type
-  unsigned         _subtype;         // 6 Effect sub-type
+  unsigned         _id;              // Effect id
+  unsigned         _spell_id;        // Spell this effect belongs to
+  unsigned         _index;           // Effect index for the spell
+  unsigned         _type;            // Effect type
+  unsigned         _subtype;         // Effect sub-type
   // SpellScaling.dbc
-  double           _m_coeff;           // 7 Effect average spell scaling multiplier
-  double           _m_delta;         // 8 Effect delta spell scaling multiplier
-  double           _m_unk;           // 9 Unused effect scaling multiplier
+  double           _m_coeff;         // Effect average spell scaling multiplier
+  double           _m_delta;         // Effect delta spell scaling multiplier
+  double           _m_unk;           // Unused effect scaling multiplier
   //
-  double           _sp_coeff;        // 10 Effect coefficient
-  double           _ap_coeff;        // 11 Effect attack power coefficient
-  double           _amplitude;       // 12 Effect amplitude (e.g., tick time)
+  double           _sp_coeff;        // Effect coefficient
+  double           _ap_coeff;        // Effect attack power coefficient
+  double           _amplitude;       // Effect amplitude (e.g., tick time)
   // SpellRadius.dbc
-  double           _radius;          // 13 Minimum spell radius
-  double           _radius_max;      // 14 Maximum spell radius
+  double           _radius;          // Minimum spell radius
+  double           _radius_max;      // Maximum spell radius
   //
-  double           _base_value;      // 15 Effect value
-  int              _misc_value;      // 16 Effect miscellaneous value
-  int              _misc_value_2;    // 17 Effect miscellaneous value 2
-  unsigned         _class_flags[NUM_CLASS_FAMILY_FLAGS]; // 18 Class family flags
-  unsigned         _trigger_spell_id;// 19 Effect triggers this spell id
-  double           _m_chain;         // 20 Effect chain multiplier
-  double           _pp_combo_points; // 21 Effect points per combo points
-  double           _real_ppl;        // 22 Effect real points per level
-  unsigned         _mechanic;        // 23 Effect Mechanic
-  int              _chain_target;    // 24 Number of targets (for chained spells)
-  unsigned         _targeting_1;     // 25 Targeting related field 1
-  unsigned         _targeting_2;     // 26 Targeting related field 2
-  double           _m_value;         // 27 Misc multiplier used for some spells(?)
-  double           _pvp_coeff;       // 28 PvP Coefficient
+  double           _base_value;      // Effect value
+  int              _misc_value;      // Effect miscellaneous value
+  int              _misc_value_2;    // Effect miscellaneous value 2
+  unsigned         _class_flags[NUM_CLASS_FAMILY_FLAGS]; // Class family flags
+  unsigned         _trigger_spell_id;// Effect triggers this spell id
+  double           _m_chain;         // Effect chain multiplier
+  double           _pp_combo_points; // Effect points per combo points
+  double           _real_ppl;        // Effect real points per level
+  unsigned         _mechanic;        // Effect Mechanic
+  int              _chain_target;    // Number of targets (for chained spells)
+  unsigned         _targeting_1;     // Targeting related field 1
+  unsigned         _targeting_2;     // Targeting related field 2
+  double           _m_value;         // Misc multiplier used for some spells(?)
+  double           _pvp_coeff;       // PvP Coefficient
 
   // Pointers for runtime linking
   const spell_data_t* _spell;
@@ -359,75 +359,73 @@ private:
 // Spell Data
 // ==========================================================================
 
-// Note, Max numbered field count 62 for hotfixing purposes. The last two fields are used to
-// indicate that a spell has hotfixed effects or powers.
 struct spell_data_t
 {
-  const char* _name;               // 1 Spell name from Spell.dbc stringblock (enGB)
-  unsigned    _id;                 // 2 Spell ID in dbc
-  double      _prj_speed;          // 4 Projectile Speed
-  unsigned    _school;             // 5 Spell school mask
-  unsigned    _class_mask;         // 6 Class mask for spell
-  uint64_t    _race_mask;          // 7 Racial mask for the spell
-  int         _scaling_type;       // 8 Array index for gtSpellScaling.dbc. -1 means the first non-class-specific sub array, and so on, 0 disabled
-  int         _max_scaling_level;  // 9 Max scaling level(?), 0 == no restrictions, otherwise min( player_level, max_scaling_level )
+  const char* _name;               // Spell name from Spell.dbc stringblock (enGB)
+  unsigned    _id;                 // Spell ID in dbc
+  double      _prj_speed;          // Projectile Speed
+  unsigned    _school;             // Spell school mask
+  unsigned    _class_mask;         // Class mask for spell
+  uint64_t    _race_mask;          // Racial mask for the spell
+  int         _scaling_type;       // Array index for gtSpellScaling.dbc. -1 means the first non-class-specific sub array, and so on, 0 disabled
+  int         _max_scaling_level;  // Max scaling level(?), 0 == no restrictions, otherwise min( player_level, max_scaling_level )
   // SpellLevels.dbc
-  unsigned    _spell_level;        // 10 Spell learned on level. NOTE: Only accurate for "class abilities"
-  unsigned    _max_level;          // 11 Maximum level for scaling
+  unsigned    _spell_level;        // Spell learned on level. NOTE: Only accurate for "class abilities"
+  unsigned    _max_level;          // Maximum level for scaling
   // SpellRange.dbc
-  double      _min_range;          // 12 Minimum range in yards
-  double      _max_range;          // 13 Maximum range in yards
+  double      _min_range;          // Minimum range in yards
+  double      _max_range;          // Maximum range in yards
   // SpellCooldown.dbc
-  unsigned    _cooldown;           // 14 Cooldown in milliseconds
-  unsigned    _gcd;                // 15 GCD in milliseconds
-  unsigned    _category_cooldown;  // 16 Category cooldown in milliseconds
+  unsigned    _cooldown;           // Cooldown in milliseconds
+  unsigned    _gcd;                // GCD in milliseconds
+  unsigned    _category_cooldown;  // Category cooldown in milliseconds
   // SpellCategory.dbc
-  unsigned    _charges;            // 17 Number of charges
-  unsigned    _charge_cooldown;    // 18 Cooldown duration of charges
+  unsigned    _charges;            // Number of charges
+  unsigned    _charge_cooldown;    // Cooldown duration of charges
   // SpellCategories.dbc
-  unsigned    _category;           // 19 Spell category (for shared cooldowns, effects?)
+  unsigned    _category;           // Spell category (for shared cooldowns, effects?)
   // SpellDuration.dbc
-  double      _duration;           // 20 Spell duration in milliseconds
+  double      _duration;           // Spell duration in milliseconds
   // SpellAuraOptions.dbc
-  unsigned    _max_stack;          // 21 Maximum stack size for spell
-  unsigned    _proc_chance;        // 22 Spell proc chance in percent
-  int         _proc_charges;       // 23 Per proc charge amount
-  unsigned    _proc_flags;         // 24 Proc flags
-  unsigned    _internal_cooldown;  // 25 ICD
-  double      _rppm;               // 26 Base real procs per minute
+  unsigned    _max_stack;          // Maximum stack size for spell
+  unsigned    _proc_chance;        // Spell proc chance in percent
+  int         _proc_charges;       // Per proc charge amount
+  unsigned    _proc_flags;         // Proc flags
+  unsigned    _internal_cooldown;  // ICD
+  double      _rppm;               // Base real procs per minute
   // SpellEquippedItems.dbc
-  unsigned    _equipped_class;         // 27
-  unsigned    _equipped_invtype_mask;  // 28
-  unsigned    _equipped_subclass_mask; // 29
+  unsigned    _equipped_class;
+  unsigned    _equipped_invtype_mask;
+  unsigned    _equipped_subclass_mask;
   // SpellScaling.dbc
-  int         _cast_min;           // 30 Minimum casting time in milliseconds
-  int         _cast_max;           // 31 Maximum casting time in milliseconds
-  int         _cast_div;           // 32 A divisor used in the formula for casting time scaling (20 always?)
-  double      _c_scaling;          // 33 A scaling multiplier for level based scaling
-  unsigned    _c_scaling_level;    // 34 A scaling divisor for level based scaling
+  int         _cast_min;           // Minimum casting time in milliseconds
+  int         _cast_max;           // Maximum casting time in milliseconds
+  int         _cast_div;           // A divisor used in the formula for casting time scaling (20 always?)
+  double      _c_scaling;          // A scaling multiplier for level based scaling
+  unsigned    _c_scaling_level;    // A scaling divisor for level based scaling
   // SpecializationSpells.dbc
-  unsigned    _replace_spell_id;   // Not included in hotfixed data, replaces spell with specialization specific spell
+  unsigned    _replace_spell_id;   // Replaces spell with specialization specific spell
   // Spell.dbc flags
-  unsigned    _attributes[NUM_SPELL_FLAGS]; // 35 Spell.dbc "flags", record field 1..10, note that 12694 added a field here after flags_7
-  unsigned    _class_flags[NUM_CLASS_FAMILY_FLAGS]; // 36 SpellClassOptions.dbc flags
-  unsigned    _class_flags_family; // 37 SpellClassOptions.dbc spell family
+  unsigned    _attributes[NUM_SPELL_FLAGS]; // SpellMisc.dbc "flags"
+  unsigned    _class_flags[NUM_CLASS_FAMILY_FLAGS]; // SpellClassOptions.dbc flags
+  unsigned    _class_flags_family; // SpellClassOptions.dbc spell family
   // SpellShapeshift.db2
-  unsigned    _stance_mask;        // 38 Stance mask (used only for druid form restrictions?)
+  unsigned    _stance_mask;        // Stance mask (used only for druid form restrictions?)
   // SpellMechanic.db2
-  unsigned    _mechanic;           // 39
+  unsigned    _mechanic;
   // Azerite stuff
-  unsigned    _power_id;           // 40 Azerite power id
-  unsigned    _essence_id;         // 41 Azerite essence id
+  unsigned    _power_id;           // Azerite power id
+  unsigned    _essence_id;         // Azerite essence id
   // Textual data
-  const char* _desc;               // 42 Spell.dbc description stringblock
-  const char* _tooltip;            // 43 Spell.dbc tooltip stringblock
+  const char* _desc;               // Spell.dbc description stringblock
+  const char* _tooltip;            // Spell.dbc tooltip stringblock
   // SpellDescriptionVariables.dbc
-  const char* _desc_vars;          // 44 Spell description variable stringblock, if present
+  const char* _desc_vars;          // Spell description variable stringblock, if present
   // SpellIcon.dbc
-  const char* _rank_str;           // 45
+  const char* _rank_str;
 
-  unsigned    _req_max_level;      // 46
-  unsigned    _dmg_class;          // 47 SpellCategories.db2 classification for the spell
+  unsigned    _req_max_level;
+  unsigned    _dmg_class;          // SpellCategories.db2 classification for the spell
 
   // Pointers for runtime linking
   const spelleffect_data_t* _effects;
