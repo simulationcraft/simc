@@ -26,3 +26,50 @@ def is_blacklisted(**kwargs):
 
     return False
 
+def race_mask(**kwargs):
+    skill = kwargs.get('skill', 0)
+
+    if skill != 0:
+        if not hasattr(race_mask, '_byskill'):
+            race_mask._byskill = dict()
+            for v in constants.RACE_INFO:
+                if v['skill'] not in race_mask._byskill:
+                    race_mask._byskill[v['skill']] = 0
+
+                race_mask._byskill[v['skill']] |= (1 << v['bit'])
+
+        return race_mask._byskill.get(skill, 0)
+
+    return 0
+
+def race_id(**kwargs):
+    mask = kwargs.get('mask', 0)
+
+    if mask != 0:
+        if not hasattr(race_id, '_mask_cache'):
+            race_id._mask_cache = {}
+
+        if mask in race_id._mask_cache:
+            return race_id._mask_cache[mask]
+
+        set_ = [
+            info['id'] for info in constants.RACE_INFO if mask & (1 << info['bit']) != 0
+        ]
+
+        if len(set_) == 1:
+            set_ = set_[0]
+        elif len(set_) == 0:
+            set_ = 0
+
+        race_id._mask_cache[mask] = set_
+
+        return set_
+
+    return 0
+
+def race_skills():
+    if not hasattr(race_skills, '_map'):
+        race_skills._map = [info['skill'] for info in constants.RACE_INFO]
+
+    return race_skills._map
+

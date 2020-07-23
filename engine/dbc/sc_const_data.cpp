@@ -10,6 +10,7 @@
 #include "client_data.hpp"
 #include "specialization_spell.hpp"
 #include "active_spells.hpp"
+#include "racial_spells.hpp"
 
 #include "generated/sc_spec_list.inc"
 #include "generated/sc_scale_data.inc"
@@ -962,7 +963,6 @@ stat_data_t& dbc_t::race_base( race_e r ) const
 {
   uint32_t race_id = util::race_id( r );
 
-  assert( race_id < race_ability_tree_size() );
 #if SC_USE_PTR
   return ptr ? __ptr_gt_race_stats[ race_id ]
              : __gt_race_stats[ race_id ];
@@ -1229,18 +1229,6 @@ double dbc_t::combat_rating( unsigned combat_rating_id, unsigned level ) const
 #endif
 }
 
-unsigned dbc_t::race_ability( unsigned race_id, unsigned class_id, unsigned n ) const
-{
-  assert( race_id < race_ability_tree_size() && class_id < dbc_t::class_max_size() && n < race_ability_size() );
-
-#if SC_USE_PTR
-  return ptr ? __ptr_race_ability_data[ race_id ][ class_id ][ n ]
-             : __race_ability_data[ race_id ][ class_id ][ n ];
-#else
-  return __race_ability_data[ race_id ][ class_id ][ n ];
-#endif
-}
-
 unsigned dbc_t::mastery_ability( unsigned class_id, unsigned specialization, unsigned n ) const
 {
   assert( class_id < dbc_t::class_max_size() );
@@ -1330,24 +1318,6 @@ unsigned dbc_t::specialization_max_class() const
   return ptr ? MAX_SPEC_CLASS : MAX_SPEC_CLASS;
 #else
   return MAX_SPEC_CLASS;
-#endif
-}
-
-unsigned dbc_t::race_ability_size() const
-{
-#if SC_USE_PTR
-  return ptr ? PTR_RACE_ABILITY_SIZE : RACE_ABILITY_SIZE;
-#else
-  return RACE_ABILITY_SIZE;
-#endif
-}
-
-unsigned dbc_t::race_ability_tree_size() const
-{
-#if SC_USE_PTR
-  return ptr ? ptr_MAX_RACE : MAX_RACE;
-#else
-  return MAX_RACE;
 #endif
 }
 
@@ -1698,54 +1668,46 @@ unsigned dbc_t::pet_ability_id( player_e c, util::string_view name, bool tokeniz
 
 unsigned dbc_t::race_ability_id( player_e c, race_e r, util::string_view spell_name ) const
 {
-  unsigned rid = util::race_id( r );
-  unsigned cid = util::class_id( c );
-  unsigned spell_id;
+  const auto& racial_spell = racial_spell_entry_t::find( spell_name, ptr, r, c );
 
-  if ( !rid || !cid )
-    return 0;
-
-  // First check for class specific racials
-  for ( unsigned n = 0; n < race_ability_size(); n++ )
+  if ( racial_spell.spell_id != 0 && !replaced_id( racial_spell.spell_id ) )
   {
-    if ( ! ( spell_id = race_ability( rid, cid, n ) ) )
-      break;
-
-    if ( ! spell( spell_id ) -> id() )
-      continue;
-
-    if ( util::str_compare_ci( spell( spell_id ) -> name_cstr(), spell_name ) )
-    {
-      // Spell has been replaced by another, so don't return id
-      if ( ! replaced_id( spell_id ) )
-        return spell_id;
-    }
-  }
-
-  // Then check for for generic racials
-  for ( unsigned n = 0; n < race_ability_size(); n++ )
-  {
-    if ( ! ( spell_id = race_ability( rid, 0, n ) ) )
-      break;
-
-    if ( ! spell( spell_id ) -> id() )
-      continue;
-
-    if ( util::str_compare_ci( spell( spell_id ) -> name_cstr(), spell_name ) )
-    {
-      // Spell has been replaced by another, so don't return id
-      if ( ! replaced_id( spell_id ) )
-      {
-        return spell_id;
-      }
-      else
-      {
-        return 0;
-      }
-    }
+    return racial_spell.spell_id;
   }
 
   return 0;
+}
+
+std::vector<const racial_spell_entry_t*> dbc_t::racial_spell( player_e c, race_e r ) const
+{
+  std::vector<const racial_spell_entry_t*> __data;
+
+  auto race_mask = util::race_mask( r );
+  auto class_mask = util::class_id_mask( c );
+
+  for ( const auto& entry : racial_spell_entry_t::data( ptr ) )
+  {
+    if ( !( entry.mask_race & race_mask  ) )
+    {
+      continue;
+    }
+
+    if ( entry.mask_class != 0 && !( entry.mask_class & class_mask ) )
+    {
+      continue;
+    }
+
+    __data.push_back( &entry );
+
+    // Racials on client data export are sorted in ascending mask order, so anything past
+    // the player's own race mask can be safely ignored.
+    if ( entry.mask_race > race_mask )
+    {
+      break;
+    }
+  }
+
+  return __data;
 }
 
 unsigned dbc_t::specialization_ability_id( specialization_e spec_id, util::string_view spell_name ) const

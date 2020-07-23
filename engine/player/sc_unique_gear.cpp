@@ -7,6 +7,7 @@
 
 #include "unique_gear_shadowlands.hpp"
 #include "simulationcraft.hpp"
+#include "dbc/racial_spells.hpp"
 #include <cctype>
 
 using namespace unique_gear;
@@ -4075,42 +4076,37 @@ void unique_gear::initialize_special_effect_2( special_effect_t* effect )
 
 void unique_gear::initialize_racial_effects( player_t* player )
 {
-  if ( player -> race == RACE_NONE )
+  if ( player->race == RACE_NONE )
   {
     return;
   }
 
-  unsigned rid = util::race_id( player -> race );
-  unsigned cid = util::class_id( player -> type );
-
-  if ( rid == 0 )
+  if ( !util::race_id( player->race ) )
   {
     return;
   }
 
   // Iterate over all race spells for the player
-  for ( unsigned n = 0; n < player -> dbc->race_ability_size(); ++n )
+  for ( const auto* entry : player->dbc->racial_spell( player->type, player->race ) )
   {
-    auto cls_spell_id = player -> dbc->race_ability( rid, cid, n );
-    auto spell_id = player -> dbc->race_ability( rid, 0, n );
-    if ( cls_spell_id > 0 || spell_id > 0 )
+    auto spell = dbc::find_spell( player, entry->spell_id );
+    if ( !spell || !spell->ok() )
     {
-      auto spell = player -> dbc->spell( cls_spell_id > 0 ? cls_spell_id : spell_id );
-      if ( ! spell || ! spell -> ok() )
-      {
-        continue;
-      }
-
-      special_effect_t effect( player );
-      effect.source = SPECIAL_EFFECT_SOURCE_RACE;
-      unique_gear::initialize_special_effect( effect, spell -> id() );
-      if ( ! effect.is_custom() )
-      {
-        continue;
-      }
-
-      player -> special_effects.push_back( new special_effect_t( effect ) );
+      continue;
     }
+
+    special_effect_t effect( player );
+    effect.source = SPECIAL_EFFECT_SOURCE_RACE;
+    unique_gear::initialize_special_effect( effect, spell->id() );
+    if ( !effect.is_custom() )
+    {
+      continue;
+    }
+
+    player->sim->print_debug( "Player {} initialized racial spell {} (id={}, class_mask={:#08x})",
+      player->name(), spell->name_cstr(), spell->id(), entry->mask_class );
+
+    player->special_effects.push_back( new special_effect_t( effect ) );
   }
 }
 

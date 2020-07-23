@@ -32,6 +32,7 @@
 #include "dbc/item_scaling.hpp"
 #include "dbc/item_weapon.hpp"
 #include "dbc/item_effect.hpp"
+#include "dbc/racial_spells.hpp"
 #include "dbc/real_ppm_data.hpp"
 #include "dbc/talent_data.hpp"
 #include "dbc/spell_data.hpp"
@@ -474,6 +475,8 @@ public:
   util::span<const item_effect_t> item_effects( unsigned item_id ) const
   { return item_effect_t::find_for_item( item_id, ptr ); }
 
+  std::vector<const racial_spell_entry_t*> racial_spell( player_e c, race_e r ) const;
+
   util::span<const hotfix::client_hotfix_entry_t> hotfixes( const spell_data_t* p ) const
   { assert( p ); return hotfix::spell_hotfixes( p -> id(), ptr ); }
 
@@ -485,10 +488,6 @@ public:
 
   // Derived data access
   unsigned class_max_size() const;
-
-  unsigned race_ability( unsigned race_id, unsigned class_id, unsigned n ) const;
-  unsigned race_ability_size() const;
-  unsigned race_ability_tree_size() const;
 
   unsigned specialization_max_per_class() const;
   unsigned specialization_max_class() const;

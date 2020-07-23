@@ -812,7 +812,7 @@
       { "data_type": "h", "field": "id_skill", "ref": "SkillLine", "formats": { "cpp": "%4u" } },
       { "data_type": "i", "field": "id_spell", "ref": "SpellName" },
       { "data_type": "h", "field": "req_skill_level" },
-      { "data_type": "I", "field": "mask_class", "formats": { "cpp": "%#.4x" } },
+      { "data_type": "I", "field": "mask_class", "formats": { "cpp": "%#.8x" } },
       { "data_type": "I", "field": "id_replace", "ref": "SpellName" },
       { "data_type": "B", "field": "unk_13" },
       { "data_type": "H", "field": "max_learn_skill" },

@@ -7,8 +7,32 @@ class DataSet:
     def db(self, dbname):
         return db.datastore(self._options).get(dbname)
 
+    def ids(self):
+        raise NotImplementedError
+
     def filter(self, **kwargs):
         raise NotImplementedError
+
+class RacialSpellSet(DataSet):
+    def filter(self, **kwargs):
+        _data = []
+
+        for v in self.db('SkillLineAbility').values():
+            if v.id_parent not in util.race_skills():
+                continue
+
+            if v.ref('id_spell').id == 0:
+                continue
+
+            if util.is_blacklisted(spell_name = v.ref('id_spell').name):
+                continue
+
+            _data.append(v)
+
+        return _data
+
+    def ids(self):
+        return list(set(v.id_spell for v in self.filter()))
 
 class ActiveClassSpellSet(DataSet):
     def get_trigger_spells(self, effect, set_):
@@ -89,6 +113,15 @@ class ActiveClassSpellSet(DataSet):
 
         return _data
 
+    def ids(self):
+        ids = set()
+        for v in self.filter():
+            ids.add(v[1].id)
+            if v[1].id != 0:
+                ids.add(v[2].id)
+
+        return list(ids)
+
 class PetActiveSpellSet(ActiveClassSpellSet):
     def filter(self, **kwargs):
         trigger_spells = set()
@@ -125,4 +158,7 @@ class PetActiveSpellSet(ActiveClassSpellSet):
                 _data.append(entry)
 
         return _data
+
+    def ids(self):
+        return list(set(v[1] for v in self.filter()))
 

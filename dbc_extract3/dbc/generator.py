@@ -5,7 +5,7 @@ from collections import defaultdict
 import dbc.db, dbc.data, dbc.parser, dbc.file
 
 from dbc import constants, util
-from dbc.filter import ActiveClassSpellSet, PetActiveSpellSet
+from dbc.filter import ActiveClassSpellSet, PetActiveSpellSet, RacialSpellSet
 
 # Special hotfix flags for spells to mark that the spell has hotfixed effects or powers
 SPELL_EFFECT_HOTFIX_PRESENT = 0x8000000000000000
@@ -2115,11 +2115,7 @@ class SpellDataGenerator(DataGenerator):
         return 0
 
     def race_mask_by_skill(self, skill):
-        for i in range(0, len(self._race_categories)):
-            if skill in self._race_categories[i]:
-                return DataGenerator._race_masks[i]
-
-        return 0
+        return util.race_mask(skill = skill)
 
     def process_spell(self, spell_id, result_dict, mask_class = 0, mask_race = 0, state = True):
         filter_list = { }
@@ -3271,126 +3267,32 @@ class MasteryAbilityGenerator(DataGenerator):
 
         self._out.write('};\n')
 
-class RacialSpellGenerator(SpellDataGenerator):
-    def __init__(self, options, data_store):
-        super().__init__(options, data_store)
-
-        SpellDataGenerator._class_categories = []
-
+class RacialSpellGenerator(DataGenerator):
     def filter(self):
-        ids = { }
+        return RacialSpellSet(self._options).filter()
 
-        for ability_id, ability_data in self._skilllineability_db.items():
-            racial_spell = 0
+    def generate(self, data = None):
+        data.sort(key = lambda v: (util.race_mask(skill = v.id_skill), v.ref('id_spell').name, -v.mask_class))
 
-            # Take only racial spells to this
-            for j in range(0, len(SpellDataGenerator._race_categories)):
-                if ability_data.id_skill in SpellDataGenerator._race_categories[j]:
-                    racial_spell = j
-                    break
+        self.output_header(
+                header = 'Racial abilities',
+                type = 'racial_spell_entry_t',
+                array = 'racial_spell',
+                length = len(data))
 
-            if not racial_spell:
-                continue
+        for v in data:
+            # Ensure that all racial spells have a race mask associated with
+            # them. Currently, pandaren racial spells lack one.
+            _mask = v.mask_race
+            if _mask == 0:
+                _mask = util.race_mask(skill = v.id_skill)
 
-            spell = self._spellname_db[ability_data.id_spell]
-            if not self.spell_state(spell):
-                continue
+            fields = [v.field_format('mask_race')[0] % _mask]
+            fields += v.field('mask_class')
+            fields += v.ref('id_spell').field('id', 'name')
+            self.output_record(fields)
 
-            if ids.get(ability_data.id_spell):
-                ids[ability_data.id_spell]['mask_class'] |= ability_data.mask_class
-                ids[ability_data.id_spell]['mask_race'] |= (ability_data.mask_race or (1 << (racial_spell - 1)))
-            else:
-                ids[ability_data.id_spell] = { 'mask_class': ability_data.mask_class, 'mask_race' : ability_data.mask_race or (1 << (racial_spell - 1)) }
-
-        return ids
-
-    def generate(self, ids = None):
-        keys = [ ]
-        max_ids = 0
-
-        for i in range(0, len(DataGenerator._race_names)):
-            keys.insert(i, [])
-            for j in range(0, len(DataGenerator._class_names)):
-                keys[i].insert(j, [])
-
-        for k, v in ids.items():
-            # Add this for all races and classes that have a mask in v['mask_race']
-            for race_bit in range(0, len(DataGenerator._race_names)):
-                if not DataGenerator._race_names[race_bit]:
-                    continue
-
-                spell = self._spellname_db[k]
-
-                if spell.id != k:
-                    continue
-
-                if v['mask_race'] & (1 << (race_bit - 1)):
-                    if v['mask_class']:
-                        for class_bit in range(0, len(DataGenerator._class_names)):
-                            if not DataGenerator._class_names[class_bit]:
-                                continue
-
-                            if v['mask_class'] & (1 << (class_bit - 1)):
-                                keys[race_bit][class_bit].append( ( spell.name, k ) )
-                    # Generic racial spell, goes to "class 0"
-                    else:
-                        keys[race_bit][0].append( ( spell.name, k ) )
-
-        # Figure out tree with most abilities
-        for race in range(0, len(keys)):
-            for cls in range(0, len(keys[race])):
-                if len(keys[race][cls]) > max_ids:
-                    max_ids = len(keys[race][cls])
-
-        data_str = "%srace_ability%s" % (
-            self._options.prefix and ('%s_' % self._options.prefix) or '',
-            self._options.suffix and ('_%s' % self._options.suffix) or '',
-        )
-
-        # Then, output the stuffs
-        self._out.write('#define %s_SIZE (%d)\n\n' % (
-            data_str.upper(),
-            max_ids
-        ))
-
-        self._out.write("#ifndef %s\n#define %s (%d)\n#endif\n\n" % (
-            self.format_str( 'MAX_RACE' ),
-            self.format_str( 'MAX_RACE' ),
-            len(DataGenerator._race_names) ))
-        self._out.write('// Racial abilities, wow build %s\n' % self._options.build)
-        self._out.write('static unsigned __%s_data[%s][%s][%s_SIZE] = {\n' % (
-            self.format_str( 'race_ability' ),
-            self.format_str( 'MAX_RACE' ),
-            self.format_str( 'MAX_CLASS' ),
-            data_str.upper()
-        ))
-
-        for race in range(0, len(keys)):
-            if DataGenerator._race_names[race]:
-                self._out.write('  // Racial abilities for %s\n' % DataGenerator._race_names[race])
-
-            self._out.write('  {\n')
-
-            for cls in range(0, len(keys[race])):
-                if len(keys[race][cls]) > 0:
-                    if cls == 0:
-                        self._out.write('    // Generic racial abilities\n')
-                    else:
-                        self._out.write('    // Racial abilities for %s class\n' % DataGenerator._class_names[cls])
-                    self._out.write('    {\n')
-                else:
-                    self._out.write('    { %5d, },\n' % 0)
-                    continue
-
-                for ability in sorted(keys[race][cls], key = lambda i: i[0]):
-                    self._out.write('      %5d, // %s\n' % ( ability[1], ability[0] ))
-
-                if len(keys[race][cls]) < max_ids:
-                    self._out.write('      %5d,\n' % 0)
-
-                self._out.write('    },\n')
-            self._out.write('  },\n')
-        self._out.write('};\n')
+        self.output_footer()
 
 class SpecializationSpellGenerator(DataGenerator):
     def filter(self):

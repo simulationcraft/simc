@@ -6,6 +6,7 @@
 #include "dbc.hpp"
 #include "specialization_spell.hpp"
 #include "active_spells.hpp"
+#include "racial_spells.hpp"
 #include "sim/sc_expressions.hpp"
 #include "azerite.hpp"
 #include "spell_query/spell_data_expr.hpp"
@@ -336,19 +337,10 @@ struct spell_list_expr_t : public spell_data_expr_t
       }
       case DATA_RACIAL_SPELL:
       {
-        for ( unsigned race = 0; race < dbc.race_ability_tree_size(); race++ )
-        {
-          for ( unsigned cls = 0; cls < dbc.specialization_max_class() - 1; cls++ )
-          {
-            for ( unsigned n = 0; n < dbc.race_ability_size(); n++ )
-            {
-              if ( ! ( spell_id = dbc.race_ability( race, cls, n ) ) )
-                continue;
-
-              result_spell_list.push_back( spell_id );
-            }
-          }
-        }
+        range::for_each( racial_spell_entry_t::data( dbc.ptr ),
+            [this]( const racial_spell_entry_t& entry ) {
+              result_spell_list.push_back( entry.spell_id );
+        } );
         break;
       }
       case DATA_MASTERY_SPELL:

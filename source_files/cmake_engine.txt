@@ -39,6 +39,7 @@ dbc/item_naming.hpp
 dbc/item_scaling.hpp
 dbc/item_set_bonus.hpp
 dbc/item_weapon.hpp
+dbc/racial_spells.hpp
 dbc/rand_prop_points.hpp
 dbc/real_ppm_data.hpp
 dbc/sc_spell_info.hpp
@@ -212,6 +213,7 @@ dbc/item_naming.cpp
 dbc/item_scaling.cpp
 dbc/item_set_bonus.cpp
 dbc/item_weapon.cpp
+dbc/racial_spells.cpp
 dbc/rand_prop_points.cpp
 dbc/real_ppm_data.cpp
 dbc/sc_const_data.cpp

@@ -307,6 +307,27 @@ class DBCRecord(RawDBCRecord):
         else:
             return self._d[field_idx]
 
+    def field_format(self, *args):
+        f = [ ]
+        for field in args:
+            field_idx = 0
+            try:
+                if field == 'id':
+                    f.append(self._id_format % self._id)
+                    continue
+                elif field == 'id_parent':
+                    f.append(self._key_format % self._key)
+                    continue
+                else:
+                    field_idx = self._cd[field]
+            except KeyError:
+                f.append(None)
+                continue
+
+            f.append(self._ff[field_idx])
+
+        return f
+
     # Output field data based on formatting
     def field(self, *args):
         f = [ ]

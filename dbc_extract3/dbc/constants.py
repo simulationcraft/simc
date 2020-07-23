@@ -68,6 +68,34 @@ CLASS_SKILL_CATEGORIES = [
    1848,   # Demon Hunter
 ]
 
+RACE_INFO = [
+    { 'id':  1, 'bit':  0, 'name': 'Human',              'skill': 754  },
+    { 'id':  2, 'bit':  1, 'name': 'Orc',                'skill': 125  },
+    { 'id':  3, 'bit':  2, 'name': 'Dwarf',              'skill': 101  },
+    { 'id':  4, 'bit':  3, 'name': 'NightElf',           'skill': 126  },
+    { 'id':  5, 'bit':  4, 'name': 'Undead',             'skill': 220  },
+    { 'id':  6, 'bit':  5, 'name': 'Tauren',             'skill': 124  },
+    { 'id':  7, 'bit':  6, 'name': 'Gnome',              'skill': 753  },
+    { 'id':  8, 'bit':  7, 'name': 'Troll',              'skill': 733  },
+    { 'id':  9, 'bit':  8, 'name': 'Goblin',             'skill': 790  },
+    { 'id': 10, 'bit':  9, 'name': 'BloodElf',           'skill': 756  },
+    { 'id': 11, 'bit': 10, 'name': 'Draenei',            'skill': 760  },
+    { 'id': 22, 'bit': 21, 'name': 'Worgen',             'skill': 789  },
+    { 'id': 24, 'bit': 23, 'name': 'Pandaren',           'skill': 899  },
+    { 'id': 25, 'bit': 24, 'name': 'Pandaren',           'skill': 899  },
+    { 'id': 26, 'bit': 25, 'name': 'Pandaren',           'skill': 899  },
+    { 'id': 27, 'bit': 26, 'name': 'Nightborne',         'skill': 2419 },
+    { 'id': 28, 'bit': 27, 'name': 'HighmountainTauren', 'skill': 2420 },
+    { 'id': 29, 'bit': 28, 'name': 'VoidElf',            'skill': 2423 },
+    { 'id': 30, 'bit': 29, 'name': 'LightforgedDraenei', 'skill': 2421 },
+    { 'id': 31, 'bit': 30, 'name': 'ZandalariTroll',     'skill': 2721 },
+    { 'id': 32, 'bit': 31, 'name': 'KulTiran',           'skill': 2723 },
+    { 'id': 34, 'bit': 11, 'name': 'DarkIronDwarf',      'skill': 2773 },
+    { 'id': 35, 'bit': 12, 'name': 'Vulpera',            'skill': 2775 },
+    { 'id': 36, 'bit': 13, 'name': 'MagharOrc',          'skill': 2598 },
+    { 'id': 37, 'bit': 14, 'name': 'Mechagnome',         'skill': 2774 }
+]
+
 PET_SKILL_CATEGORIES = [
   ( ),
   # Warrior
@@ -120,4 +148,3 @@ SPELL_NAME_BLACKLIST = [
   re.compile("^Zen Pilgrimage"),
   re.compile("^Transcendence")
 ]
-
