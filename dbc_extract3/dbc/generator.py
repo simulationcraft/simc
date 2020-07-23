@@ -2773,45 +2773,36 @@ class SpellDataGenerator(DataGenerator):
             #if index % 20 == 0:
             #  self._out.write('//{ Name                                ,     Id,             Hotfix,PrjSp,  Sch, Class,  Race,Sca,MSL,SpLv,MxL,MinRange,MaxRange,Cooldown,  GCD,Chg, ChrgCd, Cat,  Duration,  RCost, RPG,Stac, PCh,PCr, ProcFlags,EqpCl, EqpInvType,EqpSubclass,CastMn,CastMx,Div,       Scaling,SLv, RplcId, {      Attr1,      Attr2,      Attr3,      Attr4,      Attr5,      Attr6,      Attr7,      Attr8,      Attr9,     Attr10,     Attr11,     Attr12 }, {     Flags1,     Flags2,     Flags3,     Flags4 }, Family, Description, Tooltip, Description Variable, Icon, ActiveIcon, Effect1, Effect2, Effect3 },\n')
 
-            # 1, 2
             sname = self._spellname_db[id]
             fields = sname.field('name', 'id')
             hotfix.add(sname, ('name', 0))
 
-            # 4, 5
             fields += misc.field('proj_speed', 'school')
             hotfix.add(misc, ('proj_speed', 3), ('school', 4))
 
             # Hack in the combined class from the id_tuples dict
-            # 6, 7
             fields += [ u'%#.8x' % ids.get(id, { 'mask_class' : 0, 'mask_race': 0 })['mask_class'] ]
             fields += [ u'%#.16x' % ids.get(id, { 'mask_class' : 0, 'mask_race': 0 })['mask_race'] ]
 
             # Set the scaling index for the spell
-            # 8, 9
             fields += spell.get_link('scaling').field('id_class', 'max_scaling_level')
             hotfix.add(spell.get_link('scaling'), ('id_class', 7), ('max_scaling_level', 8))
 
-            # 10, 11
             fields += spell.get_link('level').field('base_level', 'max_level')
             hotfix.add(spell.get_link('level'), ('base_level', 9), ('max_level', 10))
 
-            # 12, 13
             range_entry = self._spellrange_db[misc.id_range]
             fields += range_entry.field('min_range_1', 'max_range_1')
             hotfix.add(range_entry, ('min_range_1', 11), ('max_range_1', 12))
 
-            # 14, 15, 16
             fields += spell.get_link('cooldown').field('cooldown_duration', 'gcd_cooldown', 'category_cooldown')
             hotfix.add(spell.get_link('cooldown'), ('cooldown_duration', 13), ('gcd_cooldown', 14), ('category_cooldown', 15))
 
-            # 17, 18
             category = spell.get_link('categories')
             category_data = self._spellcategory_db[category.charge_category]
 
             fields += category_data.field('charges', 'charge_cooldown')
             hotfix.add(category_data, ('charges', 16), ('charge_cooldown', 17))
-            # 19
             if category.charge_category > 0: # Note, some spells have both cooldown and charge categories
                 fields += category.field('charge_category')
                 hotfix.add(category, ('charge_category', 18))
@@ -2819,33 +2810,27 @@ class SpellDataGenerator(DataGenerator):
                 fields += category.field('cooldown_category')
                 hotfix.add(category, ('cooldown_category', 18))
 
-            # 20
             duration_entry = self._spellduration_db[misc.id_duration]
             fields += duration_entry.field('duration_1')
             hotfix.add(duration_entry, ('duration_1', 19))
 
-            # 21, 22, 23, 24, 25
             fields += spell.get_link('aura_option').field('stack_amount', 'proc_chance', 'proc_charges', 'proc_flags_1', 'internal_cooldown')
             hotfix.add(spell.get_link('aura_option'),
                     ('stack_amount', 20), ('proc_chance', 21), ('proc_charges', 22),
                     ('proc_flags_1', 23), ('internal_cooldown', 24))
 
-            # 26
             ppm_entry = self._spellprocsperminute_db[spell.get_link('aura_option').id_ppm]
             fields += ppm_entry.field('ppm')
             hotfix.add(ppm_entry, ('ppm', 25))
 
-
-            # 27, 28, 29
             fields += spell.get_link('equipped_item').field('item_class', 'mask_inv_type', 'mask_sub_class')
             hotfix.add(spell.get_link('equipped_item'),
                 ('item_class', 26), ('mask_inv_type', 27), ('mask_sub_class', 28))
 
             cast_times = self._spellcasttimes_db[misc.id_cast_time]
-            # 30, 31
             fields += cast_times.field('min_cast_time', 'cast_time')
             hotfix.add(cast_times, ('min_cast_time', 29), ('cast_time', 30))
-            # 32, 33, 34
+
             fields += [u'0', u'0', u'0'] # cast_div, c_scaling, c_scaling_threshold
 
             # NOTE: replace spell ID as it stands is not marked as a hotfixed field in spell query
@@ -2855,7 +2840,6 @@ class SpellDataGenerator(DataGenerator):
                 fields += [ '%6u' % 0 ]
 
             # Add spell flags
-            # 35
             fields += [ '{ %s }' % ', '.join(misc.field('flags_1', 'flags_2', 'flags_3', 'flags_4',
                 'flags_5', 'flags_6', 'flags_7', 'flags_8', 'flags_9', 'flags_10', 'flags_11',
                 'flags_12', 'flags_13', 'flags_14')) ]
@@ -2863,20 +2847,19 @@ class SpellDataGenerator(DataGenerator):
             hotfix.add(misc,
                 (('flags_1', 'flags_2', 'flags_3',  'flags_4',  'flags_5',  'flags_6',  'flags_7',
                   'flags_8', 'flags_9', 'flags_10', 'flags_11', 'flags_12', 'flags_13', 'flags_14'), 35))
-            # 36, 37
+
             fields += [ '{ %s }' % ', '.join(spell.get_link('class_option').field('flags_1', 'flags_2', 'flags_3', 'flags_4')) ]
             fields += spell.get_link('class_option').field('family')
             hotfix.add(spell.get_link('class_option'),
                 (('flags_1', 'flags_2', 'flags_3', 'flags_4'), 36), ('family', 37))
-            # 38
+
             fields += spell.get_link('shapeshift').field('flags_1')
             hotfix.add(spell.get_link('shapeshift'), ('flags_1', 38))
-            # 39
+
             mechanic = self._spellmechanic_db[spell.get_link('categories').mechanic]
             fields += mechanic.field('mechanic')
             hotfix.add(mechanic, ('mechanic', 39))
 
-            # 40
             power = spell.get_link('azerite_power')
             fields += power.field('id')
 
@@ -2884,7 +2867,6 @@ class SpellDataGenerator(DataGenerator):
             if self._options.build >= dbc.WowVersion(8, 2, 0, 30080):
                 essences = [x.field('id_essence')[0] for x in spell.get_links('azerite_essence')]
                 if len(essences) == 0:
-                    # 41
                     fields += self._azeriteessence_db[0].field('id')
                 else:
                     essences = list(set(essences))
@@ -2892,16 +2874,14 @@ class SpellDataGenerator(DataGenerator):
                         logging.warn('Spell %s (id=%d) associated with more than one Azerite Essence (%s)',
                             spell.name, spell.id, ', '.join(essences))
 
-                    # 41
                     fields.append(essences[0])
             else:
                 fields.append('0')
 
-            # 42, 43
             spell_text = spell.get_link('text')
             fields += spell_text.field('desc', 'tt')
             hotfix.add(spell_text, ('desc', 42), ('tt', 43))
-            # 44
+
             if self._options.build < 25600:
                 desc_var = self._spelldescriptionvariables_db[spell.id_desc_var]
             else:
@@ -2918,25 +2898,21 @@ class SpellDataGenerator(DataGenerator):
                     link = spell.get_link('desc_var_link')
                     hotfix.add(link, ('id_desc_var', 44))
                 fields += [ u'0' ]
-            # 45
+
             fields += spell_text.field('rank')
             hotfix.add(spell_text, ('rank', 45))
 
-            # 46
             fields += spell.get_link('level').field('req_max_level')
             # hotfix.add(spell.get_link('level'), ('req_max_level', 46))
 
-            # 47
             fields += category.field('dmg_class')
             # hotfix.add(category, ('dmg_class', 47))
 
             # Pad struct with empty pointers for direct access to spell effect data
-            # 48, 49, 50, 51
             fields += [ u'0', u'0', u'0', u'0' ]
 
             effect_ids = spelleffect_index.get(id, ())
 
-            # 52, 53, 54, 55
             fields += [ str(len(effect_ids)) ]
             fields += [ str(power_count) ]
             fields += [ str(len(spelldriver_index.get(id, ()))) ]
@@ -2983,35 +2959,29 @@ class SpellDataGenerator(DataGenerator):
             hotfix.add(effect, ('index', 3), ('type', 4), ('sub_type', 5), ('coefficient', 6), ('delta', 7),
                                ('bonus', 8), ('sp_coefficient', 9), ('ap_coefficient', 10), ('amplitude', 11))
 
-            # 13
             radius_entry = self._spellradius_db[effect.id_radius_1]
             fields += radius_entry.field('radius_1')
             hotfix.add(radius_entry, ('radius_1', 12))
 
-            # 14
             radius_max_entry = self._spellradius_db[effect.id_radius_2]
             fields += radius_max_entry.field('radius_1')
             hotfix.add(radius_max_entry, ('radius_1', 13))
 
-            # 15, 16, 17
             fields += effect.field('base_value', 'misc_value_1', 'misc_value_2')
             hotfix.add(effect, ('base_value', 14), ('misc_value_1', 15), ('misc_value_2', 16))
 
-            # 18, note hotfix flags bunched together into one bit field
+            # note hotfix flags bunched together into one bit field
             fields += [ '{ %s }' % ', '.join( effect.field('class_mask_1', 'class_mask_2', 'class_mask_3', 'class_mask_4' ) ) ]
             hotfix.add(effect, (('class_mask_1', 'class_mask_2', 'class_mask_3', 'class_mask_4'), 17))
 
-            # 19, 20, 21, 22, 23
             fields += effect.field('trigger_spell', 'dmg_multiplier', 'points_per_combo_points', 'real_ppl')
             hotfix.add(effect, ('trigger_spell', 18), ('dmg_multiplier', 19),
                 ('points_per_combo_points', 20), ('real_ppl', 21))
 
-            # 24
             mechanic = self._spellmechanic_db[effect.id_mechanic]
             fields += mechanic.field('mechanic')
             hotfix.add(mechanic, ('mechanic', 22))
 
-            # 25, 26, 27, 28
             fields += effect.field('chain_target', 'implicit_target_1', 'implicit_target_2', 'val_mul', 'pvp_coefficient')
             hotfix.add(effect, ('chain_target', 23), ('implicit_target_1', 24),
                 ('implicit_target_2', 25), ('val_mul', 26), ('pvp_coefficient', 27))
