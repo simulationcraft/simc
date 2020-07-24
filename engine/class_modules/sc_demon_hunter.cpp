@@ -41,6 +41,11 @@ namespace
   ** Add Bulk Extraction
   
   * Remap spell data from all the new Rank X subspells
+  ** Done -- Imolation Aura
+  ** Done -- Eye Beam
+  ** Done -- Blade Dance
+  ** Done -- Mastery: Demonic Presence
+
   * Implement Covenant abilities
   * Implement Soulbinds
   * Implement Legendaries
@@ -359,6 +364,7 @@ public:
     const spell_data_t* havoc;
     const spell_data_t* annihilation;
     const spell_data_t* blade_dance;
+    const spell_data_t* blade_dance_rank_2;
     const spell_data_t* blur;
     const spell_data_t* chaos_nova;
     const spell_data_t* chaos_strike;
@@ -367,6 +373,7 @@ public:
     const spell_data_t* death_sweep;
     const spell_data_t* demonic_appetite_fury;
     const spell_data_t* eye_beam;
+    const spell_data_t* eye_beam_rank_2;
     const spell_data_t* fel_rush_damage;
     const spell_data_t* vengeful_retreat;
     const spell_data_t* momentum_buff;
@@ -407,8 +414,11 @@ public:
   // Mastery Spells
   struct mastery_t
   {
-    const spell_data_t* demonic_presence;  // Havoc
-    const spell_data_t* fel_blood;         // Vengeance
+    // Havoc
+    const spell_data_t* demonic_presence;
+    const spell_data_t* demonic_presence_rank_2;
+    // Vengeance
+    const spell_data_t* fel_blood;
   } mastery;
 
   // Cooldowns
@@ -1142,19 +1152,15 @@ public:
       if ( ab::data().affected_by( p->spec.havoc->effectN( 4 ) ) )
         ab::cooldown->hasted = true;
 
-      // Critical Chance
-      if ( ab::data().affected_by( p->spec.havoc->effectN( 5 ) ) )
-        ab::base_crit += p->spec.havoc->effectN( 5 ).percent();
-
       // Hasted Category Cooldowns
-      if ( as<int>( ab::data().category() ) == p->spec.havoc->effectN( 6 ).misc_value1() )
+      if ( as<int>( ab::data().category() ) == p->spec.havoc->effectN( 5 ).misc_value1() )
         ab::cooldown->hasted = true;
 
       // Mastery
       if ( ab::data().affected_by( p->mastery.demonic_presence->effectN( 1 ) ) )
         affected_by.demonic_presence_da = true;
 
-      if ( ab::data().affected_by( p->mastery.demonic_presence->effectN( 3 ) ) )
+      if ( ab::data().affected_by( p->mastery.demonic_presence->effectN( 2 ) ) )
         affected_by.demonic_presence_ta = true;
 
       // Momemtum
@@ -1869,6 +1875,8 @@ struct eye_beam_t : public demon_hunter_spell_t
     {
       background = dual = true;
       aoe = -1;
+
+      base_crit += p->spec.eye_beam_rank_2->effectN( 1 ).percent();
     }
 
     double composite_target_multiplier( player_t* target ) const override
@@ -3129,7 +3137,7 @@ struct blade_dance_base_t : public demon_hunter_attack_t
   void execute() override
   {
     // Blade Dance/Death Sweep Shared Cooldown
-    cooldown->duration = data().cooldown();
+    cooldown->duration = data().cooldown() += p()->spec.blade_dance_rank_2->effectN( 1 ).time_value();
 
     demon_hunter_attack_t::execute();
 
@@ -3158,10 +3166,10 @@ struct blade_dance_t : public blade_dance_base_t
   {
     if ( attacks.empty() )
     {
-      attacks.push_back( new blade_dance_damage_t( p, data().effectN( 4 ), "blade_dance1" ) );
-      attacks.push_back( new blade_dance_damage_t( p, data().effectN( 5 ), "blade_dance2" ) );
-      attacks.push_back( new blade_dance_damage_t( p, data().effectN( 6 ), "blade_dance3" ) );
-      attacks.push_back( new blade_dance_damage_t( p, data().effectN( 7 ), "blade_dance4" ) );
+      attacks.push_back( new blade_dance_damage_t( p, data().effectN( 2 ), "blade_dance1" ) );
+      attacks.push_back( new blade_dance_damage_t( p, data().effectN( 3 ), "blade_dance2" ) );
+      attacks.push_back( new blade_dance_damage_t( p, data().effectN( 4 ), "blade_dance3" ) );
+      attacks.push_back( new blade_dance_damage_t( p, data().effectN( 5 ), "blade_dance4" ) );
     }
   }
 
@@ -3513,10 +3521,6 @@ struct felblade_t : public demon_hunter_attack_t
     {
       background = dual = true;
       may_miss = may_dodge = may_parry = false;
-
-      // Clear energize and then manually pick which effect to parse.
-      energize_type = ENERGIZE_NONE;
-      parse_effect_data( data().effectN( p->specialization() == DEMON_HUNTER_HAVOC ? 4 : 3 ) );
       gain = p->get_gain( "felblade" );
     }
   };
@@ -4829,7 +4833,6 @@ void demon_hunter_t::init_spells()
     spec.leather_specialization = find_spell( 178976 );
     spec.metamorphosis          = find_class_spell( "Metamorphosis" );
     spec.metamorphosis_buff     = spec.metamorphosis->effectN( 2 ).trigger();
-    
   }
   else
   {
@@ -4844,9 +4847,11 @@ void demon_hunter_t::init_spells()
   // Havoc
   spec.havoc                  = find_specialization_spell( "Havoc Demon Hunter" );
   spec.blade_dance            = find_class_spell( "Blade Dance",      DEMON_HUNTER_HAVOC );
+  spec.blade_dance_rank_2     = find_spell( 320402, DEMON_HUNTER_HAVOC );
   spec.chaos_nova             = find_class_spell( "Chaos Nova",       DEMON_HUNTER_HAVOC );
   spec.chaos_strike           = find_class_spell( "Chaos Strike",     DEMON_HUNTER_HAVOC );
   spec.eye_beam               = find_class_spell( "Eye Beam",         DEMON_HUNTER_HAVOC );
+  spec.eye_beam_rank_2        = find_spell( 320415, DEMON_HUNTER_HAVOC );
   spec.vengeful_retreat       = find_class_spell( "Vengeful Retreat", DEMON_HUNTER_HAVOC );
   spec.annihilation           = find_spell( 201427, DEMON_HUNTER_HAVOC );
   spec.blur                   = find_spell( 198589, DEMON_HUNTER_HAVOC );
@@ -4866,8 +4871,9 @@ void demon_hunter_t::init_spells()
 
   // Masteries ==============================================================
 
-  mastery.demonic_presence    = find_mastery_spell( DEMON_HUNTER_HAVOC );
-  mastery.fel_blood           = find_mastery_spell( DEMON_HUNTER_VENGEANCE );
+  mastery.demonic_presence        = find_mastery_spell( DEMON_HUNTER_HAVOC );
+  mastery.demonic_presence_rank_2 = find_spell( 320654, DEMON_HUNTER_HAVOC );
+  mastery.fel_blood               = find_mastery_spell( DEMON_HUNTER_VENGEANCE );
 
   // Talents ================================================================
 
@@ -5641,7 +5647,7 @@ double demon_hunter_t::passive_movement_modifier() const
 
   if ( mastery.demonic_presence->ok() )
   {
-    ms += cache.mastery() * mastery.demonic_presence->effectN( 2 ).mastery_value();
+    ms += cache.mastery() * mastery.demonic_presence_rank_2->effectN( 1 ).mastery_value();
   }
 
   return ms;
