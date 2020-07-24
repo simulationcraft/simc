@@ -113,8 +113,9 @@ std::string _encoded_enchant_name( const dbc_t& dbc, const item_enchantment_data
 
     util::tokenize( enchant_name );
 
-    if ( enchant_source->rank_str() )
-      enchant_rank_str = enchant_source->rank_str();
+    const auto& spell_text = dbc.spell_text( enchant_source->id() );
+    if ( spell_text.rank() )
+      enchant_rank_str = spell_text.rank();
     util::tokenize( enchant_rank_str );
   }
   // Revert back to figuring out name based on pure item enchantment data. This
@@ -129,8 +130,9 @@ std::string _encoded_enchant_name( const dbc_t& dbc, const item_enchantment_data
       if ( enchant.ench_prop[ i ] == 0 || enchant.ench_type[ i ] == 0 )
         continue;
 
-      if ( dbc.spell( enchant.ench_prop[ i ] )->rank_str() )
-        enchant_rank_str = dbc.spell( enchant.ench_prop[ i ] )->rank_str();
+      const auto& spell_text = dbc.spell_text( enchant.ench_prop[ i ] );
+      if ( spell_text.rank() )
+        enchant_rank_str = spell_text.rank();
       util::tokenize( enchant_rank_str );
     }
   }

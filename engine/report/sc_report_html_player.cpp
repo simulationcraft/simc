@@ -1055,6 +1055,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
 
       if ( a->data().ok() )
       {
+        const auto& spell_text = a->player->dbc->spell_text( a->data().id() );
         os.printf( "<div class=\"shrink\">\n"
                    "<h4>Spelldata</h4>\n"
                    "<ul>\n"
@@ -1070,8 +1071,8 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
                    a->data().id(),
                    util::encode_html( a->data().name_cstr() ).c_str(),
                    util::school_type_string( a->data().get_school_type() ),
-                   util::encode_html( report_helper::pretty_spell_text( a->data(), a->data().tooltip(), p ) ).c_str(),
-                   util::encode_html( report_helper::pretty_spell_text( a->data(), a->data().desc(), p ) ).c_str() );
+                   util::encode_html( report_helper::pretty_spell_text( a->data(), spell_text.tooltip(), p ) ).c_str(),
+                   util::encode_html( report_helper::pretty_spell_text( a->data(), spell_text.desc(), p ) ).c_str() );
       }
       os << "</div>\n";  // Close details, damage/weapon, spell_data
     }
@@ -3027,33 +3028,43 @@ void print_html_player_buff_spelldata( report::sc_html_stream& os, const buff_t&
                                        std::string data_name )
 {
   // Spelldata
-   if ( data.ok() )
-   {
-     os.printf( "<h4>%s</h4>\n"
-                "<ul>\n"
-                "<li><span class=\"label\">id:</span>%i</li>\n"
-                "<li><span class=\"label\">name:</span>%s</li>\n"
-                "<li><span class=\"label\">tooltip:</span><span "
-                "class=\"tooltip\">%s</span></li>\n"
-                "<li><span class=\"label\">description:</span><span "
-                "class=\"tooltip\">%s</span></li>\n"
-                "<li><span class=\"label\">max_stacks:</span>%.i</li>\n"
-                "<li><span class=\"label\">duration:</span>%.2f</li>\n"
-                "<li><span class=\"label\">cooldown:</span>%.2f</li>\n"
-                "<li><span class=\"label\">default_chance:</span>%.2f%%</li>\n"
-                "</ul>\n",
-                util::encode_html( data_name ).c_str(),
-                data.id(),
-                util::encode_html( data.name_cstr() ).c_str(),
-                b.player ? util::encode_html( report_helper::pretty_spell_text( data, data.tooltip(), *b.player ) ).c_str()
-                         : util::encode_html( data.tooltip() ).c_str(),
-                b.player ? util::encode_html( report_helper::pretty_spell_text( data, data.desc(), *b.player ) ).c_str()
-                         : util::encode_html( data.desc() ).c_str(),
-                data.max_stacks(),
-                data.duration().total_seconds(),
-                data.cooldown().total_seconds(),
-                data.proc_chance() * 100 );
-   }
+  if ( data.ok() )
+  {
+    // try to find a valid dbc pointer, going player -> source -> sim
+    // if everything fails we fallback to a "nil" spelltext_data_t record
+    const dbc_t* dbc = nullptr;
+    if ( b.player )
+      dbc = b.player -> dbc.get();
+    if ( dbc == nullptr && b.source )
+      dbc = b.source -> dbc.get();
+    if ( dbc == nullptr && b.sim )
+      dbc = b.sim -> dbc.get();
+    const auto& spell_text = dbc ? dbc->spell_text( data.id() ) : spelltext_data_t::nil();
+    os.printf( "<h4>%s</h4>\n"
+               "<ul>\n"
+               "<li><span class=\"label\">id:</span>%i</li>\n"
+               "<li><span class=\"label\">name:</span>%s</li>\n"
+               "<li><span class=\"label\">tooltip:</span><span "
+               "class=\"tooltip\">%s</span></li>\n"
+               "<li><span class=\"label\">description:</span><span "
+               "class=\"tooltip\">%s</span></li>\n"
+               "<li><span class=\"label\">max_stacks:</span>%.i</li>\n"
+               "<li><span class=\"label\">duration:</span>%.2f</li>\n"
+               "<li><span class=\"label\">cooldown:</span>%.2f</li>\n"
+               "<li><span class=\"label\">default_chance:</span>%.2f%%</li>\n"
+               "</ul>\n",
+               util::encode_html( data_name ).c_str(),
+               data.id(),
+               util::encode_html( data.name_cstr() ).c_str(),
+               b.player ? util::encode_html( report_helper::pretty_spell_text( data, spell_text.tooltip(), *b.player ) ).c_str()
+                        : util::encode_html( spell_text.tooltip() ).c_str(),
+               b.player ? util::encode_html( report_helper::pretty_spell_text( data, spell_text.desc(), *b.player ) ).c_str()
+                        : util::encode_html( spell_text.desc() ).c_str(),
+               data.max_stacks(),
+               data.duration().total_seconds(),
+               data.cooldown().total_seconds(),
+               data.proc_chance() * 100 );
+  }
 }
 
 // This function MUST accept non-player buffs as well!

@@ -73,10 +73,7 @@ struct client_hotfix_entry_t
   { }
 };
 
-// Returns hotfix entries for an object of a specified type
-util::span<const client_hotfix_entry_t> spell_hotfixes( unsigned id, bool ptr );
-util::span<const client_hotfix_entry_t> effect_hotfixes( unsigned id, bool ptr );
-util::span<const client_hotfix_entry_t> power_hotfixes( unsigned id, bool ptr );
+util::span<const client_hotfix_entry_t> find_hotfixes( util::span<const client_hotfix_entry_t> data, unsigned id );
 
 } // namespace hotfix
 

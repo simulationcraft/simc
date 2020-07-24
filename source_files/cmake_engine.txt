@@ -49,6 +49,7 @@ dbc/specialization_spell.hpp
 dbc/spell_data.hpp
 dbc/spell_item_enchantment.hpp
 dbc/spell_query/spell_data_expr.hpp
+dbc/spelltext_data.hpp
 dbc/talent_data.hpp
 interfaces/bcp_api.hpp
 interfaces/sc_http.hpp
@@ -202,6 +203,7 @@ class_modules/warlock/sc_warlock_pets.cpp
 dbc/active_spells.cpp
 dbc/azerite.cpp
 dbc/client_data.cpp
+dbc/client_hotfix_entry.cpp
 dbc/gem_data.cpp
 dbc/item_armor.cpp
 dbc/item_bonus.cpp
@@ -226,6 +228,7 @@ dbc/sc_spell_info.cpp
 dbc/specialization_spell.cpp
 dbc/spell_data.cpp
 dbc/spell_item_enchantment.cpp
+dbc/spelltext_data.cpp
 dbc/talent_data.cpp
 interfaces/bcp_api.cpp
 interfaces/sc_http.cpp

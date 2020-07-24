@@ -797,15 +797,16 @@ bool item_database::parse_item_spell_enchant( item_t& item,
       }
 
       // Kludge the rest
-      if ( dbc_name.find( "$" ) != dbc_name.npos || ( es && es -> id() > 0 && es -> rank_str() != nullptr ) )
+      if ( dbc_name.find( "$" ) != dbc_name.npos || ( es && es -> id() > 0 ) )
       {
         if ( es && es -> id() > 0 )
         {
           enchant_effect = es -> name_cstr(); // Use Spell Name
 
-          if ( es -> rank_str() != nullptr ) // If rank str is available, append its number to the enchant name
+          const auto& spell_text = item.player->dbc->spell_text( es -> id() );
+          if ( spell_text.rank() != nullptr ) // If rank str is available, append its number to the enchant name
           {
-            std::string rank = std::string( es -> rank_str() );
+            std::string rank = std::string( spell_text.rank() );
             if (  rank.find( "Rank " ) != rank.npos )
               rank.erase( rank.find( "Rank " ), std::string( "Rank " ).length() );
             enchant_effect += "_" + rank;

@@ -2,7 +2,6 @@
 #include "spell_data.hpp"
 
 #include <array>
-#include "dbc/client_hotfix_entry.hpp"
 
 #include "generated/sc_spell_data.inc"
 #if SC_USE_PTR
@@ -445,29 +444,20 @@ util::span<spell_data_t> spell_data_t::_data( bool ptr )
 
 // Hotfix data handling
 
-static util::span<const hotfix::client_hotfix_entry_t> find_hotfixes(
-  util::span<const hotfix::client_hotfix_entry_t> data, unsigned id )
-{
-  auto r = range::equal_range( data, id, {}, &hotfix::client_hotfix_entry_t::id );
-  if ( r.first == data.end() )
-    return {};
-  return { r.first, r.second };
-}
-
-util::span<const hotfix::client_hotfix_entry_t> hotfix::spell_hotfixes( unsigned id, bool ptr )
+util::span<const hotfix::client_hotfix_entry_t> spell_data_t::hotfixes( const spell_data_t& sd, bool ptr )
 {
   auto data = SC_DBC_GET_DATA( __spell_hotfix_data, __ptr_spell_hotfix_data, ptr );
-  return find_hotfixes( data, id );
+  return find_hotfixes( data, sd.id() );
 }
 
-util::span<const hotfix::client_hotfix_entry_t> hotfix::effect_hotfixes( unsigned id, bool ptr )
+util::span<const hotfix::client_hotfix_entry_t> spelleffect_data_t::hotfixes( const spelleffect_data_t& ed, bool ptr )
 {
   auto data = SC_DBC_GET_DATA( __effect_hotfix_data, __ptr_effect_hotfix_data, ptr );
-  return find_hotfixes( data, id );
+  return find_hotfixes( data, ed.id() );
 }
 
-util::span<const hotfix::client_hotfix_entry_t> hotfix::power_hotfixes( unsigned id, bool ptr )
+util::span<const hotfix::client_hotfix_entry_t> spellpower_data_t::hotfixes( const spellpower_data_t& pd, bool ptr )
 {
   auto data = SC_DBC_GET_DATA( __power_hotfix_data, __ptr_power_hotfix_data, ptr );
-  return find_hotfixes( data, id );
+  return find_hotfixes( data, pd.id() );
 }
