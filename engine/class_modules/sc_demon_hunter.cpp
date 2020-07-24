@@ -25,7 +25,7 @@ namespace
   ----------
 
   * Check all Havoc talents
-  ** Add Burning Hatred
+  ** Done -- Row 1-2
   ** Add Unbound Chaos
   
   * Add Fel Devastation baseline
@@ -282,6 +282,7 @@ public:
     const spell_data_t* felblade;
 
     const spell_data_t* insatiable_hunger;
+    const spell_data_t* burning_hatred;
     const spell_data_t* demon_blades;
 
     const spell_data_t* trail_of_ruin;
@@ -2382,6 +2383,11 @@ struct immolation_aura_t : public demon_hunter_spell_t
 
       // Rename gain for periodic energizes. Initial hit action doesn't energize.
       gain = p->get_gain( "immolation_aura_tick" );
+      if ( !initial )
+      {
+        energize_amount += s->effectN( 3 ).base_value(); // Holdover from Pain conversation
+        energize_amount += p->talent.burning_hatred->effectN( 1 ).base_value();
+      }
 
       base_multiplier *= 1.0 + p->talent.agonizing_flames->effectN( 1 ).percent();
     }
@@ -2403,7 +2409,7 @@ struct immolation_aura_t : public demon_hunter_spell_t
 
     result_amount_type amount_type( const action_state_t*, bool ) const override
     {
-      return initial ? result_amount_type::DMG_DIRECT : result_amount_type::DMG_OVER_TIME; // TOCHECK
+      return initial ? result_amount_type::DMG_DIRECT : result_amount_type::DMG_OVER_TIME;
     }
   };
 
@@ -3428,6 +3434,7 @@ struct demons_bite_t : public demon_hunter_attack_t
   demons_bite_t( demon_hunter_t* p, const std::string& options_str )
     : demon_hunter_attack_t( "demons_bite", p, p->find_class_spell( "Demon's Bite" ), options_str )
   {
+    base_multiplier *= 1.0 + p->talent.insatiable_hunger->effectN( 2 ).percent();
     energize_delta = energize_amount * data().effectN( 3 ).m_delta();
   }
 
@@ -3437,7 +3444,8 @@ struct demons_bite_t : public demon_hunter_attack_t
     
     if ( p()->talent.insatiable_hunger->ok() )
     {
-      ea += static_cast<int>( p()->rng().range( 0, 1 + p()->talent.insatiable_hunger->effectN( 1 ).base_value() ) );
+      ea += static_cast<int>( p()->rng().range( p()->talent.insatiable_hunger->effectN( 3 ).base_value(), 
+                                                1 + p()->talent.insatiable_hunger->effectN( 4 ).base_value() ) );
     }
 
     return ea;
@@ -4905,7 +4913,7 @@ void demon_hunter_t::init_spells()
   // talent.felblade
 
   talent.insatiable_hunger    = find_talent_spell( "Insatiable Hunger" );
-  // Burning Hatred
+  talent.burning_hatred       = find_talent_spell( "Burning Hatred" );
   talent.demon_blades         = find_talent_spell( "Demon Blades" );
 
   talent.trail_of_ruin        = find_talent_spell( "Trail of Ruin" );
