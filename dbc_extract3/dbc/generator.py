@@ -3190,21 +3190,21 @@ class MasteryAbilityGenerator(DataGenerator):
     def generate(self, data=None):
         data.sort(key=lambda v: v.id)
 
-         self.output_header(
-                 header = 'Mastery abilities',
-                 type = 'mastery_spell_entry_t',
-                 array = 'mastery_spell',
-                 length = len(data))
+        self.output_header(
+                header = 'Mastery abilities',
+                type = 'mastery_spell_entry_t',
+                array = 'mastery_spell',
+                length = len(data))
 
-         for entry in data:
-             fields = entry.field('id', 'id_mastery_1')
-             self.output_record(fields,
-                     comment = '{} ({} {})'.format(
-                         entry.ref('id_mastery_1').name,
-                         entry.name,
-                         util.class_name(class_id=entry.class_id)))
+        for entry in data:
+            fields = entry.field('id', 'id_mastery_1')
+            self.output_record(fields,
+                    comment = '{} ({} {})'.format(
+                        entry.ref('id_mastery_1').name,
+                        entry.name,
+                        util.class_name(class_id=entry.class_id)))
 
-                     self.output_footer()
+        self.output_footer()
 
 class RacialSpellGenerator(DataGenerator):
     def filter(self):

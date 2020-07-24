@@ -178,13 +178,13 @@ class MasterySpellSet(DataSet):
     def _filter(self, **kwargs):
         _data = []
 
-         for v in self.db('ChrSpecialization').values():
-             if v.ref('id_mastery_1').id == 0:
-                 continue
+        for v in self.db('ChrSpecialization').values():
+            if v.ref('id_mastery_1').id == 0:
+                continue
 
-             _data.append(v)
+            _data.append(v)
 
-         return _data
+        return _data
 
-     def ids(self):
-         return list(set(v.id_mastery_1
+    def ids(self):
+        return list(set(v.id_mastery_1 for v in self.get()))
