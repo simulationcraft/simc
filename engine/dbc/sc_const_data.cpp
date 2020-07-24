@@ -15,12 +15,10 @@
 
 #include "generated/sc_spec_list.inc"
 #include "generated/sc_scale_data.inc"
-#include "generated/sc_spell_lists.inc"
 #include "sc_extra_data.inc"
 
 #if SC_USE_PTR
 #include "generated/sc_scale_data_ptr.inc"
-#include "generated/sc_spell_lists_ptr.inc"
 #include "sc_extra_data_ptr.inc"
 #endif
 
