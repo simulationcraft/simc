@@ -27,9 +27,6 @@ namespace
   * Check all Havoc talents
   ** Add Burning Hatred
   ** Add Unbound Chaos
-  ** Remove Fel Mastery
-  ** Add Essence Break
-  ** Remove Dark Slash
   
   * Add Fel Devastation baseline
   * Check all Vengeance talents
@@ -89,7 +86,7 @@ public:
   {
     // Havoc
     buff_t* nemesis;
-    buff_t* dark_slash;
+    buff_t* essence_break;
 
     // Vengeance
     buff_t* frailty;
@@ -288,7 +285,7 @@ public:
     const spell_data_t* demon_blades;
 
     const spell_data_t* trail_of_ruin;
-    const spell_data_t* fel_mastery;
+    const spell_data_t* unbound_chaos;
     const spell_data_t* fel_barrage;
 
     const spell_data_t* soul_rending;
@@ -297,7 +294,7 @@ public:
     
     const spell_data_t* cycle_of_hatred;
     const spell_data_t* first_blood;
-    const spell_data_t* dark_slash;
+    const spell_data_t* essence_break;
 
     const spell_data_t* unleashed_power;
     const spell_data_t* master_of_the_glaive;
@@ -434,7 +431,7 @@ public:
     cooldown_t* blade_dance;
     cooldown_t* blur;
     cooldown_t* chaos_nova;
-    cooldown_t* dark_slash;
+    cooldown_t* essence_break;
     cooldown_t* demonic_appetite;
     cooldown_t* eye_beam;
     cooldown_t* fel_barrage;
@@ -494,8 +491,10 @@ public:
     proc_t* demon_blades_wasted;
     proc_t* demonic_appetite;
     proc_t* demons_bite_in_meta;
-    proc_t* chaos_strike_in_dark_slash;
-    proc_t* annihilation_in_dark_slash;
+    proc_t* chaos_strike_in_essence_break;
+    proc_t* annihilation_in_essence_break;
+    proc_t* blade_dance_in_essence_break;
+    proc_t* death_sweep_in_essence_break;
     proc_t* felblade_reset;
 
     // Vengeance
@@ -3042,6 +3041,15 @@ struct blade_dance_base_t : public demon_hunter_attack_t
       aoe = -1;
     }
 
+    double composite_target_multiplier( player_t* target ) const override
+    {
+      double m = demon_hunter_attack_t::composite_target_multiplier( target );
+
+      m *= 1.0 + td( target )->debuffs.essence_break->check_value();
+
+      return m;
+    }
+
     double composite_da_multiplier( const action_state_t* s ) const override
     {
       double dm = demon_hunter_attack_t::composite_da_multiplier( s );
@@ -3149,6 +3157,18 @@ struct blade_dance_base_t : public demon_hunter_attack_t
       p()->gain.revolving_blades->add( RESOURCE_FURY, cost() - adjusted_cost );
     }
 
+    // Metamorphosis benefit and Essence Break stats tracking
+    if ( p()->buff.metamorphosis->up() )
+    {
+      if ( td( target )->debuffs.essence_break->up() )
+        p()->proc.death_sweep_in_essence_break->occur();
+    }
+    else
+    {
+      if ( td( target )->debuffs.essence_break->up() )
+        p()->proc.blade_dance_in_essence_break->occur();
+    }
+
     // Create Strike Events
     for ( auto& attack : attacks )
     {
@@ -3248,10 +3268,7 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
     {
       double m = demon_hunter_attack_t::composite_target_multiplier( target );
       
-      if ( p()->specialization() == DEMON_HUNTER_HAVOC )
-      {
-        m *= 1.0 + td( target )->debuffs.dark_slash->check_value();
-      }
+      m *= 1.0 + td( target )->debuffs.essence_break->check_value();
 
       return m;
     }
@@ -3332,16 +3349,16 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
       make_event<delayed_execute_event_t>( *sim, p(), attack, target, attack->delay );
     }
 
-    // Metamorphosis benefit and Dark Slash stats tracking
+    // Metamorphosis benefit and Essence Break stats tracking
     if ( p()->buff.metamorphosis->up() )
     {
-      if ( td( target )->debuffs.dark_slash->up() )
-        p()->proc.annihilation_in_dark_slash->occur();
+      if ( td( target )->debuffs.essence_break->up() )
+        p()->proc.annihilation_in_essence_break->occur();
     }
     else
     {
-      if ( td( target )->debuffs.dark_slash->up() )
-        p()->proc.chaos_strike_in_dark_slash->occur();
+      if ( td( target )->debuffs.essence_break->up() )
+        p()->proc.chaos_strike_in_essence_break->occur();
     }
 
     // Demonic Appetite
@@ -3489,12 +3506,12 @@ struct demon_blades_t : public demon_hunter_attack_t
   }
 };
 
-// Dark Slash ===============================================================
+// Essence Break ============================================================
 
-struct dark_slash_t : public demon_hunter_attack_t
+struct essence_break_t : public demon_hunter_attack_t
 {
-  dark_slash_t( demon_hunter_t* p, const std::string& options_str )
-    : demon_hunter_attack_t( "dark_slash", p, p->find_talent_spell( "Dark Slash" ), options_str )
+  essence_break_t( demon_hunter_t* p, const std::string& options_str )
+    : demon_hunter_attack_t( "essence_break", p, p->talent.essence_break, options_str )
   {
   }
 
@@ -3504,7 +3521,7 @@ struct dark_slash_t : public demon_hunter_attack_t
 
     if ( result_is_hit( s->result ) )
     {
-      td( s->target )->debuffs.dark_slash->trigger();
+      td( s->target )->debuffs.essence_break->trigger();
     }
   }
 };
@@ -3560,7 +3577,6 @@ struct fel_rush_t : public demon_hunter_attack_t
     {
       background = dual = true;
       aoe  = -1;
-      base_multiplier *= 1.0 + p->talent.fel_mastery->effectN( 1 ).percent();
     }
   };
 
@@ -4165,9 +4181,9 @@ demon_hunter_td_t::demon_hunter_td_t( player_t* target, demon_hunter_t& p )
 {
   if (p.specialization() == DEMON_HUNTER_HAVOC)
   {
-    debuffs.dark_slash = make_buff( *this, "dark_slash", p.talent.dark_slash )
+    debuffs.essence_break = make_buff( *this, "essence_break", p.find_spell( 320338 ) )
       ->set_cooldown( timespan_t::zero() )
-      ->set_default_value( p.talent.dark_slash->effectN( 3 ).percent() );
+      ->set_default_value( p.find_spell( 320338 )->effectN( 1 ).percent() );
     debuffs.nemesis = new buffs::nemesis_debuff_t(*this);
   }
   else // DEMON_HUNTER_VENGEANCE
@@ -4328,8 +4344,8 @@ action_t* demon_hunter_t::create_action( const std::string& name,
     return new blade_dance_t( this, options_str );
   if ( name == "chaos_strike" )
     return new chaos_strike_t( this, options_str );
-  if ( name == "dark_slash" )
-    return new dark_slash_t( this, options_str );
+  if ( name == "essence_break" )
+    return new essence_break_t( this, options_str );
   if ( name == "death_sweep" )
     return new death_sweep_t( this, options_str );
   if ( name == "demons_bite" )
@@ -4741,11 +4757,13 @@ void demon_hunter_t::init_procs()
   proc.felblade_reset         = get_proc( "felblade_reset" );
 
   // Havoc
-  proc.demon_blades_wasted        = get_proc( "demon_blades_wasted" );
-  proc.demonic_appetite           = get_proc( "demonic_appetite" );
-  proc.demons_bite_in_meta        = get_proc( "demons_bite_in_meta" );
-  proc.chaos_strike_in_dark_slash = get_proc( "chaos_strike_in_dark_slash" );
-  proc.annihilation_in_dark_slash = get_proc( "annihilation_in_dark_slash" );
+  proc.demon_blades_wasted            = get_proc( "demon_blades_wasted" );
+  proc.demonic_appetite               = get_proc( "demonic_appetite" );
+  proc.demons_bite_in_meta            = get_proc( "demons_bite_in_meta" );
+  proc.chaos_strike_in_essence_break  = get_proc( "chaos_strike_in_essence_break" );
+  proc.annihilation_in_essence_break  = get_proc( "annihilation_in_essence_break" );
+  proc.blade_dance_in_essence_break   = get_proc( "blade_dance_in_essence_break" );
+  proc.death_sweep_in_essence_break   = get_proc( "death_sweep_in_essence_break" );
 
   // Vengeance
   proc.gluttony                     = get_proc( "gluttony" );
@@ -4891,7 +4909,7 @@ void demon_hunter_t::init_spells()
   talent.demon_blades         = find_talent_spell( "Demon Blades" );
 
   talent.trail_of_ruin        = find_talent_spell( "Trail of Ruin" );
-  talent.fel_mastery          = find_talent_spell( "Fel Mastery" );
+  talent.unbound_chaos        = find_talent_spell( "Unbound Chaos" );
   talent.fel_barrage          = find_talent_spell( "Fel Barrage" );
 
   // talent.soul_rending
@@ -4900,7 +4918,7 @@ void demon_hunter_t::init_spells()
 
   talent.cycle_of_hatred      = find_talent_spell( "Cycle of Hatred" );
   talent.first_blood          = find_talent_spell( "First Blood" );
-  talent.dark_slash           = find_talent_spell( "Dark Slash" );
+  talent.essence_break        = find_talent_spell( "Essence Break" );
 
   talent.unleashed_power      = find_talent_spell( "Unleashed Power" );
   talent.master_of_the_glaive = find_talent_spell( "Master of the Glaive" );
@@ -5157,12 +5175,12 @@ void demon_hunter_t::apl_havoc()
   apl_default->add_action( "variable,name=pooling_for_meta,value=!talent.demonic.enabled&cooldown.metamorphosis.remains<6&fury.deficit>30&(!variable.waiting_for_nemesis|cooldown.nemesis.remains<10)" );
   apl_default->add_action( "variable,name=pooling_for_blade_dance,value=variable.blade_dance&(fury<75-talent.first_blood.enabled*20)" );
   apl_default->add_action( "variable,name=pooling_for_eye_beam,value=talent.demonic.enabled&!talent.blind_fury.enabled&cooldown.eye_beam.remains<(gcd.max*2)&fury.deficit>20" );
-  apl_default->add_action( "variable,name=waiting_for_dark_slash,value=talent.dark_slash.enabled&!variable.pooling_for_blade_dance&!variable.pooling_for_meta&cooldown.dark_slash.up" );
+  apl_default->add_action( "variable,name=waiting_for_essence_break,value=talent.essence_break.enabled&!variable.pooling_for_blade_dance&!variable.pooling_for_meta&cooldown.essence_break.up" );
   apl_default->add_action( "variable,name=waiting_for_momentum,value=talent.momentum.enabled&!buff.momentum.up" );
   apl_default->add_action( this, "Disrupt" );
   apl_default->add_action( "call_action_list,name=cooldown,if=gcd.remains=0" );
   apl_default->add_action( "pick_up_fragment,if=fury.deficit>=35&(!azerite.eyes_of_rage.enabled|cooldown.eye_beam.remains>1.4)" );
-  apl_default->add_action( "call_action_list,name=dark_slash,if=talent.dark_slash.enabled&(variable.waiting_for_dark_slash|debuff.dark_slash.up)" );
+  apl_default->add_action( "call_action_list,name=essence_break,if=talent.essence_break.enabled&(variable.waiting_for_essence_break|debuff.essence_break.up)" );
   apl_default->add_action( "run_action_list,name=demonic,if=talent.demonic.enabled" );
   apl_default->add_action( "run_action_list,name=normal" );
   
@@ -5193,18 +5211,18 @@ void demon_hunter_t::apl_havoc()
 
   action_priority_list_t* apl_normal = get_action_priority_list( "normal" );
   apl_normal->add_action( this, "Vengeful Retreat", "if=talent.momentum.enabled&buff.prepared.down&time>1" );
-  apl_normal->add_action( this, "Fel Rush", "if=(variable.waiting_for_momentum|talent.fel_mastery.enabled)&(charges=2|(raid_event.movement.in>10&raid_event.adds.in>10))" );
+  apl_normal->add_action( this, "Fel Rush", "if=(variable.waiting_for_momentum|talent.unbound_chaos.enabled)&(charges=2|(raid_event.movement.in>10&raid_event.adds.in>10))" );
   apl_normal->add_talent( this, "Fel Barrage", "if=!variable.waiting_for_momentum&(active_enemies>desired_targets|raid_event.adds.in>30)" );
   apl_normal->add_action( this, spec.death_sweep, "death_sweep", "if=variable.blade_dance" );
   apl_normal->add_action( this, "Immolation Aura" );
   apl_normal->add_action( this, "Eye Beam", "if=active_enemies>1&(!raid_event.adds.exists|raid_event.adds.up)&!variable.waiting_for_momentum" );
   apl_normal->add_action( this, "Blade Dance", "if=variable.blade_dance" );
   apl_normal->add_talent( this, "Felblade", "if=fury.deficit>=40" );
-  apl_normal->add_action( this, "Eye Beam", "if=!talent.blind_fury.enabled&!variable.waiting_for_dark_slash&raid_event.adds.in>cooldown" );
+  apl_normal->add_action( this, "Eye Beam", "if=!talent.blind_fury.enabled&!variable.waiting_for_essence_break&raid_event.adds.in>cooldown" );
   apl_normal->add_action( this, spec.annihilation, "annihilation", "if=(talent.demon_blades.enabled|!variable.waiting_for_momentum|fury.deficit<30|buff.metamorphosis.remains<5)"
-                                                                   "&!variable.pooling_for_blade_dance&!variable.waiting_for_dark_slash" );
+                                                                   "&!variable.pooling_for_blade_dance&!variable.waiting_for_essence_break" );
   apl_normal->add_action( this, "Chaos Strike", "if=(talent.demon_blades.enabled|!variable.waiting_for_momentum|fury.deficit<30)"
-                                                "&!variable.pooling_for_meta&!variable.pooling_for_blade_dance&!variable.waiting_for_dark_slash" );
+                                                "&!variable.pooling_for_meta&!variable.pooling_for_blade_dance&!variable.waiting_for_essence_break" );
   apl_normal->add_action( this, "Eye Beam", "if=talent.blind_fury.enabled&raid_event.adds.in>cooldown" );
   apl_normal->add_action( this, "Demon's Bite" );
   apl_normal->add_action( this, "Fel Rush", "if=!talent.momentum.enabled&raid_event.movement.in>charges*10&talent.demon_blades.enabled" );
@@ -5230,10 +5248,12 @@ void demon_hunter_t::apl_havoc()
   apl_demonic->add_action( this, "Vengeful Retreat", "if=movement.distance>15" );
   apl_demonic->add_action( this, "Throw Glaive", "if=talent.demon_blades.enabled" );
 
-  action_priority_list_t* apl_dark_slash = get_action_priority_list( "dark_slash" );
-  apl_dark_slash->add_talent( this, "Dark Slash", "if=fury>=80&(!variable.blade_dance|!cooldown.blade_dance.ready)" );
-  apl_dark_slash->add_action( this, spec.annihilation, "annihilation", "if=debuff.dark_slash.up" );
-  apl_dark_slash->add_action( this, "Chaos Strike", "if=debuff.dark_slash.up" );
+  action_priority_list_t* apl_essence_break = get_action_priority_list( "essence_break" );
+  apl_essence_break->add_talent( this, "Essence Break", "if=fury>=80&cooldown.blade_dance.ready" );
+  apl_essence_break->add_action( this, spec.death_sweep, "death_sweep", "if=variable.blade_dance&debuff.essence_break.up" );
+  apl_essence_break->add_action( this, "Blade Dance", "if=variable.blade_dance&debuff.essence_break.up" );
+  apl_essence_break->add_action( this, spec.annihilation, "annihilation", "if=debuff.essence_break.up" );
+  apl_essence_break->add_action( this, "Chaos Strike", "if=debuff.essence_break.up" );
 }
 
 // demon_hunter_t::apl_vengeance ============================================
@@ -5302,7 +5322,7 @@ void demon_hunter_t::create_cooldowns()
   cooldown.blade_dance          = get_cooldown( "blade_dance" );
   cooldown.blur                 = get_cooldown( "blur" );
   cooldown.chaos_nova           = get_cooldown( "chaos_nova" );
-  cooldown.dark_slash           = get_cooldown( "dark_slash" );
+  cooldown.essence_break        = get_cooldown( "essence_break" );
   cooldown.eye_beam             = get_cooldown( "eye_beam" );
   cooldown.fel_barrage          = get_cooldown( "fel_barrage" );
   cooldown.fel_rush             = get_cooldown( "fel_rush" );
