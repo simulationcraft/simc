@@ -1,6 +1,6 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35282 shadowlands-BETA (git build dbc 9c725e1441)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35282 shadowlands-BETA (git build dbc df97e687b9)
 
-Name             : Dual Wield (rank=Passive) (id=674) [Passive] 
+Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
 Spell Type       : Magic
@@ -45,7 +45,7 @@ Description      : Activates a freezing aura for $d that creates ice beneath you
 Usable while mounted, but being attacked or damaged will cancel the effect.
 Tooltip          : Grants the ability to walk across water.
 
-Name             : Bite (rank=Basic Attack) (id=17253) [Spell Family (9)] 
+Name             : Bite (desc=Basic Attack) (id=17253) [Spell Family (9)] 
 Class            : Hunter, Death Knight
 School           : Physical
 Spell Type       : Melee
@@ -75,7 +75,7 @@ $spiked=$?s53184[${1.1}][${1.0}]
 $blink=$?s130392[${1.5}][${1.0}]
 $damage=${$<aotb>*$<ce>*$<spiked>*$<blink>*($RAP*0.333)*(1+$@versadmg)}
 
-Name             : Blood Fury (rank=Racial) (id=20572) [Scaling Spell (-1)] 
+Name             : Blood Fury (desc=Racial) (id=20572) [Scaling Spell (-1)] 
 Class            : Warrior, Hunter, Rogue, Death Knight
 Race             : Orc (0x2)
 School           : Physical
@@ -98,7 +98,7 @@ Effects          :
 Description      : Increases your attack power by $s1 for $d.
 Tooltip          : Attack power increased by $w1.
 
-Name             : Command (rank=Racial Passive) (id=21563) [Spell Family (9), Passive] 
+Name             : Command (desc=Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Orc (0x2)
 School           : Physical
@@ -116,7 +116,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Damage dealt by pets increased by $s1%.
 
-Name             : Shell Shield (rank=Special Ability) (id=26064) [Spell Family (9)] 
+Name             : Shell Shield (desc=Special Ability) (id=26064) [Spell Family (9)] 
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -157,7 +157,7 @@ Effects          :
 #1 (id=17468)    : Apply Aura (6) | Attribute (29)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
 
-Name             : Gift of the Naaru (rank=Racial) (id=28880) [Spell Family (4)] 
+Name             : Gift of the Naaru (desc=Racial) (id=28880) [Spell Family (4)] 
 Class            : Warrior, Paladin, Hunter, Priest, Death Knight, Shaman, Mage, Monk
 Race             : Draenei (0x400)
 School           : Holy
@@ -338,7 +338,7 @@ Effects          :
 Description      : Shackles the target with frozen chains, reducing movement speed by $s1% for $d.
 Tooltip          : Movement slowed $s1% by frozen chains.
 
-Name             : Raise Dead (rank=Rank 2) (id=46584) [Spell Family (15)] 
+Name             : Raise Dead (desc=Rank 2) (id=46584) [Spell Family (15)] 
 Replaces         : Raise Dead (id=46585)
 Class            : Unholy Death Knight
 School           : Physical
@@ -1099,7 +1099,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.01053 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc53343
 
-Name             : Arcane Torrent (rank=Racial) (id=50613) 
+Name             : Arcane Torrent (desc=Racial) (id=50613) 
 Class            : Death Knight
 Race             : Blood Elf (0x200)
 School           : Arcane
@@ -1714,7 +1714,7 @@ Effects          :
                    Base Value: 250 | Scaled Value: 250 | PvP Coefficient: 1.00000 | Misc Value: runic_power | Target: Self (1)
 Description      : Blow the Horn of Winter, gaining $s1 $LRune:Runes; and generating ${$s2/10} Runic Power.
 
-Name             : Glyph of the Geist (rank=Unholy) (id=58640) [Spell Family (15), Passive, Hidden] 
+Name             : Glyph of the Geist (desc=Unholy) (id=58640) [Spell Family (15), Passive, Hidden] 
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -1858,7 +1858,7 @@ Effects          :
                    Base Value: 45 | Scaled Value: 45 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Obliterate has a $s2% chance $?s207230[and Frostscythe has a ${$s2/2}.1% chance ][]to cause your next Howling Blast to consume no runes and deal $59052s2% additional damage.
 
-Name             : Gift of the Naaru (rank=Racial) (id=59545) [Spell Family (15)] 
+Name             : Gift of the Naaru (desc=Racial) (id=59545) [Spell Family (15)] 
 Class            : Death Knight
 Race             : Draenei (0x400)
 School           : Holy
@@ -1937,7 +1937,7 @@ Effects          :
                    Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Trigger Spell: 97821
 Description      : Pours dark energy into a dead target, reuniting spirit and body to allow the target to reenter battle with $s2% health and $s1% mana.
 
-Name             : Avoidance (rank=Passive) (id=62137) [Spell Family (15), Passive] 
+Name             : Avoidance (desc=Passive) (id=62137) [Spell Family (15), Passive] 
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -2127,7 +2127,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.60000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc49020
 
-Name             : Viciousness (rank=Racial Passive) (id=68975) [Passive] 
+Name             : Viciousness (desc=Racial Passive) (id=68975) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
 Race             : Worgen (0x200000)
 School           : Physical
@@ -2146,7 +2146,7 @@ Effects          :
 Description      : Increases critical strike chance by $s1%.
 Tooltip          : Critical strike chance increased by $s1%.
 
-Name             : Aberration (rank=Racial Passive) (id=68976) [Passive] 
+Name             : Aberration (desc=Racial Passive) (id=68976) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
 Race             : Worgen (0x200000)
 School           : Physical
@@ -2165,7 +2165,7 @@ Effects          :
 Description      : Reduces Shadow and Nature damage taken by $s1%.
 Tooltip          : Reduces Shadow and Nature damage taken by $s1%.
 
-Name             : Darkflight (rank=Racial) (id=68992) 
+Name             : Darkflight (desc=Racial) (id=68992) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
 Race             : Worgen (0x200000)
 School           : Physical
@@ -2480,7 +2480,7 @@ Effects          :
 Description      : $@spelldesc49530
 Tooltip          : Your next Death Coil$?s207317[ or Epidemic][] consumes no Runic Power.
 
-Name             : Parry (rank=Passive) (id=82246) [Passive] 
+Name             : Parry (desc=Passive) (id=82246) [Passive] 
 Class            : Death Knight
 School           : Physical
 Spell Type       : Magic
@@ -2530,7 +2530,7 @@ Description      : Strikes for $s1 Physical damage and infects the target with $
 |Tinterface\icons\spell_yorsahj_bloodboil_purpleoil.blp:24|t |cFFFFFFFFFestering Wound|r
 $@spelldesc194310
 
-Name             : Plate Specialization (rank=Passive) (id=86113) [Passive, Hidden] 
+Name             : Plate Specialization (desc=Passive) (id=86113) [Passive, Hidden] 
 Class            : Frost Death Knight
 School           : Physical
 Spell Type       : None
@@ -2549,7 +2549,7 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Misc Value 2: 0x1 | Target: Self (1)
 Description      : Increases your Strength by $s1% while wearing only Plate armor.
 
-Name             : Plate Specialization (rank=Passive) (id=86536) [Passive, Hidden] 
+Name             : Plate Specialization (desc=Passive) (id=86536) [Passive, Hidden] 
 Class            : Unholy Death Knight
 School           : Physical
 Spell Type       : None
@@ -2568,7 +2568,7 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Misc Value 2: 0x1 | Target: Self (1)
 Description      : Increases your Strength by $s1% while wearing only Plate armor.
 
-Name             : Plate Specialization (rank=Passive) (id=86537) [Passive, Hidden] 
+Name             : Plate Specialization (desc=Passive) (id=86537) [Passive, Hidden] 
 Class            : Blood Death Knight
 School           : Physical
 Spell Type       : None
@@ -2837,7 +2837,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Trigger Spell: 92320 | Target: Self (1)
 Description      : Your harmful spells have a chance to grant $92320s1 mastery for $92320d.
 
-Name             : Altered Form (rank=Racial Passive) (id=94293) [Passive, Hidden] 
+Name             : Altered Form (desc=Racial Passive) (id=94293) [Passive, Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
 Race             : Worgen (0x200000)
 School           : Physical
@@ -2903,7 +2903,7 @@ Effects          :
 Description      : $@spelldesc178819
 Tooltip          : Your next Death Strike is free and heals for an additional $s1% of maximum health.
 
-Name             : Incarnation: King of the Jungle (rank=Talent, Shapeshift) (id=102543) [Spell Family (7)] 
+Name             : Incarnation: King of the Jungle (desc=Talent, Shapeshift) (id=102543) [Spell Family (7)] 
 Replaces         : Berserk (id=106951)
 Class            : Death Knight, Druid
 School           : Physical
@@ -2941,7 +2941,7 @@ Description      : An improved Cat Form that allows the use of Prowl once while 
 Lasts $d. You may shapeshift in and out of this improved Cat Form for its duration.
 Tooltip          : Reduces the energy cost of all Cat Form abilities by $s1% and increases maximum Energy by $s2.
 
-Name             : Incarnation: Chosen of Elune (rank=Talent, Shapeshift) (id=102560) [Spell Family (7)] 
+Name             : Incarnation: Chosen of Elune (desc=Talent, Shapeshift) (id=102560) [Spell Family (7)] 
 Replaces         : Celestial Alignment (id=194223)
 Class            : Death Knight, Druid
 School           : Physical
@@ -5116,7 +5116,7 @@ Effects          :
                    Affected Spells: Bladestorm (46924), Bladestorm (50622), Bladestorm Off-Hand (95738), Bladestorm (227847)
                    Family Flags: 46
 
-Name             : Anti-Magic Zone (rank=PvP Talent) (id=145629) [Spell Family (15)] 
+Name             : Anti-Magic Zone (desc=PvP Talent) (id=145629) [Spell Family (15)] 
 Class            : Death Knight
 School           : Shadow
 Spell Type       : None
@@ -5143,7 +5143,7 @@ Effects          :
 Description      : $@spelldesc51052
 Tooltip          : Magic damage taken reduced by $w1%.
 
-Name             : Glyph of the Skeleton (rank=Unholy) (id=146652) [Spell Family (15), Passive, Hidden] 
+Name             : Glyph of the Skeleton (desc=Unholy) (id=146652) [Spell Family (15), Passive, Hidden] 
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -5355,7 +5355,7 @@ While you remain within your Defile, your $?s207311[Clawing Shadows][Scourge Str
 
 If any enemies are standing in the Defile, it grows in size and deals increasing damage every sec.
 
-Name             : Expansive Mind (rank=Racial Passive) (id=154747) [Passive] 
+Name             : Expansive Mind (desc=Racial Passive) (id=154747) [Passive] 
 Class            : Death Knight
 Race             : Gnome (0x40)
 School           : Physical
@@ -5611,7 +5611,7 @@ Effects          :
 Description      : $@spelldesc43265
 Tooltip          : $?s206930[Heart Strike will hit up to ${$m3+2} targets.]?s207311[Clawing Shadows will hit all enemies near the target.][Scourge Strike will hit all enemies near the target.]
 
-Name             : Sindragosa's Fury (rank=Artifact) (id=190778) [Spell Family (15)] 
+Name             : Sindragosa's Fury (desc=Artifact) (id=190778) [Spell Family (15)] 
 Class            : Death Knight
 School           : Frost
 Spell Type       : None
@@ -6443,7 +6443,7 @@ Effects          :
                    Base Value: 198494 | Scaled Value: 198494 | PvP Coefficient: 1.00000 | Trigger Spell: 198494 | Radius: 100 yards | Target: Unknown(120)
 Description      : $@spelldesc195679
 
-Name             : Ice Form (rank=PvP Talent) (id=198144) [Spell Family (3)] 
+Name             : Ice Form (desc=PvP Talent) (id=198144) [Spell Family (3)] 
 Class            : Death Knight
 School           : Frost
 Spell Type       : Magic
@@ -6589,7 +6589,7 @@ Effects          :
 Description      : Switch to your Primary Talent Specialization.
 Tooltip          : Switch to your Primary Talent Specialization.
 
-Name             : Blood for Blood (rank=PvP Talent) (id=202846) [Spell Family (15), Passive, Hidden] 
+Name             : Blood for Blood (desc=PvP Talent) (id=202846) [Spell Family (15), Passive, Hidden] 
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -6610,7 +6610,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000
 Description      : Heart Strike damage increased by $m1%, but costs $m2% of your total health.
 
-Name             : Northrend Winds (rank=PvP Talent) (id=204088) [Spell Family (15), Passive, Hidden] 
+Name             : Northrend Winds (desc=PvP Talent) (id=204088) [Spell Family (15), Passive, Hidden] 
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -6629,7 +6629,7 @@ Effects          :
                    Family Flags: 33
 Description      : The critical strike chance of your Howling Blast increased by $m1%, but it no longer deals area of effect damage.
 
-Name             : Consumption (rank=Artifact) (id=205223) [Spell Family (15)] 
+Name             : Consumption (desc=Artifact) (id=205223) [Spell Family (15)] 
 Class            : Death Knight
 School           : Physical
 Spell Type       : Melee
@@ -6840,7 +6840,7 @@ Effects          :
 Description      : Places a Mark of Blood on an enemy for $d. The enemy's damaging auto attacks will also heal their victim for $206940s1% of the victim's maximum health.
 Tooltip          : Auto attacks will heal the victim for $206940s1% of their maximum health.
 
-Name             : Will of the Necropolis (rank=Passive Talent) (id=206967) [Passive] 
+Name             : Will of the Necropolis (desc=Passive Talent) (id=206967) [Passive] 
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -7404,7 +7404,7 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: runic_power | Target: Self (1)
 Description      : $@spelldesc206930
 
-Name             : Remorseless Winter (rank=Talent) (id=211793) [Spell Family (15)] 
+Name             : Remorseless Winter (desc=Talent) (id=211793) [Spell Family (15)] 
 Class            : Death Knight
 School           : Frost
 Spell Type       : Magic
@@ -7833,7 +7833,7 @@ Effects          :
 Description      : Consume up to $s5 Bone Shield charges. For each charge consumed, you gain $s3 Runic Power and absorb damage equal to $s4% of your maximum health for $d.
 Tooltip          : Absorbing $w1 damage.
 
-Name             : Apocalypse (rank=Artifact) (id=220143) [Spell Family (15)] 
+Name             : Apocalypse (desc=Artifact) (id=220143) [Spell Family (15)] 
 Class            : Death Knight
 School           : Physical
 Spell Type       : Melee
@@ -8012,7 +8012,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.31000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc49143
 
-Name             : Necrotic Strike (rank=PvP Talent) (id=223829) [Spell Family (15)] 
+Name             : Necrotic Strike (desc=PvP Talent) (id=223829) [Spell Family (15)] 
 Class            : Death Knight
 School           : Shadowstorm
 Spell Type       : Melee
@@ -8195,7 +8195,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : When you deal Frost damage, you have a chance to release a barrage of icy spikes at your target dealing ${$253590sw1*3} Frost damage.
 
-Name             : Jungle Stalker (rank=Talent, Shapeshift) (id=252071) [Spell Family (7)] 
+Name             : Jungle Stalker (desc=Talent, Shapeshift) (id=252071) [Spell Family (7)] 
 Class            : Death Knight, Druid
 School           : Physical
 Spell Type       : Melee
@@ -8328,7 +8328,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Unlock powers at the Vindicaar's Matrix Core to use while on Argus. 
 
-Name             : Light's Judgment (rank=Racial) (id=255647) 
+Name             : Light's Judgment (desc=Racial) (id=255647) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
@@ -8350,7 +8350,7 @@ Effects          :
 Description      : Call down a strike of Holy energy, dealing $<damage> Holy damage to enemies within $A1 yards after 3 sec.
 Variables        : $damage=${$cond($gt($SP,$AP),$SP*3,$AP*3)*$pctD*(1+$@versadmg)}
 
-Name             : Holy Resistance (rank=Racial Passive) (id=255651) [Passive] 
+Name             : Holy Resistance (desc=Racial Passive) (id=255651) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
@@ -8368,7 +8368,7 @@ Effects          :
                    Base Value: -1 | Scaled Value: -1 | PvP Coefficient: 1.00000 | Misc Value: 0x2 | Target: Self (1)
 Description      : Reduces Holy damage taken by ${$s1/-1}%.
 
-Name             : Light's Reckoning (rank=Racial Passive) (id=255652) [Passive] 
+Name             : Light's Reckoning (desc=Racial Passive) (id=255652) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Physical
@@ -8386,7 +8386,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 256896 | Target: Self (1)
 Description      : Erupt with Light upon death. Deals $256896s1 Holy damage to enemies within 8 yards and heals allies for $256896s2.
 
-Name             : Demonbane (rank=Racial Passive) (id=255653) [Passive] 
+Name             : Demonbane (desc=Racial Passive) (id=255653) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Physical
@@ -8404,7 +8404,7 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 4 | Target: Self (1)
 Description      : Experience gains from killing Demons increased by $s1%.
 
-Name             : Light's Judgment (rank=Racial) (id=256893) 
+Name             : Light's Judgment (desc=Racial) (id=256893) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
@@ -8426,7 +8426,7 @@ Effects          :
 Description      : Call down a strike of Holy energy, dealing $<damage> Holy damage to enemies within $A1 yards.
 Variables        : $damage=${$cond($gt($SP,$AP),$SP*3,$AP*3)*$pctD*(1+$@versadmg)}
 
-Name             : Light's Reckoning (rank=Racial Passive) (id=256896) [Scaling Spell (-8)] 
+Name             : Light's Reckoning (desc=Racial Passive) (id=256896) [Scaling Spell (-8)] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
@@ -9760,7 +9760,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Death and Decay damage has a $s1% chance to apply a Festering Wound to the enemy.
 
-Name             : Val'kyr (rank=Unholy) (id=278107) [Spell Family (15), Passive, Hidden] 
+Name             : Val'kyr (desc=Unholy) (id=278107) [Spell Family (15), Passive, Hidden] 
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -9781,7 +9781,7 @@ Effects          :
                    Family Flags: 39
 Description      : Your Summon Gargoyle spell summons a Val'kyr instead of a Gargoyle.
 
-Name             : Death Strike (rank=Rank 2) (id=278223) [Spell Family (15), Passive] 
+Name             : Death Strike (desc=Rank 2) (id=278223) [Spell Family (15), Passive] 
 Class            : Frost Unholy Death Knight
 School           : Fire
 Spell Type       : None
@@ -11785,7 +11785,7 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: rune | Target: Self (1)
 Description      : $@spelldesc155166
 
-Name             : Swarming Mist (rank=Venthyr) (id=311648) [Scaling Spell (-1), Spell Family (15)] 
+Name             : Swarming Mist (desc=Venthyr) (id=311648) [Scaling Spell (-1), Spell Family (15)] 
 Class            : Death Knight
 School           : Shadow
 Spell Type       : None
@@ -11841,7 +11841,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.20000 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
 Description      : $@spelldesc311648
 
-Name             : Shackle the Unworthy (rank=Kyrian) (id=312202) [Spell Family (15)] 
+Name             : Shackle the Unworthy (desc=Kyrian) (id=312202) [Spell Family (15)] 
 Class            : Death Knight
 School           : Arcane
 Spell Type       : Magic
@@ -11893,7 +11893,7 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: runic_power | Target: Self (1)
 Description      : $@spelldesc311648
 
-Name             : Death's Due (rank=Night Fae) (id=315442) [Spell Family (15), Passive] 
+Name             : Death's Due (desc=Night Fae) (id=315442) [Spell Family (15), Passive] 
 Class            : Death Knight
 School           : Nature
 Spell Type       : None
@@ -11913,7 +11913,7 @@ Description      : Learn Death's Due, replacing Death and Decay.
 
 Tooltip          : Drain power from each enemy within the area, reducing their damage done by 10% and increasing your Strength by 80 for 10 sec.
 
-Name             : Abomination Limb (rank=Necrolord) (id=315443) [Spell Family (15)] 
+Name             : Abomination Limb (desc=Necrolord) (id=315443) [Spell Family (15)] 
 Class            : Death Knight
 School           : Shadow
 Spell Type       : None
@@ -11966,7 +11966,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.60000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Strike the target for $s1 Physical damage. This attack cannot be dodged, blocked, or parried.
 
-Name             : Heart Strike (rank=Rank 2) (id=316575) [Spell Family (15), Passive] 
+Name             : Heart Strike (desc=Rank 2) (id=316575) [Spell Family (15), Passive] 
 Class            : Blood Death Knight
 School           : Physical
 Spell Type       : None
@@ -11987,7 +11987,7 @@ Effects          :
                    Family Flags: 24
 Description      : Generates ${$s1/10} additional Runic Power.
 
-Name             : Rune Tap (rank=Rank 2) (id=316616) [Spell Family (15), Passive] 
+Name             : Rune Tap (desc=Rank 2) (id=316616) [Spell Family (15), Passive] 
 Class            : Blood Death Knight
 School           : Physical
 Spell Type       : None
@@ -12007,7 +12007,7 @@ Effects          :
                    Affected Spells (Category): Rune Tap (194679)
 Description      : Increases the maximum number of charges by $s1.
 
-Name             : Blood Boil (rank=Rank 2) (id=316634) [Spell Family (15), Passive] 
+Name             : Blood Boil (desc=Rank 2) (id=316634) [Spell Family (15), Passive] 
 Class            : Blood Death Knight
 School           : Physical
 Spell Type       : None
@@ -12027,7 +12027,7 @@ Effects          :
                    Affected Spells (Category): Blood Boil (50842)
 Description      : Increases the maximum number of charges by $s1.
 
-Name             : Death and Decay (rank=Rank 2) (id=316664) [Spell Family (15), Passive] 
+Name             : Death and Decay (desc=Rank 2) (id=316664) [Spell Family (15), Passive] 
 Class            : Blood Death Knight
 School           : Physical
 Spell Type       : None
@@ -12048,7 +12048,7 @@ Effects          :
                    Family Flags: 118
 Description      : Heart Strike hits up to $s1 additional enemies while you remain in Death and Decay.
 
-Name             : Veteran of the Third War (rank=Rank 2) (id=316714) [Spell Family (15), Passive] 
+Name             : Veteran of the Third War (desc=Rank 2) (id=316714) [Spell Family (15), Passive] 
 Class            : Blood Death Knight
 School           : Physical
 Spell Type       : None
@@ -12069,7 +12069,7 @@ Effects          :
                    Family Flags: 107
 Description      : Increases Stamina by $s1%.
 
-Name             : Marrowrend (rank=Rank 2) (id=316746) [Spell Family (15), Passive] 
+Name             : Marrowrend (desc=Rank 2) (id=316746) [Spell Family (15), Passive] 
 Class            : Blood Death Knight
 School           : Physical
 Spell Type       : None
@@ -12090,7 +12090,7 @@ Effects          :
                    Family Flags: 38
 Description      : Bone Shield increases your Haste by $s1%.
 
-Name             : Remorseless Winter (rank=Rank 2) (id=316794) [Spell Family (15), Passive] 
+Name             : Remorseless Winter (desc=Rank 2) (id=316794) [Spell Family (15), Passive] 
 Class            : Frost Death Knight
 School           : Physical
 Spell Type       : None
@@ -12111,7 +12111,7 @@ Effects          :
                    Family Flags: 126
 Description      : Increases damage done by $s1%.
 
-Name             : Frost Strike (rank=Rank 2) (id=316803) [Spell Family (15), Passive] 
+Name             : Frost Strike (desc=Rank 2) (id=316803) [Spell Family (15), Passive] 
 Class            : Frost Death Knight
 School           : Physical
 Spell Type       : None
@@ -12132,7 +12132,7 @@ Effects          :
                    Family Flags: 34
 Description      : Increases damage done by $s1%.
 
-Name             : Rime (rank=Rank 2) (id=316838) [Spell Family (15), Passive] 
+Name             : Rime (desc=Rank 2) (id=316838) [Spell Family (15), Passive] 
 Class            : Frost Death Knight
 School           : Physical
 Spell Type       : None
@@ -12153,7 +12153,7 @@ Effects          :
                    Family Flags: 82
 Description      : Increases Howling Blasts damage done by an additional $s1%.
 
-Name             : Pillar of Frost (rank=Rank 2) (id=316849) [Spell Family (15), Passive] 
+Name             : Pillar of Frost (desc=Rank 2) (id=316849) [Spell Family (15), Passive] 
 Class            : Frost Death Knight
 School           : Physical
 Spell Type       : None
@@ -12174,7 +12174,7 @@ Effects          :
                    Family Flags: 21
 Description      : Increases Strength by $s1%.
 
-Name             : Festering Strike (rank=Rank 2) (id=316867) [Spell Family (15), Passive] 
+Name             : Festering Strike (desc=Rank 2) (id=316867) [Spell Family (15), Passive] 
 Class            : Unholy Death Knight
 School           : Physical
 Spell Type       : None
@@ -12195,7 +12195,7 @@ Effects          :
                    Family Flags: 119
 Description      : Increases damage done by $s1%.
 
-Name             : Death and Decay (rank=Rank 2) (id=316916) [Spell Family (15), Passive] 
+Name             : Death and Decay (desc=Rank 2) (id=316916) [Spell Family (15), Passive] 
 Class            : Unholy Death Knight
 School           : Physical
 Spell Type       : None
@@ -12214,7 +12214,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Scourge Strike hits all enemies near the target while you remain in Death and Decay.
 
-Name             : Death Coil (rank=Rank 2) (id=316941) [Spell Family (15), Passive] 
+Name             : Death Coil (desc=Rank 2) (id=316941) [Spell Family (15), Passive] 
 Class            : Unholy Death Knight
 School           : Physical
 Spell Type       : None
@@ -12233,7 +12233,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Damage dealt reduces the cooldown of Dark Transformation by $47541s2 sec.
 
-Name             : Apocalypse (rank=Rank 2) (id=316961) [Spell Family (15), Passive] 
+Name             : Apocalypse (desc=Rank 2) (id=316961) [Spell Family (15), Passive] 
 Class            : Unholy Death Knight
 School           : Physical
 Spell Type       : None
@@ -12258,7 +12258,7 @@ Effects          :
                    Family Flags: 56
 Description      : Reduces the cooldown by ${$s1/-1000} sec and increases the damage done by $s2%.
 
-Name             : Heart Strike (rank=Rank 3) (id=317090) [Spell Family (15), Passive] 
+Name             : Heart Strike (desc=Rank 3) (id=317090) [Spell Family (15), Passive] 
 Class            : Blood Death Knight
 School           : Physical
 Spell Type       : None
@@ -12279,7 +12279,7 @@ Effects          :
                    Family Flags: 24
 Description      : Increases damage done by $s1%.
 
-Name             : Vampiric Blood (rank=Rank 2) (id=317133) [Spell Family (15), Passive] 
+Name             : Vampiric Blood (desc=Rank 2) (id=317133) [Spell Family (15), Passive] 
 Class            : Blood Death Knight
 School           : Physical
 Spell Type       : None
@@ -12326,7 +12326,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 16.54624 (coefficient=0.174171) | PvP Coefficient: 0.50000 | Trigger Spell: 316101 | Target: Self (1)
 Description      : Your secondary stats are all increased by $s1 while your Corruption Level is 25 or higher.
 
-Name             : Obliterate (rank=Rank 2) (id=317198) [Spell Family (15), Passive] 
+Name             : Obliterate (desc=Rank 2) (id=317198) [Spell Family (15), Passive] 
 Class            : Frost Death Knight
 School           : Physical
 Spell Type       : None
@@ -12347,7 +12347,7 @@ Effects          :
                    Family Flags: 49
 Description      : Increases damage done by $s1%.
 
-Name             : Killing Machine (rank=Rank 2) (id=317214) [Spell Family (15), Passive] 
+Name             : Killing Machine (desc=Rank 2) (id=317214) [Spell Family (15), Passive] 
 Class            : Frost Death Knight
 School           : Physical
 Spell Type       : None
@@ -12366,7 +12366,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Your next Obliterate also deals Frost damage.
 
-Name             : Empower Rune Weapon (rank=Rank 2) (id=317230) [Spell Family (15), Passive] 
+Name             : Empower Rune Weapon (desc=Rank 2) (id=317230) [Spell Family (15), Passive] 
 Class            : Frost Death Knight
 School           : Physical
 Spell Type       : None
@@ -12386,7 +12386,7 @@ Effects          :
                    Affected Spells (Category): Empower Rune Weapon (47568), Hungering Rune Weapon (207127)
 Description      : Reduces the cooldown by ${$s1/-1000} sec.
 
-Name             : Scourge Strike (rank=Rank 2) (id=317234) [Spell Family (15), Passive] 
+Name             : Scourge Strike (desc=Rank 2) (id=317234) [Spell Family (15), Passive] 
 Class            : Unholy Death Knight
 School           : Physical
 Spell Type       : None
@@ -12407,7 +12407,7 @@ Effects          :
                    Family Flags: 59, 71
 Description      : Increases damage done by $s1%.
 
-Name             : Summon Gargoyle (rank=Rank 2) (id=317250) [Spell Family (15), Passive] 
+Name             : Summon Gargoyle (desc=Rank 2) (id=317250) [Spell Family (15), Passive] 
 Class            : Unholy Death Knight
 School           : Physical
 Spell Type       : None
@@ -12712,7 +12712,7 @@ Effects          :
                    Base Value: -35 | Scaled Value: -35 | PvP Coefficient: 1.00000 | Misc Value: 127 | Misc Value 2: 0x40 | Target: Self (1)
 Description      : Embrace the ice in your veins, reducing the Runic Power cost of your abilities by $s1% for $d. Does not trigger the global cooldown.
 
-Name             : Stagger (rank=Rank 2) (id=322522) [Spell Family (53), Passive] 
+Name             : Stagger (desc=Rank 2) (id=322522) [Spell Family (53), Passive] 
 Class            : Death Knight, Monk
 School           : Physical
 Spell Type       : None
@@ -12732,7 +12732,7 @@ Effects          :
                    Family Flags: 34
 Description      : Delays magical attacks at $115069s5% effectiveness.
 
-Name             : Abomination Limb (rank=Necrolord) (id=323710) [Spell Family (15)] 
+Name             : Abomination Limb (desc=Necrolord) (id=323710) [Spell Family (15)] 
 Class            : Death Knight
 School           : Shadow
 Spell Type       : Magic
@@ -12759,7 +12759,7 @@ Effects          :
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000
 Description      : $@spelldesc311648
 
-Name             : Abomination Limb (rank=Necrolord) (id=323798) [Spell Family (15)] 
+Name             : Abomination Limb (desc=Necrolord) (id=323798) [Spell Family (15)] 
 Class            : Death Knight
 School           : Shadow
 Spell Type       : Magic
@@ -12827,7 +12827,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.45880 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc49143
 
-Name             : Dark Transformation (rank=Rank 2) (id=325554) [Spell Family (15), Passive] 
+Name             : Dark Transformation (desc=Rank 2) (id=325554) [Spell Family (15), Passive] 
 Class            : Unholy Death Knight
 School           : Physical
 Spell Type       : None

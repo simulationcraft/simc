@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35282 shadowlands-BETA (git build dbc 9c725e1441)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35282 shadowlands-BETA (git build dbc df97e687b9)
 
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Paladin, Mage
@@ -759,7 +759,7 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Multiplies the critical strike chance of your spells against frozen targets by 1.5, and adds an additional $?a231582[${$s2+$231582s1$}%][$s2%] critical strike chance.
 
-Name             : Expansive Mind (rank=Racial Passive) (id=20591) [Passive] 
+Name             : Expansive Mind (desc=Racial Passive) (id=20591) [Passive] 
 Class            : Paladin, Priest, Shaman, Mage, Warlock, Monk
 Race             : Gnome (0x40)
 School           : Physical
@@ -777,7 +777,7 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value 2: 0x8 | Target: Self (1)
 Description      : Maximum mana increased by $s1%.
 
-Name             : Command (rank=Racial Passive) (id=21563) [Spell Family (9), Passive] 
+Name             : Command (desc=Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Orc (0x2)
 School           : Physical
@@ -813,7 +813,7 @@ Effects          :
 #1 (id=17468)    : Apply Aura (6) | Attribute (29)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
 
-Name             : Arcane Torrent (rank=Racial) (id=28730) 
+Name             : Arcane Torrent (desc=Racial) (id=28730) 
 Class            : Mage, Warlock
 Race             : Blood Elf (0x200)
 School           : Arcane
@@ -834,7 +834,7 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Remove $s1 beneficial effect from all enemies within $A1 yards and restore $s2% of your Mana.
 
-Name             : Gift of the Naaru (rank=Racial) (id=28880) [Spell Family (4)] 
+Name             : Gift of the Naaru (desc=Racial) (id=28880) [Spell Family (4)] 
 Class            : Warrior, Paladin, Hunter, Priest, Death Knight, Shaman, Mage, Monk
 Race             : Draenei (0x400)
 School           : Holy
@@ -1088,7 +1088,7 @@ Effects          :
 Description      : Blasts enemies in a $a1 yard radius with frost, freezing them in place for up to $d. Damage caused may interrupt the effect.
 Tooltip          : Frozen in place.
 
-Name             : Blood Fury (rank=Racial) (id=33702) [Scaling Spell (-1)] 
+Name             : Blood Fury (desc=Racial) (id=33702) [Scaling Spell (-1)] 
 Class            : Mage, Warlock
 Race             : Orc (0x2)
 School           : Physical
@@ -1602,7 +1602,7 @@ Effects          :
 Description      : Cannot benefit from Bloodlust or other similar effects.
 Tooltip          : Cannot benefit from Bloodlust or other similar effects.
 
-Name             : Gift of the Naaru (rank=Racial) (id=59548) [Spell Family (3)] 
+Name             : Gift of the Naaru (desc=Racial) (id=59548) [Spell Family (3)] 
 Class            : Mage
 Race             : Draenei (0x400)
 School           : Holy
@@ -1655,7 +1655,7 @@ Effects          :
 Description      : Inflicts Frost damage to an enemy and reduces its movement speed for $d.
 Tooltip          : Reduced movement speed.
 
-Name             : Avoidance (rank=Passive) (id=65220) [Passive] 
+Name             : Avoidance (desc=Passive) (id=65220) [Passive] 
 Class            : Shaman, Mage, Monk
 School           : Physical
 Spell Type       : None
@@ -1679,7 +1679,7 @@ Effects          :
 Description      : Reduces the damage your pet takes from area of effect attacks by an additional $s1%.
 Reduces the range at which enemies detect your pet.
 
-Name             : Viciousness (rank=Racial Passive) (id=68975) [Passive] 
+Name             : Viciousness (desc=Racial Passive) (id=68975) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
 Race             : Worgen (0x200000)
 School           : Physical
@@ -1698,7 +1698,7 @@ Effects          :
 Description      : Increases critical strike chance by $s1%.
 Tooltip          : Critical strike chance increased by $s1%.
 
-Name             : Aberration (rank=Racial Passive) (id=68976) [Passive] 
+Name             : Aberration (desc=Racial Passive) (id=68976) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
 Race             : Worgen (0x200000)
 School           : Physical
@@ -1717,7 +1717,7 @@ Effects          :
 Description      : Reduces Shadow and Nature damage taken by $s1%.
 Tooltip          : Reduces Shadow and Nature damage taken by $s1%.
 
-Name             : Darkflight (rank=Racial) (id=68992) 
+Name             : Darkflight (desc=Racial) (id=68992) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
 Race             : Worgen (0x200000)
 School           : Physical
@@ -2082,7 +2082,7 @@ Description      : Blasts the target with energy, dealing $30451s1 Arcane damage
 
 Arcane Blast's damage is increased by $36032s1% per Arcane Charge, and its mana cost is increased by $36032s2% per Arcane Charge.
 
-Name             : Wizardry (rank=Passive) (id=89744) [Passive, Hidden] 
+Name             : Wizardry (desc=Passive) (id=89744) [Passive, Hidden] 
 Class            : Mage
 School           : Physical
 Spell Type       : None
@@ -2123,7 +2123,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Trigger Spell: 92320 | Target: Self (1)
 Description      : Your harmful spells have a chance to grant $92320s1 mastery for $92320d.
 
-Name             : Altered Form (rank=Racial Passive) (id=94293) [Passive, Hidden] 
+Name             : Altered Form (desc=Racial Passive) (id=94293) [Passive, Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
 Race             : Worgen (0x200000)
 School           : Physical
@@ -2200,7 +2200,7 @@ Effects          :
 Description      : Suppresses movement slowing effects and increases your movement speed by $s1% for $d.  Castable while another spell is in progress and unaffected by global cooldown.
 Tooltip          : $s1% increased movement speed and unaffected by movement speed slowing effects.
 
-Name             : Fire Blast (rank=Rank 3) (id=108853) [Spell Family (3)] 
+Name             : Fire Blast (desc=Rank 3) (id=108853) [Spell Family (3)] 
 Replaces         : Fire Blast (id=319836)
 Class            : Fire Mage
 School           : Fire
@@ -2609,7 +2609,7 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Conjured items disappear if logged out for more than 15 minutes.
 
-Name             : Mana Attunement (rank=Passive) (id=121039) [Spell Family (3), Passive, Hidden] 
+Name             : Mana Attunement (desc=Passive) (id=121039) [Spell Family (3), Passive, Hidden] 
 Class            : Mage
 School           : Physical
 Spell Type       : Magic
@@ -2875,7 +2875,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.50000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Consuming Brain Freeze has a $145257s2% chance to drop an icy boulder on your target.
 
-Name             : Glyph of Evaporation (rank=Frost) (id=146662) [Spell Family (3), Passive, Hidden] 
+Name             : Glyph of Evaporation (desc=Frost) (id=146662) [Spell Family (3), Passive, Hidden] 
 Class            : Mage
 School           : Physical
 Spell Type       : None
@@ -2893,7 +2893,7 @@ Effects          :
                    Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.00000 | Misc Value: 11 | Radius: 100 yards | Target: Self (1)
 Description      : Reduces the size of your Water Elemental by $s1%.
 
-Name             : Glyph of the Unbound Elemental (rank=Frost) (id=146976) [Spell Family (3), Passive, Hidden] 
+Name             : Glyph of the Unbound Elemental (desc=Frost) (id=146976) [Spell Family (3), Passive, Hidden] 
 Class            : Mage
 School           : Physical
 Spell Type       : None
@@ -3215,7 +3215,7 @@ Effects          :
 Description      : $@spelldesc153561
 Tooltip          : Burning for $w1 Fire damage every $t1 sec.
 
-Name             : Fireball (rank=Rank 2) (id=157642) [Spell Family (3), Passive] 
+Name             : Fireball (desc=Rank 2) (id=157642) [Spell Family (3), Passive] 
 Class            : Fire Mage
 School           : Physical
 Spell Type       : None
@@ -3871,7 +3871,7 @@ Effects          :
 Description      : $@spelldesc194431
 Tooltip          : Movement speed slowed by $s2%.
 
-Name             : Phoenix's Flames (rank=Artifact) (id=194466) [Spell Family (3)] 
+Name             : Phoenix's Flames (desc=Artifact) (id=194466) [Spell Family (3)] 
 Class            : Mage
 School           : Fire
 Spell Type       : Magic
@@ -4613,7 +4613,7 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Trigger Spell: 210824 | Target: Self (1)
 Description      : Arcane Blast has a $h% chance to apply Touch of the Magi, accumulating $s1% of the damage you deal to the target for $210824d, and then exploding for that amount of Arcane damage to the target and all nearby enemies.
 
-Name             : Mark of Aluneth (rank=Artifact) (id=210726) 
+Name             : Mark of Aluneth (desc=Artifact) (id=210726) 
 Class            : Mage
 School           : Physical
 Spell Type       : None
@@ -4637,7 +4637,7 @@ Effects          :
 Description      : Creates a runic prison at the target's location, slowing enemy movement speed by ${$211056s1/-1}%, inflicting ${$211088s1*6} Arcane damage over $d, and then detonating for Arcane damage equal to $s1% of your maximum mana.
 
 
-Name             : Time Anomaly (rank=PvP Talent) (id=210805) [Spell Family (3), Passive, Hidden] 
+Name             : Time Anomaly (desc=PvP Talent) (id=210805) [Spell Family (3), Passive, Hidden] 
 Class            : Mage
 School           : Arcane
 Spell Type       : None
@@ -4812,7 +4812,7 @@ Effects          :
 Description      : Slowed by $s1% for $d.
 Tooltip          : Slowed by $w1% for $d.
 
-Name             : Ebonbolt (rank=Artifact) (id=214634) [Spell Family (3)] 
+Name             : Ebonbolt (desc=Artifact) (id=214634) [Spell Family (3)] 
 Class            : Mage
 School           : Shadowfrost
 Spell Type       : Magic
@@ -4924,7 +4924,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=175) | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Deal $s1 Arcane damage.
 
-Name             : Phoenix's Flames (rank=Artifact) (id=224637) [Spell Family (3)] 
+Name             : Phoenix's Flames (desc=Artifact) (id=224637) [Spell Family (3)] 
 Class            : Mage
 School           : Fire
 Spell Type       : Magic
@@ -4944,7 +4944,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.32450 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 Description      : $@spelldesc194466
 
-Name             : Mark of Aluneth (rank=Artifact) (id=224968) [Spell Family (3)] 
+Name             : Mark of Aluneth (desc=Artifact) (id=224968) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
 Spell Type       : Magic
@@ -5114,7 +5114,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000
 Description      : $@spelldesc30455
 
-Name             : Ebonbolt (rank=Artifact) (id=228599) [Spell Family (3)] 
+Name             : Ebonbolt (desc=Artifact) (id=228599) [Spell Family (3)] 
 Class            : Mage
 School           : Shadowfrost
 Spell Type       : Magic
@@ -5184,7 +5184,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Radius: 0 - 6 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
 Description      : $@spelldesc153595
 
-Name             : Arcane Barrage (rank=Rank 2) (id=231564) [Spell Family (3), Passive] 
+Name             : Arcane Barrage (desc=Rank 2) (id=231564) [Spell Family (3), Passive] 
 Class            : Arcane Mage
 School           : Nature
 Spell Type       : None
@@ -5205,7 +5205,7 @@ Effects          :
                    Family Flags: 66
 Description      : For each Arcane Charge, Arcane Barrage hits $s1 additional nearby $Ltarget:targets; for $44425s2% damage.
 
-Name             : Evocation (rank=Rank 2) (id=231565) [Spell Family (3), Passive] 
+Name             : Evocation (desc=Rank 2) (id=231565) [Spell Family (3), Passive] 
 Class            : Arcane Mage
 School           : Arcane
 Spell Type       : None
@@ -5225,7 +5225,7 @@ Effects          :
                    Affected Spells (Category): Evocation (12051)
 Description      : Evocation's cooldown is reduced by $s1%.
 
-Name             : Fire Blast (rank=Rank 4) (id=231567) [Spell Family (3), Passive] 
+Name             : Fire Blast (desc=Rank 4) (id=231567) [Spell Family (3), Passive] 
 Class            : Fire Mage
 School           : Nature
 Spell Type       : None
@@ -5249,7 +5249,7 @@ Effects          :
                    Family Flags: 1
 Description      : Fire Blast now has ${$s1+1} charges.
 
-Name             : Fire Blast (rank=Rank 2) (id=231568) [Spell Family (3), Passive] 
+Name             : Fire Blast (desc=Rank 2) (id=231568) [Spell Family (3), Passive] 
 Class            : Fire Mage
 School           : Nature
 Spell Type       : None
@@ -5270,7 +5270,7 @@ Effects          :
                    Family Flags: 85
 Description      : Fire Blast always deals a critical strike.
 
-Name             : Shatter (rank=Rank 2) (id=231582) [Spell Family (3), Passive] 
+Name             : Shatter (desc=Rank 2) (id=231582) [Spell Family (3), Passive] 
 Class            : Frost Mage
 School           : Frost
 Spell Type       : None
@@ -5289,7 +5289,7 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Shatter increases your chance to deal a critical strike by an additional $s1%.
 
-Name             : Brain Freeze (rank=Rank 2) (id=231584) [Spell Family (3), Passive] 
+Name             : Brain Freeze (desc=Rank 2) (id=231584) [Spell Family (3), Passive] 
 Class            : Frost Mage
 School           : Frost
 Spell Type       : None
@@ -5310,7 +5310,7 @@ Description      : Brain Freeze causes your next Flurry to  apply Winter's Chill
 
 Winter's Chill causes the target to take damage from your spells as if it were frozen.
 
-Name             : Freeze (rank=Pet) (id=231596) [Spell Family (3), Passive] 
+Name             : Freeze (desc=Pet) (id=231596) [Spell Family (3), Passive] 
 Class            : Frost Mage
 School           : Frost
 Spell Type       : None
@@ -5332,7 +5332,7 @@ Description      : Your Water Elemental can now cast Freeze:
 $@spellicon33395 $@spellname33395
 $@spelldesc33395
 
-Name             : Critical Mass (rank=Rank 2) (id=231630) [Spell Family (3), Passive] 
+Name             : Critical Mass (desc=Rank 2) (id=231630) [Spell Family (3), Passive] 
 Class            : Fire Mage
 School           : Fire
 Spell Type       : None
@@ -5738,7 +5738,7 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000
 Description      : When Clearcast, Arcane Missiles fires $s2 additional $lmissile:missiles;.
 
-Name             : Blizzard (rank=Rank 2) (id=236662) [Spell Family (3), Passive] 
+Name             : Blizzard (desc=Rank 2) (id=236662) [Spell Family (3), Passive] 
 Class            : Frost Mage
 School           : Frost
 Spell Type       : None
@@ -6094,7 +6094,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Unlock powers at the Vindicaar's Matrix Core to use while on Argus. 
 
-Name             : Light's Judgment (rank=Racial) (id=255647) 
+Name             : Light's Judgment (desc=Racial) (id=255647) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
@@ -6116,7 +6116,7 @@ Effects          :
 Description      : Call down a strike of Holy energy, dealing $<damage> Holy damage to enemies within $A1 yards after 3 sec.
 Variables        : $damage=${$cond($gt($SP,$AP),$SP*3,$AP*3)*$pctD*(1+$@versadmg)}
 
-Name             : Holy Resistance (rank=Racial Passive) (id=255651) [Passive] 
+Name             : Holy Resistance (desc=Racial Passive) (id=255651) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
@@ -6134,7 +6134,7 @@ Effects          :
                    Base Value: -1 | Scaled Value: -1 | PvP Coefficient: 1.00000 | Misc Value: 0x2 | Target: Self (1)
 Description      : Reduces Holy damage taken by ${$s1/-1}%.
 
-Name             : Light's Reckoning (rank=Racial Passive) (id=255652) [Passive] 
+Name             : Light's Reckoning (desc=Racial Passive) (id=255652) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Physical
@@ -6152,7 +6152,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 256896 | Target: Self (1)
 Description      : Erupt with Light upon death. Deals $256896s1 Holy damage to enemies within 8 yards and heals allies for $256896s2.
 
-Name             : Demonbane (rank=Racial Passive) (id=255653) [Passive] 
+Name             : Demonbane (desc=Racial Passive) (id=255653) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Physical
@@ -6170,7 +6170,7 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 4 | Target: Self (1)
 Description      : Experience gains from killing Demons increased by $s1%.
 
-Name             : Light's Judgment (rank=Racial) (id=256893) 
+Name             : Light's Judgment (desc=Racial) (id=256893) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
@@ -6192,7 +6192,7 @@ Effects          :
 Description      : Call down a strike of Holy energy, dealing $<damage> Holy damage to enemies within $A1 yards.
 Variables        : $damage=${$cond($gt($SP,$AP),$SP*3,$AP*3)*$pctD*(1+$@versadmg)}
 
-Name             : Light's Reckoning (rank=Racial Passive) (id=256896) [Scaling Spell (-8)] 
+Name             : Light's Reckoning (desc=Racial Passive) (id=256896) [Scaling Spell (-8)] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
@@ -6288,7 +6288,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 257542 | Target: Enemy (6)
 Description      : Hurls a Phoenix that deals $257542s2 Fire damage to the target and reduced damage to other nearby enemies. Always deals a critical strike.
 
-Name             : Phoenix Flames (rank=Artifact) (id=257542) [Spell Family (3)] 
+Name             : Phoenix Flames (desc=Artifact) (id=257542) [Spell Family (3)] 
 Class            : Mage
 School           : Fire
 Spell Type       : Magic
@@ -8941,7 +8941,7 @@ Description      : Your damaging spells and abilities have a chance to crash a w
 
 When your health drops below $s2%, gain a shield absorbing $s3 damage within $303390d. When this occurs, Undulating Tides cannot trigger again for $s4 sec.
 
-Name             : Radiant Spark (rank=Kyrian) (id=307443) [Spell Family (3)] 
+Name             : Radiant Spark (desc=Kyrian) (id=307443) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
 Spell Type       : Magic
@@ -9005,7 +9005,7 @@ Effects          :
 Description      : $@spelldesc307443
 Tooltip          : Damage taken from $@auracaster  increased by $w1%.
 
-Name             : Shifting Power (rank=Night Fae) (id=314791) [Spell Family (3)] 
+Name             : Shifting Power (desc=Night Fae) (id=314791) [Spell Family (3)] 
 Class            : Mage
 School           : Nature
 Spell Type       : Magic
@@ -9033,7 +9033,7 @@ Description      : Draw power from the ground beneath, dealing ${$325130s1*$d/$t
 While channeling, your Mage ability cooldowns are reduced by ${-$s2/1000} sec every $t1 sec.
 Tooltip          : Every $t1 sec, deal $325130s1 Nature damage to enemies within $325130A1 yds and reduce the remaining cooldown of your abilities by ${-$s2/1000} sec.
 
-Name             : Mirrors of Torment (rank=Venthyr) (id=314793) [Spell Family (3)] 
+Name             : Mirrors of Torment (desc=Venthyr) (id=314793) [Spell Family (3)] 
 Class            : Mage
 School           : Shadow
 Spell Type       : Magic
@@ -9350,7 +9350,7 @@ Effects          :
 Description      : $@spelldesc321387
 Tooltip          : Mana regen increased by $s1%.
 
-Name             : Clearcasting (rank=Rank 3) (id=321420) [Spell Family (3), Passive] 
+Name             : Clearcasting (desc=Rank 3) (id=321420) [Spell Family (3), Passive] 
 Class            : Arcane Mage
 School           : Physical
 Spell Type       : None
@@ -9396,7 +9396,7 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Trigger Spell: 210824 | Target: Enemy (6)
 Description      : Applies Touch of the Magi to your current target, accumulating $s1% of the damage you deal to the target for $210824d, and then exploding for that amount of Arcane damage to the target and reduced damage to all nearby enemies.
 
-Name             : Arcane Barrage (rank=Rank 3) (id=321526) [Spell Family (3), Passive] 
+Name             : Arcane Barrage (desc=Rank 3) (id=321526) [Spell Family (3), Passive] 
 Class            : Arcane Mage
 School           : Arcane
 Spell Type       : None
@@ -9415,7 +9415,7 @@ Effects          :
                    Base Value: 1.5 | Scaled Value: 1.5 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Arcane Barrage grants you $s1% of your maximum mana per Arcane Charge spent.
 
-Name             : Mastery: Icicles (rank=Rank 2) (id=321684) [Spell Family (3), Passive] 
+Name             : Mastery: Icicles (desc=Rank 2) (id=321684) [Spell Family (3), Passive] 
 Class            : Frost Mage
 School           : Physical
 Spell Type       : None
@@ -9436,7 +9436,7 @@ Effects          :
                    Family Flags: 78
 Description      : Increases the damage of Frozen Orb by $s76613%.
 
-Name             : Blizzard (rank=Rank 3) (id=321696) [Spell Family (3), Passive] 
+Name             : Blizzard (desc=Rank 3) (id=321696) [Spell Family (3), Passive] 
 Class            : Frost Mage
 School           : Physical
 Spell Type       : None
@@ -9457,7 +9457,7 @@ Effects          :
                    Family Flags: 7
 Description      : Damage increased by $s1%.
 
-Name             : Cold Snap (rank=Rank 2) (id=321699) [Spell Family (3), Passive] 
+Name             : Cold Snap (desc=Rank 2) (id=321699) [Spell Family (3), Passive] 
 Class            : Frost Mage
 School           : Physical
 Spell Type       : None
@@ -9478,7 +9478,7 @@ Effects          :
                    Family Flags: 34
 Description      : Cooldown reduced by ${$s1/-1000} sec.
 
-Name             : Icy Veins (rank=Rank 2) (id=321702) [Spell Family (3), Passive] 
+Name             : Icy Veins (desc=Rank 2) (id=321702) [Spell Family (3), Passive] 
 Class            : Frost Mage
 School           : Physical
 Spell Type       : None
@@ -9499,7 +9499,7 @@ Effects          :
                    Family Flags: 46
 Description      : Duration increased by ${$s1/1000} sec.
 
-Name             : Dragon's Breath (rank=Rank 2) (id=321707) [Spell Family (3), Passive] 
+Name             : Dragon's Breath (desc=Rank 2) (id=321707) [Spell Family (3), Passive] 
 Class            : Fire Mage
 School           : Physical
 Spell Type       : None
@@ -9520,7 +9520,7 @@ Effects          :
                    Family Flags: 23
 Description      : Cooldown reduced by ${$s1/-1000} sec.
 
-Name             : Blazing Barrier (rank=Rank 2) (id=321708) [Spell Family (3), Passive] 
+Name             : Blazing Barrier (desc=Rank 2) (id=321708) [Spell Family (3), Passive] 
 Class            : Fire Mage
 School           : Physical
 Spell Type       : None
@@ -9540,7 +9540,7 @@ Effects          :
                    Affected Spells (Label): Blazing Barrier (235314)
 Description      : Damage increased by $s1%.
 
-Name             : Flamestrike (rank=Rank 2) (id=321709) [Spell Family (3), Passive] 
+Name             : Flamestrike (desc=Rank 2) (id=321709) [Spell Family (3), Passive] 
 Class            : Fire Mage
 School           : Physical
 Spell Type       : None
@@ -9561,7 +9561,7 @@ Effects          :
                    Family Flags: 2
 Description      : Damage increased by $s1%.
 
-Name             : Combustion (rank=Rank 2) (id=321710) [Spell Family (3), Passive] 
+Name             : Combustion (desc=Rank 2) (id=321710) [Spell Family (3), Passive] 
 Class            : Fire Mage
 School           : Physical
 Spell Type       : None
@@ -9582,7 +9582,7 @@ Effects          :
                    Family Flags: 58
 Description      : Duration increased by ${$s1/1000} sec.
 
-Name             : Pyroblast (rank=Rank 2) (id=321711) [Spell Family (3), Passive] 
+Name             : Pyroblast (desc=Rank 2) (id=321711) [Spell Family (3), Passive] 
 Class            : Fire Mage
 School           : Physical
 Spell Type       : None
@@ -9626,7 +9626,7 @@ Effects          :
 Description      : $@spelldesc321711
 Tooltip          : Suffering $w1 Fire damage every $t2 sec.
 
-Name             : Arcane Power (rank=Rank 2) (id=321739) [Spell Family (3), Passive] 
+Name             : Arcane Power (desc=Rank 2) (id=321739) [Spell Family (3), Passive] 
 Class            : Arcane Mage
 School           : Physical
 Spell Type       : None
@@ -9647,7 +9647,7 @@ Effects          :
                    Family Flags: 51
 Description      : Duration increased by ${$s1/1000} sec.
 
-Name             : Presence of Mind (rank=Rank 2) (id=321742) [Spell Family (3), Passive] 
+Name             : Presence of Mind (desc=Rank 2) (id=321742) [Spell Family (3), Passive] 
 Class            : Arcane Mage
 School           : Physical
 Spell Type       : None
@@ -9668,7 +9668,7 @@ Effects          :
                    Family Flags: 37
 Description      : Arcane Blast can be cast instantly $s1 additional time.
 
-Name             : Prismatic Barrier (rank=Rank 2) (id=321745) [Spell Family (3), Passive] 
+Name             : Prismatic Barrier (desc=Rank 2) (id=321745) [Spell Family (3), Passive] 
 Class            : Arcane Mage
 School           : Physical
 Spell Type       : None
@@ -9693,7 +9693,7 @@ Effects          :
                    Family Flags: 68
 Description      : Reduces magical damage taken by an additional $s1% and duration of harmful Magic effects by $s2%.
 
-Name             : Slow (rank=Rank 2) (id=321747) [Spell Family (3), Passive] 
+Name             : Slow (desc=Rank 2) (id=321747) [Spell Family (3), Passive] 
 Class            : Arcane Mage
 School           : Physical
 Spell Type       : None
@@ -9714,7 +9714,7 @@ Effects          :
                    Family Flags: 72
 Description      : Reduces the target's movement speed by an additional $s1%.
 
-Name             : Arcane Explosion (rank=Rank 2) (id=321752) [Spell Family (3), Passive] 
+Name             : Arcane Explosion (desc=Rank 2) (id=321752) [Spell Family (3), Passive] 
 Class            : Arcane Mage
 School           : Physical
 Spell Type       : None
@@ -9735,7 +9735,7 @@ Effects          :
                    Family Flags: 12
 Description      : Damage increased by $s1%.
 
-Name             : Clearcasting (rank=Rank 2) (id=321758) [Spell Family (3), Passive] 
+Name             : Clearcasting (desc=Rank 2) (id=321758) [Spell Family (3), Passive] 
 Class            : Arcane Mage
 School           : Physical
 Spell Type       : None
@@ -9758,7 +9758,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000
 Description      : When Clearcast, Arcane Missiles fires $s2 additional $lmissile:missiles;.
 
-Name             : Deathborne (rank=Necrolord) (id=324220) [Spell Family (3)] 
+Name             : Deathborne (desc=Necrolord) (id=324220) [Spell Family (3)] 
 Class            : Mage
 School           : Shadow
 Spell Type       : None
@@ -9798,7 +9798,7 @@ Description      : Transform into a powerful skeletal mage for $d.
 While in the form of a skeletal mage, your Frostbolt, Fireball, and Arcane Blast hit up to $s4 enemies near your target and your spell damage is increased by $s2%.
 Tooltip          : Transformed into a powerful skeletal mage, greatly enhancing your Frostbolt, Fireball, and Arcane Blast and increasing your spell damage by $s2%.
 
-Name             : Shifting Power (rank=Night Fae) (id=325130) [Spell Family (3)] 
+Name             : Shifting Power (desc=Night Fae) (id=325130) [Spell Family (3)] 
 Class            : Mage
 School           : Nature
 Spell Type       : Magic

@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35282 shadowlands-BETA (git build dbc 9c725e1441)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35282 shadowlands-BETA (git build dbc df97e687b9)
 
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
@@ -74,7 +74,7 @@ Description      : Finishing move that stuns the target. Lasts longer per combo 
    6 points: 7 seconds][]
 Tooltip          : Stunned.
 
-Name             : Dual Wield (rank=Passive) (id=674) [Passive] 
+Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
 Spell Type       : Magic
@@ -430,7 +430,7 @@ Effects          :
 Description      : Allows you to vanish from sight, entering stealth while in combat. For the first $11327d after vanishing, damage and harmful effects received will not break stealth. Also breaks movement impairing effects.
 Tooltip          : Improved stealth.
 
-Name             : Safe Fall (rank=Passive) (id=1860) [Spell Family (8), Passive, Hidden] 
+Name             : Safe Fall (desc=Passive) (id=1860) [Spell Family (8), Passive, Hidden] 
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -640,7 +640,7 @@ Effects          :
 Description      : Coats your weapons with a Lethal Poison that lasts for $d. Each strike has a $h% chance to poison the enemy for ${$2818m1*$2818d/$2818t1} Nature damage over $2818d. Subsequent poison applications will instantly deal $113780s1 Nature damage.
 Tooltip          : Each strike has a chance of causing the target to suffer Nature damage every $2818t1 sec for $2818d. Subsequent poison applications deal instant Nature damage.
 
-Name             : Detect Traps (rank=Passive) (id=2836) [Passive] 
+Name             : Detect Traps (desc=Passive) (id=2836) [Passive] 
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -1187,7 +1187,7 @@ Effects          :
 Description      : $?s331851[Strikes up to nearby $331850i targets for $331850s1 Physical damage, and causes][Causes] your single target attacks to also strike up to $s3 nearby enemies for $s2% of normal damage for $d.
 Tooltip          : Attacks striking nearby enemies.
 
-Name             : Nightstalker (rank=Passive Talent) (id=14062) [Spell Family (8), Passive] 
+Name             : Nightstalker (desc=Passive Talent) (id=14062) [Spell Family (8), Passive] 
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -1324,7 +1324,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
 Description      : Increases your maximum Energy by $s1 and your Energy regeneration by $s2%.
 
-Name             : Blood Fury (rank=Racial) (id=20572) [Scaling Spell (-1)] 
+Name             : Blood Fury (desc=Racial) (id=20572) [Scaling Spell (-1)] 
 Class            : Warrior, Hunter, Rogue, Death Knight
 Race             : Orc (0x2)
 School           : Physical
@@ -1347,7 +1347,7 @@ Effects          :
 Description      : Increases your attack power by $s1 for $d.
 Tooltip          : Attack power increased by $w1.
 
-Name             : Elusiveness (rank=Racial Passive) (id=21009) [Passive] 
+Name             : Elusiveness (desc=Racial Passive) (id=21009) [Passive] 
 Class            : Rogue, Druid
 Race             : Night Elf (0x8)
 School           : Physical
@@ -1365,7 +1365,7 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | SP Coefficient: 1.00000 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Increases your speed while $?s5176[Prowl is active by $s1%.][Stealth is active by $s1%.]
 
-Name             : Command (rank=Racial Passive) (id=21563) [Spell Family (9), Passive] 
+Name             : Command (desc=Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Orc (0x2)
 School           : Physical
@@ -1405,7 +1405,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 5 | Target: Enemy (6)
 Description      : $@spelldesc319606
 
-Name             : Arcane Torrent (rank=Racial) (id=25046) 
+Name             : Arcane Torrent (desc=Racial) (id=25046) 
 Class            : Rogue
 Race             : Blood Elf (0x200)
 School           : Arcane
@@ -1473,7 +1473,7 @@ Effects          :
 #1 (id=17468)    : Apply Aura (6) | Attribute (29)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
 
-Name             : Fleet Footed (rank=Passive) (id=31209) [Spell Family (8), Passive] 
+Name             : Fleet Footed (desc=Passive) (id=31209) [Spell Family (8), Passive] 
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -1537,7 +1537,7 @@ Effects          :
 Description      : Provides a moment of magic immunity, instantly removing all harmful spell effects. The cloak lingers, causing you to resist harmful spells for $d.
 Tooltip          : Resisting all harmful spells.
 
-Name             : Cheat Death (rank=Passive Talent) (id=31230) [Spell Family (8), Passive] 
+Name             : Cheat Death (desc=Passive Talent) (id=31230) [Spell Family (8), Passive] 
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -1655,7 +1655,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: energy | Target: Self (1)
 Description      : $@spelldesc35551
 
-Name             : Combat Potency (rank=Rank 2) (id=35551) [Spell Family (8), Passive] 
+Name             : Combat Potency (desc=Rank 2) (id=35551) [Spell Family (8), Passive] 
 Class            : Outlaw Rogue
 School           : Physical
 Spell Type       : None
@@ -1956,7 +1956,7 @@ Description      : $?s221622[Increases you and the target's damage by $221622m1%
 Tooltip          : Threat redirected from Rogue.
 $?$w2>0[Damage increased by $221622m1%.][]
 
-Name             : Relentless Strikes (rank=Passive) (id=58423) [Spell Family (8), Passive] 
+Name             : Relentless Strikes (desc=Passive) (id=58423) [Spell Family (8), Passive] 
 Class            : Subtlety Rogue
 School           : Physical
 Spell Type       : None
@@ -2057,7 +2057,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 733
 Description      : $@spelldesc63268
 
-Name             : Viciousness (rank=Racial Passive) (id=68975) [Passive] 
+Name             : Viciousness (desc=Racial Passive) (id=68975) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
 Race             : Worgen (0x200000)
 School           : Physical
@@ -2076,7 +2076,7 @@ Effects          :
 Description      : Increases critical strike chance by $s1%.
 Tooltip          : Critical strike chance increased by $s1%.
 
-Name             : Aberration (rank=Racial Passive) (id=68976) [Passive] 
+Name             : Aberration (desc=Racial Passive) (id=68976) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
 Race             : Worgen (0x200000)
 School           : Physical
@@ -2095,7 +2095,7 @@ Effects          :
 Description      : Reduces Shadow and Nature damage taken by $s1%.
 Tooltip          : Reduces Shadow and Nature damage taken by $s1%.
 
-Name             : Darkflight (rank=Racial) (id=68992) 
+Name             : Darkflight (desc=Racial) (id=68992) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
 Race             : Worgen (0x200000)
 School           : Physical
@@ -2194,7 +2194,7 @@ Effects          :
                    Family Flags: 17, 20, 32, 35, 77, 100
 Description      : Increases the damage done by your finishing moves by ${$76808m1}.1%.
 
-Name             : Elusiveness (rank=Passive Talent) (id=79008) [Spell Family (8), Passive] 
+Name             : Elusiveness (desc=Passive Talent) (id=79008) [Spell Family (8), Passive] 
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -2324,7 +2324,7 @@ Effects          :
                    Family Flags: 18
 Description      : While your Slice and Dice ability is active, you regain $s1 Energy every $5171t2 sec.
 
-Name             : Parry (rank=Passive) (id=82245) [Spell Family (8), Passive] 
+Name             : Parry (desc=Passive) (id=82245) [Spell Family (8), Passive] 
 Class            : Rogue
 School           : Physical
 Spell Type       : Magic
@@ -2342,7 +2342,7 @@ Effects          :
                    Base Value: 3.5 | Scaled Value: 3.5 (coefficient=0, delta coefficient=0.25) | Value Multiplier: 1 | SP Coefficient: 1.00000 | PvP Coefficient: 1.00000 | Misc Value: 90
 Description      : Gives a chance to parry enemy melee attacks.
 
-Name             : Leather Specialization (rank=Passive) (id=86092) [Passive, Hidden] 
+Name             : Leather Specialization (desc=Passive) (id=86092) [Passive, Hidden] 
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -2449,7 +2449,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Trigger Spell: 92320 | Target: Self (1)
 Description      : Your harmful spells have a chance to grant $92320s1 mastery for $92320d.
 
-Name             : Altered Form (rank=Racial Passive) (id=94293) [Passive, Hidden] 
+Name             : Altered Form (desc=Racial Passive) (id=94293) [Passive, Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
 Race             : Worgen (0x200000)
 School           : Physical
@@ -2558,7 +2558,7 @@ Effects          :
 Description      : Coats your weapons with a Poison that lasts for $d, granting you $s1% Leech.
 Tooltip          : Leech increased by $s1%.
 
-Name             : Dirty Tricks (rank=Passive Talent) (id=108216) [Spell Family (8), Passive] 
+Name             : Dirty Tricks (desc=Passive Talent) (id=108216) [Spell Family (8), Passive] 
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -3261,7 +3261,7 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
 Description      : Mutilate refunds $s1 Energy when used against a poisoned target.
 
-Name             : Expansive Mind (rank=Racial Passive) (id=154744) [Passive] 
+Name             : Expansive Mind (desc=Racial Passive) (id=154744) [Passive] 
 Class            : Rogue, Monk
 Race             : Gnome (0x40)
 School           : Physical
@@ -3322,7 +3322,7 @@ Effects          :
 Description      : $@spelldesc154904
 Tooltip          : Suffering $w1 damage every $t1 sec.
 
-Name             : Critical Strikes (rank=Passive) (id=157442) [Passive] 
+Name             : Critical Strikes (desc=Passive) (id=157442) [Passive] 
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -4152,7 +4152,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Your auto attacks have a chance to generate $?s319706[$196911m1 combo point and ][]$196911s2 Energy.
 
-Name             : Hit and Run (rank=Passive Talent) (id=196922) [Spell Family (8), Passive] 
+Name             : Hit and Run (desc=Passive Talent) (id=196922) [Spell Family (8), Passive] 
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -4174,7 +4174,7 @@ Effects          :
                    Family Flags: 22, 96
 Description      : Increases your movement speed at all times by $s1%.
 
-Name             : Acrobatic Strikes (rank=Passive Talent) (id=196924) [Spell Family (8), Passive] 
+Name             : Acrobatic Strikes (desc=Passive Talent) (id=196924) [Spell Family (8), Passive] 
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -4244,7 +4244,7 @@ Description      : Strikes an enemy, dealing $s1 Physical damage and causing the
 |cFFFFFFFFAwards $s2 combo $lpoint:points;.|r
 Tooltip          : Taking $s3% increased damage from the Rogue's abilities.
 
-Name             : Quick Draw (rank=Passive Talent) (id=196938) [Spell Family (8), Passive] 
+Name             : Quick Draw (desc=Passive Talent) (id=196938) [Spell Family (8), Passive] 
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -4268,7 +4268,7 @@ Effects          :
                    Family Flags: 108
 Description      : Half-cost uses of Pistol Shot granted by Sinister Strike now generate $s2 additional combo point, and deal $s1% additional damage.
 
-Name             : Master of Shadows (rank=Passive) (id=196976) [Spell Family (8), Passive] 
+Name             : Master of Shadows (desc=Passive) (id=196976) [Spell Family (8), Passive] 
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -4534,7 +4534,7 @@ Effects          :
 #1 (id=293832)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 
-Name             : Find Treasure (rank=Racial) (id=199736) 
+Name             : Find Treasure (desc=Racial) (id=199736) 
 Class            : Outlaw Rogue
 School           : Physical
 Spell Type       : None
@@ -4592,7 +4592,7 @@ Tooltip          : Stunned.
 Variables        : $CAP=${($AP+$OAP)*2/3}
 $damage=${$m1*$<CAP>/$AP}
 
-Name             : Weaponmaster (rank=Passive Talent) (id=200733) [Spell Family (8), Passive] 
+Name             : Weaponmaster (desc=Passive Talent) (id=200733) [Spell Family (8), Passive] 
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -4814,7 +4814,7 @@ Effects          :
 Description      : $@spelldesc277950
 Tooltip          : Movement speed slowed by $w1%.
 
-Name             : Dismantle (rank=PvP Talent) (id=207777) [Spell Family (8)] 
+Name             : Dismantle (desc=PvP Talent) (id=207777) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
 Spell Type       : Melee
@@ -4889,7 +4889,7 @@ Effects          :
 Description      : Drink an alchemical concoction that heals you for $o1% of your maximum health over $d.
 Tooltip          : Healing for $m1% of maximum health every $t1 sec.
 
-Name             : Create: Crimson Vial (rank=PvP Talent) (id=212205) 
+Name             : Create: Crimson Vial (desc=PvP Talent) (id=212205) 
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -4951,7 +4951,7 @@ Effects          :
 Description      : Invoke ancient symbols of power, generating $s5 Energy and increasing your damage done by $s1% for $d. $?s328077[Your next combo point generator will critically strike.][]
 Tooltip          : Damage done increased by $s1%.
 
-Name             : Thick as Thieves (rank=PvP Talent) (id=221622) [Spell Family (8), Passive, Hidden] 
+Name             : Thick as Thieves (desc=PvP Talent) (id=221622) [Spell Family (8), Passive, Hidden] 
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -4972,7 +4972,7 @@ Effects          :
                    Family Flags: 49
 Description      : Your Tricks of the Trade now increases your and the friendly target's damage by $m1% for $59628d.
 
-Name             : Sprint (rank=Rank 2) (id=231691) [Spell Family (8), Passive] 
+Name             : Sprint (desc=Rank 2) (id=231691) [Spell Family (8), Passive] 
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -4993,7 +4993,7 @@ Effects          :
                    Family Flags: 6
 Description      : Cooldown reduced by ${$m1/-1000} sec.
 
-Name             : Eviscerate (rank=Rank 2) (id=231716) [Spell Family (8), Passive] 
+Name             : Eviscerate (desc=Rank 2) (id=231716) [Spell Family (8), Passive] 
 Class            : Subtlety Rogue
 School           : Holy
 Spell Type       : None
@@ -5012,7 +5012,7 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Eviscerate deals an additional $s1% damage as Shadow to targets with your Find Weakness active.
 
-Name             : Shadowstrike (rank=Rank 2) (id=231718) [Spell Family (8), Passive] 
+Name             : Shadowstrike (desc=Rank 2) (id=231718) [Spell Family (8), Passive] 
 Class            : Subtlety Rogue
 School           : Physical
 Spell Type       : None
@@ -5031,7 +5031,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 5 | Target: Self (1)
 Description      : Shadowstrike deals $245623s2% increased damage and will now teleport you to a target up to ${$245623s1+5} yards away when used while Stealth is active.
 
-Name             : Garrote (rank=Rank 2) (id=231719) [Spell Family (8), Passive] 
+Name             : Garrote (desc=Rank 2) (id=231719) [Spell Family (8), Passive] 
 Class            : Assassination Rogue
 School           : Holy
 Spell Type       : None
@@ -5051,7 +5051,7 @@ Effects          :
 Description      : Garrote silences the target for $1330d when used from Stealth.
 
 
-Name             : Between the Eyes (rank=Rank 2) (id=235484) [Spell Family (8), Passive] 
+Name             : Between the Eyes (desc=Rank 2) (id=235484) [Spell Family (8), Passive] 
 Class            : Outlaw Rogue
 School           : Holy
 Spell Type       : None
@@ -5162,7 +5162,7 @@ Effects          :
 Description      : $@spelldesc245388
 Tooltip          : $s1% increased damage taken from poisons from the casting Rogue.
 
-Name             : Shadowstrike (rank=Rank 2) (id=245623) [Spell Family (8), Hidden] 
+Name             : Shadowstrike (desc=Rank 2) (id=245623) [Spell Family (8), Hidden] 
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -5216,7 +5216,7 @@ Effects          :
                    Family Flags: 103
 Description      : Shadow Dance now increases damage by ${$s1+15}%.
 
-Name             : Sprint (rank=Rank 2) (id=245751) [Spell Family (8), Passive] 
+Name             : Sprint (desc=Rank 2) (id=245751) [Spell Family (8), Passive] 
 Class            : Subtlety Rogue
 School           : Physical
 Spell Type       : None
@@ -5238,7 +5238,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.25) | PvP Coefficient: 1.00000 | Trigger Spell: 245752 | Target: Self (1)
 Description      : Sprint now allows you to run over water.
 
-Name             : Sprint (rank=Rank 2) (id=245752) [Spell Family (8), Hidden] 
+Name             : Sprint (desc=Rank 2) (id=245752) [Spell Family (8), Hidden] 
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -5390,7 +5390,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.11000 | PvP Coefficient: 1.00000 | Radius: 0 - 6 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
 Description      : $@spelldesc255544
 
-Name             : Light's Judgment (rank=Racial) (id=255647) 
+Name             : Light's Judgment (desc=Racial) (id=255647) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
@@ -5412,7 +5412,7 @@ Effects          :
 Description      : Call down a strike of Holy energy, dealing $<damage> Holy damage to enemies within $A1 yards after 3 sec.
 Variables        : $damage=${$cond($gt($SP,$AP),$SP*3,$AP*3)*$pctD*(1+$@versadmg)}
 
-Name             : Holy Resistance (rank=Racial Passive) (id=255651) [Passive] 
+Name             : Holy Resistance (desc=Racial Passive) (id=255651) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
@@ -5430,7 +5430,7 @@ Effects          :
                    Base Value: -1 | Scaled Value: -1 | PvP Coefficient: 1.00000 | Misc Value: 0x2 | Target: Self (1)
 Description      : Reduces Holy damage taken by ${$s1/-1}%.
 
-Name             : Light's Reckoning (rank=Racial Passive) (id=255652) [Passive] 
+Name             : Light's Reckoning (desc=Racial Passive) (id=255652) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Physical
@@ -5448,7 +5448,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 256896 | Target: Self (1)
 Description      : Erupt with Light upon death. Deals $256896s1 Holy damage to enemies within 8 yards and heals allies for $256896s2.
 
-Name             : Demonbane (rank=Racial Passive) (id=255653) [Passive] 
+Name             : Demonbane (desc=Racial Passive) (id=255653) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Physical
@@ -5527,7 +5527,7 @@ Effects          :
 Description      : $@spelldesc196861
 Tooltip          : Damage done reduced by $s1%.
 
-Name             : Blinding Powder (rank=Passive Talent) (id=256165) [Spell Family (8), Passive] 
+Name             : Blinding Powder (desc=Passive Talent) (id=256165) [Spell Family (8), Passive] 
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -5596,7 +5596,7 @@ Effects          :
 Description      : $@spelldesc256170
 Tooltip          : Your next $?s5171[Slice and Dice will be $w1% more effective][Roll the Bones will grant at least two matches].
 
-Name             : Retractable Hook (rank=Passive Talent) (id=256188) [Spell Family (8), Passive] 
+Name             : Retractable Hook (desc=Passive Talent) (id=256188) [Spell Family (8), Passive] 
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -5662,7 +5662,7 @@ Effects          :
 Description      : $@spelldesc255989
 Tooltip          : Critical strike chance increased by $w1%.
 
-Name             : Light's Judgment (rank=Racial) (id=256893) 
+Name             : Light's Judgment (desc=Racial) (id=256893) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
@@ -5684,7 +5684,7 @@ Effects          :
 Description      : Call down a strike of Holy energy, dealing $<damage> Holy damage to enemies within $A1 yards.
 Variables        : $damage=${$cond($gt($SP,$AP),$SP*3,$AP*3)*$pctD*(1+$@versadmg)}
 
-Name             : Light's Reckoning (rank=Racial Passive) (id=256896) [Scaling Spell (-8)] 
+Name             : Light's Reckoning (desc=Racial Passive) (id=256896) [Scaling Spell (-8)] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
@@ -5709,7 +5709,7 @@ Description      : Deals $s1 Holy Damage to enemies within $A1.
 
 Heals $s2 to allies within $A1. 
 
-Name             : Shot in the Dark (rank=Passive Talent) (id=257505) [Spell Family (8), Passive] 
+Name             : Shot in the Dark (desc=Passive Talent) (id=257505) [Spell Family (8), Passive] 
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -6945,7 +6945,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $?s277953[Backstab, Shadowstrike, and Shuriken Storm][Backstab and Shadowstrike] reduce the enemy's movement speed by $206760s1% for $206760d.
 
-Name             : Night Terrors (rank=Passive Talent) (id=277953) [Spell Family (8), Passive] 
+Name             : Night Terrors (desc=Passive Talent) (id=277953) [Spell Family (8), Passive] 
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -7140,7 +7140,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.10000 | PvP Coefficient: 0.80000 | Target: Enemy (6)
 Description      : $@spelldesc121471
 
-Name             : Sinister Strike (rank=Rank 2) (id=279876) [Spell Family (8), Passive] 
+Name             : Sinister Strike (desc=Rank 2) (id=279876) [Spell Family (8), Passive] 
 Class            : Outlaw Rogue
 School           : Physical
 Spell Type       : None
@@ -7159,7 +7159,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 15 | Target: Self (1)
 Description      : Sinister Strike has a $193315s3% chance to hit an additional time, making your next Pistol Shot half cost and double damage.
 
-Name             : Sinister Strike (rank=Rank 2) (id=279877) [Spell Family (8), Passive] 
+Name             : Sinister Strike (desc=Rank 2) (id=279877) [Spell Family (8), Passive] 
 Class            : Assassination Rogue
 School           : Physical
 Spell Type       : None
@@ -8647,7 +8647,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 16.54624 (coefficient=0.174171) | PvP Coefficient: 0.50000 | Trigger Spell: 316101 | Target: Self (1)
 Description      : Your secondary stats are all increased by $s1 while your Corruption Level is 25 or higher.
 
-Name             : Shiv (rank=Rank 2) (id=319032) [Spell Family (8), Passive] 
+Name             : Shiv (desc=Rank 2) (id=319032) [Spell Family (8), Passive] 
 Class            : Assassination Rogue
 School           : Physical
 Spell Type       : None
@@ -8692,7 +8692,7 @@ Effects          :
 Description      : $@spelldesc245388
 Tooltip          : $s1% increased damage taken from poisons from the casting Rogue.
 
-Name             : Wound Poison (rank=Rank 2) (id=319066) [Spell Family (8), Passive] 
+Name             : Wound Poison (desc=Rank 2) (id=319066) [Spell Family (8), Passive] 
 Class            : Assassination Rogue
 School           : Physical
 Spell Type       : None
@@ -8752,7 +8752,7 @@ Description      : Finishing move that leaps you into the air, sprays shuriken a
    6 points: ${$m1*6} damage][]
 
 
-Name             : Shadow Vault (rank=Rank 2) (id=319178) [Spell Family (8), Passive] 
+Name             : Shadow Vault (desc=Rank 2) (id=319178) [Spell Family (8), Passive] 
 Class            : Subtlety Rogue
 School           : Physical
 Spell Type       : None
@@ -8792,7 +8792,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.24300 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
 Description      : $@spelldesc319175
 
-Name             : Mastery: Potent Assassin (rank=Rank 2) (id=319473) [Spell Family (8), Passive] 
+Name             : Mastery: Potent Assassin (desc=Rank 2) (id=319473) [Spell Family (8), Passive] 
 Class            : Assassination Rogue
 School           : Physical
 Spell Type       : None
@@ -8837,7 +8837,7 @@ Effects          :
 Description      : $@spelldesc245388
 Tooltip          : $s1% increased damage taken from poisons from the casting Rogue.
 
-Name             : Vendetta (rank=Rank 2) (id=319568) [Spell Family (8), Passive] 
+Name             : Vendetta (desc=Rank 2) (id=319568) [Spell Family (8), Passive] 
 Class            : Assassination Rogue
 School           : Physical
 Spell Type       : None
@@ -8856,7 +8856,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Vendetta generates ${$256495s1*$256495d/5} Energy over $256495d.
 
-Name             : Grappling Hook (rank=Rank 2) (id=319600) [Spell Family (8), Passive] 
+Name             : Grappling Hook (desc=Rank 2) (id=319600) [Spell Family (8), Passive] 
 Class            : Outlaw Rogue
 School           : Physical
 Spell Type       : None
@@ -8915,7 +8915,7 @@ Description      : Flourish your weapons, striking all nearby enemies for $sw1 P
 For the next $d, your single target attacks strike up to $s3 additional nearby enemies for $s2% of normal damage.
 Tooltip          : Attacks striking up to $s3 additional nearby enemies.
 
-Name             : Shadow Techniques (rank=Rank 2) (id=319706) [Spell Family (8), Passive] 
+Name             : Shadow Techniques (desc=Rank 2) (id=319706) [Spell Family (8), Passive] 
 Class            : Subtlety Rogue
 School           : Physical
 Spell Type       : None
@@ -8936,7 +8936,7 @@ Effects          :
                    Family Flags: 107
 Description      : Your auto attacks also have a chance to generate $196911s1 combo $lpoint:points;.
 
-Name             : Backstab (rank=Rank 2) (id=319949) [Spell Family (8), Passive] 
+Name             : Backstab (desc=Rank 2) (id=319949) [Spell Family (8), Passive] 
 Class            : Subtlety Rogue
 School           : Physical
 Spell Type       : None
@@ -8958,7 +8958,7 @@ Effects          :
                    Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : When you are behind your target, Backstab now also exposes a flaw in their defenses, applying Find Weakness for $s1 sec.
 
-Name             : Shuriken Storm (rank=Rank 2) (id=319951) [Spell Family (8), Passive] 
+Name             : Shuriken Storm (desc=Rank 2) (id=319951) [Spell Family (8), Passive] 
 Class            : Subtlety Rogue
 School           : Physical
 Spell Type       : None
@@ -8977,7 +8977,7 @@ Effects          :
                    Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Shuriken Storm critical strikes apply Find Weakness for $s1 sec.
 
-Name             : Echoing Reprimand (rank=Kyrian) (id=323547) [Spell Family (8)] 
+Name             : Echoing Reprimand (desc=Kyrian) (id=323547) [Spell Family (8)] 
 Class            : Rogue
 School           : Arcane
 Spell Type       : Melee
@@ -9103,7 +9103,7 @@ Effects          :
 Description      : $@spelldesc323658
 Tooltip          : Suffering $w1 Shadow damage every $t1 seconds.
 
-Name             : Serrated Bone Spike (rank=Necrolord) (id=324073) [Spell Family (8)] 
+Name             : Serrated Bone Spike (desc=Necrolord) (id=324073) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
 Spell Type       : Melee
@@ -9131,7 +9131,7 @@ Effects          :
 Description      : $@spelldesc323737
 Tooltip          : Bleeding for $w1 every $t1 sec.
 
-Name             : Symbols of Death (rank=Rank 2) (id=328077) [Spell Family (8), Passive] 
+Name             : Symbols of Death (desc=Rank 2) (id=328077) [Spell Family (8), Passive] 
 Class            : Subtlety Rogue
 School           : Physical
 Spell Type       : None
@@ -9172,7 +9172,7 @@ Effects          :
                    Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 1.00000
 Description      : Mutilate has a $s1% chance to make your next Ambush free and usable without Stealth. Chance increased to $s2% if the target is under $s3% health.
 
-Name             : Sepsis (rank=Night Fae) (id=328305) [Spell Family (8)] 
+Name             : Sepsis (desc=Night Fae) (id=328305) [Spell Family (8)] 
 Class            : Rogue
 School           : Nature
 Spell Type       : Melee
@@ -9208,7 +9208,7 @@ Description      : Infect the target's blood, dealing $o1 Nature damage over $d.
 Cooldown reduced by $s3 sec if Sepsis does not last its full duration.
 Tooltip          : Suffering $w1 Nature damage every $t1 sec, and ${$w1*$s4} when the poison ends.
 
-Name             : Serrated Bone Spike (rank=Necrolord) (id=328547) [Spell Family (8)] 
+Name             : Serrated Bone Spike (desc=Necrolord) (id=328547) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
 Spell Type       : Melee
@@ -9264,7 +9264,7 @@ Effects          :
 #1 (id=821137)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
 
-Name             : Improved Poisons (rank=Rank 2) (id=330542) [Spell Family (8), Passive] 
+Name             : Improved Poisons (desc=Rank 2) (id=330542) [Spell Family (8), Passive] 
 Class            : Assassination Rogue
 School           : Physical
 Spell Type       : None
@@ -9305,7 +9305,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.20000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 Description      : $@spelldesc13877
 
-Name             : Blade Flurry (rank=Rank 2) (id=331851) [Spell Family (8), Passive] 
+Name             : Blade Flurry (desc=Rank 2) (id=331851) [Spell Family (8), Passive] 
 Class            : Outlaw Rogue
 School           : Physical
 Spell Type       : None

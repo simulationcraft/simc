@@ -1,6 +1,6 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35282 shadowlands-BETA (git build dbc 9c725e1441)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35282 shadowlands-BETA (git build dbc df97e687b9)
 
-Name             : Dual Wield (rank=Passive) (id=674) [Passive] 
+Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
 Spell Type       : Magic
@@ -37,7 +37,7 @@ Effects          :
 Description      : $@spelldesc255260
 Tooltip          : Magic damage taken increased by $s1%.
 
-Name             : Command (rank=Racial Passive) (id=21563) [Spell Family (9), Passive] 
+Name             : Command (desc=Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Orc (0x2)
 School           : Physical
@@ -376,7 +376,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 210041 | Target: Self (1)
 Description      : $@spelldesc178940
 
-Name             : Leather Specialization (rank=Passive) (id=178976) [Passive, Hidden] 
+Name             : Leather Specialization (desc=Passive) (id=178976) [Passive, Hidden] 
 Class            : Havoc Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -452,7 +452,7 @@ Description      : Interrupts the enemy's spellcasting and locks them from that 
 
 Generates $218903s1 Fury on a successful interrupt.][]|r
 
-Name             : Disrupt (rank=Rank 2) (id=183782) [Spell Family (107), Passive] 
+Name             : Disrupt (desc=Rank 2) (id=183782) [Spell Family (107), Passive] 
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -944,7 +944,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Summons darkness around you in an 8 yd radius, granting friendly targets a $209426s2% chance to avoid all damage from an attack. Lasts $d.
 
-Name             : Chaos Strike (rank=Passive) (id=197125) [Spell Family (107), Passive, Hidden] 
+Name             : Chaos Strike (desc=Passive) (id=197125) [Spell Family (107), Passive, Hidden] 
 Class            : Havoc Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -1311,7 +1311,7 @@ Effects          :
 #2 (id=298926)   : Apply Aura (6) | Disable Abilities (263)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 
-Name             : Fury of the Illidari (rank=Artifact) (id=201467) [Spell Family (107)] 
+Name             : Fury of the Illidari (desc=Artifact) (id=201467) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : Melee
@@ -1539,7 +1539,7 @@ Effects          :
 #3 (id=298836)   : Apply Aura (6) | Stealth Detection (228)
                    Base Value: 1000 | Scaled Value: 1000 | PvP Coefficient: 1.00000 | Target: Self (1)
 
-Name             : Arcane Torrent (rank=Racial) (id=202719) 
+Name             : Arcane Torrent (desc=Racial) (id=202719) 
 Class            : Demon Hunter
 Race             : Blood Elf (0x200)
 School           : Arcane
@@ -2403,7 +2403,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : You gain Parry equal to $s1% of your Critical Strike from gear.
 
-Name             : Soul Carver (rank=Artifact) (id=207407) [Spell Family (107)] 
+Name             : Soul Carver (desc=Artifact) (id=207407) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Fire
 Spell Type       : Melee
@@ -3599,7 +3599,7 @@ Effects          :
                    Base Value: 300 | Scaled Value: 300 | PvP Coefficient: 1.00000 | Misc Value: pain | Target: Self (1)
 Description      : $@spelldesc183752
 
-Name             : Critical Strikes (rank=Passive) (id=221351) [Passive] 
+Name             : Critical Strikes (desc=Passive) (id=221351) [Passive] 
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -3660,7 +3660,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.35000 | PvP Coefficient: 1.00000 | Chain Multiplier: 0.5 | Chain Targets: 1 | Target: Enemy (6)
 Description      : $@spelldesc162794
 
-Name             : Fel Barrage (rank=Passive) (id=222703) [Spell Family (107), Passive, Hidden] 
+Name             : Fel Barrage (desc=Passive) (id=222703) [Spell Family (107), Passive, Hidden] 
 Class            : Demon Hunter
 School           : Magic
 Spell Type       : None
@@ -3732,7 +3732,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc209795
 
-Name             : Leather Specialization (rank=Passive) (id=226359) [Passive, Hidden] 
+Name             : Leather Specialization (desc=Passive) (id=226359) [Passive, Hidden] 
 Class            : Vengeance Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -4140,7 +4140,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Unlock powers at the Vindicaar's Matrix Core to use while on Argus. 
 
-Name             : Light's Judgment (rank=Racial) (id=255647) 
+Name             : Light's Judgment (desc=Racial) (id=255647) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
@@ -4162,7 +4162,7 @@ Effects          :
 Description      : Call down a strike of Holy energy, dealing $<damage> Holy damage to enemies within $A1 yards after 3 sec.
 Variables        : $damage=${$cond($gt($SP,$AP),$SP*3,$AP*3)*$pctD*(1+$@versadmg)}
 
-Name             : Holy Resistance (rank=Racial Passive) (id=255651) [Passive] 
+Name             : Holy Resistance (desc=Racial Passive) (id=255651) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
@@ -4180,7 +4180,7 @@ Effects          :
                    Base Value: -1 | Scaled Value: -1 | PvP Coefficient: 1.00000 | Misc Value: 0x2 | Target: Self (1)
 Description      : Reduces Holy damage taken by ${$s1/-1}%.
 
-Name             : Light's Reckoning (rank=Racial Passive) (id=255652) [Passive] 
+Name             : Light's Reckoning (desc=Racial Passive) (id=255652) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Physical
@@ -4198,7 +4198,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 256896 | Target: Self (1)
 Description      : Erupt with Light upon death. Deals $256896s1 Holy damage to enemies within 8 yards and heals allies for $256896s2.
 
-Name             : Demonbane (rank=Racial Passive) (id=255653) [Passive] 
+Name             : Demonbane (desc=Racial Passive) (id=255653) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Physical
@@ -4216,7 +4216,7 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 4 | Target: Self (1)
 Description      : Experience gains from killing Demons increased by $s1%.
 
-Name             : Light's Judgment (rank=Racial) (id=256893) 
+Name             : Light's Judgment (desc=Racial) (id=256893) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
@@ -4238,7 +4238,7 @@ Effects          :
 Description      : Call down a strike of Holy energy, dealing $<damage> Holy damage to enemies within $A1 yards.
 Variables        : $damage=${$cond($gt($SP,$AP),$SP*3,$AP*3)*$pctD*(1+$@versadmg)}
 
-Name             : Light's Reckoning (rank=Racial Passive) (id=256896) [Scaling Spell (-8)] 
+Name             : Light's Reckoning (desc=Racial Passive) (id=256896) [Scaling Spell (-8)] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
@@ -6803,7 +6803,7 @@ Description      : Your damaging spells and abilities have a chance to crash a w
 
 When your health drops below $s2%, gain a shield absorbing $s3 damage within $303390d. When this occurs, Undulating Tides cannot trigger again for $s4 sec.
 
-Name             : Elysian Decree (rank=Kyrian) (id=306830) [Spell Family (107)] 
+Name             : Elysian Decree (desc=Kyrian) (id=306830) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Arcane
 Spell Type       : None
@@ -6834,7 +6834,7 @@ Description      : Place a Kyrian Sigil at the target location that activates af
 
 Detonates to deal $307046s1 Arcane damage and shatter up to $s3 Lesser Soul Fragments from enemies affected by the sigil.
 
-Name             : Elysian Decree (rank=Kyrian) (id=307046) [Spell Family (107)] 
+Name             : Elysian Decree (desc=Kyrian) (id=307046) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Arcane
 Spell Type       : Magic
@@ -6855,7 +6855,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.20000 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: AOE enemy (instant) (16)
 Description      : $@spelldesc306830
 
-Name             : Sinful Brand (rank=Venthyr) (id=317009) [Spell Family (107)] 
+Name             : Sinful Brand (desc=Venthyr) (id=317009) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Shadow
 Spell Type       : Magic
@@ -6944,7 +6944,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 16.54624 (coefficient=0.174171) | PvP Coefficient: 0.50000 | Trigger Spell: 316101 | Target: Self (1)
 Description      : Your secondary stats are all increased by $s1 while your Corruption Level is 25 or higher.
 
-Name             : Consume Magic (rank=Rank 2) (id=320313) [Spell Family (107), Passive] 
+Name             : Consume Magic (desc=Rank 2) (id=320313) [Spell Family (107), Passive] 
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -7050,7 +7050,7 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Demolish the spirit of all those around you, dealing $s1 Fire damage to nearby enemies and extracting up to $s2 Lesser Soul Fragments, drawing them to you for immediate consumption.
 
-Name             : Disrupt (rank=Rank 3) (id=320361) [Spell Family (107), Passive] 
+Name             : Disrupt (desc=Rank 3) (id=320361) [Spell Family (107), Passive] 
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -7071,7 +7071,7 @@ Effects          :
                    Family Flags: 19
 Description      : Increases the range of Disrupt to ${$s+$183752r} yards.
 
-Name             : Immolation Aura (rank=Rank 2) (id=320364) [Spell Family (107), Passive] 
+Name             : Immolation Aura (desc=Rank 2) (id=320364) [Spell Family (107), Passive] 
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -7108,7 +7108,7 @@ Effects          :
                    Base Value: 7 | Scaled Value: 7 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Immolation Aura generates an additional ${$258922s2*$258920d} Fury over $258920d.
 
-Name             : Immolation Aura (rank=Rank 3) (id=320377) [Spell Family (107), Passive] 
+Name             : Immolation Aura (desc=Rank 3) (id=320377) [Spell Family (107), Passive] 
 Class            : Havoc Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -7129,7 +7129,7 @@ Effects          :
                    Family Flags: 11
 Description      : Increases the duration of Immolation Aura by $s0%.
 
-Name             : Immolation Aura (rank=Rank 3) (id=320378) [Spell Family (107), Passive] 
+Name             : Immolation Aura (desc=Rank 3) (id=320378) [Spell Family (107), Passive] 
 Class            : Vengeance Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -7150,7 +7150,7 @@ Effects          :
                    Family Flags: 11
 Description      : Reduces the cooldown of Immolation Aura by ${$abs($s0/1000)} sec.
 
-Name             : Spectral Sight (rank=Rank 2) (id=320379) [Spell Family (107), Passive] 
+Name             : Spectral Sight (desc=Rank 2) (id=320379) [Spell Family (107), Passive] 
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -7196,7 +7196,7 @@ Effects          :
                    Base Value: -6 | Scaled Value: -6 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Fel energy thickens your skin to demonic proportions, increasing your Stamina by $s1% and your Armor by $s2%.
 
-Name             : Demonic Wards (rank=Rank 2) (id=320381) [Spell Family (107), Passive] 
+Name             : Demonic Wards (desc=Rank 2) (id=320381) [Spell Family (107), Passive] 
 Class            : Vengeance Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -7217,7 +7217,7 @@ Effects          :
                    Family Flags: 63
 Description      : Your tattoos reduce all damage taken by 10%.
 
-Name             : Demonic Wards (rank=Rank 3) (id=320382) [Spell Family (107), Passive] 
+Name             : Demonic Wards (desc=Rank 3) (id=320382) [Spell Family (107), Passive] 
 Class            : Vengeance Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -7238,7 +7238,7 @@ Effects          :
                    Family Flags: 63
 Description      : Your tattoos reduce all damage taken by 15%.
 
-Name             : Demonic Wards (rank=Rank 2) (id=320383) [Spell Family (107), Passive] 
+Name             : Demonic Wards (desc=Rank 2) (id=320383) [Spell Family (107), Passive] 
 Class            : Havoc Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -7259,7 +7259,7 @@ Effects          :
                    Family Flags: 63
 Description      : Your tattoos reduce magic damage taken by 10%.
 
-Name             : Throw Glaive (rank=Rank 2) (id=320386) [Spell Family (107), Passive] 
+Name             : Throw Glaive (desc=Rank 2) (id=320386) [Spell Family (107), Passive] 
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -7280,7 +7280,7 @@ Effects          :
                    Family Flags: 5
 Description      : Throw Glaive ricochets to an additional target.
 
-Name             : Throw Glaive (rank=Rank 3) (id=320387) [Spell Family (107), Passive] 
+Name             : Throw Glaive (desc=Rank 3) (id=320387) [Spell Family (107), Passive] 
 Class            : Vengeance Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -7301,7 +7301,7 @@ Effects          :
                    Family Flags: 5
 Description      : Reduces the cooldown of Throw Glaive by ${$abs($s0/1000)} sec.
 
-Name             : Blade Dance (rank=Rank 3) (id=320398) [Spell Family (107), Passive] 
+Name             : Blade Dance (desc=Rank 3) (id=320398) [Spell Family (107), Passive] 
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -7320,7 +7320,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Blade Dance increases your chance to dodge by $193311s1% for $193311d.
 
-Name             : Blade Dance (rank=Rank 2) (id=320402) [Spell Family (107), Passive] 
+Name             : Blade Dance (desc=Rank 2) (id=320402) [Spell Family (107), Passive] 
 Class            : Havoc Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -7341,7 +7341,7 @@ Effects          :
                    Family Flags: 25
 Description      : Reduces the cooldown of Blade Dance by ${$abs($s0/1000)} sec.
 
-Name             : Blur (rank=Rank 2) (id=320407) [Spell Family (107), Passive] 
+Name             : Blur (desc=Rank 2) (id=320407) [Spell Family (107), Passive] 
 Class            : Havoc Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -7360,7 +7360,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Blur also reduces all damage taken by $212800s3% for $212800d.
 
-Name             : Chaos Nova (rank=Rank 2) (id=320412) [Spell Family (107), Passive] 
+Name             : Chaos Nova (desc=Rank 2) (id=320412) [Spell Family (107), Passive] 
 Class            : Havoc Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -7379,7 +7379,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Each enemy stunned by Chaos Nova has a $179057s3% chance to generate a Lesser Soul Fragment.
 
-Name             : Chaos Strike (rank=Rank 3) (id=320413) [Spell Family (107), Passive] 
+Name             : Chaos Strike (desc=Rank 3) (id=320413) [Spell Family (107), Passive] 
 Class            : Havoc Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -7400,7 +7400,7 @@ Effects          :
                    Family Flags: 52
 Description      : Increases the chance that Chaos Strike will refund $193840s1 Fury by $s1%.
 
-Name             : Eye Beam (rank=Rank 2) (id=320415) [Spell Family (107), Passive] 
+Name             : Eye Beam (desc=Rank 2) (id=320415) [Spell Family (107), Passive] 
 Class            : Havoc Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -7421,7 +7421,7 @@ Effects          :
                    Family Flags: 8
 Description      : Eye Beam deals guaranteed critical strikes.
 
-Name             : Fel Rush (rank=Rank 2) (id=320416) [Spell Family (107), Passive] 
+Name             : Fel Rush (desc=Rank 2) (id=320416) [Spell Family (107), Passive] 
 Class            : Havoc Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -7441,7 +7441,7 @@ Effects          :
                    Affected Spells (Category): Fel Rush (195072)
 Description      : Fel Rush gains an additional charge.
 
-Name             : Sigil of Silence (rank=Rank 2) (id=320417) [Spell Family (107), Passive] 
+Name             : Sigil of Silence (desc=Rank 2) (id=320417) [Spell Family (107), Passive] 
 Class            : Vengeance Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -7462,7 +7462,7 @@ Effects          :
                    Family Flags: 75
 Description      : Reduces the cooldown of Sigil of Silence by ${$abs($s0/1000)} sec.
 
-Name             : Sigil of Misery (rank=Rank 2) (id=320418) [Spell Family (107), Passive] 
+Name             : Sigil of Misery (desc=Rank 2) (id=320418) [Spell Family (107), Passive] 
 Class            : Vengeance Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -7483,7 +7483,7 @@ Effects          :
                    Family Flags: 76
 Description      : Reduces the cooldown of Sigil of Misery by ${$abs($s0/1000)} sec.
 
-Name             : Darkness (rank=Rank 2) (id=320420) [Spell Family (107), Passive] 
+Name             : Darkness (desc=Rank 2) (id=320420) [Spell Family (107), Passive] 
 Class            : Havoc Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -7504,7 +7504,7 @@ Effects          :
                    Family Flags: 75
 Description      : Reduces the cooldown of Darkness by ${$abs($s0/1000)} sec.
 
-Name             : Metamorphosis (rank=Rank 3) (id=320421) [Spell Family (107), Passive] 
+Name             : Metamorphosis (desc=Rank 3) (id=320421) [Spell Family (107), Passive] 
 Class            : Havoc Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -7525,7 +7525,7 @@ Effects          :
                    Family Flags: 15
 Description      : Reduces the cooldown of Metamorphosis by ${$abs($s0/1000)} sec.
 
-Name             : Metamorphosis (rank=Rank 2) (id=320422) [Spell Family (107), Passive] 
+Name             : Metamorphosis (desc=Rank 2) (id=320422) [Spell Family (107), Passive] 
 Class            : Havoc Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -7546,7 +7546,7 @@ Effects          :
                    Family Flags: 15
 Description      : The Demon Hunter gains an additional $s0% Haste during Metamorphosis.
 
-Name             : Vengeful Retreat (rank=Rank 2) (id=320635) [Spell Family (107), Passive] 
+Name             : Vengeful Retreat (desc=Rank 2) (id=320635) [Spell Family (107), Passive] 
 Class            : Havoc Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -7565,7 +7565,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Vengeful Retreat reduces the movement speed of all nearby enemies by $198813s1% for $198813d.
 
-Name             : Fel Devastation (rank=Rank 2) (id=320639) [Spell Family (107), Passive] 
+Name             : Fel Devastation (desc=Rank 2) (id=320639) [Spell Family (107), Passive] 
 Class            : Vengeance Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -7584,7 +7584,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Fel Devastation damage also heals you for up to ${$212106s1*(2/$t1)} health.
 
-Name             : Metamorphosis (rank=Rank 4) (id=320645) [Spell Family (107), Passive] 
+Name             : Metamorphosis (desc=Rank 4) (id=320645) [Spell Family (107), Passive] 
 Class            : Havoc Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -7603,7 +7603,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : When you activate Metamorphosis, the cooldown of Eye Beam and Blade Dance is immediately reset.
 
-Name             : Mastery: Demonic Presence (rank=Rank 2) (id=320654) [Spell Family (107), Passive] 
+Name             : Mastery: Demonic Presence (desc=Rank 2) (id=320654) [Spell Family (107), Passive] 
 Class            : Havoc Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -7641,7 +7641,7 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 17 | Target: Self (1)
 Description      : Increases maximum Fury by $s1.
 
-Name             : Infernal Strike (rank=Rank 2) (id=320791) [Spell Family (107), Passive] 
+Name             : Infernal Strike (desc=Rank 2) (id=320791) [Spell Family (107), Passive] 
 Class            : Vengeance Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -7661,7 +7661,7 @@ Effects          :
                    Affected Spells (Category): Infernal Strike (189110)
 Description      : Infernal Strike gains an additional charge.
 
-Name             : Sigil of Flame (rank=Rank 2) (id=320794) [Spell Family (107), Passive] 
+Name             : Sigil of Flame (desc=Rank 2) (id=320794) [Spell Family (107), Passive] 
 Class            : Vengeance Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -7680,7 +7680,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Sigil of Flame deals an additional $204598o3 Fire damage over $204598d, to all enemies affected by the sigil.
 
-Name             : Fiery Brand (rank=Rank 2) (id=320962) [Spell Family (107), Passive] 
+Name             : Fiery Brand (desc=Rank 2) (id=320962) [Spell Family (107), Passive] 
 Class            : Vengeance Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -7699,7 +7699,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Fiery Brand deals $207771s3 Fire damage every $207771t3 sec.
 
-Name             : Soul Cleave (rank=Rank 2) (id=321021) [Spell Family (107), Passive] 
+Name             : Soul Cleave (desc=Rank 2) (id=321021) [Spell Family (107), Passive] 
 Class            : Vengeance Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -7718,7 +7718,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Soul Cleave heals for an additional $228477s5 for each Soul Fragment consumed.
 
-Name             : Demon Spikes (rank=Rank 2) (id=321028) [Spell Family (107), Passive] 
+Name             : Demon Spikes (desc=Rank 2) (id=321028) [Spell Family (107), Passive] 
 Class            : Vengeance Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -7737,7 +7737,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Demon Spikes also increases your Parry chance by $203819s1% for $203819d.
 
-Name             : Metamorphosis (rank=Rank 2) (id=321067) [Spell Family (107), Passive] 
+Name             : Metamorphosis (desc=Rank 2) (id=321067) [Spell Family (107), Passive] 
 Class            : Vengeance Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -7758,7 +7758,7 @@ Effects          :
                    Family Flags: 28
 Description      : Reduces the cooldown of Metamorphosis by ${$abs($s0/1000)} sec.
 
-Name             : Metamorphosis (rank=Rank 3) (id=321068) [Spell Family (107), Passive] 
+Name             : Metamorphosis (desc=Rank 3) (id=321068) [Spell Family (107), Passive] 
 Class            : Vengeance Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -7779,7 +7779,7 @@ Effects          :
                    Family Flags: 28
 Description      : Reduces the cooldown of Metamorphosis by ${$abs($s0/1000)} sec.
 
-Name             : Mastery: Fel Blood (rank=Rank 2) (id=321299) [Spell Family (107), Passive] 
+Name             : Mastery: Fel Blood (desc=Rank 2) (id=321299) [Spell Family (107), Passive] 
 Class            : Vengeance Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -7816,7 +7816,7 @@ Effects          :
                    Base Value: 8000 | Scaled Value: 8000 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Fel Devastation causes you to enter demon form for ${$s1/1000} sec after it finishes dealing damage.
 
-Name             : The Hunt (rank=Night Fae) (id=323639) [Spell Family (107)] 
+Name             : The Hunt (desc=Night Fae) (id=323639) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Nature
 Spell Type       : Melee
@@ -7842,7 +7842,7 @@ Description      : Charge to an enemy, inflicting $323802s1 Nature damage and ro
 
 You may reactivate The Hunt every 30 sec to teleport behind the marked target, ignoring line of sight.
 
-Name             : The Hunt (rank=Night Fae) (id=323802) [Spell Family (107)] 
+Name             : The Hunt (desc=Night Fae) (id=323802) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Nature
 Spell Type       : Melee
@@ -7875,7 +7875,7 @@ Effects          :
 Description      : $@spelldesc323639
 Tooltip          : Marked by the Demon Hunter, increasing Fury generation against this target.
 
-Name             : The Hunt (rank=Night Fae) (id=323996) [Spell Family (107)] 
+Name             : The Hunt (desc=Night Fae) (id=323996) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Nature
 Spell Type       : Melee
@@ -7897,7 +7897,7 @@ Effects          :
 Description      : $@spelldesc323639
 Tooltip          : Rooted.
 
-Name             : The Hunt (rank=Night Fae) (id=323997) [Spell Family (107)] 
+Name             : The Hunt (desc=Night Fae) (id=323997) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Nature
 Spell Type       : None
@@ -7963,7 +7963,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
 Tooltip          : Absorbs $w1 damage.
 
-Name             : Fodder to the Flame (rank=Necrolord) (id=329554) [Spell Family (107)] 
+Name             : Fodder to the Flame (desc=Necrolord) (id=329554) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -8047,7 +8047,7 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
 Tooltip          : Attack speed increased by $s1%.
 
-Name             : The Hunt (rank=Night Fae) (id=333762) [Spell Family (107)] 
+Name             : The Hunt (desc=Night Fae) (id=333762) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Nature
 Spell Type       : Melee
@@ -8069,7 +8069,7 @@ Effects          :
 Description      : $@spelldesc323639
 Tooltip          : Stunned.
 
-Name             : The Hunt (rank=Night Fae) (id=333883) [Spell Family (107)] 
+Name             : The Hunt (desc=Night Fae) (id=333883) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Nature
 Spell Type       : Melee

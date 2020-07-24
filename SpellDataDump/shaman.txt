@@ -1,6 +1,6 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35282 shadowlands-BETA (git build dbc 9c725e1441)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35282 shadowlands-BETA (git build dbc df97e687b9)
 
-Name             : Block (rank=Passive) (id=107) [Passive] 
+Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
 Spell Type       : Magic
@@ -563,7 +563,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 400 | Trigger Spell: 195573 | Target: Self (1)
 Description      : Energizes both your weapons with lightning and delivers a massive blow to your target, dealing a total of ${$32175sw1+$32176sw1} Physical damage.
 
-Name             : Expansive Mind (rank=Racial Passive) (id=20591) [Passive] 
+Name             : Expansive Mind (desc=Racial Passive) (id=20591) [Passive] 
 Class            : Paladin, Priest, Shaman, Mage, Warlock, Monk
 Race             : Gnome (0x40)
 School           : Physical
@@ -581,7 +581,7 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value 2: 0x8 | Target: Self (1)
 Description      : Maximum mana increased by $s1%.
 
-Name             : Reincarnation (rank=Passive) (id=20608) [Spell Family (11), Passive] 
+Name             : Reincarnation (desc=Passive) (id=20608) [Spell Family (11), Passive] 
 Class            : Shaman
 School           : Nature
 Spell Type       : None
@@ -607,7 +607,7 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000
 Description      : Allows you to resurrect yourself upon death with $21169s1% health and mana. This effect can occur only once every $s2 minutes.
 
-Name             : Command (rank=Racial Passive) (id=21563) [Spell Family (9), Passive] 
+Name             : Command (desc=Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Orc (0x2)
 School           : Physical
@@ -664,7 +664,7 @@ Effects          :
 #1 (id=17468)    : Apply Aura (6) | Attribute (29)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
 
-Name             : Gift of the Naaru (rank=Racial) (id=28880) [Spell Family (4)] 
+Name             : Gift of the Naaru (desc=Racial) (id=28880) [Spell Family (4)] 
 Class            : Warrior, Paladin, Hunter, Priest, Death Knight, Shaman, Mage, Monk
 Race             : Draenei (0x400)
 School           : Holy
@@ -815,7 +815,7 @@ Description      : Increases haste by $s1% for all party and raid members for $d
 Allies receiving this effect will become Exhausted and unable to benefit from Heroism or Time Warp again for $57723d.
 Tooltip          : Haste increased by $w1%.
 
-Name             : Blood Fury (rank=Racial) (id=33697) [Scaling Spell (-1)] 
+Name             : Blood Fury (desc=Racial) (id=33697) [Scaling Spell (-1)] 
 Class            : Shaman, Monk
 Race             : Orc (0x2)
 School           : Physical
@@ -860,7 +860,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.10800 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc8232
 
-Name             : Windfury Weapon (rank=Weapon Imbue) (id=33757) [Spell Family (11)] 
+Name             : Windfury Weapon (desc=Weapon Imbue) (id=33757) [Spell Family (11)] 
 Class            : Enhancement Shaman
 School           : Nature
 Spell Type       : None
@@ -1453,7 +1453,7 @@ Description      : Spirit Wolves' attacks heal them and their master for $<perce
 Tooltip          : Converts $58877s1% damage to health.
 Variables        : $percent=$?s63271[${$58877m1*1.4}][${$58877m1}]
 
-Name             : Gift of the Naaru (rank=Racial) (id=59547) [Spell Family (11)] 
+Name             : Gift of the Naaru (desc=Racial) (id=59547) [Spell Family (11)] 
 Class            : Shaman
 Race             : Draenei (0x400)
 School           : Holy
@@ -1622,7 +1622,7 @@ Effects          :
 Description      : Roots targets for $d.
 Tooltip          : Rooted.
 
-Name             : Avoidance (rank=Passive) (id=65220) [Passive] 
+Name             : Avoidance (desc=Passive) (id=65220) [Passive] 
 Class            : Shaman, Mage, Monk
 School           : Physical
 Spell Type       : None
@@ -1646,7 +1646,7 @@ Effects          :
 Description      : Reduces the damage your pet takes from area of effect attacks by an additional $s1%.
 Reduces the range at which enemies detect your pet.
 
-Name             : Viciousness (rank=Racial Passive) (id=68975) [Passive] 
+Name             : Viciousness (desc=Racial Passive) (id=68975) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
 Race             : Worgen (0x200000)
 School           : Physical
@@ -1665,7 +1665,7 @@ Effects          :
 Description      : Increases critical strike chance by $s1%.
 Tooltip          : Critical strike chance increased by $s1%.
 
-Name             : Aberration (rank=Racial Passive) (id=68976) [Passive] 
+Name             : Aberration (desc=Racial Passive) (id=68976) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
 Race             : Worgen (0x200000)
 School           : Physical
@@ -1684,7 +1684,7 @@ Effects          :
 Description      : Reduces Shadow and Nature damage taken by $s1%.
 Tooltip          : Reduces Shadow and Nature damage taken by $s1%.
 
-Name             : Darkflight (rank=Racial) (id=68992) 
+Name             : Darkflight (desc=Racial) (id=68992) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
 Race             : Worgen (0x200000)
 School           : Physical
@@ -2072,7 +2072,7 @@ Effects          :
 Description      : Calls upon the guidance of the spirits for $d, permitting movement while casting Shaman spells. Castable while casting.$?a192088[ Increases movement speed by $192088s2%.][]
 Tooltip          : Able to move while casting all Shaman spells.
 
-Name             : Mail Specialization (rank=Passive) (id=86099) [Passive, Hidden] 
+Name             : Mail Specialization (desc=Passive) (id=86099) [Passive, Hidden] 
 Class            : Enhancement Shaman
 School           : Physical
 Spell Type       : None
@@ -2091,7 +2091,7 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Misc Value 2: 0x2 | Target: Self (1)
 Description      : Increases your Agility by $s1% while wearing only Mail armor.
 
-Name             : Mail Specialization (rank=Passive) (id=86100) [Passive, Hidden] 
+Name             : Mail Specialization (desc=Passive) (id=86100) [Passive, Hidden] 
 Class            : Restoration Shaman
 School           : Physical
 Spell Type       : None
@@ -2110,7 +2110,7 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Misc Value 2: 0x8 | Target: Self (1)
 Description      : Increases your Intellect by $s1% while wearing only Mail armor.
 
-Name             : Mail Specialization (rank=Passive) (id=86108) [Passive, Hidden] 
+Name             : Mail Specialization (desc=Passive) (id=86108) [Passive, Hidden] 
 Class            : Elemental Shaman
 School           : Physical
 Spell Type       : None
@@ -2170,7 +2170,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Trigger Spell: 92320 | Target: Self (1)
 Description      : Your harmful spells have a chance to grant $92320s1 mastery for $92320d.
 
-Name             : Altered Form (rank=Racial Passive) (id=94293) [Passive, Hidden] 
+Name             : Altered Form (desc=Racial Passive) (id=94293) [Passive, Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
 Race             : Worgen (0x200000)
 School           : Physical
@@ -3177,7 +3177,7 @@ Effects          :
                    Family Flags: 13
 Description      : Healing Stream Totem now heals two targets at once.
 
-Name             : Glyph of Spirit Raptors (rank=Enhancement) (id=147783) [Spell Family (11), Passive, Hidden] 
+Name             : Glyph of Spirit Raptors (desc=Enhancement) (id=147783) [Spell Family (11), Passive, Hidden] 
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -3459,7 +3459,7 @@ Tooltip          : Suffering $<damage> Nature damage every $t1 sec.
 Damage increases by $s2% every $t1 sec.
 Variables        : $damage=${0.1*($SP*1.8)*(1+$@versadmg)*(1+0.01*$137040m3)}
 
-Name             : Critical Strikes (rank=Passive) (id=157444) [Passive, Hidden] 
+Name             : Critical Strikes (desc=Passive) (id=157444) [Passive, Hidden] 
 Class            : Enhancement Shaman
 School           : Physical
 Spell Type       : None
@@ -5468,7 +5468,7 @@ Effects          :
 Description      : Swipe at the target, causing $s1 Physical damage, and an additional $o2 Bleed damage over $d.
 Tooltip          : Bleeding for $o2 damage.
 
-Name             : Doom Winds (rank=Artifact) (id=204945) [Spell Family (11)] 
+Name             : Doom Winds (desc=Artifact) (id=204945) [Spell Family (11)] 
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -5500,7 +5500,7 @@ Description      : Unleashes the inner power of the |cFFFFCC99Doomhammer|r, caus
 Tooltip          : Chance to proc Windfury weapon on auto attacks increased by 100%.
 Windfury damage increased by $s2%.
 
-Name             : Stormkeeper (rank=Artifact) (id=205495) [Spell Family (11)] 
+Name             : Stormkeeper (desc=Artifact) (id=205495) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
 Spell Type       : Magic
@@ -6210,7 +6210,7 @@ Effects          :
 Description      : $@spelldesc51533
 Variables        : $percent=$?s63271[${$58877m1*1.4}][${$58877m1}]
 
-Name             : Lava Burst (rank=Rank 2) (id=231721) [Spell Family (11), Passive] 
+Name             : Lava Burst (desc=Rank 2) (id=231721) [Spell Family (11), Passive] 
 Class            : Elemental Restoration Shaman
 School           : Fire
 Spell Type       : None
@@ -6229,7 +6229,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 5 | Target: Self (1)
 Description      : Lava Burst will always critically strike if the target is affected by Flame Shock.
 
-Name             : Chain Lightning (rank=Rank 2) (id=231722) [Spell Family (11), Passive] 
+Name             : Chain Lightning (desc=Rank 2) (id=231722) [Spell Family (11), Passive] 
 Class            : Elemental Shaman
 School           : Fire
 Spell Type       : None
@@ -6250,7 +6250,7 @@ Effects          :
                    Family Flags: 1, 34, 63, 101
 Description      : Chain Lightning jumps to $s1 additional targets.
 
-Name             : Chain Heal (rank=Rank 2) (id=231780) [Spell Family (11), Passive] 
+Name             : Chain Heal (desc=Rank 2) (id=231780) [Spell Family (11), Passive] 
 Class            : Restoration Shaman
 School           : Fire
 Spell Type       : None
@@ -6271,7 +6271,7 @@ Effects          :
                    Family Flags: 8
 Description      : Chain Heal jumps to $s1 additional target.
 
-Name             : Tidal Waves (rank=Rank 2) (id=231785) [Spell Family (11), Passive] 
+Name             : Tidal Waves (desc=Rank 2) (id=231785) [Spell Family (11), Passive] 
 Class            : Restoration Shaman
 School           : Fire
 Spell Type       : None
@@ -6393,7 +6393,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Unlock powers at the Vindicaar's Matrix Core to use while on Argus. 
 
-Name             : Light's Judgment (rank=Racial) (id=255647) 
+Name             : Light's Judgment (desc=Racial) (id=255647) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
@@ -6415,7 +6415,7 @@ Effects          :
 Description      : Call down a strike of Holy energy, dealing $<damage> Holy damage to enemies within $A1 yards after 3 sec.
 Variables        : $damage=${$cond($gt($SP,$AP),$SP*3,$AP*3)*$pctD*(1+$@versadmg)}
 
-Name             : Holy Resistance (rank=Racial Passive) (id=255651) [Passive] 
+Name             : Holy Resistance (desc=Racial Passive) (id=255651) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
@@ -6433,7 +6433,7 @@ Effects          :
                    Base Value: -1 | Scaled Value: -1 | PvP Coefficient: 1.00000 | Misc Value: 0x2 | Target: Self (1)
 Description      : Reduces Holy damage taken by ${$s1/-1}%.
 
-Name             : Light's Reckoning (rank=Racial Passive) (id=255652) [Passive] 
+Name             : Light's Reckoning (desc=Racial Passive) (id=255652) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Physical
@@ -6451,7 +6451,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 256896 | Target: Self (1)
 Description      : Erupt with Light upon death. Deals $256896s1 Holy damage to enemies within 8 yards and heals allies for $256896s2.
 
-Name             : Demonbane (rank=Racial Passive) (id=255653) [Passive] 
+Name             : Demonbane (desc=Racial Passive) (id=255653) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Physical
@@ -6469,7 +6469,7 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 4 | Target: Self (1)
 Description      : Experience gains from killing Demons increased by $s1%.
 
-Name             : Light's Judgment (rank=Racial) (id=256893) 
+Name             : Light's Judgment (desc=Racial) (id=256893) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
@@ -6491,7 +6491,7 @@ Effects          :
 Description      : Call down a strike of Holy energy, dealing $<damage> Holy damage to enemies within $A1 yards.
 Variables        : $damage=${$cond($gt($SP,$AP),$SP*3,$AP*3)*$pctD*(1+$@versadmg)}
 
-Name             : Light's Reckoning (rank=Racial Passive) (id=256896) [Scaling Spell (-8)] 
+Name             : Light's Reckoning (desc=Racial Passive) (id=256896) [Scaling Spell (-8)] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
@@ -6516,7 +6516,7 @@ Description      : Deals $s1 Holy Damage to enemies within $A1.
 
 Heals $s2 to allies within $A1. 
 
-Name             : Fulmination (rank=0) (id=260111) [Spell Family (11)] 
+Name             : Fulmination (desc=0) (id=260111) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
 Spell Type       : None
@@ -6543,7 +6543,7 @@ Effects          :
 Description      : $@spelldesc190493
 Tooltip          : Your next Earth Shock $?s117014[or Elemental Blast ][]will deal an additional ${$190493m1*$260113s1} Nature damage to the target.
 
-Name             : Fulmination (rank=Passive) (id=260113) [Spell Family (11)] 
+Name             : Fulmination (desc=Passive) (id=260113) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
 Spell Type       : Magic
@@ -9934,7 +9934,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 16.54624 (coefficient=0.174171) | PvP Coefficient: 0.50000 | Trigger Spell: 316101 | Target: Self (1)
 Description      : Your secondary stats are all increased by $s1 while your Corruption Level is 25 or higher.
 
-Name             : Flametongue Weapon (rank=Weapon Imbue) (id=318038) [Spell Family (11)] 
+Name             : Flametongue Weapon (desc=Weapon Imbue) (id=318038) [Spell Family (11)] 
 Class            : Shaman
 School           : Fire
 Spell Type       : None
@@ -9958,7 +9958,7 @@ Description      : Imbue your $?s33757[off-hand ][]weapon with the element of Fi
 Tooltip          : Each of your $?s33757[off-hand ][]weapon attacks causes up to ${$max(($<coeff>*$AP),1)} additional Fire damage.
 Variables        : $coeff=${0.0264}
 
-Name             : Lightning Bolt (rank=Rank 2) (id=318044) [Spell Family (11), Passive] 
+Name             : Lightning Bolt (desc=Rank 2) (id=318044) [Spell Family (11), Passive] 
 Class            : Shaman
 School           : Nature
 Spell Type       : Magic
@@ -10083,7 +10083,7 @@ Description      : Imbue your weapon with the element of Fire for $d, causing ea
 Tooltip          : Each of your weapon attacks causes up to ${$max(($<coeff>*$AP),1)} additional Fire damage.
 Variables        : $coeff=${0.0264}
 
-Name             : Stormbringer (rank=Rank 2) (id=319930) [Spell Family (11), Passive] 
+Name             : Stormbringer (desc=Rank 2) (id=319930) [Spell Family (11), Passive] 
 Class            : Enhancement Shaman
 School           : Nature
 Spell Type       : None
@@ -10168,7 +10168,7 @@ Effects          :
 Description      : Charge yourself with lightning, causing your next $n Lightning Bolts or Chain Lightnings to deal $s2% more damage and be instant cast.
 Tooltip          : Your next Lightning Bolt or Chain Lightning will deal $s2% increased damage and be instant cast.
 
-Name             : Chain Harvest (rank=Venthyr) (id=320674) [Spell Family (11)] 
+Name             : Chain Harvest (desc=Venthyr) (id=320674) [Spell Family (11)] 
 Class            : Shaman
 School           : Shadow
 Spell Type       : Magic
@@ -10239,7 +10239,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.00000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(132) -> AOE friendly (31)
 Description      : $@spelldesc320746
 
-Name             : Chain Harvest (rank=Venthyr) (id=320751) [Spell Family (11)] 
+Name             : Chain Harvest (desc=Venthyr) (id=320751) [Spell Family (11)] 
 Class            : Shaman
 School           : Shadow
 Spell Type       : Magic
@@ -10259,7 +10259,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.20000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Friend (21)
 Description      : $@spelldesc320674
 
-Name             : Chain Harvest (rank=Venthyr) (id=320752) [Spell Family (11)] 
+Name             : Chain Harvest (desc=Venthyr) (id=320752) [Spell Family (11)] 
 Class            : Shaman
 School           : Shadow
 Spell Type       : Magic
@@ -10300,7 +10300,7 @@ Effects          :
 Description      : $@spelldesc16191
 Tooltip          : Mana generation rate increased by $s1%.
 
-Name             : Vesper Totem (rank=Kyrian) (id=324386) [Spell Family (11)] 
+Name             : Vesper Totem (desc=Kyrian) (id=324386) [Spell Family (11)] 
 Class            : Shaman
 School           : Arcane
 Spell Type       : Magic
@@ -10340,7 +10340,7 @@ Description      : Summon a totem at the target location for $d. Your next $s2 d
 
 Casting this ability again while the totem is active will relocate the totem.
 
-Name             : Vesper Totem (rank=Kyrian) (id=324520) [Spell Family (11)] 
+Name             : Vesper Totem (desc=Kyrian) (id=324520) [Spell Family (11)] 
 Class            : Shaman
 School           : Arcane
 Spell Type       : Magic
@@ -10360,7 +10360,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.50000 | AP Coefficient: 0.50000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
 Description      : $@spelldesc324386
 
-Name             : Vesper Totem (rank=Kyrian) (id=324522) [Spell Family (11)] 
+Name             : Vesper Totem (desc=Kyrian) (id=324522) [Spell Family (11)] 
 Class            : Shaman
 School           : Arcane
 Spell Type       : Magic
@@ -10382,7 +10382,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.00000 | AP Coefficient: 1.00000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE friendly (31)
 Description      : $@spelldesc324386
 
-Name             : Primordial Wave (rank=Necrolord) (id=326059) [Spell Family (11)] 
+Name             : Primordial Wave (desc=Necrolord) (id=326059) [Spell Family (11)] 
 Class            : Shaman
 School           : Shadow
 Spell Type       : Magic
@@ -10411,7 +10411,7 @@ Description      : Blast your target with a Primordial Wave, dealing $327162s1 S
 
 Your next $?a137040[Lava Burst]?a137041[Lightning Bolt][Healing Wave] will also hit all targets affected by your $?a137040|a137041[Flame Shock][Riptide].
 
-Name             : Primordial Wave (rank=Necrolord) (id=327161) [Spell Family (11), Hidden] 
+Name             : Primordial Wave (desc=Necrolord) (id=327161) [Spell Family (11), Hidden] 
 Class            : Shaman
 School           : Shadowstorm
 Spell Type       : None
@@ -10432,7 +10432,7 @@ Effects          :
                    Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Target: Unknown(25)
 Description      : $@spelldesc326059
 
-Name             : Primordial Wave (rank=Necrolord) (id=327162) [Spell Family (11)] 
+Name             : Primordial Wave (desc=Necrolord) (id=327162) [Spell Family (11)] 
 Class            : Shaman
 School           : Shadow
 Spell Type       : Magic
@@ -10451,7 +10451,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.65000 | AP Coefficient: 0.65000 | PvP Coefficient: 1.00000 | Target: Unknown(25)
 Description      : $@spelldesc326059
 
-Name             : Primordial Wave (rank=Necrolord) (id=327163) [Spell Family (11)] 
+Name             : Primordial Wave (desc=Necrolord) (id=327163) [Spell Family (11)] 
 Class            : Shaman
 School           : Shadow
 Spell Type       : Magic
@@ -10511,7 +10511,7 @@ Effects          :
 Description      : $@spelldesc8512
 Tooltip          : Your auto-attacks have a $h% chance to instantly attack again.
 
-Name             : Fae Transfusion (rank=Night Fae) (id=328923) [Spell Family (11)] 
+Name             : Fae Transfusion (desc=Night Fae) (id=328923) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
 Spell Type       : None
@@ -10542,7 +10542,7 @@ Description      : Transfer the life force of up to $328928I enemies in the targ
 
 Pressing Fae Transfusion again within $328933d will release $s1% of all damage from Fae Transfusion, healing up to $328930I allies near yourself.
 
-Name             : Fae Transfusion (rank=Night Fae) (id=328928) [Spell Family (11)] 
+Name             : Fae Transfusion (desc=Night Fae) (id=328928) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
 Spell Type       : Magic
@@ -10563,7 +10563,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.50000 | AP Coefficient: 0.50000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
 Description      : $@spelldesc328923
 
-Name             : Fae Transfusion (rank=Night Fae) (id=328930) [Spell Family (11)] 
+Name             : Fae Transfusion (desc=Night Fae) (id=328930) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
 Spell Type       : Magic
@@ -10585,7 +10585,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 12 yards | Target: At Caster (22) -> AOE friendly (30)
 Description      : $@spelldesc328923
 
-Name             : Fae Transfusion (rank=Night Fae) (id=328933) [Spell Family (11)] 
+Name             : Fae Transfusion (desc=Night Fae) (id=328933) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
 Spell Type       : None
@@ -10747,7 +10747,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 Description      : $@speldesc333974
 
-Name             : Lava Lash (rank=Rank 2) (id=334033) [Spell Family (11), Passive] 
+Name             : Lava Lash (desc=Rank 2) (id=334033) [Spell Family (11), Passive] 
 Class            : Enhancement Shaman
 School           : Nature
 Spell Type       : None
@@ -10890,7 +10890,7 @@ Effects          :
 Description      : $@spelldesc334195
 Tooltip          : Your next Frost Shock will deal $s1% additional damage, and hit $m2 additional $Ltarget:targets;.
 
-Name             : Chain Lightning (rank=Rank 2) (id=334308) [Spell Family (11), Passive] 
+Name             : Chain Lightning (desc=Rank 2) (id=334308) [Spell Family (11), Passive] 
 Class            : Enhancement Shaman
 School           : Fire
 Spell Type       : None
