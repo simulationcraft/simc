@@ -25,13 +25,13 @@ specialization_spell_entry_t::find( util::string_view name,
 {
   auto __data = data( ptr );
 
-  std::string cmp_str;
+  std::string cmp_str, desc_cmp_str;
   if ( tokenized )
   {
     cmp_str = util::tokenize_fn( name );
     name = cmp_str;
-    cmp_str = util::tokenize_fn( desc );
-    desc = cmp_str;
+    desc_cmp_str = util::tokenize_fn( desc );
+    desc = desc_cmp_str;
   }
 
   auto it = range::find_if( __data, [tokenized, spec, name, desc]( const auto& entry ) {
