@@ -365,15 +365,16 @@ struct spell_data_t
 {
   const char* _name;               // Spell name from Spell.dbc stringblock (enGB)
   unsigned    _id;                 // Spell ID in dbc
-  double      _prj_speed;          // Projectile Speed
   unsigned    _school;             // Spell school mask
-  unsigned    _class_mask;         // Class mask for spell
+  double      _prj_speed;          // Projectile Speed
   uint64_t    _race_mask;          // Racial mask for the spell
+  unsigned    _class_mask;         // Class mask for spell
   int         _scaling_type;       // Array index for gtSpellScaling.dbc. -1 means the first non-class-specific sub array, and so on, 0 disabled
   int         _max_scaling_level;  // Max scaling level(?), 0 == no restrictions, otherwise min( player_level, max_scaling_level )
   // SpellLevels.dbc
   unsigned    _spell_level;        // Spell learned on level. NOTE: Only accurate for "class abilities"
   unsigned    _max_level;          // Maximum level for scaling
+  unsigned    _req_max_level;
   // SpellRange.dbc
   double      _min_range;          // Minimum range in yards
   double      _max_range;          // Maximum range in yards
@@ -386,6 +387,7 @@ struct spell_data_t
   unsigned    _charge_cooldown;    // Cooldown duration of charges
   // SpellCategories.dbc
   unsigned    _category;           // Spell category (for shared cooldowns, effects?)
+  unsigned    _dmg_class;          // Classification for the spell
   // SpellDuration.dbc
   double      _duration;           // Spell duration in milliseconds
   // SpellAuraOptions.dbc
@@ -412,9 +414,6 @@ struct spell_data_t
   // Azerite stuff
   unsigned    _power_id;           // Azerite power id
   unsigned    _essence_id;         // Azerite essence id
-
-  unsigned    _req_max_level;
-  unsigned    _dmg_class;          // SpellCategories.db2 classification for the spell
 
   // Pointers for runtime linking
   const spelleffect_data_t* _effects;
