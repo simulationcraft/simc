@@ -24,9 +24,6 @@ namespace
   New Issues
   ----------
 
-  * Check all Havoc talents
-  ** Done -- Row 1-3
-  
   * Add Fel Devastation baseline
   * Check all Vengeance talents
   ** Remove Razor Spikes
@@ -41,6 +38,8 @@ namespace
   ** Done -- Eye Beam
   ** Done -- Blade Dance
   ** Done -- Mastery: Demonic Presence
+  ** Done -- Metamorphosis (Havoc)
+  ** Done -- Fel Rush
 
   * Implement Covenant abilities
   * Implement Soulbinds
@@ -107,8 +106,6 @@ public:
 };
 
 constexpr unsigned MAX_SOUL_FRAGMENTS = 5;
-constexpr timespan_t DEMONIC_EXTEND_DURATION = timespan_t::from_seconds(8);
-//constexpr timespan_t MAX_FIERY_BRAND_DURATION = timespan_t::from_seconds(10);
 constexpr double VENGEFUL_RETREAT_DISTANCE = 20.0;
 
 enum class soul_fragment
@@ -355,6 +352,9 @@ public:
     const spell_data_t* immolation_aura_rank_2;
     const spell_data_t* immolation_aura_rank_3;
     const spell_data_t* metamorphosis;
+    const spell_data_t* metamorphosis_rank_2;
+    const spell_data_t* metamorphosis_rank_3;
+    const spell_data_t* metamorphosis_rank_4;
     const spell_data_t* metamorphosis_buff;
     const spell_data_t* soul_fragment;
 
@@ -372,6 +372,8 @@ public:
     const spell_data_t* demonic_appetite_fury;
     const spell_data_t* eye_beam;
     const spell_data_t* eye_beam_rank_2;
+    const spell_data_t* fel_rush;
+    const spell_data_t* fel_rush_rank_2;
     const spell_data_t* fel_rush_damage;
     const spell_data_t* vengeful_retreat;
     const spell_data_t* momentum_buff;
@@ -1909,6 +1911,11 @@ struct eye_beam_t : public demon_hunter_spell_t
 
     dot_duration *= 1.0 + p->talent.blind_fury->effectN( 1 ).percent();
 
+    // 6/6/2020 - Override the lag handling for Eye Beam so that it doesn't use channeled ready behavior
+    //            In-game tests have shown it is possible to cast after faster than the 250ms channel_lag using a nochannel macro
+    ability_lag         = p->world_lag;
+    ability_lag_stddev  = p->world_lag_stddev;
+
     tick_action = new eye_beam_tick_t( p );
   }
 
@@ -1923,16 +1930,17 @@ struct eye_beam_t : public demon_hunter_spell_t
   {
     bool extend_meta = false;
 
-    if (p()->talent.demonic->ok())
+    if ( p()->talent.demonic->ok() )
     {
-      if (p()->buff.metamorphosis->check())
+      const timespan_t extend_duration = p()->talent.demonic->effectN( 1 ).time_value();
+      if ( p()->buff.metamorphosis->check() )
       {
-        p()->buff.metamorphosis->extend_duration(p(), DEMONIC_EXTEND_DURATION );
+        p()->buff.metamorphosis->extend_duration( p(), extend_duration );
       }
       else
       {
         // Trigger Meta before the execute so that the duration is affected by Meta haste
-        extend_meta = p()->buff.metamorphosis->trigger( 1, p()->buff.metamorphosis->default_value, -1.0, DEMONIC_EXTEND_DURATION );
+        extend_meta = p()->buff.metamorphosis->trigger( 1, p()->buff.metamorphosis->default_value, -1.0, extend_duration );
       }
     }
 
@@ -1941,21 +1949,16 @@ struct eye_beam_t : public demon_hunter_spell_t
 
     // Since Demonic triggers Meta with 8s + hasted duration, need to extend by the hasted duration after have an execute_state
     // 8/30/2018 - Demonic Meta always gets the increased channel time
-    if (true) 
+    if ( p()->talent.demonic->ok() )
     {
-      // 8/31/2018 - The channel time extend during meta is erroneously double-reduced by meta haste
-      if ( p()->bugs && !extend_meta )
-      {
-        duration /= 1.0 + p()->buff.metamorphosis->default_value;
-      }
-      p()->buff.metamorphosis->extend_duration(p(), duration);
+      p()->buff.metamorphosis->extend_duration( p(), duration );
     }
 
-    if (p()->talent.blind_fury->ok())
+    if ( p()->talent.blind_fury->ok() )
     {
       // Blind Fury gains scale with the duration of the channel
       p()->buff.blind_fury->buff_duration = duration;
-      p()->buff.blind_fury->buff_period = timespan_t::from_millis(100) * (duration / dot_duration);
+      p()->buff.blind_fury->buff_period = timespan_t::from_millis( 100 ) * ( duration / dot_duration );
       p()->buff.blind_fury->trigger();
     }
   }
@@ -2496,6 +2499,8 @@ struct metamorphosis_t : public demon_hunter_spell_t
         cooldown->duration += p->talent.demonic_origins->effectN( 1 ).time_value();
       }
 
+      cooldown->duration += p->spec.metamorphosis_rank_3->effectN( 1 ).time_value();
+
       impact_action = new metamorphosis_impact_t( p );
       // Don't assign the stats here because we don't want Meta to show up in the DPET chart
     }
@@ -2531,7 +2536,7 @@ struct metamorphosis_t : public demon_hunter_spell_t
         p()->buff.metamorphosis->trigger();
       }
 
-      if ( p()->azerite.chaotic_transformation.ok() )
+      if ( p()->azerite.chaotic_transformation.ok() || p()->spec.metamorphosis_rank_4->ok() )
       {
         p()->cooldown.eye_beam->reset( false );
         p()->cooldown.blade_dance->reset( false );
@@ -3308,10 +3313,10 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
       {
         p()->resource_gain( RESOURCE_FURY, p()->spec.chaos_strike_fury->effectN( 1 ).resource( RESOURCE_FURY ), parent->gain );
 
-        if ( p()->talent.cycle_of_hatred->ok() && p()->cooldown.metamorphosis->down() )
+        if ( p()->talent.cycle_of_hatred->ok() && p()->cooldown.eye_beam->down() )
         {
           const double adjust_seconds = p()->talent.cycle_of_hatred->effectN( 1 ).base_value();
-          p()->cooldown.metamorphosis->adjust( timespan_t::from_seconds( -adjust_seconds ) );
+          p()->cooldown.eye_beam->adjust( timespan_t::from_seconds( -adjust_seconds ) );
         }
       }
     }
@@ -3588,54 +3593,36 @@ struct felblade_t : public demon_hunter_attack_t
 
 struct fel_rush_t : public demon_hunter_attack_t
 {
-  struct fel_rush_damage_t : public demon_hunter_attack_t
+  struct unbound_chaos_t : public demon_hunter_attack_t
   {
-    struct unbound_chaos_t : public demon_hunter_attack_t
-    {
-      unbound_chaos_t( demon_hunter_t* p )
-        : demon_hunter_attack_t( "unbound_chaos", p, p->find_spell( 275148 ) )
-      {
-        background = dual = true;
-        aoe = -1;
-        // TODO: Hook up when whitelisted 
-        // base_execute_time = p->find_spell( 275147 )->duration();
-        base_execute_time = 1_s;
-      }
-    };
-
-    unbound_chaos_t* unbound_chaos;
-
-    fel_rush_damage_t( demon_hunter_t* p )
-      : demon_hunter_attack_t( "fel_rush_damage", p, p->spec.fel_rush_damage ),
-      unbound_chaos( nullptr )
+    unbound_chaos_t( demon_hunter_t* p )
+      : demon_hunter_attack_t( "unbound_chaos", p, p->find_spell( 275148 ) )
     {
       background = dual = true;
       aoe = -1;
-
-      if ( p->talent.unbound_chaos->ok() && !unbound_chaos )
-      {
-        unbound_chaos = new unbound_chaos_t( p );
-        add_child( unbound_chaos );
-      }
+      // TODO: Hook up when whitelisted 
+      // base_execute_time = p->find_spell( 275147 )->duration();
+      base_execute_time = 1_s;
     }
+  };
 
-    void execute() override
+  struct fel_rush_damage_t : public demon_hunter_attack_t
+  {
+    fel_rush_damage_t( demon_hunter_t* p )
+      : demon_hunter_attack_t( "fel_rush_damage", p, p->spec.fel_rush_damage )
     {
-      if ( unbound_chaos && p()->buff.unbound_chaos->up() )
-      {
-        unbound_chaos->set_target( target );
-        unbound_chaos->schedule_execute();
-        p()->buff.unbound_chaos->expire();
-      }
+      background = dual = true;
+      aoe = -1;
     }
   };
 
   bool a_cancel;
   timespan_t gcd_lag;
+  unbound_chaos_t* unbound_chaos;
 
   fel_rush_t( demon_hunter_t* p, const std::string& options_str )
-    : demon_hunter_attack_t( "fel_rush", p, p->find_class_spell( "Fel Rush" ) ),
-      a_cancel( false )
+    : demon_hunter_attack_t( "fel_rush", p, p->spec.fel_rush ),
+      a_cancel( false ), unbound_chaos( nullptr )
   {
     add_option( opt_bool( "animation_cancel", a_cancel ) );
     parse_options( options_str );
@@ -3643,8 +3630,16 @@ struct fel_rush_t : public demon_hunter_attack_t
     may_miss = may_dodge = may_parry = may_block = may_crit = false;
     min_gcd = trigger_gcd;
 
+    cooldown->charges += static_cast<int>( p->spec.fel_rush_rank_2->effectN( 1 ).base_value() );
+
     execute_action = new fel_rush_damage_t( p );
     execute_action->stats = stats;
+
+    if ( p->talent.unbound_chaos->ok() && !unbound_chaos )
+    {
+      unbound_chaos = new unbound_chaos_t( p );
+      add_child( unbound_chaos );
+    }
 
     if ( !a_cancel )
     {
@@ -3664,6 +3659,13 @@ struct fel_rush_t : public demon_hunter_attack_t
 
     demon_hunter_attack_t::execute();
 
+    if ( unbound_chaos && p()->buff.unbound_chaos->up() )
+    {
+      unbound_chaos->set_target( target );
+      unbound_chaos->schedule_execute();
+      p()->buff.unbound_chaos->expire();
+    }
+
     // Fel Rush and VR shared a 1 second GCD when one or the other is triggered
     p()->cooldown.movement_shared->start( timespan_t::from_seconds( 1.0 ) );
 
@@ -3671,7 +3673,6 @@ struct fel_rush_t : public demon_hunter_attack_t
     {
       p()->buff.fel_rush_move->trigger();
     }
-
   }
 
   void schedule_execute( action_state_t* s ) override
@@ -3679,7 +3680,6 @@ struct fel_rush_t : public demon_hunter_attack_t
     // Fel Rush's loss of control causes a GCD lag after the loss ends.
     // Calculate this once on schedule_execute since gcd() is called multiple times
     gcd_lag = rng().gauss( sim->gcd_lag, sim->gcd_lag_stddev );
-
     demon_hunter_attack_t::schedule_execute( s );
   }
 
@@ -3756,6 +3756,7 @@ struct fracture_t : public demon_hunter_attack_t
 
     if ( p()->buff.metamorphosis->check() )
     {
+      // TOCHECK - Shadowlands spell data
       ea += p()->spec.metamorphosis_buff->effectN( 9 ).resource( RESOURCE_FURY );
     }
 
@@ -3796,6 +3797,7 @@ struct shear_t : public demon_hunter_attack_t
 
     if ( p()->buff.metamorphosis->check() )
     {
+      // TOCHECK - Shadowlands spell data
       ea += p()->spec.metamorphosis_buff->effectN( 4 ).resource( RESOURCE_FURY );
     }
 
@@ -4035,7 +4037,7 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
 
     if (p->specialization() == DEMON_HUNTER_HAVOC)
     {
-      default_value = p->spec.metamorphosis_buff->effectN( 6 ).percent();
+      default_value = p->spec.metamorphosis_rank_2->effectN( 1 ).percent();
       add_invalidate( CACHE_HASTE );
       add_invalidate( CACHE_LEECH );
 
@@ -4493,7 +4495,7 @@ void demon_hunter_t::create_buffs()
   // TODO: Hook up real 337313 spell when whitelisted
   buff.unbound_chaos = make_buff( this, "unbound_chaos", talent.unbound_chaos )
     ->set_cooldown( timespan_t::zero() )
-    ->set_duration( timespan_t::max() );
+    ->set_duration( sim->max_time );
 
   buff.vengeful_retreat_move = new movement_buff_t(this, "vengeful_retreat_movement", spell_data_t::nil() );
   buff.vengeful_retreat_move
@@ -4569,13 +4571,31 @@ struct metamorphosis_adjusted_cooldown_expr_t : public expr_t
   demon_hunter_t* dh;
   double cooldown_multiplier;
 
-  metamorphosis_adjusted_cooldown_expr_t( demon_hunter_t* p,
-                                          const std::string& name_str )
-    : expr_t( name_str ),
-      dh( p ),
-      cooldown_multiplier( 1.0 )
+  metamorphosis_adjusted_cooldown_expr_t( demon_hunter_t* p, const std::string& name_str )
+    : expr_t( name_str ), dh( p ), cooldown_multiplier( 1.0 )
   {
   }
+
+  void calculate_multiplier()
+  {
+    double reduction_per_second = 0.0;
+    cooldown_multiplier = 1.0 / ( 1.0 + reduction_per_second );
+  }
+
+  double evaluate() override
+  {
+    return dh->cooldown.metamorphosis->remains().total_seconds() * cooldown_multiplier;
+  }
+};
+
+struct eye_beam_adjusted_cooldown_expr_t : public expr_t
+{
+  demon_hunter_t* dh;
+  double cooldown_multiplier;
+
+  eye_beam_adjusted_cooldown_expr_t( demon_hunter_t* p, const std::string& name_str )
+    : expr_t( name_str ), dh( p ), cooldown_multiplier( 1.0 )
+  {}
 
   void calculate_multiplier()
   {
@@ -4612,7 +4632,7 @@ struct metamorphosis_adjusted_cooldown_expr_t : public expr_t
       calculate_multiplier();
     }
 
-    return dh->cooldown.metamorphosis->remains().total_seconds() * cooldown_multiplier;
+    return dh->cooldown.eye_beam->remains().total_seconds() * cooldown_multiplier;
   }
 };
 
@@ -4658,13 +4678,17 @@ std::unique_ptr<expr_t> demon_hunter_t::create_expression( const std::string& na
   }
   else if ( name_str == "cooldown.metamorphosis.adjusted_remains" )
   {
+    return this->cooldown.metamorphosis->create_expression( "remains" );
+  }
+  else if ( name_str == "cooldown.eye_beam.adjusted_remains" )
+  {
     if ( this->talent.cycle_of_hatred->ok() )
     {
-      return std::make_unique<metamorphosis_adjusted_cooldown_expr_t>( this, name_str );
+      return std::make_unique<eye_beam_adjusted_cooldown_expr_t>( this, name_str );
     }
     else
     {
-      return this->cooldown.metamorphosis->create_expression( "remains" );
+      return this->cooldown.eye_beam->create_expression( "remains" );
     }
   }
   else if ( name_str == "buff.metamorphosis.extended_by_demonic" )
@@ -4905,6 +4929,9 @@ void demon_hunter_t::init_spells()
     spec.immolation_aura_rank_3 = find_spell( 320377 );
     spec.leather_specialization = find_spell( 178976 );
     spec.metamorphosis          = find_class_spell( "Metamorphosis" );
+    spec.metamorphosis_rank_2   = find_spell( 320422 );
+    spec.metamorphosis_rank_3   = find_spell( 320421 );
+    spec.metamorphosis_rank_4   = find_spell( 320645 );
     spec.metamorphosis_buff     = spec.metamorphosis->effectN( 2 ).trigger();
   }
   else
@@ -4914,16 +4941,18 @@ void demon_hunter_t::init_spells()
     spec.immolation_aura_rank_3 = find_spell( 320378 );
     spec.leather_specialization = find_spell( 226359 );
     spec.metamorphosis          = find_specialization_spell( "Metamorphosis" );
+    spec.metamorphosis_rank_2   = find_spell( 321067 );
+    spec.metamorphosis_rank_3   = find_spell( 321068 );
     spec.metamorphosis_buff     = spec.metamorphosis;
   }
 
   // Havoc
   spec.havoc                  = find_specialization_spell( "Havoc Demon Hunter" );
-  spec.blade_dance            = find_class_spell( "Blade Dance",      DEMON_HUNTER_HAVOC );
+  spec.blade_dance            = find_class_spell( "Blade Dance", DEMON_HUNTER_HAVOC );
   spec.blade_dance_rank_2     = find_spell( 320402, DEMON_HUNTER_HAVOC );
-  spec.chaos_nova             = find_class_spell( "Chaos Nova",       DEMON_HUNTER_HAVOC );
-  spec.chaos_strike           = find_class_spell( "Chaos Strike",     DEMON_HUNTER_HAVOC );
-  spec.eye_beam               = find_class_spell( "Eye Beam",         DEMON_HUNTER_HAVOC );
+  spec.chaos_nova             = find_class_spell( "Chaos Nova", DEMON_HUNTER_HAVOC );
+  spec.chaos_strike           = find_class_spell( "Chaos Strike", DEMON_HUNTER_HAVOC );
+  spec.eye_beam               = find_class_spell( "Eye Beam", DEMON_HUNTER_HAVOC );
   spec.eye_beam_rank_2        = find_spell( 320415, DEMON_HUNTER_HAVOC );
   spec.vengeful_retreat       = find_class_spell( "Vengeful Retreat", DEMON_HUNTER_HAVOC );
   spec.annihilation           = find_spell( 201427, DEMON_HUNTER_HAVOC );
@@ -4932,7 +4961,9 @@ void demon_hunter_t::init_spells()
   spec.chaos_strike_fury      = find_spell( 193840, DEMON_HUNTER_HAVOC );
   spec.death_sweep            = find_spell( 210152, DEMON_HUNTER_HAVOC );
   spec.demonic_appetite_fury  = find_spell( 210041, DEMON_HUNTER_HAVOC );
-  spec.fel_rush_damage        = find_spell( 192611, DEMON_HUNTER_HAVOC );  
+  spec.fel_rush               = find_class_spell( "Fel Rush", DEMON_HUNTER_HAVOC );
+  spec.fel_rush_rank_2        = find_spell( 320416, DEMON_HUNTER_HAVOC );
+  spec.fel_rush_damage        = find_spell( 192611, DEMON_HUNTER_HAVOC ); 
   spec.momentum_buff          = find_spell( 208628, DEMON_HUNTER_HAVOC );
 
   // Vengeance
