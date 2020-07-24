@@ -11,7 +11,7 @@
 
 struct spelltext_data_t
 {
-  unsigned id;
+  unsigned spell_id;
   const char* _desc;
   const char* _tooltip;
   const char* _rank;
@@ -28,8 +28,8 @@ struct spelltext_data_t
   static const spelltext_data_t& nil()
   { return dbc::nil<spelltext_data_t>; }
 
-  static const spelltext_data_t& find( unsigned id, bool ptr )
-  { return dbc::find<spelltext_data_t>( id, ptr, &spelltext_data_t::id ); }
+  static const spelltext_data_t& find( unsigned spell_id, bool ptr )
+  { return dbc::find<spelltext_data_t>( spell_id, ptr, &spelltext_data_t::spell_id ); }
 
   static util::span<const spelltext_data_t> data( bool ptr );
   static util::span<const hotfix::client_hotfix_entry_t> hotfixes( const spelltext_data_t&, bool ptr );
@@ -37,7 +37,7 @@ struct spelltext_data_t
 
 struct spelldesc_vars_data_t
 {
-  unsigned id;
+  unsigned spell_id;
   const char* _desc_vars;
 
   const char* desc_vars() const
@@ -46,8 +46,9 @@ struct spelldesc_vars_data_t
   static const spelldesc_vars_data_t& nil()
   { return dbc::nil<spelldesc_vars_data_t>; }
 
-  // find a description variable entry for the given spell id
-  static const spelldesc_vars_data_t& find( unsigned spell_id, bool ptr );
+  static const spelldesc_vars_data_t& find( unsigned spell_id, bool ptr )
+  { return dbc::find<spelldesc_vars_data_t>( spell_id, ptr, &spelldesc_vars_data_t::spell_id ); }
+
   static util::span<const spelldesc_vars_data_t> data( bool ptr );
   static util::span<const hotfix::client_hotfix_entry_t> hotfixes( const spelldesc_vars_data_t&, bool ptr );
 };
