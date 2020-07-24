@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35256 shadowlands-BETA (git build shadowlands 6199ee1c91)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35282 shadowlands-BETA (git build dbc 9c725e1441)
 
 Name             : Block (rank=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -3300,6 +3300,7 @@ Effects          :
 Description      : Increases all damage done by your pet by $s2%.
 
 Name             : Cloudburst Totem (id=157153) [Spell Family (11)] 
+Replaces         : Healing Stream Totem (id=5394)
 Class            : Shaman
 School           : Nature
 Spell Type       : None
@@ -4487,6 +4488,7 @@ Effects          :
 Description      : Crash Lightning also electrifies the ground, leaving an electrical field behind which damages enemies within it for ${7*$210801s1} Nature damage over $210797d. 
 
 Name             : Storm Elemental (id=192249) [Spell Family (11)] 
+Replaces         : Fire Elemental (id=198067)
 Class            : Death Knight, Shaman
 School           : Nature
 Spell Type       : Magic

@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35256 shadowlands-BETA (git build shadowlands 6199ee1c91)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35282 shadowlands-BETA (git build dbc 9c725e1441)
 
 Name             : Dual Wield (rank=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -748,6 +748,7 @@ Description      : $@spelldesc8647
 Tooltip          : Physical damage taken increased by $w1%.
 
 Name             : Chi Torpedo (id=115008) [Spell Family (53)] 
+Replaces         : Roll (id=109132)
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -1193,6 +1194,7 @@ Effects          :
 Description      : Summons a Jade Serpent Statue at the target location. When you channel Soothing Mist, the statue will also begin to channel Soothing Mist on your target, healing for $198533s1 every $198533t1 sec.
 
 Name             : Summon Black Ox Statue (id=115315) [Spell Family (53)] 
+Replaces         : Disabling Technique (id=175697)
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -1677,6 +1679,7 @@ Description      : Increases a friendly target's movement speed by $s1% for $d a
 Tooltip          : Moving $s1% faster.
 
 Name             : Ring of Peace (id=116844) [Spell Family (53)] 
+Replaces         : Disabling Technique (id=175697)
 Class            : Monk
 School           : Nature
 Spell Type       : Magic
@@ -3697,6 +3700,7 @@ Effects          :
 Description      : $@spelldesc116847
 
 Name             : Serenity (id=152173) [Spell Family (53)] 
+Replaces         : Storm, Earth, and Fire (id=137639)
 Class            : Death Knight, Monk
 School           : Physical
 Spell Type       : None
@@ -4779,6 +4783,7 @@ Effects          :
 Description      : Chi-Ji dashes to three allies, healing them for $s2.
 
 Name             : Song of Chi-Ji (id=198898) [Spell Family (53)] 
+Replaces         : Disabling Technique (id=175697)
 Class            : Monk
 School           : Nature
 Spell Type       : Magic
@@ -6290,6 +6295,7 @@ Description      : Increases your Mastery by $s1 and your Leech by $s2.
 Tooltip          : Increases Mastery by $s1 and Leech by $s2.
 
 Name             : Tiger Tail Sweep (id=264348) [Spell Family (53), Passive] 
+Replaces         : Disabling Technique (id=175697)
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -7716,6 +7722,7 @@ Description      : Taking damage has a chance to call your Personal Absorb-o-Tro
 Increases your Kul Tiran or Zandalari Engineering by $s2.
 
 Name             : Good Karma (id=280195) [Spell Family (53), Passive, Hidden] 
+Replaces         : Disabling Technique (id=175697)
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -9539,6 +9546,7 @@ Tooltip          : Breath of Fire reduces damage taken by an additional $325177s
 Spinning Crane Kick ignites targets with Breath of Fire.
 
 Name             : Invoke Chi-Ji, the Red Crane (id=325197) [Spell Family (53)] 
+Replaces         : Invoke Yul'on, the Jade Serpent (id=322118)
 Class            : Monk
 School           : Nature
 Spell Type       : Magic

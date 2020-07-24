@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35256 shadowlands-BETA (git build shadowlands 6199ee1c91)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35282 shadowlands-BETA (git build dbc 9c725e1441)
 
 Name             : Haste (id=65) [Scaling Spell (-1)] 
 Class            : Paladin
@@ -3631,6 +3631,7 @@ Effects          :
 Description      : Blessing of Freedom also increases movement speed by $m1%.
 
 Name             : Beacon of Virtue (id=200025) [Spell Family (10)] 
+Replaces         : Beacon of Light (id=53563)
 Class            : Paladin
 School           : Holy
 Spell Type       : None
@@ -3881,6 +3882,7 @@ Effects          :
 Description      : Avenger's Shield hits $s1 additional targets, and grants you an absorb shield for $s2% of all damage it deals.
 
 Name             : Blessing of Spellwarding (id=204018) [Spell Family (10)] 
+Replaces         : Blessing of Protection (id=1022)
 Class            : Paladin
 School           : Holy
 Spell Type       : Magic
@@ -3910,6 +3912,7 @@ Cannot be used on a target with Forbearance. Causes Forbearance for $25771d.
 Tooltip          : Immune to magical damage and harmful effects.
 
 Name             : Blessed Hammer (id=204019) [Spell Family (10)] 
+Replaces         : Hammer of the Righteous (id=53595)
 Class            : Paladin
 School           : Holy
 Spell Type       : None
@@ -4416,6 +4419,7 @@ Description      : Focuses Holy energy to deliver a powerful weapon strike that 
 Damage is increased by $s2% when used against a stunned target.
 
 Name             : Avenging Crusader (id=216331) [Spell Family (10)] 
+Replaces         : Avenging Wrath (id=31884)
 Class            : Paladin, Death Knight
 School           : Holy
 Spell Type       : None
@@ -4848,6 +4852,7 @@ Effects          :
 Description      : Art of War resets the cooldown of Blade of Justice $s1% more often and increases its damage by $281178s1%.
 
 Name             : Crusade (id=231895) [Spell Family (10)] 
+Replaces         : Avenging Wrath (id=31884)
 Class            : Paladin, Death Knight
 School           : Holy
 Spell Type       : None

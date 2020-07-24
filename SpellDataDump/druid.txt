@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35256 shadowlands-BETA (git build shadowlands 6199ee1c91)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35282 shadowlands-BETA (git build dbc 9c725e1441)
 
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Guardian Druid
@@ -473,6 +473,7 @@ Effects          :
 Description      : Hurl a ball of energy at the target, dealing $s1 Nature damage.
 
 Name             : Mighty Bash (id=5211) [Spell Family (7)] 
+Replaces         : Nature's Control (id=175682)
 Class            : Druid
 School           : Physical
 Spell Type       : Melee
@@ -2837,6 +2838,7 @@ Description      : Heals the target for $m1 every $t1 sec for $d.
 Tooltip          : Heals $w1 damage every $t1 seconds.
 
 Name             : Mass Entanglement (id=102359) [Spell Family (7)] 
+Replaces         : Nature's Control (id=175682)
 Class            : Druid
 School           : Nature
 Spell Type       : Magic
@@ -2895,6 +2897,7 @@ Description      : Fly to a nearby ally's position.
 Tooltip          : Flying to an ally's position.
 
 Name             : Incarnation: King of the Jungle (rank=Talent, Shapeshift) (id=102543) [Spell Family (7)] 
+Replaces         : Berserk (id=106951)
 Class            : Death Knight, Druid
 School           : Physical
 Spell Type       : Melee
@@ -2972,6 +2975,7 @@ Description      : Allows the Druid to vanish from sight, entering an improved s
 Tooltip          : Stealthed.
 
 Name             : Incarnation: Guardian of Ursoc (rank=Talent, Shapeshift) (id=102558) [Spell Family (7)] 
+Replaces         : Berserk (id=50334)
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -3019,6 +3023,7 @@ Mangle hits up to $w4 targets.
 Health increased by $w5%.
 
 Name             : Incarnation: Chosen of Elune (rank=Talent, Shapeshift) (id=102560) [Spell Family (7)] 
+Replaces         : Celestial Alignment (id=194223)
 Class            : Death Knight, Druid
 School           : Physical
 Spell Type       : None
@@ -5959,6 +5964,7 @@ Effects          :
 Description      : The cooldown on Tiger's Fury resets when a target dies with one of your Bleed effects active, and Tiger's Fury last ${$s1/1000} additional seconds.
 
 Name             : Brutal Slash (id=202028) [Spell Family (7)] 
+Replaces         : Swipe (id=213764)
 Class            : Druid
 School           : Physical
 Spell Type       : Melee
@@ -8009,6 +8015,7 @@ Description      : $@spelldesc102543
 Tooltip          : Allows the use of Prowl even while in combat.
 
 Name             : Tiger Dash (id=252216) [Spell Family (7)] 
+Replaces         : Dash (id=1850)
 Class            : Druid
 School           : Physical
 Spell Type       : Magic
@@ -11252,6 +11259,7 @@ Effects          :
 Description      : When you use Shred, Rake, and Thrash within $s1 sec, the damage of your next $145152n Rips or Ferocious Bites is increased by $145152s1%.
 
 Name             : Heart of the Wild (rank=Talent) (id=319454) [Spell Family (7)] 
+Replaces         : Nature's Control (id=175682)
 Class            : Druid
 School           : Nature
 Spell Type       : Magic

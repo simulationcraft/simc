@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35256 shadowlands-BETA (git build shadowlands 6199ee1c91)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35282 shadowlands-BETA (git build dbc 9c725e1441)
 
 Name             : Dual Wield (rank=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -1633,6 +1633,7 @@ Effects          :
 Description      : Reduces the cooldown of Vengeful Retreat by 10 sec, and generates ${($203650s1/5)*$203650d} Fury over $203650d if you damage at least one enemy with Vengeful Retreat.
 
 Name             : Demon Blades (id=203555) [Spell Family (107), Passive] 
+Replaces         : Demon's Bite (id=162243)
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -4536,6 +4537,7 @@ Effects          :
 Tooltip          : Increases haste by $s1.
 
 Name             : Fracture (id=263642) [Spell Family (107)] 
+Replaces         : Shear (id=203782)
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : Melee
@@ -5486,6 +5488,24 @@ Effects          :
 #1 (id=727995)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Activating Immolation Aura will cause your inner demon to slam into nearby enemies at the end of your next Fel Rush, dealing $275148s1 Chaos damage.
+
+Name             : Unbound Chaos (id=275147) 
+Class            : Demon Hunter
+School           : Physical
+Spell Type       : None
+Duration         : 1 seconds
+Labels           : 16: Agonizing Backlash (320035 effect#3)
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=727999)   : Unknown(179)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 13972 | Target: Unknown(87)
+Description      : $@spelldesc275144
 
 Name             : Unbound Chaos (id=275148) [Spell Family (107)] 
 Class            : Demon Hunter
@@ -8087,6 +8107,27 @@ Effects          :
 #1 (id=834156)   : Apply Aura (6) | Dummy (4)
                    Base Value: 500 | Scaled Value: 500 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
 Description      : Immolation Aura damage increases the duration of your Fiery Brand by ${$s1/1000}.2 sec.
+
+Name             : Inner Demon (id=337313) [Spell Family (107)] 
+Class            : Demon Hunter
+School           : Fire
+Spell Type       : None
+Range            : 100 yards
+Duration         : Aura (infinite)
+Labels           : 16: Agonizing Backlash (320035 effect#3)
+Stacks           : 1 maximum
+Proc Chance      : 101%
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=835272)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+Tooltip          : Your inner demon will slam into nearby enemies at the end of your next Fel Rush.
 
 Name             : Throw Glaive (id=337819) [Spell Family (107)] 
 Class            : Demon Hunter
