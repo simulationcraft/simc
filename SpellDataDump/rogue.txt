@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35282 shadowlands-BETA (git build dbc df97e687b9)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35282 shadowlands-BETA (git build dbc 87d1e7cf32)
 
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
@@ -529,6 +529,7 @@ School           : Physical
 Spell Type       : Ranged
 Spell Level      : 41
 Range            : 15 yards
+Max Targets      : 1
 GCD              : 1 seconds
 Duration         : 60 seconds
 Cooldown         : 120 seconds
@@ -1905,6 +1906,7 @@ School           : Physical
 Spell Type       : Melee
 Spell Level      : 1
 Range            : 5 yards
+Max Targets      : 1
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Master of Subtlety (31665 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Master Assassin (256735 effect#1)
@@ -2174,6 +2176,7 @@ Class            : Subtlety Rogue
 School           : Physical
 Spell Type       : None
 Spell Level      : 10
+Max Targets      : Unknown(-6)
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4443,6 +4446,7 @@ School           : Physical
 Spell Type       : Melee
 Resource         : 35 Energy (3) (id=10714)
 Spell Level      : 33
+Max Targets      : 8
 GCD              : 1 seconds
 Velocity         : 35 yards/sec
 Labels           : 16: Agonizing Backlash (320035 effect#3)
@@ -7926,6 +7930,7 @@ Class            : Rogue
 School           : Physical
 Spell Type       : Melee
 Range            : 50000 yards
+Max Targets      : 6
 Requires weapon  : Dagger
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Master of Subtlety (31665 effect#1), Mastery: Executioner (76808 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Ruthless Precision (193357 effect#1), Deeper Stratagem (193531 effect#1), Elaborate Planning (193641 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Master Assassin (256735 effect#1)
@@ -8720,6 +8725,7 @@ Spell Type       : Melee
 Resource         : 35 Energy (3) (id=192568)
 Resource         : 1 - 5 Combo Points (4) (id=192569)
 Spell Level      : 52
+Max Targets      : 8
 GCD              : 1 seconds
 Velocity         : 35 yards/sec
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
@@ -9288,6 +9294,7 @@ Class            : Rogue
 School           : Physical
 Spell Type       : Melee
 Range            : 20 yards
+Max Targets      : 5
 Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapon
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Master of Subtlety (31665 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effect#1), Acrobatic Strikes (196924 effect#4), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Master Assassin (256735 effect#1)

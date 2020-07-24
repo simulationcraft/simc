@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35282 shadowlands-BETA (git build dbc df97e687b9)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35282 shadowlands-BETA (git build dbc 87d1e7cf32)
 
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -3512,6 +3512,7 @@ School           : Shadow
 Spell Type       : Magic
 Spell Level      : 34
 Range            : 20 yards
+Max Targets      : 1
 GCD              : 1.5 seconds
 Duration         : 60 seconds
 Cooldown         : 45 seconds
