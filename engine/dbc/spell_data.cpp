@@ -424,7 +424,7 @@ static auto spell_data_linker(util::span<T, N> data) {
 void spell_data_t::link( bool ptr )
 {
   auto link_effects = spell_data_linker( spelleffect_data_t::data( ptr ) );
-  auto link_power = spell_data_linker( spellpower_data_t::data() );
+  auto link_power = spell_data_linker( spellpower_data_t::data( ptr ) );
   auto link_driver = spell_data_linker( SC_DBC_GET_DATA( __spelldriver_index_data, __ptr_spelldriver_index_data, ptr ) );
   auto link_labels = spell_data_linker( spelllabel_data_t::data( ptr ) );
 
