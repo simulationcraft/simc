@@ -2780,19 +2780,19 @@ class SpellDataGenerator(DataGenerator):
             fields = sname.field('name', 'id')
             hotfix.add(sname, ('name', 0))
 
-            fields += misc.field('proj_speed', 'school')
+            fields += misc.field('school', 'proj_speed')
             hotfix.add(misc, ('proj_speed', 3), ('school', 4))
 
             # Hack in the combined class from the id_tuples dict
-            fields += [ u'%#.8x' % ids.get(id, { 'mask_class' : 0, 'mask_race': 0 })['mask_class'] ]
             fields += [ u'%#.16x' % ids.get(id, { 'mask_class' : 0, 'mask_race': 0 })['mask_race'] ]
+            fields += [ u'%#.8x' % ids.get(id, { 'mask_class' : 0, 'mask_race': 0 })['mask_class'] ]
 
             # Set the scaling index for the spell
             fields += spell.get_link('scaling').field('id_class', 'max_scaling_level')
             hotfix.add(spell.get_link('scaling'), ('id_class', 7), ('max_scaling_level', 8))
 
-            fields += spell.get_link('level').field('base_level', 'max_level')
-            hotfix.add(spell.get_link('level'), ('base_level', 9), ('max_level', 10))
+            fields += spell.get_link('level').field('base_level', 'max_level', 'req_max_level')
+            hotfix.add(spell.get_link('level'), ('base_level', 9), ('max_level', 10), ('req_max_level', 46))
 
             range_entry = self._spellrange_db[misc.id_range]
             fields += range_entry.field('min_range_1', 'max_range_1')
@@ -2812,6 +2812,8 @@ class SpellDataGenerator(DataGenerator):
             else:
                 fields += category.field('cooldown_category')
                 hotfix.add(category, ('cooldown_category', 18))
+            fields += category.field('dmg_class')
+            hotfix.add(category, ('dmg_class', 47))
 
             duration_entry = self._spellduration_db[misc.id_duration]
             fields += duration_entry.field('duration_1')
@@ -2871,12 +2873,6 @@ class SpellDataGenerator(DataGenerator):
                     fields.append(essences[0])
             else:
                 fields.append('0')
-
-            fields += spell.get_link('level').field('req_max_level')
-            # hotfix.add(spell.get_link('level'), ('req_max_level', 46))
-
-            fields += category.field('dmg_class')
-            # hotfix.add(category, ('dmg_class', 47))
 
             # Pad struct with empty pointers for direct access to spell effect data
             fields += [ u'0', u'0', u'0', u'0' ]
