@@ -1,8 +1,14 @@
 from dbc import db, util, constants
 
+# Simple cache for raw filter results
+_CACHE = { }
+
 class DataSet:
     def __init__(self, opts):
         self._options = opts
+
+    def _filter(self, **kwargs):
+        raise NotImplementedError
 
     def db(self, dbname):
         return db.datastore(self._options).get(dbname)
@@ -10,11 +16,14 @@ class DataSet:
     def ids(self):
         raise NotImplementedError
 
-    def filter(self, **kwargs):
-        raise NotImplementedError
+    def get(self, **kwargs):
+        if not self.__class__.__name__ in _CACHE:
+            _CACHE[self.__class__.__name__] = self._filter(**kwargs)
+
+        return _CACHE[self.__class__.__name__]
 
 class RacialSpellSet(DataSet):
-    def filter(self, **kwargs):
+    def _filter(self, **kwargs):
         _data = []
 
         for v in self.db('SkillLineAbility').values():
@@ -32,7 +41,7 @@ class RacialSpellSet(DataSet):
         return _data
 
     def ids(self):
-        return list(set(v.id_spell for v in self.filter()))
+        return list(set(v.id_spell for v in self.get()))
 
 class ActiveClassSpellSet(DataSet):
     def get_trigger_spells(self, effect, set_):
@@ -70,7 +79,7 @@ class ActiveClassSpellSet(DataSet):
 
         return self.valid_misc(skill_line_ability, spell)
 
-    def filter(self, **kwargs):
+    def _filter(self, **kwargs):
         trigger_spells = set()
         _data = []
 
@@ -90,7 +99,7 @@ class ActiveClassSpellSet(DataSet):
             _data += [(data.ref('spec_id'), data.ref('spell_id'), data.ref('replace_spell_id'))]
 
         for data in self.db('SkillLineAbility').values():
-            if data.id_skill == 0 or data.id_skill not in constants.CLASS_SKILL_CATEGORIES:
+            if data.id_skill == 0 or data.id_skill not in util.class_skills():
                 continue
 
             if data.unk_13 in [3]:
@@ -105,8 +114,11 @@ class ActiveClassSpellSet(DataSet):
             if data.id_spell in trigger_spells:
                 continue
 
-            class_id = constants.CLASS_SKILL_CATEGORIES.index(data.id_skill)
-            entry = (class_id, data.ref('id_spell'), data.ref('id_replace'))
+            entry = (
+                util.class_id(player_skill=data.id_skill),
+                data.ref('id_spell'),
+                data.ref('id_replace')
+            )
 
             if entry not in _data:
                 _data.append(entry)
@@ -115,7 +127,7 @@ class ActiveClassSpellSet(DataSet):
 
     def ids(self):
         ids = set()
-        for v in self.filter():
+        for v in self.get():
             ids.add(v[1].id)
             if v[1].id != 0:
                 ids.add(v[2].id)
@@ -123,7 +135,7 @@ class ActiveClassSpellSet(DataSet):
         return list(ids)
 
 class PetActiveSpellSet(ActiveClassSpellSet):
-    def filter(self, **kwargs):
+    def _filter(self, **kwargs):
         trigger_spells = set()
         _data = []
         specialization_spells = [
@@ -160,5 +172,5 @@ class PetActiveSpellSet(ActiveClassSpellSet):
         return _data
 
     def ids(self):
-        return list(set(v[1] for v in self.filter()))
+        return list(set(v[1] for v in self.get()))
 

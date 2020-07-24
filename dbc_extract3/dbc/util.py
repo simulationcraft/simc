@@ -5,16 +5,38 @@ def class_id(**kwargs):
     player_skill = int(kwargs.get('player_skill', 0))
 
     if player_skill > 0:
-        try:
-            return constants.CLASS_SKILL_CATEGORIES.index(player_skill)
-        except:
-            return -1
+        if not hasattr(class_id, '_byskill'):
+            class_id._byskill = dict()
+            for v in constants.CLASS_INFO:
+                class_id._byskill[v['skill']] = v['id']
+
+        return class_id._byskill.get(player_skill, -1)
+
     elif pet_skill > 0:
-        for idx in range(0, len(constants.PET_SKILL_CATEGORIES)):
-            if pet_skill in constants.PET_SKILL_CATEGORIES[idx]:
-                return idx
+        if not hasattr(class_id, '_bypetskill'):
+            class_id._bypetskill = dict()
+
+            for id, v in enumerate(constants.PET_SKILL_CATEGORIES):
+                for skill in v:
+                    class_id._bypetskill[skill] = id
+
+        return class_id._bypetskill.get(pet_skill, -1)
 
     return -1
+
+def class_name(**kwargs):
+    class_id = int(kwargs.get('class_id', -1))
+
+    if class_id > -1:
+        if not hasattr(class_name, '_byclassid'):
+            class_name._byclassid = dict()
+
+            for v in constants.CLASS_INFO:
+                class_name._byclassid[v['id']] = v['name']
+
+        return class_name._byclassid.get(class_id, 'Unknown')
+
+    return 'Unknown'
 
 def is_blacklisted(**kwargs):
     spell_name = kwargs.get('spell_name', None)
@@ -66,6 +88,12 @@ def race_id(**kwargs):
         return set_
 
     return 0
+
+def class_skills():
+    if not hasattr(class_skills, '_map'):
+        class_skills._map = [info['skill'] for info in constants.CLASS_INFO]
+
+    return class_skills._map
 
 def race_skills():
     if not hasattr(race_skills, '_map'):

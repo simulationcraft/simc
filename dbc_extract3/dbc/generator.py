@@ -3271,7 +3271,7 @@ class MasteryAbilityGenerator(DataGenerator):
 
 class RacialSpellGenerator(DataGenerator):
     def filter(self):
-        return RacialSpellSet(self._options).filter()
+        return RacialSpellSet(self._options).get()
 
     def generate(self, data = None):
         data.sort(key = lambda v: (util.race_mask(skill = v.id_skill), v.ref('id_spell').name, -v.mask_class))
@@ -4079,7 +4079,7 @@ class ClientDataVersionGenerator(DataGenerator):
 
 class ActiveClassSpellGenerator(DataGenerator):
     def filter(self):
-        return ActiveClassSpellSet(self._options).filter()
+        return ActiveClassSpellSet(self._options).get()
 
     def generate(self, data = None):
         data.sort(key = lambda v: isinstance(v[0], int) and (v[0], 0) or (v[0].class_id, v[0].id))
@@ -4106,7 +4106,7 @@ class ActiveClassSpellGenerator(DataGenerator):
 
 class ActivePetSpellGenerator(DataGenerator):
     def filter(self):
-        return PetActiveSpellSet(self._options).filter()
+        return PetActiveSpellSet(self._options).get()
 
     def generate(self, data = None):
         data.sort()
