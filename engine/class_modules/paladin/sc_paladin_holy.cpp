@@ -346,8 +346,8 @@ struct holy_shock_t : public paladin_spell_t
   {
     double rm = paladin_spell_t::recharge_multiplier( cd );
 
-    if ( p() -> buffs.avenging_wrath -> check() && p() -> talents.sanctified_wrath -> ok() )
-      rm *= 1.0 + p() -> talents.sanctified_wrath -> effectN( 2 ).percent();
+    if ( p() -> buffs.avenging_wrath -> check() && p() -> talents.holy_sanctified_wrath -> ok() )
+      rm *= 1.0 + p() -> talents.holy_sanctified_wrath -> effectN( 2 ).percent();
 
     return rm;
   }
@@ -545,23 +545,17 @@ void paladin_t::init_spells_holy()
   talents.bestow_faith       = find_talent_spell( "Bestow Faith" );
   talents.lights_hammer      = find_talent_spell( "Light's Hammer" );
 
-  talents.unbreakable_spirit = find_talent_spell( "Unbreakable Spirit" );
-  talents.cavalier           = find_talent_spell( "Cavalier" );
-  talents.rule_of_law        = find_talent_spell( "Rule of Law" );
-
-  talents.devotion_aura      = find_talent_spell( "Devotion Aura" );
-  talents.aura_of_sacrifice  = find_talent_spell( "Aura of Sacrifice" );
-  talents.aura_of_mercy      = find_talent_spell( "Aura of Mercy" );
-
+  talents.saved_by_the_light = find_talent_spell( "Saved by the Light" );
   talents.judgment_of_light  = find_talent_spell( "Judgment of Light" );
   talents.holy_prism         = find_talent_spell( "Holy Prism" );
-  talents.holy_avenger       = find_talent_spell( "Holy Avenger" );
 
-  talents.sanctified_wrath   = find_talent_spell( "Sanctified Wrath" );
-  talents.avenging_crusader  = find_talent_spell( "Avenging Crusader" );
-  talents.awakening          = find_talent_spell( "Awakening" );
+  talents.rule_of_law        = find_talent_spell( "Rule of Law" );
 
-  talents.divine_purpose     = find_talent_spell( "Divine Purpose" );
+  talents.holy_sanctified_wrath = find_spell( 53376 );
+  talents.avenging_crusader     = find_talent_spell( "Avenging Crusader" );
+  talents.awakening             = find_talent_spell( "Awakening" );
+
+  talents.glimmer_of_light   = find_talent_spell( "Glimmer of Light" );
   talents.beacon_of_faith    = find_talent_spell( "Beacon of Faith" );
   talents.beacon_of_virtue   = find_talent_spell( "Beacon of Virtue" );
 
@@ -574,6 +568,7 @@ void paladin_t::init_spells_holy()
     spec.judgment_2 = find_specialization_spell( 231644 );
 
     spells.judgment_debuff = find_spell( 214222 );
+    // TODO: is this still a thing?
     spells.divine_purpose_buff = find_spell( 216411 ); // Not whitelisted
   }
 

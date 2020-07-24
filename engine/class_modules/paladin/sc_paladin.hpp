@@ -153,7 +153,6 @@ public:
     // Prot
     absorb_buff_t* holy_shield_absorb; // Dummy buff to trigger spell damage "blocking" absorb effect
     buff_t* seraphim;
-    buff_t* aegis_of_light;
     buff_t* ardent_defender;
     buff_t* avengers_valor;
     buff_t* grand_crusader;
@@ -169,7 +168,6 @@ public:
     buffs::crusade_buff_t* crusade;
     buffs::shield_of_vengeance_buff_t* shield_of_vengeance;
     buff_t* blade_of_wrath;
-    buff_t* divine_judgment;
     buff_t* fires_of_justice;
     buff_t* inquisition;
     buff_t* righteous_verdict;
@@ -286,28 +284,28 @@ public:
     const spell_data_t* crusaders_might;
     const spell_data_t* bestow_faith;
     const spell_data_t* lights_hammer;
+    // T25
+    const spell_data_t* saved_by_the_light;
+    const spell_data_t* judgment_of_light;
+    const spell_data_t* holy_prism;
     // T30
-    const spell_data_t* unbreakable_spirit;
-    const spell_data_t* cavalier;
-    const spell_data_t* rule_of_law;
-    // T45
     const spell_data_t* fist_of_justice;
     const spell_data_t* repentance;
     const spell_data_t* blinding_light;
-    // T60
-    const spell_data_t* devotion_aura;
-    const spell_data_t* aura_of_sacrifice;
-    const spell_data_t* aura_of_mercy;
-    // T75
-    const spell_data_t* judgment_of_light;
-    const spell_data_t* holy_prism;
-    const spell_data_t* holy_avenger;
-    // T90
-    const spell_data_t* sanctified_wrath;
-    const spell_data_t* avenging_crusader; // NYI
-    const spell_data_t* awakening; // NYI
-    // T100
+    // T35
+    const spell_data_t* unbreakable_spirit;
+    const spell_data_t* cavalier;
+    const spell_data_t* rule_of_law;
+    // T40
     const spell_data_t* divine_purpose;
+    const spell_data_t* holy_avenger;
+    const spell_data_t* seraphim;
+    // T45
+    const spell_data_t* holy_sanctified_wrath;
+    const spell_data_t* avenging_crusader;
+    const spell_data_t* awakening;
+    // T50
+    const spell_data_t* glimmer_of_light;
     const spell_data_t* beacon_of_faith;
     const spell_data_t* beacon_of_virtue;
 
@@ -316,52 +314,44 @@ public:
     const spell_data_t* holy_shield;
     const spell_data_t* redoubt;
     const spell_data_t* blessed_hammer;
-    // T30
+    // T25
     const spell_data_t* first_avenger;
     const spell_data_t* crusaders_judgment;
-    const spell_data_t* bastion_of_light;
-    // skip T45, see Holy
-    // T60
-    const spell_data_t* retribution_aura; // NYI
-    // const spell_data_t* cavalier;
+    const spell_data_t* moment_of_glory;
+    // skip T30, see Holy
+    // T35
+    // unbreakable spirit + cavalier in holy
     const spell_data_t* blessing_of_spellwarding;
-    // T75
-    // const spell_data_t* unbreakable_spirit;
-    const spell_data_t* final_stand;
+    // skip T40, see Holy
+    // T45
     const spell_data_t* hand_of_the_protector;
-    // T90
-    // const spell_data_t* judgment_of_light;
     const spell_data_t* consecrated_ground;
-    const spell_data_t* aegis_of_light;
-    // T100
-    const spell_data_t* last_defender;
+    // const spell_data_t* judgment_of_light;
+    // T50
+    const spell_data_t* prot_sanctified_wrath;
     const spell_data_t* righteous_protector;
-    const spell_data_t* seraphim;
+    const spell_data_t* final_stand;
 
     // Retribution
     // T15
     const spell_data_t* zeal;
     const spell_data_t* righteous_verdict;
     const spell_data_t* execution_sentence;
-    // T30
+    // T25
     const spell_data_t* fires_of_justice;
     const spell_data_t* blade_of_wrath;
-    const spell_data_t* hammer_of_wrath;
-    // Skip T45, see Holy
-    // T60
-    const spell_data_t* divine_judgment;
-    const spell_data_t* consecration;
-    const spell_data_t* wake_of_ashes;
-    // T75
-    // const spell_data_t* unbreakable_spirit;
-    // const spell_data_t* cavalier;
-    const spell_data_t* eye_for_an_eye; // Defensive, NYI
-    // T90
-    const spell_data_t* selfless_healer; // Healing, NYI
+    const spell_data_t* empyrean_power;
+    // Skip T30, see Holy
+    // T35
+    // unbreakable spirit + cavalier in holy
+    const spell_data_t* eye_for_an_eye;
+    // Skip T40, see Holy
+    // T45
+    const spell_data_t* selfless_healer;
     const spell_data_t* justicars_vengeance;
-    const spell_data_t* word_of_glory; // Healing, NYI
-    // T100
-    // const spell_data_t* divine_purpose;
+    const spell_data_t* healing_hands;
+    // T50
+    const spell_data_t* ret_sanctified_wrath;
     const spell_data_t* crusade;
     const spell_data_t* inquisition;
   } talents;
@@ -460,8 +450,6 @@ public:
   void    trigger_forbearance( player_t* target );
   int     get_local_enemies( double distance ) const;
   bool    standing_in_consecration() const;
-  double  last_defender_damage() const;
-  double  last_defender_mitigation() const;
   // Returns true if AW/Crusade is up, or if the target is below 20% HP.
   // This isn't in HoW's target_ready() so it can be used in the time_to_hpg expression
   bool    get_how_availability( player_t* t ) const;
@@ -609,7 +597,6 @@ public:
   {
     bool avenging_wrath, avenging_wrath_autocrit, judgment; // Shared
     bool crusade, divine_purpose, execution_sentence, hand_of_light, inquisition; // Ret
-    bool last_defender; // Prot
   } affected_by;
 
   // haste scaling bools
@@ -635,8 +622,6 @@ public:
       { // Periodic damage, global
         this -> base_td_multiplier *= 1.0 + p -> spec.protection_paladin -> effectN( 2 ).percent();
       }
-
-      this -> affected_by.last_defender = this -> data().affected_by( p -> talents.last_defender -> effectN( 5 ) );
     }
 
     else if ( p -> specialization() == PALADIN_HOLY )
@@ -820,11 +805,6 @@ public:
     if ( affected_by.avenging_wrath && p() -> buffs.avenging_wrath -> up() )
     {
       am *= 1.0 + p() -> buffs.avenging_wrath -> get_damage_mod();
-    }
-
-    if ( affected_by.last_defender && p() -> talents.last_defender -> ok() )
-    {
-      am *= p() -> last_defender_damage();
     }
 
     return am;

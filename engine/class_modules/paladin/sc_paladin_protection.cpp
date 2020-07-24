@@ -8,25 +8,6 @@
 
 namespace paladin {
 
-// Aegis of Light (Protection) ================================================
-
-struct aegis_of_light_t : public paladin_spell_t
-{
-  aegis_of_light_t( paladin_t* p, const std::string& options_str ) :
-    paladin_spell_t( "aegis_of_light", p, p -> talents.aegis_of_light )
-  {
-    parse_options( options_str );
-    harmful = false;
-  }
-
-  void execute() override
-  {
-    paladin_spell_t::execute();
-
-    p() -> buffs.aegis_of_light -> trigger();
-  }
-};
-
 // Ardent Defender (Protection) ===============================================
 
 struct ardent_defender_t : public paladin_spell_t
@@ -107,28 +88,6 @@ struct avengers_shield_t : public paladin_spell_t
     }
   }
 };
-
-// Bastion of Light ========================================================
-
-struct bastion_of_light_t : public paladin_spell_t
-{
-  bastion_of_light_t( paladin_t* p, const std::string& options_str ) :
-    paladin_spell_t( "bastion_of_light", p, p -> talents.bastion_of_light )
-  {
-    parse_options( options_str );
-
-    harmful = false;
-    use_off_gcd = true;
-  }
-
-  void execute() override
-  {
-    paladin_spell_t::execute();
-
-    p() -> cooldowns.shield_of_the_righteous -> reset(false, -1);
-  }
-};
-
 
 // Blessed Hammer (Protection) ================================================
 
@@ -637,13 +596,6 @@ void paladin_t::target_mitigation( school_e school,
   // Passive sources (Sanctuary)
   s -> result_amount *= 1.0 + passives.sanctuary -> effectN( 1 ).percent();
 
-  // Last Defender
-  if ( talents.last_defender -> ok() )
-  {
-    // Last Defender gives a multiplier of 0.97^N
-    s -> result_amount *= last_defender_mitigation();
-  }
-
   if ( sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() )
     sim -> print_debug( "Damage to {} after passive mitigation is {}", s -> target -> name(), s -> result_amount );
 
@@ -688,14 +640,6 @@ void paladin_t::target_mitigation( school_e school,
 
       // TODO: Show the absorb on the results like Holy Shield
     }
-  }
-
-  // Aegis of Light
-  if ( talents.aegis_of_light -> ok() && buffs.aegis_of_light -> up() )
-  {
-    s -> result_amount *= 1.0 + talents.aegis_of_light -> effectN( 1 ).percent();
-    if ( sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() )
-      sim -> print_debug( "Damage to {} after Aegis of Light is {}", s -> target -> name(), s -> result_amount );
   }
 
   if ( sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() )
@@ -818,10 +762,8 @@ void paladin_t::create_prot_actions()
 
 action_t* paladin_t::create_action_protection( const std::string& name, const std::string& options_str )
 {
-  if ( name == "aegis_of_light"            ) return new aegis_of_light_t           ( this, options_str );
   if ( name == "ardent_defender"           ) return new ardent_defender_t          ( this, options_str );
   if ( name == "avengers_shield"           ) return new avengers_shield_t          ( this, options_str );
-  if ( name == "bastion_of_light"          ) return new bastion_of_light_t         ( this, options_str );
   if ( name == "blessed_hammer"            ) return new blessed_hammer_t           ( this, options_str );
   if ( name == "blessing_of_spellwarding"  ) return new blessing_of_spellwarding_t ( this, options_str );
   if ( name == "guardian_of_ancient_kings" ) return new guardian_of_ancient_kings_t( this, options_str );
@@ -841,8 +783,6 @@ action_t* paladin_t::create_action_protection( const std::string& name, const st
 
 void paladin_t::create_buffs_protection()
 {
-  buffs.aegis_of_light = make_buff( this, "aegis_of_light", talents.aegis_of_light )
-                        -> set_cooldown( 0_ms ); // handled by the ability
   buffs.ardent_defender = make_buff( this, "ardent_defender", find_specialization_spell( "Ardent Defender" ) )
                         -> set_cooldown( 0_ms ); // handled by the ability
   buffs.avengers_valor = make_buff( this, "avengers_valor", passives.avengers_valor )
@@ -888,23 +828,16 @@ void paladin_t::init_spells_protection()
 
   talents.first_avenger              = find_talent_spell( "First Avenger" );
   talents.crusaders_judgment         = find_talent_spell( "Crusader's Judgment" );
-  talents.bastion_of_light           = find_talent_spell( "Bastion of Light" );
+  talents.moment_of_glory            = find_talent_spell( "Moment of Glory" );
 
-  talents.retribution_aura           = find_talent_spell( "Retribution Aura" );
-  //talents.cavalier                   = find_talent_spell( "Cavalier" );
   talents.blessing_of_spellwarding   = find_talent_spell( "Blessing of Spellwarding" );
 
-  //talents.unbreakable_spirit         = find_talent_spell( "Unbreakable Spirit" );
-  talents.final_stand                = find_talent_spell( "Final Stand" );
   talents.hand_of_the_protector      = find_talent_spell( "Hand of the Protector" );
-
-  //talents.judgment_of_light          = find_talent_spell( "Judgment of Light" );
   talents.consecrated_ground         = find_talent_spell( "Consecrated Ground" );
-  talents.aegis_of_light             = find_talent_spell( "Aegis of Light" );
 
-  talents.last_defender              = find_talent_spell( "Last Defender" );
+  talents.prot_sanctified_wrath      = find_spell( 171648 );
   talents.righteous_protector        = find_talent_spell( "Righteous Protector" );
-  talents.seraphim                   = find_talent_spell( "Seraphim" );
+  talents.final_stand                = find_talent_spell( "Final Stand" );
 
   // Spec passives and useful spells
   spec.protection_paladin = find_specialization_spell( "Protection Paladin" );

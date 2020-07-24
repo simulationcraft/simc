@@ -152,15 +152,6 @@ struct holy_power_consumer_t : public paladin_melee_attack_t
     }
   }
 
-  void impact( action_state_t* s ) override
-  {
-    paladin_melee_attack_t::impact( s );
-
-    // Apply Divine Judgment on enemy hits if the spell is harmful ( = is not Inquisition )
-    if ( p() -> talents.divine_judgment -> ok() && harmful )
-      p() -> buffs.divine_judgment -> trigger();
-  }
-
   void consume_resource() override
   {
     paladin_melee_attack_t::consume_resource();
@@ -410,18 +401,6 @@ struct judgment_ret_t : public judgment_t
     {
       p() -> buffs.zeal -> trigger( as<int>( p() -> talents.zeal -> effectN( 1 ).base_value() ) );
     }
-    if ( p() -> talents.divine_judgment -> ok() )
-    {
-      p() -> buffs.divine_judgment -> expire();
-    }
-  }
-
-  double action_multiplier() const override
-  {
-    double am = judgment_t::action_multiplier();
-    if ( p() -> buffs.divine_judgment -> up() )
-      am *= 1.0 + p() -> buffs.divine_judgment -> stack_value();
-    return am;
   }
 
   // Special things that happen when Judgment damages target
@@ -512,11 +491,9 @@ struct shield_of_vengeance_t : public paladin_absorb_t
 struct wake_of_ashes_t : public paladin_spell_t
 {
   wake_of_ashes_t( paladin_t* p, const std::string& options_str ) :
-    paladin_spell_t( "wake_of_ashes", p, p -> talents.wake_of_ashes )
+    paladin_spell_t( "wake_of_ashes", p, p -> find_specialization_spell( "Wake of Ashes" ) )
   {
     parse_options( options_str );
-    if ( ! ( p -> talents.wake_of_ashes -> ok() ) )
-      background = true;
 
     may_crit = true;
     aoe = -1;
@@ -572,7 +549,7 @@ struct inquisition_t : public holy_power_consumer_t
 struct hammer_of_wrath_t : public paladin_melee_attack_t
 {
   hammer_of_wrath_t( paladin_t* p, const std::string& options_str ) :
-    paladin_melee_attack_t( "hammer_of_wrath", p, p -> talents.hammer_of_wrath )
+    paladin_melee_attack_t( "hammer_of_wrath", p, p -> find_spell( "Hammer of Wrath" ) )
   {
     parse_options( options_str );
   }
@@ -637,8 +614,6 @@ void paladin_t::create_buffs_retribution()
   buffs.blade_of_wrath = make_buff( this, "blade_of_wrath", find_spell( 281178 ) )
                        -> set_default_value( find_spell( 281178 ) -> effectN( 1 ).percent() );
   buffs.crusade = new buffs::crusade_buff_t( this );
-  buffs.divine_judgment = make_buff( this, "divine_judgment", talents.divine_judgment -> effectN( 1 ).trigger() )
-                        -> set_default_value( talents.divine_judgment -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
   buffs.fires_of_justice = make_buff( this, "fires_of_justice", talents.fires_of_justice -> effectN( 1 ).trigger() )
                          -> set_chance( talents.fires_of_justice -> ok() ? talents.fires_of_justice -> proc_chance() : 0 );
   buffs.inquisition = make_buff( this, "inquisition", talents.inquisition )
@@ -674,29 +649,23 @@ void paladin_t::init_rng_retribution()
 void paladin_t::init_spells_retribution()
 {
   // Talents
-  talents.zeal                = find_talent_spell( "Zeal" );
-  talents.righteous_verdict   = find_talent_spell( "Righteous Verdict" );
-  talents.execution_sentence  = find_talent_spell( "Execution Sentence" );
+  talents.zeal                 = find_talent_spell( "Zeal" );
+  talents.righteous_verdict    = find_talent_spell( "Righteous Verdict" );
+  talents.execution_sentence   = find_talent_spell( "Execution Sentence" );
 
-  talents.fires_of_justice    = find_talent_spell( "Fires of Justice" );
-  talents.blade_of_wrath      = find_talent_spell( "Blade of Wrath" );
-  talents.hammer_of_wrath     = find_talent_spell( "Hammer of Wrath" );
+  talents.fires_of_justice     = find_talent_spell( "Fires of Justice" );
+  talents.blade_of_wrath       = find_talent_spell( "Blade of Wrath" );
+  talents.empyrean_power       = find_talent_spell( "Empyrean Power" );
 
-  talents.divine_judgment     = find_talent_spell( "Divine Judgment" );
-  talents.consecration        = find_talent_spell( "Consecration" );
-  talents.wake_of_ashes       = find_talent_spell( "Wake of Ashes" );
+  talents.eye_for_an_eye       = find_talent_spell( "Eye for an Eye" );
 
-  //talents.unbreakable_spirit   = find_talent_spell( "Unbreakable Spirit" );
-  //talents.cavalier             = find_talent_spell( "Cavalier" );
-  talents.eye_for_an_eye      = find_talent_spell( "Eye for an Eye" );
+  talents.selfless_healer      = find_talent_spell( "Selfless Healer" ); // Healing, NYI
+  talents.justicars_vengeance  = find_talent_spell( "Justicar's Vengeance" );
+  talents.healing_hands        = find_talent_spell( "Healing Hands" );
 
-  talents.selfless_healer     = find_talent_spell( "Selfless Healer" ); // Healing, NYI
-  talents.justicars_vengeance = find_talent_spell( "Justicar's Vengeance" );
-  talents.word_of_glory       = find_talent_spell( "Word of Glory" );
-
-  talents.divine_purpose      = find_talent_spell( "Divine Purpose" );
-  talents.crusade             = find_talent_spell( "Crusade" );
-  talents.inquisition         = find_talent_spell( "Inquisition" );
+  talents.ret_sanctified_wrath = find_spell( 317866 );
+  talents.crusade              = find_talent_spell( "Crusade" );
+  talents.inquisition          = find_talent_spell( "Inquisition" );
 
   // Spec passives and useful spells
   spec.retribution_paladin = find_specialization_spell( "Retribution Paladin" );
@@ -768,7 +737,7 @@ void paladin_t::generate_action_prio_list_ret()
   precombat -> add_action( "potion" );
 
   precombat -> add_action( "use_item,name=azsharas_font_of_power" );
-  precombat -> add_action( "arcane_torrent,if=!talent.wake_of_ashes.enabled" );
+  precombat -> add_action( "arcane_torrent" );
 
   ///////////////////////
   // Action Priority List
@@ -913,7 +882,7 @@ void paladin_t::generate_action_prio_list_ret()
       }
       else if ( items[i].name_str == "azsharas_font_of_power" )
       {
-        item_str = "use_item,name=" + items[i].name_str + ",if=!talent.crusade.enabled&cooldown.avenging_wrath.remains<5|talent.crusade.enabled&cooldown.crusade.remains<5&time>10|holy_power>=3&time<10&talent.wake_of_ashes.enabled";
+        item_str = "use_item,name=" + items[i].name_str + ",if=!talent.crusade.enabled&cooldown.avenging_wrath.remains<5|talent.crusade.enabled&cooldown.crusade.remains<5&time>10|holy_power>=3&time<10";
       }
       else if ( items[i].name_str == "vision_of_demise" )
       {
@@ -950,14 +919,14 @@ void paladin_t::generate_action_prio_list_ret()
 
   cds -> add_action( "the_unbound_force,if=time<=2|buff.reckless_force.up" );
   cds -> add_action( "blood_of_the_enemy,if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack=10" );
-  cds -> add_action( "guardian_of_azeroth,if=!talent.crusade.enabled&(cooldown.avenging_wrath.remains<5&holy_power>=3&(buff.inquisition.up|!talent.inquisition.enabled)|cooldown.avenging_wrath.remains>=45)|(talent.crusade.enabled&cooldown.crusade.remains<gcd&holy_power>=4|holy_power>=3&time<10&talent.wake_of_ashes.enabled|cooldown.crusade.remains>=45)" );
+  cds -> add_action( "guardian_of_azeroth,if=!talent.crusade.enabled&(cooldown.avenging_wrath.remains<5&holy_power>=3&(buff.inquisition.up|!talent.inquisition.enabled)|cooldown.avenging_wrath.remains>=45)|(talent.crusade.enabled&cooldown.crusade.remains<gcd&holy_power>=4|holy_power>=3&time<10|cooldown.crusade.remains>=45)" );
   cds -> add_action( "worldvein_resonance,if=cooldown.avenging_wrath.remains<gcd&holy_power>=3|talent.crusade.enabled&cooldown.crusade.remains<gcd&holy_power>=4|cooldown.avenging_wrath.remains>=45|cooldown.crusade.remains>=45" );
   cds -> add_action( "focused_azerite_beam,if=(!raid_event.adds.exists|raid_event.adds.in>30|spell_targets.divine_storm>=2)&!(buff.avenging_wrath.up|buff.crusade.up)&(cooldown.blade_of_justice.remains>gcd*3&cooldown.judgment.remains>gcd*3)" );
   cds -> add_action( "memory_of_lucid_dreams,if=(buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack=10)&holy_power<=3" );
   cds -> add_action( "purifying_blast,if=(!raid_event.adds.exists|raid_event.adds.in>30|spell_targets.divine_storm>=2)" );
   cds -> add_action( "use_item,effect_name=cyclotronic_blast,if=!(buff.avenging_wrath.up|buff.crusade.up)&(cooldown.blade_of_justice.remains>gcd*3&cooldown.judgment.remains>gcd*3)" );
   cds -> add_action( this, "Avenging Wrath", "if=(!talent.inquisition.enabled|buff.inquisition.up)&holy_power>=3" );
-  cds -> add_talent( this, "Crusade", "if=holy_power>=4|holy_power>=3&time<10&talent.wake_of_ashes.enabled" );
+  cds -> add_talent( this, "Crusade", "if=holy_power>=4|holy_power>=3&time<10" );
 
   if ( has_lurkers )
   {
@@ -971,14 +940,14 @@ void paladin_t::generate_action_prio_list_ret()
   finishers -> add_action( this, "Divine Storm", "if=variable.ds_castable&variable.wings_pool&((!talent.execution_sentence.enabled|(spell_targets.divine_storm>=2|cooldown.execution_sentence.remains>gcd*2))|(cooldown.avenging_wrath.remains>gcd*3&cooldown.avenging_wrath.remains<10|cooldown.crusade.remains>gcd*3&cooldown.crusade.remains<10|buff.crusade.up&buff.crusade.stack<10))" );
   finishers -> add_action( this, "Templar's Verdict", "if=variable.wings_pool&(!talent.execution_sentence.enabled|cooldown.execution_sentence.remains>gcd*2|cooldown.avenging_wrath.remains>gcd*3&cooldown.avenging_wrath.remains<10|cooldown.crusade.remains>gcd*3&cooldown.crusade.remains<10|buff.crusade.up&buff.crusade.stack<10)" );
 
-  generators -> add_action( "variable,name=HoW,value=(!talent.hammer_of_wrath.enabled|target.health.pct>=20&!(buff.avenging_wrath.up|buff.crusade.up))" );
+  generators -> add_action( "variable,name=HoW,value=(target.health.pct>=20&!(buff.avenging_wrath.up|buff.crusade.up))" );
   generators -> add_action( "call_action_list,name=finishers,if=holy_power>=5|buff.memory_of_lucid_dreams.up|buff.seething_rage.up|talent.inquisition.enabled&buff.inquisition.down&holy_power>=3" );
   generators -> add_talent( this, "Wake of Ashes", "if=(!raid_event.adds.exists|raid_event.adds.in>15|spell_targets.wake_of_ashes>=2)&(holy_power<=0|holy_power=1&cooldown.blade_of_justice.remains>gcd)&(cooldown.avenging_wrath.remains>10|talent.crusade.enabled&cooldown.crusade.remains>10)" );
   generators -> add_action( this, "Blade of Justice", "if=holy_power<=2|(holy_power=3&(cooldown.hammer_of_wrath.remains>gcd*2|variable.HoW))" );
   generators -> add_action( this, "Judgment", "if=holy_power<=2|(holy_power<=4&(cooldown.blade_of_justice.remains>gcd*2|variable.HoW))" );
-  generators -> add_talent( this, "Hammer of Wrath", "if=holy_power<=4" );
+  generators -> add_action( this, "Hammer of Wrath", "if=holy_power<=4" );
   generators -> add_talent( this, "Consecration", "if=holy_power<=2|holy_power<=3&cooldown.blade_of_justice.remains>gcd*2|holy_power=4&cooldown.blade_of_justice.remains>gcd*2&cooldown.judgment.remains>gcd*2" );
-  generators -> add_action( "call_action_list,name=finishers,if=talent.hammer_of_wrath.enabled&target.health.pct<=20|buff.avenging_wrath.up|buff.crusade.up" );
+  generators -> add_action( "call_action_list,name=finishers,if=target.health.pct<=20|buff.avenging_wrath.up|buff.crusade.up" );
   generators -> add_action( this, "Crusader Strike", "if=cooldown.crusader_strike.charges_fractional>=1.75&(holy_power<=2|holy_power<=3&cooldown.blade_of_justice.remains>gcd*2|holy_power=4&cooldown.blade_of_justice.remains>gcd*2&cooldown.judgment.remains>gcd*2&cooldown.consecration.remains>gcd*2)" );
   generators -> add_action( "call_action_list,name=finishers" );
   generators -> add_action( "concentrated_flame" );

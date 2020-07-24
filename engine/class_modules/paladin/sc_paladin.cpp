@@ -84,7 +84,7 @@ namespace buffs {
 
     // Lengthen duration if Sanctified Wrath is taken
     if ( p -> specialization() == PALADIN_HOLY )
-      buff_duration *= 1.0 + p -> talents.sanctified_wrath -> effectN( 1 ).percent();
+      buff_duration *= 1.0 + p -> talents.holy_sanctified_wrath -> effectN( 1 ).percent();
 
     // ... or if we have Light's Decree
     if ( p -> azerite.lights_decree.ok() )
@@ -188,8 +188,7 @@ struct consecration_t : public paladin_spell_t
   double precombat_time;
 
   consecration_t( paladin_t* p, const std::string& options_str ) :
-    paladin_spell_t( "consecration", p, p -> specialization() == PALADIN_RETRIBUTION ? p -> talents.consecration :
-                                          p -> find_specialization_spell( "Consecration" ) ),
+    paladin_spell_t( "consecration", p, p -> find_spell( "Consecration" ) ),
     damage_tick( new consecration_tick_t( p ) ), precombat_time( 2.0 )
   {
     add_option( opt_float( "precombat_time", precombat_time ) );
@@ -512,7 +511,7 @@ struct melee_t : public paladin_melee_attack_t
     base_execute_time     = p -> main_hand_weapon.swing_time;
     weapon_multiplier     = 1.0;
 
-    affected_by.avenging_wrath = affected_by.inquisition = affected_by.crusade = affected_by.last_defender = true;
+    affected_by.avenging_wrath = affected_by.inquisition = affected_by.crusade = true;
   }
 
   timespan_t execute_time() const override
@@ -1404,6 +1403,8 @@ void paladin_t::init_spells()
   talents.blinding_light     = find_talent_spell( "Blinding Light" );
   talents.unbreakable_spirit = find_talent_spell( "Unbreakable Spirit" );
   talents.cavalier           = find_talent_spell( "Cavalier" );
+  talents.holy_avenger       = find_talent_spell( "Holy Avenger" );
+  talents.seraphim           = find_talent_spell( "Seraphim" );
 
   // Shared Passives and spells
   passives.plate_specialization = find_specialization_spell( "Plate Specialization" );
@@ -1920,27 +1921,6 @@ bool paladin_t::get_how_availability( player_t* t ) const
   return ( buffs.avenging_wrath -> up() || buffs.crusade -> up() || t -> health_percentage() <= 20 );
 }
 
-// Last Defender
-
-double paladin_t::last_defender_damage() const
-{
-  double distance = talents.last_defender -> effectN( 1 ).base_value();
-
-  double damage_multiplier = 2.0 - std::pow( 1.0 - talents.last_defender -> effectN( 2 ).percent(), get_local_enemies( distance ) );
-
-  return damage_multiplier;
-}
-
-double paladin_t::last_defender_mitigation() const
-{
-  double distance = talents.last_defender -> effectN( 1 ).base_value();
-
-  double mitigation = std::pow( 1.0 - talents.last_defender -> effectN( 2 ).percent(), get_local_enemies( distance ) );
-
-  // Last Defender's damage reduction is capped at 50% (between 22 and 23 targets)
-  return std::max( mitigation, 0.5 );
-}
-
 // player_t::create_expression ==============================================
 
 std::unique_ptr<expr_t> paladin_t::create_consecration_expression( const std::string& expr_str )
@@ -1989,7 +1969,6 @@ std::unique_ptr<expr_t> paladin_t::create_expression( const std::string& name_st
     cooldown_t* boj_cd;
     cooldown_t* j_cd;
     cooldown_t* how_cd;
-    cooldown_t* cons_cd;
     cooldown_t* wake_cd;
 
     time_to_hpg_expr_t( const std::string& n, paladin_t& p ) :
@@ -1997,7 +1976,6 @@ std::unique_ptr<expr_t> paladin_t::create_expression( const std::string& name_st
       boj_cd ( p.get_cooldown( "blade_of_justice" )),
       j_cd( p.get_cooldown( "judgment" ) ),
       how_cd( p.get_cooldown( "hammer_of_wrath" ) ),
-      cons_cd( p.get_cooldown( "consecration" ) ),
       wake_cd( p.get_cooldown( "wake_of_ashes" ) )
     { }
 
@@ -2011,14 +1989,12 @@ std::unique_ptr<expr_t> paladin_t::create_expression( const std::string& name_st
       if ( boj_cd -> remains() < shortest_hpg_time )
         shortest_hpg_time = boj_cd -> remains();
 
-      if ( paladin.talents.hammer_of_wrath -> ok() )
-        // TODO: check every target rather than just the paladin's main target
-        if ( paladin.get_how_availability( paladin.target ) && how_cd -> remains() < shortest_hpg_time )
-          shortest_hpg_time = how_cd -> remains();
-      if ( paladin.talents.wake_of_ashes -> ok() && wake_cd -> remains() < shortest_hpg_time )
+      // TODO: check every target rather than just the paladin's main target
+      if ( paladin.get_how_availability( paladin.target ) && how_cd -> remains() < shortest_hpg_time )
+        shortest_hpg_time = how_cd -> remains();
+
+      if ( wake_cd -> remains() < shortest_hpg_time )
         shortest_hpg_time = wake_cd -> remains();
-      if ( paladin.talents.consecration -> ok() && cons_cd -> remains() < shortest_hpg_time )
-        shortest_hpg_time = cons_cd -> remains();
 
       if ( gcd_ready > shortest_hpg_time )
         return gcd_ready.total_seconds();
