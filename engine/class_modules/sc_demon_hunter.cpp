@@ -25,8 +25,7 @@ namespace
   ----------
 
   * Check all Havoc talents
-  ** Done -- Row 1-2
-  ** Add Unbound Chaos
+  ** Done -- Row 1-3
   
   * Add Fel Devastation baseline
   * Check all Vengeance talents
@@ -257,6 +256,7 @@ public:
     buff_t* nemesis;
     buff_t* out_of_range;
     buff_t* prepared;
+    buff_t* unbound_chaos;
 
     movement_buff_t* fel_rush_move;
     movement_buff_t* vengeful_retreat_move;
@@ -1971,7 +1971,7 @@ struct fel_barrage_t : public demon_hunter_spell_t
       : demon_hunter_spell_t( "fel_barrage_tick", p, p->talent.fel_barrage->effectN( 1 ).trigger() )
     {
       background = dual = true;
-      aoe = -1;
+      aoe = data().effectN( 2 ).base_value();
     }
   };
 
@@ -2375,18 +2375,25 @@ struct immolation_aura_t : public demon_hunter_spell_t
   {
     bool initial;
 
-    immolation_aura_damage_t( demon_hunter_t* p, const spell_data_t* s )
-      : demon_hunter_spell_t( "immolation_aura_tick", p, s ), initial( false )
+    immolation_aura_damage_t( demon_hunter_t* p, const spell_data_t* s, bool initial )
+      : demon_hunter_spell_t( "immolation_aura_tick", p, s ), initial( initial )
     {
       background = dual = true;
       aoe = -1;
 
       // Rename gain for periodic energizes. Initial hit action doesn't energize.
+      // Gains are encoded in the 258922 spell data differently for Havoc vs. Vengeance
       gain = p->get_gain( "immolation_aura_tick" );
       if ( !initial )
       {
-        energize_amount += s->effectN( 3 ).base_value(); // Holdover from Pain conversation
-        energize_amount += p->talent.burning_hatred->effectN( 1 ).base_value();
+        if ( p->specialization() == DEMON_HUNTER_VENGEANCE )
+        {
+          energize_amount = data().effectN( 3 ).base_value();
+        }
+        else // DEMON_HUNTER_HAVOC
+        {
+          energize_amount = p->talent.burning_hatred->ok() ? data().effectN( 2 ).base_value() : 0;
+        }
       }
 
       base_multiplier *= 1.0 + p->talent.agonizing_flames->effectN( 1 ).percent();
@@ -2429,13 +2436,12 @@ struct immolation_aura_t : public demon_hunter_spell_t
 
     if ( !p->active.immolation_aura )
     {
-      p->active.immolation_aura = new immolation_aura_damage_t( p, data().effectN( 1 ).trigger() );
+      p->active.immolation_aura = new immolation_aura_damage_t( p, data().effectN( 1 ).trigger(), false );
       p->active.immolation_aura->stats = stats;
     }
 
     // Initial damage is referenced indirectly in Immolation Aura (Rank 2) (id=320364) tooltip
-    initial_damage = new immolation_aura_damage_t( p, p->find_spell( 258921 ) );
-    initial_damage->initial = true;
+    initial_damage = new immolation_aura_damage_t( p, p->find_spell( 258921 ), true );
     initial_damage->stats = stats;
 
     // Add damage modifiers in immolation_aura_damage_t, not here.
@@ -2449,6 +2455,11 @@ struct immolation_aura_t : public demon_hunter_spell_t
 
     initial_damage->set_target( target );
     initial_damage->execute();
+
+    if ( p()->talent.unbound_chaos->ok() )
+    {
+      p()->buff.unbound_chaos->trigger();
+    }
   }
 };
 
@@ -3577,14 +3588,45 @@ struct felblade_t : public demon_hunter_attack_t
 
 struct fel_rush_t : public demon_hunter_attack_t
 {
-
   struct fel_rush_damage_t : public demon_hunter_attack_t
   {
+    struct unbound_chaos_t : public demon_hunter_attack_t
+    {
+      unbound_chaos_t( demon_hunter_t* p )
+        : demon_hunter_attack_t( "unbound_chaos", p, p->find_spell( 275148 ) )
+      {
+        background = dual = true;
+        aoe = -1;
+        // TODO: Hook up when whitelisted 
+        // base_execute_time = p->find_spell( 275147 )->duration();
+        base_execute_time = 1_s;
+      }
+    };
+
+    unbound_chaos_t* unbound_chaos;
+
     fel_rush_damage_t( demon_hunter_t* p )
-      : demon_hunter_attack_t( "fel_rush_damage", p, p->spec.fel_rush_damage )
+      : demon_hunter_attack_t( "fel_rush_damage", p, p->spec.fel_rush_damage ),
+      unbound_chaos( nullptr )
     {
       background = dual = true;
-      aoe  = -1;
+      aoe = -1;
+
+      if ( p->talent.unbound_chaos->ok() && !unbound_chaos )
+      {
+        unbound_chaos = new unbound_chaos_t( p );
+        add_child( unbound_chaos );
+      }
+    }
+
+    void execute() override
+    {
+      if ( unbound_chaos && p()->buff.unbound_chaos->up() )
+      {
+        unbound_chaos->set_target( target );
+        unbound_chaos->schedule_execute();
+        p()->buff.unbound_chaos->expire();
+      }
     }
   };
 
@@ -4448,6 +4490,11 @@ void demon_hunter_t::create_buffs()
       resource_gain( RESOURCE_FURY, b->check_value(), gain.blind_fury );
     } );
 
+  // TODO: Hook up real 337313 spell when whitelisted
+  buff.unbound_chaos = make_buff( this, "unbound_chaos", talent.unbound_chaos )
+    ->set_cooldown( timespan_t::zero() )
+    ->set_duration( timespan_t::max() );
+
   buff.vengeful_retreat_move = new movement_buff_t(this, "vengeful_retreat_movement", spell_data_t::nil() );
   buff.vengeful_retreat_move
     ->set_chance( 1.0 )
@@ -5219,7 +5266,7 @@ void demon_hunter_t::apl_havoc()
 
   action_priority_list_t* apl_normal = get_action_priority_list( "normal" );
   apl_normal->add_action( this, "Vengeful Retreat", "if=talent.momentum.enabled&buff.prepared.down&time>1" );
-  apl_normal->add_action( this, "Fel Rush", "if=(variable.waiting_for_momentum|talent.unbound_chaos.enabled)&(charges=2|(raid_event.movement.in>10&raid_event.adds.in>10))" );
+  apl_normal->add_action( this, "Fel Rush", "if=(variable.waiting_for_momentum|talent.unbound_chaos.enabled&buff.unbound_chaos.up)&(charges=2|(raid_event.movement.in>10&raid_event.adds.in>10))" );
   apl_normal->add_talent( this, "Fel Barrage", "if=!variable.waiting_for_momentum&(active_enemies>desired_targets|raid_event.adds.in>30)" );
   apl_normal->add_action( this, spec.death_sweep, "death_sweep", "if=variable.blade_dance" );
   apl_normal->add_action( this, "Immolation Aura" );
@@ -5240,6 +5287,7 @@ void demon_hunter_t::apl_havoc()
   apl_normal->add_action( this, "Throw Glaive", "if=talent.demon_blades.enabled" );
 
   action_priority_list_t* apl_demonic = get_action_priority_list( "demonic" );
+  apl_demonic->add_action( this, "Fel Rush", "if=(talent.unbound_chaos.enabled&buff.unbound_chaos.up)&(charges=2|(raid_event.movement.in>10&raid_event.adds.in>10))" );
   apl_demonic->add_action( this, spec.death_sweep, "death_sweep", "if=variable.blade_dance" );
   apl_demonic->add_action( this, "Eye Beam", "if=raid_event.adds.up|raid_event.adds.in>25" );
   apl_demonic->add_talent( this, "Fel Barrage", "if=(buff.metamorphosis.up&raid_event.adds.in>30)|active_enemies>desired_targets" );

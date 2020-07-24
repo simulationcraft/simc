@@ -1800,6 +1800,8 @@ class SpellDataGenerator(DataGenerator):
           ( 211796, 1 ), # Chaos Blades MH damage spell
           ( 211797, 1 ), # Chaos Blades OH damage spell
           ( 275148, 1 ), # Unbound Chaos Azerite damage spell
+          ( 337313, 1 ), # Inner Demon aura for Unbound Chaos talent
+          ( 275147, 1 ), # Unbound Chaos delayed trigger aura
 
           # Vengeance
           ( 203557, 2 ), # Felblade proc rate
