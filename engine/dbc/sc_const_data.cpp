@@ -1686,7 +1686,9 @@ std::vector<const racial_spell_entry_t*> dbc_t::racial_spell( player_e c, race_e
   return __data;
 }
 
-unsigned dbc_t::specialization_ability_id( specialization_e spec_id, util::string_view spell_name ) const
+unsigned dbc_t::specialization_ability_id( specialization_e  spec_id,
+                                           util::string_view spell_name,
+                                           util::string_view spell_desc ) const
 {
   unsigned class_idx = -1;
   unsigned spec_index = -1;
@@ -1704,10 +1706,17 @@ unsigned dbc_t::specialization_ability_id( specialization_e spec_id, util::strin
       continue;
     }
 
+    // If description string is given, the spell must match it exactly
+    if ( !spell_desc.empty() &&
+         ( !spec_spell.desc || !util::str_compare_ci( spec_spell.desc, spell_desc ) ) )
+    {
+      continue;
+    }
+
     if ( util::str_compare_ci( spec_spell.name, spell_name ) )
     {
       // Spell has been replaced by another, so don't return id
-      if ( ! replaced_id( spec_spell.spell_id ) )
+      if ( !replaced_id( spec_spell.spell_id ) )
       {
         return spec_spell.spell_id;
       }

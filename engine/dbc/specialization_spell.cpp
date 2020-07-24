@@ -20,6 +20,7 @@ const specialization_spell_entry_t&
 specialization_spell_entry_t::find( util::string_view name,
                                     bool              ptr,
                                     specialization_e  spec,
+                                    util::string_view desc,
                                     bool              tokenized )
 {
   auto __data = data( ptr );
@@ -29,9 +30,11 @@ specialization_spell_entry_t::find( util::string_view name,
   {
     cmp_str = util::tokenize_fn( name );
     name = cmp_str;
+    cmp_str = util::tokenize_fn( desc );
+    desc = cmp_str;
   }
 
-  auto it = range::find_if( __data, [tokenized, spec, name]( const auto& entry ) {
+  auto it = range::find_if( __data, [tokenized, spec, name, desc]( const auto& entry ) {
       if ( spec != SPEC_NONE && spec != entry.specialization_id )
       {
         return false;
@@ -39,11 +42,25 @@ specialization_spell_entry_t::find( util::string_view name,
 
       if ( tokenized )
       {
+        if ( !desc.empty() )
+        {
+          if ( !entry.desc ||
+               !util::str_compare_ci( util::tokenize_fn( entry.desc ), desc ) )
+          {
+            return false;
+          }
+        }
+
         auto spell_str = util::tokenize_fn( entry.name );
         return util::str_compare_ci( spell_str, name );
       }
       else
       {
+        if ( !desc.empty() && !util::str_compare_ci( entry.desc, desc ) )
+        {
+          return false;
+        }
+
         return util::str_compare_ci( entry.name, name );
       }
   } );

@@ -9297,15 +9297,23 @@ const spell_data_t* player_t::find_talent_spell( util::string_view n, specializa
   return spell_data_t::not_found();
 }
 
-const spell_data_t* player_t::find_specialization_spell( util::string_view name, specialization_e s ) const
+const spell_data_t* player_t::find_specialization_spell( util::string_view name,
+                                                         specialization_e s ) const
+{
+  return find_specialization_spell( name, "", s );
+}
+
+const spell_data_t* player_t::find_specialization_spell( util::string_view name,
+                                                         util::string_view desc,
+                                                         specialization_e s ) const
 {
   if ( s == SPEC_NONE || s == _spec )
   {
-    if ( unsigned spell_id = dbc->specialization_ability_id( _spec, name ) )
+    if ( unsigned spell_id = dbc->specialization_ability_id( _spec, name, desc ) )
     {
       auto spell = dbc::find_spell( this, spell_id );
 
-      if ( ( as<int>( spell->level() ) <= true_level ) )
+      if ( as<int>( spell->level() ) <= true_level )
       {
         return spell;
       }
