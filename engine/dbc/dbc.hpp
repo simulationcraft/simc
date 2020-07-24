@@ -493,10 +493,6 @@ public:
   unsigned specialization_max_class() const;
   bool     ability_specialization( uint32_t spell_id, std::vector<specialization_e>& spec_list ) const;
 
-  unsigned mastery_ability( unsigned class_id, unsigned tree_id, unsigned n ) const;
-  unsigned mastery_ability_size() const;
-  int      mastery_ability_tree( player_e c, uint32_t spell_id ) const;
-
   // Helper methods
   double   weapon_dps( unsigned item_id, unsigned ilevel = 0 ) const;
   double   weapon_dps( const dbc_item_data_t&, unsigned ilevel = 0 ) const;
@@ -518,8 +514,7 @@ public:
   unsigned pet_ability_id( player_e c, util::string_view spell_name, bool tokenized = false ) const;
   unsigned race_ability_id( player_e c, race_e r, util::string_view spell_name ) const;
   unsigned specialization_ability_id( specialization_e spec_id, util::string_view spell_name ) const;
-  unsigned mastery_ability_id( specialization_e spec, util::string_view spell_name ) const;
-  unsigned mastery_ability_id( specialization_e spec, uint32_t idx ) const;
+  unsigned mastery_ability_id( specialization_e spec ) const;
 
   bool     is_specialization_ability( uint32_t spell_id ) const;
   bool     is_specialization_ability( specialization_e spec_id, unsigned spell_id ) const;

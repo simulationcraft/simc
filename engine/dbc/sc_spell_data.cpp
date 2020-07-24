@@ -6,6 +6,7 @@
 #include "dbc.hpp"
 #include "specialization_spell.hpp"
 #include "active_spells.hpp"
+#include "mastery_spells.hpp"
 #include "racial_spells.hpp"
 #include "sim/sc_expressions.hpp"
 #include "azerite.hpp"
@@ -288,8 +289,6 @@ struct spell_list_expr_t : public spell_data_expr_t
 
   int evaluate() override
   {
-    unsigned spell_id;
-
     // Based on the data type, see what list of spell ids we should handle, and populate the
     // result_spell_list accordingly
     switch ( data_type )
@@ -345,19 +344,10 @@ struct spell_list_expr_t : public spell_data_expr_t
       }
       case DATA_MASTERY_SPELL:
       {
-        for ( unsigned cls = 0; cls < dbc.specialization_max_class(); cls++ )
-        {
-          for ( unsigned tree = 0; tree < dbc.specialization_max_per_class(); tree++ )
-          {
-            for ( unsigned n = 0; n < dbc.mastery_ability_size(); n++ )
-            {
-              if ( ! ( spell_id = dbc.mastery_ability( cls, tree, n ) ) )
-                continue;
-
-              result_spell_list.push_back( spell_id );
-            }
-          }
-        }
+        range::for_each( mastery_spell_entry_t::data( dbc.ptr ),
+            [this]( const mastery_spell_entry_t& entry ) {
+              result_spell_list.push_back( entry.spell_id );
+        } );
         break;
       }
       case DATA_SPECIALIZATION_SPELL:

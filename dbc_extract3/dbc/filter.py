@@ -174,3 +174,17 @@ class PetActiveSpellSet(ActiveClassSpellSet):
     def ids(self):
         return list(set(v[1] for v in self.get()))
 
+class MasterySpellSet(DataSet):
+    def _filter(self, **kwargs):
+        _data = []
+
+         for v in self.db('ChrSpecialization').values():
+             if v.ref('id_mastery_1').id == 0:
+                 continue
+
+             _data.append(v)
+
+         return _data
+
+     def ids(self):
+         return list(set(v.id_mastery_1

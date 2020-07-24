@@ -10,6 +10,7 @@
 #include "client_data.hpp"
 #include "specialization_spell.hpp"
 #include "active_spells.hpp"
+#include "mastery_spells.hpp"
 #include "racial_spells.hpp"
 
 #include "generated/sc_spec_list.inc"
@@ -1229,20 +1230,6 @@ double dbc_t::combat_rating( unsigned combat_rating_id, unsigned level ) const
 #endif
 }
 
-unsigned dbc_t::mastery_ability( unsigned class_id, unsigned specialization, unsigned n ) const
-{
-  assert( class_id < dbc_t::class_max_size() );
-  assert( specialization < specialization_max_per_class() );
-  assert( n < mastery_ability_size() );
-
-#if SC_USE_PTR
-  return ptr ? __ptr_class_mastery_ability_data[ class_id ][ specialization ][ n ]
-             : __class_mastery_ability_data[ class_id ][ specialization ][ n ];
-#else
-  return __class_mastery_ability_data[ class_id ][ specialization ][ n ];
-#endif
-}
-
 unsigned dbc_t::azerite_item_level( unsigned power_level ) const
 {
   if ( power_level == 0 )
@@ -1318,15 +1305,6 @@ unsigned dbc_t::specialization_max_class() const
   return ptr ? MAX_SPEC_CLASS : MAX_SPEC_CLASS;
 #else
   return MAX_SPEC_CLASS;
-#endif
-}
-
-unsigned dbc_t::mastery_ability_size() const
-{
-#if SC_USE_PTR
-  return ptr ? PTR_CLASS_MASTERY_ABILITY_SIZE : CLASS_MASTERY_ABILITY_SIZE;
-#else
-  return CLASS_MASTERY_ABILITY_SIZE;
 #endif
 }
 
@@ -1761,79 +1739,31 @@ bool dbc_t::ability_specialization( uint32_t spell_id, std::vector<specializatio
   return !spec_list.empty();
 }
 
-unsigned dbc_t::mastery_ability_id( specialization_e spec, util::string_view spell_name ) const
+unsigned dbc_t::mastery_ability_id( specialization_e spec ) const
 {
-  unsigned class_idx = -1;
-  unsigned spec_index = -1;
-
-  if ( ! spec_idx( spec, class_idx, spec_index ) )
-    return 0;
-
   if ( spec == SPEC_NONE )
-    return 0;
-
-  for ( unsigned n = 0; n < mastery_ability_size(); n++ )
   {
-    uint32_t spell_id;
-    if ( ! ( spell_id = mastery_ability( class_idx, spec_index, n ) ) )
-      break;
-
-    if ( ! spell( spell_id ) -> id() )
-      continue;
-
-    if ( util::str_compare_ci( spell( spell_id ) -> name_cstr(), spell_name ) )
-    {
-      // Spell has been replaced by another, so don't return id
-      if ( ! replaced_id( spell_id ) )
-        return spell_id;
-      return 0;
-    }
+    return 0;
   }
 
-  return 0;
-}
-
-unsigned dbc_t::mastery_ability_id( specialization_e spec, uint32_t idx ) const
-{
-  unsigned class_idx = -1;
-  unsigned spec_index = -1;
-  uint32_t spell_id;
-
-  if ( ! spec_idx( spec, class_idx, spec_index ) )
+  const auto& entry = mastery_spell_entry_t::find( spec, ptr );
+  if ( entry.spell_id == 0 )
+  {
     return 0;
+  }
 
-  if ( spec == SPEC_NONE )
+  if ( !spell( entry.spell_id )->id() )
+  {
     return 0;
-
-  if ( idx >= mastery_ability_size() )
-    return 0;
-
-  spell_id = mastery_ability( class_idx, spec_index, idx );
-
-  if ( ! spell( spell_id ) -> id() )
-    return 0;
+  }
 
   // Check if spell has been replaced by another
-  if ( ! replaced_id( spell_id ) )
-    return spell_id;
-
-  return 0;
-}
-
-int dbc_t::mastery_ability_tree( player_e c, uint32_t spell_id ) const
-{
-  uint32_t cid = util::class_id( c );
-
-  for ( unsigned tree = 0; tree < specialization_max_per_class(); tree++ )
+  if ( !replaced_id( entry.spell_id ) )
   {
-    for ( unsigned n = 0; n < mastery_ability_size(); n++ )
-    {
-      if ( mastery_ability( cid, tree, n ) == spell_id )
-        return tree;
-    }
+    return entry.spell_id;
   }
 
-  return -1;
+  return 0;
 }
 
 bool dbc_t::is_specialization_ability( specialization_e spec, unsigned spell_id ) const

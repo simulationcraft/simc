@@ -128,7 +128,7 @@
       { "data_type": "S", "field": "unk_4",      "formats": { } },
       { "data_type": "S", "field": "name",       "formats": { "cpp": "%25s" } },
       { "data_type": "S", "field": "desc",       "formats": { } },
-      { "data_type": "i", "field": "id",         "formats": { "cpp": "%-6u" } },
+      { "data_type": "i", "field": "id" },
       { "data_type": "b", "field": "class_id",   "formats": { "cpp": "%2u" } },
       { "data_type": "b", "field": "index",      "formats": { "cpp": "%-2u" } },
       { "data_type": "b", "field": "f9",         "formats": { } },
@@ -137,7 +137,7 @@
       { "data_type": "i", "field": "id_icon",    "formats": { "cpp": "%-5u" } },
       { "data_type": "b", "field": "unk_6",      "formats": { } },
       { "data_type": "i", "field": "unk_3",      "formats": { } },
-      { "data_type": "I", "field": "id_mastery", "elements": 2, "formats": { "cpp": "%-2u" }, "ref": "SpellName" }
+      { "data_type": "I", "field": "id_mastery", "elements": 2, "formats": { "cpp": "%6u" }, "ref": "SpellName" }
     ]
   },
   "ContentTuning": {

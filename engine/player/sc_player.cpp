@@ -9329,17 +9329,19 @@ const spell_data_t* player_t::find_specialization_spell( unsigned spell_id, spec
   return spell_data_t::not_found();
 }
 
-const spell_data_t* player_t::find_mastery_spell( specialization_e s, uint32_t idx ) const
+const spell_data_t* player_t::find_mastery_spell( specialization_e s ) const
 {
-  if ( s != SPEC_NONE && s == _spec )
+  if ( s == SPEC_NONE || s != _spec )
   {
-    if ( unsigned spell_id = dbc->mastery_ability_id( s, idx ) )
+    return spell_data_t::not_found();
+  }
+
+  if ( auto spell_id = dbc->mastery_ability_id( s != SPEC_NONE ? s : _spec ) )
+  {
+    const auto spell = dbc::find_spell( this, spell_id );
+    if ( spell->ok() && as<int>( spell->level() ) <= true_level )
     {
-      const spell_data_t* spell = dbc::find_spell( this, spell_id );
-      if ( as<int>( spell->level() ) <= true_level )
-      {
-        return spell;
-      }
+      return spell;
     }
   }
 
@@ -9418,7 +9420,7 @@ const spell_data_t* player_t::find_spell( util::string_view name, specialization
 
   if ( s != SPEC_NONE )
   {
-    sp = find_mastery_spell( s, 0 );
+    sp = find_mastery_spell( s );
     assert( sp );
     if ( sp->ok() )
       return sp;

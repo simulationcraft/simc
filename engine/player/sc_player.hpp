@@ -722,7 +722,7 @@ public:
   const spell_data_t* find_talent_spell( util::string_view name, specialization_e s = SPEC_NONE, bool name_tokenized = false, bool check_validity = true ) const;
   const spell_data_t* find_specialization_spell( util::string_view name, specialization_e s = SPEC_NONE ) const;
   const spell_data_t* find_specialization_spell( unsigned spell_id, specialization_e s = SPEC_NONE ) const;
-  const spell_data_t* find_mastery_spell( specialization_e s, uint32_t idx = 0 ) const;
+  const spell_data_t* find_mastery_spell( specialization_e s ) const;
   const spell_data_t* find_spell( util::string_view name, specialization_e s = SPEC_NONE ) const;
   const spell_data_t* find_spell( unsigned int id, specialization_e s ) const;
   const spell_data_t* find_spell( unsigned int id ) const;

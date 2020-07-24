@@ -5,7 +5,7 @@ from collections import defaultdict
 import dbc.db, dbc.data, dbc.parser, dbc.file
 
 from dbc import constants, util
-from dbc.filter import ActiveClassSpellSet, PetActiveSpellSet, RacialSpellSet
+from dbc.filter import ActiveClassSpellSet, PetActiveSpellSet, RacialSpellSet, MasterySpellSet
 
 # Special hotfix flags for spells to mark that the spell has hotfixed effects or powers
 SPELL_EFFECT_HOTFIX_PRESENT = 0x8000000000000000
@@ -3184,90 +3184,27 @@ class SpellDataGenerator(DataGenerator):
         return ''
 
 class MasteryAbilityGenerator(DataGenerator):
-    def __init__(self, options, data_store):
-        super().__init__(options, data_store)
-
-        self._dbc = [ 'ChrSpecialization', 'SpellName' ]
-
     def filter(self):
-        ids = {}
-        for k, v in self._chrspecialization_db.items():
-            if v.name == 'Initial':
-                continue
+        return MasterySpellSet(self._options).get()
 
-            if v.class_id == 0:
-                continue
+    def generate(self, data=None):
+        data.sort(key=lambda v: v.id)
 
-            s = self._spellname_db[v.id_mastery_1]
+         self.output_header(
+                 header = 'Mastery abilities',
+                 type = 'mastery_spell_entry_t',
+                 array = 'mastery_spell',
+                 length = len(data))
 
-            if s.id == 0:
-                continue
+         for entry in data:
+             fields = entry.field('id', 'id_mastery_1')
+             self.output_record(fields,
+                     comment = '{} ({} {})'.format(
+                         entry.ref('id_mastery_1').name,
+                         entry.name,
+                         util.class_name(class_id=entry.class_id)))
 
-            ids[v.id_mastery_1] = { 'mask_class' : v.class_id, 'category' : v.index, 'spec_name' : v.name }
-
-        return ids
-
-    def generate(self, ids = None):
-        max_ids = 0
-        mastery_class = 0
-        keys    = [
-            [ [], [], [], [] ],
-            [ [], [], [], [] ],
-            [ [], [], [], [] ],
-            [ [], [], [], [] ],
-            [ [], [], [], [] ],
-            [ [], [], [], [] ],
-            [ [], [], [], [] ],
-            [ [], [], [], [] ],
-            [ [], [], [], [] ],
-            [ [], [], [], [] ],
-            [ [], [], [], [] ],
-            [ [], [], [], [] ],
-            [ [], [], [], [] ],
-        ]
-
-        for k, v in ids.items():
-            spell = self._spellname_db[k]
-            keys[v['mask_class']][v['category']].append( ( spell.name, k, v['spec_name'] ) )
-
-
-        # Find out the maximum size of a key array
-        for cls in keys:
-            for spec in cls:
-                if len(spec) > max_ids:
-                    max_ids = len(spec)
-
-        data_str = "%sclass_mastery_ability%s" % (
-            self._options.prefix and ('%s_' % self._options.prefix) or '',
-            self._options.suffix and ('_%s' % self._options.suffix) or '',
-        )
-
-        self._out.write('#define %s_SIZE (%d)\n\n' % (data_str.upper(), max_ids))
-        self._out.write('// Class mastery abilities, wow build %s\n' % self._options.build)
-        self._out.write('static unsigned __%s_data[MAX_CLASS][MAX_SPECS_PER_CLASS][%s_SIZE] = {\n' % (
-            data_str,
-            data_str.upper(),
-        ))
-
-        for cls in range(0, len(keys)):
-            if SpellDataGenerator._class_names[cls]:
-                self._out.write('  // Class mastery abilities for %s\n' % ( SpellDataGenerator._class_names[cls] ))
-
-            self._out.write('  {\n')
-            for spec in range(0, len(keys[cls])):
-                if len(keys[cls][spec]) > 0:
-                    self._out.write('    // Masteries for %s specialization\n' % keys[cls][spec][0][2])
-                self._out.write('    {\n')
-                for ability in sorted(keys[cls][spec], key = lambda i: i[0]):
-                    self._out.write('     %6u, // %s\n' % ( ability[1], ability[0] ))
-
-                if len(keys[cls][spec]) < max_ids:
-                    self._out.write('     %6u,\n' % 0)
-
-                self._out.write('    },\n')
-            self._out.write('  },\n')
-
-        self._out.write('};\n')
+                     self.output_footer()
 
 class RacialSpellGenerator(DataGenerator):
     def filter(self):
@@ -3293,7 +3230,6 @@ class RacialSpellGenerator(DataGenerator):
             fields += v.field('mask_class')
             fields += v.ref('id_spell').field('id', 'name')
             self.output_record(fields)
-
         self.output_footer()
 
 class SpecializationSpellGenerator(DataGenerator):
