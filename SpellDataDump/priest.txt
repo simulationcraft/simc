@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35256 shadowlands-BETA (git build shadowlands 6199ee1c91)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35282 shadowlands-BETA (git build dbc 9c725e1441)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
@@ -2744,6 +2744,7 @@ Effects          :
 Description      : $@spelldesc110744
 
 Name             : Mindbender (id=123040) [Spell Family (6)] 
+Replaces         : Shadowfiend (id=34433)
 Class            : Priest, Death Knight
 School           : Shadow
 Spell Type       : Magic
@@ -4311,6 +4312,7 @@ Effects          :
 Description      : Your single-target healing spells refresh the duration of your Renew on the target.
 
 Name             : Mindbender (id=200174) [Spell Family (6)] 
+Replaces         : Shadowfiend (id=34433)
 Class            : Priest, Death Knight
 School           : Shadow
 Spell Type       : Magic
@@ -4487,6 +4489,7 @@ Description      : Switch to your Primary Talent Specialization.
 Tooltip          : Switch to your Primary Talent Specialization.
 
 Name             : Purge the Wicked (id=204197) [Spell Family (6)] 
+Replaces         : Shadow Word: Pain (id=589)
 Class            : Priest
 School           : Fire
 Spell Type       : Magic
@@ -4620,6 +4623,7 @@ Tooltip          : Dealing $s1 Shadow damage to the target every $t sec.
 Insanity drain temporarily stopped.
 
 Name             : Shadow Word: Void (id=205351) [Spell Family (6)] 
+Replaces         : Mind Blast (id=8092)
 Class            : Priest
 School           : Shadow
 Spell Type       : Magic
@@ -4701,6 +4705,7 @@ Effects          :
 Description      : You may also control your own character while Mind Control is active, but Mind Control has a $205364s3 min cooldown, and it may not be used against players.
 
 Name             : Mind Bomb (id=205369) [Spell Family (6)] 
+Replaces         : Psychic Scream (id=8122)
 Class            : Priest
 School           : Shadow
 Spell Type       : Magic
@@ -6544,6 +6549,7 @@ Effects          :
 Description      : $@spelldesc197419
 
 Name             : Luminous Barrier (id=271466) [Spell Family (6)] 
+Replaces         : Power Word: Barrier (id=62618)
 Class            : Priest
 School           : Holy
 Spell Type       : Magic

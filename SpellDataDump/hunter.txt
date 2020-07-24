@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35256 shadowlands-BETA (git build shadowlands 6199ee1c91)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35282 shadowlands-BETA (git build dbc 9c725e1441)
 
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
@@ -4980,6 +4980,7 @@ Description      : Fires an explosive shot at your target. After $t1 sec, the sh
 Tooltip          : Exploding for $212680s1 Fire damage after $t1 sec.
 
 Name             : Butchery (id=212436) [Spell Family (9)] 
+Replaces         : Carve (id=187708)
 Class            : Hunter
 School           : Physical
 Spell Type       : Melee
@@ -5711,6 +5712,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 61666 | Target: Self (1)
 
 Name             : Mongoose Bite (id=259387) [Spell Family (9)] 
+Replaces         : Raptor Strike (id=186270)
 Class            : Hunter
 School           : Physical
 Spell Type       : Melee

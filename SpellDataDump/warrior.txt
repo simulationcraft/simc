@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35256 shadowlands-BETA (git build shadowlands 6199ee1c91)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35282 shadowlands-BETA (git build dbc 9c725e1441)
 
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
@@ -155,6 +155,7 @@ Description      : Wounds the target, causing $s1 Physical damage instantly and 
 Tooltip          : Bleeding for $w2 damage every $t2 sec.
 
 Name             : Cleave (id=845) [Spell Family (4)] 
+Replaces         : Sweeping Strikes (id=260708)
 Class            : Warrior
 School           : Physical
 Spell Type       : Melee
@@ -3064,6 +3065,7 @@ Effects          :
 Description      : $@spelldesc146974
 
 Name             : Ravager (id=152277) [Spell Family (4)] 
+Replaces         : Bladestorm (id=227847)
 Class            : Warrior, Death Knight
 School           : Physical
 Spell Type       : None
@@ -4047,6 +4049,7 @@ Effects          :
 Description      : $@spelldesc202168
 
 Name             : Impending Victory (id=202168) [Spell Family (4)] 
+Replaces         : Victory Rush (id=34428)
 Class            : Warrior
 School           : Physical
 Spell Type       : Melee
@@ -5142,6 +5145,7 @@ Effects          :
 Description      : Shield Block has ${$s1+1} charges.
 
 Name             : Devastator (id=236279) [Passive] 
+Replaces         : Devastate (id=20243)
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -5735,6 +5739,7 @@ Effects          :
 Description      : Overpower has ${1+$s1} charges and causes a seismic wave, dealing $315961s1 damage to up to $315961s2 enemies in a $315961A1 yd line.
 
 Name             : Warbreaker (id=262161) [Spell Family (4)] 
+Replaces         : Colossus Smash (id=167105)
 Class            : Warrior
 School           : Physical
 Spell Type       : Melee

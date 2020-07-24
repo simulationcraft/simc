@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35256 shadowlands-BETA (git build shadowlands 6199ee1c91)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35282 shadowlands-BETA (git build dbc 9c725e1441)
 
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
@@ -4443,6 +4443,7 @@ Effects          :
 Description      : $@spelldesc187365
 
 Name             : Drain Soul (id=198590) [Spell Family (5)] 
+Replaces         : Shadow Bolt (id=686)
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic

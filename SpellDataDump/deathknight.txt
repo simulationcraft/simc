@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35256 shadowlands-BETA (git build shadowlands 6199ee1c91)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35282 shadowlands-BETA (git build dbc 9c725e1441)
 
 Name             : Dual Wield (rank=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -2904,6 +2904,7 @@ Description      : $@spelldesc178819
 Tooltip          : Your next Death Strike is free and heals for an additional $s1% of maximum health.
 
 Name             : Incarnation: King of the Jungle (rank=Talent, Shapeshift) (id=102543) [Spell Family (7)] 
+Replaces         : Berserk (id=106951)
 Class            : Death Knight, Druid
 School           : Physical
 Spell Type       : Melee
@@ -2941,6 +2942,7 @@ Lasts $d. You may shapeshift in and out of this improved Cat Form for its durati
 Tooltip          : Reduces the energy cost of all Cat Form abilities by $s1% and increases maximum Energy by $s2.
 
 Name             : Incarnation: Chosen of Elune (rank=Talent, Shapeshift) (id=102560) [Spell Family (7)] 
+Replaces         : Celestial Alignment (id=194223)
 Class            : Death Knight, Druid
 School           : Physical
 Spell Type       : None
@@ -3185,6 +3187,7 @@ Tooltip          : Absorbing the next ${$w1-1} healing received.
 If any amount of heal absorption remains when this effect expires, you die.
 
 Name             : Mindbender (id=123040) [Spell Family (6)] 
+Replaces         : Shadowfiend (id=34433)
 Class            : Priest, Death Knight
 School           : Shadow
 Spell Type       : Magic
@@ -5183,6 +5186,7 @@ Effects          :
 Description      : $@spelldesc146652
 
 Name             : Serenity (id=152173) [Spell Family (53)] 
+Replaces         : Storm, Earth, and Fire (id=137639)
 Class            : Death Knight, Monk
 School           : Physical
 Spell Type       : None
@@ -5251,6 +5255,7 @@ Blood of the Rhino
 Great Stamina|r
 
 Name             : Ravager (id=152277) [Spell Family (4)] 
+Replaces         : Bladestorm (id=227847)
 Class            : Warrior, Death Knight
 School           : Physical
 Spell Type       : None
@@ -5314,6 +5319,7 @@ Tooltip          : Continuously dealing Frost damage every $t1 sec to enemies in
 Variables        : $CAP=$?$OWB==0[${$AP*0.98}][${($AP+$OAP)*2/3}]--2H, DW
 
 Name             : Defile (id=152280) [Spell Family (15)] 
+Replaces         : Death and Decay (id=43265)
 Class            : Death Knight
 School           : Shadow
 Spell Type       : Magic
@@ -5733,6 +5739,7 @@ Effects          :
 Description      : $@spelldesc191587
 
 Name             : Storm Elemental (id=192249) [Spell Family (11)] 
+Replaces         : Fire Elemental (id=198067)
 Class            : Death Knight, Shaman
 School           : Nature
 Spell Type       : Magic
@@ -6527,6 +6534,7 @@ Effects          :
 Description      : The Mindbender's melee attacks siphon energy from the target, converting it into Insanity for its master.
 
 Name             : Mindbender (id=200174) [Spell Family (6)] 
+Replaces         : Shadowfiend (id=34433)
 Class            : Priest, Death Knight
 School           : Shadow
 Spell Type       : Magic
@@ -7285,6 +7293,7 @@ Tooltip          : Haste increased by $s1%.
 Auto attacks infect the target with a Festering Wound.
 
 Name             : Clawing Shadows (id=207311) [Spell Family (15)] 
+Replaces         : Scourge Strike (id=55090)
 Class            : Death Knight
 School           : Shadow
 Spell Type       : Melee
@@ -7700,6 +7709,7 @@ Effects          :
 Description      : $@spelldesc207317
 
 Name             : Avenging Crusader (id=216331) [Spell Family (10)] 
+Replaces         : Avenging Wrath (id=31884)
 Class            : Paladin, Death Knight
 School           : Holy
 Spell Type       : None
@@ -8053,6 +8063,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: Cone Front (104)
 
 Name             : Crusade (id=231895) [Spell Family (10)] 
+Replaces         : Avenging Wrath (id=31884)
 Class            : Paladin, Death Knight
 School           : Holy
 Spell Type       : None
