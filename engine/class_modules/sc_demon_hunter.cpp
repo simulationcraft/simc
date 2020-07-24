@@ -24,7 +24,6 @@ namespace
   New Issues
   ----------
 
-  * Add Immolation Aura baseline
   * Check all Havoc talents
   ** Add Burning Hatred
   ** Add Unbound Chaos
@@ -282,7 +281,6 @@ public:
 
     const spell_data_t* insatiable_hunger;
     const spell_data_t* demon_blades;
-    const spell_data_t* immolation_aura;
 
     const spell_data_t* trail_of_ruin;
     const spell_data_t* fel_mastery;
@@ -350,6 +348,9 @@ public:
     const spell_data_t* demonic_wards;
     const spell_data_t* disrupt;
     const spell_data_t* leather_specialization;
+    const spell_data_t* immolation_aura;
+    const spell_data_t* immolation_aura_rank_2;
+    const spell_data_t* immolation_aura_rank_3;
     const spell_data_t* metamorphosis;
     const spell_data_t* metamorphosis_buff;
     const spell_data_t* soul_fragment;
@@ -374,7 +375,6 @@ public:
     const spell_data_t* vengeance;
     const spell_data_t* demon_spikes;
     const spell_data_t* fiery_brand_dr;
-    const spell_data_t* immolation_aura;
     const spell_data_t* riposte;
     const spell_data_t* soul_cleave;
   } spec;
@@ -521,12 +521,12 @@ public:
     // General
     heal_t* consume_soul_greater;
     heal_t* consume_soul_lesser;
+    spell_t* immolation_aura;
 
     // Havoc
     attack_t* demon_blades;
 
     // Vengeance
-    spell_t* immolation_aura;
     heal_t* spirit_bomb_heal;
   } active;
 
@@ -2367,7 +2367,6 @@ struct immolation_aura_t : public demon_hunter_spell_t
   {
     bool initial;
 
-    // TOCHECK: Direct, over time, or both?
     immolation_aura_damage_t( demon_hunter_t* p, const spell_data_t* s )
       : demon_hunter_spell_t( "immolation_aura_tick", p, s ), initial( false )
     {
@@ -2409,13 +2408,20 @@ struct immolation_aura_t : public demon_hunter_spell_t
     may_miss = may_crit = false;
     dot_duration = timespan_t::zero(); 
 
+    // Vengeance (Rank 3) is different than Havoc (Rank 3)
+    if ( p->specialization() == DEMON_HUNTER_VENGEANCE )
+    {
+      cooldown->duration += p->spec.immolation_aura_rank_3->effectN( 1 ).time_value();
+    }
+
     if ( !p->active.immolation_aura )
     {
       p->active.immolation_aura = new immolation_aura_damage_t( p, data().effectN( 1 ).trigger() );
       p->active.immolation_aura->stats = stats;
     }
 
-    initial_damage = new immolation_aura_damage_t( p, data().effectN( 2 ).trigger() );
+    // Initial damage is referenced indirectly in Immolation Aura (Rank 2) (id=320364) tooltip
+    initial_damage = new immolation_aura_damage_t( p, p->find_spell( 258921 ) );
     initial_damage->initial = true;
     initial_damage->stats = stats;
 
@@ -3918,6 +3924,32 @@ struct nemesis_debuff_t : public demon_hunter_buff_t<buff_t>
   }
 };
 
+// Immolation Aura ==========================================================
+
+struct immolation_aura_buff_t : public demon_hunter_buff_t<buff_t>
+{
+  immolation_aura_buff_t( demon_hunter_t* p )
+    : base_t( *p, "immolation_aura", p->spec.immolation_aura )
+  {
+    set_cooldown( timespan_t::zero() );
+    set_tick_callback( [ p ]( buff_t*, int, timespan_t ) {
+      p->active.immolation_aura->execute();
+    } );
+
+    if ( p->talent.agonizing_flames->ok() )
+    {
+      set_default_value( p->talent.agonizing_flames->effectN( 2 ).percent() );
+      add_invalidate( CACHE_RUN_SPEED );
+    }
+
+    // Vengeance (Rank 3) is different than Havoc (Rank 3)
+    if ( p->specialization() == DEMON_HUNTER_HAVOC )
+    {
+      buff_duration *= 1.0 + p->spec.immolation_aura_rank_3->effectN( 1 ).percent();
+    }
+  }
+};
+
 // Metamorphosis Buff =======================================================
 
 struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
@@ -4330,26 +4362,8 @@ void demon_hunter_t::create_buffs()
     ->set_default_value( find_spell( 163073 )->effectN( 1 ).percent() )
     ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
+  buff.immolation_aura = new buffs::immolation_aura_buff_t( this );
   buff.metamorphosis = new buffs::metamorphosis_buff_t( this );
-
-  if(specialization() == DEMON_HUNTER_HAVOC )
-  {
-    buff.immolation_aura = make_buff( this, "immolation_aura", spec.immolation_aura )
-      ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
-        active.immolation_aura->execute();
-      } )
-      ->set_cooldown( timespan_t::zero() );
-  }
-  else // DEMON_HUNTER_VENGEANCE
-  {
-    buff.immolation_aura = make_buff( this, "immolation_aura", spec.immolation_aura )
-      ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
-        active.immolation_aura->execute();
-      } )
-      ->set_default_value( talent.agonizing_flames->effectN( 2 ).percent() )
-      ->add_invalidate( CACHE_RUN_SPEED )
-      ->set_cooldown( timespan_t::zero() );
-  }
 
   // Havoc ==================================================================
 
@@ -4803,22 +4817,25 @@ void demon_hunter_t::init_spells()
   spec.critical_strikes       = find_spell( 221351 );
   spec.demonic_wards          = find_specialization_spell( "Demonic Wards" ); // Two different spells with the same name
   spec.disrupt                = find_class_spell( "Disrupt" );
+  spec.immolation_aura        = find_class_spell( "Immolation Aura" );
+  spec.immolation_aura_rank_2 = find_spell( 320364 );
   spec.soul_fragment          = find_spell( 204255 );
 
   if ( specialization() == DEMON_HUNTER_HAVOC )
   {
     spec.consume_soul_greater   = find_spell( 178963 );
     spec.consume_soul_lesser    = spec.consume_soul_greater;
-    spec.immolation_aura        = find_talent_spell( "Immolation Aura" );
+    spec.immolation_aura_rank_3 = find_spell( 320377 );
     spec.leather_specialization = find_spell( 178976 );
     spec.metamorphosis          = find_class_spell( "Metamorphosis" );
     spec.metamorphosis_buff     = spec.metamorphosis->effectN( 2 ).trigger();
+    
   }
   else
   {
     spec.consume_soul_greater   = find_spell( 210042 );
     spec.consume_soul_lesser    = find_spell( 203794 );
-    spec.immolation_aura        = find_specialization_spell( "Immolation Aura" );
+    spec.immolation_aura_rank_3 = find_spell( 320378 );
     spec.leather_specialization = find_spell( 226359 );
     spec.metamorphosis          = find_specialization_spell( "Metamorphosis" );
     spec.metamorphosis_buff     = spec.metamorphosis;
@@ -4864,8 +4881,8 @@ void demon_hunter_t::init_spells()
   // talent.felblade
 
   talent.insatiable_hunger    = find_talent_spell( "Insatiable Hunger" );
+  // Burning Hatred
   talent.demon_blades         = find_talent_spell( "Demon Blades" );
-  talent.immolation_aura      = find_talent_spell( "Immolation Aura" );
 
   talent.trail_of_ruin        = find_talent_spell( "Trail of Ruin" );
   talent.fel_mastery          = find_talent_spell( "Fel Mastery" );
@@ -5173,7 +5190,7 @@ void demon_hunter_t::apl_havoc()
   apl_normal->add_action( this, "Fel Rush", "if=(variable.waiting_for_momentum|talent.fel_mastery.enabled)&(charges=2|(raid_event.movement.in>10&raid_event.adds.in>10))" );
   apl_normal->add_talent( this, "Fel Barrage", "if=!variable.waiting_for_momentum&(active_enemies>desired_targets|raid_event.adds.in>30)" );
   apl_normal->add_action( this, spec.death_sweep, "death_sweep", "if=variable.blade_dance" );
-  apl_normal->add_talent( this, "Immolation Aura" );
+  apl_normal->add_action( this, "Immolation Aura" );
   apl_normal->add_action( this, "Eye Beam", "if=active_enemies>1&(!raid_event.adds.exists|raid_event.adds.up)&!variable.waiting_for_momentum" );
   apl_normal->add_action( this, "Blade Dance", "if=variable.blade_dance" );
   apl_normal->add_talent( this, "Felblade", "if=fury.deficit>=40" );
@@ -5196,7 +5213,7 @@ void demon_hunter_t::apl_havoc()
   apl_demonic->add_talent( this, "Fel Barrage", "if=(buff.metamorphosis.up&raid_event.adds.in>30)|active_enemies>desired_targets" );
   apl_demonic->add_action( this, "Blade Dance", "if=variable.blade_dance&!cooldown.metamorphosis.ready"
                                                 "&(cooldown.eye_beam.remains>(5-azerite.revolving_blades.rank*3)|(raid_event.adds.in>cooldown&raid_event.adds.in<25))" );
-  apl_demonic->add_talent( this, "Immolation Aura" );
+  apl_demonic->add_action( this, "Immolation Aura" );
   apl_demonic->add_action( this, spec.annihilation, "annihilation", "if=!variable.pooling_for_blade_dance" );
   apl_demonic->add_talent( this, "Felblade", "if=fury.deficit>=40" );
   apl_demonic->add_action( this, "Chaos Strike", "if=!variable.pooling_for_blade_dance&!variable.pooling_for_eye_beam" );
