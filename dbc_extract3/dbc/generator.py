@@ -3071,10 +3071,6 @@ class SpellDescVarGenerator(SpellDataGenerator):
     def filter(self):
         data = []
 
-        # we are going to mimic what the client data has:
-        #  - an array of spell_id -> desc_var
-        #  - an array of desc_vars
-        # this generates data for the first array
         for spell_id in sorted(super().filter().keys()):
             spell = self.db('SpellName')[spell_id]
             if spell.id != spell_id:
@@ -3083,37 +3079,32 @@ class SpellDescVarGenerator(SpellDataGenerator):
             # assume there can only be one ref
             links = spell.child_refs('SpellXDescriptionVariables')
             if len(links) > 0:
-                data.append(links[0])
+                link = links[0]
+                if link.ref('id_desc_var').id == link.id_desc_var:
+                    data.append(links[0])
+            if len(links) > 1:
+                logging.warning('Spell %s (id=%d) associated with more than one description variable (%d)',
+                                spell.name, spell.id, len(links))
 
         return data
 
     def generate(self, data = None):
-        desc_vars = set()
         hotfix_data = HotfixDataGenerator('spelldesc_vars')
-
-        self.output_header(
-                header = 'Spell description variables spell id index',
-                type = 'spelldesc_vars_index_t',
-                array = 'spelldesc_vars_index',
-                length = len(data))
-
-        for entry in sorted(data, key=lambda e: e.id_spell):
-            desc_var = entry.ref('id_desc_var')
-            if desc_var.id == entry.id_desc_var:
-                self.output_record(entry.field('id_spell', 'id_desc_var'))
-                desc_vars.add(desc_var)
-
-        self.output_footer()
 
         self.output_header(
                 header = 'Spell description variables',
                 type = 'spelldesc_vars_data_t',
                 array = 'spelldesc_vars',
-                length = len(desc_vars))
+                length = len(data))
 
-        for entry in sorted(desc_vars, key=lambda e: e.id):
-            self.output_record(entry.field( 'id', 'desc' ))
-            hotfix_data.add_single(entry.id, entry, ('desc', 0))
+        for entry in sorted(data, key=lambda e: e.id_spell):
+            desc_var = entry.ref('id_desc_var')
+
+            fields = entry.field('id_spell')
+            fields += desc_var.field('desc')
+            self.output_record(fields)
+
+            hotfix_data.add_single(entry.id_spell, desc_var, ('desc', 0))
 
         self.output_footer()
         hotfix_data.output(self)
