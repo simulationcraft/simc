@@ -4012,3 +4012,23 @@ class PetRaceEnumGenerator(DataGenerator):
         self._out.write('};\n')
         self._out.write('#endif /* PET_RACES_HPP */')
 
+class RuneforgeLegendaryGenerator(DataGenerator):
+    def filter(self):
+        entries = list(filter(lambda v: v.id_bonus and v.id_spell > 0,
+            self.db('RuneforgeLegendaryAbility').values()
+        ))
+
+        return entries
+
+    def generate(self, data=None):
+        self.output_header(
+                header='Runeforge legendary bonuses',
+                type='runeforge_legendary_entry_t',
+                array='runeforge_legendary',
+                length=len(data))
+
+        for entry in sorted(data, key=lambda v: v.id_bonus):
+            fields = entry.field('id_bonus', 'id_specialization', 'id_spell', 'mask_inv_type', 'name')
+            self.output_record(fields)
+
+        self.output_footer()

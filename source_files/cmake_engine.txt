@@ -36,6 +36,7 @@ dbc/item_database.hpp
 dbc/item_effect.hpp
 dbc/item_import.hpp
 dbc/item_naming.hpp
+dbc/item_runeforge.hpp
 dbc/item_scaling.hpp
 dbc/item_set_bonus.hpp
 dbc/item_weapon.hpp
@@ -213,6 +214,7 @@ dbc/item_effect.cpp
 dbc/item_import.cpp
 dbc/item_import_ptr.cpp
 dbc/item_naming.cpp
+dbc/item_runeforge.cpp
 dbc/item_scaling.cpp
 dbc/item_set_bonus.cpp
 dbc/item_weapon.cpp

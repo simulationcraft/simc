@@ -53,6 +53,7 @@ SRC += \
     dbc$(PATHSEP)item_import.cpp \
     dbc$(PATHSEP)item_import_ptr.cpp \
     dbc$(PATHSEP)item_naming.cpp \
+    dbc$(PATHSEP)item_runeforge.cpp \
     dbc$(PATHSEP)item_scaling.cpp \
     dbc$(PATHSEP)item_set_bonus.cpp \
     dbc$(PATHSEP)item_weapon.cpp \

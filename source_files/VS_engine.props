@@ -42,6 +42,7 @@ To change the list of source files run synchronize.py
 		<ClInclude Include="..\engine\dbc\item_effect.hpp" />
 		<ClInclude Include="..\engine\dbc\item_import.hpp" />
 		<ClInclude Include="..\engine\dbc\item_naming.hpp" />
+		<ClInclude Include="..\engine\dbc\item_runeforge.hpp" />
 		<ClInclude Include="..\engine\dbc\item_scaling.hpp" />
 		<ClInclude Include="..\engine\dbc\item_set_bonus.hpp" />
 		<ClInclude Include="..\engine\dbc\item_weapon.hpp" />
@@ -319,6 +320,9 @@ To change the list of source files run synchronize.py
 			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>
 		<ClCompile Include="..\engine\dbc\item_naming.cpp">
+			<PrecompiledHeader>NotUsing</PrecompiledHeader>
+		</ClCompile>
+		<ClCompile Include="..\engine\dbc\item_runeforge.cpp">
 			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>
 		<ClCompile Include="..\engine\dbc\item_scaling.cpp">
