@@ -36,7 +36,7 @@
 #include "dbc/real_ppm_data.hpp"
 #include "dbc/talent_data.hpp"
 #include "dbc/spell_data.hpp"
-#include "dbc/client_hotfix_entry.hpp"
+#include "dbc/spelltext_data.hpp"
 
 // ==========================================================================
 // Forward declaration
@@ -465,14 +465,11 @@ public:
 
   std::vector<const racial_spell_entry_t*> racial_spell( player_e c, race_e r ) const;
 
-  util::span<const hotfix::client_hotfix_entry_t> hotfixes( const spell_data_t* p ) const
-  { assert( p ); return hotfix::spell_hotfixes( p -> id(), ptr ); }
+  const spelltext_data_t& spell_text( unsigned spell_id ) const
+  { return spelltext_data_t::find( spell_id, ptr ); }
 
-  util::span<const hotfix::client_hotfix_entry_t> hotfixes( const spelleffect_data_t* p ) const
-  { assert( p ); return hotfix::effect_hotfixes( p -> id(), ptr ); }
-
-  util::span<const hotfix::client_hotfix_entry_t> hotfixes( const spellpower_data_t* p ) const
-  { assert( p ); return hotfix::power_hotfixes( p -> id(), ptr ); }
+  const spelldesc_vars_data_t& spell_desc_vars( unsigned spell_id ) const
+  { return spelldesc_vars_data_t::find( spell_id, ptr ); }
 
   // Derived data access
   unsigned class_max_size() const;

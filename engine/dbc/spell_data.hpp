@@ -8,6 +8,7 @@
 #include "config.hpp"
 
 #include "dbc/client_data.hpp"
+#include "dbc/client_hotfix_entry.hpp"
 #include "dbc/data_enums.hh"
 #include "sc_enums.hpp"
 #include "sc_timespan.hpp"
@@ -129,8 +130,8 @@ struct spellpower_data_t
   { return dbc::nil<spellpower_data_t>; }
 
   static const spellpower_data_t& find( unsigned id, bool ptr = false );
-
   static util::span<const spellpower_data_t> data( bool ptr = false );
+  static util::span<const hotfix::client_hotfix_entry_t> hotfixes( const spellpower_data_t&, bool ptr );
 
   bool override_field( util::string_view field, double value );
   double get_field( util::string_view field ) const;
@@ -344,6 +345,7 @@ struct spelleffect_data_t
   static const spelleffect_data_t& nil();
   static const spelleffect_data_t* find( unsigned, bool ptr = false );
   static util::span<const spelleffect_data_t> data( bool ptr = false );
+  static util::span<const hotfix::client_hotfix_entry_t> hotfixes( const spelleffect_data_t&, bool ptr );
 
   static void link( bool ptr = false );
 private:
@@ -410,13 +412,6 @@ struct spell_data_t
   // Azerite stuff
   unsigned    _power_id;           // Azerite power id
   unsigned    _essence_id;         // Azerite essence id
-  // Textual data
-  const char* _desc;               // Spell.dbc description stringblock
-  const char* _tooltip;            // Spell.dbc tooltip stringblock
-  // SpellDescriptionVariables.dbc
-  const char* _desc_vars;          // Spell description variable stringblock, if present
-  // SpellIcon.dbc
-  const char* _rank_str;
 
   unsigned    _req_max_level;
   unsigned    _dmg_class;          // SpellCategories.db2 classification for the spell
@@ -462,12 +457,6 @@ struct spell_data_t
 
   timespan_t charge_cooldown() const
   { return timespan_t::from_millis( _charge_cooldown ); }
-
-  const char* desc() const
-  { return ok() ? _desc : ""; }
-
-  const char* desc_vars() const
-  { return ok() ? _desc_vars : ""; }
 
   timespan_t duration() const
   { return timespan_t::from_millis( _duration ); }
@@ -523,14 +512,8 @@ struct spell_data_t
   double real_ppm() const
   { return _rppm; }
 
-  const char* rank_str() const
-  { return ok() ? _rank_str : ""; }
-
   uint32_t school_mask() const
   { return _school; }
-
-  const char* tooltip() const
-  { return ok() ? _tooltip : ""; }
 
   unsigned stance_mask() const
   { return _stance_mask; }
@@ -766,6 +749,7 @@ struct spell_data_t
   static const spell_data_t* find( unsigned id, bool ptr = false );
   static const spell_data_t* find( unsigned id, util::string_view confirmation, bool ptr = false );
   static util::span<const spell_data_t> data( bool ptr = false );
+  static util::span<const hotfix::client_hotfix_entry_t> hotfixes( const spell_data_t&, bool ptr );
 
   static void link( bool ptr );
 private:

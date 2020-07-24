@@ -66,6 +66,11 @@ class HotfixDataGenerator(object):
             logging.debug('Hotfixed {} {}, original values: {}'.format(self._name, id, record.data))
             self._data[id] = record.data
 
+    def add_single(self, id, entry, *args):
+        record = HotfixDataRecord()
+        record.add(entry, *args)
+        self.add(id, record)
+
     def output(self, generator):
         generator._out.write('// {} hotfix entries, wow build {}\n'.format(
             self._name, generator._options.build ))
@@ -2867,30 +2872,6 @@ class SpellDataGenerator(DataGenerator):
             else:
                 fields.append('0')
 
-            spell_text = spell.get_link('text')
-            fields += spell_text.field('desc', 'tt')
-            hotfix.add(spell_text, ('desc', 42), ('tt', 43))
-
-            if self._options.build < 25600:
-                desc_var = self._spelldescriptionvariables_db[spell.id_desc_var]
-            else:
-                link = spell.get_link('desc_var_link')
-                desc_var = self._spelldescriptionvariables_db[link.id_desc_var]
-
-            if desc_var.id:
-                fields += desc_var.field('desc')
-                hotfix.add(desc_var, ('desc', 44))
-            else:
-                if self._options.build < 25600:
-                    hotfix.add(spell, ('id_desc_var', 44))
-                else:
-                    link = spell.get_link('desc_var_link')
-                    hotfix.add(link, ('id_desc_var', 44))
-                fields += [ u'0' ]
-
-            fields += spell_text.field('rank')
-            hotfix.add(spell_text, ('rank', 45))
-
             fields += spell.get_link('level').field('req_max_level')
             # hotfix.add(spell.get_link('level'), ('req_max_level', 46))
 
@@ -3056,6 +3037,86 @@ class SpellDataGenerator(DataGenerator):
         self._out.write('} };\n')
 
         return ''
+
+class SpellTextGenerator(SpellDataGenerator):
+    def filter(self):
+        data = []
+
+        for spell_id in sorted(super().filter().keys()):
+            entry = self.db('Spell')[spell_id]
+            # skip entries with "empty" text
+            if entry.desc == 0 and entry.tt == 0 and entry.rank == 0:
+                continue
+            data.append(entry)
+
+        return data
+
+    def generate(self, data = None):
+        hotfix_data = HotfixDataGenerator('spelltext')
+
+        self.output_header(
+                header = 'Spell text',
+                type = 'spelltext_data_t',
+                array = 'spelltext',
+                length = len(data))
+
+        for entry in data:
+            self.output_record(entry.field( 'id', 'desc', 'tt', 'rank' ))
+            hotfix_data.add_single(entry.id, entry, ('desc', 0), ('tt', 1), ('rank', 2))
+
+        self.output_footer()
+        hotfix_data.output(self)
+
+class SpellDescVarGenerator(SpellDataGenerator):
+    def filter(self):
+        data = []
+
+        # we are going to mimic what the client data has:
+        #  - an array of spell_id -> desc_var
+        #  - an array of desc_vars
+        # this generates data for the first array
+        for spell_id in sorted(super().filter().keys()):
+            spell = self.db('SpellName')[spell_id]
+            if spell.id != spell_id:
+                continue
+
+            # assume there can only be one ref
+            links = spell.child_refs('SpellXDescriptionVariables')
+            if len(links) > 0:
+                data.append(links[0])
+
+        return data
+
+    def generate(self, data = None):
+        desc_vars = set()
+        hotfix_data = HotfixDataGenerator('spelldesc_vars')
+
+        self.output_header(
+                header = 'Spell description variables spell id index',
+                type = 'spelldesc_vars_index_t',
+                array = 'spelldesc_vars_index',
+                length = len(data))
+
+        for entry in sorted(data, key=lambda e: e.id_spell):
+            desc_var = entry.ref('id_desc_var')
+            if desc_var.id == entry.id_desc_var:
+                self.output_record(entry.field('id_spell', 'id_desc_var'))
+                desc_vars.add(desc_var)
+
+        self.output_footer()
+
+        self.output_header(
+                header = 'Spell description variables',
+                type = 'spelldesc_vars_data_t',
+                array = 'spelldesc_vars',
+                length = len(desc_vars))
+
+        for entry in sorted(desc_vars, key=lambda e: e.id):
+            self.output_record(entry.field( 'id', 'desc' ))
+            hotfix_data.add_single(entry.id, entry, ('desc', 0))
+
+        self.output_footer()
+        hotfix_data.output(self)
 
 class MasteryAbilityGenerator(DataGenerator):
     def filter(self):

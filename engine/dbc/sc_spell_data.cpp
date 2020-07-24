@@ -162,6 +162,19 @@ struct spell_replace_spell_id_t : func_field_t<spell_replace_spell_id_t, spell_d
   }
 };
 
+template <typename Fn>
+struct spell_text_field_t : func_field_t<spell_text_field_t<Fn>, spell_data_t> {
+  const char* operator()( const dbc_t& dbc, const spell_data_t& data ) const {
+    return Fn{}( dbc.spell_text( data.id() ) );
+  }
+};
+
+struct spell_desc_vars_t : func_field_t<spell_desc_vars_t, spell_data_t> {
+  const char* operator()( const dbc_t& dbc, const spell_data_t& data ) const {
+    return dbc.spell_desc_vars( data.id() ).desc_vars();
+  }
+};
+
 static constexpr std::array<sdata_field_t, 37> _spell_data_fields { {
   { "name",              FIELD( &spell_data_t::_name ) },
   { "id",                FIELD( &spell_data_t::_id ) },
@@ -194,10 +207,10 @@ static constexpr std::array<sdata_field_t, 37> _spell_data_fields { {
   { "mechanic",          FIELD( &spell_data_t::_mechanic ) },
   { "power_id",          FIELD( &spell_data_t::_power_id ) }, // Azereite power id
   { "essence_id",        FIELD( &spell_data_t::_essence_id ) }, // Azereite essence id
-  { "desc",              FIELD( &spell_data_t::_desc ) },
-  { "tooltip",           FIELD( &spell_data_t::_tooltip ) },
-  { "rank",              FIELD( &spell_data_t::_rank_str ) },
-  { "desc_vars",         FIELD( &spell_data_t::_desc_vars ) },
+  { "desc",              spell_text_field_t< MEM_FN_T( &spelltext_data_t::desc ) >{} },
+  { "tooltip",           spell_text_field_t< MEM_FN_T( &spelltext_data_t::tooltip ) >{} },
+  { "rank",              spell_text_field_t< MEM_FN_T( &spelltext_data_t::rank ) >{} },
+  { "desc_vars",         spell_desc_vars_t{} },
   { "req_max_level",     FIELD( &spell_data_t::_req_max_level ) },
   { "dmg_class",         FIELD( &spell_data_t::_dmg_class ) },
 } };

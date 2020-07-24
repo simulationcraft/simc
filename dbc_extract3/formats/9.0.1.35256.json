@@ -1164,7 +1164,7 @@
   },
   "SpellXDescriptionVariables": {
     "fields": [
-      { "data_type": "i", "field": "id_spell", "ref": "SpellName" },
+      { "data_type": "i", "field": "id_spell", "ref": "SpellName", "formats": { "cpp": "%7u" } },
       { "data_type": "i", "field": "id_desc_var", "ref": "SpellDescriptionVariables" }
     ]
   },

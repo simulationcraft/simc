@@ -310,7 +310,8 @@ std::string tooltip_parser_t::parse()
           // for cycles of length 1 here (which should hopefully be enough).
           if ( spell->id() != default_spell.id() )
           {
-            replacement_text = report_helper::pretty_spell_text( *spell, spell->desc(), *player );
+            const auto& spell_text = dbc.spell_text( spell->id() );
+            replacement_text = report_helper::pretty_spell_text( *spell, spell_text.desc(), *player );
           }
           break;
         }

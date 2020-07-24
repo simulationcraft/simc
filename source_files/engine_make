@@ -43,6 +43,7 @@ SRC += \
     dbc$(PATHSEP)active_spells.cpp \
     dbc$(PATHSEP)azerite.cpp \
     dbc$(PATHSEP)client_data.cpp \
+    dbc$(PATHSEP)client_hotfix_entry.cpp \
     dbc$(PATHSEP)gem_data.cpp \
     dbc$(PATHSEP)item_armor.cpp \
     dbc$(PATHSEP)item_bonus.cpp \
@@ -67,6 +68,7 @@ SRC += \
     dbc$(PATHSEP)specialization_spell.cpp \
     dbc$(PATHSEP)spell_data.cpp \
     dbc$(PATHSEP)spell_item_enchantment.cpp \
+    dbc$(PATHSEP)spelltext_data.cpp \
     dbc$(PATHSEP)talent_data.cpp \
     interfaces$(PATHSEP)bcp_api.cpp \
     interfaces$(PATHSEP)sc_http.cpp \

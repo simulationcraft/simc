@@ -95,12 +95,18 @@ static constexpr auto _hotfix_spell_map = util::make_static_map<unsigned, util::
   { 39, "Mechanic" },
   { 40, "Azerite Power Id" },
   { 41, "Azerite Essence Id" },
-  { 42, "Description" },
-  { 43, "Tooltip" },
-  { 44, "Variables" },
-  { 45, "Rank" },
   { 46, "Required Max Level" },
   { 47, "Spell Type" },
+} );
+
+static constexpr auto _hotfix_spelltext_map = util::make_static_map<unsigned, util::string_view>( {
+  { 0, "Description" },
+  { 1, "Tooltip" },
+  { 2, "Rank" },
+} );
+
+static constexpr auto _hotfix_spelldesc_vars_map = util::make_static_map<unsigned, util::string_view>( {
+  { 0, "Variables" },
 } );
 
 static constexpr auto _hotfix_power_map = util::make_static_map<unsigned, util::string_view>( {
@@ -123,10 +129,10 @@ std::string map_string( const util::static_map<T, util::string_view, N>& map, T 
   return fmt::format( "Unknown({})", key );
 }
 
-std::string hotfix_map_str( util::span<const hotfix::client_hotfix_entry_t> hotfixes,
-                            util::static_map_view<unsigned, util::string_view> map )
+void print_hotfixes( fmt::memory_buffer& buf,
+                     util::span<const hotfix::client_hotfix_entry_t> hotfixes,
+                     util::static_map_view<unsigned, util::string_view> map )
 {
-  fmt::memory_buffer buf;
   for ( const auto& hotfix : hotfixes )
   {
     if ( buf.size() > 0 )
@@ -157,8 +163,14 @@ std::string hotfix_map_str( util::span<const hotfix::client_hotfix_entry_t> hotf
         break;
     }
   }
+}
 
-  return to_string( buf );
+std::string hotfix_map_str( util::span<const hotfix::client_hotfix_entry_t> hotfixes,
+                            util::static_map_view<unsigned, util::string_view> map )
+{
+  fmt::memory_buffer s;
+  print_hotfixes( s, hotfixes, map );
+  return to_string( s );
 }
 
 template <typename Range, typename Callback>
@@ -1140,7 +1152,7 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
     }
   }
 
-  const auto hotfixes = dbc.hotfixes( e );
+  const auto hotfixes = spelleffect_data_t::hotfixes( *e, dbc.ptr );
   if ( hotfixes.size() > 0 )
   {
     if ( hotfixes.front().field_id == hotfix::NEW_ENTRY )
@@ -1156,7 +1168,6 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
 
 std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int level )
 {
-
   std::ostringstream s;
   player_e pt = PLAYER_NONE;
 
@@ -1166,18 +1177,27 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
     return s.str();
   }
 
+  const spelltext_data_t& spell_text = dbc.spell_text( spell -> id() );
+  const spelldesc_vars_data_t& spelldesc_vars = dbc.spell_desc_vars( spell -> id() );
+
   std::string name_str = spell -> name_cstr();
-  if ( spell -> rank_str() )
-    name_str += " (rank=" + std::string( spell -> rank_str() ) + ")";
+  if ( spell_text.rank() )
+    name_str += " (rank=" + std::string( spell_text.rank() ) + ")";
   s <<   "Name             : " << name_str << " (id=" << spell -> id() << ") " << spell_flags( spell ) << std::endl;
 
-  const auto hotfixes = dbc.hotfixes( spell );
-  if ( hotfixes.size() > 0 )
+  const auto hotfixes = spell_data_t::hotfixes( *spell, dbc.ptr );
+  if ( hotfixes.size() > 0 && hotfixes.front().field_id == hotfix::NEW_ENTRY )
   {
-    if ( hotfixes.front().field_id == hotfix::NEW_ENTRY )
-      fmt::print( s, "Hotfixed         : NEW SPELL\n" );
-    else
-      fmt::print( s, "Hotfixed         : {}\n", hotfix_map_str( hotfixes, _hotfix_spell_map ) );
+    fmt::print( s, "Hotfixed         : NEW SPELL\n" );
+  }
+  else
+  {
+    fmt::memory_buffer hs;
+    print_hotfixes( hs, hotfixes, _hotfix_spell_map );
+    print_hotfixes( hs, spelltext_data_t::hotfixes( spell_text, dbc.ptr ), _hotfix_spelltext_map );
+    print_hotfixes( hs, spelldesc_vars_data_t::hotfixes( spelldesc_vars, dbc.ptr ), _hotfix_spelldesc_vars_map );
+    if ( hs.size() > 0 )
+      fmt::print( s, "Hotfixed         : {}\n", to_string( hs ) );
   }
 
   const unsigned replace_spell_id = dbc.replace_spell_id( spell -> id() );
@@ -1302,7 +1322,7 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
     if ( pd.aura_id() > 0 && dbc.spell( pd.aura_id() ) -> id() == pd.aura_id() )
       s << " w/ " << dbc.spell( pd.aura_id() ) -> name_cstr() << " (id=" << pd.aura_id() << ")";
 
-    const auto hotfixes = dbc.hotfixes( &pd );
+    const auto hotfixes = spellpower_data_t::hotfixes( pd, dbc.ptr );
     if ( hotfixes.size() > 0 )
     {
       if ( hotfixes.front().field_id == hotfix::NEW_ENTRY )
@@ -1702,14 +1722,14 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
     spell_info::effect_to_str( dbc, spell, &e, s, level );
   }
 
-  if ( spell -> desc() )
-    s << "Description      : " << spell -> desc() << std::endl;
+  if ( spell_text.desc() )
+    s << "Description      : " << spell_text.desc() << std::endl;
 
-  if ( spell -> tooltip() )
-    s << "Tooltip          : " << spell -> tooltip() << std::endl;
+  if ( spell_text.tooltip() )
+    s << "Tooltip          : " << spell_text.tooltip() << std::endl;
 
-  if ( spell -> desc_vars() )
-    s << "Variables        : " << spell -> desc_vars() << std::endl;
+  if ( spelldesc_vars.desc_vars() )
+    s << "Variables        : " << spelldesc_vars.desc_vars() << std::endl;
 
   s << std::endl;
 
@@ -2119,14 +2139,16 @@ void spell_info::to_xml( const dbc_t& dbc, const spell_data_t* spell, xml_node_t
     spell_info::effect_to_xml( dbc, spell, &e, effect_node, level );
   }
 
-  if ( spell -> desc() )
-    node -> add_child( "description" ) -> add_parm( ".", spell -> desc() );
+  const auto& spell_text = dbc.spell_text( spell -> id() );
+  if ( spell_text.desc() )
+    node -> add_child( "description" ) -> add_parm( ".", spell_text.desc() );
 
-  if ( spell -> tooltip() )
-    node -> add_child( "tooltip" ) -> add_parm( ".", spell -> tooltip() );
+  if ( spell_text.tooltip() )
+    node -> add_child( "tooltip" ) -> add_parm( ".", spell_text.tooltip() );
 
-  if ( spell -> _desc_vars )
-    node -> add_child( "variables" ) -> add_parm( ".", spell -> _desc_vars );
+  const auto& spelldesc_vars = dbc.spell_desc_vars( spell -> id() );
+  if ( spelldesc_vars.desc_vars() )
+    node -> add_child( "variables" ) -> add_parm( ".", spelldesc_vars.desc_vars() );
 }
 
 void spell_info::talent_to_xml( const dbc_t& /* dbc */, const talent_data_t* talent, xml_node_t* parent, int /* level */ )
