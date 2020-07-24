@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35282 shadowlands-BETA (git build dbc 9c725e1441)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35282 shadowlands-BETA (git build dbc df97e687b9)
 
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Guardian Druid
@@ -96,7 +96,7 @@ Description      : Heals all allies within $a2 yards for ${$157982s1*5} over $d.
 Healing increased by $s3% when not in a raid.
 Tooltip          : Healing all allies within $a1 yards for $157982s1 every $t1 sec.
 
-Name             : Cat Form (rank=Shapeshift) (id=768) [Spell Family (7)] 
+Name             : Cat Form (desc=Shapeshift) (id=768) [Spell Family (7)] 
 Class            : Druid
 School           : Physical
 Spell Type       : Magic
@@ -176,7 +176,7 @@ $tol=$?a5420[${1+0.01+$5420m1}][${1}]
 $gift=$?s87305[${1.25}][${1}]
 $bloom=${$<gift>*$<genesis3>*$<mstrshape>*$<gotem3>*$<tol>}
 
-Name             : Travel Form (rank=Shapeshift) (id=783) [Spell Family (7)] 
+Name             : Travel Form (desc=Shapeshift) (id=783) [Spell Family (7)] 
 Class            : Druid
 School           : Physical
 Spell Type       : Magic
@@ -604,7 +604,7 @@ While stealthed, Shred deals $m3% increased damage, and has double the chance to
 
 |cFFFFFFFFAwards $s2 combo $lpoint:points;.
 
-Name             : Travel Form (Passive) (rank=Passive) (id=5419) [Spell Family (7), Passive] 
+Name             : Travel Form (Passive) (desc=Passive) (id=5419) [Spell Family (7), Passive] 
 Class            : Druid
 School           : Nature
 Spell Type       : None
@@ -624,7 +624,7 @@ Effects          :
                    Affected Spells: Wild Charge (102401)
                    Family Flags: 68
 
-Name             : Incarnation: Tree of Life (rank=Passive) (id=5420) [Spell Family (7), Passive, Hidden] 
+Name             : Incarnation: Tree of Life (desc=Passive) (id=5420) [Spell Family (7), Passive, Hidden] 
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -684,7 +684,7 @@ Effects          :
                    Family Flags: 68
 Description      : Increases swimming speed by $s1% and allow's the druid to breathe underwater.
 
-Name             : Bear Form (rank=Shapeshift) (id=5487) [Spell Family (7)] 
+Name             : Bear Form (desc=Shapeshift) (id=5487) [Spell Family (7)] 
 Class            : Druid
 School           : Physical
 Spell Type       : Magic
@@ -1099,7 +1099,7 @@ Effects          :
                    Base Value: 17 | Scaled Value: 17 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Reduces damage from falling$?s114295[][ while in Cat Form].
 
-Name             : Elusiveness (rank=Racial Passive) (id=21009) [Passive] 
+Name             : Elusiveness (desc=Racial Passive) (id=21009) [Passive] 
 Class            : Rogue, Druid
 Race             : Night Elf (0x8)
 School           : Physical
@@ -1139,7 +1139,7 @@ Effects          :
                    Affected Spells: Wild Charge (102401)
                    Family Flags: 68
 
-Name             : Command (rank=Racial Passive) (id=21563) [Spell Family (9), Passive] 
+Name             : Command (desc=Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Orc (0x2)
 School           : Physical
@@ -1465,7 +1465,7 @@ Effects          :
 Description      : Tosses the enemy target into the air, disorienting them but making them invulnerable for up to $d.  Only one target can be affected by your Cyclone at a time.
 Tooltip          : Disoriented and invulnerable.
 
-Name             : Incarnation: Tree of Life (rank=Talent, Shapeshift) (id=33891) [Spell Family (7)] 
+Name             : Incarnation: Tree of Life (desc=Talent, Shapeshift) (id=33891) [Spell Family (7)] 
 Class            : Druid
 School           : Physical
 Spell Type       : Magic
@@ -1532,7 +1532,7 @@ Description      : Mangle the target for $s2 Physical damage.$?a231064[ Deals $s
 
 |cFFFFFFFFGenerates ${$m4/10} Rage.|r
 
-Name             : Flight Form (Passive) (rank=Passive) (id=33948) [Spell Family (7), Passive] 
+Name             : Flight Form (Passive) (desc=Passive) (id=33948) [Spell Family (7), Passive] 
 Class            : Druid
 School           : Nature
 Spell Type       : None
@@ -2073,7 +2073,7 @@ Description      : $@spelldesc52610
 Tooltip          : Damage increased $s1% while in Cat Form.
 Energy regeneration increased by $s3%.
 
-Name             : Viciousness (rank=Racial Passive) (id=68975) [Passive] 
+Name             : Viciousness (desc=Racial Passive) (id=68975) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
 Race             : Worgen (0x200000)
 School           : Physical
@@ -2092,7 +2092,7 @@ Effects          :
 Description      : Increases critical strike chance by $s1%.
 Tooltip          : Critical strike chance increased by $s1%.
 
-Name             : Aberration (rank=Racial Passive) (id=68976) [Passive] 
+Name             : Aberration (desc=Racial Passive) (id=68976) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
 Race             : Worgen (0x200000)
 School           : Physical
@@ -2111,7 +2111,7 @@ Effects          :
 Description      : Reduces Shadow and Nature damage taken by $s1%.
 Tooltip          : Reduces Shadow and Nature damage taken by $s1%.
 
-Name             : Darkflight (rank=Racial) (id=68992) 
+Name             : Darkflight (desc=Racial) (id=68992) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
 Race             : Worgen (0x200000)
 School           : Physical
@@ -2382,7 +2382,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc202031
 
-Name             : Incarnation: Tree of Life (rank=Passive) (id=81097) [Spell Family (7), Passive, Hidden] 
+Name             : Incarnation: Tree of Life (desc=Passive) (id=81097) [Spell Family (7), Passive, Hidden] 
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -2401,7 +2401,7 @@ Effects          :
                    Affected Spells: Entangling Roots (339), Regrowth (8936)
                    Family Flags: 6, 9
 
-Name             : Incarnation: Tree of Life (rank=Passive) (id=81098) [Spell Family (7), Hidden] 
+Name             : Incarnation: Tree of Life (desc=Passive) (id=81098) [Spell Family (7), Hidden] 
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -2708,7 +2708,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Mechanic: Interrupt | Target: Enemy (6)
 Description      : You charge and skull bash the target, interrupting spellcasting and preventing any spell in that school from being cast for $93985d.
 
-Name             : Altered Form (rank=Racial Passive) (id=94293) [Passive, Hidden] 
+Name             : Altered Form (desc=Racial Passive) (id=94293) [Passive, Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
 Race             : Worgen (0x200000)
 School           : Physical
@@ -2896,7 +2896,7 @@ Effects          :
 Description      : Fly to a nearby ally's position.
 Tooltip          : Flying to an ally's position.
 
-Name             : Incarnation: King of the Jungle (rank=Talent, Shapeshift) (id=102543) [Spell Family (7)] 
+Name             : Incarnation: King of the Jungle (desc=Talent, Shapeshift) (id=102543) [Spell Family (7)] 
 Replaces         : Berserk (id=106951)
 Class            : Death Knight, Druid
 School           : Physical
@@ -2974,7 +2974,7 @@ Effects          :
 Description      : Allows the Druid to vanish from sight, entering an improved stealth mode.  Lasts until cancelled.
 Tooltip          : Stealthed.
 
-Name             : Incarnation: Guardian of Ursoc (rank=Talent, Shapeshift) (id=102558) [Spell Family (7)] 
+Name             : Incarnation: Guardian of Ursoc (desc=Talent, Shapeshift) (id=102558) [Spell Family (7)] 
 Replaces         : Berserk (id=50334)
 Class            : Druid
 School           : Physical
@@ -3022,7 +3022,7 @@ Ironfur cost reduced by $w2%.
 Mangle hits up to $w4 targets.
 Health increased by $w5%.
 
-Name             : Incarnation: Chosen of Elune (rank=Talent, Shapeshift) (id=102560) [Spell Family (7)] 
+Name             : Incarnation: Chosen of Elune (desc=Talent, Shapeshift) (id=102560) [Spell Family (7)] 
 Replaces         : Celestial Alignment (id=194223)
 Class            : Death Knight, Druid
 School           : Physical
@@ -3322,7 +3322,7 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Instantly heals you for $s1% of maximum health. Usable in all shapeshift forms.
 
-Name             : Heart of the Wild (rank=Talent) (id=108291) [Spell Family (7)] 
+Name             : Heart of the Wild (desc=Talent) (id=108291) [Spell Family (7)] 
 Class            : Druid
 School           : Nature
 Spell Type       : None
@@ -3354,7 +3354,7 @@ Effects          :
 Description      : $@spelldesc319454
 Tooltip          : Damage of your Balance spells increased by $s1%, and Starsurge is instant.
 
-Name             : Heart of the Wild (rank=Talent) (id=108292) [Spell Family (7)] 
+Name             : Heart of the Wild (desc=Talent) (id=108292) [Spell Family (7)] 
 Class            : Druid
 School           : Nature
 Spell Type       : None
@@ -3390,7 +3390,7 @@ Effects          :
 Description      : $@spelldesc319454
 Tooltip          : Damage of your Feral abilities increased by $s1%, and critical strikes with attacks that generate a combo point generate an additional combo point.
 
-Name             : Heart of the Wild (rank=Talent) (id=108293) [Spell Family (7)] 
+Name             : Heart of the Wild (desc=Talent) (id=108293) [Spell Family (7)] 
 Class            : Druid
 School           : Nature
 Spell Type       : None
@@ -3421,7 +3421,7 @@ Effects          :
 Description      : $@spelldesc319454
 Tooltip          : Bear Form gives an additional $s1% Stamina, multiple uses of Ironfur may overlap, and Frenzied Regeneration gains an extra charge.
 
-Name             : Heart of the Wild (rank=Talent) (id=108294) [Spell Family (7)] 
+Name             : Heart of the Wild (desc=Talent) (id=108294) [Spell Family (7)] 
 Class            : Druid
 School           : Nature
 Spell Type       : None
@@ -3473,7 +3473,7 @@ Effects          :
                    Base Value: 4 | Scaled Value: 4 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Trigger Spell: 16870 | Target: Self (1)
 Description      : Your healing over time from Lifebloom has a $s1% chance to cause a Clearcasting state, making your next $?a155577[${$155577m1+1} Regrowths][Regrowth] cost no mana.
 
-Name             : Cat Form (rank=Passive) (id=113636) [Spell Family (7), Passive, Hidden] 
+Name             : Cat Form (desc=Passive) (id=113636) [Spell Family (7), Passive, Hidden] 
 Class            : Druid
 School           : Nature
 Spell Type       : None
@@ -3540,7 +3540,7 @@ Effects          :
 Description      : $@spelldesc158478
 Tooltip          : Healing of your next Regrowth or Rejuvenation increased by $s1%, or your next Wild Growth by $s2%.
 
-Name             : Treant Form (rank=Shapeshift) (id=114282) [Spell Family (7)] 
+Name             : Treant Form (desc=Shapeshift) (id=114282) [Spell Family (7)] 
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -3562,7 +3562,7 @@ Effects          :
 Description      : Shapeshift into Treant Form.
 Tooltip          : Shapeshifted into Treant Form.  All spells may be cast while in this form.
 
-Name             : Glyph of Stars (rank=Balance) (id=114301) [Spell Family (7), Passive, Hidden] 
+Name             : Glyph of Stars (desc=Balance) (id=114301) [Spell Family (7), Passive, Hidden] 
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -3598,7 +3598,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
 Description      : Your Aquatic Form now appears as an Orca.
 
-Name             : Incarnation (rank=Passive) (id=117679) [Spell Family (7)] 
+Name             : Incarnation (desc=Passive) (id=117679) [Spell Family (7)] 
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -4577,7 +4577,7 @@ Effects          :
 Description      : $@spelldesc24858
 Tooltip          : Your next Lunar Strike is instant cast.
 
-Name             : Critical Strikes (rank=Passive) (id=157447) [Passive] 
+Name             : Critical Strikes (desc=Passive) (id=157447) [Passive] 
 Class            : Feral Guardian Druid
 School           : Physical
 Spell Type       : None
@@ -4736,7 +4736,7 @@ Description      : When you critically strike with an attack that generates a co
 
 Damage over time cannot trigger this effect.
 
-Name             : Travel Form (rank=Rank 2) (id=159456) [Spell Family (7), Passive] 
+Name             : Travel Form (desc=Rank 2) (id=159456) [Spell Family (7), Passive] 
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -4947,7 +4947,7 @@ Effects          :
 Description      : $?a114301[You descend on starry dust, slowing your falling speed.][You flap your wings, slowing your falling speed.]
 Tooltip          : Hovering.
 
-Name             : Flight Form (rank=Shapeshift) (id=165962) [Spell Family (7)] 
+Name             : Flight Form (desc=Shapeshift) (id=165962) [Spell Family (7)] 
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -4976,7 +4976,7 @@ The act of shapeshifting frees the caster of movement impairing effects.
 Tooltip          : Immune to Polymorph effects.
 Movement speed increased and allows you to fly.
 
-Name             : Glyph of the Sun (rank=Balance) (id=171803) [Spell Family (7), Passive, Hidden] 
+Name             : Glyph of the Sun (desc=Balance) (id=171803) [Spell Family (7), Passive, Hidden] 
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -5378,7 +5378,7 @@ Description      : Celestial bodies align, maintaining both Eclipses and grantin
 |cFFFFFFFFGenerates ${$s2/10} Astral Power.|r
 Tooltip          : Both Eclipses active. Critical strike chance increased by $w1%.
 
-Name             : Ironbark (rank=Rank 2) (id=197061) [Spell Family (7), Passive] 
+Name             : Ironbark (desc=Rank 2) (id=197061) [Spell Family (7), Passive] 
 Class            : Restoration Druid
 School           : Physical
 Spell Type       : None
@@ -5769,7 +5769,7 @@ $@spellicon197626 $@spellname197626
 $@spellicon197628 $@spellname197628
 $@spellicon132469$@spellname132469
 
-Name             : Feral Overrides Passive (rank=Passive) (id=197692) [Spell Family (7), Passive, Hidden] 
+Name             : Feral Overrides Passive (desc=Passive) (id=197692) [Spell Family (7), Passive, Hidden] 
 Class            : Feral Druid
 School           : Nature
 Spell Type       : None
@@ -5822,7 +5822,7 @@ Effects          :
 Description      : Extends the duration of all of your heal over time effects on friendly targets within $A1 yards by $s1 sec, and increases the rate of your heal over time effects by ${100*(1/(1+($m2/100))-1)}% for $d.
 Tooltip          : Heal over time spells are healing ${100*(1/(1+($m2/100))-1)}% faster.
 
-Name             : Astral Power (rank=Passive) (id=197911) [Spell Family (7), Passive, Hidden] 
+Name             : Astral Power (desc=Passive) (id=197911) [Spell Family (7), Passive, Hidden] 
 Class            : Balance Druid
 School           : Nature
 Spell Type       : None
@@ -5913,7 +5913,7 @@ Effects          :
 Description      : Switch to your Primary Talent Specialization.
 Tooltip          : Switch to your Primary Talent Specialization.
 
-Name             : Rage of the Sleeper (rank=Artifact) (id=200851) [Spell Family (7)] 
+Name             : Rage of the Sleeper (desc=Artifact) (id=200851) [Spell Family (7)] 
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -6326,7 +6326,7 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.50000 | Misc Value: astral_power | Target: Self (1)
 Description      : $@spelldesc202342
 
-Name             : New Moon (rank=Artifact) (id=202767) [Spell Family (7)] 
+Name             : New Moon (desc=Artifact) (id=202767) [Spell Family (7)] 
 Class            : Druid
 School           : Arcane
 Spell Type       : Magic
@@ -6354,7 +6354,7 @@ Description      : Deals $m1 Arcane damage to the target and empowers New Moon t
 
 |cFFFFFFFFGenerates ${$m3/10} Astral Power.|r
 
-Name             : Half Moon (rank=Artifact) (id=202768) [Spell Family (7)] 
+Name             : Half Moon (desc=Artifact) (id=202768) [Spell Family (7)] 
 Class            : Druid
 School           : Arcane
 Spell Type       : Magic
@@ -6414,7 +6414,7 @@ Description      : Calls down a beam of pure celestial energy that follows the e
 Tooltip          : Generating ${$m3/10/$t3*$d} Astral Power over $d.
 Variables        : $dmg=${$d*2*$211545s1}
 
-Name             : Full Moon (rank=Artifact) (id=202771) [Spell Family (7)] 
+Name             : Full Moon (desc=Artifact) (id=202771) [Spell Family (7)] 
 Class            : Druid
 School           : Arcane
 Spell Type       : Magic
@@ -6728,7 +6728,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.10647 | PvP Coefficient: 1.00000 | Radius: 0 - 5 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
 Description      : $@spelldesc204066
 
-Name             : Force of Nature (rank=Talent) (id=205636) [Spell Family (7)] 
+Name             : Force of Nature (desc=Talent) (id=205636) [Spell Family (7)] 
 Class            : Druid
 School           : Nature
 Spell Type       : None
@@ -6852,7 +6852,7 @@ Effects          :
 Description      : $@spelldesc207383
 Tooltip          : Regrowth cost reduced by $s1% and critical effect chance increased by $s2%.
 
-Name             : Essence of G'Hanir (rank=Artifact) (id=208253) [Spell Family (7)] 
+Name             : Essence of G'Hanir (desc=Artifact) (id=208253) [Spell Family (7)] 
 Class            : Druid
 School           : Nature
 Spell Type       : Magic
@@ -6943,7 +6943,7 @@ Effects          :
 Description      : $@spelldesc209405
 Tooltip          : Your next Starfall costs no Astral Power.
 
-Name             : Stag Form (rank=Shapeshift) (id=210053) [Spell Family (7)] 
+Name             : Stag Form (desc=Shapeshift) (id=210053) [Spell Family (7)] 
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -7132,7 +7132,7 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Thrash, Swipe, Moonfire, and Maul have a $s1% chance to reset the cooldown on Mangle, and to cause it to generate an additional ${$93622m1/10} Rage.
 
-Name             : Ashamane's Frenzy (rank=Artifact) (id=210722) [Spell Family (7)] 
+Name             : Ashamane's Frenzy (desc=Artifact) (id=210722) [Spell Family (7)] 
 Class            : Druid
 School           : Physical
 Spell Type       : Melee
@@ -7565,7 +7565,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc155783
 
-Name             : Shapeshift Form (rank=Shapeshift) (id=228545) [Spell Family (7), Hidden] 
+Name             : Shapeshift Form (desc=Shapeshift) (id=228545) [Spell Family (7), Hidden] 
 Class            : Balance Feral Guardian Druid
 School           : Physical
 Spell Type       : None
@@ -7583,7 +7583,7 @@ Effects          :
 #1 (id=344157)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 
-Name             : Regrowth (rank=Rank 2) (id=231032) [Spell Family (7), Passive] 
+Name             : Regrowth (desc=Rank 2) (id=231032) [Spell Family (7), Passive] 
 Class            : Restoration Druid
 School           : Nature
 Spell Type       : None
@@ -7602,7 +7602,7 @@ Effects          :
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
 Description      : Regrowth's initial heal has a $s1% increased chance for a critical effect if the target is already affected by Regrowth.
 
-Name             : Rejuvenation (rank=Rank 2) (id=231040) [Spell Family (7), Passive] 
+Name             : Rejuvenation (desc=Rank 2) (id=231040) [Spell Family (7), Passive] 
 Class            : Restoration Druid
 School           : Nature
 Spell Type       : None
@@ -7623,7 +7623,7 @@ Effects          :
                    Family Flags: 4
 Description      : Rejuvenation's duration is increased by ${$m1/1000} sec.
 
-Name             : Moonkin Form (rank=Rank 2) (id=231042) [Spell Family (7), Passive] 
+Name             : Moonkin Form (desc=Rank 2) (id=231042) [Spell Family (7), Passive] 
 Class            : Balance Druid
 School           : Nature
 Spell Type       : None
@@ -7645,7 +7645,7 @@ Effects          :
 Description      : While in Moonkin Form, single-target attacks against you have a $s1% chance make your next Starfire instant.
 
 
-Name             : Sunfire (rank=Rank 2) (id=231050) [Spell Family (7), Passive] 
+Name             : Sunfire (desc=Rank 2) (id=231050) [Spell Family (7), Passive] 
 Class            : Balance Restoration Druid
 School           : Nature
 Spell Type       : None
@@ -7664,7 +7664,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 37 | Target: Self (1)
 Description      : Sunfire now applies its damage over time effect to all enemies within $164815A2 yards.
 
-Name             : Rake (rank=Rank 2) (id=231052) [Spell Family (7), Passive] 
+Name             : Rake (desc=Rank 2) (id=231052) [Spell Family (7), Passive] 
 Class            : Feral Druid
 School           : Nature
 Spell Type       : None
@@ -7683,7 +7683,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 37 | Target: Self (1)
 Description      : While stealthed, Rake will also stun the target for $163505d, and deal $1822s4% increased damage.
 
-Name             : Tiger's Fury (rank=Rank 2) (id=231055) [Spell Family (7), Passive] 
+Name             : Tiger's Fury (desc=Rank 2) (id=231055) [Spell Family (7), Passive] 
 Class            : Feral Druid
 School           : Nature
 Spell Type       : None
@@ -7704,7 +7704,7 @@ Effects          :
                    Family Flags: 75
 Description      : Tiger's Fury generates an additional $s1 energy.
 
-Name             : Shred (rank=Rank 3) (id=231057) [Spell Family (7), Passive] 
+Name             : Shred (desc=Rank 3) (id=231057) [Spell Family (7), Passive] 
 Class            : Feral Druid
 School           : Nature
 Spell Type       : None
@@ -7723,7 +7723,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 37 | Target: Self (1)
 Description      : While stealthed, Shred deals $5221s3% increased damage, and has double the chance to critically strike.
 
-Name             : Shred (rank=Rank 2) (id=231063) [Spell Family (7), Passive] 
+Name             : Shred (desc=Rank 2) (id=231063) [Spell Family (7), Passive] 
 Class            : Feral Druid
 School           : Nature
 Spell Type       : None
@@ -7742,7 +7742,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 37 | Target: Self (1)
 Description      : Shred deals $5221s5% increased damage against bleeding targets.
 
-Name             : Mangle (rank=Rank 2) (id=231064) [Spell Family (7), Passive] 
+Name             : Mangle (desc=Rank 2) (id=231064) [Spell Family (7), Passive] 
 Class            : Guardian Druid
 School           : Nature
 Spell Type       : None
@@ -7780,7 +7780,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 256 | Misc Value 2: 0x4 | Target: Self (1)
 Description      : You gain Dodge equal to $s1% of your Critical Strike from gear.
 
-Name             : Ironfur (rank=Rank 2) (id=231070) [Spell Family (7), Passive] 
+Name             : Ironfur (desc=Rank 2) (id=231070) [Spell Family (7), Passive] 
 Class            : Guardian Druid
 School           : Nature
 Spell Type       : None
@@ -7802,7 +7802,7 @@ Effects          :
 Description      : Multiple uses of Ironfur may overlap.
 
 
-Name             : Swipe (rank=Rank 2) (id=231283) [Spell Family (7), Passive] 
+Name             : Swipe (desc=Rank 2) (id=231283) [Spell Family (7), Passive] 
 Class            : Feral Druid
 School           : Nature
 Spell Type       : None
@@ -7821,7 +7821,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 37 | Target: Self (1)
 Description      : Swipe deals $106785s2% increased damage against bleeding targets.
 
-Name             : Archdruid's Lunarwing Form (rank=Shapeshift) (id=231437) [Passive] 
+Name             : Archdruid's Lunarwing Form (desc=Shapeshift) (id=231437) [Passive] 
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -7839,7 +7839,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.25) | PvP Coefficient: 1.00000 | Misc Value: 27 | Misc Value 2: 0xe | Target: Self (1)
 Description      : Allows your Travel Form to take on the form of a Lunarwing Owl.
 
-Name             : Thorns (rank=PvP Talent) (id=232559) 
+Name             : Thorns (desc=PvP Talent) (id=232559) 
 Class            : Druid
 School           : Nature
 Spell Type       : None
@@ -7897,7 +7897,7 @@ Description      : Omen of Clarity now triggers $s2% more often, can accumulate 
 
 Your maximum Energy is increased by $s3.
 
-Name             : Enraged Maul (rank=PvP Talent) (id=236716) [Spell Family (7)] 
+Name             : Enraged Maul (desc=PvP Talent) (id=236716) [Spell Family (7)] 
 Class            : Druid
 School           : Physical
 Spell Type       : Melee
@@ -7987,7 +7987,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : When Rip deals damage, there is a $h% chance for it to deal damage again.
 
-Name             : Jungle Stalker (rank=Talent, Shapeshift) (id=252071) [Spell Family (7)] 
+Name             : Jungle Stalker (desc=Talent, Shapeshift) (id=252071) [Spell Family (7)] 
 Class            : Death Knight, Druid
 School           : Physical
 Spell Type       : Melee
@@ -8085,7 +8085,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Unlock powers at the Vindicaar's Matrix Core to use while on Argus. 
 
-Name             : Light's Judgment (rank=Racial) (id=255647) 
+Name             : Light's Judgment (desc=Racial) (id=255647) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
@@ -8107,7 +8107,7 @@ Effects          :
 Description      : Call down a strike of Holy energy, dealing $<damage> Holy damage to enemies within $A1 yards after 3 sec.
 Variables        : $damage=${$cond($gt($SP,$AP),$SP*3,$AP*3)*$pctD*(1+$@versadmg)}
 
-Name             : Holy Resistance (rank=Racial Passive) (id=255651) [Passive] 
+Name             : Holy Resistance (desc=Racial Passive) (id=255651) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
@@ -8125,7 +8125,7 @@ Effects          :
                    Base Value: -1 | Scaled Value: -1 | PvP Coefficient: 1.00000 | Misc Value: 0x2 | Target: Self (1)
 Description      : Reduces Holy damage taken by ${$s1/-1}%.
 
-Name             : Light's Reckoning (rank=Racial Passive) (id=255652) [Passive] 
+Name             : Light's Reckoning (desc=Racial Passive) (id=255652) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Physical
@@ -8143,7 +8143,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 256896 | Target: Self (1)
 Description      : Erupt with Light upon death. Deals $256896s1 Holy damage to enemies within 8 yards and heals allies for $256896s2.
 
-Name             : Demonbane (rank=Racial Passive) (id=255653) [Passive] 
+Name             : Demonbane (desc=Racial Passive) (id=255653) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Physical
@@ -8161,7 +8161,7 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 4 | Target: Self (1)
 Description      : Experience gains from killing Demons increased by $s1%.
 
-Name             : Light's Judgment (rank=Racial) (id=256893) 
+Name             : Light's Judgment (desc=Racial) (id=256893) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
@@ -8183,7 +8183,7 @@ Effects          :
 Description      : Call down a strike of Holy energy, dealing $<damage> Holy damage to enemies within $A1 yards.
 Variables        : $damage=${$cond($gt($SP,$AP),$SP*3,$AP*3)*$pctD*(1+$@versadmg)}
 
-Name             : Light's Reckoning (rank=Racial Passive) (id=256896) [Scaling Spell (-8)] 
+Name             : Light's Reckoning (desc=Racial Passive) (id=256896) [Scaling Spell (-8)] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
@@ -8784,7 +8784,7 @@ Effects          :
                    Family Flags: 103
 Description      : Increases the duration of Moonfire by $s2.1 sec, and Moonfire grants $s1 Mastery for $269380d.
 
-Name             : Bear Form (rank=Rank 2) (id=270100) [Spell Family (7), Passive] 
+Name             : Bear Form (desc=Rank 2) (id=270100) [Spell Family (7), Passive] 
 Class            : Guardian Druid
 School           : Nature
 Spell Type       : None
@@ -8950,7 +8950,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 272871 | Radius: 40 yards | Target: Raid Members (56)
 Description      : $@spelldesc272871
 
-Name             : Frenzied Regeneration (rank=Rank 2) (id=273048) [Spell Family (7), Passive] 
+Name             : Frenzied Regeneration (desc=Rank 2) (id=273048) [Spell Family (7), Passive] 
 Class            : Guardian Druid
 School           : Nature
 Spell Type       : None
@@ -9857,7 +9857,7 @@ Effects          :
 Description      : $@spelldesc202345
 Tooltip          : Haste increased by $s1%.
 
-Name             : Wrath (rank=Solar) (id=279729) [Spell Family (7)] 
+Name             : Wrath (desc=Solar) (id=279729) [Spell Family (7)] 
 Class            : Druid
 School           : Nature
 Spell Type       : Magic
@@ -10898,7 +10898,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 696.0933 (coefficient=7.327298) | PvP Coefficient: 0.25000 | Trigger Spell: 288804 | Target: Self (1)
 Description      : Your spells and abilities have a chance to trigger a Soulbond for $288841d. During Soulbond, every $288841t1 sec you and your nearest ally are both healed for $s2 and gain $s1 Haste for $288839d.
 
-Name             : Stampeding Roar (rank=Rank 2) (id=288826) [Spell Family (7), Passive] 
+Name             : Stampeding Roar (desc=Rank 2) (id=288826) [Spell Family (7), Passive] 
 Class            : Guardian Druid
 School           : Nature
 Spell Type       : None
@@ -11066,7 +11066,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
 Description      : Soothe and Remove Corruption are usable in Cat Form.
 
-Name             : Frenzied Regeneration (rank=Rank 3) (id=301768) [Spell Family (7), Passive] 
+Name             : Frenzied Regeneration (desc=Rank 3) (id=301768) [Spell Family (7), Passive] 
 Class            : Guardian Druid
 School           : Nature
 Spell Type       : None
@@ -11185,7 +11185,7 @@ Effects          :
 Description      : $@spelldesc305497
 Tooltip          : Deals Nature damage to attackers when hit by melee attacks and reduces their movement speed.
 
-Name             : Thorns (rank=PvP Talent) (id=305497) [Spell Family (7)] 
+Name             : Thorns (desc=PvP Talent) (id=305497) [Spell Family (7)] 
 Class            : Druid
 School           : Nature
 Spell Type       : None
@@ -11258,7 +11258,7 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : When you use Shred, Rake, and Thrash within $s1 sec, the damage of your next $145152n Rips or Ferocious Bites is increased by $145152s1%.
 
-Name             : Heart of the Wild (rank=Talent) (id=319454) [Spell Family (7)] 
+Name             : Heart of the Wild (desc=Talent) (id=319454) [Spell Family (7)] 
 Replaces         : Nature's Control (id=175682)
 Class            : Druid
 School           : Nature
@@ -11291,7 +11291,7 @@ Description      : Abilities associated with your chosen Affinity are substantia
 
 Tooltip          : Abilities associated with your chosen Affinity are substantially empowered.
 
-Name             : Ravenous Frenzy (rank=Venthyr) (id=323546) [Spell Family (7)] 
+Name             : Ravenous Frenzy (desc=Venthyr) (id=323546) [Spell Family (7)] 
 Class            : Druid
 School           : Shadow
 Spell Type       : None
@@ -11343,7 +11343,7 @@ Tooltip          : Damage, healing, and haste increased by $?<$w5>0>[$w1%.
 
 If you spend ${$s5~/10}.1 sec idle, the Frenzy consumes $w3% of your health and ends.][$w6%.]
 
-Name             : Ravenous Frenzy (rank=Venthyr) (id=323557) [Spell Family (7)] 
+Name             : Ravenous Frenzy (desc=Venthyr) (id=323557) [Spell Family (7)] 
 Class            : Druid
 School           : Shadow
 Spell Type       : None
@@ -11366,7 +11366,7 @@ Effects          :
 Description      : $@spelldesc323546
 Tooltip          : Stunned.
 
-Name             : Convoke the Spirits (rank=Night Fae) (id=323764) [Spell Family (7)] 
+Name             : Convoke the Spirits (desc=Night Fae) (id=323764) [Spell Family (7)] 
 Class            : Druid
 School           : Nature
 Spell Type       : None
@@ -11401,7 +11401,7 @@ Description      : Call upon the Night Fae for an eruption of energy, channeling
 You will cast $?a24858|a197625[Starsurge, Starfall,]?a768[Ferocious Bite, Shred, Tiger's Fury,]?a5487[Mangle, Ironfur,][Wild Growth, Swiftmend,] Moonfire, Wrath, Regrowth, Rejuvenation, Rake and Thrash on appropriate nearby targets, favoring your current shapeshift form.
 Tooltip          : Every ${$t1}.2 sec, casting $?a24858|a197625[Starsurge, Starfall,]?a768[Ferocious Bite, Shred, Tiger's Fury,]?a5487[Mangle, Ironfur,][Wild Growth, Swiftmend,] Moonfire, Wrath, Regrowth, Rejuvenation, Rake or Thrash on appropriate nearby targets.
 
-Name             : Adaptive Swarm (rank=Necrolord) (id=325727) [Spell Family (7)] 
+Name             : Adaptive Swarm (desc=Necrolord) (id=325727) [Spell Family (7)] 
 Class            : Druid
 School           : Shadow
 Spell Type       : Magic
@@ -11511,7 +11511,7 @@ Effects          :
                    Family Flags: 42, 59
 Description      : Solar Eclipse increases Nature damage by $s1%, and Lunar Eclipse increases Arcane damage by $s1%.
 
-Name             : Innervate (rank=Rank 2) (id=326228) [Spell Family (7), Passive] 
+Name             : Innervate (desc=Rank 2) (id=326228) [Spell Family (7), Passive] 
 Class            : Restoration Druid
 School           : Nature
 Spell Type       : None
@@ -11530,7 +11530,7 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
 Description      : If you cast Innervate on somebody else, you gain its effect at $s1% effectiveness.
 
-Name             : Kindred Spirits (rank=Kyrian) (id=326434) [Spell Family (7)] 
+Name             : Kindred Spirits (desc=Kyrian) (id=326434) [Spell Family (7)] 
 Class            : Druid
 School           : Arcane
 Spell Type       : None
@@ -11561,7 +11561,7 @@ $@spellicon327022 $@spellname327022
 $@spelldesc327022]
 Tooltip          : Bonded with $@auracaster. Every $327097d, they may empower the bond, granting bonuses based on your respective roles.
 
-Name             : Moonfire (rank=Rank 2) (id=326646) [Spell Family (7), Passive] 
+Name             : Moonfire (desc=Rank 2) (id=326646) [Spell Family (7), Passive] 
 Class            : Druid
 School           : Nature
 Spell Type       : None
@@ -11582,7 +11582,7 @@ Effects          :
                    Family Flags: 92
 Description      : Duration increased by ${$s1/1000} sec.
 
-Name             : Kindred Empowerment (rank=Kyrian) (id=327022) [Spell Family (7)] 
+Name             : Kindred Empowerment (desc=Kyrian) (id=327022) [Spell Family (7)] 
 Class            : Druid
 School           : Arcane
 Spell Type       : None
@@ -11611,7 +11611,7 @@ Tooltip          : Energized by $@auracaster, increasing damage, healing, and mi
 
 Empowerment remaining: ${$w1-1}
 
-Name             : Kindred Protection (rank=Kyrian) (id=327037) [Spell Family (7)] 
+Name             : Kindred Protection (desc=Kyrian) (id=327037) [Spell Family (7)] 
 Class            : Druid
 School           : Arcane
 Spell Type       : None
@@ -11638,7 +11638,7 @@ Effects          :
 Description      : Protect your bonded partner, redirecting $s1% of damage they take to you, unless you fall below $s3% health.
 Tooltip          : $?$w1>0[$w1% of damage taken is redirected to $@auracaster.][Taking ${$s1*$e1}% of damage taken by bonded partner.]
 
-Name             : Kindred Focus (rank=Kyrian) (id=327071) [Spell Family (7)] 
+Name             : Kindred Focus (desc=Kyrian) (id=327071) [Spell Family (7)] 
 Class            : Druid
 School           : Arcane
 Spell Type       : None
@@ -11660,7 +11660,7 @@ Effects          :
 Description      : Focus on your bonded partner, replicating $327148s1% of all healing you deal onto them.
 Tooltip          : Receiving $327148s1% of healing dealt by $@auracaster.
 
-Name             : Kindred Spirits (rank=Kyrian) (id=327097) [Spell Family (7)] 
+Name             : Kindred Spirits (desc=Kyrian) (id=327097) [Spell Family (7)] 
 Class            : Druid
 School           : Arcane
 Spell Type       : None
@@ -11684,7 +11684,7 @@ $@spelldesc327037]?c4[|cFFFFFFFFHealer|r
 $@spelldesc327071][|cFFFFFFFFDamager|r
 $@spelldesc327022]
 
-Name             : Kindred Empowerment (rank=Kyrian) (id=327139) [Spell Family (7)] 
+Name             : Kindred Empowerment (desc=Kyrian) (id=327139) [Spell Family (7)] 
 Class            : Druid
 School           : Arcane
 Spell Type       : None
@@ -11710,7 +11710,7 @@ Effects          :
 Description      : $@spelldesc327022
 Tooltip          : Energizing $@auracaster, granting them $s1% of all damage you deal.
 
-Name             : Kindred Focus (rank=Kyrian) (id=327148) [Spell Family (7)] 
+Name             : Kindred Focus (desc=Kyrian) (id=327148) [Spell Family (7)] 
 Class            : Druid
 School           : Arcane
 Spell Type       : None
@@ -11736,7 +11736,7 @@ Effects          :
 Description      : $@spelldesc327071
 Tooltip          : Replicating $w1% of healing dealt onto $@auracaster.
 
-Name             : Starfall (rank=Rank 2) (id=327541) [Spell Family (7), Passive] 
+Name             : Starfall (desc=Rank 2) (id=327541) [Spell Family (7), Passive] 
 Class            : Balance Druid
 School           : Nature
 Spell Type       : None
@@ -11755,7 +11755,7 @@ Effects          :
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
 Description      : Casting Starfall extends the duration of active Moonfires and Sunfires by $s1 sec.
 
-Name             : Barkskin (rank=Rank 2) (id=327993) [Spell Family (7), Passive] 
+Name             : Barkskin (desc=Rank 2) (id=327993) [Spell Family (7), Passive] 
 Class            : Druid
 School           : Nature
 Spell Type       : None
@@ -11776,7 +11776,7 @@ Effects          :
                    Family Flags: 50
 Description      : Duration increased by ${$s1/1000} sec.
 
-Name             : Eclipse (rank=Rank 2) (id=328021) [Spell Family (7), Passive] 
+Name             : Eclipse (desc=Rank 2) (id=328021) [Spell Family (7), Passive] 
 Class            : Balance Druid
 School           : Nature
 Spell Type       : None
@@ -11797,7 +11797,7 @@ Effects          :
                    Family Flags: 42, 59
 Description      : Eclipse now reduces the cast time of affected spells by ${-$s1-$48517s1}%.
 
-Name             : Starsurge (rank=Rank 2) (id=328022) [Spell Family (7), Passive] 
+Name             : Starsurge (desc=Rank 2) (id=328022) [Spell Family (7), Passive] 
 Class            : Balance Druid
 School           : Nature
 Spell Type       : None
@@ -11818,7 +11818,7 @@ Effects          :
                    Family Flags: 89
 Description      : Starsurge now extends Eclipse by ${$s1+$78674s2} sec.
 
-Name             : Moonfire (rank=Rank 3) (id=328023) [Spell Family (7), Passive] 
+Name             : Moonfire (desc=Rank 3) (id=328023) [Spell Family (7), Passive] 
 Class            : Balance Druid
 School           : Nature
 Spell Type       : None
@@ -11839,7 +11839,7 @@ Effects          :
                    Family Flags: 1
 Description      : Moonfire and Sunfire duration increased by ${$s1/1000} sec.
 
-Name             : Rebirth (rank=Rank 2) (id=328024) [Spell Family (7), Passive] 
+Name             : Rebirth (desc=Rank 2) (id=328024) [Spell Family (7), Passive] 
 Class            : Druid
 School           : Nature
 Spell Type       : None
@@ -11860,7 +11860,7 @@ Effects          :
                    Family Flags: 28
 Description      : Rebirth returns the target to life with ${$s1+$20484s2}% health.
 
-Name             : Wild Growth (rank=Rank 2) (id=328025) [Spell Family (7), Passive] 
+Name             : Wild Growth (desc=Rank 2) (id=328025) [Spell Family (7), Passive] 
 Class            : Restoration Druid
 School           : Nature
 Spell Type       : None
@@ -11881,7 +11881,7 @@ Effects          :
                    Family Flags: 58
 Description      : Wild Growth heals $s1 additional $ltarget:targets;.
 
-Name             : Survival Instincts (rank=Rank 2) (id=328767) [Spell Family (7), Passive] 
+Name             : Survival Instincts (desc=Rank 2) (id=328767) [Spell Family (7), Passive] 
 Class            : Guardian Druid
 School           : Nature
 Spell Type       : None
@@ -11902,7 +11902,7 @@ Effects          :
 Description      : Survival Instincts now has ${$s1+1} charges.
 
 
-Name             : Kindred Empowerment (rank=Kyrian) (id=338411) [Spell Family (7)] 
+Name             : Kindred Empowerment (desc=Kyrian) (id=338411) [Spell Family (7)] 
 Class            : Druid
 School           : Arcane
 Spell Type       : Magic

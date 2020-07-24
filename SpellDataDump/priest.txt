@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35282 shadowlands-BETA (git build dbc 9c725e1441)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35282 shadowlands-BETA (git build dbc df97e687b9)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
@@ -718,7 +718,7 @@ Effects          :
 Description      : Increases maximum health by $s1% for $d, and instantly heals you for that amount.
 Tooltip          : Maximum health increased by $w1%.
 
-Name             : Expansive Mind (rank=Racial Passive) (id=20591) [Passive] 
+Name             : Expansive Mind (desc=Racial Passive) (id=20591) [Passive] 
 Class            : Paladin, Priest, Shaman, Mage, Warlock, Monk
 Race             : Gnome (0x40)
 School           : Physical
@@ -787,7 +787,7 @@ If the target is in your party or raid, all party and raid members will be affec
 Tooltip          : Stamina increased by $w1%.$?$w2>0[
 Magic damage taken reduced by $w2%.][]
 
-Name             : Command (rank=Racial Passive) (id=21563) [Spell Family (9), Passive] 
+Name             : Command (desc=Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Orc (0x2)
 School           : Physical
@@ -857,7 +857,7 @@ Effects          :
 #1 (id=17468)    : Apply Aura (6) | Attribute (29)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
 
-Name             : Gift of the Naaru (rank=Racial) (id=28880) [Spell Family (4)] 
+Name             : Gift of the Naaru (desc=Racial) (id=28880) [Spell Family (4)] 
 Class            : Warrior, Paladin, Hunter, Priest, Death Knight, Shaman, Mage, Monk
 Race             : Draenei (0x400)
 School           : Holy
@@ -1627,7 +1627,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 461
 Description      : $@spelldesc57986
 
-Name             : Gift of the Naaru (rank=Racial) (id=59544) 
+Name             : Gift of the Naaru (desc=Racial) (id=59544) 
 Class            : Priest
 Race             : Draenei (0x400)
 School           : Holy
@@ -1700,7 +1700,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 35779 | Target: Enemy (6)
 Description      : Crawls through the shadows to the target enemy.
 
-Name             : Holy Words (rank=Rank 2) (id=63733) [Spell Family (6), Passive] 
+Name             : Holy Words (desc=Rank 2) (id=63733) [Spell Family (6), Passive] 
 Class            : Holy Priest
 School           : Physical
 Spell Type       : None
@@ -1889,7 +1889,7 @@ Effects          :
 Description      : $@spelldesc64129
 Tooltip          : Movement speed increased by $s1%.
 
-Name             : Viciousness (rank=Racial Passive) (id=68975) [Passive] 
+Name             : Viciousness (desc=Racial Passive) (id=68975) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
 Race             : Worgen (0x200000)
 School           : Physical
@@ -1908,7 +1908,7 @@ Effects          :
 Description      : Increases critical strike chance by $s1%.
 Tooltip          : Critical strike chance increased by $s1%.
 
-Name             : Aberration (rank=Racial Passive) (id=68976) [Passive] 
+Name             : Aberration (desc=Racial Passive) (id=68976) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
 Race             : Worgen (0x200000)
 School           : Physical
@@ -1927,7 +1927,7 @@ Effects          :
 Description      : Reduces Shadow and Nature damage taken by $s1%.
 Tooltip          : Reduces Shadow and Nature damage taken by $s1%.
 
-Name             : Darkflight (rank=Racial) (id=68992) 
+Name             : Darkflight (desc=Racial) (id=68992) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
 Race             : Worgen (0x200000)
 School           : Physical
@@ -2229,7 +2229,7 @@ Description      : Chastises the target for $s1 Holy damage and $?s200199[stuns]
 
 |cFFFFFFFFCooldown reduced by $s2 sec when you cast Smite.|r][]
 
-Name             : Mysticism (rank=Passive) (id=89745) [Passive, Hidden] 
+Name             : Mysticism (desc=Passive) (id=89745) [Passive, Hidden] 
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -2270,7 +2270,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Trigger Spell: 92320 | Target: Self (1)
 Description      : Your harmful spells have a chance to grant $92320s1 mastery for $92320d.
 
-Name             : Altered Form (rank=Racial Passive) (id=94293) [Passive, Hidden] 
+Name             : Altered Form (desc=Racial Passive) (id=94293) [Passive, Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
 Race             : Worgen (0x200000)
 School           : Physical
@@ -2332,7 +2332,7 @@ Effects          :
 #1 (id=105331)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Unknown(25)
 
-Name             : Shadow (rank=Shadow) (id=107905) 
+Name             : Shadow (desc=Shadow) (id=107905) 
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -2351,7 +2351,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 961
 Description      : $@spelldesc107906
 
-Name             : Glyph of Shadow (rank=Shadow) (id=107906) [Spell Family (6), Passive, Hidden] 
+Name             : Glyph of Shadow (desc=Shadow) (id=107906) [Spell Family (6), Passive, Hidden] 
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -2533,7 +2533,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1007
 Description      : $@spelldesc120581
 
-Name             : Surge of Light (rank=Proc) (id=114255) [Spell Family (6)] 
+Name             : Surge of Light (desc=Proc) (id=114255) [Spell Family (6)] 
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -2842,7 +2842,7 @@ Effects          :
 Description      : $@spelldesc162452
 Tooltip          : Your next Mind Blast spell is instant.
 
-Name             : Glyph of the Val'kyr (rank=Holy) (id=126094) [Spell Family (6), Passive, Hidden] 
+Name             : Glyph of the Val'kyr (desc=Holy) (id=126094) [Spell Family (6), Passive, Hidden] 
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -2879,7 +2879,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1049
 Description      : $@spelldesc126094
 
-Name             : Glyph of Shadowy Friends (rank=Shadow) (id=126745) [Spell Family (6), Passive, Hidden] 
+Name             : Glyph of Shadowy Friends (desc=Shadow) (id=126745) [Spell Family (6), Passive, Hidden] 
 Class            : Priest
 School           : Shadow
 Spell Type       : None
@@ -2898,7 +2898,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Your innate shadowy form now extends to your mounts and non-combat pets.
 
-Name             : Shadowy Friends (rank=Shadow) (id=126797) 
+Name             : Shadowy Friends (desc=Shadow) (id=126797) 
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -2917,7 +2917,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1052
 Description      : $@spelldesc126745
 
-Name             : Power Word: Solace (rank=Talent) (id=129250) [Spell Family (6)] 
+Name             : Power Word: Solace (desc=Talent) (id=129250) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -3143,7 +3143,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 1590 | Target: Self (1)
                    Affected Spells (Category): Shadow Word: Void (205351)
 
-Name             : Glyph of Inspired Hymns (rank=Holy) (id=147072) [Spell Family (6), Passive, Hidden] 
+Name             : Glyph of Inspired Hymns (desc=Holy) (id=147072) [Spell Family (6), Passive, Hidden] 
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -4063,7 +4063,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
 Description      : When you heal with Penance, everyone with your Atonement is healed for $270501s1.
 
-Name             : Dome of Light (rank=PvP Talent) (id=197590) [Spell Family (6), Passive, Hidden] 
+Name             : Dome of Light (desc=PvP Talent) (id=197590) [Spell Family (6), Passive, Hidden] 
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -4594,7 +4594,7 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
 Description      : Heals the target and ${$s2-1} injured allies within $A1 yards of the target for $s1.
 
-Name             : Void Torrent (rank=Artifact) (id=205065) [Spell Family (6)] 
+Name             : Void Torrent (desc=Artifact) (id=205065) [Spell Family (6)] 
 Class            : Priest
 School           : Shadow
 Spell Type       : Magic
@@ -4829,7 +4829,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Dominate Mind can now be used on players.
 
-Name             : Light's Wrath (rank=Artifact) (id=207946) [Spell Family (6)] 
+Name             : Light's Wrath (desc=Artifact) (id=207946) [Spell Family (6)] 
 Class            : Priest
 School           : Holyfire
 Spell Type       : Magic
@@ -4871,7 +4871,7 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | SP Coefficient: 0.50000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc207946
 
-Name             : Light of T'uure (rank=Artifact) (id=208065) [Spell Family (6)] 
+Name             : Light of T'uure (desc=Artifact) (id=208065) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -5020,7 +5020,7 @@ Effects          :
 Description      : Attack the enemy's soul with a surge of Shadow energy, dealing $s1 Shadow damage and increasing your spell damage to the target by $s2% for $d.
 Tooltip          : Taking $s2% increased damage from the Priest.
 
-Name             : Spirit of Redemption (rank=PvP Talent) (id=215769) [Spell Family (6)] 
+Name             : Spirit of Redemption (desc=PvP Talent) (id=215769) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
 Spell Type       : None
@@ -5256,7 +5256,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.95000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc228260
 
-Name             : Mind Blast (rank=Rank 2) (id=231682) [Spell Family (6), Passive] 
+Name             : Mind Blast (desc=Rank 2) (id=231682) [Spell Family (6), Passive] 
 Class            : Discipline Priest
 School           : Holy
 Spell Type       : None
@@ -5278,7 +5278,7 @@ Effects          :
 Description      : Mind Blast prevents the next $<shield> damage dealt by the enemy.
 Variables        : $shield=${($SPS*$231682s1/100)*(1+$@versadmg)}
 
-Name             : Holy Fire (rank=Rank 2) (id=231687) [Spell Family (6), Passive] 
+Name             : Holy Fire (desc=Rank 2) (id=231687) [Spell Family (6), Passive] 
 Class            : Priest
 School           : Holy
 Spell Type       : None
@@ -5301,7 +5301,7 @@ Effects          :
                    Family Flags: 20
 Description      : Smite and Holy Nova have a $s1% chance to reset the cooldown of Holy Fire, and Holy Fire's damage over time effect can stack up to ${$s2+1} times.
 
-Name             : Void Bolt (rank=Rank 2) (id=231688) [Spell Family (6), Passive] 
+Name             : Void Bolt (desc=Rank 2) (id=231688) [Spell Family (6), Passive] 
 Class            : Shadow Priest
 School           : Holy
 Spell Type       : None
@@ -5322,7 +5322,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Void Bolt extends the duration of your Shadow Word: Pain and Vampiric Touch on all nearby targets by $@switch<$s2>[${$s1/1000}][${$s1/1000}.1] sec.
 
-Name             : Arcane Torrent (rank=Racial) (id=232633) 
+Name             : Arcane Torrent (desc=Racial) (id=232633) 
 Class            : Priest
 Race             : Blood Elf (0x200)
 School           : Arcane
@@ -5534,7 +5534,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Unlock powers at the Vindicaar's Matrix Core to use while on Argus. 
 
-Name             : Light's Judgment (rank=Racial) (id=255647) 
+Name             : Light's Judgment (desc=Racial) (id=255647) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
@@ -5556,7 +5556,7 @@ Effects          :
 Description      : Call down a strike of Holy energy, dealing $<damage> Holy damage to enemies within $A1 yards after 3 sec.
 Variables        : $damage=${$cond($gt($SP,$AP),$SP*3,$AP*3)*$pctD*(1+$@versadmg)}
 
-Name             : Holy Resistance (rank=Racial Passive) (id=255651) [Passive] 
+Name             : Holy Resistance (desc=Racial Passive) (id=255651) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
@@ -5574,7 +5574,7 @@ Effects          :
                    Base Value: -1 | Scaled Value: -1 | PvP Coefficient: 1.00000 | Misc Value: 0x2 | Target: Self (1)
 Description      : Reduces Holy damage taken by ${$s1/-1}%.
 
-Name             : Light's Reckoning (rank=Racial Passive) (id=255652) [Passive] 
+Name             : Light's Reckoning (desc=Racial Passive) (id=255652) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Physical
@@ -5592,7 +5592,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 256896 | Target: Self (1)
 Description      : Erupt with Light upon death. Deals $256896s1 Holy damage to enemies within 8 yards and heals allies for $256896s2.
 
-Name             : Demonbane (rank=Racial Passive) (id=255653) [Passive] 
+Name             : Demonbane (desc=Racial Passive) (id=255653) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Physical
@@ -5610,7 +5610,7 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 4 | Target: Self (1)
 Description      : Experience gains from killing Demons increased by $s1%.
 
-Name             : Light's Judgment (rank=Racial) (id=256893) 
+Name             : Light's Judgment (desc=Racial) (id=256893) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
@@ -5632,7 +5632,7 @@ Effects          :
 Description      : Call down a strike of Holy energy, dealing $<damage> Holy damage to enemies within $A1 yards.
 Variables        : $damage=${$cond($gt($SP,$AP),$SP*3,$AP*3)*$pctD*(1+$@versadmg)}
 
-Name             : Light's Reckoning (rank=Racial Passive) (id=256896) [Scaling Spell (-8)] 
+Name             : Light's Reckoning (desc=Racial Passive) (id=256896) [Scaling Spell (-8)] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
@@ -5675,7 +5675,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 23.75 (coefficient=0.25) | PvP Coefficient: 1.00000 | Misc Value: 917504 | Target: Self (1)
 Tooltip          : Increases haste by $s1.
 
-Name             : Power Leech (rank=Passive) (id=262484) [Passive] 
+Name             : Power Leech (desc=Passive) (id=262484) [Passive] 
 Class            : Priest
 School           : Shadow
 Spell Type       : None
@@ -5721,7 +5721,7 @@ Effects          :
                    Base Value: 300 | Scaled Value: 300 | PvP Coefficient: 1.00000 | Misc Value: insanity | Target: Unknown(25)
 Description      : $@spelldesc262484
 
-Name             : Smite (rank=Rank 2) (id=262861) [Spell Family (6), Passive] 
+Name             : Smite (desc=Rank 2) (id=262861) [Spell Family (6), Passive] 
 Class            : Discipline Holy Priest
 School           : Holy
 Spell Type       : None
@@ -8008,7 +8008,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 47.63547 (coefficient=0.501426) | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : Your spells and abilities have a chance to grant you $s1 Mastery for $281843d. When this effect expires it jumps once to a nearby ally, granting them $s2 Mastery for $281844d.
 
-Name             : Focused Will (rank=Rank 2) (id=285485) [Spell Family (6), Passive] 
+Name             : Focused Will (desc=Rank 2) (id=285485) [Spell Family (6), Passive] 
 Class            : Holy Priest
 School           : Holy
 Spell Type       : None
@@ -8538,7 +8538,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 16.54624 (coefficient=0.174171) | PvP Coefficient: 0.50000 | Trigger Spell: 316101 | Target: Self (1)
 Description      : Your secondary stats are all increased by $s1 while your Corruption Level is 25 or higher.
 
-Name             : Mind Blast (rank=Rank 2) (id=319899) [Spell Family (6), Passive] 
+Name             : Mind Blast (desc=Rank 2) (id=319899) [Spell Family (6), Passive] 
 Class            : Shadow Priest
 School           : Holy
 Spell Type       : None
@@ -8558,7 +8558,7 @@ Effects          :
                    Affected Spells (Category): Mind Blast (8092)
 Description      : Mind Blast's cooldown reduced by ${($m1/-1000)} sec.
 
-Name             : Void Eruption (rank=Rank 2) (id=319908) [Spell Family (6), Passive] 
+Name             : Void Eruption (desc=Rank 2) (id=319908) [Spell Family (6), Passive] 
 Class            : Shadow Priest
 School           : Shadow
 Spell Type       : None
@@ -8579,7 +8579,7 @@ Effects          :
                    Family Flags: 89
 Description      : Void Eruption cast time reduced by $m1%.
 
-Name             : Prayer of Mending (rank=Rank 2) (id=319912) [Spell Family (6), Passive] 
+Name             : Prayer of Mending (desc=Rank 2) (id=319912) [Spell Family (6), Passive] 
 Class            : Discipline Holy Priest
 School           : Holy
 Spell Type       : None
@@ -8641,7 +8641,7 @@ For the next $d, your Insanity-generating abilities generate $s2% more Insanity 
 If the target does not die within $d of using Surrender to Madness, you die.
 Tooltip          : The Priest has surrendered to madness, sharing its fate with its target. If the target doesn't die within $d, the Priest dies.
 
-Name             : Death and Madness (rank=PvP Talent) (id=321291) [Spell Family (6), Passive] 
+Name             : Death and Madness (desc=PvP Talent) (id=321291) [Spell Family (6), Passive] 
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -8818,7 +8818,7 @@ Effects          :
 Description      : $@spelldesc314867
 Tooltip          : Shadow damage done increased by $w2%, but unable to cast any Holy spells.
 
-Name             : Shadow Word: Death (rank=Rank 2) (id=322107) [Spell Family (6), Passive] 
+Name             : Shadow Word: Death (desc=Rank 2) (id=322107) [Spell Family (6), Passive] 
 Class            : Priest
 School           : Shadow
 Spell Type       : None
@@ -8839,7 +8839,7 @@ Effects          :
                    Family Flags: 33
 Description      : Shadow Word: Death's cooldown is reduced by ${$m1/-1000} sec.
 
-Name             : Dispersion (rank=Rank 2) (id=322108) [Spell Family (6), Passive] 
+Name             : Dispersion (desc=Rank 2) (id=322108) [Spell Family (6), Passive] 
 Class            : Shadow Priest
 School           : Holy
 Spell Type       : None
@@ -8860,7 +8860,7 @@ Effects          :
                    Family Flags: 40
 Description      : Voidform's Insanity drain is temporarily reduced by $47585s2% while dispersed.
 
-Name             : Vampiric Embrace (rank=Rank 2) (id=322110) [Spell Family (6), Passive] 
+Name             : Vampiric Embrace (desc=Rank 2) (id=322110) [Spell Family (6), Passive] 
 Class            : Shadow Priest
 School           : Holy
 Spell Type       : None
@@ -8881,7 +8881,7 @@ Effects          :
                    Family Flags: 2
 Description      : Healing done by Vampiric Embrace increased by $m1%.
 
-Name             : Holy Nova (rank=Rank 2) (id=322112) [Spell Family (6), Passive] 
+Name             : Holy Nova (desc=Rank 2) (id=322112) [Spell Family (6), Passive] 
 Class            : Discipline Holy Priest
 School           : Holy
 Spell Type       : None
@@ -8902,7 +8902,7 @@ Effects          :
                    Family Flags: 49
 Description      : Reduces the global cooldown of your Holy Nova by ${$m1/-1000}.1 sec.
 
-Name             : Power Word: Radiance (rank=Rank 2) (id=322115) [Spell Family (6), Passive] 
+Name             : Power Word: Radiance (desc=Rank 2) (id=322115) [Spell Family (6), Passive] 
 Class            : Discipline Priest
 School           : Holy
 Spell Type       : None
@@ -8922,7 +8922,7 @@ Effects          :
                    Affected Spells (Category): Power Word: Radiance (194509)
 Description      : Power Word: Radiance has an additional cooldown charge.
 
-Name             : Vampiric Touch (rank=Rank 2) (id=322116) [Spell Family (6), Passive] 
+Name             : Vampiric Touch (desc=Rank 2) (id=322116) [Spell Family (6), Passive] 
 Class            : Shadow Priest
 School           : Holy
 Spell Type       : None
@@ -8941,7 +8941,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 1602 | Target: Self (1)
 Description      : If your Vampiric Touch is dispelled, the dispeller flees in Horror for $87204d.
 
-Name             : Mindgames (rank=Venthyr) (id=323673) [Spell Family (6)] 
+Name             : Mindgames (desc=Venthyr) (id=323673) [Spell Family (6)] 
 Class            : Priest
 School           : Shadow
 Spell Type       : Magic
@@ -9029,7 +9029,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 127 | Misc Value 2: 0xfffffff6 | Radius: 100 yards | Target: Self (1)
 Description      : $@spelldesc323673
 
-Name             : Unholy Nova (rank=Necrolord) (id=324724) [Spell Family (6)] 
+Name             : Unholy Nova (desc=Necrolord) (id=324724) [Spell Family (6)] 
 Class            : Priest
 School           : Shadow
 Spell Type       : Magic
@@ -9060,7 +9060,7 @@ Description      : An explosion of dark energy heals allies within $A2 yds for $
 $@spelldesc325203
 Tooltip          : Attackers siphon $325118s1 health.
 
-Name             : Boon of the Ascended (rank=Kyrian) (id=325013) [Spell Family (6)] 
+Name             : Boon of the Ascended (desc=Kyrian) (id=325013) [Spell Family (6)] 
 Class            : Priest
 School           : Arcane
 Spell Type       : None
@@ -9179,7 +9179,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.12000 | PvP Coefficient: 1.00000 | Target: Friend (21)
 Description      : $@spelldesc324724
 
-Name             : Unholy Transfusion (rank=Necrolord) (id=325203) [Spell Family (6)] 
+Name             : Unholy Transfusion (desc=Necrolord) (id=325203) [Spell Family (6)] 
 Class            : Priest
 School           : Shadow
 Spell Type       : Magic
@@ -9265,7 +9265,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 2.00000 | PvP Coefficient: 1.00000 | Radius: 0 - 15 yards | Target: At Caster (22) -> AOE friendly (30)
 Description      : Explode for $s1 Arcane damage to all enemies and $s2 healing to all allies within $A1 yds, increased by $325013s5% for each stack of Boon of the Ascended.
 
-Name             : Fae Blessings (rank=Night Fae) (id=327661) [Spell Family (6)] 
+Name             : Fae Blessings (desc=Night Fae) (id=327661) [Spell Family (6)] 
 Class            : Priest
 School           : Nature
 Spell Type       : None
@@ -9307,7 +9307,7 @@ $@spellname186263: Reduces an ally's damage taken by $327694s1% for $327694d.
 $@spellname205448: Reduces the cooldowns of up to 5 allies' major abilities by $327710s1 sec.]
 Tooltip          : Your spell casts send forth helpful sprites, blessing your target.
 
-Name             : Fae Blessings (rank=Night Fae) (id=327694) [Spell Family (6)] 
+Name             : Fae Blessings (desc=Night Fae) (id=327694) [Spell Family (6)] 
 Class            : Priest
 School           : Nature
 Spell Type       : None
@@ -9328,7 +9328,7 @@ Effects          :
 Description      : $@spelldesc327661
 Tooltip          : Reduces damage taken by $s1%.
 
-Name             : Fae Blessings (rank=Night Fae) (id=327703) [Spell Family (6)] 
+Name             : Fae Blessings (desc=Night Fae) (id=327703) [Spell Family (6)] 
 Class            : Priest
 School           : Nature
 Spell Type       : None
@@ -9371,7 +9371,7 @@ Description      : Restores power.
 
 Tooltip          : Restores power.
 
-Name             : Fae Blessings (rank=Night Fae) (id=327710) [Spell Family (6)] 
+Name             : Fae Blessings (desc=Night Fae) (id=327710) [Spell Family (6)] 
 Class            : Priest
 School           : Nature
 Spell Type       : None
@@ -9391,7 +9391,7 @@ Effects          :
 Description      : $@spelldesc327661
 Tooltip          : Reduces major ability cooldown by $s1 sec.
 
-Name             : Shadow Word: Pain (rank=Rank 2) (id=327820) [Spell Family (6), Passive] 
+Name             : Shadow Word: Pain (desc=Rank 2) (id=327820) [Spell Family (6), Passive] 
 Class            : Priest
 School           : Shadow
 Spell Type       : None
@@ -9412,7 +9412,7 @@ Effects          :
                    Family Flags: 15
 Description      : Increases the duration of Shadow Word: Pain by ${$m1/1000} sec.
 
-Name             : Fade (rank=Rank 2) (id=327821) [Spell Family (6), Passive] 
+Name             : Fade (desc=Rank 2) (id=327821) [Spell Family (6), Passive] 
 Class            : Priest
 School           : Holy
 Spell Type       : None
@@ -9435,7 +9435,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 32 | Target: Self (1)
 Description      : Fade now reduces the range at which enemies will attack you.
 
-Name             : Mass Dispel (rank=Rank 2) (id=327830) [Spell Family (6), Passive] 
+Name             : Mass Dispel (desc=Rank 2) (id=327830) [Spell Family (6), Passive] 
 Class            : Priest
 School           : Holy
 Spell Type       : None

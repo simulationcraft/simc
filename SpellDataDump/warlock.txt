@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35282 shadowlands-BETA (git build dbc 9c725e1441)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35282 shadowlands-BETA (git build dbc df97e687b9)
 
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
@@ -145,7 +145,7 @@ Description      : Sends a shadowy bolt at the enemy, causing $s1 Shadow damage.
 
 Applies Shadow Embrace, increasing your damage dealt to the target by $32390s1% for $32390d. Stacks up to $32390u times.][] 
 
-Name             : Summon Imp (rank=Summon) (id=688) [Spell Family (5)] 
+Name             : Summon Imp (desc=Summon) (id=688) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
@@ -170,7 +170,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 416 | Target: Unknown(32)
 Description      : Summons an Imp under your command that casts ranged Firebolts.
 
-Name             : Summon Felhunter (rank=Summon) (id=691) [Spell Family (5)] 
+Name             : Summon Felhunter (desc=Summon) (id=691) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
@@ -195,7 +195,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 417 | Target: Unknown(32)
 Description      : Summons a Felhunter under your command, able to disrupt the spell casts of your enemies.
 
-Name             : Summon Voidwalker (rank=Summon) (id=697) [Spell Family (5)] 
+Name             : Summon Voidwalker (desc=Summon) (id=697) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
@@ -306,7 +306,7 @@ Effects          :
 Description      : Banishes an enemy Demon, Aberration, or Elemental, preventing any action for $d. Limit 1. Casting Banish again on the target will cancel the effect.
 Tooltip          : Invulnerable, but unable to act.
 
-Name             : Summon Succubus (rank=Summon) (id=712) [Spell Family (5)] 
+Name             : Summon Succubus (desc=Summon) (id=712) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
@@ -415,7 +415,7 @@ Effects          :
 Description      : Enslaves the target demon up to level $s1, forcing it to do your bidding for $d.
 Tooltip          : Enslaved.
 
-Name             : Summon Infernal (rank=Guardian) (id=1122) [Spell Family (5)] 
+Name             : Summon Infernal (desc=Guardian) (id=1122) [Spell Family (5)] 
 Class            : Destruction Warlock
 School           : Shadow
 Spell Type       : Magic
@@ -497,7 +497,7 @@ Effects          :
                    Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000
 Description      : $@spelldesc20707
 
-Name             : Firebolt (rank=Basic Attack) (id=3110) [Spell Family (5)] 
+Name             : Firebolt (desc=Basic Attack) (id=3110) [Spell Family (5)] 
 Class            : Warlock
 School           : Fire
 Spell Type       : Magic
@@ -526,7 +526,7 @@ Description      : Deals $s1 Fire damage to a target.
 Variables        : $mult=$?s56248[${1.20}][${1.00}]
 $damage=${(($SP*0.50)*0.657)+$M1}
 
-Name             : Consuming Shadows (rank=Basic Attack) (id=3716) [Spell Family (57)] 
+Name             : Consuming Shadows (desc=Basic Attack) (id=3716) [Spell Family (57)] 
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
@@ -788,7 +788,7 @@ Description      : Burns the enemy's soul, dealing $s1 Fire damage and applying 
 |cFFFFFFFFGenerates ${$281490s1/10} Soul Shard.|r
 Variables        : $cdr=${$s2/1000}
 
-Name             : Seduction (rank=Command Demon Ability) (id=6358) [Spell Family (57)] 
+Name             : Seduction (desc=Command Demon Ability) (id=6358) [Spell Family (57)] 
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
@@ -817,7 +817,7 @@ Effects          :
 Description      : Seduces the target, disorienting for $6358d. Damage will break the effect. Only usable against Humanoids.
 Tooltip          : Disoriented.
 
-Name             : Whiplash (rank=Special Ability) (id=6360) [Spell Family (57)] 
+Name             : Whiplash (desc=Special Ability) (id=6360) [Spell Family (57)] 
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
@@ -880,7 +880,7 @@ Effects          :
 Description      : Horrifies an enemy target into fleeing, incapacitating for $6789d and healing you for $108396m1% of maximum health.
 Tooltip          : Incapacitated.
 
-Name             : Lash of Pain (rank=Basic Attack) (id=7814) [Spell Family (57)] 
+Name             : Lash of Pain (desc=Basic Attack) (id=7814) [Spell Family (57)] 
 Class            : Warlock
 School           : Shadow
 Spell Type       : Melee
@@ -906,7 +906,7 @@ Description      : Lashes the target, dealing $s1 Shadow damage.
 
 |cFF777777(Right-Click to toggle)|r
 
-Name             : Lesser Invisibility (rank=Special Ability) (id=7870) [Spell Family (57)] 
+Name             : Lesser Invisibility (desc=Special Ability) (id=7870) [Spell Family (57)] 
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
@@ -942,7 +942,7 @@ Reapply when the $?s108499[Shivarra][Succubus] leaves combat.
 |cFF777777(Right-Click to toggle)|r
 Tooltip          : Invisible.
 
-Name             : Suffering (rank=Special Ability) (id=17735) [Spell Family (57)] 
+Name             : Suffering (desc=Special Ability) (id=17735) [Spell Family (57)] 
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
@@ -975,7 +975,7 @@ Taunts the current target if it is not attacking the $?s108499[Voidlord][Voidwal
 |cFF777777(Right-Click to toggle)|r
 Tooltip          : Taunted.
 
-Name             : Shadow Bulwark (rank=Command Demon Ability) (id=17767) [Spell Family (57)] 
+Name             : Shadow Bulwark (desc=Command Demon Ability) (id=17767) [Spell Family (57)] 
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
@@ -1108,7 +1108,7 @@ Effects          :
 Description      : Burns nearby enemies for $20153s1 fire damage every $t1 sec.
 Tooltip          : Burns nearby enemies for fire damage every $t1 sec.
 
-Name             : Devour Magic (rank=Special Ability) (id=19505) [Spell Family (57)] 
+Name             : Devour Magic (desc=Special Ability) (id=19505) [Spell Family (57)] 
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
@@ -1135,7 +1135,7 @@ Effects          :
 Description      : Purges $19505s1 beneficial magic $19505leffect:effects; from an enemy. If an effect is devoured, the $?s219450[Observer][Felhunter]$?s56249[ and Warlock][] will be healed for $19658m1 and gain 60 Fel Energy.
 
 
-Name             : Spell Lock (rank=Command Demon Ability) (id=19647) [Spell Family (57)] 
+Name             : Spell Lock (desc=Command Demon Ability) (id=19647) [Spell Family (57)] 
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
@@ -1202,7 +1202,7 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000
 Description      : Deals Fire damage to all nearby enemies.
 
-Name             : Expansive Mind (rank=Racial Passive) (id=20591) [Passive] 
+Name             : Expansive Mind (desc=Racial Passive) (id=20591) [Passive] 
 Class            : Paladin, Priest, Shaman, Mage, Warlock, Monk
 Race             : Gnome (0x40)
 School           : Physical
@@ -1255,7 +1255,7 @@ Effects          :
 Description      : Stores the soul of the target party or raid member, allowing resurrection upon death.$?a231811[ Also castable to resurrect a dead target.][] Targets resurrect with $3026s2% health and $3026s1% mana.
 Tooltip          : Soul is stored.
 
-Name             : Command (rank=Racial Passive) (id=21563) [Spell Family (9), Passive] 
+Name             : Command (desc=Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Orc (0x2)
 School           : Physical
@@ -1379,7 +1379,7 @@ Effects          :
 #1 (id=17468)    : Apply Aura (6) | Attribute (29)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
 
-Name             : Arcane Torrent (rank=Racial) (id=28730) 
+Name             : Arcane Torrent (desc=Racial) (id=28730) 
 Class            : Mage, Warlock
 Race             : Blood Elf (0x200)
 School           : Arcane
@@ -1470,7 +1470,7 @@ If dispelled, deals ${$233490s1*$s1/100} damage to the dispeller and silences th
 
 |cFFFFFFFFRefunds $231791m1 Soul $LShard:Shards; if the target dies while afflicted.|r][]
 
-Name             : Summon Felguard (rank=Summon) (id=30146) [Spell Family (5)] 
+Name             : Summon Felguard (desc=Summon) (id=30146) [Spell Family (5)] 
 Class            : Demonology Warlock
 School           : Shadow
 Spell Type       : Magic
@@ -1495,7 +1495,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 17252 | Target: Unknown(32)
 Description      : Summons a Felguard under your command as a powerful melee combatant.
 
-Name             : Pursuit (rank=Special Ability) (id=30151) [Spell Family (57)] 
+Name             : Pursuit (desc=Special Ability) (id=30151) [Spell Family (57)] 
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -1557,7 +1557,7 @@ Use anytime the $?s108499[Wrathguard][Felguard]'s target is further than 8 yards
 
 |cFF777777(Right-Click to toggle)|r
 
-Name             : Legion Strike (rank=Basic Attack) (id=30213) [Spell Family (57)] 
+Name             : Legion Strike (desc=Basic Attack) (id=30213) [Spell Family (57)] 
 Class            : Warlock
 School           : Physical
 Spell Type       : Melee
@@ -1618,7 +1618,7 @@ Effects          :
 Description      : Stuns all enemies within $a1 yds for $d.
 Tooltip          : Stunned.
 
-Name             : Avoidance (rank=Passive) (id=32233) [Passive] 
+Name             : Avoidance (desc=Passive) (id=32233) [Passive] 
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -1688,7 +1688,7 @@ Effects          :
 Description      : $@spelldesc32388
 Tooltip          : Damage taken increased by $s1%.
 
-Name             : Blood Fury (rank=Racial) (id=33702) [Scaling Spell (-1)] 
+Name             : Blood Fury (desc=Racial) (id=33702) [Scaling Spell (-1)] 
 Class            : Mage, Warlock
 Race             : Orc (0x2)
 School           : Physical
@@ -1781,7 +1781,7 @@ Description      : A ghostly soul haunts the target, dealing $s1 Shadow damage a
 If the target dies, Haunt's cooldown is reset.
 Tooltip          : Taking $s2% increased damage from the Warlock. Haunt's cooldown will be reset on death.
 
-Name             : Shadow Bite (rank=Basic Attack) (id=54049) [Spell Family (57)] 
+Name             : Shadow Bite (desc=Basic Attack) (id=54049) [Spell Family (57)] 
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
@@ -1824,7 +1824,7 @@ Effects          :
                    Base Value: 15 | Scaled Value: 5.795453 (coefficient=0.340909) | PvP Coefficient: 1.00000 | Misc Value: 1879048192 | Target: Self (1)
 Description      : Increases your Versatility by $s1.
 
-Name             : Glyph of Felguard (rank=Demonology) (id=56246) [Spell Family (5), Passive, Hidden] 
+Name             : Glyph of Felguard (desc=Demonology) (id=56246) [Spell Family (5), Passive, Hidden] 
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -1962,7 +1962,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 761
 Description      : $@spelldesc63312
 
-Name             : Viciousness (rank=Racial Passive) (id=68975) [Passive] 
+Name             : Viciousness (desc=Racial Passive) (id=68975) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
 Race             : Worgen (0x200000)
 School           : Physical
@@ -1981,7 +1981,7 @@ Effects          :
 Description      : Increases critical strike chance by $s1%.
 Tooltip          : Critical strike chance increased by $s1%.
 
-Name             : Aberration (rank=Racial Passive) (id=68976) [Passive] 
+Name             : Aberration (desc=Racial Passive) (id=68976) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
 Race             : Worgen (0x200000)
 School           : Physical
@@ -2000,7 +2000,7 @@ Effects          :
 Description      : Reduces Shadow and Nature damage taken by $s1%.
 Tooltip          : Reduces Shadow and Nature damage taken by $s1%.
 
-Name             : Darkflight (rank=Racial) (id=68992) 
+Name             : Darkflight (desc=Racial) (id=68992) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
 Race             : Worgen (0x200000)
 School           : Physical
@@ -2172,7 +2172,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.17600 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 Description      : $@spelldesc105174
 
-Name             : Nethermancy (rank=Passive) (id=86091) [Passive, Hidden] 
+Name             : Nethermancy (desc=Passive) (id=86091) [Passive, Hidden] 
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -2189,7 +2189,7 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | SP Coefficient: 1.00000 | PvP Coefficient: 1.00000 | Misc Value 2: 0x8 | Target: Self (1)
 Description      : Increases your Intellect by $s1%.
 
-Name             : Felstorm (rank=Special Ability) (id=89751) [Spell Family (57)] 
+Name             : Felstorm (desc=Special Ability) (id=89751) [Spell Family (57)] 
 Class            : Warlock
 School           : Physical
 Spell Type       : Melee
@@ -2246,7 +2246,7 @@ Effects          :
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000
 Description      : $@spelldesc89751
 
-Name             : Axe Toss (rank=Special Ability) (id=89766) [Spell Family (57)] 
+Name             : Axe Toss (desc=Special Ability) (id=89766) [Spell Family (57)] 
 Class            : Warlock
 School           : Physical
 Spell Type       : Ranged
@@ -2273,7 +2273,7 @@ Effects          :
 Description      : The $?s108499[Wrathguard][Felguard] hurls its weapon, stunning or interrupting the target for $89766d.
 Tooltip          : Stunned for $d.
 
-Name             : Flee (rank=Special Ability) (id=89792) [Spell Family (57)] 
+Name             : Flee (desc=Special Ability) (id=89792) [Spell Family (57)] 
 Class            : Warlock
 School           : Fire
 Spell Type       : Magic
@@ -2305,7 +2305,7 @@ Cast when the Imp is stunned or rooted.
 
 |cFF777777(Right-Click to toggle)|r
 
-Name             : Singe Magic (rank=Command Demon Ability) (id=89808) [Spell Family (57)] 
+Name             : Singe Magic (desc=Command Demon Ability) (id=89808) [Spell Family (57)] 
 Class            : Warlock
 School           : Fire
 Spell Type       : Magic
@@ -2354,7 +2354,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Trigger Spell: 92320 | Target: Self (1)
 Description      : Your harmful spells have a chance to grant $92320s1 mastery for $92320d.
 
-Name             : Flee (rank=Special Ability) (id=93282) [Spell Family (5)] 
+Name             : Flee (desc=Special Ability) (id=93282) [Spell Family (5)] 
 Class            : Warlock
 School           : Fire
 Spell Type       : Magic
@@ -2397,7 +2397,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Summons a Voidwalker under your command, able to withstand heavy punishment.
 
-Name             : Altered Form (rank=Racial Passive) (id=94293) [Passive, Hidden] 
+Name             : Altered Form (desc=Racial Passive) (id=94293) [Passive, Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
 Race             : Worgen (0x200000)
 School           : Physical
@@ -2519,7 +2519,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 55659 | Misc Value 2: 0xc8a | Target: Unknown(87)
 Description      : $@spelldesc105174
 
-Name             : Fel Firebolt (rank=Basic Attack) (id=104318) [Spell Family (5)] 
+Name             : Fel Firebolt (desc=Basic Attack) (id=104318) [Spell Family (5)] 
 Class            : Warlock
 School           : Fire
 Spell Type       : Magic
@@ -2545,7 +2545,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000
 Description      : Deals $s1 Fire damage to a target.
 
-Name             : Unending Resolve (rank=Rank 2) (id=104773) [Spell Family (5)] 
+Name             : Unending Resolve (desc=Rank 2) (id=104773) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
 Spell Type       : None
@@ -2602,7 +2602,7 @@ Description      : Calls down a demonic meteor full of Wild Imps which burst for
 
 Deals up to ${$m1*$86040m1} Shadowflame damage on impact to all enemies within $86040A1 yds of the target$?s196283[, applies Doom to each target,][] and summons up to ${$m1*$104317m2} Wild Imps, based on Soul Shards consumed.
 
-Name             : Soul Leech (rank=Talent) (id=108366) [Spell Family (5)] 
+Name             : Soul Leech (desc=Talent) (id=108366) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
 Spell Type       : None
@@ -2650,7 +2650,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Radius: 100 yards | Target: Self (1)
 Description      : All single-target damage done by you and your minions grants you and your pet shadowy shields that absorb $s1% of the damage dealt$?s219272[][ for $108366d], up to $?s219272[$219272s2][$s2]% of maximum health.
 
-Name             : Mortal Coil (rank=Talent) (id=108396) [Spell Family (5)] 
+Name             : Mortal Coil (desc=Talent) (id=108396) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
 Spell Type       : None
@@ -2850,7 +2850,7 @@ Effects          :
 Description      : Increases your movement speed by $s1%, but also damages you for $s2% of your maximum health every $t2 sec. Movement impairing effects may not reduce you below $s3% of normal movement speed. Lasts $d.
 Tooltip          : Movement speed increased by $s1%.
 
-Name             : Summon Infernal (rank=Guardian) (id=111685) [Spell Family (5)] 
+Name             : Summon Infernal (desc=Guardian) (id=111685) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
 Spell Type       : None
@@ -2898,7 +2898,7 @@ Effects          :
                    Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000
 Description      : Creates a demonic gateway between two locations. Activating the gateway transports the user to the other gateway. Each player can use a Demonic Gateway only once per $113942d.
 
-Name             : Grimoire: Imp (rank=Summon) (id=111859) [Spell Family (5)] 
+Name             : Grimoire: Imp (desc=Summon) (id=111859) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
@@ -2927,7 +2927,7 @@ Description      : Summons an Imp who attacks the target for $108501s1 sec.
 
 Imps cast ranged Firebolts and cleanse a hostile magic effect from their master.
 
-Name             : Grimoire: Voidwalker (rank=Summon) (id=111895) 
+Name             : Grimoire: Voidwalker (desc=Summon) (id=111895) 
 Class            : Warlock
 School           : Shadow
 Spell Type       : None
@@ -2955,7 +2955,7 @@ Description      : Summons a Voidwalker who attacks the target for $108501s1 sec
 
 Voidwalkers will taunt their target when summoned.
 
-Name             : Grimoire: Succubus (rank=Summon) (id=111896) 
+Name             : Grimoire: Succubus (desc=Summon) (id=111896) 
 Class            : Warlock
 School           : Shadow
 Spell Type       : None
@@ -2983,7 +2983,7 @@ Description      : Summons a Succubus who attacks the target for $108501s1 sec.
 
 Succubi will seduce their target if it is Humanoid.
 
-Name             : Grimoire: Felhunter (rank=Summon) (id=111897) 
+Name             : Grimoire: Felhunter (desc=Summon) (id=111897) 
 Class            : Warlock
 School           : Shadow
 Spell Type       : None
@@ -3011,7 +3011,7 @@ Description      : Summons a Felhunter who attacks the target for $108501s1 sec.
 
 Felhunters will Spell Lock their target when summoned.
 
-Name             : Grimoire: Felguard (rank=Summon) (id=111898) [Spell Family (5)] 
+Name             : Grimoire: Felguard (desc=Summon) (id=111898) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
@@ -3040,7 +3040,7 @@ Description      : Summons a Felguard who attacks the target for $d that deals $
 
 This Felguard will stun their target when summoned.
 
-Name             : Threatening Presence (rank=Special Ability) (id=112042) [Spell Family (57)] 
+Name             : Threatening Presence (desc=Special Ability) (id=112042) [Spell Family (57)] 
 Class            : Warlock
 School           : Physical
 Spell Type       : Magic
@@ -3275,7 +3275,7 @@ Voidwalker: $@spellname17767
 Succubus: $@spellname6358
 Imp: $@spellname89808
 
-Name             : Threatening Presence (rank=Special Ability) (id=134477) [Spell Family (57)] 
+Name             : Threatening Presence (desc=Special Ability) (id=134477) [Spell Family (57)] 
 Class            : Warlock
 School           : Physical
 Spell Type       : Magic
@@ -3639,7 +3639,7 @@ Effects          :
 Description      : Cripples the target, reducing movement speed by $s1% for $d (4 sec in PvP).
 Tooltip          : Movement speed reduced by $s1%.
 
-Name             : Burning Presence (rank=Special Ability) (id=171011) [Spell Family (57)] 
+Name             : Burning Presence (desc=Special Ability) (id=171011) [Spell Family (57)] 
 Class            : Warlock
 School           : Physical
 Spell Type       : Magic
@@ -3678,7 +3678,7 @@ Dodge and Parry chance increased by $s2%.
 
 Physical damage taken reduced by $s4%.
 
-Name             : Seethe (rank=Special Ability) (id=171014) [Spell Family (57)] 
+Name             : Seethe (desc=Special Ability) (id=171014) [Spell Family (57)] 
 Class            : Warlock
 School           : Fire
 Spell Type       : Magic
@@ -3737,7 +3737,7 @@ Effects          :
 Description      : The infernal releases a powerful burst of flames, dealing $s1 Fire damage to nearby targets, and stunning them for $d.
 Tooltip          : Stunned.
 
-Name             : Torch Magic (rank=Special Ability) (id=171021) [Spell Family (57)] 
+Name             : Torch Magic (desc=Special Ability) (id=171021) [Spell Family (57)] 
 Class            : Warlock
 School           : Fire
 Spell Type       : Magic
@@ -3763,7 +3763,7 @@ Use on the Infernal's current target.
 
 |cFF777777(Right-Click to toggle)|r
 
-Name             : Shadow Lock (rank=Special Ability) (id=171138) [Spell Family (57)] 
+Name             : Shadow Lock (desc=Special Ability) (id=171138) [Spell Family (57)] 
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
@@ -3896,7 +3896,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 95469 | Misc Value 2: 0xe5c | Radius: 0 - 10 yards | Target: Custom (18) -> Unknown(72)
 Description      : $@spelldesc185964
 
-Name             : Avoidance (rank=Passive) (id=190019) [Passive] 
+Name             : Avoidance (desc=Passive) (id=190019) [Passive] 
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -4337,7 +4337,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 40 yards | Target: Unknown(63) -> AOE enemy (instant) (16)
 Description      : $@spelldesc196447
 
-Name             : Dimensional Rift (rank=Artifact) (id=196586) 
+Name             : Dimensional Rift (desc=Artifact) (id=196586) 
 Class            : Warlock
 School           : Chaos
 Spell Type       : Magic
@@ -4476,7 +4476,7 @@ Damage is increased by $s2% against enemies below $s3% health.
 |cFFFFFFFFGenerates 1 Soul Shard if the target dies during this effect.|r
 Tooltip          : Suffering $w1 Shadow damage every $t1 seconds.
 
-Name             : Thunderstruck (rank=PvP Talent) (id=199042) [Spell Family (4)] 
+Name             : Thunderstruck (desc=PvP Talent) (id=199042) [Spell Family (4)] 
 Class            : Warrior, Warlock
 School           : Physical
 Spell Type       : Melee
@@ -4500,7 +4500,7 @@ Effects          :
 Description      : $@spelldesc199045
 Tooltip          : Rooted.
 
-Name             : Thunderstruck (rank=PvP Talent) (id=199045) [Spell Family (3), Passive, Hidden] 
+Name             : Thunderstruck (desc=PvP Talent) (id=199045) [Spell Family (3), Passive, Hidden] 
 Class            : Warrior, Warlock
 School           : Physical
 Spell Type       : None
@@ -4824,7 +4824,7 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Unknown(25)
 Description      : $@spelldesc205178
 
-Name             : Thal'kiel's Consumption (rank=Artifact) (id=211714) [Spell Family (5)] 
+Name             : Thal'kiel's Consumption (desc=Artifact) (id=211714) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
@@ -5010,7 +5010,7 @@ Description      : $@spelldesc108501
 Tooltip          : Summoned by a Grimoire of Service.
 Damage done increased by $s1%.
 
-Name             : Reap Souls (rank=Artifact) (id=216698) 
+Name             : Reap Souls (desc=Artifact) (id=216698) 
 Class            : Warlock
 School           : Shadow
 Spell Type       : None
@@ -5167,7 +5167,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 108452 | Misc Value 2: 0xf77 | Target: Unknown(87)
 Description      : $@spelldesc224103
 
-Name             : Unstable Affliction (rank=Rank 2) (id=231791) [Spell Family (5), Passive] 
+Name             : Unstable Affliction (desc=Rank 2) (id=231791) [Spell Family (5), Passive] 
 Class            : Affliction Warlock
 School           : Fire
 Spell Type       : None
@@ -5186,7 +5186,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Unstable Affliction generates $m1 Soul $LShard:Shards; if the target dies.
 
-Name             : Agony (rank=Rank 2) (id=231792) [Spell Family (5), Passive] 
+Name             : Agony (desc=Rank 2) (id=231792) [Spell Family (5), Passive] 
 Class            : Affliction Warlock
 School           : Fire
 Spell Type       : None
@@ -5207,7 +5207,7 @@ Effects          :
                    Family Flags: 10
 Description      : Agony may now ramp up to ${$s1+6} stacks.
 
-Name             : Conflagrate (rank=Rank 2) (id=231793) [Spell Family (5), Passive] 
+Name             : Conflagrate (desc=Rank 2) (id=231793) [Spell Family (5), Passive] 
 Class            : Destruction Warlock
 School           : Fire
 Spell Type       : None
@@ -5227,7 +5227,7 @@ Effects          :
                    Affected Spells (Category): Conflagrate (17962)
 Description      : Conflagrate has ${$s1+1} charges.
 
-Name             : Soulstone (rank=Rank 2) (id=231811) [Spell Family (5), Passive] 
+Name             : Soulstone (desc=Rank 2) (id=231811) [Spell Family (5), Passive] 
 Class            : Affliction Demonology Destruction Warlock
 School           : Fire
 Spell Type       : None
@@ -5575,7 +5575,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Unlock powers at the Vindicaar's Matrix Core to use while on Argus. 
 
-Name             : Light's Judgment (rank=Racial) (id=255647) 
+Name             : Light's Judgment (desc=Racial) (id=255647) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
@@ -5597,7 +5597,7 @@ Effects          :
 Description      : Call down a strike of Holy energy, dealing $<damage> Holy damage to enemies within $A1 yards after 3 sec.
 Variables        : $damage=${$cond($gt($SP,$AP),$SP*3,$AP*3)*$pctD*(1+$@versadmg)}
 
-Name             : Holy Resistance (rank=Racial Passive) (id=255651) [Passive] 
+Name             : Holy Resistance (desc=Racial Passive) (id=255651) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
@@ -5615,7 +5615,7 @@ Effects          :
                    Base Value: -1 | Scaled Value: -1 | PvP Coefficient: 1.00000 | Misc Value: 0x2 | Target: Self (1)
 Description      : Reduces Holy damage taken by ${$s1/-1}%.
 
-Name             : Light's Reckoning (rank=Racial Passive) (id=255652) [Passive] 
+Name             : Light's Reckoning (desc=Racial Passive) (id=255652) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Physical
@@ -5633,7 +5633,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 256896 | Target: Self (1)
 Description      : Erupt with Light upon death. Deals $256896s1 Holy damage to enemies within 8 yards and heals allies for $256896s2.
 
-Name             : Demonbane (rank=Racial Passive) (id=255653) [Passive] 
+Name             : Demonbane (desc=Racial Passive) (id=255653) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Physical
@@ -5651,7 +5651,7 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 4 | Target: Self (1)
 Description      : Experience gains from killing Demons increased by $s1%.
 
-Name             : Light's Judgment (rank=Racial) (id=256893) 
+Name             : Light's Judgment (desc=Racial) (id=256893) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
@@ -5673,7 +5673,7 @@ Effects          :
 Description      : Call down a strike of Holy energy, dealing $<damage> Holy damage to enemies within $A1 yards.
 Variables        : $damage=${$cond($gt($SP,$AP),$SP*3,$AP*3)*$pctD*(1+$@versadmg)}
 
-Name             : Light's Reckoning (rank=Racial Passive) (id=256896) [Scaling Spell (-8)] 
+Name             : Light's Reckoning (desc=Racial Passive) (id=256896) [Scaling Spell (-8)] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
@@ -7132,7 +7132,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 136402 | Misc Value 2: 0x10b5 | Target: Unknown(87)
 Description      : Summon an Ur'zul to fight for you for the next $d.
 
-Name             : Demonic Circle (rank=Summon) (id=268358) [Spell Family (5)] 
+Name             : Demonic Circle (desc=Summon) (id=268358) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
@@ -9370,7 +9370,7 @@ Description      : Your damaging spells and abilities have a chance to crash a w
 
 When your health drops below $s2%, gain a shield absorbing $s3 damage within $303390d. When this occurs, Undulating Tides cannot trigger again for $s4 sec.
 
-Name             : Scouring Tithe (rank=Kyrian) (id=312321) [Spell Family (5)] 
+Name             : Scouring Tithe (desc=Kyrian) (id=312321) [Spell Family (5)] 
 Class            : Warlock
 School           : Arcane
 Spell Type       : Magic
@@ -9397,7 +9397,7 @@ Effects          :
 Description      : Deal $s1 Arcane damage instantly, and $o2 over $d. If the enemy dies while affected by Scouring Tithe, you generate ${$312379s1/10} Soul $LShard:Shards;. If they survive, Scouring Tithe's cooldown is refreshed.
 Tooltip          : Suffering $w2 Arcane damage every $t2 sec.
 
-Name             : Scouring Tithe (rank=Kyrian) (id=312379) [Spell Family (5)] 
+Name             : Scouring Tithe (desc=Kyrian) (id=312379) [Spell Family (5)] 
 Class            : Warlock
 School           : Arcane
 Spell Type       : None
@@ -9453,7 +9453,7 @@ If dispelled, deals ${$s2*$s1/100} damage to the dispeller and silences them for
 |cFFFFFFFFGenerates $231791m1 Soul $LShard:Shards; if the target dies while afflicted.|r
 Tooltip          : Suffering $w2 Shadow damage every $t2 sec.  If dispelled, will cause ${$233490s1*$s1/100} damage to the dispeller and silence them for $196364d.
 
-Name             : Thunder Clap (rank=Rank 2) (id=316414) [Spell Family (4), Passive] 
+Name             : Thunder Clap (desc=Rank 2) (id=316414) [Spell Family (4), Passive] 
 Class            : Protection Warrior, Warlock
 School           : Physical
 Spell Type       : None
@@ -9472,7 +9472,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Thunder Clap reduces the movement speed of enemies by $6343s2% for $6343d.
 
-Name             : Corruption (rank=Rank 2) (id=317031) [Spell Family (5), Passive] 
+Name             : Corruption (desc=Rank 2) (id=317031) [Spell Family (5), Passive] 
 Class            : Affliction Warlock
 School           : Shadow
 Spell Type       : Magic
@@ -9513,7 +9513,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 16.54624 (coefficient=0.174171) | PvP Coefficient: 0.50000 | Trigger Spell: 316101 | Target: Self (1)
 Description      : Your secondary stats are all increased by $s1 while your Corruption Level is 25 or higher.
 
-Name             : Unending Resolve (rank=Rank 1) (id=317138) [Spell Family (5)] 
+Name             : Unending Resolve (desc=Rank 1) (id=317138) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
 Spell Type       : None
@@ -9541,7 +9541,7 @@ Effects          :
 Description      : Hardens your skin, reducing all damage you take by $s3%.
 Tooltip          : Damage taken reduced by $w3%.
 
-Name             : Impending Catastrophe (rank=Venthyr) (id=321792) [Spell Family (5)] 
+Name             : Impending Catastrophe (desc=Venthyr) (id=321792) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
 Spell Type       : None
@@ -9668,7 +9668,7 @@ Effects          :
 Description      : Your damaging periodic effects erupt on all targets within line of sight, causing $<damage> Shadow damage per effect.
 Variables        : $damage=${$bc1*($SP)*(1+$@versadmg)}
 
-Name             : Decimating Bolt (rank=Necrolord) (id=325289) [Spell Family (5)] 
+Name             : Decimating Bolt (desc=Necrolord) (id=325289) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
@@ -9703,7 +9703,7 @@ Description      : Hurl bolts of decimating magic at your target, dealing $<dama
 Decimating Bolt's damage, and the bonus to $?s137046[Incinerate]?s198590[Drain Soul][Shadow Bolt] both increase as your target's health decreases.
 Variables        : $damage=${4*$327059s1}
 
-Name             : Decimating Bolt (rank=Necrolord) (id=325299) [Spell Family (5)] 
+Name             : Decimating Bolt (desc=Necrolord) (id=325299) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
@@ -9733,7 +9733,7 @@ Effects          :
 Description      : $@spelldesc325289
 Tooltip          : Damage of $?s137046[Incinerate]?s198590[Drain Soul][Shadow Bolt] increased by $w2%.
 
-Name             : Soul Rot (rank=Night Fae) (id=325640) [Spell Family (5)] 
+Name             : Soul Rot (desc=Night Fae) (id=325640) [Spell Family (5)] 
 Class            : Warlock
 School           : Nature
 Spell Type       : Magic
@@ -9770,7 +9770,7 @@ For the next $d, casting Drain Life will cause you to also Drain Life from any e
 Consumes $s4% of maximum health when cast.
 Tooltip          : Suffering $s2 Nature damage every $t1 sec.
 
-Name             : Decimating Bolt (rank=Necrolord) (id=327059) [Spell Family (5)] 
+Name             : Decimating Bolt (desc=Necrolord) (id=327059) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
@@ -9791,7 +9791,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.50000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc325289
 
-Name             : Decimating Bolt (rank=Necrolord) (id=327070) [Spell Family (5)] 
+Name             : Decimating Bolt (desc=Necrolord) (id=327070) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
 Spell Type       : None
@@ -9813,7 +9813,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 327059 | Target: Enemy (6)
 Description      : $@spelldesc325289
 
-Name             : Decimating Bolt (rank=Necrolord) (id=327072) [Spell Family (5)] 
+Name             : Decimating Bolt (desc=Necrolord) (id=327072) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
 Spell Type       : None
@@ -9910,7 +9910,7 @@ Description      : Reduces the target's movement speed by $s1% for $d.
 |cFF8282FFCurses: A warlock can only have one Curse active per target.|r
 Tooltip          : Movement speed slowed by $w1%.
 
-Name             : Unstable Affliction (rank=Rank 3) (id=334315) [Spell Family (5), Passive] 
+Name             : Unstable Affliction (desc=Rank 3) (id=334315) [Spell Family (5), Passive] 
 Class            : Affliction Warlock
 School           : Shadow
 Spell Type       : None
@@ -9983,7 +9983,7 @@ Effects          :
 Description      : $@spelldesc273521
 Tooltip          : Drain Life deals $w1% additional damage and costs $w3% less mana.
 
-Name             : Corruption (rank=Rank 3) (id=334342) [Spell Family (5), Passive] 
+Name             : Corruption (desc=Rank 3) (id=334342) [Spell Family (5), Passive] 
 Class            : Affliction Warlock
 School           : Shadow
 Spell Type       : None
@@ -10025,7 +10025,7 @@ Effects          :
                    Family Flags: 70
 Description      : $@spelldesc264130
 
-Name             : Summon Demonic Tyrant (rank=Rank 2) (id=334585) [Spell Family (5), Passive] 
+Name             : Summon Demonic Tyrant (desc=Rank 2) (id=334585) [Spell Family (5), Passive] 
 Class            : Demonology Warlock
 School           : Shadow
 Spell Type       : None
@@ -10045,7 +10045,7 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
 Description      : Summoning your Demonic Tyrant instantly generates $s1 Soul Shards.
 
-Name             : Fel Firebolt (rank=Rank 2) (id=334591) [Spell Family (5), Passive] 
+Name             : Fel Firebolt (desc=Rank 2) (id=334591) [Spell Family (5), Passive] 
 Class            : Demonology Warlock
 School           : Shadow
 Spell Type       : None
@@ -10067,7 +10067,7 @@ Effects          :
                    Family Flags: 12
 Description      : Teaches your Wild Imps how to spend $s1% less energy when casting Fel Firebolt.
 
-Name             : Call Dreadstalkers (rank=Rank 2) (id=334727) [Spell Family (5), Passive] 
+Name             : Call Dreadstalkers (desc=Rank 2) (id=334727) [Spell Family (5), Passive] 
 Class            : Demonology Warlock
 School           : Shadow
 Spell Type       : None
@@ -10091,7 +10091,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 60 yards | Target: Unknown(120)
 Description      : Reduces the cast time of Call Dreadstalkers by 0.5 sec, and teaches your Dreadstalkers how to pursue targets faster.
 
-Name             : Havoc (rank=Rank 2) (id=335174) [Spell Family (5), Passive] 
+Name             : Havoc (desc=Rank 2) (id=335174) [Spell Family (5), Passive] 
 Class            : Destruction Warlock
 School           : Shadow
 Spell Type       : None
@@ -10113,7 +10113,7 @@ Effects          :
                    Family Flags: 20
 Description      : Havoc lasts ${$s1/1000} seconds longer.
 
-Name             : Summon Infernal (rank=Rank 2) (id=335175) [Spell Family (5), Passive] 
+Name             : Summon Infernal (desc=Rank 2) (id=335175) [Spell Family (5), Passive] 
 Class            : Destruction Warlock
 School           : Shadow
 Spell Type       : None
@@ -10135,7 +10135,7 @@ Effects          :
                    Family Flags: 50
 Description      : Your Infernal Awakening deals $s1% additional damage on impact.
 
-Name             : Rain of Fire (rank=Rank 2) (id=335189) [Spell Family (5), Passive] 
+Name             : Rain of Fire (desc=Rank 2) (id=335189) [Spell Family (5), Passive] 
 Class            : Destruction Warlock
 School           : Shadow
 Spell Type       : None
@@ -10157,7 +10157,7 @@ Effects          :
                    Family Flags: 92
 Description      : Rain of Fire deals $s1% additional damage.
 
-Name             : Summon Infernal (rank=Guardian) (id=335236) [Spell Family (5)] 
+Name             : Summon Infernal (desc=Guardian) (id=335236) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
 Spell Type       : None

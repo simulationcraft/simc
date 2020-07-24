@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35282 shadowlands-BETA (git build dbc 9c725e1441)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35282 shadowlands-BETA (git build dbc df97e687b9)
 
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
@@ -49,7 +49,7 @@ Description      : Heals your pet for $<total>% of its total health over $d.
 Tooltip          : Heals $w1% of the pet's health every $t1 sec.
 Variables        : $total=${$m1*5}
 
-Name             : Dual Wield (rank=Passive) (id=674) [Passive] 
+Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
 Spell Type       : Magic
@@ -495,7 +495,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 120 | Points Per Level: 1 | PvP Coefficient: 1.00000 | Target: Unknown(77)
 Description      : Begins taming a beast to be your companion. If you lose the beast's attention for any reason, the taming process will fail.
 
-Name             : Ice Trap (rank=Frost Trap) (id=13809) [Spell Family (9)] 
+Name             : Ice Trap (desc=Frost Trap) (id=13809) [Spell Family (9)] 
 Class            : Hunter
 School           : Frost
 Spell Type       : None
@@ -538,7 +538,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 621 | Target: Unknown(87)
 Description      : Place a frost trap that creates an ice slick around itself for $13810d when the first enemy approaches it. All enemies within $13810s1 yards will be slowed by $135299s1% while in the area of effect. Trap will exist for $13809d.
 
-Name             : Claw (rank=Basic Attack) (id=16827) [Spell Family (9)] 
+Name             : Claw (desc=Basic Attack) (id=16827) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
 Spell Type       : Melee
@@ -567,7 +567,7 @@ $spiked=$?s53184[${1.1}][${1.0}]
 $blink=$?s130392[${1.5}][${1.0}]
 $damage=${$<aotb>*$<ce>*$<spiked>*$<blink>*($RAP*0.333)*(1+$@versadmg)}
 
-Name             : Bite (rank=Basic Attack) (id=17253) [Spell Family (9)] 
+Name             : Bite (desc=Basic Attack) (id=17253) [Spell Family (9)] 
 Class            : Hunter, Death Knight
 School           : Physical
 Spell Type       : Melee
@@ -859,7 +859,7 @@ Effects          :
 Description      : Shows the location of all nearby undead on the minimap.
 Tooltip          : Tracking Undead.
 
-Name             : Blood Fury (rank=Racial) (id=20572) [Scaling Spell (-1)] 
+Name             : Blood Fury (desc=Racial) (id=20572) [Scaling Spell (-1)] 
 Class            : Warrior, Hunter, Rogue, Death Knight
 Race             : Orc (0x2)
 School           : Physical
@@ -882,7 +882,7 @@ Effects          :
 Description      : Increases your attack power by $s1 for $d.
 Tooltip          : Attack power increased by $w1.
 
-Name             : Command (rank=Racial Passive) (id=21563) [Spell Family (9), Passive] 
+Name             : Command (desc=Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Orc (0x2)
 School           : Physical
@@ -922,7 +922,7 @@ Effects          :
 Description      : Command your pet to intimidate the target, stunning it for $24394d.
 Tooltip          : Stunned.
 
-Name             : Bloody Screech (rank=Special Ability) (id=24423) [Spell Family (9)] 
+Name             : Bloody Screech (desc=Special Ability) (id=24423) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
 Spell Type       : Magic
@@ -949,7 +949,7 @@ Description      : The Carrion Bird screeches, causing Mortal Wounds on the targ
 |Tinterface\icons\ability_criticalstrike.blp:24|t |cFFFFFFFFMortal Wounds|r
 Grievously wounds the target, reducing the effectiveness of any healing received for $115804d.
 
-Name             : Prowl (rank=Bonus Ability) (id=24450) [Spell Family (9)] 
+Name             : Prowl (desc=Bonus Ability) (id=24450) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -1003,7 +1003,7 @@ Effects          :
 #1 (id=17468)    : Apply Aura (6) | Attribute (29)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
 
-Name             : Gift of the Naaru (rank=Racial) (id=28880) [Spell Family (4)] 
+Name             : Gift of the Naaru (desc=Racial) (id=28880) [Spell Family (4)] 
 Class            : Warrior, Paladin, Hunter, Priest, Death Knight, Shaman, Mage, Monk
 Race             : Draenei (0x400)
 School           : Holy
@@ -1110,7 +1110,7 @@ Effects          :
 Description      : $@spelldesc34477
 Tooltip          : Threat redirected from Hunter to target.
 
-Name             : Warp Time (rank=Special Ability) (id=35346) [Spell Family (9)] 
+Name             : Warp Time (desc=Special Ability) (id=35346) [Spell Family (9)] 
 Class            : Hunter
 School           : Arcane
 Spell Type       : Magic
@@ -1152,7 +1152,7 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
 Description      : Increases Agility by $s1.
 
-Name             : Smack (rank=Basic Attack) (id=49966) [Spell Family (9)] 
+Name             : Smack (desc=Basic Attack) (id=49966) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
 Spell Type       : Melee
@@ -1181,7 +1181,7 @@ $spiked=$?s53184[${1.1}][${1.0}]
 $blink=$?s130392[${1.5}][${1.0}]
 $damage=${$<aotb>*$<ce>*$<spiked>*$<blink>*($RAP*0.333)*(1+$@versadmg)}
 
-Name             : Pin (rank=Special Ability) (id=50245) [Spell Family (9)] 
+Name             : Pin (desc=Special Ability) (id=50245) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
 Spell Type       : Melee
@@ -1210,7 +1210,7 @@ Effects          :
 Description      : The Crab claws at the target's feet with its pincers, slowing movement by $s1% for $d.
 Tooltip          : Pinned in place.
 
-Name             : Dust Cloud (rank=Special Ability) (id=50285) [Spell Family (9)] 
+Name             : Dust Cloud (desc=Special Ability) (id=50285) [Spell Family (9)] 
 Class            : Hunter
 School           : Nature
 Spell Type       : Magic
@@ -1234,7 +1234,7 @@ Effects          :
 Description      : The Tallstrider kicks up a cloud of dust towards the target, slowing movement by $s1% for $d.
 Tooltip          : Movement slowed by $s1%.
 
-Name             : Ankle Crack (rank=Special Ability) (id=50433) [Spell Family (9)] 
+Name             : Ankle Crack (desc=Special Ability) (id=50433) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
 Spell Type       : Melee
@@ -1347,7 +1347,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
 Description      : You master the art of beast training, teaching you the ability to tame Exotic pets.
 
-Name             : Master's Call (rank=Cunning Ability) (id=53271) [Spell Family (9)] 
+Name             : Master's Call (desc=Cunning Ability) (id=53271) [Spell Family (9)] 
 Class            : Cunning Hunter Pet
 School           : Physical
 Spell Type       : None
@@ -1426,7 +1426,7 @@ Effects          :
 Description      : Remove all root and movement impairing effects on the target, and cause them to be immune to all such effects for $d.
 Tooltip          : Immune to root and movement impairing effects.
 
-Name             : Frost Breath (rank=Special Ability) (id=54644) [Spell Family (9)] 
+Name             : Frost Breath (desc=Special Ability) (id=54644) [Spell Family (9)] 
 Class            : Hunter
 School           : Froststorm
 Spell Type       : Magic
@@ -1455,7 +1455,7 @@ Effects          :
 Description      : The Chimera blasts the target with frost breath, reducing movement speed by $s1% for $d.
 Tooltip          : Movement speed reduced by $s1%.
 
-Name             : Monstrous Bite (rank=Special Ability) (id=54680) [Spell Family (9)] 
+Name             : Monstrous Bite (desc=Special Ability) (id=54680) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
 Spell Type       : Melee
@@ -1632,7 +1632,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 440
 Description      : $@spelldesc57870
 
-Name             : Gift of the Naaru (rank=Racial) (id=59543) [Spell Family (9)] 
+Name             : Gift of the Naaru (desc=Racial) (id=59543) [Spell Family (9)] 
 Class            : Hunter
 Race             : Draenei (0x400)
 School           : Holy
@@ -1700,7 +1700,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000
 Description      : When your pet is at or above 50 Focus, your pet's Basic Attacks will deal $s1% more damage, but cost $s2% additional focus.
 
-Name             : Viciousness (rank=Racial Passive) (id=68975) [Passive] 
+Name             : Viciousness (desc=Racial Passive) (id=68975) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
 Race             : Worgen (0x200000)
 School           : Physical
@@ -1719,7 +1719,7 @@ Effects          :
 Description      : Increases critical strike chance by $s1%.
 Tooltip          : Critical strike chance increased by $s1%.
 
-Name             : Aberration (rank=Racial Passive) (id=68976) [Passive] 
+Name             : Aberration (desc=Racial Passive) (id=68976) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
 Race             : Worgen (0x200000)
 School           : Physical
@@ -1738,7 +1738,7 @@ Effects          :
 Description      : Reduces Shadow and Nature damage taken by $s1%.
 Tooltip          : Reduces Shadow and Nature damage taken by $s1%.
 
-Name             : Darkflight (rank=Racial) (id=68992) 
+Name             : Darkflight (desc=Racial) (id=68992) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
 Race             : Worgen (0x200000)
 School           : Physical
@@ -1786,7 +1786,7 @@ Effects          :
                    Family Flags: 99, 113
 Description      : Increases the damage done by your pets by ${$s1}.1%.
 
-Name             : Arcane Torrent (rank=Racial) (id=80483) 
+Name             : Arcane Torrent (desc=Racial) (id=80483) 
 Class            : Hunter
 Race             : Blood Elf (0x200)
 School           : Arcane
@@ -1828,7 +1828,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc34026
 
-Name             : Mail Specialization (rank=Passive) (id=86538) [Passive, Hidden] 
+Name             : Mail Specialization (desc=Passive) (id=86538) [Passive, Hidden] 
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -1847,7 +1847,7 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Misc Value 2: 0x2 | Target: Self (1)
 Description      : Increases your Agility by $s1% while wearing only Mail armor.
 
-Name             : Spirit Walk (rank=Bonus Ability) (id=90328) [Spell Family (9)] 
+Name             : Spirit Walk (desc=Bonus Ability) (id=90328) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -1883,7 +1883,7 @@ Description      : Puts your pet in stealth mode, but slows its movement speed b
 Tooltip          : Stealthed.
 Movement speed slowed by $s2%.
 
-Name             : Play (rank=Bonus Ability) (id=90347) [Spell Family (9)] 
+Name             : Play (desc=Bonus Ability) (id=90347) [Spell Family (9)] 
 Class            : Hunter
 School           : Nature
 Spell Type       : Magic
@@ -1907,7 +1907,7 @@ Effects          :
 Description      : Puts your Fox into a playful state.
 Tooltip          : "When you're the best of friends..."
 
-Name             : Spirit Mend (rank=Exotic Ability) (id=90361) [Spell Family (9)] 
+Name             : Spirit Mend (desc=Exotic Ability) (id=90361) [Spell Family (9)] 
 Class            : Hunter
 School           : Nature
 Spell Type       : Magic
@@ -1957,7 +1957,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Trigger Spell: 92320 | Target: Self (1)
 Description      : Your harmful spells have a chance to grant $92320s1 mastery for $92320d.
 
-Name             : Froststorm Breath (rank=Exotic Ability) (id=92380) [Spell Family (9)] 
+Name             : Froststorm Breath (desc=Exotic Ability) (id=92380) [Spell Family (9)] 
 Class            : Hunter
 School           : Froststorm
 Spell Type       : Melee
@@ -2000,7 +2000,7 @@ Effects          :
 #1 (id=97724)    : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
 
-Name             : Control Pet (rank=Passive) (id=93321) [Passive] 
+Name             : Control Pet (desc=Passive) (id=93321) [Passive] 
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -2019,7 +2019,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Allows you to give commands to control your pet.
 
-Name             : Control Pet (rank=Passive) (id=93322) [Hidden] 
+Name             : Control Pet (desc=Passive) (id=93322) [Hidden] 
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -2038,7 +2038,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Allows you to give commands to control your pet.
 
-Name             : Burrow Attack (rank=Exotic Ability) (id=93433) [Spell Family (9)] 
+Name             : Burrow Attack (desc=Exotic Ability) (id=93433) [Spell Family (9)] 
 Class            : Hunter
 School           : Nature
 Spell Type       : Magic
@@ -2065,7 +2065,7 @@ Tooltip          : Burrowed into the ground, dealing damage to enemies above.
 Variables        : $bmMastery=$?s76657[${1+0.01*$76657m1}][${1}]
 $damage= ${($95714m1+(($RAP*0.60)*0.096))*8*(1+$@versadmg)*$<bmMastery>}
 
-Name             : Rest (rank=Bonus Ability) (id=94019) [Spell Family (9)] 
+Name             : Rest (desc=Bonus Ability) (id=94019) [Spell Family (9)] 
 Class            : Hunter
 School           : Nature
 Spell Type       : Magic
@@ -2091,7 +2091,7 @@ Effects          :
 Description      : You command your pet Bear to take a rest.
 Tooltip          : Zzzzzz...
 
-Name             : Trick (rank=Bonus Ability) (id=94022) [Spell Family (9)] 
+Name             : Trick (desc=Bonus Ability) (id=94022) [Spell Family (9)] 
 Class            : Hunter
 School           : Nature
 Spell Type       : Magic
@@ -2113,7 +2113,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 10 yards | Target: Self (1)
 Description      : You command your Bird of Prey to do a trick. Larger birds may not be interested.
 
-Name             : Altered Form (rank=Racial Passive) (id=94293) [Passive, Hidden] 
+Name             : Altered Form (desc=Racial Passive) (id=94293) [Passive, Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
 Race             : Worgen (0x200000)
 School           : Physical
@@ -2131,7 +2131,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Enables Worgens to switch between human and Worgan forms
 
-Name             : Burrow Attack (rank=Exotic Ability) (id=95714) [Spell Family (9)] 
+Name             : Burrow Attack (desc=Exotic Ability) (id=95714) [Spell Family (9)] 
 Class            : Hunter
 School           : Nature
 Spell Type       : Magic
@@ -2154,7 +2154,7 @@ Description      : The Worm burrows into the earth, shaking the ground above dea
 Variables        : $bmMastery=$?s76657[${1+0.01*$76657m1}][${1}]
 $damage= ${($95714m1+(($RAP*0.60)*0.096))*8*(1+$@versadmg)*$<bmMastery>}
 
-Name             : Froststorm Breath (rank=Exotic Ability) (id=95725) [Spell Family (9)] 
+Name             : Froststorm Breath (desc=Exotic Ability) (id=95725) [Spell Family (9)] 
 Class            : Hunter
 School           : Froststorm
 Spell Type       : Melee
@@ -3088,7 +3088,7 @@ Effects          :
                    Affected School(s): All
 Description      : Increases all damage done by your pet by $s2%.
 
-Name             : Critical Strikes (rank=Passive) (id=157443) [Passive] 
+Name             : Critical Strikes (desc=Passive) (id=157443) [Passive] 
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -3107,7 +3107,7 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Increases your chance to critically strike by $s1%.
 
-Name             : Molten Hide (rank=Special Ability) (id=159786) 
+Name             : Molten Hide (desc=Special Ability) (id=159786) 
 Class            : Hunter
 School           : Fire
 Spell Type       : Magic
@@ -3132,7 +3132,7 @@ Effects          :
 Description      : $@spelldesc159788
 Tooltip          : Causes $160124s1 Fire damage to attackers.
 
-Name             : Molten Hide (rank=Exotic Ability) (id=159788) [Passive] 
+Name             : Molten Hide (desc=Exotic Ability) (id=159788) [Passive] 
 Class            : Hunter
 School           : Fire
 Spell Type       : None
@@ -3158,7 +3158,7 @@ Effects          :
                    Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : When the core hound takes melee attacks, it infuses its hide with molten lava, causing $160124s1 Fire damage to all further melee attackers for $159786d. Molten Hide can only activate every $s2 sec.
 
-Name             : Feast (rank=Exotic Ability) (id=159953) 
+Name             : Feast (desc=Exotic Ability) (id=159953) 
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -3202,7 +3202,7 @@ Effects          :
 Description      : $@spelldesc159953
 Tooltip          : Regenerate $s1% of total health and focus every $t1 seconds.
 
-Name             : Agile Reflexes (rank=Special Ability) (id=160011) [Spell Family (9)] 
+Name             : Agile Reflexes (desc=Special Ability) (id=160011) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -3225,7 +3225,7 @@ Effects          :
 Description      : The Fox heightens its senses, increasing dodge chance by $s1% for $d.
 Tooltip          : Dodge chance increased by $s1%.
 
-Name             : Thick Hide (rank=Special Ability) (id=160057) [Spell Family (9), Passive] 
+Name             : Thick Hide (desc=Special Ability) (id=160057) [Spell Family (9), Passive] 
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -3257,7 +3257,7 @@ Description      : When falling below $s2% health, the Clefthoof's skin will thi
 
 This effect can only occur once every $s3 sec.
 
-Name             : Thick Hide (rank=Special Ability) (id=160058) [Spell Family (9)] 
+Name             : Thick Hide (desc=Special Ability) (id=160058) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -3280,7 +3280,7 @@ Effects          :
 Description      : The Clefthoof's skin thickens, causing it to take $s1% less damage for $d.
 Tooltip          : Damage taken reduced by $s1%.
 
-Name             : Deadly Sting (rank=Special Ability) (id=160060) [Spell Family (9)] 
+Name             : Deadly Sting (desc=Special Ability) (id=160060) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
 Spell Type       : Melee
@@ -3307,7 +3307,7 @@ Description      : The Scorpion lashes out with its tail, stinging the target an
 |Tinterface\icons\ability_criticalstrike.blp:24|t |cFFFFFFFFMortal Wounds|r
 Grievously wounds the target, reducing the effectiveness of any healing received for $115804d.
 
-Name             : Tendon Rip (rank=Special Ability) (id=160065) [Spell Family (9)] 
+Name             : Tendon Rip (desc=Special Ability) (id=160065) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
 Spell Type       : Melee
@@ -3332,7 +3332,7 @@ Effects          :
 Description      : The Silithid slashes at the target's feet, reducing movement speed by $s1% for $d.
 Tooltip          : Movement speed reduced by $s1%.
 
-Name             : Web Spray (rank=Special Ability) (id=160067) [Spell Family (9)] 
+Name             : Web Spray (desc=Special Ability) (id=160067) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
 Spell Type       : Melee
@@ -3357,7 +3357,7 @@ Effects          :
 Description      : The Spider wraps webs around the target, slowing movement by $s1% for $d.
 Tooltip          : Movement speed reduced by $s1%.
 
-Name             : Molten Hide (rank=Special Ability) (id=160124) [Spell Family (9)] 
+Name             : Molten Hide (desc=Special Ability) (id=160124) [Spell Family (9)] 
 Class            : Hunter
 School           : Fire
 Spell Type       : Magic
@@ -4177,7 +4177,7 @@ Description      : A quick shot causing ${$s2*$<mult>} Physical damage.
 Reduces the cooldown of Kill Command by $s3 sec.
 Variables        : $mult=${($min($pl-1,19)*12+112)/340}
 
-Name             : Mastery: Sniper Training (rank=Mastery) (id=193468) [Spell Family (9), Passive] 
+Name             : Mastery: Sniper Training (desc=Mastery) (id=193468) [Spell Family (9), Passive] 
 Class            : Marksmanship Hunter
 School           : Physical
 Spell Type       : None
@@ -4673,7 +4673,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.26250 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> Unknown(24)
 Description      : $@spelldesc203415
 
-Name             : Fury of the Eagle (rank=Artifact) (id=203415) [Spell Family (9)] 
+Name             : Fury of the Eagle (desc=Artifact) (id=203415) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -4694,7 +4694,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 203413 | Target: Self (1)
 Description      : Furiously strikes all enemies in front of you, dealing ${$203413s1*9} Physical damage over $d. Damage increased by Mongoose Fury.
 
-Name             : Windburst (rank=Artifact) (id=204147) [Spell Family (9)] 
+Name             : Windburst (desc=Artifact) (id=204147) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
 Spell Type       : Ranged
@@ -4818,7 +4818,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.31200 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Deals poison damage to the target.
 
-Name             : Titan's Thunder (rank=Artifact) (id=207068) [Spell Family (9)] 
+Name             : Titan's Thunder (desc=Artifact) (id=207068) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -5118,7 +5118,7 @@ Effects          :
 Description      : $@spelldesc186387
 Tooltip          : Disoriented.
 
-Name             : Expansive Mind (rank=Racial Passive) (id=227057) [Passive] 
+Name             : Expansive Mind (desc=Racial Passive) (id=227057) [Passive] 
 Class            : Hunter
 Race             : Gnome (0x40)
 School           : Physical
@@ -5156,7 +5156,7 @@ Effects          :
 Description      : $@spelldesc199921
 Tooltip          : Movement speed increased by $w1%.
 
-Name             : Exhilaration (rank=Rank 2) (id=231546) [Spell Family (9), Passive] 
+Name             : Exhilaration (desc=Rank 2) (id=231546) [Spell Family (9), Passive] 
 Class            : Beast Mastery Marksmanship Survival Hunter
 School           : Nature
 Spell Type       : None
@@ -5175,7 +5175,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 37 | Target: Self (1)
 Description      : Exhilaration also heals your pet for $128594s1% of maximum health.
 
-Name             : Bestial Wrath (rank=Rank 2) (id=231548) [Spell Family (9), Passive] 
+Name             : Bestial Wrath (desc=Rank 2) (id=231548) [Spell Family (9), Passive] 
 Class            : Beast Mastery Hunter
 School           : Nature
 Spell Type       : None
@@ -5194,7 +5194,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 37 | Target: Self (1)
 Description      : Bestial Wrath's remaining cooldown is reduced by $19574s3 sec each time you use Barbed Shot.
 
-Name             : Harpoon (rank=Rank 2) (id=231550) [Spell Family (9), Passive] 
+Name             : Harpoon (desc=Rank 2) (id=231550) [Spell Family (9), Passive] 
 Class            : Survival Hunter
 School           : Nature
 Spell Type       : None
@@ -5313,7 +5313,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Unlock powers at the Vindicaar's Matrix Core to use while on Argus. 
 
-Name             : Light's Judgment (rank=Racial) (id=255647) 
+Name             : Light's Judgment (desc=Racial) (id=255647) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
@@ -5335,7 +5335,7 @@ Effects          :
 Description      : Call down a strike of Holy energy, dealing $<damage> Holy damage to enemies within $A1 yards after 3 sec.
 Variables        : $damage=${$cond($gt($SP,$AP),$SP*3,$AP*3)*$pctD*(1+$@versadmg)}
 
-Name             : Holy Resistance (rank=Racial Passive) (id=255651) [Passive] 
+Name             : Holy Resistance (desc=Racial Passive) (id=255651) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
@@ -5353,7 +5353,7 @@ Effects          :
                    Base Value: -1 | Scaled Value: -1 | PvP Coefficient: 1.00000 | Misc Value: 0x2 | Target: Self (1)
 Description      : Reduces Holy damage taken by ${$s1/-1}%.
 
-Name             : Light's Reckoning (rank=Racial Passive) (id=255652) [Passive] 
+Name             : Light's Reckoning (desc=Racial Passive) (id=255652) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Physical
@@ -5371,7 +5371,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 256896 | Target: Self (1)
 Description      : Erupt with Light upon death. Deals $256896s1 Holy damage to enemies within 8 yards and heals allies for $256896s2.
 
-Name             : Demonbane (rank=Racial Passive) (id=255653) [Passive] 
+Name             : Demonbane (desc=Racial Passive) (id=255653) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Physical
@@ -5389,7 +5389,7 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 4 | Target: Self (1)
 Description      : Experience gains from killing Demons increased by $s1%.
 
-Name             : Light's Judgment (rank=Racial) (id=256893) 
+Name             : Light's Judgment (desc=Racial) (id=256893) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
@@ -5411,7 +5411,7 @@ Effects          :
 Description      : Call down a strike of Holy energy, dealing $<damage> Holy damage to enemies within $A1 yards.
 Variables        : $damage=${$cond($gt($SP,$AP),$SP*3,$AP*3)*$pctD*(1+$@versadmg)}
 
-Name             : Light's Reckoning (rank=Racial Passive) (id=256896) [Scaling Spell (-8)] 
+Name             : Light's Reckoning (desc=Racial Passive) (id=256896) [Scaling Spell (-8)] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
@@ -6417,7 +6417,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 23.75 (coefficient=0.25) | PvP Coefficient: 1.00000 | Misc Value: 917504 | Target: Self (1)
 Tooltip          : Increases haste by $s1.
 
-Name             : Cobra Shot (rank=Rank 2) (id=262838) [Spell Family (9), Passive] 
+Name             : Cobra Shot (desc=Rank 2) (id=262838) [Spell Family (9), Passive] 
 Class            : Beast Mastery Hunter
 School           : Nature
 Spell Type       : None
@@ -6500,7 +6500,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Active Pet (5)
 Description      : $@spelldesc263135
 
-Name             : Kill Command (rank=Rank 2) (id=263186) [Spell Family (9), Passive] 
+Name             : Kill Command (desc=Rank 2) (id=263186) [Spell Family (9), Passive] 
 Class            : Survival Hunter
 School           : Nature
 Spell Type       : None
@@ -6521,7 +6521,7 @@ Description      : Kill Command has a $259489s2% chance to immediately reset its
 
 Coordinated Assault increases this chance by another $266779s4%.
 
-Name             : Lock Jaw (rank=Special Ability) (id=263423) [Spell Family (9)] 
+Name             : Lock Jaw (desc=Special Ability) (id=263423) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
 Spell Type       : Melee
@@ -6546,7 +6546,7 @@ Effects          :
 Description      : The Dog bites the target's feet, reducing movement speed by $s1% for $d.
 Tooltip          : Movement speed reduced by $s1%.
 
-Name             : Acid Spit (rank=Special Ability) (id=263446) [Spell Family (9)] 
+Name             : Acid Spit (desc=Special Ability) (id=263446) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
 Spell Type       : Ranged
@@ -6682,7 +6682,7 @@ Effects          :
 Description      : Adds an additional $s1% speed to the initial 3 seconds of Aspect of the Cheetah.
 Tooltip          : Adds an additional $s1% speed to the initial 3 seconds of Aspect of the Cheetah.
 
-Name             : Furious Bite (rank=Special Ability) (id=263840) [Spell Family (9)] 
+Name             : Furious Bite (desc=Special Ability) (id=263840) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
 Spell Type       : Melee
@@ -6707,7 +6707,7 @@ Effects          :
 Description      : The Wolf bites the target's feet, reducing movement speed by $s1% for $d.
 Tooltip          : Movement speed reduced by $s1%.
 
-Name             : Talon Rend (rank=Special Ability) (id=263852) [Spell Family (9)] 
+Name             : Talon Rend (desc=Special Ability) (id=263852) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -6732,7 +6732,7 @@ Effects          :
 Description      : The Bird of Prey claws at the target's feet, reducing movement speed by $s1% for $d.
 Tooltip          : Movement speed reduced by $s1%.
 
-Name             : Infected Bite (rank=Special Ability) (id=263853) [Spell Family (9)] 
+Name             : Infected Bite (desc=Special Ability) (id=263853) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
 Spell Type       : Melee
@@ -6759,7 +6759,7 @@ Description      : The Hyena sinks its fangs into the target, infecting the targ
 |Tinterface\icons\ability_criticalstrike.blp:24|t |cFFFFFFFFMortal Wounds|r
 Grievously wounds the target, reducing the effectiveness of any healing received for $115804d.
 
-Name             : Savage Rend (rank=Special Ability) (id=263854) [Spell Family (9)] 
+Name             : Savage Rend (desc=Special Ability) (id=263854) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
 Spell Type       : Melee
@@ -6786,7 +6786,7 @@ Description      : The Raptor slashes deep into the target, causing Mortal Wound
 |Tinterface\icons\ability_criticalstrike.blp:24|t |cFFFFFFFFMortal Wounds|r
 Grievously wounds the target, reducing the effectiveness of any healing received for $115804d.
 
-Name             : Ravage (rank=Special Ability) (id=263857) [Spell Family (9)] 
+Name             : Ravage (desc=Special Ability) (id=263857) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
 Spell Type       : Melee
@@ -6813,7 +6813,7 @@ Description      : The Ravager tears into the enemy,  causing the Mortal Wounds 
 |Tinterface\icons\ability_criticalstrike.blp:24|t |cFFFFFFFFMortal Wounds|r
 Grievously wounds the target, reducing the effectiveness of any healing received for $115804d.
 
-Name             : Toxic Sting (rank=Special Ability) (id=263858) [Spell Family (9)] 
+Name             : Toxic Sting (desc=Special Ability) (id=263858) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
 Spell Type       : Melee
@@ -6840,7 +6840,7 @@ Description      : The Wasp dives in and stings the target, causing the Mortal W
 |Tinterface\icons\ability_criticalstrike.blp:24|t |cFFFFFFFFMortal Wounds|r
 Grievously wounds the target, reducing the effectiveness of any healing received for $115804d.
 
-Name             : Obsidian Skin (rank=Special Ability) (id=263867) [Spell Family (9)] 
+Name             : Obsidian Skin (desc=Special Ability) (id=263867) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -6863,7 +6863,7 @@ Effects          :
 Description      : The Core Hound suddenly cools and hardens the magma on its skin, reducing damage taken by $s1% for $d.
 Tooltip          : Damage reduced by $s1%.
 
-Name             : Bristle (rank=Special Ability) (id=263869) [Spell Family (9)] 
+Name             : Bristle (desc=Special Ability) (id=263869) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -6886,7 +6886,7 @@ Effects          :
 Description      : The Boar bristles its hide, reducing damage taken by $s1% for $d.
 Tooltip          : Damage reduced by $s1%.
 
-Name             : Dragon's Guile (rank=Special Ability) (id=263887) [Spell Family (9)] 
+Name             : Dragon's Guile (desc=Special Ability) (id=263887) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -6909,7 +6909,7 @@ Effects          :
 Description      : The Dragonhawk takes on a defensive posture, increasing dodge chance by $s1% for $d.
 Tooltip          : Dodge chance increased by $s1%.
 
-Name             : Catlike Reflexes (rank=Special Ability) (id=263892) [Spell Family (9)] 
+Name             : Catlike Reflexes (desc=Special Ability) (id=263892) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -6932,7 +6932,7 @@ Effects          :
 Description      : The Cat heightens its senses, increasing dodge chance by $s1% for $d.
 Tooltip          : Dodge chance increased by $s1%.
 
-Name             : Serpent's Swiftness (rank=Special Ability) (id=263904) [Spell Family (9)] 
+Name             : Serpent's Swiftness (desc=Special Ability) (id=263904) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -6955,7 +6955,7 @@ Effects          :
 Description      : The Serpent takes on a defensive posture, increasing dodge chance by $s1% for $d.
 Tooltip          : Dodge chance increased by $s1%.
 
-Name             : Thick Fur (rank=Special Ability) (id=263926) [Spell Family (9)] 
+Name             : Thick Fur (desc=Special Ability) (id=263926) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -6978,7 +6978,7 @@ Effects          :
 Description      : The Bear's fur dampens attacks, taking $s1% less damage for $d.
 Tooltip          : Damage taken reduced by $s1%.
 
-Name             : Thick Fur (rank=Special Ability) (id=263934) [Spell Family (9), Passive] 
+Name             : Thick Fur (desc=Special Ability) (id=263934) [Spell Family (9), Passive] 
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -7010,7 +7010,7 @@ Description      : When falling below $s2% health, the Bear's fur will thicken, 
 
 This effect can only occur once every $s3 sec.
 
-Name             : Silverback (rank=Special Ability) (id=263938) [Spell Family (9)] 
+Name             : Silverback (desc=Special Ability) (id=263938) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -7033,7 +7033,7 @@ Effects          :
 Description      : The Gorilla shrugs off attacks, taking $s1% less damage for $d.
 Tooltip          : Damage taken reduced by $s1%.
 
-Name             : Silverback (rank=Special Ability) (id=263939) [Spell Family (9), Passive] 
+Name             : Silverback (desc=Special Ability) (id=263939) [Spell Family (9), Passive] 
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -7251,7 +7251,7 @@ Effects          :
                    Family Flags: 25
 Description      : Wildfire Bomb now has ${$s1+1} charges, and the initial explosion deals $s2% increased damage.
 
-Name             : Winged Agility (rank=Special Ability) (id=264360) [Spell Family (9)] 
+Name             : Winged Agility (desc=Special Ability) (id=264360) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -7274,7 +7274,7 @@ Effects          :
 Description      : The Wind Serpent takes on a defensive posture, increasing dodge chance by $s1% for $d.
 Tooltip          : Dodge chance increased by $s1%.
 
-Name             : Pathfinding (rank=Cunning Passive) (id=264656) [Spell Family (9), Passive] 
+Name             : Pathfinding (desc=Cunning Passive) (id=264656) [Spell Family (9), Passive] 
 Class            : Ferocity Tenacity Cunning Hunter Pet
 School           : Physical
 Spell Type       : None
@@ -7298,7 +7298,7 @@ Effects          :
 Description      : You and your pet gain $s1% increased movement speed.
 Tooltip          : Movement speed increased by $w2%.
 
-Name             : Endurance Training (rank=Tenacity Passive) (id=264662) [Spell Family (9), Passive] 
+Name             : Endurance Training (desc=Tenacity Passive) (id=264662) [Spell Family (9), Passive] 
 Class            : Ferocity Tenacity Cunning Hunter Pet
 School           : Physical
 Spell Type       : None
@@ -7322,7 +7322,7 @@ Effects          :
 Description      : You and your pet gain $s1% increased maximum health.
 Tooltip          : Maximum health increased by $w2%.
 
-Name             : Predator's Thirst (rank=Ferocity Passive) (id=264663) [Spell Family (9), Passive] 
+Name             : Predator's Thirst (desc=Ferocity Passive) (id=264663) [Spell Family (9), Passive] 
 Class            : Ferocity Tenacity Cunning Hunter Pet
 School           : Physical
 Spell Type       : None
@@ -7346,7 +7346,7 @@ Effects          :
 Description      : You and your pet gain $s1% Leech.
 Tooltip          : Leech increased by $w2%.
 
-Name             : Primal Rage (rank=Ferocity Ability) (id=264667) [Spell Family (9)] 
+Name             : Primal Rage (desc=Ferocity Ability) (id=264667) [Spell Family (9)] 
 Class            : Ferocity Hunter Pet
 School           : Fire
 Spell Type       : None
@@ -7373,7 +7373,7 @@ Description      : Increases haste by $s1% for all party and raid members for $d
 Allies receiving this effect will become Sated and unable to benefit from Primal Rage or similar effects again for $57724d.
 Tooltip          : Haste increased by $s1%.
 
-Name             : Survival of the Fittest (rank=Tenacity Ability) (id=264735) [Spell Family (9)] 
+Name             : Survival of the Fittest (desc=Tenacity Ability) (id=264735) [Spell Family (9)] 
 Class            : Tenacity Hunter Pet
 School           : Physical
 Spell Type       : None
@@ -9571,7 +9571,7 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000
 Description      : Using Feign Death allows you to absorb $s1 damage over $280170d, and Feign Death's cooldown is reduced to $s2 seconds.
 
-Name             : Blood of the Rhino (rank=Exotic Ability) (id=280069) [Passive] 
+Name             : Blood of the Rhino (desc=Exotic Ability) (id=280069) [Passive] 
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -9591,7 +9591,7 @@ Effects          :
                    Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 0x1 | Target: Self (1)
 Description      : The Clefthoof has $s2% additional armor and increases the effectiveness of healing received by $s1%.
 
-Name             : Dune Strider (rank=Exotic Ability) (id=280151) [Spell Family (9), Passive] 
+Name             : Dune Strider (desc=Exotic Ability) (id=280151) [Spell Family (9), Passive] 
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -10572,7 +10572,7 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000
 Description      : Your primary stat is increased by $s1 while you are above $s2% health. You take $s3% increased damage while below $s4% health.
 
-Name             : Carve (rank=Rank 2) (id=294029) [Spell Family (9), Passive] 
+Name             : Carve (desc=Rank 2) (id=294029) [Spell Family (9), Passive] 
 Class            : Survival Hunter
 School           : Nature
 Spell Type       : None
@@ -10711,7 +10711,7 @@ Description      : Your damaging spells and abilities have a chance to crash a w
 
 When your health drops below $s2%, gain a shield absorbing $s3 damage within $303390d. When this occurs, Undulating Tides cannot trigger again for $s4 sec.
 
-Name             : Resonating Arrow (rank=Kyrian) (id=308491) [Spell Family (9)] 
+Name             : Resonating Arrow (desc=Kyrian) (id=308491) [Spell Family (9)] 
 Class            : Hunter
 School           : Arcane
 Spell Type       : None
@@ -10734,7 +10734,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Trigger Spell: 308495 | Radius: 12 yards | Target: AOE enemy (instant) (16)
 Description      : Fire a resonating arrow to the target location that fills the area with echoing anima for $308495d. The effect causes your attacks to ignore line of sight to enemies in the area, and you have $308498s1% increased critical strike chance against them. 
 
-Name             : Resonating Arrow (rank=Kyrian) (id=308495) [Spell Family (9), Hidden] 
+Name             : Resonating Arrow (desc=Kyrian) (id=308495) [Spell Family (9), Hidden] 
 Class            : Hunter
 School           : Arcane
 Spell Type       : None
@@ -10758,7 +10758,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc308491
 
-Name             : Resonating Arrow (rank=Kyrian) (id=308498) [Spell Family (9)] 
+Name             : Resonating Arrow (desc=Kyrian) (id=308498) [Spell Family (9)] 
 Class            : Hunter
 School           : Arcane
 Spell Type       : Magic
@@ -10877,7 +10877,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 2 | Target: Self (1)
 Description      : Passive Focus generation increased by $s1%.
 
-Name             : Steady Shot (rank=Rank 2) (id=321018) [Spell Family (9), Passive] 
+Name             : Steady Shot (desc=Rank 2) (id=321018) [Spell Family (9), Passive] 
 Class            : Marksmanship Hunter
 School           : Nature
 Spell Type       : None
@@ -10917,7 +10917,7 @@ Effects          :
                    Base Value: 5116 | Scaled Value: 5116 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Concussive Shot will replace Wing Clip.
 
-Name             : Wing Clip (rank=Rank 2) (id=321026) [Spell Family (9), Passive] 
+Name             : Wing Clip (desc=Rank 2) (id=321026) [Spell Family (9), Passive] 
 Class            : Survival Hunter
 School           : Nature
 Spell Type       : None
@@ -10938,7 +10938,7 @@ Effects          :
                    Family Flags: 125
 Description      : Wing Clip Focus cost is reduced by $s1.
 
-Name             : Rapid Fire (rank=Rank 2) (id=321281) [Spell Family (9), Passive] 
+Name             : Rapid Fire (desc=Rank 2) (id=321281) [Spell Family (9), Passive] 
 Class            : Marksmanship Hunter
 School           : Nature
 Spell Type       : None
@@ -10978,7 +10978,7 @@ Effects          :
                    Family Flags: 12, 105
 Description      : Arcane Shot and Multi-Shot damage increased by $s1%.
 
-Name             : Wildfire Bombs (rank=Rank 2) (id=321290) [Spell Family (9), Passive] 
+Name             : Wildfire Bombs (desc=Rank 2) (id=321290) [Spell Family (9), Passive] 
 Class            : Survival Hunter
 School           : Nature
 Spell Type       : None
@@ -11003,7 +11003,7 @@ Effects          :
                    Family Flags: 22
 Description      : Wildfire Bomb deals $s1% additional damage.
 
-Name             : Arcane Shot (rank=Rank 2) (id=321293) [Spell Family (9), Passive] 
+Name             : Arcane Shot (desc=Rank 2) (id=321293) [Spell Family (9), Passive] 
 Class            : Marksmanship Hunter
 School           : Nature
 Spell Type       : None
@@ -11186,7 +11186,7 @@ Description      : $@spelldesc321530
 Tooltip          : Bleeding for $w1 damage every $t1 sec.
 Taking $s2% increased damage from the Hunter's pet.
 
-Name             : Flayed Shot (rank=Venthyr) (id=324149) [Spell Family (9)] 
+Name             : Flayed Shot (desc=Venthyr) (id=324149) [Spell Family (9)] 
 Class            : Hunter
 School           : Shadow
 Spell Type       : Ranged
@@ -11217,7 +11217,7 @@ Effects          :
 Description      : Fire a shot at your enemy, causing them to bleed for $o1 Shadow damage over $d. Each time Flayed Shot deals damage, you have a $s2% chance to gain Flayer's Mark, causing your next Kill Shot to be usable on any target, regardless of their current health.
 Tooltip          : Bleeding for $s1 Shadow damage every $t1 sec.
 
-Name             : Death Chakram (rank=Necrolord) (id=325028) [Spell Family (9)] 
+Name             : Death Chakram (desc=Necrolord) (id=325028) [Spell Family (9)] 
 Class            : Hunter
 School           : Shadow
 Spell Type       : Ranged
@@ -11271,7 +11271,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.50000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc325028
 
-Name             : Wild Spirits (rank=Night Fae) (id=328231) [Spell Family (9)] 
+Name             : Wild Spirits (desc=Night Fae) (id=328231) [Spell Family (9)] 
 Class            : Hunter
 School           : Nature
 Spell Type       : None
@@ -11297,7 +11297,7 @@ Description      : Evoke the energy of Wild Spirits at the target location, appl
 
 While the Wild Spirits are active, each damaging ability you use against a target affected by the Wild Mark strikes the target for $328523s1 Nature damage.
 
-Name             : Wild Mark (rank=Night Fae) (id=328275) [Spell Family (9)] 
+Name             : Wild Mark (desc=Night Fae) (id=328275) [Spell Family (9)] 
 Class            : Hunter
 School           : Nature
 Spell Type       : None
@@ -11325,7 +11325,7 @@ Effects          :
 Description      : $@spelldesc328231
 Tooltip          : Damage taken from the hunter increased by $s2%.
 
-Name             : Wild Spirits (rank=Night Fae) (id=328523) [Spell Family (9)] 
+Name             : Wild Spirits (desc=Night Fae) (id=328523) [Spell Family (9)] 
 Class            : Hunter
 School           : Nature
 Spell Type       : Melee
@@ -11345,7 +11345,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.45000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc328231
 
-Name             : Wild Spirits (rank=Night Fae) (id=328837) [Spell Family (9)] 
+Name             : Wild Spirits (desc=Night Fae) (id=328837) [Spell Family (9)] 
 Class            : Hunter
 School           : Nature
 Spell Type       : None
