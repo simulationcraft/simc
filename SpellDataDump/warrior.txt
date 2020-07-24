@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35282 shadowlands-BETA (git build dbc df97e687b9)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35282 shadowlands-BETA (git build dbc 87d1e7cf32)
 
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
@@ -1364,6 +1364,7 @@ Class            : Warrior
 School           : Physical
 Spell Type       : Melee
 Spell Level      : 1
+Max Targets      : Unlimited(-1)
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Single-Minded Fury (81099 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Deep Wounds (262115 effect#2), Siegebreaker (280773 effect#1), Unnerving Focus (337155 effect#5)
 Triggered by     : Bladestorm (46924), Bladestorm (227847)
@@ -2003,6 +2004,7 @@ Class            : Warrior
 School           : Physical
 Spell Type       : Melee
 Spell Level      : 1
+Max Targets      : Unlimited(-1)
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Single-Minded Fury (81099 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Deep Wounds (262115 effect#2), Siegebreaker (280773 effect#1), Unnerving Focus (337155 effect#5)
@@ -4369,6 +4371,7 @@ Name             : Odyn's Fury (desc=Artifact) (id=205545) [Spell Family (4)]
 Class            : Warrior
 School           : Physical
 Spell Type       : Melee
+Max Targets      : Unlimited(-1)
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 45 seconds
@@ -4392,6 +4395,7 @@ Name             : Odyn's Fury (id=205546) [Spell Family (4)]
 Class            : Warrior
 School           : Fire
 Spell Type       : Melee
+Max Targets      : Unlimited(-1)
 Duration         : 4 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Triggered by     : Odyn's Fury (205545)
@@ -4417,6 +4421,7 @@ Name             : Odyn's Fury (id=205547) [Spell Family (4)]
 Class            : Warrior
 School           : Fire
 Spell Type       : Melee
+Max Targets      : Unlimited(-1)
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Triggered by     : Odyn's Fury (205545)
 Attributes       : ....x... ........ x.x..... ........   ....x... .x...... ........ ........ 

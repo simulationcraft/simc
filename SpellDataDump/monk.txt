@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35282 shadowlands-BETA (git build dbc df97e687b9)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35282 shadowlands-BETA (git build dbc 87d1e7cf32)
 
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -849,6 +849,7 @@ Resource         : 20 Energy (3) (id=6420) w/ Stagger (id=115069)
 Resource         : 20 Energy (3) (id=6421) w/ Windwalker Monk (id=137025)
 Spell Level      : 22
 Range            : 20 yards
+Max Targets      : 1
 GCD              : 1.5 seconds
 Duration         : 60 seconds
 Cooldown         : 45 seconds
@@ -908,6 +909,7 @@ School           : Nature
 Spell Type       : Magic
 Spell Level      : 7
 Range            : 10 yards
+Max Targets      : 1
 Velocity         : 20 yards/sec
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 74
@@ -2594,6 +2596,7 @@ School           : Nature
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 50000 yards
+Max Targets      : 3
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Xuen's Bond (336616 effect#1)
 Triggered by     : Crackling Tiger Lightning Driver (123999)
@@ -2763,6 +2766,7 @@ School           : Nature
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 50000 yards
+Max Targets      : 1
 Velocity         : 20 yards/sec
 Duration         : 6 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
@@ -2938,6 +2942,7 @@ School           : Physical
 Spell Type       : None
 Spell Level      : 1
 Range            : 50000 yards
+Max Targets      : 1
 Duration         : 10 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ x....... ........ ........   ........ ........ ........ ........ 
@@ -4344,6 +4349,7 @@ Class            : Monk
 School           : Nature
 Spell Type       : Melee
 Range            : 100 yards
+Max Targets      : 2
 Duration         : 8 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Serenity (152173 effect#2), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), The Wind Blows (281452 effect#1), Extend Life (337993 effect#2)
@@ -5296,6 +5302,7 @@ Class            : Monk
 School           : Physical
 Spell Type       : None
 Spell Level      : 1
+Max Targets      : 5
 Duration         : 15 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 5 maximum
@@ -5394,6 +5401,7 @@ School           : Physical
 Spell Type       : None
 Spell Level      : 1
 Range            : 100 yards
+Max Targets      : 5
 Duration         : 15 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8761,6 +8769,7 @@ School           : Nature
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
+Max Targets      : 1
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .x...... .....x..   ........ ........ ........ ........ 
