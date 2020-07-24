@@ -15,9 +15,9 @@
 
 namespace { // anonymous namespace ==========================================
 
-enum sdata_field_type_t
+enum sdata_field_type_t : int
 {
-  SD_TYPE_NUM,
+  SD_TYPE_NUM = 0,
   SD_TYPE_STR
 };
 
@@ -70,12 +70,19 @@ struct mem_fn_t {
 };
 
 template <typename T>
-constexpr sdata_field_type_t field_type() {
-  using U = std::decay_t<T>;
-  if ( std::is_arithmetic<U>::value )
+constexpr sdata_field_type_t field_type_impl() {
+  if ( std::is_arithmetic<T>::value )
     return SD_TYPE_NUM;
-  assert( ( std::is_same<U, const char*>::value ) );
-  return SD_TYPE_STR;
+  if ( std::is_same<T, const char*>::value )
+    return SD_TYPE_STR;
+  return static_cast<sdata_field_type_t>( -1 );
+}
+
+template <typename T>
+constexpr sdata_field_type_t field_type() {
+  constexpr auto type = field_type_impl<std::decay_t<T>>();
+  assert( static_cast<int>( type ) != -1 );
+  return type;
 }
 
 template <typename DataType, typename Fn>
