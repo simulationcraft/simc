@@ -1812,10 +1812,16 @@ specialization_e dbc_t::spec_by_spell( uint32_t spell_id ) const
 unsigned dbc_t::replace_spell_id( unsigned spell_id ) const
 {
   auto spec_spells = specialization_spell_entry_t::data( ptr );
-  auto entry = range::find( spec_spells, spell_id, &specialization_spell_entry_t::spell_id );
-  if ( entry == spec_spells.end() )
-    return 0;
-  return entry -> override_spell_id;
+  auto spec_entry = range::find( spec_spells, spell_id, &specialization_spell_entry_t::spell_id );
+  if ( spec_entry != spec_spells.end() )
+    return spec_entry -> override_spell_id;
+
+  auto talent_spells = talent_data_t::data( ptr );
+  auto talent_entry = range::find( talent_spells, spell_id, &talent_data_t::spell_id );
+  if ( talent_entry != talent_spells.end() )
+    return talent_entry -> replace_id();
+
+  return 0;
 }
 
 double dbc_t::weapon_dps( const dbc_item_data_t& item_data, unsigned ilevel ) const
