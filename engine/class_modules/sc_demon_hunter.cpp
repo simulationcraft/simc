@@ -3537,6 +3537,8 @@ struct essence_break_t : public demon_hunter_attack_t
   essence_break_t( demon_hunter_t* p, const std::string& options_str )
     : demon_hunter_attack_t( "essence_break", p, p->talent.essence_break, options_str )
   {
+    aoe = -1;
+    school = SCHOOL_CHAOS; // Manually setting for now since the spell data is broken
   }
 
   void impact( action_state_t* s ) override
@@ -5336,7 +5338,7 @@ void demon_hunter_t::apl_havoc()
   apl_demonic->add_action( this, "Throw Glaive", "if=talent.demon_blades.enabled" );
 
   action_priority_list_t* apl_essence_break = get_action_priority_list( "essence_break" );
-  apl_essence_break->add_talent( this, "Essence Break", "if=fury>=80&cooldown.blade_dance.ready" );
+  apl_essence_break->add_talent( this, "Essence Break", "if=fury>=80&(cooldown.blade_dance.ready|!variable.blade_dance)" );
   apl_essence_break->add_action( this, spec.death_sweep, "death_sweep", "if=variable.blade_dance&debuff.essence_break.up" );
   apl_essence_break->add_action( this, "Blade Dance", "if=variable.blade_dance&debuff.essence_break.up" );
   apl_essence_break->add_action( this, spec.annihilation, "annihilation", "if=debuff.essence_break.up" );
