@@ -481,7 +481,7 @@ public:
     double lucid_dreams_proc_chance_arcane = 0.075;
     double lucid_dreams_proc_chance_fire = 0.1;
     double lucid_dreams_proc_chance_frost = 0.075;
-    double focus_magic_interval = 2;
+    timespan_t focus_magic_interval = 2_s;
     double focus_magic_variance = 0.1;
     double focus_magic_crit_chance = 0.5;
   } options;
@@ -4591,9 +4591,11 @@ struct focus_magic_event_t : public event_t
       mage->buffs.focus_magic_int->trigger();
     }
 
-    timespan_t min_time = timespan_t::from_seconds( mage->options.focus_magic_interval * ( 1 - mage->options.focus_magic_variance ) );
-    timespan_t max_time = timespan_t::from_seconds( mage->options.focus_magic_interval * ( 1 + mage->options.focus_magic_variance ) );
-    mage->focus_magic_event = make_event<focus_magic_event_t>( sim(), *mage, rng().range( min_time, max_time ) );
+    if ( mage->options.focus_magic_interval > 0_ms ) {
+      timespan_t min_time = mage->options.focus_magic_interval * ( 1 - mage->options.focus_magic_variance );
+      timespan_t max_time = mage->options.focus_magic_interval * ( 1 + mage->options.focus_magic_variance );
+      mage->focus_magic_event = make_event<focus_magic_event_t>( sim(), *mage, rng().range( min_time, max_time ) );
+    }
   }
 };
 
@@ -5040,9 +5042,9 @@ void mage_t::create_options()
   add_option( opt_float( "lucid_dreams_proc_chance_arcane", options.lucid_dreams_proc_chance_arcane ) );
   add_option( opt_float( "lucid_dreams_proc_chance_fire", options.lucid_dreams_proc_chance_fire ) );
   add_option( opt_float( "lucid_dreams_proc_chance_frost", options.lucid_dreams_proc_chance_frost ) );
-  add_option( opt_float( "focus_magic_interval", options.focus_magic_interval ) );
-  add_option( opt_float( "focus_magic_variance", options.focus_magic_variance ) );
-  add_option( opt_float( "focus_magic_crit_chance", options.focus_magic_crit_chance ) );
+  add_option( opt_timespan( "focus_magic_interval", options.focus_magic_interval, 0_ms, timespan_t::max() ) );
+  add_option( opt_float( "focus_magic_variance", options.focus_magic_variance, 0, 1 ) );
+  add_option( opt_float( "focus_magic_crit_chance", options.focus_magic_crit_chance, 0, 1 ) );
   player_t::create_options();
 }
 
@@ -5168,7 +5170,7 @@ void mage_t::create_pets()
     pets.water_elemental = new pets::water_elemental::water_elemental_pet_t( sim, this );
 
   auto a = find_action( "mirror_image" );
-  if ( a )
+  if ( a && a->data().ok() )
   {
     for ( int i = 0; i < as<int>( a->data().effectN( 2 ).base_value() ); i++ )
     {
@@ -6385,10 +6387,10 @@ void mage_t::arise()
   buffs.incanters_flow->trigger();
   buffs.gbow->trigger();
 
-  if ( talents.focus_magic->ok() )
+  if ( talents.focus_magic->ok() && options.focus_magic_interval > 0_ms )
   {
-    timespan_t min_time = timespan_t::from_seconds( options.focus_magic_interval * ( 1 - options.focus_magic_variance ) );
-    timespan_t max_time = timespan_t::from_seconds( options.focus_magic_interval * ( 1 + options.focus_magic_variance ) );
+    timespan_t min_time = options.focus_magic_interval * ( 1 - options.focus_magic_variance );
+    timespan_t max_time = options.focus_magic_interval * ( 1 + options.focus_magic_variance );
     focus_magic_event = make_event<events::focus_magic_event_t>( *sim, *this, rng().range( min_time, max_time ) );
   }
 
