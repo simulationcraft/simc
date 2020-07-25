@@ -6711,7 +6711,9 @@ struct starfall_tick_t : public druid_spell_t
   {
     // has a set travel time since it spawns on the target
     return timespan_t::from_millis( data().missile_speed() );
-  }    double action_multiplier() const override
+  }
+  
+  double action_multiplier() const override
   {
     double am = druid_spell_t::action_multiplier();
 
@@ -6732,17 +6734,18 @@ struct starfall_tick_t : public druid_spell_t
   }
 };
 
-
 struct starfall_t : public druid_spell_t
 {
-  starfall_t(druid_t* p, const std::string& options_str) :
-    druid_spell_t("starfall", p, p -> find_specialization_spell("Starfall"), options_str)
+  starfall_t( druid_t* p, const std::string& options_str )
+    : druid_spell_t( "starfall", p, p->find_specialization_spell( "Starfall" ), options_str )
   {
     may_miss = may_crit = false;
 
-    if (p->azerite.lunar_shrapnel.ok())
+    add_child( p->active.starfall );
+
+    if ( p->azerite.lunar_shrapnel.ok() )
     {
-      add_child(p->active.lunar_shrapnel);
+      add_child( p->active.lunar_shrapnel );
     }
   }
 
