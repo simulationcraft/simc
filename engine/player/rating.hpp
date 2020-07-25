@@ -7,8 +7,9 @@
 
 #include "config.hpp"
 #include "sc_enums.hpp"
+#include "util/format.hpp"
+
 #include <cassert>
-#include <string>
 
 class dbc_t;
 
@@ -34,5 +35,5 @@ struct rating_t
 
   void init(dbc_t& dbc, int level);
 
-  std::string to_string();
+  friend fmt::format_context::iterator format_to( const rating_t&, fmt::format_context& );
 };

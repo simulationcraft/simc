@@ -97,13 +97,13 @@ void rating_t::init(dbc_t& dbc, int level)
   }
 }
 
-std::string rating_t::to_string()
+fmt::format_context::iterator format_to( const rating_t& r, fmt::format_context& ctx )
 {
-  fmt::memory_buffer buf;
+  auto out = ctx.out();
   for (rating_e i = static_cast<rating_e>(0); i < RATING_MAX; ++i)
   {
-    fmt::format_to( buf, "{}{}={}",
-      i > 0 ? " " : "", util::cache_type_string(cache_from_rating(i)), get(i) ); // hacky
+    out = fmt::format_to( out, "{}{}={}",
+      i > 0 ? " " : "", util::cache_type_string(cache_from_rating(i)), r.get(i) ); // hacky
   }
-  return fmt::to_string( buf );
+  return out;
 }
