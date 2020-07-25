@@ -239,18 +239,6 @@ double gear_stats_t::get_stat( stat_e stat ) const
   return default_value;
 }
 
-std::string gear_stats_t::to_string()
-{
-  std::ostringstream s;
-  for ( stat_e i = STAT_STRENGTH; i < STAT_MAX; i++ )
-  {
-    if ( i > 0 )
-      s << " ";
-    s << util::stat_type_abbrev( i ) << "=" << get_stat( i );
-  }
-  return s.str();
-}
-
 // gear_stats_t::stat_mod ===================================================
 
 double gear_stats_t::stat_mod( stat_e stat )
@@ -261,4 +249,16 @@ double gear_stats_t::stat_mod( stat_e stat )
     case STAT_SPELL_POWER:       return 1.0;
     default:                     return 1.0;
   }
+}
+
+fmt::format_context::iterator format_to( const gear_stats_t& s, fmt::format_context& ctx )
+{
+  auto out = ctx.out();
+  for ( stat_e i = STAT_STRENGTH; i < STAT_MAX; i++ )
+  {
+    if ( i > 0 )
+      out = fmt::format_to( out, " " );
+    out = fmt::format_to( out, "{}={}", util::stat_type_abbrev( i ), s.get_stat( i ) );
+  }
+  return out;
 }

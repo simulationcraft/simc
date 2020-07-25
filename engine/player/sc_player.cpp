@@ -1363,7 +1363,7 @@ std::string player_t::base_initial_current_t::to_string()
 {
   std::ostringstream s;
 
-  s << stats.to_string();
+  fmt::print( s, "{}", stats );
   s << " spell_power_per_intellect=" << spell_power_per_intellect;
   s << " spell_power_per_attack_power=" << spell_power_per_attack_power;
   s << " spell_crit_per_intellect=" << spell_crit_per_intellect;
@@ -1678,7 +1678,7 @@ void player_t::init_initial_stats()
         total_gear.add_stat( stat, gear.get_stat( stat ) );
     }
 
-    sim->print_debug( "{} total gear stats: {}", *this, total_gear.to_string() );
+    sim->print_debug( "{} total gear stats: {}", *this, total_gear );
 
     initial.stats += enchant;
     initial.stats += sim->enchant;
@@ -6168,7 +6168,7 @@ void player_t::stat_gain( stat_e stat, double amount, gain_t* gain, action_t* ac
 
   if ( sim->debug )
   {
-    sim->out_debug.print( "{} stats: {}", name(), current.stats.to_string() );
+    sim->out_debug.print( "{} stats: {}", name(), current.stats );
   }
 }
 
@@ -6308,7 +6308,7 @@ void player_t::stat_loss( stat_e stat, double amount, gain_t* gain, action_t* ac
 
   if ( sim->debug )
   {
-    sim->out_debug.print( "{} stats: {}", name(), current.stats.to_string() );
+    sim->out_debug.print( "{} stats: {}", name(), current.stats );
   }
 }
 
