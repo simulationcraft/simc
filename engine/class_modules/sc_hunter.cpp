@@ -33,11 +33,11 @@ struct spell_data_ptr_t
   const spell_data_t* data_;
 };
 
-void parse_affecting_aura( action_t *const action, const spell_data_t *const spell )
+void parse_affecting_aura( action_t& action, const spell_data_t *const spell )
 {
   for ( const spelleffect_data_t& effect : spell -> effects() )
   {
-    action->apply_affecting_effect(effect);
+    action.apply_affecting_effect(effect);
   }
 }
 
@@ -552,6 +552,7 @@ public:
   std::string default_flask() const override;
   std::string default_food() const override;
   std::string default_rune() const override;
+  void action_init_finished( action_t& ) override;
 
   target_specific_t<hunter_td_t> target_data;
 
@@ -621,10 +622,6 @@ public:
     ab::may_crit = true;
     ab::tick_may_crit = true;
 
-    parse_affecting_aura( this, p -> specs.hunter );
-    parse_affecting_aura( this, p -> specs.beast_mastery_hunter );
-    parse_affecting_aura( this, p -> specs.marksmanship_hunter );
-    parse_affecting_aura( this, p -> specs.survival_hunter );
 
     affected_by.aotw_crit_chance = ab::data().affected_by( p -> specs.aspect_of_the_wild -> effectN( 1 ) );
     affected_by.aotw_gcd_reduce = ab::data().affected_by( p -> specs.aspect_of_the_wild -> effectN( 3 ) );
@@ -637,21 +634,6 @@ public:
 
     affected_by.coordinated_assault = ab::data().affected_by( p -> specs.coordinated_assault -> effectN( 1 ) );
     affected_by.spirit_bond = ab::data().affected_by( p -> mastery.spirit_bond -> effectN( 1 ) );
-
-    // passive talents
-    parse_affecting_aura( this, p -> talents.alpha_predator );
-    parse_affecting_aura( this, p -> talents.born_to_be_wild );
-    parse_affecting_aura( this, p -> talents.dead_eye );
-    parse_affecting_aura( this, p -> talents.guerrilla_tactics );
-    parse_affecting_aura( this, p -> talents.hydras_bite );
-    parse_affecting_aura( this, p -> talents.master_marksman );
-
-    // "simple" passive rank 2 spells
-    parse_affecting_aura( this, p -> find_specialization_spell( 231550 ) ); // Harpoon (Rank 2)
-    parse_affecting_aura( this, p -> find_specialization_spell( 262838 ) ); // Cobra Shot (Rank 2)
-    parse_affecting_aura( this, p -> find_specialization_spell( 321287 ) ); // True Aim
-    parse_affecting_aura( this, p -> find_specialization_spell( 321290 ) ); // Wildfire Bombs (Rank 2)
-    parse_affecting_aura( this, p -> find_specialization_spell( 321293 ) ); // Arcane Shot (Rank 2)
   }
 
   hunter_t* p()             { return static_cast<hunter_t*>( ab::player ); }
@@ -938,6 +920,14 @@ struct hunter_pet_t: public pet_t
     return m;
   }
 
+  void action_init_finished( action_t& action ) override
+  {
+    parse_affecting_aura( action, o() -> specs.hunter );
+    parse_affecting_aura( action, o() -> specs.beast_mastery_hunter );
+    parse_affecting_aura( action, o() -> specs.marksmanship_hunter );
+    parse_affecting_aura( action, o() -> specs.survival_hunter );
+  }
+  
   hunter_t* o()             { return static_cast<hunter_t*>( owner ); }
   const hunter_t* o() const { return static_cast<hunter_t*>( owner ); }
 };
@@ -979,16 +969,6 @@ public:
 
   hunter_t* o()             { return p() -> o(); }
   const hunter_t* o() const { return p() -> o(); }
-
-  void init() override
-  {
-    ab::init();
-
-    parse_affecting_aura( this, o() -> specs.hunter );
-    parse_affecting_aura( this, o() -> specs.beast_mastery_hunter );
-    parse_affecting_aura( this, o() -> specs.marksmanship_hunter );
-    parse_affecting_aura( this, o() -> specs.survival_hunter );
-  }
 
   bool usable_moving() const override { return true; }
 };
@@ -5329,6 +5309,30 @@ std::string hunter_t::default_rune() const
          ( true_level >= 110 ) ? "defiled" :
          ( true_level >= 100 ) ? "hyper" :
          "disabled";
+}
+
+void hunter_t::action_init_finished( action_t& action )
+{
+
+    parse_affecting_aura( action, specs.hunter );
+    parse_affecting_aura( action, specs.beast_mastery_hunter );
+    parse_affecting_aura( action, specs.marksmanship_hunter );
+    parse_affecting_aura( action, specs.survival_hunter );
+    
+    // passive talents
+    parse_affecting_aura( action, talents.alpha_predator );
+    parse_affecting_aura( action, talents.born_to_be_wild );
+    parse_affecting_aura( action, talents.dead_eye );
+    parse_affecting_aura( action, talents.guerrilla_tactics );
+    parse_affecting_aura( action, talents.hydras_bite );
+    parse_affecting_aura( action, talents.master_marksman );
+
+    // "simple" passive rank 2 spells
+    parse_affecting_aura( action, find_specialization_spell( 231550 ) ); // Harpoon (Rank 2)
+    parse_affecting_aura( action, find_specialization_spell( 262838 ) ); // Cobra Shot (Rank 2)
+    parse_affecting_aura( action, find_specialization_spell( 321287 ) ); // True Aim
+    parse_affecting_aura( action, find_specialization_spell( 321290 ) ); // Wildfire Bombs (Rank 2)
+    parse_affecting_aura( action, find_specialization_spell( 321293 ) ); // Arcane Shot (Rank 2)
 }
 
 // hunter_t::init_actions ===================================================
