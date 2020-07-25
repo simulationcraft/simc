@@ -6249,16 +6249,15 @@ struct starfire_t : public druid_spell_t
       options_str )
   {
     aoe = -1;
-    base_aoe_multiplier =
-      player->talent.balance_affinity->ok() ? data().effectN( 2 ).percent() : data().effectN( 3 ).percent();
+    base_aoe_multiplier = data().effectN( 3 ).percent() * ( 1 + player->buff.eclipse_lunar->value() );
   }
 
   timespan_t execute_time() const override
   {
     timespan_t et = druid_spell_t::execute_time();
 
-    if (p ()->buff.eclipse_lunar->check ())
-      et *= 1 + p ()->buff.eclipse_lunar->data ().effectN (1).percent () + p ()->talent.soul_of_the_forest->effectN (1).percent ();
+    if ( p()->buff.eclipse_lunar->check() )
+      et *= 1 + p()->buff.eclipse_lunar->data().effectN( 1 ).percent() + p()->spec.eclipse_2->effectN( 1 ).percent() + p()->talent.soul_of_the_forest->effectN( 1 ).percent();
 
     return et;
   }
@@ -6607,8 +6606,8 @@ struct wrath_t : public druid_spell_t
   {
     timespan_t g = druid_spell_t::gcd();
 
-    if (p ()->buff.eclipse_solar->up ())
-      g *= 1 + p ()->buff.eclipse_solar->data ().effectN (1).percent ();
+    if ( p()->buff.eclipse_solar->up() )
+      g *= 1 + p()->buff.eclipse_solar->data().effectN( 1 ).percent() + p()->spec.eclipse_2->effectN( 1 ).percent() + p()->talent.soul_of_the_forest->effectN( 1 ).percent();
 
     g = std::max( min_gcd, g );
 
@@ -6619,8 +6618,8 @@ struct wrath_t : public druid_spell_t
   {
     timespan_t et = druid_spell_t::execute_time();
 
-    if (p ()->buff.eclipse_solar->up ())
-      et *= 1 + p ()->buff.eclipse_solar->data ().effectN (1).percent ();
+    if ( p()->buff.eclipse_solar->up() )
+      et *= 1 + p()->buff.eclipse_solar->data().effectN( 1 ).percent() + p()->spec.eclipse_2->effectN( 1 ).percent() + p()->talent.soul_of_the_forest->effectN( 1 ).percent();
 
     return et;
   }
@@ -7993,9 +7992,10 @@ void druid_t::create_buffs()
   } );
 
   buff.eclipse_lunar = make_buff( this, "eclipse_lunar", spec.eclipse_lunar )
+    ->set_default_value( spec.eclipse_lunar->effectN( 2 ).percent() )
     ->set_duration( spec.eclipse_lunar->duration() + talent.soul_of_the_forest->effectN( 2 ).time_value() )
     ->set_stack_change_callback( [this]( buff_t*, int, int new_ ) {
-    if (!new_)
+    if ( !new_ )
       this->eclipse_handler.advance_eclipse();
   } );
 
