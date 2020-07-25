@@ -1119,6 +1119,7 @@ public:
     // Havoc
     affect_flags demonic_presence;
     affect_flags momentum;
+    bool essence_break = false;
 
     // Vengeance
     bool charred_flesh = false;
@@ -1176,6 +1177,10 @@ public:
       if ( p->talent.momentum->ok() )
       {
         parse_affect_flags( p->spec.momentum_buff, affected_by.momentum );
+      }      
+      if ( p->talent.essence_break->ok() )
+      {
+        affected_by.essence_break = ab::data().affected_by( p->find_spell( 320338 )->effectN( 1 ) );
       }
     }
     else // DEMON_HUNTER_VENGEANCE
@@ -1234,11 +1239,16 @@ public:
 
     if ( p()->talent.charred_flesh->ok() && affected_by.charred_flesh )
     {
-      demon_hunter_td_t* td = p()->get_target_data( target );
+      demon_hunter_td_t* td = this->td( target );
       if ( td->dots.fiery_brand && td->dots.fiery_brand->is_ticking() )
       {
         m *= 1.0 + p()->talent.charred_flesh->effectN( 1 ).percent();
       }
+    }
+
+    if ( affected_by.essence_break )
+    {
+      m *= 1.0 + td( target )->debuffs.essence_break->check_value();
     }
 
     return m;
@@ -3013,15 +3023,6 @@ struct blade_dance_base_t : public demon_hunter_attack_t
       aoe = -1;
     }
 
-    double composite_target_multiplier( player_t* target ) const override
-    {
-      double m = demon_hunter_attack_t::composite_target_multiplier( target );
-
-      m *= 1.0 + td( target )->debuffs.essence_break->check_value();
-
-      return m;
-    }
-
     double composite_da_multiplier( const action_state_t* s ) const override
     {
       double dm = demon_hunter_attack_t::composite_da_multiplier( s );
@@ -3234,15 +3235,6 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
       background = dual = true;
       may_refund = ( weapon == &( p->off_hand_weapon ) );
       school = SCHOOL_CHAOS; // 7/16/2018 -- Manually setting since Blizzard broke the spell school data for Annihilation_2 (201428)
-    }
-    
-    double composite_target_multiplier( player_t* target ) const override
-    {
-      double m = demon_hunter_attack_t::composite_target_multiplier( target );
-      
-      m *= 1.0 + td( target )->debuffs.essence_break->check_value();
-
-      return m;
     }
 
     double bonus_da( const action_state_t* s ) const override
