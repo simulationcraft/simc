@@ -21,44 +21,56 @@ std::string dbc::client_data_version_str( bool ptr )
 
 std::string dbc::hotfix_date_str( bool ptr )
 {
-#if SC_USE_PTR == 1
-  return ptr ? PTR_CLIENT_DATA_HOTFIX_DATE : CLIENT_DATA_HOTFIX_DATE;
+  if ( SC_USE_PTR && ptr )
+  {
+#ifdef PTR_CLIENT_DATA_HOTFIX_DATE
+    return PTR_CLIENT_DATA_HOTFIX_DATE;
 #else
-  (void) ptr;
+    return {};
+#endif /* PTR_CLIENT_DATA_HOTFIX_DATE */
+  }
+
 #ifdef CLIENT_DATA_HOTFIX_DATE
   return CLIENT_DATA_HOTFIX_DATE;
 #else
   return {};
 #endif /* CLIENT_DATA_HOTFIX_DATE */
-#endif /* SC_USE_PTR */
 }
 
 int dbc::hotfix_build_version( bool ptr )
 {
-#if SC_USE_PTR == 1
-  return ptr ? PTR_CLIENT_DATA_HOTFIX_BUILD : CLIENT_DATA_HOTFIX_BUILD;
+  if ( SC_USE_PTR && ptr )
+  {
+#ifdef PTR_CLIENT_DATA_HOTFIX_BUILD
+    return PTR_CLIENT_DATA_HOTFIX_BUILD;
 #else
-  (void) ptr;
+    return 0;
+#endif /* PTR_CLIENT_DATA_HOTFIX_BUILD */
+  }
+
 #ifdef CLIENT_DATA_HOTFIX_BUILD
   return CLIENT_DATA_HOTFIX_BUILD;
 #else
   return 0;
 #endif /* CLIENT_DATA_HOTFIX_BUILD */
-#endif /* SC_USE_PTR */
 }
 
 std::string dbc::hotfix_hash_str( bool ptr )
 {
-#if SC_USE_PTR == 1
-  return ptr ? PTR_CLIENT_DATA_HOTFIX_HASH : CLIENT_DATA_HOTFIX_HASH;
+  if ( SC_USE_PTR && ptr )
+  {
+#ifdef PTR_CLIENT_DATA_HOTFIX_HASH
+    return PTR_CLIENT_DATA_HOTFIX_HASH;
 #else
-  (void) ptr;
+    return 0;
+#endif  /* PTR_CLIENT_DATA_HOTFIX_HASH */
+  }
+
 #ifdef CLIENT_DATA_HOTFIX_HASH
   return CLIENT_DATA_HOTFIX_HASH;
 #else
   return {};
 #endif /* CLIENT_DATA_HOTFIX_HASH */
-#endif /* SC_USE_PTR */
 }
 
 int dbc::client_data_build( bool ptr )
