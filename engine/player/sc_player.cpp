@@ -9286,9 +9286,9 @@ const spell_data_t* player_t::find_talent_spell( util::string_view n, specializa
       if ( td && ( td->spell_id() == spell_id ) )
       {
         // check if we have the talent enabled or not
-        // std::min( 100, x ) dirty fix so that we can access tier 7 talents at level 100 and not level 105
+        // Level tiers are hardcoded here which means they will need to changed when levels change
         if ( check_validity &&
-             ( !talent_points.validate( spell, j, i ) || true_level < std::min( ( j + 1 ) * 15, 100 ) ) )
+          ( !talent_points.validate( spell, j, i ) || true_level < 20 + ( j == 0 ? -1 : j ) * 5 ) )
           return spell_data_t::not_found();
 
         return spell;
