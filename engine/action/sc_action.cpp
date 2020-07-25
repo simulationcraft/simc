@@ -4629,6 +4629,11 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
             sim->print_debug( "{} base crit increased by {}", *this, effect.percent() );
             break;
 
+          case P_COOLDOWN:
+            cooldown->duration += effect.time_value();
+            sim->print_debug( "{} cooldown duration increased by {}", *this, effect.time_value() );
+            break;
+
           case P_RESOURCE_COST:
           {
             base_costs[ resource_current ] += effect.base_value();

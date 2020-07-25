@@ -1100,7 +1100,6 @@ template <typename Base>
 class demon_hunter_action_t : public Base
 {
 public:
-  bool hasted_gcd;
   double energize_delta;
 
   // Cooldown tracking
@@ -1109,23 +1108,48 @@ public:
   simple_sample_data_t* cd_wasted_iter;
 
   // Affect flags for various dynamic effects
+  struct affect_flags
+  {
+    bool direct = false;
+    bool periodic = false;
+  };
+
   struct
   {
     // Havoc
-    bool demonic_presence_da;
-    bool demonic_presence_ta;
-    bool momentum_da;
-    bool momentum_ta;
+    affect_flags demonic_presence;
+    affect_flags momentum;
 
     // Vengeance
-    bool charred_flesh;
+    bool charred_flesh = false;
   } affected_by;
+
+  void parse_affect_flags( const spell_data_t* spell, affect_flags& flags )
+  {
+    for ( const spelleffect_data_t& effect : spell->effects() )
+    {
+      if ( !effect.ok() || effect.type() != E_APPLY_AURA || effect.subtype() != A_ADD_PCT_MODIFIER )
+        return;
+
+      if ( data().affected_by( effect ) )
+      {
+        switch ( effect.misc_value1() )
+        {
+          case P_GENERIC:
+            flags.direct = true;
+            break;
+          case P_TICK_DAMAGE:
+            flags.periodic = true;
+            break;
+        }
+      }
+    }
+  }
 
   demon_hunter_action_t( const std::string& n, demon_hunter_t* p,
                          const spell_data_t* s = spell_data_t::nil(),
                          const std::string& o = std::string() )
     : ab( n, p, s ),
-      hasted_gcd( false ),
       energize_delta( 0.0 ),
       track_cd_waste( s->cooldown() > timespan_t::zero() || s->charge_cooldown() > timespan_t::zero() ),
       cd_wasted_exec( nullptr ),
@@ -1136,74 +1160,28 @@ public:
     ab::may_crit = true;
     ab::tick_may_crit = true;
 
-    memset( &affected_by, 0, sizeof( affected_by ) );
+    // Class Passives
+    ab::apply_affecting_aura( p->spec.havoc );
+    ab::apply_affecting_aura( p->spec.vengeance );
 
     if ( p->specialization() == DEMON_HUNTER_HAVOC )
     {
-      // Class Damage Multiplier
-      if ( ab::data().affected_by( p->spec.havoc->effectN( 1 ) ) )
-        ab::base_dd_multiplier *= 1.0 + p->spec.havoc->effectN( 1 ).percent();
+      // Rank Passives
+      ab::apply_affecting_aura( p->spec.eye_beam_rank_2 );
+      ab::apply_affecting_aura( p->spec.fel_rush_rank_2 );
+      ab::apply_affecting_aura( p->spec.metamorphosis_rank_3 );
 
-      if ( ab::data().affected_by( p->spec.havoc->effectN( 2 ) ) )
-        ab::base_td_multiplier *= 1.0 + p->spec.havoc->effectN( 2 ).percent();
-
-      // Hasted GCD
-      hasted_gcd = ab::data().affected_by( p->spec.havoc->effectN( 3 ) );
-
-      // Hasted Cooldowns
-      if ( ab::data().affected_by( p->spec.havoc->effectN( 4 ) ) )
-        ab::cooldown->hasted = true;
-
-      // Hasted Category Cooldowns
-      if ( as<int>( ab::data().category() ) == p->spec.havoc->effectN( 5 ).misc_value1() )
-        ab::cooldown->hasted = true;
-
-      // Mastery
-      if ( ab::data().affected_by( p->mastery.demonic_presence->effectN( 1 ) ) )
-        affected_by.demonic_presence_da = true;
-
-      if ( ab::data().affected_by( p->mastery.demonic_presence->effectN( 2 ) ) )
-        affected_by.demonic_presence_ta = true;
-
-      // Momemtum
+      // Affect Flags
+      parse_affect_flags( p->mastery.demonic_presence, affected_by.demonic_presence );
       if ( p->talent.momentum->ok() )
       {
-        if ( ab::data().affected_by( p->spec.momentum_buff->effectN( 1 ) ) )
-          affected_by.momentum_da = true;
-
-        if ( ab::data().affected_by( p->spec.momentum_buff->effectN( 2 ) ) )
-          affected_by.momentum_ta = true;
+        parse_affect_flags( p->spec.momentum_buff, affected_by.momentum );
       }
     }
     else // DEMON_HUNTER_VENGEANCE
     {
-      // Class Damage Multiplier
-      if ( ab::data().affected_by( p->spec.vengeance->effectN( 2 ) ) )
-        ab::base_dd_multiplier *= 1.0 + p->spec.vengeance->effectN( 2 ).percent();
-
-      if ( ab::data().affected_by( p->spec.vengeance->effectN( 3 ) ) )
-        ab::base_td_multiplier *= 1.0 + p->spec.vengeance->effectN( 3 ).percent();
-
-      // Hasted GCD
-      hasted_gcd = ab::data().affected_by( p->spec.vengeance->effectN( 4 ) );
-
-      // Normal Cooldowns
-      if ( ab::data().affected_by( p->spec.vengeance->effectN( 5 ) ) )
-        ab::cooldown->hasted = true;
-
-      // Category Cooldowns
-      if ( as<int>( ab::data().category() ) == p->spec.vengeance->effectN( 6 ).misc_value1() )
-        ab::cooldown->hasted = true;
-
-      if ( as<int>( ab::data().category() ) == p->spec.vengeance->effectN( 7 ).misc_value1() )
-        ab::cooldown->hasted = true;
-      
-      // Ability-Specific Damage Modifiers
-      if ( ab::data().affected_by( p->spec.vengeance->effectN( 8 ) ) )
-        ab::base_multiplier *= 1.0 + p->spec.vengeance->effectN( 8 ).percent();
-
-      if ( ab::data().affected_by( p->spec.vengeance->effectN( 9 ) ) )
-        ab::base_multiplier *= 1.0 + p->spec.vengeance->effectN( 9 ).percent();
+      // Rank Passives
+      ab::apply_affecting_aura( p->spec.immolation_aura_rank_3 );
 
       // Charred Flesh Whitelist
       if ( ab::data().affected_by( p->spec.fiery_brand_dr->effectN( 2 ) ) )
@@ -1224,24 +1202,6 @@ public:
   demon_hunter_td_t* td( player_t* t ) const
   {
     return p()->get_target_data( t );
-  }
-
-  timespan_t gcd() const override
-  {
-    timespan_t g = ab::gcd();
-
-    if ( g == timespan_t::zero() )
-      return g;
-
-    if ( hasted_gcd )
-    {
-      g *= p()->cache.attack_haste();
-    }
-
-    if ( g < ab::min_gcd )
-      g = ab::min_gcd;
-
-    return g;
   }
 
   void init() override
@@ -1288,12 +1248,12 @@ public:
   {
     double m = ab::composite_da_multiplier( s );
 
-    if ( affected_by.demonic_presence_da )
+    if ( affected_by.demonic_presence.direct )
     {
       m *= 1.0 + p()->cache.mastery_value();
     }
 
-    if ( affected_by.momentum_da )
+    if ( affected_by.momentum.direct )
     {
       m *= 1.0 + p()->buff.momentum->check_value();
     }
@@ -1305,12 +1265,12 @@ public:
   {
     double m = ab::composite_ta_multiplier( s );
 
-    if ( affected_by.demonic_presence_ta )
+    if ( affected_by.demonic_presence.periodic )
     {
       m *= 1.0 + p()->cache.mastery_value();
     }
 
-    if ( affected_by.momentum_ta )
+    if ( affected_by.momentum.periodic )
     {
       m *= 1.0 + p()->buff.momentum->check_value();
     }
@@ -1345,7 +1305,7 @@ public:
       p()->buff.demon_soul->up();
     }
 
-    if ( affected_by.momentum_ta || affected_by.momentum_da )
+    if ( affected_by.momentum.direct || affected_by.momentum.periodic )
     {
       p()->buff.momentum->up();
     }
@@ -1877,8 +1837,6 @@ struct eye_beam_t : public demon_hunter_spell_t
     {
       background = dual = true;
       aoe = -1;
-
-      base_crit += p->spec.eye_beam_rank_2->effectN( 1 ).percent();
     }
 
     double composite_target_multiplier( player_t* target ) const override
@@ -1974,7 +1932,7 @@ struct fel_barrage_t : public demon_hunter_spell_t
       : demon_hunter_spell_t( "fel_barrage_tick", p, p->talent.fel_barrage->effectN( 1 ).trigger() )
     {
       background = dual = true;
-      aoe = data().effectN( 2 ).base_value();
+      aoe = static_cast<int>( data().effectN( 2 ).base_value() );
     }
   };
 
@@ -2431,12 +2389,6 @@ struct immolation_aura_t : public demon_hunter_spell_t
     may_miss = may_crit = false;
     dot_duration = timespan_t::zero(); 
 
-    // Vengeance (Rank 3) is different than Havoc (Rank 3)
-    if ( p->specialization() == DEMON_HUNTER_VENGEANCE )
-    {
-      cooldown->duration += p->spec.immolation_aura_rank_3->effectN( 1 ).time_value();
-    }
-
     if ( !p->active.immolation_aura )
     {
       p->active.immolation_aura = new immolation_aura_damage_t( p, data().effectN( 1 ).trigger(), false );
@@ -2498,8 +2450,6 @@ struct metamorphosis_t : public demon_hunter_spell_t
       {
         cooldown->duration += p->talent.demonic_origins->effectN( 1 ).time_value();
       }
-
-      cooldown->duration += p->spec.metamorphosis_rank_3->effectN( 1 ).time_value();
 
       impact_action = new metamorphosis_impact_t( p );
       // Don't assign the stats here because we don't want Meta to show up in the DPET chart
@@ -2884,7 +2834,7 @@ namespace attacks
       weapon_multiplier = 1.0;
       base_execute_time = weapon->swing_time;
       
-      affected_by.momentum_da = true;
+      affected_by.momentum.direct = true;
 
       status.main_hand = status.off_hand = LOST_CONTACT_RANGE;
 
@@ -3631,8 +3581,6 @@ struct fel_rush_t : public demon_hunter_attack_t
 
     may_miss = may_dodge = may_parry = may_block = may_crit = false;
     min_gcd = trigger_gcd;
-
-    cooldown->charges += static_cast<int>( p->spec.fel_rush_rank_2->effectN( 1 ).base_value() );
 
     execute_action = new fel_rush_damage_t( p );
     execute_action->stats = stats;
@@ -5227,12 +5175,6 @@ void demon_hunter_t::apl_precombat()
   pre->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
   pre->add_action( "potion" );
-
-  if (specialization() == DEMON_HUNTER_HAVOC)
-  {
-    pre->add_action( this, "Metamorphosis", "if=!azerite.chaotic_transformation.enabled" );
-  }
-
   pre->add_action( "use_item,name=azsharas_font_of_power" );
 }
 
