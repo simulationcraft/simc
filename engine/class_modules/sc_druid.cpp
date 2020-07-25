@@ -780,7 +780,7 @@ public:
     caster_melee_attack( nullptr ),
     cat_melee_attack( nullptr ),
     bear_melee_attack( nullptr ),
-	  lucid_dreams( spell_data_t::not_found() ),
+    lucid_dreams( spell_data_t::not_found() ),
     buff( buffs_t() ),
     cooldown( cooldowns_t() ),
     gain( gains_t() ),
@@ -2334,6 +2334,17 @@ public:
       dm *= 1.0 + p ()->mastery.total_eclipse->ok () * p ()->cache.mastery_value ();
 
     return dm;
+  }
+
+  double composite_crit_chance () const override
+  {
+    double cc = base_t::composite_crit_chance ();
+
+    if (data ().affected_by (p ()->buff.celestial_alignment->data ().effectN (1)) && p ()->buff.celestial_alignment->up ())
+      cc += p ()->buff.celestial_alignment->data ().effectN (1).percent ();
+
+    if (data ().affected_by (p ()->buff.incarnation_moonkin->data ().effectN (1)) && p ()->buff.incarnation_moonkin->up ())
+      cc += p ()->buff.incarnation_moonkin->data ().effectN (1).percent ();
   }
 
   bool usable_moving() const override
