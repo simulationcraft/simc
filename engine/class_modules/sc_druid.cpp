@@ -230,16 +230,16 @@ struct eclipse_handler_t {
   unsigned starfire_counter;
   eclipse_state_e state;
 
-  eclipse_handler_t (druid_t* player) :wrath_counter (2), starfire_counter (2), state (ANY_NEXT),p(player) {};
+  eclipse_handler_t( druid_t* player ) :wrath_counter( 2 ), starfire_counter( 2 ), state( ANY_NEXT ), p( player ) {};
 
-  void cast_wrath ();
-  void cast_starfire ();
-  void cast_starsurge ();
-  void cast_ca_inc ();
-  void advance_eclipse ();
+  void cast_wrath();
+  void cast_starfire();
+  void cast_starsurge();
+  void cast_ca_inc();
+  void advance_eclipse();
 
-  void reset_stacks ();
-  eclipse_state_e get_state ();
+  void reset_stacks();
+  eclipse_state_e get_state();
 };
 
 struct druid_t : public player_t
@@ -610,6 +610,8 @@ public:
     const spell_data_t* moonkin_form;
     const spell_data_t* eclipse;
     const spell_data_t* eclipse_2;
+    const spell_data_t* eclipse_solar;
+    const spell_data_t* eclipse_lunar;
     const spell_data_t* starfall;
     const spell_data_t* starfall_2;
     const spell_data_t* balance_tier19_2pc;
@@ -826,7 +828,7 @@ public:
     } );
   }
 
-            ~druid_t() override;
+  ~druid_t() override;
 
   // Character Definition
   void      activate() override;
@@ -930,33 +932,33 @@ druid_t::~druid_t()
 
 // eclipse handler functio defintitions, refractor this
 
-void eclipse_handler_t::cast_wrath () {
-  if (state == ANY_NEXT || state == LUNAR_NEXT) {
+void eclipse_handler_t::cast_wrath() {
+  if ( state == ANY_NEXT || state == LUNAR_NEXT ) {
     wrath_counter--;
-    advance_eclipse ();
+    advance_eclipse();
   }
 }
 
-void eclipse_handler_t::cast_starfire () {
+void eclipse_handler_t::cast_starfire() {
   if (state == ANY_NEXT || state == SOLAR_NEXT) {
     starfire_counter--;
-    advance_eclipse ();
+    advance_eclipse();
   }
 }
 
-void eclipse_handler_t::advance_eclipse () {
-  if (!starfire_counter && state!= IN_SOLAR)
+void eclipse_handler_t::advance_eclipse() {
+  if (!starfire_counter && state != IN_SOLAR)
   {
-    p->buff.eclipse_solar->trigger ();
+    p->buff.eclipse_solar->trigger();
     state = IN_SOLAR;
-    reset_stacks ();
+    reset_stacks();
     return;
   }
   if (!wrath_counter && state != IN_LUNAR)
   {
-    p->buff.eclipse_lunar->trigger ();
+    p->buff.eclipse_lunar->trigger();
     state = IN_LUNAR;
-    reset_stacks ();
+    reset_stacks();
     return;
   }
   if (state == IN_SOLAR)
@@ -968,26 +970,26 @@ void eclipse_handler_t::advance_eclipse () {
 }
 
 
-void eclipse_handler_t::cast_starsurge () {
-  if (state == IN_LUNAR && p->buff.eclipse_lunar->up ()) {
-    p->buff.eclipse_lunar->extend_duration (p, timespan_t::from_seconds (p->spec.starsurge->effectN (2).base_value () + p->spec.starsurge_2->effectN (1).base_value ()));
+void eclipse_handler_t::cast_starsurge() {
+  if (state == IN_LUNAR && p->buff.eclipse_lunar->up()) {
+    p->buff.eclipse_lunar->extend_duration( p, timespan_t::from_seconds( p->spec.starsurge->effectN( 2 ).base_value() + p->spec.starsurge_2->effectN( 1 ).base_value() ) );
   }
-  if (state == IN_SOLAR && p->buff.eclipse_solar->up ()) {
-    p->buff.eclipse_solar->extend_duration (p, timespan_t::from_seconds (p->spec.starsurge->effectN (2).base_value () + p->spec.starsurge_2->effectN (1).base_value ()));
+  if (state == IN_SOLAR && p->buff.eclipse_solar->up()) {
+    p->buff.eclipse_solar->extend_duration( p, timespan_t::from_seconds( p->spec.starsurge->effectN( 2 ).base_value() + p->spec.starsurge_2->effectN( 1 ).base_value() ) );
   }
 }
 
-void eclipse_handler_t::cast_ca_inc () {
+void eclipse_handler_t::cast_ca_inc() {
   state = IN_BOTH;
-  reset_stacks ();
+  reset_stacks();
 }
 
-void eclipse_handler_t::reset_stacks () {
+void eclipse_handler_t::reset_stacks() {
   wrath_counter = 2;
   starfire_counter = 2;
 }
 
-eclipse_state_e eclipse_handler_t::get_state () {
+eclipse_state_e eclipse_handler_t::get_state() {
   return state;
 }
 
@@ -6248,7 +6250,7 @@ struct starfire_t : public druid_spell_t
     timespan_t et = druid_spell_t::execute_time();
 
     if (p ()->buff.eclipse_lunar->check ())
-      et *= 1 + p ()->buff.eclipse_lunar->data ().effectN (1).percent ();
+      et *= 1 + p ()->buff.eclipse_lunar->data ().effectN (1).percent () + p ()->talent.soul_of_the_forest->effectN (1).percent ();
 
     return et;
   }
@@ -7499,15 +7501,17 @@ void druid_t::init_spells()
   spec.celestial_alignment        = find_specialization_spell( "Celestial Alignment" );
   spec.innervate                  = find_specialization_spell( "Innervate" );
   spec.moonkin_form               = find_specialization_spell( "Moonkin Form" );
-  spec.eclipse                    = find_specialization_spell ("Eclispe");
+  spec.eclipse                    = find_specialization_spell( "Eclipse" );
+  spec.eclipse_2                  = find_specialization_spell( "Eclipse", "Rank 2" );
+  spec.eclipse_solar              = find_spell( 48517 );
+  spec.eclipse_lunar              = find_spell( 48518 );
   spec.starfall                   = find_specialization_spell( "Starfall" );
-  spec.eclipse_2                  = find_specialization_spell ("Eclipse","Rank 2");
-  spec.starfall_2                 = find_specialization_spell ("Starfall", "Rank 2");
+  spec.starfall_2                 = find_specialization_spell( "Starfall", "Rank 2" );
   spec.balance_tier19_2pc         = sets -> has_set_bonus( DRUID_BALANCE, T19, B2 ) ? find_spell( 211089 ) : spell_data_t::not_found();
-  spec.starsurge                  = find_specialization_spell ("Starsurge");
-  spec.starsurge_2                = find_specialization_spell ("Starsurge", "Rank 2"); // Adds more Eclipse extension
-  spec.moonkin_2                  = find_specialization_spell ("Moonkin Form", "Rank 2"); // Owlkin Frenzy proc rate RAWR
-  spec.sunfire_2                  = find_specialization_spell ("Sunfire", "Rank 2"); // Sunfire spread. currently contains no value data.
+  spec.starsurge                  = find_specialization_spell( "Starsurge" );
+  spec.starsurge_2                = find_specialization_spell( "Starsurge", "Rank 2" ); // Adds more Eclipse extension
+  spec.moonkin_2                  = find_specialization_spell( "Moonkin Form", "Rank 2" ); // Owlkin Frenzy proc rate RAWR
+  spec.sunfire_2                  = find_specialization_spell( "Sunfire", "Rank 2" ); // Sunfire spread. currently contains no value data.
   spec.stellar_drift_2            = find_spell( 202461 ); // stellar drift mobility buff
   spec.owlkin_frenzy              = find_spell( 157228 ); // Owlkin Frenzy RAWR
   spec.sunfire_dmg                = find_spell( 164815 ); // dot debuff for sunfire
@@ -7967,17 +7971,19 @@ void druid_t::create_buffs()
   buff.stellar_drift_2 = make_buff( this, "stellar_drift", find_spell( 202461 ) )
     ->set_duration( spec.starfall->duration() );  // peg stellar drift duration to starfall's
 
-  buff.eclipse_solar = make_buff (this, "eclipse_solar", find_spell (48517))
-    ->set_stack_change_callback ([this](buff_t*, int, int new_) {
+  buff.eclipse_solar = make_buff( this, "eclipse_solar", find_spell( 48517 ) )
+    ->set_duration( spec.eclipse_solar->duration() + talent.soul_of_the_forest->effectN( 2 ).time_value() )
+    ->set_stack_change_callback( [this]( buff_t*, int, int new_ ) {
     if (!new_)
-      this->eclipse_handler.advance_eclipse ();
-  });
+      this->eclipse_handler.advance_eclipse();
+  } );
 
-  buff.eclipse_lunar = make_buff (this, "eclipse_lunar", find_spell (48518))
-    ->set_stack_change_callback ([this](buff_t*, int, int new_) {
+  buff.eclipse_lunar = make_buff( this, "eclipse_lunar", spec.eclipse_lunar )
+    ->set_duration( spec.eclipse_lunar->duration() + talent.soul_of_the_forest->effectN( 2 ).time_value() )
+    ->set_stack_change_callback( [this]( buff_t*, int, int new_ ) {
     if (!new_)
-      this->eclipse_handler.advance_eclipse ();
-  });
+      this->eclipse_handler.advance_eclipse();
+  } );
 
   // Feral
 
@@ -9746,20 +9752,20 @@ std::unique_ptr<expr_t> druid_t::create_expression( const std::string& name_str 
       throw std::invalid_argument ("invalid action");
     }
 
-    else if (splits.size () == 2 && util::str_compare_ci (splits[0], "eclipse"))
+    else if ( splits.size() == 2 && util::str_compare_ci( splits[0], "eclipse" ) )
     {
-      if (util::str_compare_ci (splits[1], "state")) {
-        return make_fn_expr (name_str, [this]() {
+      if ( util::str_compare_ci( splits[1], "state" ) ) {
+        return make_fn_expr( name_str, [this]() {
           eclipse_state_e state = eclipse_handler.state;
-          if (state == ANY_NEXT)
+          if ( state == ANY_NEXT )
             return 0;
-          if (eclipse_handler.state == SOLAR_NEXT)
+          if ( eclipse_handler.state == SOLAR_NEXT )
             return 1;
-          if (eclipse_handler.state == LUNAR_NEXT)
+          if ( eclipse_handler.state == LUNAR_NEXT )
             return 2;
           else
             return 3;
-        });
+        } );
       }
     }
   }
