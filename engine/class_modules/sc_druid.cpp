@@ -6773,6 +6773,16 @@ struct starfall_t : public druid_spell_t
        with the talent spell */
     if (p()->talent.stellar_drift->ok())
       p()->buff.stellar_drift_2->trigger();
+
+    if ( p()->spec.starfall_2->ok() ) {
+      std::vector< player_t* >& tl = target_list();
+      for ( size_t i = 0, actors = tl.size(); i < actors; i++ )
+      {
+        player_t* t = tl[i];
+        td( t )->dots.moonfire->extend_duration( timespan_t::from_seconds( p()->spec.starfall_2->effectN( 1 ).base_value() ) );
+        td( t )->dots.sunfire->extend_duration( timespan_t::from_seconds( p()->spec.starfall_2->effectN( 1 ).base_value() ) );
+      }
+    }
   }
 };
 
