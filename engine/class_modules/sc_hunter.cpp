@@ -2171,7 +2171,6 @@ struct multi_shot_t: public hunter_ranged_attack_t
     hunter_ranged_attack_t( "multishot", p, p -> find_class_spell( "Multi-Shot" ) )
   {
     parse_options( options_str );
-    aoe = -1;
 
     if ( p -> azerite.rapid_reload.ok() )
     {
@@ -2923,7 +2922,6 @@ struct explosive_shot_t: public hunter_ranged_attack_t
     {
       background = true;
       dual = true;
-      aoe = -1;
     }
   };
 
@@ -3225,8 +3223,6 @@ struct carve_base_t: public hunter_melee_attack_t
                 timespan_t wfb_reduction ):
     hunter_melee_attack_t( n, p, s ), internal_bleeding( p )
   {
-    aoe = 5;
-
     // Carve (Rank 2) - also affects Butchery
     if ( p -> find_specialization_spell( 294029 ) )
       wildfire_bomb_reduction = wfb_reduction;
