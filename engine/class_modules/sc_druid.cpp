@@ -6681,57 +6681,50 @@ struct lunar_shrapnel_t : public druid_spell_t
   }
 };
 
+struct starfall_tick_t : public druid_spell_t
+{
+  starfall_tick_t( druid_t* p ) :
+    druid_spell_t( "starfall_tick", p, p->find_spell( 191037 ) )
+  {
+    aoe = -1;
+    background = dual = direct_tick = true;
+    radius = p->spec.starfall->effectN( 1 ).radius();
+
+    base_multiplier *= 1.0 + p->talent.stellar_drift->effectN( 2 ).percent();
+  }
+
+  timespan_t travel_time() const override
+  {
+    // has a set travel time since it spawns on the target
+    return timespan_t::from_millis( data().missile_speed() );
+  }    double action_multiplier() const override
+  {
+    double am = druid_spell_t::action_multiplier();
+
+    if ( p()->sets->has_set_bonus( DRUID_BALANCE, T21, B2 ) )
+      am *= 1.0 + p()->sets->set( DRUID_BALANCE, T21, B2 )->effectN( 1 ).percent();
+
+    return am;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    druid_spell_t::impact( s );
+    if ( p()->azerite.lunar_shrapnel.ok() && td( target )->dots.moonfire->is_ticking() )
+    {
+      p()->active.lunar_shrapnel->set_target( s->target );
+      p()->active.lunar_shrapnel->execute();
+    }
+  }
+};
+
+
 struct starfall_t : public druid_spell_t
 {
-  struct starfall_tick_t : public druid_spell_t
-  {
-    starfall_tick_t(const std::string& n, druid_t* p, const spell_data_t* s) :
-      druid_spell_t(n, p, s)
-    {
-      aoe = -1;
-      background = dual = direct_tick = true;
-      radius = p->spec.starfall->effectN(1).radius();
-
-      base_multiplier *= 1.0 + p->talent.stellar_drift->effectN(2).percent();
-    }
-
-    timespan_t travel_time() const override
-    {
-      // has a set travel time since it spawns on the target
-      return timespan_t::from_millis( data().missile_speed() );
-    }
-
-    double action_multiplier() const override
-    {
-      double am = druid_spell_t::action_multiplier();
-
-      if (p()->sets->has_set_bonus(DRUID_BALANCE, T21, B2))
-        am *= 1.0 + p()->sets->set(DRUID_BALANCE, T21, B2)->effectN(1).percent();
-
-      return am;
-    }
-
-    void impact(action_state_t* s) override
-    {
-      druid_spell_t::impact(s);
-      if (p()->azerite.lunar_shrapnel.ok() && td(target)->dots.moonfire->is_ticking())
-      {
-        p()->active.lunar_shrapnel->set_target(s->target);
-        p()->active.lunar_shrapnel->execute();
-      }
-    }
-  };
-
   starfall_t(druid_t* p, const std::string& options_str) :
     druid_spell_t("starfall", p, p -> find_specialization_spell("Starfall"), options_str)
   {
     may_miss = may_crit = false;
-
-    if (!p->active.starfall)
-    {
-      p->active.starfall = new starfall_tick_t("starfall_tick", p, p->find_spell(191037));
-      p->active.starfall->stats = stats;
-    }
 
     if (p->azerite.lunar_shrapnel.ok())
     {
@@ -6764,12 +6757,6 @@ struct starfall_t : public druid_spell_t
     druid_spell_t::execute();
 
     streaking_stars_trigger(SS_STARFALL, nullptr);
-
-    make_event<ground_aoe_event_t>(*sim, p(), ground_aoe_params_t()
-      .target(execute_state->target)
-      .pulse_time(data().duration() / 9) //ticks 9 times
-      .duration(data().duration())
-      .action(p()->active.starfall));
 
     if (p()->buff.oneths_overconfidence->up()) // benefit tracking
       p()->buff.oneths_overconfidence->decrement();
@@ -7767,6 +7754,9 @@ void druid_t::init_spells()
 
   if ( azerite.streaking_stars.ok() )
     active.streaking_stars = new spells::streaking_stars_t( this );
+
+  if ( spec.starfall->ok() )
+    active.starfall = new spells::starfall_tick_t( this );
 }
 
 // druid_t::init_base =======================================================
@@ -7966,7 +7956,13 @@ void druid_t::create_buffs()
   buff.solar_solstice = make_buff( this, "solar_solstice", find_spell( 252767 ) )
     ->set_default_value( find_spell( 252767 )->effectN( 1 ).percent() );
 
-  buff.starfall = make_buff( this, "starfall", spec.starfall );
+  buff.starfall = make_buff( this, "starfall", spec.starfall )
+    ->set_duration( spec.starfall->duration() + talent.stellar_drift->effectN( 1 ).time_value() )
+    ->set_period(888_ms)  // this has a random interval in game so estimate the average here
+    ->set_refresh_behavior(buff_refresh_behavior::DURATION)
+    ->set_tick_callback( [this]( buff_t*, int, timespan_t ) {
+    active.starfall->schedule_execute();
+  } );
 
   buff.stellar_drift_2 = make_buff( this, "stellar_drift", find_spell( 202461 ) )
     ->set_duration( spec.starfall->duration() );  // peg stellar drift duration to starfall's
