@@ -4018,7 +4018,14 @@ class RuneforgeLegendaryGenerator(DataGenerator):
             self.db('RuneforgeLegendaryAbility').values()
         ))
 
-        return entries
+        # Generate spec set dict and expand entries
+        spec_sets = defaultdict(list)
+        for entry in self.db('SpecSetMember').values():
+            spec_sets[entry.id_parent].append(entry)
+
+        return [
+            (entry, spec) for entry in entries for spec in spec_sets.get(entry.id_spec_set, [])
+        ]
 
     def generate(self, data=None):
         self.output_header(
@@ -4027,8 +4034,10 @@ class RuneforgeLegendaryGenerator(DataGenerator):
                 array='runeforge_legendary',
                 length=len(data))
 
-        for entry in sorted(data, key=lambda v: v.id_bonus):
-            fields = entry.field('id_bonus', 'id_specialization', 'id_spell', 'mask_inv_type', 'name')
+        for entry, spec in sorted(data, key=lambda v: (v[0].id_bonus, v[1].id_spec)):
+            fields = entry.field('id_bonus')
+            fields += spec.field('id_spec')
+            fields += entry.field('id_spell', 'mask_inv_type', 'name')
             self.output_record(fields)
 
         self.output_footer()

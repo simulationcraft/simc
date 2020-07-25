@@ -791,7 +791,7 @@
     "fields": [
       { "data_type": "S", "field": "name" },
       { "data_type": "i", "field": "id"   },
-      { "data_type": "i", "field": "id_specialization", "formats": { "cpp": "%3d" }, "ref": "ChrSpecialization" },
+      { "data_type": "i", "field": "id_spec_set" },
       { "data_type": "i", "field": "mask_inv_type", "formats": { "cpp": "%#.8x" } },
       { "data_type": "i", "field": "id_spell", "formats": { "cpp": "%6u" }, "ref": "SpellName" },
       { "data_type": "i", "field": "id_bonus", "formats": { "cpp": "%4d" } },

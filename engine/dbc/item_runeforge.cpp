@@ -16,15 +16,21 @@ util::span<const runeforge_legendary_entry_t> runeforge_legendary_entry_t::data(
   return SC_DBC_GET_DATA( __runeforge_legendary_data, __ptr_runeforge_legendary_data, ptr );
 }
 
-const runeforge_legendary_entry_t& runeforge_legendary_entry_t::find( util::string_view name, bool ptr )
+util::span<const runeforge_legendary_entry_t> runeforge_legendary_entry_t::find( util::string_view name, bool ptr )
 {
-  for ( const auto& entry : data( ptr ) )
+  auto __data = data( ptr );
+  auto __begin = std::find_if( __data.begin(), __data.end(), [name]( const runeforge_legendary_entry_t& e ) {
+    return util::str_compare_ci( e.name, name );
+  } );
+
+  if ( __begin == __data.end() )
   {
-    if ( util::str_compare_ci( entry.name, name ) )
-    {
-      return entry;
-    }
+    return {};
   }
 
-  return nil();
+  auto __end = std::find_if_not( __begin + 1, __data.end(), [name]( const runeforge_legendary_entry_t& e ) {
+    return util::str_compare_ci( e.name, name );
+  } );
+
+  return { __begin, __end };
 }

@@ -18,10 +18,10 @@ struct runeforge_legendary_entry_t
   unsigned mask_inv_type;
   const char* name;
 
-  static const runeforge_legendary_entry_t& find( unsigned bonus_id, bool ptr )
-  { return dbc::find<runeforge_legendary_entry_t>( bonus_id, ptr, &runeforge_legendary_entry_t::bonus_id ); }
+  static util::span<const runeforge_legendary_entry_t> find( unsigned bonus_id, bool ptr )
+  { return dbc::find_many<runeforge_legendary_entry_t>( bonus_id, ptr, {}, &runeforge_legendary_entry_t::bonus_id ); }
 
-  static const runeforge_legendary_entry_t& find( util::string_view name, bool ptr );
+  static util::span<const runeforge_legendary_entry_t> find( util::string_view name, bool ptr );
 
   static const runeforge_legendary_entry_t& nil()
   { return dbc::nil<runeforge_legendary_entry_t>; }
