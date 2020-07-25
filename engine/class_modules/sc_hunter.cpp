@@ -612,8 +612,6 @@ public:
     affected_by()
   {
     ab::special = true;
-    ab::may_crit = true;
-    ab::tick_may_crit = true;
 
     affected_by.aotw_crit_chance = ab::data().affected_by( p -> specs.aspect_of_the_wild -> effectN( 1 ) );
     affected_by.aotw_gcd_reduce = ab::data().affected_by( p -> specs.aspect_of_the_wild -> effectN( 3 ) );
@@ -939,9 +937,6 @@ public:
   hunter_pet_action_t( util::string_view n, T_PET* p, const spell_data_t* s = spell_data_t::nil() ):
     ab( n, p, s )
   {
-    ab::may_crit = true;
-    ab::tick_may_crit = true;
-
     // If pets are not reported separately, create single stats_t objects for the various pet
     // abilities.
     if ( ! ab::sim -> report_pets_separately )
@@ -1600,8 +1595,6 @@ struct kill_command_sv_t: public kill_command_base_t
     attack_power_mod.direct = o() -> specs.kill_command -> effectN( 1 ).percent();
     attack_power_mod.tick = o() -> talents.bloodseeker -> effectN( 1 ).percent();
     base_dd_adder += o() -> azerite.dire_consequences.value( 2 );
-
-    hasted_ticks = true;
 
     if ( ! o() -> talents.bloodseeker.ok() )
       dot_duration = 0_ms;
@@ -2340,9 +2333,6 @@ struct barbed_shot_t: public hunter_ranged_attack_t
   {
     parse_options(options_str);
 
-    tick_may_crit = false;
-    tick_zero = true;
-
     base_ta_adder += p -> azerite.feeding_frenzy.value( 2 );
 
     // Bestial Wrath (Rank 2)
@@ -2806,7 +2796,6 @@ struct rapid_fire_t: public hunter_spell_t
 
     may_miss = may_crit = false;
     channeled = true;
-    tick_zero = true;
 
     base_num_ticks = as<int>(base_num_ticks * (1 + p -> talents.streamline -> effectN( 2 ).percent()));
     dot_duration += p -> talents.streamline -> effectN( 1 ).time_value();
@@ -2933,7 +2922,6 @@ struct explosive_shot_t: public hunter_ranged_attack_t
     parse_options( options_str );
 
     may_miss = false;
-    hasted_ticks = false;
 
     tick_action = p -> get_background_action<explosive_shot_aoe_t>( "explosive_shot_aoe" );
     tick_action -> stats = stats;
@@ -2948,8 +2936,6 @@ struct serpent_sting_mm_t: public hunter_ranged_attack_t
     hunter_ranged_attack_t( "serpent_sting", p, p -> talents.serpent_sting )
   {
     parse_options( options_str );
-
-    hasted_ticks = true;
   }
 };
 
@@ -2983,8 +2969,6 @@ struct internal_bleeding_t
       hunter_ranged_attack_t( n, p, p -> find_spell( 270343 ) )
     {
       dual = true;
-      dot_max_stack = as<int>( data().max_stacks() );
-      hasted_ticks = true;
     }
   };
   internal_bleeding_action_t* action = nullptr;
@@ -3177,7 +3161,6 @@ struct flanking_strike_t: hunter_melee_attack_t
 
     base_teleport_distance  = data().max_range();
     movement_directionality = movement_direction_type::OMNI;
-    may_parry = may_dodge = may_block = false;
 
     add_child( damage );
   }
@@ -3331,7 +3314,6 @@ struct harpoon_t: public hunter_melee_attack_t
       hunter_ranged_attack_t( n, p, p -> find_spell( 271625 ) )
     {
       dual = true;
-      may_parry = may_dodge = may_block = false;
     }
 
     void impact( action_state_t* s ) override
@@ -3351,7 +3333,6 @@ struct harpoon_t: public hunter_melee_attack_t
     harmful = false;
     base_teleport_distance  = data().max_range();
     movement_directionality = movement_direction_type::OMNI;
-    may_parry = may_dodge = may_block = false;
 
     if ( p -> talents.terms_of_engagement.ok() )
     {
@@ -3392,9 +3373,6 @@ struct serpent_sting_sv_t: public hunter_ranged_attack_t
     hunter_ranged_attack_t( "serpent_sting", p, p -> find_class_spell( "Serpent Sting" ) )
   {
     parse_options( options_str );
-
-    tick_zero = false;
-    hasted_ticks = true;
 
     if ( p -> talents.hydras_bite.ok() )
       aoe = 1 + static_cast<int>( p -> talents.hydras_bite -> effectN( 1 ).base_value() );
@@ -3567,7 +3545,6 @@ struct moc_t : public hunter_spell_t
     peck_t( util::string_view n, hunter_t* p ) :
       hunter_ranged_attack_t( n, p, p -> find_spell( 131900 ) )
     {
-      may_parry = may_block = may_dodge = false;
       travel_speed = 0;
     }
   };
@@ -3576,11 +3553,6 @@ struct moc_t : public hunter_spell_t
     hunter_spell_t( "a_murder_of_crows", p, p -> talents.a_murder_of_crows )
   {
     parse_options( options_str );
-
-    hasted_ticks = false;
-    may_miss = may_crit = false;
-
-    tick_zero = true;
 
     tick_action = p -> get_background_action<peck_t>( "crow_peck" );
     starved_proc = p -> get_proc( "starved: a_murder_of_crows" );
@@ -3934,7 +3906,6 @@ struct stampede_t: public hunter_spell_t
     {
       aoe = -1;
       background = true;
-      may_crit = true;
     }
   };
 
@@ -4095,7 +4066,6 @@ struct volley_t : hunter_spell_t
     {
       aoe = -1;
       background = dual = ground_aoe = true;
-      hasted_ticks = false;
     }
   };
 
@@ -4110,7 +4080,7 @@ struct volley_t : hunter_spell_t
     // disable automatic generation of the dot from spell data
     dot_duration = 0_ms;
 
-    may_miss = may_crit = false;
+    may_miss = false;
     damage -> stats = stats;
   }
 
@@ -4206,7 +4176,6 @@ struct wildfire_bomb_t: public hunter_spell_t
         hunter_spell_t( n, p, s )
       {
         dual = true;
-        hasted_ticks = false;
       }
 
       // does not pandemic
