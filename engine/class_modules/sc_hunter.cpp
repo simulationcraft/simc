@@ -612,7 +612,6 @@ public:
     affected_by()
   {
     ab::special = true;
-    ab::gcd_type = gcd_haste_type::NONE;
     ab::may_crit = true;
     ab::tick_may_crit = true;
 
@@ -877,20 +876,7 @@ struct hunter_melee_attack_t: public hunter_action_t < melee_attack_t >
   }
 };
 
-struct hunter_spell_t: public hunter_action_t < spell_t >
-{
-public:
-  hunter_spell_t( util::string_view n, hunter_t* player,
-                  const spell_data_t* s = spell_data_t::nil() ):
-                  hunter_action_t( n, player, s )
-  {}
-
-  void execute() override
-  {
-    hunter_action_t::execute();
-    try_steady_focus();
-  }
-};
+using hunter_spell_t = hunter_ranged_attack_t;
 
 namespace pets
 {
