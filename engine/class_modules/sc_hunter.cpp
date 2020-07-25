@@ -616,7 +616,6 @@ public:
     ab::may_crit = true;
     ab::tick_may_crit = true;
 
-
     affected_by.aotw_crit_chance = ab::data().affected_by( p -> specs.aspect_of_the_wild -> effectN( 1 ) );
     affected_by.aotw_gcd_reduce = ab::data().affected_by( p -> specs.aspect_of_the_wild -> effectN( 3 ) );
     affected_by.bestial_wrath = ab::data().affected_by( p -> specs.bestial_wrath -> effectN( 1 ) );
@@ -628,6 +627,21 @@ public:
 
     affected_by.coordinated_assault = ab::data().affected_by( p -> specs.coordinated_assault -> effectN( 1 ) );
     affected_by.spirit_bond = ab::data().affected_by( p -> mastery.spirit_bond -> effectN( 1 ) );
+
+    // passive talents
+    ab::apply_affecting_aura( p -> talents.alpha_predator );
+    ab::apply_affecting_aura( p -> talents.born_to_be_wild );
+    ab::apply_affecting_aura( p -> talents.dead_eye );
+    ab::apply_affecting_aura( p -> talents.guerrilla_tactics );
+    ab::apply_affecting_aura( p -> talents.hydras_bite );
+    ab::apply_affecting_aura( p -> talents.master_marksman );
+
+    // "simple" passive rank 2 spells
+    ab::apply_affecting_aura( p -> find_specialization_spell( 231550 ) ); // Harpoon (Rank 2)
+    ab::apply_affecting_aura( p -> find_specialization_spell( 262838 ) ); // Cobra Shot (Rank 2)
+    ab::apply_affecting_aura( p -> find_specialization_spell( 321287 ) ); // True Aim
+    ab::apply_affecting_aura( p -> find_specialization_spell( 321290 ) ); // Wildfire Bombs (Rank 2)
+    ab::apply_affecting_aura( p -> find_specialization_spell( 321293 ) ); // Arcane Shot (Rank 2)
   }
 
   hunter_t* p()             { return static_cast<hunter_t*>( ab::player ); }
@@ -5305,27 +5319,12 @@ std::string hunter_t::default_rune() const
 
 void hunter_t::apply_affecting_auras( action_t& action )
 {
-    player_t::apply_affecting_auras(action);
+  player_t::apply_affecting_auras(action);
 
-    action.apply_affecting_aura( specs.hunter );
-    action.apply_affecting_aura( specs.beast_mastery_hunter );
-    action.apply_affecting_aura( specs.marksmanship_hunter );
-    action.apply_affecting_aura( specs.survival_hunter );
-    
-    // passive talents
-    action.apply_affecting_aura( talents.alpha_predator );
-    action.apply_affecting_aura( talents.born_to_be_wild );
-    action.apply_affecting_aura( talents.dead_eye );
-    action.apply_affecting_aura( talents.guerrilla_tactics );
-    action.apply_affecting_aura( talents.hydras_bite );
-    action.apply_affecting_aura( talents.master_marksman );
-
-    // "simple" passive rank 2 spells
-    action.apply_affecting_aura( find_specialization_spell( 231550 ) ); // Harpoon (Rank 2)
-    action.apply_affecting_aura( find_specialization_spell( 262838 ) ); // Cobra Shot (Rank 2)
-    action.apply_affecting_aura( find_specialization_spell( 321287 ) ); // True Aim
-    action.apply_affecting_aura( find_specialization_spell( 321290 ) ); // Wildfire Bombs (Rank 2)
-    action.apply_affecting_aura( find_specialization_spell( 321293 ) ); // Arcane Shot (Rank 2)
+  action.apply_affecting_aura( specs.hunter );
+  action.apply_affecting_aura( specs.beast_mastery_hunter );
+  action.apply_affecting_aura( specs.marksmanship_hunter );
+  action.apply_affecting_aura( specs.survival_hunter );
 }
 
 // hunter_t::init_actions ===================================================
