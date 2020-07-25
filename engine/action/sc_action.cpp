@@ -493,6 +493,36 @@ action_t::~action_t()
   }
 }
 
+static bool has_direct_damage_effect( const spell_data_t& spell )
+{
+  static constexpr effect_type_t types[] = {
+    E_HEAL, E_SCHOOL_DAMAGE, E_HEALTH_LEECH,
+    E_NORMALIZED_WEAPON_DMG, E_WEAPON_DAMAGE, E_WEAPON_PERCENT_DAMAGE
+  };
+  for ( const auto& effect : spell.effects() )
+  {
+    if ( range::contains( types, effect.type() ) )
+      return true;
+  }
+  return false;
+}
+
+static bool has_periodic_damage_effect( const spell_data_t& spell )
+{
+  static constexpr effect_subtype_t subtypes[] = {
+    A_PERIODIC_DAMAGE, A_PERIODIC_LEECH, A_PERIODIC_HEAL
+  };
+  for ( const auto& effect : spell.effects() )
+  {
+    if ( effect.type() == E_APPLY_AURA &&
+         range::contains( subtypes, effect.subtype() ) )
+    {
+      return true;
+    }
+  }
+  return false;
+}
+
 /**
  * Parse spell data values and write them into corresponding action_t members.
  */
@@ -510,6 +540,20 @@ void action_t::parse_spell_data( const spell_data_t& spell_data )
   travel_speed      = spell_data.missile_speed();
   trigger_gcd       = spell_data.gcd();
   school            = spell_data.get_school_type();
+
+  // parse attributes
+  callbacks           = !spell_data.flags( spell_attribute::SX_DISABLE_PLAYER_PROCS );
+  tick_may_crit       = spell_data.flags( spell_attribute::SX_TICK_MAY_CRIT );
+  hasted_ticks        = spell_data.flags( spell_attribute::SX_DOT_HASTED );
+  tick_on_application = spell_data.flags( spell_attribute::SX_TICK_ON_APPLICATION );
+  may_miss            = !spell_data.flags( spell_attribute::SX_ALWAYS_HIT );
+  may_dodge = may_parry = may_block = !spell_data.flags( spell_attribute::SX_NO_D_P_B );
+
+  if ( has_direct_damage_effect( spell_data ) )
+    may_crit = !spell_data.flags( spell_attribute::SX_CANNOT_CRIT );
+
+  if ( has_periodic_damage_effect( spell_data ) && spell_data.max_stacks() > 1 )
+    dot_max_stack = spell_data.max_stacks();
 
   cooldown->duration = timespan_t::zero();
 

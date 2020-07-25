@@ -309,36 +309,16 @@ struct proc_action_t : public T_ACTION
   void __initialize()
   {
     this->background   = true;
-    this->hasted_ticks = false;
 
-    this->callbacks     = !this->data().flags( spell_attribute::SX_DISABLE_PLAYER_PROCS );
+    // Reparse this as action_t is a bit conservative
     this->may_crit      = !this->data().flags( spell_attribute::SX_CANNOT_CRIT );
-    this->tick_may_crit = this->data().flags( spell_attribute::SX_TICK_MAY_CRIT );
-    this->may_miss      = !this->data().flags( spell_attribute::SX_ALWAYS_HIT );
-    this->may_dodge = this->may_parry = this->may_block = !this->data().flags( spell_attribute::SX_NO_D_P_B );
 
     if ( this->radius > 0 )
       this->aoe = -1;
 
-    bool has_dot = false;
     // Reparse effect data for any item-dependent variables.
-    for ( size_t i = 1; i <= this->data().effect_count(); i++ )
-    {
-      this->parse_effect_data( this->data().effectN( i ) );
-      if ( this->data().effectN( i ).subtype() == A_PERIODIC_DAMAGE )
-      {
-        has_dot = true;
-      }
-    }
-
-    // Auto-infer dot max stack
-    if ( has_dot && this->data().max_stacks() > 1 )
-    {
-      this->dot_max_stack = this->data().max_stacks();
-    }
-
-    this->hasted_ticks        = this->data().flags( spell_attribute::SX_DOT_HASTED );
-    this->tick_on_application = this->data().flags( spell_attribute::SX_TICK_ON_APPLICATION );
+    for ( const auto& effect : this->data().effects() )
+      this->parse_effect_data( effect );
 
     unique_gear::apply_label_modifiers( this );
   }
