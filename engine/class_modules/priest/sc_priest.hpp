@@ -441,7 +441,7 @@ public:
   void arise() override;
   void vision_of_perfection_proc() override;
   void do_dynamic_regen() override;
-  void action_init_finished( action_t& ) override;
+  void apply_affecting_auras( action_t& ) override;
 
 private:
   void create_cooldowns();

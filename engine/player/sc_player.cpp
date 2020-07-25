@@ -3070,9 +3070,13 @@ void player_t::init_finished()
   }
 }
 
+/// Called in every action constructor for all actions constructred for a player
+void player_t::apply_affecting_auras(action_t&)
+{
+}
+
 void player_t::action_init_finished(action_t&)
 {
-  // here could be generic affected_by code
 }
 
 /**

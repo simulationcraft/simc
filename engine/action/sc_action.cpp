@@ -430,6 +430,7 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
   if ( data().ok() )
   {
     parse_spell_data( data() );
+    player->apply_affecting_auras(*this);
   }
 
   if ( s_data == spell_data_t::not_found() )
@@ -4582,7 +4583,7 @@ timespan_t action_t::distance_targeting_travel_time(
   return timespan_t::zero();
 }
 
-void action_t::parse_affecting_aura(const spell_data_t* spell)
+void action_t::apply_affecting_aura(const spell_data_t* spell)
 {
   for ( const spelleffect_data_t& effect : spell -> effects() )
   {

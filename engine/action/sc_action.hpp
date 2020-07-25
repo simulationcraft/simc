@@ -581,7 +581,7 @@ public:
 
   player_t* select_target_if_target();
 
-  void parse_affecting_aura(const spell_data_t*);
+  void apply_affecting_aura(const spell_data_t*);
   void apply_affecting_effect( const spelleffect_data_t& effect );
 
   // =======================

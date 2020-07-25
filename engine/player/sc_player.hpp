@@ -806,6 +806,7 @@ public:
   virtual void create_actions();
   virtual void init_actions();
   virtual void init_finished();
+  virtual void apply_affecting_auras(action_t&);
   virtual void action_init_finished(action_t&);
   virtual bool verify_use_items() const;
   virtual void reset();

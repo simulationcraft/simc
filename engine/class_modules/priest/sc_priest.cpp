@@ -6,6 +6,7 @@
 #include "simulationcraft.hpp"
 
 #include "sc_priest.hpp"
+
 #include "tcb/span.hpp"
 
 namespace priestspace
@@ -1177,19 +1178,17 @@ void priest_t::do_dynamic_regen()
   insanity.adjust_end_event();
 }
 
-  void priest_t::action_init_finished( action_t& action )
-  {
-    auto passives = {
-      specs.shadow_priest,
-      specs.holy_priest,
-      specs.discipline_priest
-    };
+void priest_t::apply_affecting_auras( action_t& action )
+{
+  player_t::apply_affecting_auras( action );
 
-    for(auto&& spell : passives)
-    {
-      action.parse_affecting_aura(spell);
-    }
+  auto passives = { specs.shadow_priest, specs.holy_priest, specs.discipline_priest };
+
+  for ( auto&& spell : passives )
+  {
+    action.apply_affecting_aura( spell );
   }
+}
 
 /// ALL Spec Pre-Combat Action Priority List
 void priest_t::create_apl_precombat()

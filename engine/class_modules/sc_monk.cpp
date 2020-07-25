@@ -852,7 +852,7 @@ public:
     }
     return td;
   }
-  void action_init_finished( action_t& ) override;
+  void apply_affecting_auras( action_t& ) override;
   void merge( player_t& other ) override;
   void vision_of_perfection_proc() override;
 
@@ -10506,8 +10506,10 @@ std::unique_ptr<expr_t> monk_t::create_expression( const std::string& name_str )
   return base_t::create_expression( name_str );
 }
 
-void monk_t::action_init_finished( action_t& action )
+void monk_t::apply_affecting_auras( action_t& action )
 {
+  player_t::apply_affecting_auras(action);
+
   // hasted cooldown
   for ( auto&& effect : {spec.brewmaster_monk->effectN( 4 ), spec.brewmaster_monk->effectN( 5 )} )
   {
