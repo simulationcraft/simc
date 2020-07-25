@@ -1487,7 +1487,7 @@ void player_t::init_base_stats()
   if ( !is_enemy() )
     base.rating.init( *dbc, level() );
 
-  sim->print_debug( "{} base ratings initialized: {}", *this, base.rating.to_string() );
+  sim->print_debug( "{} base ratings initialized: {}", *this, base.rating );
 
   if ( !is_enemy() )
   {
