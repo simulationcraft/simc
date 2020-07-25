@@ -189,7 +189,7 @@ struct player_t : public actor_t
   struct base_initial_current_t
   {
     base_initial_current_t();
-    std::string to_string();
+
     gear_stats_t stats;
 
     double spell_power_per_intellect, spell_power_per_attack_power, spell_crit_per_intellect;
@@ -211,6 +211,8 @@ struct player_t : public actor_t
     std::array<double, ATTRIBUTE_MAX> attribute_multiplier;
     double spell_power_multiplier, attack_power_multiplier, base_armor_multiplier, armor_multiplier;
     position_e position;
+
+    friend fmt::format_context::iterator format_to( const base_initial_current_t&, fmt::format_context& );
   }
   base, // Base values, from some database or overridden by user
   initial, // Base + Passive + Gear (overridden or items) + Player Enchants + Global Enchants
