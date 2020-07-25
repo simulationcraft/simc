@@ -235,9 +235,11 @@ struct eclipse_handler_t {
 
   void cast_wrath ();
   void cast_starfire ();
+  void advance_eclipse ();
 
   void cast_starsurge ();
   void reset_stacks ();
+  eclipse_state_e get_state ();
 };
 
 struct druid_t : public player_t
@@ -931,26 +933,38 @@ druid_t::~druid_t()
 void eclipse_handler_t::cast_wrath () {
   if (state == ANY_NEXT || state == LUNAR_NEXT) {
     wrath_counter--;
-    if (!wrath_counter)
-    {
-      p->buff.eclipse_lunar->trigger ();
-      state = IN_SOLAR;
-      reset_stacks ();
-    }
+    advance_eclipse ();
   }
 }
 
 void eclipse_handler_t::cast_starfire () {
   if (state == ANY_NEXT || state == SOLAR_NEXT) {
     starfire_counter--;
-    if (!starfire_counter)
-    {
-      p->buff.eclipse_solar->trigger ();
-      state = IN_LUNAR;
-      reset_stacks ();
-    }
+    advance_eclipse ();
   }
 }
+
+void eclipse_handler_t::advance_eclipse () {
+  if (!starfire_counter && state!=IN_LUNAR)
+  {
+    p->buff.eclipse_solar->trigger ();
+    state = IN_LUNAR;
+    reset_stacks ();
+  }
+  if (!wrath_counter && state != IN_SOLAR)
+  {
+    p->buff.eclipse_lunar->trigger ();
+    state = IN_SOLAR;
+    reset_stacks ();
+  }
+  if (state == IN_SOLAR)
+    state = LUNAR_NEXT;
+  if (state == IN_LUNAR)
+    state = SOLAR_NEXT;
+  if (state == IN_BOTH)
+    state = ANY_NEXT;
+}
+
 
 void eclipse_handler_t::cast_starsurge () {
   if (state == IN_LUNAR && p->buff.eclipse_lunar->up ()) {
@@ -964,6 +978,10 @@ void eclipse_handler_t::cast_starsurge () {
 void eclipse_handler_t::reset_stacks () {
   wrath_counter = 0;
   starfire_counter = 0;
+}
+
+eclipse_state_e eclipse_handler_t::get_state () {
+  return state;
 }
 
 snapshot_counter_t::snapshot_counter_t( druid_t* player , buff_t* buff ) :
@@ -9713,6 +9731,20 @@ std::unique_ptr<expr_t> druid_t::create_expression( const std::string& name_str 
         } );
       }
       throw std::invalid_argument( "invalid action" );
+    }
+
+    else if (splits.size () == 2 && util::str_compare_ci (splits[0], "eclipse"))
+    {
+      if (util::str_compare_ci (splits[1], "state")) {
+        eclipse_state_e state = eclipse_handler.get_state ();
+          if (state==ANY_NEXT || state==IN_BOTH)
+            return make_fn_expr (name_str, [this]() { return 0; });
+          if (state == SOLAR_NEXT)
+            return make_fn_expr (name_str, [this]() { return 1; });
+          if (state == LUNAR_NEXT)
+            return make_fn_expr (name_str, [this]() { return 2; });
+      }
+      throw std::invalid_argument ("invalid action");
     }
   }
 
