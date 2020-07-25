@@ -2345,6 +2345,8 @@ public:
 
     if (data ().affected_by (p ()->buff.incarnation_moonkin->data ().effectN (1)) && p ()->buff.incarnation_moonkin->up ())
       cc += p ()->buff.incarnation_moonkin->data ().effectN (1).percent ();
+
+    return cc;
   }
 
   bool usable_moving() const override
