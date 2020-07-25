@@ -5627,6 +5627,14 @@ struct fury_of_elune_t : public druid_spell_t
       background = dual = ground_aoe = true;
       aoe = -1;
     }
+
+    double composite_aoe_multiplier( const action_state_t* state ) const override
+    {
+      if ( state->target != target )
+        return 1.0 / std::sqrt( targets_in_range_list( target_list() ).size() );
+
+      return 1.0;
+    }
   };
 
   fury_of_elune_t( druid_t* p, const std::string& options_str ) :
