@@ -1131,7 +1131,7 @@ public:
       if ( !effect.ok() || effect.type() != E_APPLY_AURA || effect.subtype() != A_ADD_PCT_MODIFIER )
         return;
 
-      if ( data().affected_by( effect ) )
+      if ( ab::data().affected_by( effect ) )
       {
         switch ( effect.misc_value1() )
         {
