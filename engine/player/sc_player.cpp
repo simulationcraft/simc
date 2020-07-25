@@ -1359,40 +1359,41 @@ player_t::base_initial_current_t::base_initial_current_t() :
   range::fill( attribute_multiplier, 1.0 );
 }
 
-std::string player_t::base_initial_current_t::to_string()
+fmt::format_context::iterator format_to( const player_t::base_initial_current_t& s, fmt::format_context& ctx )
 {
-  std::ostringstream s;
+  auto out = ctx.out();
 
-  fmt::print( s, "{}", stats );
-  s << " spell_power_per_intellect=" << spell_power_per_intellect;
-  s << " spell_power_per_attack_power=" << spell_power_per_attack_power;
-  s << " spell_crit_per_intellect=" << spell_crit_per_intellect;
-  s << " attack_power_per_strength=" << attack_power_per_strength;
-  s << " attack_power_per_agility=" << attack_power_per_agility;
-  s << " attack_crit_per_agility=" << attack_crit_per_agility;
-  s << " dodge_per_agility=" << dodge_per_agility;
-  s << " parry_per_strength=" << parry_per_strength;
-  s << " health_per_stamina=" << health_per_stamina;
+  out = fmt::format_to( out, "{}", s.stats );
+  out = fmt::format_to( out, " spell_power_per_intellect={}", s.spell_power_per_intellect );
+  out = fmt::format_to( out, " spell_power_per_attack_power={}", s.spell_power_per_attack_power );
+  out = fmt::format_to( out, " spell_crit_per_intellect={}", s.spell_crit_per_intellect );
+  out = fmt::format_to( out, " attack_power_per_strength={}", s.attack_power_per_strength );
+  out = fmt::format_to( out, " attack_power_per_agility={}", s.attack_power_per_agility );
+  out = fmt::format_to( out, " attack_crit_per_agility={}", s.attack_crit_per_agility );
+  out = fmt::format_to( out, " dodge_per_agility={}", s.dodge_per_agility );
+  out = fmt::format_to( out, " parry_per_strength={}", s.parry_per_strength );
+  out = fmt::format_to( out, " health_per_stamina={}", s.health_per_stamina );
   // resource_reduction
-  s << " miss=" << miss;
-  s << " dodge=" << dodge;
-  s << " parry=" << parry;
-  s << " block=" << block;
-  s << " spell_crit_chance=" << spell_crit_chance;
-  s << " attack_crit_chance=" << attack_crit_chance;
-  s << " block_reduction=" << block_reduction;
-  s << " mastery=" << mastery;
-  s << " skill=" << skill;
-  s << " distance=" << distance;
-  s << " armor_coeff=" << armor_coeff;
-  s << " sleeping=" << sleeping;
+  out = fmt::format_to( out, " miss={}", s.miss );
+  out = fmt::format_to( out, " dodge={}", s.dodge );
+  out = fmt::format_to( out, " parry={}", s.parry );
+  out = fmt::format_to( out, " block={}", s.block );
+  out = fmt::format_to( out, " spell_crit_chance={}", s.spell_crit_chance );
+  out = fmt::format_to( out, " attack_crit_chance={}", s.attack_crit_chance );
+  out = fmt::format_to( out, " block_reduction={}", s.block_reduction );
+  out = fmt::format_to( out, " mastery={}", s.mastery );
+  out = fmt::format_to( out, " skill={}", s.skill );
+  out = fmt::format_to( out, " distance={}", s.distance );
+  out = fmt::format_to( out, " armor_coeff={}", s.armor_coeff );
+  out = fmt::format_to( out, " sleeping={}", s.sleeping );
   // attribute_multiplier
-  s << " spell_power_multiplier=" << spell_power_multiplier;
-  s << " attack_power_multiplier=" << attack_power_multiplier;
-  s << " base_armor_multiplier=" << base_armor_multiplier;
-  s << " armor_multiplier=" << armor_multiplier;
-  s << " position=" << util::position_type_string( position );
-  return s.str();
+  out = fmt::format_to( out, " spell_power_multiplier={}", s.spell_power_multiplier );
+  out = fmt::format_to( out, " attack_power_multiplier={}", s.attack_power_multiplier );
+  out = fmt::format_to( out, " base_armor_multiplier={}", s.base_armor_multiplier );
+  out = fmt::format_to( out, " armor_multiplier={}", s.armor_multiplier );
+  out = fmt::format_to( out, " position={}", util::position_type_string( s.position ) );
+
+  return out;
 }
 
 void player_t::init()
@@ -1635,7 +1636,7 @@ void player_t::init_base_stats()
       collected_data.dtps.change_mode( false );
   }
 
-  sim->print_debug( "{} generic base stats: {}", *this, base.to_string() );
+  sim->print_debug( "{} generic base stats: {}", *this, base );
 }
 
 /**
@@ -1686,7 +1687,7 @@ void player_t::init_initial_stats()
 
   initial.stats += total_gear;
 
-  sim->print_debug( "{} generic initial stats: %s", *this, initial.to_string() );
+  sim->print_debug( "{} generic initial stats: {}", *this, initial );
 }
 
 void player_t::init_items()
@@ -5067,7 +5068,7 @@ void player_t::reset()
   // Restore default target
   target = default_target;
 
-  sim->print_debug( "{} resets current stats ( reset to initial ): {}", *this, current.to_string() );
+  sim->print_debug( "{} resets current stats ( reset to initial ): {}", *this, current );
 
   for ( auto& buff : buff_list )
     buff->reset();
