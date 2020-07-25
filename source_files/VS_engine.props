@@ -102,6 +102,7 @@ To change the list of source files run synchronize.py
 		<ClInclude Include="..\engine\player\player_stat_cache.hpp" />
 		<ClInclude Include="..\engine\player\player_talent_points.hpp" />
 		<ClInclude Include="..\engine\player\rating.hpp" />
+		<ClInclude Include="..\engine\player\runeforge_data.hpp" />
 		<ClInclude Include="..\engine\player\sample_data_helper.hpp" />
 		<ClInclude Include="..\engine\player\sc_actor_pair.hpp" />
 		<ClInclude Include="..\engine\player\sc_player.hpp" />
@@ -446,6 +447,9 @@ To change the list of source files run synchronize.py
 			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>
 		<ClCompile Include="..\engine\player\rating.cpp">
+			<PrecompiledHeader>NotUsing</PrecompiledHeader>
+		</ClCompile>
+		<ClCompile Include="..\engine\player\runeforge_data.cpp">
 			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>
 		<ClCompile Include="..\engine\player\sc_consumable.cpp">

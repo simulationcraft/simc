@@ -96,6 +96,7 @@ player/player_scaling.hpp
 player/player_stat_cache.hpp
 player/player_talent_points.hpp
 player/rating.hpp
+player/runeforge_data.hpp
 player/sample_data_helper.hpp
 player/sc_actor_pair.hpp
 player/sc_player.hpp
@@ -256,6 +257,7 @@ player/player_event.cpp
 player/player_stat_cache.cpp
 player/player_talent_points.cpp
 player/rating.cpp
+player/runeforge_data.cpp
 player/sc_consumable.cpp
 player/sc_pet.cpp
 player/sc_player.cpp

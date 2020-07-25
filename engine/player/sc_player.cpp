@@ -57,7 +57,6 @@
 #include <sstream>
 #include <cctype>
 
-
 namespace
 {
 
@@ -9395,6 +9394,46 @@ azerite_essence_t player_t::find_azerite_essence( util::string_view name, bool t
   }
 
   return azerite_essence->get_essence( name, tokenized );
+}
+
+item_runeforge_t player_t::find_runeforge_legendary( const std::string& name ) const
+{
+  auto entries = runeforge_legendary_entry_t::find( name, dbc->ptr );
+  if ( entries.size() == 0 )
+  {
+    return {};
+  }
+
+  auto spec_it = range::find_if( entries, [this]( const runeforge_legendary_entry_t& e ) {
+    return e.specialization_id == static_cast<unsigned>( _spec );
+  } );
+
+  if ( spec_it == entries.end() )
+  {
+    return {};
+  }
+
+  // Iterate over all items to find the bonus id on an item. Note that Simulationcraft
+  // currently does not enforce the item restrictions on the legendary bonuses. This is
+  // intentional to allow people who know what they are doing(tm) to override in-game
+  // rules.
+  const item_t* item = nullptr;
+  for ( const auto& i : items )
+  {
+    auto it = range::find( i.parsed.bonus_id, spec_it->bonus_id );
+    if ( it != i.parsed.bonus_id.end() )
+    {
+      item = &i;
+      break;
+    }
+  }
+
+  if ( item == nullptr )
+  {
+    return {};
+  }
+
+  return { *spec_it, item };
 }
 
 /**

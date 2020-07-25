@@ -13,6 +13,7 @@
 #include "gear_stats.hpp"
 #include "rating.hpp"
 #include "weapon.hpp"
+#include "runeforge_data.hpp"
 #include "effect_callbacks.hpp"
 #include "util/plot_data.hpp"
 #include "player_collected_data.hpp"
@@ -716,6 +717,9 @@ public:
   azerite_power_t find_azerite_spell( unsigned power_id ) const;
   azerite_essence_t find_azerite_essence( util::string_view name, bool tokenized = false ) const;
   azerite_essence_t find_azerite_essence( unsigned power_id ) const;
+
+  item_runeforge_t find_runeforge_legendary( const std::string& name ) const;
+
   const spell_data_t* find_racial_spell( util::string_view name, race_e s = RACE_NONE ) const;
   const spell_data_t* find_class_spell( util::string_view name, specialization_e s = SPEC_NONE ) const;
   const spell_data_t* find_pet_spell( util::string_view name ) const;
