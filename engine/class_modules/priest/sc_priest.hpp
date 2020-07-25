@@ -441,6 +441,7 @@ public:
   void arise() override;
   void vision_of_perfection_proc() override;
   void do_dynamic_regen() override;
+  void action_init_finished( action_t& ) override;
 
 private:
   void create_cooldowns();
@@ -885,17 +886,6 @@ struct priest_action_t : public Base
     bool twist_of_fate_ta;
     bool mastery_madness_da;
     bool mastery_madness_ta;
-    bool shadow_priest_da;
-    bool shadow_priest_ta;
-    bool holy_priest_heal_da;
-    bool holy_priest_heal_ta;
-    bool holy_priest_damage_da;
-    bool holy_priest_damage_ta;
-    bool discipline_priest_heal_da;
-    bool discipline_priest_heal_ta;
-    bool discipline_priest_damage_da;
-    bool discipline_priest_damage_ta;
-    bool sins_of_the_many_da;
   } affected_by;
 
 public:
@@ -907,61 +897,10 @@ public:
     ab::tick_may_crit     = true;
     ab::weapon_multiplier = 0.0;
 
-    if ( p.specialization() == PRIEST_SHADOW )
+    if ( p.talents.sins_of_the_many->ok() )
     {
-      if ( affected_by.shadow_priest_da )
-      {
-        ab::base_dd_multiplier *= 1.0 + p.specs.shadow_priest->effectN( 1 ).percent();
-      }
-      if ( affected_by.shadow_priest_ta )
-      {
-        ab::base_td_multiplier *= 1.0 + p.specs.shadow_priest->effectN( 2 ).percent();
-      }
-    }
-
-    if ( affected_by.holy_priest_heal_da )
-    {
-      ab::base_dd_multiplier *= 1.0 + p.specs.holy_priest->effectN( 1 ).percent();
-    }
-    if ( affected_by.holy_priest_heal_ta )
-    {
-      ab::base_td_multiplier *= 1.0 + p.specs.holy_priest->effectN( 2 ).percent();
-    }
-
-    if ( affected_by.holy_priest_damage_da )
-    {
-      ab::base_dd_multiplier *= 1.0 + p.specs.holy_priest->effectN( 3 ).percent();
-    }
-    if ( affected_by.holy_priest_damage_ta )
-    {
-      ab::base_td_multiplier *= 1.0 + p.specs.holy_priest->effectN( 4 ).percent();
-    }
-
-    if ( affected_by.discipline_priest_heal_da )
-    {
-      ab::base_dd_multiplier *= 1.0 + p.specs.discipline_priest->effectN( 1 ).percent();
-    }
-    if ( affected_by.discipline_priest_heal_ta )
-    {
-      ab::base_td_multiplier *= 1.0 + p.specs.discipline_priest->effectN( 2 ).percent();
-    }
-
-    if ( affected_by.discipline_priest_damage_da )
-    {
-      ab::base_dd_multiplier *= 1.0 + p.specs.discipline_priest->effectN( 4 ).percent();
-    }
-    if ( affected_by.discipline_priest_damage_ta )
-    {
-      ab::base_td_multiplier *= 1.0 + p.specs.discipline_priest->effectN( 5 ).percent();
-    }
-
-    else if ( p.specialization() == PRIEST_DISCIPLINE )
-    {
-      if ( p.talents.sins_of_the_many->ok() )
-      {
-        ab::base_dd_multiplier *= 1.0 + p.talents.sins_of_the_many->effectN( 1 ).percent();
-        ab::base_td_multiplier *= 1.0 + p.talents.sins_of_the_many->effectN( 1 ).percent();
-      }
+      ab::base_dd_multiplier *= 1.0 + p.talents.sins_of_the_many->effectN( 1 ).percent();
+      ab::base_td_multiplier *= 1.0 + p.talents.sins_of_the_many->effectN( 1 ).percent();
     }
   }
 
@@ -982,19 +921,7 @@ public:
         { priest().buffs.twist_of_fate->data().effectN( 1 ), affected_by.twist_of_fate_da },
         { priest().buffs.twist_of_fate->data().effectN( 2 ), affected_by.twist_of_fate_ta },
         { priest().mastery_spells.madness->effectN( 1 ), affected_by.mastery_madness_da },
-        { priest().mastery_spells.madness->effectN( 2 ), affected_by.mastery_madness_ta },
-        { priest().specs.shadow_priest->effectN( 1 ), affected_by.shadow_priest_da },
-        { priest().specs.shadow_priest->effectN( 2 ), affected_by.shadow_priest_ta },
-        { priest().specs.holy_priest->effectN( 1 ), affected_by.holy_priest_heal_da },
-        { priest().specs.holy_priest->effectN( 2 ), affected_by.holy_priest_heal_ta },
-        { priest().specs.holy_priest->effectN( 3 ), affected_by.holy_priest_damage_da },
-        { priest().specs.holy_priest->effectN( 4 ), affected_by.holy_priest_damage_ta },
-        { priest().specs.discipline_priest->effectN( 1 ), affected_by.discipline_priest_heal_da },
-        { priest().specs.discipline_priest->effectN( 2 ), affected_by.discipline_priest_heal_ta },
-        { priest().specs.discipline_priest->effectN( 4 ), affected_by.discipline_priest_damage_da },
-        { priest().specs.discipline_priest->effectN( 5 ), affected_by.discipline_priest_damage_ta },
-        { priest().talents.sins_of_the_many->effectN( 1 ),
-          affected_by.sins_of_the_many_da },  // Sins of the Many affects both direct damage and dot damage
+        { priest().mastery_spells.madness->effectN( 2 ), affected_by.mastery_madness_ta }
     };
 
     for ( const auto& a : affects )
@@ -1002,7 +929,7 @@ public:
       a.affects = base_t::data().affected_by( a.effect );
       if ( a.affects )
       {
-        ab::sim->print_debug( "Action {} ({}) affected by {} (idx={}).", ab::name(), ab::data().id(),
+        ab::sim->print_debug( "{} {} ({}) affected by {} (idx={}).", *ab::player, *this, ab::data().id(),
                               a.effect.spell()->name_cstr(), a.effect.spell_effect_num() + 1 );
       }
     }
