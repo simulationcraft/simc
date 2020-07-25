@@ -6249,7 +6249,7 @@ struct starfire_t : public druid_spell_t
       options_str )
   {
     aoe = -1;
-    base_aoe_multiplier = data().effectN( 3 ).percent() * ( 1 + player->buff.eclipse_lunar->value() );
+    base_aoe_multiplier = data().effectN( 3 ).percent();
   }
 
   timespan_t execute_time() const override
@@ -6280,6 +6280,13 @@ struct starfire_t : public druid_spell_t
     {
       p()->buff.dawning_sun->trigger( 1, p()->azerite.dawning_sun.value() );
     }
+  }
+
+  double composite_aoe_multiplier( const action_state_t* state ) const override
+  {
+    if ( state->target != target )
+      return ( 1 + p()->buff.eclipse_lunar->value() );
+    return 1.0;
   }
 };
 
