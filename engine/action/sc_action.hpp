@@ -581,6 +581,8 @@ public:
 
   player_t* select_target_if_target();
 
+  void apply_affecting_effect(const spelleffect_data_t&);
+
   // =======================
   // Const virtual functions
   // =======================

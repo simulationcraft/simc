@@ -24,6 +24,7 @@
 #include "sim/raid_event.hpp"
 #include "util/rng.hpp"
 #include "player/expansion_effects.hpp" // try to implement leyshocks_grand_compilation as a callback
+#include "util/util.hpp"
 
 // ==========================================================================
 // Action
@@ -4579,4 +4580,106 @@ timespan_t action_t::distance_targeting_travel_time(
   action_state_t* /*s*/) const
 {
   return timespan_t::zero();
+}
+
+void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
+{
+  if ( ! effect.ok() || effect.type() != E_APPLY_AURA )
+      return;
+
+  if (!data().affected_by_all(*player->dbc, effect))
+  {
+    return;
+  }
+
+  sim->print_debug("{} {} is affected by effect {} (spell {} - {} - effect #{})", *player, *this, effect.id(), effect.spell()->name_cstr(), effect.spell()->id(), effect.spell_effect_num()+1);
+   
+  if ( data().affected_by( effect ) )
+  {
+    switch ( effect.subtype() )
+    {
+      case A_HASTED_GCD:
+        gcd_type = gcd_haste_type::ATTACK_HASTE;
+        sim->print_debug( "{} gcd type set to attack_haste", *this );
+        break;
+
+      case A_HASTED_COOLDOWN:
+        cooldown->hasted = true;
+        sim->print_debug( "{} cooldown set to hasted", *this );
+        break;
+
+      case A_ADD_FLAT_MODIFIER:
+        switch ( effect.misc_value1() )
+        {
+          case P_CRIT:
+            base_crit += effect.percent();
+            sim->print_debug( "{} base crit increased by {}", *this, effect.percent() );
+            break;
+
+          case P_RESOURCE_COST:
+          {
+            base_costs[ resource_current ] += effect.base_value();
+            if ( sim->debug )
+            {
+              sim->print_debug( "{} base resource cost for resource {} increased by {}", *this,
+                                util::resource_type_string( resource_current ), effect.base_value() );
+            }
+          }
+          break;
+
+          default:
+            break;
+        }
+        break;
+
+      case A_ADD_PCT_MODIFIER:
+        switch ( effect.misc_value1() )
+        {
+          case P_GENERIC:
+            base_dd_multiplier *= 1 + effect.percent();
+            sim->print_debug( "{} base_dd_multiplier increased by {}%", *this, effect.base_value() );
+            break;
+
+          case P_COOLDOWN:
+            cooldown->duration *= 1 + effect.percent();
+            sim->print_debug( "{} cooldown duration increased by {}%", *this, effect.base_value() );
+            break;
+
+          case P_TICK_DAMAGE:
+            base_td_multiplier *= 1 + effect.percent();
+            sim->print_debug( "{} base_td_multiplier increased by {}%", *this, effect.base_value() );
+            break;
+
+          default:
+            break;
+        }
+        break;
+
+      default:
+        break;
+    }
+  }
+  else if ( data().category() == as<unsigned>( effect.misc_value1() ) )
+  {
+    switch ( effect.subtype() )
+    {
+      case A_411:  // Modify Cooldown Charges
+        cooldown->charges += as<int>( effect.base_value() );
+        sim->print_debug( "{} cooldown charges increased by {}", *this, as<int>( effect.base_value() ) );
+        break;
+
+      case A_HASTED_CATEGORY:
+        cooldown->hasted = true;
+        sim->print_debug( "{} cooldown set to hasted", *this );
+        break;
+
+      case A_453:  // Modify Cooldown Duration
+        cooldown->duration += effect.time_value();
+        sim->print_debug( "{} cooldown duration increased by {}", *this, effect.time_value() );
+        break;
+
+      default:
+        break;
+    }
+  }
 }

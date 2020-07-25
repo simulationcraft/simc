@@ -37,77 +37,7 @@ void parse_affecting_aura( action_t *const action, const spell_data_t *const spe
 {
   for ( const spelleffect_data_t& effect : spell -> effects() )
   {
-    if ( ! effect.ok() || effect.type() != E_APPLY_AURA )
-      continue;
-
-    if ( action -> data().affected_by( effect ) )
-    {
-      switch ( effect.subtype() )
-      {
-      case A_HASTED_GCD:
-        action -> gcd_type = gcd_haste_type::ATTACK_HASTE;
-        break;
-
-      case A_HASTED_COOLDOWN:
-        action -> cooldown -> hasted = true;
-        break;
-
-      case A_ADD_FLAT_MODIFIER:
-        switch( effect.misc_value1() )
-        {
-        case P_CRIT:
-          action -> base_crit += effect.percent();
-          break;
-
-        case P_RESOURCE_COST:
-          action -> base_costs[ RESOURCE_FOCUS ] += effect.base_value();
-          break;
-
-        default: break;
-        }
-        break;
-
-      case A_ADD_PCT_MODIFIER:
-        switch ( effect.misc_value1() )
-        {
-        case P_GENERIC:
-          action -> base_dd_multiplier *= 1 + effect.percent();
-          break;
-
-        case P_COOLDOWN:
-          action -> cooldown -> duration *= 1 + effect.percent();
-          break;
-
-        case P_TICK_DAMAGE:
-          action -> base_td_multiplier *= 1 + effect.percent();
-          break;
-
-        default: break;
-        }
-        break;
-
-      default: break;
-      }
-    }
-    else if ( action -> data().category() == as<unsigned>( effect.misc_value1() ) )
-    {
-      switch ( effect.subtype() )
-      {
-      case A_411: // Modify Cooldown Charges
-        action -> cooldown -> charges += as<int>( effect.base_value() );
-        break;
-
-      case A_HASTED_CATEGORY:
-        action -> cooldown -> hasted = true;
-        break;
-
-      case A_453: // Modify Cooldown Duration
-        action -> cooldown -> duration += effect.time_value();
-        break;
-
-      default: break;
-      }
-    }
+    action->apply_affecting_effect(effect);
   }
 }
 
