@@ -21,7 +21,6 @@ struct druid_t;
 
 // Active actions
 struct stalwart_guardian_t;
-struct eclipse_handler_t;
 namespace spells {
 struct moonfire_t;
 struct shooting_stars_t;
@@ -928,7 +927,7 @@ druid_t::~druid_t()
   range::dispose( counters );
 }
 
-// Refractor this
+// eclipse handler functio defintitions, refractor this
 
 void eclipse_handler_t::cast_wrath () {
   if (state == ANY_NEXT || state == LUNAR_NEXT) {
@@ -945,17 +944,19 @@ void eclipse_handler_t::cast_starfire () {
 }
 
 void eclipse_handler_t::advance_eclipse () {
-  if (!starfire_counter && state!=IN_LUNAR)
+  if (!starfire_counter && state!= IN_SOLAR)
   {
     p->buff.eclipse_solar->trigger ();
-    state = IN_LUNAR;
-    reset_stacks ();
-  }
-  if (!wrath_counter && state != IN_SOLAR)
-  {
-    p->buff.eclipse_lunar->trigger ();
     state = IN_SOLAR;
     reset_stacks ();
+    return;
+  }
+  if (!wrath_counter && state != IN_LUNAR)
+  {
+    p->buff.eclipse_lunar->trigger ();
+    state = IN_LUNAR;
+    reset_stacks ();
+    return;
   }
   if (state == IN_SOLAR)
     state = LUNAR_NEXT;
@@ -968,16 +969,16 @@ void eclipse_handler_t::advance_eclipse () {
 
 void eclipse_handler_t::cast_starsurge () {
   if (state == IN_LUNAR && p->buff.eclipse_lunar->up ()) {
-    p->buff.eclipse_lunar->extend_duration (p, p->spec.starsurge->effectN (2).time_value () + p->spec.starsurge_2->effectN (1).time_value ());
+    p->buff.eclipse_lunar->extend_duration (p, timespan_t::from_seconds (p->spec.starsurge->effectN (2).base_value () + p->spec.starsurge_2->effectN (1).base_value ()));
   }
   if (state == IN_SOLAR && p->buff.eclipse_solar->up ()) {
-    p->buff.eclipse_solar->extend_duration (p, p->spec.starsurge->effectN (2).time_value () + p->spec.starsurge_2->effectN (1).time_value ());
+    p->buff.eclipse_solar->extend_duration (p, timespan_t::from_seconds (p->spec.starsurge->effectN (2).base_value () + p->spec.starsurge_2->effectN (1).base_value ()));
   }
 }
 
 void eclipse_handler_t::reset_stacks () {
-  wrath_counter = 0;
-  starfire_counter = 0;
+  wrath_counter = 2;
+  starfire_counter = 2;
 }
 
 eclipse_state_e eclipse_handler_t::get_state () {
@@ -7952,18 +7953,14 @@ void druid_t::create_buffs()
 
   buff.eclipse_solar = make_buff (this, "eclipse_solar", find_spell (48517))
     ->set_stack_change_callback ([this](buff_t*, int, int new_) {
-    if (!new_) {
-      if(this->eclipse_handler.state==IN_SOLAR)
-        this->eclipse_handler.state = LUNAR_NEXT;
-    }
+    if (!new_)
+      this->eclipse_handler.advance_eclipse ();
   });
 
   buff.eclipse_lunar = make_buff (this, "eclipse_lunar", find_spell (48518))
     ->set_stack_change_callback ([this](buff_t*, int, int new_) {
-    if (!new_) {
-      if (this->eclipse_handler.state == IN_LUNAR)
-        this->eclipse_handler.state = SOLAR_NEXT;
-    }
+    if (!new_)
+      this->eclipse_handler.advance_eclipse ();
   });
 
   // Feral
@@ -9678,73 +9675,76 @@ std::unique_ptr<expr_t> druid_t::create_expression( const std::string& name_str 
     return make_ref_expr( "combo_points", resources.current[ RESOURCE_COMBO_POINT ] );
   }
 
-  if ( specialization() == DRUID_BALANCE )
+  if (specialization () == DRUID_BALANCE)
   {
-    if ( util::str_compare_ci( name_str, "astral_power" ) )
+    if (util::str_compare_ci (name_str, "astral_power"))
     {
-      return make_ref_expr( name_str, resources.current[ RESOURCE_ASTRAL_POWER ] );
+      return make_ref_expr (name_str, resources.current[RESOURCE_ASTRAL_POWER]);
     }
 
     // New Moon stage related expressions
-    else if ( util::str_compare_ci( name_str, "new_moon" ) )
+    else if (util::str_compare_ci (name_str, "new_moon"))
     {
-      return make_fn_expr( name_str, [this]() { return moon_stage == NEW_MOON; } );
+      return make_fn_expr (name_str, [this]() { return moon_stage == NEW_MOON; });
     }
-    else if ( util::str_compare_ci( name_str, "half_moon" ) )
+    else if (util::str_compare_ci (name_str, "half_moon"))
     {
-      return make_fn_expr( name_str, [this]() { return moon_stage == HALF_MOON; } );
+      return make_fn_expr (name_str, [this]() { return moon_stage == HALF_MOON; });
     }
-    else if ( util::str_compare_ci( name_str, "full_moon" ) )
+    else if (util::str_compare_ci (name_str, "full_moon"))
     {
-      return make_fn_expr( name_str, [this]() { return moon_stage == FULL_MOON || moon_stage == FREE_FULL_MOON; } );
+      return make_fn_expr (name_str, [this]() { return moon_stage == FULL_MOON || moon_stage == FREE_FULL_MOON; });
     }
-    else if ( util::str_compare_ci( name_str, "free_full_moon" ) )
+    else if (util::str_compare_ci (name_str, "free_full_moon"))
     {
-      return make_fn_expr( name_str, [this]() { return moon_stage == FREE_FULL_MOON; } );
+      return make_fn_expr (name_str, [this]() { return moon_stage == FREE_FULL_MOON; });
     }
 
     // automatic resolution of Celestial Alignment vs talented Incarnation
-    else if ( splits.size() == 3 && util::str_compare_ci( splits[ 1 ], "ca_inc" ) )
+    else if (splits.size () == 3 && util::str_compare_ci (splits[1], "ca_inc"))
     {
-      if ( util::str_compare_ci( splits[ 0 ], "cooldown" ) )
-        splits[ 1 ] = talent.incarnation_moonkin->ok() ? ".incarnation." : ".celestial_alignment.";
+      if (util::str_compare_ci (splits[0], "cooldown"))
+        splits[1] = talent.incarnation_moonkin->ok () ? ".incarnation." : ".celestial_alignment.";
       else
-        splits[ 1 ] = talent.incarnation_moonkin->ok() ? ".incarnation_chosen_of_elune." : ".celestial_alignment.";
-      return player_t::create_expression( splits[ 0 ] + splits[ 1 ] + splits[ 2 ] );
+        splits[1] = talent.incarnation_moonkin->ok () ? ".incarnation_chosen_of_elune." : ".celestial_alignment.";
+      return player_t::create_expression (splits[0] + splits[1] + splits[2]);
     }
 
     // check for AP overcap on action other than current action. check for current action handled in
     // druid_spell_t::create_expression syntax: <action>.ap_check.<allowed overcap = 0>
-    else if ( splits.size() >= 2 && util::str_compare_ci( splits[ 1 ], "ap_check" ) )
+    else if (splits.size () >= 2 && util::str_compare_ci (splits[1], "ap_check"))
     {
-      action_t* action = find_action( splits[ 0 ] );
-      if ( action )
+      action_t* action = find_action (splits[0]);
+      if (action)
       {
-        return make_fn_expr( name_str, [action, this, splits]() {
-          action_state_t* state = action->get_state();
-          double ap = resources.current[ RESOURCE_ASTRAL_POWER ];
-          ap += action->composite_energize_amount( state );
-          ap += talent.shooting_stars->ok() ? spec.shooting_stars_dmg->effectN( 2 ).base_value() / 10 : 0;
-          ap += talent.natures_balance->ok() ? std::ceil( action->time_to_execute / 1.5_s ) : 0;
-          action_state_t::release( state );
-          return ap <= resources.base[ RESOURCE_ASTRAL_POWER ] + ( splits.size() >= 3 ? std::stoi( splits[ 2 ] ) : 0 );
-        } );
+        return make_fn_expr (name_str, [action, this, splits]() {
+          action_state_t* state = action->get_state ();
+          double ap = resources.current[RESOURCE_ASTRAL_POWER];
+          ap += action->composite_energize_amount (state);
+          ap += talent.shooting_stars->ok () ? spec.shooting_stars_dmg->effectN (2).base_value () / 10 : 0;
+          ap += talent.natures_balance->ok () ? std::ceil (action->time_to_execute / 1.5_s) : 0;
+          action_state_t::release (state);
+          return ap <= resources.base[RESOURCE_ASTRAL_POWER] + (splits.size () >= 3 ? std::stoi (splits[2]) : 0);
+        });
       }
-      throw std::invalid_argument( "invalid action" );
+      throw std::invalid_argument ("invalid action");
     }
 
     else if (splits.size () == 2 && util::str_compare_ci (splits[0], "eclipse"))
     {
       if (util::str_compare_ci (splits[1], "state")) {
-        eclipse_state_e state = eclipse_handler.get_state ();
-          if (state==ANY_NEXT || state==IN_BOTH)
-            return make_fn_expr (name_str, [this]() { return 0; });
-          if (state == SOLAR_NEXT)
-            return make_fn_expr (name_str, [this]() { return 1; });
-          if (state == LUNAR_NEXT)
-            return make_fn_expr (name_str, [this]() { return 2; });
+        return make_fn_expr (name_str, [this]() {
+          eclipse_state_e state = eclipse_handler.state;
+          if (state == ANY_NEXT)
+            return 0;
+          if (eclipse_handler.state == SOLAR_NEXT)
+            return 1;
+          if (eclipse_handler.state == LUNAR_NEXT)
+            return 2;
+          else
+            return 3;
+        });
       }
-      throw std::invalid_argument ("invalid action");
     }
   }
 
