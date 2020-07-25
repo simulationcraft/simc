@@ -537,6 +537,10 @@ void action_t::parse_spell_data( const spell_data_t& spell_data )
     cooldown->duration = spell_data.cooldown();
   }
 
+  // -1 is uncapped, <-1 is "unknown", 1 is 'limit 1'
+  if ( spell_data.max_targets() == -1 || spell_data.max_targets() > 1 )
+    aoe = spell_data.max_targets();
+
   const auto spell_powers = spell_data.powers();
   if ( spell_powers.size() == 1 && spell_powers.front().aura_id() == 0 )
   {
