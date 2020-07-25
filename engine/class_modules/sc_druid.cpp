@@ -234,9 +234,10 @@ struct eclipse_handler_t {
 
   void cast_wrath ();
   void cast_starfire ();
+  void cast_starsurge ();
+  void cast_ca_inc ();
   void advance_eclipse ();
 
-  void cast_starsurge ();
   void reset_stacks ();
   eclipse_state_e get_state ();
 };
@@ -974,6 +975,11 @@ void eclipse_handler_t::cast_starsurge () {
   if (state == IN_SOLAR && p->buff.eclipse_solar->up ()) {
     p->buff.eclipse_solar->extend_duration (p, timespan_t::from_seconds (p->spec.starsurge->effectN (2).base_value () + p->spec.starsurge_2->effectN (1).base_value ()));
   }
+}
+
+void eclipse_handler_t::cast_ca_inc () {
+  state = IN_BOTH;
+  reset_stacks ();
 }
 
 void eclipse_handler_t::reset_stacks () {
@@ -5573,6 +5579,11 @@ struct celestial_alignment_t : public druid_spell_t
 
     // Trigger after triggering the buff so the cast procs the spell
     streaking_stars_trigger( SS_CELESTIAL_ALIGNMENT, nullptr );
+
+    p ()->eclipse_handler.cast_ca_inc ();
+    // The set eclipse duration is not found is spell data so the ca duration is used
+    p ()->buff.eclipse_lunar->trigger (1, buff_t::DEFAULT_VALUE (), 1.0, p ()->buff.celestial_alignment->data ().duration ());
+    p ()->buff.eclipse_solar->trigger (1, buff_t::DEFAULT_VALUE (), 1.0, p ()->buff.celestial_alignment->data ().duration ());
   }
 
   bool ready() override
@@ -6021,6 +6032,11 @@ struct incarnation_t : public druid_spell_t
       p()->uptime.vision_of_perfection->update( false, sim->current_time() );
 
       streaking_stars_trigger( SS_CELESTIAL_ALIGNMENT, nullptr );
+
+      p ()->eclipse_handler.cast_ca_inc ();
+      // The set eclipse duration is not found is spell data so the inc duration is used
+      p ()->buff.eclipse_lunar->trigger (1, buff_t::DEFAULT_VALUE (), 1.0, p ()->buff.incarnation_moonkin->data ().duration ());
+      p ()->buff.eclipse_solar->trigger (1, buff_t::DEFAULT_VALUE (), 1.0, p ()->buff.incarnation_moonkin->data ().duration ());
     }
 
     if ( p()->buff.incarnation_bear->check() )
