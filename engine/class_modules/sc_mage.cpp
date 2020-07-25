@@ -324,6 +324,9 @@ public:
     action_t* lucid_dreams;
   } icicle;
 
+  // Focus Magic
+  event_t* focus_magic_event;
+
   // Ignite
   action_t* ignite;
   event_t* ignite_spread_event;
@@ -425,6 +428,8 @@ public:
     // Shared
     buff_t* incanters_flow;
     buff_t* rune_of_power;
+    buff_t* focus_magic_crit;
+    buff_t* focus_magic_int;
 
 
     // Azerite
@@ -476,6 +481,9 @@ public:
     double lucid_dreams_proc_chance_arcane = 0.075;
     double lucid_dreams_proc_chance_fire = 0.1;
     double lucid_dreams_proc_chance_frost = 0.075;
+    double focus_magic_interval = 2;
+    double focus_magic_variance = 0.1;
+    double focus_magic_crit_chance = 0.5;
   } options;
 
   // Pets
@@ -586,7 +594,7 @@ public:
 
     // Tier 45
     const spell_data_t* incanters_flow;
-    const spell_data_t* mirror_image;
+    const spell_data_t* focus_magic;
     const spell_data_t* rune_of_power;
 
     // Tier 60
@@ -697,6 +705,7 @@ public:
   role_e primary_role() const override { return ROLE_SPELL; }
   stat_e convert_hybrid_stat( stat_e ) const override;
   double resource_regen_per_second( resource_e ) const override;
+  double composite_attribute_multiplier( attribute_e attr ) const override;
   double composite_player_pet_damage_multiplier( const action_state_t* ) const override;
   double composite_spell_crit_chance() const override;
   double composite_rating_multiplier( rating_e ) const override;
@@ -2240,7 +2249,7 @@ struct arcane_blast_t : public arcane_mage_spell_t
 struct arcane_explosion_t : public arcane_mage_spell_t
 {
   arcane_explosion_t( const std::string& n, mage_t* p, const std::string& options_str ) :
-    arcane_mage_spell_t( n, p, p->find_specialization_spell( "Arcane Explosion" ) )
+    arcane_mage_spell_t( n, p, p->find_class_spell( "Arcane Explosion" ) )
   {
     parse_options( options_str );
     aoe = -1;
@@ -3165,7 +3174,7 @@ struct flurry_t : public frost_mage_spell_t
 struct frostbolt_t : public frost_mage_spell_t
 {
   frostbolt_t( const std::string& n, mage_t* p, const std::string& options_str ) :
-    frost_mage_spell_t( n, p, p->find_specialization_spell( "Frostbolt" ) )
+    frost_mage_spell_t( n, p, p->find_class_spell( "Frostbolt" ) )
   {
     parse_options( options_str );
     parse_effect_data( p->find_spell( 228597 )->effectN( 1 ) );
@@ -3729,7 +3738,7 @@ struct icy_veins_t : public frost_mage_spell_t
 struct fire_blast_t : public fire_mage_spell_t
 {
   fire_blast_t( const std::string& n, mage_t* p, const std::string& options_str ) :
-    fire_mage_spell_t( n, p, p->find_specialization_spell( "Fire Blast" ) )
+    fire_mage_spell_t( n, p, p->find_class_spell( "Fire Blast" ) )
   {
     parse_options( options_str );
     usable_while_casting = true;
@@ -3951,7 +3960,7 @@ struct meteor_t : public fire_mage_spell_t
 struct mirror_image_t : public mage_spell_t
 {
   mirror_image_t( const std::string& n, mage_t* p, const std::string& options_str ) :
-    mage_spell_t( n, p, p->talents.mirror_image )
+    mage_spell_t( n, p, p->find_class_spell( "Mirror Image" ) )
   {
     parse_options( options_str );
     harmful = false;
@@ -4556,6 +4565,38 @@ struct freeze_t : public action_t
 
 namespace events {
 
+struct focus_magic_event_t : public event_t
+{
+  mage_t* mage;
+
+  focus_magic_event_t( mage_t& m, timespan_t delta_time ) :
+    event_t( m, delta_time ),
+    mage( &m )
+  {
+  }
+
+  const char* name() const override
+  { return "focus_magic_event"; }
+
+  void execute() override
+  {
+    mage->focus_magic_event = nullptr;
+
+    if ( !mage->talents.focus_magic->ok() )
+      return;
+
+    if ( rng().roll( mage->options.focus_magic_crit_chance ) )
+    {
+      mage->buffs.focus_magic_crit->trigger();
+      mage->buffs.focus_magic_int->trigger();
+    }
+
+    timespan_t min_time = timespan_t::from_seconds( mage->options.focus_magic_interval * ( 1 - mage->options.focus_magic_variance ) );
+    timespan_t max_time = timespan_t::from_seconds( mage->options.focus_magic_interval * ( 1 + mage->options.focus_magic_variance ) );
+    mage->focus_magic_event = make_event<focus_magic_event_t>( sim(), *mage, rng().range( min_time, max_time ) );
+  }
+};
+
 struct icicle_event_t : public event_t
 {
   mage_t* mage;
@@ -4807,6 +4848,7 @@ mage_t::mage_t( sim_t* sim, util::string_view name, race_e r ) :
   icicle_event(),
   icicle(),
   ignite(),
+  focus_magic_event(),
   ignite_spread_event(),
   time_anomaly_tick_event(),
   last_bomb_target(),
@@ -4920,6 +4962,7 @@ action_t* mage_t::create_action( const std::string& name, const std::string& opt
   if ( name == "counterspell"           ) return new           counterspell_t( name, this, options_str );
   if ( name == "frost_nova"             ) return new             frost_nova_t( name, this, options_str );
   if ( name == "time_warp"              ) return new              time_warp_t( name, this, options_str );
+  if ( name == "mirror_image"           ) return new           mirror_image_t( name, this, options_str );
 
   // Shared talents
   if ( name == "mirror_image"           ) return new           mirror_image_t( name, this, options_str );
@@ -4997,6 +5040,9 @@ void mage_t::create_options()
   add_option( opt_float( "lucid_dreams_proc_chance_arcane", options.lucid_dreams_proc_chance_arcane ) );
   add_option( opt_float( "lucid_dreams_proc_chance_fire", options.lucid_dreams_proc_chance_fire ) );
   add_option( opt_float( "lucid_dreams_proc_chance_frost", options.lucid_dreams_proc_chance_frost ) );
+  add_option( opt_float( "focus_magic_interval", options.focus_magic_interval ) );
+  add_option( opt_float( "focus_magic_variance", options.focus_magic_variance ) );
+  add_option( opt_float( "focus_magic_crit_chance", options.focus_magic_crit_chance ) );
   player_t::create_options();
 }
 
@@ -5121,9 +5167,10 @@ void mage_t::create_pets()
   if ( specialization() == MAGE_FROST && !talents.lonely_winter->ok() && find_action( "summon_water_elemental" ) )
     pets.water_elemental = new pets::water_elemental::water_elemental_pet_t( sim, this );
 
-  if ( talents.mirror_image->ok() && find_action( "mirror_image" ) )
+  auto a = find_action( "mirror_image" );
+  if ( a )
   {
-    for ( int i = 0; i < as<int>( talents.mirror_image->effectN( 2 ).base_value() ); i++ )
+    for ( int i = 0; i < as<int>( a->data().effectN( 2 ).base_value() ); i++ )
     {
       auto image = new pets::mirror_image::mirror_image_pet_t( sim, this );
       if ( i > 0 )
@@ -5158,7 +5205,7 @@ void mage_t::init_spells()
   talents.ice_floes          = find_talent_spell( "Ice Floes"          );
   // Tier 45
   talents.incanters_flow     = find_talent_spell( "Incanter's Flow"    );
-  talents.mirror_image       = find_talent_spell( "Mirror Image"       );
+  talents.focus_magic        = find_talent_spell( "Focus Magic"        );
   talents.rune_of_power      = find_talent_spell( "Rune of Power"      );
   // Tier 60
   talents.resonance          = find_talent_spell( "Resonance"          );
@@ -5367,10 +5414,16 @@ void mage_t::create_buffs()
 
 
   // Shared
-  buffs.incanters_flow = make_buff<buffs::incanters_flow_t>( this );
-  buffs.rune_of_power  = make_buff( this, "rune_of_power", find_spell( 116014 ) )
-                           ->set_default_value( find_spell( 116014 )->effectN( 1 ).percent() )
-                           ->set_refresh_behavior( buff_refresh_behavior::DISABLED );
+  buffs.incanters_flow    = make_buff<buffs::incanters_flow_t>( this );
+  buffs.rune_of_power     = make_buff( this, "rune_of_power", find_spell( 116014 ) )
+                              ->set_default_value( find_spell( 116014 )->effectN( 1 ).percent() )
+                              ->set_refresh_behavior( buff_refresh_behavior::DISABLED );
+  buffs.focus_magic_crit  = make_buff( this, "focus_magic_crit", find_spell( 321363 ) )
+                              ->set_default_value( find_spell( 321363 )->effectN( 1 ).percent() )
+                              ->add_invalidate( CACHE_SPELL_CRIT_CHANCE );
+  buffs.focus_magic_int   = make_buff( this, "focus_magic_int", find_spell( 334180 ) )
+                              ->set_default_value( find_spell( 334180 )->effectN( 1 ).percent() )
+                              ->add_invalidate( CACHE_INTELLECT );
 
   // Azerite
   buffs.arcane_pummeling   = make_buff( this, "arcane_pummeling", find_spell( 270670 ) )
@@ -6214,6 +6267,19 @@ void mage_t::recalculate_resource_max( resource_e rt )
   }
 }
 
+double mage_t::composite_attribute_multiplier( attribute_e attr ) const
+{
+  double m = player_t::composite_attribute_multiplier( attr );
+
+  if ( attr == ATTR_INTELLECT )
+  {
+    if ( buffs.focus_magic_int )
+      m *= 1.0 + buffs.focus_magic_int->check_stack_value();
+  }
+
+  return m;
+}
+
 double mage_t::composite_player_pet_damage_multiplier( const action_state_t* s ) const
 {
   double m = player_t::composite_player_pet_damage_multiplier( s );
@@ -6252,6 +6318,7 @@ double mage_t::composite_spell_crit_chance() const
   double c = player_t::composite_spell_crit_chance();
 
   c += spec.critical_mass->effectN( 1 ).percent();
+  c += buffs.focus_magic_crit->check_value();
 
   return c;
 }
@@ -6277,6 +6344,7 @@ void mage_t::reset()
 {
   player_t::reset();
 
+  focus_magic_event = nullptr;
   icicle_event = nullptr;
   ignite_spread_event = nullptr;
   time_anomaly_tick_event = nullptr;
@@ -6316,6 +6384,13 @@ void mage_t::arise()
 
   buffs.incanters_flow->trigger();
   buffs.gbow->trigger();
+
+  if ( talents.focus_magic->ok() )
+  {
+    timespan_t min_time = timespan_t::from_seconds( options.focus_magic_interval * ( 1 - options.focus_magic_variance ) );
+    timespan_t max_time = timespan_t::from_seconds( options.focus_magic_interval * ( 1 + options.focus_magic_variance ) );
+    focus_magic_event = make_event<events::focus_magic_event_t>( *sim, *this, rng().range( min_time, max_time ) );
+  }
 
   if ( spec.ignite->ok() )
   {
