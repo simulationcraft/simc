@@ -33,14 +33,6 @@ struct spell_data_ptr_t
   const spell_data_t* data_;
 };
 
-void parse_affecting_aura( action_t& action, const spell_data_t *const spell )
-{
-  for ( const spelleffect_data_t& effect : spell -> effects() )
-  {
-    action.apply_affecting_effect(effect);
-  }
-}
-
 namespace cdwaste {
 
 struct action_data_t
@@ -922,12 +914,12 @@ struct hunter_pet_t: public pet_t
 
   void action_init_finished( action_t& action ) override
   {
-    parse_affecting_aura( action, o() -> specs.hunter );
-    parse_affecting_aura( action, o() -> specs.beast_mastery_hunter );
-    parse_affecting_aura( action, o() -> specs.marksmanship_hunter );
-    parse_affecting_aura( action, o() -> specs.survival_hunter );
+    action.parse_affecting_aura( o() -> specs.hunter );
+    action.parse_affecting_aura( o() -> specs.beast_mastery_hunter );
+    action.parse_affecting_aura( o() -> specs.marksmanship_hunter );
+    action.parse_affecting_aura( o() -> specs.survival_hunter );
   }
-  
+
   hunter_t* o()             { return static_cast<hunter_t*>( owner ); }
   const hunter_t* o() const { return static_cast<hunter_t*>( owner ); }
 };
@@ -5314,25 +5306,25 @@ std::string hunter_t::default_rune() const
 void hunter_t::action_init_finished( action_t& action )
 {
 
-    parse_affecting_aura( action, specs.hunter );
-    parse_affecting_aura( action, specs.beast_mastery_hunter );
-    parse_affecting_aura( action, specs.marksmanship_hunter );
-    parse_affecting_aura( action, specs.survival_hunter );
+    action.parse_affecting_aura( specs.hunter );
+    action.parse_affecting_aura( specs.beast_mastery_hunter );
+    action.parse_affecting_aura( specs.marksmanship_hunter );
+    action.parse_affecting_aura( specs.survival_hunter );
     
     // passive talents
-    parse_affecting_aura( action, talents.alpha_predator );
-    parse_affecting_aura( action, talents.born_to_be_wild );
-    parse_affecting_aura( action, talents.dead_eye );
-    parse_affecting_aura( action, talents.guerrilla_tactics );
-    parse_affecting_aura( action, talents.hydras_bite );
-    parse_affecting_aura( action, talents.master_marksman );
+    action.parse_affecting_aura( talents.alpha_predator );
+    action.parse_affecting_aura( talents.born_to_be_wild );
+    action.parse_affecting_aura( talents.dead_eye );
+    action.parse_affecting_aura( talents.guerrilla_tactics );
+    action.parse_affecting_aura( talents.hydras_bite );
+    action.parse_affecting_aura( talents.master_marksman );
 
     // "simple" passive rank 2 spells
-    parse_affecting_aura( action, find_specialization_spell( 231550 ) ); // Harpoon (Rank 2)
-    parse_affecting_aura( action, find_specialization_spell( 262838 ) ); // Cobra Shot (Rank 2)
-    parse_affecting_aura( action, find_specialization_spell( 321287 ) ); // True Aim
-    parse_affecting_aura( action, find_specialization_spell( 321290 ) ); // Wildfire Bombs (Rank 2)
-    parse_affecting_aura( action, find_specialization_spell( 321293 ) ); // Arcane Shot (Rank 2)
+    action.parse_affecting_aura( find_specialization_spell( 231550 ) ); // Harpoon (Rank 2)
+    action.parse_affecting_aura( find_specialization_spell( 262838 ) ); // Cobra Shot (Rank 2)
+    action.parse_affecting_aura( find_specialization_spell( 321287 ) ); // True Aim
+    action.parse_affecting_aura( find_specialization_spell( 321290 ) ); // Wildfire Bombs (Rank 2)
+    action.parse_affecting_aura( find_specialization_spell( 321293 ) ); // Arcane Shot (Rank 2)
 }
 
 // hunter_t::init_actions ===================================================

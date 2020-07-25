@@ -4582,6 +4582,14 @@ timespan_t action_t::distance_targeting_travel_time(
   return timespan_t::zero();
 }
 
+void action_t::parse_affecting_aura(const spell_data_t* spell)
+{
+  for ( const spelleffect_data_t& effect : spell -> effects() )
+  {
+    apply_affecting_effect(effect);
+  }
+}
+
 void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
 {
   if ( ! effect.ok() || effect.type() != E_APPLY_AURA )
