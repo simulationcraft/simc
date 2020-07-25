@@ -151,6 +151,7 @@ HEADERS += engine/util/allocator.hpp
 HEADERS += engine/util/cache.hpp
 HEADERS += engine/util/chrono.hpp
 HEADERS += engine/util/concurrency.hpp
+HEADERS += engine/util/format.hpp
 HEADERS += engine/util/generic.hpp
 HEADERS += engine/util/git_info.hpp
 HEADERS += engine/util/io.hpp

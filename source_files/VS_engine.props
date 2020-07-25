@@ -155,6 +155,7 @@ To change the list of source files run synchronize.py
 		<ClInclude Include="..\engine\util\cache.hpp" />
 		<ClInclude Include="..\engine\util\chrono.hpp" />
 		<ClInclude Include="..\engine\util\concurrency.hpp" />
+		<ClInclude Include="..\engine\util\format.hpp" />
 		<ClInclude Include="..\engine\util\generic.hpp" />
 		<ClInclude Include="..\engine\util\git_info.hpp" />
 		<ClInclude Include="..\engine\util\io.hpp" />
