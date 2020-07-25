@@ -4663,6 +4663,12 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
             sim->print_debug( "{} cooldown duration increased by {}%", *this, effect.base_value() );
             break;
 
+          case P_RESOURCE_COST:
+            base_costs[ resource_current ] *= 1 + effect.percent();
+            sim->print_debug( "{} base resource cost for resource {} increased by {}", *this,
+                              util::resource_type_string( resource_current ), effect.base_value() );
+            break;
+
           case P_TICK_DAMAGE:
             base_td_multiplier *= 1 + effect.percent();
             sim->print_debug( "{} base_td_multiplier increased by {}%", *this, effect.base_value() );

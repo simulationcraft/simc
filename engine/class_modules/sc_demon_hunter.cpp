@@ -1172,6 +1172,11 @@ public:
       ab::apply_affecting_aura( p->spec.fel_rush_rank_2 );
       ab::apply_affecting_aura( p->spec.metamorphosis_rank_3 );
 
+      // Talent Passives
+      ab::apply_affecting_aura( p->talent.insatiable_hunger );
+      ab::apply_affecting_aura( p->talent.master_of_the_glaive );
+      ab::apply_affecting_aura( p->talent.unleashed_power );
+
       // Affect Flags
       parse_affect_flags( p->mastery.demonic_presence, affected_by.demonic_presence );
       if ( p->talent.momentum->ok() )
@@ -1187,6 +1192,10 @@ public:
     {
       // Rank Passives
       ab::apply_affecting_aura( p->spec.immolation_aura_rank_3 );
+
+      // Talent Passives
+      ab::apply_affecting_aura( p->talent.agonizing_flames );
+      ab::apply_affecting_aura( p->talent.quickened_sigils );
 
       // Charred Flesh Whitelist
       if ( ab::data().affected_by( p->spec.fiery_brand_dr->effectN( 2 ) ) )
@@ -1740,8 +1749,6 @@ struct chaos_nova_t : public demon_hunter_spell_t
     : demon_hunter_spell_t( "chaos_nova", p, p->spec.chaos_nova, options_str )
   {
     aoe = -1;
-    cooldown->duration += p->talent.unleashed_power->effectN( 1 ).time_value();
-    base_costs[ RESOURCE_FURY ] *= 1.0 + p->talent.unleashed_power->effectN( 2 ).percent();
   }
 
   void impact( action_state_t* s ) override
@@ -2218,8 +2225,6 @@ struct sigil_of_flame_t : public demon_hunter_spell_t
     damage = new sigil_of_flame_damage_t(p);
     damage->stats = stats;
 
-    cooldown->duration *= 1.0 + p->talent.quickened_sigils->effectN(2).percent();
-
     // Add damage modifiers in sigil_of_flame_damage_t, not here.
   }
 
@@ -2366,8 +2371,6 @@ struct immolation_aura_t : public demon_hunter_spell_t
           energize_amount = p->talent.burning_hatred->ok() ? data().effectN( 2 ).base_value() : 0;
         }
       }
-
-      base_multiplier *= 1.0 + p->talent.agonizing_flames->effectN( 1 ).percent();
     }
 
     void impact( action_state_t* s ) override
@@ -3392,7 +3395,6 @@ struct demons_bite_t : public demon_hunter_attack_t
   demons_bite_t( demon_hunter_t* p, const std::string& options_str )
     : demon_hunter_attack_t( "demons_bite", p, p->find_class_spell( "Demon's Bite" ), options_str )
   {
-    base_multiplier *= 1.0 + p->talent.insatiable_hunger->effectN( 2 ).percent();
     energize_delta = energize_amount * data().effectN( 3 ).m_delta();
   }
 
@@ -3816,7 +3818,6 @@ struct throw_glaive_t : public demon_hunter_attack_t
     : demon_hunter_attack_t("throw_glaive", p, p->find_class_spell("Throw Glaive"), options_str)
   {
     radius = 10.0;
-    cooldown->charges += static_cast<int>( p->talent.master_of_the_glaive->effectN( 2 ).base_value() );
   }
 };
 
