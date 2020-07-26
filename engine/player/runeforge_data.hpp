@@ -30,6 +30,7 @@ public:
   const runeforge_legendary_entry_t& runeforge() const;
   const item_effect_t& item_effect() const;
 
+  const spell_data_t* operator->() const;
   operator const spell_data_t*() const;
 };
 

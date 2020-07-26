@@ -64,6 +64,11 @@ const item_effect_t& item_runeforge_t::item_effect() const
   return item_effect_t::nil();
 }
 
+const spell_data_t* item_runeforge_t::operator->() const
+{
+  return operator const spell_data_t*();
+}
+
 item_runeforge_t::operator const spell_data_t*() const
 {
   if ( m_spell )
