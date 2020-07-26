@@ -1829,7 +1829,8 @@ class SpellDataGenerator(DataGenerator):
           ( 276026, 2 ),       # Iron Jaws, Feral Azerite Power
           ( 289314, 3 ),       # Burst of Savagery Azerite Trait
           ( 289315, 3 ),       # Burst of Savagery Azerite Trait buff
-		  ( 305497, 0 ), ( 305496, 0 ), # Thorns pvp talent
+          ( 305497, 0 ), ( 305496, 0 ), # Thorns pvp talent
+          ( 338825, 1 ),       # Primordial Arcanic Pulsar buff
         ),
         # Demon Hunter:
         (
