@@ -10516,17 +10516,6 @@ void monk_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( spec.windwalker_monk );
   action.apply_affecting_aura( spec.mistweaver_monk );
 
-  // // Reduce GCD from 1.5 sec to 1 sec
-  // if ( action.data().affected_by( spec.brewmaster_monk->effectN( 14 ) ) )
-  //   action.trigger_gcd += spec.brewmaster_monk->effectN( 14 ).time_value();  // Saved as -500 milliseconds
-
-  // // Reduce GCD from 1.5 sec to 1.005 sec (33%)
-  // if ( action.data().affected_by_label( spec.brewmaster_monk->effectN( 22 ) ) )
-  // {
-  //   action.trigger_gcd *= ( 100.0 + spec.brewmaster_monk->effectN( 22 ).base_value() ) / 100.0;
-  //   action.gcd_type = gcd_haste_type::NONE;
-  // }
-
   // if ( action.data().affected_by( spec.mistweaver_monk->effectN( 6 ) ) )
   //   action.gcd_type = gcd_haste_type::HASTE;
 

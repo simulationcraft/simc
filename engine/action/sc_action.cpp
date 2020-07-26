@@ -4648,16 +4648,17 @@ void action_t::apply_affecting_aura( const spell_data_t* spell )
 
 void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
 {
-  if ( ! effect.ok() || effect.type() != E_APPLY_AURA )
-      return;
+  if ( !effect.ok() || effect.type() != E_APPLY_AURA )
+    return;
 
-  if (!data().affected_by_all(*player->dbc, effect))
+  if ( !data().affected_by_all( *player->dbc, effect ) )
   {
     return;
   }
 
-  sim->print_debug("{} {} is affected by effect {} (spell {} - {} - effect #{})", *player, *this, effect.id(), effect.spell()->name_cstr(), effect.spell()->id(), effect.spell_effect_num()+1);
-   
+  sim->print_debug( "{} {} is affected by effect {} (spell {} - {} - effect #{})", *player, *this, effect.id(),
+                    effect.spell()->name_cstr(), effect.spell()->id(), effect.spell_effect_num() + 1 );
+
   if ( data().affected_by( effect ) )
   {
     switch ( effect.subtype() )
@@ -4700,7 +4701,11 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
             aoe += effect.base_value();
             sim->print_debug( "{} max target count modified by {}", *this, effect.base_value() );
 
-          break;
+            break;
+
+          case P_GCD:
+            trigger_gcd += effect.time_value();
+            sim->print_debug( "{} trigger_gcd modified by {}", *this, effect.time_value() );
 
           default:
             break;
@@ -4759,6 +4764,18 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
         sim->print_debug( "{} cooldown duration modified by {}", *this, effect.time_value() );
         break;
 
+      default:
+        break;
+    }
+  }
+  else if ( data().affected_by_label( effect ) )
+  {
+    switch ( effect.subtype() )
+    {
+      case A_ADD_PCT_LABEL_MODIFIER:
+        trigger_gcd *= ( 100 + effect.base_value() ) / 100.0;
+        sim->print_debug( "{} trigger_gcd modified by {}%", *this, effect.base_value() );
+        break;
       default:
         break;
     }
