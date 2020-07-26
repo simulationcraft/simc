@@ -803,6 +803,7 @@ public:
   virtual void init_distance_targeting();
   virtual void init_absorb_priority();
   virtual void init_assessors();
+  virtual void init_background_actions();
   virtual void create_actions();
   virtual void init_actions();
   virtual void init_finished();

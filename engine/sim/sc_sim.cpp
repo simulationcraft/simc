@@ -2532,6 +2532,7 @@ void sim_t::init_actor( player_t* p )
     p -> init_spells();
     p -> init_base_stats();
     p -> create_buffs();
+    p -> init_background_actions();
 
     // First-phase creation of special effects from various sources. Needed to be able to create
     // actions (APLs, really) based on the presence of special effects on items.

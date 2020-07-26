@@ -2431,11 +2431,6 @@ void player_t::init_spells()
     const spell_data_t* s = find_mastery_spell( specialization() );
     if ( s->ok() )
       _mastery = &( s->effectN( 1 ) );
-
-    if (record_healing())
-    {
-      spells.leech = new leech_t(this);
-    }
   }
 
 }
@@ -2674,6 +2669,21 @@ void player_t::init_scaling()
           assert( false );
           break;
       }
+    }
+  }
+}
+
+void player_t::init_background_actions()
+{
+  if ( !is_enemy() )
+  {
+    const spell_data_t* s = find_mastery_spell( specialization() );
+    if ( s->ok() )
+      _mastery = &( s->effectN( 1 ) );
+
+    if (record_healing())
+    {
+      spells.leech = new leech_t(this);
     }
   }
 }
