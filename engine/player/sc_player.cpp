@@ -1925,8 +1925,7 @@ void player_t::init_defense()
 
 void player_t::init_weapon( weapon_t& w )
 {
-  sim->print_debug( "Initializing weapon ( type {} ) for {}.", util::weapon_type_string( w.type ),
-                           *this );
+  sim->print_debug( "Initializing weapon ( type {} ) for {}.", w.type, *this );
 
   if ( w.type == WEAPON_NONE )
     return;
