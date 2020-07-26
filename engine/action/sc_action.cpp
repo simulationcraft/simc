@@ -4631,11 +4631,18 @@ timespan_t action_t::distance_targeting_travel_time(
   return timespan_t::zero();
 }
 
-void action_t::apply_affecting_aura(const spell_data_t* spell)
+void action_t::apply_affecting_aura( const spell_data_t* spell )
 {
-  for ( const spelleffect_data_t& effect : spell -> effects() )
+  if ( !spell->ok() )
   {
-    apply_affecting_effect(effect);
+    return;
+  }
+
+  assert( spell->flags( SX_PASSIVE ) && "only passive spells should be affecting actions." );
+
+  for ( const spelleffect_data_t& effect : spell->effects() )
+  {
+    apply_affecting_effect( effect );
   }
 }
 
