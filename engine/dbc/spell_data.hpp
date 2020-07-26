@@ -764,12 +764,21 @@ private:
 // ==========================================================================
 
 // Empty spell_data container
-static constexpr const spell_data_t& spell_data_nil_v = dbc::nil<spell_data_t>;
+struct spell_data_nil_t : public spell_data_t {
+  constexpr spell_data_nil_t() : spell_data_t() {
+    _name = "nil";
+  };
+};
+static constexpr const spell_data_nil_t& spell_data_nil_v = meta::static_const_t<spell_data_nil_t>::value;
 inline const spell_data_t* spell_data_t::nil() { return &spell_data_nil_v; }
 
 // Empty spell data container, which is used to return a "not found" state
-struct spell_data_not_found_t : public spell_data_t {};
-static constexpr const spell_data_t& spell_data_not_found_v = meta::static_const_t<spell_data_not_found_t>::value;
+struct spell_data_not_found_t : public spell_data_t {
+  constexpr spell_data_not_found_t() : spell_data_t() {
+    _name = "not_found";
+  };
+};
+static constexpr const spell_data_not_found_t& spell_data_not_found_v = meta::static_const_t<spell_data_not_found_t>::value;
 inline const spell_data_t* spell_data_t::not_found() { return &spell_data_not_found_v; }
 
 // ==========================================================================
