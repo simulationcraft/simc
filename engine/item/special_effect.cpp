@@ -243,7 +243,7 @@ bool special_effect_t::is_stat_buff() const
   if ( stat != STAT_NONE )
     return true;
 
-  // Prioritize trigger scanning before driver scanning; in reality if both 
+  // Prioritize trigger scanning before driver scanning; in reality if both
   // the trigger and driver spells contain "stat buffs" (as per simc
   // definition), the system will not support it. In this case, custom buffs
   // and/or callbacks should be used.
@@ -804,7 +804,7 @@ std::string special_effect_t::name() const
   // Guess proc name based on spells.
   std::string n, base_name;
   // Use driver name, if it's not hidden or passive, or there's no trigger spell to use
-  if ( ( ! driver() -> flags( spell_attribute::SX_HIDDEN ) && ! driver() -> flags( spell_attribute::SX_PASSIVE ) ) || 
+  if ( ( ! driver() -> flags( spell_attribute::SX_HIDDEN ) && ! driver() -> flags( spell_attribute::SX_PASSIVE ) ) ||
        ! trigger() -> ok() )
     n = driver() -> name_cstr();
   // Driver is hidden, try to use the spell that the driver procs
@@ -854,100 +854,84 @@ std::string special_effect_t::name() const
   return n;
 }
 
-std::ostream& operator<<(std::ostream &os, const special_effect_t& se)
+void format_to( const special_effect_t& se, fmt::format_context::iterator out )
 {
-  os << se.name();
-  os << " type=" << util::special_effect_string( se.type );
-  os << " source=" << util::special_effect_source_string( se.source );
+  fmt::format_to( out, "{}", se.name() );
+  fmt::format_to( out, " type={}", se.type );
+  fmt::format_to( out, " source={}", se.source );
 
   if ( ! se.trigger_str.empty() )
-    os << " proc=" << se.trigger_str;
+    fmt::format_to( out, " proc={}", se.trigger_str );
 
   if ( se.spell_id > 0 )
-    os << " driver=" << se.spell_id;
+    fmt::format_to( out, " driver={}", se.spell_id );
 
   if ( se.trigger() -> ok() )
-    os << " trigger=" << se.trigger() -> id();
+    fmt::format_to( out, " trigger={}", se.trigger() -> id() );
 
   if ( se.is_stat_buff() )
   {
-    os << " stat=" << util::stat_type_abbrev( se.stat == STAT_NONE ? se.stat_type() : se.stat );
-    os << " amount=" << se.stat_amount;
-    os << " duration=" << se.duration().total_seconds();
+    fmt::format_to( out, " stat={}", util::stat_type_abbrev( se.stat == STAT_NONE ? se.stat_type() : se.stat ) );
+    fmt::format_to( out, " amount={}", se.stat_amount );
+    fmt::format_to( out, " duration={}", se.duration() );
     if ( se.tick_time() != timespan_t::zero() )
-      os << " tick=" << se.tick_time().total_seconds();
+      fmt::format_to( out, " tick={}", se.tick_time() );
     if ( se.reverse )
     {
-      os << " Reverse";
+      fmt::format_to( out, " Reverse" );
       if ( se.reverse_stack_reduction > 0 )
-      {
-        os << "(" << se.reverse_stack_reduction << ")";
-      }
+        fmt::format_to( out, "({})", se.reverse_stack_reduction );
     }
   }
 
   if ( se.school != SCHOOL_NONE )
   {
-    os << " school=" << util::school_type_string( se.school );
-    os << " amount=" << se.discharge_amount;
+    fmt::format_to( out, " school={}", se.school );
+    fmt::format_to( out, " amount={}", se.discharge_amount );
     if ( se.discharge_scaling > 0 )
-      os << " coeff=" << se.discharge_scaling;
+      fmt::format_to( out, " coeff={}", se.discharge_scaling );
   }
 
   if ( se.max_stacks > 0 )
-    os << " max_stack=" << se.max_stacks;
+    fmt::format_to( out, " max_stack={}", se.max_stacks );
 
   if ( se.proc_chance() > 0 )
-    os << " proc_chance=" << se.proc_chance() * 100.0 << "%";
+    fmt::format_to( out, " proc_chance={}%", se.proc_chance() * 100.0 );
 
   if ( se.ppm() > 0 )
-    os << " ppm=" << se.ppm();
+    fmt::format_to( out, " ppm={}", se.ppm() );
 
   if ( se.rppm() > 0 && se.rppm_scale() != RPPM_DISABLE )
   {
-    os << " rppm=" << se.rppm() * se.rppm_modifier();
+    fmt::format_to( out, " rppm={}", se.rppm() * se.rppm_modifier() );
     if ( se.rppm_scale() & RPPM_HASTE )
-    {
-      os << " (Haste)";
-    }
-
+      fmt::format_to( out, " (Haste)" );
     if ( se.rppm_scale() & RPPM_CRIT )
-    {
-      os << " (Crit)";
-    }
-
+      fmt::format_to( out, " (Crit)" );
     if ( se.rppm_scale() & RPPM_ATTACK_SPEED )
-    {
-      os << " (ASpeed)";
-    }
+      fmt::format_to( out, " (ASpeed)" );
   }
 
   if ( se.cooldown() > timespan_t::zero() )
   {
+    util::string_view name;
     if ( se.type == SPECIAL_EFFECT_EQUIP )
-      os << " icd=";
+      name = "icd";
     else if ( se.type == SPECIAL_EFFECT_USE )
-      os << " cd=";
+      name = "cd";
     else
-      os << " (i)cd=";
-    os << se.cooldown().total_seconds();
+      name = "(i)cd";
+    fmt::format_to( out, " {}={}", name, se.cooldown() );
 
     if ( se.cooldown_group() > 0 )
     {
-      os << " cdgrp=" << se.cooldown_group();
-      os << " cdgrp_duration=" << se.cooldown_group_duration().total_seconds();
+      fmt::format_to( out, " cdgrp={} cdgrp_duration={}",
+                      se.cooldown_group(), se.cooldown_group_duration() );
     }
   }
 
   if ( se.weapon_proc )
-    os << " weaponproc";
-
-  return os;
-}
-
-std::string special_effect_t::to_string() const
-{
-  return fmt::to_string( *this );
+    fmt::format_to( out, " weaponproc" );
 }
 
 void special_effect::parse_special_effect_encoding( special_effect_t& effect,
@@ -1140,7 +1124,7 @@ bool special_effect::usable_proc( const special_effect_t& effect )
     }
     return false;
   }
-    
+
   // A non-zero chance to proc it through one of the proc chance triggers
   if ( effect.ppm() == 0 && effect.rppm() == 0 && effect.proc_chance() == 0 )
   {
