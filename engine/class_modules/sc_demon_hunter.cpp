@@ -1158,8 +1158,6 @@ public:
       cd_wasted_iter( nullptr )
   {
     ab::parse_options( o );
-    ab::may_crit = true;
-    ab::tick_may_crit = true;
 
     // Class Passives
     ab::apply_affecting_aura( p->spec.havoc );
@@ -1566,7 +1564,7 @@ struct consume_soul_t : public demon_hunter_heal_t
     demonic_appetite_energize_t( demon_hunter_t* p )
       : demon_hunter_spell_t( "demonic_appetite_fury", p, p->spec.demonic_appetite_fury )
     {
-      may_miss = may_block = may_dodge = may_parry = may_crit = callbacks = false;
+      may_miss = may_block = may_dodge = may_parry = callbacks = false;
       background = quiet = dual = true;
       energize_type = ENERGIZE_ON_CAST;
     }
@@ -1582,7 +1580,7 @@ struct consume_soul_t : public demon_hunter_heal_t
     vengeance_heal( p->find_specialization_spell( 203783 ) ),
     vengeance_heal_interval( timespan_t::from_seconds( vengeance_heal->effectN( 4 ).base_value() ) )
   {
-    may_miss = may_crit = false;
+    may_miss = false;
     background = true;
 
     if ( p->talent.demonic_appetite->ok() )
@@ -1681,8 +1679,6 @@ struct soul_cleave_heal_t : public demon_hunter_heal_t
       : demon_hunter_heal_t( "feast_of_souls", p, p->find_spell( 207693 ) )
     {
       background = dual = true;
-      hasted_ticks = false;
-      tick_zero = true;
     }
   };
 
@@ -1730,7 +1726,7 @@ struct blur_t : public demon_hunter_spell_t
   blur_t( demon_hunter_t* p, const std::string& options_str )
     : demon_hunter_spell_t( "blur", p, p->spec.blur, options_str )
   {
-    may_miss = may_block = may_dodge = may_parry = may_crit = false;
+    may_miss = false;
   }
 
   void execute() override
@@ -1778,7 +1774,7 @@ struct consume_magic_t : public demon_hunter_spell_t
   consume_magic_t( demon_hunter_t* p, const std::string& options_str )
     : demon_hunter_spell_t( "consume_magic", p, p->spec.consume_magic, options_str )
   {
-    may_miss = may_block = may_dodge = may_parry = may_crit = false;
+    may_miss = false;
 
     const spelleffect_data_t effect = data().effectN(
       p->specialization() == DEMON_HUNTER_HAVOC ? 2 : 3);
@@ -1802,9 +1798,8 @@ struct demon_spikes_t : public demon_hunter_spell_t
   demon_spikes_t( demon_hunter_t* p, const std::string& options_str )
     : demon_hunter_spell_t("demon_spikes", p, p->spec.demon_spikes, options_str)
   {
-    may_miss = may_block = may_dodge = may_parry = may_crit = false;
+    may_miss = harmful = false;
     use_off_gcd = true;
-    harmful = false;
   }
 
   void execute() override
@@ -1824,7 +1819,7 @@ struct disrupt_t : public demon_hunter_spell_t
   disrupt_t( demon_hunter_t* p, const std::string& options_str )
     : demon_hunter_spell_t( "disrupt", p, p->spec.disrupt, options_str )
   {
-    may_miss = may_block = may_dodge = may_parry = may_crit = false;
+    may_miss = false;
 
     const spelleffect_data_t effect = p->find_spell( 218903 )
       ->effectN( p->specialization() == DEMON_HUNTER_HAVOC ? 1 : 2 );
@@ -1881,7 +1876,7 @@ struct eye_beam_t : public demon_hunter_spell_t
   eye_beam_t( demon_hunter_t* p, const std::string& options_str )
     : demon_hunter_spell_t( "eye_beam", p, p->spec.eye_beam, options_str )
   {
-    may_miss = may_crit = false;
+    may_miss = false;
     channeled = true;
 
     dot_duration *= 1.0 + p->talent.blind_fury->effectN( 1 ).percent();
@@ -1956,9 +1951,8 @@ struct fel_barrage_t : public demon_hunter_spell_t
   fel_barrage_t( demon_hunter_t* p, const std::string& options_str )
     : demon_hunter_spell_t("fel_barrage", p, p->talent.fel_barrage, options_str)
   {
-    may_miss = may_dodge = may_parry = may_crit = may_block = false;
-    channeled = tick_zero = hasted_ticks = true;
-
+    may_miss = false;
+    channeled = true;
     tick_action = new fel_barrage_tick_t( p );
   }
 
@@ -1993,7 +1987,7 @@ struct fel_devastation_t : public demon_hunter_spell_t
   fel_devastation_t( demon_hunter_t* p, const std::string& options_str )
     : demon_hunter_spell_t( "fel_devastation", p, p->talent.fel_devastation, options_str )
   {
-    may_miss = may_crit = false;
+    may_miss = false;
     channeled = true;
 
     heal = p->find_action( "fel_devastation_heal" );
@@ -2070,7 +2064,6 @@ struct fiery_brand_t : public demon_hunter_spell_t
       : demon_hunter_spell_t( "fiery_brand_dot", p, p->find_spell( 207771 ) )
     {
       background = dual = true;
-      hasted_ticks = may_crit = false;
 
       if ( p->talent.burning_alive->ok() )
       {
@@ -2183,7 +2176,6 @@ struct sigil_of_flame_damage_t : public demon_hunter_spell_t
   {
     aoe = -1;
     background = dual = ground_aoe = true;
-    hasted_ticks = false;
 
     if (p->talent.concentrated_sigils->ok())
     {
@@ -2221,7 +2213,7 @@ struct sigil_of_flame_t : public demon_hunter_spell_t
     : demon_hunter_spell_t("sigil_of_flame", p, p->find_specialization_spell("Sigil of Flame"),
       options_str)
   {
-    may_miss = may_crit = false;
+    may_miss = false;
     damage = new sigil_of_flame_damage_t(p);
     damage->stats = stats;
 
@@ -2290,7 +2282,7 @@ struct infernal_strike_t : public demon_hunter_spell_t
     : demon_hunter_spell_t( "infernal_strike", p, p->find_specialization_spell( "Infernal Strike" ), 
                             options_str )
   {
-    may_miss = may_dodge = may_parry = may_crit = may_block = false;
+    may_miss = false;
     base_teleport_distance  = data().max_range();
     movement_directionality = movement_direction_type::OMNI;
     travel_speed = 1.0;  // allows use precombat
@@ -2399,7 +2391,7 @@ struct immolation_aura_t : public demon_hunter_spell_t
   immolation_aura_t( demon_hunter_t* p, const std::string& options_str )
     : demon_hunter_spell_t( "immolation_aura", p, p->spec.immolation_aura, options_str )
   {
-    may_miss = may_crit = false;
+    may_miss = false;
     dot_duration = timespan_t::zero(); 
 
     if ( !p->active.immolation_aura )
@@ -2448,7 +2440,7 @@ struct metamorphosis_t : public demon_hunter_spell_t
   metamorphosis_t( demon_hunter_t* p, const std::string& options_str )
     : demon_hunter_spell_t( "metamorphosis", p, p->spec.metamorphosis, options_str )
   {
-    may_miss = may_dodge = may_parry = may_crit = may_block = false;
+    may_miss = false;
     dot_duration = timespan_t::zero();
 
     if ( p->specialization() == DEMON_HUNTER_HAVOC )
@@ -2519,13 +2511,12 @@ struct nemesis_t : public demon_hunter_spell_t
   nemesis_t( demon_hunter_t* p, const std::string& options_str )
     : demon_hunter_spell_t( "nemesis", p, p->talent.nemesis, options_str )
   {
-    may_miss = may_block = may_dodge = may_parry = may_crit = false;
+    may_miss = false;
   }
 
   void impact( action_state_t* s ) override
   {
     demon_hunter_spell_t::impact( s );
-
     td( s->target )->debuffs.nemesis->trigger();
   }
 };
@@ -2589,7 +2580,7 @@ struct pick_up_fragment_t : public demon_hunter_spell_t
 
     trigger_gcd = timespan_t::zero();
     // use_off_gcd = true;
-    may_miss = may_crit = callbacks = harmful = false;
+    may_miss = callbacks = harmful = false;
     range = 5.0;  // Disallow use outside of melee.
   }
 
@@ -2774,7 +2765,7 @@ struct spirit_bomb_t : public demon_hunter_spell_t
     damage( new spirit_bomb_damage_t( p ) ),
     max_fragments_consumed( static_cast<unsigned>( data().effectN( 2 ).base_value() ) )
   {
-    may_miss = may_crit = proc = callbacks = may_dodge = may_parry = may_block = false;
+    may_miss = proc = callbacks = false;
 
     damage->stats = stats;
 
@@ -2841,7 +2832,7 @@ namespace attacks
     {
       school = SCHOOL_PHYSICAL;
       special = false;
-      background = repeating = may_glance = true;
+      background = repeating = may_glance = may_crit = true;
       trigger_gcd = timespan_t::zero();
       weapon = w;
       weapon_multiplier = 1.0;
@@ -3006,7 +2997,6 @@ struct blade_dance_base_t : public demon_hunter_attack_t
       : demon_hunter_spell_t( "trail_of_ruin", p, p->talent.trail_of_ruin->effectN( 1 ).trigger() )
     {
       background = dual = true;
-      hasted_ticks = false;
     }
   };
 
@@ -3072,7 +3062,7 @@ struct blade_dance_base_t : public demon_hunter_attack_t
                       const spell_data_t* s, const std::string& options_str, buff_t* dodge_buff )
     : demon_hunter_attack_t( n, p, s, options_str ), dodge_buff( dodge_buff ), trail_of_ruin_dot ( nullptr )
   {
-    may_miss = may_crit = may_parry = may_block = may_dodge = false;
+    may_miss = false;
     cooldown = p->cooldown.blade_dance;  // Blade Dance/Death Sweep Shared Cooldown
     range = 5.0; // Disallow use outside of melee range.
 
@@ -3507,7 +3497,6 @@ struct felblade_t : public demon_hunter_attack_t
       : demon_hunter_attack_t( "felblade_damage", p, p->find_spell( 213243 ) )
     {
       background = dual = true;
-      may_miss = may_dodge = may_parry = false;
       gain = p->get_gain( "felblade" );
     }
   };
@@ -3517,7 +3506,7 @@ struct felblade_t : public demon_hunter_attack_t
   felblade_t( demon_hunter_t* p, const std::string& options_str )
     : demon_hunter_attack_t( "felblade", p, p->talent.felblade, options_str )
   {
-    may_crit = may_block = false;
+    may_block = false;
     movement_directionality = movement_direction_type::TOWARDS;
 
     execute_action = new felblade_damage_t( p );
@@ -3573,7 +3562,7 @@ struct fel_rush_t : public demon_hunter_attack_t
     add_option( opt_bool( "animation_cancel", a_cancel ) );
     parse_options( options_str );
 
-    may_miss = may_dodge = may_parry = may_block = may_crit = false;
+    may_miss = may_dodge = may_parry = may_block = false;
     min_gcd = trigger_gcd;
 
     execute_action = new fel_rush_damage_t( p );
@@ -3663,8 +3652,6 @@ struct fracture_t : public demon_hunter_attack_t
   fracture_t( demon_hunter_t* p, const std::string& options_str )
     : demon_hunter_attack_t( "fracture", p, p->talent.fracture, options_str )
   {
-    may_crit = false;
-
     mh = new fracture_damage_t( "fracture_mh", p, data().effectN( 2 ).trigger() );
     oh = new fracture_damage_t( "fracture_oh", p, data().effectN( 3 ).trigger() );
     mh->stats = oh->stats = stats;
@@ -3789,7 +3776,7 @@ struct soul_cleave_t : public demon_hunter_attack_t
     : demon_hunter_attack_t( "soul_cleave", p, p->spec.soul_cleave, options_str ),
       heal(new heals::soul_cleave_heal_t(p))
   {
-    may_miss = may_dodge = may_parry = may_block = may_crit = false;
+    may_miss = may_dodge = may_parry = may_block = false;
     attack_power_mod.direct = 0;  // This parent action deals no damage, parsed data is for the heal
 
     execute_action = new soul_cleave_damage_t( "soul_cleave_damage", p, data().effectN( 2 ).trigger() );
@@ -3848,7 +3835,7 @@ struct vengeful_retreat_t : public demon_hunter_attack_t
   vengeful_retreat_t( demon_hunter_t* p, const std::string& options_str )
     : demon_hunter_attack_t( "vengeful_retreat", p, p->spec.vengeful_retreat, options_str )
   {
-    may_miss = may_dodge = may_parry = may_crit = may_block = false;
+    may_miss = may_dodge = may_parry = may_block = false;
     // use_off_gcd = true;
 
     execute_action = new vengeful_retreat_damage_t( p );
