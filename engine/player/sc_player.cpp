@@ -9589,7 +9589,7 @@ const spell_data_t* player_t::find_rank_spell( util::string_view name,
     }
   }
 
-  const spell_data_t* spell = dbc::find_spell( this, spell );
+  const spell_data_t* spell = dbc::find_spell( this, entry.spell_id );
   if ( !spell->ok() && as<int>( spell->level() ) > true_level )
   {
     return spell_data_t::not_found();
