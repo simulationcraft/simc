@@ -50,6 +50,13 @@ specialization_spell_entry_t::find( util::string_view name,
             return false;
           }
         }
+        else
+        {
+          if ( entry.desc )
+          {
+            return false;
+          }
+        }
 
         auto spell_str = util::tokenize_fn( entry.name );
         return util::str_compare_ci( spell_str, name );
@@ -57,6 +64,11 @@ specialization_spell_entry_t::find( util::string_view name,
       else
       {
         if ( !desc.empty() && !util::str_compare_ci( entry.desc, desc ) )
+        {
+          return false;
+        }
+
+        if ( desc.empty() && entry.desc )
         {
           return false;
         }
