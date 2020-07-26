@@ -365,7 +365,7 @@ public:
     action_t* living_bomb_explosion;
     action_t* meteor_burn;
     action_t* meteor_impact;
-    action_t* touch_of_the_magi;
+    action_t* touch_of_the_magi_explosion;
   } action;
 
   // Benefits
@@ -541,6 +541,7 @@ public:
     const spell_data_t* clearcasting;
     const spell_data_t* evocation_2;
     const spell_data_t* savant;
+    const spell_data_t* touch_of_the_magi;
 
     // Fire
     const spell_data_t* critical_mass;
@@ -619,7 +620,7 @@ public:
 
     // Tier 90
     const spell_data_t* reverberate;
-    const spell_data_t* touch_of_the_magi;
+    const spell_data_t* enlightened;
     const spell_data_t* nether_tempest;
     const spell_data_t* flame_patch;
     const spell_data_t* conflagration;
@@ -1031,9 +1032,6 @@ struct touch_of_the_magi_t : public buff_t
     buff_t( *td, "touch_of_the_magi", td->source->find_spell( 210824 ) ),
     accumulated_damage()
   {
-    auto data = debug_cast<mage_t*>( source )->talents.touch_of_the_magi;
-    set_chance( data->proc_chance() );
-    set_cooldown( data->internal_cooldown() );
   }
 
   void reset() override
@@ -1047,11 +1045,14 @@ struct touch_of_the_magi_t : public buff_t
     buff_t::expire_override( stacks, duration );
 
     auto p = debug_cast<mage_t*>( source );
-    auto explosion = p->action.touch_of_the_magi;
+    auto explosion = p->action.touch_of_the_magi_explosion;
 
     explosion->set_target( player );
-    explosion->base_dd_min = explosion->base_dd_max =
-      p->talents.touch_of_the_magi->effectN( 1 ).percent() * accumulated_damage;
+    double damage_fraction = p->spec.touch_of_the_magi->effectN( 1 ).percent();
+    if ( p->bugs )
+      // TODO: For some reason this is dealing 30% of damage instead of 25%. Verify that this is still the case close to release.
+      damage_fraction += 0.05;
+    explosion->base_dd_min = explosion->base_dd_max = damage_fraction * accumulated_damage;
     explosion->execute();
 
     accumulated_damage = 0.0;
@@ -2239,14 +2240,6 @@ struct arcane_blast_t : public arcane_mage_spell_t
              * p()->spec.arcane_charge->effectN( 4 ).percent();
 
     return t;
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    arcane_mage_spell_t::impact( s );
-
-    if ( result_is_hit( s->result ) )
-      td( s->target )->debuffs.touch_of_the_magi->trigger();
   }
 };
 
@@ -4430,7 +4423,24 @@ struct time_warp_t : public mage_spell_t
 
 struct touch_of_the_magi_t : public arcane_mage_spell_t
 {
-  touch_of_the_magi_t( const std::string& n, mage_t* p ) :
+  touch_of_the_magi_t( const std::string& n, mage_t* p, const std::string& options_str ) :
+    arcane_mage_spell_t( n, p, p->spec.touch_of_the_magi )
+  {
+    parse_options( options_str );
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    arcane_mage_spell_t::impact( s );
+
+    if ( result_is_hit( s->result ) )
+      td( s->target )->debuffs.touch_of_the_magi->trigger();
+  }
+};
+
+struct touch_of_the_magi_explosion_t : public arcane_mage_spell_t
+{
+  touch_of_the_magi_explosion_t( const std::string& n, mage_t* p ) :
     arcane_mage_spell_t( n, p, p->find_spell( 210833 ) )
   {
     background = true;
@@ -4454,6 +4464,15 @@ struct touch_of_the_magi_t : public arcane_mage_spell_t
     // It seems that TotM explosion only double dips on target based damage reductions
     // and not target based damage increases.
     m = std::min( m, 1.0 );
+
+    return m;
+  }
+
+  double composite_aoe_multiplier( const action_state_t* state ) const override {
+    double m = arcane_mage_spell_t::composite_aoe_multiplier( state );
+
+      if ( state->target != target )
+        m /= std::sqrt( targets_in_range_list( target_list() ).size() );
 
     return m;
   }
@@ -4935,6 +4954,7 @@ action_t* mage_t::create_action( const std::string& name, const std::string& opt
   if ( name == "presence_of_mind"       ) return new       presence_of_mind_t( name, this, options_str );
   if ( name == "slow"                   ) return new                   slow_t( name, this, options_str );
   if ( name == "supernova"              ) return new              supernova_t( name, this, options_str );
+  if ( name == "touch_of_the_magi"      ) return new      touch_of_the_magi_t( name, this, options_str );
 
   if ( name == "start_burn_phase"       ) return new       start_burn_phase_t( name, this, options_str );
   if ( name == "stop_burn_phase"        ) return new        stop_burn_phase_t( name, this, options_str );
@@ -5024,8 +5044,8 @@ void mage_t::create_actions()
     action.meteor_impact = get_action<meteor_impact_t>( "meteor_impact", this );
   }
 
-  if ( talents.touch_of_the_magi->ok() )
-    action.touch_of_the_magi = get_action<touch_of_the_magi_t>( "touch_of_the_magi", this );
+  if ( spec.touch_of_the_magi->ok() )
+    action.touch_of_the_magi_explosion = get_action<touch_of_the_magi_explosion_t>( "touch_of_the_magi_explosion", this );
 
   if ( azerite.glacial_assault.enabled() )
     action.glacial_assault = get_action<glacial_assault_t>( "glacial_assault", this );
@@ -5210,7 +5230,7 @@ void mage_t::init_spells()
   talents.bone_chilling      = find_talent_spell( "Bone Chilling"      );
   talents.lonely_winter      = find_talent_spell( "Lonely Winter"      );
   talents.ice_nova           = find_talent_spell( "Ice Nova"           );
-  // Tier 30
+  // Tier 25
   talents.shimmer            = find_talent_spell( "Shimmer"            );
   talents.mana_shield        = find_talent_spell( "Mana Shield"        );
   talents.slipstream         = find_talent_spell( "Slipstream"         );
@@ -5218,11 +5238,11 @@ void mage_t::init_spells()
   talents.blast_wave         = find_talent_spell( "Blast Wave"         );
   talents.glacial_insulation = find_talent_spell( "Glacial Insulation" );
   talents.ice_floes          = find_talent_spell( "Ice Floes"          );
-  // Tier 45
+  // Tier 30
   talents.incanters_flow     = find_talent_spell( "Incanter's Flow"    );
   talents.focus_magic        = find_talent_spell( "Focus Magic"        );
   talents.rune_of_power      = find_talent_spell( "Rune of Power"      );
-  // Tier 60
+  // Tier 35
   talents.resonance          = find_talent_spell( "Resonance"          );
   talents.charged_up         = find_talent_spell( "Charged Up"         );
   talents.supernova          = find_talent_spell( "Supernova"          );
@@ -5232,15 +5252,15 @@ void mage_t::init_spells()
   talents.frozen_touch       = find_talent_spell( "Frozen Touch"       );
   talents.chain_reaction     = find_talent_spell( "Chain Reaction"     );
   talents.ebonbolt           = find_talent_spell( "Ebonbolt"           );
-  // Tier 75
+  // Tier 40
   talents.ice_ward           = find_talent_spell( "Ice Ward"           );
   talents.ring_of_frost      = find_talent_spell( "Ring of Frost"      );
   talents.chrono_shift       = find_talent_spell( "Chrono Shift"       );
   talents.frenetic_speed     = find_talent_spell( "Frenetic Speed"     );
   talents.frigid_winds       = find_talent_spell( "Frigid Winds"       );
-  // Tier 90
+  // Tier 45
   talents.reverberate        = find_talent_spell( "Reverberate"        );
-  talents.touch_of_the_magi  = find_talent_spell( "Touch of the Magi"  );
+  talents.enlightened        = find_talent_spell( "Enlightened"        );
   talents.nether_tempest     = find_talent_spell( "Nether Tempest"     );
   talents.flame_patch        = find_talent_spell( "Flame Patch"        );
   talents.conflagration      = find_talent_spell( "Conflagration"      );
@@ -5248,7 +5268,7 @@ void mage_t::init_spells()
   talents.freezing_rain      = find_talent_spell( "Freezing Rain"      );
   talents.splitting_ice      = find_talent_spell( "Splitting Ice"      );
   talents.comet_storm        = find_talent_spell( "Comet Storm"        );
-  // Tier 100
+  // Tier 50
   talents.overpowered        = find_talent_spell( "Overpowered"        );
   talents.time_anomaly       = find_talent_spell( "Time Anomaly"       );
   talents.arcane_orb         = find_talent_spell( "Arcane Orb"         );
@@ -5266,6 +5286,7 @@ void mage_t::init_spells()
   spec.arcane_mage           = find_specialization_spell( 137021 );
   spec.clearcasting          = find_specialization_spell( "Clearcasting" );
   spec.evocation_2           = find_specialization_spell( 231565 );
+  spec.touch_of_the_magi     = find_specialization_spell( "Touch of the Magi" );
 
   spec.critical_mass         = find_specialization_spell( "Critical Mass" );
   spec.critical_mass_2       = find_specialization_spell( 231630 );
@@ -5613,7 +5634,7 @@ void mage_t::init_assessors()
 {
   player_t::init_assessors();
 
-  if ( talents.touch_of_the_magi->ok() )
+  if ( spec.touch_of_the_magi->ok() )
   {
     auto assessor_fn = [ this ] ( result_amount_type, action_state_t* s )
     {
