@@ -536,6 +536,7 @@ public:
     // Arcane
     const spell_data_t* arcane_barrage_2;
     const spell_data_t* arcane_charge;
+    const spell_data_t* arcane_explosion_2;
     const spell_data_t* arcane_mage;
     const spell_data_t* clearcasting;
     const spell_data_t* evocation_2;
@@ -547,6 +548,7 @@ public:
     const spell_data_t* enhanced_pyrotechnics;
     const spell_data_t* fire_blast_2;
     const spell_data_t* fire_blast_3;
+    const spell_data_t* fire_blast_4;
     const spell_data_t* fire_mage;
     const spell_data_t* hot_streak;
     const spell_data_t* ignite;
@@ -1303,6 +1305,7 @@ struct mage_spell_t : public spell_t
     bool combustion = true;
     bool ice_floes = false;
     bool shatter = false;
+    bool mastery_savant = false;
   } affected_by;
 
   static const snapshot_state_e STATE_FROZEN     = STATE_TGT_USER_1;
@@ -1388,6 +1391,9 @@ public:
 
     if ( affected_by.rune_of_power )
       m *= 1.0 + p()->buffs.rune_of_power->check_value();
+
+    if ( affected_by.mastery_savant )
+      m *= 1.0 + p()->cache.mastery() * p()->spec.savant->effectN( 5 ).mastery_value();
 
     return m;
   }
@@ -2254,20 +2260,25 @@ struct arcane_explosion_t : public arcane_mage_spell_t
     parse_options( options_str );
     aoe = -1;
     cost_reductions = { p->buffs.clearcasting };
+    affected_by.mastery_savant = true;
     base_dd_adder += p->azerite.explosive_echo.value( 2 );
+    base_dd_multiplier *= 1.0 + p->spec.arcane_explosion_2->effectN( 1 ).percent();
   }
 
   void execute() override
   {
     arcane_mage_spell_t::execute();
 
-    if ( !target_list().empty() )
-      p()->trigger_arcane_charge();
+    if ( p()->specialization() == MAGE_ARCANE )
+      {
+      if ( !target_list().empty() )
+        p()->trigger_arcane_charge();
 
-    if ( num_targets_hit >= as<int>( p()->talents.reverberate->effectN( 2 ).base_value() )
-      && rng().roll( p()->talents.reverberate->effectN( 1 ).percent() ) )
-    {
-      p()->trigger_arcane_charge();
+      if ( num_targets_hit >= as<int>( p()->talents.reverberate->effectN( 2 ).base_value() )
+        && rng().roll( p()->talents.reverberate->effectN( 1 ).percent() ) )
+      {
+        p()->trigger_arcane_charge();
+      }
     }
   }
 
@@ -2351,6 +2362,7 @@ struct arcane_missiles_tick_t : public arcane_mage_spell_t
     arcane_mage_spell_t( n, p, p->find_spell( 7268 ) )
   {
     background = true;
+    affected_by.mastery_savant = true;
   }
 
   void execute() override
@@ -2494,6 +2506,7 @@ struct arcane_orb_bolt_t : public arcane_mage_spell_t
     arcane_mage_spell_t( n, p, p->find_spell( 153640 ) )
   {
     background = true;
+    affected_by.mastery_savant = true;
   }
 
   void impact( action_state_t* s ) override
@@ -3738,13 +3751,13 @@ struct icy_veins_t : public frost_mage_spell_t
 struct fire_blast_t : public fire_mage_spell_t
 {
   fire_blast_t( const std::string& n, mage_t* p, const std::string& options_str ) :
-    fire_mage_spell_t( n, p, p->find_class_spell( "Fire Blast" ) )
+    fire_mage_spell_t( n, p, ( p->spec.fire_blast_3->ok() ) ? p->spec.fire_blast_3 : p->find_class_spell( "Fire Blast" ) )
   {
     parse_options( options_str );
-    usable_while_casting = true;
+    usable_while_casting = p->spec.fire_blast_3->ok();
     triggers_hot_streak = triggers_ignite = triggers_kindling = true;
 
-    cooldown->charges += as<int>( p->spec.fire_blast_3->effectN( 1 ).base_value() );
+    cooldown->charges += as<int>( p->spec.fire_blast_4->effectN( 1 ).base_value() );
     cooldown->charges += as<int>( p->talents.flame_on->effectN( 1 ).base_value() );
     cooldown->duration -= 1000 * p->talents.flame_on->effectN( 3 ).time_value();
     cooldown->hasted = true;
@@ -4346,6 +4359,7 @@ struct supernova_t : public arcane_mage_spell_t
     double sn_mult = 1.0 + p->talents.supernova->effectN( 1 ).percent();
     base_multiplier     *= sn_mult;
     base_aoe_multiplier /= sn_mult;
+    affected_by.mastery_savant = true;
   }
 };
 
@@ -4911,7 +4925,6 @@ action_t* mage_t::create_action( const std::string& name, const std::string& opt
   // Arcane
   if ( name == "arcane_barrage"         ) return new         arcane_barrage_t( name, this, options_str );
   if ( name == "arcane_blast"           ) return new           arcane_blast_t( name, this, options_str );
-  if ( name == "arcane_explosion"       ) return new       arcane_explosion_t( name, this, options_str );
   if ( name == "arcane_familiar"        ) return new        arcane_familiar_t( name, this, options_str );
   if ( name == "arcane_missiles"        ) return new        arcane_missiles_t( name, this, options_str );
   if ( name == "arcane_orb"             ) return new             arcane_orb_t( name, this, options_str );
@@ -4930,7 +4943,6 @@ action_t* mage_t::create_action( const std::string& name, const std::string& opt
   if ( name == "blast_wave"             ) return new             blast_wave_t( name, this, options_str );
   if ( name == "combustion"             ) return new             combustion_t( name, this, options_str );
   if ( name == "dragons_breath"         ) return new         dragons_breath_t( name, this, options_str );
-  if ( name == "fire_blast"             ) return new             fire_blast_t( name, this, options_str );
   if ( name == "fireball"               ) return new               fireball_t( name, this, options_str );
   if ( name == "flamestrike"            ) return new            flamestrike_t( name, this, options_str );
   if ( name == "living_bomb"            ) return new            living_bomb_t( name, this, options_str );
@@ -4946,7 +4958,6 @@ action_t* mage_t::create_action( const std::string& name, const std::string& opt
   if ( name == "cone_of_cold"           ) return new           cone_of_cold_t( name, this, options_str );
   if ( name == "ebonbolt"               ) return new               ebonbolt_t( name, this, options_str );
   if ( name == "flurry"                 ) return new                 flurry_t( name, this, options_str );
-  if ( name == "frostbolt"              ) return new              frostbolt_t( name, this, options_str );
   if ( name == "frozen_orb"             ) return new             frozen_orb_t( name, this, options_str );
   if ( name == "glacial_spike"          ) return new          glacial_spike_t( name, this, options_str );
   if ( name == "ice_floes"              ) return new              ice_floes_t( name, this, options_str );
@@ -4959,15 +4970,17 @@ action_t* mage_t::create_action( const std::string& name, const std::string& opt
   if ( name == "freeze"                 ) return new                 freeze_t( name, this, options_str );
 
   // Shared spells
+  if ( name == "arcane_explosion"       ) return new       arcane_explosion_t( name, this, options_str );
   if ( name == "arcane_intellect"       ) return new       arcane_intellect_t( name, this, options_str );
   if ( name == "blink"                  ) return new                  blink_t( name, this, options_str );
   if ( name == "counterspell"           ) return new           counterspell_t( name, this, options_str );
+  if ( name == "fire_blast"             ) return new             fire_blast_t( name, this, options_str );
+  if ( name == "frostbolt"              ) return new              frostbolt_t( name, this, options_str );
   if ( name == "frost_nova"             ) return new             frost_nova_t( name, this, options_str );
-  if ( name == "time_warp"              ) return new              time_warp_t( name, this, options_str );
   if ( name == "mirror_image"           ) return new           mirror_image_t( name, this, options_str );
+  if ( name == "time_warp"              ) return new              time_warp_t( name, this, options_str );
 
   // Shared talents
-  if ( name == "mirror_image"           ) return new           mirror_image_t( name, this, options_str );
   if ( name == "rune_of_power"          ) return new          rune_of_power_t( name, this, options_str );
   if ( name == "shimmer"                ) return new                shimmer_t( name, this, options_str );
 
@@ -5249,6 +5262,7 @@ void mage_t::init_spells()
   // Spec Spells
   spec.arcane_barrage_2      = find_specialization_spell( 231564 );
   spec.arcane_charge         = find_spell( 36032 );
+  spec.arcane_explosion_2    = find_specialization_spell( 321752 );
   spec.arcane_mage           = find_specialization_spell( 137021 );
   spec.clearcasting          = find_specialization_spell( "Clearcasting" );
   spec.evocation_2           = find_specialization_spell( 231565 );
@@ -5257,7 +5271,8 @@ void mage_t::init_spells()
   spec.critical_mass_2       = find_specialization_spell( 231630 );
   spec.enhanced_pyrotechnics = find_specialization_spell( 157642 );
   spec.fire_blast_2          = find_specialization_spell( 231568 );
-  spec.fire_blast_3          = find_specialization_spell( 231567 );
+  spec.fire_blast_3          = find_specialization_spell( 108853 );
+  spec.fire_blast_4          = find_specialization_spell( 231567 );
   spec.fire_mage             = find_specialization_spell( 137019 );
   spec.hot_streak            = find_specialization_spell( 195283 );
 
@@ -6392,12 +6407,6 @@ void mage_t::arise()
     timespan_t min_time = options.focus_magic_interval * ( 1 - options.focus_magic_variance );
     timespan_t max_time = options.focus_magic_interval * ( 1 + options.focus_magic_variance );
     focus_magic_event = make_event<events::focus_magic_event_t>( *sim, *this, rng().range( min_time, max_time ) );
-  }
-
-  if ( spec.ignite->ok() )
-  {
-    timespan_t first_spread = rng().real() * spec.ignite->effectN( 3 ).period();
-    ignite_spread_event = make_event<events::ignite_spread_event_t>( *sim, *this, first_spread );
   }
 
   if ( talents.time_anomaly->ok() )
