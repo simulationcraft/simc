@@ -742,6 +742,7 @@ public:
     uptime_t* arcanic_pulsar;
     uptime_t* vision_of_perfection;
     uptime_t* combined_ca_inc;
+    uptime_t* eclipse;
   } uptime;
 
   struct legendary_t
@@ -932,64 +933,88 @@ druid_t::~druid_t()
 
 // eclipse handler functio defintitions, refractor this
 
-void eclipse_handler_t::cast_wrath() {
-  if ( state == ANY_NEXT || state == LUNAR_NEXT ) {
+void eclipse_handler_t::cast_wrath()
+{
+  if ( state == ANY_NEXT || state == LUNAR_NEXT )
+  {
     wrath_counter--;
     advance_eclipse();
   }
 }
 
-void eclipse_handler_t::cast_starfire() {
-  if (state == ANY_NEXT || state == SOLAR_NEXT) {
+void eclipse_handler_t::cast_starfire()
+{
+  if ( state == ANY_NEXT || state == SOLAR_NEXT )
+  {
     starfire_counter--;
     advance_eclipse();
   }
 }
 
-void eclipse_handler_t::advance_eclipse() {
-  if (!starfire_counter && state != IN_SOLAR)
+void eclipse_handler_t::advance_eclipse()
+{
+  if ( !starfire_counter && state != IN_SOLAR )
   {
     p->buff.eclipse_solar->trigger();
     state = IN_SOLAR;
     reset_stacks();
+    p->uptime.eclipse->update( true, p->sim->current_time() );
     return;
   }
-  if (!wrath_counter && state != IN_LUNAR)
+
+  if ( !wrath_counter && state != IN_LUNAR )
   {
     p->buff.eclipse_lunar->trigger();
     state = IN_LUNAR;
     reset_stacks();
+    p->uptime.eclipse->update( true, p->sim->current_time() );
     return;
   }
-  if (state == IN_SOLAR)
+
+  if ( state == IN_SOLAR || state == IN_LUNAR || state == IN_BOTH )
+    p->uptime.eclipse->update( false, p->sim->current_time() );
+
+  if ( state == IN_SOLAR )
     state = LUNAR_NEXT;
-  if (state == IN_LUNAR)
+
+  if ( state == IN_LUNAR )
     state = SOLAR_NEXT;
-  if (state == IN_BOTH)
+
+  if ( state == IN_BOTH )
     state = ANY_NEXT;
 }
 
-
-void eclipse_handler_t::cast_starsurge() {
-  if (state == IN_LUNAR && p->buff.eclipse_lunar->up()) {
-    p->buff.eclipse_lunar->extend_duration( p, timespan_t::from_seconds( p->spec.starsurge->effectN( 2 ).base_value() + p->spec.starsurge_2->effectN( 1 ).base_value() ) );
+void eclipse_handler_t::cast_starsurge()
+{
+  if ( state == IN_LUNAR && p->buff.eclipse_lunar->up() )
+  {
+    p->buff.eclipse_lunar->extend_duration(
+        p, timespan_t::from_seconds( p->spec.starsurge->effectN( 2 ).base_value() +
+                                     p->spec.starsurge_2->effectN( 1 ).base_value() ) );
   }
-  if (state == IN_SOLAR && p->buff.eclipse_solar->up()) {
-    p->buff.eclipse_solar->extend_duration( p, timespan_t::from_seconds( p->spec.starsurge->effectN( 2 ).base_value() + p->spec.starsurge_2->effectN( 1 ).base_value() ) );
+  if ( state == IN_SOLAR && p->buff.eclipse_solar->up() )
+  {
+    p->buff.eclipse_solar->extend_duration(
+        p, timespan_t::from_seconds( p->spec.starsurge->effectN( 2 ).base_value() +
+                                     p->spec.starsurge_2->effectN( 1 ).base_value() ) );
   }
 }
 
-void eclipse_handler_t::cast_ca_inc() {
+void eclipse_handler_t::cast_ca_inc()
+{
   state = IN_BOTH;
   reset_stacks();
+  p->uptime.eclipse->update( true, p->sim->current_time() );
 }
 
-void eclipse_handler_t::reset_stacks() {
-  wrath_counter = 2;
+void eclipse_handler_t::reset_stacks()
+{
+  wrath_counter    = 2;
   starfire_counter = 2;
 }
 
-eclipse_state_e eclipse_handler_t::get_state() {
+eclipse_state_e eclipse_handler_t::get_state()
+{
   return state;
 }
 
@@ -8920,12 +8945,12 @@ void druid_t::init_procs()
   player_t::init_procs();
 
   // General
-  proc.vision_of_perfection     = get_proc( "Vision of Perfection" )->collect_count()->collect_interval();
+  proc.vision_of_perfection     = get_proc( "Vision of Perfection" );//->collect_count()->collect_interval();
 
   // Balance
-  proc.power_of_the_moon        = get_proc( "Power of the Moon" )->collect_count();
-  proc.arcanic_pulsar           = get_proc( "Arcanic Pulsar Proc" )->collect_interval();
-  proc.streaking_star           = get_proc( "Streaking Stars" )->collect_count();
+  proc.power_of_the_moon        = get_proc( "Power of the Moon" );//->collect_count();
+  proc.arcanic_pulsar           = get_proc( "Arcanic Pulsar Proc" );//->collect_interval();
+  proc.streaking_star           = get_proc( "Streaking Stars" );//->collect_count();
   proc.wasted_streaking_star    = get_proc( "Wasted Streaking Stars" );
 
   // Feral
@@ -8951,17 +8976,19 @@ void druid_t::init_uptimes()
 {
   player_t::init_uptimes();
 
+  uptime.eclipse = get_uptime( "Eclipse" );
+
   if ( talent.incarnation_moonkin->ok() )
   {
     uptime.arcanic_pulsar       = get_uptime( "Incarnation (Pulsar)" );
-    uptime.vision_of_perfection = get_uptime( "Incarnation (Vision)" )->collect_uptime();
-    uptime.combined_ca_inc      = get_uptime( "Incarnation (Total)" )->collect_uptime()->collect_duration();
+    uptime.vision_of_perfection = get_uptime( "Incarnation (Vision)" );//->collect_uptime();
+    uptime.combined_ca_inc      = get_uptime( "Incarnation (Total)" );//->collect_uptime()->collect_duration();
   }
   else
   {
     uptime.arcanic_pulsar       = get_uptime( "Celestial Alignment (Pulsar)" );
-    uptime.vision_of_perfection = get_uptime( "Celestial Alignment (Vision)" )->collect_uptime();
-    uptime.combined_ca_inc      = get_uptime( "Celestial Alignment (Total)" )->collect_uptime()->collect_duration();
+    uptime.vision_of_perfection = get_uptime( "Celestial Alignment (Vision)" );//->collect_uptime();
+    uptime.combined_ca_inc      = get_uptime( "Celestial Alignment (Total)" );//->collect_uptime()->collect_duration();
   }
 }
 
