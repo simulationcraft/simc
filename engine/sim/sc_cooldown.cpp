@@ -199,6 +199,7 @@ void cooldown_t::adjust_base_duration()
 void cooldown_t::adjust_remaining_duration( double delta )
 {
   assert( ongoing() && delta > 0.0 );
+  assert( charges > 0 && "Cooldown charges must be positive");
 
   timespan_t new_remains, remains;
   if ( charges == 1 )

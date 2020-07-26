@@ -731,7 +731,6 @@ public:
     cooldown.blackout_strike              = get_cooldown( "blackout_stike" );
     cooldown.black_ox_brew                = get_cooldown( "black_ox_brew" );
     cooldown.brewmaster_attack            = get_cooldown( "brewmaster_attack" );
-    cooldown.brewmaster_active_mitigation = get_cooldown( "brews" );
     cooldown.breath_of_fire               = get_cooldown( "breath_of_fire" );
     cooldown.fortifying_brew              = get_cooldown( "fortifying_brew" );
     cooldown.fist_of_the_white_tiger      = get_cooldown( "fist_of_the_white_tiger" );
@@ -747,6 +746,10 @@ public:
     cooldown.thunder_focus_tea            = get_cooldown( "thunder_focus_tea" );
     cooldown.touch_of_death               = get_cooldown( "touch_of_death" );
     cooldown.serenity                     = get_cooldown( "serenity" );
+
+    
+    cooldown.brewmaster_active_mitigation = get_cooldown( "brews" );
+    
 
     resource_regeneration = regen_type::DYNAMIC;
     if ( specialization() != MONK_MISTWEAVER )
@@ -5696,13 +5699,6 @@ struct ironskin_brew_t : public monk_spell_t
     harmful     = false;
     trigger_gcd = timespan_t::zero();
 
-    p.cooldown.brewmaster_active_mitigation->duration = p.spec.ironskin_brew->charge_cooldown();
-    p.cooldown.brewmaster_active_mitigation->charges  = p.spec.ironskin_brew->charges();
-    p.cooldown.brewmaster_active_mitigation->duration +=
-        p.talent.light_brewing->effectN( 1 ).time_value();  // Saved as -3000
-    p.cooldown.brewmaster_active_mitigation->charges += (int)p.talent.light_brewing->effectN( 2 ).base_value();
-    p.cooldown.brewmaster_active_mitigation->hasted = true;
-    p.cooldown.brewmaster_active_mitigation->action = this;
 
     cooldown = p.cooldown.brewmaster_active_mitigation;
   }
@@ -5754,14 +5750,6 @@ struct purifying_brew_t : public monk_spell_t
 
     harmful     = false;
     trigger_gcd = timespan_t::zero();
-
-    p.cooldown.brewmaster_active_mitigation->duration = p.spec.purifying_brew->charge_cooldown();
-    p.cooldown.brewmaster_active_mitigation->charges  = p.spec.purifying_brew->charges();
-    p.cooldown.brewmaster_active_mitigation->duration +=
-        p.talent.light_brewing->effectN( 1 ).time_value();  // Saved as -3000
-    p.cooldown.brewmaster_active_mitigation->charges += (int)p.talent.light_brewing->effectN( 2 ).base_value();
-    p.cooldown.brewmaster_active_mitigation->hasted = true;
-    p.cooldown.brewmaster_active_mitigation->action = this;
 
     cooldown = p.cooldown.brewmaster_active_mitigation;
 
@@ -7937,7 +7925,7 @@ void monk_t::init_spells()
   spec.expel_harm          = find_specialization_spell( "Expel Harm" );
   spec.fortifying_brew     = find_specialization_spell( "Fortifying Brew" );
   spec.gift_of_the_ox      = find_specialization_spell( "Gift of the Ox" );
-  spec.ironskin_brew       = find_specialization_spell( "Ironskin Brew" );
+  spec.ironskin_brew       = find_spell( "Ironskin Brew" ); // find_specialization_spell( "Ironskin Brew" ); If this is truly moved to a non-spec spell, move pointer to passives instead of spec
   spec.keg_smash           = find_specialization_spell( "Keg Smash" );
   spec.purifying_brew      = find_specialization_spell( "Purifying Brew" );
   spec.stagger             = find_specialization_spell( "Stagger" );
@@ -8090,6 +8078,12 @@ void monk_t::init_spells()
   sample_datas.heavy_stagger_damage       = get_sample_data( "Effective heavy stagger damage" );
   sample_datas.purified_damage            = get_sample_data( "Stagger damage that was purified" );
   sample_datas.staggering_strikes_cleared = get_sample_data( "Stagger damage that was cleared by Staggering Strikes" );
+
+  // Brew cooldown setup
+  cooldown.brewmaster_active_mitigation->duration = spec.ironskin_brew->charge_cooldown();
+  cooldown.brewmaster_active_mitigation->charges  = spec.ironskin_brew->charges();
+  cooldown.brewmaster_active_mitigation->duration *= 1 + talent.light_brewing->effectN( 1 ).percent();
+  cooldown.brewmaster_active_mitigation->hasted = true;
 
   // Active Action Spells
   // Brewmaster
