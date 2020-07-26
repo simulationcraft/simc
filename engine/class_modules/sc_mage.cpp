@@ -4427,6 +4427,9 @@ struct touch_of_the_magi_t : public arcane_mage_spell_t
     arcane_mage_spell_t( n, p, p->spec.touch_of_the_magi )
   {
     parse_options( options_str );
+
+    if ( data().ok() )
+      add_child( p->action.touch_of_the_magi_explosion );
   }
 
   void impact( action_state_t* s ) override
