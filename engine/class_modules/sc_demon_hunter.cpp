@@ -4846,66 +4846,64 @@ void demon_hunter_t::init_spells()
 
   // Specialization =========================================================
 
-  // General
+  // General Passives
   spec.demon_hunter           = find_specialization_spell( "Demon Hunter" );
   spec.consume_magic          = find_class_spell( "Consume Magic" );
   spec.chaos_brand            = find_spell( 255260 );
   spec.critical_strikes       = find_spell( 221351 );
   spec.demonic_wards          = find_specialization_spell( "Demonic Wards" ); // Two different spells with the same name
-  spec.disrupt                = find_class_spell( "Disrupt" );
-  spec.disrupt_rank_2         = find_spell( 183782 );
-  spec.disrupt_rank_3         = find_spell( 320361 );
-  spec.immolation_aura        = find_class_spell( "Immolation Aura" );
-  spec.immolation_aura_rank_2 = find_spell( 320364 );
-  spec.soul_fragment          = find_spell( 204255 );
-  spec.throw_glaive           = find_class_spell( "Throw Glaive" );
-  spec.throw_glaive_rank_2    = find_spell( 320386 );
   spec.thick_skin             = find_specialization_spell( "Thick Skin" );
+  spec.soul_fragment          = find_spell( 204255 );
+  spec.leather_specialization = find_specialization_spell( "Leather Specialization" );
+
+  // Shared Abilities
+  spec.disrupt                = find_class_spell( "Disrupt" );
+  spec.disrupt_rank_2         = find_rank_spell( "Disrupt", "Rank 2" );
+  spec.disrupt_rank_3         = find_rank_spell( "Disrupt", "Rank 3" );
+  spec.immolation_aura        = find_class_spell( "Immolation Aura" );
+  spec.immolation_aura_rank_2 = find_rank_spell( "Immolation Aura", "Rank 2" );
+  spec.immolation_aura_rank_3 = find_specialization_spell( "Immolation Aura", "Rank 3" );
+  spec.throw_glaive           = find_class_spell( "Throw Glaive" );
+  spec.throw_glaive_rank_2    = find_rank_spell( "Throw Glaive", "Rank 2" );
+  spec.throw_glaive_rank_3    = find_specialization_spell( "Throw Glaive", "Rank 3" );
+  spec.metamorphosis_rank_2   = find_specialization_spell( "Metamorphosis", "Rank 2" );
+  spec.metamorphosis_rank_3   = find_specialization_spell( "Metamorphosis", "Rank 3" );
+  spec.metamorphosis_rank_4   = find_specialization_spell( "Metamorphosis", "Rank 4" );
 
   if ( specialization() == DEMON_HUNTER_HAVOC )
   {
     spec.consume_soul_greater   = find_spell( 178963 );
     spec.consume_soul_lesser    = spec.consume_soul_greater;
-    spec.immolation_aura_rank_3 = find_spell( 320377 );
-    spec.leather_specialization = find_spell( 178976 );
     spec.metamorphosis          = find_class_spell( "Metamorphosis" );
-    spec.metamorphosis_rank_2   = find_spell( 320422 );
-    spec.metamorphosis_rank_3   = find_spell( 320421 );
-    spec.metamorphosis_rank_4   = find_spell( 320645 );
     spec.metamorphosis_buff     = spec.metamorphosis->effectN( 2 ).trigger();
   }
   else
   {
     spec.consume_soul_greater   = find_spell( 210042 );
     spec.consume_soul_lesser    = find_spell( 203794 );
-    spec.immolation_aura_rank_3 = find_spell( 320378 );
-    spec.leather_specialization = find_spell( 226359 );
     spec.metamorphosis          = find_specialization_spell( "Metamorphosis" );
-    spec.metamorphosis_rank_2   = find_spell( 321067 );
-    spec.metamorphosis_rank_3   = find_spell( 321068 );
     spec.metamorphosis_buff     = spec.metamorphosis;
-    spec.throw_glaive_rank_3    = find_specialization_spell( "Throw Glaive", "Rank 3" );
   }
 
   // Havoc
   spec.havoc                  = find_specialization_spell( "Havoc Demon Hunter" );
+  spec.annihilation           = find_spell( 201427, DEMON_HUNTER_HAVOC );
   spec.blade_dance            = find_class_spell( "Blade Dance", DEMON_HUNTER_HAVOC );
-  spec.blade_dance_rank_2     = find_spell( 320402, DEMON_HUNTER_HAVOC );
+  spec.blade_dance_rank_2     = find_specialization_spell( "Blade Dance", "Rank 2" );
+  spec.blur                   = find_specialization_spell( "Blur" );
   spec.chaos_nova             = find_class_spell( "Chaos Nova", DEMON_HUNTER_HAVOC );
   spec.chaos_strike           = find_class_spell( "Chaos Strike", DEMON_HUNTER_HAVOC );
-  spec.eye_beam               = find_class_spell( "Eye Beam", DEMON_HUNTER_HAVOC );
-  spec.eye_beam_rank_2        = find_spell( 320415, DEMON_HUNTER_HAVOC );
-  spec.vengeful_retreat       = find_class_spell( "Vengeful Retreat", DEMON_HUNTER_HAVOC );
-  spec.annihilation           = find_spell( 201427, DEMON_HUNTER_HAVOC );
-  spec.blur                   = find_spell( 198589, DEMON_HUNTER_HAVOC );
   spec.chaos_strike_refund    = find_spell( 197125, DEMON_HUNTER_HAVOC );
   spec.chaos_strike_fury      = find_spell( 193840, DEMON_HUNTER_HAVOC );
   spec.death_sweep            = find_spell( 210152, DEMON_HUNTER_HAVOC );
   spec.demonic_appetite_fury  = find_spell( 210041, DEMON_HUNTER_HAVOC );
+  spec.eye_beam               = find_class_spell( "Eye Beam", DEMON_HUNTER_HAVOC );
+  spec.eye_beam_rank_2        = find_specialization_spell( "Eye Beam", "Rank 2" );
   spec.fel_rush               = find_class_spell( "Fel Rush", DEMON_HUNTER_HAVOC );
-  spec.fel_rush_rank_2        = find_spell( 320416, DEMON_HUNTER_HAVOC );
+  spec.fel_rush_rank_2        = find_specialization_spell( "Fel Rush", "Rank 2" );
   spec.fel_rush_damage        = find_spell( 192611, DEMON_HUNTER_HAVOC ); 
   spec.momentum_buff          = find_spell( 208628, DEMON_HUNTER_HAVOC );
+  spec.vengeful_retreat       = find_class_spell( "Vengeful Retreat", DEMON_HUNTER_HAVOC );
 
   // Vengeance
   spec.vengeance              = find_specialization_spell( "Vengeance Demon Hunter" );
@@ -4917,7 +4915,7 @@ void demon_hunter_t::init_spells()
   // Masteries ==============================================================
 
   mastery.demonic_presence        = find_mastery_spell( DEMON_HUNTER_HAVOC );
-  mastery.demonic_presence_rank_2 = find_spell( 320654, DEMON_HUNTER_HAVOC );
+  mastery.demonic_presence_rank_2 = find_specialization_spell( "Mastery: Demonic Presence", "Rank 2" );
   mastery.fel_blood               = find_mastery_spell( DEMON_HUNTER_VENGEANCE );
 
   // Talents ================================================================
