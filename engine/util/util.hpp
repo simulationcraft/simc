@@ -73,7 +73,6 @@ const char* weapon_subclass_string    ( int subclass );
 const char* item_quality_string       ( int quality );
 const char* specialization_string     ( specialization_e spec );
 const char* movement_direction_string( movement_direction_type );
-const char* class_id_string( player_e type );
 const char* spec_string_no_class( const player_t&p );
 const char* retarget_event_string     ( retarget_source );
 const char* buff_refresh_behavior_string   ( buff_refresh_behavior );
@@ -220,3 +219,51 @@ std::string util::string_join( const T& container, util::string_view delim )
 {
   return fmt::format( "{}", fmt::join( container, to_string_view( delim ) ) );
 }
+
+// fmtlib formatters for enums
+namespace fmt {
+#define SC_ENUM_FORMATTER( EnumType, ToStringFn )                          \
+  template <> struct formatter<EnumType> : formatter<string_view> {        \
+    template <typename FormatContext>                                      \
+    auto format(EnumType val, FormatContext& ctx) -> decltype(ctx.out()) { \
+      return formatter<string_view>::format(ToStringFn(val), ctx);         \
+    }                                                                      \
+  }
+
+SC_ENUM_FORMATTER( attribute_e,             util::attribute_type_string );
+SC_ENUM_FORMATTER( dot_behavior_e,          util::dot_behavior_type_string );
+SC_ENUM_FORMATTER( meta_gem_e,              util::meta_gem_type_string );
+SC_ENUM_FORMATTER( player_e,                util::player_type_string );
+SC_ENUM_FORMATTER( pet_e,                   util::pet_type_string );
+SC_ENUM_FORMATTER( position_e,              util::position_type_string );
+SC_ENUM_FORMATTER( profession_e,            util::profession_type_string );
+SC_ENUM_FORMATTER( race_e,                  util::race_type_string );
+SC_ENUM_FORMATTER( stats_e,                 util::stats_type_string );
+SC_ENUM_FORMATTER( role_e,                  util::role_type_string );
+SC_ENUM_FORMATTER( gcd_haste_type,          util::gcd_haste_type_string );
+SC_ENUM_FORMATTER( resource_e,              util::resource_type_string );
+SC_ENUM_FORMATTER( result_e,                util::result_type_string );
+SC_ENUM_FORMATTER( block_result_e,          util::block_result_type_string );
+SC_ENUM_FORMATTER( full_result_e,           util::full_result_type_string );
+SC_ENUM_FORMATTER( result_amount_type,      util::amount_type_string );
+SC_ENUM_FORMATTER( school_e,                util::school_type_string );
+SC_ENUM_FORMATTER( cache_e,                 util::cache_type_string );
+SC_ENUM_FORMATTER( proc_types,              util::proc_type_string );
+SC_ENUM_FORMATTER( proc_types2,             util::proc_type2_string );
+SC_ENUM_FORMATTER( item_spell_trigger_type, util::item_spell_trigger_string );
+SC_ENUM_FORMATTER( special_effect_e,        util::special_effect_string );
+SC_ENUM_FORMATTER( special_effect_source_e, util::special_effect_source_string );
+SC_ENUM_FORMATTER( scale_metric_e,          util::scale_metric_type_string );
+SC_ENUM_FORMATTER( slot_e,                  util::slot_type_string );
+SC_ENUM_FORMATTER( stat_e,                  util::stat_type_string );
+SC_ENUM_FORMATTER( weapon_e,                util::weapon_type_string );
+SC_ENUM_FORMATTER( specialization_e,        util::specialization_string );
+SC_ENUM_FORMATTER( movement_direction_type, util::movement_direction_string );
+SC_ENUM_FORMATTER( retarget_source,         util::retarget_event_string );
+SC_ENUM_FORMATTER( buff_refresh_behavior,   util::buff_refresh_behavior_string );
+SC_ENUM_FORMATTER( buff_stack_behavior,     util::buff_stack_behavior_string );
+SC_ENUM_FORMATTER( buff_tick_behavior,      util::buff_tick_behavior_string );
+SC_ENUM_FORMATTER( buff_tick_time_behavior, util::buff_tick_time_behavior_string );
+
+#undef SC_ENUM_FORMATTER
+} // namespace fmt
