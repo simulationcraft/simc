@@ -19,7 +19,7 @@ struct rank_class_spell_t
   const char* name;
   const char* rank;
 
-  static const rank_class_spell_t& find( util::string_view name, util::string_view rank, bool ptr );
+  static const rank_class_spell_t& find( util::string_view name, util::string_view rank, unsigned class_id, unsigned spec_id, bool ptr );
 
   static const rank_class_spell_t& nil()
   { return dbc::nil<rank_class_spell_t>; }

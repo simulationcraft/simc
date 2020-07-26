@@ -18,6 +18,8 @@ util::span<const rank_class_spell_t> rank_class_spell_t::data( bool ptr )
 
 const rank_class_spell_t& rank_class_spell_t::find( util::string_view name,
                                                     util::string_view rank,
+                                                    unsigned          class_id,
+                                                    unsigned          spec_id,
                                                     bool              ptr )
 {
   auto __data = data( ptr );
@@ -29,7 +31,17 @@ const rank_class_spell_t& rank_class_spell_t::find( util::string_view name,
   }
 
   // Just do a linear search for the rank spells, there are at most a few for each spell
-  auto it = std::find_if( __range.first, __range.second, [rank]( const rank_class_spell_t& e ) {
+  auto it = std::find_if( __range.first, __range.second, [rank, class_id, spec_id]( const rank_class_spell_t& e ) {
+    if ( e.class_id != class_id )
+    {
+      return false;
+    }
+
+    if ( e.spec_id && e.spec_id != spec_id )
+    {
+      return false;
+    }
+
     return util::str_compare_ci( rank, e.rank );
   } );
 

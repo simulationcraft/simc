@@ -9564,7 +9564,8 @@ const spell_data_t* player_t::find_class_spell( util::string_view name, speciali
 const spell_data_t* player_t::find_rank_spell( util::string_view name,
                                                util::string_view rank ) const
 {
-  const auto& entry = rank_class_spell_t::find( name, rank, dbc->ptr );
+  const auto& entry = rank_class_spell_t::find( name, rank, util::class_id( type ),
+      static_cast<unsigned>( _spec ), dbc->ptr );
   if ( entry.spell_id == 0 )
   {
     return spell_data_t::not_found();
