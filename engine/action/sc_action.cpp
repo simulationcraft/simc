@@ -4688,7 +4688,8 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
 
           case P_COOLDOWN:
             cooldown->duration += effect.time_value();
-            sim->print_debug( "{} cooldown duration increase by {} to {}", *this, effect.time_value(), cooldown->duration );
+            sim->print_debug( "{} cooldown duration increase by {} to {}", *this, effect.time_value(),
+                              cooldown->duration );
             break;
 
           case P_RESOURCE_COST:
@@ -4773,8 +4774,15 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
     switch ( effect.subtype() )
     {
       case A_ADD_PCT_LABEL_MODIFIER:
-        trigger_gcd *= ( 100 + effect.base_value() ) / 100.0;
-        sim->print_debug( "{} trigger_gcd modified by {}% to {}", *this, effect.base_value(), trigger_gcd );
+        switch ( effect.misc_value1() )
+        {
+          case P_GCD:
+            trigger_gcd *= ( 100 + effect.base_value() ) / 100.0;
+            sim->print_debug( "{} trigger_gcd modified by {}% to {}", *this, effect.base_value(), trigger_gcd );
+
+          default:
+            break;
+        }
         break;
       default:
         break;
