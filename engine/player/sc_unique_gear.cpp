@@ -4125,8 +4125,8 @@ void unique_gear::init( player_t* p )
     for ( size_t j = 0; j < item.parsed.special_effects.size(); j++ )
     {
       special_effect_t* effect = item.parsed.special_effects[ j ];
-      if ( p -> sim -> debug )
-        p -> sim -> out_debug.printf( "Initializing item-based special effect %s", effect -> to_string().c_str() );
+
+      p -> sim -> print_debug( "Initializing item-based special effect {}", *effect );
 
       initialize_special_effect_2( effect );
     }
@@ -4136,8 +4136,8 @@ void unique_gear::init( player_t* p )
   for ( size_t i = 0; i < p -> special_effects.size(); i++ )
   {
     special_effect_t* effect = p -> special_effects[ i ];
-    if ( p -> sim -> debug )
-      p -> sim -> out_debug.printf( "Initializing generic special effect %s", effect -> to_string().c_str() );
+
+    p -> sim -> print_debug( "Initializing generic special effect {}", *effect );
 
     initialize_special_effect_2( effect );
   }

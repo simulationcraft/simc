@@ -84,8 +84,8 @@ void dbc_proc_callback_t::trigger( action_t* a, void* call_data )
 
   bool triggered = roll( a );
   if ( listener->sim->debug )
-    listener->sim->out_debug.printf( "%s attempts to proc %s on %s: %d", listener->name(), effect.to_string().c_str(),
-                                     a->name(), triggered );
+    listener->sim->print_debug( "{} attempts to proc {} on {}: {:d}", listener->name(), effect, a->name(), triggered );
+
   if ( triggered )
   {
     // Detach proc execution from proc triggering
