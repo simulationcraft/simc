@@ -245,6 +245,29 @@ public:
     azerite_power_t wildfire_cluster;
   } azerite;
 
+  struct legendary_t
+  {
+    spell_data_ptr_t call_of_the_wild;
+    spell_data_ptr_t craven_strategem; // NYI
+    spell_data_ptr_t nessingwarys_apparatus; // NYI
+    spell_data_ptr_t soulforge_embers; // NYI
+    // Beast Mastery
+    spell_data_ptr_t dire_command; // NYI
+    spell_data_ptr_t flamewakers_cobra_sting; // NYI
+    spell_data_ptr_t qapla_eredun_war_order; // NYI
+    spell_data_ptr_t rylakstalkers_fangs; // NYI
+    // Marksmanship
+    spell_data_ptr_t eagletalons_true_focus; // NYI
+    spell_data_ptr_t secrets_of_the_vigil; // NYI
+    spell_data_ptr_t serpentstalkers_trickery; // NYI
+    spell_data_ptr_t surging_shots; // NYI
+    // Survival
+    spell_data_ptr_t butchers_bone_fragments; // NYI
+    spell_data_ptr_t latent_poison_injectors; // NYI
+    spell_data_ptr_t rylakstalkers_strikes; // NYI
+    spell_data_ptr_t wildfire_cluster; // NYI
+  } legendary;
+
   struct {
     azerite_essence_t memory_of_lucid_dreams; // Memory of Lucid Dreams Minor
     double memory_of_lucid_dreams_major_mult = 0;
@@ -639,6 +662,10 @@ public:
     ab::apply_affecting_aura( p -> find_specialization_spell( 321287 ) ); // True Aim
     ab::apply_affecting_aura( p -> find_specialization_spell( 321290 ) ); // Wildfire Bombs (Rank 2)
     ab::apply_affecting_aura( p -> find_specialization_spell( 321293 ) ); // Arcane Shot (Rank 2)
+
+    // passive legendary effects
+    ab::apply_affecting_aura( p -> legendary.call_of_the_wild );
+    ab::apply_affecting_aura( p -> legendary.surging_shots );
   }
 
   hunter_t* p()             { return static_cast<hunter_t*>( ab::player ); }
@@ -4854,6 +4881,28 @@ void hunter_t::init_spells()
   specs.harpoon              = find_class_spell( "Harpoon" );
   specs.raptor_strike        = find_class_spell( "Raptor Strike" );
   specs.wildfire_bomb        = find_class_spell( "Wildfire Bomb" );
+
+  // Runeforge Legendaries
+
+  legendary.call_of_the_wild         = find_runeforge_legendary( "Call of the Wild" );
+  legendary.craven_strategem         = find_runeforge_legendary( "Craven Strategem" );
+  legendary.nessingwarys_apparatus   = find_runeforge_legendary( "Nessingwary's Trapping Apparatus" );
+  legendary.soulforge_embers         = find_runeforge_legendary( "Soulforge Embers" );
+
+  legendary.dire_command             = find_runeforge_legendary( "Dire Command" );
+  legendary.flamewakers_cobra_sting  = find_runeforge_legendary( "Flamewaker's Cobra Sting" );
+  legendary.qapla_eredun_war_order   = find_runeforge_legendary( "Qa'pla, Eredun War Order" );
+  legendary.rylakstalkers_fangs      = find_runeforge_legendary( "Rylakstalker's Piercing Fangs" );
+
+  legendary.eagletalons_true_focus   = find_runeforge_legendary( "Eagletalon's True Focus" );
+  legendary.secrets_of_the_vigil     = find_runeforge_legendary( "Secrets of the Unblinking Vigil" );
+  legendary.serpentstalkers_trickery = find_runeforge_legendary( "Serpentstalker's Trickery" );
+  legendary.surging_shots            = find_runeforge_legendary( "Surging Shots" );
+
+  legendary.butchers_bone_fragments  = find_runeforge_legendary( "Butcher's Bone Fragments" );
+  legendary.latent_poison_injectors  = find_runeforge_legendary( "Latent Poison Injectors" );
+  legendary.rylakstalkers_strikes    = find_runeforge_legendary( "Rylakstalker's Confounding Strikes" );
+  legendary.wildfire_cluster         = find_runeforge_legendary( "Wildfire Cluster" );
 
   // Azerite
 
