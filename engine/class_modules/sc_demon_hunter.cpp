@@ -40,6 +40,9 @@ namespace
   ** Done -- Mastery: Demonic Presence
   ** Done -- Metamorphosis (Havoc)
   ** Done -- Fel Rush
+  ** Done -- Disrupt
+  ** Done -- Consume Magic
+  ** Done -- Throw Glaive
 
   * Implement Covenant abilities
   * Implement Soulbinds
@@ -4857,6 +4860,7 @@ void demon_hunter_t::init_spells()
   spec.soul_fragment          = find_spell( 204255 );
   spec.throw_glaive           = find_class_spell( "Throw Glaive" );
   spec.throw_glaive_rank_2    = find_spell( 320386 );
+  spec.thick_skin             = find_specialization_spell( "Thick Skin" );
 
   if ( specialization() == DEMON_HUNTER_HAVOC )
   {
@@ -4880,7 +4884,6 @@ void demon_hunter_t::init_spells()
     spec.metamorphosis_rank_2   = find_spell( 321067 );
     spec.metamorphosis_rank_3   = find_spell( 321068 );
     spec.metamorphosis_buff     = spec.metamorphosis;
-    spec.thick_skin             = find_specialization_spell( "Thick Skin" );
     spec.throw_glaive_rank_3    = find_specialization_spell( "Throw Glaive", "Rank 3" );
   }
 
