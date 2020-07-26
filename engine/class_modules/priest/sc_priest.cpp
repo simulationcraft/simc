@@ -621,6 +621,7 @@ priest_t::priest_t( sim_t* sim, util::string_view name, race_e r )
     options(),
     azerite(),
     azerite_essence(),
+    legendary(),
     insanity( *this )
 {
   create_cooldowns();
@@ -1092,6 +1093,10 @@ void priest_t::init_spells()
   azerite_essence.vision_of_perfection_r1 = azerite_essence.vision_of_perfection.spell( 1u, essence_type::MAJOR );
   azerite_essence.vision_of_perfection_r2 =
       azerite_essence.vision_of_perfection.spell( 2u, essence_spell::UPGRADE, essence_type::MAJOR );
+
+  // runeforge legendary
+  legendary.kiss_of_death    = find_runeforge_legendary( "Kiss of Death" );
+  legendary.the_penitent_one = find_runeforge_legendary( "The Penitent One" );
 }
 
 void priest_t::create_buffs()
@@ -1108,6 +1113,9 @@ void priest_t::create_buffs()
   buffs.power_infusion = make_buff<buffs::power_infusion_t>( *this );
 
   buffs.dispersion = make_buff<buffs::dispersion_t>( *this );
+
+  buffs.the_penitent_one = make_buff( this, "the_penitent_one", legendary.the_penitent_one->effectN( 1 ).trigger() )
+                               ->set_trigger_spell( legendary.the_penitent_one );
 
   create_buffs_shadow();
   create_buffs_discipline();
@@ -1182,12 +1190,10 @@ void priest_t::apply_affecting_auras( action_t& action )
 {
   player_t::apply_affecting_auras( action );
 
-  auto passives = { specs.shadow_priest, specs.holy_priest, specs.discipline_priest };
-
-  for ( auto&& spell : passives )
-  {
-    action.apply_affecting_aura( spell );
-  }
+  action.apply_affecting_aura( specs.shadow_priest );
+  action.apply_affecting_aura( specs.holy_priest );
+  action.apply_affecting_aura( specs.discipline_priest );
+  action.apply_affecting_aura( legendary.kiss_of_death );
 }
 
 /// ALL Spec Pre-Combat Action Priority List
@@ -1327,19 +1333,6 @@ priest_td_t* priest_t::get_target_data( player_t* target ) const
 
 void priest_t::init_action_list()
 {
-  // 2020-02-13: The Discipline module/apl is outdated and not supported (both for dps and healing)
-  if ( !sim->allow_experimental_specializations && specialization() == PRIEST_DISCIPLINE )
-  {
-    if ( !quiet )
-      sim->error(
-          "Priest Discipline module for {} is not currently supported. It can be enabled by setting the option "
-          "allow_experimental_specializations=1",
-          *this );
-
-    quiet = true;
-    return;
-  }
-
   if ( !action_list_str.empty() )
   {
     player_t::init_action_list();

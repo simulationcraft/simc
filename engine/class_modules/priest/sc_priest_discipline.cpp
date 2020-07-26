@@ -51,6 +51,32 @@ struct penance_t final : public priest_spell_t
       this->stats = stats;
     }
 
+    double cost() const override
+    {
+      auto cost = base_t::cost();
+      if ( priest().buffs.the_penitent_one->check() )
+      {
+        cost *= ( 100 + priest().buffs.the_penitent_one->data().effectN( 2 ).base_value() ) / 100.0;
+      }
+      return cost;
+    }
+
+    timespan_t tick_time( const action_state_t* s ) const override
+    {
+      auto tt = base_t::tick_time( s );
+      if ( priest().buffs.the_penitent_one->check() )
+      {
+        tt *= ( 100 + priest().buffs.the_penitent_one->data().effectN( 1 ).base_value() ) / 100.0;
+      }
+      return tt;
+    }
+
+    void execute() override
+    {
+      base_t::execute();
+      priest().buffs.the_penitent_one->up();  // benefit tracking.
+    }
+
     bool verify_actor_level() const override
     {
       // Tick spell data is restricted to level 60+, even though main spell is level 10+

@@ -121,8 +121,8 @@ public:
     propagate_const<buff_t*> harvested_thoughts;
     propagate_const<buff_t*> whispers_of_the_damned;
 
-    // Holy
-    propagate_const<buff_t*> sacred_flame;
+    // Runeforge Legendary
+    propagate_const<buff_t*> the_penitent_one;
 
   } buffs;
 
@@ -400,6 +400,12 @@ public:
     const spell_data_t* vision_of_perfection_r1;
     const spell_data_t* vision_of_perfection_r2;
   } azerite_essence;
+
+  struct
+  {
+    const spell_data_t* kiss_of_death;
+    const spell_data_t* the_penitent_one;  // Effect implemented, but not hooked up the PW:Radiance
+  } legendary;
 
   struct insanity_end_event_t;
 
@@ -913,16 +919,14 @@ public:
     {
       const spelleffect_data_t& effect;
       bool& affects;
-    } affects[] = {
-        { priest().buffs.voidform->data().effectN( 1 ), affected_by.voidform_da },
-        { priest().buffs.voidform->data().effectN( 2 ), affected_by.voidform_ta },
-        { priest().buffs.shadowform->data().effectN( 1 ), affected_by.shadowform_da },
-        { priest().buffs.shadowform->data().effectN( 4 ), affected_by.shadowform_ta },
-        { priest().buffs.twist_of_fate->data().effectN( 1 ), affected_by.twist_of_fate_da },
-        { priest().buffs.twist_of_fate->data().effectN( 2 ), affected_by.twist_of_fate_ta },
-        { priest().mastery_spells.madness->effectN( 1 ), affected_by.mastery_madness_da },
-        { priest().mastery_spells.madness->effectN( 2 ), affected_by.mastery_madness_ta }
-    };
+    } affects[] = { { priest().buffs.voidform->data().effectN( 1 ), affected_by.voidform_da },
+                    { priest().buffs.voidform->data().effectN( 2 ), affected_by.voidform_ta },
+                    { priest().buffs.shadowform->data().effectN( 1 ), affected_by.shadowform_da },
+                    { priest().buffs.shadowform->data().effectN( 4 ), affected_by.shadowform_ta },
+                    { priest().buffs.twist_of_fate->data().effectN( 1 ), affected_by.twist_of_fate_da },
+                    { priest().buffs.twist_of_fate->data().effectN( 2 ), affected_by.twist_of_fate_ta },
+                    { priest().mastery_spells.madness->effectN( 1 ), affected_by.mastery_madness_da },
+                    { priest().mastery_spells.madness->effectN( 2 ), affected_by.mastery_madness_ta } };
 
     for ( const auto& a : affects )
     {

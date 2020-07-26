@@ -4688,7 +4688,7 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
 
           case P_COOLDOWN:
             cooldown->duration += effect.time_value();
-            sim->print_debug( "{} cooldown duration modified by {}", *this, effect.time_value() );
+            sim->print_debug( "{} cooldown duration increase by {} to {}", *this, effect.time_value(), cooldown->duration );
             break;
 
           case P_RESOURCE_COST:

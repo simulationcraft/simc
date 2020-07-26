@@ -332,7 +332,7 @@ struct shadow_word_death_t final : public priest_spell_t
     auto rank2 = p.find_spell( 322107 );
     if ( rank2->ok() )
     {
-      cooldown->duration = data().cooldown() + rank2->effectN( 1 ).time_value();
+      cooldown->duration += rank2->effectN( 1 ).time_value();
     }
   }
 
