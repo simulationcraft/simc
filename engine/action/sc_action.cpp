@@ -4705,7 +4705,7 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
 
           case P_GCD:
             trigger_gcd += effect.time_value();
-            sim->print_debug( "{} trigger_gcd modified by {}", *this, effect.time_value() );
+            sim->print_debug( "{} trigger_gcd modified by {} to {}", *this, effect.time_value(), trigger_gcd );
 
           default:
             break;
@@ -4774,7 +4774,7 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
     {
       case A_ADD_PCT_LABEL_MODIFIER:
         trigger_gcd *= ( 100 + effect.base_value() ) / 100.0;
-        sim->print_debug( "{} trigger_gcd modified by {}%", *this, effect.base_value() );
+        sim->print_debug( "{} trigger_gcd modified by {}% to {}", *this, effect.base_value(), trigger_gcd );
         break;
       default:
         break;

@@ -5699,7 +5699,6 @@ struct ironskin_brew_t : public monk_spell_t
     harmful     = false;
     trigger_gcd = timespan_t::zero();
 
-
     cooldown = p.cooldown.brewmaster_active_mitigation;
   }
 
@@ -6346,11 +6345,12 @@ struct expel_harm_t : public monk_spell_t
   expel_harm_dmg_t* dmg;
   niuzaos_blessing_t* niuzao;
   expel_harm_t( monk_t* p, const std::string& options_str )
-    : monk_spell_t( "expel_harm", p, p->spec.expel_harm ),
+    : monk_spell_t( "expel_harm", p, p->find_spell(322101) ),
       dmg( new expel_harm_dmg_t( p ) ),
       niuzao( new niuzaos_blessing_t( *p ) )
   {
     parse_options( options_str );
+    add_child(dmg);
   }
 
   bool ready() override
