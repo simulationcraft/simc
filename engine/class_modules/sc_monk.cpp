@@ -303,12 +303,12 @@ public:
     // Mistweaver
     const spell_data_t* zen_pulse;
 
-    // Tier 30 Talents
+    // Tier 25 Talents
     const spell_data_t* celerity;
     const spell_data_t* chi_torpedo;
     const spell_data_t* tigers_lust;
 
-    // Tier 45 Talents
+    // Tier 30 Talents
     // Brewmaster
     const spell_data_t* light_brewing;
     const spell_data_t* spitfire;
@@ -322,7 +322,7 @@ public:
     const spell_data_t* mist_wrap;
     const spell_data_t* lifecycles;
 
-    // Tier 60 Talents
+    // Tier 35 Talents
     const spell_data_t* tiger_tail_sweep;
     const spell_data_t* summon_black_ox_statue;  // Brewmaster
     const spell_data_t* song_of_chi_ji;          // Mistweaver
@@ -330,7 +330,7 @@ public:
     // Windwalker
     const spell_data_t* good_karma;
 
-    // Tier 75 Talents
+    // Tier 40 Talents
     // Windwalker
     const spell_data_t* inner_strength;
     // Mistweaver & Windwalker
@@ -340,10 +340,10 @@ public:
     const spell_data_t* healing_elixir;
     const spell_data_t* dampen_harm;
 
-    // Tier 90 Talents
+    // Tier 45 Talents
     // Brewmaster
     const spell_data_t* special_delivery;
-    const spell_data_t* invoke_niuzao;
+    const spell_data_t* exploding_keg;
     // Windwalker
     const spell_data_t* hit_combo;
     const spell_data_t* invoke_xuen;
@@ -354,10 +354,10 @@ public:
     const spell_data_t* refreshing_jade_wind;
     const spell_data_t* invoke_chi_ji;
 
-    // Tier 100 Talents
+    // Tier 50 Talents
     // Brewmaster
     const spell_data_t* high_tolerance;
-    const spell_data_t* guard;
+    const spell_data_t* celestial_flames;
     const spell_data_t* blackout_combo;
     // Windwalker
     const spell_data_t* spirtual_focus;
@@ -405,6 +405,7 @@ public:
     const spell_data_t* purifying_brew;
     const spell_data_t* stagger;
     const spell_data_t* zen_meditation;
+    const spell_data_t* invoke_niuzao;
 
     // Mistweaver
     const spell_data_t* detox;
@@ -2218,11 +2219,11 @@ private:
 
       // for future compatibility, we may want to grab Niuzao and our tick spell and build this data from those (Niuzao
       // summon duration, for example)
-      dot_duration = p->o()->talent.invoke_niuzao->duration();
+      dot_duration = p->o()->spec.invoke_niuzao->duration();
       hasted_ticks = may_miss = false;
       tick_zero = dynamic_tick_action = true;                                      // trigger tick when t == 0
       base_tick_time                  = p->o()->passives.stomp->cooldown();        // trigger a tick every second
-      cooldown->duration              = p->o()->talent.invoke_niuzao->duration();  // we're done after 45 seconds
+      cooldown->duration              = p->o()->spec.invoke_niuzao->duration();  // we're done after 45 seconds
       attack_power_mod.direct         = 0.0;
       attack_power_mod.tick           = 0.0;
 
@@ -3001,7 +3002,7 @@ struct fury_of_xuen_spell_t : public summon_pet_t
 struct niuzao_spell_t : public summon_pet_t
 {
   niuzao_spell_t( monk_t* p, const std::string& options_str )
-    : summon_pet_t( "invoke_niuzao_the_black_ox", "niuzao_the_black_ox", p, p->talent.invoke_niuzao )
+    : summon_pet_t( "invoke_niuzao_the_black_ox", "niuzao_the_black_ox", p, p->spec.invoke_niuzao )
   {
     parse_options( options_str );
 
@@ -6386,8 +6387,13 @@ struct expel_harm_t : public monk_spell_t
     // healing done and can't crit, but this gets damage dealt
     // independently and allows it to crit, so it will have higher
     // variance but with enough iterations will have the same mean.
+
+    // TODO: update for shadowlands
+    // double coeff =
+    //     p()->passives.gift_of_the_ox_heal->effectN( 1 ).ap_coeff() * p()->spec.expel_harm->effectN( 2 ).percent();
     double coeff =
-        p()->passives.gift_of_the_ox_heal->effectN( 1 ).ap_coeff() * p()->spec.expel_harm->effectN( 2 ).percent();
+        p()->passives.gift_of_the_ox_heal->effectN( 1 ).ap_coeff();
+        
     double ap = p()->composite_melee_attack_power( attack_power_type::WEAPON_MAINHAND ) *
                 p()->composite_attack_power_multiplier();
     double stacks = p()->buff.gift_of_the_ox->stack();
@@ -7785,7 +7791,7 @@ void monk_t::create_pets()
     create_pet( "fury_of_xuen" );
   }
 
-  if ( talent.invoke_niuzao->ok() && ( find_action( "invoke_niuzao" ) || find_action( "invoke_niuzao_the_black_ox" ) ) )
+  if ( spec.invoke_niuzao->ok() && ( find_action( "invoke_niuzao" ) || find_action( "invoke_niuzao_the_black_ox" ) ) )
   {
     create_pet( "niuzao_the_black_ox" );
   }
@@ -7834,12 +7840,12 @@ void monk_t::init_spells()
   // Mistweaver
   talent.zen_pulse = find_talent_spell( "Zen Pulse" );
 
-  // Tier 30 Talents
+  // Tier 25 Talents
   talent.celerity    = find_talent_spell( "Celerity" );
   talent.chi_torpedo = find_talent_spell( "Chi Torpedo" );
   talent.tigers_lust = find_talent_spell( "Tiger's Lust" );
 
-  // Tier 45 Talents
+  // Tier 30 Talents
   // Brewmaster
   talent.light_brewing = find_talent_spell( "Light Brewing" );
   talent.spitfire      = find_talent_spell( "Spitfire" );
@@ -7853,7 +7859,7 @@ void monk_t::init_spells()
   talent.mist_wrap           = find_talent_spell( "Mist Wrap" );
   talent.lifecycles          = find_talent_spell( "Lifecycles" );
 
-  // Tier 60 Talents
+  // Tier 35 Talents
   talent.tiger_tail_sweep       = find_talent_spell( "Tiger Tail Sweep" );
   talent.summon_black_ox_statue = find_talent_spell( "Summon Black Ox Statue" );  // Brewmaster & Windwalker
   talent.song_of_chi_ji         = find_talent_spell( "Song of Chi-Ji" );          // Mistweaver
@@ -7861,7 +7867,7 @@ void monk_t::init_spells()
   // Windwalker
   talent.good_karma = find_talent_spell( "Good Karma" );
 
-  // Tier 75 Talents
+  // Tier 40 Talents
   // Windwalker
   talent.inner_strength = find_talent_spell( "Inner Strength" );
   // Mistweaver & Windwalker
@@ -7871,10 +7877,10 @@ void monk_t::init_spells()
   talent.healing_elixir = find_talent_spell( "Healing Elixir" );
   talent.dampen_harm    = find_talent_spell( "Dampen Harm" );
 
-  // Tier 90 Talents
+  // Tier 45 Talents
   // Brewmaster
   talent.special_delivery = find_talent_spell( "Special Delivery" );
-  talent.invoke_niuzao    = find_talent_spell( "Invoke Niuzao, the Black Ox" );
+  talent.exploding_keg    = find_talent_spell( "Exploding Keg" );
   // Windwalker
   talent.hit_combo   = find_talent_spell( "Hit Combo" );
   talent.invoke_xuen = find_talent_spell( "Invoke Xuen, the White Tiger" );
@@ -7885,11 +7891,11 @@ void monk_t::init_spells()
   talent.refreshing_jade_wind       = find_talent_spell( "Refreshing Jade Wind" );
   talent.invoke_chi_ji              = find_talent_spell( "Invoke Chi-Ji, the Red Crane" );
 
-  // Tier 100 Talents
+  // Tier 50 Talents
   // Brewmaster
-  talent.high_tolerance = find_talent_spell( "High Tolerance" );
-  talent.guard          = find_talent_spell( "Guard" );
-  talent.blackout_combo = find_talent_spell( "Blackout Combo" );
+  talent.high_tolerance   = find_talent_spell( "High Tolerance" );
+  talent.celestial_flames = find_talent_spell( "Celestial Flames" );
+  talent.blackout_combo   = find_talent_spell( "Blackout Combo" );
   // Windwalker
   talent.spirtual_focus        = find_talent_spell( "Spiritual Focus" );
   talent.whirling_dragon_punch = find_talent_spell( "Whirling Dragon Punch" );
@@ -7926,7 +7932,7 @@ void monk_t::init_spells()
   spec.bladed_armor        = find_specialization_spell( "Bladed Armor" );
   spec.breath_of_fire      = find_specialization_spell( "Breath of Fire" );
   spec.brewmasters_balance = find_specialization_spell( "Brewmaster's Balance" );
-  spec.brewmaster_monk     = find_specialization_spell( 137023 );
+  spec.brewmaster_monk     = find_specialization_spell( "Brewmaster Monk" );
   spec.celestial_fortune   = find_specialization_spell( "Celestial Fortune" );
   spec.expel_harm          = find_specialization_spell( "Expel Harm" );
   spec.fortifying_brew     = find_specialization_spell( "Fortifying Brew" );
@@ -7936,6 +7942,7 @@ void monk_t::init_spells()
   spec.purifying_brew      = find_specialization_spell( "Purifying Brew" );
   spec.stagger             = find_specialization_spell( "Stagger" );
   spec.zen_meditation      = find_specialization_spell( "Zen Meditation" );
+  spec.invoke_niuzao       = find_specialization_spell( "Invoke Niuzao, the Black Ox" );
 
   // Mistweaver Specialization
   spec.detox                      = find_specialization_spell( "Detox" );
@@ -7943,7 +7950,7 @@ void monk_t::init_spells()
   spec.envoloping_mist_2          = find_specialization_spell( 231605 );
   spec.essence_font               = find_specialization_spell( "Essence Font" );
   spec.life_cocoon                = find_specialization_spell( "Life Cocoon" );
-  spec.mistweaver_monk            = find_specialization_spell( 137024 );
+  spec.mistweaver_monk            = find_specialization_spell( "Mistweaver Monk" );
   spec.reawaken                   = find_specialization_spell( "Reawaken" );
   spec.renewing_mist              = find_specialization_spell( "Renewing Mist" );
   spec.renewing_mist_2            = find_specialization_spell( 231606 );
@@ -7969,7 +7976,7 @@ void monk_t::init_spells()
   spec.touch_of_karma             = find_specialization_spell( "Touch of Karma" );
   spec.touch_of_death             = find_specialization_spell( "Touch of Death" );
   spec.touch_of_death_amplifier   = find_specialization_spell( "Touch of Death Amplifier" );
-  spec.windwalker_monk            = find_specialization_spell( 137025 );
+  spec.windwalker_monk            = find_specialization_spell( "Windwalker Monk" );
   spec.windwalking                = find_specialization_spell( "Windwalking" );
 
   // Azerite Powers ===================================
@@ -9710,7 +9717,7 @@ void monk_t::apl_combat_brewmaster()
       def->add_action( racial_actions[ i ] );
   }
   // Ironskin Brew
-  def->add_talent( this, "Invoke Niuzao, the Black Ox", "if=target.time_to_die>25" );
+  def->add_action( this, spec.invoke_niuzao, "invoke_niuzao_the_black_ox", "if=target.time_to_die>25" );
   def->add_action(
       this, "Ironskin Brew",
       "if=buff.blackout_combo.down&incoming_damage_1999ms>(health.max*0.1+stagger.last_tick_damage_4)&buff.elusive_"
@@ -9743,7 +9750,7 @@ void monk_t::apl_combat_brewmaster()
                    "if=talent.rushing_jade_wind.enabled&buff.blackout_combo.up&buff.rushing_jade_wind.up" );
   def->add_action(
       this, "Tiger Palm",
-      "if=(talent.invoke_niuzao_the_black_ox.enabled|talent.special_delivery.enabled)&buff.blackout_combo.up" );
+      "if=(1|talent.special_delivery.enabled)&buff.blackout_combo.up" );
   def->add_action( this, "Expel Harm", "if=buff.gift_of_the_ox.stack>4" );
   def->add_action( this, "Blackout Strike" );
   def->add_action( this, "Keg Smash" );
@@ -10508,109 +10515,36 @@ std::unique_ptr<expr_t> monk_t::create_expression( const std::string& name_str )
 
 void monk_t::apply_affecting_auras( action_t& action )
 {
-  player_t::apply_affecting_auras(action);
+  player_t::apply_affecting_auras( action );
 
-  // hasted cooldown
-  for ( auto&& effect : {spec.brewmaster_monk->effectN( 4 ), spec.brewmaster_monk->effectN( 5 )} )
-  {
-    if ( action.data().affected_by_category( *dbc, effect ) )
-    {
-      action.cooldown->hasted = true;
-    }
-  }
-  if ( action.data().affected_by( passives.aura_monk->effectN( 1 ) ) )
-  {
-    action.cooldown->hasted = true;
-  }
+  action.apply_affecting_aura( passives.aura_monk );
+  action.apply_affecting_aura( spec.brewmaster_monk );
+  action.apply_affecting_aura( spec.windwalker_monk );
+  action.apply_affecting_aura( spec.mistweaver_monk );
 
-  if ( spec.brewmaster_monk->ok() )
-  {
-    if ( action.data().affected_by( spec.brewmaster_monk->effectN( 1 ) ) )
-      action.base_dd_multiplier *= 1.0 + spec.brewmaster_monk->effectN( 1 ).percent();
+  // // Reduce GCD from 1.5 sec to 1 sec
+  // if ( action.data().affected_by( spec.brewmaster_monk->effectN( 14 ) ) )
+  //   action.trigger_gcd += spec.brewmaster_monk->effectN( 14 ).time_value();  // Saved as -500 milliseconds
 
-    if ( action.data().affected_by( spec.brewmaster_monk->effectN( 6 ) ) )  // RJW uses direct hit for it's ticks
-      action.base_dd_multiplier *= 1.0 + spec.brewmaster_monk->effectN( 6 ).percent();
+  // // Reduce GCD from 1.5 sec to 1.005 sec (33%)
+  // if ( action.data().affected_by_label( spec.brewmaster_monk->effectN( 22 ) ) )
+  // {
+  //   action.trigger_gcd *= ( 100.0 + spec.brewmaster_monk->effectN( 22 ).base_value() ) / 100.0;
+  //   action.gcd_type = gcd_haste_type::NONE;
+  // }
 
-    if ( action.data().affected_by( spec.brewmaster_monk->effectN( 7 ) ) )
-      action.base_dd_multiplier *= 1.0 + spec.brewmaster_monk->effectN( 7 ).percent();
+  // if ( action.data().affected_by( spec.mistweaver_monk->effectN( 6 ) ) )
+  //   action.gcd_type = gcd_haste_type::HASTE;
 
-    if ( action.data().affected_by( spec.brewmaster_monk->effectN( 18 ) ) )
-      action.base_dd_multiplier *= 1.0 + spec.brewmaster_monk->effectN( 18 ).percent();
+  // if ( action.data().affected_by( spec.windwalker_monk->effectN( 14 ) ) )
+  //   action.trigger_gcd += spec.windwalker_monk->effectN( 14 ).time_value();  // Saved as -500 milliseconds
 
-    if ( action.data().affected_by( spec.brewmaster_monk->effectN( 2 ) ) )
-      action.base_td_multiplier *= 1.0 + spec.brewmaster_monk->effectN( 2 ).percent();
-
-    if ( action.data().affected_by( spec.brewmaster_monk->effectN( 8 ) ) )
-      action.base_td_multiplier *= 1.0 + spec.brewmaster_monk->effectN( 8 ).percent();
-
-    // Reduce GCD from 1.5 sec to 1 sec
-    if ( action.data().affected_by( spec.brewmaster_monk->effectN( 14 ) ) )
-      action.trigger_gcd += spec.brewmaster_monk->effectN( 14 ).time_value();  // Saved as -500 milliseconds
-
-    // Brewmasters no longer use Chi so need to zero out chi cost
-    if ( action.data().affected_by( spec.brewmaster_monk->effectN( 16 ) ) )
-      action.base_costs[ RESOURCE_CHI ] *= 1 + spec.brewmaster_monk->effectN( 16 ).percent();  // -100% for Brewmasters
-
-    // Reduce GCD from 1.5 sec to 1.005 sec (33%)
-    if ( action.data().affected_by_label( spec.brewmaster_monk->effectN( 22 ) ) )
-    {
-      action.trigger_gcd *= ( 100.0 + spec.brewmaster_monk->effectN( 22 ).base_value() ) / 100.0;
-      action.gcd_type = gcd_haste_type::NONE;
-    }
-  }
-
-  if ( spec.mistweaver_monk->ok() )
-  {
-    if ( action.data().affected_by( spec.mistweaver_monk->effectN( 1 ) ) )
-      action.base_dd_multiplier *= 1.0 + spec.mistweaver_monk->effectN( 1 ).percent();
-    if ( action.data().affected_by( spec.mistweaver_monk->effectN( 2 ) ) )
-      action.base_td_multiplier *= 1.0 + spec.mistweaver_monk->effectN( 2 ).percent();
-    if ( action.data().affected_by( spec.mistweaver_monk->effectN( 6 ) ) )
-      action.gcd_type = gcd_haste_type::HASTE;
-  }
-
-  if ( spec.windwalker_monk->ok() )
-  {
-    if ( action.data().affected_by( spec.windwalker_monk->effectN( 1 ) ) )
-    {
-      action.base_dd_multiplier *= 1.0 + spec.windwalker_monk->effectN( 1 ).percent();
-    }
-    if ( action.data().affected_by( spec.windwalker_monk->effectN( 5 ) ) )
-      action.base_dd_multiplier *= 1.0 + spec.windwalker_monk->effectN( 5 ).percent();
-    if ( action.data().affected_by( spec.windwalker_monk->effectN( 6 ) ) )
-    {
-      action.base_dd_multiplier *= 1.0 + spec.windwalker_monk->effectN( 6 ).percent();
-    }
-    if ( action.data().affected_by( spec.windwalker_monk->effectN( 8 ) ) )
-    {
-      action.base_dd_multiplier *= 1.0 + spec.windwalker_monk->effectN( 8 ).percent();
-    }
-    if ( action.data().affected_by( spec.windwalker_monk->effectN( 9 ) ) )
-      action.base_dd_multiplier *= 1.0 + spec.windwalker_monk->effectN( 9 ).percent();
-    if ( action.data().affected_by( spec.windwalker_monk->effectN( 11 ) ) )
-      action.base_dd_multiplier *= 1.0 + spec.windwalker_monk->effectN( 11 ).percent();
-
-    if ( action.data().affected_by( spec.windwalker_monk->effectN( 2 ) ) )
-    {
-      action.base_td_multiplier *= 1.0 + spec.windwalker_monk->effectN( 2 ).percent();
-    }
-    if ( action.data().affected_by( spec.windwalker_monk->effectN( 7 ) ) )
-      action.base_dd_multiplier *= 1.0 + spec.windwalker_monk->effectN( 7 ).percent();
-
-    // Cooldown reduction
-    if ( action.data().affected_by( spec.windwalker_monk->effectN( 10 ) ) )
-      action.cooldown->duration *= 1.0 + spec.windwalker_monk->effectN( 10 ).percent();  // saved as -100
-
-    if ( action.data().affected_by( spec.windwalker_monk->effectN( 14 ) ) )
-      action.trigger_gcd += spec.windwalker_monk->effectN( 14 ).time_value();  // Saved as -500 milliseconds
-
-    // Reduce GCD from 1.5 sec to 1.005 sec (33%)
-    if ( action.data().affected_by_label( spec.brewmaster_monk->effectN( 16 ) ) )
-    {
-      action.trigger_gcd *= ( 100.0 + spec.brewmaster_monk->effectN( 16 ).base_value() ) / 100.0;
-      action.gcd_type = gcd_haste_type::NONE;
-    }
-  }
+  // // Reduce GCD from 1.5 sec to 1.005 sec (33%)
+  // if ( action.data().affected_by_label( spec.brewmaster_monk->effectN( 16 ) ) )
+  // {
+  //   action.trigger_gcd *= ( 100.0 + spec.brewmaster_monk->effectN( 16 ).base_value() ) / 100.0;
+  //   action.gcd_type = gcd_haste_type::NONE;
+  // }
 }
 
 void monk_t::merge( player_t& other )
