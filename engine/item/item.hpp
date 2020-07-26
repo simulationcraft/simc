@@ -12,6 +12,7 @@
 #include "sc_enums.hpp"
 #include "sc_timespan.hpp"
 #include "util/generic.hpp"
+#include "util/format.hpp"
 #include "util/string_view.hpp"
 
 #include <array>
@@ -198,7 +199,6 @@ struct item_t
   static std::vector<stat_pair_t> str_to_stat_pair( const std::string& stat_str );
   static std::string stat_pairs_to_str( const std::vector<stat_pair_t>& stat_pairs );
 
-  std::string to_string() const;
   std::string item_stats_str() const;
   std::string weapon_stats_str() const;
   std::string gem_stats_str() const;
@@ -212,5 +212,6 @@ struct item_t
 
   const special_effect_t* special_effect( special_effect_source_e source = SPECIAL_EFFECT_SOURCE_NONE, special_effect_e type = SPECIAL_EFFECT_NONE ) const;
   const special_effect_t* special_effect_with_name( util::string_view name, special_effect_source_e source = SPECIAL_EFFECT_SOURCE_NONE, special_effect_e type = SPECIAL_EFFECT_NONE ) const;
+
+  friend fmt::format_context::iterator format_to( const item_t&, fmt::format_context& );
 };
-std::ostream& operator<<(std::ostream&, const item_t&);
