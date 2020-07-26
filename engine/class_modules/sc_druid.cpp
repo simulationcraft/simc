@@ -394,8 +394,9 @@ public:
     buff_t* eclipse_solar;
     buff_t* eclipse_lunar;
     // Balance Legendaries
-    buff_t* oneths_intuition; // Shadowlands Legendary
-    buff_t* oneths_overconfidence; // Shadowlands Legendary
+    buff_t* oneths_intuition;
+    buff_t* oneths_overconfidence;
+    buff_t* primordial_arcanic_pulsar;
 
     // Feral
     buff_t* apex_predator;
@@ -2347,14 +2348,14 @@ public:
   void consume_resource() override
   {
     ab::consume_resource();
-    trigger_impeccable_fel_essence();
+    trigger_astral_power_consumption_effects();
   }
 
   bool consume_cost_per_tick( const dot_t& dot ) override
   {
     bool ab = ab::consume_cost_per_tick( dot );
     if ( ab::consume_per_tick_ )
-      trigger_impeccable_fel_essence();
+      trigger_astral_power_consumption_effects();
 
     return ab;
   }
@@ -2452,20 +2453,35 @@ public:
     }
   }
 
-  virtual void trigger_impeccable_fel_essence()
+  virtual void trigger_astral_power_consumption_effects()
   {
-    if ( p()->legendary.impeccable_fel_essence == timespan_t::zero() )
-      return;
+    if ( p()->legendary.primordial_arcanic_pulsar->ok() )
+    {
+      if ( resource_current == RESOURCE_ASTRAL_POWER && last_resource_cost > 0.0 ) {
+        if ( !p()->buff.primordial_arcanic_pulsar->check() )
+          p()->buff.primordial_arcanic_pulsar->trigger();
 
-    if ( resource_current != RESOURCE_ASTRAL_POWER )
-      return;
+        p()->buff.primordial_arcanic_pulsar->current_value += last_resource_cost;
 
-    if ( last_resource_cost <= 0.0 )
-      return;
+        if ( p()->buff.primordial_arcanic_pulsar->value() >= p()->legendary.primordial_arcanic_pulsar->effectN( 1 ).base_value() ) {
 
-    timespan_t reduction = last_resource_cost * p()->legendary.impeccable_fel_essence;
-    p()->cooldown.celestial_alignment->adjust( reduction );
-    p()->cooldown.incarnation->adjust( reduction );
+          p()->buff.primordial_arcanic_pulsar->current_value -= p()->legendary.primordial_arcanic_pulsar->effectN( 1 ).base_value();
+          timespan_t pulsar_dur =
+            timespan_t::from_seconds( p()->legendary.primordial_arcanic_pulsar->effectN( 2 ).base_value() );
+          buff_t* proc_buff =
+            p()->talent.incarnation_moonkin->ok() ? p()->buff.incarnation_moonkin : p()->buff.celestial_alignment;
+
+          proc_buff->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, pulsar_dur );
+
+          // hardcoded 13.5AP because 9s / 20s * 30AP = 13.5AP
+          p()->resource_gain( RESOURCE_ASTRAL_POWER, 13.5, p()->gain.arcanic_pulsar );
+        }
+
+        timespan_t reduction = last_resource_cost * p()->legendary.impeccable_fel_essence;
+        p()->cooldown.celestial_alignment->adjust( reduction );
+        p()->cooldown.incarnation->adjust( reduction );
+      }
+    }
   };
 
   std::unique_ptr<expr_t> create_expression( const std::string& name_str ) override
@@ -8032,6 +8048,11 @@ void druid_t::create_buffs()
     if ( !new_ )
       this->eclipse_handler.advance_eclipse();
   } );
+
+  // Balance Legendaries
+
+  // TODO: replace this with the proper spell id
+  buff.primordial_arcanic_pulsar = make_buff( this, "primordial_arcanic_pulsar", find_spell( 338668 ) );
 
   // Feral
 
