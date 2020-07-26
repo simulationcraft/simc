@@ -384,10 +384,6 @@ public:
     buff_t* fury_of_elune; // Astral Power Gain
     buff_t* incarnation_moonkin;
     buff_t* moonkin_form;
-    buff_t* oneths_intuition; // Legion Legendary
-    buff_t* oneths_overconfidence; // Legion Legendary
-    buff_t* power_of_elune; // Legion Legendary
-    buff_t* the_emerald_dreamcatcher; // Legion Legendary
     buff_t* warrior_of_elune;
     buff_t* owlkin_frenzy;
     buff_t* solar_solstice; //T21 4P Balance
@@ -397,6 +393,9 @@ public:
     buff_t* stellar_drift_2; // stellar drift mobility buff ID 202461
     buff_t* eclipse_solar;
     buff_t* eclipse_lunar;
+    // Balance Legendaries
+    buff_t* oneths_intuition; // Shadowlands Legendary
+    buff_t* oneths_overconfidence; // Shadowlands Legendary
 
     // Feral
     buff_t* apex_predator;
@@ -753,14 +752,18 @@ public:
 
     // Balance
     timespan_t impeccable_fel_essence;
+    const spell_data_t* oneths_clear_vision;
+    const spell_data_t* primordial_arcanic_pulsar;
 
     // Feral
     double the_wildshapers_clutch;
     double behemoth_headdress = 0;
     timespan_t ailuro_pouncers;
+    const spell_data_t* apex_predators_carving;
 
     // Guardian
     double fury_of_nature = 0;
+    const spell_data_t* legacy_of_the_sleeper;
   } legendary;
 
   druid_t( sim_t* sim, util::string_view name, race_e r = RACE_NIGHT_ELF ) :
@@ -5230,18 +5233,12 @@ struct regrowth_t: public druid_heal_t
 
     timespan_t et = druid_heal_t::execute_time();
 
-    et *= 1.0 + p() -> buff.power_of_elune -> current_stack
-      * p() -> buff.power_of_elune -> data().effectN( 2 ).percent();
-
     return et;
   }
 
   double action_multiplier() const override
   {
     double am = druid_heal_t::action_multiplier();
-
-    am *= 1.0 + p() -> buff.power_of_elune -> current_stack
-      * p() -> buff.power_of_elune -> data().effectN( 1 ).percent();
 
     return am;
   }
@@ -5262,9 +5259,6 @@ struct regrowth_t: public druid_heal_t
       p() -> buff.bloodtalons -> trigger( 2 );
 
     p() -> buff.predatory_swiftness -> decrement( 1 );
-
-    if ( p() -> buff.power_of_elune -> up() )
-      p() -> buff.power_of_elune -> expire();
   }
 };
 
@@ -6297,8 +6291,6 @@ struct starfire_t : public druid_spell_t
   {
     druid_spell_t::execute();
 
-    p()->buff.power_of_elune->trigger();
-
     p ()->eclipse_handler.cast_starfire ();
 
     if ( p()->azerite.dawning_sun.ok() )
@@ -6663,8 +6655,6 @@ struct wrath_t : public druid_spell_t
     streaking_stars_trigger( SS_WRATH, execute_state );
 
     p()->eclipse_handler.cast_wrath();
-
-    p()->buff.power_of_elune->trigger();
   }
 
   double bonus_da( const action_state_t* s ) const override
@@ -6871,8 +6861,6 @@ struct starsurge_t : public druid_spell_t
 
     double c = druid_spell_t::cost();
 
-    c += p()->buff.the_emerald_dreamcatcher->check_stack_value();
-
     return c;
   }
 
@@ -6921,9 +6909,6 @@ struct starsurge_t : public druid_spell_t
 
     if ( p()->sets->has_set_bonus( DRUID_BALANCE, T21, B4 ) )
       p()->buff.solar_solstice->trigger();
-
-    p()->buff.the_emerald_dreamcatcher->up();  // benefit tracking
-    p()->buff.the_emerald_dreamcatcher->trigger();
 
     if ( p()->buff.oneths_intuition->up() )  // benefit tracking
       p()->buff.oneths_intuition->decrement();
@@ -7694,6 +7679,20 @@ void druid_t::init_spells()
         talent.earthwarden->id(),
         instant_absorb_t( this, find_spell( 203975 ), "earthwarden", &earthwarden_handler ) ) );
   }
+
+  // Runeforge Legendaries
+
+  // General
+
+  // Balance
+  legendary.oneths_clear_vision = find_runeforge_legendary( "Oneth's Clear Vision" );
+  legendary.primordial_arcanic_pulsar = find_runeforge_legendary( "Primordial Arcanic Pulsar" );
+
+  // Feral
+
+  // Restoration
+
+  // Guardian
 
   // Azerite ================================================================
   // Balance
@@ -10854,42 +10853,6 @@ struct fiery_red_maimers_t : public scoped_actor_callback_t<druid_t>
 
 // Balance
 
-struct impeccable_fel_essence_t : public scoped_actor_callback_t<druid_t>
-{
-  impeccable_fel_essence_t() : super( DRUID )
-  {}
-
-  void manipulate( druid_t* p, const special_effect_t& e ) override
-  {
-    p -> legendary.impeccable_fel_essence =
-      - timespan_t::from_seconds( e.driver() -> effectN( 1 ).base_value() ) / e.driver() -> effectN( 2 ).base_value();
-  }
-};
-
-struct radiant_moonlight_t : public scoped_action_callback_t<full_moon_t>
-{
-    radiant_moonlight_t() : super(DRUID, "full_moon")
-    {}
-
-    void manipulate(full_moon_t* p, const special_effect_t&/* e */) override {
-        p->radiant_moonlight = true;
-    }
-};
-
-struct promise_of_elune_t : public class_buff_cb_t<druid_t>
-{
-  promise_of_elune_t() : super( DRUID, "power_of_elune_the_moon_goddess" )
-  {}
-
-  buff_t*& buff_ptr( const special_effect_t& e ) override
-  { return actor( e ) -> buff.power_of_elune; }
-
-  buff_t* creator( const special_effect_t& e ) const override
-  {
-    return make_buff( e.player, buff_name, e.driver() -> effectN( 1 ).trigger() );
-  }
-};
-
 struct oneths_intuition_t : public class_buff_cb_t<druid_t>
 {
   oneths_intuition_t() : super( DRUID, "oneths_intuition" )
@@ -10917,37 +10880,6 @@ struct oneths_overconfidence_t : public class_buff_cb_t<druid_t>
   {
     return make_buff( e.player, buff_name, e.player -> find_spell( 209407 ) )
       ->set_chance( e.driver() -> proc_chance() );
-  }
-};
-
-struct the_emerald_dreamcatcher_t : public class_buff_cb_t<druid_t>
-{
-  the_emerald_dreamcatcher_t() : super( DRUID, "the_emerald_dreamcatcher" )
-  {}
-
-  buff_t*& buff_ptr( const special_effect_t& e ) override
-  { return actor( e ) -> buff.the_emerald_dreamcatcher; }
-
-  buff_t* creator( const special_effect_t& e ) const override
-  {
-    return make_buff( e.player, buff_name, e.driver() -> effectN( 1 ).trigger() )
-      ->set_default_value( e.driver() -> effectN( 1 ).trigger()
-        -> effectN( 1 ).resource( RESOURCE_ASTRAL_POWER ) );
-  }
-};
-
-template<typename T>
-struct lady_and_the_child_t : public scoped_action_callback_t<T>
-{
-  lady_and_the_child_t( const std::string& name ) :
-    scoped_action_callback_t<T>( DRUID, name )
-  {}
-
-  void manipulate( T* a, const special_effect_t& e ) override
-  {
-    a -> aoe += (int) e.driver() -> effectN( 1 ).base_value();
-    a -> base_dd_multiplier *= 1.0 + e.driver() -> effectN( 2 ).percent();
-    a -> base_td_multiplier *= 1.0 + e.driver() -> effectN( 3 ).percent();
   }
 };
 
@@ -11114,28 +11046,21 @@ struct druid_module_t : public module_t
     register_special_effect( 248083, fury_of_nature_t() );
     register_special_effect( 208228, dual_determination_t() );
     register_special_effect( 208342, elizes_everlasting_encasement_t() );
-    register_special_effect( 208199, impeccable_fel_essence_t() );
     register_special_effect( 208319, the_wildshapers_clutch_t() );
     register_special_effect( 209405, oneths_intuition_t(), true );
     register_special_effect( 209405, oneths_overconfidence_t(), true );
     register_special_effect( 207523, chatoyant_signet_t() );
     register_special_effect( 208209, ailuro_pouncers_t() );
-    register_special_effect( 208283, promise_of_elune_t(), true );
     register_special_effect( 208219, skysecs_hold_t() );
-    register_special_effect( 208190, the_emerald_dreamcatcher_t(), true );
     register_special_effect( 208681, luffa_wrappings_t<thrash_cat_t>( "thrash_cat" ) );
     register_special_effect( 208681, luffa_wrappings_t<thrash_bear_t>( "thrash_bear" ) );
     register_special_effect( 236478, oakhearts_puny_quods_t() );
     register_special_effect( 236478, oakhearts_puny_quods_buff_t(), true );
-    register_special_effect( 200818, lady_and_the_child_t<moonfire_t::moonfire_damage_t>( "moonfire_dmg" ) );
-    register_special_effect( 200818, lady_and_the_child_t<moonfire_t::galactic_guardian_damage_t>( "galactic_guardian" ) );
-    register_special_effect( 200818, lady_and_the_child_t<lunar_inspiration_t>( "lunar_inspiration" ) );
     register_special_effect( 212875, fiery_red_maimers_t(), true );
     register_special_effect( 222270, sylvan_walker_t() );
     register_special_effect( 208051, sephuzs_t() );
     register_special_effect( 208051, sephuzs_secret_t(), true);
     register_special_effect( 248081, behemoth_headdress_t() );
-    register_special_effect( 248163, radiant_moonlight_t());
     // register_special_effect( 208220, amanthuls_wisdom );
     // register_special_effect( 207943, edraith_bonds_of_aglaya );
     // register_special_effect( 210667, ekowraith_creator_of_worlds );
