@@ -4443,7 +4443,7 @@ struct touch_of_the_magi_explosion_t : public arcane_mage_spell_t
   touch_of_the_magi_explosion_t( const std::string& n, mage_t* p ) :
     arcane_mage_spell_t( n, p, p->find_spell( 210833 ) )
   {
-    background = true;
+    background = reduced_aoe_damage = true;
     may_miss = may_crit = callbacks = false;
     aoe = -1;
     base_dd_min = base_dd_max = 1.0;
@@ -4464,15 +4464,6 @@ struct touch_of_the_magi_explosion_t : public arcane_mage_spell_t
     // It seems that TotM explosion only double dips on target based damage reductions
     // and not target based damage increases.
     m = std::min( m, 1.0 );
-
-    return m;
-  }
-
-  double composite_aoe_multiplier( const action_state_t* state ) const override {
-    double m = arcane_mage_spell_t::composite_aoe_multiplier( state );
-
-      if ( state->target != target )
-        m /= std::sqrt( targets_in_range_list( target_list() ).size() );
 
     return m;
   }

@@ -5659,16 +5659,8 @@ struct fury_of_elune_t : public druid_spell_t
     fury_of_elune_tick_t(const std::string& n, druid_t* p, const spell_data_t* s) :
         druid_spell_t(n, p, s)
     {
-      background = dual = ground_aoe = true;
+      background = dual = ground_aoe = reduced_aoe_damage = true;
       aoe = -1;
-    }
-
-    double composite_aoe_multiplier( const action_state_t* state ) const override
-    {
-      if ( state->target != target )
-        return 1.0 / std::sqrt( targets_in_range_list( target_list() ).size() );
-
-      return 1.0;
     }
   };
 
