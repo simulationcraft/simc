@@ -309,6 +309,7 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
     hasted_ticks(),
     consume_per_tick_(),
     split_aoe_damage(),
+    reduced_aoe_damage(),
     normalize_weapon_speed(),
     ground_aoe(),
     round_base_dmg( true ),
@@ -1216,6 +1217,10 @@ double action_t::calculate_direct_amount( action_state_t* state ) const
   // Spell splits damage across all targets equally
   if ( state->action->split_aoe_damage )
     amount /= state->n_targets;
+
+  // New Shadowlands AoE damage reduction based on total target count
+  if ( state->chain_target > 0 && state->action->reduced_aoe_damage )
+    amount /= std::sqrt( state->n_targets );
 
   amount *= composite_aoe_multiplier( state );
 

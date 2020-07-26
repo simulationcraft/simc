@@ -190,6 +190,9 @@ public:
   /// Split damage evenly between targets
   bool split_aoe_damage;
 
+  /// Reduce damage to secondary targets based on total target count
+  bool reduced_aoe_damage;
+
   /**
    * @brief Normalize weapon speed for weapon damage calculations
    *
