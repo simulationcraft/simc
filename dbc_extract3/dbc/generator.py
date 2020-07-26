@@ -5,7 +5,7 @@ from collections import defaultdict
 import dbc.db, dbc.data, dbc.parser, dbc.file
 
 from dbc import constants, util
-from dbc.filter import ActiveClassSpellSet, PetActiveSpellSet, RacialSpellSet, MasterySpellSet
+from dbc.filter import ActiveClassSpellSet, PetActiveSpellSet, RacialSpellSet, MasterySpellSet, RankSpellSet
 
 # Special hotfix field_id value to indicate an entry is new (added completely through the hotfix entry)
 HOTFIX_MAP_NEW_ENTRY  = 0xFFFFFFFF
@@ -4040,3 +4040,31 @@ class RuneforgeLegendaryGenerator(DataGenerator):
             self.output_record(fields)
 
         self.output_footer()
+
+class RankSpellGenerator(DataGenerator):
+    def filter(self):
+        return RankSpellSet(self._options).get()
+
+    def generate(self, data = None):
+        data.sort(key = lambda v: (v[2].name, self.db('Spell')[v[2].id].rank))
+
+        self.output_header(
+                header = 'Rank class spells',
+                type = 'rank_class_spell_t',
+                array = 'rank_spells',
+                length = len(data))
+
+        for class_id, spec_id, spell, replace_spell in data:
+            fields = []
+            fields += ['{:2d}'.format(class_id), '{:3d}'.format(spec_id)]
+            fields += spell.field('id')
+            fields += replace_spell.field('id')
+            fields += spell.field('name')
+
+            spell_text = self.db('Spell')[spell.id]
+            fields += spell_text.field('rank')
+
+            self.output_record(fields)
+
+        self.output_footer()
+

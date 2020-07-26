@@ -188,3 +188,44 @@ class MasterySpellSet(DataSet):
 
     def ids(self):
         return list(set(v.id_mastery_1 for v in self.get()))
+
+class RankSpellSet(DataSet):
+    def _filter(self, **kwargs):
+        _data = []
+
+        for data in self.db('SpecializationSpells').values():
+            if data.ref('spec_id').class_id == 0:
+                continue
+
+            spell_text = self.db('Spell')[data.spell_id]
+            if 'Rank' not in str(spell_text.rank):
+                continue
+
+            _data += [(
+                data.ref('spec_id').class_id,
+                data.spec_id, data.ref('spell_id'),
+                data.ref('replace_spell_id')
+            )]
+
+        for data in self.db('SkillLineAbility').values():
+            if data.id_skill == 0 or data.id_skill not in util.class_skills():
+                continue
+
+            if data.unk_13 in [3]:
+                continue
+
+            spell_text = self.db('Spell')[data.id_spell]
+            if 'Rank' not in str(spell_text.rank):
+                continue
+
+            entry = (
+                util.class_id(player_skill=data.id_skill),
+                0,
+                data.ref('id_spell'),
+                data.ref('id_replace')
+            )
+
+            if entry not in _data:
+                _data.append(entry)
+
+        return _data

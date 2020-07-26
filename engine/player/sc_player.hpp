@@ -722,6 +722,7 @@ public:
 
   const spell_data_t* find_racial_spell( util::string_view name, race_e s = RACE_NONE ) const;
   const spell_data_t* find_class_spell( util::string_view name, specialization_e s = SPEC_NONE ) const;
+  const spell_data_t* find_rank_spell( util::string_view name, util::string_view desc ) const;
   const spell_data_t* find_pet_spell( util::string_view name ) const;
   const spell_data_t* find_talent_spell( util::string_view name, specialization_e s = SPEC_NONE, bool name_tokenized = false, bool check_validity = true ) const;
   const spell_data_t* find_specialization_spell( util::string_view name, specialization_e s = SPEC_NONE ) const;
