@@ -1713,6 +1713,13 @@ unsigned dbc_t::specialization_ability_id( specialization_e  spec_id,
       continue;
     }
 
+    // If the user requested no description but the specialization spell has a description
+    // (essentially, a Rank string), skip it
+    if ( spell_desc.empty() && spec_spell.desc )
+    {
+      continue;
+    }
+
     if ( util::str_compare_ci( spec_spell.name, spell_name ) )
     {
       // Spell has been replaced by another, so don't return id
