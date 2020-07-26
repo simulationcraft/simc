@@ -4695,7 +4695,7 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
           case P_RESOURCE_COST:
             base_costs[ resource_current ] += effect.base_value();
             sim->print_debug( "{} base resource cost for resource {} modified by {}", *this,
-                              util::resource_type_string( resource_current ), effect.base_value() );
+                              resource_current, effect.base_value() );
             break;
 
           case P_TARGET:
@@ -4729,7 +4729,7 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
           case P_RESOURCE_COST:
             base_costs[ resource_current ] *= 1 + effect.percent();
             sim->print_debug( "{} base resource cost for resource {} modified by {}", *this,
-                              util::resource_type_string( resource_current ), effect.base_value() );
+                              resource_current, effect.base_value() );
             break;
 
           case P_TICK_DAMAGE:

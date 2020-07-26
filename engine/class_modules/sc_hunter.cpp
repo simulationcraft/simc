@@ -5420,7 +5420,7 @@ void hunter_t::init_action_list()
   if ( specialization() == HUNTER_SURVIVAL && main_hand_weapon.group() != WEAPON_2H )
   {
     sim -> error( "Player {} does not have a proper weapon at the Main Hand slot: {}.",
-                  name(), util::weapon_type_string( main_hand_weapon.type ) );
+                  name(), main_hand_weapon.type );
   }
 
   if ( action_list_str.empty() )
