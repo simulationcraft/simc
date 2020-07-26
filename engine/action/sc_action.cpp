@@ -4668,25 +4668,31 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
       case A_ADD_FLAT_MODIFIER:
         switch ( effect.misc_value1() )
         {
+          case P_RANGE:
+            range += effect.base_value();
+            sim->print_debug( "{} range modified by {}", *this, effect.base_value() );
+            break;
+
           case P_CRIT:
             base_crit += effect.percent();
-            sim->print_debug( "{} base crit increased by {}", *this, effect.percent() );
+            sim->print_debug( "{} base crit modified by {}", *this, effect.percent() );
             break;
 
           case P_COOLDOWN:
             cooldown->duration += effect.time_value();
-            sim->print_debug( "{} cooldown duration increased by {}", *this, effect.time_value() );
+            sim->print_debug( "{} cooldown duration modified by {}", *this, effect.time_value() );
             break;
 
           case P_RESOURCE_COST:
-          {
             base_costs[ resource_current ] += effect.base_value();
-            if ( sim->debug )
-            {
-              sim->print_debug( "{} base resource cost for resource {} increased by {}", *this,
-                                util::resource_type_string( resource_current ), effect.base_value() );
-            }
-          }
+            sim->print_debug( "{} base resource cost for resource {} modified by {}", *this,
+                              util::resource_type_string( resource_current ), effect.base_value() );
+            break;
+
+          case P_TARGET:
+            aoe += effect.base_value();
+            sim->print_debug( "{} max target count modified by {}", *this, effect.base_value() );
+
           break;
 
           default:
@@ -4699,23 +4705,23 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
         {
           case P_GENERIC:
             base_dd_multiplier *= 1 + effect.percent();
-            sim->print_debug( "{} base_dd_multiplier increased by {}%", *this, effect.base_value() );
+            sim->print_debug( "{} base_dd_multiplier modified by {}%", *this, effect.base_value() );
             break;
 
           case P_COOLDOWN:
             cooldown->duration *= 1 + effect.percent();
-            sim->print_debug( "{} cooldown duration increased by {}%", *this, effect.base_value() );
+            sim->print_debug( "{} cooldown duration modified by {}%", *this, effect.base_value() );
             break;
 
           case P_RESOURCE_COST:
             base_costs[ resource_current ] *= 1 + effect.percent();
-            sim->print_debug( "{} base resource cost for resource {} increased by {}", *this,
+            sim->print_debug( "{} base resource cost for resource {} modified by {}", *this,
                               util::resource_type_string( resource_current ), effect.base_value() );
             break;
 
           case P_TICK_DAMAGE:
             base_td_multiplier *= 1 + effect.percent();
-            sim->print_debug( "{} base_td_multiplier increased by {}%", *this, effect.base_value() );
+            sim->print_debug( "{} base_td_multiplier modified by {}%", *this, effect.base_value() );
             break;
 
           default:
@@ -4733,7 +4739,7 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
     {
       case A_411:  // Modify Cooldown Charges
         cooldown->charges += as<int>( effect.base_value() );
-        sim->print_debug( "{} cooldown charges increased by {}", *this, as<int>( effect.base_value() ) );
+        sim->print_debug( "{} cooldown charges modified by {}", *this, as<int>( effect.base_value() ) );
         break;
 
       case A_HASTED_CATEGORY:
@@ -4743,7 +4749,7 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
 
       case A_453:  // Modify Cooldown Duration
         cooldown->duration += effect.time_value();
-        sim->print_debug( "{} cooldown duration increased by {}", *this, effect.time_value() );
+        sim->print_debug( "{} cooldown duration modified by {}", *this, effect.time_value() );
         break;
 
       default:

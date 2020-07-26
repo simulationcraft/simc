@@ -347,6 +347,8 @@ public:
     const spell_data_t* critical_strikes;
     const spell_data_t* demonic_wards;
     const spell_data_t* disrupt;
+    const spell_data_t* disrupt_rank_2;
+    const spell_data_t* disrupt_rank_3;
     const spell_data_t* leather_specialization;
     const spell_data_t* immolation_aura;
     const spell_data_t* immolation_aura_rank_2;
@@ -357,6 +359,8 @@ public:
     const spell_data_t* metamorphosis_rank_4;
     const spell_data_t* metamorphosis_buff;
     const spell_data_t* soul_fragment;
+    const spell_data_t* throw_glaive;
+    const spell_data_t* throw_glaive_rank_2;
 
     // Havoc
     const spell_data_t* havoc;
@@ -384,6 +388,8 @@ public:
     const spell_data_t* fiery_brand_dr;
     const spell_data_t* riposte;
     const spell_data_t* soul_cleave;
+    const spell_data_t* thick_skin;
+    const spell_data_t* throw_glaive_rank_3;
   } spec;
 
   struct azerite_t
@@ -1163,6 +1169,10 @@ public:
     ab::apply_affecting_aura( p->spec.havoc );
     ab::apply_affecting_aura( p->spec.vengeance );
 
+    // Rank Passives
+    ab::apply_affecting_aura( p->spec.disrupt_rank_3 );
+    ab::apply_affecting_aura( p->spec.throw_glaive_rank_2 );
+
     if ( p->specialization() == DEMON_HUNTER_HAVOC )
     {
       // Rank Passives
@@ -1190,8 +1200,10 @@ public:
     {
       // Rank Passives
       ab::apply_affecting_aura( p->spec.immolation_aura_rank_3 );
+      ab::apply_affecting_aura( p->spec.throw_glaive_rank_3 );
 
       // Talent Passives
+      ab::apply_affecting_aura( p->talent.abyssal_strike );
       ab::apply_affecting_aura( p->talent.agonizing_flames );
       ab::apply_affecting_aura( p->talent.quickened_sigils );
 
@@ -1776,12 +1788,10 @@ struct consume_magic_t : public demon_hunter_spell_t
   {
     may_miss = false;
 
-    const spelleffect_data_t effect = data().effectN(
-      p->specialization() == DEMON_HUNTER_HAVOC ? 2 : 3);
-
+    const spelleffect_data_t& effect = data().effectN( 1 );
     energize_type = ENERGIZE_ON_CAST;
     energize_resource = effect.resource_gain_type();
-    energize_amount = effect.resource(energize_resource);
+    energize_amount = effect.resource( energize_resource );
   }
 
   bool ready() override
@@ -1813,17 +1823,12 @@ struct demon_spikes_t : public demon_hunter_spell_t
 
 struct disrupt_t : public demon_hunter_spell_t
 {
-  resource_e resource;
-  double resource_amount;
-
   disrupt_t( demon_hunter_t* p, const std::string& options_str )
     : demon_hunter_spell_t( "disrupt", p, p->spec.disrupt, options_str )
   {
     may_miss = false;
 
-    const spelleffect_data_t effect = p->find_spell( 218903 )
-      ->effectN( p->specialization() == DEMON_HUNTER_HAVOC ? 1 : 2 );
-
+    const spelleffect_data_t& effect = p->spec.disrupt_rank_2->effectN( 1 ).trigger()->effectN( 1 );
     energize_type = ENERGIZE_ON_CAST;
     energize_resource = effect.resource_gain_type();
     energize_amount = effect.resource( energize_resource );
@@ -2300,9 +2305,6 @@ struct infernal_strike_t : public demon_hunter_spell_t
 
       damage = a;
     }
-
-    base_teleport_distance += p->talent.abyssal_strike->effectN( 1 ).base_value();
-    cooldown->duration += p->talent.abyssal_strike->effectN( 2 ).time_value();
   }
 
   // leap travel time, independent of distance
@@ -3802,7 +3804,7 @@ struct soul_cleave_t : public demon_hunter_attack_t
 struct throw_glaive_t : public demon_hunter_attack_t
 {
   throw_glaive_t( demon_hunter_t* p, const std::string& options_str )
-    : demon_hunter_attack_t("throw_glaive", p, p->find_class_spell("Throw Glaive"), options_str)
+    : demon_hunter_attack_t("throw_glaive", p, p->spec.throw_glaive, options_str)
   {
     radius = 10.0;
   }
@@ -3815,7 +3817,7 @@ struct vengeful_retreat_t : public demon_hunter_attack_t
   struct vengeful_retreat_damage_t : public demon_hunter_attack_t
   {
     vengeful_retreat_damage_t(demon_hunter_t* p)
-      : demon_hunter_attack_t("vengeful_retreat_damage", p, p->find_spell(198813))
+      : demon_hunter_attack_t( "vengeful_retreat_damage", p, p->find_spell( 198813 ) )
     {
       background = dual = true;
       aoe = -1;
@@ -4848,9 +4850,13 @@ void demon_hunter_t::init_spells()
   spec.critical_strikes       = find_spell( 221351 );
   spec.demonic_wards          = find_specialization_spell( "Demonic Wards" ); // Two different spells with the same name
   spec.disrupt                = find_class_spell( "Disrupt" );
+  spec.disrupt_rank_2         = find_spell( 183782 );
+  spec.disrupt_rank_3         = find_spell( 320361 );
   spec.immolation_aura        = find_class_spell( "Immolation Aura" );
   spec.immolation_aura_rank_2 = find_spell( 320364 );
   spec.soul_fragment          = find_spell( 204255 );
+  spec.throw_glaive           = find_class_spell( "Throw Glaive" );
+  spec.throw_glaive_rank_2    = find_spell( 320386 );
 
   if ( specialization() == DEMON_HUNTER_HAVOC )
   {
@@ -4874,6 +4880,8 @@ void demon_hunter_t::init_spells()
     spec.metamorphosis_rank_2   = find_spell( 321067 );
     spec.metamorphosis_rank_3   = find_spell( 321068 );
     spec.metamorphosis_buff     = spec.metamorphosis;
+    spec.thick_skin             = find_specialization_spell( "Thick Skin" );
+    spec.throw_glaive_rank_3    = find_specialization_spell( "Throw Glaive", "Rank 3" );
   }
 
   // Havoc
@@ -5407,7 +5415,7 @@ double demon_hunter_t::composite_armor_multiplier() const
 
   if ( specialization() == DEMON_HUNTER_VENGEANCE )
   {
-    am *= 1.0 + spec.demonic_wards->effectN( 5 ).percent();
+    am *= 1.0 + spec.thick_skin->effectN( 2 ).percent();
 
     if ( buff.metamorphosis->check() )
     {
@@ -5438,10 +5446,7 @@ double demon_hunter_t::composite_attribute_multiplier( attribute_e a ) const
   switch ( a )
   {
     case ATTR_STAMINA:
-      if ( specialization() == DEMON_HUNTER_VENGEANCE )
-      {
-        am *= 1.0 + spec.demonic_wards->effectN( 4 ).percent();
-      }
+      am *= 1.0 + spec.thick_skin->effectN( 1 ).percent();
       break;
     default:
       break;
@@ -5456,10 +5461,7 @@ double demon_hunter_t::composite_crit_avoidance() const
 {
   double ca = player_t::composite_crit_avoidance();
 
-  if ( specialization() == DEMON_HUNTER_VENGEANCE )
-  {
-    ca += spec.demonic_wards->effectN( 2 ).percent();
-  }
+  ca += spec.thick_skin->effectN( 4 ).percent();
 
   return ca;
 }
@@ -5547,10 +5549,7 @@ double demon_hunter_t::composite_melee_expertise( const weapon_t* w ) const
 {
   double me = player_t::composite_melee_expertise( w );
 
-  if ( specialization() == DEMON_HUNTER_VENGEANCE )
-  {
-    me += spec.demonic_wards->effectN( 3 ).base_value();
-  }
+  me += spec.thick_skin->effectN( 3 ).percent();
 
   return me;
 }
@@ -5735,10 +5734,7 @@ double demon_hunter_t::calculate_expected_max_health() const
   double expected_health = (prop_values / slot_weights) * 8.318556;
   expected_health += base.stats.attribute[STAT_STAMINA];
   expected_health *= 1 + matching_gear_multiplier(ATTR_STAMINA);
-  if ( specialization() == DEMON_HUNTER_VENGEANCE )
-  {
-    expected_health *= 1 + spec.demonic_wards->effectN( 4 ).percent();
-  }
+  expected_health *= 1 + spec.thick_skin->effectN( 1 ).percent();
   expected_health *= current.health_per_stamina;
   return expected_health;
 }
