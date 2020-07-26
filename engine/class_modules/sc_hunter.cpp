@@ -252,15 +252,15 @@ public:
     spell_data_ptr_t nessingwarys_apparatus; // NYI
     spell_data_ptr_t soulforge_embers; // NYI
     // Beast Mastery
-    spell_data_ptr_t dire_command; // NYI
-    spell_data_ptr_t flamewakers_cobra_sting; // NYI
-    spell_data_ptr_t qapla_eredun_war_order; // NYI
+    spell_data_ptr_t dire_command;
+    spell_data_ptr_t flamewakers_cobra_sting;
+    spell_data_ptr_t qapla_eredun_war_order;
     spell_data_ptr_t rylakstalkers_fangs; // NYI
     // Marksmanship
-    spell_data_ptr_t eagletalons_true_focus; // NYI
+    spell_data_ptr_t eagletalons_true_focus;
     spell_data_ptr_t secrets_of_the_vigil; // NYI
     spell_data_ptr_t serpentstalkers_trickery; // NYI
-    spell_data_ptr_t surging_shots; // NYI
+    spell_data_ptr_t surging_shots;
     // Survival
     spell_data_ptr_t butchers_bone_fragments; // NYI
     spell_data_ptr_t latent_poison_injectors; // NYI
@@ -306,6 +306,10 @@ public:
     buff_t* terms_of_engagement;
     buff_t* tip_of_the_spear;
     buff_t* vipers_venom;
+
+    // Legendaries
+    buff_t* eagletalons_true_focus;
+    buff_t* flamewakers_cobra_sting;
 
     // azerite
     buff_t* blur_of_talons;
@@ -749,6 +753,16 @@ public:
       cc += p() -> buffs.thrill_of_the_hunt -> check_stack_value();
 
     return cc;
+  }
+
+  double cost() const override
+  {
+    double c = ab::cost();
+
+    if ( p() -> buffs.eagletalons_true_focus -> check() )
+      c *= p() -> buffs.eagletalons_true_focus -> check_value();
+
+    return c;
   }
 
   void update_ready( timespan_t cd ) override
@@ -2346,6 +2360,8 @@ struct cobra_shot_t: public hunter_ranged_attack_t
 
     if ( p() -> talents.spitting_cobra.ok() && p() -> buffs.bestial_wrath -> check() )
       p() -> pets.spitting_cobra -> cobra_shot_count++;
+
+    p() -> buffs.flamewakers_cobra_sting -> trigger();
   }
 };
 
@@ -2391,6 +2407,9 @@ struct barbed_shot_t: public hunter_ranged_attack_t
 
     // Bestial Wrath (Rank 2) cooldown reduction
     p() -> cooldowns.bestial_wrath -> adjust( -bestial_wrath_r2_reduction );
+
+    if ( p() -> legendary.qapla_eredun_war_order.ok() )
+      p() -> cooldowns.kill_command -> adjust( -p() -> legendary.qapla_eredun_war_order -> effectN( 1 ).time_value() );
 
     if ( p() -> azerite.dance_of_death.ok() && rng().roll( p() -> cache.attack_crit_chance() + p() -> buffs.thrill_of_the_hunt_2 -> check_stack_value() ) )
       p() -> buffs.dance_of_death -> trigger();
@@ -2533,7 +2552,12 @@ struct aimed_shot_t : public aimed_shot_base_t
       double_tap.proc = p -> get_proc( "double_tap_aimed" );
     }
 
-    if ( p -> azerite.surging_shots.ok() )
+    if ( p -> legendary.surging_shots.ok() )
+    {
+      surging_shots.chance = p -> legendary.surging_shots -> proc_chance();
+      surging_shots.proc = p -> get_proc( "Surging Shots Rapid Fire reset" );
+    }
+    else if ( p -> azerite.surging_shots.ok() )
     {
       surging_shots.chance = p -> azerite.surging_shots.spell_ref().effectN( 1 ).percent();
       surging_shots.proc = p -> get_proc( "Surging Shots Rapid Fire reset" );
@@ -3691,6 +3715,10 @@ struct kill_command_t: public hunter_spell_t
     real_ppm_t* rppm = nullptr;
     proc_t* proc;
   } dire_consequences;
+  struct {
+    double chance = 0;
+    proc_t* proc;
+  } dire_command;
 
   kill_command_t( hunter_t* p, util::string_view options_str ):
     hunter_spell_t( "kill_command", p, p -> specs.kill_command )
@@ -3702,6 +3730,13 @@ struct kill_command_t: public hunter_spell_t
     {
       flankers_advantage.chance = data().effectN( 2 ).percent();
       flankers_advantage.proc = p -> get_proc( "flankers_advantage" );
+    }
+
+    if ( p -> legendary.dire_command.ok() )
+    {
+      // assume it's a flat % without any bs /shrug
+      dire_command.chance = p -> legendary.dire_command -> effectN( 1 ).percent();
+      dire_command.proc = p -> get_proc( "Dire Command" );
     }
 
     if ( p -> azerite.dire_consequences.ok() )
@@ -3747,12 +3782,30 @@ struct kill_command_t: public hunter_spell_t
       }
     }
 
-    // XXX: Not sure if the trigger comes before the icd check or after. Typically it's the former afaik.
+    if ( rng().roll( dire_command.chance ) )
+    {
+      p() -> pets.dc_dire_beast.spawn( pets::dire_beast_duration( p() ).first );
+      dire_command.proc -> occur();
+    }
+
+    p() -> buffs.flamewakers_cobra_sting -> up(); // benefit tracking
+    p() -> buffs.flamewakers_cobra_sting -> decrement();
+
     if ( dire_consequences.rppm && dire_consequences.rppm -> trigger() )
     {
       p() -> pets.dc_dire_beast.spawn( pets::dire_beast_duration( p() ).first );
       dire_consequences.proc -> occur();
     }
+  }
+
+  double cost() const override
+  {
+    double c = hunter_spell_t::cost();
+
+    if ( p() -> buffs.flamewakers_cobra_sting -> check() )
+      c *= p() -> buffs.flamewakers_cobra_sting -> check_value();
+
+    return c;
   }
 
   bool target_ready( player_t* candidate_target ) override
@@ -5069,13 +5122,18 @@ void hunter_t::create_buffs()
       -> set_cooldown( 0_ms )
       -> set_activated( true )
       -> set_default_value( specs.trueshot -> effectN( 4 ).percent() )
-      -> set_stack_change_callback( [this]( buff_t*, int, int cur ) {
+      -> set_stack_change_callback( [this]( buff_t*, int old, int cur ) {
           cooldowns.aimed_shot -> adjust_recharge_multiplier();
           cooldowns.rapid_fire -> adjust_recharge_multiplier();
           if ( cur == 0 )
           {
             buffs.unerring_vision_driver -> expire();
             buffs.unerring_vision -> expire();
+            buffs.eagletalons_true_focus -> expire();
+          }
+          else if ( old == 0 )
+          {
+            buffs.eagletalons_true_focus -> trigger();
           }
         } );
 
@@ -5126,6 +5184,18 @@ void hunter_t::create_buffs()
   buffs.aspect_of_the_eagle =
     make_buff( this, "aspect_of_the_eagle", specs.aspect_of_the_eagle )
       -> set_cooldown( 0_ms );
+
+  // Legendaries
+
+  buffs.eagletalons_true_focus =
+    make_buff( this, "eagletalons_true_focus", legendary.eagletalons_true_focus -> effectN( 1 ).trigger() )
+      -> set_default_value( 1 + legendary.eagletalons_true_focus -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
+      -> set_trigger_spell( legendary.eagletalons_true_focus );
+
+  buffs.flamewakers_cobra_sting =
+    make_buff( this, "flamewakers_cobra_sting", legendary.flamewakers_cobra_sting -> effectN( 1 ).trigger() )
+      -> set_default_value( 1 + legendary.flamewakers_cobra_sting -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
+      -> set_trigger_spell( legendary.flamewakers_cobra_sting );
 
   // Azerite
 
