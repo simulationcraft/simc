@@ -6375,12 +6375,8 @@ struct expel_harm_t : public monk_spell_t
     // healing done and can't crit, but this gets damage dealt
     // independently and allows it to crit, so it will have higher
     // variance but with enough iterations will have the same mean.
-
-    // TODO: update for shadowlands
-    // double coeff =
-    //     p()->passives.gift_of_the_ox_heal->effectN( 1 ).ap_coeff() * p()->spec.expel_harm->effectN( 2 ).percent();
     double coeff =
-        p()->passives.gift_of_the_ox_heal->effectN( 1 ).ap_coeff();
+    p()->passives.gift_of_the_ox_heal->effectN( 1 ).ap_coeff() * p()->spec.expel_harm->effectN( 2 ).percent();
         
     double ap = p()->composite_melee_attack_power( attack_power_type::WEAPON_MAINHAND ) *
                 p()->composite_attack_power_multiplier();
