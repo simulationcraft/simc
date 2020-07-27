@@ -349,6 +349,8 @@ public:
     const spell_data_t* consume_soul_lesser;
     const spell_data_t* critical_strikes;
     const spell_data_t* demonic_wards;
+    const spell_data_t* demonic_wards_rank_2;
+    const spell_data_t* demonic_wards_rank_3;
     const spell_data_t* disrupt;
     const spell_data_t* disrupt_rank_2;
     const spell_data_t* disrupt_rank_3;
@@ -377,6 +379,7 @@ public:
     const spell_data_t* chaos_strike_fury;
     const spell_data_t* death_sweep;
     const spell_data_t* demonic_appetite_fury;
+    const spell_data_t* demons_bite;
     const spell_data_t* eye_beam;
     const spell_data_t* eye_beam_rank_2;
     const spell_data_t* fel_rush;
@@ -419,6 +422,27 @@ public:
     const spell_data_t* vision_of_perfection_2;
 
   } azerite_spells;
+
+  struct legendary_t
+  {
+    // General
+    const spell_data_t* apexis_empowerment;
+    const spell_data_t* darkglare_medallion;
+    const spell_data_t* sigil_of_the_illidari;
+    const spell_data_t* fel_bombardment;
+
+    // Havoc
+    const spell_data_t* chaos_theory;
+    const spell_data_t* erratic_fel_core;
+    const spell_data_t* darkest_hour;
+    const spell_data_t* inner_demons;
+
+    // Vengeance
+    const spell_data_t* fiery_soul;
+    const spell_data_t* razelikhs_defilement;
+    const spell_data_t* cloak_of_fel_flames;
+    const spell_data_t* spirit_of_the_darkness_flame;
+  } legendary;
 
   // Mastery Spells
   struct mastery_t
@@ -1855,7 +1879,7 @@ struct eye_beam_t : public demon_hunter_spell_t
     eye_beam_tick_t( demon_hunter_t* p )
       : demon_hunter_spell_t( "eye_beam_tick", p, p->find_spell( 198030 ) )
     {
-      background = dual = true;
+      background = dual = split_aoe_damage = true;
       aoe = -1;
     }
 
@@ -2187,8 +2211,7 @@ struct sigil_of_flame_damage_t : public demon_hunter_spell_t
 
     if (p->talent.concentrated_sigils->ok())
     {
-      dot_duration +=
-        p->talent.concentrated_sigils->effectN(5).time_value();
+      dot_duration += p->talent.concentrated_sigils->effectN(5).time_value();
     }
   }
 
@@ -3388,7 +3411,7 @@ struct annihilation_t : public chaos_strike_base_t
 struct demons_bite_t : public demon_hunter_attack_t
 {
   demons_bite_t( demon_hunter_t* p, const std::string& options_str )
-    : demon_hunter_attack_t( "demons_bite", p, p->find_class_spell( "Demon's Bite" ), options_str )
+    : demon_hunter_attack_t( "demons_bite", p, p->spec.demons_bite, options_str )
   {
     energize_delta = energize_amount * data().effectN( 3 ).m_delta();
   }
@@ -3540,9 +3563,7 @@ struct fel_rush_t : public demon_hunter_attack_t
     {
       background = dual = true;
       aoe = -1;
-      // TODO: Hook up when whitelisted 
-      // base_execute_time = p->find_spell( 275147 )->duration();
-      base_execute_time = 1_s;
+      base_execute_time = p->find_spell( 275147 )->duration();
     }
   };
 
@@ -3961,8 +3982,6 @@ struct immolation_aura_buff_t : public demon_hunter_buff_t<buff_t>
 
 struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
 {
-  bool extended_by_demonic = false;
-
   metamorphosis_buff_t(demon_hunter_t* p)
     : base_t(*p, "metamorphosis", p->spec.metamorphosis_buff)
   {
@@ -3993,54 +4012,6 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
     }
   }
 
-  bool trigger(int stacks, double value, double chance, timespan_t duration) override
-  {
-    if (!buff_t::trigger(stacks, value, chance, duration))
-    {
-      return false;
-    }
-
-    // 8/30/2018 currently you can extend demonic inside meta any # of times
-    //if ( p().specialization() == DEMON_HUNTER_HAVOC )
-    //{
-    //  // If we have an initial trigger from Eye Beam, set the flag for future validation
-    //  if ( p().executing && p().executing->id == p().spec.eye_beam->id() )
-    //  {
-    //    extended_by_demonic = true;
-    //  }
-    //  else
-    //  {
-    //    extended_by_demonic = false;
-    //  }
-    //}
-
-    return true;
-  }
-
-  void extend_duration(player_t* p, timespan_t extra_seconds) override
-  {
-
-    // 8/30/2018 currently you can extend demonic inside meta any # of times
-    //if ( this->p().specialization() == DEMON_HUNTER_HAVOC && p->executing )
-    //{
-    //  // If we extend the duration with a proper Meta cast, we can clear the flag as successive Eye Beams can extend again
-    //  if ( p->executing->id == this->p().spec.metamorphosis->id() )
-    //  {
-    //    extended_by_demonic = false;
-    //  }
-    //  // If we are triggering from Eye Beam, we should disallow any additional full Demonic extensions
-    //  else if ( p->executing->id == this->p().spec.eye_beam->id() && extra_seconds == DEMONIC_EXTEND_DURATION )
-    //  {
-    //    if ( extended_by_demonic )
-    //      return;
-	  //
-    //    extended_by_demonic = true;
-    //  }
-    //}
-
-    buff_t::extend_duration(p, extra_seconds);
-  }
-
   void start(int stacks, double value, timespan_t duration) override
   {
     demon_hunter_buff_t<buff_t>::start(stacks, value, duration);
@@ -4060,10 +4031,6 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
     {
       p().stat_loss(STAT_MAX_HEALTH, p().metamorphosis_health, (gain_t*)nullptr, (action_t*)nullptr, true);
       p().metamorphosis_health = 0;
-    }
-    else
-    {
-      extended_by_demonic = false;
     }
   }
 };
@@ -4191,7 +4158,6 @@ void demon_hunter_td_t::target_demise()
   // Don't pollute results at the end-of-iteration deaths of everyone
   if ( source->sim->event_mgr.canceled )
     return;
-
 
   // TODO: Make an option to register this for testing M+/dungeon scenarios
   //demon_hunter_t* p = static_cast<demon_hunter_t*>( source );
@@ -4391,10 +4357,9 @@ void demon_hunter_t::create_buffs()
     ->add_invalidate(CACHE_LEECH)
     ->add_invalidate(CACHE_DODGE);
 
-  buff.fel_rush_move = new movement_buff_t(
-    this, "fel_rush_movement", spell_data_t::nil() );
+  buff.fel_rush_move = new movement_buff_t( this, "fel_rush_movement", spell_data_t::nil() );
   buff.fel_rush_move->set_chance( 1.0 )
-  ->set_duration( find_class_spell( "Fel Rush" )->gcd() );
+    ->set_duration( spec.fel_rush->gcd() );
 
   buff.momentum = make_buff( this, "momentum", spec.momentum_buff )
     ->set_default_value( spec.momentum_buff->effectN( 1 ).percent() )
@@ -4481,25 +4446,6 @@ void demon_hunter_t::create_buffs()
     ->set_trigger_spell( thirsting_blades_trigger )
     ->set_default_value( azerite.thirsting_blades.value( 1 ) );
 }
-
-struct metamorphosis_buff_demonic_expr_t : public expr_t
-{
-  demon_hunter_t* dh;
-
-  metamorphosis_buff_demonic_expr_t(demon_hunter_t* p, const std::string& name_str)
-    : expr_t(name_str), dh(p)
-  {
-  }
-
-  double evaluate() override
-  {
-    buffs::metamorphosis_buff_t* metamorphosis = debug_cast<buffs::metamorphosis_buff_t*>(dh->buff.metamorphosis);
-    if (metamorphosis && metamorphosis->check() && metamorphosis->extended_by_demonic)
-      return true;
-
-    return false;
-  }
-};
 
 struct metamorphosis_adjusted_cooldown_expr_t : public expr_t
 {
@@ -4625,10 +4571,6 @@ std::unique_ptr<expr_t> demon_hunter_t::create_expression( const std::string& na
     {
       return this->cooldown.eye_beam->create_expression( "remains" );
     }
-  }
-  else if ( name_str == "buff.metamorphosis.extended_by_demonic" )
-  {
-    return std::make_unique<metamorphosis_buff_demonic_expr_t>( this, name_str );
   }
 
   return player_t::create_expression( name_str );
@@ -4851,10 +4793,12 @@ void demon_hunter_t::init_spells()
   spec.consume_magic          = find_class_spell( "Consume Magic" );
   spec.chaos_brand            = find_spell( 255260 );
   spec.critical_strikes       = find_spell( 221351 );
-  spec.demonic_wards          = find_specialization_spell( "Demonic Wards" ); // Two different spells with the same name
+  spec.demonic_wards          = find_specialization_spell( "Demonic Wards" );
+  spec.demonic_wards_rank_2   = find_rank_spell( "Demonic Wards", "Rank 2" );
+  spec.demonic_wards_rank_3   = find_rank_spell( "Demonic Wards", "Rank 3" );
   spec.thick_skin             = find_specialization_spell( "Thick Skin" );
   spec.soul_fragment          = find_spell( 204255 );
-  spec.leather_specialization = find_specialization_spell( "Leather Specialization" );
+  spec.leather_specialization = find_specialization_spell( "Leather Specialization", "Passive" );
 
   // Shared Abilities
   spec.disrupt                = find_class_spell( "Disrupt" );
@@ -4862,13 +4806,13 @@ void demon_hunter_t::init_spells()
   spec.disrupt_rank_3         = find_rank_spell( "Disrupt", "Rank 3" );
   spec.immolation_aura        = find_class_spell( "Immolation Aura" );
   spec.immolation_aura_rank_2 = find_rank_spell( "Immolation Aura", "Rank 2" );
-  spec.immolation_aura_rank_3 = find_specialization_spell( "Immolation Aura", "Rank 3" );
+  spec.immolation_aura_rank_3 = find_rank_spell( "Immolation Aura", "Rank 3" );
   spec.throw_glaive           = find_class_spell( "Throw Glaive" );
   spec.throw_glaive_rank_2    = find_rank_spell( "Throw Glaive", "Rank 2" );
-  spec.throw_glaive_rank_3    = find_specialization_spell( "Throw Glaive", "Rank 3" );
-  spec.metamorphosis_rank_2   = find_specialization_spell( "Metamorphosis", "Rank 2" );
-  spec.metamorphosis_rank_3   = find_specialization_spell( "Metamorphosis", "Rank 3" );
-  spec.metamorphosis_rank_4   = find_specialization_spell( "Metamorphosis", "Rank 4" );
+  spec.throw_glaive_rank_3    = find_rank_spell( "Throw Glaive", "Rank 3" );
+  spec.metamorphosis_rank_2   = find_rank_spell( "Metamorphosis", "Rank 2" );
+  spec.metamorphosis_rank_3   = find_rank_spell( "Metamorphosis", "Rank 3" );
+  spec.metamorphosis_rank_4   = find_rank_spell( "Metamorphosis", "Rank 4" );
 
   if ( specialization() == DEMON_HUNTER_HAVOC )
   {
@@ -4889,7 +4833,7 @@ void demon_hunter_t::init_spells()
   spec.havoc                  = find_specialization_spell( "Havoc Demon Hunter" );
   spec.annihilation           = find_spell( 201427, DEMON_HUNTER_HAVOC );
   spec.blade_dance            = find_class_spell( "Blade Dance", DEMON_HUNTER_HAVOC );
-  spec.blade_dance_rank_2     = find_specialization_spell( "Blade Dance", "Rank 2" );
+  spec.blade_dance_rank_2     = find_rank_spell( "Blade Dance", "Rank 2" );
   spec.blur                   = find_specialization_spell( "Blur" );
   spec.chaos_nova             = find_class_spell( "Chaos Nova", DEMON_HUNTER_HAVOC );
   spec.chaos_strike           = find_class_spell( "Chaos Strike", DEMON_HUNTER_HAVOC );
@@ -4897,10 +4841,11 @@ void demon_hunter_t::init_spells()
   spec.chaos_strike_fury      = find_spell( 193840, DEMON_HUNTER_HAVOC );
   spec.death_sweep            = find_spell( 210152, DEMON_HUNTER_HAVOC );
   spec.demonic_appetite_fury  = find_spell( 210041, DEMON_HUNTER_HAVOC );
+  spec.demons_bite            = find_class_spell( "Demon's Bite", DEMON_HUNTER_HAVOC );
   spec.eye_beam               = find_class_spell( "Eye Beam", DEMON_HUNTER_HAVOC );
-  spec.eye_beam_rank_2        = find_specialization_spell( "Eye Beam", "Rank 2" );
+  spec.eye_beam_rank_2        = find_rank_spell( "Eye Beam", "Rank 2" );
   spec.fel_rush               = find_class_spell( "Fel Rush", DEMON_HUNTER_HAVOC );
-  spec.fel_rush_rank_2        = find_specialization_spell( "Fel Rush", "Rank 2" );
+  spec.fel_rush_rank_2        = find_rank_spell( "Fel Rush", "Rank 2" );
   spec.fel_rush_damage        = find_spell( 192611, DEMON_HUNTER_HAVOC ); 
   spec.momentum_buff          = find_spell( 208628, DEMON_HUNTER_HAVOC );
   spec.vengeful_retreat       = find_class_spell( "Vengeful Retreat", DEMON_HUNTER_HAVOC );
@@ -4915,7 +4860,7 @@ void demon_hunter_t::init_spells()
   // Masteries ==============================================================
 
   mastery.demonic_presence        = find_mastery_spell( DEMON_HUNTER_HAVOC );
-  mastery.demonic_presence_rank_2 = find_specialization_spell( "Mastery: Demonic Presence", "Rank 2" );
+  mastery.demonic_presence_rank_2 = find_rank_spell( "Mastery: Demonic Presence", "Rank 2" );
   mastery.fel_blood               = find_mastery_spell( DEMON_HUNTER_VENGEANCE );
 
   // Talents ================================================================
@@ -5002,6 +4947,23 @@ void demon_hunter_t::init_spells()
   azerite.revolving_blades        = find_azerite_spell( "Revolving Blades" );
   azerite.seething_power          = find_azerite_spell( "Seething Power" );
   azerite.thirsting_blades        = find_azerite_spell( "Thirsting Blades" );
+
+  // Legendary Items ========================================================
+
+  legendary.apexis_empowerment            = find_runeforge_legendary( "Apexis Empowerment" );
+  legendary.darkglare_medallion           = find_runeforge_legendary( "Darkglare Medallion" );
+  legendary.sigil_of_the_illidari         = find_runeforge_legendary( "Sigil of the Illidari" );
+  legendary.fel_bombardment               = find_runeforge_legendary( "Fel Bombardment" );
+
+  legendary.chaos_theory                  = find_runeforge_legendary( "Chaos Theory" );
+  legendary.erratic_fel_core              = find_runeforge_legendary( "Erratic Fel Core" );
+  legendary.darkest_hour                  = find_runeforge_legendary( "Darkest Hour" );
+  legendary.inner_demons                  = find_runeforge_legendary( "Inner Demons" );
+  
+  legendary.fiery_soul                    = find_runeforge_legendary( "Fiery Soul" );
+  legendary.razelikhs_defilement          = find_runeforge_legendary( "Razelikh's Defilement" );
+  legendary.cloak_of_fel_flames           = find_runeforge_legendary( "Cloak of Fel Flames" );
+  legendary.spirit_of_the_darkness_flame  = find_runeforge_legendary( "Spirit of the Darkness Flame" );
 
   // Spell Initialization ===================================================
 
@@ -5853,12 +5815,15 @@ void demon_hunter_t::target_mitigation( school_e school, result_amount_type dt, 
 
     if ( dbc::get_school_mask( school ) & SCHOOL_MAGIC_MASK )
     {
-      s->result_amount *= 1.0 + spec.demonic_wards->effectN( 1 ).percent();
+      s->result_amount *= 1.0 + spec.demonic_wards->effectN( 1 ).percent() 
+        + spec.demonic_wards_rank_2->effectN( 1 ).percent();
     }
   }
   else // DEMON_HUNTER_VENGEANCE
   {
-    s->result_amount *= 1.0 + spec.demonic_wards->effectN( 1 ).percent();
+    s->result_amount *= 1.0 + spec.demonic_wards->effectN( 1 ).percent()
+      + spec.demonic_wards_rank_2->effectN( 1 ).percent()
+      + spec.demonic_wards_rank_3->effectN( 1 ).percent();
 
     const demon_hunter_td_t* td = get_target_data( s->action->player );
     if ( td->dots.fiery_brand && td->dots.fiery_brand->is_ticking() )
