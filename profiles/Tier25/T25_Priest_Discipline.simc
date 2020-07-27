@@ -1,0 +1,83 @@
+priest="T25_Priest_Discipline"
+source=default
+spec=discipline
+level=120
+race=human
+role=spell
+position=ranged_back
+talents=3020110
+azerite_essences=27:3:1/5:3:0/12:3:0/35:3:0
+
+# Default consumables
+potion=battle_potion_of_intellect
+flask=greater_flask_of_endless_fathoms
+food=baked_port_tato
+augmentation=battle_scarred
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask
+actions.precombat+=/food
+actions.precombat+=/augmentation
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+
+# Executed every time the actor is available.
+actions=use_item,slot=trinket2
+actions+=/potion,if=buff.bloodlust.react|target.time_to_die<=40
+actions+=/mindbender,if=talent.mindbender.enabled
+actions+=/shadowfiend,if=!talent.mindbender.enabled
+actions+=/blood_fury
+actions+=/berserking
+actions+=/arcane_torrent
+actions+=/lights_judgment
+actions+=/fireblood
+actions+=/ancestral_call
+actions+=/bag_of_tricks
+actions+=/power_infusion
+actions+=/purge_the_wicked,if=!ticking
+actions+=/shadow_word_pain,if=!ticking&!talent.purge_the_wicked.enabled
+actions+=/shadow_word_death
+actions+=/schism
+actions+=/mind_blast
+actions+=/penance
+actions+=/purge_the_wicked,if=remains<(duration*0.3)
+actions+=/shadow_word_pain,if=remains<(duration*0.3)&!talent.purge_the_wicked.enabled
+actions+=/power_word_solace
+actions+=/divine_star,if=mana.pct>80
+actions+=/smite
+actions+=/shadow_word_pain
+
+head=cowl_of_unspeakable_horrors,id=174116,bonus_id=4824/1517/4775,azerite_powers=405/403/30/13
+neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1630,azerite_level=80
+shoulders=spaulders_of_miasmic_mycelia,id=174117,bonus_id=4824/1517/4775,azerite_powers=403/405/18/13
+back=ashjrakamas_shroud_of_resolve,id=169223,bonus_id=6286
+chest=robe_of_the_fallen_keeper,id=174115,bonus_id=4824/1517/4775,azerite_powers=236/405/21/13
+wrists=voiddrenched_wristwraps,id=174122,bonus_id=4824/1517
+hands=emberscale_gloves,id=174125,bonus_id=4824/1517/6465/6476
+waist=binding_of_dark_heresies,id=174126,bonus_id=4824/1517/6465/6482
+legs=trousers_of_peculiar_potency,id=174121,bonus_id=4824/1517
+feet=psychics_subtle_slippers,id=174123,bonus_id=4824/1517
+finger1=ring_of_collective_consciousness,id=174530,bonus_id=4824/1517,enchant=accord_of_haste
+finger2=ring_of_cosmic_potential,id=174533,bonus_id=4824/1517,enchant=accord_of_haste
+trinket1=psyche_shredder,id=174060,bonus_id=4824/1517/6560
+trinket2=forbidden_obsidian_claw,id=173944,bonus_id=4824/1517/6552
+main_hand=vorzz_yoqal,id=172196,bonus_id=4824/1517,enchant=quick_navigation
+off_hand=uhnish_vwah,id=172190,bonus_id=4824/1517
+
+# Gear Summary
+# gear_ilvl=142.56
+# gear_stamina=912
+# gear_intellect=618
+# gear_crit_rating=325
+# gear_haste_rating=364
+# gear_mastery_rating=220
+# gear_versatility_rating=71
+# gear_corruption=95
+# gear_corruption_resistance=50
+# gear_armor=167

@@ -2090,7 +2090,7 @@ void priest_t::generate_apl_shadow()
       "if=buff.harvested_thoughts.up&cooldown.void_bolt.remains>=1.5&"
       "azerite.searing_dialogue.rank>=1",
       "Use Mind Sear on ST only if you get a Thought Harvester Proc with at least 1 Searing Dialogue Trait." );
-  single->add_talent( this, "Shadow Word: Death",
+  single->add_action( this, "Shadow Word: Death",
                       "if=target.time_to_die<3|"
                       "cooldown.shadow_word_death.charges=2|"
                       "(cooldown.shadow_word_death.charges=1&"
@@ -2101,7 +2101,7 @@ void priest_t::generate_apl_shadow()
                       "Use Dark Void on CD unless adds are incoming in 10s or less." );
   single->add_talent( this, "Mindbender", "if=talent.mindbender.enabled|(buff.voidform.stack>18|target.time_to_die<15)",
                       "Use Mindbender at 19 or more stacks, or if the target will die in less than 15s." );
-  single->add_talent( this, "Shadow Word: Death",
+  single->add_action( this, "Shadow Word: Death",
                       "if=!buff.voidform.up|"
                       "(cooldown.shadow_word_death.charges=2&"
                       "buff.voidform.stack<15)" );
@@ -2136,7 +2136,7 @@ void priest_t::generate_apl_shadow()
   cleave->add_action( this, "Mind Sear", "if=buff.harvested_thoughts.up" );
   cleave->add_action( this, "Void Bolt" );
   cleave->add_action( "call_action_list,name=cds" );
-  cleave->add_talent( this, "Shadow Word: Death", "target_if=target.time_to_die<3|buff.voidform.down" );
+  cleave->add_action( this, "Shadow Word: Death", "target_if=target.time_to_die<3|buff.voidform.down" );
   cleave->add_talent( this, "Surrender to Madness", "if=buff.voidform.stack>10+(10*buff.bloodlust.up)" );
   cleave->add_talent( this, "Dark Void",
                       "if=raid_event.adds.in>10"
