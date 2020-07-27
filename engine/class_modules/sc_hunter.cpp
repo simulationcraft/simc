@@ -2358,6 +2358,52 @@ struct kill_shot_t : hunter_ranged_attack_t
   }
 };
 
+// Arcane Shot (Base) =================================================================
+
+struct arcane_shot_base_t: public hunter_ranged_attack_t
+{
+  arcane_shot_base_t( util::string_view name, hunter_t* p ):
+    hunter_ranged_attack_t( name, p, p -> find_class_spell( "Arcane Shot" ) )
+  { }
+
+  void execute() override
+  {
+    hunter_ranged_attack_t::execute();
+
+    trigger_lethal_shots( p() );
+  }
+
+  double action_multiplier() const override
+  {
+    double am = hunter_ranged_attack_t::action_multiplier();
+
+    am *= 1 + p() -> buffs.precise_shots -> value();
+
+    return am;
+  }
+};
+
+// Arcane Shot ========================================================================
+
+struct arcane_shot_t: public arcane_shot_base_t
+{
+  arcane_shot_t( hunter_t* p, util::string_view options_str ):
+    arcane_shot_base_t( "arcane_shot", p )
+  {
+    parse_options( options_str );
+  }
+
+  void execute() override
+  {
+    arcane_shot_base_t::execute();
+
+    p() -> buffs.precise_shots -> decrement();
+
+    if ( p() -> talents.calling_the_shots.ok() )
+      p() -> cooldowns.trueshot -> adjust( - p() -> talents.calling_the_shots -> effectN( 1 ).time_value() );
+  }
+};
+
 //==============================
 // Beast Mastery attacks
 //==============================
@@ -2527,10 +2573,24 @@ struct bursting_shot_t : public hunter_ranged_attack_t
 
 struct aimed_shot_base_t: public hunter_ranged_attack_t
 {
+  struct arcane_shot_sst_t: public arcane_shot_base_t
+  {
+    arcane_shot_sst_t( util::string_view n, hunter_t* p ):
+      arcane_shot_base_t( n, p )
+    {
+      dual = true;
+      base_costs[ RESOURCE_FOCUS ] = 0;
+    }
+  };
+
   struct {
     double multiplier = 0;
     double high, low;
   } careful_aim;
+  struct {
+    arcane_shot_base_t* action;
+    int target_count;
+  } serpentstalkers_trickery;
   const int trick_shots_targets;
 
   aimed_shot_base_t( util::string_view name, hunter_t* p ):
@@ -2545,6 +2605,14 @@ struct aimed_shot_base_t: public hunter_ranged_attack_t
       careful_aim.high = p -> talents.careful_aim -> effectN( 1 ).base_value();
       careful_aim.low = p -> talents.careful_aim -> effectN( 2 ).base_value();
       careful_aim.multiplier = p -> talents.careful_aim -> effectN( 3 ).percent();
+    }
+
+    if ( p -> legendary.serpentstalkers_trickery.ok() )
+    {
+      serpentstalkers_trickery.action = p -> get_background_action<arcane_shot_sst_t>( "arcane_shot_sst" );
+      serpentstalkers_trickery.target_count =
+          as<int>( p -> legendary.serpentstalkers_trickery -> effectN( 1 ).base_value() );
+      add_child( serpentstalkers_trickery.action );
     }
   }
 
@@ -2579,6 +2647,17 @@ struct aimed_shot_base_t: public hunter_ranged_attack_t
     return b;
   }
 
+  void schedule_travel( action_state_t* s ) override
+  {
+    hunter_ranged_attack_t::schedule_travel( s );
+
+    if ( n_targets() > 0 && s -> chain_target < serpentstalkers_trickery.target_count )
+    {
+      serpentstalkers_trickery.action -> set_target( s -> target );
+      serpentstalkers_trickery.action -> execute();
+    }
+  }
+
   void impact( action_state_t* s ) override
   {
     hunter_ranged_attack_t::impact( s );
@@ -2592,21 +2671,19 @@ struct aimed_shot_base_t: public hunter_ranged_attack_t
 
 struct aimed_shot_t : public aimed_shot_base_t
 {
-  // class for 'secondary' aimed shots
-  struct aimed_shot_secondary_t: public aimed_shot_base_t
+  struct double_tap_t: public aimed_shot_base_t
   {
-    aimed_shot_secondary_t( util::string_view n, hunter_t* p ):
+    double_tap_t( util::string_view n, hunter_t* p ):
       aimed_shot_base_t( n, p )
     {
-      background = true;
-      dual       = true;
+      dual = true;
       base_costs[ RESOURCE_FOCUS ] = 0;
     }
   };
 
   bool lock_and_loaded = false;
   struct {
-    aimed_shot_secondary_t* action;
+    aimed_shot_base_t* action;
     proc_t* proc;
   } double_tap;
   struct {
@@ -2621,7 +2698,7 @@ struct aimed_shot_t : public aimed_shot_base_t
 
     if ( p -> talents.double_tap.ok() )
     {
-      double_tap.action = p -> get_background_action<aimed_shot_secondary_t>( "aimed_shot_double_tap" );
+      double_tap.action = p -> get_background_action<double_tap_t>( "aimed_shot_double_tap" );
       add_child( double_tap.action );
       double_tap.proc = p -> get_proc( "double_tap_aimed" );
     }
@@ -2655,6 +2732,10 @@ struct aimed_shot_t : public aimed_shot_base_t
 
   void execute() override
   {
+    // trigger Precise Shots before execute so that Arcane Shots from
+    // Serpenstalker's Trickery get affected by it
+    p() -> buffs.precise_shots -> trigger( 1 + rng().range( p() -> buffs.precise_shots -> max_stack() ) );
+
     aimed_shot_base_t::execute();
 
     if ( double_tap.action && p() -> buffs.double_tap -> check() )
@@ -2671,8 +2752,6 @@ struct aimed_shot_t : public aimed_shot_base_t
     if ( lock_and_loaded )
       p() -> buffs.lock_and_load -> decrement();
     lock_and_loaded = false;
-
-    p() -> buffs.precise_shots -> trigger( 1 + rng().range( p() -> buffs.precise_shots -> max_stack() ) );
 
     if ( rng().roll( surging_shots.chance ) )
     {
@@ -2714,38 +2793,6 @@ struct aimed_shot_t : public aimed_shot_base_t
   bool usable_moving() const override
   {
     return false;
-  }
-};
-
-// Arcane Shot Attack ================================================================
-
-struct arcane_shot_t: public hunter_ranged_attack_t
-{
-  arcane_shot_t( hunter_t* p, util::string_view options_str ):
-    hunter_ranged_attack_t( "arcane_shot", p, p -> find_class_spell( "Arcane Shot" ) )
-  {
-    parse_options( options_str );
-  }
-
-  void execute() override
-  {
-    hunter_ranged_attack_t::execute();
-
-    p() -> buffs.precise_shots -> decrement();
-
-    if ( p() -> talents.calling_the_shots.ok() )
-      p() -> cooldowns.trueshot -> adjust( - p() -> talents.calling_the_shots -> effectN( 1 ).time_value() );
-
-    trigger_lethal_shots( p() );
-  }
-
-  double action_multiplier() const override
-  {
-    double am = hunter_ranged_attack_t::action_multiplier();
-
-    am *= 1 + p() -> buffs.precise_shots -> value();
-
-    return am;
   }
 };
 
