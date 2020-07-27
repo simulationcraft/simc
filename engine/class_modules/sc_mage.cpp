@@ -4687,9 +4687,8 @@ struct enlightened_event_t : public event_t
 
     mage->update_enlightened();
 
-    if ( mage->options.enlightened_interval > 0_ms ) {
+    if ( mage->options.enlightened_interval > 0_ms )
       mage->enlightened_event = make_event<enlightened_event_t>( sim(), *mage, mage->options.enlightened_interval );
-    }
   }
 };
 
@@ -4719,7 +4718,8 @@ struct focus_magic_event_t : public event_t
       mage->buffs.focus_magic_int->trigger();
     }
 
-    if ( mage->options.focus_magic_interval > 0_ms ) {
+    if ( mage->options.focus_magic_interval > 0_ms )
+    {
       timespan_t min_time = mage->options.focus_magic_interval * ( 1 - mage->options.focus_magic_variance );
       timespan_t max_time = mage->options.focus_magic_interval * ( 1 + mage->options.focus_magic_variance );
       mage->focus_magic_event = make_event<focus_magic_event_t>( sim(), *mage, rng().range( min_time, max_time ) );
