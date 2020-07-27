@@ -2924,7 +2924,13 @@ public:
     if (trigger_untamed_ferocity && !p->azerite.untamed_ferocity.ok() )
       trigger_untamed_ferocity = false;
 
-    // TODO: integrate into action_t::apply_affecting_effect
+    if ( p-> specialization() == DRUID_FERAL &&  p -> talent.soul_of_the_forest -> ok() &&
+      ( data().affected_by( p -> talent.soul_of_the_forest -> effectN(2)) || data().affected_by( p -> talent.soul_of_the_forest -> effectN(3) )))
+    {
+       base_td_multiplier *= 1.0 + p->talent.soul_of_the_forest->effectN(3).percent();
+       base_dd_multiplier *= 1.0 + p->talent.soul_of_the_forest->effectN(2).percent();
+    }
+
     // Apply all Feral Affinity damage modifiers.
     if ( p -> talent.feral_affinity -> ok() )
     {
@@ -4196,9 +4202,6 @@ struct shred_t : public cat_attack_t
     cat_attack_t( "shred", p, p -> find_class_spell( "Shred" ), options_str )
   {
     // Base spell generates 0 CP, Feral passive or Feral Affinity increase it to 1 CP.
-    /*energize_amount += p -> spec.feral -> effectN( 3 ).base_value()
-      + p -> talent.feral_affinity -> effectN( 8 ).base_value();*/
-
     energize_amount +=
         p->query_aura_effect( p->spec.feral, E_APPLY_AURA, A_ADD_FLAT_MODIFIER, P_EFFECT_2, p->find_class_spell( "Shred" ) )
             ->base_value() +
@@ -5036,16 +5039,13 @@ struct regrowth_t: public druid_heal_t
     const spell_data_t* spelldata = p->find_class_spell("Regrowth");
 
     base_dd_multiplier *=
-        1.0 + p->query_aura_effect( p->spec.feral, E_APPLY_AURA, A_ADD_PCT_MODIFIER, P_GENERIC, spelldata )->percent() +
-        p->query_aura_effect( p->spec.guardian, E_APPLY_AURA, A_ADD_PCT_MODIFIER, P_GENERIC, spelldata )->percent();
+        1.0 + p->query_aura_effect( p->spec.guardian, E_APPLY_AURA, A_ADD_PCT_MODIFIER, P_GENERIC, spelldata )->percent();
 
     base_td_multiplier *=
-        1.0 + p->query_aura_effect( p->spec.feral, E_APPLY_AURA, A_ADD_PCT_MODIFIER, P_TICK_DAMAGE, spelldata )->percent() +
-        p->query_aura_effect( p->spec.guardian, E_APPLY_AURA, A_ADD_PCT_MODIFIER, P_TICK_DAMAGE, spelldata )->percent();
+        1.0 + p->query_aura_effect( p->spec.guardian, E_APPLY_AURA, A_ADD_PCT_MODIFIER, P_TICK_DAMAGE, spelldata )->percent();
 
     base_costs[ RESOURCE_MANA ] *=
-        1.0 + p->query_aura_effect( p->spec.feral, E_APPLY_AURA, A_ADD_PCT_MODIFIER, P_RESOURCE_COST, spelldata )->percent() +
-        p->query_aura_effect( p->spec.guardian, E_APPLY_AURA, A_ADD_PCT_MODIFIER, P_RESOURCE_COST, spelldata )->percent();
+        1.0 + p->query_aura_effect( p->spec.guardian, E_APPLY_AURA, A_ADD_PCT_MODIFIER, P_RESOURCE_COST, spelldata )->percent();
 
     // Hack for feral to be able to use target-related expressions on this action
     // Disables healing entirely
@@ -6839,7 +6839,6 @@ struct survival_instincts_t : public druid_spell_t
     // Spec-based cooldown modifiers
     // Despite not being labelled to a spell, both affect cooldown category 1469, which is SI's charge cooldown category
     // Spelldata is weird, a -60000 value reduces cd by 60s for feral, but increases it by 60s for guardian
-    cooldown -> duration += player -> spec.feral_overrides2 -> effectN( 6 ).time_value();
     cooldown -> duration += -1 * player -> spec.guardian_overrides -> effectN( 5 ).time_value();
 
     // Because vision of perfection does exist, but does not affect this spell for feral.
@@ -6869,7 +6868,7 @@ struct thorns_t : public druid_spell_t
       background = true;
       if ( p()->specialization() == DRUID_FERAL )
       {  // a little gnarly, TODO(xan): clean this up
-        attack_power_mod.direct = 1.2 * p()->spec.feral->effectN( 10 ).percent();
+        attack_power_mod.direct = 1.2 * p()->query_aura_effect( p()->spec.feral, E_APPLY_AURA, A_366 )->percent();
         spell_power_mod.direct = 0;
       }
     }
@@ -7390,8 +7389,7 @@ void druid_t::init_spells()
   spec.cat_form                   = find_class_spell( "Cat Form" ) -> ok() ? find_spell( 3025   ) : spell_data_t::not_found();
   spec.cat_form_speed             = find_class_spell( "Cat Form" ) -> ok() ? find_spell( 113636 ) : spell_data_t::not_found();
   spec.feral                      = find_specialization_spell( "Feral Druid" );
-  spec.feral_overrides            = specialization() == DRUID_FERAL ? find_spell( 197692 ) : spell_data_t::not_found();
-  spec.feral_overrides2           = specialization() == DRUID_FERAL ? find_spell( 106733 ) : spell_data_t::not_found();
+  spec.feral_overrides            = specialization() == DRUID_FERAL ? find_specialization_spell( "Feral Overrides Passive" ) : spell_data_t::not_found();
   spec.bloody_gash                = sets -> has_set_bonus( DRUID_FERAL, T21, B2 ) ? find_spell( 252750 ) : spell_data_t::not_found();
   spec.predatory_swiftness        = find_specialization_spell( "Predatory Swiftness" );
   spec.primal_fury                = find_spell( 16953 );
@@ -7402,7 +7400,7 @@ void druid_t::init_spells()
   spec.tigers_fury                = find_specialization_spell( "Tiger's Fury" );
   spec.tigers_fury_2              = find_rank_spell( "Tiger's Fury", "Rank 2" );
   spec.ferocious_bite_2           = find_spell( 231056 );
-  spec.shred                      = find_spell( 5221 );
+  spec.shred                      = find_class_spell( "Shred" );
   spec.shred_2                    = find_rank_spell( "Shred", "Rank 2" ); // 231063
   spec.shred_3                    = find_rank_spell( "Shred", "Rank 3" ); // 231057
   spec.swipe_2                    = find_rank_spell( "Swipe", "Rank 2" ); // 231283
@@ -9232,17 +9230,25 @@ double druid_t::composite_spell_power( school_e school ) const
   double ap_coeff = 0.0;
 
   if ( specialization() == DRUID_GUARDIAN ) { ap_coeff = spec.guardian -> effectN( 11 ).percent(); }
-  if ( specialization() == DRUID_FERAL    ) { ap_coeff = spec.feral    -> effectN( 11 ).percent(); }
+  if ( specialization() == DRUID_FERAL )
+  {
+    ap_coeff = query_aura_effect( spec.feral, E_APPLY_AURA, A_366 )->percent();
+  }
 
   if ( ap_coeff > 0 )
   {
     double weapon_sp = 0.0;
 
-    if ( buff.cat_form -> check() ) {
+    if ( buff.cat_form->check() )
+    {
       weapon_sp = cat_weapon.dps * WEAPON_POWER_COEFFICIENT;
-    } else if ( buff.bear_form -> check() ) {
+    }
+    else if ( buff.bear_form->check() )
+    {
       weapon_sp = bear_weapon.dps * WEAPON_POWER_COEFFICIENT;
-    } else {
+    }
+    else
+    {
       weapon_sp = main_hand_weapon.dps * WEAPON_POWER_COEFFICIENT;
     }
 
@@ -10246,7 +10252,6 @@ void druid_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( spec.restoration );
   action.apply_affecting_aura( spec.balance );
   action.apply_affecting_aura( spec.guardian );
-  action.apply_affecting_aura( talent.soul_of_the_forest );
 }
 
 //void druid_t::output_json_report(js::JsonOutput& root) const
@@ -10505,11 +10510,8 @@ struct luffa_wrappings_t : public scoped_action_callback_t<T>
 
   void manipulate( T* a, const special_effect_t& e ) override
   {
-    // Feral Druid passive modifies the strength of the effect.
     a->radius *= 1.0 + e.driver()->effectN(1).percent();
-      //+ p -> spec.feral -> effectN( 8 ).percent();
     a->base_multiplier *= 1.0 + e.driver()->effectN(2).percent();
-      //+ p -> spec.feral -> effectN( 8 ).percent();
   }
 };
 
