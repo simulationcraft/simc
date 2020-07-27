@@ -49,7 +49,7 @@ struct holy_fire_t final : public holy_fire_base_t
   {
     parse_options( options_str );
 
-    auto rank2 = priest().find_specialization_spell( 231687 );
+    auto rank2 = priest().find_specialization_spell( "Holy Fire", "Rank 2" );
     if ( rank2->ok() )
     {
       dot_max_stack += as<int>( rank2->effectN( 2 ).base_value() );
@@ -98,7 +98,7 @@ struct holy_nova_t final : public priest_spell_t
 
   holy_nova_t( priest_t& player, util::string_view options_str )
     : priest_spell_t( "holy_nova", player, player.find_class_spell( "Holy Nova" ) ),
-      holy_fire_rank2( player.find_specialization_spell( 231687 ) )
+      holy_fire_rank2( player.find_rank_spell( "Holy Nova", "Rank 2" ) )
   {
     parse_options( options_str );
     aoe = -1;

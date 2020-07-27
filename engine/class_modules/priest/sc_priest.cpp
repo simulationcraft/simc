@@ -239,9 +239,9 @@ struct smite_t final : public priest_spell_t
   const spell_data_t* smite_rank2;
   smite_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "smite", p, p.find_class_spell( "Smite" ) ),
-      holy_fire_rank2( priest().find_specialization_spell( 231687 ) ),
+      holy_fire_rank2( priest().find_rank_spell( "Holy Fire", "Rank 2" ) ),
       holy_word_chastise( priest().find_specialization_spell( 88625 ) ),
-      smite_rank2( priest().find_specialization_spell( 262861 ) )
+      smite_rank2( priest().find_rank_spell( "Smite", "Rank 2" ) )
   {
     parse_options( options_str );
     if ( smite_rank2->ok() )

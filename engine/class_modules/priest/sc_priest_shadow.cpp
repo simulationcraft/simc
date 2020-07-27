@@ -329,7 +329,7 @@ struct shadow_word_death_t final : public priest_spell_t
   {
     parse_options( options_str );
 
-    auto rank2 = p.find_spell( 322107 );
+    auto rank2 = p.find_rank_spell( "Shadow Word: Death", "Rank 2" );
     if ( rank2->ok() )
     {
       cooldown->duration += rank2->effectN( 1 ).time_value();
@@ -689,7 +689,7 @@ struct shadow_word_pain_t final : public priest_spell_t
       add_child( priest().active_spells.shadowy_apparitions );
     }
 
-    auto rank2 = p.find_spell( 327820 );
+    auto rank2 = p.find_rank_spell( "Shadow Word: Pain", "Rank 2" );
     if ( rank2->ok() )
     {
       dot_duration += rank2->effectN( 1 ).time_value();
