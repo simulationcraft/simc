@@ -1108,7 +1108,7 @@ struct combustion_buff_t : public buff_t
     set_default_value( data().effectN( 1 ).percent() );
     set_tick_zero( true );
     set_refresh_behavior( buff_refresh_behavior::DURATION );
-    set_duration( buff_duration + p->spec.combustion_2->effectN( 1 ).time_value() );
+    buff_duration += p->spec.combustion_2->effectN( 1 ).time_value();
 
     set_stack_change_callback( [ this ] ( buff_t*, int, int cur )
     {
@@ -4248,6 +4248,7 @@ struct pyroblast_dot_t : public fire_mage_spell_t
     fire_mage_spell_t( n, p, p->find_spell( 321712 ) )
   {
     background = hasted_ticks = true;
+    cooldown->duration = 0_ms;
   }
 };
 
