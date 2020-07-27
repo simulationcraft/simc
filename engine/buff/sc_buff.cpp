@@ -1548,12 +1548,12 @@ void buff_t::refresh( int stacks, double value, timespan_t duration )
     {
       if ( !player->is_sleeping() )
       {
-        sim->print_log( "{} refreshes {} (value={})", *player, buff_display_name, current_value );
+        sim->print_log( "{} refreshes {} (value={}, duration={})", *player, buff_display_name, current_value, d );
       }
     }
     else
     {
-      sim->print_log( "Raid refreshes {} (value={})", buff_display_name, current_value );
+      sim->print_log( "Raid refreshes {} (value={}, duration={})", buff_display_name, current_value, d );
     }
   }
 }
