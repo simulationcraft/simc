@@ -2500,8 +2500,7 @@ struct bursting_shot_t : public hunter_ranged_attack_t
 struct aimed_shot_base_t: public hunter_ranged_attack_t
 {
   struct {
-    benefit_t* benefit = nullptr;
-    double percent = 0;
+    double multiplier = 0;
     double high, low;
   } careful_aim;
   const int trick_shots_targets;
@@ -2515,10 +2514,9 @@ struct aimed_shot_base_t: public hunter_ranged_attack_t
 
     if ( p -> talents.careful_aim.ok() )
     {
-      careful_aim.benefit = p -> get_benefit( "careful_aim" );
-      careful_aim.percent = p -> talents.careful_aim -> effectN( 4 ).percent();
       careful_aim.high = p -> talents.careful_aim -> effectN( 1 ).base_value();
       careful_aim.low = p -> talents.careful_aim -> effectN( 2 ).base_value();
+      careful_aim.multiplier = p -> talents.careful_aim -> effectN( 3 ).percent();
     }
   }
 
@@ -2533,13 +2531,11 @@ struct aimed_shot_base_t: public hunter_ranged_attack_t
   {
     double m = hunter_ranged_attack_t::composite_target_da_multiplier( t );
 
-    if ( careful_aim.percent )
+    if ( careful_aim.multiplier )
     {
-      const bool active = t -> health_percentage() > careful_aim.high || t -> health_percentage() < careful_aim.low;
-      const bool procced = active && rng().roll( careful_aim.percent );
-      careful_aim.benefit -> update( procced );
-      if ( procced )
-        m *= 1 + p() -> talents.careful_aim -> effectN( 3 ).percent();
+      const double target_health_pct = t -> health_percentage();
+      if ( target_health_pct > careful_aim.high || target_health_pct < careful_aim.low )
+        m *= 1 + careful_aim.multiplier;
     }
 
     return m;
