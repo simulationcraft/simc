@@ -2498,7 +2498,6 @@ struct moonfire_t : public druid_spell_t
           p->spec.moonfire_2->effectN( 1 ).time_value() + p->spec.moonfire_3->effectN( 1 ).time_value() +
           p->query_aura_effect( p->spec.balance, E_APPLY_AURA, A_ADD_FLAT_MODIFIER, P_DURATION, p->spec.moonfire_dmg )
               ->time_value();
-      base_dd_multiplier *= 1.0 + p->spec.guardian->effectN( 8 ).percent();
       aoe = 1;
 
       if (p->talent.twin_moons->ok())
@@ -4444,14 +4443,13 @@ struct bear_attack_t : public druid_attack_t<melee_attack_t>
 {
   bool gore;
 
-  bear_attack_t( const std::string& n, druid_t* p,
-                 const spell_data_t* s = spell_data_t::nil(),
-                 const std::string& options_str = std::string() ) :
-    base_t( n, p, s ), gore( false )
+  bear_attack_t( const std::string& n, druid_t* p, const spell_data_t* s = spell_data_t::nil(),
+                 const std::string& options_str = std::string() )
+    : base_t( n, p, s ), gore( false )
   {
     parse_options( options_str );
 
-    if (p->specialization() == DRUID_BALANCE || p->specialization() == DRUID_RESTORATION)
+    if ( p->specialization() == DRUID_BALANCE || p->specialization() == DRUID_RESTORATION )
       ap_type = attack_power_type::NO_WEAPON;
   }
 
@@ -4459,10 +4457,10 @@ struct bear_attack_t : public druid_attack_t<melee_attack_t>
   {
     base_t::impact( s );
 
-    if ( result_is_hit( s -> result ) && gore )
+    if ( result_is_hit( s->result ) && gore )
       trigger_gore();
   }
-}; // end bear_attack_t
+};  // end bear_attack_t
 
 // Bear Melee Attack ========================================================
 
@@ -4768,8 +4766,6 @@ struct thrash_bear_t : public bear_attack_t
     hasted_ticks = true;
     attack_power_mod.tick = p -> spec.thrash_bear_dot -> effectN( 1 ).ap_coeff();
     dot_max_stack = 3;
-    // Apply hidden passive damage multiplier
-    base_dd_multiplier *= 1.0 + p -> spec.guardian_overrides -> effectN( 6 ).percent();
     // Bear Form cost modifier
     base_costs[ RESOURCE_RAGE ] *= 1.0 + p -> buff.bear_form -> data().effectN( 7 ).percent();
 
@@ -5036,17 +5032,6 @@ struct regrowth_t: public druid_heal_t
     may_autounshift = true;
     ignore_false_positive = true; // Prevents cat/bear from failing a skill check and going into caster form.
 
-    const spell_data_t* spelldata = p->find_class_spell("Regrowth");
-
-    base_dd_multiplier *=
-        1.0 + p->query_aura_effect( p->spec.guardian, E_APPLY_AURA, A_ADD_PCT_MODIFIER, P_GENERIC, spelldata )->percent();
-
-    base_td_multiplier *=
-        1.0 + p->query_aura_effect( p->spec.guardian, E_APPLY_AURA, A_ADD_PCT_MODIFIER, P_TICK_DAMAGE, spelldata )->percent();
-
-    base_costs[ RESOURCE_MANA ] *=
-        1.0 + p->query_aura_effect( p->spec.guardian, E_APPLY_AURA, A_ADD_PCT_MODIFIER, P_RESOURCE_COST, spelldata )->percent();
-
     // Hack for feral to be able to use target-related expressions on this action
     // Disables healing entirely
     if ( p -> specialization() == DRUID_FERAL ) {
@@ -5286,7 +5271,6 @@ struct barkskin_t : public druid_spell_t
     harmful = false;
     use_off_gcd = true;
 
-    cooldown -> duration *= 1.0 + player -> spec.guardian -> effectN( 3 ).percent();
     cooldown -> duration *= 1.0 + player -> talent.survival_of_the_fittest -> effectN( 1 ).percent();
     dot_duration = timespan_t::zero();
 
@@ -6836,11 +6820,6 @@ struct survival_instincts_t : public druid_spell_t
     harmful = false;
     use_off_gcd = true;
 
-    // Spec-based cooldown modifiers
-    // Despite not being labelled to a spell, both affect cooldown category 1469, which is SI's charge cooldown category
-    // Spelldata is weird, a -60000 value reduces cd by 60s for feral, but increases it by 60s for guardian
-    cooldown -> duration += -1 * player -> spec.guardian_overrides -> effectN( 5 ).time_value();
-
     // Because vision of perfection does exist, but does not affect this spell for feral.
 	  if ( player->specialization() == DRUID_GUARDIAN )
 	  {
@@ -7411,7 +7390,6 @@ void druid_t::init_spells()
   spec.bear_form                  = find_class_spell( "Bear Form" ) -> ok() ? find_spell( 1178 ) : spell_data_t::not_found();
   spec.gore                       = find_specialization_spell( "Gore" );
   spec.guardian                   = find_specialization_spell( "Guardian Druid" );
-  spec.guardian_overrides         = find_specialization_spell( "Guardian Overrides Passive" );
   spec.ironfur                    = find_specialization_spell( "Ironfur" );
   spec.thrash_bear_dot            = find_specialization_spell( "Thrash" ) -> ok() ? find_spell( 192090 ) : spell_data_t::not_found();
   spec.lightning_reflexes         = find_specialization_spell( 231064 );
@@ -9229,7 +9207,11 @@ double druid_t::composite_spell_power( school_e school ) const
   // In 8.0 Nurturing Instinct is gone, replaced with modifiers in feral/guardian auras.
   double ap_coeff = 0.0;
 
-  if ( specialization() == DRUID_GUARDIAN ) { ap_coeff = spec.guardian -> effectN( 11 ).percent(); }
+  if ( specialization() == DRUID_GUARDIAN )
+  {
+    ap_coeff = query_aura_effect( spec.guardian, E_APPLY_AURA, A_366 )->percent();
+  }
+
   if ( specialization() == DRUID_FERAL )
   {
     ap_coeff = query_aura_effect( spec.feral, E_APPLY_AURA, A_366 )->percent();
