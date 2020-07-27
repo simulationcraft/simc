@@ -1296,9 +1296,9 @@ std::string enemy_t::generate_tank_action_list(tank_dummy_e tank_dummy)
   std::string als = "";
   constexpr size_t numTankDummies = static_cast<size_t>(tank_dummy_e::MAX);
   //                               NONE, WEAK, DUNGEON, RAID,  HEROIC, MYTHIC
-  int aa_damage[numTankDummies] = { 0, 100000, 200000, 250000, 400000, 500000 }; // Base auto attack damage
-  int dummy_strike_damage[numTankDummies] = { 0, 250000, 500000, 625000, 1000000, 1250000 }; // Base melee nuke damage
-  int background_spell_damage[numTankDummies] = { 0, 4000, 8000, 10000, 16000, 20000 }; // Base background dot damage
+  int aa_damage[numTankDummies] = { 0, 10000, 20000, 25000, 40000, 50000 }; // Base auto attack damage
+  int dummy_strike_damage[numTankDummies] = { 0, 250000, 50000, 62500, 100000, 142500 }; // Base melee nuke damage
+  int background_spell_damage[numTankDummies] = { 0, 400, 800, 10000, 1600, 2000 }; // Base background dot damage
 
   size_t tank_dummy_index = static_cast<size_t>(tank_dummy);
   als += "/auto_attack,damage=" + util::to_string(aa_damage[tank_dummy_index]) + ",attack_speed=1.5,aoe_tanks=1";
