@@ -4661,8 +4661,16 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
     return;
   }
 
-  sim->print_debug( "{} {} is affected by effect {} (spell {} - {} - effect #{})", *player, *this, effect.id(),
-                    effect.spell()->name_cstr(), effect.spell()->id(), effect.spell_effect_num() + 1 );
+  if ( sim->debug )
+  {
+    const spell_data_t& spell = *effect.spell();
+    std::string desc_str;
+    const auto& spell_text = player->dbc->spell_text( spell.id() );
+    if ( spell_text.rank() )
+      desc_str = fmt::format( " (desc={})", spell_text.rank() );
+    sim->print_debug( "{} {} is affected by effect {} ({}{} (id={}) - effect #{})", *player, *this, effect.id(),
+                      spell.name_cstr(), desc_str, spell.id(), effect.spell_effect_num() + 1 );
+  }
 
   if ( data().affected_by( effect ) )
   {
