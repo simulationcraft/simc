@@ -3204,7 +3204,14 @@ class SpecializationSpellGenerator(DataGenerator):
             fields += spell_data.ref('spell_id').field('id')
             fields += spell_data.field('replace_spell_id')
             fields += spell_data.ref('spell_id').field('name')
-            fields += spell.field('rank')
+
+            # Only export "Rank x" descriptions, so find_specialization_spell(
+            # name, desc ) will match them, while find_specialization_spell(
+            # name ) functions like before.
+            if spell.rank == 0 or 'Rank' in spell.rank:
+                fields += spell.field('rank')
+            else:
+                fields += ['0',]
 
             self.output_record(fields)
 

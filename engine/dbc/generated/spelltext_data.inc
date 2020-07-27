@@ -1,5 +1,5 @@
 // Spell text, wow build 9.0.1.35282
-static const std::array<spelltext_data_t, 15083> __spelltext_data { {
+static const std::array<spelltext_data_t, 15089> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -14205,6 +14205,8 @@ static const std::array<spelltext_data_t, 15083> __spelltext_data { {
   { 326377, "Your healing abilities have a chance to inject your target with slime, healing them for $o1 over $d.", "Healing for $s1 every $t1 sec.", 0 },
   { 326411, "Set down one of Moma Tomalin's Stitched Surpise Cakes to feed your entire raid or party.\r\n\r\nRestores $104934o1 health and ${$104269m2/5*$104269d} mana over $104934d.", 0, 0 },
   { 326434, "Form a bond with an ally. Every $327097d, you may empower the bond for $327037d, granting you an effect based on your partner's role, and granting them an effect based on your role.\r\n\r\n$?c3[|cFFFFFFFFTank|r\r\n$@spellicon327037 $@spellname327037\r\n$@spelldesc327037]?c4[|cFFFFFFFFHealer|r\r\n$@spellicon327071 $@spellname327071\r\n$@spelldesc327071][|cFFFFFFFFDamager|r\r\n$@spellicon327022 $@spellname327022\r\n$@spelldesc327022]", "Bonded with $@auracaster. Every $327097d, they may empower the bond, granting bonuses based on your respective roles.", "Kyrian" },
+  { 326446, "Empower the bond for $327022d:\r\n\r\n$@spelldesc327097\r\n\r\n|cFFFFFFFFDamager Partner|r\r\nThey energize you, granting you $327139s1% of their damage as additional damage, healing, or absorption.", 0, "Kyrian" },
+  { 326462, "Empower the bond for $327037d:\r\n\r\n$@spelldesc327097\r\n\r\n|cFFFFFFFFTank Partner|r\r\nThey protect you, redirecting $327037s1% of damage you take to them, for $327037d or until they fall below $327037s3% health.", 0, "Kyrian" },
   { 326486, "$@spelldesc322835", "Size, movement speed, and melee range increased by $s1%.", 0 },
   { 326504, "Inflict 485 Shadow damage to your attacker over 5 sec when hit at melee range.", 0, 0 },
   { 326507, "Defeating an enemy reduces Fleshcraft's cooldown by 1 sec.", 0, 0 },
@@ -14215,6 +14217,7 @@ static const std::array<spelltext_data_t, 15083> __spelltext_data { {
   { 326514, "Upon death, your armor continues to fight, allowing you to fight for an additional 10 sec. During this time, your damage and healing done is reduced by 50% and you cannot receive healing.", 0, 0 },
   { 326572, "After landing 10 critical strikes, you gain 20% increased Critical Strike for 10 sec. May only occur once per 1 min.", 0, 0 },
   { 326646, "Duration increased by ${$s1/1000} sec.", 0, "Rank 2" },
+  { 326647, "Empower the bond for $327071d:\r\n\r\n$@spelldesc327097\r\n\r\n|cFFFFFFFFHealer Partner|r\r\nThey focus on you, replicating $327148s2% of all healing they deal onto you.", 0, "Kyrian" },
   { 326730, "Hammer of Wrath may be used on any target during Avenging Wrath.", 0, "Rank 2" },
   { 326731, "$@spelldesc317866", 0, 0 },
   { 326732, "Crusader Strike has a $s1% chance to make your next Divine Storm free and deal $326733s1% additional damage.", 0, 0 },
@@ -14484,6 +14487,8 @@ static const std::array<spelltext_data_t, 15083> __spelltext_data { {
   { 333089, "$@spelldesc332754", "Stamina increased by $w1%. Healing done increased by $w2%.", 0 },
   { 333097, "When Hot Streak activates, you have a low chance to cause all Pyroblasts and Flamestrikes to have no cast time and be guaranteed critical strikes for $333100d.", 0, 0 },
   { 333100, "$@spelldesc333097", "Pyroblast and Flamestrike have no cast time and is a guaranteed critical strike.", 0 },
+  { 333110, "$@spelldesc212084", 0, 0 },
+  { 333120, "$@spelldesc212084", 0, 0 },
   { 333167, "Casting $s1 Fireballs or Pyroblasts calls down a Meteor on your target. Hitting an enemy player counts as double.", 0, 0 },
   { 333218, "$@spelldesc319983", "Versatility increased by $w1%.", 0 },
   { 333221, "$@spelldesc319983", 0, 0 },
@@ -15025,6 +15030,7 @@ static const std::array<spelltext_data_t, 15083> __spelltext_data { {
   { 338793, "The healing of Shattered Souls is increased by |cFFFFFFFF$s1%|r.", 0, 0 },
   { 338799, "Your movement speed is increased by |cFFFFFFFF$s1%|r after casting $?c1[Fel Rush][Infernal Strike].", 0, 0 },
   { 338804, 0, "Movement speed increased by $w1%.", 0 },
+  { 338825, "$@spelldesc338668", "${$w1~} Arcane Power collected by Primordial Arcanic Pulsar.", 0 },
   { 338829, "Swiftmend no longer consumes a heal over time effect, and extends the duration of your heal over time effects on the target by $s1 sec.", 0, 0 },
   { 338831, "You may Lifebloom two targets at once, and Lifebloom's final healing is increased by $s1%.", 0, 0 },
   { 338832, "Rejuvenation healing has a $@switch<$s2>[${$s1/10}%][${$s1/10}.1%] chance to create a new Rejuvenation on a nearby target.", 0, 0 },
