@@ -7737,23 +7737,20 @@ void druid_t::create_buffs()
   buff.celestial_alignment = make_buff( this, "celestial_alignment", spec.celestial_alignment )
     ->set_cooldown( timespan_t::zero() )
     ->set_default_value( spec.celestial_alignment->effectN( 1 ).percent() )
-    ->add_invalidate (CACHE_SPELL_CRIT_CHANCE)
-    ->add_invalidate (CACHE_CRIT_CHANCE)
-    ->set_stack_change_callback( [this]( buff_t* b, int, int new_ ) {
-    if (new_)
-      uptime.combined_ca_inc->update (true, sim->current_time ());
+    ->add_invalidate( CACHE_CRIT_CHANCE )
+    ->set_stack_change_callback( [this] ( buff_t* b, int, int new_ ) {
+      if ( new_ )
+        uptime.combined_ca_inc->update( true, sim->current_time() );
     } );
 
   buff.incarnation_moonkin = make_buff( this, "incarnation_chosen_of_elune", talent.incarnation_moonkin )
     ->set_cooldown( timespan_t::zero() )
     ->set_default_value( talent.incarnation_moonkin->effectN( 1 ).percent() )
     ->add_invalidate( CACHE_HASTE )
-    ->add_invalidate( CACHE_SPELL_HASTE )
-    ->add_invalidate (CACHE_SPELL_CRIT_CHANCE)
-    ->add_invalidate (CACHE_CRIT_CHANCE)
-    ->set_stack_change_callback( [this]( buff_t*, int, int new_ ) {
-    if (new_)
-      uptime.combined_ca_inc->update (true, sim->current_time ());
+    ->add_invalidate( CACHE_CRIT_CHANCE )
+    ->set_stack_change_callback( [this] ( buff_t*, int, int new_ ) {
+      if ( new_ )
+        uptime.combined_ca_inc->update( true, sim->current_time() );
     } );
 
   buff.fury_of_elune = make_buff( this, "fury_of_elune", talent.fury_of_elune )
@@ -7775,12 +7772,12 @@ void druid_t::create_buffs()
   buff.astral_acceleration = make_buff( this, "astral_acceleration", find_spell( 242232 ) )
     ->set_default_value( find_spell( 242232 )->effectN( 1 ).percent() )
     ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
-    ->add_invalidate( CACHE_SPELL_HASTE );
+    ->add_invalidate( CACHE_HASTE );
 
   buff.starlord = make_buff( this, "starlord", find_spell( 279709 ) )
     ->set_default_value( find_spell( 279709 )->effectN( 1 ).percent() )
     ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
-    ->add_invalidate( CACHE_SPELL_HASTE );
+    ->add_invalidate( CACHE_HASTE );
 
   buff.solar_solstice = make_buff( this, "solar_solstice", find_spell( 252767 ) )
     ->set_default_value( find_spell( 252767 )->effectN( 1 ).percent() );
