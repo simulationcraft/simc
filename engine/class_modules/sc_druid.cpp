@@ -639,6 +639,7 @@ public:
     const spell_data_t* mangle_2; // Rank 2
     const spell_data_t* ironfur_2; // Rank 2
     const spell_data_t* frenzied_regeneration_2; // Rank 2
+    const spell_data_t* frenzied_regeneration_3; // Rank 3
     const spell_data_t* bear_form_2; // Rank 2
 
     // Resto
@@ -7525,7 +7526,7 @@ void druid_t::init_spells()
   spec.leather_specialization     = find_specialization_spell( "Leather Specialization" );
   spec.omen_of_clarity            = find_specialization_spell( "Omen of Clarity" );
   spec.entangling_roots           = find_spell( 339 );
-  spec.moonfire_2                 = find_specialization_spell ("Moonfire", "Rank 2");
+  spec.moonfire_2                 = find_rank_spell ("Moonfire", "Rank 2");
 
   // Balance
   spec.astral_power               = find_specialization_spell( "Astral Power" );
@@ -7534,16 +7535,16 @@ void druid_t::init_spells()
   spec.innervate                  = find_specialization_spell( "Innervate" );
   spec.moonkin_form               = find_specialization_spell( "Moonkin Form" );
   spec.eclipse                    = find_specialization_spell( "Eclipse" );
-  spec.eclipse_2                  = find_specialization_spell( "Eclipse", "Rank 2" );
+  spec.eclipse_2                  = find_rank_spell( "Eclipse", "Rank 2" );
   spec.eclipse_solar              = find_spell( 48517 );
   spec.eclipse_lunar              = find_spell( 48518 );
   spec.starfall                   = find_specialization_spell( "Starfall" );
-  spec.starfall_2                 = find_specialization_spell( "Starfall", "Rank 2" );
+  spec.starfall_2                 = find_rank_spell( "Starfall", "Rank 2" );
   spec.balance_tier19_2pc         = sets -> has_set_bonus( DRUID_BALANCE, T19, B2 ) ? find_spell( 211089 ) : spell_data_t::not_found();
   spec.starsurge                  = find_specialization_spell( "Starsurge" );
-  spec.starsurge_2                = find_specialization_spell( "Starsurge", "Rank 2" ); // Adds more Eclipse extension
-  spec.moonkin_2                  = find_specialization_spell( "Moonkin Form", "Rank 2" ); // Owlkin Frenzy proc rate RAWR
-  spec.sunfire_2                  = find_specialization_spell( "Sunfire", "Rank 2" ); // Sunfire spread. currently contains no value data.
+  spec.starsurge_2                = find_rank_spell( "Starsurge", "Rank 2" ); // Adds more Eclipse extension
+  spec.moonkin_2                  = find_rank_spell( "Moonkin Form", "Rank 2" ); // Owlkin Frenzy proc rate RAWR
+  spec.sunfire_2                  = find_rank_spell( "Sunfire", "Rank 2" ); // Sunfire spread. currently contains no value data.
   spec.stellar_drift_2            = find_spell( 202461 ); // stellar drift mobility buff
   spec.owlkin_frenzy              = find_spell( 157228 ); // Owlkin Frenzy RAWR
   spec.sunfire_dmg                = find_spell( 164815 ); // dot debuff for sunfire
@@ -7567,12 +7568,12 @@ void druid_t::init_spells()
   spec.swipe_cat                  = find_spell( 106785 );
   spec.rake_2                     = find_spell( 231052 );
   spec.tigers_fury                = find_specialization_spell( "Tiger's Fury" );
-  spec.tigers_fury_2              = find_spell( 231055 );
+  spec.tigers_fury_2              = find_rank_spell( "Tiger's Fury", "Rank 2" );
   spec.ferocious_bite_2           = find_spell( 231056 );
   spec.shred                      = find_spell( 5221 );
-  spec.shred_2                    = find_spell( 231063 );
-  spec.shred_3                    = find_spell( 231057 );
-  spec.swipe_2                    = find_spell( 231283 );
+  spec.shred_2                    = find_rank_spell( "Shred", "Rank 2" ); // 231063
+  spec.shred_3                    = find_rank_spell( "Shred", "Rank 3" ); // 231057
+  spec.swipe_2                    = find_rank_spell( "Swipe", "Rank 2" ); // 231283
   spec.savage_roar                = find_spell( 62071 );
 
 
@@ -7584,10 +7585,11 @@ void druid_t::init_spells()
   spec.ironfur                    = find_specialization_spell( "Ironfur" );
   spec.thrash_bear_dot            = find_specialization_spell( "Thrash" ) -> ok() ? find_spell( 192090 ) : spell_data_t::not_found();
   spec.lightning_reflexes         = find_specialization_spell( 231064 );
-  spec.mangle_2                   = find_specialization_spell ("Mangle", "Rank 2");
-  spec.ironfur_2                  = find_specialization_spell( 231070 );
-  spec.frenzied_regeneration_2    = find_specialization_spell( 273048 );
-  spec.bear_form_2                = find_specialization_spell( 270100 );
+  spec.mangle_2                   = find_rank_spell ("Mangle", "Rank 2");
+  spec.ironfur_2                  = find_rank_spell( "Ironfur", "Rank 2" );
+  spec.frenzied_regeneration_2    = find_rank_spell( "Frenzied Regeneration", "Rank 2" );
+  spec.frenzied_regeneration_3    = find_rank_spell( "Frenzied Regeneration", "Rank 3" );
+  spec.bear_form_2                = find_rank_spell( "Bear Form", "Rank 2" );
 
   // Restoration
   spec.moonkin_form_affinity      = find_spell(197625);
