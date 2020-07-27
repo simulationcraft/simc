@@ -173,7 +173,10 @@ static void generate_indices( bool ptr )
 
     for ( const spelleffect_data_t& effect : spell.effects() )
     {
-      if ( effect.subtype() == A_HASTED_CATEGORY )
+      static constexpr effect_subtype_t category_subtypes[] = {
+        A_411, A_453, A_454, A_HASTED_CATEGORY
+      };
+      if ( range::contains( category_subtypes, effect.subtype() ) )
       {
         const unsigned value = as<unsigned>( effect.misc_value1() );
         if ( value != 0 )
