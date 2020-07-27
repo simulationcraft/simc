@@ -2079,7 +2079,6 @@ void trigger_nessingwarys_apparatus( hunter_t* p, action_t* a )
 
 void consume_trick_shots( hunter_t* p )
 {
-  // XXX: Review the order between Volley & Secrets of the Unblinking Vigil
   if ( p -> buffs.volley -> up() )
     return;
 
@@ -2675,8 +2674,7 @@ struct aimed_shot_t : public aimed_shot_base_t
     if ( p() -> buffs.trueshot -> check() )
       m /= 1 + p() -> specs.trueshot -> effectN( 3 ).percent();
 
-    // XXX: [9.0 Beta]: it has the same effect as Trueshot above, implement as such
-    // TODO: test & confirm
+    // XXX: [9.0 Beta]: has the same effect as Trueshot above, implement as such
     if ( p() -> buffs.dead_eye -> up() )
       m /= 1 + p() -> buffs.dead_eye -> check_value();
 
