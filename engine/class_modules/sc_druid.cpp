@@ -902,8 +902,9 @@ public:
   void trigger_natures_guardian( const action_state_t* );
   double calculate_expected_max_health() const;
   const spelleffect_data_t* query_aura_effect( const spell_data_t* aura_spell, effect_type_t type = E_APPLY_AURA,
-                                               effect_subtype_t subtype = A_ADD_PCT_MODIFIER, double misc_value = 0,
-                                               const spell_data_t* affected_spell = spell_data_t::nil() );
+                                               effect_subtype_t subtype = A_ADD_PCT_MODIFIER,
+                                               property_type_t misc_value = P_GENERIC,
+                                               const spell_data_t* affected_spell = spell_data_t::nil() ) const;
 
   void vision_of_perfection_proc() override;
   void apply_affecting_auras( action_t& ) override;
@@ -1572,29 +1573,7 @@ public:
 
     gore_chance += p() -> sets -> set( DRUID_GUARDIAN, T19, B2 ) -> effectN( 1 ).percent();
 
-    if ( player->specialization() == DRUID_BALANCE )
-    {
-      if ( s->affected_by( player->spec.balance->effectN( 2 ) ) ) // Periodic Damage
-      {
-        ab::base_td_multiplier *= 1.0 + player->spec.balance->effectN( 2 ).percent();
-      }
-      if ( s->affected_by( player->spec.balance->effectN( 1 ) ) ) // Direct Damage
-      {
-        ab::base_dd_multiplier *= 1.0 + player->spec.balance->effectN( 1 ).percent();
-      }
-
-
-      // Additional dot nerf auras (multiplicative with effect#1/2)
-      if ( s->affected_by( player->spec.balance->effectN( 10 ) ) ) // Periodic Damage
-      {
-        ab::base_td_multiplier *= 1.0 + player->spec.balance->effectN(10).percent();
-      }
-      if ( s->affected_by( player->spec.balance->effectN( 9 ) ) ) // Direct Damage
-      {
-        ab::base_dd_multiplier *= 1.0 + player->spec.balance->effectN( 9 ).percent();
-      }
-    }
-    else if (player->specialization() == DRUID_RESTORATION)
+    if (player->specialization() == DRUID_RESTORATION)
     {
       if (s->affected_by(player->spec.restoration->effectN(9))) // Periodic Damage
       {
@@ -2538,9 +2517,11 @@ struct moonfire_t : public druid_spell_t
       triggers_galactic_guardian = false;
       benefits_from_galactic_guardian = true;
       dual = background = true;
-      dot_duration       += p -> spec.balance -> effectN( 4 ).time_value();
-      dot_duration += p->spec.moonfire_2->effectN (1).time_value ();
-      base_dd_multiplier *= 1.0 + p -> spec.guardian -> effectN( 8 ).percent();
+      dot_duration +=
+          p->query_aura_effect( p->spec.balance, E_APPLY_AURA, A_ADD_FLAT_MODIFIER, P_DURATION, p->spec.moonfire_dmg )
+              ->time_value();
+      dot_duration += p->spec.moonfire_2->effectN( 1 ).time_value();
+      base_dd_multiplier *= 1.0 + p->spec.guardian->effectN( 8 ).percent();
       aoe = 1;
 
       if (p->talent.twin_moons->ok())
@@ -4263,7 +4244,7 @@ struct shred_t : public cat_attack_t
       + p -> talent.feral_affinity -> effectN( 8 ).base_value();*/
 
     energize_amount +=
-        p->query_aura_effect( p->spec.feral, E_APPLY_AURA, A_ADD_FLAT_MODIFIER, 12, p->find_class_spell( "Shred" ) )
+        p->query_aura_effect( p->spec.feral, E_APPLY_AURA, A_ADD_FLAT_MODIFIER, P_EFFECT_2, p->find_class_spell( "Shred" ) )
             ->base_value() +
         p -> talent.feral_affinity -> effectN( 8 ).base_value();
   }
@@ -5112,33 +5093,19 @@ struct regrowth_t: public druid_heal_t
     may_autounshift = true;
     ignore_false_positive = true; // Prevents cat/bear from failing a skill check and going into caster form.
 
-    // Spec passive modifiers. Note: Resto also has a modifier, but as a part
-    // of a "spec-wide" modifier so better to account for that somewhere else.
-    //base_dd_multiplier *= 1.0 + p->spec.feral->effectN( 5 ).percent() + p->spec.balance->effectN( 6 ).percent() +
-    //                      p->spec.guardian->effectN( 4 ).percent();
-
-    //base_td_multiplier *= 1.0 + p->spec.feral->effectN( 6 ).percent() + p->spec.balance->effectN( 7 ).percent() +
-    //                      p->spec.guardian->effectN( 5 ).percent();
-
-    //base_costs[ RESOURCE_MANA ] *= 1.0 + p->spec.feral->effectN( 7 ).percent() +
-    //                               p->spec.balance->effectN( 8 ).percent() + p->spec.guardian->effectN( 6 ).percent();
-
     const spell_data_t* spelldata = p->find_class_spell("Regrowth");
 
     base_dd_multiplier *=
-        1.0 + p->query_aura_effect( p->spec.feral, E_APPLY_AURA, A_ADD_PCT_MODIFIER, 0, spelldata )->percent() +
-        p->query_aura_effect( p->spec.balance, E_APPLY_AURA, A_ADD_PCT_MODIFIER, 0, spelldata )->percent() +
-        p->query_aura_effect( p->spec.guardian, E_APPLY_AURA, A_ADD_PCT_MODIFIER, 0, spelldata )->percent();
+        1.0 + p->query_aura_effect( p->spec.feral, E_APPLY_AURA, A_ADD_PCT_MODIFIER, P_GENERIC, spelldata )->percent() +
+        p->query_aura_effect( p->spec.guardian, E_APPLY_AURA, A_ADD_PCT_MODIFIER, P_GENERIC, spelldata )->percent();
 
     base_td_multiplier *=
-        1.0 + p->query_aura_effect( p->spec.feral, E_APPLY_AURA, A_ADD_PCT_MODIFIER, 22, spelldata )->percent() +
-        p->query_aura_effect( p->spec.balance, E_APPLY_AURA, A_ADD_PCT_MODIFIER, 22, spelldata )->percent() +
-        p->query_aura_effect( p->spec.guardian, E_APPLY_AURA, A_ADD_PCT_MODIFIER, 22, spelldata )->percent();
+        1.0 + p->query_aura_effect( p->spec.feral, E_APPLY_AURA, A_ADD_PCT_MODIFIER, P_TICK_DAMAGE, spelldata )->percent() +
+        p->query_aura_effect( p->spec.guardian, E_APPLY_AURA, A_ADD_PCT_MODIFIER, P_TICK_DAMAGE, spelldata )->percent();
 
     base_costs[ RESOURCE_MANA ] *=
-        1.0 + p->query_aura_effect( p->spec.feral, E_APPLY_AURA, A_ADD_PCT_MODIFIER, 14, spelldata )->percent() +
-        p->query_aura_effect( p->spec.balance, E_APPLY_AURA, A_ADD_PCT_MODIFIER, 14, spelldata )->percent() +
-        p->query_aura_effect( p->spec.guardian, E_APPLY_AURA, A_ADD_PCT_MODIFIER, 14, spelldata )->percent();
+        1.0 + p->query_aura_effect( p->spec.feral, E_APPLY_AURA, A_ADD_PCT_MODIFIER, P_RESOURCE_COST, spelldata )->percent() +
+        p->query_aura_effect( p->spec.guardian, E_APPLY_AURA, A_ADD_PCT_MODIFIER, P_RESOURCE_COST, spelldata )->percent();
 
     // Hack for feral to be able to use target-related expressions on this action
     // Disables healing entirely
@@ -6295,7 +6262,9 @@ struct sunfire_t : public druid_spell_t
       dual = background = true;
       aoe = -1;
       base_aoe_multiplier = 0;
-      dot_duration += p -> spec.balance -> effectN( 4 ).time_value();
+      dot_duration +=
+          p->query_aura_effect( p->spec.balance, E_APPLY_AURA, A_ADD_FLAT_MODIFIER, P_DURATION, p->spec.sunfire_dmg )
+              ->time_value();
 
       if (p->azerite.high_noon.ok())
       {
@@ -7777,7 +7746,7 @@ void druid_t::init_base_stats()
   if ( specialization() == DRUID_FERAL )
   {
     resources.base_regen_per_second[ RESOURCE_ENERGY ] *=
-      1.0 + query_aura_effect( spec.feral, E_APPLY_AURA, A_MOD_POWER_REGEN_PERCENT, 3 )->percent();
+      1.0 + query_aura_effect( spec.feral, E_APPLY_AURA, A_MOD_POWER_REGEN_PERCENT, P_EFFECT_1 )->percent();
   }
   resources.base_regen_per_second[ RESOURCE_ENERGY ] *= 1.0 + talent.feral_affinity->effectN( 2 ).percent();
 
@@ -9106,8 +9075,8 @@ double druid_t::composite_melee_attack_power() const
   // In 8.0 Killer Instinct is gone, replaced with modifiers in balance/resto auras.
   if ( specialization() == DRUID_BALANCE )
   {
-    return spec.balance -> effectN( 9 ).percent() * cache.spell_power( SCHOOL_MAX ) *
-      composite_spell_power_multiplier();
+    return query_aura_effect( spec.balance, E_APPLY_AURA, A_404 )->percent() * cache.spell_power( SCHOOL_MAX ) *
+           composite_spell_power_multiplier();
   }
 
   if ( specialization() == DRUID_RESTORATION )
@@ -9123,7 +9092,8 @@ double druid_t::composite_melee_attack_power( attack_power_type type ) const
 {
   if ( specialization() == DRUID_BALANCE )
   {
-    return spec.balance->effectN( 9 ).percent() * cache.spell_power( SCHOOL_MAX ) * composite_spell_power_multiplier();
+    return query_aura_effect( spec.balance, E_APPLY_AURA, A_404 )->percent() * cache.spell_power( SCHOOL_MAX ) *
+           composite_spell_power_multiplier();
   }
 
   if ( specialization() == DRUID_RESTORATION )
@@ -10101,16 +10071,17 @@ double druid_t::calculate_expected_max_health() const
   return expected_health;
 }
 
+// NOTE: This will return the FIRST effect that matches parameters.
 const spelleffect_data_t* druid_t::query_aura_effect( const spell_data_t* aura_spell, effect_type_t type,
-                                                      effect_subtype_t subtype, double misc_value,
-                                                      const spell_data_t* affected_spell )
+                                                      effect_subtype_t subtype, property_type_t misc_value,
+                                                      const spell_data_t* affected_spell ) const
 {
   for ( size_t i = 1; i <= aura_spell->effect_count(); i++ )
   {
     const spelleffect_data_t& effect = aura_spell->effectN( i );
 
     if ( affected_spell != spell_data_t::nil() && !affected_spell->affected_by( effect ) )
-      return &spelleffect_data_t::nil();
+      continue;
 
     if ( effect.type() == type && effect.subtype() == subtype )
     {
@@ -10195,6 +10166,7 @@ void druid_t::apply_affecting_auras( action_t& action )
   player_t::apply_affecting_auras( action );
 
   action.apply_affecting_aura( spec.druid );
+  action.apply_affecting_aura( spec.balance );
 }
 
 druid_td_t::druid_td_t( player_t& target, druid_t& source )
