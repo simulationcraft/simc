@@ -4727,8 +4727,8 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
             break;
 
           case P_COOLDOWN:
-            cooldown->duration *= 1 + effect.percent();
-            sim->print_debug( "{} cooldown duration modified by {}%", *this, effect.base_value() );
+            base_recharge_multiplier *= 1 + effect.percent();
+            sim->print_debug( "{} cooldown recharge multiplier modified by {}%", *this, effect.base_value() );
             break;
 
           case P_RESOURCE_COST:
@@ -4755,7 +4755,7 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
   {
     switch ( effect.subtype() )
     {
-      case A_411:  // Modify Cooldown Charges
+      case A_411: // Modify Cooldown Charges
         cooldown->charges += as<int>( effect.base_value() );
         sim->print_debug( "{} cooldown charges modified by {}", *this, as<int>( effect.base_value() ) );
         break;
@@ -4765,9 +4765,14 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
         sim->print_debug( "{} cooldown set to hasted", *this );
         break;
 
-      case A_453:  // Modify Cooldown Duration
+      case A_453: // Modify Recharge Time
         cooldown->duration += effect.time_value();
         sim->print_debug( "{} cooldown duration modified by {}", *this, effect.time_value() );
+        break;
+
+      case A_454: // Modify Recharge Time%
+        base_recharge_multiplier *= 1 + effect.percent();
+        sim->print_debug( "{} cooldown recharge multiplier modified by {}%", *this, effect.base_value() );
         break;
 
       default:
