@@ -189,6 +189,7 @@ struct hunter_td_t: public actor_target_data_t
   {
     buff_t* hunters_mark;
     buff_t* latent_poison;
+    buff_t* latent_poison_injection;
     buff_t* steady_aim;
   } debuffs;
 
@@ -249,23 +250,23 @@ public:
   {
     spell_data_ptr_t call_of_the_wild;
     spell_data_ptr_t craven_strategem; // NYI
-    spell_data_ptr_t nessingwarys_apparatus; // NYI
+    spell_data_ptr_t nessingwarys_apparatus;
     spell_data_ptr_t soulforge_embers; // NYI
     // Beast Mastery
     spell_data_ptr_t dire_command;
     spell_data_ptr_t flamewakers_cobra_sting;
     spell_data_ptr_t qapla_eredun_war_order;
-    spell_data_ptr_t rylakstalkers_fangs; // NYI
+    spell_data_ptr_t rylakstalkers_fangs;
     // Marksmanship
     spell_data_ptr_t eagletalons_true_focus;
-    spell_data_ptr_t secrets_of_the_vigil; // NYI
+    spell_data_ptr_t secrets_of_the_vigil;
     spell_data_ptr_t serpentstalkers_trickery; // NYI
     spell_data_ptr_t surging_shots;
     // Survival
-    spell_data_ptr_t butchers_bone_fragments; // NYI
-    spell_data_ptr_t latent_poison_injectors; // NYI
-    spell_data_ptr_t rylakstalkers_strikes; // NYI
-    spell_data_ptr_t wildfire_cluster; // NYI
+    spell_data_ptr_t butchers_bone_fragments;
+    spell_data_ptr_t latent_poison_injectors;
+    spell_data_ptr_t rylakstalkers_strikes;
+    spell_data_ptr_t wildfire_cluster;
   } legendary;
 
   struct {
@@ -308,8 +309,10 @@ public:
     buff_t* vipers_venom;
 
     // Legendaries
+    buff_t* butchers_bone_fragments;
     buff_t* eagletalons_true_focus;
     buff_t* flamewakers_cobra_sting;
+    buff_t* secrets_of_the_vigil;
 
     // azerite
     buff_t* blur_of_talons;
@@ -345,6 +348,7 @@ public:
     gain_t* barbed_shot;
     gain_t* memory_of_lucid_dreams_major;
     gain_t* memory_of_lucid_dreams_minor;
+    gain_t* nessingwarys_apparatus;
     gain_t* terms_of_engagement;
   } gains;
 
@@ -1054,6 +1058,7 @@ struct hunter_main_pet_base_t : public hunter_pet_t
     buff_t* beast_cleave = nullptr;
     buff_t* frenzy = nullptr;
     buff_t* predator = nullptr;
+    buff_t* rylakstalkers_fangs = nullptr;
   } buffs;
 
   hunter_main_pet_base_t( hunter_t* owner, util::string_view pet_name, pet_e pt ):
@@ -1075,7 +1080,13 @@ struct hunter_main_pet_base_t : public hunter_pet_t
       make_buff( this, "bestial_wrath", find_spell( 186254 ) )
         -> set_default_value( find_spell( 186254 ) -> effectN( 1 ).percent() )
         -> set_cooldown( 0_ms )
-        -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+        -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+        -> set_stack_change_callback( [this]( buff_t*, int old, int cur ) {
+            if ( cur == 0 )
+              buffs.rylakstalkers_fangs -> expire();
+            else if ( old == 0 )
+              buffs.rylakstalkers_fangs -> trigger();
+          } );
 
     buffs.beast_cleave =
       make_buff( this, "beast_cleave", find_spell( 118455 ) )
@@ -1088,6 +1099,11 @@ struct hunter_main_pet_base_t : public hunter_pet_t
         -> add_invalidate( CACHE_ATTACK_SPEED );
     if ( o() -> azerite.feeding_frenzy.ok() )
       buffs.frenzy -> set_duration( o() -> azerite.feeding_frenzy.spell() -> effectN( 1 ).time_value() );
+
+    buffs.rylakstalkers_fangs =
+      make_buff( this, "rylakstalkers_piercing_fangs", o() -> find_spell( 336845 ) )
+        -> set_default_value( o() -> find_spell( 336845 ) -> effectN( 1 ).percent() )
+        -> set_chance( o() -> legendary.rylakstalkers_fangs.ok() );
   }
 
   double composite_melee_speed() const override
@@ -1109,6 +1125,15 @@ struct hunter_main_pet_base_t : public hunter_pet_t
 
     m *= 1 + buffs.bestial_wrath -> check_value();
     m *= 1 + o() -> buffs.coordinated_assault -> check_value();
+
+    return m;
+  }
+
+  double composite_player_critical_damage_multiplier( const action_state_t* s ) const override
+  {
+    double m = player_t::composite_player_critical_damage_multiplier( s );
+
+    m *= 1 + buffs.rylakstalkers_fangs -> check_value();
 
     return m;
   }
@@ -2042,6 +2067,31 @@ void trigger_lethal_shots( hunter_t* p )
   }
 }
 
+void trigger_nessingwarys_apparatus( hunter_t* p, action_t* a )
+{
+  if ( !p -> legendary.nessingwarys_apparatus.ok() )
+    return;
+
+  double amount = p -> legendary.nessingwarys_apparatus -> effectN( 1 ).trigger()
+                    -> effectN( 1 ).resource( RESOURCE_FOCUS );
+  p -> resource_gain( RESOURCE_FOCUS, amount, p -> gains.nessingwarys_apparatus, a );
+}
+
+void consume_trick_shots( hunter_t* p )
+{
+  // XXX: Review the order between Volley & Secrets of the Unblinking Vigil
+  if ( p -> buffs.volley -> up() )
+    return;
+
+  if ( p -> buffs.secrets_of_the_vigil -> up() )
+  {
+    p -> buffs.secrets_of_the_vigil -> decrement();
+    return;
+  }
+
+  p -> buffs.trick_shots -> decrement();
+}
+
 namespace attacks
 {
 
@@ -2592,8 +2642,7 @@ struct aimed_shot_t : public aimed_shot_base_t
     }
 
     p() -> buffs.trick_shots -> up(); // benefit tracking
-    if ( !p() -> buffs.volley -> up() )
-      p() -> buffs.trick_shots -> decrement();
+    consume_trick_shots( p() );
 
     if ( lock_and_loaded )
       p() -> buffs.lock_and_load -> decrement();
@@ -2883,8 +2932,7 @@ struct rapid_fire_t: public hunter_spell_t
   {
     hunter_spell_t::last_tick( d );
 
-    if ( !p() -> buffs.volley -> up() )
-      p() -> buffs.trick_shots -> decrement();
+    consume_trick_shots( p() );
 
     if ( p() -> buffs.double_tap -> check() )
       procs.double_tap -> occur();
@@ -3069,15 +3117,48 @@ struct melee_focus_spender_t: hunter_melee_attack_t
     }
   };
 
+  struct latent_poison_injection_t: hunter_spell_t
+  {
+    latent_poison_injection_t( util::string_view n, hunter_t* p ):
+      hunter_spell_t( n, p, p -> find_spell( 336904 ) )
+    {}
+
+    void trigger( player_t* target )
+    {
+      auto debuff = td( target ) -> debuffs.latent_poison_injection;
+      if ( ! debuff -> check() )
+        return;
+
+      set_target( target );
+      execute();
+
+      debuff -> expire();
+    }
+  };
+
   internal_bleeding_t internal_bleeding;
   latent_poison_t* latent_poison = nullptr;
+  latent_poison_injection_t* latent_poison_injection = nullptr;
   timespan_t wilderness_survival_reduction;
+  struct {
+    double chance = 0;
+    proc_t* proc;
+  } rylakstalkers_strikes;
 
   melee_focus_spender_t( util::string_view n, hunter_t* p, const spell_data_t* s ):
     hunter_melee_attack_t( n, p, s ),
     internal_bleeding( p ),
     wilderness_survival_reduction( p -> azerite.wilderness_survival.spell() -> effectN( 1 ).time_value() )
   {
+    if ( p -> legendary.latent_poison_injectors.ok() )
+      latent_poison_injection = p -> get_background_action<latent_poison_injection_t>( "latent_poison_injection" );
+
+    if ( p -> legendary.rylakstalkers_strikes.ok() )
+    {
+      rylakstalkers_strikes.chance = p -> legendary.rylakstalkers_strikes -> proc_chance();
+      rylakstalkers_strikes.proc = p -> get_proc( "Rylakstalker's Confounding Strikes" );
+    }
+
     if ( p -> azerite.latent_poison.ok() )
       latent_poison = p -> get_background_action<latent_poison_t>( "latent_poison" );
   }
@@ -3113,6 +3194,14 @@ struct melee_focus_spender_t: hunter_melee_attack_t
     trigger_birds_of_prey( p(), target );
     if ( wilderness_survival_reduction != 0_ms )
       p() -> cooldowns.wildfire_bomb -> adjust( -wilderness_survival_reduction );
+
+    p() -> buffs.butchers_bone_fragments -> trigger();
+
+    if ( rng().roll( rylakstalkers_strikes.chance ) )
+    {
+      p() -> cooldowns.wildfire_bomb -> reset( true );
+      rylakstalkers_strikes.proc -> occur();
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -3123,6 +3212,9 @@ struct melee_focus_spender_t: hunter_melee_attack_t
 
     if ( latent_poison )
       latent_poison -> trigger( s -> target );
+
+    if ( latent_poison_injection )
+      latent_poison_injection -> trigger( s -> target );
   }
 
   bool ready() override
@@ -3270,6 +3362,9 @@ struct carve_base_t: public hunter_melee_attack_t
 
     const auto reduction = wildfire_bomb_reduction * num_targets_hit;
     p() -> cooldowns.wildfire_bomb -> adjust( -reduction, true );
+
+    p() -> buffs.butchers_bone_fragments -> up(); // benefit tracking
+    p() -> buffs.butchers_bone_fragments -> expire();
   }
 
   void impact( action_state_t* s ) override
@@ -3278,6 +3373,16 @@ struct carve_base_t: public hunter_melee_attack_t
 
     trigger_birds_of_prey( p(), s -> target );
     internal_bleeding.trigger( s );
+  }
+
+  double action_multiplier() const override
+  {
+    double am = hunter_melee_attack_t::action_multiplier();
+
+    if ( p() -> buffs.butchers_bone_fragments -> check() )
+      am *= 1 + p() -> buffs.butchers_bone_fragments -> check_stack_value();
+
+    return am;
   }
 };
 
@@ -3435,6 +3540,9 @@ struct serpent_sting_sv_t: public hunter_ranged_attack_t
 
     update_flags &= ~STATE_HASTE;
 
+    if ( action_t* lpi = p() -> find_action( "latent_poison_injection" ) )
+      add_child( lpi );
+
     if ( action_t* lp = p() -> find_action( "latent_poison" ) )
       add_child( lp );
   }
@@ -3476,6 +3584,9 @@ struct serpent_sting_sv_t: public hunter_ranged_attack_t
   void assess_damage( result_amount_type type, action_state_t* s ) override
   {
     hunter_ranged_attack_t::assess_damage( type, s );
+
+    if ( s -> result_amount > 0 && p() -> legendary.latent_poison_injectors.ok() )
+      td( s -> target ) -> debuffs.latent_poison_injection -> trigger();
 
     if ( s -> result_amount > 0 && p() -> azerite.latent_poison.ok() )
       td( s -> target ) -> debuffs.latent_poison -> trigger();
@@ -3677,6 +3788,12 @@ struct tar_trap_t : public hunter_spell_t
 
     cooldown -> duration = data().cooldown();
   }
+
+  void impact( action_state_t* s ) override
+  {
+    hunter_spell_t::impact( s );
+    trigger_nessingwarys_apparatus( p(), this );
+  }
 };
 
 // Freezing Trap =====================================================================
@@ -3689,6 +3806,12 @@ struct freezing_trap_t : public hunter_spell_t
     parse_options( options_str );
 
     cooldown -> duration = data().cooldown();
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    hunter_spell_t::impact( s );
+    trigger_nessingwarys_apparatus( p(), this );
   }
 };
 
@@ -4220,6 +4343,12 @@ struct steel_trap_t: public hunter_spell_t
       background = true;
       dual = true;
     }
+
+    void execute() override
+    {
+      hunter_spell_t::execute();
+      trigger_nessingwarys_apparatus( p(), this );
+    }
   };
 
   steel_trap_t( hunter_t* p, util::string_view options_str ):
@@ -4238,9 +4367,18 @@ struct steel_trap_t: public hunter_spell_t
 
 struct wildfire_bomb_t: public hunter_spell_t
 {
-  struct wildfire_cluster_t : public hunter_spell_t
+  struct wildfire_cluster_t : hunter_spell_t
   {
     wildfire_cluster_t( util::string_view n, hunter_t* p ):
+      hunter_spell_t( n, p, p -> find_spell( 336899 ) )
+    {
+      aoe = -1;
+    }
+  };
+
+  struct azerite_wildfire_cluster_t : public hunter_spell_t
+  {
+    azerite_wildfire_cluster_t( util::string_view n, hunter_t* p ):
       hunter_spell_t( n, p, p -> find_spell( 272745 ) )
     {
       aoe = -1;
@@ -4352,7 +4490,7 @@ struct wildfire_bomb_t: public hunter_spell_t
 
   std::array<bomb_base_t*, 3> bombs;
   bomb_base_t* current_bomb = nullptr;
-  wildfire_cluster_t* wildfire_cluster = nullptr;
+  hunter_spell_t* wildfire_cluster = nullptr;
 
   wildfire_bomb_t( hunter_t* p, util::string_view options_str ):
     hunter_spell_t( "wildfire_bomb", p, p -> specs.wildfire_bomb )
@@ -4373,9 +4511,14 @@ struct wildfire_bomb_t: public hunter_spell_t
       bombs[ WILDFIRE_INFUSION_SHRAPNEL ] = p -> get_background_action<wildfire_bomb_damage_t>( "wildfire_bomb_impact", this );
     }
 
-    if ( p -> azerite.wildfire_cluster.ok() )
+    if ( p -> legendary.wildfire_cluster.ok() )
     {
       wildfire_cluster = p -> get_background_action<wildfire_cluster_t>( "wildfire_cluster" );
+      add_child( wildfire_cluster );
+    }
+    else if ( p -> azerite.wildfire_cluster.ok() )
+    {
+      wildfire_cluster = p -> get_background_action<azerite_wildfire_cluster_t>( "wildfire_cluster" );
       add_child( wildfire_cluster );
     }
   }
@@ -4505,6 +4648,10 @@ hunter_td_t::hunter_td_t( player_t* target, hunter_t* p ):
     make_buff( *this, "latent_poison", p -> find_spell( 273286 ) )
       -> set_default_value( p -> azerite.latent_poison.value( 1 ) )
       -> set_trigger_spell( p -> azerite.latent_poison );
+
+  debuffs.latent_poison_injection =
+    make_buff( *this, "latent_poison_injection", p -> legendary.latent_poison_injectors -> effectN( 1 ).trigger() )
+      -> set_trigger_spell( p -> legendary.latent_poison_injectors );
 
   debuffs.steady_aim =
     make_buff( *this, "steady_aim", p -> find_spell( 277959 ) )
@@ -5115,7 +5262,13 @@ void hunter_t::create_buffs()
 
   buffs.trick_shots =
     make_buff( this, "trick_shots", find_spell( 257622 ) )
-      -> set_chance( specs.trick_shots.ok() );
+      -> set_chance( specs.trick_shots.ok() )
+      -> set_stack_change_callback( [this]( buff_t*, int old, int cur ) {
+          if ( cur == 0 )
+            buffs.secrets_of_the_vigil -> expire();
+          else if ( old == 0 )
+            buffs.secrets_of_the_vigil -> trigger();
+        } );
 
   buffs.trueshot =
     make_buff( this, "trueshot", specs.trueshot )
@@ -5187,6 +5340,11 @@ void hunter_t::create_buffs()
 
   // Legendaries
 
+  buffs.butchers_bone_fragments =
+    make_buff( this, "butchers_bone_fragments", legendary.butchers_bone_fragments -> effectN( 1 ).trigger() )
+      -> set_default_value( legendary.butchers_bone_fragments -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
+      -> set_trigger_spell( legendary.butchers_bone_fragments );
+
   buffs.eagletalons_true_focus =
     make_buff( this, "eagletalons_true_focus", legendary.eagletalons_true_focus -> effectN( 1 ).trigger() )
       -> set_default_value( 1 + legendary.eagletalons_true_focus -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
@@ -5196,6 +5354,10 @@ void hunter_t::create_buffs()
     make_buff( this, "flamewakers_cobra_sting", legendary.flamewakers_cobra_sting -> effectN( 1 ).trigger() )
       -> set_default_value( 1 + legendary.flamewakers_cobra_sting -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
       -> set_trigger_spell( legendary.flamewakers_cobra_sting );
+
+  buffs.secrets_of_the_vigil =
+    make_buff( this, "secrets_of_the_unblinking_vigil", legendary.secrets_of_the_vigil -> effectN( 1 ).trigger() )
+      -> set_trigger_spell( legendary.secrets_of_the_vigil );
 
   // Azerite
 
@@ -5270,6 +5432,7 @@ void hunter_t::init_gains()
   gains.barbed_shot            = get_gain( "barbed_shot" );
   gains.memory_of_lucid_dreams_major = get_gain( "Lucid Dreams (Major)" );
   gains.memory_of_lucid_dreams_minor = get_gain( "Lucid Dreams (Minor)" );
+  gains.nessingwarys_apparatus = get_gain( "Nessingwary's Trapping Apparatus" );
   gains.terms_of_engagement    = get_gain( "terms_of_engagement" );
 }
 
