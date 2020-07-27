@@ -352,7 +352,6 @@ public:
   double lucid_dreams_refund;
   double strive_for_perfection_multiplier;
   double vision_of_perfection_multiplier;
-  int mana_gems_available;
 
   // Data collection
   auto_dispose<std::vector<cooldown_waste_data_t*> > cooldown_waste_data_list;
@@ -584,6 +583,7 @@ public:
   {
     bool brain_freeze_active;
     bool fingers_of_frost_active;
+    int mana_gem_charges;
   } state;
 
   // Talents
@@ -2836,7 +2836,7 @@ struct conjure_mana_gem_t : public arcane_mage_spell_t
   void execute() override
   {
     arcane_mage_spell_t::execute();
-    p()->mana_gems_available = as<int>( data().effectN( 2 ).base_value() );
+    p()->state.mana_gem_charges = as<int>( data().effectN( 2 ).base_value() );
   }
 };
 
@@ -2851,7 +2851,7 @@ struct use_mana_gem_t : public arcane_mage_spell_t
 
   bool ready() override
   {
-    if ( p()->specialization() != MAGE_ARCANE || p()->mana_gems_available <= 0 || p()->resources.pct( RESOURCE_MANA ) >= 1.0 )
+    if ( p()->specialization() != MAGE_ARCANE || p()->state.mana_gem_charges <= 0 || p()->resources.pct( RESOURCE_MANA ) >= 1.0 )
       return false;
 
     return arcane_mage_spell_t::ready();
@@ -2861,7 +2861,8 @@ struct use_mana_gem_t : public arcane_mage_spell_t
   {
     arcane_mage_spell_t::execute();
     p()->resource_gain( RESOURCE_MANA, p()->resources.max[ RESOURCE_MANA ] * data().effectN( 1 ).percent(), p()->gains.mana_gem, this );
-    p()->mana_gems_available -= 1;
+    p()->state.mana_gem_charges--;
+    assert( p()->state.mana_gem_charges >= 0 );
   }
 };
 
@@ -4985,7 +4986,6 @@ mage_t::mage_t( sim_t* sim, util::string_view name, race_e r ) :
   lucid_dreams_refund(),
   strive_for_perfection_multiplier(),
   vision_of_perfection_multiplier(),
-  mana_gems_available(),
   action(),
   benefits(),
   buffs(),
@@ -6538,7 +6538,6 @@ void mage_t::reset()
   ground_aoe_expiration.clear();
   burn_phase.reset();
   state = state_t();
-  mana_gems_available = 0;
 }
 
 void mage_t::update_movement( timespan_t duration )
@@ -6667,10 +6666,10 @@ std::unique_ptr<expr_t> mage_t::create_action_expression( action_t& action, cons
 
 std::unique_ptr<expr_t> mage_t::create_expression( const std::string& name )
 {
-  if ( util::str_compare_ci( name, "mana_gems_available" ) )
+  if ( util::str_compare_ci( name, "mana_gems_charges" ) )
   {
     return make_fn_expr( name, [ this ]
-    { return mana_gems_available; } );
+    { return state.mana_gem_charges; } );
   }
 
   // Incanters flow direction
