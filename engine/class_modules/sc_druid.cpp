@@ -606,6 +606,7 @@ public:
     const spell_data_t* starsurge_2;
     const spell_data_t* moonkin_2;
     const spell_data_t* sunfire_2;
+    const spell_data_t* moonfire_3; // +6s to moonfire AND sunfire
     const spell_data_t* stellar_drift_2; // stellar drift mobility buff ID 202461
     const spell_data_t* owlkin_frenzy;
     const spell_data_t* sunfire_dmg;
@@ -2518,9 +2519,9 @@ struct moonfire_t : public druid_spell_t
       benefits_from_galactic_guardian = true;
       dual = background = true;
       dot_duration +=
+          p->spec.moonfire_2->effectN( 1 ).time_value() + p->spec.moonfire_3->effectN( 1 ).time_value() +
           p->query_aura_effect( p->spec.balance, E_APPLY_AURA, A_ADD_FLAT_MODIFIER, P_DURATION, p->spec.moonfire_dmg )
               ->time_value();
-      dot_duration += p->spec.moonfire_2->effectN( 1 ).time_value();
       base_dd_multiplier *= 1.0 + p->spec.guardian->effectN( 8 ).percent();
       aoe = 1;
 
@@ -6263,6 +6264,7 @@ struct sunfire_t : public druid_spell_t
       aoe = -1;
       base_aoe_multiplier = 0;
       dot_duration +=
+          p->spec.moonfire_3->effectN( 1 ).time_value() +
           p->query_aura_effect( p->spec.balance, E_APPLY_AURA, A_ADD_FLAT_MODIFIER, P_DURATION, p->spec.sunfire_dmg )
               ->time_value();
 
@@ -7417,7 +7419,7 @@ void druid_t::init_spells()
   spec.leather_specialization     = find_specialization_spell( "Leather Specialization" );
   spec.omen_of_clarity            = find_specialization_spell( "Omen of Clarity" );
   spec.entangling_roots           = find_spell( 339 );
-  spec.moonfire_2                 = find_rank_spell ("Moonfire", "Rank 2");
+  spec.moonfire_2                 = find_rank_spell ( "Moonfire", "Rank 2" );
 
   // Balance
   spec.astral_power               = find_specialization_spell( "Astral Power" );
@@ -7436,6 +7438,7 @@ void druid_t::init_spells()
   spec.starsurge_2                = find_rank_spell( "Starsurge", "Rank 2" ); // Adds more Eclipse extension
   spec.moonkin_2                  = find_rank_spell( "Moonkin Form", "Rank 2" ); // Owlkin Frenzy proc rate RAWR
   spec.sunfire_2                  = find_rank_spell( "Sunfire", "Rank 2" ); // Sunfire spread. currently contains no value data.
+  spec.moonfire_3                 = find_rank_spell( "Moonfire", "Rank 3" ); // +6s to moonfire AND sunfire
   spec.stellar_drift_2            = find_spell( 202461 ); // stellar drift mobility buff
   spec.owlkin_frenzy              = find_spell( 157228 ); // Owlkin Frenzy RAWR
   spec.sunfire_dmg                = find_spell( 164815 ); // dot debuff for sunfire
