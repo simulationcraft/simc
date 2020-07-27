@@ -874,10 +874,8 @@ struct rogue_attack_t : public melee_attack_t
     affected_by.ruthless_precision = data().affected_by( p()->buffs.ruthless_precision->data().effectN( 1 ) );
 
     // Auto-parsing for damage affecting dynamic flags
-    if (p()->mastery.executioner->ok())
-      parse_damage_affecting_spell( p()->mastery.executioner, affected_by.mastery_executioner );
-    if (p()->mastery.potent_assassin->ok())
-      parse_damage_affecting_spell( p()->mastery.potent_assassin, affected_by.mastery_potent_assassin );
+    parse_damage_affecting_spell( p()->mastery.executioner, affected_by.mastery_executioner );
+    parse_damage_affecting_spell( p()->mastery.potent_assassin, affected_by.mastery_potent_assassin );
     parse_damage_affecting_buff( p()->buffs.broadside, affected_by.broadside );
     parse_damage_affecting_buff( p()->buffs.symbols_of_death, affected_by.symbols_of_death );
     parse_damage_affecting_buff( p()->buffs.shadow_dance, affected_by.shadow_dance );
