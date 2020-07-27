@@ -7,11 +7,10 @@
 
 #include "config.hpp"
 #include "util/generic.hpp"
-#include "util/format.hpp"
 #include "sc_enums.hpp"
-
 #include <array>
 #include <functional>
+#include <string>
 
 
 struct gear_stats_t
@@ -135,7 +134,6 @@ struct gear_stats_t
   void   add_stat( stat_e stat, double value );
   void   set_stat( stat_e stat, double value );
   double get_stat( stat_e stat ) const;
+  std::string to_string();
   static double stat_mod( stat_e stat );
-
-  friend fmt::format_context::iterator format_to( const gear_stats_t&, fmt::format_context& );
 };

@@ -1359,41 +1359,40 @@ player_t::base_initial_current_t::base_initial_current_t() :
   range::fill( attribute_multiplier, 1.0 );
 }
 
-fmt::format_context::iterator format_to( const player_t::base_initial_current_t& s, fmt::format_context& ctx )
+std::string player_t::base_initial_current_t::to_string()
 {
-  auto out = ctx.out();
+  std::ostringstream s;
 
-  out = fmt::format_to( out, "{}", s.stats );
-  out = fmt::format_to( out, " spell_power_per_intellect={}", s.spell_power_per_intellect );
-  out = fmt::format_to( out, " spell_power_per_attack_power={}", s.spell_power_per_attack_power );
-  out = fmt::format_to( out, " spell_crit_per_intellect={}", s.spell_crit_per_intellect );
-  out = fmt::format_to( out, " attack_power_per_strength={}", s.attack_power_per_strength );
-  out = fmt::format_to( out, " attack_power_per_agility={}", s.attack_power_per_agility );
-  out = fmt::format_to( out, " attack_crit_per_agility={}", s.attack_crit_per_agility );
-  out = fmt::format_to( out, " dodge_per_agility={}", s.dodge_per_agility );
-  out = fmt::format_to( out, " parry_per_strength={}", s.parry_per_strength );
-  out = fmt::format_to( out, " health_per_stamina={}", s.health_per_stamina );
+  s << stats.to_string();
+  s << " spell_power_per_intellect=" << spell_power_per_intellect;
+  s << " spell_power_per_attack_power=" << spell_power_per_attack_power;
+  s << " spell_crit_per_intellect=" << spell_crit_per_intellect;
+  s << " attack_power_per_strength=" << attack_power_per_strength;
+  s << " attack_power_per_agility=" << attack_power_per_agility;
+  s << " attack_crit_per_agility=" << attack_crit_per_agility;
+  s << " dodge_per_agility=" << dodge_per_agility;
+  s << " parry_per_strength=" << parry_per_strength;
+  s << " health_per_stamina=" << health_per_stamina;
   // resource_reduction
-  out = fmt::format_to( out, " miss={}", s.miss );
-  out = fmt::format_to( out, " dodge={}", s.dodge );
-  out = fmt::format_to( out, " parry={}", s.parry );
-  out = fmt::format_to( out, " block={}", s.block );
-  out = fmt::format_to( out, " spell_crit_chance={}", s.spell_crit_chance );
-  out = fmt::format_to( out, " attack_crit_chance={}", s.attack_crit_chance );
-  out = fmt::format_to( out, " block_reduction={}", s.block_reduction );
-  out = fmt::format_to( out, " mastery={}", s.mastery );
-  out = fmt::format_to( out, " skill={}", s.skill );
-  out = fmt::format_to( out, " distance={}", s.distance );
-  out = fmt::format_to( out, " armor_coeff={}", s.armor_coeff );
-  out = fmt::format_to( out, " sleeping={}", s.sleeping );
+  s << " miss=" << miss;
+  s << " dodge=" << dodge;
+  s << " parry=" << parry;
+  s << " block=" << block;
+  s << " spell_crit_chance=" << spell_crit_chance;
+  s << " attack_crit_chance=" << attack_crit_chance;
+  s << " block_reduction=" << block_reduction;
+  s << " mastery=" << mastery;
+  s << " skill=" << skill;
+  s << " distance=" << distance;
+  s << " armor_coeff=" << armor_coeff;
+  s << " sleeping=" << sleeping;
   // attribute_multiplier
-  out = fmt::format_to( out, " spell_power_multiplier={}", s.spell_power_multiplier );
-  out = fmt::format_to( out, " attack_power_multiplier={}", s.attack_power_multiplier );
-  out = fmt::format_to( out, " base_armor_multiplier={}", s.base_armor_multiplier );
-  out = fmt::format_to( out, " armor_multiplier={}", s.armor_multiplier );
-  out = fmt::format_to( out, " position={}", util::position_type_string( s.position ) );
-
-  return out;
+  s << " spell_power_multiplier=" << spell_power_multiplier;
+  s << " attack_power_multiplier=" << attack_power_multiplier;
+  s << " base_armor_multiplier=" << base_armor_multiplier;
+  s << " armor_multiplier=" << armor_multiplier;
+  s << " position=" << util::position_type_string( position );
+  return s.str();
 }
 
 void player_t::init()
@@ -1487,7 +1486,7 @@ void player_t::init_base_stats()
   if ( !is_enemy() )
     base.rating.init( *dbc, level() );
 
-  sim->print_debug( "{} base ratings initialized: {}", *this, base.rating );
+  sim->print_debug( "{} base ratings initialized: {}", *this, base.rating.to_string() );
 
   if ( !is_enemy() )
   {
@@ -1636,7 +1635,7 @@ void player_t::init_base_stats()
       collected_data.dtps.change_mode( false );
   }
 
-  sim->print_debug( "{} generic base stats: {}", *this, base );
+  sim->print_debug( "{} generic base stats: {}", *this, base.to_string() );
 }
 
 /**
@@ -1679,7 +1678,7 @@ void player_t::init_initial_stats()
         total_gear.add_stat( stat, gear.get_stat( stat ) );
     }
 
-    sim->print_debug( "{} total gear stats: {}", *this, total_gear );
+    sim->print_debug( "{} total gear stats: {}", *this, total_gear.to_string() );
 
     initial.stats += enchant;
     initial.stats += sim->enchant;
@@ -1687,7 +1686,7 @@ void player_t::init_initial_stats()
 
   initial.stats += total_gear;
 
-  sim->print_debug( "{} generic initial stats: {}", *this, initial );
+  sim->print_debug( "{} generic initial stats: %s", *this, initial.to_string() );
 }
 
 void player_t::init_items()
@@ -1925,7 +1924,8 @@ void player_t::init_defense()
 
 void player_t::init_weapon( weapon_t& w )
 {
-  sim->print_debug( "Initializing weapon ( type {} ) for {}.", w.type, *this );
+  sim->print_debug( "Initializing weapon ( type {} ) for {}.", util::weapon_type_string( w.type ),
+                           *this );
 
   if ( w.type == WEAPON_NONE )
     return;
@@ -3075,7 +3075,7 @@ void player_t::init_finished()
     range::for_each( items, [this]( const item_t& item ) {
       if ( item.active() )
       {
-        sim->print_debug( "{}", item );
+        sim->out_debug << item.to_string();
       }
     } );
   }
@@ -5067,7 +5067,7 @@ void player_t::reset()
   // Restore default target
   target = default_target;
 
-  sim->print_debug( "{} resets current stats ( reset to initial ): {}", *this, current );
+  sim->print_debug( "{} resets current stats ( reset to initial ): {}", *this, current.to_string() );
 
   for ( auto& buff : buff_list )
     buff->reset();
@@ -6168,7 +6168,7 @@ void player_t::stat_gain( stat_e stat, double amount, gain_t* gain, action_t* ac
 
   if ( sim->debug )
   {
-    sim->out_debug.print( "{} stats: {}", name(), current.stats );
+    sim->out_debug.print( "{} stats: {}", name(), current.stats.to_string() );
   }
 }
 
@@ -6308,7 +6308,7 @@ void player_t::stat_loss( stat_e stat, double amount, gain_t* gain, action_t* ac
 
   if ( sim->debug )
   {
-    sim->out_debug.print( "{} stats: {}", name(), current.stats );
+    sim->out_debug.print( "{} stats: {}", name(), current.stats.to_string() );
   }
 }
 

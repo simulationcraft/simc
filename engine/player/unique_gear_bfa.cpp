@@ -4802,7 +4802,11 @@ item_t init_punchcard( const special_effect_t& effect )
   // Punchcards use the item level of he trinket itself, apparently.
   punchcard.parsed.data.level = effect.item->item_level();
 
-  effect.player->sim->print_debug( "{} initializing punchcard: {}", effect.player->name(), punchcard );
+  if ( effect.player->sim->debug )
+  {
+    effect.player->sim->out_debug.print( "{} initializing punchcard: {}", effect.player->name(),
+                                         punchcard.to_string() );
+  }
 
   return punchcard;
 }

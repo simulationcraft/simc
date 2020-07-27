@@ -854,88 +854,100 @@ std::string special_effect_t::name() const
   return n;
 }
 
-fmt::format_context::iterator format_to( const special_effect_t& se, fmt::format_context& ctx )
+std::ostream& operator<<(std::ostream &os, const special_effect_t& se)
 {
-  auto out = ctx.out();
-
-  out = fmt::format_to( out, "{}", se.name() );
-  out = fmt::format_to( out, " type={}", se.type );
-  out = fmt::format_to( out, " source={}", se.source );
+  os << se.name();
+  os << " type=" << util::special_effect_string( se.type );
+  os << " source=" << util::special_effect_source_string( se.source );
 
   if ( ! se.trigger_str.empty() )
-    out = fmt::format_to( out, " proc={}", se.trigger_str );
+    os << " proc=" << se.trigger_str;
 
   if ( se.spell_id > 0 )
-    out = fmt::format_to( out, " driver={}", se.spell_id );
+    os << " driver=" << se.spell_id;
 
   if ( se.trigger() -> ok() )
-    out = fmt::format_to( out, " trigger={}", se.trigger() -> id() );
+    os << " trigger=" << se.trigger() -> id();
 
   if ( se.is_stat_buff() )
   {
-    out = fmt::format_to( out, " stat={}", util::stat_type_abbrev( se.stat == STAT_NONE ? se.stat_type() : se.stat ) );
-    out = fmt::format_to( out, " amount={}", se.stat_amount );
-    out = fmt::format_to( out, " duration={}", se.duration().total_seconds() );
+    os << " stat=" << util::stat_type_abbrev( se.stat == STAT_NONE ? se.stat_type() : se.stat );
+    os << " amount=" << se.stat_amount;
+    os << " duration=" << se.duration().total_seconds();
     if ( se.tick_time() != timespan_t::zero() )
-      out = fmt::format_to( out, " tick={}", se.tick_time().total_seconds() );
+      os << " tick=" << se.tick_time().total_seconds();
     if ( se.reverse )
     {
-      out = fmt::format_to( out, " Reverse" );
+      os << " Reverse";
       if ( se.reverse_stack_reduction > 0 )
-        out = fmt::format_to( out, "({})", se.reverse_stack_reduction );
+      {
+        os << "(" << se.reverse_stack_reduction << ")";
+      }
     }
   }
 
   if ( se.school != SCHOOL_NONE )
   {
-    out = fmt::format_to( out, " school={}", se.school );
-    out = fmt::format_to( out, " amount={}", se.discharge_amount );
+    os << " school=" << util::school_type_string( se.school );
+    os << " amount=" << se.discharge_amount;
     if ( se.discharge_scaling > 0 )
-      out = fmt::format_to( out, " coeff={}", se.discharge_scaling );
+      os << " coeff=" << se.discharge_scaling;
   }
 
   if ( se.max_stacks > 0 )
-    out = fmt::format_to( out, " max_stack={}", se.max_stacks );
+    os << " max_stack=" << se.max_stacks;
 
   if ( se.proc_chance() > 0 )
-    out = fmt::format_to( out, " proc_chance={}%", se.proc_chance() * 100.0 );
+    os << " proc_chance=" << se.proc_chance() * 100.0 << "%";
 
   if ( se.ppm() > 0 )
-    out = fmt::format_to( out, " ppm={}", se.ppm() );
+    os << " ppm=" << se.ppm();
 
   if ( se.rppm() > 0 && se.rppm_scale() != RPPM_DISABLE )
   {
-    out = fmt::format_to( out, " rppm={}", se.rppm() * se.rppm_modifier() );
+    os << " rppm=" << se.rppm() * se.rppm_modifier();
     if ( se.rppm_scale() & RPPM_HASTE )
-      out = fmt::format_to( out, " (Haste)" );
+    {
+      os << " (Haste)";
+    }
+
     if ( se.rppm_scale() & RPPM_CRIT )
-      out = fmt::format_to( out, " (Crit)" );
+    {
+      os << " (Crit)";
+    }
+
     if ( se.rppm_scale() & RPPM_ATTACK_SPEED )
-      out = fmt::format_to( out, " (ASpeed)" );
+    {
+      os << " (ASpeed)";
+    }
   }
 
   if ( se.cooldown() > timespan_t::zero() )
   {
-    util::string_view name;
     if ( se.type == SPECIAL_EFFECT_EQUIP )
-      name = "icd";
+      os << " icd=";
     else if ( se.type == SPECIAL_EFFECT_USE )
-      name = "cd";
+      os << " cd=";
     else
-      name = "(i)cd";
-    out = fmt::format_to( out, " {}={}", name, se.cooldown().total_seconds() );
+      os << " (i)cd=";
+    os << se.cooldown().total_seconds();
 
     if ( se.cooldown_group() > 0 )
     {
-      out = fmt::format_to( out, " cdgrp={} cdgrp_duration={}",
-                            se.cooldown_group(), se.cooldown_group_duration().total_seconds() );
+      os << " cdgrp=" << se.cooldown_group();
+      os << " cdgrp_duration=" << se.cooldown_group_duration().total_seconds();
     }
   }
 
   if ( se.weapon_proc )
-    out = fmt::format_to( out, " weaponproc" );
+    os << " weaponproc";
 
-  return out;
+  return os;
+}
+
+std::string special_effect_t::to_string() const
+{
+  return fmt::to_string( *this );
 }
 
 void special_effect::parse_special_effect_encoding( special_effect_t& effect,

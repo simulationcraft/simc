@@ -356,102 +356,150 @@ std::string item_t::socket_bonus_stats_str() const
   return str;
 }
 
-fmt::format_context::iterator format_to( const item_t& item, fmt::format_context& ctx )
+std::ostream& operator<<(std::ostream& s, const item_t& item )
 {
-  auto out = ctx.out();
 
-  out = fmt::format_to( out, "name={} id={}", item.name_str, item.parsed.data.id );
+  s << "name=" << item.name_str;
+  s << " id=" << item.parsed.data.id;
   if ( item.slot != SLOT_INVALID )
-    out = fmt::format_to( out, " slot={}", item.slot_name() );
-  out = fmt::format_to( out, " quality={}", util::item_quality_string( item.parsed.data.quality ) );
-  out = fmt::format_to( out, " ilevel={}", item.item_level() );
+  {
+    s << " slot=" << item.slot_name();
+  }
+  s << " quality=" << util::item_quality_string( item.parsed.data.quality );
+  s << " ilevel=" << item.item_level();
   if ( item.parent_slot == SLOT_INVALID )
   {
     if ( item.parsed.drop_level > 0 )
-      out = fmt::format_to( out, " drop_level={}", item.parsed.drop_level );
+      s << " drop_level=" << item.parsed.drop_level;
   }
   else
   {
-    out = fmt::format_to( out, " ({})", item.player -> items[ item.parent_slot ].slot_name() );
+    s << " (" << item.player -> items[ item.parent_slot ].slot_name() << ")";
   }
 
   if ( item.parsed.azerite_level > 0 )
-    out = fmt::format_to( out, " azerite_level={}", item.parsed.azerite_level );
+  {
+    s << " azerite_level=" << item.parsed.azerite_level;
+  }
 
   if ( item.parsed.data.lfr() )
-    out = fmt::format_to( out, " LFR" );
+    s << " LFR";
   if ( item.parsed.data.heroic() )
-    out = fmt::format_to( out, " Heroic" );
+    s << " Heroic";
   if ( item.parsed.data.mythic() )
-    out = fmt::format_to( out, " Mythic" );
+    s << " Mythic";
   if ( item.parsed.data.warforged() )
-    out = fmt::format_to( out, " Warforged" );
+    s << " Warforged";
   if ( util::is_match_slot( item.slot ) )
-    out = fmt::format_to( out, " match={:d}", item.is_matching_type() );
+    s << " match=" << item.is_matching_type();
 
   bool is_weapon = false;
   if ( item.parsed.data.item_class == ITEM_CLASS_ARMOR )
-  {
-    out = fmt::format_to( out, " type=armor/{}", util::armor_type_string( item.parsed.data.item_subclass ) );
-  }
+    s << " type=armor/" << util::armor_type_string( item.parsed.data.item_subclass );
   else if ( item.parsed.data.item_class == ITEM_CLASS_WEAPON )
   {
-    const char* class_cstr = util::weapon_class_string( item.parsed.data.inventory_type );
-    std::string class_str = class_cstr ? util::tokenize_fn( class_cstr ) : "unknown";
-    std::string subclass_str = util::tokenize_fn( util::weapon_subclass_string( item.parsed.data.item_subclass ) );
-    out = fmt::format_to( out, " type={}/{}", class_str, subclass_str );
+    std::string class_str;
+    if ( util::weapon_class_string( item.parsed.data.inventory_type ) )
+      class_str = util::weapon_class_string( item.parsed.data.inventory_type );
+    else
+      class_str = "Unknown";
+    std::string str = util::weapon_subclass_string( item.parsed.data.item_subclass );
+    util::tokenize( str );
+    util::tokenize( class_str );
+    s << " type=" << class_str << "/" << str;
     is_weapon = true;
   }
 
   if ( item.has_stats() )
-    out = fmt::format_to( out, " stats={{ {} }}", item.item_stats_str() );
+  {
+    s << " stats={ ";
+    s << item.item_stats_str();
+    s << " }";
+  }
 
   if ( item.parsed.gem_stats.size() > 0 )
-    out = fmt::format_to( out, " gems={{ {} }}", item.gem_stats_str() );
+  {
+    s << " gems={ ";
+    s << item.gem_stats_str();
+    s << " }";
+  }
 
   if ( item.socket_color_match() && item.parsed.socket_bonus_stats.size() > 0 )
-    out = fmt::format_to( out, " socket_bonus={{ {} }}", item.socket_bonus_stats_str() );
+  {
+    s << " socket_bonus={ ";
+    s << item.socket_bonus_stats_str();
+    s << " }";
+  }
 
   if ( is_weapon )
   {
+    s << " damage={ ";
     weapon_t* w = item.weapon();
-    out = fmt::format_to( out, " damage={{ {} - {} }} speed={}",
-      w -> min_dmg, w -> max_dmg, w -> swing_time.total_seconds() );
+    s << w -> min_dmg;
+    s << " - ";
+    s << w -> max_dmg;
+    s << " }";
+
+    s << " speed=";
+    s << w -> swing_time.total_seconds();
   }
 
   if ( item.parsed.enchant_stats.size() > 0 && item.parsed.encoded_enchant.empty() )
-    out = fmt::format_to( out, " enchant={{ {} }}", item.enchant_stats_str() );
+  {
+    s << " enchant={ ";
+    s << item.enchant_stats_str();
+    s << " }";
+  }
   else if ( ! item.parsed.encoded_enchant.empty() )
-    out = fmt::format_to( out, " enchant={{ {} }}", item.parsed.encoded_enchant );
+    s << " enchant={ " << item.parsed.encoded_enchant << " }";
 
-  for ( const special_effect_t* effect : item.parsed.special_effects )
-    out = fmt::format_to( out, " effect={{ {} }}", *effect );
+  for ( size_t i = 0; i < item.parsed.special_effects.size(); i++ )
+  {
+    s << " effect={ ";
+    s << item.parsed.special_effects[ i ] -> to_string();
+    s << " }";
+  }
 
   if ( ! item.source_str.empty() )
-    out = fmt::format_to( out, " source={}", item.source_str );
+    s << " source=" << item.source_str;
 
   if ( range::any_of( item.parsed.data.effects, []( const auto& e ) { return e.spell_id != 0; } ) )
   {
-    out = fmt::format_to( out, " proc_spells={{ " );
-    unsigned count = 0;
+    s << " proc_spells={ ";
     for ( const item_effect_t& effect : item.parsed.data.effects )
     {
       if ( effect.spell_id == 0 )
         continue;
 
-      auto proc_type_str = []( int8_t type ) -> util::string_view {
-        if ( type == ITEM_SPELLTRIGGER_ON_USE )
-          return "OnUse";
-        if ( type == ITEM_SPELLTRIGGER_ON_EQUIP )
-          return "OnEquip";
-        return "Unknown";
-      };
-      out = fmt::format_to( out, "{}proc={}/{}", count++ ? ", " : "", proc_type_str( effect.type ), effect.spell_id );
+      s << "proc=";
+      switch ( effect.type )
+      {
+        case ITEM_SPELLTRIGGER_ON_USE:
+          s << "OnUse";
+          break;
+        case ITEM_SPELLTRIGGER_ON_EQUIP:
+          s << "OnEquip";
+          break;
+        default:
+          s << "Unknown";
+          break;
+      }
+      s << "/" << effect.spell_id << ", ";
     }
-    out = fmt::format_to( out, " }}" );
+
+    std::streampos x = s.tellp(); s.seekp( x - std::streamoff( 2 ) );
+    s << " }";
   }
 
-  return out;
+  return s;
+}
+
+std::string item_t::to_string() const
+{
+
+  std::ostringstream s;
+  s << *this;
+  return s.str();
 }
 
 // item_t::has_item_stat ====================================================
@@ -1163,7 +1211,14 @@ std::string item_t::encoded_stats() const
     if ( ! stat_str.empty() ) stats.push_back( stat_str );
   }
 
-  return util::string_join( stats, "_" );
+  std::string str;
+  for ( size_t i = 0; i < stats.size(); i++ )
+  {
+    if ( i ) str += '_';
+    str += stats[ i ];
+  }
+
+  return str;
 }
 
 // item_t::encoded_weapon ===================================================

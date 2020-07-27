@@ -8,8 +8,6 @@
 #include "config.hpp"
 #include "sc_enums.hpp"
 #include "sc_timespan.hpp"
-#include "util/format.hpp"
-
 #include <string>
 #include <vector>
 #include <functional>
@@ -101,7 +99,7 @@ struct special_effect_t
   { buff_disabled = true; }
 
   void reset();
-
+  std::string to_string() const;
   bool active() { return stat != STAT_NONE || school != SCHOOL_NONE || execute_action; }
 
   const spell_data_t* driver() const;
@@ -151,6 +149,6 @@ struct special_effect_t
   /* Accessors for buff specific features of the proc. */
   timespan_t duration() const;
   timespan_t tick_time() const;
-
-  friend fmt::format_context::iterator format_to( const special_effect_t&, fmt::format_context& );
 };
+
+std::ostream& operator<<(std::ostream &os, const special_effect_t& x);
