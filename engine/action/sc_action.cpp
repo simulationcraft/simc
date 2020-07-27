@@ -4714,12 +4714,12 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
           case P_TARGET:
             aoe += effect.base_value();
             sim->print_debug( "{} max target count modified by {}", *this, effect.base_value() );
-
             break;
 
           case P_GCD:
             trigger_gcd += effect.time_value();
             sim->print_debug( "{} trigger_gcd modified by {} to {}", *this, effect.time_value(), trigger_gcd );
+            break;
 
           default:
             break;
