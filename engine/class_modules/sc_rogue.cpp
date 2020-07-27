@@ -740,21 +740,63 @@ struct rogue_attack_t : public melee_attack_t
   secondary_trigger_e secondary_trigger;
 
   // Affect flags for various dynamic effects
+  struct damage_affect_data
+  {
+    bool direct = false;
+    double direct_percent = 0.0;
+    bool periodic = false;
+    double periodic_percent = 0.0;
+  };
   struct
   {
-    bool shadow_blades;
-    bool ruthlessness;
-    bool relentless_strikes;
-    bool deepening_shadows;
-    bool vendetta;
-    bool alacrity;
-    bool adrenaline_rush_gcd;
-    bool broadside;
-    bool broadside_cp;
-    bool master_assassin;
-    bool toxic_blade;
-    bool ruthless_precision;
+    bool shadow_blades = false;
+    bool ruthlessness = false;
+    bool relentless_strikes = false;
+    bool deepening_shadows = false;
+    bool vendetta = false;
+    bool alacrity = false;
+    bool adrenaline_rush_gcd = false;
+    bool broadside_cp = false;
+    bool master_assassin = false;
+    bool toxic_blade = false;
+    bool ruthless_precision = false;
+
+    damage_affect_data mastery_executioner;
+    damage_affect_data mastery_potent_assassin;
+    damage_affect_data broadside;
+    damage_affect_data symbols_of_death;
+    damage_affect_data shadow_dance;
+    damage_affect_data elaborate_planning;
   } affected_by;
+
+  void parse_damage_affecting_spell( const spell_data_t* spell, damage_affect_data& flags )
+  {
+    for ( const spelleffect_data_t& effect : spell->effects() )
+    {
+      if ( !effect.ok() || effect.type() != E_APPLY_AURA || effect.subtype() != A_ADD_PCT_MODIFIER )
+        return;
+
+      if ( data().affected_by( effect ) )
+      {
+        switch ( effect.misc_value1() )
+        {
+        case P_GENERIC:
+          flags.direct = true;
+          flags.direct_percent = effect.percent();
+          break;
+        case P_TICK_DAMAGE:
+          flags.periodic = true;
+          flags.periodic_percent = effect.percent();
+          break;
+        }
+      }
+    }
+  }
+
+  void parse_damage_affecting_buff( const buff_t* buff, damage_affect_data& flags )
+  {
+    parse_damage_affecting_spell( buff->s_data, flags );
+  }
 
   rogue_attack_t( const std::string& token, rogue_t* p,
                   const spell_data_t* s = spell_data_t::nil(),
@@ -802,83 +844,44 @@ struct rogue_attack_t : public melee_attack_t
       }
     }
 
-    // Assassination Class Passive
-    if ( data().affected_by( p->spec.assassination_rogue->effectN( 1 ) ) )
-    {
-      base_dd_multiplier *= 1.0 + p->spec.assassination_rogue->effectN( 1 ).percent();
-    }
-    if ( data().affected_by( p->spec.assassination_rogue->effectN( 2 ) ) )
-    {
-      base_td_multiplier *= 1.0 + p->spec.assassination_rogue->effectN( 2 ).percent();
-    }
-
-    // Outlaw Class Passive
-    if ( data().affected_by( p->spec.outlaw_rogue->effectN( 1 ) ) )
-    {
-      base_dd_multiplier *= 1.0 + p->spec.outlaw_rogue->effectN( 1 ).percent();
-    }
-    if ( data().affected_by( p->spec.outlaw_rogue->effectN( 2 ) ) )
-    {
-      base_td_multiplier *= 1.0 + p->spec.outlaw_rogue->effectN( 2 ).percent();
-    }
-
-    // Subtlety Class Passive
-    if ( data().affected_by( p->spec.subtlety_rogue->effectN( 1 ) ) )
-    {
-      base_dd_multiplier *= 1.0 + p->spec.subtlety_rogue->effectN( 1 ).percent();
-    }
-    if ( data().affected_by( p->spec.subtlety_rogue->effectN( 2 ) ) )
-    {
-      base_td_multiplier *= 1.0 + p->spec.subtlety_rogue->effectN( 2 ).percent();
-    }
-
-    // Deeper Stratagem
-    if ( p->talent.deeper_stratagem->ok() )
-    {
-      if ( data().affected_by( p->talent.deeper_stratagem->effectN( 4 ) ) )
-      {
-        base_dd_multiplier *= 1.0 + p->talent.deeper_stratagem->effectN( 4 ).percent();
-      }
-      if ( data().affected_by( p->talent.deeper_stratagem->effectN( 5 ) ) )
-      {
-        base_td_multiplier *= 1.0 + p->talent.deeper_stratagem->effectN( 5 ).percent();
-      }
-    }
-
-    // Master Poisoner
-    if ( p->talent.master_poisoner->ok() )
-    {
-      if ( data().affected_by( p->talent.master_poisoner->effectN( 1 ) ) )
-      {
-        base_dd_multiplier *= 1.0 + p->talent.master_poisoner->effectN( 1 ).percent();
-      }
-      if ( data().affected_by( p->talent.master_poisoner->effectN( 2 ) ) )
-      {
-        base_td_multiplier *= 1.0 + p->talent.master_poisoner->effectN( 2 ).percent();
-      }
-    }
+    // Affecting passives
+    apply_affecting_aura( p->spec.assassination_rogue );
+    apply_affecting_aura( p->spec.outlaw_rogue );
+    apply_affecting_aura( p->spec.subtlety_rogue );
+    apply_affecting_aura( p->talent.deeper_stratagem );
+    apply_affecting_aura( p->talent.master_poisoner );
   }
 
   void init() override
   {
     melee_attack_t::init();
 
-    // Figure out the affected flags
+    // Dynamically affected flags
+    // Special things like CP, Energy, Crit, etc.
     affected_by.shadow_blades = data().affected_by( p() -> spec.shadow_blades -> effectN( 2 ) ) ||
-                                data().affected_by( p() -> spec.shadow_blades -> effectN( 3 ) );
+      data().affected_by( p() -> spec.shadow_blades -> effectN( 3 ) );
     affected_by.ruthlessness = base_costs[ RESOURCE_COMBO_POINT ] > 0;
     affected_by.relentless_strikes = base_costs[ RESOURCE_COMBO_POINT ] > 0;
     affected_by.deepening_shadows = base_costs[ RESOURCE_COMBO_POINT ] > 0;
     affected_by.vendetta = data().affected_by( p() -> spec.vendetta -> effectN( 1 ) );
     affected_by.alacrity = base_costs[ RESOURCE_COMBO_POINT ] > 0;
     affected_by.adrenaline_rush_gcd = data().affected_by( p() -> buffs.adrenaline_rush -> data().effectN( 3 ) );
-    affected_by.broadside = data().affected_by( p() -> buffs.broadside -> data().effectN( 4 ) );
     affected_by.broadside_cp = data().affected_by( p()->buffs.broadside->data().effectN( 1 ) ) ||
-                               data().affected_by( p()->buffs.broadside->data().effectN( 2 ) ) ||
-                               data().affected_by( p()->buffs.broadside->data().effectN( 3 ) );
+      data().affected_by( p()->buffs.broadside->data().effectN( 2 ) ) ||
+      data().affected_by( p()->buffs.broadside->data().effectN( 3 ) );
     affected_by.master_assassin = data().affected_by( p() -> spec.master_assassin -> effectN( 1 ) );
     affected_by.toxic_blade = data().affected_by( p() -> talent.toxic_blade -> effectN( 4 ).trigger() -> effectN( 1 ) );
     affected_by.ruthless_precision = data().affected_by( p()->buffs.ruthless_precision->data().effectN( 1 ) );
+
+    // Auto-parsing for damage affecting dynamic flags
+    if (p()->mastery.executioner->ok())
+      parse_damage_affecting_spell( p()->mastery.executioner, affected_by.mastery_executioner );
+    if (p()->mastery.potent_assassin->ok())
+      parse_damage_affecting_spell( p()->mastery.potent_assassin, affected_by.mastery_potent_assassin );
+    parse_damage_affecting_buff( p()->buffs.broadside, affected_by.broadside );
+    parse_damage_affecting_buff( p()->buffs.symbols_of_death, affected_by.symbols_of_death );
+    parse_damage_affecting_buff( p()->buffs.shadow_dance, affected_by.shadow_dance );
+    parse_damage_affecting_buff( p()->buffs.elaborate_planning, affected_by.elaborate_planning );
   }
 
   void snapshot_state( action_state_t* state, result_amount_type rt ) override
@@ -924,14 +927,14 @@ struct rogue_attack_t : public melee_attack_t
 
     if ( cp > 0 )
     {
-      if ( affected_by.broadside_cp && p() -> buffs.broadside -> check() )
+      if ( affected_by.broadside_cp && p()->buffs.broadside->check() )
       {
-        cp += 1;
+        cp += p()->buffs.broadside->data().effectN( 2 ).base_value();
       }
 
-      if ( affected_by.shadow_blades && p() -> buffs.shadow_blades -> check() )
+      if ( affected_by.shadow_blades && p()->buffs.shadow_blades->check() )
       {
-        cp += 1;
+        cp += p()->buffs.shadow_blades->data().effectN( 2 ).base_value();
       }
     }
 
@@ -997,31 +1000,36 @@ struct rogue_attack_t : public melee_attack_t
     m *= combo_point_da_multiplier( state );
 
     // Subtlety
-    if ( p()->mastery.executioner->ok() && data().affected_by( p()->mastery.executioner->effectN( 1 ) ) )
+    if ( affected_by.mastery_executioner.direct )
     {
       m *= 1.0 + p()->cache.mastery_value();
     }
 
-    if ( p()->buffs.symbols_of_death->up() && data().affected_by( p()->buffs.symbols_of_death->data().effectN( 1 ) ) )
+    if ( affected_by.symbols_of_death.direct && p()->buffs.symbols_of_death->up() )
     {
-      m *= 1.0 + p()->buffs.symbols_of_death->data().effectN( 1 ).percent();
+      m *= 1.0 + affected_by.symbols_of_death.direct_percent;
     }
 
-    if ( p()->buffs.shadow_dance->up() && data().affected_by( p()->buffs.shadow_dance->data().effectN( 4 ) ) )
+    if ( affected_by.shadow_dance.direct && p()->buffs.shadow_dance->up() )
     {
-      m *= 1.0 + p()->buffs.shadow_dance->data().effectN( 4 ).percent()
-        + p()->talent.dark_shadow->effectN( 2 ).percent();
+      m *= 1.0 + affected_by.shadow_dance.direct_percent + p()->talent.dark_shadow->effectN( 2 ).percent();
     }
 
     // Assassination
-    if ( p()->mastery.potent_assassin->ok() && data().affected_by( p()->mastery.potent_assassin->effectN( 1 ) ) )
+    if ( affected_by.mastery_potent_assassin.direct )
     {
       m *= 1.0 + p()->cache.mastery_value();
     }
     
-    if ( p()->buffs.elaborate_planning->up() && data().affected_by( p()->buffs.elaborate_planning->data().effectN( 1 ) ) )
+    if ( affected_by.elaborate_planning.direct && p()->buffs.elaborate_planning->up() )
     {
-      m *= 1.0 + p()->buffs.elaborate_planning->data().effectN( 1 ).percent();
+      m *= 1.0 + affected_by.elaborate_planning.direct_percent;
+    }
+
+    // Outlaw
+    if (affected_by.broadside.direct && p()->buffs.broadside->up())
+    {
+      m *= 1.0 + affected_by.broadside.direct_percent;
     }
 
     return m;
@@ -1032,7 +1040,7 @@ struct rogue_attack_t : public melee_attack_t
     double m = melee_attack_t::composite_ta_multiplier( state );
 
     // Subtlety
-    if ( p()->mastery.executioner->ok() && data().affected_by( p()->mastery.executioner->effectN( 2 ) ) )
+    if ( affected_by.mastery_executioner.periodic )
     {
       // 08/17/2018 - Mastery: Executioner has a different coefficient for periodic
       if ( p()->bugs )
@@ -1041,27 +1049,31 @@ struct rogue_attack_t : public melee_attack_t
         m *= 1.0 + p()->cache.mastery_value();
     }
 
-    if ( p()->buffs.symbols_of_death->up() && data().affected_by( p()->buffs.symbols_of_death->data().effectN( 2 ) ) )
+    if ( affected_by.symbols_of_death.periodic && p()->buffs.symbols_of_death->up() )
     {
-      m *= 1.0 + p()->buffs.symbols_of_death->data().effectN( 2 ).percent();
+      m *= 1.0 + affected_by.symbols_of_death.periodic_percent;
     }
 
-    if ( p()->buffs.shadow_dance->up() && data().affected_by( p()->buffs.shadow_dance->data().effectN( 5 ) ) )
+    if ( affected_by.shadow_dance.periodic && p()->buffs.shadow_dance->up() )
     {
-      // TOCHECK: The spell data for Dark Shadow effect 3 seems like it might not be configured correctly
-      m *= 1.0 + p()->buffs.shadow_dance->data().effectN( 5 ).percent() 
-        + p()->talent.dark_shadow->effectN( 3 ).percent();
+      m *= 1.0 + affected_by.shadow_dance.periodic_percent + p()->talent.dark_shadow->effectN( 3 ).percent();
     }
 
     // Assassination
-    if ( p()->mastery.potent_assassin->ok() && data().affected_by( p()->mastery.potent_assassin->effectN( 2 ) ) )
+    if ( affected_by.mastery_potent_assassin.periodic )
     {
       m *= 1.0 + p()->cache.mastery_value();
     }
 
-    if ( p()->buffs.elaborate_planning->up() && data().affected_by( p()->buffs.elaborate_planning->data().effectN( 2 ) ) )
+    if ( affected_by.elaborate_planning.periodic && p()->buffs.elaborate_planning->up() )
     {
-      m *= 1.0 + p()->buffs.elaborate_planning->data().effectN( 2 ).percent();
+      m *= 1.0 + affected_by.elaborate_planning.periodic_percent;
+    }
+
+    // Outlaw
+    if (affected_by.broadside.periodic && p()->buffs.broadside->up())
+    {
+      m *= 1.0 + affected_by.broadside.periodic_percent;
     }
 
     return m;
@@ -1076,11 +1088,6 @@ struct rogue_attack_t : public melee_attack_t
     if ( affected_by.vendetta )
     {
       m *= 1.0 + tdata -> debuffs.vendetta -> value();
-    }
-
-    if ( tdata -> dots.nightblade -> is_ticking() && data().affected_by( tdata -> dots.nightblade -> current_action -> data().effectN( 6 ) ) )
-    {
-      m *= 1.0 + tdata -> dots.nightblade -> current_action -> data().effectN( 6 ).percent();
     }
 
     if ( affected_by.toxic_blade )
@@ -1107,11 +1114,6 @@ struct rogue_attack_t : public melee_attack_t
   double action_multiplier() const override
   {
     double m = melee_attack_t::action_multiplier();
-
-    if ( affected_by.broadside && p()->buffs.broadside->up() )
-    {
-      m *= 1.0 + p()->buffs.broadside->data().effectN( 4 ).percent();
-    }
 
     // Apply Nightstalker as an Action Multiplier for things that don't snapshot
     if ( p()->talent.nightstalker->ok() && !snapshots_nightstalker() && p()->stealthed( STEALTH_BASIC | STEALTH_SHADOWDANCE ) )
@@ -1817,13 +1819,12 @@ void rogue_attack_t::execute()
   {
     if ( affected_by.shadow_blades && p()->buffs.shadow_blades->up() )
     {
-      p()->trigger_combo_point_gain( 1, p()->gains.shadow_blades, this );
+      p()->trigger_combo_point_gain( as<int>( p()->buffs.shadow_blades->data().effectN( 2 ).base_value() ), p()->gains.shadow_blades, this );
     }
 
     if ( affected_by.broadside_cp && p()->buffs.broadside->up() )
     {
-      const int cp_gain = as<int>( p()->buffs.broadside->data().effectN( 2 ).base_value() );
-      p()->trigger_combo_point_gain( cp_gain, p()->gains.broadside, this );
+      p()->trigger_combo_point_gain( as<int>( p()->buffs.broadside->data().effectN( 2 ).base_value() ), p()->gains.broadside, this );
     }
   }
 
@@ -1992,8 +1993,7 @@ struct melee_t : public rogue_attack_t
 
     if ( p()->buffs.shadow_dance->up() )
     {
-      m *= 1.0 + p()->buffs.shadow_dance->data().effectN( 2 ).percent()
-        + p()->talent.dark_shadow->effectN( 1 ).percent();
+      m *= 1.0 + p()->buffs.shadow_dance->data().effectN( 2 ).percent() + p()->talent.dark_shadow->effectN( 1 ).percent();
     }
 
     // Assassination
