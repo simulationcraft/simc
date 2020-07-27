@@ -4797,19 +4797,25 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
           case P_GCD:
             trigger_gcd *= ( 100 + effect.base_value() ) / 100.0;
             sim->print_debug( "{} trigger_gcd modified by {}% to {}", *this, effect.base_value(), trigger_gcd );
+            break;
+
           case P_EFFECT_1:
             base_multiplier *= ( 100 + effect.base_value() ) / 100.0;
             sim->print_debug( "{} base_multiplier modified by {}% to {}", *this, effect.base_value(), base_multiplier );
+            break;
+
           case P_GENERIC:
             base_dd_multiplier *= ( 100 + effect.base_value() ) / 100.0;
             sim->print_debug( "{} base_dd_multiplier modified by {}% to {}", *this, effect.base_value(),
                               base_dd_multiplier );
             break;
+
           case P_TICK_DAMAGE:
             base_td_multiplier *= ( 100 + effect.base_value() ) / 100.0;
             sim->print_debug( "{}base_td_multiplier modified by {}% to {}", *this, effect.base_value(),
                               base_td_multiplier );
             break;
+
           default:
             break;
         }
