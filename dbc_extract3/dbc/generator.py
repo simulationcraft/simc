@@ -1851,6 +1851,8 @@ class SpellDataGenerator(DataGenerator):
           ( 275148, 1 ), # Unbound Chaos Azerite damage spell
           ( 337313, 1 ), # Inner Demon aura for Unbound Chaos talent
           ( 275147, 1 ), # Unbound Chaos delayed trigger aura
+          ( 333105, 1 ), # Sigil of the Illidari Legendary fake Fel Eruption aura
+          ( 333110, 1 ), # Sigil of the Illidari Legendary fake Fel Eruption damage trigger
 
           # Vengeance
           ( 203557, 2 ), # Felblade proc rate
@@ -1858,6 +1860,8 @@ class SpellDataGenerator(DataGenerator):
           ( 213011, 2 ), # Charred Warblades heal
           ( 212818, 2 ), # Fiery Demise debuff
           ( 207760, 2 ), # Burning Alive spread radius
+          ( 333386, 2 ), # Sigil of the Illidari Legendary fake Eye Beam aura
+          ( 333389, 2 ), # Sigil of the Illidari Legendary fake Eye Beam damage trigger
        ),
     ]
 
