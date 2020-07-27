@@ -246,8 +246,14 @@ public:
     azerite_power_t wildfire_cluster;
   } azerite;
 
-  struct legendary_t
-  {
+  struct {
+    spell_data_ptr_t death_chakram;
+    spell_data_ptr_t flayed_shot;
+    spell_data_ptr_t resonating_arrow;
+    spell_data_ptr_t wild_spirits;
+  } covenants;
+
+  struct {
     spell_data_ptr_t call_of_the_wild;
     spell_data_ptr_t craven_strategem; // NYI
     spell_data_ptr_t nessingwarys_apparatus;
@@ -313,6 +319,9 @@ public:
     buff_t* eagletalons_true_focus;
     buff_t* flamewakers_cobra_sting;
     buff_t* secrets_of_the_vigil;
+
+    // Covenants
+    buff_t* flayers_mark;
 
     // azerite
     buff_t* blur_of_talons;
@@ -2138,6 +2147,26 @@ public:
 };
 
 // ==========================================================================
+// Covenant Abilities
+// ==========================================================================
+
+struct flayed_shot_t : hunter_ranged_attack_t
+{
+  flayed_shot_t( hunter_t* p, util::string_view options_str ):
+    hunter_ranged_attack_t( "flayed_shot", p, p -> covenants.flayed_shot )
+  {
+    parse_options( options_str );
+  }
+
+  void tick( dot_t* d ) override
+  {
+    hunter_ranged_attack_t::tick( d );
+
+    p() -> buffs.flayers_mark -> trigger();
+  }
+};
+
+// ==========================================================================
 // Hunter Attacks
 // ==========================================================================
 
@@ -2319,11 +2348,13 @@ struct kill_shot_t : hunter_ranged_attack_t
     hunter_ranged_attack_t::execute();
 
     p() -> buffs.dead_eye -> trigger();
+    p() -> buffs.flayers_mark -> decrement();
   }
 
   bool target_ready( player_t* candidate_target ) override
   {
-    return candidate_target -> health_percentage() <= health_threshold_pct &&
+    return ( candidate_target -> health_percentage() <= health_threshold_pct ||
+             p() -> buffs.flayers_mark -> up() ) &&
            hunter_ranged_attack_t::target_ready( candidate_target );
   }
 };
@@ -4889,6 +4920,7 @@ action_t* hunter_t::create_action( util::string_view name,
   if ( name == "explosive_shot"        ) return new         explosive_shot_t( this, options_str );
   if ( name == "flanking_strike"       ) return new        flanking_strike_t( this, options_str );
   if ( name == "flare"                 ) return new                  flare_t( this, options_str );
+  if ( name == "flayed_shot"           ) return new            flayed_shot_t( this, options_str );
   if ( name == "freezing_trap"         ) return new          freezing_trap_t( this, options_str );
   if ( name == "harpoon"               ) return new                harpoon_t( this, options_str );
   if ( name == "hunters_mark"          ) return new           hunters_mark_t( this, options_str );
@@ -5087,6 +5119,13 @@ void hunter_t::init_spells()
   specs.raptor_strike        = find_class_spell( "Raptor Strike" );
   specs.wildfire_bomb        = find_class_spell( "Wildfire Bomb" );
 
+  // Covenants
+
+  covenants.death_chakram    = find_spell( 325028 );
+  covenants.flayed_shot      = find_spell( 324149 );
+  covenants.resonating_arrow = find_spell( 308491 );
+  covenants.wild_spirits     = find_spell( 328231 );
+
   // Runeforge Legendaries
 
   legendary.call_of_the_wild         = find_runeforge_legendary( "Call of the Wild" );
@@ -5207,7 +5246,6 @@ void hunter_t::create_buffs()
           pets.spitting_cobra -> summon( duration );
       } );
   }
-
 
   const spell_data_t* barbed_shot = find_spell( 246152 );
   for ( size_t i = 0; i < buffs.barbed_shot.size(); i++ )
@@ -5342,6 +5380,12 @@ void hunter_t::create_buffs()
   buffs.aspect_of_the_eagle =
     make_buff( this, "aspect_of_the_eagle", specs.aspect_of_the_eagle )
       -> set_cooldown( 0_ms );
+
+  // Covenenats
+
+  buffs.flayers_mark =
+    make_buff( this, "flayers_mark", find_spell( 324156 ) )
+      -> set_chance( covenants.flayed_shot -> effectN( 2 ).percent() );
 
   // Legendaries
 
@@ -5784,6 +5828,7 @@ void hunter_t::apl_mm()
   st -> add_action( this, "Arcane Shot", "if=buff.trueshot.down&(buff.precise_shots.up&(focus>55)|focus>75|target.time_to_die<5)" );
   st -> add_action( this, "Steady Shot" );
 
+  trickshots -> add_action( this, "Kill Shot" );
   trickshots -> add_talent( this, "Volley" );
   trickshots -> add_talent( this, "Barrage" );
   trickshots -> add_talent( this, "Explosive Shot" );
