@@ -465,6 +465,7 @@ public:
   std::string default_flask() const override;
   std::string default_food() const override;
   std::string default_rune() const override;
+  void apply_affecting_auras( action_t& action ) override;
 
   void      create_buffs_retribution();
   void      init_rng_retribution();
@@ -612,49 +613,12 @@ public:
     hasted_cd( false ), hasted_gcd( false )
   {
     // Spec aura damage increase
-    if ( p -> specialization() == PALADIN_PROTECTION )
-    {
-      if ( this -> data().affected_by( p -> spec.protection_paladin -> effectN( 1 ) ) )
-      { // Direct damage, global
-        this -> base_dd_multiplier *= 1.0 + p -> spec.protection_paladin -> effectN( 1 ).percent();
-      }
-      if ( this -> data().affected_by( p -> spec.protection_paladin -> effectN( 2 ) ) )
-      { // Periodic damage, global
-        this -> base_td_multiplier *= 1.0 + p -> spec.protection_paladin -> effectN( 2 ).percent();
-      }
-    }
-
-    else if ( p -> specialization() == PALADIN_HOLY )
+    if ( p -> specialization() == PALADIN_HOLY )
     {
       this -> affected_by.judgment = this -> data().affected_by( p -> spells.judgment_debuff -> effectN( 1 ) );
     }
-
     else // Default to Ret
     {
-      if ( this -> data().affected_by( p -> spec.retribution_paladin -> effectN( 1 ) ) )
-      { // Direct damage, global
-        this -> base_dd_multiplier *= 1.0 + p -> spec.retribution_paladin -> effectN( 1 ).percent();
-      }
-      if ( this -> data().affected_by( p -> spec.retribution_paladin -> effectN( 2 ) ) )
-      { // Periodic damage, global
-        this -> base_td_multiplier *= 1.0 + p -> spec.retribution_paladin -> effectN( 2 ).percent();
-      }
-
-      if ( this -> data().affected_by( p -> spec.retribution_paladin -> effectN( 11 ) ) )
-      { // 2019-04-01, 0% increase to judgment, keeping it here just in case
-        this -> base_dd_multiplier *= 1.0 + p -> spec.retribution_paladin -> effectN( 11 ).percent();
-      }
-
-      if ( this -> data().affected_by( p -> spec.retribution_paladin -> effectN( 12 ) ) )
-      { // In the same manner, 0% increase to crusader's strike
-        this -> base_dd_multiplier *= 1.0 + p -> spec.retribution_paladin -> effectN( 12 ).percent();
-      }
-
-      if ( this -> data().affected_by( p -> spec.retribution_paladin -> effectN( 13 ) ) )
-      { // Consecration
-        this -> base_dd_multiplier *= 1.0 + p -> spec.retribution_paladin -> effectN( 13 ).percent();
-      }
-
       // Mastery
       this -> affected_by.hand_of_light = this -> data().affected_by( p -> mastery.hand_of_light -> effectN( 1 ) );
 

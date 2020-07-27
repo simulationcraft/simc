@@ -4763,7 +4763,7 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
   {
     switch ( effect.subtype() )
     {
-      case A_411: // Modify Cooldown Charges
+      case A_411:  // Modify Cooldown Charges
         cooldown->charges += as<int>( effect.base_value() );
         sim->print_debug( "{} cooldown charges modified by {}", *this, as<int>( effect.base_value() ) );
         break;
@@ -4773,12 +4773,12 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
         sim->print_debug( "{} cooldown set to hasted", *this );
         break;
 
-      case A_453: // Modify Recharge Time
+      case A_453:  // Modify Recharge Time
         cooldown->duration += effect.time_value();
         sim->print_debug( "{} cooldown duration modified by {}", *this, effect.time_value() );
         break;
 
-      case A_454: // Modify Recharge Time%
+      case A_454:  // Modify Recharge Time%
         base_recharge_multiplier *= 1 + effect.percent();
         sim->print_debug( "{} cooldown recharge multiplier modified by {}%", *this, effect.base_value() );
         break;
@@ -4797,7 +4797,19 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
           case P_GCD:
             trigger_gcd *= ( 100 + effect.base_value() ) / 100.0;
             sim->print_debug( "{} trigger_gcd modified by {}% to {}", *this, effect.base_value(), trigger_gcd );
-
+          case P_EFFECT_1:
+            base_multiplier *= ( 100 + effect.base_value() ) / 100.0;
+            sim->print_debug( "{} base_multiplier modified by {}% to {}", *this, effect.base_value(), base_multiplier );
+          case P_GENERIC:
+            base_dd_multiplier *= ( 100 + effect.base_value() ) / 100.0;
+            sim->print_debug( "{} base_dd_multiplier modified by {}% to {}", *this, effect.base_value(),
+                              base_dd_multiplier );
+            break;
+          case P_TICK_DAMAGE:
+            base_td_multiplier *= ( 100 + effect.base_value() ) / 100.0;
+            sim->print_debug( "{}base_td_multiplier modified by {}% to {}", *this, effect.base_value(),
+                              base_td_multiplier );
+            break;
           default:
             break;
         }

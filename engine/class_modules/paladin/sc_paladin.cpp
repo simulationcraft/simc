@@ -2056,6 +2056,15 @@ void paladin_t::datacollection_end()
   }
 }
 
+void paladin_t::apply_affecting_auras( action_t& action )
+{
+  player_t::apply_affecting_auras(action);
+
+  action.apply_affecting_aura( spec.retribution_paladin );
+  action.apply_affecting_aura( spec.holy_paladin );
+  action.apply_affecting_aura( spec.protection_paladin );
+}
+
 /* Report Extension Class
  * Here you can define class specific report extensions/overrides
  */

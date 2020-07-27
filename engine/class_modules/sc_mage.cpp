@@ -751,6 +751,7 @@ public:
   void regen( timespan_t ) override;
   void moving() override;
   void vision_of_perfection_proc() override;
+  void apply_affecting_auras( action_t& action ) override;
 
   target_specific_t<mage_td_t> target_data;
 
@@ -1377,15 +1378,6 @@ public:
       return;
 
     spell_t::init();
-
-    if ( affected_by.arcane_mage )
-      base_multiplier *= 1.0 + p()->spec.arcane_mage->effectN( 1 ).percent();
-
-    if ( affected_by.fire_mage )
-      base_multiplier *= 1.0 + p()->spec.fire_mage->effectN( 1 ).percent();
-
-    if ( affected_by.frost_mage )
-      base_multiplier *= 1.0 + p()->spec.frost_mage->effectN( 1 ).percent();
 
     if ( harmful && affected_by.shatter )
     {
@@ -7246,6 +7238,15 @@ void mage_t::update_enlightened()
     buffs.enlightened_damage->expire();
     buffs.enlightened_mana->trigger();
   }
+}
+
+void mage_t::apply_affecting_auras( action_t& action )
+{
+  player_t::apply_affecting_auras( action );
+
+  action.apply_affecting_aura( spec.frost_mage );
+  action.apply_affecting_aura( spec.fire_mage );
+  action.apply_affecting_aura( spec.arcane_mage );
 }
 
 /* Report Extension Class

@@ -583,6 +583,7 @@ public:
   void target_mitigation( school_e, result_amount_type, action_state_t* ) override;
   void copy_from( player_t* ) override;
   void merge( player_t& ) override;
+  void apply_affecting_auras( action_t& action ) override;
 
   void datacollection_begin() override;
   void datacollection_end() override;
@@ -6947,6 +6948,15 @@ void warrior_t::copy_from( player_t* source )
   warrior_fixed_time    = p->warrior_fixed_time;
   into_the_fray_friends = p->into_the_fray_friends;
   never_surrender_percentage = p -> never_surrender_percentage;
+}
+
+void warrior_t::apply_affecting_auras( action_t& action )
+{
+  player_t::apply_affecting_auras( action );
+
+  action.apply_affecting_aura( spec.arms_warrior );
+  action.apply_affecting_aura( spec.fury_warrior );
+  action.apply_affecting_aura( spec.prot_warrior );
 }
 
 /* Report Extension Class

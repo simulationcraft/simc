@@ -23,10 +23,6 @@
 namespace unique_gear
 {
   
-// Kludge to automatically apply all player-derived, label based modifiers to unique effects. Will
-// be replaced in the future by something else.
-void apply_label_modifiers( action_t* a );
-
 // Old-style special effect registering functions
 void register_special_effect( unsigned spell_id, const char* encoded_str );
 void register_special_effect( unsigned spell_id, std::function<void( special_effect_t& )> init_cb );
@@ -319,8 +315,6 @@ struct proc_action_t : public T_ACTION
     // Reparse effect data for any item-dependent variables.
     for ( const auto& effect : this->data().effects() )
       this->parse_effect_data( effect );
-
-    unique_gear::apply_label_modifiers( this );
   }
 
   proc_action_t( const special_effect_t& e ) : super( e.name(), e.player, e.trigger() ), effect( &e )

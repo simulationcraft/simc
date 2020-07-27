@@ -682,6 +682,7 @@ public:
   void datacollection_begin() override;
   void datacollection_end() override;
   void target_mitigation( school_e, result_amount_type, action_state_t* ) override;
+  void apply_affecting_auras( action_t& action ) override;
 
   // custom demon_hunter_t functions
   void set_out_of_range( timespan_t duration );
@@ -6327,6 +6328,15 @@ demon_hunter_td_t* demon_hunter_t::get_target_data( player_t* target ) const
     td = new demon_hunter_td_t( target, const_cast<demon_hunter_t&>( *this ) );
   }
   return td;
+}
+
+void demon_hunter_t::apply_affecting_auras( action_t& action )
+{
+  player_t::apply_affecting_auras( action );
+
+  action.apply_affecting_aura( spec.demon_hunter );
+  action.apply_affecting_aura( spec.havoc );
+  action.apply_affecting_aura( spec.vengeance );
 }
 
 /* Report Extension Class

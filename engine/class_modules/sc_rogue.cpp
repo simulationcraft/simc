@@ -625,6 +625,7 @@ struct rogue_t : public player_t
   double    resource_regen_per_second( resource_e ) const override;
   double    passive_movement_modifier() const override;
   double    temporary_movement_modifier() const override;
+  void      apply_affecting_auras( action_t& action ) override;
 
   bool poisoned_enemy( player_t* target, bool deadly_fade = false ) const;
 
@@ -843,13 +844,6 @@ struct rogue_attack_t : public melee_attack_t
         base_dd_adder = effect.bonus( player );
       }
     }
-
-    // Affecting passives
-    apply_affecting_aura( p->spec.assassination_rogue );
-    apply_affecting_aura( p->spec.outlaw_rogue );
-    apply_affecting_aura( p->spec.subtlety_rogue );
-    apply_affecting_aura( p->talent.deeper_stratagem );
-    apply_affecting_aura( p->talent.master_poisoner );
   }
 
   void init() override
@@ -2971,8 +2965,9 @@ struct marked_for_death_t : public rogue_attack_t
 
     may_miss = may_crit = harmful = callbacks = false;
     energize_type = ENERGIZE_ON_CAST;
-    cooldown -> duration += timespan_t::from_millis( p -> spec.subtlety_rogue -> effectN( 6 ).base_value() );
-    cooldown -> duration += timespan_t::from_millis( p -> spec.assassination_rogue -> effectN( 4 ).base_value() );
+    // TODO: check if applied through apply_affect_aura
+    // cooldown -> duration += timespan_t::from_millis( p -> spec.subtlety_rogue -> effectN( 6 ).base_value() );
+    // cooldown -> duration += timespan_t::from_millis( p -> spec.assassination_rogue -> effectN( 4 ).base_value() );
   }
 
   void execute() override
@@ -7709,6 +7704,17 @@ void rogue_t::vision_of_perfection_proc()
 	default:
 		break;
   }
+}
+
+void rogue_t::apply_affecting_auras( action_t& action )
+{
+  player_t::apply_affecting_auras( action );
+
+  action.apply_affecting_aura( spec.assassination_rogue );
+  action.apply_affecting_aura( spec.outlaw_rogue );
+  action.apply_affecting_aura( spec.subtlety_rogue );
+  action.apply_affecting_aura( talent.deeper_stratagem );
+  action.apply_affecting_aura( talent.master_poisoner );
 }
 
 /* Report Extension Class

@@ -915,6 +915,7 @@ public:
   std::string default_flask() const override;
   std::string default_food() const override;
   std::string default_rune() const override;
+  void apply_affecting_auras( action_t& action ) override;
 
   void vision_of_perfection_proc() override;
 
@@ -2095,8 +2096,6 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     blood_plague_t( dancing_rune_weapon_pet_t* p ) :
       drw_spell_t( p, "blood_plague", p -> o() -> spell.blood_plague )
     {
-      base_multiplier *= 1.0 + p -> o() -> spec.blood_death_knight -> effectN( 2 ).percent();
-
       // DRW usually behaves the same regardless of talents, but BP ticks are affected by rapid decomposition
       // https://github.com/SimCMinMax/WoW-BugTracker/issues/240
       if ( p -> o() -> bugs )
@@ -2112,8 +2111,6 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
       aoe = -1;
       cooldown -> duration = 0_ms;
       cooldown -> charges = 0;
-
-      base_multiplier *= 1.0 + p -> o() -> spec.blood_death_knight -> effectN( 1 ).percent();
     }
 
     void impact( action_state_t* s ) override
@@ -2133,7 +2130,6 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     deaths_caress_t( dancing_rune_weapon_pet_t* p ) :
       drw_spell_t( p, "deaths_caress", p -> o() -> spec.deaths_caress )
     {
-      base_multiplier *= 1.0 + p -> o() -> spec.blood_death_knight -> effectN( 1 ).percent();
     }
 
     void impact( action_state_t* s ) override
@@ -2154,8 +2150,6 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
       drw_attack_t( p, "death_strike", p -> o() -> spell.death_strike )
     {
       weapon = &( p -> main_hand_weapon );
-      base_multiplier *= 1.0 + p -> o() -> spec.blood_death_knight -> effectN( 1 ).percent();
-      base_multiplier *= 1.0 + p -> o() -> spec.blood_death_knight -> effectN( 3 ).percent();
     }
 
     double action_multiplier() const override
@@ -2176,7 +2170,6 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
       drw_attack_t( p, "heart_strike", p -> o() -> spec.heart_strike )
     {
       weapon = &( p -> main_hand_weapon );
-      base_multiplier *= 1.0 + p -> o() -> spec.blood_death_knight -> effectN( 1 ).percent();
       aoe = 2;
     }
 
@@ -2198,7 +2191,6 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
       drw_attack_t( p, "marrowrend", p -> o() -> spec.marrowrend )
     {
       weapon = &( p -> main_hand_weapon );
-      base_multiplier *= 1.0 + p -> o() -> spec.blood_death_knight -> effectN( 1 ).percent();
     }
 
     void impact( action_state_t* state ) override
@@ -2217,7 +2209,6 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
       drw_attack_t( p, "rune_strike", p -> o() -> talent.rune_strike )
     {
       weapon = &( p -> main_hand_weapon );
-      base_multiplier *= 1.0 + p -> o() -> spec.blood_death_knight -> effectN( 1 ).percent();
 
       cooldown -> duration = 0_ms;
       cooldown -> charges = 0;
@@ -2459,37 +2450,6 @@ struct death_knight_action_t : public Base
 
       this -> energize_amount += rp_gain;
       this -> base_costs[ RESOURCE_RUNIC_POWER ] = 0;
-    }
-
-    // Spec Auras
-    if ( this -> data().affected_by( p -> spec.unholy_death_knight -> effectN( 1 ) ) && p -> specialization() == DEATH_KNIGHT_UNHOLY )
-    {
-      this -> base_dd_multiplier *= 1.0 + p -> spec.unholy_death_knight -> effectN( 1 ).percent();
-    }
-
-    if ( this -> data().affected_by( p -> spec.unholy_death_knight -> effectN( 2 ) ) && p -> specialization() == DEATH_KNIGHT_UNHOLY )
-    {
-      this -> base_td_multiplier *= 1.0 + p -> spec.unholy_death_knight -> effectN( 2 ).percent();
-    }
-
-    if ( this -> data().affected_by( p -> spec.frost_death_knight -> effectN( 1 ) ) && p -> specialization() == DEATH_KNIGHT_FROST )
-    {
-      this -> base_dd_multiplier *= 1.0 + p -> spec.frost_death_knight -> effectN( 1 ).percent();
-    }
-
-    if ( this -> data().affected_by( p -> spec.frost_death_knight -> effectN( 2 ) ) && p -> specialization() == DEATH_KNIGHT_FROST )
-    {
-      this -> base_td_multiplier *= 1.0 + p -> spec.frost_death_knight -> effectN( 2 ).percent();
-    }
-
-    if ( this -> data().affected_by( p -> spec.blood_death_knight -> effectN( 1 ) ) && p -> specialization() == DEATH_KNIGHT_BLOOD )
-    {
-      this -> base_dd_multiplier *= 1.0 + p -> spec.blood_death_knight -> effectN( 1 ).percent();
-    }
-
-    if ( this -> data().affected_by( p -> spec.blood_death_knight -> effectN( 2 ) ) && p -> specialization() == DEATH_KNIGHT_BLOOD )
-    {
-      this -> base_td_multiplier *= 1.0 + p -> spec.blood_death_knight -> effectN( 2 ).percent();
     }
 
     this -> affected_by.frozen_heart = this -> data().affected_by( p -> mastery.frozen_heart -> effectN( 1 ) );
@@ -3953,9 +3913,6 @@ struct death_and_decay_base_t : public death_knight_spell_t
     // Note, radius and ground_aoe flag needs to be set in base so spell_targets expression works
     ground_aoe            = true;
     radius                = data().effectN( 1 ).radius_max();
-
-    // Blood has a lower base cd on DnD
-    cooldown -> duration *= 1.0 + p -> spec.blood_death_knight -> effectN( 5 ).percent();
   }
 
   double cost() const override
@@ -4363,7 +4320,6 @@ struct death_strike_t : public death_knight_melee_attack_t
   {
     parse_options( options_str );
     may_parry = false;
-    base_multiplier *= 1.0 + p -> spec.blood_death_knight -> effectN( 3 ).percent();
 
     weapon = &( p -> main_hand_weapon );
 
@@ -8737,6 +8693,16 @@ void death_knight_t::adjust_dynamic_cooldowns()
   player_t::adjust_dynamic_cooldowns();
 
   _runes.update_coefficient();
+}
+
+void death_knight_t::apply_affecting_auras( action_t& action )
+{
+  player_t::apply_affecting_auras( action );
+
+  action.apply_affecting_aura( spec.death_knight );
+  action.apply_affecting_aura( spec.unholy_death_knight );
+  action.apply_affecting_aura( spec.frost_death_knight );
+  action.apply_affecting_aura( spec.blood_death_knight );
 }
 
 /* Report Extension Class

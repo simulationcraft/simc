@@ -779,6 +779,8 @@ public:
   void datacollection_begin() override;
   void datacollection_end() override;
 
+  void apply_affecting_auras( action_t& action ) override;
+
   target_specific_t<shaman_td_t> target_data;
 
   shaman_td_t* get_target_data( player_t* target ) const override
@@ -1145,33 +1147,6 @@ public:
 
       maelstrom_gain    = effect.resource( RESOURCE_MAELSTROM );
       ab::energize_type = ENERGIZE_NONE;  // disable resource generation from spell data.
-    }
-
-    if ( ab::data().affected_by( player->spec.elemental_shaman->effectN( 1 ) ) )
-    {
-      ab::base_dd_multiplier *= 1.0 + player->spec.elemental_shaman->effectN( 1 ).percent();
-    }
-    if ( ab::data().affected_by( player->spec.elemental_shaman->effectN( 2 ) ) )
-    {
-      ab::base_td_multiplier *= 1.0 + player->spec.elemental_shaman->effectN( 2 ).percent();
-    }
-
-    if ( ab::data().affected_by( player->spec.enhancement_shaman->effectN( 1 ) ) )
-    {
-      ab::base_multiplier *= 1.0 + player->spec.enhancement_shaman->effectN( 1 ).percent();
-    }
-
-    if ( ab::data().affected_by( player->spec.restoration_shaman->effectN( 3 ) ) )
-    {
-      ab::base_dd_multiplier *= 1.0 + player->spec.restoration_shaman->effectN( 3 ).percent();
-    }
-    if ( ab::data().affected_by( player->spec.restoration_shaman->effectN( 4 ) ) )
-    {
-      ab::base_td_multiplier *= 1.0 + player->spec.restoration_shaman->effectN( 4 ).percent();
-    }
-    if ( ab::data().affected_by( player->spec.restoration_shaman->effectN( 7 ) ) )
-    {
-      ab::base_multiplier *= 1.0 + player->spec.restoration_shaman->effectN( 7 ).percent();
     }
 
     affected_by_molten_weapon =
@@ -9365,6 +9340,15 @@ stat_e shaman_t::convert_hybrid_stat( stat_e s ) const
     default:
       return s;
   }
+}
+
+void shaman_t::apply_affecting_auras( action_t& action )
+{
+  player_t::apply_affecting_auras( action );
+
+  action.apply_affecting_aura( spec.elemental_fury );
+  action.apply_affecting_aura( spec.enhancement_shaman );
+  action.apply_affecting_aura( spec.restoration_shaman );
 }
 
 /* Report Extension Class

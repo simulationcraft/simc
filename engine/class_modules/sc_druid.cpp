@@ -1573,18 +1573,6 @@ public:
     ab::tick_may_crit = true;
 
     gore_chance += p() -> sets -> set( DRUID_GUARDIAN, T19, B2 ) -> effectN( 1 ).percent();
-
-    if (player->specialization() == DRUID_RESTORATION)
-    {
-      if (s->affected_by(player->spec.restoration->effectN(9))) // Periodic Damage
-      {
-        ab::base_td_multiplier *= 1.0 + player->spec.restoration->effectN(8).percent();
-      }
-      if (s->affected_by(player->spec.restoration->effectN(8))) // Direct Damage
-      {
-        ab::base_dd_multiplier *= 1.0 + player->spec.restoration->effectN(8).percent();
-      }
-    }
   }
 
   druid_t* p()
@@ -2261,18 +2249,6 @@ public:
     owlkin_frenzy( data().affected_by( p->spec.owlkin_frenzy->effectN( 1 ) ) )
   {
     parse_options( options );
-
-    // Apply Guardian Druid aura damage modifiers
-    if ( p->specialization() == DRUID_GUARDIAN )
-    {
-      // direct damage
-      if ( s->affected_by( p->spec.guardian->effectN( 1 ) ) )
-        base_dd_multiplier *= 1.0 + p->spec.guardian->effectN( 1 ).percent();
-
-      // ticking damage
-      if ( s->affected_by( p->spec.guardian->effectN( 2 ) ) )
-        base_td_multiplier *= 1.0 + p->spec.guardian->effectN( 2 ).percent();
-    }
   }
 
   double composite_energize_amount( const action_state_t* s ) const override
@@ -2948,28 +2924,7 @@ public:
     if (trigger_untamed_ferocity && !p->azerite.untamed_ferocity.ok() )
       trigger_untamed_ferocity = false;
 
-    // Apply Feral Druid Aura damage modifiers
-    if ( p -> specialization() == DRUID_FERAL )
-    {
-       //dots
-       if ( s -> affected_by( p -> spec.feral -> effectN(2) ))
-       {
-          base_td_multiplier *= 1.0 + p -> spec.feral -> effectN(2).percent();
-       }
-       //dd
-       if ( s -> affected_by( p -> spec.feral -> effectN(1) ))
-       {
-          base_dd_multiplier *= 1.0 + p->spec.feral->effectN(1).percent();
-       }
-    }
-
-    if ( p-> specialization() == DRUID_FERAL &&  p -> talent.soul_of_the_forest -> ok() &&
-      ( data().affected_by( p -> talent.soul_of_the_forest -> effectN(2)) || data().affected_by( p -> talent.soul_of_the_forest -> effectN(3) )))
-    {
-       base_td_multiplier *= 1.0 + p->talent.soul_of_the_forest->effectN(3).percent();
-       base_dd_multiplier *= 1.0 + p->talent.soul_of_the_forest->effectN(2).percent();
-    }
-
+    // TODO: integrate into action_t::apply_affecting_effect
     // Apply all Feral Affinity damage modifiers.
     if ( p -> talent.feral_affinity -> ok() )
     {
@@ -4495,22 +4450,6 @@ struct bear_attack_t : public druid_attack_t<melee_attack_t>
 
     if (p->specialization() == DRUID_BALANCE || p->specialization() == DRUID_RESTORATION)
       ap_type = attack_power_type::NO_WEAPON;
-
-    // Apply Guardian Druid aura damage modifiers
-    if (p -> specialization() == DRUID_GUARDIAN)
-    {
-      // direct damage
-      if ( s -> affected_by( p -> spec.guardian -> effectN( 1 ) ) )
-      {
-        base_dd_multiplier *= 1.0 + p -> spec.guardian -> effectN( 1 ).percent();
-      }
-
-      // ticking damage
-      if ( s -> affected_by( p -> spec.guardian -> effectN( 2 ) ) )
-      {
-        base_td_multiplier *= 1.0 + p -> spec.guardian -> effectN( 2 ).percent();
-      }
-    }
   }
 
   void impact( action_state_t* s ) override
@@ -10164,14 +10103,6 @@ void druid_t::vision_of_perfection_proc()
   }
 }
 
-void druid_t::apply_affecting_auras( action_t& action )
-{
-  player_t::apply_affecting_auras( action );
-
-  action.apply_affecting_aura( spec.druid );
-  action.apply_affecting_aura( spec.balance );
-}
-
 druid_td_t::druid_td_t( player_t& target, druid_t& source )
   : actor_target_data_t( &target, &source ),
     dots( dots_t() ),
@@ -10304,6 +10235,18 @@ void druid_t::output_json_report( js::JsonOutput& /*root*/ ) const
       }
     }
   }
+}
+
+void druid_t::apply_affecting_auras( action_t& action )
+{
+  player_t::apply_affecting_auras( action );
+
+  action.apply_affecting_aura( spec.druid );
+  action.apply_affecting_aura( spec.feral );
+  action.apply_affecting_aura( spec.restoration );
+  action.apply_affecting_aura( spec.balance );
+  action.apply_affecting_aura( spec.guardian );
+  action.apply_affecting_aura( talent.soul_of_the_forest );
 }
 
 //void druid_t::output_json_report(js::JsonOutput& root) const

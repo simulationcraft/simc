@@ -465,6 +465,7 @@ namespace warlock
       std::string       default_flask() const override;
       std::string       default_food() const override;
       std::string       default_rune() const override;
+      void apply_affecting_auras( action_t& action ) override;
 
 
       target_specific_t<warlock_td_t> target_data;
@@ -589,38 +590,6 @@ namespace warlock
         void reset() override
         {
           spell_t::reset();
-        }
-
-        void init() override
-        {
-          action_t::init();
-
-          if ( p()->specialization() == WARLOCK_AFFLICTION )
-          {
-            if ( data().affected_by( p()->spec.affliction->effectN( 1 ) ) )
-              base_dd_multiplier *= 1.0 + p()->spec.affliction->effectN( 1 ).percent();
-
-            if ( data().affected_by( p()->spec.affliction->effectN( 2 ) ) )
-              base_td_multiplier *= 1.0 + p()->spec.affliction->effectN( 2 ).percent();
-          }
-
-          if ( p()->specialization() == WARLOCK_DEMONOLOGY )
-          {
-            if ( data().affected_by( p()->spec.demonology->effectN( 1 ) ) )
-              base_dd_multiplier *= 1.0 + p()->spec.demonology->effectN( 1 ).percent();
-
-            if ( data().affected_by( p()->spec.demonology->effectN( 2 ) ) )
-              base_td_multiplier *= 1.0 + p()->spec.demonology->effectN( 2 ).percent();
-          }
-
-          if ( p()->specialization() == WARLOCK_DESTRUCTION )
-          {
-            if ( data().affected_by( p()->spec.destruction->effectN( 1 ) ) )
-              base_dd_multiplier *= 1.0 + p()->spec.destruction->effectN( 1 ).percent();
-
-            if ( data().affected_by( p()->spec.destruction->effectN( 2 ) ) )
-              base_td_multiplier *= 1.0 + p()->spec.destruction->effectN( 2 ).percent();
-          }
         }
 
         double cost() const override

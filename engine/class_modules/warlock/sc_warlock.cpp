@@ -1180,6 +1180,15 @@ std::unique_ptr<expr_t> warlock_t::create_expression( const std::string& name_st
   return player_t::create_expression( name_str );
 }
 
+void warlock_t::apply_affecting_auras( action_t& action )
+{
+  player_t::apply_affecting_auras( action );
+
+  action.apply_affecting_aura( spec.demonology );
+  action.apply_affecting_aura( spec.destruction );
+  action.apply_affecting_aura( spec.affliction );
+}
+
 /* Report Extension Class
  * Here you can define class specific report extensions/overrides
  */
