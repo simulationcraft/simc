@@ -665,11 +665,11 @@ public:
     ab::apply_affecting_aura( p -> talents.master_marksman );
 
     // "simple" passive rank 2 spells
-    ab::apply_affecting_aura( p -> find_specialization_spell( 231550 ) ); // Harpoon (Rank 2)
-    ab::apply_affecting_aura( p -> find_specialization_spell( 262838 ) ); // Cobra Shot (Rank 2)
-    ab::apply_affecting_aura( p -> find_specialization_spell( 321287 ) ); // True Aim
-    ab::apply_affecting_aura( p -> find_specialization_spell( 321290 ) ); // Wildfire Bombs (Rank 2)
-    ab::apply_affecting_aura( p -> find_specialization_spell( 321293 ) ); // Arcane Shot (Rank 2)
+    ab::apply_affecting_aura( p -> find_rank_spell( "Harpoon", "Rank 2" ) );
+    ab::apply_affecting_aura( p -> find_rank_spell( "Cobra Shot", "Rank 2" ) );
+    ab::apply_affecting_aura( p -> find_rank_spell( "Wildfire Bombs", "Rank 2" ) );
+    ab::apply_affecting_aura( p -> find_rank_spell( "Arcane Shot", "Rank 2" ) );
+    ab::apply_affecting_aura( p -> find_specialization_spell( "True Aim" ) );
 
     // passive legendary effects
     ab::apply_affecting_aura( p -> legendary.call_of_the_wild );
@@ -2428,8 +2428,7 @@ struct barbed_shot_t: public hunter_ranged_attack_t
 
     base_ta_adder += p -> azerite.feeding_frenzy.value( 2 );
 
-    // Bestial Wrath (Rank 2)
-    if ( p -> find_specialization_spell( 231548 ) -> ok() )
+    if ( p -> find_rank_spell( "Bestial Wrath", "Rank 2" ) -> ok() )
       bestial_wrath_r2_reduction = timespan_t::from_seconds( p -> specs.bestial_wrath -> effectN( 3 ).base_value() );
   }
 
@@ -2731,8 +2730,7 @@ struct steady_shot_t: public hunter_ranged_attack_t
   {
     parse_options( options_str );
 
-     // Steady Shot (Rank 2)
-    spell_data_ptr_t rank2 = p -> find_specialization_spell( 321018 );
+    spell_data_ptr_t rank2 = p -> find_rank_spell( "Steady Shot", "Rank 2" );
     if ( rank2.ok() )
     {
       energize_type = ENERGIZE_ON_CAST;
@@ -2827,8 +2825,7 @@ struct rapid_fire_t: public hunter_spell_t
       radius = 8;
       base_aoe_multiplier = p -> specs.trick_shots -> effectN( 5 ).percent();
 
-      // Rapid Fire (Rank 2)
-      if ( p -> find_specialization_spell( 321281 ) )
+      if ( p -> find_rank_spell( "Rapid Fire", "Rank 2" ) -> ok() )
         parse_effect_data( p -> find_spell( 263585 ) -> effectN( 1 ) );
 
       base_dd_adder += p -> azerite.focused_fire.value( 2 );
@@ -3347,8 +3344,7 @@ struct carve_base_t: public hunter_melee_attack_t
                 timespan_t wfb_reduction ):
     hunter_melee_attack_t( n, p, s ), internal_bleeding( p )
   {
-    // Carve (Rank 2) - also affects Butchery
-    if ( p -> find_specialization_spell( 294029 ) )
+    if ( p -> find_rank_spell( "Carve", "Rank 2" ) -> ok() )
       wildfire_bomb_reduction = wfb_reduction;
   }
 
@@ -3844,8 +3840,7 @@ struct kill_command_t: public hunter_spell_t
   {
     parse_options( options_str );
 
-    // Survival - Kill Command (Rank 2)
-    if ( p -> find_specialization_spell( 263186 ) -> ok() )
+    if ( p -> find_rank_spell( "Kill Command", "Rank 2" ) -> ok() )
     {
       flankers_advantage.chance = data().effectN( 2 ).percent();
       flankers_advantage.proc = p -> get_proc( "flankers_advantage" );
