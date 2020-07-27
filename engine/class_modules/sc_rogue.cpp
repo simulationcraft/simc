@@ -342,6 +342,7 @@ struct rogue_t : public player_t
     const spell_data_t* shadowstep;
 
     // Generic
+    const spell_data_t* all_rogue;
     const spell_data_t* assassination_rogue;
     const spell_data_t* outlaw_rogue;
     const spell_data_t* subtlety_rogue;
@@ -815,8 +816,6 @@ struct rogue_attack_t : public melee_attack_t
     tick_may_crit = true;
     hasted_ticks = false;
 
-    memset( &affected_by, 0, sizeof( affected_by ) );
-
     for ( size_t i = 1; i <= s -> effect_count(); i++ )
     {
       const spelleffect_data_t& effect = s -> effectN( i );
@@ -844,36 +843,35 @@ struct rogue_attack_t : public melee_attack_t
         base_dd_adder = effect.bonus( player );
       }
     }
-  }
 
-  void init() override
-  {
-    melee_attack_t::init();
+    // Affecting passives
+    apply_affecting_aura( p->talent.deeper_stratagem );
+    apply_affecting_aura( p->talent.master_poisoner );
 
     // Dynamically affected flags
     // Special things like CP, Energy, Crit, etc.
-    affected_by.shadow_blades = data().affected_by( p() -> spec.shadow_blades -> effectN( 2 ) ) ||
-      data().affected_by( p() -> spec.shadow_blades -> effectN( 3 ) );
+    affected_by.shadow_blades = data().affected_by( p->spec.shadow_blades->effectN( 2 ) ) ||
+      data().affected_by( p->spec.shadow_blades->effectN( 3 ) );
     affected_by.ruthlessness = base_costs[ RESOURCE_COMBO_POINT ] > 0;
     affected_by.relentless_strikes = base_costs[ RESOURCE_COMBO_POINT ] > 0;
     affected_by.deepening_shadows = base_costs[ RESOURCE_COMBO_POINT ] > 0;
-    affected_by.vendetta = data().affected_by( p() -> spec.vendetta -> effectN( 1 ) );
+    affected_by.vendetta = data().affected_by( p->spec.vendetta->effectN( 1 ) );
     affected_by.alacrity = base_costs[ RESOURCE_COMBO_POINT ] > 0;
-    affected_by.adrenaline_rush_gcd = data().affected_by( p() -> buffs.adrenaline_rush -> data().effectN( 3 ) );
-    affected_by.broadside_cp = data().affected_by( p()->buffs.broadside->data().effectN( 1 ) ) ||
-      data().affected_by( p()->buffs.broadside->data().effectN( 2 ) ) ||
-      data().affected_by( p()->buffs.broadside->data().effectN( 3 ) );
-    affected_by.master_assassin = data().affected_by( p() -> spec.master_assassin -> effectN( 1 ) );
-    affected_by.toxic_blade = data().affected_by( p() -> talent.toxic_blade -> effectN( 4 ).trigger() -> effectN( 1 ) );
-    affected_by.ruthless_precision = data().affected_by( p()->buffs.ruthless_precision->data().effectN( 1 ) );
+    affected_by.adrenaline_rush_gcd = data().affected_by( p->buffs.adrenaline_rush->data().effectN( 3 ) );
+    affected_by.broadside_cp = data().affected_by( p->buffs.broadside->data().effectN( 1 ) ) ||
+      data().affected_by( p->buffs.broadside->data().effectN( 2 ) ) ||
+      data().affected_by( p->buffs.broadside->data().effectN( 3 ) );
+    affected_by.master_assassin = data().affected_by( p->spec.master_assassin->effectN( 1 ) );
+    affected_by.toxic_blade = data().affected_by( p->talent.toxic_blade->effectN( 4 ).trigger()->effectN( 1 ) );
+    affected_by.ruthless_precision = data().affected_by( p->buffs.ruthless_precision->data().effectN( 1 ) );
 
     // Auto-parsing for damage affecting dynamic flags
-    parse_damage_affecting_spell( p()->mastery.executioner, affected_by.mastery_executioner );
-    parse_damage_affecting_spell( p()->mastery.potent_assassin, affected_by.mastery_potent_assassin );
-    parse_damage_affecting_buff( p()->buffs.broadside, affected_by.broadside );
-    parse_damage_affecting_buff( p()->buffs.symbols_of_death, affected_by.symbols_of_death );
-    parse_damage_affecting_buff( p()->buffs.shadow_dance, affected_by.shadow_dance );
-    parse_damage_affecting_buff( p()->buffs.elaborate_planning, affected_by.elaborate_planning );
+    parse_damage_affecting_spell( p->mastery.executioner, affected_by.mastery_executioner );
+    parse_damage_affecting_spell( p->mastery.potent_assassin, affected_by.mastery_potent_assassin );
+    parse_damage_affecting_buff( p->buffs.broadside, affected_by.broadside );
+    parse_damage_affecting_buff( p->buffs.symbols_of_death, affected_by.symbols_of_death );
+    parse_damage_affecting_buff( p->buffs.shadow_dance, affected_by.shadow_dance );
+    parse_damage_affecting_buff( p->buffs.elaborate_planning, affected_by.elaborate_planning );
   }
 
   void snapshot_state( action_state_t* state, result_amount_type rt ) override
@@ -6620,6 +6618,7 @@ void rogue_t::init_spells()
   spec.shadowstep           = find_specialization_spell( "Shadowstep" );
 
   // Generic
+  spec.all_rogue            = find_spell( 137034 );
   spec.assassination_rogue  = find_specialization_spell( "Assassination Rogue" );
   spec.outlaw_rogue         = find_specialization_spell( "Outlaw Rogue" );
   spec.subtlety_rogue       = find_specialization_spell( "Subtlety Rogue" );
@@ -7710,11 +7709,10 @@ void rogue_t::apply_affecting_auras( action_t& action )
 {
   player_t::apply_affecting_auras( action );
 
+  action.apply_affecting_aura( spec.all_rogue );
   action.apply_affecting_aura( spec.assassination_rogue );
   action.apply_affecting_aura( spec.outlaw_rogue );
   action.apply_affecting_aura( spec.subtlety_rogue );
-  action.apply_affecting_aura( talent.deeper_stratagem );
-  action.apply_affecting_aura( talent.master_poisoner );
 }
 
 /* Report Extension Class
