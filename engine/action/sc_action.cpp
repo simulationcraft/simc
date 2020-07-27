@@ -494,34 +494,32 @@ action_t::~action_t()
   }
 }
 
-static bool has_direct_damage_effect( const spell_data_t& spell )
+static bool is_direct_damage_effect( const spelleffect_data_t& effect )
 {
   static constexpr effect_type_t types[] = {
     E_HEAL, E_SCHOOL_DAMAGE, E_HEALTH_LEECH,
     E_NORMALIZED_WEAPON_DMG, E_WEAPON_DAMAGE, E_WEAPON_PERCENT_DAMAGE
   };
-  for ( const auto& effect : spell.effects() )
-  {
-    if ( range::contains( types, effect.type() ) )
-      return true;
-  }
-  return false;
+  return range::contains( types, effect.type() );
 }
 
-static bool has_periodic_damage_effect( const spell_data_t& spell )
+static bool is_periodic_damage_effect( const spelleffect_data_t& effect )
 {
   static constexpr effect_subtype_t subtypes[] = {
     A_PERIODIC_DAMAGE, A_PERIODIC_LEECH, A_PERIODIC_HEAL
   };
-  for ( const auto& effect : spell.effects() )
-  {
-    if ( effect.type() == E_APPLY_AURA &&
-         range::contains( subtypes, effect.subtype() ) )
-    {
-      return true;
-    }
-  }
-  return false;
+  return effect.type() == E_APPLY_AURA &&
+         range::contains( subtypes, effect.subtype() );
+}
+
+static bool has_direct_damage_effect( const spell_data_t& spell )
+{
+  return range::any_of( spell.effects(), is_direct_damage_effect );
+}
+
+static bool has_periodic_damage_effect( const spell_data_t& spell )
+{
+  return range::any_of( spell.effects(), is_periodic_damage_effect );
 }
 
 /**
@@ -4672,6 +4670,21 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
                       spell.name_cstr(), desc_str, spell.id(), effect.spell_effect_num() + 1 );
   }
 
+  auto apply_effect_n_multiplier = [ this ]( const spelleffect_data_t& effect, unsigned n ) {
+    if ( is_direct_damage_effect( data().effectN( n ) ) )
+    {
+      base_dd_multiplier *= 1 + effect.percent();
+      sim->print_debug( "{} base_dd_multiplier modified by {}% to {}",
+                        *this, effect.base_value(), base_dd_multiplier );
+    }
+    else if ( is_periodic_damage_effect( data().effectN( n ) ) )
+    {
+      base_td_multiplier *= 1 + effect.percent();
+      sim->print_debug( "{} base_td_multiplier modified by {}% to {}",
+                        *this, effect.base_value(), base_td_multiplier );
+    }
+  };
+
   if ( data().affected_by( effect ) )
   {
     switch ( effect.subtype() )
@@ -4800,8 +4813,7 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
             break;
 
           case P_EFFECT_1:
-            base_multiplier *= ( 100 + effect.base_value() ) / 100.0;
-            sim->print_debug( "{} base_multiplier modified by {}% to {}", *this, effect.base_value(), base_multiplier );
+            apply_effect_n_multiplier( effect, 1 );
             break;
 
           case P_GENERIC:
