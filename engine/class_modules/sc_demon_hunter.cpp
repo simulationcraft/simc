@@ -1897,6 +1897,34 @@ struct disrupt_t : public demon_hunter_spell_t
 
 struct eye_beam_t : public demon_hunter_spell_t
 {
+  struct sigil_of_the_illidari_t : public demon_hunter_spell_t
+  {
+    struct sigil_of_the_illidari_tick_t : public demon_hunter_spell_t
+    {
+      sigil_of_the_illidari_tick_t( demon_hunter_t* p )
+        : demon_hunter_spell_t( "sigil_of_the_illidari_tick", p, p->find_spell( 333105 )->effectN( 1 ).trigger() )
+      {
+        // TOCHECK: Currently does not use split damage on beta but probably will at some point
+        background = dual = true;
+        aoe = -1;
+      }
+    };
+
+    sigil_of_the_illidari_t( demon_hunter_t* p )
+      : demon_hunter_spell_t( "sigil_of_the_illidari", p, p->find_spell( 333105 ) )
+    {
+      may_miss = false;
+      background = dual = hasted_ticks = tick_on_application = true;
+      tick_action = new sigil_of_the_illidari_tick_t( p );
+    }
+
+    // Behaves as a channeled spell, although we can't set channeled = true since it is background
+    timespan_t composite_dot_duration( const action_state_t* s ) const
+    {
+      return dot_duration * ( tick_time( s ) / base_tick_time );
+    }
+  };
+
   struct eye_beam_tick_t : public demon_hunter_spell_t
   {
     eye_beam_tick_t( demon_hunter_t* p )
@@ -1916,8 +1944,11 @@ struct eye_beam_t : public demon_hunter_spell_t
     }
   };
 
+  sigil_of_the_illidari_t* sigil_of_the_illidari;
+
   eye_beam_t( demon_hunter_t* p, const std::string& options_str )
-    : demon_hunter_spell_t( "eye_beam", p, p->spec.eye_beam, options_str )
+    : demon_hunter_spell_t( "eye_beam", p, p->spec.eye_beam, options_str ),
+    sigil_of_the_illidari( nullptr )
   {
     may_miss = false;
     channeled = true;
@@ -1930,6 +1961,12 @@ struct eye_beam_t : public demon_hunter_spell_t
     ability_lag_stddev  = p->world_lag_stddev;
 
     tick_action = new eye_beam_tick_t( p );
+    
+    if ( p->legendary.sigil_of_the_illidari->ok() )
+    {
+      sigil_of_the_illidari = new sigil_of_the_illidari_t( p );
+      add_child( sigil_of_the_illidari );
+    }
   }
 
   void last_tick( dot_t* d ) override
@@ -1980,6 +2017,13 @@ struct eye_beam_t : public demon_hunter_spell_t
     {
       cooldown->reset( true );
       p()->proc.darkglare_medallion_resets->occur();
+    }
+
+    // Sigil of the Illidari Legendary
+    if ( sigil_of_the_illidari )
+    {
+      sigil_of_the_illidari->set_target( target );
+      sigil_of_the_illidari->execute();
     }
   }
 };
@@ -3318,7 +3362,7 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
 
       if ( p->legendary.chaos_theory->ok() )
       {
-        // Currently Chaos Theory only applies to Chaos Strike and not Annihilation
+        // TOCHECK: Currently Chaos Theory only applies to Chaos Strike and not Annihilation
         // This is likely a bug and will not be needed eventually...
         affected_by_chaos_theory = data().affected_by( p->buff.chaos_theory->data().effectN( 1 ) );
       }
