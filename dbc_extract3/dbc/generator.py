@@ -1497,6 +1497,7 @@ class SpellDataGenerator(DataGenerator):
           ( 83381, 5 ),  # BM Pet Kill Command
           ( 259277, 5 ), # SV Pet Kill Command
           ( 206685, 0 ), # BM Spitting Cobra Cobra Spit
+          ( 324156, 0 ), # Flayer's Mark (Covenenat)
         ),
 
         # Rogue:

@@ -1,5 +1,5 @@
 // Spell text, wow build 9.0.1.35282
-static const std::array<spelltext_data_t, 15089> __spelltext_data { {
+static const std::array<spelltext_data_t, 15090> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -14107,6 +14107,7 @@ static const std::array<spelltext_data_t, 15089> __spelltext_data { {
   { 324073, "$@spelldesc323737", "Bleeding for $w1 every $t1 sec.", "Necrolord" },
   { 324143, "Brandish the banner of the Necrolords for $d, increasing your movement speed by $s2% and causing $?c1[Mortal Strike]?c2[Raging Blow]?c3[Shield Slam][one of your abilities] to grant you $@spellname325787. Killing an enemy grants $325788s1 stacks of $@spellname325787.\r\n\r\nReactivating this ability plants the banner in the ground, granting $325862s1% maximum health and $325862s2% attack speed to you and $325784s1 allies within $s3 yds of the banner. Lasts $325787s1 sec per $@spellname325787, up to $325784d.", "Movement speed increased by $w2%. Able to plant the Conqueror's Banner in the ground.", "Necrolord" },
   { 324149, "Fire a shot at your enemy, causing them to bleed for $o1 Shadow damage over $d. Each time Flayed Shot deals damage, you have a $s2% chance to gain Flayer's Mark, causing your next Kill Shot to be usable on any target, regardless of their current health.", "Bleeding for $s1 Shadow damage every $t1 sec.", "Venthyr" },
+  { 324156, "$@spelldesc324149", "Kill Shot can be used on any target, regardless of their current health.", 0 },
   { 324183, "$@spelldesc324184", 0, 0 },
   { 324184, "Sends out a wave of force dealing $s1 Shadow damage.", 0, 0 },
   { 324200, "$@spelldesc309621", 0, 0 },
