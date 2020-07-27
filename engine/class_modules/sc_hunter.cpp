@@ -3778,6 +3778,7 @@ struct tar_trap_t : public hunter_spell_t
   {
     parse_options( options_str );
 
+    harmful = may_miss = false;
     cooldown -> duration = data().cooldown();
   }
 
@@ -3797,6 +3798,7 @@ struct freezing_trap_t : public hunter_spell_t
   {
     parse_options( options_str );
 
+    harmful = may_miss = false;
     cooldown -> duration = data().cooldown();
   }
 
@@ -3815,6 +3817,19 @@ struct counter_shot_t: public interrupt_base_t
     interrupt_base_t( "counter_shot", p, p -> find_class_spell( "Counter Shot" ) )
   {
     parse_options( options_str );
+  }
+};
+
+// Flare ====================================================================
+
+struct flare_t : hunter_spell_t
+{
+  flare_t( hunter_t* p, util::string_view options_str ):
+    hunter_spell_t( "flare", p, p -> find_class_spell( "Flare" ) )
+  {
+    parse_options( options_str );
+
+    harmful = may_hit = may_miss = false;
   }
 };
 
@@ -4274,7 +4289,7 @@ struct volley_t : hunter_spell_t
     // disable automatic generation of the dot from spell data
     dot_duration = 0_ms;
 
-    may_miss = false;
+    may_miss = may_hit = false;
     damage -> stats = stats;
   }
 
@@ -4875,6 +4890,7 @@ action_t* hunter_t::create_action( const std::string& name,
   if ( name == "double_tap"            ) return new             double_tap_t( this, options_str );
   if ( name == "explosive_shot"        ) return new         explosive_shot_t( this, options_str );
   if ( name == "flanking_strike"       ) return new        flanking_strike_t( this, options_str );
+  if ( name == "flare"                 ) return new                  flare_t( this, options_str );
   if ( name == "freezing_trap"         ) return new          freezing_trap_t( this, options_str );
   if ( name == "harpoon"               ) return new                harpoon_t( this, options_str );
   if ( name == "hunters_mark"          ) return new           hunters_mark_t( this, options_str );
@@ -5756,6 +5772,7 @@ void hunter_t::apl_mm()
   st -> add_talent( this, "Barrage", "if=active_enemies>1" );
   st -> add_talent( this, "A Murder of Crows" );
   st -> add_talent( this, "Volley" );
+  st -> add_talent( this, "Chimaera Shot" );
   st -> add_talent( this, "Serpent Sting", "if=refreshable&!action.serpent_sting.in_flight" );
   st -> add_action( this, "Rapid Fire", "if=buff.trueshot.down|focus<35|focus<60&!talent.lethal_shots.enabled|buff.in_the_rhythm.remains<execute_time");
   st -> add_action( "blood_of_the_enemy,if=buff.trueshot.up&(buff.unerring_vision.stack>4|!azerite.unerring_vision.enabled)|target.time_to_die<11" );
@@ -5769,8 +5786,10 @@ void hunter_t::apl_mm()
   st -> add_action( this, "Arcane Shot", "if=buff.trueshot.down&(buff.precise_shots.up&(focus>55)|focus>75|target.time_to_die<5)" );
   st -> add_action( this, "Steady Shot" );
 
+  trickshots -> add_talent( this, "Volley" );
   trickshots -> add_talent( this, "Barrage" );
   trickshots -> add_talent( this, "Explosive Shot" );
+  trickshots -> add_talent( this, "Chimaera Shot" );
   trickshots -> add_action( this, "Aimed Shot", "if=buff.trick_shots.up&ca_execute&buff.double_tap.up");
   trickshots -> add_action( this, "Rapid Fire", "if=buff.trick_shots.up&(azerite.focused_fire.enabled|azerite.in_the_rhythm.rank>1|azerite.surging_shots.enabled|talent.streamline.enabled)" );
   trickshots -> add_action( this, "Aimed Shot", "if=buff.trick_shots.up&(buff.precise_shots.down|cooldown.aimed_shot.full_recharge_time<action.aimed_shot.cast_time|buff.trueshot.up)" );
