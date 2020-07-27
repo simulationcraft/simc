@@ -1229,10 +1229,6 @@ public:
   {
     ab::parse_options( o );
 
-    // Class Passives
-    ab::apply_affecting_aura( p->spec.havoc );
-    ab::apply_affecting_aura( p->spec.vengeance );
-
     // Rank Passives
     ab::apply_affecting_aura( p->spec.disrupt_rank_3 );
     ab::apply_affecting_aura( p->spec.throw_glaive_rank_2 );
