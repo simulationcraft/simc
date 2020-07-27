@@ -3977,14 +3977,14 @@ struct throw_glaive_t : public demon_hunter_attack_t
     if ( hit_any_target && fel_bombardment )
     {
       const int bombardment_triggers = p()->buff.fel_bombardment->check();
-      const size_t available_targets = targets_in_range_list( target_list() ).size();
-      assert( available_targets > 0 );
+      const auto targets_in_range = targets_in_range_list( target_list() );
+      assert( targets_in_range.size() > 0 );
 
       // For each stack of the buff, iterate through the target list and pick a random "primary" target
       for ( int i = 0; i < bombardment_triggers; ++i )
       {
-        size_t index = rng().range( available_targets );
-        fel_bombardment->set_target( targets_in_range_list( target_list() )[ index ] );
+        const size_t index = rng().range( targets_in_range.size() );
+        fel_bombardment->set_target( targets_in_range[ index ] );
         fel_bombardment->execute();
       }
     }
