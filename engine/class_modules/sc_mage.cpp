@@ -397,22 +397,23 @@ public:
     buff_t* arcane_power;
     buff_t* clearcasting;
     buff_t* clearcasting_channel; // Hidden buff which governs tick and channel time
-    buff_t* enlightened_damage;
-    buff_t* enlightened_mana;
     buff_t* evocation;
     buff_t* presence_of_mind;
 
     buff_t* arcane_familiar;
     buff_t* chrono_shift;
+    buff_t* enlightened_damage;
+    buff_t* enlightened_mana;
     buff_t* rule_of_threes;
 
 
     // Fire
     buff_t* combustion;
-    buff_t* enhanced_pyrotechnics;
+    buff_t* fireball;
     buff_t* heating_up;
     buff_t* hot_streak;
 
+    buff_t* alexstraszas_fury;
     buff_t* frenetic_speed;
     buff_t* pyroclasm;
 
@@ -557,15 +558,19 @@ public:
     const spell_data_t* touch_of_the_magi;
 
     // Fire
+    const spell_data_t* combustion_2;
     const spell_data_t* critical_mass;
     const spell_data_t* critical_mass_2;
-    const spell_data_t* enhanced_pyrotechnics;
+    const spell_data_t* dragons_breath_2;
+    const spell_data_t* fireball_2;
     const spell_data_t* fire_blast_2;
     const spell_data_t* fire_blast_3;
     const spell_data_t* fire_blast_4;
     const spell_data_t* fire_mage;
+    const spell_data_t* flamestrike_2;
     const spell_data_t* hot_streak;
     const spell_data_t* ignite;
+    const spell_data_t* pyroblast_2;
 
     // Frost
     const spell_data_t* brain_freeze;
@@ -1103,6 +1108,7 @@ struct combustion_buff_t : public buff_t
     set_default_value( data().effectN( 1 ).percent() );
     set_tick_zero( true );
     set_refresh_behavior( buff_refresh_behavior::DURATION );
+    set_duration( buff_duration + p->spec.combustion_2->effectN( 1 ).time_value() );
 
     set_stack_change_callback( [ this ] ( buff_t*, int, int cur )
     {
@@ -2902,6 +2908,7 @@ struct dragons_breath_t : public fire_mage_spell_t
   {
     parse_options( options_str );
     aoe = -1;
+    cooldown->duration += p->spec.dragons_breath_2->effectN( 1 ).time_value();
 
     if ( p->talents.alexstraszas_fury->ok() )
       base_crit = 1.0;
@@ -2912,7 +2919,10 @@ struct dragons_breath_t : public fire_mage_spell_t
     fire_mage_spell_t::impact( s );
 
     if ( result_is_hit( s->result ) && p()->talents.alexstraszas_fury->ok() && s->chain_target == 0 )
+    {
       handle_hot_streak( s );
+      p()->buffs.alexstraszas_fury->trigger();
+    }
 
     p()->trigger_crowd_control( s, MECHANIC_DISORIENT );
   }
@@ -3039,9 +3049,9 @@ struct fireball_t : public fire_mage_spell_t
     if ( result_is_hit( s->result ) )
     {
       if ( s->result == RESULT_CRIT )
-        p()->buffs.enhanced_pyrotechnics->expire();
+        p()->buffs.fireball->expire();
       else
-        p()->buffs.enhanced_pyrotechnics->trigger();
+        p()->buffs.fireball->trigger();
     }
   }
 
@@ -3059,7 +3069,7 @@ struct fireball_t : public fire_mage_spell_t
   {
     double c = fire_mage_spell_t::composite_crit_chance();
 
-    c += p()->buffs.enhanced_pyrotechnics->check_stack_value();
+    c += p()->buffs.fireball->check_stack_value();
 
     return c;
   }
@@ -3096,6 +3106,7 @@ struct flamestrike_t : public hot_streak_spell_t
     parse_options( options_str );
     triggers_ignite = true;
     aoe = -1;
+    base_dd_multiplier *= 1.0 + p->spec.flamestrike_2->effectN( 1 ).percent();
 
     if ( p->talents.flame_patch->ok() )
     {
@@ -3103,6 +3114,15 @@ struct flamestrike_t : public hot_streak_spell_t
       flame_patch_duration = p->find_spell( 205470 )->duration();
       add_child( flame_patch );
     }
+  }
+
+  double action_multiplier() const override
+  {
+    double am = hot_streak_spell_t::action_multiplier();
+
+    am *= 1.0 + p()->buffs.alexstraszas_fury->check_value();
+
+    return am;
   }
 
   void execute() override
@@ -3119,6 +3139,14 @@ struct flamestrike_t : public hot_streak_spell_t
         .action( flame_patch )
         .hasted( ground_aoe_params_t::SPELL_SPEED ) );
     }
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    hot_streak_spell_t::impact( s );
+
+    // the buff expiration is slightly delayed, allowing two spells cast at the same time to benefit from this effect.
+    p()->buffs.alexstraszas_fury->expire( p()->bugs ? 30_ms : 0_ms );
   }
 };
 
@@ -3920,6 +3948,18 @@ struct living_bomb_explosion_t : public fire_mage_spell_t
     aoe = -1;
     background = true;
   }
+
+  double composite_aoe_multiplier( const action_state_t* s ) const override
+  {
+    double m = fire_mage_spell_t::composite_aoe_multiplier( s );
+
+    // TODO: Verify how the primary target is determined when
+    // there are multiple primary Living Bombs active at once
+    if ( s->target != p()->last_bomb_target )
+      m /= std::sqrt( s->n_targets );
+
+    return m;
+  }
 };
 
 struct living_bomb_t : public fire_mage_spell_t
@@ -3938,6 +3978,14 @@ struct living_bomb_t : public fire_mage_spell_t
       add_child( p->action.living_bomb_dot_spread );
       add_child( p->action.living_bomb_explosion );
     }
+  }
+
+  void execute() override
+  {
+    fire_mage_spell_t::execute();
+
+    if ( hit_any_target )
+      p()->last_bomb_target = target;
   }
 };
 
@@ -4194,13 +4242,24 @@ struct trailing_embers_t : public fire_mage_spell_t
   }
 };
 
+struct pyroblast_dot_t : public fire_mage_spell_t
+{
+  pyroblast_dot_t( const std::string& n, mage_t* p ) :
+    fire_mage_spell_t( n, p, p->find_spell( 321712 ) )
+  {
+    background = hasted_ticks = true;
+  }
+};
+
 struct pyroblast_t : public hot_streak_spell_t
 {
   action_t* trailing_embers;
+  action_t* pyroblast_dot;
 
   pyroblast_t( const std::string& n, mage_t* p, const std::string& options_str ) :
     hot_streak_spell_t( n, p, p->find_specialization_spell( "Pyroblast" ) ),
-    trailing_embers()
+    trailing_embers(),
+    pyroblast_dot()
   {
     parse_options( options_str );
     triggers_hot_streak = triggers_ignite = triggers_kindling = true;
@@ -4211,6 +4270,12 @@ struct pyroblast_t : public hot_streak_spell_t
       trailing_embers = get_action<trailing_embers_t>( "trailing_embers", p );
       add_child( trailing_embers );
     }
+
+    if ( p->spec.pyroblast_2->ok() )
+    {
+      pyroblast_dot = get_action<pyroblast_dot_t>( "pyroblast_dot", p );
+      add_child( pyroblast_dot );
+    }
   }
 
   double action_multiplier() const override
@@ -4219,6 +4284,8 @@ struct pyroblast_t : public hot_streak_spell_t
 
     if ( !last_hot_streak )
       am *= 1.0 + p()->buffs.pyroclasm->check_value();
+
+    am *= 1.0 + p()->buffs.alexstraszas_fury->check_value();
 
     return am;
   }
@@ -4229,6 +4296,12 @@ struct pyroblast_t : public hot_streak_spell_t
 
     if ( !last_hot_streak )
       p()->buffs.pyroclasm->decrement();
+
+    if ( pyroblast_dot )
+    {
+      pyroblast_dot->set_target( target );
+      pyroblast_dot->execute();
+    }
   }
 
   timespan_t travel_time() const override
@@ -4240,6 +4313,9 @@ struct pyroblast_t : public hot_streak_spell_t
   void impact( action_state_t* s ) override
   {
     hot_streak_spell_t::impact( s );
+
+    // the buff expiration is slightly delayed, allowing two spells cast at the same time to benefit from this effect.
+    p()->buffs.alexstraszas_fury->expire( p()->bugs ? 30_ms : 0_ms );
 
     if ( trailing_embers )
     {
@@ -5390,14 +5466,18 @@ void mage_t::init_spells()
   spec.presence_of_mind_2    = find_specialization_spell( "Presence of Mind", "Rank 2" );
   spec.touch_of_the_magi     = find_specialization_spell( "Touch of the Magi" );
 
+  spec.combustion_2          = find_specialization_spell( "Combustion", "Rank 2" );
   spec.critical_mass         = find_specialization_spell( "Critical Mass" );
   spec.critical_mass_2       = find_specialization_spell( 231630 );
-  spec.enhanced_pyrotechnics = find_specialization_spell( 157642 );
+  spec.dragons_breath_2      = find_specialization_spell( "Dragon's Breath", "Rank 2" );
+  spec.fireball_2            = find_specialization_spell( "Fireball", "Rank 2" );
   spec.fire_blast_2          = find_specialization_spell( 231568 );
   spec.fire_blast_3          = find_specialization_spell( 108853 );
   spec.fire_blast_4          = find_specialization_spell( 231567 );
   spec.fire_mage             = find_specialization_spell( 137019 );
+  spec.flamestrike_2         = find_specialization_spell( "Flamestrike", "Rank 2" );
   spec.hot_streak            = find_specialization_spell( 195283 );
+  spec.pyroblast_2           = find_specialization_spell( "Pyroblast", "Rank 2" );
 
   spec.brain_freeze          = find_specialization_spell( "Brain Freeze" );
   spec.brain_freeze_2        = find_specialization_spell( 231584 );
@@ -5482,12 +5562,6 @@ void mage_t::create_buffs()
                                  ->set_max_stack( find_spell( 263725 )->max_stacks() + as<int>( spec.clearcasting_3->effectN( 1 ).base_value() ) );
   buffs.clearcasting_channel = make_buff( this, "clearcasting_channel", find_spell( 277726 ) )
                                  ->set_quiet( true );
-  buffs.enlightened_damage   = make_buff( this, "enlightened_damage", find_spell( 321388 ) )
-                                 ->set_default_value( find_spell( 321388 )->effectN( 1 ).percent() )
-                                 ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-  buffs.enlightened_mana     = make_buff( this, "enlightened_mana", find_spell( 321390 ) )
-                                 ->set_default_value( find_spell( 321390 )->effectN( 1 ).percent() )
-                                 ->set_affects_regen( true );
   buffs.evocation            = make_buff( this, "evocation", find_spell( 12051 ) )
                                  ->set_default_value( find_spell( 12051 )->effectN( 1 ).percent() )
                                  ->set_cooldown( 0_ms )
@@ -5497,6 +5571,7 @@ void mage_t::create_buffs()
                                  ->set_stack_change_callback( [ this ] ( buff_t*, int, int cur )
                                    { if ( cur == 0 ) cooldowns.presence_of_mind->start( cooldowns.presence_of_mind->action ); } )
                                  ->set_max_stack( find_spell( 205025 )->initial_stacks() + as<int>( spec.presence_of_mind_2->effectN( 1 ).base_value() ) );
+
   buffs.arcane_familiar      = make_buff( this, "arcane_familiar", find_spell( 210126 ) )
                                  ->set_default_value( find_spell( 210126 )->effectN( 1 ).percent() )
                                  ->set_period( 3.0_s )
@@ -5512,6 +5587,12 @@ void mage_t::create_buffs()
                                  ->set_default_value( find_spell( 236298 )->effectN( 1 ).percent() )
                                  ->add_invalidate( CACHE_RUN_SPEED )
                                  ->set_chance( talents.chrono_shift->ok() );
+  buffs.enlightened_damage   = make_buff( this, "enlightened_damage", find_spell( 321388 ) )
+                                 ->set_default_value( find_spell( 321388 )->effectN( 1 ).percent() )
+                                 ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  buffs.enlightened_mana     = make_buff( this, "enlightened_mana", find_spell( 321390 ) )
+                                 ->set_default_value( find_spell( 321390 )->effectN( 1 ).percent() )
+                                 ->set_affects_regen( true );
   buffs.rule_of_threes       = make_buff( this, "rule_of_threes", find_spell( 264774 ) )
                                  ->set_default_value( find_spell( 264774 )->effectN( 1 ).percent() )
                                  ->set_chance( talents.rule_of_threes->ok() );
@@ -5519,8 +5600,8 @@ void mage_t::create_buffs()
 
   // Fire
   buffs.combustion            = make_buff<buffs::combustion_buff_t>( this );
-  buffs.enhanced_pyrotechnics = make_buff( this, "enhanced_pyrotechnics", find_spell( 157644 ) )
-                                  ->set_chance( spec.enhanced_pyrotechnics->ok() )
+  buffs.fireball              = make_buff( this, "fireball", find_spell( 157644 ) )
+                                  ->set_chance( spec.fireball_2->ok() )
                                   ->set_default_value( find_spell( 157644 )->effectN( 1 ).percent() )
                                   ->set_stack_change_callback( [ this ] ( buff_t*, int old, int cur )
                                     {
@@ -5532,6 +5613,8 @@ void mage_t::create_buffs()
   buffs.heating_up            = make_buff( this, "heating_up", find_spell( 48107 ) );
   buffs.hot_streak            = make_buff( this, "hot_streak", find_spell( 48108 ) );
 
+  buffs.alexstraszas_fury     = make_buff( this, "alexstraszas_fury", find_spell( 334277 ) )
+                                  ->set_default_value( find_spell( 334277 )->effectN( 1 ).percent() );
   buffs.frenetic_speed        = make_buff( this, "frenetic_speed", find_spell( 236060 ) )
                                   ->set_default_value( find_spell( 236060 )->effectN( 1 ).percent() )
                                   ->add_invalidate( CACHE_RUN_SPEED )
