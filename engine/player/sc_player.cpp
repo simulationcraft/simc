@@ -9562,41 +9562,47 @@ const spell_data_t* player_t::find_class_spell( util::string_view name, speciali
 }
 
 const spell_data_t* player_t::find_rank_spell( util::string_view name,
-                                               util::string_view rank ) const
+                                               util::string_view rank,
+                                               specialization_e spec ) const
 {
-  const auto& entry = rank_class_spell_t::find( name, rank, util::class_id( type ),
-      static_cast<unsigned>( _spec ), dbc->ptr );
-  if ( entry.spell_id == 0 )
+  if ( spec == SPEC_NONE || spec == _spec )
   {
-    return spell_data_t::not_found();
-  }
-
-  if ( entry.class_id != as<unsigned>( util::class_id( type ) ) )
-  {
-    return spell_data_t::not_found();
-  }
-
-  if ( entry.spec_id > 0 && entry.spec_id != static_cast<unsigned>( _spec ) )
-  {
-    return spell_data_t::not_found();
-  }
-
-  if ( entry.override_spell_id )
-  {
-    const auto replace_spell = dbc::find_spell( this, entry.override_spell_id );
-    if ( replace_spell->ok() && as<int>( replace_spell->level() ) <= true_level )
+    const auto& entry = rank_class_spell_t::find( name, rank, util::class_id( type ),
+        static_cast<unsigned>( _spec ), dbc->ptr );
+    if ( entry.spell_id == 0 )
     {
       return spell_data_t::not_found();
     }
+
+    if ( entry.class_id != as<unsigned>( util::class_id( type ) ) )
+    {
+      return spell_data_t::not_found();
+    }
+
+    if ( entry.spec_id > 0 && entry.spec_id != static_cast<unsigned>( _spec ) )
+    {
+      return spell_data_t::not_found();
+    }
+
+    if ( entry.override_spell_id )
+    {
+      const auto replace_spell = dbc::find_spell( this, entry.override_spell_id );
+      if ( replace_spell->ok() && as<int>( replace_spell->level() ) <= true_level )
+      {
+        return spell_data_t::not_found();
+      }
+    }
+
+    const spell_data_t* spell = dbc::find_spell( this, entry.spell_id );
+    if ( !spell->ok() && as<int>( spell->level() ) > true_level )
+    {
+      return spell_data_t::not_found();
+    }
+
+    return spell;
   }
 
-  const spell_data_t* spell = dbc::find_spell( this, entry.spell_id );
-  if ( !spell->ok() && as<int>( spell->level() ) > true_level )
-  {
-    return spell_data_t::not_found();
-  }
-
-  return spell;
+  return spell_data_t::not_found();
 }
 
 const spell_data_t* player_t::find_pet_spell( util::string_view name ) const

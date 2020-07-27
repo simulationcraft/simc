@@ -89,10 +89,10 @@ public:
 
     spell_power_mod.direct *= 1.0 + player.talents.fortress_of_the_mind->effectN( 4 ).percent();
 
-    auto rank2_shadow = player.find_specialization_spell( 319899, PRIEST_SHADOW );
+    auto rank2_shadow = player.find_rank_spell( "Mind Blast", "Rank 2", PRIEST_SHADOW );
     if ( rank2_shadow->ok() )
     {
-      cooldown->duration = data().cooldown() + rank2_shadow->effectN( 1 ).time_value();
+      cooldown->duration += rank2_shadow->effectN( 1 ).time_value();
     }
 
     // Rank 2 Discipline not implemented
@@ -874,8 +874,8 @@ struct void_bolt_t final : public priest_spell_t
   {
     timespan_t dot_extension;
 
-    void_bolt_extension_t( priest_t& player )
-      : priest_spell_t( "void_bolt_extension", player, player.find_specialization_spell( 231688 ) )
+    void_bolt_extension_t( priest_t& player, const spell_data_t* rank2_spell )
+      : priest_spell_t( "void_bolt_extension", player, rank2_spell )
     {
       dot_extension = data().effectN( 1 ).time_value();
       aoe           = -1;
@@ -922,10 +922,10 @@ struct void_bolt_t final : public priest_spell_t
     energize_type    = ENERGIZE_NONE;  // disable resource generation from spell data.
     cooldown->hasted = true;
 
-    auto rank2 = player.find_specialization_spell( 231688 );
+    auto rank2 = player.find_rank_spell( "Void Bolt", "Rank 2" );
     if ( rank2->ok() )
     {
-      void_bolt_extension = new void_bolt_extension_t( player );
+      void_bolt_extension = new void_bolt_extension_t( player, rank2 );
     }
   }
 
