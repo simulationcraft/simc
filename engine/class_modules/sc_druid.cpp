@@ -28,9 +28,6 @@ struct shooting_stars_t;
 namespace heals {
 struct cenarion_ward_hot_t;
 }
-namespace cat_attacks {
-struct gushing_wound_t;
-}
 namespace bear_attacks {
 struct bear_attack_t;
 }
@@ -87,7 +84,6 @@ struct druid_td_t : public actor_target_data_t
   struct dots_t
   {
     dot_t* fury_of_elune;
-    dot_t* gushing_wound;
     dot_t* lifebloom;
     dot_t* moonfire;
     dot_t* rake;
@@ -287,7 +283,6 @@ public:
   struct active_actions_t
   {
     stalwart_guardian_t* stalwart_guardian;
-    action_t* gushing_wound;
     heals::cenarion_ward_hot_t* cenarion_ward_hot;
     action_t* brambles;
     action_t* brambles_pulse;
@@ -408,7 +403,6 @@ public:
     buff_t* savage_roar;
     buff_t* scent_of_blood;
     buff_t* tigers_fury;
-    buff_t* feral_tier17_4pc;
     buff_t* fury_of_ashamane;
     buff_t* jungle_stalker;
 
@@ -425,7 +419,6 @@ public:
     buff_t* oakhearts_puny_quods; // Legion Legendary
     buff_t* pulverize;
     buff_t* survival_instincts;
-    buff_t* guardian_tier17_4pc;
     buff_t* guardian_tier19_4pc;
     buff_t* guardians_wrath;
     buff_t* masterful_instincts;
@@ -504,8 +497,6 @@ public:
     gain_t* shred;
     gain_t* swipe_cat;
     gain_t* tigers_fury;
-    gain_t* feral_tier17_2pc;
-    gain_t* feral_tier18_4pc;
     gain_t* feral_tier19_2pc;
     gain_t* gushing_lacerations;
 
@@ -518,8 +509,6 @@ public:
     gain_t* gore;
     gain_t* stalwart_guardian;
     gain_t* rage_refund;
-    gain_t* guardian_tier17_2pc;
-    gain_t* guardian_tier18_2pc;
     gain_t* oakhearts_puny_quods;
     gain_t* rage_from_melees;
   } gain;
@@ -552,7 +541,6 @@ public:
     proc_t* predator;
     proc_t* predator_wasted;
     proc_t* primal_fury;
-    proc_t* tier17_2pc_melee;
     proc_t* blood_mist;
     proc_t* gushing_lacerations;
 
@@ -585,7 +573,6 @@ public:
     const spell_data_t* cat_form; // Cat form hidden effects
     const spell_data_t* cat_form_speed;
     const spell_data_t* feline_swiftness; // Feral Affinity
-    const spell_data_t* gushing_wound; // tier17_4pc
     const spell_data_t* bloody_gash; //tier21_2pc
     const spell_data_t* predatory_swiftness;
     const spell_data_t* primal_fury;
@@ -1661,18 +1648,12 @@ public:
   {
     ab::impact( s );
 
-    if ( p() -> buff.feral_tier17_4pc -> check() )
-      trigger_gushing_wound( s -> target, s -> result_amount );
-
     trigger_galactic_guardian( s );
   }
 
   void tick( dot_t* d ) override
   {
     ab::tick( d );
-
-    if ( p() -> buff.feral_tier17_4pc -> check() )
-      trigger_gushing_wound( d -> target, d -> state -> result_amount );
 
     trigger_galactic_guardian( d -> state );
   }
@@ -1767,17 +1748,6 @@ public:
   {
     ab::consume_resource();
     trigger_lucid_dreams();
-  }
-
-  void trigger_gushing_wound( player_t* t, double dmg )
-  {
-    if ( ! ( ab::special && ab::harmful && dmg > 0 ) )
-      return;
-
-    residual_action::trigger(
-      p() -> active.gushing_wound, // ignite spell
-      t, // target
-      p() -> spec.gushing_wound -> effectN( 1 ).percent() * dmg );
   }
 
   bool trigger_gore()
@@ -2943,7 +2913,6 @@ public:
   bool    requires_stealth;
   bool    consumes_combo_points;
   bool    consumes_clearcasting;
-  bool    trigger_tier17_2pc;
   bool    snapshots_tf;
   bool    trigger_untamed_ferocity;
 
@@ -2967,7 +2936,6 @@ public:
       requires_stealth( false ),
       consumes_combo_points( false ),
       consumes_clearcasting( data().affected_by( p->spec.omen_of_clarity->effectN( 1 ).trigger()->effectN( 1 ) ) ),
-      trigger_tier17_2pc( false ),
       snapshots_tf( true ),
       trigger_untamed_ferocity( data().affected_by( p->azerite.untamed_ferocity.spell()->effectN( 2 ) ) ),
       moment_of_clarity( data().affected_by( p->spec.omen_of_clarity->effectN( 1 ).trigger()->effectN( 3 ) ) ),
@@ -3102,14 +3070,6 @@ public:
       eff_cost *= 1.0 + p() -> buff.incarnation_cat -> check_value();
 
       p() -> gain.clearcasting -> add( RESOURCE_ENERGY, eff_cost );
-
-      // Feral tier18 4pc occurs before the base cost is consumed.
-      if ( p() -> sets -> has_set_bonus( DRUID_FERAL, T18, B4 ) )
-      {
-        p() -> resource_gain( RESOURCE_ENERGY,
-          base_t::cost() * p() -> sets -> set( DRUID_FERAL, T18, B4 ) -> effectN( 1 ).percent(),
-          p() -> gain.feral_tier18_4pc );
-      }
     }
 
     base_t::consume_resource();
@@ -3248,13 +3208,6 @@ public:
 
     trigger_predator();
     trigger_wildshapers_clutch( d -> state );
-
-    if ( trigger_tier17_2pc )
-    {
-      p() -> resource_gain( RESOURCE_ENERGY,
-        p() -> sets -> set( DRUID_FERAL, T17, B2 ) -> effectN( 1 ).base_value(),
-        p() -> gain.feral_tier17_2pc );
-    }
   }
 
   void execute() override
@@ -3454,9 +3407,6 @@ struct berserk_t : public cat_attack_t
     cat_attack_t::execute();
 
     p() -> buff.berserk -> trigger();
-
-    if ( p() -> sets -> has_set_bonus( DRUID_FERAL, T17, B4 ) )
-      p() -> buff.feral_tier17_4pc -> trigger();
   }
 
   bool ready() override
@@ -3756,19 +3706,6 @@ struct ferocious_bite_t : public cat_attack_t
   }
 };
 
-// Gushing Wound (tier17_feral_4pc) =========================================
-
-struct gushing_wound_t : public residual_action::residual_periodic_action_t<cat_attack_t>
-{
-  gushing_wound_t( druid_t* p ) :
-    residual_action::residual_periodic_action_t<cat_attack_t>( "gushing_wound", p, p -> find_spell( 166638 ) )
-  {
-    background = dual = proc = true;
-    may_miss = may_dodge = may_parry = false;
-    trigger_tier17_2pc = p -> sets -> has_set_bonus( DRUID_FERAL, T17, B2 );
-  }
-};
-
 // Lunar Inspiration ========================================================
 
 struct lunar_inspiration_t : public cat_attack_t
@@ -3948,9 +3885,6 @@ struct rake_t : public cat_attack_t
 
       base_tick_time *= 1.0 + p -> talent.jagged_wounds -> effectN( 1 ).percent();
       dot_duration   *= 1.0 + p -> talent.jagged_wounds -> effectN( 2 ).percent();
-
-      // Direct damage modifiers go in rake_t!
-      trigger_tier17_2pc = p -> sets -> has_set_bonus( DRUID_FERAL, T17, B2 );
     }
 
     dot_t* get_dot( player_t* t ) override
@@ -4000,9 +3934,6 @@ struct rake_t : public cat_attack_t
       bleed = new rake_bleed_t( p );
       bleed -> stats = stats;
     }
-
-    // Periodic damage modifiers go in rake_bleed_t!
-    trigger_tier17_2pc = p -> sets -> has_set_bonus( DRUID_FERAL, T17, B2 );
  }
 
   dot_t* get_dot(player_t* t) override
@@ -4095,8 +4026,6 @@ struct rip_t : public cat_attack_t
     may_crit     = false;
 
     hasted_ticks = true;
-
-    trigger_tier17_2pc = p -> sets -> has_set_bonus( DRUID_FERAL, T17, B2 );
 
     if ( p-> sets -> has_set_bonus( DRUID_FERAL, T20, B4) )
     {
@@ -4533,8 +4462,6 @@ struct thrash_cat_t : public cat_attack_t
     spell_power_mod.direct = 0;
     //amount_delta = 0.25;
     hasted_ticks = true;
-
-    trigger_tier17_2pc = p -> sets -> has_set_bonus( DRUID_FERAL, T17, B2 );
 
     // For some reason this is in a different spell
     energize_amount = p -> find_spell( 211141 ) -> effectN(1).base_value();
@@ -7559,7 +7486,6 @@ void druid_t::init_spells()
   spec.feral                      = find_specialization_spell( "Feral Druid" );
   spec.feral_overrides            = specialization() == DRUID_FERAL ? find_spell( 197692 ) : spell_data_t::not_found();
   spec.feral_overrides2           = specialization() == DRUID_FERAL ? find_spell( 106733 ) : spell_data_t::not_found();
-  spec.gushing_wound              = sets -> has_set_bonus( DRUID_FERAL, T17, B4 ) ? find_spell( 165432 ) : spell_data_t::not_found();
   spec.bloody_gash                = sets -> has_set_bonus( DRUID_FERAL, T21, B2 ) ? find_spell( 252750 ) : spell_data_t::not_found();
   spec.predatory_swiftness        = find_specialization_spell( "Predatory Swiftness" );
   spec.primal_fury                = find_spell( 16953 );
@@ -7788,9 +7714,6 @@ void druid_t::init_spells()
 
   if ( spec.yseras_gift )
     active.yseras_gift = new heals::yseras_gift_t( this );
-
-  if ( sets->has_set_bonus( DRUID_FERAL, T17, B4 ) )
-    active.gushing_wound = new cat_attacks::gushing_wound_t( this );
 
   if ( talent.brambles->ok() )
   {
@@ -8146,13 +8069,6 @@ void druid_t::create_buffs()
   }
 
   // Set Bonuses
-
-  buff.feral_tier17_4pc      = make_buff( this, "feral_tier17_4pc", find_spell( 166639 ) )
-    ->set_quiet( true );
-
-  buff.guardian_tier17_4pc   = make_buff( this, "guardian_tier17_4pc", find_spell( 177969 ) )
-    ->set_default_value( find_spell( 177969 ) -> effectN( 1 ).percent() );
-
   buff.guardian_tier19_4pc   = make_buff( this, "natural_defenses",
                                  sets -> set( DRUID_GUARDIAN, T19, B4 ) -> effectN( 1 ).trigger() )
     ->set_trigger_spell( sets -> set( DRUID_GUARDIAN, T19, B4 ) )
@@ -8162,118 +8078,54 @@ void druid_t::create_buffs()
 // ALL Spec Pre-Combat Action Priority List =================================
 std::string druid_t::default_flask() const
 {
-  std::string balance_flask =  (true_level > 110) ? "greater_flask_of_endless_fathoms" :
-                               (true_level > 100) ? "whispered_pact" :
-                               (true_level >= 90) ? "greater_draenic_intellect_flask" :
-                               (true_level >= 85) ? "warm_sun" :
-                               (true_level >= 80) ? "draconic_mind" :
-                               "disabled";
-
-  std::string feral_flask =    (true_level > 110) ? "greater_flask_of_the_currents" :
-                               (true_level > 100) ? "seventh_demon" :
-                               (true_level >= 90) ? "greater_draenic_agility_flask" :
-                               (true_level >= 85) ? "spring_blossoms" :
-                               (true_level >= 80) ? "winds" :
-                               "disabled";
-
-  std::string resto_flask = ( true_level > 100 ) ? "greater_flask_of_endless_fathoms" : "disabled";
-
-  std::string guardian_flask = (true_level > 110) ? "greater_flask_of_the_currents" :
-                               (true_level > 100) ? "seventh_demon" :
-                               (true_level >= 90) ? "greater_draenic_agility_flask" :
-                               (true_level >= 85) ? "spring_blossoms" :
-                               (true_level >= 80) ? "winds" :
-                               "disabled";
-
   switch ( specialization() )
   {
-  case DRUID_FERAL:
-    return feral_flask;
-  case DRUID_BALANCE:
-    return balance_flask;
-  case DRUID_RESTORATION:
-    return resto_flask;
-  case DRUID_GUARDIAN:
-    return guardian_flask;
-  default:
-    return "disabled";
+    case DRUID_FERAL:
+    case DRUID_BALANCE:
+    case DRUID_RESTORATION:
+    case DRUID_GUARDIAN:
+    default:
+      return "disabled";
   }
 }
 std::string druid_t::default_potion() const
 {
-  std::string balance_pot =  (true_level > 110) ? "unbridled_fury" :
-                             (true_level > 100) ? "deadly_grace" :
-                             (true_level >= 90) ? "draenic_intellect" :
-                             (true_level >= 85) ? "jade_serpent" :
-                             (true_level >= 80) ? "volcanic" :
-                             "disabled";
-
-  std::string feral_pot =    (true_level > 110) ? "focused_resolve" :
-                             (true_level > 100) ? "potion_of_prolonged_power" :
-                             (true_level >= 90) ? "draenic_agility" :
-                             (true_level >= 85) ? "virmens_bite" :
-                             (true_level >= 80) ? "tolvir" :
-                             "disabled";
-
-  std::string resto_pot = ( true_level > 110 ) ? "unbridled_fury" : "disabled";
-
-  std::string guardian_pot = (true_level > 110) ? "focused_resolve" :
-                             (true_level > 100) ? "old_war" :
-                             (true_level >= 90) ? "draenic_agility" :
-                             (true_level >= 85) ? "virmens_bite" :
-                             (true_level >= 80) ? "tolvir" :
-                             "disabled";
-
-
-  switch (specialization())
+  switch ( specialization() )
   {
-  case DRUID_FERAL:
-    return feral_pot;
-  case DRUID_BALANCE:
-    return balance_pot;
-  case DRUID_RESTORATION:
-    return resto_pot;
-  case DRUID_GUARDIAN:
-    return guardian_pot;
-  default:
-    return "disabled";
+    case DRUID_FERAL:
+    case DRUID_BALANCE:
+    case DRUID_RESTORATION:
+    case DRUID_GUARDIAN:
+    default:
+      return "disabled";
   }
 }
 
 std::string druid_t::default_food() const
 {
-  if (true_level >= 110)
+  switch ( specialization() )
   {
-    switch (specialization())
-    {
-      case DRUID_BALANCE:
-        return "mechdowels_big_mech";
-      case DRUID_FERAL:
-        return "mechdowels_big_mech";
-      case DRUID_RESTORATION:
-        return "mechdowels_big_mech";
-      case DRUID_GUARDIAN:
-      default:
-        return "famine_evaluator_and_snack_table";
-    }
+    case DRUID_FERAL:
+    case DRUID_BALANCE:
+    case DRUID_RESTORATION:
+    case DRUID_GUARDIAN:
+    default:
+      return "disabled";
   }
-
-  return (true_level > 100 && specialization() == DRUID_FERAL) ? "lemon_herb_filet" :
-         (true_level > 100) ? "lavish_suramar_feast" :
-         (true_level >  90) ?  "pickled_eel" :
-         (true_level >= 90) ?  "sea_mist_rice_noodles" :
-         (true_level >= 80) ?  "seafood_magnifique_feast" :
-         "disabled";
 }
 
 std::string druid_t::default_rune() const
 {
-  return (true_level >= 120) ? "battle_scarred" :
-         (true_level >= 110) ? "defiled" :
-         (true_level >= 100) ? "hyper" :
-         "disabled";
+  switch ( specialization() )
+  {
+    case DRUID_FERAL:
+    case DRUID_BALANCE:
+    case DRUID_RESTORATION:
+    case DRUID_GUARDIAN:
+    default:
+      return "disabled";
+  }
 }
-
 
 void druid_t::apl_precombat()
 {
@@ -8308,22 +8160,12 @@ void druid_t::apl_precombat()
 
   if ( specialization() == DRUID_BALANCE )
   {
-    // Azerite variables
-    precombat->add_action( "variable,name=az_ss,value=azerite.streaking_stars.rank", "Azerite variables" );
-    precombat->add_action( "variable,name=az_ap,value=azerite.arcanic_pulsar.rank" );
-    // Starfall v Starsurge target cutoff
-    precombat->add_action( "variable,name=sf_targets,value=4", "Starfall v Starsurge target cutoff" );
-    precombat->add_action( "variable,name=sf_targets,op=add,value=1,if=azerite.arcanic_pulsar.enabled" );
-    precombat->add_action( "variable,name=sf_targets,op=add,value=1,if=talent.starlord.enabled" );
-    precombat->add_action( "variable,name=sf_targets,op=add,value=1,if=azerite.streaking_stars.rank>2&azerite.arcanic_pulsar.enabled" );
-    precombat->add_action( "variable,name=sf_targets,op=sub,value=1,if=!talent.twin_moons.enabled" );
     // Precombat opener
     precombat->add_action( this, "Moonkin Form", "", "Precombat opener" );
-    precombat->add_action( "use_item,name=azsharas_font_of_power" );
     precombat->add_action( "potion,dynamic_prepot=1" );
     precombat->add_action( this, "Wrath" );
     precombat->add_action( this, "Wrath" );
-    precombat->add_action (this, "Wrath");
+    precombat->add_action( this, "Wrath" );
   }
 
   if ( specialization() == DRUID_GUARDIAN )
@@ -8920,8 +8762,6 @@ void druid_t::init_gains()
     gain.shred            = get_gain( "shred" );
     gain.swipe_cat        = get_gain( "swipe_cat" );
     gain.tigers_fury      = get_gain( "tigers_fury" );
-    gain.feral_tier17_2pc = get_gain( "feral_tier17_2pc" );  // Set bonuses
-    gain.feral_tier18_4pc = get_gain( "feral_tier18_4pc" );
     gain.feral_tier19_2pc = get_gain( "feral_tier19_2pc" );
   }
 
@@ -8936,8 +8776,6 @@ void druid_t::init_gains()
     gain.rage_refund          = get_gain( "rage_refund" );
     gain.stalwart_guardian    = get_gain( "stalwart_guardian" );
     gain.rage_from_melees     = get_gain( "rage_from_melees" );
-    gain.guardian_tier17_2pc  = get_gain( "guardian_tier17_2pc" );  // Set bonuses
-    gain.guardian_tier18_2pc  = get_gain( "guardian_tier18_2pc" );
     gain.oakhearts_puny_quods = get_gain( "oakhearts_puny_quods" );  // Legendaries
   }
 
@@ -8972,7 +8810,6 @@ void druid_t::init_procs()
   proc.predator                 = get_proc( "predator" );
   proc.predator_wasted          = get_proc( "predator_wasted" );
   proc.primal_fury              = get_proc( "primal_fury" );
-  proc.tier17_2pc_melee         = get_proc( "tier17_2pc_melee" );
   proc.blood_mist               = get_proc( "blood_mist" );
   proc.gushing_lacerations      = get_proc( "gushing_lacerations" );
 
@@ -10076,7 +9913,6 @@ void druid_t::assess_heal( school_e school,
 
     // Trigger a gain so we can track how much the set bonus helped.
     // The gain is 100% overflow so it doesn't distort charts.
-    gain.guardian_tier18_2pc -> add( RESOURCE_HEALTH, 0, s -> result_total * pct );
 
     s -> result_total *= 1.0 + pct;
   }
@@ -10366,7 +10202,6 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
     debuff( debuffs_t() )
 {
   dots.fury_of_elune    = target.get_dot( "fury_of_elune",    &source );
-  dots.gushing_wound    = target.get_dot( "gushing_wound",    &source );
   dots.lifebloom        = target.get_dot( "lifebloom",        &source );
   dots.moonfire         = target.get_dot( "moonfire",         &source );
   dots.stellar_flare    = target.get_dot( "stellar_flare",    &source );
