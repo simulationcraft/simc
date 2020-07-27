@@ -1,7 +1,7 @@
 hunter="T25_Hunter_Survival"
 source=default
 spec=survival
-level=120
+level=50
 race=gnome
 role=attack
 position=back
@@ -9,10 +9,10 @@ talents=1101021
 azerite_essences=27:3/4:3/5:3/35:3
 
 # Default consumables
-potion=unbridled_fury
-flask=greater_flask_of_the_currents
-food=baked_port_tato
-augmentation=battle_scarred
+potion=disabled
+flask=disabled
+food=disabled
+augmentation=disabled
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -51,8 +51,8 @@ actions+=/concentrated_flame
 actions+=/arcane_torrent
 actions+=/bag_of_tricks
 
-actions.apst=mongoose_bite,if=buff.coordinated_assault.up&(buff.coordinated_assault.remains<1.5*gcd|buff.blur_of_talons.up&buff.blur_of_talons.remains<1.5*gcd)
-actions.apst+=/raptor_strike,if=buff.coordinated_assault.up&(buff.coordinated_assault.remains<1.5*gcd|buff.blur_of_talons.up&buff.blur_of_talons.remains<1.5*gcd)
+actions.apst=kill_shot
+actions.apst+=/mongoose_bite,if=buff.coordinated_assault.up&(buff.coordinated_assault.remains<1.5*gcd|buff.blur_of_talons.up&buff.blur_of_talons.remains<1.5*gcd)
 actions.apst+=/flanking_strike,if=focus+cast_regen<focus.max
 actions.apst+=/kill_command,target_if=min:bloodseeker.remains,if=full_recharge_time<1.5*gcd&focus+cast_regen<focus.max
 actions.apst+=/steel_trap,if=focus+cast_regen<focus.max
@@ -63,11 +63,10 @@ actions.apst+=/serpent_sting,if=refreshable&!buff.coordinated_assault.up&buff.mo
 actions.apst+=/a_murder_of_crows,if=!buff.coordinated_assault.up
 actions.apst+=/coordinated_assault,if=!buff.coordinated_assault.up
 actions.apst+=/mongoose_bite,if=buff.mongoose_fury.up|focus+cast_regen>focus.max-10|buff.coordinated_assault.up
-actions.apst+=/raptor_strike
 actions.apst+=/wildfire_bomb,if=!ticking
 
-actions.apwfi=mongoose_bite,if=buff.blur_of_talons.up&buff.blur_of_talons.remains<gcd
-actions.apwfi+=/raptor_strike,if=buff.blur_of_talons.up&buff.blur_of_talons.remains<gcd
+actions.apwfi=kill_shot
+actions.apwfi+=/mongoose_bite,if=buff.blur_of_talons.up&buff.blur_of_talons.remains<gcd
 actions.apwfi+=/serpent_sting,if=!dot.serpent_sting.ticking
 actions.apwfi+=/a_murder_of_crows
 actions.apwfi+=/wildfire_bomb,if=full_recharge_time<1.5*gcd|focus+cast_regen<focus.max&(next_wi_bomb.volatile&dot.serpent_sting.ticking&dot.serpent_sting.refreshable|next_wi_bomb.pheromone&!buff.mongoose_fury.up&focus+cast_regen<focus.max-action.kill_command.cast_regen*3)
@@ -75,13 +74,11 @@ actions.apwfi+=/coordinated_assault
 actions.apwfi+=/mongoose_bite,if=buff.mongoose_fury.remains&next_wi_bomb.pheromone
 actions.apwfi+=/kill_command,target_if=min:bloodseeker.remains,if=full_recharge_time<1.5*gcd&focus+cast_regen<focus.max-20
 actions.apwfi+=/steel_trap,if=focus+cast_regen<focus.max
-actions.apwfi+=/raptor_strike,if=buff.tip_of_the_spear.stack=3|dot.shrapnel_bomb.ticking
 actions.apwfi+=/mongoose_bite,if=dot.shrapnel_bomb.ticking
 actions.apwfi+=/wildfire_bomb,if=next_wi_bomb.shrapnel&focus>30&dot.serpent_sting.remains>5*gcd
 actions.apwfi+=/chakrams,if=!buff.mongoose_fury.remains
 actions.apwfi+=/serpent_sting,if=refreshable
 actions.apwfi+=/kill_command,target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max&(buff.mongoose_fury.stack<5|focus<action.mongoose_bite.cost)
-actions.apwfi+=/raptor_strike
 actions.apwfi+=/mongoose_bite,if=buff.mongoose_fury.up|focus>40|dot.shrapnel_bomb.ticking
 actions.apwfi+=/wildfire_bomb,if=next_wi_bomb.volatile&dot.serpent_sting.ticking|next_wi_bomb.pheromone|next_wi_bomb.shrapnel&focus>50
 
@@ -131,11 +128,10 @@ actions.cleave+=/steel_trap
 actions.cleave+=/serpent_sting,target_if=min:remains,if=refreshable&buff.tip_of_the_spear.stack<3&next_wi_bomb.volatile|refreshable&azerite.latent_poison.rank>0
 # To simulate usage for Mongoose Bite or Raptor Strike during Aspect of the Eagle, copy each occurrence of the action and append _eagle to the action name.
 actions.cleave+=/mongoose_bite,target_if=max:debuff.latent_poison.stack
-actions.cleave+=/raptor_strike,target_if=max:debuff.latent_poison.stack
 
-actions.st=harpoon,if=talent.terms_of_engagement.enabled
+actions.st=kill_shot
+actions.st+=/harpoon,if=talent.terms_of_engagement.enabled
 actions.st+=/flanking_strike,if=focus+cast_regen<focus.max
-actions.st+=/raptor_strike,if=buff.coordinated_assault.up&(buff.coordinated_assault.remains<1.5*gcd|buff.blur_of_talons.up&buff.blur_of_talons.remains<1.5*gcd)
 # To simulate usage for Mongoose Bite or Raptor Strike during Aspect of the Eagle, copy each occurrence of the action and append _eagle to the action name.
 actions.st+=/mongoose_bite,if=buff.coordinated_assault.up&(buff.coordinated_assault.remains<1.5*gcd|buff.blur_of_talons.up&buff.blur_of_talons.remains<1.5*gcd)
 actions.st+=/kill_command,target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max
@@ -146,13 +142,12 @@ actions.st+=/serpent_sting,if=buff.vipers_venom.up&dot.serpent_sting.remains<4*g
 actions.st+=/a_murder_of_crows,if=!buff.coordinated_assault.up
 actions.st+=/coordinated_assault,if=!buff.coordinated_assault.up
 actions.st+=/mongoose_bite,if=buff.mongoose_fury.up|focus+cast_regen>focus.max-20&talent.vipers_venom.enabled|focus+cast_regen>focus.max-1&talent.terms_of_engagement.enabled|buff.coordinated_assault.up
-actions.st+=/raptor_strike
 actions.st+=/wildfire_bomb,if=dot.wildfire_bomb.refreshable
 actions.st+=/serpent_sting,if=buff.vipers_venom.up
 
-actions.wfi=harpoon,if=focus+cast_regen<focus.max&talent.terms_of_engagement.enabled
+actions.wfi=kill_shot
+actions.wfi+=/harpoon,if=focus+cast_regen<focus.max&talent.terms_of_engagement.enabled
 actions.wfi+=/mongoose_bite,if=buff.blur_of_talons.up&buff.blur_of_talons.remains<gcd
-actions.wfi+=/raptor_strike,if=buff.blur_of_talons.up&buff.blur_of_talons.remains<gcd
 actions.wfi+=/serpent_sting,if=buff.vipers_venom.up&buff.vipers_venom.remains<1.5*gcd|!dot.serpent_sting.ticking
 actions.wfi+=/wildfire_bomb,if=full_recharge_time<1.5*gcd&focus+cast_regen<focus.max|(next_wi_bomb.volatile&dot.serpent_sting.ticking&dot.serpent_sting.refreshable|next_wi_bomb.pheromone&!buff.mongoose_fury.up&focus+cast_regen<focus.max-action.kill_command.cast_regen*3)
 actions.wfi+=/kill_command,target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max-focus.regen
@@ -166,7 +161,6 @@ actions.wfi+=/wildfire_bomb,if=next_wi_bomb.shrapnel&dot.serpent_sting.remains>5
 actions.wfi+=/serpent_sting,if=refreshable
 actions.wfi+=/chakrams,if=!buff.mongoose_fury.remains
 actions.wfi+=/mongoose_bite
-actions.wfi+=/raptor_strike
 actions.wfi+=/serpent_sting,if=buff.vipers_venom.up
 actions.wfi+=/wildfire_bomb,if=next_wi_bomb.volatile&dot.serpent_sting.ticking|next_wi_bomb.pheromone|next_wi_bomb.shrapnel
 
@@ -187,13 +181,13 @@ trinket2=azsharas_font_of_power,id=169314,bonus_id=4800/1517
 main_hand=qwor_nlyeth,id=174106,bonus_id=4824/1517/6448,enchant=quick_navigation
 
 # Gear Summary
-# gear_ilvl=476.87
-# gear_agility=9708
-# gear_stamina=20021
-# gear_crit_rating=1144
-# gear_haste_rating=1756
-# gear_mastery_rating=765
-# gear_versatility_rating=769
+# gear_ilvl=142.33
+# gear_agility=477
+# gear_stamina=923
+# gear_crit_rating=289
+# gear_haste_rating=377
+# gear_mastery_rating=230
+# gear_versatility_rating=115
 # gear_corruption=890
 # gear_corruption_resistance=50
-# gear_armor=5601
+# gear_armor=400

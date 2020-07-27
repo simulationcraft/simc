@@ -1,5 +1,5 @@
 rogue="T25_Rogue_Assassination"
-level=120
+level=50
 race=human
 spec=assassination
 role=attack
@@ -29,7 +29,7 @@ save=T25_Rogue_Assassination.simc
 
 
 rogue="T25_Rogue_Outlaw"
-level=120
+level=50
 race=human
 spec=outlaw
 role=attack
@@ -59,7 +59,7 @@ save=T25_Rogue_Outlaw.simc
 
 
 rogue="T25_Rogue_Subtlety"
-level=120
+level=50
 race=night_elf
 spec=subtlety
 role=attack

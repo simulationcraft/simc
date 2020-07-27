@@ -1,6 +1,6 @@
 hunter=T25_Hunter_Marksmanship
 spec=marksmanship
-level=120
+level=50
 race=human
 role=attack
 position=ranged_back
@@ -28,7 +28,7 @@ save=T25_Hunter_Marksmanship.simc
 
 hunter=T25_Hunter_Beast_Mastery
 spec=beast_mastery
-level=120
+level=50
 race=human
 role=attack
 position=ranged_back
@@ -56,7 +56,7 @@ save=T25_Hunter_Beast_Mastery.simc
 
 hunter=T25_Hunter_Survival
 spec=survival
-level=120
+level=50
 race=gnome
 role=attack
 position=back

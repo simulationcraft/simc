@@ -1,6 +1,6 @@
 monk="T25_Monk_Windwalker"
 spec=windwalker
-level=120
+level=50
 race=human
 role=attack
 position=back
@@ -28,7 +28,7 @@ save=T25_Monk_Windwalker.simc
 
 monk="T25_Monk_Windwalker_Serenity"
 spec=windwalker
-level=120
+level=50
 race=void_elf
 role=attack
 position=back
@@ -55,7 +55,7 @@ off_hand=bilestained_crawg_tusks,id=159653,bonus_id=6536/1637/4786,enchant=versa
 save=T25_Monk_Windwalker_Serenity.simc
 
 monk="T25_Monk_Brewmaster"
-level=120
+level=50
 race=undead
 spec=brewmaster
 role=tank

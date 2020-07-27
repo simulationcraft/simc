@@ -1,5 +1,5 @@
 demonhunter="T25_Demon_Hunter_Havoc"
-level=120
+level=50
 race=night_elf
 spec=havoc
 role=attack
@@ -29,7 +29,7 @@ off_hand=bilestained_crawg_tusks,id=159653,bonus_id=3536/4786/1637,enchant=versa
 save=T25_Demon_Hunter_Havoc.simc
 
 demonhunter="T25_Demon_Hunter_Vengeance"
-level=120
+level=50
 race=blood_elf
 spec=vengeance
 role=tank

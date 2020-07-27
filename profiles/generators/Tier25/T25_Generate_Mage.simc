@@ -1,6 +1,6 @@
 mage="T25_Mage_Frost"
 spec=frost
-level=120
+level=50
 race=human
 role=spell
 position=back
@@ -33,7 +33,7 @@ save=T25_Mage_Frost.simc
 
 mage="T25_Mage_Fire"
 spec=fire
-level=120
+level=50
 race=troll
 role=spell
 position=back
@@ -65,7 +65,7 @@ save=T25_Mage_Fire.simc
 
 mage="T25_Mage_Arcane"
 spec=arcane
-level=120
+level=50
 race=troll
 role=spell
 position=back

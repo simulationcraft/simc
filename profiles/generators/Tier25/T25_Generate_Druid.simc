@@ -1,5 +1,5 @@
 druid="T25_Druid_Guardian"
-level=120
+level=50
 race=troll
 spec=guardian
 role=tank
@@ -33,7 +33,7 @@ save=T25_Druid_Guardian.simc
 
 
 druid="T25_Druid_Feral"
-level="120"
+level="50"
 race="night_elf"
 role="attack"
 spec="feral"
@@ -61,7 +61,7 @@ save=T25_Druid_Feral.simc
 druid="T25_Druid_Balance"
 source=default
 spec=balance
-level=120
+level=50
 race=troll
 role=spell
 position=ranged_back

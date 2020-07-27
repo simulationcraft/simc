@@ -1,7 +1,7 @@
 hunter="T25_Hunter_Marksmanship"
 source=default
 spec=marksmanship
-level=120
+level=50
 race=human
 role=attack
 position=ranged_back
@@ -9,10 +9,10 @@ talents=1103031
 azerite_essences=4:3/5:3/12:3/35:3
 
 # Default consumables
-potion=unbridled_fury
-flask=greater_flask_of_the_currents
-food=abyssalfried_rissole
-augmentation=battle_scarred
+potion=disabled
+flask=disabled
+food=disabled
+augmentation=disabled
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -26,7 +26,6 @@ actions.precombat+=/augmentation
 actions.precombat+=/food
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-actions.precombat+=/hunters_mark
 # Precast this as early as possible to potentially gain another cast during the fight.
 actions.precombat+=/double_tap,precast_time=10
 actions.precombat+=/use_item,name=azsharas_font_of_power
@@ -67,21 +66,22 @@ actions.cds+=/memory_of_lucid_dreams,if=!buff.trueshot.up
 actions.cds+=/potion,if=buff.trueshot.react&buff.bloodlust.react|prev_gcd.1.trueshot&target.health.pct<20|((consumable.potion_of_unbridled_fury|consumable.unbridled_fury)&target.time_to_die<61|target.time_to_die<26)
 actions.cds+=/trueshot,if=buff.trueshot.down&cooldown.rapid_fire.remains|target.time_to_die<15
 
-actions.st=explosive_shot
+actions.st=kill_shot
+actions.st+=/explosive_shot
 actions.st+=/barrage,if=active_enemies>1
 actions.st+=/a_murder_of_crows
+actions.st+=/volley
 actions.st+=/serpent_sting,if=refreshable&!action.serpent_sting.in_flight
 actions.st+=/rapid_fire,if=buff.trueshot.down|focus<35|focus<60&!talent.lethal_shots.enabled|buff.in_the_rhythm.remains<execute_time
 actions.st+=/blood_of_the_enemy,if=buff.trueshot.up&(buff.unerring_vision.stack>4|!azerite.unerring_vision.enabled)|target.time_to_die<11
 actions.st+=/focused_azerite_beam,if=!buff.trueshot.up|target.time_to_die<5
-actions.st+=/arcane_shot,if=buff.trueshot.up&buff.master_marksman.up&!buff.memory_of_lucid_dreams.up
+actions.st+=/arcane_shot,if=buff.trueshot.up&!buff.memory_of_lucid_dreams.up
 actions.st+=/aimed_shot,if=buff.trueshot.up|(buff.double_tap.down|ca_execute)&buff.precise_shots.down|full_recharge_time<cast_time&cooldown.trueshot.remains
-actions.st+=/arcane_shot,if=buff.trueshot.up&buff.master_marksman.up&buff.memory_of_lucid_dreams.up
-actions.st+=/piercing_shot
+actions.st+=/arcane_shot,if=buff.trueshot.up&buff.memory_of_lucid_dreams.up
 actions.st+=/purifying_blast,if=!buff.trueshot.up|target.time_to_die<8
 actions.st+=/concentrated_flame,if=focus+focus.regen*gcd<focus.max&buff.trueshot.down&(!dot.concentrated_flame_burn.remains&!action.concentrated_flame.in_flight)|full_recharge_time<gcd|target.time_to_die<5
 actions.st+=/the_unbound_force,if=buff.reckless_force.up|buff.reckless_force_counter.stack<10|target.time_to_die<5
-actions.st+=/arcane_shot,if=buff.trueshot.down&(buff.precise_shots.up&(focus>55|buff.master_marksman.up)|focus>75|target.time_to_die<5)
+actions.st+=/arcane_shot,if=buff.trueshot.down&(buff.precise_shots.up&(focus>55)|focus>75|target.time_to_die<5)
 actions.st+=/steady_shot
 
 actions.trickshots=barrage
@@ -96,7 +96,6 @@ actions.trickshots+=/purifying_blast
 actions.trickshots+=/concentrated_flame
 actions.trickshots+=/blood_of_the_enemy
 actions.trickshots+=/the_unbound_force,if=buff.reckless_force.up|buff.reckless_force_counter.stack<10
-actions.trickshots+=/piercing_shot
 actions.trickshots+=/a_murder_of_crows
 actions.trickshots+=/serpent_sting,if=refreshable&!action.serpent_sting.in_flight
 actions.trickshots+=/steady_shot
@@ -118,13 +117,13 @@ trinket2=azsharas_font_of_power,id=169314,bonus_id=4800/1517
 main_hand=dominion_lurker_beyond_dreams,id=172229,bonus_id=4824/1517/6448,enchant=versatile_navigation
 
 # Gear Summary
-# gear_ilvl=478.20
-# gear_agility=9838
-# gear_stamina=20309
-# gear_crit_rating=988
-# gear_haste_rating=984
-# gear_mastery_rating=1406
-# gear_versatility_rating=1072
+# gear_ilvl=143.67
+# gear_agility=482
+# gear_stamina=927
+# gear_crit_rating=275
+# gear_haste_rating=263
+# gear_mastery_rating=331
+# gear_versatility_rating=163
 # gear_corruption=890
 # gear_corruption_resistance=50
-# gear_armor=5643
+# gear_armor=411

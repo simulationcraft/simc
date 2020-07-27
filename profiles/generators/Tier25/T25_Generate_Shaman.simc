@@ -1,5 +1,5 @@
 shaman="T25_Shaman_Elemental"
-level=120
+level=50
 race=tauren
 spec=elemental
 role=spell
@@ -28,7 +28,7 @@ save=T25_Shaman_Elemental.simc
 
 
 shaman="T25_Shaman_Enhancement"
-level=120
+level=50
 race=troll
 spec=enhancement
 role=attack
@@ -57,7 +57,7 @@ save=T25_Shaman_Enhancement.simc
 
 
 shaman="T25_Shaman_Restoration"
-level=120
+level=50
 race=tauren
 spec=restoration
 role=spell

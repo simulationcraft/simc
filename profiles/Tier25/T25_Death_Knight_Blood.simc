@@ -1,7 +1,7 @@
 deathknight="T25_Death_Knight_Blood"
 source=default
 spec=blood
-level=120
+level=50
 race=undead
 role=tank
 position=front
@@ -9,10 +9,10 @@ talents=2220022
 azerite_essences=12:4:1/37:4:0/32:4:0/4:4:0
 
 # Default consumables
-potion=potion_of_unbridled_fury
-flask=greater_flask_of_the_undertow
-food=mechdowels_big_mech
-augmentation=battle_scarred
+potion=disabled
+flask=disabled
+food=disabled
+augmentation=disabled
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -68,7 +68,6 @@ actions.standard+=/marrowrend,if=buff.bone_shield.stack<5&talent.ossuary.enabled
 actions.standard+=/bonestorm,if=runic_power>=100&!buff.dancing_rune_weapon.up
 actions.standard+=/death_strike,if=runic_power.deficit<=(15+buff.dancing_rune_weapon.up*5+spell_targets.heart_strike*talent.heartbreaker.enabled*2)|target.1.time_to_die<10
 actions.standard+=/death_and_decay,if=spell_targets.death_and_decay>=3
-actions.standard+=/rune_strike,if=(charges_fractional>=1.8|buff.dancing_rune_weapon.up)&rune.time_to_3>=gcd
 actions.standard+=/heart_strike,if=buff.dancing_rune_weapon.up|rune.time_to_4<gcd
 actions.standard+=/blood_boil,if=buff.dancing_rune_weapon.up
 actions.standard+=/death_and_decay,if=buff.crimson_scourge.up|talent.rapid_decomposition.enabled|spell_targets.death_and_decay>=2
@@ -76,7 +75,6 @@ actions.standard+=/consumption
 actions.standard+=/blood_boil
 actions.standard+=/heart_strike,if=rune.time_to_3<gcd|buff.bone_shield.stack>6
 actions.standard+=/use_item,name=grongs_primal_rage
-actions.standard+=/rune_strike
 actions.standard+=/arcane_torrent,if=runic_power.deficit>20
 
 head=greathelm_of_phantasmic_reality,id=174167,bonus_id=4824/1517/4775,azerite_powers=140/582/21/13
@@ -96,13 +94,13 @@ trinket2=ashvanes_razor_coral,id=169311,bonus_id=4800/1517
 main_hand=getiikku_cut_of_death,id=159644,bonus_id=1637,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
-# gear_ilvl=474.87
-# gear_strength=10205
-# gear_stamina=19654
-# gear_crit_rating=1558
-# gear_haste_rating=1399
-# gear_mastery_rating=542
-# gear_versatility_rating=336
+# gear_ilvl=148.33
+# gear_strength=551
+# gear_stamina=1002
+# gear_crit_rating=355
+# gear_haste_rating=332
+# gear_mastery_rating=198
+# gear_versatility_rating=49
 # gear_corruption=95
 # gear_corruption_resistance=50
-# gear_armor=8318
+# gear_armor=595

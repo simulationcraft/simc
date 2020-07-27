@@ -1,5 +1,5 @@
 priest="T25_Priest_Shadow"
-level=120
+level=50
 race=human
 spec=shadow
 role=spell
@@ -36,11 +36,7 @@ off_hand=uhnish_vwah,id=172190,bonus_id=4824/1517
 save=T25_Priest_Shadow.simc
 
 copy="T25_Priest_Discipline"
-level=120
-race=human
 spec=discipline
-role=spell
-position=ranged_back
 talents=3020110
 
 save=T25_Priest_Discipline.simc

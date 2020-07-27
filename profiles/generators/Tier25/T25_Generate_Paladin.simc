@@ -1,5 +1,5 @@
 paladin="T25_Paladin_Protection"
-level=120
+level=50
 race=lightforged_draenei
 spec=protection
 role=tank
@@ -27,7 +27,7 @@ off_hand=precipice_of_oblivion,id=172188,bonus_id=4824/1517
 save=T25_Paladin_Protection.simc
 
 paladin="T25_Paladin_Retribution"
-level=120
+level=50
 race=blood_elf
 spec=retribution
 role=attack

@@ -1,6 +1,6 @@
 deathknight="T25_Death_Knight_Unholy"
 spec=unholy
-level=120
+level=50
 race=troll
 role=attack
 position=back
@@ -30,7 +30,7 @@ save=T25_Death_Knight_Unholy.simc
 
 deathknight="T25_Death_Knight_Frost"
 spec=frost
-level=120
+level=50
 race=blood_elf
 role=attack
 position=back
@@ -62,7 +62,7 @@ save=T25_Death_Knight_Frost.simc
 deathknight="T25_Death_Knight_Blood"
 source=default
 spec=blood
-level=120
+level=50
 race=undead
 role=tank
 position=front

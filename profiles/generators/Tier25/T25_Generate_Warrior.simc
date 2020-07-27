@@ -1,5 +1,5 @@
 warrior="T25_Warrior_Arms"
-level=120
+level=50
 race=troll
 spec=arms
 role=attack
@@ -28,7 +28,7 @@ save=T25_Warrior_Arms.simc
 
 
 warrior="T25_Warrior_Fury"
-level=120
+level=50
 race=gnome
 spec=fury
 role=attack
@@ -59,7 +59,7 @@ save=T25_Warrior_Fury.simc
 
 warrior="T25_Warrior_Protection"
 spec=protection
-level=120
+level=50
 race=lightforged_draenei
 role=tank
 position=front

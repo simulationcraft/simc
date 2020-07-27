@@ -1,7 +1,7 @@
 mage="T25_Mage_Arcane"
 source=default
 spec=arcane
-level=120
+level=50
 race=troll
 role=spell
 position=back
@@ -10,9 +10,9 @@ azerite_essences=4:3/5:3/32:3/35:3
 
 # Default consumables
 potion=focused_resolve
-flask=greater_flask_of_endless_fathoms
+flask=disabled
 food=mechdowels_big_mech
-augmentation=battle_scarred
+augmentation=disabled
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -33,7 +33,6 @@ actions.precombat+=/variable,name=font_double_on_use,op=set,value=equipped.azsha
 actions.precombat+=/variable,name=font_of_power_precombat_channel,op=set,value=12,if=variable.font_double_on_use&variable.font_of_power_precombat_channel=0
 actions.precombat+=/snapshot_stats
 actions.precombat+=/use_item,name=azsharas_font_of_power
-actions.precombat+=/mirror_image
 actions.precombat+=/potion
 actions.precombat+=/arcane_blast
 
@@ -55,7 +54,6 @@ actions.burn+=/start_burn_phase,if=!burn_phase
 actions.burn+=/stop_burn_phase,if=burn_phase&prev_gcd.1.evocation&target.time_to_die>variable.average_burn_length&burn_phase_duration>0
 # Less than 1 instead of equals to 0, because of pre-cast Arcane Blast
 actions.burn+=/charged_up,if=buff.arcane_charge.stack<=1
-actions.burn+=/mirror_image
 actions.burn+=/nether_tempest,if=(refreshable|!ticking)&buff.arcane_charge.stack=buff.arcane_charge.max_stack&buff.rune_of_power.down&buff.arcane_power.down
 # When running Overpowered, and we got a Rule of Threes proc (AKA we got our 4th Arcane Charge via Charged Up), use it before using RoP+AP, because the mana reduction is otherwise largely wasted since the AB was free anyway.
 actions.burn+=/arcane_blast,if=buff.rule_of_threes.up&talent.overpowered.enabled&active_enemies<3
@@ -82,8 +80,7 @@ actions.burn+=/evocation,interrupt_if=mana.pct>=85,interrupt_immediate=1
 # For the rare occasion where we go oom before evocation is back up. (Usually because we get very bad rng so the burn is cut very short)
 actions.burn+=/arcane_barrage
 
-actions.conserve=mirror_image
-actions.conserve+=/charged_up,if=buff.arcane_charge.stack=0
+actions.conserve=charged_up,if=buff.arcane_charge.stack=0
 actions.conserve+=/nether_tempest,if=(refreshable|!ticking)&buff.arcane_charge.stack=buff.arcane_charge.max_stack&buff.rune_of_power.down&buff.arcane_power.down
 actions.conserve+=/arcane_orb,if=buff.arcane_charge.stack<=2&(cooldown.arcane_power.remains>10|active_enemies<=2)
 # Arcane Blast shifts up in priority when running rule of threes.
@@ -136,13 +133,13 @@ main_hand=shglayos_astral_malignity,id=174108,bonus_id=4824/1517,enchant=torrent
 off_hand=zealous_ritualists_reverie,id=175009,bonus_id=4824/1517/6573
 
 # Gear Summary
-# gear_ilvl=480.50
-# gear_stamina=19925
-# gear_intellect=13550
-# gear_crit_rating=1411
-# gear_haste_rating=1234
-# gear_mastery_rating=1129
-# gear_versatility_rating=404
+# gear_ilvl=144.19
+# gear_stamina=919
+# gear_intellect=641
+# gear_crit_rating=331
+# gear_haste_rating=303
+# gear_mastery_rating=293
+# gear_versatility_rating=67
 # gear_corruption=90
 # gear_corruption_resistance=50
-# gear_armor=2408
+# gear_armor=178

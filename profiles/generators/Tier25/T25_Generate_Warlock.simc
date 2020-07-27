@@ -1,5 +1,5 @@
 warlock="T25_Warlock_Affliction"
-level=120
+level=50
 race=troll
 spec=affliction
 role=spell
@@ -28,7 +28,7 @@ off_hand=uhnish_vwah,id=172190,bonus_id=4824/1517/6552
 save=T25_Warlock_Affliction.simc
 
 warlock="T25_Warlock_Demonology"
-level=120
+level=50
 race=troll
 spec=demonology
 role=spell
@@ -57,7 +57,7 @@ off_hand=uhnish_vwah,id=172190,bonus_id=4824/1517/6552
 save=T25_Warlock_Demonology.simc
 
 warlock="T25_Warlock_Destruction"
-level=120
+level=50
 race=troll
 spec=destruction
 role=spell
