@@ -24,8 +24,21 @@ namespace
   New Issues
   ----------
 
+  * Implement Covenant abilities
+  * Implement Soulbinds
+  * Implement Legendaries
+
+  Havoc:
+  * Remap spell data from all the new Rank X subspells
+  ** Blur
+  ** Chaos Strike
+  ** Chaos Nova (?)
+  ** Darkness
+  ** Vengeful Retreat (?)
+
+  Vengeance:
   * Add Fel Devastation baseline
-  * Check all Vengeance talents
+  * Check all talents
   ** Remove Razor Spikes
   ** Add Demonic
   ** Add Infernal Armor
@@ -34,21 +47,16 @@ namespace
   ** Add Bulk Extraction
   
   * Remap spell data from all the new Rank X subspells
-  ** Done -- Imolation Aura
-  ** Done -- Eye Beam
-  ** Done -- Blade Dance
-  ** Done -- Mastery: Demonic Presence
-  ** Done -- Metamorphosis (Havoc)
-  ** Done -- Fel Rush
-  ** Done -- Disrupt
-  ** Done -- Consume Magic
-  ** Done -- Throw Glaive
-
-  * Implement Covenant abilities
-  * Implement Soulbinds
-  * Implement Legendaries
-  * Unrestrained Fury passive
-
+  ** Infernal Strike
+  ** Sigil of Flame
+  ** Sigil of Silence
+  ** Sigil of Misery
+  ** Fel Devastation
+  ** Fiery Brand
+  ** Soul Cleave
+  ** Demon Spikes
+  ** Metamorphosis (Vengeance)
+  ** Mastery: Fel Blood
 */
 
 // Forward Declarations
@@ -385,6 +393,7 @@ public:
     const spell_data_t* fel_rush;
     const spell_data_t* fel_rush_rank_2;
     const spell_data_t* fel_rush_damage;
+    const spell_data_t* unrestrained_fury;
     const spell_data_t* vengeful_retreat;
     const spell_data_t* momentum_buff;
 
@@ -4676,17 +4685,8 @@ void demon_hunter_t::init_base_stats()
 
   base_t::init_base_stats();
 
-  switch ( specialization() )
-  {
-    case DEMON_HUNTER_HAVOC:
-      resources.base[ RESOURCE_FURY ] = 120;
-      break;
-    case DEMON_HUNTER_VENGEANCE:
-      resources.base[ RESOURCE_FURY ] = 100;
-      break;
-    default:
-      break;
-  }
+  resources.base[ RESOURCE_FURY ] = 100;
+  resources.base[ RESOURCE_FURY ] += spec.unrestrained_fury->effectN(1).base_value();
 
   base.attack_power_per_strength = 0.0;
   base.attack_power_per_agility  = 1.0;
@@ -4848,6 +4848,7 @@ void demon_hunter_t::init_spells()
   spec.fel_rush_rank_2        = find_rank_spell( "Fel Rush", "Rank 2" );
   spec.fel_rush_damage        = find_spell( 192611, DEMON_HUNTER_HAVOC ); 
   spec.momentum_buff          = find_spell( 208628, DEMON_HUNTER_HAVOC );
+  spec.unrestrained_fury      = find_specialization_spell( "Unrestrained Fury" );
   spec.vengeful_retreat       = find_class_spell( "Vengeful Retreat", DEMON_HUNTER_HAVOC );
 
   // Vengeance
