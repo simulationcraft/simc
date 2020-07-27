@@ -711,7 +711,8 @@ public:
   void init_finished() override;
   void invalidate_cache( cache_e ) override;
   void init_resources( bool ) override;
-  double resource_gain( resource_e, double, gain_t*, action_t* = nullptr ) override;
+  double resource_gain( resource_e, double, gain_t* = nullptr, action_t* = nullptr ) override;
+  double resource_loss( resource_e, double, gain_t* = nullptr, action_t* = nullptr ) override;
   void recalculate_resource_max( resource_e ) override;
   void reset() override;
   std::unique_ptr<expr_t> create_expression( const std::string& ) override;
@@ -6405,14 +6406,24 @@ void mage_t::invalidate_cache( cache_e c )
   }
 }
 
-double mage_t::resource_gain( resource_e resource_type, double amount, gain_t* source, action_t* action )
+double mage_t::resource_gain( resource_e resource_type, double amount, gain_t* source, action_t* a )
 {
-  double g = player_t::resource_gain( resource_type, amount, source, action );
+  double g = player_t::resource_gain( resource_type, amount, source, a );
 
   if ( resource_type == RESOURCE_MANA && specialization() == MAGE_ARCANE && source != gains.evocation && source != find_gain( "mana_regen" ) )
     update_enlightened();
 
   return g;
+}
+
+double mage_t::resource_loss( resource_e resource_type, double amount, gain_t* source, action_t* a )
+{
+  double l = player_t::resource_loss( resource_type, amount, source, a );
+
+  if ( resource_type == RESOURCE_MANA && specialization() == MAGE_ARCANE )
+    update_enlightened();
+
+  return l;
 }
 
 void mage_t::recalculate_resource_max( resource_e rt )
