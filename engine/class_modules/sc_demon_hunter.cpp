@@ -31,7 +31,6 @@ namespace
   Havoc:
   * Remap spell data from all the new Rank X subspells
   ** Blur
-  ** Chaos Strike
   ** Chaos Nova (?)
   ** Darkness
   ** Vengeful Retreat (?)
@@ -383,6 +382,7 @@ public:
     const spell_data_t* blur;
     const spell_data_t* chaos_nova;
     const spell_data_t* chaos_strike;
+    const spell_data_t* chaos_strike_rank_2;
     const spell_data_t* chaos_strike_refund;
     const spell_data_t* chaos_strike_fury;
     const spell_data_t* death_sweep;
@@ -3252,19 +3252,25 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
     timespan_t delay;
     chaos_strike_base_t* parent;
     bool may_refund;
+    double refund_proc_chance;
     double thirsting_blades_bonus_da;
 
-    chaos_strike_damage_t( demon_hunter_t* p, const spelleffect_data_t& eff, 
-                           chaos_strike_base_t* a, const std::string& name )
+    chaos_strike_damage_t( demon_hunter_t* p, const spelleffect_data_t& eff, chaos_strike_base_t* a, const std::string& name )
       : demon_hunter_attack_t( name, p, eff.trigger() ), 
       delay( timespan_t::from_millis( eff.misc_value1() ) ), 
       parent( a ),
+      refund_proc_chance( 0.0 ),
       thirsting_blades_bonus_da( 0.0 )
     {
       assert( eff.type() == E_TRIGGER_SPELL );
       background = dual = true;
+      
       may_refund = ( weapon == &( p->off_hand_weapon ) );
-      school = SCHOOL_CHAOS; // 7/16/2018 -- Manually setting since Blizzard broke the spell school data for Annihilation_2 (201428)
+      if ( may_refund )
+      {
+        refund_proc_chance = p->spec.chaos_strike_refund->proc_chance();
+        refund_proc_chance += p->spec.chaos_strike_rank_2->effectN( 1 ).percent();
+      }
     }
 
     double bonus_da( const action_state_t* s ) const override
@@ -3281,7 +3287,7 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
       demon_hunter_attack_t::execute();
 
       // Technically this appears to have a 0.5s GCD, but this is not relevant at the moment
-      if ( may_refund && p()->rng().roll( p()->spec.chaos_strike_refund->proc_chance() ) )
+      if ( may_refund && p()->rng().roll( refund_proc_chance ) )
       {
         p()->resource_gain( RESOURCE_FURY, p()->spec.chaos_strike_fury->effectN( 1 ).resource( RESOURCE_FURY ), parent->gain );
 
@@ -4837,6 +4843,7 @@ void demon_hunter_t::init_spells()
   spec.blur                   = find_specialization_spell( "Blur" );
   spec.chaos_nova             = find_class_spell( "Chaos Nova", DEMON_HUNTER_HAVOC );
   spec.chaos_strike           = find_class_spell( "Chaos Strike", DEMON_HUNTER_HAVOC );
+  spec.chaos_strike_rank_2    = find_rank_spell( "Chaos Strike", "Rank 3" ); // Typo in spell data
   spec.chaos_strike_refund    = find_spell( 197125, DEMON_HUNTER_HAVOC );
   spec.chaos_strike_fury      = find_spell( 193840, DEMON_HUNTER_HAVOC );
   spec.death_sweep            = find_spell( 210152, DEMON_HUNTER_HAVOC );
