@@ -30,7 +30,7 @@ namespace fmt {
  *
  */
 template <typename T>
-struct formatter<T, std::enable_if_t<::util::fmt_detail::has_format_to<T>::value, char>> {
+struct formatter<T, char, std::enable_if_t<::util::fmt_detail::has_format_to<T>::value>> {
   constexpr auto parse( format_parse_context& ctx ) { return ctx.begin(); }
   format_context::iterator format( const T& v, format_context& ctx ) {
     static_assert(std::is_same<decltype( format_to( v, ctx ) ), format_context::iterator>::value,
