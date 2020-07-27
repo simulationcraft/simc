@@ -906,6 +906,7 @@ public:
                                                const spell_data_t* affected_spell = spell_data_t::nil() );
 
   void vision_of_perfection_proc() override;
+  void apply_affecting_auras( action_t& ) override;
 
 private:
   void              apl_precombat();
@@ -1553,7 +1554,6 @@ public:
   using base_t = druid_action_t<Base>;
 
   bool rend_and_tear;
-  bool hasted_gcd;
   double gore_chance;
   bool triggers_galactic_guardian;
   double lucid_dreams_multiplier;
@@ -1563,14 +1563,12 @@ public:
     ab( n, player, s ),
     form_mask( ab::data().stance_mask() ), may_autounshift( true ), autoshift( 0 ),
     rend_and_tear( ab::data().affected_by( player -> spec.thrash_bear_dot -> effectN( 2 ) ) ),
-    hasted_gcd( ab::data().affected_by( player -> spec.druid -> effectN( 4 ) ) ),
     gore_chance( player -> spec.gore -> effectN( 1 ).percent() ),
 	triggers_galactic_guardian( true ),
 	lucid_dreams_multiplier(p()->lucid_dreams->effectN(1).percent())
   {
     ab::may_crit      = true;
     ab::tick_may_crit = true;
-    ab::cooldown -> hasted = ab::data().affected_by( player -> spec.druid -> effectN( 3 ) );
 
     gore_chance += p() -> sets -> set( DRUID_GUARDIAN, T19, B2 ) -> effectN( 1 ).percent();
 
@@ -2070,9 +2068,6 @@ public:
 
     if ( g == timespan_t::zero() )
       return g;
-
-    if ( ab::hasted_gcd )
-      g *= ab::p() -> cache.attack_haste();
 
     if ( g < ab::min_gcd )
       return ab::min_gcd;
@@ -3719,7 +3714,7 @@ struct lunar_inspiration_t : public cat_attack_t
     hasted_ticks = true;
     energize_type = ENERGIZE_ON_HIT;
 
-    hasted_gcd = true;
+    gcd_type = gcd_haste_type::ATTACK_HASTE;
   }
 
   void init() override
@@ -10193,6 +10188,13 @@ void druid_t::vision_of_perfection_proc()
       uptime.vision_of_perfection->update( false, sim->current_time() );
     } );
   }
+}
+
+void druid_t::apply_affecting_auras( action_t& action )
+{
+  player_t::apply_affecting_auras( action );
+
+  action.apply_affecting_aura( spec.druid );
 }
 
 druid_td_t::druid_td_t( player_t& target, druid_t& source )
