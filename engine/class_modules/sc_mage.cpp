@@ -324,6 +324,9 @@ public:
     action_t* lucid_dreams;
   } icicle;
 
+  // Enlightened
+  event_t* enlightened_event;
+
   // Focus Magic
   event_t* focus_magic_event;
 
@@ -349,6 +352,7 @@ public:
   double lucid_dreams_refund;
   double strive_for_perfection_multiplier;
   double vision_of_perfection_multiplier;
+  int mana_gems_available;
 
   // Data collection
   auto_dispose<std::vector<cooldown_waste_data_t*> > cooldown_waste_data_list;
@@ -394,6 +398,8 @@ public:
     buff_t* arcane_power;
     buff_t* clearcasting;
     buff_t* clearcasting_channel; // Hidden buff which governs tick and channel time
+    buff_t* enlightened_damage;
+    buff_t* enlightened_mana;
     buff_t* evocation;
     buff_t* presence_of_mind;
 
@@ -467,6 +473,8 @@ public:
     gain_t* gbow;
     gain_t* evocation;
     gain_t* lucid_dreams;
+    gain_t* mana_gem;
+    gain_t* arcane_barrage;
   } gains;
 
   // Options
@@ -481,6 +489,7 @@ public:
     double lucid_dreams_proc_chance_arcane = 0.075;
     double lucid_dreams_proc_chance_fire = 0.1;
     double lucid_dreams_proc_chance_frost = 0.075;
+    timespan_t enlightened_interval = 2_s;
     timespan_t focus_magic_interval = 2_s;
     double focus_magic_variance = 0.1;
     double focus_magic_crit_chance = 0.5;
@@ -535,11 +544,16 @@ public:
   {
     // Arcane
     const spell_data_t* arcane_barrage_2;
+    const spell_data_t* arcane_barrage_3;
     const spell_data_t* arcane_charge;
     const spell_data_t* arcane_explosion_2;
     const spell_data_t* arcane_mage;
+    const spell_data_t* arcane_power_2;
     const spell_data_t* clearcasting;
+    const spell_data_t* clearcasting_2;
+    const spell_data_t* clearcasting_3;
     const spell_data_t* evocation_2;
+    const spell_data_t* presence_of_mind_2;
     const spell_data_t* savant;
     const spell_data_t* touch_of_the_magi;
 
@@ -697,6 +711,7 @@ public:
   void init_finished() override;
   void invalidate_cache( cache_e ) override;
   void init_resources( bool ) override;
+  double resource_gain( resource_e, double, gain_t*, action_t* = nullptr ) override;
   void recalculate_resource_max( resource_e ) override;
   void reset() override;
   std::unique_ptr<expr_t> create_expression( const std::string& ) override;
@@ -709,6 +724,7 @@ public:
   stat_e convert_hybrid_stat( stat_e ) const override;
   double resource_regen_per_second( resource_e ) const override;
   double composite_attribute_multiplier( attribute_e attr ) const override;
+  double composite_player_multiplier( school_e ) const override;
   double composite_player_pet_damage_multiplier( const action_state_t* ) const override;
   double composite_spell_crit_chance() const override;
   double composite_rating_multiplier( rating_e ) const override;
@@ -787,6 +803,7 @@ public:
   void      trigger_leyshock( unsigned id, const action_state_t* s, leyshock_trigger_e trigger_type );
   bool      trigger_crowd_control( const action_state_t* s, spell_mechanic type );
   void      trigger_lucid_dreams( player_t* trigger_target, double cost );
+  void      update_enlightened();
 
   void apl_precombat();
   void apl_arcane();
@@ -2117,6 +2134,9 @@ struct arcane_barrage_t : public arcane_mage_spell_t
 
     arcane_mage_spell_t::execute();
 
+    p()->resource_gain( RESOURCE_MANA,
+      p()->buffs.arcane_charge->check() * p()->resources.max[ RESOURCE_MANA ] * floor( p()->spec.arcane_barrage_3->effectN( 1 ).base_value() ) / 100.0,
+      p()->gains.arcane_barrage );
     p()->buffs.arcane_charge->expire();
   }
 
@@ -2420,7 +2440,7 @@ struct arcane_missiles_t : public arcane_mage_spell_t
 
     auto cc_data = p->buffs.clearcasting_channel->data();
     cc_duration_reduction  = cc_data.effectN( 1 ).percent();
-    cc_tick_time_reduction = cc_data.effectN( 2 ).percent() + p->talents.amplification->effectN( 1 ).percent();
+    cc_tick_time_reduction = cc_data.effectN( 2 ).percent() + p->talents.amplification->effectN( 1 ).percent() + p->spec.clearcasting_2->effectN( 1 ).percent();
   }
 
   result_amount_type amount_type( const action_state_t*, bool ) const override
@@ -2792,6 +2812,58 @@ struct conflagration_flare_up_t : public fire_mage_spell_t
   {
     background = true;
     aoe = -1;
+  }
+};
+
+// Conjure Mana Gem Spell ===================================================
+
+struct conjure_mana_gem_t : public arcane_mage_spell_t
+{
+  conjure_mana_gem_t( const std::string& n, mage_t* p, const std::string& options_str ) :
+    arcane_mage_spell_t( n, p, p->find_specialization_spell( "Conjure Mana Gem" ) )
+  {
+    parse_options( options_str );
+    harmful = false;
+    ignore_false_positive = true;
+  }
+
+  bool ready() override
+  {
+    if ( p()->mana_gems_available > 0 )
+      return false;
+
+    return arcane_mage_spell_t::ready();
+  }
+
+  void execute() override
+  {
+    arcane_mage_spell_t::execute();
+    p()->mana_gems_available = as<int>( data().effectN( 2 ).base_value() );
+  }
+};
+
+struct replenish_mana_t : public arcane_mage_spell_t
+{
+  replenish_mana_t( const std::string& n, mage_t* p, const std::string& options_str ) :
+    arcane_mage_spell_t( n, p, p->find_spell( 5405 ) )
+  {
+    parse_options( options_str );
+    harmful = false;
+  }
+
+  bool ready() override
+  {
+    if ( p()->specialization() != MAGE_ARCANE || p()->mana_gems_available <= 0 || p()->resources.pct( RESOURCE_MANA ) >= 1.0 )
+      return false;
+
+    return arcane_mage_spell_t::ready();
+  }
+
+  void execute() override
+  {
+    arcane_mage_spell_t::execute();
+    p()->resource_gain( RESOURCE_MANA, p()->resources.max[ RESOURCE_MANA ] * data().effectN( 1 ).percent(), p()->gains.mana_gem );
+    p()->mana_gems_available -= 1;
   }
 };
 
@@ -4592,6 +4664,34 @@ struct freeze_t : public action_t
 
 namespace events {
 
+struct enlightened_event_t : public event_t
+{
+  mage_t* mage;
+
+  enlightened_event_t( mage_t& m, timespan_t delta_time ) :
+    event_t( m, delta_time ),
+    mage( &m )
+  {
+  }
+
+  const char* name() const override
+  { return "enlightened_event"; }
+
+  void execute() override
+  {
+    mage->enlightened_event = nullptr;
+
+    if ( !mage->talents.enlightened->ok() )
+      return;
+
+    mage->update_enlightened();
+
+    if ( mage->options.enlightened_interval > 0_ms ) {
+      mage->enlightened_event = make_event<enlightened_event_t>( sim(), *mage, mage->options.enlightened_interval );
+    }
+  }
+};
+
 struct focus_magic_event_t : public event_t
 {
   mage_t* mage;
@@ -4877,6 +4977,7 @@ mage_t::mage_t( sim_t* sim, util::string_view name, race_e r ) :
   icicle_event(),
   icicle(),
   ignite(),
+  enlightened_event(),
   focus_magic_event(),
   ignite_spread_event(),
   time_anomaly_tick_event(),
@@ -4886,6 +4987,7 @@ mage_t::mage_t( sim_t* sim, util::string_view name, race_e r ) :
   lucid_dreams_refund(),
   strive_for_perfection_multiplier(),
   vision_of_perfection_multiplier(),
+  mana_gems_available(),
   action(),
   benefits(),
   buffs(),
@@ -4943,9 +5045,11 @@ action_t* mage_t::create_action( const std::string& name, const std::string& opt
   if ( name == "arcane_orb"             ) return new             arcane_orb_t( name, this, options_str );
   if ( name == "arcane_power"           ) return new           arcane_power_t( name, this, options_str );
   if ( name == "charged_up"             ) return new             charged_up_t( name, this, options_str );
+  if ( name == "conjure_mana_gem"       ) return new       conjure_mana_gem_t( name, this, options_str );
   if ( name == "evocation"              ) return new              evocation_t( name, this, options_str );
   if ( name == "nether_tempest"         ) return new         nether_tempest_t( name, this, options_str );
   if ( name == "presence_of_mind"       ) return new       presence_of_mind_t( name, this, options_str );
+  if ( name == "replenish_mana"         ) return new         replenish_mana_t( name, this, options_str );
   if ( name == "slow"                   ) return new                   slow_t( name, this, options_str );
   if ( name == "supernova"              ) return new              supernova_t( name, this, options_str );
   if ( name == "touch_of_the_magi"      ) return new      touch_of_the_magi_t( name, this, options_str );
@@ -5069,6 +5173,7 @@ void mage_t::create_options()
   add_option( opt_float( "lucid_dreams_proc_chance_arcane", options.lucid_dreams_proc_chance_arcane ) );
   add_option( opt_float( "lucid_dreams_proc_chance_fire", options.lucid_dreams_proc_chance_fire ) );
   add_option( opt_float( "lucid_dreams_proc_chance_frost", options.lucid_dreams_proc_chance_frost ) );
+  add_option( opt_timespan( "enlightened_interval", options.enlightened_interval, 0_ms, timespan_t::max() ) );
   add_option( opt_timespan( "focus_magic_interval", options.focus_magic_interval, 0_ms, timespan_t::max() ) );
   add_option( opt_float( "focus_magic_variance", options.focus_magic_variance, 0, 1 ) );
   add_option( opt_float( "focus_magic_crit_chance", options.focus_magic_crit_chance, 0, 1 ) );
@@ -5275,11 +5380,16 @@ void mage_t::init_spells()
 
   // Spec Spells
   spec.arcane_barrage_2      = find_specialization_spell( 231564 );
+  spec.arcane_barrage_3      = find_specialization_spell( "Arcane Barrage", "Rank 3" );
   spec.arcane_charge         = find_spell( 36032 );
   spec.arcane_explosion_2    = find_specialization_spell( 321752 );
   spec.arcane_mage           = find_specialization_spell( 137021 );
+  spec.arcane_power_2        = find_specialization_spell( "Arcane Power", "Rank 2" );
   spec.clearcasting          = find_specialization_spell( "Clearcasting" );
+  spec.clearcasting_2        = find_specialization_spell( "Clearcasting", "Rank 2" );
+  spec.clearcasting_3        = find_specialization_spell( "Clearcasting", "Rank 3" );
   spec.evocation_2           = find_specialization_spell( 231565 );
+  spec.presence_of_mind_2    = find_specialization_spell( "Presence of Mind", "Rank 2" );
   spec.touch_of_the_magi     = find_specialization_spell( "Touch of the Magi" );
 
   spec.critical_mass         = find_specialization_spell( "Critical Mass" );
@@ -5367,11 +5477,19 @@ void mage_t::create_buffs()
   buffs.arcane_power         = make_buff( this, "arcane_power", find_spell( 12042 ) )
                                  ->set_cooldown( 0_ms )
                                  ->set_default_value( find_spell( 12042 )->effectN( 1 ).percent()
-                                                    + talents.overpowered->effectN( 1 ).percent() );
+                                                    + talents.overpowered->effectN( 1 ).percent() )
+                                 ->set_duration( find_spell( 12042 )->duration() + spec.arcane_power_2->effectN( 1 ).time_value() );
   buffs.clearcasting         = make_buff( this, "clearcasting", find_spell( 263725 ) )
-                                 ->set_default_value( find_spell( 263725 )->effectN( 1 ).percent() );
+                                 ->set_default_value( find_spell( 263725 )->effectN( 1 ).percent() )
+                                 ->set_max_stack( as<int>( find_spell( 263725 )->max_stacks() + spec.clearcasting_3->effectN( 1 ).base_value() ) );
   buffs.clearcasting_channel = make_buff( this, "clearcasting_channel", find_spell( 277726 ) )
                                  ->set_quiet( true );
+  buffs.enlightened_damage   = make_buff( this, "enlightened_damage", find_spell( 321388 ) )
+                                 ->set_default_value( find_spell( 321388 )->effectN( 1 ).percent() )
+                                 ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  buffs.enlightened_mana     = make_buff( this, "enlightened_mana", find_spell( 321390 ) )
+                                 ->set_default_value( find_spell( 321390 )->effectN( 1 ).percent() )
+                                 ->set_affects_regen( true );
   buffs.evocation            = make_buff( this, "evocation", find_spell( 12051 ) )
                                  ->set_default_value( find_spell( 12051 )->effectN( 1 ).percent() )
                                  ->set_cooldown( 0_ms )
@@ -5379,8 +5497,8 @@ void mage_t::create_buffs()
   buffs.presence_of_mind     = make_buff( this, "presence_of_mind", find_spell( 205025 ) )
                                  ->set_cooldown( 0_ms )
                                  ->set_stack_change_callback( [ this ] ( buff_t*, int, int cur )
-                                   { if ( cur == 0 ) cooldowns.presence_of_mind->start( cooldowns.presence_of_mind->action ); } );
-
+                                   { if ( cur == 0 ) cooldowns.presence_of_mind->start( cooldowns.presence_of_mind->action ); } )
+                                 ->set_max_stack( as<int>( find_spell( 205025 )->initial_stacks() + spec.presence_of_mind_2->effectN( 1 ).base_value() ) );
   buffs.arcane_familiar      = make_buff( this, "arcane_familiar", find_spell( 210126 ) )
                                  ->set_default_value( find_spell( 210126 )->effectN( 1 ).percent() )
                                  ->set_period( 3.0_s )
@@ -5515,9 +5633,11 @@ void mage_t::init_gains()
 {
   player_t::init_gains();
 
-  gains.evocation    = get_gain( "Evocation"                  );
-  gains.gbow         = get_gain( "Greater Blessing of Wisdom" );
-  gains.lucid_dreams = get_gain( "Lucid Dreams"               );
+  gains.evocation      = get_gain( "Evocation"                  );
+  gains.gbow           = get_gain( "Greater Blessing of Wisdom" );
+  gains.lucid_dreams   = get_gain( "Lucid Dreams"               );
+  gains.mana_gem       = get_gain( "Mana Gem"                   );
+  gains.arcane_barrage = get_gain( "Arcane Barrage"             );
 }
 
 void mage_t::init_procs()
@@ -6262,6 +6382,9 @@ double mage_t::resource_regen_per_second( resource_e rt ) const
 
     if ( player_t::buffs.memory_of_lucid_dreams->check() )
       reg *= 1.0 + player_t::buffs.memory_of_lucid_dreams->data().effectN( 1 ).percent();
+
+    if ( buffs.enlightened_mana->check() )
+      reg *= 1.0 + buffs.enlightened_mana->check_value();
   }
 
   return reg;
@@ -6280,6 +6403,16 @@ void mage_t::invalidate_cache( cache_e c )
     default:
       break;
   }
+}
+
+double mage_t::resource_gain( resource_e resource_type, double amount, gain_t* source, action_t* action )
+{
+  double g = player_t::resource_gain( resource_type, amount, source, action );
+
+  if ( resource_type == RESOURCE_MANA && specialization() == MAGE_ARCANE && source != gains.evocation && source != find_gain( "mana_regen" ) )
+    update_enlightened();
+
+  return g;
 }
 
 void mage_t::recalculate_resource_max( resource_e rt )
@@ -6308,6 +6441,16 @@ double mage_t::composite_attribute_multiplier( attribute_e attr ) const
     if ( buffs.focus_magic_int )
       m *= 1.0 + buffs.focus_magic_int->check_stack_value();
   }
+
+  return m;
+}
+
+double mage_t::composite_player_multiplier( school_e school ) const
+{
+  double m = player_t::composite_player_multiplier( school );
+
+  if ( buffs.enlightened_damage && school == SCHOOL_ARCANE )
+    m *= 1.0 + buffs.enlightened_damage->check_value();
 
   return m;
 }
@@ -6376,6 +6519,7 @@ void mage_t::reset()
 {
   player_t::reset();
 
+  enlightened_event = nullptr;
   focus_magic_event = nullptr;
   icicle_event = nullptr;
   ignite_spread_event = nullptr;
@@ -6416,6 +6560,12 @@ void mage_t::arise()
 
   buffs.incanters_flow->trigger();
   buffs.gbow->trigger();
+
+  if ( talents.enlightened->ok() && options.enlightened_interval > 0_ms )
+  {
+    timespan_t first_tick = rng().real() * options.enlightened_interval;
+    enlightened_event = make_event<events::enlightened_event_t>( *sim, *this, first_tick );
+  }
 
   if ( talents.focus_magic->ok() && options.focus_magic_interval > 0_ms )
   {
@@ -6508,6 +6658,12 @@ std::unique_ptr<expr_t> mage_t::create_action_expression( action_t& action, cons
 
 std::unique_ptr<expr_t> mage_t::create_expression( const std::string& name )
 {
+  if ( util::str_compare_ci( name, "mana_gems_available" ) )
+  {
+    return make_fn_expr( name, [ this ]
+    { return mana_gems_available; } );
+  }
+
   // Incanters flow direction
   // Evaluates to:  0.0 if IF talent not chosen or IF stack unchanged
   //                1.0 if next IF stack increases
@@ -6980,6 +7136,20 @@ void mage_t::trigger_lucid_dreams( player_t* trigger_target, double cost )
     }
 
     player_t::buffs.lucid_dreams->trigger();
+  }
+}
+
+void mage_t::update_enlightened()
+{
+  if ( resources.pct( RESOURCE_MANA ) > talents.enlightened->effectN( 1 ).percent() )
+  {
+    buffs.enlightened_damage->trigger();
+    buffs.enlightened_mana->expire();
+  }
+  else
+  {
+    buffs.enlightened_damage->expire();
+    buffs.enlightened_mana->trigger();
   }
 }
 
