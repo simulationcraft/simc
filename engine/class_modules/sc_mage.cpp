@@ -6666,7 +6666,7 @@ std::unique_ptr<expr_t> mage_t::create_action_expression( action_t& action, cons
 
 std::unique_ptr<expr_t> mage_t::create_expression( const std::string& name )
 {
-  if ( util::str_compare_ci( name, "mana_gems_charges" ) )
+  if ( util::str_compare_ci( name, "mana_gem_charges" ) )
   {
     return make_fn_expr( name, [ this ]
     { return state.mana_gem_charges; } );
