@@ -8999,8 +8999,8 @@ double druid_t::composite_melee_attack_power() const
 
   if ( specialization() == DRUID_RESTORATION )
   {
-    return spec.restoration -> effectN( 10 ).percent() * cache.spell_power( SCHOOL_MAX ) *
-      composite_spell_power_multiplier();
+    return query_aura_effect( spec.restoration, E_APPLY_AURA, A_404 )->percent() * cache.spell_power( SCHOOL_MAX ) *
+           composite_spell_power_multiplier();
   }
 
   return player_t::composite_melee_attack_power();
@@ -9016,7 +9016,7 @@ double druid_t::composite_melee_attack_power( attack_power_type type ) const
 
   if ( specialization() == DRUID_RESTORATION )
   {
-    return spec.restoration->effectN( 10 ).percent() * cache.spell_power( SCHOOL_MAX ) *
+    return query_aura_effect( spec.restoration, E_APPLY_AURA, A_404 )->percent() * cache.spell_power( SCHOOL_MAX ) *
            composite_spell_power_multiplier();
   }
   return player_t::composite_melee_attack_power( type );
