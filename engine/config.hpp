@@ -170,8 +170,8 @@ constexpr double m_pi = 3.14159265358979323846;
 #define SC_BETA_STR "shadowlands"
 #endif
 
-constexpr int MAX_LEVEL = 120;
-constexpr int MAX_SCALING_LEVEL = 120;
+constexpr int MAX_LEVEL = 60;
+constexpr int MAX_SCALING_LEVEL = 60;
 constexpr int MAX_ILEVEL = 1300;
 constexpr int MAX_CLASS = 13;
 
