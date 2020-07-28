@@ -328,14 +328,19 @@ struct shadow_word_death_t final : public priest_spell_t
   : priest_spell_t( "shadow_word_death", p, p.find_class_spell( "Shadow Word: Death" ) )
   {
     parse_options( options_str );
-    cooldown           = priest().cooldowns.shadow_word_death;
-    cooldown->duration = data().cooldown();
 
     auto rank2 = p.find_rank_spell( "Shadow Word: Death", "Rank 2" );
     if ( rank2->ok() )
     {
       cooldown->duration += rank2->effectN( 1 ).time_value();
     }
+  }
+
+  void init() override
+  {
+    priest().cooldowns.shadow_word_death->hasted = true;
+
+    priest_spell_t::init();
   }
 
   void impact( action_state_t* s ) override
@@ -365,7 +370,8 @@ struct shadow_word_death_t final : public priest_spell_t
 
       if ( priest().talents.death_and_madness->ok() )
       {
-        priest().buffs.death_and_madness->trigger();
+        residual_action::trigger( p()->death_and_madness, s->target );
+        // priest().buffs.death_and_madness->trigger( p()->ignite, s->target );
       }
 
       priest().generate_insanity( total_insanity_gain, priest().gains.insanity_shadow_word_death, s->action );
@@ -1204,25 +1210,6 @@ struct void_torrent_t final : public priest_spell_t
     return priest_spell_t::ready();
   }
 };
-
-struct death_and_madness_insanity_t final : public priest_spell_t
-{
-  double insanity_gain;
-
-  death_and_madness_insanity_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "death_and_madness", p, p.find_spell( 321973 ) ),
-      insanity_gain( p.find_spell( 321973 )->effectN( 1 ).base_value() / 55 )
-  {
-    parse_options( options_str );
-    may_crit      = false;
-  }
-
-  void tick( dot_t* d ) override
-  {
-    priest_spell_t::tick( d );
-    priest().generate_insanity( insanity_gain, priest().gains.insanity_death_and_madness, d->state->action );
-  }
-};
 }  // namespace spells
 
 namespace heals
@@ -1477,11 +1464,17 @@ struct death_and_madness_debuff_t final : public priest_buff_t<buff_t>
 
 struct death_and_madness_buff_t final : public priest_buff_t<buff_t>
 {
-  death_and_madness_buff_t( priest_t& p ) : base_t( p, "death_and_madness", p.talents.death_and_madness )
-  {
-    set_trigger_spell( p.find_spell( 321973 )->effectN( 1 ).trigger() );
-  }
+  double insanity_gain;
 
+  death_and_madness_buff_t( priest_t& p )
+  : base_t( p, "death_and_madness", p.find_spell( 321973 ) ),
+    insanity_gain( p.find_spell( 321973 )->effectN( 1 ).base_value() / 55 )
+  {
+    set_tick_callback( [ this ] ( buff_t*, int, timespan_t )
+    {
+      priest().generate_insanity( insanity_gain, priest().gains.insanity_mind_blast, this );
+    } );
+  }
 };
 
 struct chorus_of_insanity_t final : public priest_buff_t<stat_buff_t>
@@ -1876,15 +1869,15 @@ void priest_t::create_buffs_shadow()
   buffs.vampiric_embrace      = make_buff<buffs::vampiric_embrace_t>( *this );
 
   // Talents
-  buffs.void_torrent           = make_buff<buffs::void_torrent_t>( *this );
-  buffs.surrender_to_madness   = make_buff<buffs::surrender_to_madness_t>( *this );
-  buffs.surrendered_to_madness = make_buff<buffs::surrendered_to_madness_t>( *this );
-  buffs.lingering_insanity     = make_buff<buffs::lingering_insanity_t>( *this );
-  buffs.death_and_madness      = make_buff<buffs::death_and_madness_debuff_t>( *this );
-  buffs.death_and_madness_buff = make_buff<buffs::death_and_madness_buff_t>( *this );
+  buffs.void_torrent             = make_buff<buffs::void_torrent_t>( *this );
+  buffs.surrender_to_madness     = make_buff<buffs::surrender_to_madness_t>( *this );
+  buffs.surrendered_to_madness   = make_buff<buffs::surrendered_to_madness_t>( *this );
+  buffs.lingering_insanity       = make_buff<buffs::lingering_insanity_t>( *this );
+  buffs.death_and_madness_debuff = make_buff<buffs::death_and_madness_debuff_t>( *this );
+  buffs.death_and_madness_buff   = make_buff<buffs::death_and_madness_buff_t>( *this );
 
   // Azerite Powers
-  buffs.chorus_of_insanity = make_buff<buffs::chorus_of_insanity_t>( *this );
+  buffs.chorus_of_insanity     = make_buff<buffs::chorus_of_insanity_t>( *this );
   buffs.harvested_thoughts     = make_buff<buffs::harvested_thoughts_t>( *this );
   buffs.whispers_of_the_damned = make_buff<buffs::whispers_of_the_damned_t>( *this );
 }

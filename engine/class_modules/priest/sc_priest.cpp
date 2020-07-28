@@ -652,6 +652,7 @@ void priest_t::create_cooldowns()
   cooldowns.psychic_horror     = get_cooldown( "psychic_horror" );
   cooldowns.dark_ascension     = get_cooldown( "dark_ascension" );
   cooldowns.power_infusion     = get_cooldown( "power_infusion" );
+  cooldowns.shadow_word_death  = get_cooldown( "shadow_word_death" );
 
   if ( specialization() == PRIEST_DISCIPLINE )
   {

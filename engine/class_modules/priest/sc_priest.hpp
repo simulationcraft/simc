@@ -115,7 +115,7 @@ public:
     propagate_const<buff_t*> vampiric_embrace;
     propagate_const<buff_t*> void_torrent;
     propagate_const<buff_t*> voidform;
-    propagate_const<buff_t*> death_and_madness;
+    propagate_const<buff_t*> death_and_madness_debuff;
     propagate_const<buff_t*> death_and_madness_buff;
 
     // Azerite Powers
