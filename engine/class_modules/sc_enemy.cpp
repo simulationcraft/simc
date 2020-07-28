@@ -1102,7 +1102,7 @@ struct tank_dummy_enemy_t : public enemy_t
         Level 50 M0/M+: 1020.82 (ExpectedStatModID: 171; ArmorConstMod: 1.187)
         Ny'alotha LFR: 984.7 (ExpectedStatModID: 143; ArmorConstMod: 1.145)
         Ny'alotha Normal: 1020.82 (ExpectedStatModID: 151; ArmorConstMod: 1.187)
-        Ny'alotha Heroic: 1020.82 (ExpectedStatModID: 152; ArmorConstMod: 1.287)
+        Ny'alotha Heroic: 1106.82 (ExpectedStatModID: 152; ArmorConstMod: 1.287)
         Ny'alotha Mythic: 1205.72‬ (ExpectedStatModID: 158; ArmorConstMod: 1.402)
         Level 60 Base/open world: 2500.000 (Level 60 Armor mitigation constants (K-values))
         Level 60 M0/M+: 2455.0 (ExpectedStatModID: 176; ArmorConstMod: 0.982) *Needs to be updated closer to release
@@ -1115,16 +1115,16 @@ struct tank_dummy_enemy_t : public enemy_t
       switch ( tank_dummy_enum )
       {
         case tank_dummy_e::DUNGEON:
-          base.armor_coeff = 879.567;  // 8.3 M0/M+
+          base.armor_coeff = 1020.82;  // 9.0 M0/M+ Pre-patch
           break;
         case tank_dummy_e::RAID:
-          base.armor_coeff = 879.567;  // Normal Ny'alotha
+          base.armor_coeff = 1020.82;  // Normal Ny'alotha
           break;
         case tank_dummy_e::HEROIC:
-          base.armor_coeff = 953.667;  // Heroic Ny'alotha
+          base.armor_coeff = 1106.82;  // Heroic Ny'alotha
           break;
         case tank_dummy_e::MYTHIC:
-          base.armor_coeff = 1038.882;  // Mythic Ny'alotha
+          base.armor_coeff = 1205.72;  // Mythic Ny'alotha
           break;
         default:
           break;  // Use the default value set in enemy_t::init_base_stats()
