@@ -125,7 +125,7 @@ struct rogue_td_t : public actor_target_data_t
     buff_t* vendetta;
     buff_t* wound_poison;
     buff_t* crippling_poison;
-    buff_t* leeching_poison;
+    buff_t* numbing_poison;
     buffs::marked_for_death_debuff_t* marked_for_death;
     buff_t* ghostly_strike;
     buff_t* rupture; // Hidden proxy for handling Scent of Blood azerite trait
@@ -155,16 +155,15 @@ struct rogue_td_t : public actor_target_data_t
 
   bool non_lethal_poisoned() const
   {
-    return debuffs.crippling_poison -> check() ||
-           debuffs.leeching_poison -> check();
+    return debuffs.crippling_poison->check() || debuffs.numbing_poison->check();
   }
 
   timespan_t non_lethal_poison_remains() const
   {
-    if ( debuffs.crippling_poison -> check() ) {
-      return debuffs.crippling_poison -> remains();
-    } else if ( debuffs.leeching_poison -> check() ) {
-      return debuffs.leeching_poison -> remains();
+    if ( debuffs.crippling_poison->check() ) {
+      return debuffs.crippling_poison->remains();
+    } else if ( debuffs.numbing_poison->check() ) {
+      return debuffs.numbing_poison->remains();
     } else {
       return timespan_t::from_seconds( 0.0 );
     }
@@ -1368,7 +1367,6 @@ struct poison_bomb_t : public rogue_attack_t
 
 struct rogue_poison_t : public rogue_attack_t
 {
-  bool lethal_;
   double proc_chance_;
 
   rogue_poison_t( const std::string& token, rogue_t* p,
@@ -1514,6 +1512,38 @@ struct deadly_poison_t : public rogue_poison_t
   }
 };
 
+// Instant Poison ===========================================================
+
+struct instant_poison_t : public rogue_poison_t
+{
+  struct instant_poison_dd_t : public rogue_poison_t
+  {
+    instant_poison_dd_t( rogue_t* p ) :
+      rogue_poison_t( "instant_poison", p, p->find_class_spell( "Instant Poison" )->effectN( 1 ).trigger() )
+    {
+      proc = false;
+      callbacks = true;
+    }
+  };
+
+  instant_poison_dd_t* proc_dd;
+
+  instant_poison_t( rogue_t* p ) :
+    rogue_poison_t( "instant_poison_driver", p, p->find_class_spell( "Instant Poison" ) )
+  {
+    dual = true;
+    proc_dd = new instant_poison_dd_t( p );
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    rogue_poison_t::impact( state );
+
+    proc_dd->set_target( state->target );
+    proc_dd->execute();
+  }
+};
+
 // Wound Poison =============================================================
 
 struct wound_poison_t : public rogue_poison_t
@@ -1521,7 +1551,7 @@ struct wound_poison_t : public rogue_poison_t
   struct wound_poison_dd_t : public rogue_poison_t
   {
     wound_poison_dd_t( rogue_t* p ) :
-      rogue_poison_t( "wound_poison", p, p -> find_specialization_spell( "Wound Poison" ) -> effectN( 1 ).trigger() )
+      rogue_poison_t( "wound_poison", p, p -> find_class_spell( "Wound Poison" ) -> effectN( 1 ).trigger() )
     {
       proc = false;
       callbacks = true;
@@ -1546,10 +1576,9 @@ struct wound_poison_t : public rogue_poison_t
   wound_poison_dd_t* proc_dd;
 
   wound_poison_t( rogue_t* player ) :
-    rogue_poison_t( "wound_poison_driver", player, player -> find_specialization_spell( "Wound Poison" ) )
+    rogue_poison_t( "wound_poison_driver", player, player -> find_class_spell( "Wound Poison" ) )
   {
     dual = true;
-
     proc_dd = new wound_poison_dd_t( player );
   }
 
@@ -1569,7 +1598,7 @@ struct crippling_poison_t : public rogue_poison_t
   struct crippling_poison_proc_t : public rogue_poison_t
   {
     crippling_poison_proc_t( rogue_t* rogue ) :
-      rogue_poison_t( "crippling_poison", rogue, rogue -> find_spell( 3409 ) )
+      rogue_poison_t( "crippling_poison", rogue, rogue->find_class_spell( "Crippling Poison" )->effectN( 1 ).trigger() )
     { }
 
     void impact( action_state_t* state ) override
@@ -1583,7 +1612,7 @@ struct crippling_poison_t : public rogue_poison_t
   crippling_poison_proc_t* proc;
 
   crippling_poison_t( rogue_t* player ) :
-    rogue_poison_t( "crippling_poison_driver", player, player -> find_specialization_spell( "Crippling Poison" ) ),
+    rogue_poison_t( "crippling_poison_driver", player, player -> find_class_spell( "Crippling Poison" ) ),
     proc( new crippling_poison_proc_t( player ) )
   {
     dual = true;
@@ -1598,29 +1627,28 @@ struct crippling_poison_t : public rogue_poison_t
   }
 };
 
-// Leeching poison =========================================================
+// Numbing poison ===========================================================
 
-struct leeching_poison_t : public rogue_poison_t
+struct numbing_poison_t : public rogue_poison_t
 {
-  struct leeching_poison_proc_t : public rogue_poison_t
+  struct numbing_poison_proc_t : public rogue_poison_t
   {
-    leeching_poison_proc_t( rogue_t* rogue ) :
-      rogue_poison_t( "leeching_poison", rogue, rogue -> find_spell( 112961 ) )
+    numbing_poison_proc_t( rogue_t* p ) :
+      rogue_poison_t( "numbing_poison", p, p->find_class_spell( "Numbing Poison" )->effectN( 1 ).trigger() )
     { }
 
     void impact( action_state_t* state ) override
     {
       rogue_poison_t::impact( state );
-
-      td( state -> target ) -> debuffs.leeching_poison -> trigger();
+      td( state->target )->debuffs.numbing_poison->trigger();
     }
   };
 
-  leeching_poison_proc_t* proc;
+  numbing_poison_proc_t* proc;
 
-  leeching_poison_t( rogue_t* player ) :
-    rogue_poison_t( "leeching_poison_driver", player, player -> find_talent_spell( "Leeching Poison" ) ),
-    proc( new leeching_poison_proc_t( player ) )
+  numbing_poison_t( rogue_t* p ) :
+    rogue_poison_t( "numbing_poison_driver", p, p->find_class_spell( "Numbing Poison" ) ),
+    proc( new numbing_poison_proc_t( p ) )
   {
     dual = true;
   }
@@ -1629,8 +1657,8 @@ struct leeching_poison_t : public rogue_poison_t
   {
     rogue_poison_t::impact( state );
 
-    proc -> set_target( state -> target );
-    proc -> execute();
+    proc->set_target( state->target );
+    proc->execute();
   }
 };
 
@@ -1638,22 +1666,10 @@ struct leeching_poison_t : public rogue_poison_t
 
 struct apply_poison_t : public action_t
 {
-  enum poison_e
-  {
-    POISON_NONE = 0,
-    DEADLY_POISON,
-    WOUND_POISON,
-    CRIPPLING_POISON,
-    LEECHING_POISON
-  };
-
-  poison_e lethal_poison;
-  poison_e nonlethal_poison;
   bool executed;
 
   apply_poison_t( rogue_t* p, const std::string& options_str ) :
     action_t( ACTION_OTHER, "apply_poison", p ),
-    lethal_poison( POISON_NONE ), nonlethal_poison( POISON_NONE ),
     executed( false )
   {
     std::string lethal_str;
@@ -1668,50 +1684,36 @@ struct apply_poison_t : public action_t
 
     if ( p -> main_hand_weapon.type != WEAPON_NONE || p -> off_hand_weapon.type != WEAPON_NONE )
     {
-      // Default to agonizing -> deadly, if no option given
-      if      ( lethal_str.empty()        ) lethal_poison = DEADLY_POISON;
-      else if ( lethal_str == "deadly"    ) lethal_poison = DEADLY_POISON;
-      else if ( lethal_str == "wound"     ) lethal_poison = WOUND_POISON;
+      if ( ! p -> active_lethal_poison )
+      {
+        if ( lethal_str.empty() && p -> specialization() == ROGUE_ASSASSINATION || lethal_str == "deadly"  ) p -> active_lethal_poison = new deadly_poison_t( p );
+        else if ( lethal_str.empty() && p -> specialization() != ROGUE_ASSASSINATION ||  lethal_str == "instant"   ) p -> active_lethal_poison = new instant_poison_t( p );
+        else if ( lethal_str == "wound"   ) p -> active_lethal_poison = new wound_poison_t( p );
+      }
 
-      if ( nonlethal_str == "crippling" ) nonlethal_poison = CRIPPLING_POISON;
-      if ( nonlethal_str == "leeching"  ) nonlethal_poison = LEECHING_POISON;
-    }
-
-    if ( ! p -> active_lethal_poison )
-    {
-      if ( lethal_poison == DEADLY_POISON  ) p -> active_lethal_poison = new deadly_poison_t( p );
-      if ( lethal_poison == WOUND_POISON   ) p -> active_lethal_poison = new wound_poison_t( p );
-    }
-
-    if ( ! p -> active_nonlethal_poison )
-    {
-      if ( nonlethal_poison == CRIPPLING_POISON ) p -> active_nonlethal_poison = new crippling_poison_t( p );
-      if ( nonlethal_poison == LEECHING_POISON  ) p -> active_nonlethal_poison = new leeching_poison_t( p );
+      if ( ! p -> active_nonlethal_poison )
+      {
+        if ( nonlethal_str.empty() || nonlethal_str == "crippling" ) p -> active_nonlethal_poison = new crippling_poison_t( p );
+        else if ( nonlethal_str == "numbing" ) p -> active_nonlethal_poison = new numbing_poison_t( p );
+      }
     }
   }
 
   void reset() override
   {
     action_t::reset();
-
     executed = false;
   }
 
   void execute() override
   {
     executed = true;
-
     if ( sim -> log )
       sim -> out_log.printf( "%s performs %s", player -> name(), name() );
   }
 
   bool ready() override
   {
-    if ( player -> specialization() != ROGUE_ASSASSINATION )
-    {
-      return false;
-    }
-
     return ! executed;
   }
 };
@@ -4395,9 +4397,6 @@ inline bool rogue_t::poisoned_enemy( player_t* target, bool deadly_fade ) const
   if ( td -> debuffs.crippling_poison -> check() )
     return true;
 
-  if ( td -> debuffs.leeching_poison -> check() )
-    return true;
-
   return false;
 }
 
@@ -4701,21 +4700,21 @@ struct rogue_poison_buff_t : public buff_t
 struct wound_poison_t : public rogue_poison_buff_t
 {
   wound_poison_t( rogue_td_t& r ) :
-    rogue_poison_buff_t( r, "wound_poison", r.source -> find_spell( 8680 ) )
+    rogue_poison_buff_t( r, "wound_poison", r.source->find_class_spell( "Wound Poison" )->effectN( 1 ).trigger() )
   { }
 };
 
 struct crippling_poison_t : public rogue_poison_buff_t
 {
   crippling_poison_t( rogue_td_t& r ) :
-    rogue_poison_buff_t( r, "crippling_poison", r.source -> find_spell( 3409 ) )
+    rogue_poison_buff_t( r, "crippling_poison", r.source->find_class_spell( "Crippling Poison" )->effectN( 1 ).trigger() )
   { }
 };
 
-struct leeching_poison_t : public rogue_poison_buff_t
+struct numbing_poison_t : public rogue_poison_buff_t
 {
-  leeching_poison_t( rogue_td_t& r ) :
-    rogue_poison_buff_t( r, "leeching_poison", r.source -> find_spell( 112961 ) )
+  numbing_poison_t( rogue_td_t& r ) :
+    rogue_poison_buff_t( r, "numbing_poison", r.source->find_class_spell( "Numbing Poison" )->effectN( 1 ).trigger() )
   { }
 };
 
@@ -5578,7 +5577,7 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
   debuffs.marked_for_death = new buffs::marked_for_death_debuff_t( *this );
   debuffs.wound_poison = new buffs::wound_poison_t( *this );
   debuffs.crippling_poison = new buffs::crippling_poison_t( *this );
-  debuffs.leeching_poison = new buffs::leeching_poison_t( *this );
+  debuffs.numbing_poison = new buffs::numbing_poison_t( *this );
   debuffs.rupture = new buffs::proxy_rupture_t( *this );
   debuffs.vendetta = new buffs::vendetta_debuff_t( *this );
   debuffs.toxic_blade = make_buff( *this, "toxic_blade", source -> talent.toxic_blade -> effectN( 4 ).trigger() )
@@ -5766,6 +5765,9 @@ void rogue_t::init_action_list()
 
   clear_action_priority_lists();
 
+  // Poisons
+  precombat->add_action( "apply_poison" );
+
   // Flask
   precombat -> add_action( "flask" );
 
@@ -5807,7 +5809,6 @@ void rogue_t::init_action_list()
   if ( specialization() == ROGUE_ASSASSINATION )
   {
     // Pre-Combat
-    precombat->add_action( "apply_poison" );
     precombat->add_action( this, "Stealth" );
     precombat->add_action( "use_item,name=azsharas_font_of_power" );
     precombat->add_action( "guardian_of_azeroth,if=talent.exsanguinate.enabled" );
