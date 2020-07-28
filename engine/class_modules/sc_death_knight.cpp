@@ -1446,6 +1446,13 @@ struct death_knight_pet_t : public pet_t
 
   virtual attack_t* create_auto_attack()
   { return nullptr; }
+
+  void apply_affecting_auras( action_t& action ) override
+  {
+    player_t::apply_affecting_auras( action );
+
+    o()->apply_affecting_auras(action);
+  }
 };
 
 // ==========================================================================
