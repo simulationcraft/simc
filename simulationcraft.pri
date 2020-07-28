@@ -87,7 +87,8 @@ win32 {
     QMAKE_CXXFLAGS_WARN_ON += /w44800 /w44100 /w44065
   }
 
-  win32-msvc2017|win32-msvc2019 {
+  # Enable /permissive- on Visual Studio 2017+
+  win32-msvc:greaterThan(QMAKE_MSC_VER, 1909) {
     QMAKE_CXXFLAGS += /permissive-
   }
 
@@ -96,16 +97,10 @@ win32 {
     DEFINES += SC_GIT_REV="\\\"$$system(git rev-parse --short HEAD)\\\""
   }
 
-  !isEmpty(PGO) {
-    win32-msvc2013 {
-      QMAKE_LFLAGS_RELEASE += /LTCG
-      QMAKE_CXXFLAGS_RELEASE += /GL
-    }
-
-    win32-msvc2015|win32-msvc2017|win32-msvc2019 {
-      QMAKE_CXXFLAGS_RELEASE += /GL
-      QMAKE_LFLAGS_RELEASE   += /LTCG /USEPROFILE /PGD:"..\SimulationCraft.pgd"
-    }
+  # Allow PGO builds on Visual Studio 2015+
+  !isEmpty(PGO):win32-msvc:greaterThan(QMAKE_MSC_VER, 1899) {
+    QMAKE_CXXFLAGS_RELEASE += /GL
+    QMAKE_LFLAGS_RELEASE   += /LTCG /USEPROFILE /PGD:"..\SimulationCraft.pgd"
   }
 }
 
