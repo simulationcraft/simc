@@ -6,6 +6,12 @@
 #ifndef SC_IMPORTWIDGET_HPP
 #define SC_IMPORTWIDGET_HPP
 
+// Workaround for "combaseapi.h(229): error C2187: syntax error: 'identifier' was unexpected here" when using /permissive-
+// Qt includes the 8.1 SDK which is unforunately not /permissive- compliant 
+#if defined( _WIN32 ) && !defined( _WIN32_WINNT_WINTHRESHOLD )
+struct IUnknown;
+#endif
+
 #include <QtWidgets/QtWidgets>
 #include <QStandardItemModel>
 #include <QMap>
