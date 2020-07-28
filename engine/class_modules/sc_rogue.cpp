@@ -811,12 +811,6 @@ struct rogue_attack_t : public melee_attack_t
   {
     parse_options( options );
 
-    may_crit = true;
-    may_glance = false;
-    special = true;
-    tick_may_crit = true;
-    hasted_ticks = false;
-
     for ( size_t i = 1; i <= s -> effect_count(); i++ )
     {
       const spelleffect_data_t& effect = s -> effectN( i );
@@ -846,33 +840,40 @@ struct rogue_attack_t : public melee_attack_t
     }
 
     // Affecting passives
+    // Put ability specific ones here; class/spec wide ones with labels that can effect things like trinkets in rogue_t::apply_affecting_auras.
     apply_affecting_aura( p->talent.deeper_stratagem );
     apply_affecting_aura( p->talent.master_poisoner );
+  }
+
+  void init() override
+  {
+    melee_attack_t::init();
 
     // Dynamically affected flags
     // Special things like CP, Energy, Crit, etc.
-    affected_by.shadow_blades = data().affected_by( p->spec.shadow_blades->effectN( 2 ) ) ||
-      data().affected_by( p->spec.shadow_blades->effectN( 3 ) );
+    affected_by.shadow_blades = data().affected_by( p()->spec.shadow_blades->effectN( 2 ) ) ||
+      data().affected_by( p()->spec.shadow_blades->effectN( 3 ) );
     affected_by.ruthlessness = base_costs[ RESOURCE_COMBO_POINT ] > 0;
     affected_by.relentless_strikes = base_costs[ RESOURCE_COMBO_POINT ] > 0;
     affected_by.deepening_shadows = base_costs[ RESOURCE_COMBO_POINT ] > 0;
-    affected_by.vendetta = data().affected_by( p->spec.vendetta->effectN( 1 ) );
+    affected_by.vendetta = data().affected_by( p()->spec.vendetta->effectN( 1 ) );
     affected_by.alacrity = base_costs[ RESOURCE_COMBO_POINT ] > 0;
-    affected_by.adrenaline_rush_gcd = data().affected_by( p->buffs.adrenaline_rush->data().effectN( 3 ) );
-    affected_by.broadside_cp = data().affected_by( p->buffs.broadside->data().effectN( 1 ) ) ||
-      data().affected_by( p->buffs.broadside->data().effectN( 2 ) ) ||
-      data().affected_by( p->buffs.broadside->data().effectN( 3 ) );
-    affected_by.master_assassin = data().affected_by( p->spec.master_assassin->effectN( 1 ) );
-    affected_by.toxic_blade = data().affected_by( p->talent.toxic_blade->effectN( 4 ).trigger()->effectN( 1 ) );
-    affected_by.ruthless_precision = data().affected_by( p->buffs.ruthless_precision->data().effectN( 1 ) );
+    affected_by.adrenaline_rush_gcd = data().affected_by( p()->buffs.adrenaline_rush->data().effectN( 3 ) );
+    affected_by.broadside_cp = data().affected_by( p()->buffs.broadside->data().effectN( 1 ) ) ||
+      data().affected_by( p()->buffs.broadside->data().effectN( 2 ) ) ||
+      data().affected_by( p()->buffs.broadside->data().effectN( 3 ) );
+    affected_by.master_assassin = data().affected_by( p()->spec.master_assassin->effectN( 1 ) );
+    affected_by.toxic_blade = data().affected_by( p()->talent.toxic_blade->effectN( 4 ).trigger()->effectN( 1 ) );
+    affected_by.ruthless_precision = data().affected_by( p()->buffs.ruthless_precision->data().effectN( 1 ) );
 
-    // Auto-parsing for damage affecting dynamic flags
-    parse_damage_affecting_spell( p->mastery.executioner, affected_by.mastery_executioner );
-    parse_damage_affecting_spell( p->mastery.potent_assassin, affected_by.mastery_potent_assassin );
-    parse_damage_affecting_buff( p->buffs.broadside, affected_by.broadside );
-    parse_damage_affecting_buff( p->buffs.symbols_of_death, affected_by.symbols_of_death );
-    parse_damage_affecting_buff( p->buffs.shadow_dance, affected_by.shadow_dance );
-    parse_damage_affecting_buff( p->buffs.elaborate_planning, affected_by.elaborate_planning );
+    // Auto-parsing for damage affecting dynamic flags, this reads IF direct/periodic dmg is affected and stores by how much.
+    // Still requires manual impl below but removes need to hardcode effect numbers.
+    parse_damage_affecting_spell( p()->mastery.executioner, affected_by.mastery_executioner );
+    parse_damage_affecting_spell( p()->mastery.potent_assassin, affected_by.mastery_potent_assassin );
+    parse_damage_affecting_buff( p()->buffs.broadside, affected_by.broadside );
+    parse_damage_affecting_buff( p()->buffs.symbols_of_death, affected_by.symbols_of_death );
+    parse_damage_affecting_buff( p()->buffs.shadow_dance, affected_by.shadow_dance );
+    parse_damage_affecting_buff( p()->buffs.elaborate_planning, affected_by.elaborate_planning );
   }
 
   void snapshot_state( action_state_t* state, result_amount_type rt ) override
@@ -1237,7 +1238,7 @@ struct main_gauche_t : public rogue_attack_t
   main_gauche_t( rogue_t* p ) :
     rogue_attack_t( "main_gauche", p, p -> find_spell( 86392 ) )
   {
-    special = background = may_crit = true;
+    background = true;
   }
 
   double attack_direct_power_coefficient( const action_state_t* s ) const override
@@ -1266,7 +1267,7 @@ struct blade_flurry_attack_t : public rogue_attack_t
   blade_flurry_attack_t( rogue_t* p ) :
     rogue_attack_t( "blade_flurry_attack", p, p -> find_spell( 22482 ) )
   {
-    may_miss = may_crit = proc = callbacks = may_dodge = may_parry = may_block = false;
+    proc = callbacks = false;
     background = true;
     aoe        = -1;
     radius     = 5;
@@ -1304,7 +1305,6 @@ struct internal_bleeding_t : public rogue_attack_t
     rogue_attack_t( "internal_bleeding", p, p -> find_spell( 154953 ) )
   {
     background = true;
-    hasted_ticks = true;
   }
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
@@ -1341,7 +1341,6 @@ struct poison_bomb_t : public rogue_attack_t
   {
     background = true;
     aoe = -1;
-    may_miss = may_dodge = may_parry = may_block = false;
   }
 };
 
@@ -1362,9 +1361,6 @@ struct rogue_poison_t : public rogue_attack_t
     proc              = true;
     background        = true;
     trigger_gcd       = timespan_t::zero();
-    may_dodge         = false;
-    may_parry         = false;
-    may_block         = false;
     callbacks         = false;
 
     proc_chance_  = data().proc_chance();
@@ -1421,7 +1417,7 @@ struct deadly_poison_t : public rogue_poison_t
       rogue_poison_t( "deadly_poison_instant", p, p -> find_spell( 113780 ) )
     {
       proc = false;
-      callbacks = harmful = true;
+      callbacks = true;
     }
   };
 
@@ -1430,10 +1426,8 @@ struct deadly_poison_t : public rogue_poison_t
     deadly_poison_dot_t( rogue_t* p ) :
       rogue_poison_t( "deadly_poison_dot", p, p -> find_specialization_spell( "Deadly Poison" ) -> effectN( 1 ).trigger() )
     {
-      proc           = false;
-      harmful        = true;
-      hasted_ticks   = true;
-      callbacks      = true;
+      proc = false;
+      callbacks = true;
     }
 
     timespan_t calculate_dot_refresh_duration(const dot_t* dot, timespan_t /* triggered_duration */) const override
@@ -1478,7 +1472,6 @@ struct deadly_poison_t : public rogue_poison_t
     proc_instant( nullptr ), proc_dot( nullptr )
   {
     dual = true;
-    may_miss = may_crit = false;
 
     proc_instant = new deadly_poison_dd_t( player );
     proc_dot     = new deadly_poison_dot_t( player );
@@ -1512,7 +1505,8 @@ struct wound_poison_t : public rogue_poison_t
     wound_poison_dd_t( rogue_t* p ) :
       rogue_poison_t( "wound_poison", p, p -> find_specialization_spell( "Wound Poison" ) -> effectN( 1 ).trigger() )
     {
-      harmful          = true;
+      proc = false;
+      callbacks = true;
     }
 
     void impact( action_state_t* state ) override
@@ -1536,8 +1530,7 @@ struct wound_poison_t : public rogue_poison_t
   wound_poison_t( rogue_t* player ) :
     rogue_poison_t( "wound_poison_driver", player, player -> find_specialization_spell( "Wound Poison" ) )
   {
-    dual           = true;
-    may_miss = may_crit = false;
+    dual = true;
 
     proc_dd = new wound_poison_dd_t( player );
   }
@@ -1576,7 +1569,6 @@ struct crippling_poison_t : public rogue_poison_t
     proc( new crippling_poison_proc_t( player ) )
   {
     dual = true;
-    may_miss = may_crit = false;
   }
 
   void impact( action_state_t* state ) override
@@ -1613,7 +1605,6 @@ struct leeching_poison_t : public rogue_poison_t
     proc( new leeching_poison_proc_t( player ) )
   {
     dual = true;
-    may_miss = may_crit = false;
   }
 
   void impact( action_state_t* state ) override
@@ -1653,7 +1644,6 @@ struct apply_poison_t : public action_t
     add_option( opt_string( "lethal", lethal_str ) );
     add_option( opt_string( "nonlethal", nonlethal_str ) );
     parse_options( options_str );
-    ignore_false_positive = true;
 
     trigger_gcd = timespan_t::zero();
     harmful = false;
@@ -1901,7 +1891,7 @@ struct melee_t : public rogue_attack_t
   melee_t( const char* name, rogue_t* p, int sw ) :
     rogue_attack_t( name, p ), sync_weapons( sw ), first( true )
   {
-    background = repeating = may_glance = true;
+    background = repeating = true;
     special = false;
     school = SCHOOL_PHYSICAL;
     trigger_gcd = timespan_t::zero();
@@ -2071,7 +2061,7 @@ struct adrenaline_rush_t : public rogue_attack_t
     add_option( opt_float( "precombat_seconds", precombat_seconds ) );
     parse_options( options_str );
 
-    harmful = may_miss = may_crit = false;
+    harmful = false;
 
     if ( p->azerite.vision_of_perfection.enabled() )
     {
@@ -2107,7 +2097,6 @@ struct ambush_t : public rogue_attack_t
   ambush_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "ambush", p, p -> find_specialization_spell( "Ambush" ), options_str )
   {
-    may_dodge = may_block = may_parry = false;
     requires_stealth  = true;
   }
 
@@ -2246,8 +2235,7 @@ struct blade_flurry_t : public rogue_attack_t
   blade_flurry_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "blade_flurry", p, p -> find_specialization_spell( "Blade Flurry" ), options_str )
   {
-    harmful = may_miss = may_crit = false;
-    ignore_false_positive = true;
+    harmful = false;
     internal_cooldown -> duration += p -> talent.dancing_steel -> effectN( 4 ).time_value();
   }
 
@@ -2345,7 +2333,6 @@ struct crimson_tempest_t : public rogue_attack_t
     rogue_attack_t( "crimson_tempest", p, p -> talent.crimson_tempest, options_str )
   {
     aoe = -1;
-    hasted_ticks = true;
   }
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
@@ -2375,8 +2362,6 @@ struct detection_t : public rogue_attack_t
   detection_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "detection", p, p -> find_class_spell( "Detection" ), options_str )
   {
-    may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = false;
-    ignore_false_positive = true;
     gcd_type = gcd_haste_type::ATTACK_HASTE;
     min_gcd = timespan_t::from_millis(750); // Force 750ms min gcd because rogue player base has a 1s min.
   }
@@ -2490,7 +2475,6 @@ struct fan_of_knives_t: public rogue_attack_t
     {
       aoe = -1;
       background  = true;
-      may_miss = may_block = may_dodge = may_parry = false;
       base_dd_min = p -> azerite.echoing_blades.value( 6 );
       base_dd_max = p -> azerite.echoing_blades.value( 6 );
     }
@@ -2620,9 +2604,6 @@ struct garrote_t : public rogue_attack_t
   garrote_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "garrote", p, p -> spec.garrote, options_str )
   {
-    may_crit = false;
-    may_dodge = may_block = may_parry = false;
-    hasted_ticks = true;
   }
 
   action_state_t* new_state() override
@@ -2711,8 +2692,6 @@ struct gouge_t : public rogue_attack_t
   gouge_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "gouge", p, p -> find_specialization_spell( "Gouge" ), options_str )
   {
-    requires_stealth  = false;
-
     if ( p -> talent.dirty_tricks -> ok() )
       base_costs[ RESOURCE_ENERGY ] = 0;
   }
@@ -2792,8 +2771,6 @@ struct kick_t : public rogue_attack_t
   kick_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "kick", p, p -> find_class_spell( "Kick" ), options_str )
   {
-    may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = false;
-    ignore_false_positive = true;
   }
 
   bool target_ready( player_t* candidate_target ) override
@@ -2812,8 +2789,6 @@ struct killing_spree_tick_t : public rogue_attack_t
   killing_spree_tick_t( rogue_t* p, const char* name, const spell_data_t* s ) :
     rogue_attack_t( name, p, s )
   {
-    may_dodge = may_parry = may_block = false;
-    may_crit = true;
     background = true;
     direct_tick = true;
   }
@@ -2828,8 +2803,6 @@ struct killing_spree_t : public rogue_attack_t
     rogue_attack_t( "killing_spree", p, p -> talent.killing_spree, options_str ),
     attack_mh( nullptr ), attack_oh( nullptr )
   {
-    may_miss  = false;
-    may_crit  = false;
     channeled = true;
     tick_zero = true;
 
@@ -2964,11 +2937,8 @@ struct marked_for_death_t : public rogue_attack_t
     add_option( opt_float( "precombat_seconds", precombat_seconds ) );
     parse_options( options_str );
 
-    may_miss = may_crit = harmful = callbacks = false;
+    harmful = false;
     energize_type = ENERGIZE_ON_CAST;
-    // TODO: check if applied through apply_affect_aura
-    // cooldown -> duration += timespan_t::from_millis( p -> spec.subtlety_rogue -> effectN( 6 ).base_value() );
-    // cooldown -> duration += timespan_t::from_millis( p -> spec.assassination_rogue -> effectN( 4 ).base_value() );
   }
 
   void execute() override
@@ -3009,7 +2979,6 @@ struct double_dose_t : public rogue_attack_t
     rogue_attack_t( "double_dose", p, p -> find_spell(273009) )
   {
     background  = true;
-    may_miss = may_block = may_dodge = may_parry = false;
     base_dd_min = p -> azerite.double_dose.value();
     base_dd_max = p -> azerite.double_dose.value();
   }
@@ -3025,8 +2994,6 @@ struct mutilate_t : public rogue_attack_t
     rogue_attack_t( "mutilate", p, p -> find_specialization_spell( "Mutilate" ), options_str ),
     mh_strike( nullptr ), oh_strike( nullptr ), double_dose( nullptr)
   {
-    may_crit = false;
-
     if ( p -> main_hand_weapon.type != WEAPON_DAGGER ||
          p ->  off_hand_weapon.type != WEAPON_DAGGER )
     {
@@ -3088,8 +3055,6 @@ struct nightblade_t : public rogue_attack_t
   nightblade_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "nightblade", p, p -> find_specialization_spell( "Nightblade" ), options_str )
   {
-    may_crit = false;
-    hasted_ticks = true;
     ap_type = attack_power_type::WEAPON_BOTH;
 
     if ( p ->  replicating_shadows )
@@ -3134,7 +3099,6 @@ struct replicating_shadows_t : public rogue_attack_t
     nightblade_action( nullptr )
   {
     background  = true;
-    may_miss = may_block = may_dodge = may_parry = false;
     base_dd_min = p -> azerite.replicating_shadows.value();
     base_dd_max = p -> azerite.replicating_shadows.value();
   }
@@ -3234,8 +3198,6 @@ struct rupture_t : public rogue_attack_t
   rupture_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "rupture", p, p -> find_specialization_spell( "Rupture" ), options_str )
   {
-    may_crit = false;
-    hasted_ticks = true;
   }
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
@@ -3375,7 +3337,7 @@ struct shadow_blades_attack_t : public rogue_attack_t
     rogue_attack_t( "shadow_blades_attack", p, p -> find_spell( 279043 ) )
   {
     background = true;
-    may_crit = may_dodge = may_block = may_parry = false;
+    may_dodge = may_block = may_parry = false;
     attack_power_mod.direct = 0;
   }
 
@@ -3398,7 +3360,7 @@ struct shadow_blades_t : public rogue_attack_t
     add_option( opt_float( "precombat_seconds", precombat_seconds ) );
     parse_options( options_str );
 
-    harmful = may_miss = may_crit = false;
+    harmful = false;
     gcd_type = gcd_haste_type::ATTACK_HASTE;
     min_gcd = timespan_t::from_millis(750); // Force 750ms min gcd because rogue player base has a 1s min.
 
@@ -3437,7 +3399,7 @@ struct shadow_dance_t : public rogue_attack_t
   {
     parse_options( options_str );
 
-    harmful = may_miss = may_crit = false;
+    harmful = false;
     dot_duration = timespan_t::zero(); // No need to have a tick here
     icd -> duration = data().cooldown();
     if ( p -> talent.enveloping_shadows -> ok() )
@@ -3500,7 +3462,6 @@ struct shadowstrike_t : public rogue_attack_t
   shadowstrike_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "shadowstrike", p, p -> spec.shadowstrike, options_str )
   {
-    may_dodge = may_block = may_parry = false;
     requires_weapon_type = WEAPON_DAGGER;
     requires_stealth = true;
   }
@@ -3617,7 +3578,6 @@ struct shuriken_tornado_t : public rogue_attack_t
   shuriken_tornado_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "shuriken_tornado", p, p -> talent.shuriken_tornado, options_str )
   {
-    may_miss = false;
     dot_duration = timespan_t::zero();
     aoe = -1;
   }
@@ -3771,7 +3731,6 @@ struct sprint_t : public rogue_attack_t
   {
     harmful = callbacks = false;
     cooldown = p -> cooldowns.sprint;
-    ignore_false_positive = true;
     cooldown->duration = data().cooldown() + p->spell.sprint_2->effectN( 1 ).time_value();
   }
 
@@ -3793,8 +3752,6 @@ struct symbols_of_death_t : public rogue_attack_t
     parse_options( options_str );
 
     harmful = callbacks = false;
-    requires_stealth = false;
-
     dot_duration = timespan_t::zero();
   }
 
@@ -3834,8 +3791,7 @@ struct vanish_t : public rogue_attack_t
   vanish_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "vanish", p, p -> find_class_spell( "Vanish" ), options_str )
   {
-    may_miss = may_crit = harmful = false;
-    ignore_false_positive = true;
+    harmful = false;
   }
 
   void execute() override
@@ -3864,12 +3820,7 @@ struct vendetta_t : public rogue_attack_t
     nothing_personal_t( rogue_t* p ) :
       rogue_attack_t( "nothing_personal", p, p -> find_spell( 286581 ) )
     {
-      may_dodge = may_parry = may_block = false;
-      may_crit = false;
-      tick_may_crit = true;
       background = true;
-      harmful = true;
-      hasted_ticks = true;
       base_td = p -> azerite.nothing_personal.value();
     }
   };
@@ -3928,8 +3879,7 @@ struct stealth_t : public rogue_attack_t
   stealth_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "stealth", p, p -> find_class_spell( "Stealth" ) )
   {
-    may_miss = may_crit = harmful = false;
-    ignore_false_positive = true;
+    harmful = false;
 
     parse_options( options_str );
   }
@@ -3976,7 +3926,6 @@ struct kidney_shot_t : public rogue_attack_t
     rogue_attack_t( "kidney_shot", p, p -> find_class_spell( "Kidney Shot" ), options_str ),
     internal_bleeding( p -> talent.internal_bleeding ? new internal_bleeding_t( p ) : nullptr )
   {
-    may_crit = false;
     if ( internal_bleeding )
     {
       add_child( internal_bleeding );
@@ -4005,7 +3954,6 @@ struct cheap_shot_t : public rogue_attack_t
   cheap_shot_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "cheap_shot", p, p -> find_class_spell( "Cheap Shot" ), options_str )
   {
-    may_crit = false;
     requires_stealth = true;
   }
 
@@ -5858,10 +5806,10 @@ void rogue_t::init_action_list()
     cds -> add_action( "variable,name=ss_vanish_condition,value=azerite.shrouded_suffocation.enabled&(non_ss_buffed_targets>=1|spell_targets.fan_of_knives=3)&(ss_buffed_targets_above_pandemic=0|spell_targets.fan_of_knives>=6)", "See full comment on https://github.com/Ravenholdt-TC/Rogue/wiki/Assassination-APL-Research." );
     cds -> add_action( "pool_resource,for_next=1,extra_amount=45" );
     cds -> add_action( this, "Vanish", "if=talent.subterfuge.enabled&!stealthed.rogue&cooldown.garrote.up&(variable.ss_vanish_condition|!azerite.shrouded_suffocation.enabled&(dot.garrote.refreshable|debuff.vendetta.up&dot.garrote.pmultiplier<=1))&combo_points.deficit>=((1+2*azerite.shrouded_suffocation.enabled)*spell_targets.fan_of_knives)>?4&raid_event.adds.in>12" );
-    cds -> add_action( this, "Vanish", "if=talent.master_assassin.enabled&!stealthed.all&master_assassin_remains<=0&!dot.rupture.refreshable&dot.garrote.remains>3&(debuff.vendetta.up&(!talent.toxic_blade.enabled|debuff.toxic_blade.up)&(!essence.blood_of_the_enemy.major|debuff.blood_of_the_enemy.up)|essence.vision_of_perfection.enabled)", "Vanish with Master Assasin: No stealth and no active MA buff, Rupture not in refresh range, during Vendetta+TB+BotE (unless using VoP)" );
+    //cds -> add_action( this, "Vanish", "if=talent.master_assassin.enabled&!stealthed.all&master_assassin_remains<=0&!dot.rupture.refreshable&dot.garrote.remains>3&(debuff.vendetta.up&(!talent.toxic_blade.enabled|debuff.toxic_blade.up)&(!essence.blood_of_the_enemy.major|debuff.blood_of_the_enemy.up)|essence.vision_of_perfection.enabled)", "Vanish with Master Assasin: No stealth and no active MA buff, Rupture not in refresh range, during Vendetta+TB+BotE (unless using VoP)" );
     cds -> add_action( "shadowmeld,if=!stealthed.all&azerite.shrouded_suffocation.enabled&dot.garrote.refreshable&dot.garrote.pmultiplier<=1&combo_points.deficit>=1", "Shadowmeld for Shrouded Suffocation" );
     cds -> add_talent( this, "Exsanguinate", "if=!stealthed.rogue&(!dot.garrote.refreshable&dot.rupture.remains>4+4*cp_max_spend|dot.rupture.remains*0.5>target.time_to_die)&target.time_to_die>4", "Exsanguinate when not stealthed and both Rupture and Garrote are up for long enough." );
-    cds -> add_talent( this, "Toxic Blade", "if=dot.rupture.ticking&(!equipped.azsharas_font_of_power|cooldown.vendetta.remains>10)" );
+    //cds -> add_talent( this, "Toxic Blade", "if=dot.rupture.ticking&(!equipped.azsharas_font_of_power|cooldown.vendetta.remains>10)" );
 
     // Non-spec stuff with lower prio
     cds -> add_action( potion_action );
@@ -6103,14 +6051,14 @@ void rogue_t::init_action_list()
 
     // Stealthed Rotation
     action_priority_list_t* stealthed = get_action_priority_list( "stealthed", "Stealthed Rotation" );
-    stealthed -> add_action( this, "Shadowstrike", "if=(talent.find_weakness.enabled|spell_targets.shuriken_storm<3)&(buff.stealth.up|buff.vanish.up)", "If Stealth/vanish are up, use Shadowstrike to benefit from the passive bonus and Find Weakness, even if we are at max CP (from the precombat MfD)." );
+    stealthed -> add_action( this, "Shadowstrike", "if=(buff.stealth.up|buff.vanish.up)", "If Stealth/vanish are up, use Shadowstrike to benefit from the passive bonus and Find Weakness, even if we are at max CP (from the precombat MfD)." );
     stealthed -> add_action( "call_action_list,name=finish,if=buff.shuriken_tornado.up&combo_points.deficit<=2", "Finish at 3+ CP without DS / 4+ with DS with Shuriken Tornado buff up to avoid some CP waste situations." );
     stealthed -> add_action( "call_action_list,name=finish,if=spell_targets.shuriken_storm=4&combo_points>=4", "Also safe to finish at 4+ CP with exactly 4 targets. (Same as outside stealth.)" );
     stealthed -> add_action( "call_action_list,name=finish,if=combo_points.deficit<=1-(talent.deeper_stratagem.enabled&(buff.vanish.up|azerite.the_first_dance.enabled&spell_targets.shuriken_storm<3&buff.nights_vengeance.up))", "Finish at 4+ CP without DS, 5+ with DS, and 6 with DS after Vanish or The First Dance + Nights Vegeance" );
     stealthed -> add_talent( this, "Gloomblade" , "if=azerite.perforate.rank>=2&spell_targets.shuriken_storm<=2&position_back", "Use Gloomblade over Shadowstrike and Storm with 2+ Perforate at 2 or less targets.");
-    stealthed -> add_action( this, "Shadowstrike", "cycle_targets=1,if=talent.secret_technique.enabled&talent.find_weakness.enabled&debuff.find_weakness.remains<1&spell_targets.shuriken_storm=2&target.time_to_die-remains>6", "At 2 targets with Secret Technique keep up Find Weakness by cycling Shadowstrike.");
+    stealthed -> add_action( this, "Shadowstrike", "cycle_targets=1,if=talent.secret_technique.enabled&debuff.find_weakness.remains<1&spell_targets.shuriken_storm=2&target.time_to_die-remains>6", "At 2 targets with Secret Technique keep up Find Weakness by cycling Shadowstrike.");
     stealthed -> add_action( this, "Shadowstrike", "if=!talent.deeper_stratagem.enabled&azerite.blade_in_the_shadows.rank=3&spell_targets.shuriken_storm=3", "Without Deeper Stratagem and 3 Ranks of Blade in the Shadows it is worth using Shadowstrike on 3 targets." );
-    stealthed -> add_action( this, "Shadowstrike", "if=variable.use_priority_rotation&(talent.find_weakness.enabled&debuff.find_weakness.remains<1|talent.weaponmaster.enabled&spell_targets.shuriken_storm<=4|azerite.inevitability.enabled&buff.symbols_of_death.up&spell_targets.shuriken_storm<=3+azerite.blade_in_the_shadows.enabled)", "For priority rotation, use Shadowstrike over Storm 1) with WM against up to 4 targets, 2) if FW is running off (on any amount of targets), or 3) to maximize SoD extension with Inevitability on 3 targets (4 with BitS)." );
+    stealthed -> add_action( this, "Shadowstrike", "if=variable.use_priority_rotation&(debuff.find_weakness.remains<1|talent.weaponmaster.enabled&spell_targets.shuriken_storm<=4|azerite.inevitability.enabled&buff.symbols_of_death.up&spell_targets.shuriken_storm<=3+azerite.blade_in_the_shadows.enabled)", "For priority rotation, use Shadowstrike over Storm 1) with WM against up to 4 targets, 2) if FW is running off (on any amount of targets), or 3) to maximize SoD extension with Inevitability on 3 targets (4 with BitS)." );
     stealthed -> add_action( this, "Shuriken Storm", "if=spell_targets>=3" );
     stealthed -> add_action( this, "Shadowstrike" );
 
