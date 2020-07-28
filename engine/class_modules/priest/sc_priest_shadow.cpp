@@ -370,7 +370,8 @@ struct shadow_word_death_t final : public priest_spell_t
 
       if ( priest().talents.death_and_madness->ok() )
       {
-		  // trigger death_and_madness_debuff on current target
+  		  // NYI
+  		  // trigger death_and_madness_debuff on current target
       }
 
       priest().generate_insanity( total_insanity_gain, priest().gains.insanity_shadow_word_death, s->action );
@@ -1471,8 +1472,7 @@ struct death_and_madness_buff_t final : public priest_buff_t<buff_t>
   {
     set_tick_callback( [ this ] ( buff_t*, int, timespan_t )
     {
-		// generate insanity per tick
-		// priest().generate_insanity( insanity_gain, priest().gains.insanity_mind_blast, this );
+      priest().generate_insanity( insanity_gain, priest().gains.insanity_death_and_madness, nullptr );
     } );
   }
 };
