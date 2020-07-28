@@ -768,7 +768,7 @@ public:
   // Virtual methods
   virtual void invalidate_cache( cache_e c );
   virtual void init();
-  virtual void override_talent( std::string& override_str );
+  virtual void override_talent( util::string_view override_str );
   virtual void init_meta_gem();
   virtual void init_resources( bool force = false );
   virtual std::string init_use_item_actions( const std::string& append = std::string() );

@@ -7,6 +7,7 @@
 
 #include "config.hpp"
 #include "sim/sc_expressions.hpp"
+#include "util/string_view.hpp"
 
 #include <memory>
 
@@ -111,6 +112,6 @@ struct spell_data_expr_t
   virtual std::vector<uint32_t> in( const spell_data_expr_t& /* other */ ) { return std::vector<uint32_t>(); }
   virtual std::vector<uint32_t> not_in( const spell_data_expr_t& /* other */ ) { return std::vector<uint32_t>(); }
 
-  static std::unique_ptr<spell_data_expr_t> parse( sim_t* sim, const std::string& expr_str );
+  static std::unique_ptr<spell_data_expr_t> parse( sim_t* sim, util::string_view expr_str );
   static std::unique_ptr<spell_data_expr_t> create_spell_expression( dbc_t& dbc, util::string_view name_str );
 };

@@ -1056,12 +1056,12 @@ struct position_event_t : public raid_event_t
   }
 };
 
-std::unique_ptr<expr_t> parse_player_if_expr( player_t& player, const std::string& expr_str )
+std::unique_ptr<expr_t> parse_player_if_expr( player_t& player, util::string_view expr_str )
 {
   if ( expr_str.empty() )
     return nullptr;
 
-  std::vector<expression::expr_token_t> tokens = expression::parse_tokens( nullptr, expr_str );
+  auto tokens = expression::parse_tokens( nullptr, expr_str );
 
   if ( player.sim->debug )
     expression::print_tokens( tokens, player.sim );

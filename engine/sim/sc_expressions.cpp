@@ -868,7 +868,7 @@ bool is_binary( token_e expr_token_type )
 
 // next_token ===============================================================
 
-token_e next_token( action_t* action, const std::string& expr_str,
+token_e next_token( action_t* action, util::string_view expr_str,
                     int& current_index, std::string& token_str,
                     token_e prev_token )
 {
@@ -1008,13 +1008,13 @@ token_e next_token( action_t* action, const std::string& expr_str,
 
   if ( action )
   {
-    action->sim->errorf( "%s-%s: Unexpected token (%c) in %s\n",
+    action->sim->error( "{}-{}: Unexpected token ({}) in {}\n",
                          action->player->name(), action->name(), c,
-                         expr_str.c_str() );
+                         expr_str );
   }
   else
   {
-    printf( "Unexpected token (%c) in %s\n", c, expr_str.c_str() );
+    fmt::print( "Unexpected token ({}) in {}\n", c, expr_str );
   }
 
   return TOK_UNKNOWN;
@@ -1023,7 +1023,7 @@ token_e next_token( action_t* action, const std::string& expr_str,
 // parse_tokens =============================================================
 
 std::vector<expr_token_t> parse_tokens( action_t* action,
-                                        const std::string& expr_str )
+                                        util::string_view expr_str )
 {
   std::vector<expr_token_t> tokens;
 
@@ -1234,7 +1234,7 @@ int expr_t::get_global_id()
 // build_expression_tree ====================================================
 
 static std::unique_ptr<expr_t> build_expression_tree(
-    action_t* action, std::vector<expression::expr_token_t>& tokens,
+    action_t* action, util::span<expression::expr_token_t> tokens,
     bool optimize )
 {
   std::vector<std::unique_ptr<expr_t>> stack;
@@ -1297,7 +1297,7 @@ static std::unique_ptr<expr_t> build_expression_tree(
 
 // action_expr_t::parse =====================================================
 
-std::unique_ptr<expr_t> expr_t::parse( action_t* action, const std::string& expr_str,
+std::unique_ptr<expr_t> expr_t::parse( action_t* action, util::string_view expr_str,
                        bool optimize )
 {
   try
