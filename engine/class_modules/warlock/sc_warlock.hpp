@@ -549,17 +549,17 @@ namespace warlock
       public:
         gain_t * gain;
 
-        warlock_spell_t( warlock_t* p, const std::string& n ) :
+        warlock_spell_t( warlock_t* p, util::string_view n ) :
           warlock_spell_t( n, p, p -> find_class_spell( n ) )
         {
         }
 
-        warlock_spell_t( warlock_t* p, const std::string& n, specialization_e s ) :
+        warlock_spell_t( warlock_t* p, util::string_view n, specialization_e s ) :
           warlock_spell_t( n, p, p -> find_class_spell( n, s ) )
         {
         }
 
-        warlock_spell_t( const std::string& token, warlock_t* p, const spell_data_t* s = spell_data_t::nil() ) :
+        warlock_spell_t( util::string_view token, warlock_t* p, const spell_data_t* s = spell_data_t::nil() ) :
           spell_t( token, p, s )
         {
           may_crit = true;

@@ -13,17 +13,17 @@ namespace warlock {
       bool can_havoc;
       bool destro_mastery;
 
-      destruction_spell_t(warlock_t* p, const std::string& n) :
+      destruction_spell_t(warlock_t* p, util::string_view n) :
         destruction_spell_t(n, p, p -> find_class_spell(n))
       {
       }
 
-      destruction_spell_t(warlock_t* p, const std::string& n, specialization_e s) :
+      destruction_spell_t(warlock_t* p, util::string_view n, specialization_e s) :
         destruction_spell_t(n, p, p -> find_class_spell(n, s))
       {
       }
 
-      destruction_spell_t(const std::string& token, warlock_t* p, const spell_data_t* s = spell_data_t::nil()) :
+      destruction_spell_t(util::string_view token, warlock_t* p, const spell_data_t* s = spell_data_t::nil()) :
         warlock_spell_t(token, p, s)
       {
         may_crit = true;
@@ -155,7 +155,7 @@ namespace warlock {
     //Talents
     struct soul_fire_t : public destruction_spell_t
     {
-      soul_fire_t(warlock_t* p, const std::string& options_str) :
+      soul_fire_t(warlock_t* p, util::string_view options_str) :
         destruction_spell_t("soul_fire", p, p -> talents.soul_fire)
       {
         parse_options(options_str);
@@ -208,7 +208,7 @@ namespace warlock {
 
     struct shadowburn_t : public destruction_spell_t
     {
-      shadowburn_t(warlock_t* p, const std::string& options_str) :
+      shadowburn_t(warlock_t* p, util::string_view options_str) :
         destruction_spell_t("shadowburn", p, p -> talents.shadowburn)
       {
         parse_options(options_str);
@@ -242,7 +242,7 @@ namespace warlock {
 
     struct dark_soul_instability_t : public destruction_spell_t
     {
-      dark_soul_instability_t(warlock_t* p, const std::string& options_str) :
+      dark_soul_instability_t(warlock_t* p, util::string_view options_str) :
         destruction_spell_t("dark_soul_instability", p, p -> talents.dark_soul_instability)
       {
         parse_options(options_str);
@@ -260,7 +260,7 @@ namespace warlock {
     //Spells
     struct havoc_t : public destruction_spell_t
     {
-      havoc_t(warlock_t* p, const std::string& options_str) : destruction_spell_t(p, "Havoc")
+      havoc_t(warlock_t* p, util::string_view options_str) : destruction_spell_t(p, "Havoc")
       {
         parse_options(options_str);
         may_crit = false;
@@ -275,7 +275,7 @@ namespace warlock {
 
     struct immolate_t : public destruction_spell_t
     {
-      immolate_t(warlock_t* p, const std::string& options_str) :
+      immolate_t(warlock_t* p, util::string_view options_str) :
         destruction_spell_t("immolate", p, p -> find_spell(348))
       {
         parse_options(options_str);
@@ -314,7 +314,7 @@ namespace warlock {
       timespan_t base_duration;
       roaring_blaze_t* roaring_blaze;
 
-      conflagrate_t(warlock_t* p, const std::string& options_str) :
+      conflagrate_t(warlock_t* p, util::string_view options_str) :
         destruction_spell_t("Conflagrate", p, p -> find_spell(17962)),
         total_duration(),
         base_duration(),
@@ -466,7 +466,7 @@ namespace warlock {
       double backdraft_cast_time;
       incinerate_fnb_t* fnb_action;
 
-      incinerate_t(warlock_t* p, const std::string& options_str) :
+      incinerate_t(warlock_t* p, util::string_view options_str) :
         destruction_spell_t(p, "Incinerate"), fnb_action(new incinerate_fnb_t(p))
       {
         parse_options(options_str);
@@ -564,7 +564,7 @@ namespace warlock {
       double refund;
       internal_combustion_t* internal_combustion;
 
-      chaos_bolt_t(warlock_t* p, const std::string& options_str) :
+      chaos_bolt_t(warlock_t* p, util::string_view options_str) :
         destruction_spell_t(p, "Chaos Bolt"),
         refund(0),
         internal_combustion(new internal_combustion_t(p))
@@ -710,7 +710,7 @@ namespace warlock {
       channel_demonfire_tick_t* channel_demonfire;
       int immolate_action_id;
 
-      channel_demonfire_t(warlock_t* p, const std::string& options_str) :
+      channel_demonfire_t(warlock_t* p, util::string_view options_str) :
         destruction_spell_t("channel_demonfire", p, p -> talents.channel_demonfire),
         channel_demonfire(new channel_demonfire_tick_t(p)),
         immolate_action_id(0)
@@ -799,7 +799,7 @@ namespace warlock {
       infernal_awakening_t* infernal_awakening;
       timespan_t infernal_duration;
 
-      summon_infernal_t(warlock_t* p, const std::string& options_str) :
+      summon_infernal_t(warlock_t* p, util::string_view options_str) :
         destruction_spell_t("Summon_Infernal", p, p -> find_spell(1122)),
         infernal_awakening(nullptr)
       {
@@ -876,7 +876,7 @@ namespace warlock {
         }
       };
 
-      rain_of_fire_t(warlock_t* p, const std::string& options_str) :
+      rain_of_fire_t(warlock_t* p, util::string_view options_str) :
         destruction_spell_t("rain_of_fire", p, p -> find_spell(5740))
       {
         parse_options(options_str);
@@ -913,7 +913,7 @@ namespace warlock {
     {
       immolate_t* immolate;
 
-      cataclysm_t(warlock_t* p, const std::string& options_str) :
+      cataclysm_t(warlock_t* p, util::string_view options_str) :
         destruction_spell_t("cataclysm", p, p -> talents.cataclysm),
         immolate(new immolate_t(p, ""))
       {

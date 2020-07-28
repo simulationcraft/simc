@@ -19,17 +19,17 @@ namespace warlock
       gain_t * gain;
       timespan_t db_max_contribution;
 
-      affliction_spell_t(warlock_t* p, const std::string& n) :
+      affliction_spell_t(warlock_t* p, util::string_view n) :
         affliction_spell_t(n, p, p -> find_class_spell(n))
       {
       }
 
-      affliction_spell_t(warlock_t* p, const std::string& n, specialization_e s) :
+      affliction_spell_t(warlock_t* p, util::string_view n, specialization_e s) :
         affliction_spell_t(n, p, p -> find_class_spell(n, s))
       {
       }
 
-      affliction_spell_t(const std::string& token, warlock_t* p, const spell_data_t* s = spell_data_t::nil()) :
+      affliction_spell_t(util::string_view token, warlock_t* p, const spell_data_t* s = spell_data_t::nil()) :
         warlock_spell_t(token, p, s)
       {
         may_crit = true;
@@ -191,7 +191,7 @@ namespace warlock
       double chance;
       bool pandemic_invocation_usable;
 
-      agony_t( warlock_t* p, const std::string& options_str ) :
+      agony_t( warlock_t* p, util::string_view options_str ) :
         affliction_spell_t( p, "Agony")
       {
         parse_options( options_str );
@@ -308,7 +308,7 @@ namespace warlock
     {
       bool pandemic_invocation_usable;
 
-      corruption_t( warlock_t* p, const std::string& options_str) :
+      corruption_t( warlock_t* p, util::string_view options_str) :
         affliction_spell_t( "Corruption", p, p -> find_spell(172) )  //triggers 146739
       {
         parse_options(options_str);
@@ -407,7 +407,7 @@ namespace warlock
 
       std::array<real_ua_t*, MAX_UAS> ua_dots;
 
-      unstable_affliction_t( warlock_t* p, const std::string& options_str ) :
+      unstable_affliction_t( warlock_t* p, util::string_view options_str ) :
         affliction_spell_t( "unstable_affliction", p, p -> spec.unstable_affliction ),
         ua_dots()
       {
@@ -483,7 +483,7 @@ namespace warlock
 
     struct summon_darkglare_t : public affliction_spell_t
     {
-      summon_darkglare_t(warlock_t* p, const std::string& options_str) :
+      summon_darkglare_t(warlock_t* p, util::string_view options_str) :
         affliction_spell_t("summon_darkglare", p, p -> spec.summon_darkglare)
       {
         parse_options(options_str);
@@ -558,7 +558,7 @@ namespace warlock
       double sow_the_seeds_targets;
       seed_of_corruption_aoe_t* explosion;
 
-      seed_of_corruption_t( warlock_t* p, const std::string& options_str ) :
+      seed_of_corruption_t( warlock_t* p, util::string_view options_str ) :
         affliction_spell_t( "seed_of_corruption", p, p -> find_spell( 27243 ) ),
           threshold_mod( 3.0 ),
           sow_the_seeds_targets( p->talents.sow_the_seeds->effectN( 1 ).base_value() ),
@@ -633,7 +633,7 @@ namespace warlock
     // lvl 15 - nightfall|drain soul|haunt
     struct drain_soul_t : public affliction_spell_t
     {
-      drain_soul_t( warlock_t* p, const std::string& options_str ) :
+      drain_soul_t( warlock_t* p, util::string_view options_str ) :
         affliction_spell_t( "drain_soul", p, p -> talents.drain_soul )
       {
         parse_options(options_str);
@@ -664,7 +664,7 @@ namespace warlock
 
     struct haunt_t : public affliction_spell_t
     {
-      haunt_t( warlock_t* p, const std::string& options_str ) :
+      haunt_t( warlock_t* p, util::string_view options_str ) :
         affliction_spell_t( "haunt", p, p -> talents.haunt )
       {
         parse_options( options_str );
@@ -686,7 +686,7 @@ namespace warlock
     {
       bool pandemic_invocation_usable;
 
-      siphon_life_t(warlock_t* p, const std::string& options_str) :
+      siphon_life_t(warlock_t* p, util::string_view options_str) :
         affliction_spell_t("siphon_life", p, p -> talents.siphon_life)
       {
         parse_options(options_str);
@@ -728,7 +728,7 @@ namespace warlock
     struct phantom_singularity_t : public affliction_spell_t
     {
 
-      phantom_singularity_t( warlock_t* p, const std::string& options_str ) :
+      phantom_singularity_t( warlock_t* p, util::string_view options_str ) :
         affliction_spell_t( "phantom_singularity", p, p -> talents.phantom_singularity )
       {
         parse_options( options_str );
@@ -786,7 +786,7 @@ namespace warlock
 
     struct vile_taint_t : public affliction_spell_t
     {
-      vile_taint_t( warlock_t* p, const std::string& options_str ) :
+      vile_taint_t( warlock_t* p, util::string_view options_str ) :
         affliction_spell_t( "vile_taint", p, p -> talents.vile_taint )
       {
         parse_options( options_str );
@@ -803,7 +803,7 @@ namespace warlock
     struct deathbolt_t : public affliction_spell_t
     {
 
-      deathbolt_t(warlock_t* p, const std::string& options_str) :
+      deathbolt_t(warlock_t* p, util::string_view options_str) :
         affliction_spell_t("deathbolt", p, p -> talents.deathbolt)
       {
         parse_options(options_str);

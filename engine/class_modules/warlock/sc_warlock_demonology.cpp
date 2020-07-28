@@ -10,17 +10,17 @@ namespace warlock {
     public:
       gain_t * gain;
 
-      demonology_spell_t(warlock_t* p, const std::string& n) :
+      demonology_spell_t(warlock_t* p, util::string_view n) :
         demonology_spell_t(n, p, p -> find_class_spell(n))
       {
       }
 
-      demonology_spell_t(warlock_t* p, const std::string& n, specialization_e s) :
+      demonology_spell_t(warlock_t* p, util::string_view n, specialization_e s) :
         demonology_spell_t(n, p, p -> find_class_spell(n, s))
       {
       }
 
-      demonology_spell_t(const std::string& token, warlock_t* p, const spell_data_t* s = spell_data_t::nil()) :
+      demonology_spell_t(util::string_view token, warlock_t* p, const spell_data_t* s = spell_data_t::nil()) :
         warlock_spell_t(token, p, s)
       {
         may_crit = true;
@@ -83,7 +83,7 @@ namespace warlock {
 
     struct shadow_bolt_t : public demonology_spell_t
     {
-      shadow_bolt_t(warlock_t* p, const std::string& options_str) :
+      shadow_bolt_t(warlock_t* p, util::string_view options_str) :
         demonology_spell_t(p, "Shadow Bolt", p->specialization())
       {
         parse_options(options_str);
@@ -129,7 +129,7 @@ namespace warlock {
       umbral_blaze_t* blaze;
       const spell_data_t* summon_spell;
 
-      hand_of_guldan_t( warlock_t* p, const std::string& options_str ) :
+      hand_of_guldan_t( warlock_t* p, util::string_view options_str ) :
         demonology_spell_t( p, "Hand of Gul'dan" ), shards_used( 0 ), blaze( new umbral_blaze_t( p ) ),
         summon_spell( p->find_spell( 104317 ) )
       {
@@ -216,7 +216,7 @@ namespace warlock {
     };
 
     struct demonbolt_t : public demonology_spell_t {
-      demonbolt_t(warlock_t* p, const std::string& options_str) : demonology_spell_t(p, "Demonbolt") {
+      demonbolt_t(warlock_t* p, util::string_view options_str) : demonology_spell_t(p, "Demonbolt") {
         parse_options(options_str);
         energize_type = ENERGIZE_ON_CAST;
         energize_resource = RESOURCE_SOUL_SHARD;
@@ -271,7 +271,7 @@ namespace warlock {
     struct call_dreadstalkers_t : public demonology_spell_t {
       int dreadstalker_count;
 
-      call_dreadstalkers_t(warlock_t* p, const std::string& options_str) : demonology_spell_t(p, "Call Dreadstalkers") {
+      call_dreadstalkers_t(warlock_t* p, util::string_view options_str) : demonology_spell_t(p, "Call Dreadstalkers") {
         parse_options(options_str);
         may_crit = false;
         dreadstalker_count = as<int>( data().effectN(1).base_value() );
@@ -354,7 +354,7 @@ namespace warlock {
 
       implosion_aoe_t* explosion;
 
-      implosion_t(warlock_t* p, const std::string& options_str) : demonology_spell_t("implosion", p),explosion(new implosion_aoe_t(p))
+      implosion_t(warlock_t* p, util::string_view options_str) : demonology_spell_t("implosion", p),explosion(new implosion_aoe_t(p))
       {
         parse_options(options_str);
         add_child(explosion);
@@ -414,7 +414,7 @@ namespace warlock {
     {
       double demonic_consumption_multiplier;
 
-      summon_demonic_tyrant_t(warlock_t* p, const std::string& options_str) :
+      summon_demonic_tyrant_t(warlock_t* p, util::string_view options_str) :
         demonology_spell_t("summon_demonic_tyrant", p, p -> find_spell(265187)), demonic_consumption_multiplier( 0 )
       {
         parse_options(options_str);
@@ -496,7 +496,7 @@ namespace warlock {
     // Talents
     struct demonic_strength_t : public demonology_spell_t
     {
-      demonic_strength_t(warlock_t* p, const std::string& options_str) :
+      demonic_strength_t(warlock_t* p, util::string_view options_str) :
         demonology_spell_t("demonic_strength", p, p->talents.demonic_strength)
       {
         parse_options(options_str);
@@ -542,7 +542,7 @@ namespace warlock {
         }
       };
 
-      bilescourge_bombers_t(warlock_t* p, const std::string& options_str) :
+      bilescourge_bombers_t(warlock_t* p, util::string_view options_str) :
         demonology_spell_t("bilescourge_bombers", p, p->talents.bilescourge_bombers)
       {
         parse_options(options_str);
@@ -574,7 +574,7 @@ namespace warlock {
     };
 
     struct power_siphon_t : public demonology_spell_t {
-      power_siphon_t(warlock_t* p, const std::string& options_str) : demonology_spell_t("power_siphon", p, p -> talents.power_siphon) {
+      power_siphon_t(warlock_t* p, util::string_view options_str) : demonology_spell_t("power_siphon", p, p -> talents.power_siphon) {
         parse_options(options_str);
         harmful = false;
         ignore_false_positive = true;
@@ -621,7 +621,7 @@ namespace warlock {
     };
 
     struct doom_t : public demonology_spell_t {
-      doom_t(warlock_t* p, const std::string& options_str) : demonology_spell_t("doom", p, p -> talents.doom) {
+      doom_t(warlock_t* p, util::string_view options_str) : demonology_spell_t("doom", p, p -> talents.doom) {
           parse_options(options_str);
 
           base_tick_time = data().duration();
@@ -650,7 +650,7 @@ namespace warlock {
 
     struct soul_strike_t : public demonology_spell_t
     {
-      soul_strike_t(warlock_t* p, const std::string& options_str) :
+      soul_strike_t(warlock_t* p, util::string_view options_str) :
         demonology_spell_t("Soul Strike", p, p->talents.soul_strike)
       {
         parse_options(options_str);
@@ -679,7 +679,7 @@ namespace warlock {
 
     struct summon_vilefiend_t : public demonology_spell_t
     {
-      summon_vilefiend_t(warlock_t* p, const std::string& options_str) :
+      summon_vilefiend_t(warlock_t* p, util::string_view options_str) :
         demonology_spell_t("summon_vilefiend", p, p->talents.summon_vilefiend)
       {
         parse_options(options_str);
@@ -701,7 +701,7 @@ namespace warlock {
     };
 
     struct grimoire_felguard_t : public summon_pet_t {
-      grimoire_felguard_t(warlock_t* p, const std::string& options_str) :
+      grimoire_felguard_t(warlock_t* p, util::string_view options_str) :
         summon_pet_t("grimoire_felguard", p, p -> talents.grimoire_felguard) {
         parse_options(options_str);
         cooldown->duration = data().cooldown();
@@ -728,7 +728,7 @@ namespace warlock {
 
     struct inner_demons_t : public demonology_spell_t
     {
-      inner_demons_t(warlock_t* p, const std::string& options_str) : demonology_spell_t("inner_demons", p)
+      inner_demons_t(warlock_t* p, util::string_view options_str) : demonology_spell_t("inner_demons", p)
       {
         parse_options(options_str);
         trigger_gcd = timespan_t::zero();
@@ -746,7 +746,7 @@ namespace warlock {
 
     struct nether_portal_t : public demonology_spell_t
     {
-      nether_portal_t(warlock_t* p, const std::string& options_str) :
+      nether_portal_t(warlock_t* p, util::string_view options_str) :
         demonology_spell_t("nether_portal", p, p->talents.nether_portal)
       {
         parse_options(options_str);
@@ -777,7 +777,7 @@ namespace warlock {
       };
 
       timespan_t summon_duration;
-      summon_random_demon_t(warlock_t* p, const std::string& options_str) :
+      summon_random_demon_t(warlock_t* p, util::string_view options_str) :
         demonology_spell_t("summon_random_demon", p),
         summon_duration(timespan_t::from_seconds(15))
       {

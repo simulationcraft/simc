@@ -11,7 +11,7 @@ namespace warlock
     struct drain_life_t : public warlock_spell_t
     {
 
-      drain_life_t( warlock_t* p, const std::string& options_str ) :
+      drain_life_t( warlock_t* p, util::string_view options_str ) :
         warlock_spell_t( p, "Drain Life" )
       {
         parse_options( options_str );
@@ -55,7 +55,7 @@ namespace warlock
     //TOCHECK: Does the damage proc affect Seed of Corruption? If so, this needs to be split into specs as well
     struct grimoire_of_sacrifice_t : public warlock_spell_t
     {
-      grimoire_of_sacrifice_t( warlock_t* p, const std::string& options_str ) :
+      grimoire_of_sacrifice_t( warlock_t* p, util::string_view options_str ) :
         warlock_spell_t( "grimoire_of_sacrifice", p, p -> talents.grimoire_of_sacrifice )
       {
         parse_options( options_str );

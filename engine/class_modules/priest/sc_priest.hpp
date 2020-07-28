@@ -1173,12 +1173,12 @@ struct priest_spell_t : public priest_action_t<spell_t>
     double amount = s->result_amount;
     amount *= priest().buffs.vampiric_embrace->data().effectN( 1 ).percent();  // FIXME additive or multiplicate?
 
-    // Get all non-pet, non-sleeping players
-    std::vector<player_t*> ally_list;
-    range::remove_copy_if( sim->player_no_pet_list.data(), back_inserter( ally_list ), player_t::_is_sleeping );
-
-    for ( player_t* ally : ally_list )
+    for ( player_t* ally : sim->player_no_pet_list )
     {
+      if (ally -> current.sleeping )
+      {
+        continue;
+      }
       ally->resource_gain( RESOURCE_HEALTH, amount, ally->gains.vampiric_embrace );
 
       for ( pet_t* pet : ally->pet_list )
