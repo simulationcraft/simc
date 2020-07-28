@@ -1218,22 +1218,19 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
     if ( dbc.is_specialization_ability( spell -> id() ) )
     {
       std::vector<specialization_e> spec_list;
-      std::vector<specialization_e>::const_iterator iter;
       dbc.ability_specialization( spell -> id(), spec_list );
 
-      for ( iter = spec_list.begin(); iter != spec_list.end(); ++iter )
+      for ( const specialization_e spec : spec_list )
       {
-        if ( *iter == PET_FEROCITY || *iter == PET_CUNNING || *iter == PET_TENACITY )
+        if ( spec == PET_FEROCITY || spec == PET_CUNNING || spec == PET_TENACITY )
           pet_ability = true;
-        auto specialization_str = util::inverse_tokenize( dbc::specialization_string( *iter ) );
-        if ( util::str_compare_ci( specialization_str, "Unknown" ) )
-        {
-          specialization_str += " (" + util::to_string( *iter ) + ")";
-        }
 
-        s << specialization_str << " ";
+        auto specialization_str = util::inverse_tokenize( dbc::specialization_string( spec ) );
+        if ( util::str_compare_ci( specialization_str, "Unknown" ) )
+          fmt::print( s, "{} ({}) ", specialization_str, static_cast<int>( spec ) );
+        else
+          fmt::print( s, "{} ", specialization_str );
       }
-      spec_list.clear();
     }
 
     for ( unsigned int i = 1; i < range::size( _class_map ); i++ )
