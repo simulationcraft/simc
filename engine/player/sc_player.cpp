@@ -2316,9 +2316,9 @@ void player_t::activate_action_list( action_priority_list_t* a, execute_type typ
   a->used = true;
 }
 
-void player_t::override_talent( std::string& override_str )
+void player_t::override_talent( util::string_view override_str )
 {
-  std::string::size_type cut_pt = override_str.find( ',' );
+  auto cut_pt = override_str.find( ',' );
 
   if ( cut_pt != override_str.npos && override_str.substr( cut_pt + 1, 3 ) == "if=" )
   {
@@ -2332,16 +2332,14 @@ void player_t::override_talent( std::string& override_str )
     override_str = override_str.substr( 0, cut_pt );
   }
 
-  util::tokenize( override_str );
-
   // Support disable_row:<row> syntax
   std::string::size_type pos = override_str.find( "disable_row" );
   if ( pos != std::string::npos )
   {
-    std::string row_str = override_str.substr( 11 );
+    auto row_str = override_str.substr( 11 );
     if ( !row_str.empty() )
     {
-      unsigned row = util::to_unsigned( override_str.substr( 11 ) );
+      unsigned row = util::to_unsigned( std::string(override_str.substr( 11 )) );
       if ( row == 0 || row > MAX_TALENT_ROWS )
       {
         throw std::invalid_argument(fmt::format("talent_override: Invalid talent row {} in '{}'.", row, override_str ));
@@ -2356,7 +2354,7 @@ void player_t::override_talent( std::string& override_str )
     }
   }
 
-  unsigned spell_id = dbc->talent_ability_id( type, specialization(), override_str.c_str(), true );
+  unsigned spell_id = dbc->talent_ability_id( type, specialization(), override_str, true );
 
   if ( !spell_id || dbc->spell( spell_id )->id() != spell_id )
   {
@@ -7833,7 +7831,7 @@ struct wait_fixed_t : public wait_action_base_t
     interrupt_auto_attack = false;  // Probably shouldn't interrupt autoattacks while waiting.
     quiet                 = true;
 
-    time_expr = std::unique_ptr<expr_t>( expr_t::parse( this, sec_str ) );
+    time_expr = expr_t::parse( this, sec_str );
     if ( !time_expr )
     {
       sim->errorf( "%s: Unable to generate wait expression from '%s'", player->name(), options_str.c_str() );
@@ -8150,7 +8148,7 @@ struct use_item_t : public action_t
     return action_t::ready();
   }
 
-  std::unique_ptr<expr_t> create_special_effect_expr( const std::vector<std::string>& data_str_split )
+  std::unique_ptr<expr_t> create_special_effect_expr( util::span<std::string> data_str_split )
   {
     struct use_item_buff_type_expr_t : public expr_t
     {
@@ -8193,7 +8191,7 @@ struct use_item_t : public action_t
 
   std::unique_ptr<expr_t> create_expression( util::string_view name_str ) override
   {
-    std::vector<std::string> split = util::string_split( name_str, "." );
+    auto split = util::string_split( name_str, "." );
     if ( auto e = create_special_effect_expr( split ) )
     {
       return e;

@@ -1014,7 +1014,7 @@ struct spell_school_expr_t : public spell_list_expr_t
 };
 
 std::unique_ptr<spell_data_expr_t> build_expression_tree(
-  dbc_t& dbc, const std::vector<expression::expr_token_t>& tokens )
+  dbc_t& dbc, util::span<expression::expr_token_t> tokens )
 {
   std::vector<std::unique_ptr<spell_data_expr_t>> stack;
 
@@ -1109,7 +1109,7 @@ std::unique_ptr<spell_data_expr_t> spell_data_expr_t::create_spell_expression( d
   return nullptr;
 }
 
-std::unique_ptr<spell_data_expr_t> spell_data_expr_t::parse( sim_t* sim, const std::string& expr_str )
+std::unique_ptr<spell_data_expr_t> spell_data_expr_t::parse( sim_t* sim, util::string_view expr_str )
 {
   if ( expr_str.empty() ) return nullptr;
 
