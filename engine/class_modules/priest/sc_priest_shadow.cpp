@@ -325,7 +325,7 @@ struct mind_flay_t final : public priest_spell_t
 struct shadow_word_death_t final : public priest_spell_t
 {
   shadow_word_death_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "shadow_word_death", p, p.find_class_spell( "Shadow Word: Death" ) )
+  : priest_spell_t( "shadow_word_death", p, p.find_class_spell( "Shadow Word: Death" ) )
   {
     parse_options( options_str );
 
@@ -334,6 +334,13 @@ struct shadow_word_death_t final : public priest_spell_t
     {
       cooldown->duration += rank2->effectN( 1 ).time_value();
     }
+  }
+
+  void init() override
+  {
+    priest().cooldowns.shadow_word_death->hasted = true;
+
+    priest_spell_t::init();
   }
 
   void impact( action_state_t* s ) override
@@ -347,12 +354,24 @@ struct shadow_word_death_t final : public priest_spell_t
     {
       total_insanity_gain = data().effectN( 3 ).base_value();
 
+      if ( priest().legendary.painbreaker_psalm->ok() )
+      {
+        // TODO: Check if this ever gets un-hardcoded for (336165)
+        total_insanity_gain += 10;
+      }
+
       // TODO: Add in a custom buff that checks after 1 second to see if the target SWD was cast on is now dead.
 
       if ( !( ( save_health_percentage > 0.0 ) && ( s->target->health_percentage() <= 0.0 ) ) )
       {
         // target is not killed
         inflict_self_damage( s->result_amount );
+      }
+
+      if ( priest().talents.death_and_madness->ok() )
+      {
+  		  // NYI
+  		  // trigger death_and_madness_debuff on current target
       }
 
       priest().generate_insanity( total_insanity_gain, priest().gains.insanity_shadow_word_death, s->action );
@@ -1420,6 +1439,44 @@ struct lingering_insanity_t final : public priest_buff_t<buff_t>
   }
 };
 
+struct death_and_madness_debuff_t final : public priest_buff_t<buff_t>
+{
+  death_and_madness_debuff_t( priest_t& p ) : base_t( p, "death_and_madness", p.talents.death_and_madness )
+  {
+  }
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    if ( remaining_duration > timespan_t::zero() )
+    {
+      if ( sim -> debug )
+      {
+        sim -> out_debug.printf("%s death_and_madness insanity triggered", player -> name() );
+      }
+
+      priest().buffs.death_and_madness_buff->trigger();
+      priest().cooldowns.shadow_word_death->reset( true );
+    }
+
+    buff_t::expire_override( expiration_stacks, remaining_duration );
+  }
+};
+
+struct death_and_madness_buff_t final : public priest_buff_t<buff_t>
+{
+  double insanity_gain;
+
+  death_and_madness_buff_t( priest_t& p )
+  : base_t( p, "death_and_madness", p.find_spell( 321973 ) ),
+    insanity_gain( p.find_spell( 321973 )->effectN( 1 ).base_value() / 55 )
+  {
+    set_tick_callback( [ this ] ( buff_t*, int, timespan_t )
+    {
+      priest().generate_insanity( insanity_gain, priest().gains.insanity_death_and_madness, nullptr );
+    } );
+  }
+};
+
 struct chorus_of_insanity_t final : public priest_buff_t<stat_buff_t>
 {
   chorus_of_insanity_t( priest_t& p ) : base_t( p, "chorus_of_insanity", p.find_spell( 279572 ) )
@@ -1804,7 +1861,6 @@ void priest_t::insanity_state_t::adjust_end_event()
 void priest_t::create_buffs_shadow()
 {
   // Baseline
-
   buffs.shadowform            = make_buff<buffs::shadowform_t>( *this );
   buffs.shadowform_state      = make_buff<buffs::shadowform_state_t>( *this );
   buffs.shadowy_insight       = make_buff<buffs::shadowy_insight_t>( *this );
@@ -1813,14 +1869,15 @@ void priest_t::create_buffs_shadow()
   buffs.vampiric_embrace      = make_buff<buffs::vampiric_embrace_t>( *this );
 
   // Talents
-  buffs.void_torrent           = make_buff<buffs::void_torrent_t>( *this );
-  buffs.surrender_to_madness   = make_buff<buffs::surrender_to_madness_t>( *this );
-  buffs.surrendered_to_madness = make_buff<buffs::surrendered_to_madness_t>( *this );
-  buffs.lingering_insanity     = make_buff<buffs::lingering_insanity_t>( *this );
+  buffs.void_torrent             = make_buff<buffs::void_torrent_t>( *this );
+  buffs.surrender_to_madness     = make_buff<buffs::surrender_to_madness_t>( *this );
+  buffs.surrendered_to_madness   = make_buff<buffs::surrendered_to_madness_t>( *this );
+  buffs.lingering_insanity       = make_buff<buffs::lingering_insanity_t>( *this );
+  buffs.death_and_madness_debuff = make_buff<buffs::death_and_madness_debuff_t>( *this );
+  buffs.death_and_madness_buff   = make_buff<buffs::death_and_madness_buff_t>( *this );
 
   // Azerite Powers
-  buffs.chorus_of_insanity = make_buff<buffs::chorus_of_insanity_t>( *this );
-
+  buffs.chorus_of_insanity     = make_buff<buffs::chorus_of_insanity_t>( *this );
   buffs.harvested_thoughts     = make_buff<buffs::harvested_thoughts_t>( *this );
   buffs.whispers_of_the_damned = make_buff<buffs::whispers_of_the_damned_t>( *this );
 }
@@ -2091,20 +2148,14 @@ void priest_t::generate_apl_shadow()
       "azerite.searing_dialogue.rank>=1",
       "Use Mind Sear on ST only if you get a Thought Harvester Proc with at least 1 Searing Dialogue Trait." );
   single->add_action( this, "Shadow Word: Death",
-                      "if=target.time_to_die<3|"
-                      "cooldown.shadow_word_death.charges=2|"
-                      "(cooldown.shadow_word_death.charges=1&"
-                      "cooldown.shadow_word_death.remains<gcd.max)",
-                      "Use SWD before capping charges, or the target is about to die." );
+                      "if=target.time_to_die<3",
+                      "Use SWD if the target is about to die." );
   single->add_talent( this, "Surrender to Madness", "if=buff.voidform.stack>10+(10*buff.bloodlust.up)" );
   single->add_talent( this, "Dark Void", "if=raid_event.adds.in>10",
                       "Use Dark Void on CD unless adds are incoming in 10s or less." );
   single->add_talent( this, "Mindbender", "if=talent.mindbender.enabled|(buff.voidform.stack>18|target.time_to_die<15)",
                       "Use Mindbender at 19 or more stacks, or if the target will die in less than 15s." );
-  single->add_action( this, "Shadow Word: Death",
-                      "if=!buff.voidform.up|"
-                      "(cooldown.shadow_word_death.charges=2&"
-                      "buff.voidform.stack<15)" );
+  single->add_action( this, "Shadow Word: Death" );
   single->add_talent( this, "Shadow Crash", "if=raid_event.adds.in>5&raid_event.adds.duration<20",
                       "Use Shadow Crash on CD unless there are adds incoming." );
   single->add_action( this, "Mind Blast",

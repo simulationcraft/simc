@@ -577,6 +577,7 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p ) : actor_target_data_t(
 {
   dots.shadow_word_pain = target->get_dot( "shadow_word_pain", &p );
   dots.vampiric_touch   = target->get_dot( "vampiric_touch", &p );
+  dots.vampiric_touch   = target->get_dot( "devouring_plague", &p );
 
   buffs.schism = make_buff( *this, "schism", p.talents.schism );
 
@@ -651,6 +652,7 @@ void priest_t::create_cooldowns()
   cooldowns.psychic_horror     = get_cooldown( "psychic_horror" );
   cooldowns.dark_ascension     = get_cooldown( "dark_ascension" );
   cooldowns.power_infusion     = get_cooldown( "power_infusion" );
+  cooldowns.shadow_word_death  = get_cooldown( "shadow_word_death" );
 
   if ( specialization() == PRIEST_DISCIPLINE )
   {
@@ -689,6 +691,7 @@ void priest_t::create_gains()
   gains.insanity_dark_void                     = get_gain( "Insanity Gained from Dark Void" );
   gains.insanity_lucid_dreams                  = get_gain( "Insanity Gained from Lucid Dreams" );
   gains.insanity_memory_of_lucid_dreams        = get_gain( "Insanity Gained from Memory of Lucid Dreams" );
+  gains.insanity_death_and_madness             = get_gain( "Insanity Gained from Death and Madness" );
   gains.shadow_word_death_self_damage          = get_gain( "Shadow Word: Death self inflicted damage" );
 }
 
@@ -1097,6 +1100,9 @@ void priest_t::init_spells()
   // runeforge legendary
   legendary.kiss_of_death    = find_runeforge_legendary( "Kiss of Death" );
   legendary.the_penitent_one = find_runeforge_legendary( "The Penitent One" );
+
+  // Shadow Legendaries
+  legendary.painbreaker_psalm = find_runeforge_legendary( "Painbreaker Psalm" );
 }
 
 void priest_t::create_buffs()
