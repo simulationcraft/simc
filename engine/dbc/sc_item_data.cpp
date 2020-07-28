@@ -157,7 +157,7 @@ void item_database::apply_item_scaling( item_t& item, unsigned curve_id, unsigne
 
   if ( item.sim -> debug )
   {
-    item.sim -> out_debug.printf( "%s: Scaling %s from ilevel %d to %u (%.3f) using player level %u",
+    item.sim -> print_debug( "{}: Scaling {} from ilevel {} to {} ({:.3f}) using player level {}",
         item.player -> name(), item.name(), item.parsed.data.level,
         static_cast<unsigned>( util::round( scaled_result, 0 ) ),
         scaled_result, base_value );
@@ -173,7 +173,7 @@ bool item_database::apply_item_bonus( item_t& item, const item_bonus_entry_t& en
     // Adjust ilevel, value is in 'value_1' field
     case ITEM_BONUS_ILEVEL:
       if ( item.sim -> debug )
-        item.player -> sim -> out_debug.printf( "Player %s item '%s' adjusting ilevel by %d (old=%d new=%d)",
+        item.player -> sim -> print_debug( "Player {} item '{}' adjusting ilevel by {} (old={} new={})",
             item.player -> name(), item.name(), entry.value_1, item.parsed.data.level, item.parsed.data.level + entry.value_1 );
       item.parsed.data.level += entry.value_1;
       break;
@@ -208,8 +208,8 @@ bool item_database::apply_item_bonus( item_t& item, const item_bonus_entry_t& en
       if ( found == -1 && offset != -1 )
       {
         if ( item.sim -> debug )
-          item.player -> sim -> out_debug.printf( "Player %s item '%s' adding new stat %s offset=%d (allocation %u)",
-              item.player -> name(), item.name(), util::stat_type_string( util::translate_item_mod( entry.value_1 ) ), offset, entry.value_2 );
+          item.player -> sim -> print_debug( "Player {} item '{}' adding new stat {} offset={} (allocation {})",
+              item.player -> name(), item.name(), util::translate_item_mod( entry.value_1 ), offset, entry.value_2 );
         item.parsed.data.stat_type_e[ offset ] = entry.value_1;
         item.parsed.data.stat_alloc[ offset ] = entry.value_2;
       }
@@ -217,14 +217,14 @@ bool item_database::apply_item_bonus( item_t& item, const item_bonus_entry_t& en
       else if ( found != -1 )
       {
         if ( item.sim -> debug )
-          item.player -> sim -> out_debug.printf( "Player %s item '%s' adding existing stat %s offset=%d (allocation %u)",
-              item.player -> name(), item.name(), util::stat_type_string( util::translate_item_mod( entry.value_1 ) ), found , entry.value_2 );
+          item.player -> sim -> print_debug( "Player {} item '{}' adding existing stat {} offset={} (allocation {})",
+              item.player -> name(), item.name(), util::translate_item_mod( entry.value_1 ), found , entry.value_2 );
         item.parsed.data.stat_alloc[ found ] += entry.value_2;
       }
       // New stat but no room, this should never happen.
       else
       {
-        item.player -> sim -> errorf( "Player %s item '%s' unable to add item modifier, stats full", item.player -> name(), item.name() );
+        item.player -> sim -> error( "Player {} item '{}' unable to add item modifier, stats full", item.player -> name(), item.name() );
         return false;
       }
       break;
@@ -232,7 +232,7 @@ bool item_database::apply_item_bonus( item_t& item, const item_bonus_entry_t& en
     case ITEM_BONUS_QUALITY:
       if ( item.sim -> debug )
       {
-        item.player -> sim -> out_debug.printf( "Player %s item '%s' adjusting quality (old=%s new=%s)",
+        item.player -> sim -> print_debug( "Player {} item '{}' adjusting quality (old={} new={})",
             item.player -> name(), item.name(), util::item_quality_string( item.parsed.data.quality ),
             util::item_quality_string( entry.value_1 ) );
       }
@@ -248,7 +248,7 @@ bool item_database::apply_item_bonus( item_t& item, const item_bonus_entry_t& en
     // Adjust required level of the item. Value in 'value_1'
     case ITEM_BONUS_REQ_LEVEL:
       if ( item.sim -> debug )
-        item.player -> sim -> out_debug.printf( "Player %s item '%s' adjusting required level by %d (old=%d new=%d)",
+        item.player -> sim -> print_debug( "Player {} item '{}' adjusting required level by {} (old={} new={})",
             item.player -> name(), item.name(), entry.value_1, item.parsed.data.req_level, item.parsed.data.req_level + entry.value_1 );
       item.parsed.data.req_level += entry.value_1;
       break;
@@ -256,7 +256,7 @@ bool item_database::apply_item_bonus( item_t& item, const item_bonus_entry_t& en
     case ITEM_BONUS_SOCKET:
     {
       if ( item.sim -> debug )
-        item.player -> sim -> out_debug.printf( "Player %s item '%s' adding %d socket(s) (type=%d)",
+        item.player -> sim -> print_debug( "Player {} item '{}' adding {} socket(s) (type={})",
             item.player -> name(), item.name(), entry.value_1, entry.value_2 );
       int n_added = 0;
       for ( size_t i = 0, end = range::size( item.parsed.data.socket_color ); i < end && n_added < entry.value_1; i++ )
@@ -405,22 +405,15 @@ stat_pair_t item_database::item_enchantment_effect_stats( player_t* player,
 
 std::string item_database::stat_to_str( int stat, int stat_amount )
 {
-  std::string stat_str;
-
-  if ( stat_amount )
+  stat_e s = util::translate_item_mod( stat );
+  if ( stat_amount && s != STAT_NONE )
   {
-    stat_e s = util::translate_item_mod( stat );
-    if ( s != STAT_NONE )
-    {
-      char stat_buf[64];
-      snprintf( stat_buf, sizeof( stat_buf ), "%d%s", stat_amount, util::stat_type_abbrev( s ) );
-      stat_str = stat_buf;
-
-      util::tokenize( stat_str );
-    }
+    std::string stat_str = fmt::format( "{}{}", stat_amount, util::stat_type_abbrev( s ) );
+    util::tokenize( stat_str );
+    return stat_str;
   }
 
-  return stat_str;
+  return {};
 }
 
 // item_database_t::approx_scale_coefficient ================================

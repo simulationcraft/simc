@@ -149,6 +149,7 @@ util/allocator.hpp
 util/cache.hpp
 util/chrono.hpp
 util/concurrency.hpp
+util/format.hpp
 util/generic.hpp
 util/git_info.hpp
 util/io.hpp
