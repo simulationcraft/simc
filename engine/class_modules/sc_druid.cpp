@@ -294,10 +294,13 @@ public:
     spell_t* starfall;
     spell_t* fury_of_elune;
     action_t* yseras_gift;
-    
+
     // Azerite
     spell_t* lunar_shrapnel;
     spell_t* streaking_stars;
+
+    // Covenant
+    spell_t* kindred_empowerment;
   } active;
 
   // Pets
@@ -376,6 +379,10 @@ public:
     buff_t* sephuzs_secret;
     buff_t* innervate;
     buff_t* thorns;
+
+    // Covenants
+    buff_t* kindred_empowerment;
+    buff_t* kindred_empowerment_energize;
 
     // Balance
     buff_t* natures_balance;
@@ -722,6 +729,23 @@ public:
     const spell_data_t* flourish;
   } talent;
 
+  // Covenant
+  struct covenant_t
+  {
+    // Kyrian
+    const spell_data_t* kindred_empowerment;
+    const spell_data_t* kindred_empowerment_energize;
+    const spell_data_t* kindred_empowerment_damage;
+    const spell_data_t* empower_bond;
+
+    // Night Fae
+    const spell_data_t* convoke_the_spirits;
+
+    // Venthyr
+
+    // Necrolord
+  } covenant;
+
   struct uptimes_t
   {
     uptime_t* arcanic_pulsar;
@@ -834,6 +858,7 @@ public:
   void      init_rng() override;
   void      init_spells() override;
   void      init_scaling() override;
+  void      init_assessors() override;
   void      create_buffs() override;
   std::string       default_flask() const override;
   std::string       default_potion() const override;
@@ -1535,6 +1560,55 @@ survival_instincts_buff_t( druid_t& p ) :
   {
     druid_buff_t<buff_t>::expire_override( expiration_stacks, remaining_duration );
     p().buff.masterful_instincts -> trigger();
+  }
+};
+
+// Covenants
+
+struct kindred_empowerment_buff_t : public druid_buff_t<buff_t>
+{
+  double pool;
+
+  kindred_empowerment_buff_t( druid_t& p ) : base_t( p, "kindred_empowerment", p.covenant.kindred_empowerment ), pool( 0.0 )
+  {
+    set_refresh_behavior( buff_refresh_behavior::DURATION );
+  }
+
+  void expire_override( int s, timespan_t d ) override
+  {
+    druid_buff_t<buff_t>::expire_override( s, d );
+    pool = 0.0;
+  }
+
+  void add_pool( const action_state_t* s )
+  {
+    trigger();
+
+    if ( sim->debug )
+      sim->print_debug( "Kindred Empowerment: Adding {} from {} to pool of {}", s->result_amount, s->action->name(), pool );
+
+    pool += s->result_amount;
+  }
+
+  void use_pool( const action_state_t* s )
+  {
+    if ( pool <= 1 )  // minimum pool value of 1
+      return;
+
+    double amount = s->result_amount * p().covenant.kindred_empowerment->effectN( 2 ).percent();
+    amount        = std::min( amount, pool - 1 );
+    if ( amount == 0 )
+      return;
+
+    if ( sim->debug )
+      sim->print_debug( "Kindred Empowerment: Using {} from pool of {} on {}", amount, pool, s->action->name() );
+
+    auto damage = p().active.kindred_empowerment;
+    damage->set_target( s->target );
+    damage->base_dd_min = damage->base_dd_max = amount;
+    damage->execute();
+
+    pool -= amount;
   }
 };
 
@@ -2644,7 +2718,7 @@ struct moonfire_t : public druid_spell_t
         while ( tl.size() < as<size_t>( aoe ) && unafflicted.size() > 0 )
         {
           // Random target
-          size_t i = as<size_t>( p()->rng().range( 0, as<double>( unafflicted.size() ) ) );
+          size_t i = static_cast<size_t>( p()->rng().range( 0, as<double>( unafflicted.size() ) ) );
 
           tl.push_back( unafflicted[ i ] );
           unafflicted.erase( unafflicted.begin() + i );
@@ -2654,7 +2728,7 @@ struct moonfire_t : public druid_spell_t
         while ( tl.size() < as<size_t>( aoe ) && afflicted.size() > 0 )
         {
           // Random target
-          size_t i = as<size_t>( p()->rng().range( 0, as<double>( afflicted.size() ) ) );
+          size_t i = static_cast<size_t>( p()->rng().range( 0, as<double>( afflicted.size() ) ) );
 
           tl.push_back( afflicted[ i ] );
           afflicted.erase( afflicted.begin() + i );
@@ -5455,6 +5529,23 @@ struct streaking_stars_t : public druid_spell_t
   }
 };
 
+struct kindred_empowerment_t : public druid_spell_t
+{
+  kindred_empowerment_t( druid_t* p )
+    : druid_spell_t( "kindred_empowerment", p, p->covenant.kindred_empowerment_damage )
+  {
+    background = true;
+    may_miss = may_crit = callbacks = false;
+  }
+
+  void init() override
+  {
+    druid_spell_t::init();
+
+    snapshot_flags = update_flags = 0;
+  }
+};
+
 // Fury of Elune =========================================================
 
 struct fury_of_elune_t : public druid_spell_t
@@ -7098,6 +7189,34 @@ struct force_of_nature_t : public druid_spell_t
     }
   }
 };
+
+struct kindred_spirits_t : public druid_spell_t
+{
+  kindred_spirits_t( druid_t* player, const std::string& options_str )
+    : druid_spell_t( "empower_bond", player, player->covenant.empower_bond, options_str )
+  {
+    harmful = false;
+
+    if ( player->active.kindred_empowerment )
+      add_child( player->active.kindred_empowerment );
+  }
+
+  bool ready() override
+  {
+    if ( p()->beta_covenant == "kyrian" )
+      return druid_spell_t::ready();
+
+    return false;
+  }
+
+  void execute() override
+  {
+    druid_spell_t::execute();
+
+    p()->buff.kindred_empowerment_energize->trigger();
+  }
+};
+
 struct convoke_the_spirits_t : public druid_spell_t
 {
   action_t* conv_fm;
@@ -7119,7 +7238,7 @@ struct convoke_the_spirits_t : public druid_spell_t
   int wr_count;
 
   convoke_the_spirits_t( druid_t* player, const std::string& options_str )
-    : druid_spell_t( "convoke_the_spirits", player, player->find_spell( 323764 ), options_str ), he_count( 2 )
+    : druid_spell_t( "convoke_the_spirits", player, player->covenant.convoke_the_spirits, options_str ), he_count( 2 )
   {
     harmful = channeled = true;
 
@@ -7511,6 +7630,7 @@ action_t* druid_t::create_action( const std::string& name,
   if ( name == "wild_growth"            ) return new            wild_growth_t( this, options_str );
   if ( name == "incarnation"            ) return new            incarnation_t( this, options_str );
 
+  if ( name == "kindred_spirits" || name == "empower_bond" ) return new kindred_spirits_t( this, options_str );
   if ( name == "convoke_the_spirits" ) return new convoke_the_spirits_t( this, options_str );
 
   return player_t::create_action( name, options_str );
@@ -7710,6 +7830,13 @@ void druid_t::init_spells()
         instant_absorb_t( this, find_spell( 203975 ), "earthwarden", &earthwarden_handler ) ) );
   }
 
+  // Covenants
+  covenant.empower_bond = find_spell( 326446 ); // kindred_spirits action
+  covenant.kindred_empowerment = find_spell( 327022 );
+  covenant.kindred_empowerment_energize = find_spell( 327139 );
+  covenant.kindred_empowerment_damage = find_spell( 338411 );
+  covenant.convoke_the_spirits = find_spell( 323764 );
+
   // Runeforge Legendaries
 
   // General
@@ -7835,6 +7962,9 @@ void druid_t::init_spells()
 
   if ( spec.starfall->ok() )
     active.starfall = new spells::starfall_tick_t( this );
+
+  if ( beta_covenant == "kyrian" )
+    active.kindred_empowerment = new spells::kindred_empowerment_t( this );
 }
 
 // druid_t::init_base =======================================================
@@ -7880,6 +8010,38 @@ void druid_t::init_base_stats()
   resources.base_regen_per_second[ RESOURCE_ENERGY ] *= 1.0 + talent.feral_affinity->effectN( 2 ).percent();
 
   base_gcd = 1.5_s;
+}
+
+void druid_t::init_assessors()
+{
+  player_t::init_assessors();
+
+  if ( beta_covenant == "kyrian" )
+  {
+    assessor_out_damage.add( assessor::TARGET_DAMAGE + 1, [this]( result_amount_type, action_state_t* s ) {
+      auto pool = debug_cast<buffs::kindred_empowerment_buff_t*>( buff.kindred_empowerment );
+      const auto s_action = s->action;
+
+      // TODO: Confirm damage must come from an active action
+      if ( !s_action->harmful || ( s_action->type != ACTION_SPELL && s_action->type != ACTION_ATTACK ) )
+        return assessor::CONTINUE;
+
+      if ( s->result_amount == 0 )
+        return assessor::CONTINUE;
+
+      // TODO: Confirm added damage doesn't add to the pool
+      if ( s_action == active.kindred_empowerment )
+        return assessor::CONTINUE;
+
+      if ( buff.kindred_empowerment_energize->up() )
+        pool->add_pool( s );
+
+      if ( buff.kindred_empowerment->up() )
+        pool->use_pool( s );
+
+      return assessor::CONTINUE;
+    } );
+  }
 }
 
 // druid_t::init_buffs ======================================================
@@ -7934,6 +8096,12 @@ void druid_t::create_buffs()
   buff.arcanic_pulsar = make_buff(this, "arcanic_pulsar", azerite.arcanic_pulsar.spell()->effectN(1).trigger()->effectN(1).trigger());
 
   player_t::buffs.memory_of_lucid_dreams->set_affects_regen( true );
+
+  // Covenant
+  buff.kindred_empowerment = new kindred_empowerment_buff_t( *this );
+
+  buff.kindred_empowerment_energize =
+      make_buff( this, "kindred_empowerment_energize", covenant.kindred_empowerment_energize );
 
   // Talent buffs
   buff.tiger_dash = new tiger_dash_buff_t( *this );
