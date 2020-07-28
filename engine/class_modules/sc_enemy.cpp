@@ -134,7 +134,7 @@ struct enemy_action_t : public ACTION_TYPE
   timespan_t cooldown_;
   int aoe_tanks;
 
-  enemy_action_t( const std::string& name, player_t* player )
+  enemy_action_t( util::string_view name, player_t* player )
     : action_type_t( name, player ),
       apply_debuff( false ),
       num_debuff_stacks( -1000000 ),
@@ -160,7 +160,7 @@ struct enemy_action_t : public ACTION_TYPE
   }
 
   // this is only used by helper structures
-  std::string filter_options_list( const std::string options_str )
+  std::string filter_options_list( util::string_view options_str )
   {
     std::vector<std::string> splits = util::string_split( options_str, "," );
     std::string filtered_options    = "";
@@ -307,7 +307,7 @@ struct enemy_action_driver_t : public CHILD_ACTION_TYPE
   std::vector<child_action_type_t*> ch_list;
   size_t num_attacks;
 
-  enemy_action_driver_t( player_t* player, const std::string& options_str )
+  enemy_action_driver_t( player_t* player, util::string_view options_str )
     : child_action_type_t( player, options_str ), aoe_tanks( 0 ), num_attacks( 0 )
   {
     this->add_option( opt_int( "aoe_tanks", aoe_tanks ) );
@@ -405,7 +405,7 @@ struct enemy_action_driver_t : public CHILD_ACTION_TYPE
 struct melee_t : public enemy_action_t<melee_attack_t>
 {
   bool first;
-  melee_t( const std::string& name, player_t* player, const std::string options_str )
+  melee_t( util::string_view name, player_t* player, util::string_view options_str )
     : base_t( name, player ), first( false )
   {
     school            = SCHOOL_PHYSICAL;
@@ -455,7 +455,7 @@ struct auto_attack_t : public enemy_action_t<attack_t>
   std::vector<melee_t*> mh_list;
 
   // default constructor
-  auto_attack_t( player_t* p, const std::string& options_str ) : base_t( "auto_attack", p ), mh_list( 0 )
+  auto_attack_t( player_t* p, util::string_view options_str ) : base_t( "auto_attack", p ), mh_list( 0 )
   {
     parse_options( options_str );
 
@@ -548,7 +548,7 @@ struct auto_attack_off_hand_t : public enemy_action_t<attack_t>
   std::vector<melee_t*> oh_list;
 
   // default constructor
-  auto_attack_off_hand_t( player_t* p, const std::string& options_str )
+  auto_attack_off_hand_t( player_t* p, util::string_view options_str )
     : base_t( "auto_attack_off_hand", p ), oh_list( 0 )
   {
     parse_options( options_str );
@@ -632,7 +632,7 @@ struct auto_attack_off_hand_t : public enemy_action_t<attack_t>
 struct melee_nuke_t : public enemy_action_t<melee_attack_t>
 {
   // default constructor
-  melee_nuke_t( player_t* p, const std::string& options_str ) : base_t( "melee_nuke", p )
+  melee_nuke_t( player_t* p, util::string_view options_str ) : base_t( "melee_nuke", p )
   {
     school   = SCHOOL_PHYSICAL;
     may_miss = may_dodge = may_parry = false;
@@ -667,7 +667,7 @@ struct melee_nuke_t : public enemy_action_t<melee_attack_t>
 
 struct melee_nuke_driver_t : public enemy_action_driver_t<melee_nuke_t>
 {
-  melee_nuke_driver_t( player_t* p, const std::string& options_str )
+  melee_nuke_driver_t( player_t* p, util::string_view options_str )
     : enemy_action_driver_t<melee_nuke_t>( p, options_str )
   {
   }
@@ -677,7 +677,7 @@ struct melee_nuke_driver_t : public enemy_action_driver_t<melee_nuke_t>
 
 struct spell_nuke_t : public enemy_action_t<spell_t>
 {
-  spell_nuke_t( player_t* p, const std::string& options_str ) : base_t( "spell_nuke", p )
+  spell_nuke_t( player_t* p, util::string_view options_str ) : base_t( "spell_nuke", p )
   {
     school            = SCHOOL_FIRE;
     base_execute_time = timespan_t::from_seconds( 3.0 );
@@ -710,7 +710,7 @@ struct spell_nuke_t : public enemy_action_t<spell_t>
 
 struct spell_nuke_driver_t : public enemy_action_driver_t<spell_nuke_t>
 {
-  spell_nuke_driver_t( player_t* p, const std::string& options_str )
+  spell_nuke_driver_t( player_t* p, util::string_view options_str )
     : enemy_action_driver_t<spell_nuke_t>( p, options_str )
   {
   }
@@ -720,7 +720,7 @@ struct spell_nuke_driver_t : public enemy_action_driver_t<spell_nuke_t>
 
 struct spell_dot_t : public enemy_action_t<spell_t>
 {
-  spell_dot_t( player_t* p, const std::string& options_str ) : base_t( "spell_dot", p )
+  spell_dot_t( player_t* p, util::string_view options_str ) : base_t( "spell_dot", p )
   {
     school            = SCHOOL_FIRE;
     base_tick_time    = timespan_t::from_seconds( 1.0 );
@@ -761,7 +761,7 @@ struct spell_dot_t : public enemy_action_t<spell_t>
 
 struct spell_dot_driver_t : public enemy_action_driver_t<spell_dot_t>
 {
-  spell_dot_driver_t( player_t* p, const std::string& options_str )
+  spell_dot_driver_t( player_t* p, util::string_view options_str )
     : enemy_action_driver_t<spell_dot_t>( p, options_str )
   {
     base_tick_time = timespan_t::from_seconds( 1.0 );
@@ -784,7 +784,7 @@ struct spell_dot_driver_t : public enemy_action_driver_t<spell_dot_t>
 struct spell_aoe_t : public enemy_action_t<spell_t>
 {
   // default constructor
-  spell_aoe_t( player_t* p, const std::string& options_str ) : base_t( "spell_aoe", p )
+  spell_aoe_t( player_t* p, util::string_view options_str ) : base_t( "spell_aoe", p )
   {
     school            = SCHOOL_FIRE;
     base_execute_time = timespan_t::from_seconds( 3.0 );
@@ -841,7 +841,7 @@ struct summon_add_t : public spell_t
   timespan_t summoning_duration;
   pet_t* pet;
 
-  summon_add_t( player_t* p, const std::string& options_str )
+  summon_add_t( player_t* p, util::string_view options_str )
     : spell_t( "summon_add", player, spell_data_t::nil() ),
       add_name( "" ),
       summoning_duration( timespan_t::zero() ),
@@ -881,7 +881,7 @@ struct summon_add_t : public spell_t
   }
 };
 
-action_t* enemy_create_action( player_t* p, const std::string& name, const std::string& options_str )
+action_t* enemy_create_action( player_t* p, util::string_view name, util::string_view options_str )
 {
   if ( name == "auto_attack" )
     return new auto_attack_t( p, options_str );
@@ -906,7 +906,7 @@ action_t* enemy_create_action( player_t* p, const std::string& name, const std::
 
 struct add_t : public pet_t
 {
-  add_t( sim_t* s, enemy_t* o, const std::string& n, pet_e pt = PET_ENEMY ) : pet_t( s, o, n, pt )
+  add_t( sim_t* s, enemy_t* o, util::string_view n, pet_e pt = PET_ENEMY ) : pet_t( s, o, n, pt )
   {
     true_level = s->max_player_level + 3;
   }
@@ -1028,7 +1028,7 @@ struct tank_dummy_enemy_t : public enemy_t
     enemy_t::create_options();
   }
 
-  tank_dummy_e convert_tank_dummy_string( const std::string& tank_dummy_string )
+  tank_dummy_e convert_tank_dummy_string( util::string_view tank_dummy_string )
   {
     if ( util::str_in_str_ci( tank_dummy_string, "none" ) )
       return tank_dummy_e::NONE;
@@ -1044,7 +1044,7 @@ struct tank_dummy_enemy_t : public enemy_t
       return tank_dummy_e::MYTHIC;
 
     if ( !tank_dummy_string.empty() && sim->debug )
-      sim->out_debug.printf( "Unknown Tank Dummy string input provided: %s", tank_dummy_string.c_str() );
+      sim->out_debug.print( "Unknown Tank Dummy string input provided: {}", tank_dummy_string );
 
     return tank_dummy_e::NONE;
   }
