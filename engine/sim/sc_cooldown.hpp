@@ -93,7 +93,7 @@ struct cooldown_t
   const char* name() const
   { return name_str.c_str(); }
 
-  std::unique_ptr<expr_t> create_expression( const std::string& name_str );
+  std::unique_ptr<expr_t> create_expression( util::string_view name_str );
 
   void add_execute_type( execute_type e )
   { execute_types_mask |= ( 1 << static_cast<unsigned>( e ) ); }

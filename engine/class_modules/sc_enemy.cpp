@@ -86,7 +86,7 @@ struct enemy_t : public player_t
   void combat_end() override;
   virtual void recalculate_health();
   void demise() override;
-  std::unique_ptr<expr_t> create_expression( const std::string& type ) override;
+  std::unique_ptr<expr_t> create_expression( util::string_view type ) override;
   timespan_t available() const override
   {
     return waiting_time;
@@ -1609,7 +1609,7 @@ bool enemy_t::taunt( player_t* source )
 
 // enemy_t::create_expression ===============================================
 
-std::unique_ptr<expr_t> enemy_t::create_expression( const std::string& name_str )
+std::unique_ptr<expr_t> enemy_t::create_expression( util::string_view name_str )
 {
   if ( name_str == "adds" )
     return make_mem_fn_expr( name_str, active_pets, &std::vector<pet_t*>::size );

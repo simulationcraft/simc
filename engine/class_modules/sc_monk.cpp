@@ -846,7 +846,7 @@ public:
   void init_action_list() override;
   void activate() override;
   void collect_resource_timeline_information() override;
-  std::unique_ptr<expr_t> create_expression( const std::string& name_str ) override;
+  std::unique_ptr<expr_t> create_expression( util::string_view name_str ) override;
   monk_td_t* get_target_data( player_t* target ) const override
   {
     monk_td_t*& td = target_data[ target ];
@@ -2358,7 +2358,7 @@ public:
     return p()->get_target_data( t );
   }
 
-  std::unique_ptr<expr_t> create_expression( const std::string& name_str ) override
+  std::unique_ptr<expr_t> create_expression( util::string_view name_str ) override
   {
     if ( name_str == "combo_strike" )
       return make_mem_fn_expr( name_str, *this, &monk_action_t::is_combo_strike );
@@ -10395,7 +10395,7 @@ double monk_t::calculate_last_stagger_tick_damage( int n ) const
 
 // monk_t::create_expression ==================================================
 
-std::unique_ptr<expr_t> monk_t::create_expression( const std::string& name_str )
+std::unique_ptr<expr_t> monk_t::create_expression( util::string_view name_str )
 {
   std::vector<std::string> splits = util::string_split( name_str, "." );
   if ( splits.size() == 2 && splits[ 0 ] == "stagger" )

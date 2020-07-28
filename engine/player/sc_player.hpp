@@ -987,9 +987,9 @@ public:
   virtual void  summon_pet( util::string_view name, timespan_t duration = timespan_t::zero() );
   virtual void dismiss_pet( util::string_view name );
 
-  virtual std::unique_ptr<expr_t> create_expression( const std::string& name );
-  virtual std::unique_ptr<expr_t> create_action_expression( action_t&, const std::string& name );
-  virtual std::unique_ptr<expr_t> create_resource_expression( const std::string& name );
+  virtual std::unique_ptr<expr_t> create_expression( util::string_view name );
+  virtual std::unique_ptr<expr_t> create_action_expression( action_t&, util::string_view name );
+  virtual std::unique_ptr<expr_t> create_resource_expression( util::string_view name );
 
   virtual void create_options();
   void recreate_talent_str( talent_format format = talent_format::NUMBERS );

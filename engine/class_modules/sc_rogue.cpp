@@ -604,8 +604,8 @@ struct rogue_t : public player_t
   void        combat_begin() override;
   timespan_t  available() const override;
   action_t*   create_action( const std::string& name, const std::string& options ) override;
-  std::unique_ptr<expr_t> create_expression( const std::string& name_str ) override;
-  std::unique_ptr<expr_t> create_resource_expression( const std::string& name ) override;
+  std::unique_ptr<expr_t> create_expression( util::string_view name_str ) override;
+  std::unique_ptr<expr_t> create_resource_expression( util::string_view name ) override;
   void        regen( timespan_t periodicity ) override;
   double      resource_gain( resource_e, double, gain_t* g = nullptr, action_t* a = nullptr ) override;
   resource_e  primary_resource() const override { return RESOURCE_ENERGY; }
@@ -1169,7 +1169,7 @@ struct rogue_attack_t : public melee_attack_t
   virtual double composite_poison_flat_modifier( const action_state_t* ) const
   { return 0.0; }
 
-  std::unique_ptr<expr_t> create_expression( const std::string& name_str ) override;
+  std::unique_ptr<expr_t> create_expression( util::string_view name_str ) override;
 };
 
 struct secondary_ability_trigger_t : public event_t
@@ -3261,7 +3261,7 @@ struct rupture_t : public rogue_attack_t
     p() -> trigger_venomous_wounds( d -> state );
   }
 
-  std::unique_ptr<expr_t> create_expression( const std::string& name ) override
+  std::unique_ptr<expr_t> create_expression( util::string_view name ) override
   {
     if ( util::str_compare_ci( name, "new_duration" ) )
     {
@@ -4211,7 +4211,7 @@ struct exsanguinated_expr_t : public expr_t
 
 // rogue_attack_t::create_expression =========================================
 
-std::unique_ptr<expr_t> actions::rogue_attack_t::create_expression( const std::string& name_str )
+std::unique_ptr<expr_t> actions::rogue_attack_t::create_expression( util::string_view name_str )
 {
   if ( util::str_compare_ci( name_str, "cp_gain" ) )
   {
@@ -6180,9 +6180,9 @@ action_t* rogue_t::create_action( const std::string& name,
 
 // rogue_t::create_expression ===============================================
 
-std::unique_ptr<expr_t> rogue_t::create_expression( const std::string& name_str )
+std::unique_ptr<expr_t> rogue_t::create_expression( util::string_view name_str )
 {
-  std::vector<std::string> split = util::string_split( name_str, "." );
+  auto split = util::string_split( name_str, "." );
 
   if ( name_str == "combo_points" )
     return make_ref_expr( name_str, resources.current[ RESOURCE_COMBO_POINT ] );
@@ -6489,7 +6489,7 @@ std::unique_ptr<expr_t> rogue_t::create_expression( const std::string& name_str 
   return player_t::create_expression( name_str );
 }
 
-std::unique_ptr<expr_t> rogue_t::create_resource_expression( const std::string& name_str )
+std::unique_ptr<expr_t> rogue_t::create_resource_expression( util::string_view name_str )
 {
   auto splits = util::string_split( name_str, "." );
   if ( splits.empty() )

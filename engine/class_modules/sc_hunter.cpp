@@ -556,8 +556,8 @@ public:
   void      regen( timespan_t periodicity ) override;
   double    resource_gain( resource_e resource_type, double amount, gain_t* g = nullptr, action_t* a = nullptr ) override;
   void      create_options() override;
-  std::unique_ptr<expr_t>   create_expression( const std::string& name ) override;
-  std::unique_ptr<expr_t>   create_action_expression( action_t&, const std::string& name ) override;
+  std::unique_ptr<expr_t>   create_expression( util::string_view name ) override;
+  std::unique_ptr<expr_t>   create_action_expression( action_t&, util::string_view name ) override;
   action_t* create_action( const std::string& name, const std::string& options ) override;
   pet_t*    create_pet( const std::string& name, const std::string& type = std::string() ) override;
   void      create_pets() override;
@@ -824,7 +824,7 @@ public:
   }
 
   // action list expressions
-  std::unique_ptr<expr_t> create_expression( const std::string& name ) override
+  std::unique_ptr<expr_t> create_expression( util::string_view name ) override
   {
     if ( util::str_compare_ci( name, "cast_regen" ) )
     {
@@ -3955,7 +3955,7 @@ struct kill_command_t: public hunter_spell_t
     return false;
   }
 
-  std::unique_ptr<expr_t> create_expression(const std::string& expression_str) override
+  std::unique_ptr<expr_t> create_expression(util::string_view expression_str) override
   {
     // this is somewhat unfortunate but we can't get at the pets dot in any other way
     auto splits = util::string_split( expression_str, "." );
@@ -4771,7 +4771,7 @@ void hunter_t::vision_of_perfection_proc()
  * Use this function for expressions which are bound to an action property such as target, cast_time etc.
  * If you need an expression tied to the player itself use the normal hunter_t::create_expression override.
  */
-std::unique_ptr<expr_t> hunter_t::create_action_expression ( action_t& action, const std::string& expression_str )
+std::unique_ptr<expr_t> hunter_t::create_action_expression ( action_t& action, util::string_view expression_str )
 {
   std::vector<std::string> splits = util::string_split( expression_str, "." );
 
@@ -4794,7 +4794,7 @@ std::unique_ptr<expr_t> hunter_t::create_action_expression ( action_t& action, c
   return player_t::create_action_expression( action, expression_str );
 }
 
-std::unique_ptr<expr_t> hunter_t::create_expression( const std::string& expression_str )
+std::unique_ptr<expr_t> hunter_t::create_expression( util::string_view expression_str )
 {
   std::vector<std::string> splits = util::string_split( expression_str, "." );
 

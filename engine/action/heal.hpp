@@ -43,5 +43,5 @@ public:
 
   virtual double composite_versatility(const action_state_t* state) const override;
 
-  virtual std::unique_ptr<expr_t> create_expression( const std::string& name ) override;
+  virtual std::unique_ptr<expr_t> create_expression( util::string_view name ) override;
 };

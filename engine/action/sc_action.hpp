@@ -904,7 +904,7 @@ public:
   // becomes active.
   virtual void activate();
 
-  virtual std::unique_ptr<expr_t> create_expression(const std::string& name);
+  virtual std::unique_ptr<expr_t> create_expression(util::string_view name);
 
   virtual action_state_t* new_state();
 

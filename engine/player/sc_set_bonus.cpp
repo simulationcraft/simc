@@ -305,7 +305,7 @@ std::string set_bonus_t::to_profile_string( const std::string& newline ) const
   return s;
 }
 
-std::unique_ptr<expr_t> set_bonus_t::create_expression( const player_t* , const std::string& type )
+std::unique_ptr<expr_t> set_bonus_t::create_expression( const player_t* , util::string_view type )
 {
   set_bonus_type_e set_bonus = SET_BONUS_NONE;
   set_bonus_e bonus = B_NONE;
@@ -320,14 +320,14 @@ std::unique_ptr<expr_t> set_bonus_t::create_expression( const player_t* , const 
   return expr_t::create_constant( type, static_cast<double>(state) );
 }
 
-bool set_bonus_t::parse_set_bonus_option( const std::string& opt_str,
+bool set_bonus_t::parse_set_bonus_option( util::string_view opt_str,
                                           set_bonus_type_e& set_bonus,
                                           set_bonus_e& bonus )
 {
   set_bonus = SET_BONUS_NONE;
   bonus = B_NONE;
 
-  std::vector<std::string> split = util::string_split( opt_str, "_" );
+  auto split = util::string_split( opt_str, "_" );
   if ( split.size() < 2 )
   {
     return false;
@@ -346,7 +346,7 @@ bool set_bonus_t::parse_set_bonus_option( const std::string& opt_str,
   }
   bonus = static_cast<set_bonus_e>( b - 1 );
 
-  std::string set_name = opt_str.substr( 0, opt_str.size() - split.back().size() - 1 );
+  auto set_name = opt_str.substr( 0, opt_str.size() - split.back().size() - 1 );
 
   auto set_bonuses = item_set_bonus_t::data( SC_USE_PTR );
 

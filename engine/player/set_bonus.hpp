@@ -8,6 +8,7 @@
 #include "config.hpp"
 #include "sc_enums.hpp"
 #include "dbc/data_definitions.hh"
+#include "util/string_view.hpp"
 
 #include <iosfwd>
 #include <memory>
@@ -60,7 +61,7 @@ struct set_bonus_t
   // Initialize set bonuses in earnest
   void initialize();
 
-  std::unique_ptr<expr_t> create_expression(const player_t*, const std::string& type);
+  std::unique_ptr<expr_t> create_expression(const player_t*, util::string_view type);
 
   std::vector<const item_set_bonus_t*> enabled_set_bonus_data() const;
 
@@ -78,7 +79,7 @@ struct set_bonus_t
     return set_bonus_spec_data[set_bonus][specdata::spec_idx(spec)][bonus].enabled;
   }
 
-  bool parse_set_bonus_option(const std::string& opt_str, set_bonus_type_e& set_bonus, set_bonus_e& bonus);
+  bool parse_set_bonus_option(util::string_view opt_str, set_bonus_type_e& set_bonus, set_bonus_e& bonus);
   std::string to_string() const;
   std::string to_profile_string(const std::string & = "\n") const;
   std::string generate_set_bonus_options() const;

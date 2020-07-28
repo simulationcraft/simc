@@ -720,8 +720,8 @@ public:
   double resource_loss( resource_e, double, gain_t* = nullptr, action_t* = nullptr ) override;
   void recalculate_resource_max( resource_e ) override;
   void reset() override;
-  std::unique_ptr<expr_t> create_expression( const std::string& ) override;
-  std::unique_ptr<expr_t> create_action_expression( action_t&, const std::string& ) override;
+  std::unique_ptr<expr_t> create_expression( util::string_view ) override;
+  std::unique_ptr<expr_t> create_action_expression( action_t&, util::string_view ) override;
   action_t* create_action( const std::string&, const std::string& ) override;
   void create_actions() override;
   void create_pets() override;
@@ -6707,9 +6707,9 @@ void mage_t::combat_end()
  * Use this function for expressions which are bound to some action property (eg. target, cast_time, etc.) and not just
  * to the player itself. For those use the normal mage_t::create_expression override.
  */
-std::unique_ptr<expr_t> mage_t::create_action_expression( action_t& action, const std::string& name )
+std::unique_ptr<expr_t> mage_t::create_action_expression( action_t& action, util::string_view name )
 {
-  std::vector<std::string> splits = util::string_split( name, "." );
+  auto splits = util::string_split( name, "." );
 
   // Firestarter expressions ==================================================
   if ( splits.size() == 2 && util::str_compare_ci( splits[ 0 ], "firestarter" ) )
@@ -6748,7 +6748,7 @@ std::unique_ptr<expr_t> mage_t::create_action_expression( action_t& action, cons
   return player_t::create_action_expression( action, name );
 }
 
-std::unique_ptr<expr_t> mage_t::create_expression( const std::string& name )
+std::unique_ptr<expr_t> mage_t::create_expression( util::string_view name )
 {
   if ( util::str_compare_ci( name, "mana_gem_charges" ) )
   {

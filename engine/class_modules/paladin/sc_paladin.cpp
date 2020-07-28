@@ -1923,7 +1923,7 @@ bool paladin_t::get_how_availability( player_t* t ) const
 
 // player_t::create_expression ==============================================
 
-std::unique_ptr<expr_t> paladin_t::create_consecration_expression( const std::string& expr_str )
+std::unique_ptr<expr_t> paladin_t::create_consecration_expression( util::string_view expr_str )
 {
   auto expr = util::string_split( expr_str, "." );
   if ( expr.size() != 2 )
@@ -1951,12 +1951,12 @@ std::unique_ptr<expr_t> paladin_t::create_consecration_expression( const std::st
   return nullptr;
 }
 
-std::unique_ptr<expr_t> paladin_t::create_expression( const std::string& name_str )
+std::unique_ptr<expr_t> paladin_t::create_expression( util::string_view name_str )
 {
   struct paladin_expr_t : public expr_t
   {
     paladin_t& paladin;
-    paladin_expr_t( const std::string& n, paladin_t& p ) :
+    paladin_expr_t( util::string_view n, paladin_t& p ) :
       expr_t( n ), paladin( p ) {}
   };
 
@@ -1971,7 +1971,7 @@ std::unique_ptr<expr_t> paladin_t::create_expression( const std::string& name_st
     cooldown_t* how_cd;
     cooldown_t* wake_cd;
 
-    time_to_hpg_expr_t( const std::string& n, paladin_t& p ) :
+    time_to_hpg_expr_t( util::string_view n, paladin_t& p ) :
       paladin_expr_t( n, p ), cs_cd( p.get_cooldown( "crusader_strike" ) ),
       boj_cd ( p.get_cooldown( "blade_of_justice" )),
       j_cd( p.get_cooldown( "judgment" ) ),

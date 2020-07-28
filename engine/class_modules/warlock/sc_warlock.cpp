@@ -1056,7 +1056,7 @@ void warlock_t::create_all_pets()
   }
 }
 
-std::unique_ptr<expr_t> warlock_t::create_pet_expression(const std::string& name_str)
+std::unique_ptr<expr_t> warlock_t::create_pet_expression(util::string_view name_str)
 {
   if (name_str == "last_cast_imps")
   {
@@ -1080,7 +1080,7 @@ std::unique_ptr<expr_t> warlock_t::create_pet_expression(const std::string& name
   return player_t::create_expression(name_str);
 }
 
-std::unique_ptr<expr_t> warlock_t::create_expression( const std::string& name_str )
+std::unique_ptr<expr_t> warlock_t::create_expression( util::string_view name_str )
 {
   if ( name_str == "time_to_shard" )
   {
@@ -1149,7 +1149,7 @@ std::unique_ptr<expr_t> warlock_t::create_expression( const std::string& name_st
     });
   }
 
-  std::vector<std::string> splits = util::string_split( name_str, "." );
+  auto splits = util::string_split( name_str, "." );
 
   if (splits.size() == 3 && splits[0] == "time_to_imps" && splits[2] == "remains")
   {

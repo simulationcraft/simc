@@ -595,7 +595,7 @@ struct sim_t : private sc_thread_t
   player_t* find_player( int index ) const;
   cooldown_t* get_cooldown( util::string_view name );
   void      use_optimal_buffs_and_debuffs( int value );
-  std::unique_ptr<expr_t>   create_expression( const std::string& name );
+  std::unique_ptr<expr_t>   create_expression( util::string_view name );
   /**
    * Create error with printf formatting.
    */

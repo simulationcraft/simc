@@ -3275,7 +3275,7 @@ bool sim_t::time_to_think( timespan_t proc_time )
 
 // sim_t::create_expression =================================================
 
-std::unique_ptr<expr_t> sim_t::create_expression( const std::string& name_str )
+std::unique_ptr<expr_t> sim_t::create_expression( util::string_view name_str )
 {
   if ( name_str == "desired_targets" )
     return expr_t::create_constant( name_str, desired_targets );
