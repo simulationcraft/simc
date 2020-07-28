@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35282 shadowlands-BETA (git build dbc 87d1e7cf32)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35282 shadowlands-BETA (hotfix 2020-07-28/35282, no-networking)
 
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
@@ -24,7 +24,7 @@ Effects          :
 #1 (id=86)       : Summon (28)
                    Base Value: 1 | Scaled Value: 1 | Value Multiplier: 1 | PvP Coefficient: 1.00000 | Misc Value: 4277 | Misc Value 2: 0x41 | Radius: 100 yards | Target: Unknown(32)
 #2 (id=87)       : Apply Aura (6) | Invisibility Detection (19)
-                   Base Value: 0 | Scaled Value: 515 | Points Per Level: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 215 | Points Per Level: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Summons an Eye of Kilrogg and binds your vision to it. The eye is stealthed and moves quickly but is very fragile.
 Tooltip          : Controlling Eye of Kilrogg.
 Detecting Invisibility.
@@ -2868,7 +2868,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .x...
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=124148)   : Summon (28)
-                   Base Value: 1 | Scaled Value: 121 | Points Per Level: 1 | PvP Coefficient: 1.00000 | Misc Value: 89 | Misc Value 2: 0x2c7 | Target: Unknown(87)
+                   Base Value: 1 | Scaled Value: 61 | Points Per Level: 1 | PvP Coefficient: 1.00000 | Misc Value: 89 | Misc Value 2: 0x2c7 | Target: Unknown(87)
 Description      : $@spelldesc1122
 
 Name             : Demonic Gateway (id=111771) [Spell Family (5)] 
@@ -4642,7 +4642,7 @@ Effects          :
 #1 (id=302906)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=303022)   : Summon (28)
-                   Base Value: 1 | Scaled Value: 120 | Points Per Level: 1 | PvP Coefficient: 1.00000 | Misc Value: 103679 | Misc Value 2: 0xeb8 | Radius: 2.5 yards | Target: Unknown(49)
+                   Base Value: 1 | Scaled Value: 60 | Points Per Level: 1 | PvP Coefficient: 1.00000 | Misc Value: 103679 | Misc Value 2: 0xeb8 | Radius: 2.5 yards | Target: Unknown(49)
 Description      : Creates a Soul Effigy bound to the target, which is attackable only by you. $205247s1% of all damage taken by the Effigy is duplicated on the original target. Limit 1. Lasts $d.
 Tooltip          : Damage taken by the Soul Effigy is replicated on this target.
 
@@ -10179,7 +10179,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .x...
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=831709)   : Summon (28)
-                   Base Value: 1 | Scaled Value: 121 | Points Per Level: 1 | PvP Coefficient: 1.00000 | Misc Value: 89 | Misc Value 2: 0x2c7 | Target: Unknown(87)
+                   Base Value: 1 | Scaled Value: 61 | Points Per Level: 1 | PvP Coefficient: 1.00000 | Misc Value: 89 | Misc Value 2: 0x2c7 | Target: Unknown(87)
 Description      : $@spelldesc1122
 
 

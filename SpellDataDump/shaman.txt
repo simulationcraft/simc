@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35282 shadowlands-BETA (git build dbc 87d1e7cf32)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35282 shadowlands-BETA (hotfix 2020-07-28/35282, no-networking)
 
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -4568,7 +4568,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   x......x ........ ....x... ........ 
 Effects          :
 #1 (id=284862)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 326 | Scaled Value: 2416 | Points Per Level: 19 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 326 | Scaled Value: 1276 | Points Per Level: 19 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=284863)   : Apply Aura (6) | Dummy (4)
                    Base Value: 7 | Scaled Value: 7 | PvP Coefficient: 1.00000 | Misc Value: 126 | Target: Self (1)
 #3 (id=284864)   : Apply Aura (6) | Periodic Dummy (226): every 8 seconds
@@ -10082,7 +10082,7 @@ Attributes       : .......x ........ ..x..... ........   ........ ........ .....
                  : Hidden (7)
 Effects          :
 #1 (id=806487)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 326 | Scaled Value: 2473 | Points Per Level: 19 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 326 | Scaled Value: 1333 | Points Per Level: 19 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Imbue your weapon with the element of Fire for $d, causing each of your attacks to deal ${$max(($<coeff>*$AP),1)} additional Fire damage.
 Tooltip          : Each of your weapon attacks causes up to ${$max(($<coeff>*$AP),1)} additional Fire damage.
 Variables        : $coeff=${0.0264}

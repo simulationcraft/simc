@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35282 shadowlands-BETA (git build dbc 87d1e7cf32)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35282 shadowlands-BETA (hotfix 2020-07-28/35282, no-networking)
 
 Name             : Haste (id=65) [Scaling Spell (-1)] 
 Class            : Paladin
@@ -929,7 +929,7 @@ Effects          :
 #1 (id=22383)    : Unknown(176)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=22384)    : Apply Aura (6) | Invisibility (18)
-                   Base Value: 340 | Scaled Value: 940 | Points Per Level: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 340 | Scaled Value: 640 | Points Per Level: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=22385)    : Apply Aura (6) | Unknown(335)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc66

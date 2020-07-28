@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35282 shadowlands-BETA (git build dbc 87d1e7cf32)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35282 shadowlands-BETA (hotfix 2020-07-28/35282, no-networking)
 
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -420,7 +420,7 @@ Spell Level      : 1
 Range            : 5 yards
 GCD              : 1.5 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Brewmaster Monk (137023 effect#1), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#2), Heightened Senses (165692 effect#1), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), Item - Monk T19 Brewmaster 4P Bonus (211417 effect#1), Blackout Combo (228563 effect#1), The Wind Blows (281452 effect#1), Rushing Tiger Palm (337334 effect#1), Xuen's Battlegear (337481 effect#1), Extend Life (337993 effect#2)
+Affecting spells : Brewmaster Monk (137023 effect#1), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#2), Heightened Senses (165692 effect#1), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), Item - Monk T19 Brewmaster 4P Bonus (211417 effect#1), Blackout Combo (228563 effect#1), The Wind Blows (281452 effect#1), Rushing Tiger Palm (337334 effect#1), Extend Life (337993 effect#2)
 Family Flags     : 10, 103
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ..x..... ........ ........ 
@@ -2522,6 +2522,7 @@ Description      : $@spelldesc115181
 Tooltip          : Burning for $w1 Fire damage every $t1 sec.  Dealing $w2% reduced damage to the Monk.
 
 Name             : Invoke Xuen, the White Tiger (id=123904) [Spell Family (53)] 
+Hotfixed         : Affecting Spells
 Class            : Windwalker Monk
 School           : Nature
 Spell Type       : Magic
@@ -2536,6 +2537,7 @@ Category Cooldown: 120 seconds
 Proc Chance      : 100%
 Proc Flags       : ..x.x.x. x...x... x.x..... ........ 
                  : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Periodic
+Family Flags     : 3
 Attributes       : ........ ........ ........ ........   ........ ........ .x...... ....x... 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9179,6 +9181,7 @@ Effects          :
 Description      : Touch of Death can now be used on targets with less than $s1% health remaining, dealing $s2% of your maximum health in damage.
 
 Name             : Invoke Yul'on, the Jade Serpent (id=322118) [Spell Family (53)] 
+Hotfixed         : Affecting Spells
 Class            : Mistweaver Monk
 School           : Nature
 Spell Type       : Magic
@@ -9190,6 +9193,7 @@ Cooldown         : 180 seconds
 Category         : 1418
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 180 seconds
+Family Flags     : 3
 Attributes       : ........ ........ ........ ........   ........ ........ .x...... ....x... 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9555,6 +9559,7 @@ Tooltip          : Breath of Fire reduces damage taken by an additional $325177s
 Spinning Crane Kick ignites targets with Breath of Fire.
 
 Name             : Invoke Chi-Ji, the Red Crane (id=325197) [Spell Family (53)] 
+Hotfixed         : Affecting Spells
 Replaces         : Invoke Yul'on, the Jade Serpent (id=322118)
 Class            : Monk
 School           : Nature
@@ -9567,6 +9572,7 @@ Cooldown         : 120 seconds
 Category         : 1418
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 120 seconds
+Family Flags     : 3
 Attributes       : ........ ........ ........ ........   ........ ........ .x...... ....x... 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
