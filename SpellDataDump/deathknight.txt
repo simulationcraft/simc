@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35282 shadowlands-BETA (hotfix 2020-07-28/35282, no-networking)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35282 shadowlands-BETA (hotfix 2020-07-28/35282, git build shadowlands 54ab888b01)
 
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -554,7 +554,7 @@ GCD              : 1.5 seconds
 Velocity         : 4 yards/sec
 Duration         : 20 seconds
 Charges          : 1 (120 seconds cooldown)
-Category         : 1614
+Category         : 1614: Seal of Necrofantasia (212216 effect#1), Seal of Necrofantasia (212216 effect#2), Strive for Perfection (296320 effect#5), Strive for Perfection (299367 effect#5), Strive for Perfection (299369 effect#5), Empower Rune Weapon (317230 effect#1), Accelerated Cold (337822 effect#2)
 Labels           : 16: Agonizing Backlash (320035 effect#3)
                  : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
 Affecting spells : Death Knight (137005 effect#2), Accelerated Cold (337822 effect#1)
@@ -1027,7 +1027,7 @@ Spell Level      : 5
 Range            : 30 yards
 GCD              : 0.5 seconds
 Charges          : 1 (25 seconds cooldown)
-Category         : 1428
+Category         : 1428: Blood Death Knight (137008 effect#4), Blood Death Knight (137008 effect#11), Unholy Command (202727 effect#1), Grip of the Everlasting (334722 effect#1)
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Mechanic         : Grip
 Affecting spells : Death's Reach (276079 effect#1)
@@ -1127,7 +1127,7 @@ Spell Type       : Magic
 Spell Level      : 17
 GCD              : 1.5 seconds
 Charges          : 1 (7.5 seconds cooldown)
-Category         : 1611: Death Knight (137005 effect#3)
+Category         : 1611: Death Knight (137005 effect#3), Blood Boil (316634 effect#1)
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Master of Ghouls (246995 effect#1), 
 Family Flags     : 18, 43, 48
@@ -5747,7 +5747,7 @@ Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
 Charges          : 1 (150 seconds cooldown)
-Category         : 1572
+Category         : 1572: Strive for Perfection (296320 effect#3), Strive for Perfection (299367 effect#3), Strive for Perfection (299369 effect#3)
 Labels           : 16: Agonizing Backlash (320035 effect#3)
                  : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
 Affecting spells : Call of Flame (338303 effect#1)
@@ -5855,7 +5855,7 @@ Spell Level      : 19
 Duration         : 4 seconds
 Cooldown         : 1.5 seconds
 Charges          : 1 (25 seconds cooldown)
-Category         : 1645
+Category         : 1645: Rune Tap (316616 effect#1)
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 27
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
@@ -8073,7 +8073,7 @@ GCD              : 1.5 seconds
 Duration         : 25 seconds
 Cooldown         : 20 seconds
 Charges          : 1 (120 seconds cooldown)
-Category         : 1550
+Category         : 1550: Strive for Perfection (296320 effect#6), Strive for Perfection (299367 effect#6), Strive for Perfection (299369 effect#6)
 Labels           : 16: Agonizing Backlash (320035 effect#3)
                  : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
 Stacks           : 10 maximum

@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35282 shadowlands-BETA (hotfix 2020-07-28/35282, no-networking)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35282 shadowlands-BETA (hotfix 2020-07-28/35282, git build shadowlands 54ab888b01)
 
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
@@ -1382,7 +1382,7 @@ GCD              : 1.5 seconds
 Velocity         : 80 yards/sec
 Requires weapon  : Bow, Gun, Crossbow
 Charges          : 1 (10 seconds cooldown)
-Category         : 1873
+Category         : 1873: Dead Eye (321460 effect#1)
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), 
 Family Flags     : 11, 106, 121
@@ -4068,7 +4068,7 @@ Velocity         : 90 yards/sec
 Requires weapon  : Two-handed Axe, Two-handed Mace, Polearm, Two-handed Sword, Staff
 Cooldown         : 1 seconds
 Charges          : 1 (30 seconds cooldown)
-Category         : 1635
+Category         : 1635: Harpoon (231550 effect#1)
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 1 seconds
 Affecting spells : Hunter (137014 effect#3), Aspect of the Wild (193530 effect#3)
@@ -5853,7 +5853,7 @@ Spell Level      : 11
 Range            : 50 yards
 GCD              : 1.5 seconds
 Charges          : 1 (6 seconds cooldown)
-Category         : 1171: Hunter (137014 effect#11)
+Category         : 1171: Hunter (137014 effect#11), Alpha Predator (269737 effect#1)
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), Alpha Predator (269737 effect#2)
 Family Flags     : 1, 72, 106
@@ -5920,7 +5920,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 35 yards/sec
 Charges          : 1 (18 seconds cooldown)
-Category         : 1716: Hunter (137014 effect#10)
+Category         : 1716: Hunter (137014 effect#10), Guerrilla Tactics (264332 effect#1)
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Hunter (137014 effect#3), Aspect of the Wild (193530 effect#3)
 Family Flags     : 1, 26
@@ -8284,7 +8284,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 35 yards/sec
 Charges          : 1 (18 seconds cooldown)
-Category         : 1716: Hunter (137014 effect#10)
+Category         : 1716: Hunter (137014 effect#10), Guerrilla Tactics (264332 effect#1)
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Hunter (137014 effect#3), Aspect of the Wild (193530 effect#3)
 Family Flags     : 1, 26
@@ -8380,7 +8380,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 35 yards/sec
 Charges          : 1 (18 seconds cooldown)
-Category         : 1716: Hunter (137014 effect#10)
+Category         : 1716: Hunter (137014 effect#10), Guerrilla Tactics (264332 effect#1)
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Hunter (137014 effect#3), Aspect of the Wild (193530 effect#3)
 Family Flags     : 1, 26
@@ -8555,7 +8555,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 35 yards/sec
 Charges          : 1 (18 seconds cooldown)
-Category         : 1716: Hunter (137014 effect#10)
+Category         : 1716: Hunter (137014 effect#10), Guerrilla Tactics (264332 effect#1)
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Hunter (137014 effect#3), Aspect of the Wild (193530 effect#3)
 Family Flags     : 1, 26

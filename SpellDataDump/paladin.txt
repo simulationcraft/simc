@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35282 shadowlands-BETA (hotfix 2020-07-28/35282, no-networking)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35282 shadowlands-BETA (hotfix 2020-07-28/35282, git build shadowlands 54ab888b01)
 
 Name             : Haste (id=65) [Scaling Spell (-1)] 
 Class            : Paladin
@@ -436,7 +436,7 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Velocity         : 35 yards/sec
 Charges          : 1 (12 seconds cooldown)
-Category         : 1663: Retribution Paladin (137027 effect#7), Protection Paladin (137028 effect#7), Holy Paladin (137029 effect#6)
+Category         : 1663: Retribution Paladin (137027 effect#7), Protection Paladin (137028 effect#4), Protection Paladin (137028 effect#7), Holy Paladin (137029 effect#6), Crusader's Judgment (204023 effect#1)
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Avenging Wrath (31884 effect#1), Inquisition (84963 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Holy Paladin (137029 effect#5), Avenging Crusader (216331 effect#1), Crusade (231895 effect#1), Item - Paladin T21 Retribution 2P Bonus (251867 effect#1), Wake of Ashes (255937 effect#4), Mastery: Hand of Light (267316 effect#1), Execution Sentence (267799 effect#1), Judgment (327977 effect#1), Blessing of Dawn (337747 effect#1), 
 Family Flags     : 23, 27, 65
@@ -945,7 +945,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Charges          : 1 (6 seconds cooldown)
-Category         : 1627: Paladin (137026 effect#4), Retribution Paladin (137027 effect#5)
+Category         : 1627: Paladin (137026 effect#4), Retribution Paladin (137027 effect#5), Fires of Justice (203316 effect#3), Crusader Strike (231667 effect#1)
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Avenging Wrath (31884 effect#1), Improved Crusader Strike (44300 effect#1), Inquisition (84963 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Holy Paladin (137029 effect#4), Judgment (214222 effect#1), Avenging Crusader (216331 effect#1), Crusade (231895 effect#1), Wake of Ashes (255937 effect#4), Blessing of Dawn (337747 effect#1), 
 Family Flags     : 47, 65
@@ -1101,7 +1101,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapon
 Charges          : 1 (6 seconds cooldown)
-Category         : 1570: Paladin (137026 effect#3)
+Category         : 1570: Paladin (137026 effect#3), Hammer of the Righteous (317854 effect#1), Hammer of the Righteous (337287 effect#1)
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Avenging Wrath (31884 effect#1), Inquisition (84963 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Holy Paladin (137029 effect#4), Crusade (231895 effect#1), Wake of Ashes (255937 effect#4), Blessing of Dawn (337747 effect#1), 
 Family Flags     : 50, 65
@@ -3446,7 +3446,7 @@ Spell Type       : None
 Spell Level      : 18
 GCD              : 1.5 seconds
 Charges          : 1 (60 seconds cooldown)
-Category         : 1662
+Category         : 1662: Cavalier (230332 effect#1), Gallant Steed (280189 effect#2), Divine Steed (317911 effect#1)
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Steed of Glory (199542 effect#1), Light's Barding (339268 effect#1)
 Family Flags     : 36, 60
@@ -4864,7 +4864,7 @@ GCD              : 1.5 seconds
 Duration         : 25 seconds
 Cooldown         : 20 seconds
 Charges          : 1 (120 seconds cooldown)
-Category         : 1550
+Category         : 1550: Strive for Perfection (296320 effect#6), Strive for Perfection (299367 effect#6), Strive for Perfection (299369 effect#6)
 Labels           : 16: Agonizing Backlash (320035 effect#3)
                  : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
 Stacks           : 10 maximum
@@ -6600,7 +6600,7 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Velocity         : 35 yards/sec
 Charges          : 1 (12 seconds cooldown)
-Category         : 1663: Retribution Paladin (137027 effect#7), Protection Paladin (137028 effect#7), Holy Paladin (137029 effect#6)
+Category         : 1663: Retribution Paladin (137027 effect#7), Protection Paladin (137028 effect#4), Protection Paladin (137028 effect#7), Holy Paladin (137029 effect#6), Crusader's Judgment (204023 effect#1)
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Avenging Wrath (31884 effect#1), Inquisition (84963 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Holy Paladin (137029 effect#5), Avenging Crusader (216331 effect#1), Crusade (231895 effect#1), Item - Paladin T21 Retribution 2P Bonus (251867 effect#1), Wake of Ashes (255937 effect#4), Mastery: Hand of Light (267316 effect#1), Execution Sentence (267799 effect#1), Judgment (327977 effect#1), Blessing of Dawn (337747 effect#1), 
 Family Flags     : 23, 27, 65
@@ -6628,7 +6628,7 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Velocity         : 35 yards/sec
 Charges          : 1 (12 seconds cooldown)
-Category         : 1663: Retribution Paladin (137027 effect#7), Protection Paladin (137028 effect#7), Holy Paladin (137029 effect#6)
+Category         : 1663: Retribution Paladin (137027 effect#7), Protection Paladin (137028 effect#4), Protection Paladin (137028 effect#7), Holy Paladin (137029 effect#6), Crusader's Judgment (204023 effect#1)
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Avenging Wrath (31884 effect#1), Inquisition (84963 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Holy Paladin (137029 effect#5), Avenging Crusader (216331 effect#1), Crusade (231895 effect#1), Item - Paladin T21 Retribution 2P Bonus (251867 effect#1), Wake of Ashes (255937 effect#4), Mastery: Hand of Light (267316 effect#1), Execution Sentence (267799 effect#1), Judgment (327977 effect#1), Blessing of Dawn (337747 effect#1), 
 Family Flags     : 3, 23, 27, 65

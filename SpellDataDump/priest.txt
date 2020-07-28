@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35282 shadowlands-BETA (hotfix 2020-07-28/35282, no-networking)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35282 shadowlands-BETA (hotfix 2020-07-28/35282, git build shadowlands 54ab888b01)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
@@ -459,7 +459,7 @@ Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Charges          : 1 (15 seconds cooldown)
-Category         : 1602: Priest (137030 effect#2)
+Category         : 1602: Priest (137030 effect#2), Item - Priest T17 Shadow 2P Bonus (165628 effect#1), Voidform (194249 effect#6), Mangaza's Madness (207701 effect#1), Mind Blast (319899 effect#1)
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Mastery: Madness (77486 effect#1), Twist of Fate (123254 effect#1), Shadowy Insight (124430 effect#1), Holy Priest (137031 effect#3), Discipline Priest (137032 effect#7), Shadow Priest (137033 effect#1), Mental Fatigue (185104 effect#1), Fortress of the Mind (193195 effect#2), Surrender to Madness (193223 effect#2), Voidform (194249 effect#1), Schism (214621 effect#2), Shadowform (232698 effect#1), Empty Mind (247226 effect#1), Item - Priest T21 Shadow 2P Bonus (251845 effect#1), Overwhelming Darkness (252909 effect#1), Twist of Fate (265258 effect#1), Whispers of the Damned (275722 effect#2), Sins of the Many (280398 effect#1), Surrender to Madness (319952 effect#7), Mind Devourer (338332 effect#1)
 Family Flags     : 13, 72
@@ -3874,7 +3874,7 @@ Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Charges          : 1 (20 seconds cooldown)
-Category         : 1690
+Category         : 1690: Item - Priest T21 Discipline 2P Bonus (251843 effect#1), Power Word: Radiance (322115 effect#1)
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x80000000
 Affecting spells : Rapid Healing (24546 effect#2), Spirit of Redemption (27827 effect#2), Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Surrender to Madness (193223 effect#2), Power Word: Shield (211558 effect#1), Twist of Fate (265258 effect#1), Enduring Luminescence (278643 effect#2), Enduring Luminescence (279245 effect#1), Dejahna's Inspiration (281456 effect#1), Kam Xi'raff (281457 effect#1), Surrender to Madness (319952 effect#7), Shining Radiance (337778 effect#1)
@@ -4636,7 +4636,7 @@ Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Charges          : 2 (9 seconds cooldown)
-Category         : 1590: Shadow Priest (137033 effect#10)
+Category         : 1590: Shadow Priest (137033 effect#10), Voidform (194249 effect#15), Mangaza's Madness (207701 effect#2)
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Mastery: Madness (77486 effect#1), Twist of Fate (123254 effect#1), Holy Priest (137031 effect#3), Shadow Priest (137033 effect#1), Surrender to Madness (193223 effect#2), Voidform (194249 effect#1), Schism (214621 effect#2), Shadowform (232698 effect#1), Empty Mind (247226 effect#1), Twist of Fate (265258 effect#1), Whispers of the Damned (275722 effect#2), Sins of the Many (280398 effect#1), Surrender to Madness (319952 effect#7), Mind Devourer (338332 effect#1)
 Family Flags     : 30, 72

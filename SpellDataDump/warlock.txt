@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35282 shadowlands-BETA (hotfix 2020-07-28/35282, no-networking)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35282 shadowlands-BETA (hotfix 2020-07-28/35282, git build shadowlands 54ab888b01)
 
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
@@ -1068,7 +1068,7 @@ Spell Level      : 10
 Range            : 40 yards
 GCD              : 1.5 seconds
 Charges          : 1 (12.96 seconds cooldown)
-Category         : 672: Warlock (137042 effect#2)
+Category         : 672: Warlock (137042 effect#2), Item - Warlock T19 Destruction 4P Bonus (212017 effect#1), Item - Warlock T19 Destruction 4P Bonus (212017 effect#2), Conflagrate (231793 effect#1), Cinders of the Azj'Aqir (337166 effect#1), Cinders of the Azj'Aqir (337166 effect#2)
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Flamelicked (185229 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Conflagrate (265931 effect#1), Flashover (267115 effect#3), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), Wrath of Consumption (337130 effect#1), Odr, Shawl of the Ymirjar (337164 effect#1)
 Family Flags     : 49, 55, 118

@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35282 shadowlands-BETA (hotfix 2020-07-28/35282, no-networking)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35282 shadowlands-BETA (hotfix 2020-07-28/35282, git build shadowlands 54ab888b01)
 
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
@@ -1688,7 +1688,7 @@ Range            : 25 yards
 Duration         : 2 seconds
 Cooldown         : 1 seconds
 Charges          : 1 (30 seconds cooldown)
-Category         : 1206
+Category         : 1206: Subtlety Rogue (137035 effect#5)
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 41
 Attributes       : ....x... ........ ........ .....x..   .....x.. ..x..... ........ ........ 
@@ -3424,7 +3424,7 @@ Spell Type       : None
 Spell Level      : 26
 Duration         : 8 seconds
 Charges          : 1 (60 seconds cooldown)
-Category         : 1615
+Category         : 1615: Enveloping Shadows (238104 effect#2)
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Subterfuge (108208 effect#2), Soothing Darkness (200759 effect#2), Dark Shadow (245687 effect#1), 
 Family Flags     : 103
@@ -4925,7 +4925,7 @@ Spell Type       : None
 Spell Level      : 21
 Duration         : 10 seconds
 Charges          : 1 (30 seconds cooldown)
-Category         : 1694
+Category         : 1694: Item - Rogue T20 Subtlety 2P Bonus (242279 effect#2)
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Shadow Dance (185313 effect#6), Item - Rogue T20 Subtlety 2P Bonus (242279 effect#1), Item - Rogue T20 Subtlety 4P Bonus (242280 effect#1), 
 Family Flags     : 117

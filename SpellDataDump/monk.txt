@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35282 shadowlands-BETA (hotfix 2020-07-28/35282, no-networking)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35282 shadowlands-BETA (hotfix 2020-07-28/35282, git build shadowlands 54ab888b01)
 
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -662,7 +662,7 @@ Spell Type       : None
 Spell Level      : 3
 Cooldown         : 0.8 seconds
 Charges          : 1 (20 seconds cooldown)
-Category         : 1365
+Category         : 1365: Celerity (115173 effect#1), Celerity (115173 effect#2), Roll Buff (222625 effect#1), Roll (328669 effect#1), Roll Out (337294 effect#1)
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 7, 50
 Attributes       : ....x... ........ x......x ........   .....x.. ..x..... .x...... ....x... 
@@ -755,7 +755,7 @@ Spell Type       : None
 Spell Level      : 1
 Duration         : 1.1 seconds
 Charges          : 1 (20 seconds cooldown)
-Category         : 1365
+Category         : 1365: Celerity (115173 effect#1), Celerity (115173 effect#2), Roll Buff (222625 effect#1), Roll (328669 effect#1), Roll Out (337294 effect#1)
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 7, 33
 Attributes       : ....x... ........ x......x ........   .....x.. ..x..... .x...... ....x... 
@@ -936,7 +936,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 30 yards/sec
 Charges          : 1 (9 seconds cooldown)
-Category         : 1517
+Category         : 1517: Renewing Mist (281231 effect#1)
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Thunder Focus Tea (116680 effect#3), Chi-ji's Guidance (167717 effect#1), Extend Life (185158 effect#2), Item - Monk T19 Mistweaver 2P Bonus (211418 effect#1), Shelter of Rin (281301 effect#1), Extend Life (337993 effect#2)
 Family Flags     : 23, 97
@@ -1124,7 +1124,7 @@ Spell Type       : None
 Spell Level      : 14
 Cooldown         : 1 seconds
 Charges          : 2 (15 seconds cooldown)
-Category         : 1562: Brewmaster Monk (137023 effect#5)
+Category         : 1562: Brewmaster Monk (137023 effect#5), Light Brewing (325093 effect#1)
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Eluding Movements (184906 effect#2), Item - Monk T19 Brewmaster 2P Bonus (211415 effect#1), Evasive Stride (337250 effect#1)
 Family Flags     : 53, 111
@@ -1997,7 +1997,7 @@ Spell Type       : Magic
 Spell Level      : 16
 Cooldown         : 1 seconds
 Charges          : 2 (15 seconds cooldown)
-Category         : 1562: Brewmaster Monk (137023 effect#5)
+Category         : 1562: Brewmaster Monk (137023 effect#5), Light Brewing (325093 effect#1)
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 53, 66, 67
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2256,7 +2256,7 @@ Velocity         : 30 yards/sec
 Duration         : 15 seconds
 Cooldown         : 1 seconds
 Charges          : 1 (8 seconds cooldown)
-Category         : 1490: Brewmaster Monk (137023 effect#4)
+Category         : 1490: Brewmaster Monk (137023 effect#4), Stormstout's Last Gasp (248044 effect#1), Stormstout's Last Gasp (337288 effect#2)
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Affecting spells : Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Serenity (152173 effect#2), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), Stormstout's Last Gasp (248044 effect#2), The Wind Blows (281452 effect#1), Stormstout's Last Gasp (337288 effect#1), Extend Life (337993 effect#2)
@@ -3622,7 +3622,7 @@ GCD              : 1 seconds
 Duration         : 15 seconds
 Cooldown         : 16 seconds
 Charges          : 1 (90 seconds cooldown)
-Category         : 1592
+Category         : 1592: Storm, Earth, and Fire (231627 effect#1), Strive for Perfection (296320 effect#4), Strive for Perfection (299367 effect#4), Strive for Perfection (299369 effect#4)
 Labels           : 16: Agonizing Backlash (320035 effect#3)
                  : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
 Stacks           : 2 maximum

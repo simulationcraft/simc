@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35282 shadowlands-BETA (hotfix 2020-07-28/35282, no-networking)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35282 shadowlands-BETA (hotfix 2020-07-28/35282, git build shadowlands 54ab888b01)
 
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -244,7 +244,7 @@ Spell Level      : 26
 GCD              : 1 seconds
 Duration         : 15 seconds
 Charges          : 1 (30 seconds cooldown)
-Category         : 1569
+Category         : 1569: Echo of the Elements (108283 effect#3)
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Praetorian's Tidecallers (210604 effect#1)
 Family Flags     : 6, 15, 19, 29
@@ -1028,7 +1028,7 @@ Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Velocity         : 50 yards/sec
 Charges          : 1 (8 seconds cooldown)
-Category         : 1536
+Category         : 1536: Echo of the Elements (108283 effect#1), Ascendance (114050 effect#3), Echo of the Elements (333919 effect#1)
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Elemental Fury (60188 effect#1), Lava Surge (77762 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Lightning Crash (242284 effect#1), Flames of the Forefathers (264113 effect#1), Igneous Potential (279829 effect#2)
 Family Flags     : 39, 44
@@ -1545,7 +1545,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 18 seconds
 Charges          : 1 (6 seconds cooldown)
-Category         : 1228
+Category         : 1228: Echo of the Elements (108283 effect#2)
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Earth Shield (974 effect#1), Healing Trance (60515 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#1), Item - Shaman T18 Restoration 2P Bonus (185873 effect#1), Torrent (200072 effect#1)
 Family Flags     : 41, 68
@@ -3310,7 +3310,7 @@ GCD              : 1 seconds
 Duration         : 15 seconds
 Cooldown         : 1 seconds
 Charges          : 1 (30 seconds cooldown)
-Category         : 1569
+Category         : 1569: Echo of the Elements (108283 effect#3)
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 1 seconds
 Family Flags     : 29
@@ -4498,7 +4498,7 @@ Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
 Charges          : 1 (150 seconds cooldown)
-Category         : 1572
+Category         : 1572: Strive for Perfection (296320 effect#3), Strive for Perfection (299367 effect#3), Strive for Perfection (299369 effect#3)
 Labels           : 16: Agonizing Backlash (320035 effect#3)
                  : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
 Affecting spells : Call of Flame (338303 effect#1)
@@ -4875,7 +4875,7 @@ Spell Level      : 34
 Range            : 40 yards
 GCD              : 1.5 seconds
 Charges          : 1 (150 seconds cooldown)
-Category         : 1572
+Category         : 1572: Strive for Perfection (296320 effect#3), Strive for Perfection (299367 effect#3), Strive for Perfection (299369 effect#3)
 Labels           : 16: Agonizing Backlash (320035 effect#3)
                  : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
 Affecting spells : Call of Flame (338303 effect#1)

@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35282 shadowlands-BETA (hotfix 2020-07-28/35282, no-networking)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35282 shadowlands-BETA (hotfix 2020-07-28/35282, git build shadowlands 54ab888b01)
 
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
@@ -35,7 +35,7 @@ Spell Level      : 2
 Range            : 8 - 25 yards
 Cooldown         : 1.5 seconds
 Charges          : 1 (20 seconds cooldown)
-Category         : 1386
+Category         : 1386: Double Time (103827 effect#1), Double Time (103827 effect#2)
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 1 seconds
 Affecting spells : Recklessness (1719 effect#6), Warrior (137047 effect#2), Raging Fury (222266 effect#1), Charge (319157 effect#1), Unnerving Focus (337155 effect#3)
@@ -420,7 +420,7 @@ Resource         : 30 Rage (1) (id=10739)
 Spell Level      : 6
 Cooldown         : 1 seconds
 Charges          : 1 (16 seconds cooldown)
-Category         : 1385: Warrior (137047 effect#4)
+Category         : 1385: Warrior (137047 effect#4), Shield Block (231847 effect#1), Ararat's Bloodmirrors (248117 effect#1)
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Bladestorm (46924 effect#3), Neltharion's Fury (203524 effect#4), Bladestorm (222634 effect#3), Bladestorm (227847 effect#3), Deadly Calm (262228 effect#1)
 Family Flags     : 12
@@ -643,7 +643,7 @@ Spell Level      : 33
 Range            : 8 - 40 yards
 Cooldown         : 0.8 seconds
 Charges          : 1 (45 seconds cooldown)
-Category         : 1211
+Category         : 1211: Bounding Stride (202163 effect#1), Timeless Strategem (208091 effect#1), Leaper (335214 effect#1)
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 0.8 seconds
 Affecting spells : Weight of the Earth (208177 effect#1)
@@ -752,7 +752,7 @@ GCD              : 1.5 seconds
 Duration         : 15 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Charges          : 1 (12 seconds cooldown)
-Category         : 1680
+Category         : 1680: Dreadnaught (262150 effect#1)
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 1 maximum
 Proc Chance      : 100%
@@ -1017,7 +1017,7 @@ Spell Level      : 47
 Duration         : 5 seconds
 Cooldown         : 1 seconds
 Charges          : 1 (25 seconds cooldown)
-Category         : 1692
+Category         : 1692: Ararat's Bloodmirrors (248117 effect#2)
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
@@ -1798,7 +1798,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Charges          : 1 (8 seconds cooldown)
-Category         : 1672: Fury Warrior (137050 effect#5)
+Category         : 1672: Fury Warrior (137050 effect#5), Inner Rage (215573 effect#1), Raging Blow (316453 effect#1)
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Recklessness (1719 effect#6), Warrior (137047 effect#2), Unnerving Focus (337155 effect#3)
 Family Flags     : 8, 106
@@ -3657,7 +3657,7 @@ Spell Level      : 16
 Range            : 8 - 25 yards
 Cooldown         : 1.5 seconds
 Charges          : 1 (20 seconds cooldown)
-Category         : 1386
+Category         : 1386: Double Time (103827 effect#1), Double Time (103827 effect#2)
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Raging Fury (222266 effect#1)
 Family Flags     : 48
@@ -9863,7 +9863,7 @@ Range            : 10 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Charges          : 1 (8 seconds cooldown)
-Category         : 1672: Fury Warrior (137050 effect#5)
+Category         : 1672: Fury Warrior (137050 effect#5), Inner Rage (215573 effect#1), Raging Blow (316453 effect#1)
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Recklessness (1719 effect#6), Warrior (137047 effect#2), Unnerving Focus (337155 effect#3)
 Family Flags     : 8, 106

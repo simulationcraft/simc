@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35282 shadowlands-BETA (hotfix 2020-07-28/35282, no-networking)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35282 shadowlands-BETA (hotfix 2020-07-28/35282, git build shadowlands 54ab888b01)
 
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -482,7 +482,7 @@ Spell Level      : 10
 Range            : 30 yards
 GCD              : 1.5 seconds
 Charges          : 1 (9 seconds cooldown)
-Category         : 1612: Havoc Demon Hunter (212612 effect#5)
+Category         : 1612: Master of the Glaive (203556 effect#2), Havoc Demon Hunter (212612 effect#5)
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Demon Soul (163073 effect#1), Momentum (208628 effect#1), Mo'arg Bionic Stabilizers (208826 effect#1), Havoc Demon Hunter (212612 effect#1), Vengeance Demon Hunter (212613 effect#3), Chaos Blades (247938 effect#2), Throw Glaive (320386 effect#1), Throw Glaive (320387 effect#1), Demon's Touch (339153 effect#1)
 Family Flags     : 5, 16, 32, 42, 85
@@ -703,7 +703,7 @@ Spell Type       : Melee
 Range            : 30 yards
 Cooldown         : 0.8 seconds
 Charges          : 1 (20 seconds cooldown)
-Category         : 1553
+Category         : 1553: Abyssal Strike (207550 effect#1), Infernal Strike (320791 effect#1)
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 0.8 seconds
 Affecting spells : Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2)
@@ -858,7 +858,7 @@ Spell Type       : None
 GCD              : 0.25 seconds
 Cooldown         : 1 seconds
 Charges          : 1 (10 seconds cooldown)
-Category         : 1545
+Category         : 1545: Fel Rush (320416 effect#1), Erratic Fel Core (337685 effect#1)
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 2
 Attributes       : ....x... ........ x....... ........   ........ .xx..... ........ ........ 
@@ -1733,7 +1733,7 @@ Spell Type       : None
 Spell Level      : 1
 Cooldown         : 1.5 seconds
 Charges          : 2 (20 seconds cooldown)
-Category         : 1586: Vengeance Demon Hunter (212613 effect#5)
+Category         : 1586: Vengeance Demon Hunter (212613 effect#5), Oblivion's Embrace (248074 effect#1)
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
