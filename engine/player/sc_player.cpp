@@ -8668,7 +8668,7 @@ struct pool_resource_t : public action_t
 
 }  // UNNAMED NAMESPACE
 
-action_t* player_t::create_action( const std::string& name, const std::string& options_str )
+action_t* player_t::create_action( util::string_view name, const std::string& options_str )
 {
   if ( name == "ancestral_call" )
     return new ancestral_call_t( this, options_str );

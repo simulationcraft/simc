@@ -924,7 +924,7 @@ void paladin_t::create_actions()
 
 // paladin_t::create_action =================================================
 
-action_t* paladin_t::create_action( const std::string& name, const std::string& options_str )
+action_t* paladin_t::create_action( util::string_view name, const std::string& options_str )
 {
   action_t* ret_action = create_action_retribution( name, options_str );
   if ( ret_action )

@@ -885,7 +885,7 @@ namespace warlock {
     return nullptr;
   }
   // add actions
-  action_t* warlock_t::create_action_demonology(const std::string& action_name, const std::string& options_str) {
+  action_t* warlock_t::create_action_demonology(util::string_view action_name, const std::string& options_str) {
     using namespace actions_demonology;
 
     if (action_name == "shadow_bolt") return new            shadow_bolt_t(this, options_str);

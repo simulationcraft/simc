@@ -4487,7 +4487,7 @@ struct guardian_of_azeroth_t : public azerite_essence_major_t
       azerite_essence_t essence;
       player_t* owner;
 
-      azerite_spike_t(const std::string& n, pet_t* p, const std::string& options, const azerite_essence_t& ess) :
+      azerite_spike_t(util::string_view n, pet_t* p, const std::string& options, const azerite_essence_t& ess) :
         spell_t(n, p, p->find_spell(295856)), essence(ess), owner(p->owner)
       {
         parse_options(options);
@@ -4541,7 +4541,7 @@ struct guardian_of_azeroth_t : public azerite_essence_major_t
       pet_t(p->sim, p, "guardian_of_azeroth", true, true), essence(ess)
     {}
 
-    action_t* create_action(const std::string& name, const std::string& options) override
+    action_t* create_action(util::string_view name, const std::string& options) override
     {
       if (name == "azerite_spike")
         return new azerite_spike_t(name, this, options, essence);
@@ -5878,7 +5878,7 @@ void touch_of_the_everlasting( special_effect_t& effect )
 
 } // Namespace azerite essences ends
 
-action_t* create_action( player_t* player, const std::string& name, const std::string& options )
+action_t* create_action( player_t* player, util::string_view name, const std::string& options )
 {
   if ( util::str_compare_ci( name, "focused_azerite_beam" ) )
   {

@@ -82,7 +82,7 @@ struct warlock_pet_t : public pet_t
     bool usable_moving() const override { return true; }
   };
 
-  action_t* create_action( const std::string& name,
+  action_t* create_action( util::string_view name,
     const std::string& options_str ) override
   {
     if ( name == "travel" ) return new travel_t( this );
@@ -292,7 +292,7 @@ struct felhunter_pet_t : public warlock_pet_t
 {
   felhunter_pet_t( warlock_t* owner, const std::string& name );
   void init_base_stats() override;
-  action_t* create_action( const std::string& name, const std::string& options_str ) override;
+  action_t* create_action( util::string_view name, const std::string& options_str ) override;
 };
 
 struct imp_pet_t : public warlock_pet_t
@@ -300,7 +300,7 @@ struct imp_pet_t : public warlock_pet_t
   double firebolt_cost;
 
   imp_pet_t( warlock_t* owner, const std::string& name );
-  action_t* create_action( const std::string& name, const std::string& options_str ) override;
+  action_t* create_action( util::string_view name, const std::string& options_str ) override;
   timespan_t available() const override;
 };
 
@@ -308,14 +308,14 @@ struct succubus_pet_t : public warlock_pet_t
 {
   succubus_pet_t( warlock_t* owner, const std::string& name );
   void init_base_stats() override;
-  action_t* create_action( const std::string& name, const std::string& options_str ) override;
+  action_t* create_action( util::string_view name, const std::string& options_str ) override;
 };
 
 struct voidwalker_pet_t : warlock_pet_t
 {
   voidwalker_pet_t( warlock_t* owner, const std::string& name );
   void init_base_stats() override;
-  action_t* create_action( const std::string& name, const std::string& options_str ) override;
+  action_t* create_action( util::string_view name, const std::string& options_str ) override;
 };
 
 } // Namespace base ends
@@ -337,7 +337,7 @@ struct felguard_pet_t : public warlock_pet_t
 
   felguard_pet_t(warlock_t* owner, const std::string& name);
   void init_base_stats() override;
-  action_t* create_action(const std::string& name, const std::string& options_str) override;
+  action_t* create_action(util::string_view name, const std::string& options_str) override;
   timespan_t available() const override;
 
   void queue_ds_felstorm();
@@ -367,7 +367,7 @@ struct dreadstalker_t : public warlock_pet_t
   void arise() override;
   void demise() override;
   timespan_t available() const override;
-  action_t* create_action(const std::string& name, const std::string& options_str) override;
+  action_t* create_action(util::string_view name, const std::string& options_str) override;
 };
 
 struct vilefiend_t : public warlock_simple_pet_t
@@ -376,7 +376,7 @@ struct vilefiend_t : public warlock_simple_pet_t
 
   vilefiend_t( warlock_t* owner );
   void init_base_stats() override;
-  action_t* create_action( const std::string& name, const std::string& options_str ) override;
+  action_t* create_action( util::string_view name, const std::string& options_str ) override;
 };
 
 struct demonic_tyrant_t : public warlock_pet_t
@@ -384,7 +384,7 @@ struct demonic_tyrant_t : public warlock_pet_t
   demonic_tyrant_t(warlock_t* owner, const std::string& name = "demonic_tyrant");
   void init_base_stats() override;
   void demise() override;
-  action_t* create_action(const std::string& name, const std::string& options_str) override;
+  action_t* create_action(util::string_view name, const std::string& options_str) override;
 };
 
 namespace random_demons
@@ -394,7 +394,7 @@ struct shivarra_t : public warlock_simple_pet_t
   shivarra_t( warlock_t* owner );
   void init_base_stats() override;
   void arise() override;
-  action_t* create_action( const std::string& name, const std::string& options_str ) override;
+  action_t* create_action( util::string_view name, const std::string& options_str ) override;
 };
 
 struct darkhound_t : public warlock_simple_pet_t
@@ -402,13 +402,13 @@ struct darkhound_t : public warlock_simple_pet_t
   darkhound_t( warlock_t* owner );
   void init_base_stats() override;
   void arise() override;
-  action_t* create_action( const std::string& name, const std::string& options_str ) override;
+  action_t* create_action( util::string_view name, const std::string& options_str ) override;
 };
 
 struct bilescourge_t : public warlock_simple_pet_t
 {
   bilescourge_t( warlock_t* owner );
-  action_t* create_action( const std::string& name, const std::string& options_str ) override;
+  action_t* create_action( util::string_view name, const std::string& options_str ) override;
 };
 
 struct urzul_t : public warlock_simple_pet_t
@@ -416,7 +416,7 @@ struct urzul_t : public warlock_simple_pet_t
   urzul_t( warlock_t* owner );
   void init_base_stats() override;
   void arise() override;
-  action_t* create_action( const std::string& name, const std::string& options_str ) override;
+  action_t* create_action( util::string_view name, const std::string& options_str ) override;
 };
 
 struct void_terror_t : public warlock_simple_pet_t
@@ -424,7 +424,7 @@ struct void_terror_t : public warlock_simple_pet_t
   void_terror_t( warlock_t* owner );
   void init_base_stats() override;
   void arise() override;
-  action_t* create_action( const std::string& name, const std::string& options_str ) override;
+  action_t* create_action( util::string_view name, const std::string& options_str ) override;
 };
 
 struct wrathguard_t : public warlock_simple_pet_t
@@ -432,7 +432,7 @@ struct wrathguard_t : public warlock_simple_pet_t
   wrathguard_t( warlock_t* owner );
   void init_base_stats() override;
   void arise() override;
-  action_t* create_action( const std::string& name, const std::string& options_str ) override;
+  action_t* create_action( util::string_view name, const std::string& options_str ) override;
 };
 
 struct vicious_hellhound_t : public warlock_simple_pet_t
@@ -440,7 +440,7 @@ struct vicious_hellhound_t : public warlock_simple_pet_t
   vicious_hellhound_t( warlock_t* owner );
   void init_base_stats() override;
   void arise() override;
-  action_t* create_action( const std::string& name, const std::string& options_str ) override;
+  action_t* create_action( util::string_view name, const std::string& options_str ) override;
 };
 
 struct illidari_satyr_t : public warlock_simple_pet_t
@@ -448,7 +448,7 @@ struct illidari_satyr_t : public warlock_simple_pet_t
   illidari_satyr_t( warlock_t* owner );
   void init_base_stats() override;
   void arise() override;
-  action_t* create_action( const std::string& name, const std::string& options_str ) override;
+  action_t* create_action( util::string_view name, const std::string& options_str ) override;
 };
 
 struct eyes_of_guldan_t : public warlock_simple_pet_t
@@ -456,7 +456,7 @@ struct eyes_of_guldan_t : public warlock_simple_pet_t
   eyes_of_guldan_t( warlock_t* owner );
   void arise() override;
   void demise() override;
-  action_t* create_action( const std::string& name, const std::string& options_str ) override;
+  action_t* create_action( util::string_view name, const std::string& options_str ) override;
 };
 
 struct prince_malchezaar_t : public warlock_simple_pet_t
@@ -490,7 +490,7 @@ struct darkglare_t : public warlock_pet_t
 {
   darkglare_t(warlock_t* owner, const std::string& name = "darkglare");
   virtual double composite_player_multiplier(school_e school) const override;
-  virtual action_t* create_action(const std::string& name, const std::string& options_str) override;
+  virtual action_t* create_action(util::string_view name, const std::string& options_str) override;
 };
 } // Namespace affliction ends
 } // Namespace pets ends

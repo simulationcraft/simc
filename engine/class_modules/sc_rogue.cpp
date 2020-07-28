@@ -602,7 +602,7 @@ struct rogue_t : public player_t
   void        arise() override;
   void        combat_begin() override;
   timespan_t  available() const override;
-  action_t*   create_action( const std::string& name, const std::string& options ) override;
+  action_t*   create_action( util::string_view name, const std::string& options ) override;
   std::unique_ptr<expr_t> create_expression( util::string_view name_str ) override;
   std::unique_ptr<expr_t> create_resource_expression( util::string_view name ) override;
   void        regen( timespan_t periodicity ) override;
@@ -6120,7 +6120,7 @@ void rogue_t::init_action_list()
 
 // rogue_t::create_action  ==================================================
 
-action_t* rogue_t::create_action( const std::string& name,
+action_t* rogue_t::create_action( util::string_view name,
                                   const std::string& options_str )
 {
   using namespace actions;

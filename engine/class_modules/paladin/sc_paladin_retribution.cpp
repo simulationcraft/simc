@@ -588,7 +588,7 @@ void paladin_t::create_ret_actions()
   active.shield_of_vengeance_damage = new shield_of_vengeance_proc_t( this );
 }
 
-action_t* paladin_t::create_action_retribution( const std::string& name, const std::string& options_str )
+action_t* paladin_t::create_action_retribution( util::string_view name, const std::string& options_str )
 {
   if ( name == "blade_of_justice"          ) return new blade_of_justice_t         ( this, options_str );
   if ( name == "crusade"                   ) return new crusade_t                  ( this, options_str );

@@ -899,7 +899,7 @@ public:
   void      target_mitigation( school_e, result_amount_type, action_state_t* ) override;
   void      do_damage( action_state_t* ) override;
   void      create_actions() override;
-  action_t* create_action( const std::string& name, const std::string& options ) override;
+  action_t* create_action( util::string_view name, const std::string& options ) override;
   std::unique_ptr<expr_t>   create_expression( util::string_view name ) override;
   void      create_options() override;
   void      create_pets() override;
@@ -1438,7 +1438,7 @@ struct death_knight_pet_t : public pet_t
     pet_t::init_action_list();
   }
 
-  action_t* create_action( const std::string& name, const std::string& options_str ) override;
+  action_t* create_action( util::string_view name, const std::string& options_str ) override;
 
   // DK pets have their own base attack speed
   double composite_melee_speed() const override
@@ -1571,7 +1571,7 @@ struct pet_spell_t : public pet_action_t<T_PET, spell_t>
 // Base Death Knight Pet Method Definitions
 // ==========================================================================
 
-action_t* death_knight_pet_t::create_action( const std::string& name,
+action_t* death_knight_pet_t::create_action( util::string_view name,
                                        const std::string& options_str )
 {
   if ( name == "auto_attack" ) return new auto_attack_t( this );
@@ -1775,7 +1775,7 @@ struct ghoul_pet_t : public base_ghoul_pet_t
     // def -> add_action( "Gnaw" ); Unused because it's a dps loss compared to waiting for DT and casting Monstrous Blow
   }
 
-  action_t* create_action( const std::string& name, const std::string& options_str ) override
+  action_t* create_action( util::string_view name, const std::string& options_str ) override
   {
     if ( name == "claw"           ) return new           claw_t( this, options_str );
     if ( name == "gnaw"           ) return new           gnaw_t( this, options_str );
@@ -1845,7 +1845,7 @@ struct army_ghoul_pet_t : public base_ghoul_pet_t
     }
   }
 
-  action_t* create_action( const std::string& name, const std::string& options_str ) override
+  action_t* create_action( util::string_view name, const std::string& options_str ) override
   {
     if ( name == "claw" ) return new army_claw_t( this, options_str );
 
@@ -1956,7 +1956,7 @@ struct gargoyle_pet_t : public death_knight_pet_t
     dark_empowerment = make_buff( this, "dark_empowerment", o() -> spell.pet_dark_empowerment );
   }
 
-  action_t* create_action( const std::string& name, const std::string& options_str ) override
+  action_t* create_action( util::string_view name, const std::string& options_str ) override
   {
     if ( name == "gargoyle_strike" ) return new gargoyle_strike_t( this, options_str );
     if ( name == "travel"          ) return new travel_t( this );
@@ -2031,7 +2031,7 @@ struct risen_skulker_pet_t : public death_knight_pet_t
     def -> add_action( "Skulker Shot" );
   }
 
-  action_t* create_action( const std::string& name, const std::string& options_str ) override
+  action_t* create_action( util::string_view name, const std::string& options_str ) override
   {
     if ( name == "skulker_shot" ) return new skulker_shot_t( this, options_str );
 
@@ -2404,7 +2404,7 @@ struct magus_pet_t : public death_knight_pet_t
     def -> add_action( "shadow_bolt" );
   }
 
-  action_t* create_action( const std::string& name, const std::string& options_str ) override
+  action_t* create_action( util::string_view name, const std::string& options_str ) override
   {
     if ( name == "frostbolt" ) return new frostbolt_magus_t( this, options_str );
     if ( name == "shadow_bolt" ) return new shadow_bolt_magus_t( this, options_str );
@@ -6954,7 +6954,7 @@ void death_knight_t::create_actions()
 
 // death_knight_t::create_action  ===========================================
 
-action_t* death_knight_t::create_action( const std::string& name, const std::string& options_str )
+action_t* death_knight_t::create_action( util::string_view name, const std::string& options_str )
 {
   // General Actions
   if ( name == "antimagic_shell"          ) return new antimagic_shell_t          ( this, options_str );

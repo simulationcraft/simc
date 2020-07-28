@@ -760,7 +760,7 @@ public:
   double composite_player_pet_damage_multiplier( const action_state_t* state ) const override;
   double composite_maelstrom_gain_coefficient( const action_state_t* state = nullptr ) const;
   double matching_gear_multiplier( attribute_e attr ) const override;
-  action_t* create_action( const std::string& name, const std::string& options ) override;
+  action_t* create_action( util::string_view name, const std::string& options ) override;
   pet_t* create_pet( const std::string& name, const std::string& type = std::string() ) override;
   void create_pets() override;
   std::unique_ptr<expr_t> create_expression( util::string_view name ) override;
@@ -1986,7 +1986,7 @@ struct shaman_pet_t : public pet_t
     }
   }
 
-  action_t* create_action( const std::string& name, const std::string& options_str ) override;
+  action_t* create_action( util::string_view name, const std::string& options_str ) override;
 
   virtual attack_t* create_auto_attack()
   {
@@ -2131,7 +2131,7 @@ struct pet_spell_t : public pet_action_t<T_PET, spell_t>
 // Base Shaman Pet Method Definitions
 // ==========================================================================
 
-action_t* shaman_pet_t::create_action( const std::string& name, const std::string& options_str )
+action_t* shaman_pet_t::create_action( util::string_view name, const std::string& options_str )
 {
   if ( name == "auto_attack" )
     return new auto_attack_t( this );
@@ -2345,7 +2345,7 @@ struct primal_elemental_t : public shaman_pet_t
     shaman_pet_t::create_default_apl();
   }
 
-  action_t* create_action( const std::string& name, const std::string& options_str ) override
+  action_t* create_action( util::string_view name, const std::string& options_str ) override
   {
     if ( name == "travel" )
       return new travel_t( this );
@@ -2458,7 +2458,7 @@ struct fire_elemental_t : public primal_elemental_t
     def->add_action( "fire_blast" );
   }
 
-  action_t* create_action( const std::string& name, const std::string& options_str ) override
+  action_t* create_action( util::string_view name, const std::string& options_str ) override
   {
     if ( name == "fire_blast" )
       return new fire_blast_t( this, options_str );
@@ -2527,7 +2527,7 @@ struct ember_elemental_t : public primal_elemental_t
     def->add_action( "ember_blast" );
   }
 
-  action_t* create_action( const std::string& name, const std::string& options_str ) override
+  action_t* create_action( util::string_view name, const std::string& options_str ) override
   {
     if ( name == "ember_blast" )
       return new ember_blast_t( this, options_str );
@@ -2657,7 +2657,7 @@ struct storm_elemental_t : public primal_elemental_t
     return m;
   }
 
-  action_t* create_action( const std::string& name, const std::string& options_str ) override
+  action_t* create_action( util::string_view name, const std::string& options_str ) override
   {
     if ( name == "eye_of_the_storm" )
       return new eye_of_the_storm_t( this, options_str );
@@ -2726,7 +2726,7 @@ struct spark_elemental_t : public primal_elemental_t
     def->add_action( "shocking_blast" );
   }
 
-  action_t* create_action( const std::string& name, const std::string& options_str ) override
+  action_t* create_action( util::string_view name, const std::string& options_str ) override
   {
     if ( name == "shocking_blast" )
       return new shocking_blast_t( this, options_str );
@@ -6490,7 +6490,7 @@ void shaman_t::trigger_secondary_ability( const action_state_t* source_state, ac
 
 // shaman_t::create_action  =================================================
 
-action_t* shaman_t::create_action( const std::string& name, const std::string& options_str )
+action_t* shaman_t::create_action( util::string_view name, const std::string& options_str )
 {
   // shared
   if ( name == "ascendance" )

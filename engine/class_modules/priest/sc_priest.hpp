@@ -420,7 +420,7 @@ public:
   void reset() override;
   void create_options() override;
   std::string create_profile( save_e ) override;
-  action_t* create_action( const std::string& name, const std::string& options ) override;
+  action_t* create_action( util::string_view name, const std::string& options ) override;
   pet_t* create_pet( const std::string& name, const std::string& type = std::string() ) override;
   void create_pets() override;
   void copy_from( player_t* source ) override;
@@ -729,7 +729,7 @@ struct base_fiend_pet_t : public priest_pet_t
     resources.current = resources.max = resources.initial;
   }
 
-  action_t* create_action( const std::string& name, const std::string& options_str ) override;
+  action_t* create_action( util::string_view name, const std::string& options_str ) override;
 };
 
 struct shadowfiend_pet_t final : public base_fiend_pet_t

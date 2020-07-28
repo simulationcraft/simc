@@ -569,7 +569,7 @@ public:
   void apl_prot();
   void init_action_list() override;
 
-  action_t* create_action( const std::string& name, const std::string& options ) override;
+  action_t* create_action( util::string_view name, const std::string& options ) override;
   void activate() override;
   resource_e primary_resource() const override
   {
@@ -4603,7 +4603,7 @@ struct taunt_t : public warrior_spell_t
 
 // warrior_t::create_action  ================================================
 
-action_t* warrior_t::create_action( const std::string& name, const std::string& options_str )
+action_t* warrior_t::create_action( util::string_view name, const std::string& options_str )
 {
   if ( name == "auto_attack" )
     return new auto_attack_t( this, options_str );

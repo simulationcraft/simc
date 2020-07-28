@@ -916,7 +916,7 @@ namespace warlock
   } // end buffs namespace
 
   // add actions
-  action_t* warlock_t::create_action_affliction( const std::string& action_name, const std::string& options_str )
+  action_t* warlock_t::create_action_affliction( util::string_view action_name, const std::string& options_str )
   {
     using namespace actions_affliction;
 

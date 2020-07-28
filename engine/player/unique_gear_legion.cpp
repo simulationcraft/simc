@@ -6,6 +6,7 @@
 #include "simulationcraft.hpp"
 #include "darkmoon_deck.hpp"
 #include "util/static_map.hpp"
+#include "util/string_view.hpp"
 
 using namespace unique_gear;
 
@@ -5956,7 +5957,7 @@ struct spawn_of_serpentrix_t : public pet_t
     }
   }
 
-  action_t* create_action( const std::string& name,
+  action_t* create_action( ::util::string_view name,
                            const std::string& options_str ) override
   {
     if ( name == "magma_spit" ) return new magma_spit_t( this, damage_amount );

@@ -508,7 +508,7 @@ void paladin_t::create_holy_actions()
     active.beacon_of_light = new beacon_of_light_heal_t( this );
 }
 
-action_t* paladin_t::create_action_holy( const std::string& name, const std::string& options_str )
+action_t* paladin_t::create_action_holy( util::string_view name, const std::string& options_str )
 {
   if ( name == "beacon_of_light"           ) return new beacon_of_light_t          ( this, options_str );
   if ( name == "divine_protection"         ) return new divine_protection_t        ( this, options_str );

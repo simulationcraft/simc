@@ -944,7 +944,7 @@ namespace warlock {
   } // end buffs namespace
 
   // add actions
-  action_t* warlock_t::create_action_destruction(const std::string& action_name, const std::string& options_str) {
+  action_t* warlock_t::create_action_destruction(util::string_view action_name, const std::string& options_str) {
       using namespace actions_destruction;
 
       if (action_name == "conflagrate") return new                      conflagrate_t(this, options_str);

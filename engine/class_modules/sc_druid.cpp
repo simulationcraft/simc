@@ -898,7 +898,7 @@ public:
   double    passive_movement_modifier() const override;
   double    matching_gear_multiplier( attribute_e attr ) const override;
   std::unique_ptr<expr_t>   create_expression( util::string_view name ) override;
-  action_t* create_action( const std::string& name, const std::string& options ) override;
+  action_t* create_action( util::string_view name, const std::string& options ) override;
   pet_t*    create_pet   ( const std::string& name, const std::string& type = std::string() ) override;
   void      create_pets() override;
   resource_e primary_resource() const override;
@@ -1223,7 +1223,7 @@ struct force_of_nature_t : public pet_t
 
   resource_e primary_resource() const override { return RESOURCE_NONE; }
 
-  action_t* create_action( const std::string& name, const std::string& options_str ) override
+  action_t* create_action( util::string_view name, const std::string& options_str ) override
   {
     if ( name == "auto_attack" ) return new auto_attack_t( this );
 
@@ -7554,7 +7554,7 @@ void druid_t::activate()
 
 // druid_t::create_action  ==================================================
 
-action_t* druid_t::create_action( const std::string& name,
+action_t* druid_t::create_action( util::string_view name,
                                   const std::string& options_str )
 {
   using namespace cat_attacks;

@@ -790,7 +790,7 @@ public:
   std::string default_rune() const override;
 
   // player_t overrides
-  action_t* create_action( const std::string& name, const std::string& options ) override;
+  action_t* create_action( util::string_view name, const std::string& options ) override;
   double composite_base_armor_multiplier() const override;
   double composite_melee_crit_chance() const override;
   double composite_melee_crit_chance_multiplier() const override;
@@ -1805,7 +1805,7 @@ public:
     pet_t::init_action_list();
   }
 
-  action_t* create_action( const std::string& name, const std::string& options_str ) override
+  action_t* create_action( util::string_view name, const std::string& options_str ) override
   {
     if ( name == "auto_attack" )
       return new auto_attack_t( this, options_str );
@@ -2017,7 +2017,7 @@ public:
     pet_t::init_action_list();
   }
 
-  action_t* create_action( const std::string& name, const std::string& options_str ) override
+  action_t* create_action( util::string_view name, const std::string& options_str ) override
   {
     if ( name == "crackling_tiger_lightning" )
       return new crackling_tiger_lightning_t( this, options_str );
@@ -2157,7 +2157,7 @@ public:
     pet_t::init_action_list();
   }
 
-  action_t* create_action( const std::string& name, const std::string& options_str ) override
+  action_t* create_action( util::string_view name, const std::string& options_str ) override
   {
     if ( name == "crackling_tiger_lightning" )
       return new crackling_tiger_lightning_t( this, options_str );
@@ -2298,7 +2298,7 @@ public:
     pet_t::init_action_list();
   }
 
-  action_t* create_action( const std::string& name, const std::string& options_str ) override
+  action_t* create_action( util::string_view name, const std::string& options_str ) override
   {
     if ( name == "stomp" )
       return new stomp_t( this, options_str );
@@ -7498,7 +7498,7 @@ monk_td_t::monk_td_t( player_t* target, monk_t* p )
 
 // monk_t::create_action ====================================================
 
-action_t* monk_t::create_action( const std::string& name, const std::string& options_str )
+action_t* monk_t::create_action( util::string_view name, const std::string& options_str )
 {
   using namespace actions;
   // General

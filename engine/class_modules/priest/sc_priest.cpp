@@ -562,7 +562,7 @@ void base_fiend_pet_t::init_action_list()
   priest_pet_t::init_action_list();
 }
 
-action_t* base_fiend_pet_t::create_action( const std::string& name, const std::string& options_str )
+action_t* base_fiend_pet_t::create_action( util::string_view name, const std::string& options_str )
 {
   return priest_pet_t::create_action( name, options_str );
 }
@@ -885,7 +885,7 @@ double priest_t::matching_gear_multiplier( attribute_e attr ) const
   return 0.0;
 }
 
-action_t* priest_t::create_action( const std::string& name, const std::string& options_str )
+action_t* priest_t::create_action( util::string_view name, const std::string& options_str )
 {
   using namespace actions::spells;
   using namespace actions::heals;

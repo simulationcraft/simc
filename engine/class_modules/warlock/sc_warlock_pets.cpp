@@ -208,7 +208,7 @@ void felhunter_pet_t::init_base_stats()
   melee_attack = new warlock_pet_melee_t(this);
 }
 
-action_t* felhunter_pet_t::create_action(const std::string& name, const std::string& options_str)
+action_t* felhunter_pet_t::create_action(util::string_view name, const std::string& options_str)
 {
   if (name == "shadow_bite") return new shadow_bite_t(this);
   return warlock_pet_t::create_action(name, options_str);
@@ -233,7 +233,7 @@ imp_pet_t::imp_pet_t( warlock_t* owner, const std::string& name ) :
   owner_coeff.sp_from_sp *= 1.25;
 }
 
-action_t* imp_pet_t::create_action( const std::string& name, const std::string& options_str )
+action_t* imp_pet_t::create_action( util::string_view name, const std::string& options_str )
 {
   if ( name == "firebolt" ) return new firebolt_t( this );
   return warlock_pet_t::create_action( name, options_str );
@@ -294,7 +294,7 @@ void succubus_pet_t::init_base_stats()
   melee_attack = new warlock_pet_melee_t(this);
 }
 
-action_t* succubus_pet_t::create_action(const std::string& name, const std::string& options_str)
+action_t* succubus_pet_t::create_action(util::string_view name, const std::string& options_str)
 {
   if (name == "lash_of_pain") return new lash_of_pain_t(this);
 
@@ -327,7 +327,7 @@ void voidwalker_pet_t::init_base_stats()
   melee_attack = new warlock_pet_melee_t(this);
 }
 
-action_t* voidwalker_pet_t::create_action(const std::string& name, const std::string& options_str)
+action_t* voidwalker_pet_t::create_action(util::string_view name, const std::string& options_str)
 {
   if (name == "consuming_shadows") return new consuming_shadows_t(this);
   return warlock_pet_t::create_action(name, options_str);
@@ -567,7 +567,7 @@ void felguard_pet_t::init_base_stats()
   }
 }
 
-action_t* felguard_pet_t::create_action(const std::string& name, const std::string& options_str)
+action_t* felguard_pet_t::create_action(util::string_view name, const std::string& options_str)
 {
   if (name == "legion_strike") return new legion_strike_t(this, options_str);
   if (name == "felstorm") return new felstorm_t(this, options_str);
@@ -840,7 +840,7 @@ timespan_t dreadstalker_t::available() const
   return sim -> expected_iteration_time * 2;
 }
 
-action_t* dreadstalker_t::create_action(const std::string& name, const std::string& options_str)
+action_t* dreadstalker_t::create_action(util::string_view name, const std::string& options_str)
 {
   if (name == "dreadbite") return new dreadbite_t(this);
 
@@ -882,7 +882,7 @@ void vilefiend_t::init_base_stats()
   bile_spit = new bile_spit_t( this );
 }
 
-action_t* vilefiend_t::create_action( const std::string& name, const std::string& options_str )
+action_t* vilefiend_t::create_action( util::string_view name, const std::string& options_str )
 {
   if ( name == "headbutt" )
   {
@@ -945,7 +945,7 @@ void demonic_tyrant_t::demise() {
   }
 }
 
-action_t* demonic_tyrant_t::create_action(const std::string& name, const std::string& options_str) {
+action_t* demonic_tyrant_t::create_action(util::string_view name, const std::string& options_str) {
   if (name == "demonfire") return new demonfire_t(this, options_str);
 
   return warlock_pet_t::create_action(name, options_str);
@@ -1009,7 +1009,7 @@ void shivarra_t::arise()
   special_ability->cooldown->start( timespan_t::from_millis( rng().range( 3500, 5100 ) ) );
 }
 
-action_t* shivarra_t::create_action( const std::string& name, const std::string& options_str )
+action_t* shivarra_t::create_action( util::string_view name, const std::string& options_str )
 {
   if ( name == "multi_slash" )
   {
@@ -1052,7 +1052,7 @@ void darkhound_t::arise()
   special_ability->cooldown->start( timespan_t::from_millis( rng().range( 3000, 5000 ) ) );
 }
 
-action_t* darkhound_t::create_action( const std::string& name, const std::string& options_str )
+action_t* darkhound_t::create_action( util::string_view name, const std::string& options_str )
 {
   if ( name == "fel_bite" )
   {
@@ -1077,7 +1077,7 @@ bilescourge_t::bilescourge_t( warlock_t* owner ) :
   owner_coeff.ap_from_sp = 0.065;
 }
 
-action_t* bilescourge_t::create_action( const std::string& name, const std::string& options_str )
+action_t* bilescourge_t::create_action( util::string_view name, const std::string& options_str )
 {
   if ( name == "toxic_bile" ) return new toxic_bile_t( this );
 
@@ -1116,7 +1116,7 @@ void urzul_t::arise()
   special_ability->cooldown->start( timespan_t::from_millis( rng().range( 3500, 4500 ) ) );
 }
 
-action_t* urzul_t::create_action( const std::string& name, const std::string& options_str )
+action_t* urzul_t::create_action( util::string_view name, const std::string& options_str )
 {
   if ( name == "many_faced_bite" )
   {
@@ -1178,7 +1178,7 @@ void void_terror_t::arise()
   special_ability->cooldown->start( timespan_t::from_millis( rng().range( 1800, 5000 ) ) );
 }
 
-action_t* void_terror_t::create_action( const std::string& name, const std::string& options_str )
+action_t* void_terror_t::create_action( util::string_view name, const std::string& options_str )
 {
   if ( name == "double_breath" )
   {
@@ -1222,7 +1222,7 @@ void wrathguard_t::arise()
   special_ability->cooldown->start( timespan_t::from_millis( rng().range( 3000, 5000 ) ) );
 }
 
-action_t* wrathguard_t::create_action( const std::string& name, const std::string& options_str )
+action_t* wrathguard_t::create_action( util::string_view name, const std::string& options_str )
 {
   if ( name == "overhead_assault" )
   {
@@ -1267,7 +1267,7 @@ void vicious_hellhound_t::arise()
   special_ability->cooldown->start( timespan_t::from_millis( rng().range( 3200, 5100 ) ) );
 }
 
-action_t* vicious_hellhound_t::create_action( const std::string& name, const std::string& options_str )
+action_t* vicious_hellhound_t::create_action( util::string_view name, const std::string& options_str )
 {
   if ( name == "demon_fangs" )
   {
@@ -1311,7 +1311,7 @@ void illidari_satyr_t::arise()
   special_ability->cooldown->start( timespan_t::from_millis( rng().range( 3500, 5000 ) ) );
 }
 
-action_t* illidari_satyr_t::create_action( const std::string& name, const std::string& options_str )
+action_t* illidari_satyr_t::create_action( util::string_view name, const std::string& options_str )
 {
   if ( name == "shadow_slash" )
   {
@@ -1351,7 +1351,7 @@ void eyes_of_guldan_t::demise()
   o()->buffs.eyes_of_guldan->decrement();
 }
 
-action_t* eyes_of_guldan_t::create_action( const std::string& name, const std::string& options_str )
+action_t* eyes_of_guldan_t::create_action( util::string_view name, const std::string& options_str )
 {
   if ( name == "eye_of_guldan" )
   {
@@ -1515,7 +1515,7 @@ double darkglare_t::composite_player_multiplier(school_e school) const
   return m;
 }
 
-action_t* darkglare_t::create_action(const std::string& name, const std::string& options_str)
+action_t* darkglare_t::create_action(util::string_view name, const std::string& options_str)
 {
   if (name == "dark_glare") return new dark_glare_t(this);
 

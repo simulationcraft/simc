@@ -633,7 +633,7 @@ public:
   // overridden player_t init functions
   stat_e convert_hybrid_stat( stat_e s ) const override;
   void copy_from( player_t* source ) override;
-  action_t* create_action( const std::string& name, const std::string& options ) override;
+  action_t* create_action( util::string_view name, const std::string& options ) override;
   void create_buffs() override;
   std::unique_ptr<expr_t> create_expression( util::string_view ) override;
   void create_options() override;
@@ -4644,7 +4644,7 @@ void demon_hunter_t::copy_from( player_t* source )
 
 // demon_hunter_t::create_action ============================================
 
-action_t* demon_hunter_t::create_action( const std::string& name, const std::string& options_str )
+action_t* demon_hunter_t::create_action( util::string_view name, const std::string& options_str )
 {
   using namespace actions::heals;
 

@@ -435,7 +435,7 @@ namespace warlock
       void      vision_of_perfection_proc_aff();
       void      vision_of_perfection_proc_demo();
       void      darkglare_extension_helper( warlock_t* p, timespan_t darkglare_extension );
-      action_t* create_action( const std::string& name, const std::string& options ) override;
+      action_t* create_action( util::string_view name, const std::string& options ) override;
       pet_t*    create_pet( const std::string& name, const std::string& type = std::string() ) override;
       void      create_pets() override;
       std::string      create_profile( save_e ) override;
@@ -481,7 +481,7 @@ namespace warlock
       }
 
       // sc_warlock_affliction
-      action_t* create_action_affliction( const std::string& action_name, const std::string& options_str );
+      action_t* create_action_affliction( util::string_view action_name, const std::string& options_str );
       void create_buffs_affliction();
       void init_spells_affliction();
       void init_gains_affliction();
@@ -492,7 +492,7 @@ namespace warlock
       std::unique_ptr<expr_t>   create_aff_expression(util::string_view name_str);
 
       // sc_warlock_demonology
-      action_t* create_action_demonology( const std::string& action_name, const std::string& options_str );
+      action_t* create_action_demonology( util::string_view action_name, const std::string& options_str );
       void create_buffs_demonology();
       void init_spells_demonology();
       void init_gains_demonology();
@@ -502,7 +502,7 @@ namespace warlock
       void create_apl_demonology();
 
       // sc_warlock_destruction
-      action_t* create_action_destruction( const std::string& action_name, const std::string& options_str );
+      action_t* create_action_destruction( util::string_view action_name, const std::string& options_str );
       void create_buffs_destruction();
       void init_spells_destruction();
       void init_gains_destruction();

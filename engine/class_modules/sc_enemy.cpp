@@ -66,7 +66,7 @@ struct enemy_t : public player_t
     return RESOURCE_HEALTH;
   }
 
-  action_t* create_action( const std::string& name, const std::string& options_str ) override;
+  action_t* create_action( util::string_view name, const std::string& options_str ) override;
   void init_race() override;
   void init_base_stats() override;
   void init_defense() override;
@@ -960,7 +960,7 @@ struct add_t : public pet_t
     return RESOURCE_HEALTH;
   }
 
-  action_t* create_action( const std::string& name, const std::string& options_str ) override
+  action_t* create_action( util::string_view name, const std::string& options_str ) override
   {
     action_t* a = enemy_create_action( this, name, options_str );
 
@@ -1145,7 +1145,7 @@ struct tank_dummy_enemy_t : public enemy_t
 
 // enemy_t::create_action ===================================================
 
-action_t* enemy_t::create_action( const std::string& name, const std::string& options_str )
+action_t* enemy_t::create_action( util::string_view name, const std::string& options_str )
 {
   action_t* a = enemy_create_action( this, name, options_str );
 

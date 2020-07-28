@@ -760,7 +760,7 @@ bool paladin_t::standing_in_consecration() const
 void paladin_t::create_prot_actions()
 { }
 
-action_t* paladin_t::create_action_protection( const std::string& name, const std::string& options_str )
+action_t* paladin_t::create_action_protection( util::string_view name, const std::string& options_str )
 {
   if ( name == "ardent_defender"           ) return new ardent_defender_t          ( this, options_str );
   if ( name == "avengers_shield"           ) return new avengers_shield_t          ( this, options_str );

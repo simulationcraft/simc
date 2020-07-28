@@ -558,7 +558,7 @@ public:
   void      create_options() override;
   std::unique_ptr<expr_t>   create_expression( util::string_view name ) override;
   std::unique_ptr<expr_t>   create_action_expression( action_t&, util::string_view name ) override;
-  action_t* create_action( const std::string& name, const std::string& options ) override;
+  action_t* create_action( util::string_view name, const std::string& options ) override;
   pet_t*    create_pet( const std::string& name, const std::string& type = std::string() ) override;
   void      create_pets() override;
   resource_e primary_resource() const override { return RESOURCE_FOCUS; }
@@ -1140,7 +1140,7 @@ struct hunter_main_pet_base_t : public hunter_pet_t
 
   void init_spells() override;
 
-  action_t* create_action( const std::string& name, const std::string& options_str ) override;
+  action_t* create_action( util::string_view name, const std::string& options_str ) override;
 
   void moving() override
   { return; }
@@ -1354,7 +1354,7 @@ struct hunter_main_pet_t : public hunter_main_pet_base_t
     return std::max( remains + lag, 100_ms );
   }
 
-  action_t* create_action( const std::string& name, const std::string& options_str ) override;
+  action_t* create_action( util::string_view name, const std::string& options_str ) override;
 
   void init_spells() override;
 };
@@ -1463,7 +1463,7 @@ struct spitting_cobra_t: public hunter_pet_t
     action_list_str = "cobra_spit";
   }
 
-  action_t* create_action( const std::string& name,
+  action_t* create_action( util::string_view name,
                            const std::string& options_str ) override
   {
     if ( name == "cobra_spit" )
@@ -1916,7 +1916,7 @@ hunter_main_pet_td_t::hunter_main_pet_td_t( player_t* target, hunter_main_pet_t*
 
 // hunter_pet_t::create_action ==============================================
 
-action_t* hunter_main_pet_base_t::create_action( const std::string& name, const std::string& options_str )
+action_t* hunter_main_pet_base_t::create_action( util::string_view name, const std::string& options_str )
 {
   if ( name == "auto_attack" )
     return new actions::pet_auto_attack_t( this, options_str );
@@ -1924,7 +1924,7 @@ action_t* hunter_main_pet_base_t::create_action( const std::string& name, const 
   return hunter_pet_t::create_action( name, options_str );
 }
 
-action_t* hunter_main_pet_t::create_action( const std::string& name,
+action_t* hunter_main_pet_t::create_action( util::string_view name,
                                             const std::string& options_str )
 {
   using namespace actions;
@@ -4859,7 +4859,7 @@ std::unique_ptr<expr_t> hunter_t::create_expression( util::string_view expressio
 
 // hunter_t::create_action ==================================================
 
-action_t* hunter_t::create_action( const std::string& name,
+action_t* hunter_t::create_action( util::string_view name,
                                    const std::string& options_str )
 {
   using namespace attacks;

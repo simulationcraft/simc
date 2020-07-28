@@ -3448,7 +3448,7 @@ struct blademaster_pet_t : public pet_t
     }
   }
 
-  action_t* create_action( const std::string& name,
+  action_t* create_action( util::string_view name,
                            const std::string& options_str ) override
   {
     if ( name == "felstorm" )

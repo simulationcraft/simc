@@ -474,7 +474,7 @@ double warlock_t::matching_gear_multiplier( attribute_e attr ) const
   return 0.0;
 }
 
-action_t* warlock_t::create_action( const std::string& action_name, const std::string& options_str )
+action_t* warlock_t::create_action( util::string_view action_name, const std::string& options_str )
 {
   using namespace actions;
 
