@@ -356,6 +356,7 @@ public:
   // Data collection
   auto_dispose<std::vector<cooldown_waste_data_t*> > cooldown_waste_data_list;
   auto_dispose<std::vector<shatter_source_t*> > shatter_source_list;
+  std::unordered_map<std::string, std::shared_ptr<sample_data_helper_t> > consumed_winters_chill_stacks;
 
   // Cached actions
   struct actions_t
@@ -576,9 +577,13 @@ public:
     const spell_data_t* brain_freeze;
     const spell_data_t* brain_freeze_2;
     const spell_data_t* blizzard_2;
+    const spell_data_t* blizzard_3;
+    const spell_data_t* cold_snap_2;
     const spell_data_t* fingers_of_frost;
     const spell_data_t* frost_mage;
     const spell_data_t* icicles;
+    const spell_data_t* icicles_2;
+    const spell_data_t* icy_veins_2;
     const spell_data_t* shatter;
     const spell_data_t* shatter_2;
   } spec;
@@ -774,6 +779,19 @@ public:
     auto cdw = new cooldown_waste_data_t( cd );
     cooldown_waste_data_list.push_back( cdw );
     return cdw;
+  }
+
+  sample_data_helper_t* get_winters_chill_data( const action_t* a )
+  {
+    for ( auto wc_stacks : consumed_winters_chill_stacks )
+    {
+      if ( wc_stacks.first == a->name_str )
+        return wc_stacks.second.get();
+    }
+
+    std::shared_ptr<sample_data_helper_t> data( new sample_data_helper_t( a->name_str, true ) );
+    consumed_winters_chill_stacks[ a->name_str ] = data;
+    return data.get();
   }
 
   shatter_source_t* get_shatter_source( const std::string& name )
@@ -1164,7 +1182,7 @@ struct icy_veins_buff_t : public buff_t
     set_default_value( data().effectN( 1 ).percent() );
     set_cooldown( 0_ms );
     add_invalidate( CACHE_SPELL_HASTE );
-    buff_duration += p->talents.thermal_void->effectN( 2 ).time_value();
+    buff_duration += p->talents.thermal_void->effectN( 2 ).time_value() + p->spec.icy_veins_2->effectN( 1 ).time_value();
   }
 
   void expire_override( int stacks, timespan_t duration ) override
@@ -1895,6 +1913,7 @@ struct frost_mage_spell_t : public mage_spell_t
 {
   bool chills;
   bool calculate_on_impact;
+  bool consumes_winters_chill;
 
   proc_t* proc_brain_freeze;
   proc_t* proc_fof;
@@ -1908,6 +1927,7 @@ struct frost_mage_spell_t : public mage_spell_t
     mage_spell_t( n, p, s ),
     chills(),
     calculate_on_impact(),
+    consumes_winters_chill(),
     proc_brain_freeze(),
     proc_fof(),
     track_shatter(),
@@ -2013,10 +2033,15 @@ struct frost_mage_spell_t : public mage_spell_t
 
       if ( chills )
         p()->buffs.bone_chilling->trigger();
+
+      if ( consumes_winters_chill && td( s->target )->debuffs.winters_chill->check() )
+      {
+        td( s->target )->debuffs.winters_chill->decrement();
+        p()->get_winters_chill_data( this )->add( 1 );
+      }
     }
   }
 };
-
 
 // Icicles ==================================================================
 
@@ -2616,6 +2641,7 @@ struct blizzard_shard_t : public frost_mage_spell_t
   {
     aoe = -1;
     background = ground_aoe = chills = true;
+    base_dd_multiplier *= 1.0 + p->spec.blizzard_3->effectN( 1 ).percent();
   }
 
   result_amount_type amount_type( const action_state_t*, bool ) const override
@@ -2709,6 +2735,7 @@ struct cold_snap_t : public frost_mage_spell_t
   {
     parse_options( options_str );
     harmful = false;
+    cooldown->duration += p->spec.cold_snap_2->effectN( 1 ).time_value();
   };
 
   void execute() override
@@ -2751,7 +2778,7 @@ struct comet_storm_projectile_t : public frost_mage_spell_t
     frost_mage_spell_t( n, p, p->find_spell( 153596 ) )
   {
     aoe = -1;
-    background = true;
+    background = consumes_winters_chill = true;
   }
 };
 
@@ -2800,7 +2827,7 @@ struct cone_of_cold_t : public frost_mage_spell_t
   {
     parse_options( options_str );
     aoe = -1;
-    chills = true;
+    chills = consumes_winters_chill = true;
   }
 };
 
@@ -3175,6 +3202,7 @@ struct flurry_bolt_t : public frost_mage_spell_t
     chills = true;
     base_multiplier *= 1.0 + p->talents.lonely_winter->effectN( 1 ).percent();
     glacial_assault_chance = p->azerite.glacial_assault.spell_ref().effectN( 1 ).trigger()->proc_chance();
+    consumes_winters_chill = true;
   }
 
   void impact( action_state_t* s ) override
@@ -3185,7 +3213,10 @@ struct flurry_bolt_t : public frost_mage_spell_t
       return;
 
     if ( p()->state.brain_freeze_active )
-      td( s->target )->debuffs.winters_chill->trigger();
+    {
+      auto wc = td( s->target )->debuffs.winters_chill;
+      wc->trigger( wc->max_stack() );
+    }
 
     if ( rng().roll( glacial_assault_chance ) )
     {
@@ -3283,7 +3314,7 @@ struct frostbolt_t : public frost_mage_spell_t
   {
     parse_options( options_str );
     parse_effect_data( p->find_spell( 228597 )->effectN( 1 ) );
-    chills = calculate_on_impact = track_shatter = true;
+    chills = calculate_on_impact = track_shatter = consumes_winters_chill = true;
     base_multiplier *= 1.0 + p->talents.lonely_winter->effectN( 1 ).percent();
 
     if ( p->spec.icicles->ok() )
@@ -3358,12 +3389,19 @@ struct frost_nova_t : public mage_spell_t
 
 // Frozen Orb Spell =========================================================
 
+// TODO: Frozen Orb actually selects random targets each time it ticks when
+// there are more than eight targets in range. This is not important for
+// current use-cases. In the future if this becomes important, e.g., there
+// is interest about priority target damage for encounters with more than
+// eight targets, random target selection should be added as an option for
+// all actions, because many target-capped abilities probably work this way.
+
 struct frozen_orb_bolt_t : public frost_mage_spell_t
 {
   frozen_orb_bolt_t( util::string_view n, mage_t* p ) :
     frost_mage_spell_t( n, p, p->find_spell( 84721 ) )
   {
-    aoe = -1;
+    aoe = as<int>( data().effectN( 2 ).base_value() );;
     background = chills = true;
   }
 
@@ -3385,7 +3423,7 @@ struct frozen_orb_bolt_t : public frost_mage_spell_t
   {
     double am = frost_mage_spell_t::action_multiplier();
 
-    am *= 1.0 + p()->cache.mastery() * p()->spec.icicles->effectN( 4 ).mastery_value();
+    am *= 1.0 + p()->cache.mastery() * p()->spec.icicles_2->effectN( 1 ).mastery_value();
 
     return am;
   }
@@ -3460,7 +3498,7 @@ struct glacial_spike_t : public frost_mage_spell_t
   {
     parse_options( options_str );
     parse_effect_data( p->find_spell( 228600 )->effectN( 1 ) );
-    calculate_on_impact = track_shatter = true;
+    calculate_on_impact = track_shatter = consumes_winters_chill = true;
     base_dd_adder += p->azerite.flash_freeze.value( 2 ) * p->spec.icicles->effectN( 2 ).base_value();
 
     if ( p->talents.splitting_ice->ok() )
@@ -3599,7 +3637,7 @@ struct ice_lance_t : public frost_mage_spell_t
   {
     parse_options( options_str );
     parse_effect_data( p->find_spell( 228598 )->effectN( 1 ) );
-    calculate_on_impact = track_shatter = true;
+    calculate_on_impact = track_shatter = consumes_winters_chill = true;
     base_multiplier *= 1.0 + p->talents.lonely_winter->effectN( 1 ).percent();
     base_dd_adder += p->azerite.whiteout.value( 3 );
 
@@ -3777,6 +3815,7 @@ struct ice_nova_t : public frost_mage_spell_t
   {
     parse_options( options_str );
     aoe = -1;
+    consumes_winters_chill = true;
 
     double in_mult = p->talents.ice_nova->effectN( 3 ).percent();
     base_multiplier     *= in_mult;
@@ -4738,6 +4777,7 @@ struct freeze_t : public action_t
 
 }  // namespace actions
 
+
 namespace events {
 
 struct enlightened_event_t : public event_t
@@ -5043,6 +5083,7 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
   debuffs.winters_chill     = make_buff( *this, "winters_chill", mage->find_spell( 228358 ) )
                                 ->set_chance( mage->spec.brain_freeze_2->ok() );
   debuffs.touch_of_the_magi = make_buff<buffs::touch_of_the_magi_t>( this );
+
   debuffs.packed_ice        = make_buff( *this, "packed_ice", mage->find_spell( 272970 ) )
                                 ->set_chance( mage->azerite.packed_ice.enabled() )
                                 ->set_default_value( mage->azerite.packed_ice.value() );
@@ -5332,6 +5373,8 @@ void mage_t::datacollection_begin()
 
   range::for_each( cooldown_waste_data_list, std::mem_fn( &cooldown_waste_data_t::datacollection_begin ) );
   range::for_each( shatter_source_list, std::mem_fn( &shatter_source_t::datacollection_begin ) );
+  for ( auto data : consumed_winters_chill_stacks )
+      data.second->datacollection_begin();
 }
 
 void mage_t::datacollection_end()
@@ -5340,6 +5383,8 @@ void mage_t::datacollection_end()
 
   range::for_each( cooldown_waste_data_list, std::mem_fn( &cooldown_waste_data_t::datacollection_end ) );
   range::for_each( shatter_source_list, std::mem_fn( &shatter_source_t::datacollection_end ) );
+  for ( auto data : consumed_winters_chill_stacks )
+      data.second->datacollection_end();
 }
 
 void mage_t::regen( timespan_t periodicity )
@@ -5482,9 +5527,12 @@ void mage_t::init_spells()
 
   spec.brain_freeze          = find_specialization_spell( "Brain Freeze" );
   spec.brain_freeze_2        = find_specialization_spell( 231584 );
-  spec.blizzard_2            = find_specialization_spell( 236662 );
+  spec.blizzard_2            = find_specialization_spell( "Blizzard", "Rank 2" );
+  spec.blizzard_3            = find_specialization_spell( "Blizzard", "Rank 3" );
+  spec.cold_snap_2           = find_specialization_spell( "Cold Snap", "Rank 2" );
   spec.fingers_of_frost      = find_specialization_spell( "Fingers of Frost" );
   spec.frost_mage            = find_specialization_spell( 137020 );
+  spec.icy_veins_2           = find_specialization_spell( "Icy Veins", "Rank 2" );
   spec.shatter               = find_specialization_spell( "Shatter" );
   spec.shatter_2             = find_specialization_spell( 231582 );
 
@@ -5493,6 +5541,7 @@ void mage_t::init_spells()
   spec.savant                = find_mastery_spell( MAGE_ARCANE );
   spec.ignite                = find_mastery_spell( MAGE_FIRE );
   spec.icicles               = find_mastery_spell( MAGE_FROST );
+  spec.icicles_2             = find_specialization_spell( "Mastery: Icicles", "Rank 2" );
 
   // Azerite
   azerite.arcane_pressure          = find_azerite_spell( "Arcane Pressure"          );
@@ -7399,71 +7448,111 @@ public:
 
   void html_customsection_shatter( report::sc_html_stream& os )
   {
-    if ( p.shatter_source_list.empty() )
+    if ( p.shatter_source_list.empty() && p.consumed_winters_chill_stacks.empty() )
       return;
 
     os << "<div class=\"player-section custom_section\">\n"
           "<h3 class=\"toggle open\">Shatter</h3>\n"
-          "<div class=\"toggle-content\">\n"
-          "<table class=\"sc sort even\">\n"
-          "<thead>\n"
-          "<tr>\n"
-          "<th></th>\n"
-          "<th colspan=\"2\">None</th>\n"
-          "<th colspan=\"3\">Winter's Chill</th>\n"
-          "<th colspan=\"2\">Fingers of Frost</th>\n"
-          "<th colspan=\"2\">Other effects</th>\n"
-          "</tr>\n"
-          "<tr>\n"
-          "<th class=\"toggle-sort\" data-sortdir=\"asc\" data-sorttype=\"alpha\">Ability</th>\n"
-          "<th class=\"toggle-sort\">Count</th>\n"
-          "<th class=\"toggle-sort\">Percent</th>\n"
-          "<th class=\"toggle-sort\">Count</th>\n"
-          "<th class=\"toggle-sort\">Percent</th>\n"
-          "<th class=\"toggle-sort\">Utilization</th>\n"
-          "<th class=\"toggle-sort\">Count</th>\n"
-          "<th class=\"toggle-sort\">Percent</th>\n"
-          "<th class=\"toggle-sort\">Count</th>\n"
-          "<th class=\"toggle-sort\">Percent</th>\n"
-          "</tr>\n"
-          "</thead>\n";
+          "<div class=\"toggle-content flexwrap\">\n";
 
-    double bff = p.procs.brain_freeze_used->count.pretty_mean();
-
-    for ( const shatter_source_t* data : p.shatter_source_list )
+    if ( !p.shatter_source_list.empty() )
     {
-      if ( !data->active() )
-        continue;
+      os << "<table class=\"sc sort even\">\n"
+            "<thead>\n"
+            "<tr>\n"
+            "<th></th>\n"
+            "<th colspan=\"2\">None</th>\n"
+            "<th colspan=\"3\">Winter's Chill</th>\n"
+            "<th colspan=\"2\">Fingers of Frost</th>\n"
+            "<th colspan=\"2\">Other effects</th>\n"
+            "</tr>\n"
+            "<tr>\n"
+            "<th class=\"toggle-sort\" data-sortdir=\"asc\" data-sorttype=\"alpha\">Ability</th>\n"
+            "<th class=\"toggle-sort\">Count</th>\n"
+            "<th class=\"toggle-sort\">Percent</th>\n"
+            "<th class=\"toggle-sort\">Count</th>\n"
+            "<th class=\"toggle-sort\">Percent</th>\n"
+            "<th class=\"toggle-sort\">Utilization</th>\n"
+            "<th class=\"toggle-sort\">Count</th>\n"
+            "<th class=\"toggle-sort\">Percent</th>\n"
+            "<th class=\"toggle-sort\">Count</th>\n"
+            "<th class=\"toggle-sort\">Percent</th>\n"
+            "</tr>\n"
+            "</thead>\n";
 
-      auto nonzero = [] ( std::string fmt, double d ) { return d != 0.0 ? fmt::format( fmt, d ) : ""; };
-      auto cells = [ &, total = data->count_total() ] ( double mean, bool util = false )
+      double bff = p.procs.brain_freeze_used->count.pretty_mean() * p.find_spell( 228358 )->max_stacks();
+
+      for ( const shatter_source_t* data : p.shatter_source_list )
       {
-        std::string format_str = "<td class=\"right\">{}</td><td class=\"right\">{}</td>";
-        if ( util ) format_str += "<td class=\"right\">{}</td>";
+        if ( !data->active() )
+          continue;
 
-        fmt::print( os, format_str,
-          nonzero( "{:.1f}", mean ),
-          nonzero( "{:.1f}%", 100.0 * mean / total ),
-          nonzero( "{:.1f}%", bff > 0.0 ? 100.0 * mean / bff : 0.0 ) );
-      };
+        auto nonzero = [] ( std::string fmt, double d ) { return d != 0.0 ? fmt::format( fmt, d ) : ""; };
+        auto cells = [ &, total = data->count_total() ] ( double mean, bool util = false )
+        {
+          std::string format_str = "<td class=\"right\">{}</td><td class=\"right\">{}</td>";
+          if ( util ) format_str += "<td class=\"right\">{}</td>";
 
-      std::string name = data->name_str;
-      if ( action_t* a = p.find_action( name ) )
-        name = report_decorators::decorated_action(*a);
-      else
-        name = util::encode_html( name );
+          fmt::print( os, format_str,
+            nonzero( "{:.1f}", mean ),
+            nonzero( "{:.1f}%", 100.0 * mean / total ),
+            nonzero( "{:.1f}%", bff > 0.0 ? 100.0 * mean / bff : 0.0 ) );
+        };
 
-      os << "<tr>";
-      fmt::print( os, "<td class=\"left\">{}</td>", name );
-      cells( data->count( FROZEN_NONE ) );
-      cells( data->count( FROZEN_WINTERS_CHILL ), true );
-      cells( data->count( FROZEN_FINGERS_OF_FROST ) );
-      cells( data->count( FROZEN_ROOT ) );
-      os << "</tr>\n";
+        std::string name = data->name_str;
+        if ( action_t* a = p.find_action( name ) )
+          name = report_decorators::decorated_action(*a);
+        else
+          name = util::encode_html( name );
+
+        os << "<tr>";
+        fmt::print( os, "<td class=\"left\">{}</td>", name );
+        cells( data->count( FROZEN_NONE ) );
+        cells( data->count( FROZEN_WINTERS_CHILL ), true );
+        cells( data->count( FROZEN_FINGERS_OF_FROST ) );
+        cells( data->count( FROZEN_ROOT ) );
+        os << "</tr>\n";
+      }
+
+      os << "</table>\n";
     }
 
-    os << "</table>\n"
-          "</div>\n"
+    if ( !p.consumed_winters_chill_stacks.empty() )
+    {
+      os << "<table class=\"sc sort even\">\n"
+            "<thead>\n"
+            "<tr>\n"
+            "<th></th>"
+            "<th colspan=\"3\">Winter's Chill Consumed</th>\n"
+            "</tr>\n"
+            "<tr>\n"
+            "<th class=\"toggle-sort\" data-sortdir=\"asc\" data-sorttype=\"alpha\">Ability</th>\n"
+            "<th class=\"toggle-sort\">Average</th>\n"
+            "<th class=\"toggle-sort\">Minimum</th>\n"
+            "<th class=\"toggle-sort\">Maximum</th>\n"
+            "</tr>\n"
+            "</thead>\n";
+
+      for ( auto data : p.consumed_winters_chill_stacks )
+      {
+        std::string name = data.first;
+        if ( action_t* a = p.find_action( name ) )
+          name = report_decorators::decorated_action(*a);
+        else
+          name = util::encode_html( name );
+
+        os << "<tr>";
+        fmt::print( os, "<td class=\"left\">{}</td>", name );
+        fmt::print( os, "<td class=\"right\">{:.1f}</td>", data.second->mean() );
+        fmt::print( os, "<td class=\"right\">{:.1f}</td>", data.second->min() );
+        fmt::print( os, "<td class=\"right\">{:.1f}</td>", data.second->max() );
+        os << "</tr>\n";
+      }
+
+      os << "</table>\n";
+    }
+
+    os << "</div>\n"
           "</div>\n";
   }
 
