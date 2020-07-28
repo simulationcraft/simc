@@ -52,7 +52,6 @@ struct enemy_t : public player_t
   {
     s->target_list.push_back( this );
     position_str = "front";
-    // level = 0;
     combat_reach = 4.0;
   }
 
@@ -1043,8 +1042,8 @@ struct tank_dummy_enemy_t : public enemy_t
     if ( util::str_in_str_ci( tank_dummy_string, "mythic" ) )
       return tank_dummy_e::MYTHIC;
 
-    if ( !tank_dummy_string.empty() && sim->debug )
-      sim->out_debug.print( "Unknown Tank Dummy string input provided: {}", tank_dummy_string );
+    if ( !tank_dummy_string.empty() )
+      sim->print_debug( "Unknown Tank Dummy string input provided: {}", tank_dummy_string );
 
     return tank_dummy_e::NONE;
   }
@@ -1204,8 +1203,7 @@ void enemy_t::init_base_stats()
   {
     if ( sim->overrides.target_health.size() > 0 || fixed_health > 0 )
     {
-      if ( sim->debug )
-        sim->out_debug << "Setting vary_combat_length forcefully to 0.0 because fixed health simulation was detected.";
+      sim->print_debug( "Setting vary_combat_length forcefully to 0.0 because fixed health simulation was detected." );
 
       sim->vary_combat_length = 0.0;
     }
@@ -1243,8 +1241,10 @@ void enemy_t::create_buffs()
   player_t::create_buffs();
 
   for ( unsigned int i = 1; i <= 10; ++i )
-    buffs_health_decades.push_back( make_buff(
-        this, "Health Decade (" + util::to_string( ( i - 1 ) * 10 ) + " - " + util::to_string( i * 10 ) + ")" ) );
+  {
+    buffs_health_decades.push_back(
+        make_buff( this, fmt::format( "Health Decade ({} - {})", ( i - 1 ) * 10, i * 10 ) ) );
+  }
 }
 
 // enemy_t::init_resources ==================================================
@@ -1522,7 +1522,7 @@ void enemy_t::create_pets()
 {
   for ( int i = 0; i < sim->target_adds; i++ )
   {
-    create_pet( "add" + util::to_string( i ) );
+    create_pet( fmt::format( "add{}", i ) );
   }
 }
 
@@ -1578,9 +1578,8 @@ void enemy_t::recalculate_health()
     initial_health *= factor;
   }
 
-  if ( sim->debug )
-    sim->out_debug.printf( "Target %s initial health calculated to be %.0f. Damage was %.0f", name(), initial_health,
-                           iteration_dmg_taken );
+  sim->print_debug( "Target {} initial health calculated to be {}. Damage was {}", name(), initial_health,
+                    iteration_dmg_taken );
 }
 
 bool enemy_t::taunt( player_t* source )
