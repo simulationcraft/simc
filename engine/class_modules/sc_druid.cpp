@@ -281,6 +281,7 @@ public:
   bool affinity_resources;  // activate resources tied to affinities
 
   std::string beta_covenant;
+  double kindred_empowerment_ratio;
 
   struct active_actions_t
   {
@@ -301,6 +302,7 @@ public:
 
     // Covenant
     spell_t* kindred_empowerment;
+    spell_t* kindred_empowerment_partner;
   } active;
 
   // Pets
@@ -793,6 +795,7 @@ public:
     catweave_bear( false ),
     affinity_resources( false ),
     beta_covenant( "none" ),
+    kindred_empowerment_ratio( 1.0 ),
     active( active_actions_t() ),
     force_of_nature(),
     caster_form_weapon(),
@@ -1568,8 +1571,10 @@ survival_instincts_buff_t( druid_t& p ) :
 struct kindred_empowerment_buff_t : public druid_buff_t<buff_t>
 {
   double pool;
+  double cumul_pool;
 
-  kindred_empowerment_buff_t( druid_t& p ) : base_t( p, "kindred_empowerment", p.covenant.kindred_empowerment ), pool( 0.0 )
+  kindred_empowerment_buff_t( druid_t& p )
+    : base_t( p, "kindred_empowerment", p.covenant.kindred_empowerment ), pool( 0.0 )
   {
     set_refresh_behavior( buff_refresh_behavior::DURATION );
   }
@@ -1578,16 +1583,21 @@ struct kindred_empowerment_buff_t : public druid_buff_t<buff_t>
   {
     druid_buff_t<buff_t>::expire_override( s, d );
     pool = 0.0;
+    cumul_pool = 0.0;
   }
 
   void add_pool( const action_state_t* s )
   {
     trigger();
 
-    if ( sim->debug )
-      sim->print_debug( "Kindred Empowerment: Adding {} from {} to pool of {}", s->result_amount, s->action->name(), pool );
+    double amount = s->result_amount * p().covenant.kindred_empowerment_energize->effectN( 1 ).percent() *
+                    p().kindred_empowerment_ratio;
 
-    pool += s->result_amount;
+    if ( sim->debug )
+      sim->print_debug( "Kindred Empowerment: Adding {} from {} to pool of {}", amount, s->action->name(), pool );
+
+    pool += amount;
+    cumul_pool += amount;
   }
 
   void use_pool( const action_state_t* s )
@@ -1609,6 +1619,17 @@ struct kindred_empowerment_buff_t : public druid_buff_t<buff_t>
     damage->execute();
 
     pool -= amount;
+  }
+
+  void snapshot()
+  {
+    if ( cumul_pool )
+    {
+      auto partner = p().active.kindred_empowerment_partner;
+      partner->set_target( p().target );
+      partner->base_dd_min = partner->base_dd_max = cumul_pool;
+      partner->execute();
+    }
   }
 };
 
@@ -5531,8 +5552,8 @@ struct streaking_stars_t : public druid_spell_t
 
 struct kindred_empowerment_t : public druid_spell_t
 {
-  kindred_empowerment_t( druid_t* p )
-    : druid_spell_t( "kindred_empowerment", p, p->covenant.kindred_empowerment_damage )
+  kindred_empowerment_t( druid_t* p, const std::string& n )
+    : druid_spell_t( n, p, p->covenant.kindred_empowerment_damage )
   {
     background = true;
     may_miss = may_crit = callbacks = false;
@@ -7198,7 +7219,10 @@ struct kindred_spirits_t : public druid_spell_t
     harmful = false;
 
     if ( player->active.kindred_empowerment )
+    {
       add_child( player->active.kindred_empowerment );
+      add_child( player->active.kindred_empowerment_partner );
+    }
   }
 
   bool ready() override
@@ -7964,7 +7988,8 @@ void druid_t::init_spells()
     active.starfall = new spells::starfall_tick_t( this );
 
   if ( beta_covenant == "kyrian" )
-    active.kindred_empowerment = new spells::kindred_empowerment_t( this );
+    active.kindred_empowerment = new spells::kindred_empowerment_t( this, "kindred_empowerment" );
+    active.kindred_empowerment_partner = new spells::kindred_empowerment_t( this, "kindreD_empowerment_partner" );
 }
 
 // druid_t::init_base =======================================================
@@ -8101,7 +8126,14 @@ void druid_t::create_buffs()
   buff.kindred_empowerment = new kindred_empowerment_buff_t( *this );
 
   buff.kindred_empowerment_energize =
-      make_buff( this, "kindred_empowerment_energize", covenant.kindred_empowerment_energize );
+      make_buff( this, "kindred_empowerment_energize", covenant.kindred_empowerment_energize )
+    ->set_stack_change_callback( [this]( buff_t* b, int, int new_ ) {
+      if ( !new_ )
+      {
+        auto pool = debug_cast<buffs::kindred_empowerment_buff_t*>( buff.kindred_empowerment );
+        pool->snapshot();
+      }
+    } );
 
   // Talent buffs
   buff.tiger_dash = new tiger_dash_buff_t( *this );
@@ -9980,6 +10012,7 @@ void druid_t::create_options()
   add_option( opt_float ( "thorns_attack_period", thorns_attack_period ) );
   add_option( opt_float ( "thorns_hit_chance", thorns_hit_chance ) );
   add_option( opt_string( "beta_covenant", beta_covenant ) );
+  add_option( opt_float ( "kindred_empowerment_ratio", kindred_empowerment_ratio ) );
 }
 
 // druid_t::create_profile ==================================================
@@ -10521,6 +10554,7 @@ void druid_t::copy_from( player_t* source )
   affinity_resources = p->affinity_resources;
   ahhhhh_the_great_outdoors = p->ahhhhh_the_great_outdoors;
   beta_covenant = p->beta_covenant;
+  kindred_empowerment_ratio = p->kindred_empowerment_ratio;
   thorns_attack_period = p->thorns_attack_period;
   thorns_hit_chance = p->thorns_hit_chance;
 }
