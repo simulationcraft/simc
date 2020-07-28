@@ -14975,7 +14975,7 @@ static const std::array<spelltext_data_t, 15089> __spelltext_data { {
   { 338093, "$@spelldesc338089", "Death's Advance movement speed increased by $w1%.", 0 },
   { 338131, "Lightning Bolt has a |cFFFFFFFF$s1%|r chance to generate an extra stack of Fulmination.", 0, 0 },
   { 338138, "Your Breath of Fire ignites your right leg in flame for $338140d, causing your Blackout Kick and Spinning Crane Kick to deal $338140m1% additional damage as Fire damage and refresh the duration of your Breath of Flame on the target.", 0, 0 },
-  { 338140, "$@spelldesc338138", "Damage done by your Blackout Kick and Spinning Crane Kick increased by $w1%, and their damage refreshes the duration of Breath of Fire on the target.", 0 },
+  { 338140, "$@spelldesc338138", "Your Blackout Kick and Spinning Crane Kick deal $w1% increased damage as Fire damage, and their damage refreshes the duration of Breath of Fire on the target.", 0 },
   { 338252, "Casting Earthquake has a |cFFFFFFFF$s1%|r chance to instantly cast Chain Lightning at a random enemy in the Earthquake.", 0, 0 },
   { 338303, "$?s192249[Storm Elemental][Fire Elemental] lasts |cFFFFFFFF$s1%|r longer.", 0, 0 },
   { 338305, "Fae Blessings affects $s2 additional spells, and enhanced casts of Power Word: Shield, Shadow Mend, or Void Bolt have a |cFFFFFFFF$s1|r% chance to reduce Fae Blessings's cooldown by $s3 sec.", 0, 0 },
@@ -15023,7 +15023,7 @@ static const std::array<spelltext_data_t, 15089> __spelltext_data { {
   { 338664, "Shackle the Unworth has a |cFFFFFFFF${$s1}.1%|r chance to spread to a nearby enemy each time it deals damage.", 0, 0 },
   { 338668, "Every $s1 Astral Power spent grants Celestial Alignment for $s2 sec.", 0, 0 },
   { 338671, "The cooldown of $?c1[Blur][Fiery Brand] is reduced by |cFFFFFFFF${$s1/-1000} sec|r.", 0, 0 },
-  { 338682, "Demonic Wards $?c2[also] reduces magic damage taken by $?c1[an additional ][]|cFFFFFFFF$s1%|r.", 0, 0 },
+  { 338682, "Demonic Wards $?c2[also ][]reduces magic damage taken by $?c1[an additional ][]|cFFFFFFFF$s1%|r.", 0, 0 },
   { 338715, "A goblin refined concoction that increases your Intellect by $s1 for $d.", "Intellect increase by $w1.", 0 },
   { 338741, "Divine Shield's cooldown is reduced by 5 sec when you take damage. This effect can only trigger once every |cFFFFFFFF$s1|r sec.", 0, 0 },
   { 338787, "Word of Glory applies absorb shield that lasts $s2 sec for |cFFFFFFFF$s1|r% healing on the Paladin when used.", 0, 0 },
@@ -15034,7 +15034,7 @@ static const std::array<spelltext_data_t, 15089> __spelltext_data { {
   { 338829, "Swiftmend no longer consumes a heal over time effect, and extends the duration of your heal over time effects on the target by $s1 sec.", 0, 0 },
   { 338831, "You may Lifebloom two targets at once, and Lifebloom's final healing is increased by $s1%.", 0, 0 },
   { 338832, "Rejuvenation healing has a $@switch<$s2>[${$s1/10}%][${$s1/10}.1%] chance to create a new Rejuvenation on a nearby target.", 0, 0 },
-  { 338835, "Your movement speed is increased by |cFFFFFFFF$s1%|r after casting $?c1[Fel Rush][Infernal Strike].", 0, 0 },
+  { 338835, "Consume Magic has a |cFFFFFFFF$s1%|r to dispel a second effect.", 0, 0 },
   { 339018, "Your attacks and abilities deal |cFFFFFFFF ${$s1}.1%|r increased damage to enemies inside Resonating Arrow.", 0, 0 },
   { 339048, "Enemies that leave your Imprison are snared by 50% for |cFFFFFFFF${$s1/1000} sec|r.", 0, 0 },
   { 339056, "Thrash has a $s1% chance to trigger an additional Thrash.", 0, 0 },
@@ -15063,7 +15063,7 @@ static const std::array<spelltext_data_t, 15089> __spelltext_data { {
   { 339186, "Primordial Wave has a |cFFFFFFFF${$s1/10}%|r chance to not incur its cooldown.", 0, 0 },
   { 339228, "Blade Dance has a |cFFFFFFFF$s1%|r chance to apply Essence Break.", 0, 0 },
   { 339229, 0, "Damage taken from Eye Beam  increased by $w1%.", 0 },
-  { 339230, "Spending |cFFFFFFFF$s1|r Fury buffs the damage of Eye Beam by $s1%.", 0, 0 },
+  { 339230, "Targets hit by Throw Glaive take |cFFFFFFFF$s1%|r increased damage from Eye Beam.", 0, 0 },
   { 339231, "Immolation Aura's damage is increases by an additional |cFFFFFFFF$s1%|r each time it deals damage.", 0, 0 },
   { 339259, "Spear of Bastion's instant damage and Rage generation are increased by |cFFFFFFFF$s1%|r.", 0, 0 },
   { 339264, "Hunter's Mark decreases the damage the target deals to you by|cFFFFFFFF ${$s1*-1}.1%|r.", 0, 0 },
@@ -15092,7 +15092,11 @@ static const std::array<spelltext_data_t, 15089> __spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 9.0.1.35282
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 4> __spelltext_hotfix_data { {
+  {  338140,  1, "Damage done by your Blackout Kick and Spinning Crane Kick increased by $w1%, and their damage refreshes the duration of Breath of Fire on the target.", "Your Blackout Kick and Spinning Crane Kick deal $w1% increased damage as Fire damage, and their damage refreshes the duration of Breath of Fire on the target." },
+  {  338682,  0, "Demonic Wards $?c2[also] reduces magic damage taken by $?c1[an additional ][]|cFFFFFFFF$s1%|r.", "Demonic Wards $?c2[also ][]reduces magic damage taken by $?c1[an additional ][]|cFFFFFFFF$s1%|r." },
+  {  338835,  0, "Your movement speed is increased by |cFFFFFFFF$s1%|r after casting $?c1[Fel Rush][Infernal Strike].", "Consume Magic has a |cFFFFFFFF$s1%|r to dispel a second effect." },
+  {  339230,  0, "Spending |cFFFFFFFF$s1|r Fury buffs the damage of Eye Beam by $s1%.", "Targets hit by Throw Glaive take |cFFFFFFFF$s1%|r increased damage from Eye Beam." },
 } };
 
 // Spell description variables, wow build 9.0.1.35282
