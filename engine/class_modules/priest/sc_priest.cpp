@@ -1099,6 +1099,9 @@ void priest_t::init_spells()
   // runeforge legendary
   legendary.kiss_of_death    = find_runeforge_legendary( "Kiss of Death" );
   legendary.the_penitent_one = find_runeforge_legendary( "The Penitent One" );
+
+  // Shadow Legendaries
+  legendary.painbreaker_psalm = find_runeforge_legendary( "Painbreaker Psalm" );
 }
 
 void priest_t::create_buffs()

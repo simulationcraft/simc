@@ -411,6 +411,7 @@ public:
   {
     const spell_data_t* kiss_of_death;
     const spell_data_t* the_penitent_one;  // Effect implemented, but not hooked up the PW:Radiance
+    const spell_data_t* painbreaker_psalm;
   } legendary;
 
   struct insanity_end_event_t;

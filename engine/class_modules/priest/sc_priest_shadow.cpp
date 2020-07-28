@@ -322,28 +322,10 @@ struct mind_flay_t final : public priest_spell_t
   }
 };
 
-struct death_and_madness_t final : public priest_spell_t
-{
-  death_and_madness_t( priest_t& p )
-    : priest_spell_t( "death_and_madness", p, p.talents.death_and_madness )
-  {
-    may_miss = may_crit = harmful = callbacks = false;
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    priest_spell_t::impact( s );
-    priest().buffs.death_and_madness->trigger();
-  }
-};
-
 struct shadow_word_death_t final : public priest_spell_t
 {
-  propagate_const<death_and_madness_t*> child_death_and_madness;
-
   shadow_word_death_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "shadow_word_death", p, p.find_class_spell( "Shadow Word: Death" ) ),
-      child_death_and_madness( new death_and_madness_t( priest() ) )
+  : priest_spell_t( "shadow_word_death", p, p.find_class_spell( "Shadow Word: Death" ) )
   {
     parse_options( options_str );
     cooldown           = priest().cooldowns.shadow_word_death;
@@ -367,8 +349,7 @@ struct shadow_word_death_t final : public priest_spell_t
     {
       total_insanity_gain = data().effectN( 3 ).base_value();
 
-      // TODO: Check for Painbreaker Psalm Legendary
-      if ( false )
+      if ( priest().legendary.painbreaker_psalm->ok() )
       {
         // TODO: Check if this ever gets un-hardcoded for (336165)
         total_insanity_gain += 10;
@@ -384,8 +365,7 @@ struct shadow_word_death_t final : public priest_spell_t
 
       if ( priest().talents.death_and_madness->ok() )
       {
-        child_death_and_madness->target = s->target;
-        child_death_and_madness->execute();
+        priest().buffs.death_and_madness->trigger();
       }
 
       priest().generate_insanity( total_insanity_gain, priest().gains.insanity_shadow_word_death, s->action );
