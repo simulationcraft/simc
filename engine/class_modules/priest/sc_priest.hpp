@@ -55,6 +55,7 @@ public:
   {
     propagate_const<dot_t*> shadow_word_pain;
     propagate_const<dot_t*> vampiric_touch;
+    propagate_const<dot_t*> devouring_plague;
   } dots;
 
   struct buffs_t
@@ -114,6 +115,8 @@ public:
     propagate_const<buff_t*> vampiric_embrace;
     propagate_const<buff_t*> void_torrent;
     propagate_const<buff_t*> voidform;
+    propagate_const<buff_t*> death_and_madness;
+    propagate_const<buff_t*> death_and_madness_buff;
 
     // Azerite Powers
     // Shadow
@@ -206,7 +209,7 @@ public:
     const spell_data_t* psychic_horror;  // NYI
     // T75
     const spell_data_t* auspicious_spirits;
-    const spell_data_t* death_and_madness;  // NYI
+    const spell_data_t* death_and_madness;
     const spell_data_t* shadow_crash;
     // T90
     const spell_data_t* lingering_insanity;
@@ -279,6 +282,8 @@ public:
     propagate_const<cooldown_t*> mind_bomb;
     propagate_const<cooldown_t*> psychic_horror;
     propagate_const<cooldown_t*> dark_ascension;
+    propagate_const<cooldown_t*> shadow_word_death;
+    propagate_const<cooldown_t*> devouring_plague;
 
     // Holy
     propagate_const<cooldown_t*> holy_word_chastise;
@@ -320,6 +325,7 @@ public:
     propagate_const<gain_t*> insanity_lucid_dreams;
     propagate_const<gain_t*> insanity_memory_of_lucid_dreams;
     propagate_const<gain_t*> shadow_word_death_self_damage;
+    propagate_const<gain_t*> insanity_death_and_madness;
   } gains;
 
   // Benefits
@@ -1309,34 +1315,7 @@ struct priest_module_t final : public module_t
   }
   void register_hotfixes() const override
   {
-    /** December 5th 2017 hotfixes
-
-    hotfix::register_effect("Priest", "2017-12-05", "Shadow Priest damage increased by 3%", 191068)
-    .field("base_value")
-    .operation(hotfix::HOTFIX_SET)
-    .modifier(23.0)
-    .verification_value(20.0);
-
-    hotfix::register_effect("Priest", "2017-12-05", "Shadow Priest damage increased by 3%", 179717)
-    .field("base_value")
-    .operation(hotfix::HOTFIX_SET)
-    .modifier(23.0)
-    .verification_value(20.0);
-
-    hotfix::register_effect("Priest", "2017-12-05", "Vampiric Touch damage reduced by 15%.", 25010)
-    .field("sp_coefficient")
-    .operation(hotfix::HOTFIX_SET)
-    .modifier(0.579)
-    .verification_value(0.6816);
-
-    hotfix::register_effect("Priest", "2017-12-05", "Shadow Word: Pain damage reduced by 15%.", 254257)
-    .field("sp_coefficient")
-    .operation(hotfix::HOTFIX_SET)
-    .modifier(0.31)
-    .verification_value(0.365);
-    **/
   }
-
   void combat_begin( sim_t* ) const override
   {
   }

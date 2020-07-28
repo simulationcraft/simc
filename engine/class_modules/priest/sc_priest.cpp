@@ -577,6 +577,7 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p ) : actor_target_data_t(
 {
   dots.shadow_word_pain = target->get_dot( "shadow_word_pain", &p );
   dots.vampiric_touch   = target->get_dot( "vampiric_touch", &p );
+  dots.vampiric_touch   = target->get_dot( "devouring_plague", &p );
 
   buffs.schism = make_buff( *this, "schism", p.talents.schism );
 
@@ -689,6 +690,7 @@ void priest_t::create_gains()
   gains.insanity_dark_void                     = get_gain( "Insanity Gained from Dark Void" );
   gains.insanity_lucid_dreams                  = get_gain( "Insanity Gained from Lucid Dreams" );
   gains.insanity_memory_of_lucid_dreams        = get_gain( "Insanity Gained from Memory of Lucid Dreams" );
+  gains.insanity_death_and_madness             = get_gain( "Insanity Gained from Death and Madness" );
   gains.shadow_word_death_self_damage          = get_gain( "Shadow Word: Death self inflicted damage" );
 }
 
