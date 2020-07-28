@@ -443,7 +443,7 @@ public:
   void combat_begin() override;
   void init_rng() override;
   priest_td_t* get_target_data( player_t* target ) const override;
-  std::unique_ptr<expr_t> create_expression( const std::string& name_str ) override;
+  std::unique_ptr<expr_t> create_expression( util::string_view name_str ) override;
   void arise() override;
   void vision_of_perfection_proc() override;
   void do_dynamic_regen() override;

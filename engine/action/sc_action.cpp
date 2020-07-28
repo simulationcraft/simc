@@ -2701,7 +2701,7 @@ void action_t::check_spell( const spell_data_t* sp )
   }
 }
 
-std::unique_ptr<expr_t> action_t::create_expression( const std::string& name_str )
+std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str )
 {
   class action_expr_t : public expr_t
   {
@@ -3417,7 +3417,7 @@ std::unique_ptr<expr_t> action_t::create_expression( const std::string& name_str
   {
     // Find target
     player_t* expr_target = nullptr;
-    std::string tail      = name_str.substr( splits[ 0 ].length() + 1 );
+    auto tail      = name_str.substr( splits[ 0 ].length() + 1 );
     if ( util::is_number( splits[ 1 ] ) )
     {
       expr_target = find_target_by_number( std::stoi( splits[ 1 ] ) );
@@ -3505,7 +3505,7 @@ std::unique_ptr<expr_t> action_t::create_expression( const std::string& name_str
     std::vector<action_t*> in_flight_list;
     bool in_flight_singleton = ( splits[ 0 ] == "in_flight" ||
       splits[ 0 ] == "in_flight_to_target" || splits[ 0 ] == "in_flight_remains" );
-    std::string action_name  = ( in_flight_singleton ) ? name_str : splits[ 1 ];
+    auto action_name  = ( in_flight_singleton ) ? name_str : splits[ 1 ];
     for ( size_t i = 0; i < player->action_list.size(); ++i )
     {
       action_t* action = player->action_list[ i ];
@@ -3603,14 +3603,14 @@ std::unique_ptr<expr_t> action_t::create_expression( const std::string& name_str
   // necessary for self.target.*, self.dot.*
   if ( splits.size() >= 2 && splits[ 0 ] == "self" )
   {
-    std::string tail = name_str.substr( splits[ 0 ].length() + 1 );
+    auto tail = name_str.substr( splits[ 0 ].length() + 1 );
     return player->create_action_expression( *this, tail );
   }
 
   // necessary for sim.target.*
   if ( splits.size() >= 2 && splits[ 0 ] == "sim" )
   {
-    std::string tail = name_str.substr( splits[ 0 ].length() + 1 );
+    auto tail = name_str.substr( splits[ 0 ].length() + 1 );
     return sim->create_expression( tail );
   }
 

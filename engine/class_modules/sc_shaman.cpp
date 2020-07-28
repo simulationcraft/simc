@@ -763,7 +763,7 @@ public:
   action_t* create_action( const std::string& name, const std::string& options ) override;
   pet_t* create_pet( const std::string& name, const std::string& type = std::string() ) override;
   void create_pets() override;
-  std::unique_ptr<expr_t> create_expression( const std::string& name ) override;
+  std::unique_ptr<expr_t> create_expression( util::string_view name ) override;
   resource_e primary_resource() const override
   {
     return RESOURCE_MANA;
@@ -1320,7 +1320,7 @@ public:
     ab::update_ready( cd );
   }
 
-  std::unique_ptr<expr_t> create_expression( const std::string& name ) override
+  std::unique_ptr<expr_t> create_expression( util::string_view name ) override
   {
     if ( !util::str_compare_ci( name, "cooldown.higher_priority.min_remains" ) )
       return ab::create_expression( name );
@@ -6003,7 +6003,7 @@ struct shaman_totem_pet_t : public pet_t
     return owner->composite_spell_power_multiplier();
   }
 
-  std::unique_ptr<expr_t> create_expression( const std::string& name ) override
+  std::unique_ptr<expr_t> create_expression( util::string_view name ) override
   {
     if ( util::str_compare_ci( name, "duration" ) )
       return make_ref_expr( name, duration );
@@ -6041,7 +6041,7 @@ struct shaman_totem_t : public shaman_spell_t
     totem_pet->summon( totem_duration );
   }
 
-  std::unique_ptr<expr_t> create_expression( const std::string& name ) override
+  std::unique_ptr<expr_t> create_expression( util::string_view name ) override
   {
     // Redirect active/remains to "pet.<totem name>.active/remains" so things work ok with the
     // pet initialization order shenanigans. Otherwise, at this point in time (when
@@ -6694,7 +6694,7 @@ void shaman_t::create_pets()
 
 // shaman_t::create_expression ==============================================
 
-std::unique_ptr<expr_t> shaman_t::create_expression( const std::string& name )
+std::unique_ptr<expr_t> shaman_t::create_expression( util::string_view name )
 {
   std::vector<std::string> splits = util::string_split( name, "." );
 

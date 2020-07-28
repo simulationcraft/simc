@@ -409,7 +409,7 @@ public:
   virtual void      init_spells() override;
   virtual void      init_action_list() override;
   virtual void      reset() override;
-  virtual std::unique_ptr<expr_t> create_expression( const std::string& name ) override;
+  virtual std::unique_ptr<expr_t> create_expression( util::string_view name ) override;
 
   // player stat functions
   virtual double    composite_attribute_multiplier( attribute_e attr ) const override;
@@ -457,7 +457,7 @@ public:
   void         trigger_memory_of_lucid_dreams( double cost );
   virtual void vision_of_perfection_proc() override;
 
-  std::unique_ptr<expr_t> create_consecration_expression( const std::string& expr_str );
+  std::unique_ptr<expr_t> create_consecration_expression( util::string_view expr_str );
 
   ground_aoe_event_t* active_consecration;
 

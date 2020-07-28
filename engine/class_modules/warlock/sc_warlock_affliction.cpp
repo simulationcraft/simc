@@ -1138,7 +1138,7 @@ namespace warlock
     fil->add_action( "shadow_bolt" );
   }
 
-  std::unique_ptr<expr_t> warlock_t::create_aff_expression(const std::string& name_str)
+  std::unique_ptr<expr_t> warlock_t::create_aff_expression(util::string_view name_str)
   {
     if (name_str == "deathbolt_setup")
     {

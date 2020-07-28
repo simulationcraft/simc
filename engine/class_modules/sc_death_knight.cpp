@@ -900,7 +900,7 @@ public:
   void      do_damage( action_state_t* ) override;
   void      create_actions() override;
   action_t* create_action( const std::string& name, const std::string& options ) override;
-  std::unique_ptr<expr_t>   create_expression( const std::string& name ) override;
+  std::unique_ptr<expr_t>   create_expression( util::string_view name ) override;
   void      create_options() override;
   void      create_pets() override;
   resource_e primary_resource() const override { return RESOURCE_RUNIC_POWER; }
@@ -941,7 +941,7 @@ public:
 
   // Actor is standing in their own Death and Decay or Defile
   bool      in_death_and_decay() const;
-  std::unique_ptr<expr_t>   create_death_and_decay_expression( const std::string& expr_str );
+  std::unique_ptr<expr_t>   create_death_and_decay_expression( util::string_view expr_str );
 
   unsigned  replenish_rune( unsigned n, gain_t* gain = nullptr );
 
@@ -2567,7 +2567,7 @@ struct death_knight_action_t : public Base
     return base_gcd;
   }
 
-  std::unique_ptr<expr_t> create_expression( const std::string& name_str ) override
+  std::unique_ptr<expr_t> create_expression( util::string_view name_str ) override
   {
     auto dnd_expr = p() -> create_death_and_decay_expression( name_str );
     if ( dnd_expr )
@@ -7018,7 +7018,7 @@ action_t* death_knight_t::create_action( const std::string& name, const std::str
 
 // death_knight_t::create_expression ========================================
 
-std::unique_ptr<expr_t> death_knight_t::create_death_and_decay_expression( const std::string& expr_str )
+std::unique_ptr<expr_t> death_knight_t::create_death_and_decay_expression( util::string_view expr_str )
 {
   auto expr = util::string_split( expr_str, "." );
   if ( expr.size() < 2 || ( expr.size() == 3 && ! util::str_compare_ci( expr[ 0 ], "dot" ) ) )
@@ -7055,7 +7055,7 @@ std::unique_ptr<expr_t> death_knight_t::create_death_and_decay_expression( const
   return nullptr;
 }
 
-std::unique_ptr<expr_t> death_knight_t::create_expression( const std::string& name_str )
+std::unique_ptr<expr_t> death_knight_t::create_expression( util::string_view name_str )
 {
   auto splits = util::string_split( name_str, "." );
 
@@ -7067,7 +7067,7 @@ std::unique_ptr<expr_t> death_knight_t::create_expression( const std::string& na
       auto n = n_char - '0';
       if ( n <= 0 || as<size_t>( n ) > MAX_RUNES )
       {
-        sim -> errorf( "%s invalid expression '%s'.", name(), name_str.c_str() );
+        sim -> error( "{} invalid expression '{}'.", name(), name_str );
         return player_t::create_expression( name_str );
       }
 

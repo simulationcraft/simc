@@ -8191,7 +8191,7 @@ struct use_item_t : public action_t
     return std::make_unique<use_item_buff_type_expr_t>( e->stat_type() == stat );
   }
 
-  std::unique_ptr<expr_t> create_expression( const std::string& name_str ) override
+  std::unique_ptr<expr_t> create_expression( util::string_view name_str ) override
   {
     std::vector<std::string> split = util::string_split( name_str, "." );
     if ( auto e = create_special_effect_expr( split ) )
@@ -9645,10 +9645,10 @@ const spell_data_t* player_t::find_spell( unsigned int id, specialization_e s ) 
 
 namespace
 {
-std::unique_ptr<expr_t> deprecate_expression( player_t& p, const std::string& old_name, const std::string& new_name, action_t* a = nullptr  )
+std::unique_ptr<expr_t> deprecate_expression( player_t& p, util::string_view old_name, util::string_view new_name, action_t* a = nullptr  )
 {
-  p.sim->errorf( "Use of \"%s\" ( action %s ) in action expressions is deprecated: use \"%s\" instead.\n",
-                  old_name.c_str(), a?a->name() : "unknown", new_name.c_str() );
+  p.sim->error( "Use of \"{}\" ( action {} ) in action expressions is deprecated: use \"{}\" instead.\n",
+                  old_name, a?a->name() : "unknown", new_name );
 
   return p.create_expression( new_name );
 }
@@ -9674,7 +9674,7 @@ struct position_expr_t : public player_expr_t
   }
 };
 
-std::unique_ptr<expr_t> deprecated_player_expressions( player_t& player, const std::string& expression_str )
+std::unique_ptr<expr_t> deprecated_player_expressions( player_t& player, util::string_view expression_str )
 {
   if ( expression_str == "health_pct" )
     return deprecate_expression( player, expression_str, "health.pct" );
@@ -9708,12 +9708,12 @@ std::unique_ptr<expr_t> deprecated_player_expressions( player_t& player, const s
  * Use this function for expressions which are bound to some action property (eg. target, cast_time, etc.) and not
  * just to the player itself.
  */
-std::unique_ptr<expr_t> player_t::create_action_expression( action_t&, const std::string& name )
+std::unique_ptr<expr_t> player_t::create_action_expression( action_t&, util::string_view name )
 {
   return create_expression( name );
 }
 
-std::unique_ptr<expr_t> player_t::create_expression( const std::string& expression_str )
+std::unique_ptr<expr_t> player_t::create_expression( util::string_view expression_str )
 {
   if (auto e = deprecated_player_expressions(*this, expression_str))
   {
@@ -10203,7 +10203,7 @@ std::unique_ptr<expr_t> player_t::create_expression( const std::string& expressi
         }
 
         // build player/pet expression from the tail of the expression string.
-        std::string tail = expression_str.substr( splits[ 1 ].length() + 5 );
+        auto tail = expression_str.substr( splits[ 1 ].length() + 5 );
         if ( auto e = pet->create_expression( tail ) )
         {
           return e;
@@ -10231,7 +10231,7 @@ std::unique_ptr<expr_t> player_t::create_expression( const std::string& expressi
     {
       if ( pet->owner )
       {
-        std::string tail = expression_str.substr( 6 );
+        auto tail = expression_str.substr( 6 );
         if ( auto e = pet->owner->create_expression( tail ) )
         {
           return e;
@@ -10260,7 +10260,7 @@ std::unique_ptr<expr_t> player_t::create_expression( const std::string& expressi
   return sim->create_expression( expression_str );
 }
 
-std::unique_ptr<expr_t> player_t::create_resource_expression( const std::string& name_str )
+std::unique_ptr<expr_t> player_t::create_resource_expression( util::string_view name_str )
 {
   auto splits = util::string_split( name_str, "." );
   if ( splits.empty() )
@@ -10323,7 +10323,7 @@ std::unique_ptr<expr_t> player_t::create_resource_expression( const std::string&
 
     else if ( util::str_prefix_ci( splits[ 1 ], "time_to_" ) )
     {
-      std::vector<std::string> parts = util::string_split( splits[ 1 ], "_" );
+      auto parts = util::string_split( splits[ 1 ], "_" );
 
       // foo.time_to_max
       if ( util::str_in_str_ci( parts[ 2 ], "max" ) )
@@ -10351,7 +10351,7 @@ std::unique_ptr<expr_t> player_t::create_resource_expression( const std::string&
     }
   }
 
-  std::string tail = name_str.substr(splits[ 0 ].length() + 1);
+  auto tail = name_str.substr(splits[ 0 ].length() + 1);
   throw std::invalid_argument(fmt::format("Unsupported resource expression '{}'.", tail));
 }
 

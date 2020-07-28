@@ -872,7 +872,7 @@ public:
   double    temporary_movement_modifier() const override;
   double    passive_movement_modifier() const override;
   double    matching_gear_multiplier( attribute_e attr ) const override;
-  std::unique_ptr<expr_t>   create_expression( const std::string& name ) override;
+  std::unique_ptr<expr_t>   create_expression( util::string_view name ) override;
   action_t* create_action( const std::string& name, const std::string& options ) override;
   pet_t*    create_pet   ( const std::string& name, const std::string& type = std::string() ) override;
   void      create_pets() override;
@@ -1802,7 +1802,7 @@ public:
     return ab::verify_actor_spec();
   }
 
-  std::unique_ptr<expr_t> create_expression(const std::string& name_str) override
+  std::unique_ptr<expr_t> create_expression(util::string_view name_str) override
   {
     std::vector<std::string> splits = util::string_split(name_str, ".");
 
@@ -2405,7 +2405,7 @@ public:
     }
   };
 
-  std::unique_ptr<expr_t> create_expression( const std::string& name_str ) override
+  std::unique_ptr<expr_t> create_expression( util::string_view name_str ) override
   {
     std::vector<std::string> splits = util::string_split( name_str, "." );
 
@@ -9604,7 +9604,7 @@ double druid_t::composite_leech() const
 
 // druid_t::create_expression ===============================================
 
-std::unique_ptr<expr_t> druid_t::create_expression( const std::string& name_str )
+std::unique_ptr<expr_t> druid_t::create_expression( util::string_view name_str )
 {
   std::vector<std::string> splits = util::string_split( name_str, "." );
 

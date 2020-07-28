@@ -493,7 +493,7 @@ timespan_t cooldown_t::cooldown_duration( const cooldown_t* cd )
     return cd->duration;
 }
 
-std::unique_ptr<expr_t> cooldown_t::create_expression( const std::string& name_str )
+std::unique_ptr<expr_t> cooldown_t::create_expression( util::string_view name_str )
 {
   if ( name_str == "remains" )
     return make_mem_fn_expr( name_str, *this, &cooldown_t::remains );

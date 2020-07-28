@@ -635,7 +635,7 @@ public:
   void copy_from( player_t* source ) override;
   action_t* create_action( const std::string& name, const std::string& options ) override;
   void create_buffs() override;
-  std::unique_ptr<expr_t> create_expression( const std::string& ) override;
+  std::unique_ptr<expr_t> create_expression( util::string_view ) override;
   void create_options() override;
   pet_t* create_pet( const std::string& name, const std::string& type = std::string() ) override;
   std::string create_profile( save_e ) override;
@@ -722,7 +722,7 @@ public:
   {
     return options.target_reach >= 0 ? options.target_reach : sim->target->combat_reach;
   }
-  std::unique_ptr<expr_t> create_sigil_expression( const std::string& );
+  std::unique_ptr<expr_t> create_sigil_expression( util::string_view );
 
   // Secondary Action Tracking
   std::vector<action_t*> background_actions;
@@ -2381,7 +2381,7 @@ struct sigil_of_flame_t : public demon_hunter_spell_t
     damage->make_ground_aoe_event( p(), execute_state );
   }
 
-  std::unique_ptr<expr_t> create_expression(const std::string& name) override
+  std::unique_ptr<expr_t> create_expression(util::string_view name) override
   {
     if (auto e = p()->create_sigil_expression(name))
       return e;
@@ -2463,7 +2463,7 @@ struct infernal_strike_t : public demon_hunter_spell_t
     return td( t )->dots.sigil_of_flame;
   }
 
-  std::unique_ptr<expr_t> create_expression( const std::string& name ) override
+  std::unique_ptr<expr_t> create_expression( util::string_view name ) override
   {
     if ( auto e = p()->create_sigil_expression( name ) )
       return e;
@@ -4865,7 +4865,7 @@ struct eye_beam_adjusted_cooldown_expr_t : public expr_t
   demon_hunter_t* dh;
   double cooldown_multiplier;
 
-  eye_beam_adjusted_cooldown_expr_t( demon_hunter_t* p, const std::string& name_str )
+  eye_beam_adjusted_cooldown_expr_t( demon_hunter_t* p, util::string_view name_str )
     : expr_t( name_str ), dh( p ), cooldown_multiplier( 1.0 )
   {}
 
@@ -4910,7 +4910,7 @@ struct eye_beam_adjusted_cooldown_expr_t : public expr_t
 
 // demon_hunter_t::create_expression ========================================
 
-std::unique_ptr<expr_t> demon_hunter_t::create_expression( const std::string& name_str )
+std::unique_ptr<expr_t> demon_hunter_t::create_expression( util::string_view name_str )
 {
   if ( name_str == "greater_soul_fragments" || name_str == "lesser_soul_fragments" || 
        name_str == "soul_fragments" || name_str == "demon_soul_fragments" )
@@ -4921,7 +4921,7 @@ std::unique_ptr<expr_t> demon_hunter_t::create_expression( const std::string& na
       soul_fragment type;
       bool require_demon;
 
-      soul_fragments_expr_t( demon_hunter_t* p, const std::string& n, soul_fragment t, bool require_demon )
+      soul_fragments_expr_t( demon_hunter_t* p, util::string_view n, soul_fragment t, bool require_demon )
         : expr_t( n ), dh( p ), type( t ), require_demon( require_demon )
       {
       }
@@ -6529,7 +6529,7 @@ void demon_hunter_t::spawn_soul_fragment( soul_fragment type, unsigned n, player
 
 // demon_hunter_t::create_sigil_expression ==================================
 
-std::unique_ptr<expr_t> demon_hunter_t::create_sigil_expression( const std::string& name )
+std::unique_ptr<expr_t> demon_hunter_t::create_sigil_expression( util::string_view name )
 {
   if ( util::str_compare_ci( name, "activation_time" ) || util::str_compare_ci( name, "delay" ) )
   {
@@ -6548,7 +6548,7 @@ std::unique_ptr<expr_t> demon_hunter_t::create_sigil_expression( const std::stri
     {
       demon_hunter_t* dh;
 
-      sigil_placed_expr_t( demon_hunter_t* p, const std::string& n )
+      sigil_placed_expr_t( demon_hunter_t* p, util::string_view n )
         : expr_t( n ), dh( p )
       {}
 
