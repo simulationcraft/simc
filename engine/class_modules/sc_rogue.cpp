@@ -289,6 +289,7 @@ struct rogue_t : public player_t
     cooldown_t* sprint;
     cooldown_t* vanish;
     cooldown_t* between_the_eyes;
+    cooldown_t* blade_flurry;
     cooldown_t* blade_rush;
     cooldown_t* blind;
     cooldown_t* gouge;
@@ -358,6 +359,7 @@ struct rogue_t : public player_t
 
     // Outlaw
     const spell_data_t* blade_flurry;
+    const spell_data_t* blade_flurry_rank_2;
     const spell_data_t* combat_potency;
     const spell_data_t* combat_potency_reg;
     const spell_data_t* restless_blades;
@@ -560,6 +562,7 @@ struct rogue_t : public player_t
     cooldowns.sprint                   = get_cooldown( "sprint"                   );
     cooldowns.vanish                   = get_cooldown( "vanish"                   );
     cooldowns.between_the_eyes         = get_cooldown( "between_the_eyes"         );
+    cooldowns.blade_flurry             = get_cooldown( "blade_flurry"             );
     cooldowns.blade_rush               = get_cooldown( "blade_rush"               );
     cooldowns.blind                    = get_cooldown( "blind"                    );
     cooldowns.gouge                    = get_cooldown( "gouge"                    );
@@ -1267,11 +1270,13 @@ struct blade_flurry_attack_t : public rogue_attack_t
   blade_flurry_attack_t( rogue_t* p ) :
     rogue_attack_t( "blade_flurry_attack", p, p -> find_spell( 22482 ) )
   {
-    proc = callbacks = false;
+    callbacks = false;
     background = true;
-    aoe        = -1;
-    radius     = 5;
-    range      = -1.0;
+    radius = 5;
+    range = -1.0;
+
+    // Spell data has chain targets with mult 1 set to 5 on the damage effect, but it is 4 targets as in the dummy effect, so we set that here.
+    aoe = p->spec.blade_flurry->effectN( 3 ).base_value();
   }
 
   void init() override
@@ -1297,6 +1302,19 @@ struct blade_flurry_attack_t : public rogue_attack_t
     }
     return tl.size();
   }
+};
+
+struct blade_flurry_instant_attack_t : public rogue_attack_t
+{
+  blade_flurry_instant_attack_t( rogue_t* p ) :
+    rogue_attack_t( "blade_flurry_instant_attack", p, p -> find_spell( 331850 ) )
+  {
+    background = true;
+    range = -1.0;
+  }
+
+  bool procs_main_gauche() const override
+  { return false; }
 };
 
 struct internal_bleeding_t : public rogue_attack_t
@@ -2232,17 +2250,30 @@ struct between_the_eyes_t : public rogue_attack_t
 
 struct blade_flurry_t : public rogue_attack_t
 {
+  blade_flurry_instant_attack_t* instant_attack;
+
   blade_flurry_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "blade_flurry", p, p -> find_specialization_spell( "Blade Flurry" ), options_str )
+    rogue_attack_t( "blade_flurry", p, p -> spec.blade_flurry, options_str ),
+    instant_attack(nullptr)
   {
     harmful = false;
     internal_cooldown -> duration += p -> talent.dancing_steel -> effectN( 4 ).time_value();
+
+    add_child( p-> active_blade_flurry );
+
+    if ( p->spec.blade_flurry_rank_2->ok() ) {
+      instant_attack = new blade_flurry_instant_attack_t( p );
+      add_child( instant_attack );
+    }
   }
 
   void execute() override
   {
     rogue_attack_t::execute();
     p() -> buffs.blade_flurry -> trigger();
+
+    if (instant_attack)
+      instant_attack->execute();
   }
 };
 
@@ -5141,7 +5172,8 @@ void rogue_t::trigger_blade_flurry( const action_state_t* state )
   if ( !state -> action -> result_is_hit( state -> result ) )
     return;
 
-  if ( state -> action -> is_aoe() )
+  // TOCHECK: Beta bug, BF AoE triggers replication as well.
+  if ( state -> action -> is_aoe() && ( !bugs || state->action->name_str != "blade_flurry_instant_attack" ) )
     return;
 
   if ( sim -> active_enemies == 1 )
@@ -5386,6 +5418,7 @@ void rogue_t::trigger_restless_blades( const action_state_t* state )
   // Abilities
   cooldowns.adrenaline_rush -> adjust( v, false );
   cooldowns.between_the_eyes -> adjust( v, false );
+  cooldowns.blade_flurry -> adjust( v, false );
   cooldowns.grappling_hook -> adjust( v, false );
   cooldowns.sprint -> adjust( v, false );
   cooldowns.vanish -> adjust( v, false );
@@ -6577,6 +6610,7 @@ void rogue_t::init_spells()
 
   // Outlaw
   spec.blade_flurry         = find_specialization_spell( "Blade Flurry" );
+  spec.blade_flurry_rank_2  = find_rank_spell( "Blade Flurry", "Rank 2" );
   spec.combat_potency       = find_specialization_spell( 35551 );
   spec.combat_potency_reg   = find_specialization_spell( 61329 );
   spec.restless_blades      = find_specialization_spell( "Restless Blades" );
