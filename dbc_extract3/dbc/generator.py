@@ -1836,6 +1836,7 @@ class SpellDataGenerator(DataGenerator):
           ( 326446, 0, True ), # Kyrian Empower Bond on DPS
           ( 326462, 0, True ), # Kyrian Empower Bond on Tank
           ( 326647, 0, True ), # Kyrian Empower Bond on Healer
+          ( 338142, 0, True ), # Kyrian Lone Empowerment
         ),
         # Demon Hunter:
         (
