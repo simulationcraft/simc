@@ -4,6 +4,7 @@
 // ==========================================================================
 
 #include "simulationcraft.hpp"
+#include "util/generic.hpp"
 
 // ==========================================================================
 // Enemy
@@ -73,7 +74,7 @@ struct enemy_t : public player_t
   void init_resources( bool force = false ) override;
   void init_target() override;
   virtual std::string generate_action_list();
-  std::string generate_tank_action_list( tank_dummy_e );
+  virtual void generate_heal_raid_event();
   void init_action_list() override;
   void init_stats() override;
   double resource_loss( resource_e, double, gain_t*, action_t* ) override;
@@ -114,7 +115,8 @@ struct enemy_t : public player_t
 
   bool taunt( player_t* source ) override;
 
-  void add_tank_heal_raid_event();
+  std::string generate_tank_action_list( tank_dummy_e );
+  void add_tank_heal_raid_event( tank_dummy_e );
 };
 
 // Enemy actions are generic to serve both enemy_t and enemy_add_t,
@@ -774,7 +776,7 @@ struct spell_dot_driver_t : public enemy_action_driver_t<spell_dot_t>
   void schedule_execute( action_state_t* s ) override
   {
     target_cache.is_valid = false;
-    enemy_action_driver_t<spell_dot_t>::schedule_execute( s );
+    base_t::schedule_execute( s );
   }
 };
 
@@ -855,7 +857,7 @@ struct summon_add_t : public spell_t
     pet    = p->find_pet( add_name );
     if ( !pet )
     {
-      sim->errorf( "Player %s unable to find pet %s for summons.\n", p->name(), add_name.c_str() );
+      sim->error( "Player {} unable to find pet {} for summons.", p->name(), add_name );
       sim->cancel();
     }
 
@@ -1134,6 +1136,11 @@ struct tank_dummy_enemy_t : public enemy_t
   {
     return generate_tank_action_list( tank_dummy_enum );
   }
+
+  void generate_heal_raid_event() override
+  {
+    return add_tank_heal_raid_event( tank_dummy_enum );
+  }
 };
 
 // enemy_t::create_action ===================================================
@@ -1303,6 +1310,11 @@ std::string enemy_t::generate_action_list()
   return generate_tank_action_list( tank_dummy_e::HEROIC );
 }
 
+void enemy_t::generate_heal_raid_event()
+{
+  add_tank_heal_raid_event( tank_dummy_e::HEROIC );
+}
+
 std::string enemy_t::generate_tank_action_list( tank_dummy_e tank_dummy )
 {
   std::string als                 = "";
@@ -1324,9 +1336,14 @@ std::string enemy_t::generate_tank_action_list( tank_dummy_e tank_dummy )
 
 // enemy_t::add_tank_heal_raid_event() ======================================
 
-void enemy_t::add_tank_heal_raid_event()
+void enemy_t::add_tank_heal_raid_event( tank_dummy_e tank_dummy )
 {
-  std::string heal_raid_event = "heal,name=tank_heal,amount=50000,period=0.5,duration=0,player_if=role.tank";
+  constexpr size_t numTankDummies = static_cast<size_t>( tank_dummy_e::MAX );
+  //                                           NONE, WEAK, DUNGEON, RAID,  HEROIC, MYTHIC
+  int heal_value[ numTankDummies ] = { 0, 5000, 10000, 12500, 20000, 25000 };
+  size_t tank_dummy_index          = static_cast<size_t>( tank_dummy );
+  std::string heal_raid_event = fmt::format( "heal,name=tank_heal,amount={},period=0.5,duration=0,player_if=role.tank",
+                                             heal_value[ tank_dummy_index ] );
   sim->raid_events_str += "/" + heal_raid_event;
   std::string::size_type cut_pt = heal_raid_event.find_first_of( "," );
   auto heal_options             = heal_raid_event.substr( cut_pt + 1 );
@@ -1359,7 +1376,7 @@ void enemy_t::init_action_list()
       // If targeting an player, use Fluffy Pillow or Tank Dummy boss as appropriate
       if ( !target->is_enemy() )
       {
-        add_tank_heal_raid_event();
+        generate_heal_raid_event();
 
         action_list_str += generate_action_list();
       }
@@ -1566,10 +1583,7 @@ void enemy_t::recalculate_health()
                             health_recalculation_dampening_exponent );  // dampening factor, by default 1/n
     double factor = 1.0 - ( delta_time / sim->expected_iteration_time );
 
-    if ( factor > 1.5 )
-      factor = 1.5;
-    if ( factor < 0.5 )
-      factor = 0.5;
+    factor = clamp(factor, 0.5, 1.5);
 
     if ( sim->current_time() > sim->expected_iteration_time &&
          this != sim->target )  // Special case for aoe targets that do not die before fluffy pillow.
