@@ -370,8 +370,6 @@ struct summon_shadowfiend_t final : public summon_pet_t
     parse_options( options_str );
     harmful            = false;
     summoning_duration = data().duration();
-    cooldown           = p.cooldowns.shadowfiend;
-    cooldown->duration = data().cooldown();
     cooldown->duration *= 1.0 + azerite::vision_of_perfection_cdr( p.azerite_essence.vision_of_perfection );
   }
 };
@@ -387,8 +385,6 @@ struct summon_mindbender_t final : public summon_pet_t
     parse_options( options_str );
     harmful            = false;
     summoning_duration = data().duration();
-    cooldown           = p.cooldowns.mindbender;
-    cooldown->duration = data().cooldown();
     cooldown->duration *= 1.0 + azerite::vision_of_perfection_cdr( p.azerite_essence.vision_of_perfection );
   }
 };
@@ -637,14 +633,12 @@ priest_t::priest_t( sim_t* sim, util::string_view name, race_e r )
 void priest_t::create_cooldowns()
 {
   cooldowns.chakra             = get_cooldown( "chakra" );
-  cooldowns.mindbender         = get_cooldown( "mindbender" );
   cooldowns.penance            = get_cooldown( "penance" );
   cooldowns.apotheosis         = get_cooldown( "apotheosis " );
   cooldowns.holy_fire          = get_cooldown( "holy_fire" );
   cooldowns.holy_word_chastise = get_cooldown( "holy_word_chastise" );
   cooldowns.holy_word_serenity = get_cooldown( "holy_word_serenity" );
   cooldowns.power_word_shield  = get_cooldown( "power_word_shield" );
-  cooldowns.shadowfiend        = get_cooldown( "shadowfiend" );
   cooldowns.silence            = get_cooldown( "silence" );
   cooldowns.mind_blast         = get_cooldown( "mind_blast" );
   cooldowns.void_bolt          = get_cooldown( "void_bolt" );
@@ -1103,6 +1097,7 @@ void priest_t::init_spells()
 
   // Shadow Legendaries
   legendary.painbreaker_psalm = find_runeforge_legendary( "Painbreaker Psalm" );
+  legendary.shadowflame_prism = find_runeforge_legendary( "Shadowflame Prism" );
 }
 
 void priest_t::create_buffs()
@@ -1200,6 +1195,7 @@ void priest_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( specs.holy_priest );
   action.apply_affecting_aura( specs.discipline_priest );
   action.apply_affecting_aura( legendary.kiss_of_death );
+  action.apply_affecting_aura( legendary.shadowflame_prism );  // Applies CD reduction
 }
 
 /// ALL Spec Pre-Combat Action Priority List
