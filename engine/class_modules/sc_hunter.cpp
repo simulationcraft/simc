@@ -6,6 +6,7 @@
 #include <memory>
 
 #include "simulationcraft.hpp"
+#include "player/covenant.hpp"
 #include "player/pet_spawner.hpp"
 
 namespace
@@ -252,6 +253,24 @@ public:
     spell_data_ptr_t resonating_arrow;
     spell_data_ptr_t wild_spirits;
   } covenants;
+
+  struct {
+    // Covenant
+    conduit_data_t empowered_release;
+    conduit_data_t enfeebled_mark;
+    conduit_data_t necrotic_barrage;
+    conduit_data_t spirit_attunement;
+    // Beast Mastery
+    conduit_data_t ferocious_appetite;
+    conduit_data_t one_with_the_beast;
+    // Marksmanship
+    conduit_data_t brutal_projectiles;
+    conduit_data_t deadly_chain;
+    conduit_data_t powerful_precision;
+    conduit_data_t sharpshooters_focus;
+    // Survival
+    conduit_data_t reversal_of_fortune;
+  } conduits;
 
   struct {
     spell_data_ptr_t call_of_the_wild;
@@ -5269,6 +5288,23 @@ void hunter_t::init_spells()
   covenants.flayed_shot      = find_spell( 324149 );
   covenants.resonating_arrow = find_spell( 308491 );
   covenants.wild_spirits     = find_spell( 328231 );
+
+  // Soulbind Conduits
+
+  conduits.empowered_release   = find_conduit_spell( "Empowered Release" );
+  conduits.enfeebled_mark      = find_conduit_spell( "Enfeebled Mark" );
+  conduits.necrotic_barrage    = find_conduit_spell( "Necrotic Barrage" );
+  conduits.spirit_attunement   = find_conduit_spell( "Spirit Attunement" );
+
+  conduits.ferocious_appetite  = find_conduit_spell( "Ferocious Appetite" );
+  conduits.one_with_the_beast  = find_conduit_spell( "One With the Beast" );
+
+  conduits.brutal_projectiles  = find_conduit_spell( "Brutal Projectiles" );
+  conduits.deadly_chain        = find_conduit_spell( "Deadly Chain" );
+  conduits.powerful_precision  = find_conduit_spell( "Powerful Precision" );
+  conduits.sharpshooters_focus = find_conduit_spell( "Sharpshooter's Focus" );
+
+  conduits.reversal_of_fortune = find_conduit_spell( "Reversal of Fortune" );
 
   // Runeforge Legendaries
 
