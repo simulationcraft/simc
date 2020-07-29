@@ -760,7 +760,7 @@ private:
   using ab = Base;
 
 public:
-  bool         requires_stealth;
+  bool requires_stealth;
 
   // Secondary triggered ability, due to Weaponmaster talent or Death from Above. Secondary
   // triggered abilities cost no resources or incur cooldowns.
@@ -866,6 +866,9 @@ public:
 
   void parse_spell_data( const spell_data_t* s )
   {
+    if ( s->stance_mask() & 0x20000000)
+      requires_stealth = true;
+
     for ( size_t i = 1; i <= s->effect_count(); i++ )
     {
       const spelleffect_data_t& effect = s->effectN( i );
@@ -2151,7 +2154,6 @@ struct ambush_t : public rogue_attack_t
   ambush_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "ambush", p, p -> find_specialization_spell( "Ambush" ), options_str )
   {
-    requires_stealth  = true;
   }
 
   bool procs_main_gauche() const override
@@ -3521,7 +3523,6 @@ struct shadowstrike_t : public rogue_attack_t
   shadowstrike_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "shadowstrike", p, p -> spec.shadowstrike, options_str )
   {
-    requires_stealth = true;
   }
 
   double cost() const override
@@ -4011,7 +4012,6 @@ struct cheap_shot_t : public rogue_attack_t
   cheap_shot_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "cheap_shot", p, p -> find_class_spell( "Cheap Shot" ), options_str )
   {
-    requires_stealth = true;
   }
 
   double cost() const override
