@@ -13,6 +13,7 @@
 struct conduit_entry_t
 {
   unsigned id;
+  unsigned spell_id;
   const char* name;
 
   static const conduit_entry_t& find( util::string_view name, bool ptr, bool tokenized = false );

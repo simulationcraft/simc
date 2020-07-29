@@ -298,7 +298,7 @@ struct expr_data_map_t
   expr_data_e type;
 };
 
-static constexpr std::array<expr_data_map_t, 11> expr_map { {
+static constexpr std::array<expr_data_map_t, 12> expr_map { {
   { "spell", DATA_SPELL },
   { "talent", DATA_TALENT },
   { "effect", DATA_EFFECT },
@@ -309,7 +309,8 @@ static constexpr std::array<expr_data_map_t, 11> expr_map { {
   { "spec_spell", DATA_SPECIALIZATION_SPELL },
   { "azerite", DATA_AZERITE_SPELL },
   { "covenant_spell", DATA_COVENANT_SPELL },
-  { "soulbind_spell", DATA_SOULBIND_SPELL }
+  { "soulbind_spell", DATA_SOULBIND_SPELL },
+  { "conduit_spell", DATA_CONDUIT_SPELL }
 } };
 
 expr_data_e parse_data_type( util::string_view name )
@@ -503,6 +504,11 @@ struct spell_list_expr_t : public spell_data_expr_t
               result_spell_list.push_back( e.spell_id );
         } );
         break;
+      case DATA_CONDUIT_SPELL:
+        range::for_each( conduit_entry_t::data( dbc.ptr ),
+            [this]( const conduit_entry_t& e ) {
+              result_spell_list.push_back( e.spell_id );
+        } );
       default:
         return expression::TOK_UNKNOWN;
     }

@@ -4103,7 +4103,7 @@ class ConduitGenerator(DataGenerator):
 
         for spell, conduit_id in data:
             fields = ['{:3d}'.format(conduit_id),]
-            fields += spell.field('name')
+            fields += spell.field('id', 'name')
 
             self.output_record(fields)
 
