@@ -225,7 +225,7 @@ struct eclipse_handler_t {
   unsigned starfire_counter;
   eclipse_state_e state;
 
-  eclipse_handler_t( druid_t* player ) :wrath_counter( 2 ), starfire_counter( 2 ), state( ANY_NEXT ), p( player ) {};
+  eclipse_handler_t( druid_t* player ) : p( player ), wrath_counter( 2 ), starfire_counter( 2 ), state( ANY_NEXT ){};
 
   void cast_wrath();
   void cast_starfire();
@@ -786,6 +786,7 @@ public:
   druid_t( sim_t* sim, util::string_view name, race_e r = RACE_NIGHT_ELF ) :
     player_t( sim, DRUID, name, r ),
     form( NO_FORM ),
+    eclipse_handler(this),
     previous_streaking_stars(SS_NONE),
     lucid_dreams_proc_chance_balance( 0.15 ),
     lucid_dreams_proc_chance_feral( 0.15 ),
@@ -817,8 +818,7 @@ public:
     spec( specializations_t() ),
     talent( talents_t() ),
     uptime( uptimes_t() ),
-    legendary( legendary_t() ),
-    eclipse_handler(this)
+    legendary( legendary_t() )
   {
     cooldown.berserk             = get_cooldown( "berserk"             );
     cooldown.celestial_alignment = get_cooldown( "celestial_alignment" );
@@ -7511,8 +7511,8 @@ struct adaptive_swarm_t : public druid_spell_t
   struct adaptive_swarm_base_t : public druid_spell_t
   {
     adaptive_swarm_base_t* other;
-    bool is_heal;
     swarm_t* swarm;
+    bool is_heal;
 
     adaptive_swarm_base_t( druid_t* p, swarm_t* sw )
       : druid_spell_t( "adaptive_swarm_damage", p, p->covenant.adaptive_swarm_damage ), swarm( sw ), is_heal( false )
@@ -8188,8 +8188,10 @@ void druid_t::init_spells()
     active.starfall = new spells::starfall_tick_t( this );
 
   if ( beta_covenant == "kyrian" )
+  {
     active.kindred_empowerment = new spells::kindred_empowerment_t( this, "kindred_empowerment" );
     active.kindred_empowerment_partner = new spells::kindred_empowerment_t( this, "kindreD_empowerment_partner" );
+  }
 }
 
 // druid_t::init_base =======================================================

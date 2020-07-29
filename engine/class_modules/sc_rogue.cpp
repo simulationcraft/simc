@@ -1883,8 +1883,8 @@ struct apply_poison_t : public action_t
     {
       if ( ! p -> active_lethal_poison )
       {
-        if ( lethal_str.empty() && p -> specialization() == ROGUE_ASSASSINATION || lethal_str == "deadly"  ) p -> active_lethal_poison = new deadly_poison_t( p );
-        else if ( lethal_str.empty() && p -> specialization() != ROGUE_ASSASSINATION ||  lethal_str == "instant"   ) p -> active_lethal_poison = new instant_poison_t( p );
+        if ( (lethal_str.empty() && p -> specialization() == ROGUE_ASSASSINATION) || lethal_str == "deadly"  ) p -> active_lethal_poison = new deadly_poison_t( p );
+        else if ( (lethal_str.empty() && p -> specialization() != ROGUE_ASSASSINATION) ||  lethal_str == "instant"   ) p -> active_lethal_poison = new instant_poison_t( p );
         else if ( lethal_str == "wound"   ) p -> active_lethal_poison = new wound_poison_t( p );
       }
 
