@@ -35,6 +35,7 @@ struct actor_target_data_t;
 struct attack_t;
 class azerite_essence_t;
 class azerite_power_t;
+class conduit_data_t;
 class dbc_t;
 struct benefit_t;
 struct item_t;
@@ -75,6 +76,9 @@ namespace report {
 }
 namespace js {
     struct JsonOutput;
+}
+namespace covenant {
+  class covenant_state_t;
 }
 
 /* Player Report Extension
@@ -184,6 +188,9 @@ struct player_t : public actor_t
 
   /// Azerite essence state object
   std::unique_ptr<azerite::azerite_essence_state_t> azerite_essence;
+
+  /// Covenant state object
+  std::unique_ptr<covenant::covenant_state_t> covenant;
 
   // TODO: FIXME, these stats should not be increased by scale factor deltas
   struct base_initial_current_t
@@ -720,7 +727,10 @@ public:
   azerite_essence_t find_azerite_essence( util::string_view name, bool tokenized = false ) const;
   azerite_essence_t find_azerite_essence( unsigned power_id ) const;
 
-  item_runeforge_t find_runeforge_legendary( const std::string& name ) const;
+  item_runeforge_t find_runeforge_legendary( util::string_view name ) const;
+
+  conduit_data_t find_conduit_spell( util::string_view name ) const;
+  const spell_data_t* find_soulbind_spell( util::string_view name ) const;
 
   const spell_data_t* find_racial_spell( util::string_view name, race_e s = RACE_NONE ) const;
   const spell_data_t* find_class_spell( util::string_view name, specialization_e s = SPEC_NONE ) const;

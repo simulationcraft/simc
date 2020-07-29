@@ -24,6 +24,7 @@ dbc/active_spells.hpp
 dbc/azerite.hpp
 dbc/client_data.hpp
 dbc/client_hotfix_entry.hpp
+dbc/covenant_data.hpp
 dbc/data_definitions.hh
 dbc/data_enums.hh
 dbc/dbc.hpp
@@ -79,6 +80,7 @@ player/actor_target_data.hpp
 player/assessor.hpp
 player/azerite_data.hpp
 player/consumable.hpp
+player/covenant.hpp
 player/darkmoon_deck.hpp
 player/effect_callbacks.hpp
 player/expansion_effects.hpp
@@ -208,6 +210,7 @@ dbc/active_spells.cpp
 dbc/azerite.cpp
 dbc/client_data.cpp
 dbc/client_hotfix_entry.cpp
+dbc/covenant_data.cpp
 dbc/gem_data.cpp
 dbc/item_armor.cpp
 dbc/item_bonus.cpp
@@ -253,6 +256,7 @@ player/action_variable.cpp
 player/actor.cpp
 player/actor_target_data.cpp
 player/azerite_data.cpp
+player/covenant.cpp
 player/darkmoon_deck.cpp
 player/ground_aoe.cpp
 player/instant_absorb.cpp

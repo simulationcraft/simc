@@ -3,6 +3,7 @@ from dbc import constants
 def class_id(**kwargs):
     pet_skill = int(kwargs.get('pet_skill', 0))
     player_skill = int(kwargs.get('player_skill', 0))
+    mask = int(kwargs.get('mask', 0))
 
     if player_skill > 0:
         if not hasattr(class_id, '_byskill'):
@@ -12,7 +13,7 @@ def class_id(**kwargs):
 
         return class_id._byskill.get(player_skill, -1)
 
-    elif pet_skill > 0:
+    if pet_skill > 0:
         if not hasattr(class_id, '_bypetskill'):
             class_id._bypetskill = dict()
 
@@ -21,6 +22,26 @@ def class_id(**kwargs):
                     class_id._bypetskill[skill] = id
 
         return class_id._bypetskill.get(pet_skill, -1)
+
+    if mask > 0:
+        if not hasattr(race_id, '_mask_cache'):
+            class_id._mask_cache = {}
+
+        if mask in class_id._mask_cache:
+            return class_id._mask_cache[mask]
+
+        set_ = [
+            info['id'] for info in constants.CLASS_INFO if mask & (1 << info['bit']) != 0
+        ]
+
+        if len(set_) == 1:
+            set_ = set_[0]
+        elif len(set_) == 0:
+            set_ = 0
+
+        class_id._mask_cache[mask] = set_
+
+        return set_
 
     return -1
 
