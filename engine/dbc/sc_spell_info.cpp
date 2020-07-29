@@ -7,6 +7,8 @@
 
 #include "dbc.hpp"
 #include "dbc/item_set_bonus.hpp"
+#include "dbc/covenant_data.hpp"
+#include "player/covenant.hpp"
 #include "util/static_map.hpp"
 #include "util/string_view.hpp"
 #include "util/util.hpp"
@@ -1271,6 +1273,23 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
     s << std::endl;
   }
 
+  const auto& covenant_spell = covenant_ability_entry_t::find( spell->name_cstr(), dbc.ptr );
+  if ( covenant_spell.spell_id == spell->id() )
+  {
+    s << "Covenant         : ";
+    s << util::inverse_tokenize(
+        util::covenant_type_string( static_cast<covenant_e>( covenant_spell.covenant_id ) ) );
+    s << std::endl;
+  }
+
+  const auto& soulbind_spell = soulbind_ability_entry_t::find( spell->id(), dbc.ptr );
+  if ( soulbind_spell.spell_id == spell->id() )
+  {
+    s << "Covenant         : ";
+    s << util::inverse_tokenize(
+        util::covenant_type_string( static_cast<covenant_e>( soulbind_spell.covenant_id ) ) );
+    s << std::endl;
+  }
   std::string school_string = util::school_type_string( spell -> get_school_type() );
   school_string[ 0 ] = std::toupper( school_string[ 0 ] );
   s << "School           : " << school_string << std::endl;
