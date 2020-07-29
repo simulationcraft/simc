@@ -323,6 +323,7 @@ public:
     // Covenants
     buff_t* flayers_mark;
     buff_t* resonating_arrow;
+    buff_t* wild_spirits;
 
     // azerite
     buff_t* blur_of_talons;
@@ -492,6 +493,12 @@ public:
     spell_data_ptr_t spirit_bond;
   } mastery;
 
+  // Wild Spitis Night Fae Covenant ability
+  struct {
+    action_t* action = nullptr;
+    cooldown_t* icd = nullptr;
+  } wild_spirits;
+
   cdwaste::player_data_t cd_waste;
 
   player_t* current_hunters_mark_target;
@@ -628,6 +635,8 @@ public:
 
   bool precombat = false;
   bool track_cd_waste;
+  bool procs_wild_spirits = false;
+
   cdwaste::action_data_t* cd_waste;
 
   struct {
@@ -698,6 +707,21 @@ public:
 
     if ( track_cd_waste )
       cd_waste = p() -> cd_waste.get( this );
+
+    // by default nothing procs Wild Spirits
+    // if the action did not explicitly set it to true we try to infer it
+    if ( p() -> covenants.wild_spirits.ok() && !procs_wild_spirits )
+    {
+      procs_wild_spirits = [ this ]() -> bool {
+        if ( ab::proc || ab::background )
+          return false;
+        if ( !( ab::callbacks && ab::may_hit && ab::harmful ) )
+          return false;
+        return p() -> covenants.wild_spirits -> effectN( 1 ).trigger() -> proc_flags() & ( 1 << ab::proc_type() );
+      }();
+      if ( procs_wild_spirits )
+        ab::sim -> print_debug( "{} action {} set to proc Wild Spirits on impact", ab::player -> name(), ab::name() );
+    }
   }
 
   void init_finished() override
@@ -728,6 +752,27 @@ public:
       g = ab::min_gcd;
 
     return g;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    ab::impact( s );
+
+    if ( procs_wild_spirits && p() -> buffs.wild_spirits -> check() )
+    {
+      if ( p() -> wild_spirits.icd -> down() )
+        return;
+
+      if ( ab::sim -> debug )
+      {
+        ab::sim -> print_debug( "{} procs {} from {} on {}",
+          p() -> name(), p() -> wild_spirits.action -> name(), ab::name(), s -> target -> name() );
+      }
+
+      p() -> wild_spirits.action -> set_target( s -> target );
+      p() -> wild_spirits.action -> schedule_execute();
+      p() -> wild_spirits.icd -> start();
+    }
   }
 
   double action_multiplier() const override
@@ -2180,6 +2225,39 @@ struct resonating_arrow_t : hunter_spell_t
     hunter_spell_t::execute();
 
     p() -> buffs.resonating_arrow -> trigger();
+  }
+};
+
+struct wild_spirits_t : hunter_spell_t
+{
+  struct wild_spirits_proc_t : hunter_spell_t
+  {
+    wild_spirits_proc_t( util::string_view n, hunter_t* p ):
+      hunter_spell_t( n, p, p -> find_spell( 328523 ) )
+    {
+      proc = true;
+      callbacks = false;
+    }
+  };
+
+  wild_spirits_t( hunter_t* p, util::string_view options_str ):
+    hunter_spell_t( "wild_spirits", p, p -> covenants.wild_spirits )
+  {
+    parse_options( options_str );
+
+    harmful = may_hit = may_miss = false;
+
+    p -> wild_spirits.action = p -> get_background_action<wild_spirits_proc_t>( "wild_spirits_proc" );
+    p -> wild_spirits.icd = p -> get_cooldown( "wild_spirits_proc" );
+    p -> wild_spirits.icd -> duration = p -> covenants.wild_spirits -> effectN( 1 ).trigger() -> internal_cooldown();
+    add_child( p -> wild_spirits.action );
+  }
+
+  void execute()
+  {
+    hunter_spell_t::execute();
+
+    p() -> buffs.wild_spirits -> trigger();
   }
 };
 
@@ -5015,6 +5093,7 @@ action_t* hunter_t::create_action( util::string_view name,
   if ( name == "tar_trap"              ) return new               tar_trap_t( this, options_str );
   if ( name == "trueshot"              ) return new               trueshot_t( this, options_str );
   if ( name == "volley"                ) return new                 volley_t( this, options_str );
+  if ( name == "wild_spirits"          ) return new           wild_spirits_t( this, options_str );
   if ( name == "wildfire_bomb"         ) return new          wildfire_bomb_t( this, options_str );
 
   if ( name == "serpent_sting" )
@@ -5466,6 +5545,12 @@ void hunter_t::create_buffs()
       -> set_default_value( find_spell( 308498 ) -> effectN( 1 ).percent() )
       -> add_invalidate( CACHE_CRIT_CHANCE )
       -> set_activated( true );
+
+  buffs.wild_spirits =
+      make_buff( this, "wild_spirits", covenants.wild_spirits -> effectN( 1 ).trigger() )
+        -> set_default_value( find_spell( 328275 ) -> effectN( 2 ).percent() )
+        -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+        -> set_activated( true );
 
   // Legendaries
 
@@ -6237,6 +6322,8 @@ double hunter_t::composite_player_critical_damage_multiplier( const action_state
 double hunter_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
+
+  m *= 1 + buffs.wild_spirits -> check_value();
 
   return m;
 }
