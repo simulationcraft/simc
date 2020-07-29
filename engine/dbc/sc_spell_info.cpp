@@ -1614,6 +1614,12 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
     s << std::endl;
   }
 
+  const auto& conduit = conduit_entry_t::find_by_spellid( spell->id(), dbc.ptr );
+  if ( conduit.spell_id && conduit.spell_id == spell->id() )
+  {
+    s << "Conduit Id       : " << conduit.id << std::endl;
+  }
+
   if ( spell -> proc_flags() > 0 )
   {
     s << "Proc Flags       : ";

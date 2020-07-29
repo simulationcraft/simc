@@ -195,7 +195,19 @@ struct spell_covenant_id_t : func_field_t<spell_covenant_id_t, spell_data_t> {
   }
 };
 
-static constexpr std::array<sdata_field_t, 39> _spell_data_fields { {
+struct spell_conduit_id_t : func_field_t<spell_conduit_id_t, spell_data_t> {
+  unsigned operator()( const dbc_t& dbc, const spell_data_t& data ) const {
+    const auto& conduit_entry = conduit_entry_t::find_by_spellid( data.id(), dbc.ptr );
+    if ( conduit_entry.spell_id && conduit_entry.spell_id == data.id() )
+    {
+      return conduit_entry.id;
+    }
+
+    return 0;
+  }
+};
+
+static constexpr std::array<sdata_field_t, 40> _spell_data_fields { {
   { "name",              FIELD( &spell_data_t::_name ) },
   { "id",                FIELD( &spell_data_t::_id ) },
   { "speed",             FIELD( &spell_data_t::_prj_speed ) },
@@ -235,6 +247,7 @@ static constexpr std::array<sdata_field_t, 39> _spell_data_fields { {
   { "dmg_class",         FIELD( &spell_data_t::_dmg_class ) },
   { "max_targets",       FIELD( &spell_data_t::_max_targets ) },
   { "covenant",          spell_covenant_id_t{} },
+  { "conduit_id",        spell_conduit_id_t{} },
 } };
 
 #undef FIELD

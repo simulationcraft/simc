@@ -66,6 +66,12 @@ const conduit_entry_t& conduit_entry_t::find( util::string_view name,
   return find_entry( data( ptr ), name , tokenized );
 }
 
+const conduit_entry_t& conduit_entry_t::find_by_spellid( unsigned spell_id, bool ptr )
+{
+  const auto index = SC_DBC_GET_DATA( __conduit_spell_id_index, __ptr_conduit_spell_id_index, ptr );
+  return dbc::find_indexed( spell_id, data( ptr ), index, &conduit_entry_t::spell_id );
+}
+
 const conduit_rank_entry_t& conduit_rank_entry_t::find( unsigned id,
                                                         unsigned rank,
                                                         bool     ptr )

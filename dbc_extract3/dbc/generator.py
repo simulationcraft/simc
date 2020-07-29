@@ -4109,6 +4109,14 @@ class ConduitGenerator(DataGenerator):
 
         self.output_footer()
 
+        # Generate spell_id-based index
+        conduit_index = list((v[0].id, index) for index, v in enumerate(data))
+
+        self.output_id_index(
+            index = [ index for _, index in sorted(conduit_index) ],
+            array = 'conduit_spell')
+
+
 class ConduitRankGenerator(DataGenerator):
     def generate(self, data=None):
         data = list(filter(lambda v: v.ref('id_spell').id > 0, self.db('SoulbindConduitRank').values()))
