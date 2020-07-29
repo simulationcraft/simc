@@ -201,8 +201,8 @@ public:
   actions::rogue_poison_t* active_lethal_poison;
   actions::rogue_poison_t* active_nonlethal_poison;
   actions::rogue_attack_t* active_main_gauche;
-  actions::rogue_attack_t* poison_bomb;
-  actions::rogue_attack_t* replicating_shadows;
+  actions::rogue_spell_t* poison_bomb;
+  actions::rogue_spell_t* replicating_shadows;
 
   // Autoattacks
   action_t* auto_attack;
@@ -1544,10 +1544,10 @@ struct internal_bleeding_t : public rogue_attack_t
   }
 };
 
-struct poison_bomb_t : public rogue_attack_t
+struct poison_bomb_t : public rogue_spell_t
 {
   poison_bomb_t( rogue_t* p ) :
-    rogue_attack_t( "poison_bomb", p, p -> find_spell( 255546 ) )
+    rogue_spell_t( "poison_bomb", p, p -> find_spell( 255546 ) )
   {
     background = true;
     aoe = -1;
@@ -2422,10 +2422,10 @@ struct crimson_tempest_t : public rogue_attack_t
 // Detection ================================================================
 
 // This ability does nothing but for some odd reasons throughout the history of Rogue spaghetti, we may want to look at using it. So, let's support it.
-struct detection_t : public rogue_attack_t
+struct detection_t : public rogue_spell_t
 {
   detection_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "detection", p, p -> find_class_spell( "Detection" ), options_str )
+    rogue_spell_t( "detection", p, p -> find_class_spell( "Detection" ), options_str )
   {
     gcd_type = gcd_haste_type::ATTACK_HASTE;
     min_gcd = timespan_t::from_millis(750); // Force 750ms min gcd because rogue player base has a 1s min.
@@ -2989,12 +2989,12 @@ struct pistol_shot_t : public rogue_attack_t
 
 // Marked for Death =========================================================
 
-struct marked_for_death_t : public rogue_attack_t
+struct marked_for_death_t : public rogue_spell_t
 {
   double precombat_seconds;
 
   marked_for_death_t( rogue_t* p, const std::string& options_str ):
-    rogue_attack_t( "marked_for_death", p, p -> find_talent_spell( "Marked for Death" ) ),
+    rogue_spell_t( "marked_for_death", p, p -> find_talent_spell( "Marked for Death" ) ),
     precombat_seconds( 0.0 )
   {
     add_option( opt_float( "precombat_seconds", precombat_seconds ) );
@@ -3006,7 +3006,7 @@ struct marked_for_death_t : public rogue_attack_t
 
   void execute() override
   {
-    rogue_attack_t::execute();
+    rogue_spell_t::execute();
 
     if ( precombat_seconds && ! p() -> in_combat ) {
       p() -> cooldowns.marked_for_death -> adjust( - timespan_t::from_seconds( precombat_seconds ), false );
@@ -3153,14 +3153,15 @@ struct nightblade_t : public rogue_attack_t
   }
 };
 
-struct replicating_shadows_t : public rogue_attack_t
+struct replicating_shadows_t : public rogue_spell_t
 {
   action_t* nightblade_action;
 
   replicating_shadows_t( rogue_t* p ) :
-    rogue_attack_t( "replicating_shadows", p, p -> find_spell(286131) ),
+    rogue_spell_t( "replicating_shadows", p, p -> find_spell(286131) ),
     nightblade_action( nullptr )
   {
+    may_miss = false;
     background  = true;
     base_dd_min = p -> azerite.replicating_shadows.value();
     base_dd_max = p -> azerite.replicating_shadows.value();
@@ -3168,7 +3169,7 @@ struct replicating_shadows_t : public rogue_attack_t
 
   void execute() override
   {
-    rogue_attack_t::execute();
+    rogue_spell_t::execute();
 
     if ( ! p() -> last_nightblade_target )
       return;
@@ -3210,12 +3211,12 @@ struct replicating_shadows_t : public rogue_attack_t
 
 // Roll the Bones ===========================================================
 
-struct roll_the_bones_t : public rogue_attack_t
+struct roll_the_bones_t : public rogue_spell_t
 {
   double precombat_seconds;
 
   roll_the_bones_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "roll_the_bones", p, p -> spec.roll_the_bones ),
+    rogue_spell_t( "roll_the_bones", p, p -> spec.roll_the_bones ),
     precombat_seconds( 0.0 )
   {
     add_option( opt_float( "precombat_seconds", precombat_seconds ) );
@@ -3227,7 +3228,7 @@ struct roll_the_bones_t : public rogue_attack_t
 
   void execute() override
   {
-    rogue_attack_t::execute();
+    rogue_spell_t::execute();
 
     // Restless Blades and thus True Bearing CDR triggers before buff roll.
     trigger_restless_blades( execute_state );
@@ -3250,7 +3251,7 @@ struct roll_the_bones_t : public rogue_attack_t
       return false;
     }
 
-    return rogue_attack_t::ready();
+    return rogue_spell_t::ready();
   }
 };
 
@@ -3410,12 +3411,12 @@ struct shadow_blades_attack_t : public rogue_attack_t
   }
 };
 
-struct shadow_blades_t : public rogue_attack_t
+struct shadow_blades_t : public rogue_spell_t
 {
   double precombat_seconds;
 
   shadow_blades_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "shadow_blades", p, p -> find_specialization_spell( "Shadow Blades" ) ),
+    rogue_spell_t( "shadow_blades", p, p -> find_specialization_spell( "Shadow Blades" ) ),
     precombat_seconds( 0.0 )
   {
     add_option( opt_float( "precombat_seconds", precombat_seconds ) );
@@ -3436,7 +3437,7 @@ struct shadow_blades_t : public rogue_attack_t
 
   void execute() override
   {
-    rogue_attack_t::execute();
+    rogue_spell_t::execute();
 
     p() -> buffs.shadow_blades -> trigger();
 
@@ -3450,12 +3451,12 @@ struct shadow_blades_t : public rogue_attack_t
 
 // Shadow Dance =============================================================
 
-struct shadow_dance_t : public rogue_attack_t
+struct shadow_dance_t : public rogue_spell_t
 {
   cooldown_t* icd;
 
   shadow_dance_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "shadow_dance", p, p -> spec.shadow_dance ),
+    rogue_spell_t( "shadow_dance", p, p -> spec.shadow_dance ),
     icd( p -> get_cooldown( "shadow_dance_icd" ) )
   {
     parse_options( options_str );
@@ -3471,7 +3472,7 @@ struct shadow_dance_t : public rogue_attack_t
 
   void execute() override
   {
-    rogue_attack_t::execute();
+    rogue_spell_t::execute();
 
     p() -> buffs.shadow_dance -> trigger();
 
@@ -3492,16 +3493,16 @@ struct shadow_dance_t : public rogue_attack_t
       return false;
     }
 
-    return rogue_attack_t::ready();
+    return rogue_spell_t::ready();
   }
 };
 
 // Shadowstep ===============================================================
 
-struct shadowstep_t : public rogue_attack_t
+struct shadowstep_t : public rogue_spell_t
 {
   shadowstep_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "shadowstep", p, p -> spec.shadowstep, options_str )
+    rogue_spell_t( "shadowstep", p, p -> spec.shadowstep, options_str )
   {
     harmful = false;
     dot_duration = timespan_t::zero();
@@ -3511,7 +3512,7 @@ struct shadowstep_t : public rogue_attack_t
 
   void execute() override
   {
-    rogue_attack_t::execute();
+    rogue_spell_t::execute();
     p() -> buffs.shadowstep -> trigger();
   }
 };
@@ -3632,10 +3633,10 @@ struct shuriken_storm_t: public rogue_attack_t
 
 // Shuriken Tornado =========================================================
 
-struct shuriken_tornado_t : public rogue_attack_t
+struct shuriken_tornado_t : public rogue_spell_t
 {
   shuriken_tornado_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "shuriken_tornado", p, p -> talent.shuriken_tornado, options_str )
+    rogue_spell_t( "shuriken_tornado", p, p -> talent.shuriken_tornado, options_str )
   {
     dot_duration = timespan_t::zero();
     aoe = -1;
@@ -3643,7 +3644,7 @@ struct shuriken_tornado_t : public rogue_attack_t
 
   void execute() override
   {
-    rogue_attack_t::execute();
+    rogue_spell_t::execute();
 
     p() -> buffs.shuriken_tornado -> trigger();
   }
@@ -3743,12 +3744,12 @@ struct sinister_strike_t : public rogue_attack_t
 
 // Slice and Dice ===========================================================
 
-struct slice_and_dice_t : public rogue_attack_t
+struct slice_and_dice_t : public rogue_spell_t
 {
   double precombat_seconds;
 
   slice_and_dice_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "slice_and_dice", p, p -> talent.slice_and_dice ),
+    rogue_spell_t( "slice_and_dice", p, p -> talent.slice_and_dice ),
     precombat_seconds( 0.0 )
   {
     add_option( opt_float( "precombat_seconds", precombat_seconds ) );
@@ -3761,7 +3762,7 @@ struct slice_and_dice_t : public rogue_attack_t
 
   void execute() override
   {
-    rogue_attack_t::execute();
+    rogue_spell_t::execute();
 
     trigger_restless_blades( execute_state );
 
@@ -3783,10 +3784,10 @@ struct slice_and_dice_t : public rogue_attack_t
 
 // Sprint ===================================================================
 
-struct sprint_t : public rogue_attack_t
+struct sprint_t : public rogue_spell_t
 {
   sprint_t( rogue_t* p, const std::string& options_str ):
-    rogue_attack_t( "sprint", p, p -> spell.sprint, options_str )
+    rogue_spell_t( "sprint", p, p -> spell.sprint, options_str )
   {
     harmful = callbacks = false;
     cooldown = p -> cooldowns.sprint;
@@ -3795,18 +3796,17 @@ struct sprint_t : public rogue_attack_t
 
   void execute() override
   {
-    rogue_attack_t::execute();
-
+    rogue_spell_t::execute();
     p() -> buffs.sprint -> trigger();
   }
 };
 
 // Symbols of Death =========================================================
 
-struct symbols_of_death_t : public rogue_attack_t
+struct symbols_of_death_t : public rogue_spell_t
 {
   symbols_of_death_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "symbols_of_death", p, p -> spec.symbols_of_death )
+    rogue_spell_t( "symbols_of_death", p, p -> spec.symbols_of_death )
   {
     parse_options( options_str );
 
@@ -3816,8 +3816,7 @@ struct symbols_of_death_t : public rogue_attack_t
 
   void execute() override
   {
-    rogue_attack_t::execute();
-
+    rogue_spell_t::execute();
     p() -> buffs.symbols_of_death -> trigger();
   }
 };
@@ -3844,17 +3843,17 @@ struct toxic_blade_t : public rogue_attack_t
 
 // Vanish ===================================================================
 
-struct vanish_t : public rogue_attack_t
+struct vanish_t : public rogue_spell_t
 {
   vanish_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "vanish", p, p -> find_class_spell( "Vanish" ), options_str )
+    rogue_spell_t( "vanish", p, p -> find_class_spell( "Vanish" ), options_str )
   {
     harmful = false;
   }
 
   void execute() override
   {
-    rogue_attack_t::execute();
+    rogue_spell_t::execute();
 
     p()->buffs.vanish->trigger();
     p()->cancel_auto_attack();
@@ -3865,18 +3864,18 @@ struct vanish_t : public rogue_attack_t
     if ( p() -> buffs.vanish -> check() )
       return false;
 
-    return rogue_attack_t::ready();
+    return rogue_spell_t::ready();
   }
 };
 
 // Vendetta =================================================================
 
-struct vendetta_t : public rogue_attack_t
+struct vendetta_t : public rogue_spell_t
 {
-  struct nothing_personal_t : rogue_attack_t
+  struct nothing_personal_t : rogue_spell_t
   {
     nothing_personal_t( rogue_t* p ) :
-      rogue_attack_t( "nothing_personal", p, p -> find_spell( 286581 ) )
+      rogue_spell_t( "nothing_personal", p, p -> find_spell( 286581 ) )
     {
       background = true;
       base_td = p -> azerite.nothing_personal.value();
@@ -3887,7 +3886,7 @@ struct vendetta_t : public rogue_attack_t
   nothing_personal_t* nothing_personal_dot;
 
   vendetta_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "vendetta", p, p -> find_specialization_spell( "Vendetta" ) ),
+    rogue_spell_t( "vendetta", p, p -> find_specialization_spell( "Vendetta" ) ),
     precombat_seconds( 0.0 ), nothing_personal_dot( nullptr )
   {
     add_option( opt_float( "precombat_seconds", precombat_seconds ) );
@@ -3911,7 +3910,7 @@ struct vendetta_t : public rogue_attack_t
 
   void execute() override
   {
-    rogue_attack_t::execute();
+    rogue_spell_t::execute();
 
     rogue_td_t* td = this->td( execute_state->target );
 
@@ -3932,10 +3931,10 @@ struct vendetta_t : public rogue_attack_t
 // Stealth
 // ==========================================================================
 
-struct stealth_t : public rogue_attack_t
+struct stealth_t : public rogue_spell_t
 {
   stealth_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "stealth", p, p -> find_class_spell( "Stealth" ) )
+    rogue_spell_t( "stealth", p, p -> find_class_spell( "Stealth" ) )
   {
     harmful = false;
 
@@ -3944,7 +3943,7 @@ struct stealth_t : public rogue_attack_t
 
   void execute() override
   {
-    rogue_attack_t::execute();
+    rogue_spell_t::execute();
 
     if ( sim -> log )
       sim -> out_log.printf( "%s performs %s", p() -> name(), name() );
@@ -3968,7 +3967,7 @@ struct stealth_t : public rogue_attack_t
     if ( !p()->restealth_allowed )
       return false;
 
-    return rogue_attack_t::ready();
+    return rogue_spell_t::ready();
   }
 };
 
@@ -5007,7 +5006,7 @@ struct roll_the_bones_t : public buff_t
 
 inline void actions::marked_for_death_t::impact( action_state_t* state )
 {
-  rogue_attack_t::impact( state );
+  rogue_spell_t::impact( state );
 
   td( state -> target ) -> debuffs.marked_for_death -> trigger();
 }
