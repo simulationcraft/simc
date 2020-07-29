@@ -356,7 +356,6 @@ public:
   // Data collection
   auto_dispose<std::vector<cooldown_waste_data_t*> > cooldown_waste_data_list;
   auto_dispose<std::vector<shatter_source_t*> > shatter_source_list;
-  std::unordered_map<std::string, std::shared_ptr<sample_data_helper_t> > consumed_winters_chill_stacks;
 
   // Cached actions
   struct actions_t
@@ -524,6 +523,8 @@ public:
     proc_t* brain_freeze_used;
     proc_t* fingers_of_frost;
     proc_t* fingers_of_frost_wasted;
+    proc_t* winters_chill_applied;
+    proc_t* winters_chill_consumed;
   } procs;
 
   struct shuffled_rngs_t
@@ -630,7 +631,6 @@ public:
     const spell_data_t* supernova;
     const spell_data_t* flame_on;
     const spell_data_t* alexstraszas_fury;
-    const spell_data_t* phoenix_flames;
     const spell_data_t* frozen_touch;
     const spell_data_t* chain_reaction;
     const spell_data_t* ebonbolt;
@@ -779,19 +779,6 @@ public:
     auto cdw = new cooldown_waste_data_t( cd );
     cooldown_waste_data_list.push_back( cdw );
     return cdw;
-  }
-
-  sample_data_helper_t* get_winters_chill_data( const action_t* a )
-  {
-    for ( auto wc_stacks : consumed_winters_chill_stacks )
-    {
-      if ( wc_stacks.first == a->name_str )
-        return wc_stacks.second.get();
-    }
-
-    std::shared_ptr<sample_data_helper_t> data( new sample_data_helper_t( a->name_str, true ) );
-    consumed_winters_chill_stacks[ a->name_str ] = data;
-    return data.get();
   }
 
   shatter_source_t* get_shatter_source( const std::string& name )
@@ -1917,6 +1904,7 @@ struct frost_mage_spell_t : public mage_spell_t
 
   proc_t* proc_brain_freeze;
   proc_t* proc_fof;
+  proc_t* proc_winters_chill_consumed;
 
   bool track_shatter;
   shatter_source_t* shatter_source;
@@ -1941,6 +1929,9 @@ struct frost_mage_spell_t : public mage_spell_t
   {
     if ( initialized )
       return;
+
+    if ( consumes_winters_chill )
+      proc_winters_chill_consumed = p()->get_proc( "Winter's Chill stacks consumed by " + std::string( data().name_cstr() ) );
 
     mage_spell_t::init();
 
@@ -2037,7 +2028,8 @@ struct frost_mage_spell_t : public mage_spell_t
       if ( consumes_winters_chill && td( s->target )->debuffs.winters_chill->check() )
       {
         td( s->target )->debuffs.winters_chill->decrement();
-        p()->get_winters_chill_data( this )->add( 1 );
+        proc_winters_chill_consumed->occur();
+        p()->procs.winters_chill_consumed->occur();
       }
     }
   }
@@ -3216,6 +3208,8 @@ struct flurry_bolt_t : public frost_mage_spell_t
     {
       auto wc = td( s->target )->debuffs.winters_chill;
       wc->trigger( wc->max_stack() );
+      for ( int i = 0; i < wc->max_stack(); i++ )
+        p()->procs.winters_chill_applied->occur();
     }
 
     if ( rng().roll( glacial_assault_chance ) )
@@ -4231,31 +4225,25 @@ struct phoenix_flames_splash_t : public fire_mage_spell_t
     fire_mage_spell_t( n, p, p->find_spell( 257542 ) )
   {
     aoe = -1;
-    background = true;
+    background = reduced_aoe_damage = true;
     triggers_ignite = true;
     // Phoenix Flames always crits
     base_crit = 1.0;
-  }
-
-  size_t available_targets( std::vector<player_t*>& tl ) const override
-  {
-    fire_mage_spell_t::available_targets( tl );
-
-    tl.erase( std::remove( tl.begin(), tl.end(), target ), tl.end() );
-
-    return tl.size();
   }
 };
 
 struct phoenix_flames_t : public fire_mage_spell_t
 {
+  int max_spread_targets;
+
   phoenix_flames_t( util::string_view n, mage_t* p, util::string_view options_str ) :
-    fire_mage_spell_t( n, p, p->talents.phoenix_flames )
+    fire_mage_spell_t( n, p, p->find_specialization_spell( "Phoenix Flames" ) )
   {
     parse_options( options_str );
     triggers_hot_streak = triggers_ignite = triggers_kindling = true;
     // Phoenix Flames always crits
     base_crit = 1.0;
+    max_spread_targets = as<int>( p->spec.ignite->effectN( 4 ).base_value() );
 
     impact_action = get_action<phoenix_flames_splash_t>( "phoenix_flames_splash", p );
     add_child( impact_action );
@@ -4265,6 +4253,54 @@ struct phoenix_flames_t : public fire_mage_spell_t
   {
     timespan_t t = fire_mage_spell_t::travel_time();
     return std::min( t, 0.75_s );
+  }
+
+  static double ignite_bank( dot_t* ignite )
+  {
+    if ( !ignite->is_ticking() )
+      return 0.0;
+
+    auto ignite_state = debug_cast<residual_action::residual_periodic_state_t*>( ignite->state );
+    return ignite_state->tick_amount * ignite->ticks_left();
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    // TODO: Verify what happens when Phoenix Flames hits an immune target.
+    if ( result_is_hit( s->result ) )
+    {
+      dot_t* source_ignite = s->target->get_dot( "ignite", p() );
+      if ( source_ignite->is_ticking() )
+      {
+        int spreads_remaining = max_spread_targets;
+        // TODO: Verify which targets Ignite spreads to when there are more than eight.
+        for ( auto t : target_list() )
+        {
+          if ( t == s->target )
+            continue;
+
+          if ( spreads_remaining <= 0 )
+            break;
+
+          // TODO: Exact copies of the Ignite are not spread. Instead, the Ignites can
+          // sometimes have partial ticks, but the conditions for this are not known.
+          dot_t* dest_ignite = t->get_dot( "ignite", p() );
+          if ( ignite_bank( dest_ignite ) < ignite_bank( source_ignite ) )
+          {
+            if ( dest_ignite->is_ticking() )
+              p()->procs.ignite_overwrite->occur();
+            else
+              p()->procs.ignite_new_spread->occur();
+            // In game, the existing Ignite is not removed; its
+            // state is updated to closely match the source Ignite.
+            source_ignite->copy( t, DOT_COPY_START );
+            spreads_remaining--;
+          }
+        }
+      }
+    }
+
+    fire_mage_spell_t::impact( s );
   }
 };
 
@@ -5373,8 +5409,6 @@ void mage_t::datacollection_begin()
 
   range::for_each( cooldown_waste_data_list, std::mem_fn( &cooldown_waste_data_t::datacollection_begin ) );
   range::for_each( shatter_source_list, std::mem_fn( &shatter_source_t::datacollection_begin ) );
-  for ( auto data : consumed_winters_chill_stacks )
-      data.second->datacollection_begin();
 }
 
 void mage_t::datacollection_end()
@@ -5383,8 +5417,6 @@ void mage_t::datacollection_end()
 
   range::for_each( cooldown_waste_data_list, std::mem_fn( &cooldown_waste_data_t::datacollection_end ) );
   range::for_each( shatter_source_list, std::mem_fn( &shatter_source_t::datacollection_end ) );
-  for ( auto data : consumed_winters_chill_stacks )
-      data.second->datacollection_end();
 }
 
 void mage_t::regen( timespan_t periodicity )
@@ -5467,7 +5499,7 @@ void mage_t::init_spells()
   talents.supernova          = find_talent_spell( "Supernova"          );
   talents.flame_on           = find_talent_spell( "Flame On"           );
   talents.alexstraszas_fury  = find_talent_spell( "Alexstrasza's Fury" );
-  talents.phoenix_flames     = find_talent_spell( "Phoenix Flames"     );
+  // NYI Fire Talent
   talents.frozen_touch       = find_talent_spell( "Frozen Touch"       );
   talents.chain_reaction     = find_talent_spell( "Chain Reaction"     );
   talents.ebonbolt           = find_talent_spell( "Ebonbolt"           );
@@ -5797,6 +5829,8 @@ void mage_t::init_procs()
       procs.brain_freeze_used       = get_proc( "Brain Freeze used" );
       procs.fingers_of_frost        = get_proc( "Fingers of Frost" );
       procs.fingers_of_frost_wasted = get_proc( "Fingers of Frost wasted due to Winter's Chill" );
+      procs.winters_chill_applied   = get_proc( "Winter's Chill stacks applied" );
+      procs.winters_chill_consumed  = get_proc( "Winter's Chill stacks consumed" );
       break;
     default:
       break;
@@ -7448,111 +7482,71 @@ public:
 
   void html_customsection_shatter( report::sc_html_stream& os )
   {
-    if ( p.shatter_source_list.empty() && p.consumed_winters_chill_stacks.empty() )
+    if ( p.shatter_source_list.empty() )
       return;
 
     os << "<div class=\"player-section custom_section\">\n"
           "<h3 class=\"toggle open\">Shatter</h3>\n"
-          "<div class=\"toggle-content flexwrap\">\n";
+          "<div class=\"toggle-content\">\n"
+          "<table class=\"sc sort even\">\n"
+          "<thead>\n"
+          "<tr>\n"
+          "<th></th>\n"
+          "<th colspan=\"2\">None</th>\n"
+          "<th colspan=\"3\">Winter's Chill</th>\n"
+          "<th colspan=\"2\">Fingers of Frost</th>\n"
+          "<th colspan=\"2\">Other effects</th>\n"
+          "</tr>\n"
+          "<tr>\n"
+          "<th class=\"toggle-sort\" data-sortdir=\"asc\" data-sorttype=\"alpha\">Ability</th>\n"
+          "<th class=\"toggle-sort\">Count</th>\n"
+          "<th class=\"toggle-sort\">Percent</th>\n"
+          "<th class=\"toggle-sort\">Count</th>\n"
+          "<th class=\"toggle-sort\">Percent</th>\n"
+          "<th class=\"toggle-sort\">Utilization</th>\n"
+          "<th class=\"toggle-sort\">Count</th>\n"
+          "<th class=\"toggle-sort\">Percent</th>\n"
+          "<th class=\"toggle-sort\">Count</th>\n"
+          "<th class=\"toggle-sort\">Percent</th>\n"
+          "</tr>\n"
+          "</thead>\n";
 
-    if ( !p.shatter_source_list.empty() )
+    double bff = p.procs.brain_freeze_used->count.pretty_mean();
+
+    for ( const shatter_source_t* data : p.shatter_source_list )
     {
-      os << "<table class=\"sc sort even\">\n"
-            "<thead>\n"
-            "<tr>\n"
-            "<th></th>\n"
-            "<th colspan=\"2\">None</th>\n"
-            "<th colspan=\"3\">Winter's Chill</th>\n"
-            "<th colspan=\"2\">Fingers of Frost</th>\n"
-            "<th colspan=\"2\">Other effects</th>\n"
-            "</tr>\n"
-            "<tr>\n"
-            "<th class=\"toggle-sort\" data-sortdir=\"asc\" data-sorttype=\"alpha\">Ability</th>\n"
-            "<th class=\"toggle-sort\">Count</th>\n"
-            "<th class=\"toggle-sort\">Percent</th>\n"
-            "<th class=\"toggle-sort\">Count</th>\n"
-            "<th class=\"toggle-sort\">Percent</th>\n"
-            "<th class=\"toggle-sort\">Utilization</th>\n"
-            "<th class=\"toggle-sort\">Count</th>\n"
-            "<th class=\"toggle-sort\">Percent</th>\n"
-            "<th class=\"toggle-sort\">Count</th>\n"
-            "<th class=\"toggle-sort\">Percent</th>\n"
-            "</tr>\n"
-            "</thead>\n";
+      if ( !data->active() )
+        continue;
 
-      double bff = p.procs.brain_freeze_used->count.pretty_mean() * p.find_spell( 228358 )->max_stacks();
-
-      for ( const shatter_source_t* data : p.shatter_source_list )
+      auto nonzero = [] ( std::string fmt, double d ) { return d != 0.0 ? fmt::format( fmt, d ) : ""; };
+      auto cells = [ &, total = data->count_total() ] ( double mean, bool util = false )
       {
-        if ( !data->active() )
-          continue;
+        std::string format_str = "<td class=\"right\">{}</td><td class=\"right\">{}</td>";
+        if ( util ) format_str += "<td class=\"right\">{}</td>";
 
-        auto nonzero = [] ( std::string fmt, double d ) { return d != 0.0 ? fmt::format( fmt, d ) : ""; };
-        auto cells = [ &, total = data->count_total() ] ( double mean, bool util = false )
-        {
-          std::string format_str = "<td class=\"right\">{}</td><td class=\"right\">{}</td>";
-          if ( util ) format_str += "<td class=\"right\">{}</td>";
+        fmt::print( os, format_str,
+          nonzero( "{:.1f}", mean ),
+          nonzero( "{:.1f}%", 100.0 * mean / total ),
+          nonzero( "{:.1f}%", bff > 0.0 ? 100.0 * mean / bff : 0.0 ) );
+      };
 
-          fmt::print( os, format_str,
-            nonzero( "{:.1f}", mean ),
-            nonzero( "{:.1f}%", 100.0 * mean / total ),
-            nonzero( "{:.1f}%", bff > 0.0 ? 100.0 * mean / bff : 0.0 ) );
-        };
+      std::string name = data->name_str;
+      if ( action_t* a = p.find_action( name ) )
+        name = report_decorators::decorated_action(*a);
+      else
+        name = util::encode_html( name );
 
-        std::string name = data->name_str;
-        if ( action_t* a = p.find_action( name ) )
-          name = report_decorators::decorated_action(*a);
-        else
-          name = util::encode_html( name );
-
-        os << "<tr>";
-        fmt::print( os, "<td class=\"left\">{}</td>", name );
-        cells( data->count( FROZEN_NONE ) );
-        cells( data->count( FROZEN_WINTERS_CHILL ), true );
-        cells( data->count( FROZEN_FINGERS_OF_FROST ) );
-        cells( data->count( FROZEN_ROOT ) );
-        os << "</tr>\n";
-      }
-
-      os << "</table>\n";
+      os << "<tr>";
+      fmt::print( os, "<td class=\"left\">{}</td>", name );
+      cells( data->count( FROZEN_NONE ) );
+      cells( data->count( FROZEN_WINTERS_CHILL ), true );
+      cells( data->count( FROZEN_FINGERS_OF_FROST ) );
+      cells( data->count( FROZEN_ROOT ) );
+      os << "</tr>\n";
     }
 
-    if ( !p.consumed_winters_chill_stacks.empty() )
-    {
-      os << "<table class=\"sc sort even\">\n"
-            "<thead>\n"
-            "<tr>\n"
-            "<th></th>"
-            "<th colspan=\"3\">Winter's Chill Consumed</th>\n"
-            "</tr>\n"
-            "<tr>\n"
-            "<th class=\"toggle-sort\" data-sortdir=\"asc\" data-sorttype=\"alpha\">Ability</th>\n"
-            "<th class=\"toggle-sort\">Average</th>\n"
-            "<th class=\"toggle-sort\">Minimum</th>\n"
-            "<th class=\"toggle-sort\">Maximum</th>\n"
-            "</tr>\n"
-            "</thead>\n";
-
-      for ( auto data : p.consumed_winters_chill_stacks )
-      {
-        std::string name = data.first;
-        if ( action_t* a = p.find_action( name ) )
-          name = report_decorators::decorated_action(*a);
-        else
-          name = util::encode_html( name );
-
-        os << "<tr>";
-        fmt::print( os, "<td class=\"left\">{}</td>", name );
-        fmt::print( os, "<td class=\"right\">{:.1f}</td>", data.second->mean() );
-        fmt::print( os, "<td class=\"right\">{:.1f}</td>", data.second->min() );
-        fmt::print( os, "<td class=\"right\">{:.1f}</td>", data.second->max() );
-        os << "</tr>\n";
-      }
-
-      os << "</table>\n";
-    }
-
-    os << "</div>\n"
+    os << "</table>\n"
+          "</div>\n"
           "</div>\n";
   }
 
