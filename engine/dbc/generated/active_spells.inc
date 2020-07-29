@@ -1,4 +1,4 @@
-// Active class spells, wow build 9.0.1.35282
+// Active class spells, wow build 9.0.1.35360
 static const std::array<active_class_spell_t, 612> __active_spells_data { {
   {  1,   0,  88163,      0, "Attack"                             },
   {  1,   0,    100,      0, "Charge"                             },
@@ -123,7 +123,7 @@ static const std::array<active_class_spell_t, 612> __active_spells_data { {
   {  3,   0,  56641,      0, "Steady Shot"                        },
   {  3,   0,  19801,      0, "Tranquilizing Shot"                 },
   {  3,   0,   1513,      0, "Scare Beast"                        },
-  {  3,   0, 321297,      0, "Eyes of the Beast (NYI)"            },
+  {  3,   0, 321297,      0, "Eyes of the Beast"                  },
   {  3,   0, 257284,      0, "Hunter's Mark"                      },
   {  3,   0, 195645,      0, "Wing Clip"                          },
   {  3,   0, 187650,      0, "Freezing Trap"                      },
@@ -614,7 +614,7 @@ static const std::array<active_class_spell_t, 612> __active_spells_data { {
   { 12,  581, 212084,      0, "Fel Devastation"                    },
 } };
 
-// Pet active spells, wow build 9.0.1.35282
+// Pet active spells, wow build 9.0.1.35360
 static const std::array<active_pet_spell_t, 125> __active_pet_spells_data { {
   {  3,   2649, "Growl"                              },
   {  3,  16827, "Claw"                               },
