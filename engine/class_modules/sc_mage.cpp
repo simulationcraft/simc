@@ -794,14 +794,6 @@ public:
     return ss;
   }
 
-  enum leyshock_trigger_e
-  {
-    LEYSHOCK_EXECUTE,
-    LEYSHOCK_IMPACT,
-    LEYSHOCK_TICK,
-    LEYSHOCK_BUMP
-  };
-
   void      update_rune_distance( double distance );
   action_t* get_icicle();
   bool      trigger_delayed_buff( buff_t* buff, double chance, timespan_t delay = 0.15_s );
@@ -811,7 +803,6 @@ public:
   void      trigger_icicle_gain( player_t* icicle_target, action_t* icicle_action );
   void      trigger_evocation( timespan_t duration_override = timespan_t::min(), bool hasted = true );
   void      trigger_arcane_charge( int stacks = 1 );
-  void      trigger_leyshock( unsigned id, const action_state_t* s, leyshock_trigger_e trigger_type );
   bool      trigger_crowd_control( const action_state_t* s, spell_mechanic type );
   void      trigger_lucid_dreams( player_t* trigger_target, double cost );
   void      update_enlightened();
@@ -1193,13 +1184,6 @@ struct incanters_flow_t : public buff_t
     set_period( p->talents.incanters_flow->effectN( 1 ).period() );
     set_chance( p->talents.incanters_flow->ok() );
     set_default_value( data().effectN( 1 ).percent() );
-
-    // Leyshock
-    set_stack_change_callback( [ p ] ( buff_t* b, int old, int cur )
-    {
-      if ( old == 3 && cur == 4 )
-        p->trigger_leyshock( b->data().id(), nullptr, mage_t::LEYSHOCK_BUMP );
-    } );
   }
 
   void reset() override
@@ -1506,7 +1490,6 @@ public:
   void execute() override
   {
     spell_t::execute();
-    p()->trigger_leyshock( id, execute_state, mage_t::LEYSHOCK_EXECUTE );
 
     // Make sure we remove all cost reduction buffs before we trigger new ones.
     // This will prevent for example Arcane Blast consuming its own Clearcasting proc.
@@ -1527,24 +1510,12 @@ public:
       p()->buffs.ice_floes->decrement();
   }
 
-  void tick( dot_t* d ) override
-  {
-    spell_t::tick( d );
-    p()->trigger_leyshock( id, d->state, mage_t::LEYSHOCK_TICK );
-  }
-
   void last_tick( dot_t* d ) override
   {
     spell_t::last_tick( d );
 
     if ( channeled && affected_by.ice_floes )
       p()->buffs.ice_floes->decrement();
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    spell_t::impact( s );
-    p()->trigger_leyshock( id, s, mage_t::LEYSHOCK_IMPACT );
   }
 
   void consume_resource() override
@@ -7161,123 +7132,6 @@ void mage_t::trigger_arcane_charge( int stacks )
 
   if ( before < 3 && after >= 3 )
     buffs.rule_of_threes->trigger();
-}
-
-void mage_t::trigger_leyshock( unsigned id, const action_state_t*, leyshock_trigger_e trigger_type )
-{
-  if ( !player_t::buffs.leyshock_crit )
-    return;
-
-  stat_e buff = STAT_NONE;
-
-  switch ( trigger_type )
-  {
-    case LEYSHOCK_EXECUTE:
-      switch ( id )
-      {
-        case 120: // Cone of Cold
-        case 12472: // Icy Veins
-        case 190356: // Blizard
-        case 228354: // Flurry tick
-          buff = STAT_CRIT_RATING;
-          break;
-        case 1953: // Blink
-        case 55342: // Mirror Image
-        case 84721: // Frozen Orb tick
-        case 153596: // Comet Storm tick
-        case 157997: // Ice Nova
-        case 190357: // Blizzard tick
-        case 205021: // Ray of Frost
-        case 212653: // Shimmer
-          buff = STAT_HASTE_RATING;
-          break;
-        case 1459: // Arcane Intellect
-        case 2139: // Counterspell
-        case 30455: // Ice Lance
-        case 31687: // Summon Water Elemental
-        case 108839: // Ice Floes
-        case 116011: // Rune of Power
-        case 153595: // Comet Storm
-        case 235219: // Cold Snap
-          buff = STAT_VERSATILITY_RATING;
-          break;
-        case 122: // Frost Nova
-        case 80353: // Time Warp
-        case 84714: // Frozen Orb
-        case 148022: // Icicle
-        case 199786: // Glacial Spike
-        case 257537: // Ebonbolt
-          buff = STAT_MASTERY_RATING;
-          break;
-        case 116: // Frostbolt
-        case 44614: // Flurry
-          switch ( buffs.icicles->check() )
-          {
-            case 4:
-            case 5:
-              buff = STAT_CRIT_RATING;
-              break;
-            case 3:
-              buff = STAT_HASTE_RATING;
-              break;
-            case 1:
-              buff = STAT_VERSATILITY_RATING;
-              break;
-            case 0:
-            case 2:
-              buff = STAT_MASTERY_RATING;
-              break;
-            default:
-              break;
-          }
-          break;
-        default:
-          break;
-      }
-      break;
-    case LEYSHOCK_IMPACT:
-      switch ( id )
-      {
-        case 84714: // Frozen Orb
-        case 153596: // Comet Storm tick
-        case 199786: // Glacial Spike
-          buff = STAT_CRIT_RATING;
-          break;
-        case 116: // Frostbolt
-          buff = STAT_HASTE_RATING;
-          break;
-        case 30455: // Ice Lance
-        case 228354: // Flurry tick
-          buff = STAT_MASTERY_RATING;
-          break;
-        default:
-          break;
-      }
-      break;
-    case LEYSHOCK_TICK:
-      switch ( id )
-      {
-        case 205021: // Ray of Frost
-          buff = STAT_HASTE_RATING;
-          break;
-        default:
-          break;
-      }
-      break;
-    case LEYSHOCK_BUMP:
-      switch ( id )
-      {
-        case 116267: // Incanter's Flow
-          buff = STAT_MASTERY_RATING;
-          break;
-        default:
-          break;
-      }
-    default:
-      break;
-  }
-
-  expansion::bfa::trigger_leyshocks_grand_compilation( buff, this );
 }
 
 void mage_t::trigger_lucid_dreams( player_t* trigger_target, double cost )
