@@ -379,6 +379,7 @@ public:
     gain_t* memory_of_lucid_dreams_major;
     gain_t* memory_of_lucid_dreams_minor;
     gain_t* nessingwarys_apparatus;
+    gain_t* reversal_of_fortune;
     gain_t* terms_of_engagement;
   } gains;
 
@@ -3873,6 +3874,14 @@ struct interrupt_base_t: public hunter_spell_t
     may_miss = may_block = may_dodge = may_parry = false;
   }
 
+  void execute() override
+  {
+    hunter_spell_t::execute();
+
+    if ( p() -> conduits.reversal_of_fortune.ok() )
+      p() -> resource_gain( RESOURCE_FOCUS, p() -> conduits.reversal_of_fortune.value(), p() -> gains.reversal_of_fortune, this );
+  }
+
   bool target_ready( player_t* candidate_target ) override
   {
     if ( ! candidate_target -> debuffs.casting || ! candidate_target -> debuffs.casting -> check() ) return false;
@@ -5667,6 +5676,7 @@ void hunter_t::init_gains()
   gains.memory_of_lucid_dreams_major = get_gain( "Lucid Dreams (Major)" );
   gains.memory_of_lucid_dreams_minor = get_gain( "Lucid Dreams (Minor)" );
   gains.nessingwarys_apparatus = get_gain( "Nessingwary's Trapping Apparatus" );
+  gains.reversal_of_fortune    = get_gain( "Reversal of Fortune" );
   gains.terms_of_engagement    = get_gain( "terms_of_engagement" );
 }
 
