@@ -1831,9 +1831,13 @@ class SpellDataGenerator(DataGenerator):
           ( 289314, 3 ),       # Burst of Savagery Azerite Trait
           ( 289315, 3 ),       # Burst of Savagery Azerite Trait buff
           ( 305497, 0 ), ( 305496, 0 ), # Thorns pvp talent
-          ( 338825, 1 ),       # Primordial Arcanic Pulsar buff
 
-          # Covenant
+          # Shadowlands Legendary
+          ( 338825, 1 ),       # Primordial Arcanic Pulsar buff
+          ( 339943, 1 ),       # Runecarve #3 Nature crit buff
+          ( 339946, 1 ),       # Runecarve #3 Arcane crit buff
+
+          # Shadowlands Covenant
           ( 326446, 0, True ), # Kyrian Empower Bond on DPS
           ( 326462, 0, True ), # Kyrian Empower Bond on Tank
           ( 326647, 0, True ), # Kyrian Empower Bond on Healer
