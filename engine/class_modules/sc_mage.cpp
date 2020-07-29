@@ -2907,12 +2907,17 @@ struct dragons_breath_t : public fire_mage_spell_t
     }
   }
 
+  void execute() override
+  {
+    fire_mage_spell_t::execute();
+
+    if ( hit_any_target && p()->talents.alexstraszas_fury->ok() )
+      p()->buffs.alexstraszas_fury->trigger();
+  }
+
   void impact( action_state_t* s ) override
   {
     fire_mage_spell_t::impact( s );
-
-    if ( result_is_hit( s->result ) && p()->talents.alexstraszas_fury->ok() && s->chain_target == 0 )
-      p()->buffs.alexstraszas_fury->trigger();
 
     p()->trigger_crowd_control( s, MECHANIC_DISORIENT );
   }
