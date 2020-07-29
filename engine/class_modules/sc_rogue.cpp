@@ -1242,7 +1242,7 @@ struct rogue_attack_t : public rogue_action_t<melee_attack_t>
     special = true;
   }
 
-  void impact( action_state_t* state );
+  void impact( action_state_t* state ) override;
   double cost() const override;
   void consume_resource() override;
   void execute() override;
