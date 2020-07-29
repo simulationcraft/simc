@@ -1632,10 +1632,10 @@ struct fire_mage_spell_t : public mage_spell_t
       if ( triggers_ignite )
         trigger_ignite( s );
 
-      if ( triggers_hot_streak )
+      if ( triggers_hot_streak && s->chain_target == 0 )
         handle_hot_streak( s );
 
-      if ( triggers_kindling && p()->talents.kindling->ok() && s->result == RESULT_CRIT )
+      if ( triggers_kindling && p()->talents.kindling->ok() && s->result == RESULT_CRIT && s->chain_target == 0 )
         p()->cooldowns.combustion->adjust( -p()->talents.kindling->effectN( 1 ).time_value() );
     }
   }
@@ -2901,7 +2901,10 @@ struct dragons_breath_t : public fire_mage_spell_t
     cooldown->duration += p->spec.dragons_breath_2->effectN( 1 ).time_value();
 
     if ( p->talents.alexstraszas_fury->ok() )
+    {
       base_crit = 1.0;
+      triggers_hot_streak = true;
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -2909,10 +2912,7 @@ struct dragons_breath_t : public fire_mage_spell_t
     fire_mage_spell_t::impact( s );
 
     if ( result_is_hit( s->result ) && p()->talents.alexstraszas_fury->ok() && s->chain_target == 0 )
-    {
-      handle_hot_streak( s );
       p()->buffs.alexstraszas_fury->trigger();
-    }
 
     p()->trigger_crowd_control( s, MECHANIC_DISORIENT );
   }
@@ -4192,38 +4192,17 @@ struct nether_tempest_t : public arcane_mage_spell_t
 
 struct phoenix_flames_splash_t : public fire_mage_spell_t
 {
+  int max_spread_targets;
+
   phoenix_flames_splash_t( util::string_view n, mage_t* p ) :
     fire_mage_spell_t( n, p, p->find_spell( 257542 ) )
   {
     aoe = -1;
     background = reduced_aoe_damage = true;
-    triggers_ignite = true;
-    // Phoenix Flames always crits
-    base_crit = 1.0;
-  }
-};
-
-struct phoenix_flames_t : public fire_mage_spell_t
-{
-  int max_spread_targets;
-
-  phoenix_flames_t( util::string_view n, mage_t* p, util::string_view options_str ) :
-    fire_mage_spell_t( n, p, p->find_specialization_spell( "Phoenix Flames" ) )
-  {
-    parse_options( options_str );
     triggers_hot_streak = triggers_ignite = triggers_kindling = true;
+    max_spread_targets = as<int>( p->spec.ignite->effectN( 4 ).base_value() );
     // Phoenix Flames always crits
     base_crit = 1.0;
-    max_spread_targets = as<int>( p->spec.ignite->effectN( 4 ).base_value() );
-
-    impact_action = get_action<phoenix_flames_splash_t>( "phoenix_flames_splash", p );
-    add_child( impact_action );
-  }
-
-  timespan_t travel_time() const override
-  {
-    timespan_t t = fire_mage_spell_t::travel_time();
-    return std::min( t, 0.75_s );
   }
 
   static double ignite_bank( dot_t* ignite )
@@ -4238,7 +4217,7 @@ struct phoenix_flames_t : public fire_mage_spell_t
   void impact( action_state_t* s ) override
   {
     // TODO: Verify what happens when Phoenix Flames hits an immune target.
-    if ( result_is_hit( s->result ) )
+    if ( result_is_hit( s->result ) && s->chain_target == 0 )
     {
       dot_t* source_ignite = s->target->get_dot( "ignite", p() );
       if ( source_ignite->is_ticking() )
@@ -4273,6 +4252,23 @@ struct phoenix_flames_t : public fire_mage_spell_t
     }
 
     fire_mage_spell_t::impact( s );
+  }
+};
+
+struct phoenix_flames_t : public fire_mage_spell_t
+{
+  phoenix_flames_t( util::string_view n, mage_t* p, util::string_view options_str ) :
+    fire_mage_spell_t( n, p, p->find_specialization_spell( "Phoenix Flames" ) )
+  {
+    parse_options( options_str );
+    impact_action = get_action<phoenix_flames_splash_t>( "phoenix_flames_splash", p );
+    add_child( impact_action );
+  }
+
+  timespan_t travel_time() const override
+  {
+    timespan_t t = fire_mage_spell_t::travel_time();
+    return std::min( t, 0.75_s );
   }
 };
 
