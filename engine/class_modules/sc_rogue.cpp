@@ -761,9 +761,6 @@ private:
 
 public:
   bool         requires_stealth;
-  position_e   requires_position;
-  weapon_e     requires_weapon_type;
-  weapon_e     requires_weapon_group;
 
   // Secondary triggered ability, due to Weaponmaster talent or Death from Above. Secondary
   // triggered abilities cost no resources or incur cooldowns.
@@ -804,13 +801,16 @@ public:
   rogue_action_t( util::string_view n, rogue_t* p, const spell_data_t* s = spell_data_t::nil(),
                   const std::string& options = std::string() )
     : ab( n, p, s ),
-    requires_stealth( false ), requires_position( POSITION_NONE ),
-    requires_weapon_type( WEAPON_NONE ), requires_weapon_group( WEAPON_NONE ),
+    requires_stealth( false ),
     secondary_trigger( TRIGGER_NONE )
   {
     ab::parse_options( options );
-
     parse_spell_data( s );
+
+    // rogue_t sets base and min GCD to 1s by default but let's also enforce non-hasted GCDs.
+    // Even for rogue abilities that can be considered spells, hasted GCDs seem to be an exception rather than rule.
+    // Those should be set explicitly. (see Vendetta, Shadow Blades, Detection)
+    ab::gcd_type = gcd_haste_type::NONE;
 
     // Affecting passives
     // Put ability specific ones here; class/spec wide ones with labels that can effect things like trinkets in rogue_t::apply_affecting_auras.
@@ -1933,22 +1933,6 @@ bool rogue_attack_t::ready()
     return false;
   }
 
-  if ( requires_position != POSITION_NONE )
-    if ( p()->position() != requires_position )
-      return false;
-
-  if ( requires_weapon_type != WEAPON_NONE )
-  {
-    if ( !weapon || weapon->type != requires_weapon_type )
-      return false;
-  }
-
-  if ( requires_weapon_group != WEAPON_NONE )
-  {
-    if ( !weapon || weapon->group() != requires_weapon_group )
-      return false;
-  }
-
   return true;
 }
 
@@ -2188,7 +2172,6 @@ struct backstab_t : public rogue_attack_t
   backstab_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "backstab", p, p -> find_specialization_spell( "Backstab" ), options_str )
   {
-    requires_weapon_type = WEAPON_DAGGER;
   }
 
   double bonus_da( const action_state_t* state ) const override
@@ -2366,8 +2349,6 @@ struct blade_rush_t : public rogue_attack_t
   blade_rush_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "blade_rush", p, p -> talent.blade_rush, options_str )
   {
-    weapon = &( p->main_hand_weapon );
-    requires_weapon_group = WEAPON_1H;
     blade_rush_attack = new blade_rush_attack_t( p );  
   }
 
@@ -2387,7 +2368,6 @@ struct blindside_t: public rogue_attack_t
   blindside_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "blindside", p, p -> talent.blindside, options_str )
   {
-    requires_weapon_type = WEAPON_DAGGER;
   }
 
   bool target_ready( player_t* candidate_target ) override
@@ -2464,7 +2444,6 @@ struct dispatch_t: public rogue_attack_t
   dispatch_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "dispatch", p, p -> find_specialization_spell( "Dispatch" ), options_str )
   {
-    requires_weapon_group = WEAPON_1H;
   }
 
   bool procs_main_gauche() const override
@@ -2818,7 +2797,6 @@ struct gloomblade_t : public rogue_attack_t
   gloomblade_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "gloomblade", p, p -> talent.gloomblade, options_str )
   {
-    requires_weapon_type = WEAPON_DAGGER;
   }
 
   double bonus_da( const action_state_t* state ) const override
@@ -3359,7 +3337,6 @@ struct secret_technique_t : public rogue_attack_t
     secret_technique_attack_t( const std::string& n, rogue_t* p ) :
       rogue_attack_t( n, p, p -> find_spell( 280720 ) )
     {
-      weapon = &(p -> main_hand_weapon);
       background = true;
       aoe = -1;
     }
@@ -3386,7 +3363,6 @@ struct secret_technique_t : public rogue_attack_t
   secret_technique_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "secret_technique", p, p -> talent.secret_technique, options_str )
   {
-    requires_weapon_type = WEAPON_DAGGER;
     may_miss = false;
     aoe = -1;
 
@@ -3552,7 +3528,6 @@ struct shadowstrike_t : public rogue_attack_t
   shadowstrike_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "shadowstrike", p, p -> spec.shadowstrike, options_str )
   {
-    requires_weapon_type = WEAPON_DAGGER;
     requires_stealth = true;
   }
 
@@ -3860,7 +3835,6 @@ struct toxic_blade_t : public rogue_attack_t
   toxic_blade_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "toxic_blade", p, p -> talent.toxic_blade, options_str )
   {
-    requires_weapon_type = WEAPON_DAGGER;
   }
 
   void impact( action_state_t* s ) override
