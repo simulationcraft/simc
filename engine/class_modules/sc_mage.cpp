@@ -4234,6 +4234,8 @@ struct phoenix_flames_splash_t : public fire_mage_spell_t
   {
     aoe = -1;
     background = reduced_aoe_damage = true;
+    // TODO: Phoenix Flames currently does not trigger Kindling on the beta.
+    // Verify whether this is fixed closer to shadowlands release.
     triggers_hot_streak = triggers_ignite = triggers_kindling = true;
     max_spread_targets = as<int>( p->spec.ignite->effectN( 4 ).base_value() );
     // Phoenix Flames always crits
