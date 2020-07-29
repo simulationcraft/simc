@@ -281,6 +281,7 @@ public:
 
   std::string beta_covenant;
   double kindred_empowerment_ratio;
+  int convoke_the_spirits_heals;
 
   struct active_actions_t
   {
@@ -800,6 +801,7 @@ public:
     affinity_resources( false ),
     beta_covenant( "none" ),
     kindred_empowerment_ratio( 1.0 ),
+    convoke_the_spirits_heals( 2 ),
     active( active_actions_t() ),
     force_of_nature(),
     caster_form_weapon(),
@@ -7228,10 +7230,7 @@ struct force_of_nature_t : public druid_spell_t
     for ( size_t i = 0; i < p()->force_of_nature.size(); i++ )
     {
       if ( p()->force_of_nature[ i ]->is_sleeping() )
-      {
         p()->force_of_nature[ i ]->summon( summon_duration );
-        expansion::bfa::trigger_leyshocks_grand_compilation( STAT_CRIT_RATING, player );
-      }
     }
   }
 };
@@ -7275,7 +7274,6 @@ struct convoke_the_spirits_t : public druid_spell_t
   action_t* conv_mf;
 
   shuffled_rng_t* deck;
-  int he_count;
 
   action_t* conv_cast;
   player_t* conv_tar;
@@ -7287,9 +7285,8 @@ struct convoke_the_spirits_t : public druid_spell_t
   int wr_count;
 
   convoke_the_spirits_t( druid_t* player, const std::string& options_str )
-    : druid_spell_t( "convoke_the_spirits", player, player->covenant.convoke_the_spirits, options_str ), he_count( 2 )
+    : druid_spell_t( "convoke_the_spirits", player, player->covenant.convoke_the_spirits, options_str )
   {
-    add_option( opt_int( "heals", he_count ) );
     parse_options( options_str );
 
     harmful = channeled = true;
@@ -7320,7 +7317,7 @@ struct convoke_the_spirits_t : public druid_spell_t
     add_child( conv_sf );
     add_child( conv_mf );
 
-    deck = player->get_shuffled_rng( "convoke_the_spirits", he_count, 16 );
+    deck = player->get_shuffled_rng( "convoke_the_spirits", player->convoke_the_spirits_heals, 16 );
   }
 
   double composite_haste() const override
@@ -10216,17 +10213,18 @@ void druid_t::create_options()
 {
   player_t::create_options();
 
-  add_option( opt_float ( "predator_rppm", predator_rppm_rate ) );
-  add_option( opt_float ( "initial_astral_power", initial_astral_power ) );
-  add_option( opt_int   ( "initial_moon_stage", initial_moon_stage ) );
-  add_option( opt_int   ( "lively_spirit_stacks", lively_spirit_stacks));
-  add_option( opt_bool  ( "outside", ahhhhh_the_great_outdoors ) );
-  add_option( opt_bool  ( "catweave_bear", catweave_bear ) );
-  add_option( opt_bool  ( "affinity_resources", affinity_resources ) );
-  add_option( opt_float ( "thorns_attack_period", thorns_attack_period ) );
-  add_option( opt_float ( "thorns_hit_chance", thorns_hit_chance ) );
+  add_option( opt_float( "predator_rppm", predator_rppm_rate ) );
+  add_option( opt_float( "initial_astral_power", initial_astral_power ) );
+  add_option( opt_int( "initial_moon_stage", initial_moon_stage ) );
+  add_option( opt_int( "lively_spirit_stacks", lively_spirit_stacks ) );
+  add_option( opt_bool( "outside", ahhhhh_the_great_outdoors ) );
+  add_option( opt_bool( "catweave_bear", catweave_bear ) );
+  add_option( opt_bool( "affinity_resources", affinity_resources ) );
+  add_option( opt_float( "thorns_attack_period", thorns_attack_period ) );
+  add_option( opt_float( "thorns_hit_chance", thorns_hit_chance ) );
   add_option( opt_string( "beta_covenant", beta_covenant ) );
-  add_option( opt_float ( "kindred_empowerment_ratio", kindred_empowerment_ratio ) );
+  add_option( opt_float( "kindred_empowerment_ratio", kindred_empowerment_ratio ) );
+  add_option( opt_int( "convoke_the_spirits_heals", convoke_the_spirits_heals ) );
 }
 
 // druid_t::create_profile ==================================================
@@ -10765,6 +10763,7 @@ void druid_t::copy_from( player_t* source )
   ahhhhh_the_great_outdoors = p->ahhhhh_the_great_outdoors;
   beta_covenant = p->beta_covenant;
   kindred_empowerment_ratio = p->kindred_empowerment_ratio;
+  convoke_the_spirits_heals = p->convoke_the_spirits_heals;
   thorns_attack_period = p->thorns_attack_period;
   thorns_hit_chance = p->thorns_hit_chance;
 }
