@@ -872,14 +872,17 @@ struct devouring_plague_t final : public priest_spell_t
     parse_options( options_str );
     may_crit                        = true;
     tick_zero                       = false;
-    base_costs[ RESOURCE_INSANITY ] = insanity_cost;
+    base_costs[ RESOURCE_INSANITY ] = 0; // custom insanity handling
     tick_may_crit                   = false;
   }
 
-  void execute() override
+  void consume_resource() override
   {
-    priest_spell_t::execute();
+    priest_spell_t::consume_resource();
+
     priest().resource_loss( RESOURCE_INSANITY, insanity_cost, priest().gains.insanity_lost_devouring_plague, execute_state->action );
+    
+    priest().insanity.adjust_end_event();
   }
 
   bool ready() override
