@@ -266,7 +266,7 @@ public:
     // Marksmanship
     spell_data_ptr_t eagletalons_true_focus;
     spell_data_ptr_t secrets_of_the_vigil;
-    spell_data_ptr_t serpentstalkers_trickery; // NYI
+    spell_data_ptr_t serpentstalkers_trickery;
     spell_data_ptr_t surging_shots;
     // Survival
     spell_data_ptr_t butchers_bone_fragments;
@@ -322,6 +322,7 @@ public:
 
     // Covenants
     buff_t* flayers_mark;
+    buff_t* resonating_arrow;
 
     // azerite
     buff_t* blur_of_talons;
@@ -535,7 +536,6 @@ public:
   void      init_spells() override;
   void      init_base_stats() override;
   void      create_buffs() override;
-  void      init_special_effects() override;
   void      init_gains() override;
   void      init_position() override;
   void      init_procs() override;
@@ -2162,6 +2162,24 @@ struct flayed_shot_t : hunter_ranged_attack_t
     hunter_ranged_attack_t::tick( d );
 
     p() -> buffs.flayers_mark -> trigger();
+  }
+};
+
+struct resonating_arrow_t : hunter_spell_t
+{
+  resonating_arrow_t( hunter_t* p, util::string_view options_str ):
+    hunter_spell_t( "resonating_arrow", p, p -> covenants.resonating_arrow )
+  {
+    parse_options( options_str );
+
+    harmful = may_hit = may_miss = false;
+  }
+
+  void execute()
+  {
+    hunter_spell_t::execute();
+
+    p() -> buffs.resonating_arrow -> trigger();
   }
 };
 
@@ -4989,6 +5007,7 @@ action_t* hunter_t::create_action( util::string_view name,
   if ( name == "rapid_fire"            ) return new             rapid_fire_t( this, options_str );
   if ( name == "raptor_strike"         ) return new          raptor_strike_t( this, options_str );
   if ( name == "raptor_strike_eagle"   ) return new    raptor_strike_eagle_t( this, options_str );
+  if ( name == "resonating_arrow"      ) return new       resonating_arrow_t( this, options_str );
   if ( name == "stampede"              ) return new               stampede_t( this, options_str );
   if ( name == "steady_shot"           ) return new            steady_shot_t( this, options_str );
   if ( name == "steel_trap"            ) return new             steel_trap_t( this, options_str );
@@ -5442,6 +5461,12 @@ void hunter_t::create_buffs()
     make_buff( this, "flayers_mark", find_spell( 324156 ) )
       -> set_chance( covenants.flayed_shot -> effectN( 2 ).percent() );
 
+  buffs.resonating_arrow =
+    make_buff( this, "resonating_arrow", covenants.resonating_arrow -> effectN( 1 ).trigger() )
+      -> set_default_value( find_spell( 308498 ) -> effectN( 1 ).percent() )
+      -> add_invalidate( CACHE_CRIT_CHANCE )
+      -> set_activated( true );
+
   // Legendaries
 
   buffs.butchers_bone_fragments =
@@ -5517,13 +5542,6 @@ void hunter_t::create_buffs()
       -> add_stat( STAT_CRIT_RATING, azerite.unerring_vision.value( 1 ) );
 
   player_t::buffs.memory_of_lucid_dreams -> set_affects_regen( true );
-}
-
-// hunter_t::init_special_effects ===========================================
-
-void hunter_t::init_special_effects()
-{
-  player_t::init_special_effects();
 }
 
 // hunter_t::init_gains =====================================================
@@ -6151,6 +6169,8 @@ double hunter_t::composite_melee_crit_chance() const
 
   crit += specs.critical_strikes -> effectN( 1 ).percent();
 
+  crit += buffs.resonating_arrow -> check_value();
+
   return crit;
 }
 
@@ -6161,6 +6181,8 @@ double hunter_t::composite_spell_crit_chance() const
   double crit = player_t::composite_spell_crit_chance();
 
   crit += specs.critical_strikes -> effectN( 1 ).percent();
+
+  crit += buffs.resonating_arrow -> check_value();
 
   return crit;
 }
