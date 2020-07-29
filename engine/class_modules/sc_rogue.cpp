@@ -5434,18 +5434,18 @@ void actions::rogue_action_t<Base>::trigger_exsanguinate( const action_state_t* 
   do_exsanguinate<base_t>( td->dots.crimson_tempest, coeff );
 }
 
-template<typename Base>
+template <typename Base>
 void actions::rogue_action_t<Base>::trigger_relentless_strikes( const action_state_t* state )
 {
-  if ( ! p()->spec.relentless_strikes -> ok() ||! affected_by.relentless_strikes )
+  if ( !p()->spec.relentless_strikes->ok() || !affected_by.relentless_strikes )
     return;
 
   double grant_energy = 0;
-  grant_energy += cast_state( state ) -> cp * p()->spell.relentless_strikes_energize -> effectN( 1 ).resource( RESOURCE_ENERGY );
+  grant_energy += cast_state( state )->cp * p()->spell.relentless_strikes_energize->effectN( 1 ).resource( RESOURCE_ENERGY );
 
   if ( grant_energy > 0 )
   {
-    p()->resource_gain( RESOURCE_ENERGY, grant_energy, p()->gains.relentless_strikes, state -> action );
+    p()->resource_gain( RESOURCE_ENERGY, grant_energy, p()->gains.relentless_strikes, state->action );
   }
 }
 
