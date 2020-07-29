@@ -1798,7 +1798,6 @@ void rogue_attack_t::impact( action_state_t* state )
   p()->trigger_main_gauche( state );
   p()->trigger_combat_potency( state );
   p()->trigger_blade_flurry( state );
-  p()->trigger_shadow_techniques( state );
   p()->trigger_shadow_blades_attack( state );
 
   if ( result_is_hit( state->result ) )
@@ -2007,6 +2006,12 @@ struct melee_t : public rogue_attack_t
     }
 
     rogue_attack_t::execute();
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    rogue_attack_t::impact( state );
+    p()->trigger_shadow_techniques( state );
   }
 
   double composite_target_multiplier( player_t* target ) const override
@@ -5363,28 +5368,20 @@ void rogue_t::trigger_deepening_shadows( const action_state_t* state )
 
 void rogue_t::trigger_shadow_techniques( const action_state_t* state )
 {
-  if ( ! spec.shadow_techniques -> ok() )
-  {
+  if ( !spec.shadow_techniques->ok() || !state->action->result_is_hit( state->result ) )
     return;
-  }
 
-  if ( state -> action -> special )
-  {
-    return;
-  }
-
-  if ( ! state -> action -> result_is_hit( state -> result ) )
-  {
-    return;
-  }
-  if (sim -> debug) sim -> out_debug.printf( "Melee attack landed, so shadow techniques increment from %d to %d", shadow_techniques, shadow_techniques+1);
+  if ( sim->debug )
+    sim->out_debug.printf( "Melee attack landed, so shadow techniques increment from %d to %d", shadow_techniques, shadow_techniques + 1 );
 
   if ( ++shadow_techniques == 5 || ( shadow_techniques == 4 && rng().roll( 0.5 ) ) )
   {
-    if (sim -> debug) sim -> out_debug.printf( "Shadow techniques proc'd at %d", shadow_techniques);
-    trigger_combo_point_gain( as<int>( spec.shadow_techniques_effect -> effectN( 1 ).base_value() ), gains.shadow_techniques, state -> action );
-    resource_gain( RESOURCE_ENERGY, spec.shadow_techniques_effect -> effectN( 2 ).base_value(), gains.shadow_techniques, state -> action );
-    if (sim -> debug) sim -> out_debug.printf( "Resetting shadow_techniques counter to zero.");
+    if ( sim->debug )
+      sim->out_debug.printf( "Shadow techniques proc'd at %d", shadow_techniques );
+    trigger_combo_point_gain( as<int>( spec.shadow_techniques_effect->effectN( 1 ).base_value() ), gains.shadow_techniques, state->action );
+    resource_gain( RESOURCE_ENERGY, spec.shadow_techniques_effect->effectN( 2 ).base_value(), gains.shadow_techniques, state->action );
+    if ( sim->debug )
+      sim->out_debug.printf( "Resetting shadow_techniques counter to zero." );
     shadow_techniques = 0;
   }
 }
