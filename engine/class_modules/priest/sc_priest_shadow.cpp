@@ -96,8 +96,6 @@ public:
     {
       cooldown->duration += rank2_shadow->effectN( 1 ).time_value();
     }
-
-    // Rank 2 Discipline not implemented
   }
 
   void init() override
@@ -859,6 +857,40 @@ struct vampiric_touch_t final : public priest_spell_t
     if ( d->state->result_amount > 0 && priest().azerite.thought_harvester.enabled() )
     {
       priest().buffs.harvested_thoughts->trigger();
+    }
+  }
+};
+
+struct devouring_plague_t final : public priest_spell_t
+{
+  double insanity_cost;
+
+  devouring_plague_t( priest_t& p, util::string_view options_str )
+    : priest_spell_t( "devouring_plague", p, p.find_class_spell( "Devouring Plague" ) ),
+      insanity_cost( data().cost( POWER_INSANITY ) / 100.0 )
+  {
+    parse_options( options_str );
+    may_crit                        = true;
+    tick_zero                       = false;
+    base_costs[ RESOURCE_INSANITY ] = insanity_cost;
+    tick_may_crit                   = false;
+  }
+
+  void execute() override
+  {
+    priest_spell_t::execute();
+    priest().resource_loss( RESOURCE_INSANITY, insanity_cost, priest().gains.insanity_lost_devouring_plague, execute_state->action );
+  }
+
+  bool ready() override
+  {
+    if ( priest().resources.current[ RESOURCE_INSANITY ] >= insanity_cost )
+    {
+      return priest_spell_t::ready();
+    }
+    else
+    {
+      return false;
     }
   }
 };
@@ -1988,6 +2020,10 @@ action_t* priest_t::create_action_shadow( util::string_view name, util::string_v
   if ( name == "dark_ascension" )
   {
     return new dark_ascension_t( *this, options_str );
+  }
+  if ( name == "devouring_plague" )
+  {
+    return new devouring_plague_t( *this, options_str );
   }
 
   return nullptr;

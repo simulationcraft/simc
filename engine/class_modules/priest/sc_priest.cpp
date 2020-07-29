@@ -475,67 +475,6 @@ using namespace unique_gear;
 
 void init()
 {
-  // Priest Leyshock's Grand Compendium basic hooks
-
-  // Haste
-  // Dark Void
-  expansion::bfa::register_leyshocks_trigger( 263346, STAT_HASTE_RATING );
-  // Dispersion
-  expansion::bfa::register_leyshocks_trigger( 47585, STAT_HASTE_RATING );
-  // Void Torrent
-  expansion::bfa::register_leyshocks_trigger( 263165, STAT_HASTE_RATING );
-  // Mind Bomb
-  expansion::bfa::register_leyshocks_trigger( 205369, STAT_HASTE_RATING );
-  // Holy Nova
-  expansion::bfa::register_leyshocks_trigger( 132157, STAT_HASTE_RATING );
-  // Angelic Feather
-  expansion::bfa::register_leyshocks_trigger( 121536, STAT_HASTE_RATING );
-  // Smite
-  expansion::bfa::register_leyshocks_trigger( 585, STAT_HASTE_RATING );
-
-  // Critical Strike
-  // Psychic Horror
-  expansion::bfa::register_leyshocks_trigger( 64044, STAT_CRIT_RATING );
-  // Void Eruption
-  expansion::bfa::register_leyshocks_trigger( 228260, STAT_CRIT_RATING );
-  // Dispel Magic
-  expansion::bfa::register_leyshocks_trigger( 528, STAT_CRIT_RATING );
-  // Holy Word: Chastise
-  expansion::bfa::register_leyshocks_trigger( 88625, STAT_CRIT_RATING );
-  // Halo
-  expansion::bfa::register_leyshocks_trigger( 120517, STAT_CRIT_RATING );
-
-  // Mastery
-  // Vampiric Embrace
-  expansion::bfa::register_leyshocks_trigger( 15286, STAT_MASTERY_RATING );
-  // Psychic Scream
-  expansion::bfa::register_leyshocks_trigger( 8122, STAT_MASTERY_RATING );
-  // Fade
-  expansion::bfa::register_leyshocks_trigger( 586, STAT_MASTERY_RATING );
-  // Purify Disease
-  expansion::bfa::register_leyshocks_trigger( 213634, STAT_MASTERY_RATING );
-  // Divine Star
-  expansion::bfa::register_leyshocks_trigger( 110744, STAT_MASTERY_RATING );
-  // Holy Fire
-  expansion::bfa::register_leyshocks_trigger( 14914, STAT_MASTERY_RATING );
-  // Halo
-  expansion::bfa::register_leyshocks_trigger( 120517, STAT_MASTERY_RATING );
-
-  // Versatility
-  // Mind Flay
-  expansion::bfa::register_leyshocks_trigger( 15407, STAT_VERSATILITY_RATING );
-  // Shadow Mend
-  expansion::bfa::register_leyshocks_trigger( 186263, STAT_VERSATILITY_RATING );
-  // Shadow Word: Death
-  expansion::bfa::register_leyshocks_trigger( 32379, STAT_VERSATILITY_RATING );
-  // Silence
-  expansion::bfa::register_leyshocks_trigger( 15487, STAT_VERSATILITY_RATING );
-  // Surrender to Madness
-  expansion::bfa::register_leyshocks_trigger( 193223, STAT_VERSATILITY_RATING );
-  // Dark Ascension
-  expansion::bfa::register_leyshocks_trigger( 280711, STAT_VERSATILITY_RATING );
-  // Apotheosis
-  expansion::bfa::register_leyshocks_trigger( 200183, STAT_VERSATILITY_RATING );
 }
 
 }  // namespace items
@@ -577,7 +516,7 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p ) : actor_target_data_t(
 {
   dots.shadow_word_pain = target->get_dot( "shadow_word_pain", &p );
   dots.vampiric_touch   = target->get_dot( "vampiric_touch", &p );
-  dots.vampiric_touch   = target->get_dot( "devouring_plague", &p );
+  dots.devouring_plague = target->get_dot( "devouring_plague", &p );
 
   buffs.schism = make_buff( *this, "schism", p.talents.schism );
 
@@ -623,6 +562,7 @@ priest_t::priest_t( sim_t* sim, util::string_view name, race_e r )
     azerite(),
     azerite_essence(),
     legendary(),
+    conduit(),
     insanity( *this )
 {
   create_cooldowns();
@@ -653,6 +593,7 @@ void priest_t::create_cooldowns()
   cooldowns.dark_ascension     = get_cooldown( "dark_ascension" );
   cooldowns.power_infusion     = get_cooldown( "power_infusion" );
   cooldowns.shadow_word_death  = get_cooldown( "shadow_word_death" );
+  cooldowns.devouring_plague   = get_cooldown( "devouring_plague" );
 
   if ( specialization() == PRIEST_DISCIPLINE )
   {
@@ -693,6 +634,7 @@ void priest_t::create_gains()
   gains.insanity_memory_of_lucid_dreams        = get_gain( "Insanity Gained from Memory of Lucid Dreams" );
   gains.insanity_death_and_madness             = get_gain( "Insanity Gained from Death and Madness" );
   gains.shadow_word_death_self_damage          = get_gain( "Shadow Word: Death self inflicted damage" );
+  gains.insanity_lost_devouring_plague         = get_gain( "Insanity spent on Devouring Plague" );
 }
 
 /** Construct priest procs */
@@ -1103,6 +1045,9 @@ void priest_t::init_spells()
 
   // Shadow Legendaries
   legendary.painbreaker_psalm = find_runeforge_legendary( "Painbreaker Psalm" );
+
+  // Shadow Conduits
+  // conduit.mind_devourer = find_conduit( "Mind Devourer" );
 }
 
 void priest_t::create_buffs()
@@ -1254,46 +1199,28 @@ void priest_t::create_apl_precombat()
   }
 }
 
+// TODO: Adjust these with new consumables in Shadowlands
 std::string priest_t::default_potion() const
 {
-  std::string lvl120_potion = ( specialization() == PRIEST_SHADOW ) ? "unbridled_fury" : "battle_potion_of_intellect";
+  std::string lvl60_potion = ( specialization() == PRIEST_SHADOW ) ? "unbridled_fury" : "battle_potion_of_intellect";
+  std::string lvl50_potion = ( specialization() == PRIEST_SHADOW ) ? "unbridled_fury" : "battle_potion_of_intellect";
 
-  return ( true_level > 110 )
-             ? lvl120_potion
-             : ( true_level >= 100 )
-                   ? "prolonged_power"
-                   : ( true_level >= 90 )
-                         ? "draenic_intellect"
-                         : ( true_level >= 85 ) ? "jade_serpent" : ( true_level >= 80 ) ? "volcanic" : "disabled";
+  return ( true_level > 50 ) ? lvl60_potion : lvl50_potion;
 }
 
 std::string priest_t::default_flask() const
 {
-  return ( true_level > 110 )
-             ? "greater_flask_of_endless_fathoms"
-             : ( true_level >= 100 )
-                   ? "whispered_pact"
-                   : ( true_level >= 90 )
-                         ? "greater_draenic_intellect_flask"
-                         : ( true_level >= 85 ) ? "warm_sun" : ( true_level >= 80 ) ? "draconic_mind" : "disabled";
+  return ( true_level > 50 ) ? "greater_flask_of_endless_fathoms" : "greater_flask_of_endless_fathoms";
 }
 
 std::string priest_t::default_food() const
 {
-  return ( true_level > 110 )
-             ? "baked_port_tato"
-             : ( true_level > 100 )
-                   ? "azshari_salad"
-                   : ( true_level > 90 )
-                         ? "buttered_sturgeon"
-                         : ( true_level >= 90 ) ? "mogu_fish_stew"
-                                                : ( true_level >= 80 ) ? "seafood_magnifique_feast" : "disabled";
+  return ( true_level > 50 ) ? "baked_port_tato" : "baked_port_tato";
 }
 
 std::string priest_t::default_rune() const
 {
-  return ( true_level >= 120 ) ? "battle_scarred"
-                               : ( true_level >= 110 ) ? "defiled" : ( true_level >= 100 ) ? "focus" : "disabled";
+  return ( true_level > 50 ) ? "battle_scarred" : "battle_scarred";
 }
 
 /** NO Spec Combat Action Priority List */

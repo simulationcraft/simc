@@ -127,6 +127,9 @@ public:
     // Runeforge Legendary
     propagate_const<buff_t*> the_penitent_one;
 
+    // Conduits
+    propagate_const<buff_t*> mind_devourer;
+
   } buffs;
 
   // Talents
@@ -326,6 +329,7 @@ public:
     propagate_const<gain_t*> insanity_memory_of_lucid_dreams;
     propagate_const<gain_t*> shadow_word_death_self_damage;
     propagate_const<gain_t*> insanity_death_and_madness;
+    propagate_const<gain_t*> insanity_lost_devouring_plague;
   } gains;
 
   // Benefits
@@ -413,6 +417,11 @@ public:
     const spell_data_t* the_penitent_one;  // Effect implemented, but not hooked up the PW:Radiance
     const spell_data_t* painbreaker_psalm;
   } legendary;
+
+  struct
+  {
+    const spell_data_t* mind_devourer;
+  } conduit;
 
   struct insanity_end_event_t;
 
