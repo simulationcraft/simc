@@ -385,6 +385,7 @@ public:
     // Covenants
     buff_t* kindred_empowerment;
     buff_t* kindred_empowerment_energize;
+    buff_t* ravenous_frenzy;
 
     // Balance
     buff_t* natures_balance;
@@ -744,6 +745,7 @@ public:
     const spell_data_t* convoke_the_spirits;
 
     // Venthyr
+    const spell_data_t* ravenous_frenzy;
 
     // Necrolord
   } covenant;
@@ -1652,19 +1654,21 @@ public:
   bool triggers_galactic_guardian;
   double lucid_dreams_multiplier;
 
-  druid_action_t( const std::string& n, druid_t* player,
-                  const spell_data_t* s = spell_data_t::nil() ) :
-    ab( n, player, s ),
-    form_mask( ab::data().stance_mask() ), may_autounshift( true ), autoshift( 0 ),
-    rend_and_tear( ab::data().affected_by( player -> spec.thrash_bear_dot -> effectN( 2 ) ) ),
-    gore_chance( player -> spec.gore -> effectN( 1 ).percent() ),
-	triggers_galactic_guardian( true ),
-	lucid_dreams_multiplier(p()->lucid_dreams->effectN(1).percent())
+  druid_action_t( const std::string& n, druid_t* player, const spell_data_t* s = spell_data_t::nil() )
+    : ab( n, player, s ),
+      form_mask( ab::data().stance_mask() ),
+      may_autounshift( true ),
+      autoshift( 0 ),
+      rend_and_tear( ab::data().affected_by( player->spec.thrash_bear_dot->effectN( 2 ) ) ),
+      gore_chance( player->spec.gore->effectN( 1 ).percent() ),
+      triggers_galactic_guardian( true ),
+      lucid_dreams_multiplier( p()->lucid_dreams->effectN( 1 ).percent() )
   {
     ab::may_crit      = true;
     ab::tick_may_crit = true;
 
-    gore_chance += p() -> sets -> set( DRUID_GUARDIAN, T19, B2 ) -> effectN( 1 ).percent();
+    gore_chance += p()->sets->set( DRUID_GUARDIAN, T19, B2 )->effectN( 1 ).percent();
+
   }
 
   druid_t* p()
@@ -1718,12 +1722,12 @@ public:
 
   void schedule_execute( action_state_t* s = nullptr ) override
   {
-    if ( ! check_form_restriction() )
+    if ( !check_form_restriction() )
     {
       if ( may_autounshift && ( form_mask & NO_FORM ) == NO_FORM )
-        p() -> shapeshift( NO_FORM );
+        p()->shapeshift( NO_FORM );
       else if ( autoshift )
-        p() -> shapeshift( ( form_e ) autoshift );
+        p()->shapeshift( (form_e)autoshift );
       else
       {
         assert( false && "Action executed in wrong form with no valid form to shift to!" );
@@ -1733,14 +1737,21 @@ public:
     ab::schedule_execute( s );
   }
 
+  void execute() override
+  {
+    ab::execute();
+
+    if ( !ab::background && p()->buff.ravenous_frenzy->check() )
+      p()->buff.ravenous_frenzy->trigger();
+  }
+
   /* Override this function for temporary effects that change the normal
      form restrictions of the spell. eg: Predatory Swiftness */
   virtual bool check_form_restriction()
   {
-    return ! form_mask || ( form_mask & p() -> get_form() ) == p() -> get_form() ||
-      ( p() -> specialization() == DRUID_GUARDIAN &&
-        p() -> buff.bear_form -> check() &&
-        ab::data().affected_by( p() -> buff.bear_form -> data().effectN( 2 ) ) );
+    return !form_mask || ( form_mask & p()->get_form() ) == p()->get_form() ||
+           ( p()->specialization() == DRUID_GUARDIAN && p()->buff.bear_form->check() &&
+             ab::data().affected_by( p()->buff.bear_form->data().effectN( 2 ) ) );
   }
 
   bool ready() override
@@ -2381,11 +2392,14 @@ public:
     if ( data().affected_by( p()->spec.moonkin_form->effectN( 10 ) ) && p()->buff.moonkin_form->up() )
       tm *= 1.0 + p()->spec.moonkin_form->effectN( 10 ).percent();
 
-    if ( data().affected_by( p()->buff.eclipse_lunar->data().effectN( 3 ) ) && p()->buff.eclipse_lunar->up() )
+    if ( data().affected_by( p()->buff.eclipse_lunar->data().effectN( 4 ) ) && p()->buff.eclipse_lunar->up() )
       tm *= 1.0 + p()->mastery.total_eclipse->ok() * p()->cache.mastery_value();
 
-    if ( data().affected_by( p()->buff.eclipse_solar->data().effectN( 3 ) ) && p()->buff.eclipse_solar->up() )
+    if ( data().affected_by( p()->buff.eclipse_solar->data().effectN( 4 ) ) && p()->buff.eclipse_solar->up() )
       tm *= 1.0 + p()->mastery.total_eclipse->ok() * p()->cache.mastery_value();
+
+    if ( data().affected_by( p()->covenant.ravenous_frenzy->effectN( 2 ) ) && p()->buff.ravenous_frenzy->up() )
+      tm *= 1.0 + p()->buff.ravenous_frenzy->stack_value();
 
     return tm;
   }
@@ -2397,11 +2411,14 @@ public:
     if ( data().affected_by( p()->spec.moonkin_form->effectN( 9 ) ) && p()->buff.moonkin_form->up() )
       dm *= 1.0 + p()->spec.moonkin_form->effectN( 9 ).percent();
 
-    if ( data().affected_by( p()->buff.eclipse_lunar->data().effectN( 4 ) ) && p()->buff.eclipse_lunar->up() )
+    if ( data().affected_by( p()->buff.eclipse_lunar->data().effectN( 3 ) ) && p()->buff.eclipse_lunar->up() )
       dm *= 1.0 + p()->mastery.total_eclipse->ok() * p()->cache.mastery_value();
 
-    if ( data().affected_by( p()->buff.eclipse_solar->data().effectN( 4 ) ) && p()->buff.eclipse_solar->up() )
+    if ( data().affected_by( p()->buff.eclipse_solar->data().effectN( 3 ) ) && p()->buff.eclipse_solar->up() )
       dm *= 1.0 + p()->mastery.total_eclipse->ok() * p()->cache.mastery_value();
+
+    if ( data().affected_by( p()->covenant.ravenous_frenzy->effectN( 1 ) ) && p()->buff.ravenous_frenzy->up() )
+      dm *= 1.0 + p()->buff.ravenous_frenzy->stack_value();
 
     return dm;
   }
@@ -7401,6 +7418,31 @@ struct convoke_the_spirits_t : public druid_spell_t
     return true;
   }
 };
+
+struct ravenous_frenzy_t : public druid_spell_t
+{
+  ravenous_frenzy_t( druid_t* player, const std::string& options_str )
+    : druid_spell_t( "ravenous_frenzy", player, player->covenant.ravenous_frenzy, options_str )
+  {
+    harmful = false;
+    dot_duration = 0_ms;
+  }
+
+  bool ready() override
+  {
+    if ( p()->beta_covenant == "venthyr" )
+      return druid_spell_t::ready();
+
+    return false;
+  }
+
+  void execute() override
+  {
+    druid_spell_t::execute();
+
+    p()->buff.ravenous_frenzy->trigger();
+  }
+};
 } // end namespace spells
 
 // ==========================================================================
@@ -7656,6 +7698,7 @@ action_t* druid_t::create_action( util::string_view name,
 
   if ( name == "kindred_spirits" || name == "empower_bond" ) return new kindred_spirits_t( this, options_str );
   if ( name == "convoke_the_spirits" ) return new convoke_the_spirits_t( this, options_str );
+  if ( name == "ravenous_frenzy" ) return new ravenous_frenzy_t( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
@@ -7860,6 +7903,7 @@ void druid_t::init_spells()
   covenant.kindred_empowerment_energize = find_spell( 327139 );
   covenant.kindred_empowerment_damage = find_spell( 338411 );
   covenant.convoke_the_spirits = find_spell( 323764 );
+  covenant.ravenous_frenzy = find_spell( 323546 );
 
   // Runeforge Legendaries
 
@@ -8134,6 +8178,14 @@ void druid_t::create_buffs()
         pool->snapshot();
       }
     } );
+
+  buff.ravenous_frenzy = make_buff( this, "ravenous_frenzy", covenant.ravenous_frenzy )
+    ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
+//    ->set_tick_behavior( buff_tick_behavior::NONE )
+    ->set_default_value( covenant.ravenous_frenzy->effectN( 1 ).percent() )
+    ->set_cooldown( 0_ms )
+    ->set_period( 0_ms )
+    ->add_invalidate( CACHE_HASTE );
 
   // Talent buffs
   buff.tiger_dash = new tiger_dash_buff_t( *this );
@@ -9572,18 +9624,20 @@ double druid_t::composite_spell_haste() const
 {
   double sh = player_t::composite_spell_haste();
 
-  sh *= 1.0 / (1.0 + buff.astral_acceleration->stack_value());
+  sh *= 1.0 / ( 1.0 + buff.astral_acceleration->stack_value() );
 
-  sh *= 1.0 / (1.0 + buff.starlord->stack_value());
+  sh *= 1.0 / ( 1.0 + buff.starlord->stack_value() );
 
-  if (buff.incarnation_moonkin->check())
-      sh /= (1.0 + talent.incarnation_moonkin->effectN(3).percent());
+  sh *= 1.0 / ( 1.0 + buff.ravenous_frenzy->stack_value() );
 
-  if ( buff.sephuzs_secret -> check() )
-     sh *= 1.0 / ( 1.0 + buff.sephuzs_secret -> stack_value() );
+  if ( buff.incarnation_moonkin->check() )
+    sh /= ( 1.0 + talent.incarnation_moonkin->effectN( 3 ).percent() );
 
-  if ( legendary.sephuzs_secret -> ok() )
-     sh *= 1.0 / ( 1.0 + 0.02 ); //Todo(feral): fix spelldata hook.
+  if ( buff.sephuzs_secret->check() )
+    sh *= 1.0 / ( 1.0 + buff.sephuzs_secret->stack_value() );
+
+  if ( legendary.sephuzs_secret->ok() )
+    sh *= 1.0 / ( 1.0 + 0.02 );  // Todo(feral): fix spelldata hook.
 
   return sh;
 }
@@ -9592,15 +9646,17 @@ double druid_t::composite_spell_haste() const
 
 double druid_t::composite_melee_haste() const
 {
-   double mh = player_t::composite_melee_haste();
+  double mh = player_t::composite_melee_haste();
 
-   if ( buff.sephuzs_secret -> check() )
-      mh *= 1.0 / ( 1.0 + buff.sephuzs_secret -> stack_value() );
+  mh *= 1.0 / ( 1.0 + buff.ravenous_frenzy->stack_value() );
 
-   if ( legendary.sephuzs_secret -> ok() )
-      mh *= 1.0 / ( 1.0 + 0.02 ); //Todo(feral): Fix spelldata hook.
+  if ( buff.sephuzs_secret->check() )
+    mh *= 1.0 / ( 1.0 + buff.sephuzs_secret->stack_value() );
 
-   return mh;
+  if ( legendary.sephuzs_secret->ok() )
+    mh *= 1.0 / ( 1.0 + 0.02 );  // Todo(feral): Fix spelldata hook.
+
+  return mh;
 }
 
 // druid_t::composite_spell_power ===========================================
