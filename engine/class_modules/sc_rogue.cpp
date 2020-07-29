@@ -1194,6 +1194,133 @@ public:
 
   virtual double composite_poison_flat_modifier( const action_state_t* ) const
   { return 0.0; }
+
+  double cost() const override
+  {
+    double c = ab::cost();
+
+    if ( c <= 0 )
+      return 0;
+
+    if ( p()->talent.shadow_focus->ok() && p()->stealthed( STEALTH_BASIC | STEALTH_SHADOWDANCE ) )
+    {
+      c *= 1.0 + p()->spell.shadow_focus->effectN( 1 ).percent();
+    }
+
+    if ( c <= 0 )
+      c = 0;
+
+    return c;
+  }
+
+  void consume_resource() override
+  {
+    // Abilities triggered as part of another ability (secondary triggers) do not consume resources
+    if ( secondary_trigger != TRIGGER_NONE )
+    {
+      return;
+    }
+
+    ab::consume_resource();
+
+    p()->spend_combo_points( ab::execute_state );
+
+    if ( ab::result_is_miss( ab::execute_state->result ) && ab::last_resource_cost > 0 )
+    {
+      p()->trigger_energy_refund( ab::execute_state );
+    }
+    else
+    {
+      // Memory of Lucid Dreams
+      if ( p()->azerite.memory_of_lucid_dreams.enabled() && ab::last_resource_cost > 0 )
+      {
+        if ( ab::current_resource() == RESOURCE_ENERGY )
+        {
+          if ( p()->rng().roll( p()->options.memory_of_lucid_dreams_proc_chance ) )
+          {
+            // Gains are rounded up to the nearest whole value, which can be seen with the Lucid Dreams active up
+            const double amount = ceil( ab::last_resource_cost * p()->spell.memory_of_lucid_dreams->effectN( 1 ).percent() );
+            p()->resource_gain( RESOURCE_ENERGY, amount, p()->gains.memory_of_lucid_dreams );
+
+            if ( p()->azerite.memory_of_lucid_dreams.rank() >= 3 )
+            {
+              p()->player_t::buffs.lucid_dreams->trigger();
+            }
+          }
+        }
+      }
+    }
+  }
+
+  void execute() override
+  {
+    ab::execute();
+
+    if ( ab::harmful )
+      p()->restealth_allowed = false;
+
+    p()->trigger_auto_attack( ab::execute_state );
+
+    p()->trigger_ruthlessness_cp( ab::execute_state );
+
+    if ( ab::energize_type != ENERGIZE_NONE && ab::energize_resource == RESOURCE_COMBO_POINT )
+    {
+      if ( affected_by.shadow_blades && p()->buffs.shadow_blades->up() )
+      {
+        p()->trigger_combo_point_gain( as<int>( p()->buffs.shadow_blades->data().effectN( 2 ).base_value() ), p()->gains.shadow_blades, this );
+      }
+
+      if ( affected_by.broadside_cp && p()->buffs.broadside->up() )
+      {
+        p()->trigger_combo_point_gain( as<int>( p()->buffs.broadside->data().effectN( 2 ).base_value() ), p()->gains.broadside, this );
+      }
+    }
+
+    p()->trigger_relentless_strikes( ab::execute_state );
+
+    p()->trigger_elaborate_planning( ab::execute_state );
+    p()->trigger_alacrity( ab::execute_state );
+
+    if ( ab::harmful && p()->stealthed( STEALTH_BASIC | STEALTH_SHADOWMELD ) )
+    {
+      ab::player->buffs.shadowmeld->expire();
+
+      // Check stealthed again after shadowmeld is popped. If we're still stealthed, trigger subterfuge
+      if ( p()->talent.subterfuge->ok() && !p()->buffs.subterfuge->check() && p()->stealthed( STEALTH_BASIC ) )
+        p()->buffs.subterfuge->trigger();
+      else
+        p()->break_stealth();
+    }
+
+    p()->trigger_deepening_shadows( ab::execute_state );
+  }
+
+  void schedule_travel( action_state_t* state ) override
+  {
+    ab::schedule_travel( state );
+
+    if ( ab::energize_type != ENERGIZE_NONE && ab::energize_resource == RESOURCE_COMBO_POINT )
+      p()->trigger_seal_fate( state );
+  }
+
+  bool ready() override
+  {
+    if ( !ab::ready() )
+      return false;
+
+    if ( ab::base_costs[ RESOURCE_COMBO_POINT ] > 0 &&
+      ab::player->resources.current[ RESOURCE_COMBO_POINT ] < ab::base_costs[ RESOURCE_COMBO_POINT ] )
+      return false;
+
+    if ( requires_stealth && !p()->stealthed() )
+    {
+      return false;
+    }
+
+    return true;
+  }
+
+  std::unique_ptr<expr_t> create_expression( util::string_view name_str ) override;
 };
 
 // ==========================================================================
@@ -1232,12 +1359,6 @@ struct rogue_attack_t : public rogue_action_t<melee_attack_t>
   }
 
   void impact( action_state_t* state ) override;
-  double cost() const override;
-  void consume_resource() override;
-  void execute() override;
-  void schedule_travel( action_state_t* state ) override;
-  bool ready() override;
-  std::unique_ptr<expr_t> create_expression( util::string_view name_str ) override;
 };
 
 // ==========================================================================
@@ -1787,13 +1908,11 @@ struct apply_poison_t : public action_t
   }
 };
 
-// ==========================================================================
-// Attacks
-// ==========================================================================
+// rogue_attack_t
 
 void rogue_attack_t::impact( action_state_t* state )
 {
-  melee_attack_t::impact( state );
+  base_t::impact( state );
 
   p()->trigger_main_gauche( state );
   p()->trigger_combat_potency( state );
@@ -1808,132 +1927,6 @@ void rogue_attack_t::impact( action_state_t* state )
     if ( procs_poison() && p()->active_nonlethal_poison )
       p()->active_nonlethal_poison->trigger( state );
   }
-}
-
-double rogue_attack_t::cost() const
-{
-  double c = melee_attack_t::cost();
-
-  if ( c <= 0 )
-    return 0;
-
-  if ( p()->talent.shadow_focus->ok() && p()->stealthed( STEALTH_BASIC | STEALTH_SHADOWDANCE ) )
-  {
-    c *= 1.0 + p()->spell.shadow_focus->effectN( 1 ).percent();
-  }
-
-  if ( c <= 0 )
-    c = 0;
-
-  return c;
-}
-
-void rogue_attack_t::consume_resource()
-{
-  // Abilities triggered as part of another ability (secondary triggers) do not consume resources
-  if ( secondary_trigger != TRIGGER_NONE )
-  {
-    return;
-  }
-
-  melee_attack_t::consume_resource();
-
-  p()->spend_combo_points( execute_state );
-
-  if ( result_is_miss( execute_state->result ) && last_resource_cost > 0 )
-  {
-    p()->trigger_energy_refund( execute_state );
-  }
-  else
-  {
-    // Memory of Lucid Dreams
-    if ( p()->azerite.memory_of_lucid_dreams.enabled() && last_resource_cost > 0 )
-    {
-      if ( rogue_attack_t::current_resource() == RESOURCE_ENERGY )
-      {
-        if ( p()->rng().roll( p()->options.memory_of_lucid_dreams_proc_chance ) )
-        {
-          // Gains are rounded up to the nearest whole value, which can be seen with the Lucid Dreams active up
-          const double amount = ceil( last_resource_cost * p()->spell.memory_of_lucid_dreams->effectN( 1 ).percent() );
-          p()->resource_gain( RESOURCE_ENERGY, amount, p()->gains.memory_of_lucid_dreams );
-
-          if ( p()->azerite.memory_of_lucid_dreams.rank() >= 3 )
-          {
-            p()->player_t::buffs.lucid_dreams->trigger();
-          }
-        }
-      }
-    }
-  }
-}
-
-void rogue_attack_t::execute()
-{
-  melee_attack_t::execute();
-
-  if ( harmful )
-    p()->restealth_allowed = false;
-
-  p()->trigger_auto_attack( execute_state );
-
-  p()->trigger_ruthlessness_cp( execute_state );
-
-  if ( energize_type != ENERGIZE_NONE && energize_resource == RESOURCE_COMBO_POINT )
-  {
-    if ( affected_by.shadow_blades && p()->buffs.shadow_blades->up() )
-    {
-      p()->trigger_combo_point_gain( as<int>( p()->buffs.shadow_blades->data().effectN( 2 ).base_value() ), p()->gains.shadow_blades, this );
-    }
-
-    if ( affected_by.broadside_cp && p()->buffs.broadside->up() )
-    {
-      p()->trigger_combo_point_gain( as<int>( p()->buffs.broadside->data().effectN( 2 ).base_value() ), p()->gains.broadside, this );
-    }
-  }
-
-  p()->trigger_relentless_strikes( execute_state );
-
-  p()->trigger_elaborate_planning( execute_state );
-  p()->trigger_alacrity( execute_state );
-
-  if ( harmful && p()->stealthed( STEALTH_BASIC | STEALTH_SHADOWMELD ) )
-  {
-    player->buffs.shadowmeld->expire();
-
-    // Check stealthed again after shadowmeld is popped. If we're still stealthed, trigger subterfuge
-    if ( p()->talent.subterfuge->ok() && !p()->buffs.subterfuge->check() && p()->stealthed( STEALTH_BASIC ) )
-      p()->buffs.subterfuge->trigger();
-    else
-      p()->break_stealth();
-  }
-
-  p()->trigger_deepening_shadows( execute_state );
-}
-
-
-void rogue_attack_t::schedule_travel( action_state_t* state )
-{
-  melee_attack_t::schedule_travel( state );
-
-  if ( energize_type != ENERGIZE_NONE && energize_resource == RESOURCE_COMBO_POINT )
-    p()->trigger_seal_fate( state );
-}
-
-bool rogue_attack_t::ready()
-{
-  if ( !melee_attack_t::ready() )
-    return false;
-
-  if ( base_costs[ RESOURCE_COMBO_POINT ] > 0 &&
-       player->resources.current[ RESOURCE_COMBO_POINT ] < base_costs[ RESOURCE_COMBO_POINT ] )
-    return false;
-
-  if ( requires_stealth && !p()->stealthed() )
-  {
-    return false;
-  }
-
-  return true;
 }
 
 // Melee Attack =============================================================
@@ -4244,23 +4237,24 @@ struct exsanguinated_expr_t : public expr_t
 
 // rogue_attack_t::create_expression =========================================
 
-std::unique_ptr<expr_t> actions::rogue_attack_t::create_expression( util::string_view name_str )
+template<typename Base>
+std::unique_ptr<expr_t> actions::rogue_action_t<Base>::create_expression( util::string_view name_str )
 {
   if ( util::str_compare_ci( name_str, "cp_gain" ) )
   {
-    return make_mem_fn_expr( "cp_gain", *this, &rogue_attack_t::generate_cp );
+    return make_mem_fn_expr( "cp_gain", *this, &base_t::generate_cp );
   }
   // Garrote and Rupture and APL lines using "exsanguinated"
   // TODO: Add Internal Bleeding (not the same id as Kidney Shot)
   else if ( util::str_compare_ci( name_str, "exsanguinated" ) &&
-            ( data().id() == 703 || data().id() == 1943 || this -> name_str == "crimson_tempest" ) )
+            ( ab::data().id() == 703 || ab::data().id() == 1943 || this -> name_str == "crimson_tempest" ) )
   {
     return std::make_unique<exsanguinated_expr_t>( this );
   }
   else if ( util::str_compare_ci( name_str, "ss_buffed") )
   {
     return make_fn_expr( "ss_buffed", [ this ]() {
-    rogue_td_t* td_ = td( target );
+    rogue_td_t* td_ = td( ab::target );
     if ( ! td_ -> dots.garrote -> is_ticking() )
     {
       return 0.0;
@@ -4269,7 +4263,7 @@ std::unique_ptr<expr_t> actions::rogue_attack_t::create_expression( util::string
   } );
   }
 
-  return melee_attack_t::create_expression( name_str );
+  return ab::create_expression( name_str );
 }
 
 // ==========================================================================
