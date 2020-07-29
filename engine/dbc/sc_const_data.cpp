@@ -1749,7 +1749,7 @@ bool dbc_t::ability_specialization( uint32_t spell_id, std::vector<specializatio
   {
     if ( spec_spell.spell_id == spell_id )
     {
-      spec_list.push_back( static_cast<const specialization_e>( spec_spell.specialization_id ) );
+      spec_list.push_back( static_cast<specialization_e>( spec_spell.specialization_id ) );
     }
   }
 

@@ -522,6 +522,7 @@ struct spell_list_expr_t : public spell_data_expr_t
             [this]( const conduit_entry_t& e ) {
               result_spell_list.push_back( e.spell_id );
         } );
+        break;
       default:
         return expression::TOK_UNKNOWN;
     }

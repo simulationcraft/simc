@@ -89,13 +89,8 @@ public:
 
     spell_power_mod.direct *= 1.0 + player.talents.fortress_of_the_mind->effectN( 4 ).percent();
 
-    auto rank2_shadow = player.find_rank_spell( "Mind Blast", "Rank 2", PRIEST_SHADOW );
-
-    // 07-28-2020 Mind Blast Rank 2 does not apply to SW:V
-    if ( rank2_shadow->ok() && !priest().talents.shadow_word_void->ok() )
-    {
-      cooldown->duration += rank2_shadow->effectN( 1 ).time_value();
-    }
+    // Reduces CD of Mind Blast but not SW:V
+    apply_affecting_aura(player.find_rank_spell( "Mind Blast", "Rank 2", PRIEST_SHADOW ) );
   }
 
   void init() override
@@ -881,7 +876,7 @@ struct devouring_plague_t final : public priest_spell_t
     priest_spell_t::consume_resource();
 
     priest().resource_loss( RESOURCE_INSANITY, insanity_cost, priest().gains.insanity_lost_devouring_plague, execute_state->action );
-    
+
     priest().insanity.adjust_end_event();
   }
 

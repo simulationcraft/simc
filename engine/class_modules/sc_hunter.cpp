@@ -6,6 +6,7 @@
 #include <memory>
 
 #include "simulationcraft.hpp"
+#include "player/covenant.hpp"
 #include "player/pet_spawner.hpp"
 
 namespace
@@ -254,6 +255,24 @@ public:
   } covenants;
 
   struct {
+    // Covenant
+    conduit_data_t empowered_release;
+    conduit_data_t enfeebled_mark;
+    conduit_data_t necrotic_barrage;
+    conduit_data_t spirit_attunement;
+    // Beast Mastery
+    conduit_data_t ferocious_appetite;
+    conduit_data_t one_with_the_beast;
+    // Marksmanship
+    conduit_data_t brutal_projectiles;
+    conduit_data_t deadly_chain;
+    conduit_data_t powerful_precision;
+    conduit_data_t sharpshooters_focus;
+    // Survival
+    conduit_data_t reversal_of_fortune;
+  } conduits;
+
+  struct {
     spell_data_ptr_t call_of_the_wild;
     spell_data_ptr_t craven_strategem; // NYI
     spell_data_ptr_t nessingwarys_apparatus;
@@ -360,6 +379,7 @@ public:
     gain_t* memory_of_lucid_dreams_major;
     gain_t* memory_of_lucid_dreams_minor;
     gain_t* nessingwarys_apparatus;
+    gain_t* reversal_of_fortune;
     gain_t* terms_of_engagement;
   } gains;
 
@@ -2775,15 +2795,6 @@ struct aimed_shot_t : public aimed_shot_base_t
       dual = true;
       base_costs[ RESOURCE_FOCUS ] = 0;
     }
-
-    int n_targets() const override
-    {
-      // XXX: Double Tap Aimed Shots are always as-if affected by Trick Shots in-game
-      if ( p() -> bugs )
-        return trick_shots_targets + 1;
-
-      return aimed_shot_base_t::n_targets();
-    }
   };
 
   bool lock_and_loaded = false;
@@ -3861,6 +3872,14 @@ struct interrupt_base_t: public hunter_spell_t
     hunter_spell_t( n, p, s )
   {
     may_miss = may_block = may_dodge = may_parry = false;
+  }
+
+  void execute() override
+  {
+    hunter_spell_t::execute();
+
+    if ( p() -> conduits.reversal_of_fortune.ok() )
+      p() -> resource_gain( RESOURCE_FOCUS, p() -> conduits.reversal_of_fortune.value(), p() -> gains.reversal_of_fortune, this );
   }
 
   bool target_ready( player_t* candidate_target ) override
@@ -5279,6 +5298,23 @@ void hunter_t::init_spells()
   covenants.resonating_arrow = find_spell( 308491 );
   covenants.wild_spirits     = find_spell( 328231 );
 
+  // Soulbind Conduits
+
+  conduits.empowered_release   = find_conduit_spell( "Empowered Release" );
+  conduits.enfeebled_mark      = find_conduit_spell( "Enfeebled Mark" );
+  conduits.necrotic_barrage    = find_conduit_spell( "Necrotic Barrage" );
+  conduits.spirit_attunement   = find_conduit_spell( "Spirit Attunement" );
+
+  conduits.ferocious_appetite  = find_conduit_spell( "Ferocious Appetite" );
+  conduits.one_with_the_beast  = find_conduit_spell( "One With the Beast" );
+
+  conduits.brutal_projectiles  = find_conduit_spell( "Brutal Projectiles" );
+  conduits.deadly_chain        = find_conduit_spell( "Deadly Chain" );
+  conduits.powerful_precision  = find_conduit_spell( "Powerful Precision" );
+  conduits.sharpshooters_focus = find_conduit_spell( "Sharpshooter's Focus" );
+
+  conduits.reversal_of_fortune = find_conduit_spell( "Reversal of Fortune" );
+
   // Runeforge Legendaries
 
   legendary.call_of_the_wild         = find_runeforge_legendary( "Call of the Wild" );
@@ -5640,6 +5676,7 @@ void hunter_t::init_gains()
   gains.memory_of_lucid_dreams_major = get_gain( "Lucid Dreams (Major)" );
   gains.memory_of_lucid_dreams_minor = get_gain( "Lucid Dreams (Minor)" );
   gains.nessingwarys_apparatus = get_gain( "Nessingwary's Trapping Apparatus" );
+  gains.reversal_of_fortune    = get_gain( "Reversal of Fortune" );
   gains.terms_of_engagement    = get_gain( "terms_of_engagement" );
 }
 

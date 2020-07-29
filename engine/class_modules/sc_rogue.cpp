@@ -974,6 +974,10 @@ public:
     return ab::dot_duration > timespan_t::zero() && ab::base_tick_time > timespan_t::zero();
   }
 
+private:
+  void do_exsanguinate( dot_t* dot, double coeff );
+
+public:
   // Ability triggers
   void spend_combo_points( const action_state_t* );
   void trigger_auto_attack( const action_state_t* );
@@ -1879,8 +1883,8 @@ struct apply_poison_t : public action_t
     {
       if ( ! p -> active_lethal_poison )
       {
-        if ( lethal_str.empty() && p -> specialization() == ROGUE_ASSASSINATION || lethal_str == "deadly"  ) p -> active_lethal_poison = new deadly_poison_t( p );
-        else if ( lethal_str.empty() && p -> specialization() != ROGUE_ASSASSINATION ||  lethal_str == "instant"   ) p -> active_lethal_poison = new instant_poison_t( p );
+        if ( (lethal_str.empty() && p -> specialization() == ROGUE_ASSASSINATION) || lethal_str == "deadly"  ) p -> active_lethal_poison = new deadly_poison_t( p );
+        else if ( (lethal_str.empty() && p -> specialization() != ROGUE_ASSASSINATION) ||  lethal_str == "instant"   ) p -> active_lethal_poison = new instant_poison_t( p );
         else if ( lethal_str == "wound"   ) p -> active_lethal_poison = new wound_poison_t( p );
       }
 
@@ -5406,7 +5410,7 @@ void actions::rogue_action_t<Base>::trigger_restless_blades( const action_state_
 }
 
 template <typename Base>
-void do_exsanguinate( dot_t* dot, double coeff )
+void actions::rogue_action_t<Base>::do_exsanguinate( dot_t* dot, double coeff )
 {
   if ( !dot->is_ticking() )
   {
@@ -5417,8 +5421,7 @@ void do_exsanguinate( dot_t* dot, double coeff )
   // dot -> adjust( coeff );
   // Since the advent of hasted bleed exsanguinate works differently though.
   dot->adjust_full_ticks( coeff );
-
-  Base::cast_state( dot->state )->exsanguinated = true;
+  cast_state( dot->state )->exsanguinated = true;
 }
 
 template <typename Base>
@@ -5428,10 +5431,10 @@ void actions::rogue_action_t<Base>::trigger_exsanguinate( const action_state_t* 
 
   double coeff = 1.0 / ( 1.0 + p()->talent.exsanguinate->effectN( 1 ).percent() );
 
-  do_exsanguinate<base_t>( td->dots.garrote, coeff );
-  do_exsanguinate<base_t>( td->dots.internal_bleeding, coeff );
-  do_exsanguinate<base_t>( td->dots.rupture, coeff );
-  do_exsanguinate<base_t>( td->dots.crimson_tempest, coeff );
+  do_exsanguinate( td->dots.garrote, coeff );
+  do_exsanguinate( td->dots.internal_bleeding, coeff );
+  do_exsanguinate( td->dots.rupture, coeff );
+  do_exsanguinate( td->dots.crimson_tempest, coeff );
 }
 
 template <typename Base>

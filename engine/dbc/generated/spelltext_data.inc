@@ -1,5 +1,5 @@
 // Spell text, wow build 9.0.1.35360
-static const std::array<spelltext_data_t, 15211> __spelltext_data { {
+static const std::array<spelltext_data_t, 15212> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -15157,6 +15157,7 @@ static const std::array<spelltext_data_t, 15211> __spelltext_data { {
   { 339939, "Ancient Aftershock's cooldown is reduced by |cFFFFFFFF${$s1/-1000} sec|r.", 0, 0 },
   { 339942, "Entering Eclipse increases your critical strike chance with Arcane or Nature spells by ${$339943s1*$339943u}%, decreasing by $339943s1% every sec.", 0, 0 },
   { 339943, "$@spelldesc339942", "Critical strike chance with Nature spells increased $w1%.", 0 },
+  { 339946, "$@spelldesc339942", "Critical strike chance with Arcane spells increased $w1%.", 0 },
   { 339948, "$?c3[Shockwave's][Piercing Howl's] cooldown is reduced by |cFFFFFFFF${$s1/-1000} sec|r.", 0, 0 },
   { 339949, "Starsurge and Starfall reduce the cost of Starsurge and Starfall by $340049s1% for $340049d, stacking up to $340049u times.", 0, 0 },
   { 339960, "Send out a fierce roar, attracting enemies within $A1 yards. Ineffective on targets not native to the Shadowlands.", 0, 0 },
