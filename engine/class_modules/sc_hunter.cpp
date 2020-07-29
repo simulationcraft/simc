@@ -1709,7 +1709,6 @@ struct beast_cleave_attack_t: public hunter_pet_action_t<hunter_main_pet_base_t,
   beast_cleave_attack_t( hunter_main_pet_base_t* p ):
     hunter_pet_action_t( "beast_cleave", p, p -> find_spell( 118459 ) )
   {
-    aoe = -1;
     background = true;
     callbacks = false;
     may_miss = false;
