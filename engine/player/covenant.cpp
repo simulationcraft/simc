@@ -13,11 +13,11 @@
 #include "dbc/covenant_data.hpp"
 
 conduit_data_t::conduit_data_t() :
-  m_player( nullptr ), m_conduit( &conduit_rank_entry_t::nil() )
+  m_player( nullptr ), m_conduit( &conduit_rank_entry_t::nil() ), m_spell( spell_data_t::not_found() )
 { }
 
 conduit_data_t::conduit_data_t( const player_t* player, const conduit_rank_entry_t& entry ) :
-  m_player( player ), m_conduit( &entry )
+  m_player( player ), m_conduit( &entry ), m_spell( dbc::find_spell( player, entry.spell_id ) )
 { }
 
 bool conduit_data_t::ok() const
@@ -44,16 +44,6 @@ double conduit_data_t::percent() const
 timespan_t conduit_data_t::time_value() const
 {
   return timespan_t::from_millis( m_conduit->value );
-}
-
-const spell_data_t* conduit_data_t::operator->() const
-{
-  if ( !m_player || m_conduit->spell_id == 0 )
-  {
-    return spell_data_t::not_found();
-  }
-
-  return dbc::find_spell( m_player, m_conduit->spell_id );
 }
 
 namespace util

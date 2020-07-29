@@ -32,6 +32,7 @@ class conduit_data_t
 {
   const player_t*             m_player;
   const conduit_rank_entry_t* m_conduit;
+  const spell_data_t*         m_spell;
 
 public:
   conduit_data_t();
@@ -45,9 +46,10 @@ public:
   timespan_t time_value() const;
 
   operator const spell_data_t*() const
-  { return operator->(); }
+  { return m_spell; }
 
-  const spell_data_t* operator->() const;
+  const spell_data_t* operator->() const
+  { return m_spell; }
 };
 
 namespace util

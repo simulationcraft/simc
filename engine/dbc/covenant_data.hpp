@@ -17,8 +17,9 @@ struct conduit_entry_t
   const char* name;
 
   static const conduit_entry_t& find( util::string_view name, bool ptr, bool tokenized = false );
-  static const conduit_entry_t& find( unsigned id, bool ptr )
-  { return dbc::find<conduit_entry_t>( id, ptr, &conduit_entry_t::id ); }
+  static const conduit_entry_t& find( unsigned conduit_id, bool ptr )
+  { return dbc::find<conduit_entry_t>( conduit_id, ptr, &conduit_entry_t::id ); }
+  static const conduit_entry_t& find_by_spellid( unsigned spell_id, bool ptr );
 
   static const conduit_entry_t& nil()
   { return dbc::nil<conduit_entry_t>; }
