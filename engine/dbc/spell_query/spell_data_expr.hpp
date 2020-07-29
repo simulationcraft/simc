@@ -25,6 +25,8 @@ enum expr_data_e : int
   DATA_MASTERY_SPELL,
   DATA_SPECIALIZATION_SPELL,
   DATA_AZERITE_SPELL,
+  DATA_COVENANT_SPELL,
+  DATA_SOULBIND_SPELL
 };
 
 struct spell_data_expr_t
