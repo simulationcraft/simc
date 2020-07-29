@@ -4264,7 +4264,8 @@ struct phoenix_flames_t : public fire_mage_spell_t
               p()->procs.ignite_new_spread->occur();
             // In game, the existing Ignite is not removed; its
             // state is updated to closely match the source Ignite.
-            source_ignite->copy( t, DOT_COPY_START );
+            dest_ignite->cancel();
+            source_ignite->copy( t, DOT_COPY_CLONE );
             spreads_remaining--;
           }
         }
