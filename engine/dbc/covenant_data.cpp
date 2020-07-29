@@ -78,7 +78,7 @@ const conduit_rank_entry_t& conduit_rank_entry_t::find( unsigned id,
 
   auto it = range::lower_bound( __data, rank, {}, &conduit_rank_entry_t::rank );
 
-  if ( it->rank != rank )
+  if ( it == __data.end() || it->rank != rank )
   {
     return nil();
   }
@@ -98,7 +98,7 @@ const covenant_ability_entry_t& covenant_ability_entry_t::find( util::string_vie
 {
   auto __data = data( ptr );
   auto it = range::lower_bound( __data, name, {}, &covenant_ability_entry_t::name );
-  if ( !util::str_compare_ci( it->name, name ) )
+  if ( it == __data.end() || !util::str_compare_ci( it->name, name ) )
   {
     return nil();
   }
