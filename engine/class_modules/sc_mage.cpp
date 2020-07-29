@@ -693,6 +693,33 @@ public:
     azerite_power_t whiteout;
   } azerite;
 
+  // Runeforge Legendaries
+  struct runeforge_legendaries_t
+  {
+    // Arcane
+    item_runeforge_t arcane_bombardment;
+    item_runeforge_t arcane_harmony;
+    item_runeforge_t siphon_storm;
+    item_runeforge_t temporal_warp;
+
+    // Fire
+    item_runeforge_t fevered_incantation;
+    item_runeforge_t firestorm;
+    item_runeforge_t molten_skyfall;
+    item_runeforge_t sun_kings_blessing;
+
+    // Frost
+    item_runeforge_t cold_front;
+    item_runeforge_t freezing_winds;
+    item_runeforge_t glacial_fragments;
+    item_runeforge_t slick_ice;
+
+    // Shared
+    item_runeforge_t disciplinary_command;
+    item_runeforge_t expanded_potential;
+    item_runeforge_t grisly_icicle;
+  } runeforge;
+
   struct uptimes_t
   {
     uptime_t* burn_phase;
@@ -2161,6 +2188,9 @@ struct arcane_barrage_t : public arcane_mage_spell_t
     double m = arcane_mage_spell_t::composite_da_multiplier( s );
 
     m *= 1.0 + s->n_targets * p()->talents.resonance->effectN( 1 ).percent();
+
+    if ( s->target->health_percentage() < p()->runeforge.arcane_bombardment->effectN( 1 ).base_value() )
+      m *= 1.0 + p()->runeforge.arcane_bombardment->effectN( 2 ).percent();
 
     return m;
   }
@@ -5569,6 +5599,26 @@ void mage_t::init_spells()
   azerite.packed_ice               = find_azerite_spell( "Packed Ice"               );
   azerite.tunnel_of_ice            = find_azerite_spell( "Tunnel of Ice"            );
   azerite.whiteout                 = find_azerite_spell( "Whiteout"                 );
+
+  // Runeforge Legendaries
+  runeforge.arcane_bombardment   = find_runeforge_legendary( "Arcane Bombardment"   );
+  runeforge.arcane_harmony       = find_runeforge_legendary( "Arcane Harmony"       );
+  runeforge.siphon_storm         = find_runeforge_legendary( "Siphon Storm"         );
+  runeforge.temporal_warp        = find_runeforge_legendary( "Temporal Warp"        );
+
+  runeforge.fevered_incantation  = find_runeforge_legendary( "Fevered Incantation"  );
+  runeforge.firestorm            = find_runeforge_legendary( "Firestorm"            );
+  runeforge.molten_skyfall       = find_runeforge_legendary( "Molten Skyfall"       );
+  runeforge.sun_kings_blessing   = find_runeforge_legendary( "Sun King's Blessing"  );
+
+  runeforge.cold_front           = find_runeforge_legendary( "Cold Front"           );
+  runeforge.freezing_winds       = find_runeforge_legendary( "Freezing Winds"       );
+  runeforge.glacial_fragments    = find_runeforge_legendary( "Glacial Fragments"    );
+  runeforge.slick_ice            = find_runeforge_legendary( "Slick Ice"            );
+
+  runeforge.disciplinary_command = find_runeforge_legendary( "Disciplinary Command" );
+  runeforge.expanded_potential   = find_runeforge_legendary( "Expanded Potential"   );
+  runeforge.grisly_icicle        = find_runeforge_legendary( "Grisly Icicle"        );
 
   auto memory = find_azerite_essence( "Memory of Lucid Dreams" );
   lucid_dreams_refund = memory.spell( 1u, essence_type::MINOR )->effectN( 1 ).percent();
