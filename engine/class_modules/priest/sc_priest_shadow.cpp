@@ -89,13 +89,7 @@ public:
 
     spell_power_mod.direct *= 1.0 + player.talents.fortress_of_the_mind->effectN( 4 ).percent();
 
-    auto rank2_shadow = player.find_rank_spell( "Mind Blast", "Rank 2", PRIEST_SHADOW );
-
-    // 07-28-2020 Mind Blast Rank 2 does not apply to SW:V
-    if ( rank2_shadow->ok() && !priest().talents.shadow_word_void->ok() )
-    {
-      cooldown->duration += rank2_shadow->effectN( 1 ).time_value();
-    }
+    apply_affecting_aura(player.find_rank_spell( "Mind Blast", "Rank 2", PRIEST_SHADOW ) );
 
     // Rank 2 Discipline not implemented
   }
