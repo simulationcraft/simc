@@ -308,15 +308,15 @@ public:
 
   struct {
     // Covenant
-    conduit_data_t empowered_release;
+    conduit_data_t empowered_release; // NYI
     conduit_data_t enfeebled_mark;
-    conduit_data_t necrotic_barrage;
+    conduit_data_t necrotic_barrage; // NYI
     conduit_data_t spirit_attunement;
     // Beast Mastery
-    conduit_data_t ferocious_appetite;
+    conduit_data_t ferocious_appetite; // NYI
     conduit_data_t one_with_the_beast;
     // Marksmanship
-    conduit_data_t brutal_projectiles;
+    conduit_data_t brutal_projectiles; // NYI
     conduit_data_t deadly_chain;
     conduit_data_t powerful_precision;
     conduit_data_t sharpshooters_focus;
@@ -1219,7 +1219,8 @@ struct hunter_main_pet_base_t : public hunter_pet_t
 
     buffs.bestial_wrath =
       make_buff( this, "bestial_wrath", find_spell( 186254 ) )
-        -> set_default_value( find_spell( 186254 ) -> effectN( 1 ).percent() )
+        -> set_default_value( find_spell( 186254 ) -> effectN( 1 ).percent() +
+                              o() -> conduits.one_with_the_beast.percent() )
         -> set_cooldown( 0_ms )
         -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
         -> set_stack_change_callback( [this]( buff_t*, int old, int cur ) {
@@ -2350,6 +2351,8 @@ struct wild_spirits_t : hunter_spell_t
     {
       proc = true;
       callbacks = false;
+
+      base_multiplier *= 1 + p -> conduits.spirit_attunement.percent();
     }
   };
 
@@ -2806,7 +2809,8 @@ struct aimed_shot_base_t: public hunter_ranged_attack_t
     trick_shots_targets( static_cast<int>( p -> specs.trick_shots -> effectN( 1 ).base_value() ) )
   {
     radius = 8;
-    base_aoe_multiplier = p -> specs.trick_shots -> effectN( 4 ).percent();
+    base_aoe_multiplier = p -> specs.trick_shots -> effectN( 4 ).percent() +
+                          p -> conduits.deadly_chain.percent();
 
     if ( p -> talents.careful_aim.ok() )
     {
@@ -3106,7 +3110,8 @@ struct rapid_fire_t: public hunter_spell_t
       dual = true;
       direct_tick = true;
       radius = 8;
-      base_aoe_multiplier = p -> specs.trick_shots -> effectN( 5 ).percent();
+      base_aoe_multiplier = p -> specs.trick_shots -> effectN( 5 ).percent() +
+                            p -> conduits.deadly_chain.percent();
 
       if ( p -> find_rank_spell( "Rapid Fire", "Rank 2" ) -> ok() )
         parse_effect_data( p -> find_spell( 263585 ) -> effectN( 1 ) );
@@ -5517,7 +5522,8 @@ void hunter_t::create_buffs()
     make_buff( this, "bestial_wrath", specs.bestial_wrath )
       -> set_cooldown( 0_ms )
       -> set_activated( true )
-      -> set_default_value( specs.bestial_wrath -> effectN( 1 ).percent() );
+      -> set_default_value( specs.bestial_wrath -> effectN( 1 ).percent() +
+                            conduits.one_with_the_beast.percent() );
   if ( talents.spitting_cobra.ok() )
   {
     timespan_t duration = find_spell( 194407 ) -> duration();
@@ -5570,7 +5576,8 @@ void hunter_t::create_buffs()
 
   buffs.precise_shots =
     make_buff( this, "precise_shots", find_spell( 260242 ) )
-      -> set_default_value( find_spell( 260242 ) -> effectN( 1 ).percent() );
+      -> set_default_value( find_spell( 260242 ) -> effectN( 1 ).percent() +
+                            conduits.powerful_precision.percent() );
 
   buffs.steady_focus =
     make_buff( this, "steady_focus", find_spell( 193534 ) )
@@ -5606,6 +5613,8 @@ void hunter_t::create_buffs()
             buffs.eagletalons_true_focus -> trigger();
           }
         } );
+  if ( conduits.sharpshooters_focus.ok() )
+    buffs.trueshot -> buff_duration *= 1 + conduits.sharpshooters_focus.percent();
 
   buffs.volley =
     make_buff( this, "volley", talents.volley )
@@ -5666,12 +5675,16 @@ void hunter_t::create_buffs()
       -> set_default_value( find_spell( 308498 ) -> effectN( 1 ).percent() )
       -> add_invalidate( CACHE_CRIT_CHANCE )
       -> set_activated( true );
+  if ( conduits.enfeebled_mark.ok() )
+    buffs.resonating_arrow -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   buffs.wild_spirits =
       make_buff( this, "wild_spirits", covenants.wild_spirits -> effectN( 1 ).trigger() )
         -> set_default_value( find_spell( 328275 ) -> effectN( 2 ).percent() )
         -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
         -> set_activated( true );
+  if ( conduits.spirit_attunement.ok() )
+    buffs.wild_spirits -> buff_duration += conduits.spirit_attunement -> effectN( 2 ).time_value();
 
   // Legendaries
 
@@ -6446,6 +6459,9 @@ double hunter_t::composite_player_multiplier( school_e school ) const
   double m = player_t::composite_player_multiplier( school );
 
   m *= 1 + buffs.wild_spirits -> check_value();
+
+  if ( conduits.enfeebled_mark.ok() && buffs.resonating_arrow -> check() )
+    m *= 1 + conduits.enfeebled_mark.percent();
 
   return m;
 }
