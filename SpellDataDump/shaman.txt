@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35282 shadowlands-BETA (hotfix 2020-07-28/35282, git build shadowlands 54ab888b01)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35360 shadowlands-BETA (git build shadowlands bdf1b04aec)
 
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -10174,6 +10174,7 @@ Tooltip          : Your next Lightning Bolt or Chain Lightning will deal $s2% in
 
 Name             : Chain Harvest (desc=Venthyr) (id=320674) [Spell Family (11)] 
 Class            : Shaman
+Covenant         : Venthyr
 School           : Shadow
 Spell Type       : Magic
 Range            : 40 yards
@@ -10306,6 +10307,7 @@ Tooltip          : Mana generation rate increased by $s1%.
 
 Name             : Vesper Totem (desc=Kyrian) (id=324386) [Spell Family (11)] 
 Class            : Shaman
+Covenant         : Kyrian
 School           : Arcane
 Spell Type       : Magic
 Resource         : 10% Base Mana (0) (id=192681)
@@ -10389,6 +10391,7 @@ Description      : $@spelldesc324386
 
 Name             : Primordial Wave (desc=Necrolord) (id=326059) [Spell Family (11)] 
 Class            : Shaman
+Covenant         : Necrolord
 School           : Shadow
 Spell Type       : Magic
 Resource         : 10% Base Mana (0) (id=192726)
@@ -10518,6 +10521,7 @@ Tooltip          : Your auto-attacks have a $h% chance to instantly attack again
 
 Name             : Fae Transfusion (desc=Night Fae) (id=328923) [Spell Family (11)] 
 Class            : Shaman
+Covenant         : Night Fae
 School           : Nature
 Spell Type       : None
 Range            : 40 yards
@@ -10922,6 +10926,7 @@ Class            : Shaman
 School           : Physical
 Spell Type       : None
 Labels           : 16: Agonizing Backlash (320035 effect#3)
+Conduit Id       : 120
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

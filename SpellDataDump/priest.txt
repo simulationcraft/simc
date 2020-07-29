@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35282 shadowlands-BETA (hotfix 2020-07-28/35282, git build shadowlands 54ab888b01)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35360 shadowlands-BETA (git build shadowlands bdf1b04aec)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
@@ -8947,6 +8947,7 @@ Description      : If your Vampiric Touch is dispelled, the dispeller flees in H
 
 Name             : Mindgames (desc=Venthyr) (id=323673) [Spell Family (6)] 
 Class            : Priest
+Covenant         : Venthyr
 School           : Shadow
 Spell Type       : Magic
 Range            : 40 yards
@@ -9035,6 +9036,7 @@ Description      : $@spelldesc323673
 
 Name             : Unholy Nova (desc=Necrolord) (id=324724) [Spell Family (6)] 
 Class            : Priest
+Covenant         : Necrolord
 School           : Shadow
 Spell Type       : Magic
 Resource         : 0.5% Base Mana (0) (id=192705)
@@ -9066,6 +9068,7 @@ Tooltip          : Attackers siphon $325118s1 health.
 
 Name             : Boon of the Ascended (desc=Kyrian) (id=325013) [Spell Family (6)] 
 Class            : Priest
+Covenant         : Kyrian
 School           : Arcane
 Spell Type       : None
 Cast Time        : 1.5 seconds
@@ -9271,6 +9274,7 @@ Description      : Explode for $s1 Arcane damage to all enemies and $s2 healing 
 
 Name             : Fae Blessings (desc=Night Fae) (id=327661) [Spell Family (6)] 
 Class            : Priest
+Covenant         : Night Fae
 School           : Nature
 Spell Type       : None
 Resource         : 2% Base Mana (0) (id=192749)
@@ -9519,6 +9523,7 @@ Class            : Priest
 School           : Physical
 Spell Type       : None
 Labels           : 16: Agonizing Backlash (320035 effect#3)
+Conduit Id       : 113
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
