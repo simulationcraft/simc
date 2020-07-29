@@ -230,7 +230,7 @@ struct eclipse_handler_t {
   void cast_wrath();
   void cast_starfire();
   void cast_starsurge();
-  void cast_ca_inc();
+  void cast_ca_inc( bool inc );
   void advance_eclipse();
 
   void reset_stacks();
@@ -406,6 +406,8 @@ public:
     buff_t* primordial_arcanic_pulsar;
     buff_t* oneths_free_starsurge;
     buff_t* oneths_free_starfall;
+    buff_t* runecarve_3_nature_buff;
+    buff_t* runecarve_3_arcane_buff;
 
     // Feral
     buff_t* apex_predator;
@@ -1028,10 +1030,22 @@ void eclipse_handler_t::cast_starsurge()
   }
 }
 
-void eclipse_handler_t::cast_ca_inc()
+void eclipse_handler_t::cast_ca_inc( bool inc )
 {
+  buff_t* buf;
+
   state = IN_BOTH;
   reset_stacks();
+
+  if ( inc )
+    buf = p->buff.incarnation_moonkin;
+  else
+    buf = p->buff.celestial_alignment;
+
+  // The set eclipse duration is not found is spell data so the buff duration is used
+  p->buff.eclipse_lunar->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, buf->data().duration() );
+  p->buff.eclipse_solar->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, buf->data().duration() );
+
   p->uptime.eclipse->update( true, p->sim->current_time() );
 }
 
@@ -2458,6 +2472,14 @@ public:
     if ( data().affected_by( p()->buff.incarnation_moonkin->data().effectN( 1 ) ) &&
          p()->buff.incarnation_moonkin->up() )
       cc += p()->buff.incarnation_moonkin->data().effectN( 1 ).percent();
+
+    if ( data().affected_by( p()->buff.runecarve_3_nature_buff->data().effectN( 1 ) ) &&
+         p()->buff.runecarve_3_nature_buff->up() )
+      cc += p()->buff.runecarve_3_nature_buff->stack_value() / 100.0;
+
+    if ( data().affected_by( p()->buff.runecarve_3_arcane_buff->data().effectN( 1 ) ) &&
+         p()->buff.runecarve_3_arcane_buff->up() )
+      cc += p()->buff.runecarve_3_arcane_buff->stack_value() / 100.0;
 
     return cc;
   }
@@ -5552,10 +5574,7 @@ struct celestial_alignment_t : public druid_spell_t
     // Trigger after triggering the buff so the cast procs the spell
     streaking_stars_trigger( SS_CELESTIAL_ALIGNMENT, nullptr );
 
-    p ()->eclipse_handler.cast_ca_inc ();
-    // The set eclipse duration is not found is spell data so the ca duration is used
-    p ()->buff.eclipse_lunar->trigger (1, buff_t::DEFAULT_VALUE (), 1.0, p ()->buff.celestial_alignment->data ().duration ());
-    p ()->buff.eclipse_solar->trigger (1, buff_t::DEFAULT_VALUE (), 1.0, p ()->buff.celestial_alignment->data ().duration ());
+    p()->eclipse_handler.cast_ca_inc( false );
   }
 
   bool ready() override
@@ -6038,10 +6057,7 @@ struct incarnation_t : public druid_spell_t
 
       streaking_stars_trigger( SS_CELESTIAL_ALIGNMENT, nullptr );
 
-      p ()->eclipse_handler.cast_ca_inc ();
-      // The set eclipse duration is not found is spell data so the inc duration is used
-      p ()->buff.eclipse_lunar->trigger (1, buff_t::DEFAULT_VALUE (), 1.0, p ()->buff.incarnation_moonkin->data ().duration ());
-      p ()->buff.eclipse_solar->trigger (1, buff_t::DEFAULT_VALUE (), 1.0, p ()->buff.incarnation_moonkin->data ().duration ());
+      p()->eclipse_handler.cast_ca_inc( true );
     }
 
     if ( p()->buff.incarnation_bear->check() )
@@ -8072,7 +8088,7 @@ void druid_t::init_spells()
   legendary.oneths_clear_vision = find_runeforge_legendary( "Oneth's Clear Vision" );
   legendary.primordial_arcanic_pulsar = find_runeforge_legendary( "Primordial Arcanic Pulsar" );
   legendary.timeworn_dreamcatcher = find_runeforge_legendary( "Timeworn Dreamcatcher" );
-  legendary.runecarve_3 = find_runeforge_legendary( "Druid Balance Runecarve 3" );
+  legendary.runecarve_3 = find_runeforge_legendary( "Druid - Balance Power 03 (DNT)" );
 
   // Feral
 
@@ -8452,26 +8468,38 @@ void druid_t::create_buffs()
   buff.stellar_drift_2 = make_buff( this, "stellar_drift", find_spell( 202461 ) )
     ->set_duration( spec.starfall->duration() );  // peg stellar drift duration to starfall's
 
-  buff.eclipse_solar = make_buff( this, "eclipse_solar", find_spell( 48517 ) )
-    ->set_duration( spec.eclipse_solar->duration() + talent.soul_of_the_forest->effectN( 2 ).time_value() )
-    ->set_stack_change_callback( [this]( buff_t*, int, int new_ ) {
-    if (!new_)
-      this->eclipse_handler.advance_eclipse();
-  } );
+  buff.eclipse_solar =
+      make_buff( this, "eclipse_solar", spec.eclipse_solar )
+          ->set_duration( spec.eclipse_solar->duration() + talent.soul_of_the_forest->effectN( 2 ).time_value() )
+          ->set_stack_change_callback( [this]( buff_t*, int old_, int new_ ) {
+            if ( !new_ )
+              this->eclipse_handler.advance_eclipse();
+            else if ( legendary.runecarve_3->ok() )
+              buff.runecarve_3_nature_buff->trigger();
+          } );
 
-  buff.eclipse_lunar = make_buff( this, "eclipse_lunar", spec.eclipse_lunar )
-    ->set_default_value( spec.eclipse_lunar->effectN( 2 ).percent() )
-    ->set_duration( spec.eclipse_lunar->duration() + talent.soul_of_the_forest->effectN( 2 ).time_value() )
-    ->set_stack_change_callback( [this]( buff_t*, int, int new_ ) {
-    if ( !new_ )
-      this->eclipse_handler.advance_eclipse();
-  } );
+  buff.eclipse_lunar =
+      make_buff( this, "eclipse_lunar", spec.eclipse_lunar )
+          ->set_default_value( spec.eclipse_lunar->effectN( 2 ).percent() )
+          ->set_duration( spec.eclipse_lunar->duration() + talent.soul_of_the_forest->effectN( 2 ).time_value() )
+          ->set_stack_change_callback( [this]( buff_t*, int old_, int new_ ) {
+            if ( !new_ )
+              this->eclipse_handler.advance_eclipse();
+            else if ( legendary.runecarve_3->ok() )
+              buff.runecarve_3_arcane_buff->trigger();
+          } );
 
   // Balance Legendaries
 
   buff.primordial_arcanic_pulsar = make_buff( this, "primordial_arcanic_pulsar", find_spell( 338825 ) );
-  buff.oneths_free_starsurge = make_buff( this, "oneths_clear_vision", find_spell(339797));
-  buff.oneths_free_starfall = make_buff( this, "oneths_perception", find_spell(339800));
+  buff.oneths_free_starsurge     = make_buff( this, "oneths_clear_vision", find_spell( 339797 ) );
+  buff.oneths_free_starfall      = make_buff( this, "oneths_perception", find_spell( 339800 ) );
+  buff.runecarve_3_nature_buff   = make_buff( this, "runecarve_3_nature", find_spell( 339943 ) )
+                                     ->set_reverse( true )
+                                     ->set_default_value( find_spell( 339943 )->effectN( 1 ).base_value() );
+  buff.runecarve_3_arcane_buff   = make_buff( this, "runecarve_3_arcane", find_spell( 339946 ) )
+                                     ->set_reverse( true )
+                                     ->set_default_value( find_spell( 339946 )->effectN( 1 ).base_value() );
 
   // Feral
 
