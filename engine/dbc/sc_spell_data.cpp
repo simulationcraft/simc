@@ -6,12 +6,14 @@
 #include "dbc.hpp"
 #include "specialization_spell.hpp"
 #include "active_spells.hpp"
+#include "covenant_data.hpp"
 #include "mastery_spells.hpp"
 #include "racial_spells.hpp"
 #include "sim/sc_expressions.hpp"
 #include "azerite.hpp"
 #include "spell_query/spell_data_expr.hpp"
 #include "sim/sc_sim.hpp"
+#include "player/covenant.hpp"
 
 namespace { // anonymous namespace ==========================================
 
@@ -175,7 +177,37 @@ struct spell_desc_vars_t : func_field_t<spell_desc_vars_t, spell_data_t> {
   }
 };
 
-static constexpr std::array<sdata_field_t, 38> _spell_data_fields { {
+struct spell_covenant_id_t : func_field_t<spell_covenant_id_t, spell_data_t> {
+  const char* operator()( const dbc_t& dbc, const spell_data_t& data ) const {
+    const auto& covenant_entry = covenant_ability_entry_t::find( data.name_cstr(), dbc.ptr );
+    if ( covenant_entry.spell_id && covenant_entry.spell_id == data.id() )
+    {
+      return util::covenant_type_string( static_cast<covenant_e>( covenant_entry.covenant_id ) );
+    }
+
+    const auto& soulbind_entry = soulbind_ability_entry_t::find( data.id(), dbc.ptr );
+    if ( soulbind_entry.spell_id && soulbind_entry.spell_id == data.id() )
+    {
+      return util::covenant_type_string( static_cast<covenant_e>( soulbind_entry.covenant_id ) );
+    }
+
+    return "";
+  }
+};
+
+struct spell_conduit_id_t : func_field_t<spell_conduit_id_t, spell_data_t> {
+  unsigned operator()( const dbc_t& dbc, const spell_data_t& data ) const {
+    const auto& conduit_entry = conduit_entry_t::find_by_spellid( data.id(), dbc.ptr );
+    if ( conduit_entry.spell_id && conduit_entry.spell_id == data.id() )
+    {
+      return conduit_entry.id;
+    }
+
+    return 0;
+  }
+};
+
+static constexpr std::array<sdata_field_t, 40> _spell_data_fields { {
   { "name",              FIELD( &spell_data_t::_name ) },
   { "id",                FIELD( &spell_data_t::_id ) },
   { "speed",             FIELD( &spell_data_t::_prj_speed ) },
@@ -214,6 +246,8 @@ static constexpr std::array<sdata_field_t, 38> _spell_data_fields { {
   { "req_max_level",     FIELD( &spell_data_t::_req_max_level ) },
   { "dmg_class",         FIELD( &spell_data_t::_dmg_class ) },
   { "max_targets",       FIELD( &spell_data_t::_max_targets ) },
+  { "covenant",          spell_covenant_id_t{} },
+  { "conduit_id",        spell_conduit_id_t{} },
 } };
 
 #undef FIELD
@@ -277,7 +311,7 @@ struct expr_data_map_t
   expr_data_e type;
 };
 
-static constexpr std::array<expr_data_map_t, 9> expr_map { {
+static constexpr std::array<expr_data_map_t, 12> expr_map { {
   { "spell", DATA_SPELL },
   { "talent", DATA_TALENT },
   { "effect", DATA_EFFECT },
@@ -287,6 +321,9 @@ static constexpr std::array<expr_data_map_t, 9> expr_map { {
   { "mastery", DATA_MASTERY_SPELL },
   { "spec_spell", DATA_SPECIALIZATION_SPELL },
   { "azerite", DATA_AZERITE_SPELL },
+  { "covenant_spell", DATA_COVENANT_SPELL },
+  { "soulbind_spell", DATA_SOULBIND_SPELL },
+  { "conduit_spell", DATA_CONDUIT_SPELL }
 } };
 
 expr_data_e parse_data_type( util::string_view name )
@@ -468,8 +505,23 @@ struct spell_list_expr_t : public spell_data_expr_t
         }
         break;
       }
-
-
+      case DATA_COVENANT_SPELL:
+        range::for_each( covenant_ability_entry_t::data( dbc.ptr ),
+            [this]( const covenant_ability_entry_t& e ) {
+              result_spell_list.push_back( e.spell_id );
+        } );
+        break;
+      case DATA_SOULBIND_SPELL:
+        range::for_each( soulbind_ability_entry_t::data( dbc.ptr ),
+            [this]( const soulbind_ability_entry_t& e ) {
+              result_spell_list.push_back( e.spell_id );
+        } );
+        break;
+      case DATA_CONDUIT_SPELL:
+        range::for_each( conduit_entry_t::data( dbc.ptr ),
+            [this]( const conduit_entry_t& e ) {
+              result_spell_list.push_back( e.spell_id );
+        } );
       default:
         return expression::TOK_UNKNOWN;
     }

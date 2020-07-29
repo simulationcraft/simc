@@ -13,7 +13,7 @@ class DataSet:
     def db(self, dbname):
         return db.datastore(self._options).get(dbname)
 
-    def ids(self):
+    def ids(self, **kwargs):
         raise NotImplementedError
 
     def get(self, **kwargs):
@@ -40,7 +40,7 @@ class RacialSpellSet(DataSet):
 
         return _data
 
-    def ids(self):
+    def ids(self, **kwargs):
         return list(set(v.id_spell for v in self.get()))
 
 class ActiveClassSpellSet(DataSet):
@@ -125,7 +125,7 @@ class ActiveClassSpellSet(DataSet):
 
         return _data
 
-    def ids(self):
+    def ids(self, **kwargs):
         ids = set()
         for v in self.get():
             ids.add(v[1].id)
@@ -171,7 +171,7 @@ class PetActiveSpellSet(ActiveClassSpellSet):
 
         return _data
 
-    def ids(self):
+    def ids(self, **kwargs):
         return list(set(v[1] for v in self.get()))
 
 class MasterySpellSet(DataSet):
@@ -186,7 +186,7 @@ class MasterySpellSet(DataSet):
 
         return _data
 
-    def ids(self):
+    def ids(self, **kwargs):
         return list(set(v.id_mastery_1 for v in self.get()))
 
 class RankSpellSet(DataSet):
@@ -229,3 +229,50 @@ class RankSpellSet(DataSet):
                 _data.append(entry)
 
         return _data
+
+# Master list of all conduits (spells - used for indexing, ids used for option stuff)
+class ConduitSet(DataSet):
+    def _filter(self, **kwargs):
+        _conduits = set()
+
+        for data in self.db('SoulbindConduitRank').values():
+            if data.ref('id_spell').id != 0:
+                _conduits.add((data.ref('id_spell'), data.id_parent))
+
+        return list(_conduits)
+
+    def ids(self, **kwargs):
+        return list(set(v[0].id for v in self.get()))
+
+class SoulbindAbilitySet(DataSet):
+    def _filter(self, **kwargs):
+        _soulbinds = set()
+
+        for entry in self.db('Soulbind').values():
+            for talent in entry.ref('id_garr_talent_tree').child_refs('GarrTalent'):
+                for rank in talent.children('GarrTalentRank'):
+                    if rank.id_spell == 0:
+                        continue
+
+                    if rank.ref('id_spell').id == rank.id_spell:
+                        _soulbinds.add((rank, entry))
+
+        return list(_soulbinds)
+
+    def ids(self):
+        return list(set(v[0].id_spell for v in self.get()))
+
+class CovenantAbilitySet(DataSet):
+    def _filter(self, **kwargs):
+        _covenant_abilities = list()
+
+        for entry in self.db('UICovenantAbility').values():
+            if entry.id_spell == 0:
+                continue
+
+            if entry.ref('id_spell').id != entry.id_spell:
+                continue
+
+            _covenant_abilities.append(entry)
+
+        return _covenant_abilities

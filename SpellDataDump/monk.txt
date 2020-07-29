@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35282 shadowlands-BETA (hotfix 2020-07-28/35282, git build shadowlands 54ab888b01)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35360 shadowlands-BETA (git build shadowlands bdf1b04aec)
 
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -2522,7 +2522,6 @@ Description      : $@spelldesc115181
 Tooltip          : Burning for $w1 Fire damage every $t1 sec.  Dealing $w2% reduced damage to the Monk.
 
 Name             : Invoke Xuen, the White Tiger (id=123904) [Spell Family (53)] 
-Hotfixed         : Affecting Spells
 Class            : Windwalker Monk
 School           : Nature
 Spell Type       : Magic
@@ -8908,6 +8907,7 @@ When your health drops below $s2%, gain a shield absorbing $s3 damage within $30
 
 Name             : Weapons of Order (desc=Kyrian) (id=310454) [Spell Family (53)] 
 Class            : Monk
+Covenant         : Kyrian
 School           : Arcane
 Spell Type       : Magic
 Resource         : 10% Base Mana (0) (id=192412) w/ Mistweaver Monk (id=137024)
@@ -9181,7 +9181,6 @@ Effects          :
 Description      : Touch of Death can now be used on targets with less than $s1% health remaining, dealing $s2% of your maximum health in damage.
 
 Name             : Invoke Yul'on, the Jade Serpent (id=322118) [Spell Family (53)] 
-Hotfixed         : Affecting Spells
 Class            : Mistweaver Monk
 School           : Nature
 Spell Type       : Magic
@@ -9559,7 +9558,6 @@ Tooltip          : Breath of Fire reduces damage taken by an additional $325177s
 Spinning Crane Kick ignites targets with Breath of Fire.
 
 Name             : Invoke Chi-Ji, the Red Crane (id=325197) [Spell Family (53)] 
-Hotfixed         : Affecting Spells
 Replaces         : Invoke Yul'on, the Jade Serpent (id=322118)
 Class            : Monk
 School           : Nature
@@ -9695,6 +9693,7 @@ Description      : Touch of Death spawns $s1 Chi Spheres, granting 1 Chi when yo
 
 Name             : Bonedust Brew (desc=Necrolord) (id=325216) [Spell Family (53)] 
 Class            : Monk
+Covenant         : Necrolord
 School           : Shadow
 Spell Type       : Melee
 Range            : 40 yards
@@ -9727,6 +9726,7 @@ Tooltip          : The Monk's abilities have a $s1% chance to affect the target 
 
 Name             : Fallen Order (desc=Venthyr) (id=326860) [Spell Family (53)] 
 Class            : Monk
+Covenant         : Venthyr
 School           : Physical
 Spell Type       : None
 GCD              : 1 seconds
@@ -9772,6 +9772,7 @@ Effects          :
 
 Name             : Faeline Stomp (desc=Night Fae) (id=327104) [Spell Family (53)] 
 Class            : Monk
+Covenant         : Night Fae
 School           : Nature
 Spell Type       : Melee
 Range            : 30 yards

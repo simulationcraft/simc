@@ -44,6 +44,7 @@ SRC += \
     dbc$(PATHSEP)azerite.cpp \
     dbc$(PATHSEP)client_data.cpp \
     dbc$(PATHSEP)client_hotfix_entry.cpp \
+    dbc$(PATHSEP)covenant_data.cpp \
     dbc$(PATHSEP)gem_data.cpp \
     dbc$(PATHSEP)item_armor.cpp \
     dbc$(PATHSEP)item_bonus.cpp \
@@ -89,6 +90,7 @@ SRC += \
     player$(PATHSEP)actor.cpp \
     player$(PATHSEP)actor_target_data.cpp \
     player$(PATHSEP)azerite_data.cpp \
+    player$(PATHSEP)covenant.cpp \
     player$(PATHSEP)darkmoon_deck.cpp \
     player$(PATHSEP)ground_aoe.cpp \
     player$(PATHSEP)instant_absorb.cpp \

@@ -5,7 +5,7 @@ from collections import defaultdict
 import dbc.db, dbc.data, dbc.parser, dbc.file
 
 from dbc import constants, util
-from dbc.filter import ActiveClassSpellSet, PetActiveSpellSet, RacialSpellSet, MasterySpellSet, RankSpellSet
+from dbc.filter import ActiveClassSpellSet, PetActiveSpellSet, RacialSpellSet, MasterySpellSet, RankSpellSet, ConduitSet, SoulbindAbilitySet, CovenantAbilitySet
 
 # Special hotfix field_id value to indicate an entry is new (added completely through the hotfix entry)
 HOTFIX_MAP_NEW_ENTRY  = 0xFFFFFFFF
@@ -1497,6 +1497,7 @@ class SpellDataGenerator(DataGenerator):
           ( 83381, 5 ),  # BM Pet Kill Command
           ( 259277, 5 ), # SV Pet Kill Command
           ( 206685, 0 ), # BM Spitting Cobra Cobra Spit
+          ( 324156, 0 ), # Flayer's Mark (Covenenat)
         ),
 
         # Rogue:
@@ -1830,9 +1831,13 @@ class SpellDataGenerator(DataGenerator):
           ( 289314, 3 ),       # Burst of Savagery Azerite Trait
           ( 289315, 3 ),       # Burst of Savagery Azerite Trait buff
           ( 305497, 0 ), ( 305496, 0 ), # Thorns pvp talent
-          ( 338825, 1 ),       # Primordial Arcanic Pulsar buff
 
-          # Covenant
+          # Shadowlands Legendary
+          ( 338825, 1 ),       # Primordial Arcanic Pulsar buff
+          ( 339943, 1 ),       # Runecarve #3 Nature crit buff
+          ( 339946, 1 ),       # Runecarve #3 Arcane crit buff
+
+          # Shadowlands Covenant
           ( 326446, 0, True ), # Kyrian Empower Bond on DPS
           ( 326462, 0, True ), # Kyrian Empower Bond on Tank
           ( 326647, 0, True ), # Kyrian Empower Bond on Healer
@@ -4087,3 +4092,112 @@ class RankSpellGenerator(DataGenerator):
 
         self.output_footer()
 
+class ConduitGenerator(DataGenerator):
+    def filter(self):
+        return ConduitSet(self._options).get()
+
+    def generate(self, data=None):
+        data.sort(key = lambda v: v[1])
+
+        self.output_header(
+                header = 'Conduits',
+                type = 'conduit_entry_t',
+                array = 'conduit',
+                length = len(data))
+
+        for spell, conduit_id in data:
+            fields = ['{:3d}'.format(conduit_id),]
+            fields += spell.field('id', 'name')
+
+            self.output_record(fields)
+
+        self.output_footer()
+
+        # Generate spell_id-based index
+        conduit_index = list((v[0].id, index) for index, v in enumerate(data))
+
+        self.output_id_index(
+            index = [ index for _, index in sorted(conduit_index) ],
+            array = 'conduit_spell')
+
+
+class ConduitRankGenerator(DataGenerator):
+    def generate(self, data=None):
+        data = list(filter(lambda v: v.ref('id_spell').id > 0, self.db('SoulbindConduitRank').values()))
+
+        self.output_header(
+                header = 'Conduit ranks',
+                type = 'conduit_rank_entry_t',
+                array = 'conduit_rank',
+                length = len(data))
+
+        for conduit_rank in sorted(data, key = lambda v: (v.id_parent, v.rank)):
+            fields = conduit_rank.field('id_parent', 'rank', 'id_spell', 'spell_mod')
+
+            self.output_record(fields)
+
+        self.output_footer()
+
+class SoulbindAbilityGenerator(DataGenerator):
+    def filter(self):
+        return SoulbindAbilitySet(self._options).get()
+
+    def generate(self, data=None):
+        data.sort(key = lambda v: v[0].id_spell)
+
+        self.output_header(
+                header = 'Soulbind abilities',
+                type = 'soulbind_ability_entry_t',
+                array = 'soulbind_ability',
+                length = len(data))
+
+        for garr_talent, soulbind in data:
+            fields = garr_talent.ref('id_spell').field('id')
+            fields += soulbind.field('id_covenant')
+            fields += garr_talent.ref('id_spell').field('name')
+
+            self.output_record(fields)
+
+        self.output_footer()
+
+class CovenantAbilityGenerator(DataGenerator):
+    def filter(self):
+        return CovenantAbilitySet(self._options).get()
+
+    def generate(self, data=None):
+        # Generate a spell id, classes map so we can explode the ability set
+        # based on class info
+        _class_map = defaultdict(lambda: [0])
+        for entry in self.db('SkillLineAbility').values():
+            if entry.mask_class == 0:
+                continue
+
+            _class_map[entry.id_spell] = util.class_id(mask = entry.mask_class)
+
+        _output_data = []
+        for entry in data:
+            classes = _class_map[entry.id_spell]
+            if isinstance(classes, int):
+                classes = [classes]
+
+            _output_data.extend([
+                (c, entry) for c in classes
+            ])
+
+        _output_data.sort(key = lambda v: v[1].ref('id_spell').name)
+
+        self.output_header(
+                header = 'Covenant abilities',
+                type = 'covenant_ability_entry_t',
+                array = 'covenant_ability',
+                length = len(_output_data))
+
+        for class_id, entry in _output_data:
+            fields = ['{:2d}'.format(class_id)]
+            fields += entry.ref('id_covenant_preview').field('id_covenant')
+            fields += entry.field('ability_type')
+            fields += entry.ref('id_spell').field('id', 'name')
+
+            self.output_record(fields)
+
+        self.output_footer()

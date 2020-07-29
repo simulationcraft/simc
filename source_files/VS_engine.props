@@ -30,6 +30,7 @@ To change the list of source files run synchronize.py
 		<ClInclude Include="..\engine\dbc\azerite.hpp" />
 		<ClInclude Include="..\engine\dbc\client_data.hpp" />
 		<ClInclude Include="..\engine\dbc\client_hotfix_entry.hpp" />
+		<ClInclude Include="..\engine\dbc\covenant_data.hpp" />
 		<ClInclude Include="..\engine\dbc\data_definitions.hh" />
 		<ClInclude Include="..\engine\dbc\data_enums.hh" />
 		<ClInclude Include="..\engine\dbc\dbc.hpp" />
@@ -85,6 +86,7 @@ To change the list of source files run synchronize.py
 		<ClInclude Include="..\engine\player\assessor.hpp" />
 		<ClInclude Include="..\engine\player\azerite_data.hpp" />
 		<ClInclude Include="..\engine\player\consumable.hpp" />
+		<ClInclude Include="..\engine\player\covenant.hpp" />
 		<ClInclude Include="..\engine\player\darkmoon_deck.hpp" />
 		<ClInclude Include="..\engine\player\effect_callbacks.hpp" />
 		<ClInclude Include="..\engine\player\expansion_effects.hpp" />
@@ -298,6 +300,9 @@ To change the list of source files run synchronize.py
 		<ClCompile Include="..\engine\dbc\client_hotfix_entry.cpp">
 			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>
+		<ClCompile Include="..\engine\dbc\covenant_data.cpp">
+			<PrecompiledHeader>NotUsing</PrecompiledHeader>
+		</ClCompile>
 		<ClCompile Include="..\engine\dbc\gem_data.cpp">
 			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>
@@ -432,6 +437,9 @@ To change the list of source files run synchronize.py
 		</ClCompile>
 		<ClCompile Include="..\engine\player\azerite_data.cpp">
 			
+		</ClCompile>
+		<ClCompile Include="..\engine\player\covenant.cpp">
+			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>
 		<ClCompile Include="..\engine\player\darkmoon_deck.cpp">
 			<PrecompiledHeader>NotUsing</PrecompiledHeader>

@@ -7,6 +7,8 @@
 
 #include "dbc.hpp"
 #include "dbc/item_set_bonus.hpp"
+#include "dbc/covenant_data.hpp"
+#include "player/covenant.hpp"
 #include "util/static_map.hpp"
 #include "util/string_view.hpp"
 #include "util/util.hpp"
@@ -632,6 +634,7 @@ static constexpr auto _effect_subtype_strings = util::make_static_map<unsigned, 
   { 291, "Modify Experience Gained from Quests"         },
   { 301, "Absorb Healing"                               },
   { 305, "Modify Min Speed%"                            },
+  { 306, "Modify Crit Chance% from Caster"              },
   { 308, "Modify Crit Chance% from Caster's Spells"     },
   { 318, "Modify Mastery%"                              },
   { 319, "Modify Melee Attack Speed%"                   },
@@ -1271,6 +1274,23 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
     s << std::endl;
   }
 
+  const auto& covenant_spell = covenant_ability_entry_t::find( spell->name_cstr(), dbc.ptr );
+  if ( covenant_spell.spell_id == spell->id() )
+  {
+    s << "Covenant         : ";
+    s << util::inverse_tokenize(
+        util::covenant_type_string( static_cast<covenant_e>( covenant_spell.covenant_id ) ) );
+    s << std::endl;
+  }
+
+  const auto& soulbind_spell = soulbind_ability_entry_t::find( spell->id(), dbc.ptr );
+  if ( soulbind_spell.spell_id == spell->id() )
+  {
+    s << "Covenant         : ";
+    s << util::inverse_tokenize(
+        util::covenant_type_string( static_cast<covenant_e>( soulbind_spell.covenant_id ) ) );
+    s << std::endl;
+  }
   std::string school_string = util::school_type_string( spell -> get_school_type() );
   school_string[ 0 ] = std::toupper( school_string[ 0 ] );
   s << "School           : " << school_string << std::endl;
@@ -1593,6 +1613,12 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
 
     s << azerite_essence_str( spell, data );
     s << std::endl;
+  }
+
+  const auto& conduit = conduit_entry_t::find_by_spellid( spell->id(), dbc.ptr );
+  if ( conduit.spell_id && conduit.spell_id == spell->id() )
+  {
+    s << "Conduit Id       : " << conduit.id << std::endl;
   }
 
   if ( spell -> proc_flags() > 0 )

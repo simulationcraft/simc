@@ -31,6 +31,7 @@
 #include "player/actor_target_data.hpp"
 #include "player/azerite_data.hpp"
 #include "player/consumable.hpp"
+#include "player/covenant.hpp"
 #include "player/instant_absorb.hpp"
 #include "player/pet.hpp"
 #include "player/player_demise_event.hpp"
@@ -1236,6 +1237,7 @@ player_t::player_t( sim_t* s, player_e t, util::string_view n, race_e r )
   {
     azerite = azerite::create_state( this );
     azerite_essence = azerite::create_essence_state( this );
+    covenant = covenant::create_player_state( this );
   }
 
   // Set the gear object to a special default value, so we can support gear_x=0 properly.
@@ -9429,7 +9431,27 @@ azerite_essence_t player_t::find_azerite_essence( util::string_view name, bool t
   return azerite_essence->get_essence( name, tokenized );
 }
 
-item_runeforge_t player_t::find_runeforge_legendary( const std::string& name ) const
+conduit_data_t player_t::find_conduit_spell( util::string_view name ) const
+{
+  if ( !covenant )
+  {
+    return {};
+  }
+
+  return covenant->get_conduit_ability( name );
+}
+
+const spell_data_t* player_t::find_soulbind_spell( util::string_view name ) const
+{
+  if ( !covenant )
+  {
+    return spell_data_t::not_found();
+  }
+
+  return covenant->get_soulbind_ability( name );
+}
+
+item_runeforge_t player_t::find_runeforge_legendary( util::string_view name ) const
 {
   auto entries = runeforge_legendary_entry_t::find( name, dbc->ptr );
   if ( entries.size() == 0 )
@@ -10251,6 +10273,11 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
     return azerite_essence->create_expression( splits );
   }
 
+  if ( splits[ 0 ] == "soulbind" || splits[ 0 ] == "conduit" || splits[ 0 ] == "covenant" )
+  {
+    return covenant->create_expression( splits );
+  }
+
   return sim->create_expression( expression_str );
 }
 
@@ -10560,6 +10587,19 @@ std::string player_t::create_profile( save_e stype )
         profile_str += "azerite_essences=" + azerite_essence_str + term;
       }
     }
+
+    if ( covenant )
+    {
+      if ( !covenant->covenant_option_str().empty() )
+      {
+        profile_str += covenant->covenant_option_str() + term;
+      }
+
+      if ( !covenant->soulbind_option_str().empty() )
+      {
+        profile_str += covenant->soulbind_option_str() + term;
+      }
+    }
   }
 
   if ( stype & SAVE_PLAYER )
@@ -10799,6 +10839,11 @@ void player_t::copy_from( player_t* source )
     azerite_essence -> copy_state( source -> azerite_essence );
   }
 
+  if ( covenant )
+  {
+    covenant->copy_state( source->covenant );
+  }
+
   talent_overrides_str = source->talent_overrides_str;
   action_list_str      = source->action_list_str;
   alist_map            = source->alist_map;
@@ -11009,6 +11054,11 @@ void player_t::create_options()
           azerite.get(), std::placeholders::_1, std::placeholders::_2, std::placeholders::_3 ) ) );
     add_option( opt_func( "azerite_essences", std::bind( &azerite::azerite_essence_state_t::parse_azerite_essence,
           azerite_essence.get(), std::placeholders::_1, std::placeholders::_2, std::placeholders::_3 ) ) );
+
+    if ( covenant )
+    {
+      covenant->register_options( this );
+    }
   }
 
   // Obsolete options

@@ -863,7 +863,7 @@
     "parent": "SoulbindConduit",
     "fields": [
       { "data_type": "i", "field": "rank",     "formats": { "cpp": "%2u" } },
-      { "data_type": "i", "field": "id_spell", "formats": { "cpp": "%7u" }, "ref": "SpellName" },
+      { "data_type": "i", "field": "id_spell", "formats": { "cpp": "%6u" }, "ref": "SpellName" },
       { "data_type": "f", "field": "spell_mod" }
     ]
   },
@@ -1202,6 +1202,30 @@
       { "data_type": "i", "field": "id_replace", "formats": { "cpp": "%7u" }, "ref": "SpellName" },
 
       { "data_type": "B", "field": "unk", "elements": 2                      }
+    ]
+  },
+  "UICovenantAbility": {
+    "fields": [
+      { "data_type": "i", "field": "id_covenant_preview", "ref": "UICovenantPreview" },
+      { "data_type": "i", "field": "id_spell", "formats": { "cpp": "%6u" }, "ref": "SpellName" },
+      { "data_type": "b", "field": "ability_type" }
+    ]
+  },
+  "UICovenantPreview": {
+    "fields": [
+      { "data_type": "i", "field": "id" },
+      { "data_type": "i", "field": "id_covenant" },
+      { "data_type": "i", "field": "id_ui_map" },
+      { "data_type": "i", "field": "crest" },
+      { "data_type": "i", "field": "id_transmog_set_0" },
+      { "data_type": "i", "field": "texture_kit" },
+      { "data_type": "i", "field": "id_mount" },
+      { "data_type": "i", "field": "id_player_choice_response" },
+      { "data_type": "i", "field": "unk_8" },
+      { "data_type": "i", "field": "unk_9" },
+      { "data_type": "i", "field": "id_transmog_set_1" },
+      { "data_type": "i", "field": "id_transmog_set_2" },
+      { "data_type": "i", "field": "id_transmog_set_3" }
     ]
   }
 }

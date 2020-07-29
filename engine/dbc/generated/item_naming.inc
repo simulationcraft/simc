@@ -1,5 +1,5 @@
-// Item name descriptions, wow build 9.0.1.35282
-static const std::array<item_name_description_t, 351> __item_name_description_data { {
+// Item name descriptions, wow build 9.0.1.35360
+static const std::array<item_name_description_t, 354> __item_name_description_data { {
   {     2, "Now with extra description"                  },
   {    20, "Season 10"                                   },
   {   226, "Season 10 Elite"                             },
@@ -351,5 +351,8 @@ static const std::array<item_name_description_t, 351> __item_name_description_da
   { 13591, "Renown"                                      },
   { 13592, "Queen's Conservatory"                        },
   { 13593, "Prestige"                                    },
+  { 13594, "Necrolord Sanctum"                           },
+  { 13595, "Necrolord Prestige"                          },
+  { 13596, "Travel Network"                              },
 } };
 

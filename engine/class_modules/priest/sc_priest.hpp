@@ -273,10 +273,8 @@ public:
 
     // Discipline
     propagate_const<cooldown_t*> chakra;
-    propagate_const<cooldown_t*> mindbender;
     propagate_const<cooldown_t*> penance;
     propagate_const<cooldown_t*> power_word_shield;
-    propagate_const<cooldown_t*> shadowfiend;
     propagate_const<cooldown_t*> silence;
 
     // Shadow
@@ -416,6 +414,7 @@ public:
     const spell_data_t* kiss_of_death;
     const spell_data_t* the_penitent_one;  // Effect implemented, but not hooked up the PW:Radiance
     const spell_data_t* painbreaker_psalm;
+    const spell_data_t* shadowflame_prism; // TODO: Add 20% damage modifier
   } legendary;
 
   struct

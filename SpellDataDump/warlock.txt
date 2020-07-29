@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35282 shadowlands-BETA (hotfix 2020-07-28/35282, git build shadowlands 54ab888b01)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35360 shadowlands-BETA (git build shadowlands bdf1b04aec)
 
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
@@ -367,7 +367,7 @@ Duration         : 18 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 6 maximum
 Proc Chance      : 101%
-Affecting spells : Mastery: Potent Afflictions (77215 effect#1), Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Epidemic (184922 effect#1), Writhe in Agony (196102 effect#1), Hood of Eternal Disdain (205797 effect#1), Agony (231792 effect#1), Tormented Agony (252938 effect#1), Creeping Death (264000 effect#1), Sudden Onset (278721 effect#1), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), Wrath of Consumption (337130 effect#1)
+Affecting spells : Mastery: Potent Afflictions (77215 effect#1), Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Epidemic (184922 effect#1), Writhe in Agony (196102 effect#1), Hood of Eternal Disdain (205797 effect#1), Agony (231792 effect#1), Tormented Agony (252938 effect#1), Creeping Death (264000 effect#1), Sudden Onset (278721 effect#1), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), Wrath of Consumption (337130 effect#1), Rolling Agony (339481 effect#1)
 Family Flags     : 10, 49
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ........ 
@@ -732,7 +732,7 @@ Duration         : 10 seconds
 Cooldown         : 6 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Single-Minded Fury (81099 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Crackling Thunder (203201 effect#1), Kakushan's Stormscale Gauntlets (207844 effect#1), Colossus Smash (208086 effect#1), Deep Wounds (262115 effect#2), Deafening Crash (272824 effect#2), Siegebreaker (280773 effect#1), Unnerving Focus (337155 effect#5)
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Single-Minded Fury (81099 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Crackling Thunder (203201 effect#1), Kakushan's Stormscale Gauntlets (207844 effect#1), Colossus Smash (208086 effect#1), Deep Wounds (262115 effect#2), Deafening Crash (272824 effect#2), Siegebreaker (280773 effect#1), Unnerving Focus (337155 effect#5), Show of Force (339825 effect#1)
 Family Flags     : 7, 8, 9, 18
 Attributes       : ....x... ........ x.x..x.. ........   ...x...x .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1415,13 +1415,13 @@ Velocity         : 25 yards/sec
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 5 maximum
 Proc Chance      : 101%
-Affecting spells : Backdraft (117828 effect#1), Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Flamelicked (185229 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Chaotic Flames (253092 effect#1), Conflagrate (265931 effect#1), Chaotic Inferno (279673 effect#1), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), Chaos Shards (287637 effect#2), Decimating Bolt (325299 effect#1), Wrath of Consumption (337130 effect#1), Odr, Shawl of the Ymirjar (337164 effect#1)
+Affecting spells : Backdraft (117828 effect#1), Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Immolate (157736 effect#2), Flamelicked (185229 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Chaotic Flames (253092 effect#1), Conflagrate (265931 effect#1), Chaotic Inferno (279673 effect#1), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), Chaos Shards (287637 effect#2), Decimating Bolt (325299 effect#1), Wrath of Consumption (337130 effect#1), Odr, Shawl of the Ymirjar (337164 effect#1)
 Family Flags     : 38, 49, 118
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ......x. ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ .....x.. 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
@@ -1652,6 +1652,8 @@ Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ........ ........ x.x..... ........ 
                  : Magic Hostile Spell, Periodic
+Affecting spells : Reap and Sow (236114 effect#1), Cold Embrace (339576 effect#1)
+Family Flags     : 31
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1674,7 +1676,9 @@ Duration         : 12 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 3 maximum
 Proc Chance      : 101%
+Affecting spells : Reap and Sow (236114 effect#1), Cold Embrace (339576 effect#1)
 Triggered by     : Shadow Embrace (32388)
+Family Flags     : 31
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ xx...... ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2110,7 +2114,7 @@ Cooldown         : 30 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Affecting spells : Havoc (335174 effect#1)
+Affecting spells : Havoc (335174 effect#1), Duplicitous Havoc (339890 effect#1)
 Family Flags     : 20
 Attributes       : ........ ........ x....... ........   ...x...x ..x..... ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ ..x..... ........ 
@@ -3151,7 +3155,7 @@ Cast Time        : 3 seconds
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Backdraft (117828 effect#1), Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Item - Warlock T17 Destruction 4P Bonus (165452 effect#1), Flamelicked (185229 effect#1), Item - Warlock T18 Destruction 2P Bonus (185965 effect#1), Embrace Chaos (212019 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Crashing Chaos (277706 effect#1), Chaotic Inferno (278748 effect#2), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), Wrath of Consumption (337130 effect#1), Odr, Shawl of the Ymirjar (337164 effect#1), Madness  of the Azj'Aqir (337170 effect#1), 
+Affecting spells : Backdraft (117828 effect#1), Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Immolate (157736 effect#2), Item - Warlock T17 Destruction 4P Bonus (165452 effect#1), Flamelicked (185229 effect#1), Item - Warlock T18 Destruction 2P Bonus (185965 effect#1), Embrace Chaos (212019 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Crashing Chaos (277706 effect#1), Chaotic Inferno (278748 effect#2), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), Wrath of Consumption (337130 effect#1), Odr, Shawl of the Ymirjar (337164 effect#1), Madness  of the Azj'Aqir (337170 effect#1), Soul Tithe (340238 effect#1)
 Family Flags     : 45, 49, 118
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3573,8 +3577,12 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=219942)   : Apply Aura (6) | Periodic Damage (3): fire every 3 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+#2 (id=839431)   : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Affected Spells: Incinerate (29722), Chaos Bolt (116858), Incinerate (244670)
+                   Family Flags: 38, 45
 Description      : $@spelldesc348
-Tooltip          : Suffering $w1 Fire damage every $t1 sec.
+Tooltip          : Suffering $w1 Fire damage every $t1 sec.$?e1[ Damage taken by Chaos Bolt and Incinerate increased by $w2%.][]
 Variables        : $mastery=$?s77220[${((100+$77220m3)/100)}][${1.00}]
 
 Name             : Warlock (id=157903) [Passive, Hidden] 
@@ -3949,6 +3957,7 @@ Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ........ ........ ..x..... ........ 
                  : Periodic
+Affecting spells : Soul Tithe (340238 effect#1)
 Family Flags     : 127
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5059,6 +5068,7 @@ Effects          :
                    Family Flags: 125
 #4 (id=370676)   : Apply Aura (6) | Add Percent Modifier (108): Spell Proc Chance (18)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 18 | Target: Self (1)
+                   Affected Spells: Soul Rot (325640)
                    Family Flags: 112
 Description      : $@spelldesc216698
 Tooltip          : Increases your damage by $s1%, and doubles the effectiveness of the other traits of the Deadwind Harvester.
@@ -5463,7 +5473,7 @@ Spell Type       : None
 Spell Level      : 12
 Range            : 100 yards
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Backdraft (117828 effect#1), Flamelicked (185229 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Chaotic Flames (253092 effect#1), Conflagrate (265931 effect#1), Chaotic Inferno (279673 effect#1), Chaos Shards (287637 effect#2), Decimating Bolt (325299 effect#1), Odr, Shawl of the Ymirjar (337164 effect#1)
+Affecting spells : Backdraft (117828 effect#1), Immolate (157736 effect#2), Flamelicked (185229 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Chaotic Flames (253092 effect#1), Conflagrate (265931 effect#1), Chaotic Inferno (279673 effect#1), Chaos Shards (287637 effect#2), Decimating Bolt (325299 effect#1), Odr, Shawl of the Ymirjar (337164 effect#1)
 Family Flags     : 38, 118
 Attributes       : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ......x. 
@@ -9377,6 +9387,7 @@ When your health drops below $s2%, gain a shield absorbing $s3 damage within $30
 
 Name             : Scouring Tithe (desc=Kyrian) (id=312321) [Spell Family (5)] 
 Class            : Warlock
+Covenant         : Kyrian
 School           : Arcane
 Spell Type       : Magic
 Resource         : 2% Base Mana (0) (id=192419)
@@ -9549,6 +9560,7 @@ Tooltip          : Damage taken reduced by $w3%.
 
 Name             : Impending Catastrophe (desc=Venthyr) (id=321792) [Spell Family (5)] 
 Class            : Warlock
+Covenant         : Venthyr
 School           : Shadow
 Spell Type       : None
 Resource         : 4% Base Mana (0) (id=192622)
@@ -9658,7 +9670,7 @@ Range            : 100 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), Wrath of Consumption (337130 effect#1)
+Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), Wrath of Consumption (337130 effect#1), Soul Tithe (340238 effect#1)
 Family Flags     : 49, 127
 Attributes       : ........ ........ x....... .....x..   ...x...x ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ......x. 
@@ -9676,6 +9688,7 @@ Variables        : $damage=${$bc1*($SP)*(1+$@versadmg)}
 
 Name             : Decimating Bolt (desc=Necrolord) (id=325289) [Spell Family (5)] 
 Class            : Warlock
+Covenant         : Necrolord
 School           : Shadow
 Spell Type       : Magic
 Resource         : 4% Base Mana (0) (id=192711)
@@ -9720,7 +9733,7 @@ Stacks           : 3 maximum
 Proc Chance      : 100%
 Proc Flags       : ........ ....x... x....... ........ 
                  : Generic Hostile Spell, Magic Hostile Spell
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : .......x ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9741,6 +9754,7 @@ Tooltip          : Damage of $?s137046[Incinerate]?s198590[Drain Soul][Shadow Bo
 
 Name             : Soul Rot (desc=Night Fae) (id=325640) [Spell Family (5)] 
 Class            : Warlock
+Covenant         : Night Fae
 School           : Nature
 Spell Type       : Magic
 Resource         : 0 - 20 Health (-2) (id=192719)
@@ -9750,15 +9764,15 @@ GCD              : 1.5 seconds
 Duration         : 8 seconds
 Cooldown         : 60 seconds
 Labels           : 16: Agonizing Backlash (320035 effect#3)
-Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), Wrath of Consumption (337130 effect#1)
-Family Flags     : 49
+Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Deadwind Harvester (216708 effect#4), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), Wrath of Consumption (337130 effect#1), Exhumed Soul (340348 effect#1), 
+Family Flags     : 49, 112
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
                  : ........ .x...... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : Tick on application (169), Periodic effect can crit (265)
 Effects          :
 #1 (id=816046)   : Dummy (3)

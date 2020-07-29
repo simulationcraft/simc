@@ -356,7 +356,6 @@ public:
   // Data collection
   auto_dispose<std::vector<cooldown_waste_data_t*> > cooldown_waste_data_list;
   auto_dispose<std::vector<shatter_source_t*> > shatter_source_list;
-  std::unordered_map<std::string, std::shared_ptr<sample_data_helper_t> > consumed_winters_chill_stacks;
 
   // Cached actions
   struct actions_t
@@ -524,6 +523,8 @@ public:
     proc_t* brain_freeze_used;
     proc_t* fingers_of_frost;
     proc_t* fingers_of_frost_wasted;
+    proc_t* winters_chill_applied;
+    proc_t* winters_chill_consumed;
   } procs;
 
   struct shuffled_rngs_t
@@ -630,7 +631,6 @@ public:
     const spell_data_t* supernova;
     const spell_data_t* flame_on;
     const spell_data_t* alexstraszas_fury;
-    const spell_data_t* phoenix_flames;
     const spell_data_t* frozen_touch;
     const spell_data_t* chain_reaction;
     const spell_data_t* ebonbolt;
@@ -781,19 +781,6 @@ public:
     return cdw;
   }
 
-  sample_data_helper_t* get_winters_chill_data( const action_t* a )
-  {
-    for ( auto wc_stacks : consumed_winters_chill_stacks )
-    {
-      if ( wc_stacks.first == a->name_str )
-        return wc_stacks.second.get();
-    }
-
-    std::shared_ptr<sample_data_helper_t> data( new sample_data_helper_t( a->name_str, true ) );
-    consumed_winters_chill_stacks[ a->name_str ] = data;
-    return data.get();
-  }
-
   shatter_source_t* get_shatter_source( const std::string& name )
   {
     for ( auto ss : shatter_source_list )
@@ -807,14 +794,6 @@ public:
     return ss;
   }
 
-  enum leyshock_trigger_e
-  {
-    LEYSHOCK_EXECUTE,
-    LEYSHOCK_IMPACT,
-    LEYSHOCK_TICK,
-    LEYSHOCK_BUMP
-  };
-
   void      update_rune_distance( double distance );
   action_t* get_icicle();
   bool      trigger_delayed_buff( buff_t* buff, double chance, timespan_t delay = 0.15_s );
@@ -824,7 +803,6 @@ public:
   void      trigger_icicle_gain( player_t* icicle_target, action_t* icicle_action );
   void      trigger_evocation( timespan_t duration_override = timespan_t::min(), bool hasted = true );
   void      trigger_arcane_charge( int stacks = 1 );
-  void      trigger_leyshock( unsigned id, const action_state_t* s, leyshock_trigger_e trigger_type );
   bool      trigger_crowd_control( const action_state_t* s, spell_mechanic type );
   void      trigger_lucid_dreams( player_t* trigger_target, double cost );
   void      update_enlightened();
@@ -1206,13 +1184,6 @@ struct incanters_flow_t : public buff_t
     set_period( p->talents.incanters_flow->effectN( 1 ).period() );
     set_chance( p->talents.incanters_flow->ok() );
     set_default_value( data().effectN( 1 ).percent() );
-
-    // Leyshock
-    set_stack_change_callback( [ p ] ( buff_t* b, int old, int cur )
-    {
-      if ( old == 3 && cur == 4 )
-        p->trigger_leyshock( b->data().id(), nullptr, mage_t::LEYSHOCK_BUMP );
-    } );
   }
 
   void reset() override
@@ -1519,7 +1490,6 @@ public:
   void execute() override
   {
     spell_t::execute();
-    p()->trigger_leyshock( id, execute_state, mage_t::LEYSHOCK_EXECUTE );
 
     // Make sure we remove all cost reduction buffs before we trigger new ones.
     // This will prevent for example Arcane Blast consuming its own Clearcasting proc.
@@ -1540,24 +1510,12 @@ public:
       p()->buffs.ice_floes->decrement();
   }
 
-  void tick( dot_t* d ) override
-  {
-    spell_t::tick( d );
-    p()->trigger_leyshock( id, d->state, mage_t::LEYSHOCK_TICK );
-  }
-
   void last_tick( dot_t* d ) override
   {
     spell_t::last_tick( d );
 
     if ( channeled && affected_by.ice_floes )
       p()->buffs.ice_floes->decrement();
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    spell_t::impact( s );
-    p()->trigger_leyshock( id, s, mage_t::LEYSHOCK_IMPACT );
   }
 
   void consume_resource() override
@@ -1674,10 +1632,10 @@ struct fire_mage_spell_t : public mage_spell_t
       if ( triggers_ignite )
         trigger_ignite( s );
 
-      if ( triggers_hot_streak )
+      if ( triggers_hot_streak && s->chain_target == 0 )
         handle_hot_streak( s );
 
-      if ( triggers_kindling && p()->talents.kindling->ok() && s->result == RESULT_CRIT )
+      if ( triggers_kindling && p()->talents.kindling->ok() && s->result == RESULT_CRIT && s->chain_target == 0 )
         p()->cooldowns.combustion->adjust( -p()->talents.kindling->effectN( 1 ).time_value() );
     }
   }
@@ -1917,6 +1875,7 @@ struct frost_mage_spell_t : public mage_spell_t
 
   proc_t* proc_brain_freeze;
   proc_t* proc_fof;
+  proc_t* proc_winters_chill_consumed;
 
   bool track_shatter;
   shatter_source_t* shatter_source;
@@ -1941,6 +1900,9 @@ struct frost_mage_spell_t : public mage_spell_t
   {
     if ( initialized )
       return;
+
+    if ( consumes_winters_chill )
+      proc_winters_chill_consumed = p()->get_proc( "Winter's Chill stacks consumed by " + std::string( data().name_cstr() ) );
 
     mage_spell_t::init();
 
@@ -2037,7 +1999,8 @@ struct frost_mage_spell_t : public mage_spell_t
       if ( consumes_winters_chill && td( s->target )->debuffs.winters_chill->check() )
       {
         td( s->target )->debuffs.winters_chill->decrement();
-        p()->get_winters_chill_data( this )->add( 1 );
+        proc_winters_chill_consumed->occur();
+        p()->procs.winters_chill_consumed->occur();
       }
     }
   }
@@ -2938,18 +2901,23 @@ struct dragons_breath_t : public fire_mage_spell_t
     cooldown->duration += p->spec.dragons_breath_2->effectN( 1 ).time_value();
 
     if ( p->talents.alexstraszas_fury->ok() )
+    {
       base_crit = 1.0;
+      triggers_hot_streak = true;
+    }
+  }
+
+  void execute() override
+  {
+    fire_mage_spell_t::execute();
+
+    if ( hit_any_target && p()->talents.alexstraszas_fury->ok() )
+      p()->buffs.alexstraszas_fury->trigger();
   }
 
   void impact( action_state_t* s ) override
   {
     fire_mage_spell_t::impact( s );
-
-    if ( result_is_hit( s->result ) && p()->talents.alexstraszas_fury->ok() && s->chain_target == 0 )
-    {
-      handle_hot_streak( s );
-      p()->buffs.alexstraszas_fury->trigger();
-    }
 
     p()->trigger_crowd_control( s, MECHANIC_DISORIENT );
   }
@@ -3216,6 +3184,8 @@ struct flurry_bolt_t : public frost_mage_spell_t
     {
       auto wc = td( s->target )->debuffs.winters_chill;
       wc->trigger( wc->max_stack() );
+      for ( int i = 0; i < wc->max_stack(); i++ )
+        p()->procs.winters_chill_applied->occur();
     }
 
     if ( rng().roll( glacial_assault_chance ) )
@@ -4227,36 +4197,75 @@ struct nether_tempest_t : public arcane_mage_spell_t
 
 struct phoenix_flames_splash_t : public fire_mage_spell_t
 {
+  int max_spread_targets;
+
   phoenix_flames_splash_t( util::string_view n, mage_t* p ) :
     fire_mage_spell_t( n, p, p->find_spell( 257542 ) )
   {
     aoe = -1;
-    background = true;
-    triggers_ignite = true;
+    background = reduced_aoe_damage = true;
+    triggers_hot_streak = triggers_ignite = triggers_kindling = true;
+    max_spread_targets = as<int>( p->spec.ignite->effectN( 4 ).base_value() );
     // Phoenix Flames always crits
     base_crit = 1.0;
   }
 
-  size_t available_targets( std::vector<player_t*>& tl ) const override
+  static double ignite_bank( dot_t* ignite )
   {
-    fire_mage_spell_t::available_targets( tl );
+    if ( !ignite->is_ticking() )
+      return 0.0;
 
-    tl.erase( std::remove( tl.begin(), tl.end(), target ), tl.end() );
+    auto ignite_state = debug_cast<residual_action::residual_periodic_state_t*>( ignite->state );
+    return ignite_state->tick_amount * ignite->ticks_left();
+  }
 
-    return tl.size();
+  void impact( action_state_t* s ) override
+  {
+    // TODO: Verify what happens when Phoenix Flames hits an immune target.
+    if ( result_is_hit( s->result ) && s->chain_target == 0 )
+    {
+      dot_t* source_ignite = s->target->get_dot( "ignite", p() );
+      if ( source_ignite->is_ticking() )
+      {
+        int spreads_remaining = max_spread_targets;
+        // TODO: Verify which targets Ignite spreads to when there are more than eight.
+        for ( auto t : target_list() )
+        {
+          if ( t == s->target )
+            continue;
+
+          if ( spreads_remaining <= 0 )
+            break;
+
+          // TODO: Exact copies of the Ignite are not spread. Instead, the Ignites can
+          // sometimes have partial ticks, but the conditions for this are not known.
+          dot_t* dest_ignite = t->get_dot( "ignite", p() );
+          if ( ignite_bank( dest_ignite ) < ignite_bank( source_ignite ) )
+          {
+            if ( dest_ignite->is_ticking() )
+              p()->procs.ignite_overwrite->occur();
+            else
+              p()->procs.ignite_new_spread->occur();
+            // In game, the existing Ignite is not removed; its
+            // state is updated to closely match the source Ignite.
+            dest_ignite->cancel();
+            source_ignite->copy( t, DOT_COPY_CLONE );
+            spreads_remaining--;
+          }
+        }
+      }
+    }
+
+    fire_mage_spell_t::impact( s );
   }
 };
 
 struct phoenix_flames_t : public fire_mage_spell_t
 {
   phoenix_flames_t( util::string_view n, mage_t* p, util::string_view options_str ) :
-    fire_mage_spell_t( n, p, p->talents.phoenix_flames )
+    fire_mage_spell_t( n, p, p->find_specialization_spell( "Phoenix Flames" ) )
   {
     parse_options( options_str );
-    triggers_hot_streak = triggers_ignite = triggers_kindling = true;
-    // Phoenix Flames always crits
-    base_crit = 1.0;
-
     impact_action = get_action<phoenix_flames_splash_t>( "phoenix_flames_splash", p );
     add_child( impact_action );
   }
@@ -5373,8 +5382,6 @@ void mage_t::datacollection_begin()
 
   range::for_each( cooldown_waste_data_list, std::mem_fn( &cooldown_waste_data_t::datacollection_begin ) );
   range::for_each( shatter_source_list, std::mem_fn( &shatter_source_t::datacollection_begin ) );
-  for ( auto data : consumed_winters_chill_stacks )
-      data.second->datacollection_begin();
 }
 
 void mage_t::datacollection_end()
@@ -5383,8 +5390,6 @@ void mage_t::datacollection_end()
 
   range::for_each( cooldown_waste_data_list, std::mem_fn( &cooldown_waste_data_t::datacollection_end ) );
   range::for_each( shatter_source_list, std::mem_fn( &shatter_source_t::datacollection_end ) );
-  for ( auto data : consumed_winters_chill_stacks )
-      data.second->datacollection_end();
 }
 
 void mage_t::regen( timespan_t periodicity )
@@ -5467,7 +5472,7 @@ void mage_t::init_spells()
   talents.supernova          = find_talent_spell( "Supernova"          );
   talents.flame_on           = find_talent_spell( "Flame On"           );
   talents.alexstraszas_fury  = find_talent_spell( "Alexstrasza's Fury" );
-  talents.phoenix_flames     = find_talent_spell( "Phoenix Flames"     );
+  // NYI Fire Talent
   talents.frozen_touch       = find_talent_spell( "Frozen Touch"       );
   talents.chain_reaction     = find_talent_spell( "Chain Reaction"     );
   talents.ebonbolt           = find_talent_spell( "Ebonbolt"           );
@@ -5797,6 +5802,8 @@ void mage_t::init_procs()
       procs.brain_freeze_used       = get_proc( "Brain Freeze used" );
       procs.fingers_of_frost        = get_proc( "Fingers of Frost" );
       procs.fingers_of_frost_wasted = get_proc( "Fingers of Frost wasted due to Winter's Chill" );
+      procs.winters_chill_applied   = get_proc( "Winter's Chill stacks applied" );
+      procs.winters_chill_consumed  = get_proc( "Winter's Chill stacks consumed" );
       break;
     default:
       break;
@@ -7129,123 +7136,6 @@ void mage_t::trigger_arcane_charge( int stacks )
     buffs.rule_of_threes->trigger();
 }
 
-void mage_t::trigger_leyshock( unsigned id, const action_state_t*, leyshock_trigger_e trigger_type )
-{
-  if ( !player_t::buffs.leyshock_crit )
-    return;
-
-  stat_e buff = STAT_NONE;
-
-  switch ( trigger_type )
-  {
-    case LEYSHOCK_EXECUTE:
-      switch ( id )
-      {
-        case 120: // Cone of Cold
-        case 12472: // Icy Veins
-        case 190356: // Blizard
-        case 228354: // Flurry tick
-          buff = STAT_CRIT_RATING;
-          break;
-        case 1953: // Blink
-        case 55342: // Mirror Image
-        case 84721: // Frozen Orb tick
-        case 153596: // Comet Storm tick
-        case 157997: // Ice Nova
-        case 190357: // Blizzard tick
-        case 205021: // Ray of Frost
-        case 212653: // Shimmer
-          buff = STAT_HASTE_RATING;
-          break;
-        case 1459: // Arcane Intellect
-        case 2139: // Counterspell
-        case 30455: // Ice Lance
-        case 31687: // Summon Water Elemental
-        case 108839: // Ice Floes
-        case 116011: // Rune of Power
-        case 153595: // Comet Storm
-        case 235219: // Cold Snap
-          buff = STAT_VERSATILITY_RATING;
-          break;
-        case 122: // Frost Nova
-        case 80353: // Time Warp
-        case 84714: // Frozen Orb
-        case 148022: // Icicle
-        case 199786: // Glacial Spike
-        case 257537: // Ebonbolt
-          buff = STAT_MASTERY_RATING;
-          break;
-        case 116: // Frostbolt
-        case 44614: // Flurry
-          switch ( buffs.icicles->check() )
-          {
-            case 4:
-            case 5:
-              buff = STAT_CRIT_RATING;
-              break;
-            case 3:
-              buff = STAT_HASTE_RATING;
-              break;
-            case 1:
-              buff = STAT_VERSATILITY_RATING;
-              break;
-            case 0:
-            case 2:
-              buff = STAT_MASTERY_RATING;
-              break;
-            default:
-              break;
-          }
-          break;
-        default:
-          break;
-      }
-      break;
-    case LEYSHOCK_IMPACT:
-      switch ( id )
-      {
-        case 84714: // Frozen Orb
-        case 153596: // Comet Storm tick
-        case 199786: // Glacial Spike
-          buff = STAT_CRIT_RATING;
-          break;
-        case 116: // Frostbolt
-          buff = STAT_HASTE_RATING;
-          break;
-        case 30455: // Ice Lance
-        case 228354: // Flurry tick
-          buff = STAT_MASTERY_RATING;
-          break;
-        default:
-          break;
-      }
-      break;
-    case LEYSHOCK_TICK:
-      switch ( id )
-      {
-        case 205021: // Ray of Frost
-          buff = STAT_HASTE_RATING;
-          break;
-        default:
-          break;
-      }
-      break;
-    case LEYSHOCK_BUMP:
-      switch ( id )
-      {
-        case 116267: // Incanter's Flow
-          buff = STAT_MASTERY_RATING;
-          break;
-        default:
-          break;
-      }
-    default:
-      break;
-  }
-
-  expansion::bfa::trigger_leyshocks_grand_compilation( buff, this );
-}
-
 void mage_t::trigger_lucid_dreams( player_t* trigger_target, double cost )
 {
   if ( lucid_dreams_refund <= 0.0 )
@@ -7448,111 +7338,71 @@ public:
 
   void html_customsection_shatter( report::sc_html_stream& os )
   {
-    if ( p.shatter_source_list.empty() && p.consumed_winters_chill_stacks.empty() )
+    if ( p.shatter_source_list.empty() )
       return;
 
     os << "<div class=\"player-section custom_section\">\n"
           "<h3 class=\"toggle open\">Shatter</h3>\n"
-          "<div class=\"toggle-content flexwrap\">\n";
+          "<div class=\"toggle-content\">\n"
+          "<table class=\"sc sort even\">\n"
+          "<thead>\n"
+          "<tr>\n"
+          "<th></th>\n"
+          "<th colspan=\"2\">None</th>\n"
+          "<th colspan=\"3\">Winter's Chill</th>\n"
+          "<th colspan=\"2\">Fingers of Frost</th>\n"
+          "<th colspan=\"2\">Other effects</th>\n"
+          "</tr>\n"
+          "<tr>\n"
+          "<th class=\"toggle-sort\" data-sortdir=\"asc\" data-sorttype=\"alpha\">Ability</th>\n"
+          "<th class=\"toggle-sort\">Count</th>\n"
+          "<th class=\"toggle-sort\">Percent</th>\n"
+          "<th class=\"toggle-sort\">Count</th>\n"
+          "<th class=\"toggle-sort\">Percent</th>\n"
+          "<th class=\"toggle-sort\">Utilization</th>\n"
+          "<th class=\"toggle-sort\">Count</th>\n"
+          "<th class=\"toggle-sort\">Percent</th>\n"
+          "<th class=\"toggle-sort\">Count</th>\n"
+          "<th class=\"toggle-sort\">Percent</th>\n"
+          "</tr>\n"
+          "</thead>\n";
 
-    if ( !p.shatter_source_list.empty() )
+    double bff = p.procs.brain_freeze_used->count.pretty_mean();
+
+    for ( const shatter_source_t* data : p.shatter_source_list )
     {
-      os << "<table class=\"sc sort even\">\n"
-            "<thead>\n"
-            "<tr>\n"
-            "<th></th>\n"
-            "<th colspan=\"2\">None</th>\n"
-            "<th colspan=\"3\">Winter's Chill</th>\n"
-            "<th colspan=\"2\">Fingers of Frost</th>\n"
-            "<th colspan=\"2\">Other effects</th>\n"
-            "</tr>\n"
-            "<tr>\n"
-            "<th class=\"toggle-sort\" data-sortdir=\"asc\" data-sorttype=\"alpha\">Ability</th>\n"
-            "<th class=\"toggle-sort\">Count</th>\n"
-            "<th class=\"toggle-sort\">Percent</th>\n"
-            "<th class=\"toggle-sort\">Count</th>\n"
-            "<th class=\"toggle-sort\">Percent</th>\n"
-            "<th class=\"toggle-sort\">Utilization</th>\n"
-            "<th class=\"toggle-sort\">Count</th>\n"
-            "<th class=\"toggle-sort\">Percent</th>\n"
-            "<th class=\"toggle-sort\">Count</th>\n"
-            "<th class=\"toggle-sort\">Percent</th>\n"
-            "</tr>\n"
-            "</thead>\n";
+      if ( !data->active() )
+        continue;
 
-      double bff = p.procs.brain_freeze_used->count.pretty_mean() * p.find_spell( 228358 )->max_stacks();
-
-      for ( const shatter_source_t* data : p.shatter_source_list )
+      auto nonzero = [] ( std::string fmt, double d ) { return d != 0.0 ? fmt::format( fmt, d ) : ""; };
+      auto cells = [ &, total = data->count_total() ] ( double mean, bool util = false )
       {
-        if ( !data->active() )
-          continue;
+        std::string format_str = "<td class=\"right\">{}</td><td class=\"right\">{}</td>";
+        if ( util ) format_str += "<td class=\"right\">{}</td>";
 
-        auto nonzero = [] ( std::string fmt, double d ) { return d != 0.0 ? fmt::format( fmt, d ) : ""; };
-        auto cells = [ &, total = data->count_total() ] ( double mean, bool util = false )
-        {
-          std::string format_str = "<td class=\"right\">{}</td><td class=\"right\">{}</td>";
-          if ( util ) format_str += "<td class=\"right\">{}</td>";
+        fmt::print( os, format_str,
+          nonzero( "{:.1f}", mean ),
+          nonzero( "{:.1f}%", 100.0 * mean / total ),
+          nonzero( "{:.1f}%", bff > 0.0 ? 100.0 * mean / bff : 0.0 ) );
+      };
 
-          fmt::print( os, format_str,
-            nonzero( "{:.1f}", mean ),
-            nonzero( "{:.1f}%", 100.0 * mean / total ),
-            nonzero( "{:.1f}%", bff > 0.0 ? 100.0 * mean / bff : 0.0 ) );
-        };
+      std::string name = data->name_str;
+      if ( action_t* a = p.find_action( name ) )
+        name = report_decorators::decorated_action(*a);
+      else
+        name = util::encode_html( name );
 
-        std::string name = data->name_str;
-        if ( action_t* a = p.find_action( name ) )
-          name = report_decorators::decorated_action(*a);
-        else
-          name = util::encode_html( name );
-
-        os << "<tr>";
-        fmt::print( os, "<td class=\"left\">{}</td>", name );
-        cells( data->count( FROZEN_NONE ) );
-        cells( data->count( FROZEN_WINTERS_CHILL ), true );
-        cells( data->count( FROZEN_FINGERS_OF_FROST ) );
-        cells( data->count( FROZEN_ROOT ) );
-        os << "</tr>\n";
-      }
-
-      os << "</table>\n";
+      os << "<tr>";
+      fmt::print( os, "<td class=\"left\">{}</td>", name );
+      cells( data->count( FROZEN_NONE ) );
+      cells( data->count( FROZEN_WINTERS_CHILL ), true );
+      cells( data->count( FROZEN_FINGERS_OF_FROST ) );
+      cells( data->count( FROZEN_ROOT ) );
+      os << "</tr>\n";
     }
 
-    if ( !p.consumed_winters_chill_stacks.empty() )
-    {
-      os << "<table class=\"sc sort even\">\n"
-            "<thead>\n"
-            "<tr>\n"
-            "<th></th>"
-            "<th colspan=\"3\">Winter's Chill Consumed</th>\n"
-            "</tr>\n"
-            "<tr>\n"
-            "<th class=\"toggle-sort\" data-sortdir=\"asc\" data-sorttype=\"alpha\">Ability</th>\n"
-            "<th class=\"toggle-sort\">Average</th>\n"
-            "<th class=\"toggle-sort\">Minimum</th>\n"
-            "<th class=\"toggle-sort\">Maximum</th>\n"
-            "</tr>\n"
-            "</thead>\n";
-
-      for ( auto data : p.consumed_winters_chill_stacks )
-      {
-        std::string name = data.first;
-        if ( action_t* a = p.find_action( name ) )
-          name = report_decorators::decorated_action(*a);
-        else
-          name = util::encode_html( name );
-
-        os << "<tr>";
-        fmt::print( os, "<td class=\"left\">{}</td>", name );
-        fmt::print( os, "<td class=\"right\">{:.1f}</td>", data.second->mean() );
-        fmt::print( os, "<td class=\"right\">{:.1f}</td>", data.second->min() );
-        fmt::print( os, "<td class=\"right\">{:.1f}</td>", data.second->max() );
-        os << "</tr>\n";
-      }
-
-      os << "</table>\n";
-    }
-
-    os << "</div>\n"
+    os << "</table>\n"
+          "</div>\n"
           "</div>\n";
   }
 
