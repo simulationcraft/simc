@@ -2775,15 +2775,6 @@ struct aimed_shot_t : public aimed_shot_base_t
       dual = true;
       base_costs[ RESOURCE_FOCUS ] = 0;
     }
-
-    int n_targets() const override
-    {
-      // XXX: Double Tap Aimed Shots are always as-if affected by Trick Shots in-game
-      if ( p() -> bugs )
-        return trick_shots_targets + 1;
-
-      return aimed_shot_base_t::n_targets();
-    }
   };
 
   bool lock_and_loaded = false;
