@@ -1,5 +1,5 @@
 // Spell text, wow build 9.0.1.35360
-static const std::array<spelltext_data_t, 15212> __spelltext_data { {
+static const std::array<spelltext_data_t, 15214> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -15143,6 +15143,8 @@ static const std::array<spelltext_data_t, 15212> __spelltext_data { {
   { 339738, "$@spelldesc339735", "Asleep.", 0 },
   { 339750, "Bestial Wrath increases all damage you and your pet deal by |cFFFFFFFF ${$s1}.1%|r.", 0, 0 },
   { 339766, "After your Demonic Tyrant expires, gain a Demonic Core and $s1% increased damage from your demons for 15 sec.", 0, 0 },
+  { 339797, "$@spelldesc338661", "Your next Starsurge costs no Astral Power.", 0 },
+  { 339800, "$@spelldesc338661", "Your next Starfall costs no Astral Power.", 0 },
   { 339818, "Revenge increases the damage of your next Thunder Clap by |cFFFFFFFF$s1%|r.", 0, 0 },
   { 339825, "$@spelldesc339818", "Your next Thunder Clap deals $w1% increased damage.", 0 },
   { 339845, "Your Felguard deals $s1% more damage and takes $s1% less damage.", 0, 0 },

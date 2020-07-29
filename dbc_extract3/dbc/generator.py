@@ -1836,6 +1836,8 @@ class SpellDataGenerator(DataGenerator):
           ( 338825, 1 ),       # Primordial Arcanic Pulsar buff
           ( 339943, 1 ),       # Runecarve #3 Nature crit buff
           ( 339946, 1 ),       # Runecarve #3 Arcane crit buff
+          ( 339797, 1 ),       # Oneth's Clear Vision (free starsurge)
+          ( 339800, 1 ),       # Oneth's Perception (free starfall)
 
           # Shadowlands Covenant
           ( 326446, 0, True ), # Kyrian Empower Bond on DPS

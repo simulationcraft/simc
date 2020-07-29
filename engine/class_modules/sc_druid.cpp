@@ -403,9 +403,9 @@ public:
     buff_t* eclipse_solar;
     buff_t* eclipse_lunar;
     // Balance Legendaries
-    buff_t* oneths_intuition;
-    buff_t* oneths_overconfidence;
     buff_t* primordial_arcanic_pulsar;
+    buff_t* oneths_free_starsurge;
+    buff_t* oneths_free_starfall;
 
     // Feral
     buff_t* apex_predator;
@@ -771,6 +771,8 @@ public:
     timespan_t impeccable_fel_essence;
     const spell_data_t* oneths_clear_vision;
     const spell_data_t* primordial_arcanic_pulsar;
+    const spell_data_t* timeworn_dreamcatcher;
+    const spell_data_t* runecarve_3;
 
     // Feral
     double the_wildshapers_clutch;
@@ -6743,8 +6745,8 @@ struct starfall_t : public druid_spell_t
     : druid_spell_t( "starfall_convoke", p, p->find_specialization_spell( "Starfall" ), options_str ), convoke( true )
   {
     may_miss = may_crit = false;
-    
-    starfall_tick_convoke = p->find_action( "starfall_tick_convoke ");
+
+    starfall_tick_convoke = p->find_action( "starfall_tick_convoke " );
     if ( !starfall_tick_convoke )
       starfall_tick_convoke = new starfall_tick_t( p, true );
 
@@ -6766,7 +6768,7 @@ struct starfall_t : public druid_spell_t
 
   double cost() const override
   {
-    if ( p()->buff.oneths_overconfidence->check() || convoke )
+    if ( p()->buff.oneths_free_starfall->check() || convoke )
       return 0;
 
     return druid_spell_t::cost();
@@ -6777,9 +6779,6 @@ struct starfall_t : public druid_spell_t
     druid_spell_t::execute();
 
     streaking_stars_trigger( SS_STARFALL, nullptr );
-
-    if ( p()->buff.oneths_overconfidence->up() )  // benefit tracking
-      p()->buff.oneths_overconfidence->decrement();
 
     action_t* tick_action;
     if ( convoke )
@@ -6811,20 +6810,23 @@ struct starfall_t : public druid_spell_t
     if ( convoke )
       return;
 
-    p()->buff.oneths_intuition->trigger();
+    if ( p()->buff.oneths_free_starfall->up() )  // benefit tracking
+      p()->buff.oneths_free_starfall->decrement();
+
+    if ( p()->legendary.oneths_clear_vision->ok() &&
+         rng().roll( p()->legendary.oneths_clear_vision->effectN( 1 ).percent() ) )
+    {
+      p()->buff.oneths_free_starsurge->trigger();
+    }
 
     if ( p()->sets->has_set_bonus( DRUID_BALANCE, T20, B4 ) )
-    {
       p()->buff.astral_acceleration->trigger();
-    }
+
     if ( p()->talent.starlord->ok() )
-    {
       p()->buff.starlord->trigger();
-    }
+
     if ( p()->sets->has_set_bonus( DRUID_BALANCE, T21, B4 ) )
-    {
       p()->buff.solar_solstice->trigger();
-    }
   }
 };
 
@@ -6838,7 +6840,8 @@ struct starsurge_t : public druid_spell_t
     : druid_spell_t(
           "starsurge_convoke", p,
           p->specialization() == DRUID_BALANCE ? p->find_affinity_spell( "Starsurge" ) : p->find_spell( 197626 ),
-          options_str ), convoke( true )
+          options_str ),
+      convoke( true )
   {}
 
   starsurge_t( druid_t* p, const std::string& options_str )
@@ -6862,8 +6865,7 @@ struct starsurge_t : public druid_spell_t
     auto apl = player->precombat_action_list;
 
     // emulate performing check_form_restriction()
-    auto it =
-      range::find_if( apl, []( action_t* a ) { return util::str_compare_ci( a->name(), "moonkin_form" ); } );
+    auto it = range::find_if( apl, []( action_t* a ) { return util::str_compare_ci( a->name(), "moonkin_form" ); } );
     if ( it == apl.end() )
       return false;
 
@@ -6876,7 +6878,7 @@ struct starsurge_t : public druid_spell_t
 
   double cost() const override
   {
-    if ( p()->buff.oneths_intuition->check() || convoke )
+    if ( p()->buff.oneths_free_starsurge->check() || convoke )
       return 0;
 
     return druid_spell_t::cost();
@@ -6920,13 +6922,19 @@ struct starsurge_t : public druid_spell_t
   {
     druid_spell_t::execute();
 
-    p ()->eclipse_handler.cast_starsurge();
-
-    if ( p()->buff.oneths_intuition->up() )  // benefit tracking
-      p()->buff.oneths_intuition->decrement();
+    p()->eclipse_handler.cast_starsurge();
 
     if ( convoke )
       return;
+
+    if ( p()->buff.oneths_free_starsurge->up() )  // benefit tracking
+      p()->buff.oneths_free_starsurge->decrement();
+
+    if ( p()->legendary.oneths_clear_vision->ok() &&
+         rng().roll( p()->legendary.oneths_clear_vision->effectN( 1 ).percent() ) )
+    {
+      p()->buff.oneths_free_starfall->trigger();
+    }
 
     if ( p()->sets->has_set_bonus( DRUID_BALANCE, T20, B4 ) )
       p()->buff.astral_acceleration->trigger();
@@ -6936,9 +6944,6 @@ struct starsurge_t : public druid_spell_t
 
     if ( p()->sets->has_set_bonus( DRUID_BALANCE, T21, B4 ) )
       p()->buff.solar_solstice->trigger();
-
-    p()->buff.oneths_overconfidence->trigger();
-
   }
 
   double bonus_da( const action_state_t* s ) const override
@@ -6962,9 +6967,9 @@ struct starsurge_t : public druid_spell_t
       if ( p()->buff.arcanic_pulsar->check() == p()->buff.arcanic_pulsar->max_stack() )
       {
         timespan_t pulsar_dur =
-          timespan_t::from_seconds( p()->azerite.arcanic_pulsar.spell()->effectN( 3 ).base_value() );
+            timespan_t::from_seconds( p()->azerite.arcanic_pulsar.spell()->effectN( 3 ).base_value() );
         buff_t* proc_buff =
-          p()->talent.incarnation_moonkin->ok() ? p()->buff.incarnation_moonkin : p()->buff.celestial_alignment;
+            p()->talent.incarnation_moonkin->ok() ? p()->buff.incarnation_moonkin : p()->buff.celestial_alignment;
 
         if ( proc_buff->check() )
           proc_buff->extend_duration( p(), pulsar_dur );
@@ -6978,9 +6983,7 @@ struct starsurge_t : public druid_spell_t
         p()->proc.arcanic_pulsar->occur();
 
         p()->uptime.arcanic_pulsar->update( true, sim->current_time() );
-        make_event( *sim, pulsar_dur, [this]() {
-          p()->uptime.arcanic_pulsar->update( false, sim->current_time() );
-        } );
+        make_event( *sim, pulsar_dur, [this]() { p()->uptime.arcanic_pulsar->update( false, sim->current_time() ); } );
 
         streaking_stars_trigger( SS_CELESTIAL_ALIGNMENT, nullptr );
       }
@@ -8068,6 +8071,8 @@ void druid_t::init_spells()
   // Balance
   legendary.oneths_clear_vision = find_runeforge_legendary( "Oneth's Clear Vision" );
   legendary.primordial_arcanic_pulsar = find_runeforge_legendary( "Primordial Arcanic Pulsar" );
+  legendary.timeworn_dreamcatcher = find_runeforge_legendary( "Timeworn Dreamcatcher" );
+  legendary.runecarve_3 = find_runeforge_legendary( "Druid Balance Runecarve 3" );
 
   // Feral
 
@@ -8464,8 +8469,9 @@ void druid_t::create_buffs()
 
   // Balance Legendaries
 
-  // TODO: replace this with the proper spell id
-  buff.primordial_arcanic_pulsar = make_buff( this, "primordial_arcanic_pulsar", find_spell( 338668 ) );
+  buff.primordial_arcanic_pulsar = make_buff( this, "primordial_arcanic_pulsar", find_spell( 338825 ) );
+  buff.oneths_free_starsurge = make_buff( this, "oneths_clear_vision", find_spell(339797));
+  buff.oneths_free_starfall = make_buff( this, "oneths_perception", find_spell(339800));
 
   // Feral
 
@@ -11231,38 +11237,6 @@ struct fiery_red_maimers_t : public scoped_actor_callback_t<druid_t>
   }
 };
 
-// Balance
-
-struct oneths_intuition_t : public class_buff_cb_t<druid_t>
-{
-  oneths_intuition_t() : super( DRUID, "oneths_intuition" )
-  {}
-
-  buff_t*& buff_ptr( const special_effect_t& e ) override
-  { return actor( e ) -> buff.oneths_intuition; }
-
-  buff_t* creator( const special_effect_t& e ) const override
-  {
-    return make_buff( e.player, buff_name, e.player -> find_spell( 209406 ) )
-      ->set_chance( e.driver() -> proc_chance() );
-  }
-};
-
-struct oneths_overconfidence_t : public class_buff_cb_t<druid_t>
-{
-  oneths_overconfidence_t() : super( DRUID, "oneths_overconfidence" )
-  {}
-
-  buff_t*& buff_ptr( const special_effect_t& e ) override
-  { return actor( e ) -> buff.oneths_overconfidence; }
-
-  buff_t* creator( const special_effect_t& e ) const override
-  {
-    return make_buff( e.player, buff_name, e.player -> find_spell( 209407 ) )
-      ->set_chance( e.driver() -> proc_chance() );
-  }
-};
-
 // Guardian
 
 struct fury_of_nature_t : public scoped_actor_callback_t<druid_t>
@@ -11427,8 +11401,6 @@ struct druid_module_t : public module_t
     register_special_effect( 208228, dual_determination_t() );
     register_special_effect( 208342, elizes_everlasting_encasement_t() );
     register_special_effect( 208319, the_wildshapers_clutch_t() );
-    register_special_effect( 209405, oneths_intuition_t(), true );
-    register_special_effect( 209405, oneths_overconfidence_t(), true );
     register_special_effect( 207523, chatoyant_signet_t() );
     register_special_effect( 208209, ailuro_pouncers_t() );
     register_special_effect( 208219, skysecs_hold_t() );
