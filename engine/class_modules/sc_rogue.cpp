@@ -369,11 +369,13 @@ public:
     const spell_data_t* adrenaline_rush;
     const spell_data_t* blade_flurry;
     const spell_data_t* blade_flurry_rank_2;
+    const spell_data_t* broadside;
     const spell_data_t* combat_potency;
     const spell_data_t* combat_potency_reg;
     const spell_data_t* restless_blades;
     const spell_data_t* roll_the_bones;
     const spell_data_t* ruthlessness;
+    const spell_data_t* ruthless_precision;
     const spell_data_t* sinister_strike;
 
     // Subtlety
@@ -828,27 +830,19 @@ public:
     affected_by.adrenaline_rush_gcd = ab::data().affected_by( p->spec.adrenaline_rush->effectN( 3 ) );
     affected_by.master_assassin = ab::data().affected_by( p->spec.master_assassin->effectN( 1 ) );
     affected_by.toxic_blade = ab::data().affected_by( p->talent.toxic_blade->effectN( 4 ).trigger()->effectN( 1 ) );
+    affected_by.broadside_cp = ab::data().affected_by( p->spec.broadside->effectN( 1 ) ) ||
+      ab::data().affected_by( p->spec.broadside->effectN( 2 ) ) ||
+      ab::data().affected_by( p->spec.broadside->effectN( 3 ) );
+    affected_by.ruthless_precision = ab::data().affected_by( p->spec.ruthless_precision->effectN( 1 ) );
 
     // Auto-parsing for damage affecting dynamic flags, this reads IF direct/periodic dmg is affected and stores by how much.
     // Still requires manual impl below but removes need to hardcode effect numbers.
     parse_damage_affecting_spell( p->mastery.executioner, affected_by.mastery_executioner );
     parse_damage_affecting_spell( p->mastery.potent_assassin, affected_by.mastery_potent_assassin );
-  }
-
-  void init() override
-  {
-    ab::init();
-
-    // Auto-parsing for buffs in init(), as these are created after spells and aren't initialized yet above
-    // TOCHECK: May be better to just store the spell data in p->spec.foo and do above though...
-    affected_by.broadside_cp = ab::data().affected_by( p()->buffs.broadside->data().effectN( 1 ) ) ||
-      ab::data().affected_by( p()->buffs.broadside->data().effectN( 2 ) ) ||
-      ab::data().affected_by( p()->buffs.broadside->data().effectN( 3 ) );
-    affected_by.ruthless_precision = ab::data().affected_by( p()->buffs.ruthless_precision->data().effectN( 1 ) );
-    parse_damage_affecting_buff( p()->buffs.broadside, affected_by.broadside );
-    parse_damage_affecting_buff( p()->buffs.symbols_of_death, affected_by.symbols_of_death );
-    parse_damage_affecting_buff( p()->buffs.shadow_dance, affected_by.shadow_dance );
-    parse_damage_affecting_buff( p()->buffs.elaborate_planning, affected_by.elaborate_planning );
+    parse_damage_affecting_spell( p->spec.broadside, affected_by.broadside );
+    parse_damage_affecting_spell( p->spec.symbols_of_death, affected_by.symbols_of_death );
+    parse_damage_affecting_spell( p->spec.shadow_dance, affected_by.shadow_dance );
+    parse_damage_affecting_spell( p->talent.elaborate_planning -> effectN( 1 ).trigger(), affected_by.elaborate_planning );
   }
 
   // Type Wrappers ============================================================
@@ -923,11 +917,6 @@ public:
         }
       }
     }
-  }
-
-  void parse_damage_affecting_buff( const buff_t* buff, damage_affect_data& flags )
-  {
-    parse_damage_affecting_spell( buff->s_data, flags );
   }
 
   // Action State =============================================================
@@ -6693,11 +6682,13 @@ void rogue_t::init_spells()
   spec.adrenaline_rush      = find_specialization_spell( "Adrenaline Rush" );
   spec.blade_flurry         = find_specialization_spell( "Blade Flurry" );
   spec.blade_flurry_rank_2  = find_rank_spell( "Blade Flurry", "Rank 2" );
+  spec.broadside            = find_spell( 193356 );
   spec.combat_potency       = find_specialization_spell( 35551 );
   spec.combat_potency_reg   = find_specialization_spell( 61329 );
   spec.restless_blades      = find_specialization_spell( "Restless Blades" );
   spec.roll_the_bones       = find_specialization_spell( "Roll the Bones" );
   spec.ruthlessness         = find_specialization_spell( "Ruthlessness" );
+  spec.ruthless_precision   = find_spell( 193357 );
   spec.sinister_strike      = find_specialization_spell( "Sinister Strike" );
 
   // Subtlety
@@ -6995,7 +6986,7 @@ void rogue_t::create_buffs()
                                 } );
   buffs.opportunity           = make_buff( this, "opportunity", find_spell( 195627 ) );
   // Roll the bones buffs
-  buffs.broadside             = make_buff( this, "broadside", find_spell( 193356 ) )
+  buffs.broadside             = make_buff( this, "broadside", spec.broadside )
                                 -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buffs.buried_treasure       = make_buff( this, "buried_treasure", find_spell( 199600 ) )
                                 -> set_affects_regen( true )
@@ -7006,7 +6997,7 @@ void rogue_t::create_buffs()
                                 -> set_default_value( 1.0 / ( 1.0 + find_spell( 193358 ) -> effectN( 1 ).percent() ) );
   buffs.skull_and_crossbones  = make_buff( this, "skull_and_crossbones", find_spell( 199603 ) )
                                 -> set_default_value( find_spell( 199603 ) -> effectN( 1 ).percent() );
-  buffs.ruthless_precision    = make_buff( this, "ruthless_precision", find_spell( 193357 ) )
+  buffs.ruthless_precision    = make_buff( this, "ruthless_precision", spec.ruthless_precision )
                                 -> set_default_value( find_spell( 193357 ) -> effectN( 1 ).percent() )
                                 -> add_invalidate( CACHE_CRIT_CHANCE );
   buffs.true_bearing          = make_buff( this, "true_bearing", find_spell( 193359 ) )
