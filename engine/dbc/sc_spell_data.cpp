@@ -14,6 +14,7 @@
 #include "spell_query/spell_data_expr.hpp"
 #include "sim/sc_sim.hpp"
 #include "player/covenant.hpp"
+#include "util/util.hpp"
 
 namespace { // anonymous namespace ==========================================
 
@@ -335,6 +336,17 @@ expr_data_e parse_data_type( util::string_view name )
   }
 
   return static_cast<expr_data_e>( -1 );
+}
+
+util::string_view data_type_str( expr_data_e type )
+{
+  for ( auto& entry : expr_map )
+  {
+    if ( entry.type == type )
+      return entry.name;
+  }
+
+  return "unknown";
 }
 
 unsigned class_str_to_mask( util::string_view str )
@@ -1107,6 +1119,11 @@ std::unique_ptr<spell_data_expr_t> build_expression_tree(
 
 } // anonymous namespace ====================================================
 
+void format_to( expr_data_e expr_type, fmt::format_context::iterator out )
+{
+  fmt::format_to( out, "{}", data_type_str( expr_type ) );
+}
+
 std::unique_ptr<spell_data_expr_t> spell_data_expr_t::create_spell_expression( dbc_t& dbc, util::string_view name_str )
 {
   std::vector<std::string> splits = util::string_split( name_str, "." );
@@ -1126,7 +1143,15 @@ std::unique_ptr<spell_data_expr_t> spell_data_expr_t::create_spell_expression( d
   }
 
   if ( data_type == static_cast<expr_data_e>( -1 ) )
-    return nullptr;
+  {
+    std::vector<std::string> valid_types;
+    for(const auto& entry : expr_map)
+    {
+      valid_types.push_back(std::string(entry.name));
+    }
+    
+    throw std::invalid_argument(fmt::format("Unable to decode spell expression type '{}'. Valid types are {{{}}}", splits[ 0 ], util::string_join(valid_types, ", ")));
+  }
 
   // Effect handling, set flag and remove effect keyword from tokens
   bool effect_query = false;
@@ -1159,7 +1184,14 @@ std::unique_ptr<spell_data_expr_t> spell_data_expr_t::create_spell_expression( d
     }
   }
 
-  return nullptr;
+  std::vector<std::string> valid_fields;
+  for ( const auto& field : data_fields_by_type( data_type, effect_query ) )
+  {
+    valid_fields.push_back( std::string( field.name ) );
+  }
+  
+  throw std::invalid_argument( fmt::format( "Unknown spell expression field '{}'. Valid fields for type '{}' are {{{}}}", splits[ 1 ],
+                                            data_type, util::string_join( valid_fields, ", " ) ) );
 }
 
 std::unique_ptr<spell_data_expr_t> spell_data_expr_t::parse( sim_t* sim, util::string_view expr_str )
