@@ -1206,7 +1206,7 @@ struct hunter_main_pet_base_t : public hunter_pet_t
 
   double composite_player_critical_damage_multiplier( const action_state_t* s ) const override
   {
-    double m = player_t::composite_player_critical_damage_multiplier( s );
+    double m = hunter_pet_t::composite_player_critical_damage_multiplier( s );
 
     m *= 1 + buffs.rylakstalkers_fangs -> check_value();
 
