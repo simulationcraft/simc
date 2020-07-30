@@ -403,6 +403,7 @@ public:
     const spell_data_t* ruthlessness_cp;
     const spell_data_t* shadow_focus;
     const spell_data_t* subterfuge;
+    const spell_data_t* slice_and_dice;
   } spell;
 
   // Talents
@@ -448,7 +449,6 @@ public:
     const spell_data_t* dirty_tricks;
 
     const spell_data_t* loaded_dice;
-    const spell_data_t* slice_and_dice;
 
     const spell_data_t* dancing_steel;
     const spell_data_t* blade_rush;
@@ -2452,7 +2452,6 @@ struct eviscerate_t : public rogue_attack_t
   void execute() override
   {
     rogue_attack_t::execute();
-
     p() -> buffs.nights_vengeance -> expire();
   }
 };
@@ -3130,16 +3129,6 @@ struct roll_the_bones_t : public rogue_spell_t
 
     p() -> buffs.snake_eyes -> trigger( p() -> buffs.snake_eyes -> max_stack(), cp * p() -> azerite.snake_eyes.value() );
   }
-
-  bool ready() override
-  {
-    if ( p() -> talent.slice_and_dice -> ok() )
-    {
-      return false;
-    }
-
-    return rogue_spell_t::ready();
-  }
 };
 
 // Rupture ==================================================================
@@ -3714,7 +3703,7 @@ struct slice_and_dice_t : public rogue_spell_t
   double precombat_seconds;
 
   slice_and_dice_t( rogue_t* p, const std::string& options_str ) :
-    rogue_spell_t( "slice_and_dice", p, p -> talent.slice_and_dice ),
+    rogue_spell_t( "slice_and_dice", p, p -> spell.slice_and_dice ),
     precombat_seconds( 0.0 )
   {
     add_option( opt_float( "precombat_seconds", precombat_seconds ) );
@@ -5537,7 +5526,7 @@ double rogue_t::composite_melee_speed() const
   double h = player_t::composite_melee_speed();
 
   if ( buffs.slice_and_dice -> check() )
-    h *= 1.0 / ( 1.0 + talent.slice_and_dice -> effectN( 1 ).percent() * buffs.slice_and_dice -> value() );
+    h *= 1.0 / ( 1.0 + spell.slice_and_dice -> effectN( 1 ).percent() * buffs.slice_and_dice -> value() );
 
   if ( buffs.adrenaline_rush -> check() )
     h *= 1.0 / ( 1.0 + buffs.adrenaline_rush -> value() );
@@ -5738,6 +5727,7 @@ void rogue_t::init_action_list()
   {
     // Pre-Combat
     precombat->add_action( this, "Stealth" );
+    precombat->add_action( this, "Slice and Dice", "precombat_seconds=1" );
     precombat->add_action( "use_item,name=azsharas_font_of_power" );
     precombat->add_action( "guardian_of_azeroth,if=talent.exsanguinate.enabled" );
 
@@ -5747,6 +5737,7 @@ void rogue_t::init_action_list()
     def -> add_action( "call_action_list,name=stealthed,if=stealthed.rogue" );
     def -> add_action( "call_action_list,name=cds,if=(!talent.master_assassin.enabled|dot.garrote.ticking)" );
     def -> add_action( "call_action_list,name=dot" );
+    def -> add_action( this, "Slice and Dice", "if=buff.slice_and_dice.remains<target.time_to_die&buff.slice_and_dice.remains<(1+combo_points)*1.8" );
     def -> add_action( "call_action_list,name=direct" );
     def -> add_action( "arcane_torrent,if=energy.deficit>=15+variable.energy_regen_combined" );
     def -> add_action( "arcane_pulse");
@@ -5851,7 +5842,7 @@ void rogue_t::init_action_list()
     // Pre-Combat
     precombat -> add_action( this, "Stealth", "if=(!equipped.pocketsized_computation_device|!cooldown.cyclotronic_blast.duration|raid_event.invulnerable.exists)" );
     precombat -> add_action( this, "Roll the Bones", "precombat_seconds=2" );
-    precombat -> add_talent( this, "Slice and Dice", "precombat_seconds=2" );
+    precombat -> add_action( this, "Slice and Dice", "precombat_seconds=2" );
     precombat -> add_action( this, "Adrenaline Rush", "precombat_seconds=1,if=(!equipped.pocketsized_computation_device|!cooldown.cyclotronic_blast.duration|raid_event.invulnerable.exists)" );
     precombat -> add_action( "use_item,name=azsharas_font_of_power" );
     precombat -> add_action( "use_item,effect_name=cyclotronic_blast,if=!raid_event.invulnerable.exists" );
@@ -5880,6 +5871,7 @@ void rogue_t::init_action_list()
     action_priority_list_t* cds = get_action_priority_list( "cds", "Cooldowns" );
     cds -> add_action( "call_action_list,name=essences,if=!stealthed.all" );
     cds -> add_action( this, "Adrenaline Rush", "if=!buff.adrenaline_rush.up&(!equipped.azsharas_font_of_power|cooldown.latent_arcana.remains>20)" );
+    cds -> add_action( this, "Roll the Bones", "if=buff.roll_the_bones.remains<=3|variable.rtb_reroll" );
     cds -> add_talent( this, "Marked for Death", "target_if=min:target.time_to_die,if=raid_event.adds.up&(target.time_to_die<combo_points.deficit|!stealthed.rogue&combo_points.deficit>=cp_max_spend-1)", "If adds are up, snipe the one with lowest TTD. Use when dying faster than CP deficit or without any CP." );
     cds -> add_talent( this, "Marked for Death", "if=raid_event.adds.in>30-raid_event.adds.duration&!stealthed.rogue&combo_points.deficit>=cp_max_spend-1", "If no adds will die within the next 30s, use MfD on boss without any CP." );
     cds -> add_action( this, "Blade Flurry", "if=spell_targets>=2&!buff.blade_flurry.up&(!raid_event.adds.exists|raid_event.adds.remains>8|raid_event.adds.in>(2-cooldown.blade_flurry.charges_fractional)*25)", "Blade Flurry on 2+ enemies. With adds: Use if they stay for 8+ seconds or if your next charge will be ready in time for the next wave." );
@@ -5923,8 +5915,7 @@ void rogue_t::init_action_list()
     // Finishers
     action_priority_list_t* finish = get_action_priority_list( "finish", "Finishers" );
     finish -> add_action( this, "Between the Eyes", "if=variable.bte_condition", "BtE over RtB rerolls with Deadshot/Ace traits or Ruthless Precision." );
-    finish -> add_talent( this, "Slice and Dice", "if=buff.slice_and_dice.remains<target.time_to_die&buff.slice_and_dice.remains<(1+combo_points)*1.8" );
-    finish -> add_action( this, "Roll the Bones", "if=buff.roll_the_bones.remains<=3|variable.rtb_reroll" );
+    finish -> add_action( this, "Slice and Dice", "if=buff.slice_and_dice.remains<target.time_to_die&buff.slice_and_dice.remains<(1+combo_points)*1.8" );
     finish -> add_action( this, "Between the Eyes", "if=azerite.ace_up_your_sleeve.enabled|azerite.deadshot.enabled", "BtE with the Ace Up Your Sleeve or Deadshot traits." );
     finish -> add_action( this, "Dispatch" );
 
@@ -5939,13 +5930,14 @@ void rogue_t::init_action_list()
     // Pre-Combat
     precombat -> add_action( this, "Stealth" );
     precombat -> add_talent( this, "Marked for Death", "precombat_seconds=15" );
+    precombat -> add_action( this, "Slice and Dice", "precombat_seconds=1" );
     precombat -> add_action( "potion" );
     precombat -> add_action( "use_item,name=azsharas_font_of_power" );
 
     // Main Rotation
     def -> add_action( "call_action_list,name=cds", "Check CDs at first" );
     def -> add_action( "run_action_list,name=stealthed,if=stealthed.all", "Run fully switches to the Stealthed Rotation (by doing so, it forces pooling if nothing is available)." );
-    def -> add_action( this, "Rupture", "if=target.time_to_die>6&remains<gcd.max&combo_points>=4-(time<10)*2", "Apply Rupture at 2+ CP during the first 10 seconds, after that 4+ CP if it expires within the next GCD or is not up" );
+    def -> add_action( this, "Slice and Dice", "if=target.time_to_die>6&buff.slice_and_dice.remains<gcd.max&combo_points>=4-(time<10)*2", "Apply Slice and Dice at 2+ CP during the first 10 seconds, after that 4+ CP if it expires within the next GCD or is not up" );
     def -> add_action( "variable,name=use_priority_rotation,value=priority_rotation&spell_targets.shuriken_storm>=2", "Only change rotation if we have priority_rotation set and multiple targets up." );
     def -> add_action( "call_action_list,name=stealth_cds,if=variable.use_priority_rotation", "Priority Rotation? Let's give a crap about energy for the stealth CDs (builder still respect it). Yup, it can be that simple." );
     def -> add_action( "variable,name=stealth_threshold,value=25+talent.vigor.enabled*35+talent.master_of_shadows.enabled*25+talent.shadow_focus.enabled*20+talent.alacrity.enabled*10+15*(spell_targets.shuriken_storm>=3)", "Used to define when to use stealth CDs or builders" );
@@ -6028,6 +6020,7 @@ void rogue_t::init_action_list()
     action_priority_list_t* finish = get_action_priority_list( "finish", "Finishers" );
     finish -> add_action( "pool_resource,for_next=1" );
     finish -> add_action( this, "Eviscerate", "if=buff.nights_vengeance.up&(spell_targets.shuriken_storm<2|variable.use_priority_rotation|!talent.secret_technique.enabled|!cooldown.secret_technique.up)", "Eviscerate has highest priority with Night's Vengeance up. Exception is AoE damage when SecTec is ready." );
+    finish -> add_action( this, "Slice and Dice", "if=buff.slice_and_dice.remains<target.time_to_die&buff.slice_and_dice.remains<(1+combo_points)*1.8" );
     finish -> add_action( this, "Rupture", "if=(!talent.dark_shadow.enabled|!buff.shadow_dance.up)&target.time_to_die-remains>6&remains<tick_time*2", "Keep up Rupture if it is about to run out. Do not use NB during Dance, if talented into Dark Shadow." );
     finish -> add_action( this, "Rupture", "cycle_targets=1,if=!variable.use_priority_rotation&spell_targets.shuriken_storm>=2&(azerite.nights_vengeance.enabled|!azerite.replicating_shadows.enabled|spell_targets.shuriken_storm-active_dot.rupture>=2)&!buff.shadow_dance.up&target.time_to_die>=(5+(2*combo_points))&refreshable", "Multidotting outside Dance on targets that will live for the duration of Rupture, refresh during pandemic. Multidot as long as 2+ targets do not have Rupture up with Replicating Shadows (unless you have Night's Vengeance too)." );
     finish -> add_action( this, "Rupture", "if=remains<cooldown.symbols_of_death.remains+10&cooldown.symbols_of_death.remains<=5&target.time_to_die-remains>cooldown.symbols_of_death.remains+5", "Refresh Rupture early if it will expire during Symbols. Do that refresh if SoD gets ready in the next 5s." );
@@ -6206,7 +6199,7 @@ std::unique_ptr<expr_t> rogue_t::create_expression( util::string_view name_str )
   }
   else if ( util::str_compare_ci( name_str, "rtb_buffs" ) )
   {
-    if ( specialization() != ROGUE_OUTLAW || talent.slice_and_dice -> ok() )
+    if ( specialization() != ROGUE_OUTLAW )
     {
       return expr_t::create_constant( name_str, 0 );
     }
@@ -6558,8 +6551,8 @@ void rogue_t::init_spells()
   spec.shadow_techniques    = find_specialization_spell( "Shadow Techniques" );
   spec.shadow_techniques_effect = find_spell( 196911 );
   spec.symbols_of_death     = find_specialization_spell( "Symbols of Death" );
-  spec.eviscerate           = find_specialization_spell( "Eviscerate" );
-  spec.eviscerate_2         = find_specialization_spell( 231716 );
+  spec.eviscerate           = find_class_spell( "Eviscerate" );
+  spec.eviscerate_2         = find_rank_spell( "Eviscerate", "Rank 2" );
   spec.shadowstrike         = find_specialization_spell( "Shadowstrike" );
   spec.shadowstrike_2       = find_spell( 245623 );
 
@@ -6581,6 +6574,7 @@ void rogue_t::init_spells()
   spell.shadow_focus                  = find_spell( 112942 );
   spell.subterfuge                    = find_spell( 115192 );
   spell.relentless_strikes_energize   = find_spell( 98440 );
+  spell.slice_and_dice                = find_class_spell( "Slice and Dice" );
 
   // Talents
   // Shared
@@ -6623,7 +6617,6 @@ void rogue_t::init_spells()
   talent.dirty_tricks       = find_talent_spell( "Dirty Tricks" );
 
   talent.loaded_dice        = find_talent_spell( "Loaded Dice" );
-  talent.slice_and_dice     = find_talent_spell( "Slice and Dice" );
 
   talent.dancing_steel      = find_talent_spell( "Dancing Steel" );
   talent.blade_rush         = find_talent_spell( "Blade Rush" );
@@ -6826,6 +6819,9 @@ void rogue_t::create_buffs()
                                 -> add_invalidate( CACHE_RUN_SPEED );
   buffs.stealth               = new buffs::stealth_t( this );
   buffs.vanish                = new buffs::vanish_t( this );
+  buffs.slice_and_dice        = make_buff( this, "slice_and_dice", spell.slice_and_dice )
+    -> set_refresh_behavior( buff_refresh_behavior::DURATION )
+    -> add_invalidate( CACHE_ATTACK_SPEED );
 
   // Assassination
   buffs.envenom               = make_buff( this, "envenom", find_specialization_spell( "Envenom" ) )
@@ -6902,11 +6898,6 @@ void rogue_t::create_buffs()
                                   -> set_default_value( find_spell( 270070 ) -> effectN( 1 ).percent() );
   // Outlaw
   buffs.loaded_dice             = make_buff( this, "loaded_dice", talent.loaded_dice -> effectN( 1 ).trigger() );
-  buffs.slice_and_dice          = make_buff( this, "slice_and_dice", talent.slice_and_dice )
-                                  -> set_period( timespan_t::zero() )
-                                  -> set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
-                                  -> set_affects_regen( true )
-                                  -> add_invalidate( CACHE_ATTACK_SPEED );
   buffs.killing_spree           = make_buff( this, "killing_spree", talent.killing_spree )
                                   -> set_cooldown( timespan_t::zero() )
                                   -> set_duration( talent.killing_spree -> duration() );
@@ -7478,13 +7469,14 @@ double rogue_t::resource_regen_per_second( resource_e r ) const
 {
   double reg = player_t::resource_regen_per_second( r );
 
-  if ( r == RESOURCE_ENERGY )
+  // Slice and Dice does not have any energy effect in Shadowlands but keeping this commented out for now in case they change their minds.
+  /*if ( r == RESOURCE_ENERGY )
   {
     if ( buffs.slice_and_dice->up() )
     {
       reg *= 1.0 + talent.slice_and_dice->effectN( 3 ).percent() * buffs.slice_and_dice->check_value();
     }
-  }
+  }*/
 
   return reg;
 }
