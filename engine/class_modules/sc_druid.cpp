@@ -387,6 +387,8 @@ public:
     buff_t* thorns;
     buff_t* heart_of_the_wild;
 
+    buff_t* druid_runecarve_1_cooldown;
+
     // Covenants
     buff_t* kindred_empowerment;
     buff_t* kindred_empowerment_energize;
@@ -773,14 +775,19 @@ public:
   {
     // General
     const spell_data_t* sephuzs_secret = spell_data_t::not_found();
-    double LegendaryDamageMod = 0.0;
+
+    const spell_data_t* druid_runecarve_1;         // 7084
+    const spell_data_t* druid_runecarve_3;         // 7085
+    const spell_data_t* druid_runecarve_4;         // 7086
+    const spell_data_t* lycaras_fleeting_glimpse;  // 7110
 
     // Balance
     timespan_t impeccable_fel_essence;
-    const spell_data_t* oneths_clear_vision;
-    const spell_data_t* primordial_arcanic_pulsar;
-    const spell_data_t* timeworn_dreamcatcher;
-    const spell_data_t* runecarve_3;
+
+    const spell_data_t* oneths_clear_vision;        // 7087
+    const spell_data_t* primordial_arcanic_pulsar;  // 7088
+    const spell_data_t* balance_runecarve_3;        // 7107
+    const spell_data_t* timeworn_dreamcatcher;      // 7108
 
     // Feral
     double the_wildshapers_clutch;
@@ -887,6 +894,7 @@ public:
   void      invalidate_cache( cache_e ) override;
   void      arise() override;
   void      reset() override;
+  void      combat_begin() override;
   void      merge( player_t& other ) override;
   timespan_t available() const override;
   double    composite_armor() const override;
@@ -1695,6 +1703,13 @@ public:
     ab::tick_may_crit = true;
 
     gore_chance += p()->sets->set( DRUID_GUARDIAN, T19, B2 )->effectN( 1 ).percent();
+
+    if ( p()->legendary.druid_runecarve_3->ok() &&
+         ab::data().affected_by( p()->legendary.druid_runecarve_3->effectN( 1 ) ) )
+    {
+      ab::base_tick_time *= 1.0 + p()->legendary.druid_runecarve_3->effectN( 1 ).percent();
+      ab::dot_duration *= 1.0 + p()->legendary.druid_runecarve_3->effectN( 3 ).percent();
+    }
   }
 
   druid_t* p()
@@ -2670,6 +2685,9 @@ struct moonfire_t : public druid_spell_t
       double am = druid_spell_t::action_multiplier();
 
       am *= 1.0 + p()->buff.solar_solstice->check_value();
+
+      if ( p()->legendary.druid_runecarve_4->ok() && p()->get_active_dots( internal_id ) == 1 )
+        am *= 1.0 + p()->legendary.druid_runecarve_4->effectN( 1 ).percent();
 
       return am;
     }
@@ -3963,6 +3981,16 @@ struct rake_t : public cat_attack_t
       hasted_ticks = true;
     }
 
+    double action_multiplier() const override
+    {
+      double am = cat_attack_t::action_multiplier();
+
+      if ( p()->legendary.druid_runecarve_4->ok() && p()->get_active_dots( internal_id ) == 1 )
+        am *= 1.0 + p()->legendary.druid_runecarve_4->effectN( 1 ).percent();
+
+      return am;
+    }
+
     dot_t* get_dot( player_t* t ) override
     {
       if ( ! t ) t = target;
@@ -4149,6 +4177,16 @@ struct rip_t : public cat_attack_t
   double attack_tick_power_coefficient( const action_state_t* s ) const override
   {
     return cat_attack_t::attack_tick_power_coefficient( s );
+  }
+
+  double action_multiplier() const override
+  {
+    double am = cat_attack_t::action_multiplier();
+
+    if ( p()->legendary.druid_runecarve_4->ok() && p()->get_active_dots( internal_id ) == 1 )
+      am *= 1.0 + p()->legendary.druid_runecarve_4->effectN( 1 ).percent();
+
+    return am;
   }
 
   double bonus_ta( const action_state_t* s ) const override
@@ -5445,7 +5483,15 @@ struct bear_form_t : public druid_spell_t
   {
     druid_spell_t::execute();
 
-    p() -> shapeshift( BEAR_FORM );
+    p()->shapeshift( BEAR_FORM );
+
+    if ( p()->legendary.druid_runecarve_1->ok() && !p()->buff.druid_runecarve_1_cooldown->check() &&
+         p()->talent.guardian_affinity->ok() )
+    {
+      p()->buff.heart_of_the_wild->trigger(
+          1, buff_t::DEFAULT_VALUE(), 1.0,
+          timespan_t::from_seconds( p()->legendary.druid_runecarve_1->effectN( 2 ).base_value() ) );
+    }
   }
 };
 // Brambles =================================================================
@@ -5515,10 +5561,17 @@ struct cat_form_t : public druid_spell_t
   {
     druid_spell_t::execute();
 
-    p() -> shapeshift( CAT_FORM );
+    p()->shapeshift( CAT_FORM );
+
+    if ( p()->legendary.druid_runecarve_1->ok() && !p()->buff.druid_runecarve_1_cooldown->check() &&
+         p()->talent.feral_affinity->ok() )
+    {
+      p()->buff.heart_of_the_wild->trigger(
+          1, buff_t::DEFAULT_VALUE(), 1.0,
+          timespan_t::from_seconds( p()->legendary.druid_runecarve_1->effectN( 2 ).base_value() ) );
+    }
   }
 };
-
 
 // Celestial Alignment ======================================================
 
@@ -6492,7 +6545,15 @@ struct moonkin_form_t : public druid_spell_t
   {
     druid_spell_t::execute();
 
-    p() -> shapeshift( MOONKIN_FORM );
+    p()->shapeshift( MOONKIN_FORM );
+
+    if ( p()->legendary.druid_runecarve_1->ok() && !p()->buff.druid_runecarve_1_cooldown->check() &&
+         p()->talent.balance_affinity->ok() )
+    {
+      p()->buff.heart_of_the_wild->trigger(
+          1, buff_t::DEFAULT_VALUE(), 1.0,
+          timespan_t::from_seconds( p()->legendary.druid_runecarve_1->effectN( 2 ).base_value() ) );
+    }
   }
 };
 
@@ -7809,6 +7870,25 @@ struct ailuro_pouncers_event_t : public event_t
   }
 };
 
+struct lycaras_fleeting_glimpse_event_t : public event_t
+{
+  druid_t* druid;
+  timespan_t interval;
+
+  lycaras_fleeting_glimpse_event_t( druid_t* p, timespan_t tm ) : event_t( *p, tm ), druid( p ), interval( tm )
+  {}
+
+  const char* name() const override
+  {
+    return "lycaras_fleeting_glimpse";
+  }
+
+  void execute() override
+  {
+    make_event<lycaras_fleeting_glimpse_event_t>( sim(), druid, interval );
+  }
+};
+
 // ==========================================================================
 // Druid Character Definition
 // ==========================================================================
@@ -8159,12 +8239,16 @@ void druid_t::init_spells()
   // Runeforge Legendaries
 
   // General
+  legendary.druid_runecarve_1 = find_runeforge_legendary( "Druid - All Power 01 (DNT)" );
+  legendary.druid_runecarve_3 = find_runeforge_legendary( "Druid - All Power 03 (DNT)" );
+  legendary.druid_runecarve_4 = find_runeforge_legendary( "Druid - All Power 04 (DNT)" );
+  legendary.lycaras_fleeting_glimpse = find_runeforge_legendary( "Lycara's Fleeting Glimpse" );
 
   // Balance
   legendary.oneths_clear_vision = find_runeforge_legendary( "Oneth's Clear Vision" );
   legendary.primordial_arcanic_pulsar = find_runeforge_legendary( "Primordial Arcanic Pulsar" );
   legendary.timeworn_dreamcatcher = find_runeforge_legendary( "Timeworn Dreamcatcher" );
-  legendary.runecarve_3 = find_runeforge_legendary( "Druid - Balance Power 03 (DNT)" );
+  legendary.balance_runecarve_3 = find_runeforge_legendary( "Druid - Balance Power 03 (DNT)" );
 
   // Feral
 
@@ -8396,9 +8480,11 @@ void druid_t::create_buffs()
 
   buff.prowl = make_buff( this, "prowl", find_class_spell( "Prowl" ) );
 
-  buff.innervate = new innervate_buff_t(*this);
+  buff.innervate = new innervate_buff_t( *this );
 
-  buff.thorns = make_buff(this, "thorns", find_spell(305497));
+  buff.thorns = make_buff( this, "thorns", find_spell( 305497 ) );
+
+  buff.druid_runecarve_1_cooldown = make_buff( this, "druid_runecarve_1", find_spell( 338643 ) )->set_quiet( true );
 
   // Azerite
   buff.shredding_fury = make_buff( this, "shredding_fury", find_spell( 274426 ) )
@@ -8573,7 +8659,7 @@ void druid_t::create_buffs()
           ->set_stack_change_callback( [this]( buff_t*, int old_, int new_ ) {
             if ( !new_ )
               this->eclipse_handler.advance_eclipse();
-            else if ( legendary.runecarve_3->ok() )
+            else if ( legendary.balance_runecarve_3->ok() )
               buff.runecarve_3_nature_buff->trigger();
           } );
 
@@ -8584,7 +8670,7 @@ void druid_t::create_buffs()
           ->set_stack_change_callback( [this]( buff_t*, int old_, int new_ ) {
             if ( !new_ )
               this->eclipse_handler.advance_eclipse();
-            else if ( legendary.runecarve_3->ok() )
+            else if ( legendary.balance_runecarve_3->ok() )
               buff.runecarve_3_arcane_buff->trigger();
           } );
 
@@ -9677,6 +9763,17 @@ void druid_t::arise()
     buff.strife_doubled = buff_t::find( this, "conflict_vers" );
 }
 
+void druid_t::combat_begin()
+{
+  player_t::combat_begin();
+
+  if ( legendary.lycaras_fleeting_glimpse->ok() )
+  {
+    make_event<lycaras_fleeting_glimpse_event_t>(
+        *sim, this, timespan_t::from_seconds( legendary.lycaras_fleeting_glimpse->effectN( 1 ).base_value() ) );
+  }
+}
+
 // druid_t::recalculate_resource_max ========================================
 
 void druid_t::recalculate_resource_max( resource_e rt )
@@ -9829,8 +9926,6 @@ double druid_t::composite_armor_multiplier() const
 double druid_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
-
-  m *= 1.0 + legendary.LegendaryDamageMod;
 
   // Fury of Nature increases Arcane and Nature damage
   if ( buff.bear_form -> check() && ( dbc::is_school( school, SCHOOL_ARCANE ) || dbc::is_school( school, SCHOOL_NATURE ) ) )
