@@ -278,7 +278,6 @@ public:
   double thorns_hit_chance;
   int initial_moon_stage;
   int lively_spirit_stacks;  // to set how many spells a healer will cast during Innervate
-  bool ahhhhh_the_great_outdoors;
   bool catweave_bear;
   bool affinity_resources;  // activate resources tied to affinities
 
@@ -318,7 +317,6 @@ public:
   melee_attack_t* caster_melee_attack;
   melee_attack_t* cat_melee_attack;
   melee_attack_t* bear_melee_attack;
-  double sylvan_walker;
 
   double equipped_weapon_dps;
 
@@ -782,8 +780,6 @@ public:
     const spell_data_t* lycaras_fleeting_glimpse;  // 7110
 
     // Balance
-    timespan_t impeccable_fel_essence;
-
     const spell_data_t* oneths_clear_vision;        // 7087
     const spell_data_t* primordial_arcanic_pulsar;  // 7088
     const spell_data_t* balance_runecarve_3;        // 7107
@@ -814,7 +810,6 @@ public:
     thorns_hit_chance( 0.75 ),
     initial_moon_stage( NEW_MOON ),
     lively_spirit_stacks(9),  //set a usually fitting default value
-    ahhhhh_the_great_outdoors( false ),
     catweave_bear( false ),
     affinity_resources( false ),
     beta_covenant( "none" ),
@@ -858,7 +853,6 @@ public:
     cooldown.rage_from_melees -> duration  = timespan_t::from_seconds( 1.0 );
 
     legendary.the_wildshapers_clutch = 0.0;
-    sylvan_walker = 0;
     equipped_weapon_dps = 0;
 
     resource_regeneration = regen_type::DYNAMIC;
@@ -2556,10 +2550,6 @@ public:
           // hardcoded 12AP because 9s / 20s * 30AP = 13.5AP - 1.5 Shadowlands discount
           p()->resource_gain( RESOURCE_ASTRAL_POWER, 12, p()->gain.arcanic_pulsar );
         }
-
-        timespan_t reduction = last_resource_cost * p()->legendary.impeccable_fel_essence;
-        p()->cooldown.celestial_alignment->adjust( reduction );
-        p()->cooldown.incarnation->adjust( reduction );
       }
     }
   };
@@ -10210,9 +10200,6 @@ double druid_t::composite_damage_versatility_rating() const
 {
   double cdvr = player_t::composite_damage_versatility_rating();
 
-  if ( ahhhhh_the_great_outdoors )
-    cdvr += sylvan_walker;
-
   return cdvr;
 }
 
@@ -10222,9 +10209,6 @@ double druid_t::composite_heal_versatility_rating() const
 {
   double chvr = player_t::composite_heal_versatility_rating();
 
-  if ( ahhhhh_the_great_outdoors )
-    chvr += sylvan_walker;
-
   return chvr;
 }
 
@@ -10233,9 +10217,6 @@ double druid_t::composite_heal_versatility_rating() const
 double druid_t::composite_mitigation_versatility_rating() const
 {
   double cmvr = player_t::composite_mitigation_versatility_rating();
-
-  if ( ahhhhh_the_great_outdoors )
-    cmvr += sylvan_walker;
 
   return cmvr;
 }
@@ -10453,7 +10434,6 @@ void druid_t::create_options()
   add_option( opt_float( "initial_astral_power", initial_astral_power ) );
   add_option( opt_int( "initial_moon_stage", initial_moon_stage ) );
   add_option( opt_int( "lively_spirit_stacks", lively_spirit_stacks ) );
-  add_option( opt_bool( "outside", ahhhhh_the_great_outdoors ) );
   add_option( opt_bool( "catweave_bear", catweave_bear ) );
   add_option( opt_bool( "affinity_resources", affinity_resources ) );
   add_option( opt_float( "thorns_attack_period", thorns_attack_period ) );
@@ -10997,7 +10977,6 @@ void druid_t::copy_from( player_t* source )
   initial_moon_stage = p->initial_moon_stage;
   lively_spirit_stacks = p->lively_spirit_stacks;
   affinity_resources = p->affinity_resources;
-  ahhhhh_the_great_outdoors = p->ahhhhh_the_great_outdoors;
   beta_covenant = p->beta_covenant;
   kindred_empowerment_ratio = p->kindred_empowerment_ratio;
   convoke_the_spirits_heals = p->convoke_the_spirits_heals;
@@ -11539,17 +11518,6 @@ struct oakhearts_puny_quods_t : public scoped_action_callback_t<barkskin_t>
   }
 };
 
-struct sylvan_walker_t: public unique_gear::scoped_actor_callback_t<druid_t>
-{
-  sylvan_walker_t(): super( DRUID )
-  {}
-
-  void manipulate( druid_t* druid, const special_effect_t& e ) override
-  {
-    druid -> sylvan_walker = util::round( e.driver() -> effectN( 1 ).average( e.item ) );
-  }
-};
-
 struct oakhearts_puny_quods_buff_t : public class_buff_cb_t<druid_t>
 {
   oakhearts_puny_quods_buff_t() : super( DRUID, "oakhearts_puny_quods" )
@@ -11639,54 +11607,12 @@ struct druid_module_t : public module_t
     register_special_effect( 236478, oakhearts_puny_quods_t() );
     register_special_effect( 236478, oakhearts_puny_quods_buff_t(), true );
     register_special_effect( 212875, fiery_red_maimers_t(), true );
-    register_special_effect( 222270, sylvan_walker_t() );
     register_special_effect( 208051, sephuzs_t() );
     register_special_effect( 208051, sephuzs_secret_t(), true);
     register_special_effect( 248081, behemoth_headdress_t() );
-    // register_special_effect( 208220, amanthuls_wisdom );
-    // register_special_effect( 207943, edraith_bonds_of_aglaya );
-    // register_special_effect( 210667, ekowraith_creator_of_worlds );
-    // register_special_effect( 207932, tearstone_of_elune );
-    // register_special_effect( 207271, the_dark_titans_advice );
-    // register_special_effect( 208191, essence_of_infusion_t() );
   }
 
-  void register_hotfixes() const override
-  {
-    /*
-    hotfix::register_spell( "Druid", "2016-12-18", "Incorrect spell level for starfall damage component.", 191037 )
-      .field( "spell_level" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 40 )
-      .verification_value( 76 );
-    */
-    /*
-    hotfix::register_effect( "Druid", "2016-09-23", "Sunfire damage increased by 10%.-dot", 232417 )
-      .field( "sp_coefficient" )
-      .operation( hotfix::HOTFIX_MUL )
-      .modifier( 1.10 )
-      .verification_value( 0.5 );
-
-    hotfix::register_effect( "Druid", "2016-09-23", "Starfall damage increased by 10%.", 280158 )
-      .field( "sp_coefficient" )
-      .operation( hotfix::HOTFIX_MUL )
-      .modifier( 1.10 )
-      .verification_value( 0.4 );
-
-    hotfix::register_effect( "Druid", "2016-09-23", "Lunar Strike damage increased by 5%.", 284976 )
-      .field( "sp_coefficient" )
-      .operation( hotfix::HOTFIX_MUL )
-      .modifier( 1.05 )
-      .verification_value( 2.7 );
-
-    hotfix::register_effect( "Druid", "2016-09-23", "Solar Wrath damage increased by 5%.", 280098 )
-      .field( "sp_coefficient" )
-      .operation( hotfix::HOTFIX_MUL )
-      .modifier( 1.05 )
-      .verification_value( 1.9 );
-      */
-  }
-
+  void register_hotfixes() const override {}
   void combat_begin( sim_t* ) const override {}
   void combat_end( sim_t* ) const override {}
 };
