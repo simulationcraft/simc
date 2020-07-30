@@ -10366,6 +10366,30 @@ std::unique_ptr<expr_t> druid_t::create_expression( util::string_view name_str )
             return 3;
         } );
       }
+      else if ( util::str_compare_ci( splits[ 1 ], "any_next" ) )
+      {
+        return make_fn_expr( name_str, [this]() { return eclipse_handler.state == ANY_NEXT; } );
+      }
+      else if ( util::str_compare_ci( splits[ 1 ], "in_solar" ) )
+      {
+        return make_fn_expr( name_str, [this]() { return eclipse_handler.state == IN_SOLAR; } );
+      }
+      else if ( util::str_compare_ci( splits[ 1 ], "in_lunar" ) )
+      {
+        return make_fn_expr( name_str, [this]() { return eclipse_handler.state == IN_LUNAR; } );
+      }
+      else if ( util::str_compare_ci( splits[ 1 ], "in_both" ) )
+      {
+        return make_fn_expr( name_str, [this]() { return eclipse_handler.state == IN_BOTH; } );
+      }
+      else if ( util::str_compare_ci( splits[ 1 ], "solar_next" ) )
+      {
+        return make_fn_expr( name_str, [this]() { return eclipse_handler.state == SOLAR_NEXT; } );
+      }
+      else if ( util::str_compare_ci( splits[ 1 ], "lunar_next" ) )
+      {
+        return make_fn_expr( name_str, [this]() { return eclipse_handler.state == LUNAR_NEXT; } );
+      }
     }
   }
 
