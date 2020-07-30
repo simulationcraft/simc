@@ -201,8 +201,8 @@ public:
   actions::rogue_poison_t* active_lethal_poison;
   actions::rogue_poison_t* active_nonlethal_poison;
   actions::rogue_attack_t* active_main_gauche;
-  actions::rogue_spell_t* poison_bomb;
-  actions::rogue_spell_t* replicating_shadows;
+  actions::rogue_spell_t* active_poison_bomb;
+  actions::rogue_spell_t* active_replicating_shadows;
 
   // Autoattacks
   action_t* auto_attack;
@@ -357,6 +357,7 @@ public:
     const spell_data_t* subtlety_rogue;
 
     // Assassination
+    const spell_data_t* deadly_poison;
     const spell_data_t* improved_poisons;
     const spell_data_t* seal_fate;
     const spell_data_t* venomous_wounds;
@@ -559,8 +560,8 @@ public:
     active_lethal_poison( nullptr ),
     active_nonlethal_poison( nullptr ),
     active_main_gauche( nullptr ),
-    poison_bomb( nullptr ),
-    replicating_shadows( nullptr ),
+    active_poison_bomb( nullptr ),
+    active_replicating_shadows( nullptr ),
     auto_attack( nullptr ), melee_main_hand( nullptr ), melee_off_hand( nullptr ),
     shadow_blades_attack( nullptr ),
     last_nightblade_target( nullptr ),
@@ -754,10 +755,9 @@ protected:
 private:
   /// typedef for the templated action type, eg. spell_t, attack_t, heal_t
   using ab = Base;
+  bool _requires_stealth;
 
 public:
-  bool requires_stealth;
-
   // Secondary triggered ability, due to Weaponmaster talent or Death from Above. Secondary
   // triggered abilities cost no resources or incur cooldowns.
   secondary_trigger_e secondary_trigger;
@@ -797,7 +797,7 @@ public:
   rogue_action_t( util::string_view n, rogue_t* p, const spell_data_t* s = spell_data_t::nil(),
                   const std::string& options = std::string() )
     : ab( n, p, s ),
-    requires_stealth( false ),
+    _requires_stealth( false ),
     secondary_trigger( TRIGGER_NONE )
   {
     ab::parse_options( options );
@@ -863,7 +863,7 @@ public:
   void parse_spell_data( const spell_data_t* s )
   {
     if ( s->stance_mask() & 0x20000000)
-      requires_stealth = true;
+      _requires_stealth = true;
 
     for ( size_t i = 1; i <= s->effect_count(); i++ )
     {
@@ -991,6 +991,10 @@ public:
   {
     return ab::dot_duration > timespan_t::zero() && ab::base_tick_time > timespan_t::zero();
   }
+
+  // Overridable wrapper for checking stealth requirement
+  virtual bool requires_stealth() const
+  { return _requires_stealth; }
 
 private:
   void do_exsanguinate( dot_t* dot, double coeff );
@@ -1337,7 +1341,7 @@ public:
       ab::player->resources.current[ RESOURCE_COMBO_POINT ] < ab::base_costs[ RESOURCE_COMBO_POINT ] )
       return false;
 
-    if ( requires_stealth && !p()->stealthed() )
+    if ( requires_stealth() && !p()->stealthed() )
     {
       return false;
     }
@@ -1450,132 +1454,6 @@ struct secondary_attack_trigger_t : public event_t
   { if ( state ) action_state_t::release( state ); }
 };
 
-struct main_gauche_t : public rogue_attack_t
-{
-  main_gauche_t( rogue_t* p ) :
-    rogue_attack_t( "main_gauche", p, p -> find_spell( 86392 ) )
-  {
-    background = true;
-  }
-
-  double attack_direct_power_coefficient( const action_state_t* s ) const override
-  {
-    double ap = rogue_attack_t::attack_direct_power_coefficient( s );
-
-    // Main Gauche is not set up like most masteries as it is a flat mod instead of a percent mod
-    // Need to reference the 2nd effect and directly apply the sp_coeff instead of dividing by 100
-    ap += p()->cache.mastery() * p()->mastery.main_gauche->effectN( 2 ).sp_coeff();
-
-    return ap;
-  }
-
-  bool procs_main_gauche() const override
-  { return false; }
-
-  bool procs_combat_potency() const override
-  { return true; }
-
-  bool procs_poison() const override
-  { return false; }
-};
-
-struct blade_flurry_attack_t : public rogue_attack_t
-{
-  blade_flurry_attack_t( rogue_t* p ) :
-    rogue_attack_t( "blade_flurry_attack", p, p -> find_spell( 22482 ) )
-  {
-    callbacks = false;
-    background = true;
-    radius = 5;
-    range = -1.0;
-
-    // Spell data has chain targets with mult 1 set to 5 on the damage effect, but it is 4 targets as in the dummy effect, so we set that here.
-    aoe = static_cast<int>( p->spec.blade_flurry->effectN( 3 ).base_value() );
-  }
-
-  void init() override
-  {
-    rogue_attack_t::init();
-    snapshot_flags |= STATE_TGT_MUL_DA;
-  }
-
-  bool procs_main_gauche() const override
-  { return false; }
-
-  size_t available_targets( std::vector< player_t* >& tl ) const override
-  {
-    rogue_attack_t::available_targets( tl );
-
-    for ( size_t i = 0; i < tl.size(); i++ )
-    {
-      if ( tl[i] == target ) // Cannot hit the original target.
-      {
-        tl.erase( tl.begin() + i );
-        break;
-      }
-    }
-    return tl.size();
-  }
-};
-
-struct blade_flurry_instant_attack_t : public rogue_attack_t
-{
-  blade_flurry_instant_attack_t( rogue_t* p ) :
-    rogue_attack_t( "blade_flurry_instant_attack", p, p -> find_spell( 331850 ) )
-  {
-    background = true;
-    range = -1.0;
-  }
-
-  bool procs_main_gauche() const override
-  { return false; }
-};
-
-struct internal_bleeding_t : public rogue_attack_t
-{
-  internal_bleeding_t( rogue_t* p ) :
-    rogue_attack_t( "internal_bleeding", p, p -> find_spell( 154953 ) )
-  {
-    background = true;
-  }
-
-  timespan_t composite_dot_duration( const action_state_t* s ) const override
-  {
-    timespan_t duration = rogue_attack_t::composite_dot_duration( s );
-
-    if ( cast_state( s ) -> exsanguinated )
-    {
-      duration *= 1.0 / ( 1.0 + p() -> talent.exsanguinate -> effectN( 1 ).percent() );
-    }
-
-    return duration;
-  }
-
-  void tick( dot_t* d ) override
-  {
-    rogue_attack_t::tick( d );
-
-    trigger_venomous_wounds( d -> state );
-  }
-
-  double composite_persistent_multiplier( const action_state_t* state ) const override
-  {
-    double m = rogue_attack_t::composite_persistent_multiplier( state );
-    m *= cast_state( state ) -> cp;
-    return m;
-  }
-};
-
-struct poison_bomb_t : public rogue_spell_t
-{
-  poison_bomb_t( rogue_t* p ) :
-    rogue_spell_t( "poison_bomb", p, p -> find_spell( 255546 ) )
-  {
-    background = true;
-    aoe = -1;
-  }
-};
-
 // ==========================================================================
 // Poisons
 // ==========================================================================
@@ -1584,9 +1462,8 @@ struct rogue_poison_t : public rogue_attack_t
 {
   double proc_chance_;
 
-  rogue_poison_t( const std::string& token, rogue_t* p,
-                  const spell_data_t* s = spell_data_t::nil() ) :
-    actions::rogue_attack_t( token, p, s ),
+  rogue_poison_t( util::string_view name, rogue_t* p, const spell_data_t* s = spell_data_t::nil() ) :
+    actions::rogue_attack_t( name, p, s ),
     proc_chance_( 0 )
   {
     proc              = true;
@@ -1633,8 +1510,11 @@ struct rogue_poison_t : public rogue_attack_t
     set_target( source_state -> target );
     execute();
 
-    if ( p() -> azerite.double_dose.ok() && ( source_state -> action -> name_str == "mutilate_mh" || source_state -> action -> name_str == "mutilate_oh" ) )
-      p() -> buffs.double_dose -> trigger( 1 );
+    if ( p()->azerite.double_dose.ok() && p()->active_lethal_poison == this &&
+      ( source_state->action->name_str == "mutilate_mh" || source_state->action->name_str == "mutilate_oh" ) )
+    {
+      p()->buffs.double_dose->trigger( 1 );
+    }
   }
 };
 
@@ -1644,8 +1524,8 @@ struct deadly_poison_t : public rogue_poison_t
 {
   struct deadly_poison_dd_t : public rogue_poison_t
   {
-    deadly_poison_dd_t( rogue_t* p ) :
-      rogue_poison_t( "deadly_poison_instant", p, p -> find_spell( 113780 ) )
+    deadly_poison_dd_t( util::string_view name, rogue_t* p ) :
+      rogue_poison_t( name, p, p->find_spell( 113780 ) )
     {
       proc = false;
       callbacks = true;
@@ -1654,8 +1534,8 @@ struct deadly_poison_t : public rogue_poison_t
 
   struct deadly_poison_dot_t : public rogue_poison_t
   {
-    deadly_poison_dot_t( rogue_t* p ) :
-      rogue_poison_t( "deadly_poison_dot", p, p -> find_specialization_spell( "Deadly Poison" ) -> effectN( 1 ).trigger() )
+    deadly_poison_dot_t( util::string_view name, rogue_t* p ) :
+      rogue_poison_t( name, p, p->spec.deadly_poison->effectN( 1 ).trigger() )
     {
       proc = false;
       callbacks = true;
@@ -1698,14 +1578,14 @@ struct deadly_poison_t : public rogue_poison_t
   deadly_poison_dd_t*  proc_instant;
   deadly_poison_dot_t* proc_dot;
 
-  deadly_poison_t( rogue_t* player ) :
-    rogue_poison_t( "deadly_poison", player, player -> find_specialization_spell( "Deadly Poison" ) ),
+  deadly_poison_t( util::string_view name, rogue_t* p ) :
+    rogue_poison_t( name, p, p->spec.deadly_poison ),
     proc_instant( nullptr ), proc_dot( nullptr )
   {
     dual = true;
 
-    proc_instant = new deadly_poison_dd_t( player );
-    proc_dot     = new deadly_poison_dot_t( player );
+    proc_instant = p->get_background_action<deadly_poison_dd_t>( "deadly_poison_instant" );
+    proc_dot  = p->get_background_action<deadly_poison_dot_t>( "deadly_poison_dot" );
   }
 
   void impact( action_state_t* state ) override
@@ -1733,8 +1613,8 @@ struct instant_poison_t : public rogue_poison_t
 {
   struct instant_poison_dd_t : public rogue_poison_t
   {
-    instant_poison_dd_t( rogue_t* p ) :
-      rogue_poison_t( "instant_poison", p, p->find_class_spell( "Instant Poison" )->effectN( 1 ).trigger() )
+    instant_poison_dd_t( util::string_view name, rogue_t* p ) :
+      rogue_poison_t( name, p, p->find_class_spell( "Instant Poison" )->effectN( 1 ).trigger() )
     {
       proc = false;
       callbacks = true;
@@ -1743,11 +1623,11 @@ struct instant_poison_t : public rogue_poison_t
 
   instant_poison_dd_t* proc_dd;
 
-  instant_poison_t( rogue_t* p ) :
-    rogue_poison_t( "instant_poison_driver", p, p->find_class_spell( "Instant Poison" ) )
+  instant_poison_t( util::string_view name, rogue_t* p ) :
+    rogue_poison_t( name, p, p->find_class_spell( "Instant Poison" ) )
   {
     dual = true;
-    proc_dd = new instant_poison_dd_t( p );
+    proc_dd = p->get_background_action<instant_poison_dd_t>( "instant_poison" );
   }
 
   void impact( action_state_t* state ) override
@@ -1765,8 +1645,8 @@ struct wound_poison_t : public rogue_poison_t
 {
   struct wound_poison_dd_t : public rogue_poison_t
   {
-    wound_poison_dd_t( rogue_t* p ) :
-      rogue_poison_t( "wound_poison", p, p -> find_class_spell( "Wound Poison" ) -> effectN( 1 ).trigger() )
+    wound_poison_dd_t( util::string_view name, rogue_t* p ) :
+      rogue_poison_t( name, p, p -> find_class_spell( "Wound Poison" ) -> effectN( 1 ).trigger() )
     {
       proc = false;
       callbacks = true;
@@ -1776,13 +1656,13 @@ struct wound_poison_t : public rogue_poison_t
     {
       rogue_poison_t::impact( state );
 
-      if ( result_is_hit( state -> result ) )
+      if ( result_is_hit( state->result ) )
       {
-        td( state -> target ) -> debuffs.wound_poison -> trigger();
+        td( state->target )->debuffs.wound_poison->trigger();
 
-        if ( ! sim -> overrides.mortal_wounds && state -> target -> debuffs.mortal_wounds )
+        if ( !sim->overrides.mortal_wounds && state->target->debuffs.mortal_wounds )
         {
-          state -> target -> debuffs.mortal_wounds -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, data().duration() );
+          state->target->debuffs.mortal_wounds->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, data().duration() );
         }
       }
     }
@@ -1790,11 +1670,11 @@ struct wound_poison_t : public rogue_poison_t
 
   wound_poison_dd_t* proc_dd;
 
-  wound_poison_t( rogue_t* player ) :
-    rogue_poison_t( "wound_poison_driver", player, player -> find_class_spell( "Wound Poison" ) )
+  wound_poison_t( util::string_view name, rogue_t* p ) :
+    rogue_poison_t( name, p, p->find_class_spell( "Wound Poison" ) )
   {
     dual = true;
-    proc_dd = new wound_poison_dd_t( player );
+    proc_dd = p->get_background_action<wound_poison_dd_t>( "wound_poison" );
   }
 
   void impact( action_state_t* state ) override
@@ -1812,25 +1692,25 @@ struct crippling_poison_t : public rogue_poison_t
 {
   struct crippling_poison_proc_t : public rogue_poison_t
   {
-    crippling_poison_proc_t( rogue_t* rogue ) :
-      rogue_poison_t( "crippling_poison", rogue, rogue->find_class_spell( "Crippling Poison" )->effectN( 1 ).trigger() )
+    crippling_poison_proc_t( util::string_view name, rogue_t* p ) :
+      rogue_poison_t( name, p, p->find_class_spell( "Crippling Poison" )->effectN( 1 ).trigger() )
     { }
 
     void impact( action_state_t* state ) override
     {
       rogue_poison_t::impact( state );
 
-      td( state -> target ) -> debuffs.crippling_poison -> trigger();
+      td( state->target )->debuffs.crippling_poison->trigger();
     }
   };
 
   crippling_poison_proc_t* proc;
 
-  crippling_poison_t( rogue_t* player ) :
-    rogue_poison_t( "crippling_poison_driver", player, player -> find_class_spell( "Crippling Poison" ) ),
-    proc( new crippling_poison_proc_t( player ) )
+  crippling_poison_t( util::string_view name, rogue_t* p ) :
+    rogue_poison_t( name, p, p->find_class_spell( "Crippling Poison" ) )
   {
     dual = true;
+    proc = p->get_background_action<crippling_poison_proc_t>( "crippling_poison" );
   }
 
   void impact( action_state_t* state ) override
@@ -1848,8 +1728,8 @@ struct numbing_poison_t : public rogue_poison_t
 {
   struct numbing_poison_proc_t : public rogue_poison_t
   {
-    numbing_poison_proc_t( rogue_t* p ) :
-      rogue_poison_t( "numbing_poison", p, p->find_class_spell( "Numbing Poison" )->effectN( 1 ).trigger() )
+    numbing_poison_proc_t( util::string_view name, rogue_t* p ) :
+      rogue_poison_t( name, p, p->find_class_spell( "Numbing Poison" )->effectN( 1 ).trigger() )
     { }
 
     void impact( action_state_t* state ) override
@@ -1861,11 +1741,11 @@ struct numbing_poison_t : public rogue_poison_t
 
   numbing_poison_proc_t* proc;
 
-  numbing_poison_t( rogue_t* p ) :
-    rogue_poison_t( "numbing_poison_driver", p, p->find_class_spell( "Numbing Poison" ) ),
-    proc( new numbing_poison_proc_t( p ) )
+  numbing_poison_t( util::string_view name, rogue_t* p ) :
+    rogue_poison_t( name, p, p->find_class_spell( "Numbing Poison" ) )
   {
     dual = true;
+    proc = p->get_background_action<numbing_poison_proc_t>( "numbing_poison" );
   }
 
   void impact( action_state_t* state ) override
@@ -1901,15 +1781,20 @@ struct apply_poison_t : public action_t
     {
       if ( ! p -> active_lethal_poison )
       {
-        if ( (lethal_str.empty() && p -> specialization() == ROGUE_ASSASSINATION) || lethal_str == "deadly"  ) p -> active_lethal_poison = new deadly_poison_t( p );
-        else if ( (lethal_str.empty() && p -> specialization() != ROGUE_ASSASSINATION) ||  lethal_str == "instant"   ) p -> active_lethal_poison = new instant_poison_t( p );
-        else if ( lethal_str == "wound"   ) p -> active_lethal_poison = new wound_poison_t( p );
+        if ( ( lethal_str.empty() && p->specialization() == ROGUE_ASSASSINATION ) || lethal_str == "deadly" )
+          p->active_lethal_poison = p->get_background_action<deadly_poison_t>( "deadly_poison_driver" );
+        else if ( ( lethal_str.empty() && p->specialization() != ROGUE_ASSASSINATION ) || lethal_str == "instant" )
+          p->active_lethal_poison = p->get_background_action<instant_poison_t>( "instant_poison_driver" );
+        else if ( lethal_str == "wound" )
+          p->active_lethal_poison = p->get_background_action<wound_poison_t>( "wound_poison_driver" );
       }
 
       if ( ! p -> active_nonlethal_poison )
       {
-        if ( nonlethal_str.empty() || nonlethal_str == "crippling" ) p -> active_nonlethal_poison = new crippling_poison_t( p );
-        else if ( nonlethal_str == "numbing" ) p -> active_nonlethal_poison = new numbing_poison_t( p );
+        if ( nonlethal_str.empty() || nonlethal_str == "crippling" )
+          p->active_nonlethal_poison = p->get_background_action<crippling_poison_t>( "crippling_poison_driver" );
+        else if ( nonlethal_str == "numbing" )
+          p->active_nonlethal_poison = p->get_background_action<numbing_poison_t>( "numbing_poison_driver" );
       }
     }
   }
@@ -1953,6 +1838,10 @@ void rogue_attack_t::impact( action_state_t* state )
       p()->active_nonlethal_poison->trigger( state );
   }
 }
+
+// ==========================================================================
+// Attacks
+// ==========================================================================
 
 // Melee Attack =============================================================
 
@@ -2174,8 +2063,31 @@ struct adrenaline_rush_t : public rogue_attack_t
 struct ambush_t : public rogue_attack_t
 {
   ambush_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "ambush", p, p -> find_specialization_spell( "Ambush" ), options_str )
+    rogue_attack_t( "ambush", p, p -> find_class_spell( "Ambush" ), options_str )
   {
+  }
+
+  void execute() override
+  {
+    rogue_attack_t::execute();
+    p()->buffs.blindside->expire();
+  }
+
+  double cost() const override
+  {
+    double c = rogue_attack_t::cost();
+    c *= 1.0 + p()->buffs.blindside->check_value();
+    return c;
+  }
+
+  bool requires_stealth() const override
+  { 
+    if ( p()->buffs.blindside->check() )
+    {
+      return false;
+    }
+
+    return rogue_attack_t::requires_stealth();
   }
 
   bool procs_main_gauche() const override
@@ -2307,8 +2219,60 @@ struct between_the_eyes_t : public rogue_attack_t
 
 // Blade Flurry =============================================================
 
+struct blade_flurry_attack_t : public rogue_attack_t
+{
+  blade_flurry_attack_t( util::string_view name, rogue_t* p ) :
+    rogue_attack_t( name, p, p -> find_spell( 22482 ) )
+  {
+    callbacks = false;
+    background = true;
+    radius = 5;
+    range = -1.0;
+
+    // Spell data has chain targets with mult 1 set to 5 on the damage effect, but it is 4 targets as in the dummy effect, so we set that here.
+    aoe = static_cast<int>( p->spec.blade_flurry->effectN( 3 ).base_value() );
+  }
+
+  void init() override
+  {
+    rogue_attack_t::init();
+    snapshot_flags |= STATE_TGT_MUL_DA;
+  }
+
+  bool procs_main_gauche() const override
+  { return false; }
+
+  size_t available_targets( std::vector< player_t* >& tl ) const override
+  {
+    rogue_attack_t::available_targets( tl );
+
+    for ( size_t i = 0; i < tl.size(); i++ )
+    {
+      if ( tl[ i ] == target ) // Cannot hit the original target.
+      {
+        tl.erase( tl.begin() + i );
+        break;
+      }
+    }
+    return tl.size();
+  }
+};
+
 struct blade_flurry_t : public rogue_attack_t
 {
+  struct blade_flurry_instant_attack_t : public rogue_attack_t
+  {
+    blade_flurry_instant_attack_t( util::string_view name, rogue_t* p ) :
+      rogue_attack_t( name, p, p -> find_spell( 331850 ) )
+    {
+      background = true;
+      range = -1.0;
+    }
+
+    bool procs_main_gauche() const override
+    { return false; }
+  };
+
   blade_flurry_instant_attack_t* instant_attack;
 
   blade_flurry_t( rogue_t* p, const std::string& options_str ) :
@@ -2318,10 +2282,11 @@ struct blade_flurry_t : public rogue_attack_t
     harmful = false;
     internal_cooldown -> duration += p -> talent.dancing_steel -> effectN( 4 ).time_value();
 
-    add_child( p-> active_blade_flurry );
+    add_child( p->active_blade_flurry );
 
-    if ( p->spec.blade_flurry_rank_2->ok() ) {
-      instant_attack = new blade_flurry_instant_attack_t( p );
+    if ( p->spec.blade_flurry_rank_2->ok() )
+    {
+      instant_attack = p->get_background_action<blade_flurry_instant_attack_t>( "blade_flurry_instant_attack" );
       add_child( instant_attack );
     }
   }
@@ -2329,10 +2294,13 @@ struct blade_flurry_t : public rogue_attack_t
   void execute() override
   {
     rogue_attack_t::execute();
-    p() -> buffs.blade_flurry -> trigger();
+    p()->buffs.blade_flurry->trigger();
 
-    if (instant_attack)
+    if ( instant_attack )
+    {
+      instant_attack->set_target( target );
       instant_attack->execute();
+    }
   }
 };
 
@@ -2342,73 +2310,35 @@ struct blade_rush_t : public rogue_attack_t
 {
   struct blade_rush_attack_t : public rogue_attack_t
   {
-    blade_rush_attack_t( rogue_t* p ) :
-      rogue_attack_t( "blade_rush_attack", p, p -> find_spell( 271881 ) )
+    blade_rush_attack_t( util::string_view name, rogue_t* p ) :
+      rogue_attack_t( name, p, p -> find_spell( 271881 ) )
     {
       aoe = -1;
+    }
+
+    void execute() override
+    {
+      rogue_attack_t::execute();
+      p()->buffs.blade_rush->trigger();
     }
 
     double composite_da_multiplier( const action_state_t* state ) const override
     {
       double m = rogue_attack_t::composite_da_multiplier( state );
 
-      if ( state -> target == state -> action -> target )
+      if ( state->target == state->action->target )
         m *= data().effectN( 2 ).percent();
-      else if ( p() -> buffs.blade_flurry -> up() )
-        m *= 1.0 + p() -> talent.blade_rush -> effectN( 1 ).percent();
+      else if ( p()->buffs.blade_flurry->up() )
+        m *= 1.0 + p()->talent.blade_rush->effectN( 1 ).percent();
 
       return m;
     }
   };
 
-  rogue_attack_t* blade_rush_attack;
-
   blade_rush_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "blade_rush", p, p -> talent.blade_rush, options_str )
   {
-    blade_rush_attack = new blade_rush_attack_t( p );  
-  }
-
-  void execute() override
-  {
-    rogue_attack_t::execute();
-
-    blade_rush_attack -> execute();
-    p() -> buffs.blade_rush -> trigger();
-  }
-};
-
-// Blindside ================================================================
-
-struct blindside_t: public rogue_attack_t
-{
-  blindside_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "blindside", p, p -> talent.blindside, options_str )
-  {
-  }
-
-  bool target_ready( player_t* candidate_target ) override
-  {
-    if ( ! p() -> buffs.blindside -> check() &&
-         candidate_target -> health_percentage() >= data().effectN( 4 ).base_value() )
-      return false;
-
-    return rogue_attack_t::target_ready( candidate_target );
-  }
-
-  double cost() const override
-  {
-    double c = rogue_attack_t::cost();
-    c *= 1.0 + p() -> buffs.blindside -> check_value();
-    return c;
-  }
-
-  void execute() override
-  {
-    rogue_attack_t::execute();
-
-    if ( p() -> buffs.blindside -> up() )
-      p() -> buffs.blindside -> expire();
+    execute_action = p->get_background_action<blade_rush_attack_t>( "blade_rush_attack" );
   }
 };
 
@@ -2556,13 +2486,12 @@ struct fan_of_knives_t: public rogue_attack_t
 {
   struct echoing_blades_t : public rogue_attack_t
   {
-    echoing_blades_t( rogue_t* p ) :
-      rogue_attack_t( "echoing_blades", p, p -> find_spell(287653) )
+    echoing_blades_t( util::string_view name, rogue_t* p ) :
+      rogue_attack_t( name, p, p -> find_spell(287653) )
     {
       aoe = -1;
       background  = true;
-      base_dd_min = p -> azerite.echoing_blades.value( 6 );
-      base_dd_max = p -> azerite.echoing_blades.value( 6 );
+      base_dd_min = base_dd_max = p -> azerite.echoing_blades.value( 6 );
     }
 
     double composite_crit_chance() const override
@@ -2586,7 +2515,7 @@ struct fan_of_knives_t: public rogue_attack_t
 
     if ( p -> azerite.echoing_blades.ok() )
     {
-      echoing_blades_attack = new echoing_blades_t( p );
+      echoing_blades_attack = p->get_background_action<echoing_blades_t>( "echoing_blades" );
       add_child( echoing_blades_attack );
     }
   }
@@ -2772,7 +2701,8 @@ struct garrote_t : public rogue_attack_t
   }
 };
 
-// Gouge ==================================================================
+// Gouge =====================================================================
+
 struct gouge_t : public rogue_attack_t
 {
   gouge_t( rogue_t* p, const std::string& options_str ) :
@@ -2871,7 +2801,7 @@ struct kick_t : public rogue_attack_t
 
 struct killing_spree_tick_t : public rogue_attack_t
 {
-  killing_spree_tick_t( rogue_t* p, const char* name, const spell_data_t* s ) :
+  killing_spree_tick_t( util::string_view name, rogue_t* p, const spell_data_t* s ) :
     rogue_attack_t( name, p, s )
   {
     background = true;
@@ -2891,12 +2821,13 @@ struct killing_spree_t : public rogue_attack_t
     channeled = true;
     tick_zero = true;
 
-    attack_mh = new killing_spree_tick_t( p, "killing_spree_mh", p -> find_spell( 57841 ) );
-    add_child( attack_mh );
+    attack_mh = p->get_background_action<killing_spree_tick_t>( "killing_spree_mh", p->find_spell( 57841 ) );
+    add_child( attack_mh );  
 
     if ( player -> off_hand_weapon.type != WEAPON_NONE )
     {
-      attack_oh = new killing_spree_tick_t( p, "killing_spree_oh", p -> find_spell( 57841 ) -> effectN( 1 ).trigger() );
+      attack_oh = p->get_background_action<killing_spree_tick_t>( "killing_spree_oh",
+                                                                  p->find_spell( 57841 )->effectN( 1 ).trigger() );
       add_child( attack_oh );
     }
   }
@@ -2906,7 +2837,7 @@ struct killing_spree_t : public rogue_attack_t
 
   void execute() override
   {
-    p() -> buffs.killing_spree -> trigger();
+    p()->buffs.killing_spree->trigger();
 
     rogue_attack_t::execute();
   }
@@ -2915,14 +2846,10 @@ struct killing_spree_t : public rogue_attack_t
   {
     rogue_attack_t::tick( d );
 
-    attack_mh -> pre_execute_state = attack_mh -> get_state( d -> state );
-    attack_mh -> execute();
-
-    if ( attack_oh && result_is_hit( attack_mh -> execute_state -> result ) )
-    {
-      attack_oh -> pre_execute_state = attack_oh -> get_state( d -> state );
-      attack_oh -> execute();
-    }
+    attack_mh->set_target( d->target );
+    attack_oh->set_target( d->target );
+    attack_mh->execute();
+    attack_oh->execute();
   }
 };
 
@@ -3009,6 +2936,37 @@ struct pistol_shot_t : public rogue_attack_t
   }
 };
 
+// Main Gauche ==============================================================
+
+struct main_gauche_t : public rogue_attack_t
+{
+  main_gauche_t( util::string_view name, rogue_t* p ) :
+    rogue_attack_t( name, p, p -> find_spell( 86392 ) )
+  {
+    background = true;
+  }
+
+  double attack_direct_power_coefficient( const action_state_t* s ) const override
+  {
+    double ap = rogue_attack_t::attack_direct_power_coefficient( s );
+
+    // Main Gauche is not set up like most masteries as it is a flat mod instead of a percent mod
+    // Need to reference the 2nd effect and directly apply the sp_coeff instead of dividing by 100
+    ap += p()->cache.mastery() * p()->mastery.main_gauche->effectN( 2 ).sp_coeff();
+
+    return ap;
+  }
+
+  bool procs_main_gauche() const override
+  { return false; }
+
+  bool procs_combat_potency() const override
+  { return true; }
+
+  bool procs_poison() const override
+  { return false; }
+};
+
 // Marked for Death =========================================================
 
 struct marked_for_death_t : public rogue_spell_t
@@ -3043,12 +3001,11 @@ struct marked_for_death_t : public rogue_spell_t
   }
 };
 
-
 // Mutilate =================================================================
 
 struct mutilate_strike_t : public rogue_attack_t
 {
-  mutilate_strike_t( rogue_t* p, const char* name, const spell_data_t* s ) :
+  mutilate_strike_t( util::string_view name, rogue_t* p, const spell_data_t* s ) :
     rogue_attack_t( name, p, s )
   {
     background  = true;
@@ -3064,12 +3021,11 @@ struct mutilate_strike_t : public rogue_attack_t
 
 struct double_dose_t : public rogue_attack_t
 {
-  double_dose_t( rogue_t* p ) :
-    rogue_attack_t( "double_dose", p, p -> find_spell(273009) )
+  double_dose_t( util::string_view name, rogue_t* p ) :
+    rogue_attack_t( name, p, p -> find_spell(273009) )
   {
     background  = true;
-    base_dd_min = p -> azerite.double_dose.value();
-    base_dd_max = p -> azerite.double_dose.value();
+    base_dd_min = base_dd_max = p->azerite.double_dose.value();
   }
 };
 
@@ -3090,15 +3046,15 @@ struct mutilate_t : public rogue_attack_t
       background = true;
     }
 
-    mh_strike = new mutilate_strike_t( p, "mutilate_mh", data().effectN( 3 ).trigger() );
+    mh_strike = p->get_background_action<mutilate_strike_t>( "mutilate_mh", data().effectN( 3 ).trigger() );
     add_child( mh_strike );
 
-    oh_strike = new mutilate_strike_t( p, "mutilate_oh", data().effectN( 4 ).trigger() );
+    oh_strike = p->get_background_action<mutilate_strike_t>( "mutilate_oh", data().effectN( 4 ).trigger() );
     add_child( oh_strike );
 
     if ( p -> azerite.double_dose.ok() )
     {
-      double_dose = new double_dose_t( p );
+      double_dose = p->get_background_action<double_dose_t>( "double_dose" );
       add_child( double_dose );
     }
   }
@@ -3106,32 +3062,42 @@ struct mutilate_t : public rogue_attack_t
   void execute() override
   {
     // Reset Double Dose tracker before anything happens.
-    p() -> buffs.double_dose -> expire();
+    p()->buffs.double_dose->expire();
 
     rogue_attack_t::execute();
 
     if ( result_is_hit( execute_state -> result ) )
     {
-      if ( p() -> talent.blindside -> ok() && rng().roll( p() -> talent.blindside -> effectN( 5 ).percent() ) )
-        p() -> buffs.blindside -> trigger();
-
-      mh_strike -> set_target( execute_state -> target );
-      mh_strike -> execute();
-
-      oh_strike -> set_target( execute_state -> target );
-      oh_strike -> execute();
-
-      if ( double_dose && p() -> buffs.double_dose -> stack() == p() -> buffs.double_dose -> max_stack() )
+      if ( p()->talent.blindside->ok() )
       {
-        double_dose -> set_target( execute_state -> target );
-        double_dose -> execute();
+        double chance = p()->talent.blindside->effectN( 1 ).percent();
+        if ( execute_state->target->health_percentage() < p()->talent.blindside->effectN( 3 ).percent() )
+        {
+          chance = p()->talent.blindside->effectN( 2 ).percent();
+        }
+        if ( rng().roll( chance ) )
+        {
+          p()->buffs.blindside->trigger();
+        }
       }
 
-      if ( p() -> talent.venom_rush-> ok() && p() -> get_target_data( execute_state -> target ) -> poisoned() )
+      mh_strike->set_target( execute_state->target );
+      mh_strike->execute();
+
+      oh_strike->set_target( execute_state->target );
+      oh_strike->execute();
+
+      if ( double_dose && p()->buffs.double_dose->stack() == p()->buffs.double_dose->max_stack() )
       {
-          p() -> resource_gain( RESOURCE_ENERGY,
-              p() -> talent.venom_rush -> effectN(1).base_value(),
-              p() -> gains.venom_rush );
+        double_dose->set_target( execute_state->target );
+        double_dose->execute();
+      }
+
+      if ( p()->talent.venom_rush->ok() && p()->get_target_data( execute_state->target )->poisoned() )
+      {
+        p()->resource_gain( RESOURCE_ENERGY,
+                            p()->talent.venom_rush->effectN( 1 ).base_value(),
+                            p()->gains.venom_rush );
       }
     }
   }
@@ -3146,8 +3112,10 @@ struct nightblade_t : public rogue_attack_t
   {
     ap_type = attack_power_type::WEAPON_BOTH;
 
-    if ( p ->  replicating_shadows )
-      add_child( p ->  replicating_shadows );
+    if ( p->active_replicating_shadows )
+    {
+      add_child( p->active_replicating_shadows );
+    }
   }
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
@@ -3183,8 +3151,8 @@ struct replicating_shadows_t : public rogue_spell_t
 {
   action_t* nightblade_action;
 
-  replicating_shadows_t( rogue_t* p ) :
-    rogue_spell_t( "replicating_shadows", p, p -> find_spell(286131) ),
+  replicating_shadows_t( util::string_view name, rogue_t* p ) :
+    rogue_spell_t( name, p, p -> find_spell(286131) ),
     nightblade_action( nullptr )
   {
     may_miss = false;
@@ -3356,8 +3324,8 @@ struct secret_technique_t : public rogue_attack_t
 {
   struct secret_technique_attack_t : public rogue_attack_t
   {
-    secret_technique_attack_t( const std::string& n, rogue_t* p ) :
-      rogue_attack_t( n, p, p -> find_spell( 280720 ) )
+    secret_technique_attack_t( util::string_view name, rogue_t* p ) :
+      rogue_attack_t( name, p, p->find_spell( 280720 ) )
     {
       background = true;
       aoe = -1;
@@ -3388,31 +3356,30 @@ struct secret_technique_t : public rogue_attack_t
     may_miss = false;
     aoe = -1;
 
-    player_attack = new secret_technique_attack_t( "secret_technique_player", p );
+    player_attack = p->get_background_action<secret_technique_attack_t>( "secret_technique_player" );
     add_child( player_attack );
-    clone_attack = new secret_technique_attack_t( "secret_technique_clones", p );
+    clone_attack = p->get_background_action<secret_technique_attack_t>( "secret_technique_clones" );
     add_child( clone_attack );
 
-    radius = player_attack -> radius;
+    radius = player_attack->radius;
   }
 
   void execute() override
   {
     rogue_attack_t::execute();
 
-    int cp = cast_state( execute_state ) -> cp;
+    int cp = cast_state( execute_state )->cp;
 
     // Hit of the main char happens right on cast.
     make_event<actions::secondary_attack_trigger_t>( *sim, execute_state -> target, player_attack, cp, TRIGGER_SECRET_TECHNIQUE );
 
     // The clones seem to hit 1s later (no time reference in spell data though)
-    timespan_t delay = timespan_t::from_seconds( 1.0 );
     // Trigger tracking buff until clone damage
-    p() -> buffs.secret_technique -> trigger( 1, buff_t::DEFAULT_VALUE(), (-1.0), delay );
+    p()->buffs.secret_technique->trigger( 1, buff_t::DEFAULT_VALUE(), ( -1.0 ), 1_s );
     // Assuming effect #2 is the number of aditional clones
     for ( size_t i = 0; i < data().effectN( 2 ).base_value(); i++ )
     {
-      make_event<actions::secondary_attack_trigger_t>( *sim, execute_state -> target, clone_attack, cp, TRIGGER_SECRET_TECHNIQUE, delay );
+      make_event<actions::secondary_attack_trigger_t>( *sim, execute_state -> target, clone_attack, cp, TRIGGER_SECRET_TECHNIQUE, 1_s );
     }
   }
 };
@@ -3691,13 +3658,10 @@ struct shuriken_toss_t : public rogue_attack_t
 
 struct sinister_strike_t : public rogue_attack_t
 {
-  timespan_t extra_attack_delay;
-  action_t* extra_attack;
-
   struct sinister_strike_extra_attack_t : public rogue_attack_t
   {
-    sinister_strike_extra_attack_t( rogue_t* p ) :
-      rogue_attack_t( "sinister_strike_extra_attack", p, p -> find_spell( 197834 ) )
+    sinister_strike_extra_attack_t( util::string_view name, rogue_t* p ) :
+      rogue_attack_t( name, p, p -> find_spell( 197834 ) )
     {
       background = true;
       
@@ -3724,20 +3688,23 @@ struct sinister_strike_t : public rogue_attack_t
     }
   };
 
+  timespan_t extra_attack_delay;
+  sinister_strike_extra_attack_t* extra_attack;
+
   sinister_strike_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "sinister_strike", p, p -> find_specialization_spell( "Sinister Strike" ), options_str ),
-    extra_attack_delay( timespan_t::from_millis( 300 ) ),
-    extra_attack( new sinister_strike_extra_attack_t( p ) )
+    extra_attack_delay( timespan_t::from_millis( 300 ) )
   {
     add_child( extra_attack );
+    extra_attack = p->get_background_action<sinister_strike_extra_attack_t>( "sinister_strike_extra_attack" );
   }
 
   double extra_attack_proc_chance() const
   {
     double opportunity_proc_chance = data().effectN( 3 ).percent();
-    opportunity_proc_chance += p() -> talent.weaponmaster -> effectN( 1 ).percent();
-    opportunity_proc_chance += p() -> buffs.skull_and_crossbones -> stack_value();
-    opportunity_proc_chance += p() -> buffs.keep_your_wits_about_you -> stack_value();
+    opportunity_proc_chance += p()->talent.weaponmaster->effectN( 1 ).percent();
+    opportunity_proc_chance += p()->buffs.skull_and_crossbones->stack_value();
+    opportunity_proc_chance += p()->buffs.keep_your_wits_about_you->stack_value();
     return opportunity_proc_chance;
   }
 
@@ -3745,7 +3712,7 @@ struct sinister_strike_t : public rogue_attack_t
   {
     double b = rogue_attack_t::bonus_da( s );
 
-    b += p() -> buffs.snake_eyes -> value();
+    b += p()->buffs.snake_eyes->value();
 
     return b;
   }
@@ -3754,12 +3721,12 @@ struct sinister_strike_t : public rogue_attack_t
   {
     rogue_attack_t::execute();
 
-    if ( ! result_is_hit( execute_state -> result ) )
+    if ( !result_is_hit( execute_state->result ) )
     {
       return;
     }
 
-    p() -> buffs.snake_eyes -> decrement();
+    p()->buffs.snake_eyes->decrement();
 
     if ( p()->buffs.opportunity->trigger( 1, buff_t::DEFAULT_VALUE(), extra_attack_proc_chance() ) )
     {
@@ -3900,8 +3867,8 @@ struct vendetta_t : public rogue_spell_t
 {
   struct nothing_personal_t : rogue_spell_t
   {
-    nothing_personal_t( rogue_t* p ) :
-      rogue_spell_t( "nothing_personal", p, p -> find_spell( 286581 ) )
+    nothing_personal_t( util::string_view name, rogue_t* p ) :
+      rogue_spell_t( name, p, p -> find_spell( 286581 ) )
     {
       background = true;
       base_td = p -> azerite.nothing_personal.value();
@@ -3924,7 +3891,7 @@ struct vendetta_t : public rogue_spell_t
 
     if ( p -> azerite.nothing_personal.ok() )
     {
-      nothing_personal_dot = new nothing_personal_t( p );
+      nothing_personal_dot = p->get_background_action<nothing_personal_t>( "nothing_personal" );
       add_child( nothing_personal_dot );
     }
 
@@ -3953,9 +3920,7 @@ struct vendetta_t : public rogue_spell_t
   }
 };
 
-// ==========================================================================
-// Stealth
-// ==========================================================================
+// Stealth ==================================================================
 
 struct stealth_t : public rogue_spell_t
 {
@@ -3997,20 +3962,53 @@ struct stealth_t : public rogue_spell_t
   }
 };
 
-// ==========================================================================
-// Kidney Shot
-// ==========================================================================
+// Kidney Shot ==============================================================
 
 struct kidney_shot_t : public rogue_attack_t
 {
+  struct internal_bleeding_t : public rogue_attack_t
+  {
+    internal_bleeding_t( util::string_view name, rogue_t* p ) :
+      rogue_attack_t( name, p, p->find_spell( 154953 ) )
+    {
+      background = true;
+    }
+
+    timespan_t composite_dot_duration( const action_state_t* s ) const override
+    {
+      timespan_t duration = rogue_attack_t::composite_dot_duration( s );
+
+      if ( cast_state( s )->exsanguinated )
+      {
+        duration *= 1.0 / ( 1.0 + p()->talent.exsanguinate->effectN( 1 ).percent() );
+      }
+
+      return duration;
+    }
+
+    void tick( dot_t* d ) override
+    {
+      rogue_attack_t::tick( d );
+      trigger_venomous_wounds( d->state );
+    }
+
+    double composite_persistent_multiplier( const action_state_t* state ) const override
+    {
+      double m = rogue_attack_t::composite_persistent_multiplier( state );
+      m *= cast_state( state )->cp;
+      return m;
+    }
+  };
+
   internal_bleeding_t* internal_bleeding;
 
   kidney_shot_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "kidney_shot", p, p -> find_class_spell( "Kidney Shot" ), options_str ),
-    internal_bleeding( p -> talent.internal_bleeding ? new internal_bleeding_t( p ) : nullptr )
+    internal_bleeding( nullptr )
   {
-    if ( internal_bleeding )
+    if ( p->talent.internal_bleeding )
     {
+      internal_bleeding = p->get_background_action<internal_bleeding_t>( "internal_bleeding" );
       add_child( internal_bleeding );
     }
   }
@@ -4028,9 +4026,7 @@ struct kidney_shot_t : public rogue_attack_t
   }
 };
 
-// ==========================================================================
-// Cheap Shot
-// ==========================================================================
+// Cheap Shot ===============================================================
 
 struct cheap_shot_t : public rogue_attack_t
 {
@@ -4056,9 +4052,19 @@ struct cheap_shot_t : public rogue_attack_t
   }
 };
 
-// ==========================================================================
-// Poisoned Knife
-// ==========================================================================
+// Poison Bomb ==============================================================
+
+struct poison_bomb_t : public rogue_spell_t
+{
+  poison_bomb_t( util::string_view name, rogue_t* p ) :
+    rogue_spell_t( name, p, p -> find_spell( 255546 ) )
+  {
+    background = true;
+    aoe = -1;
+  }
+};
+
+// Poisoned Knife ===========================================================
 
 struct poisoned_knife_t : public rogue_attack_t
 {
@@ -4568,7 +4574,7 @@ struct stealth_like_buff_t : public buff_t
 {
   rogue_t* rogue;
 
-  stealth_like_buff_t( rogue_t* r, const std::string& name, const spell_data_t* spell ) :
+  stealth_like_buff_t( rogue_t* r, util::string_view name, const spell_data_t* spell ) :
     buff_t( r, name, spell ), rogue( r )
   { }
 
@@ -4702,7 +4708,7 @@ struct shuriken_tornado_t : public buff_t
 
 struct rogue_poison_buff_t : public buff_t
 {
-  rogue_poison_buff_t( rogue_td_t& r, const std::string& name, const spell_data_t* spell ) :
+  rogue_poison_buff_t( rogue_td_t& r, util::string_view name, const spell_data_t* spell ) :
     buff_t( r, name, spell )
   { }
 
@@ -5149,7 +5155,7 @@ void actions::rogue_action_t<Base>::trigger_poison_bomb( const action_state_t* s
       .pulse_time( p()->spell.poison_bomb_driver->duration() / p()->talent.poison_bomb->effectN( 2 ).base_value() )
       .duration( p()->spell.poison_bomb_driver->duration() )
       .start_time( p()->sim->current_time() )
-      .action( p()->poison_bomb ) );
+      .action( p()->active_poison_bomb ) );
   }
 }
 
@@ -5468,10 +5474,11 @@ void actions::rogue_action_t<Base>::spend_combo_points( const action_state_t* st
   }
 
   // Proc Replicating Shadows on the current target.
-  if ( p()->specialization() == ROGUE_SUBTLETY && p()->replicating_shadows && p()->rng().roll( max_spend * p()->azerite.replicating_shadows.spell_ref().effectN( 2 ).percent() ) )
+  if ( p()->specialization() == ROGUE_SUBTLETY && p()->active_replicating_shadows && 
+       p()->rng().roll( max_spend * p()->azerite.replicating_shadows.spell_ref().effectN( 2 ).percent() ) )
   {
-    p()->replicating_shadows -> set_target( state -> target );
-    p()->replicating_shadows -> execute();
+    p()->active_replicating_shadows->set_target( state->target );
+    p()->active_replicating_shadows->execute();
   }
 }
 
@@ -5864,7 +5871,7 @@ void rogue_t::init_action_list()
     direct -> add_action( this, "Fan of Knives", "if=variable.use_filler&azerite.echoing_blades.enabled&spell_targets.fan_of_knives>=2+(debuff.vendetta.up*(1+(azerite.echoing_blades.rank=1)))", "With Echoing Blades, Fan of Knives at 2+ targets, or 3-4+ targets when Vendetta is up" );
     direct -> add_action( this, "Fan of Knives", "if=variable.use_filler&(buff.hidden_blades.stack>=19|(!priority_rotation&spell_targets.fan_of_knives>=4+(azerite.double_dose.rank>2)+stealthed.rogue))", "Fan of Knives at 19+ stacks of Hidden Blades or against 4+ (5+ with Double Dose) targets." );
     direct -> add_action( this, "Fan of Knives", "target_if=!dot.deadly_poison_dot.ticking,if=variable.use_filler&spell_targets.fan_of_knives>=3", "Fan of Knives to apply Deadly Poison if inactive on any target at 3 targets." );
-    direct -> add_talent( this, "Blindside", "if=variable.use_filler&(buff.blindside.up|!talent.venom_rush.enabled&!azerite.double_dose.enabled)" );
+    direct -> add_action( this, "Ambush", "if=variable.use_filler" );
     direct -> add_action( this, "Mutilate", "target_if=!dot.deadly_poison_dot.ticking,if=variable.use_filler&spell_targets.fan_of_knives=2", "Tab-Mutilate to apply Deadly Poison at 2 targets" );
     direct -> add_action( this, "Mutilate", "if=variable.use_filler" );
   }
@@ -6070,8 +6077,7 @@ void rogue_t::init_action_list()
 
 // rogue_t::create_action  ==================================================
 
-action_t* rogue_t::create_action( util::string_view name,
-                                  const std::string& options_str )
+action_t* rogue_t::create_action( util::string_view name, const std::string& options_str )
 {
   using namespace actions;
 
@@ -6083,7 +6089,6 @@ action_t* rogue_t::create_action( util::string_view name,
   if ( name == "between_the_eyes"    ) return new between_the_eyes_t   ( this, options_str );
   if ( name == "blade_flurry"        ) return new blade_flurry_t       ( this, options_str );
   if ( name == "blade_rush"          ) return new blade_rush_t         ( this, options_str );
-  if ( name == "blindside"           ) return new blindside_t          ( this, options_str );
   if ( name == "cheap_shot"          ) return new cheap_shot_t         ( this, options_str );
   if ( name == "crimson_tempest"     ) return new crimson_tempest_t    ( this, options_str );
   if ( name == "detection"           ) return new detection_t          ( this, options_str );
@@ -6553,6 +6558,7 @@ void rogue_t::init_spells()
   spec.subtlety_rogue       = find_specialization_spell( "Subtlety Rogue" );
 
   // Assassination
+  spec.deadly_poison        = find_specialization_spell( "Deadly Poison" );
   spec.improved_poisons     = find_specialization_spell( "Improved Poisons" );
   spec.seal_fate            = find_specialization_spell( "Seal Fate" );
   spec.venomous_wounds      = find_specialization_spell( "Venomous Wounds" );
@@ -6700,22 +6706,22 @@ void rogue_t::init_spells()
 
   if ( mastery.main_gauche->ok() )
   {
-    active_main_gauche = new actions::main_gauche_t( this );
-  }
-    
-  if ( spec.blade_flurry->ok() )
-  {
-    active_blade_flurry = new actions::blade_flurry_attack_t( this );
+    active_main_gauche = get_background_action<actions::main_gauche_t>( "main_gauche" );
   }
 
-  if ( talent.poison_bomb -> ok() )
+  if ( spec.blade_flurry->ok() )
   {
-    poison_bomb = new actions::poison_bomb_t( this );
+    active_blade_flurry = get_background_action<actions::blade_flurry_attack_t>( "blade_flurry_attack" );
+  }
+
+  if ( talent.poison_bomb->ok() )
+  {
+    active_poison_bomb = get_background_action<actions::poison_bomb_t>( "poison_bomb" );
   }
 
   if ( azerite.replicating_shadows.ok() )
   {
-    replicating_shadows = new actions::replicating_shadows_t( this );
+    active_replicating_shadows = get_background_action<actions::replicating_shadows_t>( "replicating_shadows" );
   }
 }
 
@@ -6993,9 +6999,7 @@ void rogue_t::create_buffs()
 
 // rogue_t::create_options ==================================================
 
-static bool do_parse_secondary_weapon( rogue_t* rogue,
-                                       const std::string& value,
-                                       slot_e slot )
+static bool do_parse_secondary_weapon( rogue_t* rogue, const std::string& value, slot_e slot )
 {
   switch ( slot )
   {
@@ -7014,25 +7018,19 @@ static bool do_parse_secondary_weapon( rogue_t* rogue,
   return true;
 }
 
-static bool parse_offhand_secondary( sim_t* sim,
-                                     const std::string& /* name */,
-                                     const std::string& value )
+static bool parse_offhand_secondary( sim_t* sim, const std::string& /* name */, const std::string& value )
 {
   rogue_t* rogue = static_cast<rogue_t*>( sim -> active_player );
   return do_parse_secondary_weapon( rogue, value, SLOT_OFF_HAND );
 }
 
-static bool parse_mainhand_secondary( sim_t* sim,
-                                      const std::string& /* name */,
-                                      const std::string& value )
+static bool parse_mainhand_secondary( sim_t* sim, const std::string& /* name */, const std::string& value )
 {
   rogue_t* rogue = static_cast<rogue_t*>( sim -> active_player );
   return do_parse_secondary_weapon( rogue, value, SLOT_MAIN_HAND );
 }
 
-static bool parse_fixed_rtb( sim_t* sim,
-                             const std::string& /* name */,
-                             const std::string& value )
+static bool parse_fixed_rtb( sim_t* sim, const std::string& /* name */, const std::string& value )
 {
   std::vector<size_t> buffs;
   for ( auto it = value.begin(); it < value.end(); ++it )
@@ -7064,9 +7062,7 @@ static bool parse_fixed_rtb( sim_t* sim,
   return true;
 }
 
-static bool parse_fixed_rtb_odds( sim_t* sim,
-                                  const std::string& /* name */,
-                                  const std::string& value )
+static bool parse_fixed_rtb_odds( sim_t* sim, const std::string& /* name */, const std::string& value )
 {
   std::vector<std::string> odds = util::string_split( value, "," );
   if ( odds.size() != 6 )
