@@ -230,8 +230,11 @@ struct eclipse_handler_t {
   void cast_wrath();
   void cast_starfire();
   void cast_starsurge();
-  void cast_ca_inc( bool inc );
+
   void advance_eclipse();
+
+  void trigger_both( timespan_t );
+  void expire_both();
 
   void reset_stacks();
   eclipse_state_e get_state();
@@ -1031,23 +1034,23 @@ void eclipse_handler_t::cast_starsurge()
   }
 }
 
-void eclipse_handler_t::cast_ca_inc( bool inc )
+void eclipse_handler_t::trigger_both( timespan_t d = 0_ms )
 {
-  buff_t* buf;
-
   state = IN_BOTH;
   reset_stacks();
 
-  if ( inc )
-    buf = p->buff.incarnation_moonkin;
-  else
-    buf = p->buff.celestial_alignment;
-
-  // The set eclipse duration is not found is spell data so the buff duration is used
-  p->buff.eclipse_lunar->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, buf->data().duration() );
-  p->buff.eclipse_solar->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, buf->data().duration() );
+  p->buff.eclipse_lunar->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, d );
+  p->buff.eclipse_solar->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, d );
 
   p->uptime.eclipse->update( true, p->sim->current_time() );
+}
+
+void eclipse_handler_t::expire_both()
+{
+  p->buff.eclipse_solar->expire();
+  p->buff.eclipse_lunar->expire();
+
+  p->uptime.eclipse->update( false, p->sim->current_time() );
 }
 
 void eclipse_handler_t::reset_stacks()
@@ -2551,10 +2554,13 @@ public:
           buff_t* proc_buff =
             p()->talent.incarnation_moonkin->ok() ? p()->buff.incarnation_moonkin : p()->buff.celestial_alignment;
 
-          proc_buff->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, pulsar_dur );
+          if ( proc_buff->check() )
+            proc_buff->extend_duration( p(), pulsar_dur );
+          else
+            proc_buff->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, pulsar_dur );
 
-          // hardcoded 13.5AP because 9s / 20s * 30AP = 13.5AP
-          p()->resource_gain( RESOURCE_ASTRAL_POWER, 13.5, p()->gain.arcanic_pulsar );
+          // hardcoded 12AP because 9s / 20s * 30AP = 13.5AP - 1.5 Shadowlands discount
+          p()->resource_gain( RESOURCE_ASTRAL_POWER, 12, p()->gain.arcanic_pulsar );
         }
 
         timespan_t reduction = last_resource_cost * p()->legendary.impeccable_fel_essence;
@@ -5574,8 +5580,6 @@ struct celestial_alignment_t : public druid_spell_t
 
     // Trigger after triggering the buff so the cast procs the spell
     streaking_stars_trigger( SS_CELESTIAL_ALIGNMENT, nullptr );
-
-    p()->eclipse_handler.cast_ca_inc( false );
   }
 
   bool ready() override
@@ -6057,8 +6061,6 @@ struct incarnation_t : public druid_spell_t
       p()->uptime.vision_of_perfection->update( false, sim->current_time() );
 
       streaking_stars_trigger( SS_CELESTIAL_ALIGNMENT, nullptr );
-
-      p()->eclipse_handler.cast_ca_inc( true );
     }
 
     if ( p()->buff.incarnation_bear->check() )
@@ -8435,7 +8437,15 @@ void druid_t::create_buffs()
     ->add_invalidate( CACHE_CRIT_CHANCE )
     ->set_stack_change_callback( [this] ( buff_t* b, int, int new_ ) {
       if ( new_ )
+      {
+        this->eclipse_handler.trigger_both();
         uptime.combined_ca_inc->update( true, sim->current_time() );
+      }
+      else
+      {
+        this->eclipse_handler.expire_both();
+        uptime.combined_ca_inc->update( false, sim->current_time() );
+      }
     } );
 
   buff.incarnation_moonkin = make_buff( this, "incarnation_chosen_of_elune", talent.incarnation_moonkin )
@@ -8445,7 +8455,15 @@ void druid_t::create_buffs()
     ->add_invalidate( CACHE_CRIT_CHANCE )
     ->set_stack_change_callback( [this] ( buff_t*, int, int new_ ) {
       if ( new_ )
+      {
+        this->eclipse_handler.trigger_both();
         uptime.combined_ca_inc->update( true, sim->current_time() );
+      }
+      else
+      {
+        this->eclipse_handler.expire_both();
+        uptime.combined_ca_inc->update( false, sim->current_time() );
+      }
     } );
 
   buff.fury_of_elune = make_buff( this, "fury_of_elune", talent.fury_of_elune )
