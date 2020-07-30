@@ -281,7 +281,6 @@ public:
   bool catweave_bear;
   bool affinity_resources;  // activate resources tied to affinities
 
-  std::string beta_covenant;
   double kindred_empowerment_ratio;
   int convoke_the_spirits_heals;
   double convoke_the_spirits_ultimate;
@@ -744,19 +743,20 @@ public:
   struct covenant_t
   {
     // Kyrian
+    const spell_data_t* kyrian; // kindred spirits
+    const spell_data_t* empower_bond; // the actual action
     const spell_data_t* kindred_empowerment;
     const spell_data_t* kindred_empowerment_energize;
     const spell_data_t* kindred_empowerment_damage;
-    const spell_data_t* empower_bond;
 
     // Night Fae
-    const spell_data_t* convoke_the_spirits;
+    const spell_data_t* night_fae; // convoke the spirits
 
     // Venthyr
-    const spell_data_t* ravenous_frenzy;
+    const spell_data_t* venthyr; // ravenous frenzy
 
     // Necrolord
-    const spell_data_t* adaptive_swarm;
+    const spell_data_t* necrolord; // adaptive swarm
     const spell_data_t* adaptive_swarm_damage;
     const spell_data_t* adaptive_swarm_heal;
   } covenant;
@@ -812,7 +812,6 @@ public:
     lively_spirit_stacks(9),  //set a usually fitting default value
     catweave_bear( false ),
     affinity_resources( false ),
-    beta_covenant( "none" ),
     kindred_empowerment_ratio( 1.0 ),
     convoke_the_spirits_heals( 2 ),
     convoke_the_spirits_ultimate( 0.01 ),
@@ -1749,7 +1748,7 @@ public:
   {
     double ta = ab::composite_ta_multiplier( s );
 
-    if ( p()->buff.ravenous_frenzy->up() && ab::data().affected_by( p()->covenant.ravenous_frenzy->effectN( 2 ) ) )
+    if ( p()->buff.ravenous_frenzy->up() && ab::data().affected_by( p()->buff.ravenous_frenzy->data().effectN( 2 ) ) )
       ta *= 1.0 + p()->buff.ravenous_frenzy->stack_value();
 
     if ( p()->buff.heart_of_the_wild->up() &&
@@ -1763,7 +1762,7 @@ public:
   {
     double da = ab::composite_da_multiplier( s );
 
-    if ( p()->buff.ravenous_frenzy->up() && ab::data().affected_by( p()->covenant.ravenous_frenzy->effectN( 1 ) ) )
+    if ( p()->buff.ravenous_frenzy->up() && ab::data().affected_by( p()->buff.ravenous_frenzy->data().effectN( 1 ) ) )
       da *= 1.0 + p()->buff.ravenous_frenzy->stack_value();
 
     if ( p()->buff.heart_of_the_wild->up() &&
@@ -7369,14 +7368,6 @@ struct kindred_spirits_t : public druid_spell_t
     }
   }
 
-  bool ready() override
-  {
-    if ( p()->beta_covenant == "kyrian" )
-      return druid_spell_t::ready();
-
-    return false;
-  }
-
   void execute() override
   {
     druid_spell_t::execute();
@@ -7407,7 +7398,7 @@ struct convoke_the_spirits_t : public druid_spell_t
   // Restoration
 
   convoke_the_spirits_t( druid_t* player, const std::string& options_str )
-    : druid_spell_t( "convoke_the_spirits", player, player->covenant.convoke_the_spirits, options_str ),
+    : druid_spell_t( "convoke_the_spirits", player, player->covenant.night_fae, options_str ),
       conv_cast( nullptr ),
       conv_tar( nullptr )
   {
@@ -7451,14 +7442,6 @@ struct convoke_the_spirits_t : public druid_spell_t
   double composite_haste() const override
   {
     return 1.0;
-  }
-
-  bool ready() override
-  {
-    if ( p()->beta_covenant == "night_fae" )
-      return druid_spell_t::ready();
-
-    return false;
   }
 
   void execute() override
@@ -7572,18 +7555,10 @@ struct convoke_the_spirits_t : public druid_spell_t
 struct ravenous_frenzy_t : public druid_spell_t
 {
   ravenous_frenzy_t( druid_t* player, const std::string& options_str )
-    : druid_spell_t( "ravenous_frenzy", player, player->covenant.ravenous_frenzy, options_str )
+    : druid_spell_t( "ravenous_frenzy", player, player->covenant.venthyr, options_str )
   {
     harmful = false;
     dot_duration = 0_ms;
-  }
-
-  bool ready() override
-  {
-    if ( p()->beta_covenant == "venthyr" )
-      return druid_spell_t::ready();
-
-    return false;
   }
 
   void execute() override
@@ -7702,7 +7677,7 @@ struct adaptive_swarm_t : public druid_spell_t
   int cast_heal;
 
   adaptive_swarm_t( druid_t* player, const std::string& options_str )
-    : druid_spell_t( "adaptive_swarm", player, player->covenant.adaptive_swarm, options_str ), cast_heal( 0 )
+    : druid_spell_t( "adaptive_swarm", player, player->covenant.necrolord, options_str ), cast_heal( 0 )
   {
     add_option( opt_bool( "cast_heal", cast_heal ) );
     parse_options( options_str );
@@ -7713,14 +7688,6 @@ struct adaptive_swarm_t : public druid_spell_t
     damage->stats = stats;
     heal->other = damage;
     add_child( damage );
-  }
-
-  bool ready() override
-  {
-    if ( p()->beta_covenant == "necrolord" )
-      return druid_spell_t::ready();
-
-    return false;
   }
 
   void execute() override
@@ -8216,13 +8183,14 @@ void druid_t::init_spells()
   }
 
   // Covenants
-  covenant.empower_bond = find_spell( 326446 ); // kindred_spirits action
+  covenant.kyrian = find_covenant_spell( "Kindred Spirits" );
+  covenant.empower_bond = covenant.kyrian->ok() ? find_spell( 326446 ) : spell_data_t::not_found();
   covenant.kindred_empowerment = find_spell( 327022 );
   covenant.kindred_empowerment_energize = find_spell( 327139 );
   covenant.kindred_empowerment_damage = find_spell( 338411 );
-  covenant.convoke_the_spirits = find_spell( 323764 );
-  covenant.ravenous_frenzy = find_spell( 323546 );
-  covenant.adaptive_swarm = find_spell( 325727 );
+  covenant.night_fae = find_covenant_spell( "Convoke the Spirits" );
+  covenant.venthyr = find_covenant_spell( "Ravenous Frenzy" );
+  covenant.necrolord = find_covenant_spell( "Adaptive Swarm" );
   covenant.adaptive_swarm_damage = find_spell( 325733 );
   covenant.adaptive_swarm_heal = find_spell( 325748 );
 
@@ -8358,10 +8326,10 @@ void druid_t::init_spells()
   if ( spec.starfall->ok() )
     active.starfall = new spells::starfall_tick_t( this );
 
-  if ( beta_covenant == "kyrian" )
+  if ( covenant.kyrian->ok() )
   {
     active.kindred_empowerment = new spells::kindred_empowerment_t( this, "kindred_empowerment" );
-    active.kindred_empowerment_partner = new spells::kindred_empowerment_t( this, "kindreD_empowerment_partner" );
+    active.kindred_empowerment_partner = new spells::kindred_empowerment_t( this, "kindred_empowerment_partner" );
   }
 }
 
@@ -8414,7 +8382,7 @@ void druid_t::init_assessors()
 {
   player_t::init_assessors();
 
-  if ( beta_covenant == "kyrian" )
+  if ( covenant.kyrian->ok() )
   {
     assessor_out_damage.add( assessor::TARGET_DAMAGE + 1, [this]( result_amount_type, action_state_t* s ) {
       auto pool = debug_cast<buffs::kindred_empowerment_buff_t*>( buff.kindred_empowerment );
@@ -8510,9 +8478,9 @@ void druid_t::create_buffs()
       }
     } );
 
-  buff.ravenous_frenzy = make_buff( this, "ravenous_frenzy", covenant.ravenous_frenzy )
+  buff.ravenous_frenzy = make_buff( this, "ravenous_frenzy", covenant.venthyr )
     ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
-    ->set_default_value( covenant.ravenous_frenzy->effectN( 1 ).percent() )
+    ->set_default_value( covenant.venthyr->effectN( 1 ).percent() )
     ->set_cooldown( 0_ms )
     ->set_period( 0_ms )
     ->add_invalidate( CACHE_HASTE );
@@ -10399,11 +10367,6 @@ std::unique_ptr<expr_t> druid_t::create_expression( util::string_view name_str )
         } );
       }
     }
-
-    else if ( splits.size() == 2 && util::str_compare_ci( splits[ 0 ], "covenant" ) )
-    {
-      return make_fn_expr( name_str, [this, splits]() { return util::str_compare_ci( splits[ 1 ], beta_covenant ); } );
-    }
   }
 
   // Convert talent.incarnation.* & buff.incarnation.* to spec-based incarnations. cooldown.incarnation.* doesn't need
@@ -10438,7 +10401,6 @@ void druid_t::create_options()
   add_option( opt_bool( "affinity_resources", affinity_resources ) );
   add_option( opt_float( "thorns_attack_period", thorns_attack_period ) );
   add_option( opt_float( "thorns_hit_chance", thorns_hit_chance ) );
-  add_option( opt_string( "beta_covenant", beta_covenant ) );
   add_option( opt_float( "kindred_empowerment_ratio", kindred_empowerment_ratio ) );
   add_option( opt_int( "convoke_the_spirits_heals", convoke_the_spirits_heals ) );
   add_option( opt_float( "convoke_the_spirits_ultimate", convoke_the_spirits_ultimate ) );
@@ -10977,7 +10939,6 @@ void druid_t::copy_from( player_t* source )
   initial_moon_stage = p->initial_moon_stage;
   lively_spirit_stacks = p->lively_spirit_stacks;
   affinity_resources = p->affinity_resources;
-  beta_covenant = p->beta_covenant;
   kindred_empowerment_ratio = p->kindred_empowerment_ratio;
   convoke_the_spirits_heals = p->convoke_the_spirits_heals;
   convoke_the_spirits_ultimate = p->convoke_the_spirits_ultimate;
