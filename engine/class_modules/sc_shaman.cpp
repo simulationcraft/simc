@@ -6696,7 +6696,7 @@ void shaman_t::create_pets()
 
 std::unique_ptr<expr_t> shaman_t::create_expression( util::string_view name )
 {
-  std::vector<std::string> splits = util::string_split( name, "." );
+  auto splits = util::string_split( name, "." );
 
   if ( splits.size() >= 3 && util::str_compare_ci( splits[ 0 ], "pet" ) )
   {

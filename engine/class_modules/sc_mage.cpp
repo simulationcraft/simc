@@ -6881,7 +6881,7 @@ std::unique_ptr<expr_t> mage_t::create_expression( util::string_view name )
     { return icicle_event != nullptr; } );
   }
 
-  std::vector<std::string> splits = util::string_split( name, "." );
+  auto splits = util::string_split( name, "." );
 
   if ( splits.size() == 3 && util::str_compare_ci( splits[ 0 ], "ground_aoe" ) )
   {

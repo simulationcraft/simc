@@ -118,7 +118,7 @@ void stat_search( std::string&              encoding_str,
                   stat_e                    type,
                   util::string_view         stat_str )
 {
-  std::vector<std::string> stat_tokens = util::string_split( stat_str, " " );
+  auto stat_tokens = util::string_split( stat_str, " " );
   size_t num_descriptions = description_tokens.size();
 
   for ( size_t i = 0; i < num_descriptions; i++ )
@@ -3060,7 +3060,7 @@ void util::fuzzy_stats( std::string&      encoding,
   if ( is_proc_description( buffer ) )
     return;
 
-  std::vector<std::string> splits = util::string_split( buffer, "_." );
+  auto splits = util::string_split( buffer, "_." );
 
   stat_search( encoding, splits, STAT_ALL,  "all stats" );
   stat_search( encoding, splits, STAT_ALL,  "to all stats" );

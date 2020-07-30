@@ -22,7 +22,7 @@ bool is_plot_stat( sim_t* sim, stat_e stat )
   // search for explicit stat option
   if ( !sim->reforge_plot->reforge_plot_stat_str.empty() )
   {
-    std::vector<std::string> stat_list =
+    auto stat_list =
         util::string_split( sim->reforge_plot->reforge_plot_stat_str, ",:;/|" );
 
     auto it = range::find_if( stat_list, [stat]( const std::string& s ) {

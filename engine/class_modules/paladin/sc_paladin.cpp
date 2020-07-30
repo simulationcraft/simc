@@ -1961,7 +1961,7 @@ std::unique_ptr<expr_t> paladin_t::create_expression( util::string_view name_str
   };
 
 
-  std::vector<std::string> splits = util::string_split( name_str, "." );
+  auto splits = util::string_split( name_str, "." );
 
   struct time_to_hpg_expr_t : public paladin_expr_t
   {

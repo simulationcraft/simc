@@ -71,7 +71,7 @@ void parse_proc_flags( util::string_view flags,
                        util::span<const proc_parse_opt_t> opts,
                        unsigned& proc_flags )
 {
-  std::vector<std::string> splits = util::string_split( flags, "/" );
+  auto splits = util::string_split( flags, "/" );
 
   for( auto& proc_opt : opts )
   {
@@ -959,7 +959,7 @@ void special_effect::parse_special_effect_encoding( special_effect_t& effect,
       effect.school = sc;
       effect.discharge_amount = t.value;
 
-      std::vector<std::string> splits = util::string_split( t.value_str, "+" );
+      auto splits = util::string_split( t.value_str, "+" );
       if ( splits.size() == 2 )
       {
         effect.discharge_amount  = std::stod( splits[ 0 ] );

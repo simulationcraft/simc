@@ -29,7 +29,7 @@ namespace js {
 
   rapidjson::Value* sc_js_t::path_value(util::string_view path_str)
   {
-    std::vector<std::string> path = util::string_split(path_str, ".");
+    auto path = util::string_split(path_str, ".");
     rapidjson::Value* v = nullptr;
     if (path.size() < 1)
       return v;

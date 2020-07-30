@@ -163,7 +163,7 @@ struct enemy_action_t : public ACTION_TYPE
   // this is only used by helper structures
   std::string filter_options_list( util::string_view options_str )
   {
-    std::vector<std::string> splits = util::string_split( options_str, "," );
+    auto splits = util::string_split( options_str, "," );
     std::string filtered_options    = "";
     for ( size_t i = 0; i < splits.size(); i++ )
     {
