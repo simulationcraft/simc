@@ -6256,10 +6256,11 @@ struct lunar_beam_t : public druid_spell_t
 
 struct starfire_t : public druid_spell_t
 {
-  starfire_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "starfire", player,
-      player->talent.balance_affinity->ok() ? player->find_spell( 197628 ) : player->find_affinity_spell( "Starfire" ),
-      options_str )
+  starfire_t( druid_t* player, const std::string& options_str )
+    : druid_spell_t( "starfire", player,
+                     player->specialization() == DRUID_BALANCE ? player->find_affinity_spell( "Starfire" )
+                                                               : player->find_spell( 197628 ),
+                     options_str )
   {
     aoe = -1;
     base_aoe_multiplier = data().effectN( 3 ).percent();
@@ -6283,7 +6284,8 @@ struct starfire_t : public druid_spell_t
     et *= 1.0 + p()->buff.owlkin_frenzy->value();
 
     if ( p()->buff.eclipse_lunar->check() )
-      et *= 1 + p()->buff.eclipse_lunar->data().effectN( 1 ).percent() + p()->spec.eclipse_2->effectN( 1 ).percent() + p()->talent.soul_of_the_forest->effectN( 1 ).percent();
+      et *= 1 + p()->buff.eclipse_lunar->data().effectN( 1 ).percent() + p()->spec.eclipse_2->effectN( 1 ).percent() +
+            p()->talent.soul_of_the_forest->effectN( 1 ).percent();
 
     return et;
   }
