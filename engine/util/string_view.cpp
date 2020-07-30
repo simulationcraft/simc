@@ -31,6 +31,20 @@ util::string_view::size_type util::string_view::find(char c, size_type pos) cons
   return it == cend() ? npos : it - cbegin();
 }
 
+util::string_view::size_type util::string_view::rfind(string_view sv, size_type pos) const noexcept {
+  assert(sv.size() == 0 || sv.data() != nullptr);
+  pos = (std::min)(size_, pos);
+  if (sv.size() < size_ - pos)
+    pos += sv.size();
+  else
+    pos = size_;
+  auto last = cbegin() + pos;
+  auto it = std::find_end(cbegin(), last, sv.cbegin(), sv.cend(), traits::eq);
+  if (sv.size() > 0 && it == last)
+    return npos;
+  return it - cbegin();
+}
+
 util::string_view::size_type util::string_view::find_first_of(string_view sv, size_type pos) const noexcept {
   assert(sv.size() == 0 || sv.data() != nullptr);
   if (pos >= size_)

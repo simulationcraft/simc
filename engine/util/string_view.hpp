@@ -211,10 +211,16 @@ public:
   }
 
   // rfind
-  //constexpr size_type rfind(basic_string_view s, size_type pos = npos) const noexcept;
-  //constexpr size_type rfind(charT c, size_type pos = npos) const noexcept;
-  //constexpr size_type rfind(const charT* s, size_type pos, size_type n) const;
-  //constexpr size_type rfind(const charT* s, size_type pos = npos) const;
+  /* constexpr */ size_type rfind(string_view sv, size_type pos = npos) const noexcept;
+  /* constexpr */ size_type rfind(char c, size_type pos = npos) const noexcept{
+    return rfind(string_view(&c, 1), pos);
+  }
+  /* constexpr */ size_type rfind(const char* s, size_type pos, size_type n) const {
+    return rfind(string_view(s, n), pos);
+  }
+  /* constexpr */ size_type rfind(const char* s, size_type pos = npos) const {
+    return rfind(string_view(s), pos);
+  }
 
   // find_first_of
   /* constexpr */ size_type find_first_of(string_view sv, size_type pos = 0) const noexcept;
