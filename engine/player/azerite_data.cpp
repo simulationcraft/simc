@@ -557,7 +557,7 @@ std::string azerite_state_t::overrides_str() const
   return s.str();
 }
 
-bool azerite_state_t::parse_override( sim_t* sim, const std::string&, const std::string& value )
+bool azerite_state_t::parse_override( sim_t* sim, util::string_view, const std::string& value )
 {
   m_overrides.clear();
 
@@ -1081,7 +1081,7 @@ std::string azerite_essence_state_t::option_str() const
 // first element is the major essence, and the two subsequent tokens are the minor essences. In 3
 // element tokens, ordering does not matter. Placement of passive milestone spells is irrelevant.
 bool azerite_essence_state_t::parse_azerite_essence( sim_t* sim,
-                                                     const std::string& /* name */,
+                                                     util::string_view /* name */,
                                                      const std::string& value )
 {
   // Three or two digit options used?

@@ -568,7 +568,7 @@ bool has_foreground_actions( const player_t& p )
 
 // parse_talent_url =========================================================
 
-bool parse_talent_url( sim_t* sim, const std::string& name, const std::string& url )
+bool parse_talent_url( sim_t* sim, util::string_view name, const std::string& url )
 {
   assert( name == "talents" );
   (void)name;
@@ -618,7 +618,7 @@ bool parse_talent_url( sim_t* sim, const std::string& name, const std::string& u
 
 // parse_talent_override ====================================================
 
-bool parse_talent_override( sim_t* sim, const std::string& name, const std::string& override_str )
+bool parse_talent_override( sim_t* sim, util::string_view name, const std::string& override_str )
 {
   assert( name == "talent_override" );
   (void)name;
@@ -634,7 +634,7 @@ bool parse_talent_override( sim_t* sim, const std::string& name, const std::stri
 
 // parse_timeofday ====================================================
 
-bool parse_timeofday( sim_t* sim, const std::string& name, const std::string& override_str )
+bool parse_timeofday( sim_t* sim, util::string_view name, const std::string& override_str )
 {
   assert( name == "timeofday" );
   (void)name;
@@ -660,7 +660,7 @@ bool parse_timeofday( sim_t* sim, const std::string& name, const std::string& ov
 
 // parse_loa ====================================================
 
-bool parse_loa( sim_t* sim, const std::string& name, const std::string& override_str )
+bool parse_loa( sim_t* sim, util::string_view name, const std::string& override_str )
 {
   assert( name == "zandalari_loa" );
   ( void )name;
@@ -701,7 +701,7 @@ bool parse_loa( sim_t* sim, const std::string& name, const std::string& override
 }
 
 // parse_tricks
-bool parse_tricks( sim_t* sim, const std::string& name, const std::string& override_str )
+bool parse_tricks( sim_t* sim, util::string_view name, const std::string& override_str )
 {
   assert( name == "vulpera_tricks" );
   (void)name;
@@ -739,7 +739,7 @@ bool parse_tricks( sim_t* sim, const std::string& name, const std::string& overr
 
 // parse_role_string ========================================================
 
-bool parse_role_string( sim_t* sim, const std::string& name, const std::string& value )
+bool parse_role_string( sim_t* sim, util::string_view name, const std::string& value )
 {
   assert( name == "role" );
   (void)name;
@@ -751,7 +751,7 @@ bool parse_role_string( sim_t* sim, const std::string& name, const std::string& 
 
 // parse_world_lag ==========================================================
 
-bool parse_world_lag( sim_t* sim, const std::string& name, const std::string& value )
+bool parse_world_lag( sim_t* sim, util::string_view name, const std::string& value )
 {
   assert( name == "world_lag" );
   (void)name;
@@ -770,7 +770,7 @@ bool parse_world_lag( sim_t* sim, const std::string& name, const std::string& va
 
 // parse_world_lag ==========================================================
 
-bool parse_world_lag_stddev( sim_t* sim, const std::string& name, const std::string& value )
+bool parse_world_lag_stddev( sim_t* sim, util::string_view name, const std::string& value )
 {
   assert( name == "world_lag_stddev" );
   (void)name;
@@ -789,7 +789,7 @@ bool parse_world_lag_stddev( sim_t* sim, const std::string& name, const std::str
 
 // parse_brain_lag ==========================================================
 
-bool parse_brain_lag( sim_t* sim, const std::string& name, const std::string& value )
+bool parse_brain_lag( sim_t* sim, util::string_view name, const std::string& value )
 {
   assert( name == "brain_lag" );
   (void)name;
@@ -806,7 +806,7 @@ bool parse_brain_lag( sim_t* sim, const std::string& name, const std::string& va
 
 // parse_brain_lag_stddev ===================================================
 
-bool parse_brain_lag_stddev( sim_t* sim, const std::string& name, const std::string& value )
+bool parse_brain_lag_stddev( sim_t* sim, util::string_view name, const std::string& value )
 {
   assert( name == "brain_lag_stddev" );
   (void)name;
@@ -823,7 +823,7 @@ bool parse_brain_lag_stddev( sim_t* sim, const std::string& name, const std::str
 
 // parse_specialization =====================================================
 
-bool parse_specialization( sim_t* sim, const std::string&, const std::string& value )
+bool parse_specialization( sim_t* sim, util::string_view, const std::string& value )
 {
   sim->active_player->_spec = dbc::translate_spec_str( sim->active_player->type, value );
 
@@ -838,7 +838,7 @@ bool parse_specialization( sim_t* sim, const std::string&, const std::string& va
 
 // parse stat timelines =====================================================
 
-bool parse_stat_timelines( sim_t* sim, const std::string& name, const std::string& value )
+bool parse_stat_timelines( sim_t* sim, util::string_view name, const std::string& value )
 {
   assert( name == "stat_timelines" );
   (void)name;
@@ -862,7 +862,7 @@ bool parse_stat_timelines( sim_t* sim, const std::string& name, const std::strin
 
 // parse_origin =============================================================
 
-bool parse_origin( sim_t* sim, const std::string&, const std::string& origin )
+bool parse_origin( sim_t* sim, util::string_view, const std::string& origin )
 {
   player_t& p = *sim->active_player;
 
@@ -880,7 +880,7 @@ bool parse_origin( sim_t* sim, const std::string&, const std::string& origin )
 
 // parse_source ===============================================================
 
-bool parse_source( sim_t* sim, const std::string&, const std::string& value )
+bool parse_source( sim_t* sim, util::string_view, const std::string& value )
 {
   player_t& p = *sim->active_player;
 
@@ -889,7 +889,7 @@ bool parse_source( sim_t* sim, const std::string&, const std::string& value )
   return true;
 }
 
-bool parse_set_bonus( sim_t* sim, const std::string&, const std::string& value )
+bool parse_set_bonus( sim_t* sim, util::string_view, const std::string& value )
 {
   static const char* error_str = "%s invalid 'set_bonus' option value '%s' given, available options: %s";
 
@@ -924,7 +924,7 @@ bool parse_set_bonus( sim_t* sim, const std::string&, const std::string& value )
   return true;
 }
 
-bool parse_initial_resource( sim_t* sim, const std::string&, const std::string& value )
+bool parse_initial_resource( sim_t* sim, util::string_view, const std::string& value )
 {
   player_t* player = sim->active_player;
   auto opts        = util::string_split( value, ":/" );
@@ -8297,7 +8297,7 @@ struct use_items_t : public action_t
     return false;
   }
 
-  bool parse_slots( sim_t* /* sim */, const std::string& /* opt_name */, const std::string& opt_value )
+  bool parse_slots( sim_t* /* sim */, util::string_view /* opt_name */, const std::string& opt_value )
   {
     // Empty out default priority slots. slots= option will change the use_items action logic so
     // that only the designated slots will be checked/executed for a special effect
@@ -9166,7 +9166,7 @@ void player_t::create_talents_numbers()
   }
 }
 
-static bool parse_min_gcd( sim_t* sim, const std::string& name, const std::string& value )
+static bool parse_min_gcd( sim_t* sim, util::string_view name, const std::string& value )
 {
   if ( name != "min_gcd" )
     return false;

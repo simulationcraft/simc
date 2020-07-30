@@ -768,10 +768,6 @@ std::unique_ptr<expr_t> select_analyze_binary( util::string_view name, token_e o
   }
 }
 
-}  // UNNAMED NAMESPACE ====================================================
-
-// precedence ===============================================================
-
 int precedence( token_e expr_token_type )
 {
   switch ( expr_token_type )
@@ -821,54 +817,6 @@ int precedence( token_e expr_token_type )
     default:
       assert( false );
       return 0;
-  }
-}
-
-// is_unary =================================================================
-
-bool is_unary( token_e expr_token_type )
-{
-  switch ( expr_token_type )
-  {
-    case TOK_NOT:
-    case TOK_PLUS:
-    case TOK_MINUS:
-    case TOK_ABS:
-    case TOK_FLOOR:
-    case TOK_CEIL:
-      return true;
-    default:
-      return false;
-  }
-}
-
-// is_binary ================================================================
-
-bool is_binary( token_e expr_token_type )
-{
-  switch ( expr_token_type )
-  {
-    case TOK_MULT:
-    case TOK_DIV:
-    case TOK_MOD:
-    case TOK_ADD:
-    case TOK_SUB:
-    case TOK_MAX:
-    case TOK_MIN:
-    case TOK_EQ:
-    case TOK_NOTEQ:
-    case TOK_LT:
-    case TOK_LTEQ:
-    case TOK_GT:
-    case TOK_GTEQ:
-    case TOK_AND:
-    case TOK_XOR:
-    case TOK_OR:
-    case TOK_IN:
-    case TOK_NOTIN:
-      return true;
-    default:
-      return false;
   }
 }
 
@@ -1032,6 +980,57 @@ token_e next_token( action_t* action, util::string_view expr_str,
   }
 
   return TOK_UNKNOWN;
+}
+
+}  // UNNAMED NAMESPACE ====================================================
+
+
+// is_unary =================================================================
+
+bool is_unary( token_e expr_token_type )
+{
+  switch ( expr_token_type )
+  {
+    case TOK_NOT:
+    case TOK_PLUS:
+    case TOK_MINUS:
+    case TOK_ABS:
+    case TOK_FLOOR:
+    case TOK_CEIL:
+      return true;
+    default:
+      return false;
+  }
+}
+
+// is_binary ================================================================
+
+bool is_binary( token_e expr_token_type )
+{
+  switch ( expr_token_type )
+  {
+    case TOK_MULT:
+    case TOK_DIV:
+    case TOK_MOD:
+    case TOK_ADD:
+    case TOK_SUB:
+    case TOK_MAX:
+    case TOK_MIN:
+    case TOK_EQ:
+    case TOK_NOTEQ:
+    case TOK_LT:
+    case TOK_LTEQ:
+    case TOK_GT:
+    case TOK_GTEQ:
+    case TOK_AND:
+    case TOK_XOR:
+    case TOK_OR:
+    case TOK_IN:
+    case TOK_NOTIN:
+      return true;
+    default:
+      return false;
+  }
 }
 
 // parse_tokens =============================================================

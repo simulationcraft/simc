@@ -41,14 +41,14 @@ public:
   option_t( util::string_view name ) :
     _name( name )
 { }
-  virtual ~option_t() { }
-  opts::parse_status parse( sim_t* sim , const std::string& n, const std::string& value ) const;
-  const std::string& name() const
+  virtual ~option_t() = default;
+  opts::parse_status parse( sim_t* sim, util::string_view name, const std::string& value ) const;
+  util::string_view name() const
   { return _name; }
   std::ostream& print( std::ostream& stream ) const
   { return do_print( stream ); }
 protected:
-  virtual opts::parse_status do_parse( sim_t*, const std::string& name, const std::string& value ) const = 0;
+  virtual opts::parse_status do_parse( sim_t*, util::string_view name, const std::string& value ) const = 0;
   virtual std::ostream& do_print( std::ostream& stream ) const = 0;
 private:
   std::string _name;
@@ -57,15 +57,15 @@ private:
 
 namespace opts {
 
-typedef std::function<parse_status(parse_status, const std::string&, const std::string&)> parse_status_fn_t;
+typedef std::function<parse_status(parse_status, util::string_view name, const std::string& value)> parse_status_fn_t;
 typedef std::unordered_map<std::string, std::string> map_t;
 typedef std::unordered_map<std::string, std::vector<std::string>> map_list_t;
-typedef std::function<bool(sim_t*,const std::string&, const std::string&)> function_t;
+typedef std::function<bool(sim_t*, util::string_view, const std::string&)> function_t;
 typedef std::vector<std::string> list_t;
 
-parse_status parse( sim_t*, util::span<const std::unique_ptr<option_t>>, const std::string& name, const std::string& value, const parse_status_fn_t& fn = nullptr );
-void parse( sim_t*, const std::string& context, util::span<const std::unique_ptr<option_t>>, util::string_view options_str, const parse_status_fn_t& fn = nullptr );
-void parse( sim_t*, const std::string& context, util::span<const std::unique_ptr<option_t>>, util::span<const std::string> strings, const parse_status_fn_t& fn = nullptr );
+parse_status parse( sim_t*, util::span<const std::unique_ptr<option_t>>, util::string_view name, const std::string& value, const parse_status_fn_t& fn = nullptr );
+void parse( sim_t*, util::string_view context, util::span<const std::unique_ptr<option_t>>, util::string_view options_str, const parse_status_fn_t& fn = nullptr );
+void parse( sim_t*, util::string_view context, util::span<const std::unique_ptr<option_t>>, util::span<const std::string> strings, const parse_status_fn_t& fn = nullptr );
 }
 inline std::ostream& operator<<( std::ostream& stream, const std::unique_ptr<option_t>& opt )
 { return opt -> print( stream ); }

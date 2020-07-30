@@ -670,7 +670,7 @@ void item_t::parse_options()
   try
   {
     opts::parse( sim, option_name_str, options, remainder,
-      [ this ]( opts::parse_status status, const std::string& name, const std::string& value ) {
+      [ this ]( opts::parse_status status, util::string_view name, const std::string& value ) {
         // Fail parsing if strict parsing is used and the option is not found
         if ( sim->strict_parsing && status == opts::parse_status::NOT_FOUND )
         {

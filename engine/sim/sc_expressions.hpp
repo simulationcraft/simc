@@ -64,12 +64,8 @@ struct expr_token_t
   std::string label;
 };
 
-int precedence( token_e );
 bool is_unary( token_e );
 bool is_binary( token_e );
-token_e next_token( action_t* action, const std::string& expr_str,
-                    int& current_index, std::string& token_str,
-                    token_e prev_token );
 std::vector<expr_token_t> parse_tokens( action_t* action,
                                         util::string_view expr_str );
 void print_tokens( std::vector<expr_token_t>& tokens, sim_t* sim );

@@ -58,7 +58,7 @@ bool stat_may_cap( int stat )
 // parse_normalize_scale_factors ============================================
 
 bool parse_normalize_scale_factors( sim_t* sim,
-                                    const std::string& name,
+                                    util::string_view name,
                                     const std::string& value )
 {
   if ( name != "normalize_scale_factors" ) return false;

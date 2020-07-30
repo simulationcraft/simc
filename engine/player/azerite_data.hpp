@@ -216,7 +216,7 @@ public:
   size_t rank( util::string_view name, bool tokenized = false ) const;
 
   /// Parse and sanitize azerite_override option
-  bool parse_override( sim_t*, const std::string& /*name*/, const std::string& /*value*/ );
+  bool parse_override( sim_t*, util::string_view /*name*/, const std::string& /*value*/ );
   /// Output overrides as an azerite_override options string
   std::string overrides_str() const;
   /// Clone overrides from another actor
@@ -284,7 +284,7 @@ public:
   /// Clone state from another actor
   void copy_state( const std::unique_ptr<azerite_essence_state_t>& other );
 
-  bool parse_azerite_essence( sim_t*, const std::string& /* name */, const std::string& /* value */ );
+  bool parse_azerite_essence( sim_t*, util::string_view /* name */, const std::string& /* value */ );
 
   /// Create essence-related expressions
   std::unique_ptr<expr_t> create_expression( const std::vector<std::string>& expr_str ) const;

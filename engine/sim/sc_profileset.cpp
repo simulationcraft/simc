@@ -1145,7 +1145,7 @@ void create_options( sim_t* sim )
 {
   sim -> add_option( opt_map_list( "profileset.", sim -> profileset_map ) );
   sim -> add_option( opt_func( "profileset_metric", []( sim_t*             sim,
-                                                        const std::string&,
+                                                        util::string_view,
                                                         const std::string& value ) {
     sim -> profileset_metric.clear();
 
@@ -1165,7 +1165,7 @@ void create_options( sim_t* sim )
     return true;
   } ) );
   sim -> add_option( opt_func( "profileset_output_data", []( sim_t*             sim,
-                                                        const std::string&,
+                                                        util::string_view,
                                                         const std::string& value ) {
     sim -> profileset_output_data.clear();
 

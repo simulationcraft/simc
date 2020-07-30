@@ -1153,7 +1153,7 @@ player_t* bcp_api::from_local_json( sim_t*             sim,
   try
   {
     opts::parse( sim, "local_json", options, options_str,
-      [ sim ]( opts::parse_status status, const std::string& name, const std::string& value ) {
+      [ sim ]( opts::parse_status status, util::string_view name, const std::string& value ) {
         // Fail parsing if strict parsing is used and the option is not found
         if ( sim->strict_parsing && status == opts::parse_status::NOT_FOUND )
         {

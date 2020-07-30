@@ -100,10 +100,10 @@ public:
   { return static_cast<unsigned>( m_covenant ); }
 
   /// Parse player-scope "covenant" option
-  bool parse_covenant( sim_t* sim, const std::string& name, const std::string& value );
+  bool parse_covenant( sim_t* sim, util::string_view name, const std::string& value );
 
   /// Parse player-scope "soulbind" option
-  bool parse_soulbind( sim_t* sim, const std::string& name, const std::string& value );
+  bool parse_soulbind( sim_t* sim, util::string_view name, const std::string& value );
 
   /// Retrieve covenant ability spell data. Returns spell_data_t::not_found if covenant
   /// ability is not enabled on the actor. Returns spell_data_t::nil if covenant ability

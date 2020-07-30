@@ -6995,19 +6995,19 @@ static bool do_parse_secondary_weapon( rogue_t* rogue, const std::string& value,
   return true;
 }
 
-static bool parse_offhand_secondary( sim_t* sim, const std::string& /* name */, const std::string& value )
+static bool parse_offhand_secondary( sim_t* sim, util::string_view /* name */, const std::string& value )
 {
   rogue_t* rogue = static_cast<rogue_t*>( sim -> active_player );
   return do_parse_secondary_weapon( rogue, value, SLOT_OFF_HAND );
 }
 
-static bool parse_mainhand_secondary( sim_t* sim, const std::string& /* name */, const std::string& value )
+static bool parse_mainhand_secondary( sim_t* sim, util::string_view /* name */, const std::string& value )
 {
   rogue_t* rogue = static_cast<rogue_t*>( sim -> active_player );
   return do_parse_secondary_weapon( rogue, value, SLOT_MAIN_HAND );
 }
 
-static bool parse_fixed_rtb( sim_t* sim, const std::string& /* name */, const std::string& value )
+static bool parse_fixed_rtb( sim_t* sim, util::string_view /* name */, const std::string& value )
 {
   std::vector<size_t> buffs;
   for ( auto it = value.begin(); it < value.end(); ++it )
@@ -7039,7 +7039,7 @@ static bool parse_fixed_rtb( sim_t* sim, const std::string& /* name */, const st
   return true;
 }
 
-static bool parse_fixed_rtb_odds( sim_t* sim, const std::string& /* name */, const std::string& value )
+static bool parse_fixed_rtb_odds( sim_t* sim, util::string_view /* name */, const std::string& value )
 {
   std::vector<std::string> odds = util::string_split( value, "," );
   if ( odds.size() != 6 )
