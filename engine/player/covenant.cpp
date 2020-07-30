@@ -13,11 +13,11 @@
 #include "dbc/covenant_data.hpp"
 
 conduit_data_t::conduit_data_t() :
-  m_player( nullptr ), m_conduit( &conduit_rank_entry_t::nil() ), m_spell( spell_data_t::not_found() )
+  /* m_player( nullptr ), */ m_conduit( &conduit_rank_entry_t::nil() ), m_spell( spell_data_t::not_found() )
 { }
 
 conduit_data_t::conduit_data_t( const player_t* player, const conduit_rank_entry_t& entry ) :
-  m_player( player ), m_conduit( &entry ), m_spell( dbc::find_spell( player, entry.spell_id ) )
+  /* m_player( player ), */ m_conduit( &entry ), m_spell( dbc::find_spell( player, entry.spell_id ) )
 { }
 
 bool conduit_data_t::ok() const
@@ -225,6 +225,38 @@ bool covenant_state_t::parse_soulbind( sim_t*             sim,
   m_soulbind_str = value;
 
   return true;
+}
+
+const spell_data_t* covenant_state_t::get_covenant_ability( util::string_view name ) const
+{
+  if ( !enabled() )
+  {
+    return spell_data_t::not_found();
+  }
+
+  const auto& entry = covenant_ability_entry_t::find( name, m_player->dbc->ptr );
+  if ( entry.spell_id == 0 )
+  {
+    return spell_data_t::nil();
+  }
+
+  if ( entry.covenant_id != id() )
+  {
+    return spell_data_t::not_found();
+  }
+
+  if ( entry.class_id && entry.class_id != as<unsigned>( util::class_id( m_player->type ) ) )
+  {
+    return spell_data_t::not_found();
+  }
+
+  const auto spell = dbc::find_spell( m_player, entry.spell_id );
+  if ( as<int>( spell->level() ) > m_player->true_level )
+  {
+    return spell_data_t::not_found();
+  }
+
+  return spell;
 }
 
 const spell_data_t* covenant_state_t::get_soulbind_ability( util::string_view name,

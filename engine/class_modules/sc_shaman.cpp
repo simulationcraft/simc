@@ -1121,7 +1121,7 @@ public:
 
   // Generic procs
 
-  shaman_action_t( const std::string& n, shaman_t* player, const spell_data_t* s = spell_data_t::nil() )
+  shaman_action_t( util::string_view n, shaman_t* player, const spell_data_t* s = spell_data_t::nil() )
     : ab( n, player, s ),
       track_cd_waste( s->cooldown() > timespan_t::zero() || s->charge_cooldown() > timespan_t::zero() ),
       cd_wasted_exec( nullptr ),
@@ -1614,7 +1614,7 @@ private:
 public:
   using base_t = shaman_spell_base_t<Base>;
 
-  shaman_spell_base_t( const std::string& n, shaman_t* player, const spell_data_t* s = spell_data_t::nil() )
+  shaman_spell_base_t( util::string_view n, shaman_t* player, const spell_data_t* s = spell_data_t::nil() )
     : ab( n, player, s )
   {
   }
@@ -1650,7 +1650,7 @@ public:
   bool affected_by_master_of_the_elements = false;
   bool affected_by_stormkeeper            = false;
 
-  shaman_spell_t( const std::string& token, shaman_t* p, const spell_data_t* s = spell_data_t::nil(),
+  shaman_spell_t( util::string_view token, shaman_t* p, const spell_data_t* s = spell_data_t::nil(),
                   const std::string& options = std::string() )
     : base_t( token, p, s ), overload( nullptr ), proc_sb( nullptr )
   {

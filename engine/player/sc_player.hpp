@@ -731,6 +731,7 @@ public:
 
   conduit_data_t find_conduit_spell( util::string_view name ) const;
   const spell_data_t* find_soulbind_spell( util::string_view name ) const;
+  const spell_data_t* find_covenant_spell( util::string_view name ) const;
 
   const spell_data_t* find_racial_spell( util::string_view name, race_e s = RACE_NONE ) const;
   const spell_data_t* find_class_spell( util::string_view name, specialization_e s = SPEC_NONE ) const;

@@ -31,6 +31,7 @@ enum token_e
   TOK_MINUS,
   TOK_MULT,
   TOK_DIV,
+  TOK_MOD,
   TOK_ADD,
   TOK_SUB,
   TOK_AND,

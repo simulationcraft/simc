@@ -658,7 +658,7 @@ public:
   simple_sample_data_with_min_max_t *cd_wasted_exec, *cd_wasted_cumulative;
   simple_sample_data_t* cd_wasted_iter;
   bool initialized;
-  warrior_action_t( const std::string& n, warrior_t* player, const spell_data_t* s = spell_data_t::nil() )
+  warrior_action_t( util::string_view n, warrior_t* player, const spell_data_t* s = spell_data_t::nil() )
     : ab( n, player, s ),
       tactician_per_rage( 0 ),
       track_cd_waste( s->cooldown() > timespan_t::zero() || s->charge_cooldown() > timespan_t::zero() ),
@@ -1041,7 +1041,7 @@ struct warrior_heal_t : public warrior_action_t<heal_t>
 
 struct warrior_spell_t : public warrior_action_t<spell_t>
 {  // Main Warrior Spell Class - Used for spells that deal no damage, usually buffs.
-  warrior_spell_t( const std::string& n, warrior_t* p, const spell_data_t* s = spell_data_t::nil() ) : base_t( n, p, s )
+  warrior_spell_t( util::string_view n, warrior_t* p, const spell_data_t* s = spell_data_t::nil() ) : base_t( n, p, s )
   {
     may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = false;
   }

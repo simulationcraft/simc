@@ -1836,6 +1836,8 @@ class SpellDataGenerator(DataGenerator):
           ( 338825, 1 ),       # Primordial Arcanic Pulsar buff
           ( 339943, 1 ),       # Runecarve #3 Nature crit buff
           ( 339946, 1 ),       # Runecarve #3 Arcane crit buff
+          ( 339797, 1 ),       # Oneth's Clear Vision (free starsurge)
+          ( 339800, 1 ),       # Oneth's Perception (free starfall)
 
           # Shadowlands Covenant
           ( 326446, 0, True ), # Kyrian Empower Bond on DPS
@@ -2663,6 +2665,13 @@ class SpellDataGenerator(DataGenerator):
                 for rank in talent.children('GarrTalentRank'):
                     if rank.ref('id_spell').id == rank.id_spell:
                         self.process_spell(rank.id_spell, ids, 0, 0)
+
+        # Covenant abilities
+        for entry in self.db('UICovenantAbility').values():
+            if entry.id_spell == 0 or entry.ref('id_spell').id != entry.id_spell:
+                continue
+
+            self.process_spell(entry.id_spell, ids, 0, 0)
 
         # Souldbind conduits
         for _, entry in self.db('SoulbindConduit').items():

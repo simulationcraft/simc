@@ -1,5 +1,5 @@
 // Spell text, wow build 9.0.1.35360
-static const std::array<spelltext_data_t, 15212> __spelltext_data { {
+static const std::array<spelltext_data_t, 15218> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -12888,6 +12888,7 @@ static const std::array<spelltext_data_t, 15212> __spelltext_data { {
   { 300693, "Intellect increased by $s1.", "Intellect increased by $s.", 0 },
   { 300714, "Fill yourself with unbridled energy, giving your offensive spells and attacks a chance to do an additional $300717s1 Fire damage to your target. Lasts $d.", "Chance to deal an extra $300717s1 Fire damage to your current target.", 0 },
   { 300717, "Deal $s1 Fire damage to your current target.", 0, 0 },
+  { 300728, "Wend through the shadows, appearing at the targeted location.", 0, "Venthyr" },
   { 300741, "Empowers your mind, giving your healing abilities a chance to restore an additional $300744s1 health to your target. Lasts $d.", "Chance to restore an extra $300744s1 health to your current target.", 0 },
   { 300744, "Restores $s1 health to your current target.", 0, 0 },
   { 300761, "Haste increased by $s1.", "Haste increased by $s.", 0 },
@@ -14106,9 +14107,11 @@ static const std::array<spelltext_data_t, 15212> __spelltext_data { {
   { 324064, "Increase the stamina of an item worn on the chest, legs, hands or feet by $ec for 2 hrs.\r\n\r\nCannot be applied to items higher than level $ecix.", 0, 0 },
   { 324068, "Increase the stamina of an item worn on the chest, legs, hands or feet by $ec for 2 hrs.\r\n\r\nCannot be applied to items higher than level $ecix.", 0, 0 },
   { 324073, "$@spelldesc323737", "Bleeding for $w1 every $t1 sec.", "Necrolord" },
+  { 324128, "Corrupts the targeted ground, causing ${$52212m1*11} Shadow damage over $d to targets within the area.\r\n\r\nEnemies damaged deal $324164s1% reduced damage to you, up to a maximum of ${$324164s1*-$324164u}% and their power is transferred to you as an equal amount of Strength.\r\n\r\nWhile you remain within the area, your $?s223829[Necrotic Strike and ][]$?c1[Heart Strike will hit up to $188290m3 additional targets.]?s207311[Clawing Shadows will hit all enemies near the target.][Scourge Strike will hit all enemies near the target.]", 0, "Night Fae" },
   { 324143, "Brandish the banner of the Necrolords for $d, increasing your movement speed by $s2% and causing $?c1[Mortal Strike]?c2[Raging Blow]?c3[Shield Slam][one of your abilities] to grant you $@spellname325787. Killing an enemy grants $325788s1 stacks of $@spellname325787.\r\n\r\nReactivating this ability plants the banner in the ground, granting $325862s1% maximum health and $325862s2% attack speed to you and $325784s1 allies within $s3 yds of the banner. Lasts $325787s1 sec per $@spellname325787, up to $325784d.", "Movement speed increased by $w2%. Able to plant the Conqueror's Banner in the ground.", "Necrolord" },
   { 324149, "Fire a shot at your enemy, causing them to bleed for $o1 Shadow damage over $d. Each time Flayed Shot deals damage, you have a $s2% chance to gain Flayer's Mark, causing your next Kill Shot to be usable on any target, regardless of their current health.", "Bleeding for $s1 Shadow damage every $t1 sec.", "Venthyr" },
   { 324156, "$@spelldesc324149", "Kill Shot can be used on any target, regardless of their current health.", 0 },
+  { 324164, "$@spelldesc324128", "Weakened by Death's Due, damage dealt to you reduced by $s1%.", 0 },
   { 324183, "$@spelldesc324184", 0, 0 },
   { 324184, "Sends out a wave of force dealing $s1 Shadow damage.", 0, 0 },
   { 324200, "$@spelldesc309621", 0, 0 },
@@ -14140,6 +14143,7 @@ static const std::array<spelltext_data_t, 15212> __spelltext_data { {
   { 324631, "Form a shield of flesh and bone over $d that absorbs damage equal to $s1% of your maximum health for $324867d.\r\n\r\nChanneling near a corpse claims their essence to grow the shield, up to $s3% of your maximum health. This is most effective against powerful enemies.", "Anima is being siphoned.", "Necrolord" },
   { 324701, "Teleports you forward $A1 yds or until reaching an obstacle.", 0, "Night Fae" },
   { 324724, "An explosion of dark energy heals allies within $A2 yds for $s2 and infects enemies with Unholy Transfusion.\r\n\r\n|TInterface\\ICONS\\Spell_AnimaMaldraxxus_Debuff.blp:24|t |cFFFFFFFFUnholy Tranfusion|r\r\n$@spelldesc325203", "Attackers siphon $325118s1 health.", "Necrolord" },
+  { 324739, "Call your steward to bring you a Phial of Serenity that can be consumed to restore $323436s1% health and remove all Curse, Disease, Poison, and Bleed effects.\r\n\r\nYour Steward additionally offers access to a selection of useful amenities, each once per day.", 0, "Kyrian" },
   { 324747, "$@spelldesc309627", 0, 0 },
   { 324748, "Increase your $pri by $s1%.", "$pri increased by $w1%.", 0 },
   { 324773, "Permanently enchants a chest piece to increase all stats by $ec1.", 0, 0 },
@@ -15143,6 +15147,8 @@ static const std::array<spelltext_data_t, 15212> __spelltext_data { {
   { 339738, "$@spelldesc339735", "Asleep.", 0 },
   { 339750, "Bestial Wrath increases all damage you and your pet deal by |cFFFFFFFF ${$s1}.1%|r.", 0, 0 },
   { 339766, "After your Demonic Tyrant expires, gain a Demonic Core and $s1% increased damage from your demons for 15 sec.", 0, 0 },
+  { 339797, "$@spelldesc338661", "Your next Starsurge costs no Astral Power.", 0 },
+  { 339800, "$@spelldesc338661", "Your next Starfall costs no Astral Power.", 0 },
   { 339818, "Revenge increases the damage of your next Thunder Clap by |cFFFFFFFF$s1%|r.", 0, 0 },
   { 339825, "$@spelldesc339818", "Your next Thunder Clap deals $w1% increased damage.", 0 },
   { 339845, "Your Felguard deals $s1% more damage and takes $s1% less damage.", 0, 0 },
