@@ -2134,6 +2134,7 @@ void priest_t::generate_apl_shadow()
       "buff.chorus_of_insanity.stack>20)|azerite.chorus_of_insanity.rank=0",
       "Use these cooldowns in between your 1st and 2nd Void Bolt in your 2nd Voidform when you have Chorus of Insanity "
       "active" );
+  cds->add_action( this, "Power Infusion", "if=buff.voidform.up" );
   cds->add_action( "use_items", "Default fallback for usable items: Use on cooldown." );
 
   // Crit CDs
@@ -2146,6 +2147,7 @@ void priest_t::generate_apl_shadow()
   single->add_talent( this, "Dark Ascension", "if=buff.voidform.down" );
   single->add_action( this, "Void Bolt" );
   single->add_action( "call_action_list,name=cds" );
+  single->add_action( this, "Devouring Plague", "if=refreshable&buff.voidform.up");
   single->add_action(
       this, "Mind Sear",
       "if=buff.harvested_thoughts.up&cooldown.void_bolt.remains>=1.5&"
@@ -2157,8 +2159,8 @@ void priest_t::generate_apl_shadow()
   single->add_talent( this, "Surrender to Madness", "if=buff.voidform.stack>10+(10*buff.bloodlust.up)" );
   single->add_talent( this, "Dark Void", "if=raid_event.adds.in>10",
                       "Use Dark Void on CD unless adds are incoming in 10s or less." );
-  single->add_talent( this, "Mindbender", "if=talent.mindbender.enabled|(buff.voidform.stack>18|target.time_to_die<15)",
-                      "Use Mindbender at 19 or more stacks, or if the target will die in less than 15s." );
+  single->add_talent( this, "Mindbender", "if=(talent.mindbender.enabled&buff.voidform.up)|(buff.voidform.stack>18|target.time_to_die<15)",
+                      "Use Shadowfiend at 19 or more stacks, or if the target will die in less than 15s. If using Minbender use on CD in Voidform" );
   single->add_action( this, "Shadow Word: Death" );
   single->add_talent( this, "Shadow Crash", "if=raid_event.adds.in>5&raid_event.adds.duration<20",
                       "Use Shadow Crash on CD unless there are adds incoming." );
@@ -2216,6 +2218,7 @@ void priest_t::generate_apl_shadow()
                       ",if=(talent.misery.enabled&target.time_to_die>"
                       "((1.0+2.0*spell_targets.mind_sear)*variable.vt_mis_trait_ranks_check*"
                       "(variable.vt_mis_sd_check*spell_targets.mind_sear)))" );
+  cleave->add_action( this, "Devouring Plague", "if=refreshable&buff.voidform.up");
   cleave->add_talent( this, "Void Torrent", "if=buff.voidform.up" );
   cleave->add_action( this, "Mind Sear",
                       "target_if=spell_targets.mind_sear>1,"
