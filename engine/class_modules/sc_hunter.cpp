@@ -778,6 +778,7 @@ public:
   {
     ab::impact( s );
 
+    // XXX: check result_is_hit()?
     if ( procs_wild_spirits && p() -> buffs.wild_spirits -> check() )
     {
       if ( p() -> wild_spirits.icd -> down() )
@@ -2584,7 +2585,7 @@ struct cobra_shot_t: public hunter_ranged_attack_t
   const timespan_t kill_command_reduction;
 
   cobra_shot_t( hunter_t* p, util::string_view options_str ):
-    hunter_ranged_attack_t( "cobra_shot", p, p -> find_class_spell( "Cobra Shot" ) ),
+    hunter_ranged_attack_t( "cobra_shot", p, p -> find_specialization_spell( "Cobra Shot" ) ),
     kill_command_reduction( timespan_t::from_seconds( data().effectN( 3 ).base_value() ) )
   {
     parse_options( options_str );
@@ -2679,7 +2680,7 @@ struct barbed_shot_t: public hunter_ranged_attack_t
 struct bursting_shot_t : public hunter_ranged_attack_t
 {
   bursting_shot_t( hunter_t* p, util::string_view options_str ) :
-    hunter_ranged_attack_t( "bursting_shot", p, p -> find_class_spell( "Bursting Shot" ) )
+    hunter_ranged_attack_t( "bursting_shot", p, p -> find_specialization_spell( "Bursting Shot" ) )
   {
     parse_options( options_str );
   }
@@ -3709,7 +3710,7 @@ struct harpoon_t: public hunter_melee_attack_t
 struct serpent_sting_sv_t: public hunter_ranged_attack_t
 {
   serpent_sting_sv_t( hunter_t* p, util::string_view options_str ):
-    hunter_ranged_attack_t( "serpent_sting", p, p -> find_class_spell( "Serpent Sting" ) )
+    hunter_ranged_attack_t( "serpent_sting", p, p -> find_specialization_spell( "Serpent Sting" ) )
   {
     parse_options( options_str );
 
@@ -4013,7 +4014,7 @@ struct freezing_trap_t : public hunter_spell_t
 struct counter_shot_t: public interrupt_base_t
 {
   counter_shot_t( hunter_t* p, util::string_view options_str ):
-    interrupt_base_t( "counter_shot", p, p -> find_class_spell( "Counter Shot" ) )
+    interrupt_base_t( "counter_shot", p, p -> find_specialization_spell( "Counter Shot" ) )
   {
     parse_options( options_str );
   }
@@ -4786,7 +4787,7 @@ struct aspect_of_the_eagle_t: public hunter_spell_t
 struct muzzle_t: public interrupt_base_t
 {
   muzzle_t( hunter_t* p, util::string_view options_str ):
-    interrupt_base_t( "muzzle", p, p -> find_class_spell( "Muzzle" ) )
+    interrupt_base_t( "muzzle", p, p -> find_specialization_spell( "Muzzle" ) )
   {
     parse_options( options_str );
   }
@@ -5267,29 +5268,29 @@ void hunter_t::init_spells()
   specs.kill_shot            = find_class_spell( "Kill Shot" );
 
   // Beast Mastery
-  specs.aspect_of_the_wild   = find_class_spell( "Aspect of the Wild" );
-  specs.barbed_shot          = find_class_spell( "Barbed Shot" );
+  specs.aspect_of_the_wild   = find_specialization_spell( "Aspect of the Wild" );
+  specs.barbed_shot          = find_specialization_spell( "Barbed Shot" );
   specs.beast_cleave         = find_specialization_spell( "Beast Cleave" );
-  specs.bestial_wrath        = find_class_spell( "Bestial Wrath" );
+  specs.bestial_wrath        = find_specialization_spell( "Bestial Wrath" );
   specs.kindred_spirits      = find_specialization_spell( "Kindred Spirits" );
   specs.pack_tactics         = find_specialization_spell( "Pack Tactics" );
   specs.wild_call            = find_specialization_spell( "Wild Call" );
 
   // Marksmanship
-  specs.aimed_shot           = find_class_spell( "Aimed Shot" );
+  specs.aimed_shot           = find_specialization_spell( "Aimed Shot" );
   specs.lone_wolf            = find_specialization_spell( "Lone Wolf" );
   specs.precise_shots        = find_specialization_spell( "Precise Shots" );
-  specs.rapid_fire           = find_class_spell( "Rapid Fire" );
+  specs.rapid_fire           = find_specialization_spell( "Rapid Fire" );
   specs.trick_shots          = find_specialization_spell( "Trick Shots" );
-  specs.trueshot             = find_class_spell( "Trueshot" );
+  specs.trueshot             = find_specialization_spell( "Trueshot" );
 
   // Survival
-  specs.aspect_of_the_eagle  = find_class_spell( "Aspect of the Eagle" );
-  specs.carve                = find_class_spell( "Carve" );
-  specs.coordinated_assault  = find_class_spell( "Coordinated Assault" );
-  specs.harpoon              = find_class_spell( "Harpoon" );
-  specs.raptor_strike        = find_class_spell( "Raptor Strike" );
-  specs.wildfire_bomb        = find_class_spell( "Wildfire Bomb" );
+  specs.aspect_of_the_eagle  = find_specialization_spell( "Aspect of the Eagle" );
+  specs.carve                = find_specialization_spell( "Carve" );
+  specs.coordinated_assault  = find_specialization_spell( "Coordinated Assault" );
+  specs.harpoon              = find_specialization_spell( "Harpoon" );
+  specs.raptor_strike        = find_specialization_spell( "Raptor Strike" );
+  specs.wildfire_bomb        = find_specialization_spell( "Wildfire Bomb" );
 
   // Covenants
 
