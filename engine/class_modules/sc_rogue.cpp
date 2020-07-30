@@ -53,8 +53,8 @@ namespace actions
 
 namespace buffs
 {
-struct rogue_poison_buff_t;
-struct marked_for_death_debuff_t;
+  struct rogue_poison_buff_t;
+  struct marked_for_death_debuff_t;
 }
 
 enum current_weapon_e
@@ -130,7 +130,7 @@ public:
     buff_t* wound_poison;
     buff_t* crippling_poison;
     buff_t* numbing_poison;
-    buffs::marked_for_death_debuff_t* marked_for_death;
+    buff_t* marked_for_death;
     buff_t* ghostly_strike;
     buff_t* rupture; // Hidden proxy for handling Scent of Blood azerite trait
     buff_t* toxic_blade;
@@ -652,7 +652,7 @@ public:
   double    temporary_movement_modifier() const override;
   void      apply_affecting_auras( action_t& action ) override;
 
-  bool poisoned_enemy( player_t* target, bool deadly_fade = false ) const;
+  bool is_target_poisoned( player_t* target, bool deadly_fade = false ) const;
 
   void break_stealth();
   void cancel_auto_attack();
@@ -683,6 +683,24 @@ public:
 
   void swap_weapon( weapon_slot_e slot, current_weapon_e to_weapon, bool in_combat = true );
   bool stealthed( uint32_t stealth_mask = STEALTH_ALL ) const;
+
+  // Secondary Action Tracking
+  std::vector<action_t*> background_actions;
+
+  template <typename T, typename... Ts>
+  T* get_background_action( util::string_view n, Ts&&... args )
+  {
+    auto it = range::find( background_actions, n, &action_t::name_str );
+    if ( it != background_actions.cend() )
+    {
+      return dynamic_cast<T*>( *it );
+    }
+
+    auto action = new T( n, this, std::forward<Ts>( args )... );
+    action->background = true;
+    background_actions.push_back( action );
+    return action;
+  }
 };
 
 namespace actions { // namespace actions
@@ -1654,9 +1672,9 @@ struct deadly_poison_t : public rogue_poison_t
 
     void impact( action_state_t* state ) override
     {
-      if ( ! p() -> poisoned_enemy( state -> target ) && result_is_hit( state -> result ) )
+      if ( !p()->is_target_poisoned( state->target ) && result_is_hit( state->result ) )
       {
-        p() -> poisoned_enemies++;
+        p()->poisoned_enemies++;
       }
 
       rogue_poison_t::impact( state );
@@ -1669,10 +1687,10 @@ struct deadly_poison_t : public rogue_poison_t
       rogue_poison_t::last_tick( d );
 
       // Due to DOT system behavior, deliver "Deadly Poison DOT fade event" as
-      // a separate parmeter to poisoned_enemy() call.
-      if ( ! p() -> poisoned_enemy( t, true ) )
+      // a separate parmeter to is_target_poisoned() call.
+      if ( !p()->is_target_poisoned( t, true ) )
       {
-        p() -> poisoned_enemies--;
+        p()->poisoned_enemies--;
       }
     }
   };
@@ -3017,8 +3035,12 @@ struct marked_for_death_t : public rogue_spell_t
     }
   }
 
-  // Defined after marked_for_death_debuff_t. Sigh.
-  void impact( action_state_t* state ) override;
+  void impact( action_state_t* state ) override
+  {
+    rogue_spell_t::impact( state );
+
+    td( state->target )->debuffs.marked_for_death->trigger();
+  }
 };
 
 
@@ -4407,27 +4429,6 @@ void weapon_info_t::reset()
   callback_state( WEAPON_SECONDARY, false );
 }
 
-// Due to how our DOT system functions, at the time when last_tick() is called
-// for Deadly Poison, is_ticking() for the dot object will still return true.
-// This breaks the is_ticking() check below, creating an inconsistent state in
-// the sim, if Deadly Poison was the only poison up on the target. As a
-// workaround, deliver the "Deadly Poison fade event" as an extra parameter.
-inline bool rogue_t::poisoned_enemy( player_t* target, bool deadly_fade ) const
-{
-  const rogue_td_t* td = get_target_data( target );
-
-  if ( ! deadly_fade && td -> dots.deadly_poison -> is_ticking() )
-    return true;
-
-  if ( td -> debuffs.wound_poison -> check() )
-    return true;
-
-  if ( td -> debuffs.crippling_poison -> check() )
-    return true;
-
-  return false;
-}
-
 namespace buffs {
 // ==========================================================================
 // Buffs
@@ -4708,8 +4709,8 @@ struct rogue_poison_buff_t : public buff_t
   void execute( int stacks, double value, timespan_t duration ) override
   {
     rogue_t* rogue = debug_cast< rogue_t* >( source );
-    if ( ! rogue -> poisoned_enemy( player ) )
-      rogue -> poisoned_enemies++;
+    if ( !rogue->is_target_poisoned( player ) )
+      rogue->poisoned_enemies++;
 
     buff_t::execute( stacks, value, duration );
   }
@@ -4719,8 +4720,8 @@ struct rogue_poison_buff_t : public buff_t
     buff_t::expire_override( expiration_stacks, remaining_duration );
 
     rogue_t* rogue = debug_cast< rogue_t* >( source );
-    if ( ! rogue -> poisoned_enemy( player ) )
-      rogue -> poisoned_enemies--;
+    if ( !rogue->is_target_poisoned( player ) )
+      rogue->poisoned_enemies--;
   }
 };
 
@@ -4857,6 +4858,7 @@ struct roll_the_bones_t : public buff_t
 {
   rogue_t* rogue;
   std::array<buff_t*, 6> buffs;
+  std::array<proc_t*, 6> procs;
 
   roll_the_bones_t( rogue_t* r ) :
     buff_t( r, "roll_the_bones", r -> spec.roll_the_bones ),
@@ -4865,26 +4867,39 @@ struct roll_the_bones_t : public buff_t
     set_period( timespan_t::zero() ); // Disable ticking
     set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
 
-    buffs[ 0 ] = rogue -> buffs.broadside;
-    buffs[ 1 ] = rogue -> buffs.buried_treasure;
-    buffs[ 2 ] = rogue -> buffs.grand_melee;
-    buffs[ 3 ] = rogue -> buffs.ruthless_precision;
-    buffs[ 4 ] = rogue -> buffs.skull_and_crossbones;
-    buffs[ 5 ] = rogue -> buffs.true_bearing;
+    buffs = {
+      rogue->buffs.broadside,
+      rogue->buffs.buried_treasure,
+      rogue->buffs.grand_melee,
+      rogue->buffs.ruthless_precision,
+      rogue->buffs.skull_and_crossbones,
+      rogue->buffs.true_bearing
+    };
+
+  }
+
+  void set_procs()
+  {
+    procs = {
+      rogue->procs.roll_the_bones_1,
+      rogue->procs.roll_the_bones_2,
+      rogue->procs.roll_the_bones_3,
+      rogue->procs.roll_the_bones_4,
+      rogue->procs.roll_the_bones_5,
+      rogue->procs.roll_the_bones_6
+    };
   }
 
   void expire_secondary_buffs()
   {
-    rogue -> buffs.broadside -> expire();
-    rogue -> buffs.buried_treasure -> expire();
-    rogue -> buffs.grand_melee -> expire();
-    rogue -> buffs.ruthless_precision -> expire();
-    rogue -> buffs.skull_and_crossbones -> expire();
-    rogue -> buffs.true_bearing -> expire();
+    for ( auto buff : buffs )
+    {
+      buff->expire();
+    }
     rogue -> buffs.paradise_lost -> expire();
   }
 
-  std::vector<buff_t*> random_roll(bool loaded)
+  std::vector<buff_t*> random_roll( bool loaded_dice )
   {
     std::vector<buff_t*> rolled;
 
@@ -4903,12 +4918,12 @@ struct roll_the_bones_t : public buff_t
 
     if ( ! rogue -> fixed_rtb_odds.empty() )
     {
-      std::vector<double> current_odds = rogue -> fixed_rtb_odds;
-      if (loaded)
+      std::vector<double> current_odds = rogue->fixed_rtb_odds;
+      if ( loaded_dice )
       {
         // At some point Loaded Dice were apparently changed to just convert 1 buffs straight into two buffs. (2020-03-09)
-        current_odds[1] += current_odds[0];
-        current_odds[0] = 0.0;
+        current_odds[ 1 ] += current_odds[ 0 ];
+        current_odds[ 0 ] = 0.0;
       }
 
       double odd_sum = 0.0;
@@ -4945,7 +4960,7 @@ struct roll_the_bones_t : public buff_t
   {
     std::vector<buff_t*> rolled;
     range::for_each( rogue -> fixed_rtb, [this, &rolled]( size_t idx )
-    { rolled.push_back( buffs[ idx ] ); } );
+      { rolled.push_back( buffs[ idx ] ); } );
     return rolled;
   }
 
@@ -4961,9 +4976,9 @@ struct roll_the_bones_t : public buff_t
       rolled = fixed_roll();
     }
 
-    for ( size_t i = 0; i < rolled.size(); ++i )
+    for ( auto buff : rolled )
     {
-      rolled[ i ] -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, duration );
+      buff->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, duration );
     }
 
     return as<unsigned>( rolled.size() );
@@ -4975,45 +4990,20 @@ struct roll_the_bones_t : public buff_t
 
     expire_secondary_buffs();
 
-    switch ( roll_the_bones( remains() ) )
-    {
-      case 1:
-        rogue -> procs.roll_the_bones_1 -> occur();
-        if ( rogue -> azerite.paradise_lost.ok() )
-          rogue -> buffs.paradise_lost -> trigger( 1, buff_t::DEFAULT_VALUE(), (-1.0), remains() );
-        break;
-      case 2:
-        rogue -> procs.roll_the_bones_2 -> occur();
-        break;
-      case 3:
-        rogue -> procs.roll_the_bones_3 -> occur();
-        break;
-      case 4:
-        rogue -> procs.roll_the_bones_4 -> occur();
-        break;
-      case 5:
-        rogue -> procs.roll_the_bones_5 -> occur();
-        break;
-      case 6:
-        rogue -> procs.roll_the_bones_6 -> occur();
-        break;
-      default:
-        assert( 0 );
-    }
+    const timespan_t roll_duration = remains();
+    const int buffs_rolled = roll_the_bones( roll_duration );
 
-    if ( rogue -> buffs.loaded_dice -> check() )
-        rogue -> buffs.loaded_dice -> expire();
+    procs[ buffs_rolled - 1 ]->occur();
+    rogue->buffs.loaded_dice->expire();
+
+    if ( buffs_rolled == 1 && rogue->azerite.paradise_lost.ok() )
+    {
+      rogue->buffs.paradise_lost->trigger( 1, buff_t::DEFAULT_VALUE(), ( -1.0 ), roll_duration );
+    }
   }
 };
 
 } // end namespace buffs
-
-inline void actions::marked_for_death_t::impact( action_state_t* state )
-{
-  rogue_spell_t::impact( state );
-
-  td( state -> target ) -> debuffs.marked_for_death -> trigger();
-}
 
 // ==========================================================================
 // Rogue Triggers
@@ -5152,16 +5142,14 @@ void actions::rogue_action_t<Base>::trigger_poison_bomb( const action_state_t* s
   const actions::rogue_action_state_t* s = cast_state( state );
   if ( p()->rng().roll( p()->talent.poison_bomb->effectN( 1 ).percent() / 10 * s->cp ) )
   {
-    make_event<ground_aoe_event_t>( *p()->sim, p(),
-                                    ground_aoe_params_t()
-                                        .target( state->target )
-                                        .x( state->target->x_position )
-                                        .y( state->target->y_position )
-                                        .pulse_time( p()->spell.poison_bomb_driver->duration() /
-                                                     p()->talent.poison_bomb->effectN( 2 ).base_value() )
-                                        .duration( p()->spell.poison_bomb_driver->duration() )
-                                        .start_time( p()->sim->current_time() )
-                                        .action( p()->poison_bomb ) );
+    make_event<ground_aoe_event_t>( *p()->sim, p(), ground_aoe_params_t()
+      .target( state->target )
+      .x( state->target->x_position )
+      .y( state->target->y_position )
+      .pulse_time( p()->spell.poison_bomb_driver->duration() / p()->talent.poison_bomb->effectN( 2 ).base_value() )
+      .duration( p()->spell.poison_bomb_driver->duration() )
+      .start_time( p()->sim->current_time() )
+      .action( p()->poison_bomb ) );
   }
 }
 
@@ -5237,7 +5225,7 @@ void actions::rogue_action_t<Base>::trigger_blade_flurry( const action_state_t* 
   const double target_da_multiplier = ( 1.0 / state->target_da_multiplier );
 
   // Note, unmitigated damage
-  double damage                         = state->result_total * multiplier * target_da_multiplier;
+  double damage = state->result_total * multiplier * target_da_multiplier;
   p()->active_blade_flurry->base_dd_min = damage;
   p()->active_blade_flurry->base_dd_max = damage;
   p()->active_blade_flurry->set_target( state->target );
@@ -5493,7 +5481,7 @@ void actions::rogue_action_t<Base>::trigger_shadow_blades_attack( action_state_t
   if ( !p()->buffs.shadow_blades->check() || state->result_total <= 0 || !ab::result_is_hit( state->result ) || !affected_by.shadow_blades )
     return;
 
-  double amount                          = state->result_amount * p()->buffs.shadow_blades->check_value();
+  double amount = state->result_amount * p()->buffs.shadow_blades->check_value();
   p()->shadow_blades_attack->base_dd_min = amount;
   p()->shadow_blades_attack->base_dd_max = amount;
   p()->shadow_blades_attack->set_target( state->target );
@@ -5528,7 +5516,6 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
   dots( dots_t() ),
   debuffs( debuffs_t() )
 {
-
   dots.deadly_poison      = target -> get_dot( "deadly_poison_dot", source );
   dots.garrote            = target -> get_dot( "garrote", source );
   dots.internal_bleeding  = target -> get_dot( "internal_bleeding", source );
@@ -6769,17 +6756,18 @@ void rogue_t::init_procs()
 {
   player_t::init_procs();
 
-  procs.seal_fate                    = get_proc( "Seal Fate"                    );
-  procs.weaponmaster                 = get_proc( "Weaponmaster"                 );
+  procs.seal_fate           = get_proc( "Seal Fate"                    );
+  procs.weaponmaster        = get_proc( "Weaponmaster"                 );
 
-  procs.roll_the_bones_1             = get_proc( "Roll the Bones: 1 buff"       );
-  procs.roll_the_bones_2             = get_proc( "Roll the Bones: 2 buffs"      );
-  procs.roll_the_bones_3             = get_proc( "Roll the Bones: 3 buffs"      );
-  procs.roll_the_bones_4             = get_proc( "Roll the Bones: 4 buffs"      );
-  procs.roll_the_bones_5             = get_proc( "Roll the Bones: 5 buffs"      );
-  procs.roll_the_bones_6             = get_proc( "Roll the Bones: 6 buffs"      );
+  procs.roll_the_bones_1    = get_proc( "Roll the Bones: 1 buff"       );
+  procs.roll_the_bones_2    = get_proc( "Roll the Bones: 2 buffs"      );
+  procs.roll_the_bones_3    = get_proc( "Roll the Bones: 3 buffs"      );
+  procs.roll_the_bones_4    = get_proc( "Roll the Bones: 4 buffs"      );
+  procs.roll_the_bones_5    = get_proc( "Roll the Bones: 5 buffs"      );
+  procs.roll_the_bones_6    = get_proc( "Roll the Bones: 6 buffs"      );
+  static_cast<buffs::roll_the_bones_t*>( buffs.roll_the_bones )->set_procs();
 
-  procs.deepening_shadows            = get_proc( "Deepening Shadows"            );
+  procs.deepening_shadows   = get_proc( "Deepening Shadows"            );
 }
 
 // rogue_t::init_scaling ====================================================
@@ -7336,6 +7324,28 @@ void rogue_t::activate()
   player_t::activate();
 
   sim->target_non_sleeping_list.register_callback( restealth_callback_t( this ) );
+}
+
+// rogue_t::is_target_poisoned ==============================================
+// Due to how our DOT system functions, at the time when last_tick() is called
+// for Deadly Poison, is_ticking() for the dot object will still return true.
+// This breaks the is_ticking() check below, creating an inconsistent state in
+// the sim, if Deadly Poison was the only poison up on the target. As a
+// workaround, deliver the "Deadly Poison fade event" as an extra parameter.
+bool rogue_t::is_target_poisoned( player_t* target, bool deadly_fade ) const
+{
+  const rogue_td_t* td = get_target_data( target );
+
+  if ( !deadly_fade && td->dots.deadly_poison->is_ticking() )
+    return true;
+
+  if ( td->debuffs.wound_poison->check() )
+    return true;
+
+  if ( td->debuffs.crippling_poison->check() )
+    return true;
+
+  return false;
 }
 
 // rogue_t::break_stealth ===================================================
