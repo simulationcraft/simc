@@ -60,6 +60,7 @@ enum item_bonus_type
   ITEM_BONUS_SET_ILEVEL= 14,
   ITEM_BONUS_ADD_RANK  = 17, // Add artifact power rank to a specific trait
   ITEM_BONUS_ADD_ITEM_EFFECT = 23,
+  ITEM_BONUS_MOD_ITEM_STAT = 25, // Modify item stat to type
 };
 
 enum proc_types
@@ -471,8 +472,8 @@ enum item_mod_type {
   ITEM_MOD_CRIT_SPELL_RATING        = 21,
   ITEM_MOD_CORRUPTION               = 22,
   ITEM_MOD_CORRUPTION_RESISTANCE    = 23, // TODO: Guess
-  ITEM_MOD_UNSUSED                  = 24,
-  ITEM_MOD_CRIT_TAKEN_MELEE_RATING  = 25,
+  ITEM_MOD_BONUS_STAT_1             = 24,
+  ITEM_MOD_BONUS_STAT_2             = 25,
   ITEM_MOD_CRIT_TAKEN_RANGED_RATING = 26,
   ITEM_MOD_CRIT_TAKEN_SPELL_RATING  = 27,
   ITEM_MOD_HASTE_MELEE_RATING       = 28,

@@ -261,7 +261,12 @@ std::string item_t::item_stats_str() const
     if ( v > 0 )
       s << "+";
 
-    s << v << " " << util::stat_type_abbrev( stat ) << ", ";
+    s << v << " " << util::stat_type_abbrev( stat );
+    if ( stat == STAT_NONE )
+    {
+      s << "(" << parsed.data.stat_type_e[ i ] << ")";
+    }
+    s << ", ";
   }
 
   std::string str = s.str();

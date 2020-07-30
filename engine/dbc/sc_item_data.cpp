@@ -324,6 +324,34 @@ bool item_database::apply_item_bonus( item_t& item, const item_bonus_entry_t& en
           index );
       break;
     }
+    case ITEM_BONUS_MOD_ITEM_STAT:
+    {
+      if ( entry.value_1 == 0 )
+      {
+        return true;
+      }
+
+      auto stat_type = util::translate_item_mod( entry.value_1 );
+      if ( stat_type == STAT_NONE )
+      {
+        item.player->sim->error( "Player {} item '{}' unknown modified stat type {}, ignoring",
+            item.player->name(), item.name(), entry.value_1 );
+        return true;
+      }
+
+      for ( size_t i = 0, end = range::size( item.parsed.data.stat_type_e ); i < end; i++ )
+      {
+        if ( item.parsed.data.stat_type_e[ i ] == ITEM_MOD_BONUS_STAT_1 ||
+             item.parsed.data.stat_type_e[ i ] == ITEM_MOD_BONUS_STAT_2 )
+        {
+          item.player->sim->print_debug( "Player {} item '{}' modifying stat type to '{}' (index={})",
+              item.player->name(), item.name(), util::stat_type_abbrev( stat_type ), i );
+          item.parsed.data.stat_type_e[ i ] = entry.value_1;
+          break;
+        }
+      }
+      break;
+    }
     default:
       break;
   }
@@ -1218,6 +1246,37 @@ static std::vector< std::tuple< item_mod_type, double, double > > get_bonus_id_s
   return data;
 }
 
+static std::string get_bonus_mod_stat( util::span<const item_bonus_entry_t> entries )
+{
+  fmt::memory_buffer b;
+
+  for ( size_t i = 0; i < entries.size(); ++i )
+  {
+    if ( entries[ i ].type != ITEM_MOD_BONUS_STAT_1 &&
+         entries[ i ].type != ITEM_MOD_BONUS_STAT_2 )
+    {
+      continue;
+    }
+
+    if ( entries[ i ].value_1 == 0 )
+    {
+      continue;
+    }
+
+    if ( b.size() > 0 )
+    {
+      fmt::format_to( b, ", " );
+    }
+
+    fmt::format_to( b, "{} ({})",
+        util::stat_type_abbrev( util::translate_item_mod( entries[ i ].value_1 ) ),
+        entries[ i ].value_2 );
+
+  }
+
+  return fmt::to_string( b );
+}
+
 std::string dbc::bonus_ids_str( const dbc_t& dbc )
 {
   std::vector<unsigned> bonus_ids;
@@ -1235,7 +1294,7 @@ std::string dbc::bonus_ids_str( const dbc_t& dbc )
          e.type != ITEM_BONUS_SOCKET && e.type != ITEM_BONUS_SCALING &&
          e.type != ITEM_BONUS_SCALING_2 && e.type != ITEM_BONUS_SET_ILEVEL &&
          e.type != ITEM_BONUS_ADD_RANK && e.type != ITEM_BONUS_QUALITY &&
-         e.type != ITEM_BONUS_ADD_ITEM_EFFECT )
+         e.type != ITEM_BONUS_ADD_ITEM_EFFECT && e.type != ITEM_BONUS_MOD_ITEM_STAT )
     {
       continue;
     }
@@ -1263,6 +1322,7 @@ std::string dbc::bonus_ids_str( const dbc_t& dbc )
     std::pair< std::pair<int, double>, std::pair<int, double> > scaling = get_bonus_id_scaling( dbc, entries );
     auto power_index = get_bonus_power_index( entries );
     std::string item_effects = get_bonus_item_effect( entries, dbc );
+    auto item_mod_stat = get_bonus_mod_stat( entries );
 
     std::vector<std::string> fields;
 
@@ -1332,6 +1392,11 @@ std::string dbc::bonus_ids_str( const dbc_t& dbc )
     if ( !item_effects.empty() )
     {
       fields.emplace_back( fmt::format( "effects={{ {} }}", item_effects ) );
+    }
+
+    if ( !item_mod_stat.empty() )
+    {
+      fields.emplace_back( fmt::format( "mod_to_stat={{ {} }}", item_mod_stat ) );
     }
 
     fmt::format_to( s, "{}\n", fmt::join( fields, ", " ) );
