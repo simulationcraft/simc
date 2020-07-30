@@ -2437,7 +2437,7 @@ struct death_knight_action_t : public Base
     bool razorice;
   } affected_by;
 
-  death_knight_action_t( const std::string& n, death_knight_t* p, const spell_data_t* s = spell_data_t::nil() ) :
+  death_knight_action_t( util::string_view n, death_knight_t* p, const spell_data_t* s = spell_data_t::nil() ) :
     action_base_t( n, p, s ), gain( nullptr ),
     hasted_gcd( false ),
     weapon_req( WEAPON_NONE ),
@@ -2609,7 +2609,7 @@ struct death_knight_melee_attack_t : public death_knight_action_t<melee_attack_t
 
 struct death_knight_spell_t : public death_knight_action_t<spell_t>
 {
-  death_knight_spell_t( const std::string& n, death_knight_t* p,
+  death_knight_spell_t( util::string_view n, death_knight_t* p,
                         const spell_data_t* s = spell_data_t::nil() ) :
     base_t( n, p, s )
   {
@@ -2626,7 +2626,7 @@ struct death_knight_spell_t : public death_knight_action_t<spell_t>
 
 struct death_knight_heal_t : public death_knight_action_t<heal_t>
 {
-  death_knight_heal_t( const std::string& n, death_knight_t* p,
+  death_knight_heal_t( util::string_view n, death_knight_t* p,
                        const spell_data_t* s = spell_data_t::nil() ) :
     base_t( n, p, s )
   { }

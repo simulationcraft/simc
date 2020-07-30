@@ -2338,7 +2338,7 @@ private:
 public:
   using base_t = monk_action_t<Base>;
 
-  monk_action_t( const std::string& n, monk_t* player, const spell_data_t* s = spell_data_t::nil() )
+  monk_action_t( util::string_view n, monk_t* player, const spell_data_t* s = spell_data_t::nil() )
     : ab( n, player, s ), sef_ability( SEF_NONE ), ww_mastery( false ), may_combo_strike( false ), affected_by()
   {
     ab::may_crit = true;
@@ -2765,7 +2765,7 @@ public:
 
 struct monk_spell_t : public monk_action_t<spell_t>
 {
-  monk_spell_t( const std::string& n, monk_t* player, const spell_data_t* s = spell_data_t::nil() )
+  monk_spell_t( util::string_view n, monk_t* player, const spell_data_t* s = spell_data_t::nil() )
     : base_t( n, player, s )
   {
     ap_type = attack_power_type::WEAPON_MAINHAND;
@@ -3157,7 +3157,7 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
   weapon_t* mh;
   weapon_t* oh;
 
-  monk_melee_attack_t( const std::string& n, monk_t* player, const spell_data_t* s = spell_data_t::nil() )
+  monk_melee_attack_t( util::string_view n, monk_t* player, const spell_data_t* s = spell_data_t::nil() )
     : base_t( n, player, s ), mh( nullptr ), oh( nullptr )
   {
     special    = true;

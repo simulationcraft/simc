@@ -41,14 +41,14 @@ namespace residual_action
     typedef residual_periodic_action_t<Base> residual_action_t;
 
     template <typename T>
-    residual_periodic_action_t(const std::string& n, T& p, const spell_data_t* s) :
+    residual_periodic_action_t(util::string_view n, T& p, const spell_data_t* s) :
       ab(n, p, s)
     {
       initialize_();
     }
 
     template <typename T>
-    residual_periodic_action_t(const std::string& n, T* p, const spell_data_t* s) :
+    residual_periodic_action_t(util::string_view n, T* p, const spell_data_t* s) :
       ab(n, p, s)
     {
       initialize_();

@@ -21,7 +21,7 @@ namespace pets {
 }
 
 template <typename Action, typename Actor, typename... Args>
-action_t* get_action( const std::string& name, Actor* actor, Args&&... args )
+action_t* get_action( util::string_view name, Actor* actor, Args&&... args )
 {
   action_t* a = actor->find_action( name );
   if ( !a )
@@ -259,7 +259,7 @@ struct effect_source_t : private noncopyable
   std::array<simple_sample_data_t, N> counts;
   std::array<int, N> iteration_counts;
 
-  effect_source_t( const std::string& name ) :
+  effect_source_t( util::string_view name ) :
     name_str( name ),
     counts(),
     iteration_counts()
@@ -808,7 +808,7 @@ public:
     return cdw;
   }
 
-  shatter_source_t* get_shatter_source( const std::string& name )
+  shatter_source_t* get_shatter_source( util::string_view name )
   {
     for ( auto ss : shatter_source_list )
     {
@@ -844,7 +844,7 @@ namespace pets {
 
 struct mage_pet_t : public pet_t
 {
-  mage_pet_t( sim_t* sim, mage_t* owner, const std::string& pet_name,
+  mage_pet_t( sim_t* sim, mage_t* owner, util::string_view pet_name,
               bool guardian = false, bool dynamic = false ) :
     pet_t( sim, owner, pet_name, guardian, dynamic )
   { }
@@ -914,7 +914,7 @@ struct waterbolt_t : public mage_pet_spell_t
 
 struct freeze_t : public mage_pet_spell_t
 {
-  freeze_t( const std::string& n, water_elemental_pet_t* p ) :
+  freeze_t( util::string_view n, water_elemental_pet_t* p ) :
     mage_pet_spell_t( n, p, p->find_pet_spell( "Freeze" ) )
   {
     background = true;
@@ -2107,7 +2107,7 @@ struct presence_of_mind_t : public arcane_mage_spell_t
 
 struct ignite_t : public residual_action_t
 {
-  ignite_t( const std::string& n, mage_t* p ) :
+  ignite_t( util::string_view n, mage_t* p ) :
     residual_action_t( n, p, p->find_spell( 12654 ) )
   {
     callbacks = true;
@@ -2399,7 +2399,7 @@ struct arcane_intellect_t : public mage_spell_t
 
 struct arcane_missiles_tick_t : public arcane_mage_spell_t
 {
-  arcane_missiles_tick_t( const std::string& n, mage_t* p ) :
+  arcane_missiles_tick_t( util::string_view n, mage_t* p ) :
     arcane_mage_spell_t( n, p, p->find_spell( 7268 ) )
   {
     background = true;
@@ -2837,7 +2837,7 @@ struct conflagration_t : public fire_mage_spell_t
 
 struct conflagration_flare_up_t : public fire_mage_spell_t
 {
-  conflagration_flare_up_t( const std::string& n, mage_t* p ) :
+  conflagration_flare_up_t( util::string_view n, mage_t* p ) :
     fire_mage_spell_t( n, p, p->find_spell( 205345 ) )
   {
     background = true;
