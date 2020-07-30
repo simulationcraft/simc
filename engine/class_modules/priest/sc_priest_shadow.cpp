@@ -89,9 +89,8 @@ public:
 
     spell_power_mod.direct *= 1.0 + player.talents.fortress_of_the_mind->effectN( 4 ).percent();
 
+    // Reduces CD of Mind Blast but not SW:V
     apply_affecting_aura(player.find_rank_spell( "Mind Blast", "Rank 2", PRIEST_SHADOW ) );
-
-    // Rank 2 Discipline not implemented
   }
 
   void init() override
@@ -853,6 +852,43 @@ struct vampiric_touch_t final : public priest_spell_t
     if ( d->state->result_amount > 0 && priest().azerite.thought_harvester.enabled() )
     {
       priest().buffs.harvested_thoughts->trigger();
+    }
+  }
+};
+
+struct devouring_plague_t final : public priest_spell_t
+{
+  double insanity_cost;
+
+  devouring_plague_t( priest_t& p, util::string_view options_str )
+    : priest_spell_t( "devouring_plague", p, p.find_class_spell( "Devouring Plague" ) ),
+      insanity_cost( data().cost( POWER_INSANITY ) / 100.0 )
+  {
+    parse_options( options_str );
+    may_crit                        = true;
+    tick_zero                       = false;
+    base_costs[ RESOURCE_INSANITY ] = 0; // custom insanity handling
+    tick_may_crit                   = false;
+  }
+
+  void consume_resource() override
+  {
+    priest_spell_t::consume_resource();
+
+    priest().resource_loss( RESOURCE_INSANITY, insanity_cost, priest().gains.insanity_lost_devouring_plague, execute_state->action );
+
+    priest().insanity.adjust_end_event();
+  }
+
+  bool ready() override
+  {
+    if ( priest().resources.current[ RESOURCE_INSANITY ] >= insanity_cost )
+    {
+      return priest_spell_t::ready();
+    }
+    else
+    {
+      return false;
     }
   }
 };
@@ -1983,6 +2019,10 @@ action_t* priest_t::create_action_shadow( util::string_view name, util::string_v
   {
     return new dark_ascension_t( *this, options_str );
   }
+  if ( name == "devouring_plague" )
+  {
+    return new devouring_plague_t( *this, options_str );
+  }
 
   return nullptr;
 }
@@ -2094,6 +2134,7 @@ void priest_t::generate_apl_shadow()
       "buff.chorus_of_insanity.stack>20)|azerite.chorus_of_insanity.rank=0",
       "Use these cooldowns in between your 1st and 2nd Void Bolt in your 2nd Voidform when you have Chorus of Insanity "
       "active" );
+  cds->add_action( this, "Power Infusion", "if=buff.voidform.up" );
   cds->add_action( "use_items", "Default fallback for usable items: Use on cooldown." );
 
   // Crit CDs
@@ -2106,6 +2147,7 @@ void priest_t::generate_apl_shadow()
   single->add_talent( this, "Dark Ascension", "if=buff.voidform.down" );
   single->add_action( this, "Void Bolt" );
   single->add_action( "call_action_list,name=cds" );
+  single->add_action( this, "Devouring Plague", "if=refreshable&buff.voidform.up");
   single->add_action(
       this, "Mind Sear",
       "if=buff.harvested_thoughts.up&cooldown.void_bolt.remains>=1.5&"
@@ -2117,8 +2159,8 @@ void priest_t::generate_apl_shadow()
   single->add_talent( this, "Surrender to Madness", "if=buff.voidform.stack>10+(10*buff.bloodlust.up)" );
   single->add_talent( this, "Dark Void", "if=raid_event.adds.in>10",
                       "Use Dark Void on CD unless adds are incoming in 10s or less." );
-  single->add_talent( this, "Mindbender", "if=talent.mindbender.enabled|(buff.voidform.stack>18|target.time_to_die<15)",
-                      "Use Mindbender at 19 or more stacks, or if the target will die in less than 15s." );
+  single->add_talent( this, "Mindbender", "if=(talent.mindbender.enabled&buff.voidform.up)|(buff.voidform.stack>18|target.time_to_die<15)",
+                      "Use Shadowfiend at 19 or more stacks, or if the target will die in less than 15s. If using Minbender use on CD in Voidform" );
   single->add_action( this, "Shadow Word: Death" );
   single->add_talent( this, "Shadow Crash", "if=raid_event.adds.in>5&raid_event.adds.duration<20",
                       "Use Shadow Crash on CD unless there are adds incoming." );
@@ -2176,6 +2218,7 @@ void priest_t::generate_apl_shadow()
                       ",if=(talent.misery.enabled&target.time_to_die>"
                       "((1.0+2.0*spell_targets.mind_sear)*variable.vt_mis_trait_ranks_check*"
                       "(variable.vt_mis_sd_check*spell_targets.mind_sear)))" );
+  cleave->add_action( this, "Devouring Plague", "if=refreshable&buff.voidform.up");
   cleave->add_talent( this, "Void Torrent", "if=buff.voidform.up" );
   cleave->add_action( this, "Mind Sear",
                       "target_if=spell_targets.mind_sear>1,"
