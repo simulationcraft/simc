@@ -285,6 +285,7 @@ public:
   std::string beta_covenant;
   double kindred_empowerment_ratio;
   int convoke_the_spirits_heals;
+  double convoke_the_spirits_ultimate;
 
   struct active_actions_t
   {
@@ -811,6 +812,7 @@ public:
     beta_covenant( "none" ),
     kindred_empowerment_ratio( 1.0 ),
     convoke_the_spirits_heals( 2 ),
+    convoke_the_spirits_ultimate( 0.01 ),
     active( active_actions_t() ),
     force_of_nature(),
     caster_form_weapon(),
@@ -1692,7 +1694,6 @@ public:
     ab::tick_may_crit = true;
 
     gore_chance += p()->sets->set( DRUID_GUARDIAN, T19, B2 )->effectN( 1 ).percent();
-
   }
 
   druid_t* p()
@@ -7294,30 +7295,36 @@ struct kindred_spirits_t : public druid_spell_t
 
 struct convoke_the_spirits_t : public druid_spell_t
 {
+  shuffled_rng_t* deck;
+  action_t* conv_cast;
+  player_t* conv_tar;
+
+  // Balance
   action_t* conv_fm;
   action_t* conv_ss;
   action_t* conv_wr;
   action_t* conv_sf;
   action_t* conv_mf;
-
-  shuffled_rng_t* deck;
-
-  action_t* conv_cast;
-  player_t* conv_tar;
-
   bool mf_cast;
-
   int mf_count;
   int ss_count;
   int wr_count;
 
+  // Feral
+  // Guardian
+  // Restoration
+
   convoke_the_spirits_t( druid_t* player, const std::string& options_str )
-    : druid_spell_t( "convoke_the_spirits", player, player->covenant.convoke_the_spirits, options_str )
+    : druid_spell_t( "convoke_the_spirits", player, player->covenant.convoke_the_spirits, options_str ),
+      conv_cast( nullptr ),
+      conv_tar( nullptr )
   {
     parse_options( options_str );
 
     harmful = channeled = true;
+    deck = player->get_shuffled_rng( "convoke_the_spirits", player->convoke_the_spirits_heals, 16 );
 
+    // Balance
     conv_fm = player->find_action( "full_moon_convoke" );
     if ( !conv_fm )
       conv_fm = new full_moon_t( player, options_str, true );
@@ -7344,7 +7351,9 @@ struct convoke_the_spirits_t : public druid_spell_t
     add_child( conv_sf );
     add_child( conv_mf );
 
-    deck = player->get_shuffled_rng( "convoke_the_spirits", player->convoke_the_spirits_heals, 16 );
+    // Feral
+    // Guardian
+    // Restoration
   }
 
   double composite_haste() const override
@@ -7363,13 +7372,17 @@ struct convoke_the_spirits_t : public druid_spell_t
   void execute() override
   {
     druid_spell_t::execute();
-
     deck->reset();
-    mf_cast = false;
 
+    // Balance
+    mf_cast = false;
     mf_count = 0;
     ss_count = 0;
     wr_count = 0;
+
+    // Feral
+    // Guardian
+    // Restoration
   }
 
   void tick( dot_t* d ) override
@@ -7385,61 +7398,74 @@ struct convoke_the_spirits_t : public druid_spell_t
 
     conv_tar = tl[ static_cast<size_t>( rng().range( 0, as<double>( tl.size() ) ) ) ];
 
-    if ( rng().roll( 0.01 ) )  // assume full moon overrides spell selection logic
+    if ( rng().roll( p()->convoke_the_spirits_ultimate ) )  // assume 1% 'ultimate' overrides spell selection logic
     {
-      conv_cast = conv_fm;
-    }
-    else if ( !p()->buff.starfall->check() )  // always starfall if it isn't up
-    {
-      conv_cast = conv_sf;
-    }
-    else  // randomly decide on damage spell
-    {
-      std::vector<player_t*> mf_tl;  // separate list for mf targets without a dot;
-      for ( auto i : tl )
+      switch ( p()->specialization() )
       {
-        if ( !td( i )->dots.moonfire->is_ticking() )
-          mf_tl.push_back( i );
+        case DRUID_BALANCE: conv_cast = conv_fm; break;
+        case DRUID_FERAL:
+        case DRUID_GUARDIAN:
+        case DRUID_RESTORATION:
+        default: return;
       }
-
-      player_t* mf_tar = nullptr;
-      if ( mf_tl.size() )
-        mf_tar = mf_tl[ static_cast<size_t>( rng().range( 0, as<double>( mf_tl.size() ) ) ) ];
-
-      if ( !mf_cast && mf_tar )  // always mf once if at least one eligible target
+    }
+    else if ( p()->buff.moonkin_form->check() )
+    {
+      if ( !p()->buff.starfall->check() )  // always starfall if it isn't up
       {
-        conv_cast = conv_mf;
-        mf_cast = true;
+        conv_cast = conv_sf;
       }
-      else  // try to keep spell count balanced
+      else  // randomly decide on damage spell
       {
-        std::vector<action_t*> dam;
+        std::vector<player_t*> mf_tl;  // separate list for mf targets without a dot;
+        for ( auto i : tl )
+        {
+          if ( !td( i )->dots.moonfire->is_ticking() )
+            mf_tl.push_back( i );
+        }
 
-        if ( mf_tar && mf_count <= ss_count && mf_count <= wr_count )  // balance mf against ss & wr
-          dam.push_back( conv_mf );
+        player_t* mf_tar = nullptr;
+        if ( mf_tl.size() )
+          mf_tar = mf_tl[ static_cast<size_t>( rng().range( 0, as<double>( mf_tl.size() ) ) ) ];
 
-        if ( ss_count <= wr_count )  // balance ss only against wr
-          dam.push_back( conv_ss );
+        if ( !mf_cast && mf_tar )  // always mf once if at least one eligible target
+        {
+          conv_cast = conv_mf;
+          mf_cast   = true;
+        }
+        else  // try to keep spell count balanced
+        {
+          std::vector<action_t*> dam;
 
-        if ( wr_count <= ss_count )  // balance wr only against ss
-          dam.push_back( conv_wr );
+          if ( mf_tar && mf_count <= ss_count && mf_count <= wr_count )  // balance mf against ss & wr
+            dam.push_back( conv_mf );
 
-        if ( !dam.size() )  // sanity check
-          return;
+          if ( ss_count <= wr_count )  // balance ss only against wr
+            dam.push_back( conv_ss );
 
-        conv_cast = dam[ static_cast<size_t>( rng().range( 0, as<double>( dam.size() ) ) ) ];
+          if ( wr_count <= ss_count )  // balance wr only against ss
+            dam.push_back( conv_wr );
+
+          if ( !dam.size() )  // sanity check
+            return;
+
+          conv_cast = dam[ static_cast<size_t>( rng().range( 0, as<double>( dam.size() ) ) ) ];
+
+          if ( conv_cast == conv_mf )
+            mf_count++;
+          else if ( conv_cast == conv_ss )
+            ss_count++;
+          else if ( conv_cast == conv_wr )
+            wr_count++;
+        }
 
         if ( conv_cast == conv_mf )
-          mf_count++;
-        else if ( conv_cast == conv_ss )
-          ss_count++;
-        else if ( conv_cast == conv_wr )
-          wr_count++;
+          conv_tar = mf_tar;
       }
-
-      if ( conv_cast == conv_mf )
-        conv_tar = mf_tar;
     }
+
+    if ( !conv_cast || !conv_tar )
+      return;
 
     conv_cast->set_target( conv_tar );
     conv_cast->execute();
@@ -10291,6 +10317,7 @@ void druid_t::create_options()
   add_option( opt_string( "beta_covenant", beta_covenant ) );
   add_option( opt_float( "kindred_empowerment_ratio", kindred_empowerment_ratio ) );
   add_option( opt_int( "convoke_the_spirits_heals", convoke_the_spirits_heals ) );
+  add_option( opt_float( "convoke_the_spirits_ultimate", convoke_the_spirits_ultimate ) );
 }
 
 // druid_t::create_profile ==================================================
@@ -10830,6 +10857,7 @@ void druid_t::copy_from( player_t* source )
   beta_covenant = p->beta_covenant;
   kindred_empowerment_ratio = p->kindred_empowerment_ratio;
   convoke_the_spirits_heals = p->convoke_the_spirits_heals;
+  convoke_the_spirits_ultimate = p->convoke_the_spirits_ultimate;
   thorns_attack_period = p->thorns_attack_period;
   thorns_hit_chance = p->thorns_hit_chance;
 }
