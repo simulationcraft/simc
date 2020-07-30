@@ -164,7 +164,7 @@ public:
   }
 };
 
-template <template <typename> class F>
+template <template <typename> class F, typename T = double>
 class expr_binary_t : public binary_base_t
 {
 public:
@@ -175,7 +175,7 @@ public:
 
   double evaluate() override  // override
   {
-    return F<double>()( left->eval(), right->eval() );
+    return F<T>()( left->eval(), right->eval() );
   }
 };
 
@@ -199,6 +199,8 @@ std::unique_ptr<expr_t> select_binary( util::string_view name, token_e op, std::
       return std::make_unique<expr_binary_t<std::multiplies>>( name, op, std::move(left), std::move(right) );
     case TOK_DIV:
       return std::make_unique<expr_binary_t<std::divides>>( name, op, std::move(left), std::move(right) );
+    case TOK_MOD:
+      return std::make_unique<expr_binary_t<std::modulus, int64_t>>( name, op, std::move(left), std::move(right) );
 
     case TOK_MAX:
       return std::make_unique<expr_binary_t<binary::max>>(name, op, std::move(left), std::move(right));
@@ -632,7 +634,7 @@ public:
   }
 };
 
-template <template <typename> class F>
+template <template <typename> class F, typename T = double>
 class expr_analyze_binary_t : public analyze_binary_base_t
 {
 public:
@@ -643,7 +645,7 @@ public:
 
   double evaluate() override  // override
   {
-    result = F<double>()( left->eval(), right->eval() );
+    result = F<T>()( left->eval(), right->eval() );
     return result;
   }
 
@@ -661,7 +663,7 @@ public:
     bool right_constant = right->is_constant( &right_value );
     if ( left_constant && right_constant )
     {
-      result = F<double>()( left_value, right_value );
+      result = F<T>()( left_value, right_value );
       if (EXPRESSION_DEBUG)
       {
         printf("Reduced %*d %s (%s, %s) binary expression to %f\n", spacing,
@@ -686,7 +688,7 @@ public:
         }
         double evaluate() override
         {
-          return F<double>()( left, right->eval() );
+          return F<T>()( left, right->eval() );
         }
       };
       return std::make_unique<left_reduced_t>(
@@ -708,7 +710,7 @@ public:
         }
         double evaluate() override
         {
-          return F<double>()( left->eval(), right );
+          return F<T>()( left->eval(), right );
         }
       };
       return std::make_unique<right_reduced_t>(
@@ -739,6 +741,8 @@ std::unique_ptr<expr_t> select_analyze_binary( util::string_view name, token_e o
       return std::make_unique<expr_analyze_binary_t<std::multiplies>>( name, op, std::move(left), std::move(right) );
     case TOK_DIV:
       return std::make_unique<expr_analyze_binary_t<std::divides>>( name, op, std::move(left), std::move(right) );
+    case TOK_MOD:
+      return std::make_unique<expr_analyze_binary_t<std::modulus, int64_t>>( name, op, std::move(left), std::move(right) );
 
     case TOK_MAX:
       return std::make_unique<expr_analyze_binary_t<binary::max>>( name, op, std::move(left), std::move(right) );
@@ -784,6 +788,7 @@ int precedence( token_e expr_token_type )
 
     case TOK_MULT:
     case TOK_DIV:
+    case TOK_MOD:
       return 7;
 
     case TOK_ADD:
@@ -845,6 +850,7 @@ bool is_binary( token_e expr_token_type )
   {
     case TOK_MULT:
     case TOK_DIV:
+    case TOK_MOD:
     case TOK_ADD:
     case TOK_SUB:
     case TOK_MAX:
@@ -893,7 +899,15 @@ token_e next_token( action_t* action, util::string_view expr_str,
   if ( c == '*' )
     return TOK_MULT;
   if ( c == '%' )
+  {
+    if ( expr_str[ current_index ] == '%' )
+    {
+      current_index++;
+      token_str += "%";
+      return TOK_MOD;
+    }
     return TOK_DIV;
+  }
   if ( c == '&' )
   {
     if ( expr_str[ current_index ] == '&' )
