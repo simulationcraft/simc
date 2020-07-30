@@ -126,7 +126,7 @@ public:
     buff_t* marked_for_death;
     buff_t* ghostly_strike;
     buff_t* rupture; // Hidden proxy for handling Scent of Blood azerite trait
-    buff_t* toxic_blade;
+    buff_t* shiv;
     buff_t* find_weakness;
     buff_t* prey_on_the_weak;
   } debuffs;
@@ -301,7 +301,7 @@ public:
     cooldown_t* marked_for_death;
     cooldown_t* weaponmaster;
     cooldown_t* vendetta;
-    cooldown_t* toxic_blade;
+    cooldown_t* shiv;
     cooldown_t* symbols_of_death;
     cooldown_t* secret_technique;
     cooldown_t* shadow_blades;
@@ -358,6 +358,8 @@ public:
     const spell_data_t* master_assassin;
     const spell_data_t* garrote;
     const spell_data_t* garrote_2;
+    const spell_data_t* shiv_2;
+    const spell_data_t* shiv_2_debuff;
 
     // Outlaw
     const spell_data_t* adrenaline_rush;
@@ -433,7 +435,7 @@ public:
     const spell_data_t* internal_bleeding;
 
     const spell_data_t* venom_rush;
-    const spell_data_t* toxic_blade;
+    //const spell_data_t* toxic_blade;
     const spell_data_t* exsanguinate;
 
     const spell_data_t* poison_bomb;
@@ -588,7 +590,7 @@ public:
     cooldowns.riposte                  = get_cooldown( "riposte"                  );
     cooldowns.weaponmaster             = get_cooldown( "weaponmaster"             );
     cooldowns.vendetta                 = get_cooldown( "vendetta"                 );
-    cooldowns.toxic_blade              = get_cooldown( "toxic_blade"              );
+    cooldowns.shiv                     = get_cooldown( "shiv"                     );
     cooldowns.symbols_of_death         = get_cooldown( "symbols_of_death"         );
     cooldowns.secret_technique         = get_cooldown( "secret_technique"         );
     cooldowns.shadow_blades            = get_cooldown( "shadow_blades"            );
@@ -774,7 +776,7 @@ public:
     bool adrenaline_rush_gcd = false;
     bool broadside_cp = false;
     bool master_assassin = false;
-    bool toxic_blade = false;
+    bool shiv_rank_2 = false;
     bool ruthless_precision = false;
 
     damage_affect_data mastery_executioner;
@@ -818,7 +820,7 @@ public:
     affected_by.alacrity = costs_combo_points;
     affected_by.adrenaline_rush_gcd = ab::data().affected_by( p->spec.adrenaline_rush->effectN( 3 ) );
     affected_by.master_assassin = ab::data().affected_by( p->spec.master_assassin->effectN( 1 ) );
-    affected_by.toxic_blade = ab::data().affected_by( p->talent.toxic_blade->effectN( 4 ).trigger()->effectN( 1 ) );
+    affected_by.shiv_rank_2 = ab::data().affected_by( p->spec.shiv_2_debuff->effectN( 1 ) );
     affected_by.broadside_cp = ab::data().affected_by( p->spec.broadside->effectN( 1 ) ) ||
       ab::data().affected_by( p->spec.broadside->effectN( 2 ) ) ||
       ab::data().affected_by( p->spec.broadside->effectN( 3 ) );
@@ -1143,9 +1145,9 @@ public:
       m *= 1.0 + td( target )->debuffs.vendetta->value();
     }
 
-    if ( affected_by.toxic_blade )
+    if ( affected_by.shiv_rank_2 )
     {
-      m *= 1.0 + td( target )->debuffs.toxic_blade->value();
+      m *= 1.0 + td( target )->debuffs.shiv->value();
     }
 
     return m;
@@ -3775,12 +3777,12 @@ struct symbols_of_death_t : public rogue_spell_t
   }
 };
 
-// Toxic Blade ==============================================================
+// Shiv =====================================================================
 
-struct toxic_blade_t : public rogue_attack_t
+struct shiv_t : public rogue_attack_t
 {
-  toxic_blade_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "toxic_blade", p, p -> talent.toxic_blade, options_str )
+  shiv_t( rogue_t* p, const std::string& options_str ) :
+    rogue_attack_t( "shiv", p, p->find_class_spell( "Shiv" ), options_str )
   {
   }
 
@@ -3788,9 +3790,9 @@ struct toxic_blade_t : public rogue_attack_t
   {
     rogue_attack_t::impact( s );
 
-    if ( result_is_hit( s -> result ) )
+    if ( p()->spec.shiv_2->ok() && result_is_hit( s->result ) )
     {
-      td( s -> target ) -> debuffs.toxic_blade -> trigger();
+      td( s->target )->debuffs.shiv->trigger();
     }
   }
 };
@@ -5497,21 +5499,21 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
   debuffs.numbing_poison = new buffs::numbing_poison_t( *this );
   debuffs.rupture = new buffs::proxy_rupture_t( *this );
   debuffs.vendetta = new buffs::vendetta_debuff_t( *this );
-  debuffs.toxic_blade = make_buff( *this, "toxic_blade", source -> talent.toxic_blade -> effectN( 4 ).trigger() )
-    -> set_default_value( source -> talent.toxic_blade -> effectN( 4 ).trigger() -> effectN( 1 ).percent() );
-  debuffs.ghostly_strike = make_buff( *this, "ghostly_strike", source -> talent.ghostly_strike )
-    -> set_default_value( source -> talent.ghostly_strike -> effectN( 3 ).percent() );
-  const spell_data_t* fw_debuff = source -> talent.find_weakness -> effectN( 1 ).trigger();
+  debuffs.shiv = make_buff( *this, "shiv", source->spec.shiv_2_debuff )
+    ->set_default_value( source->spec.shiv_2_debuff->effectN( 1 ).percent() );
+  debuffs.ghostly_strike = make_buff( *this, "ghostly_strike", source->talent.ghostly_strike )
+    ->set_default_value( source->talent.ghostly_strike->effectN( 3 ).percent() );
+  const spell_data_t* fw_debuff = source->talent.find_weakness->effectN( 1 ).trigger();
   debuffs.find_weakness = make_buff( *this, "find_weakness", fw_debuff )
-    -> set_default_value( fw_debuff -> effectN( 1 ).percent() );
+    ->set_default_value( fw_debuff->effectN( 1 ).percent() );
   debuffs.prey_on_the_weak = make_buff( *this, "prey_on_the_weak", source->find_spell( 255909 ) )
     ->set_default_value( source->find_spell( 255909 )->effectN( 1 ).percent() );
 
   // Register on-demise callback for assassination to perform Venomous Wounds energy replenish on
   // death.
-  if ( source -> specialization() == ROGUE_ASSASSINATION && source -> spec.venomous_wounds -> ok() )
+  if ( source->specialization() == ROGUE_ASSASSINATION && source->spec.venomous_wounds->ok() )
   {
-    target -> callbacks_on_demise.emplace_back(std::bind( &rogue_t::trigger_venomous_wounds_death, source, std::placeholders::_1 ) );
+    target->callbacks_on_demise.emplace_back( std::bind( &rogue_t::trigger_venomous_wounds_death, source, std::placeholders::_1 ) );
   }
 }
 
@@ -5746,23 +5748,23 @@ void rogue_t::init_action_list()
 
     // Cooldowns
     action_priority_list_t* cds = get_action_priority_list( "cds", "Cooldowns" );
-    cds -> add_action( "use_item,name=azsharas_font_of_power,if=!stealthed.all&master_assassin_remains=0&(cooldown.vendetta.remains<?(cooldown.toxic_blade.remains*equipped.ashvanes_razor_coral))<10+10*equipped.ashvanes_razor_coral&!debuff.vendetta.up&!debuff.toxic_blade.up" );
+    cds -> add_action( "use_item,name=azsharas_font_of_power,if=!stealthed.all&master_assassin_remains=0&(cooldown.vendetta.remains<?(cooldown.shiv.remains*equipped.ashvanes_razor_coral))<10+10*equipped.ashvanes_razor_coral&!debuff.vendetta.up&!debuff.shiv.up" );
     cds -> add_action( "call_action_list,name=essences,if=!stealthed.all&dot.rupture.ticking&master_assassin_remains=0" );
     cds -> add_talent( this, "Marked for Death", "target_if=min:target.time_to_die,if=raid_event.adds.up&(target.time_to_die<combo_points.deficit*1.5|combo_points.deficit>=cp_max_spend)", "If adds are up, snipe the one with lowest TTD. Use when dying faster than CP deficit or without any CP." );
     cds -> add_talent( this, "Marked for Death", "if=raid_event.adds.in>30-raid_event.adds.duration&combo_points.deficit>=cp_max_spend", "If no adds will die within the next 30s, use MfD on boss without any CP." );
     cds -> add_action( "variable,name=vendetta_subterfuge_condition,value=!talent.subterfuge.enabled|!azerite.shrouded_suffocation.enabled|dot.garrote.pmultiplier>1&(spell_targets.fan_of_knives<6|!cooldown.vanish.up)", "Vendetta logical conditionals based on current spec" );
     cds -> add_action( "variable,name=vendetta_nightstalker_condition,value=!talent.nightstalker.enabled|!talent.exsanguinate.enabled|cooldown.exsanguinate.remains<5-2*talent.deeper_stratagem.enabled" );
-    cds -> add_action( "variable,name=variable,name=vendetta_font_condition,value=!equipped.azsharas_font_of_power|azerite.shrouded_suffocation.enabled|debuff.razor_coral_debuff.down|trinket.ashvanes_razor_coral.cooldown.remains<10&(cooldown.toxic_blade.remains<1|debuff.toxic_blade.up)" );
+    cds -> add_action( "variable,name=variable,name=vendetta_font_condition,value=!equipped.azsharas_font_of_power|azerite.shrouded_suffocation.enabled|debuff.razor_coral_debuff.down|trinket.ashvanes_razor_coral.cooldown.remains<10&(cooldown.shiv.remains<1|debuff.shiv.up)" );
     cds -> add_action( this, "Vendetta", "if=!stealthed.rogue&dot.rupture.ticking&!debuff.vendetta.up&variable.vendetta_subterfuge_condition&variable.vendetta_nightstalker_condition&variable.vendetta_font_condition" );
     cds -> add_action( this, "Vanish", "if=talent.exsanguinate.enabled&talent.nightstalker.enabled&combo_points>=cp_max_spend&cooldown.exsanguinate.remains<1", "Vanish with Exsg + Nightstalker: Maximum CP and Exsg ready for next GCD" );
     cds -> add_action( this, "Vanish", "if=talent.nightstalker.enabled&!talent.exsanguinate.enabled&combo_points>=cp_max_spend&(debuff.vendetta.up|essence.vision_of_perfection.enabled)", "Vanish with Nightstalker + No Exsg: Maximum CP and Vendetta up (unless using VoP)" );
     cds -> add_action( "variable,name=ss_vanish_condition,value=azerite.shrouded_suffocation.enabled&(non_ss_buffed_targets>=1|spell_targets.fan_of_knives=3)&(ss_buffed_targets_above_pandemic=0|spell_targets.fan_of_knives>=6)", "See full comment on https://github.com/Ravenholdt-TC/Rogue/wiki/Assassination-APL-Research." );
     cds -> add_action( "pool_resource,for_next=1,extra_amount=45" );
     cds -> add_action( this, "Vanish", "if=talent.subterfuge.enabled&!stealthed.rogue&cooldown.garrote.up&(variable.ss_vanish_condition|!azerite.shrouded_suffocation.enabled&(dot.garrote.refreshable|debuff.vendetta.up&dot.garrote.pmultiplier<=1))&combo_points.deficit>=((1+2*azerite.shrouded_suffocation.enabled)*spell_targets.fan_of_knives)>?4&raid_event.adds.in>12" );
-    //cds -> add_action( this, "Vanish", "if=talent.master_assassin.enabled&!stealthed.all&master_assassin_remains<=0&!dot.rupture.refreshable&dot.garrote.remains>3&(debuff.vendetta.up&(!talent.toxic_blade.enabled|debuff.toxic_blade.up)&(!essence.blood_of_the_enemy.major|debuff.blood_of_the_enemy.up)|essence.vision_of_perfection.enabled)", "Vanish with Master Assasin: No stealth and no active MA buff, Rupture not in refresh range, during Vendetta+TB+BotE (unless using VoP)" );
+    cds -> add_action( this, "Vanish", "if=talent.master_assassin.enabled&!stealthed.all&master_assassin_remains<=0&!dot.rupture.refreshable&dot.garrote.remains>3&(debuff.vendetta.up&debuff.shiv.up&(!essence.blood_of_the_enemy.major|debuff.blood_of_the_enemy.up)|essence.vision_of_perfection.enabled)", "Vanish with Master Assasin: No stealth and no active MA buff, Rupture not in refresh range, during Vendetta+TB+BotE (unless using VoP)" );
     cds -> add_action( "shadowmeld,if=!stealthed.all&azerite.shrouded_suffocation.enabled&dot.garrote.refreshable&dot.garrote.pmultiplier<=1&combo_points.deficit>=1", "Shadowmeld for Shrouded Suffocation" );
     cds -> add_talent( this, "Exsanguinate", "if=!stealthed.rogue&(!dot.garrote.refreshable&dot.rupture.remains>4+4*cp_max_spend|dot.rupture.remains*0.5>target.time_to_die)&target.time_to_die>4", "Exsanguinate when not stealthed and both Rupture and Garrote are up for long enough." );
-    //cds -> add_talent( this, "Toxic Blade", "if=dot.rupture.ticking&(!equipped.azsharas_font_of_power|cooldown.vendetta.remains>10)" );
+    cds -> add_action( this, "Shiv", "if=dot.rupture.ticking&(!equipped.azsharas_font_of_power|cooldown.vendetta.remains>10)" );
 
     // Non-spec stuff with lower prio
     cds -> add_action( potion_action );
@@ -5775,7 +5777,7 @@ void rogue_t::init_action_list()
     cds -> add_action( "use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.down|target.time_to_die<20" );
     cds -> add_action( "use_item,name=ashvanes_razor_coral,if=(!talent.exsanguinate.enabled|!talent.subterfuge.enabled)&debuff.vendetta.remains>10-4*equipped.azsharas_font_of_power" );
     cds -> add_action( "use_item,name=ashvanes_razor_coral,if=(talent.exsanguinate.enabled&talent.subterfuge.enabled)&debuff.vendetta.up&(exsanguinated.garrote|azerite.shrouded_suffocation.enabled&dot.garrote.pmultiplier>1)" );
-    cds -> add_action( "use_item,effect_name=cyclotronic_blast,if=master_assassin_remains=0&!debuff.vendetta.up&!debuff.toxic_blade.up&buff.memory_of_lucid_dreams.down&energy<80&dot.rupture.remains>4" );
+    cds -> add_action( "use_item,effect_name=cyclotronic_blast,if=master_assassin_remains=0&!debuff.vendetta.up&!debuff.shiv.up&buff.memory_of_lucid_dreams.down&energy<80&dot.rupture.remains>4" );
     cds -> add_action( "use_item,name=lurkers_insidious_gift,if=debuff.vendetta.up" );
     cds -> add_action( "use_item,name=lustrous_golden_plumage,if=debuff.vendetta.up" );
     cds -> add_action( "use_item,effect_name=gladiators_medallion,if=debuff.vendetta.up" );
@@ -5785,7 +5787,7 @@ void rogue_t::init_action_list()
     // Azerite Essences
     action_priority_list_t* essences = get_action_priority_list( "essences", "Essences" );
     essences->add_action( "concentrated_flame,if=energy.time_to_max>1&!debuff.vendetta.up&(!dot.concentrated_flame_burn.ticking&!action.concentrated_flame.in_flight|full_recharge_time<gcd.max)" );
-    essences->add_action( "blood_of_the_enemy,if=debuff.vendetta.up&(exsanguinated.garrote|debuff.toxic_blade.up&combo_points.deficit<=1|debuff.vendetta.remains<=10)|target.time_to_die<=10", "Always use Blood with Vendetta up. Hold for Exsanguinate. Use with TB up before a finisher as long as it runs for 10s during Vendetta." );
+    essences->add_action( "blood_of_the_enemy,if=debuff.vendetta.up&(exsanguinated.garrote|debuff.shiv.up&combo_points.deficit<=1|debuff.vendetta.remains<=10)|target.time_to_die<=10", "Always use Blood with Vendetta up. Hold for Exsanguinate. Use with TB up before a finisher as long as it runs for 10s during Vendetta." );
     essences->add_action( "guardian_of_azeroth,if=cooldown.vendetta.remains<3|debuff.vendetta.up|target.time_to_die<30", "Attempt to align Guardian with Vendetta as long as it won't result in losing a full-value cast over the remaining duration of the fight" );
     essences->add_action( "guardian_of_azeroth,if=floor((target.time_to_die-30)%cooldown)>floor((target.time_to_die-30-cooldown.vendetta.remains)%cooldown)" );
     essences->add_action( "focused_azerite_beam,if=spell_targets.fan_of_knives>=2|raid_event.adds.in>60&energy<70" );
@@ -5813,8 +5815,8 @@ void rogue_t::init_action_list()
     // Damage over time abilities
     action_priority_list_t* dot = get_action_priority_list( "dot", "Damage over time abilities" );
     dot -> add_action( "variable,name=skip_cycle_garrote,value=priority_rotation&spell_targets.fan_of_knives>3&(dot.garrote.remains<cooldown.garrote.duration|poisoned_bleeds>5)", "Limit Garrotes on non-primrary targets for the priority rotation if 5+ bleeds are already up" );
-    dot -> add_action( "variable,name=skip_cycle_rupture,value=priority_rotation&spell_targets.fan_of_knives>3&(debuff.toxic_blade.up|(poisoned_bleeds>5&!azerite.scent_of_blood.enabled))", "Limit Ruptures on non-primrary targets for the priority rotation if 5+ bleeds are already up" );
-    dot -> add_action( "variable,name=skip_rupture,value=debuff.vendetta.up&(debuff.toxic_blade.up|master_assassin_remains>0)&dot.rupture.remains>2", "Limit Ruptures if Vendetta+Toxic Blade/Master Assassin is up and we have 2+ seconds left on the Rupture DoT" );
+    dot -> add_action( "variable,name=skip_cycle_rupture,value=priority_rotation&spell_targets.fan_of_knives>3&(debuff.shiv.up|(poisoned_bleeds>5&!azerite.scent_of_blood.enabled))", "Limit Ruptures on non-primrary targets for the priority rotation if 5+ bleeds are already up" );
+    dot -> add_action( "variable,name=skip_rupture,value=debuff.vendetta.up&(debuff.shiv.up|master_assassin_remains>0)&dot.rupture.remains>2", "Limit Ruptures if Vendetta+Shiv/Master Assassin is up and we have 2+ seconds left on the Rupture DoT" );
     dot -> add_action( this, "Garrote", "if=talent.exsanguinate.enabled&!exsanguinated.garrote&dot.garrote.pmultiplier<=1&cooldown.exsanguinate.remains<2&spell_targets.fan_of_knives=1&raid_event.adds.in>6&dot.garrote.remains*0.5<target.time_to_die", "Special Garrote and Rupture setup prior to Exsanguinate cast" );
     dot -> add_action( this, "Rupture", "if=talent.exsanguinate.enabled&(combo_points>=cp_max_spend&cooldown.exsanguinate.remains<1&dot.rupture.remains*0.5<target.time_to_die)" );
     dot -> add_action( "pool_resource,for_next=1", "Garrote upkeep, also tries to use it as a special generator for the last CP before a finisher" );
@@ -5824,11 +5826,11 @@ void rogue_t::init_action_list()
     dot -> add_talent( this, "Crimson Tempest", "if=spell_targets>=2&remains<2+(spell_targets>=5)&combo_points>=4", "Crimson Tempest on multiple targets at 4+ CP when running out in 2s (up to 4 targets) or 3s (5+ targets)" );
     dot -> add_action( this, "Rupture", "if=!variable.skip_rupture&(combo_points>=4&refreshable|!ticking&(time>10|combo_points>=2))&(pmultiplier<=1|remains<=tick_time&spell_targets.fan_of_knives>=3+azerite.shrouded_suffocation.enabled)&(!exsanguinated|remains<=tick_time*2&spell_targets.fan_of_knives>=3+azerite.shrouded_suffocation.enabled)&target.time_to_die-remains>4", "Keep up Rupture at 4+ on all targets (when living long enough and not snapshot)" );
     dot -> add_action( this, "Rupture", "cycle_targets=1,if=!variable.skip_cycle_rupture&!variable.skip_rupture&target!=self.target&combo_points>=4&refreshable&(pmultiplier<=1|remains<=tick_time&spell_targets.fan_of_knives>=3+azerite.shrouded_suffocation.enabled)&(!exsanguinated|remains<=tick_time*2&spell_targets.fan_of_knives>=3+azerite.shrouded_suffocation.enabled)&target.time_to_die-remains>4" );
-    dot -> add_talent( this, "Crimson Tempest", "if=spell_targets=1&combo_points>=(cp_max_spend-1)&refreshable&!exsanguinated&!debuff.toxic_blade.up&master_assassin_remains=0&!azerite.twist_the_knife.enabled&target.time_to_die-remains>4", "Crimson Tempest on ST if in pandemic and it will do less damage than Envenom due to TB/MA/TtK" );
+    dot -> add_talent( this, "Crimson Tempest", "if=spell_targets=1&combo_points>=(cp_max_spend-1)&refreshable&!exsanguinated&!debuff.shiv.up&master_assassin_remains=0&!azerite.twist_the_knife.enabled&target.time_to_die-remains>4", "Crimson Tempest on ST if in pandemic and it will do less damage than Envenom due to TB/MA/TtK" );
 
     // Direct damage abilities
     action_priority_list_t* direct = get_action_priority_list( "direct", "Direct damage abilities" );
-    direct -> add_action( this, "Envenom", "if=combo_points>=4+talent.deeper_stratagem.enabled&(debuff.vendetta.up|debuff.toxic_blade.up|energy.deficit<=25+variable.energy_regen_combined|!variable.single_target)&(!talent.exsanguinate.enabled|cooldown.exsanguinate.remains>2)", "Envenom at 4+ (5+ with DS) CP. Immediately on 2+ targets, with Vendetta, or with TB; otherwise wait for some energy. Also wait if Exsg combo is coming up." );
+    direct -> add_action( this, "Envenom", "if=combo_points>=4+talent.deeper_stratagem.enabled&(debuff.vendetta.up|debuff.shiv.up|energy.deficit<=25+variable.energy_regen_combined|!variable.single_target)&(!talent.exsanguinate.enabled|cooldown.exsanguinate.remains>2)", "Envenom at 4+ (5+ with DS) CP. Immediately on 2+ targets, with Vendetta, or with TB; otherwise wait for some energy. Also wait if Exsg combo is coming up." );
     direct -> add_action( "variable,name=use_filler,value=combo_points.deficit>1|energy.deficit<=25+variable.energy_regen_combined|!variable.single_target" );
     direct -> add_action( this, "Fan of Knives", "if=variable.use_filler&azerite.echoing_blades.enabled&spell_targets.fan_of_knives>=2+(debuff.vendetta.up*(1+(azerite.echoing_blades.rank=1)))", "With Echoing Blades, Fan of Knives at 2+ targets, or 3-4+ targets when Vendetta is up" );
     direct -> add_action( this, "Fan of Knives", "if=variable.use_filler&(buff.hidden_blades.stack>=19|(!priority_rotation&spell_targets.fan_of_knives>=4+(azerite.double_dose.rank>2)+stealthed.rogue))", "Fan of Knives at 19+ stacks of Hidden Blades or against 4+ (5+ with Double Dose) targets." );
@@ -6088,7 +6090,7 @@ action_t* rogue_t::create_action( util::string_view name, const std::string& opt
   if ( name == "sprint"              ) return new sprint_t             ( this, options_str );
   if ( name == "stealth"             ) return new stealth_t            ( this, options_str );
   if ( name == "symbols_of_death"    ) return new symbols_of_death_t   ( this, options_str );
-  if ( name == "toxic_blade"         ) return new toxic_blade_t        ( this, options_str );
+  if ( name == "shiv"                ) return new shiv_t               ( this, options_str );
   if ( name == "vanish"              ) return new vanish_t             ( this, options_str );
   if ( name == "vendetta"            ) return new vendetta_t           ( this, options_str );
   if ( name == "cancel_autoattack"   ) return new cancel_autoattack_t  ( this, options_str );
@@ -6529,6 +6531,8 @@ void rogue_t::init_spells()
   spec.master_assassin      = find_spell( 256735 );
   spec.garrote              = find_specialization_spell( "Garrote" );
   spec.garrote_2            = find_specialization_spell( 231719 );
+  spec.shiv_2               = find_rank_spell( "Shiv", "Rank 2" );
+  spec.shiv_2_debuff        = find_spell( 319504 );
 
   // Outlaw
   spec.adrenaline_rush      = find_specialization_spell( "Adrenaline Rush" );
@@ -6601,7 +6605,7 @@ void rogue_t::init_spells()
   talent.internal_bleeding  = find_talent_spell( "Internal Bleeding" );
 
   talent.venom_rush         = find_talent_spell( "Venom Rush" );
-  talent.toxic_blade        = find_talent_spell( "Toxic Blade" );
+  //talent.toxic_blade        = find_talent_spell( "Toxic Blade" );
   talent.exsanguinate       = find_talent_spell( "Exsanguinate" );
 
   talent.poison_bomb        = find_talent_spell( "Poison Bomb" );
