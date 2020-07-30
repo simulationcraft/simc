@@ -1,5 +1,5 @@
 // Spell text, wow build 9.0.1.35360
-static const std::array<spelltext_data_t, 15218> __spelltext_data { {
+static const std::array<spelltext_data_t, 15220> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -15160,6 +15160,8 @@ static const std::array<spelltext_data_t, 15218> __spelltext_data { {
   { 339896, "Conflagrate increases your remaining Immolate damage by $s1% until Immolate expires or is refreshed.", 0, 0 },
   { 339920, "Trueshot lasts|cFFFFFFFF ${$s1}.1%|r longer.", 0, 0 },
   { 339924, "Your auto attacks have a $s2% chance to cause your next Rapid Fire to deal|cFFFFFFFF ${$s1}.1%|r increased damage for each shot.", 0, 0 },
+  { 339928, "$@spelldesc339924", "Your next Rapid Fire deals $339924s1% increased damage per shot.", 0 },
+  { 339929, "$@spelldesc339924\r\n", "Your next Rapid Fire deals $339924s1% increased damage per shot.", 0 },
   { 339939, "Ancient Aftershock's cooldown is reduced by |cFFFFFFFF${$s1/-1000} sec|r.", 0, 0 },
   { 339942, "Entering Eclipse increases your critical strike chance with Arcane or Nature spells by ${$339943s1*$339943u}%, decreasing by $339943s1% every sec.", 0, 0 },
   { 339943, "$@spelldesc339942", "Critical strike chance with Nature spells increased $w1%.", 0 },
