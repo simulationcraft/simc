@@ -7270,7 +7270,7 @@ struct warrior_of_elune_t : public druid_spell_t
 
     p()->cooldown.warrior_of_elune->reset( false );
 
-    p()->buff.warrior_of_elune->trigger( p()->talent.warrior_of_elune->max_stacks() );
+    p()->buff.warrior_of_elune->trigger( p()->talent.warrior_of_elune->initial_stacks() );
   }
 
   bool ready() override
