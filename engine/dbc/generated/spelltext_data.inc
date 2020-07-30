@@ -1,5 +1,5 @@
 // Spell text, wow build 9.0.1.35360
-static const std::array<spelltext_data_t, 15220> __spelltext_data { {
+static const std::array<spelltext_data_t, 15221> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -14705,6 +14705,7 @@ static const std::array<spelltext_data_t, 15220> __spelltext_data { {
   { 336135, "Removes any loss of control effect with a duration of $s1 seconds or more. This effect can only occur once every $336139d.", 0, 0 },
   { 336139, "$@spelldesc214027", "Recently adapted to control.", 0 },
   { 336140, "Door of Shadows frees you from roots and snares.", 0, 0 },
+  { 336142, "$@spelldesc336143", 0, 0 },
   { 336143, "Your Shadowfiend or Mindbender deals 20% additional damage as Shadowflame damage, and the cooldown on Shadowfiend and Mindbender is reduced by $s1%.", 0, 0 },
   { 336147, "Door of Shadows has ${$s1+1} charges, but its cooldown is increased by ${$s2/1000} sec.", 0, 0 },
   { 336150, "Theotar will cover the costs of your Transmogrification.", 0, 0 },
