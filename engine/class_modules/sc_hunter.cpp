@@ -6483,11 +6483,6 @@ double hunter_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
 
-  m *= 1 + buffs.wild_spirits -> check_value();
-
-  if ( conduits.enfeebled_mark.ok() && buffs.resonating_arrow -> check() )
-    m *= 1 + conduits.enfeebled_mark.percent();
-
   return m;
 }
 
@@ -6498,9 +6493,12 @@ double hunter_t::composite_player_target_multiplier( player_t* target, school_e 
   double d = player_t::composite_player_target_multiplier( target, school );
 
   if ( auto td = find_target_data( target ) )
-  {
     d *= 1 + td -> debuffs.hunters_mark -> check_value();
-  }
+
+  d *= 1 + buffs.wild_spirits -> check_value();
+
+  if ( conduits.enfeebled_mark.ok() && buffs.resonating_arrow -> check() )
+    d *= 1 + conduits.enfeebled_mark.percent();
 
   return d;
 }
