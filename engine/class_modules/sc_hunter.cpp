@@ -36,6 +36,58 @@ struct spell_data_ptr_t
   const spell_data_t* data_;
 };
 
+static void print_affected_by( const action_t* a, const spelleffect_data_t& effect, util::string_view label = {} )
+{
+  fmt::memory_buffer out;
+  const spell_data_t& spell = *effect.spell();
+  const auto& spell_text = a->player->dbc->spell_text( spell.id() );
+
+  fmt::format_to( out, "{} {} is affected by {}", *a->player, *a, spell.name_cstr() );
+  if ( spell_text.rank() )
+    fmt::format_to( out, " (desc={})", spell_text.rank() );
+  fmt::format_to( out, " (id={}) effect#{}", spell.id(), effect.spell_effect_num() + 1 );
+  if ( !label.empty() )
+    fmt::format_to( out, ": {}", label );
+
+  a -> sim -> print_debug( "{}", util::string_view( out.data(), out.size() ) );
+}
+
+static bool check_affected_by( action_t* a, const spelleffect_data_t& effect )
+{
+  bool affected = a -> data().affected_by( effect );
+  if ( affected && a -> sim -> debug )
+    print_affected_by( a, effect );
+  return affected;
+}
+
+struct damage_affected_by {
+  uint8_t direct = 0;
+  uint8_t tick = 0;
+};
+damage_affected_by parse_damage_affecting_aura( action_t* a, spell_data_ptr_t spell )
+{
+  damage_affected_by affected_by;
+  for ( const spelleffect_data_t& effect : spell -> effects() )
+  {
+    if ( effect.type() != E_APPLY_AURA ||
+         effect.subtype() != A_ADD_PCT_MODIFIER ||
+         !a -> data().affected_by( effect ) )
+        continue;
+
+    if ( effect.misc_value1() == P_GENERIC )
+    {
+      affected_by.direct = as<uint8_t>( effect.spell_effect_num() + 1 );
+      print_affected_by( a, effect, "direct damage increase" );
+    }
+    else if ( effect.misc_value1() == P_TICK_DAMAGE )
+    {
+      affected_by.tick = as<uint8_t>( effect.spell_effect_num() + 1 );
+      print_affected_by( a, effect, "tick damage increase" );
+    }
+  }
+  return affected_by;
+}
+
 namespace cdwaste {
 
 struct action_data_t
@@ -657,42 +709,40 @@ public:
   bool track_cd_waste;
   bool procs_wild_spirits = false;
 
-  cdwaste::action_data_t* cd_waste;
+  cdwaste::action_data_t* cd_waste = nullptr;
 
   struct {
     // bm
-    bool aotw_crit_chance;
-    bool aotw_gcd_reduce;
-    bool bestial_wrath;
-    bool master_of_beasts;
-    bool thrill_of_the_hunt;
+    bool aotw_crit_chance = false;
+    bool aotw_gcd_reduce = false;
+    damage_affected_by bestial_wrath;
+    damage_affected_by master_of_beasts;
+    bool thrill_of_the_hunt = false;
     // mm
-    bool lone_wolf;
-    bool sniper_training;
+    damage_affected_by lone_wolf;
+    damage_affected_by sniper_training;
     // surv
-    bool coordinated_assault;
-    bool spirit_bond;
+    damage_affected_by coordinated_assault;
+    damage_affected_by spirit_bond;
   } affected_by;
 
   hunter_action_t( util::string_view n, hunter_t* p, const spell_data_t* s ):
     ab( n, p, s ),
-    track_cd_waste( s -> cooldown() > 0_ms || s -> charge_cooldown() > 0_ms ),
-    cd_waste( nullptr ),
-    affected_by()
+    track_cd_waste( s -> cooldown() > 0_ms || s -> charge_cooldown() > 0_ms )
   {
     ab::special = true;
 
-    affected_by.aotw_crit_chance = ab::data().affected_by( p -> specs.aspect_of_the_wild -> effectN( 1 ) );
-    affected_by.aotw_gcd_reduce = ab::data().affected_by( p -> specs.aspect_of_the_wild -> effectN( 3 ) );
-    affected_by.bestial_wrath = ab::data().affected_by( p -> specs.bestial_wrath -> effectN( 1 ) );
-    affected_by.master_of_beasts = ab::data().affected_by( p -> mastery.master_of_beasts -> effectN( 3 ) );
-    affected_by.thrill_of_the_hunt = ab::data().affected_by( p -> talents.thrill_of_the_hunt -> effectN( 1 ).trigger() -> effectN( 1 ) );
+    affected_by.aotw_crit_chance    = check_affected_by( this, p -> specs.aspect_of_the_wild -> effectN( 1 ) );
+    affected_by.aotw_gcd_reduce     = check_affected_by( this, p -> specs.aspect_of_the_wild -> effectN( 3 ) );
+    affected_by.bestial_wrath       = parse_damage_affecting_aura( this, p -> specs.bestial_wrath );
+    affected_by.master_of_beasts    = parse_damage_affecting_aura( this, p -> mastery.master_of_beasts );
+    affected_by.thrill_of_the_hunt  = check_affected_by( this, p -> talents.thrill_of_the_hunt -> effectN( 1 ).trigger() -> effectN( 1 ) );
 
-    affected_by.lone_wolf = ab::data().affected_by( p -> specs.lone_wolf -> effectN( 1 ) );
-    affected_by.sniper_training = ab::data().affected_by( p -> mastery.sniper_training -> effectN( 2 ) );
+    affected_by.lone_wolf           = parse_damage_affecting_aura( this, p -> specs.lone_wolf );
+    affected_by.sniper_training     = parse_damage_affecting_aura( this, p -> mastery.sniper_training );
 
-    affected_by.coordinated_assault = ab::data().affected_by( p -> specs.coordinated_assault -> effectN( 1 ) );
-    affected_by.spirit_bond = ab::data().affected_by( p -> mastery.spirit_bond -> effectN( 1 ) );
+    affected_by.coordinated_assault = parse_damage_affecting_aura( this, p -> specs.coordinated_assault );
+    affected_by.spirit_bond         = parse_damage_affecting_aura( this, p -> mastery.spirit_bond );
 
     // passive talents
     ab::apply_affecting_aura( p -> talents.alpha_predator );
@@ -796,27 +846,49 @@ public:
     }
   }
 
-  double action_multiplier() const override
+  double composite_da_multiplier( const action_state_t* s ) const override
   {
-    double am = ab::action_multiplier();
+    double am = ab::composite_da_multiplier( s );
 
-    if ( affected_by.bestial_wrath )
+    if ( affected_by.bestial_wrath.direct )
       am *= 1 + p() -> buffs.bestial_wrath -> check_value();
 
-    if ( affected_by.coordinated_assault )
+    if ( affected_by.coordinated_assault.direct )
       am *= 1 + p() -> buffs.coordinated_assault -> check_value();
 
-    if ( affected_by.master_of_beasts )
-      am *= 1 + p() -> cache.mastery() * p() -> mastery.master_of_beasts -> effectN( 3 ).mastery_value();
+    if ( affected_by.master_of_beasts.direct )
+      am *= 1 + p() -> cache.mastery() * p() -> mastery.master_of_beasts -> effectN( affected_by.master_of_beasts.direct ).mastery_value();
 
-    if ( affected_by.sniper_training )
-      am *= 1 + p() -> cache.mastery() * p() -> mastery.sniper_training -> effectN( 2 ).mastery_value();
+    if ( affected_by.sniper_training.direct )
+      am *= 1 + p() -> cache.mastery() * p() -> mastery.sniper_training -> effectN( affected_by.sniper_training.direct ).mastery_value();
 
-    if ( affected_by.spirit_bond )
-      am *= 1 + p() -> cache.mastery() * p() -> mastery.spirit_bond -> effectN( 1 ).mastery_value();
+    if ( affected_by.spirit_bond.direct )
+      am *= 1 + p() -> cache.mastery() * p() -> mastery.spirit_bond -> effectN( affected_by.spirit_bond.direct ).mastery_value();
 
-    if ( affected_by.lone_wolf && p() -> pets.main == nullptr )
-      am *= 1 + p() -> specs.lone_wolf -> effectN( 1 ).percent();
+    if ( affected_by.lone_wolf.direct && p() -> pets.main == nullptr )
+      am *= 1 + p() -> specs.lone_wolf -> effectN( affected_by.lone_wolf.direct ).percent();
+
+    return am;
+  }
+
+  double composite_ta_multiplier( const action_state_t* s ) const override
+  {
+    double am = ab::composite_ta_multiplier( s );
+
+    if ( affected_by.bestial_wrath.tick )
+      am *= 1 + p() -> buffs.bestial_wrath -> check_value();
+
+    if ( affected_by.coordinated_assault.tick )
+      am *= 1 + p() -> buffs.coordinated_assault -> check_value();
+
+    if ( affected_by.sniper_training.tick )
+      am *= 1 + p() -> cache.mastery() * p() -> mastery.sniper_training -> effectN( affected_by.sniper_training.tick ).mastery_value();
+
+    if ( affected_by.spirit_bond.tick )
+      am *= 1 + p() -> cache.mastery() * p() -> mastery.spirit_bond -> effectN( affected_by.spirit_bond.tick ).mastery_value();
+
+    if ( affected_by.lone_wolf.tick && p() -> pets.main == nullptr )
+      am *= 1 + p() -> specs.lone_wolf -> effectN( affected_by.lone_wolf.tick ).percent();
 
     return am;
   }
@@ -1595,37 +1667,46 @@ private:
 public:
 
   struct {
-    // bm
-    bool aspect_of_the_beast;
-    // sv
-    bool spirit_bond;
+    damage_affected_by aspect_of_the_beast;
+    damage_affected_by spirit_bond;
   } affected_by;
 
   hunter_main_pet_action_t( util::string_view n, hunter_main_pet_t* p, const spell_data_t* s = spell_data_t::nil() ):
                             ab( n, p, s ), affected_by()
   {
-    affected_by.aspect_of_the_beast = ab::data().affected_by( ab::o() -> talents.aspect_of_the_beast -> effectN( 1 ) );
-
-    affected_by.spirit_bond = ab::data().affected_by( ab::o() -> mastery.spirit_bond -> effectN( 1 ) );
+    affected_by.aspect_of_the_beast = parse_damage_affecting_aura( this, ab::o() -> talents.aspect_of_the_beast );
+    affected_by.spirit_bond         = parse_damage_affecting_aura( this, ab::o() -> mastery.spirit_bond );
   }
 
   void init() override
   {
     ab::init();
 
-    if ( affected_by.aspect_of_the_beast )
-      ab::base_multiplier *= 1 + ab::o() -> talents.aspect_of_the_beast -> effectN( 1 ).percent();
+    if ( affected_by.aspect_of_the_beast.direct )
+      ab::base_dd_multiplier *= 1 + ab::o() -> talents.aspect_of_the_beast -> effectN( affected_by.aspect_of_the_beast.direct ).percent();
+    if ( affected_by.aspect_of_the_beast.tick )
+      ab::base_td_multiplier *= 1 + ab::o() -> talents.aspect_of_the_beast -> effectN( affected_by.aspect_of_the_beast.tick ).percent();
   }
 
   hunter_main_pet_td_t* td( player_t* t = nullptr ) const
   { return ab::p() -> get_target_data( t ? t : ab::target ); }
 
-  double action_multiplier() const override
+  double composite_da_multiplier( const action_state_t* s ) const override
   {
-    double am = ab::action_multiplier();
+    double am = ab::composite_da_multiplier( s );
 
-    if ( affected_by.spirit_bond && ab::o() -> mastery.spirit_bond.ok() )
-      am *= 1 + ab::o() -> cache.mastery() * ab::o() -> mastery.spirit_bond -> effectN( 1 ).mastery_value();
+    if ( affected_by.spirit_bond.direct )
+      am *= 1 + ab::o() -> cache.mastery() * ab::o() -> mastery.spirit_bond -> effectN( affected_by.spirit_bond.direct ).mastery_value();
+
+    return am;
+  }
+
+  double composite_ta_multiplier( const action_state_t* s ) const override
+  {
+    double am = ab::composite_ta_multiplier( s );
+
+    if ( affected_by.spirit_bond.tick )
+      am *= 1 + ab::o() -> cache.mastery() * ab::o() -> mastery.spirit_bond -> effectN( affected_by.spirit_bond.tick ).mastery_value();
 
     return am;
   }
@@ -3239,7 +3320,7 @@ struct melee_t : public auto_attack_base_t<melee_attack_t>
     may_glance         = true;
 
     // technically there is a separate effect for auto attacks, but meh
-    affected_by.coordinated_assault = true;
+    affected_by.coordinated_assault.direct = true;
   }
 };
 
