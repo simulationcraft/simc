@@ -308,12 +308,12 @@ public:
 
   struct {
     // Covenant
-    conduit_data_t empowered_release; // NYI
+    conduit_data_t empowered_release;
     conduit_data_t enfeebled_mark;
     conduit_data_t necrotic_barrage; // NYI
     conduit_data_t spirit_attunement;
     // Beast Mastery
-    conduit_data_t ferocious_appetite; // NYI
+    conduit_data_t ferocious_appetite;
     conduit_data_t one_with_the_beast;
     // Marksmanship
     conduit_data_t brutal_projectiles; // NYI
@@ -1784,6 +1784,7 @@ struct kill_command_bm_t: public kill_command_base_t
     double multiplier = 1;
     benefit_t* benefit = nullptr;
   } killer_instinct;
+  timespan_t ferocious_appetite_reduction;
 
   kill_command_bm_t( hunter_main_pet_base_t* p ):
     kill_command_base_t( p, p -> find_spell( 83381 ) )
@@ -1797,6 +1798,17 @@ struct kill_command_bm_t: public kill_command_base_t
       killer_instinct.multiplier = 1 + o() -> talents.killer_instinct -> effectN( 1 ).percent();
       killer_instinct.benefit = o() -> get_benefit( "killer_instinct" );
     }
+
+    if ( o() -> conduits.ferocious_appetite.ok() )
+      ferocious_appetite_reduction = timespan_t::from_seconds( o() -> conduits.ferocious_appetite.value() / 10 );
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    kill_command_base_t::impact( s );
+
+    if ( ferocious_appetite_reduction != 0_s && s -> result == RESULT_CRIT )
+      o() -> cooldowns.aspect_of_the_wild -> adjust( -ferocious_appetite_reduction );
   }
 
   double composite_attack_power() const override
@@ -2568,6 +2580,15 @@ struct kill_shot_t : hunter_ranged_attack_t
     return ( candidate_target -> health_percentage() <= health_threshold_pct ||
              p() -> buffs.flayers_mark -> up() ) &&
            hunter_ranged_attack_t::target_ready( candidate_target );
+  }
+
+  double action_multiplier() const override
+  {
+    double am = hunter_ranged_attack_t::action_multiplier();
+
+    am *= 1 + p() -> buffs.flayers_mark -> check_value();
+
+    return am;
   }
 };
 
@@ -5670,7 +5691,9 @@ void hunter_t::create_buffs()
 
   buffs.flayers_mark =
     make_buff( this, "flayers_mark", find_spell( 324156 ) )
-      -> set_chance( covenants.flayed_shot -> effectN( 2 ).percent() );
+      -> set_default_value( conduits.empowered_release.percent() )
+      -> set_chance( covenants.flayed_shot -> effectN( 2 ).percent() +
+                     conduits.empowered_release -> effectN( 1 ).percent() );
 
   buffs.resonating_arrow =
     make_buff( this, "resonating_arrow", covenants.resonating_arrow -> effectN( 1 ).trigger() )
