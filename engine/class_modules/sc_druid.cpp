@@ -385,6 +385,7 @@ public:
     buff_t* sephuzs_secret;
     buff_t* innervate;
     buff_t* thorns;
+    buff_t* heart_of_the_wild;
 
     // Covenants
     buff_t* kindred_empowerment;
@@ -1739,8 +1740,12 @@ public:
   {
     double ta = ab::composite_ta_multiplier( s );
 
-    if ( ab::data().affected_by( p()->covenant.ravenous_frenzy->effectN( 2 ) ) && p()->buff.ravenous_frenzy->up() )
+    if ( p()->buff.ravenous_frenzy->up() && ab::data().affected_by( p()->covenant.ravenous_frenzy->effectN( 2 ) ) )
       ta *= 1.0 + p()->buff.ravenous_frenzy->stack_value();
+
+    if ( p()->buff.heart_of_the_wild->up() &&
+         ab::data().affected_by( p()->buff.heart_of_the_wild->data().effectN( 2 ) ) )
+      ta *= 1.0 + p()->buff.heart_of_the_wild->data().effectN( 2 ).percent();
 
     return ta;
   }
@@ -1749,8 +1754,12 @@ public:
   {
     double da = ab::composite_da_multiplier( s );
 
-    if ( ab::data().affected_by( p()->covenant.ravenous_frenzy->effectN( 1 ) ) && p()->buff.ravenous_frenzy->up() )
+    if ( p()->buff.ravenous_frenzy->up() && ab::data().affected_by( p()->covenant.ravenous_frenzy->effectN( 1 ) ) )
       da *= 1.0 + p()->buff.ravenous_frenzy->stack_value();
+
+    if ( p()->buff.heart_of_the_wild->up() &&
+         ab::data().affected_by( p()->buff.heart_of_the_wild->data().effectN( 1 ) ) )
+      da *= 1.0 + p()->buff.heart_of_the_wild->data().effectN( 1 ).percent();
 
     return da;
   }
@@ -3282,9 +3291,10 @@ public:
 
     base_t::execute();
 
-    if ( energize_resource == RESOURCE_COMBO_POINT && energize_amount > 0 && hit_any_target )
+    if ( energize_resource == RESOURCE_COMBO_POINT && energize_amount > 0 && hit_any_target && attack_critical )
     {
-      if ( attack_critical && p() -> specialization() == DRUID_FERAL )
+      if ( p()->specialization() == DRUID_FERAL ||
+           ( p()->talent.feral_affinity->ok() && p()->buff.heart_of_the_wild->check() ) )
       {
         trigger_primal_fury();
       }
@@ -3405,8 +3415,11 @@ struct cat_melee_t : public cat_attack_t
   {
     double cm = cat_attack_t::action_multiplier();
 
-    if ( p() -> buff.cat_form -> check() )
-      cm *= 1.0 + p() -> buff.cat_form -> data().effectN( 3 ).percent();
+    if ( p()->buff.cat_form->check() )
+      cm *= 1.0 + p()->buff.cat_form->data().effectN( 3 ).percent();
+
+    if ( p()->talent.feral_affinity->ok() && p()->buff.heart_of_the_wild->up() )
+      cm *= 1.0 + p()->buff.heart_of_the_wild->data().effectN( 3 ).percent();
 
     return cm;
   }
@@ -6056,6 +6069,22 @@ struct incarnation_t : public druid_spell_t
   }
 };
 
+struct heart_of_the_wild_t : public druid_spell_t
+{
+  heart_of_the_wild_t( druid_t* p, const std::string& options_str )
+    : druid_spell_t( "heart_of_the_wild", p, p->talent.heart_of_the_wild, options_str )
+  {
+    harmful = may_crit = may_miss = false;
+  }
+
+  void execute() override
+  {
+    druid_spell_t::execute();
+
+    p()->buff.heart_of_the_wild->trigger();
+  }
+};
+
 // Entangling Roots =========================================================
 struct entangling_roots_t : public druid_spell_t
 {
@@ -6871,6 +6900,16 @@ struct starsurge_t : public druid_spell_t
   timespan_t travel_time() const override  // hack to allow bypassing of action_t::init() precombat check
   {
     return action_list && action_list->name_str == "precombat" ? 100_ms : druid_spell_t::travel_time();
+  }
+
+  timespan_t execute_time() const override
+  {
+    timespan_t et = druid_spell_t::execute_time();
+
+    if ( p()->talent.balance_affinity->ok() && p()->buff.heart_of_the_wild->check() )
+      et *= 1.0 + p()->buff.heart_of_the_wild->data().effectN( 3 ).percent();
+
+    return et;
   }
 
   bool ready() override
@@ -7901,6 +7940,7 @@ action_t* druid_t::create_action( util::string_view name, const std::string& opt
   if ( name == "wild_growth"            ) return new            wild_growth_t( this, options_str );
   if ( name == "incarnation"            ) return new            incarnation_t( this, options_str );
 
+  if ( name == "heart_of_the_wild" ) return new heart_of_the_wild_t( this, options_str );
   if ( name == "kindred_spirits" || name == "empower_bond" ) return new kindred_spirits_t( this, options_str );
   if ( name == "convoke_the_spirits" ) return new convoke_the_spirits_t( this, options_str );
   if ( name == "ravenous_frenzy" ) return new ravenous_frenzy_t( this, options_str );
@@ -8435,6 +8475,13 @@ void druid_t::create_buffs()
   buff.guardian_of_elune     = make_buff( this, "guardian_of_elune", talent.guardian_of_elune -> effectN( 1 ).trigger() )
     ->set_chance( talent.guardian_of_elune -> ok() )
     ->set_default_value( talent.guardian_of_elune -> effectN( 1 ).trigger() -> effectN( 1 ).time_value().total_seconds() );
+
+  buff.heart_of_the_wild = make_buff( this, "heart_of_the_wild",
+    talent.balance_affinity->ok() ? find_spell( 108291 ) :
+    talent.feral_affinity->ok() ? find_spell( 108292 ) :
+    talent.guardian_affinity->ok() ? find_spell( 108293 ) :
+    talent.restoration_affinity->ok() ? find_spell( 108294 ) :
+    spell_data_t::not_found() );
 
   // Balance
 
