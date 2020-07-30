@@ -1558,16 +1558,16 @@ struct moonkin_form_affinity_t : public druid_buff_t< buff_t >
 
 struct warrior_of_elune_buff_t : public druid_buff_t<buff_t>
 {
-  warrior_of_elune_buff_t( druid_t& p ) :
-    base_t( p, "warrior_of_elune", p.talent.warrior_of_elune )
+  warrior_of_elune_buff_t( druid_t& p ) : base_t( p, "warrior_of_elune", p.talent.warrior_of_elune )
   {
-    set_default_value(p.talent.warrior_of_elune->effectN(1).percent());
+    set_default_value( p.talent.warrior_of_elune->effectN( 1 ).percent() );
   }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
-    druid_buff_t<buff_t>::expire_override(expiration_stacks, remaining_duration);
-    p().cooldown.warrior_of_elune -> start();
+    druid_buff_t<buff_t>::expire_override( expiration_stacks, remaining_duration );
+
+    p().cooldown.warrior_of_elune->start();
   }
 };
 
@@ -2390,14 +2390,9 @@ private:
   using ab = druid_spell_base_t<spell_t>;
 
 public:
-  bool warrior_of_elune;
-  bool owlkin_frenzy;
-
   druid_spell_t( const std::string& token, druid_t* p, const spell_data_t* s = spell_data_t::nil(),
-    const std::string& options = std::string() ) :
-    base_t( token, p, s ),
-    warrior_of_elune( data().affected_by( p->talent.warrior_of_elune->effectN( 1 ) ) ),
-    owlkin_frenzy( data().affected_by( p->spec.owlkin_frenzy->effectN( 1 ) ) )
+                 const std::string& options = std::string() )
+    : base_t( token, p, s )
   {
     parse_options( options );
   }
@@ -2408,9 +2403,6 @@ public:
 
     if ( energize_resource_() == RESOURCE_ASTRAL_POWER )
     {
-      if ( warrior_of_elune && p()->buff.warrior_of_elune->check() )
-        e *= 1.0 + p()->talent.warrior_of_elune->effectN( 2 ).percent();
-
       if ( p()->buffs.memory_of_lucid_dreams->up() )
         e *= 1.0 + p()->buffs.memory_of_lucid_dreams->data().effectN( 1 ).percent();
     }
@@ -2496,19 +2488,6 @@ public:
     return spell_t::usable_moving();
   }
 
-  timespan_t execute_time() const override
-  {
-    timespan_t et = ab::execute_time();
-
-    if ( warrior_of_elune )
-      et *= 1 + p()->buff.warrior_of_elune->check_value();
-
-    if ( owlkin_frenzy )
-      et *= 1 + p()->buff.owlkin_frenzy->check_value();
-
-    return et;
-  }
-
   void execute() override
   {
     // Adjust buffs and cooldowns if we're in precombat.
@@ -2524,16 +2503,6 @@ public:
     }
 
     ab::execute();
-
-    // Check on instant cast to see if instant-cast-buff decrement is needed
-    if ( time_to_execute == timespan_t::zero() )
-    {
-      if ( warrior_of_elune && p()->buff.warrior_of_elune->up() )
-        p()->buff.warrior_of_elune->decrement();
-
-      else if ( owlkin_frenzy && p()->buff.owlkin_frenzy->up() )
-        p()->buff.owlkin_frenzy->decrement();
-    }
   }
 
   virtual void trigger_astral_power_consumption_effects()
@@ -6266,9 +6235,22 @@ struct starfire_t : public druid_spell_t
     base_aoe_multiplier = data().effectN( 3 ).percent();
   }
 
+  double composite_energize_amount( const action_state_t* s ) const override
+  {
+    double e = druid_spell_t::composite_energize_amount( s );
+
+    if ( energize_resource_() == RESOURCE_ASTRAL_POWER && p()->buff.warrior_of_elune->check() )
+      e *= 1.0 + p()->talent.warrior_of_elune->effectN( 2 ).percent();
+
+    return e;
+  }
+
   timespan_t execute_time() const override
   {
     timespan_t et = druid_spell_t::execute_time();
+
+    et *= 1.0 + p()->buff.warrior_of_elune->value();
+    et *= 1.0 + p()->buff.owlkin_frenzy->value();
 
     if ( p()->buff.eclipse_lunar->check() )
       et *= 1 + p()->buff.eclipse_lunar->data().effectN( 1 ).percent() + p()->spec.eclipse_2->effectN( 1 ).percent() + p()->talent.soul_of_the_forest->effectN( 1 ).percent();
@@ -6286,7 +6268,13 @@ struct starfire_t : public druid_spell_t
   {
     druid_spell_t::execute();
 
-    p ()->eclipse_handler.cast_starfire ();
+    if ( time_to_execute == 0_ms )
+    {
+      p()->buff.warrior_of_elune->decrement();
+      p()->buff.owlkin_frenzy->decrement();
+    }
+
+    p()->eclipse_handler.cast_starfire();
 
     if ( p()->azerite.dawning_sun.ok() )
     {
@@ -6298,6 +6286,7 @@ struct starfire_t : public druid_spell_t
   {
     if ( state->target != target )
       return ( 1 + p()->buff.eclipse_lunar->value() );
+
     return 1.0;
   }
 };
@@ -7177,8 +7166,8 @@ struct thorns_t : public druid_spell_t
 
 struct warrior_of_elune_t : public druid_spell_t
 {
-  warrior_of_elune_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "warrior_of_elune", player, player -> talent.warrior_of_elune, options_str )
+  warrior_of_elune_t( druid_t* player, const std::string& options_str )
+    : druid_spell_t( "warrior_of_elune", player, player->talent.warrior_of_elune, options_str )
   {
     harmful = false;
   }
@@ -7187,14 +7176,14 @@ struct warrior_of_elune_t : public druid_spell_t
   {
     druid_spell_t::execute();
 
-    p()->cooldown.warrior_of_elune->reset(false);
+    p()->cooldown.warrior_of_elune->reset( false );
 
-    p() -> buff.warrior_of_elune -> trigger( p() -> talent.warrior_of_elune -> max_stacks() );
+    p()->buff.warrior_of_elune->trigger( p()->talent.warrior_of_elune->max_stacks() );
   }
 
   bool ready() override
   {
-    if ( p() -> buff.warrior_of_elune -> check() )
+    if ( p()->buff.warrior_of_elune->check() )
       return false;
 
     return druid_spell_t::ready();
