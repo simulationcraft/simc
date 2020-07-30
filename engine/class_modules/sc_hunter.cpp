@@ -1164,6 +1164,7 @@ public:
 
     ab::base_execute_time = ab::weapon -> swing_time;
     ab::school = SCHOOL_PHYSICAL;
+    ab::may_crit = true;
   }
 
   timespan_t execute_time() const override
@@ -3333,6 +3334,7 @@ struct melee_t : public auto_attack_base_t<melee_attack_t>
     school             = SCHOOL_PHYSICAL;
     weapon_multiplier  = 1;
     may_glance         = true;
+    may_crit           = true;
 
     // technically there is a separate effect for auto attacks, but meh
     affected_by.coordinated_assault.direct = true;
