@@ -1315,6 +1315,11 @@ struct animal_companion_t : public hunter_main_pet_base_t
 
     hunter_main_pet_base_t::init_action_list();
   }
+
+  timespan_t available() const override
+  {
+    return sim -> expected_iteration_time * 2;
+  }
 };
 
 // ==========================================================================
