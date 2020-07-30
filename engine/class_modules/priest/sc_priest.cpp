@@ -898,7 +898,7 @@ action_t* priest_t::create_action( util::string_view name, const std::string& op
   return base_t::create_action( name, options_str );
 }
 
-pet_t* priest_t::create_pet( const std::string& pet_name, const std::string& /* pet_type */ )
+pet_t* priest_t::create_pet( util::string_view pet_name, util::string_view /* pet_type */ )
 {
   // pet_t* p = find_pet( pet_name );
 

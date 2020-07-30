@@ -8,7 +8,7 @@ namespace warlock
 namespace pets
 {
 
-warlock_pet_t::warlock_pet_t(warlock_t* owner, const std::string& pet_name, pet_e pt, bool guardian) :
+warlock_pet_t::warlock_pet_t(warlock_t* owner, util::string_view pet_name, pet_e pt, bool guardian) :
   pet_t(owner->sim, owner, pet_name, pt, guardian),
   special_action(nullptr),
   special_action_two(nullptr),
@@ -191,7 +191,7 @@ struct shadow_bite_t : public warlock_pet_melee_attack_t
   { }
 };
 
-felhunter_pet_t::felhunter_pet_t(warlock_t* owner, const std::string& name) :
+felhunter_pet_t::felhunter_pet_t(warlock_t* owner, util::string_view name) :
   warlock_pet_t(owner, name, PET_FELHUNTER, name != "felhunter")
 {
   action_list_str = "shadow_bite";
@@ -222,7 +222,7 @@ struct firebolt_t : public warlock_pet_spell_t
   { }
 };
 
-imp_pet_t::imp_pet_t( warlock_t* owner, const std::string& name ) :
+imp_pet_t::imp_pet_t( warlock_t* owner, util::string_view name ) :
   warlock_pet_t( owner, name, PET_IMP, name != "imp" ),
   firebolt_cost( find_spell( 3110 )->cost( POWER_ENERGY ) )
 {
@@ -275,7 +275,7 @@ struct whiplash_t : public warlock_pet_spell_t
   }
 };
 
-succubus_pet_t::succubus_pet_t( warlock_t* owner, const std::string& name ) :
+succubus_pet_t::succubus_pet_t( warlock_t* owner, util::string_view name ) :
   warlock_pet_t( owner, name, PET_SUCCUBUS, name != "succubus" )
 {
   main_hand_weapon.swing_time = timespan_t::from_seconds( 3.0 );
@@ -310,7 +310,7 @@ struct consuming_shadows_t : public warlock_pet_spell_t
   }
 };
 
-voidwalker_pet_t::voidwalker_pet_t( warlock_t* owner, const std::string& name ) :
+voidwalker_pet_t::voidwalker_pet_t( warlock_t* owner, util::string_view name ) :
   warlock_pet_t( owner, name, PET_VOIDWALKER, name != "voidwalker" )
 {
   action_list_str = "consuming_shadows";
@@ -481,7 +481,7 @@ struct soul_strike_t : public warlock_pet_melee_attack_t
   }
 };
 
-felguard_pet_t::felguard_pet_t(warlock_t* owner, const std::string& name) :
+felguard_pet_t::felguard_pet_t(warlock_t* owner, util::string_view name) :
     warlock_pet_t(owner, name, PET_FELGUARD, name != "felguard"), soul_strike( nullptr ),
     felstorm_spell( find_spell( 89751 ) ),
     min_energy_threshold( felstorm_spell->cost( POWER_ENERGY ) ), max_energy_threshold( 100 )

@@ -8760,6 +8760,11 @@ void player_t::parse_talents_numbers( const std::string& talent_string )
   create_talents_numbers();
 }
 
+pet_t* player_t::create_pet( util::string_view, util::string_view )
+{
+  return nullptr;
+}
+
 /**
  * Old-style armory format for xx.battle.net / xx.battlenet.com
  */

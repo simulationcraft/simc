@@ -761,7 +761,7 @@ public:
   double composite_maelstrom_gain_coefficient( const action_state_t* state = nullptr ) const;
   double matching_gear_multiplier( attribute_e attr ) const override;
   action_t* create_action( util::string_view name, const std::string& options ) override;
-  pet_t* create_pet( const std::string& name, const std::string& type = std::string() ) override;
+  pet_t* create_pet( util::string_view name, util::string_view type = "" ) override;
   void create_pets() override;
   std::unique_ptr<expr_t> create_expression( util::string_view name ) override;
   resource_e primary_resource() const override
@@ -6611,7 +6611,7 @@ action_t* shaman_t::create_action( util::string_view name, const std::string& op
 
 // shaman_t::create_pet =====================================================
 
-pet_t* shaman_t::create_pet( const std::string& pet_name, const std::string& /* pet_type */ )
+pet_t* shaman_t::create_pet( util::string_view pet_name, util::string_view /* pet_type */ )
 {
   pet_t* p = find_pet( pet_name );
 

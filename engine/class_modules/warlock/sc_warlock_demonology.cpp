@@ -873,7 +873,7 @@ namespace warlock {
   namespace buffs {
   } // end buffs namespace
 
-  pet_t* warlock_t::create_demo_pet(const std::string& pet_name, const std::string& /* pet_type */)
+  pet_t* warlock_t::create_demo_pet(util::string_view pet_name, util::string_view /* pet_type */)
   {
     pet_t* p = find_pet(pet_name);
     if (p) return p;

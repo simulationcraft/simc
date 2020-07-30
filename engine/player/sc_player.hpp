@@ -1012,7 +1012,7 @@ public:
 
   virtual action_t* create_action( util::string_view name, const std::string& options );
   virtual void      create_pets() { }
-  virtual pet_t*    create_pet( const std::string& /* name*/,  const std::string& /* type */ = std::string() ) { return nullptr; }
+  virtual pet_t*    create_pet( util::string_view name,  util::string_view type = "" );
 
   virtual void armory_extensions( const std::string& /* region */, const std::string& /* server */, const std::string& /* character */,
                                   cache::behavior_e /* behavior */ = cache::players() )

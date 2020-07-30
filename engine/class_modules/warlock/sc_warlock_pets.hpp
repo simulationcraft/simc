@@ -44,7 +44,7 @@ struct warlock_pet_t : public pet_t
   bool is_warlock_pet = true;
   int dreadbite_executes = 0;
 
-  warlock_pet_t( warlock_t* owner, const std::string& pet_name, pet_e pt, bool guardian = false );
+  warlock_pet_t( warlock_t* owner, util::string_view pet_name, pet_e pt, bool guardian = false );
   void init_base_stats() override;
   void init_action_list() override;
   void create_buffs() override;
@@ -290,7 +290,7 @@ namespace base
 {
 struct felhunter_pet_t : public warlock_pet_t
 {
-  felhunter_pet_t( warlock_t* owner, const std::string& name );
+  felhunter_pet_t( warlock_t* owner, util::string_view name );
   void init_base_stats() override;
   action_t* create_action( util::string_view name, const std::string& options_str ) override;
 };
@@ -299,21 +299,21 @@ struct imp_pet_t : public warlock_pet_t
 {
   double firebolt_cost;
 
-  imp_pet_t( warlock_t* owner, const std::string& name );
+  imp_pet_t( warlock_t* owner, util::string_view name );
   action_t* create_action( util::string_view name, const std::string& options_str ) override;
   timespan_t available() const override;
 };
 
 struct succubus_pet_t : public warlock_pet_t
 {
-  succubus_pet_t( warlock_t* owner, const std::string& name );
+  succubus_pet_t( warlock_t* owner, util::string_view name );
   void init_base_stats() override;
   action_t* create_action( util::string_view name, const std::string& options_str ) override;
 };
 
 struct voidwalker_pet_t : warlock_pet_t
 {
-  voidwalker_pet_t( warlock_t* owner, const std::string& name );
+  voidwalker_pet_t( warlock_t* owner, util::string_view name );
   void init_base_stats() override;
   action_t* create_action( util::string_view name, const std::string& options_str ) override;
 };
@@ -335,7 +335,7 @@ struct felguard_pet_t : public warlock_pet_t
   double min_energy_threshold;
   double max_energy_threshold;
 
-  felguard_pet_t(warlock_t* owner, const std::string& name);
+  felguard_pet_t(warlock_t* owner, util::string_view name);
   void init_base_stats() override;
   action_t* create_action(util::string_view name, const std::string& options_str) override;
   timespan_t available() const override;

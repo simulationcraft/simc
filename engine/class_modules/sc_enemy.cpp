@@ -79,7 +79,7 @@ struct enemy_t : public player_t
   void init_stats() override;
   double resource_loss( resource_e, double, gain_t*, action_t* ) override;
   void create_options() override;
-  pet_t* create_pet( const std::string& add_name, const std::string& pet_type = std::string() ) override;
+  pet_t* create_pet( util::string_view add_name, util::string_view pet_type = "" ) override;
   void create_pets() override;
   double health_percentage() const override;
   void combat_begin() override;
@@ -1525,7 +1525,7 @@ void enemy_t::create_options()
 
 // enemy_t::create_add ======================================================
 
-pet_t* enemy_t::create_pet( const std::string& add_name, const std::string& /* pet_type */ )
+pet_t* enemy_t::create_pet( util::string_view add_name, util::string_view /* pet_type */ )
 {
   pet_t* p = find_pet( add_name );
   if ( !p )

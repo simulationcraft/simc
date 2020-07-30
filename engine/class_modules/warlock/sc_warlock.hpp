@@ -436,7 +436,7 @@ namespace warlock
       void      vision_of_perfection_proc_demo();
       void      darkglare_extension_helper( warlock_t* p, timespan_t darkglare_extension );
       action_t* create_action( util::string_view name, const std::string& options ) override;
-      pet_t*    create_pet( const std::string& name, const std::string& type = std::string() ) override;
+      pet_t*    create_pet( util::string_view name, util::string_view type = "" ) override;
       void      create_pets() override;
       std::string      create_profile( save_e ) override;
       void      copy_from( player_t* source ) override;
@@ -512,8 +512,8 @@ namespace warlock
       void create_apl_destruction();
 
       // sc_warlock_pets
-      pet_t* create_main_pet(const std::string& pet_name, const std::string& options_str);
-      pet_t* create_demo_pet(const std::string& pet_name, const std::string& options_str);
+      pet_t* create_main_pet(util::string_view pet_name, util::string_view pet_type);
+      pet_t* create_demo_pet(util::string_view pet_name, util::string_view pet_type);
       void   create_all_pets();
       std::unique_ptr<expr_t> create_pet_expression(util::string_view name_str);
 

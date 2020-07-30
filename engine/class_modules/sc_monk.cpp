@@ -815,7 +815,7 @@ public:
   double resource_gain( resource_e, double, gain_t* = nullptr, action_t* = nullptr ) override;
   double temporary_movement_modifier() const override;
   double passive_movement_modifier() const override;
-  pet_t* create_pet( const std::string& name, const std::string& type = std::string() ) override;
+  pet_t* create_pet( util::string_view name, util::string_view type = "" ) override;
   void create_pets() override;
   void init_spells() override;
   void init_base_stats() override;
@@ -1898,7 +1898,7 @@ struct xuen_pet_t : public pet_t
 private:
   struct melee_t : public melee_attack_t
   {
-    melee_t( const std::string& n, xuen_pet_t* player ) : melee_attack_t( n, player, spell_data_t::nil() )
+    melee_t( util::string_view n, xuen_pet_t* player ) : melee_attack_t( n, player, spell_data_t::nil() )
     {
       background = repeating = may_crit = may_glance = true;
       school                                         = SCHOOL_PHYSICAL;
@@ -1989,7 +1989,7 @@ private:
   };
 
 public:
-  xuen_pet_t( sim_t* sim, monk_t* owner, std::string name ) : pet_t( sim, owner, name, true )
+  xuen_pet_t( sim_t* sim, monk_t* owner, util::string_view name ) : pet_t( sim, owner, name, true )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.min_dmg    = dbc->spell_scaling( o()->type, level() );
@@ -2129,7 +2129,7 @@ private:
   };
 
 public:
-  fury_of_xuen_pet_t( sim_t* sim, monk_t* owner, std::string name ) : pet_t( sim, owner, name, true )
+  fury_of_xuen_pet_t( sim_t* sim, monk_t* owner, util::string_view name ) : pet_t( sim, owner, name, true )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.min_dmg    = dbc->spell_scaling( o()->type, level() );
@@ -7741,7 +7741,7 @@ int monk_t::mark_of_the_crane_counter()
 
 // monk_t::create_pet =======================================================
 
-pet_t* monk_t::create_pet( const std::string& name, const std::string& /* pet_type */ )
+pet_t* monk_t::create_pet( util::string_view name, util::string_view /* pet_type */ )
 {
   pet_t* p = find_pet( name );
 

@@ -436,7 +436,7 @@ public:
   void create_options() override;
   std::string create_profile( save_e ) override;
   action_t* create_action( util::string_view name, const std::string& options ) override;
-  pet_t* create_pet( const std::string& name, const std::string& type = std::string() ) override;
+  pet_t* create_pet( util::string_view name, util::string_view type = "") override;
   void create_pets() override;
   void copy_from( player_t* source ) override;
   resource_e primary_resource() const override

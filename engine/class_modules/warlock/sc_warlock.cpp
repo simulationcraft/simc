@@ -517,7 +517,7 @@ action_t* warlock_t::create_action( util::string_view action_name, const std::st
   return player_t::create_action( action_name, options_str );
 }
 
-pet_t* warlock_t::create_pet( const std::string& pet_name, const std::string& pet_type )
+pet_t* warlock_t::create_pet( util::string_view pet_name, util::string_view pet_type )
 {
   pet_t* p = find_pet( pet_name );
   if ( p ) return p;
@@ -1019,7 +1019,7 @@ void warlock_t::vision_of_perfection_proc()
   }
 }
 
-pet_t* warlock_t::create_main_pet(const std::string& pet_name, const std::string& pet_type)
+pet_t* warlock_t::create_main_pet(util::string_view pet_name, util::string_view pet_type)
 {
   pet_t* p = find_pet(pet_name);
   if (p) return p;

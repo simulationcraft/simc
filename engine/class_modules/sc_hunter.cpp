@@ -646,7 +646,7 @@ public:
   std::unique_ptr<expr_t>   create_expression( util::string_view name ) override;
   std::unique_ptr<expr_t>   create_action_expression( action_t&, util::string_view name ) override;
   action_t* create_action( util::string_view name, const std::string& options ) override;
-  pet_t*    create_pet( const std::string& name, const std::string& type = std::string() ) override;
+  pet_t*    create_pet( util::string_view name, util::string_view type ) override;
   void      create_pets() override;
   resource_e primary_resource() const override { return RESOURCE_FOCUS; }
   role_e    primary_role() const override { return ROLE_ATTACK; }
@@ -5248,8 +5248,8 @@ action_t* hunter_t::create_action( util::string_view name,
 
 // hunter_t::create_pet =====================================================
 
-pet_t* hunter_t::create_pet( const std::string& pet_name,
-                             const std::string& pet_type )
+pet_t* hunter_t::create_pet( util::string_view pet_name,
+                             util::string_view pet_type )
 {
   using namespace pets;
 

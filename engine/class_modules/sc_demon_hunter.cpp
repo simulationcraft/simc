@@ -637,7 +637,7 @@ public:
   void create_buffs() override;
   std::unique_ptr<expr_t> create_expression( util::string_view ) override;
   void create_options() override;
-  pet_t* create_pet( const std::string& name, const std::string& type = std::string() ) override;
+  pet_t* create_pet( util::string_view name, util::string_view type ) override;
   std::string create_profile( save_e ) override;
   void init_absorb_priority() override;
   void init_action_list() override;
@@ -4986,8 +4986,8 @@ void demon_hunter_t::create_options()
 
 // demon_hunter_t::create_pet ===============================================
 
-pet_t* demon_hunter_t::create_pet( const std::string& pet_name,
-                                   const std::string& /* pet_type */ )
+pet_t* demon_hunter_t::create_pet( util::string_view pet_name,
+                                   util::string_view /* pet_type */ )
 {
   pet_t* p = find_pet( pet_name );
 
