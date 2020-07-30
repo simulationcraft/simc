@@ -363,7 +363,6 @@ public:
     buff_t* bestial_wrath;
     buff_t* dire_beast;
     buff_t* thrill_of_the_hunt;
-    buff_t* thrill_of_the_hunt_2;
 
     // Marksmanship
     buff_t* dead_eye;
@@ -933,7 +932,7 @@ public:
     if ( ab::last_resource_cost <= 0 )
       return;
 
-    if ( !ab::player -> rng().roll( p() -> options.memory_of_lucid_dreams_proc_chance ) )
+    if ( !ab::rng().roll( p() -> options.memory_of_lucid_dreams_proc_chance ) )
       return;
 
     const double gain = ab::last_resource_cost * p() -> azerite_essence.memory_of_lucid_dreams_minor_mult;
@@ -1085,15 +1084,6 @@ struct hunter_pet_t: public pet_t
     main_hand_weapon.swing_time = 2_s;
   }
 
-  double composite_melee_crit_chance() const override
-  {
-    double cc = pet_t::composite_melee_crit_chance();
-
-    cc += o() -> buffs.thrill_of_the_hunt_2 -> check_stack_value();
-
-    return cc;
-  }
-
   double composite_player_multiplier( school_e school ) const override
   {
     double m = pet_t::composite_player_multiplier( school );
@@ -1208,6 +1198,10 @@ struct hunter_main_pet_base_t : public hunter_pet_t
     buff_t* rylakstalkers_fangs = nullptr;
   } buffs;
 
+  struct {
+    spell_data_ptr_t thrill_of_the_hunt;
+  } spells;
+
   hunter_main_pet_base_t( hunter_t* owner, util::string_view pet_name, pet_e pt ):
     hunter_pet_t( owner, pet_name, pt )
   {
@@ -1274,6 +1268,16 @@ struct hunter_main_pet_base_t : public hunter_pet_t
     m *= 1 + o() -> buffs.coordinated_assault -> check_value();
 
     return m;
+  }
+
+  double composite_melee_crit_chance() const override
+  {
+    double cc = hunter_pet_t::composite_melee_crit_chance();
+
+    if ( o() -> buffs.thrill_of_the_hunt -> check() )
+      cc += o() -> buffs.thrill_of_the_hunt -> check() * spells.thrill_of_the_hunt -> effectN( 1 ).percent();
+
+    return cc;
   }
 
   double composite_player_critical_damage_multiplier( const action_state_t* s ) const override
@@ -2102,6 +2106,8 @@ void hunter_main_pet_base_t::init_spells()
 {
   hunter_pet_t::init_spells();
 
+  spells.thrill_of_the_hunt = find_spell( 312365 );
+
   if ( o() -> specialization() == HUNTER_BEAST_MASTERY )
     active.kill_command = new actions::kill_command_bm_t( this );
   else if ( o() -> specialization() == HUNTER_SURVIVAL )
@@ -2730,7 +2736,6 @@ struct barbed_shot_t: public hunter_ranged_attack_t
       sim -> out_debug.print( "{} {} unable to trigger excess Barbed Shot buff", player -> name(), name() );
 
     p() -> buffs.thrill_of_the_hunt -> trigger();
-    p() -> buffs.thrill_of_the_hunt_2 -> trigger();
 
     // Bestial Wrath (Rank 2) cooldown reduction
     p() -> cooldowns.bestial_wrath -> adjust( -bestial_wrath_r2_reduction );
@@ -2738,7 +2743,7 @@ struct barbed_shot_t: public hunter_ranged_attack_t
     if ( p() -> legendary.qapla_eredun_war_order.ok() )
       p() -> cooldowns.kill_command -> adjust( -p() -> legendary.qapla_eredun_war_order -> effectN( 1 ).time_value() );
 
-    if ( p() -> azerite.dance_of_death.ok() && rng().roll( p() -> cache.attack_crit_chance() + p() -> buffs.thrill_of_the_hunt_2 -> check_stack_value() ) )
+    if ( p() -> azerite.dance_of_death.ok() && rng().roll( composite_crit_chance() ) )
       p() -> buffs.dance_of_death -> trigger();
 
     for ( auto pet : pets::active<pets::hunter_main_pet_base_t>( p() -> pets.main, p() -> pets.animal_companion ) )
@@ -5543,13 +5548,6 @@ void hunter_t::create_buffs()
     make_buff( this, "thrill_of_the_hunt", talents.thrill_of_the_hunt -> effectN( 1 ).trigger() )
       -> set_default_value( talents.thrill_of_the_hunt -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
       -> set_trigger_spell( talents.thrill_of_the_hunt );
-
-  const spell_data_t* thrill_of_the_hunt_2 = find_spell( 312365 );
-  buffs.thrill_of_the_hunt_2 =
-    make_buff( this, "thrill_of_the_hunt_2", thrill_of_the_hunt_2 )
-    -> set_default_value( thrill_of_the_hunt_2 -> effectN( 1 ).percent() )
-    -> set_trigger_spell( talents.thrill_of_the_hunt )
-    -> set_quiet( true );
 
   // Marksmanship
 
