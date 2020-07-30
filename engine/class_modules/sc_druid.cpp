@@ -408,6 +408,7 @@ public:
     buff_t* oneths_free_starfall;
     buff_t* runecarve_3_nature_buff;
     buff_t* runecarve_3_arcane_buff;
+    buff_t* timeworn_dreamcatcher;
 
     // Feral
     buff_t* apex_predator;
@@ -6787,7 +6788,12 @@ struct starfall_t : public druid_spell_t
     if ( p()->buff.oneths_free_starfall->check() || convoke )
       return 0;
 
-    return druid_spell_t::cost();
+    double c = druid_spell_t::cost();
+
+    if ( p()->legendary.timeworn_dreamcatcher->ok() )
+      c *= 1.0 + p()->buff.timeworn_dreamcatcher->check_stack_value();
+
+    return c;
   }
 
   void execute() override
@@ -6825,6 +6831,9 @@ struct starfall_t : public druid_spell_t
 
     if ( convoke )
       return;
+
+    if ( p()->legendary.timeworn_dreamcatcher->ok() )
+      p()->buff.timeworn_dreamcatcher->trigger();
 
     if ( p()->buff.oneths_free_starfall->up() )  // benefit tracking
       p()->buff.oneths_free_starfall->decrement();
@@ -6897,7 +6906,12 @@ struct starsurge_t : public druid_spell_t
     if ( p()->buff.oneths_free_starsurge->check() || convoke )
       return 0;
 
-    return druid_spell_t::cost();
+    double c = druid_spell_t::cost();
+
+    if ( p()->legendary.timeworn_dreamcatcher->ok() )
+      c *= 1.0 + p()->buff.timeworn_dreamcatcher->check_stack_value();
+
+    return c;
   }
 
   double action_multiplier() const override
@@ -6942,6 +6956,9 @@ struct starsurge_t : public druid_spell_t
 
     if ( convoke )
       return;
+
+    if ( p()->legendary.timeworn_dreamcatcher->ok() )
+      p()->buff.timeworn_dreamcatcher->trigger();
 
     if ( p()->buff.oneths_free_starsurge->up() )  // benefit tracking
       p()->buff.oneths_free_starsurge->decrement();
@@ -8492,14 +8509,20 @@ void druid_t::create_buffs()
   // Balance Legendaries
 
   buff.primordial_arcanic_pulsar = make_buff( this, "primordial_arcanic_pulsar", find_spell( 338825 ) );
-  buff.oneths_free_starsurge     = make_buff( this, "oneths_clear_vision", find_spell( 339797 ) );
-  buff.oneths_free_starfall      = make_buff( this, "oneths_perception", find_spell( 339800 ) );
-  buff.runecarve_3_nature_buff   = make_buff( this, "runecarve_3_nature", find_spell( 339943 ) )
-                                     ->set_reverse( true )
-                                     ->set_default_value( find_spell( 339943 )->effectN( 1 ).base_value() );
-  buff.runecarve_3_arcane_buff   = make_buff( this, "runecarve_3_arcane", find_spell( 339946 ) )
-                                     ->set_reverse( true )
-                                     ->set_default_value( find_spell( 339946 )->effectN( 1 ).base_value() );
+
+  buff.oneths_free_starsurge = make_buff( this, "oneths_clear_vision", find_spell( 339797 ) );
+
+  buff.oneths_free_starfall = make_buff( this, "oneths_perception", find_spell( 339800 ) );
+
+  buff.timeworn_dreamcatcher = make_buff( this, "timeworn_dreamcatcher", find_spell( 340049 ) )
+                                   ->set_refresh_behavior( buff_refresh_behavior::DURATION );
+  buff.timeworn_dreamcatcher->set_default_value( buff.timeworn_dreamcatcher->data().effectN( 1 ).percent() );
+
+  buff.runecarve_3_nature_buff = make_buff( this, "runecarve_3_nature", find_spell( 339943 ) )->set_reverse( true );
+  buff.runecarve_3_nature_buff->set_default_value( buff.runecarve_3_nature_buff->data().effectN( 1 ).base_value() );
+
+  buff.runecarve_3_arcane_buff = make_buff( this, "runecarve_3_arcane", find_spell( 339946 ) )->set_reverse( true );
+  buff.runecarve_3_arcane_buff->set_default_value( buff.runecarve_3_arcane_buff->data().effectN( 1 ).base_value() );
 
   // Feral
 
