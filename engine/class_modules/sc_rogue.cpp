@@ -352,6 +352,7 @@ public:
     // Assassination
     const spell_data_t* deadly_poison;
     const spell_data_t* improved_poisons;
+    const spell_data_t* improved_poisons_2;
     const spell_data_t* seal_fate;
     const spell_data_t* venomous_wounds;
     const spell_data_t* vendetta;
@@ -1461,33 +1462,38 @@ struct rogue_poison_t : public rogue_attack_t
     actions::rogue_attack_t( name, p, s ),
     proc_chance_( 0 )
   {
-    proc              = true;
-    background        = true;
-    trigger_gcd       = timespan_t::zero();
-    callbacks         = false;
+    proc = true;
+    background = true;
+    trigger_gcd = timespan_t::zero();
+    callbacks = false;
 
-    proc_chance_  = data().proc_chance();
-    if ( s -> affected_by( p -> spec.improved_poisons -> effectN( 1 ) ) )
+    proc_chance_ = data().proc_chance();
+    if ( s->affected_by( p->spec.improved_poisons->effectN( 1 ) ) )
     {
-      proc_chance_ += p -> spec.improved_poisons -> effectN( 1 ).percent();
+      proc_chance_ += p->spec.improved_poisons->effectN( 1 ).percent();
     }
   }
 
   timespan_t execute_time() const override
-  { return timespan_t::zero(); }
+  {
+    return timespan_t::zero();
+  }
 
   virtual double proc_chance( const action_state_t* source_state ) const
   {
-    double chance = proc_chance_;
-
-    if ( p() -> buffs.envenom -> up() )
+    if ( p()->spec.improved_poisons_2->ok() && p()->stealthed( STEALTH_BASIC | STEALTH_ROGUE ) )
     {
-      chance += p() -> buffs.envenom -> data().effectN( 2 ).percent();
+      return p()->spec.improved_poisons_2->effectN( 1 ).percent();
     }
 
-    const rogue_attack_t* attack = rogue_t::cast_attack( source_state -> action );
-    chance += attack -> composite_poison_flat_modifier( source_state );
+    double chance = proc_chance_;
+    if ( p()->buffs.envenom->up() )
+    {
+      chance += p()->buffs.envenom->data().effectN( 2 ).percent();
+    }
 
+    const rogue_attack_t* attack = rogue_t::cast_attack( source_state->action );
+    chance += attack->composite_poison_flat_modifier( source_state );
     return chance;
   }
 
@@ -1495,18 +1501,23 @@ struct rogue_poison_t : public rogue_attack_t
   {
     bool result = rng().roll( proc_chance( source_state ) );
 
-    if ( sim -> debug )
-      sim -> out_debug.printf( "%s attempts to proc %s, target=%s source_action=%s proc_chance=%.3f: %d",
-          player -> name(), name(), source_state -> target -> name(), source_state -> action -> name(), proc_chance( source_state ), result );
+    if ( sim->debug )
+      sim->out_debug.printf( "%s attempts to proc %s, target=%s source_action=%s proc_chance=%.3f: %d",
+          player->name(),
+          name(),
+          source_state->target->name(),
+          source_state->action->name(),
+          proc_chance( source_state ),
+          result );
 
-    if ( ! result )
+    if ( !result )
       return;
 
-    set_target( source_state -> target );
+    set_target( source_state->target );
     execute();
 
     if ( p()->azerite.double_dose.ok() && p()->active_lethal_poison == this &&
-      ( source_state->action->name_str == "mutilate_mh" || source_state->action->name_str == "mutilate_oh" ) )
+        ( source_state->action->name_str == "mutilate_mh" || source_state->action->name_str == "mutilate_oh" ) )
     {
       p()->buffs.double_dose->trigger( 1 );
     }
@@ -6525,6 +6536,7 @@ void rogue_t::init_spells()
   // Assassination
   spec.deadly_poison        = find_specialization_spell( "Deadly Poison" );
   spec.improved_poisons     = find_specialization_spell( "Improved Poisons" );
+  spec.improved_poisons_2   = find_rank_spell( "Improved Poisons", "Rank 2" );
   spec.seal_fate            = find_specialization_spell( "Seal Fate" );
   spec.venomous_wounds      = find_specialization_spell( "Venomous Wounds" );
   spec.vendetta             = find_specialization_spell( "Vendetta" );
