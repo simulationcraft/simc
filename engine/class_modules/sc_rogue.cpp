@@ -51,12 +51,6 @@ namespace actions
   struct shadow_blades_attack_t;
 }
 
-namespace buffs
-{
-  struct rogue_poison_buff_t;
-  struct marked_for_death_debuff_t;
-}
-
 enum current_weapon_e
 {
   WEAPON_PRIMARY = 0u,
@@ -118,7 +112,6 @@ public:
     dot_t* garrote;
     dot_t* internal_bleeding;
     dot_t* killing_spree; // Strictly speaking, this should probably be on player
-    dot_t* nightblade;
     dot_t* rupture;
     dot_t* crimson_tempest;
     dot_t* nothing_personal;
@@ -210,8 +203,8 @@ public:
   actions::melee_t* melee_off_hand;
   actions::shadow_blades_attack_t* shadow_blades_attack;
 
-  // Track target of last manual Nightblade application for Replicating Shadows azerite power
-  player_t* last_nightblade_target;
+  // Track target of last manual Rupture application for Replicating Shadows azerite power
+  player_t* last_rupture_target;
 
   // Is using stealth during combat allowed? Relevant for Dungeon sims.
   bool restealth_allowed;
@@ -564,7 +557,7 @@ public:
     active_replicating_shadows( nullptr ),
     auto_attack( nullptr ), melee_main_hand( nullptr ), melee_off_hand( nullptr ),
     shadow_blades_attack( nullptr ),
-    last_nightblade_target( nullptr ),
+    last_rupture_target( nullptr ),
     restealth_allowed( false ),
     buffs( buffs_t() ),
     cooldowns( cooldowns_t() ),
@@ -3103,106 +3096,6 @@ struct mutilate_t : public rogue_attack_t
   }
 };
 
-// Nightblade ===============================================================
-
-struct nightblade_t : public rogue_attack_t
-{
-  nightblade_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "nightblade", p, p -> find_specialization_spell( "Nightblade" ), options_str )
-  {
-    ap_type = attack_power_type::WEAPON_BOTH;
-
-    if ( p->active_replicating_shadows )
-    {
-      add_child( p->active_replicating_shadows );
-    }
-  }
-
-  timespan_t composite_dot_duration( const action_state_t* s ) const override
-  {
-    timespan_t base_per_tick = data().effectN( 1 ).period();
-    return data().duration() + base_per_tick * cast_state( s ) -> cp;
-  }
-
-  double composite_persistent_multiplier( const action_state_t* state ) const override
-  {
-    // Copy the persistent multiplier from the origin of replications.
-    if ( secondary_trigger == TRIGGER_REPLICATING_SHADOWS )
-      return p() -> get_target_data( p() -> last_nightblade_target ) -> dots.nightblade -> state -> persistent_multiplier;
-    return rogue_attack_t::composite_persistent_multiplier( state );
-  }
-
-  void execute() override
-  {
-    rogue_attack_t::execute();
-
-    // Check if this is a manually applied Nightblade that hits
-    if ( secondary_trigger == TRIGGER_NONE && result_is_hit( execute_state -> result ) )
-    {
-      p() -> buffs.nights_vengeance -> trigger();
-
-      // Save the target for Replicating Shadows
-      p() -> last_nightblade_target = execute_state -> target;
-    }
-  }
-};
-
-struct replicating_shadows_t : public rogue_spell_t
-{
-  action_t* nightblade_action;
-
-  replicating_shadows_t( util::string_view name, rogue_t* p ) :
-    rogue_spell_t( name, p, p -> find_spell(286131) ),
-    nightblade_action( nullptr )
-  {
-    may_miss = false;
-    background  = true;
-    base_dd_min = p -> azerite.replicating_shadows.value();
-    base_dd_max = p -> azerite.replicating_shadows.value();
-  }
-
-  void execute() override
-  {
-    rogue_spell_t::execute();
-
-    if ( ! p() -> last_nightblade_target )
-      return;
-
-    // Get the last manually applied Nightblade as origin. Has to be still up.
-    rogue_td_t* last_nb_tdata = p() -> get_target_data( p() -> last_nightblade_target );
-    if ( last_nb_tdata -> dots.nightblade -> is_ticking() )
-    {
-      // Find the closest target to that manual target without a Nightblade debuff.
-      double minDist = 0.0;
-      player_t* minDistTarget = nullptr;
-      for ( const auto enemy : sim -> target_non_sleeping_list )
-      {
-        rogue_td_t* tdata = p() -> get_target_data( enemy );
-        if ( ! tdata -> dots.nightblade -> is_ticking() )
-        {
-          double dist = enemy -> get_position_distance( p() -> last_nightblade_target -> x_position, p() -> last_nightblade_target -> y_position );
-          if ( ! minDistTarget || dist < minDist)
-          {
-            minDist = dist;
-            minDistTarget = enemy;
-          }
-        }
-      }
-
-      // If it exists, trigger a new nightblade with 0 CP duration. We also copy the persistent multiplier in nightblade_t.
-      // Estimated 10 yd spread radius.
-      if ( minDistTarget && minDist < 10.0 )
-      {
-        if ( !nightblade_action )
-          nightblade_action = p() -> find_action( "nightblade" );
-        if ( nightblade_action )
-          make_event<actions::secondary_attack_trigger_t>( *sim, minDistTarget, nightblade_action,
-            cast_state( last_nb_tdata -> dots.nightblade -> state ) -> cp, TRIGGER_REPLICATING_SHADOWS );
-      }
-    }
-  }
-};
-
 // Roll the Bones ===========================================================
 
 struct roll_the_bones_t : public rogue_spell_t
@@ -3256,6 +3149,10 @@ struct rupture_t : public rogue_attack_t
   rupture_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "rupture", p, p -> find_specialization_spell( "Rupture" ), options_str )
   {
+    if ( p->active_replicating_shadows )
+    {
+      add_child( p->active_replicating_shadows );
+    }
   }
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
@@ -3271,6 +3168,14 @@ struct rupture_t : public rogue_attack_t
     return duration;
   }
 
+  double composite_persistent_multiplier( const action_state_t* state ) const override
+  {
+    // Copy the persistent multiplier from the origin of replications.
+    if ( secondary_trigger == TRIGGER_REPLICATING_SHADOWS )
+      return p()->get_target_data( p()->last_rupture_target )->dots.rupture->state->persistent_multiplier;
+    return rogue_attack_t::composite_persistent_multiplier( state );
+  }
+
   void execute() override
   {
     rogue_attack_t::execute();
@@ -3278,14 +3183,23 @@ struct rupture_t : public rogue_attack_t
     trigger_poison_bomb( execute_state );
 
     // Run quiet proxy buff that handles Scent of Blood
-    td( execute_state -> target ) -> debuffs.rupture -> trigger();
+    td( execute_state->target )->debuffs.rupture->trigger();
+
+    // Check if this is a manually applied Rupture that hits
+    if ( secondary_trigger == TRIGGER_NONE && result_is_hit( execute_state->result ) )
+    {
+      p()->buffs.nights_vengeance->trigger();
+
+      // Save the target for Replicating Shadows
+      p()->last_rupture_target = execute_state->target;
+    }
   }
 
   void tick( dot_t* d ) override
   {
     rogue_attack_t::tick( d );
 
-    trigger_venomous_wounds( d -> state );
+    trigger_venomous_wounds( d->state );
   }
 
   std::unique_ptr<expr_t> create_expression( util::string_view name ) override
@@ -3299,15 +3213,17 @@ struct rupture_t : public rogue_attack_t
         double base_duration;
 
         new_duration_expr_t( rupture_t* a ) :
-          expr_t( "new_duration" ), rupture( a ), cp_max_spend( a -> p() -> consume_cp_max() ),
-          base_duration( a -> data().duration().total_seconds() )
-        {}
+          expr_t( "new_duration" ),
+          rupture( a ),
+          cp_max_spend( a->p()->consume_cp_max() ),
+          base_duration( a->data().duration().total_seconds() )
+        {
+        }
 
         double evaluate() override
         {
-          double duration = base_duration * ( 1.0 + std::min( cp_max_spend, rupture -> p() -> resources.current[ RESOURCE_COMBO_POINT ] ) );
-
-          return std::min( duration * 1.3, duration + rupture -> td( rupture -> target ) -> dots.rupture -> remains().total_seconds() );
+          double duration = base_duration * ( 1.0 + std::min( cp_max_spend, rupture->p()->resources.current[ RESOURCE_COMBO_POINT ] ) );
+          return std::min( duration * 1.3, duration + rupture->td( rupture->target )->dots.rupture->remains().total_seconds() );
         }
       };
 
@@ -3315,6 +3231,62 @@ struct rupture_t : public rogue_attack_t
     }
 
     return rogue_attack_t::create_expression( name );
+  }
+};
+
+struct replicating_shadows_t : public rogue_spell_t
+{
+  action_t* rupture_action;
+
+  replicating_shadows_t( util::string_view name, rogue_t* p ) :
+    rogue_spell_t( name, p, p -> find_spell(286131) ),
+    rupture_action( nullptr )
+  {
+    may_miss = false;
+    background  = true;
+    base_dd_min = p -> azerite.replicating_shadows.value();
+    base_dd_max = p -> azerite.replicating_shadows.value();
+  }
+
+  void execute() override
+  {
+    rogue_spell_t::execute();
+
+    if ( ! p() -> last_rupture_target )
+      return;
+
+    // Get the last manually applied Rupture as origin. Has to be still up.
+    rogue_td_t* last_nb_tdata = p() -> get_target_data( p() -> last_rupture_target );
+    if ( last_nb_tdata -> dots.rupture -> is_ticking() )
+    {
+      // Find the closest target to that manual target without a Rupture debuff.
+      double minDist = 0.0;
+      player_t* minDistTarget = nullptr;
+      for ( const auto enemy : sim -> target_non_sleeping_list )
+      {
+        rogue_td_t* tdata = p() -> get_target_data( enemy );
+        if ( ! tdata -> dots.rupture -> is_ticking() )
+        {
+          double dist = enemy -> get_position_distance( p() -> last_rupture_target -> x_position, p() -> last_rupture_target -> y_position );
+          if ( ! minDistTarget || dist < minDist)
+          {
+            minDist = dist;
+            minDistTarget = enemy;
+          }
+        }
+      }
+
+      // If it exists, trigger a new rupture with 0 CP duration. We also copy the persistent multiplier in rupture_t.
+      // Estimated 10 yd spread radius.
+      if ( minDistTarget && minDist < 10.0 )
+      {
+        if ( !rupture_action )
+          rupture_action = p() -> find_action( "rupture" );
+        if ( rupture_action )
+          make_event<actions::secondary_attack_trigger_t>( *sim, minDistTarget, rupture_action,
+            cast_state( last_nb_tdata -> dots.rupture -> state ) -> cp, TRIGGER_REPLICATING_SHADOWS );
+      }
+    }
   }
 };
 
@@ -5528,7 +5500,6 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
   dots.internal_bleeding  = target -> get_dot( "internal_bleeding", source );
   dots.rupture            = target -> get_dot( "rupture", source );
   dots.crimson_tempest    = target -> get_dot( "crimson_tempest", source );
-  dots.nightblade         = target -> get_dot( "nightblade", source );
   dots.nothing_personal   = target -> get_dot( "nothing_personal", source );
 
   debuffs.marked_for_death = new buffs::marked_for_death_debuff_t( *this );
@@ -5974,12 +5945,12 @@ void rogue_t::init_action_list()
     // Main Rotation
     def -> add_action( "call_action_list,name=cds", "Check CDs at first" );
     def -> add_action( "run_action_list,name=stealthed,if=stealthed.all", "Run fully switches to the Stealthed Rotation (by doing so, it forces pooling if nothing is available)." );
-    def -> add_action( this, "Nightblade", "if=target.time_to_die>6&remains<gcd.max&combo_points>=4-(time<10)*2", "Apply Nightblade at 2+ CP during the first 10 seconds, after that 4+ CP if it expires within the next GCD or is not up" );
+    def -> add_action( this, "Rupture", "if=target.time_to_die>6&remains<gcd.max&combo_points>=4-(time<10)*2", "Apply Rupture at 2+ CP during the first 10 seconds, after that 4+ CP if it expires within the next GCD or is not up" );
     def -> add_action( "variable,name=use_priority_rotation,value=priority_rotation&spell_targets.shuriken_storm>=2", "Only change rotation if we have priority_rotation set and multiple targets up." );
     def -> add_action( "call_action_list,name=stealth_cds,if=variable.use_priority_rotation", "Priority Rotation? Let's give a crap about energy for the stealth CDs (builder still respect it). Yup, it can be that simple." );
     def -> add_action( "variable,name=stealth_threshold,value=25+talent.vigor.enabled*35+talent.master_of_shadows.enabled*25+talent.shadow_focus.enabled*20+talent.alacrity.enabled*10+15*(spell_targets.shuriken_storm>=3)", "Used to define when to use stealth CDs or builders" );
     def -> add_action( "call_action_list,name=stealth_cds,if=energy.deficit<=variable.stealth_threshold", "Consider using a Stealth CD when reaching the energy threshold" );
-    def -> add_action( this, "Nightblade", "if=azerite.nights_vengeance.enabled&!buff.nights_vengeance.up&combo_points.deficit>1&(spell_targets.shuriken_storm<2|variable.use_priority_rotation)&(cooldown.symbols_of_death.remains<=3|(azerite.nights_vengeance.rank>=2&buff.symbols_of_death.remains>3&!stealthed.all&cooldown.shadow_dance.charges_fractional>=0.9))", "Night's Vengeance: Nightblade before Symbols at low CP to combine early refresh with getting the buff up. Also low CP during Symbols between Dances with 2+ NV." );
+    def -> add_action( this, "Rupture", "if=azerite.nights_vengeance.enabled&!buff.nights_vengeance.up&combo_points.deficit>1&(spell_targets.shuriken_storm<2|variable.use_priority_rotation)&(cooldown.symbols_of_death.remains<=3|(azerite.nights_vengeance.rank>=2&buff.symbols_of_death.remains>3&!stealthed.all&cooldown.shadow_dance.charges_fractional>=0.9))", "Night's Vengeance: Rupture before Symbols at low CP to combine early refresh with getting the buff up. Also low CP during Symbols between Dances with 2+ NV." );
     def -> add_action( "call_action_list,name=finish,if=combo_points.deficit<=1|target.time_to_die<=1&combo_points>=3", "Finish at 4+ without DS, 5+ with DS (outside stealth)" );
     def -> add_action( "call_action_list,name=finish,if=spell_targets.shuriken_storm=4&combo_points>=4", "With DS also finish at 4+ against exactly 4 targets (outside stealth)" );
     def -> add_action( "call_action_list,name=build,if=energy.deficit<=variable.stealth_threshold", "Use a builder when reaching the energy threshold" );
@@ -5992,14 +5963,14 @@ void rogue_t::init_action_list()
     action_priority_list_t* cds = get_action_priority_list( "cds", "Cooldowns" );
     cds -> add_action( this, "Shadow Dance", "use_off_gcd=1,if=!buff.shadow_dance.up&buff.shuriken_tornado.up&buff.shuriken_tornado.remains<=3.5", "Use Dance off-gcd before the first Shuriken Storm from Tornado comes in." );
     cds -> add_action( this, "Symbols of Death", "use_off_gcd=1,if=buff.shuriken_tornado.up&buff.shuriken_tornado.remains<=3.5", "(Unless already up because we took Shadow Focus) use Symbols off-gcd before the first Shuriken Storm from Tornado comes in." );
-    cds -> add_action( "call_action_list,name=essences,if=!stealthed.all&dot.nightblade.ticking|essence.breath_of_the_dying.major&time>=2" );
+    cds -> add_action( "call_action_list,name=essences,if=!stealthed.all&dot.rupture.ticking|essence.breath_of_the_dying.major&time>=2" );
     cds -> add_action( "pool_resource,for_next=1,if=!talent.shadow_focus.enabled", "Pool for Tornado pre-SoD with ShD ready when not running SF." );
-    cds -> add_talent( this, "Shuriken Tornado", "if=energy>=60&dot.nightblade.ticking&cooldown.symbols_of_death.up&cooldown.shadow_dance.charges>=1", "Use Tornado pre SoD when we have the energy whether from pooling without SF or just generally." );
-    cds -> add_action( this, "Symbols of Death", "if=dot.nightblade.ticking&!cooldown.shadow_blades.up&(!talent.shuriken_tornado.enabled|talent.shadow_focus.enabled|cooldown.shuriken_tornado.remains>2)&(!essence.blood_of_the_enemy.major|cooldown.blood_of_the_enemy.remains>2)&(azerite.nights_vengeance.rank<2|buff.nights_vengeance.up)", "Use Symbols on cooldown (after first Nightblade) unless we are going to pop Tornado and do not have Shadow Focus." );
+    cds -> add_talent( this, "Shuriken Tornado", "if=energy>=60&dot.rupture.ticking&cooldown.symbols_of_death.up&cooldown.shadow_dance.charges>=1", "Use Tornado pre SoD when we have the energy whether from pooling without SF or just generally." );
+    cds -> add_action( this, "Symbols of Death", "if=dot.rupture.ticking&!cooldown.shadow_blades.up&(!talent.shuriken_tornado.enabled|talent.shadow_focus.enabled|cooldown.shuriken_tornado.remains>2)&(!essence.blood_of_the_enemy.major|cooldown.blood_of_the_enemy.remains>2)&(azerite.nights_vengeance.rank<2|buff.nights_vengeance.up)", "Use Symbols on cooldown (after first Rupture) unless we are going to pop Tornado and do not have Shadow Focus." );
     cds -> add_talent( this, "Marked for Death", "target_if=min:target.time_to_die,if=raid_event.adds.up&(target.time_to_die<combo_points.deficit|!stealthed.all&combo_points.deficit>=cp_max_spend)", "If adds are up, snipe the one with lowest TTD. Use when dying faster than CP deficit or not stealthed without any CP." );
     cds -> add_talent( this, "Marked for Death", "if=raid_event.adds.in>30-raid_event.adds.duration&!stealthed.all&combo_points.deficit>=cp_max_spend", "If no adds will die within the next 30s, use MfD on boss without any CP and no stealth." );
-    cds -> add_action( this, "Shadow Blades", "if=!stealthed.all&dot.nightblade.ticking&combo_points.deficit>=2" );
-    cds -> add_talent( this, "Shuriken Tornado", "if=talent.shadow_focus.enabled&dot.nightblade.ticking&buff.symbols_of_death.up", "With SF, if not already done, use Tornado with SoD up." );
+    cds -> add_action( this, "Shadow Blades", "if=!stealthed.all&dot.rupture.ticking&combo_points.deficit>=2" );
+    cds -> add_talent( this, "Shuriken Tornado", "if=talent.shadow_focus.enabled&dot.rupture.ticking&buff.symbols_of_death.up", "With SF, if not already done, use Tornado with SoD up." );
     cds -> add_action( this, "Shadow Dance", "if=!buff.shadow_dance.up&target.time_to_die<=5+talent.subterfuge.enabled&!raid_event.adds.up" );
 
     // Non-spec stuff with lower prio
@@ -6009,7 +5980,7 @@ void rogue_t::init_action_list()
     cds -> add_action( "fireblood,if=buff.symbols_of_death.up" );
     cds -> add_action( "ancestral_call,if=buff.symbols_of_death.up" );
 
-    cds -> add_action( "use_item,effect_name=cyclotronic_blast,if=!stealthed.all&dot.nightblade.ticking&!buff.symbols_of_death.up&energy.deficit>=30" );
+    cds -> add_action( "use_item,effect_name=cyclotronic_blast,if=!stealthed.all&dot.rupture.ticking&!buff.symbols_of_death.up&energy.deficit>=30" );
     cds -> add_action( "use_item,name=azsharas_font_of_power,if=!buff.shadow_dance.up&cooldown.symbols_of_death.remains<10" );
     cds -> add_action( "use_item,name=ashvanes_razor_coral,if=debuff.razor_coral_debuff.down|debuff.conductive_ink_debuff.up&target.health.pct<32&target.health.pct>=30|!debuff.conductive_ink_debuff.up&(debuff.razor_coral_debuff.stack>=25-10*debuff.blood_of_the_enemy.up|target.time_to_die<40)&buff.symbols_of_death.remains>8", "Very roughly rule of thumbified maths below: Use for Inkpod crit, otherwise with SoD at 25+ stacks or 15+ with also Blood up." );
     cds -> add_action( "use_item,name=mydas_talisman" );
@@ -6037,7 +6008,7 @@ void rogue_t::init_action_list()
     stealth_cds -> add_action( "shadowmeld,if=energy>=40&energy.deficit>=10&!variable.shd_threshold&combo_points.deficit>1&debuff.find_weakness.remains<1" );
     stealth_cds -> add_action( "variable,name=shd_combo_points,value=combo_points.deficit>=4-(talent.deeper_stratagem.enabled&(azerite.the_first_dance.enabled&!talent.dark_shadow.enabled&!talent.subterfuge.enabled&spell_targets.shuriken_storm<3))", "CP requirement: Dance at low CP by default. (Subtraction is a copy from the stealhed finisher call for TFD handling.)" );
     stealth_cds -> add_action( "variable,name=shd_combo_points,value=combo_points.deficit<=1+2*azerite.the_first_dance.enabled,if=variable.use_priority_rotation&(talent.nightstalker.enabled|talent.dark_shadow.enabled)", "CP requirement: Dance only before finishers if we have amp talents and priority rotation." );
-    stealth_cds -> add_action( this, "Shadow Dance", "if=variable.shd_combo_points&(!talent.dark_shadow.enabled|dot.nightblade.remains>=5+talent.subterfuge.enabled)&(variable.shd_threshold|buff.symbols_of_death.remains>=1.2|spell_targets.shuriken_storm>=4&cooldown.symbols_of_death.remains>10)&(azerite.nights_vengeance.rank<2|buff.nights_vengeance.up)", "With Dark Shadow only Dance when Nightblade will stay up. Use during Symbols or above threshold. Wait for NV buff with 2+NV." );
+    stealth_cds -> add_action( this, "Shadow Dance", "if=variable.shd_combo_points&(!talent.dark_shadow.enabled|dot.rupture.remains>=5+talent.subterfuge.enabled)&(variable.shd_threshold|buff.symbols_of_death.remains>=1.2|spell_targets.shuriken_storm>=4&cooldown.symbols_of_death.remains>10)&(azerite.nights_vengeance.rank<2|buff.nights_vengeance.up)", "With Dark Shadow only Dance when Rupture will stay up. Use during Symbols or above threshold. Wait for NV buff with 2+NV." );
     stealth_cds -> add_action( this, "Shadow Dance", "if=variable.shd_combo_points&target.time_to_die<cooldown.symbols_of_death.remains&!raid_event.adds.up", "Burn remaining Dances before the target dies if SoD won't be ready in time." );
 
     // Stealthed Rotation
@@ -6057,9 +6028,9 @@ void rogue_t::init_action_list()
     action_priority_list_t* finish = get_action_priority_list( "finish", "Finishers" );
     finish -> add_action( "pool_resource,for_next=1" );
     finish -> add_action( this, "Eviscerate", "if=buff.nights_vengeance.up&(spell_targets.shuriken_storm<2|variable.use_priority_rotation|!talent.secret_technique.enabled|!cooldown.secret_technique.up)", "Eviscerate has highest priority with Night's Vengeance up. Exception is AoE damage when SecTec is ready." );
-    finish -> add_action( this, "Nightblade", "if=(!talent.dark_shadow.enabled|!buff.shadow_dance.up)&target.time_to_die-remains>6&remains<tick_time*2", "Keep up Nightblade if it is about to run out. Do not use NB during Dance, if talented into Dark Shadow." );
-    finish -> add_action( this, "Nightblade", "cycle_targets=1,if=!variable.use_priority_rotation&spell_targets.shuriken_storm>=2&(azerite.nights_vengeance.enabled|!azerite.replicating_shadows.enabled|spell_targets.shuriken_storm-active_dot.nightblade>=2)&!buff.shadow_dance.up&target.time_to_die>=(5+(2*combo_points))&refreshable", "Multidotting outside Dance on targets that will live for the duration of Nightblade, refresh during pandemic. Multidot as long as 2+ targets do not have Nightblade up with Replicating Shadows (unless you have Night's Vengeance too)." );
-    finish -> add_action( this, "Nightblade", "if=remains<cooldown.symbols_of_death.remains+10&cooldown.symbols_of_death.remains<=5&target.time_to_die-remains>cooldown.symbols_of_death.remains+5", "Refresh Nightblade early if it will expire during Symbols. Do that refresh if SoD gets ready in the next 5s." );
+    finish -> add_action( this, "Rupture", "if=(!talent.dark_shadow.enabled|!buff.shadow_dance.up)&target.time_to_die-remains>6&remains<tick_time*2", "Keep up Rupture if it is about to run out. Do not use NB during Dance, if talented into Dark Shadow." );
+    finish -> add_action( this, "Rupture", "cycle_targets=1,if=!variable.use_priority_rotation&spell_targets.shuriken_storm>=2&(azerite.nights_vengeance.enabled|!azerite.replicating_shadows.enabled|spell_targets.shuriken_storm-active_dot.rupture>=2)&!buff.shadow_dance.up&target.time_to_die>=(5+(2*combo_points))&refreshable", "Multidotting outside Dance on targets that will live for the duration of Rupture, refresh during pandemic. Multidot as long as 2+ targets do not have Rupture up with Replicating Shadows (unless you have Night's Vengeance too)." );
+    finish -> add_action( this, "Rupture", "if=remains<cooldown.symbols_of_death.remains+10&cooldown.symbols_of_death.remains<=5&target.time_to_die-remains>cooldown.symbols_of_death.remains+5", "Refresh Rupture early if it will expire during Symbols. Do that refresh if SoD gets ready in the next 5s." );
     finish -> add_talent( this, "Secret Technique" );
     finish -> add_action( this, "Eviscerate" );
 
@@ -6107,7 +6078,6 @@ action_t* rogue_t::create_action( util::string_view name, const std::string& opt
   if ( name == "killing_spree"       ) return new killing_spree_t      ( this, options_str );
   if ( name == "marked_for_death"    ) return new marked_for_death_t   ( this, options_str );
   if ( name == "mutilate"            ) return new mutilate_t           ( this, options_str );
-  if ( name == "nightblade"          ) return new nightblade_t         ( this, options_str );
   if ( name == "pistol_shot"         ) return new pistol_shot_t        ( this, options_str );
   if ( name == "poisoned_knife"      ) return new poisoned_knife_t     ( this, options_str );
   if ( name == "roll_the_bones"      ) return new roll_the_bones_t     ( this, options_str );
@@ -7286,7 +7256,7 @@ void rogue_t::reset()
 
   shadow_techniques = 0;
 
-  last_nightblade_target = nullptr;
+  last_rupture_target = nullptr;
 
   restealth_allowed = false;
 
