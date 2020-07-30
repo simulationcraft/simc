@@ -735,7 +735,7 @@
 3488583, DBFilesClient\Soulbind.db2
 3490472, DBFilesClient\SoulbindUiDisplayInfo.db2
 3500241, DBFilesClient\RuneforgeLegendaryAbility.db2
-3502042, DBFilesClient\UiCovenantAbility.db2
+3502042, DBFilesClient\UICovenantAbility.db2
 3502043, DBFilesClient\UICovenantPreview.db2
 3507821, DBFilesClient\ChrRaceRacialAbility.db2
 3509132, DBFilesClient\UiCovenantDisplayInfo.db2
