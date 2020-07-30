@@ -300,7 +300,7 @@ public:
   } azerite;
 
   struct {
-    spell_data_ptr_t death_chakram;
+    spell_data_ptr_t death_chakram; // NYI
     spell_data_ptr_t flayed_shot;
     spell_data_ptr_t resonating_arrow;
     spell_data_ptr_t wild_spirits;
@@ -5390,10 +5390,10 @@ void hunter_t::init_spells()
 
   // Covenants
 
-  covenants.death_chakram    = find_spell( 325028 );
-  covenants.flayed_shot      = find_spell( 324149 );
-  covenants.resonating_arrow = find_spell( 308491 );
-  covenants.wild_spirits     = find_spell( 328231 );
+  covenants.death_chakram    = find_covenant_spell( "Death Chakram" );
+  covenants.flayed_shot      = find_covenant_spell( "Flayed Shot" );
+  covenants.resonating_arrow = find_covenant_spell( "Resonating Arrow" );
+  covenants.wild_spirits     = find_covenant_spell( "Wild Spirits" );
 
   // Soulbind Conduits
 
