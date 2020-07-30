@@ -30,7 +30,7 @@ enum class covenant_e : unsigned
 
 class conduit_data_t
 {
-  const player_t*             m_player;
+  /* const player_t*             m_player; */
   const conduit_rank_entry_t* m_conduit;
   const spell_data_t*         m_spell;
 
@@ -104,6 +104,11 @@ public:
 
   /// Parse player-scope "soulbind" option
   bool parse_soulbind( sim_t* sim, const std::string& name, const std::string& value );
+
+  /// Retrieve covenant ability spell data. Returns spell_data_t::not_found if covenant
+  /// ability is not enabled on the actor. Returns spell_data_t::nil if covenant ability
+  /// cannot be found from client data.
+  const spell_data_t* get_covenant_ability( util::string_view name ) const;
 
   /// Retrieve soulbind ability spell data. Returns spell_data_t::not_found if soulbind
   /// ability is not enabled on the actor. Returns spell_data_t::nil if soulbind ability

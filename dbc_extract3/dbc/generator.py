@@ -2666,6 +2666,13 @@ class SpellDataGenerator(DataGenerator):
                     if rank.ref('id_spell').id == rank.id_spell:
                         self.process_spell(rank.id_spell, ids, 0, 0)
 
+        # Covenant abilities
+        for entry in self.db('UICovenantAbility').values():
+            if entry.id_spell == 0 or entry.ref('id_spell').id != entry.id_spell:
+                continue
+
+            self.process_spell(entry.id_spell, ids, 0, 0)
+
         # Souldbind conduits
         for _, entry in self.db('SoulbindConduit').items():
             for spell_id in set(rank.id_spell for rank in entry.children('SoulbindConduitRank')):

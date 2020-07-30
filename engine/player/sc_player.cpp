@@ -9451,6 +9451,16 @@ const spell_data_t* player_t::find_soulbind_spell( util::string_view name ) cons
   return covenant->get_soulbind_ability( name );
 }
 
+const spell_data_t* player_t::find_covenant_spell( util::string_view name ) const
+{
+  if ( !covenant )
+  {
+    return spell_data_t::not_found();
+  }
+
+  return covenant->get_covenant_ability( name );
+}
+
 item_runeforge_t player_t::find_runeforge_legendary( util::string_view name ) const
 {
   auto entries = runeforge_legendary_entry_t::find( name, dbc->ptr );
