@@ -395,7 +395,7 @@ bool parse_player( sim_t*             sim,
 bool parse_proxy( sim_t* , util::string_view /* name */, const std::string& value )
 {
 
-  std::vector<std::string> splits = util::string_split( value, "," );
+  auto splits = util::string_split( value, "," );
 
   if ( splits.size() != 3 )
   {
@@ -668,7 +668,7 @@ bool parse_guild( sim_t*             sim,
     std::vector<int> ranks_list;
     if ( ! ranks_str.empty() )
     {
-      std::vector<std::string> ranks = util::string_split( ranks_str, "/" );
+      auto ranks = util::string_split( ranks_str, "/" );
 
       for ( size_t i = 0; i < ranks.size(); i++ )
         ranks_list.push_back( std::stoi( ranks[i] ) );
@@ -739,7 +739,7 @@ bool parse_override_spell_data( sim_t*             sim,
     throw std::invalid_argument("Invalid form. Spell data override takes the form <spell|effect|power>.<id>.<field>=value");
   }
 
-  std::vector< std::string > splits = util::string_split( value.substr( 0, v_pos ), "." );
+  auto splits = util::string_split( value.substr( 0, v_pos ), "." );
 
   if ( splits.size() != 3 )
   {
@@ -781,7 +781,7 @@ bool parse_override_target_health( sim_t*             sim,
                                    util::string_view /* name */,
                                    const std::string& value )
 {
-  std::vector<std::string> healths = util::string_split( value, "/" );
+  auto healths = util::string_split( value, "/" );
 
   for ( size_t i = 0; i < healths.size(); ++i )
   {
@@ -852,7 +852,7 @@ bool parse_item_sources( sim_t*             sim,
 {
   sim -> item_db_sources.clear();
 
-  std::vector<std::string> sources = util::string_split( value, ":/|" );
+  auto sources = util::string_split( value, ":/|" );
 
   for ( size_t j = 0; j < sources.size(); j++ )
   {
@@ -3359,7 +3359,7 @@ std::unique_ptr<expr_t> sim_t::create_expression( util::string_view name_str )
     return std::make_unique<nonexecute_actors_pct_expr>( this );
   }
 
-  std::vector<std::string> splits = util::string_split( name_str, "." );
+  auto splits = util::string_split( name_str, "." );
 
   if ( splits.size() == 3 )
   {

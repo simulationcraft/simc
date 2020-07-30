@@ -23,7 +23,7 @@ sequence_t::sequence_t( player_t* p, const std::string& sub_action_str ) :
 {
   trigger_gcd = timespan_t::zero();
 
-  std::vector<std::string> splits = util::string_split( sub_action_str, ":" );
+  auto splits = util::string_split( sub_action_str, ":" );
   if ( !splits.empty() && splits[ 0 ].find( '=' ) != std::string::npos )
   {
     add_option( opt_string( "name", name_str ) );
@@ -139,7 +139,7 @@ strict_sequence_t::strict_sequence_t( player_t* p, const std::string& sub_action
 {
   trigger_gcd = timespan_t::zero();
 
-  std::vector<std::string> splits = util::string_split( sub_action_str, ":" );
+  auto splits = util::string_split( sub_action_str, ":" );
   if ( ! splits.empty() )
   {
     add_option( opt_bool( "allow_skip", allow_skip ) );

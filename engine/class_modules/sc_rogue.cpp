@@ -7041,7 +7041,7 @@ static bool parse_fixed_rtb( sim_t* sim, util::string_view /* name */, const std
 
 static bool parse_fixed_rtb_odds( sim_t* sim, util::string_view /* name */, const std::string& value )
 {
-  std::vector<std::string> odds = util::string_split( value, "," );
+  auto odds = util::string_split( value, "," );
   if ( odds.size() != 6 )
   {
     sim -> errorf( "%s: Expected 6 comma-separated values for 'fixed_rtb_odds'", sim -> active_player -> name());

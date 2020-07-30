@@ -711,7 +711,7 @@ void item_t::parse_options()
 
   if ( ! option_gem_id_str.empty() )
   {
-    std::vector<std::string> spl = util::string_split( option_gem_id_str, ":/" );
+    auto spl = util::string_split( option_gem_id_str, ":/" );
     for ( size_t i = 0, end = std::min( range::size( parsed.gem_id ), spl.size() ); i < end; i++ )
     {
       int gem_id = std::stoi( spl[ i ] );
@@ -722,7 +722,7 @@ void item_t::parse_options()
 
   if ( ! option_gem_bonus_id_str.empty() )
   {
-    std::vector<std::string> gem_bonus_split = util::string_split( option_gem_bonus_id_str, "/" );
+    auto gem_bonus_split = util::string_split( option_gem_bonus_id_str, "/" );
     size_t gem_slot = 0;
     for ( const auto& gem_bonus_id_str : gem_bonus_split )
     {
@@ -732,7 +732,7 @@ void item_t::parse_options()
         continue;
       }
 
-      std::vector<std::string> bonus_id_split = util::string_split( gem_bonus_id_str, ":" );
+      auto bonus_id_split = util::string_split( gem_bonus_id_str, ":" );
       for ( const auto& bonus_id_str : bonus_id_split )
       {
         parsed.gem_bonus_id[ gem_slot ].push_back( util::to_unsigned( bonus_id_str ) );
@@ -791,7 +791,7 @@ void item_t::parse_options()
   {
     try
     {
-      std::vector<std::string> split = util::string_split( option_bonus_id_str, "/:" );
+      auto split = util::string_split( option_bonus_id_str, "/:" );
       for (auto & elem : split)
       {
         int bonus_id = std::stoi( elem );

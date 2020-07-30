@@ -550,7 +550,7 @@ bool item_database::initialize_item_sources( item_t& item, std::vector<std::stri
 
   if ( ! item.option_data_source_str.empty() )
   {
-    std::vector<std::string> item_sources_split = util::string_split( item.option_data_source_str, ":/|" );
+    auto item_sources_split = util::string_split( item.option_data_source_str, ":/|" );
 
     source_list.clear();
 
@@ -971,7 +971,7 @@ double item_database::item_budget( const item_t* item, unsigned max_ilevel )
 std::vector<item_database::token_t> item_database::parse_tokens( const std::string& encoded_str )
 {
   std::vector<token_t> tokens;
-  std::vector<std::string> splits = util::string_split( encoded_str, "_" );
+  auto splits = util::string_split( encoded_str, "_" );
 
   tokens.reserve( splits.size() );
   for ( auto& split : splits )

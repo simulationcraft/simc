@@ -843,7 +843,7 @@ bool parse_stat_timelines( sim_t* sim, util::string_view name, const std::string
   assert( name == "stat_timelines" );
   (void)name;
 
-  std::vector<std::string> stats = util::string_split( value, "," );
+  auto stats = util::string_split( value, "," );
 
   for ( auto& stat_type : stats )
   {
@@ -1693,7 +1693,7 @@ void player_t::init_items()
   sim->print_debug( "Initializing items for {}.", *this );
 
   // Create items
-  for ( const std::string& split : util::string_split( items_str, "/" ) )
+  for ( const auto& split : util::string_split( items_str, "/" ) )
   {
     if ( find_item_by_name( split ) )
     {
@@ -2078,7 +2078,7 @@ void player_t::init_professions()
 
   sim->print_debug( "Initializing professions for {}.", *this );
 
-  std::vector<std::string> splits = util::string_split( professions_str, ",/" );
+  auto splits = util::string_split( professions_str, ",/" );
 
   for ( auto& split : splits )
   {
@@ -9825,7 +9825,7 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
   // time_to_pct expressions
   if ( util::str_prefix_ci( expression_str, "time_to_" ) )
   {
-    std::vector<std::string> parts = util::string_split( expression_str, "_" );
+    auto parts = util::string_split( expression_str, "_" );
     double percent = -1.0;
 
     if ( util::str_in_str_ci( parts[ 2 ], "die" ) )
@@ -9854,7 +9854,7 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
   if ( util::str_in_str_ci( expression_str, "incoming_damage_" ) || util::str_in_str_ci( expression_str, "incoming_magic_damage_" ))
   {
     bool magic_damage = util::str_in_str_ci( expression_str, "incoming_magic_damage_" );
-    std::vector<std::string> parts = util::string_split( expression_str, "_" );
+    auto parts = util::string_split( expression_str, "_" );
     timespan_t window_duration;
 
     if ( util::str_in_str_ci( parts.back(), "ms" ) )
@@ -9881,7 +9881,7 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
   }
 
   // everything from here on requires splits
-  std::vector<std::string> splits = util::string_split( expression_str, "." );
+  auto splits = util::string_split( expression_str, "." );
 
   if ( splits.size() == 2 )
   {
@@ -10578,7 +10578,7 @@ std::string player_t::create_profile( save_e stype )
 
     if ( talent_overrides_str.size() > 0 )
     {
-      std::vector<std::string> splits = util::string_split( talent_overrides_str, "/" );
+      auto splits = util::string_split( talent_overrides_str, "/" );
       for ( size_t i = 0; i < splits.size(); i++ )
       {
         profile_str += "talent_override=" + splits[ i ] + term;
