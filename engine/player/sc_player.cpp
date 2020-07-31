@@ -9466,12 +9466,12 @@ const spell_data_t* player_t::find_covenant_spell( util::string_view name ) cons
   return covenant->get_covenant_ability( name );
 }
 
-item_runeforge_t player_t::find_runeforge_legendary( util::string_view name ) const
+item_runeforge_t player_t::find_runeforge_legendary( util::string_view name, bool tokenized ) const
 {
-  auto entries = runeforge_legendary_entry_t::find( name, dbc->ptr );
+  auto entries = runeforge_legendary_entry_t::find( name, dbc->ptr, tokenized );
   if ( entries.size() == 0 )
   {
-    return {};
+    return item_runeforge_t::nil();
   }
 
   auto spec_it = range::find_if( entries, [this]( const runeforge_legendary_entry_t& e ) {
@@ -9480,7 +9480,7 @@ item_runeforge_t player_t::find_runeforge_legendary( util::string_view name ) co
 
   if ( spec_it == entries.end() )
   {
-    return {};
+    return item_runeforge_t::not_found();
   }
 
   // Iterate over all items to find the bonus id on an item. Note that Simulationcraft
@@ -9500,7 +9500,7 @@ item_runeforge_t player_t::find_runeforge_legendary( util::string_view name ) co
 
   if ( item == nullptr )
   {
-    return {};
+    return item_runeforge_t::not_found();
   }
 
   return { *spec_it, item };
@@ -10291,6 +10291,11 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
   if ( splits[ 0 ] == "soulbind" || splits[ 0 ] == "conduit" || splits[ 0 ] == "covenant" )
   {
     return covenant->create_expression( splits );
+  }
+
+  if ( auto expr = runeforge::create_expression( this, splits ) )
+  {
+    return expr;
   }
 
   return sim->create_expression( expression_str );

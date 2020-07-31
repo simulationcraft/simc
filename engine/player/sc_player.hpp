@@ -727,7 +727,7 @@ public:
   azerite_essence_t find_azerite_essence( util::string_view name, bool tokenized = false ) const;
   azerite_essence_t find_azerite_essence( unsigned power_id ) const;
 
-  item_runeforge_t find_runeforge_legendary( util::string_view name ) const;
+  item_runeforge_t find_runeforge_legendary( util::string_view name, bool tokenized = false ) const;
 
   conduit_data_t find_conduit_spell( util::string_view name ) const;
   const spell_data_t* find_soulbind_spell( util::string_view name ) const;
