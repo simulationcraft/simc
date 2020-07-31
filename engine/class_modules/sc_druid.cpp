@@ -2430,8 +2430,11 @@ public:
           buff_t* proc_buff =
             p()->talent.incarnation_moonkin->ok() ? p()->buff.incarnation_moonkin : p()->buff.celestial_alignment;
 
-          if ( proc_buff->check() )
+          if ( proc_buff->check() ) {
             proc_buff->extend_duration( p(), pulsar_dur );
+            p()->buff.eclipse_lunar->extend_duration( p(), pulsar_dur );
+            p()->buff.eclipse_solar->extend_duration( p(), pulsar_dur );
+          }
           else
             proc_buff->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, pulsar_dur );
 
@@ -8204,7 +8207,7 @@ void druid_t::create_buffs()
     ->set_stack_change_callback( [this] ( buff_t* b, int, int new_ ) {
       if ( new_ )
       {
-        this->eclipse_handler.trigger_both();
+        this->eclipse_handler.trigger_both( b->buff_duration );
         uptime.combined_ca_inc->update( true, sim->current_time() );
       }
       else
@@ -8219,10 +8222,10 @@ void druid_t::create_buffs()
     ->set_default_value( talent.incarnation_moonkin->effectN( 1 ).percent() )
     ->add_invalidate( CACHE_HASTE )
     ->add_invalidate( CACHE_CRIT_CHANCE )
-    ->set_stack_change_callback( [this] ( buff_t*, int, int new_ ) {
+    ->set_stack_change_callback( [this] ( buff_t* b, int, int new_ ) {
       if ( new_ )
       {
-        this->eclipse_handler.trigger_both();
+        this->eclipse_handler.trigger_both( b->buff_duration );
         uptime.combined_ca_inc->update( true, sim->current_time() );
       }
       else
