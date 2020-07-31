@@ -6570,7 +6570,7 @@ struct starfall_t : public druid_spell_t
 
   void execute() override
   {
-    if ( p()->buff.oneths_free_starfall->up() && oneth_sf )
+    if ( free_cast == free_cast_e::NONE && p()->buff.oneths_free_starfall->up() && oneth_sf )
     {
       p()->buff.oneths_free_starfall->expire();
       oneth_sf->set_target( target );
@@ -6695,7 +6695,7 @@ struct starsurge_t : public druid_spell_t
 
   void execute() override
   {
-    if ( p()->buff.oneths_free_starsurge->up() && oneth_ss )
+    if ( free_cast == free_cast_e::NONE && p()->buff.oneths_free_starsurge->up() && oneth_ss )
     {
       p()->buff.oneths_free_starsurge->expire();
       oneth_ss->set_target( target );
