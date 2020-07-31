@@ -224,20 +224,6 @@ int numDigits( T number );
 
 bool contains_non_ascii( util::string_view );
 
-// https://graphics.stanford.edu/~seander/bithacks.html#RoundUpPowerOf2
-inline unsigned next_power_of_two( unsigned v )
-{
-  v--;
-  v |= v >> 1;
-  v |= v >> 2;
-  v |= v >> 4;
-  v |= v >> 8;
-  v |= v >> 16;
-  v++;
-
-  return v;
-}
-
 void print_chained_exception( const std::exception& e, std::ostream& out, int level =  0);
 void print_chained_exception( std::exception_ptr eptr, std::ostream& out, int level =  0);
 

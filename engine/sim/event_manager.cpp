@@ -60,7 +60,7 @@ event_manager_t::~event_manager_t()
 
 void* event_manager_t::allocate_event( const std::size_t size )
 {
-  static const std::size_t SIZE = util::next_power_of_two( 2 * sizeof( event_t ) );
+  static constexpr std::size_t SIZE = util::next_power_of_two( 2 * sizeof( event_t ) );
   assert( SIZE > size );
   (void)size;
 

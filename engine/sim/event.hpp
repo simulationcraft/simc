@@ -17,6 +17,22 @@ namespace rng {
     struct rng_t;
 }
 
+namespace util {
+// https://graphics.stanford.edu/~seander/bithacks.html#RoundUpPowerOf2
+constexpr unsigned next_power_of_two( unsigned v )
+{
+  v--;
+  v |= v >> 1;
+  v |= v >> 2;
+  v |= v >> 4;
+  v |= v >> 8;
+  v |= v >> 16;
+  v++;
+
+  return v;
+}
+} // namespace util
+
 // Event ====================================================================
 //
 // event_t is designed to be a very simple light-weight event transporter and
@@ -104,6 +120,8 @@ inline Event* make_event( sim_t& sim, Args&&... args )
 {
   static_assert( std::is_base_of<event_t, Event>::value,
                  "Event must be derived from event_t" );
+  static_assert( sizeof( Event ) <= util::next_power_of_two( 2 * sizeof( event_t ) ),
+                 "Event type is too big" );
   auto r = new ( sim ) Event( std::forward<Args>(args)... );
   assert( r -> id != 0 && "Event not added to event manager!" );
   return r;
