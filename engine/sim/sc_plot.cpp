@@ -26,7 +26,7 @@ bool is_plot_stat( sim_t* sim, stat_e stat )
     auto stat_list =
         util::string_split( sim->plot->dps_plot_stat_str, ",:;/|" );
 
-    auto it = range::find_if( stat_list, [stat]( const std::string& s ) {
+    auto it = range::find_if( stat_list, [stat]( util::string_view s ) {
       return stat == util::parse_stat_type( s );
     } );
 

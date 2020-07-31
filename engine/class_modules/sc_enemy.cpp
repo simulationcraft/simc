@@ -165,15 +165,13 @@ struct enemy_action_t : public ACTION_TYPE
   {
     auto splits = util::string_split( options_str, "," );
     std::string filtered_options    = "";
-    for ( size_t i = 0; i < splits.size(); i++ )
+    for ( auto split : splits )
     {
-      if ( util::str_in_str_ci( splits[ i ], "if=" ) )
-        splits[ i ].erase();
-      else
+      if ( !util::str_in_str_ci( split, "if=" ) )
       {
         if ( filtered_options.length() > 0 )
           filtered_options += ",";
-        filtered_options += splits[ i ];
+        filtered_options += std::string(split);
       }
     }
     return filtered_options;
@@ -1425,7 +1423,7 @@ void enemy_t::init_action_list()
       std::string new_action_list_str = "";
 
       // split the action_list_str into individual actions so we can modify each later
-      std::vector<std::string> splits = util::string_split( action_list_str, "/" );
+      auto splits = util::string_split( action_list_str, "/" );
 
       for ( size_t i = 0; i < tanks.size(); i++ )
       {
@@ -1436,7 +1434,7 @@ void enemy_t::init_action_list()
         // to each action if it doesn't already specify a different target
         for ( auto& split : splits )
         {
-          tank_str += "/" + split;
+          tank_str += fmt::format( "/{}", split );
 
           if ( !util::str_in_str_ci( "target=", split ) )
             tank_str += ",target=" + tanks[ i ]->name_str;
@@ -1622,7 +1620,7 @@ std::unique_ptr<expr_t> enemy_t::create_expression( util::string_view name_str )
   if ( name_str == "current_target" )
     return make_ref_expr( name_str, current_target );
 
-  std::vector<std::string> splits = util::string_split( name_str, "." );
+  auto splits = util::string_split( name_str, "." );
 
   if ( splits[ 0 ] == "current_target" )
   {

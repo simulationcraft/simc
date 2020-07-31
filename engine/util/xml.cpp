@@ -240,7 +240,7 @@ void xml_node_t::create_children( const std::string&      input,
 
 // xml_node_t::search_tree ==================================================
 
-xml_node_t* xml_node_t::search_tree( const std::string& node_name )
+xml_node_t* xml_node_t::search_tree( util::string_view node_name )
 {
   if ( node_name.empty() || node_name == name_str )
     return this;
@@ -301,7 +301,7 @@ xml_node_t* xml_node_t::split_path( std::string&       key,
       if ( ! node ) return nullptr;
     }
 
-    key = splits[ splits.size() - 1 ];
+    key = std::string( splits[ splits.size() - 1 ] );
   }
 
   return node;
@@ -1142,7 +1142,7 @@ sc_xml_t sc_xml_t::search_tree( const std::string& node_name,
   return sc_xml_t();
 }
 
-sc_xml_t sc_xml_t::search_tree( const std::string& node_name ) const
+sc_xml_t sc_xml_t::search_tree( util::string_view node_name ) const
 {
   if ( node_name.empty() || util::str_compare_ci( node_name, name() ) )
   {
@@ -1188,7 +1188,7 @@ sc_xml_t sc_xml_t::split_path( std::string& key, const std::string& path ) const
       }
     }
 
-    key = splits[ splits.size() - 1 ];
+    key = std::string( splits[ splits.size() - 1 ] );
   }
 
   return node;

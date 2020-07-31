@@ -53,6 +53,7 @@
 #include "sim/shuffled_rng.hpp"
 #include "util/io.hpp"
 #include "util/rng.hpp"
+#include "util/util.hpp"
 
 #include <cerrno>
 #include <memory>
@@ -850,7 +851,7 @@ bool parse_stat_timelines( sim_t* sim, util::string_view name, const std::string
     stat_e st = util::parse_stat_type( stat_type );
     if ( st == STAT_NONE )
     {
-      sim->errorf( "'%s' could not parse timeline stat '%s' (%s).\n", sim->active_player->name(), stat_type.c_str(), value.c_str() );
+      sim->error( "'{}' could not parse timeline stat '{}' ({}).\n", sim->active_player->name(), stat_type, value );
       return false;
     }
 
@@ -895,7 +896,7 @@ bool parse_set_bonus( sim_t* sim, util::string_view, const std::string& value )
 
   player_t* p = sim->active_player;
 
-  std::vector<std::string> set_bonus_split = util::string_split( value, "=" );
+  auto set_bonus_split = util::string_split( value, "=" );
 
   if ( set_bonus_split.size() != 2 )
   {
@@ -903,7 +904,7 @@ bool parse_set_bonus( sim_t* sim, util::string_view, const std::string& value )
     return false;
   }
 
-  int opt_val = std::stoi( set_bonus_split[ 1 ] );
+  int opt_val = util::to_int( set_bonus_split[ 1 ] );
   if ( opt_val != 0 && opt_val != 1 )
   {
     sim->errorf( error_str, p->name(), value.c_str(), p->sets->generate_set_bonus_options().c_str() );
@@ -933,21 +934,21 @@ bool parse_initial_resource( sim_t* sim, util::string_view, const std::string& v
     auto resource_split = util::string_split( opt_str, "=" );
     if ( resource_split.size() != 2 )
     {
-      sim->errorf( "%s unknown initial_resources option '%s'", player->name(), opt_str.c_str() );
+      sim->error( "{} unknown initial_resources option '{}'", player->name(), opt_str );
       return false;
     }
 
     resource_e resource = util::parse_resource_type( resource_split[ 0 ] );
     if ( resource == RESOURCE_NONE )
     {
-      sim->errorf( "%s could not parse valid resource from '%s'", player->name(), resource_split[ 0 ].c_str() );
+      sim->error( "{} could not parse valid resource from '{}'", player->name(), resource_split[ 0 ] );
       return false;
     }
 
-    double amount = std::stod( resource_split[ 1 ] );
+    double amount = util::to_double( resource_split[ 1 ] );
     if ( amount < 0 )
     {
-      sim->errorf( "%s too low initial_resources option '%s'", player->name(), opt_str.c_str() );
+      sim->error( "{} too low initial_resources option '{}'", player->name(), opt_str );
       return false;
     }
 
@@ -1697,9 +1698,9 @@ void player_t::init_items()
   {
     if ( find_item_by_name( split ) )
     {
-      sim->error( "{} has multiple %s equipped.\n", *this, split );
+      sim->error( "{} has multiple {} equipped.\n", *this, split );
     }
-    items.emplace_back( this, split );
+    items.emplace_back( this, std::string(split) );
   }
 
   std::array<bool, SLOT_MAX> matching_gear_slots;  // true if the given item is equal to the highest armor type the player can wear
@@ -2082,7 +2083,7 @@ void player_t::init_professions()
 
   for ( auto& split : splits )
   {
-    std::string prof_name;
+    util::string_view prof_name;
     int prof_value = 0;
 
     auto subsplit = util::string_split( split, "=" );
@@ -2091,7 +2092,7 @@ void player_t::init_professions()
       prof_name = subsplit[ 0 ];
       try
       {
-        prof_value = std::stoi( subsplit[ 1 ] );
+        prof_value = util::to_int( subsplit[ 1 ] );
       }
       catch ( const std::exception& )
       {
@@ -2706,7 +2707,7 @@ void player_t::create_actions()
   }
   util::tokenize( modify_action );
 
-  std::vector<std::string> skip_actions;
+  std::vector<util::string_view> skip_actions;
   if ( !action_list_skip.empty() )
   {
     sim->print_debug( "{} action_list_skip={}", *this, action_list_skip );
@@ -8146,7 +8147,7 @@ struct use_item_t : public action_t
     return action_t::ready();
   }
 
-  std::unique_ptr<expr_t> create_special_effect_expr( util::span<std::string> data_str_split )
+  std::unique_ptr<expr_t> create_special_effect_expr( util::span<const util::string_view> data_str_split )
   {
     struct use_item_buff_type_expr_t : public expr_t
     {
@@ -8304,7 +8305,7 @@ struct use_items_t : public action_t
     priority_slots.clear();
 
     auto split = util::string_split( opt_value, ":|" );
-    range::for_each( split, [this]( const std::string& slot_str ) {
+    range::for_each( split, [this]( util::string_view slot_str ) {
       auto slot = util::parse_slot_type( slot_str );
       if ( slot != SLOT_INVALID )
       {
@@ -8908,17 +8909,17 @@ bool player_t::parse_talents_armory( const std::string& talent_string )
 
 namespace
 {
-std::string armory2_class_name( const std::string& tokenized_class, const std::string& tokenized_spec )
+std::string armory2_class_name( util::string_view tokenized_class, util::string_view tokenized_spec )
 {
-  auto class_str = tokenized_class;
-  auto spec_str  = tokenized_spec;
+  auto class_str = std::string( tokenized_class );
+  auto spec_str  = std::string( tokenized_spec );
 
   util::replace_all( class_str, "-", " " );
   util::replace_all( spec_str, "-", " " );
   return util::inverse_tokenize( spec_str ) + " " + util::inverse_tokenize( class_str );
 }
 
-player_e armory2_parse_player_type( const std::string& class_name )
+player_e armory2_parse_player_type( util::string_view class_name )
 {
   if ( util::str_compare_ci( class_name, "death-knight" ) )
   {
@@ -8964,16 +8965,16 @@ bool player_t::parse_talents_armory2( const std::string& talents_url )
 
   if ( player_type == PLAYER_NONE || type != player_type )
   {
-    sim->errorf( "Player %s has malformed talent url '%s': expected class '%s', got '%s'", name(), talents_url.c_str(),
-                 util::player_type_string( type ), split[ OFFSET_CLASS ].c_str() );
+    sim->error( "Player {} has malformed talent url '{}': expected class '{}', got '{}'", name(), talents_url,
+                 util::player_type_string( type ), split[ OFFSET_CLASS ] );
     return false;
   }
 
   if ( spec_type == SPEC_NONE || specialization() != spec_type )
   {
-    sim->errorf( "Player %s has malformed talent url '%s': expected specialization '%s', got '%s'", name(),
-                 talents_url.c_str(), dbc::specialization_string( specialization() ),
-                 split[ OFFSET_SPEC ].c_str() );
+    sim->error( "Player {} has malformed talent url '{}': expected specialization '{}', got '{}'", name(),
+                 talents_url, dbc::specialization_string( specialization() ),
+                 split[ OFFSET_SPEC ] );
     return false;
   }
 
@@ -9171,7 +9172,7 @@ static bool parse_min_gcd( sim_t* sim, util::string_view name, const std::string
   if ( name != "min_gcd" )
     return false;
 
-  double v = std::strtod( value.c_str(), nullptr );
+  double v = util::to_double( value );
   if ( v <= 0 )
   {
     sim->errorf( " %s: Invalid value '%s' for global minimum cooldown.", sim->active_player->name(), value.c_str() );
@@ -9835,7 +9836,7 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
       if (parts.size() == 4 )
       {
         // eg. time_to_pct_90.1
-        percent = std::stod( parts[ 3 ] );
+        percent = util::to_double( parts[ 3 ] );
       }
       else
       {
@@ -9858,9 +9859,9 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
     timespan_t window_duration;
 
     if ( util::str_in_str_ci( parts.back(), "ms" ) )
-      window_duration = timespan_t::from_millis( std::stoi( parts.back() ) );
+      window_duration = timespan_t::from_millis( util::to_int( parts.back() ) );
     else
-      window_duration = timespan_t::from_seconds( std::stod( parts.back() ) );
+      window_duration = timespan_t::from_seconds( util::to_double( parts.back() ) );
 
     // skip construction if the duration is nonsensical
     if ( window_duration > timespan_t::zero() )
@@ -10125,7 +10126,7 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
     }
     else if ( splits[ 0 ] == "swing" )
     {
-      std::string& s = splits[ 1 ];
+      const auto s = splits[ 1 ];
       slot_e hand    = SLOT_INVALID;
       if ( s == "mh" || s == "mainhand" || s == "main_hand" )
         hand = SLOT_MAIN_HAND;
@@ -10370,7 +10371,7 @@ std::unique_ptr<expr_t> player_t::create_resource_expression( util::string_view 
       }
 
       // foo.time_to_x
-      const double amount = std::stod( parts[ 2 ] );
+      const double amount = util::to_double( parts[ 2 ] );
       return make_fn_expr( name_str, [ this, r, amount ] {
         if ( resources.current[ r ] >= amount )
         {
@@ -10581,7 +10582,7 @@ std::string player_t::create_profile( save_e stype )
       auto splits = util::string_split( talent_overrides_str, "/" );
       for ( size_t i = 0; i < splits.size(); i++ )
       {
-        profile_str += "talent_override=" + splits[ i ] + term;
+        profile_str += fmt::format( "talent_override={}{}", splits[ i ], term );
       }
     }
 

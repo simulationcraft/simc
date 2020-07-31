@@ -57,7 +57,7 @@ constexpr proc_parse_opt_t __proc2_opts[] =
   { "tickdamage",  PF2_PERIODIC_DAMAGE  },
 };
 
-bool has_proc( util::span<const std::string> opts, util::string_view proc )
+bool has_proc( util::span<const util::string_view> opts, util::string_view proc )
 {
   for ( auto & opt : opts )
   {
@@ -962,8 +962,8 @@ void special_effect::parse_special_effect_encoding( special_effect_t& effect,
       auto splits = util::string_split( t.value_str, "+" );
       if ( splits.size() == 2 )
       {
-        effect.discharge_amount  = std::stod( splits[ 0 ] );
-        effect.discharge_scaling = std::stod( splits[ 1 ] ) / 100.0;
+        effect.discharge_amount  = util::to_double( splits[ 0 ] );
+        effect.discharge_scaling = util::to_double( splits[ 1 ] ) / 100.0;
       }
     }
     else if ( t.name == "stacks" || t.name == "stack" )

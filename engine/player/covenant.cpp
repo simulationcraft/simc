@@ -355,7 +355,7 @@ std::string covenant_state_t::covenant_option_str() const
 }
 
 std::unique_ptr<expr_t> covenant_state_t::create_expression(
-    const std::vector<std::string>& expr_str ) const
+    util::span<const util::string_view> expr_str ) const
 {
   if ( expr_str.size() == 1 )
   {

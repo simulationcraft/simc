@@ -554,17 +554,18 @@ bool item_database::initialize_item_sources( item_t& item, std::vector<std::stri
 
     source_list.clear();
 
-    for ( unsigned i = 0; i < item_sources_split.size(); i++ )
+    for ( auto split : item_sources_split )
     {
-      if ( ! util::str_compare_ci( item_sources_split[ i ], "local" ) &&
-           ! util::str_compare_ci( item_sources_split[ i ], "wowhead" ) &&
-           ! util::str_compare_ci( item_sources_split[ i ], "ptrhead" ) &&
-           ! util::str_compare_ci( item_sources_split[ i ], "bcpapi" ) )
+      if ( ! util::str_compare_ci( split, "local" ) &&
+           ! util::str_compare_ci( split, "wowhead" ) &&
+           ! util::str_compare_ci( split, "ptrhead" ) &&
+           ! util::str_compare_ci( split, "bcpapi" ) )
       {
         continue;
       }
-      util::tokenize( item_sources_split[ i ] );
-      source_list.push_back( item_sources_split[ i ] );
+      auto valid_source = std::string(split);
+      util::tokenize( valid_source );
+      source_list.emplace_back( valid_source );
     }
 
     if ( source_list.empty() )
@@ -977,7 +978,7 @@ std::vector<item_database::token_t> item_database::parse_tokens( const std::stri
   for ( auto& split : splits )
   {
     token_t t ;
-    t.full = split;
+    t.full = std::string(split);
     int index = 0;
     while ( t.full[ index ] != '\0' &&
             t.full[ index ] != '%'  &&

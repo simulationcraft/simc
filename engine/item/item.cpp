@@ -714,7 +714,7 @@ void item_t::parse_options()
     auto spl = util::string_split( option_gem_id_str, ":/" );
     for ( size_t i = 0, end = std::min( range::size( parsed.gem_id ), spl.size() ); i < end; i++ )
     {
-      int gem_id = std::stoi( spl[ i ] );
+      int gem_id = util::to_int( spl[ i ] );
 
       parsed.gem_id[ i ] = gem_id;
     }
@@ -749,7 +749,7 @@ void item_t::parse_options()
     auto gem_idx = 0U;
     for ( const auto& ilevel_str : split )
     {
-      auto ilevel = std::stoi( ilevel_str );
+      auto ilevel = util::to_int( ilevel_str );
       if ( ilevel >= 0 && ilevel < MAX_ILEVEL )
       {
         parsed.gem_ilevel[ gem_idx ] = ilevel;
@@ -794,7 +794,7 @@ void item_t::parse_options()
       auto split = util::string_split( option_bonus_id_str, "/:" );
       for (auto & elem : split)
       {
-        int bonus_id = std::stoi( elem );
+        int bonus_id = util::to_int( elem );
         if ( bonus_id <= 0 )
         {
           throw std::invalid_argument("Negative or 0 bonus id.");

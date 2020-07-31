@@ -1155,7 +1155,7 @@ void create_options( sim_t* sim )
       auto metric = util::parse_scale_metric( v );
       if ( metric == SCALE_METRIC_NONE )
       {
-        sim -> errorf( "Invalid profileset metric '%s'", v.c_str() );
+        sim -> error( "Invalid profileset metric '{}'", v );
         return false;
       }
 
@@ -1169,7 +1169,7 @@ void create_options( sim_t* sim )
                                                         const std::string& value ) {
     sim -> profileset_output_data.clear();
 
-    auto split = util::string_split( value, "/:," );
+    auto split = util::string_split_as_string( value, "/:," );
     for ( const auto& v : split )
     {
       sim -> profileset_output_data.push_back( v );

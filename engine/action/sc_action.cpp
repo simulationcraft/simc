@@ -3120,9 +3120,9 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
         {
           double yards_from_player;
           int num_targets;
-          active_enemies_t( action_t& a, const std::string& yards ) : action_expr_t( "active_enemies_within", a )
+          active_enemies_t( action_t& a, util::string_view yards ) : action_expr_t( "active_enemies_within", a )
           {
-            yards_from_player = std::stoi( yards );
+            yards_from_player = util::to_int( yards );
             num_targets       = 0;
           }
 
@@ -3318,7 +3318,7 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
 
   if ( splits.size() == 3 && splits[ 0 ] == "prev_gcd" )
   {
-    int gcd = std::stoi( splits[ 1 ] );
+    int gcd = util::to_int( splits[ 1 ] );
 
     struct prevgcd_expr_t : public action_expr_t
     {
@@ -3420,7 +3420,7 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
     auto tail      = name_str.substr( splits[ 0 ].length() + 1 );
     if ( util::is_number( splits[ 1 ] ) )
     {
-      expr_target = find_target_by_number( std::stoi( splits[ 1 ] ) );
+      expr_target = find_target_by_number( util::to_int( splits[ 1 ] ) );
 
       if ( !expr_target )
         throw std::invalid_argument( fmt::format( "Cannot find target by number '{}'.", splits[ 1 ] ) );

@@ -4198,7 +4198,7 @@ struct item_effect_expr_t : public item_effect_base_expr_t
 // user input
 struct item_buff_expr_t : public item_effect_expr_t
 {
-  item_buff_expr_t( player_t& player, const std::vector<slot_e> slots, stat_e s, bool stacking, const std::string& expr_str ) :
+  item_buff_expr_t( player_t& player, const std::vector<slot_e> slots, stat_e s, bool stacking, util::string_view expr_str ) :
     item_effect_expr_t( player, slots )
   {
     for (auto e : effects)
@@ -4243,7 +4243,7 @@ struct item_buff_exists_expr_t : public item_effect_expr_t
 // from user input
 struct item_cooldown_expr_t : public item_effect_expr_t
 {
-  item_cooldown_expr_t( player_t& player, const std::vector<slot_e>& slots, const std::string& expr ) :
+  item_cooldown_expr_t( player_t& player, const std::vector<slot_e>& slots, util::string_view expr ) :
     item_effect_expr_t( player, slots )
   {
     for (auto e : effects)

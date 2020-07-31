@@ -22,7 +22,7 @@ cache::cache_control_t cache::cache_control_t::singleton;
 #ifdef SC_NO_NETWORKING
 namespace http
 {
-void set_proxy( const std::string&, const std::string&, const unsigned) {}
+void set_proxy( util::string_view, util::string_view, const unsigned) {}
 const proxy_t& get_proxy() { static proxy_t p {};  return p; }
 http_connection_pool_t* pool() { return nullptr; }
 
@@ -157,12 +157,12 @@ int download( url_cache_entry_t&              entry,
 
 // http::set_proxy ==========================================================
 
-void http::set_proxy( const std::string& proxy_type,
-                      const std::string& proxy_host,
+void http::set_proxy( util::string_view proxy_type,
+                      util::string_view proxy_host,
                       const unsigned     proxy_port )
 {
-  proxy.type = proxy_type;
-  proxy.host = proxy_host;
+  proxy.type = std::string( proxy_type );
+  proxy.host = std::string( proxy_host );
   proxy.port = proxy_port;
 }
 

@@ -114,7 +114,7 @@ constexpr bool pred_ci ( char a, char b )
 }
 
 void stat_search( std::string&              encoding_str,
-                  std::vector<std::string>& description_tokens,
+                  util::span<const util::string_view> description_tokens,
                   stat_e                    type,
                   util::string_view         stat_str )
 {
@@ -157,13 +157,13 @@ void stat_search( std::string&              encoding_str,
       if ( ( i > 0 ) &&
            ( util::is_number( description_tokens[ i - 1 ] ) ) )
       {
-        value_str = description_tokens[ i - 1 ];
+        value_str = std::string( description_tokens[ i - 1 ] );
       }
       if ( ( ( i + stat_tokens.size() + 1 ) < num_descriptions ) &&
            ( description_tokens[ i + stat_tokens.size() ] == "by" ) &&
            ( util::is_number( description_tokens[ i + stat_tokens.size() + 1 ] ) ) )
       {
-        value_str = description_tokens[ i + stat_tokens.size() + 1 ];
+        value_str = std::string( description_tokens[ i + stat_tokens.size() + 1 ] );
       }
 
       if ( ! value_str.empty() )
@@ -235,6 +235,33 @@ double stat_value( const player_t* p, stat_e stat )
   }
 
   return v;
+}
+
+
+template<typename StringType>
+std::vector<StringType> string_split_impl( util::string_view str, util::string_view delim, bool skip_empty_entries )
+{
+  std::vector<StringType> results;
+  if ( str.empty() )
+    return results;
+
+  typename StringType::size_type cut_pt, start = 0;
+
+  while ( ( cut_pt = str.find_first_of( delim, start ) ) != StringType::npos )
+  {
+    if ( !skip_empty_entries || cut_pt > start ) // Found something, push to the vector
+      results.emplace_back( str.substr( start, cut_pt - start ) );
+
+    start = cut_pt + 1; // skip the found delimeter
+  }
+
+  if ( start < str.size() )
+  {
+    // Push the tail
+    results.emplace_back( str.substr( start, str.size() - start ) );
+  }
+
+  return results;
 }
 
 } // anonymous namespace ============================================
@@ -1747,7 +1774,7 @@ bool util::parse_origin( std::string& region,
                          std::string& name,
                          util::string_view origin )
 {
-  auto tokens = string_split( origin, "/:.?&=" );
+  auto tokens = string_split_as_string( origin, "/:.?&=" );
 
   if ( origin.find( ".battle.net" ) != string_view::npos )
   {
@@ -2277,31 +2304,15 @@ bool util::socket_gem_match( item_socket_color socket, item_socket_color gem )
 
 // string_split =============================================================
 
-std::vector<std::string> util::string_split( util::string_view str, util::string_view delim, bool skip_empty_entries )
+std::vector<util::string_view> util::string_split( util::string_view str, util::string_view delim, bool skip_empty_entries )
 {
-  std::vector<std::string> results;
-  if ( str.empty() )
-    return results;
-
-  string_view::size_type cut_pt, start = 0;
-
-  while ( ( cut_pt = str.find_first_of( delim, start ) ) != string_view::npos )
-  {
-    if ( !skip_empty_entries || cut_pt > start ) // Found something, push to the vector
-      results.emplace_back( str.substr( start, cut_pt - start ) );
-
-    start = cut_pt + 1; // skip the found delimeter
-  }
-
-  if ( start < str.size() )
-  {
-    // Push the tail
-    results.emplace_back( str.substr( start, str.size() - start ) );
-  }
-
-  return results;
+  return string_split_impl<util::string_view>(str, delim, skip_empty_entries );
 }
 
+std::vector<std::string> util::string_split_as_string( util::string_view str, util::string_view delim, bool skip_empty_entries )
+{
+  return string_split_impl<std::string>(str, delim, skip_empty_entries );
+}
 /* Splits the string while skipping and stripping quoted parts in the string
  */
 std::vector<std::string> util::string_split_allow_quotes( util::string_view str_, util::string_view delim )
@@ -2567,16 +2578,21 @@ unsigned util::to_unsigned( const char* str )
 int util::to_int( const std::string& str )
 { return std::stoi( str ); }
 
+double util::to_double( const std::string& str )
+{
+  return std::stod( str );
+}
+
 // parse_date ===============================================================
 
 int64_t util::parse_date( util::string_view month_day_year )
 {
-  std::vector<std::string> splits = string_split( month_day_year, " _,;-/ \t\n\r" );
+  auto splits = string_split( month_day_year, " _,;-/ \t\n\r" );
   if ( splits.size() != 3 ) return 0;
 
-  std::string& month = splits[ 0 ];
-  std::string& day   = splits[ 1 ];
-  std::string& year  = splits[ 2 ];
+  auto month = std::string(splits[ 0 ]);
+  auto day   = std::string(splits[ 1 ]);
+  auto year  = std::string(splits[ 2 ]);
 
   tolower( month );
 

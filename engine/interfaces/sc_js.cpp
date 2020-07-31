@@ -29,7 +29,7 @@ namespace js {
 
   rapidjson::Value* sc_js_t::path_value(util::string_view path_str)
   {
-    auto path = util::string_split(path_str, ".");
+    auto path = util::string_split_as_string(path_str, ".");
     rapidjson::Value* v = nullptr;
     if (path.size() < 1)
       return v;
@@ -53,7 +53,7 @@ namespace js {
         if (v->GetType() != rapidjson::kArrayType)
           v->SetArray();
 
-        int parsed_idx = std::stoi(path[i]);
+        int parsed_idx = util::to_int(path[i]);
         assert(parsed_idx >= 0);
         unsigned idx = parsed_idx;
         unsigned missing = 0;

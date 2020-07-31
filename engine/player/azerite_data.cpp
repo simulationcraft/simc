@@ -572,12 +572,12 @@ bool azerite_state_t::parse_override( sim_t* sim, util::string_view, const std::
     auto opt_split = util::string_split( opt, ":" );
     if ( opt_split.size() != 2 )
     {
-      sim -> errorf( "%s unknown azerite override string \"%s\"", sim -> active_player -> name(),
-          opt.c_str());
+      sim -> error( "{} unknown azerite override string \"{}\"", sim -> active_player -> name(),
+          opt);
       return false;
     }
 
-    std::string power_str = opt_split[ 0 ];
+    auto power_str = opt_split[ 0 ];
     unsigned ilevel = util::to_unsigned( opt_split[ 1 ] );
 
     if ( ilevel > MAX_ILEVEL )
@@ -687,7 +687,7 @@ bool azerite_state_t::is_enabled( util::string_view name, bool tokenized ) const
   return is_enabled( power.id );
 }
 
-std::unique_ptr<expr_t> azerite_state_t::create_expression( const std::vector<std::string>& expr_str ) const
+std::unique_ptr<expr_t> azerite_state_t::create_expression( util::span<const util::string_view> expr_str ) const
 {
   if ( expr_str.size() == 1 )
   {
@@ -1116,8 +1116,8 @@ bool azerite_essence_state_t::parse_azerite_essence( sim_t* sim,
       rank = util::to_unsigned( token_split[ 1 ] );
       if ( rank > MAX_AZERITE_ESSENCE_RANK )
       {
-        sim->error( "Invalid Azerite Essence rank, expected max of %u, got %s",
-          MAX_AZERITE_ESSENCE_RANK, token_split[ 1 ].c_str() );
+        sim->error( "Invalid Azerite Essence rank, expected max of {}, got {}",
+          MAX_AZERITE_ESSENCE_RANK, token_split[ 1 ] );
         return false;
       }
     }
@@ -1133,8 +1133,8 @@ bool azerite_essence_state_t::parse_azerite_essence( sim_t* sim,
 
       if ( type == essence_type::INVALID )
       {
-        sim->errorf( "Invalid Azerite Essence type, expected '0' or '1', got '%s'",
-            token_split[ 2 ].c_str() );
+        sim->error( "Invalid Azerite Essence type, expected '0' or '1', got '{}'",
+            token_split[ 2 ] );
         return false;
       }
     }
@@ -1145,7 +1145,7 @@ bool azerite_essence_state_t::parse_azerite_essence( sim_t* sim,
       const auto& essence = azerite_essence_entry_t::find( token_split[ 0 ], true, m_player->dbc->ptr );
       if ( essence.id == 0 )
       {
-        sim->errorf( "Unable to find Azerite Essence with name '%s'", splits[ i ].c_str() );
+        sim->error( "Unable to find Azerite Essence with name '{}'", splits[ i ] );
         return false;
       }
 
@@ -1157,7 +1157,7 @@ bool azerite_essence_state_t::parse_azerite_essence( sim_t* sim,
       const auto& essence = azerite_essence_entry_t::find( id, m_player->dbc->ptr );
       if ( essence.id != id )
       {
-        sim->errorf( "Unable to find Azerite Essence with id %s", splits[ i ].c_str() );
+        sim->error( "Unable to find Azerite Essence with id {}", splits[ i ] );
         return false;
       }
     }
@@ -1169,16 +1169,16 @@ bool azerite_essence_state_t::parse_azerite_essence( sim_t* sim,
       {
         if ( id == 0 )
         {
-          sim->errorf( "Unable to parse passive Azerite Essence '%s' into a spell id",
-            token_split[ 0 ].c_str() );
+          sim->error( "Unable to parse passive Azerite Essence '{}' into a spell id",
+            token_split[ 0 ] );
           return false;
         }
 
         auto spell = m_player->find_spell( id );
         if ( !spell->ok() )
         {
-          sim->errorf( "Unable to find passive Azerite Essence '%s'",
-            token_split[ 0 ].c_str() );
+          sim->error( "Unable to find passive Azerite Essence '{}'",
+            token_split[ 0 ] );
           return false;
         }
 
@@ -1219,7 +1219,7 @@ bool azerite_essence_state_t::parse_azerite_essence( sim_t* sim,
         break;
       }
       default:
-        sim->errorf( "Invalid token format for '%s'", splits[ i ].c_str() );
+        sim->error( "Invalid token format for '{}'", splits[ i ] );
         return false;
     }
 
@@ -1231,7 +1231,7 @@ bool azerite_essence_state_t::parse_azerite_essence( sim_t* sim,
   return true;
 }
 
-std::unique_ptr<expr_t> azerite_essence_state_t::create_expression( const std::vector<std::string>& expr_str ) const
+std::unique_ptr<expr_t> azerite_essence_state_t::create_expression( util::span<const util::string_view> expr_str ) const
 {
   if ( expr_str.size() <= 2 )
     return nullptr;

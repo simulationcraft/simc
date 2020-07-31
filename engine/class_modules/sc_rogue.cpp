@@ -4,6 +4,7 @@
 // ==========================================================================
 
 #include "simulationcraft.hpp"
+#include "util/util.hpp"
 
 namespace { // UNNAMED NAMESPACE
 
@@ -6342,7 +6343,7 @@ std::unique_ptr<expr_t> rogue_t::create_expression( util::string_view name_str )
   {
     return make_fn_expr( split[ 0 ], [ this, split ]() {
       timespan_t return_value = timespan_t::from_seconds( 0.0 );
-      unsigned attack_x = strtoul( split[ 1 ].c_str(), nullptr, 0 );
+      unsigned attack_x = util::to_unsigned( split[ 1 ] );
       if ( main_hand_attack && attack_x > shadow_techniques && attack_x <= 5 )
       {
         unsigned remaining_aa = attack_x - shadow_techniques;
@@ -7053,7 +7054,7 @@ static bool parse_fixed_rtb_odds( sim_t* sim, util::string_view /* name */, cons
   double sum = 0.0;
   for ( size_t i = 0; i < odds.size(); i++ )
   {
-    buff_chances[ i ] = strtod( odds[ i ].c_str(), nullptr );
+    buff_chances[ i ] = util::to_double( odds[ i ] );
     sum += buff_chances[ i ];
   }
 

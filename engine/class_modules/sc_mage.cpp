@@ -4,6 +4,7 @@
 // ==========================================================================
 
 #include "simulationcraft.hpp"
+#include "util/util.hpp"
 
 namespace {
 
@@ -6904,7 +6905,7 @@ std::unique_ptr<expr_t> mage_t::create_expression( util::string_view name )
 
   if ( splits.size() == 3 && util::str_compare_ci( splits[ 0 ], "ground_aoe" ) )
   {
-    std::string type = splits[ 1 ];
+    auto type = std::string( splits[ 1 ] );
     util::tolower( type );
 
     if ( util::str_compare_ci( splits[ 2 ], "remains" ) )
@@ -6918,7 +6919,7 @@ std::unique_ptr<expr_t> mage_t::create_expression( util::string_view name )
 
   if ( splits.size() == 3 && util::str_compare_ci( splits[ 0 ], "incanters_flow_time_to" ) )
   {
-    int expr_stack = std::stoi( splits[ 1 ] );
+    int expr_stack = util::to_int( splits[ 1 ] );
     if ( expr_stack < 1 || expr_stack > buffs.incanters_flow->max_stack() )
       throw std::invalid_argument( fmt::format( "Invalid incanters_flow_time_to stack number '{}'", splits[ 1 ] ) );
 

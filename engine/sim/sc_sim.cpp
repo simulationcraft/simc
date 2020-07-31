@@ -101,7 +101,7 @@ struct seed_predicate_t
 
 bool parse_debug_seed( sim_t* sim, util::string_view, const std::string& value )
 {
-  auto split = util::string_split( value, ":/," );
+  auto split = util::string_split_as_string( value, ":/," );
 
   for ( const auto& seed_str : split )
   {
@@ -137,15 +137,12 @@ bool parse_json_reports( sim_t* sim, util::string_view /* option_name */, const 
 {
   auto splits = util::string_split( value, ",", false );
 
-  std::string destination;
-  if (splits.size() > 0)
-  {
-    destination = splits[0];
-  }
-  if (destination.empty())
+  if (splits.empty() || splits[0].empty())
   {
     throw std::runtime_error("Cannot generate JSON report with no destination. Please specify a value after json=");
   }
+  
+  auto destination = splits[0];
   std::string report_version;
   bool fullStates = false;
   bool pretty_print = false;
@@ -163,13 +160,13 @@ bool parse_json_reports( sim_t* sim, util::string_view /* option_name */, const 
       }
       if ( splitOptions[ 0 ] == "version" )
       {
-        report_version = splitOptions[ 1 ];
+        report_version = std::string( splitOptions[ 1 ] );
       }
       if ( splitOptions[ 0 ] == "full_states" )
       {
         try
         {
-          fullStates = std::stoi( splitOptions[ 1 ] );
+          fullStates = util::to_int( splitOptions[ 1 ] );
           if ( fullStates )
           {
             // We need to set the global json full states so extra data gets produced if one report requests it.
@@ -185,7 +182,7 @@ bool parse_json_reports( sim_t* sim, util::string_view /* option_name */, const 
       {
         try
         {
-          pretty_print = std::stoi( splitOptions[ 1 ] );
+          pretty_print = util::to_int( splitOptions[ 1 ] );
         }
         catch ( const std::exception& )
         {
@@ -197,7 +194,7 @@ bool parse_json_reports( sim_t* sim, util::string_view /* option_name */, const 
         // limit floating point decimal places. Valid if > 0
         try
         {
-          decimal_places = std::stoi( splitOptions[ 1 ] );
+          decimal_places = util::to_int( splitOptions[ 1 ] );
         }
         catch ( const std::exception& )
         {
@@ -207,7 +204,7 @@ bool parse_json_reports( sim_t* sim, util::string_view /* option_name */, const 
     }
   }
 
-  auto entry = report::json::create_report_entry( *sim, report_version, destination );
+  auto entry = report::json::create_report_entry( *sim, std::move(report_version), std::string(destination) );
   entry.full_states = fullStates;
   entry.decimal_places = decimal_places;
   entry.pretty_print = pretty_print;
@@ -407,7 +404,7 @@ bool parse_proxy( sim_t* , util::string_view /* name */, const std::string& valu
     throw std::invalid_argument(fmt::format("Proxy invalid type '{}'", splits[ 0 ] ));
   }
 
-  unsigned port = std::stoul( splits[ 2 ] );
+  unsigned port = util::to_unsigned( splits[ 2 ] );
   if ( port <= 0 || port >= 65536 )
   {
     throw std::invalid_argument(fmt::format("Invalid proxy port, outside range", port ));
@@ -518,7 +515,7 @@ public:
     options.push_back( opt_string( "server", server ) );
     options.push_back( opt_bool( "cache", use_cache ) );
 
-    names = util::string_split( input, "," );
+    names = util::string_split_as_string( input, "," );
 
     std::vector<std::string> names2 = names;
     size_t count = 0;
@@ -671,7 +668,7 @@ bool parse_guild( sim_t*             sim,
       auto ranks = util::string_split( ranks_str, "/" );
 
       for ( size_t i = 0; i < ranks.size(); i++ )
-        ranks_list.push_back( std::stoi( ranks[i] ) );
+        ranks_list.push_back( util::to_int( ranks[i] ) );
     }
 
     player_e pt = PLAYER_NONE;
@@ -746,7 +743,7 @@ bool parse_override_spell_data( sim_t*             sim,
     throw std::invalid_argument("Invalid form. Spell data override takes the form <spell|effect|power>.<id>.<field>=value");
   }
 
-  int parsed_id = std::stoi( splits[ 1 ] );
+  int parsed_id = util::to_int( splits[ 1 ] );
   if ( parsed_id <= 0 )
   {
     throw std::invalid_argument("Invalid spell id (negative or zero).");
@@ -786,7 +783,7 @@ bool parse_override_target_health( sim_t*             sim,
   for ( size_t i = 0; i < healths.size(); ++i )
   {
     std::stringstream s;
-    s << healths[ i ];
+    s << std::string( healths[ i ] );
     uint64_t health_number;
     s >> health_number;
     if ( health_number > 0 )
@@ -3374,9 +3371,9 @@ std::unique_ptr<expr_t> sim_t::create_expression( util::string_view name_str )
   {
     player_t* actor = sim_t::find_player( splits[ 1 ] );
     if ( ! target ) return nullptr;
-    std::string rest = splits[ 2 ];
+    auto rest = std::string(splits[ 2 ]);
     for ( size_t i = 3; i < splits.size(); ++i )
-      rest += '.' + splits[ i ];
+      rest += fmt::format( ".{}", splits[ i ] );
     return actor -> create_expression( rest );
   }
 
@@ -3389,8 +3386,8 @@ std::unique_ptr<expr_t> sim_t::create_expression( util::string_view name_str )
 
   if ( splits.size() >= 3 && util::str_compare_ci( splits[ 0 ], "raid_event" ) )
   {
-    const std::string& type_or_name = splits[ 1 ];
-    const std::string& filter = splits[ 2 ];
+    auto type_or_name = splits[ 1 ];
+    auto filter = splits[ 2 ];
 
     // Call once to see if we have a valid raid expression.
     raid_event_t::evaluate_raid_event_expression( this, type_or_name, filter, true );
@@ -3679,8 +3676,8 @@ void sim_t::create_options()
   add_option( opt_obsoleted( "legion.pantheon_trinket_interval_stddev" ) );
   add_option( opt_func( "legion.cradle_of_anguish_resets", []( sim_t* sim, util::string_view, const std::string& value ) {
     auto split = util::string_split( value, ":/," );
-    range::for_each( split, [ sim ]( const std::string& str ) {
-      auto v = std::atof( str.c_str() );
+    range::for_each( split, [ sim ]( util::string_view str ) {
+      auto v = util::to_double( str );
       if ( v <= 0.0 )
       {
         return;
