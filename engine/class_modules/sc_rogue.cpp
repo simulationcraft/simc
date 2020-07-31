@@ -3138,12 +3138,7 @@ struct roll_the_bones_t : public rogue_spell_t
   {
     rogue_spell_t::execute();
 
-    // Restless Blades and thus True Bearing CDR triggers before buff roll.
-    trigger_restless_blades( execute_state );
-
-    int cp = cast_state( execute_state ) -> cp;
-    timespan_t d = ( cp + 1 ) * p() -> buffs.roll_the_bones -> data().duration();
-
+    timespan_t d = p() -> buffs.roll_the_bones -> data().duration();
     if ( precombat_seconds && ! p() -> in_combat )
       d -= timespan_t::from_seconds( precombat_seconds );
 
