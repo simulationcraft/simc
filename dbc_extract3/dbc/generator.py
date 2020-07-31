@@ -1498,6 +1498,7 @@ class SpellDataGenerator(DataGenerator):
           ( 259277, 5 ), # SV Pet Kill Command
           ( 206685, 0 ), # BM Spitting Cobra Cobra Spit
           ( 324156, 0 ), # Flayer's Mark (Covenenat)
+          ( 328757, 0 ), # Wild Spirits (Covenenat)
           ( 339928, 2 ), ( 339929, 2 ) # Brutal Projectiles (Conduit)
         ),
 

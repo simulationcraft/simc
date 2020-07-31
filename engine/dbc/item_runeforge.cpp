@@ -16,11 +16,23 @@ util::span<const runeforge_legendary_entry_t> runeforge_legendary_entry_t::data(
   return SC_DBC_GET_DATA( __runeforge_legendary_data, __ptr_runeforge_legendary_data, ptr );
 }
 
-util::span<const runeforge_legendary_entry_t> runeforge_legendary_entry_t::find( util::string_view name, bool ptr )
+util::span<const runeforge_legendary_entry_t> runeforge_legendary_entry_t::find(
+    util::string_view name, bool ptr, bool tokenized )
 {
+  std::string name_str = tokenized ? util::tokenize_fn( name ) : std::string( name );
+
   auto __data = data( ptr );
-  auto __begin = std::find_if( __data.begin(), __data.end(), [name]( const runeforge_legendary_entry_t& e ) {
-    return util::str_compare_ci( e.name, name );
+  auto __begin = std::find_if( __data.begin(), __data.end(),
+    [&name_str, &tokenized]( const runeforge_legendary_entry_t& e ) {
+      if ( tokenized )
+      {
+        std::string rf_name = util::tokenize_fn( e.name );
+        return util::str_compare_ci( rf_name, name_str );
+      }
+      else
+      {
+        return util::str_compare_ci( e.name, name_str );
+      }
   } );
 
   if ( __begin == __data.end() )
@@ -28,8 +40,17 @@ util::span<const runeforge_legendary_entry_t> runeforge_legendary_entry_t::find(
     return {};
   }
 
-  auto __end = std::find_if_not( __begin + 1, __data.end(), [name]( const runeforge_legendary_entry_t& e ) {
-    return util::str_compare_ci( e.name, name );
+  auto __end = std::find_if_not( __begin + 1, __data.end(),
+    [&name_str, tokenized]( const runeforge_legendary_entry_t& e ) {
+      if ( tokenized )
+      {
+        std::string rf_name = util::tokenize_fn( e.name );
+        return util::str_compare_ci( rf_name, name_str );
+      }
+      else
+      {
+        return util::str_compare_ci( e.name, name_str );
+      }
   } );
 
   return { __begin, __end };

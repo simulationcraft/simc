@@ -1,5 +1,5 @@
 // Spell text, wow build 9.0.1.35360
-static const std::array<spelltext_data_t, 15221> __spelltext_data { {
+static const std::array<spelltext_data_t, 15222> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -14345,6 +14345,7 @@ static const std::array<spelltext_data_t, 15221> __spelltext_data { {
   { 328738, "$@spelldesc328261", 0, 0 },
   { 328741, "Periodically shuffle the deck while in combat.", "Darkmoon Deck: Indomitable is usable.\r\n\r\nShield Value:", 0 },
   { 328748, "$@spelldesc325216", 0, 0 },
+  { 328757, "$@spelldesc328231", 0, "Night Fae" },
   { 328767, "Survival Instincts now has ${$s1+1} charges.\r\n", 0, "Rank 2" },
   { 328837, "$@spelldesc328231", 0, "Night Fae" },
   { 328891, 0, "Food just never seems to satiate while holding the Tantalizingly Large Gilded Plum.", 0 },

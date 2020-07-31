@@ -5,15 +5,45 @@
 #include "dbc/dbc.hpp"
 #include "dbc/spell_data.hpp"
 
+#include "sim/sc_expressions.hpp"
+
+const item_runeforge_t& item_runeforge_t::nil()
+{
+  static item_runeforge_t __nil { spell_data_t::nil() };
+  return __nil;
+}
+
+const item_runeforge_t& item_runeforge_t::not_found()
+{
+  static item_runeforge_t __not_found { spell_data_t::not_found() };
+  return __not_found;
+}
+
 item_runeforge_t::item_runeforge_t() :
   m_entry( &runeforge_legendary_entry_t::nil() ), m_item( nullptr ),
-  m_spell( spell_data_t::not_found() )
+  m_spell( spell_data_t::nil() )
+{
+}
+
+item_runeforge_t::item_runeforge_t( const spell_data_t* spell ) :
+  m_entry( &runeforge_legendary_entry_t::nil() ), m_item( nullptr ),
+  m_spell( spell )
 {
 }
 
 item_runeforge_t::item_runeforge_t( const runeforge_legendary_entry_t& entry, const item_t* item ) :
   m_entry( &entry ), m_item( item ), m_spell( nullptr )
-{ }
+{
+  const auto& effect = item_effect();
+  if ( effect.id != 0 )
+  {
+    m_spell = dbc::find_spell( m_item->player, effect.spell_id );
+  }
+  else
+  {
+    m_spell = spell_data_t::not_found();
+  }
+}
 
 bool item_runeforge_t::enabled() const
 {
@@ -23,11 +53,6 @@ bool item_runeforge_t::enabled() const
 const runeforge_legendary_entry_t& item_runeforge_t::runeforge() const
 {
   return *m_entry;
-}
-
-const item_t* item_runeforge_t::item() const
-{
-  return m_item;
 }
 
 const item_effect_t& item_runeforge_t::item_effect() const
@@ -64,28 +89,40 @@ const item_effect_t& item_runeforge_t::item_effect() const
   return item_effect_t::nil();
 }
 
-const spell_data_t* item_runeforge_t::operator->() const
+namespace runeforge
 {
-  return operator const spell_data_t*();
-}
-
-item_runeforge_t::operator const spell_data_t*() const
+std::unique_ptr<expr_t> create_expression( const player_t* player,
+                                           util::span<const util::string_view> expr_str )
 {
-  if ( m_spell )
+  if ( expr_str.size() != 3 )
   {
-    return m_spell;
+    return nullptr;
   }
 
-  const auto& effect = item_effect();
-  if ( effect.id != 0 )
+  if ( !util::str_compare_ci( expr_str.front(), "runeforge" ) )
   {
-    m_spell = dbc::find_spell( m_item->player, effect.spell_id );
+    return nullptr;
+  }
+
+  const auto runeforge = player->find_runeforge_legendary( expr_str[ 1 ], true );
+  if ( runeforge == item_runeforge_t::nil() )
+  {
+    throw std::invalid_argument(
+        fmt::format( "Unknown runeforge legendary name '{}'", expr_str[ 1 ] ) );
+  }
+
+  if ( util::str_compare_ci( expr_str[ 2 ], "equipped" ) )
+  {
+    return expr_t::create_constant( "runeforge_equipped",
+        static_cast<double>( runeforge->ok() ) );
   }
   else
   {
-    m_spell = spell_data_t::not_found();
+    throw std::invalid_argument(
+        fmt::format( "Invalid runeforge legendary expression '{}', allowed values are 'equipped'.",
+          expr_str[ 2 ] ) );
   }
 
-  return m_spell;
+  return nullptr;
 }
-
+} // Namespace runeforge enas

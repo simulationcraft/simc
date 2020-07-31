@@ -704,6 +704,68 @@ public:
 namespace actions { // namespace actions
 
 // ==========================================================================
+// Secondary Action Triggers
+// ==========================================================================
+
+template<typename Base>
+struct secondary_action_trigger_t : public event_t
+{
+  Base* action;
+  action_state_t* state;
+  player_t* target;
+  int cp;
+  secondary_trigger_e source;
+
+  secondary_action_trigger_t( action_state_t* s, secondary_trigger_e source_, timespan_t delay = timespan_t::zero() ) :
+    event_t( *s -> action -> sim, delay ), action( dynamic_cast<Base*>( s->action ) ), state( s ), target( nullptr ), cp( 0 ), source( source_ )
+  {}
+
+  secondary_action_trigger_t( player_t* target, Base* action, int cp, secondary_trigger_e source_, timespan_t delay = timespan_t::zero() ) :
+    event_t( *action -> sim, delay ), action( action ), state( nullptr ), target( target ), cp( cp ), source( source_ )
+  {}
+
+  const char* name() const override
+  { return "secondary_action_trigger"; }
+
+  void execute() override
+  {
+    player_t* action_target = state ? state->target : target;
+
+    // Ensure target is still available and did not demise during delay.
+    if ( !action_target || action_target->is_sleeping() )
+      return;
+
+    auto bg = action->background, d = action->dual, r = action->repeating;
+    action->background = action->dual = true;
+    action->repeating = false;
+    action->secondary_trigger = source;
+    action->set_target( action_target );
+
+    // No state, construct one and grab combo points from the event instead of current CP amount.
+    if ( !state )
+    {
+      state = action->get_state();
+      action->cast_state( state )->cp = cp;
+      // Calling snapshot_internal, snapshot_state would overwrite CP.
+      action->snapshot_internal( state, action->snapshot_flags, action->amount_type( state ) );
+    }
+
+    action->pre_execute_state = state;
+    action->execute();
+
+    action->background = bg;
+    action->dual = d;
+    action->repeating = r;
+    action->secondary_trigger = TRIGGER_NONE;
+
+    state = nullptr;
+  }
+
+  ~secondary_action_trigger_t() override
+  { if ( state ) action_state_t::release( state ); }
+};
+
+// ==========================================================================
 // Rogue Action State
 // ==========================================================================
 
@@ -941,6 +1003,17 @@ public:
   }
 
   // Helper Functions =========================================================
+
+  virtual void make_secondary_trigger( secondary_trigger_e source_, action_state_t* s, timespan_t delay = timespan_t::zero() )
+  {
+    assert( s->action == this );
+    make_event<secondary_action_trigger_t<base_t>>( *ab::sim, s, source_, delay );
+  }
+
+  virtual void make_secondary_trigger( secondary_trigger_e source_, player_t* target, int cp = 0, timespan_t delay = timespan_t::zero() )
+  {
+    make_event<secondary_action_trigger_t<base_t>>( *ab::sim, target, this, cp, source_, delay );
+  }
 
   // Helper function for expressions. Returns the number of guaranteed generated combo points for
   // this ability, taking into account any potential buffs.
@@ -1385,70 +1458,6 @@ struct rogue_attack_t : public rogue_action_t<melee_attack_t>
   }
 
   void impact( action_state_t* state ) override;
-};
-
-// ==========================================================================
-// Rogue Secondary Abilities
-// ==========================================================================
-
-struct secondary_attack_trigger_t : public event_t
-{
-  action_t* action;
-  action_state_t* state;
-  player_t* target;
-  int cp;
-  secondary_trigger_e source;
-
-  secondary_attack_trigger_t( action_state_t* s, secondary_trigger_e source_, timespan_t delay = timespan_t::zero() ) :
-    event_t( *s -> action -> sim, delay ), action( s -> action ), state( s ), target( nullptr ), cp( 0 ), source( source_ )
-  {}
-
-  secondary_attack_trigger_t( player_t* target, action_t* action, int cp, secondary_trigger_e source_, timespan_t delay = timespan_t::zero() ) :
-    event_t( *action -> sim, delay ), action( action ), state( nullptr ), target( target ), cp( cp ), source( source_ )
-  {}
-
-  const char* name() const override
-  { return "secondary_attack_trigger"; }
-
-  void execute() override
-  {
-    // Ensure target is still available and did not demise during delay.
-    if ( ( state && state->target && state->target->is_sleeping() ) ||
-      ( target && target->is_sleeping() ) )
-      return;
-
-    rogue_attack_t* attack = rogue_t::cast_attack( action );
-    auto bg = attack->background, d = attack->dual, r = attack->repeating;
-
-    attack->background = attack->dual = true;
-    attack->repeating = false;
-    attack->secondary_trigger = source;
-    if ( state )
-    {
-      attack->set_target( state->target );
-      attack->pre_execute_state = state;
-    }
-    // No state, construct one and grab combo points from the event instead of current CP amount.
-    else
-    {
-      attack->set_target( target );
-      action_state_t* s = attack->get_state();
-      attack->cast_state( s )->cp = cp;
-      // Calling snapshot_internal, snapshot_state would overwrite CP.
-      attack->snapshot_internal( s, attack->snapshot_flags, attack->amount_type( s ) );
-
-      attack->pre_execute_state = s;
-    }
-    attack->execute();
-    attack->background = bg;
-    attack->dual = d;
-    attack->repeating = r;
-    attack->secondary_trigger = TRIGGER_NONE;
-    state = nullptr;
-  }
-
-  ~secondary_attack_trigger_t() override
-  { if ( state ) action_state_t::release( state ); }
 };
 
 // ==========================================================================
@@ -2824,8 +2833,8 @@ struct killing_spree_t : public rogue_attack_t
     rogue_attack_t( "killing_spree", p, p -> talent.killing_spree, options_str ),
     attack_mh( nullptr ), attack_oh( nullptr )
   {
-    channeled = true;
-    tick_zero = true;
+    channeled = tick_zero = true;
+    interrupt_auto_attack = false;
 
     attack_mh = p->get_background_action<killing_spree_tick_t>( "killing_spree_mh", p->find_spell( 57841 ) );
     add_child( attack_mh );  
@@ -3239,7 +3248,7 @@ struct rupture_t : public rogue_attack_t
 
 struct replicating_shadows_t : public rogue_spell_t
 {
-  action_t* rupture_action;
+  rupture_t* rupture_action;
 
   replicating_shadows_t( util::string_view name, rogue_t* p ) :
     rogue_spell_t( name, p, p -> find_spell(286131) ),
@@ -3284,10 +3293,10 @@ struct replicating_shadows_t : public rogue_spell_t
       if ( minDistTarget && minDist < 10.0 )
       {
         if ( !rupture_action )
-          rupture_action = p() -> find_action( "rupture" );
+          rupture_action = dynamic_cast<rupture_t*>( p()->find_action( "rupture" ) );
         if ( rupture_action )
-          make_event<actions::secondary_attack_trigger_t>( *sim, minDistTarget, rupture_action,
-            cast_state( last_nb_tdata -> dots.rupture -> state ) -> cp, TRIGGER_REPLICATING_SHADOWS );
+          rupture_action->make_secondary_trigger( TRIGGER_REPLICATING_SHADOWS, minDistTarget,
+                                                  cast_state( last_nb_tdata->dots.rupture->state )->cp );
       }
     }
   }
@@ -3346,7 +3355,7 @@ struct secret_technique_t : public rogue_attack_t
     int cp = cast_state( execute_state )->cp;
 
     // Hit of the main char happens right on cast.
-    make_event<actions::secondary_attack_trigger_t>( *sim, execute_state -> target, player_attack, cp, TRIGGER_SECRET_TECHNIQUE );
+    player_attack->make_secondary_trigger( TRIGGER_SECRET_TECHNIQUE, execute_state->target, cp );
 
     // The clones seem to hit 1s later (no time reference in spell data though)
     // Trigger tracking buff until clone damage
@@ -3354,7 +3363,7 @@ struct secret_technique_t : public rogue_attack_t
     // Assuming effect #2 is the number of aditional clones
     for ( size_t i = 0; i < data().effectN( 2 ).base_value(); i++ )
     {
-      make_event<actions::secondary_attack_trigger_t>( *sim, execute_state -> target, clone_attack, cp, TRIGGER_SECRET_TECHNIQUE, 1_s );
+      clone_attack->make_secondary_trigger( TRIGGER_SECRET_TECHNIQUE, execute_state->target, cp, 1_s );
     }
   }
 };
@@ -3670,8 +3679,8 @@ struct sinister_strike_t : public rogue_attack_t
     rogue_attack_t( "sinister_strike", p, p -> find_specialization_spell( "Sinister Strike" ), options_str ),
     extra_attack_delay( timespan_t::from_millis( 300 ) )
   {
-    add_child( extra_attack );
     extra_attack = p->get_background_action<sinister_strike_extra_attack_t>( "sinister_strike_extra_attack" );
+    add_child( extra_attack );
   }
 
   double extra_attack_proc_chance() const
@@ -3705,7 +3714,7 @@ struct sinister_strike_t : public rogue_attack_t
 
     if ( p()->buffs.opportunity->trigger( 1, buff_t::DEFAULT_VALUE(), extra_attack_proc_chance() ) )
     {
-      make_event<actions::secondary_attack_trigger_t>( *sim, execute_state->target, extra_attack, 0, TRIGGER_SINISTER_STRIKE, extra_attack_delay );
+      extra_attack->make_secondary_trigger( TRIGGER_SINISTER_STRIKE, execute_state->target, 0, extra_attack_delay );
     }
   }
 };
@@ -3996,7 +4005,7 @@ struct kidney_shot_t : public rogue_attack_t
 
     if ( state->target->type == ENEMY_ADD && internal_bleeding )
     {
-      make_event<actions::secondary_attack_trigger_t>( *sim, state->target, internal_bleeding, cast_state( state )->cp, TRIGGER_INTERNAL_BLEEDING );
+      internal_bleeding->make_secondary_trigger( TRIGGER_INTERNAL_BLEEDING, state->target, cast_state( state )->cp );
     }
   }
 };
@@ -4663,7 +4672,7 @@ struct shadow_dance_t : public stealth_like_buff_t
 struct shuriken_tornado_t : public buff_t
 {
   rogue_t* rogue;
-  action_t* shuriken_storm_action;
+  actions::shuriken_storm_t* shuriken_storm_action;
 
   shuriken_tornado_t( rogue_t* r ) :
     buff_t( r, "shuriken_tornado", r -> talent.shuriken_tornado ),
@@ -4674,9 +4683,9 @@ struct shuriken_tornado_t : public buff_t
     set_period( timespan_t::from_seconds( 1.0 ) ); // Not explicitly in spell data
     set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
       if ( !shuriken_storm_action )
-        shuriken_storm_action = rogue -> find_action( "shuriken_storm" );
+        shuriken_storm_action = dynamic_cast<actions::shuriken_storm_t*>( rogue->find_action( "shuriken_storm" ) );
       if ( shuriken_storm_action )
-        make_event<actions::secondary_attack_trigger_t>( *sim, rogue -> target, shuriken_storm_action, 0, TRIGGER_SHURIKEN_TORNADO );
+        shuriken_storm_action->make_secondary_trigger( TRIGGER_SHURIKEN_TORNADO, rogue->target );
     } );
   }
 };
@@ -5030,7 +5039,7 @@ void rogue_t::trigger_venomous_wounds_death( player_t* target )
 }
 
 template <typename Base>
-void actions::rogue_action_t<Base>::trigger_auto_attack( const action_state_t* state )
+void actions::rogue_action_t<Base>::trigger_auto_attack( const action_state_t* /* state */ )
 {
   if ( p()->main_hand_attack->execute_event || !p()->off_hand_attack || p()->off_hand_attack->execute_event )
     return;
@@ -5107,7 +5116,7 @@ void actions::rogue_action_t<Base>::trigger_combat_potency( const action_state_t
 }
 
 template <typename Base>
-void actions::rogue_action_t<Base>::trigger_energy_refund( const action_state_t* state )
+void actions::rogue_action_t<Base>::trigger_energy_refund( const action_state_t* /* state */ )
 {
   double energy_restored = ab::last_resource_cost * 0.80;
   p()->resource_gain( RESOURCE_ENERGY, energy_restored, p()->gains.energy_refund );
@@ -5303,9 +5312,9 @@ void actions::rogue_action_t<Base>::trigger_shadow_techniques( const action_stat
 }
 
 template <typename Base>
-void actions::rogue_action_t<Base>::trigger_weaponmaster( const action_state_t* s )
+void actions::rogue_action_t<Base>::trigger_weaponmaster( const action_state_t* state )
 {
-  if ( !p()->talent.weaponmaster->ok() || !ab::result_is_hit( s->result ) || p()->cooldowns.weaponmaster->down() )
+  if ( !p()->talent.weaponmaster->ok() || !ab::result_is_hit( state->result ) || p()->cooldowns.weaponmaster->down() )
     return;
 
   if ( !p()->rng().roll( p()->talent.weaponmaster->proc_chance() ) )
@@ -5320,11 +5329,11 @@ void actions::rogue_action_t<Base>::trigger_weaponmaster( const action_state_t* 
   }
 
   // Direct damage re-computes on execute
-  make_event<actions::secondary_attack_trigger_t>( *p()->sim, s->target, s->action, cast_state( s )->cp, TRIGGER_WEAPONMASTER );
+  this->make_secondary_trigger( TRIGGER_WEAPONMASTER, state->target, cast_state( state )->cp );
 }
 
 template <typename Base>
-void actions::rogue_action_t<Base>::trigger_elaborate_planning( const action_state_t* s )
+void actions::rogue_action_t<Base>::trigger_elaborate_planning( const action_state_t* /* state */ )
 {
   if ( !p()->talent.elaborate_planning->ok() || ab::base_costs[ RESOURCE_COMBO_POINT ] == 0 || ab::background )
     return;
@@ -5332,14 +5341,13 @@ void actions::rogue_action_t<Base>::trigger_elaborate_planning( const action_sta
 }
 
 template <typename Base>
-void actions::rogue_action_t<Base>::trigger_alacrity( const action_state_t* s )
+void actions::rogue_action_t<Base>::trigger_alacrity( const action_state_t* state )
 {
   if ( !p()->talent.alacrity->ok() || !affected_by.alacrity )
     return;
 
-  const rogue_action_state_t* rs = cast_state( s );
-  double chance                  = p()->talent.alacrity->effectN( 2 ).percent() * rs->cp;
-  int stacks                     = 0;
+  double chance = p()->talent.alacrity->effectN( 2 ).percent() * cast_state( state )->cp;
+  int stacks = 0;
   if ( chance > 1 )
   {
     stacks += 1;

@@ -2033,8 +2033,6 @@ struct eye_beam_t : public demon_hunter_spell_t
 
   void execute() override
   {
-    bool extend_meta = false;
-
     if ( p()->talent.demonic->ok() )
     {
       const timespan_t extend_duration = p()->talent.demonic->effectN( 1 ).time_value();
@@ -2044,8 +2042,8 @@ struct eye_beam_t : public demon_hunter_spell_t
       }
       else
       {
-        // Trigger Meta before the execute so that the duration is affected by Meta haste
-        extend_meta = p()->buff.metamorphosis->trigger( 1, p()->buff.metamorphosis->default_value, -1.0, extend_duration );
+        // Trigger Meta before the execute so that the channel duration is affected by Meta haste
+        p()->buff.metamorphosis->trigger( 1, p()->buff.metamorphosis->default_value, -1.0, extend_duration );
       }
     }
 
@@ -2896,7 +2894,7 @@ struct spirit_bomb_t : public demon_hunter_spell_t
   struct spirit_bomb_damage_t : public demon_hunter_spell_t
   {
     spirit_bomb_damage_t( util::string_view name, demon_hunter_t* p )
-      : demon_hunter_spell_t( "spirit_bomb_damage", p, p->find_spell( 247455 ) )
+      : demon_hunter_spell_t( name, p, p->find_spell( 247455 ) )
     {
       background = dual = true;
       aoe = -1;
