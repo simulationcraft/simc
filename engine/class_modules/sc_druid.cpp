@@ -410,7 +410,6 @@ public:
     buff_t* timeworn_dreamcatcher;
 
     // Feral
-    buff_t* apex_predator;
     buff_t* berserk;
     buff_t* bloodtalons;
     buff_t* incarnation_cat;
@@ -420,6 +419,8 @@ public:
     buff_t* tigers_fury;
     buff_t* fury_of_ashamane;
     buff_t* jungle_stalker;
+    // Feral Legendaries
+    buff_t* apex_predators_craving;
 
     // Guardian
     buff_t* barkskin;
@@ -770,7 +771,7 @@ public:
     const spell_data_t* timeworn_dreamcatcher;      // 7108
 
     // Feral
-    const spell_data_t* apex_predators_carving;
+    const spell_data_t* apex_predators_craving;
 
     // Guardian
   } legendary;
@@ -3466,9 +3467,9 @@ struct ferocious_bite_t : public cat_attack_t
     req *= 1.0 + p() -> buff.berserk -> check_value();
     req *= 1.0 + p() -> buff.incarnation_cat -> check_value();
 
-    if ( p() -> buff.apex_predator -> check() )
+    if ( p()->buff.apex_predators_craving->check() )
     {
-       req *= ( 1 - p() -> buff.apex_predator -> data().effectN(1).percent() );
+      req *= 1.0 + p()->buff.apex_predators_craving->data().effectN( 1 ).percent();
     }
 
     return req;
@@ -3486,9 +3487,9 @@ struct ferocious_bite_t : public cat_attack_t
   {
     double c = cat_attack_t::cost();
 
-    if ( p() -> buff.apex_predator -> check() )
+    if ( p()->buff.apex_predators_craving->check() )
     {
-      c *= (1 - p() -> buff.apex_predator -> data().effectN(1).percent() );
+      c *= 1.0 + p()->buff.apex_predators_craving->data().effectN( 1 ).percent();
     }
 
     return c;
@@ -3553,16 +3554,15 @@ struct ferocious_bite_t : public cat_attack_t
            p() -> gain.soul_of_the_forest);
      }
 
-     p() -> buff.apex_predator -> expire();
-
+     p()->buff.apex_predators_craving->expire();
   }
 
   void consume_resource() override
   {
-     if ( p() -> buff.apex_predator -> check() )
-     {
-        ApexPredatorResource();
-        return;
+    if ( p()->buff.apex_predators_craving->check() )
+    {
+      ApexPredatorResource();
+      return;
      }
 
     /* Extra energy consumption happens first. In-game it happens before the
@@ -3580,7 +3580,7 @@ struct ferocious_bite_t : public cat_attack_t
   {
     double am = cat_attack_t::action_multiplier();
 
-    if ( p() -> buff.apex_predator -> up() )
+    if ( p()->buff.apex_predators_craving->up() )
     {
       am *= 2.0;
       return am;
@@ -3928,12 +3928,12 @@ struct rip_t : public cat_attack_t
   {
      base_t::tick( d );
 
-     p() -> buff.apex_predator -> trigger();
+     p()->buff.apex_predators_craving->trigger();
 
-    if ( p()->rng().roll( combo_point_on_tick_proc_rate ) )
-    {
-      p()->resource_gain( RESOURCE_COMBO_POINT, 1, p()->gain.gushing_lacerations );
-      p()->proc.gushing_lacerations->occur();
+     if ( p()->rng().roll( combo_point_on_tick_proc_rate ) )
+     {
+       p()->resource_gain( RESOURCE_COMBO_POINT, 1, p()->gain.gushing_lacerations );
+       p()->proc.gushing_lacerations->occur();
     }
   }
 };
@@ -7802,6 +7802,7 @@ void druid_t::init_spells()
   legendary.balance_runecarve_3 = find_runeforge_legendary( "Druid - Balance Power 03 (DNT)" );
 
   // Feral
+  legendary.apex_predators_craving = find_runeforge_legendary( "Apex Predator's Craving" );
 
   // Restoration
 
@@ -8232,8 +8233,8 @@ void druid_t::create_buffs()
 
   // Feral
 
-  buff.apex_predator        = make_buff(this, "apex_predator", find_spell(252752))
-    ->set_chance(  sets -> has_set_bonus( DRUID_FERAL, T21, B4 ) ? find_spell( 251790 ) -> proc_chance() : 0 /*: 0 )*/ );
+  buff.apex_predators_craving = make_buff( this, "apex_predators_craving", find_spell( 339140 ) )
+    ->set_chance( legendary.apex_predators_craving->effectN( 1 ).percent() );
 
   buff.berserk               = new berserk_buff_t( *this );
 
