@@ -1535,6 +1535,7 @@ class SpellDataGenerator(DataGenerator):
             ( 286131, 0 ),          # Replicating Shadows, Azerite trait dmg effect
             ( 197834, 0 ),          # Sinister Strike extra attack damage spell
             ( 257506, 0 ),          # Shot in the Dark buff for free Cheap Shot casts
+            ( 282449, 0 ),          # Secret Technique clone attack
         ),
 
         # Priest:
