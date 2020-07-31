@@ -1670,6 +1670,14 @@ class SpellDataGenerator(DataGenerator):
           ( 264774, 0 ),                            # Ro3 buff (talent)
           ( 277726, 0 ),                            # Amplification (?)
           ( 279856, 0 ),                            # Glacial Assault
+          ( 333170, 0 ),                            # Molten Skyfall
+          ( 333182, 0 ),                            # Molten Skyfall
+          ( 333314, 0 ),                            # Sun King's Blessing
+          ( 327327, 0 ),                            # Cold Front
+          ( 327330, 0 ),                            # Cold Front
+          ( 327478, 0 ),                            # Freezing Winds
+          ( 327368, 0 ),                            # Disciplinary Command (Fire tracker)
+          ( 327369, 0 ),                            # Disciplinary Command (Arcane tracker)
         ),
 
         # Warlock:
