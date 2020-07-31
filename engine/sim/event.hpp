@@ -128,69 +128,73 @@ inline Event* make_event( sim_t& sim, Args&&... args )
 }
 
 template <typename T>
-inline event_t* make_event( sim_t& s, timespan_t t, const T& f )
+class fn_event_t : public event_t
 {
-  class fn_event_t : public event_t
+  T fn;
+
+public:
+  template <typename U = T>
+  fn_event_t( sim_t& s, timespan_t t, U&& fn ) :
+    event_t( s, t ), fn( std::forward<U>( fn ) )
+  { }
+
+  const char* name() const override
+  { return "function_event"; }
+
+  void execute() override
+  { fn(); }
+};
+
+template <typename T>
+class fn_event_repeating_t : public event_t
+{
+  T fn;
+  timespan_t time;
+  int n;
+
+public:
+  template <typename U = T>
+  fn_event_repeating_t( sim_t& s, timespan_t t, U&& fn, int n ) :
+    event_t( s, t ), fn( std::forward<U>( fn ) ), time( t ), n( n )
+  { }
+
+  const char* name() const override
+  { return "repeating_function_event"; }
+
+  void execute() override
   {
-    T fn;
+    fn();
+    if ( n == -1 || --n > 0 )
+    {
+      make_event<fn_event_repeating_t<T>>( sim(), sim(), time, std::move( fn ), n );
+    }
+  }
+};
 
-    public:
-      fn_event_t( sim_t& s, timespan_t t, const T& f ) :
-        event_t( s, t ), fn( f )
-      { }
-
-      const char* name() const override
-      { return "function_event"; }
-
-      void execute() override
-      { fn(); }
-  };
-
-  return make_event<fn_event_t>( s, s, t, f );
+template <typename T>
+inline event_t* make_event( sim_t& s, timespan_t t, T&& fn )
+{
+  return make_event<fn_event_t<std::decay_t<T>>>( s, s, t, std::forward<T>( fn ) );
 }
 
 template <typename T>
-inline event_t* make_repeating_event( sim_t& s, timespan_t t, const T& fn, int n = -1 )
+inline event_t* make_repeating_event( sim_t& s, timespan_t t, T&& fn, int n = -1 )
 {
-  class fn_event_repeating_t : public event_t
-  {
-    T fn;
-    timespan_t time;
-    int n;
-
-    public:
-      fn_event_repeating_t( sim_t& s, timespan_t t, const T& f, int n ) :
-        event_t( s, t ), fn( f ), time( t ), n( n )
-      { }
-
-      const char* name() const override
-      { return "repeating_function_event"; }
-
-      void execute() override
-      {
-        fn();
-        if ( n == -1 || --n > 0 )
-        {
-          make_event<fn_event_repeating_t>( sim(), sim(), time, fn, n );
-        }
-      }
-  };
-
-  return make_event<fn_event_repeating_t>( s, s, t, fn, n );
+  return make_event<fn_event_repeating_t<std::decay_t<T>>>( s, s, t, std::forward<T>( fn ), n );
 }
 
 template <typename T>
-inline event_t* make_event( sim_t* s, timespan_t t, const T& f )
-{ return make_event( *s, t, f ); }
+inline event_t* make_event( sim_t* s, timespan_t t, T&& fn )
+{ return make_event( *s, t, std::forward<T>( fn ) ); }
 
 template <typename T>
-inline event_t* make_event( sim_t* s, const T& f )
-{ return make_event( *s, timespan_t::zero(), f ); }
+inline event_t* make_event( sim_t* s, T&& fn )
+{ return make_event( *s, timespan_t::zero(), std::forward<T>( fn ) ); }
 
 template <typename T>
-inline event_t* make_event( sim_t& s, const T& f )
-{ return make_event( s, timespan_t::zero(), f ); }
+inline event_t* make_event( sim_t& s, T&& fn )
+{ return make_event( s, timespan_t::zero(), std::forward<T>( fn ) ); }
 
 template <typename T>
-inline event_t* make_repeating_event( sim_t* s, timespan_t t, const T& f, int n = -1 )
-{ return make_repeating_event( *s, t, f, n ); }
+inline event_t* make_repeating_event( sim_t* s, timespan_t t, T&& fn, int n = -1 )
+{ return make_repeating_event( *s, t, std::forward<T>( fn ), n ); }
