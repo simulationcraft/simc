@@ -10025,22 +10025,6 @@ std::unique_ptr<expr_t> druid_t::create_expression( util::string_view name_str )
     }
     return player_t::create_expression( splits[ 0 ] + splits[ 1 ] + splits[ 2 ] );
   }
-
-  // Temporary legendary.* expression
-  if ( splits.size() == 2 && util::str_compare_ci( splits[ 0 ], "legendary" ) )
-  {
-    if ( util::str_compare_ci( splits[ 1 ], "oneth" ) )
-      return expr_t::create_constant( name_str, legendary.oneths_clear_vision->ok() );
-    if ( util::str_compare_ci( splits[ 1 ], "pulsar" ) )
-      return expr_t::create_constant( name_str, legendary.primordial_arcanic_pulsar->ok() );
-    if ( util::str_compare_ci( splits[ 1 ], "dreamcatcher" ) )
-      return expr_t::create_constant( name_str, legendary.timeworn_dreamcatcher->ok() );
-    if ( util::str_compare_ci( splits[ 1 ], "crit" ) )
-      return expr_t::create_constant( name_str, legendary.balance_runecarve_3->ok() );
-
-    throw std::invalid_argument( "invalid legendary (oneth pulsar dreamcatcher crit)" );
-  }
-
   return player_t::create_expression( name_str );
 }
 
