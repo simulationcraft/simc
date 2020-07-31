@@ -499,6 +499,7 @@ public:
     gain_t* sunfire;
     gain_t* celestial_alignment;
     gain_t* incarnation;
+    gain_t* primordial_arcanic_pulsar;
     gain_t* arcanic_pulsar;
     gain_t* vision_of_perfection;
 
@@ -2421,7 +2422,7 @@ public:
             proc_buff->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, pulsar_dur );
 
           // hardcoded 12AP because 9s / 20s * 30AP = 13.5AP - 1.5 Shadowlands discount
-          p()->resource_gain( RESOURCE_ASTRAL_POWER, 12, p()->gain.arcanic_pulsar );
+          p()->resource_gain( RESOURCE_ASTRAL_POWER, 12, p()->gain.primordial_arcanic_pulsar );
         }
       }
     }
@@ -6547,8 +6548,7 @@ struct starfall_t : public druid_spell_t
     if ( p()->legendary.timeworn_dreamcatcher->ok() )
       p()->buff.timeworn_dreamcatcher->trigger();
 
-    if ( p()->legendary.oneths_clear_vision->ok() &&
-         rng().roll( p()->legendary.oneths_clear_vision->effectN( 1 ).percent() ) )
+    if ( p()->legendary.oneths_clear_vision->ok() )
       p()->buff.oneths_free_starsurge->trigger();
   }
 };
@@ -6654,8 +6654,7 @@ struct starsurge_t : public druid_spell_t
     if ( p()->legendary.timeworn_dreamcatcher->ok() )
       p()->buff.timeworn_dreamcatcher->trigger();
 
-    if ( p()->legendary.oneths_clear_vision->ok() &&
-         rng().roll( p()->legendary.oneths_clear_vision->effectN( 1 ).percent() ) )
+    if ( p()->legendary.oneths_clear_vision->ok() )
       p()->buff.oneths_free_starfall->trigger();
   }
 
@@ -7776,30 +7775,30 @@ void druid_t::init_spells()
   }
 
   // Covenants
-  covenant.kyrian = find_covenant_spell( "Kindred Spirits" );
-  covenant.empower_bond = covenant.kyrian->ok() ? find_spell( 326446 ) : spell_data_t::not_found();
-  covenant.kindred_empowerment = find_spell( 327022 );
+  covenant.kyrian                       = find_covenant_spell( "Kindred Spirits" );
+  covenant.empower_bond                 = covenant.kyrian->ok() ? find_spell( 326446 ) : spell_data_t::not_found();
+  covenant.kindred_empowerment          = find_spell( 327022 );
   covenant.kindred_empowerment_energize = find_spell( 327139 );
-  covenant.kindred_empowerment_damage = find_spell( 338411 );
-  covenant.night_fae = find_covenant_spell( "Convoke the Spirits" );
-  covenant.venthyr = find_covenant_spell( "Ravenous Frenzy" );
-  covenant.necrolord = find_covenant_spell( "Adaptive Swarm" );
-  covenant.adaptive_swarm_damage = find_spell( 325733 );
-  covenant.adaptive_swarm_heal = find_spell( 325748 );
+  covenant.kindred_empowerment_damage   = find_spell( 338411 );
+  covenant.night_fae                    = find_covenant_spell( "Convoke the Spirits" );
+  covenant.venthyr                      = find_covenant_spell( "Ravenous Frenzy" );
+  covenant.necrolord                    = find_covenant_spell( "Adaptive Swarm" );
+  covenant.adaptive_swarm_damage        = find_spell( 325733 );
+  covenant.adaptive_swarm_heal          = find_spell( 325748 );
 
   // Runeforge Legendaries
 
   // General
-  legendary.druid_runecarve_1 = find_runeforge_legendary( "Druid - All Power 01 (DNT)" );
-  legendary.druid_runecarve_3 = find_runeforge_legendary( "Druid - All Power 03 (DNT)" );
-  legendary.druid_runecarve_4 = find_runeforge_legendary( "Druid - All Power 04 (DNT)" );
+  legendary.druid_runecarve_1        = find_runeforge_legendary( "Druid - All Power 01 (DNT)" );
+  legendary.druid_runecarve_3        = find_runeforge_legendary( "Druid - All Power 03 (DNT)" );
+  legendary.druid_runecarve_4        = find_runeforge_legendary( "Druid - All Power 04 (DNT)" );
   legendary.lycaras_fleeting_glimpse = find_runeforge_legendary( "Lycara's Fleeting Glimpse" );
 
   // Balance
-  legendary.oneths_clear_vision = find_runeforge_legendary( "Oneth's Clear Vision" );
+  legendary.oneths_clear_vision       = find_runeforge_legendary( "Oneth's Clear Vision" );
   legendary.primordial_arcanic_pulsar = find_runeforge_legendary( "Primordial Arcanic Pulsar" );
-  legendary.timeworn_dreamcatcher = find_runeforge_legendary( "Timeworn Dreamcatcher" );
-  legendary.balance_runecarve_3 = find_runeforge_legendary( "Druid - Balance Power 03 (DNT)" );
+  legendary.timeworn_dreamcatcher     = find_runeforge_legendary( "Timeworn Dreamcatcher" );
+  legendary.balance_runecarve_3       = find_runeforge_legendary( "Druid - Balance Power 03 (DNT)" );
 
   // Feral
   legendary.apex_predators_craving = find_runeforge_legendary( "Apex Predator's Craving" );
@@ -8217,12 +8216,15 @@ void druid_t::create_buffs()
 
   buff.primordial_arcanic_pulsar = make_buff( this, "primordial_arcanic_pulsar", find_spell( 338825 ) );
 
-  buff.oneths_free_starsurge = make_buff( this, "oneths_clear_vision", find_spell( 339797 ) );
+  buff.oneths_free_starsurge = make_buff( this, "oneths_clear_vision", find_spell( 339797 ) )
+    ->set_chance( legendary.oneths_clear_vision->effectN( 1 ).percent() );
 
-  buff.oneths_free_starfall = make_buff( this, "oneths_perception", find_spell( 339800 ) );
+  buff.oneths_free_starfall = make_buff( this, "oneths_perception", find_spell( 339800 ) )
+    ->set_chance( legendary.oneths_clear_vision->effectN( 1 ).percent() );
 
-  buff.timeworn_dreamcatcher = make_buff( this, "timeworn_dreamcatcher", find_spell( 340049 ) )
-                                   ->set_refresh_behavior( buff_refresh_behavior::DURATION );
+  buff.timeworn_dreamcatcher =
+      make_buff( this, "timeworn_dreamcatcher", legendary.timeworn_dreamcatcher->effectN( 1 ).trigger() )
+          ->set_refresh_behavior( buff_refresh_behavior::DURATION );
   buff.timeworn_dreamcatcher->set_default_value( buff.timeworn_dreamcatcher->data().effectN( 1 ).percent() );
 
   buff.runecarve_3_nature_buff = make_buff( this, "runecarve_3_nature", find_spell( 339943 ) )->set_reverse( true );
@@ -8233,8 +8235,9 @@ void druid_t::create_buffs()
 
   // Feral
 
-  buff.apex_predators_craving = make_buff( this, "apex_predators_craving", find_spell( 339140 ) )
-    ->set_chance( legendary.apex_predators_craving->effectN( 1 ).percent() );
+  buff.apex_predators_craving =
+      make_buff( this, "apex_predators_craving", legendary.apex_predators_craving->effectN( 1 ).trigger() )
+          ->set_chance( legendary.apex_predators_craving->effectN( 1 ).percent() );
 
   buff.berserk               = new berserk_buff_t( *this );
 
@@ -8991,19 +8994,20 @@ void druid_t::init_gains()
 
   if ( specialization() == DRUID_BALANCE )
   {
-    gain.natures_balance      = get_gain( "natures_balance" );
-    gain.force_of_nature      = get_gain( "force_of_nature" );
-    gain.fury_of_elune        = get_gain( "fury_of_elune" );
-    gain.stellar_flare        = get_gain( "stellar_flare" );
-    gain.starfire             = get_gain( "starfire" );
-    gain.moonfire             = get_gain( "moonfire" );
-    gain.shooting_stars       = get_gain( "shooting_stars" );
-    gain.wrath                = get_gain( "wrath" );
-    gain.sunfire              = get_gain( "sunfire" );
-    gain.celestial_alignment  = get_gain( "celestial_alignment" );
-    gain.incarnation          = get_gain( "incarnation" );
-    gain.arcanic_pulsar       = get_gain( "arcanic_pulsar" );
-    gain.vision_of_perfection = get_gain( "vision_of_perfection" );
+    gain.natures_balance           = get_gain( "natures_balance" );
+    gain.force_of_nature           = get_gain( "force_of_nature" );
+    gain.fury_of_elune             = get_gain( "fury_of_elune" );
+    gain.stellar_flare             = get_gain( "stellar_flare" );
+    gain.starfire                  = get_gain( "starfire" );
+    gain.moonfire                  = get_gain( "moonfire" );
+    gain.shooting_stars            = get_gain( "shooting_stars" );
+    gain.wrath                     = get_gain( "wrath" );
+    gain.sunfire                   = get_gain( "sunfire" );
+    gain.celestial_alignment       = get_gain( "celestial_alignment" );
+    gain.incarnation               = get_gain( "incarnation" );
+    gain.primordial_arcanic_pulsar = get_gain( "primordial_arcanic_pulsar" );
+    gain.arcanic_pulsar            = get_gain( "arcanic_pulsar" );
+    gain.vision_of_perfection      = get_gain( "vision_of_perfection" );
   }
 
   if ( specialization() == DRUID_FERAL )
