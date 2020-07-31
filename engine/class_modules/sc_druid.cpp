@@ -580,7 +580,6 @@ public:
     // Feral
     const spell_data_t* feral;
     const spell_data_t* feral_overrides;
-    const spell_data_t* feral_overrides2;
     const spell_data_t* cat_form; // Cat form hidden effects
     const spell_data_t* cat_form_speed;
     const spell_data_t* feline_swiftness; // Feral Affinity
@@ -5320,13 +5319,6 @@ struct kindred_empowerment_t : public druid_spell_t
     background = true;
     may_miss = may_crit = callbacks = false;
   }
-
-  void init() override
-  {
-    druid_spell_t::init();
-
-    update_flags = snapshot_flags = STATE_VERSATILITY | STATE_TGT_MUL_DA;  // Seems to double dip vers & target debuffs
-  }
 };
 
 // Fury of Elune =========================================================
@@ -7654,7 +7646,7 @@ void druid_t::init_spells()
   spec.cat_form                   = find_class_spell( "Cat Form" )->ok() ? find_spell( 3025   ) : spell_data_t::not_found();
   spec.cat_form_speed             = find_class_spell( "Cat Form" )->ok() ? find_spell( 113636 ) : spell_data_t::not_found();
   spec.feral                      = find_specialization_spell( "Feral Druid" );
-  spec.feral_overrides            = specialization() == DRUID_FERAL ? find_specialization_spell( "Feral Overrides Passive" ) : spell_data_t::not_found();
+  spec.feral_overrides            = find_specialization_spell( "Feral Overrides Passive" );
   spec.predatory_swiftness        = find_specialization_spell( "Predatory Swiftness" );
   spec.primal_fury                = find_spell( 16953 );
   spec.rip                        = find_specialization_spell( "Rip" );
