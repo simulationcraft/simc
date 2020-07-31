@@ -1874,6 +1874,23 @@ struct hot_streak_spell_t : public fire_mage_spell_t
       }
     }
   }
+
+  void impact( action_state_t* s ) override
+  {
+    fire_mage_spell_t::impact( s );
+
+    // The buff expiration is slightly delayed, allowing two spells cast at the same time to benefit from this effect.
+    p()->buffs.alexstraszas_fury->expire( p()->bugs ? 30_ms : 0_ms );
+  }
+
+  double action_multiplier() const override
+  {
+    double am = fire_mage_spell_t::action_multiplier();
+
+    am *= 1.0 + p()->buffs.alexstraszas_fury->check_value();
+
+    return am;
+  }
 };
 
 
@@ -3140,15 +3157,6 @@ struct flamestrike_t : public hot_streak_spell_t
     }
   }
 
-  double action_multiplier() const override
-  {
-    double am = hot_streak_spell_t::action_multiplier();
-
-    am *= 1.0 + p()->buffs.alexstraszas_fury->check_value();
-
-    return am;
-  }
-
   void execute() override
   {
     hot_streak_spell_t::execute();
@@ -3163,14 +3171,6 @@ struct flamestrike_t : public hot_streak_spell_t
         .action( flame_patch )
         .hasted( ground_aoe_params_t::SPELL_SPEED ) );
     }
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    hot_streak_spell_t::impact( s );
-
-    // the buff expiration is slightly delayed, allowing two spells cast at the same time to benefit from this effect.
-    p()->buffs.alexstraszas_fury->expire( p()->bugs ? 30_ms : 0_ms );
   }
 };
 
@@ -4365,8 +4365,6 @@ struct pyroblast_t : public hot_streak_spell_t
     if ( !last_hot_streak )
       am *= 1.0 + p()->buffs.pyroclasm->check_value();
 
-    am *= 1.0 + p()->buffs.alexstraszas_fury->check_value();
-
     return am;
   }
 
@@ -4393,9 +4391,6 @@ struct pyroblast_t : public hot_streak_spell_t
   void impact( action_state_t* s ) override
   {
     hot_streak_spell_t::impact( s );
-
-    // the buff expiration is slightly delayed, allowing two spells cast at the same time to benefit from this effect.
-    p()->buffs.alexstraszas_fury->expire( p()->bugs ? 30_ms : 0_ms );
 
     if ( trailing_embers )
     {
