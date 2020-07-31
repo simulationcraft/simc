@@ -767,28 +767,28 @@ public:
   struct legendary_t
   {
     // General
-    const spell_data_t* druid_runecarve_1;         // 7084
-    const spell_data_t* druid_runecarve_3;         // 7085
-    const spell_data_t* druid_runecarve_4;         // 7086
-    const spell_data_t* lycaras_fleeting_glimpse;  // 7110
+    item_runeforge_t druid_runecarve_1;         // 7084
+    item_runeforge_t druid_runecarve_3;         // 7085
+    item_runeforge_t druid_runecarve_4;         // 7086
+    item_runeforge_t lycaras_fleeting_glimpse;  // 7110
 
     // Balance
-    const spell_data_t* oneths_clear_vision;        // 7087
-    const spell_data_t* primordial_arcanic_pulsar;  // 7088
-    const spell_data_t* balance_runecarve_3;        // 7107
-    const spell_data_t* timeworn_dreamcatcher;      // 7108
+    item_runeforge_t oneths_clear_vision;        // 7087
+    item_runeforge_t primordial_arcanic_pulsar;  // 7088
+    item_runeforge_t balance_runecarve_3;        // 7107
+    item_runeforge_t timeworn_dreamcatcher;      // 7108
 
     // Feral
-    const spell_data_t* feral_runecarve_1;       // 7089
-    const spell_data_t* feral_runecarve_2;       // 7090
-    const spell_data_t* apex_predators_craving;  // 7091
-    const spell_data_t* feral_runecarve_4;       // 7109
+    item_runeforge_t feral_runecarve_1;       // 7089
+    item_runeforge_t feral_runecarve_2;       // 7090
+    item_runeforge_t apex_predators_craving;  // 7091
+    item_runeforge_t feral_runecarve_4;       // 7109
 
     // Guardian
-    const spell_data_t* guardian_runecarve_1;   // 7092
-    const spell_data_t* guardian_runecarve_2;   // 7093
-    const spell_data_t* guardian_runecarve_3;   // 7094
-    const spell_data_t* legacy_of_the_sleeper;  // 7095
+    item_runeforge_t guardian_runecarve_1;   // 7092
+    item_runeforge_t guardian_runecarve_2;   // 7093
+    item_runeforge_t guardian_runecarve_3;   // 7094
+    item_runeforge_t legacy_of_the_sleeper;  // 7095
   } legendary;
 
   druid_t( sim_t* sim, util::string_view name, race_e r = RACE_NIGHT_ELF ) :
