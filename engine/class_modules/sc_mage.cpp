@@ -1338,7 +1338,6 @@ struct mage_spell_t : public spell_t
     // Temporary damage increase.
     bool arcane_power = true;
     bool bone_chilling = true;
-    bool crackling_energy = true;
     bool incanters_flow = true;
     bool rune_of_power = true;
 
