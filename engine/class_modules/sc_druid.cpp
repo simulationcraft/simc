@@ -104,6 +104,8 @@ struct druid_td_t : public actor_target_data_t
 
     dot_t* adaptive_swarm_damage;
     dot_t* adaptive_swarm_heal;
+
+    dot_t* feral_runecarve_4;
   } dots;
 
   struct buffs_t
@@ -303,6 +305,9 @@ public:
     // Covenant
     spell_t* kindred_empowerment;
     spell_t* kindred_empowerment_partner;
+
+    // Legendary
+    action_t* feral_runecarve_4;
   } active;
 
   // Pets
@@ -420,6 +425,7 @@ public:
     buff_t* fury_of_ashamane;
     buff_t* jungle_stalker;
     // Feral Legendaries
+    buff_t* feral_runecarve_2;
     buff_t* apex_predators_craving;
 
     // Guardian
@@ -513,6 +519,8 @@ public:
     gain_t* swipe_cat;
     gain_t* tigers_fury;
     gain_t* gushing_lacerations;
+    gain_t* feral_runecarve_1;
+    gain_t* feral_runecarve_2;
 
     // Guardian (Bear)
     gain_t* bear_form;
@@ -771,9 +779,16 @@ public:
     const spell_data_t* timeworn_dreamcatcher;      // 7108
 
     // Feral
-    const spell_data_t* apex_predators_craving;
+    const spell_data_t* feral_runecarve_1;       // 7089
+    const spell_data_t* feral_runecarve_2;       // 7090
+    const spell_data_t* apex_predators_craving;  // 7091
+    const spell_data_t* feral_runecarve_4;       // 7109
 
     // Guardian
+    const spell_data_t* guardian_runecarve_1;   // 7092
+    const spell_data_t* guardian_runecarve_2;   // 7093
+    const spell_data_t* guardian_runecarve_3;   // 7094
+    const spell_data_t* legacy_of_the_sleeper;  // 7095
   } legendary;
 
   druid_t( sim_t* sim, util::string_view name, race_e r = RACE_NIGHT_ELF ) :
@@ -2999,47 +3014,60 @@ public:
   void consume_resource() override
   {
     // Treat Omen of Clarity energy savings like an energy gain for tracking purposes.
-    if ( consumes_clearcasting && current_resource() == RESOURCE_ENERGY &&
-      base_t::cost() > 0 && p() -> buff.clearcasting -> up() )
+    if ( consumes_clearcasting && current_resource() == RESOURCE_ENERGY && base_t::cost() > 0 &&
+         p()->buff.clearcasting->up() )
     {
-      // Base cost doesn't factor in Berserk, but Omen of Clarity does net us less energy during it, so account for that here.
+      // Base cost doesn't factor in Berserk, but Omen of Clarity does net us less energy during it, so account for that
+      // here.
       double eff_cost = base_t::cost();
-      eff_cost *= 1.0 + p() -> buff.berserk -> value();
-      eff_cost *= 1.0 + p() -> buff.incarnation_cat -> check_value();
+      eff_cost *= 1.0 + p()->buff.berserk->value();
+      eff_cost *= 1.0 + p()->buff.incarnation_cat->check_value();
 
-      p() -> gain.clearcasting -> add( RESOURCE_ENERGY, eff_cost );
+      p()->gain.clearcasting->add( RESOURCE_ENERGY, eff_cost );
     }
 
     base_t::consume_resource();
 
     if ( consumes_clearcasting && current_resource() == RESOURCE_ENERGY && base_t::cost() > 0 )
-      p() -> buff.clearcasting -> decrement();
+    {
+      p()->buff.clearcasting->decrement();
+
+      if ( p()->legendary.feral_runecarve_1->ok() )
+      {
+        // TODO: check if we need to modify by eff_cost for berserk/incarn
+        p()->resource_gain( RESOURCE_ENERGY, base_t::cost() * p()->legendary.feral_runecarve_1->effectN( 1 ).percent(),
+                            p()->gain.feral_runecarve_1 );
+      }
+    }
 
     if ( consumes_combo_points && hit_any_target )
     {
-      int consumed = ( int ) p() -> resources.current[ RESOURCE_COMBO_POINT ];
+      int consumed = as<int>( p()->resources.current[ RESOURCE_COMBO_POINT ] );
 
-      p() -> resource_loss( RESOURCE_COMBO_POINT, consumed, nullptr, this );
+      p()->resource_loss( RESOURCE_COMBO_POINT, consumed, nullptr, this );
 
-      if ( sim -> log )
+      if ( sim->log )
       {
-        sim -> out_log.printf( "%s consumes %d %s for %s (0)",
-          player -> name(),
-          consumed,
-          util::resource_type_string( RESOURCE_COMBO_POINT ),
-          name() );
+        sim->print_log( "{} consumes {} {} for {} (0)", player->name(), consumed,
+                        util::resource_type_string( RESOURCE_COMBO_POINT ), name() );
       }
 
-      stats -> consume_resource( RESOURCE_COMBO_POINT, consumed );
+      stats->consume_resource( RESOURCE_COMBO_POINT, consumed );
 
-      if ( p() -> spec.predatory_swiftness -> ok() )
-        p() -> buff.predatory_swiftness -> trigger( 1, 1, consumed * 0.20 );
+      if ( p()->spec.predatory_swiftness->ok() )
+        p()->buff.predatory_swiftness->trigger( 1, 1, consumed * 0.20 );
 
-      if ( p() -> talent.soul_of_the_forest -> ok() && p() -> specialization() == DRUID_FERAL )
+      if ( p()->talent.soul_of_the_forest->ok() && p()->specialization() == DRUID_FERAL )
       {
-        p() -> resource_gain( RESOURCE_ENERGY,
-          consumed * p() -> talent.soul_of_the_forest -> effectN( 1 ).resource( RESOURCE_ENERGY ),
-          p() -> gain.soul_of_the_forest );
+        p()->resource_gain( RESOURCE_ENERGY,
+                            consumed * p()->talent.soul_of_the_forest->effectN( 1 ).resource( RESOURCE_ENERGY ),
+                            p()->gain.soul_of_the_forest );
+      }
+
+      if ( p()->buff.feral_runecarve_2->up() )
+      {
+        p()->resource_gain( RESOURCE_COMBO_POINT, p()->buff.feral_runecarve_2->check_value(),
+                            p()->gain.feral_runecarve_2 );
       }
     }
   }
@@ -3121,8 +3149,17 @@ public:
   {
     base_t::impact( s );
 
-    if ( result_is_hit( s -> result ) && s -> result == RESULT_CRIT )
-      attack_critical = true;
+    if ( result_is_hit( s->result ) )
+    {
+      if ( s->result == RESULT_CRIT )
+        attack_critical = true;
+
+      if ( p()->legendary.feral_runecarve_4->ok() &&
+           ( p()->buff.berserk->check() || p()->buff.incarnation_cat->check() ) )
+      {
+        trigger_feral_runecarve_4( s->target, s->result_amount );
+      }
+    }
   }
 
   void tick( dot_t* d ) override
@@ -3147,25 +3184,33 @@ public:
       }
     }
 
-    if ( hit_any_target && trigger_untamed_ferocity )
+    if ( hit_any_target )
     {
-      p()->cooldown.berserk->adjust( -p()->azerite.untamed_ferocity.time_value( 3 ), false );
-      p()->cooldown.incarnation->adjust( -p()->azerite.untamed_ferocity.time_value( 4 ), false );
+      if ( trigger_untamed_ferocity )
+      {
+        p()->cooldown.berserk->adjust( -p()->azerite.untamed_ferocity.time_value( 3 ), false );
+        p()->cooldown.incarnation->adjust( -p()->azerite.untamed_ferocity.time_value( 4 ), false );
+      }
+      if ( p()->legendary.feral_runecarve_4->ok() )
+      {
+        p()->cooldown.berserk->adjust( -p()->legendary.feral_runecarve_4->effectN( 1 ).time_value(), false );
+        p()->cooldown.incarnation->adjust( -p()->legendary.feral_runecarve_4->effectN( 1 ).time_value(), false );
+      }
     }
 
-    if ( ! hit_any_target )
+    if ( !hit_any_target )
       trigger_energy_refund();
 
     if ( harmful )
     {
-      p() -> buff.prowl -> expire();
-      p() -> buffs.shadowmeld -> expire();
+      p()->buff.prowl->expire();
+      p()->buffs.shadowmeld->expire();
 
       // Track benefit of damage buffs
-      p() -> buff.tigers_fury -> up();
-      p() -> buff.savage_roar -> up();
+      p()->buff.tigers_fury->up();
+      p()->buff.savage_roar->up();
       if ( special && base_costs[ RESOURCE_ENERGY ] > 0 )
-        p() -> buff.berserk -> up();
+        p()->buff.berserk->up();
     }
   }
 
@@ -3208,6 +3253,15 @@ public:
 
     p() -> cooldown.tigers_fury -> reset( true );
     p() -> proc.predator -> occur();
+  }
+
+  void trigger_feral_runecarve_4( player_t* t, double d )
+  {
+    if ( !special || !harmful || !d )
+      return;
+
+    residual_action::trigger( p()->active.feral_runecarve_4, t,
+                              p()->legendary.feral_runecarve_4->effectN( 2 ).percent() * d );
   }
 }; // end druid_cat_attack_t
 
@@ -3592,6 +3646,16 @@ struct ferocious_bite_t : public cat_attack_t
     am *= 1.0 + excess_energy / max_excess_energy;
 
     return am;
+  }
+};
+
+struct feral_runecarve_4_t : public residual_action::residual_periodic_action_t<cat_attack_t>
+{
+  feral_runecarve_4_t( druid_t* p )
+    : residual_action::residual_periodic_action_t<cat_attack_t>( "feral_runecarve_4", p, p->find_spell( 340056 ) )
+  {
+    background = dual = proc = true;
+    may_miss = may_dodge = may_parry = false;
   }
 };
 
@@ -4242,6 +4306,9 @@ struct tigers_fury_t : public cat_attack_t
     cat_attack_t::execute();
 
     p()->buff.tigers_fury->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, duration );
+
+    if ( p()->legendary.feral_runecarve_2->ok() )
+      p()->buff.feral_runecarve_2->trigger();
 
     //p()->buff.jungle_fury->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, duration );
   }
@@ -7793,11 +7860,18 @@ void druid_t::init_spells()
   legendary.balance_runecarve_3       = find_runeforge_legendary( "Druid - Balance Power 03 (DNT)" );
 
   // Feral
+  legendary.feral_runecarve_1      = find_runeforge_legendary( "Druid - Feral Power 01 (DNT)" );
+  legendary.feral_runecarve_2      = find_runeforge_legendary( "Druid - Feral Power 02 (DNT)" );
   legendary.apex_predators_craving = find_runeforge_legendary( "Apex Predator's Craving" );
-
-  // Restoration
+  legendary.feral_runecarve_4      = find_runeforge_legendary( "Druid - Feral Power 04 (DNT)" );
 
   // Guardian
+  legendary.guardian_runecarve_1  = find_runeforge_legendary( "Druid - Guardian Power 01 (DNT)" );
+  legendary.guardian_runecarve_2  = find_runeforge_legendary( "Druid - Guardian Power 02 (DNT)" );
+  legendary.guardian_runecarve_3  = find_runeforge_legendary( "Druid - Guardian Power 03 (DNT)" );
+  legendary.legacy_of_the_sleeper = find_runeforge_legendary( "Legacy of the Sleeper" );
+
+  // Restoration
 
   // Azerite ================================================================
   // Balance
@@ -7913,6 +7987,9 @@ void druid_t::init_spells()
     active.kindred_empowerment = new spells::kindred_empowerment_t( this, "kindred_empowerment" );
     active.kindred_empowerment_partner = new spells::kindred_empowerment_t( this, "kindred_empowerment_partner" );
   }
+
+  if ( legendary.feral_runecarve_4->ok() )
+    active.feral_runecarve_4 = new cat_attacks::feral_runecarve_4_t( this );
 }
 
 // druid_t::init_base =======================================================
@@ -7929,10 +8006,11 @@ void druid_t::init_base_stats()
   base.spell_power_per_intellect = specialization() == DRUID_BALANCE || specialization() == DRUID_RESTORATION ? 1.0 : 0.0;
 
   // Resources
-  resources.base[ RESOURCE_RAGE         ] = 100;
-  resources.base[ RESOURCE_COMBO_POINT  ] = 5;
+  resources.base[ RESOURCE_RAGE ]         = 100;
+  resources.base[ RESOURCE_COMBO_POINT ]  = 5;
   resources.base[ RESOURCE_ASTRAL_POWER ] = 100;
-  resources.base[ RESOURCE_ENERGY       ] = 100 + talent.moment_of_clarity->effectN( 3 ).resource( RESOURCE_ENERGY );
+  resources.base[ RESOURCE_ENERGY ]       = 100 + talent.moment_of_clarity->effectN( 3 ).resource( RESOURCE_ENERGY ) +
+                                      legendary.feral_runecarve_1->effectN( 2 ).base_value();
 
   // only activate other resources if you have the affinity and affinity_resources = true
   resources.active_resource[ RESOURCE_HEALTH       ] = specialization() == DRUID_GUARDIAN ||
@@ -8226,6 +8304,10 @@ void druid_t::create_buffs()
   buff.runecarve_3_arcane_buff->set_default_value( buff.runecarve_3_arcane_buff->data().effectN( 1 ).base_value() );
 
   // Feral
+
+  buff.feral_runecarve_2 = make_buff( this, "feral_runecarve_2", legendary.feral_runecarve_2->effectN( 1 ).trigger() );
+  buff.feral_runecarve_2->set_default_value(
+      buff.feral_runecarve_2->data().effectN( 1 ).trigger()->effectN( 1 ).base_value() );
 
   buff.apex_predators_craving =
       make_buff( this, "apex_predators_craving", legendary.apex_predators_craving->effectN( 1 ).trigger() )
@@ -9004,14 +9086,15 @@ void druid_t::init_gains()
 
   if ( specialization() == DRUID_FERAL )
   {
-    gain.brutal_slash     = get_gain( "brutal_slash" );
-    gain.energy_refund    = get_gain( "energy_refund" );
-    gain.feral_frenzy     = get_gain( "feral_frenzy" );
-    gain.primal_fury      = get_gain( "primal_fury" );
-    gain.rake             = get_gain( "rake" );
-    gain.shred            = get_gain( "shred" );
-    gain.swipe_cat        = get_gain( "swipe_cat" );
-    gain.tigers_fury      = get_gain( "tigers_fury" );
+    gain.brutal_slash      = get_gain( "brutal_slash" );
+    gain.energy_refund     = get_gain( "energy_refund" );
+    gain.feral_frenzy      = get_gain( "feral_frenzy" );
+    gain.primal_fury       = get_gain( "primal_fury" );
+    gain.rake              = get_gain( "rake" );
+    gain.shred             = get_gain( "shred" );
+    gain.swipe_cat         = get_gain( "swipe_cat" );
+    gain.tigers_fury       = get_gain( "tigers_fury" );
+    gain.feral_runecarve_1 = get_gain( "feral_runecarve_1" );
   }
 
   if ( specialization() == DRUID_GUARDIAN )
@@ -10475,6 +10558,7 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
   dots.wild_growth           = target.get_dot( "wild_growth", &source );
   dots.adaptive_swarm_damage = target.get_dot( "adaptive_swarm_damage", &source );
   dots.adaptive_swarm_heal   = target.get_dot( "adaptive_swarm_heal", &source );
+  dots.feral_runecarve_4     = target.get_dot( "feral_runecarve_4", &source );
 
   buff.lifebloom = make_buff( *this, "lifebloom", source.find_class_spell( "Lifebloom" ) );
 
