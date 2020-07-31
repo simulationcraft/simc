@@ -703,6 +703,68 @@ public:
 namespace actions { // namespace actions
 
 // ==========================================================================
+// Secondary Action Triggers
+// ==========================================================================
+
+template<typename Base>
+struct secondary_action_trigger_t : public event_t
+{
+  Base* action;
+  action_state_t* state;
+  player_t* target;
+  int cp;
+  secondary_trigger_e source;
+
+  secondary_action_trigger_t( action_state_t* s, secondary_trigger_e source_, timespan_t delay = timespan_t::zero() ) :
+    event_t( *s -> action -> sim, delay ), action( dynamic_cast<Base*>( s->action ) ), state( s ), target( nullptr ), cp( 0 ), source( source_ )
+  {}
+
+  secondary_action_trigger_t( player_t* target, Base* action, int cp, secondary_trigger_e source_, timespan_t delay = timespan_t::zero() ) :
+    event_t( *action -> sim, delay ), action( action ), state( nullptr ), target( target ), cp( cp ), source( source_ )
+  {}
+
+  const char* name() const override
+  { return "secondary_action_trigger"; }
+
+  void execute() override
+  {
+    player_t* action_target = state ? state->target : target;
+
+    // Ensure target is still available and did not demise during delay.
+    if ( !action_target || action_target->is_sleeping() )
+      return;
+
+    auto bg = action->background, d = action->dual, r = action->repeating;
+    action->background = action->dual = true;
+    action->repeating = false;
+    action->secondary_trigger = source;
+    action->set_target( action_target );
+
+    // No state, construct one and grab combo points from the event instead of current CP amount.
+    if ( !state )
+    {
+      state = action->get_state();
+      action->cast_state( state )->cp = cp;
+      // Calling snapshot_internal, snapshot_state would overwrite CP.
+      action->snapshot_internal( state, action->snapshot_flags, action->amount_type( state ) );
+    }
+
+    action->pre_execute_state = state;
+    action->execute();
+
+    action->background = bg;
+    action->dual = d;
+    action->repeating = r;
+    action->secondary_trigger = TRIGGER_NONE;
+
+    state = nullptr;
+  }
+
+  ~secondary_action_trigger_t() override
+  { if ( state ) action_state_t::release( state ); }
+};
+
+// ==========================================================================
 // Rogue Action State
 // ==========================================================================
 
@@ -944,12 +1006,12 @@ public:
   virtual void make_secondary_trigger( secondary_trigger_e source_, action_state_t* s, timespan_t delay = timespan_t::zero() )
   {
     assert( s->action == this );
-    make_event<actions::secondary_action_trigger_t<base_t>>( *ab::sim, s, source_, delay );
+    make_event<secondary_action_trigger_t<base_t>>( *ab::sim, s, source_, delay );
   }
 
   virtual void make_secondary_trigger( secondary_trigger_e source_, player_t* target, int cp = 0, timespan_t delay = timespan_t::zero() )
   {
-    make_event<actions::secondary_action_trigger_t<base_t>>( *ab::sim, target, this, cp, source_ );
+    make_event<secondary_action_trigger_t<base_t>>( *ab::sim, target, this, cp, source_ );
   }
 
   // Helper function for expressions. Returns the number of guaranteed generated combo points for
@@ -1395,68 +1457,6 @@ struct rogue_attack_t : public rogue_action_t<melee_attack_t>
   }
 
   void impact( action_state_t* state ) override;
-};
-
-// ==========================================================================
-// Rogue Secondary Abilities
-// ==========================================================================
-
-template<typename Base>
-struct secondary_action_trigger_t : public event_t
-{
-  Base* action;
-  action_state_t* state;
-  player_t* target;
-  int cp;
-  secondary_trigger_e source;
-
-  secondary_action_trigger_t( action_state_t* s, secondary_trigger_e source_, timespan_t delay = timespan_t::zero() ) :
-    event_t( *s -> action -> sim, delay ), action( dynamic_cast<Base*>( s->action ) ), state( s ), target( nullptr ), cp( 0 ), source( source_ )
-  {}
-
-  secondary_action_trigger_t( player_t* target, Base* action, int cp, secondary_trigger_e source_, timespan_t delay = timespan_t::zero() ) :
-    event_t( *action -> sim, delay ), action( action ), state( nullptr ), target( target ), cp( cp ), source( source_ )
-  {}
-
-  const char* name() const override
-  { return "secondary_action_trigger"; }
-
-  void execute() override
-  {
-    player_t* action_target = state ? state->target : target;
-
-    // Ensure target is still available and did not demise during delay.
-    if ( !action_target || action_target->is_sleeping() )
-      return;
-
-    auto bg = action->background, d = action->dual, r = action->repeating;
-    action->background = action->dual = true;
-    action->repeating = false;
-    action->secondary_trigger = source;
-    action->set_target( action_target );
-    
-    // No state, construct one and grab combo points from the event instead of current CP amount.
-    if ( !state )
-    {
-      state = action->get_state();
-      action->cast_state( state )->cp = cp;
-      // Calling snapshot_internal, snapshot_state would overwrite CP.
-      action->snapshot_internal( state, action->snapshot_flags, action->amount_type( state ) );
-    }
-
-    action->pre_execute_state = state;
-    action->execute();
-
-    action->background = bg;
-    action->dual = d;
-    action->repeating = r;
-    action->secondary_trigger = TRIGGER_NONE;
-
-    state = nullptr;
-  }
-
-  ~secondary_action_trigger_t() override
-  { if ( state ) action_state_t::release( state ); }
 };
 
 // ==========================================================================
