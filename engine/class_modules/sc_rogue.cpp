@@ -1011,7 +1011,7 @@ public:
 
   virtual void make_secondary_trigger( secondary_trigger_e source_, player_t* target, int cp = 0, timespan_t delay = timespan_t::zero() )
   {
-    make_event<secondary_action_trigger_t<base_t>>( *ab::sim, target, this, cp, source_ );
+    make_event<secondary_action_trigger_t<base_t>>( *ab::sim, target, this, cp, source_, delay );
   }
 
   // Helper function for expressions. Returns the number of guaranteed generated combo points for
@@ -5038,7 +5038,7 @@ void rogue_t::trigger_venomous_wounds_death( player_t* target )
 }
 
 template <typename Base>
-void actions::rogue_action_t<Base>::trigger_auto_attack( const action_state_t* state )
+void actions::rogue_action_t<Base>::trigger_auto_attack( const action_state_t* /* state */ )
 {
   if ( p()->main_hand_attack->execute_event || !p()->off_hand_attack || p()->off_hand_attack->execute_event )
     return;
@@ -5115,7 +5115,7 @@ void actions::rogue_action_t<Base>::trigger_combat_potency( const action_state_t
 }
 
 template <typename Base>
-void actions::rogue_action_t<Base>::trigger_energy_refund( const action_state_t* state )
+void actions::rogue_action_t<Base>::trigger_energy_refund( const action_state_t* /* state */ )
 {
   double energy_restored = ab::last_resource_cost * 0.80;
   p()->resource_gain( RESOURCE_ENERGY, energy_restored, p()->gains.energy_refund );
@@ -5311,9 +5311,9 @@ void actions::rogue_action_t<Base>::trigger_shadow_techniques( const action_stat
 }
 
 template <typename Base>
-void actions::rogue_action_t<Base>::trigger_weaponmaster( const action_state_t* s )
+void actions::rogue_action_t<Base>::trigger_weaponmaster( const action_state_t* state )
 {
-  if ( !p()->talent.weaponmaster->ok() || !ab::result_is_hit( s->result ) || p()->cooldowns.weaponmaster->down() )
+  if ( !p()->talent.weaponmaster->ok() || !ab::result_is_hit( state->result ) || p()->cooldowns.weaponmaster->down() )
     return;
 
   if ( !p()->rng().roll( p()->talent.weaponmaster->proc_chance() ) )
@@ -5328,11 +5328,11 @@ void actions::rogue_action_t<Base>::trigger_weaponmaster( const action_state_t* 
   }
 
   // Direct damage re-computes on execute
-  this->make_secondary_trigger( TRIGGER_WEAPONMASTER, s->target, cast_state( s )->cp );
+  this->make_secondary_trigger( TRIGGER_WEAPONMASTER, state->target, cast_state( state )->cp );
 }
 
 template <typename Base>
-void actions::rogue_action_t<Base>::trigger_elaborate_planning( const action_state_t* s )
+void actions::rogue_action_t<Base>::trigger_elaborate_planning( const action_state_t* /* state */ )
 {
   if ( !p()->talent.elaborate_planning->ok() || ab::base_costs[ RESOURCE_COMBO_POINT ] == 0 || ab::background )
     return;
@@ -5340,14 +5340,13 @@ void actions::rogue_action_t<Base>::trigger_elaborate_planning( const action_sta
 }
 
 template <typename Base>
-void actions::rogue_action_t<Base>::trigger_alacrity( const action_state_t* s )
+void actions::rogue_action_t<Base>::trigger_alacrity( const action_state_t* state )
 {
   if ( !p()->talent.alacrity->ok() || !affected_by.alacrity )
     return;
 
-  const rogue_action_state_t* rs = cast_state( s );
-  double chance                  = p()->talent.alacrity->effectN( 2 ).percent() * rs->cp;
-  int stacks                     = 0;
+  double chance = p()->talent.alacrity->effectN( 2 ).percent() * cast_state( state )->cp;
+  int stacks = 0;
   if ( chance > 1 )
   {
     stacks += 1;
