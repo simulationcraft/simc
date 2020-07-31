@@ -2823,8 +2823,8 @@ struct killing_spree_t : public rogue_attack_t
     rogue_attack_t( "killing_spree", p, p -> talent.killing_spree, options_str ),
     attack_mh( nullptr ), attack_oh( nullptr )
   {
-    channeled = true;
-    tick_zero = true;
+    channeled = tick_zero = true;
+    interrupt_auto_attack = false;
 
     attack_mh = p->get_background_action<killing_spree_tick_t>( "killing_spree_mh", p->find_spell( 57841 ) );
     add_child( attack_mh );  
@@ -3669,8 +3669,8 @@ struct sinister_strike_t : public rogue_attack_t
     rogue_attack_t( "sinister_strike", p, p -> find_specialization_spell( "Sinister Strike" ), options_str ),
     extra_attack_delay( timespan_t::from_millis( 300 ) )
   {
-    add_child( extra_attack );
     extra_attack = p->get_background_action<sinister_strike_extra_attack_t>( "sinister_strike_extra_attack" );
+    add_child( extra_attack );
   }
 
   double extra_attack_proc_chance() const
