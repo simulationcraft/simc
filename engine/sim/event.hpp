@@ -6,8 +6,10 @@
 #pragma once
 
 #include "config.hpp"
-#include "util/generic.hpp"
+
 #include "sc_timespan.hpp"
+#include "util/generic.hpp"
+#include "util/format.hpp"
 
 struct actor_t;
 struct sim_t;
@@ -77,6 +79,8 @@ struct event_t : private noncopyable
     e = nullptr;
   }
   static void cancel( event_t*& e );
+
+  friend void format_to( const event_t&, fmt::format_context::iterator );
 
 protected:
   template <typename Event, typename... Args>

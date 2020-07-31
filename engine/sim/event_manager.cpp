@@ -175,14 +175,14 @@ void event_manager_t::add_event( event_t* e, timespan_t delta_time )
   if ( ++events_remaining > max_events_remaining )
     max_events_remaining = events_remaining;
 
-  sim->print_debug( "Add Event: {} time={} reschedule={} id={}",
-      e->name(), e->time, e->reschedule_time, e->id );
+  if ( sim->debug )
+    sim->print_debug( "Add Event: {} time={} reschedule={}", *e, e->time, e->reschedule_time );
 
 #ifdef ACTOR_EVENT_BOOKKEEPING
   if ( sim->debug && e->actor )
   {
     e->actor->event_counter++;
-    sim->out_debug.printf( "Actor %s has %d scheduled events", e->actor->name(),
+    sim->print_debug( "Actor {} has {} scheduled events", e->actor->name(),
                            e->actor->event_counter );
   }
 #endif
@@ -192,8 +192,7 @@ void event_manager_t::add_event( event_t* e, timespan_t delta_time )
 
 void event_manager_t::reschedule_event( event_t* e )
 {
-  if ( sim->debug )
-    sim->out_debug.printf( "Reschedule Event: %s %d", e->name(), e->id );
+  sim->print_debug( "Reschedule Event: {}", *e );
 
   e -> next = nullptr;
   add_event( e, ( e->reschedule_time - current_time ) );
@@ -225,8 +224,7 @@ bool event_manager_t::execute()
 
     if ( e->canceled )
     {
-      if ( sim->debug )
-        sim->out_debug.printf( "Canceled event: %s", e->name() );
+      sim->print_debug( "Canceled event: {}", *e );
     }
     else if ( e->reschedule_time > e->time )
     {
@@ -235,8 +233,7 @@ bool event_manager_t::execute()
     }
     else
     {
-      if ( sim->debug )
-        sim->out_debug.printf( "Executing event: %s", e->name() );
+      sim->print_debug( "Executing event: {}", *e );
 
       if ( monitor_cpu )
       {

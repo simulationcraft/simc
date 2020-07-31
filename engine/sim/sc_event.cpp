@@ -54,13 +54,13 @@ void event_t::reschedule( timespan_t delta_time )
   {
     if ( reschedule_time == timespan_t::zero() )
     {
-      _sim.print_debug("Rescheduling event {} ({}) from {} to {}",
-          name(), id, time, delta_time );
+      _sim.print_debug("Rescheduling event {} from {} to {}",
+          *this, time, delta_time );
     }
     else
     {
-      _sim.print_debug( "Adjusting reschedule of event {} ({}) from {} to {} time={}",
-          name(), id, reschedule_time, delta_time, time );
+      _sim.print_debug( "Adjusting reschedule of event {} from {} to {} time={}",
+          *this, reschedule_time, delta_time, time );
     }
   }
 
@@ -90,3 +90,7 @@ void event_t::cancel( event_t*& e )
   e           = nullptr;
 }
 
+void format_to( const event_t& e, fmt::format_context::iterator out )
+{
+  fmt::format_to( out, "{}(#{})", e.name(), e.id );
+}
