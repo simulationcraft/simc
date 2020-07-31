@@ -139,8 +139,10 @@ bool covenant_state_t::parse_covenant( sim_t*             sim,
 // Parse soulbind= option into conduit_state_t and soulbind spell ids
 // Format:
 // soulbind_token = conduit_id:conduit_rank | soulbind_ability_id
-// soulbind = soulbind_token/soulbind_token/soulbind_token/...
+// soulbind = [soulbind_tree_id,]soulbind_token/soulbind_token/soulbind_token/...
 // Where:
+// soulbind_tree_id = numeric or tokenized soulbind tree identifier; unused by
+//                    Simulationcraft, and ignored on parse.
 // conduit_id = conduit id number or tokenized version of the conduit name
 // conduit_rank = the rank number, starting from 1
 // soulbind_ability_id = soulbind ability spell id or tokenized veresion of the soulbind
@@ -150,8 +152,21 @@ bool covenant_state_t::parse_soulbind( sim_t*             sim,
                                        const std::string& value )
 {
   m_conduits.clear();
+  auto value_str = value;
 
-  for ( const auto& entry : util::string_split( value, "|/" ) )
+  // Ignore anything before a comma character in the soulbind option to allow the
+  // specification of the soulbind tree (as a numeric parameter, or the name of the
+  // follower in tokenized form). Currently simc has no use for this information, but
+  // third party tools will find it easier to determine the soulbind tree to display/use
+  // from the identifier, instead of reverse-mapping it from the soulbind spell
+  // identifiers.
+  auto comma_pos = value_str.find(',');
+  if ( comma_pos != std::string::npos )
+  {
+    value_str = value_str.substr( comma_pos + 1 );
+  }
+
+  for ( const auto& entry : util::string_split( value_str, "|/" ) )
   {
     // Conduit handling
     if ( entry.find( ':' ) != std::string::npos )
