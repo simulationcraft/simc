@@ -41,9 +41,16 @@ double conduit_data_t::percent() const
   return m_conduit->value / 100.0;
 }
 
-timespan_t conduit_data_t::time_value() const
+timespan_t conduit_data_t::time_value( time_type tt ) const
 {
-  return timespan_t::from_millis( m_conduit->value );
+  if ( tt == time_type::MS )
+  {
+    return timespan_t::from_millis( m_conduit->value );
+  }
+  else
+  {
+    return timespan_t::from_seconds( m_conduit->value );
+  }
 }
 
 namespace util

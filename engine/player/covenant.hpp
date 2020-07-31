@@ -35,6 +35,13 @@ class conduit_data_t
   const spell_data_t*         m_spell;
 
 public:
+  /// Time type conversion for azerite_power_t::time_value
+  enum time_type
+  {
+    MS = 0,
+    S,
+  };
+
   conduit_data_t();
   conduit_data_t( const player_t* player, const conduit_rank_entry_t& conduit );
 
@@ -43,7 +50,7 @@ public:
 
   double value() const;
   double percent() const;
-  timespan_t time_value() const;
+  timespan_t time_value( time_type tt = MS ) const;
 
   operator const spell_data_t*() const
   { return m_spell; }
