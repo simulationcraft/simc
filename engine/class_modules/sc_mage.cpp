@@ -2302,7 +2302,7 @@ struct arcane_explosion_t : public arcane_mage_spell_t
     cost_reductions = { p->buffs.clearcasting };
     affected_by.mastery_savant = true;
     base_dd_adder += p->azerite.explosive_echo.value( 2 );
-    base_dd_multiplier *= 1.0 + p->spec.arcane_explosion_2->effectN( 1 ).percent();
+    base_multiplier *= 1.0 + p->spec.arcane_explosion_2->effectN( 1 ).percent();
   }
 
   void execute() override
@@ -2310,7 +2310,7 @@ struct arcane_explosion_t : public arcane_mage_spell_t
     arcane_mage_spell_t::execute();
 
     if ( p()->specialization() == MAGE_ARCANE )
-      {
+    {
       if ( !target_list().empty() )
         p()->trigger_arcane_charge();
 
@@ -2633,7 +2633,7 @@ struct blizzard_shard_t : public frost_mage_spell_t
   {
     aoe = -1;
     background = ground_aoe = chills = true;
-    base_dd_multiplier *= 1.0 + p->spec.blizzard_3->effectN( 1 ).percent();
+    base_multiplier *= 1.0 + p->spec.blizzard_3->effectN( 1 ).percent();
   }
 
   result_amount_type amount_type( const action_state_t*, bool ) const override
@@ -3130,7 +3130,7 @@ struct flamestrike_t : public hot_streak_spell_t
     parse_options( options_str );
     triggers_ignite = true;
     aoe = -1;
-    base_dd_multiplier *= 1.0 + p->spec.flamestrike_2->effectN( 1 ).percent();
+    base_multiplier *= 1.0 + p->spec.flamestrike_2->effectN( 1 ).percent();
 
     if ( p->talents.flame_patch->ok() )
     {
