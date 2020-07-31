@@ -1294,10 +1294,10 @@ protected:
   }
 
 public:
-  druid_buff_t( druid_t& p, const std::string& name, const spell_data_t* s = spell_data_t::nil(), const item_t* item = nullptr ) :
+  druid_buff_t( druid_t& p, util::string_view name, const spell_data_t* s = spell_data_t::nil(), const item_t* item = nullptr ) :
     BuffBase( &p, name, s, item )
   { }
-  druid_buff_t( druid_td_t& td, const std::string& name, const spell_data_t* s = spell_data_t::nil(), const item_t* item = nullptr ) :
+  druid_buff_t( druid_td_t& td, util::string_view name, const spell_data_t* s = spell_data_t::nil(), const item_t* item = nullptr ) :
     BuffBase( td, name, s, item )
   { }
 
@@ -1366,7 +1366,7 @@ struct berserk_buff_base_t : public druid_buff_t<buff_t>
 {
   double increased_max_energy;
 
-  berserk_buff_base_t( druid_t& p, const std::string& name, const spell_data_t* spell ) :
+  berserk_buff_base_t( druid_t& p, util::string_view name, const spell_data_t* spell ) :
     base_t( p, name, spell ),
     increased_max_energy(0)
   // Cooldown handled by ability
@@ -1688,7 +1688,7 @@ public:
 
   free_cast_e free_cast; // convoke_the_spirits, lycaras, oneths
 
-  druid_action_t( const std::string& n, druid_t* player, const spell_data_t* s = spell_data_t::nil() )
+  druid_action_t( util::string_view n, druid_t* player, const spell_data_t* s = spell_data_t::nil() )
     : ab( n, player, s ),
       form_mask( ab::data().stance_mask() ),
       may_autounshift( true ),
@@ -2165,7 +2165,7 @@ public:
   snapshot_counter_t* sr_counter;
   bool direct_bleed;
 
-  druid_attack_t( const std::string& n, druid_t* player,
+  druid_attack_t( util::string_view n, druid_t* player,
                   const spell_data_t* s = spell_data_t::nil() ) :
     ab( n, player, s ), consumes_bloodtalons( false ),
     bt_counter( nullptr ), tf_counter( nullptr ), direct_bleed( false )
@@ -2321,7 +2321,7 @@ public:
   bool cat_form_gcd;
   bool reset_melee_swing; // TRUE(default) to reset swing timer on execute (as most cast time spells do)
 
-  druid_spell_base_t( const std::string& n, druid_t* player,
+  druid_spell_base_t( util::string_view n, druid_t* player,
                       const spell_data_t* s = spell_data_t::nil() ) :
     ab( n, player, s ),
     cat_form_gcd( ab::data().affected_by( player -> spec.cat_form -> effectN( 4 ) ) ),
@@ -2415,7 +2415,7 @@ private:
   using ab = druid_spell_base_t<spell_t>;
 
 public:
-  druid_spell_t( const std::string& token, druid_t* p, const spell_data_t* s = spell_data_t::nil(),
+  druid_spell_t( util::string_view token, druid_t* p, const spell_data_t* s = spell_data_t::nil(),
                  const std::string& options = std::string() )
     : base_t( token, p, s )
   {
@@ -2620,7 +2620,7 @@ struct moonfire_t : public druid_spell_t
       : moonfire_damage_t( p, p->free_cast_string( "moonfire_dmg", free ) )
     {}
 
-    moonfire_damage_t( druid_t* p, const std::string& n ) : druid_spell_t( n, p, p->spec.moonfire_dmg )
+    moonfire_damage_t( druid_t* p, util::string_view n ) : druid_spell_t( n, p, p->spec.moonfire_dmg )
     {
       if ( p->spec.astral_power->ok() )
       {
@@ -2888,7 +2888,7 @@ struct druid_heal_t : public druid_spell_base_t<heal_t>
 {
   bool target_self;
 
-  druid_heal_t( const std::string& token, druid_t* p,
+  druid_heal_t( util::string_view token, druid_t* p,
                 const spell_data_t* s = spell_data_t::nil(),
                 const std::string& options_str = std::string() ) :
     base_t( token, p, s ),
@@ -2953,7 +2953,7 @@ namespace caster_attacks {
 
 struct caster_attack_t : public druid_attack_t < melee_attack_t >
 {
-  caster_attack_t( const std::string& token, druid_t* p,
+  caster_attack_t( util::string_view token, druid_t* p,
                    const spell_data_t* s = spell_data_t::nil(),
                    const std::string& options = std::string() ) :
     base_t( token, p, s )
@@ -3016,7 +3016,7 @@ public:
   } savage_roar;
   bool    tigers_fury;
 
-  cat_attack_t( const std::string& token, druid_t* p, const spell_data_t* s = spell_data_t::nil(),
+  cat_attack_t( util::string_view token, druid_t* p, const spell_data_t* s = spell_data_t::nil(),
                 const std::string& options = std::string() )
     : base_t( token, p, s ),
       requires_stealth( false ),
@@ -4582,7 +4582,7 @@ struct bear_attack_t : public druid_attack_t<melee_attack_t>
 {
   bool gore;
 
-  bear_attack_t( const std::string& n, druid_t* p, const spell_data_t* s = spell_data_t::nil(),
+  bear_attack_t( util::string_view n, druid_t* p, const spell_data_t* s = spell_data_t::nil(),
                  const std::string& options_str = std::string() )
     : base_t( n, p, s ), gore( false )
   {
@@ -5615,7 +5615,7 @@ struct streaking_stars_t : public druid_spell_t
 
 struct kindred_empowerment_t : public druid_spell_t
 {
-  kindred_empowerment_t( druid_t* p, const std::string& n )
+  kindred_empowerment_t( druid_t* p, util::string_view n )
     : druid_spell_t( n, p, p->covenant.kindred_empowerment_damage )
   {
     background = true;
@@ -5636,8 +5636,7 @@ struct fury_of_elune_t : public druid_spell_t
 {
   struct fury_of_elune_tick_t : public druid_spell_t
   {
-    fury_of_elune_tick_t(const std::string& n, druid_t* p, const spell_data_t* s) :
-        druid_spell_t(n, p, s)
+    fury_of_elune_tick_t( util::string_view n, druid_t* p, const spell_data_t* s ) : druid_spell_t( n, p, s )
     {
       background = dual = ground_aoe = reduced_aoe_damage = true;
       aoe = -1;
