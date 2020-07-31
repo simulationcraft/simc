@@ -7884,7 +7884,6 @@ action_t* druid_t::create_action( util::string_view name, const std::string& opt
   if ( name == "brutal_slash"           ) return new           brutal_slash_t( this, options_str );
   if ( name == "bristling_fur"          ) return new          bristling_fur_t( this, options_str );
   if ( name == "cat_form"               ) return new       spells::cat_form_t( this, options_str );
-  if ( name == "celestial_alignment"    ) return new    celestial_alignment_t( this, options_str );
   if ( name == "cenarion_ward"          ) return new          cenarion_ward_t( this, options_str );
   if ( name == "dash"                   ) return new                   dash_t( this, options_str );
   if ( name == "tiger_dash"             ) return new             tiger_dash_t( this, options_str );
@@ -7944,6 +7943,14 @@ action_t* druid_t::create_action( util::string_view name, const std::string& opt
   if ( name == "wild_charge"            ) return new            wild_charge_t( this, options_str );
   if ( name == "wild_growth"            ) return new            wild_growth_t( this, options_str );
   if ( name == "incarnation"            ) return new            incarnation_t( this, options_str );
+
+  if ( name == "celestial_alignment" )
+  {
+    if ( talent.incarnation_moonkin->ok() )
+      return new incarnation_t( this, options_str );
+    else
+      return new celestial_alignment_t( this, options_str );
+  }
 
   if ( name == "heart_of_the_wild" ) return new heart_of_the_wild_t( this, options_str );
   if ( name == "kindred_spirits" || name == "empower_bond" ) return new kindred_spirits_t( this, options_str );
