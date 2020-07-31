@@ -1277,13 +1277,16 @@ double action_t::calculate_direct_amount( action_state_t* state ) const
     amount = 0;
   }
 
-  sim->print_debug(
-      "{} direct amount for {}: amount={} initial_amount={} weapon={} base={} s_mod={} s_power={} "
-      "a_mod={} a_power={} mult={} w_mult={} w_slot_mod={} bonus_da={}",
-      player->name(), name(), amount, state->result_raw, weapon_amount, base_direct_amount,
-      spell_direct_power_coefficient( state ), state->composite_spell_power(),
-      attack_direct_power_coefficient( state ), state->composite_attack_power(), state->composite_da_multiplier(),
-      weapon_multiplier, weapon_slot_modifier, bonus_da( state ) );
+  if ( sim->debug )
+  {
+    sim->print_debug(
+        "{} direct amount for {}: amount={} initial_amount={} weapon={} base={} s_mod={} s_power={} "
+        "a_mod={} a_power={} mult={} w_mult={} w_slot_mod={} bonus_da={}",
+        player->name(), name(), amount, state->result_raw, weapon_amount, base_direct_amount,
+        spell_direct_power_coefficient( state ), state->composite_spell_power(),
+        attack_direct_power_coefficient( state ), state->composite_attack_power(), state->composite_da_multiplier(),
+        weapon_multiplier, weapon_slot_modifier, bonus_da( state ) );
+  }
 
   // Record total amount to state
   if ( result_is_miss( state->result ) )
