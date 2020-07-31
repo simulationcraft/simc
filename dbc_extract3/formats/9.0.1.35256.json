@@ -321,17 +321,17 @@
   },
   "Item": {
     "fields": [
-      { "data_type": "i", "field": "classs" },
-      { "data_type": "i", "field": "subclass" },
+      { "data_type": "B", "field": "classs" },
+      { "data_type": "B", "field": "subclass" },
 
       { "data_type": "B", "field": "material" },
-      { "data_type": "I", "field": "type_inv" },
+      { "data_type": "B", "field": "type_inv" },
 
       { "data_type": "B", "field": "sheath" },
-      { "data_type": "b", "field": "unk_2" },
+      { "data_type": "B", "field": "unk_2" },
       { "data_type": "i", "field": "unk_1" },
 
-      { "data_type": "I", "field": "unk_3" },
+      { "data_type": "B", "field": "unk_3" },
 
       { "data_type": "i", "field": "unk_4" }
     ]
