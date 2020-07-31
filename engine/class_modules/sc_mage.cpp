@@ -489,8 +489,8 @@ public:
     double lucid_dreams_proc_chance_arcane = 0.075;
     double lucid_dreams_proc_chance_fire = 0.1;
     double lucid_dreams_proc_chance_frost = 0.075;
-    timespan_t enlightened_interval = 2_s;
-    timespan_t focus_magic_interval = 2_s;
+    timespan_t enlightened_interval = 2.0_s;
+    timespan_t focus_magic_interval = 2.0_s;
     double focus_magic_variance = 0.1;
     double focus_magic_crit_chance = 0.5;
   } options;
@@ -1077,8 +1077,7 @@ struct touch_of_the_magi_t : public buff_t
   touch_of_the_magi_t( mage_td_t* td ) :
     buff_t( *td, "touch_of_the_magi", td->source->find_spell( 210824 ) ),
     accumulated_damage()
-  {
-  }
+  { }
 
   void reset() override
   {
@@ -2176,7 +2175,7 @@ struct arcane_barrage_t : public arcane_mage_spell_t
     // Arcane Barrage restores 1% mana per charge in game and states that 2% is restored
     // in the tooltip. The data has a value of 1.5, so this is likely a rounding issue.
     p()->resource_gain( RESOURCE_MANA,
-      p()->buffs.arcane_charge->check() * p()->resources.max[ RESOURCE_MANA ] * floor( p()->spec.arcane_barrage_3->effectN( 1 ).base_value() ) / 100.0,
+      p()->buffs.arcane_charge->check() * p()->resources.max[ RESOURCE_MANA ] * floor( p()->spec.arcane_barrage_3->effectN( 1 ).base_value() ) * 0.01,
       p()->gains.arcane_barrage, this );
     p()->buffs.arcane_charge->expire();
   }
@@ -3881,7 +3880,7 @@ struct icy_veins_t : public frost_mage_spell_t
 struct fire_blast_t : public fire_mage_spell_t
 {
   fire_blast_t( util::string_view n, mage_t* p, util::string_view options_str ) :
-    fire_mage_spell_t( n, p, ( p->spec.fire_blast_3->ok() ) ? p->spec.fire_blast_3 : p->find_class_spell( "Fire Blast" ) )
+    fire_mage_spell_t( n, p, p->spec.fire_blast_3->ok() ? p->spec.fire_blast_3 : p->find_class_spell( "Fire Blast" ) )
   {
     parse_options( options_str );
     usable_while_casting = p->spec.fire_blast_3->ok();
@@ -4475,7 +4474,7 @@ struct rune_of_power_t : public mage_spell_t
   {
     mage_spell_t::execute();
 
-    p()->distance_from_rune = 0;
+    p()->distance_from_rune = 0.0;
     p()->buffs.rune_of_power->trigger();
   }
 };
@@ -4822,8 +4821,7 @@ struct enlightened_event_t : public event_t
   enlightened_event_t( mage_t& m, timespan_t delta_time ) :
     event_t( m, delta_time ),
     mage( &m )
-  {
-  }
+  { }
 
   const char* name() const override
   { return "enlightened_event"; }
@@ -4849,8 +4847,7 @@ struct focus_magic_event_t : public event_t
   focus_magic_event_t( mage_t& m, timespan_t delta_time ) :
     event_t( m, delta_time ),
     mage( &m )
-  {
-  }
+  { }
 
   const char* name() const override
   { return "focus_magic_event"; }
@@ -4870,8 +4867,8 @@ struct focus_magic_event_t : public event_t
 
     if ( mage->options.focus_magic_interval > 0_ms )
     {
-      timespan_t min_time = mage->options.focus_magic_interval * ( 1 - mage->options.focus_magic_variance );
-      timespan_t max_time = mage->options.focus_magic_interval * ( 1 + mage->options.focus_magic_variance );
+      timespan_t min_time = mage->options.focus_magic_interval * ( 1.0 - mage->options.focus_magic_variance );
+      timespan_t max_time = mage->options.focus_magic_interval * ( 1.0 + mage->options.focus_magic_variance );
       mage->focus_magic_event = make_event<focus_magic_event_t>( sim(), *mage, rng().range( min_time, max_time ) );
     }
   }
@@ -5326,8 +5323,8 @@ void mage_t::create_options()
   add_option( opt_float( "lucid_dreams_proc_chance_frost", options.lucid_dreams_proc_chance_frost ) );
   add_option( opt_timespan( "enlightened_interval", options.enlightened_interval, 1_ms, timespan_t::max() ) );
   add_option( opt_timespan( "focus_magic_interval", options.focus_magic_interval, 0_ms, timespan_t::max() ) );
-  add_option( opt_float( "focus_magic_variance", options.focus_magic_variance, 0, 1 ) );
-  add_option( opt_float( "focus_magic_crit_chance", options.focus_magic_crit_chance, 0, 1 ) );
+  add_option( opt_float( "focus_magic_variance", options.focus_magic_variance, 0.0, 1.0 ) );
+  add_option( opt_float( "focus_magic_crit_chance", options.focus_magic_crit_chance, 0.0, 1.0 ) );
   player_t::create_options();
 }
 
@@ -5628,12 +5625,12 @@ void mage_t::init_spells()
 
 void mage_t::init_base_stats()
 {
-  if ( base.distance < 1 )
+  if ( base.distance < 1.0 )
   {
     if ( specialization() == MAGE_ARCANE )
-      base.distance = 10;
+      base.distance = 10.0;
     else
-      base.distance = 30;
+      base.distance = 30.0;
   }
 
   player_t::init_base_stats();
@@ -6578,15 +6575,8 @@ void mage_t::invalidate_cache( cache_e c )
 {
   player_t::invalidate_cache( c );
 
-  switch ( c )
-  {
-    case CACHE_MASTERY:
-      if ( spec.savant->ok() )
-        recalculate_resource_max( RESOURCE_MANA );
-      break;
-    default:
-      break;
-  }
+  if ( c == CACHE_MASTERY && spec.savant->ok() )
+    recalculate_resource_max( RESOURCE_MANA );
 }
 
 double mage_t::resource_gain( resource_e resource_type, double amount, gain_t* source, action_t* a )
@@ -6622,7 +6612,7 @@ void mage_t::recalculate_resource_max( resource_e rt )
     resources.max[ rt ] *= 1.0 + buffs.arcane_familiar->check_value();
 
     resources.current[ rt ] = resources.max[ rt ] * pct;
-    sim->print_debug( "{} adjusts maximum mana from {} to {} ({}%)", name(), max, resources.max[ rt ], 100 * pct );
+    sim->print_debug( "{} adjusts maximum mana from {} to {} ({}%)", name(), max, resources.max[ rt ], 100.0 * pct );
   }
 }
 
@@ -6631,10 +6621,7 @@ double mage_t::composite_attribute_multiplier( attribute_e attr ) const
   double m = player_t::composite_attribute_multiplier( attr );
 
   if ( attr == ATTR_INTELLECT )
-  {
-    if ( buffs.focus_magic_int )
-      m *= 1.0 + buffs.focus_magic_int->check_stack_value();
-  }
+    m *= 1.0 + buffs.focus_magic_int->check_stack_value();
 
   return m;
 }
@@ -6643,7 +6630,7 @@ double mage_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
 
-  if ( talents.enlightened->ok() && dbc::is_school( school, SCHOOL_ARCANE ) )
+  if ( dbc::is_school( school, SCHOOL_ARCANE ) )
     m *= 1.0 + buffs.enlightened_damage->check_value();
 
   return m;
@@ -6763,8 +6750,8 @@ void mage_t::arise()
 
   if ( talents.focus_magic->ok() && options.focus_magic_interval > 0_ms )
   {
-    timespan_t min_time = options.focus_magic_interval * ( 1 - options.focus_magic_variance );
-    timespan_t max_time = options.focus_magic_interval * ( 1 + options.focus_magic_variance );
+    timespan_t min_time = options.focus_magic_interval * ( 1.0 - options.focus_magic_variance );
+    timespan_t max_time = options.focus_magic_interval * ( 1.0 + options.focus_magic_variance );
     focus_magic_event = make_event<events::focus_magic_event_t>( *sim, *this, rng().range( min_time, max_time ) );
   }
 
