@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35360 shadowlands-BETA (hotfix 2020-07-29/35282, no-networking)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35360 shadowlands-BETA (, no-networking)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
@@ -9517,6 +9517,43 @@ Effects          :
 #2 (id=833069)   : Apply Aura (6) | Dummy (4)
                    Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : During Rapture, Power Word: Shield costs $s1% less mana and applies $s2 second longer Atonements.
+
+Name             : Shadowflame Prism (id=336142) 
+Class            : Priest
+School           : Shadowflame
+Spell Type       : None
+Range            : 50000 yards
+Attributes       : ........ ........ .......x ........   ...x...x ........ ........ ........ 
+                 : ..x..... ........ ........ .....x..   ........ ........ ..x..... ....x.x. 
+                 : .......x x......x ....x... ........   ........ ........ .......x ........ 
+                 : ........ ........ ........ .....x..   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Cannot crit (93), Always hits (114), Disable player multipliers (221)
+Effects          :
+#1 (id=833214)   : School Damage (2): shadowflame
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Description      : $@spelldesc336143
+
+Name             : Shadowflame Prism (id=336143) [Spell Family (6), Passive] 
+Class            : Priest
+School           : Physical
+Spell Type       : None
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=833215)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cooldown (11)
+                   Base Value: -40 | Scaled Value: -40 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
+                   Affected Spells: Shadowfiend (34433), Mindbender (123040), Mindbender (200174)
+                   Family Flags: 19, 40
+Description      : Your Shadowfiend or Mindbender deals 20% additional damage as Shadowflame damage, and the cooldown on Shadowfiend and Mindbender is reduced by $s1%.
 
 Name             : Mind Devourer (id=338332) [Spell Family (6), Passive, Hidden] 
 Class            : Priest
