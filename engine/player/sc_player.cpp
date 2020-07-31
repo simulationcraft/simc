@@ -1479,7 +1479,7 @@ void player_t::init_base_stats()
     double stat_value = base.stats.get_stat( stat );
     if ( stat_value > 0 )
     {
-      sim->error( "{} stat {} is {} != 0.0", name(), util::stat_type_string( stat ), stat_value );
+      sim->error( "{} stat {} is {} != 0.0", name(), stat, stat_value );
       sim->error( " Please do not modify player_t::base before init_base_stats is called\n" );
     }
   }
@@ -1654,7 +1654,7 @@ void player_t::init_initial_stats()
     double stat_value = initial.stats.get_stat( stat );
     if ( stat_value > 0 )
     {
-      sim->error( "{} initial stat {} is {} != 0", *this, util::stat_type_string( stat ), stat_value );
+      sim->error( "{} initial stat {} is {} != 0", *this, stat, stat_value );
       sim->error( " Please do not modify player_t::initial before init_initial_stats is called\n" );
     }
   }
@@ -2045,8 +2045,7 @@ void player_t::init_resources( bool force )
     {
       double actual_resource = std::min( max_resource, resources.initial_opt[ resource ] );
 
-      sim->print_debug( "{} resource {} overridden to {}", *this, util::resource_type_string( resource ),
-                               actual_resource );
+      sim->print_debug( "{} resource {} overridden to {}", *this, resource, actual_resource );
 
       resources.current[ resource ] = actual_resource;
     }
@@ -2960,16 +2959,14 @@ void player_t::init_assessors()
         {
           sim->print_log( "{} {} hits {} for {} {} damage ({})", *this, state->action->name(),
                                *state->target, state->result_amount,
-                               util::school_type_string( state->action->get_school() ),
-                               util::result_type_string( state->result ) );
+                               state->action->get_school(), state->result );
         }
         else  // result_amount_type::DMG_OVER_TIME
         {
           dot_t* dot = state->action->get_dot( state->target );
           sim->print_log( "{} {} ticks ({} of {}) on {} for {} {} damage ({})", *this, state->action->name(),
                                dot->current_tick, dot->num_ticks, *state->target, state->result_amount,
-                               util::school_type_string( state->action->get_school() ),
-                               util::result_type_string( state->result ) );
+                               state->action->get_school(), state->result );
         }
       }
       return assessor::CONTINUE;
@@ -4407,7 +4404,7 @@ void player_t::invalidate_cache( cache_e c )
   if ( !cache.active )
     return;
 
-  sim->print_debug( "{} invalidates stat cache for {}.", *this, util::cache_type_string( c ) );
+  sim->print_debug( "{} invalidates stat cache for {}.", *this, c );
 
   // Special linked invalidations
   switch ( c )
@@ -5852,10 +5849,10 @@ double player_t::resource_loss( resource_e resource_type, double amount, gain_t*
   }
 
   if ( sim->debug )
-    sim->out_debug.printf( "Player %s loses %.2f (%.2f) %s. pct=%.2f%% (%.0f/%.0f)", name(), actual_amount, amount,
-                           util::resource_type_string( resource_type ),
-                           resources.max[ resource_type ] ? resources.pct( resource_type ) * 100 : 0,
-                           resources.current[ resource_type ], resources.max[ resource_type ] );
+    sim->print_debug( "Player {} loses {:.2f} ({:.2f}) {}. pct={:.2f}% ({:.2f}/{:.2f})",
+                      name(), actual_amount, amount, resource_type,
+                      resources.max[ resource_type ] ? resources.pct( resource_type ) * 100 : 0,
+                      resources.current[ resource_type ], resources.max[ resource_type ] );
 
   return actual_amount;
 }
@@ -5884,10 +5881,10 @@ double player_t::resource_gain( resource_e resource_type, double amount, gain_t*
 
   if ( sim->log )
   {
-    sim->out_log.printf( "%s gains %.2f (%.2f) %s from %s (%.2f/%.2f)", name(), actual_amount, amount,
-                         util::resource_type_string( resource_type ),
-                         source ? source->name() : action ? action->name() : "unknown",
-                         resources.current[ resource_type ], resources.max[ resource_type ] );
+    sim->print_log( "{} gains {:.2f} ({:.2f}) {} from {} ({:.2f}/{:.2f})",
+                    name(), actual_amount, amount, resource_type,
+                    source ? source->name() : action ? action->name() : "unknown",
+                    resources.current[ resource_type ], resources.max[ resource_type ] );
   }
 
   return actual_amount;
@@ -6041,9 +6038,8 @@ void player_t::stat_gain( stat_e stat, double amount, gain_t* gain, action_t* ac
   if (resource_regeneration == regen_type::DYNAMIC&& regen_caches[ cache_type ] )
     do_dynamic_regen();
 
-  if ( sim->log )
-    sim->out_log.printf( "%s gains %.2f %s%s", name(), amount, util::stat_type_string( stat ),
-                         temporary_stat ? " (temporary)" : "" );
+  sim->print_log( "{} gains {:.2f} {}{}", name(), amount, stat,
+                  temporary_stat ? " (temporary)" : "" );
 
   switch ( stat )
   {
@@ -6180,9 +6176,8 @@ void player_t::stat_loss( stat_e stat, double amount, gain_t* gain, action_t* ac
   if (resource_regeneration == regen_type::DYNAMIC&& regen_caches[ cache_type ] )
     do_dynamic_regen();
 
-  if ( sim->log )
-    sim->out_log.printf( "%s loses %.2f %s%s", name(), amount, util::stat_type_string( stat ),
-                         ( temporary_buff ) ? " (temporary)" : "" );
+  sim->print_log( "{} loses {:.2f} {}{}", name(), amount, stat,
+                  temporary_buff ? " (temporary)" : "" );
 
   int temp_value = temporary_buff ? 1 : 0;
   switch ( stat )
@@ -6312,9 +6307,7 @@ void player_t::cost_reduction_gain( school_e school, double amount, gain_t* /* g
   if ( amount <= 0 )
     return;
 
-  if ( sim->log )
-    sim->out_log.printf( "%s gains a cost reduction of %.0f on abilities of school %s", name(), amount,
-                         util::school_type_string( school ) );
+  sim->print_log( "{} gains a cost reduction of {:.1f} on abilities of school {}", name(), amount, school );
 
   if ( school > SCHOOL_MAX_PRIMARY )
   {
@@ -6337,9 +6330,7 @@ void player_t::cost_reduction_loss( school_e school, double amount, action_t* /*
   if ( amount <= 0 )
     return;
 
-  if ( sim->log )
-    sim->out_log.printf( "%s loses a cost reduction %.0f on abilities of school %s", name(), amount,
-                         util::school_type_string( school ) );
+  sim->print_log( "{} loses a cost reduction of {:.1f} on abilities of school {}", name(), amount, school );
 
   if ( school > SCHOOL_MAX_PRIMARY )
   {
@@ -11320,9 +11311,7 @@ scaling_metric_data_t player_t::scaling_for_metric( scale_metric_e metric ) cons
  */
 void player_t::change_position( position_e new_pos )
 {
-  if ( sim->debug )
-    sim->out_debug.printf( "%s changes position from %s to %s.", name(), util::position_type_string( position() ),
-                           util::position_type_string( new_pos ) );
+  sim->print_debug( "{} changes position from {} to {}.", name(), position(), new_pos );
 
   current.position = new_pos;
 }
@@ -11340,7 +11329,7 @@ void player_t::register_resource_callback(resource_e resource, double value, res
   resource_callbacks.push_back(entry);
   has_active_resource_callbacks = true;
   sim->print_debug("{} resource callback registered. resource={} value={} pct={} fire_once={}",
-      name(), util::resource_type_string(resource), value, use_pct, fire_once);
+      name(), resource, value, use_pct, fire_once);
 }
 
 /**

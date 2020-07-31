@@ -1365,7 +1365,7 @@ void action_t::consume_resource()
   player->resource_loss( cr, last_resource_cost, nullptr, this );
 
   sim->print_log("{} consumes {} {} for {} ({})",
-      player->name(), last_resource_cost, util::resource_type_string( cr ), name(), player->resources.current[ cr ] );
+      player->name(), last_resource_cost, cr, name(), player->resources.current[ cr ] );
 
   stats->consume_resource( current_resource(), last_resource_cost );
 }
@@ -1485,8 +1485,7 @@ block_result_e action_t::calculate_block_result( action_state_t* s ) const
     }
   }
 
-  sim->print_debug("{} result for {} is {}",
-      player->name(), name(), util::block_result_type_string( block_result ) );
+  sim->print_debug("{} result for {} is {}", player->name(), name(), block_result );
 
   return block_result;
 }
@@ -3769,10 +3768,7 @@ void action_t::impact( action_state_t* s )
   else
   {
     if ( sim->log )
-    {
-      sim->out_log.printf( "Target %s avoids %s %s (%s)", s->target->name(), player->name(), name(),
-                           util::result_type_string( s->result ) );
-    }
+      sim->print_log( "Target {} avoids {} {} ({})", s->target->name(), player->name(), name(), s->result );
   }
 }
 
