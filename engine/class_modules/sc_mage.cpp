@@ -122,6 +122,7 @@ struct mage_td_t : public actor_target_data_t
   struct debuffs_t
   {
     buff_t* frozen;
+    buff_t* grisly_icicle;
     buff_t* winters_chill;
     buff_t* touch_of_the_magi;
 
@@ -363,6 +364,11 @@ public:
     action_t* arcane_assault;
     action_t* conflagration_flare_up;
     action_t* glacial_assault;
+    action_t* legendary_frozen_orb;
+    action_t* legendary_frozen_orb_bolt;
+    action_t* legendary_meteor;
+    action_t* legendary_meteor_burn;
+    action_t* legendary_meteor_impact;
     action_t* living_bomb_dot;
     action_t* living_bomb_dot_spread;
     action_t* living_bomb_explosion;
@@ -451,6 +457,31 @@ public:
     buff_t* tunnel_of_ice;
 
 
+    // Runeforge Legendaries
+
+    buff_t* arcane_harmony;
+    buff_t* siphon_storm;
+    buff_t* temporal_warp;
+
+    buff_t* fevered_incantation;
+    buff_t* firestorm;
+    buff_t* molten_skyfall;
+    buff_t* molten_skyfall_ready;
+    buff_t* sun_kings_blessing;
+    buff_t* sun_kings_blessing_ready;
+
+    buff_t* cold_front;
+    buff_t* cold_front_ready;
+    buff_t* freezing_winds;
+    buff_t* slick_ice;
+
+    buff_t* disciplinary_command;
+    buff_t* disciplinary_command_arcane; // Hidden buff
+    buff_t* disciplinary_command_frost; // Hidden buff
+    buff_t* disciplinary_command_fire; // Hidden buff
+    buff_t* expanded_potential;
+
+
     // Miscellaneous Buffs
     buff_t* gbow;
     buff_t* shimmer;
@@ -531,6 +562,13 @@ public:
   {
     shuffled_rng_t* time_anomaly;
   } shuffled_rng;
+
+  struct real_ppms_t
+  {
+    // Runeforge Legendaries
+    real_ppm_t* expanded_potential;
+    real_ppm_t* firestorm;
+  } rppm;
 
   // Sample data
   struct sample_data_t
@@ -717,7 +755,7 @@ public:
     // Shared
     item_runeforge_t disciplinary_command;
     item_runeforge_t expanded_potential;
-    item_runeforge_t grisly_icicle;
+    item_runeforge_t grisly_icicle; // NYI
   } runeforge;
 
   struct uptimes_t
@@ -762,8 +800,10 @@ public:
   stat_e convert_hybrid_stat( stat_e ) const override;
   double resource_regen_per_second( resource_e ) const override;
   double composite_attribute_multiplier( attribute_e attr ) const override;
+  double composite_player_critical_damage_multiplier( const action_state_t* ) const override;
   double composite_player_multiplier( school_e ) const override;
   double composite_player_pet_damage_multiplier( const action_state_t* ) const override;
+  double composite_player_target_multiplier( player_t*, school_e ) const override;
   double composite_spell_crit_chance() const override;
   double composite_rating_multiplier( rating_e ) const override;
   double composite_spell_haste() const override;
@@ -830,7 +870,7 @@ public:
   void      trigger_icicle_gain( player_t* icicle_target, action_t* icicle_action );
   void      trigger_evocation( timespan_t duration_override = timespan_t::min(), bool hasted = true );
   void      trigger_arcane_charge( int stacks = 1 );
-  bool      trigger_crowd_control( const action_state_t* s, spell_mechanic type );
+  bool      trigger_crowd_control( const action_state_t* s, spell_mechanic type, timespan_t duration = timespan_t::min() );
   void      trigger_lucid_dreams( player_t* trigger_target, double cost );
   void      update_enlightened();
 
@@ -1160,6 +1200,61 @@ struct combustion_buff_t : public buff_t
   }
 };
 
+// TODO: Verify what happens when Expanded Potential is triggered and
+// consumed at the same time, e.g., what happens when casting Fireball
+// into Pyroblast with Hot Streak when Expanded Potential is up, but
+// the Fireball also triggers a new instance of Expanded Potential?
+struct expanded_potential_buff_t : buff_t
+{
+  expanded_potential_buff_t( mage_t* p, util::string_view name, const spell_data_t* spell_data ) :
+    buff_t( p, name, spell_data )
+  { }
+
+  // TODO: When the buff is canceled with a cancel_buff_t
+  // action, this will still run handle_consumed_stacks
+  bool handle_consumed_stacks( int stacks )
+  {
+    timespan_t remaining_duration = timespan_t::zero();
+    if ( !expiration.empty() )
+      remaining_duration = expiration.back()->remains();
+    auto mage = debug_cast<mage_t*>( player );
+    if ( mage->buffs.expanded_potential->check() && remaining_duration > timespan_t::zero() )
+    {
+      mage->buffs.expanded_potential->expire();
+      return true;
+    }
+    return false;
+  }
+
+  void expire( timespan_t delay = timespan_t::zero() ) override
+  {
+    if ( current_stack > 0 && delay <= timespan_t::zero() )
+    {
+      if ( handle_consumed_stacks( current_stack ) )
+        return;
+    }
+
+    buff_t::expire( delay );
+  }
+
+  void decrement( int stacks, double value ) override
+  {
+    if ( overridden )
+      return;
+
+    if ( max_stack() == 0 || current_stack <= 0 )
+      return;
+
+    if ( stacks == 0 || current_stack <= stacks )
+    {
+      expire();
+    }
+    else if ( handle_consumed_stacks( stacks ) )
+        return;
+    buff_t::decrement( stacks, value );
+  }
+};
+
 struct ice_floes_buff_t : public buff_t
 {
   ice_floes_buff_t( mage_t* p ) :
@@ -1198,6 +1293,7 @@ struct icy_veins_buff_t : public buff_t
       mage->sample_data.icy_veins_duration->add( elapsed( sim->current_time() ).total_seconds() );
 
     mage->buffs.frigid_grasp->expire();
+    mage->buffs.slick_ice->expire();
   }
 };
 
@@ -1353,18 +1449,22 @@ struct mage_spell_t : public spell_t
   bool track_cd_waste;
   cooldown_waste_data_t* cd_waste;
 
+  bool triggers_fevered_incantation;
+
 public:
   mage_spell_t( util::string_view n, mage_t* p, const spell_data_t* s = spell_data_t::nil() ) :
     spell_t( n, p, s ),
     affected_by(),
     track_cd_waste(),
-    cd_waste()
+    cd_waste(),
+    triggers_fevered_incantation()
   {
     may_crit = tick_may_crit = true;
     weapon_multiplier = 0.0;
     affected_by.ice_floes = data().affected_by( p->talents.ice_floes->effectN( 1 ) );
     track_cd_waste = data().cooldown() > 0_ms || data().charge_cooldown() > 0_ms;
     energize_type = ENERGIZE_NONE;
+    triggers_fevered_incantation = true;
   }
 
   mage_t* p()
@@ -1533,6 +1633,38 @@ public:
 
     if ( !background && affected_by.ice_floes && time_to_execute > 0_ms )
       p()->buffs.ice_floes->decrement();
+
+    // TODO: Verify how this effect interacts with spells that have multiple
+    // schools and how it interacts with spells that are not Mage spells.
+    if ( p()->runeforge.disciplinary_command.ok() && !background )
+    {
+      if ( dbc::is_school( get_school(), SCHOOL_ARCANE ) )
+        p()->buffs.disciplinary_command_arcane->trigger();
+      if ( dbc::is_school( get_school(), SCHOOL_FROST ) )
+        p()->buffs.disciplinary_command_frost->trigger();
+      if ( dbc::is_school( get_school(), SCHOOL_FIRE ) )
+        p()->buffs.disciplinary_command_fire->trigger();
+      if ( p()->buffs.disciplinary_command_arcane->check() && p()->buffs.disciplinary_command_frost->check() && p()->buffs.disciplinary_command_fire->check() )
+      {
+        p()->buffs.disciplinary_command->trigger();
+        p()->buffs.disciplinary_command_arcane->expire();
+        p()->buffs.disciplinary_command_frost->expire();
+        p()->buffs.disciplinary_command_fire->expire();
+      }
+    }
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    spell_t::impact( s );
+
+    if ( triggers_fevered_incantation && s->result_amount > 0.0 )
+    {
+      if ( s->result == RESULT_CRIT )
+        p()->buffs.fevered_incantation->trigger();
+      else
+        p()->buffs.fevered_incantation->expire();
+    }
   }
 
   void last_tick( dot_t* d ) override
@@ -1837,7 +1969,7 @@ struct hot_streak_spell_t : public fire_mage_spell_t
 
   timespan_t execute_time() const override
   {
-    if ( p()->buffs.hot_streak->check() )
+    if ( p()->buffs.hot_streak->check() || p()->buffs.firestorm->check() )
       return 0_ms;
 
     return fire_mage_spell_t::execute_time();
@@ -1864,6 +1996,16 @@ struct hot_streak_spell_t : public fire_mage_spell_t
       p()->buffs.hot_streak->expire();
       p()->buffs.pyroclasm->trigger();
       p()->buffs.firemind->trigger();
+      if ( !p()->buffs.sun_kings_blessing_ready->check() )
+      {
+        if ( p()->buffs.sun_kings_blessing->check() == p()->buffs.sun_kings_blessing->max_stack() )
+        {
+          p()->buffs.sun_kings_blessing->expire();
+          p()->buffs.sun_kings_blessing_ready->trigger();
+        }
+        else
+          p()->buffs.sun_kings_blessing->trigger();
+      }
 
       if ( rng().roll( p()->talents.pyromaniac->effectN( 1 ).percent() ) )
       {
@@ -2178,6 +2320,7 @@ struct arcane_barrage_t : public arcane_mage_spell_t
       p()->buffs.arcane_charge->check() * p()->resources.max[ RESOURCE_MANA ] * floor( p()->spec.arcane_barrage_3->effectN( 1 ).base_value() ) * 0.01,
       p()->gains.arcane_barrage, this );
     p()->buffs.arcane_charge->expire();
+    p()->buffs.arcane_harmony->expire();
   }
 
   void impact( action_state_t* s ) override
@@ -2203,6 +2346,7 @@ struct arcane_barrage_t : public arcane_mage_spell_t
     double m = arcane_mage_spell_t::composite_da_multiplier( s );
 
     m *= 1.0 + s->n_targets * p()->talents.resonance->effectN( 1 ).percent();
+    m *= 1.0 + p()->buffs.arcane_harmony->check_stack_value();
 
     if ( s->target->health_percentage() < p()->runeforge.arcane_bombardment->effectN( 1 ).base_value() )
       m *= 1.0 + p()->runeforge.arcane_bombardment->effectN( 2 ).percent();
@@ -2281,6 +2425,12 @@ struct arcane_blast_t : public arcane_mage_spell_t
 
     if ( p()->buffs.presence_of_mind->up() )
       p()->buffs.presence_of_mind->decrement();
+
+    if ( p()->rppm.expanded_potential->trigger() )
+      // There is a delay where it is possible to cast a spell that would
+      // consume Expanded Potential immediately after Expanded Potential
+      // is triggered, which will prevent it from being consumed.
+      p()->trigger_delayed_buff( p()->buffs.expanded_potential, 1.0 );
   }
 
   double action_multiplier() const override
@@ -2419,6 +2569,7 @@ struct arcane_missiles_tick_t : public arcane_mage_spell_t
   {
     background = true;
     affected_by.mastery_savant = true;
+    base_multiplier *= 1.0 + p->runeforge.arcane_harmony->effectN( 1 ).percent();
   }
 
   void execute() override
@@ -2436,6 +2587,14 @@ struct arcane_missiles_tick_t : public arcane_mage_spell_t
     da += p()->buffs.arcane_pummeling->check_stack_value();
 
     return da;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    arcane_mage_spell_t::impact( s );
+
+    if ( result_is_hit( s->result ) )
+      p()->buffs.arcane_harmony->trigger();
   }
 };
 
@@ -2973,10 +3132,12 @@ struct dragons_breath_t : public fire_mage_spell_t
 struct evocation_t : public arcane_mage_spell_t
 {
   int brain_storm_charges;
+  int siphon_storm_charges;
 
   evocation_t( util::string_view n, mage_t* p, util::string_view options_str ) :
     arcane_mage_spell_t( n, p, p->find_specialization_spell( "Evocation" ) ),
-    brain_storm_charges()
+    brain_storm_charges(),
+    siphon_storm_charges()
   {
     parse_options( options_str );
     base_tick_time = 1.0_s;
@@ -2987,6 +3148,8 @@ struct evocation_t : public arcane_mage_spell_t
 
     if ( p->azerite.brain_storm.enabled() )
       brain_storm_charges = as<int>( p->find_spell( 288466 )->effectN( 1 ).base_value() );
+    if ( p->runeforge.siphon_storm.ok() )
+      siphon_storm_charges = as<int>( p->runeforge.siphon_storm->effectN( 1 ).base_value() );
   }
 
   void execute() override
@@ -2996,12 +3159,15 @@ struct evocation_t : public arcane_mage_spell_t
     p()->trigger_evocation();
     if ( brain_storm_charges > 0 )
       p()->trigger_arcane_charge( brain_storm_charges );
+    if ( siphon_storm_charges > 0 )
+      p()->trigger_arcane_charge( siphon_storm_charges );
   }
 
   void tick( dot_t* d ) override
   {
     arcane_mage_spell_t::tick( d );
     p()->buffs.brain_storm->trigger();
+    p()->buffs.siphon_storm->trigger();
   }
 
   void last_tick( dot_t* d ) override
@@ -3078,6 +3244,12 @@ struct fireball_t : public fire_mage_spell_t
   {
     fire_mage_spell_t::execute();
 
+    if ( p()->rppm.expanded_potential->trigger() )
+      // There is a delay where it is possible to cast a spell that would
+      // consume Expanded Potential immediately after Expanded Potential
+      // is triggered, which will prevent it from being consumed.
+      p()->trigger_delayed_buff( p()->buffs.expanded_potential, 1.0 );
+
     if ( rng().roll( p()->azerite.duplicative_incineration.spell_ref().effectN( 1 ).percent() ) )
       execute();
   }
@@ -3092,6 +3264,19 @@ struct fireball_t : public fire_mage_spell_t
         p()->buffs.fireball->expire();
       else
         p()->buffs.fireball->trigger();
+
+      if ( p()->buffs.molten_skyfall_ready->check() )
+      {
+        p()->buffs.molten_skyfall_ready->expire();
+        p()->action.legendary_meteor->set_target( s->target );
+        p()->action.legendary_meteor->execute();
+      }
+      p()->buffs.molten_skyfall->trigger();
+      if ( p()->buffs.molten_skyfall->check() == p()->buffs.molten_skyfall->max_stack() - 1 )
+      {
+        p()->buffs.molten_skyfall->expire();
+        p()->buffs.molten_skyfall_ready->trigger();
+      }
     }
   }
 
@@ -3189,6 +3374,7 @@ struct glacial_assault_t : public frost_mage_spell_t
 struct flurry_bolt_t : public frost_mage_spell_t
 {
   double glacial_assault_chance;
+  bool first_bolt;
 
   flurry_bolt_t( util::string_view n, mage_t* p ) :
     frost_mage_spell_t( n, p, p->find_spell( 228354 ) ),
@@ -3226,6 +3412,13 @@ struct flurry_bolt_t : public frost_mage_spell_t
         .target( s->target )
         .n_pulses( 1 )
         .action( p()->action.glacial_assault ) );
+    }
+
+    p()->buffs.cold_front->trigger();
+    if ( p()->buffs.cold_front->check() == p()->buffs.cold_front->max_stack() - 1 )
+    {
+      p()->buffs.cold_front->expire();
+      p()->buffs.cold_front_ready->trigger();
     }
   }
 
@@ -3283,10 +3476,18 @@ struct flurry_t : public frost_mage_spell_t
 
     bool brain_freeze = p()->buffs.brain_freeze->up();
     p()->state.brain_freeze_active = brain_freeze;
+
     p()->buffs.brain_freeze->decrement();
 
     if ( brain_freeze )
       p()->procs.brain_freeze_used->occur();
+
+    if ( p()->buffs.cold_front_ready->check() )
+    {
+      p()->buffs.cold_front_ready->expire();
+      p()->action.legendary_frozen_orb->set_target( target );
+      p()->action.legendary_frozen_orb->execute();
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -3326,6 +3527,15 @@ struct frostbolt_t : public frost_mage_spell_t
     frost_mage_spell_t::init_finished();
   }
 
+  double composite_haste() const override
+  {
+    double h = frost_mage_spell_t::composite_haste();
+
+    h /= 1.0 + p()->buffs.slick_ice->check_stack_value();
+
+    return h;
+  }
+
   void execute() override
   {
     frost_mage_spell_t::execute();
@@ -3345,6 +3555,24 @@ struct frostbolt_t : public frost_mage_spell_t
     if ( target != p()->last_frostbolt_target )
       p()->buffs.tunnel_of_ice->expire();
     p()->last_frostbolt_target = target;
+
+    if ( p()->rppm.expanded_potential->trigger() )
+      p()->trigger_delayed_buff( p()->buffs.expanded_potential, 1.0 );
+
+    // TODO: Freezing Winds currently only reduces the cooldown of Frozen Orb while
+    // Frozen Orb is active, verify that this is still the case closer to release.
+    if ( p()->buffs.freezing_winds->up() == p()->bugs )
+      p()->cooldowns.frozen_orb->adjust( p()->runeforge.freezing_winds->effectN( 1 ).time_value() );
+
+    if ( p()->buffs.cold_front_ready->check() )
+    {
+      p()->buffs.cold_front_ready->expire();
+      p()->action.legendary_frozen_orb->set_target( target );
+      p()->action.legendary_frozen_orb->execute();
+    }
+
+    if ( p()->buffs.icy_veins->up() )
+      p()->buffs.slick_ice->trigger();
   }
 
   void impact( action_state_t* s ) override
@@ -3352,7 +3580,15 @@ struct frostbolt_t : public frost_mage_spell_t
     frost_mage_spell_t::impact( s );
 
     if ( result_is_hit( s->result ) )
+    {
       p()->buffs.tunnel_of_ice->trigger();
+      p()->buffs.cold_front->trigger();
+      if ( p()->buffs.cold_front->check() == p()->buffs.cold_front->max_stack() - 1 )
+      {
+        p()->buffs.cold_front->expire();
+        p()->buffs.cold_front_ready->trigger();
+      }
+    }
   }
 
   double bonus_da( const action_state_t* s ) const override
@@ -3381,7 +3617,9 @@ struct frost_nova_t : public mage_spell_t
   void impact( action_state_t* s ) override
   {
     mage_spell_t::impact( s );
-    p()->trigger_crowd_control( s, MECHANIC_ROOT );
+
+    p()->trigger_crowd_control( s, MECHANIC_ROOT, data().duration() );
+    td( s->target )->debuffs.grisly_icicle->trigger();
   }
 };
 
@@ -3439,13 +3677,19 @@ struct frozen_orb_t : public frost_mage_spell_t
 {
   action_t* frozen_orb_bolt;
 
-  frozen_orb_t( util::string_view n, mage_t* p, util::string_view options_str ) :
-    frost_mage_spell_t( n, p, p->find_specialization_spell( "Frozen Orb" ) ),
-    frozen_orb_bolt( get_action<frozen_orb_bolt_t>( "frozen_orb_bolt", p ) )
+  frozen_orb_t( util::string_view n, mage_t* p, util::string_view options_str, bool legendary = false ) :
+    frost_mage_spell_t( n, p, legendary ? p->find_spell( 84714 ) : p->find_specialization_spell( "Frozen Orb" ) ),
+    frozen_orb_bolt( legendary ? p->action.legendary_frozen_orb_bolt : get_action<frozen_orb_bolt_t>( "frozen_orb_bolt", p ) )
   {
     parse_options( options_str );
     may_miss = may_crit = affected_by.shatter = false;
     add_child( frozen_orb_bolt );
+    if ( legendary )
+    {
+      background = true;
+      cooldown->duration = 0_ms;
+      base_costs[ RESOURCE_MANA ] = 0;
+    }
   }
 
   void init_finished() override
@@ -3468,6 +3712,7 @@ struct frozen_orb_t : public frost_mage_spell_t
   {
     frost_mage_spell_t::execute();
     p()->buffs.freezing_rain->trigger();
+    p()->buffs.freezing_winds->trigger();
   }
 
   void impact( action_state_t* s ) override
@@ -3483,7 +3728,12 @@ struct frozen_orb_t : public frost_mage_spell_t
       .pulse_time( pulse_time )
       .target( s->target )
       .n_pulses( pulse_count )
-      .action( frozen_orb_bolt ), true );
+      .action( frozen_orb_bolt )
+      .expiration_callback( [ this ] ()
+        {
+          if ( p()->ground_aoe_expiration[ name_str ] <= sim->current_time() )
+            p()->buffs.freezing_winds->expire();
+        } ), true );
   }
 };
 
@@ -3595,6 +3845,17 @@ struct ice_floes_t : public mage_spell_t
 
 // Ice Lance Spell ==========================================================
 
+// TODO: This is not currently a mage_spell_t because it doesn't benefit from
+// any of the Mage buffs or spec auras. Verify that this is still the case later.
+struct glacial_fragments_t : public spell_t
+{
+  glacial_fragments_t( util::string_view n, mage_t* p ) :
+    spell_t( n, p, p->find_spell( 327498 ) )
+  {
+    background = true;
+  }
+};
+
 struct ice_lance_state_t : public mage_spell_state_t
 {
   bool fingers_of_frost;
@@ -3625,13 +3886,15 @@ struct ice_lance_state_t : public mage_spell_state_t
 
 struct ice_lance_t : public frost_mage_spell_t
 {
+  action_t* glacial_fragments;
   shatter_source_t* extension_source;
   shatter_source_t* cleave_source;
 
   ice_lance_t( util::string_view n, mage_t* p, util::string_view options_str ) :
     frost_mage_spell_t( n, p, p->find_specialization_spell( "Ice Lance" ) ),
     extension_source(),
-    cleave_source()
+    cleave_source(),
+    glacial_fragments()
   {
     parse_options( options_str );
     parse_effect_data( p->find_spell( 228598 )->effectN( 1 ) );
@@ -3645,6 +3908,12 @@ struct ice_lance_t : public frost_mage_spell_t
       aoe = as<int>( 1 + p->talents.splitting_ice->effectN( 1 ).base_value() );
       base_multiplier *= 1.0 + p->talents.splitting_ice->effectN( 3 ).percent();
       base_aoe_multiplier *= p->talents.splitting_ice->effectN( 2 ).percent();
+    }
+
+    if ( p->runeforge.glacial_fragments.ok() )
+    {
+      glacial_fragments = get_action<glacial_fragments_t>( "glacial_fragments", p );
+      add_child( glacial_fragments );
     }
   }
 
@@ -3764,6 +4033,16 @@ struct ice_lance_t : public frost_mage_spell_t
 
     if ( !primary )
       record_shatter_source( s, cleave_source );
+
+    // TODO: Determine how it is verified that Blizzard is actively "hitting" the target to increase this chance.
+    if ( glacial_fragments )
+    {
+      double chance = p()->ground_aoe_expiration[ "blizzard" ] > sim->current_time()
+        ? p()->runeforge.glacial_fragments->effectN( 2 ).percent()
+        : p()->runeforge.glacial_fragments->effectN( 1 ).percent();
+      if ( rng().roll( chance ) )
+        glacial_fragments->execute();
+    }
   }
 
   double action_multiplier() const override
@@ -4056,11 +4335,13 @@ struct meteor_burn_t : public fire_mage_spell_t
 
 struct meteor_impact_t : public fire_mage_spell_t
 {
+  action_t* meteor_burn;
   timespan_t meteor_burn_duration;
   timespan_t meteor_burn_pulse_time;
 
-  meteor_impact_t( util::string_view n, mage_t* p ) :
+  meteor_impact_t( util::string_view n, mage_t* p, action_t* m ) :
     fire_mage_spell_t( n, p, p->find_spell( 153564 ) ),
+    meteor_burn( m ),
     meteor_burn_duration( p->find_spell( 175396 )->duration() ),
     meteor_burn_pulse_time( p->find_spell( 155158 )->effectN( 1 ).period() )
   {
@@ -4080,13 +4361,13 @@ struct meteor_impact_t : public fire_mage_spell_t
 
     if ( s->chain_target == 0 )
     {
-      p()->ground_aoe_expiration[ p()->action.meteor_burn->name_str ] = sim->current_time() + meteor_burn_duration;
+      p()->ground_aoe_expiration[ meteor_burn->name_str ] = sim->current_time() + meteor_burn_duration;
 
       make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
         .pulse_time( meteor_burn_pulse_time )
         .target( s->target )
         .duration( meteor_burn_duration )
-        .action( p()->action.meteor_burn ) );
+        .action( meteor_burn ) );
     }
   }
 };
@@ -4095,17 +4376,28 @@ struct meteor_t : public fire_mage_spell_t
 {
   timespan_t meteor_delay;
 
-  meteor_t( util::string_view n, mage_t* p, util::string_view options_str ) :
-    fire_mage_spell_t( n, p, p->talents.meteor ),
+  meteor_t( util::string_view n, mage_t* p, util::string_view options_str, bool legendary = false ) :
+    fire_mage_spell_t( n, p, legendary ? p->find_spell( 153561 ) : p->talents.meteor ),
     meteor_delay( p->find_spell( 177345 )->duration() )
   {
     parse_options( options_str );
-    impact_action = p->action.meteor_impact;
+    impact_action = legendary ? p->action.legendary_meteor_impact : p->action.meteor_impact;
 
     if ( data().ok() )
     {
-      add_child( p->action.meteor_burn );
-      add_child( p->action.meteor_impact );
+      if ( legendary )
+      {
+        background = true;
+        cooldown->duration = 0_ms;
+        base_costs[ RESOURCE_MANA ] = 0;
+        add_child( p->action.legendary_meteor_burn );
+        add_child( p->action.legendary_meteor_impact );
+      }
+      else
+      {
+        add_child( p->action.meteor_burn );
+        add_child( p->action.meteor_impact );
+      }
     }
   }
 
@@ -4232,12 +4524,13 @@ struct phoenix_flames_splash_t : public fire_mage_spell_t
   {
     aoe = -1;
     background = reduced_aoe_damage = true;
-    // TODO: Phoenix Flames currently does not trigger Kindling on the beta.
-    // Verify whether this is fixed closer to shadowlands release.
-    triggers_hot_streak = triggers_ignite = triggers_kindling = true;
+    triggers_hot_streak = triggers_ignite = true;
     max_spread_targets = as<int>( p->spec.ignite->effectN( 4 ).base_value() );
     // Phoenix Flames always crits
     base_crit = 1.0;
+    // TODO: Phoenix Flames currently does not trigger fevered incantation or Kindling
+    // on the beta. Verify whether this is fixed closer to shadowlands release.
+    triggers_kindling = triggers_fevered_incantation = !p->bugs;
   }
 
   static double ignite_bank( dot_t* ignite )
@@ -4369,6 +4662,19 @@ struct pyroblast_t : public hot_streak_spell_t
 
   void execute() override
   {
+    // TODO: Verify that Sun King's Blessing activates when
+    // an instant cast Pyroblast without Hot Streak is used
+    if ( !last_hot_streak && p()->buffs.sun_kings_blessing_ready->check() )
+    {
+      timespan_t d = timespan_t::from_seconds( p()->runeforge.sun_kings_blessing->effectN( 2 ).base_value() );
+      if ( p()->buffs.combustion->check() )
+        // If Combustion is already up, its duration is overwritten.
+        p()->buffs.combustion->extend_duration( p(), d - p()->buffs.combustion->remains() );
+      else
+        p()->buffs.combustion->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, d );
+      p()->buffs.sun_kings_blessing_ready->expire();
+    }
+
     hot_streak_spell_t::execute();
 
     if ( !last_hot_streak )
@@ -4399,6 +4705,19 @@ struct pyroblast_t : public hot_streak_spell_t
         trailing_embers->set_target( t );
         trailing_embers->execute();
       }
+    }
+
+    if ( p()->buffs.molten_skyfall_ready->check() )
+    {
+      p()->buffs.molten_skyfall_ready->expire();
+      p()->action.legendary_meteor->set_target( s->target );
+      p()->action.legendary_meteor->execute();
+    }
+    p()->buffs.molten_skyfall->trigger();
+    if ( p()->buffs.molten_skyfall->check() == p()->buffs.molten_skyfall->max_stack() - 1 )
+    {
+      p()->buffs.molten_skyfall->expire();
+      p()->buffs.molten_skyfall_ready->trigger();
     }
   }
 
@@ -4614,12 +4933,15 @@ struct time_warp_t : public mage_spell_t
   {
     parse_options( options_str );
     harmful = false;
-    background = sim->overrides.bloodlust != 0;
+    background = sim->overrides.bloodlust != 0 && !p->runeforge.temporal_warp.ok();
   }
 
   void execute() override
   {
     mage_spell_t::execute();
+
+    if ( player->buffs.exhaustion->check() )
+      p()->buffs.temporal_warp->trigger();
 
     for ( player_t* p : sim->player_non_sleeping_list )
     {
@@ -4633,7 +4955,7 @@ struct time_warp_t : public mage_spell_t
 
   bool ready() override
   {
-    if ( player->buffs.exhaustion->check() )
+    if ( player->buffs.exhaustion->check() && !p()->runeforge.temporal_warp.ok() )
       return false;
 
     return mage_spell_t::ready();
@@ -5112,6 +5434,9 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
 
   debuffs.frozen            = make_buff( *this, "frozen" )
                                 ->set_duration( mage->options.frozen_duration );
+  debuffs.grisly_icicle        = make_buff( *this, "frost_nova", mage->find_class_spell( "Frost Nova" ) )
+                                ->set_default_value( mage->runeforge.grisly_icicle->effectN( 2 ).percent() )
+                                ->set_chance( mage->runeforge.grisly_icicle.ok() );
   debuffs.winters_chill     = make_buff( *this, "winters_chill", mage->find_spell( 228358 ) )
                                 ->set_chance( mage->spec.brain_freeze_2->ok() );
   debuffs.touch_of_the_magi = make_buff<buffs::touch_of_the_magi_t>( this );
@@ -5164,7 +5489,7 @@ mage_t::mage_t( sim_t* sim, util::string_view name, race_e r ) :
   resource_regeneration = regen_type::DYNAMIC;
 }
 
-bool mage_t::trigger_crowd_control( const action_state_t* s, spell_mechanic type )
+bool mage_t::trigger_crowd_control( const action_state_t* s, spell_mechanic type, timespan_t d )
 {
   if ( type == MECHANIC_INTERRUPT )
     return true;
@@ -5173,7 +5498,7 @@ bool mage_t::trigger_crowd_control( const action_state_t* s, spell_mechanic type
     && ( s->target->is_add() || s->target->level() < sim->max_player_level + 3 ) )
   {
     if ( type == MECHANIC_ROOT )
-      get_target_data( s->target )->debuffs.frozen->trigger();
+      get_target_data( s->target )->debuffs.frozen->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, d );
 
     return true;
   }
@@ -5287,7 +5612,7 @@ void mage_t::create_actions()
   if ( talents.meteor->ok() )
   {
     action.meteor_burn   = get_action<meteor_burn_t>( "meteor_burn", this );
-    action.meteor_impact = get_action<meteor_impact_t>( "meteor_impact", this );
+    action.meteor_impact = get_action<meteor_impact_t>( "meteor_impact", this, action.meteor_burn );
   }
 
   if ( spec.touch_of_the_magi->ok() )
@@ -5295,6 +5620,19 @@ void mage_t::create_actions()
 
   if ( azerite.glacial_assault.enabled() )
     action.glacial_assault = get_action<glacial_assault_t>( "glacial_assault", this );
+
+  if ( runeforge.molten_skyfall.ok() )
+  {
+    action.legendary_meteor_burn   = get_action<meteor_burn_t>( "legendary_meteor_burn", this );
+    action.legendary_meteor_impact = get_action<meteor_impact_t>( "legendary_meteor_impact", this, action.legendary_meteor_burn );
+    action.legendary_meteor        = get_action<meteor_t>( "legendary_meteor", this, "", true );
+  }
+
+  if ( runeforge.cold_front.ok() )
+  {
+    action.legendary_frozen_orb_bolt = get_action<frozen_orb_bolt_t>( "legendary_frozen_orb_bolt", this );
+    action.legendary_frozen_orb      = get_action<frozen_orb_t>( "legendary_frozen_orb", this, "", true );
+  }
 
   player_t::create_actions();
 }
@@ -5595,7 +5933,7 @@ void mage_t::init_spells()
 
   // Runeforge Legendaries
   runeforge.arcane_bombardment   = find_runeforge_legendary( "Arcane Bombardment"   );
-  runeforge.arcane_harmony       = find_runeforge_legendary( "Arcane Harmony"       );
+  runeforge.arcane_harmony       = find_runeforge_legendary( "Arcane Infinity"      );
   runeforge.siphon_storm         = find_runeforge_legendary( "Siphon Storm"         );
   runeforge.temporal_warp        = find_runeforge_legendary( "Temporal Warp"        );
 
@@ -5655,7 +5993,7 @@ void mage_t::create_buffs()
                                  ->set_default_value( find_spell( 12042 )->effectN( 1 ).percent()
                                                     + talents.overpowered->effectN( 1 ).percent() )
                                  ->set_duration( find_spell( 12042 )->duration() + spec.arcane_power_2->effectN( 1 ).time_value() );
-  buffs.clearcasting         = make_buff( this, "clearcasting", find_spell( 263725 ) )
+  buffs.clearcasting         = make_buff<buffs::expanded_potential_buff_t>( this, "clearcasting", find_spell( 263725 ) )
                                  ->set_default_value( find_spell( 263725 )->effectN( 1 ).percent() )
                                  ->set_max_stack( find_spell( 263725 )->max_stacks() + as<int>( spec.clearcasting_3->effectN( 1 ).base_value() ) );
   buffs.clearcasting_channel = make_buff( this, "clearcasting_channel", find_spell( 277726 ) )
@@ -5709,7 +6047,12 @@ void mage_t::create_buffs()
                                         buffs.flames_of_alacrity->decrement( old - cur );
                                     } );
   buffs.heating_up            = make_buff( this, "heating_up", find_spell( 48107 ) );
-  buffs.hot_streak            = make_buff( this, "hot_streak", find_spell( 48108 ) );
+  buffs.hot_streak            = make_buff<buffs::expanded_potential_buff_t>( this, "hot_streak", find_spell( 48108 ) )
+                                  ->set_stack_change_callback( [ this ] ( buff_t*, int old, int )
+                                    {
+                                      if ( old == 0 && rppm.firestorm->trigger() )
+                                        buffs.firestorm->trigger();
+                                    } );
 
   buffs.alexstraszas_fury     = make_buff( this, "alexstraszas_fury", find_spell( 334277 ) )
                                   ->set_default_value( find_spell( 334277 )->effectN( 1 ).percent() );
@@ -5723,7 +6066,7 @@ void mage_t::create_buffs()
 
 
   // Frost
-  buffs.brain_freeze     = make_buff( this, "brain_freeze", find_spell( 190446 ) );
+  buffs.brain_freeze     = make_buff<buffs::expanded_potential_buff_t>( this, "brain_freeze", find_spell( 190446 ) );
   buffs.fingers_of_frost = make_buff( this, "fingers_of_frost", find_spell( 44544 ) );
   buffs.icicles          = make_buff( this, "icicles", find_spell( 205473 ) );
   buffs.icy_veins        = make_buff<buffs::icy_veins_buff_t>( this );
@@ -5784,6 +6127,56 @@ void mage_t::create_buffs()
   buffs.tunnel_of_ice      = make_buff( this, "tunnel_of_ice", find_spell( 277904 ) )
                                ->set_default_value( azerite.tunnel_of_ice.value() )
                                ->set_chance( azerite.tunnel_of_ice.enabled() );
+
+  // Runeforge Legendaries
+  buffs.arcane_harmony = make_buff( this, "arcane_harmony", find_spell( 332777 ) )
+                           ->set_default_value( find_spell( 332777 )->effectN( 1 ).percent() )
+                           ->set_chance( runeforge.arcane_harmony.ok() );
+  buffs.siphon_storm   = make_buff( this, "siphon_storm", find_spell( 332934 ) )
+                           ->set_default_value( find_spell( 332934 )->effectN( 1 ).percent() )
+                           ->add_invalidate( CACHE_INTELLECT )
+                           ->set_chance( runeforge.siphon_storm.ok() );
+  buffs.temporal_warp  = make_buff( this, "temporal_warp", find_spell( 327355 ) )
+                           ->set_default_value( find_spell( 327355 )->effectN( 1 ).percent() )
+                           ->add_invalidate( CACHE_SPELL_HASTE )
+                           ->set_chance( runeforge.temporal_warp.ok() );
+
+  buffs.fevered_incantation      = make_buff( this, "fevered_incantation", find_spell( 333049 ) )
+                                     ->set_default_value( find_spell( 333049 )->effectN( 1 ).percent() )
+                                     ->set_chance( runeforge.fevered_incantation.ok() );
+  buffs.firestorm                = make_buff( this, "firestorm", find_spell( 333100 ) )
+                                     ->set_chance( runeforge.firestorm.ok() );
+  buffs.molten_skyfall           = make_buff( this, "molten_skyfall", find_spell( 333170 ) )
+                                     ->set_chance( runeforge.molten_skyfall.ok() );
+  buffs.molten_skyfall_ready     = make_buff( this, "molten_skyfall_ready", find_spell( 333182 ) );
+  buffs.sun_kings_blessing       = make_buff( this, "sun_kings_blessing", find_spell( 333314 ) )
+                                     ->set_chance( runeforge.sun_kings_blessing.ok() );
+  buffs.sun_kings_blessing_ready = make_buff( this, "sun_kings_blessing_ready", find_spell( 333315 ) );
+
+  buffs.cold_front       = make_buff( this, "cold_front", find_spell( 327327 ) )
+                             ->set_chance( runeforge.cold_front.ok() );
+  buffs.cold_front_ready = make_buff( this, "cold_front_ready", find_spell( 327330 ) );
+  buffs.freezing_winds   = make_buff( this, "freezing_winds", find_spell( 327478 ) )
+                             // ->set_period( 2.5_s )
+                             ->set_tick_callback( [ this ] ( buff_t*, int, timespan_t )
+                               { buffs.fingers_of_frost->trigger(); } );
+  buffs.slick_ice        = make_buff( this, "slick_ice", find_spell( 327509 ) )
+                                        ->set_default_value( find_spell( 327509 )->effectN( 1 ).percent() )
+                                        ->set_chance( runeforge.slick_ice.ok() );
+
+  buffs.disciplinary_command        = make_buff( this, "disciplinary_command", find_spell( 327371 ) )
+                                        ->set_default_value( find_spell( 327371 )->effectN( 1 ).percent() );
+  buffs.disciplinary_command_arcane = make_buff( this, "disciplinary_command_arcane", find_spell( 327369  ) )
+                                        ->set_quiet( true )
+                                        ->set_chance( runeforge.disciplinary_command.ok() );
+  buffs.disciplinary_command_frost  = make_buff( this, "disciplinary_command_frost", find_spell( 327366 ) )
+                                        ->set_quiet( true )
+                                        ->set_chance( runeforge.disciplinary_command.ok() );
+  buffs.disciplinary_command_fire   = make_buff( this, "disciplinary_command_fire", find_spell( 327368 ) )
+                                        ->set_quiet( true )
+                                        ->set_chance( runeforge.disciplinary_command.ok() );
+  buffs.expanded_potential          = make_buff( this, "expanded_potential", find_spell( 327495 ) )
+                                        ->set_chance( runeforge.expanded_potential.ok() );
 
   // Misc
   // N active GBoWs are modeled by a single buff that gives N times as much mana.
@@ -5923,6 +6316,9 @@ void mage_t::init_rng()
   // TODO: There's no data about this in game. Keep an eye out in case Blizzard
   // changes this behind the scenes.
   shuffled_rng.time_anomaly = get_shuffled_rng( "time_anomaly", 1, 16 );
+
+  rppm.expanded_potential = get_rppm( "expanded_potential", runeforge.expanded_potential );
+  rppm.firestorm = get_rppm( "firestorm", runeforge.firestorm );
 }
 
 void mage_t::init_assessors()
@@ -6621,7 +7017,23 @@ double mage_t::composite_attribute_multiplier( attribute_e attr ) const
   double m = player_t::composite_attribute_multiplier( attr );
 
   if ( attr == ATTR_INTELLECT )
+  {
     m *= 1.0 + buffs.focus_magic_int->check_stack_value();
+    m *= 1.0 + buffs.siphon_storm->check_stack_value();
+  }
+
+  return m;
+}
+
+double mage_t::composite_player_critical_damage_multiplier( const action_state_t* s ) const
+{
+  double m = player_t::composite_player_critical_damage_multiplier( s );
+
+  // TODO: Verify whether there are damage types that this does not buff.
+  m *= 1.0 + buffs.fevered_incantation->check_stack_value();
+
+  // TODO: Verify whether there are damage types that this does not buff.
+  m *= 1.0 + buffs.disciplinary_command->check_value();
 
   return m;
 }
@@ -6647,6 +7059,17 @@ double mage_t::composite_player_pet_damage_multiplier( const action_state_t* s )
   m *= 1.0 + buffs.bone_chilling->check_stack_value();
   m *= 1.0 + buffs.incanters_flow->check_stack_value();
   m *= 1.0 + buffs.rune_of_power->check_value();
+
+  return m;
+}
+
+double mage_t::composite_player_target_multiplier( player_t* target, school_e school ) const
+{
+  double m = player_t::composite_player_target_multiplier( target, school );
+
+  // TODO: Verify that the damage bonus from Frost Nova is actually applied to targets that are immune to roots.
+  if ( dbc::is_school( school, SCHOOL_ARCANE ) || dbc::is_school( school, SCHOOL_FIRE ) || dbc::is_school( school, SCHOOL_FROST ) )
+    m *= 1.0 + get_target_data( target )->debuffs.grisly_icicle->check_value();
 
   return m;
 }
@@ -6684,6 +7107,7 @@ double mage_t::composite_spell_haste() const
   double h = player_t::composite_spell_haste();
 
   h /= 1.0 + buffs.icy_veins->check_value();
+  h /= 1.0 + buffs.temporal_warp->check_value();
 
   return h;
 }
