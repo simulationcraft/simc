@@ -115,9 +115,11 @@ ol.float li {
 .column-tables {
     display: inline-block;
 }
-.column-tables table.sc:first-of-type,
-.column-charts div.charts:first-of-type {
+.column-tables table.sc:first-of-type {
     margin-top: 0;
+}
+.toggle-content .column-charts {
+    margin-top: -2px;
 }
 .mt {
     margin-top: 20px;
