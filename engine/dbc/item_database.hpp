@@ -79,7 +79,7 @@ struct token_t
   double value;
   std::string value_str;
 };
-std::vector<token_t> parse_tokens( const std::string& encoded_str );
+std::vector<token_t> parse_tokens( util::string_view encoded_str );
 
 bool has_item_bonus_type( const item_t& item, item_bonus_type bonus_type );
 }

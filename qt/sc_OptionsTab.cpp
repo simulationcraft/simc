@@ -993,7 +993,8 @@ QString SC_OptionsTab::get_globalSettings()
   }
   else
   {
-    auto splits = util::string_split( choice.target_error -> currentText().toStdString(), "%" );
+    std::string target_error = choice.target_error -> currentText().toStdString();
+    auto splits = util::string_split( target_error, "%" );
     assert( splits.size() > 0 );
     options += "target_error=" + util::to_QString( splits[ 0 ] ) + "\n";
     options += "iterations=0\n";
@@ -1194,7 +1195,8 @@ QString SC_OptionsTab::mergeOptions()
         {
           options += "dps_plot_iterations=";
 
-          auto splits = util::string_split( choice.plots_iterations -> currentText().toStdString(), "/" );
+          std::string iterations = choice.plots_iterations -> currentText().toStdString();
+          auto splits = util::string_split( iterations, "/" );
           if ( splits.size() > 1 )
           {
             int base_iter = util::to_int( choice.iterations -> currentText().toStdString() );
@@ -1209,7 +1211,8 @@ QString SC_OptionsTab::mergeOptions()
       }
       else
       {
-        auto splits = util::string_split( choice.plots_target_error -> currentText().toStdString(), "%" );
+        std::string target_error = choice.plots_target_error -> currentText().toStdString();
+        auto splits = util::string_split( target_error, "%" );
         assert( splits.size() > 0 );
         options += "dps_plot_target_error=" + util::to_QString( splits[0] ) + "\n";
         options += "dps_plot_iterations=0\n";

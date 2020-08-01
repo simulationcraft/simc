@@ -166,7 +166,7 @@ bool covenant_state_t::parse_soulbind( sim_t*             sim,
     value_str = value_str.substr( comma_pos + 1 );
   }
 
-  for ( const auto& entry : util::string_split( value_str, "|/" ) )
+  for ( const util::string_view entry : util::string_split( value_str, "|/" ) )
   {
     // Conduit handling
     if ( entry.find( ':' ) != std::string::npos )

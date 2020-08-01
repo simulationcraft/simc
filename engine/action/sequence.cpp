@@ -16,7 +16,7 @@
 
 // sequence_t::sequence_t ===================================================
 
-sequence_t::sequence_t( player_t* p, const std::string& sub_action_str ) :
+sequence_t::sequence_t( player_t* p, util::string_view sub_action_str ) :
   action_t( ACTION_SEQUENCE, "default", p ),
   waiting( false ), sequence_wait_on_ready( -1 ),
   current_action( -1 ), restarted( false ), last_restart( timespan_t::min() ), has_option( false )
@@ -133,7 +133,7 @@ bool sequence_t::ready()
 // Strict Sequence Action
 // ==========================================================================
 
-strict_sequence_t::strict_sequence_t( player_t* p, const std::string& sub_action_str ) :
+strict_sequence_t::strict_sequence_t( player_t* p, util::string_view sub_action_str ) :
   action_t( ACTION_SEQUENCE, "strict_sequence", p ),
   current_action( 0 ), allow_skip( false )
 {

@@ -965,7 +965,7 @@ double item_database::item_budget( const item_t* item, unsigned max_ilevel )
 
 // item_database::parse_tokens ==============================================
 
-std::vector<item_database::token_t> item_database::parse_tokens( const std::string& encoded_str )
+std::vector<item_database::token_t> item_database::parse_tokens( util::string_view encoded_str )
 {
   std::vector<token_t> tokens;
   auto splits = util::string_split( encoded_str, "_" );

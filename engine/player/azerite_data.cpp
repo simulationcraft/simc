@@ -561,7 +561,7 @@ bool azerite_state_t::parse_override( sim_t* sim, util::string_view, util::strin
   m_overrides.clear();
 
   auto override_split = util::string_split( value, "/" );
-  for ( const auto& opt : override_split )
+  for ( const util::string_view opt : override_split )
   {
     if ( opt.empty() )
     {

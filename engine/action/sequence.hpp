@@ -27,7 +27,7 @@ struct sequence_t : public action_t
   timespan_t last_restart;
   bool has_option;
 
-  sequence_t(player_t*, const std::string& sub_action_str);
+  sequence_t(player_t*, util::string_view sub_action_str);
 
   virtual void schedule_execute(action_state_t* execute_state = nullptr) override;
   virtual void reset() override;
@@ -45,7 +45,7 @@ struct strict_sequence_t : public action_t
   // Allow strict sequence sub-actions to be skipped if they are not ready. Default = false.
   bool allow_skip;
 
-  strict_sequence_t(player_t*, const std::string& opts);
+  strict_sequence_t(player_t*, util::string_view opts);
 
   bool ready() override;
   void reset() override;
