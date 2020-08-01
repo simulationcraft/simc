@@ -280,7 +280,7 @@ T convert_string_to_number( Converter converter, const std::string& str, util::s
   }
   catch ( const std::out_of_range& )
   {
-    throw std::invalid_argument( fmt::format( "Could not parse '{}' to {}: resulting value exceeds range [{}, {}]",
+    throw std::out_of_range( fmt::format( "Could not parse '{}' to {}: resulting value exceeds range [{}, {}]",
                                               str, type_name, std::numeric_limits<T>::lowest(),
                                               std::numeric_limits<T>::max() ) );
   }
