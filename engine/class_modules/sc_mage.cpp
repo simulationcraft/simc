@@ -5307,7 +5307,7 @@ void mage_t::create_options()
   add_option( opt_timespan( "scorch_delay", options.scorch_delay ) );
   add_option( opt_int( "greater_blessing_of_wisdom_count", options.gbow_count ) );
   add_option( opt_bool( "allow_shimmer_lance", options.allow_shimmer_lance ) );
-  add_option( opt_func( "rotation", [ this ] ( sim_t*, util::string_view, const std::string& val )
+  add_option( opt_func( "rotation", [ this ] ( sim_t*, util::string_view, util::string_view val )
   {
     if ( util::str_compare_ci( val, "standard" ) )
       options.rotation = ROTATION_STANDARD;

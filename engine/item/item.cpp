@@ -91,7 +91,7 @@ item_t::parsed_input_t::~parsed_input_t() = default;
 
 // item_t::item_t ===========================================================
 
-item_t::item_t( player_t* p, const std::string& o ) :
+item_t::item_t( player_t* p, util::string_view o ) :
   sim( p -> sim ),
   player( p ),
   slot( SLOT_INVALID ),
@@ -670,7 +670,7 @@ void item_t::parse_options()
   try
   {
     opts::parse( sim, option_name_str, options, remainder,
-      [ this ]( opts::parse_status status, util::string_view name, const std::string& value ) {
+      [ this ]( opts::parse_status status, util::string_view name, util::string_view value ) {
         // Fail parsing if strict parsing is used and the option is not found
         if ( sim->strict_parsing && status == opts::parse_status::NOT_FOUND )
         {

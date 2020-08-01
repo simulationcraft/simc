@@ -619,7 +619,7 @@ bool parse_talent_url( sim_t* sim, util::string_view name, util::string_view url
 
 // parse_talent_override ====================================================
 
-bool parse_talent_override( sim_t* sim, util::string_view name, const std::string& override_str )
+bool parse_talent_override( sim_t* sim, util::string_view name, util::string_view override_str )
 {
   assert( name == "talent_override" );
   (void)name;
@@ -628,7 +628,7 @@ bool parse_talent_override( sim_t* sim, util::string_view name, const std::strin
 
   if ( !p->talent_overrides_str.empty() )
     p->talent_overrides_str += "/";
-  p->talent_overrides_str += override_str;
+  p->talent_overrides_str += std::string( override_str );
 
   return true;
 }
@@ -752,7 +752,7 @@ bool parse_role_string( sim_t* sim, util::string_view name, util::string_view va
 
 // parse_world_lag ==========================================================
 
-bool parse_world_lag( sim_t* sim, util::string_view name, const std::string& value )
+bool parse_world_lag( sim_t* sim, util::string_view name, util::string_view value )
 {
   assert( name == "world_lag" );
   (void)name;
@@ -771,7 +771,7 @@ bool parse_world_lag( sim_t* sim, util::string_view name, const std::string& val
 
 // parse_world_lag ==========================================================
 
-bool parse_world_lag_stddev( sim_t* sim, util::string_view name, const std::string& value )
+bool parse_world_lag_stddev( sim_t* sim, util::string_view name, util::string_view value )
 {
   assert( name == "world_lag_stddev" );
   (void)name;
@@ -790,7 +790,7 @@ bool parse_world_lag_stddev( sim_t* sim, util::string_view name, const std::stri
 
 // parse_brain_lag ==========================================================
 
-bool parse_brain_lag( sim_t* sim, util::string_view name, const std::string& value )
+bool parse_brain_lag( sim_t* sim, util::string_view name, util::string_view value )
 {
   assert( name == "brain_lag" );
   (void)name;
@@ -807,7 +807,7 @@ bool parse_brain_lag( sim_t* sim, util::string_view name, const std::string& val
 
 // parse_brain_lag_stddev ===================================================
 
-bool parse_brain_lag_stddev( sim_t* sim, util::string_view name, const std::string& value )
+bool parse_brain_lag_stddev( sim_t* sim, util::string_view name, util::string_view value )
 {
   assert( name == "brain_lag_stddev" );
   (void)name;
@@ -863,15 +863,15 @@ bool parse_stat_timelines( sim_t* sim, util::string_view name, util::string_view
 
 // parse_origin =============================================================
 
-bool parse_origin( sim_t* sim, util::string_view, const std::string& origin )
+bool parse_origin( sim_t* sim, util::string_view, util::string_view origin )
 {
   player_t& p = *sim->active_player;
 
+  p.origin_str = std::string( origin );
 
   std::string region, server, name;
   if ( util::parse_origin( region, server, name, origin ) )
   {
-    p.origin_str = origin;
     p.region_str = region;
     p.server_str = server;
   }
@@ -8298,7 +8298,7 @@ struct use_items_t : public action_t
     return false;
   }
 
-  bool parse_slots( sim_t* /* sim */, util::string_view /* opt_name */, const std::string& opt_value )
+  bool parse_slots( sim_t* /* sim */, util::string_view /* opt_name */, util::string_view opt_value )
   {
     // Empty out default priority slots. slots= option will change the use_items action logic so
     // that only the designated slots will be checked/executed for a special effect
@@ -9167,7 +9167,7 @@ void player_t::create_talents_numbers()
   }
 }
 
-static bool parse_min_gcd( sim_t* sim, util::string_view name, const std::string& value )
+static bool parse_min_gcd( sim_t* sim, util::string_view name, util::string_view value )
 {
   if ( name != "min_gcd" )
     return false;
@@ -9175,7 +9175,7 @@ static bool parse_min_gcd( sim_t* sim, util::string_view name, const std::string
   double v = util::to_double( value );
   if ( v <= 0 )
   {
-    sim->errorf( " %s: Invalid value '%s' for global minimum cooldown.", sim->active_player->name(), value.c_str() );
+    sim->error( "{}: Invalid value '{}' for global minimum cooldown.", sim->active_player->name(), value );
     return false;
   }
 

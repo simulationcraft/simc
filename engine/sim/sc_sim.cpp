@@ -224,7 +224,7 @@ bool replace_json2( sim_t* sim, util::string_view /*option_name*/, util::string_
 
 bool parse_ptr( sim_t*             sim,
                        util::string_view name,
-                       const std::string& value )
+                       util::string_view value )
 {
   if ( name != "ptr" ) return false;
 
@@ -282,7 +282,7 @@ bool parse_active( sim_t*             sim,
 
 bool parse_optimal_raid( sim_t*             sim,
                                 util::string_view name,
-                                const std::string& value )
+                                util::string_view value )
 {
   if ( name != "optimal_raid" ) return false;
 
@@ -3674,7 +3674,7 @@ void sim_t::create_options()
   add_option( opt_obsoleted( "legion.pantheon_trinket_users" ) );
   add_option( opt_obsoleted( "legion.pantheon_trinket_interval" ) );
   add_option( opt_obsoleted( "legion.pantheon_trinket_interval_stddev" ) );
-  add_option( opt_func( "legion.cradle_of_anguish_resets", []( sim_t* sim, util::string_view, const std::string& value ) {
+  add_option( opt_func( "legion.cradle_of_anguish_resets", []( sim_t* sim, util::string_view, util::string_view value ) {
     auto split = util::string_split( value, ":/," );
     range::for_each( split, [ sim ]( util::string_view str ) {
       auto v = util::to_double( str );
@@ -3695,7 +3695,7 @@ void sim_t::create_options()
   } ) );
 
   // Battle for Azeroth
-  add_option( opt_func( "disable_azerite", []( sim_t* sim, util::string_view, const std::string& value ) {
+  add_option( opt_func( "disable_azerite", []( sim_t* sim, util::string_view, util::string_view value ) {
     if ( value == "1" )
     {
       sim -> azerite_status = azerite_control::DISABLED_ALL;
@@ -3710,8 +3710,8 @@ void sim_t::create_options()
     }
     else
     {
-      sim -> errorf( "Unknown disable_azerite value \"%s\", valid values are 'items' or 'all'",
-          value.c_str() );
+      sim -> error( "Unknown disable_azerite value '{}', valid values are 'items' or 'all'",
+          value );
       return false;
     }
     return true;

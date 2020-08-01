@@ -1146,7 +1146,7 @@ void create_options( sim_t* sim )
   sim -> add_option( opt_map_list( "profileset.", sim -> profileset_map ) );
   sim -> add_option( opt_func( "profileset_metric", []( sim_t*             sim,
                                                         util::string_view,
-                                                        const std::string& value ) {
+                                                        util::string_view value ) {
     sim -> profileset_metric.clear();
 
     auto split = util::string_split( value, "/:," );
@@ -1166,7 +1166,7 @@ void create_options( sim_t* sim )
   } ) );
   sim -> add_option( opt_func( "profileset_output_data", []( sim_t*             sim,
                                                         util::string_view,
-                                                        const std::string& value ) {
+                                                        util::string_view value ) {
     sim -> profileset_output_data.clear();
 
     auto split = util::string_split_as_string( value, "/:," );
