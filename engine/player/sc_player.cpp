@@ -2283,8 +2283,7 @@ bool player_t::add_action( const spell_data_t* s, util::string_view options, uti
   {
     std::string& str =
         ( alist == "default" ) ? action_list_str : ( get_action_priority_list( alist )->action_list_str );
-    std::string name = s->name_cstr();
-    util::tokenize( name );
+    auto name = util::tokenize_fn( s->name_cstr() );
     str += "/" + name;
     if ( !options.empty() )
     {
@@ -2753,10 +2752,8 @@ void player_t::create_actions()
       cut_pt = action_name.find( ':' );
       if ( cut_pt != std::string::npos )
       {
-        std::string pet_name   = action_name.substr( 0, cut_pt );
-        std::string pet_action = action_name.substr( cut_pt + 1 );
-
-        util::tokenize( pet_action );
+        auto pet_name   = action_name.substr( 0, cut_pt );
+        auto pet_action = util::tokenize_fn( action_name.substr( cut_pt + 1 ) );
 
         a = new execute_pet_action_t( this, pet_name, pet_action, action_options );
       }

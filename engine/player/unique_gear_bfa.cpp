@@ -4796,8 +4796,7 @@ item_t init_punchcard( const special_effect_t& effect )
 
   item_t punchcard( effect.player, "" );
   punchcard.parsed.data.init( item_data, *effect.player->dbc );
-  punchcard.name_str    = item_data.name;
-  ::util::tokenize( punchcard.name_str );
+  punchcard.name_str    = ::util::tokenize_fn( item_data.name );
 
   // Punchcards use the item level of he trinket itself, apparently.
   punchcard.parsed.data.level = effect.item->item_level();

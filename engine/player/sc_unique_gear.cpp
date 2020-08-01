@@ -194,9 +194,7 @@ std::string suffix( const item_t* item )
 
 std::string tokenized_name( const spell_data_t* data )
 {
-  std::string s = data -> name_cstr();
-  util::tokenize( s );
-  return s;
+  return util::tokenize_fn( data -> name_cstr() );
 }
 
 // Enchants ================================================================
@@ -1185,8 +1183,7 @@ void set_bonus::t17_lfr_4pc_clothcaster( special_effect_t& effect )
 
   effect.proc_flags2_ = PF2_CAST_DAMAGE;
 
-  std::string spell_name = spell -> name_cstr();
-  util::tokenize( spell_name );
+  auto spell_name = util::tokenize_fn( spell -> name_cstr() );
 
   struct eruption_t : public spell_t
   {
@@ -1426,8 +1423,7 @@ void item::rune_of_reorigination( special_effect_t& effect )
 
   const spell_data_t* spell = effect.item -> player -> find_spell( 139120 );
 
-  std::string buff_name = spell -> name_cstr();
-  util::tokenize( buff_name );
+  auto buff_name = util::tokenize_fn( spell -> name_cstr() );
 
   stat_buff_t* buff = make_buff<stat_buff_t>( effect.item -> player, buff_name, spell, effect.item );
   buff->add_stat( STAT_CRIT_RATING, 0 )
@@ -1446,8 +1442,7 @@ void item::spark_of_zandalar( special_effect_t& effect )
 
   const spell_data_t* buff = effect.item -> player -> find_spell( 138960 );
 
-  std::string buff_name = buff -> name_cstr();
-  util::tokenize( buff_name );
+  auto buff_name = util::tokenize_fn( buff -> name_cstr() );
 
   stat_buff_t* b = make_buff<stat_buff_t>( effect.item -> player, buff_name, buff, effect.item );
 
@@ -1546,8 +1541,7 @@ void item::skeers_bloodsoaked_talisman( special_effect_t& effect )
   // Aura is hidden, thre's no linkage in spell data actual
   const spell_data_t* buff = effect.item -> player -> find_spell( 146293 );
 
-  std::string buff_name = buff -> name_cstr();
-  util::tokenize( buff_name );
+  auto buff_name = util::tokenize_fn( buff -> name_cstr() );
 
   // Require a damaging result, instead of any harmful spell hit
   effect.proc_flags2_ = PF2_ALL_HIT;
@@ -1570,8 +1564,7 @@ void item::blackiron_micro_crucible( special_effect_t& effect )
   const spell_data_t* driver = effect.item -> player -> find_spell( effect.spell_id );
   const spell_data_t* spell = driver -> effectN( 1 ).trigger();
 
-  std::string buff_name = spell -> name_cstr();
-  util::tokenize( buff_name );
+  auto buff_name = util::tokenize_fn( spell -> name_cstr() );
 
   // Require a damaging result, instead of any harmful spell hit
   effect.proc_flags2_ = PF2_ALL_HIT;
@@ -1595,8 +1588,7 @@ void item::humming_blackiron_trigger( special_effect_t& effect )
   const spell_data_t* driver = effect.item -> player -> find_spell( effect.spell_id );
   const spell_data_t* spell = driver -> effectN( 1 ).trigger();
 
-  std::string buff_name = spell -> name_cstr();
-  util::tokenize( buff_name );
+  auto buff_name = util::tokenize_fn( spell -> name_cstr() );
 
   // Require a damaging result, instead of any harmful spell hit
   effect.proc_flags2_ = PF2_ALL_HIT;
@@ -1819,8 +1811,7 @@ void item::battering_talisman_trigger( special_effect_t& effect )
   const spell_data_t* spell = driver -> effectN( 1 ).trigger();
   const spell_data_t* stacks = effect.item -> player -> find_spell( 146293 );
 
-  std::string buff_name = spell -> name_cstr();
-  util::tokenize( buff_name );
+  auto buff_name = util::tokenize_fn( spell -> name_cstr() );
 
   // Require a damaging result, instead of any harmful spell hit
   effect.proc_flags2_ = PF2_ALL_HIT;
@@ -1844,8 +1835,7 @@ void item::forgemasters_insignia( special_effect_t& effect )
   const spell_data_t* driver = effect.item -> player -> find_spell( effect.spell_id );
   const spell_data_t* spell = driver -> effectN( 1 ).trigger();
 
-  std::string buff_name = spell -> name_cstr();
-  util::tokenize( buff_name );
+  auto buff_name = util::tokenize_fn( spell -> name_cstr() );
 
   // Require a damaging result, instead of any harmful spell hit
   effect.proc_flags2_ = PF2_ALL_HIT;
@@ -1869,8 +1859,7 @@ void item::autorepairing_autoclave( special_effect_t& effect )
   const spell_data_t* driver = effect.item -> player -> find_spell( effect.spell_id );
   const spell_data_t* spell = driver -> effectN( 1 ).trigger();
 
-  std::string buff_name = spell -> name_cstr();
-  util::tokenize( buff_name );
+  auto buff_name = util::tokenize_fn( spell -> name_cstr() );
 
   // Require a damaging result, instead of any harmful spell hit
   effect.proc_flags2_ = PF2_ALL_HIT;
@@ -2078,8 +2067,7 @@ void item::legendary_ring( special_effect_t& effect )
 
     if ( buffspell && actionspell )
     {
-      std::string name = buffspell -> name_cstr();
-      util::tokenize( name );
+      auto name = util::tokenize_fn( buffspell -> name_cstr() );
       buff = new legendary_ring_buff_t( effect, name, buffspell, actionspell );
     }
 
@@ -2193,8 +2181,7 @@ void item::black_blood_of_yshaarj( special_effect_t& effect )
   const spell_data_t* ticker = driver -> effectN( 1 ).trigger();
   const spell_data_t* buff = effect.item -> player -> find_spell( 146202 );
 
-  std::string buff_name = buff -> name_cstr();
-  util::tokenize( buff_name );
+  auto buff_name = util::tokenize_fn( buff -> name_cstr() );
 
   stat_buff_t* b = make_buff<stat_buff_t>( effect.item -> player, buff_name, buff, effect.item );
   b->add_stat( STAT_INTELLECT, ticker -> effectN( 1 ).average( effect.item ) )

@@ -202,9 +202,7 @@ namespace {
     }
     std::string token() const override
     {
-      std::string token = m_spell->name_cstr();
-      util::tokenize(token);
-      return util::encode_html(token);
+      return util::encode_html( util::tokenize_fn( m_spell->name_cstr() ) );
     }
   };
 

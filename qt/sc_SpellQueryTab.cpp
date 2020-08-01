@@ -272,13 +272,12 @@ SC_SpellQueryTab::SC_SpellQueryTab( SC_MainWindow* parent ) :
 void SC_SpellQueryTab::run_spell_query()
 {
   // local copy of the argument
-  std::string arg = textbox.arg -> text().toStdString();
+  auto arg = util::tokenize_fn( textbox.arg -> text().toStdString() );
 
   // bail if arg is empty
   if ( arg.empty() )
     return;
 
-  util::tokenize( arg );
 
   // construct the query string
   QString command = "spell_query=";
@@ -293,9 +292,6 @@ void SC_SpellQueryTab::run_spell_query()
       command += "." + choice.filter -> currentText();
 
     command += choice.operatorString -> currentText();
-
-    // tokenize the argument
-    util::tokenize( arg );
   }
 
   // Add the argument (to support advanced mode, this isn't tokenized unless we use a source)

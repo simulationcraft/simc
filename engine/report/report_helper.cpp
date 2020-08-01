@@ -669,9 +669,7 @@ void report_helper::print_html_sample_data( report::sc_html_stream& os, const pl
      << "<tr>\n"
      << "<td class=\"left small\" colspan=\"" << columns << "\">";
 
-  std::string tokenized_name = data.name_str;
-  util::tokenize( tokenized_name );
-  tokenized_name = util::remove_special_chars( tokenized_name );
+  auto tokenized_name = util::remove_special_chars( util::tokenize_fn( data.name_str ) );
   os.printf( "<a id=\"actor%d_%s_stats_toggle\" class=\"toggle-details\">%s</a></td>\n</tr>\n", p.index,
              tokenized_name.c_str(), name.c_str() );
 

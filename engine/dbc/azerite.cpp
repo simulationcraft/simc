@@ -29,8 +29,7 @@ azerite_essence_entry_t::find( util::string_view name, bool tokenized, bool ptr 
   {
     if ( tokenized )
     {
-      std::string s = it->name;
-      util::tokenize( s );
+      auto s = util::tokenize_fn( it->name );
 
       if ( util::str_compare_ci( name, s ) )
       {

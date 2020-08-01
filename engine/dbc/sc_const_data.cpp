@@ -1264,8 +1264,7 @@ const azerite_power_entry_t& dbc_t::azerite_power( util::string_view name, bool 
   {
     if ( tokenized )
     {
-      std::string tokenized_name = power.name;
-      util::tokenize( tokenized_name );
+      auto tokenized_name = util::tokenize_fn( power.name );
       if ( util::str_compare_ci( name, tokenized_name ) )
       {
         return power;

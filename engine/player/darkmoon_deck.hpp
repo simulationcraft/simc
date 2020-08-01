@@ -50,8 +50,7 @@ struct special_effect_t;
         const spell_data_t* s = player->find_spell(spell_id);
         assert(s->found());
 
-        std::string n = s->name_cstr();
-        util::tokenize(n);
+        auto n = util::tokenize_fn( s->name_cstr() );
 
         cards.push_back(make_buff<BUFF_TYPE>(player, n, s, effect.item));
         });
@@ -106,8 +105,7 @@ struct special_effect_t;
         const spell_data_t* s = player->find_spell(spell_id);
         assert(s->found());
 
-        std::string n = s->name_cstr();
-        util::tokenize(n);
+        auto n = util::tokenize_fn( s->name_cstr() );
 
         cards.push_back(unique_gear::create_proc_action<ACTION_TYPE>(n, effect, spell_id));
         });

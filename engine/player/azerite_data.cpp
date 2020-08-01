@@ -528,8 +528,7 @@ std::string azerite_state_t::overrides_str() const
   // Iterate over the powers in order, grab all overrides into a vector
   range::for_each( powers, [ & ]( unsigned power_id ) {
       const auto& power = m_player -> dbc->azerite_power( power_id );
-      std::string power_name = power.name;
-      util::tokenize( power_name );
+      auto power_name = util::tokenize_fn( power.name );
 
       const auto& overrides = m_overrides.at( power_id );
       range::for_each( overrides, [ & ]( unsigned ilevel ) {
@@ -970,8 +969,7 @@ azerite_essence_t azerite_essence_state_t::get_essence( util::string_view name, 
     const auto spell = m_player->find_spell( m_state[ i ].id() );
     if ( tokenized )
     {
-      std::string name_str = spell->name_cstr();
-      util::tokenize( name_str );
+      auto name_str = util::tokenize_fn( spell->name_cstr() );
       if ( util::str_compare_ci( name, name_str ) )
       {
         return { m_player, spell };

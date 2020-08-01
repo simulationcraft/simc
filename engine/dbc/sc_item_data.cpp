@@ -436,9 +436,7 @@ std::string item_database::stat_to_str( int stat, int stat_amount )
   stat_e s = util::translate_item_mod( stat );
   if ( stat_amount && s != STAT_NONE )
   {
-    std::string stat_str = fmt::format( "{}{}", stat_amount, util::stat_type_abbrev( s ) );
-    util::tokenize( stat_str );
-    return stat_str;
+    return util::tokenize_fn( fmt::format( "{}{}", stat_amount, util::stat_type_abbrev( s ) ) );
   }
 
   return {};
@@ -563,9 +561,7 @@ bool item_database::initialize_item_sources( item_t& item, std::vector<std::stri
       {
         continue;
       }
-      auto valid_source = std::string(split);
-      util::tokenize( valid_source );
-      source_list.emplace_back( valid_source );
+      source_list.emplace_back( util::tokenize_fn( split ) );
     }
 
     if ( source_list.empty() )
@@ -1005,9 +1001,7 @@ const dbc_item_data_t& dbc::find_gem( util::string_view gem, bool ptr, bool toke
   return gem_index.get( ptr, [&gem, tokenized]( const dbc_item_data_t* obj ) {
       if ( tokenized )
       {
-        std::string n = obj->name;
-        util::tokenize( n );
-        return n == gem;
+        return util::tokenize_fn( obj->name ) == gem;
       }
       else
       {

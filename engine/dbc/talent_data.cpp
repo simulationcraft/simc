@@ -51,11 +51,9 @@ const talent_data_t* talent_data_t::find( util::string_view name, specialization
 
 const talent_data_t* talent_data_t::find_tokenized( util::string_view name, specialization_e spec, bool ptr )
 {
-  std::string tokenized_name;
   for ( const talent_data_t& td : data( ptr ) )
   {
-    tokenized_name = td.name_cstr();
-    util::tokenize( tokenized_name );
+    auto tokenized_name = util::tokenize_fn( td.name_cstr() );
     if ( td.specialization() == spec && util::str_compare_ci( name, tokenized_name ) )
       return &td;
   }

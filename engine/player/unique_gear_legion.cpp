@@ -5430,8 +5430,7 @@ void item::ravaged_seed_pod( special_effect_t& effect )
 void set_bonus::march_of_the_legion( special_effect_t&  effect ) {
     const spell_data_t* spell = effect.player->find_spell( 228445 );
 
-    std::string spell_name = spell->name_cstr();
-    ::util::tokenize( spell_name );
+    auto spell_name = ::util::tokenize_fn( spell->name_cstr() );
 
     struct march_t : public proc_spell_t
     {
@@ -5620,8 +5619,7 @@ void consumables::potion_of_the_old_war( special_effect_t& effect )
 
 void consumables::potion_of_deadly_grace( special_effect_t& effect )
 {
-  std::string action_name = effect.driver() -> effectN( 1 ).trigger() -> name_cstr();
-  ::util::tokenize( action_name );
+  auto action_name = ::util::tokenize_fn( effect.driver() -> effectN( 1 ).trigger() -> name_cstr() );
 
   // Instantiate a new action if we cannot find a suitable one already
   auto action = effect.player -> find_action( action_name );

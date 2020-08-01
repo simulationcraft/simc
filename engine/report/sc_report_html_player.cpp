@@ -4245,8 +4245,7 @@ void print_html_proc_table( report::sc_html_stream& os, const player_t& p )
 
       std::string name  = util::encode_html( proc->name_str );
       std::string span  = name;
-      std::string token = highchart::build_id( p, "_" + util::remove_special_chars( name ) + "_proc" );
-      util::tokenize( token );
+      std::string token = util::tokenize_fn( highchart::build_id( p, "_" + util::remove_special_chars( name ) + "_proc" ) );
 
       os << "<tbody>\n";
       if ( p.sim->report_details && ( show_count || show_interval ) )
@@ -4317,8 +4316,7 @@ void print_html_uptime_table( report::sc_html_stream& os, const player_t& p )
 
     std::string name  = util::encode_html( uptime->name_str );
     std::string span  = name;
-    std::string token = highchart::build_id( p, "_" + util::remove_special_chars( name ) + "_benefit" );
-    util::tokenize( token );
+    std::string token = util::tokenize_fn( highchart::build_id( p, "_" + util::remove_special_chars( name ) + "_benefit" ) );
 
     os << "<tbody>\n";
     if ( p.sim->report_details && ( show_uptime || show_duration ) )
@@ -4370,9 +4368,8 @@ void print_html_uptime_table( report::sc_html_stream& os, const player_t& p )
 
       std::string name  = util::encode_html( pet->name_str + " - " + uptime->name_str );
       std::string span  = name;
-      std::string token = highchart::build_id( p, "_pet" + util::to_string( pet->index ) + "_" +
-                                                    util::remove_special_chars( uptime->name_str ) + "_uptime" );
-      util::tokenize( token );
+      std::string token = util::tokenize_fn( highchart::build_id( p, "_pet" + util::to_string( pet->index ) + "_" +
+                                                    util::remove_special_chars( uptime->name_str ) + "_uptime" ) );
 
       os << "<tbody>\n";
       if ( p.sim->report_details && ( show_uptime || show_duration ) )
@@ -4439,8 +4436,7 @@ void print_html_benefit_table( report::sc_html_stream& os, const player_t& p )
 
     std::string name  = util::encode_html( benefit->name_str );
     std::string span  = name;
-    std::string token = highchart::build_id( p, "_" + util::remove_special_chars( name ) + "_benefit" );
-    util::tokenize( token );
+    std::string token = util::tokenize_fn( highchart::build_id( p, "_" + util::remove_special_chars( name ) + "_benefit" ) );
 
     os << "<tbody>\n";
     if ( p.sim->report_details && show_ratio )
@@ -4481,9 +4477,8 @@ void print_html_benefit_table( report::sc_html_stream& os, const player_t& p )
 
       std::string name  = util::encode_html( pet->name_str + " - " + benefit->name_str );
       std::string span  = name;
-      std::string token = highchart::build_id( p, "_pet" + util::to_string( pet->index ) + "_" +
-                                                    util::remove_special_chars( benefit->name_str ) + "_benefit" );
-      util::tokenize( token );
+      std::string token = util::tokenize_fn( highchart::build_id( p, "_pet" + util::to_string( pet->index ) + "_" +
+                                                    util::remove_special_chars( benefit->name_str ) + "_benefit" ) );
 
       os << "<tbody>\n";
       if ( p.sim->report_details && show_ratio )

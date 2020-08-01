@@ -36,8 +36,7 @@ const dbc_item_data_t* find_consumable( const dbc_t& dbc,
 
   // Poor man's longest matching prefix!
   const auto& item = dbc::find_consumable( type, dbc.ptr, [name]( const dbc_item_data_t* i ) {
-    std::string n = i -> name ? i -> name : "unknown";
-    util::tokenize( n );
+    auto n = util::tokenize_fn( i -> name ? i -> name : "unknown" );
     return util::str_in_str_ci( n, name );
   } );
 
@@ -829,8 +828,7 @@ struct food_t : public dbc_consumable_base_t
 
     if ( item_data )
     {
-      effect -> name_str = item_data -> name;
-      util::tokenize( effect -> name_str );
+      effect -> name_str = util::tokenize_fn( item_data -> name );
     }
 
     return effect;

@@ -15,10 +15,8 @@
 
 instant_absorb_t::instant_absorb_t( player_t* p, const spell_data_t* s, util::string_view n,
                                     std::function<double( const action_state_t* )> handler )
-  : /* spell( s ), */ absorb_handler( handler ), player( p ), name( n )
+  : /* spell( s ), */ absorb_handler( handler ), player( p ), name( util::tokenize_fn( n ) )
 {
-  util::tokenize( name );
-
   absorb_stats         = p->get_stats( name );
   absorb_gain          = p->get_gain( name );
   absorb_stats->type   = STATS_ABSORB;

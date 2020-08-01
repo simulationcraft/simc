@@ -1833,8 +1833,7 @@ std::string item_t::stat_pairs_to_str( const std::vector<stat_pair_t>& stat_pair
     str += stats[ i ];
   }
 
-  util::tokenize( str );
-  return str;
+  return util::tokenize_fn( str );
 }
 
 // item_t::download_item ====================================================
