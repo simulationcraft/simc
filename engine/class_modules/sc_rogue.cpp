@@ -376,6 +376,7 @@ public:
     const spell_data_t* ruthlessness;
     const spell_data_t* ruthless_precision;
     const spell_data_t* sinister_strike;
+    const spell_data_t* sinister_strike_2;
 
     // Subtlety
     const spell_data_t* deepening_shadows;
@@ -3680,8 +3681,8 @@ struct sinister_strike_t : public rogue_attack_t
   sinister_strike_extra_attack_t* extra_attack;
 
   sinister_strike_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "sinister_strike", p, p -> find_specialization_spell( "Sinister Strike" ), options_str ),
-    extra_attack_delay( timespan_t::from_millis( 300 ) )
+    rogue_attack_t( "sinister_strike", p, p->spec.sinister_strike, options_str ),
+    extra_attack_delay( 300_ms )
   {
     extra_attack = p->get_background_action<sinister_strike_extra_attack_t>( "sinister_strike_extra_attack" );
     add_child( extra_attack );
@@ -3716,7 +3717,7 @@ struct sinister_strike_t : public rogue_attack_t
 
     p()->buffs.snake_eyes->decrement();
 
-    if ( p()->buffs.opportunity->trigger( 1, buff_t::DEFAULT_VALUE(), extra_attack_proc_chance() ) )
+    if ( p()->spec.sinister_strike_2->ok() && p()->buffs.opportunity->trigger( 1, buff_t::DEFAULT_VALUE(), extra_attack_proc_chance() ) )
     {
       extra_attack->make_secondary_trigger( TRIGGER_SINISTER_STRIKE, execute_state->target, 0, extra_attack_delay );
     }
@@ -6576,6 +6577,7 @@ void rogue_t::init_spells()
   spec.ruthlessness         = find_specialization_spell( "Ruthlessness" );
   spec.ruthless_precision   = find_spell( 193357 );
   spec.sinister_strike      = find_specialization_spell( "Sinister Strike" );
+  spec.sinister_strike_2    = find_rank_spell( "Sinister Strike", "Rank 2", ROGUE_OUTLAW );
 
   // Subtlety
   spec.deepening_shadows    = find_specialization_spell( "Deepening Shadows" );
