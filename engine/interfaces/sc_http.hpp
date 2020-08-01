@@ -62,7 +62,7 @@ void cache_load( const std::string& file_name );
 void cache_save( const std::string& file_name );
 void clear_cache();
 
-std::tuple<std::string, std::string> normalize_header( const std::string& );
+std::tuple<std::string, std::string> normalize_header( util::string_view );
 
 int get( std::string& result, const std::string& url,
          cache::behavior_e caching, const std::string& confirmation = "",

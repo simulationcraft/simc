@@ -38,7 +38,7 @@ int get( std::string& /*result */,
 {
   return 503;
 }
-std::tuple<std::string, std::string> normalize_header( const std::string& )
+std::tuple<std::string, std::string> normalize_header( util::string_view )
 {
   return {};
 }
@@ -380,7 +380,7 @@ int http::get( std::string&       result,
   return response_code;
 }
 
-std::tuple<std::string, std::string> http::normalize_header( const std::string& header_str )
+std::tuple<std::string, std::string> http::normalize_header( util::string_view header_str )
 {
   // Find first ':'
   auto pos = header_str.find( ':' );
@@ -390,8 +390,8 @@ std::tuple<std::string, std::string> http::normalize_header( const std::string& 
     return {};
   }
 
-  std::string key   = header_str.substr( 0, pos );
-  std::string value = header_str.substr( pos + 1 );
+  auto key   = std::string( header_str.substr( 0, pos ) );
+  auto value = std::string( header_str.substr( pos + 1 ) );
 
   // Transform all header keys to lowercase to sanitize the input
   std::transform( key.begin(), key.end(), key.begin(), tolower );
