@@ -633,10 +633,10 @@ action_t* base_fiend_pet_t::create_action( util::string_view name, const std::st
 
 priest_td_t::priest_td_t( player_t* target, priest_t& p ) : actor_target_data_t( target, &p ), dots(), buffs()
 {
-  dots.shadow_word_pain = target->get_dot( "shadow_word_pain", &p );
-  dots.vampiric_touch   = target->get_dot( "vampiric_touch", &p );
-  dots.devouring_plague = target->get_dot( "devouring_plague", &p );
-  dots.devouring_plague = target->get_dot( "unholy_transfusion", &p );
+  dots.shadow_word_pain   = target->get_dot( "shadow_word_pain", &p );
+  dots.vampiric_touch     = target->get_dot( "vampiric_touch", &p );
+  dots.devouring_plague   = target->get_dot( "devouring_plague", &p );
+  dots.unholy_transfusion = target->get_dot( "unholy_transfusion", &p );
 
   buffs.schism = make_buff( *this, "schism", p.talents.schism );
 
