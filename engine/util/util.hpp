@@ -139,7 +139,8 @@ profession_e translate_profession_id( int skill_id );
 bool socket_gem_match( item_socket_color socket, item_socket_color gem );
 double crit_multiplier( meta_gem_e gem );
 
-std::vector<std::string> string_split( util::string_view str, util::string_view delim, bool skip_empty_entries = true );
+std::vector<util::string_view> string_split( util::string_view str, util::string_view delim, bool skip_empty_entries = true );
+std::vector<std::string> string_split_as_string( util::string_view str, util::string_view delim, bool skip_empty_entries = true );
 std::vector<std::string> string_split_allow_quotes( util::string_view str, util::string_view delim );
 template <typename T>
 std::string string_join( const T& container, util::string_view delim = ", " );
@@ -153,7 +154,16 @@ std::string to_string( double f, int precision );
 
 unsigned to_unsigned( const std::string& str );
 unsigned to_unsigned( const char* str );
+inline unsigned to_unsigned( util::string_view str )
+{ return to_unsigned( std::string( str ) ); }
+
 int to_int( const std::string& str );
+inline int to_int( util::string_view str )
+{ return to_int(std::string(str)); }
+
+double to_double( const std::string& str );
+inline double to_double( util::string_view str )
+{ return to_double(std::string(str)); }
 
 int64_t parse_date( util::string_view month_day_year );
 

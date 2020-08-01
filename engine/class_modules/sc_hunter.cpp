@@ -986,7 +986,7 @@ public:
     // fudge wildfire bomb dot name
     auto splits = util::string_split( name, "." );
     if ( splits.size() == 3 && splits[ 0 ] == "dot" && splits[ 1 ] == "wildfire_bomb" )
-      return ab::create_expression( "dot.wildfire_bomb_dot." + splits[ 2 ] );
+      return ab::create_expression( fmt::format( "dot.wildfire_bomb_dot.{}", splits[ 2 ] ) );
 
     return ab::create_expression( name );
   }

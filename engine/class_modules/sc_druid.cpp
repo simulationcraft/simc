@@ -2463,7 +2463,7 @@ public:
 
         action_state_t::release( state );
         return ap
-               <= p()->resources.base[ RESOURCE_ASTRAL_POWER ] + ( splits.size() >= 2 ? std::stoi( splits[ 1 ] ) : 0 );
+               <= p()->resources.base[ RESOURCE_ASTRAL_POWER ] + ( splits.size() >= 2 ? util::to_int( splits[ 1 ] ) : 0 );
       } );
     }
 
@@ -9943,11 +9943,12 @@ std::unique_ptr<expr_t> druid_t::create_expression( util::string_view name_str )
     // automatic resolution of Celestial Alignment vs talented Incarnation
     else if ( splits.size() == 3 && util::str_compare_ci( splits[ 1 ], "ca_inc" ) )
     {
+      std::string replacement;
       if ( util::str_compare_ci( splits[ 0 ], "cooldown" ) )
-        splits[ 1 ] = talent.incarnation_moonkin->ok() ? ".incarnation." : ".celestial_alignment.";
+        replacement = talent.incarnation_moonkin->ok() ? ".incarnation." : ".celestial_alignment.";
       else
-        splits[ 1 ] = talent.incarnation_moonkin->ok() ? ".incarnation_chosen_of_elune." : ".celestial_alignment.";
-      return player_t::create_expression( splits[ 0 ] + splits[ 1 ] + splits[ 2 ] );
+        replacement = talent.incarnation_moonkin->ok() ? ".incarnation_chosen_of_elune." : ".celestial_alignment.";
+      return player_t::create_expression( fmt::format("{}{}{}", splits[ 0 ], replacement, splits[ 2 ]) );
     }
 
     // check for AP overcap on action other than current action. check for current action handled in
@@ -9964,7 +9965,7 @@ std::unique_ptr<expr_t> druid_t::create_expression( util::string_view name_str )
           ap += talent.shooting_stars->ok() ? spec.shooting_stars_dmg->effectN( 2 ).base_value() / 10 : 0;
           ap += talent.natures_balance->ok() ? std::ceil( action->time_to_execute / 1.5_s ) : 0;
           action_state_t::release( state );
-          return ap <= resources.base[ RESOURCE_ASTRAL_POWER ] + ( splits.size() >= 3 ? std::stoi( splits[ 2 ] ) : 0 );
+          return ap <= resources.base[ RESOURCE_ASTRAL_POWER ] + ( splits.size() >= 3 ? util::to_int( splits[ 2 ] ) : 0 );
         } );
       }
       throw std::invalid_argument( "invalid action" );
@@ -10018,15 +10019,16 @@ std::unique_ptr<expr_t> druid_t::create_expression( util::string_view name_str )
   if ( splits.size() == 3 && util::str_compare_ci( splits[ 1 ], "incarnation" )
        && ( util::str_compare_ci( splits[ 0 ], "buff" ) || util::str_compare_ci( splits[ 0 ], "talent" ) ) )
   {
+    std::string replacement_name;
     switch ( specialization() )
     {
-      case DRUID_BALANCE:     splits[ 1 ] = ".incarnation_chosen_of_elune.";    break;
-      case DRUID_FERAL:       splits[ 1 ] = ".incarnation_king_of_the_jungle."; break;
-      case DRUID_GUARDIAN:    splits[ 1 ] = ".incarnation_guardian_of_ursoc.";  break;
-      case DRUID_RESTORATION: splits[ 1 ] = ".incarnation_tree_of_life.";       break;
+      case DRUID_BALANCE:     replacement_name = ".incarnation_chosen_of_elune.";    break;
+      case DRUID_FERAL:       replacement_name = ".incarnation_king_of_the_jungle."; break;
+      case DRUID_GUARDIAN:    replacement_name = ".incarnation_guardian_of_ursoc.";  break;
+      case DRUID_RESTORATION: replacement_name = ".incarnation_tree_of_life.";       break;
       default: break;
     }
-    return player_t::create_expression( splits[ 0 ] + splits[ 1 ] + splits[ 2 ] );
+    return player_t::create_expression( fmt::format("{}{}{}", splits[ 0 ], replacement_name, splits[ 2 ]) );
   }
   return player_t::create_expression( name_str );
 }

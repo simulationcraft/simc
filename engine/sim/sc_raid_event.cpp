@@ -477,7 +477,7 @@ struct invulnerable_event_t final : public raid_event_t
     parse_options( options_str );
   }
 
-  bool parse_target( sim_t* /* sim */, util::string_view /* name */, const std::string& value )
+  bool parse_target( sim_t* /* sim */, util::string_view /* name */, util::string_view value )
   {
     auto it = range::find_if( sim->target_list, [ &value ]( const player_t* target ) {
       return util::str_compare_ci( value, target->name() );
@@ -490,7 +490,7 @@ struct invulnerable_event_t final : public raid_event_t
     }
     else
     {
-      sim->errorf( "Unknown invulnerability raid event target '%s'", value.c_str() );
+      sim->error( "Unknown invulnerability raid event target '{}'", value );
       return false;
     }
   }
@@ -1514,7 +1514,7 @@ void raid_event_t::parse_options( util::string_view options_str )
     return;
 
   opts::parse( sim, type, options, options_str,
-               [ this ]( opts::parse_status status, util::string_view name, const std::string& value ) {
+               [ this ]( opts::parse_status status, util::string_view name, util::string_view value ) {
                  // Fail parsing if strict parsing is used and the option is not found
                  if ( sim->strict_parsing && status == opts::parse_status::NOT_FOUND )
                  {
@@ -1614,12 +1614,12 @@ void raid_event_t::init( sim_t* sim )
 
   for ( const auto& split : splits )
   {
-    std::string name    = split;
-    std::string options = "";
+    auto name    = split;
+    util::string_view options = "";
 
     sim->print_debug( "Creating raid event '{}'.", name );
 
-    std::string::size_type cut_pt = name.find_first_of( "," );
+    util::string_view::size_type cut_pt = name.find_first_of( "," );
 
     if ( cut_pt != name.npos )
     {

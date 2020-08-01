@@ -6,6 +6,7 @@
 #define COVENANT_HPP
 
 #include "util/format.hpp"
+#include "util/span.hpp"
 #include "util/string_view.hpp"
 #include "sc_timespan.hpp"
 
@@ -107,10 +108,10 @@ public:
   { return static_cast<unsigned>( m_covenant ); }
 
   /// Parse player-scope "covenant" option
-  bool parse_covenant( sim_t* sim, util::string_view name, const std::string& value );
+  bool parse_covenant( sim_t* sim, util::string_view name, util::string_view value );
 
   /// Parse player-scope "soulbind" option
-  bool parse_soulbind( sim_t* sim, util::string_view name, const std::string& value );
+  bool parse_soulbind( sim_t* sim, util::string_view name, util::string_view value );
 
   /// Retrieve covenant ability spell data. Returns spell_data_t::not_found if covenant
   /// ability is not enabled on the actor. Returns spell_data_t::nil if covenant ability
@@ -127,7 +128,7 @@ public:
   conduit_data_t get_conduit_ability( util::string_view name, bool tokenized = false ) const;
 
   /// Create essence-related expressions
-  std::unique_ptr<expr_t> create_expression( const std::vector<std::string>& expr_str ) const;
+  std::unique_ptr<expr_t> create_expression( util::span<const util::string_view> expr_str ) const;
 
   /// HTML report covenant-related information generator
   report::sc_html_stream& generate_report( report::sc_html_stream& root ) const;

@@ -12,6 +12,7 @@
 #include <memory>
 
 #include "util/cache.hpp"
+#include "util/string_view.hpp"
 
 struct sim_t;
 
@@ -54,7 +55,7 @@ public:
   virtual std::unique_ptr<http_handle_t> handle( const std::string& url ) = 0;
 };
 
-void set_proxy( const std::string& type, const std::string& host, const unsigned port );
+void set_proxy( util::string_view type, util::string_view host, const unsigned port );
 const proxy_t& get_proxy();
 
 void cache_load( const std::string& file_name );

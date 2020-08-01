@@ -4,6 +4,7 @@
 // ==========================================================================
 
 #include "simulationcraft.hpp"
+#include "util/util.hpp"
 
 namespace { // UNNAMED NAMESPACE
 
@@ -6352,7 +6353,7 @@ std::unique_ptr<expr_t> rogue_t::create_expression( util::string_view name_str )
   {
     return make_fn_expr( split[ 0 ], [ this, split ]() {
       timespan_t return_value = timespan_t::from_seconds( 0.0 );
-      unsigned attack_x = strtoul( split[ 1 ].c_str(), nullptr, 0 );
+      unsigned attack_x = util::to_unsigned( split[ 1 ] );
       if ( main_hand_attack && attack_x > shadow_techniques && attack_x <= 5 )
       {
         unsigned remaining_aa = attack_x - shadow_techniques;
@@ -6986,7 +6987,7 @@ void rogue_t::create_buffs()
 
 // rogue_t::create_options ==================================================
 
-static bool do_parse_secondary_weapon( rogue_t* rogue, const std::string& value, slot_e slot )
+static bool do_parse_secondary_weapon( rogue_t* rogue, util::string_view value, slot_e slot )
 {
   switch ( slot )
   {
@@ -7005,19 +7006,19 @@ static bool do_parse_secondary_weapon( rogue_t* rogue, const std::string& value,
   return true;
 }
 
-static bool parse_offhand_secondary( sim_t* sim, util::string_view /* name */, const std::string& value )
+static bool parse_offhand_secondary( sim_t* sim, util::string_view /* name */, util::string_view value )
 {
   rogue_t* rogue = static_cast<rogue_t*>( sim -> active_player );
   return do_parse_secondary_weapon( rogue, value, SLOT_OFF_HAND );
 }
 
-static bool parse_mainhand_secondary( sim_t* sim, util::string_view /* name */, const std::string& value )
+static bool parse_mainhand_secondary( sim_t* sim, util::string_view /* name */, util::string_view value )
 {
   rogue_t* rogue = static_cast<rogue_t*>( sim -> active_player );
   return do_parse_secondary_weapon( rogue, value, SLOT_MAIN_HAND );
 }
 
-static bool parse_fixed_rtb( sim_t* sim, util::string_view /* name */, const std::string& value )
+static bool parse_fixed_rtb( sim_t* sim, util::string_view /* name */, util::string_view value )
 {
   std::vector<size_t> buffs;
   for ( auto it = value.begin(); it < value.end(); ++it )
@@ -7039,8 +7040,8 @@ static bool parse_fixed_rtb( sim_t* sim, util::string_view /* name */, const std
 
   if ( buffs.size() == 0 || buffs.size() > 6 )
   {
-    sim -> errorf( "%s: No valid 'fixed_rtb' buffs given by string '%s'", sim -> active_player -> name(),
-        value.c_str() );
+    sim -> error( "{}: No valid 'fixed_rtb' buffs given by string '{}'", sim -> active_player -> name(),
+        value );
     return false;
   }
 
@@ -7049,7 +7050,7 @@ static bool parse_fixed_rtb( sim_t* sim, util::string_view /* name */, const std
   return true;
 }
 
-static bool parse_fixed_rtb_odds( sim_t* sim, util::string_view /* name */, const std::string& value )
+static bool parse_fixed_rtb_odds( sim_t* sim, util::string_view /* name */, util::string_view value )
 {
   auto odds = util::string_split( value, "," );
   if ( odds.size() != 6 )
@@ -7063,7 +7064,7 @@ static bool parse_fixed_rtb_odds( sim_t* sim, util::string_view /* name */, cons
   double sum = 0.0;
   for ( size_t i = 0; i < odds.size(); i++ )
   {
-    buff_chances[ i ] = strtod( odds[ i ].c_str(), nullptr );
+    buff_chances[ i ] = util::to_double( odds[ i ] );
     sum += buff_chances[ i ];
   }
 

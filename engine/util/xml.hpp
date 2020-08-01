@@ -73,7 +73,7 @@ struct sc_xml_t
   virtual ~sc_xml_t();
 
 private:
-  sc_xml_t search_tree( const std::string& node_name ) const;
+  sc_xml_t search_tree( util::string_view node_name ) const;
   sc_xml_t search_tree( const std::string& node_name, const std::string& parm_name, const std::string& parm_value ) const;
   sc_xml_t split_path ( std::string& key, const std::string& path ) const;
 };
@@ -112,7 +112,7 @@ struct xml_node_t
   void         create_children ( const std::string& input, std::string::size_type& index );
   void        create_parameter( const std::string& input, std::string::size_type& index );
 
-  xml_node_t* search_tree( const std::string& node_name );
+  xml_node_t* search_tree( util::string_view node_name );
   xml_node_t* search_tree( const std::string& node_name, const std::string& parm_name, const std::string& parm_value );
   xml_node_t* split_path ( std::string& key, const std::string& path );
 

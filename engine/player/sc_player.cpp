@@ -53,6 +53,7 @@
 #include "sim/shuffled_rng.hpp"
 #include "util/io.hpp"
 #include "util/rng.hpp"
+#include "util/util.hpp"
 
 #include <cerrno>
 #include <memory>
@@ -568,16 +569,16 @@ bool has_foreground_actions( const player_t& p )
 
 // parse_talent_url =========================================================
 
-bool parse_talent_url( sim_t* sim, util::string_view name, const std::string& url )
+bool parse_talent_url( sim_t* sim, util::string_view name, util::string_view url )
 {
   assert( name == "talents" );
   (void)name;
 
   player_t* p = sim->active_player;
 
-  p->talents_str = url;
+  p->talents_str = std::string( url );
 
-  std::string::size_type cut_pt = url.find( '#' );
+  auto cut_pt = url.find( '#' );
 
   if ( cut_pt != url.npos )
   {
@@ -611,14 +612,14 @@ bool parse_talent_url( sim_t* sim, util::string_view name, const std::string& ur
     }
   }
 
-  sim->errorf( "Unable to decode talent string '%s' for player '%s'.\n", url.c_str(), p->name() );
+  sim->error( "Unable to decode talent string '{}' for player '{}'.\n", url, p->name() );
 
   return false;
 }
 
 // parse_talent_override ====================================================
 
-bool parse_talent_override( sim_t* sim, util::string_view name, const std::string& override_str )
+bool parse_talent_override( sim_t* sim, util::string_view name, util::string_view override_str )
 {
   assert( name == "talent_override" );
   (void)name;
@@ -627,14 +628,14 @@ bool parse_talent_override( sim_t* sim, util::string_view name, const std::strin
 
   if ( !p->talent_overrides_str.empty() )
     p->talent_overrides_str += "/";
-  p->talent_overrides_str += override_str;
+  p->talent_overrides_str += std::string( override_str );
 
   return true;
 }
 
 // parse_timeofday ====================================================
 
-bool parse_timeofday( sim_t* sim, util::string_view name, const std::string& override_str )
+bool parse_timeofday( sim_t* sim, util::string_view name, util::string_view override_str )
 {
   assert( name == "timeofday" );
   (void)name;
@@ -651,7 +652,7 @@ bool parse_timeofday( sim_t* sim, util::string_view name, const std::string& ove
   }
   else
   {
-    sim->errorf( "\n%s timeofday string \"%s\" not valid.\n", sim->active_player->name(), override_str.c_str() );
+    sim->error( "{} timeofday string '{}' not valid.", sim->active_player->name(), override_str );
     return false;
   }
 
@@ -660,7 +661,7 @@ bool parse_timeofday( sim_t* sim, util::string_view name, const std::string& ove
 
 // parse_loa ====================================================
 
-bool parse_loa( sim_t* sim, util::string_view name, const std::string& override_str )
+bool parse_loa( sim_t* sim, util::string_view name, util::string_view override_str )
 {
   assert( name == "zandalari_loa" );
   ( void )name;
@@ -693,7 +694,7 @@ bool parse_loa( sim_t* sim, util::string_view name, const std::string& override_
   }
   else
   {
-    sim->errorf( "\n%s zandalari_loa string \"%s\" not valid.\n", sim->active_player->name(), override_str.c_str() );
+    sim->error( "{} zandalari_loa string '{}' not valid.", sim->active_player->name(), override_str );
     return false;
   }
 
@@ -701,7 +702,7 @@ bool parse_loa( sim_t* sim, util::string_view name, const std::string& override_
 }
 
 // parse_tricks
-bool parse_tricks( sim_t* sim, util::string_view name, const std::string& override_str )
+bool parse_tricks( sim_t* sim, util::string_view name, util::string_view override_str )
 {
   assert( name == "vulpera_tricks" );
   (void)name;
@@ -730,7 +731,7 @@ bool parse_tricks( sim_t* sim, util::string_view name, const std::string& overri
   }
   else
   {
-    sim->error( "\n%s vulpera_tricks string \"%s\" not valid.\n", sim->active_player->name(), override_str.c_str() );
+    sim->error( "{} vulpera_tricks string '{}' not valid.", sim->active_player->name(), override_str );
     return false;
   }
 
@@ -739,7 +740,7 @@ bool parse_tricks( sim_t* sim, util::string_view name, const std::string& overri
 
 // parse_role_string ========================================================
 
-bool parse_role_string( sim_t* sim, util::string_view name, const std::string& value )
+bool parse_role_string( sim_t* sim, util::string_view name, util::string_view value )
 {
   assert( name == "role" );
   (void)name;
@@ -751,12 +752,12 @@ bool parse_role_string( sim_t* sim, util::string_view name, const std::string& v
 
 // parse_world_lag ==========================================================
 
-bool parse_world_lag( sim_t* sim, util::string_view name, const std::string& value )
+bool parse_world_lag( sim_t* sim, util::string_view name, util::string_view value )
 {
   assert( name == "world_lag" );
   (void)name;
 
-  sim->active_player->world_lag = timespan_t::from_seconds( std::stod( value ) );
+  sim->active_player->world_lag = timespan_t::from_seconds( util::to_double( value ) );
 
   if ( sim->active_player->world_lag < timespan_t::zero() )
   {
@@ -770,12 +771,12 @@ bool parse_world_lag( sim_t* sim, util::string_view name, const std::string& val
 
 // parse_world_lag ==========================================================
 
-bool parse_world_lag_stddev( sim_t* sim, util::string_view name, const std::string& value )
+bool parse_world_lag_stddev( sim_t* sim, util::string_view name, util::string_view value )
 {
   assert( name == "world_lag_stddev" );
   (void)name;
 
-  sim->active_player->world_lag_stddev = timespan_t::from_seconds( std::stod( value ) );
+  sim->active_player->world_lag_stddev = timespan_t::from_seconds( util::to_double( value ) );
 
   if ( sim->active_player->world_lag_stddev < timespan_t::zero() )
   {
@@ -789,12 +790,12 @@ bool parse_world_lag_stddev( sim_t* sim, util::string_view name, const std::stri
 
 // parse_brain_lag ==========================================================
 
-bool parse_brain_lag( sim_t* sim, util::string_view name, const std::string& value )
+bool parse_brain_lag( sim_t* sim, util::string_view name, util::string_view value )
 {
   assert( name == "brain_lag" );
   (void)name;
 
-  sim->active_player->brain_lag = timespan_t::from_seconds( std::stod( value ) );
+  sim->active_player->brain_lag = timespan_t::from_seconds( util::to_double( value ) );
 
   if ( sim->active_player->brain_lag < timespan_t::zero() )
   {
@@ -806,12 +807,12 @@ bool parse_brain_lag( sim_t* sim, util::string_view name, const std::string& val
 
 // parse_brain_lag_stddev ===================================================
 
-bool parse_brain_lag_stddev( sim_t* sim, util::string_view name, const std::string& value )
+bool parse_brain_lag_stddev( sim_t* sim, util::string_view name, util::string_view value )
 {
   assert( name == "brain_lag_stddev" );
   (void)name;
 
-  sim->active_player->brain_lag_stddev = timespan_t::from_seconds( std::stod( value ) );
+  sim->active_player->brain_lag_stddev = timespan_t::from_seconds( util::to_double( value ) );
 
   if ( sim->active_player->brain_lag_stddev < timespan_t::zero() )
   {
@@ -823,13 +824,13 @@ bool parse_brain_lag_stddev( sim_t* sim, util::string_view name, const std::stri
 
 // parse_specialization =====================================================
 
-bool parse_specialization( sim_t* sim, util::string_view, const std::string& value )
+bool parse_specialization( sim_t* sim, util::string_view, util::string_view value )
 {
   sim->active_player->_spec = dbc::translate_spec_str( sim->active_player->type, value );
 
   if ( sim->active_player->_spec == SPEC_NONE )
   {
-    sim->errorf( "\n%s specialization string \"%s\" not valid.\n", sim->active_player->name(), value.c_str() );
+    sim->error( "{} specialization string '{}' not valid.", sim->active_player->name(), value );
     return false;
   }
 
@@ -838,7 +839,7 @@ bool parse_specialization( sim_t* sim, util::string_view, const std::string& val
 
 // parse stat timelines =====================================================
 
-bool parse_stat_timelines( sim_t* sim, util::string_view name, const std::string& value )
+bool parse_stat_timelines( sim_t* sim, util::string_view name, util::string_view value )
 {
   assert( name == "stat_timelines" );
   (void)name;
@@ -850,7 +851,7 @@ bool parse_stat_timelines( sim_t* sim, util::string_view name, const std::string
     stat_e st = util::parse_stat_type( stat_type );
     if ( st == STAT_NONE )
     {
-      sim->errorf( "'%s' could not parse timeline stat '%s' (%s).\n", sim->active_player->name(), stat_type.c_str(), value.c_str() );
+      sim->error( "'{}' could not parse timeline stat '{}' ({}).\n", sim->active_player->name(), stat_type, value );
       return false;
     }
 
@@ -862,11 +863,11 @@ bool parse_stat_timelines( sim_t* sim, util::string_view name, const std::string
 
 // parse_origin =============================================================
 
-bool parse_origin( sim_t* sim, util::string_view, const std::string& origin )
+bool parse_origin( sim_t* sim, util::string_view, util::string_view origin )
 {
   player_t& p = *sim->active_player;
 
-  p.origin_str = origin;
+  p.origin_str = std::string( origin );
 
   std::string region, server, name;
   if ( util::parse_origin( region, server, name, origin ) )
@@ -880,7 +881,7 @@ bool parse_origin( sim_t* sim, util::string_view, const std::string& origin )
 
 // parse_source ===============================================================
 
-bool parse_source( sim_t* sim, util::string_view, const std::string& value )
+bool parse_source( sim_t* sim, util::string_view, util::string_view value )
 {
   player_t& p = *sim->active_player;
 
@@ -889,24 +890,24 @@ bool parse_source( sim_t* sim, util::string_view, const std::string& value )
   return true;
 }
 
-bool parse_set_bonus( sim_t* sim, util::string_view, const std::string& value )
+bool parse_set_bonus( sim_t* sim, util::string_view, util::string_view value )
 {
-  static const char* error_str = "%s invalid 'set_bonus' option value '%s' given, available options: %s";
+  static const char* error_str = "{} invalid 'set_bonus' option value '{}' given, available options: {}";
 
   player_t* p = sim->active_player;
 
-  std::vector<std::string> set_bonus_split = util::string_split( value, "=" );
+  auto set_bonus_split = util::string_split( value, "=" );
 
   if ( set_bonus_split.size() != 2 )
   {
-    sim->errorf( error_str, p->name(), value.c_str(), p->sets->generate_set_bonus_options().c_str() );
+    sim->error( error_str, p->name(), value, p->sets->generate_set_bonus_options() );
     return false;
   }
 
-  int opt_val = std::stoi( set_bonus_split[ 1 ] );
+  int opt_val = util::to_int( set_bonus_split[ 1 ] );
   if ( opt_val != 0 && opt_val != 1 )
   {
-    sim->errorf( error_str, p->name(), value.c_str(), p->sets->generate_set_bonus_options().c_str() );
+    sim->error( error_str, p->name(), value, p->sets->generate_set_bonus_options() );
     return false;
   }
 
@@ -915,7 +916,7 @@ bool parse_set_bonus( sim_t* sim, util::string_view, const std::string& value )
 
   if ( !p->sets->parse_set_bonus_option( set_bonus_split[ 0 ], set_bonus, bonus ) )
   {
-    sim->errorf( error_str, p->name(), value.c_str(), p->sets->generate_set_bonus_options().c_str() );
+    sim->error( error_str, p->name(), value, p->sets->generate_set_bonus_options() );
     return false;
   }
 
@@ -924,7 +925,7 @@ bool parse_set_bonus( sim_t* sim, util::string_view, const std::string& value )
   return true;
 }
 
-bool parse_initial_resource( sim_t* sim, util::string_view, const std::string& value )
+bool parse_initial_resource( sim_t* sim, util::string_view, util::string_view value )
 {
   player_t* player = sim->active_player;
   auto opts        = util::string_split( value, ":/" );
@@ -933,21 +934,21 @@ bool parse_initial_resource( sim_t* sim, util::string_view, const std::string& v
     auto resource_split = util::string_split( opt_str, "=" );
     if ( resource_split.size() != 2 )
     {
-      sim->errorf( "%s unknown initial_resources option '%s'", player->name(), opt_str.c_str() );
+      sim->error( "{} unknown initial_resources option '{}'", player->name(), opt_str );
       return false;
     }
 
     resource_e resource = util::parse_resource_type( resource_split[ 0 ] );
     if ( resource == RESOURCE_NONE )
     {
-      sim->errorf( "%s could not parse valid resource from '%s'", player->name(), resource_split[ 0 ].c_str() );
+      sim->error( "{} could not parse valid resource from '{}'", player->name(), resource_split[ 0 ] );
       return false;
     }
 
-    double amount = std::stod( resource_split[ 1 ] );
+    double amount = util::to_double( resource_split[ 1 ] );
     if ( amount < 0 )
     {
-      sim->errorf( "%s too low initial_resources option '%s'", player->name(), opt_str.c_str() );
+      sim->error( "{} too low initial_resources option '{}'", player->name(), opt_str );
       return false;
     }
 
@@ -1697,9 +1698,9 @@ void player_t::init_items()
   {
     if ( find_item_by_name( split ) )
     {
-      sim->error( "{} has multiple %s equipped.\n", *this, split );
+      sim->error( "{} has multiple {} equipped.\n", *this, split );
     }
-    items.emplace_back( this, split );
+    items.emplace_back( this, std::string(split) );
   }
 
   std::array<bool, SLOT_MAX> matching_gear_slots;  // true if the given item is equal to the highest armor type the player can wear
@@ -2082,7 +2083,7 @@ void player_t::init_professions()
 
   for ( auto& split : splits )
   {
-    std::string prof_name;
+    util::string_view prof_name;
     int prof_value = 0;
 
     auto subsplit = util::string_split( split, "=" );
@@ -2091,7 +2092,7 @@ void player_t::init_professions()
       prof_name = subsplit[ 0 ];
       try
       {
-        prof_value = std::stoi( subsplit[ 1 ] );
+        prof_value = util::to_int( subsplit[ 1 ] );
       }
       catch ( const std::exception& )
       {
@@ -2706,7 +2707,7 @@ void player_t::create_actions()
   }
   util::tokenize( modify_action );
 
-  std::vector<std::string> skip_actions;
+  std::vector<util::string_view> skip_actions;
   if ( !action_list_skip.empty() )
   {
     sim->print_debug( "{} action_list_skip={}", *this, action_list_skip );
@@ -8146,7 +8147,7 @@ struct use_item_t : public action_t
     return action_t::ready();
   }
 
-  std::unique_ptr<expr_t> create_special_effect_expr( util::span<std::string> data_str_split )
+  std::unique_ptr<expr_t> create_special_effect_expr( util::span<const util::string_view> data_str_split )
   {
     struct use_item_buff_type_expr_t : public expr_t
     {
@@ -8297,14 +8298,14 @@ struct use_items_t : public action_t
     return false;
   }
 
-  bool parse_slots( sim_t* /* sim */, util::string_view /* opt_name */, const std::string& opt_value )
+  bool parse_slots( sim_t* /* sim */, util::string_view /* opt_name */, util::string_view opt_value )
   {
     // Empty out default priority slots. slots= option will change the use_items action logic so
     // that only the designated slots will be checked/executed for a special effect
     priority_slots.clear();
 
     auto split = util::string_split( opt_value, ":|" );
-    range::for_each( split, [this]( const std::string& slot_str ) {
+    range::for_each( split, [this]( util::string_view slot_str ) {
       auto slot = util::parse_slot_type( slot_str );
       if ( slot != SLOT_INVALID )
       {
@@ -8740,7 +8741,7 @@ action_t* player_t::create_action( util::string_view name, const std::string& op
   return consumable::create_action( this, name, options_str );
 }
 
-void player_t::parse_talents_numbers( const std::string& talent_string )
+void player_t::parse_talents_numbers( util::string_view talent_string )
 {
   talent_points.clear();
 
@@ -8768,7 +8769,7 @@ pet_t* player_t::create_pet( util::string_view, util::string_view )
 /**
  * Old-style armory format for xx.battle.net / xx.battlenet.com
  */
-bool player_t::parse_talents_armory( const std::string& talent_string )
+bool player_t::parse_talents_armory( util::string_view talent_string )
 {
   talent_points.clear();
 
@@ -8820,28 +8821,28 @@ bool player_t::parse_talents_armory( const std::string& talent_string )
         w_class = WARRIOR;
         break;
       default:
-        sim->errorf( "Player %s has malformed talent string '%s': invalid class character '%c'.\n", name(),
-                     talent_string.c_str(), talent_string[ 0 ] );
+        sim->error( "Player {} has malformed talent string '{}': invalid class character '{}'.\n", name(),
+                     talent_string, talent_string[ 0 ] );
         return false;
     }
 
     if ( w_class != type )
     {
-      sim->errorf( "Player %s has malformed talent string '%s': specified class %s does not match player class %s.\n",
-                   name(), talent_string.c_str(), util::player_type_string( w_class ),
+      sim->error( "Player {} has malformed talent string '{}': specified class {} does not match player class {}.\n",
+                   name(), talent_string, util::player_type_string( w_class ),
                    util::player_type_string( type ) );
       return false;
     }
   }
 
-  std::string::size_type cut_pt = talent_string.find( '!' );
+  auto cut_pt = talent_string.find( '!' );
   if ( cut_pt == talent_string.npos )
   {
-    sim->errorf( "Player %s has malformed talent string '%s'.\n", name(), talent_string.c_str() );
+    sim->error( "Player {} has malformed talent string '{}'.\n", name(), talent_string );
     return false;
   }
 
-  std::string spec_string = talent_string.substr( 1, cut_pt - 1 );
+  auto spec_string = talent_string.substr( 1, cut_pt - 1 );
   if ( !spec_string.empty() )
   {
     unsigned specidx = 0;
@@ -8861,15 +8862,15 @@ bool player_t::parse_talents_armory( const std::string& talent_string )
         specidx = 3;
         break;
       default:
-        sim->errorf( "Player %s has malformed talent string '%s': invalid spec character '%c'.\n", name(),
-                     talent_string.c_str(), spec_string[ 0 ] );
+        sim->error( "Player {} has malformed talent string '{}': invalid spec character '{}'.\n", name(),
+                     talent_string, spec_string[ 0 ] );
         return false;
     }
 
     _spec = dbc->spec_by_idx( type, specidx );
   }
 
-  std::string t_str = talent_string.substr( cut_pt + 1 );
+  auto t_str = talent_string.substr( cut_pt + 1 );
   if ( t_str.empty() )
   {
     // No talents picked.
@@ -8895,8 +8896,8 @@ bool player_t::parse_talents_armory( const std::string& talent_string )
         talent_points.select_row_col( static_cast<int>( i ), t_str[ i ] - '0' );
         break;
       default:
-        sim->errorf( "Player %s has malformed talent string '%s': talent list has invalid character '%c'.\n", name(),
-                     talent_string.c_str(), t_str[ i ] );
+        sim->error( "Player {} has malformed talent string '{}': talent list has invalid character '{}'.\n", name(),
+                     talent_string, t_str[ i ] );
         return false;
     }
   }
@@ -8908,17 +8909,17 @@ bool player_t::parse_talents_armory( const std::string& talent_string )
 
 namespace
 {
-std::string armory2_class_name( const std::string& tokenized_class, const std::string& tokenized_spec )
+std::string armory2_class_name( util::string_view tokenized_class, util::string_view tokenized_spec )
 {
-  auto class_str = tokenized_class;
-  auto spec_str  = tokenized_spec;
+  auto class_str = std::string( tokenized_class );
+  auto spec_str  = std::string( tokenized_spec );
 
   util::replace_all( class_str, "-", " " );
   util::replace_all( spec_str, "-", " " );
   return util::inverse_tokenize( spec_str ) + " " + util::inverse_tokenize( class_str );
 }
 
-player_e armory2_parse_player_type( const std::string& class_name )
+player_e armory2_parse_player_type( util::string_view class_name )
 {
   if ( util::str_compare_ci( class_name, "death-knight" ) )
   {
@@ -8938,19 +8939,19 @@ player_e armory2_parse_player_type( const std::string& class_name )
 /**
  * New armory format used in worldofwarcraft.com / www.wowchina.com
  */
-bool player_t::parse_talents_armory2( const std::string& talents_url )
+bool player_t::parse_talents_armory2( util::string_view talents_url )
 {
   auto split = util::string_split( talents_url, "#/=" );
   if ( split.size() < 5 )
   {
-    sim->errorf( "Player %s has malformed talent url '%s'", name(), talents_url.c_str() );
+    sim->error( "Player {} has malformed talent url '{}'", name(), talents_url );
     return false;
   }
 
   // Sanity check that second to last split is "talents"
   if ( !util::str_compare_ci( split[ split.size() - 2 ], "talents" ) )
   {
-    sim->errorf( "Player %s has malformed talent url '%s'", name(), talents_url.c_str() );
+    sim->error( "Player {} has malformed talent url '{}'", name(), talents_url );
     return false;
   }
 
@@ -8964,16 +8965,16 @@ bool player_t::parse_talents_armory2( const std::string& talents_url )
 
   if ( player_type == PLAYER_NONE || type != player_type )
   {
-    sim->errorf( "Player %s has malformed talent url '%s': expected class '%s', got '%s'", name(), talents_url.c_str(),
-                 util::player_type_string( type ), split[ OFFSET_CLASS ].c_str() );
+    sim->error( "Player {} has malformed talent url '{}': expected class '{}', got '{}'", name(), talents_url,
+                 util::player_type_string( type ), split[ OFFSET_CLASS ] );
     return false;
   }
 
   if ( spec_type == SPEC_NONE || specialization() != spec_type )
   {
-    sim->errorf( "Player %s has malformed talent url '%s': expected specialization '%s', got '%s'", name(),
-                 talents_url.c_str(), dbc::specialization_string( specialization() ),
-                 split[ OFFSET_SPEC ].c_str() );
+    sim->error( "Player {} has malformed talent url '{}': expected specialization '{}', got '{}'", name(),
+                 talents_url, dbc::specialization_string( specialization() ),
+                 split[ OFFSET_SPEC ] );
     return false;
   }
 
@@ -9166,15 +9167,15 @@ void player_t::create_talents_numbers()
   }
 }
 
-static bool parse_min_gcd( sim_t* sim, util::string_view name, const std::string& value )
+static bool parse_min_gcd( sim_t* sim, util::string_view name, util::string_view value )
 {
   if ( name != "min_gcd" )
     return false;
 
-  double v = std::strtod( value.c_str(), nullptr );
+  double v = util::to_double( value );
   if ( v <= 0 )
   {
-    sim->errorf( " %s: Invalid value '%s' for global minimum cooldown.", sim->active_player->name(), value.c_str() );
+    sim->error( "{}: Invalid value '{}' for global minimum cooldown.", sim->active_player->name(), value );
     return false;
   }
 
@@ -9835,7 +9836,7 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
       if (parts.size() == 4 )
       {
         // eg. time_to_pct_90.1
-        percent = std::stod( parts[ 3 ] );
+        percent = util::to_double( parts[ 3 ] );
       }
       else
       {
@@ -9858,9 +9859,9 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
     timespan_t window_duration;
 
     if ( util::str_in_str_ci( parts.back(), "ms" ) )
-      window_duration = timespan_t::from_millis( std::stoi( parts.back() ) );
+      window_duration = timespan_t::from_millis( util::to_int( parts.back() ) );
     else
-      window_duration = timespan_t::from_seconds( std::stod( parts.back() ) );
+      window_duration = timespan_t::from_seconds( util::to_double( parts.back() ) );
 
     // skip construction if the duration is nonsensical
     if ( window_duration > timespan_t::zero() )
@@ -10125,7 +10126,7 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
     }
     else if ( splits[ 0 ] == "swing" )
     {
-      std::string& s = splits[ 1 ];
+      const auto s = splits[ 1 ];
       slot_e hand    = SLOT_INVALID;
       if ( s == "mh" || s == "mainhand" || s == "main_hand" )
         hand = SLOT_MAIN_HAND;
@@ -10375,7 +10376,7 @@ std::unique_ptr<expr_t> player_t::create_resource_expression( util::string_view 
       }
 
       // foo.time_to_x
-      const double amount = std::stod( parts[ 2 ] );
+      const double amount = util::to_double( parts[ 2 ] );
       return make_fn_expr( name_str, [ this, r, amount ] {
         if ( resources.current[ r ] >= amount )
         {
@@ -10586,7 +10587,7 @@ std::string player_t::create_profile( save_e stype )
       auto splits = util::string_split( talent_overrides_str, "/" );
       for ( size_t i = 0; i < splits.size(); i++ )
       {
-        profile_str += "talent_override=" + splits[ i ] + term;
+        profile_str += fmt::format( "talent_override={}{}", splits[ i ], term );
       }
     }
 

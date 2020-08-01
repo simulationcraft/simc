@@ -679,7 +679,7 @@ bool profilesets_t::parse( sim_t* sim )
       return false;
     }
 
-    auto has_output_opts = range::find_if( profileset_opts, []( const std::string& opt ) {
+    auto has_output_opts = range::find_if( profileset_opts, []( util::string_view opt ) {
       auto name_end = opt.find( "=" );
       if ( name_end == std::string::npos )
       {
@@ -1146,7 +1146,7 @@ void create_options( sim_t* sim )
   sim -> add_option( opt_map_list( "profileset.", sim -> profileset_map ) );
   sim -> add_option( opt_func( "profileset_metric", []( sim_t*             sim,
                                                         util::string_view,
-                                                        const std::string& value ) {
+                                                        util::string_view value ) {
     sim -> profileset_metric.clear();
 
     auto split = util::string_split( value, "/:," );
@@ -1155,7 +1155,7 @@ void create_options( sim_t* sim )
       auto metric = util::parse_scale_metric( v );
       if ( metric == SCALE_METRIC_NONE )
       {
-        sim -> errorf( "Invalid profileset metric '%s'", v.c_str() );
+        sim -> error( "Invalid profileset metric '{}'", v );
         return false;
       }
 
@@ -1166,10 +1166,10 @@ void create_options( sim_t* sim )
   } ) );
   sim -> add_option( opt_func( "profileset_output_data", []( sim_t*             sim,
                                                         util::string_view,
-                                                        const std::string& value ) {
+                                                        util::string_view value ) {
     sim -> profileset_output_data.clear();
 
-    auto split = util::string_split( value, "/:," );
+    auto split = util::string_split_as_string( value, "/:," );
     for ( const auto& v : split )
     {
       sim -> profileset_output_data.push_back( v );

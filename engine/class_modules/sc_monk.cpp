@@ -10467,7 +10467,7 @@ std::unique_ptr<expr_t> monk_t::create_expression( util::string_view name_str )
     if ( util::str_in_str_ci( splits[ 1 ], "last_tick_damage_" ) )
     {
       auto parts = util::string_split( splits[ 1 ], "_" );
-      int n                          = std::stoi( parts.back() );
+      int n = util::to_int( parts.back() );
 
       // skip construction if the duration is nonsensical
       if ( n > 0 )

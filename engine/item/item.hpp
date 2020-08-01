@@ -141,7 +141,7 @@ struct item_t
     parsed(), xml(), option_initial_cd(0)
   { }
 
-  item_t( player_t*, const std::string& options_str );
+  item_t( player_t*, util::string_view options_str );
 
   bool active() const;
   const char* name() const;

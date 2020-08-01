@@ -92,7 +92,7 @@ const item_effect_t& item_runeforge_t::item_effect() const
 namespace runeforge
 {
 std::unique_ptr<expr_t> create_expression( const player_t* player,
-                                           const std::vector<std::string>& expr_str )
+                                           util::span<const util::string_view> expr_str )
 {
   if ( expr_str.size() != 3 )
   {

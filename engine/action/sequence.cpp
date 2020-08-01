@@ -34,17 +34,17 @@ sequence_t::sequence_t( player_t* p, const std::string& sub_action_str ) :
   // Skip first token if it's an option
   for ( size_t i = as<size_t>( has_option ); i < splits.size(); ++i )
   {
-    std::string::size_type cut_pt = splits[ i ].find( ',' );
-    std::string action_name( splits[ i ], 0, cut_pt );
+    auto cut_pt      = splits[ i ].find( ',' );
+    auto action_name = splits[ i ].substr( 0, cut_pt );
     std::string action_options;
 
-    if ( cut_pt != std::string::npos )
-      action_options.assign( splits[ i ], cut_pt + 1, std::string::npos );
+    if ( cut_pt != util::string_view::npos )
+      action_options = std::string( splits[ i ].substr( cut_pt + 1 ) );
 
     action_t* a = p -> create_action( action_name, action_options );
     if ( ! a )
     {
-      sim -> errorf( "Player %s has unknown sequence action: %s\n", p -> name(), splits[ i ].c_str() );
+      sim -> error( "Player {} has unknown sequence action: {}\n", p -> name(), splits[ i ] );
       sim -> cancel();
       continue;
     }
@@ -150,17 +150,17 @@ strict_sequence_t::strict_sequence_t( player_t* p, const std::string& sub_action
   // First token is sequence options, so skip
   for ( size_t i = 1; i < splits.size(); ++i )
   {
-    std::string::size_type cut_pt = splits[ i ].find( ',' );
-    std::string action_name( splits[ i ], 0, cut_pt );
+    auto cut_pt      = splits[ i ].find( ',' );
+    auto action_name = splits[ i ].substr( 0, cut_pt );
     std::string action_options;
 
-    if ( cut_pt != std::string::npos )
-      action_options.assign( splits[ i ], cut_pt + 1, std::string::npos );
+    if ( cut_pt != util::string_view::npos )
+      action_options = std::string( splits[ i ].substr( cut_pt + 1 ) );
 
     action_t* a = p -> create_action( action_name, action_options );
     if ( ! a )
     {
-      sim -> errorf( "Player %s has unknown strict sequence '%s' action: %s\n", p -> name(), seq_name_str.c_str(), splits[ i ].c_str() );
+      sim -> error( "Player {} has unknown strict sequence '{}' action: {}\n", p -> name(), seq_name_str, splits[ i ] );
       sim -> cancel();
       continue;
     }

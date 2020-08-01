@@ -1,6 +1,7 @@
 #include "simulationcraft.hpp"
 #include "sc_warlock.hpp"
 #include "sc_warlock_pets.hpp"
+#include "util/util.hpp"
 #include <queue>
 
 namespace warlock
@@ -1153,7 +1154,7 @@ std::unique_ptr<expr_t> warlock_t::create_expression( util::string_view name_str
 
   if (splits.size() == 3 && splits[0] == "time_to_imps" && splits[2] == "remains")
   {
-    std::string amt = splits[1];
+    auto amt = splits[1];
 
     return make_fn_expr(name_str, [this, amt](){
       if(amt == "all")
@@ -1162,18 +1163,18 @@ std::unique_ptr<expr_t> warlock_t::create_expression( util::string_view name_str
       }
       else
       {
-        return this->time_to_imps(std::stoi(amt));
+        return this->time_to_imps(util::to_int(amt));
       }
     });
   }
   else if ( splits.size() == 2 && util::str_compare_ci( splits[0], "imps_spawned_during" ) )
   {
-    std::string period = splits[1];
+    auto period = splits[1];
 
     return make_fn_expr( name_str, [this, period]()
     {
       // Add a custom split .summon_demonic_tyrant which returns its cast time.
-      return this->imps_spawned_during( timespan_t::from_millis( std::stod( period ) ) );
+      return this->imps_spawned_during( timespan_t::from_millis( util::to_double( period ) ) );
     } );
   }
 

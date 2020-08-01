@@ -4,6 +4,7 @@
 // ==========================================================================
 
 #include "simulationcraft.hpp"
+#include "util/util.hpp"
 
 namespace {
 
@@ -5631,7 +5632,7 @@ void mage_t::create_options()
   add_option( opt_timespan( "scorch_delay", options.scorch_delay ) );
   add_option( opt_int( "greater_blessing_of_wisdom_count", options.gbow_count ) );
   add_option( opt_bool( "allow_shimmer_lance", options.allow_shimmer_lance ) );
-  add_option( opt_func( "rotation", [ this ] ( sim_t*, util::string_view, const std::string& val )
+  add_option( opt_func( "rotation", [ this ] ( sim_t*, util::string_view, util::string_view val )
   {
     if ( util::str_compare_ci( val, "standard" ) )
       options.rotation = ROTATION_STANDARD;
@@ -7297,7 +7298,7 @@ std::unique_ptr<expr_t> mage_t::create_expression( util::string_view name )
 
   if ( splits.size() == 3 && util::str_compare_ci( splits[ 0 ], "ground_aoe" ) )
   {
-    std::string type = splits[ 1 ];
+    auto type = std::string( splits[ 1 ] );
     util::tolower( type );
 
     if ( util::str_compare_ci( splits[ 2 ], "remains" ) )
@@ -7311,7 +7312,7 @@ std::unique_ptr<expr_t> mage_t::create_expression( util::string_view name )
 
   if ( splits.size() == 3 && util::str_compare_ci( splits[ 0 ], "incanters_flow_time_to" ) )
   {
-    int expr_stack = std::stoi( splits[ 1 ] );
+    int expr_stack = util::to_int( splits[ 1 ] );
     if ( expr_stack < 1 || expr_stack > buffs.incanters_flow->max_stack() )
       throw std::invalid_argument( fmt::format( "Invalid incanters_flow_time_to stack number '{}'", splits[ 1 ] ) );
 
