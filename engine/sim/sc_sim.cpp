@@ -3058,7 +3058,6 @@ void sim_t::merge( sim_t& other_sim )
 
   range::append( iteration_data, other_sim.iteration_data );
   merge_time += chrono::elapsed(start_time);
-  init_time += other_sim.init_time;
 }
 
 /// merge all sims together
