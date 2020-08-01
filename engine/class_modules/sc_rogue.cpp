@@ -3139,18 +3139,15 @@ struct roll_the_bones_t : public rogue_spell_t
   {
     rogue_spell_t::execute();
 
-    // Restless Blades and thus True Bearing CDR triggers before buff roll.
-    trigger_restless_blades( execute_state );
-
-    int cp = cast_state( execute_state ) -> cp;
-    timespan_t d = ( cp + 1 ) * p() -> buffs.roll_the_bones -> data().duration();
-
+    timespan_t d = p() -> buffs.roll_the_bones -> data().duration();
     if ( precombat_seconds && ! p() -> in_combat )
       d -= timespan_t::from_seconds( precombat_seconds );
 
     p() -> buffs.roll_the_bones -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, d );
 
-    p() -> buffs.snake_eyes -> trigger( p() -> buffs.snake_eyes -> max_stack(), cp * p() -> azerite.snake_eyes.value() );
+    // Roll the Bones still triggers Snake Eyes on Shadowlands Beta but the damage increase is zero since it does not consume CP anymore.
+    // - Mystler 2020-07-31
+    p() -> buffs.snake_eyes -> trigger( p() -> buffs.snake_eyes -> max_stack(), 0 );
   }
 };
 
@@ -3200,7 +3197,9 @@ struct rupture_t : public rogue_attack_t
     // Check if this is a manually applied Rupture that hits
     if ( secondary_trigger == TRIGGER_NONE && result_is_hit( execute_state->result ) )
     {
-      p()->buffs.nights_vengeance->trigger();
+      // Night's Vengeance has not been updated to work with Rupture and does nothing at all.
+      // Keeping impl for reference until we nuke azerite powers. -Mystler 2020-07-31
+      //p()->buffs.nights_vengeance->trigger();
 
       // Save the target for Replicating Shadows
       p()->last_rupture_target = execute_state->target;
@@ -3264,7 +3263,9 @@ struct replicating_shadows_t : public rogue_spell_t
   {
     rogue_spell_t::execute();
 
-    if ( ! p() -> last_rupture_target )
+    // Replicating Shadows has not been changed to work with Rupture and simply does nothing aside from the direct damage on SL Beta.
+    // Keeping impl for reference until we nuke azerite powers. -Mystler 2020-07-31
+    /*if ( ! p() -> last_rupture_target )
       return;
 
     // Get the last manually applied Rupture as origin. Has to be still up.
@@ -3298,7 +3299,7 @@ struct replicating_shadows_t : public rogue_spell_t
           rupture_action->make_secondary_trigger( TRIGGER_REPLICATING_SHADOWS, minDistTarget,
                                                   cast_state( last_nb_tdata->dots.rupture->state )->cp );
       }
-    }
+    }*/
   }
 };
 
@@ -3754,8 +3755,9 @@ struct slice_and_dice_t : public rogue_spell_t
 
     p() -> buffs.snake_eyes -> trigger( p() -> buffs.snake_eyes -> max_stack(), cp * p() -> azerite.snake_eyes.value() );
 
+    // On Shadowlands Beta, Slice and Dice simply removes any active Paradise Lost buff. -Mystler 2020-07-31
     if ( p() -> azerite.paradise_lost.ok() )
-      p() -> buffs.paradise_lost -> trigger( 1, buff_t::DEFAULT_VALUE(), (-1.0), snd_duration );
+      p() -> buffs.paradise_lost -> expire();
   }
 };
 

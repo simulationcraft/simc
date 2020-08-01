@@ -1535,6 +1535,8 @@ class SpellDataGenerator(DataGenerator):
             ( 286131, 0 ),          # Replicating Shadows, Azerite trait dmg effect
             ( 197834, 0 ),          # Sinister Strike extra attack damage spell
             ( 257506, 0 ),          # Shot in the Dark buff for free Cheap Shot casts
+            ( 282449, 0 ),          # Secret Technique clone attack
+            ( 130493, 0 ),          # Nightstalker dmg increase driver
         ),
 
         # Priest:
@@ -1668,6 +1670,14 @@ class SpellDataGenerator(DataGenerator):
           ( 264774, 0 ),                            # Ro3 buff (talent)
           ( 277726, 0 ),                            # Amplification (?)
           ( 279856, 0 ),                            # Glacial Assault
+          ( 333170, 0 ),                            # Molten Skyfall
+          ( 333182, 0 ),                            # Molten Skyfall
+          ( 333314, 0 ),                            # Sun King's Blessing
+          ( 327327, 0 ),                            # Cold Front
+          ( 327330, 0 ),                            # Cold Front
+          ( 327478, 0 ),                            # Freezing Winds
+          ( 327368, 0 ),                            # Disciplinary Command (Fire tracker)
+          ( 327369, 0 ),                            # Disciplinary Command (Arcane tracker)
         ),
 
         # Warlock:

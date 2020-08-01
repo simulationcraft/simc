@@ -454,22 +454,22 @@ public:
   struct legendary_t
   {
     // General
-    const spell_data_t* apexis_empowerment;
-    const spell_data_t* darkglare_medallion;
-    const spell_data_t* sigil_of_the_illidari;
-    const spell_data_t* fel_bombardment;
+    item_runeforge_t apexis_empowerment;
+    item_runeforge_t darkglare_medallion;
+    item_runeforge_t sigil_of_the_illidari;
+    item_runeforge_t fel_bombardment;
 
     // Havoc
-    const spell_data_t* chaos_theory;
-    const spell_data_t* erratic_fel_core;
-    const spell_data_t* darkest_hour;
-    const spell_data_t* inner_demons;
+    item_runeforge_t chaos_theory;
+    item_runeforge_t erratic_fel_core;
+    item_runeforge_t darkest_hour;
+    item_runeforge_t inner_demons;
 
     // Vengeance
-    const spell_data_t* fiery_soul;
-    const spell_data_t* razelikhs_defilement;
-    const spell_data_t* cloak_of_fel_flames;
-    const spell_data_t* spirit_of_the_darkness_flame;
+    item_runeforge_t fiery_soul;
+    item_runeforge_t razelikhs_defilement;
+    item_runeforge_t cloak_of_fel_flames;
+    item_runeforge_t spirit_of_the_darkness_flame;
   } legendary;
 
   // Mastery Spells
@@ -5342,11 +5342,10 @@ void demon_hunter_t::init_spells()
 
   // Covenant Abilities =====================================================
 
-  // Covenant Testing
-  covenant.elysian_decree       = util::str_compare_ci( this->name_str, "elysian_decree" ) ? find_spell( 306830 ) : spell_data_t::not_found();
-  covenant.fodder_to_the_flame  = util::str_compare_ci( this->name_str, "fodder_to_the_flame" ) ? find_spell( 329554 ) : spell_data_t::not_found();
-  covenant.sinful_brand         = util::str_compare_ci( this->name_str, "sinful_brand" ) ? find_spell( 317009 ) : spell_data_t::not_found();
-  covenant.the_hunt             = util::str_compare_ci( this->name_str, "the_hunt" ) ? find_spell( 323639 ) : spell_data_t::not_found();
+  covenant.elysian_decree       = find_covenant_spell( "Elysian Decree" );
+  covenant.fodder_to_the_flame  = find_covenant_spell( "Fodder to the Flame" );
+  covenant.sinful_brand         = find_covenant_spell( "Sinful Brand" );
+  covenant.the_hunt             = find_covenant_spell( "The Hunt" );
 
   // Legendary Items ========================================================
 
@@ -5364,21 +5363,6 @@ void demon_hunter_t::init_spells()
   legendary.razelikhs_defilement          = find_runeforge_legendary( "Razelikh's Defilement" );
   legendary.cloak_of_fel_flames           = find_runeforge_legendary( "Cloak of Fel Flames" );
   legendary.spirit_of_the_darkness_flame  = find_runeforge_legendary( "Spirit of the Darkness Flame" );
-
-  // Legendary Testing
-  if( util::str_compare_ci( this->name_str, "darkglare_medallion" ) )
-    legendary.darkglare_medallion   = find_spell( 337534 );
-  if ( util::str_compare_ci( this->name_str, "sigil_of_the_illidari" ) )
-    legendary.sigil_of_the_illidari = find_spell( 337504 );
-  if ( util::str_compare_ci( this->name_str, "fel_bombardment" ) )
-    legendary.fel_bombardment       = find_spell( 337775 );
-  
-  if ( util::str_compare_ci( this->name_str, "chaos_theory" ) )
-    legendary.chaos_theory          = find_spell( 337551 );
-  if ( util::str_compare_ci( this->name_str, "erratic_fel_core" ) )
-    legendary.erratic_fel_core      = find_spell( 337685 );
-  if ( util::str_compare_ci( this->name_str, "inner_demons" ) )
-    legendary.inner_demons          = find_spell( 337548 );
 
   // Spell Initialization ===================================================
 

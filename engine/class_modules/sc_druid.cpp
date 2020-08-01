@@ -2430,8 +2430,11 @@ public:
           buff_t* proc_buff =
             p()->talent.incarnation_moonkin->ok() ? p()->buff.incarnation_moonkin : p()->buff.celestial_alignment;
 
-          if ( proc_buff->check() )
+          if ( proc_buff->check() ) {
             proc_buff->extend_duration( p(), pulsar_dur );
+            p()->buff.eclipse_lunar->extend_duration( p(), pulsar_dur );
+            p()->buff.eclipse_solar->extend_duration( p(), pulsar_dur );
+          }
           else
             proc_buff->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, pulsar_dur );
 
@@ -6567,7 +6570,7 @@ struct starfall_t : public druid_spell_t
 
   void execute() override
   {
-    if ( p()->buff.oneths_free_starfall->up() && oneth_sf )
+    if ( free_cast == free_cast_e::NONE && p()->buff.oneths_free_starfall->up() && oneth_sf )
     {
       p()->buff.oneths_free_starfall->expire();
       oneth_sf->set_target( target );
@@ -6692,7 +6695,7 @@ struct starsurge_t : public druid_spell_t
 
   void execute() override
   {
-    if ( p()->buff.oneths_free_starsurge->up() && oneth_ss )
+    if ( free_cast == free_cast_e::NONE && p()->buff.oneths_free_starsurge->up() && oneth_ss )
     {
       p()->buff.oneths_free_starsurge->expire();
       oneth_ss->set_target( target );
@@ -8204,7 +8207,7 @@ void druid_t::create_buffs()
     ->set_stack_change_callback( [this] ( buff_t* b, int, int new_ ) {
       if ( new_ )
       {
-        this->eclipse_handler.trigger_both();
+        this->eclipse_handler.trigger_both( b->buff_duration );
         uptime.combined_ca_inc->update( true, sim->current_time() );
       }
       else
@@ -8219,10 +8222,10 @@ void druid_t::create_buffs()
     ->set_default_value( talent.incarnation_moonkin->effectN( 1 ).percent() )
     ->add_invalidate( CACHE_HASTE )
     ->add_invalidate( CACHE_CRIT_CHANCE )
-    ->set_stack_change_callback( [this] ( buff_t*, int, int new_ ) {
+    ->set_stack_change_callback( [this] ( buff_t* b, int, int new_ ) {
       if ( new_ )
       {
-        this->eclipse_handler.trigger_both();
+        this->eclipse_handler.trigger_both( b->buff_duration );
         uptime.combined_ca_inc->update( true, sim->current_time() );
       }
       else
@@ -10027,22 +10030,6 @@ std::unique_ptr<expr_t> druid_t::create_expression( util::string_view name_str )
     }
     return player_t::create_expression( fmt::format("{}{}{}", splits[ 0 ], replacement_name, splits[ 2 ]) );
   }
-
-  // Temporary legendary.* expression
-  if ( splits.size() == 2 && util::str_compare_ci( splits[ 0 ], "legendary" ) )
-  {
-    if ( util::str_compare_ci( splits[ 1 ], "oneth" ) )
-      return expr_t::create_constant( name_str, legendary.oneths_clear_vision->ok() );
-    if ( util::str_compare_ci( splits[ 1 ], "pulsar" ) )
-      return expr_t::create_constant( name_str, legendary.primordial_arcanic_pulsar->ok() );
-    if ( util::str_compare_ci( splits[ 1 ], "dreamcatcher" ) )
-      return expr_t::create_constant( name_str, legendary.timeworn_dreamcatcher->ok() );
-    if ( util::str_compare_ci( splits[ 1 ], "crit" ) )
-      return expr_t::create_constant( name_str, legendary.balance_runecarve_3->ok() );
-
-    throw std::invalid_argument( "invalid legendary (oneth pulsar dreamcatcher crit)" );
-  }
-
   return player_t::create_expression( name_str );
 }
 

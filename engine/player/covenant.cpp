@@ -41,9 +41,16 @@ double conduit_data_t::percent() const
   return m_conduit->value / 100.0;
 }
 
-timespan_t conduit_data_t::time_value() const
+timespan_t conduit_data_t::time_value( time_type tt ) const
 {
-  return timespan_t::from_millis( m_conduit->value );
+  if ( tt == time_type::MS )
+  {
+    return timespan_t::from_millis( m_conduit->value );
+  }
+  else
+  {
+    return timespan_t::from_seconds( m_conduit->value );
+  }
 }
 
 namespace util
@@ -132,8 +139,10 @@ bool covenant_state_t::parse_covenant( sim_t*             sim,
 // Parse soulbind= option into conduit_state_t and soulbind spell ids
 // Format:
 // soulbind_token = conduit_id:conduit_rank | soulbind_ability_id
-// soulbind = soulbind_token/soulbind_token/soulbind_token/...
+// soulbind = [soulbind_tree_id,]soulbind_token/soulbind_token/soulbind_token/...
 // Where:
+// soulbind_tree_id = numeric or tokenized soulbind tree identifier; unused by
+//                    Simulationcraft, and ignored on parse.
 // conduit_id = conduit id number or tokenized version of the conduit name
 // conduit_rank = the rank number, starting from 1
 // soulbind_ability_id = soulbind ability spell id or tokenized veresion of the soulbind
@@ -143,8 +152,21 @@ bool covenant_state_t::parse_soulbind( sim_t*             sim,
                                        util::string_view value )
 {
   m_conduits.clear();
+  auto value_str = value;
 
-  for ( const auto& entry : util::string_split( value, "|/" ) )
+  // Ignore anything before a comma character in the soulbind option to allow the
+  // specification of the soulbind tree (as a numeric parameter, or the name of the
+  // follower in tokenized form). Currently simc has no use for this information, but
+  // third party tools will find it easier to determine the soulbind tree to display/use
+  // from the identifier, instead of reverse-mapping it from the soulbind spell
+  // identifiers.
+  auto comma_pos = value_str.find(',');
+  if ( comma_pos != std::string::npos )
+  {
+    value_str = value_str.substr( comma_pos + 1 );
+  }
+
+  for ( const auto& entry : util::string_split( value_str, "|/" ) )
   {
     // Conduit handling
     if ( entry.find( ':' ) != std::string::npos )
