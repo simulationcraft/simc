@@ -970,7 +970,7 @@ struct void_bolt_t final : public priest_spell_t
           priest().cooldowns.shadowfiend->adjust( -timespan_t::from_seconds( fae_blessings_cdr ) );
         }
         // Remove 1 stack of Fae Blessings
-        priest().buffs.fae_blessings->expire();
+        priest().buffs.fae_blessings->decrement();
       }
     }
 
@@ -2153,6 +2153,11 @@ void priest_t::generate_apl_shadow()
       "Use these cooldowns in between your 1st and 2nd Void Bolt in your 2nd Voidform when you have Chorus of Insanity "
       "active" );
   cds->add_action( this, "Power Infusion", "if=buff.voidform.up" );
+  cds->add_action( this, "Fae Blessings", "if=buff.voidform.up" );
+  cds->add_action( "fae_blessings", "if=buff.voidform.up" );
+  cds->add_action( "mindgames" );
+  cds->add_action( "unholy_nova" );
+  cds->add_action( "boon_of_the_ascended" );
   cds->add_action( "use_items", "Default fallback for usable items: Use on cooldown." );
 
   // Crit CDs

@@ -314,7 +314,7 @@ struct fae_blessings_t final : public priest_spell_t
 
   fae_blessings_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "fae_blessings", p, p.covenant.fae_blessings ),
-      stacks( data().effectN( 1 ).base_value() )
+      stacks( (int)data().effectN( 1 ).base_value() )
   {
     parse_options( options_str );
     harmful = false;
@@ -327,6 +327,17 @@ struct fae_blessings_t final : public priest_spell_t
     priest_spell_t::execute();
 
     priest().buffs.fae_blessings->trigger( stacks );
+    priest().cooldowns.fae_blessings->reset( false );
+  }
+
+  bool ready() override
+  {
+    if ( priest().buffs.fae_blessings->check() )
+    {
+      return false;
+    }
+
+    return priest_spell_t::ready();
   }
 };
 
@@ -547,17 +558,18 @@ struct fae_blessings_t final : public priest_buff_t<buff_t>
   int stacks;
 
   fae_blessings_t( priest_t& p ) : base_t( p, "fae_blessings", p.covenant.fae_blessings ),
-    stacks( data().effectN( 1 ).base_value() )
+    stacks( (int)data().effectN( 1 ).base_value() )
   {
-    set_max_stack( stacks ); // TODO: Add conduit stack increase
+    // When not night-fae this is returned as 0
+    set_max_stack( stacks >= 1 ? stacks : 1); // TODO: Add conduit stack increase
   }
 
-  void expire_override( int stacks, timespan_t ) override
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
-    if ( stacks <= 0 )
-    {
-      expire();
-    }
+    priest_buff_t<buff_t>::expire_override( expiration_stacks, remaining_duration );
+
+    // check for conduit procs?
+    priest().cooldowns.fae_blessings->start();
   }
 };
 }  // namespace buffs
@@ -703,6 +715,7 @@ void priest_t::create_cooldowns()
   cooldowns.devouring_plague   = get_cooldown( "devouring_plague" );
   cooldowns.mindbender         = get_cooldown( "mindbender" );
   cooldowns.shadowfiend        = get_cooldown( "shadowfiend" );
+  cooldowns.fae_blessings      = get_cooldown( "fae_blessings" );
 
   if ( specialization() == PRIEST_DISCIPLINE )
   {
@@ -1215,8 +1228,7 @@ void priest_t::create_buffs()
                                ->set_trigger_spell( legendary.the_penitent_one );
 
   // Covenant Buffs
-  buffs.fae_blessings = make_buff( this, "fae_blessings", covenant.fae_blessings->effectN( 1 ).trigger() )
-                               ->set_trigger_spell( covenant.fae_blessings );
+  buffs.fae_blessings = make_buff<buffs::fae_blessings_t>( *this );
 
   create_buffs_shadow();
   create_buffs_discipline();

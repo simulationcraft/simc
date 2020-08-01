@@ -274,6 +274,7 @@ public:
   {
     // Shared
     propagate_const<cooldown_t*> power_infusion;
+	propagate_const<cooldown_t*> fae_blessings;
 
     // Discipline
     propagate_const<cooldown_t*> chakra;
@@ -440,9 +441,9 @@ public:
 
   struct
   {
-    const spell_data_t* fae_blessings; // NYI
-    const spell_data_t* unholy_nova; // NYI
-    const spell_data_t* mindgames; // NYI
+    const spell_data_t* fae_blessings;
+    const spell_data_t* unholy_nova; // needs testing
+    const spell_data_t* mindgames; // needs additional option
     const spell_data_t* boon_of_the_ascended; // NYI
     const spell_data_t* ascended_nova; // NYI
     const spell_data_t* ascended_blast; // NYI
