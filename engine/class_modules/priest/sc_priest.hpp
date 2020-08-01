@@ -274,7 +274,7 @@ public:
   {
     // Shared
     propagate_const<cooldown_t*> power_infusion;
-	  propagate_const<cooldown_t*> fae_blessings;
+    propagate_const<cooldown_t*> fae_blessings;
 
     // Discipline
     propagate_const<cooldown_t*> chakra;
