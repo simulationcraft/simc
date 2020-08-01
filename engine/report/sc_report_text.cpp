@@ -741,7 +741,7 @@ void sim_summary_performance( std::ostream& os, sim_t* sim )
 #endif
       "  RNG Engine    = {}{}\n"
       "  Iterations    = {}{}\n"
-      "  TotalEvents   = {:n}\n"
+      "  TotalEvents   = {}\n"
       "  MaxEventQueue = {}\n"
 #ifdef EVENT_QUEUE_DEBUG
       "  AllocEvents   = {}\n"

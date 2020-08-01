@@ -1408,7 +1408,7 @@ size_t action_t::available_targets( std::vector<player_t*>& tl ) const
     sim->print_debug("{} regenerated target cache for {} ({})", player->name(), signature_str, name() );
     for ( size_t i = 0; i < tl.size(); i++ )
     {
-      sim->print_debug( "[{:n}, {} (id={})]", i, tl[ i ]->name(), tl[ i ]->actor_index );
+      sim->print_debug( "[{}, {} (id={})]", i, tl[ i ]->name(), tl[ i ]->actor_index );
     }
   }
 

@@ -236,7 +236,7 @@ void set_bonus_t::initialize()
 
 std::string set_bonus_t::to_string() const
 {
-  return fmt::to_string( *this );
+  return fmt::format( "{}", *this );
 }
 
 
