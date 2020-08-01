@@ -357,6 +357,7 @@ public:
     const spell_data_t* seal_fate;
     const spell_data_t* venomous_wounds;
     const spell_data_t* vendetta;
+    const spell_data_t* vendetta_2;
     const spell_data_t* master_assassin;
     const spell_data_t* garrote;
     const spell_data_t* garrote_2;
@@ -366,7 +367,7 @@ public:
     // Outlaw
     const spell_data_t* adrenaline_rush;
     const spell_data_t* blade_flurry;
-    const spell_data_t* blade_flurry_rank_2;
+    const spell_data_t* blade_flurry_2;
     const spell_data_t* broadside;
     const spell_data_t* combat_potency;
     const spell_data_t* combat_potency_reg;
@@ -841,7 +842,7 @@ public:
     bool adrenaline_rush_gcd = false;
     bool broadside_cp = false;
     bool master_assassin = false;
-    bool shiv_rank_2 = false;
+    bool shiv_2 = false;
     bool ruthless_precision = false;
 
     damage_affect_data mastery_executioner;
@@ -886,7 +887,7 @@ public:
     affected_by.alacrity = costs_combo_points;
     affected_by.adrenaline_rush_gcd = ab::data().affected_by( p->spec.adrenaline_rush->effectN( 3 ) );
     affected_by.master_assassin = ab::data().affected_by( p->spec.master_assassin->effectN( 1 ) );
-    affected_by.shiv_rank_2 = ab::data().affected_by( p->spec.shiv_2_debuff->effectN( 1 ) );
+    affected_by.shiv_2 = ab::data().affected_by( p->spec.shiv_2_debuff->effectN( 1 ) );
     affected_by.broadside_cp = ab::data().affected_by( p->spec.broadside->effectN( 1 ) ) ||
       ab::data().affected_by( p->spec.broadside->effectN( 2 ) ) ||
       ab::data().affected_by( p->spec.broadside->effectN( 3 ) );
@@ -1234,7 +1235,7 @@ public:
       m *= 1.0 + td( target )->debuffs.vendetta->value();
     }
 
-    if ( affected_by.shiv_rank_2 )
+    if ( affected_by.shiv_2 )
     {
       m *= 1.0 + td( target )->debuffs.shiv->value();
     }
@@ -2308,7 +2309,7 @@ struct blade_flurry_t : public rogue_attack_t
 
     add_child( p->active_blade_flurry );
 
-    if ( p->spec.blade_flurry_rank_2->ok() )
+    if ( p->spec.blade_flurry_2->ok() )
     {
       instant_attack = p->get_background_action<blade_flurry_instant_attack_t>( "blade_flurry_instant_attack" );
       add_child( instant_attack );
@@ -3867,8 +3868,9 @@ struct vendetta_t : public rogue_spell_t
   nothing_personal_t* nothing_personal_dot;
 
   vendetta_t( rogue_t* p, const std::string& options_str ) :
-    rogue_spell_t( "vendetta", p, p -> find_specialization_spell( "Vendetta" ) ),
-    precombat_seconds( 0.0 ), nothing_personal_dot( nullptr )
+    rogue_spell_t( "vendetta", p, p->spec.vendetta ),
+    precombat_seconds( 0.0 ),
+    nothing_personal_dot( nullptr )
   {
     add_option( opt_float( "precombat_seconds", precombat_seconds ) );
     parse_options( options_str );
@@ -3899,11 +3901,12 @@ struct vendetta_t : public rogue_spell_t
     td->debuffs.vendetta->expire();
     td->debuffs.vendetta->trigger();
 
-    if ( precombat_seconds && ! p() -> in_combat ) {
-      timespan_t precombat_lost_seconds = - timespan_t::from_seconds( precombat_seconds );
-      p() -> cooldowns.vendetta -> adjust( precombat_lost_seconds, false );
-      p() -> buffs.vendetta -> extend_duration( p(), precombat_lost_seconds );
-      td -> debuffs.vendetta -> extend_duration( p(), precombat_lost_seconds );
+    if ( precombat_seconds && !p()->in_combat )
+    {
+      timespan_t precombat_lost_seconds = -timespan_t::from_seconds( precombat_seconds );
+      p()->cooldowns.vendetta->adjust( precombat_lost_seconds, false );
+      p()->buffs.vendetta->extend_duration( p(), precombat_lost_seconds );
+      td->debuffs.vendetta->extend_duration( p(), precombat_lost_seconds );
     }
   }
 };
@@ -4837,7 +4840,9 @@ struct vendetta_debuff_t : public buff_t
     buff_t::start( stacks, value, duration );
 
     // 3/25/2020 - The base 3s duration regen buff does not re-apply on refreshes
-    debug_cast<rogue_t*>( source )->buffs.vendetta->trigger();
+    rogue_t* rogue = debug_cast<rogue_t*>( source );
+    if ( rogue->spec.vendetta_2->ok() )
+      rogue->buffs.vendetta->trigger();
     trigger_nothing_personal( remains() );
   }
 
@@ -6552,6 +6557,7 @@ void rogue_t::init_spells()
   spec.seal_fate            = find_specialization_spell( "Seal Fate" );
   spec.venomous_wounds      = find_specialization_spell( "Venomous Wounds" );
   spec.vendetta             = find_specialization_spell( "Vendetta" );
+  spec.vendetta_2           = find_rank_spell( "Vendetta", "Rank 2" );
   spec.master_assassin      = find_spell( 256735 );
   spec.garrote              = find_specialization_spell( "Garrote" );
   spec.garrote_2            = find_specialization_spell( 231719 );
@@ -6561,7 +6567,7 @@ void rogue_t::init_spells()
   // Outlaw
   spec.adrenaline_rush      = find_specialization_spell( "Adrenaline Rush" );
   spec.blade_flurry         = find_specialization_spell( "Blade Flurry" );
-  spec.blade_flurry_rank_2  = find_rank_spell( "Blade Flurry", "Rank 2" );
+  spec.blade_flurry_2       = find_rank_spell( "Blade Flurry", "Rank 2" );
   spec.broadside            = find_spell( 193356 );
   spec.combat_potency       = find_specialization_spell( 35551 );
   spec.combat_potency_reg   = find_specialization_spell( 61329 );
@@ -6857,8 +6863,8 @@ void rogue_t::create_buffs()
                                 -> set_duration( timespan_t::min() )
                                 -> set_period( timespan_t::zero() )
                                 -> set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
-  buffs.vendetta              = make_buff( this, "vendetta_energy", find_spell( 256495 ) )
-                                -> set_default_value( find_spell( 256495 ) -> effectN( 1 ).base_value() / 5.0 )
+  buffs.vendetta              = make_buff( this, "vendetta_energy", spec.vendetta->effectN( 4 ).trigger() )
+                                -> set_default_value( spec.vendetta->effectN( 4 ).trigger()->effectN( 1 ).base_value() / 5.0 )
                                 -> set_affects_regen( true );
 
   // Outlaw
