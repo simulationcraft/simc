@@ -560,7 +560,7 @@ bool azerite_state_t::parse_override( sim_t* sim, util::string_view, util::strin
 {
   m_overrides.clear();
 
-  auto override_split = util::string_split( value, "/" );
+  auto override_split = util::string_split<util::string_view>( value, "/" );
   for ( const util::string_view opt : override_split )
   {
     if ( opt.empty() )
@@ -568,7 +568,7 @@ bool azerite_state_t::parse_override( sim_t* sim, util::string_view, util::strin
       continue;
     }
 
-    auto opt_split = util::string_split( opt, ":" );
+    auto opt_split = util::string_split<util::string_view>( opt, ":" );
     if ( opt_split.size() != 2 )
     {
       sim -> error( "{} unknown azerite override string \"{}\"", sim -> active_player -> name(),
@@ -1087,14 +1087,14 @@ bool azerite_essence_state_t::parse_azerite_essence( sim_t* sim,
   int n_parsed_powers = 0;
   bool major_parsed = false;
 
-  auto splits = util::string_split( value, "/" );
+  auto splits = util::string_split<util::string_view>( value, "/" );
 
   m_state.clear();
 
   for ( size_t i = 0u; i < splits.size(); ++i )
   {
     // Split by :
-    auto token_split = util::string_split( splits[ i ], ":" );
+    auto token_split = util::string_split<util::string_view>( splits[ i ], ":" );
 
     unsigned id = util::to_unsigned_ignore_error( token_split[ 0 ], 0 );
     unsigned rank = 0;

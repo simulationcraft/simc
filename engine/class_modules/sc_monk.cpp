@@ -10397,7 +10397,7 @@ double monk_t::calculate_last_stagger_tick_damage( int n ) const
 
 std::unique_ptr<expr_t> monk_t::create_expression( util::string_view name_str )
 {
-  auto splits = util::string_split( name_str, "." );
+  auto splits = util::string_split<util::string_view>( name_str, "." );
   if ( splits.size() == 2 && splits[ 0 ] == "stagger" )
   {
     struct stagger_threshold_expr_t : public expr_t
@@ -10466,7 +10466,7 @@ std::unique_ptr<expr_t> monk_t::create_expression( util::string_view name_str )
 
     if ( util::str_in_str_ci( splits[ 1 ], "last_tick_damage_" ) )
     {
-      auto parts = util::string_split( splits[ 1 ], "_" );
+      auto parts = util::string_split<util::string_view>( splits[ 1 ], "_" );
       int n = util::to_int( parts.back() );
 
       // skip construction if the duration is nonsensical

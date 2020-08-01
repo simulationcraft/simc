@@ -121,7 +121,7 @@ void stat_search( std::string&              encoding_str,
                   stat_e                    type,
                   util::string_view         stat_str )
 {
-  auto stat_tokens = util::string_split( stat_str, " " );
+  auto stat_tokens = util::string_split<util::string_view>( stat_str, " " );
   size_t num_descriptions = description_tokens.size();
 
   for ( size_t i = 0; i < num_descriptions; i++ )
@@ -240,32 +240,6 @@ double stat_value( const player_t* p, stat_e stat )
   return v;
 }
 
-
-template<typename StringType>
-std::vector<StringType> string_split_impl( util::string_view str, util::string_view delim, bool skip_empty_entries )
-{
-  std::vector<StringType> results;
-  if ( str.empty() )
-    return results;
-
-  typename StringType::size_type cut_pt, start = 0;
-
-  while ( ( cut_pt = str.find_first_of( delim, start ) ) != StringType::npos )
-  {
-    if ( !skip_empty_entries || cut_pt > start ) // Found something, push to the vector
-      results.emplace_back( str.substr( start, cut_pt - start ) );
-
-    start = cut_pt + 1; // skip the found delimeter
-  }
-
-  if ( start < str.size() )
-  {
-    // Push the tail
-    results.emplace_back( str.substr( start, str.size() - start ) );
-  }
-
-  return results;
-}
 
 template <typename T, typename Converter>
 T convert_string_to_number( Converter converter, const std::string& str, util::string_view type_name )
@@ -1796,7 +1770,7 @@ bool util::parse_origin( std::string& region,
                          std::string& name,
                          util::string_view origin )
 {
-  auto tokens = string_split_as_string( origin, "/:.?&=" );
+  auto tokens = string_split( origin, "/:.?&=" );
 
   if ( origin.find( ".battle.net" ) != string_view::npos )
   {
@@ -2324,17 +2298,6 @@ bool util::socket_gem_match( item_socket_color socket, item_socket_color gem )
   return ( gem & socket ) != 0;
 }
 
-// string_split =============================================================
-
-std::vector<util::string_view> util::string_split( util::string_view str, util::string_view delim, bool skip_empty_entries )
-{
-  return string_split_impl<util::string_view>(str, delim, skip_empty_entries );
-}
-
-std::vector<std::string> util::string_split_as_string( util::string_view str, util::string_view delim, bool skip_empty_entries )
-{
-  return string_split_impl<std::string>(str, delim, skip_empty_entries );
-}
 /* Splits the string while skipping and stripping quoted parts in the string
  */
 std::vector<std::string> util::string_split_allow_quotes( util::string_view str_, util::string_view delim )
@@ -3122,7 +3085,7 @@ void util::fuzzy_stats( std::string&      encoding,
   if ( is_proc_description( buffer ) )
     return;
 
-  auto splits = util::string_split( buffer, "_." );
+  auto splits = util::string_split<util::string_view>( buffer, "_." );
 
   stat_search( encoding, splits, STAT_ALL,  "all stats" );
   stat_search( encoding, splits, STAT_ALL,  "to all stats" );

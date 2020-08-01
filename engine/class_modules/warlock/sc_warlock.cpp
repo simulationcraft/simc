@@ -1150,7 +1150,7 @@ std::unique_ptr<expr_t> warlock_t::create_expression( util::string_view name_str
     });
   }
 
-  auto splits = util::string_split( name_str, "." );
+  auto splits = util::string_split<util::string_view>( name_str, "." );
 
   if (splits.size() == 3 && splits[0] == "time_to_imps" && splits[2] == "remains")
   {

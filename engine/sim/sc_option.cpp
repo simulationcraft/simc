@@ -643,7 +643,7 @@ void opts::parse( sim_t*                                      sim,
                   util::string_view                           options_str,
                   const parse_status_fn_t&                    status_fn )
 {
-  opts::parse( sim, context, options, util::string_split( options_str, "," ), status_fn );
+  opts::parse( sim, context, options, util::string_split<util::string_view>( options_str, "," ), status_fn );
 }
 
 

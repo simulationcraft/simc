@@ -475,7 +475,7 @@ size_t progress_bar_t::n_plot_phases() const
   }
 
   size_t n_phases = 0;
-  auto stat_list = util::string_split( sim.plot -> dps_plot_stat_str, ",:;/|" );
+  auto stat_list = util::string_split<util::string_view>( sim.plot -> dps_plot_stat_str, ",:;/|" );
   range::for_each( stat_list, [ &n_phases, this ]( util::string_view stat_str ) {
     auto n_players = n_stat_scaling_players( stat_str );
 
@@ -501,7 +501,7 @@ size_t progress_bar_t::n_scale_factor_phases() const
   }
 
   size_t n_phases = 0;
-  auto stat_list = util::string_split( sim.scaling -> scale_only_str, ",:;/|" );
+  auto stat_list = util::string_split<util::string_view>( sim.scaling -> scale_only_str, ",:;/|" );
   std::vector<stat_e> scale_only;
 
   range::for_each( stat_list, [ &scale_only ]( util::string_view stat_str ) {
@@ -550,7 +550,7 @@ size_t progress_bar_t::n_reforge_plot_phases() const
     return 0;
   }
 
-  auto stat_list = util::string_split( sim.reforge_plot -> reforge_plot_stat_str, ",:;/|" );
+  auto stat_list = util::string_split<util::string_view>( sim.reforge_plot -> reforge_plot_stat_str, ",:;/|" );
   std::vector<stat_e> stat_indices;
   range::for_each( stat_list, [ &stat_indices, this ]( util::string_view stat_str ) {
     if ( n_stat_scaling_players( stat_str ) > 0 )

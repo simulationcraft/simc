@@ -163,7 +163,7 @@ struct enemy_action_t : public ACTION_TYPE
   // this is only used by helper structures
   std::string filter_options_list( util::string_view options_str )
   {
-    auto splits = util::string_split( options_str, "," );
+    auto splits = util::string_split<util::string_view>( options_str, "," );
     std::string filtered_options    = "";
     for ( auto split : splits )
     {
@@ -1423,7 +1423,7 @@ void enemy_t::init_action_list()
       std::string new_action_list_str = "";
 
       // split the action_list_str into individual actions so we can modify each later
-      auto splits = util::string_split( action_list_str, "/" );
+      auto splits = util::string_split<util::string_view>( action_list_str, "/" );
 
       for ( size_t i = 0; i < tanks.size(); i++ )
       {
@@ -1620,7 +1620,7 @@ std::unique_ptr<expr_t> enemy_t::create_expression( util::string_view name_str )
   if ( name_str == "current_target" )
     return make_ref_expr( name_str, current_target );
 
-  auto splits = util::string_split( name_str, "." );
+  auto splits = util::string_split<util::string_view>( name_str, "." );
 
   if ( splits[ 0 ] == "current_target" )
   {

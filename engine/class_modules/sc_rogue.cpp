@@ -6132,7 +6132,7 @@ action_t* rogue_t::create_action( util::string_view name, const std::string& opt
 
 std::unique_ptr<expr_t> rogue_t::create_expression( util::string_view name_str )
 {
-  auto split = util::string_split( name_str, "." );
+  auto split = util::string_split<util::string_view>( name_str, "." );
 
   if ( name_str == "combo_points" )
     return make_ref_expr( name_str, resources.current[ RESOURCE_COMBO_POINT ] );
@@ -6443,7 +6443,7 @@ std::unique_ptr<expr_t> rogue_t::create_expression( util::string_view name_str )
 
 std::unique_ptr<expr_t> rogue_t::create_resource_expression( util::string_view name_str )
 {
-  auto splits = util::string_split( name_str, "." );
+  auto splits = util::string_split<util::string_view>( name_str, "." );
   if ( splits.empty() )
     return nullptr;
 
@@ -7062,7 +7062,7 @@ static bool parse_fixed_rtb( sim_t* sim, util::string_view /* name */, util::str
 
 static bool parse_fixed_rtb_odds( sim_t* sim, util::string_view /* name */, util::string_view value )
 {
-  auto odds = util::string_split( value, "," );
+  auto odds = util::string_split<util::string_view>( value, "," );
   if ( odds.size() != 6 )
   {
     sim -> errorf( "%s: Expected 6 comma-separated values for 'fixed_rtb_odds'", sim -> active_player -> name());

@@ -294,7 +294,7 @@ xml_node_t* xml_node_t::split_path( std::string&       key,
   }
   else
   {
-    auto splits = util::string_split( path, "/" );
+    auto splits = util::string_split<util::string_view>( path, "/" );
     for ( size_t i = 0; i < splits.size() - 1; i++ )
     {
       node = node -> search_tree( splits[ i ] );
@@ -1178,7 +1178,7 @@ sc_xml_t sc_xml_t::split_path( std::string& key, const std::string& path ) const
   }
   else
   {
-    auto splits = util::string_split( path, "/" );
+    auto splits = util::string_split<util::string_view>( path, "/" );
     for ( size_t i = 0; i < splits.size() - 1; i++ )
     {
       node = node.search_tree( splits[ i ] );

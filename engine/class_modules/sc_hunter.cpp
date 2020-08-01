@@ -984,7 +984,7 @@ public:
     }
 
     // fudge wildfire bomb dot name
-    auto splits = util::string_split( name, "." );
+    auto splits = util::string_split<util::string_view>( name, "." );
     if ( splits.size() == 3 && splits[ 0 ] == "dot" && splits[ 1 ] == "wildfire_bomb" )
       return ab::create_expression( fmt::format( "dot.wildfire_bomb_dot.{}", splits[ 2 ] ) );
 
@@ -4279,7 +4279,7 @@ struct kill_command_t: public hunter_spell_t
   std::unique_ptr<expr_t> create_expression(util::string_view expression_str) override
   {
     // this is somewhat unfortunate but we can't get at the pets dot in any other way
-    auto splits = util::string_split( expression_str, "." );
+    auto splits = util::string_split<util::string_view>( expression_str, "." );
     if ( splits.size() == 2 && splits[ 0 ] == "bloodseeker" && splits[ 1 ] == "remains" )
     {
       return make_fn_expr( expression_str, [ this ] () {
@@ -5094,7 +5094,7 @@ void hunter_t::vision_of_perfection_proc()
  */
 std::unique_ptr<expr_t> hunter_t::create_action_expression ( action_t& action, util::string_view expression_str )
 {
-  auto splits = util::string_split( expression_str, "." );
+  auto splits = util::string_split<util::string_view>( expression_str, "." );
 
   //Careful Aim expression
   if ( splits.size() == 1 && splits[ 0 ] == "ca_execute" )
@@ -5117,7 +5117,7 @@ std::unique_ptr<expr_t> hunter_t::create_action_expression ( action_t& action, u
 
 std::unique_ptr<expr_t> hunter_t::create_expression( util::string_view expression_str )
 {
-  auto splits = util::string_split( expression_str, "." );
+  auto splits = util::string_split<util::string_view>( expression_str, "." );
 
   if ( splits.size() == 3 && splits[ 0 ] == "cooldown")
   {

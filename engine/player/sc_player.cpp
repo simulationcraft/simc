@@ -845,7 +845,7 @@ bool parse_stat_timelines( sim_t* sim, util::string_view name, util::string_view
   assert( name == "stat_timelines" );
   (void)name;
 
-  auto stats = util::string_split( value, "," );
+  auto stats = util::string_split<util::string_view>( value, "," );
 
   for ( auto& stat_type : stats )
   {
@@ -897,7 +897,7 @@ bool parse_set_bonus( sim_t* sim, util::string_view, util::string_view value )
 
   player_t* p = sim->active_player;
 
-  auto set_bonus_split = util::string_split( value, "=" );
+  auto set_bonus_split = util::string_split<util::string_view>( value, "=" );
 
   if ( set_bonus_split.size() != 2 )
   {
@@ -929,10 +929,10 @@ bool parse_set_bonus( sim_t* sim, util::string_view, util::string_view value )
 bool parse_initial_resource( sim_t* sim, util::string_view, util::string_view value )
 {
   player_t* player = sim->active_player;
-  auto opts        = util::string_split( value, ":/" );
+  auto opts        = util::string_split<util::string_view>( value, ":/" );
   for ( const auto& opt_str : opts )
   {
-    auto resource_split = util::string_split( opt_str, "=" );
+    auto resource_split = util::string_split<util::string_view>( opt_str, "=" );
     if ( resource_split.size() != 2 )
     {
       sim->error( "{} unknown initial_resources option '{}'", player->name(), opt_str );
@@ -1695,7 +1695,7 @@ void player_t::init_items()
   sim->print_debug( "Initializing items for {}.", *this );
 
   // Create items
-  for ( const auto& split : util::string_split( items_str, "/" ) )
+  for ( const auto& split : util::string_split<util::string_view>( items_str, "/" ) )
   {
     if ( find_item_by_name( split ) )
     {
@@ -2080,14 +2080,14 @@ void player_t::init_professions()
 
   sim->print_debug( "Initializing professions for {}.", *this );
 
-  auto splits = util::string_split( professions_str, ",/" );
+  auto splits = util::string_split<util::string_view>( professions_str, ",/" );
 
   for ( auto& split : splits )
   {
     util::string_view prof_name;
     int prof_value = 0;
 
-    auto subsplit = util::string_split( split, "=" );
+    auto subsplit = util::string_split<util::string_view>( split, "=" );
     if ( subsplit.size() == 2 )
     {
       prof_name = subsplit[ 0 ];
@@ -2396,7 +2396,7 @@ void player_t::init_talents()
 
   if ( !talent_overrides_str.empty() )
   {
-    for ( auto& split : util::string_split( talent_overrides_str, "/" ) )
+    for ( auto& split : util::string_split<util::string_view>( talent_overrides_str, "/" ) )
     {
       override_talent( split );
     }
@@ -2712,7 +2712,7 @@ void player_t::create_actions()
   {
     sim->print_debug( "{} action_list_skip={}", *this, action_list_skip );
 
-    skip_actions = util::string_split( action_list_skip, "/" );
+    skip_actions = util::string_split<util::string_view>( action_list_skip, "/" );
   }
 
   if ( !use_apl.empty() )
@@ -2731,7 +2731,7 @@ void player_t::create_actions()
     // Convert old style action list to new style, all lines are without comments
     if ( !apl->action_list_str.empty() )
     {
-      for ( auto& split : util::string_split( apl->action_list_str, "/" ) )
+      for ( auto& split : util::string_split<util::string_view>( apl->action_list_str, "/" ) )
         apl->action_list.emplace_back( split, "" );
     }
 
@@ -8188,7 +8188,7 @@ struct use_item_t : public action_t
 
   std::unique_ptr<expr_t> create_expression( util::string_view name_str ) override
   {
-    auto split = util::string_split( name_str, "." );
+    auto split = util::string_split<util::string_view>( name_str, "." );
     if ( auto e = create_special_effect_expr( split ) )
     {
       return e;
@@ -8302,7 +8302,7 @@ struct use_items_t : public action_t
     // that only the designated slots will be checked/executed for a special effect
     priority_slots.clear();
 
-    auto split = util::string_split( opt_value, ":|" );
+    auto split = util::string_split<util::string_view>( opt_value, ":|" );
     range::for_each( split, [this]( util::string_view slot_str ) {
       auto slot = util::parse_slot_type( slot_str );
       if ( slot != SLOT_INVALID )
@@ -8939,7 +8939,7 @@ player_e armory2_parse_player_type( util::string_view class_name )
  */
 bool player_t::parse_talents_armory2( util::string_view talents_url )
 {
-  auto split = util::string_split( talents_url, "#/=" );
+  auto split = util::string_split<util::string_view>( talents_url, "#/=" );
   if ( split.size() < 5 )
   {
     sim->error( "Player {} has malformed talent url '{}'", name(), talents_url );
@@ -9824,7 +9824,7 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
   // time_to_pct expressions
   if ( util::str_prefix_ci( expression_str, "time_to_" ) )
   {
-    auto parts = util::string_split( expression_str, "_" );
+    auto parts = util::string_split<util::string_view>( expression_str, "_" );
     double percent = -1.0;
 
     if ( util::str_in_str_ci( parts[ 2 ], "die" ) )
@@ -9853,7 +9853,7 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
   if ( util::str_in_str_ci( expression_str, "incoming_damage_" ) || util::str_in_str_ci( expression_str, "incoming_magic_damage_" ))
   {
     bool magic_damage = util::str_in_str_ci( expression_str, "incoming_magic_damage_" );
-    auto parts = util::string_split( expression_str, "_" );
+    auto parts = util::string_split<util::string_view>( expression_str, "_" );
     timespan_t window_duration;
 
     if ( util::str_in_str_ci( parts.back(), "ms" ) )
@@ -9880,7 +9880,7 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
   }
 
   // everything from here on requires splits
-  auto splits = util::string_split( expression_str, "." );
+  auto splits = util::string_split<util::string_view>( expression_str, "." );
 
   if ( splits.size() == 2 )
   {
@@ -10302,7 +10302,7 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
 
 std::unique_ptr<expr_t> player_t::create_resource_expression( util::string_view name_str )
 {
-  auto splits = util::string_split( name_str, "." );
+  auto splits = util::string_split<util::string_view>( name_str, "." );
   if ( splits.empty() )
     return nullptr;
 
@@ -10363,7 +10363,7 @@ std::unique_ptr<expr_t> player_t::create_resource_expression( util::string_view 
 
     else if ( util::str_prefix_ci( splits[ 1 ], "time_to_" ) )
     {
-      auto parts = util::string_split( splits[ 1 ], "_" );
+      auto parts = util::string_split<util::string_view>( splits[ 1 ], "_" );
 
       // foo.time_to_max
       if ( util::str_in_str_ci( parts[ 2 ], "max" ) )
@@ -10582,7 +10582,7 @@ std::string player_t::create_profile( save_e stype )
 
     if ( talent_overrides_str.size() > 0 )
     {
-      auto splits = util::string_split( talent_overrides_str, "/" );
+      auto splits = util::string_split<util::string_view>( talent_overrides_str, "/" );
       for ( size_t i = 0; i < splits.size(); i++ )
       {
         profile_str += fmt::format( "talent_override={}{}", splits[ i ], term );

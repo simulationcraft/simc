@@ -327,7 +327,7 @@ bool set_bonus_t::parse_set_bonus_option( util::string_view opt_str,
   set_bonus = SET_BONUS_NONE;
   bonus = B_NONE;
 
-  auto split = util::string_split( opt_str, "_" );
+  auto split = util::string_split<util::string_view>( opt_str, "_" );
   if ( split.size() < 2 )
   {
     return false;

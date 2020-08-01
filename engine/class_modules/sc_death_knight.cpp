@@ -7020,7 +7020,7 @@ action_t* death_knight_t::create_action( util::string_view name, const std::stri
 
 std::unique_ptr<expr_t> death_knight_t::create_death_and_decay_expression( util::string_view expr_str )
 {
-  auto expr = util::string_split( expr_str, "." );
+  auto expr = util::string_split<util::string_view>( expr_str, "." );
   if ( expr.size() < 2 || ( expr.size() == 3 && ! util::str_compare_ci( expr[ 0 ], "dot" ) ) )
   {
     return nullptr;
@@ -7057,7 +7057,7 @@ std::unique_ptr<expr_t> death_knight_t::create_death_and_decay_expression( util:
 
 std::unique_ptr<expr_t> death_knight_t::create_expression( util::string_view name_str )
 {
-  auto splits = util::string_split( name_str, "." );
+  auto splits = util::string_split<util::string_view>( name_str, "." );
 
   if ( util::str_compare_ci( splits[ 0 ], "rune" ) && splits.size() > 1 )
   {

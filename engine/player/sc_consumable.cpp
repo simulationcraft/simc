@@ -311,7 +311,7 @@ struct dbc_consumable_base_t : public action_t
 
   std::unique_ptr<expr_t> create_expression( util::string_view name_str ) override
   {
-    auto split = util::string_split( name_str, "." );
+    auto split = util::string_split<util::string_view>( name_str, "." );
     if ( split.size() == 2 && util::str_compare_ci( split[ 0 ], "consumable" ) )
     {
       auto match = util::str_compare_ci( consumable_name, split[ 1 ] );

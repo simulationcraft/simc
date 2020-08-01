@@ -4329,7 +4329,7 @@ std::unique_ptr<expr_t> unique_gear::create_expression( player_t& player, util::
   std::vector<slot_e> slots;
   bool legendary_ring = false;
 
-  auto splits = util::string_split( name_str, "." );
+  auto splits = util::string_split<util::string_view>( name_str, "." );
 
   if ( splits.size() < 2 )
   {

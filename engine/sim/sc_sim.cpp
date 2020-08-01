@@ -101,7 +101,7 @@ struct seed_predicate_t
 
 bool parse_debug_seed( sim_t* sim, util::string_view, util::string_view value )
 {
-  auto split = util::string_split_as_string( value, ":/," );
+  auto split = util::string_split( value, ":/," );
 
   for ( const auto& seed_str : split )
   {
@@ -135,7 +135,7 @@ bool parse_debug_seed( sim_t* sim, util::string_view, util::string_view value )
  */
 bool parse_json_reports( sim_t* sim, util::string_view /* option_name */, util::string_view value )
 {
-  auto splits = util::string_split( value, ",", false );
+  auto splits = util::string_split<util::string_view>( value, ",", false );
 
   if (splits.empty() || splits[0].empty())
   {
@@ -153,7 +153,7 @@ bool parse_json_reports( sim_t* sim, util::string_view /* option_name */, util::
     {
       const auto& split = splits[ i ];
 
-      auto splitOptions = util::string_split( split, "=" );
+      auto splitOptions = util::string_split<util::string_view>( split, "=" );
       if ( splitOptions.size() != 2 )
       {
         continue;
@@ -392,7 +392,7 @@ bool parse_player( sim_t*             sim,
 bool parse_proxy( sim_t* , util::string_view /* name */, util::string_view value )
 {
 
-  auto splits = util::string_split( value, "," );
+  auto splits = util::string_split<util::string_view>( value, "," );
 
   if ( splits.size() != 3 )
   {
@@ -515,7 +515,7 @@ public:
     options.push_back( opt_string( "server", server ) );
     options.push_back( opt_bool( "cache", use_cache ) );
 
-    names = util::string_split_as_string( input, "," );
+    names = util::string_split( input, "," );
 
     std::vector<std::string> names2 = names;
     size_t count = 0;
@@ -665,7 +665,7 @@ bool parse_guild( sim_t*             sim,
     std::vector<int> ranks_list;
     if ( ! ranks_str.empty() )
     {
-      auto ranks = util::string_split( ranks_str, "/" );
+      auto ranks = util::string_split<util::string_view>( ranks_str, "/" );
 
       for ( size_t i = 0; i < ranks.size(); i++ )
         ranks_list.push_back( util::to_int( ranks[i] ) );
@@ -736,7 +736,7 @@ bool parse_override_spell_data( sim_t*             sim,
     throw std::invalid_argument("Invalid form. Spell data override takes the form <spell|effect|power>.<id>.<field>=value");
   }
 
-  auto splits = util::string_split( value.substr( 0, v_pos ), "." );
+  auto splits = util::string_split<util::string_view>( value.substr( 0, v_pos ), "." );
 
   if ( splits.size() != 3 )
   {
@@ -778,7 +778,7 @@ bool parse_override_target_health( sim_t*             sim,
                                    util::string_view /* name */,
                                    util::string_view value )
 {
-  auto healths = util::string_split( value, "/" );
+  auto healths = util::string_split<util::string_view>( value, "/" );
 
   for ( size_t i = 0; i < healths.size(); ++i )
   {
@@ -849,7 +849,7 @@ bool parse_item_sources( sim_t*             sim,
 {
   sim -> item_db_sources.clear();
 
-  auto sources = util::string_split( value, ":/|" );
+  auto sources = util::string_split<util::string_view>( value, ":/|" );
 
   for ( size_t j = 0; j < sources.size(); j++ )
   {
@@ -2414,7 +2414,7 @@ void sim_t::init_parties()
     {
       party_index++;
 
-      auto player_names = util::string_split( party_str, ",;/" );
+      auto player_names = util::string_split<util::string_view>( party_str, ",;/" );
 
       for ( const auto& player_name : player_names )
       {
@@ -3355,7 +3355,7 @@ std::unique_ptr<expr_t> sim_t::create_expression( util::string_view name_str )
     return std::make_unique<nonexecute_actors_pct_expr>( this );
   }
 
-  auto splits = util::string_split( name_str, "." );
+  auto splits = util::string_split<util::string_view>( name_str, "." );
 
   if ( splits.size() == 3 )
   {
@@ -3674,7 +3674,7 @@ void sim_t::create_options()
   add_option( opt_obsoleted( "legion.pantheon_trinket_interval" ) );
   add_option( opt_obsoleted( "legion.pantheon_trinket_interval_stddev" ) );
   add_option( opt_func( "legion.cradle_of_anguish_resets", []( sim_t* sim, util::string_view, util::string_view value ) {
-    auto split = util::string_split( value, ":/," );
+    auto split = util::string_split<util::string_view>( value, ":/," );
     range::for_each( split, [ sim ]( util::string_view str ) {
       auto v = util::to_double( str );
       if ( v <= 0.0 )

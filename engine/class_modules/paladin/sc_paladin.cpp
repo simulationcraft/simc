@@ -1925,7 +1925,7 @@ bool paladin_t::get_how_availability( player_t* t ) const
 
 std::unique_ptr<expr_t> paladin_t::create_consecration_expression( util::string_view expr_str )
 {
-  auto expr = util::string_split( expr_str, "." );
+  auto expr = util::string_split<util::string_view>( expr_str, "." );
   if ( expr.size() != 2 )
   {
     return nullptr;
@@ -1961,7 +1961,7 @@ std::unique_ptr<expr_t> paladin_t::create_expression( util::string_view name_str
   };
 
 
-  auto splits = util::string_split( name_str, "." );
+  auto splits = util::string_split<util::string_view>( name_str, "." );
 
   struct time_to_hpg_expr_t : public paladin_expr_t
   {

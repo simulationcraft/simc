@@ -1610,7 +1610,7 @@ std::unique_ptr<raid_event_t> raid_event_t::create( sim_t* sim, util::string_vie
 
 void raid_event_t::init( sim_t* sim )
 {
-  auto splits = util::string_split( sim->raid_events_str, "/\\" );
+  auto splits = util::string_split<util::string_view>( sim->raid_events_str, "/\\" );
 
   for ( const auto& split : splits )
   {

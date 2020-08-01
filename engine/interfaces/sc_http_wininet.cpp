@@ -242,7 +242,7 @@ bool wininet_handle_t::parse_headers()
   if ( ret )
   {
     auto headers_str  = std::string{buffer.begin(), buffer.end()};
-    auto header_split = util::string_split( headers_str, "\r\n" );
+    auto header_split = util::string_split<util::string_view>( headers_str, "\r\n" );
 
     range::for_each( header_split, [this]( util::string_view header_str ) {
       auto normalized_header = http::normalize_header( header_str );

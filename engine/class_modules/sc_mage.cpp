@@ -7211,7 +7211,7 @@ void mage_t::combat_end()
  */
 std::unique_ptr<expr_t> mage_t::create_action_expression( action_t& action, util::string_view name )
 {
-  auto splits = util::string_split( name, "." );
+  auto splits = util::string_split<util::string_view>( name, "." );
 
   // Firestarter expressions ==================================================
   if ( splits.size() == 2 && util::str_compare_ci( splits[ 0 ], "firestarter" ) )
@@ -7294,7 +7294,7 @@ std::unique_ptr<expr_t> mage_t::create_expression( util::string_view name )
     { return icicle_event != nullptr; } );
   }
 
-  auto splits = util::string_split( name, "." );
+  auto splits = util::string_split<util::string_view>( name, "." );
 
   if ( splits.size() == 3 && util::str_compare_ci( splits[ 0 ], "ground_aoe" ) )
   {

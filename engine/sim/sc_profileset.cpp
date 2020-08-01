@@ -1149,7 +1149,7 @@ void create_options( sim_t* sim )
                                                         util::string_view value ) {
     sim -> profileset_metric.clear();
 
-    auto split = util::string_split( value, "/:," );
+    auto split = util::string_split<util::string_view>( value, "/:," );
     for ( const auto& v : split )
     {
       auto metric = util::parse_scale_metric( v );
@@ -1169,7 +1169,7 @@ void create_options( sim_t* sim )
                                                         util::string_view value ) {
     sim -> profileset_output_data.clear();
 
-    auto split = util::string_split_as_string( value, "/:," );
+    auto split = util::string_split( value, "/:," );
     for ( const auto& v : split )
     {
       sim -> profileset_output_data.push_back( v );

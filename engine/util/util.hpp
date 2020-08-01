@@ -139,8 +139,33 @@ profession_e translate_profession_id( int skill_id );
 bool socket_gem_match( item_socket_color socket, item_socket_color gem );
 double crit_multiplier( meta_gem_e gem );
 
-std::vector<util::string_view> string_split( util::string_view str, util::string_view delim, bool skip_empty_entries = true );
-std::vector<std::string> string_split_as_string( util::string_view str, util::string_view delim, bool skip_empty_entries = true );
+
+template<typename StringType = std::string>
+inline std::vector<StringType> string_split( util::string_view str, util::string_view delim, bool skip_empty_entries = true )
+{
+  std::vector<StringType> results;
+  if ( str.empty() )
+    return results;
+
+  typename StringType::size_type cut_pt, start = 0;
+
+  while ( ( cut_pt = str.find_first_of( delim, start ) ) != StringType::npos )
+  {
+    if ( !skip_empty_entries || cut_pt > start ) // Found something, push to the vector
+      results.emplace_back( str.substr( start, cut_pt - start ) );
+
+    start = cut_pt + 1; // skip the found delimeter
+  }
+
+  if ( start < str.size() )
+  {
+    // Push the tail
+    results.emplace_back( str.substr( start, str.size() - start ) );
+  }
+
+  return results;
+}
+
 std::vector<std::string> string_split_allow_quotes( util::string_view str, util::string_view delim );
 template <typename T>
 std::string string_join( const T& container, util::string_view delim = ", " );

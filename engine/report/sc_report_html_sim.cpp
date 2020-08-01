@@ -600,7 +600,7 @@ void print_html_raid_summary( report::sc_html_stream& os, sim_t& sim )
        << "<th class=\"left\">Raid Event List</th>\n"
        << "</tr>\n";
 
-    auto raid_event_names = util::string_split( sim.raid_events_str, "/" );
+    auto raid_event_names = util::string_split<util::string_view>( sim.raid_events_str, "/" );
     for ( size_t i = 0; i < raid_event_names.size(); i++ )
     {
       os.printf( "<tr>\n"

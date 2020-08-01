@@ -2447,7 +2447,7 @@ public:
 
   std::unique_ptr<expr_t> create_expression( util::string_view name_str ) override
   {
-    auto splits = util::string_split( name_str, "." );
+    auto splits = util::string_split<util::string_view>( name_str, "." );
 
     // check for AP overcap on current action. check for other action handled in druid_t::create_expression
     // syntax: ap_check.<allowed overcap = 0>
@@ -9826,7 +9826,7 @@ double druid_t::composite_leech() const
 
 std::unique_ptr<expr_t> druid_t::create_expression( util::string_view name_str )
 {
-  auto splits = util::string_split( name_str, "." );
+  auto splits = util::string_split<util::string_view>( name_str, "." );
 
   if ( splits[ 0 ] == "druid" && (splits[ 2 ] == "ticks_gained_on_refresh" || splits[2] == "ticks_gained_on_refresh_pmultiplier" ))
   {

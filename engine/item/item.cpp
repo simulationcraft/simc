@@ -711,7 +711,7 @@ void item_t::parse_options()
 
   if ( ! option_gem_id_str.empty() )
   {
-    auto spl = util::string_split( option_gem_id_str, ":/" );
+    auto spl = util::string_split<util::string_view>( option_gem_id_str, ":/" );
     for ( size_t i = 0, end = std::min( range::size( parsed.gem_id ), spl.size() ); i < end; i++ )
     {
       int gem_id = util::to_int( spl[ i ] );
@@ -722,7 +722,7 @@ void item_t::parse_options()
 
   if ( ! option_gem_bonus_id_str.empty() )
   {
-    auto gem_bonus_split = util::string_split( option_gem_bonus_id_str, "/" );
+    auto gem_bonus_split = util::string_split<util::string_view>( option_gem_bonus_id_str, "/" );
     size_t gem_slot = 0;
     for ( const auto& gem_bonus_id_str : gem_bonus_split )
     {
@@ -732,7 +732,7 @@ void item_t::parse_options()
         continue;
       }
 
-      auto bonus_id_split = util::string_split( gem_bonus_id_str, ":" );
+      auto bonus_id_split = util::string_split<util::string_view>( gem_bonus_id_str, ":" );
       for ( const auto& bonus_id_str : bonus_id_split )
       {
         parsed.gem_bonus_id[ gem_slot ].push_back( util::to_unsigned( bonus_id_str ) );
@@ -745,7 +745,7 @@ void item_t::parse_options()
 
   if ( ! option_gem_ilevel_str.empty() )
   {
-    auto split = util::string_split( option_gem_ilevel_str, "/:" );
+    auto split = util::string_split<util::string_view>( option_gem_ilevel_str, "/:" );
     auto gem_idx = 0U;
     for ( const auto& ilevel_str : split )
     {
@@ -761,7 +761,7 @@ void item_t::parse_options()
 
   if ( ! option_azerite_powers_str.empty() )
   {
-    auto split = util::string_split( option_azerite_powers_str, "/:" );
+    auto split = util::string_split<util::string_view>( option_azerite_powers_str, "/:" );
     for ( const auto& power_str : split )
     {
       auto power_id = util::to_unsigned_ignore_error( power_str, 0 );
@@ -791,7 +791,7 @@ void item_t::parse_options()
   {
     try
     {
-      auto split = util::string_split( option_bonus_id_str, "/:" );
+      auto split = util::string_split<util::string_view>( option_bonus_id_str, "/:" );
       for (auto & elem : split)
       {
         int bonus_id = util::to_int( elem );
@@ -1477,7 +1477,7 @@ void item_t::decode_gems()
 
     // First, attempt to parse gems by trying to find them through item data (split the strings by /
     // and search for each)
-    auto split = util::string_split( option_gems_str, "/" );
+    auto split = util::string_split<util::string_view>( option_gems_str, "/" );
     unsigned gem_index = 0;
     for ( const auto& gem_str : split )
     {

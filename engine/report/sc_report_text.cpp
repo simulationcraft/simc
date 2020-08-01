@@ -1191,7 +1191,7 @@ void print_text_report( std::ostream& os, sim_t* sim, bool detail )
   if ( !sim->raid_events_str.empty() )
   {
     fmt::print( os, "\n\nRaid Events:\n" );
-    auto raid_event_names = util::string_split( sim->raid_events_str, "/" );
+    auto raid_event_names = util::string_split<util::string_view>( sim->raid_events_str, "/" );
     if ( !raid_event_names.empty() )
     {
       fmt::print( os, "  raid_event=/{}\n", raid_event_names[ 0 ] );
