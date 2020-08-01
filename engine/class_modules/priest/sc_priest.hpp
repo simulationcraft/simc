@@ -274,7 +274,7 @@ public:
   {
     // Shared
     propagate_const<cooldown_t*> power_infusion;
-	propagate_const<cooldown_t*> fae_blessings;
+	  propagate_const<cooldown_t*> fae_blessings;
 
     // Discipline
     propagate_const<cooldown_t*> chakra;
@@ -290,8 +290,8 @@ public:
     propagate_const<cooldown_t*> dark_ascension;
     propagate_const<cooldown_t*> shadow_word_death;
     propagate_const<cooldown_t*> devouring_plague;
-	  propagate_const<cooldown_t*> shadowfiend;
-	  propagate_const<cooldown_t*> mindbender;
+    propagate_const<cooldown_t*> shadowfiend;
+    propagate_const<cooldown_t*> mindbender;
 
     // Holy
     propagate_const<cooldown_t*> holy_word_chastise;
