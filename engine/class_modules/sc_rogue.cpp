@@ -399,6 +399,7 @@ public:
     const spell_data_t* fleet_footed;
     const spell_data_t* master_of_shadows;
     const spell_data_t* memory_of_lucid_dreams;
+    const spell_data_t* nightstalker_dmg_amp;
     const spell_data_t* sprint;
     const spell_data_t* sprint_2;
     const spell_data_t* relentless_strikes_energize;
@@ -845,6 +846,7 @@ public:
 
     damage_affect_data mastery_executioner;
     damage_affect_data mastery_potent_assassin;
+    damage_affect_data nightstalker_dmg_amp;
     damage_affect_data broadside;
     damage_affect_data symbols_of_death;
     damage_affect_data shadow_dance;
@@ -898,6 +900,8 @@ public:
     parse_damage_affecting_spell( p->spec.symbols_of_death, affected_by.symbols_of_death );
     parse_damage_affecting_spell( p->spec.shadow_dance, affected_by.shadow_dance );
     parse_damage_affecting_spell( p->talent.elaborate_planning -> effectN( 1 ).trigger(), affected_by.elaborate_planning );
+    if ( p()->talent.nightstalker->ok() )
+      parse_damage_affecting_spell( p->spell.nightstalker_dmg_amp, affected_by.nightstalker_dmg_amp );
   }
 
   // Type Wrappers ============================================================
@@ -1056,7 +1060,8 @@ public:
   virtual double proc_chance_main_gauche() const
   { return p()->mastery.main_gauche->proc_chance(); }
 
-  // Generic rules for snapshotting the Nightstalker pmultiplier, default to DoTs only
+  // Generic rules for snapshotting the Nightstalker pmultiplier, default to DoTs only.
+  // If a DoT with DD component is whitelisted in the direct damage effect #1 on 130493 this can double dip.
   virtual bool snapshots_nightstalker() const
   {
     return ab::dot_duration > timespan_t::zero() && ab::base_tick_time > timespan_t::zero();
@@ -1164,6 +1169,15 @@ public:
       m *= 1.0 + affected_by.broadside.direct_percent;
     }
 
+    // General
+
+    // Apply Nightstalker direct damage increase via the corresponding driver spell.
+    // And yes, this can cause double dips with the persistent multiplier on DoTs which is the case with Crimson Tempest.
+    if ( affected_by.nightstalker_dmg_amp.direct && p()->stealthed( STEALTH_BASIC | STEALTH_SHADOWDANCE ) )
+    {
+      m *= 1.0 + ( affected_by.nightstalker_dmg_amp.direct_percent + p()->spec.subtlety_rogue->effectN( 4 ).percent() );
+    }
+
     return m;
   }
 
@@ -1233,22 +1247,16 @@ public:
     double m = ab::composite_persistent_multiplier( state );
 
     // Apply Nightstalker as a Persistent Multiplier for things that snapshot
+    // This appears to be driven by the dummy effect #2 and there is no whitelist.
+    // This can and will cause double dips on direct damage if a spell is whitelisted in effect #1.
     if ( p()->talent.nightstalker->ok() && snapshots_nightstalker() && p()->stealthed( STEALTH_BASIC | STEALTH_SHADOWDANCE ) )
     {
-      m *= 1.0 + ( p()->talent.nightstalker->effectN( 2 ).percent() + p()->spec.subtlety_rogue->effectN( 4 ).percent() );
-    }
-
-    return m;
-  }
-
-  double action_multiplier() const override
-  {
-    double m = ab::action_multiplier();
-
-    // Apply Nightstalker as an Action Multiplier for things that don't snapshot
-    if ( p()->talent.nightstalker->ok() && !snapshots_nightstalker() && p()->stealthed( STEALTH_BASIC | STEALTH_SHADOWDANCE ) )
-    {
-      m *= 1.0 + ( p()->talent.nightstalker->effectN( 2 ).percent() + p()->spec.subtlety_rogue->effectN( 4 ).percent() );
+      double ns_mod = p()->spell.nightstalker_dmg_amp->effectN( 2 ).percent();
+      // Bug: Rupture seems to ignore the sub modifier for Nightstalker snapshot damage as of Shadowlands beta 2020-07-31.
+      // https://github.com/SimCMinMax/WoW-BugTracker/issues/472
+      if ( !p()->bugs || ab::name_str != "rupture" )
+        ns_mod += p()->spec.subtlety_rogue->effectN( 4 ).percent();
+      m *= 1.0 + ns_mod;
     }
 
     return m;
@@ -6594,6 +6602,7 @@ void rogue_t::init_spells()
   spell.fan_of_knives                 = find_class_spell( "Fan of Knives" );
   spell.fleet_footed                  = find_spell( 31209 );
   spell.master_of_shadows             = find_spell( 196980 );
+  spell.nightstalker_dmg_amp          = find_spell( 130493 );
   spell.sprint                        = find_class_spell( "Sprint" );
   spell.sprint_2                      = find_spell( 231691 );
   spell.ruthlessness_driver           = find_spell( 14161 );
