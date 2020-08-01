@@ -153,7 +153,6 @@ std::string to_string( double f );
 std::string to_string( double f, int precision );
 
 unsigned to_unsigned( const std::string& str );
-unsigned to_unsigned( const char* str );
 inline unsigned to_unsigned( util::string_view str )
 { return to_unsigned( std::string( str ) ); }
 

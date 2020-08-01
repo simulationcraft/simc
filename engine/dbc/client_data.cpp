@@ -76,14 +76,14 @@ std::string dbc::hotfix_hash_str( bool ptr )
 int dbc::client_data_build( bool ptr )
 {
 #if SC_USE_PTR == 1
-  std::string __version = ptr ? PTR_CLIENT_DATA_WOW_VERSION : CLIENT_DATA_WOW_VERSION;
+  util::string_view __version = ptr ? PTR_CLIENT_DATA_WOW_VERSION : CLIENT_DATA_WOW_VERSION;
 #else
   (void) ptr;
-  std::string __version = CLIENT_DATA_WOW_VERSION;
+  util::string_view __version = CLIENT_DATA_WOW_VERSION;
 #endif /* SC_USE_PTR */
 
   auto pos = __version.rfind( '.' );
-  if ( pos == std::string::npos )
+  if ( pos == util::string_view::npos )
   {
     return -1;
   }

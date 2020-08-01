@@ -774,7 +774,7 @@ void action_t::parse_target_str()
   {
     if ( option.target_str[ 0 ] >= '0' && option.target_str[ 0 ] <= '9' )
     {
-      option.target_number = std::stoi( option.target_str );
+      option.target_number = util::to_int( option.target_str );
       player_t* p          = find_target_by_number( option.target_number );
       // Numerical targeting is intended to be dynamic, so don't give an error message if we can't find the target yet
       if ( p )

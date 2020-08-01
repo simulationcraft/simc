@@ -2338,7 +2338,7 @@ void player_t::override_talent( util::string_view override_str )
     auto row_str = override_str.substr( 11 );
     if ( !row_str.empty() )
     {
-      unsigned row = util::to_unsigned( std::string(override_str.substr( 11 )) );
+      unsigned row = util::to_unsigned( override_str.substr( 11 ) );
       if ( row == 0 || row > MAX_TALENT_ROWS )
       {
         throw std::invalid_argument(fmt::format("talent_override: Invalid talent row {} in '{}'.", row, override_str ));

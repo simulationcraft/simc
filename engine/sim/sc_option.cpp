@@ -139,7 +139,7 @@ struct converter_uint_t
 {
   static unsigned int convert( util::string_view v )
   {
-    return std::stoul( std::string( v ) );
+    return util::to_unsigned( v );
   }
 };
 

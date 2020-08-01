@@ -1376,7 +1376,7 @@ void item_t::decode_ilevel()
 {
   if ( ! option_ilevel_str.empty() )
   {
-    parsed.item_level = std::stoi( option_ilevel_str );
+    parsed.item_level = util::to_int( option_ilevel_str );
     if ( parsed.item_level == 0 )
     {
       throw std::invalid_argument("Parsed item level is zero.");

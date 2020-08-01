@@ -284,7 +284,7 @@ bool wowhead::download_item_data( item_t&            item,
         else
           begin++;
 
-        int parsed_spell_id = std::stoi(url.substr(begin));
+        int parsed_spell_id = util::to_int(url.substr(begin));
         if (parsed_spell_id < 0)
         {
           throw std::invalid_argument(fmt::format("Invalid spell id {} < 0.", parsed_spell_id));

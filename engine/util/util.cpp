@@ -2557,26 +2557,15 @@ std::string util::to_string( double f )
   return to_string( f, 3 );
 }
 
-// to_unsigned ==============================================================
-
 unsigned util::to_unsigned( const std::string& str )
-{ return util::to_unsigned( str.c_str() ); }
-
-unsigned util::to_unsigned( const char* str )
 {
-  errno = 0;
-
-  unsigned l = strtoul( str, nullptr, 0 );
-  if ( errno != 0 )
-    return 0;
-
-  return l;
+  return std::stoul( str );
 }
 
-// to_int ===================================================================
-
 int util::to_int( const std::string& str )
-{ return std::stoi( str ); }
+{
+  return std::stoi( str );
+}
 
 double util::to_double( const std::string& str )
 {

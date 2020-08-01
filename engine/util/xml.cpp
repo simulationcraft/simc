@@ -505,7 +505,7 @@ bool xml_node_t::get_value( int&               value,
   xml_parm_t* parm = node -> get_parm( key );
   if ( ! parm ) return false;
 
-  value = std::stoi( parm -> value_str.c_str() );
+  value = util::to_int( parm -> value_str );
 
   return true;
 }
