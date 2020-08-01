@@ -3877,9 +3877,9 @@ struct ice_lance_t : public frost_mage_spell_t
 
   ice_lance_t( util::string_view n, mage_t* p, util::string_view options_str ) :
     frost_mage_spell_t( n, p, p->find_specialization_spell( "Ice Lance" ) ),
+    glacial_fragments(),
     extension_source(),
-    cleave_source(),
-    glacial_fragments()
+    cleave_source()
   {
     parse_options( options_str );
     parse_effect_data( p->find_spell( 228598 )->effectN( 1 ) );

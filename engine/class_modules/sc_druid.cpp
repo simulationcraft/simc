@@ -1656,7 +1656,7 @@ public:
   {
     double c = ab::cost();
 
-    if ( p()->buff.innervate->up() && p()->specialization() == DRUID_RESTORATION || free_cast )
+    if ( (p()->buff.innervate->up() && p()->specialization() == DRUID_RESTORATION) || free_cast )
       c *= 0;
 
     return c;
@@ -8131,7 +8131,7 @@ void druid_t::create_buffs()
 
   buff.kindred_empowerment_energize =
       make_buff( this, "kindred_empowerment_energize", covenant.kindred_empowerment_energize )
-    ->set_stack_change_callback( [this]( buff_t* b, int, int new_ ) {
+    ->set_stack_change_callback( [this]( buff_t*, int, int new_ ) {
       if ( !new_ )
       {
         auto pool = debug_cast<buffs::kindred_empowerment_buff_t*>( buff.kindred_empowerment );
@@ -8267,7 +8267,7 @@ void druid_t::create_buffs()
   buff.eclipse_solar =
       make_buff( this, "eclipse_solar", spec.eclipse_solar )
           ->set_duration( spec.eclipse_solar->duration() + talent.soul_of_the_forest->effectN( 2 ).time_value() )
-          ->set_stack_change_callback( [this]( buff_t*, int old_, int new_ ) {
+          ->set_stack_change_callback( [this]( buff_t*, int /* old_ */, int new_ ) {
             if ( !new_ )
               this->eclipse_handler.advance_eclipse();
             else if ( legendary.balance_runecarve_3->ok() )
@@ -8278,7 +8278,7 @@ void druid_t::create_buffs()
       make_buff( this, "eclipse_lunar", spec.eclipse_lunar )
           ->set_default_value( spec.eclipse_lunar->effectN( 2 ).percent() )
           ->set_duration( spec.eclipse_lunar->duration() + talent.soul_of_the_forest->effectN( 2 ).time_value() )
-          ->set_stack_change_callback( [this]( buff_t*, int old_, int new_ ) {
+          ->set_stack_change_callback( [this]( buff_t*, int /* old_ */, int new_ ) {
             if ( !new_ )
               this->eclipse_handler.advance_eclipse();
             else if ( legendary.balance_runecarve_3->ok() )
