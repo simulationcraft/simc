@@ -900,7 +900,7 @@ public:
     parse_damage_affecting_spell( p->spec.symbols_of_death, affected_by.symbols_of_death );
     parse_damage_affecting_spell( p->spec.shadow_dance, affected_by.shadow_dance );
     parse_damage_affecting_spell( p->talent.elaborate_planning -> effectN( 1 ).trigger(), affected_by.elaborate_planning );
-    if ( p()->talent.nightstalker->ok() )
+    if ( p->talent.nightstalker->ok() )
       parse_damage_affecting_spell( p->spell.nightstalker_dmg_amp, affected_by.nightstalker_dmg_amp );
   }
 
@@ -3317,11 +3317,11 @@ struct secret_technique_t : public rogue_attack_t
 {
   struct secret_technique_attack_t : public rogue_attack_t
   {
-    secret_technique_attack_t( util::string_view name, rogue_t* p ) :
-      rogue_attack_t( name, p, p->find_spell( 280720 ) )
+    secret_technique_attack_t( util::string_view name, rogue_t* p, const spell_data_t* s ) :
+      rogue_attack_t( name, p, s )
     {
       background = true;
-      aoe = -1;
+      aoe = aoe != 0 ? aoe : -1;
     }
 
     double combo_point_da_multiplier( const action_state_t* state ) const override
@@ -3347,14 +3347,11 @@ struct secret_technique_t : public rogue_attack_t
     rogue_attack_t( "secret_technique", p, p -> talent.secret_technique, options_str )
   {
     may_miss = false;
-    aoe = -1;
 
-    player_attack = p->get_background_action<secret_technique_attack_t>( "secret_technique_player" );
+    player_attack = p->get_background_action<secret_technique_attack_t>( "secret_technique_player", p->find_spell( 280720 ) );
     add_child( player_attack );
-    clone_attack = p->get_background_action<secret_technique_attack_t>( "secret_technique_clones" );
+    clone_attack = p->get_background_action<secret_technique_attack_t>( "secret_technique_clones", p->find_spell( 282449 ) );
     add_child( clone_attack );
-
-    radius = player_attack->radius;
   }
 
   void execute() override
@@ -3366,14 +3363,11 @@ struct secret_technique_t : public rogue_attack_t
     // Hit of the main char happens right on cast.
     player_attack->make_secondary_trigger( TRIGGER_SECRET_TECHNIQUE, execute_state->target, cp );
 
-    // The clones seem to hit 1s later (no time reference in spell data though)
-    // Trigger tracking buff until clone damage
+    // The clones seem to hit 1s and 1.3s later (no time reference in spell data though)
+    // Trigger tracking buff until first clone's damage
     p()->buffs.secret_technique->trigger( 1, buff_t::DEFAULT_VALUE(), ( -1.0 ), 1_s );
-    // Assuming effect #2 is the number of aditional clones
-    for ( size_t i = 0; i < data().effectN( 2 ).base_value(); i++ )
-    {
-      clone_attack->make_secondary_trigger( TRIGGER_SECRET_TECHNIQUE, execute_state->target, cp, 1_s );
-    }
+    clone_attack->make_secondary_trigger( TRIGGER_SECRET_TECHNIQUE, execute_state->target, cp, 1_s );
+    clone_attack->make_secondary_trigger( TRIGGER_SECRET_TECHNIQUE, execute_state->target, cp, 1.3_s );
   }
 };
 
@@ -5974,7 +5968,7 @@ void rogue_t::init_action_list()
     def -> add_action( "call_action_list,name=stealth_cds,if=variable.use_priority_rotation", "Priority Rotation? Let's give a crap about energy for the stealth CDs (builder still respect it). Yup, it can be that simple." );
     def -> add_action( "variable,name=stealth_threshold,value=25+talent.vigor.enabled*35+talent.master_of_shadows.enabled*25+talent.shadow_focus.enabled*20+talent.alacrity.enabled*10+15*(spell_targets.shuriken_storm>=3)", "Used to define when to use stealth CDs or builders" );
     def -> add_action( "call_action_list,name=stealth_cds,if=energy.deficit<=variable.stealth_threshold", "Consider using a Stealth CD when reaching the energy threshold" );
-    def -> add_action( this, "Rupture", "if=azerite.nights_vengeance.enabled&!buff.nights_vengeance.up&combo_points.deficit>1&(spell_targets.shuriken_storm<2|variable.use_priority_rotation)&(cooldown.symbols_of_death.remains<=3|(azerite.nights_vengeance.rank>=2&buff.symbols_of_death.remains>3&!stealthed.all&cooldown.shadow_dance.charges_fractional>=0.9))", "Night's Vengeance: Rupture before Symbols at low CP to combine early refresh with getting the buff up. Also low CP during Symbols between Dances with 2+ NV." );
+    //def -> add_action( this, "Rupture", "if=azerite.nights_vengeance.enabled&!buff.nights_vengeance.up&combo_points.deficit>1&(spell_targets.shuriken_storm<2|variable.use_priority_rotation)&(cooldown.symbols_of_death.remains<=3|(azerite.nights_vengeance.rank>=2&buff.symbols_of_death.remains>3&!stealthed.all&cooldown.shadow_dance.charges_fractional>=0.9))", "Night's Vengeance: Rupture before Symbols at low CP to combine early refresh with getting the buff up. Also low CP during Symbols between Dances with 2+ NV." );
     def -> add_action( "call_action_list,name=finish,if=combo_points.deficit<=1|target.time_to_die<=1&combo_points>=3", "Finish at 4+ without DS, 5+ with DS (outside stealth)" );
     def -> add_action( "call_action_list,name=finish,if=spell_targets.shuriken_storm=4&combo_points>=4", "With DS also finish at 4+ against exactly 4 targets (outside stealth)" );
     def -> add_action( "call_action_list,name=build,if=energy.deficit<=variable.stealth_threshold", "Use a builder when reaching the energy threshold" );
@@ -5990,7 +5984,7 @@ void rogue_t::init_action_list()
     cds -> add_action( "call_action_list,name=essences,if=!stealthed.all&dot.rupture.ticking|essence.breath_of_the_dying.major&time>=2" );
     cds -> add_action( "pool_resource,for_next=1,if=!talent.shadow_focus.enabled", "Pool for Tornado pre-SoD with ShD ready when not running SF." );
     cds -> add_talent( this, "Shuriken Tornado", "if=energy>=60&dot.rupture.ticking&cooldown.symbols_of_death.up&cooldown.shadow_dance.charges>=1", "Use Tornado pre SoD when we have the energy whether from pooling without SF or just generally." );
-    cds -> add_action( this, "Symbols of Death", "if=dot.rupture.ticking&!cooldown.shadow_blades.up&(!talent.shuriken_tornado.enabled|talent.shadow_focus.enabled|cooldown.shuriken_tornado.remains>2)&(!essence.blood_of_the_enemy.major|cooldown.blood_of_the_enemy.remains>2)&(azerite.nights_vengeance.rank<2|buff.nights_vengeance.up)", "Use Symbols on cooldown (after first Rupture) unless we are going to pop Tornado and do not have Shadow Focus." );
+    cds -> add_action( this, "Symbols of Death", "if=dot.rupture.ticking&!cooldown.shadow_blades.up&(!talent.shuriken_tornado.enabled|talent.shadow_focus.enabled|cooldown.shuriken_tornado.remains>2)&(!essence.blood_of_the_enemy.major|cooldown.blood_of_the_enemy.remains>2)", "Use Symbols on cooldown (after first Rupture) unless we are going to pop Tornado and do not have Shadow Focus." );
     cds -> add_talent( this, "Marked for Death", "target_if=min:target.time_to_die,if=raid_event.adds.up&(target.time_to_die<combo_points.deficit|!stealthed.all&combo_points.deficit>=cp_max_spend)", "If adds are up, snipe the one with lowest TTD. Use when dying faster than CP deficit or not stealthed without any CP." );
     cds -> add_talent( this, "Marked for Death", "if=raid_event.adds.in>30-raid_event.adds.duration&!stealthed.all&combo_points.deficit>=cp_max_spend", "If no adds will die within the next 30s, use MfD on boss without any CP and no stealth." );
     cds -> add_action( this, "Shadow Blades", "if=!stealthed.all&dot.rupture.ticking&combo_points.deficit>=2" );
@@ -6032,7 +6026,7 @@ void rogue_t::init_action_list()
     stealth_cds -> add_action( "shadowmeld,if=energy>=40&energy.deficit>=10&!variable.shd_threshold&combo_points.deficit>1&debuff.find_weakness.remains<1" );
     stealth_cds -> add_action( "variable,name=shd_combo_points,value=combo_points.deficit>=4-(talent.deeper_stratagem.enabled&(azerite.the_first_dance.enabled&!talent.dark_shadow.enabled&!talent.subterfuge.enabled&spell_targets.shuriken_storm<3))", "CP requirement: Dance at low CP by default. (Subtraction is a copy from the stealhed finisher call for TFD handling.)" );
     stealth_cds -> add_action( "variable,name=shd_combo_points,value=combo_points.deficit<=1+2*azerite.the_first_dance.enabled,if=variable.use_priority_rotation&(talent.nightstalker.enabled|talent.dark_shadow.enabled)", "CP requirement: Dance only before finishers if we have amp talents and priority rotation." );
-    stealth_cds -> add_action( this, "Shadow Dance", "if=variable.shd_combo_points&(!talent.dark_shadow.enabled|dot.rupture.remains>=5+talent.subterfuge.enabled)&(variable.shd_threshold|buff.symbols_of_death.remains>=1.2|spell_targets.shuriken_storm>=4&cooldown.symbols_of_death.remains>10)&(azerite.nights_vengeance.rank<2|buff.nights_vengeance.up)", "With Dark Shadow only Dance when Rupture will stay up. Use during Symbols or above threshold. Wait for NV buff with 2+NV." );
+    stealth_cds -> add_action( this, "Shadow Dance", "if=variable.shd_combo_points&(!talent.dark_shadow.enabled|dot.rupture.remains>=5+talent.subterfuge.enabled)&(variable.shd_threshold|buff.symbols_of_death.remains>=1.2|spell_targets.shuriken_storm>=4&cooldown.symbols_of_death.remains>10)", "With Dark Shadow only Dance when Rupture will stay up. Use during Symbols or above threshold. Wait for NV buff with 2+NV." );
     stealth_cds -> add_action( this, "Shadow Dance", "if=variable.shd_combo_points&target.time_to_die<cooldown.symbols_of_death.remains&!raid_event.adds.up", "Burn remaining Dances before the target dies if SoD won't be ready in time." );
 
     // Stealthed Rotation
@@ -6040,7 +6034,7 @@ void rogue_t::init_action_list()
     stealthed -> add_action( this, "Shadowstrike", "if=(buff.stealth.up|buff.vanish.up)", "If Stealth/vanish are up, use Shadowstrike to benefit from the passive bonus and Find Weakness, even if we are at max CP (from the precombat MfD)." );
     stealthed -> add_action( "call_action_list,name=finish,if=buff.shuriken_tornado.up&combo_points.deficit<=2", "Finish at 3+ CP without DS / 4+ with DS with Shuriken Tornado buff up to avoid some CP waste situations." );
     stealthed -> add_action( "call_action_list,name=finish,if=spell_targets.shuriken_storm=4&combo_points>=4", "Also safe to finish at 4+ CP with exactly 4 targets. (Same as outside stealth.)" );
-    stealthed -> add_action( "call_action_list,name=finish,if=combo_points.deficit<=1-(talent.deeper_stratagem.enabled&(buff.vanish.up|azerite.the_first_dance.enabled&spell_targets.shuriken_storm<3&buff.nights_vengeance.up))", "Finish at 4+ CP without DS, 5+ with DS, and 6 with DS after Vanish or The First Dance + Nights Vegeance" );
+    stealthed -> add_action( "call_action_list,name=finish,if=combo_points.deficit<=1-(talent.deeper_stratagem.enabled&(buff.vanish.up|azerite.the_first_dance.enabled&spell_targets.shuriken_storm<3))", "Finish at 4+ CP without DS, 5+ with DS, and 6 with DS after Vanish or The First Dance + Nights Vegeance" );
     stealthed -> add_talent( this, "Gloomblade" , "if=azerite.perforate.rank>=2&spell_targets.shuriken_storm<=2&position_back", "Use Gloomblade over Shadowstrike and Storm with 2+ Perforate at 2 or less targets.");
     stealthed -> add_action( this, "Shadowstrike", "cycle_targets=1,if=talent.secret_technique.enabled&debuff.find_weakness.remains<1&spell_targets.shuriken_storm=2&target.time_to_die-remains>6", "At 2 targets with Secret Technique keep up Find Weakness by cycling Shadowstrike.");
     stealthed -> add_action( this, "Shadowstrike", "if=!talent.deeper_stratagem.enabled&azerite.blade_in_the_shadows.rank=3&spell_targets.shuriken_storm=3", "Without Deeper Stratagem and 3 Ranks of Blade in the Shadows it is worth using Shadowstrike on 3 targets." );
@@ -6051,10 +6045,9 @@ void rogue_t::init_action_list()
     // Finishers
     action_priority_list_t* finish = get_action_priority_list( "finish", "Finishers" );
     finish -> add_action( "pool_resource,for_next=1" );
-    finish -> add_action( this, "Eviscerate", "if=buff.nights_vengeance.up&(spell_targets.shuriken_storm<2|variable.use_priority_rotation|!talent.secret_technique.enabled|!cooldown.secret_technique.up)", "Eviscerate has highest priority with Night's Vengeance up. Exception is AoE damage when SecTec is ready." );
     finish -> add_action( this, "Slice and Dice", "if=buff.slice_and_dice.remains<target.time_to_die&buff.slice_and_dice.remains<(1+combo_points)*1.8" );
     finish -> add_action( this, "Rupture", "if=(!talent.dark_shadow.enabled|!buff.shadow_dance.up)&target.time_to_die-remains>6&remains<tick_time*2", "Keep up Rupture if it is about to run out. Do not use NB during Dance, if talented into Dark Shadow." );
-    finish -> add_action( this, "Rupture", "cycle_targets=1,if=!variable.use_priority_rotation&spell_targets.shuriken_storm>=2&(azerite.nights_vengeance.enabled|!azerite.replicating_shadows.enabled|spell_targets.shuriken_storm-active_dot.rupture>=2)&!buff.shadow_dance.up&target.time_to_die>=(5+(2*combo_points))&refreshable", "Multidotting outside Dance on targets that will live for the duration of Rupture, refresh during pandemic. Multidot as long as 2+ targets do not have Rupture up with Replicating Shadows (unless you have Night's Vengeance too)." );
+    finish -> add_action( this, "Rupture", "cycle_targets=1,if=!variable.use_priority_rotation&spell_targets.shuriken_storm>=2&!buff.shadow_dance.up&target.time_to_die>=(5+(2*combo_points))&refreshable", "Multidotting outside Dance on targets that will live for the duration of Rupture, refresh during pandemic." );
     finish -> add_action( this, "Rupture", "if=remains<cooldown.symbols_of_death.remains+10&cooldown.symbols_of_death.remains<=5&target.time_to_die-remains>cooldown.symbols_of_death.remains+5", "Refresh Rupture early if it will expire during Symbols. Do that refresh if SoD gets ready in the next 5s." );
     finish -> add_talent( this, "Secret Technique" );
     finish -> add_action( this, "Eviscerate" );
