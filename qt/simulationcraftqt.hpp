@@ -1240,4 +1240,13 @@ public:
     }
 };
 
+namespace util {
+  
+// explicit conversion of string_view to QString
+inline QString to_QString(string_view sv) {
+  return QString::fromUtf8(sv.data(), sv.size() );
+}
+
+}
+
 #endif // SIMULATIONCRAFTQT_H
