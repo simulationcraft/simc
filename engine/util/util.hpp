@@ -153,16 +153,17 @@ std::string to_string( double f );
 std::string to_string( double f, int precision );
 
 unsigned to_unsigned( const std::string& str );
-inline unsigned to_unsigned( util::string_view str )
-{ return to_unsigned( std::string( str ) ); }
+unsigned to_unsigned( util::string_view str );
+
+
+unsigned to_unsigned_ignore_error( const std::string& str, unsigned on_error_value );
+unsigned to_unsigned_ignore_error( util::string_view str, unsigned on_error_value );
 
 int to_int( const std::string& str );
-inline int to_int( util::string_view str )
-{ return to_int(std::string(str)); }
+int to_int( util::string_view str );
 
 double to_double( const std::string& str );
-inline double to_double( util::string_view str )
-{ return to_double(std::string(str)); }
+double to_double( util::string_view str );
 
 int64_t parse_date( util::string_view month_day_year );
 

@@ -59,6 +59,7 @@
 #include <memory>
 #include <sstream>
 #include <cctype>
+#include <stdexcept>
 
 namespace
 {
@@ -9924,7 +9925,7 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
     // item equipped by item_id or name or effect_name
     if ( splits[ 0 ] == "equipped" )
     {
-      unsigned item_id = util::to_unsigned( splits[ 1 ] );
+      unsigned item_id = util::to_unsigned_ignore_error( splits[ 1 ], 0 );
       for ( size_t i = 0; i < items.size(); ++i )
       {
         if ( item_id > 0 && items[ i ].parsed.data.id == item_id )

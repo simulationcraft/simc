@@ -578,7 +578,7 @@ bool azerite_state_t::parse_override( sim_t* sim, util::string_view, util::strin
     }
 
     auto power_str = opt_split[ 0 ];
-    unsigned ilevel = util::to_unsigned( opt_split[ 1 ] );
+    unsigned ilevel = util::to_unsigned_ignore_error( opt_split[ 1 ], 0 );
 
     if ( ilevel > MAX_ILEVEL )
     {
@@ -591,7 +591,7 @@ bool azerite_state_t::parse_override( sim_t* sim, util::string_view, util::strin
     // Additionally try with an azerite power id if the name-based lookup fails
     if ( power->id == 0 )
     {
-      unsigned power_id = util::to_unsigned( opt_split[ 0 ] );
+      unsigned power_id = util::to_unsigned_ignore_error( opt_split[ 0 ], 0 );
       if ( power_id > 0 )
       {
         power = &( m_player->dbc->azerite_power( power_id ) );
@@ -1098,7 +1098,7 @@ bool azerite_essence_state_t::parse_azerite_essence( sim_t* sim,
     // Split by :
     auto token_split = util::string_split( splits[ i ], ":" );
 
-    unsigned id = util::to_unsigned( token_split[ 0 ] );
+    unsigned id = util::to_unsigned_ignore_error( token_split[ 0 ], 0 );
     unsigned rank = 0;
     essence_type type = essence_type::INVALID;
 

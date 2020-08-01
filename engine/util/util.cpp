@@ -12,6 +12,9 @@
 #include "lib/utf8-cpp/utf8.h"
 
 #include <cctype>
+#include <limits>
+#include <stdexcept>
+#include <string>
 
 namespace { // anonymous namespace ==========================================
 
@@ -262,6 +265,25 @@ std::vector<StringType> string_split_impl( util::string_view str, util::string_v
   }
 
   return results;
+}
+
+template <typename T, typename Converter>
+T convert_string_to_number( Converter converter, const std::string& str, util::string_view type_name )
+{
+  try
+  {
+    return converter( str );
+  }
+  catch ( const std::invalid_argument& )
+  {
+    throw std::invalid_argument( fmt::format( "Could not parse '{}' to {}: invalid input string", str, type_name ) );
+  }
+  catch ( const std::out_of_range& )
+  {
+    throw std::invalid_argument( fmt::format( "Could not parse '{}' to {}: resulting value exceeds range [{}, {}]",
+                                              str, type_name, std::numeric_limits<T>::lowest(),
+                                              std::numeric_limits<T>::max() ) );
+  }
 }
 
 } // anonymous namespace ============================================
@@ -2559,17 +2581,52 @@ std::string util::to_string( double f )
 
 unsigned util::to_unsigned( const std::string& str )
 {
-  return std::stoul( str );
+  return convert_string_to_number<unsigned>( []( const std::string& str ) { return std::stoul( str ); }, str,
+                                             "unsigned" );
+}
+
+unsigned util::to_unsigned( util::string_view str )
+{
+  return to_unsigned( std::string( str ) );
 }
 
 int util::to_int( const std::string& str )
 {
-  return std::stoi( str );
+  return convert_string_to_number<int>( []( const std::string& str ) { return std::stoi( str ); }, str, "int" );
+}
+
+int util::to_int( util::string_view str )
+{
+  return to_int( std::string( str ) );
 }
 
 double util::to_double( const std::string& str )
 {
-  return std::stod( str );
+  return convert_string_to_number<double>( []( const std::string& str ) { return std::stod( str ); }, str, "double" );
+}
+
+double util::to_double( util::string_view str )
+{
+  return to_double( std::string( str ) );
+}
+
+// Convert string to unsigned. If parsing fails, return on_error_value
+unsigned util::to_unsigned_ignore_error( const std::string& str, unsigned on_error_value )
+{
+  try
+  {
+    return std::stoul( str );
+  }
+  catch ( const std::exception& )
+  {
+    return on_error_value;
+  }
+}
+
+// Convert string to unsigned. If parsing fails, return on_error_value
+unsigned util::to_unsigned_ignore_error( util::string_view str, unsigned on_error_value )
+{
+  return to_unsigned_ignore_error( std::string( str ), on_error_value );
 }
 
 // parse_date ===============================================================

@@ -113,7 +113,7 @@ bool covenant_state_t::parse_covenant( sim_t*             sim,
                                        util::string_view value )
 {
   covenant_e covenant = util::parse_covenant_string( value );
-  unsigned covenant_id = util::to_unsigned( value );
+  unsigned covenant_id = util::to_unsigned_ignore_error( value, 0 );
 
   if ( covenant == covenant_e::INVALID ||
        covenant_id > static_cast<unsigned>( covenant_e::COVENANT_ID_MAX ) )
@@ -180,7 +180,7 @@ bool covenant_state_t::parse_soulbind( sim_t*             sim,
       }
 
       const conduit_entry_t* conduit_entry = nullptr;
-      unsigned conduit_id = util::to_unsigned( _conduit_split[ 0 ] );
+      unsigned conduit_id = util::to_unsigned_ignore_error( _conduit_split[ 0 ], 0 );
       unsigned conduit_rank = util::to_unsigned( _conduit_split[ 1 ] );
       if ( conduit_rank == 0 )
       {
@@ -223,7 +223,7 @@ bool covenant_state_t::parse_soulbind( sim_t*             sim,
     else
     {
       const soulbind_ability_entry_t* soulbind_entry = nullptr;
-      auto soulbind_spell_id = util::to_unsigned( entry );
+      auto soulbind_spell_id = util::to_unsigned_ignore_error( entry, 0 );
       if ( soulbind_spell_id > 0 )
       {
         soulbind_entry = &soulbind_ability_entry_t::find( soulbind_spell_id,

@@ -764,7 +764,7 @@ void item_t::parse_options()
     auto split = util::string_split( option_azerite_powers_str, "/:" );
     for ( const auto& power_str : split )
     {
-      auto power_id = util::to_unsigned( power_str );
+      auto power_id = util::to_unsigned_ignore_error( power_str, 0 );
       if ( power_id > 0 )
       {
         parsed.azerite_ids.push_back( power_id );
