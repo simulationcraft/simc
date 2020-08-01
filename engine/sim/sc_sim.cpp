@@ -99,7 +99,7 @@ struct seed_predicate_t
 
 // parse_debug_seed =========================================================
 
-bool parse_debug_seed( sim_t* sim, util::string_view, const std::string& value )
+bool parse_debug_seed( sim_t* sim, util::string_view, util::string_view value )
 {
   auto split = util::string_split_as_string( value, ":/," );
 
@@ -133,7 +133,7 @@ bool parse_debug_seed( sim_t* sim, util::string_view, const std::string& value )
  * - pretty_print [bool]: Pretty-print (whitespaces and indentation) the report.
  * - decimal_places [int]: limit floating point decimal places. Valid if > 0
  */
-bool parse_json_reports( sim_t* sim, util::string_view /* option_name */, const std::string& value )
+bool parse_json_reports( sim_t* sim, util::string_view /* option_name */, util::string_view value )
 {
   auto splits = util::string_split( value, ",", false );
 
@@ -214,7 +214,7 @@ bool parse_json_reports( sim_t* sim, util::string_view /* option_name */, const 
   return true;
 }
 
-bool replace_json2( sim_t* sim, util::string_view /*option_name*/, const std::string& value )
+bool replace_json2( sim_t* sim, util::string_view /*option_name*/, util::string_view value )
 {
   // Redirect existing json2=value option to json=value,version=2
   return parse_json_reports(sim, "json", fmt::format("{},version=2", value));
@@ -229,9 +229,9 @@ bool parse_ptr( sim_t*             sim,
   if ( name != "ptr" ) return false;
 
   if ( SC_USE_PTR )
-    sim -> dbc->ptr = std::stoi( value ) != 0;
+    sim -> dbc->ptr = util::to_int( value ) != 0;
   else
-    sim -> errorf( "SimulationCraft has not been built with PTR data.  The 'ptr=' option is ignored.\n" );
+    sim -> error( "SimulationCraft has not been built with PTR data.  The 'ptr=' option is ignored.\n" );
 
   return true;
 }
@@ -240,7 +240,7 @@ bool parse_ptr( sim_t*             sim,
 
 bool parse_active( sim_t*             sim,
                           util::string_view name,
-                          const std::string& value )
+                          util::string_view value )
 {
   if ( name != "active" ) return false;
 
@@ -286,7 +286,7 @@ bool parse_optimal_raid( sim_t*             sim,
 {
   if ( name != "optimal_raid" ) return false;
 
-  sim -> use_optimal_buffs_and_debuffs( std::stoi( value ) );
+  sim -> use_optimal_buffs_and_debuffs( util::to_int( value ) );
 
   return true;
 }
@@ -295,7 +295,7 @@ bool parse_optimal_raid( sim_t*             sim,
 
 bool parse_player( sim_t*             sim,
                           util::string_view name,
-                          const std::string& value )
+                          util::string_view value )
 {
 
   if ( name[ 0 ] >= '0' && name[ 0 ] <= '9' )
@@ -306,13 +306,13 @@ bool parse_player( sim_t*             sim,
   if ( name == "pet" || name == "guardian" )
   {
     std::string::size_type cut_pt = value.find( ',' );
-    std::string pet_type( value, 0, cut_pt );
+    auto pet_type = value.substr( 0, cut_pt );
 
     std::string pet_name;
     if ( cut_pt != value.npos )
-      pet_name.assign( value, cut_pt + 1, value.npos );
+      pet_name = std::string( value.substr( cut_pt + 1 ) );
     else
-      pet_name = value;
+      pet_name = std::string( value );
 
     if ( ! sim -> active_player )
     {
@@ -324,7 +324,7 @@ bool parse_player( sim_t*             sim,
   else if ( name == "copy" )
   {
     std::string::size_type cut_pt = value.find( ',' );
-    std::string player_name( value, 0, cut_pt );
+    auto player_name = value.substr( 0, cut_pt );
 
     player_t* source;
     if ( cut_pt == value.npos )
@@ -337,7 +337,7 @@ bool parse_player( sim_t*             sim,
     }
     else
     {
-      std::string source_name = value.substr( cut_pt + 1 );
+      auto source_name = value.substr( cut_pt + 1 );
       source = sim -> find_player( source_name );
       if (!source)
       {
@@ -389,7 +389,7 @@ bool parse_player( sim_t*             sim,
 
 // parse_proxy ==============================================================
 
-bool parse_proxy( sim_t* , util::string_view /* name */, const std::string& value )
+bool parse_proxy( sim_t* , util::string_view /* name */, util::string_view value )
 {
 
   auto splits = util::string_split( value, "," );
@@ -418,7 +418,7 @@ bool parse_proxy( sim_t* , util::string_view /* name */, const std::string& valu
 
 bool parse_cache( sim_t*             /* sim */,
                          util::string_view name,
-                         const std::string& value )
+                         util::string_view value )
 {
   if ( name == "cache_players" )
   {
@@ -448,7 +448,7 @@ bool parse_cache( sim_t*             /* sim */,
 
 bool parse_talent_format( sim_t*             sim,
                           util::string_view name,
-                          const std::string& value )
+                          util::string_view value )
 {
   if ( name != "talent_format" ) return false;
 
@@ -574,7 +574,7 @@ public:
 
 bool clear_http_cache(sim_t* sim,
   util::string_view name,
-  const std::string& value)
+  util::string_view value)
 {
   assert(name == "http_clear_cache"); (void)name;
   if (value != "0" && !sim->parent)
@@ -586,7 +586,7 @@ bool clear_http_cache(sim_t* sim,
 
 bool parse_armory( sim_t*             sim,
                    util::string_view name,
-                   const std::string& value )
+                   util::string_view value )
 {
     std::string spec = "active";
 
@@ -620,7 +620,7 @@ bool parse_armory( sim_t*             sim,
       try
       {
         if ( name == "local_json" )
-          p = bcp_api::from_local_json( sim, player_name, value, description );
+          p = bcp_api::from_local_json( sim, player_name, std::string( value ), description );
         else
           p = bcp_api::download_player( sim, stuff.region, stuff.server,
               player_name, description, stuff.cache );
@@ -644,7 +644,7 @@ bool parse_armory( sim_t*             sim,
 
 bool parse_guild( sim_t*             sim,
                   util::string_view name,
-                  const std::string& value )
+                  util::string_view value )
 {
   // Save Raid Summary file when guilds are downloaded
   sim -> save_raid_summary = 1;
@@ -695,7 +695,7 @@ bool parse_guild( sim_t*             sim,
 
 bool parse_fight_style( sim_t*             sim,
                         util::string_view /*name*/,
-                        const std::string& value )
+                        util::string_view value )
 {
   static constexpr std::array<util::string_view, 10> FIGHT_STYLES { {
     "Patchwerk", "Ultraxion", "CleaveAdd", "HelterSkelter", "LightMovement", "HeavyMovement",
@@ -721,7 +721,7 @@ bool parse_fight_style( sim_t*             sim,
 
 bool parse_override_spell_data( sim_t*             sim,
                                        util::string_view /* name */,
-                                       const std::string& value )
+                                       util::string_view value )
 {
   // Register overrides only once, for the main thread
   if ( sim -> parent )
@@ -729,9 +729,9 @@ bool parse_override_spell_data( sim_t*             sim,
     return true;
   }
 
-  size_t v_pos = value.find( '=' );
+  auto v_pos = value.find( '=' );
 
-  if ( v_pos == std::string::npos )
+  if ( v_pos == util::string_view::npos )
   {
     throw std::invalid_argument("Invalid form. Spell data override takes the form <spell|effect|power>.<id>.<field>=value");
   }
@@ -750,7 +750,7 @@ bool parse_override_spell_data( sim_t*             sim,
   }
   unsigned id = as<unsigned>(parsed_id);
 
-  double v = std::stod( value.substr( v_pos + 1 ) );
+  double v = util::to_double( value.substr( v_pos + 1 ) );
 
   if ( util::str_compare_ci( splits[ 0 ], "spell" ) )
   {
@@ -776,7 +776,7 @@ bool parse_override_spell_data( sim_t*             sim,
 
 bool parse_override_target_health( sim_t*             sim,
                                    util::string_view /* name */,
-                                   const std::string& value )
+                                   util::string_view value )
 {
   auto healths = util::string_split( value, "/" );
 
@@ -800,15 +800,15 @@ bool parse_override_target_health( sim_t*             sim,
 
 bool parse_spell_query( sim_t*             sim,
                                util::string_view /* name */,
-                               const std::string& value )
+                               util::string_view value )
 {
-  std::string sq_str = value;
-  size_t lvl_offset = std::string::npos;
+  auto sq_str = value;
+  size_t lvl_offset = util::string_view::npos;
 
-  if ( ( lvl_offset = value.rfind( "@" ) ) != std::string::npos )
+  if ( ( lvl_offset = value.rfind( "@" ) ) != util::string_view::npos )
   {
-    std::string lvl_offset_str = value.substr( lvl_offset + 1 );
-    int sq_lvl = std::stoi( lvl_offset_str );
+    auto lvl_offset_str = value.substr( lvl_offset + 1 );
+    int sq_lvl = util::to_int( lvl_offset_str );
     if ( sq_lvl < 1 )
       return false;
 
@@ -845,7 +845,7 @@ const char* const default_item_db_sources[] =
 
 bool parse_item_sources( sim_t*             sim,
                                 util::string_view /* name */,
-                                const std::string& value )
+                                util::string_view value )
 {
   sim -> item_db_sources.clear();
 
@@ -874,7 +874,7 @@ bool parse_item_sources( sim_t*             sim,
 
 bool parse_process_priority( sim_t*             sim,
                                    util::string_view /* name */,
-                                   const std::string& value )
+                                   util::string_view value )
 {
   computer_process::priority_e pr = computer_process::BELOW_NORMAL;
 
@@ -900,7 +900,7 @@ bool parse_process_priority( sim_t*             sim,
   }
   else
   {
-    sim -> errorf( "Could not set thread priority to %s. Defaulting to below_normal priority.", value.c_str() );
+    sim -> error( "Could not set thread priority to {}. Defaulting to below_normal priority.", value );
   }
 
   sim -> process_priority = pr;
@@ -910,7 +910,7 @@ bool parse_process_priority( sim_t*             sim,
 
 bool parse_target_error_role( sim_t * sim,
                               util::string_view /* name */,
-                              const std::string& value )
+                              util::string_view value )
 {
   sim -> target_error_role = util::parse_role_type( value );
 
@@ -924,13 +924,13 @@ bool parse_target_error_role( sim_t * sim,
 
 bool parse_maximize_reporting( sim_t*             sim,
                                    util::string_view /*name*/,
-                                   const std::string& v )
+                                   util::string_view v )
 {
   if ( v != "0" && v != "1" )
   {
     throw std::invalid_argument("Acceptable values are '1' or '0'.");
   }
-  bool r = std::stoi( v ) != 0;
+  bool r = util::to_int( v ) != 0;
   if ( r )
   {
     sim -> maximize_reporting = true;

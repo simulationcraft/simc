@@ -103,7 +103,7 @@ covenant_state_t::covenant_state_t( const player_t* player ) :
 
 bool covenant_state_t::parse_covenant( sim_t*             sim,
                                        util::string_view /* name */,
-                                       const std::string& value )
+                                       util::string_view value )
 {
   covenant_e covenant = util::parse_covenant_string( value );
   unsigned covenant_id = util::to_unsigned( value );
@@ -140,7 +140,7 @@ bool covenant_state_t::parse_covenant( sim_t*             sim,
 // ability name
 bool covenant_state_t::parse_soulbind( sim_t*             sim,
                                        util::string_view /* name */,
-                                       const std::string& value )
+                                       util::string_view value )
 {
   m_conduits.clear();
 
@@ -222,7 +222,7 @@ bool covenant_state_t::parse_soulbind( sim_t*             sim,
     }
   }
 
-  m_soulbind_str = value;
+  m_soulbind_str = std::string( value );
 
   return true;
 }

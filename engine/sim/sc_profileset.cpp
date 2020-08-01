@@ -679,7 +679,7 @@ bool profilesets_t::parse( sim_t* sim )
       return false;
     }
 
-    auto has_output_opts = range::find_if( profileset_opts, []( const std::string& opt ) {
+    auto has_output_opts = range::find_if( profileset_opts, []( util::string_view opt ) {
       auto name_end = opt.find( "=" );
       if ( name_end == std::string::npos )
       {

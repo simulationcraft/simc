@@ -668,9 +668,9 @@ public:
   bool add_action( util::string_view action, util::string_view options = "", util::string_view alist = "default" );
   bool add_action( const spell_data_t* s, util::string_view options = "", util::string_view alist = "default" );
   void add_option( std::unique_ptr<option_t> o );
-  void parse_talents_numbers( const std::string& talent_string );
-  bool parse_talents_armory( const std::string& talent_string );
-  bool parse_talents_armory2( const std::string& talent_string );
+  void parse_talents_numbers( util::string_view talent_string );
+  bool parse_talents_armory( util::string_view talent_string );
+  bool parse_talents_armory2( util::string_view talent_string );
 
   bool is_moving() const;
   double composite_block_dr( double extra_block ) const;

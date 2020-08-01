@@ -557,7 +557,7 @@ std::string azerite_state_t::overrides_str() const
   return s.str();
 }
 
-bool azerite_state_t::parse_override( sim_t* sim, util::string_view, const std::string& value )
+bool azerite_state_t::parse_override( sim_t* sim, util::string_view, util::string_view value )
 {
   m_overrides.clear();
 
@@ -1082,7 +1082,7 @@ std::string azerite_essence_state_t::option_str() const
 // element tokens, ordering does not matter. Placement of passive milestone spells is irrelevant.
 bool azerite_essence_state_t::parse_azerite_essence( sim_t* sim,
                                                      util::string_view /* name */,
-                                                     const std::string& value )
+                                                     util::string_view value )
 {
   // Three or two digit options used?
   bool explicit_type = false;
@@ -1226,7 +1226,7 @@ bool azerite_essence_state_t::parse_azerite_essence( sim_t* sim,
     n_parsed_powers++;
   }
 
-  m_option_str = value;
+  m_option_str = std::string( value );
 
   return true;
 }

@@ -1610,16 +1610,16 @@ std::unique_ptr<raid_event_t> raid_event_t::create( sim_t* sim, util::string_vie
 
 void raid_event_t::init( sim_t* sim )
 {
-  auto splits = util::string_split_as_string( sim->raid_events_str, "/\\" );
+  auto splits = util::string_split( sim->raid_events_str, "/\\" );
 
   for ( const auto& split : splits )
   {
-    std::string name    = split;
-    std::string options = "";
+    auto name    = split;
+    util::string_view options = "";
 
     sim->print_debug( "Creating raid event '{}'.", name );
 
-    std::string::size_type cut_pt = name.find_first_of( "," );
+    util::string_view::size_type cut_pt = name.find_first_of( "," );
 
     if ( cut_pt != name.npos )
     {
