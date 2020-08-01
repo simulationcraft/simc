@@ -56,6 +56,7 @@ public:
     propagate_const<dot_t*> shadow_word_pain;
     propagate_const<dot_t*> vampiric_touch;
     propagate_const<dot_t*> devouring_plague;
+    propagate_const<dot_t*> unholy_transfusion;
   } dots;
 
   struct buffs_t
@@ -130,6 +131,9 @@ public:
     // Conduits
     propagate_const<buff_t*> mind_devourer;
 
+    // Covenants
+    propagate_const<buff_t*> fae_blessings;
+    propagate_const<buff_t*> boon_of_the_ascended;
   } buffs;
 
   // Talents
@@ -270,6 +274,7 @@ public:
   {
     // Shared
     propagate_const<cooldown_t*> power_infusion;
+    propagate_const<cooldown_t*> fae_blessings;
 
     // Discipline
     propagate_const<cooldown_t*> chakra;
@@ -285,6 +290,8 @@ public:
     propagate_const<cooldown_t*> dark_ascension;
     propagate_const<cooldown_t*> shadow_word_death;
     propagate_const<cooldown_t*> devouring_plague;
+    propagate_const<cooldown_t*> shadowfiend;
+    propagate_const<cooldown_t*> mindbender;
 
     // Holy
     propagate_const<cooldown_t*> holy_word_chastise;
@@ -328,6 +335,8 @@ public:
     propagate_const<gain_t*> shadow_word_death_self_damage;
     propagate_const<gain_t*> insanity_death_and_madness;
     propagate_const<gain_t*> insanity_lost_devouring_plague;
+    propagate_const<gain_t*> insanity_mindgames;
+    propagate_const<gain_t*> insanity_ascended_blast;
   } gains;
 
   // Benefits
@@ -411,16 +420,35 @@ public:
 
   struct
   {
-    const spell_data_t* kiss_of_death;
-    const spell_data_t* the_penitent_one;  // Effect implemented, but not hooked up the PW:Radiance
-    const spell_data_t* painbreaker_psalm;
-    const spell_data_t* shadowflame_prism; // TODO: Add 20% damage modifier
+    // Generic Priest
+    item_runeforge_t twins_of_the_sun_priestess;
+    // Holy
+    item_runeforge_t divine_image; // NYI
+    item_runeforge_t harmonious_apparatus; // NYI
+    // Disc
+    item_runeforge_t kiss_of_death;
+    item_runeforge_t the_penitent_one;  // Effect implemented, but not hooked up the PW:Radiance
+    // Shadow
+    item_runeforge_t painbreaker_psalm; // NYI
+    item_runeforge_t shadowflame_prism; // TODO: Add 20% damage modifier
+    item_runeforge_t eternal_call_to_the_void; // NYI
   } legendary;
 
   struct
   {
     const spell_data_t* mind_devourer;
   } conduit;
+
+  struct
+  {
+    const spell_data_t* fae_blessings;
+    const spell_data_t* unholy_nova; // needs testing
+    const spell_data_t* mindgames; // needs additional option
+    const spell_data_t* boon_of_the_ascended; // NYI
+    const spell_data_t* ascended_nova; // NYI
+    const spell_data_t* ascended_blast; // NYI
+    const spell_data_t* ascended_eruption; // NYI
+  } covenant;
 
   struct insanity_end_event_t;
 

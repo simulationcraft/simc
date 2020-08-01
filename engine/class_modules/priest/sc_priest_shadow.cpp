@@ -934,11 +934,13 @@ struct void_bolt_t final : public priest_spell_t
 
   double insanity_gain;
   void_bolt_extension_t* void_bolt_extension;
+  double fae_blessings_cdr;
 
   void_bolt_t( priest_t& player, util::string_view options_str )
     : priest_spell_t( "void_bolt", player, player.find_spell( 205448 ) ),
       insanity_gain( data().effectN( 3 ).resource( RESOURCE_INSANITY ) ),
-      void_bolt_extension( nullptr )
+      void_bolt_extension( nullptr ),
+      fae_blessings_cdr( player.find_spell( 327710 )->effectN( 1 ).base_value() )
   {
     parse_options( options_str );
     use_off_gcd      = true;
@@ -955,6 +957,22 @@ struct void_bolt_t final : public priest_spell_t
   void execute() override
   {
     priest_spell_t::execute();
+
+    if ( priest().covenant.fae_blessings->ok() )
+    {
+      if ( priest().buffs.fae_blessings->check() )
+      {
+        // Adjust CD of Shadowfiend/Mindbender
+        if ( priest().talents.mindbender->ok() )
+        {
+          priest().cooldowns.mindbender->adjust( -timespan_t::from_seconds( fae_blessings_cdr ) );
+        } else {
+          priest().cooldowns.shadowfiend->adjust( -timespan_t::from_seconds( fae_blessings_cdr ) );
+        }
+        // Remove 1 stack of Fae Blessings
+        priest().buffs.fae_blessings->decrement();
+      }
+    }
 
     priest().generate_insanity( insanity_gain, priest().gains.insanity_void_bolt, execute_state->action );
   }
@@ -2135,6 +2153,11 @@ void priest_t::generate_apl_shadow()
       "Use these cooldowns in between your 1st and 2nd Void Bolt in your 2nd Voidform when you have Chorus of Insanity "
       "active" );
   cds->add_action( this, "Power Infusion", "if=buff.voidform.up" );
+  cds->add_action( this, "Fae Blessings", "if=buff.voidform.up" );
+  cds->add_action( "fae_blessings", "if=buff.voidform.up" );
+  cds->add_action( "mindgames" );
+  cds->add_action( "unholy_nova" );
+  cds->add_action( "boon_of_the_ascended" );
   cds->add_action( "use_items", "Default fallback for usable items: Use on cooldown." );
 
   // Crit CDs
