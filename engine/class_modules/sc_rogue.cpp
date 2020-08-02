@@ -130,6 +130,7 @@ public:
     buff_t* shiv;
     buff_t* find_weakness;
     buff_t* prey_on_the_weak;
+    buff_t* between_the_eyes;
   } debuffs;
 
   rogue_td_t( player_t* target, rogue_t* source );
@@ -374,6 +375,7 @@ public:
 
     // Outlaw
     const spell_data_t* adrenaline_rush;
+    const spell_data_t* between_the_eyes;
     const spell_data_t* blade_flurry;
     const spell_data_t* blade_flurry_2;
     const spell_data_t* broadside;
@@ -1316,6 +1318,13 @@ public:
     return c;
   }
 
+  double composite_target_crit_chance( player_t* target ) const
+  {
+    double c = ab::composite_target_crit_chance( target );
+    c += td( target )->debuffs.between_the_eyes->stack_value();
+    return c;
+  }
+
   double target_armor( player_t* target ) const override
   {
     double a = ab::target_armor( target );
@@ -2228,19 +2237,19 @@ struct backstab_t : public rogue_attack_t
 
 struct between_the_eyes_t : public rogue_attack_t
 {
-  between_the_eyes_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ):
-    rogue_attack_t( name, p, p -> find_specialization_spell( "Between the Eyes" ), options_str )
+  between_the_eyes_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ) :
+    rogue_attack_t( name, p, p->spec.between_the_eyes, options_str )
   {
     ap_type = attack_power_type::WEAPON_BOTH;
-    crit_bonus_multiplier *= 1.0 + p -> find_specialization_spell( 235484 ) -> effectN( 1 ).percent();
+    crit_bonus_multiplier *= 1.0 + p->find_rank_spell( "Between the Eyes", "Rank 2" )->effectN( 1 ).percent();
   }
 
   double bonus_da( const action_state_t* state ) const override
   {
     double b = rogue_attack_t::bonus_da( state );
 
-    if ( p() -> azerite.ace_up_your_sleeve.ok() )
-      b += p() -> azerite.ace_up_your_sleeve.value(); // CP Mult is applied as a mod later.
+    if ( p()->azerite.ace_up_your_sleeve.ok() )
+      b += p()->azerite.ace_up_your_sleeve.value(); // CP Mult is applied as a mod later.
 
     return b;
   }
@@ -2249,9 +2258,9 @@ struct between_the_eyes_t : public rogue_attack_t
   {
     double c = rogue_attack_t::composite_crit_chance();
 
-    if ( p() -> buffs.ruthless_precision -> up() )
+    if ( p()->buffs.ruthless_precision->up() )
     {
-      c += p() -> buffs.ruthless_precision -> data().effectN( 2 ).percent();
+      c += p()->buffs.ruthless_precision->data().effectN( 2 ).percent();
     }
 
     return c;
@@ -2264,12 +2273,15 @@ struct between_the_eyes_t : public rogue_attack_t
     trigger_restless_blades( execute_state );
 
     const rogue_action_state_t* rs = cast_state( execute_state );
-    if ( result_is_hit( execute_state -> result ) )
+    if ( result_is_hit( execute_state->result ) )
     {
-      p() -> buffs.deadshot -> trigger();
+      // There is nothing about the debuff duration in spell data, so we have to hardcode the 3s base.
+      td( execute_state->target )->debuffs.between_the_eyes->trigger(1, buff_t::DEFAULT_VALUE(), -1.0, 3_s * cast_state( execute_state )->cp );
 
-      if ( p() -> azerite.ace_up_your_sleeve.ok() && rng().roll( rs -> cp * p() -> azerite.ace_up_your_sleeve.spell_ref().effectN( 2 ).percent() ) )
-        trigger_combo_point_gain( as<int>( p() -> azerite.ace_up_your_sleeve.spell_ref().effectN( 3 ).base_value() ) , p() -> gains.ace_up_your_sleeve );
+      p()->buffs.deadshot->trigger();
+
+      if ( p()->azerite.ace_up_your_sleeve.ok() && rng().roll( rs->cp * p()->azerite.ace_up_your_sleeve.spell_ref().effectN( 2 ).percent() ) )
+        trigger_combo_point_gain( as<int>( p()->azerite.ace_up_your_sleeve.spell_ref().effectN( 3 ).base_value() ), p()->gains.ace_up_your_sleeve );
     }
   }
 
@@ -5581,6 +5593,9 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
     ->set_default_value( fw_debuff->effectN( 1 ).percent() );
   debuffs.prey_on_the_weak = make_buff( *this, "prey_on_the_weak", source->find_spell( 255909 ) )
     ->set_default_value( source->find_spell( 255909 )->effectN( 1 ).percent() );
+  debuffs.between_the_eyes = make_buff( *this, "between_the_eyes", source->spec.between_the_eyes )
+    ->set_default_value( source->spec.between_the_eyes->effectN( 2 ).percent() )
+    ->set_cooldown( timespan_t::zero() );
 
   // Register on-demise callback for assassination to perform Venomous Wounds energy replenish on
   // death.
@@ -6610,6 +6625,7 @@ void rogue_t::init_spells()
 
   // Outlaw
   spec.adrenaline_rush      = find_specialization_spell( "Adrenaline Rush" );
+  spec.between_the_eyes     = find_specialization_spell( "Between the Eyes" );
   spec.blade_flurry         = find_specialization_spell( "Blade Flurry" );
   spec.blade_flurry_2       = find_rank_spell( "Blade Flurry", "Rank 2" );
   spec.broadside            = find_spell( 193356 );
