@@ -1553,7 +1553,7 @@ struct kindred_empowerment_buff_t : public druid_buff_t<buff_t>
   double cumul_pool;
 
   kindred_empowerment_buff_t( druid_t& p )
-    : base_t( p, "kindred_empowerment", p.covenant.kindred_empowerment ), pool( 0.0 )
+    : base_t( p, "kindred_empowerment", p.covenant.kindred_empowerment ), pool( 1.0 )
   {
     set_refresh_behavior( buff_refresh_behavior::DURATION );
   }
@@ -5427,6 +5427,8 @@ struct kindred_empowerment_t : public druid_spell_t
   {
     background = true;
     may_miss = may_crit = callbacks = false;
+    snapshot_flags |= STATE_TGT_MUL_DA;
+    update_flags |= STATE_TGT_MUL_DA;
   }
 };
 
