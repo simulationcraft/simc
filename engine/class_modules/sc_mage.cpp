@@ -3332,6 +3332,9 @@ struct fireball_t : public fire_mage_spell_t
   {
     fire_mage_spell_t::execute();
 
+    // There is a delay where it is possible to cast a spell that would
+    // consume Expanded Potential immediately after Expanded Potential
+    // is triggered, which will prevent it from being consumed.
     p()->trigger_delayed_buff( p()->buffs.expanded_potential );
 
     if ( rng().roll( p()->azerite.duplicative_incineration.spell_ref().effectN( 1 ).percent() ) )
