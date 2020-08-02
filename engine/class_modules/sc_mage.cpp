@@ -882,6 +882,7 @@ public:
   }
 
   void      update_rune_distance( double distance );
+  void      update_enlightened();
   action_t* get_icicle();
   bool      trigger_delayed_buff( buff_t* buff, double chance, timespan_t delay = 0.15_s );
   void      trigger_brain_freeze( double chance, proc_t* source );
@@ -892,7 +893,6 @@ public:
   void      trigger_arcane_charge( int stacks = 1 );
   bool      trigger_crowd_control( const action_state_t* s, spell_mechanic type, timespan_t duration = timespan_t::min() );
   void      trigger_lucid_dreams( player_t* trigger_target, double cost );
-  void      update_enlightened();
 
   void apl_precombat();
   void apl_arcane();
@@ -7750,6 +7750,23 @@ void mage_t::update_rune_distance( double distance )
   }
 }
 
+void mage_t::update_enlightened()
+{
+  if ( !talents.enlightened->ok() )
+    return;
+
+  if ( resources.pct( RESOURCE_MANA ) > talents.enlightened->effectN( 1 ).percent() )
+  {
+    buffs.enlightened_damage->trigger();
+    buffs.enlightened_mana->expire();
+  }
+  else
+  {
+    buffs.enlightened_damage->expire();
+    buffs.enlightened_mana->trigger();
+  }
+}
+
 action_t* mage_t::get_icicle()
 {
   action_t* a = nullptr;
@@ -7914,23 +7931,6 @@ void mage_t::trigger_lucid_dreams( player_t* trigger_target, double cost )
     }
 
     player_t::buffs.lucid_dreams->trigger();
-  }
-}
-
-void mage_t::update_enlightened()
-{
-  if ( !talents.enlightened->ok() )
-    return;
-
-  if ( resources.pct( RESOURCE_MANA ) > talents.enlightened->effectN( 1 ).percent() )
-  {
-    buffs.enlightened_damage->trigger();
-    buffs.enlightened_mana->expire();
-  }
-  else
-  {
-    buffs.enlightened_damage->expire();
-    buffs.enlightened_mana->trigger();
   }
 }
 
