@@ -409,7 +409,6 @@ public:
     buff_t* owlkin_frenzy;
     buff_t* starfall;
     buff_t* starlord; //talent
-    buff_t* stellar_drift_2; // stellar drift mobility buff ID 202461
     buff_t* eclipse_solar;
     buff_t* eclipse_lunar;
     // Balance Legendaries
@@ -588,7 +587,6 @@ public:
     const spell_data_t* omen_of_clarity;        // Feral & Restoration
     const spell_data_t* innervate;              // Balance & Restoration
     const spell_data_t* entangling_roots;
-    const spell_data_t* moonfire_2;
     const spell_data_t* barkskin;
     const spell_data_t* ironfur;
 
@@ -627,10 +625,7 @@ public:
     const spell_data_t* starfall_2;
     const spell_data_t* starsurge;
     const spell_data_t* starsurge_2;
-    const spell_data_t* moonkin_2;
-    const spell_data_t* sunfire_2;
-    const spell_data_t* moonfire_3; // +6s to moonfire AND sunfire
-    const spell_data_t* stellar_drift_2; // stellar drift mobility buff ID 202461
+    const spell_data_t* stellar_drift; // stellar drift mobility affected by list ID 202461 Effect 1
     const spell_data_t* owlkin_frenzy;
     const spell_data_t* sunfire_dmg;
     const spell_data_t* moonfire_dmg;
@@ -2410,7 +2405,8 @@ public:
 
   bool usable_moving() const override
   {
-    if ( p()->buff.stellar_drift_2->check() && data().affected_by( p()->spec.stellar_drift_2->effectN( 1 ) ) )
+    if ( p()->talent.stellar_drift->ok() && p()->buff.starfall->check() &&
+         data().affected_by( p()->spec.stellar_drift->effectN( 1 ) ) )
       return true;
 
     return spell_t::usable_moving();
@@ -2553,7 +2549,8 @@ struct moonfire_t : public druid_spell_t
       benefits_from_galactic_guardian = true;
       dual = background = true;
       dot_duration +=
-          p->spec.moonfire_2->effectN( 1 ).time_value() + p->spec.moonfire_3->effectN( 1 ).time_value() +
+          p->find_rank_spell( "Moonfire", "Rank 2" )->effectN( 1 ).time_value() +
+          p->find_rank_spell( "Moonfire", "Rank 3" )->effectN( 1 ).time_value() +
           p->query_aura_effect( p->spec.balance, E_APPLY_AURA, A_ADD_FLAT_MODIFIER, P_DURATION, p->spec.moonfire_dmg )
               ->time_value();
       aoe = 1;
@@ -6162,32 +6159,29 @@ struct new_moon_t : public druid_spell_t
 
 struct sunfire_t : public druid_spell_t
 {
-
   struct sunfire_damage_t : public druid_spell_t
   {
     int sunfire_action_id;
-    sunfire_damage_t( druid_t* p ) :
-      druid_spell_t( "sunfire_dmg", p, p -> spec.sunfire_dmg ),
-      sunfire_action_id(0)
+    sunfire_damage_t( druid_t* p ) : druid_spell_t( "sunfire_dmg", p, p->spec.sunfire_dmg ), sunfire_action_id( 0 )
     {
-      if ( p -> talent.shooting_stars -> ok() && ! p -> active.shooting_stars )
+      if ( p->talent.shooting_stars->ok() && !p->active.shooting_stars )
       {
-        p -> active.shooting_stars = new shooting_stars_t( p );
+        p->active.shooting_stars = new shooting_stars_t( p );
       }
 
-      dual = background = true;
-      aoe = -1;
+      dual = background   = true;
+      aoe                 = p->find_rank_spell( "Sunfire", "Rank 2" )->ok() ? -1 : 0;
       base_aoe_multiplier = 0;
+      // Moonfire Rank 3 also increase sunfire duration
       dot_duration +=
-          p->spec.moonfire_3->effectN( 1 ).time_value() +
+          p->find_rank_spell( "Moonfire", "Rank 3" )->effectN( 1 ).time_value() +
           p->query_aura_effect( p->spec.balance, E_APPLY_AURA, A_ADD_FLAT_MODIFIER, P_DURATION, p->spec.sunfire_dmg )
               ->time_value();
 
-      if (p->azerite.high_noon.ok())
+      if ( p->azerite.high_noon.ok() )
       {
         radius += p->azerite.high_noon.value();
       }
-
     }
 
     dot_t* get_dot( player_t* t ) override
@@ -6221,7 +6215,6 @@ struct sunfire_t : public druid_spell_t
 
       return ta;
     }
-
   };
 
   sunfire_damage_t* damage;
@@ -6607,9 +6600,6 @@ struct starfall_t : public druid_spell_t
 
     p()->buff.starfall->set_tick_callback( [this]( buff_t*, int, timespan_t ) { starfall_tick->schedule_execute(); } );
     p()->buff.starfall->trigger();
-
-    if ( p()->talent.stellar_drift->ok() )
-      p()->buff.stellar_drift_2->trigger();
 
     if ( p()->spec.starfall_2->ok() )
     {
@@ -7964,7 +7954,6 @@ void druid_t::init_spells()
   spec.leather_specialization = find_specialization_spell( "Leather Specialization" );
   spec.omen_of_clarity        = find_specialization_spell( "Omen of Clarity" );
   spec.entangling_roots       = find_spell( 339 );
-  spec.moonfire_2             = find_rank_spell( "Moonfire", "Rank 2" );
   spec.barkskin               = find_class_spell( "Barkskin" );
   spec.ironfur                = find_class_spell( "Ironfur" );
 
@@ -7983,10 +7972,7 @@ void druid_t::init_spells()
   // do NOT use find_affinity_spell here for spec.starsurge. eclipse extension is held within the balance version.
   spec.starsurge                  = find_specialization_spell( "Starsurge", DRUID_BALANCE );
   spec.starsurge_2                = find_rank_spell( "Starsurge", "Rank 2" ); // Adds more Eclipse extension
-  spec.moonkin_2                  = find_rank_spell( "Moonkin Form", "Rank 2" ); // Owlkin Frenzy proc rate RAWR
-  spec.sunfire_2                  = find_rank_spell( "Sunfire", "Rank 2" ); // Sunfire spread. currently contains no value data.
-  spec.moonfire_3                 = find_rank_spell( "Moonfire", "Rank 3" ); // +6s to moonfire AND sunfire
-  spec.stellar_drift_2            = find_spell( 202461 ); // stellar drift mobility buff
+  spec.stellar_drift              = find_spell( 202461 ); // stellar drift mobility buff
   spec.owlkin_frenzy              = find_spell( 157228 ); // Owlkin Frenzy RAWR
   spec.sunfire_dmg                = find_spell( 164815 ); // dot debuff for sunfire
   spec.moonfire_dmg               = find_spell( 164812 ); // dot debuff for moonfire
@@ -8438,7 +8424,7 @@ void druid_t::create_buffs()
 
   buff.owlkin_frenzy = make_buff( this, "owlkin_frenzy", spec.owlkin_frenzy )
     ->set_default_value( spec.owlkin_frenzy->effectN( 1 ).percent() )
-    ->set_chance( spec.moonkin_2->effectN( 1 ).percent() );
+    ->set_chance( find_rank_spell( "Moonkin Form", "Rank 2" )->effectN( 1 ).percent() );
 
   buff.starlord = make_buff( this, "starlord", find_spell( 279709 ) )
     ->set_default_value( find_spell( 279709 )->effectN( 1 ).percent() )
@@ -8449,9 +8435,6 @@ void druid_t::create_buffs()
     ->set_duration( spec.starfall->duration() + talent.stellar_drift->effectN( 1 ).time_value() )
     ->set_period( 888_ms )  // this has a random interval in game so estimate the average here
     ->set_refresh_behavior( buff_refresh_behavior::DURATION );
-
-  buff.stellar_drift_2 = make_buff( this, "stellar_drift", find_spell( 202461 ) )
-    ->set_duration( spec.starfall->duration() );  // peg stellar drift duration to starfall's
 
   buff.eclipse_solar =
       make_buff( this, "eclipse_solar", spec.eclipse_solar )
