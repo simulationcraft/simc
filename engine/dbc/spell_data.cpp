@@ -61,6 +61,11 @@ school_e spelleffect_data_t::school_type() const
   return dbc::get_school_type( as<uint32_t>( misc_value1() ) );
 }
 
+bool spelleffect_data_t::has_common_school( school_e school ) const
+{
+  return ( as<uint32_t>( misc_value1() ) & dbc::get_school_mask( school ) ) != 0;
+}
+
 double spelleffect_data_t::delta( const player_t* p, unsigned level ) const
 {
   assert( level <= MAX_SCALING_LEVEL );

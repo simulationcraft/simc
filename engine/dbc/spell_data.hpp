@@ -238,6 +238,8 @@ struct spelleffect_data_t
 
   school_e school_type() const;
 
+  bool has_common_school( school_e ) const;
+
   double mastery_value() const
   { return _sp_coeff * ( 1 / 100.0 ); }
 
