@@ -1330,6 +1330,7 @@ struct mirrors_of_torment_t : public buff_t
     period()
   {
     set_cooldown( 0_ms );
+    set_reverse( true );
     auto p = debug_cast<mage_t*>( source );
     if ( p->options.mirrors_of_torment_interval > 0_ms )
     {
@@ -1344,31 +1345,20 @@ struct mirrors_of_torment_t : public buff_t
         period = std::max( 1_ms, p->rng().gauss( period, period * p->options.mirrors_of_torment_stddev ) );
         return period;
       } );
-      set_tick_callback( [ this ] ( buff_t* buff, int, timespan_t )
-      { buff->decrement(); } );
+      set_tick_callback( [ p ] ( buff_t* buff, int, timespan_t )
+      {
+        if ( buff->check() == 1 )
+        {
+          p->action.tormenting_backlash->set_target( buff->player );
+          p->action.tormenting_backlash->execute();
+        }
+        else
+        {
+          p->action.agonizing_backlash->set_target( buff->player );
+          p->action.agonizing_backlash->execute();
+        }
+      } );
     }
-  }
-
-  bool freeze_stacks() override
-  {
-    return true;
-  }
-
-  void decrement( int stacks, double value ) override
-  {
-    auto p = debug_cast<mage_t*>( source );
-    if ( current_stack == 1 )
-    {
-      p->action.tormenting_backlash->set_target( player );
-      p->action.tormenting_backlash->execute();
-    }
-    else
-    {
-      p->action.agonizing_backlash->set_target( player );
-      p->action.agonizing_backlash->execute();
-    }
-
-    buff_t::decrement( stacks, value );
   }
 };
 
@@ -5202,8 +5192,7 @@ struct mirrors_of_torment_t : public mage_spell_t
   void impact( action_state_t* s ) override
   {
     mage_spell_t::impact( s );
-    auto debuff = td( s->target )->debuffs.mirrors_of_torment;
-    debuff->trigger( debuff->max_stack() );
+    td( s->target )->debuffs.mirrors_of_torment->trigger();
   }
 };
 
@@ -5235,6 +5224,7 @@ struct shifting_power_pulse_t : public mage_spell_t
     mage_spell_t( n, p, p->find_spell( 325130 ) )
   {
     background = true;
+    aoe = -1;
   }
 };
 
