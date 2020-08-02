@@ -601,14 +601,9 @@ public:
     const spell_data_t* rip;
     const spell_data_t* sharpened_claws;
     const spell_data_t* swipe_cat;
-    const spell_data_t* rake_2;
+    const spell_data_t* rake_dmg;
     const spell_data_t* tigers_fury;
-    const spell_data_t* tigers_fury_2;
-    const spell_data_t* ferocious_bite_2;
     const spell_data_t* shred;
-    const spell_data_t* shred_2;
-    const spell_data_t* shred_3;
-    const spell_data_t* swipe_2;
     const spell_data_t* savage_roar; // Hidden buff
 
     // Balance
@@ -3836,8 +3831,7 @@ struct rake_t : public cat_attack_t
 {
   struct rake_bleed_t : public cat_attack_t
   {
-    rake_bleed_t( druid_t* p ) :
-      cat_attack_t( "rake_bleed", p, p -> find_spell( 155722 ) )
+    rake_bleed_t( druid_t* p ) : cat_attack_t( "rake_bleed", p, p->spec.rake_dmg )
     {
       background = dual = true;
       may_miss = may_parry = may_dodge = may_crit = false;
@@ -3888,20 +3882,24 @@ struct rake_t : public cat_attack_t
   };
 
   action_t* bleed;
+  bool stealth_mul;
 
-  rake_t( druid_t* p, const std::string& options_str ) :
-    cat_attack_t( "rake", p, p -> find_affinity_spell( "Rake" ) )
+  rake_t( druid_t* p, const std::string& options_str )
+    : cat_attack_t( "rake", p, p->find_affinity_spell( "Rake" ) ), stealth_mul( 0.0 )
   {
     parse_options( options_str );
 
-    bleed = p -> find_action( "rake_bleed" );
+    if ( p->find_rank_spell( "Rake", "Rank 2" )->ok() )
+      stealth_mul = data().effectN( 4 ).percent();
 
-    if ( ! bleed )
+    bleed = p->find_action( "rake_bleed" );
+
+    if ( !bleed )
     {
-      bleed = new rake_bleed_t( p );
-      bleed -> stats = stats;
+      bleed        = new rake_bleed_t( p );
+      bleed->stats = stats;
     }
- }
+  }
 
   dot_t* get_dot(player_t* t) override
   {
@@ -3916,7 +3914,7 @@ struct rake_t : public cat_attack_t
     double pm = cat_attack_t::composite_persistent_multiplier( s );
 
     if ( stealthed() )
-      pm *= 1.0 + data().effectN( 4 ).percent();
+      pm *= 1.0 + stealth_mul;
 
     return pm;
   }
@@ -4158,14 +4156,22 @@ struct savage_roar_t : public cat_attack_t
 
 struct shred_t : public cat_attack_t
 {
-  shred_t( druid_t* p, const std::string& options_str ) :
-    cat_attack_t( "shred", p, p -> find_class_spell( "Shred" ), options_str )
+  double bleed_mul;
+  double stealth_mul;
+
+  shred_t( druid_t* p, const std::string& options_str )
+    : cat_attack_t( "shred", p, p->find_class_spell( "Shred" ), options_str ), bleed_mul( 0.0 ), stealth_mul( 0.0 )
   {
+    if ( p->find_rank_spell( "Shred", "Rank 2" )->ok() )
+      bleed_mul = data().effectN( 4 ).percent();
+
+    if ( p->find_rank_spell( "Shred", "Rank 3" )->ok() )
+      stealth_mul = data().effectN( 3 ).percent();
+
     // Base spell generates 0 CP, Feral passive or Feral Affinity increase it to 1 CP.
     energize_amount +=
-        p->query_aura_effect( p->spec.feral, E_APPLY_AURA, A_ADD_FLAT_MODIFIER, P_EFFECT_2, p->find_class_spell( "Shred" ) )
-            ->base_value() +
-        p -> talent.feral_affinity -> effectN( 8 ).base_value();
+        p->query_aura_effect( p->spec.feral, E_APPLY_AURA, A_ADD_FLAT_MODIFIER, P_EFFECT_2, &data() )->base_value() +
+        p->talent.feral_affinity->effectN( 8 ).base_value();
   }
 
   void impact( action_state_t* s ) override
@@ -4207,8 +4213,8 @@ struct shred_t : public cat_attack_t
   {
     double tm = cat_attack_t::composite_target_multiplier( t );
 
-    if ( t -> debuffs.bleeding && t -> debuffs.bleeding -> up() )
-      tm *= 1.0 + p() -> spec.shred -> effectN( 4 ).percent();
+    if ( t->debuffs.bleeding && t->debuffs.bleeding->up() )
+      tm *= 1.0 + bleed_mul;
 
     return tm;
   }
@@ -4217,7 +4223,7 @@ struct shred_t : public cat_attack_t
   {
     double cm = cat_attack_t::composite_crit_chance_multiplier();
 
-    if ( stealthed() )
+    if ( stealthed() && stealth_mul )
       cm *= 2.0;
 
     return cm;
@@ -4228,7 +4234,7 @@ struct shred_t : public cat_attack_t
     double m = cat_attack_t::action_multiplier();
 
     if ( stealthed() )
-      m *= 1.0 + data().effectN( 4 ).percent();
+      m *= 1.0 + stealth_mul;
 
     return m;
   }
@@ -4238,16 +4244,21 @@ struct shred_t : public cat_attack_t
 
 struct swipe_cat_t : public cat_attack_t
 {
-public:
-  swipe_cat_t( druid_t* player, const std::string& options_str ) :
-    cat_attack_t( "swipe_cat", player, player -> find_affinity_spell( "Swipe" ) -> ok() ?
-      player -> spec.swipe_cat : spell_data_t::not_found(), options_str )
+  double bleed_mul;
+
+  swipe_cat_t( druid_t* player, const std::string& options_str )
+    : cat_attack_t( "swipe_cat", player,
+                    player->find_affinity_spell( "Swipe" )->ok() ? player->spec.swipe_cat : spell_data_t::not_found(),
+                    options_str ),
+      bleed_mul( 0.0 )
   {
     aoe = -1;
     energize_amount = data().effectN(1).base_value();
     energize_resource = RESOURCE_COMBO_POINT;
     energize_type = ENERGIZE_ON_HIT;
 
+    if ( player->find_rank_spell( "Swipe", "Rank 2")->ok())
+      bleed_mul = player->spec.swipe_cat->effectN( 2 ).percent();
   }
 
   double cost() const override
@@ -4272,17 +4283,12 @@ public:
     return b;
   }
 
-  void execute() override
-  {
-    cat_attack_t::execute();
-  }
-
   double composite_target_multiplier( player_t* t ) const override
   {
     double tm = cat_attack_t::composite_target_multiplier( t );
 
-    if ( t -> debuffs.bleeding && t -> debuffs.bleeding -> up() )
-      tm *= 1.0 + data().effectN( 2 ).percent();
+    if ( t->debuffs.bleeding && t->debuffs.bleeding->up() )
+      tm *= 1.0 + bleed_mul;
 
     return tm;
   }
@@ -4302,14 +4308,13 @@ struct tigers_fury_t : public cat_attack_t
 {
   timespan_t duration;
 
-  tigers_fury_t( druid_t* p, const std::string& options_str ) :
-    cat_attack_t( "tigers_fury", p, p -> spec.tigers_fury, options_str ),
-    duration( p -> buff.tigers_fury -> buff_duration )
+  tigers_fury_t( druid_t* p, const std::string& options_str )
+    : cat_attack_t( "tigers_fury", p, p->spec.tigers_fury, options_str ), duration( p->buff.tigers_fury->buff_duration )
   {
     harmful = may_miss = may_parry = may_dodge = may_crit = false;
     autoshift = form_mask = CAT_FORM;
-    energize_type = ENERGIZE_ON_CAST;
-    energize_amount += p -> spec.tigers_fury_2 -> effectN( 1 ).resource( RESOURCE_ENERGY );
+    energize_type         = ENERGIZE_ON_CAST;
+    energize_amount += p->find_rank_spell( "Tiger's Fury", "Rank 2" )->effectN( 1 ).resource( RESOURCE_ENERGY );
 
     if ( p->talent.predator->ok() )
       duration += p->talent.predator->effectN( 1 ).time_value();
@@ -7977,14 +7982,9 @@ void druid_t::init_spells()
   spec.rip                        = find_specialization_spell( "Rip" );
   spec.sharpened_claws            = find_specialization_spell( "Sharpened Claws" );
   spec.swipe_cat                  = find_spell( 106785 );
-  spec.rake_2                     = find_spell( 231052 );
+  spec.rake_dmg                   = find_spell( 155722 );
   spec.tigers_fury                = find_specialization_spell( "Tiger's Fury" );
-  spec.tigers_fury_2              = find_rank_spell( "Tiger's Fury", "Rank 2" );
-  spec.ferocious_bite_2           = find_spell( 231056 );
   spec.shred                      = find_class_spell( "Shred" );
-  spec.shred_2                    = find_rank_spell( "Shred", "Rank 2" ); // 231063
-  spec.shred_3                    = find_rank_spell( "Shred", "Rank 3" ); // 231057
-  spec.swipe_2                    = find_rank_spell( "Swipe", "Rank 2" ); // 231283
   spec.savage_roar                = find_spell( 62071 );
 
   // Guardian
