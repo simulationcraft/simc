@@ -768,7 +768,7 @@ void action_t::parse_effect_data( const spelleffect_data_t& spelleffect_data )
         energize_amount   = spelleffect_data.resource( energize_resource );
       }
       break;
-      
+
     default:
       break;
   }
@@ -1672,7 +1672,8 @@ void action_t::execute()
     target = default_target;
   }
 
-  if ( energize_type_() == action_energize::ON_CAST || ( energize_type_() == action_energize::ON_HIT && hit_any_target ) )
+  const action_energize energize_type = energize_type_();
+  if ( energize_type == action_energize::ON_CAST || ( energize_type == action_energize::ON_HIT && hit_any_target ) )
   {
     auto amount = composite_energize_amount( execute_state );
     if ( amount != 0 )
@@ -1680,7 +1681,7 @@ void action_t::execute()
       gain_energize_resource( energize_resource_(), amount, energize_gain( execute_state ) );
     }
   }
-  else if ( energize_type_() == action_energize::PER_HIT )
+  else if ( energize_type == action_energize::PER_HIT )
   {
     auto amount = composite_energize_amount( execute_state ) * num_targets_hit;
     if ( amount != 0 )
@@ -1747,7 +1748,7 @@ void action_t::tick( dot_t* d )
   }
 
   if ( energize_type_() == action_energize::PER_TICK && d->get_last_tick_factor() >= 1.0)
-  {    
+  {
     // Partial tick is not counted for resource gain
     gain_energize_resource( energize_resource_(), composite_energize_amount( d->state ), gain );
   }
@@ -3486,7 +3487,7 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
       {
         if ( proxy_expr.size() <= action.target->actor_index )
         {
-          
+
           std::generate_n(std::back_inserter(proxy_expr), action.target->actor_index + 1 - proxy_expr.size(), []{ return std::unique_ptr<expr_t>(); });
         }
 
@@ -4414,7 +4415,7 @@ bool action_t::execute_targeting(action_t* action) const
   return true;
 }
 
-// This returns a list of all targets currently in range. 
+// This returns a list of all targets currently in range.
 std::vector<player_t*> action_t::targets_in_range_list(
   std::vector<player_t*>& tl) const
 {
