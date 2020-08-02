@@ -1566,7 +1566,7 @@ void action_t::execute()
     {
       action_state_t* s = get_state( pre_execute_state );
       s->target         = tl[ t ];
-      s->n_targets      = as<size_t>( num_targets );
+      s->n_targets      = as<unsigned>( num_targets );
       s->chain_target   = t;
       if ( !pre_execute_state )
       {

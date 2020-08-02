@@ -24,7 +24,7 @@ struct action_state_t : private noncopyable
   action_t*       action;
   player_t*       target;
   // Execution attributes
-  size_t          n_targets;            // Total number of targets the execution hits.
+  unsigned        n_targets;            // Total number of targets the execution hits.
   int             chain_target;         // The chain target number, 0 == no chain, 1 == first target, etc.
   double original_x;
   double original_y;
