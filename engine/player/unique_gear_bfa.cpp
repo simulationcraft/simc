@@ -5352,13 +5352,13 @@ void items::logic_loop_of_recursion( special_effect_t& effect )
     void trigger( action_t* a, void* s ) override
     {
       int this_id = a->internal_id;
-      auto it     = range::find_if( list, [a]( const llor_tracker_t& entry ) { return entry.target == a->target; } );
+      auto it     = range::find( list, a->target, &llor_tracker_t::target );
       if ( it == list.end() )  // new target
       {
         llor_tracker_t tmp;
         tmp.target = a->target;
         tmp.action_ids.push_back( this_id );
-        list.push_back( tmp );  // create new entry for target
+        list.push_back( std::move( tmp ) );  // create new entry for target
         return;
       }
 
@@ -5372,7 +5372,8 @@ void items::logic_loop_of_recursion( special_effect_t& effect )
         else  // full, execute
         {
           logic_loop_callback_t::trigger( a, s );
-          list.clear();
+          for ( auto& tracker : list )
+            tracker.action_ids.clear();
         }
       }
     }
