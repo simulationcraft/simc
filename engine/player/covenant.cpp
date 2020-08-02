@@ -176,10 +176,10 @@ bool covenant_state_t::parse_soulbind( sim_t*             sim,
   for ( const util::string_view entry : util::string_split<util::string_view>( value_str, "|/" ) )
   {
     // Conduit handling
-    if ( entry.find( ':' ) != std::string::npos )
+    if ( entry.find( ':' ) != util::string_view::npos )
     {
       auto _conduit_split = util::string_split<util::string_view>( entry, ":" );
-      if ( _conduit_split.size() > 2 )
+      if ( _conduit_split.size() != 2 )
       {
         sim->error( "{} unknown conduit format {}, must be conduit_id:conduit_rank",
           m_player->name(), entry );
