@@ -589,6 +589,8 @@ public:
     const spell_data_t* innervate;              // Balance & Restoration
     const spell_data_t* entangling_roots;
     const spell_data_t* moonfire_2;
+    const spell_data_t* barkskin;
+    const spell_data_t* ironfur;
 
     // Feral
     const spell_data_t* feral;
@@ -641,14 +643,9 @@ public:
     const spell_data_t* guardian_overrides;
     const spell_data_t* bear_form;
     const spell_data_t* gore;
-    const spell_data_t* ironfur;
     const spell_data_t* thick_hide; // Guardian Affinity
     const spell_data_t* thrash_bear_dot; // For Rend and Tear modifier
     const spell_data_t* lightning_reflexes;
-    const spell_data_t* mangle_2; // Rank 2
-    const spell_data_t* ironfur_2; // Rank 2
-    const spell_data_t* frenzied_regeneration_2; // Rank 2
-    const spell_data_t* frenzied_regeneration_3; // Rank 3
     const spell_data_t* bear_form_2; // Rank 2
 
     // Resto
@@ -1296,8 +1293,9 @@ struct incarnation_bear_buff_t : public druid_buff_t<buff_t>
 {
   double hp_mul;
 
-  incarnation_bear_buff_t( druid_t& p ) :
-    base_t( p, "incarnation_guardian_of_ursoc", p.talent.incarnation_bear->ok() ? p.talent.incarnation_bear : p.find_spell( 102558 ) )
+  incarnation_bear_buff_t( druid_t& p )
+    : base_t( p, "incarnation_guardian_of_ursoc",
+              p.talent.incarnation_bear->ok() ? p.talent.incarnation_bear : p.find_spell( 102558 ) )
   {
     set_cooldown( 0_ms );
     hp_mul = 1.0 + data().effectN( 5 ).percent();
@@ -1320,9 +1318,9 @@ struct incarnation_bear_buff_t : public druid_buff_t<buff_t>
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
-      player->resources.max[ RESOURCE_HEALTH ] /= hp_mul;
-      player->resources.current[ RESOURCE_HEALTH ] /= hp_mul;
-      p().recalculate_resource_max( RESOURCE_HEALTH );
+    player->resources.max[ RESOURCE_HEALTH ] /= hp_mul;
+    player->resources.current[ RESOURCE_HEALTH ] /= hp_mul;
+    p().recalculate_resource_max( RESOURCE_HEALTH );
 
     druid_buff_t<buff_t>::expire_override( expiration_stacks, remaining_duration );
   }
@@ -4513,9 +4511,10 @@ struct mangle_t : public bear_attack_t
   double bleeding_multiplier;
 
   mangle_t( druid_t* player, const std::string& options_str )
-    : bear_attack_t( "mangle", player, player->find_class_spell( "Mangle" ), options_str )
+    : bear_attack_t( "mangle", player, player->find_class_spell( "Mangle" ), options_str ), bleeding_multiplier( 0.0 )
   {
-    bleeding_multiplier = data().effectN( 3 ).percent();
+    if ( p()->find_rank_spell( "Mangle", "Rank 2")->ok() )
+      bleeding_multiplier = data().effectN( 3 ).percent();
 
     if ( p()->specialization() == DRUID_GUARDIAN )
     {
@@ -4836,8 +4835,7 @@ struct frenzied_regeneration_t : public heals::druid_heal_t
     hasted_ticks = false;
     tick_zero = true;
 
-    if ( p -> specialization() == DRUID_GUARDIAN )
-      cooldown->charges += as<int>( p->spec.frenzied_regeneration_2->effectN( 1 ).base_value() );
+    cooldown->charges += as<int>( p->find_rank_spell( "Frenzied Regeneration", "Rank 2" )->effectN( 1 ).base_value() );
   }
 
   void init() override
@@ -6463,13 +6461,15 @@ struct wrath_t : public druid_spell_t
 
 struct stampeding_roar_t : public druid_spell_t
 {
-  stampeding_roar_t( druid_t* p, const std::string& options_str ) :
-    druid_spell_t( "stampeding_roar", p, p -> find_class_spell( "Stampeding Roar" ), options_str )
+  stampeding_roar_t( druid_t* p, const std::string& options_str )
+    : druid_spell_t( "stampeding_roar", p, p->find_class_spell( "Stampeding Roar" ), options_str )
   {
     form_mask = BEAR_FORM | CAT_FORM;
     autoshift = BEAR_FORM;
 
     harmful = false;
+
+    cooldown->duration -= p->find_rank_spell( "Stampeding Roar", "Rank 2" )->effectN( 1 ).time_value();
   }
 
   void execute() override
@@ -6808,19 +6808,22 @@ struct stellar_flare_t : public druid_spell_t
 
 struct survival_instincts_t : public druid_spell_t
 {
-  survival_instincts_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "survival_instincts", player, player -> find_specialization_spell( "Survival Instincts" ),
-      options_str )
+  survival_instincts_t( druid_t* player, const std::string& options_str )
+    : druid_spell_t( "survival_instincts", player, player->find_specialization_spell( "Survival Instincts" ),
+                     options_str )
   {
-    harmful = false;
+    harmful     = false;
     use_off_gcd = true;
 
+    cooldown->charges +=
+        as<int>( player->find_rank_spell( "Survival Instincts", "Rank 2" )->effectN( 1 ).base_value() );
+
     // Because vision of perfection does exist, but does not affect this spell for feral.
-	  if ( player->specialization() == DRUID_GUARDIAN )
-	  {
-      cooldown -> duration *= 1.0 + player -> talent.survival_of_the_fittest -> effectN( 2 ).percent();
-      cooldown -> duration *= 1.0 + player -> vision_of_perfection_cdr;
-	  }
+    if ( player->specialization() == DRUID_GUARDIAN )
+    {
+      cooldown->duration *= 1.0 + player->talent.survival_of_the_fittest->effectN( 2 ).percent();
+      cooldown->duration *= 1.0 + player->vision_of_perfection_cdr;
+    }
   }
 
   void execute() override
@@ -7956,12 +7959,14 @@ void druid_t::init_spells()
   // Specializations ========================================================
 
   // Generic / Multiple specs
-  spec.critical_strikes           = find_specialization_spell( "Critical Strikes" );
-  spec.druid                      = find_spell( 137009 );
-  spec.leather_specialization     = find_specialization_spell( "Leather Specialization" );
-  spec.omen_of_clarity            = find_specialization_spell( "Omen of Clarity" );
-  spec.entangling_roots           = find_spell( 339 );
-  spec.moonfire_2                 = find_rank_spell ( "Moonfire", "Rank 2" );
+  spec.critical_strikes       = find_specialization_spell( "Critical Strikes" );
+  spec.druid                  = find_spell( 137009 );
+  spec.leather_specialization = find_specialization_spell( "Leather Specialization" );
+  spec.omen_of_clarity        = find_specialization_spell( "Omen of Clarity" );
+  spec.entangling_roots       = find_spell( 339 );
+  spec.moonfire_2             = find_rank_spell( "Moonfire", "Rank 2" );
+  spec.barkskin               = find_class_spell( "Barkskin" );
+  spec.ironfur                = find_class_spell( "Ironfur" );
 
   // Balance
   spec.astral_power               = find_specialization_spell( "Astral Power" );
@@ -8010,17 +8015,12 @@ void druid_t::init_spells()
   spec.savage_roar                = find_spell( 62071 );
 
   // Guardian
-  spec.bear_form                  = find_class_spell( "Bear Form" )->ok() ? find_spell( 1178 ) : spell_data_t::not_found();
-  spec.gore                       = find_specialization_spell( "Gore" );
-  spec.guardian                   = find_specialization_spell( "Guardian Druid" );
-  spec.ironfur                    = find_specialization_spell( "Ironfur" );
-  spec.thrash_bear_dot            = find_specialization_spell( "Thrash" )->ok() ? find_spell( 192090 ) : spell_data_t::not_found();
-  spec.lightning_reflexes         = find_specialization_spell( 231064 );
-  spec.mangle_2                   = find_rank_spell( "Mangle", "Rank 2" );
-  spec.ironfur_2                  = find_rank_spell( "Ironfur", "Rank 2" );
-  spec.frenzied_regeneration_2    = find_rank_spell( "Frenzied Regeneration", "Rank 2" );
-  spec.frenzied_regeneration_3    = find_rank_spell( "Frenzied Regeneration", "Rank 3" );
-  spec.bear_form_2                = find_rank_spell( "Bear Form", "Rank 2" );
+  spec.bear_form               = find_class_spell( "Bear Form" )->ok() ? find_spell( 1178 ) : spell_data_t::not_found();
+  spec.gore                    = find_specialization_spell( "Gore" );
+  spec.guardian                = find_specialization_spell( "Guardian Druid" );
+  spec.lightning_reflexes      = find_specialization_spell( "Lightning Reflexes" );
+  spec.bear_form_2             = find_rank_spell( "Bear Form", "Rank 2" );
+  spec.thrash_bear_dot = find_specialization_spell( "Thrash" )->ok() ? find_spell( 192090 ) : spell_data_t::not_found();
 
   // Restoration
   spec.restoration                = find_specialization_spell("Restoration Druid");
@@ -8369,6 +8369,11 @@ void druid_t::create_buffs()
     ->set_chance( talent.guardian_of_elune -> ok() )
     ->set_default_value( talent.guardian_of_elune -> effectN( 1 ).trigger() -> effectN( 1 ).time_value().total_seconds() );
 
+  buff.pulverize = make_buff( this, "pulverize", talent.pulverize )
+    ->set_cooldown( 0_ms )
+    ->set_default_value( talent.pulverize->effectN( 2 ).percent() )
+    ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
+
   buff.heart_of_the_wild = make_buff( this, "heart_of_the_wild",
     talent.balance_affinity->ok() ? find_spell( 108291 ) :
     talent.feral_affinity->ok() ? find_spell( 108292 ) :
@@ -8522,18 +8527,17 @@ void druid_t::create_buffs()
                             ->set_chance( talent.scent_of_blood->ok() ? 1.0 : 0.0 );
 
   // Guardian
-  buff.barkskin              = make_buff( this, "barkskin", find_specialization_spell( "Barkskin" ) )
-    ->set_cooldown( timespan_t::zero() )
-    ->set_default_value( find_specialization_spell( "Barkskin" ) -> effectN( 2 ).percent() )
-    ->set_duration( find_specialization_spell( "Barkskin" ) -> duration() )
-    ->set_tick_behavior( talent.brambles -> ok() ? buff_tick_behavior::REFRESH : buff_tick_behavior::NONE )
-    ->set_tick_callback( [ this ] ( buff_t*, int, timespan_t ) {
-                                 if ( talent.brambles -> ok() )
-                                   active.brambles_pulse -> execute();
-                               } );
+  buff.barkskin = make_buff( this, "barkskin", spec.barkskin )
+    ->set_cooldown( 0_ms )
+    ->set_default_value( spec.barkskin->effectN( 1 ).percent() )
+    ->set_duration( spec.barkskin->duration() + find_rank_spell( "Barkskin", "Rank 2")->effectN( 1 ).time_value() )
+    ->set_tick_behavior( talent.brambles->ok() ? buff_tick_behavior::REFRESH : buff_tick_behavior::NONE )
+    ->set_tick_callback( [this]( buff_t*, int, timespan_t ) {
+      if ( talent.brambles->ok() )
+        active.brambles_pulse->execute();
+    } );
 
-  buff.berserk_bear =
-      make_buff( this, "berserk", find_specialization_spell( "Berserk" ) )->set_cooldown( timespan_t::zero() );
+  buff.berserk_bear = make_buff( this, "berserk", find_specialization_spell( "Berserk" ) )->set_cooldown( 0_ms );
 
   buff.bristling_fur         = make_buff( this, "bristling_fur", talent.bristling_fur )
     ->set_cooldown( timespan_t::zero() );
@@ -8549,23 +8553,19 @@ void druid_t::create_buffs()
   buff.guardians_wrath       = make_buff( this, "guardians_wrath", find_spell( 279541 ) )
     ->set_default_value( find_spell( 279541 ) -> effectN( 1 ).resource( RESOURCE_RAGE ) );
 
-  buff.ironfur               = make_buff( this, "ironfur", spec.ironfur )
-    ->set_duration( spec.ironfur -> duration() )
-    ->set_default_value( spec.ironfur -> effectN( 1 ).percent() )
+  buff.ironfur = make_buff( this, "ironfur", spec.ironfur )
+    ->set_duration( spec.ironfur->duration() )
+    ->set_default_value( spec.ironfur->effectN( 1 ).percent() )
     ->add_invalidate( CACHE_ARMOR )
     ->add_invalidate( CACHE_AGILITY )
-    ->set_max_stack( (unsigned) ( specialization() == DRUID_GUARDIAN ? spec.ironfur_2 -> effectN( 1 ).base_value() :
-                                           1 ) )
-                                           ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
-                                           ->set_cooldown( timespan_t::zero() );
+    ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
+    ->set_cooldown( 0_ms )
+    ->set_max_stack( as<unsigned>( spec.ironfur->max_stacks() +
+        find_rank_spell( "Ironfur", "Rank 2" )->effectN( 1 ).base_value() ) );
 
   buff.masterful_instincts   = make_buff<stat_buff_t>( this, "masterful_instincts", find_spell( 273349 ) )
                                -> add_stat( STAT_MASTERY_RATING, azerite.masterful_instincts.value( 1 ) )
                                -> add_stat( STAT_ARMOR, azerite.masterful_instincts.value( 2 ) );
-
-  buff.pulverize             = make_buff( this, "pulverize", find_spell( 158792 ) )
-    ->set_default_value( find_spell( 158792 ) -> effectN( 1 ).percent() )
-    ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
 
   buff.survival_instincts    = new survival_instincts_buff_t( *this );
 
