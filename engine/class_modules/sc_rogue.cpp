@@ -191,18 +191,26 @@ public:
   unsigned poisoned_enemies;
 
   // Active
-  actions::rogue_attack_t* active_blade_flurry;
-  actions::rogue_poison_t* active_lethal_poison;
-  actions::rogue_poison_t* active_nonlethal_poison;
-  actions::rogue_attack_t* active_main_gauche;
-  actions::rogue_spell_t* active_poison_bomb;
-  actions::rogue_spell_t* active_replicating_shadows;
+  struct
+  {
+    actions::rogue_attack_t* blade_flurry = nullptr;
+    actions::rogue_poison_t* lethal_poison = nullptr;
+    actions::rogue_poison_t* nonlethal_poison = nullptr;
+    actions::rogue_attack_t* main_gauche = nullptr;
+    actions::rogue_spell_t* poison_bomb = nullptr;
+    actions::rogue_spell_t* replicating_shadows = nullptr;
+    actions::shadow_blades_attack_t* shadow_blades_attack = nullptr;
+    struct
+    {
+      actions::rogue_attack_t* backstab = nullptr;
+      actions::rogue_attack_t* shadowstrike = nullptr;
+    } weaponmaster;
+  } active;
 
   // Autoattacks
   action_t* auto_attack;
   actions::melee_t* melee_main_hand;
   actions::melee_t* melee_off_hand;
-  actions::shadow_blades_attack_t* shadow_blades_attack;
 
   // Track target of last manual Rupture application for Replicating Shadows azerite power
   player_t* last_rupture_target;
@@ -556,14 +564,7 @@ public:
     player_t( sim, ROGUE, name, r ),
     shadow_techniques( 0 ),
     poisoned_enemies( 0 ),
-    active_blade_flurry( nullptr ),
-    active_lethal_poison( nullptr ),
-    active_nonlethal_poison( nullptr ),
-    active_main_gauche( nullptr ),
-    active_poison_bomb( nullptr ),
-    active_replicating_shadows( nullptr ),
     auto_attack( nullptr ), melee_main_hand( nullptr ), melee_off_hand( nullptr ),
-    shadow_blades_attack( nullptr ),
     last_rupture_target( nullptr ),
     restealth_allowed( false ),
     buffs( buffs_t() ),
@@ -686,8 +687,10 @@ public:
   bool stealthed( uint32_t stealth_mask = STEALTH_ALL ) const;
 
   // Secondary Action Tracking
+private:
   std::vector<action_t*> background_actions;
 
+public:
   template <typename T, typename... Ts>
   T* get_background_action( util::string_view n, Ts&&... args )
   {
@@ -701,6 +704,40 @@ public:
     action->background = true;
     background_actions.push_back( action );
     return action;
+  }
+
+  // Secondary Action Trigger Tracking
+private:
+  std::vector<action_t*> secondary_trigger_actions;
+
+public:
+  template <typename T, typename... Ts>
+  T* find_secondary_trigger_action( secondary_trigger_e source )
+  {
+    T* found_action = nullptr;
+    for ( auto action : secondary_trigger_actions )
+    {
+      found_action = dynamic_cast<T*>( action );
+      if ( found_action && found_action->secondary_trigger == source )
+        break;
+    }
+    return found_action;
+  }
+
+  template <typename T, typename... Ts>
+  T* get_secondary_trigger_action( secondary_trigger_e source, util::string_view n, Ts&&... args )
+  {
+    T* found_action = find_secondary_trigger_action<T>( source );
+    if ( !found_action )
+    {
+      // Actions will follow form of foo_t( util::string_view name, rogue_t* p, ... )
+      found_action = new T( n, this, std::forward<Ts>( args )... );
+      found_action->background = found_action->dual = true;
+      found_action->repeating = false;
+      found_action->secondary_trigger = source;
+      secondary_trigger_actions.push_back( found_action );
+    }
+    return found_action;
   }
 };
 
@@ -717,14 +754,13 @@ struct secondary_action_trigger_t : public event_t
   action_state_t* state;
   player_t* target;
   int cp;
-  secondary_trigger_e source;
 
-  secondary_action_trigger_t( action_state_t* s, secondary_trigger_e source_, timespan_t delay = timespan_t::zero() ) :
-    event_t( *s -> action -> sim, delay ), action( dynamic_cast<Base*>( s->action ) ), state( s ), target( nullptr ), cp( 0 ), source( source_ )
+  secondary_action_trigger_t( action_state_t* s, timespan_t delay = timespan_t::zero() ) :
+    event_t( *s -> action -> sim, delay ), action( dynamic_cast<Base*>( s->action ) ), state( s ), target( nullptr ), cp( 0 )
   {}
 
-  secondary_action_trigger_t( player_t* target, Base* action, int cp, secondary_trigger_e source_, timespan_t delay = timespan_t::zero() ) :
-    event_t( *action -> sim, delay ), action( action ), state( nullptr ), target( target ), cp( cp ), source( source_ )
+  secondary_action_trigger_t( player_t* target, Base* action, int cp, timespan_t delay = timespan_t::zero() ) :
+    event_t( *action -> sim, delay ), action( action ), state( nullptr ), target( target ), cp( cp )
   {}
 
   const char* name() const override
@@ -732,16 +768,14 @@ struct secondary_action_trigger_t : public event_t
 
   void execute() override
   {
+    assert( action->is_secondary_action() );
+
     player_t* action_target = state ? state->target : target;
 
     // Ensure target is still available and did not demise during delay.
     if ( !action_target || action_target->is_sleeping() )
       return;
 
-    auto bg = action->background, d = action->dual, r = action->repeating;
-    action->background = action->dual = true;
-    action->repeating = false;
-    action->secondary_trigger = source;
     action->set_target( action_target );
 
     // No state, construct one and grab combo points from the event instead of current CP amount.
@@ -755,12 +789,6 @@ struct secondary_action_trigger_t : public event_t
 
     action->pre_execute_state = state;
     action->execute();
-
-    action->background = bg;
-    action->dual = d;
-    action->repeating = r;
-    action->secondary_trigger = TRIGGER_NONE;
-
     state = nullptr;
   }
 
@@ -1008,18 +1036,24 @@ public:
     ab::snapshot_state( state, rt );
   }
 
+  // Secondary Trigger Functions ==============================================
+
+  bool is_secondary_action()
+  { return secondary_trigger != TRIGGER_NONE && ab::background == true; }
+
+  virtual void trigger_secondary_action( player_t* target, int cp = 0, timespan_t delay = timespan_t::zero() )
+  {
+    assert( is_secondary_action() );
+    make_event<secondary_action_trigger_t<base_t>>( *ab::sim, target, this, cp, delay );
+  }
+
+  virtual void trigger_secondary_action( action_state_t* s, timespan_t delay = timespan_t::zero() )
+  {
+    assert( is_secondary_action() && s->action == this );
+    make_event<secondary_action_trigger_t<base_t>>( *ab::sim, s, delay );
+  }
+
   // Helper Functions =========================================================
-
-  virtual void make_secondary_trigger( secondary_trigger_e source_, action_state_t* s, timespan_t delay = timespan_t::zero() )
-  {
-    assert( s->action == this );
-    make_event<secondary_action_trigger_t<base_t>>( *ab::sim, s, source_, delay );
-  }
-
-  virtual void make_secondary_trigger( secondary_trigger_e source_, player_t* target, int cp = 0, timespan_t delay = timespan_t::zero() )
-  {
-    make_event<secondary_action_trigger_t<base_t>>( *ab::sim, target, this, cp, source_, delay );
-  }
 
   // Helper function for expressions. Returns the number of guaranteed generated combo points for
   // this ability, taking into account any potential buffs.
@@ -1093,7 +1127,7 @@ public:
   void trigger_alacrity( const action_state_t* );
   void trigger_deepening_shadows( const action_state_t* );
   void trigger_shadow_techniques( const action_state_t* );
-  void trigger_weaponmaster( const action_state_t* );
+  void trigger_weaponmaster( const action_state_t*, rogue_attack_t* action );
   void trigger_restless_blades( const action_state_t* );
   void trigger_exsanguinate( const action_state_t* );
   void trigger_relentless_strikes( const action_state_t* );
@@ -1536,7 +1570,7 @@ struct rogue_poison_t : public rogue_attack_t
     set_target( source_state->target );
     execute();
 
-    if ( p()->azerite.double_dose.ok() && p()->active_lethal_poison == this &&
+    if ( p()->azerite.double_dose.ok() && p()->active.lethal_poison == this &&
         ( source_state->action->name_str == "mutilate_mh" || source_state->action->name_str == "mutilate_oh" ) )
     {
       p()->buffs.double_dose->trigger( 1 );
@@ -1805,22 +1839,22 @@ struct apply_poison_t : public action_t
 
     if ( p -> main_hand_weapon.type != WEAPON_NONE || p -> off_hand_weapon.type != WEAPON_NONE )
     {
-      if ( ! p -> active_lethal_poison )
+      if ( ! p -> active.lethal_poison )
       {
         if ( ( lethal_str.empty() && p->specialization() == ROGUE_ASSASSINATION ) || lethal_str == "deadly" )
-          p->active_lethal_poison = p->get_background_action<deadly_poison_t>( "deadly_poison_driver" );
+          p->active.lethal_poison = p->get_background_action<deadly_poison_t>( "deadly_poison_driver" );
         else if ( ( lethal_str.empty() && p->specialization() != ROGUE_ASSASSINATION ) || lethal_str == "instant" )
-          p->active_lethal_poison = p->get_background_action<instant_poison_t>( "instant_poison_driver" );
+          p->active.lethal_poison = p->get_background_action<instant_poison_t>( "instant_poison_driver" );
         else if ( lethal_str == "wound" )
-          p->active_lethal_poison = p->get_background_action<wound_poison_t>( "wound_poison_driver" );
+          p->active.lethal_poison = p->get_background_action<wound_poison_t>( "wound_poison_driver" );
       }
 
-      if ( ! p -> active_nonlethal_poison )
+      if ( ! p -> active.nonlethal_poison )
       {
         if ( nonlethal_str.empty() || nonlethal_str == "crippling" )
-          p->active_nonlethal_poison = p->get_background_action<crippling_poison_t>( "crippling_poison_driver" );
+          p->active.nonlethal_poison = p->get_background_action<crippling_poison_t>( "crippling_poison_driver" );
         else if ( nonlethal_str == "numbing" )
-          p->active_nonlethal_poison = p->get_background_action<numbing_poison_t>( "numbing_poison_driver" );
+          p->active.nonlethal_poison = p->get_background_action<numbing_poison_t>( "numbing_poison_driver" );
       }
     }
   }
@@ -1857,11 +1891,11 @@ void rogue_attack_t::impact( action_state_t* state )
 
   if ( result_is_hit( state->result ) )
   {
-    if ( procs_poison() && p()->active_lethal_poison )
-      p()->active_lethal_poison->trigger( state );
+    if ( procs_poison() && p()->active.lethal_poison )
+      p()->active.lethal_poison->trigger( state );
 
-    if ( procs_poison() && p()->active_nonlethal_poison )
-      p()->active_nonlethal_poison->trigger( state );
+    if ( procs_poison() && p()->active.nonlethal_poison )
+      p()->active.nonlethal_poison->trigger( state );
   }
 }
 
@@ -2048,8 +2082,8 @@ struct adrenaline_rush_t : public rogue_attack_t
 {
   double precombat_seconds;
 
-  adrenaline_rush_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "adrenaline_rush", p, p -> spec.adrenaline_rush ),
+  adrenaline_rush_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ) :
+    rogue_attack_t( name, p, p -> spec.adrenaline_rush ),
     precombat_seconds( 0.0 )
   {
     add_option( opt_float( "precombat_seconds", precombat_seconds ) );
@@ -2088,8 +2122,8 @@ struct adrenaline_rush_t : public rogue_attack_t
 
 struct ambush_t : public rogue_attack_t
 {
-  ambush_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "ambush", p, p -> find_class_spell( "Ambush" ), options_str )
+  ambush_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ) :
+    rogue_attack_t( name, p, p -> find_class_spell( "Ambush" ), options_str )
   {
   }
 
@@ -2124,9 +2158,13 @@ struct ambush_t : public rogue_attack_t
 
 struct backstab_t : public rogue_attack_t
 {
-  backstab_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "backstab", p, p -> find_specialization_spell( "Backstab" ), options_str )
+  backstab_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ) :
+    rogue_attack_t( name, p, p -> find_specialization_spell( "Backstab" ), options_str )
   {
+    if ( p->active.weaponmaster.backstab && p->active.weaponmaster.backstab != this )
+    {
+      add_child( p->active.weaponmaster.backstab );
+    }
   }
 
   double bonus_da( const action_state_t* state ) const override
@@ -2181,7 +2219,7 @@ struct backstab_t : public rogue_attack_t
   {
     rogue_attack_t::impact( state );
 
-    trigger_weaponmaster( state );
+    trigger_weaponmaster( state, p()->active.weaponmaster.backstab );
     trigger_inevitability( state );
   }
 };
@@ -2190,9 +2228,8 @@ struct backstab_t : public rogue_attack_t
 
 struct between_the_eyes_t : public rogue_attack_t
 {
-  between_the_eyes_t( rogue_t* p, const std::string& options_str ):
-    rogue_attack_t( "between_the_eyes", p, p -> find_specialization_spell( "Between the Eyes" ),
-                    options_str )
+  between_the_eyes_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ):
+    rogue_attack_t( name, p, p -> find_specialization_spell( "Between the Eyes" ), options_str )
   {
     ap_type = attack_power_type::WEAPON_BOTH;
     crit_bonus_multiplier *= 1.0 + p -> find_specialization_spell( 235484 ) -> effectN( 1 ).percent();
@@ -2301,14 +2338,14 @@ struct blade_flurry_t : public rogue_attack_t
 
   blade_flurry_instant_attack_t* instant_attack;
 
-  blade_flurry_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "blade_flurry", p, p -> spec.blade_flurry, options_str ),
+  blade_flurry_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ) :
+    rogue_attack_t( name, p, p -> spec.blade_flurry, options_str ),
     instant_attack(nullptr)
   {
     harmful = false;
     internal_cooldown -> duration += p -> talent.dancing_steel -> effectN( 4 ).time_value();
 
-    add_child( p->active_blade_flurry );
+    add_child( p->active.blade_flurry );
 
     if ( p->spec.blade_flurry_2->ok() )
     {
@@ -2361,8 +2398,8 @@ struct blade_rush_t : public rogue_attack_t
     }
   };
 
-  blade_rush_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "blade_rush", p, p -> talent.blade_rush, options_str )
+  blade_rush_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ) :
+    rogue_attack_t( name, p, p -> talent.blade_rush, options_str )
   {
     execute_action = p->get_background_action<blade_rush_attack_t>( "blade_rush_attack" );
   }
@@ -2372,8 +2409,8 @@ struct blade_rush_t : public rogue_attack_t
 
 struct crimson_tempest_t : public rogue_attack_t
 {
-  crimson_tempest_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "crimson_tempest", p, p -> talent.crimson_tempest, options_str )
+  crimson_tempest_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ) :
+    rogue_attack_t( name, p, p -> talent.crimson_tempest, options_str )
   {
     aoe = -1;
   }
@@ -2402,8 +2439,8 @@ struct crimson_tempest_t : public rogue_attack_t
 // This ability does nothing but for some odd reasons throughout the history of Rogue spaghetti, we may want to look at using it. So, let's support it.
 struct detection_t : public rogue_spell_t
 {
-  detection_t( rogue_t* p, const std::string& options_str ) :
-    rogue_spell_t( "detection", p, p -> find_class_spell( "Detection" ), options_str )
+  detection_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ) :
+    rogue_spell_t( name, p, p -> find_class_spell( "Detection" ), options_str )
   {
     gcd_type = gcd_haste_type::ATTACK_HASTE;
     min_gcd = timespan_t::from_millis(750); // Force 750ms min gcd because rogue player base has a 1s min.
@@ -2414,8 +2451,8 @@ struct detection_t : public rogue_spell_t
 
 struct dispatch_t: public rogue_attack_t
 {
-  dispatch_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "dispatch", p, p -> find_specialization_spell( "Dispatch" ), options_str )
+  dispatch_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ) :
+    rogue_attack_t( name, p, p -> find_specialization_spell( "Dispatch" ), options_str )
   {
   }
 
@@ -2436,8 +2473,8 @@ struct dispatch_t: public rogue_attack_t
 
 struct envenom_t : public rogue_attack_t
 {
-  envenom_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "envenom", p, p -> find_specialization_spell( "Envenom" ), options_str )
+  envenom_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ) :
+    rogue_attack_t( name, p, p -> find_specialization_spell( "Envenom" ), options_str )
   {
     dot_duration = timespan_t::zero();
   }
@@ -2469,8 +2506,8 @@ struct envenom_t : public rogue_attack_t
 
 struct eviscerate_t : public rogue_attack_t
 {
-  eviscerate_t( rogue_t* p, const std::string& options_str ):
-    rogue_attack_t( "eviscerate", p, p -> spec.eviscerate, options_str )
+  eviscerate_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ):
+    rogue_attack_t( name, p, p -> spec.eviscerate, options_str )
   {
     base_multiplier *= 1.0 + p -> spec.eviscerate_2 -> effectN( 1 ).percent();
   }
@@ -2493,8 +2530,8 @@ struct eviscerate_t : public rogue_attack_t
 
 struct exsanguinate_t : public rogue_attack_t
 {
-  exsanguinate_t( rogue_t* p, const std::string& options_str ):
-    rogue_attack_t( "exsanguinate", p, p -> talent.exsanguinate, options_str )
+  exsanguinate_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ):
+    rogue_attack_t( name, p, p -> talent.exsanguinate, options_str )
   { }
 
   void impact( action_state_t* state ) override
@@ -2528,8 +2565,8 @@ struct fan_of_knives_t: public rogue_attack_t
   echoing_blades_t* echoing_blades_attack;
   int echoing_blades_crit_count;
 
-  fan_of_knives_t( rogue_t* p, const std::string& options_str ):
-    rogue_attack_t( "fan_of_knives", p, p -> find_specialization_spell( "Fan of Knives" ), options_str ),
+  fan_of_knives_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ):
+    rogue_attack_t( name, p, p -> find_specialization_spell( "Fan of Knives" ), options_str ),
     echoing_blades_attack( nullptr ), echoing_blades_crit_count( 0 )
   {
     aoe = -1;
@@ -2577,11 +2614,11 @@ struct fan_of_knives_t: public rogue_attack_t
     {
       // 2018-01-25: Poisons are applied on cast as well
       // Note: Usual application on impact will not happen because this attack has no weapon assigned
-      if ( p() -> active_lethal_poison )
-        p() -> active_lethal_poison -> trigger( state );
+      if ( p() -> active.lethal_poison )
+        p() -> active.lethal_poison -> trigger( state );
 
-      if ( p() -> active_nonlethal_poison )
-        p() -> active_nonlethal_poison -> trigger( state );
+      if ( p() -> active.nonlethal_poison )
+        p() -> active.nonlethal_poison -> trigger( state );
     }
   }
 
@@ -2601,8 +2638,8 @@ struct fan_of_knives_t: public rogue_attack_t
 
 struct feint_t : public rogue_attack_t
 {
-  feint_t( rogue_t* p, const std::string& options_str ):
-    rogue_attack_t( "feint", p, p -> find_class_spell( "Feint" ), options_str )
+  feint_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ):
+    rogue_attack_t( name, p, p -> find_class_spell( "Feint" ), options_str )
   { }
 
   void execute() override
@@ -2641,8 +2678,8 @@ struct garrote_t : public rogue_attack_t
     }
   };
 
-  garrote_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "garrote", p, p -> spec.garrote, options_str )
+  garrote_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ) :
+    rogue_attack_t( name, p, p -> spec.garrote, options_str )
   {
   }
 
@@ -2730,8 +2767,8 @@ struct garrote_t : public rogue_attack_t
 
 struct gouge_t : public rogue_attack_t
 {
-  gouge_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "gouge", p, p -> find_specialization_spell( "Gouge" ), options_str )
+  gouge_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ) :
+    rogue_attack_t( name, p, p -> find_specialization_spell( "Gouge" ), options_str )
   {
     if ( p -> talent.dirty_tricks -> ok() )
       base_costs[ RESOURCE_ENERGY ] = 0;
@@ -2742,8 +2779,8 @@ struct gouge_t : public rogue_attack_t
 
 struct ghostly_strike_t : public rogue_attack_t
 {
-  ghostly_strike_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "ghostly_strike", p, p -> talent.ghostly_strike, options_str )
+  ghostly_strike_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ) :
+    rogue_attack_t( name, p, p -> talent.ghostly_strike, options_str )
   {
   }
 
@@ -2766,8 +2803,8 @@ struct ghostly_strike_t : public rogue_attack_t
 
 struct gloomblade_t : public rogue_attack_t
 {
-  gloomblade_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "gloomblade", p, p -> talent.gloomblade, options_str )
+  gloomblade_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ) :
+    rogue_attack_t( name, p, p -> talent.gloomblade, options_str )
   {
   }
 
@@ -2808,8 +2845,8 @@ struct gloomblade_t : public rogue_attack_t
 
 struct kick_t : public rogue_attack_t
 {
-  kick_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "kick", p, p -> find_class_spell( "Kick" ), options_str )
+  kick_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ) :
+    rogue_attack_t( name, p, p -> find_class_spell( "Kick" ), options_str )
   {
   }
 
@@ -2839,8 +2876,8 @@ struct killing_spree_t : public rogue_attack_t
   melee_attack_t* attack_mh;
   melee_attack_t* attack_oh;
 
-  killing_spree_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "killing_spree", p, p -> talent.killing_spree, options_str ),
+  killing_spree_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ) :
+    rogue_attack_t( name, p, p -> talent.killing_spree, options_str ),
     attack_mh( nullptr ), attack_oh( nullptr )
   {
     channeled = tick_zero = true;
@@ -2882,8 +2919,8 @@ struct killing_spree_t : public rogue_attack_t
 
 struct pistol_shot_t : public rogue_attack_t
 {
-  pistol_shot_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "pistol_shot", p, p -> find_specialization_spell( "Pistol Shot" ), options_str )
+  pistol_shot_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ) :
+    rogue_attack_t( name, p, p -> find_specialization_spell( "Pistol Shot" ), options_str )
   {
     ap_type = attack_power_type::WEAPON_BOTH;
   }
@@ -2998,8 +3035,8 @@ struct marked_for_death_t : public rogue_spell_t
 {
   double precombat_seconds;
 
-  marked_for_death_t( rogue_t* p, const std::string& options_str ):
-    rogue_spell_t( "marked_for_death", p, p -> find_talent_spell( "Marked for Death" ) ),
+  marked_for_death_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ):
+    rogue_spell_t( name, p, p -> find_talent_spell( "Marked for Death" ) ),
     precombat_seconds( 0.0 )
   {
     add_option( opt_float( "precombat_seconds", precombat_seconds ) );
@@ -3060,8 +3097,8 @@ struct mutilate_t : public rogue_attack_t
   rogue_attack_t* oh_strike;
   rogue_attack_t* double_dose;
 
-  mutilate_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "mutilate", p, p -> find_specialization_spell( "Mutilate" ), options_str ),
+  mutilate_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ) :
+    rogue_attack_t( name, p, p -> find_specialization_spell( "Mutilate" ), options_str ),
     mh_strike( nullptr ), oh_strike( nullptr ), double_dose( nullptr)
   {
     if ( p -> main_hand_weapon.type != WEAPON_DAGGER ||
@@ -3134,8 +3171,8 @@ struct roll_the_bones_t : public rogue_spell_t
 {
   double precombat_seconds;
 
-  roll_the_bones_t( rogue_t* p, const std::string& options_str ) :
-    rogue_spell_t( "roll_the_bones", p, p -> spec.roll_the_bones ),
+  roll_the_bones_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ) :
+    rogue_spell_t( name, p, p -> spec.roll_the_bones ),
     precombat_seconds( 0.0 )
   {
     add_option( opt_float( "precombat_seconds", precombat_seconds ) );
@@ -3165,12 +3202,12 @@ struct roll_the_bones_t : public rogue_spell_t
 
 struct rupture_t : public rogue_attack_t
 {
-  rupture_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "rupture", p, p -> find_specialization_spell( "Rupture" ), options_str )
+  rupture_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ) :
+    rogue_attack_t( name, p, p -> find_specialization_spell( "Rupture" ), options_str )
   {
-    if ( p->active_replicating_shadows )
+    if ( p->active.replicating_shadows )
     {
-      add_child( p->active_replicating_shadows );
+      add_child( p->active.replicating_shadows );
     }
   }
 
@@ -3345,14 +3382,17 @@ struct secret_technique_t : public rogue_attack_t
   secret_technique_attack_t* player_attack;
   secret_technique_attack_t* clone_attack;
 
-  secret_technique_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "secret_technique", p, p -> talent.secret_technique, options_str )
+  secret_technique_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ) :
+    rogue_attack_t( name, p, p -> talent.secret_technique, options_str )
   {
     may_miss = false;
 
-    player_attack = p->get_background_action<secret_technique_attack_t>( "secret_technique_player", p->find_spell( 280720 ) );
+    player_attack = p->get_secondary_trigger_action<secret_technique_attack_t>(
+      TRIGGER_SECRET_TECHNIQUE, "secret_technique_player", p->find_spell( 280720 ) );
+    clone_attack = p->get_secondary_trigger_action<secret_technique_attack_t>(
+      TRIGGER_SECRET_TECHNIQUE, "secret_technique_clones", p->find_spell( 282449 ) );
+
     add_child( player_attack );
-    clone_attack = p->get_background_action<secret_technique_attack_t>( "secret_technique_clones", p->find_spell( 282449 ) );
     add_child( clone_attack );
   }
 
@@ -3363,13 +3403,13 @@ struct secret_technique_t : public rogue_attack_t
     int cp = cast_state( execute_state )->cp;
 
     // Hit of the main char happens right on cast.
-    player_attack->make_secondary_trigger( TRIGGER_SECRET_TECHNIQUE, execute_state->target, cp );
+    player_attack->trigger_secondary_action( execute_state->target, cp );
 
     // The clones seem to hit 1s and 1.3s later (no time reference in spell data though)
     // Trigger tracking buff until first clone's damage
     p()->buffs.secret_technique->trigger( 1, buff_t::DEFAULT_VALUE(), ( -1.0 ), 1_s );
-    clone_attack->make_secondary_trigger( TRIGGER_SECRET_TECHNIQUE, execute_state->target, cp, 1_s );
-    clone_attack->make_secondary_trigger( TRIGGER_SECRET_TECHNIQUE, execute_state->target, cp, 1.3_s );
+    clone_attack->trigger_secondary_action( execute_state->target, cp, 1_s );
+    clone_attack->trigger_secondary_action( execute_state->target, cp, 1.3_s );
   }
 };
 
@@ -3377,8 +3417,8 @@ struct secret_technique_t : public rogue_attack_t
 
 struct shadow_blades_attack_t : public rogue_attack_t
 {
-  shadow_blades_attack_t( rogue_t* p ) :
-    rogue_attack_t( "shadow_blades_attack", p, p -> find_spell( 279043 ) )
+  shadow_blades_attack_t( util::string_view name, rogue_t* p ) :
+    rogue_attack_t( name, p, p -> find_spell( 279043 ) )
   {
     background = true;
     may_dodge = may_block = may_parry = false;
@@ -3397,8 +3437,8 @@ struct shadow_blades_t : public rogue_spell_t
 {
   double precombat_seconds;
 
-  shadow_blades_t( rogue_t* p, const std::string& options_str ) :
-    rogue_spell_t( "shadow_blades", p, p -> find_specialization_spell( "Shadow Blades" ) ),
+  shadow_blades_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ) :
+    rogue_spell_t( name, p, p -> find_specialization_spell( "Shadow Blades" ) ),
     precombat_seconds( 0.0 )
   {
     add_option( opt_float( "precombat_seconds", precombat_seconds ) );
@@ -3409,7 +3449,9 @@ struct shadow_blades_t : public rogue_spell_t
     min_gcd = timespan_t::from_millis(750); // Force 750ms min gcd because rogue player base has a 1s min.
 
     school = SCHOOL_SHADOW;
-    add_child( p -> shadow_blades_attack );
+
+    p->active.shadow_blades_attack = p->get_background_action<shadow_blades_attack_t>( "shadow_blades_attack" );
+    add_child( p->active.shadow_blades_attack );
 
     if ( p->azerite.vision_of_perfection.enabled() )
     {
@@ -3437,12 +3479,10 @@ struct shadow_dance_t : public rogue_spell_t
 {
   cooldown_t* icd;
 
-  shadow_dance_t( rogue_t* p, const std::string& options_str ) :
-    rogue_spell_t( "shadow_dance", p, p -> spec.shadow_dance ),
+  shadow_dance_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ) :
+    rogue_spell_t( name, p, p->spec.shadow_dance, options_str ),
     icd( p -> get_cooldown( "shadow_dance_icd" ) )
   {
-    parse_options( options_str );
-
     harmful = false;
     dot_duration = timespan_t::zero(); // No need to have a tick here
     icd -> duration = data().cooldown();
@@ -3483,8 +3523,8 @@ struct shadow_dance_t : public rogue_spell_t
 
 struct shadowstep_t : public rogue_spell_t
 {
-  shadowstep_t( rogue_t* p, const std::string& options_str ) :
-    rogue_spell_t( "shadowstep", p, p -> spec.shadowstep, options_str )
+  shadowstep_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ) :
+    rogue_spell_t( name, p, p -> spec.shadowstep, options_str )
   {
     harmful = false;
     dot_duration = timespan_t::zero();
@@ -3503,9 +3543,13 @@ struct shadowstep_t : public rogue_spell_t
 
 struct shadowstrike_t : public rogue_attack_t
 {
-  shadowstrike_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "shadowstrike", p, p -> spec.shadowstrike, options_str )
+  shadowstrike_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ) :
+    rogue_attack_t( name, p, p -> spec.shadowstrike, options_str )
   {
+    if ( p->active.weaponmaster.shadowstrike && p->active.weaponmaster.shadowstrike != this )
+    {
+      add_child( p->active.weaponmaster.shadowstrike );
+    }
   }
 
   double cost() const override
@@ -3532,7 +3576,7 @@ struct shadowstrike_t : public rogue_attack_t
     if ( p() -> talent.find_weakness ->ok() )
       td( state -> target ) -> debuffs.find_weakness -> trigger();
 
-    trigger_weaponmaster( state );
+    trigger_weaponmaster( state, p()->active.weaponmaster.shadowstrike );
     trigger_inevitability( state );
   }
 
@@ -3581,8 +3625,8 @@ struct shadowstrike_t : public rogue_attack_t
 
 struct shuriken_storm_t: public rogue_attack_t
 {
-  shuriken_storm_t( rogue_t* p, const std::string& options_str ):
-    rogue_attack_t( "shuriken_storm", p, p -> find_specialization_spell( "Shuriken Storm" ), options_str )
+  shuriken_storm_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ):
+    rogue_attack_t( name, p, p -> find_specialization_spell( "Shuriken Storm" ), options_str )
   {
     aoe = -1;
     energize_type = ENERGIZE_PER_HIT;
@@ -3617,18 +3661,24 @@ struct shuriken_storm_t: public rogue_attack_t
 
 struct shuriken_tornado_t : public rogue_spell_t
 {
-  shuriken_tornado_t( rogue_t* p, const std::string& options_str ) :
-    rogue_spell_t( "shuriken_tornado", p, p -> talent.shuriken_tornado, options_str )
+  shuriken_tornado_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ) :
+    rogue_spell_t( name, p, p -> talent.shuriken_tornado, options_str )
   {
     dot_duration = timespan_t::zero();
     aoe = -1;
+
+    // Trigger action is created in the buff, but it can't be parented then, just look it up here
+    action_t* trigger_action = p->find_secondary_trigger_action<shuriken_storm_t>( TRIGGER_SHURIKEN_TORNADO );
+    if ( trigger_action )
+    {
+      add_child( trigger_action );
+    }
   }
 
   void execute() override
   {
     rogue_spell_t::execute();
-
-    p() -> buffs.shuriken_tornado -> trigger();
+    p()->buffs.shuriken_tornado->trigger();
   }
 };
 
@@ -3636,8 +3686,8 @@ struct shuriken_tornado_t : public rogue_spell_t
 
 struct shuriken_toss_t : public rogue_attack_t
 {
-  shuriken_toss_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "shuriken_toss", p, p -> find_specialization_spell( "Shuriken Toss" ), options_str )
+  shuriken_toss_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ) :
+    rogue_attack_t( name, p, p -> find_specialization_spell( "Shuriken Toss" ), options_str )
   {
     ap_type = attack_power_type::WEAPON_BOTH;
   }
@@ -3680,11 +3730,11 @@ struct sinister_strike_t : public rogue_attack_t
   timespan_t extra_attack_delay;
   sinister_strike_extra_attack_t* extra_attack;
 
-  sinister_strike_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "sinister_strike", p, p->spec.sinister_strike, options_str ),
+  sinister_strike_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ) :
+    rogue_attack_t( name, p, p->spec.sinister_strike, options_str ),
     extra_attack_delay( 300_ms )
   {
-    extra_attack = p->get_background_action<sinister_strike_extra_attack_t>( "sinister_strike_extra_attack" );
+    extra_attack = p->get_secondary_trigger_action<sinister_strike_extra_attack_t>( TRIGGER_SINISTER_STRIKE, "sinister_strike_extra_attack" );
     add_child( extra_attack );
   }
 
@@ -3719,7 +3769,7 @@ struct sinister_strike_t : public rogue_attack_t
 
     if ( p()->spec.sinister_strike_2->ok() && p()->buffs.opportunity->trigger( 1, buff_t::DEFAULT_VALUE(), extra_attack_proc_chance() ) )
     {
-      extra_attack->make_secondary_trigger( TRIGGER_SINISTER_STRIKE, execute_state->target, 0, extra_attack_delay );
+      extra_attack->trigger_secondary_action( execute_state->target, 0, extra_attack_delay );
     }
   }
 };
@@ -3730,8 +3780,8 @@ struct slice_and_dice_t : public rogue_spell_t
 {
   double precombat_seconds;
 
-  slice_and_dice_t( rogue_t* p, const std::string& options_str ) :
-    rogue_spell_t( "slice_and_dice", p, p -> spell.slice_and_dice ),
+  slice_and_dice_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ) :
+    rogue_spell_t( name, p, p -> spell.slice_and_dice ),
     precombat_seconds( 0.0 )
   {
     add_option( opt_float( "precombat_seconds", precombat_seconds ) );
@@ -3769,8 +3819,8 @@ struct slice_and_dice_t : public rogue_spell_t
 
 struct sprint_t : public rogue_spell_t
 {
-  sprint_t( rogue_t* p, const std::string& options_str ):
-    rogue_spell_t( "sprint", p, p -> spell.sprint, options_str )
+  sprint_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ):
+    rogue_spell_t( name, p, p -> spell.sprint, options_str )
   {
     harmful = callbacks = false;
     cooldown = p -> cooldowns.sprint;
@@ -3788,11 +3838,9 @@ struct sprint_t : public rogue_spell_t
 
 struct symbols_of_death_t : public rogue_spell_t
 {
-  symbols_of_death_t( rogue_t* p, const std::string& options_str ) :
-    rogue_spell_t( "symbols_of_death", p, p -> spec.symbols_of_death )
+  symbols_of_death_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ) :
+    rogue_spell_t( name, p, p -> spec.symbols_of_death, options_str )
   {
-    parse_options( options_str );
-
     harmful = callbacks = false;
     dot_duration = timespan_t::zero();
   }
@@ -3808,8 +3856,8 @@ struct symbols_of_death_t : public rogue_spell_t
 
 struct shiv_t : public rogue_attack_t
 {
-  shiv_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "shiv", p, p->find_class_spell( "Shiv" ), options_str )
+  shiv_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ) :
+    rogue_attack_t( name, p, p->find_class_spell( "Shiv" ), options_str )
   {
   }
 
@@ -3828,8 +3876,8 @@ struct shiv_t : public rogue_attack_t
 
 struct vanish_t : public rogue_spell_t
 {
-  vanish_t( rogue_t* p, const std::string& options_str ) :
-    rogue_spell_t( "vanish", p, p -> find_class_spell( "Vanish" ), options_str )
+  vanish_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ) :
+    rogue_spell_t( name, p, p -> find_class_spell( "Vanish" ), options_str )
   {
     harmful = false;
   }
@@ -3868,8 +3916,8 @@ struct vendetta_t : public rogue_spell_t
   double precombat_seconds;
   nothing_personal_t* nothing_personal_dot;
 
-  vendetta_t( rogue_t* p, const std::string& options_str ) :
-    rogue_spell_t( "vendetta", p, p->spec.vendetta ),
+  vendetta_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ) :
+    rogue_spell_t( name, p, p->spec.vendetta, options_str ),
     precombat_seconds( 0.0 ),
     nothing_personal_dot( nullptr )
   {
@@ -3916,12 +3964,10 @@ struct vendetta_t : public rogue_spell_t
 
 struct stealth_t : public rogue_spell_t
 {
-  stealth_t( rogue_t* p, const std::string& options_str ) :
-    rogue_spell_t( "stealth", p, p -> find_class_spell( "Stealth" ) )
+  stealth_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ) :
+    rogue_spell_t( name, p, p->find_class_spell( "Stealth" ), options_str )
   {
     harmful = false;
-
-    parse_options( options_str );
   }
 
   void execute() override
@@ -3994,13 +4040,13 @@ struct kidney_shot_t : public rogue_attack_t
 
   internal_bleeding_t* internal_bleeding;
 
-  kidney_shot_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "kidney_shot", p, p -> find_class_spell( "Kidney Shot" ), options_str ),
+  kidney_shot_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ) :
+    rogue_attack_t( name, p, p -> find_class_spell( "Kidney Shot" ), options_str ),
     internal_bleeding( nullptr )
   {
     if ( p->talent.internal_bleeding )
     {
-      internal_bleeding = p->get_background_action<internal_bleeding_t>( "internal_bleeding" );
+      internal_bleeding = p->get_secondary_trigger_action<internal_bleeding_t>( TRIGGER_INTERNAL_BLEEDING, "internal_bleeding" );
       add_child( internal_bleeding );
     }
   }
@@ -4013,7 +4059,7 @@ struct kidney_shot_t : public rogue_attack_t
 
     if ( state->target->type == ENEMY_ADD && internal_bleeding )
     {
-      internal_bleeding->make_secondary_trigger( TRIGGER_INTERNAL_BLEEDING, state->target, cast_state( state )->cp );
+      internal_bleeding->trigger_secondary_action( state->target, cast_state( state )->cp );
     }
   }
 };
@@ -4022,8 +4068,8 @@ struct kidney_shot_t : public rogue_attack_t
 
 struct cheap_shot_t : public rogue_attack_t
 {
-  cheap_shot_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "cheap_shot", p, p -> find_class_spell( "Cheap Shot" ), options_str )
+  cheap_shot_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ) :
+    rogue_attack_t( name, p, p -> find_class_spell( "Cheap Shot" ), options_str )
   {
   }
 
@@ -4060,8 +4106,8 @@ struct poison_bomb_t : public rogue_spell_t
 
 struct poisoned_knife_t : public rogue_attack_t
 {
-  poisoned_knife_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "poisoned_knife", p, p -> find_specialization_spell( "Poisoned Knife" ), options_str )
+  poisoned_knife_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ) :
+    rogue_attack_t( name, p, p -> find_specialization_spell( "Poisoned Knife" ), options_str )
   { }
 
   double composite_poison_flat_modifier( const action_state_t* ) const override
@@ -4075,7 +4121,7 @@ struct poisoned_knife_t : public rogue_attack_t
 struct cancel_autoattack_t : public action_t
 {
   rogue_t* rogue;
-  cancel_autoattack_t( rogue_t* rogue_, const std::string& options_str ) :
+  cancel_autoattack_t( rogue_t* rogue_, const std::string& options_str = "" ) :
     action_t( ACTION_OTHER, "cancel_autoattack", rogue_ ),
     rogue( rogue_ )
   {
@@ -4689,11 +4735,10 @@ struct shuriken_tornado_t : public buff_t
   {
     set_cooldown( timespan_t::zero() );
     set_period( timespan_t::from_seconds( 1.0 ) ); // Not explicitly in spell data
+    
+    shuriken_storm_action = r->get_secondary_trigger_action<actions::shuriken_storm_t>( TRIGGER_SHURIKEN_TORNADO, "shuriken_storm_tornado" );
     set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
-      if ( !shuriken_storm_action )
-        shuriken_storm_action = dynamic_cast<actions::shuriken_storm_t*>( rogue->find_action( "shuriken_storm" ) );
-      if ( shuriken_storm_action )
-        shuriken_storm_action->make_secondary_trigger( TRIGGER_SHURIKEN_TORNADO, rogue->target );
+      shuriken_storm_action->trigger_secondary_action( rogue->target );
     } );
   }
 };
@@ -5096,8 +5141,8 @@ void actions::rogue_action_t<Base>::trigger_main_gauche( const action_state_t* s
   if ( !p()->rng().roll( p()->mastery.main_gauche->proc_chance() ) )
     return;
 
-  p()->active_main_gauche->set_target( state->target );
-  p()->active_main_gauche->schedule_execute();
+  p()->active.main_gauche->set_target( state->target );
+  p()->active.main_gauche->schedule_execute();
 }
 
 template <typename Base>
@@ -5114,7 +5159,7 @@ void actions::rogue_action_t<Base>::trigger_combat_potency( const action_state_t
 
   double chance = p()->spec.combat_potency->effectN( 1 ).percent();
   // Looks like CP proc chance is normalized by weapon speed (i.e. penalty for using daggers)
-  if ( state->action != p()->active_main_gauche )
+  if ( state->action != p()->active.main_gauche )
     chance *= state->action->weapon->swing_time.total_seconds() / 2.6;
   if ( !p()->rng().roll( chance ) )
     return;
@@ -5149,7 +5194,7 @@ void actions::rogue_action_t<Base>::trigger_poison_bomb( const action_state_t* s
       .pulse_time( p()->spell.poison_bomb_driver->duration() / p()->talent.poison_bomb->effectN( 2 ).base_value() )
       .duration( p()->spell.poison_bomb_driver->duration() )
       .start_time( p()->sim->current_time() )
-      .action( p()->active_poison_bomb ) );
+      .action( p()->active.poison_bomb ) );
   }
 }
 
@@ -5226,10 +5271,10 @@ void actions::rogue_action_t<Base>::trigger_blade_flurry( const action_state_t* 
 
   // Note, unmitigated damage
   double damage = state->result_total * multiplier * target_da_multiplier;
-  p()->active_blade_flurry->base_dd_min = damage;
-  p()->active_blade_flurry->base_dd_max = damage;
-  p()->active_blade_flurry->set_target( state->target );
-  p()->active_blade_flurry->execute();
+  p()->active.blade_flurry->base_dd_min = damage;
+  p()->active.blade_flurry->base_dd_max = damage;
+  p()->active.blade_flurry->set_target( state->target );
+  p()->active.blade_flurry->execute();
 
   // Keep triggers once per instance with 8.2
   if ( procs_keep_your_wits )
@@ -5322,9 +5367,9 @@ void actions::rogue_action_t<Base>::trigger_shadow_techniques( const action_stat
 }
 
 template <typename Base>
-void actions::rogue_action_t<Base>::trigger_weaponmaster( const action_state_t* state )
+void actions::rogue_action_t<Base>::trigger_weaponmaster( const action_state_t* state, actions::rogue_attack_t* action )
 {
-  if ( !p()->talent.weaponmaster->ok() || !ab::result_is_hit( state->result ) || p()->cooldowns.weaponmaster->down() )
+  if ( !p()->talent.weaponmaster->ok() || !ab::result_is_hit( state->result ) || p()->cooldowns.weaponmaster->down() || !action )
     return;
 
   if ( !p()->rng().roll( p()->talent.weaponmaster->proc_chance() ) )
@@ -5339,7 +5384,7 @@ void actions::rogue_action_t<Base>::trigger_weaponmaster( const action_state_t* 
   }
 
   // Direct damage re-computes on execute
-  this->make_secondary_trigger( TRIGGER_WEAPONMASTER, state->target, cast_state( state )->cp );
+  action->trigger_secondary_action( state->target, cast_state( state )->cp );
 }
 
 template <typename Base>
@@ -5467,11 +5512,11 @@ void actions::rogue_action_t<Base>::spend_combo_points( const action_state_t* st
   }
 
   // Proc Replicating Shadows on the current target.
-  if ( p()->specialization() == ROGUE_SUBTLETY && p()->active_replicating_shadows && 
+  if ( p()->specialization() == ROGUE_SUBTLETY && p()->active.replicating_shadows && 
        p()->rng().roll( max_spend * p()->azerite.replicating_shadows.spell_ref().effectN( 2 ).percent() ) )
   {
-    p()->active_replicating_shadows->set_target( state->target );
-    p()->active_replicating_shadows->execute();
+    p()->active.replicating_shadows->set_target( state->target );
+    p()->active.replicating_shadows->execute();
   }
 }
 
@@ -5482,10 +5527,10 @@ void actions::rogue_action_t<Base>::trigger_shadow_blades_attack( action_state_t
     return;
 
   double amount = state->result_amount * p()->buffs.shadow_blades->check_value();
-  p()->shadow_blades_attack->base_dd_min = amount;
-  p()->shadow_blades_attack->base_dd_max = amount;
-  p()->shadow_blades_attack->set_target( state->target );
-  p()->shadow_blades_attack->execute();
+  p()->active.shadow_blades_attack->base_dd_min = amount;
+  p()->active.shadow_blades_attack->base_dd_max = amount;
+  p()->active.shadow_blades_attack->set_target( state->target );
+  p()->active.shadow_blades_attack->execute();
 }
 
 template <typename Base>
@@ -6076,52 +6121,52 @@ action_t* rogue_t::create_action( util::string_view name, const std::string& opt
 {
   using namespace actions;
 
-  if ( name == "adrenaline_rush"     ) return new adrenaline_rush_t    ( this, options_str );
-  if ( name == "ambush"              ) return new ambush_t             ( this, options_str );
+  if ( name == "adrenaline_rush"     ) return new adrenaline_rush_t    ( name, this, options_str );
+  if ( name == "ambush"              ) return new ambush_t             ( name, this, options_str );
   if ( name == "apply_poison"        ) return new apply_poison_t       ( this, options_str );
   if ( name == "auto_attack"         ) return new auto_melee_attack_t  ( this, options_str );
-  if ( name == "backstab"            ) return new backstab_t           ( this, options_str );
-  if ( name == "between_the_eyes"    ) return new between_the_eyes_t   ( this, options_str );
-  if ( name == "blade_flurry"        ) return new blade_flurry_t       ( this, options_str );
-  if ( name == "blade_rush"          ) return new blade_rush_t         ( this, options_str );
-  if ( name == "cheap_shot"          ) return new cheap_shot_t         ( this, options_str );
-  if ( name == "crimson_tempest"     ) return new crimson_tempest_t    ( this, options_str );
-  if ( name == "detection"           ) return new detection_t          ( this, options_str );
-  if ( name == "dispatch"            ) return new dispatch_t           ( this, options_str );
-  if ( name == "envenom"             ) return new envenom_t            ( this, options_str );
-  if ( name == "eviscerate"          ) return new eviscerate_t         ( this, options_str );
-  if ( name == "exsanguinate"        ) return new exsanguinate_t       ( this, options_str );
-  if ( name == "fan_of_knives"       ) return new fan_of_knives_t      ( this, options_str );
-  if ( name == "feint"               ) return new feint_t              ( this, options_str );
-  if ( name == "garrote"             ) return new garrote_t            ( this, options_str );
-  if ( name == "gouge"               ) return new gouge_t              ( this, options_str );
-  if ( name == "ghostly_strike"      ) return new ghostly_strike_t     ( this, options_str );
-  if ( name == "gloomblade"          ) return new gloomblade_t         ( this, options_str );
-  if ( name == "kick"                ) return new kick_t               ( this, options_str );
-  if ( name == "kidney_shot"         ) return new kidney_shot_t        ( this, options_str );
-  if ( name == "killing_spree"       ) return new killing_spree_t      ( this, options_str );
-  if ( name == "marked_for_death"    ) return new marked_for_death_t   ( this, options_str );
-  if ( name == "mutilate"            ) return new mutilate_t           ( this, options_str );
-  if ( name == "pistol_shot"         ) return new pistol_shot_t        ( this, options_str );
-  if ( name == "poisoned_knife"      ) return new poisoned_knife_t     ( this, options_str );
-  if ( name == "roll_the_bones"      ) return new roll_the_bones_t     ( this, options_str );
-  if ( name == "rupture"             ) return new rupture_t            ( this, options_str );
-  if ( name == "secret_technique"    ) return new secret_technique_t   ( this, options_str );
-  if ( name == "shadow_blades"       ) return new shadow_blades_t      ( this, options_str );
-  if ( name == "shadow_dance"        ) return new shadow_dance_t       ( this, options_str );
-  if ( name == "shadowstep"          ) return new shadowstep_t         ( this, options_str );
-  if ( name == "shadowstrike"        ) return new shadowstrike_t       ( this, options_str );
-  if ( name == "shuriken_storm"      ) return new shuriken_storm_t     ( this, options_str );
-  if ( name == "shuriken_tornado"    ) return new shuriken_tornado_t   ( this, options_str );
-  if ( name == "shuriken_toss"       ) return new shuriken_toss_t      ( this, options_str );
-  if ( name == "sinister_strike"     ) return new sinister_strike_t    ( this, options_str );
-  if ( name == "slice_and_dice"      ) return new slice_and_dice_t     ( this, options_str );
-  if ( name == "sprint"              ) return new sprint_t             ( this, options_str );
-  if ( name == "stealth"             ) return new stealth_t            ( this, options_str );
-  if ( name == "symbols_of_death"    ) return new symbols_of_death_t   ( this, options_str );
-  if ( name == "shiv"                ) return new shiv_t               ( this, options_str );
-  if ( name == "vanish"              ) return new vanish_t             ( this, options_str );
-  if ( name == "vendetta"            ) return new vendetta_t           ( this, options_str );
+  if ( name == "backstab"            ) return new backstab_t           ( name, this, options_str );
+  if ( name == "between_the_eyes"    ) return new between_the_eyes_t   ( name, this, options_str );
+  if ( name == "blade_flurry"        ) return new blade_flurry_t       ( name, this, options_str );
+  if ( name == "blade_rush"          ) return new blade_rush_t         ( name, this, options_str );
+  if ( name == "cheap_shot"          ) return new cheap_shot_t         ( name, this, options_str );
+  if ( name == "crimson_tempest"     ) return new crimson_tempest_t    ( name, this, options_str );
+  if ( name == "detection"           ) return new detection_t          ( name, this, options_str );
+  if ( name == "dispatch"            ) return new dispatch_t           ( name, this, options_str );
+  if ( name == "envenom"             ) return new envenom_t            ( name, this, options_str );
+  if ( name == "eviscerate"          ) return new eviscerate_t         ( name, this, options_str );
+  if ( name == "exsanguinate"        ) return new exsanguinate_t       ( name, this, options_str );
+  if ( name == "fan_of_knives"       ) return new fan_of_knives_t      ( name, this, options_str );
+  if ( name == "feint"               ) return new feint_t              ( name, this, options_str );
+  if ( name == "garrote"             ) return new garrote_t            ( name, this, options_str );
+  if ( name == "gouge"               ) return new gouge_t              ( name, this, options_str );
+  if ( name == "ghostly_strike"      ) return new ghostly_strike_t     ( name, this, options_str );
+  if ( name == "gloomblade"          ) return new gloomblade_t         ( name, this, options_str );
+  if ( name == "kick"                ) return new kick_t               ( name, this, options_str );
+  if ( name == "kidney_shot"         ) return new kidney_shot_t        ( name, this, options_str );
+  if ( name == "killing_spree"       ) return new killing_spree_t      ( name, this, options_str );
+  if ( name == "marked_for_death"    ) return new marked_for_death_t   ( name, this, options_str );
+  if ( name == "mutilate"            ) return new mutilate_t           ( name, this, options_str );
+  if ( name == "pistol_shot"         ) return new pistol_shot_t        ( name, this, options_str );
+  if ( name == "poisoned_knife"      ) return new poisoned_knife_t     ( name, this, options_str );
+  if ( name == "roll_the_bones"      ) return new roll_the_bones_t     ( name, this, options_str );
+  if ( name == "rupture"             ) return new rupture_t            ( name, this, options_str );
+  if ( name == "secret_technique"    ) return new secret_technique_t   ( name, this, options_str );
+  if ( name == "shadow_blades"       ) return new shadow_blades_t      ( name, this, options_str );
+  if ( name == "shadow_dance"        ) return new shadow_dance_t       ( name, this, options_str );
+  if ( name == "shadowstep"          ) return new shadowstep_t         ( name, this, options_str );
+  if ( name == "shadowstrike"        ) return new shadowstrike_t       ( name, this, options_str );
+  if ( name == "shuriken_storm"      ) return new shuriken_storm_t     ( name, this, options_str );
+  if ( name == "shuriken_tornado"    ) return new shuriken_tornado_t   ( name, this, options_str );
+  if ( name == "shuriken_toss"       ) return new shuriken_toss_t      ( name, this, options_str );
+  if ( name == "sinister_strike"     ) return new sinister_strike_t    ( name, this, options_str );
+  if ( name == "slice_and_dice"      ) return new slice_and_dice_t     ( name, this, options_str );
+  if ( name == "sprint"              ) return new sprint_t             ( name, this, options_str );
+  if ( name == "stealth"             ) return new stealth_t            ( name, this, options_str );
+  if ( name == "symbols_of_death"    ) return new symbols_of_death_t   ( name, this, options_str );
+  if ( name == "shiv"                ) return new shiv_t               ( name, this, options_str );
+  if ( name == "vanish"              ) return new vanish_t             ( name, this, options_str );
+  if ( name == "vendetta"            ) return new vendetta_t           ( name, this, options_str );
   if ( name == "cancel_autoattack"   ) return new cancel_autoattack_t  ( this, options_str );
   if ( name == "swap_weapon"         ) return new weapon_swap_t        ( this, options_str );
 
@@ -6702,26 +6747,30 @@ void rogue_t::init_spells()
 
   auto_attack = new actions::auto_melee_attack_t( this, "" );
 
-  shadow_blades_attack = new actions::shadow_blades_attack_t( this );
-
   if ( mastery.main_gauche->ok() )
   {
-    active_main_gauche = get_background_action<actions::main_gauche_t>( "main_gauche" );
+    active.main_gauche = get_background_action<actions::main_gauche_t>( "main_gauche" );
   }
 
   if ( spec.blade_flurry->ok() )
   {
-    active_blade_flurry = get_background_action<actions::blade_flurry_attack_t>( "blade_flurry_attack" );
+    active.blade_flurry = get_background_action<actions::blade_flurry_attack_t>( "blade_flurry_attack" );
   }
 
   if ( talent.poison_bomb->ok() )
   {
-    active_poison_bomb = get_background_action<actions::poison_bomb_t>( "poison_bomb" );
+    active.poison_bomb = get_background_action<actions::poison_bomb_t>( "poison_bomb" );
   }
 
   if ( azerite.replicating_shadows.ok() )
   {
-    active_replicating_shadows = get_background_action<actions::replicating_shadows_t>( "replicating_shadows" );
+    active.replicating_shadows = get_background_action<actions::replicating_shadows_t>( "replicating_shadows" );
+  }
+
+  if ( talent.weaponmaster->ok() && specialization() == ROGUE_SUBTLETY )
+  {
+    active.weaponmaster.backstab = get_secondary_trigger_action<actions::backstab_t>( TRIGGER_WEAPONMASTER, "backstab_weaponmaster" );
+    active.weaponmaster.shadowstrike = get_secondary_trigger_action<actions::shadowstrike_t>( TRIGGER_WEAPONMASTER, "shadowstrike_weaponmaster" );
   }
 }
 
