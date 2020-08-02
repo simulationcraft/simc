@@ -682,7 +682,7 @@ priest_t::priest_t( sim_t* sim, util::string_view name, race_e r )
     azerite(),
     azerite_essence(),
     legendary(),
-    conduit(),
+    conduits(),
     covenant(),
     insanity( *this )
 {
@@ -774,6 +774,9 @@ void priest_t::create_procs()
   procs.serendipity_overflow            = get_proc( "Serendipity lost to overflow (Non-Tier 17 4pc)" );
   procs.power_of_the_dark_side          = get_proc( "Power of the Dark Side Penance damage buffed" );
   procs.power_of_the_dark_side_overflow = get_proc( "Power of the Dark Side lost to overflow" );
+  procs.shimmering_apparitions          = get_proc( "Shadowy Apparition Procced from Shimmering Apparition non SW:P Crit" );
+  procs.dissonant_echoes                = get_proc( "Void Bolt resets from Dissonant Echoes" );
+  procs.mind_devourer                   = get_proc( "Mind Devourer free Devouring Plague proc" );
 }
 
 /** Construct priest benefits */
@@ -1190,14 +1193,21 @@ void priest_t::init_spells()
   // Disc legendaries
   legendary.kiss_of_death    = find_runeforge_legendary( "Kiss of Death" );
   legendary.the_penitent_one = find_runeforge_legendary( "The Penitent One" );
-
   // Shadow Legendaries
   legendary.painbreaker_psalm        = find_runeforge_legendary( "Painbreaker Psalm" );
   legendary.shadowflame_prism        = find_runeforge_legendary( "Shadowflame Prism" );
   legendary.eternal_call_to_the_void = find_runeforge_legendary( "Eternal Call to the Void" );
 
   // Shadow Conduits
-  // conduit.mind_devourer = find_conduit( "Mind Devourer" );
+  conduits.dissonant_echoes       = find_conduit_spell( "Dissonant Echoes" );
+  conduits.mind_devourer          = find_conduit_spell( "Mind Devourer" );
+  conduits.rabid_shadows          = find_conduit_spell( "Rabid Shadows" );
+  conduits.shimmering_apparitions = find_conduit_spell( "Shimmering Apparitions" );
+  // Covenant Conduits
+  conduits.courageous_ascension  = find_conduit_spell( "Courageous Ascension" );
+  conduits.festering_transfusion = find_conduit_spell( "Festering Transfusion" );
+  conduits.blessing_of_plenty    = find_conduit_spell( "Blessing of Plenty" );
+  conduits.shattered_perceptions = find_conduit_spell( "Shattered Perceptions" );
 
   // Covenant Abilities
   covenant.fae_blessings        = find_covenant_spell( "Fae Blessings" );

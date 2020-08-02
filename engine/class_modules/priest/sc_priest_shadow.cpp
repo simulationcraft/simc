@@ -64,6 +64,7 @@ private:
   double whispers_of_the_damned_value;
   double harvested_thoughts_value;
   double whispers_bonus_insanity;
+  double mind_devourer_increase;
 
 public:
   mind_blast_t( priest_t& player, util::string_view options_str )
@@ -79,7 +80,8 @@ public:
                                    ->effectN( 1 )
                                    .trigger()
                                    ->effectN( 1 )
-                                   .resource( RESOURCE_INSANITY ) )
+                                   .resource( RESOURCE_INSANITY ) ),
+      mind_devourer_increase( priest().conduits.mind_devourer->effectN( 1 ).percent() )
   {
     parse_options( options_str );
 
@@ -124,6 +126,18 @@ public:
     return d;
   }
 
+  double composite_da_multiplier( const action_state_t* state ) const override
+  {
+    double d = priest_spell_t::composite_da_multiplier( state );
+
+    if ( priest().conduits.mind_devourer->ok() )
+    {
+      d *= ( 1.0 + mind_devourer_increase );
+    }
+
+    return d;
+  }
+
   void impact( action_state_t* s ) override
   {
     priest_spell_t::impact( s );
@@ -132,6 +146,15 @@ public:
     if ( priest().azerite.whispers_of_the_damned.enabled() && s->result == RESULT_CRIT )
     {
       total_insanity_gain += whispers_bonus_insanity;
+    }
+
+    if ( priest().conduits.mind_devourer->ok() )
+    {
+      if ( rng().roll( priest().conduits.mind_devourer->effectN( 2 ).percent() ) )
+      {
+        priest().buffs.mind_devourer->trigger();
+        priest().procs.mind_devourer->occur();
+      }
     }
 
     priest().generate_insanity( total_insanity_gain, priest().gains.insanity_mind_blast, s->action );
@@ -755,6 +778,17 @@ struct shadow_word_pain_t final : public priest_spell_t
       {
         priest().active_spells.shadowy_apparitions->trigger( d->target );
       }
+      else
+      {
+        if ( priest().conduits.shimmering_apparitions->ok() )
+        {
+          if ( rng().roll( priest().conduits.shimmering_apparitions->effectN( 1 ).percent() ) )
+          {
+            priest().active_spells.shadowy_apparitions->trigger( d->target );
+            priest().procs.shimmering_apparitions->occur();
+          }
+        }
+      }
     }
 
     if ( d->state->result_amount > 0 )
@@ -875,14 +909,21 @@ struct devouring_plague_t final : public priest_spell_t
   {
     priest_spell_t::consume_resource();
 
-    priest().resource_loss( RESOURCE_INSANITY, insanity_cost, priest().gains.insanity_lost_devouring_plague, execute_state->action );
+    if ( priest().buffs.mind_devourer->up() )
+    {
+      priest().buffs.mind_devourer->expire();
+    }
+    else
+    {
+      priest().resource_loss( RESOURCE_INSANITY, insanity_cost, priest().gains.insanity_lost_devouring_plague, execute_state->action );
 
-    priest().insanity.adjust_end_event();
+      priest().insanity.adjust_end_event();
+    }
   }
 
   bool ready() override
   {
-    if ( priest().resources.current[ RESOURCE_INSANITY ] >= insanity_cost )
+    if ( priest().buffs.mind_devourer->up() || priest().resources.current[ RESOURCE_INSANITY ] >= insanity_cost )
     {
       return priest_spell_t::ready();
     }
@@ -929,6 +970,15 @@ struct void_bolt_t final : public priest_spell_t
       {
         td.dots.vampiric_touch->extend_duration( dot_extension, true );
       }
+
+      if ( priest().conduits.dissonant_echoes->ok() )
+      {
+        if ( rng().roll( priest().conduits.dissonant_echoes->effectN( 1 ).percent() ) )
+        {
+          priest().cooldowns.void_bolt->reset( true );
+          priest().procs.dissonant_echoes->occur();
+        }
+      }
     }
   };
 
@@ -960,7 +1010,7 @@ struct void_bolt_t final : public priest_spell_t
 
     if ( priest().covenant.fae_blessings->ok() )
     {
-      if ( priest().buffs.fae_blessings->check() )
+      if ( priest().buffs.fae_blessings->up() )
       {
         // Adjust CD of Shadowfiend/Mindbender
         if ( priest().talents.mindbender->ok() )
@@ -1898,6 +1948,9 @@ void priest_t::create_buffs_shadow()
   buffs.chorus_of_insanity     = make_buff<buffs::chorus_of_insanity_t>( *this );
   buffs.harvested_thoughts     = make_buff<buffs::harvested_thoughts_t>( *this );
   buffs.whispers_of_the_damned = make_buff<buffs::whispers_of_the_damned_t>( *this );
+
+  // Conduits
+  buffs.mind_devourer = make_buff( this, "mind_devourer", find_spell( 338333 ) -> effectN( 1 ).trigger() );
 }
 
 void priest_t::init_rng_shadow()
@@ -2170,7 +2223,7 @@ void priest_t::generate_apl_shadow()
   single->add_talent( this, "Dark Ascension", "if=buff.voidform.down" );
   single->add_action( this, "Void Bolt" );
   single->add_action( "call_action_list,name=cds" );
-  single->add_action( this, "Devouring Plague", "if=refreshable&buff.voidform.up");
+  single->add_action( this, "Devouring Plague", "if=refreshable&buff.voidform.up" );
   single->add_action(
       this, "Mind Sear",
       "if=buff.harvested_thoughts.up&cooldown.void_bolt.remains>=1.5&"
@@ -2241,7 +2294,7 @@ void priest_t::generate_apl_shadow()
                       ",if=(talent.misery.enabled&target.time_to_die>"
                       "((1.0+2.0*spell_targets.mind_sear)*variable.vt_mis_trait_ranks_check*"
                       "(variable.vt_mis_sd_check*spell_targets.mind_sear)))" );
-  cleave->add_action( this, "Devouring Plague", "if=refreshable&buff.voidform.up");
+  cleave->add_action( this, "Devouring Plague", "target_if=refreshable,if=buff.voidform.up" );
   cleave->add_talent( this, "Void Torrent", "if=buff.voidform.up" );
   cleave->add_action( this, "Mind Sear",
                       "target_if=spell_targets.mind_sear>1,"
