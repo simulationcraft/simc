@@ -7748,6 +7748,7 @@ action_t* druid_t::create_action( util::string_view name, const std::string& opt
   if ( name == "wild_growth"            ) return new            wild_growth_t( this, options_str );
   if ( name == "incarnation"            ) return new            incarnation_t( this, options_str );
 
+  if ( name == "heart_of_the_wild" ) return new heart_of_the_wild_t( this, options_str );
   if ( name == "celestial_alignment" )
   {
     if ( talent.incarnation_moonkin->ok() )
@@ -7756,11 +7757,22 @@ action_t* druid_t::create_action( util::string_view name, const std::string& opt
       return new celestial_alignment_t( this, options_str );
   }
 
-  if ( name == "heart_of_the_wild" ) return new heart_of_the_wild_t( this, options_str );
-  if ( name == "kindred_spirits" || name == "empower_bond" ) return new kindred_spirits_t( this, options_str );
-  if ( name == "convoke_the_spirits" ) return new convoke_the_spirits_t( this, options_str );
-  if ( name == "ravenous_frenzy" ) return new ravenous_frenzy_t( this, options_str );
-  if ( name == "adaptive_swarm" ) return new adaptive_swarm_t( this, options_str );
+  if ( covenant.kyrian->ok() )
+  {
+    if ( name == "kindred_spirits" || name == "empower_bond" ) return new kindred_spirits_t( this, options_str );
+  }
+  if ( covenant.night_fae->ok() )
+  {
+    if ( name == "convoke_the_spirits" ) return new convoke_the_spirits_t( this, options_str );
+  }
+  if ( covenant.venthyr->ok() )
+  {
+    if ( name == "ravenous_frenzy" ) return new ravenous_frenzy_t( this, options_str );
+  }
+  if ( covenant.necrolord->ok() )
+  {
+    if ( name == "adaptive_swarm" ) return new adaptive_swarm_t( this, options_str );
+  }
 
   return player_t::create_action( name, options_str );
 }
