@@ -544,7 +544,10 @@ public:
   dot_t* find_dot( player_t* target ) const;
 
   bool is_aoe() const
-  { return n_targets() == -1 || n_targets() > 0; }
+  {
+    const int num_targets = n_targets();
+    return num_targets == -1 || num_targets > 0;
+  }
 
   const char* name() const
   { return name_str.c_str(); }
