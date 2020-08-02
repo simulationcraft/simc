@@ -14394,7 +14394,7 @@ static const std::array<spelltext_data_t, 15231> __spelltext_data { {
   { 329781, "When receiving healing while above $s1% health or healing an ally that's above $s1% health, $s2% of the healing is repeated on the target over $330859d.", 0, 0 },
   { 329784, "After 5 sec out of combat, gain a shield for 10% of your health lasting for 30 sec.", 0, 0 },
   { 329786, "Defeating an enemy grants you 10% movement speed for 20 sec. This effect is increased if defeating a powerful enemy.", 0, 0 },
-  { 329791, "You and your nearby allies' critical strikes grant you stacks of Valiant Strikes, up to $330943u. At $330943u stacks, you heal yourself for $$330945s*$330944t}% of your maximum health and up to 4 nearby allies for half this effect over $330944d.", 0, 0 },
+  { 329791, "You and your nearby allies' critical strikes grant you stacks of Valiant Strikes, up to $330943u. At $330943u stacks, you heal yourself for ${$330945s*($330944d/$330944t)}% of your maximum health and up to 4 nearby allies for half this effect over $330944d.", 0, 0 },
   { 329831, "Deploy a power crystal which beams arcane energy into you, inflicting $o1 Arcane damage over $d and granting $s2 Critical Strike.", "Critical Strike increased by $w2.", 0 },
   { 329840, "Inflict $s1 Shadow damage to all nearby enemies and form a Blood Barrier for $329849d. The Blood Barrier absorbs $329852s1 damage and an additional $329852s2 damage for each enemy struck.", 0, 0 },
   { 329849, "$@spelldesc329840", "Absorbing $w1 damage.", 0 },
@@ -15234,7 +15234,8 @@ static const std::array<spelltext_data_t, 15231> __spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 9.0.1.35360
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __spelltext_hotfix_data { {
+  {  329791,  0, "You and your nearby allies' critical strikes grant you stacks of Valiant Strikes, up to $330943u. At $330943u stacks, you heal yourself for $$330945s*$330944t}% of your maximum health and up to 4 nearby allies for half this effect over $330944d.", "You and your nearby allies' critical strikes grant you stacks of Valiant Strikes, up to $330943u. At $330943u stacks, you heal yourself for ${$330945s*($330944d/$330944t)}% of your maximum health and up to 4 nearby allies for half this effect over $330944d." },
 } };
 
 // Spell description variables, wow build 9.0.1.35360
