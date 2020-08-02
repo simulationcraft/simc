@@ -113,9 +113,9 @@ bool covenant_state_t::parse_covenant( sim_t*             sim,
                                        util::string_view value )
 {
   covenant_e covenant = util::parse_covenant_string( value );
-  unsigned covenant_id = util::to_unsigned_ignore_error( value, 0 );
+  unsigned covenant_id = util::to_unsigned_ignore_error( value, -1u );
 
-  if ( covenant == covenant_e::INVALID ||
+  if ( covenant == covenant_e::INVALID &&
        covenant_id > static_cast<unsigned>( covenant_e::COVENANT_ID_MAX ) )
   {
     sim->error( "{} unknown covenant '{}', must be one of "
@@ -130,7 +130,14 @@ bool covenant_state_t::parse_covenant( sim_t*             sim,
   }
   else
   {
-    m_covenant = static_cast<covenant_e>( covenant_id );
+    if ( covenant_id == -1u )
+    {
+      m_covenant = covenant_e::INVALID;
+    }
+    else
+    {
+      m_covenant = static_cast<covenant_e>( covenant_id );
+    }
   }
 
   return true;
