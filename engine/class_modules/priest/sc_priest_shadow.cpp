@@ -64,7 +64,6 @@ private:
   double whispers_of_the_damned_value;
   double harvested_thoughts_value;
   double whispers_bonus_insanity;
-  double mind_devourer_increase;
 
 public:
   mind_blast_t( priest_t& player, util::string_view options_str )
@@ -80,8 +79,7 @@ public:
                                    ->effectN( 1 )
                                    .trigger()
                                    ->effectN( 1 )
-                                   .resource( RESOURCE_INSANITY ) ),
-      mind_devourer_increase( priest().conduits.mind_devourer->effectN( 1 ).percent() )
+                                   .resource( RESOURCE_INSANITY ) )
   {
     parse_options( options_str );
 
@@ -126,18 +124,6 @@ public:
     return d;
   }
 
-  double composite_da_multiplier( const action_state_t* state ) const override
-  {
-    double d = priest_spell_t::composite_da_multiplier( state );
-
-    if ( priest().conduits.mind_devourer->ok() )
-    {
-      d *= ( 1.0 + mind_devourer_increase );
-    }
-
-    return d;
-  }
-
   void impact( action_state_t* s ) override
   {
     priest_spell_t::impact( s );
@@ -148,13 +134,9 @@ public:
       total_insanity_gain += whispers_bonus_insanity;
     }
 
-    if ( priest().conduits.mind_devourer->ok() )
+    if ( priest().buffs.mind_devourer->trigger() )
     {
-      if ( rng().roll( priest().conduits.mind_devourer->effectN( 2 ).percent() ) )
-      {
-        priest().buffs.mind_devourer->trigger();
-        priest().procs.mind_devourer->occur();
-      }
+      priest().procs.mind_devourer->occur();
     }
 
     priest().generate_insanity( total_insanity_gain, priest().gains.insanity_mind_blast, s->action );
@@ -911,7 +893,7 @@ struct devouring_plague_t final : public priest_spell_t
 
     if ( priest().buffs.mind_devourer->up() )
     {
-      priest().buffs.mind_devourer->expire();
+      priest().buffs.mind_devourer->decrement();
     }
     else
     {
@@ -1950,7 +1932,9 @@ void priest_t::create_buffs_shadow()
   buffs.whispers_of_the_damned = make_buff<buffs::whispers_of_the_damned_t>( *this );
 
   // Conduits
-  buffs.mind_devourer = make_buff( this, "mind_devourer", find_spell( 338333 ) -> effectN( 1 ).trigger() );
+  buffs.mind_devourer = make_buff( this, "mind_devourer", find_spell( 338333 ) )
+                            ->set_trigger_spell( conduits.mind_devourer )
+                            ->set_chance( conduits.mind_devourer->effectN( 2 ).percent() );
 }
 
 void priest_t::init_rng_shadow()

@@ -1318,6 +1318,7 @@ void priest_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( specs.discipline_priest );
   action.apply_affecting_aura( legendary.kiss_of_death );
   action.apply_affecting_aura( legendary.shadowflame_prism );  // Applies CD reduction
+  action.apply_affecting_aura( conduits.mind_devourer ); // Applies Mind Blast damage modifier
 }
 
 /// ALL Spec Pre-Combat Action Priority List
