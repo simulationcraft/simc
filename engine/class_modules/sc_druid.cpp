@@ -6600,8 +6600,7 @@ struct starsurge_t : public druid_spell_t
   action_t* oneth_ss;
 
   starsurge_t( druid_t* p, const std::string& options_str, free_cast_e free = free_cast_e::NONE )
-    : druid_spell_t( p->free_cast_string( "starsurge", free ), p,
-                     p->specialization() == DRUID_BALANCE ? p->spec.starsurge : p->find_spell( 197626 ), options_str )
+    : druid_spell_t( p->free_cast_string( "starsurge", free ), p, p->spec.starsurge, options_str )
   {
     free_cast = free;
 
