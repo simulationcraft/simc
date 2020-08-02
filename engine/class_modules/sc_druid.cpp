@@ -6600,7 +6600,7 @@ struct starsurge_t : public druid_spell_t
   action_t* oneth_ss;
 
   starsurge_t( druid_t* p, const std::string& options_str, free_cast_e free = free_cast_e::NONE )
-    : druid_spell_t( p->free_cast_string( "starsurge", free ), p, p->spec.starsurge, options_str )
+    : druid_spell_t( p->free_cast_string( "starsurge", free ), p, p->find_affinity_spell( "Starsurge" ), options_str )
   {
     free_cast = free;
 
@@ -7915,7 +7915,8 @@ void druid_t::init_spells()
   spec.eclipse_lunar              = find_spell( 48518 );
   spec.starfall                   = find_affinity_spell( "Starfall" );
   spec.starfall_2                 = find_rank_spell( "Starfall", "Rank 2" );
-  spec.starsurge                  = find_affinity_spell( "Starsurge" );
+  // do NOT use find_affinity_spell here for spec.starsurge. eclipse extension is held within the balance version.
+  spec.starsurge                  = find_specialization_spell( "Starsurge", DRUID_BALANCE );
   spec.starsurge_2                = find_rank_spell( "Starsurge", "Rank 2" ); // Adds more Eclipse extension
   spec.moonkin_2                  = find_rank_spell( "Moonkin Form", "Rank 2" ); // Owlkin Frenzy proc rate RAWR
   spec.sunfire_2                  = find_rank_spell( "Sunfire", "Rank 2" ); // Sunfire spread. currently contains no value data.
@@ -9090,7 +9091,18 @@ void druid_t::apl_restoration()
 
   for ( size_t i = 0; i < racial_actions.size(); i++ )
     default_list -> add_action( racial_actions[i] );
-  default_list->add_action( "use_item,effect_name=cyclotronic_blast,if=!buff.prowl.up&!buff.shadowmeld.up" );
+
+  default_list->add_action( "run_action_list,name=balance,if=talent.balance_affinity.enabled" );
+
+  balance->add_action( this, "Moonfire", "target_if=refreshable" );
+  balance->add_action( this, "Sunfire", "target_if=refreshable" );
+  balance->add_action( "heart_of_the_wild" );
+  balance->add_action( "convoke_the_spirits,if=buff.eclipse_solar.up" );
+  balance->add_action( this, "Starsurge" );
+  balance->add_action( this, "Wrath", "if=buff.eclipse_solar.up|eclipse.lunar_next" );
+  balance->add_action( this, "Starfire" );
+
+/*  default_list->add_action( "use_item,effect_name=cyclotronic_blast,if=!buff.prowl.up&!buff.shadowmeld.up" );
   default_list->add_action( "use_items" );
   default_list->add_action( "potion" );
   default_list->add_action(
@@ -9123,13 +9135,7 @@ void druid_t::apl_restoration()
       "combo_points*4>time_to_die)))|combo_points=5&energy>90&remains<=10" );
   feral->add_action( "rake,target_if=refreshable&time_to_die>10&(combo_points<5|remains<1)&spell_targets.swipe_cat<4" );
   feral->add_action( "swipe_cat,if=spell_targets.swipe_cat>=2" );
-  feral->add_action( "shred,if=combo_points<5|energy>90" );
-
-  balance->add_action( "sunfire,target_if=refreshable" );
-  balance->add_action( "moonfire,target_if=refreshable&spell_targets.lunar_strike<7" );
-  balance->add_action( "starsurge" );
-  balance->add_action( "lunar_strike,if=buff.lunar_empowerment.up|spell_targets>1" );
-  balance->add_action( "solar_wrath" );
+  feral->add_action( "shred,if=combo_points<5|energy>90" );*/
 }
 
 // druid_t::init_scaling ====================================================
@@ -10055,7 +10061,7 @@ std::unique_ptr<expr_t> druid_t::create_expression( util::string_view name_str )
     }
 
     // New Moon stage related expressions
-    else if ( util::str_compare_ci( name_str, "new_moon" ) )
+    if ( util::str_compare_ci( name_str, "new_moon" ) )
     {
       return make_fn_expr( name_str, [this]() { return moon_stage == NEW_MOON; } );
     }
@@ -10069,7 +10075,7 @@ std::unique_ptr<expr_t> druid_t::create_expression( util::string_view name_str )
     }
 
     // automatic resolution of Celestial Alignment vs talented Incarnation
-    else if ( splits.size() == 3 && util::str_compare_ci( splits[ 1 ], "ca_inc" ) )
+    if ( splits.size() == 3 && util::str_compare_ci( splits[ 1 ], "ca_inc" ) )
     {
       std::string replacement;
       if ( util::str_compare_ci( splits[ 0 ], "cooldown" ) )
@@ -10081,7 +10087,7 @@ std::unique_ptr<expr_t> druid_t::create_expression( util::string_view name_str )
 
     // check for AP overcap on action other than current action. check for current action handled in
     // druid_spell_t::create_expression syntax: <action>.ap_check.<allowed overcap = 0>
-    else if ( splits.size() >= 2 && util::str_compare_ci( splits[ 1 ], "ap_check" ) )
+    if ( splits.size() >= 2 && util::str_compare_ci( splits[ 1 ], "ap_check" ) )
     {
       action_t* action = find_action( splits[ 0 ] );
       if ( action )
@@ -10098,8 +10104,11 @@ std::unique_ptr<expr_t> druid_t::create_expression( util::string_view name_str )
       }
       throw std::invalid_argument( "invalid action" );
     }
+  }
 
-    else if ( splits.size() == 2 && util::str_compare_ci( splits[ 0 ], "eclipse" ) )
+  if ( specialization() == DRUID_BALANCE || talent.balance_affinity->ok() )
+  {
+    if ( splits.size() == 2 && util::str_compare_ci( splits[ 0 ], "eclipse" ) )
     {
       if ( util::str_compare_ci( splits[ 1 ], "state" ) )
       {
