@@ -7561,9 +7561,6 @@ std::unique_ptr<expr_t> mage_t::create_expression( util::string_view name )
 
   if ( splits.size() == 3 && util::str_compare_ci( splits[ 0 ], "ground_aoe" ) )
   {
-    auto type_str = std::string( splits[ 1 ] );
-    util::tolower( type_str );
-
     auto to_string = [] ( ground_aoe_type_e type )
     {
       switch ( type )
@@ -7581,7 +7578,7 @@ std::unique_ptr<expr_t> mage_t::create_expression( util::string_view name )
     auto type = AOE_MAX;
     for ( auto i = static_cast<ground_aoe_type_e>( 0 ); i < AOE_MAX; i++ )
     {
-      if ( type_str == to_string( i ) )
+      if ( util::str_compare_ci( splits[ 1 ], to_string( i ) ) )
       {
         type = i;
         break;
@@ -8125,7 +8122,7 @@ public:
       if ( !data->active() )
         continue;
 
-      auto nonzero = [] ( std::string fmt, double d ) { return d != 0.0 ? fmt::format( fmt, d ) : ""; };
+      auto nonzero = [] ( const char* fmt, double d ) { return d != 0.0 ? fmt::format( fmt, d ) : ""; };
       auto cells = [ &, total = data->count_total() ] ( double mean, bool util = false )
       {
         std::string format_str = "<td class=\"right\">{}</td><td class=\"right\">{}</td>";
@@ -8139,7 +8136,7 @@ public:
 
       std::string name = data->name_str;
       if ( action_t* a = p.find_action( name ) )
-        name = report_decorators::decorated_action(*a);
+        name = report_decorators::decorated_action( *a );
       else
         name = util::encode_html( name );
 
