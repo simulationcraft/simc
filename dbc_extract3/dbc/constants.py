@@ -163,3 +163,7 @@ SPELL_NAME_BLACKLIST = [
   re.compile("^Zen Pilgrimage"),
   re.compile("^Transcendence")
 ]
+
+SPELL_LABEL_BLACKLIST = [
+  16,     # Agonizing Backlash
+]

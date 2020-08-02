@@ -2778,6 +2778,8 @@ class SpellDataGenerator(DataGenerator):
                 continue
             if label_data.id_parent not in id_keys:
                 continue
+            if label_data.label in constants.SPELL_LABEL_BLACKLIST:
+                continue
             labels.append(label_data)
             spelllabel_index[label_data.id_parent] += 1
 
