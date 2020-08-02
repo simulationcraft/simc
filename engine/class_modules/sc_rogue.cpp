@@ -378,7 +378,7 @@ public:
     const spell_data_t* blade_flurry_2;
     const spell_data_t* broadside;
     const spell_data_t* combat_potency;
-    const spell_data_t* combat_potency_reg;
+    const spell_data_t* combat_potency_2;
     const spell_data_t* restless_blades;
     const spell_data_t* roll_the_bones;
     const spell_data_t* ruthlessness;
@@ -2925,6 +2925,10 @@ struct pistol_shot_t : public rogue_attack_t
     ap_type = attack_power_type::WEAPON_BOTH;
   }
 
+  // Probably a bug on Shadowlands beta but Pistol Shot now procs CP. -Mystler 2020-08-02
+  bool procs_combat_potency() const override
+  { return p()->bugs; }
+
   double cost() const override
   {
     double c = rogue_attack_t::cost();
@@ -5148,24 +5152,18 @@ void actions::rogue_action_t<Base>::trigger_main_gauche( const action_state_t* s
 template <typename Base>
 void actions::rogue_action_t<Base>::trigger_combat_potency( const action_state_t* state )
 {
-  if ( !p()->spec.combat_potency->ok() )
+  if ( !p()->spec.combat_potency_2->ok() || !ab::result_is_hit( state->result ) || !procs_combat_potency() )
     return;
 
-  if ( !ab::result_is_hit( state->result ) )
-    return;
-
-  if ( !procs_combat_potency() )
-    return;
-
-  double chance = p()->spec.combat_potency->effectN( 1 ).percent();
+  double chance = p()->spec.combat_potency_2->effectN( 1 ).percent();
   // Looks like CP proc chance is normalized by weapon speed (i.e. penalty for using daggers)
-  if ( state->action != p()->active.main_gauche )
+  if ( state->action != p()->active.main_gauche && state->action->weapon )
     chance *= state->action->weapon->swing_time.total_seconds() / 2.6;
   if ( !p()->rng().roll( chance ) )
     return;
 
   // energy gain value is in the proc trigger spell
-  double gain = p()->spec.combat_potency->effectN( 1 ).trigger()->effectN( 1 ).resource( RESOURCE_ENERGY );
+  double gain = p()->spec.combat_potency_2->effectN( 1 ).trigger()->effectN( 1 ).resource( RESOURCE_ENERGY );
 
   p()->resource_gain( RESOURCE_ENERGY, gain, p()->gains.combat_potency, state->action );
 }
@@ -6554,7 +6552,7 @@ void rogue_t::init_base_stats()
   resources.base[ RESOURCE_ENERGY ] += spec.assassination_rogue -> effectN( 5 ).base_value();
 
   resources.base_regen_per_second[ RESOURCE_ENERGY ] = 10;
-  resources.base_regen_per_second[ RESOURCE_ENERGY ] *= 1.0 + spec.combat_potency_reg -> effectN( 1 ).percent();
+  resources.base_regen_per_second[ RESOURCE_ENERGY ] *= 1.0 + spec.combat_potency -> effectN( 1 ).percent();
   resources.base_regen_per_second[ RESOURCE_ENERGY ] *= 1.0 + talent.vigor -> effectN( 2 ).percent();
 
   base_gcd = timespan_t::from_seconds( 1.0 );
@@ -6615,8 +6613,8 @@ void rogue_t::init_spells()
   spec.blade_flurry         = find_specialization_spell( "Blade Flurry" );
   spec.blade_flurry_2       = find_rank_spell( "Blade Flurry", "Rank 2" );
   spec.broadside            = find_spell( 193356 );
-  spec.combat_potency       = find_specialization_spell( 35551 );
-  spec.combat_potency_reg   = find_specialization_spell( 61329 );
+  spec.combat_potency       = find_specialization_spell( "Combat Potency" );
+  spec.combat_potency_2     = find_rank_spell( "Combat Potency", "Rank 2" );
   spec.restless_blades      = find_specialization_spell( "Restless Blades" );
   spec.roll_the_bones       = find_specialization_spell( "Roll the Bones" );
   spec.ruthlessness         = find_specialization_spell( "Ruthlessness" );
