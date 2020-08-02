@@ -616,6 +616,25 @@ void base_fiend_pet_t::init_action_list()
   priest_pet_t::init_action_list();
 }
 
+double base_fiend_pet_t::composite_player_multiplier(school_e school) const
+{ 
+  double m = pet_t::composite_player_multiplier( school );
+
+  if ( o().conduits.rabid_shadows->ok() )
+    m *= 1 + o().conduits.rabid_shadows->effectN( 2 ).percent();
+  
+  return m;
+}
+
+double base_fiend_pet_t::composite_melee_haste() const
+{
+  double h = pet_t::composite_melee_haste();
+
+  if (o().conduits.rabid_shadows->ok())
+    h *= 1 + o().conduits.rabid_shadows.percent();
+  return h;
+}
+
 action_t* base_fiend_pet_t::create_action( util::string_view name, const std::string& options_str )
 {
   return priest_pet_t::create_action( name, options_str );

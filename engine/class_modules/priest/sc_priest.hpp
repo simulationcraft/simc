@@ -790,6 +790,9 @@ struct base_fiend_pet_t : public priest_pet_t
     resources.current = resources.max = resources.initial;
   }
 
+  double composite_player_multiplier(school_e school) const override;
+  double composite_melee_haste() const override;
+
   action_t* create_action( util::string_view name, const std::string& options_str ) override;
 };
 
