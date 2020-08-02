@@ -89,6 +89,11 @@ public:
 
     spell_power_mod.direct *= 1.0 + player.talents.fortress_of_the_mind->effectN( 4 ).percent();
 
+    if ( priest().conduits.mind_devourer->ok() )
+    {
+      base_dd_multiplier *= ( 1.0 + priest().conduits.mind_devourer.percent() );
+    }
+
     // Reduces CD of Mind Blast but not SW:V
     apply_affecting_aura( player.find_rank_spell( "Mind Blast", "Rank 2", PRIEST_SHADOW ) );
   }
@@ -764,7 +769,7 @@ struct shadow_word_pain_t final : public priest_spell_t
       {
         if ( priest().conduits.shimmering_apparitions->ok() )
         {
-          if ( rng().roll( priest().conduits.shimmering_apparitions->effectN( 1 ).percent() ) )
+          if ( rng().roll( priest().conduits.shimmering_apparitions.percent() ) )
           {
             priest().active_spells.shadowy_apparitions->trigger( d->target );
             priest().procs.shimmering_apparitions->occur();
@@ -956,7 +961,7 @@ struct void_bolt_t final : public priest_spell_t
 
       if ( priest().conduits.dissonant_echoes->ok() )
       {
-        if ( rng().roll( priest().conduits.dissonant_echoes->effectN( 1 ).percent() ) )
+        if ( rng().roll( priest().conduits.dissonant_echoes.percent() ) )
         {
           priest().cooldowns.void_bolt->reset( true );
           priest().procs.dissonant_echoes->occur();
