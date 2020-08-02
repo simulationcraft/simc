@@ -584,12 +584,6 @@ public:
     shuffled_rng_t* time_anomaly;
   } shuffled_rng;
 
-  struct real_ppms_t
-  {
-    // Runeforge Legendaries
-    real_ppm_t* expanded_potential;
-  } rppm;
-
   // Sample data
   struct sample_data_t
   {
@@ -884,7 +878,7 @@ public:
   void      update_rune_distance( double distance );
   void      update_enlightened();
   action_t* get_icicle();
-  bool      trigger_delayed_buff( buff_t* buff, double chance, timespan_t delay = 0.15_s );
+  bool      trigger_delayed_buff( buff_t* buff, double chance = -1.0, timespan_t delay = 0.15_s );
   void      trigger_brain_freeze( double chance, proc_t* source );
   void      trigger_fof( double chance, int stacks, proc_t* source );
   void      trigger_icicle( player_t* icicle_target, bool chain = false );
@@ -2515,11 +2509,10 @@ struct arcane_blast_t : public arcane_mage_spell_t
     if ( p()->buffs.presence_of_mind->up() )
       p()->buffs.presence_of_mind->decrement();
 
-    if ( p()->rppm.expanded_potential->trigger() )
-      // There is a delay where it is possible to cast a spell that would
-      // consume Expanded Potential immediately after Expanded Potential
-      // is triggered, which will prevent it from being consumed.
-      p()->trigger_delayed_buff( p()->buffs.expanded_potential, 1.0 );
+    // There is a delay where it is possible to cast a spell that would
+    // consume Expanded Potential immediately after Expanded Potential
+    // is triggered, which will prevent it from being consumed.
+    p()->trigger_delayed_buff( p()->buffs.expanded_potential );
   }
 
   double action_multiplier() const override
@@ -3339,11 +3332,7 @@ struct fireball_t : public fire_mage_spell_t
   {
     fire_mage_spell_t::execute();
 
-    if ( p()->rppm.expanded_potential->trigger() )
-      // There is a delay where it is possible to cast a spell that would
-      // consume Expanded Potential immediately after Expanded Potential
-      // is triggered, which will prevent it from being consumed.
-      p()->trigger_delayed_buff( p()->buffs.expanded_potential, 1.0 );
+    p()->trigger_delayed_buff( p()->buffs.expanded_potential );
 
     if ( rng().roll( p()->azerite.duplicative_incineration.spell_ref().effectN( 1 ).percent() ) )
       execute();
@@ -3661,8 +3650,7 @@ struct frostbolt_t : public frost_mage_spell_t
       p()->buffs.tunnel_of_ice->expire();
     p()->last_frostbolt_target = target;
 
-    if ( p()->rppm.expanded_potential->trigger() )
-      p()->trigger_delayed_buff( p()->buffs.expanded_potential, 1.0 );
+    p()->trigger_delayed_buff( p()->buffs.expanded_potential );
 
     // TODO: Freezing Winds currently only reduces the cooldown of Frozen Orb while
     // Frozen Orb is active, verify that this is still the case closer to release.
@@ -5888,7 +5876,7 @@ void mage_t::create_actions()
 
   if ( find_covenant_spell( "Mirrors of Torment" )->ok() )
   {
-    action.agonizing_backlash = get_action<agonizing_backlash_t>( "agonizing_backlash", this );
+    action.agonizing_backlash  = get_action<agonizing_backlash_t>( "agonizing_backlash", this );
     action.tormenting_backlash = get_action<tormenting_backlash_t>( "tormenting_backlash", this );
   }
 
@@ -6435,7 +6423,7 @@ void mage_t::create_buffs()
                                         ->set_quiet( true )
                                         ->set_chance( runeforge.disciplinary_command.ok() );
   buffs.expanded_potential          = make_buff( this, "expanded_potential", find_spell( 327495 ) )
-                                        ->set_chance( runeforge.expanded_potential.ok() );
+                                        ->set_trigger_spell( runeforge.expanded_potential );
 
   // Covenant Abilities
   buffs.deathborne = make_buff( this, "deathborne", find_spell( 324220 ) )
@@ -6579,8 +6567,6 @@ void mage_t::init_rng()
   // TODO: There's no data about this in game. Keep an eye out in case Blizzard
   // changes this behind the scenes.
   shuffled_rng.time_anomaly = get_shuffled_rng( "time_anomaly", 1, 16 );
-
-  rppm.expanded_potential = get_rppm( "expanded_potential", runeforge.expanded_potential );
 }
 
 void mage_t::init_assessors()
@@ -7783,13 +7769,28 @@ action_t* mage_t::get_icicle()
 
 bool mage_t::trigger_delayed_buff( buff_t* buff, double chance, timespan_t delay )
 {
-  bool success = rng().roll( chance );
+  if ( buff->max_stack() == 0 || buff->cooldown->down() )
+    return false;
+
+  bool success;
+  if ( chance < 0.0 )
+  {
+    if ( buff->rppm )
+      success = buff->rppm->trigger();
+    else
+      success = rng().roll( buff->default_chance );
+  }
+  else
+  {
+    success = rng().roll( chance );
+  }
+
   if ( success )
   {
     if ( buff->check() )
-      make_event( sim, delay, [ buff ] { buff->trigger(); } );
+      make_event( sim, delay, [ buff ] { buff->execute(); } );
     else
-      buff->trigger();
+      buff->execute();
   }
 
   return success;
