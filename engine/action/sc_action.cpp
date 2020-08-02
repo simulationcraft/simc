@@ -1519,7 +1519,8 @@ void action_t::execute()
     sim->cancel();
   }
 
-  if ( n_targets() == 0 && target->is_sleeping() )
+  int num_targets = n_targets();
+  if ( num_targets == 0 && target->is_sleeping() )
     return;
 
   if ( !execute_targeting( this ) )
@@ -1555,18 +1556,18 @@ void action_t::execute()
     tick_action->snapshot_state( tick_action->execute_state, amount_type( tick_action->execute_state, tick_action->direct_tick ) );
   }
 
-  size_t num_targets;
-  if ( is_aoe() )  // aoe
+  if ( num_targets == -1 || num_targets > 0 )  // aoe
   {
     std::vector<player_t*>& tl = target_list();
-    num_targets                = ( n_targets() < 0 ) ? tl.size() : std::min( tl.size(), as<size_t>( n_targets() ) );
+    const int max_targets = as<int>( tl.size() );
+    num_targets           = ( num_targets < 0 ) ? max_targets : std::min( max_targets, num_targets );
 
-    for ( size_t t = 0, max_targets = tl.size(); t < num_targets && t < max_targets; t++ )
+    for ( int t = 0; t < num_targets; t++ )
     {
       action_state_t* s = get_state( pre_execute_state );
       s->target         = tl[ t ];
-      s->n_targets      = std::min( num_targets, tl.size() );
-      s->chain_target   = as<int>( t );
+      s->n_targets      = as<size_t>( num_targets );
+      s->chain_target   = t;
       if ( !pre_execute_state )
       {
         snapshot_state( s, amount_type( s ) );
