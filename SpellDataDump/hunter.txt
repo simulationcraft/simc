@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35360 shadowlands-BETA (, no-networking)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35360 shadowlands-BETA (hotfix 2020-08-02/35360, no-networking)
 
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
@@ -8,7 +8,6 @@ Spell Level      : 1
 Range            : 40 yards
 Velocity         : 60 yards/sec
 Requires weapon  : Bow, Gun, Crossbow
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Bestial Wrath (19574 effect#1), Survival Hunter (137017 effect#6), Lone Wolf (155228 effect#1), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#1), Signet of Melandrus (233001 effect#1), Signet of Melandrus (233005 effect#1), Thrill of the Hunt (257946 effect#1)
 Family Flags     : 0, 121
 Attributes       : .x..x... ........ x.x..... ........   ........ ........ ........ ........ 
@@ -33,7 +32,6 @@ Range            : 45 yards
 GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 10 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -75,7 +73,6 @@ Range            : 50000 yards
 Cooldown         : 1 seconds
 Charges          : 1 (20 seconds cooldown)
 Category         : 1449
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 0.5 seconds
 Family Flags     : 30
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
@@ -97,7 +94,6 @@ School           : Physical
 Spell Type       : None
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Hunter (137014 effect#3), Aspect of the Wild (193530 effect#3)
 Family Flags     : 1, 35
 Attributes       : ....x... ........ x....... x.......   ........ ........ .x...... ........ 
@@ -120,7 +116,6 @@ Resource         : 35 Focus (2) (id=106)
 Cast Time        : 6 seconds
 GCD              : 1.5 seconds
 Duration         : 3 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Hunter (137014 effect#1), Survival Hunter (137017 effect#5), Aspect of the Wild (193530 effect#3), Roar of the Seven Lions (207318 effect#1)
 Family Flags     : 1, 24
 Attributes       : ....x... ........ x....... .......x   ........ ..x..... .x...... ........ 
@@ -143,7 +138,6 @@ Spell Type       : None
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ x....... ........   ........ ..x..... .x...... ........ 
                  : ...x.... ........ ........ ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -165,7 +159,6 @@ Spell Type       : None
 Spell Level      : 4
 Duration         : Aura (infinite)
 Category         : 1239
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 65
 Attributes       : ....x..x ........ ..x..... x..x....   .....x.. ..x..... .x...... ....x... 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
@@ -192,7 +185,6 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Duration         : 20 seconds
 Category         : 33
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Mechanic         : Flee
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
@@ -219,7 +211,6 @@ Spell Type       : None
 Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 6 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 97
 Attributes       : ........ ........ x....... ........   ..x..... ......x. .x...... ..x..x.. 
                  : ........ ..x..... x....... ..x.....   ........ ........ x....... ........ 
@@ -246,7 +237,6 @@ Class            : Hunter
 School           : Physical
 Spell Type       : None
 Range            : 50000 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : Feed Pet (6991)
 Attributes       : ........ ........ ........ ....x...   ........ ..x..... ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ......x. 
@@ -270,7 +260,6 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 25 yards/sec
 Cooldown         : 20 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Hunter (137014 effect#3), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#3)
 Family Flags     : 1, 121
 Attributes       : ....x... ........ x....... ........   ........ ..x....x .x...... ........ 
@@ -292,7 +281,6 @@ Spell Type       : None
 Range            : 50000 yards
 Cast Time        : 3 seconds
 GCD              : 1.5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x... ........ x....... ........   ........ ..x..... .x...... ....x... 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -318,7 +306,6 @@ Max Targets      : 5
 GCD              : 1.5 seconds
 Velocity         : 50 yards/sec
 Requires weapon  : Bow, Gun, Crossbow
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Refocus (24531 effect#1), Multi-Shot Damage Increase (28539 effect#1), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#1), Focus of the Titans (197139 effect#1), Roar of the Seven Lions (207318 effect#1), Trueshot (211327 effect#1), Bestial Rage (246116 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Precise Shots (260242 effect#1), Coordinated Assault (266779 effect#1), True Aim (321287 effect#1)
 Family Flags     : 1, 12, 106, 121
 Attributes       : .x..x... ........ x....... ........   ........ .x...... ........ ...x.... 
@@ -345,7 +332,6 @@ Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 60 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Mechanic         : Freeze
 Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x 
@@ -381,7 +367,6 @@ Velocity         : 50 yards/sec
 Duration         : 6 seconds
 Requires weapon  : Bow, Gun, Crossbow
 Cooldown         : 5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Mechanic         : Snare
 Affecting spells : Hunter (137014 effect#3), Item - Hunter WoD PvP 2P Bonus (166005 effect#1), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#3)
 Family Flags     : 1, 9, 121
@@ -409,7 +394,6 @@ Spell Level      : 6
 Velocity         : 0.2 yards/sec
 Duration         : 360 seconds
 Cooldown         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Improved Feign Death (24432 effect#1), Duck and Cover (280169 effect#2), Craven Strategem (336747 effect#1)
 Family Flags     : 8
 Attributes       : ........ x....... x.x.x... .x......   ........ ..x...x. .x...... ........ 
@@ -434,7 +418,6 @@ Spell Level      : 43
 Range            : 50000 yards
 GCD              : 1.5 seconds
 Duration         : 60 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ .......x x....... ........   ..x..... ..x..x.. .x...... .....x.. 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -457,7 +440,6 @@ School           : Physical
 Spell Type       : None
 Range            : 10 yards
 Cooldown         : 10 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x... ........ x....... ...xx...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -481,7 +463,6 @@ School           : Nature
 Spell Type       : None
 Spell Level      : 10
 Range            : 30 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : Tame Beast (1515)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ..x.....   ........ .x...... x....... ........ 
@@ -505,7 +486,6 @@ GCD              : 1.5 seconds
 Duration         : 60 seconds
 Cooldown         : 30 seconds
 Category         : 411
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 30 seconds
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -526,7 +506,6 @@ Spell Type       : None
 Spell Level      : 16
 Range            : 50000 yards
 Duration         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ..x..... ........ ........ ....x...   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -548,7 +527,6 @@ Spell Level      : 10
 Range            : 5 yards
 GCD              : 1 seconds
 Cooldown         : 3 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Hunter Pet (34902 effect#2), Blink Strikes (130392 effect#1), Aspect of the Beast (191384 effect#1), Mastery: Spirit Bond (263135 effect#1), 
 Family Flags     : 19
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
@@ -578,7 +556,6 @@ Range            : 5 yards
 GCD              : 1 seconds
 Cooldown         : 3 seconds
 Category         : 19
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Hunter Pet (34902 effect#2), Blink Strikes (130392 effect#1), Aspect of the Beast (191384 effect#1), Mastery: Spirit Bond (263135 effect#1), 
 Family Flags     : 19
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
@@ -611,7 +588,6 @@ Velocity         : 100 yards/sec
 Requires weapon  : Bow, Gun, Crossbow
 Charges          : 2 (12 seconds cooldown)
 Category         : 1715: Marksmanship Hunter (137016 effect#9)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Azerite Power Id : 97
 Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Refocus (24531 effect#1), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Item - Hunter T18 Marksmanship 4P Bonus (188191 effect#1), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#1), Lock and Load (194594 effect#1), Sentinel's Sight (208913 effect#1), Trueshot (211327 effect#1), Wind Arrows (214826 effect#1), Gyroscopic Stabilization (235712 effect#1), Precision (246153 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Master Marksman (260309 effect#1), Lethal Shots (260395 effect#2), Arrowstorm (263814 effect#1), Coordinated Assault (266779 effect#1), Trueshot (288613 effect#4)
 Triggered by     : Lock and Load (194594)
@@ -641,7 +617,6 @@ Range            : 100 yards
 GCD              : 1.5 seconds
 Duration         : 15 seconds
 Cooldown         : 90 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Hunter (137014 effect#3), Beastlord (184900 effect#1), Aspect of the Wild (193530 effect#3)
 Family Flags     : 1, 57
 Attributes       : ........ ........ x....... .....x..   ........ ..x....x ........ ........ 
@@ -677,7 +652,6 @@ Spell Level      : 33
 Range            : 100 yards
 GCD              : 1.5 seconds
 Cooldown         : 60 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Hunter (137014 effect#3), Aspect of the Wild (193530 effect#3)
 Family Flags     : 1, 67
 Attributes       : ....x... ........ x.x..x.. ........   ........ .xx..... ........ ..x.x... 
@@ -704,7 +678,6 @@ GCD              : 1 seconds
 Velocity         : 40 yards/sec
 Requires weapon  : Bow, Gun, Polearm, Crossbow
 Cooldown         : 10 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Mastery: Sniper Training (193468 effect#1)
 Family Flags     : 121
 Attributes       : .x...... ........ x....... ........   ........ ........ ........ ...x.... 
@@ -729,7 +702,6 @@ Spell Type       : None
 Spell Level      : 4
 Duration         : Aura (infinite)
 Category         : 1239
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 65
 Attributes       : ....x..x ........ ..x..... x..x....   .....x.. ..x..... .x...... ....x... 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
@@ -752,7 +724,6 @@ Spell Type       : None
 Spell Level      : 4
 Duration         : Aura (infinite)
 Category         : 1239
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 65
 Attributes       : ....x..x ........ ..x..... x..x....   .....x.. ..x..... .x...... ....x... 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
@@ -775,7 +746,6 @@ Spell Type       : None
 Spell Level      : 4
 Duration         : Aura (infinite)
 Category         : 1239
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 65
 Attributes       : ....x..x ........ ..x..... x..x....   .....x.. ..x..... .x...... ....x... 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
@@ -798,7 +768,6 @@ Spell Type       : None
 Spell Level      : 4
 Duration         : Aura (infinite)
 Category         : 1239
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 65
 Attributes       : ....x..x ........ ..x..... x..x....   .....x.. ..x..... .x...... ....x... 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
@@ -821,7 +790,6 @@ Spell Type       : None
 Spell Level      : 4
 Duration         : Aura (infinite)
 Category         : 1239
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 65
 Attributes       : ....x..x ........ ..x..... x..x....   .....x.. ..x..... .x...... ....x... 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
@@ -844,7 +812,6 @@ Spell Type       : None
 Spell Level      : 4
 Duration         : Aura (infinite)
 Category         : 1239
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 65
 Attributes       : ....x..x ........ ..x..... x..x....   .....x.. ..x..... .x...... ....x... 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
@@ -907,7 +874,6 @@ School           : Physical
 Spell Type       : Magic
 Range            : 100 yards
 Duration         : 5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Mechanic         : Stun
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
@@ -931,7 +897,6 @@ Spell Level      : 1
 Range            : 5 yards
 Cooldown         : 6 seconds
 Category         : 36
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Affecting spells : Aspect of the Beast (191384 effect#1), 
 Family Flags     : 60
@@ -958,7 +923,6 @@ Spell Level      : 14
 Duration         : Aura (infinite)
 Cooldown         : 10 seconds
 Category         : 38
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 10 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 101%
@@ -1039,7 +1003,6 @@ Spell Level      : 10
 Range            : 50 yards
 GCD              : 1.5 seconds
 Cooldown         : 7.5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Hunter (137014 effect#2), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Roar of the Seven Lions (207318 effect#1), Bestial Rage (246116 effect#1), Unseen Predator's Cloak (248212 effect#1), Item - Hunter T21 Beast Mastery 2P Bonus (251755 effect#1), Thrill of the Hunt (257946 effect#1), Rotting Jaws (264195 effect#1), Coordinated Assault (266779 effect#1), Flamewaker's Cobra Sting (336826 effect#1)
 Family Flags     : 1, 2, 43, 106
 Attributes       : ....x... ........ x.x..x.. ........   ........ .xx..... ........ ..xxx... 
@@ -1068,7 +1031,6 @@ Spell Level      : 27
 Range            : 100 yards
 Duration         : 30 seconds
 Cooldown         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Proc Flags       : ..x.x.x. x...x... ........ ........ 
                  : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell
@@ -1096,7 +1058,6 @@ School           : Physical
 Spell Type       : None
 Range            : 100 yards
 Duration         : 8 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..xx.... ........ ........ ........   x....... ........ xx...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1119,7 +1080,6 @@ Spell Level      : 14
 Range            : 5 yards
 Duration         : 6 seconds
 Cooldown         : 10 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Aspect of the Beast (191384 effect#1), 
 Family Flags     : 60
 Attributes       : ....x... ........ x....... ........   ........ .x...... ........ ..x..... 
@@ -1162,7 +1122,6 @@ Spell Level      : 10
 Range            : 5 yards
 GCD              : 1 seconds
 Cooldown         : 3 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Hunter Pet (34902 effect#2), Blink Strikes (130392 effect#1), Aspect of the Beast (191384 effect#1), Mastery: Spirit Bond (263135 effect#1), 
 Family Flags     : 19
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
@@ -1190,7 +1149,6 @@ Spell Level      : 14
 Range            : 5 yards
 Duration         : 6 seconds
 Cooldown         : 10 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Mechanic         : Root
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
@@ -1219,7 +1177,6 @@ Spell Level      : 14
 Range            : 5 yards
 Duration         : 6 seconds
 Cooldown         : 10 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Aspect of the Beast (191384 effect#1), 
 Family Flags     : 60
 Attributes       : ....x... ........ ........ ........   ........ .x...... ........ ........ 
@@ -1243,7 +1200,6 @@ Spell Level      : 14
 Range            : 5 yards
 Duration         : 6 seconds
 Cooldown         : 10 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Mechanic         : Snare
 Affecting spells : Aspect of the Beast (191384 effect#1), 
 Family Flags     : 60
@@ -1267,7 +1223,6 @@ Spell Type       : None
 Spell Level      : 10
 Range            : 10 yards
 Velocity         : 10 yards/sec
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : Feed Pet (6991)
 Attributes       : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1285,7 +1240,6 @@ Class            : Hunter, Death Knight
 School           : Physical
 Spell Type       : None
 Range            : 5 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1311,7 +1265,6 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Requires weapon  : Bow, Gun, Crossbow
 Cooldown         : 15 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Hunter (137014 effect#2), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#3)
 Family Flags     : 1, 2, 121
 Attributes       : .x..x... ........ x....... ........   ........ .x...... ........ ...x.... 
@@ -1334,7 +1287,6 @@ Class            : Beast Mastery Hunter
 School           : Physical
 Spell Type       : None
 Spell Level      : 20
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1355,7 +1307,6 @@ Spell Type       : None
 Spell Level      : 28
 Range            : 40 yards
 Cooldown         : 45 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 66
 Attributes       : ....x... ........ ........ ........   ........ ........ .x...... ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1383,7 +1334,6 @@ Velocity         : 80 yards/sec
 Requires weapon  : Bow, Gun, Crossbow
 Charges          : 1 (10 seconds cooldown)
 Category         : 1873: Dead Eye (321460 effect#1)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), Flayer's Mark (324156 effect#1)
 Family Flags     : 11, 106, 121
 Attributes       : .x..x... ........ x....... ........   ........ .x...... ........ ........ 
@@ -1408,7 +1358,6 @@ Spell Type       : None
 Spell Level      : 1
 Range            : 40 yards
 Duration         : 4 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 83
 Attributes       : ....x... ........ ........ .....x..   ........ ..x....x ........ ........ 
                  : ..x..... x....... ........ ........   ........ ........ ........ ........ 
@@ -1436,7 +1385,6 @@ Range            : 30 yards
 Duration         : 6 seconds
 Cooldown         : 10 seconds
 Category         : 1247
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 10 seconds
 Mechanic         : Snare
 Affecting spells : Aspect of the Beast (191384 effect#1), 
@@ -1463,7 +1411,6 @@ Spell Type       : Melee
 Spell Level      : 14
 Range            : 5 yards
 Cooldown         : 8 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Aspect of the Beast (191384 effect#1), 
 Family Flags     : 60
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
@@ -1523,7 +1470,6 @@ Class            : Beast Mastery Hunter
 School           : Physical
 Spell Type       : None
 Spell Level      : 28
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1551,7 +1497,6 @@ Cast Time        : 1.75 seconds
 GCD              : 1.5 seconds
 Velocity         : 75 yards/sec
 Requires weapon  : Bow, Gun, Crossbow
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#1), Steady Focus (193534 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), Steady Shot (321018 effect#1)
 Family Flags     : 1, 32, 106, 121
 Attributes       : .x..x... ........ x....... ........   ........ ........ ........ ........ 
@@ -1600,7 +1545,6 @@ Name             : Glyph of Lesser Proportion (id=57870) [Spell Family (9), Pass
 Class            : Hunter
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1619,7 +1563,6 @@ Class            : Hunter
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1667,7 +1610,6 @@ Spell Level      : 19
 GCD              : 1.5 seconds
 Duration         : 60 seconds
 Cooldown         : 180 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ x.x..... x.......   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1685,7 +1627,6 @@ Name             : Basic Attack Focus Cost Modifier (id=62762) [Spell Family (17
 Class            : Hunter, Death Knight
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1767,7 +1708,6 @@ Class            : Beast Mastery Hunter
 School           : Physical
 Spell Type       : None
 Spell Level      : 10
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1814,7 +1754,6 @@ School           : Physical
 Spell Type       : Melee
 Spell Level      : 1
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Roar of the Seven Lions (207318 effect#1), Bestial Rage (246116 effect#1), Item - Hunter T21 Beast Mastery 2P Bonus (251755 effect#1), Rotting Jaws (264195 effect#1), Flamewaker's Cobra Sting (336826 effect#1)
 Family Flags     : 43
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
@@ -1834,7 +1773,6 @@ Class            : Hunter
 School           : Physical
 Spell Type       : None
 Spell Level      : 27
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -1856,7 +1794,6 @@ Spell Level      : 14
 Duration         : Aura (infinite)
 Cooldown         : 10 seconds
 Category         : 38
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 10 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 101%
@@ -1891,7 +1828,6 @@ Spell Type       : Magic
 Spell Level      : 14
 GCD              : 1.5 seconds
 Duration         : 15 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Aspect of the Beast (191384 effect#1), 
 Family Flags     : 60
 Attributes       : ....x... ........ ........ ....x...   ........ ..x..... .x...... ........ 
@@ -1917,7 +1853,6 @@ Spell Level      : 14
 Range            : 25 yards
 Duration         : 10 seconds
 Cooldown         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x80000000
 Affecting spells : Aspect of the Beast (191384 effect#1), 
 Family Flags     : 60
@@ -1965,7 +1900,6 @@ Spell Type       : Melee
 Resource         : 10 Focus (2) and 5 Focus (2) per tick (id=4257)
 Spell Level      : 14
 Duration         : 8 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Aspect of the Beast (191384 effect#1), 
 Family Flags     : 60
 Attributes       : ........ ........ x....... ........   ..x...xx ..x..... .x...... .....x.. 
@@ -1988,7 +1922,6 @@ Name             : Hunter Pet Exotic Marker (DND) (id=93273) [Passive, Hidden]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx x....... ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2005,7 +1938,6 @@ Name             : Control Pet (desc=Passive) (id=93321) [Passive]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2024,7 +1956,6 @@ Name             : Control Pet (desc=Passive) (id=93322) [Hidden]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Attributes       : .......x x....... ........ ........   ........ ........ ........ .......x 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2047,7 +1978,6 @@ Resource         : 10 Focus (2) and 5 Focus (2) per tick (id=4304)
 Spell Level      : 14
 Duration         : 8 seconds
 Cooldown         : 14 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Aspect of the Beast (191384 effect#1), 
 Family Flags     : 60
 Attributes       : ........ ........ ........ ........   ..x...x. ..x..... .x...... .....x.. 
@@ -2073,7 +2003,6 @@ Spell Type       : Magic
 Spell Level      : 14
 GCD              : 1.5 seconds
 Duration         : 12 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Aspect of the Beast (191384 effect#1), 
 Family Flags     : 60
 Attributes       : ....x... ........ ........ ....x...   ........ ..x..... .x...... ........ 
@@ -2098,7 +2027,6 @@ School           : Nature
 Spell Type       : Magic
 Spell Level      : 14
 GCD              : 1.5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Aspect of the Beast (191384 effect#1), 
 Family Flags     : 60
 Attributes       : ....x... ........ ........ ....x...   ........ ........ .x...... ........ 
@@ -2137,7 +2065,6 @@ Class            : Hunter
 School           : Nature
 Spell Type       : Magic
 Spell Level      : 14
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Aspect of the Beast (191384 effect#1), 
 Triggered by     : Burrow Attack (93433)
 Family Flags     : 60
@@ -2160,7 +2087,6 @@ Class            : Hunter
 School           : Froststorm
 Spell Type       : Melee
 Spell Level      : 14
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Aspect of the Beast (191384 effect#1), 
 Triggered by     : Froststorm Breath (92380)
 Family Flags     : 60
@@ -2181,7 +2107,6 @@ Name             : Posthaste (id=109215) [Spell Family (9), Passive]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2204,7 +2129,6 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 45 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Mastery: Sniper Training (193468 effect#1)
 Family Flags     : 102, 121
 Attributes       : ....x... ........ ........ ........   ........ ........ .x...... ....x... 
@@ -2226,7 +2150,6 @@ Name             : Narrow Escape (id=109298) [Spell Family (9), Passive]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.x. ........ ........ ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2248,7 +2171,6 @@ Spell Level      : 9
 Range            : 45 yards
 GCD              : 1.5 seconds
 Cooldown         : 120 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Hunter (137014 effect#3), Aspect of the Wild (193530 effect#3), Nature's Salve (287940 effect#1)
 Family Flags     : 1, 107
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
@@ -2291,7 +2213,6 @@ Class            : Hunter
 School           : Physical
 Spell Type       : None
 Spell Level      : 1
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -2311,7 +2232,6 @@ Class            : Beast Mastery Hunter
 School           : Physical
 Spell Type       : None
 Spell Level      : 32
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 111
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2333,7 +2253,6 @@ Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 8 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Mechanic         : Root
 Attributes       : ........ ........ ..x..... x.xx...x   ...x.x.x ........ ..x..... ........ 
@@ -2358,7 +2277,6 @@ School           : Physical
 Spell Type       : None
 Range            : 200 yards
 Duration         : 4 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ..x.x... ........ ........ ........ 
                  : White Melee, Yellow Melee
@@ -2381,7 +2299,6 @@ School           : Physical
 Spell Type       : Melee
 Range            : 5 yards
 Max Targets      : 5
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 111
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
                  : .......x ........ ......x. .....x..   ........ .x...... ........ ........ 
@@ -2402,7 +2319,6 @@ School           : Physical
 Spell Type       : None
 Range            : 100 yards
 Duration         : 4 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ ........ ......x. 
                  : .......x ........ ........ ........   ........ ........ ........ ........ 
@@ -2428,7 +2344,6 @@ Duration         : 3 seconds
 Requires weapon  : Bow, Gun, Crossbow
 Cooldown         : 20 seconds
 Category         : 85
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Hunter (137014 effect#3), Marksmanship Hunter (137016 effect#6), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#3), Roar of the Seven Lions (207318 effect#1), Trueshot (211327 effect#1)
 Family Flags     : 1, 98, 121
 Attributes       : .x..x... ........ x....... ........   ..x...x. .x....x. ........ ..x.xx.. 
@@ -2453,7 +2368,6 @@ Spell Level      : 1
 Range            : 50 yards
 Max Targets      : 8
 Requires weapon  : Bow, Gun, Crossbow
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), 
 Triggered by     : Barrage (120360)
 Family Flags     : 106, 119, 121
@@ -2480,7 +2394,6 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 8 seconds
 Cooldown         : 20 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Hunter (137014 effect#3), Aspect of the Wild (193530 effect#3), Dire Longevity (215911 effect#1)
 Family Flags     : 1, 100
 Attributes       : ....x... ........ ........ ........   ........ .x...... ........ ....x... 
@@ -2502,7 +2415,6 @@ Class            : Hunter
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Dire Longevity (215911 effect#1)
 Family Flags     : 89
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
@@ -2523,7 +2435,6 @@ Class            : Hunter
 School           : Physical
 Spell Type       : Ranged
 Duration         : 3 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ......x.   ........ .x...... ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2545,7 +2456,6 @@ Class            : Hunter
 School           : Physical
 Spell Type       : Ranged
 Duration         : 3 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ......x.   ........ .x...... ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2570,7 +2480,6 @@ Spell Level      : 47
 Range            : 50 yards
 Cast Time        : 0.1 seconds
 GCD              : 1.5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ x....... .....x..   ........ ..x..... ........ ........ 
                  : x....... ........ ......x. ....x...   ........ .x...... xx...... ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
@@ -2593,7 +2502,6 @@ Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
 Requires weapon  : Bow, Gun, Crossbow
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : .x...... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ...x....   ........ ........ ........ ........ 
@@ -2613,7 +2521,6 @@ School           : Physical
 Spell Type       : None
 Range            : 50000 yards
 Cooldown         : 120 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ .....x..   ........ ........ ........ .....xx. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2633,7 +2540,6 @@ School           : Physical
 Spell Type       : None
 Spell Level      : 1
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2667,7 +2573,6 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 15 seconds
 Cooldown         : 60 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Mastery: Master of Beasts (76657 effect#3), Hunter (137014 effect#3), Marksmanship Hunter (137016 effect#5), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#3), Roar of the Seven Lions (207318 effect#1), Trueshot (211327 effect#1), The Mantle of Command (247993 effect#2)
 Family Flags     : 1, 99, 121
 Attributes       : ....x... ........ ........ ........   ........ .x...... ........ ........ 
@@ -2691,7 +2596,6 @@ Spell Type       : Ranged
 Spell Level      : 1
 Range            : 100 yards
 Velocity         : 1.5 yards/sec
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Mastery: Master of Beasts (76657 effect#3), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Mastery: Sniper Training (193468 effect#2), Aspect of the Wild (193530 effect#1), Roar of the Seven Lions (207318 effect#1), Trueshot (211327 effect#1), The Mantle of Command (247993 effect#2), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Mastery: Spirit Bond (263135 effect#1), Coordinated Assault (266779 effect#1), 
 Family Flags     : 55, 99, 106
 Attributes       : ........ ........ x....x.x ........   ........ ........ ........ ........ 
@@ -2714,7 +2618,6 @@ Spell Type       : None
 Spell Level      : 18
 Range            : 50000 yards
 Duration         : 20 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : Flare (1543)
 Attributes       : ........ ........ ........ ........   ........ ..x..... .x...... ........ 
                  : ..x..... ........ ......x. ........   ........ ........ ........ ........ 
@@ -2734,7 +2637,6 @@ Spell Type       : Magic
 Spell Level      : 16
 Range            : 50000 yards
 Duration         : 39 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Mechanic         : Snare
 Family Flags     : 29, 36
 Attributes       : ........ ........ ........ x.xx....   ...x.x.x ..x..... ........ ........ 
@@ -2758,7 +2660,6 @@ Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 8 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Mechanic         : Root
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
@@ -2780,7 +2681,6 @@ Name             : Hunter (id=137014) [Spell Family (9), Passive, Hidden]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2847,7 +2747,6 @@ Name             : Beast Mastery Hunter (id=137015) [Spell Family (9), Passive, 
 Class            : Beast Mastery Hunter, Death Knight
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2880,7 +2779,6 @@ Name             : Marksmanship Hunter (id=137016) [Spell Family (9), Passive, H
 Class            : Marksmanship Hunter, Death Knight
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2926,7 +2824,6 @@ Name             : Survival Hunter (id=137017) [Spell Family (9), Passive, Hidde
 Class            : Survival Hunter, Death Knight
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2976,7 +2873,6 @@ Class            : Hunter
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffa07fff)
 School           : Nature
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : .......x .......x ........ ........   ........ ........ ........ ........ 
@@ -2999,7 +2895,6 @@ Range            : 40 yards
 Duration         : 3 seconds
 Requires weapon  : Bow, Gun, Crossbow
 Cooldown         : 24 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Affecting spells : Mastery: Sniper Training (193468 effect#1)
 Family Flags     : 115, 121
@@ -3020,7 +2915,6 @@ Name             : Adaptation (id=152244) [Passive]
 Class            : Hunter, Death Knight, Shaman
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3047,7 +2941,6 @@ Class            : Marksmanship Hunter
 School           : Physical
 Spell Type       : None
 Spell Level      : 26
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3074,7 +2967,6 @@ Class            : Hunter, Death Knight, Shaman
 School           : Physical
 Spell Type       : None
 Spell Level      : 1
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.x. x....... ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3096,7 +2988,6 @@ Class            : Hunter
 School           : Physical
 Spell Type       : None
 Spell Level      : 1
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3117,7 +3008,6 @@ Spell Type       : Magic
 Spell Level      : 28
 Range            : 30 yards
 Duration         : 10 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Proc Flags       : ...x.x.. ........ ........ ........ 
                  : White Melee Taken, Yellow Melee Taken
@@ -3141,7 +3031,6 @@ School           : Fire
 Spell Type       : None
 Spell Level      : 28
 Range            : 30 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Internal Cooldown: 60 seconds
 Proc Chance      : 100%
 Proc Flags       : ...x.x.. ........ ........ ........ 
@@ -3168,7 +3057,6 @@ Spell Type       : None
 Range            : 5 yards
 GCD              : 1 seconds
 Cooldown         : 60 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x... ........ ........ ........   ........ ........ .x...... ........ 
                  : x....... ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3186,7 +3074,6 @@ Class            : Hunter
 School           : Physical
 Spell Type       : Melee
 Duration         : 6 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ........   ......x. ........ ........ .....x.. 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3212,7 +3099,6 @@ Spell Type       : None
 Spell Level      : 8
 Duration         : 20 seconds
 Cooldown         : 90 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Aspect of the Beast (191384 effect#1), 
 Family Flags     : 60
 Attributes       : ....x... ........ x....... ........   ........ ..x..... ........ ........ 
@@ -3234,7 +3120,6 @@ School           : Physical
 Spell Type       : None
 Spell Level      : 14
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Internal Cooldown: 120 seconds
 Proc Chance      : 101%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
@@ -3266,7 +3151,6 @@ School           : Physical
 Spell Type       : None
 Spell Level      : 14
 Duration         : 15 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Aspect of the Beast (191384 effect#1), 
 Triggered by     : Thick Hide (160057)
 Family Flags     : 60
@@ -3291,7 +3175,6 @@ Spell Level      : 1
 Range            : 5 yards
 Cooldown         : 6 seconds
 Category         : 36
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Affecting spells : Aspect of the Beast (191384 effect#1), 
 Family Flags     : 60
@@ -3318,7 +3201,6 @@ Spell Level      : 14
 Range            : 5 yards
 Duration         : 6 seconds
 Cooldown         : 10 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Mechanic         : Snare
 Affecting spells : Aspect of the Beast (191384 effect#1), 
 Family Flags     : 60
@@ -3343,7 +3225,6 @@ Spell Level      : 14
 Range            : 5 yards
 Duration         : 6 seconds
 Cooldown         : 10 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Mechanic         : Snare
 Affecting spells : Aspect of the Beast (191384 effect#1), 
 Family Flags     : 60
@@ -3366,7 +3247,6 @@ School           : Fire
 Spell Type       : Magic
 Spell Level      : 28
 Range            : 30 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Aspect of the Beast (191384 effect#1), 
 Triggered by     : Molten Hide (159786)
 Family Flags     : 60
@@ -3389,7 +3269,6 @@ Spell Type       : Ranged
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 20 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Mechanic         : Root
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
@@ -3415,7 +3294,6 @@ Spell Type       : Ranged
 Spell Level      : 1
 Range            : 50000 yards
 Duration         : 20 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Mechanic         : Bleed
 Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), 
 Family Flags     : 36, 106
@@ -3442,7 +3320,6 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
 Cooldown         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Trap Cooldown Reduction (61255 effect#1), Hunter (137014 effect#3), Aspect of the Wild (193530 effect#3)
 Family Flags     : 1, 7
 Attributes       : ....x... ........ x....... ........   ........ ........ .x...... ........ 
@@ -3466,7 +3343,6 @@ Spell Type       : None
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 60 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : Steel Trap (162488)
 Attributes       : ........ ........ x...x... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3486,7 +3362,6 @@ Class            : Beast Mastery Marksmanship Survival Assassination Outlaw Subt
 Race             : Dark Iron Dwarf (0x800)
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3510,7 +3385,6 @@ Spell Type       : None
 Spell Level      : 1
 Range            : 100 yards
 Duration         : Aura (infinite)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : .......x ........ ........ x..x.x..   .....x.. ........ ........ ........ 
                  : ........ ......x. ...x.... ........   ........ ........ ....x... ........ 
                  : ........ ........ ........ ........   ...x.... ........ .xx..... ........ 
@@ -3531,7 +3405,6 @@ Spell Level      : 1
 Range            : 40 yards
 Velocity         : 40 yards/sec
 Requires weapon  : Bow, Gun, Crossbow
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), 
 Family Flags     : 106, 121
 Attributes       : .x...... ........ x....... ........   ........ .x...... ........ ...x.... 
@@ -3557,7 +3430,6 @@ Spell Level      : 1
 Range            : 40 yards
 Velocity         : 40 yards/sec
 Requires weapon  : Bow, Gun, Crossbow
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), 
 Family Flags     : 106, 121
 Attributes       : .x...... ........ x....... ........   ........ .x...... ........ ...x.... 
@@ -3581,7 +3453,6 @@ School           : Physical
 Spell Type       : None
 Spell Level      : 1
 GCD              : 1.5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3604,7 +3475,6 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 70 yards/sec
 Requires weapon  : Bow, Gun, Crossbow
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Precise Shots (260242 effect#2), Coordinated Assault (266779 effect#1), True Aim (321287 effect#1), Arcane Shot (321293 effect#1)
 Triggered by     : Precise Shots (260242)
 Family Flags     : 1, 105, 106, 121
@@ -3627,7 +3497,6 @@ Class            : Beast Mastery Hunter
 School           : Physical
 Spell Type       : None
 Spell Level      : 26
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 20%
 Proc Flags       : ......x. ........ ........ ........ 
                  : White Ranged
@@ -3654,7 +3523,6 @@ School           : Physical
 Spell Type       : None
 Spell Level      : 14
 Duration         : 4 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : One with the Pack (199528 effect#1)
 Triggered by     : Wild Call (185789), Primal Instincts (279807)
 Family Flags     : 127
@@ -3680,7 +3548,6 @@ Spell Level      : 34
 Range            : 100 yards
 Duration         : 15 seconds
 Cooldown         : 90 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Beastlord (184900 effect#1)
 Family Flags     : 57
 Attributes       : ........ ........ x....... .....x..   ........ ..x....x ........ ........ 
@@ -3710,7 +3577,6 @@ Spell Type       : None
 Spell Level      : 5
 Duration         : 3 seconds
 Cooldown         : 180 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Call of the Wild (206332 effect#1), Embrace of the Aspects (225092 effect#1), Born To Be Wild (266921 effect#1), Call of the Wild (336742 effect#1), Cheetah's Vigor (339558 effect#1)
 Family Flags     : 21
 Attributes       : ....x... ........ x....... ........   .....x.. ..x..... ........ ........ 
@@ -3733,7 +3599,6 @@ School           : Physical
 Spell Type       : None
 Spell Level      : 5
 Duration         : 9 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Call of the Wild (206332 effect#1), Embrace of the Aspects (225092 effect#1), Born To Be Wild (266921 effect#1), Call of the Wild (336742 effect#1), Cheetah's Vigor (339558 effect#1)
 Family Flags     : 21
 Attributes       : ....x... ........ x....... ........   .....x.. ..x..... ........ ........ 
@@ -3756,7 +3621,6 @@ School           : Physical
 Spell Type       : None
 Spell Level      : 5
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Triggered by     : Harpoon (190925)
 Attributes       : ....x... ........ x.x..x.. .....x..   ........ ........ ..x..... ..xx.... 
@@ -3780,7 +3644,6 @@ Spell Type       : None
 Spell Level      : 39
 Duration         : 8 seconds
 Cooldown         : 180 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Call of the Wild (206332 effect#1), Embrace of the Aspects (225092 effect#1), Born To Be Wild (266921 effect#1), Call of the Wild (336742 effect#1), Harmony of the Tortollan (339377 effect#1)
 Family Flags     : 15
 Attributes       : ....x... ........ x.x..... ........   ....x... ..x..... ........ ........ 
@@ -3820,7 +3683,6 @@ Spell Level      : 10
 Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : Two-handed Axe, Two-handed Mace, Polearm, Two-handed Sword, Staff
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Eagle (186289 effect#1), Aspect of the Wild (193530 effect#1), Raptor's Cry (203638 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Tip of the Spear (260286 effect#1), Mastery: Spirit Bond (263135 effect#1), Coordinated Assault (266779 effect#1), Wilderness Survival (278532 effect#3)
 Family Flags     : 1, 55, 80, 106
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
@@ -3846,7 +3708,6 @@ Spell Level      : 26
 Range            : 100 yards
 Duration         : 15 seconds
 Cooldown         : 90 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Hunter (137014 effect#3), Aspect of the Wild (193530 effect#3), Call of the Wild (206332 effect#1), Embrace of the Aspects (225092 effect#1), Vigorous Wings (263818 effect#1), Born To Be Wild (266921 effect#1), Call of the Wild (336742 effect#1)
 Family Flags     : 1, 20
 Attributes       : ....x... ........ x....... ........   .....x.. ..x..... ........ ........ 
@@ -3877,7 +3738,6 @@ GCD              : 1.5 seconds
 Duration         : 6 seconds
 Requires weapon  : Bow, Gun, Crossbow
 Cooldown         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Mastery: Sniper Training (193468 effect#2), Aspect of the Wild (193530 effect#1), Trueshot (211327 effect#1), Magnetized Blasting Cap Launcher (226841 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), 
 Family Flags     : 1, 70, 106
 Attributes       : .x..x... ........ x...x... ........   ........ ........ ........ ...x.... 
@@ -3908,7 +3768,6 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
 Cooldown         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Trap Cooldown Reduction (61255 effect#1), Hunter (137014 effect#3), Aspect of the Wild (193530 effect#3)
 Family Flags     : 1, 7, 90
 Attributes       : ....x... ........ x...x... ........   ........ ........ .x...... ........ 
@@ -3932,7 +3791,6 @@ Spell Level      : 1
 Range            : 100 yards
 Duration         : 60 seconds
 Cooldown         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 30 seconds
 Triggered by     : Freezing Trap (187650)
 Attributes       : ........ ........ x....... x..x....   .....x.. ........ ........ ........ 
@@ -3957,7 +3815,6 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
 Cooldown         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Trap Cooldown Reduction (61255 effect#1), Hunter (137014 effect#3), Aspect of the Wild (193530 effect#3)
 Family Flags     : 1, 7, 92
 Attributes       : ....x... ........ x....... ........   ........ ........ .x...... ........ 
@@ -3980,7 +3837,6 @@ Spell Level      : 20
 Range            : 100 yards
 Duration         : 60 seconds
 Cooldown         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 30 seconds
 Triggered by     : Tar Trap (187698)
 Attributes       : ........ ........ x....... x..x....   .....x.. ........ ........ ........ 
@@ -4008,7 +3864,6 @@ Duration         : 3 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 15 seconds
 Category         : 88
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 15 seconds
 Family Flags     : 115
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... .x...... ........ 
@@ -4035,7 +3890,6 @@ Max Targets      : 5
 GCD              : 1.5 seconds
 Requires weapon  : Two-handed Axe, Two-handed Mace, Polearm, Two-handed Sword, Staff
 Cooldown         : 6 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Hunter (137014 effect#2), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Butcher's Bone Apron (236446 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Mastery: Spirit Bond (263135 effect#1), Coordinated Assault (266779 effect#1), Frizzo's Fingertrap (281262 effect#1), Butcher's Bone Fragments (336908 effect#1)
 Family Flags     : 1, 2, 55, 71, 106
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
@@ -4069,7 +3923,6 @@ Requires weapon  : Two-handed Axe, Two-handed Mace, Polearm, Two-handed Sword, S
 Cooldown         : 1 seconds
 Charges          : 1 (30 seconds cooldown)
 Category         : 1635: Harpoon (231550 effect#1)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 1 seconds
 Affecting spells : Hunter (137014 effect#3), Aspect of the Wild (193530 effect#3)
 Family Flags     : 1, 50
@@ -4095,7 +3948,6 @@ Range            : 5 - 50000 yards
 GCD              : 1.5 seconds
 Duration         : 3 seconds
 Cooldown         : 6 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Mechanic         : Root
 Attributes       : ....x... ........ ..x..x.. ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ......x. 
@@ -4117,7 +3969,6 @@ School           : Physical
 Spell Type       : None
 Spell Level      : 1
 Range            : 50000 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4158,7 +4009,6 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 45 yards/sec
 Requires weapon  : Bow, Gun, Crossbow
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Spitting Cobras (197140 effect#1), Roar of the Seven Lions (207318 effect#1), Bestial Rage (246116 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Cobra Shot (262838 effect#1), Coordinated Assault (266779 effect#1), 
 Family Flags     : 1, 86, 106
 Attributes       : .x..x... ........ x....... ........   ........ .x...... ........ ...x.... 
@@ -4186,7 +4036,6 @@ Class            : Marksmanship Hunter
 School           : Physical
 Spell Type       : None
 Spell Level      : 10
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4225,8 +4074,7 @@ Range            : 100 yards
 GCD              : 1.3 seconds
 Duration         : 20 seconds
 Cooldown         : 120 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-                 : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
 Affecting spells : Hunter (137014 effect#3), Call of the Wild (206332 effect#1), Embrace of the Aspects (225092 effect#1), Ride the Lightning (263821 effect#1), Aspect of the Cheetah (263829 effect#1), Call of the Wild (336742 effect#1)
 Family Flags     : 1, 77
 Attributes       : ....x... ........ x....... ........   .....x.. ..x..... ........ ........ 
@@ -4260,7 +4108,6 @@ Name             : Scent of Blood (id=193532) [Spell Family (9), Passive]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Proc Flags       : ........ ..x...x. ........ ........ 
                  : Generic Heal, Magic Heal
@@ -4284,7 +4131,6 @@ Class            : Hunter
 School           : Physical
 Spell Type       : None
 Spell Level      : 1
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ....x... x.x.x.x. x....... ........ 
                  : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
@@ -4306,7 +4152,6 @@ Class            : Hunter
 School           : Physical
 Spell Type       : None
 Duration         : 12 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 2 maximum
 Proc Chance      : 101%
 Attributes       : ....x... ........ ..x..... ........   ........ ..x..... ........ ........ 
@@ -4333,7 +4178,6 @@ Class            : Hunter
 School           : Physical
 Spell Type       : None
 Duration         : 15 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Hunter (137014 effect#3), Aspect of the Wild (193530 effect#3)
 Family Flags     : 1
 Attributes       : ........ ........ ........ ........   ...x...x ..x..... ........ ........ 
@@ -4353,7 +4197,6 @@ Class            : Hunter
 School           : Physical
 Spell Type       : None
 Duration         : 15 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 101%
 Triggered by     : Lock and Load (194595)
@@ -4388,7 +4231,6 @@ Class            : Hunter
 School           : Physical
 Spell Type       : None
 Spell Level      : 1
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 5%
 Proc Flags       : ......x. x....... ........ ........ 
                  : White Ranged, Yellow Ranged
@@ -4416,7 +4258,6 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Duration         : 15 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, Bow, Gun, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear, Crossbow
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Hunter (137014 effect#3), Item - Hunter WoD PvP 2P Bonus (166005 effect#1), Aspect of the Wild (193530 effect#3), Wing Clip (321026 effect#1)
 Family Flags     : 1, 125
 Attributes       : ....x... ........ x....... ........   ...x...x .x...... ........ ........ 
@@ -4440,7 +4281,6 @@ Spell Level      : 1
 Range            : 50000 yards
 Duration         : 60 seconds
 Cooldown         : 60 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
@@ -4472,7 +4312,6 @@ Name             : One with the Pack (id=199528) [Spell Family (9), Passive]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4492,7 +4331,6 @@ Name             : Stomp (id=199530) [Spell Family (9), Passive]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), 
 Family Flags     : 106
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
@@ -4513,7 +4351,6 @@ Name             : Killer Cobra (id=199532) [Spell Family (9), Passive]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ......x. x....... ........ ........ 
                  : White Ranged, Yellow Ranged
@@ -4535,7 +4372,6 @@ Class            : Hunter
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : Disengage (781)
 Attributes       : ....x..x ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ ........ ......x. 
@@ -4554,7 +4390,6 @@ Name             : Trailblazer (id=199921) [Spell Family (9), Passive, Hidden]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ....x.x. x...x... x....... ........ 
                  : Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
@@ -4602,7 +4437,6 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 12 seconds
 Cooldown         : 120 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Attributes       : ........ ........ x....... .......x   ........ ..x..... ........ ....x... 
                  : ........ ........ ...x.... ........   ........ ........ .x...... ........ 
@@ -4624,7 +4458,6 @@ Class            : Hunter
 School           : Physical
 Spell Type       : Ranged
 Range            : 150 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Mastery: Master of Beasts (76657 effect#3), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), The Mantle of Command (247993 effect#2), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), 
 Family Flags     : 106, 113
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
@@ -4644,7 +4477,6 @@ Name             : Stomp (id=201754) [Spell Family (9)]
 Class            : Hunter
 School           : Physical
 Spell Type       : Melee
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 6
 Attributes       : ....x... ........ ..x..... ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4731,7 +4563,6 @@ Spell Type       : Ranged
 Spell Level      : 1
 Range            : 50000 yards
 Requires weapon  : Bow, Gun, Crossbow
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4809,7 +4640,6 @@ Spell Level      : 1
 Range            : 25 yards
 Cast Time        : 2 seconds
 Velocity         : 32 yards/sec
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4913,7 +4743,6 @@ Spell Level      : 19
 Range            : 100 yards
 Duration         : 360 seconds
 Cooldown         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : Wake Up (210000)
 Attributes       : ........ x....... x.x.x... xx......   ........ ..x..... .xx..... ........ 
                  : ........ ........ ........ ....x...   ........ ........ ..x..... ........ 
@@ -4940,7 +4769,6 @@ Spell Type       : None
 Spell Level      : 6
 Range            : 1000 yards
 Cooldown         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ x....... x.x.x... x.......   ........ ..x..... .xx..... ........ 
                  : ..x..... ........ ........ ....x...   ........ ........ ..x..... ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4966,7 +4794,6 @@ Velocity         : 75 yards/sec
 Duration         : 3 seconds
 Requires weapon  : Bow, Gun, Crossbow
 Cooldown         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Hunter (137014 effect#3), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#3), Trueshot (211327 effect#1)
 Family Flags     : 1, 63, 121
 Attributes       : .x..x... ........ x....... ........   ........ ........ ........ ........ 
@@ -4996,7 +4823,6 @@ GCD              : 1.5 seconds
 Requires weapon  : Two-handed Axe, Two-handed Mace, Polearm, Two-handed Sword, Staff
 Charges          : 3 (9 seconds cooldown)
 Category         : 1616: Hunter (137014 effect#5)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Butcher's Bone Apron (236446 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Mastery: Spirit Bond (263135 effect#1), Coordinated Assault (266779 effect#1), Frizzo's Fingertrap (281262 effect#1), Butcher's Bone Fragments (336908 effect#1)
 Family Flags     : 1, 38, 55, 106
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
@@ -5025,7 +4851,6 @@ Spell Type       : Ranged
 Spell Level      : 1
 Range            : 100 yards
 Max Targets      : 6
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Mastery: Sniper Training (193468 effect#2), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), 
 Family Flags     : 73, 106
 Attributes       : ....x... ........ x....... ........   ........ ........ ........ ........ 
@@ -5052,7 +4877,6 @@ Duration         : 8 seconds
 Requires weapon  : Bow, Gun, Crossbow
 Charges          : 2 (12 seconds cooldown)
 Category         : 1675: Hunter (137014 effect#9)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Mechanic         : Bleed
 Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), Feeding Frenzy (278529 effect#2)
 Family Flags     : 1, 78, 106
@@ -5101,7 +4925,6 @@ Spell Type       : None
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 4 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Mechanic         : Snare
@@ -5147,7 +4970,6 @@ Class            : Hunter
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -5167,7 +4989,6 @@ Class            : Beast Mastery Marksmanship Survival Hunter
 School           : Nature
 Spell Type       : None
 Spell Level      : 44
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5186,7 +5007,6 @@ Class            : Beast Mastery Hunter
 School           : Nature
 Spell Type       : None
 Spell Level      : 47
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5205,7 +5025,6 @@ Class            : Survival Hunter
 School           : Nature
 Spell Type       : None
 Spell Level      : 38
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5224,7 +5043,6 @@ Name             : Hybrid Kinship (id=242155) [Hidden]
 Class            : Hunter
 School           : Nature
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : .......x .......x ........ ........   ........ ........ ........ ........ 
@@ -5244,7 +5062,6 @@ School           : Physical
 Spell Type       : None
 Range            : 100 yards
 Duration         : 8 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Dire Longevity (215911 effect#1)
 Family Flags     : 89
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
@@ -5452,7 +5269,6 @@ GCD              : 1.5 seconds
 Duration         : 3 seconds
 Requires weapon  : Bow, Gun, Crossbow
 Cooldown         : 20 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Hunter (137014 effect#3), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#3), Streamline (260367 effect#1), Double Tap (260402 effect#1), Whirling Rebound (264199 effect#1), Trueshot (288613 effect#1)
 Family Flags     : 1, 118, 121
 Attributes       : .x...... ........ ........ ........   ..x...x. .x...... ........ .....x.. 
@@ -5483,7 +5299,6 @@ Spell Level      : 3
 Range            : 40 yards
 Velocity         : 40 yards/sec
 Requires weapon  : Bow, Gun, Crossbow
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Lethal Shots (260395 effect#1), Coordinated Assault (266779 effect#1), Focused Fire (278531 effect#2), Surging Shots (336867 effect#1), Brutal Projectiles (339929 effect#1)
 Family Flags     : 3, 106, 121
 Attributes       : .x...... ........ ........ ........   ........ ........ ........ ........ 
@@ -5507,7 +5322,6 @@ Spell Level      : 7
 Range            : 60 yards
 GCD              : 1 seconds
 Duration         : Aura (infinite)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Hunter (137014 effect#3), Aspect of the Wild (193530 effect#3)
 Family Flags     : 1, 28
 Attributes       : ....x... ........ ........ ........   .....x.. ..x..... ........ ........ 
@@ -5547,7 +5361,6 @@ Max Targets      : 5
 GCD              : 1.5 seconds
 Velocity         : 50 yards/sec
 Requires weapon  : Bow, Gun, Crossbow
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Refocus (24531 effect#1), Multi-Shot Damage Increase (28539 effect#1), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#1), Focus of the Titans (197139 effect#1), Roar of the Seven Lions (207318 effect#1), Trueshot (211327 effect#1), Bestial Rage (246116 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Precise Shots (260242 effect#1), Coordinated Assault (266779 effect#1), True Aim (321287 effect#1)
 Triggered by     : Precise Shots (260242)
 Family Flags     : 1, 12, 106, 121
@@ -5569,7 +5382,6 @@ Class            : Marksmanship Hunter
 School           : Physical
 Spell Type       : None
 Spell Level      : 32
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5596,7 +5408,6 @@ Class            : Hunter
 School           : Physical
 Spell Type       : None
 Duration         : 20 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Proc Flags       : ........ x....... ........ ........ 
                  : Yellow Ranged
@@ -5618,7 +5429,6 @@ Name             : Spitting Cobra (id=257891) [Spell Family (9), Passive]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -5636,7 +5446,6 @@ Name             : Thrill of the Hunt (id=257944) [Spell Family (9), Passive]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ........ x....... ........ ........ 
                  : Yellow Ranged
@@ -5658,7 +5467,6 @@ Class            : Hunter
 School           : Physical
 Spell Type       : None
 Duration         : 8 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 3 maximum
 Proc Chance      : 101%
 Triggered by     : Thrill of the Hunt (257944)
@@ -5684,7 +5492,6 @@ Spell Type       : Melee
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 8 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 37
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -5728,7 +5535,6 @@ Spell Level      : 1
 Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : Two-handed Axe, Two-handed Mace, Polearm, Two-handed Sword, Staff
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Blackness (184902 effect#1), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Mongoose Fury (259388 effect#1), Mastery: Spirit Bond (263135 effect#1), Coordinated Assault (266779 effect#1), Wilderness Survival (278532 effect#2)
 Family Flags     : 1, 55, 96, 106
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
@@ -5752,7 +5558,6 @@ Class            : Hunter
 School           : Physical
 Spell Type       : None
 Duration         : 14 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 5 maximum
 Proc Chance      : 101%
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5779,7 +5584,6 @@ Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 20 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Hunter (137014 effect#3), Aspect of the Wild (193530 effect#3)
 Family Flags     : 1
 Attributes       : ....x... ........ x....x.. ........   ........ .xx..... ........ ........ 
@@ -5805,7 +5609,6 @@ Class            : Hunter
 School           : Physical
 Spell Type       : Ranged
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Mastery: Spirit Bond (263135 effect#1), Coordinated Assault (266779 effect#1), 
 Family Flags     : 55, 106
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5827,7 +5630,6 @@ Spell Type       : Ranged
 Spell Level      : 12
 Range            : 100 yards
 Velocity         : 30 yards/sec
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Mastery: Spirit Bond (263135 effect#1), Coordinated Assault (266779 effect#1), 
 Triggered by     : Chakrams (259391)
 Family Flags     : 55, 106
@@ -5854,7 +5656,6 @@ Range            : 50 yards
 GCD              : 1.5 seconds
 Charges          : 1 (6 seconds cooldown)
 Category         : 1171: Hunter (137014 effect#11), Alpha Predator (269737 effect#1)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), Alpha Predator (269737 effect#2)
 Family Flags     : 1, 72, 106
 Attributes       : ....x... ........ x.x..x.. ........   ........ .xx..... ........ ..xxx... 
@@ -5892,7 +5693,6 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 60 yards/sec
 Duration         : 12 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Item - Hunter T11 2P Bonus (89923 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Hydra's Bite (260241 effect#2), Mastery: Spirit Bond (263135 effect#1), Coordinated Assault (266779 effect#1), Viper's Venom (268552 effect#1), 
 Family Flags     : 1, 14, 55, 106
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
@@ -5921,7 +5721,6 @@ GCD              : 1.5 seconds
 Velocity         : 35 yards/sec
 Charges          : 1 (18 seconds cooldown)
 Category         : 1716: Hunter (137014 effect#10), Guerrilla Tactics (264332 effect#1)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Hunter (137014 effect#3), Aspect of the Wild (193530 effect#3)
 Family Flags     : 1, 26
 Attributes       : ....x... ........ ........ ........   ........ ........ .x...... ........ 
@@ -5942,7 +5741,6 @@ School           : Physical
 Spell Type       : Melee
 Spell Level      : 1
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5962,7 +5760,6 @@ Class            : Hunter
 School           : Physical
 Spell Type       : None
 Spell Level      : 1
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5988,7 +5785,6 @@ School           : Fire
 Spell Type       : Ranged
 Spell Level      : 1
 Range            : 50000 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), Wildfire Bombs (321290 effect#1), 
 Family Flags     : 22, 106
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
@@ -6009,7 +5805,6 @@ Class            : Marksmanship Hunter
 School           : Physical
 Spell Type       : None
 Spell Level      : 38
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Proc Flags       : ........ x....... ........ ........ 
                  : Yellow Ranged
@@ -6031,7 +5826,6 @@ Class            : Hunter
 School           : Nature
 Spell Type       : None
 Spell Level      : 1
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Internal Cooldown: 0.5 seconds
 Proc Chance      : 101%
 Proc Flags       : ........ x....... ........ ........ 
@@ -6059,7 +5853,6 @@ School           : Physical
 Spell Type       : None
 Spell Level      : 1
 Duration         : 15 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 2 maximum
 Proc Chance      : 101%
 Proc Flags       : ........ x....... ........ ........ 
@@ -6099,7 +5892,6 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 6 seconds
 Cooldown         : 45 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Hunter (137014 effect#3), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#3)
 Family Flags     : 1, 121
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6122,7 +5914,6 @@ Class            : Hunter
 School           : Physical
 Spell Type       : Ranged
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Mastery: Sniper Training (193468 effect#2), Aspect of the Wild (193530 effect#1), Roar of the Seven Lions (207318 effect#1), Trueshot (211327 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), 
 Family Flags     : 34, 106
 Attributes       : .x...... ........ ........ ........   ........ ........ ........ ........ 
@@ -6143,7 +5934,6 @@ Class            : Hunter
 School           : Physical
 Spell Type       : None
 Range            : 50000 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -6166,7 +5956,6 @@ Class            : Hunter
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 10 maximum
 Proc Chance      : 101%
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
@@ -6187,7 +5976,6 @@ Class            : Hunter
 School           : Physical
 Spell Type       : None
 Spell Level      : 1
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -6206,7 +5994,6 @@ Class            : Hunter
 School           : Physical
 Spell Type       : None
 Duration         : 10 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 3 maximum
 Proc Chance      : 100%
 Proc Flags       : ....x... x....... ........ ........ 
@@ -6233,7 +6020,6 @@ Class            : Hunter
 School           : Physical
 Spell Type       : None
 Spell Level      : 1
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -6254,7 +6040,6 @@ Class            : Hunter
 School           : Physical
 Spell Type       : None
 Spell Level      : 1
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ....x... x....... ........ ........ 
                  : Yellow Melee, Yellow Ranged
@@ -6277,7 +6062,6 @@ Class            : Hunter
 School           : Physical
 Spell Type       : None
 Spell Level      : 1
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Proc Flags       : ........ x....... ........ ........ 
                  : Yellow Ranged
@@ -6307,7 +6091,6 @@ Class            : Hunter
 School           : Physical
 Spell Type       : None
 Spell Level      : 1
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 20%
 Proc Flags       : ........ x....... ........ ........ 
                  : Yellow Ranged
@@ -6330,7 +6113,6 @@ School           : Physical
 Spell Type       : None
 Spell Level      : 1
 Duration         : 15 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 101%
 Proc Flags       : ........ x....... ........ ........ 
@@ -6361,7 +6143,6 @@ Spell Type       : None
 GCD              : 1.5 seconds
 Duration         : 15 seconds
 Cooldown         : 60 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6390,7 +6171,6 @@ Class            : Hunter
 School           : Physical
 Spell Type       : None
 Spell Level      : 1
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Proc Flags       : ........ x....... ........ ........ 
                  : Yellow Ranged
@@ -6430,7 +6210,6 @@ Class            : Beast Mastery Hunter
 School           : Nature
 Spell Type       : None
 Spell Level      : 49
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6452,7 +6231,6 @@ School           : Physical
 Spell Type       : None
 Spell Level      : 10
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6489,7 +6267,6 @@ Class            : Hunter
 School           : Nature
 Spell Type       : None
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Mastery: Spirit Bond (263135 effect#4), 
 Triggered by     : Mastery: Spirit Bond (263135)
 Family Flags     : 54
@@ -6513,7 +6290,6 @@ Class            : Survival Hunter
 School           : Nature
 Spell Type       : None
 Spell Level      : 28
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6537,7 +6313,6 @@ Spell Level      : 14
 Range            : 5 yards
 Duration         : 6 seconds
 Cooldown         : 10 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Mechanic         : Snare
 Affecting spells : Aspect of the Beast (191384 effect#1), 
 Family Flags     : 60
@@ -6562,7 +6337,6 @@ Spell Level      : 14
 Range            : 30 yards
 Duration         : 6 seconds
 Cooldown         : 10 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Mechanic         : Snare
 Affecting spells : Aspect of the Beast (191384 effect#1), 
 Family Flags     : 60
@@ -6585,7 +6359,6 @@ School           : Physical
 Spell Type       : Ranged
 Spell Level      : 3
 Range            : 40 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), 
 Family Flags     : 106
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6698,7 +6471,6 @@ Spell Level      : 14
 Range            : 5 yards
 Duration         : 6 seconds
 Cooldown         : 10 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Mechanic         : Snare
 Affecting spells : Aspect of the Beast (191384 effect#1), 
 Family Flags     : 60
@@ -6723,7 +6495,6 @@ Spell Level      : 14
 Range            : 5 yards
 Duration         : 6 seconds
 Cooldown         : 10 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Mechanic         : Snare
 Affecting spells : Aspect of the Beast (191384 effect#1), 
 Family Flags     : 60
@@ -6748,7 +6519,6 @@ Spell Level      : 1
 Range            : 5 yards
 Cooldown         : 6 seconds
 Category         : 36
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Affecting spells : Aspect of the Beast (191384 effect#1), 
 Family Flags     : 60
@@ -6775,7 +6545,6 @@ Spell Level      : 1
 Range            : 5 yards
 Cooldown         : 6 seconds
 Category         : 36
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Affecting spells : Aspect of the Beast (191384 effect#1), 
 Family Flags     : 60
@@ -6802,7 +6571,6 @@ Spell Level      : 1
 Range            : 5 yards
 Cooldown         : 6 seconds
 Category         : 36
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Affecting spells : Aspect of the Beast (191384 effect#1), 
 Family Flags     : 60
@@ -6829,7 +6597,6 @@ Spell Level      : 1
 Range            : 5 yards
 Cooldown         : 6 seconds
 Category         : 36
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Affecting spells : Aspect of the Beast (191384 effect#1), 
 Family Flags     : 60
@@ -6855,7 +6622,6 @@ Spell Type       : None
 Spell Level      : 14
 Duration         : 12 seconds
 Cooldown         : 60 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Aspect of the Beast (191384 effect#1), 
 Family Flags     : 60
 Attributes       : ....x... ........ ........ .....x..   ........ ..x..... ........ ........ 
@@ -6878,7 +6644,6 @@ Spell Type       : None
 Spell Level      : 14
 Duration         : 12 seconds
 Cooldown         : 60 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Aspect of the Beast (191384 effect#1), 
 Family Flags     : 60
 Attributes       : ....x... ........ ........ .....x..   ........ ..x..... ........ ........ 
@@ -6901,7 +6666,6 @@ Spell Type       : None
 Spell Level      : 8
 Duration         : 20 seconds
 Cooldown         : 90 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Aspect of the Beast (191384 effect#1), 
 Family Flags     : 60
 Attributes       : ....x... ........ x....... ........   ........ ..x..... ........ ........ 
@@ -6924,7 +6688,6 @@ Spell Type       : None
 Spell Level      : 8
 Duration         : 20 seconds
 Cooldown         : 90 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Aspect of the Beast (191384 effect#1), 
 Family Flags     : 60
 Attributes       : ....x... ........ x....... ........   ........ ..x..... ........ ........ 
@@ -6947,7 +6710,6 @@ Spell Type       : None
 Spell Level      : 8
 Duration         : 20 seconds
 Cooldown         : 90 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Aspect of the Beast (191384 effect#1), 
 Family Flags     : 60
 Attributes       : ....x... ........ x....... ........   ........ ..x..... ........ ........ 
@@ -6969,7 +6731,6 @@ School           : Physical
 Spell Type       : None
 Spell Level      : 14
 Duration         : 15 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Aspect of the Beast (191384 effect#1), 
 Triggered by     : Thick Fur (263934)
 Family Flags     : 60
@@ -6992,7 +6753,6 @@ School           : Physical
 Spell Type       : None
 Spell Level      : 14
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Internal Cooldown: 120 seconds
 Proc Chance      : 101%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
@@ -7024,7 +6784,6 @@ School           : Physical
 Spell Type       : None
 Spell Level      : 14
 Duration         : 15 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Aspect of the Beast (191384 effect#1), 
 Triggered by     : Silverback (263939)
 Family Flags     : 60
@@ -7047,7 +6806,6 @@ School           : Physical
 Spell Type       : None
 Spell Level      : 14
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Internal Cooldown: 120 seconds
 Proc Chance      : 101%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
@@ -7240,7 +6998,6 @@ Class            : Hunter
 School           : Nature
 Spell Type       : None
 Spell Level      : 1
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7266,7 +7023,6 @@ Spell Type       : None
 Spell Level      : 8
 Duration         : 20 seconds
 Cooldown         : 90 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Aspect of the Beast (191384 effect#1), 
 Family Flags     : 60
 Attributes       : ....x... ........ x....... ........   ........ ..x..... ........ ........ 
@@ -7287,7 +7043,6 @@ Class            : Ferocity Tenacity Cunning Hunter Pet
 School           : Physical
 Spell Type       : None
 Range            : 50000 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Aspect of the Beast (191384 effect#3), 
 Family Flags     : 13
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
@@ -7311,7 +7066,6 @@ Class            : Ferocity Tenacity Cunning Hunter Pet
 School           : Physical
 Spell Type       : None
 Range            : 50000 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Aspect of the Beast (191384 effect#3), 
 Family Flags     : 18
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
@@ -7335,7 +7089,6 @@ Class            : Ferocity Tenacity Cunning Hunter Pet
 School           : Physical
 Spell Type       : None
 Range            : 50000 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Aspect of the Beast (191384 effect#3), 
 Family Flags     : 23
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
@@ -7361,7 +7114,6 @@ Spell Type       : None
 Spell Level      : 26
 Duration         : 40 seconds
 Cooldown         : 360 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Aspect of the Beast (191384 effect#1), 
 Family Flags     : 60
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... .x...... ........ 
@@ -7389,7 +7141,6 @@ Range            : 50000 yards
 Duration         : 6 seconds
 Cooldown         : 180 seconds
 Category         : 1830
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 180 seconds
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -7412,7 +7163,6 @@ School           : Fire
 Spell Type       : Ranged
 Spell Level      : 1
 Range            : 50000 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Guerrilla Tactics (264332 effect#2), Coordinated Assault (266779 effect#1), Wildfire Bombs (321290 effect#1), 
 Family Flags     : 22, 25, 106
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7434,7 +7184,6 @@ School           : Physical
 Spell Type       : None
 Range            : 100 yards
 Duration         : 0.5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : Wildfire Bomb (259495)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
@@ -7460,7 +7209,6 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 40 yards/sec
 Requires weapon  : Two-handed Axe, Two-handed Mace, Polearm, Two-handed Sword, Staff
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Eagle (186289 effect#1), Aspect of the Wild (193530 effect#1), Raptor's Cry (203638 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Tip of the Spear (260286 effect#1), Mastery: Spirit Bond (263135 effect#1), Coordinated Assault (266779 effect#1), Wilderness Survival (278532 effect#3)
 Family Flags     : 1, 55, 80, 106
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
@@ -7486,7 +7234,6 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 40 yards/sec
 Requires weapon  : Two-handed Axe, Two-handed Mace, Polearm, Two-handed Sword, Staff
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Blackness (184902 effect#1), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Mongoose Fury (259388 effect#1), Mastery: Spirit Bond (263135 effect#1), Coordinated Assault (266779 effect#1), Wilderness Survival (278532 effect#2)
 Family Flags     : 1, 55, 96, 106
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
@@ -7509,7 +7256,6 @@ Name             : Terms of Engagement (id=265895) [Spell Family (9), Passive]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -7529,7 +7275,6 @@ Class            : Hunter
 School           : Physical
 Spell Type       : None
 Duration         : 2 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : Terms of Engagement (265895)
 Attributes       : ....x..x ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7549,7 +7294,6 @@ Class            : Hunter
 School           : Physical
 Spell Type       : None
 Duration         : 10 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7592,8 +7336,7 @@ Range            : 100 yards
 GCD              : 1.5 seconds
 Duration         : 20 seconds
 Cooldown         : 120 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-                 : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
 Affecting spells : Hunter (137014 effect#3), Aspect of the Wild (193530 effect#3), Call of the Wild (336742 effect#1)
 Family Flags     : 1, 27
 Attributes       : ....x... ........ x....... ........   .....x.. ..x..... ........ ........ 
@@ -7631,7 +7374,6 @@ Class            : Hunter
 School           : Nature
 Spell Type       : None
 Spell Level      : 1
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -7694,7 +7436,6 @@ Name             : Animal Companion (id=267116) [Spell Family (9), Passive]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -7719,7 +7460,6 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 5 seconds
 Cooldown         : 20 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Hunter (137014 effect#3), Aspect of the Wild (193530 effect#3)
 Triggered by     : Chakrams (259391)
 Family Flags     : 1
@@ -7764,7 +7504,6 @@ School           : Physical
 Spell Type       : Ranged
 Spell Level      : 1
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Mastery: Spirit Bond (263135 effect#1), Coordinated Assault (266779 effect#1), 
 Family Flags     : 55, 106
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8022,7 +7761,6 @@ Name             : Viper's Venom (id=268501) [Spell Family (9), Passive, Hidden]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Real PPM         : 3 (Haste multiplier)
 Proc Flags       : ....x... x....... ........ ........ 
@@ -8045,7 +7783,6 @@ Class            : Hunter
 School           : Physical
 Spell Type       : None
 Duration         : 8 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ........ x....... ........ ........ 
                  : Yellow Ranged
@@ -8182,7 +7919,6 @@ Name             : Alpha Predator (id=269737) [Spell Family (9), Passive, Hidden
 Class            : Hunter
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8208,7 +7944,6 @@ Spell Type       : Magic
 Spell Level      : 1
 Range            : 50000 yards
 Duration         : 6 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), Wildfire Bombs (321290 effect#1), 
 Family Flags     : 22, 106
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
@@ -8232,7 +7967,6 @@ Spell Type       : None
 Range            : 15 yards
 GCD              : 1.5 seconds
 Cooldown         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), 
 Family Flags     : 1, 106
 Attributes       : ....x... ........ x.x..x.. ........   ........ .xx..... ........ ..xxx... 
@@ -8259,7 +7993,6 @@ School           : Physical
 Spell Type       : Melee
 Range            : 100 yards
 Requires weapon  : Two-handed Axe, Two-handed Mace, Polearm, Two-handed Sword, Staff
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), 
 Family Flags     : 106
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
@@ -8286,7 +8019,6 @@ GCD              : 1.5 seconds
 Velocity         : 35 yards/sec
 Charges          : 1 (18 seconds cooldown)
 Category         : 1716: Hunter (137014 effect#10), Guerrilla Tactics (264332 effect#1)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Hunter (137014 effect#3), Aspect of the Wild (193530 effect#3)
 Family Flags     : 1, 26
 Attributes       : ....x... ........ ........ ........   ........ ........ .x...... ........ 
@@ -8311,7 +8043,6 @@ School           : Physical
 Spell Type       : None
 Range            : 100 yards
 Duration         : 0.5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : Pheromone Bomb (270323)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
@@ -8332,7 +8063,6 @@ Class            : Hunter
 School           : Fire
 Spell Type       : Ranged
 Range            : 50000 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Mechanic         : Bleed
 Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Guerrilla Tactics (264332 effect#2), Coordinated Assault (266779 effect#1), Wildfire Bombs (321290 effect#1), 
 Family Flags     : 22, 25, 106
@@ -8356,7 +8086,6 @@ Spell Type       : Ranged
 Spell Level      : 1
 Range            : 50000 yards
 Duration         : 6 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), Wildfire Bombs (321290 effect#1), 
 Family Flags     : 22, 106
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
@@ -8382,7 +8111,6 @@ GCD              : 1.5 seconds
 Velocity         : 35 yards/sec
 Charges          : 1 (18 seconds cooldown)
 Category         : 1716: Hunter (137014 effect#10), Guerrilla Tactics (264332 effect#1)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Hunter (137014 effect#3), Aspect of the Wild (193530 effect#3)
 Family Flags     : 1, 26
 Attributes       : ....x... ........ ........ ........   ........ ........ .x...... ........ 
@@ -8405,7 +8133,6 @@ School           : Physical
 Spell Type       : None
 Range            : 100 yards
 Duration         : 0.5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : Shrapnel Bomb (270335)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
@@ -8426,7 +8153,6 @@ Class            : Hunter
 School           : Fire
 Spell Type       : Ranged
 Range            : 50000 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Mechanic         : Bleed
 Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Guerrilla Tactics (264332 effect#2), Coordinated Assault (266779 effect#1), 
 Family Flags     : 25, 106
@@ -8450,7 +8176,6 @@ Spell Type       : Ranged
 Spell Level      : 1
 Range            : 50000 yards
 Duration         : 6 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : .....x.. .x...... ........ ........ 
                  : Yellow Melee Taken, Yellow Ranged Taken
@@ -8479,7 +8204,6 @@ School           : Physical
 Spell Type       : Ranged
 Range            : 100 yards
 Duration         : 9 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 3 maximum
 Proc Chance      : 101%
 Mechanic         : Bleed
@@ -8503,7 +8227,6 @@ Name             : Natural Mending (id=270581) [Spell Family (9), Passive, Hidde
 Class            : Hunter
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ....x... x.x.x.x. x....... ........ 
                  : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
@@ -8528,7 +8251,6 @@ Name             : Wildfire Infusion (id=271014) [Spell Family (9), Passive, Hid
 Class            : Hunter
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8557,7 +8279,6 @@ GCD              : 1.5 seconds
 Velocity         : 35 yards/sec
 Charges          : 1 (18 seconds cooldown)
 Category         : 1716: Hunter (137014 effect#10), Guerrilla Tactics (264332 effect#1)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Hunter (137014 effect#3), Aspect of the Wild (193530 effect#3)
 Family Flags     : 1, 26
 Attributes       : ....x... ........ ........ ........   ........ ........ .x...... ........ 
@@ -8580,7 +8301,6 @@ School           : Physical
 Spell Type       : None
 Range            : 100 yards
 Duration         : 0.5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : Volatile Bomb (271045)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
@@ -8601,7 +8321,6 @@ Class            : Hunter
 School           : Fire
 Spell Type       : Ranged
 Range            : 50000 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Guerrilla Tactics (264332 effect#2), Coordinated Assault (266779 effect#1), Wildfire Bombs (321290 effect#1), 
 Family Flags     : 22, 25, 106
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8623,7 +8342,6 @@ School           : Fire
 Spell Type       : Magic
 Range            : 50000 yards
 Duration         : 6 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), Wildfire Bombs (321290 effect#1), 
 Family Flags     : 22, 106
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
@@ -8806,7 +8524,6 @@ School           : Physical
 Spell Type       : Ranged
 Range            : 100 yards
 Velocity         : 70 yards/sec
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), 
 Family Flags     : 106
 Attributes       : ....x... ........ ..x..x.. ........   ........ .x...... ........ ........ 
@@ -8832,7 +8549,6 @@ GCD              : 1.5 seconds
 Velocity         : 45 yards/sec
 Duration         : 12 seconds
 Requires weapon  : Bow, Gun, Crossbow
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), 
 Family Flags     : 1, 5, 106, 121
 Attributes       : .x...... ........ x....... ........   ........ .x...... ........ ...x.... 
@@ -8856,7 +8572,6 @@ Class            : Hunter
 School           : Physical
 Spell Type       : None
 Spell Level      : 22
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 4
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
                  : ........ ......x. ...x.... ........   ........ ........ ........ ........ 
@@ -8988,7 +8703,6 @@ School           : Physical
 Spell Type       : None
 Range            : 100 yards
 Duration         : 8 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 3 maximum
 Proc Chance      : 101%
 Affecting spells : Feeding Frenzy (278529 effect#2), Feeding Frenzy (279607 effect#1)
@@ -9248,7 +8962,6 @@ Name             : Killer Instinct (id=273887) [Spell Family (9), Passive]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ......x. x....... ........ ........ 
                  : White Ranged, Yellow Ranged
@@ -9483,7 +9196,6 @@ Spell Level      : 13
 Range            : 100 yards
 Velocity         : 50 yards/sec
 Requires weapon  : Bow, Gun, Crossbow
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), 
 Family Flags     : 106
 Attributes       : .x..x... ........ x....... ........   ........ .x...... ........ ...x.... 
@@ -9583,7 +9295,6 @@ Name             : Blood of the Rhino (desc=Exotic Ability) (id=280069) [Passive
 Class            : Hunter
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9603,7 +9314,6 @@ Name             : Dune Strider (desc=Exotic Ability) (id=280151) [Spell Family 
 Class            : Hunter
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10242,7 +9952,6 @@ School           : Nature
 Spell Type       : None
 Range            : 40 yards
 Duration         : 8 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Hunter (137014 effect#3), Aspect of the Wild (193530 effect#3), Dire Longevity (215911 effect#1)
 Triggered by     : Dire Beast (120679)
 Family Flags     : 1, 100
@@ -10487,8 +10196,7 @@ Spell Level      : 34
 GCD              : 1.5 seconds
 Duration         : 15 seconds
 Cooldown         : 120 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-                 : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
 Affecting spells : Hunter (137014 effect#3), Aspect of the Wild (193530 effect#3), Call of the Wild (336742 effect#1), Sharpshooter's Focus (339920 effect#1)
 Family Flags     : 1, 53
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... ........ ........ 
@@ -10585,7 +10293,6 @@ Class            : Survival Hunter
 School           : Nature
 Spell Type       : None
 Spell Level      : 32
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10728,7 +10435,6 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 0.5 yards/sec
 Cooldown         : 60 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Hunter (137014 effect#3), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#3)
 Family Flags     : 1, 31, 39, 121
 Attributes       : ....x... ........ x....... ........   ........ ........ .x...... ........ 
@@ -10749,7 +10455,6 @@ School           : Arcane
 Spell Type       : None
 Range            : 100 yards
 Duration         : 10 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : Resonating Arrow (308491)
 Family Flags     : 31, 39
 Attributes       : .......x x....... x.x....x x..x.x..   .....x.. ..x..... ........ ........ 
@@ -10773,7 +10478,6 @@ School           : Arcane
 Spell Type       : Magic
 Range            : 100 yards
 Duration         : 10 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 31, 39
 Attributes       : ........ ........ x.x....x x..x....   .....x.. ..x..... ........ ........ 
                  : ..x..... ......x. ...x..x. ....x...   ........ .x...... xx..x... ....x... 
@@ -10804,7 +10508,6 @@ School           : Physical
 Spell Type       : None
 Range            : 100 yards
 Duration         : 8 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 3 maximum
 Proc Chance      : 101%
 Attributes       : ....x..x ........ ........ ........   ........ ........ ........ ........ 
@@ -10850,7 +10553,6 @@ Velocity         : 80 yards/sec
 Requires weapon  : Polearm
 Cooldown         : 10 seconds
 Category         : 1226
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), Flayer's Mark (324156 effect#1)
 Family Flags     : 11, 106, 121
 Attributes       : ....x... ........ x....... ........   ........ .x...... ........ ........ 
@@ -10872,7 +10574,6 @@ Class            : Beast Mastery Hunter
 School           : Nature
 Spell Type       : None
 Spell Level      : 11
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10891,7 +10592,6 @@ Class            : Marksmanship Hunter
 School           : Nature
 Spell Type       : None
 Spell Level      : 11
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10912,7 +10612,6 @@ Class            : Beast Mastery Marksmanship Hunter
 School           : Nature
 Spell Type       : None
 Spell Level      : 13
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10931,7 +10630,6 @@ Class            : Survival Hunter
 School           : Nature
 Spell Type       : None
 Spell Level      : 11
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10952,7 +10650,6 @@ Class            : Marksmanship Hunter
 School           : Nature
 Spell Type       : None
 Spell Level      : 28
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10971,7 +10668,6 @@ Class            : Marksmanship Hunter
 School           : Nature
 Spell Type       : None
 Spell Level      : 49
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10992,7 +10688,6 @@ Class            : Survival Hunter
 School           : Nature
 Spell Type       : None
 Spell Level      : 49
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11017,7 +10712,6 @@ Class            : Marksmanship Hunter
 School           : Nature
 Spell Type       : None
 Spell Level      : 17
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11042,7 +10736,6 @@ Range            : 50000 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Duration         : 60 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ x...x... ........   ..x..... .....x.. .x...... ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11064,7 +10757,6 @@ Class            : Hunter
 School           : Physical
 Spell Type       : None
 Spell Level      : 1
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Proc Flags       : ........ x....... ........ ........ 
                  : Yellow Ranged
@@ -11090,7 +10782,6 @@ School           : Physical
 Spell Type       : None
 Spell Level      : 1
 Duration         : 3 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Proc Flags       : ........ x....... ........ ........ 
                  : Yellow Ranged
@@ -11113,7 +10804,6 @@ Class            : Hunter
 School           : Physical
 Spell Type       : None
 Spell Level      : 1
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -11134,7 +10824,6 @@ Spell Type       : None
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 8 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -11156,7 +10845,6 @@ Spell Level      : 10
 Range            : 50 yards
 GCD              : 1.5 seconds
 Cooldown         : 60 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), 
 Family Flags     : 1, 106
 Attributes       : ....x... ........ x.x..x.. ........   ........ .xx..... ........ ..xxx... 
@@ -11183,7 +10871,6 @@ Spell Type       : Melee
 Spell Level      : 10
 Range            : 50 yards
 Duration         : 18 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Hunter (137014 effect#2), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), 
 Family Flags     : 1, 2, 106
 Attributes       : ....x... ........ x....... ........   ........ .x...... ........ ........ 
@@ -11213,7 +10900,6 @@ Velocity         : 50 yards/sec
 Duration         : 20 seconds
 Requires weapon  : Bow, Gun, Polearm, Crossbow
 Cooldown         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Mechanic         : Bleed
 Affecting spells : Hunter (137014 effect#3), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#3), Mastery: Spirit Bond (263135 effect#1), 
 Family Flags     : 1, 55, 74, 121
@@ -11239,7 +10925,6 @@ School           : Shadow
 Spell Type       : None
 Range            : 40 yards
 Duration         : 12 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 101%
 Proc Flags       : ........ x....... ........ ........ 
@@ -11268,8 +10953,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 30 yards/sec
 Cooldown         : 45 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-                 : 1032: Necrotic Barrage (339129 effect#1)
+Labels           : 1032: Necrotic Barrage (339129 effect#1)
 Affecting spells : Hunter (137014 effect#3), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#3)
 Family Flags     : 1, 74, 121
 Attributes       : ........ ........ ........ ........   ........ .x...... ........ ........ 
@@ -11297,8 +10981,7 @@ Class            : Hunter
 School           : Shadow
 Spell Type       : Ranged
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-                 : 1032: Necrotic Barrage (339129 effect#1)
+Labels           : 1032: Necrotic Barrage (339129 effect#1)
 Mechanic         : Bleed
 Affecting spells : Hunter (137014 effect#3), Mastery: Sniper Training (193468 effect#2), Aspect of the Wild (193530 effect#3)
 Family Flags     : 1, 74
@@ -11323,7 +11006,6 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 30 yards/sec
 Cooldown         : 120 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Hunter (137014 effect#3), Aspect of the Wild (193530 effect#3)
 Family Flags     : 1
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
@@ -11415,7 +11097,6 @@ School           : Nature
 Spell Type       : None
 Range            : 100 yards
 Duration         : 15 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Internal Cooldown: 0.5 seconds
 Proc Chance      : 101%
 Proc Flags       : ....x... x...x... x....... ........ 
@@ -11442,7 +11123,6 @@ Name             : Markman's Advantage (id=339264) [Spell Family (9), Passive, H
 Class            : Hunter
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Conduit Id       : 157
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -11462,7 +11142,6 @@ Name             : Brutal Projectiles (id=339924) [Spell Family (9), Passive, Hi
 Class            : Hunter
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Conduit Id       : 189
 Proc Flags       : ......x. ........ ........ ........ 
@@ -11488,7 +11167,6 @@ School           : Physical
 Spell Type       : None
 Range            : 40 yards
 Duration         : 15 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11507,7 +11185,6 @@ Class            : Hunter
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 20 maximum
 Proc Chance      : 101%
 Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 

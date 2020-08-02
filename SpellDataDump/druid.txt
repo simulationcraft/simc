@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35360 shadowlands-BETA (, no-networking)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35360 shadowlands-BETA (hotfix 2020-08-02/35360, no-networking)
 
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Guardian Druid
@@ -8,7 +8,6 @@ Spell Level      : 28
 GCD              : 1.5 seconds
 Duration         : 3 seconds
 Cooldown         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Mechanic         : Incapacitate
 Affecting spells : Druid (137009 effect#4), Starfall (191034 effect#2), Astral Influence (197524 effect#3), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#7)
@@ -36,7 +35,6 @@ Range            : 35 yards
 Cast Time        : 1.7 seconds
 GCD              : 1.5 seconds
 Duration         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Mechanic         : Root
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
@@ -71,8 +69,7 @@ GCD              : 1.5 seconds
 Duration         : 8 seconds
 Cooldown         : 180 seconds
 Category         : 46
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-                 : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
 Category Cooldown: 180 seconds
 Affecting spells : Starfall (191034 effect#2), Inner Peace (197073 effect#1), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), 
 Family Flags     : 53
@@ -103,7 +100,6 @@ Spell Type       : Magic
 Spell Level      : 5
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Affecting spells : Metamorphosis Rune (23724 effect#1), Cheaper Druid Shapeshifting (38314 effect#1), Druid (137009 effect#4), Starfall (191034 effect#2), Stellar Drift (202461 effect#1)
 Family Flags     : 31, 96
@@ -149,7 +145,6 @@ Spell Level      : 10
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 12 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Incarnation: Tree of Life (5420 effect#1), Bear Form (5487 effect#8), Nimble Healing Touch (24542 effect#2), Blessing of Lower City (37878 effect#1), Ironbark (102342 effect#2), Heart of the Wild (108294 effect#1), Restoration Druid (137012 effect#1), Germination (155675 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Restoration Affinity (197492 effect#3), Astral Influence (197524 effect#1), Flourish (197721 effect#2), Stellar Drift (202461 effect#1), Essence of G'Hanir (208253 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Rejuvenation (231040 effect#1), Autumn Leaves (287247 effect#1), Ravenous Frenzy (323546 effect#1), Adaptive Swarm (325748 effect#2), Druid Runecarve 3 (338657 effect#2), 
 Family Flags     : 4, 118
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -182,7 +177,6 @@ School           : Physical
 Spell Type       : Magic
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Affecting spells : Metamorphosis Rune (23724 effect#1), Cheaper Druid Shapeshifting (38314 effect#1), Druid (137009 effect#4), Starfall (191034 effect#2), Stellar Drift (202461 effect#1)
 Family Flags     : 46
@@ -213,7 +207,6 @@ Spell Level      : 20
 Range            : 5 yards
 GCD              : 1 seconds
 Duration         : 4 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x00000001
 Mechanic         : Bleed
 Affecting spells : Tiger's Fury (5217 effect#1), Berserk (50334 effect#2), Savage Roar (62071 effect#1), Mastery: Razor Claws (77493 effect#1), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Heart of the Wild (108292 effect#1), Feral Druid (137011 effect#1), Restoration Druid (137012 effect#5), Bloodtalons (145152 effect#1), Soul of the Forest (158476 effect#3), Bloodletting (165699 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Feral Affinity (197490 effect#6), Astral Influence (197524 effect#1), Feral Affinity (202155 effect#6), Feral Affinity (202157 effect#6), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Item - Druid T20 Feral 4P Bonus (242235 effect#1), Gushing Lacerations (278509 effect#2), Berserk (279526 effect#1), Ravenous Frenzy (323546 effect#1), Adaptive Swarm (325733 effect#2), Lone Empowerment (338142 effect#1), Druid Runecarve 3 (338657 effect#1), 
@@ -248,7 +241,6 @@ Class            : Druid
 School           : Nature
 Spell Type       : None
 Spell Level      : 1
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Internal Cooldown: 0.75 seconds
 Proc Chance      : 100%
 Stance Mask      : 0x00000010
@@ -282,7 +274,6 @@ Resource         : 35 Energy (3) (id=143)
 Spell Level      : 10
 Range            : 5 yards
 GCD              : 1 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x00000001
 Mechanic         : Bleed
 Affecting spells : Tiger's Fury (5217 effect#1), Berserk (50334 effect#2), Savage Roar (62071 effect#1), Mastery: Razor Claws (77493 effect#1), Incarnation: King of the Jungle (102543 effect#1), Prowl (102547 effect#5), Berserk (106951 effect#1), Heart of the Wild (108292 effect#1), Feral Druid (137011 effect#1), Restoration Druid (137012 effect#5), Bloodletting (165699 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Feral Affinity (197490 effect#5), Astral Influence (197524 effect#1), Feral Affinity (202155 effect#5), Feral Affinity (202157 effect#5), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Untamed Ferocity (273338 effect#2), Blood Mist (279524 effect#2), Berserk (279526 effect#1), Ravenous Frenzy (323546 effect#1), Adaptive Swarm (325733 effect#2), Lone Empowerment (338142 effect#1), Druid Runecarve 3 (338657 effect#1), 
@@ -319,7 +310,6 @@ GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 120 seconds
 Category         : 44
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 120 seconds
 Affecting spells : Cat Form (768 effect#5), Starfall (191034 effect#2), Stellar Drift (202461 effect#1)
 Family Flags     : 67
@@ -347,7 +337,6 @@ Range            : 30 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Duration         : 40 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Stance Mask      : 0x40000002
 Mechanic         : Sleep
@@ -376,7 +365,6 @@ Spell Level      : 19
 Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 8 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Cat Form (768 effect#2), Bear Form (5487 effect#2), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1)
 Family Flags     : 111
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -402,7 +390,6 @@ Spell Level      : 39
 Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 10 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Cat Form (768 effect#2), Bear Form (5487 effect#2), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1)
 Family Flags     : 49
 Attributes       : ........ ........ x....... ........   ........ ........ .x...... ........ 
@@ -421,7 +408,6 @@ Name             : Cat Form (id=3025) [Spell Family (7), Passive, Hidden]
 Class            : Druid
 School           : Nature
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x00000001
 Attributes       : ....x.xx ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -456,7 +442,6 @@ Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x40000000
 Affecting spells : Moonkin Form (24858 effect#9), Eclipse (Solar) (48517 effect#1), Berserk (50334 effect#2), Incarnation: Chosen of Elune (102560 effect#1), Heart of the Wild (108291 effect#1), Restoration Druid (137012 effect#5), Balance Druid (137013 effect#1), Item - Druid T17 Balance 2P Bonus (165433 effect#1), Celestial Fury (180719 effect#2), Starfall (191034 effect#2), Thrash (192090 effect#2), Celestial Alignment (194223 effect#1), Astral Influence (197524 effect#1), Astral Power (197911 effect#2), Stellar Drift (202461 effect#1), Promise of Elune, the Moon Goddess (208283 effect#2), Ekowraith, Creator of Worlds (210667 effect#1), Solar Empowerment (211089 effect#1), Dawning Sun (276154 effect#1), Ravenous Frenzy (323546 effect#1), Lone Empowerment (338142 effect#1), Druid Runecarve 3 (338657 effect#1), Druid Balance Runecarve 3 (339943 effect#1)
 Family Flags     : 0, 18
@@ -483,7 +468,6 @@ GCD              : 1.5 seconds
 Duration         : 4 seconds
 Cooldown         : 60 seconds
 Category         : 32
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 60 seconds
 Proc Chance      : 101%
 Mechanic         : Stun
@@ -509,7 +493,6 @@ Spell Type       : None
 Spell Level      : 17
 Duration         : Aura (infinite)
 Cooldown         : 6 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
@@ -543,7 +526,6 @@ Spell Type       : None
 Spell Level      : 12
 Duration         : 10 seconds
 Cooldown         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Wildcat Celerity (184877 effect#1), Starfall (191034 effect#2), Predator (202021 effect#1), Stellar Drift (202461 effect#1), Tiger's Fury (231055 effect#1), Jungle Fury (274425 effect#2)
 Family Flags     : 75
 Attributes       : ....x... ........ ..x..... ........   .....x.. ..x..... ........ ........ 
@@ -578,7 +560,6 @@ Resource         : 40 Energy (3) (id=231)
 Spell Level      : 5
 Range            : 5 yards
 GCD              : 1 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x00000001
 Affecting spells : Tiger's Fury (5217 effect#1), Berserk (50334 effect#2), Savage Roar (62071 effect#1), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Heart of the Wild (108292 effect#1), Clearcasting (135700 effect#1), Feral Druid (137011 effect#1), Restoration Druid (137012 effect#5), Starfall (191034 effect#2), Thrash (192090 effect#2), Feral Affinity (197490 effect#5), Astral Influence (197524 effect#1), Feral Affinity (202155 effect#5), Feral Affinity (202157 effect#5), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Untamed Ferocity (273338 effect#2), Berserk (279526 effect#1), Ravenous Frenzy (323546 effect#1), Lone Empowerment (338142 effect#1), Druid Runecarve 3 (338657 effect#1), 
 Family Flags     : 15, 98
@@ -628,7 +609,6 @@ Name             : Incarnation: Tree of Life (desc=Passive) (id=5420) [Spell Fam
 Class            : Druid
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x00000002
 Attributes       : ......xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -667,7 +647,6 @@ Class            : Druid
 School           : Nature
 Spell Type       : None
 Spell Level      : 1
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x00000008
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -691,7 +670,6 @@ Spell Type       : Magic
 Spell Level      : 8
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Affecting spells : Metamorphosis Rune (23724 effect#1), Cheaper Druid Shapeshifting (38314 effect#1), Druid (137009 effect#4), Starfall (191034 effect#2), Stellar Drift (202461 effect#1)
 Family Flags     : 30, 97
@@ -745,7 +723,6 @@ Range            : 30 yards
 Duration         : 3 seconds
 Cooldown         : 8 seconds
 Category         : 82
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 8 seconds
 Proc Chance      : 101%
 Stance Mask      : 0x00000010
@@ -776,7 +753,6 @@ Resource         : 40 Rage (1) (id=280)
 Spell Level      : 10
 Range            : 5 yards
 GCD              : 1.5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x00000010
 Affecting spells : Berserk (50334 effect#2), Druid (137009 effect#3), Guardian Druid (137010 effect#1), Item - Druid T17 Guardian 2P Bonus (165410 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Guardian's Wrath (278511 effect#2), Ravenous Frenzy (323546 effect#1), Lone Empowerment (338142 effect#1), Druid Runecarve 3 (338657 effect#1), 
 Family Flags     : 11, 77
@@ -802,7 +778,6 @@ Resource         : 6% Base Mana (0) (id=11196) w/ Restoration Druid (id=137012)
 Spell Level      : 2
 Range            : 40 yards
 GCD              : 1.5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x40000002
 Affecting spells : Bear Form (5487 effect#2), Guardian Druid (137010 effect#6), Balance Druid (137013 effect#4), Lunar Inspiration (155627 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Feral Overrides Passive (197692 effect#1), Astral Power (197911 effect#3), Twin Moonfire (200818 effect#2), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Galactic Guardian (213708 effect#1), Solar Solstice (252767 effect#1), Long Night (269379 effect#2), Twin Moons (279620 effect#2), Moonfire (328023 effect#1)
 Family Flags     : 1, 21, 103
@@ -835,7 +810,6 @@ Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Duration         : 12 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Cat Form (3025 effect#4), Incarnation: Tree of Life (5420 effect#1), Clearcasting (16870 effect#1), Nimble Healing Touch (24542 effect#2), Blessing of Lower City (37878 effect#1), Predatory Swiftness (69369 effect#1), Incarnation: Tree of Life (81097 effect#1), Ironbark (102342 effect#2), Heart of the Wild (108294 effect#1), Nature's Swiftness (132158 effect#1), Guardian Druid (137010 effect#3), Feral Druid (137011 effect#4), Restoration Druid (137012 effect#1), Balance Druid (137013 effect#5), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Flourish (197721 effect#2), Stellar Drift (202461 effect#1), Abundance (207640 effect#1), Essence of G'Hanir (208253 effect#1), Power of Elune, the Moon Goddess (208284 effect#2), Ekowraith, Creator of Worlds (210667 effect#1), Rampant Growth (278515 effect#1), Ravenous Frenzy (323546 effect#1), Adaptive Swarm (325748 effect#2), Druid Runecarve 3 (338657 effect#2), 
 Family Flags     : 6, 118
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -862,7 +836,6 @@ Class            : Feral Druid
 School           : Physical
 Spell Type       : Magic
 Spell Level      : 33
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ..x..... ........ ........ ........ 
                  : White Melee
@@ -888,7 +861,6 @@ Spell Type       : Magic
 Spell Level      : 10
 Range            : 100 yards
 Duration         : 15 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 1 maximum
 Proc Chance      : 101%
 Affecting spells : Item - Druid T18 Feral 2P Bonus (185805 effect#1), Starfall (191034 effect#2), Stellar Drift (202461 effect#1), Moment of Clarity (236068 effect#1), 
@@ -919,7 +891,6 @@ Class            : Guardian Druid
 School           : Physical
 Spell Type       : None
 Spell Level      : 27
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Starfall (191034 effect#2), Stellar Drift (202461 effect#1), Druid Runecarve 1 (338608 effect#1)
 Family Flags     : 109
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
@@ -940,7 +911,6 @@ Class            : Feral Druid
 School           : Physical
 Spell Type       : None
 Spell Level      : 17
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x00000001
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -961,7 +931,6 @@ School           : Physical
 Spell Type       : None
 Spell Level      : 18
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 3 maximum
 Proc Chance      : 101%
 Stance Mask      : 0x00000001
@@ -984,7 +953,6 @@ Class            : Feral Druid
 School           : Physical
 Spell Type       : None
 Spell Level      : 49
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 1 maximum
 Proc Chance      : 101%
 Proc Flags       : ....x... x.x.x.x. x....... ........ 
@@ -1011,7 +979,6 @@ Class            : Druid
 School           : Physical
 Spell Type       : Magic
 Duration         : 6 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x .....x.. ........   ........ ........ ........ ........ 
@@ -1036,7 +1003,6 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Charges          : 1 (15 seconds cooldown)
 Category         : 1576: Item - Druid T17 Restoration 2P Bonus (165437 effect#1)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x00000002
 Affecting spells : Incarnation: Tree of Life (5420 effect#1), Blessing of Lower City (37878 effect#1), Heart of the Wild (108294 effect#1), Restoration Druid (137012 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Restoration Affinity (197492 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effect#1), Druid Runecarve 3 (338657 effect#2), 
 Family Flags     : 33, 118
@@ -1063,7 +1029,6 @@ Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Cooldown         : 600 seconds
 Category         : 26
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 600 seconds
 Affecting spells : Cat Form (3025 effect#4), Bear Form (5487 effect#2), Cheaper Druid Shapeshifting (38314 effect#1), Nature's Swiftness (132158 effect#1), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Rebirth (328024 effect#1)
 Family Flags     : 28
@@ -1084,7 +1049,6 @@ Class            : Druid
 School           : Physical
 Spell Type       : None
 Spell Level      : 1
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x00000001
 Attributes       : ....x.xx ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1122,7 +1086,6 @@ Class            : Druid
 School           : Nature
 Spell Type       : None
 Spell Level      : 1
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -1166,7 +1129,6 @@ Resource         : 1 - 5 Combo Points (4) (id=10587)
 Spell Level      : 7
 Range            : 5 yards
 GCD              : 1 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x00000001
 Affecting spells : Tiger's Fury (5217 effect#1), Berserk (50334 effect#2), Savage Roar (62071 effect#1), Mastery: Razor Claws (77493 effect#1), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Heart of the Wild (108292 effect#1), Feral Druid (137011 effect#1), Restoration Druid (137012 effect#5), Bloodtalons (145152 effect#2), Soul of the Forest (158476 effect#2), Starfall (191034 effect#2), Thrash (192090 effect#2), Feral Affinity (197490 effect#4), Astral Influence (197524 effect#1), Sabertooth (202031 effect#1), Feral Affinity (202155 effect#4), Feral Affinity (202157 effect#4), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Apex Predator (252752 effect#1), Berserk (279526 effect#1), Ravenous Frenzy (323546 effect#1), Lone Empowerment (338142 effect#1), Druid Runecarve 3 (338657 effect#1), Apex Predator's Craving (339140 effect#1), 
 Family Flags     : 98, 108
@@ -1202,7 +1164,6 @@ Spell Level      : 28
 Range            : 5 yards
 GCD              : 1 seconds
 Cooldown         : 20 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x00000001
 Affecting spells : Tiger's Fury (5217 effect#1), Berserk (50334 effect#2), Maim Damage (61252 effect#1), Savage Roar (62071 effect#1), Mastery: Razor Claws (77493 effect#1), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Heart of the Wild (108292 effect#1), Feral Druid (137011 effect#1), Soul of the Forest (158476 effect#2), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Fiery Red Maimers (212875 effect#2), Fiery Red Maimers (236757 effect#2), Berserk (279526 effect#1), Ravenous Frenzy (323546 effect#1), Lone Empowerment (338142 effect#1), Druid Runecarve 3 (338657 effect#1), 
 Family Flags     : 39, 98
@@ -1236,7 +1197,6 @@ Spell Type       : Magic
 Spell Level      : 23
 Duration         : 8 seconds
 Cooldown         : 60 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, Generic Heal Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken
@@ -1273,7 +1233,6 @@ Duration         : 3 seconds
 Cooldown         : 1 seconds
 Charges          : 1 (36 seconds cooldown)
 Category         : 1568: Berserk (50334 effect#7), Incarnation: Guardian of Ursoc (102558 effect#3), Heart of the Wild (108293 effect#3), Druid (137009 effect#2), Frenzied Regeneration (273048 effect#1)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x00000010
 Affecting spells : Berserk (50334 effect#1), Incarnation: Guardian of Ursoc (102558 effect#1), Druid (137009 effect#3), Starfall (191034 effect#2), Stellar Drift (202461 effect#1), Natural Defenses (211160 effect#1), Frenzied Regeneration (301768 effect#1), Adaptive Swarm (325748 effect#2)
 Family Flags     : 62
@@ -1300,7 +1259,6 @@ Spell Type       : Magic
 Spell Level      : 20
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Flags       : ...x.x.x .x...x.. .x...... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken
 Affecting spells : Metamorphosis Rune (23724 effect#1), Cheaper Druid Shapeshifting (38314 effect#1), Druid (137009 effect#4), Feral Druid (137011 effect#3), Starfall (191034 effect#2), Stellar Drift (202461 effect#1), Moonkin Form (231042 effect#1)
@@ -1357,7 +1315,6 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 12 seconds
 Cooldown         : 180 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x40000002
 Affecting spells : Starfall (191034 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1)
 Family Flags     : 79
@@ -1386,7 +1343,6 @@ Range            : 40 yards
 Max Targets      : 1
 GCD              : 1.5 seconds
 Duration         : 15 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 1 maximum
 Proc Chance      : 100%
 Stance Mask      : 0x00000002
@@ -1417,7 +1373,6 @@ School           : Nature
 Spell Type       : Magic
 Spell Level      : 26
 Range            : 40 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Incarnation: Tree of Life (5420 effect#1), Blessing of Lower City (37878 effect#1), Heart of the Wild (108294 effect#1), Restoration Druid (137012 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), The Dark Titan's Advice (207271 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effect#1), Adaptive Swarm (325748 effect#2), Druid Runecarve 3 (338657 effect#2), The Dark Titan's Lesson (338831 effect#1)
 Family Flags     : 36, 118
 Attributes       : ........ ........ ........ x..x....   .....x.. ..x..... ........ ........ 
@@ -1443,7 +1398,6 @@ Range            : 20 yards
 Cast Time        : 1.7 seconds
 GCD              : 1.5 seconds
 Duration         : 6 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Stance Mask      : 0x40000002
 Mechanic         : Banish
@@ -1475,7 +1429,6 @@ GCD              : 1.5 seconds
 Duration         : Aura (infinite)
 Cooldown         : 180 seconds
 Category         : 1333
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 180 seconds
 Proc Chance      : 101%
 Affecting spells : Metamorphosis Rune (23724 effect#1), Cheaper Druid Shapeshifting (38314 effect#1), Incarnation (117679 effect#1), Druid (137009 effect#4), Wildcat Celerity (184877 effect#1), Starfall (191034 effect#2), Stellar Drift (202461 effect#1)
@@ -1509,7 +1462,6 @@ Spell Level      : 8
 Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 6 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x00000010
 Affecting spells : Berserk (50334 effect#1), Gore (93622 effect#1), Incarnation: Guardian of Ursoc (102558 effect#1), Druid (137009 effect#3), Guardian Druid (137010 effect#1), Restoration Druid (137012 effect#5), Soul of the Forest (158477 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effect#1), Lone Empowerment (338142 effect#1), Druid Runecarve 3 (338657 effect#1), 
 Family Flags     : 38, 77
@@ -1588,7 +1540,6 @@ Name             : Force of Nature (id=37846)
 Class            : Druid
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -1630,7 +1581,6 @@ GCD              : 1.5 seconds
 Duration         : 7 seconds
 Cooldown         : 10 seconds
 Category         : 1237
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 10 seconds
 Affecting spells : Incarnation: Tree of Life (5420 effect#1), Ironbark (102342 effect#2), Heart of the Wild (108294 effect#1), Restoration Druid (137012 effect#1), Nature's Wisdom (167715 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Restoration Affinity (197492 effect#5), Astral Influence (197524 effect#1), Flourish (197721 effect#2), Stellar Drift (202461 effect#1), Essence of G'Hanir (208253 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effect#1), Adaptive Swarm (325748 effect#2), Wild Growth (328025 effect#1), Druid Runecarve 3 (338657 effect#2), 
 Family Flags     : 58, 118
@@ -1657,7 +1607,6 @@ Class            : Feral Druid
 School           : Physical
 Spell Type       : None
 Spell Level      : 37
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
@@ -1679,7 +1628,6 @@ Class            : Druid
 School           : Physical
 Spell Type       : None
 Duration         : 10 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Soul of the Forest (114107 effect#1), Starfall (191034 effect#2), Stellar Drift (202461 effect#1), Mastery: Total Eclipse (326085 effect#1), Eclipse (328021 effect#1)
 Family Flags     : 59
 Attributes       : ........ ........ ........ .......x   ........ ..x..... ........ ........ 
@@ -1715,7 +1663,6 @@ Class            : Druid
 School           : Physical
 Spell Type       : None
 Duration         : 10 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Soul of the Forest (114107 effect#1), Starfall (191034 effect#2), Stellar Drift (202461 effect#1), Mastery: Total Eclipse (326085 effect#1), Eclipse (328021 effect#1)
 Family Flags     : 42
 Attributes       : ........ ........ ........ .......x   ........ ..x..... ........ ........ 
@@ -1751,7 +1698,6 @@ Class            : Druid
 School           : Physical
 Spell Type       : None
 Duration         : 6 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Starfall (191034 effect#2), Stellar Drift (202461 effect#1), Dual Determination (208228 effect#3)
 Family Flags     : 71
 Attributes       : .......x ........ ........ ........   ........ ..x....x ........ ....x... 
@@ -1779,7 +1725,6 @@ GCD              : 1.5 seconds
 Duration         : 15 seconds
 Cooldown         : 180 seconds
 Category         : 1208
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 180 seconds
 Affecting spells : Starfall (191034 effect#2), Stellar Drift (202461 effect#1), Legacy of the Sleeper (339062 effect#1), 
 Family Flags     : 84
@@ -1828,7 +1773,6 @@ Resource         : 16% Base Mana (0) (id=2290)
 Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Incarnation: Tree of Life (5420 effect#1), Heart of the Wild (108294 effect#1), Restoration Druid (137012 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Stellar Drift (202461 effect#1), Ravenous Frenzy (323546 effect#1), Druid Runecarve 3 (338657 effect#2), 
 Family Flags     : 81, 118
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -1853,7 +1797,6 @@ Spell Level      : 1
 Range            : 100 yards
 GCD              : 1 seconds
 Duration         : 6 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Starfall (191034 effect#2), Stellar Drift (202461 effect#1), Berserk (279526 effect#1)
 Family Flags     : 60
 Attributes       : ....x... ........ ..x..... .....x..   .....x.. ..x..... ......x. ...x.... 
@@ -1886,7 +1829,6 @@ Class            : Druid
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1926,7 +1868,6 @@ Spell Type       : None
 Cast Time        : 1.5 seconds
 Cooldown         : 1.5 seconds
 Category         : 133
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 1.5 seconds
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1947,7 +1888,6 @@ School           : Nature
 Spell Type       : None
 Range            : 5 yards
 Duration         : 12 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 1 maximum
 Proc Chance      : 101%
 Triggered by     : Infected Wounds (48484)
@@ -1994,8 +1934,7 @@ Duration         : 6 seconds
 Cooldown         : 6 seconds
 Charges          : 1 (180 seconds cooldown)
 Category         : 1469: Survival of the Fittest (203965 effect#2), Dual Determination (208228 effect#1), Dual Determination (208228 effect#2), Strive for Perfection (296320 effect#7), Strive for Perfection (296320 effect#8), Strive for Perfection (299367 effect#7), Strive for Perfection (299369 effect#7), Survival Instincts (328767 effect#1)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-                 : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
 Affecting spells : Starfall (191034 effect#2), Stellar Drift (202461 effect#1), Dual Determination (208228 effect#3)
 Family Flags     : 71
 Attributes       : ....x... ........ ........ ........   ........ ..x..... ........ ........ 
@@ -2020,7 +1959,6 @@ Spell Type       : Magic
 Spell Level      : 1
 Range            : 15 yards
 Duration         : 6 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Starfall (191034 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), 
 Triggered by     : Typhoon (132469)
 Family Flags     : 56
@@ -2045,7 +1983,6 @@ Class            : Druid
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x00000001
 Affecting spells : Starfall (191034 effect#2), Stellar Drift (202461 effect#1)
 Family Flags     : 80
@@ -2140,7 +2077,6 @@ Class            : Druid
 School           : Physical
 Spell Type       : Magic
 Duration         : 12 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 1 maximum
 Proc Chance      : 101%
 Affecting spells : Item - Druid WoD PvP Restoration 4P Bonus (165707 effect#2), Starfall (191034 effect#2), Stellar Drift (202461 effect#1), Ailuro Pouncers (208209 effect#1)
@@ -2174,7 +2110,6 @@ Class            : Feral Druid
 School           : Physical
 Spell Type       : None
 Spell Level      : 10
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2201,7 +2136,6 @@ Class            : Restoration Druid
 School           : Physical
 Spell Type       : None
 Spell Level      : 10
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2222,7 +2156,6 @@ Spell Type       : Melee
 Range            : 8 yards
 GCD              : 1.5 seconds
 Cooldown         : 6 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x00000010
 Mechanic         : Bleed
 Affecting spells : Bear Form (5487 effect#7), Berserk (50334 effect#1), Incarnation: King of the Jungle (102543 effect#1), Incarnation: Guardian of Ursoc (102558 effect#1), Berserk (106951 effect#1), Druid (137009 effect#3), Guardian Druid (137010 effect#1), Restoration Druid (137012 effect#5), Bloodletting (165699 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Luffa Wrappings (208681 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Berserk (279526 effect#1), Sharpened Claws (279943 effect#1), Ravenous Frenzy (323546 effect#1), Lone Empowerment (338142 effect#1), Druid Runecarve 3 (338657 effect#1), Druid Guardian Runecarve 1 (339060 effect#1), 
@@ -2253,7 +2186,6 @@ Spell Level      : 12
 Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 45 yards/sec
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x40000000
 Affecting spells : Moonkin Form (24858 effect#9), Eclipse (Solar) (48517 effect#3), Eclipse (Lunar) (48518 effect#3), Berserk (50334 effect#2), Incarnation: Chosen of Elune (102560 effect#1), Heart of the Wild (108291 effect#1), Restoration Druid (137012 effect#5), Balance Druid (137013 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Celestial Alignment (194223 effect#1), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Oneth's Intuition (209406 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), The Emerald Dreamcatcher (224706 effect#1), Item - Druid T20 Balance 2P Bonus (242231 effect#2), Item - Druid  T21 Balance 2P Bonus (251803 effect#2), Arcanic Pulsar (287773 effect#2), Ravenous Frenzy (323546 effect#1), Starsurge (328022 effect#1), Lone Empowerment (338142 effect#1), Druid Runecarve 3 (338657 effect#1), Oneth's Clear Vision (339797 effect#1), Druid Balance Runecarve 3 (339943 effect#1), Druid Balance Runecarve 3 (339946 effect#1), Timeworn Dreamcatcher (340049 effect#1)
 Family Flags     : 18, 89
@@ -2281,7 +2213,6 @@ Range            : 40 yards
 Duration         : 8 seconds
 Cooldown         : 60 seconds
 Category         : 1420
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 60 seconds
 Stance Mask      : 0x40000000
 Affecting spells : Starfall (191034 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1)
@@ -2308,7 +2239,6 @@ Class            : Balance Druid
 School           : Physical
 Spell Type       : None
 Spell Level      : 11
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Internal Cooldown: 0.2 seconds
 Proc Chance      : 100%
 Proc Flags       : ........ ........ x....... ........ 
@@ -2343,7 +2273,6 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x00000010
 Affecting spells : Berserk (50334 effect#2), Druid (137009 effect#4), Guardian Druid (137010 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effect#1), Lone Empowerment (338142 effect#1), Druid Runecarve 3 (338657 effect#1), 
 Family Flags     : 77, 123
@@ -2369,7 +2298,6 @@ Class            : Druid
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2387,7 +2315,6 @@ Name             : Incarnation: Tree of Life (desc=Passive) (id=81097) [Spell Fa
 Class            : Druid
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2407,7 +2334,6 @@ Class            : Druid
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : .......x x....... ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2427,7 +2353,6 @@ Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Starfall (191034 effect#2), Stellar Drift (202461 effect#1)
 Family Flags     : 88
 Attributes       : ........ ........ ........ x..x.x..   .....x.. ..x..... ........ ........ 
@@ -2450,7 +2375,6 @@ School           : Nature
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Incarnation: Tree of Life (5420 effect#1), Ironbark (102342 effect#2), Heart of the Wild (108294 effect#1), Restoration Druid (137012 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Stellar Drift (202461 effect#1), Blossoming Efflorescence (242315 effect#1), Ravenous Frenzy (323546 effect#1), Adaptive Swarm (325748 effect#2), Druid Runecarve 3 (338657 effect#2), 
 Family Flags     : 65, 118
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
@@ -2471,7 +2395,6 @@ Class            : Restoration Druid
 School           : Physical
 Spell Type       : None
 Spell Level      : 27
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2494,7 +2417,6 @@ Class            : Guardian Druid
 School           : Physical
 Spell Type       : None
 Spell Level      : 27
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x00000010
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2518,7 +2440,6 @@ Class            : Feral Druid
 School           : Physical
 Spell Type       : None
 Spell Level      : 27
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2541,7 +2462,6 @@ Class            : Balance Druid
 School           : Physical
 Spell Type       : None
 Spell Level      : 27
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2569,7 +2489,6 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Charges          : 1 (8 seconds cooldown)
 Category         : 1510
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Cat Form (768 effect#2), Bear Form (5487 effect#2), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1)
 Family Flags     : 111
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -2636,7 +2555,6 @@ Resource         : 12% Base Mana (0) (id=11197) w/ Restoration Druid (id=137012)
 Spell Level      : 22
 Range            : 40 yards
 GCD              : 1.5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x40000002
 Affecting spells : Eclipse (Solar) (48517 effect#3), Restoration Druid (137012 effect#5), Balance Druid (137013 effect#4), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Astral Power (197911 effect#3), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Solar Solstice (252767 effect#1), High Noon (278505 effect#2), High Noon (279070 effect#1), Adaptive Swarm (325733 effect#2), Moonfire (328023 effect#1), Druid Balance Runecarve 3 (339943 effect#1)
 Family Flags     : 1, 102
@@ -2664,7 +2582,6 @@ Class            : Druid
 School           : Physical
 Spell Type       : None
 Duration         : 10 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
@@ -2693,7 +2610,6 @@ Spell Type       : None
 Spell Level      : 26
 Range            : 100 yards
 Duration         : 4 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Mechanic         : Interrupt
 Affecting spells : Cat Form (3025 effect#4), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Druid (137009 effect#4), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Berserk (279526 effect#1)
 Family Flags     : 25
@@ -2734,7 +2650,6 @@ Spell Type       : Magic
 Spell Level      : 16
 Range            : 100 yards
 Duration         : 5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x40000000
 Affecting spells : Cat Form (768 effect#2), Bear Form (5487 effect#2), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1)
 Triggered by     : Solar Beam (78675)
@@ -2761,7 +2676,6 @@ Spell Level      : 12
 Range            : 40 yards
 Duration         : 12 seconds
 Cooldown         : 90 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, Generic Heal Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken
@@ -2793,7 +2707,6 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 30 seconds
 Cooldown         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.x .x.x.... .......x 
@@ -2820,7 +2733,6 @@ Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 8 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Incarnation: Tree of Life (5420 effect#1), Bear Form (5487 effect#8), Ironbark (102342 effect#2), Heart of the Wild (108294 effect#1), Druid (137009 effect#4), Restoration Druid (137012 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Flourish (197721 effect#2), Stellar Drift (202461 effect#1), Essence of G'Hanir (208253 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effect#1), Adaptive Swarm (325748 effect#2), Druid Runecarve 3 (338657 effect#2), 
 Triggered by     : Cenarion Ward (102351)
 Family Flags     : 106, 118
@@ -2848,7 +2760,6 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 30 seconds
 Cooldown         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Mechanic         : Root
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
@@ -2876,7 +2787,6 @@ Range            : 5 - 25 yards
 Duration         : 0.5 seconds
 Cooldown         : 15 seconds
 Category         : 1205
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 15 seconds
 Affecting spells : Cat Form (3025 effect#3), Travel Form (Passive) (5419 effect#2), Aquatic Form Passive (5421 effect#3), Bear Form Passive 2 (21178 effect#2), Moonkin Form (24858 effect#7), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Moonkin Form (197625 effect#6), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1)
 Family Flags     : 68
@@ -2907,8 +2817,7 @@ GCD              : 1 seconds
 Duration         : 30 seconds
 Cooldown         : 180 seconds
 Category         : 1333
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-                 : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
 Category Cooldown: 180 seconds
 Proc Chance      : 101%
 Affecting spells : Metamorphosis Rune (23724 effect#1), Cheaper Druid Shapeshifting (38314 effect#1), Incarnation (117679 effect#1), Druid (137009 effect#4), Wildcat Celerity (184877 effect#1), Starfall (191034 effect#2), Stellar Drift (202461 effect#1)
@@ -2942,7 +2851,6 @@ Spell Type       : None
 Spell Level      : 1
 Duration         : Aura (infinite)
 Cooldown         : 6 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
@@ -2985,7 +2893,6 @@ GCD              : 1.5 seconds
 Duration         : 30 seconds
 Cooldown         : 180 seconds
 Category         : 1333
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 180 seconds
 Proc Chance      : 101%
 Affecting spells : Metamorphosis Rune (23724 effect#1), Cheaper Druid Shapeshifting (38314 effect#1), Incarnation (117679 effect#1), Druid (137009 effect#4), Wildcat Celerity (184877 effect#1), Starfall (191034 effect#2), Stellar Drift (202461 effect#1)
@@ -3033,8 +2940,7 @@ GCD              : 1.5 seconds
 Duration         : 30 seconds
 Cooldown         : 180 seconds
 Category         : 1333
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-                 : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
 Category Cooldown: 180 seconds
 Proc Chance      : 101%
 Affecting spells : Incarnation (117679 effect#1), Druid (137009 effect#4), Wildcat Celerity (184877 effect#1), Starfall (191034 effect#2), Stellar Drift (202461 effect#1)
@@ -3069,7 +2975,6 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 60 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Starfall (191034 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1)
 Family Flags     : 110
 Attributes       : ........ ........ ..x..... ........   ...x...x ..x..... .x...... ........ 
@@ -3093,7 +2998,6 @@ Class            : Druid
 School           : Nature
 Spell Type       : Magic
 Range            : 50000 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Mechanic         : Grip
 Attributes       : ........ x....... .......x x..x....   ...x.x.x ..x..... ........ ........ 
                  : ..x..... ......x. ........ ........   ........ ........ ....x... ......x. 
@@ -3115,7 +3019,6 @@ Spell Type       : Melee
 Resource         : 35 Energy (3) (id=9341)
 Range            : 8 yards
 GCD              : 1 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x00000001
 Affecting spells : Tiger's Fury (5217 effect#1), Berserk (50334 effect#2), Savage Roar (62071 effect#1), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Heart of the Wild (108292 effect#1), Clearcasting (135700 effect#1), Feral Druid (137011 effect#1), Restoration Druid (137012 effect#5), Starfall (191034 effect#2), Feral Affinity (197490 effect#3), Astral Influence (197524 effect#1), Feral Affinity (202155 effect#3), Feral Affinity (202157 effect#3), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Untamed Ferocity (273338 effect#2), Berserk (279526 effect#1), Sharpened Claws (279943 effect#1), Scent of Blood (285646 effect#1), Ravenous Frenzy (323546 effect#1), Lone Empowerment (338142 effect#1), Druid Runecarve 3 (338657 effect#1), 
 Family Flags     : 74, 98
@@ -3147,7 +3050,6 @@ Resource         : 40 Energy (3) (id=5069)
 Range            : 8 yards
 GCD              : 1 seconds
 Duration         : 15 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x00000001
 Mechanic         : Bleed
 Affecting spells : Tiger's Fury (5217 effect#1), Berserk (50334 effect#2), Savage Roar (62071 effect#1), Mastery: Razor Claws (77493 effect#1), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Heart of the Wild (108292 effect#1), Clearcasting (135700 effect#1), Feral Druid (137011 effect#1), Restoration Druid (137012 effect#5), Bloodletting (165699 effect#1), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Luffa Wrappings (208681 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Item - Druid T19 Feral 2P Bonus (211140 effect#1), Untamed Ferocity (273338 effect#2), Berserk (279526 effect#1), Sharpened Claws (279943 effect#1), Ravenous Frenzy (323546 effect#1), Adaptive Swarm (325733 effect#2), Lone Empowerment (338142 effect#1), Druid Runecarve 3 (338657 effect#1), Druid Guardian Runecarve 1 (339060 effect#1), 
@@ -3176,7 +3078,6 @@ School           : Physical
 Spell Type       : None
 Spell Level      : 11
 Range            : 5 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x00000011
 Affecting spells : Starfall (191034 effect#2), Stellar Drift (202461 effect#1), Luffa Wrappings (208681 effect#3), Druid Guardian Runecarve 1 (339060 effect#1), 
 Family Flags     : 26
@@ -3200,7 +3101,6 @@ Spell Level      : 26
 Range            : 13 yards
 Cooldown         : 15 seconds
 Category         : 1260
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 15 seconds
 Stance Mask      : 0x00000011
 Affecting spells : Cat Form (3025 effect#4), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Druid (137009 effect#4), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Berserk (279526 effect#1)
@@ -3228,7 +3128,6 @@ GCD              : 1.5 seconds
 Duration         : 8 seconds
 Cooldown         : 120 seconds
 Category         : 1257
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 120 seconds
 Proc Chance      : 101%
 Affecting spells : Starfall (191034 effect#2), Astral Influence (197524 effect#3), Stellar Drift (202461 effect#1), Stampeding Roar (288826 effect#1)
@@ -3258,8 +3157,7 @@ GCD              : 1 seconds
 Duration         : 20 seconds
 Cooldown         : 180 seconds
 Category         : 1208
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-                 : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
 Category Cooldown: 180 seconds
 Affecting spells : Wildcat Celerity (184877 effect#1), Starfall (191034 effect#2), Stellar Drift (202461 effect#1)
 Family Flags     : 70
@@ -3287,7 +3185,6 @@ Name             : Glyph of the Ursol Chameleon (id=107059) [Spell Family (7), P
 Class            : Druid
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3307,7 +3204,6 @@ School           : Nature
 Spell Type       : Magic
 Spell Level      : 1
 Cooldown         : 90 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Bear Form (5487 effect#8), Starfall (191034 effect#2), Stellar Drift (202461 effect#1)
 Family Flags     : 101
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3330,7 +3226,6 @@ Spell Type       : None
 Duration         : 45 seconds
 Cooldown         : 300 seconds
 Category         : 1383
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 300 seconds
 Attributes       : ........ ........ ..x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3362,7 +3257,6 @@ Spell Type       : None
 Duration         : 45 seconds
 Cooldown         : 300 seconds
 Category         : 1383
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 300 seconds
 Internal Cooldown: 0.9 seconds
 Proc Chance      : 100%
@@ -3398,7 +3292,6 @@ Spell Type       : None
 Duration         : 45 seconds
 Cooldown         : 300 seconds
 Category         : 1383
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 300 seconds
 Attributes       : ........ ........ ..x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3429,7 +3322,6 @@ Spell Type       : None
 Duration         : 45 seconds
 Cooldown         : 300 seconds
 Category         : 1383
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 300 seconds
 Attributes       : ........ ........ ..x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3457,7 +3349,6 @@ Class            : Restoration Druid
 School           : Physical
 Spell Type       : Magic
 Spell Level      : 33
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ........ ......x. ..x..x.. ........ 
                  : Magic Heal, Periodic, Trap Triggered
@@ -3478,7 +3369,6 @@ Name             : Cat Form (desc=Passive) (id=113636) [Spell Family (7), Passiv
 Class            : Druid
 School           : Nature
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x00000001
 Attributes       : ....x.xx ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3496,7 +3386,6 @@ Name             : Soul of the Forest (id=114107) [Spell Family (7), Passive]
 Class            : Druid
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3521,7 +3410,6 @@ Class            : Druid
 School           : Nature
 Spell Type       : Magic
 Duration         : 15 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ........ ......x. x....... ........ 
@@ -3548,7 +3436,6 @@ Spell Type       : None
 Spell Level      : 19
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ....x... ........ ........ ........   ........ ........ ........ ........ 
@@ -3567,7 +3454,6 @@ Name             : Glyph of Stars (desc=Balance) (id=114301) [Spell Family (7), 
 Class            : Druid
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3585,7 +3471,6 @@ Name             : Glyph of the Orca (id=114333) [Spell Family (7), Passive, Hid
 Class            : Druid
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3604,7 +3489,6 @@ Class            : Druid
 School           : Physical
 Spell Type       : None
 Duration         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ x..x.x.x   .....x.. ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : .......x .......x ........ ........   ...x.... ........ .xx..... ........ 
@@ -3626,7 +3510,6 @@ Class            : Druid
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : .......x x....... ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3646,7 +3529,6 @@ Spell Type       : None
 Spell Level      : 1
 Duration         : 30 seconds
 Cooldown         : 90 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ....x... ......x. x.x..x.. ........ 
                  : Yellow Melee, Magic Heal, Magic Hostile Spell, Periodic, Trap Triggered
@@ -3675,7 +3557,6 @@ School           : Nature
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 40 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ .....xx. 
                  : ........ .......x ........ ........   ........ ........ ........ .x...... 
@@ -3696,7 +3577,6 @@ Spell Type       : Magic
 Spell Level      : 1
 Range            : 40 yards
 Max Targets      : 1
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ......x. 
                  : ........ .......x ........ ........   ........ ........ ........ .x...... 
@@ -3715,7 +3595,6 @@ Class            : Druid
 School           : Physical
 Spell Type       : None
 Spell Level      : 6
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.x. ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3739,7 +3618,6 @@ Max Targets      : 1
 Velocity         : 20 yards/sec
 Duration         : 3600 seconds
 Cooldown         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .....x.. ........ ........ ........ 
@@ -3759,7 +3637,6 @@ Name             : Glyph of the Cheetah (id=131113) [Spell Family (7), Passive, 
 Class            : Druid
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3778,7 +3655,6 @@ Class            : Druid
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3797,7 +3673,6 @@ Class            : Feral Druid
 School           : Physical
 Spell Type       : None
 Spell Level      : 27
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Starfall (191034 effect#2), Stellar Drift (202461 effect#1), Druid Runecarve 1 (338608 effect#1)
 Family Flags     : 109
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
@@ -3820,7 +3695,6 @@ Spell Type       : Magic
 Spell Level      : 58
 Duration         : Aura (infinite)
 Cooldown         : 60 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ........ ......x. x....... ........ 
@@ -3859,7 +3733,6 @@ Name             : Visual Effect: Tree of Life (id=132213) [Hidden]
 Class            : Druid
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : Incarnation: Tree of Life (33891)
 Attributes       : .......x x....... ........ .....x..   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ ........ ........ 
@@ -3882,7 +3755,6 @@ Range            : 15 yards
 GCD              : 1.5 seconds
 Cooldown         : 30 seconds
 Category         : 1217
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 30 seconds
 Affecting spells : Starfall (191034 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), 
 Family Flags     : 56
@@ -3907,7 +3779,6 @@ Spell Type       : Magic
 Spell Level      : 10
 Range            : 100 yards
 Duration         : 15 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ....x.x. x.x.x.x. x....... ........ 
@@ -3945,7 +3816,6 @@ Name             : Druid (id=137009) [Spell Family (7), Passive, Hidden]
 Class            : Druid
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3976,7 +3846,6 @@ Name             : Guardian Druid (id=137010) [Spell Family (7), Passive, Hidden
 Class            : Guardian Death Knight, Druid
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4029,7 +3898,6 @@ Name             : Feral Druid (id=137011) [Spell Family (7), Passive, Hidden]
 Class            : Feral Death Knight, Druid
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4076,7 +3944,6 @@ Name             : Restoration Druid (id=137012) [Spell Family (7), Passive, Hid
 Class            : Restoration Death Knight, Druid
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4116,7 +3983,6 @@ Name             : Balance Druid (id=137013) [Spell Family (7), Passive, Hidden]
 Class            : Balance Death Knight, Druid
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4224,7 +4090,6 @@ School           : Nature
 Spell Type       : None
 Spell Level      : 27
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Waking Dream (278958 effect#1), Berserk (279526 effect#1), Adaptive Swarm (325748 effect#2), Druid Runecarve 1 (338608 effect#1)
 Family Flags     : 82, 109
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -4245,7 +4110,6 @@ Class            : Druid
 School           : Nature
 Spell Type       : None
 Spell Level      : 1
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Waking Dream (278958 effect#1), Berserk (279526 effect#1), Adaptive Swarm (325748 effect#2)
 Family Flags     : 82
 Attributes       : ........ ........ ........ x..x....   .....x.. ..x..... ........ ........ 
@@ -4267,7 +4131,6 @@ School           : Nature
 Spell Type       : None
 Spell Level      : 1
 Range            : 30 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Waking Dream (278958 effect#1), Berserk (279526 effect#1), Adaptive Swarm (325748 effect#2)
 Family Flags     : 82
 Attributes       : ........ ........ ........ x..x....   .....x.. ..x..... ...x.... ........ 
@@ -4288,7 +4151,6 @@ Class            : Druid
 School           : Physical
 Spell Type       : None
 Duration         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Internal Cooldown: 0.1 seconds
 Stacks           : 2 initial, 2 maximum
 Proc Chance      : 100%
@@ -4322,7 +4184,6 @@ Spell Level      : 38
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Affecting spells : Starfall (191034 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1)
 Family Flags     : 115
@@ -4370,7 +4231,6 @@ Name             : Guardian of Elune (id=155578) [Spell Family (7), Passive]
 Class            : Druid
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
@@ -4391,7 +4251,6 @@ Name             : Lunar Inspiration (id=155580) [Passive]
 Class            : Druid
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4414,7 +4273,6 @@ Spell Level      : 1
 Range            : 40 yards
 GCD              : 1 seconds
 Duration         : 16 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x00000001
 Affecting spells : Tiger's Fury (5217 effect#1), Berserk (50334 effect#2), Savage Roar (62071 effect#1), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Heart of the Wild (108292 effect#1), Feral Druid (137011 effect#1), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Twin Moonfire (200818 effect#2), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Power of the Moon (273367 effect#2), Berserk (279526 effect#1), Ravenous Frenzy (323546 effect#1), Lone Empowerment (338142 effect#1), Druid Runecarve 3 (338657 effect#1), 
 Family Flags     : 98, 120
@@ -4443,7 +4301,6 @@ Class            : Druid
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
@@ -4463,7 +4320,6 @@ Name             : Germination (id=155675) [Spell Family (7), Passive]
 Class            : Druid
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Incarnation: Tree of Life (5420 effect#1), Heart of the Wild (108294 effect#1), Restoration Druid (137012 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Stellar Drift (202461 effect#1), Ravenous Frenzy (323546 effect#1), Druid Runecarve 3 (338657 effect#2), 
 Family Flags     : 118
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -4488,7 +4344,6 @@ Spell Type       : Melee
 Spell Level      : 6
 Range            : 100 yards
 Duration         : 15 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x00000001
 Mechanic         : Bleed
 Affecting spells : Tiger's Fury (5217 effect#1), Berserk (50334 effect#2), Savage Roar (62071 effect#1), Mastery: Razor Claws (77493 effect#1), Incarnation: King of the Jungle (102543 effect#1), Prowl (102547 effect#5), Berserk (106951 effect#1), Heart of the Wild (108292 effect#1), Feral Druid (137011 effect#1), Restoration Druid (137012 effect#5), Bloodletting (165699 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Feral Affinity (197490 effect#5), Astral Influence (197524 effect#1), Feral Affinity (202155 effect#5), Feral Affinity (202157 effect#5), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Untamed Ferocity (273338 effect#2), Blood Mist (279524 effect#2), Berserk (279526 effect#1), Ravenous Frenzy (323546 effect#1), Adaptive Swarm (325733 effect#2), Lone Empowerment (338142 effect#1), Druid Runecarve 3 (338657 effect#1), 
@@ -4513,7 +4368,6 @@ Class            : Guardian Druid
 School           : Physical
 Spell Type       : None
 Spell Level      : 10
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ........ ...x...x ........ .......x 
                  : Generic Heal Taken, Magic Heal Taken
@@ -4541,7 +4395,6 @@ Spell Type       : Melee
 GCD              : 1.5 seconds
 Duration         : 8 seconds
 Cooldown         : 40 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
@@ -4563,7 +4416,6 @@ Class            : Druid
 School           : Physical
 Spell Type       : Magic
 Duration         : 10 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ..x..... ........   ........ ..x..... ........ ........ 
                  : ........ .......x ........ ........   ........ ........ xx...... ........ 
                  : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -4585,7 +4437,6 @@ Class            : Feral Guardian Druid
 School           : Physical
 Spell Type       : None
 Spell Level      : 1
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4606,7 +4457,6 @@ Spell Type       : Magic
 Range            : 40 yards
 Max Targets      : 60
 Duration         : 8 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 5 maximum
 Proc Chance      : 101%
 Affecting spells : Incarnation: Tree of Life (5420 effect#1), Nimble Healing Touch (24542 effect#2), Blessing of Lower City (37878 effect#1), Ironbark (102342 effect#2), Heart of the Wild (108294 effect#1), Restoration Druid (137012 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#3), Flourish (197721 effect#2), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#7), Ravenous Frenzy (323546 effect#1), Adaptive Swarm (325748 effect#2), Druid Runecarve 3 (338657 effect#2), 
@@ -4632,7 +4482,6 @@ Name             : Soul of the Forest (id=158476) [Spell Family (7), Passive]
 Class            : Druid
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4658,7 +4507,6 @@ Name             : Soul of the Forest (id=158477) [Spell Family (7), Passive]
 Class            : Druid
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4682,7 +4530,6 @@ Name             : Soul of the Forest (id=158478) [Spell Family (7), Passive]
 Class            : Druid
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4700,7 +4547,6 @@ Name             : Mastery: Nature's Guardian (id=159195) [Spell Family (7), Pas
 Class            : Guardian Druid
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4719,7 +4565,6 @@ Class            : Feral Druid
 School           : Physical
 Spell Type       : None
 Spell Level      : 31
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Internal Cooldown: 0.7 seconds
 Proc Chance      : 100%
 Stance Mask      : 0x00000001
@@ -4745,7 +4590,6 @@ Class            : Druid
 School           : Physical
 Spell Type       : None
 Spell Level      : 24
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -4766,7 +4610,6 @@ Class            : Beast Mastery Marksmanship Survival Assassination Outlaw Subt
 Race             : Dark Iron Dwarf (0x800)
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4788,7 +4631,6 @@ Class            : Shadow Elemental Arcane Fire Frost Affliction Demonology Dest
 Race             : Dark Iron Dwarf (0x800)
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4810,7 +4652,6 @@ Class            : Brewmaster Guardian Vengeance Monk, Druid, Demon Hunter
 Race             : Dark Iron Dwarf (0x800)
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4830,7 +4671,6 @@ Class            : Holy Discipline Holy Restoration Mistweaver Restoration Palad
 Race             : Dark Iron Dwarf (0x800)
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4854,7 +4694,6 @@ Spell Type       : Melee
 Spell Level      : 17
 Range            : 50000 yards
 Duration         : 4 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Mechanic         : Stun
 Attributes       : ........ ........ ..x..x.. ........   ........ ........ ........ ........ 
@@ -4877,7 +4716,6 @@ School           : Arcane
 Spell Type       : Magic
 Range            : 100 yards
 Duration         : 12 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x40000013
 Affecting spells : Bear Form (5487 effect#2), Moonkin Form (24858 effect#9), Eclipse (Lunar) (48518 effect#3), Berserk (50334 effect#2), Incarnation: Chosen of Elune (102560 effect#1), Heart of the Wild (108291 effect#1), Guardian Druid (137010 effect#6), Restoration Druid (137012 effect#5), Balance Druid (137013 effect#1), Lunar Inspiration (155627 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Celestial Alignment (194223 effect#1), Astral Influence (197524 effect#1), Feral Overrides Passive (197692 effect#1), Twin Moonfire (200818 effect#2), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Solar Solstice (252767 effect#1), Long Night (269379 effect#2), Power of the Moon (273367 effect#2), Twin Moons (279620 effect#2), Ravenous Frenzy (323546 effect#1), Adaptive Swarm (325733 effect#2), Moonfire (326646 effect#1), Moonfire (328023 effect#1), Lone Empowerment (338142 effect#1), Druid Runecarve 3 (338657 effect#1), Druid Balance Runecarve 3 (339946 effect#1)
 Family Flags     : 1, 18, 92, 103
@@ -4907,7 +4745,6 @@ Spell Type       : Magic
 Spell Level      : 13
 Range            : 100 yards
 Duration         : 12 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x40000002
 Affecting spells : Moonkin Form (24858 effect#9), Eclipse (Solar) (48517 effect#3), Berserk (50334 effect#2), Incarnation: Chosen of Elune (102560 effect#1), Heart of the Wild (108291 effect#1), Restoration Druid (137012 effect#5), Balance Druid (137013 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Celestial Alignment (194223 effect#1), Astral Influence (197524 effect#1), Astral Power (197911 effect#3), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Solar Solstice (252767 effect#1), High Noon (278505 effect#2), High Noon (279070 effect#1), Ravenous Frenzy (323546 effect#1), Adaptive Swarm (325733 effect#2), Moonfire (328023 effect#1), Lone Empowerment (338142 effect#1), Druid Runecarve 3 (338657 effect#1), Druid Balance Runecarve 3 (339943 effect#1)
 Family Flags     : 1, 18, 102
@@ -4933,7 +4770,6 @@ School           : Physical
 Spell Type       : None
 GCD              : 0.5 seconds
 Duration         : 15 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x40000000
 Attributes       : ........ ........ ........ ........   ..x...x. ........ ........ .....x.. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4959,7 +4795,6 @@ Resource         : 7.4% Base Mana (0) (id=9590)
 Spell Level      : 24
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Affecting spells : Metamorphosis Rune (23724 effect#1), Cheaper Druid Shapeshifting (38314 effect#1), Druid (137009 effect#4), Starfall (191034 effect#2), Stellar Drift (202461 effect#1)
 Family Flags     : 46
@@ -4984,7 +4819,6 @@ Name             : Glyph of the Sun (desc=Balance) (id=171803) [Spell Family (7)
 Class            : Druid
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5005,7 +4839,6 @@ Spell Type       : None
 Cast Time        : 1.5 seconds
 Cooldown         : 1.5 seconds
 Category         : 133
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 1.5 seconds
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5026,7 +4859,6 @@ School           : Physical
 Spell Type       : None
 Spell Level      : 1
 GCD              : 1.5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5148,7 +4980,6 @@ Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x40000000
 Affecting spells : Moonkin Form (24858 effect#9), Eclipse (Solar) (48517 effect#1), Berserk (50334 effect#2), Incarnation: Chosen of Elune (102560 effect#1), Heart of the Wild (108291 effect#1), Restoration Druid (137012 effect#5), Balance Druid (137013 effect#1), Item - Druid T17 Balance 2P Bonus (165433 effect#1), Celestial Fury (180719 effect#2), Starfall (191034 effect#2), Thrash (192090 effect#2), Celestial Alignment (194223 effect#1), Astral Influence (197524 effect#1), Astral Power (197911 effect#2), Stellar Drift (202461 effect#1), Promise of Elune, the Moon Goddess (208283 effect#2), Ekowraith, Creator of Worlds (210667 effect#1), Solar Empowerment (211089 effect#1), Dawning Sun (276154 effect#1), Ravenous Frenzy (323546 effect#1), Lone Empowerment (338142 effect#1), Druid Runecarve 3 (338657 effect#1), Druid Balance Runecarve 3 (339943 effect#1)
 Family Flags     : 0, 18
@@ -5176,7 +5007,6 @@ Resource         : 50 Eclipse (8) (id=10344)
 Spell Level      : 34
 GCD              : 1.5 seconds
 Duration         : 8 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x40000000
 Affecting spells : Eclipse (Solar) (48517 effect#3), Eclipse (Lunar) (48518 effect#3), Thrash (192090 effect#2), Stellar Drift (202354 effect#1), Stellar Drift (202461 effect#1), Oneth's Overconfidence (209407 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Item - Druid  T21 Balance 2P Bonus (251803 effect#1), Adaptive Swarm (325733 effect#2), Oneth's Perception (339800 effect#1), Druid Balance Runecarve 3 (339943 effect#1), Druid Balance Runecarve 3 (339946 effect#1), Timeworn Dreamcatcher (340049 effect#1)
 Family Flags     : 55, 119
@@ -5206,7 +5036,6 @@ Spell Type       : Magic
 Spell Level      : 29
 Range            : 200 yards
 Velocity         : 0.8 yards/sec
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Moonkin Form (24858 effect#9), Eclipse (Solar) (48517 effect#3), Eclipse (Lunar) (48518 effect#3), Berserk (50334 effect#2), Incarnation: Chosen of Elune (102560 effect#1), Heart of the Wild (108291 effect#1), Balance Druid (137013 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Celestial Alignment (194223 effect#1), Stellar Drift (202354 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Item - Druid  T21 Balance 2P Bonus (251803 effect#1), Ravenous Frenzy (323546 effect#1), Adaptive Swarm (325733 effect#2), Lone Empowerment (338142 effect#1), Druid Runecarve 3 (338657 effect#1), Druid Balance Runecarve 3 (339943 effect#1), Druid Balance Runecarve 3 (339946 effect#1), Timeworn Dreamcatcher (340049 effect#1)
 Family Flags     : 18, 55
 Attributes       : ........ ........ .......x x..x....   .....x.x ........ ........ ........ 
@@ -5230,8 +5059,7 @@ Resource         : 40 Rage (1) (id=10391)
 Spell Level      : 18
 Duration         : 7 seconds
 Cooldown         : 0.5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-                 : 824: Will to Survive (312922 effect#1)
+Labels           : 824: Will to Survive (312922 effect#1)
 Stacks           : 1 maximum
 Proc Chance      : 101%
 Stance Mask      : 0x00000010
@@ -5257,7 +5085,6 @@ Spell Type       : Melee
 Spell Level      : 18
 Range            : 100 yards
 Duration         : 15 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 3 maximum
 Proc Chance      : 101%
 Affecting spells : Berserk (50334 effect#2), Druid (137009 effect#3), Guardian Druid (137010 effect#1), Restoration Druid (137012 effect#5), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Rend and Tear (204053 effect#1), Elize's Everlasting Encasement (208342 effect#1), Luffa Wrappings (208681 effect#3), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Sharpened Claws (279943 effect#1), Ravenous Frenzy (323546 effect#1), Adaptive Swarm (325733 effect#2), Lone Empowerment (338142 effect#1), Druid Runecarve 3 (338657 effect#1), Druid Guardian Runecarve 1 (339060 effect#1), 
@@ -5295,7 +5122,6 @@ GCD              : 1.5 seconds
 Duration         : Aura (infinite)
 Cooldown         : 60 seconds
 Category         : 511
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Starfall (191034 effect#2), Stellar Drift (202461 effect#1)
 Family Flags     : 112
 Attributes       : ........ ........ x....... ....x...   ........ ........ .x...... ....x... 
@@ -5327,7 +5153,6 @@ Spell Level      : 10
 Range            : 40 yards
 Cast Time        : 2.25 seconds
 GCD              : 1.5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x40000002
 Affecting spells : Moonkin Form (24858 effect#9), Eclipse (Lunar) (48518 effect#1), Berserk (50334 effect#2), Incarnation: Chosen of Elune (102560 effect#1), Heart of the Wild (108291 effect#1), Restoration Druid (137012 effect#5), Balance Druid (137013 effect#1), Owlkin Frenzy (157228 effect#1), Item - Druid T17 Balance 2P Bonus (165433 effect#2), Celestial Fury (180719 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Celestial Alignment (194223 effect#1), Astral Influence (197524 effect#1), Warrior of Elune (202425 effect#1), Stellar Drift (202461 effect#1), Promise of Elune, the Moon Goddess (208283 effect#2), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effect#1), Lone Empowerment (338142 effect#1), Druid Runecarve 3 (338657 effect#1), Druid Balance Runecarve 3 (339946 effect#1)
 Family Flags     : 2, 18
@@ -5359,8 +5184,7 @@ Spell Level      : 38
 GCD              : 1.5 seconds
 Duration         : 20 seconds
 Cooldown         : 180 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-                 : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
 Affecting spells : Starfall (191034 effect#2), Stellar Drift (202461 effect#1)
 Family Flags     : 113
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -5387,7 +5211,6 @@ Class            : Restoration Druid
 School           : Physical
 Spell Type       : None
 Spell Level      : 56
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5407,7 +5230,6 @@ Name             : Inner Peace (id=197073) [Spell Family (7), Passive]
 Class            : Druid
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -5428,7 +5250,6 @@ Class            : Druid
 School           : Physical
 Spell Type       : None
 Spell Level      : 1
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Internal Cooldown: 0.2 seconds
 Proc Chance      : 100%
 Proc Flags       : ........ ........ x....... ........ 
@@ -5462,7 +5283,6 @@ Class            : Druid
 School           : Physical
 Spell Type       : None
 Spell Level      : 1
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -5517,7 +5337,6 @@ Class            : Druid
 School           : Physical
 Spell Type       : None
 Spell Level      : 1
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -5545,7 +5364,6 @@ Class            : Druid
 School           : Physical
 Spell Type       : None
 Spell Level      : 1
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -5596,7 +5414,6 @@ Class            : Balance Druid
 School           : Astral
 Spell Type       : None
 Spell Level      : 27
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Guardian Druid (137010 effect#7), Feral Druid (137011 effect#7), Starfall (191034 effect#2), Stellar Drift (202461 effect#1), Druid Runecarve 1 (338608 effect#1)
 Family Flags     : 76, 109
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -5629,7 +5446,6 @@ Spell Type       : Magic
 Spell Level      : 1
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Affecting spells : Metamorphosis Rune (23724 effect#1), Cheaper Druid Shapeshifting (38314 effect#1), Druid (137009 effect#4), Feral Druid (137011 effect#3), Starfall (191034 effect#2), Stellar Drift (202461 effect#1), Moonkin Form (231042 effect#1)
 Family Flags     : 45
@@ -5674,7 +5490,6 @@ Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Velocity         : 28 yards/sec
 Cooldown         : 10 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Moonkin Form (24858 effect#9), Eclipse (Solar) (48517 effect#3), Eclipse (Lunar) (48518 effect#3), Berserk (50334 effect#2), Incarnation: Chosen of Elune (102560 effect#1), Heart of the Wild (108291 effect#1), Restoration Druid (137012 effect#5), Balance Druid (137013 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Celestial Alignment (194223 effect#1), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Oneth's Intuition (209406 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), The Emerald Dreamcatcher (224706 effect#1), Item - Druid T20 Balance 2P Bonus (242231 effect#2), Item - Druid  T21 Balance 2P Bonus (251803 effect#2), Arcanic Pulsar (287773 effect#2), Ravenous Frenzy (323546 effect#1), Starsurge (328022 effect#1), Lone Empowerment (338142 effect#1), Druid Runecarve 3 (338657 effect#1), Oneth's Clear Vision (339797 effect#1), Druid Balance Runecarve 3 (339943 effect#1), Druid Balance Runecarve 3 (339946 effect#1), Timeworn Dreamcatcher (340049 effect#1)
 Family Flags     : 18, 89
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5698,7 +5513,6 @@ Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Moonkin Form (24858 effect#9), Eclipse (Lunar) (48518 effect#1), Berserk (50334 effect#2), Incarnation: Chosen of Elune (102560 effect#1), Heart of the Wild (108291 effect#1), Restoration Druid (137012 effect#5), Balance Druid (137013 effect#1), Owlkin Frenzy (157228 effect#1), Item - Druid T17 Balance 2P Bonus (165433 effect#2), Celestial Fury (180719 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Celestial Alignment (194223 effect#1), Astral Influence (197524 effect#1), Warrior of Elune (202425 effect#1), Stellar Drift (202461 effect#1), Promise of Elune, the Moon Goddess (208283 effect#2), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effect#1), Lone Empowerment (338142 effect#1), Druid Runecarve 3 (338657 effect#1), Druid Balance Runecarve 3 (339946 effect#1)
 Family Flags     : 2, 18
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5723,7 +5537,6 @@ Resource         : 12% Base Mana (0) (id=10709)
 Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Moonkin Form (24858 effect#9), Eclipse (Solar) (48517 effect#3), Berserk (50334 effect#2), Incarnation: Chosen of Elune (102560 effect#1), Heart of the Wild (108291 effect#1), Restoration Druid (137012 effect#5), Balance Druid (137013 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Celestial Alignment (194223 effect#1), Astral Influence (197524 effect#1), Astral Power (197911 effect#3), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Solar Solstice (252767 effect#1), High Noon (278505 effect#2), High Noon (279070 effect#1), Ravenous Frenzy (323546 effect#1), Adaptive Swarm (325733 effect#2), Moonfire (328023 effect#1), Lone Empowerment (338142 effect#1), Druid Runecarve 3 (338657 effect#1), Druid Balance Runecarve 3 (339943 effect#1)
 Family Flags     : 1, 18, 102
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5745,7 +5558,6 @@ Class            : Druid
 School           : Physical
 Spell Type       : None
 Spell Level      : 1
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Internal Cooldown: 0.2 seconds
 Proc Chance      : 100%
 Proc Flags       : ........ ........ x....... ........ 
@@ -5777,7 +5589,6 @@ Name             : Feral Overrides Passive (desc=Passive) (id=197692) [Spell Fam
 Class            : Feral Druid
 School           : Nature
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Starfall (191034 effect#2), Moonkin Form (197625 effect#5), Stellar Drift (202461 effect#1)
 Family Flags     : 34
 Attributes       : ....x.xx ........ ........ ........   ........ ..x..... ........ ........ 
@@ -5806,7 +5617,6 @@ Spell Level      : 1
 GCD              : 1.5 seconds
 Duration         : 8 seconds
 Cooldown         : 90 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5831,7 +5641,6 @@ Class            : Balance Druid
 School           : Nature
 Spell Type       : None
 Spell Level      : 10
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5858,7 +5667,6 @@ School           : Nature
 Spell Type       : None
 Range            : 100 yards
 Duration         : 6 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Incarnation: Tree of Life (5420 effect#1), Ironbark (102342 effect#2), Heart of the Wild (108294 effect#1), Restoration Druid (137012 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Stellar Drift (202461 effect#1), Ravenous Frenzy (323546 effect#1), Adaptive Swarm (325748 effect#2), Druid Runecarve 3 (338657 effect#2), 
 Family Flags     : 20, 118
 Attributes       : ........ ........ ..x..... x..x....   ........ ..x..... ........ ........ 
@@ -5880,7 +5688,6 @@ Class            : Druid
 School           : Physical
 Spell Type       : None
 Spell Level      : 1
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -5951,7 +5758,6 @@ Name             : Predator (id=202021) [Spell Family (7), Passive]
 Class            : Druid
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -5978,7 +5784,6 @@ Range            : 8 yards
 GCD              : 1 seconds
 Charges          : 3 (8 seconds cooldown)
 Category         : 1581: Druid (137009 effect#1)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x00000001
 Affecting spells : Tiger's Fury (5217 effect#1), Berserk (50334 effect#2), Savage Roar (62071 effect#1), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Heart of the Wild (108292 effect#1), Clearcasting (135700 effect#1), Feral Druid (137011 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Untamed Ferocity (273338 effect#2), Berserk (279526 effect#1), Scent of Blood (285646 effect#1), Ravenous Frenzy (323546 effect#1), Lone Empowerment (338142 effect#1), Druid Runecarve 3 (338657 effect#1), 
 Family Flags     : 98, 99
@@ -6004,7 +5809,6 @@ Name             : Sabertooth (id=202031) [Spell Family (7), Passive]
 Class            : Druid
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -6027,7 +5831,6 @@ Class            : Druid
 School           : Physical
 Spell Type       : None
 Spell Level      : 1
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -6081,7 +5884,6 @@ Class            : Druid
 School           : Physical
 Spell Type       : None
 Spell Level      : 1
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -6135,7 +5937,6 @@ Name             : Shooting Stars (id=202342) [Spell Family (7), Passive, Hidden
 Class            : Druid
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ .....x.. ........ ........ 
@@ -6153,7 +5954,6 @@ Name             : Starlord (id=202345) [Spell Family (7), Passive, Hidden]
 Class            : Druid
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Proc Flags       : ........ ........ x....... ........ 
                  : Magic Hostile Spell
@@ -6180,7 +5980,6 @@ Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Duration         : 24 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Moonkin Form (24858 effect#9), Eclipse (Solar) (48517 effect#3), Eclipse (Lunar) (48518 effect#3), Berserk (50334 effect#2), Incarnation: Chosen of Elune (102560 effect#1), Heart of the Wild (108291 effect#1), Balance Druid (137013 effect#1), Starfall (191034 effect#2), Celestial Alignment (194223 effect#1), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effect#1), Adaptive Swarm (325733 effect#2), Lone Empowerment (338142 effect#1), Druid Runecarve 3 (338657 effect#1), Druid Balance Runecarve 3 (339943 effect#1), Druid Balance Runecarve 3 (339946 effect#1)
 Family Flags     : 18, 105
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -6207,7 +6006,6 @@ Name             : Stellar Drift (id=202354) [Spell Family (7), Passive, Hidden]
 Class            : Druid
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -6233,7 +6031,6 @@ School           : Arcane
 Spell Type       : Magic
 Duration         : Aura (infinite)
 Cooldown         : 45 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 3 initial, 3 maximum
 Proc Chance      : 100%
 Proc Flags       : ........ ........ x....... ........ 
@@ -6261,7 +6058,6 @@ Name             : Nature's Balance (id=202430) [Spell Family (7), Passive]
 Class            : Druid
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -6289,7 +6085,6 @@ Class            : Druid
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : x....... ........ ........ ........   ........ ........ ........ ........ 
@@ -6312,7 +6107,6 @@ Spell Type       : Magic
 Spell Level      : 1
 Range            : 50000 yards
 Velocity         : 0.8 yards/sec
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Moonkin Form (24858 effect#9), Berserk (50334 effect#2), Incarnation: Chosen of Elune (102560 effect#1), Heart of the Wild (108291 effect#1), Balance Druid (137013 effect#1), Starfall (191034 effect#2), Celestial Alignment (194223 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effect#1), Lone Empowerment (338142 effect#1), Druid Runecarve 3 (338657 effect#1), 
 Family Flags     : 18
 Attributes       : ........ ........ ........ ...x....   .......x ..x..... ........ ........ 
@@ -6394,7 +6188,6 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 8 seconds
 Cooldown         : 60 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Eclipse (Solar) (48517 effect#3), Eclipse (Lunar) (48518 effect#3), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Adaptive Swarm (325733 effect#2), Druid Balance Runecarve 3 (339943 effect#1), Druid Balance Runecarve 3 (339946 effect#1)
 Family Flags     : 23
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ....x... 
@@ -6477,7 +6270,6 @@ Resource         : 30% Base Mana (0) (id=10902)
 Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 60 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Starfall (191034 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Adaptive Swarm (325733 effect#2), Adaptive Swarm (325748 effect#2)
 Family Flags     : 54
 Attributes       : ....x... ........ x....... ........   ........ ........ ........ ....x... 
@@ -6496,7 +6288,6 @@ Name             : Brambles (id=203953) [Spell Family (7), Passive]
 Class            : Druid
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ x....... ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -6518,7 +6309,6 @@ Class            : Druid
 School           : Nature
 Spell Type       : Magic
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Berserk (50334 effect#2), Guardian Druid (137010 effect#1), Starfall (191034 effect#2), Stellar Drift (202461 effect#1), Ravenous Frenzy (323546 effect#1), Lone Empowerment (338142 effect#1), Druid Runecarve 3 (338657 effect#1), 
 Family Flags     : 77
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6538,7 +6328,6 @@ Name             : Blood Frenzy (id=203961) [Spell Family (7)]
 Class            : Druid
 School           : Nature
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6555,7 +6344,6 @@ Name             : Blood Frenzy (id=203962) [Spell Family (7), Passive]
 Class            : Druid
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -6573,7 +6361,6 @@ Name             : Galactic Guardian (id=203964) [Spell Family (7), Passive]
 Class            : Druid
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Internal Cooldown: 2 seconds
 Proc Chance      : 5%
 Proc Flags       : ..x.x... ....x... x.x..... ........ 
@@ -6597,7 +6384,6 @@ Name             : Survival of the Fittest (id=203965) [Spell Family (7), Passiv
 Class            : Druid
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -6620,7 +6406,6 @@ Name             : Earthwarden (id=203974) [Spell Family (7), Passive]
 Class            : Druid
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
@@ -6642,7 +6427,6 @@ Class            : Druid
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 3 maximum
 Proc Chance      : 101%
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6662,7 +6446,6 @@ Name             : Rend and Tear (id=204053) [Spell Family (7), Passive]
 Class            : Druid
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -6695,7 +6478,6 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 8.5 seconds
 Cooldown         : 75 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6714,7 +6496,6 @@ School           : Arcane
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Berserk (50334 effect#2), Guardian Druid (137010 effect#1), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effect#1), Adaptive Swarm (325733 effect#2), Adaptive Swarm (325748 effect#2), Lone Empowerment (338142 effect#1), Druid Runecarve 3 (338657 effect#1), 
 Family Flags     : 54, 77
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6740,7 +6521,6 @@ Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 60 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Starfall (191034 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1)
 Family Flags     : 41
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ....x... 
@@ -6772,7 +6552,6 @@ Class            : Druid
 School           : Physical
 Spell Type       : None
 Spell Level      : 1
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -6791,7 +6570,6 @@ Class            : Druid
 School           : Physical
 Spell Type       : None
 Spell Level      : 1
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -6811,7 +6589,6 @@ School           : Nature
 Spell Type       : None
 Range            : 100 yards
 Duration         : 6 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Incarnation: Tree of Life (5420 effect#1), Ironbark (102342 effect#2), Heart of the Wild (108294 effect#1), Restoration Druid (137012 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Stellar Drift (202461 effect#1), Ravenous Frenzy (323546 effect#1), Adaptive Swarm (325748 effect#2), Druid Runecarve 3 (338657 effect#2), 
 Family Flags     : 118, 121
 Attributes       : ........ ........ ..x..... x..x....   ........ ........ ........ ........ 
@@ -6833,7 +6610,6 @@ Class            : Druid
 School           : Nature
 Spell Type       : None
 Duration         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 100 maximum
 Proc Chance      : 101%
 Attributes       : ........ ........ ..x..... x..x...x   ........ ..x..... ........ ........ 
@@ -6954,7 +6730,6 @@ Spell Type       : None
 Spell Level      : 19
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Affecting spells : Metamorphosis Rune (23724 effect#1), Cheaper Druid Shapeshifting (38314 effect#1), Druid (137009 effect#4), Starfall (191034 effect#2), Stellar Drift (202461 effect#1)
 Family Flags     : 46
@@ -7117,7 +6892,6 @@ Class            : Guardian Druid
 School           : Physical
 Spell Type       : None
 Spell Level      : 37
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ....x... ....x... x....... ........ 
                  : Yellow Melee, Generic Hostile Spell, Magic Hostile Spell
@@ -7259,7 +7033,6 @@ Class            : Druid
 School           : Astral
 Spell Type       : Magic
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Moonkin Form (24858 effect#9), Eclipse (Solar) (48517 effect#3), Eclipse (Lunar) (48518 effect#3), Berserk (50334 effect#2), Incarnation: Chosen of Elune (102560 effect#1), Heart of the Wild (108291 effect#1), Balance Druid (137013 effect#1), Starfall (191034 effect#2), Celestial Alignment (194223 effect#1), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effect#1), Adaptive Swarm (325733 effect#2), Lone Empowerment (338142 effect#1), Druid Runecarve 3 (338657 effect#1), Druid Balance Runecarve 3 (339943 effect#1), Druid Balance Runecarve 3 (339946 effect#1)
 Family Flags     : 18, 23
 Attributes       : ........ ........ x....... x..x....   .....x.. ........ ........ ........ 
@@ -7281,7 +7054,6 @@ School           : Astral
 Spell Type       : Magic
 Range            : 40 yards
 Cooldown         : 0.5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : .......x ........ ........ ........   ........ ........ ........ ........ 
@@ -7303,7 +7075,6 @@ Spell Level      : 47
 Range            : 100 yards
 Cast Time        : 10 seconds
 GCD              : 1.5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Starfall (191034 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1)
 Family Flags     : 73
 Attributes       : ........ ........ x....... ....x...   ........ ........ .x...... ........ 
@@ -7343,7 +7114,6 @@ Class            : Druid
 School           : Physical
 Spell Type       : None
 Duration         : 15 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ........ ..x...x. ........ ........ 
@@ -7372,7 +7142,6 @@ School           : Physical
 Spell Type       : None
 Range            : 100 yards
 Duration         : 15 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ........ ........ x....... ........ 
@@ -7401,7 +7170,6 @@ Class            : Druid
 School           : Nature
 Spell Type       : Magic
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Berserk (50334 effect#2), Guardian Druid (137010 effect#1), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effect#1), Adaptive Swarm (325733 effect#2), Adaptive Swarm (325748 effect#2), Lone Empowerment (338142 effect#1), Druid Runecarve 3 (338657 effect#1), 
 Family Flags     : 54, 77
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7424,7 +7192,6 @@ Spell Type       : Melee
 Spell Level      : 22
 Range            : 8 yards
 GCD              : 1 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x00000011
 Affecting spells : Starfall (191034 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Sharpened Claws (279943 effect#1)
 Family Flags     : 24
@@ -7448,7 +7215,6 @@ School           : Physical
 Spell Type       : Melee
 Range            : 8 yards
 GCD              : 1.5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x00000010
 Affecting spells : Bear Form (5487 effect#7), Berserk (50334 effect#2), Druid (137009 effect#3), Guardian Druid (137010 effect#1), Restoration Druid (137012 effect#5), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Sharpened Claws (279943 effect#1), Ravenous Frenzy (323546 effect#1), Lone Empowerment (338142 effect#1), Druid Runecarve 3 (338657 effect#1), 
 Family Flags     : 52, 77
@@ -7494,7 +7260,6 @@ Class            : Druid
 School           : Physical
 Spell Type       : None
 Spell Level      : 1
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -7555,7 +7320,6 @@ Name             : Nature's Guardian (id=227034) [Spell Family (7)]
 Class            : Druid
 School           : Nature
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ .....x.. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7574,7 +7338,6 @@ Class            : Balance Feral Guardian Druid
 School           : Physical
 Spell Type       : None
 Spell Level      : 1
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : .......x ........ ........ ........   ........ ........ x....... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -7592,7 +7355,6 @@ Class            : Restoration Druid
 School           : Nature
 Spell Type       : None
 Spell Level      : 54
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7611,7 +7373,6 @@ Class            : Restoration Druid
 School           : Nature
 Spell Type       : None
 Spell Level      : 26
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7632,7 +7393,6 @@ Class            : Balance Druid
 School           : Nature
 Spell Type       : None
 Spell Level      : 37
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7654,7 +7414,6 @@ Class            : Balance Restoration Druid
 School           : Nature
 Spell Type       : None
 Spell Level      : 31
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7673,7 +7432,6 @@ Class            : Feral Druid
 School           : Nature
 Spell Type       : None
 Spell Level      : 38
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7692,7 +7450,6 @@ Class            : Feral Druid
 School           : Nature
 Spell Type       : None
 Spell Level      : 47
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7713,7 +7470,6 @@ Class            : Feral Druid
 School           : Nature
 Spell Type       : None
 Spell Level      : 44
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7732,7 +7488,6 @@ Class            : Feral Druid
 School           : Nature
 Spell Type       : None
 Spell Level      : 42
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7751,7 +7506,6 @@ Class            : Guardian Druid
 School           : Nature
 Spell Type       : None
 Spell Level      : 42
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7770,7 +7524,6 @@ Class            : Guardian Druid
 School           : Physical
 Spell Type       : None
 Spell Level      : 47
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7789,7 +7542,6 @@ Class            : Guardian Druid
 School           : Nature
 Spell Type       : None
 Spell Level      : 33
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7811,7 +7563,6 @@ Class            : Feral Druid
 School           : Nature
 Spell Type       : None
 Spell Level      : 42
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7829,7 +7580,6 @@ Name             : Archdruid's Lunarwing Form (desc=Shapeshift) (id=231437) [Pas
 Class            : Druid
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -7850,7 +7600,6 @@ Spell Type       : None
 Range            : 50000 yards
 Duration         : 4 seconds
 Cooldown         : 1 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Mechanic         : Snare
 Triggered by     : Thorns (236696), Thorns (305497)
 Attributes       : ........ ........ ........ ..xx....   .....x.. ..x..... ........ ........ 
@@ -7871,7 +7620,6 @@ Name             : Moment of Clarity (id=236068) [Spell Family (7), Passive]
 Class            : Druid
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -7910,7 +7658,6 @@ Spell Level      : 10
 Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 3 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x00000010
 Affecting spells : Druid (137009 effect#3), Item - Druid T17 Guardian 2P Bonus (165410 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Guardian's Wrath (278511 effect#2)
 Family Flags     : 11
@@ -7935,7 +7682,6 @@ Spell Type       : None
 Spell Level      : 1
 Range            : 40 yards
 Duration         : 10 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Starfall (191034 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1)
 Triggered by     : Force of Nature (205636)
 Family Flags     : 41
@@ -7997,7 +7743,6 @@ School           : Physical
 Spell Type       : Melee
 Spell Level      : 1
 Duration         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Affecting spells : Metamorphosis Rune (23724 effect#1), Cheaper Druid Shapeshifting (38314 effect#1), Incarnation (117679 effect#1), Druid (137009 effect#4), Wildcat Celerity (184877 effect#1), Starfall (191034 effect#2), Stellar Drift (202461 effect#1)
 Triggered by     : Incarnation: King of the Jungle (102543)
@@ -8027,7 +7772,6 @@ GCD              : 1.5 seconds
 Duration         : 5 seconds
 Cooldown         : 45 seconds
 Category         : 44
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 45 seconds
 Affecting spells : Cat Form (768 effect#5), Starfall (191034 effect#2), Stellar Drift (202461 effect#1)
 Family Flags     : 67
@@ -8793,7 +8537,6 @@ Class            : Guardian Druid
 School           : Nature
 Spell Type       : None
 Spell Level      : 12
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8959,7 +8702,6 @@ Class            : Guardian Druid
 School           : Nature
 Spell Type       : None
 Spell Level      : 38
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9178,7 +8920,6 @@ GCD              : 1 seconds
 Velocity         : 20 yards/sec
 Charges          : 3 (25 seconds cooldown)
 Category         : 1727
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Moonkin Form (24858 effect#9), Eclipse (Lunar) (48518 effect#3), Berserk (50334 effect#2), Incarnation: Chosen of Elune (102560 effect#1), Heart of the Wild (108291 effect#1), Balance Druid (137013 effect#1), Starfall (191034 effect#2), Celestial Alignment (194223 effect#1), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effect#1), Lone Empowerment (338142 effect#1), Druid Runecarve 3 (338657 effect#1), Druid Balance Runecarve 3 (339946 effect#1)
 Family Flags     : 18, 63
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9209,7 +8950,6 @@ GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
 Charges          : 3 (25 seconds cooldown)
 Category         : 1727
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Moonkin Form (24858 effect#9), Eclipse (Lunar) (48518 effect#3), Berserk (50334 effect#2), Incarnation: Chosen of Elune (102560 effect#1), Heart of the Wild (108291 effect#1), Balance Druid (137013 effect#1), Starfall (191034 effect#2), Celestial Alignment (194223 effect#1), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effect#1), Lone Empowerment (338142 effect#1), Druid Runecarve 3 (338657 effect#1), Druid Balance Runecarve 3 (339946 effect#1)
 Family Flags     : 18, 63
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9240,7 +8980,6 @@ GCD              : 1.5 seconds
 Velocity         : 0.9 yards/sec
 Charges          : 3 (25 seconds cooldown)
 Category         : 1727
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Moonkin Form (24858 effect#9), Eclipse (Lunar) (48518 effect#3), Berserk (50334 effect#2), Incarnation: Chosen of Elune (102560 effect#1), Heart of the Wild (108291 effect#1), Balance Druid (137013 effect#1), Starfall (191034 effect#2), Celestial Alignment (194223 effect#1), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effect#1), Lone Empowerment (338142 effect#1), Druid Runecarve 3 (338657 effect#1), Druid Balance Runecarve 3 (339946 effect#1)
 Family Flags     : 18, 63
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9333,7 +9072,6 @@ Range            : 5 yards
 GCD              : 1 seconds
 Duration         : 1 seconds
 Cooldown         : 45 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x00000001
 Affecting spells : Mastery: Razor Claws (77493 effect#1), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Untamed Ferocity (273338 effect#2), Berserk (279526 effect#1), Adaptive Swarm (325733 effect#2)
 Family Flags     : 94
@@ -9359,7 +9097,6 @@ School           : Physical
 Spell Type       : Melee
 Range            : 8 yards
 Duration         : 6 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Tiger's Fury (5217 effect#1), Berserk (50334 effect#2), Savage Roar (62071 effect#1), Mastery: Razor Claws (77493 effect#1), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Heart of the Wild (108292 effect#1), Feral Druid (137011 effect#1), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Untamed Ferocity (273338 effect#2), Berserk (279526 effect#1), Ravenous Frenzy (323546 effect#1), Adaptive Swarm (325733 effect#2), Lone Empowerment (338142 effect#1), Druid Runecarve 3 (338657 effect#1), 
 Family Flags     : 94, 98
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9386,7 +9123,6 @@ Name             : Photosynthesis (id=274902) [Spell Family (7), Passive]
 Class            : Druid
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -9428,7 +9164,6 @@ Class            : Druid
 School           : Nature
 Spell Type       : None
 Spell Level      : 13
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Metamorphosis Rune (23724 effect#1), Cheaper Druid Shapeshifting (38314 effect#1), Druid (137009 effect#4), Starfall (191034 effect#2), Stellar Drift (202461 effect#1)
 Family Flags     : 29
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -9496,7 +9231,6 @@ Class            : Druid
 School           : Nature
 Spell Type       : None
 Spell Level      : 36
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Metamorphosis Rune (23724 effect#1), Cheaper Druid Shapeshifting (38314 effect#1), Crow Discount (40389 effect#1), Druid (137009 effect#4), Starfall (191034 effect#2), Stellar Drift (202461 effect#1)
 Family Flags     : 47
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -9753,7 +9487,6 @@ Name             : Twin Moons (id=279620) [Spell Family (7), Passive, Hidden]
 Class            : Druid
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Internal Cooldown: 0.5 seconds
 Proc Chance      : 100%
 Proc Flags       : ........ ........ x....... ........ 
@@ -9784,7 +9517,6 @@ Class            : Druid
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : Twin Moons (279620)
 Attributes       : .......x ........ ........ ...x....   .....x.. ..x..... ........ ........ 
                  : ........ ........ ........ ....x...   ........ .x...... .x...... ........ 
@@ -9845,7 +9577,6 @@ Class            : Druid
 School           : Firestorm
 Spell Type       : None
 Duration         : 20 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 3 maximum
 Proc Chance      : 101%
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -9866,7 +9597,6 @@ Class            : Druid
 School           : Nature
 Spell Type       : Magic
 Range            : 50000 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... .....x..   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10624,7 +10354,6 @@ Resource         : 20 Energy (3) (id=191997)
 Resource         : 1 - 5 Combo Points (4) (id=191998)
 Range            : 8 yards
 GCD              : 1 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x00000001
 Affecting spells : Tiger's Fury (5217 effect#1), Berserk (50334 effect#2), Savage Roar (62071 effect#1), Mastery: Razor Claws (77493 effect#1), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Heart of the Wild (108292 effect#1), Feral Druid (137011 effect#1), Soul of the Forest (158476 effect#2), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effect#1), Adaptive Swarm (325733 effect#2), Adaptive Swarm (325748 effect#2), Lone Empowerment (338142 effect#1), Druid Runecarve 3 (338657 effect#1), 
 Family Flags     : 54, 93, 98
@@ -10651,7 +10380,6 @@ Name             : Scent of Blood (id=285564) [Spell Family (7), Passive]
 Class            : Druid
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -10671,7 +10399,6 @@ School           : Physical
 Spell Type       : None
 Range            : 100 yards
 Duration         : 6 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10907,7 +10634,6 @@ Class            : Guardian Druid
 School           : Nature
 Spell Type       : None
 Spell Level      : 49
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11037,7 +10763,6 @@ Class            : Guardian Druid
 School           : Physical
 Spell Type       : None
 Spell Level      : 10
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11056,7 +10781,6 @@ Class            : Feral Druid
 School           : Physical
 Spell Type       : None
 Spell Level      : 19
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11075,7 +10799,6 @@ Class            : Guardian Druid
 School           : Nature
 Spell Type       : None
 Spell Level      : 52
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11174,7 +10897,6 @@ School           : Nature
 Spell Type       : Magic
 Range            : 100 yards
 Cooldown         : 0.5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : Thorns (305497)
 Attributes       : ........ ........ ..x..... x..x....   ........ ..x..... ........ ........ 
                  : ........ ........ ......x. ....x...   ........ ........ ........ ......x. 
@@ -11198,7 +10920,6 @@ Range            : 40 yards
 GCD              : 1 seconds
 Duration         : 12 seconds
 Cooldown         : 45 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 1 seconds
 Internal Cooldown: 0.5 seconds
 Proc Chance      : 100%
@@ -11245,7 +10966,6 @@ Name             : Bloodtalons (id=319439) [Spell Family (7), Passive]
 Class            : Druid
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11271,7 +10991,6 @@ GCD              : 1.5 seconds
 Duration         : 45 seconds
 Cooldown         : 300 seconds
 Category         : 1383
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 300 seconds
 Attributes       : ........ ........ ..x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11303,7 +11022,6 @@ Spell Type       : None
 GCD              : 1.5 seconds
 Duration         : 20 seconds
 Cooldown         : 180 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 99 maximum
 Proc Chance      : 100%
 Affecting spells : Starfall (191034 effect#2), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1)
@@ -11353,7 +11071,6 @@ Class            : Druid
 School           : Shadow
 Spell Type       : None
 Duration         : 1 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Attributes       : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ xx...... ........ 
@@ -11379,7 +11096,6 @@ Spell Type       : None
 GCD              : 1.5 seconds
 Duration         : 4 seconds
 Cooldown         : 120 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 99 maximum
 Proc Chance      : 101%
 Stance Mask      : 0x40000011
@@ -11415,7 +11131,6 @@ Spell Type       : Magic
 Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 25 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11439,7 +11154,6 @@ Spell Type       : Magic
 Range            : 100 yards
 Velocity         : 12 yards/sec
 Duration         : 12 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 5 maximum
 Proc Chance      : 101%
 Affecting spells : Moonkin Form (24858 effect#9), Berserk (50334 effect#2), Incarnation: Chosen of Elune (102560 effect#1), Heart of the Wild (108291 effect#1), Balance Druid (137013 effect#1), Starfall (191034 effect#2), Celestial Alignment (194223 effect#1), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effect#1), Lone Empowerment (338142 effect#1), Druid Runecarve 3 (338657 effect#1), 
@@ -11470,7 +11184,6 @@ Spell Level      : 1
 Range            : 100 yards
 Velocity         : 12 yards/sec
 Duration         : 12 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 5 maximum
 Proc Chance      : 101%
 Affecting spells : Incarnation: Tree of Life (5420 effect#1), Heart of the Wild (108294 effect#1), Restoration Druid (137012 effect#1), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effect#1), Druid Runecarve 3 (338657 effect#2), 
@@ -11498,7 +11211,6 @@ Class            : Balance Druid
 School           : Physical
 Spell Type       : None
 Spell Level      : 10
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11523,7 +11235,6 @@ Class            : Restoration Druid
 School           : Nature
 Spell Type       : None
 Spell Level      : 52
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11548,7 +11259,6 @@ Max Targets      : 1
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
 Duration         : 3600 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ...x.... ........ ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ ........ ........   .....x.. x....... ........ ........ 
@@ -11577,7 +11287,6 @@ Spell Type       : None
 GCD              : 1.5 seconds
 Cooldown         : 60 seconds
 Category         : 1885
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 60 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ...x.... ........ ........ ........   ........ ........ ........ ........ 
@@ -11603,7 +11312,6 @@ Spell Type       : None
 GCD              : 1.5 seconds
 Cooldown         : 60 seconds
 Category         : 1885
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 60 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ...x.... ........ ........ ........   ........ ........ ........ ........ 
@@ -11627,7 +11335,6 @@ Class            : Druid
 School           : Nature
 Spell Type       : None
 Spell Level      : 9
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11650,7 +11357,6 @@ Spell Type       : None
 GCD              : 1.5 seconds
 Cooldown         : 60 seconds
 Category         : 1885
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 60 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ...x.... ........ ........ ........   ........ ........ ........ ........ 
@@ -11675,7 +11381,6 @@ School           : Arcane
 Spell Type       : None
 Range            : 100 yards
 Duration         : 10 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ..x.x.x. x.x.x.x. x.x..x.. ........ 
                  : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Trap Triggered
@@ -11705,7 +11410,6 @@ Spell Type       : None
 Resource         : 2% Base Mana (0) (id=192740)
 Range            : 40 yards
 Duration         : 10 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Starfall (191034 effect#2), Stellar Drift (202461 effect#1)
 Family Flags     : 107
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11731,7 +11435,6 @@ School           : Arcane
 Spell Type       : None
 Range            : 100 yards
 Duration         : 10 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Starfall (191034 effect#2), Stellar Drift (202461 effect#1)
 Family Flags     : 107
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11755,7 +11458,6 @@ Resource         : 2% Base Mana (0) (id=192742)
 Range            : 40 yards
 Cast Time        : 2.5 seconds
 Duration         : 60 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11777,7 +11479,6 @@ School           : Arcane
 Spell Type       : None
 Range            : 100 yards
 Duration         : 10 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ..x.x.x. x.x.x.x. x.x..x.. ........ 
                  : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Trap Triggered
@@ -11803,7 +11504,6 @@ School           : Arcane
 Spell Type       : None
 Range            : 100 yards
 Duration         : 10 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ........ ..x...x. .....x.. ........ 
                  : Generic Heal, Magic Heal, Trap Triggered
@@ -11828,7 +11528,6 @@ Class            : Balance Druid
 School           : Nature
 Spell Type       : None
 Spell Level      : 54
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11847,7 +11546,6 @@ Class            : Druid
 School           : Nature
 Spell Type       : None
 Spell Level      : 43
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11868,7 +11566,6 @@ Class            : Balance Druid
 School           : Nature
 Spell Type       : None
 Spell Level      : 47
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11889,7 +11586,6 @@ Class            : Balance Druid
 School           : Nature
 Spell Type       : None
 Spell Level      : 49
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11910,7 +11606,6 @@ Class            : Balance Druid
 School           : Nature
 Spell Type       : None
 Spell Level      : 33
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11931,7 +11626,6 @@ Class            : Druid
 School           : Nature
 Spell Type       : None
 Spell Level      : 44
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11952,7 +11646,6 @@ Class            : Restoration Druid
 School           : Nature
 Spell Type       : None
 Spell Level      : 49
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11973,7 +11666,6 @@ Class            : Guardian Druid
 School           : Nature
 Spell Type       : None
 Spell Level      : 47
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11998,7 +11690,6 @@ GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 60 seconds
 Category         : 1885
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 60 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ...x.... ........ ........ ........   ........ ........ ........ ........ 
@@ -12024,7 +11715,6 @@ Class            : Druid
 School           : Arcane
 Spell Type       : Magic
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : Kindred Empowerment (327022)
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
                  : ........ ......x. ...x.... .....x..   ........ ........ ........ ......x. 
@@ -12043,7 +11733,6 @@ Name             : Oneth's Clear Vision (id=338661) [Spell Family (7), Passive]
 Class            : Druid
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ........ ......x. x....... ........ 
                  : Magic Heal, Magic Hostile Spell
@@ -12064,7 +11753,6 @@ Name             : Primordial Arcanic Pulsar (id=338668) [Spell Family (7), Pass
 Class            : Druid
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ........ ......x. x....... ........ 
                  : Magic Heal, Magic Hostile Spell
@@ -12088,7 +11776,6 @@ Class            : Druid
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 4 maximum
 Proc Chance      : 101%
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -12108,7 +11795,6 @@ Name             : The Dark Titan's Lesson (id=338831) [Spell Family (7), Passiv
 Class            : Druid
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -12131,7 +11817,6 @@ Class            : Druid
 School           : Arcane
 Spell Type       : Magic
 Duration         : 15 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ........ ........ x....... ........ 
@@ -12156,7 +11841,6 @@ Class            : Druid
 School           : Arcane
 Spell Type       : Magic
 Duration         : 15 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ........ ......x. ........ ........ 
@@ -12180,7 +11864,6 @@ Name             : Druid Balance Runecarve 3 (id=339942) [Spell Family (7), Pass
 Class            : Druid
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -12200,7 +11883,6 @@ Class            : Druid
 School           : Nature
 Spell Type       : None
 Duration         : 7 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 7 maximum
 Proc Chance      : 101%
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -12225,7 +11907,6 @@ Class            : Druid
 School           : Arcane
 Spell Type       : None
 Duration         : 7 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 7 maximum
 Proc Chance      : 101%
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 

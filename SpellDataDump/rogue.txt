@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35360 shadowlands-BETA (, no-networking)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35360 shadowlands-BETA (hotfix 2020-08-02/35360, no-networking)
 
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
@@ -10,7 +10,6 @@ Spell Level      : 13
 Range            : 5 yards
 GCD              : 1 seconds
 Requires weapon  : Dagger
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Master of Subtlety (31665 effect#1), Vendetta (79140 effect#1), Shadow Blades (121471 effect#3), Nightstalker (130493 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Sleight of Hand (145211 effect#1), Shadow Dance (185313 effect#4), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), The First of the Dead (248210 effect#3), Master Assassin (256735 effect#1), Perforate (277720 effect#1), Inevitability (278683 effect#3)
 Family Flags     : 2, 54
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
@@ -48,7 +47,6 @@ Duration         : 1 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 20 seconds
 Category         : 270
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 20 seconds
 Proc Chance      : 101%
 Mechanic         : Stun
@@ -102,7 +100,6 @@ GCD              : 1 seconds
 Duration         : 18 seconds
 Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapon, Dagger
 Cooldown         : 6 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Mechanic         : Bleed
 Affecting spells : Stealth (1784 effect#5), Vanish (11327 effect#5), Master of Subtlety (31665 effect#1), Mastery: Potent Assassin (76803 effect#1), Vendetta (79140 effect#1), Subterfuge (115192 effect#3), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effect#1), Symbols of Death (212283 effect#1), Item - Rogue T20 Assassination 4P Bonus (242274 effect#1), Item - Rogue T20 Assassination 2P Bonus (242275 effect#1), Headshot (242277 effect#1), Master Assassin (256735 effect#1)
 Family Flags     : 8, 54
@@ -136,7 +133,6 @@ Spell Level      : 19
 Range            : 5 yards
 GCD              : 1 seconds
 Requires weapon  : Dagger
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Master of Subtlety (31665 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Master Assassin (256735 effect#1)
 Family Flags     : 53, 54
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
@@ -168,7 +164,6 @@ Spell Type       : None
 Spell Level      : 19
 Range            : 50000 yards
 Duration         : 3 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Mechanic         : Silence
 Affecting spells : Iron Wire (196861 effect#1)
 Family Flags     : 61
@@ -194,7 +189,6 @@ Spell Level      : 36
 Range            : 30 yards
 GCD              : 1 seconds
 Cooldown         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Mechanic         : Distract
 Family Flags     : 12
 Attributes       : ....x... ........ ..x..... ......x.   .....x.. x.x..... .x...... ........ 
@@ -219,7 +213,6 @@ Spell Level      : 1
 Range            : 5 yards
 GCD              : 1 seconds
 Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapon, Dagger
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Master of Subtlety (31665 effect#1), Vendetta (79140 effect#1), Nightstalker (130493 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Adrenaline Rush (186286 effect#3), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Master Assassin (256735 effect#1), Sinister Strike (279877 effect#1)
 Family Flags     : 1, 54
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
@@ -247,7 +240,6 @@ Spell Level      : 6
 Range            : 5 yards
 Duration         : 5 seconds
 Cooldown         : 15 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Improved Kick (24434 effect#1), Acrobatic Strikes (196924 effect#1)
 Family Flags     : 4
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
@@ -274,7 +266,6 @@ Duration         : 4 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 15 seconds
 Category         : 33
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 15 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
@@ -310,7 +301,6 @@ Spell Type       : None
 Spell Level      : 3
 Duration         : Aura (infinite)
 Cooldown         : 2 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
@@ -351,7 +341,6 @@ Spell Type       : None
 Spell Level      : 15
 Range            : 5 yards
 Cast Time        : 1.5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 46
 Attributes       : ....x... ........ x....... ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -375,7 +364,6 @@ Range            : 5 yards
 GCD              : 1 seconds
 Duration         : 4 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Stance Mask      : 0x20000000
 Mechanic         : Stun
@@ -406,7 +394,6 @@ Spell Type       : Melee
 Spell Level      : 31
 Cooldown         : 120 seconds
 Category         : 39
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 120 seconds
 Affecting spells : Item - Rogue T18 Subtlety 2P Bonus (186278 effect#1)
 Family Flags     : 11
@@ -435,7 +422,6 @@ Class            : Rogue
 School           : Physical
 Spell Type       : None
 Spell Level      : 25
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 47
 Attributes       : ....x.xx ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -461,7 +447,6 @@ Range            : 5 yards
 GCD              : 1 seconds
 Duration         : 4 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Mechanic         : Bleed
 Affecting spells : Master of Subtlety (31665 effect#1), Rogue Tier 6 Trinket (40460 effect#1), Mastery: Potent Assassin (76803 effect#1), Mastery: Executioner (76808 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Adrenaline Rush (186286 effect#3), Ruthless Precision (193357 effect#1), Deeper Stratagem (193531 effect#1), Elaborate Planning (193641 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Lesser Adrenaline Rush (246558 effect#3), Master Assassin (256735 effect#1)
 Family Flags     : 20, 54
@@ -503,7 +488,6 @@ Spell Level      : 38
 GCD              : 1 seconds
 Duration         : 5 seconds
 Cooldown         : 15 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Elusiveness (79008 effect#1)
 Family Flags     : 27
 Attributes       : ....x... ........ x.x..... ........   .....x.. ........ ........ ........ 
@@ -533,7 +517,6 @@ Max Targets      : 1
 GCD              : 1 seconds
 Duration         : 60 seconds
 Cooldown         : 120 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Mechanic         : Disorient
@@ -566,7 +549,6 @@ Spell Level      : 13
 Range            : 5 yards
 GCD              : 1 seconds
 Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapon
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Adrenaline Rush (13750 effect#3), Master of Subtlety (31665 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Deceit (166878 effect#1), Cold Blood (182304 effect#1), Eviscerating Blade (184917 effect#2), Shadow Dance (185313 effect#4), Ruthless Precision (193357 effect#1), Deeper Stratagem (193531 effect#1), Elaborate Planning (193641 effect#1), Acrobatic Strikes (196924 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Lesser Adrenaline Rush (246558 effect#3), Sharpened Sabers (252285 effect#1), Master Assassin (256735 effect#1)
 Family Flags     : 54, 112
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
@@ -594,7 +576,6 @@ School           : Nature
 Spell Type       : Melee
 Range            : 100 yards
 Duration         : 12 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Improved Poisons (14117 effect#1), Venomous Totem (23726 effect#2), Master of Subtlety (31665 effect#1), Envenom (32645 effect#3), Mastery: Potent Assassin (76803 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effect#1), Master Poisoner (196864 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Toxic Blade (245389 effect#1), Virulent Poisons (252277 effect#1), Master Assassin (256735 effect#1), Shiv (319033 effect#1), Shiv (319504 effect#1)
 Triggered by     : Deadly Poison (2823)
 Family Flags     : 16, 51, 54
@@ -621,7 +602,6 @@ Spell Level      : 13
 Cast Time        : 1.5 seconds
 Duration         : 3600 seconds
 Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapon, Dagger
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 30%
 Proc Flags       : ..x.x... x....... ........ ........ 
                  : White Melee, Yellow Melee, Yellow Ranged
@@ -647,7 +627,6 @@ School           : Physical
 Spell Type       : None
 Spell Level      : 19
 Cooldown         : 1.5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ x.x..... x..x....   .....x.. ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -670,7 +649,6 @@ Spell Level      : 5
 Duration         : 8 seconds
 Cooldown         : 120 seconds
 Category         : 44
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 120 seconds
 Affecting spells : Sprint (231691 effect#1)
 Family Flags     : 6
@@ -702,7 +680,6 @@ Spell Level      : 22
 Cast Time        : 1.5 seconds
 Duration         : 3600 seconds
 Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapon, Dagger
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 30%
 Proc Flags       : ..x.x... x....... ........ ........ 
                  : White Melee, Yellow Melee, Yellow Ranged
@@ -729,7 +706,6 @@ Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 12 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Mechanic         : Snare
 Affecting spells : Improved Poisons (14117 effect#1), Envenom (32645 effect#3), Mastery: Potent Assassin (76803 effect#1), Master Poisoner (196864 effect#3)
 Triggered by     : Crippling Poison (3408)
@@ -758,7 +734,6 @@ Spell Level      : 12
 Range            : 100 yards
 GCD              : 1 seconds
 Duration         : 6 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Adrenaline Rush (13750 effect#3), Rogue Tier 6 Trinket (40460 effect#1), Energetic Recovery (79152 effect#1), Adrenaline Rush (186286 effect#3), Deeper Stratagem (193531 effect#1), Lesser Adrenaline Rush (246558 effect#3)
 Family Flags     : 18, 89
 Attributes       : ....x... ........ x.x..... .....x..   .....x.. ..x..... ......x. ........ 
@@ -798,7 +773,6 @@ Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x40000000
 Affecting spells : Moonkin Form (24858 effect#9), Eclipse (Solar) (48517 effect#1), Berserk (50334 effect#2), Incarnation: Chosen of Elune (102560 effect#1), Heart of the Wild (108291 effect#1), Restoration Druid (137012 effect#5), Balance Druid (137013 effect#1), Item - Druid T17 Balance 2P Bonus (165433 effect#1), Celestial Fury (180719 effect#2), Starfall (191034 effect#2), Thrash (192090 effect#2), Celestial Alignment (194223 effect#1), Astral Influence (197524 effect#1), Astral Power (197911 effect#2), Stellar Drift (202461 effect#1), Promise of Elune, the Moon Goddess (208283 effect#2), Ekowraith, Creator of Worlds (210667 effect#1), Solar Empowerment (211089 effect#1), Dawning Sun (276154 effect#1), Ravenous Frenzy (323546 effect#1), Lone Empowerment (338142 effect#1), Druid Runecarve 3 (338657 effect#1), Druid Balance Runecarve 3 (339943 effect#1)
 Family Flags     : 0, 18
@@ -822,7 +796,6 @@ Spell Level      : 23
 Duration         : 10 seconds
 Cooldown         : 120 seconds
 Category         : 66
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 120 seconds
 Family Flags     : 5
 Attributes       : ....x... ........ x....... ........   ........ ..x..... ........ ........ 
@@ -844,7 +817,6 @@ School           : Physical
 Spell Type       : Melee
 Range            : 5 yards
 Requires weapon  : Dagger
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Master of Subtlety (31665 effect#1), Envenom (32645 effect#4), Vendetta (79140 effect#1), Nightstalker (130493 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Cold Blood (170882 effect#1), Shadow Dance (185313 effect#4), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Master Assassin (256735 effect#1), Contaminant (269308 effect#2)
 Triggered by     : Mutilate (1329)
 Family Flags     : 33, 54
@@ -873,7 +845,6 @@ School           : Nature
 Spell Type       : Melee
 Range            : 100 yards
 Duration         : 10 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Affecting spells : Improved Poisons (14117 effect#1), Envenom (32645 effect#3), Master Poisoner (196864 effect#1)
 Triggered by     : Numbing Poison (5761)
@@ -903,7 +874,6 @@ Spell Level      : 54
 Cast Time        : 1.5 seconds
 Duration         : 3600 seconds
 Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapon, Dagger
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 50%
 Proc Flags       : ..x.x... x....... ........ ........ 
                  : White Melee, Yellow Melee, Yellow Ranged
@@ -933,7 +903,6 @@ Range            : 5 yards
 GCD              : 1 seconds
 Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapon, Dagger
 Cooldown         : 25 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Shadow Blades (121471 effect#3), Nightstalker (130493 effect#1), Acrobatic Strikes (196924 effect#1), Toxic Blade (245389 effect#1), Shiv (319504 effect#1)
 Family Flags     : 29
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
@@ -967,7 +936,6 @@ Range            : 10 yards
 GCD              : 1 seconds
 Duration         : 60 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Stance Mask      : 0x20000000
@@ -1000,7 +968,6 @@ Spell Level      : 7
 Range            : 5 yards
 GCD              : 1 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x20000000
 Affecting spells : Master of Subtlety (31665 effect#1), Vendetta (79140 effect#1), Blindside (121153 effect#1), Nightstalker (130493 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Sleight of Hand (145211 effect#2), Cold Blood (182304 effect#1), Shadow Dance (185313 effect#4), Broadside (193356 effect#2), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effect#1), Acrobatic Strikes (196924 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Master Assassin (256735 effect#1)
 Family Flags     : 9, 54
@@ -1029,7 +996,6 @@ Spell Level      : 32
 Cast Time        : 1.5 seconds
 Duration         : 3600 seconds
 Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapon, Dagger
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 30%
 Proc Flags       : ..x.x... x....... ........ ........ 
                  : White Melee, Yellow Melee, Yellow Ranged
@@ -1056,7 +1022,6 @@ Spell Type       : Melee
 Spell Level      : 23
 Range            : 100 yards
 Duration         : 12 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 3 maximum
 Proc Chance      : 101%
 Affecting spells : Improved Poisons (14117 effect#1), Master of Subtlety (31665 effect#1), Envenom (32645 effect#3), Mastery: Potent Assassin (76803 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Poison Knives (192376 effect#2), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effect#1), Master Poisoner (196864 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Toxic Blade (245389 effect#1), Virulent Poisons (252277 effect#1), Master Assassin (256735 effect#1), Shiv (319033 effect#1), Wound Poison (319066 effect#1), Shiv (319504 effect#1)
@@ -1084,7 +1049,6 @@ School           : Physical
 Spell Type       : None
 Spell Level      : 15
 Duration         : 3 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Stance Mask      : 0x20000000
@@ -1126,8 +1090,7 @@ Spell Level      : 34
 GCD              : 0.8 seconds
 Duration         : 20 seconds
 Cooldown         : 180 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-                 : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
 Affecting spells : Item - Rogue T18 Combat 4P Bonus (186288 effect#1)
 Family Flags     : 39
 Attributes       : ....x... ........ x....... ........   ........ ..x..... ........ ........ 
@@ -1162,7 +1125,6 @@ GCD              : 1 seconds
 Duration         : 12 seconds
 Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapon, Dagger
 Cooldown         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ..x.x... x....... ........ ........ 
                  : White Melee, Yellow Melee, Yellow Ranged
@@ -1192,7 +1154,6 @@ Name             : Nightstalker (desc=Passive Talent) (id=14062) [Spell Family (
 Class            : Rogue
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Subtlety Rogue (137035 effect#3)
 Family Flags     : 121
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
@@ -1219,7 +1180,6 @@ Class            : Assassination Rogue
 School           : Physical
 Spell Type       : None
 Spell Level      : 29
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1247,7 +1207,6 @@ Class            : Outlaw Rogue
 School           : Physical
 Spell Type       : None
 Spell Level      : 19
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ....x... x.x.x.x. x....... ........ 
                  : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
@@ -1268,7 +1227,6 @@ Name             : Seal Fate (id=14189) [Spell Family (8)]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : Seal Fate (14190)
 Family Flags     : 87
 Attributes       : ....x... ........ ........ ........   ........ ..x..... ........ ........ 
@@ -1288,7 +1246,6 @@ Class            : Assassination Rogue
 School           : Physical
 Spell Type       : None
 Spell Level      : 12
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ....x.x. x.x.x.x. x....... ........ 
                  : Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
@@ -1309,7 +1266,6 @@ Name             : Vigor (id=14983) [Spell Family (8), Passive, Hidden]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -1390,7 +1346,6 @@ School           : Physical
 Spell Type       : Melee
 Spell Level      : 1
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Acrobatic Strikes (196924 effect#1), 
 Family Flags     : 93
 Attributes       : ....x... ........ ..x..x.. ........   ........ ........ ........ ........ 
@@ -1433,7 +1388,6 @@ School           : Physical
 Spell Type       : Melee
 Range            : 5 yards
 Requires weapon  : Dagger
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Master of Subtlety (31665 effect#1), Envenom (32645 effect#4), Vendetta (79140 effect#1), Nightstalker (130493 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Cold Blood (170882 effect#1), Shadow Dance (185313 effect#4), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Master Assassin (256735 effect#1), Contaminant (269308 effect#2)
 Triggered by     : Mutilate (1329)
 Family Flags     : 34, 54
@@ -1479,7 +1433,6 @@ Class            : Rogue
 School           : Physical
 Spell Type       : None
 Spell Level      : 27
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 106
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1499,7 +1452,6 @@ Class            : Rogue
 School           : Physical
 Spell Type       : None
 Spell Level      : 1
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -1520,7 +1472,6 @@ Spell Type       : None
 Spell Level      : 49
 Duration         : 5 seconds
 Cooldown         : 120 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 48
 Attributes       : ....x... ........ ..x..... ........   .....x.. ..x..... .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1542,7 +1493,6 @@ Name             : Cheat Death (desc=Passive Talent) (id=31230) [Spell Family (8
 Class            : Rogue
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 42
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ...x.... ........ 
@@ -1564,7 +1514,6 @@ Class            : Rogue
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ...x....   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1598,7 +1547,6 @@ Range            : 5 yards
 GCD              : 1 seconds
 Duration         : 1 seconds
 Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapon, Dagger
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ....x... ....x... x.x..... ........ 
                  : Yellow Melee, Generic Hostile Spell, Magic Hostile Spell, Periodic
@@ -1648,7 +1596,6 @@ Name             : Combat Potency (id=35546) [Spell Family (8)]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Mechanic         : Snare
 Triggered by     : Combat Potency (35551)
 Family Flags     : 114
@@ -1669,7 +1616,6 @@ Class            : Outlaw Rogue
 School           : Physical
 Spell Type       : None
 Spell Level      : 37
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ..x.x... ........ ........ ........ 
                  : White Melee, Yellow Melee
@@ -1697,7 +1643,6 @@ Duration         : 2 seconds
 Cooldown         : 1 seconds
 Charges          : 1 (30 seconds cooldown)
 Category         : 1206: Subtlety Rogue (137035 effect#5)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 41
 Attributes       : ....x... ........ ........ .....x..   .....x.. ..x..... ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ xx...... ........ 
@@ -1741,7 +1686,6 @@ School           : Holy
 Spell Type       : None
 Range            : 50000 yards
 Duration         : 360 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ .......x x.xx.x..   .....x.. ..x..... ........ ........ 
                  : x.x..... ......x. ...x.... ........   ........ ........ ....x... ....x.x. 
                  : .......x ........ ...x.... ........   ..xx.... ........ .xx..... ........ 
@@ -1762,7 +1706,6 @@ Class            : Rogue
 School           : Physical
 Spell Type       : None
 Duration         : 3 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x... ........ ........ x..x....   .....x.. ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : .......x ........ ........ ........   ........ ........ ........ ........ 
@@ -1787,7 +1730,6 @@ GCD              : 1 seconds
 Duration         : 2 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 120 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Nightstalker (130493 effect#1)
 Family Flags     : 55, 91
 Attributes       : ....x... ........ x....... .....x..   ........ ..x..... ........ ..x..... 
@@ -1823,7 +1765,6 @@ Resource         : 35 Energy (3) (id=2351)
 Spell Level      : 33
 GCD              : 1 seconds
 Velocity         : 35 yards/sec
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Master of Subtlety (31665 effect#1), Vendetta (79140 effect#1), Nightstalker (130493 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effect#1), The Dreadlord's Deceit (208693 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Master Assassin (256735 effect#1), Hidden Blades (270070 effect#1), Echoing Blades (287649 effect#2)
 Family Flags     : 50, 54
 Attributes       : ....x... ........ x....... ........   ....x... .x...... ........ ........ 
@@ -1869,7 +1810,6 @@ School           : Physical
 Spell Type       : None
 GCD              : 1 seconds
 Duration         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1891,7 +1831,6 @@ Spell Type       : Melee
 Spell Level      : 1
 Range            : 5 yards
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Master of Subtlety (31665 effect#1), Vendetta (79140 effect#1), Nightstalker (130493 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Master Assassin (256735 effect#1)
 Family Flags     : 54, 55
 Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... ........ ........ 
@@ -1917,7 +1856,6 @@ Spell Level      : 1
 Range            : 5 yards
 Max Targets      : 1
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Master of Subtlety (31665 effect#1), Vendetta (79140 effect#1), Nightstalker (130493 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Master Assassin (256735 effect#1)
 Triggered by     : Killing Spree (57841)
 Family Flags     : 54, 55
@@ -1942,7 +1880,6 @@ Spell Level      : 44
 Range            : 100 yards
 Duration         : 30 seconds
 Cooldown         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ..x.x.x. x....... ........ ........ 
                  : White Melee, Yellow Melee, White Ranged, Yellow Ranged
@@ -1972,7 +1909,6 @@ Class            : Subtlety Rogue
 School           : Physical
 Spell Type       : None
 Spell Level      : 28
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ....x... x.x.x.x. x....... ........ 
                  : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
@@ -1995,7 +1931,6 @@ School           : Physical
 Spell Type       : None
 Spell Level      : 27
 Duration         : 6 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ..xx.... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2015,7 +1950,6 @@ Class            : Outlaw Rogue
 School           : Physical
 Spell Type       : None
 Spell Level      : 12
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2035,7 +1969,6 @@ Name             : Glyph of Disguise (id=63268) [Spell Family (8), Passive, Hidd
 Class            : Rogue
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2054,7 +1987,6 @@ Class            : Rogue
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2134,7 +2066,6 @@ Class            : Assassination Rogue
 School           : Physical
 Spell Type       : None
 Spell Level      : 10
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2159,7 +2090,6 @@ Class            : Outlaw Rogue
 School           : Physical
 Spell Type       : None
 Spell Level      : 10
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 30%
 Proc Flags       : ..x.x.x. x....... ........ ........ 
                  : White Melee, Yellow Melee, White Ranged, Yellow Ranged
@@ -2186,7 +2116,6 @@ School           : Physical
 Spell Type       : None
 Spell Level      : 10
 Max Targets      : Unknown(-6)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2210,7 +2139,6 @@ Name             : Elusiveness (desc=Passive Talent) (id=79008) [Spell Family (8
 Class            : Rogue
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2231,7 +2159,6 @@ Class            : Outlaw Rogue
 School           : Physical
 Spell Type       : None
 Spell Level      : 28
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Internal Cooldown: 0.1 seconds
 Proc Chance      : 100%
 Proc Flags       : ....x... x.x.x.x. x....... ........ 
@@ -2257,7 +2184,6 @@ Class            : Assassination Rogue
 School           : Physical
 Spell Type       : None
 Spell Level      : 28
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ........ ........ ..x..x.. ........ 
                  : Periodic, Trap Triggered
@@ -2288,8 +2214,7 @@ Range            : 30 yards
 GCD              : 1 seconds
 Duration         : 20 seconds
 Cooldown         : 120 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-                 : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
 Family Flags     : 56
 Attributes       : ........ ........ ........ ........   .....x.. ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2320,7 +2245,6 @@ Class            : Subtlety Rogue
 School           : Physical
 Spell Type       : None
 Spell Level      : 10
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2359,7 +2283,6 @@ Class            : Rogue
 School           : Physical
 Spell Type       : None
 Spell Level      : 27
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2379,7 +2302,6 @@ School           : Physical
 Spell Type       : Melee
 Spell Level      : 1
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Master of Subtlety (31665 effect#1), Mastery: Main Gauche (76806 effect#2), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Master Assassin (256735 effect#1)
 Family Flags     : 54, 65
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
@@ -2401,7 +2323,6 @@ School           : Physical
 Spell Type       : None
 Range            : 100 yards
 Duration         : 10 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Triggered by     : Find Weakness (91023)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2422,7 +2343,6 @@ Name             : Find Weakness (id=91023) [Spell Family (8), Passive, Hidden]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ....x... ....x... ........ ........ 
                  : Yellow Melee, Generic Hostile Spell
@@ -2483,7 +2403,6 @@ Name             : Relentless Strikes (id=98440) [Spell Family (8)]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ........   .....x.. ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2501,7 +2420,6 @@ Name             : Subterfuge (id=108208) [Spell Family (8), Passive]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2533,7 +2451,6 @@ Name             : Shadow Focus (id=108209) [Spell Family (8), Passive]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2553,7 +2470,6 @@ School           : Physical
 Spell Type       : None
 Duration         : 3600 seconds
 Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapon, Dagger
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Improved Poisons (14117 effect#2), Envenom (32645 effect#2), Master Poisoner (196864 effect#3)
 Family Flags     : 64, 73
 Attributes       : ........ ........ ........ ........   .....x.. ........ .x...... ........ 
@@ -2574,7 +2490,6 @@ Name             : Dirty Tricks (desc=Passive Talent) (id=108216) [Spell Family 
 Class            : Rogue
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2598,7 +2513,6 @@ Resource         : 30 Energy (3) (id=5326)
 Range            : 5 yards
 GCD              : 1 seconds
 Requires weapon  : Dagger
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Master of Subtlety (31665 effect#1), Envenom (32645 effect#4), Vendetta (79140 effect#1), Nightstalker (130493 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Master Assassin (256735 effect#1)
 Family Flags     : 54, 72
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
@@ -2631,7 +2545,6 @@ Class            : Rogue
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 123
 Attributes       : .......x ........ ........ ...x...x   .....x.. ........ ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ ........ ........ 
@@ -2653,7 +2566,6 @@ School           : Nature
 Spell Type       : Melee
 Spell Level      : 10
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Improved Poisons (14117 effect#1), Venomous Totem (23726 effect#2), Master of Subtlety (31665 effect#1), Envenom (32645 effect#3), Mastery: Potent Assassin (76803 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effect#1), Master Poisoner (196864 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Toxic Blade (245389 effect#1), Virulent Poisons (252277 effect#1), Master Assassin (256735 effect#1), Shiv (319033 effect#1), Shiv (319504 effect#1)
 Family Flags     : 16, 54
 Attributes       : ........ ........ .....x.. ........   ...x...x ........ ........ ........ 
@@ -2678,7 +2590,6 @@ Spell Level      : 11
 Range            : 30 yards
 GCD              : 1 seconds
 Velocity         : 35 yards/sec
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Master of Subtlety (31665 effect#1), Vendetta (79140 effect#1), Shadow Blades (121471 effect#2), Nightstalker (130493 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Master Assassin (256735 effect#1)
 Family Flags     : 54, 75
 Attributes       : ........ ........ ........ ........   ........ .x...... ........ ..xx.... 
@@ -2708,7 +2619,6 @@ Spell Level      : 47
 GCD              : 1 seconds
 Duration         : 15 seconds
 Cooldown         : 360 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x20000000
 Family Flags     : 71
 Attributes       : ........ ........ ........ ........   .....x.. ........ ........ ........ 
@@ -2730,7 +2640,6 @@ Class            : Rogue
 School           : Physical
 Spell Type       : None
 Duration         : 3 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ .......x   .....x.. ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2757,7 +2666,6 @@ School           : Nature
 Spell Type       : Magic
 Range            : 100 yards
 Duration         : 5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Mechanic         : Snare
 Affecting spells : Improved Poisons (14117 effect#1), Envenom (32645 effect#3), Mastery: Potent Assassin (76803 effect#1), Master Poisoner (196864 effect#3)
 Family Flags     : 14, 51
@@ -2779,7 +2687,6 @@ Class            : Rogue
 School           : Physical
 Spell Type       : None
 Duration         : 2 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : Shroud of Concealment (114018)
 Attributes       : ...x.... ........ ........ ........   .....x.. ........ ...x.... ........ 
                  : ..xx.... ........ ........ ........   ........ ........ ........ ........ 
@@ -2800,7 +2707,6 @@ Class            : Rogue
 School           : Physical
 Spell Type       : None
 Duration         : 10 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
@@ -2830,7 +2736,6 @@ School           : Physical
 Spell Type       : None
 Range            : 30 yards
 Duration         : 300 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ...x.x..   .....x.. ..x..... ........ ........ 
                  : ........ ......x. ........ ....x...   ........ ........ xx...... ........ 
                  : x....... ....x... ........ ........   ...x.... ........ .xxx.... ........ 
@@ -2855,7 +2760,6 @@ Spell Level      : 25
 GCD              : 1 seconds
 Duration         : 2 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Master of Subtlety (31665 effect#1), Mastery: Potent Assassin (76803 effect#1), Vendetta (79140 effect#1), Nightstalker (130493 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Ruthless Precision (193357 effect#1), Deeper Stratagem (193531 effect#1), Elaborate Planning (193641 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Master Assassin (256735 effect#1)
 Family Flags     : 54, 81
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
@@ -2891,8 +2795,7 @@ Spell Level      : 34
 GCD              : 1 seconds
 Duration         : 20 seconds
 Cooldown         : 180 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-                 : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
 Proc Chance      : 101%
 Proc Flags       : ....x... x...x... x.x..... ........ 
                  : Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Periodic
@@ -2924,7 +2827,6 @@ Class            : Rogue
 School           : Shadow
 Spell Type       : Melee
 Range            : 30 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Master of Subtlety (31665 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Master Assassin (256735 effect#1)
 Family Flags     : 54, 80
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2945,7 +2847,6 @@ Class            : Rogue
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ....x.x. x...x... x....... ........ 
                  : Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
@@ -2971,7 +2872,6 @@ Name             : Prey on the Weak (id=131511) [Spell Family (8), Passive]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Rogue Tier 6 Trinket (40460 effect#1), Shadow Blades (121471 effect#2)
 Family Flags     : 19
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
@@ -2991,7 +2891,6 @@ Name             : Rogue (id=137034) [Spell Family (8), Passive, Hidden]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3011,7 +2910,6 @@ Name             : Subtlety Rogue (id=137035) [Spell Family (8), Passive, Hidden
 Class            : Subtlety Rogue, Death Knight
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3052,7 +2950,6 @@ Name             : Outlaw Rogue (id=137036) [Spell Family (8), Passive, Hidden]
 Class            : Outlaw Rogue, Death Knight
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3101,7 +2998,6 @@ Name             : Assassination Rogue (id=137037) [Spell Family (8), Passive, H
 Class            : Assassination Rogue, Death Knight
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3165,7 +3061,6 @@ Spell Level      : 1
 Range            : 30 yards
 Duration         : 60 seconds
 Cooldown         : 60 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Subtlety Rogue (137035 effect#6), Assassination Rogue (137037 effect#4)
 Family Flags     : 84
 Attributes       : ....x... ........ ..x..... .....x..   .....x.. ..x..... ........ ..x..... 
@@ -3191,7 +3086,6 @@ Class            : Rogue
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
@@ -3287,7 +3181,6 @@ Name             : Venom Rush (id=152152) [Passive]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3323,7 +3216,6 @@ Name             : Internal Bleeding (id=154904) [Passive]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3344,7 +3236,6 @@ Spell Type       : Melee
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 6 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Mechanic         : Bleed
 Affecting spells : Master of Subtlety (31665 effect#1), Mastery: Potent Assassin (76803 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Ruthless Precision (193357 effect#1), Deeper Stratagem (193531 effect#5), Elaborate Planning (193641 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Master Assassin (256735 effect#1)
 Family Flags     : 54, 95
@@ -3367,7 +3258,6 @@ Class            : Rogue
 School           : Physical
 Spell Type       : None
 Spell Level      : 1
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3387,7 +3277,6 @@ School           : Physical
 Spell Type       : None
 Spell Level      : 1
 Duration         : Aura (infinite)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Soothing Darkness (200759 effect#1), 
 Family Flags     : 110
 Attributes       : ........ ........ ..x..... ...x....   ....x... ..x..... ........ ....x... 
@@ -3411,7 +3300,6 @@ Class            : Beast Mastery Marksmanship Survival Assassination Outlaw Subt
 Race             : Dark Iron Dwarf (0x800)
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3437,7 +3325,6 @@ Spell Level      : 8
 GCD              : 1 seconds
 Duration         : 4 seconds
 Cooldown         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Iron Stomach (193546 effect#1)
 Family Flags     : 99
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3462,7 +3349,6 @@ Spell Level      : 26
 Duration         : 8 seconds
 Charges          : 1 (60 seconds cooldown)
 Category         : 1615: Enveloping Shadows (238104 effect#2)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Subterfuge (108208 effect#2), Soothing Darkness (200759 effect#2), Dark Shadow (245687 effect#1), 
 Family Flags     : 103
 Attributes       : ........ ........ ..x..... ...x...x   ....x... ..x..... ........ ....x... 
@@ -3499,7 +3385,6 @@ Class            : Subtlety Rogue
 School           : Physical
 Spell Type       : None
 Spell Level      : 34
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ....x... x.x.x.x. x....... ........ 
                  : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
@@ -3528,7 +3413,6 @@ Spell Level      : 10
 Range            : 5 yards
 GCD              : 1 seconds
 Requires weapon  : Dagger
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x20000000
 Affecting spells : Master of Subtlety (31665 effect#1), Vendetta (79140 effect#1), Shadow Blades (121471 effect#2), Nightstalker (130493 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), From the Shadows (184918 effect#1), Shadow Dance (185313 effect#4), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Shadowstrike (245623 effect#1), The First of the Dead (248210 effect#1), Master Assassin (256735 effect#1), Inevitability (278683 effect#3), Blade In The Shadows (279752 effect#2), Blade In The Shadows (279754 effect#1)
 Family Flags     : 54, 104
@@ -3560,7 +3444,6 @@ Spell Level      : 11
 Range            : 30 yards
 GCD              : 1 seconds
 Velocity         : 40 yards/sec
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Master of Subtlety (31665 effect#1), Vendetta (79140 effect#1), Shadow Blades (121471 effect#2), Nightstalker (130493 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Master Assassin (256735 effect#1)
 Family Flags     : 54, 75
 Attributes       : ........ ........ ........ ........   ........ .x...... ........ ..xxx... 
@@ -3588,7 +3471,6 @@ Spell Level      : 10
 Range            : 20 yards
 GCD              : 1 seconds
 Duration         : 6 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Adrenaline Rush (13750 effect#3), Master of Subtlety (31665 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Broadside (193356 effect#2), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effect#1), Opportunity (195627 effect#1), Blunderbuss (202848 effect#1), Greenskin's Waterlogged Wristcuffs (209423 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Lesser Adrenaline Rush (246558 effect#3), Master Assassin (256735 effect#1), Shot in the Dark (257506 effect#1), Deadshot (272940 effect#1)
 Family Flags     : 54, 101
 Attributes       : ........ ........ ..x..... ........   ........ .x...... ........ ..xx.... 
@@ -3663,7 +3545,6 @@ Spell Level      : 10
 Range            : 5 yards
 GCD              : 1 seconds
 Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapon, Dagger
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Adrenaline Rush (13750 effect#3), Master of Subtlety (31665 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Cold Blood (182304 effect#1), Shadow Dance (185313 effect#4), Broadside (193356 effect#2), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effect#1), Acrobatic Strikes (196924 effect#1), Skull and Crossbones (199603 effect#1), Weaponmaster (200733 effect#1), Swordplay (211669 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Lesser Adrenaline Rush (246558 effect#3), Master Assassin (256735 effect#1), Snake Eyes (275863 effect#1), Keep Your Wits About You (288988 effect#1)
 Family Flags     : 54, 98
 Attributes       : ....x... ........ x.x..... .......x   ........ .x...... ........ ..xx.... 
@@ -3696,7 +3577,6 @@ School           : Physical
 Spell Type       : None
 Spell Level      : 1
 Duration         : Aura (infinite)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x... ........ ..x..... .....x.x   .....x.. ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ......x. 
                  : ....x... ........ ........ ........   ........ ........ ........ ........ 
@@ -3727,7 +3607,6 @@ School           : Physical
 Spell Type       : None
 Spell Level      : 1
 Duration         : Aura (infinite)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x... ........ ..x..... .....x.x   .....x.. ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ......x. 
                  : ....x... ........ ........ ........   ........ ........ ........ ........ 
@@ -3754,7 +3633,6 @@ Class            : Rogue
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Internal Cooldown: 0.1 seconds
 Proc Chance      : 100%
 Proc Flags       : ....x... x.x.x.x. x....... ........ 
@@ -3784,7 +3662,6 @@ School           : Physical
 Spell Type       : None
 Spell Level      : 1
 Duration         : Aura (infinite)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x... ........ ..x..... .....x.x   .....x.. ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ......x. 
                  : ....x... ........ ........ ........   ........ ........ ........ ........ 
@@ -3806,7 +3683,6 @@ Name             : Deeper Stratagem (id=193531) [Spell Family (8), Passive]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3840,7 +3716,6 @@ School           : Shadow
 Spell Type       : None
 Spell Level      : 1
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Mastery: Executioner (76808 effect#1), Deeper Stratagem (193531 effect#1), 
 Family Flags     : 100
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3860,7 +3735,6 @@ Name             : Weaponmaster (id=193537) [Spell Family (8), Passive]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Internal Cooldown: 0.5 seconds
 Proc Chance      : 15%
 Proc Flags       : ....x... x...x... x.x..... ........ 
@@ -3884,7 +3758,6 @@ School           : Physical
 Spell Type       : None
 Spell Level      : 1
 Duration         : 20 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 5 maximum
 Proc Chance      : 101%
 Triggered by     : Alacrity (193539)
@@ -3906,7 +3779,6 @@ Name             : Alacrity (id=193539) [Spell Family (8), Passive]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ....x... x.x.x.x. x....... ........ 
                  : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
@@ -3929,7 +3801,6 @@ Name             : Iron Stomach (id=193546) [Spell Family (8), Passive]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3949,7 +3820,6 @@ Name             : Elaborate Planning (id=193640) [Spell Family (8), Passive]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ....x... x.x.x.x. ........ ........ 
                  : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal
@@ -3972,7 +3842,6 @@ School           : Physical
 Spell Type       : None
 Spell Level      : 1
 Duration         : 4 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 1 maximum
 Proc Chance      : 101%
 Triggered by     : Elaborate Planning (193640)
@@ -4005,7 +3874,6 @@ Spell Level      : 18
 Range            : 40 yards
 Velocity         : 80 yards/sec
 Cooldown         : 60 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Retractable Hook (256188 effect#1), Grappling Hook (319600 effect#1)
 Family Flags     : 102
 Attributes       : ....x... ........ ........ .....x..   .....x.. ..x..... ........ ........ 
@@ -4027,7 +3895,6 @@ School           : Physical
 Spell Type       : Melee
 Spell Level      : 1
 Duration         : 10 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ....x... x....... ........ ........ 
@@ -4068,7 +3935,6 @@ Spell Level      : 2
 Range            : 5 yards
 GCD              : 1 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Master of Subtlety (31665 effect#1), Rogue Tier 6 Trinket (40460 effect#1), Mastery: Executioner (76808 effect#1), Vendetta (79140 effect#1), Nightstalker (130493 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Adrenaline Rush (186286 effect#3), Ruthless Precision (193357 effect#1), Deeper Stratagem (193531 effect#1), Elaborate Planning (193641 effect#1), Acrobatic Strikes (196924 effect#1), Finality: Eviscerate (197496 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Master Assassin (256735 effect#1), Night's Vengeance (273424 effect#1)
 Family Flags     : 17, 54
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
@@ -4094,7 +3960,6 @@ Name             : Iron Wire (id=196861) [Spell Family (8), Passive]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4118,7 +3983,6 @@ Name             : Master Poisoner (id=196864) [Spell Family (8), Passive]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4151,7 +4015,6 @@ Class            : Rogue
 School           : Physical
 Spell Type       : None
 Range            : 50000 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Shadow Techniques (319706 effect#1)
 Family Flags     : 107
 Attributes       : ....x... ........ ........ ........   ........ ..x..... ........ ........ 
@@ -4173,7 +4036,6 @@ Class            : Subtlety Rogue
 School           : Physical
 Spell Type       : None
 Spell Level      : 12
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ..x.x... ........ ........ ........ 
                  : White Melee, Yellow Melee
@@ -4196,7 +4058,6 @@ Name             : Hit and Run (desc=Passive Talent) (id=196922) [Spell Family (
 Class            : Rogue
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4218,7 +4079,6 @@ Name             : Acrobatic Strikes (desc=Passive Talent) (id=196924) [Spell Fa
 Class            : Rogue
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4259,7 +4119,6 @@ GCD              : 1 seconds
 Duration         : 10 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 35 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Adrenaline Rush (13750 effect#3), Master of Subtlety (31665 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Broadside (193356 effect#2), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effect#1), Acrobatic Strikes (196924 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Lesser Adrenaline Rush (246558 effect#3), Master Assassin (256735 effect#1)
 Family Flags     : 26, 54
 Attributes       : ....x... ........ x.x..... .......x   ........ .x...... ........ ..xx.... 
@@ -4288,7 +4147,6 @@ Name             : Quick Draw (desc=Passive Talent) (id=196938) [Spell Family (8
 Class            : Rogue
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4313,7 +4171,6 @@ Class            : Rogue
 School           : Physical
 Spell Type       : None
 Spell Level      : 1
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4332,7 +4189,6 @@ Class            : Rogue
 School           : Physical
 Spell Type       : None
 Duration         : 3 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 105
 Attributes       : ........ ........ ........ ........   .....x.. ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4461,7 +4317,6 @@ Spell Level      : 10
 Range            : 100 yards
 GCD              : 1 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Adrenaline Rush (13750 effect#3), Master of Subtlety (31665 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Cold Blood (182304 effect#1), Shadow Dance (185313 effect#4), Broadside (193356 effect#2), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effect#1), Acrobatic Strikes (196924 effect#1), Skull and Crossbones (199603 effect#1), Weaponmaster (200733 effect#1), Swordplay (211669 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Lesser Adrenaline Rush (246558 effect#3), Master Assassin (256735 effect#1), Snake Eyes (275863 effect#1), Keep Your Wits About You (288979 effect#2), Keep Your Wits About You (288988 effect#1)
 Family Flags     : 23, 54, 98
 Attributes       : ....x... ........ x.x..... .......x   ........ .x...... ........ ..xx.... 
@@ -4486,7 +4341,6 @@ Spell Level      : 33
 Max Targets      : 8
 GCD              : 1 seconds
 Velocity         : 35 yards/sec
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Master of Subtlety (31665 effect#1), Vendetta (79140 effect#1), Nightstalker (130493 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effect#1), Symbols of Death (212283 effect#1), The Dreadlord's Deceit (228224 effect#1), Headshot (242277 effect#1), Master Assassin (256735 effect#1)
 Family Flags     : 54, 127
 Attributes       : ....x... ........ x....... ........   ....x... .x...... ........ ........ 
@@ -4518,7 +4372,6 @@ School           : Physical
 Spell Type       : None
 Spell Level      : 1
 Duration         : Aura (infinite)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x... ........ ..x..... .....x.x   .....x.. ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ......x. 
                  : ....x... ........ ........ ........   ........ ........ ........ ........ 
@@ -4539,7 +4392,6 @@ School           : Physical
 Spell Type       : None
 Spell Level      : 1
 Duration         : Aura (infinite)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x... ........ ..x..... .....x.x   .....x.. ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ......x. 
                  : ....x... ........ ........ ........   ........ ........ ........ ........ 
@@ -4561,7 +4413,6 @@ Class            : Rogue
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : Rupture (1943)
 Attributes       : .......x x....... .......x x....x..   ........ ..x..... ........ ........ 
                  : x.x..... ........ ......x. ....x...   ........ .x...... xx...... ....x... 
@@ -4607,7 +4458,6 @@ Spell Level      : 18
 Range            : 20 yards
 GCD              : 1 seconds
 Cooldown         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Adrenaline Rush (13750 effect#3), Master of Subtlety (31665 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Cold Blood (182304 effect#1), Shadow Dance (185313 effect#4), Ruthless Precision (193357 effect#1), Deeper Stratagem (193531 effect#1), Elaborate Planning (193641 effect#1), Symbols of Death (212283 effect#1), Between the Eyes (235484 effect#1), Headshot (242277 effect#1), Lesser Adrenaline Rush (246558 effect#3), Master Assassin (256735 effect#1)
 Family Flags     : 54, 111
 Attributes       : ....x... ........ x....... ........   ........ .x...... ........ ...x.... 
@@ -4637,7 +4487,6 @@ Name             : Weaponmaster (desc=Passive Talent) (id=200733) [Spell Family 
 Class            : Rogue
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4686,7 +4535,6 @@ Spell Level      : 1
 Range            : 5 yards
 GCD              : 1 seconds
 Requires weapon  : Dagger
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Master of Subtlety (31665 effect#1), Vendetta (79140 effect#1), Shadow Blades (121471 effect#2), Nightstalker (130493 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), The First of the Dead (248210 effect#2), Master Assassin (256735 effect#1), Perforate (277720 effect#1), Inevitability (278683 effect#3)
 Family Flags     : 54, 109
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
@@ -4710,7 +4558,6 @@ Name             : Soothing Darkness (id=200759) [Spell Family (8), Passive, Hid
 Class            : Rogue
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4738,7 +4585,6 @@ Resource         : 25 Energy (3) (id=12036)
 Range            : 5 yards
 GCD              : 1 seconds
 Cooldown         : 45 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4837,7 +4683,6 @@ Spell Type       : None
 Spell Level      : 1
 Range            : 50000 yards
 Duration         : 8 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 1 maximum
 Proc Chance      : 101%
 Family Flags     : 125
@@ -4864,7 +4709,6 @@ Range            : 5 yards
 GCD              : 1 seconds
 Duration         : 6 seconds
 Cooldown         : 45 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Mechanic         : Disarm
 Affecting spells : Dirty Tricks (108216 effect#1), Acrobatic Strikes (196924 effect#1)
 Family Flags     : 52
@@ -4891,7 +4735,6 @@ Name             : Detection (id=210108) [Spell Family (8), Passive]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4912,7 +4755,6 @@ Spell Level      : 1
 Duration         : 6 seconds
 Cooldown         : 60 seconds
 Category         : 30
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 60 seconds
 Affecting spells : Iron Stomach (193546 effect#1)
 Family Flags     : 99
@@ -4963,7 +4805,6 @@ Spell Level      : 21
 Duration         : 10 seconds
 Charges          : 1 (30 seconds cooldown)
 Category         : 1694: Item - Rogue T20 Subtlety 2P Bonus (242279 effect#2)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Shadow Dance (185313 effect#6), Item - Rogue T20 Subtlety 2P Bonus (242279 effect#1), Item - Rogue T20 Subtlety 4P Bonus (242280 effect#1), 
 Family Flags     : 117
 Attributes       : ....x... ........ x.x..... ........   .....x.. ..x..... ........ ........ 
@@ -4996,7 +4837,6 @@ Name             : Thick as Thieves (desc=PvP Talent) (id=221622) [Spell Family 
 Class            : Rogue
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5018,7 +4858,6 @@ Class            : Rogue
 School           : Physical
 Spell Type       : None
 Spell Level      : 39
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5039,7 +4878,6 @@ Class            : Subtlety Rogue
 School           : Holy
 Spell Type       : None
 Spell Level      : 37
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5058,7 +4896,6 @@ Class            : Subtlety Rogue
 School           : Physical
 Spell Type       : None
 Spell Level      : 24
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5077,7 +4914,6 @@ Class            : Assassination Rogue
 School           : Holy
 Spell Type       : None
 Spell Level      : 21
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5097,7 +4933,6 @@ Class            : Outlaw Rogue
 School           : Holy
 Spell Type       : None
 Spell Level      : 48
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5118,7 +4953,6 @@ Name             : Enveloping Shadows (id=238104) [Spell Family (8), Passive]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -5150,7 +4984,6 @@ Range            : 5 yards
 GCD              : 1 seconds
 Requires weapon  : Dagger
 Cooldown         : 25 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Master of Subtlety (31665 effect#1), Mastery: Potent Assassin (76803 effect#1), Vendetta (79140 effect#1), Nightstalker (130493 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Toxic Blade (245389 effect#1), Master Assassin (256735 effect#1), Shiv (319033 effect#1), Shiv (319504 effect#1)
 Family Flags     : 36, 54
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
@@ -5183,7 +5016,6 @@ Spell Type       : None
 Range            : 100 yards
 Duration         : 9 seconds
 Requires weapon  : Dagger
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Master of Subtlety (31665 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Master Assassin (256735 effect#1)
 Triggered by     : Toxic Blade (245388)
 Family Flags     : 54
@@ -5208,7 +5040,6 @@ Class            : Rogue
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : .......x ........ ........ x..x....   .....x.. ........ ........ ........ 
                  : ........ ......x. ...x.... ........   ........ ........ ....x... ........ 
                  : ........ ........ .....x.. ........   ...x.... ........ .xx..... ........ 
@@ -5233,7 +5064,6 @@ Name             : Dark Shadow (id=245687) [Spell Family (8), Passive]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -5262,7 +5092,6 @@ Class            : Subtlety Rogue
 School           : Physical
 Spell Type       : None
 Spell Level      : 39
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Proc Flags       : ........ ..x..... ........ ........ 
                  : Generic Heal
@@ -5284,7 +5113,6 @@ Class            : Rogue
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : Sprint (245751)
 Attributes       : .......x ........ ........ x..x....   .....x.. ........ ........ ........ 
                  : ........ ......x. ...x.... ........   ........ ........ ........ ........ 
@@ -5369,7 +5197,6 @@ Name             : Poison Bomb (id=255544) [Spell Family (8), Passive]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Proc Flags       : ....x... ....x... x....... ........ 
                  : Yellow Melee, Generic Hostile Spell, Magic Hostile Spell
@@ -5397,7 +5224,6 @@ School           : Physical
 Spell Type       : None
 Range            : 100 yards
 Duration         : 2 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5415,7 +5241,6 @@ Class            : Rogue
 School           : Nature
 Spell Type       : Magic
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Master of Subtlety (31665 effect#1), Envenom (32645 effect#3), Mastery: Potent Assassin (76803 effect#1), Vendetta (79140 effect#1), Nightstalker (130493 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Toxic Blade (245389 effect#1), Master Assassin (256735 effect#1), Shiv (319033 effect#1), Shiv (319504 effect#1)
 Family Flags     : 54, 86
 Attributes       : ........ ........ ..x..... x..x....   .....x.. ........ ........ ........ 
@@ -5513,7 +5338,6 @@ School           : Physical
 Spell Type       : None
 Range            : 100 yards
 Duration         : 6 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Rogue Tier 6 Trinket (40460 effect#1), Shadow Blades (121471 effect#2)
 Family Flags     : 19
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5533,7 +5357,6 @@ Name             : Master Assassin (id=255989) [Spell Family (8), Passive]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -5553,7 +5376,6 @@ School           : Physical
 Spell Type       : None
 Range            : 100 yards
 Duration         : 8 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
                  : x....... ........ ........ ........   ........ ........ ........ ........ 
@@ -5572,7 +5394,6 @@ Name             : Blinding Powder (desc=Passive Talent) (id=256165) [Spell Fami
 Class            : Rogue
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -5596,7 +5417,6 @@ Name             : Loaded Dice (id=256170) [Spell Family (8), Passive]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ........ ..x..... ........ ........ 
                  : Generic Heal
@@ -5618,7 +5438,6 @@ Class            : Rogue
 School           : Physical
 Spell Type       : None
 Duration         : 45 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ........ ..x..... ........ ........ 
@@ -5641,7 +5460,6 @@ Name             : Retractable Hook (desc=Passive Talent) (id=256188) [Spell Fam
 Class            : Rogue
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -5662,7 +5480,6 @@ Class            : Rogue
 School           : Physical
 Spell Type       : None
 Duration         : 3 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : Vendetta (79140)
 Attributes       : ........ ........ ........ .......x   .....x.. ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5683,7 +5500,6 @@ Class            : Rogue
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 123
 Attributes       : ........ ........ ........ ...x...x   .....x.. ........ ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ ........ ........ 
@@ -5754,7 +5570,6 @@ Name             : Shot in the Dark (desc=Passive Talent) (id=257505) [Spell Fam
 Class            : Rogue
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -5773,7 +5588,6 @@ Class            : Rogue
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 101%
 Proc Flags       : ....x... ........ ........ ........ 
@@ -6346,7 +6160,6 @@ Name             : Hidden Blades (id=270061) [Spell Family (8), Passive]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -6365,7 +6178,6 @@ Class            : Rogue
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 20 maximum
 Proc Chance      : 101%
 Proc Flags       : ........ ........ ........ .....x.. 
@@ -6389,7 +6201,6 @@ Name             : Coming Soon (id=271464) [Spell Family (3), Passive, Hidden]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -6491,7 +6302,6 @@ Range            : 20 yards
 GCD              : 1 seconds
 Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapon
 Cooldown         : 45 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Acrobatic Strikes (196924 effect#4)
 Family Flags     : 13
 Attributes       : ....x... ........ ..x..... .....x..   ........ .x...... ........ ........ 
@@ -6517,7 +6327,6 @@ School           : Physical
 Spell Type       : Melee
 Range            : 20 yards
 Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapon
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Master of Subtlety (31665 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effect#1), Acrobatic Strikes (196924 effect#4), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Master Assassin (256735 effect#1)
 Family Flags     : 13, 54
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
@@ -6541,7 +6350,6 @@ School           : Physical
 Spell Type       : Melee
 Duration         : 5 seconds
 Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapon
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Acrobatic Strikes (196924 effect#4)
 Family Flags     : 13
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
@@ -6562,7 +6370,6 @@ Name             : Dancing Steel (id=272026) [Spell Family (8), Passive]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -6953,7 +6760,6 @@ Resource         : 60 Energy (3) (id=191851)
 GCD              : 1 seconds
 Duration         : 4 seconds
 Cooldown         : 60 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6972,7 +6778,6 @@ Class            : Rogue
 School           : Physical
 Spell Type       : None
 Spell Level      : 19
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6990,7 +6795,6 @@ Name             : Night Terrors (desc=Passive Talent) (id=277953) [Spell Family
 Class            : Rogue
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -7167,7 +6971,6 @@ Class            : Rogue
 School           : Shadow
 Spell Type       : Melee
 Range            : 50000 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ .....x..   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7186,7 +6989,6 @@ Class            : Outlaw Rogue
 School           : Physical
 Spell Type       : None
 Spell Level      : 11
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7205,7 +7007,6 @@ Class            : Assassination Rogue
 School           : Physical
 Spell Type       : None
 Spell Level      : 16
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7903,7 +7704,6 @@ Name             : Leeching Poison (id=280716) [Spell Family (8), Passive]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -7927,7 +7727,6 @@ Range            : 5 yards
 GCD              : 1 seconds
 Requires weapon  : Dagger
 Cooldown         : 45 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Master of Subtlety (31665 effect#1), Mastery: Executioner (76808 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Ruthless Precision (193357 effect#1), Deeper Stratagem (193531 effect#1), Elaborate Planning (193641 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Master Assassin (256735 effect#1)
 Family Flags     : 32, 54
 Attributes       : ....x... ........ x.x..... .......x   ........ .x...... ........ ........ 
@@ -7969,7 +7768,6 @@ Spell Type       : Melee
 Range            : 50000 yards
 Max Targets      : 6
 Requires weapon  : Dagger
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Master of Subtlety (31665 effect#1), Mastery: Executioner (76808 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Ruthless Precision (193357 effect#1), Deeper Stratagem (193531 effect#1), Elaborate Planning (193641 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Master Assassin (256735 effect#1)
 Family Flags     : 32, 54
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
@@ -8028,7 +7826,6 @@ Class            : Rogue
 School           : Physical
 Spell Type       : Melee
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Master of Subtlety (31665 effect#1), Mastery: Executioner (76808 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Ruthless Precision (193357 effect#1), Deeper Stratagem (193531 effect#1), Elaborate Planning (193641 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Master Assassin (256735 effect#1)
 Family Flags     : 32, 54
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -8512,7 +8309,6 @@ Spell Level      : 26
 Range            : 20 yards
 GCD              : 1 seconds
 Cooldown         : 45 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Adrenaline Rush (13750 effect#3), Master of Subtlety (31665 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Cold Blood (182304 effect#1), Shadow Dance (185313 effect#4), Ruthless Precision (193357 effect#1), Deeper Stratagem (193531 effect#1), Elaborate Planning (193641 effect#1), Symbols of Death (212283 effect#1), Between the Eyes (235484 effect#1), Headshot (242277 effect#1), Lesser Adrenaline Rush (246558 effect#3), Master Assassin (256735 effect#1)
 Family Flags     : 54, 111
 Attributes       : ....x... ........ x....... ........   ........ .x...... ........ ...x.... 
@@ -8548,7 +8344,6 @@ Spell Level      : 9
 Range            : 100 yards
 GCD              : 1 seconds
 Duration         : 6 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Adrenaline Rush (13750 effect#3), Rogue Tier 6 Trinket (40460 effect#1), Energetic Recovery (79152 effect#1), Adrenaline Rush (186286 effect#3), Deeper Stratagem (193531 effect#1), Lesser Adrenaline Rush (246558 effect#3)
 Family Flags     : 18, 89
 Attributes       : ....x... ........ x.x..... .....x..   .....x.. ..x..... ......x. ........ 
@@ -8580,7 +8375,6 @@ Spell Level      : 17
 GCD              : 1 seconds
 Duration         : 30 seconds
 Cooldown         : 45 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Adrenaline Rush (13750 effect#3), Deeper Stratagem (193531 effect#1), Lesser Adrenaline Rush (246558 effect#3)
 Family Flags     : 113
 Attributes       : ....x... ........ x.x..... .....x..   .....x.. ..x..... ........ ....x... 
@@ -8604,7 +8398,6 @@ Spell Type       : None
 Cast Time        : 1.5 seconds
 Duration         : 3600 seconds
 Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapon, Dagger
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 30%
 Proc Flags       : ..x.x... x....... ........ ........ 
                  : White Melee, Yellow Melee, Yellow Ranged
@@ -8629,7 +8422,6 @@ Class            : Rogue
 School           : Nature
 Spell Type       : Melee
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Master of Subtlety (31665 effect#1), Envenom (32645 effect#3), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Master Assassin (256735 effect#1)
 Triggered by     : Instant Poison (315584)
 Family Flags     : 51, 54
@@ -8652,7 +8444,6 @@ Class            : Subtlety Rogue
 School           : Physical
 Spell Type       : None
 Spell Level      : 19
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ....x... ....x... ........ ........ 
                  : Yellow Melee, Generic Hostile Spell
@@ -8675,7 +8466,6 @@ School           : Physical
 Spell Type       : None
 Range            : 100 yards
 Duration         : 18 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : Find Weakness (316219)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ......x. 
@@ -8714,7 +8504,6 @@ Class            : Assassination Rogue
 School           : Physical
 Spell Type       : None
 Spell Level      : 56
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8735,7 +8524,6 @@ Spell Type       : None
 Range            : 100 yards
 Duration         : 9 seconds
 Requires weapon  : Dagger
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Master of Subtlety (31665 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Master Assassin (256735 effect#1)
 Family Flags     : 54
 Attributes       : ....x... ........ ..x..... ..x....x   ........ ........ ........ ........ 
@@ -8759,7 +8547,6 @@ Class            : Assassination Rogue
 School           : Physical
 Spell Type       : None
 Spell Level      : 42
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8786,7 +8573,6 @@ Max Targets      : 8
 GCD              : 1 seconds
 Velocity         : 35 yards/sec
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Master of Subtlety (31665 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Master Assassin (256735 effect#1)
 Family Flags     : 44, 54
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
@@ -8820,7 +8606,6 @@ Class            : Subtlety Rogue
 School           : Physical
 Spell Type       : None
 Spell Level      : 58
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8839,7 +8624,6 @@ Class            : Rogue
 School           : Shadow
 Spell Type       : Melee
 Velocity         : 20 yards/sec
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Master of Subtlety (31665 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Master Assassin (256735 effect#1)
 Triggered by     : Shadow Vault (319175)
 Family Flags     : 54
@@ -8860,7 +8644,6 @@ Class            : Assassination Rogue
 School           : Physical
 Spell Type       : None
 Spell Level      : 37
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8881,7 +8664,6 @@ Spell Type       : None
 Range            : 100 yards
 Duration         : 9 seconds
 Requires weapon  : Dagger
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Master of Subtlety (31665 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Master Assassin (256735 effect#1)
 Family Flags     : 54
 Attributes       : ....x... ........ ..x..... ..x....x   ........ ........ ........ ........ 
@@ -8905,7 +8687,6 @@ Class            : Assassination Rogue
 School           : Physical
 Spell Type       : None
 Spell Level      : 48
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8924,7 +8705,6 @@ Class            : Outlaw Rogue
 School           : Physical
 Spell Type       : None
 Spell Level      : 42
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8950,7 +8730,6 @@ GCD              : 1 seconds
 Duration         : 12 seconds
 Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapon, Dagger
 Cooldown         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ..x.x... x....... ........ ........ 
                  : White Melee, Yellow Melee, Yellow Ranged
@@ -8983,7 +8762,6 @@ Class            : Subtlety Rogue
 School           : Physical
 Spell Type       : None
 Spell Level      : 25
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9004,7 +8782,6 @@ Class            : Subtlety Rogue
 School           : Physical
 Spell Type       : None
 Spell Level      : 42
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ..x.x... ........ ........ ........ 
                  : White Melee, Yellow Melee
@@ -9026,7 +8803,6 @@ Class            : Subtlety Rogue
 School           : Physical
 Spell Type       : None
 Spell Level      : 56
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9050,7 +8826,6 @@ Range            : 5 yards
 GCD              : 1 seconds
 Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapon, Dagger
 Cooldown         : 45 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Master of Subtlety (31665 effect#1), Vendetta (79140 effect#1), Nightstalker (130493 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Master Assassin (256735 effect#1)
 Family Flags     : 54, 82
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
@@ -9087,7 +8862,6 @@ Spell Level      : 13
 Range            : 5 yards
 GCD              : 1 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x20000000
 Affecting spells : Master of Subtlety (31665 effect#1), Vendetta (79140 effect#1), Blindside (121153 effect#1), Nightstalker (130493 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Sleight of Hand (145211 effect#2), Cold Blood (182304 effect#1), Shadow Dance (185313 effect#4), Broadside (193356 effect#2), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effect#1), Acrobatic Strikes (196924 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Master Assassin (256735 effect#1)
 Family Flags     : 9, 54
@@ -9118,7 +8892,6 @@ School           : Physical
 Spell Type       : None
 Duration         : 300 seconds
 Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapon, Dagger
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 30%
 Proc Flags       : ..x.x... x....... ........ ........ 
                  : White Melee, Yellow Melee, Yellow Ranged
@@ -9145,7 +8918,6 @@ School           : Shadow
 Spell Type       : Melee
 Range            : 100 yards
 Duration         : 12 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ........ ...x...x ........ .......x 
                  : Generic Heal Taken, Magic Heal Taken
@@ -9176,7 +8948,6 @@ Range            : 100 yards
 GCD              : 1 seconds
 Duration         : Aura (infinite)
 Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapon, Dagger
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Master of Subtlety (31665 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Master Assassin (256735 effect#1)
 Triggered by     : Serrated Bone Spike (328547)
 Family Flags     : 54
@@ -9201,7 +8972,6 @@ Class            : Subtlety Rogue
 School           : Physical
 Spell Type       : None
 Spell Level      : 43
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9219,7 +8989,6 @@ Name             : Blindside (id=328085) [Spell Family (8), Passive]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -9246,7 +9015,6 @@ GCD              : 1 seconds
 Duration         : 10 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 90 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Master of Subtlety (31665 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Master Assassin (256735 effect#1)
 Family Flags     : 54
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
@@ -9286,7 +9054,6 @@ Duration         : Aura (infinite)
 Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapon, Dagger
 Charges          : 3 (30 seconds cooldown)
 Category         : 1889
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Master of Subtlety (31665 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Master Assassin (256735 effect#1)
 Family Flags     : 54
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...xx... 
@@ -9316,7 +9083,6 @@ Name             : Serrated Bone Spike (id=328549) [Spell Family (8)]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : Serrated Bone Spike (324073)
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ xx...... ........ 
@@ -9335,7 +9101,6 @@ Class            : Assassination Rogue
 School           : Physical
 Spell Type       : None
 Spell Level      : 52
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9356,7 +9121,6 @@ Spell Type       : Melee
 Range            : 20 yards
 Max Targets      : 5
 Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapon
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Master of Subtlety (31665 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effect#1), Acrobatic Strikes (196924 effect#4), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Master Assassin (256735 effect#1)
 Family Flags     : 13, 54
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
@@ -9377,7 +9141,6 @@ Class            : Outlaw Rogue
 School           : Physical
 Spell Type       : None
 Spell Level      : 52
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9395,7 +9158,6 @@ Name             : Dashing Scoundrel (id=340081) [Spell Family (8), Passive]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9414,7 +9176,6 @@ Name             : Dashing Scoundrel (id=340426) [Spell Family (8)]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : Envenom (32645)
 Attributes       : ....x... ........ ........ x..x....   .....x.. ........ ........ ........ 
                  : ........ ......x. ........ ........   ........ ........ ........ ........ 

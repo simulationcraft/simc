@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35360 shadowlands-BETA (, no-networking)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35360 shadowlands-BETA (hotfix 2020-08-02/35360, no-networking)
 
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
@@ -10,7 +10,6 @@ Range            : 50000 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Duration         : 45 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 115
 Attributes       : ........ ........ x....... ........   ..x..... .....x.. .x...... .....x.. 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
@@ -38,7 +37,6 @@ Spell Level      : 2
 Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Mastery: Potent Afflictions (77215 effect#1), Epidemic (184922 effect#1), Absolute Corruption (196103 effect#2), Sacrolash's Dark Strike (207952 effect#1), Tormented Agony (252938 effect#1), Creeping Death (264000 effect#1), Corruption (317031 effect#1), Sacrolash's Dark Strike (337111 effect#1)
 Family Flags     : 1
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -67,7 +65,6 @@ Spell Level      : 10
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Item - Warlock T17 Destruction 2P Bonus (165455 effect#2), Flamelicked (185229 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Conflagrate (265931 effect#1), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), Wrath of Consumption (337130 effect#1), Odr, Shawl of the Ymirjar (337164 effect#1)
 Family Flags     : 2, 49, 118
 Attributes       : ........ ........ x....... .......x   ........ ........ ........ ....x... 
@@ -97,7 +94,6 @@ Spell Level      : 15
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 20 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Grimoire of Supremacy (152107 effect#6), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), Wrath of Consumption (337130 effect#1)
 Family Flags     : 33, 49, 122
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -126,7 +122,6 @@ Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Shadowy Inspiration (196606 effect#1), Nightfall (264571 effect#1), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), Decimating Bolt (325299 effect#1), Malefic Wrath (337125 effect#1), Wrath of Consumption (337130 effect#1)
 Family Flags     : 0, 49
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -155,7 +150,6 @@ Cast Time        : 6 seconds
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
 Category         : 1363
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Fel Domination (333889 effect#1)
 Family Flags     : 26
 Attributes       : ........ ........ ........ ........   x....... ........ .x...... ........ 
@@ -180,7 +174,6 @@ Cast Time        : 6 seconds
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
 Category         : 1363
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Glyph of the Observer (219450 effect#1), Fel Domination (333889 effect#1)
 Family Flags     : 29
 Attributes       : ........ ........ ........ ........   x....... ........ .x...... ........ 
@@ -196,16 +189,15 @@ Effects          :
 Description      : Summons a Felhunter under your command, able to disrupt the spell casts of your enemies.
 
 Name             : Summon Voidwalker (desc=Summon) (id=697) [Spell Family (5)] 
+Hotfixed         : Spell Level (10 -> 0)
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
 Resource         : 1 Soul Shard (7) (id=81)
-Spell Level      : 10
 Cast Time        : 6 seconds
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
 Category         : 1363
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Fel Domination (333889 effect#1)
 Family Flags     : 27
 Attributes       : ........ ........ ........ ........   x....... ........ .x...... ........ 
@@ -230,7 +222,6 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 120 seconds
 Cooldown         : 120 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 60
 Attributes       : ........ ........ x....... ....x...   ..x..... ........ .x...... ....xx.. 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -285,7 +276,6 @@ Range            : 30 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Duration         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Mechanic         : Banish
 Family Flags     : 59
@@ -316,7 +306,6 @@ Cast Time        : 6 seconds
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
 Category         : 1363
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Orb of the Fel Temptress (240264 effect#1), Fel Domination (333889 effect#1)
 Family Flags     : 28
 Attributes       : ........ ........ ........ ........   x....... ........ .x...... ........ 
@@ -339,7 +328,6 @@ Spell Level      : 8
 Range            : 45 yards
 GCD              : 1.5 seconds
 Duration         : 5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 24
 Attributes       : ........ ........ x....... ........   ..x..... ......x. ........ .....x.. 
                  : ...x.... ...x.... ........ .....x..   ........ ........ ........ ........ 
@@ -364,7 +352,6 @@ Spell Level      : 10
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 18 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 6 maximum
 Proc Chance      : 101%
 Affecting spells : Mastery: Potent Afflictions (77215 effect#1), Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Epidemic (184922 effect#1), Writhe in Agony (196102 effect#1), Hood of Eternal Disdain (205797 effect#1), Agony (231792 effect#1), Tormented Agony (252938 effect#1), Creeping Death (264000 effect#1), Sudden Onset (278721 effect#1), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), Wrath of Consumption (337130 effect#1), Rolling Agony (339481 effect#1)
@@ -397,7 +384,6 @@ Range            : 30 yards
 Cast Time        : 3 seconds
 GCD              : 1.5 seconds
 Duration         : 300 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Mechanic         : Charm
 Family Flags     : 11
@@ -427,8 +413,7 @@ Velocity         : 1 yards/sec
 Duration         : 0.25 seconds
 Cooldown         : 180 seconds
 Category         : 731
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-                 : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
 Category Cooldown: 180 seconds
 Affecting spells : Conflagrate (265931 effect#1), Crashing Chaos (277705 effect#2), Summon Infernal (335175 effect#1)
 Family Flags     : 50
@@ -459,7 +444,6 @@ Spell Level      : 34
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Family Flags     : 102
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -483,7 +467,6 @@ Name             : Use Soulstone (id=3026) [Spell Family (5)]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 58
 Attributes       : ........ ........ .......x ........   ........ ..x..... ........ ........ 
                  : x....... ........ ........ ........   ........ ........ ........ ........ 
@@ -507,7 +490,6 @@ Range            : 40 yards
 Cast Time        : 1.75 seconds
 GCD              : 0.5 seconds
 Velocity         : 16 yards/sec
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Increased Imp Firebolt Damage (22855 effect#1)
 Family Flags     : 94
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -533,7 +515,6 @@ Spell Type       : Magic
 Resource         : 20 Energy (3) (id=217)
 Spell Level      : 10
 GCD              : 1 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 18, 91
 Attributes       : ........ ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
@@ -559,7 +540,6 @@ Cast Time        : 0.5 seconds
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
 Requires weapon  : Wand
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : .x..x... ........ ........ ........   ........ ........ ........ ........ 
                  : .....x.. ........ ........ ........   ........ .......x x....... ........ 
                  : ........ ........ ........ x.......   ........ ........ ........ ........ 
@@ -582,7 +562,6 @@ Max Targets      : 5
 Cast Time        : 1.5 seconds
 Duration         : 20 seconds
 Cooldown         : 40 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Mechanic         : Flee
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
@@ -612,7 +591,6 @@ Spell Level      : 15
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 8 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 124
 Attributes       : ........ ........ x....... ........   ...x...x ..x..... ........ ....x... 
                  : ........ ........ ......x. ........   ........ ........ ........ ........ 
@@ -642,7 +620,6 @@ Range            : 30 yards
 Cast Time        : 1.7 seconds
 GCD              : 1.5 seconds
 Category         : 1266
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Increased Fear Break Threshold (95677 effect#1)
 Family Flags     : 42, 111
 Attributes       : ........ ........ x....... ......x.   ........ ..x..... ........ .x...... 
@@ -666,7 +643,6 @@ Resource         : 2% Base Mana (0) (id=257)
 Spell Level      : 7
 Cast Time        : 3 seconds
 GCD              : 1.5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 110
 Attributes       : ........ ........ x....... ........   ........ ........ .x...... ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -686,7 +662,6 @@ School           : Shadow
 Spell Type       : None
 Spell Level      : 13
 Range            : 50000 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : Soulstone (20707)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -706,7 +681,6 @@ School           : Physical
 Spell Type       : Magic
 Cooldown         : 60 seconds
 Category         : 1711
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 60 seconds
 Family Flags     : 16
 Attributes       : ........ .....x.. ........ ........   ........ ........ ........ ........ 
@@ -730,7 +704,6 @@ Spell Level      : 19
 GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 6 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Single-Minded Fury (81099 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Crackling Thunder (203201 effect#1), Kakushan's Stormscale Gauntlets (207844 effect#1), Colossus Smash (208086 effect#1), Deep Wounds (262115 effect#2), Deafening Crash (272824 effect#2), Siegebreaker (280773 effect#1), Unnerving Focus (337155 effect#5), Show of Force (339825 effect#1)
 Family Flags     : 7, 8, 9, 18
@@ -767,7 +740,6 @@ GCD              : 1.5 seconds
 Velocity         : 24 yards/sec
 Cooldown         : 45 seconds
 Category         : 631
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Conflagrate (265931 effect#1), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), Wrath of Consumption (337130 effect#1), Odr, Shawl of the Ymirjar (337164 effect#1)
 Family Flags     : 49, 65
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ...x.... 
@@ -799,7 +771,6 @@ Cast Time        : 1.7 seconds
 Duration         : 30 seconds
 Cooldown         : 30 seconds
 Category         : 1468
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 30 seconds
 Proc Chance      : 101%
 Mechanic         : Sleep
@@ -826,7 +797,6 @@ Spell Level      : 17
 Range            : 10 yards
 Duration         : 10 seconds
 Cooldown         : 6 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Mechanic         : Snare
 Family Flags     : 27
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
@@ -857,7 +827,6 @@ Velocity         : 24 yards/sec
 Duration         : 3 seconds
 Cooldown         : 45 seconds
 Category         : 633
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 45 seconds
 Proc Chance      : 101%
 Affecting spells : Odr, Shawl of the Ymirjar (212173 effect#1), Odr, Shawl of the Ymirjar (337164 effect#1)
@@ -889,7 +858,6 @@ Resource         : 60 Energy (3) (id=309)
 Spell Level      : 14
 Range            : 5 yards
 GCD              : 1 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 24
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -916,7 +884,6 @@ Spell Level      : 17
 GCD              : 1.5 seconds
 Duration         : 300 seconds
 Category         : 37
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ..x.x.x. x.x.x.x. x.x..x.. ........ 
@@ -952,7 +919,6 @@ Range            : 30 yards
 Duration         : 5 seconds
 Cooldown         : 10 seconds
 Category         : 82
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 10 seconds
 Mechanic         : Heal
 Family Flags     : 19
@@ -985,7 +951,6 @@ Range            : 50000 yards
 GCD              : 1 seconds
 Duration         : 20 seconds
 Cooldown         : 120 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 22
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ .....x..   ........ ........ ........ ......x. 
@@ -1019,7 +984,6 @@ GCD              : 1.5 seconds
 Duration         : 5 seconds
 Charges          : 2 (12 seconds cooldown)
 Category         : 651: Warlock (137042 effect#5)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Flamelicked (185229 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), Wrath of Consumption (337130 effect#1), Odr, Shawl of the Ymirjar (337164 effect#1)
 Family Flags     : 7, 49, 118
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -1045,7 +1009,6 @@ Name             : Agony (id=17941) [Spell Family (5)]
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 107
 Attributes       : ........ ........ x....... x..x....   ........ ..x..... ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1069,7 +1032,6 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Charges          : 1 (12.96 seconds cooldown)
 Category         : 672: Warlock (137042 effect#2), Item - Warlock T19 Destruction 4P Bonus (212017 effect#1), Item - Warlock T19 Destruction 4P Bonus (212017 effect#2), Conflagrate (231793 effect#1), Cinders of the Azj'Aqir (337166 effect#1), Cinders of the Azj'Aqir (337166 effect#2)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Flamelicked (185229 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Conflagrate (265931 effect#1), Flashover (267115 effect#3), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), Wrath of Consumption (337130 effect#1), Odr, Shawl of the Ymirjar (337164 effect#1)
 Family Flags     : 49, 55, 118
 Attributes       : ........ ........ x....... ........   ........ ........ .x...... ........ 
@@ -1094,7 +1056,6 @@ School           : Fire
 Spell Type       : Magic
 Spell Level      : 22
 Duration         : Aura (infinite)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -1118,7 +1079,6 @@ Spell Level      : 18
 Range            : 30 yards
 Cooldown         : 15 seconds
 Category         : 12
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 15 seconds
 Family Flags     : 31, 74
 Attributes       : ........ ........ x....... ........   .......x ........ .x...... ........ 
@@ -1145,7 +1105,6 @@ Range            : 40 yards
 Duration         : 6 seconds
 Cooldown         : 24 seconds
 Category         : 88
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 24 seconds
 Family Flags     : 30
 Attributes       : ........ ........ ..x..... ........   ........ ........ .x...... ........ 
@@ -1167,7 +1126,6 @@ School           : Shadow
 Spell Type       : Magic
 Spell Level      : 16
 Range            : 45 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1187,7 +1145,6 @@ Class            : Warlock
 School           : Fire
 Spell Type       : Magic
 Spell Level      : 22
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : Immolation (19483)
 Attributes       : ....x... ........ x.x..... ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1233,7 +1190,6 @@ GCD              : 1.5 seconds
 Duration         : 900 seconds
 Cooldown         : 600 seconds
 Category         : 831
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 600 seconds
 Stance Mask      : 0x80200000
 Family Flags     : 56
@@ -1281,7 +1237,6 @@ Spell Type       : Magic
 Spell Level      : 22
 Range            : 50000 yards
 Duration         : 2 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Conflagrate (265931 effect#1), Crashing Chaos (277705 effect#2), Summon Infernal (335175 effect#1)
 Triggered by     : Summon Infernal (1122)
 Family Flags     : 50
@@ -1312,7 +1267,6 @@ Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
 Velocity         : 30 yards/sec
 Duration         : 12 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
@@ -1346,7 +1300,6 @@ School           : Shadow
 Spell Type       : Magic
 Spell Level      : 28
 Range            : 50000 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Mastery: Potent Afflictions (77215 effect#1), Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), Wrath of Consumption (337130 effect#1)
 Family Flags     : 47, 49
 Attributes       : ........ ........ .......x ........   ........ ........ ........ ........ 
@@ -1412,7 +1365,6 @@ Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Velocity         : 25 yards/sec
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 5 maximum
 Proc Chance      : 101%
 Affecting spells : Backdraft (117828 effect#1), Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Immolate (157736 effect#2), Flamelicked (185229 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Chaotic Flames (253092 effect#1), Conflagrate (265931 effect#1), Chaotic Inferno (279673 effect#1), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), Chaos Shards (287637 effect#2), Decimating Bolt (325299 effect#1), Wrath of Consumption (337130 effect#1), Odr, Shawl of the Ymirjar (337164 effect#1)
@@ -1444,7 +1396,6 @@ Spell Level      : 12
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 10 maximum
 Proc Chance      : 101%
 Affecting spells : Mastery: Potent Afflictions (77215 effect#1), Epidemic (184922 effect#1), Item - Warlock T19 Affliction 2P Bonus (212002 effect#1), Creeping Death (264000 effect#1), Dreadful Calling (278727 effect#2), Unstable Affliction (334315 effect#1)
@@ -1481,7 +1432,6 @@ Cast Time        : 6 seconds
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
 Category         : 1363
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Fel Domination (333889 effect#1)
 Family Flags     : 30
 Attributes       : ........ ........ ........ ........   x....... ........ .x...... ........ 
@@ -1507,7 +1457,6 @@ GCD              : 1.5 seconds
 Duration         : 8 seconds
 Cooldown         : 15 seconds
 Category         : 1158
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 37
 Attributes       : ....x... ........ x.x..... .....x..   ........ .xx..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1538,7 +1487,6 @@ Class            : Warlock
 School           : Physical
 Spell Type       : Melee
 Range            : 50000 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Triggered by     : Pursuit (30151)
 Attributes       : ....x... ........ x.x..... ........   ...x...x .x...... ........ ........ 
@@ -1568,7 +1516,6 @@ Range            : 5 yards
 GCD              : 1 seconds
 Duration         : 6 seconds
 Requires weapon  : 
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 36
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
@@ -1602,7 +1549,6 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Duration         : 3 seconds
 Cooldown         : 60 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Mechanic         : Stun
 Affecting spells : Darkfury (264874 effect#1), 
 Family Flags     : 44
@@ -1624,7 +1570,6 @@ Class            : Warlock
 School           : Physical
 Spell Type       : None
 Spell Level      : 1
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.x. ........ x.x..... ...x....   .....x.. ........ .x...... ........ 
                  : ........ ......x. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1648,7 +1593,6 @@ Class            : Affliction Warlock
 School           : Shadow
 Spell Type       : None
 Spell Level      : 52
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ........ ........ x.x..... ........ 
                  : Magic Hostile Spell, Periodic
@@ -1673,7 +1617,6 @@ School           : Shadow
 Spell Type       : None
 Range            : 50000 yards
 Duration         : 12 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 3 maximum
 Proc Chance      : 101%
 Affecting spells : Reap and Sow (236114 effect#1), Cold Embrace (339576 effect#1)
@@ -1738,7 +1681,6 @@ School           : Fire
 Spell Type       : Magic
 Spell Level      : 14
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Flamelicked (185229 effect#1), Conflagrate (265931 effect#1), Inferno (270545 effect#2), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), Rain of Fire (335189 effect#1), Wrath of Consumption (337130 effect#1)
 Family Flags     : 49, 92
 Attributes       : ........ ........ .......x x..x....   ...x.x.x ........ ........ ........ 
@@ -1766,7 +1708,6 @@ GCD              : 1.5 seconds
 Velocity         : 40 yards/sec
 Duration         : 18 seconds
 Cooldown         : 15 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), Wrath of Consumption (337130 effect#1)
 Family Flags     : 49, 101
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1794,7 +1735,6 @@ Resource         : 60 Energy (3) (id=2462)
 Spell Level      : 16
 Range            : 5 yards
 GCD              : 1 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 29, 54
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
@@ -1833,7 +1773,6 @@ Name             : Glyph of Felguard (desc=Demonology) (id=56246) [Spell Family 
 Class            : Warlock
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1852,7 +1791,6 @@ Class            : Warlock
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1870,7 +1808,6 @@ Name             : Glyph of Soulwell (id=58094) [Spell Family (5), Passive, Hidd
 Class            : Warlock
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1889,7 +1826,6 @@ Class            : Warlock
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1911,7 +1847,6 @@ Resource         : 1% Base Mana (0) (id=192753)
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 15 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Mastery: Potent Afflictions (77215 effect#1), Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Tormented Agony (252938 effect#1), Creeping Death (264000 effect#1), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), Wrath of Consumption (337130 effect#1)
 Family Flags     : 8, 49
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1932,7 +1867,6 @@ Name             : Glyph of Crimson Banish (id=63312) [Spell Family (5), Passive
 Class            : Warlock
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1953,7 +1887,6 @@ Class            : Warlock
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2033,7 +1966,6 @@ Class            : Affliction Warlock
 School           : Physical
 Spell Type       : None
 Spell Level      : 10
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2058,7 +1990,6 @@ Class            : Demonology Warlock
 School           : Physical
 Spell Type       : None
 Spell Level      : 10
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2081,7 +2012,6 @@ Class            : Destruction Warlock
 School           : Physical
 Spell Type       : None
 Spell Level      : 10
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2111,7 +2041,6 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 1 maximum
 Proc Chance      : 101%
 Affecting spells : Havoc (335174 effect#1), Duplicitous Havoc (339890 effect#1)
@@ -2139,7 +2068,6 @@ Spell Level      : 1
 Range            : 30 yards
 Cast Time        : 3 seconds
 Velocity         : 20 yards/sec
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Grimoire of Supremacy (152107 effect#6)
 Family Flags     : 122
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -2161,7 +2089,6 @@ Class            : Warlock
 School           : Shadowflame
 Spell Type       : Magic
 Range            : 50000 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Dirty Hands (211105 effect#1), From the Shadows (270569 effect#1), Demonic Meteor (278737 effect#1), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), Wrath of Consumption (337130 effect#1)
 Family Flags     : 49, 86
 Attributes       : ........ ........ .......x ........   ...x...x ........ ........ ........ 
@@ -2201,7 +2128,6 @@ Spell Type       : Melee
 Resource         : 60 Energy (3) (id=4145)
 Duration         : 5 seconds
 Cooldown         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 35
 Attributes       : ....x... ........ ..x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -2232,7 +2158,6 @@ Class            : Warlock
 School           : Physical
 Spell Type       : Melee
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : Felstorm (89751)
 Attributes       : ....x... ........ x.x..... ........   ....x... ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .xx..... ........ ........ 
@@ -2260,7 +2185,6 @@ Range            : 30 yards
 Velocity         : 20 yards/sec
 Duration         : 4 seconds
 Cooldown         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Felstorm (89751 effect#3)
 Family Flags     : 34
 Attributes       : ........ ........ x.x..... ........   ........ ........ .x...... ........ 
@@ -2287,7 +2211,6 @@ Spell Level      : 17
 Range            : 40 yards
 Duration         : 0.2 seconds
 Cooldown         : 20 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 16
 Attributes       : ........ ........ x....... ........   ........ ..x....x ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2317,7 +2240,6 @@ Spell Type       : Magic
 Spell Level      : 27
 Range            : 30 yards
 Cooldown         : 15 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x08000000
 Family Flags     : 15
 Attributes       : ........ ........ x....... ........   .......x ........ ........ ........ 
@@ -2367,7 +2289,6 @@ Resource         : 2% Base Mana (0) (id=4299)
 Spell Level      : 1
 Range            : 40 yards
 Cooldown         : 20 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : Flee (89792)
 Attributes       : ........ ........ x....... ........   ........ .......x .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2387,7 +2308,6 @@ School           : Physical
 Spell Type       : None
 Spell Level      : 10
 Duration         : Aura (infinite)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2424,7 +2344,6 @@ Name             : The Codex of Xerrath (id=101508) [Spell Family (5), Passive]
 Class            : Warlock
 School           : Chaos
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2488,7 +2407,6 @@ Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Cooldown         : 20 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Demonic Calling (205146 effect#1), Item - Warlock T19 Demonology 4P Bonus (212007 effect#1), Call Dreadstalkers (334727 effect#1)
 Family Flags     : 25
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2510,7 +2428,6 @@ School           : Shadow
 Spell Type       : None
 Range            : 100 yards
 Duration         : 20 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 14
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2533,7 +2450,6 @@ Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 2 seconds
 Velocity         : 30 yards/sec
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Demonic Power (265273 effect#4), Fel Firebolt (334591 effect#1)
 Family Flags     : 12
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -2558,7 +2474,6 @@ Resource         : 2% Base Mana (0) (id=4978)
 Spell Level      : 39
 Duration         : 8 seconds
 Cooldown         : 180 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Family Flags     : 54, 67
 Attributes       : ....x... ........ ..x..... ........   ........ ..x..... ........ ........ 
@@ -2590,7 +2505,6 @@ Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Velocity         : 0.7 yards/sec
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 21
 Attributes       : ........ ........ x....... ........   .......x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ........ 
@@ -2613,7 +2527,6 @@ School           : Shadow
 Spell Type       : None
 Range            : 50000 yards
 Duration         : 15 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Demon Skin (219272 effect#3)
 Family Flags     : 13
 Attributes       : ........ ........ ..x..... ........   ........ ..x..... ........ ........ 
@@ -2635,7 +2548,6 @@ Class            : Warlock
 School           : Physical
 Spell Type       : None
 Spell Level      : 20
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ..x.x... ....x... x.x..... ........ 
                  : White Melee, Yellow Melee, Generic Hostile Spell, Magic Hostile Spell, Periodic
@@ -2660,7 +2572,6 @@ Class            : Warlock
 School           : Shadow
 Spell Type       : None
 Spell Level      : 1
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : Mortal Coil (6789)
 Attributes       : ........ ........ ..x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
@@ -2682,7 +2593,6 @@ School           : Shadow
 Spell Type       : None
 Spell Level      : 43
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ x.x..... ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ x....... ......x. 
                  : ........ ........ ........ ........   ...x.... ........ .xx..... ........ 
@@ -2706,7 +2616,6 @@ Spell Level      : 1
 Duration         : 20 seconds
 Cooldown         : 60 seconds
 Category         : 25
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 60 seconds
 Attributes       : ........ ........ ........ ...x....   .....x.. ........ ........ ........ 
                  : ........ ......x. ........ ........   ........ ........ ........ ......x. 
@@ -2735,7 +2644,6 @@ Spell Type       : Magic
 Spell Level      : 14
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Item - Warlock WoD PvP Demonology 4P Bonus (165967 effect#1), 
 Family Flags     : 78
 Attributes       : ........ ........ x.x..... .....x..   ........ ..x..... ........ ....x... 
@@ -2764,7 +2672,6 @@ Spell Type       : None
 Spell Level      : 1
 Cooldown         : 90 seconds
 Category         : 1336
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 90 seconds
 Attributes       : ......x. x....... ........ .......x   ........ ........ ........ ....x..x 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2793,7 +2700,6 @@ Spell Level      : 1
 Range            : 50000 yards
 GCD              : 1.5 seconds
 Cooldown         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ .....x..   ........ ..x..... ........ ..x..... 
                  : ........ ........ ........ ..x..x..   ........ ........ x....... ......x. 
                  : ........ ...x.... ........ ........   ........ ........ ........ ........ 
@@ -2815,7 +2721,6 @@ Name             : Nightfall (id=108558) [Spell Family (5), Passive, Hidden]
 Class            : Warlock
 School           : Shadow
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -2835,7 +2740,6 @@ School           : Physical
 Spell Type       : None
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 61
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ x....... ........ ........   ........ ........ xx...... ........ 
@@ -2861,7 +2765,6 @@ School           : Shadow
 Spell Type       : None
 Range            : 50000 yards
 Duration         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : Summon Infernal (1122)
 Attributes       : ........ ........ x....... ........   ........ ........ .x...... ....x... 
                  : ..x..... ........ ...x.... ........   ........ ........ ........ ......x. 
@@ -2886,7 +2789,6 @@ Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Duration         : 0.001 seconds
 Cooldown         : 10 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Pillars of the Dark Portal (217519 effect#1), Pillars of the Dark Portal (337065 effect#1)
 Family Flags     : 57
 Attributes       : ........ ........ ........ ........   ........ ........ .x...... ........ 
@@ -2914,7 +2816,6 @@ GCD              : 1.5 seconds
 Duration         : 27 seconds
 Cooldown         : 90 seconds
 Category         : 1336
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 90 seconds
 Attributes       : ........ ........ ........ ........   .......x ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2942,7 +2843,6 @@ GCD              : 1.5 seconds
 Duration         : 27 seconds
 Cooldown         : 90 seconds
 Category         : 1336
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 90 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2970,7 +2870,6 @@ GCD              : 1.5 seconds
 Duration         : 27 seconds
 Cooldown         : 90 seconds
 Category         : 1336
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 90 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2998,7 +2897,6 @@ GCD              : 1.5 seconds
 Duration         : 27 seconds
 Cooldown         : 90 seconds
 Category         : 1336
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 90 seconds
 Attributes       : ........ ........ ........ ........   .......x ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3027,7 +2925,6 @@ GCD              : 1.5 seconds
 Duration         : 17 seconds
 Cooldown         : 120 seconds
 Category         : 1336
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 120 seconds
 Attributes       : ........ ........ ........ ........   .......x ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3051,7 +2948,6 @@ School           : Physical
 Spell Type       : Magic
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Family Flags     : 47
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ .......x 
@@ -3082,7 +2978,6 @@ Duration         : 20 seconds
 Cooldown         : 120 seconds
 Charges          : 0 (120 seconds cooldown)
 Category         : 1447
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 108
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -3108,7 +3003,6 @@ Resource         : 1% Base Mana (0) (id=192758)
 GCD              : 1.5 seconds
 Duration         : 20 seconds
 Cooldown         : 120 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 108
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -3128,7 +3022,6 @@ Class            : Warlock
 School           : Physical
 Spell Type       : None
 Duration         : 90 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 126
 Attributes       : ........ ........ .......x x.xx.x..   .....x.. ........ ........ ........ 
                  : x..x.... ......x. ...x.... ........   ........ ........ ..x.x... ........ 
@@ -3154,7 +3047,6 @@ Range            : 40 yards
 Cast Time        : 3 seconds
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Backdraft (117828 effect#1), Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Immolate (157736 effect#2), Item - Warlock T17 Destruction 4P Bonus (165452 effect#1), Flamelicked (185229 effect#1), Item - Warlock T18 Destruction 2P Bonus (185965 effect#1), Embrace Chaos (212019 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Crashing Chaos (277706 effect#1), Chaotic Inferno (278748 effect#2), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), Wrath of Consumption (337130 effect#1), Odr, Shawl of the Ymirjar (337164 effect#1), Madness  of the Azj'Aqir (337170 effect#1), Soul Tithe (340238 effect#1)
 Family Flags     : 45, 49, 118
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ...x.... 
@@ -3178,7 +3070,6 @@ Name             : Void Reflexes (id=117225) [Passive]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3199,7 +3090,6 @@ Class            : Warlock
 School           : Physical
 Spell Type       : Magic
 Duration         : 10 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 1 initial, 2 maximum
 Proc Chance      : 100%
 Proc Flags       : ........ ........ x....... ........ 
@@ -3234,7 +3124,6 @@ Range            : 30 yards
 Max Targets      : 1
 Duration         : 20 seconds
 Category         : 1266
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Mechanic         : Flee
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
@@ -3260,7 +3149,6 @@ Class            : Warlock
 School           : Physical
 Spell Type       : None
 Spell Level      : 29
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 103
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
                  : ........ ......x. ...x.... ........   ........ ........ ........ ........ 
@@ -3287,7 +3175,6 @@ School           : Physical
 Spell Type       : Magic
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Family Flags     : 47
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
@@ -3312,7 +3199,6 @@ Name             : Warlock (id=137042) [Spell Family (5), Passive, Hidden]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3341,7 +3227,6 @@ Name             : Affliction Warlock (id=137043) [Spell Family (5), Passive, Hi
 Class            : Affliction Death Knight, Warlock
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3386,7 +3271,6 @@ Name             : Demonology Warlock (id=137044) [Spell Family (5), Passive, Hi
 Class            : Demonology Death Knight, Warlock
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3439,7 +3323,6 @@ Name             : Destruction Warlock (id=137046) [Spell Family (5), Passive, H
 Class            : Destruction Death Knight, Warlock
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3485,7 +3368,6 @@ Spell Type       : Magic
 Spell Level      : 3
 Range            : 40 yards
 Duration         : 14 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Mastery: Potent Afflictions (77215 effect#1), Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Epidemic (184922 effect#1), Absolute Corruption (196103 effect#2), Sacrolash's Dark Strike (207952 effect#1), Tormented Agony (252938 effect#1), Creeping Death (264000 effect#1), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), Corruption (317031 effect#1), Sacrolash's Dark Strike (337111 effect#1), Wrath of Consumption (337130 effect#1)
 Triggered by     : Corruption (172)
 Family Flags     : 1, 49
@@ -3507,7 +3389,6 @@ Name             : Grimoire of Supremacy (id=152107) [Spell Family (5), Passive]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3542,7 +3423,6 @@ Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Cooldown         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Flamelicked (185229 effect#1), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), Wrath of Consumption (337130 effect#1)
 Family Flags     : 49, 72
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3563,7 +3443,6 @@ School           : Fire
 Spell Type       : Magic
 Range            : 100 yards
 Duration         : 18 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Item - Warlock T17 Destruction 2P Bonus (165455 effect#1), Flamelicked (185229 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Conflagrate (265931 effect#1), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), Wrath of Consumption (337130 effect#1), Odr, Shawl of the Ymirjar (337164 effect#1)
 Family Flags     : 4, 49, 118
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -3589,7 +3468,6 @@ Name             : Warlock (id=157903) [Passive, Hidden]
 Class            : Destruction Warlock
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3607,7 +3485,6 @@ Class            : Shadow Elemental Arcane Fire Frost Affliction Demonology Dest
 Race             : Dark Iron Dwarf (0x800)
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3633,7 +3510,6 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 30 seconds
 Cooldown         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Mechanic         : Snare
 Attributes       : ........ ........ x....... ........   ..x..... ........ ........ .....x.. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3655,7 +3531,6 @@ School           : Physical
 Spell Type       : Magic
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Family Flags     : 47
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
@@ -3697,7 +3572,6 @@ Range            : 30 yards
 Duration         : 5 seconds
 Cooldown         : 10 seconds
 Category         : 82
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 10 seconds
 Mechanic         : Heal
 Family Flags     : 19
@@ -3729,7 +3603,6 @@ Spell Level      : 22
 Range            : 50000 yards
 Duration         : 2 seconds
 Cooldown         : 60 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Conflagrate (265931 effect#1)
 Family Flags     : 17
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
@@ -3754,7 +3627,6 @@ Spell Type       : Magic
 Spell Level      : 18
 Range            : 30 yards
 Cooldown         : 10 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 31, 74
 Attributes       : ........ ........ x....... ........   .......x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3783,7 +3655,6 @@ Range            : 40 yards
 Duration         : 6 seconds
 Cooldown         : 24 seconds
 Category         : 88
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 24 seconds
 Family Flags     : 30
 Attributes       : ........ ........ ..x..... ........   ........ ........ .x...... ........ 
@@ -3911,7 +3782,6 @@ Class            : Warlock
 School           : Physical
 Spell Type       : None
 Spell Level      : 1
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.x. ........ x.x..... ...x....   .....x.. ........ .x...... ........ 
                  : ........ ......x. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3933,7 +3803,6 @@ School           : Shadowflame
 Spell Type       : Magic
 Range            : 100 yards
 Duration         : 12 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Demonic Calling (205146 effect#1), Item - Warlock T19 Demonology 4P Bonus (212007 effect#1), Call Dreadstalkers (334727 effect#1)
 Family Flags     : 25
 Attributes       : ........ ........ .......x ........   ........ ........ ........ ........ 
@@ -3953,7 +3822,6 @@ Name             : Immolate (id=193541) [Spell Family (5), Passive, Hidden]
 Class            : Destruction Warlock
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ........ ........ ..x..... ........ 
                  : Periodic
@@ -3979,7 +3847,6 @@ Spell Type       : None
 Spell Level      : 1
 Range            : 50000 yards
 Duration         : 3600 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Real PPM         : 20 (Haste multiplier)
 Proc Flags       : ........ ........ x.x..... ........ 
@@ -4007,7 +3874,6 @@ School           : Shadow
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 50000 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), Wrath of Consumption (337130 effect#1)
 Triggered by     : Grimoire of Sacrifice (196099)
 Family Flags     : 49, 116
@@ -4027,7 +3893,6 @@ Name             : Writhe in Agony (id=196102) [Spell Family (5), Passive]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4051,7 +3916,6 @@ Name             : Absolute Corruption (id=196103) [Spell Family (5), Passive]
 Class            : Warlock
 School           : Shadow
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4075,7 +3939,6 @@ Name             : Sow the Seeds (id=196226) [Spell Family (5), Passive]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4095,7 +3958,6 @@ Name             : Shadowy Inspiration (id=196269) [Spell Family (5), Passive]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4117,7 +3979,6 @@ Resource         : 2% Base Mana (0) (id=10562)
 Spell Level      : 26
 Range            : 40 yards
 GCD              : 1.5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Mastery: Master Demonologist (77219 effect#2)
 Family Flags     : 46
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4140,7 +4001,6 @@ School           : Shadowflame
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Mastery: Master Demonologist (77219 effect#2), Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), Wrath of Consumption (337130 effect#1)
 Family Flags     : 46, 49
 Attributes       : ........ ........ .......x x..x....   .....x.. ........ ...x.... ........ 
@@ -4160,7 +4020,6 @@ Name             : Hand of Doom (id=196283) [Spell Family (5), Passive]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4180,7 +4039,6 @@ School           : Shadow
 Spell Type       : Magic
 Range            : 50000 yards
 Duration         : 4 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 43
 Attributes       : ........ ........ x....... ..x.....   ...x...x ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
@@ -4203,7 +4061,6 @@ Class            : Destruction Warlock
 School           : Physical
 Spell Type       : None
 Spell Level      : 12
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4223,7 +4080,6 @@ Name             : Fire and Brimstone (id=196408) [Spell Family (5), Passive]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4243,7 +4099,6 @@ Name             : Eradication (id=196412) [Spell Family (5), Passive]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ........ ........ x....... ........ 
                  : Magic Hostile Spell
@@ -4265,7 +4120,6 @@ Class            : Warlock
 School           : Physical
 Spell Type       : None
 Duration         : 7 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : Eradication (196412)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4289,7 +4143,6 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 3 seconds
 Cooldown         : 25 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Improved Rain of Fire/Hellfire (24430 effect#1), Warlock (137042 effect#1)
 Family Flags     : 5
 Attributes       : ........ ........ ........ ........   ..x...x. ........ ........ ....xx.. 
@@ -4310,7 +4163,6 @@ Class            : Warlock
 School           : Fire
 Spell Type       : Magic
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Conflagrate (265931 effect#1), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), Wrath of Consumption (337130 effect#1), Odr, Shawl of the Ymirjar (337164 effect#1)
 Family Flags     : 15, 49
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4335,7 +4187,6 @@ Spell Type       : Magic
 Range            : 40 yards
 Max Targets      : 1
 Velocity         : 16 yards/sec
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : .......x x....... ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4378,7 +4229,6 @@ Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
 Duration         : 15 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ........ ........ x....... ........ 
@@ -4463,7 +4313,6 @@ Resource         : 0% Base Mana (0) and 1% Base Mana (0) per tick (id=10748)
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Nightfall (264571 effect#3), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), Decimating Bolt (325299 effect#2), Malefic Wrath (337125 effect#1), Wrath of Consumption (337130 effect#1)
 Family Flags     : 23, 49
 Attributes       : ........ ........ x....... ........   ..x..... ......x. ........ ..x..x.. 
@@ -4495,7 +4344,6 @@ Spell Type       : Melee
 Spell Level      : 1
 Range            : 50000 yards
 Duration         : 1 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Mechanic         : Root
 Attributes       : ....x... ........ x.x..x.. ........   ...x...x .x...... ........ ........ 
@@ -4516,7 +4364,6 @@ Name             : Thunderstruck (desc=PvP Talent) (id=199045) [Spell Family (3)
 Class            : Warrior, Warlock
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4557,7 +4404,6 @@ Name             : Demonic Calling (id=205145) [Spell Family (5), Passive]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 20%
 Proc Flags       : ........ ........ x....... ........ 
                  : Magic Hostile Spell
@@ -4581,7 +4427,6 @@ Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
 Duration         : 20 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ........ ........ x....... ........ 
@@ -4610,7 +4455,6 @@ Name             : Reverse Entropy (id=205148) [Spell Family (5), Passive]
 Class            : Warlock
 School           : Fire
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Real PPM         : 2.5
 Proc Flags       : ........ ........ x.x..... ........ 
@@ -4638,7 +4482,6 @@ Max Targets      : 1
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Duration         : 600 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 37
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4664,7 +4507,6 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 16 seconds
 Cooldown         : 45 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Mastery: Potent Afflictions (77215 effect#1), Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), Wrath of Consumption (337130 effect#1)
 Family Flags     : 49, 84
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4692,8 +4534,7 @@ Spell Level      : 42
 GCD              : 1.5 seconds
 Duration         : 20 seconds
 Cooldown         : 180 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-                 : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
 Affecting spells : Dark Caller (334183 effect#1)
 Family Flags     : 88
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ....x... 
@@ -4721,7 +4562,6 @@ Name             : Roaring Blaze (id=205184) [Spell Family (5), Passive]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ........ ........ x....... ........ 
                  : Magic Hostile Spell
@@ -4744,7 +4584,6 @@ School           : Shadow
 Spell Type       : Melee
 Range            : 50000 yards
 Max Targets      : 1
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4763,7 +4602,6 @@ School           : Shadow
 Spell Type       : Magic
 Range            : 40 yards
 Cast Time        : 2 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ..x..... ........   ........ .......x ........ ........ 
@@ -4781,7 +4619,6 @@ Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
 Range            : 500 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Mastery: Potent Afflictions (77215 effect#1), Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), Wrath of Consumption (337130 effect#1)
 Family Flags     : 49, 84
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4803,7 +4640,6 @@ Name             : Soul Effigy (id=205247) [Spell Family (5), Passive]
 Class            : Warlock
 School           : Shadow
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
@@ -4824,7 +4660,6 @@ Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ .......x x..x....   ...x.x.x ........ ........ ........ 
                  : ........ ......x. ...x.... .....x..   ........ ........ ........ ......x. 
                  : .......x ........ ........ ........   ...x.... ........ .xx..... ..x..... 
@@ -4985,7 +4820,6 @@ Name             : Soul Conduit (id=215941) [Spell Family (5), Passive]
 Class            : Warlock
 School           : Shadow
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ........ ..x.x.x. x.x..x.. ........ 
                  : Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Trap Triggered
@@ -5008,7 +4842,6 @@ Class            : Warlock
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5078,7 +4911,6 @@ Class            : Warlock
 School           : Physical
 Spell Type       : Magic
 Spell Level      : 20
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Affecting spells : Improved Rain of Fire/Hellfire (24430 effect#1)
 Family Flags     : 6
@@ -5105,7 +4937,6 @@ Name             : Glyph of the Observer (id=219450) [Spell Family (5), Passive,
 Class            : Warlock
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5187,7 +5018,6 @@ Class            : Affliction Warlock
 School           : Fire
 Spell Type       : None
 Spell Level      : 15
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5206,7 +5036,6 @@ Class            : Affliction Warlock
 School           : Fire
 Spell Type       : None
 Spell Level      : 26
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5227,7 +5056,6 @@ Class            : Destruction Warlock
 School           : Fire
 Spell Type       : None
 Spell Level      : 23
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5247,7 +5075,6 @@ Class            : Affliction Demonology Destruction Warlock
 School           : Fire
 Spell Type       : None
 Spell Level      : 48
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5268,7 +5095,6 @@ Spell Type       : Magic
 Spell Level      : 12
 Range            : 100 yards
 Duration         : 8 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 1 maximum
 Proc Chance      : 101%
 Affecting spells : Mastery: Potent Afflictions (77215 effect#1), Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Epidemic (184922 effect#1), Item - Warlock T19 Affliction 2P Bonus (212002 effect#1), Creeping Death (264000 effect#1), Dreadful Calling (278727 effect#2), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), Unstable Affliction (334315 effect#1), Wrath of Consumption (337130 effect#1)
@@ -5295,7 +5121,6 @@ Spell Type       : Magic
 Spell Level      : 12
 Range            : 100 yards
 Duration         : 8 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 1 maximum
 Proc Chance      : 101%
 Affecting spells : Mastery: Potent Afflictions (77215 effect#1), Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Epidemic (184922 effect#1), Item - Warlock T19 Affliction 2P Bonus (212002 effect#1), Creeping Death (264000 effect#1), Dreadful Calling (278727 effect#2), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), Unstable Affliction (334315 effect#1), Wrath of Consumption (337130 effect#1)
@@ -5322,7 +5147,6 @@ Spell Type       : Magic
 Spell Level      : 12
 Range            : 100 yards
 Duration         : 8 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 1 maximum
 Proc Chance      : 101%
 Affecting spells : Mastery: Potent Afflictions (77215 effect#1), Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Epidemic (184922 effect#1), Item - Warlock T19 Affliction 2P Bonus (212002 effect#1), Creeping Death (264000 effect#1), Dreadful Calling (278727 effect#2), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), Unstable Affliction (334315 effect#1), Wrath of Consumption (337130 effect#1)
@@ -5349,7 +5173,6 @@ Spell Type       : Magic
 Spell Level      : 12
 Range            : 100 yards
 Duration         : 8 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 1 maximum
 Proc Chance      : 101%
 Affecting spells : Mastery: Potent Afflictions (77215 effect#1), Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Epidemic (184922 effect#1), Item - Warlock T19 Affliction 2P Bonus (212002 effect#1), Creeping Death (264000 effect#1), Dreadful Calling (278727 effect#2), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), Unstable Affliction (334315 effect#1), Wrath of Consumption (337130 effect#1)
@@ -5376,7 +5199,6 @@ Spell Type       : Magic
 Spell Level      : 12
 Range            : 100 yards
 Duration         : 8 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 1 maximum
 Proc Chance      : 101%
 Affecting spells : Mastery: Potent Afflictions (77215 effect#1), Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Epidemic (184922 effect#1), Item - Warlock T19 Affliction 2P Bonus (212002 effect#1), Creeping Death (264000 effect#1), Dreadful Calling (278727 effect#2), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), Unstable Affliction (334315 effect#1), Wrath of Consumption (337130 effect#1)
@@ -5405,7 +5227,6 @@ Spell Level      : 9
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Flamelicked (185229 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Inevitable Demise (273525 effect#3), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), Inevitable Demise (334320 effect#2), Claw of Endereth (337038 effect#1), Wrath of Consumption (337130 effect#1), Odr, Shawl of the Ymirjar (337164 effect#1)
 Family Flags     : 3, 49
 Attributes       : ........ ........ x....... ........   ..x..... ......x. ........ ..x..x.. 
@@ -5472,7 +5293,6 @@ School           : Fire
 Spell Type       : None
 Spell Level      : 12
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Backdraft (117828 effect#1), Immolate (157736 effect#2), Flamelicked (185229 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Chaotic Flames (253092 effect#1), Conflagrate (265931 effect#1), Chaotic Inferno (279673 effect#1), Chaos Shards (287637 effect#2), Decimating Bolt (325299 effect#1), Odr, Shawl of the Ymirjar (337164 effect#1)
 Family Flags     : 38, 118
 Attributes       : ........ x....... ........ ........   ........ ........ ........ ........ 
@@ -5492,7 +5312,6 @@ Class            : Warlock
 School           : Fire
 Spell Type       : None
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5510,7 +5329,6 @@ Class            : Warlock
 School           : Shadowflame
 Spell Type       : None
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ x....... x....... ...x....   ...x...x ........ ........ ........ 
                  : ..x..... x....... ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5528,7 +5346,6 @@ Class            : Warlock
 School           : Physical
 Spell Type       : None
 Spell Level      : 3
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5735,7 +5552,6 @@ Name             : Empowered Healthstone (id=262031) [Spell Family (5), Passive]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5754,7 +5570,6 @@ Class            : Warlock
 School           : Physical
 Spell Type       : None
 Duration         : 6 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ....xx..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5854,7 +5669,6 @@ Name             : Creeping Death (id=264000) [Spell Family (5), Passive]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -5882,7 +5696,6 @@ Spell Level      : 1
 Range            : 50 yards
 GCD              : 1.5 seconds
 Cooldown         : 10 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5906,7 +5719,6 @@ School           : Shadowflame
 Spell Type       : None
 Spell Level      : 10
 Range            : 40 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ x....... ........   .......x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ...x.... ........ ........   ........ ..x..... ........ ........ 
@@ -5952,7 +5764,6 @@ Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Duration         : 15 seconds
 Cooldown         : 45 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5972,7 +5783,6 @@ Spell Type       : Magic
 Range            : 100 yards
 GCD              : 1.5 seconds
 Cooldown         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 14
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
@@ -5992,7 +5802,6 @@ School           : Shadow
 Spell Type       : None
 Range            : 100 yards
 Duration         : 20 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 4 maximum
 Proc Chance      : 101%
 Proc Flags       : ........ ........ x....... ........ 
@@ -6024,7 +5833,6 @@ Range            : 40 yards
 Cast Time        : 4.5 seconds
 GCD              : 1.5 seconds
 Velocity         : 35 yards/sec
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Shadowy Inspiration (196606 effect#1), Demonic Core (264173 effect#1), From the Shadows (270569 effect#1), Shadow's Bite (272945 effect#1), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), Power Siphon (334581 effect#1), Wrath of Consumption (337130 effect#1), Balespider's Burning Core (337161 effect#1)
 Family Flags     : 49, 70
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6048,7 +5856,6 @@ Spell Type       : Magic
 Spell Level      : 22
 Range            : 100 yards
 Duration         : Aura (infinite)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x... x....... ..x..... ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6068,7 +5875,6 @@ School           : Fire
 Spell Type       : Magic
 Spell Level      : 22
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : Embers (264364)
 Attributes       : ....x... x....... x.x..... ........   ...x...x ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
@@ -6088,7 +5894,6 @@ Class            : Warlock
 School           : Shadow
 Spell Type       : None
 Duration         : 12 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 101%
 Proc Flags       : ........ ........ x....... ........ 
@@ -6118,7 +5923,6 @@ Name             : Darkfury (id=264874) [Spell Family (5), Passive]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -6145,7 +5949,6 @@ Spell Type       : None
 Spell Level      : 16
 GCD              : 1.5 seconds
 Cooldown         : 10 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6173,8 +5976,7 @@ Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Duration         : 15 seconds
 Cooldown         : 90 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-                 : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
 Family Flags     : 81
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6199,7 +6001,6 @@ Spell Type       : None
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 15 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6229,7 +6030,6 @@ Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 2 seconds
 Velocity         : 35 yards/sec
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), Wrath of Consumption (337130 effect#1)
 Family Flags     : 49
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -6250,7 +6050,6 @@ School           : Fire
 Spell Type       : Magic
 Range            : 100 yards
 Duration         : 8 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), Wrath of Consumption (337130 effect#1), Odr, Shawl of the Ymirjar (337164 effect#1)
 Family Flags     : 49, 87, 118
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -6275,7 +6074,6 @@ Class            : Warlock
 School           : Fire
 Spell Type       : Magic
 Duration         : 8 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : Reverse Entropy (205148)
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6294,7 +6092,6 @@ Name             : Rain of Chaos (id=266086) [Spell Family (5), Passive]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -6312,7 +6109,6 @@ Name             : Internal Combustion (id=266134) [Spell Family (5), Passive]
 Class            : Warlock
 School           : Fire
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 32
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6396,7 +6192,6 @@ School           : Shadow
 Spell Type       : None
 Spell Level      : 28
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6420,7 +6215,6 @@ Name             : Flashover (id=267115) [Spell Family (5), Passive]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -6450,7 +6244,6 @@ School           : Shadowflame
 Spell Type       : None
 Spell Level      : 10
 Range            : 40 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ x....... ........   .......x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ...x.... ........ ........   ........ ..x..... ........ ........ 
@@ -6473,7 +6266,6 @@ Range            : 100 yards
 GCD              : 1.5 seconds
 Duration         : 20 seconds
 Cooldown         : 60 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
@@ -6500,7 +6292,6 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 6 seconds
 Cooldown         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6519,7 +6310,6 @@ School           : Shadow
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Mastery: Master Demonologist (77219 effect#2), Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), Wrath of Consumption (337130 effect#1)
 Family Flags     : 49, 89
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -6541,7 +6331,6 @@ School           : Physical
 Spell Type       : Melee
 Spell Level      : 1
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6561,7 +6350,6 @@ School           : Physical
 Spell Type       : None
 Spell Level      : 1
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6581,7 +6369,6 @@ School           : Physical
 Spell Type       : None
 Spell Level      : 1
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -6608,7 +6395,6 @@ Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
 Duration         : 15 seconds
 Cooldown         : 180 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 80
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6844,7 +6630,6 @@ School           : Shadow
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6863,7 +6648,6 @@ School           : Physical
 Spell Type       : None
 Spell Level      : 1
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ x....... ........   ........ ..x..... ........ ........ 
                  : ..x..... ........ ........ ....xx..   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
@@ -6884,7 +6668,6 @@ Spell Type       : None
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 20 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -6905,7 +6688,6 @@ Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 15 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6925,7 +6707,6 @@ Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 15 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6945,7 +6726,6 @@ Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 15 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6965,7 +6745,6 @@ Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 15 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6985,7 +6764,6 @@ Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 15 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7005,7 +6783,6 @@ Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 15 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7025,7 +6802,6 @@ Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 15 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7045,7 +6821,6 @@ Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 15 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7065,7 +6840,6 @@ Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 15 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7089,7 +6863,6 @@ GCD              : 1 seconds
 Velocity         : 65 yards/sec
 Duration         : 10 seconds
 Requires weapon  : 
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ ........ ........ ........ 
@@ -7114,7 +6887,6 @@ Spell Level      : 1
 Range            : 5 yards
 GCD              : 1 seconds
 Requires weapon  : 
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ ........ ........ ........ 
@@ -7134,7 +6906,6 @@ Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 15 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7155,7 +6926,6 @@ Resource         : 2% Base Mana (0) (id=191574)
 Spell Level      : 27
 Cast Time        : 0.5 seconds
 Cooldown         : 10 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -7334,7 +7104,6 @@ Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 2 seconds
 Velocity         : 35 yards/sec
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7351,7 +7120,6 @@ Name             : Inferno (id=270545) [Spell Family (5), Passive]
 Class            : Warlock
 School           : Fire
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -7380,7 +7148,6 @@ Spell Type       : None
 Spell Level      : 10
 Range            : 100 yards
 Duration         : 12 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : .......x ........ ........ ........   ........ ........ ........ ........ 
@@ -7481,7 +7248,6 @@ Class            : Warlock
 School           : Shadow
 Spell Type       : Melee
 Range            : 50000 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7502,7 +7268,6 @@ Spell Level      : 1
 Range            : 5 yards
 GCD              : 1 seconds
 Requires weapon  : 
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7523,7 +7288,6 @@ Spell Level      : 1
 Range            : 5 yards
 GCD              : 1 seconds
 Requires weapon  : 
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7545,7 +7309,6 @@ Range            : 100 yards
 GCD              : 1 seconds
 Duration         : 15 seconds
 Cooldown         : 4 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ..x..... ........   ..x..... .x....x. ........ .....x.. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7569,7 +7332,6 @@ Spell Type       : Magic
 Spell Level      : 1
 Range            : 5 yards
 GCD              : 1 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7593,7 +7355,6 @@ Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1 seconds
 Velocity         : 25 yards/sec
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7613,7 +7374,6 @@ Spell Type       : Melee
 Spell Level      : 1
 Range            : 5 yards
 GCD              : 1 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7639,7 +7399,6 @@ Spell Type       : Melee
 Spell Level      : 1
 Range            : 5 yards
 GCD              : 1 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7659,7 +7418,6 @@ Spell Type       : Melee
 Spell Level      : 1
 Range            : 5 yards
 GCD              : 1 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7679,7 +7437,6 @@ Spell Type       : Melee
 Spell Level      : 1
 Range            : 5 yards
 GCD              : 1 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8052,7 +7809,6 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 20 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Mastery: Potent Afflictions (77215 effect#1), Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), Wrath of Consumption (337130 effect#1)
 Family Flags     : 49, 85
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8243,7 +7999,6 @@ School           : Shadow
 Spell Type       : None
 Range            : 100 yards
 Duration         : 20 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 14
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8921,7 +8676,6 @@ Class            : Warlock
 School           : Fire
 Spell Type       : None
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9180,7 +8934,6 @@ Class            : Warlock
 School           : Shadow
 Spell Type       : None
 Spell Level      : 44
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9396,7 +9149,6 @@ Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Duration         : 18 seconds
 Cooldown         : 40 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -9417,7 +9169,6 @@ Name             : Scouring Tithe (desc=Kyrian) (id=312379) [Spell Family (5)]
 Class            : Warlock
 School           : Arcane
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9441,7 +9192,6 @@ Max Targets      : 1
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Duration         : 16 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 1 maximum
 Proc Chance      : 101%
 Affecting spells : Mastery: Potent Afflictions (77215 effect#1), Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Epidemic (184922 effect#1), Item - Warlock T19 Affliction 2P Bonus (212002 effect#1), Creeping Death (264000 effect#1), Dreadful Calling (278727 effect#2), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), Unstable Affliction (334315 effect#1), Wrath of Consumption (337130 effect#1)
@@ -9475,7 +9225,6 @@ Class            : Protection Warrior, Warlock
 School           : Physical
 Spell Type       : None
 Spell Level      : 32
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9495,7 +9244,6 @@ School           : Shadow
 Spell Type       : Magic
 Spell Level      : 12
 Range            : 40 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ ........ ........ ........ 
@@ -9538,7 +9286,6 @@ Resource         : 2% Base Mana (0) (id=192523)
 Spell Level      : 4
 Duration         : 8 seconds
 Cooldown         : 180 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Family Flags     : 54, 67
 Attributes       : ....x... ........ ..x..... ........   ........ ..x..... ........ ........ 
@@ -9569,7 +9316,6 @@ Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Duration         : 12 seconds
 Cooldown         : 60 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9593,7 +9339,6 @@ Spell Level      : 41
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 120 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 95
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9622,7 +9367,6 @@ Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), Wrath of Consumption (337130 effect#1)
 Family Flags     : 49
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9643,7 +9387,6 @@ School           : Shadow
 Spell Type       : Magic
 Range            : 100 yards
 Duration         : 12 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), Wrath of Consumption (337130 effect#1)
 Family Flags     : 49
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9669,7 +9412,6 @@ Spell Level      : 10
 Range            : 100 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), Wrath of Consumption (337130 effect#1), Soul Tithe (340238 effect#1)
 Family Flags     : 49, 127
 Attributes       : ........ ........ x....... .....x..   ...x...x ..x..... ........ ........ 
@@ -9696,7 +9438,6 @@ Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
 Cooldown         : 45 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), Wrath of Consumption (337130 effect#1)
 Family Flags     : 49
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9728,7 +9469,6 @@ School           : Shadow
 Spell Type       : Magic
 Range            : 40 yards
 Duration         : 45 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 3 maximum
 Proc Chance      : 100%
 Proc Flags       : ........ ....x... x....... ........ 
@@ -9763,7 +9503,6 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Duration         : 8 seconds
 Cooldown         : 60 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Deadwind Harvester (216708 effect#4), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), Wrath of Consumption (337130 effect#1), Exhumed Soul (340348 effect#1), 
 Family Flags     : 49, 112
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9795,7 +9534,6 @@ Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), Wrath of Consumption (337130 effect#1)
 Triggered by     : Decimating Bolt (327070), Decimating Bolt (327072)
 Family Flags     : 49
@@ -9817,7 +9555,6 @@ School           : Shadow
 Spell Type       : None
 Range            : 100 yards
 Velocity         : 25 yards/sec
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), Wrath of Consumption (337130 effect#1)
 Triggered by     : Decimating Bolt (325289)
 Family Flags     : 49
@@ -9839,7 +9576,6 @@ School           : Shadow
 Spell Type       : None
 Range            : 100 yards
 Velocity         : 25 yards/sec
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), Wrath of Consumption (337130 effect#1)
 Triggered by     : Decimating Bolt (325289)
 Family Flags     : 49
@@ -9862,7 +9598,6 @@ Spell Type       : Magic
 Spell Level      : 34
 Duration         : 15 seconds
 Cooldown         : 180 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Affecting spells : Fel Celerity (339130 effect#1)
@@ -9888,7 +9623,6 @@ Name             : Dark Caller (id=334183) [Spell Family (5), Passive]
 Class            : Warlock
 School           : Shadow
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -9912,7 +9646,6 @@ Spell Level      : 58
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 8 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Mechanic         : Snare
 Family Flags     : 113
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -9935,7 +9668,6 @@ Class            : Affliction Warlock
 School           : Shadow
 Spell Type       : None
 Spell Level      : 56
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9956,7 +9688,6 @@ Class            : Warlock
 School           : Physical
 Spell Type       : None
 Spell Level      : 1
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ........ ........ ..x..... ........ 
                  : Periodic
@@ -9979,7 +9710,6 @@ School           : Shadow
 Spell Type       : Magic
 Range            : 100 yards
 Duration         : 20 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 50 maximum
 Proc Chance      : 101%
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -10008,7 +9738,6 @@ Class            : Affliction Warlock
 School           : Shadow
 Spell Type       : None
 Spell Level      : 54
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10028,7 +9757,6 @@ School           : Shadow
 Spell Type       : None
 Range            : 100 yards
 Duration         : 15 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 2 initial, 2 maximum
 Proc Chance      : 100%
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ....x... 
@@ -10051,7 +9779,6 @@ School           : Shadow
 Spell Type       : None
 Spell Level      : 52
 Range            : 40 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10071,7 +9798,6 @@ School           : Shadow
 Spell Type       : None
 Spell Level      : 56
 Range            : 40 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10093,7 +9819,6 @@ School           : Shadow
 Spell Type       : None
 Spell Level      : 54
 Range            : 40 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10117,7 +9842,6 @@ School           : Shadow
 Spell Type       : None
 Spell Level      : 54
 Range            : 40 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10139,7 +9863,6 @@ School           : Shadow
 Spell Type       : None
 Spell Level      : 52
 Range            : 40 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10161,7 +9884,6 @@ School           : Shadow
 Spell Type       : None
 Spell Level      : 56
 Range            : 40 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10183,7 +9905,6 @@ School           : Shadow
 Spell Type       : None
 Range            : 50000 yards
 Duration         : 10 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ x....... ........   ........ ........ .x...... ....x... 
                  : ..x..... ........ ...x.... ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

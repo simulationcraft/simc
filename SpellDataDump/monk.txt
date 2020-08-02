@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35360 shadowlands-BETA (, no-networking)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35360 shadowlands-BETA (hotfix 2020-08-02/35360, no-networking)
 
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -26,7 +26,6 @@ Range            : 30 yards
 Duration         : 3 seconds
 Cooldown         : 8 seconds
 Category         : 82
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 8 seconds
 Mechanic         : Heal
 Affecting spells : Aspect of the Beast (191384 effect#1), 
@@ -53,7 +52,6 @@ Class            : Monk
 School           : Physical
 Spell Type       : None
 Spell Level      : 15
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ..x.x.x. x...x... x.x..... ........ 
                  : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Periodic
@@ -74,7 +72,6 @@ Name             : Pet Damage (id=8875) [Spell Family (9), Passive, Hidden]
 Class            : Monk
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx x....... ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -99,7 +96,6 @@ Spell Level      : 33
 Range            : 100 yards
 GCD              : 1.5 seconds
 Cooldown         : 60 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Hunter (137014 effect#3), Aspect of the Wild (193530 effect#3)
 Family Flags     : 1, 67
 Attributes       : ....x... ........ x.x..x.. ........   ........ .xx..... ........ ..x.x... 
@@ -120,7 +116,6 @@ Name             : Pet Health (id=19581) [Spell Family (9), Passive, Hidden]
 Class            : Monk
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx x....... ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -176,7 +171,6 @@ School           : Physical
 Spell Type       : Magic
 Range            : 100 yards
 Duration         : 5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Mechanic         : Stun
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
@@ -263,7 +257,6 @@ Name             : Hunter Pet (id=34902) [Spell Family (9), Passive, Hidden]
 Class            : Monk
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ....x... 
                  : ........ ........ ....x... .x......   ........ ........ ........ ........ 
@@ -328,7 +321,6 @@ Spell Type       : None
 Spell Level      : 10
 Duration         : 10 seconds
 Cooldown         : 20 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Aspect of the Beast (191384 effect#1), 
 Family Flags     : 60
 Attributes       : ........ ........ ........ ........   .....x.. ..x..... ........ ........ 
@@ -373,7 +365,6 @@ Name             : Kindred Spirits (id=88680) [Spell Family (9), Passive, Hidden
 Class            : Monk
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Kindred Spirits (56315 effect#2)
 Family Flags     : 87
 Attributes       : ......xx x....... ........ ........   ........ ........ ........ ........ 
@@ -419,7 +410,6 @@ Resource         : 50 Energy (3) (id=10716) w/ Windwalker Monk (id=137025)
 Spell Level      : 1
 Range            : 5 yards
 GCD              : 1.5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Brewmaster Monk (137023 effect#1), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#2), Heightened Senses (165692 effect#1), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), Item - Monk T19 Brewmaster 4P Bonus (211417 effect#1), Blackout Combo (228563 effect#1), The Wind Blows (281452 effect#1), Rushing Tiger Palm (337334 effect#1), Extend Life (337993 effect#2)
 Family Flags     : 10, 103
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
@@ -467,7 +457,6 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 3 seconds
 Category         : 1561
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 3 seconds
 Proc Chance      : 101%
 Affecting spells : Blackout Kick! (116768 effect#1), Brewmaster Monk (137023 effect#1), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), Blackout Kick (261916 effect#1), Blackout Kick (261917 effect#1), The Wind Blows (281452 effect#1), Weapons of Order (311054 effect#1), Extend Life (337993 effect#2)
@@ -499,7 +488,6 @@ Spell Level      : 21
 GCD              : 1 seconds
 Duration         : 1.5 seconds
 Cooldown         : 25 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 6
 Attributes       : ....x... ........ ..x..... .....x..   ........ ........ .x...... ....x... 
                  : ........ ........ ........ ........   ........ ........ ..x..... ........ 
@@ -540,7 +528,6 @@ Resource         : 25 Energy (3) (id=10834) w/ Brewmaster Monk (id=137023)
 Spell Level      : 7
 GCD              : 1.5 seconds
 Duration         : 1.5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Brewmaster Monk (137023 effect#14), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#14), Serenity (152173 effect#1), Dance of Chi-Ji (286587 effect#3), Weapons of Order (311054 effect#1), Dance of Chi-Ji (325202 effect#1)
 Triggered by     : Cyclone Strikes (220358)
 Family Flags     : 63
@@ -570,7 +557,6 @@ Class            : Monk
 School           : Physical
 Spell Type       : Melee
 Spell Level      : 1
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 13
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -589,7 +575,6 @@ Name             : Spinning Crane Kick (id=107270) [Spell Family (53)]
 Class            : Monk
 School           : Physical
 Spell Type       : Melee
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Brewmaster Monk (137023 effect#1), Mistweaver Monk (137024 effect#14), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#2), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), Cyclone Strikes (220358 effect#1), The Wind Blows (281452 effect#1), Dance of Chi-Ji (286587 effect#3), Extend Life (337993 effect#2)
 Triggered by     : Spinning Crane Kick (101546), Spinning Crane Kick (322729)
 Family Flags     : 8, 103
@@ -619,7 +604,6 @@ Spell Level      : 10
 Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 10 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Thunder Focus Tea (116680 effect#1), Monk (137022 effect#1), Brewmaster Monk (137023 effect#14), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#5), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), Item - Monk T19 Windwalker 2P Bonus (211427 effect#1), Pressure Point (247255 effect#1), Rising Sun Kick (262840 effect#1), Swift Roundhouse (278710 effect#1), Weapons of Order (311054 effect#1), Pressure Point (337482 effect#1)
 Family Flags     : 39, 67
 Attributes       : ....x... ........ ........ ........   ........ .x...... ........ ...x.... 
@@ -640,7 +624,6 @@ Class            : Monk
 School           : Nature
 Spell Type       : None
 Spell Level      : 1
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx x....... x....... ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -663,7 +646,6 @@ Spell Level      : 3
 Cooldown         : 0.8 seconds
 Charges          : 1 (20 seconds cooldown)
 Category         : 1365: Celerity (115173 effect#1), Celerity (115173 effect#2), Roll Buff (222625 effect#1), Roll (328669 effect#1), Roll Out (337294 effect#1)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 7, 50
 Attributes       : ....x... ........ x......x ........   .....x.. ..x..... .x...... ....x... 
                  : ........ ........ ........ ........   ..x..... .....x.. ........ ........ 
@@ -689,7 +671,6 @@ GCD              : 1 seconds
 Duration         : 4 seconds
 Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapon
 Cooldown         : 24 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Monk (137022 effect#1), Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Serenity (152173 effect#1), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), Katsuo's Eclipse (208045 effect#1), The Wind Blows (281452 effect#1), Weapons of Order (311054 effect#1), Extend Life (337993 effect#2)
 Triggered by     : Katsuo's Eclipse (208045)
 Family Flags     : 55, 67, 103
@@ -733,7 +714,6 @@ School           : Physical
 Spell Type       : None
 Range            : 50000 yards
 Duration         : Aura (infinite)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ........   ........ ...x.... ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
                  : x....... ........ ........ ........   ........ ........ ........ ........ 
@@ -756,7 +736,6 @@ Spell Level      : 1
 Duration         : 1.1 seconds
 Charges          : 1 (20 seconds cooldown)
 Category         : 1365: Celerity (115173 effect#1), Celerity (115173 effect#2), Roll Buff (222625 effect#1), Roll (328669 effect#1), Roll Out (337294 effect#1)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 7, 33
 Attributes       : ....x... ........ x......x ........   .....x.. ..x..... .x...... ....x... 
                  : ........ ........ ........ ........   ..x..... .....x.. ........ ........ 
@@ -787,7 +766,6 @@ School           : Physical
 Spell Type       : Melee
 Spell Level      : 1
 Duration         : 0.2 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ x....... x....... ........   ...x...x ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -817,7 +795,6 @@ Spell Type       : Melee
 Spell Level      : 17
 GCD              : 1 seconds
 Category         : 47
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Fortifying Brew (120954 effect#6), High Tolerance (196737 effect#5), Shuffle (215479 effect#1), Stagger (322522 effect#1)
 Family Flags     : 34
 Attributes       : ....x.x. ........ x.x..... x..x.x.x   ........ ..x..... .x...... ....x..x 
@@ -854,7 +831,6 @@ GCD              : 1.5 seconds
 Duration         : 60 seconds
 Cooldown         : 45 seconds
 Category         : 33
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 45 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
@@ -888,7 +864,6 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
 Cooldown         : 15 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Brewmaster Monk (137023 effect#14), Windwalker Monk (137025 effect#14)
 Family Flags     : 1
 Attributes       : ........ ........ ........ ...x....   .......x ........ ........ ........ 
@@ -911,7 +886,6 @@ Spell Level      : 7
 Range            : 10 yards
 Max Targets      : 1
 Velocity         : 20 yards/sec
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 74
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....xx.   ........ ........ ........ ........ 
@@ -937,7 +911,6 @@ GCD              : 1.5 seconds
 Velocity         : 30 yards/sec
 Charges          : 1 (9 seconds cooldown)
 Category         : 1517: Renewing Mist (281231 effect#1)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Thunder Focus Tea (116680 effect#3), Chi-ji's Guidance (167717 effect#1), Extend Life (185158 effect#2), Item - Monk T19 Mistweaver 2P Bonus (211418 effect#1), Shelter of Rin (281301 effect#1), Extend Life (337993 effect#2)
 Family Flags     : 23, 97
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
@@ -963,7 +936,6 @@ Name             : Celerity (desc=Passive Talent) (id=115173) [Spell Family (53)
 Class            : Monk
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -990,7 +962,6 @@ Spell Level      : 10
 Range            : 40 yards
 GCD              : 1 seconds
 Duration         : 8 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Extend Life (185158 effect#2), Extend Life (337993 effect#2)
 Family Flags     : 24, 48
 Attributes       : ........ ........ ........ ........   ..x...x. ........ ........ .....x.. 
@@ -1016,7 +987,6 @@ Spell Type       : None
 Spell Level      : 26
 Duration         : 8 seconds
 Cooldown         : 300 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ...x.x.. ........ ........ ........ 
@@ -1048,7 +1018,6 @@ Spell Type       : Magic
 Spell Level      : 19
 GCD              : 1 seconds
 Cooldown         : 15 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Affecting spells : Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Serenity (152173 effect#2), Item - Monk WoD PvP Brewmaster 4P Bonus (171445 effect#1), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), Blackout Combo (228563 effect#2), The Wind Blows (281452 effect#1), Extend Life (337993 effect#2)
 Family Flags     : 19, 67, 103
@@ -1072,8 +1041,7 @@ School           : Physical
 Spell Type       : Magic
 Spell Level      : 23
 Cooldown         : 420 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-                 : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
 Affecting spells : Fortifying Brew (325208 effect#1)
 Family Flags     : 52, 53
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1098,7 +1066,6 @@ Spell Level      : 1
 GCD              : 1 seconds
 Duration         : 5 seconds
 Cooldown         : 60 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 3 maximum
 Proc Chance      : 101%
 Family Flags     : 53, 56
@@ -1125,7 +1092,6 @@ Spell Level      : 14
 Cooldown         : 1 seconds
 Charges          : 2 (15 seconds cooldown)
 Category         : 1562: Brewmaster Monk (137023 effect#5), Light Brewing (325093 effect#1)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Eluding Movements (184906 effect#2), Item - Monk T19 Brewmaster 2P Bonus (211415 effect#1), Evasive Stride (337250 effect#1)
 Family Flags     : 53, 111
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1150,8 +1116,7 @@ Resource         : 4.374% Base Mana (0) (id=5718)
 Spell Level      : 48
 GCD              : 1.5 seconds
 Cooldown         : 180 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-                 : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
 Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Extend Life (185158 effect#2), Extend Life (337993 effect#2)
 Family Flags     : 48, 60
 Attributes       : ........ ........ ........ ........   ........ ..x....x ........ ........ 
@@ -1181,7 +1146,6 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 900 seconds
 Cooldown         : 10 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ .......x   ........ ........ .x...... ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ .x...... 
@@ -1205,7 +1169,6 @@ Range            : 40 yards
 GCD              : 1 seconds
 Duration         : 900 seconds
 Cooldown         : 10 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x... ........ ........ ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ .x...... 
@@ -1226,7 +1189,6 @@ Name             : Ascension (id=115396) [Passive]
 Class            : Monk
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -1250,7 +1212,6 @@ School           : Physical
 Spell Type       : None
 Spell Level      : 1
 Cooldown         : 120 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 53, 92, 104
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1274,7 +1235,6 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Charges          : 1 (8 seconds cooldown)
 Category         : 1511
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Brewmaster Monk (137023 effect#14), Windwalker Monk (137025 effect#14)
 Family Flags     : 22
 Attributes       : ........ ........ ........ ........   .......x ........ ........ ........ 
@@ -1300,7 +1260,6 @@ School           : Physical
 Spell Type       : Magic
 Range            : 30 yards
 Cooldown         : 8 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Provoke (328670 effect#1)
 Family Flags     : 117
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
@@ -1323,7 +1282,6 @@ Class            : Windwalker Monk
 School           : Physical
 Spell Type       : None
 Spell Level      : 29
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 123
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1365,7 +1323,6 @@ Class            : Windwalker Monk
 School           : Physical
 Spell Type       : Magic
 Spell Level      : 16
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Internal Cooldown: 1 seconds
 Proc Chance      : 100%
 Proc Flags       : .x...... ........ ........ ........ 
@@ -1399,7 +1356,6 @@ Spell Level      : 13
 Range            : 5 yards
 GCD              : 1.5 seconds
 Duration         : 15 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Mechanic         : Snare
 Proc Flags       : ...x.x.. ........ ........ ........ 
@@ -1429,7 +1385,6 @@ Spell Type       : Melee
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 3 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Mechanic         : Taunt
 Affecting spells : Provoke (328670 effect#1)
@@ -1457,7 +1412,6 @@ Class            : Mistweaver Monk
 School           : Physical
 Spell Type       : None
 Spell Level      : 37
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
@@ -1487,7 +1441,6 @@ Spell Level      : 4
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Thunder Focus Tea (116680 effect#2), Enveloping Mist (124682 effect#2), Brewmaster Monk (137023 effect#18), Mistweaver Monk (137024 effect#1), Windwalker Monk (137025 effect#11), Extend Life (185158 effect#2), Lifecycles (Vivify) (197916 effect#1), Infusion of Life (199380 effect#1), Vivify (231602 effect#1), Uplifted Spirits (278576 effect#3), Lunar Glide (281521 effect#1), Celestial Brew (322507 effect#2), Soothing Focus (337476 effect#1), Extend Life (337993 effect#2)
 Family Flags     : 26, 48
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1511,7 +1464,6 @@ Spell Type       : Magic
 Spell Level      : 22
 Duration         : 30 seconds
 Cooldown         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ....x... ....x.x. ........ ........ 
@@ -1559,7 +1511,6 @@ Spell Level      : 19
 Range            : 5 yards
 Duration         : 4 seconds
 Cooldown         : 15 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 30
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ...x.... ........ ........ ........ 
@@ -1580,7 +1531,6 @@ Spell Type       : Melee
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 8 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
@@ -1605,7 +1555,6 @@ School           : Physical
 Spell Type       : None
 Spell Level      : 1
 Duration         : 15 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ....x... ....x... ........ ........ 
@@ -1641,7 +1590,6 @@ Class            : Monk
 School           : Physical
 Spell Type       : Magic
 Spell Level      : 1
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -1664,7 +1612,6 @@ Range            : 20 yards
 GCD              : 1.5 seconds
 Duration         : 6 seconds
 Cooldown         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Brewmaster Monk (137023 effect#14), Windwalker Monk (137025 effect#14)
 Family Flags     : 47
 Attributes       : ....x... ........ x....... ........   ........ ........ ........ ........ 
@@ -1690,7 +1637,6 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 5 seconds
 Cooldown         : 45 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Brewmaster Monk (137023 effect#14), Windwalker Monk (137025 effect#14)
 Family Flags     : 99
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1717,7 +1663,6 @@ Spell Level      : 1
 GCD              : 1.5 seconds
 Duration         : 6 seconds
 Cooldown         : 6 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Monk (137022 effect#1), Brewmaster Monk (137023 effect#6), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#6), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), Weapons of Order (311054 effect#1)
 Family Flags     : 5, 76
 Attributes       : ....x... ........ x.x..... ........   ........ ........ ........ ........ 
@@ -1755,7 +1700,6 @@ Spell Level      : 21
 Range            : 40 yards
 Duration         : 12 seconds
 Cooldown         : 120 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Item - Monk WoD PvP Mistweaver 4P Bonus (165697 effect#1), Burst of Life (287472 effect#1)
 Family Flags     : 78
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1783,7 +1727,6 @@ School           : Physical
 Spell Type       : Melee
 Spell Level      : 1
 Range            : 8 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#2), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), Open Palm Strikes (279918 effect#4), The Wind Blows (281452 effect#1), Inner Fury (336452 effect#1), Extend Life (337993 effect#2)
 Triggered by     : Fists of Fury (113656)
 Family Flags     : 20, 103
@@ -1807,7 +1750,6 @@ Class            : Brewmaster Monk
 School           : Physical
 Spell Type       : None
 Spell Level      : 10
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ...x.x.. ........ ........ ........ 
                  : White Melee Taken, Yellow Melee Taken
@@ -1837,7 +1779,6 @@ Class            : Mistweaver Monk
 School           : Physical
 Spell Type       : None
 Spell Level      : 29
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ........ ..x...x. ........ ........ 
                  : Generic Heal, Magic Heal
@@ -1869,7 +1810,6 @@ Resource         : 20 Energy (3) and 20 Energy (3) per tick (id=11677) w/ Brewma
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 4 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Affecting spells : Brewmaster Monk (137023 effect#1), Mistweaver Monk (137024 effect#15), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#2), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), The Emperor's Capacitor (235054 effect#1), The Wind Blows (281452 effect#1), The Emperor's Capacitor (337291 effect#1), Extend Life (337993 effect#2)
 Family Flags     : 32, 70, 103
@@ -1897,7 +1837,6 @@ Class            : Monk
 School           : Physical
 Spell Type       : Magic
 Spell Level      : 19
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ...x.x.. ........ ........ ........ 
                  : White Melee Taken, Yellow Melee Taken
@@ -1920,7 +1859,6 @@ Spell Type       : Melee
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 3 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Mechanic         : Taunt
 Attributes       : ....x... ........ x.x..... ........   ........ ........ ........ ........ 
@@ -1947,7 +1885,6 @@ School           : Physical
 Spell Type       : None
 Spell Level      : 1
 Duration         : 10 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 2 maximum
 Proc Chance      : 101%
 Triggered by     : Chi Torpedo (115008)
@@ -1973,7 +1910,6 @@ Spell Level      : 6
 GCD              : 1.5 seconds
 Duration         : 3 seconds
 Cooldown         : 60 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Mechanic         : Stun
 Affecting spells : Brewmaster Monk (137023 effect#14), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#14), Tiger Tail Sweep (264348 effect#1), 
 Family Flags     : 41
@@ -1998,7 +1934,6 @@ Spell Level      : 16
 Cooldown         : 1 seconds
 Charges          : 2 (15 seconds cooldown)
 Category         : 1562: Brewmaster Monk (137023 effect#5), Light Brewing (325093 effect#1)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 53, 66, 67
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2020,7 +1955,6 @@ School           : Nature
 Spell Type       : Magic
 Spell Level      : 1 (max 1)
 Range            : 50000 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 61
 Attributes       : ........ ........ x....... ...x....   .....x.. ..x..... ........ ........ 
                  : ..x..... ........ ...x.... ........   ........ ........ ........ ..x...x. 
@@ -2043,7 +1977,6 @@ School           : Nature
 Spell Type       : Magic
 Range            : 50000 yards
 Duration         : 20 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
@@ -2069,7 +2002,6 @@ School           : Physical
 Spell Type       : Magic
 Spell Level      : 1
 Duration         : Aura (infinite)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : .......x x....... .......x x..x....   .....x.. ........ ........ ........ 
                  : x....... ......x. ...x.... ........   ........ ........ ....x... ........ 
                  : ........ ........ ........ ........   ...x.... ........ .xx..... ........ 
@@ -2089,7 +2021,6 @@ Spell Type       : Melee
 Spell Level      : 1
 Range            : 5 yards
 Duration         : 4 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Mechanic         : Stun
 Affecting spells : Monk (137022 effect#1), Serenity (152173 effect#1), Katsuo's Eclipse (208045 effect#1), Weapons of Order (311054 effect#1)
 Triggered by     : Fists of Fury (113656)
@@ -2112,7 +2043,6 @@ Class            : Mistweaver Monk
 School           : Physical
 Spell Type       : None
 Spell Level      : 27
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2131,7 +2061,6 @@ Class            : Brewmaster Monk
 School           : Physical
 Spell Type       : None
 Spell Level      : 27
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2150,7 +2079,6 @@ Class            : Windwalker Monk
 School           : Physical
 Spell Type       : None
 Spell Level      : 27
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2170,7 +2098,6 @@ School           : Physical
 Spell Type       : None
 Spell Level      : 15
 Duration         : 15 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 51
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2228,7 +2155,6 @@ Name             : Touch of Death Notification Driver (desc=Passive) (id=121128)
 Class            : Monk
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ..x.x.x. x.x.x.x. x.x..xxx ........ 
                  : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Trap Triggered, Melee Main-Hand, Melee Off-Hand
@@ -2257,7 +2183,6 @@ Duration         : 15 seconds
 Cooldown         : 1 seconds
 Charges          : 1 (8 seconds cooldown)
 Category         : 1490: Brewmaster Monk (137023 effect#4), Stormstout's Last Gasp (248044 effect#1), Stormstout's Last Gasp (337288 effect#2)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Affecting spells : Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Serenity (152173 effect#2), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), Stormstout's Last Gasp (248044 effect#2), The Wind Blows (281452 effect#1), Stormstout's Last Gasp (337288 effect#1), Extend Life (337993 effect#2)
 Family Flags     : 57, 103
@@ -2302,7 +2227,6 @@ Class            : Monk
 School           : Physical
 Spell Type       : Magic
 Range            : 50000 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 92
 Attributes       : ........ ........ .......x x..x....   .....x.. ........ ........ ........ 
                  : ..x..... ......x. ........ ........   ........ ........ .x...... ........ 
@@ -2321,7 +2245,6 @@ Name             : Power Strikes (id=121817) [Spell Family (53), Passive]
 Class            : Monk
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2344,7 +2267,6 @@ Spell Type       : Magic
 Spell Level      : 1
 Duration         : 10 seconds
 Cooldown         : 120 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2370,7 +2292,6 @@ School           : Nature
 Spell Type       : Magic
 Charges          : 2 (30 seconds cooldown)
 Category         : 1646
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Extend Life (185158 effect#2), Extend Life (337993 effect#2)
 Family Flags     : 77, 116
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -2394,7 +2315,6 @@ Spell Level      : 23
 Range            : 20 yards
 Duration         : 10 seconds
 Cooldown         : 90 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Item - Monk WoD PvP Windwalker 2P Bonus (180743 effect#1)
 Family Flags     : 73
 Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... ........ ...x.... 
@@ -2424,7 +2344,6 @@ Spell Type       : Magic
 Spell Level      : 1
 Duration         : 6 seconds
 Cooldown         : 90 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2445,7 +2364,6 @@ Spell Type       : Melee
 Spell Level      : 1
 Range            : 50000 yards
 Duration         : Aura (infinite)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : Fists of Fury (117418)
 Attributes       : .......x x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2465,7 +2383,6 @@ School           : Physical
 Spell Type       : Melee
 Spell Level      : 1
 Duration         : 4 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Serenity (152173 effect#2), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), The Wind Blows (281452 effect#1), Extend Life (337993 effect#2)
 Family Flags     : 69, 103
 Attributes       : ........ ........ x....... ........   ...x...x ........ ........ ........ 
@@ -2501,7 +2418,6 @@ Spell Level      : 1
 Range            : 50000 yards
 GCD              : 1 seconds
 Duration         : 12 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Affecting spells : Item - Monk WoD PvP Brewmaster 4P Bonus (171445 effect#1), Boiling Brew (272792 effect#2), Celestial Flames (325190 effect#1)
 Family Flags     : 125
@@ -2531,7 +2447,6 @@ GCD              : 1 seconds
 Duration         : 24 seconds
 Cooldown         : 120 seconds
 Category         : 1418
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 120 seconds
 Proc Chance      : 100%
 Proc Flags       : ..x.x.x. x...x... x.x..... ........ 
@@ -2562,7 +2477,6 @@ GCD              : 1.5 seconds
 Velocity         : 30 yards/sec
 Duration         : 1 seconds
 Cooldown         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Brewmaster Monk (137023 effect#7), Windwalker Monk (137025 effect#14), Storm, Earth, and Fire (137639 effect#2), Extend Life (185158 effect#2), Extend Life (337993 effect#2)
 Family Flags     : 38
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
@@ -2598,7 +2512,6 @@ Spell Type       : Magic
 Spell Level      : 1
 Range            : 50000 yards
 Max Targets      : 3
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Xuen's Bond (336616 effect#1)
 Triggered by     : Crackling Tiger Lightning Driver (123999)
 Family Flags     : 68
@@ -2620,7 +2533,6 @@ Class            : Monk
 School           : Nature
 Spell Type       : None
 Duration         : Aura (infinite)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : .......x x..x.... ..x..... x..x....   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : .......x ........ ........ ........   ........ .x...... ........ ........ 
@@ -2640,7 +2552,6 @@ Class            : Windwalker Monk
 School           : Physical
 Spell Type       : Magic
 Spell Level      : 1
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2659,7 +2570,6 @@ Class            : Death Knight, Monk
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 65
 Attributes       : ........ ........ ........ x.xx...x   ........ ..x..... ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ x....... .....x.. 
@@ -2682,7 +2592,6 @@ Class            : Death Knight, Monk
 School           : Physical
 Spell Type       : None
 Duration         : 10 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : High Tolerance (196737 effect#4)
 Family Flags     : 93
 Attributes       : ........ ........ ........ x.xx...x   ........ ..x..... ........ ........ 
@@ -2710,7 +2619,6 @@ Class            : Monk
 School           : Physical
 Spell Type       : None
 Duration         : 10 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Brewmaster Monk (137023 effect#14), High Tolerance (196737 effect#3)
 Family Flags     : 91
 Attributes       : ........ ........ ........ x.xx...x   ........ ..x..... ........ ........ 
@@ -2738,7 +2646,6 @@ Class            : Monk
 School           : Physical
 Spell Type       : None
 Duration         : 10 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : High Tolerance (196737 effect#2)
 Family Flags     : 86
 Attributes       : ........ ........ ........ x.xx...x   ........ ..x..... ........ ........ 
@@ -2770,7 +2677,6 @@ Range            : 50000 yards
 Max Targets      : 1
 Velocity         : 20 yards/sec
 Duration         : 6 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 11
 Attributes       : ........ ........ .....x.. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ x....... ......x. 
@@ -2791,7 +2697,6 @@ Class            : Brewmaster Monk
 School           : Physical
 Spell Type       : None
 Spell Level      : 17
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2812,7 +2717,6 @@ Spell Type       : None
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 81
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -2833,7 +2737,6 @@ Spell Type       : None
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 81
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -2852,7 +2755,6 @@ Class            : Monk
 School           : Nature
 Spell Type       : Magic
 Range            : 50000 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Extend Life (185158 effect#2), Extend Life (337993 effect#2)
 Family Flags     : 77, 121
 Attributes       : ........ ........ .......x x..x....   .....x.. ..x..... ........ ........ 
@@ -2878,7 +2780,6 @@ Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Duration         : 6 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Mistweaver Monk (137024 effect#1), Extend Life (185158 effect#2), Mist Wrap (197900 effect#1), Lifecycles (Enveloping Mist) (197919 effect#1), Soothing Mist (209525 effect#2), Enveloping Mist (231605 effect#1), Surge of Mists (246328 effect#1), Soothing Focus (337476 effect#1), Extend Life (337993 effect#2)
 Family Flags     : 48, 67, 79
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2904,7 +2805,6 @@ Name             : Glyph of Rising Tiger Kick (desc=Mistweaver, Windwalker) (id=
 Class            : Monk
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2923,7 +2823,6 @@ Class            : Monk
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2945,7 +2844,6 @@ Spell Level      : 1
 Range            : 50000 yards
 Max Targets      : 1
 Duration         : 10 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2965,7 +2863,6 @@ Class            : Monk
 School           : Nature
 Spell Type       : Magic
 Range            : 50000 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ .......x x..x....   .....x.. ........ ........ ........ 
                  : ..x..... ......x. ........ ........   ........ ........ .x...... ........ 
                  : .......x .......x ........ ........   ...x.... ........ .xx..... ........ 
@@ -2983,7 +2880,6 @@ Name             : Glyph of Honor (id=125732) [Spell Family (53), Passive, Hidde
 Class            : Monk
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3002,7 +2898,6 @@ Class            : Monk
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3020,7 +2915,6 @@ Name             : Glyph of Fighting Pose (id=125872) [Spell Family (53), Passiv
 Class            : Monk
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3039,7 +2933,6 @@ Class            : Monk
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3060,7 +2953,6 @@ Spell Type       : Magic
 Spell Level      : 37
 GCD              : 1 seconds
 Duration         : Aura (infinite)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ .......x ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3081,7 +2973,6 @@ Name             : Glyph of Crackling Tiger Lightning (id=125931) [Spell Family 
 Class            : Monk
 School           : Stormstrike
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3100,7 +2991,6 @@ Class            : Monk
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3119,7 +3009,6 @@ Class            : Windwalker Monk
 School           : Physical
 Spell Type       : Magic
 Spell Level      : 14
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -3205,7 +3094,6 @@ Class            : Monk
 School           : Physical
 Spell Type       : None
 Spell Level      : 50
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3225,7 +3113,6 @@ School           : Nature
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Enveloping Mist (124682 effect#2), Brewmaster Monk (137023 effect#7), Mistweaver Monk (137024 effect#1), Windwalker Monk (137025 effect#14), Storm, Earth, and Fire (137639 effect#2), Extend Life (185158 effect#2), Extend Life (337993 effect#2)
 Family Flags     : 38, 48, 77, 89
 Attributes       : ........ ........ ........ x..x....   ...x.x.x ........ ........ ........ 
@@ -3247,7 +3134,6 @@ School           : Nature
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 50000 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Enveloping Mist (124682 effect#2), Brewmaster Monk (137023 effect#20), Mistweaver Monk (137024 effect#1), Storm, Earth, and Fire (137639 effect#1), Extend Life (185158 effect#2), Extend Life (337993 effect#2)
 Family Flags     : 48, 58, 77
 Attributes       : ........ ........ ..x....x x..x....   .....x.x ........ ........ ........ 
@@ -3269,7 +3155,6 @@ School           : Nature
 Spell Type       : None
 Spell Level      : 1
 Range            : 50000 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Brewmaster Monk (137023 effect#7), Windwalker Monk (137025 effect#6), Storm, Earth, and Fire (137639 effect#1), 
 Family Flags     : 27
 Attributes       : ........ ...x.... x......x ...x....   .....x.x ..x..... ........ ....x... 
@@ -3295,7 +3180,6 @@ Spell Level      : 1
 Range            : 50000 yards
 Velocity         : 20 yards/sec
 Duration         : 0.1 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#2), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), The Wind Blows (281452 effect#1), Extend Life (337993 effect#2)
 Family Flags     : 27, 103
 Attributes       : ........ ........ ..x....x x..x....   .....x.x ........ ........ ....x... 
@@ -3322,7 +3206,6 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 25 seconds
 Cooldown         : 180 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 3
 Attributes       : ........ ........ ........ ........   ........ ........ .x...... ........ 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
@@ -3347,7 +3230,6 @@ Name             : Monk (id=137022) [Spell Family (53), Passive, Hidden]
 Class            : Monk
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3367,7 +3249,6 @@ Class            : Brewmaster Death Knight, Monk
 Race             : Blood Elf (0x200)
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3453,7 +3334,6 @@ Class            : Mistweaver Death Knight, Monk
 Race             : Blood Elf (0x200)
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3526,7 +3406,6 @@ Class            : Windwalker Death Knight, Monk
 Race             : Blood Elf (0x200)
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3598,7 +3477,6 @@ School           : Physical
 Spell Type       : Magic
 Spell Level      : 19
 GCD              : 1 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3622,8 +3500,7 @@ Duration         : 15 seconds
 Cooldown         : 16 seconds
 Charges          : 1 (90 seconds cooldown)
 Category         : 1592: Storm, Earth, and Fire (231627 effect#1), Strive for Perfection (296320 effect#4), Strive for Perfection (299367 effect#4), Strive for Perfection (299369 effect#4)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-                 : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
 Stacks           : 2 maximum
 Proc Chance      : 100%
 Proc Flags       : ....x.x. x.x.x.x. x.x..x.. .x...... 
@@ -3668,7 +3545,6 @@ School           : Nature
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#2), Serenity (152173 effect#2), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), The Wind Blows (281452 effect#1), Extend Life (337993 effect#2)
 Family Flags     : 38, 103
 Attributes       : ........ ........ ........ x..x....   ...x.x.x ........ ........ ........ 
@@ -3688,7 +3564,6 @@ Name             : Rushing Jade Wind (id=148187) [Spell Family (53)]
 Class            : Monk
 School           : Physical
 Spell Type       : Melee
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), The Wind Blows (281452 effect#1), Extend Life (337993 effect#2)
 Triggered by     : Rushing Jade Wind (116847)
 Family Flags     : 5, 103
@@ -3713,8 +3588,7 @@ Spell Type       : None
 GCD              : 1 seconds
 Duration         : 12 seconds
 Cooldown         : 90 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-                 : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
 Family Flags     : 126
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3755,7 +3629,6 @@ Spell Type       : Melee
 GCD              : 1 seconds
 Duration         : 1 seconds
 Cooldown         : 24 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Monk (137022 effect#1), Storm, Earth, and Fire (137639 effect#1), 
 Family Flags     : 122
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ....x... 
@@ -3806,7 +3679,6 @@ Class            : Monk
 School           : Physical
 Spell Type       : None
 Spell Level      : 1
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3828,7 +3700,6 @@ Class            : Windwalker Monk
 School           : Physical
 Spell Type       : None
 Spell Level      : 18
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3847,7 +3718,6 @@ Class            : Brewmaster Windwalker Monk
 School           : Physical
 Spell Type       : None
 Spell Level      : 1
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3865,7 +3735,6 @@ Name             : Whirling Dragon Punch (id=158221) [Spell Family (53)]
 Class            : Monk
 School           : Physical
 Spell Type       : Melee
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Monk (137022 effect#1), Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#2), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), The Wind Blows (281452 effect#1), Extend Life (337993 effect#2)
 Family Flags     : 103, 122
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3886,7 +3755,6 @@ Class            : Monk
 School           : Nature
 Spell Type       : Magic
 Spell Level      : 1
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Extend Life (185158 effect#2), Extend Life (337993 effect#2)
 Triggered by     : Refreshing Jade Wind (196725)
 Family Flags     : 48, 85
@@ -3908,7 +3776,6 @@ Class            : Beast Mastery Marksmanship Survival Assassination Outlaw Subt
 Race             : Dark Iron Dwarf (0x800)
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3930,7 +3797,6 @@ Class            : Brewmaster Guardian Vengeance Monk, Druid, Demon Hunter
 Race             : Dark Iron Dwarf (0x800)
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3950,7 +3816,6 @@ Class            : Holy Discipline Holy Restoration Mistweaver Restoration Palad
 Race             : Dark Iron Dwarf (0x800)
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3973,7 +3838,6 @@ School           : Physical
 Spell Type       : None
 Spell Level      : 1
 Range            : 40 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ..x..... 
@@ -3993,7 +3857,6 @@ Spell Type       : None
 Spell Level      : 1
 Range            : 100 yards
 Duration         : Aura (infinite)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
@@ -4021,7 +3884,6 @@ Spell Level      : 17
 Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 90 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ .....x..   ........ ..x..... ........ ........ 
                  : ........ x....... ........ ........   ........ ........ .......x ........ 
@@ -4045,7 +3907,6 @@ School           : Physical
 Spell Type       : None
 Spell Level      : 1
 GCD              : 1.5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4063,7 +3924,6 @@ Class            : Monk
 School           : Nature
 Spell Type       : Magic
 Range            : 50000 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Extend Life (185158 effect#2), Extend Life (337993 effect#2)
 Family Flags     : 77, 121
 Attributes       : ........ ........ .......x x..x....   .....x.. ..x..... ........ ........ 
@@ -4085,7 +3945,6 @@ School           : Physical
 Spell Type       : Melee
 Spell Level      : 24
 Range            : 5 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Thunder Focus Tea (116680 effect#1), Monk (137022 effect#1), Brewmaster Monk (137023 effect#1), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), Item - Monk T19 Windwalker 2P Bonus (211427 effect#1), Pressure Point (247255 effect#1), Rising Sun Kick (262840 effect#1), Swift Roundhouse (278710 effect#1), The Wind Blows (281452 effect#1), Weapons of Order (311054 effect#1), Pressure Point (337482 effect#1), Extend Life (337993 effect#2)
 Triggered by     : Rising Sun Kick (107428)
 Family Flags     : 39, 103
@@ -4110,7 +3969,6 @@ Spell Level      : 19
 GCD              : 1.5 seconds
 Duration         : 3 seconds
 Cooldown         : 12 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 107
 Attributes       : ........ ........ x....... ........   ..x...x. ..x..... ........ ....xx.. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4134,7 +3992,6 @@ Spell Type       : Magic
 Spell Level      : 1
 Velocity         : 40 yards/sec
 Duration         : 8 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 1 maximum
 Proc Chance      : 101%
 Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Item - Monk T19 Mistweaver 4P Bonus (211423 effect#2), Upwelling (274963 effect#2), Font of Life (279875 effect#2)
@@ -4162,7 +4019,6 @@ School           : Nature
 Spell Type       : Magic
 Spell Level      : 4
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Mastery: Gust of Mists (117907 effect#3), Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), 
 Family Flags     : 48, 110
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4227,7 +4083,6 @@ School           : Physical
 Spell Type       : None
 Spell Level      : 30
 Duration         : 10 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 100 maximum
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...... ........ ........ 
@@ -4328,7 +4183,6 @@ Name             : Eye of the Tiger (id=196607) [Spell Family (53), Passive]
 Class            : Monk
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
@@ -4352,7 +4206,6 @@ Spell Type       : Melee
 Range            : 100 yards
 Max Targets      : 2
 Duration         : 8 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Serenity (152173 effect#2), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), The Wind Blows (281452 effect#1), Extend Life (337993 effect#2)
 Triggered by     : Eye of the Tiger (196607)
 Family Flags     : 44, 103
@@ -4381,7 +4234,6 @@ Spell Level      : 1
 GCD              : 1.5 seconds
 Duration         : 9 seconds
 Cooldown         : 9 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Monk (137022 effect#1), Brewmaster Monk (137023 effect#9), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#14), Weapons of Order (311054 effect#1)
 Family Flags     : 76
 Attributes       : ....x... ........ x.x..... ........   ........ ........ ........ ........ 
@@ -4404,7 +4256,6 @@ Name             : Special Delivery (id=196730) [Spell Family (53), Passive]
 Class            : Monk
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ........ ..x...x. ........ ........ 
                  : Generic Heal, Magic Heal
@@ -4437,7 +4288,6 @@ School           : Physical
 Spell Type       : Melee
 Range            : 100 yards
 Duration         : 15 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Serenity (152173 effect#2), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), The Wind Blows (281452 effect#1), Extend Life (337993 effect#2)
 Family Flags     : 103
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
@@ -4464,7 +4314,6 @@ School           : Physical
 Spell Type       : None
 Range            : 100 yards
 Velocity         : 3 yards/sec
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : Special Delivery (196730)
 Attributes       : ....x... x....... ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4482,7 +4331,6 @@ Name             : Blackout Combo (id=196736) [Spell Family (53), Passive]
 Class            : Monk
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
@@ -4516,7 +4364,6 @@ Name             : High Tolerance (id=196737) [Spell Family (53), Passive]
 Class            : Monk
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4552,7 +4399,6 @@ Name             : Hit Combo (id=196740) [Spell Family (53), Passive]
 Class            : Monk
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4571,7 +4417,6 @@ Class            : Monk
 School           : Physical
 Spell Type       : None
 Duration         : 10 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 6 maximum
 Proc Chance      : 101%
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
@@ -4599,7 +4444,6 @@ Name             : Focused Thunder (id=197895) [Spell Family (53), Passive]
 Class            : Monk
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4623,7 +4467,6 @@ Name             : Mist Wrap (id=197900) [Spell Family (53), Passive]
 Class            : Monk
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4650,7 +4493,6 @@ Spell Type       : None
 GCD              : 1.5 seconds
 Duration         : 12 seconds
 Cooldown         : 90 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 53
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4669,7 +4511,6 @@ Name             : Lifecycles (id=197915) [Spell Family (53), Passive]
 Class            : Monk
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ........ ......x. ........ ........ 
@@ -4696,7 +4537,6 @@ Spell Type       : Magic
 Spell Level      : 1
 Duration         : 15 seconds
 Cooldown         : 45 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ........ ......x. ........ ........ 
@@ -4722,7 +4562,6 @@ School           : Nature
 Spell Type       : Magic
 Spell Level      : 1
 Duration         : 15 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ........ ......x. ........ ........ 
@@ -4749,7 +4588,6 @@ Spell Type       : Magic
 Spell Level      : 10
 Range            : 60 yards
 Duration         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), 
 Family Flags     : 48, 112
 Attributes       : ........ ........ x....... ........   ..x...x. ........ ........ ..x..x.. 
@@ -4772,7 +4610,6 @@ School           : Nature
 Spell Type       : None
 Spell Level      : 1
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Jade Bond (336773 effect#1)
 Family Flags     : 48, 115
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
@@ -4800,7 +4637,6 @@ Cast Time        : 1.8 seconds
 GCD              : 1.5 seconds
 Duration         : 5 seconds
 Cooldown         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Brewmaster Monk (137023 effect#7), Windwalker Monk (137025 effect#14), Storm, Earth, and Fire (137639 effect#2), Extend Life (185158 effect#2), Extend Life (337993 effect#2)
 Family Flags     : 38
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
@@ -4823,7 +4659,6 @@ Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 20 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Mechanic         : Disorient
@@ -4871,7 +4706,6 @@ Class            : Monk
 School           : Physical
 Spell Type       : None
 Duration         : 20 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 3 maximum
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
@@ -4919,7 +4753,6 @@ GCD              : 1.5 seconds
 Requires weapon  : Two-handed Axe, Two-handed Mace, Polearm, Two-handed Sword, Staff
 Charges          : 1 (4 seconds cooldown)
 Category         : 1561
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Affecting spells : Blackout Kick! (116768 effect#1), Brewmaster Monk (137023 effect#1), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), Blackout Kick (261916 effect#1), Blackout Kick (261917 effect#1), Elusive Footwork (278571 effect#3), The Wind Blows (281452 effect#1), Weapons of Order (311054 effect#1), Extend Life (337993 effect#2)
 Family Flags     : 4, 67, 80, 103
@@ -4957,7 +4790,6 @@ Range            : 40 yards
 GCD              : 0.5 seconds
 Duration         : 20 seconds
 Cooldown         : 1 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Extend Life (185158 effect#2), Extend Life (337993 effect#2)
 Family Flags     : 24
 Attributes       : ........ ........ x....... ........   ..x...x. ........ ........ ..x..x.. 
@@ -4985,7 +4817,6 @@ Class            : Monk
 School           : Physical
 Spell Type       : None
 Spell Level      : 1
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -5003,7 +4834,6 @@ Name             : Spirit of the Crane (id=210803) [Spell Family (53)]
 Class            : Monk
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 1 maximum
 Proc Chance      : 101%
 Attributes       : ........ ........ ........ x..x....   ........ ..x..... ........ ........ 
@@ -5063,7 +4893,6 @@ Spell Level      : 31
 Range            : 100 yards
 Cast Time        : 10 seconds
 GCD              : 1.5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 46
 Attributes       : ........ ........ ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ....x... ........ ........ ........ 
@@ -5146,8 +4975,7 @@ School           : Physical
 Spell Type       : None
 Spell Level      : 16
 Duration         : 5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-                 : 824: Will to Survive (312922 effect#1)
+Labels           : 824: Will to Survive (312922 effect#1)
 Affecting spells : Eluding Movements (184906 effect#2), Item - Monk T19 Brewmaster 2P Bonus (211415 effect#1), Evasive Stride (337250 effect#1)
 Family Flags     : 111
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5177,7 +5005,6 @@ Resource         : 25% Base Mana (0) (id=12292)
 GCD              : 1.5 seconds
 Duration         : 15 seconds
 Cooldown         : 60 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ..x.x.x. x...x... x.x..... ........ 
                  : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Periodic
@@ -5211,7 +5038,6 @@ Class            : Brewmaster Monk
 School           : Nature
 Spell Type       : None
 Spell Level      : 27
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ........ ...x...x ........ .......x 
                  : Generic Heal Taken, Magic Heal Taken
@@ -5234,7 +5060,6 @@ Name             : Celestial Fortune (id=216521) [Spell Family (53)]
 Class            : Monk
 School           : Nature
 Spell Type       : Magic
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x... ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ .....x.. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5258,7 +5083,6 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Charges          : 1 (8 seconds cooldown)
 Category         : 1511
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Brewmaster Monk (137023 effect#14), Windwalker Monk (137025 effect#14)
 Family Flags     : 22
 Attributes       : ........ ........ ........ ........   .......x ........ ........ ........ 
@@ -5281,7 +5105,6 @@ Class            : Windwalker Monk
 School           : Physical
 Spell Type       : None
 Spell Level      : 19
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
@@ -5305,7 +5128,6 @@ Spell Type       : None
 Spell Level      : 1
 Max Targets      : 5
 Duration         : 15 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 5 maximum
 Proc Chance      : 101%
 Attributes       : .......x ........ .......x ........   ........ ........ ........ ........ 
@@ -5332,7 +5154,6 @@ Spell Type       : Melee
 Spell Level      : 1
 GCD              : 1 seconds
 Cooldown         : 5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x... ........ x....... .....x..   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5355,7 +5176,6 @@ Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1 seconds
 Duration         : 6 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 2 maximum
 Proc Chance      : 101%
 Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Extend Life (185158 effect#2), Soothing Mist (209525 effect#2), Extend Life (337993 effect#2)
@@ -5404,7 +5224,6 @@ Spell Level      : 1
 Range            : 100 yards
 Max Targets      : 5
 Duration         : 15 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   .....x.. ........ ........ ........ 
@@ -5423,7 +5242,6 @@ Class            : Monk
 School           : Physical
 Spell Type       : None
 Duration         : 15 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ....x... ..x.x.x. x....... ........ 
@@ -5458,7 +5276,6 @@ School           : Physical
 Spell Type       : Melee
 Spell Level      : 3
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Blackout Kick! (116768 effect#1), Brewmaster Monk (137023 effect#1), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), Blackout Kick (261916 effect#1), Blackout Kick (261917 effect#1), The Wind Blows (281452 effect#1), Weapons of Order (311054 effect#1), Extend Life (337993 effect#2)
 Family Flags     : 4, 103
 Attributes       : ........ ........ ..x..... ........   ........ .x...... ........ ...x.... 
@@ -5487,7 +5304,6 @@ Name             : Vivify (desc=Rank 2) (id=231602) [Spell Family (53), Passive]
 Class            : Brewmaster Windwalker Monk
 School           : Frost
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5508,7 +5324,6 @@ Class            : Mistweaver Monk
 School           : Frost
 Spell Type       : None
 Spell Level      : 17
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5529,7 +5344,6 @@ Class            : Windwalker Monk
 School           : Frost
 Spell Type       : None
 Spell Level      : 27
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5549,7 +5363,6 @@ Class            : Mistweaver Monk
 School           : Frost
 Spell Type       : None
 Spell Level      : 24
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5570,7 +5383,6 @@ Class            : Mistweaver Monk
 School           : Frost
 Spell Type       : None
 Spell Level      : 25
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5693,7 +5505,6 @@ Name             : Spitfire (id=242580) [Spell Family (53), Passive]
 Class            : Monk
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 25%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
@@ -5715,7 +5526,6 @@ Class            : Monk
 School           : Fire
 Spell Type       : None
 Duration         : 2 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ....x... ....x... x....... ........ 
@@ -5742,7 +5552,6 @@ Spell Type       : None
 Spell Level      : 22
 Duration         : 15 seconds
 Cooldown         : 420 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Fortifying Brew (325208 effect#1)
 Family Flags     : 52, 53
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -5771,7 +5580,6 @@ Class            : Brewmaster Monk
 School           : Physical
 Spell Type       : None
 Spell Level      : 19
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6007,7 +5815,6 @@ School           : Nature
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Brewmaster Monk (137023 effect#7), Windwalker Monk (137025 effect#14), Storm, Earth, and Fire (137639 effect#2), Extend Life (185158 effect#2), Extend Life (337993 effect#2)
 Family Flags     : 38
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
@@ -6028,7 +5835,6 @@ Class            : Monk
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Proc Flags       : ..x.x.x. x.x.x.x. x.x..x.. ........ 
                  : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Trap Triggered
@@ -6051,7 +5857,6 @@ School           : Physical
 Spell Type       : None
 Range            : 100 yards
 Duration         : 5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 5 maximum
 Proc Chance      : 101%
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
@@ -6073,7 +5878,6 @@ Class            : Windwalker Monk
 School           : Physical
 Spell Type       : None
 Spell Level      : 11
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6094,7 +5898,6 @@ Class            : Windwalker Monk
 School           : Physical
 Spell Type       : None
 Spell Level      : 14
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6118,7 +5921,6 @@ Resource         : 40 Energy (3) (id=79673) w/ Windwalker Monk (id=137025)
 Range            : 5 yards
 GCD              : 1 seconds
 Cooldown         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), The Wind Blows (248101 effect#1), The Wind Blows (281452 effect#1), Extend Life (337993 effect#2)
 Family Flags     : 103, 118
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ....x... 
@@ -6145,7 +5947,6 @@ Class            : Monk
 School           : Physical
 Spell Type       : Melee
 Range            : 5 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), The Wind Blows (248101 effect#1), The Wind Blows (281452 effect#1), Extend Life (337993 effect#2)
 Triggered by     : Fist of the White Tiger (261947)
 Family Flags     : 103, 118
@@ -6167,7 +5968,6 @@ Class            : Monk
 School           : Physical
 Spell Type       : Melee
 Range            : 5 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : Fist of the White Tiger (261947)
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -6187,7 +5987,6 @@ Class            : Mistweaver Windwalker Monk
 School           : Physical
 Spell Type       : None
 Spell Level      : 18
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6308,7 +6107,6 @@ Replaces         : Disabling Technique (id=175697)
 Class            : Monk
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -7090,7 +6888,6 @@ Class            : Monk
 School           : Nature
 Spell Type       : Magic
 Range            : 40 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), 
 Family Flags     : 48
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7110,7 +6907,6 @@ Class            : Mistweaver Monk
 School           : Frost
 Spell Type       : None
 Spell Level      : 16
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7148,7 +6944,6 @@ Name             : Rising Mist (id=274909) [Spell Family (53), Passive]
 Class            : Monk
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Internal Cooldown: 1 seconds
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
@@ -7172,7 +6967,6 @@ Name             : Rising Mist (id=274912) [Spell Family (53)]
 Class            : Monk
 School           : Nature
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), 
 Triggered by     : Rising Mist (274909)
 Family Flags     : 48
@@ -7193,7 +6987,6 @@ Class            : Monk
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ........ ..x...x. ........ ........ 
                  : Generic Heal, Magic Heal
@@ -7737,7 +7530,6 @@ School           : Physical
 Spell Type       : None
 Spell Level      : 1
 Range            : 40 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -7757,7 +7549,6 @@ School           : Physical
 Spell Type       : None
 Spell Level      : 1
 Range            : 40 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Proc Flags       : ....x... x.x.x... x.x..x.. ........ 
                  : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Hostile Spell, Periodic, Trap Triggered
@@ -7904,7 +7695,6 @@ Name             : Bob and Weave (id=280515) [Spell Family (53), Passive]
 Class            : Monk
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -8245,7 +8035,6 @@ Class            : Mistweaver Monk
 School           : Frost
 Spell Type       : None
 Spell Level      : 19
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8570,7 +8359,6 @@ Spell Level      : 1
 Range            : 10 yards
 GCD              : 1 seconds
 Cooldown         : 10 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .x...... .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8660,7 +8448,6 @@ School           : Physical
 Spell Type       : Melee
 Spell Level      : 24
 Range            : 5 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Serenity (152173 effect#2), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), The Wind Blows (281452 effect#1), Extend Life (337993 effect#2)
 Family Flags     : 103
 Attributes       : ....x... ........ ........ ........   ........ .x...... ........ ........ 
@@ -8771,7 +8558,6 @@ Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
 Max Targets      : 1
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .x...... .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8914,7 +8700,6 @@ Resource         : 10% Base Mana (0) (id=192412) w/ Mistweaver Monk (id=137024)
 GCD              : 1.5 seconds
 Duration         : 30 seconds
 Cooldown         : 120 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Internal Cooldown: 0.1 seconds
 Stacks           : 1 maximum
 Proc Chance      : 101%
@@ -8951,7 +8736,6 @@ Class            : Monk
 School           : Arcane
 Spell Type       : None
 Duration         : 5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8973,7 +8757,6 @@ School           : Arcane
 Spell Type       : Magic
 Spell Level      : 4
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), 
 Family Flags     : 48
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9043,7 +8826,6 @@ Spell Level      : 8
 Range            : 100 yards
 GCD              : 1 seconds
 Cooldown         : 15 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Brewmaster Monk (137023 effect#14), Windwalker Monk (137025 effect#14), Extend Life (185158 effect#2), Expel Harm (322102 effect#1), Expel Harm (322106 effect#1), Celestial Brew (322507 effect#2), Harm Denial (336379 effect#1), Extend Life (337993 effect#2)
 Family Flags     : 17, 95
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
@@ -9074,7 +8856,6 @@ Name             : Expel Harm (desc=Rank 2) (id=322102) [Spell Family (53), Pass
 Class            : Brewmaster Monk
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9094,7 +8875,6 @@ Name             : Expel Harm (desc=Rank 2) (id=322104) [Spell Family (53), Pass
 Class            : Monk
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9112,7 +8892,6 @@ Name             : Expel Harm (desc=Rank 2) (id=322106) [Spell Family (53), Pass
 Class            : Monk
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9135,7 +8914,6 @@ Spell Type       : Melee
 Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 180 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Brewmaster Monk (137023 effect#14), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#14), Hidden Master's Forbidden Touch (213112 effect#2), Hidden Master's Forbidden Touch (213114 effect#1), Fatal Touch (337296 effect#1)
 Family Flags     : 40, 67
 Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... ........ ...x.... 
@@ -9164,7 +8942,6 @@ Class            : Monk
 School           : Physical
 Spell Type       : None
 Spell Level      : 24
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9190,7 +8967,6 @@ GCD              : 1.5 seconds
 Duration         : 25 seconds
 Cooldown         : 180 seconds
 Category         : 1418
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 180 seconds
 Family Flags     : 3
 Attributes       : ........ ........ ........ ........   ........ ........ .x...... ....x... 
@@ -9210,7 +8986,6 @@ Class            : Brewmaster Monk
 School           : Physical
 Spell Type       : Melee
 Spell Level      : 13
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Internal Cooldown: 0.1 seconds
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
@@ -9240,7 +9015,6 @@ Spell Level      : 14
 GCD              : 1 seconds
 Duration         : 8 seconds
 Cooldown         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Light Brewing (325093 effect#2)
 Family Flags     : 53, 75
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9270,7 +9044,6 @@ Class            : Brewmaster Monk
 School           : Physical
 Spell Type       : None
 Spell Level      : 31
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9288,7 +9061,6 @@ Name             : Stagger (desc=Rank 2) (id=322522) [Spell Family (53), Passive
 Class            : Death Knight, Monk
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9308,7 +9080,6 @@ Name             : Spinning Crane Kick (desc=Rank 2) (id=322700) [Spell Family (
 Class            : Brewmaster Monk
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9326,7 +9097,6 @@ Name             : Brewmaster's Balance (desc=Rank 2) (id=322719) [Spell Family 
 Class            : Monk
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9349,7 +9119,6 @@ Resource         : 25 Energy (3) (id=192645) w/ Brewmaster Monk (id=137023)
 Spell Level      : 19
 GCD              : 1.5 seconds
 Duration         : 1.5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Brewmaster Monk (137023 effect#14), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#14), Serenity (152173 effect#1), Dance of Chi-Ji (286587 effect#3), Weapons of Order (311054 effect#1), Dance of Chi-Ji (325202 effect#1)
 Family Flags     : 63
 Attributes       : ....x... ........ x.x..... .......x   ..x...x. ........ ........ ....xx.. 
@@ -9377,7 +9146,6 @@ Name             : Invoke Niuzao, the Black Ox (desc=Rank 2) (id=322740) [Spell 
 Class            : Brewmaster Monk
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9396,7 +9164,6 @@ Class            : Brewmaster Monk
 School           : Physical
 Spell Type       : None
 Spell Level      : 37
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9437,7 +9204,6 @@ Name             : Light Brewing (id=325093) [Spell Family (53), Passive]
 Class            : Monk
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -9461,7 +9227,6 @@ Class            : Brewmaster Monk
 School           : Physical
 Spell Type       : None
 Spell Level      : 52
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
@@ -9487,7 +9252,6 @@ GCD              : 1 seconds
 Velocity         : 15 yards/sec
 Duration         : 3 seconds
 Cooldown         : 60 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 49
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9510,7 +9274,6 @@ Name             : Celestial Flames (id=325177) [Spell Family (53), Passive]
 Class            : Monk
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 30%
 Proc Flags       : ........ ..x...x. ........ ........ 
                  : Generic Heal, Magic Heal
@@ -9536,7 +9299,6 @@ Class            : Monk
 School           : Fire
 Spell Type       : None
 Duration         : 6 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
@@ -9568,7 +9330,6 @@ GCD              : 1.5 seconds
 Duration         : 25 seconds
 Cooldown         : 120 seconds
 Category         : 1418
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 120 seconds
 Family Flags     : 3
 Attributes       : ........ ........ ........ ........   ........ ........ .x...... ....x... 
@@ -9591,7 +9352,6 @@ Name             : Dance of Chi-Ji (id=325201) [Scaling Spell (-1), Spell Family
 Class            : Monk
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Real PPM         : 2 (Haste multiplier)
 Proc Flags       : ....x... ....x... ........ ........ 
@@ -9635,7 +9395,6 @@ Class            : Mistweaver Windwalker Monk
 School           : Physical
 Spell Type       : None
 Spell Level      : 37
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9656,7 +9415,6 @@ Class            : Mistweaver Monk
 School           : Physical
 Spell Type       : None
 Spell Level      : 52
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9675,7 +9433,6 @@ Class            : Windwalker Monk
 School           : Physical
 Spell Type       : None
 Spell Level      : 24
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9701,7 +9458,6 @@ GCD              : 1 seconds
 Velocity         : 20 yards/sec
 Duration         : 10 seconds
 Cooldown         : 60 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 50%
 Proc Flags       : ..x.x.x. x.x.x.x. x.x..x.. ........ 
                  : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Trap Triggered
@@ -9732,7 +9488,6 @@ Spell Type       : None
 GCD              : 1 seconds
 Duration         : 24 seconds
 Cooldown         : 180 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9758,7 +9513,6 @@ School           : Physical
 Spell Type       : None
 Range            : 100 yards
 Duration         : 6 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9779,7 +9533,6 @@ Range            : 30 yards
 GCD              : 1 seconds
 Duration         : 30 seconds
 Cooldown         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Internal Cooldown: 2 seconds
 Proc Chance      : 10%
 Family Flags     : 14
@@ -9806,7 +9559,6 @@ Class            : Monk
 School           : Nature
 Spell Type       : Melee
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ...xx... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ...x.... ........ ........ ........   ........ ........ ........ ........ 
@@ -9824,7 +9576,6 @@ Class            : Monk
 School           : Physical
 Spell Type       : None
 Spell Level      : 9
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9843,7 +9594,6 @@ Name             : Provoke (desc=Rank 2) (id=328670) [Spell Family (53), Passive
 Class            : Monk
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9864,7 +9614,6 @@ Class            : Brewmaster Monk
 School           : Physical
 Spell Type       : None
 Spell Level      : 56
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9885,7 +9634,6 @@ Class            : Monk
 School           : Shadow
 Spell Type       : Melee
 Range            : 50000 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ .....x..   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

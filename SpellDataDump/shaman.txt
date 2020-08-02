@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35360 shadowlands-BETA (, no-networking)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35360 shadowlands-BETA (hotfix 2020-08-02/35360, no-networking)
 
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -25,7 +25,6 @@ Resource         : 10% Base Mana (0) (id=10997)
 Spell Level      : 39
 Range            : 30 yards
 GCD              : 1.5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Restoration Shaman (137039 effect#9)
 Family Flags     : 88
 Attributes       : ........ ........ x....... ........   .......x ........ ........ ........ 
@@ -46,7 +45,6 @@ Class            : Shaman
 School           : Nature
 Spell Type       : None
 Range            : 300 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#1), Elemental Shaman (137040 effect#6), Enhancement Shaman (137041 effect#7)
 Family Flags     : 41, 70
 Attributes       : ........ ........ ..x..... x..x....   .....x.. ..x..... ........ ........ 
@@ -72,7 +70,6 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 600 seconds
 Category         : 1195
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Internal Cooldown: 3 seconds
 Stacks           : 9 initial, 9 maximum
 Proc Chance      : 100%
@@ -108,7 +105,6 @@ Spell Level      : 21
 Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Earth Shield (974 effect#1), Healing Trance (60515 effect#1), Unleash Life (73685 effect#2), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#1), Enhancement Shaman (137041 effect#5), Harmony of the Elements (167703 effect#1), Maelstrom Weapon (187881 effect#1), Jonat's Focus (210607 effect#1), Chain Heal (231780 effect#1), Ancestral Reach (263790 effect#1), Flash Flood (280615 effect#1), High Tide (288675 effect#1), Spiritwalker's Tidal Totem (335892 effect#1), Jonat's Natural Focus (335894 effect#1), Nature's Reach (338346 effect#2)
 Family Flags     : 8, 41
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -136,7 +132,6 @@ Range            : 40 yards
 GCD              : 1 seconds
 Duration         : 20 seconds
 Cooldown         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Totemic Surge (338042 effect#1)
 Family Flags     : 15, 29, 69
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -159,7 +154,6 @@ School           : Nature
 Spell Type       : Magic
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Spiritwalker's Grace (79206 effect#1)
 Triggered by     : Retrieving the Doomhammer (193749), Retrieving the Weapons of Storm (199859)
 Family Flags     : 11
@@ -194,7 +188,6 @@ Resource         : 21.5% Base Mana (0) (id=12194)
 Spell Level      : 48
 Duration         : 40 seconds
 Cooldown         : 300 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 38
 Attributes       : ........ ........ x.x..... ........   ........ ........ .x...... ........ 
                  : ..xx.... ........ ........ ........   ........ ........ ........ ........ 
@@ -219,7 +212,6 @@ School           : Nature
 Spell Type       : Magic
 Spell Level      : 8
 Duration         : 5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Mechanic         : Snare
 Family Flags     : 32
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
@@ -245,7 +237,6 @@ GCD              : 1 seconds
 Duration         : 15 seconds
 Charges          : 1 (30 seconds cooldown)
 Category         : 1569: Echo of the Elements (108283 effect#3)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Praetorian's Tidecallers (210604 effect#1)
 Family Flags     : 6, 15, 19, 29
 Attributes       : ....x... ........ x....... ........   ........ ........ ........ ....x... 
@@ -271,7 +262,6 @@ School           : Nature
 Spell Type       : Magic
 Spell Level      : 14
 Duration         : 15 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ........ ..x...x. .....x.. ........ 
                  : Generic Heal, Magic Heal, Trap Triggered
@@ -302,7 +292,6 @@ Range            : 50000 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Duration         : 60 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 115
 Attributes       : ........ ........ x....... ........   ..x..... ..x..x.. .x...... .....x.. 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
@@ -329,7 +318,6 @@ Spell Level      : 4
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Earth Shield (974 effect#1), Tidal Waves (53390 effect#2), Healing Trance (60515 effect#1), Unleash Life (73685 effect#2), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#1), Elemental Shaman (137040 effect#4), Enhancement Shaman (137041 effect#5), Maelstrom Weapon (187881 effect#1), Nobundo's Redemption (208764 effect#1), Tidal Waves (211991 effect#1), Flash Flood (280615 effect#1), Refreshing Waters (337974 effect#1), Swirling Currents (338340 effect#1)
 Family Flags     : 7, 41
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -351,7 +339,6 @@ Spell Type       : Magic
 Spell Level      : 10
 Range            : 40 yards
 GCD              : 1.5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Shaman Shock Range Bonus (32973 effect#1), Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Lightning Crash (242284 effect#1), Earthen Strength (252141 effect#1), Lava Shock (273453 effect#1)
 Family Flags     : 20, 39
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
@@ -377,7 +364,6 @@ Spell Level      : 47
 GCD              : 1 seconds
 Duration         : 10 seconds
 Cooldown         : 60 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Totemic Surge (338042 effect#1)
 Family Flags     : 15, 57
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ....x... 
@@ -397,7 +383,6 @@ Class            : Shaman
 School           : Nature
 Spell Type       : None
 Spell Level      : 1
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 26
 Attributes       : ........ x..x.... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -424,7 +409,6 @@ Resource         : 12% Base Mana (0) (id=354)
 Spell Level      : 49
 GCD              : 1 seconds
 Duration         : 120 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 29
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -445,8 +429,7 @@ Class            : Shaman
 School           : Fire
 Spell Type       : Magic
 Range            : 50000 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-                 : 737: Molten Weapon (224125 effect#1), Molten Weapon (224125 effect#3)
+Labels           : 737: Molten Weapon (224125 effect#1), Molten Weapon (224125 effect#3)
 Proc Chance      : 101%
 Affecting spells : Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Lightning Crash (242284 effect#1)
 Family Flags     : 21, 39, 56
@@ -466,7 +449,6 @@ Name             : Master of the Elements (id=16166) [Spell Family (11), Passive
 Class            : Shaman
 School           : Nature
 Spell Type       : Magic
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Proc Flags       : ........ ........ x....... ........ 
                  : Magic Hostile Spell
@@ -491,7 +473,6 @@ Spell Level      : 38
 GCD              : 1.5 seconds
 Duration         : 8 seconds
 Cooldown         : 180 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 29, 117
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -512,7 +493,6 @@ Class            : Restoration Shaman
 School           : Physical
 Spell Type       : None
 Spell Level      : 37
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ........ ......x. ........ ........ 
                  : Magic Heal
@@ -540,7 +520,6 @@ GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapon
 Cooldown         : 7.5 seconds
 Category         : 1254
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 7.5 seconds
 Proc Chance      : 101%
 Affecting spells : Ascendance (114051 effect#3), Shaman (137038 effect#2), Stormbringer (201846 effect#2), Electropotence (264121 effect#1), Roiling Storm (279515 effect#3)
@@ -588,7 +567,6 @@ Spell Type       : None
 Spell Level      : 8
 Cooldown         : 1800 seconds
 Category         : 1161
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 1800 seconds
 Affecting spells : Ancient Ankh Talisman (287777 effect#1), Improved Reincarnation (319352 effect#1), Astral Protection (337964 effect#1), 
 Family Flags     : 9
@@ -630,7 +608,6 @@ Class            : Shaman
 School           : Physical
 Spell Type       : Melee
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Furious Winds (184920 effect#1), Doom Winds (204945 effect#2), Crackling Surge (224127 effect#2), Lightning Crash (242284 effect#1), Forceful Winds (262652 effect#1)
 Family Flags     : 23, 39
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -694,7 +671,6 @@ Name             : Nature's Guardian (id=30884) [Spell Family (11), Passive]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Internal Cooldown: 45 seconds
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
@@ -716,7 +692,6 @@ Name             : Nature's Guardian (id=31616)
 Class            : Shaman
 School           : Nature
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : Nature's Guardian (30884)
 Attributes       : ........ ........ ..x..... x..x.x..   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ .....x.. 
@@ -738,7 +713,6 @@ Spell Type       : Melee
 Spell Level      : 19
 Range            : 5 yards
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 2 initial, 2 maximum
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x...... ........ 
@@ -768,7 +742,6 @@ Spell Type       : Melee
 Spell Level      : 19
 Range            : 5 yards
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Gathering Storms (198300 effect#1), Stormbringer (201846 effect#4), Item - Shaman T19 Enhancement 2P Bonus (211987 effect#1), Crackling Surge (224127 effect#1), Lightning Crash (242284 effect#1), Thunderaan's Fury (287768 effect#2), Legacy of the Frost Witch (335901 effect#1)
 Triggered by     : Stormstrike (17364)
 Family Flags     : 39, 76
@@ -796,7 +769,6 @@ Resource         : 21.5% Base Mana (0) (id=1324)
 Spell Level      : 48
 Duration         : 40 seconds
 Cooldown         : 300 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 38
 Attributes       : ........ ........ x.x..... ........   ........ ........ .x...... ........ 
                  : ..xx.... ........ ........ ........   ........ ........ ........ ........ 
@@ -844,7 +816,6 @@ School           : Physical
 Spell Type       : Melee
 Range            : 100 yards
 Requires weapon  : One-handed Axe, One-handed Mace, Fist Weapon, Dagger
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Furious Winds (184920 effect#1), Doom Winds (204945 effect#2), Crackling Surge (224127 effect#2), Lightning Crash (242284 effect#1), Forceful Winds (262652 effect#1)
 Family Flags     : 23, 39
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -867,7 +838,6 @@ Spell Type       : None
 Spell Level      : 10
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Staff, Fist Weapon, Dagger
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Mastery: Enhanced Elements (77223 effect#4), Doom Winds (204945 effect#1), Thunderaan's Fury (287802 effect#2), Doom Winds (335903 effect#1)
 Family Flags     : 72
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -888,7 +858,6 @@ School           : Nature
 Spell Type       : Melee
 Spell Level      : 26
 Cooldown         : 5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Mechanic         : Heal
 Attributes       : ....x... ........ ..x..... ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
@@ -926,7 +895,6 @@ School           : Nature
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Item - Shaman T19 Elemental 2P Bonus (211951 effect#1), Lightning Crash (242284 effect#1)
 Family Flags     : 39, 79, 96
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -947,7 +915,6 @@ School           : Nature
 Spell Type       : Magic
 Spell Level      : 17 (max 37)
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Al'Akir's Acrimony (208699 effect#1), Chain Lightning (231722 effect#1), Lightning Crash (242284 effect#1)
 Family Flags     : 39, 63, 79
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -971,7 +938,6 @@ Range            : 35 yards
 GCD              : 1 seconds
 Duration         : 20 seconds
 Cooldown         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 15, 29
 Attributes       : ....x... ........ x....... ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -996,7 +962,6 @@ GCD              : 1.5 seconds
 Duration         : 5 seconds
 Cooldown         : 45 seconds
 Category         : 1223
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 45 seconds
 Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Lightning Crash (242284 effect#1)
 Family Flags     : 39, 45
@@ -1029,7 +994,6 @@ GCD              : 1.5 seconds
 Velocity         : 50 yards/sec
 Charges          : 1 (8 seconds cooldown)
 Category         : 1536: Echo of the Elements (108283 effect#1), Ascendance (114050 effect#3), Echo of the Elements (333919 effect#1)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Elemental Fury (60188 effect#1), Lava Surge (77762 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Lightning Crash (242284 effect#1), Flames of the Forefathers (264113 effect#1), Igneous Potential (279829 effect#2)
 Family Flags     : 39, 44
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -1053,8 +1017,7 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Cooldown         : 120 seconds
 Category         : 1653
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-                 : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
 Category Cooldown: 120 seconds
 Affecting spells : Shaman (137038 effect#3), Elemental Spirits (262624 effect#1)
 Family Flags     : 48
@@ -1079,7 +1042,6 @@ Class            : Restoration Shaman
 School           : Physical
 Spell Type       : None
 Spell Level      : 20
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ........ ..x...x. ........ ........ 
                  : Generic Heal, Magic Heal
@@ -1105,7 +1067,6 @@ Spell Level      : 18
 Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 8 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 35
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1125,7 +1086,6 @@ School           : Nature
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#1), Rushing Streams (147074 effect#1), Praetorian's Tidecallers (210604 effect#1)
 Triggered by     : Healing Stream (5672)
 Family Flags     : 13, 41
@@ -1149,7 +1109,6 @@ Spell Type       : Magic
 Spell Level      : 41
 GCD              : 1.5 seconds
 Duration         : 3600 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Internal Cooldown: 3 seconds
 Stacks           : 3 initial, 3 maximum
 Proc Chance      : 100%
@@ -1179,7 +1138,6 @@ Name             : Water Shield (id=52128) [Spell Family (11)]
 Class            : Shaman
 School           : Nature
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : Water Shield (52127)
 Family Flags     : 37
 Attributes       : ........ ........ ..x..... x..x.x..   ........ ........ ........ ........ 
@@ -1200,7 +1158,6 @@ Class            : Shaman
 School           : Physical
 Spell Type       : Magic
 Duration         : 15 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 1 initial, 2 maximum
 Proc Chance      : 100%
 Proc Flags       : ........ ..x...x. ........ ........ 
@@ -1300,7 +1257,6 @@ Resource         : 40% Base Mana (0) (id=2612)
 Spell Level      : 14
 Range            : 40 yards
 Cast Time        : 3 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1321,7 +1277,6 @@ Spell Level      : 12
 Range            : 30 yards
 Duration         : 3 seconds
 Cooldown         : 12 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Shaman Shock Range Bonus (32973 effect#1)
 Family Flags     : 59
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
@@ -1341,7 +1296,6 @@ Name             : Glyph of the Spectral Wolf (id=58135) [Spell Family (11), Pas
 Class            : Shaman
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1360,7 +1314,6 @@ Class            : Shaman
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1382,7 +1335,6 @@ Spell Level      : 44
 Duration         : 8 seconds
 Cooldown         : 60 seconds
 Category         : 44
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x00008000
 Family Flags     : 104
 Attributes       : ........ ........ ........ ........   .....x.. ..x..... ........ ........ 
@@ -1408,7 +1360,6 @@ Spell Type       : None
 Spell Level      : 1
 Range            : 25 yards
 Duration         : 0.1 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : Spirit Walk (58875)
 Attributes       : .......x x....... ........ ........   ........ ..x....x ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1434,7 +1385,6 @@ Spell Level      : 1
 Range            : 100 yards
 GCD              : 1.5 seconds
 Cooldown         : 10 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ..x.x... ....x... x....... ........ 
                  : White Melee, Yellow Melee, Generic Hostile Spell, Magic Hostile Spell
@@ -1489,8 +1439,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapon
 Cooldown         : 18 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-                 : 737: Molten Weapon (224125 effect#1), Molten Weapon (224125 effect#3)
+Labels           : 737: Molten Weapon (224125 effect#1), Molten Weapon (224125 effect#3)
 Affecting spells : Mastery: Enhanced Elements (77223 effect#1), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effect#2), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Hot Hand (215785 effect#1), Lightning Crash (242284 effect#1), Lava Lash (334033 effect#1), Primal Lava Actuators (335896 effect#1)
 Family Flags     : 39, 56, 66
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
@@ -1515,7 +1464,6 @@ Class            : Elemental Shaman
 School           : Physical
 Spell Type       : None
 Spell Level      : 27
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 91
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1546,7 +1494,6 @@ GCD              : 1.5 seconds
 Duration         : 18 seconds
 Charges          : 1 (6 seconds cooldown)
 Category         : 1228: Echo of the Elements (108283 effect#2)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Earth Shield (974 effect#1), Healing Trance (60515 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#1), Item - Shaman T18 Restoration 2P Bonus (185873 effect#1), Torrent (200072 effect#1)
 Family Flags     : 41, 68
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -1574,7 +1521,6 @@ Range            : 40 yards
 Cast Time        : 3 seconds
 GCD              : 1.5 seconds
 Duration         : 6 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Echoes of the Great Sundering (208723 effect#1), Seismic Thunder (319343 effect#1)
 Family Flags     : 83
@@ -1602,7 +1548,6 @@ Class            : Shaman
 School           : Nature
 Spell Type       : Magic
 Duration         : 8 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Mechanic         : Root
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
@@ -1718,7 +1663,6 @@ GCD              : 1.5 seconds
 Duration         : 10 seconds
 Charges          : 1 (15 seconds cooldown)
 Category         : 1539
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 101%
 Proc Flags       : ........ ......x. ........ ........ 
@@ -1756,7 +1700,6 @@ GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Charges          : 0 (12 seconds cooldown)
 Category         : 1254
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Attributes       : ........ ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -1784,7 +1727,6 @@ Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 10 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Spiritwalker's Grace (79206 effect#1), Overflowing Shores (278077 effect#2), Flash Flood (280615 effect#1)
 Family Flags     : 84
 Attributes       : ........ ........ x....... ........   ........ ..x..... ........ ........ 
@@ -1811,7 +1753,6 @@ Class            : Shaman
 School           : Nature
 Spell Type       : Magic
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#1), Overflowing Shores (278077 effect#2), Heavy Rainfall (338344 effect#1)
 Family Flags     : 41, 87
 Attributes       : ........ ........ ........ x..x....   ...x.x.x ........ ........ ........ 
@@ -1837,7 +1778,6 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Charges          : 1 (8 seconds cooldown)
 Category         : 1513
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 109
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1858,7 +1798,6 @@ Class            : Enhancement Shaman
 School           : Physical
 Spell Type       : None
 Spell Level      : 10
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1893,7 +1832,6 @@ Class            : Restoration Shaman
 School           : Physical
 Spell Type       : None
 Spell Level      : 10
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1918,7 +1856,6 @@ Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
 Velocity         : 50 yards/sec
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Lightning Crash (242284 effect#1), Igneous Potential (279829 effect#2)
 Family Flags     : 39, 79, 86
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -1944,7 +1881,6 @@ Spell Level      : 27
 Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Earth Shield (974 effect#1), Tidal Waves (53390 effect#1), Healing Trance (60515 effect#1), Unleash Life (73685 effect#2), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#1), Tidal Waves (211991 effect#1), Flash Flood (280615 effect#1), Spiritwalker's Tidal Totem (335892 effect#1), Swirling Currents (338340 effect#1)
 Family Flags     : 41, 80
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -1965,7 +1901,6 @@ School           : Physical
 Spell Type       : Magic
 Spell Level      : 22
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Echoes of the Great Sundering (208723 effect#1), Lightning Crash (242284 effect#1), Seismic Thunder (319343 effect#1)
 Family Flags     : 39, 83
 Attributes       : ........ ........ ........ x..x....   ...x...x ........ ........ ........ 
@@ -1988,7 +1923,6 @@ Class            : Elemental Restoration Shaman
 School           : Physical
 Spell Type       : None
 Spell Level      : 29
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ........ ........ ..x..... ........ 
                  : Periodic
@@ -2014,7 +1948,6 @@ School           : Fire
 Spell Type       : None
 Spell Level      : 19
 Duration         : 10 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ........ ........ x....... ........ 
@@ -2048,7 +1981,6 @@ Resource         : 14.1% Base Mana (0) (id=3374)
 Spell Level      : 44
 Duration         : 15 seconds
 Cooldown         : 120 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Graceful Spirit (192088 effect#1), 
 Family Flags     : 93
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
@@ -2077,7 +2009,6 @@ Class            : Enhancement Shaman
 School           : Physical
 Spell Type       : None
 Spell Level      : 27
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2096,7 +2027,6 @@ Class            : Restoration Shaman
 School           : Physical
 Spell Type       : None
 Spell Level      : 27
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2115,7 +2045,6 @@ Class            : Elemental Shaman
 School           : Physical
 Spell Type       : None
 Spell Level      : 27
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2134,7 +2063,6 @@ Class            : Enhancement Shaman
 School           : Physical
 Spell Type       : Magic
 Spell Level      : 10
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2193,7 +2121,6 @@ Class            : Shaman
 School           : Nature
 Spell Type       : Magic
 Spell Level      : 16
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Praetorian's Tidecallers (210604 effect#1), Spouting Spirits (279504 effect#1)
 Family Flags     : 116
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -2222,7 +2149,6 @@ GCD              : 1 seconds
 Duration         : 6 seconds
 Charges          : 1 (180 seconds cooldown)
 Category         : 1540
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Praetorian's Tidecallers (210604 effect#1), Spouting Spirits (279504 effect#1)
 Family Flags     : 29, 116
 Attributes       : ....x... ........ x....... ........   ........ ........ ........ ........ 
@@ -2245,7 +2171,6 @@ School           : Nature
 Spell Type       : None
 Spell Level      : 16
 Duration         : 10 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : .......x x....... ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
@@ -2263,7 +2188,6 @@ Class            : Shaman
 School           : Nature
 Spell Type       : None
 Spell Level      : 16
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Praetorian's Tidecallers (210604 effect#1), Spouting Spirits (279504 effect#1)
 Triggered by     : Spirit Link (98017)
 Family Flags     : 116
@@ -2286,7 +2210,6 @@ Spell Type       : None
 Spell Level      : 42
 Duration         : 8 seconds
 Cooldown         : 90 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Astral Shift (263786 effect#1)
 Family Flags     : 43
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2311,8 +2234,7 @@ Spell Level      : 49
 GCD              : 1 seconds
 Duration         : 10 seconds
 Cooldown         : 180 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-                 : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
 Affecting spells : Praetorian's Tidecallers (210604 effect#1)
 Family Flags     : 29, 113
 Attributes       : ....x... ........ x....... ........   ........ ........ ........ ....x... 
@@ -2337,7 +2259,6 @@ Spell Type       : None
 GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 120 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ..x.x.x. x.x.x.x. x.x..x.. ........ 
                  : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Trap Triggered
@@ -2358,7 +2279,6 @@ Name             : Echo of the Elements (id=108283) [Spell Family (11), Passive]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 52
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2388,7 +2308,6 @@ Spell Level      : 50
 GCD              : 1.5 seconds
 Duration         : 15 seconds
 Cooldown         : 180 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 102
 Attributes       : ........ ........ x....... .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2419,7 +2338,6 @@ Spell Level      : 50
 GCD              : 1.5 seconds
 Duration         : 15 seconds
 Cooldown         : 180 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 102
 Attributes       : ........ ........ x....... .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2457,7 +2375,6 @@ Spell Level      : 50
 GCD              : 1.5 seconds
 Duration         : 15 seconds
 Cooldown         : 180 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ........ ......x. .....x.. ........ 
                  : Magic Heal, Trap Triggered
@@ -2489,7 +2406,6 @@ Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Category         : 85
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Stormkeeper (191634 effect#1), Stormkeeper (205495 effect#1), Al'Akir's Acrimony (208699 effect#1), Chain Lightning (231722 effect#1), Lightning Crash (242284 effect#1), Tectonic Thunder (286976 effect#1), Stormkeeper (320137 effect#1)
 Family Flags     : 34, 39
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -2514,7 +2430,6 @@ Name             : Restorative Mists (id=114083) [Spell Family (11)]
 Class            : Shaman
 School           : Nature
 Spell Type       : Magic
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 106
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ .....x.. 
@@ -2534,7 +2449,6 @@ Class            : Shaman
 School           : Physical
 Spell Type       : Melee
 Range            : 30 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : Ascendance (114051)
 Family Flags     : 97
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2555,7 +2469,6 @@ Class            : Shaman
 School           : Physical
 Spell Type       : Melee
 Range            : 30 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 97
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ x....... 
@@ -2576,7 +2489,6 @@ School           : Fire
 Spell Type       : Magic
 Spell Level      : 16
 Range            : 40 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Al'Akir's Acrimony (208699 effect#1), Chain Lightning (231722 effect#1), Lightning Crash (242284 effect#1)
 Family Flags     : 39, 79, 101
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -2595,7 +2507,6 @@ Name             : Ancestral Guidance (id=114911)
 Class            : Shaman
 School           : Nature
 Spell Type       : Magic
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ .....x.. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2613,7 +2524,6 @@ Name             : Healing Tide (id=114942) [Spell Family (11)]
 Class            : Shaman
 School           : Nature
 Spell Type       : Magic
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#1), 
 Family Flags     : 41, 110
 Attributes       : ........ ........ ........ ........   ........ ........ ...x.... ........ 
@@ -2638,7 +2548,6 @@ GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 9 seconds
 Category         : 1254
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 9 seconds
 Proc Chance      : 100%
 Affecting spells : Ascendance (114051 effect#4), Shaman (137038 effect#2), Stormbringer (201846 effect#2), Roiling Storm (279515 effect#3)
@@ -2666,7 +2575,6 @@ Spell Level      : 19
 Range            : 100 yards
 Velocity         : 30 yards/sec
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Affecting spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Gathering Storms (198300 effect#1), Stormbringer (201846 effect#4), Item - Shaman T19 Enhancement 2P Bonus (211987 effect#1), Crackling Surge (224127 effect#1), Lightning Crash (242284 effect#1), Thunderaan's Fury (287768 effect#2), Legacy of the Frost Witch (335901 effect#1)
 Triggered by     : Windstrike (115356)
@@ -2694,7 +2602,6 @@ Spell Level      : 19
 Range            : 100 yards
 Velocity         : 30 yards/sec
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Gathering Storms (198300 effect#1), Stormbringer (201846 effect#4), Item - Shaman T19 Enhancement 2P Bonus (211987 effect#1), Crackling Surge (224127 effect#1), Lightning Crash (242284 effect#1), Thunderaan's Fury (287768 effect#2), Legacy of the Frost Witch (335901 effect#1)
 Triggered by     : Windstrike (115356)
 Family Flags     : 39, 76
@@ -2717,7 +2624,6 @@ Name             : Earthgrab (id=116943) [Spell Family (11), Passive]
 Class            : Shaman
 School           : Nature
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2737,7 +2643,6 @@ Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Mechanic         : Snare
 Family Flags     : 32
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
@@ -2757,7 +2662,6 @@ Name             : Primal Elementalist (id=117013) [Passive]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2780,7 +2684,6 @@ Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Velocity         : 40 yards/sec
 Cooldown         : 12 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Maelstrom Weapon (187881 effect#1), Lightning Crash (242284 effect#1)
 Family Flags     : 39, 56, 98
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -2805,7 +2708,6 @@ Range            : 40 yards
 Max Targets      : 8
 Velocity         : 1 yards/sec
 Cooldown         : 60 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ x....... ........   ...x...x ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : .......x ........ ........ ........   ...x.... .....x.. ........ ........ 
@@ -2828,7 +2730,6 @@ Range            : 40 yards
 Cast Time        : 2 seconds
 Duration         : 21 seconds
 Cooldown         : 10 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ x....... ..x.....   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -2852,7 +2753,6 @@ Spell Type       : None
 Range            : 100 yards
 Duration         : 10 seconds
 Cooldown         : 60 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2875,7 +2775,6 @@ Spell Type       : Melee
 Range            : 5 yards
 Duration         : 4 seconds
 Cooldown         : 40 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2895,7 +2794,6 @@ School           : Elemental
 Spell Type       : None
 Range            : 40 yards
 Duration         : 10 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2915,7 +2813,6 @@ School           : Nature
 Spell Type       : Magic
 Cast Time        : 2 seconds
 Duration         : 3 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Mechanic         : Stun
 Family Flags     : 74
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2938,7 +2835,6 @@ Spell Type       : Magic
 Range            : 40 yards
 Cast Time        : 2 seconds
 Velocity         : 40 yards/sec
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Lightning Crash (242284 effect#1)
 Family Flags     : 39, 79, 108
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -2958,7 +2854,6 @@ Class            : Shaman
 School           : Physical
 Spell Type       : None
 Spell Level      : 1
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2976,7 +2871,6 @@ Name             : Shaman (id=137038) [Spell Family (11), Passive, Hidden]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3007,7 +2901,6 @@ Name             : Restoration Shaman (id=137039) [Spell Family (11), Passive, H
 Class            : Restoration Death Knight, Shaman
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3055,7 +2948,6 @@ Name             : Elemental Shaman (id=137040) [Spell Family (11), Passive, Hid
 Class            : Elemental Death Knight, Shaman
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3093,7 +2985,6 @@ Name             : Enhancement Shaman (id=137041) [Spell Family (11), Passive, H
 Class            : Enhancement Death Knight, Shaman
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3162,7 +3053,6 @@ Name             : Rushing Streams (id=147074) [Spell Family (11), Passive]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3182,7 +3072,6 @@ Name             : Glyph of Spirit Raptors (desc=Enhancement) (id=147783) [Spell
 Class            : Shaman
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3200,7 +3089,6 @@ Name             : Glyph of Lingering Ancestors (id=147784) [Spell Family (11), 
 Class            : Shaman
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3219,7 +3107,6 @@ Class            : Shaman
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3238,7 +3125,6 @@ Class            : Shaman
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3256,7 +3142,6 @@ Name             : Adaptation (id=152244) [Passive]
 Class            : Hunter, Death Knight, Shaman
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3283,7 +3168,6 @@ Class            : Hunter, Death Knight, Shaman
 School           : Physical
 Spell Type       : None
 Spell Level      : 1
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.x. x....... ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3311,7 +3195,6 @@ Duration         : 15 seconds
 Cooldown         : 1 seconds
 Charges          : 1 (30 seconds cooldown)
 Category         : 1569: Echo of the Elements (108283 effect#3)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 1 seconds
 Family Flags     : 29
 Attributes       : ....x... ........ x....... ........   ........ ........ ........ ........ 
@@ -3334,7 +3217,6 @@ School           : Physical
 Spell Type       : None
 Resource         : 1% Base Mana (0) (id=192045)
 Spell Level      : 1
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ........ ..x...x. x....... ........ 
                  : Generic Heal, Magic Heal, Magic Hostile Spell
@@ -3357,7 +3239,6 @@ School           : Fire
 Spell Type       : None
 Spell Level      : 1
 Duration         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Proc Flags       : ........ ........ x....... ........ 
                  : Magic Hostile Spell
@@ -3388,7 +3269,6 @@ Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 0.5 seconds
 Velocity         : 30 yards/sec
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3411,7 +3291,6 @@ Cast Time        : 3 seconds
 GCD              : 0.5 seconds
 Duration         : 15 seconds
 Cooldown         : 10 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3438,7 +3317,6 @@ Spell Level      : 1
 Range            : 40 yards
 Duration         : 8 seconds
 Cooldown         : 40 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ x....... ........   ..x..... ......x. .x...... .....x.. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -3465,7 +3343,6 @@ Class            : Enhancement Shaman
 School           : Physical
 Spell Type       : None
 Spell Level      : 10
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3483,7 +3360,6 @@ Name             : Cloudburst (id=157503) [Spell Family (11)]
 Class            : Shaman
 School           : Nature
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3504,7 +3380,6 @@ Class            : Beast Mastery Marksmanship Survival Assassination Outlaw Subt
 Race             : Dark Iron Dwarf (0x800)
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3526,7 +3401,6 @@ Class            : Shadow Elemental Arcane Fire Frost Affliction Demonology Dest
 Race             : Dark Iron Dwarf (0x800)
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3548,7 +3422,6 @@ Class            : Holy Discipline Holy Restoration Mistweaver Restoration Palad
 Race             : Dark Iron Dwarf (0x800)
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3613,7 +3486,6 @@ Class            : Elemental Shaman
 School           : Physical
 Spell Type       : None
 Spell Level      : 10
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 14
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3637,7 +3509,6 @@ Class            : Shaman
 School           : Physical
 Spell Type       : None
 Spell Level      : 1
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ........ ........ x....... ........ 
                  : Magic Hostile Spell
@@ -3660,7 +3531,6 @@ School           : Physical
 Spell Type       : Magic
 Spell Level      : 1
 Duration         : 6 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ .x...x.. ........ ........ 
@@ -3681,7 +3551,6 @@ Spell Type       : Magic
 Spell Level      : 1
 Range            : 45 yards
 Velocity         : 90 yards/sec
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Lightning Crash (242284 effect#1)
 Family Flags     : 39, 123
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3741,7 +3610,6 @@ School           : Elemental
 Spell Type       : None
 Range            : 40 yards
 Duration         : 10 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3761,7 +3629,6 @@ School           : Elemental
 Spell Type       : None
 Range            : 40 yards
 Duration         : 10 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3804,7 +3671,6 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 9 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Mastery: Enhanced Elements (77223 effect#1), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effect#2), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Lightning Crash (242284 effect#1), Crashing Lightning (242286 effect#1), Storm's Eye (263795 effect#1), Crash Lightning (333964 effect#1)
 Family Flags     : 39, 56, 85
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
@@ -3832,7 +3698,6 @@ School           : Nature
 Spell Type       : None
 Spell Level      : 1
 Duration         : 10 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ....x... x...x... x....... ........ 
                  : Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
@@ -3854,7 +3719,6 @@ Class            : Enhancement Shaman
 School           : Physical
 Spell Type       : None
 Spell Level      : 29
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 20%
 Proc Flags       : ..x.x... ........ ........ ........ 
                  : White Melee, Yellow Melee
@@ -3880,7 +3744,6 @@ Class            : Shaman
 School           : Physical
 Spell Type       : Magic
 Duration         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 10 maximum
 Proc Chance      : 101%
 Proc Flags       : ....x... x.x.x.x. x....... ........ 
@@ -3915,7 +3778,6 @@ Range            : 10 yards
 GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 20 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Lightning Crash (242284 effect#1)
 Family Flags     : 39, 126
 Attributes       : ........ ........ x.x..... ........   ........ .x...... ........ ........ 
@@ -3941,7 +3803,6 @@ Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effect#1), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effect#2), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Maelstrom Weapon (187881 effect#1), Stormkeeper (191634 effect#1), Stormkeeper (205495 effect#1), Item - Shaman T19 Elemental 2P Bonus (211951 effect#1), Lightning Crash (242284 effect#1), Wind Gust (263806 effect#1), Lightning Bolt (318044 effect#1), Stormkeeper (320137 effect#1), 
 Family Flags     : 0, 39, 56
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -3966,7 +3827,6 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 18 seconds
 Cooldown         : 6 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Shaman Shock Range Bonus (32973 effect#1), Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Elemental Bellows (184919 effect#1), Fire Elemental (188592 effect#2), Lightning Crash (242284 effect#1), Focused Elements (246594 effect#1), Lashing Flames (334168 effect#1), Skybreaker's Fiery Demise (336734 effect#3)
 Family Flags     : 28, 39, 56
 Attributes       : ........ ........ x.x..... ..x.....   ........ ........ ........ ........ 
@@ -3997,7 +3857,6 @@ Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Category         : 85
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effect#1), Spiritwalker's Grace (79206 effect#1), Ascendance (114050 effect#2), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Maelstrom Weapon (187881 effect#1), Stormkeeper (191634 effect#1), Stormkeeper (205495 effect#1), Al'Akir's Acrimony (208699 effect#1), Chain Lightning (231722 effect#1), Lightning Crash (242284 effect#1), Lightningburn (263792 effect#1), Wind Gust (263806 effect#1), Tectonic Thunder (286976 effect#1), Stormkeeper (320137 effect#1), 
 Family Flags     : 1, 39, 56
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -4024,7 +3883,6 @@ Spell Level      : 1
 Range            : 30 yards
 GCD              : 1 seconds
 Duration         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Call of Flame (338303 effect#1)
 Family Flags     : 55
 Attributes       : ........ ........ x....... ........   ........ ..x..... ........ ....x... 
@@ -4056,7 +3914,6 @@ Spell Type       : Magic
 Spell Level      : 18
 Range            : 30 yards
 Duration         : 60 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 54
 Attributes       : ........ ........ x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ .x...... ......x. 
@@ -4116,7 +3973,6 @@ Class            : Elemental Shaman
 School           : Physical
 Spell Type       : None
 Spell Level      : 22
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ........ ....x... x....... ........ 
                  : Generic Hostile Spell, Magic Hostile Spell
@@ -4142,7 +3998,6 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Duration         : 15 seconds
 Cooldown         : 60 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 2 initial, 2 maximum
 Proc Chance      : 100%
 Proc Flags       : ........ ........ x....... ........ 
@@ -4217,7 +4072,6 @@ Range            : 40 yards
 GCD              : 1 seconds
 Duration         : 3 seconds
 Cooldown         : 60 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Totemic Surge (338042 effect#1)
 Family Flags     : 15, 29, 99
 Attributes       : ....x... ........ x....... ........   ........ ........ ........ ........ 
@@ -4242,7 +4096,6 @@ Range            : 40 yards
 GCD              : 1 seconds
 Duration         : 15 seconds
 Cooldown         : 120 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 15, 29
 Attributes       : ....x... ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4261,7 +4114,6 @@ Class            : Shaman
 School           : Nature
 Spell Type       : Magic
 Spell Level      : 1
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 53
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4283,7 +4135,6 @@ Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 53
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4302,7 +4153,6 @@ Name             : Graceful Spirit (id=192088) [Spell Family (11), Passive]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4329,7 +4179,6 @@ Spell Type       : None
 Spell Level      : 19
 GCD              : 1.5 seconds
 Duration         : 1800 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Internal Cooldown: 1 seconds
 Proc Chance      : 100%
 Proc Flags       : ...x.x.. ........ ........ ........ 
@@ -4367,7 +4216,6 @@ Spell Type       : Magic
 Spell Level      : 1
 Range            : 10 yards
 Max Targets      : 1
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Energized Shield (24499 effect#1), Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Lightning Crash (242284 effect#1)
 Triggered by     : Lightning Shield (192106)
 Family Flags     : 10, 39, 56
@@ -4393,7 +4241,6 @@ Range            : 40 yards
 GCD              : 1 seconds
 Duration         : 15 seconds
 Cooldown         : 60 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 12
 Attributes       : ....x... ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4413,7 +4260,6 @@ Name             : Liquid Magma Totem (id=192223) [Hidden]
 Class            : Shaman
 School           : Fire
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : Liquid Magma Totem (192226)
 Attributes       : .......x ........ ........ .....x..   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4435,7 +4281,6 @@ Spell Type       : Magic
 GCD              : 1.5 seconds
 Duration         : 15 seconds
 Cooldown         : 45 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...x.. ........ ........ 
@@ -4456,7 +4301,6 @@ School           : Fire
 Spell Type       : Magic
 Range            : 100 yards
 Velocity         : 8 yards/sec
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Elemental Fury (60188 effect#1)
 Family Flags     : 2
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4475,7 +4319,6 @@ Name             : Crashing Storm (id=192246) [Spell Family (11), Passive]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4499,8 +4342,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Charges          : 1 (150 seconds cooldown)
 Category         : 1572: Strive for Perfection (296320 effect#3), Strive for Perfection (299367 effect#3), Strive for Perfection (299369 effect#3)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-                 : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
 Affecting spells : Call of Flame (338303 effect#1)
 Family Flags     : 124
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
@@ -4525,8 +4367,7 @@ Range            : 20 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 12 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-                 : 737: Molten Weapon (224125 effect#1), Molten Weapon (224125 effect#3)
+Labels           : 737: Molten Weapon (224125 effect#1), Molten Weapon (224125 effect#3)
 Affecting spells : Mastery: Enhanced Elements (77223 effect#1), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effect#2), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Lightning Crash (242284 effect#1)
 Family Flags     : 39, 56, 90
 Attributes       : ........ ........ x.x..... ........   ........ .x...... ........ ........ 
@@ -4552,7 +4393,6 @@ School           : Fire
 Spell Type       : None
 Spell Level      : 10
 Duration         : 16 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ..x.x... ........ ........ ........ 
                  : White Melee, Yellow Melee
@@ -4584,7 +4424,6 @@ Spell Type       : Magic
 Spell Level      : 13
 Range            : 100 yards
 Duration         : 8 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Internal Cooldown: 0.1 seconds
 Proc Chance      : 100%
 Proc Flags       : ..x.x.x. x...x... x.x..... ........ 
@@ -4613,7 +4452,6 @@ Spell Type       : Magic
 Spell Level      : 13
 Range            : 100 yards
 Velocity         : 50 yards/sec
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : Stormlash (207835)
 Family Flags     : 58
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4634,7 +4472,6 @@ Class            : Shaman
 School           : Physical
 Spell Type       : None
 Duration         : 2 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 3 maximum
 Proc Chance      : 101%
 Triggered by     : Stormstrike (17364)
@@ -4657,7 +4494,6 @@ Spell Type       : Melee
 Spell Level      : 1
 Range            : 5 yards
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Mastery: Enhanced Elements (77223 effect#1), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effect#2), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Lightning Crash (242284 effect#1), Crashing Lightning (242286 effect#1), Storm's Eye (263795 effect#1), Crash Lightning (333964 effect#1)
 Triggered by     : Crash Lightning (187878)
 Family Flags     : 39, 56, 85
@@ -4681,7 +4517,6 @@ Spell Level      : 17
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 6 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Shaman Shock Range Bonus (32973 effect#1), Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Icefury (210714 effect#2), Lightning Crash (242284 effect#1), Earthen Strength (252141 effect#2), Hailstorm (334196 effect#1)
 Family Flags     : 31, 39, 56
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
@@ -4709,7 +4544,6 @@ School           : Physical
 Spell Type       : Melee
 Spell Level      : 1
 Range            : 5 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Triggered by     : Feral Lunge (196884)
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
@@ -4732,7 +4566,6 @@ Spell Level      : 1
 Range            : 8 - 25 yards
 GCD              : 0.5 seconds
 Cooldown         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Affecting spells : Shaman (137038 effect#3)
 Family Flags     : 16
@@ -4756,7 +4589,6 @@ School           : Physical
 Spell Type       : None
 Range            : 40 yards
 Duration         : 10 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4778,8 +4610,7 @@ GCD              : 1.5 seconds
 Duration         : 2 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 40 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-                 : 737: Molten Weapon (224125 effect#1), Molten Weapon (224125 effect#3)
+Labels           : 737: Molten Weapon (224125 effect#1), Molten Weapon (224125 effect#3)
 Affecting spells : Mastery: Enhanced Elements (77223 effect#1), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effect#3), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Lightning Crash (242284 effect#1)
 Family Flags     : 16, 39, 56, 107
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -4806,7 +4637,6 @@ Class            : Shaman
 School           : Nature
 Spell Type       : None
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Elemental Fury (60188 effect#1)
 Family Flags     : 121
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4831,7 +4661,6 @@ Range            : 30 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Cooldown         : 20 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Spiritwalker's Grace (79206 effect#1), Flash Flood (280615 effect#1)
 Family Flags     : 51
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -4851,7 +4680,6 @@ Class            : Shaman
 School           : Nature
 Spell Type       : None
 Range            : 50000 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#1), Flash Flood (280615 effect#1)
 Family Flags     : 41, 51
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
@@ -4876,8 +4704,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Charges          : 1 (150 seconds cooldown)
 Category         : 1572: Strive for Perfection (296320 effect#3), Strive for Perfection (299367 effect#3), Strive for Perfection (299369 effect#3)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-                 : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
 Affecting spells : Call of Flame (338303 effect#1)
 Family Flags     : 55
 Attributes       : ........ ........ x....... ........   ........ ..x..... ........ ........ 
@@ -4905,7 +4732,6 @@ Spell Level      : 37
 Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 300 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 54
 Attributes       : ........ ........ x....... ........   ........ ..x..... ........ ....x... 
                  : ........ ........ ...x.... ........   ........ ........ .x...... ......x. 
@@ -5111,7 +4937,6 @@ Range            : 40 yards
 GCD              : 1 seconds
 Duration         : 15 seconds
 Cooldown         : 60 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 29
 Attributes       : ....x... ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5135,7 +4960,6 @@ School           : Nature
 Spell Type       : None
 Spell Level      : 1
 Duration         : Aura (infinite)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5256,7 +5080,6 @@ Name             : Undulation (id=200071) [Spell Family (11), Passive]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -5274,7 +5097,6 @@ Name             : Torrent (id=200072) [Spell Family (11), Passive]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -5294,7 +5116,6 @@ Name             : Deluge (id=200076) [Spell Family (11), Passive]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -5336,7 +5157,6 @@ Class            : Enhancement Shaman
 School           : Nature
 Spell Type       : None
 Spell Level      : 27
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 5%
 Proc Flags       : ....x... ........ x....... ........ 
                  : Yellow Melee, Magic Hostile Spell
@@ -5361,7 +5181,6 @@ School           : Physical
 Spell Type       : Melee
 Range            : 100 yards
 Duration         : 12 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
@@ -5400,7 +5219,6 @@ Name             : Hot Hand (id=201900) [Spell Family (11), Passive, Hidden]
 Class            : Shaman
 School           : Fire
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 5%
 Proc Flags       : ..x..... ........ ........ ........ 
                  : White Melee
@@ -5426,7 +5244,6 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Duration         : 3 seconds
 Cooldown         : 14 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x... ........ x.x..... ........   .......x .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5452,7 +5269,6 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 3 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 15 maximum
 Proc Chance      : 101%
 Attributes       : ....x... ........ x.x..... ........   .......x .x...... ........ ...x.... 
@@ -5545,7 +5361,6 @@ Range            : 40 yards
 GCD              : 1 seconds
 Duration         : 30 seconds
 Cooldown         : 300 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 29
 Attributes       : ....x... ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5567,7 +5382,6 @@ School           : Nature
 Spell Type       : None
 Range            : 100 yards
 Duration         : 10 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : Ancestral Vigor (207401)
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
                  : ..x..... x.....x. ...x.... ........   ........ ........ ........ ........ 
@@ -5587,7 +5401,6 @@ Name             : Ancestral Vigor (id=207401) [Spell Family (11), Passive]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ........ ......x. ........ ........ 
                  : Magic Heal
@@ -5610,7 +5423,6 @@ School           : Nature
 Spell Type       : None
 Spell Level      : 1
 Duration         : Aura (infinite)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5630,7 +5442,6 @@ School           : Holy
 Spell Type       : None
 Range            : 40 yards
 Duration         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ x....... ........ .......x   ........ ........ ...x.... ........ 
                  : ..x..... x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ ..x..... ........ ........ 
@@ -5658,7 +5469,6 @@ Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Cooldown         : 5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#1), 
 Family Flags     : 33, 41
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
@@ -5688,7 +5498,6 @@ GCD              : 1.5 seconds
 Duration         : 12 seconds
 Charges          : 3 (12 seconds cooldown)
 Category         : 1225
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Real PPM         : 10
 Proc Flags       : ....x... x...x... x....... ........ 
@@ -5790,7 +5599,6 @@ Class            : Shaman
 School           : Nature
 Spell Type       : None
 GCD              : 1.5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ........ ........ x....... ........ 
                  : Magic Hostile Spell
@@ -5820,7 +5628,6 @@ GCD              : 1.5 seconds
 Velocity         : 40 yards/sec
 Duration         : 15 seconds
 Cooldown         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 4 initial, 4 maximum
 Proc Chance      : 100%
 Proc Flags       : ........ ....x... x....... ........ 
@@ -5851,7 +5658,6 @@ Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 6 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ x....... ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -5871,7 +5677,6 @@ School           : Nature
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Mastery: Enhanced Elements (77223 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Lightning Crash (242284 effect#1)
 Family Flags     : 39, 56
 Attributes       : ........ ........ ........ x..x....   ...x...x ........ ........ ........ 
@@ -5891,7 +5696,6 @@ Name             : Cycle of the Elements (id=210853) [Spell Family (11), Passive
 Class            : Shaman
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Proc Flags       : ....x... ....x... ........ ........ 
                  : Yellow Melee, Generic Hostile Spell
@@ -5916,7 +5720,6 @@ Resource         : 4% Base Mana (0) (id=11138)
 Range            : 100 yards
 Cast Time        : 10 seconds
 GCD              : 1.5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Spiritwalker's Grace (79206 effect#1)
 Family Flags     : 92
 Attributes       : ........ ........ x....... ....x...   ........ ........ .x...... ........ 
@@ -5938,7 +5741,6 @@ School           : Nature
 Spell Type       : Magic
 Spell Level      : 13
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Mastery: Enhanced Elements (77223 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Lightning Crash (242284 effect#1)
 Family Flags     : 39, 56, 58
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5998,7 +5800,6 @@ Spell Type       : None
 Spell Level      : 1
 Range            : 30 yards
 Cast Time        : 2 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effect#2), Enhancement Shaman (137041 effect#5), Maelstrom Weapon (187881 effect#1), Stormkeeper (191634 effect#1), Stormkeeper (205495 effect#1), Item - Shaman T19 Elemental 2P Bonus (211951 effect#1), Wind Gust (263806 effect#1), Lightning Bolt (318044 effect#1), Stormkeeper (320137 effect#1), 
 Family Flags     : 0
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -6018,7 +5819,6 @@ Class            : Shaman
 School           : Fire
 Spell Type       : None
 Duration         : 8 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : Hot Hand (201900)
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6045,7 +5845,6 @@ School           : Physical
 Spell Type       : Melee
 Spell Level      : 1
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Affecting spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Lightning Crash (242284 effect#1)
 Family Flags     : 39, 107
@@ -6066,7 +5865,6 @@ Class            : Shaman
 School           : Physical
 Spell Type       : None
 Range            : 50000 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ x..x.x.x   .....x.. ..x..... ........ ........ 
                  : ..x..... ......x. ...x.... ....x...   ........ .x...... xx...... ......x. 
                  : x......x ........ .......x ........   ...x.... ........ .xx..... ........ 
@@ -6087,7 +5885,6 @@ Spell Type       : Magic
 Spell Level      : 1
 Range            : 40 yards
 Velocity         : 40 yards/sec
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Lightning Crash (242284 effect#1)
 Family Flags     : 5, 39, 79
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -6112,7 +5909,6 @@ School           : Fire
 Spell Type       : Magic
 Range            : 5 yards
 Duration         : 15 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
@@ -6142,7 +5938,6 @@ School           : Frost
 Spell Type       : None
 Range            : 5 yards
 Duration         : 15 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Proc Flags       : ..x..... ........ ........ ........ 
                  : White Melee
@@ -6168,7 +5963,6 @@ School           : Nature
 Spell Type       : Magic
 Range            : 5 yards
 Duration         : 15 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -6196,7 +5990,6 @@ Spell Type       : Melee
 Spell Level      : 18
 Range            : 30 yards
 Duration         : 15 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Shaman (137038 effect#3), Elemental Spirits (262624 effect#1)
 Family Flags     : 48
 Attributes       : ........ ........ x....... ........   ........ ..x..... ........ ....x... 
@@ -6218,7 +6011,6 @@ Class            : Elemental Restoration Shaman
 School           : Fire
 Spell Type       : None
 Spell Level      : 20
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6237,7 +6029,6 @@ Class            : Elemental Shaman
 School           : Fire
 Spell Type       : None
 Spell Level      : 43
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6258,7 +6049,6 @@ Class            : Restoration Shaman
 School           : Fire
 Spell Type       : None
 Spell Level      : 23
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6279,7 +6069,6 @@ Class            : Restoration Shaman
 School           : Fire
 Spell Type       : None
 Spell Level      : 27
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6525,7 +6314,6 @@ School           : Nature
 Spell Type       : None
 Range            : 100 yards
 Duration         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 8 maximum
 Proc Chance      : 101%
 Proc Flags       : ........ ....x... x....... ........ 
@@ -6551,7 +6339,6 @@ Class            : Shaman
 School           : Nature
 Spell Type       : Magic
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : Fulmination (260111)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
@@ -6570,7 +6357,6 @@ Class            : Shaman
 School           : Nature
 Spell Type       : Magic
 Duration         : 15 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : Master of the Elements (16166)
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6590,7 +6376,6 @@ Class            : Shaman
 School           : Physical
 Spell Type       : None
 Spell Level      : 1
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -6610,7 +6395,6 @@ School           : Physical
 Spell Type       : None
 Spell Level      : 1
 Duration         : Aura (infinite)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 4 maximum
 Proc Chance      : 101%
 Triggered by     : Spirit Wolf (260882)
@@ -6636,7 +6420,6 @@ School           : Physical
 Spell Type       : None
 Spell Level      : 1
 Duration         : Aura (infinite)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : .......x x....... .......x ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
                  : ........ .......x ........ ........   ........ ..x..... ........ ........ 
@@ -6655,7 +6438,6 @@ Class            : Shaman
 School           : Physical
 Spell Type       : None
 Spell Level      : 1
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Proc Flags       : ........ ........ x....... ........ 
                  : Magic Hostile Spell
@@ -6696,7 +6478,6 @@ School           : Physical
 Spell Type       : None
 Spell Level      : 1
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : .......x ........ ........ ........   ........ ........ ........ ........ 
@@ -6727,7 +6508,6 @@ Class            : Shaman
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6749,7 +6529,6 @@ School           : Physical
 Spell Type       : None
 Range            : 100 yards
 GCD              : 1.5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x...x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6769,7 +6548,6 @@ School           : Physical
 Spell Type       : None
 Range            : 100 yards
 Duration         : 15 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 5 maximum
 Proc Chance      : 101%
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6888,7 +6666,6 @@ Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 20 maximum
 Proc Chance      : 101%
 Triggered by     : Storm Elemental (157299)
@@ -7067,7 +6844,6 @@ Spell Type       : None
 Spell Level      : 1
 GCD              : 1 seconds
 Cooldown         : 60 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7522,7 +7298,6 @@ Spell Type       : Magic
 Spell Level      : 1
 Range            : 40 yards
 Max Targets      : 6
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : Eye of the Storm (157375)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7622,7 +7397,6 @@ School           : Frost
 Spell Type       : Melee
 Range            : 5 yards
 Duration         : 3 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Mastery: Enhanced Elements (77223 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Lightning Crash (242284 effect#1)
 Family Flags     : 39, 56
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
@@ -7647,7 +7421,6 @@ School           : Fire
 Spell Type       : Magic
 Range            : 5 yards
 Duration         : 4 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7668,7 +7441,6 @@ School           : Physical
 Spell Type       : None
 Spell Level      : 1
 Duration         : 10 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 99 maximum
 Proc Chance      : 101%
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7743,7 +7515,6 @@ Name             : Aftershock (id=273221) [Spell Family (11), Passive]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ........ ........ x....... ........ 
                  : Magic Hostile Spell
@@ -9076,7 +8847,6 @@ Name             : Flash Flood (id=280614) [Spell Family (11), Passive]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -9095,7 +8865,6 @@ Class            : Shaman
 School           : Physical
 Spell Type       : None
 Duration         : 15 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ........ ......x. ........ ........ 
@@ -9308,7 +9077,6 @@ Class            : Shaman
 School           : Fire
 Spell Type       : Magic
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Elemental Fury (60188 effect#1), Lava Surge (77762 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Lightning Crash (242284 effect#1), Flames of the Forefathers (264113 effect#1), Igneous Potential (279829 effect#2)
 Triggered by     : Lava Burst (51505)
 Family Flags     : 39, 44
@@ -9329,7 +9097,6 @@ Class            : Shaman
 School           : Fire
 Spell Type       : Magic
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Lightning Crash (242284 effect#1), Igneous Potential (279829 effect#2)
 Triggered by     : Lava Burst Overload (77451)
 Family Flags     : 39, 79, 86
@@ -9352,7 +9119,6 @@ Spell Type       : None
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 15 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Proc Flags       : ........ ....x... x....... ........ 
                  : Generic Hostile Spell, Magic Hostile Spell
@@ -9377,7 +9143,6 @@ Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 6 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Mechanic         : Root
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
@@ -9445,7 +9210,6 @@ School           : Physical
 Spell Type       : None
 Spell Level      : 1
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : .......x ........ ........ ........   ........ ........ ........ ..x..... 
@@ -9630,7 +9394,6 @@ School           : Physical
 Spell Type       : None
 Spell Level      : 1
 Duration         : 25 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 2 initial, 2 maximum
 Proc Chance      : 100%
 Proc Flags       : ........ ......x. ........ ........ 
@@ -9724,7 +9487,6 @@ Name             : Restorative Mists (id=294020) [Spell Family (11)]
 Class            : Shaman
 School           : Nature
 Spell Type       : Magic
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#1), 
 Triggered by     : Ascendance (114052)
 Family Flags     : 41, 106
@@ -9945,7 +9707,6 @@ Spell Type       : None
 Spell Level      : 7
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Staff, Fist Weapon, Dagger
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Elemental Fury (60188 effect#1)
 Family Flags     : 21
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9968,7 +9729,6 @@ School           : Nature
 Spell Type       : Magic
 Spell Level      : 6
 Range            : 40 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9990,7 +9750,6 @@ School           : Nature
 Spell Type       : Magic
 Spell Level      : 1
 Duration         : 12 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 5 maximum
 Proc Chance      : 101%
 Proc Flags       : ........ ....x... x....... ........ 
@@ -10041,7 +9800,6 @@ Class            : Shaman
 School           : Nature
 Spell Type       : None
 Duration         : 1800 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 25%
 Proc Flags       : ..x.x... ........ ......x. ........ 
                  : White Melee, Yellow Melee, Melee Main-Hand
@@ -10066,7 +9824,6 @@ School           : Fire
 Spell Type       : None
 Spell Level      : 7
 Duration         : 3600 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ..x.x... ........ ........ ........ 
                  : White Melee, Yellow Melee
@@ -10093,7 +9850,6 @@ School           : Nature
 Spell Type       : None
 Spell Level      : 43
 Range            : 40 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10118,7 +9874,6 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 8 seconds
 Cooldown         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Proc Flags       : ........ x.x.x.x. x....x.. ........ 
                  : Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Trap Triggered
@@ -10181,7 +9936,6 @@ Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
 Cooldown         : 90 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Maelstrom Weapon (187881 effect#1), Flash Flood (280615 effect#1)
 Family Flags     : 65
 Attributes       : ........ ........ x....... ........   ........ ..x..... ........ ........ 
@@ -10209,7 +9963,6 @@ Resource         : 10% Base Mana (0) (id=192593)
 Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 20 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10229,7 +9982,6 @@ Class            : Shaman
 School           : Nature
 Spell Type       : None
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#1), 
 Family Flags     : 41
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -10249,7 +10001,6 @@ Class            : Shaman
 School           : Shadow
 Spell Type       : Magic
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#1), 
 Family Flags     : 41
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10269,7 +10020,6 @@ Class            : Shaman
 School           : Shadow
 Spell Type       : Magic
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Lightning Crash (242284 effect#1)
 Family Flags     : 39
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10290,7 +10040,6 @@ School           : Physical
 Spell Type       : None
 Range            : 100 yards
 Duration         : 10 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
                  : .......x ........ ........ ........   ........ ..x..... ........ ........ 
@@ -10316,7 +10065,6 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 30 seconds
 Cooldown         : 60 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Proc Flags       : ....x... ..x.x.x. x....... ........ 
                  : Yellow Melee, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
@@ -10353,7 +10101,6 @@ Spell Type       : Magic
 Spell Level      : 1
 Range            : 40 yards
 Max Targets      : 6
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -10373,7 +10120,6 @@ School           : Arcane
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 40 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#1), 
 Family Flags     : 41
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
@@ -10402,7 +10148,6 @@ GCD              : 1.5 seconds
 Velocity         : 45 yards/sec
 Charges          : 1 (45 seconds cooldown)
 Category         : 1893
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Maelstrom Weapon (187881 effect#1), 
 Family Flags     : 25
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
@@ -10425,7 +10170,6 @@ School           : Shadowstorm
 Spell Type       : None
 Spell Level      : 1
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : Primordial Wave (326059)
 Attributes       : .......x ........ x.x..... ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
@@ -10446,7 +10190,6 @@ School           : Shadow
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10465,7 +10208,6 @@ School           : Shadow
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10501,7 +10243,6 @@ School           : Physical
 Spell Type       : None
 Range            : 40 yards
 Duration         : 120 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Internal Cooldown: 1 seconds
 Proc Chance      : 10%
 Proc Flags       : ..x..... ........ ........ ........ 
@@ -10528,8 +10269,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 3 seconds
 Cooldown         : 120 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-                 : 981: Elemental Fury (60188 effect#2)
+Labels           : 981: Elemental Fury (60188 effect#2)
 Affecting spells : Essential Extraction (339183 effect#1), 
 Family Flags     : 125
 Attributes       : ........ ........ ........ ........   ..x...x. ........ ........ .....x.. 
@@ -10557,7 +10297,6 @@ School           : Nature
 Spell Type       : Magic
 Range            : 100 yards
 Max Targets      : 4
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Mastery: Enhanced Elements (77223 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Lightning Crash (242284 effect#1), Essential Extraction (339183 effect#1), 
 Family Flags     : 39, 56, 125
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10580,7 +10319,6 @@ Spell Type       : Magic
 Range            : 100 yards
 Max Targets      : 8
 GCD              : 1.5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#1), 
 Family Flags     : 41
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10602,7 +10340,6 @@ School           : Nature
 Spell Type       : None
 Range            : 40 yards
 Duration         : 20 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : Fae Transfusion (328923)
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10624,7 +10361,6 @@ Name             : Echo of the Elements (id=333919) [Spell Family (11), Passive]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 52
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10648,7 +10384,6 @@ Spell Level      : 1
 Range            : 40 yards
 GCD              : 1 seconds
 Cooldown         : 60 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x... ........ x....... ........   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10667,8 +10402,7 @@ School           : Nature
 Spell Type       : Melee
 Range            : 30 yards
 Duration         : 15 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-                 : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
 Affecting spells : Shaman (137038 effect#3), Elemental Spirits (262624 effect#1)
 Family Flags     : 48
 Attributes       : ........ ........ x....... ........   ........ ..x..... ........ ........ 
@@ -10692,7 +10426,6 @@ Spell Type       : None
 Spell Level      : 38
 Range            : 5 yards
 Duration         : 15 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 3 maximum
 Proc Chance      : 101%
 Proc Flags       : ....x... ........ x....... ........ 
@@ -10722,7 +10455,6 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, One-handed Mace, Fist Weapon, Dagger
 Cooldown         : 15 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Mastery: Enhanced Elements (77223 effect#1), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effect#2), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Lightning Crash (242284 effect#1)
 Family Flags     : 27, 39, 56
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10743,7 +10475,6 @@ School           : Fire
 Spell Type       : Magic
 Range            : 100 yards
 Max Targets      : 6
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Mastery: Enhanced Elements (77223 effect#1), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effect#2), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Lightning Crash (242284 effect#1)
 Family Flags     : 27, 39, 56
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10765,7 +10496,6 @@ School           : Nature
 Spell Type       : None
 Spell Level      : 22
 Range            : 40 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10787,7 +10517,6 @@ School           : Fire
 Spell Type       : None
 Range            : 100 yards
 Requires weapon  : One-handed Axe, One-handed Mace, Fist Weapon, Dagger
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
@@ -10812,7 +10541,6 @@ School           : Fire
 Spell Type       : None
 Range            : 100 yards
 Duration         : 12 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : Lashing Flames (334046)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -10835,7 +10563,6 @@ School           : Fire
 Spell Type       : None
 Range            : 100 yards
 Requires weapon  : One-handed Axe, One-handed Mace, Fist Weapon, Dagger
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Mastery: Enhanced Elements (77223 effect#1), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effect#2), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Lightning Crash (242284 effect#1)
 Family Flags     : 27, 39, 56
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -10856,7 +10583,6 @@ Class            : Shaman
 School           : Fire
 Spell Type       : None
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Mastery: Enhanced Elements (77223 effect#1), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effect#2), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Lightning Crash (242284 effect#1)
 Family Flags     : 27, 39, 56
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -10878,7 +10604,6 @@ School           : Frost
 Spell Type       : None
 Range            : 100 yards
 Duration         : 20 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 5 maximum
 Proc Chance      : 101%
 Proc Flags       : ........ ........ x....... ........ 
@@ -10907,7 +10632,6 @@ Class            : Enhancement Shaman
 School           : Fire
 Spell Type       : None
 Spell Level      : 52
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10925,7 +10649,6 @@ Name             : Nature's Reach (id=338346) [Spell Family (11), Passive, Hidde
 Class            : Shaman
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Conduit Id       : 120
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35360 shadowlands-BETA (, no-networking)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35360 shadowlands-BETA (hotfix 2020-08-02/35360, no-networking)
 
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -25,7 +25,6 @@ Resource         : 1 Rune (5) (id=5921)
 Spell Level      : 27
 GCD              : 1.5 seconds
 Duration         : 600 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Death Knight (137005 effect#2)
 Family Flags     : 127
 Attributes       : ....x... ........ ..x..... x..x....   ........ ..x..... .x...... ........ 
@@ -55,7 +54,6 @@ Range            : 5 yards
 GCD              : 1 seconds
 Cooldown         : 3 seconds
 Category         : 19
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Hunter Pet (34902 effect#2), Blink Strikes (130392 effect#1), Aspect of the Beast (191384 effect#1), Mastery: Spirit Bond (263135 effect#1), 
 Family Flags     : 19
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
@@ -123,7 +121,6 @@ Spell Type       : None
 Spell Level      : 14
 Duration         : 12 seconds
 Cooldown         : 60 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Aspect of the Beast (191384 effect#1), 
 Family Flags     : 60
 Attributes       : ....x... ........ ........ .....x..   ........ ..x..... ........ ........ 
@@ -212,7 +209,6 @@ GCD              : 1.5 seconds
 Duration         : 4 seconds
 Cooldown         : 480 seconds
 Category         : 1650
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 480 seconds
 Family Flags     : 11
 Attributes       : ........ ........ ........ ........   ........ ..x..... .x...... ........ 
@@ -233,7 +229,6 @@ Class            : Death Knight
 School           : Shadow
 Spell Type       : None
 Duration         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : Army of the Dead (42650)
 Family Flags     : 96
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -262,7 +257,6 @@ GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 30 seconds
 Category         : 1877
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 30 seconds
 Affecting spells : Crimson Scourge (81141 effect#1), Blood Death Knight (137008 effect#5), Rapid Decomposition (194662 effect#1)
 Family Flags     : 5
@@ -291,8 +285,7 @@ Name             : Death Strike (id=45470) [Spell Family (15)]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-                 : 823: Will to Survive (312922 effect#2)
+Labels           : 823: Will to Survive (312922 effect#2)
 Affecting spells : Icebound Fortitude (48792 effect#4), Haemostasis (235559 effect#1), Hemostasis (273947 effect#1)
 Family Flags     : 66
 Attributes       : ........ ........ ........ ...x....   ........ ..x..... ........ ........ 
@@ -318,7 +311,6 @@ Spell Level      : 21
 Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 8 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Family Flags     : 2
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ...x.... 
@@ -347,7 +339,6 @@ Spell Level      : 29
 Range            : 30 yards
 GCD              : 1.5 seconds
 Cooldown         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 12
 Attributes       : ........ ........ ........ .......x   ........ ..x..... .x...... ........ 
                  : x....... ........ ........ ........   ........ ........ ..x..... ......x. 
@@ -372,7 +363,6 @@ Range            : 30 yards
 Duration         : 60 seconds
 Cooldown         : 120 seconds
 Category         : 1245
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 120 seconds
 Stance Mask      : 0x40000000
 Family Flags     : 12
@@ -397,7 +387,6 @@ Resource         : 40 Energy (3) (id=2187)
 Spell Level      : 22
 Range            : 5 yards
 GCD              : 1 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x00000040
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -422,7 +411,6 @@ Spell Type       : None
 Spell Level      : 22
 Range            : 5 yards
 Cooldown         : 90 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x00000040
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ...xx... ........   ........ ........ ........ ........ 
@@ -445,7 +433,6 @@ Spell Type       : None
 Spell Level      : 1
 Range            : 5 - 30 yards
 Cooldown         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Stance Mask      : 0x00000040
 Attributes       : ....x... ........ ........ .....x..   .....x.. ..x..... ........ ........ 
@@ -471,7 +458,6 @@ Resource         : 10 Energy (3) (id=2191)
 Spell Level      : 22
 GCD              : 1 seconds
 Cooldown         : 45 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x00000040
 Attributes       : ....x... ........ x.x..... ........   ........ ........ .x...... ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -497,7 +483,6 @@ Range            : 15 yards
 Duration         : 3 seconds
 Cooldown         : 15 seconds
 Category         : 88
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 15 seconds
 Family Flags     : 10
 Attributes       : ........ ........ ........ ........   ........ .x...... ........ ........ 
@@ -521,7 +506,6 @@ Resource         : 40 Runic Power (6) (id=2194)
 Spell Level      : 2
 Range            : 30 yards
 GCD              : 1.5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Affecting spells : Sudden Doom (81340 effect#1), Death March (235556 effect#2), Death's Certainty (334898 effect#2), Deadliest Coil (334949 effect#1)
 Family Flags     : 13
@@ -555,8 +539,7 @@ Velocity         : 4 yards/sec
 Duration         : 20 seconds
 Charges          : 1 (120 seconds cooldown)
 Category         : 1614: Seal of Necrofantasia (212216 effect#1), Seal of Necrofantasia (212216 effect#2), Strive for Perfection (296320 effect#5), Strive for Perfection (299367 effect#5), Strive for Perfection (299369 effect#5), Empower Rune Weapon (317230 effect#1), Accelerated Cold (337822 effect#2)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-                 : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
 Affecting spells : Death Knight (137005 effect#2), Accelerated Cold (337822 effect#1)
 Family Flags     : 14, 127
 Attributes       : ....x... ........ ..x..... ........   ........ ..x..... ........ ........ 
@@ -584,7 +567,6 @@ School           : Shadow
 Spell Type       : Magic
 Range            : 40 yards
 Velocity         : 35 yards/sec
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Affecting spells : Mastery: Dreadblade (77515 effect#1), Sudden Doom (81340 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Death March (235556 effect#2), Master of Ghouls (246995 effect#1), Death's Certainty (334898 effect#2), Deadliest Coil (334949 effect#1)
 Family Flags     : 13, 43, 64, 78
@@ -608,7 +590,6 @@ Spell Type       : Magic
 Spell Level      : 2
 Range            : 40 yards
 Velocity         : 35 yards/sec
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Veteran of the Third War (48263 effect#2), Sudden Doom (81340 effect#1), Death March (235556 effect#2), Veteran of the Fourth War (319278 effect#2), Death's Certainty (334898 effect#2), Deadliest Coil (334949 effect#1)
 Family Flags     : 13, 31
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
@@ -632,7 +613,6 @@ Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, G
 School           : Physical
 Spell Type       : None
 Spell Level      : 8
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Blood Death Knight (137008 effect#13), Veteran of the Third War (316714 effect#1)
 Family Flags     : 107
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -659,7 +639,6 @@ Spell Type       : None
 Spell Level      : 42
 Duration         : 8 seconds
 Cooldown         : 45 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : March of the Damned (280143 effect#2), Fleeting Wind (338093 effect#1)
 Family Flags     : 123
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -690,7 +669,6 @@ Spell Type       : Melee
 Spell Level      : 8
 Duration         : 5 seconds
 Cooldown         : 60 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 60 seconds
 Proc Chance      : 101%
 Affecting spells : Anti-Magic Barrier (205727 effect#1), Volatile Shielding (207188 effect#1), Spell Eater (207321 effect#1), Acherus Drapes (210852 effect#1), Runic Barrier (280010 effect#3), Runic Barrier (280132 effect#1), Death's Embrace (334728 effect#1)
@@ -721,7 +699,6 @@ School           : Shadow
 Spell Type       : None
 Duration         : 15 seconds
 Cooldown         : 120 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 19
 Attributes       : ........ ........ ........ ..x..x..   ........ ..x..... .x.x.... ........ 
                  : ..x..... ........ ........ .....x..   ........ ........ ....x... ........ 
@@ -748,7 +725,6 @@ Spell Type       : None
 Spell Level      : 26
 Duration         : 8 seconds
 Cooldown         : 180 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
@@ -786,7 +762,6 @@ Spell Level      : 17
 Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, One-handed Sword, Two-handed Sword, Fist Weapon
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Killing Machine (51124 effect#1), Death Knight (137005 effect#2), Koltira's Newfound Will (208782 effect#2), Item - Death Knight T21 Frost 2P Bonus (251873 effect#2), Obliterate (317198 effect#1), Koltira's Favor (334583 effect#2)
 Family Flags     : 49, 127
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ...x.... 
@@ -820,7 +795,6 @@ GCD              : 1.5 seconds
 Duration         : 13 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 120 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ....x... x...x.x. x.x..... ........ 
                  : Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic
@@ -853,7 +827,6 @@ Spell Type       : None
 Spell Level      : 33
 Duration         : 10 seconds
 Cooldown         : 120 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Cold Hearted (288425 effect#3)
 Family Flags     : 36
 Attributes       : ........ ........ ..x..... ........   .....x.. ..x....x .x...... ........ 
@@ -885,7 +858,6 @@ Class            : Death Knight
 School           : Shadow
 Spell Type       : None
 Spell Level      : 27
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -908,7 +880,6 @@ Spell Level      : 11
 Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, One-handed Sword, Two-handed Sword, Fist Weapon, Dagger
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Death Knight (137005 effect#2), Biting Cold (166057 effect#1), Frost Strike (316803 effect#1), Eradicating Blow (337936 effect#1)
 Family Flags     : 34, 127
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ...x.... 
@@ -942,7 +913,6 @@ Resource         : -10 Runic Power (6) (id=10641)
 Spell Level      : 10
 Range            : 30 yards
 GCD              : 1.5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Razorice (51714 effect#1), Rime (59052 effect#1), Mastery: Frozen Heart (77514 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Biting Cold (166057 effect#1), Northrend Winds (204088 effect#1), Master of Ghouls (246995 effect#1), Item - Death Knight T21 Frost 2P Bonus (251873 effect#1)
 Family Flags     : 33, 43, 120
 Attributes       : ........ ........ ..x..... ........   ...x...x .x...... ........ ...x.... 
@@ -971,7 +941,6 @@ GCD              : 1.5 seconds
 Duration         : 35 seconds
 Cooldown         : 180 seconds
 Category         : 1834
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 180 seconds
 Affecting spells : Val'kyr (278107 effect#1)
 Family Flags     : 39
@@ -1000,7 +969,6 @@ Class            : Unholy Death Knight
 School           : Physical
 Spell Type       : None
 Spell Level      : 23
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Real PPM         : 2.875 (Haste multiplier)
 Proc Flags       : ..x..... ........ ........ ........ 
@@ -1028,7 +996,6 @@ Range            : 30 yards
 GCD              : 0.5 seconds
 Charges          : 1 (25 seconds cooldown)
 Category         : 1428: Blood Death Knight (137008 effect#4), Blood Death Knight (137008 effect#11), Unholy Command (202727 effect#1), Grip of the Everlasting (334722 effect#1)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Mechanic         : Grip
 Affecting spells : Death's Reach (276079 effect#1)
 Family Flags     : 25
@@ -1054,8 +1021,7 @@ Spell Level      : 4
 Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-                 : 823: Will to Survive (312922 effect#2)
+Labels           : 823: Will to Survive (312922 effect#2)
 Affecting spells : Dark Succor (101568 effect#2), Death Knight (137005 effect#2), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Item - Death Knight T18 Blood 4P Bonus (187873 effect#1), Ossuary (219788 effect#1), Death March (235556 effect#2), Haemostasis (235559 effect#1), Gravewarden (242010 effect#2), Master of Ghouls (246995 effect#1), Hemostasis (273947 effect#1), Voracious (273953 effect#2), Death Strike (278223 effect#1), Death's Certainty (334898 effect#2), Insatiable Appetite (338330 effect#1)
 Family Flags     : 4, 43, 127
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ...x.... 
@@ -1082,8 +1048,7 @@ Class            : Death Knight
 School           : Frost
 Spell Type       : Melee
 Range            : 10 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-                 : 961: Exacting Preparation (331580 effect#4), Exacting Preparation (331580 effect#5), Exacting Preparation (331580 effect#6)
+Labels           : 961: Exacting Preparation (331580 effect#4), Exacting Preparation (331580 effect#5), Exacting Preparation (331580 effect#6)
 Affecting spells : Razorice (51714 effect#1), Mastery: Frozen Heart (77514 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Biting Cold (166057 effect#1), Master of Ghouls (246995 effect#1), 
 Family Flags     : 43, 104, 120
 Attributes       : ....x... .....x.. ..x..x.. ........   ........ ........ ........ ........ 
@@ -1128,7 +1093,6 @@ Spell Level      : 17
 GCD              : 1.5 seconds
 Charges          : 1 (7.5 seconds cooldown)
 Category         : 1611: Death Knight (137005 effect#3), Blood Boil (316634 effect#1)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Master of Ghouls (246995 effect#1), 
 Family Flags     : 18, 43, 48
 Attributes       : ........ ........ ..x..... ........   ........ .x...... ........ ........ 
@@ -1158,7 +1122,6 @@ GCD              : 1.5 seconds
 Duration         : 60 seconds
 Cooldown         : 60 seconds
 Category         : 511
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 80
 Attributes       : ........ ........ ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1184,7 +1147,6 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 120 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 45 seconds
 Proc Chance      : 101%
 Affecting spells : Reinforced Shell (337764 effect#1), 
@@ -1206,7 +1168,6 @@ Class            : Death Knight
 School           : Frost
 Spell Type       : None
 Duration         : 10 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 1 maximum
 Proc Chance      : 101%
 Triggered by     : Killing Machine (51128),  (0)
@@ -1235,7 +1196,6 @@ Class            : Frost Death Knight
 School           : Physical
 Spell Type       : None
 Spell Level      : 23
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Real PPM         : 4.5
 Proc Flags       : ..x..... ........ ........ ........ 
@@ -1262,7 +1222,6 @@ Spell Level      : 29
 GCD              : 1.5 seconds
 Duration         : 15 seconds
 Cooldown         : 45 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Proc Flags       : ....x... ..x.x.x. x.x..x.. ........ 
                  : Yellow Melee, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Trap Triggered
@@ -1296,7 +1255,6 @@ School           : Shadow
 Spell Type       : Melee
 Spell Level      : 23
 Duration         : 3 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Family Flags     : 102
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -1319,7 +1277,6 @@ Class            : Unholy Death Knight
 School           : Shadow
 Spell Type       : None
 Spell Level      : 13
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1340,7 +1297,6 @@ School           : Frost
 Spell Type       : Magic
 Range            : 50000 yards
 Duration         : 20 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 5 maximum
 Proc Chance      : 101%
 Attributes       : ........ .....x.. ..x..... ........   ...x...x ........ ........ ........ 
@@ -1369,7 +1325,6 @@ Spell Level      : 14
 Range            : 40 yards
 Cast Time        : 2 seconds
 Velocity         : 25 yards/sec
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 99
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1388,7 +1343,6 @@ Class            : Death Knight
 School           : Physical
 Spell Type       : None
 Spell Level      : 22
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.x. x....... ........ x.......   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1409,7 +1363,6 @@ Class            : Death Knight
 School           : Shadow
 Spell Type       : Magic
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Mastery: Dreadblade (77515 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Morbid Strike (166021 effect#2), Master of Ghouls (246995 effect#1), Death's Due (324164 effect#3)
 Family Flags     : 43, 67, 78
 Attributes       : ........ ........ ........ x..x....   ...x.x.x ........ ........ ........ 
@@ -1432,7 +1385,6 @@ Class            : Hunter, Death Knight
 School           : Physical
 Spell Type       : None
 Range            : 5 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1456,7 +1408,6 @@ School           : Physical
 Spell Type       : None
 Cast Time        : 5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Miscellaneous, Dagger, Spear
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : .....x.x x....x.. x....... ........   ........ ..x..... ........ ........ 
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1478,7 +1429,6 @@ School           : Physical
 Spell Type       : None
 Cast Time        : 5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Miscellaneous, Dagger, Spear
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : .....x.x x....... x....... ........   ........ ..x..... ........ ........ 
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1501,8 +1451,7 @@ Spell Type       : None
 Spell Level      : 10
 Range            : 40 yards
 Duration         : 15 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-                 : 961: Exacting Preparation (331580 effect#4), Exacting Preparation (331580 effect#5), Exacting Preparation (331580 effect#6)
+Labels           : 961: Exacting Preparation (331580 effect#4), Exacting Preparation (331580 effect#5), Exacting Preparation (331580 effect#6)
 Stacks           : 1 maximum
 Proc Chance      : 101%
 Affecting spells : Veteran of the Third War (48263 effect#2), Veteran of the Fourth War (319278 effect#2)
@@ -1531,7 +1480,6 @@ Spell Type       : Melee
 Spell Level      : 23
 Range            : 50000 yards
 Duration         : 24 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Rapid Decomposition (194662 effect#1), Master of Ghouls (246995 effect#1), Soulflayer's Corruption (248066 effect#1), Withering Plague (337884 effect#1), Debilitating Malady (338523 effect#1)
 Triggered by     : Death's Caress (195292)
 Family Flags     : 43, 57, 65
@@ -1565,7 +1513,6 @@ Spell Level      : 11
 Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : Two-handed Axe, Two-handed Mace, Polearm, Two-handed Sword, Staff
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Death Knight (137005 effect#2), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Death and Decay (188290 effect#2), Master of Ghouls (246995 effect#1), Scourge Strike (317234 effect#1)
 Family Flags     : 43, 59, 127
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ...x.... 
@@ -1591,7 +1538,6 @@ School           : Frost
 Spell Type       : Melee
 Range            : 50000 yards
 Duration         : 24 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Affecting spells : Razorice (51714 effect#1), Mastery: Frozen Heart (77514 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Biting Cold (166057 effect#1), Master of Ghouls (246995 effect#1), 
 Family Flags     : 43, 58, 65, 120
@@ -1618,8 +1564,7 @@ Spell Level      : 29
 Duration         : 10 seconds
 Cooldown         : 90 seconds
 Category         : 1641
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-                 : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
 Affecting spells : Vampiric Blood (317133 effect#1), 
 Family Flags     : 35
 Attributes       : ....x... ........ ..x..... ........   ........ ..x..... ........ ........ 
@@ -1669,7 +1614,6 @@ Range            : 30 yards
 Duration         : 3 seconds
 Cooldown         : 8 seconds
 Category         : 82
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 8 seconds
 Proc Chance      : 101%
 Mechanic         : Taunt
@@ -1697,7 +1641,6 @@ Spell Type       : None
 Spell Level      : 1
 GCD              : 1.5 seconds
 Cooldown         : 45 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Death Knight (137005 effect#2)
 Family Flags     : 62, 127
 Attributes       : ....x... ........ ..x..... ........   ........ ..x..... ........ ........ 
@@ -1718,7 +1661,6 @@ Name             : Glyph of the Geist (desc=Unholy) (id=58640) [Spell Family (15
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1738,7 +1680,6 @@ Name             : Glyph of Foul Menagerie (id=58642) [Spell Family (15), Passiv
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1759,7 +1700,6 @@ Spell Type       : None
 Cast Time        : 1.5 seconds
 Cooldown         : 1.5 seconds
 Category         : 133
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 1.5 seconds
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1781,7 +1721,6 @@ Spell Type       : None
 Cast Time        : 1.5 seconds
 Cooldown         : 1.5 seconds
 Category         : 133
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 1.5 seconds
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1801,7 +1740,6 @@ Class            : Death Knight
 School           : Frost
 Spell Type       : Magic
 Duration         : 15 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ........ ........ x....... ........ 
@@ -1837,7 +1775,6 @@ Class            : Frost Death Knight
 School           : Physical
 Spell Type       : None
 Spell Level      : 31
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
@@ -1891,7 +1828,6 @@ Spell Type       : None
 Resource         : 0 Runic Power (6) (id=5972)
 Spell Level      : 23
 Duration         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x00000040
 Affecting spells : Val'kyr (278107 effect#1)
 Triggered by     : Summon Gargoyle (49206), Dark Arbiter (207349)
@@ -1920,7 +1856,6 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 600 seconds
 Category         : 1555
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 600 seconds
 Affecting spells : Death Knight (137005 effect#2)
 Family Flags     : 63, 127
@@ -1942,7 +1877,6 @@ Class            : Death Knight
 School           : Physical
 Spell Type       : None
 Spell Level      : 1
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.x. ........ x.x..... ...x....   .....x.. ........ .x...... ........ 
                  : ........ ......x. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1969,8 +1903,7 @@ Name             : Stoneskin Gargoyle (id=62157) [Passive, Hidden]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-                 : 961: Exacting Preparation (331580 effect#4), Exacting Preparation (331580 effect#5), Exacting Preparation (331580 effect#6)
+Labels           : 961: Exacting Preparation (331580 effect#4), Exacting Preparation (331580 effect#5), Exacting Preparation (331580 effect#6)
 Attributes       : ....x.xx x....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1991,7 +1924,6 @@ School           : Physical
 Spell Type       : None
 Cast Time        : 5 seconds
 Requires weapon  : Two-handed Axe, Two-handed Mace, Polearm, Two-handed Sword, Staff
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : .....x.x x....... x....... ........   ........ ..x..... ........ ........ 
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2011,7 +1943,6 @@ Name             : Basic Attack Focus Cost Modifier (id=62762) [Spell Family (17
 Class            : Hunter, Death Knight
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2037,7 +1968,6 @@ GCD              : 1.5 seconds
 Velocity         : 40 yards/sec
 Duration         : 15 seconds
 Cooldown         : 60 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Item - Death Knight T17 Unholy 2P Bonus (165575 effect#1), Dark Transformation (325554 effect#1), Eternal Hunger (337381 effect#1)
 Family Flags     : 69
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2065,7 +1995,6 @@ School           : Physical
 Spell Type       : Melee
 Range            : 100 yards
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Dark Succor (101568 effect#2), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Item - Death Knight T18 Blood 4P Bonus (187873 effect#1), Ossuary (219788 effect#1), Death March (235556 effect#2), Haemostasis (235559 effect#1), Gravewarden (242010 effect#2), Master of Ghouls (246995 effect#1), Hemostasis (273947 effect#1), Voracious (273953 effect#2), Death Strike (278223 effect#1), Death's Certainty (334898 effect#2), Insatiable Appetite (338330 effect#1)
 Family Flags     : 4, 43
 Attributes       : ....x... ........ ..x..x.. ........   ........ ........ ........ ...x.... 
@@ -2087,7 +2016,6 @@ School           : Frost
 Spell Type       : Melee
 Range            : 100 yards
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Razorice (51714 effect#1), Mastery: Frozen Heart (77514 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Biting Cold (166057 effect#1), Master of Ghouls (246995 effect#1), Frost Strike (316803 effect#1), Eradicating Blow (337936 effect#1)
 Triggered by     : Frost Strike (49143)
 Family Flags     : 34, 43, 110, 120
@@ -2110,7 +2038,6 @@ School           : Physical
 Spell Type       : Melee
 Range            : 100 yards
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Killing Machine (51124 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Koltira's Newfound Will (208782 effect#2), Master of Ghouls (246995 effect#1), Item - Death Knight T21 Frost 2P Bonus (251873 effect#2), Obliterate (317198 effect#1), Koltira's Favor (334583 effect#2)
 Triggered by     : Obliterate (49020)
 Family Flags     : 43, 49, 111
@@ -2193,7 +2120,6 @@ Class            : Death Knight
 School           : Shadow
 Spell Type       : Melee
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Affecting spells : Mastery: Dreadblade (77515 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Death and Decay (188290 effect#2), Master of Ghouls (246995 effect#1), Scourge Strike (317234 effect#1)
 Triggered by     : Scourge Strike (55090)
@@ -2218,7 +2144,6 @@ Class            : Blood Death Knight
 School           : Physical
 Spell Type       : None
 Spell Level      : 10
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2241,7 +2166,6 @@ Class            : Frost Death Knight
 School           : Physical
 Spell Type       : None
 Spell Level      : 10
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2266,7 +2190,6 @@ Class            : Unholy Death Knight
 School           : Physical
 Spell Type       : None
 Spell Level      : 10
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2294,7 +2217,6 @@ School           : Shadow
 Spell Type       : None
 Spell Level      : 1
 Duration         : 10 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 70
 Attributes       : ........ ........ ..x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2318,7 +2240,6 @@ Resource         : -10 Runic Power (6) (id=10654)
 Spell Level      : 17
 Range            : 30 yards
 GCD              : 1.5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Mastery: Dreadblade (77515 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Master of Ghouls (246995 effect#1), 
 Family Flags     : 43, 76, 78
 Attributes       : ........ ........ ........ ........   ........ .x...... ........ ...x.... 
@@ -2343,7 +2264,6 @@ Class            : Blood Death Knight
 School           : Physical
 Spell Type       : None
 Spell Level      : 18
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 25%
 Proc Flags       : ..x..... ........ ........ ........ 
                  : White Melee
@@ -2366,7 +2286,6 @@ Class            : Death Knight
 School           : Physical
 Spell Type       : None
 Duration         : 15 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 116
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2392,7 +2311,6 @@ Class            : Frost Death Knight
 School           : Physical
 Spell Type       : None
 Spell Level      : 13
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 53
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2413,7 +2331,6 @@ School           : Physical
 Spell Type       : Magic
 Spell Level      : 23
 Duration         : 8 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Meat Shield (338435 effect#2)
 Family Flags     : 74
 Attributes       : ........ ........ ........ .......x   ........ ..x..... ........ ........ 
@@ -2434,7 +2351,6 @@ Name             : Blood Burst (id=81280)
 Class            : Death Knight
 School           : Shadow
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2452,7 +2368,6 @@ Class            : Death Knight
 School           : Physical
 Spell Type       : None
 Duration         : 10 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Internal Cooldown: 0.1 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 101%
@@ -2509,7 +2424,6 @@ Spell Level      : 10
 Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : Two-handed Axe, Two-handed Mace, Polearm, Two-handed Sword, Staff
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Death Knight (137005 effect#2), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Master of Ghouls (246995 effect#1), Cankerous Wounds (278482 effect#1)
 Family Flags     : 43, 73, 127
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ...x.... 
@@ -2535,7 +2449,6 @@ Class            : Frost Death Knight
 School           : Physical
 Spell Type       : None
 Spell Level      : 27
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2554,7 +2467,6 @@ Class            : Unholy Death Knight
 School           : Physical
 Spell Type       : None
 Spell Level      : 27
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2573,7 +2485,6 @@ Class            : Blood Death Knight
 School           : Physical
 Spell Type       : None
 Spell Level      : 27
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2594,7 +2505,6 @@ Spell Type       : Melee
 Resource         : 40 Energy (3) (id=10560)
 Spell Level      : 22
 Range            : 5 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x00000040
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... .x...... ...x.... 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -2616,7 +2526,6 @@ Resource         : 40 Energy (3) (id=10561)
 Spell Level      : 22
 Range            : 5 yards
 GCD              : 1 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x00000040
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... .x...... ...x.... 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -2642,7 +2551,6 @@ Spell Level      : 22
 Range            : 5 yards
 Duration         : 2 seconds
 Cooldown         : 90 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x00000040
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... .x...... ...x.... 
                  : ........ ........ ...xx... ........   ........ ........ ........ ........ 
@@ -2667,7 +2575,6 @@ Spell Level      : 22
 Range            : 5 yards
 Duration         : 1 seconds
 Cooldown         : 90 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x00000040
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... .x...... ...x.... 
                  : ........ ........ ...xx... ........   ........ ........ ........ ........ 
@@ -2692,7 +2599,6 @@ Spell Level      : 1
 Range            : 5 - 30 yards
 Velocity         : 30 yards/sec
 Cooldown         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Attributes       : ....x... ........ ........ .....x..   .....x.. ..x..... .x...... ........ 
                  : ........ ........ ........ ....x...   ........ ........ xx...... ........ 
@@ -2716,7 +2622,6 @@ Spell Type       : None
 Spell Level      : 14
 Range            : 5 - 30 yards
 Duration         : 2 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Stance Mask      : 0x00000040
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
@@ -2746,7 +2651,6 @@ Spell Level      : 1
 Range            : 5 - 30 yards
 Velocity         : 30 yards/sec
 Cooldown         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Stance Mask      : 0x00000040
 Attributes       : ....x... ........ ........ .....x..   .....x.. ..x..... .x...... ........ 
@@ -2773,7 +2677,6 @@ Spell Level      : 22
 GCD              : 1 seconds
 Duration         : 10 seconds
 Cooldown         : 45 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x00000040
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... .x...... ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -2799,7 +2702,6 @@ Spell Level      : 22
 GCD              : 1 seconds
 Duration         : 10 seconds
 Cooldown         : 45 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x00000040
 Attributes       : ....x... ........ x.x..... ........   ..x...x. ..x..... .x...... .....x.. 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -2861,7 +2763,6 @@ School           : Physical
 Spell Type       : None
 Range            : 100 yards
 Duration         : 300 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : Raise Ally (61999)
 Attributes       : ........ x....... ........ ..x..x..   ........ ..x..... ........ ........ 
                  : x......x x....... ........ ........   ........ x....... ....x... ......x. 
@@ -2881,7 +2782,6 @@ Class            : Death Knight
 School           : Physical
 Spell Type       : None
 Duration         : 20 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
@@ -2913,8 +2813,7 @@ GCD              : 1 seconds
 Duration         : 30 seconds
 Cooldown         : 180 seconds
 Category         : 1333
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-                 : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
 Category Cooldown: 180 seconds
 Proc Chance      : 101%
 Affecting spells : Metamorphosis Rune (23724 effect#1), Cheaper Druid Shapeshifting (38314 effect#1), Incarnation (117679 effect#1), Druid (137009 effect#4), Wildcat Celerity (184877 effect#1), Starfall (191034 effect#2), Stellar Drift (202461 effect#1)
@@ -2951,8 +2850,7 @@ GCD              : 1.5 seconds
 Duration         : 30 seconds
 Cooldown         : 180 seconds
 Category         : 1333
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-                 : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
 Category Cooldown: 180 seconds
 Proc Chance      : 101%
 Affecting spells : Incarnation (117679 effect#1), Druid (137009 effect#4), Wildcat Celerity (184877 effect#1), Starfall (191034 effect#2), Stellar Drift (202461 effect#1)
@@ -2986,7 +2884,6 @@ Range            : 20 yards
 GCD              : 1.5 seconds
 Duration         : 4 seconds
 Cooldown         : 45 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Mechanic         : Stun
 Family Flags     : 84
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3011,7 +2908,6 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 120 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Tightening Grasp (206970 effect#1)
 Family Flags     : 26
 Attributes       : ........ ........ ........ ........   ........ ........ .x...... ....x... 
@@ -3041,7 +2937,6 @@ Range            : 30 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Duration         : 300 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Mechanic         : Charm
 Attributes       : ........ ........ x....... ......x.   x....... ..x..... .x...... ........ 
@@ -3062,7 +2957,6 @@ Name             : Purgatory (id=114556) [Spell Family (15), Passive]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3085,7 +2979,6 @@ Spell Type       : Melee
 Spell Level      : 17
 GCD              : 1 seconds
 Category         : 47
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Fortifying Brew (120954 effect#6), High Tolerance (196737 effect#5), Shuffle (215479 effect#1), Stagger (322522 effect#1)
 Family Flags     : 34
 Attributes       : ....x.x. ........ x.x..... x..x.x.x   ........ ..x..... .x...... ....x..x 
@@ -3119,7 +3012,6 @@ Spell Level      : 1
 GCD              : 1.5 seconds
 Duration         : 6 seconds
 Cooldown         : 45 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Mastery: Dreadblade (77515 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Master of Ghouls (246995 effect#1), 
 Family Flags     : 43, 78, 93
 Attributes       : ........ ........ ........ ........   ........ ........ .x...... ........ 
@@ -3144,7 +3036,6 @@ School           : Shadow
 Spell Type       : Magic
 Spell Level      : 1
 Duration         : 14 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 4 maximum
 Proc Chance      : 101%
 Affecting spells : Mastery: Dreadblade (77515 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Master of Ghouls (246995 effect#1), 
@@ -3171,7 +3062,6 @@ Class            : Death Knight
 School           : Shadow
 Spell Type       : None
 Duration         : 3 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ..x..x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : x....... ........ ........ ........   ........ ........ ........ ........ 
@@ -3197,8 +3087,7 @@ GCD              : 1.5 seconds
 Duration         : 12 seconds
 Cooldown         : 60 seconds
 Category         : 1417
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-                 : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
 Category Cooldown: 60 seconds
 Stance Mask      : 0x08000000
 Affecting spells : Item - Priest T18 Shadow 2P Bonus (186980 effect#2), Surrender to Madness (193223 effect#2), Surrender to Madness (319952 effect#7), Shadowflame Prism (336143 effect#1)
@@ -3223,7 +3112,6 @@ School           : Shadow
 Spell Type       : None
 Spell Level      : 1
 Range            : 50000 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ...x.... ........ 
@@ -3242,7 +3130,6 @@ School           : Physical
 Spell Type       : None
 Range            : 50000 yards
 Duration         : 240 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ..xx.x..   ........ ..x..... ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ....x... ....x.x. 
                  : ........ ........ ........ ........   ..x..... ........ ........ ........ 
@@ -3261,7 +3148,6 @@ Class            : Death Knight, Monk
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 65
 Attributes       : ........ ........ ........ x.xx...x   ........ ..x..... ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ x....... .....x.. 
@@ -3284,7 +3170,6 @@ Class            : Death Knight, Monk
 School           : Physical
 Spell Type       : None
 Duration         : 10 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : High Tolerance (196737 effect#4)
 Family Flags     : 93
 Attributes       : ........ ........ ........ x.xx...x   ........ ..x..... ........ ........ 
@@ -3311,7 +3196,6 @@ Name             : Death's Advance (id=124285) [Spell Family (15), Passive, Hidd
 Class            : Death Knight
 School           : Shadow
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3335,7 +3219,6 @@ Range            : 30 yards
 GCD              : 1 seconds
 Duration         : Aura (infinite)
 Cooldown         : 15 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ....x... 
                  : x....... ........ ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ ........ ........   .......x x....... ........ ........ 
@@ -3354,7 +3237,6 @@ School           : Physical
 Spell Type       : None
 Spell Level      : 1
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3387,7 +3269,6 @@ GCD              : 1.5 seconds
 Duration         : 8 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 45 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Mastery: Dreadblade (77515 effect#1), Death Knight (137005 effect#2), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Biting Cold (166057 effect#1), Master of Ghouls (246995 effect#1), 
 Family Flags     : 43, 78, 90, 127
 Attributes       : ........ ........ ..x..... ........   ........ .x...... ........ ...x.... 
@@ -3415,7 +3296,6 @@ Name             : Death Knight (id=137005) [Spell Family (15), Passive, Hidden]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 70, 83
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3450,7 +3330,6 @@ Name             : Frost Death Knight (id=137006) [Spell Family (15), Passive, H
 Class            : Frost Death Knight
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3473,7 +3352,6 @@ Name             : Unholy Death Knight (id=137007) [Spell Family (15), Passive, 
 Class            : Unholy Death Knight
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3498,7 +3376,6 @@ Name             : Blood Death Knight (id=137008) [Spell Family (15), Passive, H
 Class            : Blood Death Knight
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3553,7 +3430,6 @@ Name             : Guardian Druid (id=137010) [Spell Family (7), Passive, Hidden
 Class            : Guardian Death Knight, Druid
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3606,7 +3482,6 @@ Name             : Feral Druid (id=137011) [Spell Family (7), Passive, Hidden]
 Class            : Feral Death Knight, Druid
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3653,7 +3528,6 @@ Name             : Restoration Druid (id=137012) [Spell Family (7), Passive, Hid
 Class            : Restoration Death Knight, Druid
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3693,7 +3567,6 @@ Name             : Balance Druid (id=137013) [Spell Family (7), Passive, Hidden]
 Class            : Balance Death Knight, Druid
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3744,7 +3617,6 @@ Name             : Beast Mastery Hunter (id=137015) [Spell Family (9), Passive, 
 Class            : Beast Mastery Hunter, Death Knight
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3777,7 +3649,6 @@ Name             : Marksmanship Hunter (id=137016) [Spell Family (9), Passive, H
 Class            : Marksmanship Hunter, Death Knight
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3823,7 +3694,6 @@ Name             : Survival Hunter (id=137017) [Spell Family (9), Passive, Hidde
 Class            : Survival Hunter, Death Knight
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3872,7 +3742,6 @@ Name             : Fire Mage (id=137019) [Spell Family (3), Passive, Hidden]
 Class            : Fire Death Knight, Mage
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3925,7 +3794,6 @@ Name             : Frost Mage (id=137020) [Spell Family (3), Passive, Hidden]
 Class            : Frost Death Knight, Mage
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3979,7 +3847,6 @@ Class            : Arcane Death Knight, Mage
 School           : Physical
 Spell Type       : None
 Spell Level      : 10 (max 40)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4010,7 +3877,6 @@ Class            : Brewmaster Death Knight, Monk
 Race             : Blood Elf (0x200)
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4096,7 +3962,6 @@ Class            : Mistweaver Death Knight, Monk
 Race             : Blood Elf (0x200)
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4169,7 +4034,6 @@ Class            : Windwalker Death Knight, Monk
 Race             : Blood Elf (0x200)
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4240,7 +4104,6 @@ Class            : Retribution Paladin, Death Knight
 Race             : Blood Elf (0x200)
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4305,7 +4168,6 @@ Name             : Protection Paladin (id=137028) [Spell Family (10), Passive, H
 Class            : Protection Paladin, Death Knight
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4368,7 +4230,6 @@ Class            : Holy Paladin, Death Knight
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4423,7 +4284,6 @@ Name             : Holy Priest (id=137031) [Spell Family (6), Passive, Hidden]
 Class            : Holy Priest, Death Knight
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4457,7 +4317,6 @@ Name             : Discipline Priest (id=137032) [Spell Family (6), Passive, Hid
 Class            : Discipline Priest, Death Knight
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4505,7 +4364,6 @@ Class            : Shadow Priest, Death Knight
 Race             : Blood Elf (0x200)
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4555,7 +4413,6 @@ Name             : Subtlety Rogue (id=137035) [Spell Family (8), Passive, Hidden
 Class            : Subtlety Rogue, Death Knight
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4596,7 +4453,6 @@ Name             : Outlaw Rogue (id=137036) [Spell Family (8), Passive, Hidden]
 Class            : Outlaw Rogue, Death Knight
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4645,7 +4501,6 @@ Name             : Assassination Rogue (id=137037) [Spell Family (8), Passive, H
 Class            : Assassination Rogue, Death Knight
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4705,7 +4560,6 @@ Name             : Restoration Shaman (id=137039) [Spell Family (11), Passive, H
 Class            : Restoration Death Knight, Shaman
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4753,7 +4607,6 @@ Name             : Elemental Shaman (id=137040) [Spell Family (11), Passive, Hid
 Class            : Elemental Death Knight, Shaman
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4791,7 +4644,6 @@ Name             : Enhancement Shaman (id=137041) [Spell Family (11), Passive, H
 Class            : Enhancement Death Knight, Shaman
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4840,7 +4692,6 @@ Name             : Affliction Warlock (id=137043) [Spell Family (5), Passive, Hi
 Class            : Affliction Death Knight, Warlock
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4885,7 +4736,6 @@ Name             : Demonology Warlock (id=137044) [Spell Family (5), Passive, Hi
 Class            : Demonology Death Knight, Warlock
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4938,7 +4788,6 @@ Name             : Destruction Warlock (id=137046) [Spell Family (5), Passive, H
 Class            : Destruction Death Knight, Warlock
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4981,7 +4830,6 @@ Name             : Protection Warrior (id=137048) [Spell Family (4), Passive, Hi
 Class            : Protection Warrior, Death Knight
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5035,7 +4883,6 @@ Name             : Arms Warrior (id=137049) [Spell Family (4), Passive, Hidden]
 Class            : Arms Warrior, Death Knight
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ..x..... ........ ........ ........ 
                  : White Melee
@@ -5087,7 +4934,6 @@ Name             : Fury Warrior (id=137050) [Spell Family (4), Passive, Hidden]
 Class            : Fury Warrior, Death Knight
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5124,7 +4970,6 @@ Spell Type       : None
 Spell Level      : 5
 Range            : 50000 yards
 Duration         : 10 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Affecting spells : Reinforced Shell (337764 effect#1), 
 Family Flags     : 51
@@ -5148,7 +4993,6 @@ Name             : Glyph of the Skeleton (desc=Unholy) (id=146652) [Spell Family
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5171,7 +5015,6 @@ Spell Type       : None
 Cast Time        : 1.5 seconds
 Cooldown         : 1.5 seconds
 Category         : 133
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 1.5 seconds
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5194,8 +5037,7 @@ Spell Type       : None
 GCD              : 1 seconds
 Duration         : 12 seconds
 Cooldown         : 90 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-                 : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
 Family Flags     : 126
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5233,7 +5075,6 @@ Name             : Adaptation (id=152244) [Passive]
 Class            : Hunter, Death Knight, Shaman
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -5266,8 +5107,7 @@ Velocity         : 30 yards/sec
 Duration         : 12 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 45 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-                 : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
 Affecting spells : Warrior (137047 effect#2)
 Family Flags     : 8, 107
 Attributes       : ....x... ........ ........ .......x   ........ ........ ........ ....x... 
@@ -5298,7 +5138,6 @@ Spell Type       : None
 Resource         : 0 Runic Power (6) and 16 Runic Power (6) per tick (id=9067)
 Duration         : Aura (infinite)
 Cooldown         : 120 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 113
 Attributes       : ........ ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5330,7 +5169,6 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 20 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Crimson Scourge (81141 effect#1), Blood Death Knight (137008 effect#5), Rapid Decomposition (194662 effect#1)
 Family Flags     : 5
 Attributes       : ........ ........ ........ ........   ........ .x...... ........ ....x... 
@@ -5378,7 +5216,6 @@ Name             : Breath of Sindragosa (id=155166) [Spell Family (15)]
 Class            : Death Knight
 School           : Frost
 Spell Type       : Magic
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Proc Flags       : ........ ........ x.x..... ........ 
                  : Magic Hostile Spell, Periodic
@@ -5405,7 +5242,6 @@ Class            : Death Knight
 School           : Shadow
 Spell Type       : Magic
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Mastery: Dreadblade (77515 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Morbid Strike (166021 effect#2), Master of Ghouls (246995 effect#1), Death's Due (324164 effect#3)
 Family Flags     : 43, 67, 78, 114
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
@@ -5428,7 +5264,6 @@ Class            : Warrior, Death Knight
 School           : Physical
 Spell Type       : Melee
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Single-Minded Fury (81099 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Deep Wounds (262115 effect#2), Siegebreaker (280773 effect#1)
 Family Flags     : 9, 107
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5451,7 +5286,6 @@ Class            : Hunter, Death Knight, Shaman
 School           : Physical
 Spell Type       : None
 Spell Level      : 1
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.x. x....... ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -5474,7 +5308,6 @@ School           : Fire
 Spell Type       : None
 Spell Level      : 1
 Duration         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Proc Flags       : ........ ........ x....... ........ 
                  : Magic Hostile Spell
@@ -5501,7 +5334,6 @@ Class            : Blood Death Knight
 School           : Physical
 Spell Type       : None
 Spell Level      : 29
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 101
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5521,7 +5353,6 @@ Class            : Arms Fury Retribution Frost Unholy Warrior, Paladin, Death Kn
 Race             : Dark Iron Dwarf (0x800)
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5544,7 +5375,6 @@ Class            : Protection Protection Blood Warrior, Paladin, Death Knight
 Race             : Dark Iron Dwarf (0x800)
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5564,7 +5394,6 @@ Class            : Frost Unholy Death Knight
 School           : Physical
 Spell Type       : None
 Spell Level      : 18
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : .x...... ........ ........ ........ 
                  : Killing Blow
@@ -5587,7 +5416,6 @@ School           : Shadow
 Spell Type       : None
 Range            : 50000 yards
 Duration         : 10 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Death and Decay (316664 effect#1)
 Family Flags     : 118
 Attributes       : ........ ........ .......x x..x....   .....x.. ..x..... ........ ........ 
@@ -5661,7 +5489,6 @@ School           : Physical
 Spell Type       : None
 Spell Level      : 1
 Range            : 50000 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -5697,7 +5524,6 @@ School           : Shadow
 Spell Type       : Melee
 Range            : 100 yards
 Duration         : 27 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Affecting spells : Mastery: Dreadblade (77515 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Ebon Fever (207269 effect#1), Master of Ghouls (246995 effect#1), 
 Triggered by     : Outbreak (77575)
@@ -5724,7 +5550,6 @@ Class            : Death Knight
 School           : Shadow
 Spell Type       : Magic
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Mastery: Dreadblade (77515 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Ebon Fever (207269 effect#1), Master of Ghouls (246995 effect#1), 
 Family Flags     : 40, 43, 78
 Attributes       : ........ ........ x....... ...x....   ...x...x ........ ........ ........ 
@@ -5749,8 +5574,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Charges          : 1 (150 seconds cooldown)
 Category         : 1572: Strive for Perfection (296320 effect#3), Strive for Perfection (299367 effect#3), Strive for Perfection (299369 effect#3)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-                 : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
 Affecting spells : Call of Flame (338303 effect#1)
 Family Flags     : 124
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
@@ -5773,7 +5597,6 @@ School           : Shadow
 Spell Type       : Melee
 Range            : 50000 yards
 Duration         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Internal Cooldown: 1 seconds
 Stacks           : -1 initial, 6 maximum
 Proc Chance      : 100%
@@ -5799,7 +5622,6 @@ Class            : Death Knight
 School           : Shadow
 Spell Type       : Melee
 Range            : 50000 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Affecting spells : Mastery: Dreadblade (77515 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Bursting Sores (207264 effect#1), Master of Ghouls (246995 effect#1), Festering Strike (316867 effect#1)
 Family Flags     : 43, 78, 119
@@ -5822,7 +5644,6 @@ Name             : Rapid Decomposition (id=194662) [Spell Family (15), Passive]
 Class            : Death Knight
 School           : Shadow
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -5857,7 +5678,6 @@ Duration         : 4 seconds
 Cooldown         : 1.5 seconds
 Charges          : 1 (25 seconds cooldown)
 Category         : 1645: Rune Tap (316616 effect#1)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 27
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ..x..... ......x. 
@@ -5881,7 +5701,6 @@ Resource         : 10 - 100 Runic Power (6) (id=10533)
 GCD              : 1.5 seconds
 Duration         : 1 seconds
 Cooldown         : 60 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5905,7 +5724,6 @@ Name             : Icy Talons (id=194878) [Spell Family (15), Passive]
 Class            : Death Knight
 School           : Frost
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Internal Cooldown: 0.5 seconds
 Proc Chance      : 101%
 Proc Flags       : ....x... ....x... x.x..x.. ........ 
@@ -5928,7 +5746,6 @@ Class            : Death Knight
 School           : Frost
 Spell Type       : None
 Duration         : 6 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 3 maximum
 Proc Chance      : 101%
 Triggered by     : Icy Talons (194878)
@@ -5949,7 +5766,6 @@ Name             : Frozen Pulse (id=194909) [Spell Family (15), Passive]
 Class            : Death Knight
 School           : Frost
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ..x..... ........ ........ ........ 
                  : White Melee
@@ -5972,7 +5788,6 @@ Name             : Gathering Storm (id=194912) [Spell Family (15), Passive]
 Class            : Death Knight
 School           : Frost
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ....x... ..x.x.x. x.x..x.. ........ 
                  : Yellow Melee, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Trap Triggered
@@ -5998,7 +5813,6 @@ Range            : 100 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, One-handed Sword, Two-handed Sword, Fist Weapon
 Cooldown         : 6 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Death Knight (137005 effect#1)
 Family Flags     : 50
 Attributes       : ........ ........ ........ ........   ........ .x...... ........ ........ 
@@ -6018,7 +5832,6 @@ Name             : All Will Serve (id=194916) [Spell Family (15), Passive]
 Class            : Death Knight
 School           : Shadow
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -6036,7 +5849,6 @@ Name             : Pestilent Pustules (id=194917) [Spell Family (15), Passive]
 Class            : Death Knight
 School           : Shadow
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -6056,7 +5868,6 @@ School           : Shadow
 Spell Type       : Magic
 Spell Level      : 23
 Duration         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Internal Cooldown: 2.5 seconds
 Stacks           : 1 initial, 10 maximum
 Proc Chance      : 100%
@@ -6096,7 +5907,6 @@ Spell Level      : 11
 Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Death Knight (137005 effect#2), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Unholy Coil (184897 effect#2), Item - Death Knight T19 Blood 2P Bonus (211039 effect#1), Master of Ghouls (246995 effect#1), 
 Triggered by     : Bone Shield (195181)
 Family Flags     : 43, 117, 127
@@ -6130,7 +5940,6 @@ Spell Level      : 28
 Range            : 30 yards
 GCD              : 1.5 seconds
 Velocity         : 45 yards/sec
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Master of Ghouls (246995 effect#1), 
 Family Flags     : 43, 87
 Attributes       : ........ ........ ..x..... ........   ........ .x...... ........ ...x.... 
@@ -6156,7 +5965,6 @@ School           : Frost
 Spell Type       : Melee
 Spell Level      : 23
 Range            : 50000 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Triggered by     : Frost Fever (195621)
 Attributes       : ....x... ........ ........ ..x.....   ........ ........ ........ ........ 
@@ -6180,7 +5988,6 @@ School           : Frost
 Spell Type       : Melee
 Spell Level      : 23
 Range            : 50000 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ........ ........ ..x..... ........ 
                  : Periodic
@@ -6201,7 +6008,6 @@ Name             : Bloodworms (id=195679) [Spell Family (15), Passive]
 Class            : Death Knight
 School           : Shadow
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Real PPM         : 5
 Proc Flags       : ..x..... ........ ........ ........ 
@@ -6231,7 +6037,6 @@ Name             : Frozen Pulse (id=195750) [Spell Family (15)]
 Class            : Death Knight
 School           : Frost
 Spell Type       : Magic
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Razorice (51714 effect#1), Mastery: Frozen Heart (77514 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Master of Ghouls (246995 effect#1), 
 Triggered by     : Frozen Pulse (194909)
 Family Flags     : 43, 120
@@ -6251,7 +6056,6 @@ Name             : Festering Wound (id=195757) [Spell Family (15)]
 Class            : Death Knight
 School           : Shadow
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : Festering Wound (197147)
 Family Flags     : 85
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6273,7 +6077,6 @@ Class            : Death Knight
 School           : Frost
 Spell Type       : Magic
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Razorice (51714 effect#1), Mastery: Frozen Heart (77514 effect#1), Death Knight (137005 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Master of Ghouls (246995 effect#1), 
 Family Flags     : 43, 50, 120
 Attributes       : ........ ........ .......x x..x....   .....x.x ........ ........ ........ 
@@ -6294,7 +6097,6 @@ Class            : Death Knight
 School           : Shadow
 Spell Type       : None
 Duration         : 16 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : Bloodworms (195679)
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6312,7 +6114,6 @@ Name             : Bonestorm (id=196528) [Spell Family (15)]
 Class            : Death Knight
 School           : Shadow
 Spell Type       : Melee
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Master of Ghouls (246995 effect#1), 
 Triggered by     : Bonestorm (194844)
 Family Flags     : 43
@@ -6334,7 +6135,6 @@ Name             : Bonestorm (id=196545) [Spell Family (15)]
 Class            : Death Knight
 School           : Shadow
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ .....x.. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6358,7 +6158,6 @@ Spell Level      : 19
 GCD              : 1.5 seconds
 Duration         : 8 seconds
 Cooldown         : 20 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 122
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6383,7 +6182,6 @@ Name             : Remorseless Winter (id=196771) [Spell Family (15)]
 Class            : Death Knight
 School           : Frost
 Spell Type       : Magic
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Razorice (51714 effect#1), Mastery: Frozen Heart (77514 effect#1), Sudden Doom (81340 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Gathering Storm (211805 effect#1), Master of Ghouls (246995 effect#1), Frozen Tempest (278487 effect#2), Remorseless Winter (316794 effect#1), Biting Cold (334678 effect#2), Biting Cold (337989 effect#1)
 Triggered by     : Remorseless Winter (196770)
 Family Flags     : 43, 120, 121, 126
@@ -6405,7 +6203,6 @@ Class            : Unholy Death Knight
 School           : Shadow
 Spell Type       : None
 Spell Level      : 1
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
@@ -6429,7 +6226,6 @@ Class            : Death Knight
 School           : Shadow
 Spell Type       : None
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : Bloodworms (195679)
 Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6452,8 +6248,7 @@ Spell Level      : 18
 GCD              : 1.5 seconds
 Duration         : 12 seconds
 Cooldown         : 60 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-                 : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
 Affecting spells : Thermal Void (155149 effect#2), Norgannon's Foresight (236380 effect#1), Icy Veins (321702 effect#1)
 Family Flags     : 46
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
@@ -6480,7 +6275,6 @@ Class            : Death Knight
 School           : Shadow
 Spell Type       : None
 Duration         : 15 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : Bloodworms (197531)
 Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6501,7 +6295,6 @@ Spell Type       : Melee
 Resource         : 40 Energy (3) (id=10760)
 Spell Level      : 22
 Range            : 5 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x00000040
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -6521,7 +6314,6 @@ School           : Shadow
 Spell Type       : None
 Spell Level      : 1
 Range            : 50000 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ...x.... ........ 
@@ -6545,8 +6337,7 @@ GCD              : 1.5 seconds
 Duration         : 15 seconds
 Cooldown         : 60 seconds
 Category         : 1417
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-                 : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
 Category Cooldown: 60 seconds
 Stance Mask      : 0x08000000
 Affecting spells : Item - Priest T18 Shadow 2P Bonus (186980 effect#2), Surrender to Madness (193223 effect#2), Surrender to Madness (319952 effect#7), Shadowflame Prism (336143 effect#1)
@@ -6682,7 +6473,6 @@ Name             : Red Thirst (id=205723) [Spell Family (15), Passive]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -6702,7 +6492,6 @@ Name             : Anti-Magic Barrier (id=205727) [Spell Family (15), Passive]
 Class            : Death Knight
 School           : None
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -6759,7 +6548,6 @@ GCD              : 1.5 seconds
 Duration         : 8 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Category         : 1207
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Blood Plague (55078 effect#3), Death Knight (137005 effect#2), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Death and Decay (188290 effect#3), Blood for Blood (202846 effect#1), Item - Death Knight T19 Blood 2P Bonus (211039 effect#1), Master of Ghouls (246995 effect#1), Heart Strike (316575 effect#1), Heart Strike (317090 effect#1)
 Family Flags     : 24, 43, 127
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ...x.... 
@@ -6796,7 +6584,6 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 3 seconds
 Cooldown         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Master of Ghouls (246995 effect#1), 
 Family Flags     : 43, 86
 Attributes       : ........ ........ x....... ........   ..x..... ......x. ........ .....x.. 
@@ -6824,7 +6611,6 @@ Range            : 15 yards
 GCD              : 1.5 seconds
 Duration         : 15 seconds
 Cooldown         : 6 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ..x..... ........ ........ ........ 
                  : White Melee
@@ -6845,7 +6631,6 @@ Name             : Will of the Necropolis (desc=Passive Talent) (id=206967) [Pas
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -6867,7 +6652,6 @@ Name             : Tightening Grasp (id=206970) [Spell Family (15), Passive]
 Class            : Death Knight
 School           : Shadow
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -6887,7 +6671,6 @@ Name             : Foul Bulwark (id=206974) [Spell Family (15), Passive]
 Class            : Death Knight
 School           : Shadow
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -6909,7 +6692,6 @@ Class            : Death Knight
 School           : Physical
 Spell Type       : None
 Spell Level      : 1
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 37
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6930,7 +6712,6 @@ School           : Frost
 Spell Type       : Melee
 Spell Level      : 1
 Range            : 50000 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Attributes       : ....x... ........ ........ ..x.....   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ..x..... ......x. 
@@ -6949,7 +6730,6 @@ Name             : Runic Attenuation (id=207104) [Spell Family (15), Passive]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Real PPM         : 18 (Haste multiplier)
 Proc Flags       : ..x..... ........ ........ ........ 
@@ -6972,7 +6752,6 @@ Class            : Death Knight
 School           : Physical
 Spell Type       : None
 Spell Level      : 1
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Internal Cooldown: 0.5 seconds
 Proc Chance      : 100%
 Proc Flags       : ....x.x. x...x... x.x..... ........ 
@@ -6996,7 +6775,6 @@ Class            : Death Knight
 School           : Physical
 Spell Type       : None
 Spell Level      : 1
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Internal Cooldown: 0.1 seconds
 Proc Chance      : 100%
 Proc Flags       : ........ ........ x....... ........ 
@@ -7020,7 +6798,6 @@ School           : Frost
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Razorice (51714 effect#1), Mastery: Frozen Heart (77514 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Master of Ghouls (246995 effect#1), 
 Family Flags     : 43, 120
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
@@ -7044,7 +6821,6 @@ Spell Level      : 1
 GCD              : 1.5 seconds
 Duration         : 5 seconds
 Cooldown         : 60 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Mechanic         : Disorient
@@ -7072,7 +6848,6 @@ Class            : Death Knight
 School           : Physical
 Spell Type       : None
 Spell Level      : 1
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -7095,7 +6870,6 @@ Class            : Death Knight
 School           : Physical
 Spell Type       : None
 Spell Level      : 1
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ..x..... ........ ........ ........ 
                  : White Melee
@@ -7121,7 +6895,6 @@ Spell Level      : 1
 Range            : 8 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, One-handed Sword, Two-handed Sword, Fist Weapon
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Killing Machine (51124 effect#1), Razorice (51714 effect#1), Mastery: Frozen Heart (77514 effect#1), Death Knight (137005 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Master of Ghouls (246995 effect#1), Item - Death Knight T21 Frost 2P Bonus (251873 effect#3)
 Family Flags     : 15, 43, 120, 127
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
@@ -7150,7 +6923,6 @@ Class            : Death Knight
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Internal Cooldown: 0.5 seconds
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ x....... ........ 
@@ -7176,7 +6948,6 @@ Name             : Bursting Sores (id=207264) [Spell Family (15), Passive]
 Class            : Death Knight
 School           : Shadow
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -7200,7 +6971,6 @@ School           : Shadow
 Spell Type       : Melee
 Range            : 50000 yards
 Velocity         : 0.15 yards/sec
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Affecting spells : Mastery: Dreadblade (77515 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Master of Ghouls (246995 effect#1), 
 Family Flags     : 43, 78
@@ -7225,7 +6995,6 @@ Name             : Ebon Fever (id=207269) [Spell Family (15), Passive]
 Class            : Death Knight
 School           : Shadow
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -7253,7 +7022,6 @@ Name             : Infected Claws (id=207272) [Spell Family (15), Passive]
 Class            : Death Knight
 School           : Shadow
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -7274,7 +7042,6 @@ Spell Type       : Magic
 GCD              : 1.5 seconds
 Duration         : 12 seconds
 Cooldown         : 75 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Proc Flags       : ..x..... ........ ........ ........ 
                  : White Melee
@@ -7303,7 +7070,6 @@ Resource         : -10 Runic Power (6) (id=11018)
 Range            : 30 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Mastery: Dreadblade (77515 effect#1), Death Knight (137005 effect#2), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Death and Decay (188290 effect#2), Master of Ghouls (246995 effect#1), Scourge Strike (317234 effect#1)
 Family Flags     : 43, 59, 78, 127
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ...x.... 
@@ -7325,7 +7091,6 @@ Name             : Sludge Belcher (id=207313) [Spell Family (15), Passive]
 Class            : Death Knight
 School           : Shadow
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -7346,7 +7111,6 @@ Spell Type       : None
 Resource         : 30 Runic Power (6) (id=11019)
 Max Targets      : 20
 GCD              : 1.5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Sudden Doom (81340 effect#1)
 Family Flags     : 121
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7365,7 +7129,6 @@ Name             : Spell Eater (id=207321) [Spell Family (15), Passive]
 Class            : Death Knight
 School           : Shadow
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -7391,7 +7154,6 @@ School           : Shadow
 Spell Type       : Melee
 Spell Level      : 23
 Range            : 50000 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Attributes       : ....x... ........ ........ ..x.....   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ..x..... ......x. 
@@ -7411,7 +7173,6 @@ Class            : Death Knight
 School           : Frost
 Spell Type       : Magic
 Duration         : 3 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 1 maximum
 Proc Chance      : 101%
 Affecting spells : Gathering Storm (211805 effect#1), Frozen Tempest (278487 effect#2), Remorseless Winter (316794 effect#1), Biting Cold (334678 effect#2), Biting Cold (337989 effect#1)
@@ -7436,7 +7197,6 @@ School           : Frost
 Spell Type       : None
 Range            : 50000 yards
 Duration         : 8 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 10 maximum
 Proc Chance      : 101%
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7460,7 +7220,6 @@ School           : Shadow
 Spell Type       : Melee
 Range            : 40 yards
 Duration         : Aura (infinite)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 1 maximum
 Proc Chance      : 101%
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7486,7 +7245,6 @@ Cast Time        : 2.5 seconds
 GCD              : 1 seconds
 Velocity         : 40 yards/sec
 Requires weapon  : Bow, Gun, Crossbow
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : .x..x... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ...x....   ........ ........ ........ ........ 
@@ -7510,7 +7268,6 @@ Spell Level      : 25
 GCD              : 1.5 seconds
 Duration         : 4 seconds
 Cooldown         : 60 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Death Knight (137005 effect#2)
 Family Flags     : 32, 127
 Attributes       : ....x... ........ .......x ........   ..x...x. ..x..... ........ .....x.. 
@@ -7547,7 +7304,6 @@ Name             : Havoc Demon Hunter (id=212612) [Spell Family (107), Passive, 
 Class            : Havoc Death Knight, Demon Hunter
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7581,7 +7337,6 @@ Name             : Vengeance Demon Hunter (id=212613) [Spell Family (107), Passi
 Class            : Vengeance Death Knight, Demon Hunter
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7632,7 +7387,6 @@ Class            : Death Knight
 School           : Physical
 Spell Type       : None
 Duration         : 0.001 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : Wraith Walk (212552)
 Attributes       : .......x ........ ........ ........   ........ .......x ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7653,7 +7407,6 @@ Class            : Death Knight
 School           : Shadow
 Spell Type       : Magic
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Mastery: Dreadblade (77515 effect#1), Sudden Doom (81340 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Master of Ghouls (246995 effect#1), 
 Family Flags     : 43, 78, 121
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7674,7 +7427,6 @@ School           : Shadow
 Spell Type       : Magic
 Range            : 100 yards
 Duration         : 8 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7694,7 +7446,6 @@ School           : Shadow
 Spell Type       : Magic
 Range            : 100 yards
 Max Targets      : 7
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Mastery: Dreadblade (77515 effect#1), Sudden Doom (81340 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Master of Ghouls (246995 effect#1), 
 Family Flags     : 43, 78, 121
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7721,8 +7472,7 @@ Spell Level      : 28
 GCD              : 1.5 seconds
 Duration         : 20 seconds
 Cooldown         : 120 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-                 : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
 Proc Chance      : 100%
 Proc Flags       : ....x... ....x... ........ ........ 
                  : Yellow Melee, Generic Hostile Spell
@@ -7767,7 +7517,6 @@ Name             : Ossuary (id=219786) [Spell Family (15), Passive]
 Class            : Death Knight
 School           : Shadow
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -7790,7 +7539,6 @@ Class            : Death Knight
 School           : Shadow
 Spell Type       : None
 Duration         : Aura (infinite)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7814,7 +7562,6 @@ Spell Type       : None
 GCD              : 1.5 seconds
 Duration         : 8 seconds
 Cooldown         : 60 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7885,7 +7632,6 @@ Name             : Runic Attenuation (id=221322) [Spell Family (15)]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : Runic Attenuation (207104)
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7904,7 +7650,6 @@ Class            : Death Knight
 School           : Shadow
 Spell Type       : Melee
 Spell Level      : 15
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7928,7 +7673,6 @@ Range            : 20 yards
 GCD              : 1.5 seconds
 Duration         : 5 seconds
 Cooldown         : 45 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Mechanic         : Stun
 Family Flags     : 84
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7951,7 +7695,6 @@ Spell Type       : None
 Spell Level      : 58
 Charges          : 2 (60 seconds cooldown)
 Category         : 1644
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ .x......   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7974,7 +7717,6 @@ School           : Physical
 Spell Type       : Melee
 Range            : 100 yards
 Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapon, Dagger
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Killing Machine (51124 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Koltira's Newfound Will (208782 effect#2), Master of Ghouls (246995 effect#1), Item - Death Knight T21 Frost 2P Bonus (251873 effect#2), Obliterate (317198 effect#1), Koltira's Favor (334583 effect#2)
 Triggered by     : Obliterate (49020)
 Family Flags     : 43, 49
@@ -7998,7 +7740,6 @@ School           : Frost
 Spell Type       : Melee
 Range            : 100 yards
 Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapon, Dagger, Spear
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Razorice (51714 effect#1), Mastery: Frozen Heart (77514 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Biting Cold (166057 effect#1), Master of Ghouls (246995 effect#1), Frost Strike (316803 effect#1), Eradicating Blow (337936 effect#1)
 Triggered by     : Frost Strike (49143)
 Family Flags     : 34, 43, 120
@@ -8024,7 +7765,6 @@ Resource         : -10 Runic Power (6) (id=11414)
 Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Affecting spells : Mastery: Dreadblade (77515 effect#1), Death Knight (137005 effect#2)
 Family Flags     : 77, 78, 127
@@ -8075,8 +7815,7 @@ Duration         : 25 seconds
 Cooldown         : 20 seconds
 Charges          : 1 (120 seconds cooldown)
 Category         : 1550: Strive for Perfection (296320 effect#6), Strive for Perfection (299367 effect#6), Strive for Perfection (299369 effect#6)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-                 : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
 Stacks           : 10 maximum
 Proc Chance      : 100%
 Proc Flags       : ....x... ....x.x. x.x..... ........ 
@@ -8123,7 +7862,6 @@ School           : Frost
 Spell Type       : Magic
 Spell Level      : 10
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Razorice (51714 effect#1), Rime (59052 effect#1), Mastery: Frozen Heart (77514 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Biting Cold (166057 effect#1), Northrend Winds (204088 effect#1), Master of Ghouls (246995 effect#1), Item - Death Knight T21 Frost 2P Bonus (251873 effect#1)
 Family Flags     : 33, 43, 120
 Attributes       : ........ ........ ........ ........   ...x...x .x...... ........ ...x.... 
@@ -8142,7 +7880,6 @@ Name             : Ravager (id=248439) [Spell Family (4)]
 Class            : Warrior, Death Knight
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Recklessness (1719 effect#5), Unnerving Focus (337155 effect#2)
 Family Flags     : 76
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
@@ -8204,7 +7941,6 @@ School           : Physical
 Spell Type       : Melee
 Spell Level      : 1
 Duration         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Affecting spells : Metamorphosis Rune (23724 effect#1), Cheaper Druid Shapeshifting (38314 effect#1), Incarnation (117679 effect#1), Druid (137009 effect#4), Wildcat Celerity (184877 effect#1), Starfall (191034 effect#2), Stellar Drift (202461 effect#1)
 Triggered by     : Incarnation: King of the Jungle (102543)
@@ -8248,7 +7984,6 @@ Class            : Death Knight
 School           : Physical
 Spell Type       : None
 Spell Level      : 1
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ .x...... ........ ........ 
@@ -8270,7 +8005,6 @@ School           : Frost
 Spell Type       : None
 Spell Level      : 1
 Duration         : Aura (infinite)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Internal Cooldown: 0.5 seconds
 Stacks           : 1 initial, 5 maximum
 Proc Chance      : 100%
@@ -8295,7 +8029,6 @@ Class            : Death Knight
 School           : Frost
 Spell Type       : Magic
 Range            : 20 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Razorice (51714 effect#1), Mastery: Frozen Heart (77514 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Master of Ghouls (246995 effect#1), 
 Family Flags     : 43, 120
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8479,7 +8212,6 @@ Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 20 maximum
 Proc Chance      : 101%
 Triggered by     : Storm Elemental (157299)
@@ -9359,7 +9091,6 @@ Name             : Hemostasis (id=273946) [Spell Family (15), Passive]
 Class            : Death Knight
 School           : Shadow
 Spell Type       : Melee
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Proc Flags       : ....x... ........ x....... ........ 
                  : Yellow Melee, Magic Hostile Spell
@@ -9381,7 +9112,6 @@ Class            : Death Knight
 School           : Physical
 Spell Type       : None
 Duration         : 15 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 5 maximum
 Proc Chance      : 101%
 Proc Flags       : ....x... ........ x....... ........ 
@@ -9406,7 +9136,6 @@ Name             : Grip of the Dead (id=273952) [Spell Family (15), Passive]
 Class            : Death Knight
 School           : Shadow
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -9426,7 +9155,6 @@ Name             : Voracious (id=273953) [Spell Family (15), Passive]
 Class            : Death Knight
 School           : Shadow
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9454,7 +9182,6 @@ Class            : Death Knight
 School           : Shadow
 Spell Type       : None
 Duration         : 8 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Internal Cooldown: 0.5 seconds
 Proc Chance      : 101%
 Proc Flags       : ....x... ........ x....... ........ 
@@ -9517,7 +9244,6 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Death Knight (137005 effect#2), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Master of Ghouls (246995 effect#1), 
 Family Flags     : 43, 125, 127
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
@@ -9566,7 +9292,6 @@ School           : Physical
 Spell Type       : None
 Range            : 30 yards
 Velocity         : 1.2 yards/sec
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : Consumption (274156)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9588,8 +9313,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 90 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-                 : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
 Affecting spells : Mastery: Dreadblade (77515 effect#1), Death Knight (137005 effect#2), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Master of Ghouls (246995 effect#1), Apocalypse (316961 effect#1), 
 Family Flags     : 43, 56, 78, 127
 Attributes       : ........ ........ ..x..... ........   ........ .x...... ........ ...x.... 
@@ -9633,7 +9357,6 @@ Class            : Death Knight
 School           : Frost
 Spell Type       : Magic
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Razorice (51714 effect#1), Mastery: Frozen Heart (77514 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Master of Ghouls (246995 effect#1), 
 Family Flags     : 43, 120
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
@@ -9673,7 +9396,6 @@ Name             : Harbinger of Doom (id=276023) [Spell Family (15), Passive]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -9695,7 +9417,6 @@ Name             : Death's Reach (id=276079) [Spell Family (15), Passive]
 Class            : Death Knight
 School           : Shadow
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Proc Flags       : .x...... ........ ........ ........ 
                  : Killing Blow
@@ -9721,7 +9442,6 @@ Class            : Death Knight
 School           : Physical
 Spell Type       : None
 Spell Level      : 1
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ........ ........ x....... ........ 
                  : Magic Hostile Spell
@@ -9749,7 +9469,6 @@ Name             : Pestilence (id=277234) [Spell Family (15), Passive]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -9768,7 +9487,6 @@ Class            : Death Knight
 School           : Physical
 Spell Type       : None
 Range            : 50000 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9789,7 +9507,6 @@ Class            : Frost Unholy Death Knight
 School           : Fire
 Spell Type       : None
 Spell Level      : 28
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9953,7 +9670,6 @@ Spell Level      : 44
 GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 180 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Consort's Cold Core (235605 effect#1), Absolute Zero (334692 effect#1)
 Family Flags     : 46
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9974,7 +9690,6 @@ School           : Frost
 Spell Type       : Magic
 Range            : 100 yards
 Duration         : 10 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 1 maximum
 Proc Chance      : 101%
 Affecting spells : Razorice (51714 effect#1), Mastery: Frozen Heart (77514 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Master of Ghouls (246995 effect#1), 
@@ -10720,7 +10435,6 @@ Name             : Cold Heart (id=281208) [Spell Family (15), Passive, Hidden]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10739,7 +10453,6 @@ Class            : Death Knight
 School           : Frost
 Spell Type       : None
 Duration         : Aura (infinite)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 20 maximum
 Proc Chance      : 101%
 Proc Flags       : ........ x...x... x....... ........ 
@@ -10765,7 +10478,6 @@ Class            : Death Knight
 School           : Frost
 Spell Type       : Magic
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Razorice (51714 effect#1), Mastery: Frozen Heart (77514 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Master of Ghouls (246995 effect#1), 
 Family Flags     : 43, 120
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10784,7 +10496,6 @@ Name             : Obliteration (id=281238) [Spell Family (15), Passive]
 Class            : Death Knight
 School           : Physical
 Spell Type       : Melee
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Proc Flags       : ........ ..x..... ........ ........ 
                  : Generic Heal
@@ -11132,7 +10843,6 @@ Class            : Death Knight
 School           : Frost
 Spell Type       : None
 Duration         : 10 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Consort's Cold Core (235605 effect#1), Absolute Zero (334692 effect#1)
 Triggered by     : Frostwhelp's Indignation (287303)
 Family Flags     : 46
@@ -11154,7 +10864,6 @@ School           : Frost
 Spell Type       : Magic
 Range            : 100 yards
 Duration         : 15 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 5 maximum
 Proc Chance      : 101%
 Triggered by     : Frostwhelp's Indignation (287320)
@@ -11322,7 +11031,6 @@ Spell Level      : 22
 Range            : 40 yards
 Cast Time        : 2 seconds
 Velocity         : 35 yards/sec
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x00000040
 Affecting spells : Mastery: Dreadblade (77515 effect#1), 
 Family Flags     : 78
@@ -11349,7 +11057,6 @@ Cast Time        : 2 seconds
 Velocity         : 35 yards/sec
 Duration         : 4 seconds
 Cooldown         : 3 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x00000040
 Attributes       : ........ ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -11774,7 +11481,6 @@ Name             : Breath of Sindragosa (id=303753)
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : Breath of Sindragosa (152279)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11798,7 +11504,6 @@ Resource         : -10 Runic Power (6) (id=215245)
 GCD              : 1.5 seconds
 Duration         : 8 seconds
 Cooldown         : 60 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Proc Flags       : ....x... ....x... x.x..... ........ 
                  : Yellow Melee, Generic Hostile Spell, Magic Hostile Spell, Periodic
@@ -11828,8 +11533,7 @@ Name             : Swarming Mist (id=311730) [Spell Family (15)]
 Class            : Death Knight
 School           : Shadow
 Spell Type       : Magic
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-                 : 1061: Impenetrable Gloom (338629 effect#2)
+Labels           : 1061: Impenetrable Gloom (338629 effect#2)
 Affecting spells : Mastery: Dreadblade (77515 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Master of Ghouls (246995 effect#1), 
 Triggered by     : Swarming Mist (311648)
 Family Flags     : 43, 78
@@ -11885,7 +11589,6 @@ Name             : Swarming Mist (id=312546) [Spell Family (15)]
 Class            : Death Knight
 School           : Shadow
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11902,7 +11605,6 @@ Name             : Death's Due (desc=Night Fae) (id=315442) [Spell Family (15), 
 Class            : Death Knight
 School           : Nature
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -11927,7 +11629,6 @@ Range            : 20 yards
 GCD              : 1.5 seconds
 Duration         : 12 seconds
 Cooldown         : 120 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Death Knight (137005 effect#2)
 Family Flags     : 127
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
@@ -11956,7 +11657,6 @@ Spell Level      : 1
 Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Death Knight (137005 effect#2), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Master of Ghouls (246995 effect#1), 
 Family Flags     : 43, 61, 127
 Attributes       : ....x... ........ ..x..x.. ........   ........ .x...... ........ ...x.... 
@@ -11977,7 +11677,6 @@ Class            : Blood Death Knight
 School           : Physical
 Spell Type       : None
 Spell Level      : 23
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11998,7 +11697,6 @@ Class            : Blood Death Knight
 School           : Physical
 Spell Type       : None
 Spell Level      : 31
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -12018,7 +11716,6 @@ Class            : Blood Death Knight
 School           : Physical
 Spell Type       : None
 Spell Level      : 38
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -12038,7 +11735,6 @@ Class            : Blood Death Knight
 School           : Physical
 Spell Type       : None
 Spell Level      : 43
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -12059,7 +11755,6 @@ Class            : Blood Death Knight
 School           : Physical
 Spell Type       : None
 Spell Level      : 49
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -12080,7 +11775,6 @@ Class            : Blood Death Knight
 School           : Physical
 Spell Type       : None
 Spell Level      : 41
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -12101,7 +11795,6 @@ Class            : Frost Death Knight
 School           : Physical
 Spell Type       : None
 Spell Level      : 34
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -12122,7 +11815,6 @@ Class            : Frost Death Knight
 School           : Physical
 Spell Type       : None
 Spell Level      : 43
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -12143,7 +11835,6 @@ Class            : Frost Death Knight
 School           : Physical
 Spell Type       : None
 Spell Level      : 41
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -12164,7 +11855,6 @@ Class            : Frost Death Knight
 School           : Physical
 Spell Type       : None
 Spell Level      : 49
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -12185,7 +11875,6 @@ Class            : Unholy Death Knight
 School           : Physical
 Spell Type       : None
 Spell Level      : 38
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -12206,7 +11895,6 @@ Class            : Unholy Death Knight
 School           : Physical
 Spell Type       : None
 Spell Level      : 43
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -12225,7 +11913,6 @@ Class            : Unholy Death Knight
 School           : Physical
 Spell Type       : None
 Spell Level      : 41
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -12244,7 +11931,6 @@ Class            : Unholy Death Knight
 School           : Physical
 Spell Type       : None
 Spell Level      : 49
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -12269,7 +11955,6 @@ Class            : Blood Death Knight
 School           : Physical
 Spell Type       : None
 Spell Level      : 52
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -12290,7 +11975,6 @@ Class            : Blood Death Knight
 School           : Physical
 Spell Type       : None
 Spell Level      : 56
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -12337,7 +12021,6 @@ Class            : Frost Death Knight
 School           : Physical
 Spell Type       : None
 Spell Level      : 52
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -12358,7 +12041,6 @@ Class            : Frost Death Knight
 School           : Physical
 Spell Type       : None
 Spell Level      : 58
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -12377,7 +12059,6 @@ Class            : Frost Death Knight
 School           : Physical
 Spell Type       : None
 Spell Level      : 56
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -12397,7 +12078,6 @@ Class            : Unholy Death Knight
 School           : Physical
 Spell Type       : None
 Spell Level      : 56
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -12418,7 +12098,6 @@ Class            : Unholy Death Knight
 School           : Physical
 Spell Type       : None
 Spell Level      : 52
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -12436,7 +12115,6 @@ Name             : Relish in Blood (id=317610) [Spell Family (15), Passive]
 Class            : Death Knight
 School           : Shadow
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -12454,7 +12132,6 @@ Name             : Relish in Blood (id=317614) [Spell Family (15)]
 Class            : Death Knight
 School           : Shadow
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -12474,7 +12151,6 @@ Class            : Death Knight
 School           : Shadow
 Spell Type       : None
 Duration         : 15 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 96
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -12496,7 +12172,6 @@ School           : Frost
 Spell Type       : Melee
 Range            : 50000 yards
 Duration         : 6 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ..x.....   ........ ..x..... ........ ........ 
                  : x....... ........ ......x. ........   ........ ........ ........ ......x. 
                  : ....x... ........ ........ ....x...   ........ ........ ........ ........ 
@@ -12514,7 +12189,6 @@ Name             : Unholy Pact (id=319230) [Spell Family (15), Passive]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -12537,7 +12211,6 @@ Class            : Death Knight
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ........ ......x. ........ ........ 
                  : Magic Heal
@@ -12561,7 +12234,6 @@ School           : Fire
 Spell Type       : Magic
 Range            : 100 yards
 Duration         : 15 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : Unholy Pact (319232)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -12586,7 +12258,6 @@ Class            : Death Knight
 School           : Shadow
 Spell Type       : Magic
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Master of Ghouls (246995 effect#1), 
 Family Flags     : 43
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -12607,7 +12278,6 @@ Class            : Death Knight
 School           : Fire
 Spell Type       : Magic
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Master of Ghouls (246995 effect#1), 
 Triggered by     : Unholy Pact (319245)
 Family Flags     : 43
@@ -12630,7 +12300,6 @@ School           : Fire
 Spell Type       : Magic
 Range            : 100 yards
 Duration         : 15 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Master of Ghouls (246995 effect#1), 
 Triggered by     : Unholy Pact (319233)
 Family Flags     : 43
@@ -12656,7 +12325,6 @@ Spell Type       : None
 Spell Level      : 23
 Range            : 40 yards
 Duration         : 15 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 1 maximum
 Proc Chance      : 101%
 Triggered by     : Unholy Pact (319233)
@@ -12679,7 +12347,6 @@ Class            : Death Knight
 Race             : Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xff007800)
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Blood Death Knight (137008 effect#13), Veteran of the Third War (316714 effect#1)
 Family Flags     : 107
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -12705,7 +12372,6 @@ School           : Frost
 Spell Type       : None
 Duration         : 8 seconds
 Cooldown         : 45 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -12722,7 +12388,6 @@ Name             : Stagger (desc=Rank 2) (id=322522) [Spell Family (53), Passive
 Class            : Death Knight, Monk
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -12744,8 +12409,7 @@ School           : Shadow
 Spell Type       : Magic
 Range            : 20 yards
 Max Targets      : 1
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-                 : 1062: Brutal Grasp (338651 effect#1)
+Labels           : 1062: Brutal Grasp (338651 effect#1)
 Mechanic         : Grip
 Affecting spells : Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Master of Ghouls (246995 effect#1), 
 Triggered by     : Abomination Limb (315443)
@@ -12771,7 +12435,6 @@ Class            : Death Knight
 School           : Shadow
 Spell Type       : Magic
 Range            : 20 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Master of Ghouls (246995 effect#1), 
 Triggered by     : Abomination Limb (315443)
 Family Flags     : 43
@@ -12793,7 +12456,6 @@ School           : Physical
 Spell Type       : Melee
 Range            : 100 yards
 Requires weapon  : Two-handed Axe, Two-handed Mace, Polearm, Two-handed Sword, Staff, Spear
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Killing Machine (51124 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Koltira's Newfound Will (208782 effect#2), Master of Ghouls (246995 effect#1), Item - Death Knight T21 Frost 2P Bonus (251873 effect#2), Obliterate (317198 effect#1), Koltira's Favor (334583 effect#2)
 Triggered by     : Obliterate (49020)
 Family Flags     : 43, 49
@@ -12817,7 +12479,6 @@ School           : Frost
 Spell Type       : Melee
 Range            : 100 yards
 Requires weapon  : Two-handed Axe, Two-handed Mace, Polearm, Two-handed Sword, Staff
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Razorice (51714 effect#1), Mastery: Frozen Heart (77514 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Biting Cold (166057 effect#1), Master of Ghouls (246995 effect#1), Frost Strike (316803 effect#1), Eradicating Blow (337936 effect#1)
 Triggered by     : Frost Strike (49143)
 Family Flags     : 34, 43, 120
@@ -12839,7 +12500,6 @@ Class            : Unholy Death Knight
 School           : Physical
 Spell Type       : None
 Spell Level      : 58
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -12859,7 +12519,6 @@ Name             : Rune of Sanguination (id=326801) [Spell Family (15), Passive,
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx x..x.x.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -12881,7 +12540,6 @@ School           : Physical
 Spell Type       : None
 Cast Time        : 5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Miscellaneous, Dagger, Spear
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : .....x.x x....... x....... ........   ........ ..x..... ........ ........ 
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -12902,8 +12560,7 @@ Class            : Death Knight
 School           : Physical
 Spell Type       : None
 Duration         : 8 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-                 : 961: Exacting Preparation (331580 effect#4), Exacting Preparation (331580 effect#5), Exacting Preparation (331580 effect#6)
+Labels           : 961: Exacting Preparation (331580 effect#4), Exacting Preparation (331580 effect#5), Exacting Preparation (331580 effect#6)
 Triggered by     : Rune of Sanguination (326801)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
@@ -12926,7 +12583,6 @@ Class            : Death Knight
 School           : Shadow
 Spell Type       : None
 Duration         : 300 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 1 maximum
 Proc Chance      : 101%
 Triggered by     : Rune of Sanguination (326808)
@@ -12949,7 +12605,6 @@ School           : Physical
 Spell Type       : None
 Cast Time        : 5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Miscellaneous, Dagger, Spear
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : .....x.x x....... x....... ........   ........ ..x..... ........ ........ 
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -12969,7 +12624,6 @@ Name             : Rune of Spellwarding (id=326864) [Spell Family (15), Passive,
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Real PPM         : 3 (Haste multiplier)
 Proc Flags       : ........ .....x.. .x.x.... ........ 
@@ -12996,8 +12650,7 @@ Class            : Death Knight
 School           : Shadow
 Spell Type       : None
 Duration         : 8 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-                 : 961: Exacting Preparation (331580 effect#4), Exacting Preparation (331580 effect#5), Exacting Preparation (331580 effect#6)
+Labels           : 961: Exacting Preparation (331580 effect#4), Exacting Preparation (331580 effect#5), Exacting Preparation (331580 effect#6)
 Stacks           : 1 maximum
 Proc Chance      : 101%
 Triggered by     : Rune of Spellwarding (326864)
@@ -13022,8 +12675,7 @@ Class            : Death Knight
 School           : Shadow
 Spell Type       : None
 Duration         : 6 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-                 : 961: Exacting Preparation (331580 effect#4), Exacting Preparation (331580 effect#5), Exacting Preparation (331580 effect#6)
+Labels           : 961: Exacting Preparation (331580 effect#4), Exacting Preparation (331580 effect#5), Exacting Preparation (331580 effect#6)
 Stacks           : 1 maximum
 Proc Chance      : 101%
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -13046,7 +12698,6 @@ School           : Physical
 Spell Type       : None
 Cast Time        : 5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Miscellaneous, Dagger, Spear
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : .....x.x x....... x....... ........   ........ ..x..... ........ ........ 
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -13066,7 +12717,6 @@ Name             : Rune of Hysteria (id=326913) [Spell Family (15), Passive, Hid
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Real PPM         : 3 (Haste multiplier)
 Proc Flags       : ..x.x... ....x... ........ ........ 
@@ -13093,8 +12743,7 @@ Class            : Death Knight
 School           : Physical
 Spell Type       : None
 Duration         : 8 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-                 : 961: Exacting Preparation (331580 effect#4), Exacting Preparation (331580 effect#5), Exacting Preparation (331580 effect#6)
+Labels           : 961: Exacting Preparation (331580 effect#4), Exacting Preparation (331580 effect#5), Exacting Preparation (331580 effect#6)
 Stacks           : 1 maximum
 Proc Chance      : 101%
 Triggered by     : Rune of Hysteria (326913)
@@ -13119,7 +12768,6 @@ School           : Physical
 Spell Type       : None
 Cast Time        : 5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Miscellaneous, Dagger, Spear
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : .....x.x x....... x....... ........   ........ ..x..... ........ ........ 
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -13139,7 +12787,6 @@ Name             : Unending Thirst (id=326982) [Spell Family (15), Passive, Hidd
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Proc Flags       : .x...... ........ ........ ........ 
                  : Killing Blow
@@ -13163,8 +12810,7 @@ Class            : Death Knight
 School           : Physical
 Spell Type       : None
 Duration         : 10 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-                 : 961: Exacting Preparation (331580 effect#4), Exacting Preparation (331580 effect#5), Exacting Preparation (331580 effect#6)
+Labels           : 961: Exacting Preparation (331580 effect#4), Exacting Preparation (331580 effect#5), Exacting Preparation (331580 effect#6)
 Stacks           : 1 maximum
 Proc Chance      : 101%
 Triggered by     : Unending Thirst (326982)
@@ -13192,7 +12838,6 @@ School           : Physical
 Spell Type       : None
 Cast Time        : 5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Miscellaneous, Dagger, Spear
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : .....x.x x....... x....... ........   ........ ..x..... ........ ........ 
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -13216,7 +12861,6 @@ Resource         : 20 Runic Power (6) (id=192766)
 Spell Level      : 54
 GCD              : 1.5 seconds
 Cooldown         : 120 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 124
 Attributes       : ........ ........ ........ .....x..   ........ ........ .x.x.... ........ 
                  : ..x..... ........ ........ .....x..   ........ ........ ....x... ........ 
@@ -13236,7 +12880,6 @@ Class            : Death Knight
 School           : Shadow
 Spell Type       : Magic
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Master of Ghouls (246995 effect#1), 
 Family Flags     : 43, 124
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 

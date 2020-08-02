@@ -1,11 +1,10 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35360 shadowlands-BETA (, no-networking)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35360 shadowlands-BETA (hotfix 2020-08-02/35360, no-networking)
 
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
 Spell Type       : None
 Spell Level      : 20
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Internal Cooldown: 0.5 seconds
 Proc Chance      : 100%
 Proc Flags       : ...x.x.. ........ ........ ........ 
@@ -36,7 +35,6 @@ Range            : 8 - 25 yards
 Cooldown         : 1.5 seconds
 Charges          : 1 (20 seconds cooldown)
 Category         : 1386: Double Time (103827 effect#1), Double Time (103827 effect#2)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 1 seconds
 Affecting spells : Recklessness (1719 effect#6), Warrior (137047 effect#2), Raging Fury (222266 effect#1), Charge (319157 effect#1), Unnerving Focus (337155 effect#3)
 Family Flags     : 0, 8
@@ -83,7 +81,6 @@ Range            : 30 yards
 Duration         : 3 seconds
 Cooldown         : 8 seconds
 Category         : 82
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 8 seconds
 Proc Chance      : 101%
 Mechanic         : Taunt
@@ -134,7 +131,6 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Duration         : 15 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Mechanic         : Bleed
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Single-Minded Fury (81099 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#2), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Sweeping Strikes (260708 effect#1), Deep Wounds (262115 effect#2), Deadly Calm (262228 effect#1), Siegebreaker (280773 effect#1)
 Family Flags     : 5, 8, 9, 52
@@ -164,7 +160,6 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : Two-handed Axe, Two-handed Mace, Polearm, Two-handed Sword, Staff
 Cooldown         : 6 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Overpower (7384 effect#2), Mastery: Unshackled Fury (76856 effect#1), Single-Minded Fury (81099 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Deep Wounds (262115 effect#2), Deadly Calm (262228 effect#1), Siegebreaker (280773 effect#1)
 Family Flags     : 8, 9, 18, 22
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
@@ -189,7 +184,6 @@ Spell Type       : Melee
 Spell Level      : 23
 Duration         : 8 seconds
 Cooldown         : 240 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Bladestorm (46924 effect#3), Neltharion's Fury (203524 effect#4), Bladestorm (222634 effect#3), Bladestorm (227847 effect#3), Shield Wall (316834 effect#1), Stalwart Guardian (334993 effect#2)
 Family Flags     : 13
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... .x...... ........ 
@@ -213,7 +207,6 @@ Spell Level      : 34
 GCD              : 1.5 seconds
 Duration         : 8 seconds
 Cooldown         : 45 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Affecting spells : Recklessness (1719 effect#9), Bladestorm (46924 effect#3), Warrior (137047 effect#2), Morale Killer (199023 effect#2), Booming Voice (202743 effect#1), Neltharion's Fury (203524 effect#4), Bladestorm (222634 effect#3), Bladestorm (227847 effect#3), Demoralizing Shout (316464 effect#1), Unnerving Focus (337155 effect#6)
 Family Flags     : 8, 17, 70
@@ -251,7 +244,6 @@ Spell Type       : Melee
 Spell Level      : 54
 Duration         : 6 seconds
 Cooldown         : 240 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Mechanic         : Taunt
 Affecting spells : Bladestorm (46924 effect#3), Bladestorm (227847 effect#3)
@@ -281,7 +273,6 @@ Spell Level      : 1
 Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Single-Minded Fury (81099 effect#1), Whirlwind (85739 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Item - Warrior T18 Arms 4P Bonus (185804 effect#1), Colossus Smash (208086 effect#1), Weighted Blade (253383 effect#1), Sweeping Strikes (260708 effect#1), Slam (261901 effect#1), Deep Wounds (262115 effect#2), Deadly Calm (262228 effect#1), Crushing Assault (278826 effect#2), Siegebreaker (280773 effect#1), Slam (316534 effect#1)
 Family Flags     : 8, 9, 18, 21, 52
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
@@ -305,7 +296,6 @@ Resource         : 30 Rage (1) (id=135)
 Spell Level      : 9
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Warrior (137047 effect#2), Weighted Blade (253383 effect#1), Deadly Calm (262228 effect#1), Crushing Assault (278826 effect#3), Meat Cleaver (280392 effect#1), Whirlwind (316435 effect#1), Collateral Damage (334783 effect#1)
 Family Flags     : 8, 34, 54
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
@@ -337,7 +327,6 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Duration         : 15 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Hamstring Rage Reduction (22778 effect#1), Improved Hamstring (24428 effect#1), Mastery: Unshackled Fury (76856 effect#1), Single-Minded Fury (81099 effect#1), Whirlwind (85739 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#2), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Sweeping Strikes (260708 effect#1), Deep Wounds (262115 effect#2), Deadly Calm (262228 effect#1), Siegebreaker (280773 effect#1)
 Family Flags     : 1, 8, 9, 52
 Attributes       : ........ ........ x.x..... ........   ...x...x .x...... ........ ........ 
@@ -363,8 +352,7 @@ Spell Level      : 34
 GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 90 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-                 : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
 Affecting spells : Warrior (137047 effect#2), Reckless Abandon (202751 effect#1), Recklessness (316828 effect#1), Depths of Insanity (337162 effect#1)
 Family Flags     : 4, 8
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... ........ ........ 
@@ -421,7 +409,6 @@ Spell Level      : 6
 Cooldown         : 1 seconds
 Charges          : 1 (16 seconds cooldown)
 Category         : 1385: Warrior (137047 effect#4), Shield Block (231847 effect#1), Ararat's Bloodmirrors (248117 effect#1)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Bladestorm (46924 effect#3), Neltharion's Fury (203524 effect#4), Bladestorm (222634 effect#3), Bladestorm (227847 effect#3), Deadly Calm (262228 effect#1)
 Family Flags     : 12
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... ........ ........ 
@@ -442,7 +429,6 @@ School           : Physical
 Spell Type       : Magic
 Spell Level      : 1
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -464,7 +450,6 @@ Spell Level      : 43
 Range            : 25 yards
 Cooldown         : 30 seconds
 Category         : 1865
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 1 seconds
 Affecting spells : Raging Fury (222266 effect#1)
 Family Flags     : 48
@@ -489,7 +474,6 @@ Range            : 8 yards
 GCD              : 1.5 seconds
 Duration         : 8 seconds
 Cooldown         : 90 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Mechanic         : Flee
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
@@ -520,7 +504,6 @@ Class            : Protection Warrior
 School           : Physical
 Spell Type       : None
 Spell Level      : 12
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Internal Cooldown: 3 seconds
 Proc Chance      : 101%
 Real PPM         : 3 (Haste multiplier)
@@ -544,7 +527,6 @@ School           : Physical
 Spell Type       : None
 Spell Level      : 12
 Duration         : 6 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ....x... ....x... ........ ........ 
                  : Yellow Melee, Generic Hostile Spell
@@ -579,7 +561,6 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 6 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Recklessness (1719 effect#7), Warrior (137047 effect#1), Death Sentence (144442 effect#1), Precise Strikes (209493 effect#1), Stone Heart (225947 effect#1), Execute (231827 effect#1), Deadly Calm (262228 effect#1), Execute (316402 effect#1), Execute (316403 effect#1), Execute (316405 effect#1), Ashen Juggernaut (335234 effect#1), Unnerving Focus (337155 effect#4)
 Family Flags     : 8, 18, 29, 59
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
@@ -609,7 +590,6 @@ Spell Level      : 19
 GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 6 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Single-Minded Fury (81099 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Crackling Thunder (203201 effect#1), Kakushan's Stormscale Gauntlets (207844 effect#1), Colossus Smash (208086 effect#1), Deep Wounds (262115 effect#2), Deafening Crash (272824 effect#2), Siegebreaker (280773 effect#1), Unnerving Focus (337155 effect#5), Show of Force (339825 effect#1)
 Family Flags     : 7, 8, 9, 18
@@ -644,7 +624,6 @@ Range            : 8 - 40 yards
 Cooldown         : 0.8 seconds
 Charges          : 1 (45 seconds cooldown)
 Category         : 1211: Bounding Stride (202163 effect#1), Timeless Strategem (208091 effect#1), Leaper (335214 effect#1)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 0.8 seconds
 Affecting spells : Weight of the Earth (208177 effect#1)
 Family Flags     : 61
@@ -673,7 +652,6 @@ Range            : 5 yards
 Duration         : 4 seconds
 Cooldown         : 15 seconds
 Category         : 88
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 15 seconds
 Family Flags     : 3
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
@@ -698,7 +676,6 @@ Spell Level      : 12
 Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapon
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Revenge! (5302 effect#1), Mastery: Unshackled Fury (76856 effect#1), Single-Minded Fury (81099 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Best Served Cold (202560 effect#1), Colossus Smash (208086 effect#1), Deep Wounds (262115 effect#2), Callous Reprisal (278760 effect#2), Siegebreaker (280773 effect#1)
 Family Flags     : 8, 9, 10, 18
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
@@ -724,7 +701,6 @@ Spell Level      : 31
 GCD              : 1.5 seconds
 Duration         : 3600 seconds
 Cooldown         : 15 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Warrior (137047 effect#2)
 Family Flags     : 8, 16, 70
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... .x...... ........ 
@@ -753,7 +729,6 @@ Duration         : 15 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Charges          : 1 (12 seconds cooldown)
 Category         : 1680: Dreadnaught (262150 effect#1)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
@@ -792,7 +767,6 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : Two-handed Axe, Two-handed Mace, Polearm, Two-handed Sword, Staff
 Cooldown         : 6 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Overpower (7384 effect#2), Mastery: Unshackled Fury (76856 effect#1), Single-Minded Fury (81099 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Item - Warrior T17 Arms 4P Bonus (165336 effect#1), Vicious Strike (165638 effect#1), Sharpen Blade (198817 effect#1), Archavon's Heavy Hand (205144 effect#1), Colossus Smash (208086 effect#1), Precise Strikes (209493 effect#1), Sweeping Strikes (260708 effect#1), Mortal Strike (261900 effect#1), Deep Wounds (262115 effect#2), Deadly Calm (262228 effect#1), Siegebreaker (280773 effect#1), Exploiter (335452 effect#1)
 Family Flags     : 8, 9, 18, 25, 52
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
@@ -817,7 +791,6 @@ Spell Level      : 21
 GCD              : 1.5 seconds
 Duration         : 8 seconds
 Cooldown         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Mechanic         : Snare
 Affecting spells : Warrior (137047 effect#2), Disturb the Peace (339948 effect#1)
 Family Flags     : 8, 70, 71
@@ -839,7 +812,6 @@ Class            : Fury Warrior
 School           : Physical
 Spell Type       : None
 Spell Level      : 37
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -861,7 +833,6 @@ Spell Level      : 37
 Duration         : 15 seconds
 Cooldown         : 180 seconds
 Category         : 1251
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 20 seconds
 Affecting spells : Bladestorm (46924 effect#3), Item - Warrior T18 Protection 2P Bonus (185796 effect#1), Neltharion's Fury (203524 effect#4), Bladestorm (222634 effect#3), Bladestorm (227847 effect#3), Bolster (280001 effect#1)
 Family Flags     : 51
@@ -888,7 +859,6 @@ Spell Type       : None
 Spell Level      : 29
 Duration         : 6 seconds
 Cooldown         : 60 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Bladestorm (46924 effect#3), Bladestorm (227847 effect#3)
 Family Flags     : 28
 Attributes       : ....x... ........ x.x..... ........   ........ ..x....x ........ ........ 
@@ -918,7 +888,6 @@ Spell Level      : 14
 Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapon
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 3 maximum
 Proc Chance      : 101%
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Single-Minded Fury (81099 effect#1), Avatar (107574 effect#1), Shield Block (132404 effect#4), Warrior (137047 effect#2), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Deep Wounds (262115 effect#2), Siegebreaker (280773 effect#1)
@@ -988,7 +957,6 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 4.5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Single-Minded Fury (81099 effect#1), Whirlwind (85739 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Vicious Strike (165640 effect#1), Colossus Smash (208086 effect#1), Bloody Rage (242952 effect#1), Bloody Rage (242953 effect#1), Deep Wounds (262115 effect#2), Siegebreaker (280773 effect#1), Bloodthirst (316537 effect#1), Seethe (335091 effect#1), Unnerving Focus (337155 effect#3)
 Family Flags     : 8, 9, 18, 42
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
@@ -1018,7 +986,6 @@ Duration         : 5 seconds
 Cooldown         : 1 seconds
 Charges          : 1 (25 seconds cooldown)
 Category         : 1692: Ararat's Bloodmirrors (248117 effect#2)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : .....x.x .x...x.. .x...... ........ 
@@ -1049,7 +1016,6 @@ Spell Level      : 3
 Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 9 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Single-Minded Fury (81099 effect#1), Whirlwind (85739 effect#1), Avatar (107574 effect#1), Shield Block (132404 effect#2), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Vicious Strike (165642 effect#1), Heavy Repercussions (203177 effect#2), Kakushan's Stormscale Gauntlets (207844 effect#1), Colossus Smash (208086 effect#1), The Walls Fell (215057 effect#2), Sweeping Strikes (260708 effect#1), Deep Wounds (262115 effect#2), Punish (275334 effect#1), Brace for Impact (278124 effect#2), Siegebreaker (280773 effect#1), Shield Slam (316523 effect#1), Shield Slam (316790 effect#1), The Wall (335239 effect#2), Unnerving Focus (337155 effect#3)
 Family Flags     : 8, 9, 18, 41, 52
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
@@ -1118,7 +1084,6 @@ Name             : Sudden Death (id=29725) [Spell Family (4), Passive, Hidden]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Internal Cooldown: 3 seconds
 Proc Chance      : 100%
 Real PPM         : 1.7 (Haste multiplier)
@@ -1141,7 +1106,6 @@ Name             : Second Wind (id=29838) [Spell Family (4), Passive]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
@@ -1163,7 +1127,6 @@ Class            : Warrior
 School           : Physical
 Spell Type       : None
 Spell Level      : 5
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : .x...... ........ ........ ........ 
                  : Killing Blow
@@ -1184,7 +1147,6 @@ Class            : Warrior
 School           : Physical
 Spell Type       : None
 Duration         : 20 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : Victorious State (32215)
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1212,7 +1174,6 @@ Spell Type       : Melee
 Spell Level      : 5
 Range            : 5 yards
 GCD              : 1.5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Single-Minded Fury (81099 effect#1), Whirlwind (85739 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#2), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Sweeping Strikes (260708 effect#1), Deep Wounds (262115 effect#2), Siegebreaker (280773 effect#1)
 Family Flags     : 8, 9, 40, 52
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
@@ -1252,7 +1213,6 @@ Class            : Warrior
 School           : Physical
 Spell Type       : Melee
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Single-Minded Fury (81099 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Weighted Blade (253383 effect#1), Deep Wounds (262115 effect#2), Deadly Calm (262228 effect#1), Meat Cleaver (280392 effect#1), Siegebreaker (280773 effect#1), Collateral Damage (334783 effect#1)
 Triggered by     : Whirlwind (190411)
 Family Flags     : 9, 34
@@ -1274,7 +1234,6 @@ Class            : Fury Warrior
 School           : Physical
 Spell Type       : None
 Spell Level      : 14
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1297,7 +1256,6 @@ GCD              : 1.5 seconds
 Duration         : 4 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 60 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Recklessness (1719 effect#8), Warrior (137047 effect#2), Arms Warrior (137049 effect#4), Fury Warrior (137050 effect#6), Unnerving Focus (337155 effect#5)
 Family Flags     : 8, 46
 Attributes       : ....x... ........ x.x..... .....x..   ....x... .xx....x ........ ........ 
@@ -1335,7 +1293,6 @@ Spell Type       : Melee
 Spell Level      : 21
 GCD              : 1.5 seconds
 Cooldown         : 40 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Single-Minded Fury (81099 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#2), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Deep Wounds (262115 effect#2), Siegebreaker (280773 effect#1), Disturb the Peace (339948 effect#1)
 Family Flags     : 8, 9, 47
@@ -1365,7 +1322,6 @@ School           : Physical
 Spell Type       : Melee
 Spell Level      : 1
 Max Targets      : Unlimited(-1)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Single-Minded Fury (81099 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Deep Wounds (262115 effect#2), Siegebreaker (280773 effect#1), Unnerving Focus (337155 effect#5)
 Triggered by     : Bladestorm (46924), Bladestorm (227847)
 Family Flags     : 9, 46
@@ -1389,7 +1345,6 @@ Class            : Warrior
 School           : Physical
 Spell Type       : Melee
 Range            : 50000 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Single-Minded Fury (81099 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Weight of the Earth (208177 effect#1), Deep Wounds (262115 effect#2), Siegebreaker (280773 effect#1)
 Family Flags     : 9, 61
 Attributes       : ....x... ........ x.x..x.. ........   ........ ........ ........ ........ 
@@ -1434,7 +1389,6 @@ GCD              : 1.5 seconds
 Velocity         : 40 yards/sec
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 6 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Single-Minded Fury (81099 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#2), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Deep Wounds (262115 effect#2), Siegebreaker (280773 effect#1)
 Family Flags     : 8, 9, 14
 Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... ........ ........ 
@@ -1454,7 +1408,6 @@ Name             : Glyph of Gushing Wound (desc=Protection) (id=58099) [Spell Fa
 Class            : Warrior
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1472,7 +1425,6 @@ Name             : Glyph of Mighty Victory (id=58104) [Spell Family (4), Passive
 Class            : Warrior
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1493,7 +1445,6 @@ Class            : Warrior
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1512,7 +1463,6 @@ Class            : Warrior
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1532,7 +1482,6 @@ School           : Physical
 Spell Type       : None
 Range            : 100 yards
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : Shattering Throw (64382)
 Attributes       : ....x... ........ x.x..x.. .....x..   ........ .x...... ........ ........ 
                  : ........ ........ ........ ..x.....   ........ ..x..... ..x..... ......x. 
@@ -1558,7 +1507,6 @@ GCD              : 1.5 seconds
 Velocity         : 50 yards/sec
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 180 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Bladestorm (46924 effect#3), Mastery: Unshackled Fury (76856 effect#1), Single-Minded Fury (81099 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#2), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Bladestorm (222634 effect#3), Deep Wounds (262115 effect#2), Siegebreaker (280773 effect#1)
 Family Flags     : 8, 9, 73
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
@@ -1582,7 +1530,6 @@ Class            : Warrior
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1600,7 +1547,6 @@ Name             : Glyph of Thunder Strike (desc=Arms, Protection) (id=68164) [S
 Class            : Warrior
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ....x... x...x... x....... ........ 
                  : Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
@@ -1709,7 +1655,6 @@ Class            : Fury Warrior
 School           : Physical
 Spell Type       : None
 Spell Level      : 10
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 110
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1737,7 +1682,6 @@ Class            : Protection Warrior
 School           : Physical
 Spell Type       : None
 Spell Level      : 10
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1767,7 +1711,6 @@ School           : Physical
 Spell Type       : None
 Spell Level      : 14
 Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapon, Dagger
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ x....... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1799,7 +1742,6 @@ GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Charges          : 1 (8 seconds cooldown)
 Category         : 1672: Fury Warrior (137050 effect#5), Inner Rage (215573 effect#1), Raging Blow (316453 effect#1)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Recklessness (1719 effect#6), Warrior (137047 effect#2), Unnerving Focus (337155 effect#3)
 Family Flags     : 8, 106
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
@@ -1833,7 +1775,6 @@ Spell Type       : Melee
 Spell Level      : 14
 Range            : 100 yards
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Single-Minded Fury (81099 effect#1), Whirlwind (85739 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Inner Rage (215573 effect#2), Raging Thirst (242300 effect#1), Deep Wounds (262115 effect#2), Siegebreaker (280773 effect#1), Cruelty (335070 effect#1)
 Triggered by     : Raging Blow (85288)
 Family Flags     : 9, 45
@@ -1856,7 +1797,6 @@ Class            : Warrior
 School           : Physical
 Spell Type       : None
 Duration         : 20 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Internal Cooldown: 0.5 seconds
 Stacks           : 2 maximum
 Proc Chance      : 100%
@@ -1888,7 +1828,6 @@ Class            : Arms Warrior
 School           : Physical
 Spell Type       : None
 Spell Level      : 27
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -1907,7 +1846,6 @@ Class            : Fury Warrior
 School           : Physical
 Spell Type       : None
 Spell Level      : 27
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -1926,7 +1864,6 @@ Class            : Protection Warrior
 School           : Physical
 Spell Type       : None
 Spell Level      : 27
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -1945,7 +1882,6 @@ Class            : Warrior
 School           : Physical
 Spell Type       : None
 Spell Level      : 1
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2006,7 +1942,6 @@ Spell Type       : Melee
 Spell Level      : 1
 Max Targets      : Unlimited(-1)
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Single-Minded Fury (81099 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Deep Wounds (262115 effect#2), Siegebreaker (280773 effect#1), Unnerving Focus (337155 effect#5)
 Triggered by     : Bladestorm (50622)
 Family Flags     : 9, 46
@@ -2030,7 +1965,6 @@ Spell Type       : Melee
 Spell Level      : 14
 Range            : 100 yards
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Single-Minded Fury (81099 effect#1), Whirlwind (85739 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Inner Rage (215573 effect#2), Raging Thirst (242300 effect#1), Deep Wounds (262115 effect#2), Siegebreaker (280773 effect#1), Cruelty (335070 effect#1)
 Triggered by     : Raging Blow (85288)
 Family Flags     : 9, 45
@@ -2055,7 +1989,6 @@ Spell Type       : None
 Spell Level      : 41
 GCD              : 1.5 seconds
 Cooldown         : 180 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Bladestorm (46924 effect#3), Warrior (137047 effect#2), Bladestorm (227847 effect#3), Moment of Glory (280209 effect#2), Rallying Cry (316825 effect#1), Inspiring Presence (335034 effect#1), 
 Family Flags     : 8, 67, 68
 Attributes       : ....x... ........ x.x..... ........   ........ ........ .x...... ........ 
@@ -2076,7 +2009,6 @@ School           : Physical
 Spell Type       : None
 Range            : 100 yards
 Duration         : 10 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Bladestorm (46924 effect#3), Bladestorm (227847 effect#3), Moment of Glory (280209 effect#2), Inspiring Presence (335034 effect#1)
 Family Flags     : 68, 70
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -2099,7 +2031,6 @@ Class            : Warrior
 School           : Physical
 Spell Type       : None
 Spell Level      : 1
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2122,7 +2053,6 @@ Class            : Warrior
 School           : Physical
 Spell Type       : None
 Spell Level      : 1
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2142,7 +2072,6 @@ School           : Physical
 Spell Type       : Magic
 Range            : 50000 yards
 Duration         : 1 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Mechanic         : Root
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
@@ -2167,7 +2096,6 @@ GCD              : 1.5 seconds
 Velocity         : 40 yards/sec
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Single-Minded Fury (81099 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#2), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Deep Wounds (262115 effect#2), Siegebreaker (280773 effect#1)
 Family Flags     : 8, 9
 Attributes       : ....x... ........ ..x..x.. ........   ........ .x...... ........ ........ 
@@ -2194,8 +2122,7 @@ Spell Level      : 26
 GCD              : 1.5 seconds
 Duration         : 20 seconds
 Cooldown         : 90 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-                 : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
                  : 771: Strive for Perfection (296320 effect#9)
 Affecting spells : Recklessness (1719 effect#9), Warrior (137047 effect#2), Unstoppable Force (275336 effect#1), Avatar (316438 effect#1), Unnerving Focus (337155 effect#6)
 Family Flags     : 8, 32
@@ -2241,7 +2168,6 @@ Class            : Warrior
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2260,7 +2186,6 @@ Class            : Warrior
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2281,7 +2206,6 @@ Spell Type       : Melee
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 6 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Mechanic         : Bleed
 Attributes       : ....x... ........ ..x..x.. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ..x..... ..x..... ..x...x. 
@@ -2303,7 +2227,6 @@ School           : Physical
 Spell Type       : Melee
 Range            : 100 yards
 Duration         : 15 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Mechanic         : Bleed
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Single-Minded Fury (81099 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Deep Wounds (262115 effect#2), Siegebreaker (280773 effect#1)
 Triggered by     : Deep Wounds (115768)
@@ -2327,7 +2250,6 @@ Class            : Protection Warrior
 School           : Physical
 Spell Type       : None
 Spell Level      : 42
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
@@ -2371,7 +2293,6 @@ Class            : Warrior
 School           : Holy
 Spell Type       : None
 Spell Level      : 1
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : Glyph of Thunder Strike (68164)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2388,7 +2309,6 @@ Name             : Glyph of Hawk Feast (id=115943) [Spell Family (4), Passive, H
 Class            : Warrior
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ....x... ...x.... ........ ........ 
                  : Yellow Melee, Generic Heal Taken
@@ -2410,7 +2330,6 @@ Class            : Warrior
 School           : Physical
 Spell Type       : None
 Range            : 5 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : Glyph of Hawk Feast (115943)
 Attributes       : .......x x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2428,7 +2347,6 @@ Name             : Glyph of Burning Anger (desc=Fury, Protection) (id=115946) [S
 Class            : Warrior
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ........ ...x...x ........ ........ 
                  : Generic Heal Taken, Magic Heal Taken
@@ -2451,7 +2369,6 @@ School           : Physical
 Spell Type       : None
 Range            : 100 yards
 Duration         : 5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : Glyph of Burning Anger (115946)
 Attributes       : .......x x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2470,7 +2387,6 @@ Class            : Warrior
 School           : Physical
 Spell Type       : None
 Spell Level      : 1
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Enraged Regeneration (184364 effect#2), Furious Charge (202225 effect#1)
 Family Flags     : 80
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -2493,7 +2409,6 @@ Spell Type       : Melee
 Spell Level      : 1
 GCD              : 1.5 seconds
 Cooldown         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Bladestorm (46924 effect#3), Mastery: Unshackled Fury (76856 effect#1), Single-Minded Fury (81099 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#2), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Neltharion's Fury (203524 effect#4), Colossus Smash (208086 effect#1), Bladestorm (222634 effect#3), Deep Wounds (262115 effect#2), Siegebreaker (280773 effect#1), Unnerving Focus (337155 effect#3)
 Family Flags     : 8, 9, 49
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
@@ -2520,7 +2435,6 @@ Spell Level      : 23
 Duration         : 8 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 180 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Bladestorm (46924 effect#3), Bladestorm (227847 effect#3), Die by the Sword (315948 effect#1), Stalwart Guardian (334993 effect#1)
 Family Flags     : 97
 Attributes       : ....x... ........ x.x..... ........   ....x... ..x..... ........ ........ 
@@ -2549,7 +2463,6 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Duration         : 6 seconds
 Cooldown         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Affecting spells : Glyph of Mighty Victory (58104 effect#1), Protection Warrior (137048 effect#9), Victory Rush (319158 effect#1)
 Family Flags     : 81
@@ -2572,7 +2485,6 @@ Name             : Glyph of the Blazing Trail (id=123779) [Spell Family (4), Pas
 Class            : Warrior
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2591,7 +2503,6 @@ Class            : Warrior
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2610,7 +2521,6 @@ Class            : Warrior
 School           : Physical
 Spell Type       : None
 Spell Level      : 1
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2630,7 +2540,6 @@ School           : Physical
 Spell Type       : Melee
 Spell Level      : 10
 Range            : 50000 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Single-Minded Fury (81099 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Deep Wounds (262115 effect#2), Siegebreaker (280773 effect#1)
 Family Flags     : 9, 74
 Attributes       : ....x... ........ x....... ........   ........ ........ ........ ........ 
@@ -2653,7 +2562,6 @@ Spell Type       : None
 Spell Level      : 22
 Range            : 50000 yards
 Duration         : 2 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Attributes       : ....x... ........ ..x..x.. ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ..x..... ......x. 
@@ -2678,7 +2586,6 @@ Range            : 30 yards
 Velocity         : 25 yards/sec
 Duration         : 4 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Mechanic         : Stun
 Attributes       : ....x... ........ ..x..x.. ........   ........ .x...... ........ ........ 
                  : ..x..... ........ ........ ........   ........ ..x..... ..x..... ........ 
@@ -2700,8 +2607,7 @@ School           : Physical
 Spell Type       : None
 Spell Level      : 4
 Duration         : 6 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-                 : 824: Will to Survive (312922 effect#1)
+Labels           : 824: Will to Survive (312922 effect#1)
 Affecting spells : Shield Mastery (184927 effect#1)
 Family Flags     : 83
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... ........ ........ 
@@ -2731,7 +2637,6 @@ Name             : Warrior (id=137047) [Spell Family (4), Passive, Hidden]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Internal Cooldown: 0.75 seconds
 Proc Chance      : 100%
 Proc Flags       : ...x.x.. ........ ........ ........ 
@@ -2795,7 +2700,6 @@ Name             : Protection Warrior (id=137048) [Spell Family (4), Passive, Hi
 Class            : Protection Warrior, Death Knight
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2849,7 +2753,6 @@ Name             : Arms Warrior (id=137049) [Spell Family (4), Passive, Hidden]
 Class            : Arms Warrior, Death Knight
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ..x..... ........ ........ ........ 
                  : White Melee
@@ -2901,7 +2804,6 @@ Name             : Fury Warrior (id=137050) [Spell Family (4), Passive, Hidden]
 Class            : Fury Warrior, Death Knight
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2984,7 +2886,6 @@ Name             : Glyph of the Weaponmaster (id=146974) [Spell Family (4), Pass
 Class            : Warrior
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3003,7 +2904,6 @@ Class            : Warrior
 School           : Physical
 Spell Type       : None
 Duration         : 600 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3028,7 +2928,6 @@ Spell Type       : None
 Spell Level      : 1
 Range            : 25 yards
 Duration         : 6 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...... ........ ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken
@@ -3052,7 +2951,6 @@ Class            : Warrior
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3077,8 +2975,7 @@ Velocity         : 30 yards/sec
 Duration         : 12 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 45 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-                 : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
 Affecting spells : Warrior (137047 effect#2)
 Family Flags     : 8, 107
 Attributes       : ....x... ........ ........ .......x   ........ ........ ........ ....x... 
@@ -3106,7 +3003,6 @@ Name             : Anger Management (id=152278) [Spell Family (4), Passive]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ....x... x.x.x.x. x....... ........ 
                  : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
@@ -3150,7 +3046,6 @@ Class            : Warrior, Death Knight
 School           : Physical
 Spell Type       : Melee
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Single-Minded Fury (81099 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Deep Wounds (262115 effect#2), Siegebreaker (280773 effect#1)
 Family Flags     : 9, 107
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3173,7 +3068,6 @@ Class            : Protection Warrior
 School           : Physical
 Spell Type       : None
 Spell Level      : 42
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3192,7 +3086,6 @@ Class            : Arms Fury Retribution Frost Unholy Warrior, Paladin, Death Kn
 Race             : Dark Iron Dwarf (0x800)
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3215,7 +3108,6 @@ Class            : Protection Protection Blood Warrior, Paladin, Death Knight
 Race             : Dark Iron Dwarf (0x800)
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3239,7 +3131,6 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 6 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Recklessness (1719 effect#7), Warrior (137047 effect#1), Death Sentence (144442 effect#1), Precise Strikes (209493 effect#1), Stone Heart (225947 effect#1), Execute (231827 effect#1), Deadly Calm (262228 effect#1), Execute (316402 effect#1), Execute (316403 effect#1), Execute (316405 effect#1), Ashen Juggernaut (335234 effect#1), Unnerving Focus (337155 effect#4)
 Family Flags     : 8, 18, 29, 59
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
@@ -3268,7 +3159,6 @@ Spell Level      : 7
 Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Single-Minded Fury (81099 effect#1), Whirlwind (85739 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Death Sentence (144442 effect#1), Colossus Smash (208086 effect#1), Precise Strikes (209493 effect#1), Stone Heart (225947 effect#1), Execute (231827 effect#1), Deep Wounds (262115 effect#2), Deadly Calm (262228 effect#1), Siegebreaker (280773 effect#1), Ashen Juggernaut (335234 effect#1)
 Triggered by     : Execute (5308)
 Family Flags     : 9, 29, 115
@@ -3294,7 +3184,6 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 90 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Single-Minded Fury (81099 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#2), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Sweeping Strikes (260708 effect#1), Deep Wounds (262115 effect#2), Deadly Calm (262228 effect#1), Lord of War (278752 effect#2), Siegebreaker (280773 effect#1), Colossus Smash (316411 effect#1)
 Family Flags     : 8, 9, 52, 62
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
@@ -3315,7 +3204,6 @@ Class            : Fury Warrior
 School           : Physical
 Spell Type       : None
 Spell Level      : 10
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
@@ -3345,7 +3233,6 @@ School           : Physical
 Spell Type       : Melee
 Spell Level      : 1
 Duration         : 4 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Mechanic         : Enrage
 Affecting spells : Warpaint (208154 effect#1), Item - Warrior T19 Fury 4P Bonus (212158 effect#1)
 Triggered by     : Item - Warrior T17 Fury 2P Bonus (165337), Trial by Combat (218826)
@@ -3378,7 +3265,6 @@ Spell Type       : None
 Spell Level      : 23
 Duration         : 8 seconds
 Cooldown         : 180 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Bladestorm (46924 effect#3), Bladestorm (227847 effect#3), Enraged Regeneration (316474 effect#1), Stalwart Guardian (334993 effect#1)
 Family Flags     : 11, 64
 Attributes       : ....x... ........ x.x..... ........   ........ .......x x....... ........ 
@@ -3408,7 +3294,6 @@ Spell Level      : 19
 Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Warrior (137047 effect#2), Unstoppable (200853 effect#1), Simmering Rage (278757 effect#2), Unbridled Ferocity (288056 effect#2), Rampage (316519 effect#1), Bloodthirst (316537 effect#1)
 Family Flags     : 8, 108, 123
 Attributes       : ........ ........ ..x..... ........   ........ .xx..... ........ ........ 
@@ -3440,7 +3325,6 @@ Spell Type       : Melee
 Spell Level      : 1
 Range            : 8 yards
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Single-Minded Fury (81099 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Unstoppable (200853 effect#1), Colossus Smash (208086 effect#1), Deep Wounds (262115 effect#2), Simmering Rage (278757 effect#2), Siegebreaker (280773 effect#1), Unbridled Ferocity (288056 effect#2), Rampage (316519 effect#1), Bloodthirst (316537 effect#1)
 Triggered by     : Rampage (184367)
@@ -3465,7 +3349,6 @@ Spell Type       : Melee
 Spell Level      : 1
 Range            : 8 yards
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Single-Minded Fury (81099 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Unstoppable (200853 effect#1), Colossus Smash (208086 effect#1), Deep Wounds (262115 effect#2), Simmering Rage (278757 effect#2), Siegebreaker (280773 effect#1), Unbridled Ferocity (288056 effect#2), Rampage (316519 effect#1), Bloodthirst (316537 effect#1)
 Triggered by     : Rampage (184367)
@@ -3488,7 +3371,6 @@ Class            : Arms Warrior
 School           : Physical
 Spell Type       : None
 Spell Level      : 32
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ....x... x.x.x.x. x....... ........ 
                  : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
@@ -3532,7 +3414,6 @@ Spell Level      : 9
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Category         : 891
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Recklessness (1719 effect#5), Warrior (137047 effect#2), Crushing Assault (278826 effect#3), Whirlwind (316435 effect#1), Unnerving Focus (337155 effect#2), 
 Family Flags     : 8, 54, 55
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
@@ -3581,7 +3462,6 @@ Resource         : 40 Rage (1) (id=192743) w/ Initial Warrior (id=325446)
 Spell Level      : 17
 Duration         : 12 seconds
 Cooldown         : 12 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Bladestorm (46924 effect#3), Shield Mastery (184927 effect#2), Neltharion's Fury (203524 effect#4), Bladestorm (227847 effect#3), Deadly Calm (262228 effect#1), Bloodsport (279172 effect#3), Ignore Pain (316778 effect#1)
 Family Flags     : 11, 109
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
@@ -3625,7 +3505,6 @@ Spell Type       : None
 Duration         : Aura (infinite)
 Cooldown         : 6 seconds
 Category         : 1618
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 6 seconds
 Proc Chance      : 101%
 Affecting spells : Bladestorm (46924 effect#3), Bladestorm (227847 effect#3)
@@ -3658,7 +3537,6 @@ Range            : 8 - 25 yards
 Cooldown         : 1.5 seconds
 Charges          : 1 (20 seconds cooldown)
 Category         : 1386: Double Time (103827 effect#1), Double Time (103827 effect#2)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Raging Fury (222266 effect#1)
 Family Flags     : 48
 Attributes       : ....x... ........ ........ .....x..   ........ ..x..... ........ ........ 
@@ -3685,7 +3563,6 @@ Name             : Morale Killer (desc=PvP Talent) (id=199023) [Spell Family (4)
 Class            : Warrior
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3710,7 +3587,6 @@ Spell Type       : Melee
 Spell Level      : 1
 Range            : 50000 yards
 Duration         : 1 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Mechanic         : Root
 Attributes       : ....x... ........ x.x..x.. ........   ...x...x .x...... ........ ........ 
@@ -3731,7 +3607,6 @@ Name             : Thunderstruck (desc=PvP Talent) (id=199045) [Spell Family (3)
 Class            : Warrior, Warlock
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3750,7 +3625,6 @@ Class            : Warrior
 School           : Physical
 Spell Type       : Melee
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Single-Minded Fury (81099 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Weighted Blade (253383 effect#1), Deep Wounds (262115 effect#2), Deadly Calm (262228 effect#1), Meat Cleaver (280392 effect#1), Siegebreaker (280773 effect#1), Collateral Damage (334783 effect#1)
 Triggered by     : Whirlwind (1680)
 Family Flags     : 9, 34, 35
@@ -3772,7 +3646,6 @@ Class            : Warrior
 School           : Physical
 Spell Type       : Melee
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Single-Minded Fury (81099 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Weighted Blade (253383 effect#1), Deep Wounds (262115 effect#2), Deadly Calm (262228 effect#1), Meat Cleaver (280392 effect#1), Siegebreaker (280773 effect#1), Collateral Damage (334783 effect#1)
 Triggered by     : Whirlwind (190411)
 Family Flags     : 9, 34
@@ -3794,7 +3667,6 @@ Class            : Warrior
 School           : Physical
 Spell Type       : Melee
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Single-Minded Fury (81099 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Weighted Blade (253383 effect#1), Deep Wounds (262115 effect#2), Deadly Calm (262228 effect#1), Meat Cleaver (280392 effect#1), Siegebreaker (280773 effect#1), Collateral Damage (334783 effect#1)
 Triggered by     : Whirlwind (1680)
 Family Flags     : 9, 34
@@ -3817,7 +3689,6 @@ School           : Physical
 Spell Type       : Melee
 Spell Level      : 1 (max 80)
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Single-Minded Fury (81099 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Weighted Blade (253383 effect#1), Deep Wounds (262115 effect#2), Deadly Calm (262228 effect#1), Meat Cleaver (280392 effect#1), Siegebreaker (280773 effect#1), Collateral Damage (334783 effect#1)
 Triggered by     : Whirlwind (190411)
 Family Flags     : 9, 34
@@ -3840,7 +3711,6 @@ School           : Physical
 Spell Type       : Melee
 Spell Level      : 1 (max 80)
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Single-Minded Fury (81099 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Weighted Blade (253383 effect#1), Deep Wounds (262115 effect#2), Deadly Calm (262228 effect#1), Meat Cleaver (280392 effect#1), Siegebreaker (280773 effect#1), Collateral Damage (334783 effect#1)
 Triggered by     : Whirlwind (190411)
 Family Flags     : 9, 34
@@ -3887,7 +3757,6 @@ Spell Type       : Melee
 Spell Level      : 1
 Range            : 8 yards
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Single-Minded Fury (81099 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Unstoppable (200853 effect#1), Colossus Smash (208086 effect#1), Deep Wounds (262115 effect#2), Simmering Rage (278757 effect#2), Siegebreaker (280773 effect#1), Unbridled Ferocity (288056 effect#2), Rampage (316519 effect#1), Bloodthirst (316537 effect#1)
 Triggered by     : Rampage (184367)
@@ -3912,7 +3781,6 @@ Spell Type       : Melee
 Spell Level      : 1
 Range            : 8 yards
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Single-Minded Fury (81099 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Unstoppable (200853 effect#1), Colossus Smash (208086 effect#1), Deep Wounds (262115 effect#2), Simmering Rage (278757 effect#2), Siegebreaker (280773 effect#1), Unbridled Ferocity (288056 effect#2), Rampage (316519 effect#1), Bloodthirst (316537 effect#1)
 Triggered by     : Rampage (184367)
@@ -3934,7 +3802,6 @@ Name             : Indomitable (id=202095) [Spell Family (4), Passive]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ....x... x.x.x.x. x....... ........ 
                  : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
@@ -3959,7 +3826,6 @@ Name             : Second Wind (id=202147) [Spell Family (4), Passive]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ x....... ........ 
                  : ........ .......x .......x ........   ........ ........ ........ ........ 
@@ -3978,7 +3844,6 @@ Class            : Warrior
 School           : Physical
 Spell Type       : None
 Duration         : 5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ x....... ........ x..x....   .....x.. ..x..... ........ ....x... 
                  : ........ ......x. ...x.... ....x...   ........ ........ ........ ........ 
                  : .......x ........ ........ ........   ...x.... ........ .xx..... ........ 
@@ -3996,7 +3861,6 @@ Name             : Bounding Stride (id=202163) [Spell Family (4), Passive, Hidde
 Class            : Warrior
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4016,7 +3880,6 @@ Class            : Warrior
 School           : Physical
 Spell Type       : None
 Duration         : 3 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4034,7 +3897,6 @@ Name             : Impending Victory (id=202166) [Spell Family (4)]
 Class            : Warrior
 School           : Physical
 Spell Type       : Melee
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Victorious (32216 effect#2)
 Family Flags     : 118
 Attributes       : ....x... ........ x.x..... ........   ........ .xx..... ........ ...xx... 
@@ -4059,7 +3921,6 @@ Resource         : 10 Rage (1) (id=10852)
 Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Victorious (32216 effect#1), Mastery: Unshackled Fury (76856 effect#1), Single-Minded Fury (81099 effect#1), Whirlwind (85739 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#2), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Sweeping Strikes (260708 effect#1), Deep Wounds (262115 effect#2), Deadly Calm (262228 effect#1), Siegebreaker (280773 effect#1)
 Family Flags     : 8, 9, 52, 72
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
@@ -4080,7 +3941,6 @@ Name             : Furious Charge (id=202224) [Spell Family (4), Passive, Hidden
 Class            : Warrior
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4099,7 +3959,6 @@ Class            : Warrior
 School           : Physical
 Spell Type       : None
 Duration         : 5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ....x... ..x...x. ........ ........ 
@@ -4123,7 +3982,6 @@ Name             : Fervor of Battle (id=202316) [Spell Family (4), Passive, Hidd
 Class            : Warrior
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4141,7 +3999,6 @@ Name             : Best Served Cold (id=202560) [Spell Family (4), Passive, Hidd
 Class            : Warrior
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Revenge! (5302 effect#2)
 Family Flags     : 66
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -4163,7 +4020,6 @@ Name             : Never Surrender (id=202561) [Spell Family (4), Passive, Hidde
 Class            : Warrior
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ...x.... ........   ........ ........ ........ ........ 
@@ -4184,7 +4040,6 @@ Class            : Warrior
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 5 maximum
 Proc Chance      : 101%
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
@@ -4204,7 +4059,6 @@ Name             : Into the Fray (id=202603) [Spell Family (4), Passive, Hidden]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4222,7 +4076,6 @@ Name             : Booming Voice (id=202743) [Spell Family (4), Passive, Hidden]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4251,7 +4104,6 @@ Name             : Reckless Abandon (id=202751) [Spell Family (4), Passive, Hidd
 Class            : Warrior
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ........ ..x..... ........ ........ 
                  : Generic Heal
@@ -4276,7 +4128,6 @@ Name             : Heavy Repercussions (id=203177) [Spell Family (4), Passive, H
 Class            : Warrior
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4298,7 +4149,6 @@ Name             : Crackling Thunder (id=203201) [Spell Family (4), Passive, Hid
 Class            : Warrior
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4443,7 +4293,6 @@ Name             : Massacre (id=206315) [Spell Family (4), Passive, Hidden]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4471,7 +4320,6 @@ Spell Level      : 1
 Range            : 50000 yards
 Duration         : 10 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Affecting spells : Deadly Calm (262228 effect#1), Lord of War (278752 effect#2), Colossus Smash (316411 effect#1)
 Family Flags     : 62
@@ -4497,7 +4345,6 @@ Name             : Warpaint (id=208154) [Spell Family (4), Passive, Hidden]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4607,7 +4454,6 @@ Class            : Fury Warrior
 School           : Physical
 Spell Type       : None
 Spell Level      : 19
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
@@ -4633,7 +4479,6 @@ Class            : Warrior
 School           : Physical
 Spell Type       : None
 Duration         : 6 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : Rampage! (209694), Rampage! (210972)
 Attributes       : .......x ........ ..x..... .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4669,7 +4514,6 @@ Name             : Rampage! (id=210972) [Spell Family (4), Hidden]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : Rampage! (209694)
 Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4689,7 +4533,6 @@ School           : Physical
 Spell Type       : None
 Duration         : 3 seconds
 Cooldown         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : .....x.x .x...x.. .x...... ........ 
                  : Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken
@@ -4718,7 +4561,6 @@ Spell Level      : 1
 Range            : 20 yards
 Duration         : 6 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Mechanic         : Bleed
 Attributes       : ........ ........ x.x..... ........   ........ ........ .x...... ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ......x. 
@@ -4738,7 +4580,6 @@ Name             : Trauma (id=215538) [Spell Family (4), Passive]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
@@ -4759,7 +4600,6 @@ Name             : Fresh Meat (id=215568) [Spell Family (4), Passive]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4779,7 +4619,6 @@ Name             : Frothing Berserker (id=215571) [Spell Family (4), Passive]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Internal Cooldown: 0.5 seconds
 Proc Chance      : 20%
 Proc Flags       : ....x... ........ ........ ........ 
@@ -4801,7 +4640,6 @@ Name             : Frothing Berserker (id=215572) [Spell Family (4)]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4818,7 +4656,6 @@ Name             : Inner Rage (id=215573) [Spell Family (4), Passive, Hidden]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4990,8 +4827,7 @@ GCD              : 1.5 seconds
 Duration         : 6 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 90 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-                 : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
 Affecting spells : Recklessness (1719 effect#8), Warrior (137047 effect#2), Arms Warrior (137049 effect#4), Fury Warrior (137050 effect#6), Unnerving Focus (337155 effect#5)
 Family Flags     : 8, 46
 Attributes       : ....x... ........ x.x..... .....x..   ....x... .xx....x ........ ........ 
@@ -5027,7 +4863,6 @@ Velocity         : 30 yards/sec
 Duration         : 12 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 45 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Warrior (137047 effect#2)
 Family Flags     : 8, 107
 Attributes       : ....x... ........ ........ .......x   ........ ........ ........ ....x... 
@@ -5056,7 +4891,6 @@ Class            : Fury Warrior
 School           : Physical
 Spell Type       : None
 Spell Level      : 58
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5077,7 +4911,6 @@ Class            : Arms Protection Warrior
 School           : Physical
 Spell Type       : None
 Spell Level      : 18
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5096,7 +4929,6 @@ Class            : Protection Warrior
 School           : Physical
 Spell Type       : None
 Spell Level      : 28
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5115,7 +4947,6 @@ Class            : Fury Warrior
 School           : Physical
 Spell Type       : None
 Spell Level      : 10
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -5134,7 +4965,6 @@ Class            : Warrior
 School           : Physical
 Spell Type       : None
 Spell Level      : 22
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5154,7 +4984,6 @@ Replaces         : Devastate (id=20243)
 Class            : Warrior
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ..x..... ........ ........ ........ 
                  : White Melee
@@ -5179,7 +5008,6 @@ Class            : Warrior
 School           : Physical
 Spell Type       : Melee
 Range            : 5 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 3 maximum
 Proc Chance      : 101%
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Single-Minded Fury (81099 effect#1), Avatar (107574 effect#1), Shield Block (132404 effect#4), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Deep Wounds (262115 effect#2), Siegebreaker (280773 effect#1)
@@ -5206,7 +5034,6 @@ Spell Type       : Melee
 Spell Level      : 1
 Range            : 50000 yards
 Duration         : 2.5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Mechanic         : Stun
 Family Flags     : 24
@@ -5296,7 +5123,6 @@ Name             : Ravager (id=248439) [Spell Family (4)]
 Class            : Warrior, Death Knight
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Recklessness (1719 effect#5), Unnerving Focus (337155 effect#2)
 Family Flags     : 76
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
@@ -5317,7 +5143,6 @@ Class            : Warrior
 School           : Physical
 Spell Type       : None
 Spell Level      : 1
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -5341,7 +5166,6 @@ School           : Physical
 Spell Type       : None
 Spell Level      : 1
 Duration         : 10 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5527,7 +5351,6 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 21 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Single-Minded Fury (81099 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Sweeping Strikes (260708 effect#1), Deep Wounds (262115 effect#2), Siegebreaker (280773 effect#1), Unnerving Focus (337155 effect#3)
 Family Flags     : 8, 9, 18, 26, 52
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
@@ -5555,7 +5378,6 @@ Spell Level      : 22
 GCD              : 1.5 seconds
 Duration         : 12 seconds
 Cooldown         : 45 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Warrior (137047 effect#2), Sweeping Strikes (316432 effect#1), Sweeping Strikes (316433 effect#1)
 Family Flags     : 8, 63
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
@@ -5584,7 +5406,6 @@ Spell Type       : Melee
 Spell Level      : 1
 Range            : 5 yards
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Single-Minded Fury (81099 effect#1), Whirlwind (85739 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Death Sentence (144442 effect#1), Colossus Smash (208086 effect#1), Precise Strikes (209493 effect#1), Stone Heart (225947 effect#1), Execute (231827 effect#1), Sweeping Strikes (260708 effect#1), Deep Wounds (262115 effect#2), Deadly Calm (262228 effect#1), Siegebreaker (280773 effect#1), Ashen Juggernaut (335234 effect#1)
 Triggered by     : Execute (163201)
 Family Flags     : 9, 29, 52, 116
@@ -5625,7 +5446,6 @@ Class            : Arms Warrior
 School           : Physical
 Spell Type       : None
 Spell Level      : 44
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5646,7 +5466,6 @@ Class            : Arms Warrior
 School           : Physical
 Spell Type       : None
 Spell Level      : 20
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5667,7 +5486,6 @@ Class            : Arms Warrior
 School           : Physical
 Spell Type       : None
 Spell Level      : 10
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
@@ -5699,7 +5517,6 @@ Spell Type       : Melee
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 12 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Mechanic         : Bleed
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Single-Minded Fury (81099 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Mastery: Deep Wounds (262111 effect#1), Siegebreaker (280773 effect#1)
 Triggered by     : Mastery: Deep Wounds (262111)
@@ -5728,7 +5545,6 @@ Name             : Dreadnaught (id=262150) [Spell Family (4), Passive, Hidden]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -5750,7 +5566,6 @@ School           : Physical
 Spell Type       : Melee
 GCD              : 1.5 seconds
 Cooldown         : 45 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Single-Minded Fury (81099 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#2), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Deep Wounds (262115 effect#2), Lord of War (278752 effect#2), Siegebreaker (280773 effect#1)
 Family Flags     : 8, 9, 23
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
@@ -5772,7 +5587,6 @@ School           : Physical
 Spell Type       : None
 Duration         : 20 seconds
 Cooldown         : 60 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Internal Cooldown: 0.5 seconds
 Stacks           : 4 initial, 4 maximum
 Proc Chance      : 100%
@@ -5805,7 +5619,6 @@ Name             : War Machine (id=262231) [Spell Family (4), Passive]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -5829,7 +5642,6 @@ Class            : Warrior
 School           : Physical
 Spell Type       : Melee
 Duration         : 8 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Recklessness (1719 effect#5), Unnerving Focus (337155 effect#2)
 Triggered by     : War Machine (262231), War Machine (316733)
 Family Flags     : 39
@@ -6630,7 +6442,6 @@ Name             : Punish (id=275334) [Spell Family (4), Passive, Hidden]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
@@ -6657,7 +6468,6 @@ School           : Physical
 Spell Type       : None
 Range            : 100 yards
 Duration         : 9 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 5 maximum
 Proc Chance      : 101%
 Triggered by     : Punish (275334)
@@ -6678,7 +6488,6 @@ Name             : Unstoppable Force (id=275336) [Spell Family (4), Passive, Hid
 Class            : Warrior
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -6702,7 +6511,6 @@ Name             : Menace (id=275338) [Spell Family (4), Passive, Hidden]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -6720,7 +6528,6 @@ Name             : Rumbling Earth (id=275339) [Spell Family (4), Passive]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -7081,7 +6888,6 @@ Class            : Arms Warrior
 School           : Physical
 Spell Type       : None
 Spell Level      : 26
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.x. ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7137,7 +6943,6 @@ Name             : Bolster (id=280001) [Spell Family (4), Passive, Hidden]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7414,7 +7219,6 @@ Name             : Meat Cleaver (id=280392) [Spell Family (4), Passive, Hidden]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -7844,7 +7648,6 @@ Name             : Sudden Death (id=280721) [Spell Family (4), Passive, Hidden]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Internal Cooldown: 3 seconds
 Proc Chance      : 100%
 Real PPM         : 1.7 (Haste multiplier)
@@ -7871,7 +7674,6 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Single-Minded Fury (81099 effect#1), Whirlwind (85739 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#2), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Deep Wounds (262115 effect#2), Siegebreaker (280773 effect#1), Unnerving Focus (337155 effect#3)
 Family Flags     : 8, 9, 53
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
@@ -7898,7 +7700,6 @@ Spell Type       : Melee
 Range            : 50000 yards
 Duration         : 10 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   .......x ..x..... x.x..... ......x. 
@@ -7925,7 +7726,6 @@ Spell Type       : Melee
 Spell Level      : 8
 Range            : 5 yards
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Single-Minded Fury (81099 effect#1), Whirlwind (85739 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#2), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Death Sentence (144442 effect#1), Colossus Smash (208086 effect#1), Precise Strikes (209493 effect#1), Stone Heart (225947 effect#1), Execute (231827 effect#1), Deep Wounds (262115 effect#2), Deadly Calm (262228 effect#1), Siegebreaker (280773 effect#1), Ashen Juggernaut (335234 effect#1)
 Triggered by     : Execute (5308)
 Family Flags     : 8, 9, 29, 116
@@ -7946,7 +7746,6 @@ Name             : Massacre (id=281001) [Spell Family (4), Passive, Hidden]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -8447,7 +8246,6 @@ Range            : 25 yards
 GCD              : 1.5 seconds
 Velocity         : 0.4 yards/sec
 Cooldown         : 60 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Warrior (137047 effect#2)
 Family Flags     : 8
 Attributes       : ....x... ........ x....... ........   ........ .x...... ........ ........ 
@@ -8520,7 +8318,6 @@ Name             : Deadly Calm (id=314522) [Spell Family (4), Passive, Hidden]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8542,7 +8339,6 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 12 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Single-Minded Fury (81099 effect#1), Whirlwind (85739 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Deep Wounds (262115 effect#2), Siegebreaker (280773 effect#1), Unnerving Focus (337155 effect#3)
 Family Flags     : 8, 9, 18, 20
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
@@ -8567,7 +8363,6 @@ Class            : Arms Warrior
 School           : Physical
 Spell Type       : None
 Spell Level      : 52
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8588,7 +8383,6 @@ Class            : Warrior
 School           : Physical
 Spell Type       : Melee
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Single-Minded Fury (81099 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Deep Wounds (262115 effect#2), Siegebreaker (280773 effect#1)
 Family Flags     : 9
 Attributes       : ........ ........ .....x.. ........   ........ ........ .x...... ........ 
@@ -8611,7 +8405,6 @@ Class            : Fury Warrior
 School           : Physical
 Spell Type       : None
 Spell Level      : 13
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8636,7 +8429,6 @@ Class            : Fury Warrior
 School           : Physical
 Spell Type       : None
 Spell Level      : 18
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8657,7 +8449,6 @@ Class            : Arms Protection Warrior
 School           : Physical
 Spell Type       : None
 Spell Level      : 13
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8678,7 +8469,6 @@ Class            : Arms Warrior
 School           : Physical
 Spell Type       : None
 Spell Level      : 37
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8699,7 +8489,6 @@ Class            : Fury Warrior
 School           : Physical
 Spell Type       : None
 Spell Level      : 28
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8718,7 +8507,6 @@ Class            : Protection Warrior, Warlock
 School           : Physical
 Spell Type       : None
 Spell Level      : 32
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8737,7 +8525,6 @@ Class            : Fury Warrior
 School           : Physical
 Spell Type       : None
 Spell Level      : 20
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8756,7 +8543,6 @@ Class            : Fury Warrior
 School           : Physical
 Spell Type       : None
 Spell Level      : 42
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8775,7 +8561,6 @@ Class            : Protection Warrior
 School           : Physical
 Spell Type       : None
 Spell Level      : 48
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8800,7 +8585,6 @@ Class            : Arms Warrior
 School           : Physical
 Spell Type       : None
 Spell Level      : 42
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8821,7 +8605,6 @@ Class            : Arms Warrior
 School           : Physical
 Spell Type       : None
 Spell Level      : 58
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8842,7 +8625,6 @@ Class            : Fury Warrior
 School           : Physical
 Spell Type       : None
 Spell Level      : 22
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8865,7 +8647,6 @@ Class            : Protection Warrior
 School           : Physical
 Spell Type       : None
 Spell Level      : 52
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8886,7 +8667,6 @@ Class            : Arms Warrior
 School           : Physical
 Spell Type       : None
 Spell Level      : 28
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8905,7 +8685,6 @@ Class            : Arms Warrior
 School           : Physical
 Spell Type       : None
 Spell Level      : 49
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8926,7 +8705,6 @@ Class            : Fury Warrior
 School           : Physical
 Spell Type       : None
 Spell Level      : 26
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8945,7 +8723,6 @@ Class            : Fury Warrior
 School           : Physical
 Spell Type       : None
 Spell Level      : 49
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8965,7 +8742,6 @@ Class            : Protection Warrior
 School           : Physical
 Spell Type       : None
 Spell Level      : 49
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8986,7 +8762,6 @@ Class            : Fury Warrior
 School           : Physical
 Spell Type       : None
 Spell Level      : 32
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9007,7 +8782,6 @@ Class            : Fury Warrior
 School           : Physical
 Spell Type       : None
 Spell Level      : 44
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9028,7 +8802,6 @@ Class            : Protection Warrior
 School           : Physical
 Spell Type       : None
 Spell Level      : 10
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9049,7 +8822,6 @@ Class            : Arms Warrior
 School           : Physical
 Spell Type       : None
 Spell Level      : 48
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9070,7 +8842,6 @@ Class            : Fury Warrior
 School           : Physical
 Spell Type       : None
 Spell Level      : 48
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9095,7 +8866,6 @@ Range            : 8 yards
 GCD              : 1.5 seconds
 Duration         : 15 seconds
 Cooldown         : 90 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Mechanic         : Flee
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
@@ -9121,7 +8891,6 @@ Name             : Intimidating Shout (id=316594) [Spell Family (4)]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : Intimidating Shout (316593)
 Family Flags     : 70
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9142,7 +8911,6 @@ School           : Physical
 Spell Type       : Magic
 Range            : 100 yards
 Duration         : 15 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Mechanic         : Flee
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
@@ -9165,7 +8933,6 @@ Name             : War Machine (id=316733) [Spell Family (4), Passive]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -9189,7 +8956,6 @@ Class            : Protection Warrior
 School           : Physical
 Spell Type       : None
 Spell Level      : 27
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9210,7 +8976,6 @@ Class            : Protection Warrior
 School           : Physical
 Spell Type       : None
 Spell Level      : 44
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9231,7 +8996,6 @@ Class            : Warrior
 School           : Physical
 Spell Type       : None
 Spell Level      : 56
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9252,7 +9016,6 @@ Class            : Fury Warrior
 School           : Physical
 Spell Type       : None
 Spell Level      : 52
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9273,7 +9036,6 @@ Class            : Protection Warrior
 School           : Physical
 Spell Type       : None
 Spell Level      : 58
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9312,8 +9074,7 @@ Class            : Warrior
 Covenant         : Venthyr
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-                 : 861: Protection Warrior (137048 effect#14)
+Labels           : 861: Protection Warrior (137048 effect#14)
 Attributes       : ......xx x....... .......x x..x...x   .....x.. ........ ........ ........ 
                  : x....... ......x. ........ ........   ........ ........ ....x... ........ 
                  : .......x .......x .....x.. ........   ...x.... ........ .xx..... ........ 
@@ -9340,7 +9101,6 @@ Class            : Warrior
 School           : Physical
 Spell Type       : None
 Spell Level      : 8
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9361,7 +9121,6 @@ Class            : Warrior
 School           : Physical
 Spell Type       : None
 Spell Level      : 11
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9385,7 +9144,6 @@ Spell Type       : None
 GCD              : 1.5 seconds
 Duration         : 120 seconds
 Cooldown         : 120 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Internal Cooldown: 0.5 seconds
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
@@ -9418,7 +9176,6 @@ Name             : Initial Warrior (id=325446) [Spell Family (4), Passive, Hidde
 Class            : Unknown (1446) Warrior
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9459,7 +9216,6 @@ Class            : Warrior
 School           : Shadow
 Spell Type       : None
 Duration         : 120 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 15 maximum
 Proc Chance      : 101%
 Triggered by     : Conqueror's Banner (324143)
@@ -9485,7 +9241,6 @@ Class            : Warrior
 School           : Shadow
 Spell Type       : None
 Duration         : Aura (infinite)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Triggered by     : Conqueror's Banner (324143)
 Attributes       : .......x ........ ........ ........   ........ ..x..... ........ ........ 
@@ -9507,7 +9262,6 @@ School           : Shadow
 Spell Type       : None
 Range            : 100 yards
 Duration         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ x..x.x..   ...x.x.x ..x..... ........ ........ 
                  : ........ ......x. ........ ........   ........ ........ ..x..... ........ 
                  : .......x ........ ........ ........   ...x.... ........ .xx..... ........ 
@@ -9540,7 +9294,6 @@ GCD              : 1.5 seconds
 Duration         : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 90 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Single-Minded Fury (81099 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#2), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Deep Wounds (262115 effect#2), Siegebreaker (280773 effect#1)
 Family Flags     : 8, 9
 Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... ........ ........ 
@@ -9567,7 +9320,6 @@ School           : Nature
 Spell Type       : Magic
 Range            : 100 yards
 Duration         : 12 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Single-Minded Fury (81099 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Deep Wounds (262115 effect#2), Siegebreaker (280773 effect#1)
 Family Flags     : 9
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -9590,7 +9342,6 @@ School           : Nature
 Spell Type       : None
 Range            : 100 yards
 Velocity         : 20 yards/sec
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Recklessness (1719 effect#5), Unnerving Focus (337155 effect#2)
 Family Flags     : 77
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9632,7 +9383,6 @@ School           : Physical
 Spell Type       : None
 Range            : 100 yards
 Duration         : Aura (infinite)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : Conqueror's Frenzy (325862)
 Attributes       : ....x... ........ x.x..... ........   ........ ..x....x ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -9680,7 +9430,6 @@ Name             : Collateral Damage (id=334779) [Spell Family (4), Passive, Hid
 Class            : Warrior
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
@@ -9702,7 +9451,6 @@ Class            : Warrior
 School           : Physical
 Spell Type       : None
 Duration         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Internal Cooldown: 0.5 seconds
 Stacks           : 20 maximum
 Proc Chance      : 100%
@@ -9727,7 +9475,6 @@ Name             : Ravager (id=334934) [Spell Family (4)]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Recklessness (1719 effect#5), Unnerving Focus (337155 effect#2)
 Family Flags     : 76
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
@@ -9747,7 +9494,6 @@ Name             : Cruelty (id=335070) [Spell Family (4), Passive, Hidden]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -9769,7 +9515,6 @@ Name             : Frenzy (id=335077) [Spell Family (4), Passive, Hidden]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9788,7 +9533,6 @@ Class            : Warrior
 School           : Physical
 Spell Type       : None
 Duration         : 12 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 3 maximum
 Proc Chance      : 101%
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9808,7 +9552,6 @@ Name             : Seethe (id=335091) [Spell Family (4), Passive, Hidden]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
@@ -9838,7 +9581,6 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 3 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Single-Minded Fury (81099 effect#1), Whirlwind (85739 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Vicious Strike (165640 effect#1), Colossus Smash (208086 effect#1), Bloody Rage (242952 effect#1), Bloody Rage (242953 effect#1), Deep Wounds (262115 effect#2), Siegebreaker (280773 effect#1), Bloodthirst (316537 effect#1), Seethe (335091 effect#1), Unnerving Focus (337155 effect#3)
 Family Flags     : 8, 9, 18, 42
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
@@ -9868,7 +9610,6 @@ GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Charges          : 1 (8 seconds cooldown)
 Category         : 1672: Fury Warrior (137050 effect#5), Inner Rage (215573 effect#1), Raging Blow (316453 effect#1)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Recklessness (1719 effect#6), Warrior (137047 effect#2), Unnerving Focus (337155 effect#3)
 Family Flags     : 8, 106
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
@@ -9901,7 +9642,6 @@ Spell Type       : Melee
 Spell Level      : 14
 Range            : 100 yards
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Single-Minded Fury (81099 effect#1), Whirlwind (85739 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Inner Rage (215573 effect#2), Raging Thirst (242300 effect#1), Deep Wounds (262115 effect#2), Siegebreaker (280773 effect#1), Cruelty (335070 effect#1)
 Triggered by     : Crushing Blow (335097)
 Family Flags     : 9, 45
@@ -9925,7 +9665,6 @@ Spell Type       : Melee
 Spell Level      : 14
 Range            : 100 yards
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Single-Minded Fury (81099 effect#1), Whirlwind (85739 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Inner Rage (215573 effect#2), Raging Thirst (242300 effect#1), Deep Wounds (262115 effect#2), Siegebreaker (280773 effect#1), Cruelty (335070 effect#1)
 Triggered by     : Crushing Blow (335097)
 Family Flags     : 9, 45
@@ -9947,7 +9686,6 @@ Class            : Warrior
 School           : Physical
 Spell Type       : None
 Duration         : 12 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Depths of Insanity (337162 effect#1)
 Triggered by     : Reckless Abandon (202751)
 Family Flags     : 50

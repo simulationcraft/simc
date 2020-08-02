@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35360 shadowlands-BETA (, no-networking)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35360 shadowlands-BETA (hotfix 2020-08-02/35360, no-networking)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
@@ -9,7 +9,6 @@ Spell Level      : 4
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 15 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x88000000
 Mechanic         : Shield
 Affecting spells : Improved Power Word: Shield (24191 effect#1), Rapture (47536 effect#4), Shadow Priest (137033 effect#8), Clear Thoughts (167695 effect#1), Surrender to Madness (193223 effect#2), Kam Xi'raff (281457 effect#1), Surrender to Madness (319952 effect#7)
@@ -39,7 +38,6 @@ Spell Level      : 19
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 15 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x88000000
 Affecting spells : Rapid Healing (24546 effect#2), Spirit of Redemption (27827 effect#2), Healing Trance (37706 effect#1), Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Surrender to Madness (193223 effect#2), An'juna's Trance (207555 effect#1), Light of T'uure (208065 effect#1), Twist of Fate (265258 effect#1), Dejahna's Inspiration (281456 effect#1), Kam Xi'raff (281457 effect#1), Surrender to Madness (319952 effect#7)
 Family Flags     : 6, 126
@@ -72,7 +70,6 @@ GCD              : 1.5 seconds
 Cooldown         : 8 seconds
 Charges          : 1 (8 seconds cooldown)
 Category         : 1509
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 8 seconds
 Stance Mask      : 0x80000000
 Affecting spells : Surrender to Madness (193223 effect#2), Surrender to Madness (319952 effect#7), Clear Mind (337707 effect#1)
@@ -99,7 +96,6 @@ Resource         : 1.6% Base Mana (0) (id=57)
 Spell Level      : 24
 Range            : 30 yards
 GCD              : 1.5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x08000000
 Affecting spells : Surrender to Madness (193223 effect#2), Surrender to Madness (319952 effect#7), Clear Mind (337707 effect#1)
 Family Flags     : 25
@@ -124,7 +120,6 @@ Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Twist of Fate (123254 effect#1), Holy Priest (137031 effect#3), Discipline Priest (137032 effect#4), Shadow Priest (137033 effect#1), Surrender to Madness (193223 effect#2), Voidform (194249 effect#1), Muze's Unwavering Will (210632 effect#1), Schism (214621 effect#2), Shadowform (232698 effect#1), Smite (262861 effect#1), Twist of Fate (265258 effect#1), Sins of the Many (280398 effect#1), Surrender to Madness (319952 effect#7), Boon of the Ascended (325013 effect#4)
 Family Flags     : 7, 72
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -146,7 +141,6 @@ Spell Type       : Magic
 Spell Level      : 9
 Duration         : 10 seconds
 Cooldown         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Surrender to Madness (193223 effect#2), Surrender to Madness (319952 effect#7), Fade (327821 effect#1)
 Family Flags     : 14
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
@@ -179,7 +173,6 @@ Spell Level      : 2
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 12 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Stance Mask      : 0x08000000
 Affecting spells : Mastery: Madness (77486 effect#1), Twist of Fate (123254 effect#1), Holy Priest (137031 effect#3), Discipline Priest (137032 effect#5), Shadow Priest (137033 effect#1), Surrender to Madness (193223 effect#2), Voidform (194249 effect#1), Schism (214621 effect#2), Shadowform (232698 effect#1), Twist of Fate (265258 effect#1), Torment of Torments (269555 effect#1), Death Throes (278659 effect#1), Sins of the Many (280398 effect#1), Surrender to Madness (319952 effect#7), Shadow Word: Pain (327820 effect#1)
@@ -213,7 +206,6 @@ Spell Level      : 32
 Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x80000000
 Affecting spells : Rapid Healing (24546 effect#2), Spirit of Redemption (27827 effect#2), Healing Trance (37706 effect#1), Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Surrender to Madness (193223 effect#2), Light of T'uure (208065 effect#1), Muze's Unwavering Will (210632 effect#1), Everlasting Hope (253443 effect#1), Twist of Fate (265258 effect#1), Dejahna's Inspiration (281456 effect#1), Kam Xi'raff (281457 effect#1), Surrender to Madness (319952 effect#7), Prayer Circle (321379 effect#1)
 Family Flags     : 9, 126
@@ -243,7 +235,6 @@ Range            : 30 yards
 Cast Time        : 1.8 seconds
 GCD              : 1.5 seconds
 Duration         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Stance Mask      : 0x08000000
 Mechanic         : Charm
@@ -273,7 +264,6 @@ Resource         : 0.9% Base Mana (0) (id=11171) w/ Holy Priest (id=137031)
 Spell Level      : 21
 Range            : 30 yards
 GCD              : 1.5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x08000000
 Affecting spells : Surrender to Madness (193223 effect#2), Surrender to Madness (319952 effect#7)
 Family Flags     : 64
@@ -300,7 +290,6 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Charges          : 1 (60 seconds cooldown)
 Category         : 1673
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x80000000
 Affecting spells : Spirit of Redemption (27827 effect#2), Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Surrender to Madness (193223 effect#2), Apotheosis (200183 effect#2), Light of T'uure (208065 effect#1), Rammal's Ulterior Motive (234711 effect#1), Twist of Fate (265258 effect#1), Dejahna's Inspiration (281456 effect#1), Kam Xi'raff (281457 effect#1), Surrender to Madness (319952 effect#7)
 Family Flags     : 10, 126
@@ -329,7 +318,6 @@ Spell Level      : 15
 Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x80000000
 Affecting spells : Rapid Healing (24546 effect#2), Spirit of Redemption (27827 effect#2), Healing Trance (37706 effect#1), Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Complete Healing (184914 effect#1), Surrender to Madness (193223 effect#2), Light of T'uure (208065 effect#1), Muze's Unwavering Will (210632 effect#1), Rammal's Ulterior Motive (234711 effect#1), Answered Prayers (253437 effect#1), Twist of Fate (265258 effect#1), Dejahna's Inspiration (281456 effect#1), Kam Xi'raff (281457 effect#1), Promise of Deliverance (287340 effect#1), Surrender to Madness (319952 effect#7), Flash Concentration (336267 effect#1), 
 Family Flags     : 12, 126
@@ -354,7 +342,6 @@ Spell Level      : 3
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x80000000
 Affecting spells : Rapid Healing (24546 effect#2), Spirit of Redemption (27827 effect#2), Healing Trance (37706 effect#1), Spirit Shell (109964 effect#1), Surge of Light (114255 effect#1), Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Complete Healing (184914 effect#1), Surrender to Madness (193223 effect#2), Light of T'uure (208065 effect#1), Muze's Unwavering Will (210632 effect#1), Rammal's Ulterior Motive (234711 effect#1), Answered Prayers (253437 effect#1), Twist of Fate (265258 effect#1), Dejahna's Inspiration (281456 effect#1), Kam Xi'raff (281457 effect#1), Promise of Deliverance (287340 effect#1), Surrender to Madness (319952 effect#7)
 Triggered by     : Surge of Light (114255)
@@ -380,7 +367,6 @@ Spell Level      : 22
 Range            : 50000 yards
 GCD              : 1.5 seconds
 Duration         : 60 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Stance Mask      : 0x08000000
 Affecting spells : Surrender to Madness (193223 effect#2), Surrender to Madness (319952 effect#7)
@@ -412,7 +398,6 @@ Cast Time        : 0.5 seconds
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
 Requires weapon  : Wand
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : .x..x... ........ ........ ........   ........ ........ ........ ........ 
                  : .....x.. ........ ........ ........   ........ .......x x....... ........ 
                  : ........ ........ ........ x.......   ........ ........ ........ ........ 
@@ -432,7 +417,6 @@ School           : Holy
 Spell Type       : None
 Range            : 50000 yards
 Duration         : 7.5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Mechanic         : Shield
 Attributes       : ........ ........ ........ x.xx.x..   ...x.x.x ..x..... xx...... ........ 
                  : ..x..... ......x. ...x.... ........   ........ ........ ........ ......x. 
@@ -460,7 +444,6 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Charges          : 1 (15 seconds cooldown)
 Category         : 1602: Priest (137030 effect#2), Item - Priest T17 Shadow 2P Bonus (165628 effect#1), Voidform (194249 effect#6), Mangaza's Madness (207701 effect#1), Mind Blast (319899 effect#1)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Mastery: Madness (77486 effect#1), Twist of Fate (123254 effect#1), Shadowy Insight (124430 effect#1), Holy Priest (137031 effect#3), Discipline Priest (137032 effect#7), Shadow Priest (137033 effect#1), Mental Fatigue (185104 effect#1), Fortress of the Mind (193195 effect#2), Surrender to Madness (193223 effect#2), Voidform (194249 effect#1), Schism (214621 effect#2), Shadowform (232698 effect#1), Empty Mind (247226 effect#1), Item - Priest T21 Shadow 2P Bonus (251845 effect#1), Overwhelming Darkness (252909 effect#1), Twist of Fate (265258 effect#1), Whispers of the Damned (275722 effect#2), Sins of the Many (280398 effect#1), Surrender to Madness (319952 effect#7), Mind Devourer (338332 effect#1)
 Family Flags     : 13, 72
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -490,7 +473,6 @@ Max Targets      : 5
 GCD              : 1.5 seconds
 Duration         : 8 seconds
 Cooldown         : 60 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Stance Mask      : 0x08000000
 Mechanic         : Flee
@@ -521,7 +503,6 @@ Range            : 30 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Duration         : 50 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Stance Mask      : 0x08000000
 Mechanic         : Shackle
@@ -549,7 +530,6 @@ Spell Level      : 58
 Range            : 40 yards
 Duration         : 20 seconds
 Cooldown         : 120 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Surrender to Madness (193223 effect#2), Surrender to Madness (319952 effect#7)
 Family Flags     : 61
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
@@ -576,7 +556,6 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Duration         : 7 seconds
 Cooldown         : 10 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 1 maximum
 Proc Chance      : 101%
 Affecting spells : Twist of Fate (123254 effect#1), Holy Priest (137031 effect#3), Shadow Priest (137033 effect#1), Surrender to Madness (193223 effect#2), Voidform (194249 effect#1), Schism (214621 effect#2), Holy Fire (231687 effect#2), Shadowform (232698 effect#1), Twist of Fate (265258 effect#1), Sins of the Many (280398 effect#1), Surrender to Madness (319952 effect#7)
@@ -607,7 +586,6 @@ Spell Level      : 38
 GCD              : 1.5 seconds
 Duration         : 15 seconds
 Cooldown         : 120 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ........ ........ x.x..x.. ........ 
                  : Magic Hostile Spell, Periodic, Trap Triggered
@@ -635,7 +613,6 @@ Spell Level      : 10
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 3 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x08000000
 Affecting spells : Mastery: Madness (77486 effect#1), Twist of Fate (123254 effect#1), Holy Priest (137031 effect#3), Shadow Priest (137033 effect#1), Mental Fatigue (185104 effect#1), Fortress of the Mind (193195 effect#1), Surrender to Madness (193223 effect#2), Voidform (194249 effect#1), Schism (214621 effect#2), Shadowform (232698 effect#1), Item - Priest T21 Shadow 2P Bonus (251845 effect#1), Overwhelming Darkness (252909 effect#1), Twist of Fate (265258 effect#1), Sins of the Many (280398 effect#1), Surrender to Madness (319952 effect#7), Boon of the Ascended (325013 effect#7)
 Family Flags     : 70, 72
@@ -669,7 +646,6 @@ Spell Level      : 41
 Range            : 30 yards
 Duration         : 4 seconds
 Cooldown         : 45 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Stance Mask      : 0x08000000
 Mechanic         : Silence
@@ -696,7 +672,6 @@ Spell Level      : 8
 Duration         : 10 seconds
 Cooldown         : 90 seconds
 Category         : 671
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 90 seconds
 Stance Mask      : 0x08000000
 Affecting spells : Surrender to Madness (193223 effect#2), Surrender to Madness (319952 effect#7)
@@ -742,7 +717,6 @@ Class            : Holy Priest
 School           : Physical
 Spell Type       : None
 Spell Level      : 31
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Surrender to Madness (193223 effect#2), Afterlife (196707 effect#1), Surrender to Madness (319952 effect#7)
 Family Flags     : 73
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
@@ -767,7 +741,6 @@ Spell Level      : 6
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 3600 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Surrender to Madness (193223 effect#2), Surrender to Madness (319952 effect#7)
 Family Flags     : 3
 Attributes       : ........ ........ ........ ........   ........ ..x..... .x...... ........ 
@@ -811,7 +784,6 @@ Class            : Priest
 School           : Holy
 Spell Type       : None
 Duration         : 15 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ........ ..x...x. .....x.. ........ 
                  : Generic Heal, Magic Heal, Trap Triggered
@@ -894,7 +866,6 @@ Range            : 30 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Cooldown         : 45 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Shadow Priest (137033 effect#7), Surrender to Madness (193223 effect#2), Surrender to Madness (319952 effect#7), Clear Mind (337707 effect#1)
 Family Flags     : 39
 Attributes       : ........ ........ ........ .....x..   ........ ........ ........ ........ 
@@ -923,7 +894,6 @@ Spell Level      : 14
 Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Twist of Fate (123254 effect#1), Priest (137030 effect#1), Holy Priest (137031 effect#3), Shadow Priest (137033 effect#1), Surrender to Madness (193223 effect#2), Voidform (194249 effect#1), Schism (214621 effect#2), Shadowform (232698 effect#1), Zeks Exterminatus (236546 effect#1), Twist of Fate (265258 effect#1), Sins of the Many (280398 effect#1), Surrender to Madness (319952 effect#7), Shadow Word: Death (322107 effect#1), Kiss of Death (336133 effect#1)
 Family Flags     : 33, 44, 72
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
@@ -961,7 +931,6 @@ Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x80000000
 Affecting spells : Spirit of Redemption (27827 effect#2), Healing Trance (37706 effect#1), Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Surrender to Madness (193223 effect#2), Light of T'uure (208065 effect#1), Answered Prayers (253437 effect#1), Twist of Fate (265258 effect#1), Dejahna's Inspiration (281456 effect#1), Kam Xi'raff (281457 effect#1), Surrender to Madness (319952 effect#7)
 Family Flags     : 34, 126
@@ -991,7 +960,6 @@ School           : Holy
 Spell Type       : Magic
 Spell Level      : 27
 Range            : 30 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x08000000
 Affecting spells : Shadow Priest (137033 effect#7), Surrender to Madness (193223 effect#2), Surrender to Madness (319952 effect#7), Clear Mind (337707 effect#1)
 Triggered by     : Mass Dispel (32375)
@@ -1019,7 +987,6 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Cooldown         : 12 seconds
 Category         : 1181
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 12 seconds
 Stance Mask      : 0x80000000
 Affecting spells : Healing Trance (37706 effect#1), Priest (137030 effect#1), Surrender to Madness (193223 effect#2), Kam Xi'raff (281457 effect#1), Prayer of Mending (319912 effect#1), Surrender to Madness (319952 effect#7)
@@ -1047,7 +1014,6 @@ School           : Holy
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 50000 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Spirit of Redemption (27827 effect#2), Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Surrender to Madness (193223 effect#2), Light of T'uure (208065 effect#1), Twist of Fate (265258 effect#1), Word of Mending (278645 effect#1), Dejahna's Inspiration (281456 effect#1), Kam Xi'raff (281457 effect#1), Surrender to Madness (319952 effect#7)
 Family Flags     : 117, 126
 Attributes       : ........ ........ ..x..... ...x....   ........ ........ ........ ........ 
@@ -1071,7 +1037,6 @@ Spell Level      : 38
 Range            : 40 yards
 Duration         : 8 seconds
 Cooldown         : 180 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
@@ -1102,8 +1067,7 @@ GCD              : 1.5 seconds
 Duration         : 15 seconds
 Cooldown         : 180 seconds
 Category         : 1417
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-                 : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
 Category Cooldown: 180 seconds
 Stance Mask      : 0x08000000
 Affecting spells : Glyph of the Sha (147776 effect#1), Item - Priest T18 Shadow 2P Bonus (186980 effect#1), Surrender to Madness (193223 effect#2), Surrender to Madness (319952 effect#7), Dispersion (322108 effect#1), Shadowflame Prism (336143 effect#1)
@@ -1135,7 +1099,6 @@ Spell Level      : 41
 Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 60 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x80000000
 Affecting spells : Spirit of Redemption (27827 effect#2), Healing Trance (37706 effect#1), Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Surrender to Madness (193223 effect#2), Apotheosis (200183 effect#2), Light of T'uure (208065 effect#1), Twist of Fate (265258 effect#1), Dejahna's Inspiration (281456 effect#1), Kam Xi'raff (281457 effect#1), Surrender to Madness (319952 effect#7)
 Family Flags     : 28, 126
@@ -1168,7 +1131,6 @@ Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Duration         : 21 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Affecting spells : Mastery: Madness (77486 effect#1), Twist of Fate (123254 effect#1), Holy Priest (137031 effect#3), Shadow Priest (137033 effect#1), Surrender to Madness (193223 effect#2), Voidform (194249 effect#1), Schism (214621 effect#2), Shadowform (232698 effect#1), Twist of Fate (265258 effect#1), Sins of the Many (280398 effect#1), Thought Harvester (288340 effect#2), Surrender to Madness (319952 effect#7)
 Family Flags     : 42, 72
@@ -1202,7 +1164,6 @@ Spell Level      : 27
 Range            : 50000 yards
 GCD              : 1.5 seconds
 Duration         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 10 maximum
 Proc Chance      : 100%
 Stance Mask      : 0x80000000
@@ -1246,7 +1207,6 @@ Class            : Priest
 School           : Holy
 Spell Type       : None
 Duration         : 8 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 1 maximum
 Proc Chance      : 101%
 Affecting spells : Surrender to Madness (193223 effect#2), Focused Will (285485 effect#1), Surrender to Madness (319952 effect#7)
@@ -1270,7 +1230,6 @@ Class            : Discipline Holy Shadow Priest
 School           : Physical
 Spell Type       : None
 Spell Level      : 33
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ...x.x.. ........ ........ ........ 
                  : White Melee Taken, Yellow Melee Taken
@@ -1296,7 +1255,6 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 90 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Affecting spells : Surrender to Madness (193223 effect#2), Surrender to Madness (319952 effect#7), Exaltation (337790 effect#2)
 Family Flags     : 119
@@ -1331,7 +1289,6 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 9 seconds
 Category         : 1230
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 9 seconds
 Affecting spells : Surrender to Madness (193223 effect#2), Penitent (246519 effect#1), Kam Xi'raff (281457 effect#1), Surrender to Madness (319952 effect#7), The Penitent One (336009 effect#2)
 Family Flags     : 55
@@ -1356,7 +1313,6 @@ Spell Level      : 16
 GCD              : 1.5 seconds
 Duration         : 6 seconds
 Cooldown         : 120 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Surrender to Madness (193223 effect#2), Intangibility (288733 effect#1), Surrender to Madness (319952 effect#7)
 Family Flags     : 50
 Attributes       : ........ ........ ..x..... x.......   .....x.. ..x....x .x...... ........ 
@@ -1402,7 +1358,6 @@ Spell Type       : Magic
 Spell Level      : 25
 Range            : 40 yards
 Velocity         : 40 yards/sec
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Twist of Fate (123254 effect#1), Holy Priest (137031 effect#3), Shadow Priest (137033 effect#1), Reparation (186478 effect#1), Surrender to Madness (193223 effect#2), Voidform (194249 effect#1), Schism (214621 effect#2), Shadowform (232698 effect#1), Radiant Focus (252848 effect#1), Twist of Fate (265258 effect#1), Contemptuous Homily (278629 effect#2), Sins of the Many (280398 effect#1), Surrender to Madness (319952 effect#7)
 Triggered by     : Penance (47758)
 Family Flags     : 47, 72
@@ -1425,7 +1380,6 @@ School           : Holy
 Spell Type       : Magic
 Range            : 40 yards
 Velocity         : 40 yards/sec
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Spirit of Redemption (27827 effect#2), Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Reparation (186478 effect#1), Surrender to Madness (193223 effect#2), Power Word: Shield (211558 effect#1), Radiant Focus (252848 effect#1), Twist of Fate (265258 effect#1), Dejahna's Inspiration (281456 effect#1), Kam Xi'raff (281457 effect#1), Surrender to Madness (319952 effect#7)
 Family Flags     : 48, 126
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -1447,7 +1401,6 @@ School           : Holy
 Spell Type       : None
 Spell Level      : 1
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ..x....x x..x.x..   .....x.. ........ ........ ........ 
                  : x....... ......x. ...x.... .....x..   ........ ........ ..x.x... ........ 
                  : .......x ........ ........ ........   ...x.... ........ .xx..... ........ 
@@ -1468,7 +1421,6 @@ Spell Type       : None
 Spell Level      : 1
 Range            : 40 yards
 Duration         : 2 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Item - Priest T17 Discipline 2P Bonus (165614 effect#1), Castigation (193134 effect#1), Surrender to Madness (193223 effect#2), Surrender to Madness (319952 effect#7), The Penitent One (336009 effect#1)
 Family Flags     : 71
 Attributes       : ........ x....... x....... .....x..   ..x....x ..x...x. ........ ..x.xx.. 
@@ -1494,7 +1446,6 @@ Spell Level      : 38
 Range            : 40 yards
 Duration         : 10 seconds
 Cooldown         : 180 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x88000000
 Affecting spells : Item - Priest WoD PvP Holy4P Bonus (171142 effect#1), Surrender to Madness (193223 effect#2), Phyrix's Embrace (234689 effect#1), Surrender to Madness (319952 effect#7), Lasting Spirit (337811 effect#1), 
 Family Flags     : 75
@@ -1525,7 +1476,6 @@ Spell Level      : 26
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 3 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Mastery: Madness (77486 effect#1), Twist of Fate (123254 effect#1), Holy Priest (137031 effect#3), Shadow Priest (137033 effect#1), Surrender to Madness (193223 effect#2), Voidform (194249 effect#1), Schism (214621 effect#2), Shadowform (232698 effect#1), Twist of Fate (265258 effect#1), Sins of the Many (280398 effect#1), Surrender to Madness (319952 effect#7)
 Family Flags     : 65, 72
 Attributes       : ........ ........ x.....x. ........   ..x....x ........ ........ .....x.. 
@@ -1552,7 +1502,6 @@ School           : Shadow
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Mastery: Madness (77486 effect#1), Twist of Fate (123254 effect#1), Holy Priest (137031 effect#3), Shadow Priest (137033 effect#1), Surrender to Madness (193223 effect#2), Voidform (194249 effect#1), Schism (214621 effect#2), Shadowform (232698 effect#1), Twist of Fate (265258 effect#1), Sins of the Many (280398 effect#1), Surrender to Madness (319952 effect#7)
 Triggered by     : Mind Sear (48045)
 Family Flags     : 65, 72
@@ -1595,7 +1544,6 @@ Name             : Glyph of Shackle Undead (id=57986) [Spell Family (6), Passive
 Class            : Priest
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1614,7 +1562,6 @@ Class            : Priest
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1664,7 +1611,6 @@ GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 180 seconds
 Category         : 1243
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Affecting spells : Surrender to Madness (193223 effect#2), Dome of Light (197590 effect#1), Surrender to Madness (319952 effect#7)
 Family Flags     : 88
@@ -1688,7 +1634,6 @@ Spell Level      : 1
 Range            : 30 yards
 GCD              : 1.5 seconds
 Cooldown         : 6 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x... ........ x....... .....x..   ........ .xx..... ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1706,7 +1651,6 @@ Class            : Holy Priest
 School           : Physical
 Spell Type       : None
 Spell Level      : 14
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ........ ......x. x....... ........ 
                  : Magic Heal, Magic Hostile Spell
@@ -1737,7 +1681,6 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 4 seconds
 Cooldown         : 45 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Mechanic         : Stun
 Affecting spells : Surrender to Madness (193223 effect#2), Surrender to Madness (319952 effect#7)
 Family Flags     : 77
@@ -1758,7 +1701,6 @@ Name             : Body and Soul (id=64129) [Spell Family (6), Passive]
 Class            : Priest
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ........ ......x. ........ ........ 
                  : Magic Heal
@@ -1787,8 +1729,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 8 seconds
 Cooldown         : 180 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-                 : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
 Stance Mask      : 0x80000000
 Affecting spells : Surrender to Madness (193223 effect#2), Kam Xi'raff (281457 effect#1), Surrender to Madness (319952 effect#7)
 Family Flags     : 54
@@ -1820,7 +1761,6 @@ Spell Level      : 1
 Range            : 40 yards
 Max Targets      : 60
 Duration         : 8 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Spirit of Redemption (27827 effect#2), Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Surrender to Madness (193223 effect#2), Light of T'uure (208065 effect#1), Twist of Fate (265258 effect#1), Dejahna's Inspiration (281456 effect#1), Kam Xi'raff (281457 effect#1), Surrender to Madness (319952 effect#7)
 Triggered by     : Divine Hymn (64843)
 Family Flags     : 66, 126
@@ -1849,7 +1789,6 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 5 seconds
 Cooldown         : 300 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x80000000
 Affecting spells : Surrender to Madness (193223 effect#2), Surrender to Madness (319952 effect#7)
 Family Flags     : 68
@@ -1875,7 +1814,6 @@ School           : Holy
 Spell Type       : None
 Range            : 50000 yards
 Duration         : 3 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Triggered by     : Body and Soul (64129)
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -1958,7 +1896,6 @@ School           : Holy
 Spell Type       : None
 Spell Level      : 27
 Max Targets      : 10
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : Mass Dispel (32375)
 Attributes       : .......x x....... x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ .x...... ........ ........ 
@@ -1982,7 +1919,6 @@ Spell Level      : 49
 Range            : 40 yards
 Duration         : 1.5 seconds
 Cooldown         : 90 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Mechanic         : Grip
 Affecting spells : Surrender to Madness (193223 effect#2), Death Denied (287723 effect#1), Surrender to Madness (319952 effect#7), Vault of Heavens (336470 effect#1)
 Family Flags     : 83
@@ -2009,7 +1945,6 @@ Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Mental Fatigue (185104 effect#1), Surrender to Madness (193223 effect#2), Surrender to Madness (319952 effect#7)
 Family Flags     : 80
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -2039,7 +1974,6 @@ Class            : Holy Priest
 School           : Physical
 Spell Type       : None
 Spell Level      : 10
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ........ ......x. ........ ........ 
                  : Magic Heal
@@ -2063,7 +1997,6 @@ Class            : Shadow Priest
 School           : Physical
 Spell Type       : None
 Spell Level      : 10
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2089,7 +2022,6 @@ School           : Holy
 Spell Type       : None
 Range            : 100 yards
 Duration         : 6 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Surrender to Madness (193223 effect#2), Surrender to Madness (319952 effect#7)
 Family Flags     : 96
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
@@ -2111,7 +2043,6 @@ Class            : Shadow Priest
 School           : Physical
 Spell Type       : None
 Spell Level      : 29
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ........ ........ ..x..... ........ 
                  : Periodic
@@ -2133,7 +2064,6 @@ Class            : Discipline Priest
 School           : Physical
 Spell Type       : None
 Spell Level      : 23
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ........ ........ x.x..... ........ 
                  : Magic Hostile Spell, Periodic
@@ -2163,7 +2093,6 @@ Spell Type       : Magic
 Spell Level      : 5
 Range            : 50000 yards
 Duration         : 12 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Surrender to Madness (193223 effect#2), Dome of Light (197590 effect#1), Surrender to Madness (319952 effect#7)
 Family Flags     : 88
 Attributes       : ........ ........ ........ x..x.x.x   .....x.. ........ ........ ........ 
@@ -2214,7 +2143,6 @@ Spell Level      : 29
 Range            : 30 yards
 GCD              : 1.5 seconds
 Cooldown         : 60 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Twist of Fate (123254 effect#1), Holy Priest (137031 effect#3), Shadow Priest (137033 effect#1), Surrender to Madness (193223 effect#2), Voidform (194249 effect#1), Apotheosis (200183 effect#2), Schism (214621 effect#2), Shadowform (232698 effect#1), Twist of Fate (265258 effect#1), Sins of the Many (280398 effect#1), Surrender to Madness (319952 effect#7)
 Family Flags     : 21, 69, 72
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -2238,7 +2166,6 @@ Class            : Priest
 School           : Physical
 Spell Type       : None
 Spell Level      : 27
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2298,7 +2225,6 @@ School           : Holy
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 50000 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x80000000
 Affecting spells : Surrender to Madness (193223 effect#2), Power Word: Shield (211558 effect#1), Dejahna's Inspiration (281456 effect#1), Surrender to Madness (319952 effect#7)
 Family Flags     : 74
@@ -2321,7 +2247,6 @@ School           : Holy
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 50000 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x80000000
 Triggered by     : Prayer of Healing (596)
 Attributes       : .......x x....... x....... ........   ........ ........ ........ ........ 
@@ -2341,7 +2266,6 @@ Class            : Priest
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2359,7 +2283,6 @@ Name             : Glyph of Shadow (desc=Shadow) (id=107906) [Spell Family (6), 
 Class            : Priest
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2377,7 +2300,6 @@ Name             : Twist of Fate (id=109142) [Spell Family (6), Passive]
 Class            : Priest
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ..x.x.x. x.x.x.x. x.x..x.. ........ 
                  : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Trap Triggered
@@ -2398,7 +2320,6 @@ Name             : Surge of Light (id=109186) [Spell Family (6), Passive]
 Class            : Priest
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ........ ......x. x....... ........ 
                  : Magic Heal, Magic Hostile Spell
@@ -2422,7 +2343,6 @@ Spell Type       : Magic
 Spell Level      : 16
 Duration         : 10 seconds
 Cooldown         : 60 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x80000000
 Affecting spells : Rapid Healing (24546 effect#2), Healing Trance (37706 effect#1), Surrender to Madness (193223 effect#2), Surrender to Madness (319952 effect#7)
 Family Flags     : 18
@@ -2451,7 +2371,6 @@ GCD              : 1.5 seconds
 Duration         : 15 seconds
 Cooldown         : 15 seconds
 Category         : 1380
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 15 seconds
 Stance Mask      : 0x80000000
 Affecting spells : Surrender to Madness (193223 effect#2), Light of T'uure (208065 effect#1), Power Word: Shield (211558 effect#1), Surrender to Madness (319952 effect#7)
@@ -2474,7 +2393,6 @@ Class            : Priest
 School           : Holy
 Spell Type       : Magic
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Spirit of Redemption (27827 effect#2), Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Surrender to Madness (193223 effect#2), Light of T'uure (208065 effect#1), Power Word: Shield (211558 effect#1), Twist of Fate (265258 effect#1), Dejahna's Inspiration (281456 effect#1), Kam Xi'raff (281457 effect#1), Surrender to Madness (319952 effect#7)
 Family Flags     : 98, 126
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
@@ -2498,7 +2416,6 @@ Spell Level      : 17
 Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 600 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x08000000
 Affecting spells : Surrender to Madness (193223 effect#2), Surrender to Madness (319952 effect#7)
 Family Flags     : 64
@@ -2523,7 +2440,6 @@ Class            : Priest
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2542,7 +2458,6 @@ Class            : Priest
 School           : Physical
 Spell Type       : None
 Duration         : 20 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 2 maximum
 Proc Chance      : 101%
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -2575,7 +2490,6 @@ Spell Type       : None
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 15 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ x....... ...x.... ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2603,7 +2517,6 @@ GCD              : 1.5 seconds
 Duration         : 3.2 seconds
 Cooldown         : 40 seconds
 Category         : 1366
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 40 seconds
 Stance Mask      : 0x80000000
 Affecting spells : Surrender to Madness (193223 effect#2), Light of T'uure (208065 effect#1), Power Word: Shield (211558 effect#1), Surrender to Madness (319952 effect#7)
@@ -2625,7 +2538,6 @@ Name             : Glyph of the Heavens (id=120581) [Spell Family (6), Passive, 
 Class            : Priest
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Attributes       : ......xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ...x.... ........ 
@@ -2645,7 +2557,6 @@ Class            : Priest
 School           : Holy
 Spell Type       : Magic
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Spirit of Redemption (27827 effect#2), Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Surrender to Madness (193223 effect#2), Light of T'uure (208065 effect#1), Power Word: Shield (211558 effect#1), Twist of Fate (265258 effect#1), Dejahna's Inspiration (281456 effect#1), Kam Xi'raff (281457 effect#1), Surrender to Madness (319952 effect#7)
 Family Flags     : 97, 126
 Attributes       : ........ ........ .......x x..x....   .....x.x ........ ........ ........ 
@@ -2666,7 +2577,6 @@ Class            : Priest
 School           : Holy
 Spell Type       : Magic
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Twist of Fate (123254 effect#1), Holy Priest (137031 effect#3), Shadow Priest (137033 effect#1), Surrender to Madness (193223 effect#2), Voidform (194249 effect#1), Light of T'uure (208065 effect#1), Power Word: Shield (211558 effect#1), Schism (214621 effect#2), Shadowform (232698 effect#1), Twist of Fate (265258 effect#1), Sins of the Many (280398 effect#1), Surrender to Madness (319952 effect#7)
 Family Flags     : 72, 97
 Attributes       : ........ ........ .......x x..x....   .....x.x ........ ........ ........ 
@@ -2691,7 +2601,6 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Charges          : 3 (20 seconds cooldown)
 Category         : 1373
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -2711,7 +2620,6 @@ School           : Holy
 Spell Type       : None
 Range            : 50000 yards
 Duration         : 5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ .......x x..x....   .....x.. ..x..... ........ ........ 
                  : ..x..... x.....x. ........ ........   ........ ........ ........ ......x. 
                  : .......x ........ ....x... ........   ...x.... ........ .xx..... ........ 
@@ -2731,7 +2639,6 @@ Class            : Priest
 School           : Holy
 Spell Type       : Magic
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Twist of Fate (123254 effect#1), Holy Priest (137031 effect#3), Shadow Priest (137033 effect#1), Surrender to Madness (193223 effect#2), Voidform (194249 effect#1), Light of T'uure (208065 effect#1), Power Word: Shield (211558 effect#1), Schism (214621 effect#2), Shadowform (232698 effect#1), Twist of Fate (265258 effect#1), Sins of the Many (280398 effect#1), Surrender to Madness (319952 effect#7)
 Family Flags     : 72, 98
 Attributes       : ........ ........ ........ x..x....   .....x.. .....x.. ........ ........ 
@@ -2758,8 +2665,7 @@ GCD              : 1.5 seconds
 Duration         : 12 seconds
 Cooldown         : 60 seconds
 Category         : 1417
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-                 : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
 Category Cooldown: 60 seconds
 Stance Mask      : 0x08000000
 Affecting spells : Item - Priest T18 Shadow 2P Bonus (186980 effect#2), Surrender to Madness (193223 effect#2), Surrender to Madness (319952 effect#7), Shadowflame Prism (336143 effect#1)
@@ -2784,7 +2690,6 @@ School           : Shadow
 Spell Type       : None
 Spell Level      : 1
 Range            : 50000 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ...x.... ........ 
@@ -2802,7 +2707,6 @@ Class            : Priest
 School           : Physical
 Spell Type       : None
 Duration         : 8 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Triggered by     : Twist of Fate (109142)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2829,7 +2733,6 @@ Class            : Priest
 School           : Shadow
 Spell Type       : Magic
 Duration         : 12 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : Shadowy Insight (162452)
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2850,7 +2753,6 @@ Name             : Glyph of the Val'kyr (desc=Holy) (id=126094) [Spell Family (6
 Class            : Priest
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2869,7 +2771,6 @@ Class            : Priest
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2888,7 +2789,6 @@ Class            : Priest
 School           : Shadow
 Spell Type       : None
 Spell Level      : 1
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2907,7 +2807,6 @@ Class            : Priest
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2930,7 +2829,6 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 0.5 yards/sec
 Cooldown         : 15 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Twist of Fate (123254 effect#1), Priest (137030 effect#1), Holy Priest (137031 effect#3), Shadow Priest (137033 effect#1), Surrender to Madness (193223 effect#2), Voidform (194249 effect#1), Schism (214621 effect#2), Shadowform (232698 effect#1), Twist of Fate (265258 effect#1), Sins of the Many (280398 effect#1), Surrender to Madness (319952 effect#7)
 Family Flags     : 72, 108
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -2972,7 +2870,6 @@ Spell Type       : Magic
 Resource         : 1.6% Base Mana (0) (id=7897)
 Spell Level      : 29
 GCD              : 1.5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Twist of Fate (123254 effect#1), Holy Priest (137031 effect#3), Shadow Priest (137033 effect#1), Surrender to Madness (193223 effect#2), Voidform (194249 effect#1), Schism (214621 effect#2), Shadowform (232698 effect#1), Twist of Fate (265258 effect#1), Sins of the Many (280398 effect#1), Sudden Revelation (287360 effect#1), Surrender to Madness (319952 effect#7), Holy Nova (322112 effect#1)
 Family Flags     : 49, 72
 Attributes       : ........ ........ x....... ........   ...x...x ........ ........ ........ 
@@ -2993,7 +2890,6 @@ Name             : Priest (id=137030) [Spell Family (6), Passive, Hidden]
 Class            : Priest
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3019,7 +2915,6 @@ Name             : Holy Priest (id=137031) [Spell Family (6), Passive, Hidden]
 Class            : Holy Priest, Death Knight
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3053,7 +2948,6 @@ Name             : Discipline Priest (id=137032) [Spell Family (6), Passive, Hid
 Class            : Discipline Priest, Death Knight
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3101,7 +2995,6 @@ Class            : Shadow Priest, Death Knight
 Race             : Blood Elf (0x200)
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3151,7 +3044,6 @@ Name             : Glyph of Inspired Hymns (desc=Holy) (id=147072) [Spell Family
 Class            : Priest
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3169,7 +3061,6 @@ Name             : Glyph of the Sha (id=147776) [Spell Family (6), Passive, Hidd
 Class            : Priest
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3190,7 +3081,6 @@ Class            : Priest
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3209,7 +3099,6 @@ Class            : Priest
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3229,7 +3118,6 @@ School           : Shadow
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Twist of Fate (123254 effect#1), Holy Priest (137031 effect#3), Shadow Priest (137033 effect#1), Auspicious Spirits (155271 effect#1), Surrender to Madness (193223 effect#2), Voidform (194249 effect#1), Schism (214621 effect#2), Shadowform (232698 effect#1), Twist of Fate (265258 effect#1), Sins of the Many (280398 effect#1), Surrender to Madness (319952 effect#7)
 Family Flags     : 72, 90
 Attributes       : ........ ........ ........ x..x....   .....x.x ..x..... ........ ........ 
@@ -3251,7 +3139,6 @@ Name             : Auspicious Spirits (id=155271) [Spell Family (6), Passive]
 Class            : Priest
 School           : Shadow
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3278,7 +3165,6 @@ Spell Type       : None
 Spell Level      : 27
 Range            : 50000 yards
 Velocity         : 40 yards/sec
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Surrender to Madness (193223 effect#2), Surrender to Madness (319952 effect#7)
 Family Flags     : 29
 Attributes       : ........ ........ ........ x..x.x..   .....x.. ..x..... ...x.... ........ 
@@ -3319,7 +3205,6 @@ Name             : Shadowy Insight (id=162452) [Spell Family (6), Passive]
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 2 maximum
 Proc Chance      : 100%
 Real PPM         : 3 (Haste multiplier)
@@ -3345,7 +3230,6 @@ Class            : Shadow Elemental Arcane Fire Frost Affliction Demonology Dest
 Race             : Dark Iron Dwarf (0x800)
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3367,7 +3251,6 @@ Class            : Holy Discipline Holy Restoration Mistweaver Restoration Palad
 Race             : Dark Iron Dwarf (0x800)
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3389,7 +3272,6 @@ Class            : Shadow Priest
 School           : Physical
 Spell Type       : None
 Spell Level      : 14
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Surrender to Madness (193223 effect#2), Legacy of the Void (193225 effect#2), Surrender to Madness (319952 effect#7)
 Family Flags     : 127
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -3420,7 +3302,6 @@ Spell Level      : 16
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Spirit of Redemption (27827 effect#2), Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Shadow Priest (137033 effect#7), Surrender to Madness (193223 effect#2), Power Word: Shield (211558 effect#1), Twist of Fate (265258 effect#1), Depth of the Shadows (275544 effect#1), Dejahna's Inspiration (281456 effect#1), Kam Xi'raff (281457 effect#1), Surrender to Madness (319952 effect#7)
 Family Flags     : 52, 126
 Attributes       : ........ ........ x....... .......x   ........ ........ ........ ........ 
@@ -3443,7 +3324,6 @@ Class            : Discipline Priest
 School           : Shadow
 Spell Type       : Magic
 Spell Level      : 1
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ........ ......x. ........ ........ 
                  : Magic Heal
@@ -3466,7 +3346,6 @@ Spell Type       : Magic
 Spell Level      : 1
 Range            : 40 yards
 Duration         : 10 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, Generic Heal Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken
@@ -3493,7 +3372,6 @@ Class            : Priest
 School           : Shadow
 Spell Type       : Magic
 Spell Level      : 10
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Surrender to Madness (193223 effect#2), Surrender to Madness (319952 effect#7)
 Family Flags     : 44
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3513,7 +3391,6 @@ Class            : Shadow Priest
 School           : Shadow
 Spell Type       : Magic
 Spell Level      : 16
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ........ ........ x....... ........ 
                  : Magic Hostile Spell
@@ -3533,7 +3410,6 @@ Name             : Masochism (id=193063) [Spell Family (6), Passive, Hidden]
 Class            : Priest
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3553,7 +3429,6 @@ School           : Shadow
 Spell Type       : None
 Spell Level      : 1
 Duration         : 10 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3573,7 +3448,6 @@ Name             : Castigation (id=193134) [Spell Family (6), Passive, Hidden]
 Class            : Priest
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3594,7 +3468,6 @@ Name             : Enlightenment (id=193155) [Spell Family (6), Passive, Hidden]
 Class            : Priest
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3612,7 +3485,6 @@ Name             : Benediction (id=193157) [Spell Family (6), Passive, Hidden]
 Class            : Priest
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3630,7 +3502,6 @@ Name             : Fortress of the Mind (id=193195) [Spell Family (6), Passive, 
 Class            : Priest
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3665,7 +3536,6 @@ Spell Type       : None
 GCD              : 1.5 seconds
 Duration         : 60 seconds
 Cooldown         : 180 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ .....x.x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -3692,7 +3562,6 @@ Name             : Legacy of the Void (id=193225) [Spell Family (6), Passive, Hi
 Class            : Priest
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3757,7 +3626,6 @@ School           : Shadow
 Spell Type       : None
 Spell Level      : 10
 Duration         : Aura (infinite)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 100 maximum
 Proc Chance      : 101%
 Affecting spells : Surrender to Madness (193223 effect#2), Iridi's Empowerment (224999 effect#2), Void Eruption (319908 effect#1), Surrender to Madness (319952 effect#7)
@@ -3823,7 +3691,6 @@ Class            : Priest
 School           : Physical
 Spell Type       : None
 Spell Level      : 1
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : Voidform (185916)
 Attributes       : .......x ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3844,7 +3711,6 @@ Spell Type       : None
 Spell Level      : 1
 Range            : 60 yards
 Duration         : 15 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Surrender to Madness (193223 effect#2), Surrender to Madness (319952 effect#7)
 Family Flags     : 94
 Attributes       : ........ ........ x.x..... ........   ........ ........ .x...... ........ 
@@ -3875,7 +3741,6 @@ Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Charges          : 1 (20 seconds cooldown)
 Category         : 1690: Item - Priest T21 Discipline 2P Bonus (251843 effect#1), Power Word: Radiance (322115 effect#1)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x80000000
 Affecting spells : Rapid Healing (24546 effect#2), Spirit of Redemption (27827 effect#2), Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Surrender to Madness (193223 effect#2), Power Word: Shield (211558 effect#1), Twist of Fate (265258 effect#1), Enduring Luminescence (278643 effect#2), Enduring Luminescence (279245 effect#1), Dejahna's Inspiration (281456 effect#1), Kam Xi'raff (281457 effect#1), Surrender to Madness (319952 effect#7), Shining Radiance (337778 effect#1)
 Family Flags     : 22, 126
@@ -3944,7 +3809,6 @@ Name             : Psychic Voice (id=196704) [Spell Family (6), Passive, Hidden]
 Class            : Priest
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3987,7 +3851,6 @@ Name             : Afterlife (id=196707) [Spell Family (6), Passive]
 Class            : Priest
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4011,7 +3874,6 @@ Name             : Light of the Naaru (id=196985) [Spell Family (6), Passive]
 Class            : Priest
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4029,7 +3891,6 @@ Name             : Shield Discipline (id=197045) [Spell Family (6), Passive]
 Class            : Priest
 School           : Holy
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4050,7 +3911,6 @@ Class            : Priest
 School           : Physical
 Spell Type       : None
 Spell Level      : 1
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ........ ......x. ........ ........ 
                  : Magic Heal
@@ -4071,7 +3931,6 @@ Name             : Dome of Light (desc=PvP Talent) (id=197590) [Spell Family (6)
 Class            : Priest
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4099,7 +3958,6 @@ Class            : Discipline Priest
 School           : Shadow
 Spell Type       : None
 Spell Level      : 24
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Real PPM         : 1 (Haste multiplier)
 Proc Flags       : ........ ........ x.x..... ........ 
@@ -4123,7 +3981,6 @@ School           : Shadow
 Spell Type       : None
 Range            : 100 yards
 Duration         : 20 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : Power of the Dark Side (198068)
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -4166,7 +4023,6 @@ Name             : Lingering Insanity (id=199849) [Spell Family (6), Passive, Hi
 Class            : Priest
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4187,7 +4043,6 @@ Name             : Reaper of Souls (id=199853) [Spell Family (6), Passive, Hidde
 Class            : Priest
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4207,7 +4062,6 @@ Name             : San'layn (id=199855) [Spell Family (6), Passive, Hidden]
 Class            : Priest
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4236,7 +4090,6 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Charges          : 2 (9 seconds cooldown)
 Category         : 1169
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Twist of Fate (123254 effect#1), Priest (137030 effect#1), Holy Priest (137031 effect#3), Shadow Priest (137033 effect#1), Surrender to Madness (193223 effect#2), Voidform (194249 effect#1), Schism (214621 effect#2), Shadowform (232698 effect#1), Zeks Exterminatus (236546 effect#1), Twist of Fate (265258 effect#1), Sins of the Many (280398 effect#1), Surrender to Madness (319952 effect#7), Shadow Word: Death (322107 effect#1), Kiss of Death (336133 effect#1)
 Family Flags     : 33, 44, 72
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
@@ -4261,7 +4114,6 @@ School           : Shadow
 Spell Type       : None
 Spell Level      : 1
 Range            : 50000 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ...x.... ........ 
@@ -4279,7 +4131,6 @@ Class            : Priest
 School           : Physical
 Spell Type       : None
 Spell Level      : 1
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ........ ......x. ........ ........ 
                  : Magic Heal
@@ -4301,7 +4152,6 @@ Class            : Priest
 School           : Holy
 Spell Type       : None
 Spell Level      : 1
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ...x.... ..x..... 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4326,8 +4176,7 @@ GCD              : 1.5 seconds
 Duration         : 15 seconds
 Cooldown         : 60 seconds
 Category         : 1417
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-                 : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
 Category Cooldown: 60 seconds
 Stance Mask      : 0x08000000
 Affecting spells : Item - Priest T18 Shadow 2P Bonus (186980 effect#2), Surrender to Madness (193223 effect#2), Surrender to Madness (319952 effect#7), Shadowflame Prism (336143 effect#1)
@@ -4356,7 +4205,6 @@ Spell Level      : 1
 GCD              : 1.5 seconds
 Duration         : 20 seconds
 Cooldown         : 120 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ..x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4387,7 +4235,6 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 4 seconds
 Cooldown         : 60 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
@@ -4412,7 +4259,6 @@ Class            : Priest
 School           : Physical
 Spell Type       : None
 Spell Level      : 1
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4435,7 +4281,6 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 4 seconds
 Cooldown         : 60 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Surrender to Madness (193223 effect#2), Apotheosis (200183 effect#2), Surrender to Madness (319952 effect#7)
 Family Flags     : 69
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -4455,7 +4300,6 @@ Name             : Guardian Angel (id=200209) [Spell Family (6), Passive]
 Class            : Priest
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4501,7 +4345,6 @@ Resource         : 1.8% Base Mana (0) (id=10913)
 Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Affecting spells : Twist of Fate (123254 effect#1), Holy Priest (137031 effect#3), Shadow Priest (137033 effect#1), Surrender to Madness (193223 effect#2), Voidform (194249 effect#1), Schism (214621 effect#2), Shadowform (232698 effect#1), Twist of Fate (265258 effect#1), Death Throes (278659 effect#1), Sins of the Many (280398 effect#1), Surrender to Madness (319952 effect#7)
 Family Flags     : 72, 100
@@ -4526,7 +4369,6 @@ Spell Type       : Magic
 Spell Level      : 1
 Range            : 40 yards
 Duration         : 20 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Affecting spells : Twist of Fate (123254 effect#1), Holy Priest (137031 effect#3), Shadow Priest (137033 effect#1), Surrender to Madness (193223 effect#2), Voidform (194249 effect#1), Schism (214621 effect#2), Holy Fire (231687 effect#2), Shadowform (232698 effect#1), Twist of Fate (265258 effect#1), Death Throes (278659 effect#1), Sins of the Many (280398 effect#1), Surrender to Madness (319952 effect#7)
 Triggered by     : Purge the Wicked (204197)
@@ -4555,7 +4397,6 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 3 seconds
 Cooldown         : 45 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4580,7 +4421,6 @@ Spell Level      : 43
 Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 15 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x80000000
 Affecting spells : Spirit of Redemption (27827 effect#2), Twist of Fate (123254 effect#1), Priest (137030 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Surrender to Madness (193223 effect#2), Twist of Fate (265258 effect#1), Dejahna's Inspiration (281456 effect#1), Kam Xi'raff (281457 effect#1), Surrender to Madness (319952 effect#7)
 Family Flags     : 86, 126
@@ -4637,7 +4477,6 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Charges          : 2 (9 seconds cooldown)
 Category         : 1590: Shadow Priest (137033 effect#10), Voidform (194249 effect#15), Mangaza's Madness (207701 effect#2)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Mastery: Madness (77486 effect#1), Twist of Fate (123254 effect#1), Holy Priest (137031 effect#3), Shadow Priest (137033 effect#1), Surrender to Madness (193223 effect#2), Voidform (194249 effect#1), Schism (214621 effect#2), Shadowform (232698 effect#1), Empty Mind (247226 effect#1), Twist of Fate (265258 effect#1), Whispers of the Damned (275722 effect#2), Sins of the Many (280398 effect#1), Surrender to Madness (319952 effect#7), Mind Devourer (338332 effect#1)
 Family Flags     : 30, 72
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4667,7 +4506,6 @@ Cast Time        : 1.8 seconds
 GCD              : 1.5 seconds
 Duration         : 30 seconds
 Cooldown         : 120 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Stance Mask      : 0x08000000
 Mechanic         : Charm
@@ -4693,7 +4531,6 @@ Name             : Dominant Mind (id=205367) [Spell Family (6), Passive]
 Class            : Priest
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4718,7 +4555,6 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 2 seconds
 Cooldown         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ x....... ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4742,7 +4578,6 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 1.5 yards/sec
 Cooldown         : 20 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Surrender to Madness (193223 effect#2), Surrender to Madness (319952 effect#7)
 Family Flags     : 31
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4767,7 +4602,6 @@ School           : Shadow
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Twist of Fate (123254 effect#1), Holy Priest (137031 effect#3), Shadow Priest (137033 effect#1), Surrender to Madness (193223 effect#2), Voidform (194249 effect#1), Schism (214621 effect#2), Shadowform (232698 effect#1), Twist of Fate (265258 effect#1), Sins of the Many (280398 effect#1), Surrender to Madness (319952 effect#7)
 Triggered by     : Shadow Crash (205385)
 Family Flags     : 31, 72
@@ -4793,7 +4627,6 @@ GCD              : 1.5 seconds
 Velocity         : 40 yards/sec
 Cooldown         : 4.5 seconds
 Category         : 1660
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 4.5 seconds
 Affecting spells : Mastery: Madness (77486 effect#1), Twist of Fate (123254 effect#1), Priest (137030 effect#1), Holy Priest (137031 effect#3), Shadow Priest (137033 effect#1), Surrender to Madness (193223 effect#2), Voidform (194249 effect#1), Void (211657 effect#1), Schism (214621 effect#2), Shadowform (232698 effect#1), Overwhelming Darkness (252909 effect#1), Twist of Fate (265258 effect#1), Sins of the Many (280398 effect#1), Surrender to Madness (319952 effect#7)
 Family Flags     : 72, 106
@@ -4907,7 +4740,6 @@ Class            : Priest
 School           : Shadow
 Spell Type       : Magic
 Spell Level      : 1
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4929,7 +4761,6 @@ Spell Level      : 37
 Range            : 100 yards
 Cast Time        : 10 seconds
 GCD              : 1.5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Surrender to Madness (193223 effect#2), Surrender to Madness (319952 effect#7)
 Family Flags     : 116
 Attributes       : ........ ........ x....... ....x...   ........ ........ .x...... ........ 
@@ -4950,7 +4781,6 @@ Class            : Priest
 School           : Physical
 Spell Type       : None
 Duration         : 180 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ..x..x.x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4976,7 +4806,6 @@ GCD              : 1.5 seconds
 Cooldown         : 8 seconds
 Charges          : 1 (8 seconds cooldown)
 Category         : 1509
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 8 seconds
 Stance Mask      : 0x80000000
 Affecting spells : Surrender to Madness (193223 effect#2), Surrender to Madness (319952 effect#7), Clear Mind (337707 effect#1)
@@ -5004,7 +4833,6 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Duration         : 9 seconds
 Cooldown         : 24 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Twist of Fate (123254 effect#1), Holy Priest (137031 effect#3), Shadow Priest (137033 effect#1), Surrender to Madness (193223 effect#2), Voidform (194249 effect#1), Shadowform (232698 effect#1), Twist of Fate (265258 effect#1), Sins of the Many (280398 effect#1), Surrender to Madness (319952 effect#7)
 Family Flags     : 56, 72
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5030,7 +4858,6 @@ School           : Holy
 Spell Type       : None
 Duration         : 7 seconds
 Cooldown         : 180 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Surrender to Madness (193223 effect#2), Afterlife (196707 effect#1), Surrender to Madness (319952 effect#7)
 Family Flags     : 5
 Attributes       : ........ ........ x....... ........   ........ ..x..... ........ ........ 
@@ -5070,7 +4897,6 @@ School           : Shadowfrost
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Surrender to Madness (193223 effect#2), Surrender to Madness (319952 effect#7)
 Family Flags     : 81
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -5094,7 +4920,6 @@ School           : Shadow
 Spell Type       : None
 Spell Level      : 10
 Duration         : Aura (infinite)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : Voidform (185916), Voidform (194249)
 Attributes       : .......x ........ ..x..... x..x.x..   .....x.. ..x..... ........ ........ 
                  : ........ ......x. ...x.... ........   ........ ........ ........ ........ 
@@ -5116,7 +4941,6 @@ Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 6 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Mechanic         : Flee
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
@@ -5149,7 +4973,6 @@ Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
 Category         : 1660
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Mastery: Madness (77486 effect#1), Surrender to Madness (193223 effect#2), Legacy of the Void (193225 effect#1), Voidform (194249 effect#12), Heart of the Void (248296 effect#1), Surrender to Madness (319952 effect#7)
 Family Flags     : 36
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5173,7 +4996,6 @@ Class            : Shadow Priest
 School           : Shadow
 Spell Type       : None
 Spell Level      : 14
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5197,7 +5019,6 @@ Class            : Shadow Priest
 School           : Physical
 Spell Type       : None
 Spell Level      : 14
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5221,7 +5042,6 @@ Spell Type       : Magic
 Spell Level      : 10
 Range            : 100 yards
 Velocity         : 35 yards/sec
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Mastery: Madness (77486 effect#1), Twist of Fate (123254 effect#1), Holy Priest (137031 effect#3), Shadow Priest (137033 effect#1), Surrender to Madness (193223 effect#2), Legacy of the Void (193225 effect#1), Voidform (194249 effect#1), Schism (214621 effect#2), Shadowform (232698 effect#1), Heart of the Void (248296 effect#1), Twist of Fate (265258 effect#1), Sins of the Many (280398 effect#1), Surrender to Madness (319952 effect#7)
 Triggered by     : Surrender to Madness (319952)
 Family Flags     : 36, 72
@@ -5244,7 +5064,6 @@ Spell Type       : Magic
 Spell Level      : 10
 Range            : 100 yards
 Velocity         : 40 yards/sec
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Mastery: Madness (77486 effect#1), Twist of Fate (123254 effect#1), Holy Priest (137031 effect#3), Shadow Priest (137033 effect#1), Surrender to Madness (193223 effect#2), Legacy of the Void (193225 effect#1), Voidform (194249 effect#1), Schism (214621 effect#2), Shadowform (232698 effect#1), Heart of the Void (248296 effect#1), Twist of Fate (265258 effect#1), Sins of the Many (280398 effect#1), Surrender to Madness (319952 effect#7)
 Triggered by     : Surrender to Madness (319952)
 Family Flags     : 36, 72
@@ -5265,7 +5084,6 @@ Class            : Discipline Priest
 School           : Holy
 Spell Type       : None
 Spell Level      : 18
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Surrender to Madness (193223 effect#2), Surrender to Madness (319952 effect#7)
 Family Flags     : 101
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -5287,7 +5105,6 @@ Class            : Priest
 School           : Holy
 Spell Type       : None
 Spell Level      : 31
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5310,7 +5127,6 @@ Class            : Shadow Priest
 School           : Holy
 Spell Type       : None
 Spell Level      : 18
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5355,7 +5171,6 @@ School           : Shadow
 Spell Type       : Magic
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Attributes       : ........ ........ ........ x.......   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5386,7 +5201,6 @@ School           : Shadow
 Spell Type       : Magic
 Spell Level      : 14
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : Void Bolt (205448)
 Attributes       : .......x ........ ........ ........   ........ ..x..... ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ xx...... ........ 
@@ -5405,7 +5219,6 @@ Name             : Angel's Mercy (id=238100) [Spell Family (6), Passive]
 Class            : Priest
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
@@ -5426,7 +5239,6 @@ Name             : Cosmic Ripple (id=238136) [Spell Family (6), Passive]
 Class            : Priest
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -5444,7 +5256,6 @@ Name             : Misery (id=238558) [Spell Family (6), Passive]
 Class            : Priest
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -5463,7 +5274,6 @@ Class            : Priest
 School           : Holy
 Spell Type       : None
 Spell Level      : 1
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Spirit of Redemption (27827 effect#2), Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Surrender to Madness (193223 effect#2), Light of T'uure (208065 effect#1), Twist of Fate (265258 effect#1), Dejahna's Inspiration (281456 effect#1), Kam Xi'raff (281457 effect#1), Surrender to Madness (319952 effect#7)
 Family Flags     : 93, 126
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
@@ -5485,7 +5295,6 @@ School           : Holy
 Spell Type       : None
 GCD              : 1.5 seconds
 Cooldown         : 90 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5685,7 +5494,6 @@ School           : Shadow
 Spell Type       : None
 Spell Level      : 1
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ..x..... ........ ........ ........ 
                  : White Melee
@@ -5712,7 +5520,6 @@ Class            : Priest
 School           : Shadow
 Spell Type       : None
 Range            : 50000 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ...x.... ........ 
@@ -5730,7 +5537,6 @@ Class            : Discipline Holy Priest
 School           : Holy
 Spell Type       : None
 Spell Level      : 19
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5755,7 +5561,6 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 4 seconds
 Cooldown         : 45 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Twist of Fate (123254 effect#1), Holy Priest (137031 effect#3), Shadow Priest (137033 effect#1), Mental Fatigue (185104 effect#1), Surrender to Madness (193223 effect#2), Voidform (194249 effect#1), Schism (214621 effect#2), Shadowform (232698 effect#1), Twist of Fate (265258 effect#1), Sins of the Many (280398 effect#1), Surrender to Madness (319952 effect#7)
 Family Flags     : 51, 72
 Attributes       : ........ ........ ........ ..x.....   ..x..... ......x. ........ .....x.. 
@@ -5790,7 +5595,6 @@ Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Cooldown         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Twist of Fate (123254 effect#1), Holy Priest (137031 effect#3), Shadow Priest (137033 effect#1), Surrender to Madness (193223 effect#2), Voidform (194249 effect#1), Schism (214621 effect#2), Shadowform (232698 effect#1), Twist of Fate (265258 effect#1), Sins of the Many (280398 effect#1), Surrender to Madness (319952 effect#7)
 Family Flags     : 72, 113
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5814,7 +5618,6 @@ Class            : Priest
 School           : Physical
 Spell Type       : None
 Duration         : 15 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ..x..x.x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5852,7 +5655,6 @@ Name             : Last Word (id=263716) [Spell Family (6), Passive]
 Class            : Priest
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -5974,7 +5776,6 @@ Spell Type       : None
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 1.5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Surrender to Madness (193223 effect#2), Surrender to Madness (319952 effect#7)
 Triggered by     : Symbol of Hope (64901)
 Family Flags     : 68
@@ -6003,7 +5804,6 @@ Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
 Cooldown         : 720 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x80000000
 Affecting spells : Spirit of Redemption (27827 effect#2), Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Surrender to Madness (193223 effect#2), Twist of Fate (265258 effect#1), Dejahna's Inspiration (281456 effect#1), Kam Xi'raff (281457 effect#1), Surrender to Madness (319952 effect#7)
 Family Flags     : 126
@@ -6030,7 +5830,6 @@ Class            : Priest
 School           : Physical
 Spell Type       : None
 Duration         : 10 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Triggered by     : Twist of Fate (265259)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6056,7 +5855,6 @@ Name             : Twist of Fate (id=265259) [Spell Family (6), Passive]
 Class            : Priest
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ..x.x.x. x.x.x.x. x.x..x.. ........ 
                  : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Trap Triggered
@@ -6536,7 +6334,6 @@ Class            : Priest
 School           : Holy
 Spell Type       : None
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Spirit of Redemption (27827 effect#2), Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Surrender to Madness (193223 effect#2), Twist of Fate (265258 effect#1), Dejahna's Inspiration (281456 effect#1), Kam Xi'raff (281457 effect#1), Surrender to Madness (319952 effect#7)
 Family Flags     : 76, 126
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6563,7 +6360,6 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 180 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Affecting spells : Surrender to Madness (193223 effect#2), Dome of Light (197590 effect#2), Light of T'uure (208065 effect#1), Kam Xi'raff (281457 effect#1), Surrender to Madness (319952 effect#7)
 Family Flags     : 99
@@ -6586,7 +6382,6 @@ Class            : Discipline Priest
 School           : Physical
 Spell Type       : None
 Spell Level      : 10
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7438,7 +7233,6 @@ Name             : Sins of the Many (id=280391) [Spell Family (6), Passive]
 Class            : Priest
 School           : Holy
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -7457,7 +7251,6 @@ Class            : Priest
 School           : Holy
 Spell Type       : None
 Duration         : Aura (infinite)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7892,7 +7685,6 @@ Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 60 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7914,7 +7706,6 @@ Class            : Shadow Priest
 School           : Physical
 Spell Type       : None
 Spell Level      : 24
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7937,7 +7728,6 @@ School           : Shadow
 Spell Type       : Magic
 Range            : 100 yards
 Velocity         : 27 yards/sec
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Mastery: Madness (77486 effect#1), Twist of Fate (123254 effect#1), Holy Priest (137031 effect#3), Shadow Priest (137033 effect#1), Surrender to Madness (193223 effect#2), Legacy of the Void (193225 effect#1), Voidform (194249 effect#1), Schism (214621 effect#2), Shadowform (232698 effect#1), Heart of the Void (248296 effect#1), Twist of Fate (265258 effect#1), Sins of the Many (280398 effect#1), Surrender to Madness (319952 effect#7)
 Family Flags     : 36, 72
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7957,7 +7747,6 @@ Class            : Priest
 School           : Holy
 Spell Type       : Magic
 Spell Level      : 17
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Spirit of Redemption (27827 effect#2), Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Surrender to Madness (193223 effect#2), Twist of Fate (265258 effect#1), Dejahna's Inspiration (281456 effect#1), Kam Xi'raff (281457 effect#1), Surrender to Madness (319952 effect#7)
 Triggered by     : Holy Nova (132157)
 Family Flags     : 126
@@ -8017,7 +7806,6 @@ Class            : Holy Priest
 School           : Holy
 Spell Type       : None
 Spell Level      : 43
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8261,7 +8049,6 @@ Name             : Intangibility (id=288733) [Spell Family (6), Passive, Hidden]
 Class            : Priest
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -8354,7 +8141,6 @@ Class            : Priest
 School           : Shadow
 Spell Type       : None
 Duration         : 3.9 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : Void Torrent (263165)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ....xx.. 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -8501,7 +8287,6 @@ Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 20 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x80000000
 Affecting spells : Spirit of Redemption (27827 effect#2), Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Surrender to Madness (193223 effect#2), Power Word: Shield (211558 effect#1), Twist of Fate (265258 effect#1), Dejahna's Inspiration (281456 effect#1), Kam Xi'raff (281457 effect#1), Surrender to Madness (319952 effect#7)
 Family Flags     : 104, 126
@@ -8547,7 +8332,6 @@ Class            : Shadow Priest
 School           : Holy
 Spell Type       : None
 Spell Level      : 13
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8567,7 +8351,6 @@ Class            : Shadow Priest
 School           : Shadow
 Spell Type       : None
 Spell Level      : 39
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8588,7 +8371,6 @@ Class            : Discipline Holy Priest
 School           : Holy
 Spell Type       : None
 Spell Level      : 48
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8612,7 +8394,6 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 25 seconds
 Cooldown         : 120 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ .....x.x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -8649,7 +8430,6 @@ Name             : Death and Madness (desc=PvP Talent) (id=321291) [Spell Family
 Class            : Priest
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ........ ........ x....... ........ 
                  : Magic Hostile Spell
@@ -8674,7 +8454,6 @@ Name             : Prayer Circle (id=321377) [Spell Family (6), Passive]
 Class            : Priest
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ........ ..x...x. ........ ........ 
                  : Generic Heal, Magic Heal
@@ -8696,7 +8475,6 @@ Class            : Priest
 School           : Physical
 Spell Type       : None
 Duration         : 8 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Triggered by     : Prayer Circle (321377)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8718,7 +8496,6 @@ Name             : Light's Caress (id=321950) [Spell Family (6), Passive]
 Class            : Priest
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -8737,7 +8514,6 @@ Class            : Priest
 School           : Shadow
 Spell Type       : None
 Duration         : 4 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
                  : ........ ......x. ...x.... ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ...x.... ........ .xx..... ........ 
@@ -8758,7 +8534,6 @@ School           : Holy
 Spell Type       : None
 Range            : 50000 yards
 Duration         : 7 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : Death and Madness (321291)
 Attributes       : ........ ........ ........ ...x....   ........ ..x..... ........ ........ 
                  : ..x..... ........ ........ ........   ........ .x...... xx...... ........ 
@@ -8780,7 +8555,6 @@ School           : Holy
 Spell Type       : Magic
 Spell Level      : 5
 Range            : 50000 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ x..x.x.x   .....x.. ........ ........ ........ 
                  : ..x..... ......x. ...x.x.. ........   ........ .x...... ........ ......x. 
                  : x......x .....x.x ........ ........   ...x.... ..x..... .xx..... ........ 
@@ -8801,7 +8575,6 @@ Spell Type       : Magic
 Spell Level      : 41
 Range            : 30 yards
 Duration         : 7 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Stance Mask      : 0x08000000
 Mechanic         : Silence
@@ -8827,7 +8600,6 @@ Class            : Priest
 School           : Shadow
 Spell Type       : None
 Spell Level      : 27
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8848,7 +8620,6 @@ Class            : Shadow Priest
 School           : Holy
 Spell Type       : None
 Spell Level      : 32
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8869,7 +8640,6 @@ Class            : Shadow Priest
 School           : Holy
 Spell Type       : None
 Spell Level      : 47
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8890,7 +8660,6 @@ Class            : Discipline Holy Priest
 School           : Holy
 Spell Type       : None
 Spell Level      : 48
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8911,7 +8680,6 @@ Class            : Discipline Priest
 School           : Holy
 Spell Type       : None
 Spell Level      : 39
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8931,7 +8699,6 @@ Class            : Shadow Priest
 School           : Holy
 Spell Type       : None
 Spell Level      : 48
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8955,7 +8722,6 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Duration         : 5 seconds
 Cooldown         : 45 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Twist of Fate (123254 effect#1), Holy Priest (137031 effect#3), Shadow Priest (137033 effect#1), Surrender to Madness (193223 effect#2), Voidform (194249 effect#1), Schism (214621 effect#2), Shadowform (232698 effect#1), Twist of Fate (265258 effect#1), Sins of the Many (280398 effect#1), Surrender to Madness (319952 effect#7), Shattered Perceptions (338315 effect#1), 
 Family Flags     : 72, 84
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8997,7 +8763,6 @@ Spell Type       : None
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 6 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : Mindgames (323673)
 Attributes       : .......x ........ ........ ........   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -9019,7 +8784,6 @@ Spell Type       : None
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 6 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : Mindgames (323673)
 Attributes       : .......x ........ ........ ........   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -9042,7 +8806,6 @@ Spell Type       : Magic
 Resource         : 0.5% Base Mana (0) (id=192705)
 GCD              : 1.5 seconds
 Cooldown         : 60 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
@@ -9075,7 +8838,6 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 180 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 99 maximum
 Proc Chance      : 100%
 Proc Flags       : ........ ........ x....... ........ 
@@ -9123,7 +8885,6 @@ School           : Arcane
 Spell Type       : Magic
 Resource         : 0.5% Base Mana (0) (id=192701)
 GCD              : 1 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Twist of Fate (123254 effect#1), Holy Priest (137031 effect#3), Shadow Priest (137033 effect#1), Surrender to Madness (193223 effect#2), Voidform (194249 effect#1), Schism (214621 effect#2), Shadowform (232698 effect#1), Twist of Fate (265258 effect#1), Sins of the Many (280398 effect#1), Surrender to Madness (319952 effect#7), Boon of the Ascended (325013 effect#8)
 Family Flags     : 72, 109
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -9148,7 +8909,6 @@ Name             : Ascended Nova (id=325041) [Spell Family (6)]
 Class            : Priest
 School           : Arcane
 Spell Type       : Magic
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Spirit of Redemption (27827 effect#2), Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Surrender to Madness (193223 effect#2), Twist of Fate (265258 effect#1), Dejahna's Inspiration (281456 effect#1), Kam Xi'raff (281457 effect#1), Surrender to Madness (319952 effect#7)
 Triggered by     : Ascended Nova (325020)
 Family Flags     : 126
@@ -9169,7 +8929,6 @@ Class            : Priest
 School           : Shadow
 Spell Type       : Magic
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Spirit of Redemption (27827 effect#2), Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Surrender to Madness (193223 effect#2), Twist of Fate (265258 effect#1), Dejahna's Inspiration (281456 effect#1), Kam Xi'raff (281457 effect#1), Surrender to Madness (319952 effect#7)
 Triggered by     : Unholy Transfusion (325203)
 Family Flags     : 126
@@ -9193,7 +8952,6 @@ Spell Type       : Magic
 GCD              : 1.5 seconds
 Duration         : 15 seconds
 Cooldown         : 60 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
@@ -9224,7 +8982,6 @@ Range            : 40 yards
 GCD              : 1 seconds
 Velocity         : 42 yards/sec
 Cooldown         : 3 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Twist of Fate (123254 effect#1), Holy Priest (137031 effect#3), Shadow Priest (137033 effect#1), Surrender to Madness (193223 effect#2), Voidform (194249 effect#1), Schism (214621 effect#2), Shadowform (232698 effect#1), Twist of Fate (265258 effect#1), Sins of the Many (280398 effect#1), Surrender to Madness (319952 effect#7), Boon of the Ascended (325013 effect#8)
 Family Flags     : 72, 109
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -9254,7 +9011,6 @@ Name             : Ascended Eruption (id=325326) [Spell Family (6)]
 Class            : Priest
 School           : Arcane
 Spell Type       : Magic
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Twist of Fate (123254 effect#1), Holy Priest (137031 effect#3), Shadow Priest (137033 effect#1), Surrender to Madness (193223 effect#2), Voidform (194249 effect#1), Schism (214621 effect#2), Shadowform (232698 effect#1), Twist of Fate (265258 effect#1), Sins of the Many (280398 effect#1), Surrender to Madness (319952 effect#7), Boon of the Ascended (325013 effect#8)
 Family Flags     : 72, 109
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9281,7 +9037,6 @@ Resource         : 2% Base Mana (0) (id=192749)
 GCD              : 1.5 seconds
 Duration         : 60 seconds
 Cooldown         : 90 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 1 initial, 12 maximum
 Proc Chance      : 100%
 Proc Flags       : ........ ......x. x....... ........ 
@@ -9322,7 +9077,6 @@ Spell Type       : None
 Range            : 100 yards
 Velocity         : 30 yards/sec
 Duration         : 15 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9342,7 +9096,6 @@ School           : Nature
 Spell Type       : None
 Range            : 100 yards
 Velocity         : 30 yards/sec
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9385,7 +9138,6 @@ School           : Nature
 Spell Type       : None
 Range            : 100 yards
 Velocity         : 30 yards/sec
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9404,7 +9156,6 @@ Class            : Priest
 School           : Shadow
 Spell Type       : None
 Spell Level      : 12
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9425,7 +9176,6 @@ Class            : Priest
 School           : Holy
 Spell Type       : None
 Spell Level      : 17
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9448,7 +9198,6 @@ Class            : Priest
 School           : Holy
 Spell Type       : None
 Spell Level      : 54
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9474,7 +9223,6 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 12 seconds
 Category         : 691
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stance Mask      : 0x08000000
 Affecting spells : Mastery: Madness (77486 effect#1), Twist of Fate (123254 effect#1), Holy Priest (137031 effect#3), Shadow Priest (137033 effect#1), Surrender to Madness (193223 effect#2), Voidform (194249 effect#1), Schism (214621 effect#2), Shadowform (232698 effect#1), Twist of Fate (265258 effect#1), Sins of the Many (280398 effect#1), Surrender to Madness (319952 effect#7), Mind Devourer (338333 effect#1)
 Family Flags     : 72, 87
@@ -9559,7 +9307,6 @@ Name             : Mind Devourer (id=338332) [Spell Family (6), Passive, Hidden]
 Class            : Priest
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Conduit Id       : 113
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9583,7 +9330,6 @@ Class            : Priest
 School           : Shadow
 Spell Type       : None
 Duration         : 15 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : Devouring Plague (335467)
 Attributes       : ........ ........ ..x..... ........   .....x.. ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

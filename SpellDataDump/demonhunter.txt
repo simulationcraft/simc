@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35360 shadowlands-BETA (, no-networking)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35360 shadowlands-BETA (hotfix 2020-08-02/35360, no-networking)
 
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -23,7 +23,6 @@ School           : None
 Spell Type       : Magic
 Range            : 100 yards
 Duration         : Aura (infinite)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ........   ........ ...x.... ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
                  : x....... ........ ........ ........   ........ ........ ........ ........ 
@@ -138,7 +137,6 @@ School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
 Cooldown         : 1.5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 79
 Attributes       : ........ ........ .......x x.......   .....x.. ..x..... ........ ........ 
                  : ........ ......x. ........ ....x...   ........ .x...... xx...... ........ 
@@ -165,7 +163,6 @@ Spell Type       : Melee
 Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Fist Weapon, Dagger, Spear
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Demon Soul (163073 effect#1), Momentum (208628 effect#1), Item - Demon Hunter T19 Havoc 2P Bonus (211054 effect#1), Havoc Demon Hunter (212612 effect#1), Vengeance Demon Hunter (212613 effect#3), Chaos Blades (247938 effect#2), Insatiable Hunger (258876 effect#2), Chaotic Transformation (288754 effect#2), Mark of the Ogre (326486 effect#3)
 Family Flags     : 0, 16, 32, 42
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
@@ -192,7 +189,6 @@ Class            : Demon Hunter
 School           : Chaos
 Spell Type       : None
 Duration         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Flags       : ..x.x... x...x... x....... ........ 
                  : White Melee, Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
 Affecting spells : Soul Rending (204909 effect#2), Demonic Origins (235893 effect#2), Metamorphosis (320421 effect#1), Metamorphosis (320422 effect#1), Demon's Touch (339153 effect#1)
@@ -235,7 +231,6 @@ Class            : Beast Mastery Marksmanship Survival Assassination Outlaw Subt
 Race             : Dark Iron Dwarf (0x800)
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -257,7 +252,6 @@ Class            : Brewmaster Guardian Vengeance Monk, Druid, Demon Hunter
 Race             : Dark Iron Dwarf (0x800)
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -280,7 +274,6 @@ Resource         : 40 Fury (17) (id=10198)
 Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, War Glaive, Fist Weapon
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Metamorphosis (162264 effect#5), Mastery: Demonic Presence (185164 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Immolation Aura (258920 effect#6), Thirsting Blades (278736 effect#2), Chaos Strike (320413 effect#1), Mark of the Ogre (326486 effect#3), Chaotic Blades (337567 effect#2)
 Family Flags     : 32, 43, 52
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
@@ -305,7 +298,6 @@ Class            : Demon Hunter
 School           : Shadow
 Spell Type       : Melee
 Duration         : 15 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Family Flags     : 21
 Attributes       : ........ ........ ..x..... x..x....   .....x.. ..x..... ........ ........ 
@@ -334,7 +326,6 @@ Name             : Shattered Souls (id=178940) [Spell Family (107), Passive]
 Class            : Havoc Demon Hunter
 School           : Physical
 Spell Type       : Magic
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : .x...... ........ ........ ........ 
                  : Killing Blow
@@ -358,7 +349,6 @@ Class            : Demon Hunter
 School           : Shadow
 Spell Type       : Magic
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Shattered Restoration (338793 effect#1)
 Family Flags     : 20
 Attributes       : ........ ........ .......x x..x....   .....x.. ..x..... ........ ........ 
@@ -381,7 +371,6 @@ Class            : Havoc Demon Hunter
 School           : Physical
 Spell Type       : None
 Spell Level      : 27
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -403,7 +392,6 @@ Resource         : 30 Fury (17) (id=10418)
 GCD              : 1.5 seconds
 Duration         : 2 seconds
 Cooldown         : 60 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Demon Soul (163073 effect#1), Mastery: Demonic Presence (185164 effect#1), Unleashed Power (206477 effect#1), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Vengeance Demon Hunter (212613 effect#3), Chaos Blades (247938 effect#2), Demon's Touch (339153 effect#1)
 Family Flags     : 16, 17, 32, 43
 Attributes       : ....x... ........ ........ ........   ...x...x .x...... ........ ........ 
@@ -433,7 +421,6 @@ Range            : 5 yards
 Duration         : 3 seconds
 Cooldown         : 15 seconds
 Category         : 88
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 15 seconds
 Affecting spells : Disrupt (320361 effect#1)
 Family Flags     : 19, 72
@@ -457,7 +444,6 @@ Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
 Spell Level      : 32
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ........ ....x... x....... ........ 
                  : Generic Hostile Spell, Magic Hostile Spell
@@ -483,7 +469,6 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Charges          : 1 (9 seconds cooldown)
 Category         : 1612: Master of the Glaive (203556 effect#2), Havoc Demon Hunter (212612 effect#5)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Demon Soul (163073 effect#1), Momentum (208628 effect#1), Mo'arg Bionic Stabilizers (208826 effect#1), Havoc Demon Hunter (212612 effect#1), Vengeance Demon Hunter (212613 effect#3), Chaos Blades (247938 effect#2), Throw Glaive (320386 effect#1), Throw Glaive (320387 effect#1), Demon's Touch (339153 effect#1)
 Family Flags     : 5, 16, 32, 42, 85
 Attributes       : ....x... ........ ..x..x.. ........   ........ .x...... ........ ........ 
@@ -504,7 +489,6 @@ Class            : Havoc Demon Hunter
 School           : Physical
 Spell Type       : None
 Spell Level      : 10
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -533,7 +517,6 @@ Range            : 30 yards
 Duration         : 3 seconds
 Cooldown         : 8 seconds
 Category         : 82
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 8 seconds
 Proc Flags       : ...x.x.x .x.x.x.. .x.x.... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, Generic Heal Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
@@ -558,7 +541,6 @@ Name             : Energy Regen (id=186452) [Spell Family (107), Passive, Hidden
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -579,8 +561,7 @@ Spell Type       : None
 Duration         : 15 seconds
 Cooldown         : 300 seconds
 Category         : 1251
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-                 : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
 Category Cooldown: 20 seconds
 Affecting spells : Soul Rending (217996 effect#2), Metamorphosis (321067 effect#1), Metamorphosis (321068 effect#1)
 Family Flags     : 28
@@ -631,7 +612,6 @@ Duration         : 1 seconds
 Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, War Glaive, Fist Weapon
 Cooldown         : 15 seconds
 Category         : 1640
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 15 seconds
 Affecting spells : Metamorphosis (162264 effect#6), First Blood (206416 effect#2), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Item - Demon Hunter T20 Havoc 4P Bonus (242227 effect#1), Revolving Blades (279581 effect#2), Revolving Blades (279584 effect#1), Essence Break (320338 effect#1), Blade Dance (320402 effect#1), Demon's Touch (339153 effect#1)
 Family Flags     : 25, 32, 42, 85
@@ -668,7 +648,6 @@ Spell Type       : None
 GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 60 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Spectral Sight (320379 effect#1), Lost in Darkness (339149 effect#1)
 Family Flags     : 74
 Attributes       : ........ ........ ........ .x......   ........ ........ ........ ........ 
@@ -704,7 +683,6 @@ Range            : 30 yards
 Cooldown         : 0.8 seconds
 Charges          : 1 (20 seconds cooldown)
 Category         : 1553: Abyssal Strike (207550 effect#1), Infernal Strike (320791 effect#1)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 0.8 seconds
 Affecting spells : Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2)
 Family Flags     : 1
@@ -727,7 +705,6 @@ Class            : Demon Hunter
 School           : Fire
 Spell Type       : Melee
 Range            : 50000 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Demon Soul (163073 effect#1), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Vengeance Demon Hunter (212613 effect#1), 
 Family Flags     : 1, 70, 72
 Attributes       : ....x... ........ ..x..x.. ........   ........ ........ ........ ........ 
@@ -747,7 +724,6 @@ Name             : Increased Threat (id=189926) [Spell Family (107), Passive, Hi
 Class            : Vengeance Demon Hunter
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -768,8 +744,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 300 seconds
 Category         : 1577
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-                 : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
 Category Cooldown: 300 seconds
 Affecting spells : Soul Rending (204909 effect#2), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Demonic Origins (235893 effect#2), Metamorphosis (320421 effect#1), Metamorphosis (320422 effect#1), Demon's Touch (339153 effect#1)
 Family Flags     : 15, 32
@@ -798,7 +773,6 @@ Class            : Demon Hunter
 School           : Chaos
 Spell Type       : Melee
 Range            : 50000 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Demon Soul (163073 effect#1), Mastery: Demonic Presence (185164 effect#1), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Chaos Blades (247938 effect#2), Demon's Touch (339153 effect#1)
 Family Flags     : 16, 18, 43
 Attributes       : ....x... ........ ........ ........   ........ .x...... ........ ........ 
@@ -819,7 +793,6 @@ Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
 Duration         : 1 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -838,7 +811,6 @@ Name             : Chaos Strike (id=193840) [Spell Family (107)]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -859,7 +831,6 @@ GCD              : 0.25 seconds
 Cooldown         : 1 seconds
 Charges          : 1 (10 seconds cooldown)
 Category         : 1545: Fel Rush (320416 effect#1), Erratic Fel Core (337685 effect#1)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 2
 Attributes       : ....x... ........ x....... ........   ........ .xx..... ........ ........ 
                  : ........ ........ ..x..... ........   ........ ........ ........ ........ 
@@ -879,7 +850,6 @@ Name             : Double Jump (id=196055) [Spell Family (107), Passive]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -900,7 +870,6 @@ Spell Type       : None
 GCD              : 1.5 seconds
 Duration         : 5 seconds
 Cooldown         : 180 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -927,7 +896,6 @@ Spell Level      : 39
 GCD              : 1.5 seconds
 Duration         : 8 seconds
 Cooldown         : 300 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 77
 Attributes       : ....x... ........ ........ .......x   .....x.. ..x..... ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -949,7 +917,6 @@ Class            : Havoc Demon Hunter
 School           : Physical
 Spell Type       : None
 Spell Level      : 1
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Internal Cooldown: 0.5 seconds
 Proc Chance      : 20%
 Proc Flags       : ....x... ....x... ........ ........ 
@@ -973,7 +940,6 @@ Name             : Glide (id=197130) [Spell Family (107), Passive, Hidden]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -997,7 +963,6 @@ GCD              : 1.5 seconds
 Duration         : 2 seconds
 Cooldown         : 30 seconds
 Category         : 1582
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 30 seconds
 Affecting spells : Blind Fury (203550 effect#1), Soul Flame of Insight (226334 effect#2), Item - Demon Hunter T21 Havoc 2P Bonus (251767 effect#1), Demon's Touch (339153 effect#1)
 Family Flags     : 10
@@ -1026,7 +991,6 @@ Class            : Demon Hunter
 School           : Chromatic
 Spell Type       : Magic
 Range            : 50000 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Demon Soul (163073 effect#1), Mastery: Demonic Presence (185164 effect#1), Blind Fury (203550 effect#1), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Soul Flame of Insight (226334 effect#1), Chaos Blades (247938 effect#2), Item - Demon Hunter T21 Havoc 2P Bonus (251767 effect#1), Eyes of Rage (278500 effect#2), Eye Beam (320415 effect#1), Demon's Touch (339153 effect#1), Exposed Wound (339229 effect#1)
 Family Flags     : 8, 10, 16, 43
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1049,7 +1013,6 @@ Spell Type       : None
 Spell Level      : 24
 Cooldown         : 60 seconds
 Category         : 1621
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 60 seconds
 Affecting spells : Desperate Instincts (205411 effect#3), Fel Defender (338671 effect#1)
 Family Flags     : 26
@@ -1071,7 +1034,6 @@ School           : Physical
 Spell Type       : None
 Duration         : 1 seconds
 Cooldown         : 25 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 25 seconds
 Affecting spells : Prepared (203551 effect#2), Momentum (206476 effect#1)
 Family Flags     : 3
@@ -1101,7 +1063,6 @@ Class            : Demon Hunter
 School           : Physical
 Spell Type       : Melee
 Duration         : 3 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Demon Soul (163073 effect#1), Prepared (203551 effect#2), Momentum (206476 effect#1), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Chaos Blades (247938 effect#2), 
 Triggered by     : Vengeful Retreat (198793)
 Family Flags     : 3, 16, 42
@@ -1126,7 +1087,6 @@ School           : Chaos
 Spell Type       : Melee
 Range            : 15 yards
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Fist Weapon, Dagger, Spear
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Demon Soul (163073 effect#1), Mastery: Demonic Presence (185164 effect#1), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Chaos Blades (247938 effect#2), Immolation Aura (258920 effect#6), Thirsting Blades (278736 effect#1), Essence Break (320338 effect#1), Mark of the Ogre (326486 effect#3), Chaotic Blades (337567 effect#1), Demon's Touch (339153 effect#1)
 Triggered by     : Chaos Strike (162794)
 Family Flags     : 6, 16, 43
@@ -1148,7 +1108,6 @@ Class            : Demon Hunter
 School           : Physical
 Spell Type       : Melee
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Fist Weapon, Dagger, Spear
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Metamorphosis (162264 effect#6), Demon Soul (163073 effect#1), First Blood (206416 effect#2), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Item - Demon Hunter T20 Havoc 4P Bonus (242227 effect#1), Chaos Blades (247938 effect#2), Revolving Blades (279581 effect#2), Revolving Blades (279584 effect#1), Essence Break (320338 effect#1), Blade Dance (320402 effect#1), Demon's Touch (339153 effect#1)
 Triggered by     : Blade Dance (188499)
 Family Flags     : 16, 25, 42
@@ -1172,7 +1131,6 @@ Class            : Demon Hunter
 School           : Chromatic
 Spell Type       : Magic
 Duration         : 3 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Demon Soul (163073 effect#1), Mastery: Demonic Presence (185164 effect#1), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Chaos Blades (247938 effect#2), 
 Family Flags     : 16, 43, 56
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1197,7 +1155,6 @@ Class            : Demon Hunter
 School           : Physical
 Spell Type       : Melee
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Fist Weapon, Dagger, Spear
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Metamorphosis (162264 effect#6), Demon Soul (163073 effect#1), First Blood (206416 effect#2), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Item - Demon Hunter T20 Havoc 4P Bonus (242227 effect#1), Chaos Blades (247938 effect#2), Revolving Blades (279581 effect#2), Revolving Blades (279584 effect#1), Essence Break (320338 effect#1), Blade Dance (320402 effect#1), Demon's Touch (339153 effect#1)
 Triggered by     : Blade Dance (188499)
 Family Flags     : 12, 16, 25, 42
@@ -1247,7 +1204,6 @@ Resource         : 40 Fury (17) (id=10809)
 Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Fist Weapon, Dagger, Spear
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Mastery: Demonic Presence (185164 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Thirsting Blades (278736 effect#2)
 Family Flags     : 32, 43, 53
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
@@ -1273,7 +1229,6 @@ School           : Chaos
 Spell Type       : Melee
 Range            : 15 yards
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Fist Weapon, Dagger, Spear
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Demon Soul (163073 effect#1), Mastery: Demonic Presence (185164 effect#1), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Chaos Blades (247938 effect#2), Thirsting Blades (278736 effect#1), Essence Break (320338 effect#1), Demon's Touch (339153 effect#1)
 Triggered by     : Annihilation (201427)
 Family Flags     : 16, 43, 50
@@ -1295,7 +1250,6 @@ Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
 Duration         : 1 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : Metamorphosis (191427)
 Attributes       : .......x x....... ........ .....x..   ........ ..x..... ........ ........ 
                  : ..x..... ........ ......x. ....x...   ........ .x...... xx...... ....x... 
@@ -1320,7 +1274,6 @@ GCD              : 1.5 seconds
 Velocity         : 3 yards/sec
 Duration         : 3 seconds
 Cooldown         : 60 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ .x...... ........ ....x... 
@@ -1379,7 +1332,6 @@ Class            : Demon Hunter
 School           : Chaos
 Spell Type       : Melee
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : x......x ........ ........ ........   ...x.... ........ .xx..... ..x..... 
@@ -1400,7 +1352,6 @@ Class            : Demon Hunter
 School           : Chaos
 Spell Type       : Melee
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ x....... 
                  : x......x ........ ........ ........   ...x.... ........ .xx..... ..x..... 
@@ -1426,7 +1377,6 @@ GCD              : 1.5 seconds
 Duration         : 2 seconds
 Cooldown         : 120 seconds
 Category         : 1608
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 120 seconds
 Affecting spells : Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Sigil of Silence (320417 effect#1), Darkness (320420 effect#1), Demon's Touch (339153 effect#1)
 Family Flags     : 24, 32, 75
@@ -1456,7 +1406,6 @@ GCD              : 1.5 seconds
 Duration         : 2 seconds
 Cooldown         : 90 seconds
 Category         : 1606
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 90 seconds
 Affecting spells : Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Demon's Touch (339153 effect#1)
 Family Flags     : 24, 32
@@ -1524,7 +1473,6 @@ Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : Spectral Sight (188501)
 Attributes       : ........ x....... ........ ........   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1568,7 +1516,6 @@ Race             : Blood Elf (0x200)
 School           : Physical
 Spell Type       : None
 Spell Level      : 14
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Demonic Wards (320381 effect#1), Demonic Wards (320382 effect#1), Demonic Wards (320383 effect#1)
 Family Flags     : 63
 Attributes       : ....x.x. ........ ..x..... x..x.x.x   ........ ..x..... .x...... ....x... 
@@ -1588,7 +1535,6 @@ Name             : Blind Fury (id=203550) [Spell Family (107), Passive]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -1614,7 +1560,6 @@ Name             : Prepared (id=203551) [Spell Family (107), Passive]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -1637,7 +1582,6 @@ Replaces         : Demon's Bite (id=162243)
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ..x..... ........ ........ ........ 
                  : White Melee
@@ -1661,7 +1605,6 @@ Name             : Master of the Glaive (id=203556) [Spell Family (107), Passive
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ....x... ....x... x....... ........ 
                  : Yellow Melee, Generic Hostile Spell, Magic Hostile Spell
@@ -1685,7 +1628,6 @@ Name             : Felblade (id=203557) [Spell Family (107), Passive, Hidden]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Real PPM         : 2 (Haste multiplier)
 Proc Flags       : ....x... ....x... ........ ........ 
@@ -1707,8 +1649,7 @@ Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
 Duration         : 10 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-                 : 719: Memory of Lucid Dreams (298357 effect#17), Memory of Lucid Dreams (299372 effect#17), Memory of Lucid Dreams (299374 effect#17)
+Labels           : 719: Memory of Lucid Dreams (298357 effect#17), Memory of Lucid Dreams (299372 effect#17), Memory of Lucid Dreams (299374 effect#17)
 Affecting spells : Item - Demon Hunter T19 Havoc 2P Bonus (211054 effect#2)
 Triggered by     : Prepared (203551)
 Family Flags     : 40
@@ -1734,7 +1675,6 @@ Spell Level      : 1
 Cooldown         : 1.5 seconds
 Charges          : 2 (20 seconds cooldown)
 Category         : 1586: Vengeance Demon Hunter (212613 effect#5), Oblivion's Embrace (248074 effect#1)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1753,7 +1693,6 @@ School           : Physical
 Spell Type       : Magic
 Spell Level      : 1
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Fist Weapon, Dagger, Spear
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -1772,7 +1711,6 @@ Class            : Vengeance Demon Hunter
 School           : Physical
 Spell Type       : None
 Spell Level      : 10
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1800,7 +1738,6 @@ Spell Type       : Melee
 Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Fist Weapon, Dagger, Spear
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Demon Soul (163073 effect#1), Metamorphosis (187827 effect#4), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#1), 
 Family Flags     : 22, 32, 70, 85
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
@@ -1825,7 +1762,6 @@ Class            : Vengeance Demon Hunter
 School           : Physical
 Spell Type       : None
 Spell Level      : 1
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
@@ -1856,7 +1792,6 @@ School           : Shadow
 Spell Type       : Magic
 Range            : 100 yards
 Velocity         : 25 yards/sec
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Shattered Restoration (338793 effect#1)
 Family Flags     : 20
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
@@ -1878,7 +1813,6 @@ School           : Physical
 Spell Type       : None
 Range            : 100 yards
 Duration         : 20 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 81
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ....x... 
                  : x....... ......x. ........ ........   ........ ........ ........ ........ 
@@ -1905,7 +1839,6 @@ Spell Type       : Melee
 Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Fist Weapon, Dagger, Spear
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Demon Soul (163073 effect#1), Momentum (208628 effect#1), Item - Demon Hunter T19 Havoc 2P Bonus (211054 effect#1), Havoc Demon Hunter (212612 effect#1), Vengeance Demon Hunter (212613 effect#3), Chaos Blades (247938 effect#2), Chaotic Transformation (288754 effect#2)
 Triggered by     : Demon Blades (203555)
 Family Flags     : 16, 32, 42, 44
@@ -1929,8 +1862,7 @@ School           : Physical
 Spell Type       : None
 Spell Level      : 1
 Duration         : 6 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-                 : 824: Will to Survive (312922 effect#1)
+Labels           : 824: Will to Survive (312922 effect#1)
 Affecting spells : Mastery: Fel Blood (203747 effect#2), Item - Demon Hunter T21 Vengeance 2P Bonus (251770 effect#1)
 Family Flags     : 7
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... ........ ........ 
@@ -1962,7 +1894,6 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Cooldown         : 60 seconds
 Category         : 1541
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 1 seconds
 Affecting spells : Demon Soul (163073 effect#1), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#1), Spirit of the Darkness Flame (235543 effect#1), Charred Flesh (264002 effect#1), Revel in Pain (272985 effect#2), Spirit of the Darkness Flame (337542 effect#1), Fel Defender (338671 effect#1)
 Family Flags     : 32, 36, 70, 72
@@ -1992,7 +1923,6 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Velocity         : 50 yards/sec
 Cooldown         : 9 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Demon Soul (163073 effect#1), Mo'arg Bionic Stabilizers (208826 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#1), Throw Glaive (320386 effect#1), Throw Glaive (320387 effect#1), Demon's Touch (339153 effect#1)
 Family Flags     : 5, 32, 70, 85
 Attributes       : ....x... ........ ..x..x.. ........   ........ .x...... ........ ........ 
@@ -2014,7 +1944,6 @@ Name             : Shattered Souls (id=204254) [Spell Family (107), Passive]
 Class            : Vengeance Demon Hunter
 School           : Physical
 Spell Type       : Magic
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Internal Cooldown: 1 seconds
 Proc Chance      : 100%
 Proc Flags       : .x...... ........ ........ ........ 
@@ -2044,7 +1973,6 @@ School           : Physical
 Spell Type       : None
 Range            : 100 yards
 Duration         : 20 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ....x... 
                  : x....... ......x. ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ...x.... ........ .xx..... ........ 
@@ -2069,7 +1997,6 @@ School           : Physical
 Spell Type       : Magic
 Range            : 100 yards
 Duration         : 6 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Concentrated Sigils (207666 effect#5), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2)
 Family Flags     : 33
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
@@ -2091,7 +2018,6 @@ Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
 Duration         : 3 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
@@ -2119,7 +2045,6 @@ GCD              : 1.5 seconds
 Duration         : 2 seconds
 Cooldown         : 30 seconds
 Category         : 1605
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 30 seconds
 Affecting spells : Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Demon's Touch (339153 effect#1)
 Family Flags     : 24, 32
@@ -2146,7 +2071,6 @@ School           : Fire
 Spell Type       : Magic
 Range            : 100 yards
 Duration         : 6 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Affecting spells : Demon Soul (163073 effect#1), Concentrated Sigils (207666 effect#5), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Vengeance Demon Hunter (212613 effect#1), 
 Family Flags     : 33, 70, 72
@@ -2174,7 +2098,6 @@ School           : Physical
 Spell Type       : Magic
 Range            : 100 yards
 Duration         : 6 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Concentrated Sigils (207666 effect#5), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2)
 Family Flags     : 33
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
@@ -2195,7 +2118,6 @@ Name             : Soul Rending (id=204909) [Spell Family (107), Passive]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2219,7 +2141,6 @@ Name             : Desperate Instincts (id=205411) [Spell Family (107), Passive]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2246,7 +2167,6 @@ Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : Desperate Instincts (205411)
 Attributes       : .......x x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2264,7 +2184,6 @@ Name             : First Blood (id=206416) [Spell Family (107), Passive]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2288,7 +2207,6 @@ Name             : Momentum (id=206476) [Spell Family (107), Passive]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Internal Cooldown: 0.5 seconds
 Proc Chance      : 100%
 Proc Flags       : ....x... ....x... x....... ........ 
@@ -2314,7 +2232,6 @@ Name             : Unleashed Power (id=206477) [Spell Family (107), Passive]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2338,7 +2255,6 @@ Name             : Demonic Appetite (id=206478) [Spell Family (107), Passive]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Real PPM         : 6 (Haste multiplier)
 Proc Flags       : ....x... ........ ........ ........ 
@@ -2364,7 +2280,6 @@ Range            : 50 yards
 GCD              : 1.5 seconds
 Duration         : 60 seconds
 Cooldown         : 120 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ........ ........ ........ x....... 
                  : Death
@@ -2388,7 +2303,6 @@ Class            : Vengeance Demon Hunter
 School           : Physical
 Spell Type       : None
 Spell Level      : 29
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 96
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2435,7 +2349,6 @@ Name             : Agonizing Flames (id=207548) [Spell Family (107), Passive]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2459,7 +2372,6 @@ Name             : Abyssal Strike (id=207550) [Spell Family (107), Passive]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2478,7 +2390,6 @@ Name             : Concentrated Sigils (id=207666) [Spell Family (107), Passive,
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2514,7 +2425,6 @@ GCD              : 1.5 seconds
 Duration         : 2 seconds
 Cooldown         : 180 seconds
 Category         : 1607
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 180 seconds
 Affecting spells : Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Sigil of Misery (320418 effect#1), Demon's Touch (339153 effect#1)
 Family Flags     : 24, 32, 76
@@ -2540,7 +2450,6 @@ School           : Physical
 Spell Type       : Magic
 Range            : 100 yards
 Duration         : 20 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Mechanic         : Flee
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
@@ -2567,7 +2476,6 @@ School           : Shadow
 Spell Type       : Magic
 Range            : 100 yards
 Duration         : 6 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ..x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
@@ -2586,7 +2494,6 @@ Name             : Feast of Souls (id=207697) [Spell Family (107), Passive, Hidd
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2604,7 +2511,6 @@ Name             : Burning Alive (id=207739) [Spell Family (107), Passive]
 Class            : Demon Hunter
 School           : Fire
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2624,7 +2530,6 @@ School           : Fire
 Spell Type       : None
 Range            : 100 yards
 Duration         : 8 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : .....x.. .....x.. .x.x.... ........ 
                  : Yellow Melee Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
@@ -2652,7 +2557,6 @@ Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2670,7 +2574,6 @@ School           : Fire
 Spell Type       : Magic
 Range            : 100 yards
 Duration         : 8 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : .....x.. .....x.. .x.x.... ........ 
                  : Yellow Melee Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
@@ -2701,7 +2604,6 @@ Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
 Duration         : 60 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2720,7 +2622,6 @@ Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
 Duration         : 6 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2791,7 +2692,6 @@ Name             : Last Resort (id=209258) [Spell Family (107), Passive]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2815,7 +2715,6 @@ School           : Physical
 Spell Type       : None
 Range            : 50000 yards
 Duration         : 480 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ..xx.x..   ........ ..x..... ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ....x... ....x.x. 
                  : ........ ........ ........ ........   ..x..... ........ ........ ........ 
@@ -2833,7 +2732,6 @@ Name             : Quickened Sigils (id=209281) [Spell Family (107), Passive, Hi
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2859,7 +2757,6 @@ School           : Physical
 Spell Type       : None
 Range            : 100 yards
 Duration         : 8 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Demonic Wards (320381 effect#1), Demonic Wards (320382 effect#1), Demonic Wards (320383 effect#1)
 Family Flags     : 51, 63
 Attributes       : ........ x....... ........ .......x   .....x.. ..x..... ........ ........ 
@@ -2882,7 +2779,6 @@ Name             : Demonic Appetite (id=210041) [Spell Family (107)]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Item - Demon Hunter T19 Havoc 2P Bonus (211054 effect#2)
 Triggered by     : Consume Soul (178963)
 Family Flags     : 41
@@ -2904,7 +2800,6 @@ School           : Shadow
 Spell Type       : Magic
 Range            : 100 yards
 Velocity         : 25 yards/sec
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Shattered Restoration (338793 effect#1)
 Family Flags     : 20
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
@@ -2930,7 +2825,6 @@ Duration         : 1 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 9 seconds
 Category         : 1640
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 9 seconds
 Affecting spells : First Blood (206416 effect#2), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Item - Demon Hunter T20 Havoc 4P Bonus (242227 effect#1), Revolving Blades (279581 effect#2), Revolving Blades (279584 effect#1), Essence Break (320338 effect#1), Demon's Touch (339153 effect#1)
 Family Flags     : 32, 37, 42, 85
@@ -2965,7 +2859,6 @@ Class            : Demon Hunter
 School           : Physical
 Spell Type       : Melee
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Fist Weapon, Dagger, Spear
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Demon Soul (163073 effect#1), First Blood (206416 effect#2), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Item - Demon Hunter T20 Havoc 4P Bonus (242227 effect#1), Chaos Blades (247938 effect#2), Revolving Blades (279581 effect#2), Revolving Blades (279584 effect#1), Essence Break (320338 effect#1), Demon's Touch (339153 effect#1)
 Triggered by     : Death Sweep (210152)
 Family Flags     : 16, 37, 42
@@ -2989,7 +2882,6 @@ Class            : Demon Hunter
 School           : Physical
 Spell Type       : Melee
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Fist Weapon, Dagger, Spear
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Demon Soul (163073 effect#1), First Blood (206416 effect#2), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Item - Demon Hunter T20 Havoc 4P Bonus (242227 effect#1), Chaos Blades (247938 effect#2), Revolving Blades (279581 effect#2), Revolving Blades (279584 effect#1), Essence Break (320338 effect#1), Demon's Touch (339153 effect#1)
 Triggered by     : Death Sweep (210152)
 Family Flags     : 16, 37, 38, 42
@@ -3013,7 +2905,6 @@ Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
 Duration         : 25 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : Soul Fragment (203795), Soul Fragment (204255)
 Attributes       : .......x ........ ........ x..x....   .....x.. ........ ........ ........ 
                  : ........ ......x. ........ ........   ........ ........ ....x... ........ 
@@ -3032,7 +2923,6 @@ Class            : Demon Hunter
 School           : Chaos
 Spell Type       : Melee
 Range            : 30 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Mastery: Demonic Presence (185164 effect#1), 
 Family Flags     : 43
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3053,7 +2943,6 @@ Class            : Demon Hunter
 School           : Chaos
 Spell Type       : Melee
 Range            : 30 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Mastery: Demonic Presence (185164 effect#1), 
 Triggered by     : Chaos Blades (247938)
 Family Flags     : 43
@@ -3080,7 +2969,6 @@ Range            : 20 yards
 GCD              : 1.5 seconds
 Duration         : 4 seconds
 Cooldown         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Mastery: Demonic Presence (185164 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3)
 Family Flags     : 32, 43
 Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... ........ ........ 
@@ -3109,7 +2997,6 @@ Range            : 20 yards
 GCD              : 1.5 seconds
 Duration         : 2 seconds
 Cooldown         : 45 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 78
 Attributes       : ........ ........ ........ ........   ..x...x. .x...... ........ ....xx.. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3133,7 +3020,6 @@ Class            : Demon Hunter
 School           : Fire
 Spell Type       : Magic
 Range            : 50000 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Demon Soul (163073 effect#1), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Vengeance Demon Hunter (212613 effect#1), Demon's Touch (339153 effect#1)
 Triggered by     : Fel Devastation (212084)
 Family Flags     : 67, 70, 72
@@ -3154,7 +3040,6 @@ Name             : Fel Devastation (id=212106) [Spell Family (107)]
 Class            : Demon Hunter
 School           : Fire
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Ruinous Bulwark (326853 effect#1), Roaring Fire (339644 effect#1)
 Family Flags     : 80
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -3173,7 +3058,6 @@ Name             : Demon Hunter (id=212611) [Spell Family (107), Passive, Hidden
 Class            : Vengeance Demon Hunter
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3192,7 +3076,6 @@ Name             : Havoc Demon Hunter (id=212612) [Spell Family (107), Passive, 
 Class            : Havoc Death Knight, Demon Hunter
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3226,7 +3109,6 @@ Name             : Vengeance Demon Hunter (id=212613) [Spell Family (107), Passi
 Class            : Vengeance Death Knight, Demon Hunter
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3279,7 +3161,6 @@ Spell Type       : None
 Duration         : 10 seconds
 Cooldown         : 60 seconds
 Category         : 1621
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 60 seconds
 Affecting spells : Desperate Instincts (205411 effect#3), Fel Defender (338671 effect#1)
 Triggered by     : Blur (198589)
@@ -3367,7 +3248,6 @@ Spell Type       : Melee
 Spell Level      : 50
 Range            : 15 yards
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Fist Weapon, Dagger, Spear
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Demon Soul (163073 effect#1), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Momentum (208628 effect#1), Item - Demon Hunter T19 Havoc 2P Bonus (211054 effect#3), Havoc Demon Hunter (212612 effect#1), Vengeance Demon Hunter (212613 effect#1), Chaos Blades (247938 effect#2), Demon's Touch (339153 effect#1)
 Family Flags     : 16, 30, 42, 70, 72
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
@@ -3393,7 +3273,6 @@ School           : Physical
 Spell Type       : None
 Range            : 100 yards
 Duration         : 6 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Mechanic         : Snare
 Triggered by     : Master of the Glaive (203556)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3413,7 +3292,6 @@ Name             : Demonic (id=213410) [Spell Family (107), Passive]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3455,7 +3333,6 @@ Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
 Duration         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : Spectral Sight (188501)
 Attributes       : ........ x....... ........ ........   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3473,7 +3350,6 @@ Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
 Duration         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3492,7 +3368,6 @@ Class            : Demon Hunter
 School           : Chaos
 Spell Type       : Melee
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3516,7 +3391,6 @@ Max Targets      : 1
 GCD              : 1.5 seconds
 Duration         : 60 seconds
 Cooldown         : 45 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Mechanic         : Sap
@@ -3541,7 +3415,6 @@ Name             : Soul Rending (id=217996) [Spell Family (107), Passive]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3565,7 +3438,6 @@ Name             : Feed the Demon (id=218612) [Spell Family (107), Passive, Hidd
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3583,7 +3455,6 @@ Name             : Disrupt (id=218903) [Spell Family (107)]
 Class            : Demon Hunter
 School           : Chaos
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : Disrupt (183782)
 Family Flags     : 64
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
@@ -3605,7 +3476,6 @@ Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
 Spell Level      : 1
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3624,7 +3494,6 @@ Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
 Duration         : 15 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : Soul Fragment (203795), Soul Fragment (204255)
 Attributes       : .......x ........ ........ x..x....   .....x.. ........ ........ ........ 
                  : ........ ......x. ........ ........   ........ ........ ........ ........ 
@@ -3644,7 +3513,6 @@ School           : Chaos
 Spell Type       : Melee
 Range            : 15 yards
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Fist Weapon, Dagger, Spear
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Demon Soul (163073 effect#1), Mastery: Demonic Presence (185164 effect#1), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Chaos Blades (247938 effect#2), Immolation Aura (258920 effect#6), Thirsting Blades (278736 effect#1), Essence Break (320338 effect#1), Mark of the Ogre (326486 effect#3), Chaotic Blades (337567 effect#1), Demon's Touch (339153 effect#1)
 Triggered by     : Chaos Strike (162794)
 Family Flags     : 14, 16, 43
@@ -3665,7 +3533,6 @@ Name             : Fel Barrage (desc=Passive) (id=222703) [Spell Family (107), P
 Class            : Demon Hunter
 School           : Magic
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Real PPM         : 4 (Haste multiplier)
 Proc Flags       : ....x... ....x... x.x..... ........ 
@@ -3689,7 +3556,6 @@ School           : Physical
 Spell Type       : Melee
 Range            : 20 yards
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Fist Weapon, Dagger, Spear
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Mark of the Ogre (326486 effect#3)
 Triggered by     : Fracture (263642)
 Family Flags     : 69
@@ -3714,7 +3580,6 @@ School           : Physical
 Spell Type       : Melee
 Range            : 20 yards
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Fist Weapon, Dagger, Spear
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Mark of the Ogre (326486 effect#3)
 Triggered by     : Fracture (263642)
 Family Flags     : 69
@@ -3738,7 +3603,6 @@ Class            : Vengeance Demon Hunter
 School           : Physical
 Spell Type       : None
 Spell Level      : 27
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3756,7 +3620,6 @@ Name             : Fallout (id=227174) [Spell Family (107), Passive, Hidden]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3775,7 +3638,6 @@ Class            : Demon Hunter
 School           : Fire
 Spell Type       : Magic
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : Frailty (247456)
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
                  : ........ ......x. ........ ....xx..   ........ .x...... ........ ......x. 
@@ -3796,7 +3658,6 @@ School           : Chaos
 Spell Type       : Melee
 Range            : 15 yards
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Fist Weapon, Dagger, Spear
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Demon Soul (163073 effect#1), Mastery: Demonic Presence (185164 effect#1), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Chaos Blades (247938 effect#2), Thirsting Blades (278736 effect#1), Essence Break (320338 effect#1), Demon's Touch (339153 effect#1)
 Triggered by     : Annihilation (201427)
 Family Flags     : 16, 43, 127
@@ -3823,7 +3684,6 @@ Spell Level      : 1
 Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, War Glaive, Fist Weapon
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Immolation Aura (258920 effect#6), Mark of the Ogre (326486 effect#3)
 Family Flags     : 32, 34
 Attributes       : ....x... ........ ..x..... ........   ........ .xx..... ........ ........ 
@@ -3857,7 +3717,6 @@ School           : Physical
 Spell Type       : Melee
 Range            : 5 yards
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Fist Weapon, Dagger, Spear
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Demon Soul (163073 effect#1), Vengeance Demon Hunter (212613 effect#1), Immolation Aura (258920 effect#6), Mark of the Ogre (326486 effect#3)
 Triggered by     : Soul Cleave (228477)
 Family Flags     : 31, 34, 70
@@ -3882,7 +3741,6 @@ School           : Physical
 Spell Type       : None
 Spell Level      : 1
 Duration         : 0.1 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : Vengeful Retreat (198793)
 Attributes       : .......x x....... ........ ........   ........ ..x....x ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3904,7 +3762,6 @@ Range            : 15 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 15 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Item - Demon Hunter T19 Havoc 2P Bonus (211054 effect#3), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Demon's Touch (339153 effect#1)
 Family Flags     : 30, 32, 85
 Attributes       : ....x... ........ ..x..... .....x..   ........ .x...... ........ ........ 
@@ -3931,7 +3788,6 @@ Name             : Felblade (id=236167) [Spell Family (107), Passive, Hidden]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 101%
 Real PPM         : 2 (Haste multiplier)
 Proc Flags       : ....x... ....x... ........ ........ 
@@ -3954,7 +3810,6 @@ School           : Chromatic
 Spell Type       : Magic
 Range            : 40 yards
 Duration         : 3 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Mastery: Demonic Presence (185164 effect#1), 
 Family Flags     : 43, 56
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3977,7 +3832,6 @@ Spell Type       : None
 Resource         : 30 Fury (17) (id=191871)
 GCD              : 1.5 seconds
 Duration         : 1.5 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3)
 Family Flags     : 32
 Attributes       : ....x... ........ ..x..... .......x   ........ ........ ........ ....x... 
@@ -4002,7 +3856,6 @@ Class            : Demon Hunter
 School           : Fire
 Spell Type       : Magic
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Metamorphosis (162264 effect#5), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2)
 Family Flags     : 68, 72
 Attributes       : ........ ........ ........ x..x....   ........ ........ ........ ........ 
@@ -4024,7 +3877,6 @@ School           : Fire
 Spell Type       : Magic
 Range            : 100 yards
 Duration         : 20 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
@@ -4050,7 +3902,6 @@ School           : Physical
 Spell Type       : None
 Duration         : 18 seconds
 Cooldown         : 120 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Family Flags     : 62
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4103,7 +3954,6 @@ Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
 Spell Level      : 50
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ....x.x. x...x... x.x..... ........ 
                  : Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Periodic
@@ -4272,7 +4122,6 @@ Range            : 10 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 20 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Demon Soul (163073 effect#1), Mastery: Demonic Presence (185164 effect#1), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Vengeance Demon Hunter (212613 effect#3), Chaos Blades (247938 effect#2), 
 Family Flags     : 16, 32, 43, 71
 Attributes       : ....x... ........ ........ ........   ........ .x...... ........ ........ 
@@ -4292,7 +4141,6 @@ Name             : Insatiable Hunger (id=258876) [Spell Family (107), Passive, H
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4318,7 +4166,6 @@ Name             : Trail of Ruin (id=258881) [Spell Family (107), Passive]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
@@ -4341,7 +4188,6 @@ School           : Chromatic
 Spell Type       : Magic
 Range            : 8 yards
 Duration         : 4 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Demon Soul (163073 effect#1), Mastery: Demonic Presence (185164 effect#1), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Chaos Blades (247938 effect#2), 
 Triggered by     : Trail of Ruin (258881)
 Family Flags     : 16, 43
@@ -4363,7 +4209,6 @@ Name             : Cycle of Hatred (id=258887) [Spell Family (107), Passive]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4385,7 +4230,6 @@ GCD              : 1.5 seconds
 Duration         : 6 seconds
 Cooldown         : 30 seconds
 Category         : 1676
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Agonizing Flames (207548 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Infernal Armor (320331 effect#1), Immolation Aura (320377 effect#1), Immolation Aura (320378 effect#1), Demon's Touch (339153 effect#1)
 Family Flags     : 11, 32, 85
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
@@ -4430,7 +4274,6 @@ Name             : Immolation Aura (id=258921) [Spell Family (107)]
 Class            : Demon Hunter
 School           : Fire
 Spell Type       : Magic
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Demon Soul (163073 effect#1), Agonizing Flames (207548 effect#1), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Chaos Blades (247938 effect#2), Infernal Armor (320331 effect#1), Immolation Aura (320377 effect#1), Immolation Aura (320378 effect#1), Demon's Touch (339153 effect#1)
 Family Flags     : 11, 16, 49
 Attributes       : ........ ........ ..x..... ........   ...x...x .x...... ........ ........ 
@@ -4449,7 +4292,6 @@ Name             : Immolation Aura (id=258922) [Spell Family (107)]
 Class            : Demon Hunter
 School           : Fire
 Spell Type       : Magic
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Demon Soul (163073 effect#1), Agonizing Flames (207548 effect#1), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Chaos Blades (247938 effect#2), Infernal Armor (320331 effect#1), Immolation Aura (320377 effect#1), Immolation Aura (320378 effect#1), Demon's Touch (339153 effect#1)
 Triggered by     : Immolation Aura (258920)
 Family Flags     : 11, 16, 61
@@ -4476,7 +4318,6 @@ Spell Type       : None
 GCD              : 1.5 seconds
 Duration         : 3 seconds
 Cooldown         : 60 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Mark of the Ogre (326486 effect#3), Demon's Touch (339153 effect#1)
 Family Flags     : 47
 Attributes       : ........ ........ ........ ........   ..x...x. ........ ........ ....xx.. 
@@ -4501,7 +4342,6 @@ School           : Chromatic
 Spell Type       : Magic
 Range            : 100 yards
 Velocity         : 20 yards/sec
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Demon Soul (163073 effect#1), Mastery: Demonic Presence (185164 effect#1), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Chaos Blades (247938 effect#2), Mark of the Ogre (326486 effect#3), Demon's Touch (339153 effect#1)
 Triggered by     : Fel Barrage (258925)
 Family Flags     : 16, 43, 47
@@ -4547,7 +4387,6 @@ GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Fist Weapon, Dagger, Spear
 Charges          : 2 (4.5 seconds cooldown)
 Category         : 1552: Vengeance Demon Hunter (212613 effect#6)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Metamorphosis (187827 effect#8), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Mark of the Ogre (326486 effect#3)
 Family Flags     : 32, 73
 Attributes       : ....x... ........ ........ ........   ........ .x...... ........ ........ 
@@ -4578,7 +4417,6 @@ Spell Type       : Magic
 GCD              : 1.5 seconds
 Duration         : 12 seconds
 Cooldown         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4680,7 +4518,6 @@ Name             : Charred Flesh (id=264002) [Spell Family (107), Passive]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -5000,7 +4837,6 @@ Name             : Void Reaver (id=268175) [Spell Family (107), Passive, Hidden]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
@@ -5023,7 +4859,6 @@ School           : Physical
 Spell Type       : None
 Range            : 100 yards
 Duration         : 12 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : Void Reaver (268175)
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -5475,7 +5310,6 @@ Name             : Unbound Chaos (id=275144) [Spell Family (107), Passive]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : Unbound Chaos (275148)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5495,7 +5329,6 @@ Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
 Duration         : 1 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5574,7 +5407,6 @@ Spell Level      : 18
 Range            : 30 yards
 GCD              : 1.5 seconds
 Cooldown         : 10 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ..x..... ........   .......x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5596,7 +5428,6 @@ Class            : Havoc Demon Hunter
 School           : Physical
 Spell Type       : None
 Spell Level      : 14
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Demonic Wards (320381 effect#1), Demonic Wards (320382 effect#1), Demonic Wards (320383 effect#1)
 Family Flags     : 63
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6400,7 +6231,6 @@ Class            : Vengeance Demon Hunter
 School           : Physical
 Spell Type       : None
 Spell Level      : 50
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ....x.x. x...x... x.x..... ........ 
                  : Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Periodic
@@ -6814,7 +6644,6 @@ GCD              : 1.5 seconds
 Duration         : 2 seconds
 Cooldown         : 60 seconds
 Category         : 1887
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 60 seconds
 Affecting spells : Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Demon's Touch (339153 effect#1)
 Family Flags     : 24, 32
@@ -6841,7 +6670,6 @@ Class            : Demon Hunter
 School           : Arcane
 Spell Type       : Magic
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Demon Soul (163073 effect#1), Concentrated Sigils (207666 effect#5), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Vengeance Demon Hunter (212613 effect#1), Chaos Blades (247938 effect#2), 
 Family Flags     : 16, 33, 42, 70
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
@@ -6868,7 +6696,6 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 8 seconds
 Cooldown         : 60 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Demon Soul (163073 effect#1), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Vengeance Demon Hunter (212613 effect#1), Chaos Blades (247938 effect#2), Increased Scrutiny (340028 effect#1)
 Family Flags     : 16, 32, 70, 83
 Attributes       : ....x... ........ ........ ..x.....   ........ ........ ........ ........ 
@@ -6897,7 +6724,6 @@ School           : Shadow
 Spell Type       : None
 Range            : 100 yards
 Duration         : Aura (infinite)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : Sinful Brand (317009)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6917,7 +6743,6 @@ School           : Shadow
 Spell Type       : None
 Range            : 100 yards
 Duration         : Aura (infinite)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : Sinful Brand (317009)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6954,7 +6779,6 @@ Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
 Spell Level      : 37
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6972,7 +6796,6 @@ Name             : Infernal Armor (id=320331) [Spell Family (107), Passive, Hidd
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -6993,7 +6816,6 @@ Class            : Demon Hunter
 School           : Fire
 Spell Type       : Magic
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Demon Soul (163073 effect#1), Vengeance Demon Hunter (212613 effect#1), 
 Family Flags     : 70
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7015,7 +6837,6 @@ Spell Type       : Melee
 Range            : 100 yards
 Duration         : 8 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Fist Weapon, Dagger, Spear
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   .......x ..x..... x.x..... ......x. 
                  : x....... ........ ........ ........   ........ ........ ........ ...x.... 
@@ -7038,7 +6859,6 @@ School           : Fire
 Spell Type       : Magic
 GCD              : 1.5 seconds
 Cooldown         : 90 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Demon Soul (163073 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#1), 
 Family Flags     : 32, 70, 72
 Attributes       : ....x... ........ ........ ........   ........ .x...... ........ ........ 
@@ -7060,7 +6880,6 @@ Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
 Spell Level      : 47
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7081,7 +6900,6 @@ Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
 Spell Level      : 19
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7099,7 +6917,6 @@ Name             : Burning Hatred (id=320374) [Spell Family (107), Passive]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -7118,7 +6935,6 @@ Class            : Havoc Demon Hunter
 School           : Physical
 Spell Type       : None
 Spell Level      : 26
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7139,7 +6955,6 @@ Class            : Vengeance Demon Hunter
 School           : Physical
 Spell Type       : None
 Spell Level      : 26
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7160,7 +6975,6 @@ Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
 Spell Level      : 42
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7181,7 +6995,6 @@ Class            : Vengeance Demon Hunter
 School           : Physical
 Spell Type       : None
 Spell Level      : 1
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ....x.x. ........ ..x..... x..x.x.x   ........ ..x..... .x...... ....x... 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
@@ -7206,7 +7019,6 @@ Class            : Vengeance Demon Hunter
 School           : Physical
 Spell Type       : None
 Spell Level      : 29
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7227,7 +7039,6 @@ Class            : Vengeance Demon Hunter
 School           : Physical
 Spell Type       : None
 Spell Level      : 43
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7248,7 +7059,6 @@ Class            : Havoc Demon Hunter
 School           : Physical
 Spell Type       : None
 Spell Level      : 29
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7269,7 +7079,6 @@ Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
 Spell Level      : 23
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7290,7 +7099,6 @@ Class            : Vengeance Demon Hunter
 School           : Physical
 Spell Type       : None
 Spell Level      : 31
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7311,7 +7119,6 @@ Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
 Spell Level      : 31
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7330,7 +7137,6 @@ Class            : Havoc Demon Hunter
 School           : Physical
 Spell Type       : None
 Spell Level      : 22
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7351,7 +7157,6 @@ Class            : Havoc Demon Hunter
 School           : Physical
 Spell Type       : None
 Spell Level      : 33
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7370,7 +7175,6 @@ Class            : Havoc Demon Hunter
 School           : Physical
 Spell Type       : None
 Spell Level      : 38
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7389,7 +7193,6 @@ Class            : Havoc Demon Hunter
 School           : Physical
 Spell Type       : None
 Spell Level      : 17
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7410,7 +7213,6 @@ Class            : Havoc Demon Hunter
 School           : Physical
 Spell Type       : None
 Spell Level      : 27
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7431,7 +7233,6 @@ Class            : Havoc Demon Hunter
 School           : Physical
 Spell Type       : None
 Spell Level      : 28
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7451,7 +7252,6 @@ Class            : Vengeance Demon Hunter
 School           : Physical
 Spell Type       : None
 Spell Level      : 48
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7472,7 +7272,6 @@ Class            : Vengeance Demon Hunter
 School           : Physical
 Spell Type       : None
 Spell Level      : 33
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7493,7 +7292,6 @@ Class            : Havoc Demon Hunter
 School           : Physical
 Spell Type       : None
 Spell Level      : 48
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7514,7 +7312,6 @@ Class            : Havoc Demon Hunter
 School           : Physical
 Spell Type       : None
 Spell Level      : 49
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7535,7 +7332,6 @@ Class            : Havoc Demon Hunter
 School           : Physical
 Spell Type       : None
 Spell Level      : 20
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7556,7 +7352,6 @@ Class            : Havoc Demon Hunter
 School           : Physical
 Spell Type       : None
 Spell Level      : 41
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7575,7 +7370,6 @@ Class            : Vengeance Demon Hunter
 School           : Physical
 Spell Type       : None
 Spell Level      : 27
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7594,7 +7388,6 @@ Class            : Havoc Demon Hunter
 School           : Physical
 Spell Type       : None
 Spell Level      : 52
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7613,7 +7406,6 @@ Class            : Havoc Demon Hunter
 School           : Physical
 Spell Type       : None
 Spell Level      : 44
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7632,7 +7424,6 @@ Class            : Havoc Demon Hunter
 School           : Physical
 Spell Type       : None
 Spell Level      : 43
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7651,7 +7442,6 @@ Class            : Vengeance Demon Hunter
 School           : Physical
 Spell Type       : None
 Spell Level      : 28
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7671,7 +7461,6 @@ Class            : Vengeance Demon Hunter
 School           : Physical
 Spell Type       : None
 Spell Level      : 22
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7690,7 +7479,6 @@ Class            : Vengeance Demon Hunter
 School           : Physical
 Spell Type       : None
 Spell Level      : 38
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7709,7 +7497,6 @@ Class            : Vengeance Demon Hunter
 School           : Physical
 Spell Type       : None
 Spell Level      : 17
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7728,7 +7515,6 @@ Class            : Vengeance Demon Hunter
 School           : Physical
 Spell Type       : None
 Spell Level      : 41
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7747,7 +7533,6 @@ Class            : Vengeance Demon Hunter
 School           : Physical
 Spell Type       : None
 Spell Level      : 20
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7768,7 +7553,6 @@ Class            : Vengeance Demon Hunter
 School           : Physical
 Spell Type       : None
 Spell Level      : 49
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7789,7 +7573,6 @@ Class            : Vengeance Demon Hunter
 School           : Physical
 Spell Type       : None
 Spell Level      : 44
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7807,7 +7590,6 @@ Name             : Demonic (id=321453) [Spell Family (107), Passive]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -7830,7 +7612,6 @@ Range            : 50 yards
 Cast Time        : 1 seconds
 GCD              : 1.5 seconds
 Cooldown         : 180 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3)
 Family Flags     : 32, 82
 Attributes       : ....x... ........ x.x..... .....x..   ........ ..x..... ........ ........ 
@@ -7854,7 +7635,6 @@ School           : Nature
 Spell Type       : Melee
 Range            : 100 yards
 Duration         : 60 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Demon Soul (163073 effect#1), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Vengeance Demon Hunter (212613 effect#1), Chaos Blades (247938 effect#2), 
 Triggered by     : The Hunt (323639)
 Family Flags     : 16, 42, 70, 87
@@ -7887,7 +7667,6 @@ School           : Nature
 Spell Type       : Melee
 Range            : 100 yards
 Duration         : 3 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Mechanic         : Root
 Triggered by     : The Hunt (323802)
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
@@ -7908,7 +7687,6 @@ Class            : Demon Hunter
 School           : Nature
 Spell Type       : None
 Duration         : 60 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ..x.x.x. x.x.x.x. x.x..x.. ........ 
                  : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Trap Triggered
@@ -7930,7 +7708,6 @@ Name             : Ruinous Bulwark (id=326853) [Spell Family (107), Passive, Hid
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : Magic
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Proc Chance      : 100%
 Proc Flags       : ........ ..x...x. ........ ........ 
                  : Generic Heal, Magic Heal
@@ -7956,7 +7733,6 @@ Class            : Demon Hunter
 School           : Shadow
 Spell Type       : Magic
 Duration         : 10 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7977,7 +7753,6 @@ Spell Type       : None
 GCD              : 1.5 seconds
 Cooldown         : 120 seconds
 Category         : 1888
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Category Cooldown: 120 seconds
 Affecting spells : Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3)
 Family Flags     : 32, 81
@@ -8001,7 +7776,6 @@ School           : Physical
 Spell Type       : None
 Range            : 100 yards
 Duration         : 30 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Brooding Pool (340063 effect#1)
 Family Flags     : 86
 Attributes       : ........ ........ .......x ...x....   .....x.. ........ ........ ........ 
@@ -8022,7 +7796,6 @@ School           : Physical
 Spell Type       : None
 Range            : 100 yards
 Duration         : Aura (infinite)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ..x....x ...x....   .....x.. ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : .......x ........ ........ ........   ...x.... ........ .xx..... ........ 
@@ -8042,7 +7815,6 @@ School           : Physical
 Spell Type       : None
 Range            : 100 yards
 Duration         : Aura (infinite)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ........ ........ ..x....x ...x....   .....x.. ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : .......x ........ ........ ........   ...x.... ........ .xx..... ........ 
@@ -8081,7 +7853,6 @@ Class            : Demon Hunter
 School           : Fire
 Spell Type       : Magic
 Range            : 50000 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Demon's Touch (339153 effect#1)
 Triggered by     : Fel Devastation (333105)
 Family Flags     : 67, 72
@@ -8102,7 +7873,6 @@ Name             : Fel Devastation (id=333120) [Spell Family (107)]
 Class            : Demon Hunter
 School           : Fire
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Ruinous Bulwark (326853 effect#1), Roaring Fire (339644 effect#1)
 Family Flags     : 80
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -8158,7 +7928,6 @@ School           : Nature
 Spell Type       : Melee
 Range            : 100 yards
 Duration         : 3 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Mechanic         : Stun
 Triggered by     : The Hunt (323802)
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
@@ -8180,7 +7949,6 @@ School           : Nature
 Spell Type       : Melee
 Range            : 100 yards
 Duration         : 20 seconds
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Triggered by     : The Hunt (323802)
 Attributes       : ........ ........ ..x..... .....x..   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ x...x... ........ 
@@ -8199,7 +7967,6 @@ Name             : Charred Flesh (id=336639) [Spell Family (107), Passive]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -8219,7 +7986,6 @@ School           : Fire
 Spell Type       : None
 Range            : 100 yards
 Duration         : Aura (infinite)
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Stacks           : 1 maximum
 Proc Chance      : 101%
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8240,7 +8006,6 @@ School           : Physical
 Spell Type       : Melee
 Range            : 30 yards
 Velocity         : 40 yards/sec
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Demon Soul (163073 effect#1), Momentum (208628 effect#1), Mo'arg Bionic Stabilizers (208826 effect#1), Havoc Demon Hunter (212612 effect#1), Vengeance Demon Hunter (212613 effect#3), Chaos Blades (247938 effect#2), Throw Glaive (320386 effect#1), Throw Glaive (320387 effect#1), Demon's Touch (339153 effect#1)
 Triggered by     : Throw Glaive (185123)
 Family Flags     : 5, 16, 32, 42, 85
@@ -8261,7 +8026,6 @@ Name             : Viscous Ink (id=338682) [Spell Family (107), Passive, Hidden]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Conduit Id       : 131
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8281,7 +8045,6 @@ Class            : Demon Hunter
 School           : Arcane
 Spell Type       : Magic
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
 Affecting spells : Demon Soul (163073 effect#1), Concentrated Sigils (207666 effect#5), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Vengeance Demon Hunter (212613 effect#1), Chaos Blades (247938 effect#2), 
 Triggered by     : Elysian Decree (307046)
 Family Flags     : 16, 33, 42, 70
@@ -8305,8 +8068,7 @@ Class            : Demon Hunter
 School           : Arcane
 Spell Type       : Magic
 Range            : 100 yards
-Labels           : 16: Agonizing Backlash (320035 effect#3)
-                 : 1074: Repeat Decree (339895 effect#1)
+Labels           : 1074: Repeat Decree (339895 effect#1)
 Affecting spells : Demon Soul (163073 effect#1), Concentrated Sigils (207666 effect#5), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Vengeance Demon Hunter (212613 effect#1), Chaos Blades (247938 effect#2), 
 Triggered by     : Elysian Decree (339893)
 Family Flags     : 16, 33, 42, 70
