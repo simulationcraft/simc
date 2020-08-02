@@ -2303,37 +2303,41 @@ bool util::socket_gem_match( item_socket_color socket, item_socket_color gem )
 std::vector<std::string> util::string_split_allow_quotes( util::string_view str_, util::string_view delim )
 {
   std::vector<std::string> results;
-  std::string::size_type cut_pt, start = 0;
+  util::string_view::size_type cut_pt, start = 0;
 
-  std::string str = to_string( str_ );
+  std::string buffer;
 
-  const std::string not_in_quote = to_string( delim ) + '"';
+  const std::string not_in_quote    = to_string( delim ) + '"';
   static const std::string in_quote = "\"";
-  const std::string* search = &not_in_quote;
+  const std::string* search         = &not_in_quote;
 
-  while ( ( cut_pt = str.find_first_of( *search, start ) ) != std::string::npos )
+  while ( ( cut_pt = str_.find_first_of( *search, start ) ) != util::string_view::npos )
   {
-    if ( str[ cut_pt ] == '"' )
+    if ( str_[ cut_pt ] == '"' )
     {
-      str.erase( cut_pt, 1 );
-      start = cut_pt;
+      if ( cut_pt > start )
+        buffer.append( str_.data() + start, cut_pt - start );
+      start  = ++cut_pt;
       search = ( search == &not_in_quote ) ? &in_quote : &not_in_quote;
     }
     else if ( search == &not_in_quote )
     {
-      if ( cut_pt > 0 )
-        results.push_back( str.substr( 0, cut_pt ) );
-      str.erase( 0, cut_pt + 1 );
-      start = 0;
+      if ( cut_pt > start )
+      {
+        buffer.append( str_.data() + start, cut_pt - start );
+        results.emplace_back( std::move( buffer ) );
+      }
+      start = ++cut_pt;
     }
   }
 
-  if ( str.length() > 0 )
-    results.push_back( str );
+  // tail
+  buffer.append( str_.data() + start, str_.size() - start );
+  if ( !buffer.empty() )
+    results.emplace_back( std::move( buffer ) );
 
   return results;
 }
-
 
 /**
  * Replaces all occurrences of 'from' in the string 's', with 'to'.
