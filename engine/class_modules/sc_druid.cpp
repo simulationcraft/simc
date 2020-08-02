@@ -7253,8 +7253,7 @@ struct adaptive_swarm_t : public druid_spell_t
       : druid( d ),
         max_stacks( d->covenant.adaptive_swarm_damage->max_stacks() ),
         init_stacks( as<int>( d->covenant.necrolord->effectN( 1 ).base_value() ) )
-    {
-    }
+    {}
 
     swarm_state_t* find_swarm( dot_t* dot )
     {
@@ -7285,7 +7284,7 @@ struct adaptive_swarm_t : public druid_spell_t
                                      it2->stack, it2->swarm->name(), it2->swarm->target->name(), it2->UID, it->UID );
 
           it->stack = std::min( max_stacks, it->stack + it2->stack );
-          it2++;
+          swarm_tracker.erase( it2 );
         }
       }
     }
