@@ -55,6 +55,16 @@ enum rotation_type_e
   ROTATION_FROZEN_ORB
 };
 
+enum ground_aoe_type_e
+{
+  AOE_BLIZZARD = 0,
+  AOE_COMET_STORM,
+  AOE_FLAME_PATCH,
+  AOE_FROZEN_ORB,
+  AOE_METEOR_BURN,
+  AOE_MAX
+};
+
 struct state_switch_t
 {
 private:
@@ -347,7 +357,7 @@ public:
   state_switch_t burn_phase;
 
   // Ground AoE tracking
-  std::map<std::string, timespan_t> ground_aoe_expiration;
+  std::array<timespan_t, AOE_MAX> ground_aoe_expiration;
 
   // Miscellaneous
   double distance_from_rune;
@@ -370,8 +380,6 @@ public:
     action_t* living_bomb_dot;
     action_t* living_bomb_dot_spread;
     action_t* living_bomb_explosion;
-    action_t* meteor_burn;
-    action_t* meteor_impact;
     action_t* touch_of_the_magi_explosion;
   } action;
 
@@ -2841,7 +2849,7 @@ struct blizzard_t : public frost_mage_spell_t
     frost_mage_spell_t::execute();
 
     timespan_t ground_aoe_duration = data().duration() * player->cache.spell_speed();
-    p()->ground_aoe_expiration[ name_str ] = sim->current_time() + ground_aoe_duration;
+    p()->ground_aoe_expiration[ AOE_BLIZZARD ] = sim->current_time() + ground_aoe_duration;
 
     make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
       .target( target )
@@ -2951,7 +2959,7 @@ struct comet_storm_t : public frost_mage_spell_t
 
     int pulse_count = 7;
     timespan_t pulse_time = 0.2_s;
-    p()->ground_aoe_expiration[ name_str ] = sim->current_time() + pulse_count * pulse_time;
+    p()->ground_aoe_expiration[ AOE_COMET_STORM ] = sim->current_time() + pulse_count * pulse_time;
 
     make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
       .pulse_time( pulse_time )
@@ -3323,7 +3331,7 @@ struct flamestrike_t : public hot_streak_spell_t
 
     if ( flame_patch )
     {
-      p()->ground_aoe_expiration[ flame_patch->name_str ] = sim->current_time() + flame_patch_duration;
+      p()->ground_aoe_expiration[ AOE_FLAME_PATCH ] = sim->current_time() + flame_patch_duration;
 
       make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
         .target( target )
@@ -3707,7 +3715,7 @@ struct frozen_orb_t : public frost_mage_spell_t
 
     int pulse_count = 20;
     timespan_t pulse_time = 0.5_s;
-    p()->ground_aoe_expiration[ name_str ] = sim->current_time() + ( pulse_count - 1 ) * pulse_time;
+    p()->ground_aoe_expiration[ AOE_FROZEN_ORB ] = sim->current_time() + ( pulse_count - 1 ) * pulse_time;
 
     make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
       .pulse_time( pulse_time )
@@ -3716,7 +3724,7 @@ struct frozen_orb_t : public frost_mage_spell_t
       .action( frozen_orb_bolt )
       .expiration_callback( [ this ]
         {
-          if ( p()->ground_aoe_expiration[ name_str ] <= sim->current_time() )
+          if ( p()->ground_aoe_expiration[ AOE_FROZEN_ORB ] <= sim->current_time() )
             p()->buffs.freezing_winds->expire();
         } ), true );
   }
@@ -4023,7 +4031,7 @@ struct ice_lance_t : public frost_mage_spell_t
     // TODO: Determine how it is verified that Blizzard is actively "hitting" the target to increase this chance.
     if ( glacial_fragments )
     {
-      double chance = p()->ground_aoe_expiration[ "blizzard" ] > sim->current_time()
+      double chance = p()->ground_aoe_expiration[ AOE_BLIZZARD ] > sim->current_time()
         ? p()->runeforge.glacial_fragments->effectN( 2 ).percent()
         : p()->runeforge.glacial_fragments->effectN( 1 ).percent();
       if ( rng().roll( chance ) )
@@ -4351,7 +4359,7 @@ struct meteor_impact_t : public fire_mage_spell_t
 
     if ( s->chain_target == 0 )
     {
-      p()->ground_aoe_expiration[ meteor_burn->name_str ] = sim->current_time() + meteor_burn_duration;
+      p()->ground_aoe_expiration[ AOE_METEOR_BURN ] = sim->current_time() + meteor_burn_duration;
 
       make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
         .pulse_time( meteor_burn_pulse_time )
@@ -7106,7 +7114,7 @@ void mage_t::reset()
   last_bomb_target = nullptr;
   last_frostbolt_target = nullptr;
   icicles.clear();
-  ground_aoe_expiration.clear();
+  ground_aoe_expiration = std::array<timespan_t, AOE_MAX>();
   burn_phase.reset();
   state = state_t();
 }
@@ -7283,8 +7291,35 @@ std::unique_ptr<expr_t> mage_t::create_expression( util::string_view name )
 
   if ( splits.size() == 3 && util::str_compare_ci( splits[ 0 ], "ground_aoe" ) )
   {
-    auto type = std::string( splits[ 1 ] );
-    util::tolower( type );
+    auto type_str = std::string( splits[ 1 ] );
+    util::tolower( type_str );
+
+    auto to_string = [] ( ground_aoe_type_e type )
+    {
+      switch ( type )
+      {
+        case AOE_BLIZZARD:    return "blizzard";
+        case AOE_COMET_STORM: return "comet_storm";
+        case AOE_FLAME_PATCH: return "flame_patch";
+        case AOE_FROZEN_ORB:  return "frozen_orb";
+        case AOE_METEOR_BURN: return "meteor_burn";
+        case AOE_MAX:         return "unknown";
+      }
+      return "unknown";
+    };
+
+    auto type = AOE_MAX;
+    for ( auto i = static_cast<ground_aoe_type_e>( 0 ); i < AOE_MAX; i++ )
+    {
+      if ( type_str == to_string( i ) )
+      {
+        type = i;
+        break;
+      }
+    }
+
+    if ( type == AOE_MAX )
+      throw std::invalid_argument( fmt::format( "Unknown ground_aoe type '{}'", splits[ 1 ] ) );
 
     if ( util::str_compare_ci( splits[ 2 ], "remains" ) )
     {
