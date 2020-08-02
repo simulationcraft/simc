@@ -270,7 +270,7 @@
       { "data_type": "i", "field": "unk_5" },
       { "data_type": "i", "field": "unk_6" },
       { "data_type": "i", "field": "unk_7" },
-      { "data_type": "i", "field": "unk_8" }
+      { "data_type": "b", "field": "unk_8" }
     ]
   },
   "GarrTalentTree": {
