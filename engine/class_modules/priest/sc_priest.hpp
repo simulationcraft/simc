@@ -445,10 +445,10 @@ public:
     // Discipline
     conduit_data_t swift_penitence; // NYI
     // Shadow
-    conduit_data_t dissonant_echoes; // NYI
-    conduit_data_t mind_devourer; // NYI
+    conduit_data_t dissonant_echoes;
+    conduit_data_t mind_devourer;
     conduit_data_t rabid_shadows; // NYI
-    conduit_data_t shimmering_apparitions; // NYI
+    conduit_data_t shimmering_apparitions;
     // Covenant
     conduit_data_t courageous_ascension; // NYI
     conduit_data_t festering_transfusion; // NYI
