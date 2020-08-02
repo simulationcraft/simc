@@ -540,7 +540,7 @@ public:
     timespan_t enlightened_interval = 2.0_s;
     // TODO: Determine reasonable default values for Focus Magic options.
     timespan_t focus_magic_interval = 2.0_s;
-    double focus_magic_variance = 0.1;
+    double focus_magic_stddev = 0.1;
     double focus_magic_crit_chance = 0.5;
     // TODO: Determine reasonable default values for Mirrors of Torment options.
     timespan_t mirrors_of_torment_interval = 2.0_s;
@@ -1321,7 +1321,7 @@ struct incanters_flow_t : public buff_t
 
 struct mirrors_of_torment_t : public buff_t
 {
-  unsigned int tick_index;
+  unsigned tick_index;
   timespan_t period;
 
   mirrors_of_torment_t( mage_td_t* td ) :
@@ -1329,28 +1329,23 @@ struct mirrors_of_torment_t : public buff_t
     tick_index(),
     period()
   {
-    cooldown->duration = 0_ms;
+    set_cooldown( 0_ms );
     auto p = debug_cast<mage_t*>( source );
     if ( p->options.mirrors_of_torment_interval > 0_ms )
     {
       set_tick_behavior( buff_tick_behavior::REFRESH );
-      set_tick_time_callback( [ this, p ]( const buff_t*, unsigned int current_tick )
-        { if ( tick_index == current_tick && period > 0_ms )
-            return period;
-          tick_index = current_tick;
-          if ( p->options.mirrors_of_torment_stddev == 0 )
-            period = p->options.mirrors_of_torment_interval;
-          else
-          {
-            timespan_t stddev = p->options.mirrors_of_torment_interval * p->options.mirrors_of_torment_stddev;
-            period = p->rng().gauss( p->options.mirrors_of_torment_interval, stddev );
-            if ( period <= 0_ms )
-              period = 1_ms;
-          }
+      set_tick_time_callback( [ this, p ] ( const buff_t*, unsigned current_tick )
+      {
+        if ( tick_index == current_tick && period > 0_ms )
           return period;
-        } );
+
+        tick_index = current_tick;
+        period = p->options.mirrors_of_torment_interval;
+        period = std::max( 1_ms, p->rng().gauss( period, period * p->options.mirrors_of_torment_stddev ) );
+        return period;
+      } );
       set_tick_callback( [ this ] ( buff_t* buff, int, timespan_t )
-        { buff->decrement(); } );
+      { buff->decrement(); } );
     }
   }
 
@@ -1490,6 +1485,7 @@ struct mage_spell_t : public spell_t
     bool mastery_savant = false;
     bool shifting_power = true;
     bool radiant_spark = true;
+    bool deathborne_cleave = false;
   } affected_by;
 
   static const snapshot_state_e STATE_FROZEN     = STATE_TGT_USER_1;
@@ -1498,24 +1494,21 @@ struct mage_spell_t : public spell_t
   bool track_cd_waste;
   cooldown_waste_data_t* cd_waste;
 
-  bool triggers_fevered_incantation;
-  bool triggers_radiant_spark;
+  bool triggers_fevered_incantation = true;
+  bool triggers_radiant_spark = false;
 
 public:
   mage_spell_t( util::string_view n, mage_t* p, const spell_data_t* s = spell_data_t::nil() ) :
     spell_t( n, p, s ),
     affected_by(),
     track_cd_waste(),
-    cd_waste(),
-    triggers_fevered_incantation()
+    cd_waste()
   {
     may_crit = tick_may_crit = true;
     weapon_multiplier = 0.0;
     affected_by.ice_floes = data().affected_by( p->talents.ice_floes->effectN( 1 ) );
     track_cd_waste = data().cooldown() > 0_ms || data().charge_cooldown() > 0_ms;
     energize_type = ENERGIZE_NONE;
-    triggers_fevered_incantation = true;
-    triggers_radiant_spark = false;
   }
 
   mage_t* p()
@@ -1567,6 +1560,19 @@ public:
     spell_t::init_finished();
   }
 
+  int n_targets() const override
+  {
+    if ( affected_by.deathborne_cleave )
+    {
+      assert( spell_t::n_targets() == 0 );
+      return p()->buffs.deathborne->check() ? ( 1 + as<int>( p()->buffs.deathborne->data().effectN( 4 ).base_value() ) ) : 0;
+    }
+    else
+    {
+      return spell_t::n_targets();
+    }
+  }
+
   double action_multiplier() const override
   {
     double m = spell_t::action_multiplier();
@@ -1592,13 +1598,16 @@ public:
     return m;
   }
 
-  double composite_da_multiplier( const action_state_t* s  ) const override
+  double composite_da_multiplier( const action_state_t* s ) const override
   {
-    double m = spell_t::action_multiplier();
+    double m = spell_t::composite_da_multiplier( s );
 
-    if ( affected_by.radiant_spark )
-      if ( auto td = p()->target_data[ s->target ] )
+    if ( auto td = p()->target_data[ s->target ] )
+    {
+      if ( affected_by.radiant_spark )
         m *= 1.0 + td->debuffs.radiant_spark_vulnerability->check_stack_value();
+    }
+
     return m;
   }
 
@@ -1731,6 +1740,7 @@ public:
     }
 
     if ( auto td = p()->target_data[ s->target ] )
+    {
       if ( triggers_radiant_spark && result_is_hit( s->result ) && td->dots.radiant_spark->is_ticking() )
       {
         if ( td->debuffs.radiant_spark_vulnerability->check() < td->debuffs.radiant_spark_vulnerability->max_stack() )
@@ -1738,6 +1748,7 @@ public:
         else
           td->debuffs.radiant_spark_vulnerability->expire();
       }
+    }
   }
 
   void last_tick( dot_t* d ) override
@@ -2465,8 +2476,8 @@ struct arcane_blast_t : public arcane_mage_spell_t
     parse_options( options_str );
     cost_reductions = { p->buffs.rule_of_threes };
     base_dd_adder += p->azerite.galvanizing_spark.value( 2 );
-    reduced_aoe_damage = true;
-    triggers_radiant_spark = true;
+    reduced_aoe_damage = triggers_radiant_spark = true;
+    affected_by.deathborne_cleave = true;
 
     if ( p->azerite.equipoise.enabled() )
     {
@@ -2489,20 +2500,6 @@ struct arcane_blast_t : public arcane_mage_spell_t
              * p()->spec.arcane_charge->effectN( 5 ).percent();
 
     return std::max( c, 0.0 );
-  }
-
-  int n_targets() const override
-  {
-    int n = arcane_mage_spell_t::n_targets();
-
-    if ( p()->buffs.deathborne->check() )
-    {
-      if ( n == 0 )
-        n = 1;
-      n += as<int>( p()->buffs.deathborne->data().effectN( 4 ).base_value() );
-    }
-
-    return n;
   }
 
   double bonus_da( const action_state_t* s ) const override
@@ -2568,7 +2565,7 @@ struct arcane_explosion_t : public arcane_mage_spell_t
     parse_options( options_str );
     aoe = -1;
     cost_reductions = { p->buffs.clearcasting };
-    affected_by.mastery_savant = triggers_radiant_spark =  true;
+    affected_by.mastery_savant = triggers_radiant_spark = true;
     base_dd_adder += p->azerite.explosive_echo.value( 2 );
     base_multiplier *= 1.0 + p->spec.arcane_explosion_2->effectN( 1 ).percent();
   }
@@ -3332,6 +3329,7 @@ struct fireball_t : public fire_mage_spell_t
   {
     parse_options( options_str );
     triggers_hot_streak = triggers_ignite = triggers_kindling = triggers_radiant_spark = true;
+    affected_by.deathborne_cleave = true;
     base_dd_adder += p->azerite.duplicative_incineration.value( 2 );
 
     if ( p->talents.conflagration->ok() )
@@ -3345,20 +3343,6 @@ struct fireball_t : public fire_mage_spell_t
   {
     timespan_t t = fire_mage_spell_t::travel_time();
     return std::min( t, 0.75_s );
-  }
-
-  int n_targets() const override
-  {
-    int n = fire_mage_spell_t::n_targets();
-
-    if ( p()->buffs.deathborne->check() )
-    {
-      if ( n == 0 )
-        n = 1;
-      n += as<int>( p()->buffs.deathborne->data().effectN( 4 ).base_value() );
-    }
-
-    return n;
   }
 
   void execute() override
@@ -3635,6 +3619,7 @@ struct frostbolt_t : public frost_mage_spell_t
     parse_options( options_str );
     parse_effect_data( p->find_spell( 228597 )->effectN( 1 ) );
     chills = calculate_on_impact = track_shatter = consumes_winters_chill = triggers_radiant_spark = true;
+    affected_by.deathborne_cleave = true;
     base_multiplier *= 1.0 + p->talents.lonely_winter->effectN( 1 ).percent();
 
     if ( p->spec.icicles->ok() )
@@ -3664,20 +3649,6 @@ struct frostbolt_t : public frost_mage_spell_t
     t *= 1.0 + p()->buffs.slick_ice->check_stack_value();
 
     return t;
-  }
-
-  int n_targets() const override
-  {
-    int n = frost_mage_spell_t::n_targets();
-
-    if ( p()->buffs.deathborne->check() )
-    {
-      if ( n == 0 )
-        n = 1;
-      n += as<int>( p()->buffs.deathborne->data().effectN( 4 ).base_value() );
-    }
-
-    return n;
   }
 
   void execute() override
@@ -5284,18 +5255,25 @@ struct shifting_power_t : public mage_spell_t
     reduction = data().effectN( 2 ).time_value();
   }
 
+  void init_finished() override
+  {
+    mage_spell_t::init_finished();
+
+    for ( auto a : p()->action_list )
+    {
+      auto m = dynamic_cast<mage_spell_t*>( a );
+      if ( m
+        && m->affected_by.shifting_power
+        && range::find( shifting_power_cooldowns, m->cooldown ) == shifting_power_cooldowns.end() )
+      {
+        shifting_power_cooldowns.push_back( m->cooldown );
+      }
+    }
+  }
+
   void tick( dot_t* d ) override
   {
     mage_spell_t::tick( d );
-
-    if ( shifting_power_cooldowns.empty() )
-      for ( auto a : p()->action_list )
-      {
-        auto m = dynamic_cast<mage_spell_t*>( a );
-        if ( m && m->affected_by.shifting_power )
-          if ( std::find( shifting_power_cooldowns.begin(), shifting_power_cooldowns.end(), m->cooldown ) == shifting_power_cooldowns.end() )
-            shifting_power_cooldowns.push_back( m->cooldown );
-      }
 
     for ( auto cd : shifting_power_cooldowns )
       cd->adjust( reduction );
@@ -5470,9 +5448,9 @@ struct focus_magic_event_t : public event_t
 
     if ( mage->options.focus_magic_interval > 0_ms )
     {
-      timespan_t min_time = mage->options.focus_magic_interval * ( 1.0 - mage->options.focus_magic_variance );
-      timespan_t max_time = mage->options.focus_magic_interval * ( 1.0 + mage->options.focus_magic_variance );
-      mage->focus_magic_event = make_event<focus_magic_event_t>( sim(), *mage, rng().range( min_time, max_time ) );
+      timespan_t period = mage->options.focus_magic_interval;
+      period = std::max( 1_ms, mage->rng().gauss( period, period * mage->options.focus_magic_stddev ) );
+      mage->focus_magic_event = make_event<focus_magic_event_t>( sim(), *mage, period );
     }
   }
 };
@@ -5918,8 +5896,11 @@ void mage_t::create_actions()
   if ( runeforge.cold_front.ok() )
     action.legendary_frozen_orb = get_action<frozen_orb_t>( "legendary_frozen_orb", this, "", true );
 
-  action.agonizing_backlash  = get_action<agonizing_backlash_t>( "agonizing_backlash", this );
-  action.tormenting_backlash = get_action<tormenting_backlash_t>( "tormenting_backlash", this );
+  if ( find_covenant_spell( "Mirrors of Torment" )->ok() )
+  {
+    action.agonizing_backlash = get_action<agonizing_backlash_t>( "agonizing_backlash", this );
+    action.tormenting_backlash = get_action<tormenting_backlash_t>( "tormenting_backlash", this );
+  }
 
   player_t::create_actions();
 }
@@ -5948,7 +5929,7 @@ void mage_t::create_options()
   add_option( opt_float( "lucid_dreams_proc_chance_frost", options.lucid_dreams_proc_chance_frost ) );
   add_option( opt_timespan( "enlightened_interval", options.enlightened_interval, 1_ms, timespan_t::max() ) );
   add_option( opt_timespan( "focus_magic_interval", options.focus_magic_interval, 0_ms, timespan_t::max() ) );
-  add_option( opt_float( "focus_magic_variance", options.focus_magic_variance, 0.0, 1.0 ) );
+  add_option( opt_float( "focus_magic_stddev", options.focus_magic_stddev, 0.0, std::numeric_limits<double>::max() ) );
   add_option( opt_float( "focus_magic_crit_chance", options.focus_magic_crit_chance, 0.0, 1.0 ) );
   add_option( opt_timespan( "mirrors_of_torment_interval", options.mirrors_of_torment_interval, 0_ms, timespan_t::max() ) );
   add_option( opt_float( "mirrors_of_torment_stddev", options.mirrors_of_torment_stddev, 0.0, std::numeric_limits<double>::max() ) );
@@ -6468,7 +6449,7 @@ void mage_t::create_buffs()
 
   // Covenant Abilities
   buffs.deathborne = make_buff( this, "deathborne", find_spell( 324220 ) )
-                      ->set_default_value( find_spell( 324220 )->effectN( 1 ).percent() );
+                       ->set_default_value( find_spell( 324220 )->effectN( 1 ).percent() );
 
   // Misc
   // N active GBoWs are modeled by a single buff that gives N times as much mana.
@@ -7466,9 +7447,9 @@ void mage_t::arise()
 
   if ( talents.focus_magic->ok() && options.focus_magic_interval > 0_ms )
   {
-    timespan_t min_time = options.focus_magic_interval * ( 1.0 - options.focus_magic_variance );
-    timespan_t max_time = options.focus_magic_interval * ( 1.0 + options.focus_magic_variance );
-    focus_magic_event = make_event<events::focus_magic_event_t>( *sim, *this, rng().range( min_time, max_time ) );
+    timespan_t period = options.focus_magic_interval;
+    period = std::max( 1_ms, rng().gauss( period, period * options.focus_magic_stddev ) );
+    focus_magic_event = make_event<events::focus_magic_event_t>( *sim, *this, period );
   }
 
   if ( talents.time_anomaly->ok() )
