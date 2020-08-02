@@ -3,6 +3,8 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
+#include "simulationcraft.hpp"
+
 #include "player/covenant.hpp"
 #include "reports.hpp"
 #include "report/report_helper.hpp"
@@ -10,7 +12,6 @@
 #include "sc_highchart.hpp"
 #include "sim/scale_factor_control.hpp"
 #include "util/util.hpp"
-#include "simulationcraft.hpp"
 
 namespace
 {  // UNNAMED NAMESPACE ==========================================
