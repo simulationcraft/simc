@@ -421,7 +421,7 @@ public:
     buff_t* timeworn_dreamcatcher;
 
     // Feral
-    buff_t* berserk;
+    buff_t* berserk_cat;
     buff_t* bloodtalons;
     buff_t* incarnation_cat;
     buff_t* predatory_swiftness;
@@ -437,6 +437,7 @@ public:
     // Guardian
     buff_t* barkskin;
     buff_t* bristling_fur;
+    buff_t* berserk_bear;
     buff_t* earthwarden;
     buff_t* earthwarden_driver;
     buff_t* galactic_guardian;
@@ -481,7 +482,6 @@ public:
     cooldown_t* thrash_bear;
     cooldown_t* maul;
     cooldown_t* moon_cd; // New / Half / Full Moon
-    cooldown_t* wod_pvp_4pc_melee;
     cooldown_t* swiftmend;
     cooldown_t* tigers_fury;
     cooldown_t* warrior_of_elune;
@@ -844,7 +844,6 @@ public:
     cooldown.thrash_bear         = get_cooldown( "thrash_bear"         );
     cooldown.maul                = get_cooldown( "maul"                );
     cooldown.moon_cd             = get_cooldown( "moon_cd"             );
-    cooldown.wod_pvp_4pc_melee   = get_cooldown( "wod_pvp_4pc_melee"   );
     cooldown.swiftmend           = get_cooldown( "swiftmend"           );
     cooldown.tigers_fury         = get_cooldown( "tigers_fury"         );
     cooldown.warrior_of_elune    = get_cooldown( "warrior_of_elune"    );
@@ -852,7 +851,6 @@ public:
     cooldown.innervate           = get_cooldown( "innervate"           );
     cooldown.rage_from_melees    = get_cooldown( "rage_from_melees"    );
 
-    cooldown.wod_pvp_4pc_melee -> duration = timespan_t::from_seconds( 30.0 );
     cooldown.rage_from_melees -> duration  = timespan_t::from_seconds( 1.0 );
 
     equipped_weapon_dps = 0;
@@ -1260,7 +1258,6 @@ public:
     add_invalidate( CACHE_ATTACK_POWER );
     add_invalidate( CACHE_STAMINA );
     add_invalidate( CACHE_ARMOR );
-    add_invalidate( CACHE_EXP );
     add_invalidate( CACHE_CRIT_AVOIDANCE );
   }
 
@@ -1295,13 +1292,49 @@ private:
   const spell_data_t* rage_spell;
 };
 
+struct incarnation_bear_buff_t : public druid_buff_t<buff_t>
+{
+  double hp_mul;
+
+  incarnation_bear_buff_t( druid_t& p ) :
+    base_t( p, "incarnation_guardian_of_ursoc", p.talent.incarnation_bear->ok() ? p.talent.incarnation_bear : p.find_spell( 102558 ) )
+  {
+    set_cooldown( 0_ms );
+    hp_mul = 1.0 + data().effectN( 5 ).percent();
+  }
+
+  bool trigger( int stacks, double value, double chance, timespan_t duration ) override
+  {
+    bool refresh = !check();
+    bool success = druid_buff_t<buff_t>::trigger( stacks, value, chance, duration );
+
+    if ( !refresh && success )
+    {
+      player->resources.max[ RESOURCE_HEALTH ] *= hp_mul;
+      player->resources.current[ RESOURCE_HEALTH ] *= hp_mul;
+      p().recalculate_resource_max( RESOURCE_HEALTH );
+    }
+
+    return success;
+  }
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+      player->resources.max[ RESOURCE_HEALTH ] /= hp_mul;
+      player->resources.current[ RESOURCE_HEALTH ] /= hp_mul;
+      p().recalculate_resource_max( RESOURCE_HEALTH );
+
+    druid_buff_t<buff_t>::expire_override( expiration_stacks, remaining_duration );
+  }
+};
+
 // Berserk Buff Template ====================================================
 
-struct berserk_buff_base_t : public druid_buff_t<buff_t>
+struct berserk_cat_buff_base_t : public druid_buff_t<buff_t>
 {
   double increased_max_energy;
 
-  berserk_buff_base_t( druid_t& p, util::string_view name, const spell_data_t* spell ) :
+  berserk_cat_buff_base_t( druid_t& p, util::string_view name, const spell_data_t* spell ) :
     base_t( p, name, spell ),
     increased_max_energy(0)
   // Cooldown handled by ability
@@ -1333,10 +1366,10 @@ struct berserk_buff_base_t : public druid_buff_t<buff_t>
 
 // Berserk Buff =============================================================
 
-struct berserk_buff_t : public berserk_buff_base_t
+struct berserk_cat_buff_t : public berserk_cat_buff_base_t
 {
-  berserk_buff_t( druid_t& p ) :
-    berserk_buff_base_t( p, "berserk", p.find_spell( 106951 ) )
+  berserk_cat_buff_t( druid_t& p ) :
+    berserk_cat_buff_base_t( p, "berserk", p.find_spell( 106951 ) )
   {
     default_value        = data().effectN( 1 ).percent(); // cost modifier
     increased_max_energy = data().effectN( 3 ).resource( RESOURCE_ENERGY );
@@ -1345,10 +1378,10 @@ struct berserk_buff_t : public berserk_buff_base_t
 
 // Incarnation: King of the Jungle ==========================================
 
-struct incarnation_cat_buff_t : public berserk_buff_base_t
+struct incarnation_cat_buff_t : public berserk_cat_buff_base_t
 {
   incarnation_cat_buff_t( druid_t& p ) :
-    berserk_buff_base_t( p, "incarnation_king_of_the_jungle", p.talent.incarnation_cat )
+    berserk_cat_buff_base_t( p, "incarnation_king_of_the_jungle", p.talent.incarnation_cat )
   {
     default_value        = data().effectN( 1 ).percent(); // cost modifier
     increased_max_energy = data().effectN( 2 ).resource(RESOURCE_ENERGY);
@@ -2999,7 +3032,7 @@ public:
       p() -> buff.clearcasting -> check() )
       return 0;
 
-    c *= 1.0 + p() -> buff.berserk -> check_value();
+    c *= 1.0 + p() -> buff.berserk_cat -> check_value();
     c *= 1.0 + p() -> buff.incarnation_cat -> check_value();
 
     return c;
@@ -3007,14 +3040,15 @@ public:
 
   void consume_resource() override
   {
+    double eff_cost = base_t::cost();
+
     // Treat Omen of Clarity energy savings like an energy gain for tracking purposes.
     if ( consumes_clearcasting && current_resource() == RESOURCE_ENERGY && base_t::cost() > 0 &&
          p()->buff.clearcasting->up() )
     {
       // Base cost doesn't factor in Berserk, but Omen of Clarity does net us less energy during it, so account for that
       // here.
-      double eff_cost = base_t::cost();
-      eff_cost *= 1.0 + p()->buff.berserk->value();
+      eff_cost *= 1.0 + p()->buff.berserk_cat->value();
       eff_cost *= 1.0 + p()->buff.incarnation_cat->check_value();
 
       p()->gain.clearcasting->add( RESOURCE_ENERGY, eff_cost );
@@ -3029,7 +3063,7 @@ public:
       if ( p()->legendary.feral_runecarve_1->ok() )
       {
         // TODO: check if we need to modify by eff_cost for berserk/incarn
-        p()->resource_gain( RESOURCE_ENERGY, base_t::cost() * p()->legendary.feral_runecarve_1->effectN( 1 ).percent(),
+        p()->resource_gain( RESOURCE_ENERGY, eff_cost * p()->legendary.feral_runecarve_1->effectN( 1 ).percent(),
                             p()->gain.feral_runecarve_1 );
       }
     }
@@ -3149,7 +3183,7 @@ public:
         attack_critical = true;
 
       if ( p()->legendary.feral_runecarve_4->ok() &&
-           ( p()->buff.berserk->check() || p()->buff.incarnation_cat->check() ) )
+           ( p()->buff.berserk_cat->check() || p()->buff.incarnation_cat->check() ) )
       {
         trigger_feral_runecarve_4( s->target, s->result_amount );
       }
@@ -3204,7 +3238,7 @@ public:
       p()->buff.tigers_fury->up();
       p()->buff.savage_roar->up();
       if ( special && base_costs[ RESOURCE_ENERGY ] > 0 )
-        p()->buff.berserk->up();
+        p()->buff.berserk_cat->up();
     }
   }
 
@@ -3290,15 +3324,15 @@ struct cat_melee_t : public cat_attack_t
 
   double action_multiplier() const override
   {
-    double cm = cat_attack_t::action_multiplier();
+    double am = cat_attack_t::action_multiplier();
 
     if ( p()->buff.cat_form->check() )
-      cm *= 1.0 + p()->buff.cat_form->data().effectN( 3 ).percent();
+      am *= 1.0 + p()->buff.cat_form->data().effectN( 4 ).percent();
 
     if ( p()->talent.feral_affinity->ok() && p()->buff.heart_of_the_wild->up() )
-      cm *= 1.0 + p()->buff.heart_of_the_wild->data().effectN( 3 ).percent();
+      am *= 1.0 + p()->buff.heart_of_the_wild->data().effectN( 3 ).percent();
 
-    return cm;
+    return am;
   }
 
   double composite_target_multiplier( player_t* t ) const override
@@ -3349,9 +3383,9 @@ struct rip_state_t : public action_state_t
 
 // Berserk ==================================================================
 
-struct berserk_t : public cat_attack_t
+struct berserk_cat_t : public cat_attack_t
 {
-  berserk_t( druid_t* player, const std::string& options_str ) :
+  berserk_cat_t( druid_t* player, const std::string& options_str ) :
     cat_attack_t( "berserk", player, player -> find_specialization_spell( "Berserk" ), options_str )
   {
     harmful = may_miss = may_parry = may_dodge = may_crit = false;
@@ -3362,7 +3396,7 @@ struct berserk_t : public cat_attack_t
   {
     cat_attack_t::execute();
 
-    p() -> buff.berserk -> trigger();
+    p() -> buff.berserk_cat -> trigger();
   }
 
   bool ready() override
@@ -3512,7 +3546,7 @@ struct ferocious_bite_t : public cat_attack_t
   {
     double req = base_costs[ RESOURCE_ENERGY ] + max_excess_energy;
 
-    req *= 1.0 + p() -> buff.berserk -> check_value();
+    req *= 1.0 + p() -> buff.berserk_cat -> check_value();
     req *= 1.0 + p() -> buff.incarnation_cat -> check_value();
 
     if ( p()->buff.apex_predators_craving->check() )
@@ -3546,7 +3580,7 @@ struct ferocious_bite_t : public cat_attack_t
   void execute() override
   {
     // Berserk does affect the additional energy consumption.
-    max_excess_energy *= 1.0 + p() -> buff.berserk -> value();
+    max_excess_energy *= 1.0 + p() -> buff.berserk_cat -> value();
     max_excess_energy *= 1.0 + p() -> buff.incarnation_cat -> check_value();
 
     excess_energy = std::min( max_excess_energy,
@@ -3848,13 +3882,13 @@ struct rake_t : public cat_attack_t
 
       if ( !p()->azerite.blood_mist.ok() )
         return;
-      if ( p()->buff.berserk->check() || p()->buff.incarnation_cat->check() )
+      if ( p()->buff.berserk_cat->check() || p()->buff.incarnation_cat->check() )
         return;
       if ( !p()->rppm.blood_mist->trigger() )
         return;
 
       p()->proc.blood_mist->occur();
-      p()->buff.berserk->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, timespan_t::from_seconds( 6 ) );
+      p()->buff.berserk_cat->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, timespan_t::from_seconds( 6 ) );
     }
   };
 
@@ -3969,7 +4003,7 @@ struct rip_t : public cat_attack_t
 
     ta += p()->azerite.gushing_lacerations.value( 2 );
 
-    if ( p()->buff.berserk->up() || p()->buff.incarnation_cat->up() )
+    if ( p()->buff.berserk_cat->up() || p()->buff.incarnation_cat->up() )
     {
       ta += p()->azerite.primordial_rage.value();
     }
@@ -4417,6 +4451,30 @@ struct bear_melee_t : public bear_attack_t
   }
 };
 
+struct berserk_bear_t : public bear_attack_t
+{
+  berserk_bear_t( druid_t* p, const std::string& o )
+    : bear_attack_t( "berserk", p, p->find_specialization_spell( "berserk" ), o )
+  {
+    harmful = may_miss = may_parry = may_dodge = may_crit = false;
+  }
+
+  void execute() override
+  {
+    bear_attack_t::execute();
+
+    p()->buff.berserk_bear->trigger();
+  }
+
+  bool ready() override
+  {
+    if ( p()->talent.incarnation_bear->ok() )
+      return false;
+
+    return bear_attack_t::ready();
+  }
+};
+
 // Growl ====================================================================
 
 struct growl_t: public bear_attack_t
@@ -4429,22 +4487,22 @@ struct growl_t: public bear_attack_t
     use_off_gcd = true;
   }
 
-  void update_ready( timespan_t ) override
-  {
-    timespan_t cd = cooldown -> duration;
-
-    if ( p() -> buff.incarnation_bear -> up() )
-      cd = timespan_t::zero();
-
-    bear_attack_t::update_ready( cd );
-  }
-
   void impact( action_state_t* s ) override
   {
     if ( s -> target -> is_enemy() )
       target -> taunt( player );
 
     bear_attack_t::impact( s );
+  }
+
+  double recharge_multiplier( const cooldown_t& cd ) const override
+  {
+    double rm = bear_attack_t::recharge_multiplier( cd );
+
+    if ( p()->buff.berserk_bear->check() || p()->buff.incarnation_bear->check() )
+      rm *= 1.0 + p()->buff.berserk_bear->data().effectN( 1 ).percent();
+
+    return rm;
   }
 };
 
@@ -4475,16 +4533,6 @@ struct mangle_t : public bear_attack_t
     return em;
   }
 
-  void update_ready( timespan_t ) override
-  {
-    timespan_t cd = cooldown -> duration;
-
-    if ( p() -> buff.incarnation_bear -> up() )
-      cd = timespan_t::zero();
-
-    bear_attack_t::update_ready( cd );
-  }
-
   double composite_target_multiplier( player_t* t ) const override
   {
     double tm = bear_attack_t::composite_target_multiplier( t );
@@ -4497,8 +4545,8 @@ struct mangle_t : public bear_attack_t
 
   int n_targets() const override
   {
-    if ( p() -> buff.incarnation_bear -> up() )
-      return (int) p() -> buff.incarnation_bear -> data().effectN( 4 ).base_value();
+    if ( p()->buff.incarnation_bear->check() )
+      return as<int>( p()->buff.incarnation_bear->data().effectN( 4 ).base_value() );
 
     return bear_attack_t::n_targets();
   }
@@ -4524,6 +4572,16 @@ struct mangle_t : public bear_attack_t
       }
     }
   }
+
+  double recharge_multiplier( const cooldown_t& cd ) const override
+  {
+    double rm = bear_attack_t::recharge_multiplier( cd );
+
+    if ( p()->buff.berserk_bear->check() || p()->buff.incarnation_bear->check() )
+      rm *= 1.0 + p()->buff.berserk_bear->data().effectN( 1 ).percent();
+
+    return rm;
+  }
 };
 
 // Maul =====================================================================
@@ -4534,16 +4592,6 @@ struct maul_t : public bear_attack_t
     bear_attack_t( "maul", player, player -> find_specialization_spell( "Maul" ), options_str )
   {
     gore = true;
-  }
-
-  void update_ready( timespan_t ) override
-  {
-    timespan_t cd = cooldown -> duration;
-
-    if ( p() -> buff.incarnation_bear -> up() )
-      cd = timespan_t::zero();
-
-    bear_attack_t::update_ready( cd );
   }
 
   void impact( action_state_t* s ) override
@@ -4621,16 +4669,6 @@ struct swipe_bear_t : public bear_attack_t
     gore = true;
   }
 
-  void update_ready( timespan_t ) override
-  {
-    timespan_t cd = cooldown -> duration;
-
-    if ( p() -> buff.incarnation_bear -> up() )
-      cd = timespan_t::zero();
-
-    bear_attack_t::update_ready( cd );
-  }
-
   double composite_da_multiplier( const action_state_t* s ) const override
   {
     double m = bear_attack_t::composite_da_multiplier( s );
@@ -4682,16 +4720,6 @@ struct thrash_bear_t : public bear_attack_t
       blood_frenzy_amount = p -> find_spell( 203961 ) -> effectN( 1 ).resource( RESOURCE_RAGE );
   }
 
-  void update_ready( timespan_t ) override
-  {
-    timespan_t cd = cooldown -> duration;
-
-    if ( p() -> buff.incarnation_bear -> up() )
-      cd = timespan_t::zero();
-
-    bear_attack_t::update_ready( cd );
-  }
-
   void tick( dot_t* d ) override
   {
     bear_attack_t::tick( d );
@@ -4729,6 +4757,16 @@ struct thrash_bear_t : public bear_attack_t
 
     if ( p() -> azerite.twisted_claws.ok() )
       p() -> buff.twisted_claws -> trigger();
+  }
+
+  double recharge_multiplier( const cooldown_t& cd ) const override
+  {
+    double rm = bear_attack_t::recharge_multiplier( cd );
+
+    if ( p()->buff.berserk_bear->check() || p()->buff.incarnation_bear->check() )
+      rm *= 1.0 + p()->buff.berserk_bear->data().effectN( 1 ).percent();
+
+    return rm;
   }
 };
 
@@ -4799,7 +4837,7 @@ struct frenzied_regeneration_t : public heals::druid_heal_t
     tick_zero = true;
 
     if ( p -> specialization() == DRUID_GUARDIAN )
-      cooldown -> charges += (int) p -> spec.frenzied_regeneration_2 -> effectN( 1 ).base_value();
+      cooldown->charges += as<int>( p->spec.frenzied_regeneration_2->effectN( 1 ).base_value() );
   }
 
   void init() override
@@ -4825,6 +4863,16 @@ struct frenzied_regeneration_t : public heals::druid_heal_t
       * p() -> buff.guardian_of_elune -> data().effectN( 2 ).percent();
 
     return am;
+  }
+
+  double recharge_multiplier( const cooldown_t& cd ) const override
+  {
+    double rm = druid_heal_t::recharge_multiplier( cd );
+
+    if ( p()->buff.berserk_bear->check() || p()->buff.incarnation_bear->check() )
+      rm *= 1.0 + p()->buff.berserk_bear->data().effectN( 7 ).percent();
+
+    return rm;
   }
 };
 
@@ -5802,14 +5850,6 @@ struct incarnation_t : public druid_spell_t
       streaking_stars_trigger( SS_CELESTIAL_ALIGNMENT, nullptr );
     }
 
-    if ( p()->buff.incarnation_bear->check() )
-    {
-      p()->cooldown.mangle->reset( false );
-      p()->cooldown.thrash_bear->reset( false );
-      p()->cooldown.growl->reset( false );
-      p()->cooldown.maul->reset( false );
-    }
-
     if ( !p()->in_combat )
     {
       timespan_t time = std::max( min_gcd, trigger_gcd * composite_haste() );
@@ -5911,7 +5951,10 @@ struct ironfur_t : public druid_spell_t
   {
     double c = druid_spell_t::cost();
 
-    c += p() -> buff.guardians_wrath -> check_stack_value();
+    c += p()->buff.guardians_wrath->check_stack_value();
+
+    if ( p()->buff.berserk_bear->check() || p()->buff.incarnation_bear->check() )
+      c *= 1.0 + p()->buff.berserk_bear->data().effectN( 6 ).percent();
 
     return c;
   }
@@ -7685,7 +7728,6 @@ action_t* druid_t::create_action( util::string_view name, const std::string& opt
 
   if ( name == "auto_attack"            ) return new            auto_attack_t( this, options_str );
   if ( name == "barkskin"               ) return new               barkskin_t( this, options_str );
-  if ( name == "berserk"                ) return new                berserk_t( this, options_str );
   if ( name == "bear_form"              ) return new      spells::bear_form_t( this, options_str );
   if ( name == "brutal_slash"           ) return new           brutal_slash_t( this, options_str );
   if ( name == "bristling_fur"          ) return new          bristling_fur_t( this, options_str );
@@ -7749,12 +7791,16 @@ action_t* druid_t::create_action( util::string_view name, const std::string& opt
   if ( name == "incarnation"            ) return new            incarnation_t( this, options_str );
 
   if ( name == "heart_of_the_wild" ) return new heart_of_the_wild_t( this, options_str );
+  if ( name == "berserk" )
+  {
+    if ( specialization() == DRUID_FERAL ) return new berserk_cat_t( this, options_str );
+    else if ( specialization() == DRUID_GUARDIAN ) return new berserk_bear_t( this, options_str );
+  }
+
   if ( name == "celestial_alignment" )
   {
-    if ( talent.incarnation_moonkin->ok() )
-      return new incarnation_t( this, options_str );
-    else
-      return new celestial_alignment_t( this, options_str );
+    if ( talent.incarnation_moonkin->ok() ) return new incarnation_t( this, options_str );
+    else return new celestial_alignment_t( this, options_str );
   }
 
   if ( covenant.kyrian->ok() )
@@ -8298,10 +8344,7 @@ void druid_t::create_buffs()
 
   buff.jungle_stalker        = make_buff( this, "jungle_stalker", find_spell( 252071 ) );
 
-  buff.incarnation_bear      = make_buff( this, "incarnation_guardian_of_ursoc",
-        talent.incarnation_bear->ok() ? talent.incarnation_bear : find_spell(102558) ) // for bear VoP
-    ->add_invalidate( CACHE_ARMOR )
-    ->set_cooldown( timespan_t::zero() );
+  buff.incarnation_bear = new incarnation_bear_buff_t( *this );
 
   buff.incarnation_tree      = make_buff( this, "incarnation_tree_of_life", talent.incarnation_tree )
     ->set_duration( timespan_t::from_seconds( 30 ) )
@@ -8456,7 +8499,7 @@ void druid_t::create_buffs()
       make_buff( this, "apex_predators_craving", legendary.apex_predators_craving->effectN( 1 ).trigger() )
           ->set_chance( legendary.apex_predators_craving->effectN( 1 ).percent() );
 
-  buff.berserk               = new berserk_buff_t( *this );
+  buff.berserk_cat = new berserk_cat_buff_t( *this );
 
   buff.predatory_swiftness   = make_buff( this, "predatory_swiftness", find_spell( 69369 ) )
     ->set_chance( spec.predatory_swiftness -> ok() );
@@ -8486,6 +8529,9 @@ void druid_t::create_buffs()
                                  if ( talent.brambles -> ok() )
                                    active.brambles_pulse -> execute();
                                } );
+
+  buff.berserk_bear =
+      make_buff( this, "berserk", find_specialization_spell( "Berserk" ) )->set_cooldown( timespan_t::zero() );
 
   buff.bristling_fur         = make_buff( this, "bristling_fur", talent.bristling_fur )
     ->set_cooldown( timespan_t::zero() );
@@ -9658,11 +9704,8 @@ double druid_t::composite_armor_multiplier() const
 {
   double a = player_t::composite_armor_multiplier();
 
-  if ( buff.bear_form -> check() )
-  {
-    a *= 1.0 + buff.bear_form -> data().effectN( 4 ).percent();
-    a *= 1.0 + buff.incarnation_bear -> data().effectN( 5 ).percent();
-  }
+  if ( buff.bear_form->check() )
+    a *= 1.0 + buff.bear_form->data().effectN( 4 ).percent();
 
   return a;
 }
@@ -10684,7 +10727,7 @@ void druid_t::vision_of_perfection_proc()
       }
       else
       {
-        vp_buff = buff.berserk;
+        vp_buff = buff.berserk_cat;
       }
       break;
 
