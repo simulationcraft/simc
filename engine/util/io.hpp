@@ -31,7 +31,7 @@ std::wstring widen( const std::string& str );
 
 std::string latin1_to_utf8( const std::string& str );
 std::string utf8_to_latin1( const std::string& str );
-std::string maybe_latin1_to_utf8( const std::string& str );
+std::string maybe_latin1_to_utf8( util::string_view str );
 
 // Like std::fopen, but works with UTF-8 filenames on windows.
 FILE* fopen( const std::string& filename, const char* mode );

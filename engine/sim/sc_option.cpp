@@ -690,7 +690,7 @@ bool option_db_t::parse_file( std::istream& input )
 
 // option_db_t::parse_text ==================================================
 
-void option_db_t::parse_text( const std::string& text )
+void option_db_t::parse_text( util::string_view text )
 {
   // Split a chunk of text into lines to parse.
   std::string::size_type first = 0;
@@ -725,7 +725,7 @@ void option_db_t::parse_text( const std::string& text )
 
 // option_db_t::parse_line ==================================================
 
-void option_db_t::parse_line( const std::string& line )
+void option_db_t::parse_line( util::string_view line )
 {
   if ( line[ 0 ] == '#' )
   {
@@ -743,7 +743,7 @@ void option_db_t::parse_line( const std::string& line )
 
 // option_db_t::parse_token =================================================
 
-void option_db_t::parse_token( const std::string& token )
+void option_db_t::parse_token( util::string_view token )
 {
   if ( token == "-" )
   {
@@ -751,7 +751,7 @@ void option_db_t::parse_token( const std::string& token )
     return;
   }
 
-  std::string parsed_token = token;
+  std::string parsed_token = std::string( token );
   std::string::size_type cut_pt = parsed_token.find( '=' );
 
   // Expand the token with template variables, and try to find '=' again

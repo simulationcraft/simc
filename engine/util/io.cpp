@@ -68,7 +68,7 @@ std::wstring widen( const char* str )
 std::wstring widen( const std::string& str )
 { return _widen( str ); }
 
-std::string maybe_latin1_to_utf8( const std::string& str )
+std::string maybe_latin1_to_utf8( util::string_view str )
 {
   std::string result;
 

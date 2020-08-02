@@ -40,7 +40,7 @@ void SC_SimulateThread::run()
     error_str.clear();
     try
     {
-      description.options.parse_text( utf8_options.constData() );
+      description.options.parse_text( util::string_view( utf8_options.constData(), utf8_options.size() ) );
     }
     catch ( const std::exception& e )
     {

@@ -107,8 +107,8 @@ struct option_db_t : public std::vector<option_tuple_t>
     emplace_back( scope, name, value );
   }
   bool parse_file( std::istream& file );
-  void parse_token( const std::string& token );
-  void parse_line( const std::string& line );
-  void parse_text( const std::string& text );
+  void parse_token( util::string_view token );
+  void parse_line( util::string_view line );
+  void parse_text( util::string_view text );
   void parse_args( util::span<const std::string> args );
 };
