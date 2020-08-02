@@ -128,6 +128,9 @@ struct mage_td_t : public actor_target_data_t
   struct dots_t
   {
     dot_t* nether_tempest;
+
+    // Covenant Abilities
+    dot_t* radiant_spark;
   } dots;
 
   struct debuffs_t
@@ -139,6 +142,10 @@ struct mage_td_t : public actor_target_data_t
 
     // Azerite
     buff_t* packed_ice;
+
+    // Covenant Abilities
+    buff_t* mirrors_of_torment;
+    buff_t* radiant_spark_vulnerability;
   } debuffs;
 
   mage_td_t( player_t* target, mage_t* mage );
@@ -372,6 +379,7 @@ public:
   // Cached actions
   struct actions_t
   {
+    action_t* agonizing_backlash;
     action_t* arcane_assault;
     action_t* conflagration_flare_up;
     action_t* glacial_assault;
@@ -380,6 +388,7 @@ public:
     action_t* living_bomb_dot;
     action_t* living_bomb_dot_spread;
     action_t* living_bomb_explosion;
+    action_t* tormenting_backlash;
     action_t* touch_of_the_magi_explosion;
   } action;
 
@@ -487,6 +496,9 @@ public:
     buff_t* expanded_potential;
 
 
+    // Covenant Abilities
+    buff_t* deathborne;
+
     // Miscellaneous Buffs
     buff_t* gbow;
     buff_t* shimmer;
@@ -526,9 +538,13 @@ public:
     double lucid_dreams_proc_chance_fire = 0.1;
     double lucid_dreams_proc_chance_frost = 0.075;
     timespan_t enlightened_interval = 2.0_s;
+    // TODO: Determine reasonable default values for Focus Magic options.
     timespan_t focus_magic_interval = 2.0_s;
     double focus_magic_variance = 0.1;
     double focus_magic_crit_chance = 0.5;
+    // TODO: Determine reasonable default values for Mirrors of Torment options.
+    timespan_t mirrors_of_torment_interval = 2.0_s;
+    double mirrors_of_torment_stddev = 0.1;
   } options;
 
   // Pets
@@ -1112,6 +1128,8 @@ action_t* mirror_image_pet_t::create_action( util::string_view name, const std::
 
 namespace buffs {
 
+// Custom buffs =============================================================
+
 // Touch of the Magi debuff =================================================
 
 struct touch_of_the_magi_t : public buff_t
@@ -1157,8 +1175,6 @@ struct touch_of_the_magi_t : public buff_t
     accumulated_damage += s->result_total;
   }
 };
-
-// Custom buffs =============================================================
 
 struct combustion_buff_t : public buff_t
 {
@@ -1303,6 +1319,64 @@ struct incanters_flow_t : public buff_t
   }
 };
 
+struct mirrors_of_torment_t : public buff_t
+{
+  unsigned int tick_index;
+  timespan_t period;
+
+  mirrors_of_torment_t( mage_td_t* td ) :
+    buff_t( *td, "mirrors_of_torment", td->source->find_spell( 314793 ) ),
+    tick_index(),
+    period()
+  {
+    cooldown->duration = 0_ms;
+    auto p = debug_cast<mage_t*>( source );
+    if ( p->options.mirrors_of_torment_interval > 0_ms )
+    {
+      set_tick_behavior( buff_tick_behavior::REFRESH );
+      set_tick_time_callback( [ this, p ]( const buff_t*, unsigned int current_tick )
+        { if ( tick_index == current_tick && period > 0_ms )
+            return period;
+          tick_index = current_tick;
+          if ( p->options.mirrors_of_torment_stddev == 0 )
+            period = p->options.mirrors_of_torment_interval;
+          else
+          {
+            timespan_t stddev = p->options.mirrors_of_torment_interval * p->options.mirrors_of_torment_stddev;
+            period = p->rng().gauss( p->options.mirrors_of_torment_interval, stddev );
+            if ( period <= 0_ms )
+              period = 1_ms;
+          }
+          return period;
+        } );
+      set_tick_callback( [ this ] ( buff_t* buff, int, timespan_t )
+        { buff->decrement(); } );
+    }
+  }
+
+  bool freeze_stacks() override
+  {
+    return true;
+  }
+
+  void decrement( int stacks, double value ) override
+  {
+    auto p = debug_cast<mage_t*>( source );
+    if ( current_stack == 1 )
+    {
+      p->action.tormenting_backlash->set_target( player );
+      p->action.tormenting_backlash->execute();
+    }
+    else
+    {
+      p->action.agonizing_backlash->set_target( player );
+      p->action.agonizing_backlash->execute();
+    }
+
+    buff_t::decrement( stacks, value );
+  }
+};
+
 }  // buffs
 
 
@@ -1407,12 +1481,15 @@ struct mage_spell_t : public spell_t
     bool bone_chilling = true;
     bool incanters_flow = true;
     bool rune_of_power = true;
+    bool deathborne = true;
 
     // Misc
     bool combustion = true;
     bool ice_floes = false;
     bool shatter = false;
     bool mastery_savant = false;
+    bool shifting_power = true;
+    bool radiant_spark = true;
   } affected_by;
 
   static const snapshot_state_e STATE_FROZEN     = STATE_TGT_USER_1;
@@ -1422,6 +1499,7 @@ struct mage_spell_t : public spell_t
   cooldown_waste_data_t* cd_waste;
 
   bool triggers_fevered_incantation;
+  bool triggers_radiant_spark;
 
 public:
   mage_spell_t( util::string_view n, mage_t* p, const spell_data_t* s = spell_data_t::nil() ) :
@@ -1437,6 +1515,7 @@ public:
     track_cd_waste = data().cooldown() > 0_ms || data().charge_cooldown() > 0_ms;
     energize_type = ENERGIZE_NONE;
     triggers_fevered_incantation = true;
+    triggers_radiant_spark = false;
   }
 
   mage_t* p()
@@ -1507,6 +1586,19 @@ public:
     if ( affected_by.mastery_savant )
       m *= 1.0 + p()->cache.mastery() * p()->spec.savant->effectN( 5 ).mastery_value();
 
+    if ( affected_by.deathborne )
+      m *= 1.0 + p()->buffs.deathborne->check_value();
+
+    return m;
+  }
+
+  double composite_da_multiplier( const action_state_t* s  ) const override
+  {
+    double m = spell_t::action_multiplier();
+
+    if ( affected_by.radiant_spark )
+      if ( auto td = p()->target_data[ s->target ] )
+        m *= 1.0 + td->debuffs.radiant_spark_vulnerability->check_stack_value();
     return m;
   }
 
@@ -1637,6 +1729,15 @@ public:
       else
         p()->buffs.fevered_incantation->expire();
     }
+
+    if ( auto td = p()->target_data[ s->target ] )
+      if ( triggers_radiant_spark && result_is_hit( s->result ) && td->dots.radiant_spark->is_ticking() )
+      {
+        if ( td->debuffs.radiant_spark_vulnerability->check() < td->debuffs.radiant_spark_vulnerability->max_stack() )
+          td->debuffs.radiant_spark_vulnerability->trigger();
+        else
+          td->debuffs.radiant_spark_vulnerability->expire();
+      }
   }
 
   void last_tick( dot_t* d ) override
@@ -2284,6 +2385,7 @@ struct arcane_barrage_t : public arcane_mage_spell_t
     parse_options( options_str );
     cooldown->hasted = true;
     base_aoe_multiplier *= data().effectN( 2 ).percent();
+    triggers_radiant_spark = true;
   }
 
   int n_targets() const override
@@ -2363,6 +2465,8 @@ struct arcane_blast_t : public arcane_mage_spell_t
     parse_options( options_str );
     cost_reductions = { p->buffs.rule_of_threes };
     base_dd_adder += p->azerite.galvanizing_spark.value( 2 );
+    reduced_aoe_damage = true;
+    triggers_radiant_spark = true;
 
     if ( p->azerite.equipoise.enabled() )
     {
@@ -2385,6 +2489,20 @@ struct arcane_blast_t : public arcane_mage_spell_t
              * p()->spec.arcane_charge->effectN( 5 ).percent();
 
     return std::max( c, 0.0 );
+  }
+
+  int n_targets() const override
+  {
+    int n = arcane_mage_spell_t::n_targets();
+
+    if ( p()->buffs.deathborne->check() )
+    {
+      if ( n == 0 )
+        n = 1;
+      n += as<int>( p()->buffs.deathborne->data().effectN( 4 ).base_value() );
+    }
+
+    return n;
   }
 
   double bonus_da( const action_state_t* s ) const override
@@ -2450,7 +2568,7 @@ struct arcane_explosion_t : public arcane_mage_spell_t
     parse_options( options_str );
     aoe = -1;
     cost_reductions = { p->buffs.clearcasting };
-    affected_by.mastery_savant = true;
+    affected_by.mastery_savant = triggers_radiant_spark =  true;
     base_dd_adder += p->azerite.explosive_echo.value( 2 );
     base_multiplier *= 1.0 + p->spec.arcane_explosion_2->effectN( 1 ).percent();
   }
@@ -2494,6 +2612,7 @@ struct arcane_assault_t : public arcane_mage_spell_t
     arcane_mage_spell_t( n, p, p->find_spell( 225119 ) )
   {
     background = true;
+    affected_by.radiant_spark = false;
   }
 };
 
@@ -2552,7 +2671,7 @@ struct arcane_missiles_tick_t : public arcane_mage_spell_t
     arcane_mage_spell_t( n, p, p->find_spell( 7268 ) )
   {
     background = true;
-    affected_by.mastery_savant = true;
+    affected_by.mastery_savant = triggers_radiant_spark = true;
     base_multiplier *= 1.0 + p->runeforge.arcane_harmony->effectN( 1 ).percent();
   }
 
@@ -2705,7 +2824,7 @@ struct arcane_orb_bolt_t : public arcane_mage_spell_t
     arcane_mage_spell_t( n, p, p->find_spell( 153640 ) )
   {
     background = true;
-    affected_by.mastery_savant = true;
+    affected_by.mastery_savant = triggers_radiant_spark = true;
   }
 
   void impact( action_state_t* s ) override
@@ -2763,6 +2882,7 @@ struct blast_wave_t : public fire_mage_spell_t
   {
     parse_options( options_str );
     aoe = -1;
+    triggers_radiant_spark = true;
   }
 };
 
@@ -2929,7 +3049,7 @@ struct comet_storm_projectile_t : public frost_mage_spell_t
     frost_mage_spell_t( n, p, p->find_spell( 153596 ) )
   {
     aoe = -1;
-    background = consumes_winters_chill = true;
+    background = consumes_winters_chill = triggers_radiant_spark = true;
   }
 };
 
@@ -2978,7 +3098,7 @@ struct cone_of_cold_t : public frost_mage_spell_t
   {
     parse_options( options_str );
     aoe = -1;
-    chills = consumes_winters_chill = true;
+    chills = consumes_winters_chill = triggers_radiant_spark = true;
   }
 };
 
@@ -2990,6 +3110,7 @@ struct conflagration_t : public fire_mage_spell_t
     fire_mage_spell_t( n, p, p->find_spell( 226757 ) )
   {
     background = true;
+    affected_by.radiant_spark = false;
   }
 };
 
@@ -2999,6 +3120,7 @@ struct conflagration_flare_up_t : public fire_mage_spell_t
     fire_mage_spell_t( n, p, p->find_spell( 205345 ) )
   {
     background = true;
+    affected_by.radiant_spark = false;
     aoe = -1;
   }
 };
@@ -3087,6 +3209,7 @@ struct dragons_breath_t : public fire_mage_spell_t
   {
     parse_options( options_str );
     aoe = -1;
+    triggers_radiant_spark = true;
     cooldown->duration += p->spec.dragons_breath_2->effectN( 1 ).time_value();
 
     if ( p->talents.alexstraszas_fury->ok() )
@@ -3178,7 +3301,7 @@ struct ebonbolt_t : public frost_mage_spell_t
   {
     parse_options( options_str );
     parse_effect_data( p->find_spell( 257538 )->effectN( 1 ) );
-    calculate_on_impact = track_shatter = true;
+    calculate_on_impact = track_shatter = triggers_radiant_spark = true;
 
     if ( p->talents.splitting_ice->ok() )
     {
@@ -3208,7 +3331,7 @@ struct fireball_t : public fire_mage_spell_t
     fire_mage_spell_t( n, p, p->find_class_spell( "Fireball" ) )
   {
     parse_options( options_str );
-    triggers_hot_streak = triggers_ignite = triggers_kindling = true;
+    triggers_hot_streak = triggers_ignite = triggers_kindling = triggers_radiant_spark = true;
     base_dd_adder += p->azerite.duplicative_incineration.value( 2 );
 
     if ( p->talents.conflagration->ok() )
@@ -3222,6 +3345,20 @@ struct fireball_t : public fire_mage_spell_t
   {
     timespan_t t = fire_mage_spell_t::travel_time();
     return std::min( t, 0.75_s );
+  }
+
+  int n_targets() const override
+  {
+    int n = fire_mage_spell_t::n_targets();
+
+    if ( p()->buffs.deathborne->check() )
+    {
+      if ( n == 0 )
+        n = 1;
+      n += as<int>( p()->buffs.deathborne->data().effectN( 4 ).base_value() );
+    }
+
+    return n;
   }
 
   void execute() override
@@ -3255,7 +3392,8 @@ struct fireball_t : public fire_mage_spell_t
         p()->action.legendary_meteor->set_target( s->target );
         p()->action.legendary_meteor->execute();
       }
-      p()->buffs.molten_skyfall->trigger();
+      else
+        p()->buffs.molten_skyfall->trigger();
       if ( p()->buffs.molten_skyfall->check() == p()->buffs.molten_skyfall->max_stack() - 1 )
       {
         p()->buffs.molten_skyfall->expire();
@@ -3293,6 +3431,7 @@ struct flame_patch_t : public fire_mage_spell_t
   {
     aoe = -1;
     ground_aoe = background = true;
+    affected_by.radiant_spark = false;
   }
 
   result_amount_type amount_type( const action_state_t*, bool ) const override
@@ -3313,7 +3452,7 @@ struct flamestrike_t : public hot_streak_spell_t
     flame_patch()
   {
     parse_options( options_str );
-    triggers_ignite = true;
+    triggers_ignite = triggers_radiant_spark = true;
     aoe = -1;
     base_multiplier *= 1.0 + p->spec.flamestrike_2->effectN( 1 ).percent();
 
@@ -3367,7 +3506,7 @@ struct flurry_bolt_t : public frost_mage_spell_t
     chills = true;
     base_multiplier *= 1.0 + p->talents.lonely_winter->effectN( 1 ).percent();
     glacial_assault_chance = p->azerite.glacial_assault.spell_ref().effectN( 1 ).trigger()->proc_chance();
-    consumes_winters_chill = true;
+    consumes_winters_chill = triggers_radiant_spark = true;
   }
 
   void impact( action_state_t* s ) override
@@ -3495,7 +3634,7 @@ struct frostbolt_t : public frost_mage_spell_t
   {
     parse_options( options_str );
     parse_effect_data( p->find_spell( 228597 )->effectN( 1 ) );
-    chills = calculate_on_impact = track_shatter = consumes_winters_chill = true;
+    chills = calculate_on_impact = track_shatter = consumes_winters_chill = triggers_radiant_spark = true;
     base_multiplier *= 1.0 + p->talents.lonely_winter->effectN( 1 ).percent();
 
     if ( p->spec.icicles->ok() )
@@ -3525,6 +3664,20 @@ struct frostbolt_t : public frost_mage_spell_t
     t *= 1.0 + p()->buffs.slick_ice->check_stack_value();
 
     return t;
+  }
+
+  int n_targets() const override
+  {
+    int n = frost_mage_spell_t::n_targets();
+
+    if ( p()->buffs.deathborne->check() )
+    {
+      if ( n == 0 )
+        n = 1;
+      n += as<int>( p()->buffs.deathborne->data().effectN( 4 ).base_value() );
+    }
+
+    return n;
   }
 
   void execute() override
@@ -3573,7 +3726,8 @@ struct frostbolt_t : public frost_mage_spell_t
     if ( result_is_hit( s->result ) )
     {
       p()->buffs.tunnel_of_ice->trigger();
-      p()->buffs.cold_front->trigger();
+      if ( !p()->buffs.cold_front_ready->check() )
+        p()->buffs.cold_front->trigger();
       if ( p()->buffs.cold_front->check() == p()->buffs.cold_front->max_stack() - 1 )
       {
         p()->buffs.cold_front->expire();
@@ -3601,7 +3755,7 @@ struct frost_nova_t : public mage_spell_t
   {
     parse_options( options_str );
     aoe = -1;
-    affected_by.shatter = true;
+    affected_by.shatter = triggers_radiant_spark = true;
     cooldown->charges += as<int>( p->talents.ice_ward->effectN( 1 ).base_value() );
   }
 
@@ -3739,7 +3893,7 @@ struct glacial_spike_t : public frost_mage_spell_t
   {
     parse_options( options_str );
     parse_effect_data( p->find_spell( 228600 )->effectN( 1 ) );
-    calculate_on_impact = track_shatter = consumes_winters_chill = true;
+    calculate_on_impact = track_shatter = consumes_winters_chill = triggers_radiant_spark = true;
     base_dd_adder += p->azerite.flash_freeze.value( 2 ) * p->spec.icicles->effectN( 2 ).base_value();
 
     if ( p->talents.splitting_ice->ok() )
@@ -3892,7 +4046,7 @@ struct ice_lance_t : public frost_mage_spell_t
   {
     parse_options( options_str );
     parse_effect_data( p->find_spell( 228598 )->effectN( 1 ) );
-    calculate_on_impact = track_shatter = consumes_winters_chill = true;
+    calculate_on_impact = track_shatter = consumes_winters_chill = triggers_radiant_spark = true;
     base_multiplier *= 1.0 + p->talents.lonely_winter->effectN( 1 ).percent();
     base_dd_adder += p->azerite.whiteout.value( 3 );
 
@@ -4089,7 +4243,7 @@ struct ice_nova_t : public frost_mage_spell_t
   {
     parse_options( options_str );
     aoe = -1;
-    consumes_winters_chill = true;
+    consumes_winters_chill = triggers_radiant_spark = true;
 
     double in_mult = p->talents.ice_nova->effectN( 3 ).percent();
     base_multiplier     *= in_mult;
@@ -4160,7 +4314,7 @@ struct fire_blast_t : public fire_mage_spell_t
   {
     parse_options( options_str );
     usable_while_casting = p->spec.fire_blast_3->ok();
-    triggers_hot_streak = triggers_ignite = triggers_kindling = true;
+    triggers_hot_streak = triggers_ignite = triggers_kindling = triggers_radiant_spark = true;
 
     cooldown->charges += as<int>( p->spec.fire_blast_4->effectN( 1 ).base_value() );
     cooldown->charges += as<int>( p->talents.flame_on->effectN( 1 ).base_value() );
@@ -4205,6 +4359,7 @@ struct living_bomb_dot_t : public fire_mage_spell_t
     primary( primary_ )
   {
     background = true;
+    affected_by.radiant_spark = false;
   }
 
   void init() override
@@ -4260,6 +4415,7 @@ struct living_bomb_explosion_t : public fire_mage_spell_t
   {
     aoe = -1;
     background = true;
+    affected_by.radiant_spark = false;
   }
 
   double composite_aoe_multiplier( const action_state_t* s ) const override
@@ -4345,7 +4501,7 @@ struct meteor_impact_t : public fire_mage_spell_t
   {
     background = split_aoe_damage = true;
     aoe = -1;
-    triggers_ignite = true;
+    triggers_ignite = triggers_radiant_spark = true;
   }
 
   timespan_t travel_time() const override
@@ -4447,6 +4603,7 @@ struct nether_tempest_aoe_t : public arcane_mage_spell_t
   {
     aoe = -1;
     background = true;
+    affected_by.radiant_spark = false;
   }
 
   result_amount_type amount_type( const action_state_t*, bool ) const override
@@ -4470,6 +4627,7 @@ struct nether_tempest_t : public arcane_mage_spell_t
   {
     parse_options( options_str );
     add_child( nether_tempest_aoe );
+    affected_by.radiant_spark = false;
   }
 
   void execute() override
@@ -4522,7 +4680,7 @@ struct phoenix_flames_splash_t : public fire_mage_spell_t
   {
     aoe = -1;
     background = reduced_aoe_damage = true;
-    triggers_hot_streak = triggers_ignite = true;
+    triggers_hot_streak = triggers_ignite = triggers_radiant_spark = true;
     max_spread_targets = as<int>( p->spec.ignite->effectN( 4 ).base_value() );
     // Phoenix Flames always crits
     base_crit = 1.0;
@@ -4618,6 +4776,7 @@ struct pyroblast_dot_t : public fire_mage_spell_t
   {
     background = true;
     cooldown->duration = 0_ms;
+    affected_by.radiant_spark = false;
   }
 };
 
@@ -4632,7 +4791,7 @@ struct pyroblast_t : public hot_streak_spell_t
     pyroblast_dot()
   {
     parse_options( options_str );
-    triggers_hot_streak = triggers_ignite = triggers_kindling = true;
+    triggers_hot_streak = triggers_ignite = triggers_kindling = triggers_radiant_spark = true;
     base_dd_adder += p->azerite.wildfire.value( 2 );
 
     if ( p->azerite.trailing_embers.enabled() )
@@ -4705,17 +4864,21 @@ struct pyroblast_t : public hot_streak_spell_t
       }
     }
 
-    if ( p()->buffs.molten_skyfall_ready->check() )
+    if ( result_is_hit( s->result ) )
     {
-      p()->buffs.molten_skyfall_ready->expire();
-      p()->action.legendary_meteor->set_target( s->target );
-      p()->action.legendary_meteor->execute();
-    }
-    p()->buffs.molten_skyfall->trigger();
-    if ( p()->buffs.molten_skyfall->check() == p()->buffs.molten_skyfall->max_stack() - 1 )
-    {
-      p()->buffs.molten_skyfall->expire();
-      p()->buffs.molten_skyfall_ready->trigger();
+      if ( p()->buffs.molten_skyfall_ready->check() )
+      {
+        p()->buffs.molten_skyfall_ready->expire();
+        p()->action.legendary_meteor->set_target( s->target );
+        p()->action.legendary_meteor->execute();
+      }
+      else
+        p()->buffs.molten_skyfall->trigger();
+      if ( p()->buffs.molten_skyfall->check() == p()->buffs.molten_skyfall->max_stack() - 1 )
+      {
+        p()->buffs.molten_skyfall->expire();
+        p()->buffs.molten_skyfall_ready->trigger();
+      }
     }
   }
 
@@ -4738,7 +4901,7 @@ struct ray_of_frost_t : public frost_mage_spell_t
     frost_mage_spell_t( n, p, p->talents.ray_of_frost )
   {
     parse_options( options_str );
-    channeled = chills = true;
+    channeled = chills = triggers_radiant_spark = true;
   }
 
   void init_finished() override
@@ -4804,7 +4967,7 @@ struct scorch_t : public fire_mage_spell_t
     fire_mage_spell_t( n, p, p->find_specialization_spell( "Scorch" ) )
   {
     parse_options( options_str );
-    triggers_hot_streak = triggers_ignite = true;
+    triggers_hot_streak = triggers_ignite = triggers_radiant_spark = true;
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -4890,7 +5053,7 @@ struct supernova_t : public arcane_mage_spell_t
     double sn_mult = 1.0 + p->talents.supernova->effectN( 1 ).percent();
     base_multiplier     *= sn_mult;
     base_aoe_multiplier /= sn_mult;
-    affected_by.mastery_savant = true;
+    affected_by.mastery_savant = triggers_radiant_spark = true;
   }
 };
 
@@ -4989,6 +5152,7 @@ struct touch_of_the_magi_explosion_t : public arcane_mage_spell_t
   {
     background = reduced_aoe_damage = true;
     may_miss = may_crit = callbacks = false;
+    affected_by.radiant_spark = false;
     aoe = -1;
     base_dd_min = base_dd_max = 1.0;
   }
@@ -5010,6 +5174,131 @@ struct touch_of_the_magi_explosion_t : public arcane_mage_spell_t
     m = std::min( m, 1.0 );
 
     return m;
+  }
+};
+
+// ==========================================================================
+// Mage Covenant Abilities
+// ==========================================================================
+
+// Deathborne Spell =========================================================
+
+struct deathborne_t : public mage_spell_t
+{
+  deathborne_t( util::string_view n, mage_t* p, util::string_view options_str ) :
+    mage_spell_t( n, p, p->find_covenant_spell( "Deathborne" ) )
+  {
+    parse_options( options_str );
+    harmful = false;
+  }
+
+  void execute() override
+  {
+    mage_spell_t::execute();
+
+    p()->buffs.deathborne->trigger();
+  }
+};
+
+// Mirrors of Torment Spell =================================================
+
+struct agonizing_backlash_t : public mage_spell_t
+{
+  agonizing_backlash_t( util::string_view n, mage_t* p ) :
+    mage_spell_t( n, p, p->find_spell( 320035 ) )
+  {
+    background = true;
+  }
+};
+
+struct tormenting_backlash_t : public mage_spell_t
+{
+  tormenting_backlash_t( util::string_view n, mage_t* p ) :
+    mage_spell_t( n, p, p->find_spell( 317589 ) )
+  {
+    background = true;
+  }
+};
+
+struct mirrors_of_torment_t : public mage_spell_t
+{
+  mirrors_of_torment_t( util::string_view n, mage_t* p, util::string_view options_str ) :
+    mage_spell_t( n, p, p->find_covenant_spell( "Mirrors of Torment" ) )
+  {
+    parse_options( options_str );
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    mage_spell_t::impact( s );
+    auto debuff = td( s->target )->debuffs.mirrors_of_torment;
+    debuff->trigger( debuff->max_stack() );
+  }
+};
+
+// Radiant Spark Spell ======================================================
+
+struct radiant_spark_t : public mage_spell_t
+{
+  radiant_spark_t( util::string_view n, mage_t* p, util::string_view options_str ) :
+    mage_spell_t( n, p, p->find_covenant_spell( "Radiant Spark" ) )
+  {
+    parse_options( options_str );
+    affected_by.radiant_spark = false;
+  }
+
+  void last_tick( dot_t* d ) override
+  {
+    if ( auto td = p()->target_data[ d->target ] )
+      td->debuffs.radiant_spark_vulnerability->expire();
+
+    mage_spell_t::last_tick( d );
+  }
+};
+
+// Shifting Power Spell =====================================================
+
+struct shifting_power_pulse_t : public mage_spell_t
+{
+  shifting_power_pulse_t( util::string_view n, mage_t* p ) :
+    mage_spell_t( n, p, p->find_spell( 325130 ) )
+  {
+    background = true;
+  }
+};
+
+struct shifting_power_t : public mage_spell_t
+{
+  std::vector<cooldown_t*> shifting_power_cooldowns;
+  timespan_t reduction;
+
+  shifting_power_t( util::string_view n, mage_t* p, util::string_view options_str ) :
+    mage_spell_t( n, p, p->find_covenant_spell( "Shifting Power" ) ),
+    shifting_power_cooldowns(),
+    reduction()
+  {
+    parse_options( options_str );
+    channeled = true;
+    affected_by.shifting_power = false;
+    tick_action = get_action<shifting_power_pulse_t>( "shifting_power_pulse", p );
+    reduction = data().effectN( 2 ).time_value();
+  }
+
+  void tick( dot_t* d ) override
+  {
+    mage_spell_t::tick( d );
+
+    if ( shifting_power_cooldowns.empty() )
+      for ( auto a : p()->action_list )
+      {
+        auto m = dynamic_cast<mage_spell_t*>( a );
+        if ( m && m->affected_by.shifting_power )
+          if ( std::find( shifting_power_cooldowns.begin(), shifting_power_cooldowns.end(), m->cooldown ) == shifting_power_cooldowns.end() )
+            shifting_power_cooldowns.push_back( m->cooldown );
+      }
+
+    for ( auto cd : shifting_power_cooldowns )
+      cd->adjust( reduction );
   }
 };
 
@@ -5436,6 +5725,12 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
                             ->set_default_value( mage->runeforge.grisly_icicle->effectN( 2 ).percent() )
                             ->set_chance( mage->runeforge.grisly_icicle.ok() );
 
+  // Covenant Abilities
+  dots.radiant_spark = target->get_dot( "radiant_spark", mage );
+
+  debuffs.mirrors_of_torment          = make_buff<buffs::mirrors_of_torment_t>( this );
+  debuffs.radiant_spark_vulnerability = make_buff( *this, "radiant_spark_vulnerability", mage->find_spell( 307454 ) )
+                                          ->set_default_value( mage->find_spell( 307454 )->effectN( 1 ).percent() );
   // Azerite
   debuffs.packed_ice = make_buff( *this, "packed_ice", mage->find_spell( 272970 ) )
                          ->set_chance( mage->azerite.packed_ice.enabled() )
@@ -5571,6 +5866,12 @@ action_t* mage_t::create_action( util::string_view name, const std::string& opti
   if ( name == "rune_of_power"          ) return new          rune_of_power_t( name, this, options_str );
   if ( name == "shimmer"                ) return new                shimmer_t( name, this, options_str );
 
+  // Covenant Abilities
+  if ( name == "deathborne"             ) return new             deathborne_t( name, this, options_str );
+  if ( name == "mirrors_of_torment"     ) return new     mirrors_of_torment_t( name, this, options_str );
+  if ( name == "radiant_spark"          ) return new          radiant_spark_t( name, this, options_str );
+  if ( name == "shifting_power"         ) return new         shifting_power_t( name, this, options_str );
+
   // Special
   if ( name == "blink_any" )
     return create_action( talents.shimmer->ok() ? "shimmer" : "blink", options_str );
@@ -5617,6 +5918,9 @@ void mage_t::create_actions()
   if ( runeforge.cold_front.ok() )
     action.legendary_frozen_orb = get_action<frozen_orb_t>( "legendary_frozen_orb", this, "", true );
 
+  action.agonizing_backlash  = get_action<agonizing_backlash_t>( "agonizing_backlash", this );
+  action.tormenting_backlash = get_action<tormenting_backlash_t>( "tormenting_backlash", this );
+
   player_t::create_actions();
 }
 
@@ -5646,6 +5950,8 @@ void mage_t::create_options()
   add_option( opt_timespan( "focus_magic_interval", options.focus_magic_interval, 0_ms, timespan_t::max() ) );
   add_option( opt_float( "focus_magic_variance", options.focus_magic_variance, 0.0, 1.0 ) );
   add_option( opt_float( "focus_magic_crit_chance", options.focus_magic_crit_chance, 0.0, 1.0 ) );
+  add_option( opt_timespan( "mirrors_of_torment_interval", options.mirrors_of_torment_interval, 0_ms, timespan_t::max() ) );
+  add_option( opt_float( "mirrors_of_torment_stddev", options.mirrors_of_torment_stddev, 0.0, std::numeric_limits<double>::max() ) );
   player_t::create_options();
 }
 
@@ -6159,6 +6465,10 @@ void mage_t::create_buffs()
                                         ->set_chance( runeforge.disciplinary_command.ok() );
   buffs.expanded_potential          = make_buff( this, "expanded_potential", find_spell( 327495 ) )
                                         ->set_chance( runeforge.expanded_potential.ok() );
+
+  // Covenant Abilities
+  buffs.deathborne = make_buff( this, "deathborne", find_spell( 324220 ) )
+                      ->set_default_value( find_spell( 324220 )->effectN( 1 ).percent() );
 
   // Misc
   // N active GBoWs are modeled by a single buff that gives N times as much mana.
