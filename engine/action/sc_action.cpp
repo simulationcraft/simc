@@ -3888,7 +3888,7 @@ bool action_t::dot_refreshable( const dot_t* dot, timespan_t triggered_duration 
   }
 }
 
-call_action_list_t::call_action_list_t( player_t* player, const std::string& options_str )
+call_action_list_t::call_action_list_t( player_t* player, util::string_view options_str )
   : action_t( ACTION_CALL, "call_action_list", player, spell_data_t::nil() ), alist( nullptr )
 {
   std::string alist_name;
@@ -3921,7 +3921,7 @@ call_action_list_t::call_action_list_t( player_t* player, const std::string& opt
   }
 }
 
-swap_action_list_t::swap_action_list_t( player_t* player, const std::string& options_str,
+swap_action_list_t::swap_action_list_t( player_t* player, util::string_view options_str,
                                         util::string_view name ) :
     action_t( ACTION_OTHER, name, player ),
     alist( nullptr )
@@ -3969,7 +3969,7 @@ bool swap_action_list_t::ready()
   return action_t::ready();
 }
 
-run_action_list_t::run_action_list_t( player_t* player, const std::string& options_str ) :
+run_action_list_t::run_action_list_t( player_t* player, util::string_view options_str ) :
   swap_action_list_t( player, options_str, "run_action_list" )
 {
   quiet                 = true;

@@ -972,7 +972,7 @@ struct call_action_list_t : public action_t
 {
   action_priority_list_t* alist;
 
-  call_action_list_t( player_t*, const std::string& );
+  call_action_list_t( player_t*, util::string_view );
   void execute() override
   { assert( 0 ); }
 };
@@ -981,7 +981,7 @@ struct swap_action_list_t : public action_t
 {
   action_priority_list_t* alist;
 
-  swap_action_list_t( player_t* player, const std::string& options_str,
+  swap_action_list_t( player_t* player, util::string_view options_str,
     util::string_view name = "swap_action_list" );
 
   void execute() override;
@@ -990,7 +990,7 @@ struct swap_action_list_t : public action_t
 
 struct run_action_list_t : public swap_action_list_t
 {
-  run_action_list_t( player_t* player, const std::string& options_str );
+  run_action_list_t( player_t* player, util::string_view options_str );
 
   void execute() override;
 };

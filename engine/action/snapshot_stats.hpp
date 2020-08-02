@@ -27,7 +27,7 @@ struct snapshot_stats_t : public action_t
   attack_t* proxy_attack;
   role_e role;
 
-  snapshot_stats_t(player_t* player, const std::string& options_str);
+  snapshot_stats_t(player_t* player, util::string_view options_str);
 
   void init_finished() override;
   void execute() override;

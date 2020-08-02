@@ -409,9 +409,9 @@ struct execute_pet_action_t : public action_t
 
   std::string pet_name;
 
-  execute_pet_action_t( player_t* player, const std::string& name, const std::string& as,
-                        const std::string& options_str ) :
-    action_t( ACTION_OTHER, "execute_" + name + "_" + as, player ),
+  execute_pet_action_t( player_t* player, util::string_view name, util::string_view as,
+                        util::string_view options_str ) :
+    action_t( ACTION_OTHER, fmt::format( "execute_{}_{}", name, as ), player ),
     pet_action( nullptr ),
     pet( nullptr ),
     action_str( as ),
@@ -7210,7 +7210,7 @@ namespace
 
 struct start_moving_t : public action_t
 {
-  start_moving_t( player_t* player, const std::string& options_str ) : action_t( ACTION_OTHER, "start_moving", player )
+  start_moving_t( player_t* player, util::string_view options_str ) : action_t( ACTION_OTHER, "start_moving", player )
   {
     parse_options( options_str );
     trigger_gcd           = timespan_t::zero();
@@ -7240,7 +7240,7 @@ struct start_moving_t : public action_t
 
 struct stop_moving_t : public action_t
 {
-  stop_moving_t( player_t* player, const std::string& options_str ) : action_t( ACTION_OTHER, "stop_moving", player )
+  stop_moving_t( player_t* player, util::string_view options_str ) : action_t( ACTION_OTHER, "stop_moving", player )
   {
     parse_options( options_str );
     trigger_gcd           = timespan_t::zero();
@@ -7272,10 +7272,9 @@ struct stop_moving_t : public action_t
 
 struct racial_spell_t : public spell_t
 {
-  racial_spell_t( player_t* p, const std::string& token, const spell_data_t* spell, const std::string& options ) :
+  racial_spell_t( player_t* p, util::string_view token, const spell_data_t* spell ) :
     spell_t( token, p, spell )
   {
-    parse_options( options );
   }
 
   void init() override
@@ -7291,9 +7290,10 @@ struct racial_spell_t : public spell_t
 
 struct shadowmeld_t : public racial_spell_t
 {
-  shadowmeld_t( player_t* p, const std::string& options_str ) :
-    racial_spell_t( p, "shadowmeld", p->find_racial_spell( "Shadowmeld" ), options_str )
+  shadowmeld_t( player_t* p, util::string_view options_str ) :
+    racial_spell_t( p, "shadowmeld", p->find_racial_spell( "Shadowmeld" ) )
   {
+    parse_options( options_str );
   }
 
   void execute() override
@@ -7318,11 +7318,12 @@ struct arcane_torrent_t : public racial_spell_t
   double gain_pct;
   double gain_energy;
 
-  arcane_torrent_t( player_t* p, const std::string& options_str ) :
-    racial_spell_t( p, "arcane_torrent", p->find_racial_spell( "Arcane Torrent" ), options_str ),
+  arcane_torrent_t( player_t* p, util::string_view options_str ) :
+    racial_spell_t( p, "arcane_torrent", p->find_racial_spell( "Arcane Torrent" ) ),
     gain_pct( 0 ),
     gain_energy( 0 )
   {
+    parse_options( options_str );
     harmful = false;
     energize_type = ENERGIZE_ON_CAST;
     // Some specs need special handling here
@@ -7374,9 +7375,10 @@ struct arcane_torrent_t : public racial_spell_t
 
 struct berserking_t : public racial_spell_t
 {
-  berserking_t( player_t* p, const std::string& options_str ) :
-    racial_spell_t( p, "berserking", p->find_racial_spell( "Berserking" ), options_str )
+  berserking_t( player_t* p, util::string_view options_str ) :
+    racial_spell_t( p, "berserking", p->find_racial_spell( "Berserking" ) )
   {
+    parse_options( options_str );
     harmful = false;
   }
 
@@ -7392,9 +7394,10 @@ struct berserking_t : public racial_spell_t
 
 struct blood_fury_t : public racial_spell_t
 {
-  blood_fury_t( player_t* p, const std::string& options_str ) :
-    racial_spell_t( p, "blood_fury", p->find_racial_spell( "Blood Fury" ), options_str )
+  blood_fury_t( player_t* p, util::string_view options_str ) :
+    racial_spell_t( p, "blood_fury", p->find_racial_spell( "Blood Fury" ) )
   {
+    parse_options( options_str );
     harmful = false;
   }
 
@@ -7410,8 +7413,8 @@ struct blood_fury_t : public racial_spell_t
 
 struct darkflight_t : public racial_spell_t
 {
-  darkflight_t( player_t* p, const std::string& options_str ) :
-    racial_spell_t( p, "darkflight", p->find_racial_spell( "Darkflight" ), options_str )
+  darkflight_t( player_t* p, util::string_view options_str ) :
+    racial_spell_t( p, "darkflight", p->find_racial_spell( "Darkflight" ) )
   {
     parse_options( options_str );
   }
@@ -7428,8 +7431,8 @@ struct darkflight_t : public racial_spell_t
 
 struct rocket_barrage_t : public racial_spell_t
 {
-  rocket_barrage_t( player_t* p, const std::string& options_str ) :
-    racial_spell_t( p, "rocket_barrage", p->find_racial_spell( "Rocket Barrage" ), options_str )
+  rocket_barrage_t( player_t* p, util::string_view options_str ) :
+    racial_spell_t( p, "rocket_barrage", p->find_racial_spell( "Rocket Barrage" ) )
   {
     parse_options( options_str );
   }
@@ -7439,9 +7442,10 @@ struct rocket_barrage_t : public racial_spell_t
 
 struct stoneform_t : public racial_spell_t
 {
-  stoneform_t( player_t* p, const std::string& options_str ) :
-    racial_spell_t( p, "stoneform", p->find_racial_spell( "Stoneform" ), options_str )
+  stoneform_t( player_t* p, util::string_view options_str ) :
+    racial_spell_t( p, "stoneform", p->find_racial_spell( "Stoneform" ) )
   {
+    parse_options( options_str );
     harmful = false;
   }
 
@@ -7492,10 +7496,11 @@ struct lights_judgment_t : public racial_spell_t
   action_t* damage;
   bool precombat;
 
-  lights_judgment_t( player_t* p, const std::string& options_str ) :
-    racial_spell_t( p, "lights_judgment", p->find_racial_spell( "Light's Judgment" ), options_str ),
+  lights_judgment_t( player_t* p, util::string_view options_str ) :
+    racial_spell_t( p, "lights_judgment", p->find_racial_spell( "Light's Judgment" ) ),
     precombat()
   {
+    parse_options( options_str );
     // The cast doesn't trigger combat
     may_miss = callbacks = harmful = false;
 
@@ -7549,9 +7554,10 @@ struct lights_judgment_t : public racial_spell_t
 
 struct arcane_pulse_t : public racial_spell_t
 {
-  arcane_pulse_t( player_t* p, const std::string& options_str ) :
-    racial_spell_t( p, "arcane_pulse", p->find_racial_spell( "Arcane Pulse" ), options_str )
+  arcane_pulse_t( player_t* p, util::string_view options_str ) :
+    racial_spell_t( p, "arcane_pulse", p->find_racial_spell( "Arcane Pulse" ) )
   {
+    parse_options( options_str );
     may_crit = true;
     aoe      = -1;
     // these are sadly hardcoded in the tooltip
@@ -7584,9 +7590,10 @@ struct arcane_pulse_t : public racial_spell_t
 
 struct ancestral_call_t : public racial_spell_t
 {
-  ancestral_call_t( player_t* p, const std::string& options_str ) :
-    racial_spell_t( p, "ancestral_call", p->find_racial_spell( "Ancestral Call" ), options_str )
+  ancestral_call_t( player_t* p, util::string_view options_str ) :
+    racial_spell_t( p, "ancestral_call", p->find_racial_spell( "Ancestral Call" ) )
   {
+    parse_options( options_str );
     harmful = false;
   }
 
@@ -7603,9 +7610,10 @@ struct ancestral_call_t : public racial_spell_t
 
 struct fireblood_t : public racial_spell_t
 {
-  fireblood_t( player_t* p, const std::string& options_str ) :
-    racial_spell_t( p, "fireblood", p->find_racial_spell( "Fireblood" ), options_str )
+  fireblood_t( player_t* p, util::string_view options_str ) :
+    racial_spell_t( p, "fireblood", p->find_racial_spell( "Fireblood" ) )
   {
+    parse_options( options_str );
     harmful = false;
   }
 
@@ -7621,9 +7629,10 @@ struct fireblood_t : public racial_spell_t
 
 struct haymaker_t : public racial_spell_t
 {
-  haymaker_t( player_t* p, const std::string& options_str ) :
-    racial_spell_t( p, "haymaker", p->find_racial_spell( "Haymaker" ), options_str )
+  haymaker_t( player_t* p, util::string_view options_str ) :
+    racial_spell_t( p, "haymaker", p->find_racial_spell( "Haymaker" ) )
   {
+    parse_options( options_str );
     may_crit = true;
     // Hardcoded in the tooltip.
     attack_power_mod.direct = 0.75;
@@ -7656,9 +7665,10 @@ struct haymaker_t : public racial_spell_t
 // Bag of Tricks ===========================================================
 struct bag_of_tricks_t : public racial_spell_t
 {
-  bag_of_tricks_t( player_t* p, const std::string& options_str )
-    : racial_spell_t( p, "bag_of_tricks", p->find_racial_spell( "Bag of Tricks" ), options_str )
+  bag_of_tricks_t( player_t* p, util::string_view options_str )
+    : racial_spell_t( p, "bag_of_tricks", p->find_racial_spell( "Bag of Tricks" ) )
   {
+    parse_options( options_str );
     // This either a healing or damage spell depending on the chosen trick
     //Values for damage are hardcoded in tooltip
     if ( p->vulpera_tricks == player_t::HEALING || p->vulpera_tricks == player_t::HOLY )
@@ -7718,7 +7728,7 @@ struct restart_sequence_t : public action_t
   sequence_t* seq;
   std::string seq_name_str;
 
-  restart_sequence_t( player_t* player, const std::string& options_str ) :
+  restart_sequence_t( player_t* player, util::string_view options_str ) :
     action_t( ACTION_OTHER, "restart_sequence", player ),
     seq( nullptr ),
     seq_name_str( "default" )  // matches default name for sequences
@@ -7779,7 +7789,7 @@ struct restore_mana_t : public action_t
 {
   double mana;
 
-  restore_mana_t( player_t* player, const std::string& options_str ) :
+  restore_mana_t( player_t* player, util::string_view options_str ) :
     action_t( ACTION_OTHER, "restore_mana", player ),
     mana( 0 )
   {
@@ -7810,7 +7820,7 @@ struct wait_fixed_t : public wait_action_base_t
 {
   std::unique_ptr<expr_t> time_expr;
 
-  wait_fixed_t( player_t* player, const std::string& options_str ) : wait_action_base_t( player, "wait" ), time_expr()
+  wait_fixed_t( player_t* player, util::string_view options_str ) : wait_action_base_t( player, "wait" ), time_expr()
   {
     std::string sec_str = "1.0";
 
@@ -7822,7 +7832,7 @@ struct wait_fixed_t : public wait_action_base_t
     time_expr = expr_t::parse( this, sec_str );
     if ( !time_expr )
     {
-      sim->errorf( "%s: Unable to generate wait expression from '%s'", player->name(), options_str.c_str() );
+      sim->error( "{}: Unable to generate wait expression from '{}'", player->name(), options_str );
       background = true;
     }
   }
@@ -7841,7 +7851,7 @@ struct wait_fixed_t : public wait_action_base_t
 // wait until actions *before* this wait are ready.
 struct wait_until_ready_t : public wait_fixed_t
 {
-  wait_until_ready_t( player_t* player, const std::string& options_str ) : wait_fixed_t( player, options_str )
+  wait_until_ready_t( player_t* player, util::string_view options_str ) : wait_fixed_t( player, options_str )
   {
     interrupt_auto_attack = false;
     quiet                 = true;
@@ -7891,7 +7901,7 @@ struct use_item_t : public action_t
   timespan_t cooldown_group_duration;
   std::string item_name, item_slot, effect_name;
 
-  use_item_t( player_t* player, const std::string& options_str ) :
+  use_item_t( player_t* player, util::string_view options_str ) :
     action_t( ACTION_OTHER, "use_item", player ),
     item( nullptr ),
     action( nullptr ),
@@ -8197,7 +8207,7 @@ struct use_items_t : public action_t
   std::vector<slot_e> priority_slots;    // Slot priority, or custom slots to check
   bool custom_slots;                     // Custom slots= parameter passed. Only check priority_slots.
 
-  use_items_t( player_t* player, const std::string& options_str ) :
+  use_items_t( player_t* player, util::string_view options_str ) :
     action_t( ACTION_USE, "use_items", player ),
     // Ensure trinkets are checked before all other items by default
     priority_slots( {SLOT_TRINKET_1, SLOT_TRINKET_2} ),
@@ -8441,7 +8451,7 @@ struct cancel_buff_t : public action_t
   std::string buff_name;
   buff_t* buff;
 
-  cancel_buff_t( player_t* player, const std::string& options_str ) :
+  cancel_buff_t( player_t* player, util::string_view options_str ) :
     action_t( ACTION_OTHER, "cancel_buff", player ),
     buff_name(),
     buff( nullptr )
@@ -8503,7 +8513,7 @@ struct cancel_buff_t : public action_t
 
 struct cancel_action_t : public action_t
 {
-  cancel_action_t( player_t* player, const std::string& options_str ) :
+  cancel_action_t( player_t* player, util::string_view options_str ) :
     action_t( ACTION_OTHER, "cancel_action", player )
   {
     parse_options( options_str );
@@ -8545,7 +8555,7 @@ struct pool_resource_t : public action_t
   std::string amount_str;
   std::unique_ptr<expr_t> amount_expr;
 
-  pool_resource_t( player_t* p, const std::string& options_str, resource_e r = RESOURCE_NONE ) :
+  pool_resource_t( player_t* p, util::string_view options_str, resource_e r = RESOURCE_NONE ) :
     action_t( ACTION_OTHER, "pool_resource", p ),
     resource( r != RESOURCE_NONE ? r : p->primary_resource() ),
     wait( timespan_t::from_seconds( 0.251 ) ),

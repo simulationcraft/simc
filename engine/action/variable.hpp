@@ -8,6 +8,7 @@
 #include "config.hpp"
 #include "sc_action.hpp"
 #include "sc_enums.hpp"
+#include "util/string_view.hpp"
 #include <string>
 #include <memory>
 
@@ -24,7 +25,7 @@ struct variable_t : public action_t
   std::unique_ptr<expr_t> condition_expression;
   std::unique_ptr<expr_t> value_else_expression;
 
-  variable_t(player_t* player, const std::string& options_str);
+  variable_t(player_t* player, util::string_view options_str);
 
   void init_finished() override;
 

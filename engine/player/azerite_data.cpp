@@ -4061,7 +4061,7 @@ struct concentrated_flame_t : public azerite_essence_major_t
   missile_t* missile;
   burn_t* burn;
 
-  concentrated_flame_t( player_t* p, const std::string& options_str ) :
+  concentrated_flame_t( player_t* p, util::string_view options_str ) :
     azerite_essence_major_t( p, "concentrated_flame", p->find_spell( 295373 ) ),
     stack( 1u ), burn( nullptr )
   {
@@ -4114,7 +4114,7 @@ struct memory_of_lucid_dreams_t : public azerite_essence_major_t
 {
   double precombat_time;
 
-  memory_of_lucid_dreams_t( player_t* p, const std::string& options_str ) :
+  memory_of_lucid_dreams_t( player_t* p, util::string_view options_str ) :
     azerite_essence_major_t( p, "memory_of_lucid_dreams", p->find_spell( 298357 ) )
   {
     // Default the precombat timer to the player's base, unhasted gcd
@@ -4258,7 +4258,7 @@ void blood_of_the_enemy( special_effect_t& effect )
 // Major Power: Blood of the Enemy
 struct blood_of_the_enemy_t : public azerite_essence_major_t
 {
-  blood_of_the_enemy_t( player_t* p, const std::string& options_str ) :
+  blood_of_the_enemy_t( player_t* p, util::string_view options_str ) :
     azerite_essence_major_t( p, "blood_of_the_enemy", p->find_spell( 297108 ) )
   {
     parse_options( options_str );
@@ -4389,7 +4389,7 @@ struct focused_azerite_beam_tick_t : public spell_t
 
 struct focused_azerite_beam_t : public azerite_essence_major_t
 {
-  focused_azerite_beam_t( player_t* p, const std::string& options_str ) :
+  focused_azerite_beam_t( player_t* p, util::string_view options_str ) :
     azerite_essence_major_t( p, "focused_azerite_beam", p->find_spell(295258) )
   {
     parse_options(options_str);
@@ -4485,7 +4485,7 @@ struct guardian_of_azeroth_t : public azerite_essence_major_t
       azerite_essence_t essence;
       player_t* owner;
 
-      azerite_spike_t(util::string_view n, pet_t* p, const std::string& options, const azerite_essence_t& ess) :
+      azerite_spike_t(util::string_view n, pet_t* p, util::string_view options, const azerite_essence_t& ess) :
         spell_t(n, p, p->find_spell(295856)), essence(ess), owner(p->owner)
       {
         parse_options(options);
@@ -4592,7 +4592,7 @@ struct guardian_of_azeroth_t : public azerite_essence_major_t
   double precombat_time;
   timespan_t summon_duration;
 
-  guardian_of_azeroth_t(player_t* p, const std::string& options_str) :
+  guardian_of_azeroth_t(player_t* p, util::string_view options_str) :
     azerite_essence_major_t(p, "guardian_of_azeroth", p->find_spell(295840)),
     summon_duration( player -> find_spell( 300091 ) -> duration() )
   {
@@ -4714,7 +4714,7 @@ void conflict_and_strife( special_effect_t& effect )
 
 struct conflict_t : public azerite_essence_major_t
 {
-  conflict_t(player_t* p, const std::string& options_str) :
+  conflict_t(player_t* p, util::string_view options_str) :
     azerite_essence_major_t(p, "conflict", p->find_spell(303823))
   {
     parse_options( options_str );
@@ -4792,7 +4792,7 @@ struct purifying_blast_t : public azerite_essence_major_t
     }
   };
 
-  purifying_blast_t(player_t* p, const std::string& options_str) :
+  purifying_blast_t(player_t* p, util::string_view options_str) :
     azerite_essence_major_t(p, "purifying_blast", p->find_spell(295337))
   {
     parse_options(options_str);
@@ -4843,7 +4843,7 @@ struct ripple_in_space_t : public azerite_essence_major_t
 {
   timespan_t delay;
 
-  ripple_in_space_t(player_t* p, const std::string& options_str) :
+  ripple_in_space_t(player_t* p, util::string_view options_str) :
     azerite_essence_major_t(p, "ripple_in_space", p->find_spell(302731))
   {
     parse_options( options_str );
@@ -4949,7 +4949,7 @@ struct the_unbound_force_t : public azerite_essence_major_t
 
   unsigned max_shard;
 
-  the_unbound_force_t(player_t* p, const std::string& options_str) :
+  the_unbound_force_t(player_t* p, util::string_view options_str) :
     azerite_essence_major_t(p, "the_unbound_force", p->find_spell(298452)), max_shard(0u)
   {
     parse_options(options_str);
@@ -5236,7 +5236,7 @@ struct worldvein_resonance_t : public azerite_essence_major_t
   buff_t* lifeblood;
   buff_t* worldvein_resonance;
 
-  worldvein_resonance_t( player_t* p, const std::string& options_str ) :
+  worldvein_resonance_t( player_t* p, util::string_view options_str ) :
     azerite_essence_major_t( p, "worldvein_resonance", p->find_spell( 295186 ) ), stacks()
   {
     // Default the precombat timer to the player's base, unhasted gcd
@@ -5342,7 +5342,7 @@ void anima_of_life_and_death( special_effect_t& effect )
 
 struct anima_of_death_t : public azerite_essence_major_t
 {
-  anima_of_death_t( player_t* p, const std::string& options_str ) :
+  anima_of_death_t( player_t* p, util::string_view options_str ) :
     azerite_essence_major_t( p, "anima_of_death", p -> find_spell( 294926 ) )
   {
     parse_options( options_str );
@@ -5634,7 +5634,7 @@ struct reaping_flames_t : public azerite_essence_major_t
   double cd_reset;
   buff_t* damage_buff;
 
-  reaping_flames_t( player_t* p, const std::string& options_str ) :
+  reaping_flames_t( player_t* p, util::string_view options_str ) :
     azerite_essence_major_t( p, "reaping_flames", p->find_spell( 310690 ) ),
     damage_buff()
   {

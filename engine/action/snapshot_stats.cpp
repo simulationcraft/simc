@@ -12,7 +12,7 @@
 #include "player/player_scaling.hpp"
 
 
-snapshot_stats_t::snapshot_stats_t(player_t* player, const std::string& options_str) :
+snapshot_stats_t::snapshot_stats_t(player_t* player, util::string_view options_str) :
   action_t(ACTION_OTHER, "snapshot_stats", player),
   completed(false),
   proxy_spell(nullptr),

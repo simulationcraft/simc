@@ -12,7 +12,7 @@
 #include "sim/sc_cooldown.hpp"
 
 
-variable_t::variable_t(player_t* player, const std::string& options_str) :
+variable_t::variable_t(player_t* player, util::string_view options_str) :
   action_t(ACTION_VARIABLE, "variable", player),
   operation(OPERATION_SET),
   var(nullptr),

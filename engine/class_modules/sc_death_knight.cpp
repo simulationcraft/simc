@@ -1464,12 +1464,9 @@ struct pet_action_t : public T_ACTION
 {
   typedef pet_action_t<T_PET, T_ACTION> super;
 
-  pet_action_t( T_PET* pet, const std::string& name,
-    const spell_data_t* spell = spell_data_t::nil(), const std::string& options = std::string() ) :
+  pet_action_t( T_PET* pet, util::string_view name, const spell_data_t* spell = spell_data_t::nil()) :
     T_ACTION( name, pet, spell )
   {
-    this -> parse_options( options );
-
     this -> special = true;
     this -> may_crit = true;
   }
@@ -1504,9 +1501,9 @@ struct pet_melee_attack_t : public pet_action_t<T_PET, melee_attack_t>
 {
   using super = pet_melee_attack_t<T_PET>;
 
-  pet_melee_attack_t( T_PET* pet, const std::string& name,
-    const spell_data_t* spell = spell_data_t::nil(), const std::string& options = std::string() ) :
-    pet_action_t<T_PET, melee_attack_t>( pet, name, spell, options )
+  pet_melee_attack_t( T_PET* pet, util::string_view name,
+    const spell_data_t* spell = spell_data_t::nil() ) :
+    pet_action_t<T_PET, melee_attack_t>( pet, name, spell )
   {
     if ( this -> school == SCHOOL_NONE )
     {
@@ -1558,9 +1555,9 @@ struct pet_spell_t : public pet_action_t<T_PET, spell_t>
 {
   using super = pet_spell_t<T_PET>;
 
-  pet_spell_t( T_PET* pet, const std::string& name,
-    const spell_data_t* spell = spell_data_t::nil(), const std::string& options = std::string() ) :
-    pet_action_t<T_PET, spell_t>( pet, name, spell, options )
+  pet_spell_t( T_PET* pet, util::string_view name,
+    const spell_data_t* spell = spell_data_t::nil() ) :
+    pet_action_t<T_PET, spell_t>( pet, name )
   {
     this -> tick_may_crit = true;
     this -> hasted_ticks  = false;
@@ -1592,10 +1589,10 @@ struct dt_melee_ability_t : public pet_melee_attack_t<T>
   bool usable_in_dt;
   bool triggers_infected_claws;
 
-  dt_melee_ability_t( T* pet, const std::string& name,
-      const spell_data_t* spell = spell_data_t::nil(), const std::string& options = std::string(),
+  dt_melee_ability_t( T* pet, util::string_view name,
+      const spell_data_t* spell = spell_data_t::nil(),
       bool usable_in_dt = true ) :
-    pet_melee_attack_t<T>( pet, name, spell, options ),
+    pet_melee_attack_t<T>( pet, name, spell ),
     usable_in_dt( usable_in_dt ),
     triggers_infected_claws( false )
   { }
@@ -1700,18 +1697,20 @@ struct ghoul_pet_t : public base_ghoul_pet_t
 
   struct claw_t : public dt_melee_ability_t<ghoul_pet_t>
   {
-    claw_t( ghoul_pet_t* player, const std::string& options_str ) :
-      super( player, "claw", player -> o() -> spell.pet_ghoul_claw, options_str, false )
+    claw_t( ghoul_pet_t* player, util::string_view options_str ) :
+      super( player, "claw", player -> o() -> spell.pet_ghoul_claw, false )
     {
+      parse_options( options_str );
       triggers_infected_claws = true;
     }
   };
 
   struct sweeping_claws_t : public dt_melee_ability_t<ghoul_pet_t>
   {
-    sweeping_claws_t( ghoul_pet_t* player, const std::string& options_str ) :
-      super( player, "sweeping_claws", player -> o() -> spell.pet_sweeping_claws, options_str )
+    sweeping_claws_t( ghoul_pet_t* player, util::string_view options_str ) :
+      super( player, "sweeping_claws", player -> o() -> spell.pet_sweeping_claws )
     {
+      parse_options( options_str );
       aoe = -1;
       triggers_infected_claws = true;
     }
@@ -1719,18 +1718,20 @@ struct ghoul_pet_t : public base_ghoul_pet_t
 
   struct gnaw_t : public dt_melee_ability_t<ghoul_pet_t>
   {
-    gnaw_t( ghoul_pet_t* player, const std::string& options_str ) :
-      super( player, "gnaw", player -> o() -> spell.pet_gnaw, options_str, false )
+    gnaw_t( ghoul_pet_t* player, util::string_view options_str ) :
+      super( player, "gnaw", player -> o() -> spell.pet_gnaw, false )
     {
+      parse_options( options_str );
       cooldown = player -> get_cooldown( "gnaw" );
     }
   };
 
   struct monstrous_blow_t : public dt_melee_ability_t<ghoul_pet_t>
   {
-    monstrous_blow_t( ghoul_pet_t* player, const std::string& options_str ):
-      super( player, "monstrous_blow", player -> o() -> spell.pet_monstrous_blow, options_str )
+    monstrous_blow_t( ghoul_pet_t* player, util::string_view options_str ):
+      super( player, "monstrous_blow", player -> o() -> spell.pet_monstrous_blow )
     {
+      parse_options( options_str );
       cooldown = player -> get_cooldown( "gnaw" );
     }
   };
@@ -1796,9 +1797,11 @@ struct army_ghoul_pet_t : public base_ghoul_pet_t
 
   struct army_claw_t : public pet_melee_attack_t<army_ghoul_pet_t>
   {
-    army_claw_t( army_ghoul_pet_t* player, const std::string& options_str ) :
-      super( player, "claw", player -> o() -> spell.pet_army_claw, options_str )
-    { }
+    army_claw_t( army_ghoul_pet_t* player, util::string_view options_str ) :
+      super( player, "claw", player -> o() -> spell.pet_army_claw )
+    { 
+      parse_options( options_str );
+    }
   };
 
   struct last_surprise_t : public pet_spell_t<army_ghoul_pet_t>
@@ -1913,9 +1916,11 @@ struct gargoyle_pet_t : public death_knight_pet_t
 
   struct gargoyle_strike_t : public pet_spell_t<gargoyle_pet_t>
   {
-    gargoyle_strike_t( gargoyle_pet_t* player, const std::string& options_str ) :
-      super( player, "gargoyle_strike", player -> o() -> spell.pet_gargoyle_strike, options_str )
-    { }
+    gargoyle_strike_t( gargoyle_pet_t* player, util::string_view options_str ) :
+      super( player, "gargoyle_strike", player -> o() -> spell.pet_gargoyle_strike )
+    { 
+      parse_options( options_str );
+    }
   };
 
   gargoyle_pet_t( death_knight_t* owner ) :
@@ -1993,9 +1998,10 @@ struct risen_skulker_pet_t : public death_knight_pet_t
 {
   struct skulker_shot_t : public pet_action_t<risen_skulker_pet_t, ranged_attack_t>
   {
-    skulker_shot_t( risen_skulker_pet_t* player, const std::string& options_str ) :
-      super( player, "skulker_shot", player -> o() -> spell.pet_skulker_shot, options_str )
+    skulker_shot_t( risen_skulker_pet_t* player, util::string_view options_str ) :
+      super( player, "skulker_shot", player -> o() -> spell.pet_skulker_shot )
     {
+      parse_options( options_str );
       weapon = &( player -> main_hand_weapon );
 
       // Risen Skulker deals twice the damage to its main target, and normal damage to the other targets
@@ -2073,7 +2079,7 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
 
   struct drw_attack_t : public pet_melee_attack_t<dancing_rune_weapon_pet_t>
   {
-    drw_attack_t( dancing_rune_weapon_pet_t* p, const std::string& name, const spell_data_t* s ) :
+    drw_attack_t( dancing_rune_weapon_pet_t* p, util::string_view name, const spell_data_t* s ) :
       super( p, name, s )
     {
       background = true;
@@ -2326,9 +2332,10 @@ struct magus_pet_t : public death_knight_pet_t
 
   struct magus_spell_t : public pet_action_t<magus_pet_t, spell_t>
   {
-    magus_spell_t( magus_pet_t* player, const std::string& name , const spell_data_t* spell, const std::string& options_str ) :
-      super( player, name, spell, options_str )
+    magus_spell_t( magus_pet_t* player, util::string_view name , const spell_data_t* spell, util::string_view options_str ) :
+      super( player, name, spell )
     {
+      parse_options( options_str );
       base_dd_min = base_dd_max = player -> o() -> azerite.magus_of_the_dead.value();
     }
 
