@@ -259,7 +259,7 @@ struct hunter_td_t: public actor_target_data_t
   void target_demise();
 };
 
-struct hunter_t: public player_t
+struct hunter_t final : public player_t
 {
 public:
 
@@ -1303,7 +1303,7 @@ struct hunter_main_pet_base_t : public hunter_pet_t
 // Animal Companion
 // ==========================================================================
 
-struct animal_companion_t : public hunter_main_pet_base_t
+struct animal_companion_t final : public hunter_main_pet_base_t
 {
   animal_companion_t( hunter_t* owner ):
     hunter_main_pet_base_t( owner, "animal_companion", PET_HUNTER )
@@ -1344,7 +1344,7 @@ public:
   hunter_main_pet_td_t( player_t* target, hunter_main_pet_t* p );
 };
 
-struct hunter_main_pet_t : public hunter_main_pet_base_t
+struct hunter_main_pet_t final : public hunter_main_pet_base_t
 {
   struct gains_t
   {
@@ -1521,7 +1521,7 @@ struct hunter_main_pet_t : public hunter_main_pet_base_t
 // Dire Critter
 // ==========================================================================
 
-struct dire_critter_t: public hunter_pet_t
+struct dire_critter_t final : public hunter_pet_t
 {
   struct dire_beast_melee_t: public hunter_pet_melee_t<dire_critter_t>
   {
@@ -1585,7 +1585,7 @@ std::pair<timespan_t, int> dire_beast_duration( hunter_t* p )
 // Spitting Cobra
 // ==========================================================================
 
-struct spitting_cobra_t: public hunter_pet_t
+struct spitting_cobra_t final : public hunter_pet_t
 {
   struct cobra_spit_t: public hunter_pet_action_t<spitting_cobra_t, spell_t>
   {
@@ -2357,7 +2357,7 @@ struct resonating_arrow_t : hunter_spell_t
 
 struct wild_spirits_t : hunter_spell_t
 {
-  struct wild_spirits_proc_t : hunter_spell_t
+  struct wild_spirits_proc_t final : hunter_spell_t
   {
     wild_spirits_proc_t( util::string_view n, hunter_t* p ):
       hunter_spell_t( n, p, p -> find_spell( 328523 ) )
@@ -2449,7 +2449,7 @@ struct auto_shot_t : public auto_attack_base_t<ranged_attack_t>
 
 struct barrage_t: public hunter_spell_t
 {
-  struct barrage_damage_t: public hunter_ranged_attack_t
+  struct barrage_damage_t final : public hunter_ranged_attack_t
   {
     barrage_damage_t( util::string_view n, hunter_t* p ):
       hunter_ranged_attack_t( n, p, p -> talents.barrage -> effectN( 1 ).trigger() )
@@ -2489,7 +2489,7 @@ struct barrage_t: public hunter_spell_t
 
 struct multi_shot_t: public hunter_ranged_attack_t
 {
-  struct rapid_reload_t: public hunter_ranged_attack_t
+  struct rapid_reload_t final : public hunter_ranged_attack_t
   {
     rapid_reload_t( util::string_view n, hunter_t* p ):
       hunter_ranged_attack_t( n, p, p -> find_spell( 278565 ) )
@@ -2646,7 +2646,7 @@ struct arcane_shot_t: public arcane_shot_base_t
 
 struct chimaera_shot_t: public hunter_ranged_attack_t
 {
-  struct chimaera_shot_impact_t: public hunter_ranged_attack_t
+  struct chimaera_shot_impact_t final : public hunter_ranged_attack_t
   {
     chimaera_shot_impact_t( util::string_view n, hunter_t* p, const spell_data_t* s ):
       hunter_ranged_attack_t( n, p, s )
@@ -2806,7 +2806,7 @@ struct bursting_shot_t : public hunter_ranged_attack_t
 
 struct aimed_shot_base_t: public hunter_ranged_attack_t
 {
-  struct arcane_shot_sst_t: public arcane_shot_base_t
+  struct arcane_shot_sst_t final : public arcane_shot_base_t
   {
     arcane_shot_sst_t( util::string_view n, hunter_t* p ):
       arcane_shot_base_t( n, p )
@@ -2821,7 +2821,7 @@ struct aimed_shot_base_t: public hunter_ranged_attack_t
     double high, low;
   } careful_aim;
   struct {
-    arcane_shot_base_t* action;
+    arcane_shot_sst_t* action;
     int target_count;
   } serpentstalkers_trickery;
   const int trick_shots_targets;
@@ -2905,7 +2905,7 @@ struct aimed_shot_base_t: public hunter_ranged_attack_t
 
 struct aimed_shot_t : public aimed_shot_base_t
 {
-  struct double_tap_t: public aimed_shot_base_t
+  struct double_tap_t final : public aimed_shot_base_t
   {
     double_tap_t( util::string_view n, hunter_t* p ):
       aimed_shot_base_t( n, p )
@@ -2917,7 +2917,7 @@ struct aimed_shot_t : public aimed_shot_base_t
 
   bool lock_and_loaded = false;
   struct {
-    aimed_shot_base_t* action;
+    double_tap_t* action;
     proc_t* proc;
   } double_tap;
   struct {
@@ -3112,7 +3112,7 @@ struct rapid_fire_t: public hunter_spell_t
     }
   };
 
-  struct rapid_fire_damage_t: public hunter_ranged_attack_t
+  struct rapid_fire_damage_t final : public hunter_ranged_attack_t
   {
     const int trick_shots_targets;
     struct {
@@ -3308,7 +3308,7 @@ struct rapid_fire_t: public hunter_spell_t
 
 struct explosive_shot_t: public hunter_ranged_attack_t
 {
-  struct explosive_shot_aoe_t: hunter_ranged_attack_t
+  struct explosive_shot_aoe_t final : hunter_ranged_attack_t
   {
     explosive_shot_aoe_t( util::string_view n, hunter_t* p ):
       hunter_ranged_attack_t( n, p, p -> find_spell( 212680 ) )
@@ -3366,7 +3366,7 @@ struct melee_t : public auto_attack_base_t<melee_attack_t>
 
 struct internal_bleeding_t
 {
-  struct internal_bleeding_action_t: hunter_ranged_attack_t
+  struct internal_bleeding_action_t final : hunter_ranged_attack_t
   {
     internal_bleeding_action_t( util::string_view n, hunter_t* p ):
       hunter_ranged_attack_t( n, p, p -> find_spell( 270343 ) )
@@ -3386,8 +3386,8 @@ struct internal_bleeding_t
   {
     if ( action )
     {
-      auto td = action->td( s -> target );
-      if (td -> dots.shrapnel_bomb -> is_ticking())
+      auto td = action -> find_td( s -> target );
+      if ( td && td -> dots.shrapnel_bomb -> is_ticking() )
       {
         action -> set_target( s -> target );
         action -> execute();
@@ -3401,7 +3401,7 @@ struct internal_bleeding_t
 
 struct melee_focus_spender_t: hunter_melee_attack_t
 {
-  struct latent_poison_t: hunter_spell_t
+  struct latent_poison_t final : hunter_spell_t
   {
     latent_poison_t( util::string_view n, hunter_t* p ):
       hunter_spell_t( n, p, p -> find_spell( 273289 ) )
@@ -3421,7 +3421,7 @@ struct melee_focus_spender_t: hunter_melee_attack_t
     }
   };
 
-  struct latent_poison_injection_t: hunter_spell_t
+  struct latent_poison_injection_t final : hunter_spell_t
   {
     latent_poison_injection_t( util::string_view n, hunter_t* p ):
       hunter_spell_t( n, p, p -> find_spell( 336904 ) )
@@ -3589,7 +3589,7 @@ struct mongoose_bite_eagle_t : mongoose_bite_base_t
 
 struct flanking_strike_t: hunter_melee_attack_t
 {
-  struct flanking_strike_damage_t : hunter_melee_attack_t
+  struct flanking_strike_damage_t final : hunter_melee_attack_t
   {
     flanking_strike_damage_t( util::string_view n, hunter_t* p ):
       hunter_melee_attack_t( n, p, p -> find_spell( 269752 ) )
@@ -3767,7 +3767,7 @@ struct raptor_strike_eagle_t: public raptor_strike_base_t
 
 struct harpoon_t: public hunter_melee_attack_t
 {
-  struct terms_of_engagement_t : hunter_ranged_attack_t
+  struct terms_of_engagement_t final : hunter_ranged_attack_t
   {
     terms_of_engagement_t( util::string_view n, hunter_t* p ):
       hunter_ranged_attack_t( n, p, p -> find_spell( 271625 ) )
@@ -3938,7 +3938,7 @@ struct chakrams_t : public hunter_ranged_attack_t
    * Fortunately Survival is melee, so the impact of this should be pretty low.
    */
 
-  struct chakrams_damage_t : public hunter_ranged_attack_t
+  struct chakrams_damage_t final : public hunter_ranged_attack_t
   {
     chakrams_damage_t( util::string_view n, hunter_t* p ):
       hunter_ranged_attack_t( n, p, p -> talents.chakrams -> effectN( 1 ).trigger() )
@@ -4013,7 +4013,7 @@ struct interrupt_base_t: public hunter_spell_t
 
 struct moc_t : public hunter_spell_t
 {
-  struct peck_t : public hunter_ranged_attack_t
+  struct peck_t final : public hunter_ranged_attack_t
   {
     peck_t( util::string_view n, hunter_t* p ) :
       hunter_ranged_attack_t( n, p, p -> find_spell( 131900 ) )
@@ -4587,7 +4587,7 @@ struct double_tap_t: public hunter_spell_t
 
 struct volley_t : hunter_spell_t
 {
-  struct damage_t : hunter_ranged_attack_t
+  struct damage_t final : hunter_ranged_attack_t
   {
     damage_t( util::string_view n, hunter_t* p )
       : hunter_ranged_attack_t( n, p, p -> find_spell( 260247 ) )
@@ -4660,7 +4660,7 @@ struct coordinated_assault_t: public hunter_spell_t
 
 struct steel_trap_t: public hunter_spell_t
 {
-  struct steel_trap_impact_t : public hunter_spell_t
+  struct steel_trap_impact_t final : public hunter_spell_t
   {
     steel_trap_impact_t( util::string_view n, hunter_t* p ):
       hunter_spell_t( n, p, p -> find_spell( 162487 ) )
@@ -4692,7 +4692,7 @@ struct steel_trap_t: public hunter_spell_t
 
 struct wildfire_bomb_t: public hunter_spell_t
 {
-  struct wildfire_cluster_t : hunter_spell_t
+  struct wildfire_cluster_t final : hunter_spell_t
   {
     wildfire_cluster_t( util::string_view n, hunter_t* p ):
       hunter_spell_t( n, p, p -> find_spell( 336899 ) )
@@ -4701,7 +4701,7 @@ struct wildfire_bomb_t: public hunter_spell_t
     }
   };
 
-  struct azerite_wildfire_cluster_t : public hunter_spell_t
+  struct azerite_wildfire_cluster_t final : public hunter_spell_t
   {
     azerite_wildfire_cluster_t( util::string_view n, hunter_t* p ):
       hunter_spell_t( n, p, p -> find_spell( 272745 ) )
@@ -4713,7 +4713,7 @@ struct wildfire_bomb_t: public hunter_spell_t
 
   struct bomb_base_t : public hunter_spell_t
   {
-    struct dot_action_t : public hunter_spell_t
+    struct dot_action_t final : public hunter_spell_t
     {
       dot_action_t( util::string_view n, hunter_t* p, const spell_data_t* s ):
         hunter_spell_t( n, p, s )
@@ -4750,14 +4750,14 @@ struct wildfire_bomb_t: public hunter_spell_t
     }
   };
 
-  struct wildfire_bomb_damage_t : public bomb_base_t
+  struct wildfire_bomb_damage_t final : public bomb_base_t
   {
     wildfire_bomb_damage_t( util::string_view n, hunter_t* p, wildfire_bomb_t* a ):
       bomb_base_t( n, a, p -> find_spell( 265157 ), "wildfire_bomb_dot", p -> find_spell( 269747 ) )
     {}
   };
 
-  struct shrapnel_bomb_t : public bomb_base_t
+  struct shrapnel_bomb_t final : public bomb_base_t
   {
     shrapnel_bomb_t( util::string_view n, hunter_t* p, wildfire_bomb_t* a ):
       bomb_base_t( n, a, p -> find_spell( 270338 ), "shrapnel_bomb", p -> find_spell( 270339 ) )
@@ -4767,16 +4767,16 @@ struct wildfire_bomb_t: public hunter_spell_t
     }
   };
 
-  struct pheromone_bomb_t : public bomb_base_t
+  struct pheromone_bomb_t final : public bomb_base_t
   {
     pheromone_bomb_t( util::string_view n, hunter_t* p, wildfire_bomb_t* a ):
       bomb_base_t( n, a, p -> find_spell( 270329 ), "pheromone_bomb", p -> find_spell( 270332 ) )
     {}
   };
 
-  struct volatile_bomb_t : public bomb_base_t
+  struct volatile_bomb_t final : public bomb_base_t
   {
-    struct violent_reaction_t : public hunter_spell_t
+    struct violent_reaction_t final : public hunter_spell_t
     {
       violent_reaction_t( util::string_view n, hunter_t* p ):
         hunter_spell_t( n, p, p -> find_spell( 260231 ) )
