@@ -1362,7 +1362,7 @@ struct berserk_cat_buff_base_t : public druid_buff_t<buff_t>
 struct berserk_cat_buff_t : public berserk_cat_buff_base_t
 {
   berserk_cat_buff_t( druid_t& p ) :
-    berserk_cat_buff_base_t( p, "berserk", p.find_spell( 106951 ) )
+    berserk_cat_buff_base_t( p, "berserk_cat", p.find_spell( 106951 ) )
   {
     default_value        = data().effectN( 1 ).percent(); // cost modifier
     increased_max_energy = data().effectN( 3 ).resource( RESOURCE_ENERGY );
@@ -7798,7 +7798,6 @@ action_t* druid_t::create_action( util::string_view name, const std::string& opt
     else return new celestial_alignment_t( this, options_str );
   }
 
-  if ( name == "heart_of_the_wild" ) return new heart_of_the_wild_t( this, options_str );
   if ( name == "kindred_spirits" || name == "empower_bond" ) return new kindred_spirits_t( this, options_str );
   if ( name == "convoke_the_spirits" ) return new convoke_the_spirits_t( this, options_str );
   if ( name == "ravenous_frenzy" ) return new ravenous_frenzy_t( this, options_str );
@@ -8509,7 +8508,7 @@ void druid_t::create_buffs()
         active.brambles_pulse->execute();
     } );
 
-  buff.berserk_bear = make_buff( this, "berserk", find_specialization_spell( "Berserk" ) )->set_cooldown( 0_ms );
+  buff.berserk_bear = make_buff( this, "berserk_bear", find_specialization_spell( "Berserk" ) )->set_cooldown( 0_ms );
 
   buff.bristling_fur         = make_buff( this, "bristling_fur", talent.bristling_fur )
     ->set_cooldown( timespan_t::zero() );
