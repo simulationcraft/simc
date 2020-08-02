@@ -3,11 +3,13 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
+#include "player/covenant.hpp"
 #include "reports.hpp"
 #include "report/report_helper.hpp"
 #include "report/decorators.hpp"
 #include "sc_highchart.hpp"
 #include "sim/scale_factor_control.hpp"
+#include "util/util.hpp"
 #include "simulationcraft.hpp"
 
 namespace
@@ -3480,13 +3482,20 @@ void print_html_player_description( report::sc_html_stream& os, const player_t& 
   os.printf( "<li><b>Level:</b> %d%s</li>\n"
              "<li><b>Role:</b> %s</li>\n"
              "<li><b>Position:</b> %s</li>\n"
-             "<li><b>Profile Source:</b> %s</li>\n"
-             "</ul>\n",
+             "<li><b>Profile Source:</b> %s</li>\n",
              p.level(),
              sim.timewalk > 0 && !p.is_enemy() ? timewalk_str.c_str() : "",
              util::inverse_tokenize( util::role_type_string( p.primary_role() ) ).c_str(),
              util::encode_html( p.position_str ).c_str(),
              util::profile_source_string( p.profile_source_ ) );
+
+  if ( p.covenant )
+  {
+    os.format( "<li><b>Covenant:</b> {}</li>\n",
+               util::inverse_tokenize( util::covenant_type_string( p.covenant->type() ) ) );
+  }
+
+  os.format("</ul>\n");
 
   if ( !p.report_information.thumbnail_url.empty() )
   {

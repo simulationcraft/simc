@@ -4,6 +4,7 @@
 // ==========================================================================
 
 #include "simulationcraft.hpp"
+#include "player/covenant.hpp"
 #include "reports.hpp"
 #include "report/report_timer.hpp"
 #include "sim/scale_factor_control.hpp"
@@ -1139,6 +1140,8 @@ void print_player( std::ostream& os, player_t& p )
     fmt::print( os, "  Origin: {}\n", p.origin_str );
   if ( !p.talents_str.empty() )
     fmt::print( os, "  Talents: {}\n", p.talents_str );
+  if ( p.covenant )
+    fmt::print( os, "  Covenant: {}\n", util::covenant_type_string( p.covenant->type() ) );
   print_core_stats( os, p );
   print_generic_stats( os, p );
   print_spell_stats( os, p );
