@@ -4375,10 +4375,10 @@ double player_t::composite_player_vulnerability( school_e school ) const
     m *= 1.0 + debuffs.damage_taken->current_stack * 0.01;
 
   if ( debuffs.mystic_touch &&
-       dbc::has_common_school( debuffs.mystic_touch->data().effectN( 1 ).school_type(), school ) )
+       debuffs.mystic_touch->data().effectN( 1 ).has_common_school( school ) )
     m *= 1.0 + debuffs.mystic_touch->value();
 
-  if ( debuffs.chaos_brand && dbc::has_common_school( debuffs.chaos_brand->data().effectN( 1 ).school_type(), school ) )
+  if ( debuffs.chaos_brand && debuffs.chaos_brand->data().effectN( 1 ).has_common_school( school ) )
     m *= 1.0 + debuffs.chaos_brand->value();
 
   return m;
