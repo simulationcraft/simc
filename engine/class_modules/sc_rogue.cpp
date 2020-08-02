@@ -394,6 +394,7 @@ public:
     const spell_data_t* shadow_blades;
     const spell_data_t* shadow_dance;
     const spell_data_t* shadow_techniques;
+    const spell_data_t* shadow_techniques_2;
     const spell_data_t* shadow_techniques_effect;
     const spell_data_t* symbols_of_death;
     const spell_data_t* eviscerate;
@@ -5368,7 +5369,8 @@ void actions::rogue_action_t<Base>::trigger_shadow_techniques( const action_stat
   {
     if ( p()->sim->debug )
       p()->sim->out_debug.printf( "Shadow techniques proc'd at %d", p()->shadow_techniques );
-    trigger_combo_point_gain( as<int>( p()->spec.shadow_techniques_effect->effectN( 1 ).base_value() ), p()->gains.shadow_techniques );
+    if ( p()->spec.shadow_techniques_2->ok() )
+      trigger_combo_point_gain( as<int>( p()->spec.shadow_techniques_effect->effectN( 1 ).base_value() ), p()->gains.shadow_techniques );
     p()->resource_gain( RESOURCE_ENERGY, p()->spec.shadow_techniques_effect->effectN( 2 ).base_value(), p()->gains.shadow_techniques, state->action );
     if ( p()->sim->debug )
       p()->sim->out_debug.printf( "Resetting shadow_techniques counter to zero." );
@@ -6644,6 +6646,7 @@ void rogue_t::init_spells()
   spec.shadow_blades        = find_specialization_spell( "Shadow Blades" );
   spec.shadow_dance         = find_specialization_spell( "Shadow Dance" );
   spec.shadow_techniques    = find_specialization_spell( "Shadow Techniques" );
+  spec.shadow_techniques_2  = find_rank_spell( "Shadow Techniques", "Rank 2" );
   spec.shadow_techniques_effect = find_spell( 196911 );
   spec.symbols_of_death     = find_specialization_spell( "Symbols of Death" );
   spec.eviscerate           = find_class_spell( "Eviscerate" );
