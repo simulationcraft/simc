@@ -2366,7 +2366,7 @@ void print_html_player_action_priority_list( report::sc_html_stream& os, const p
       continue;
 
     os << "<tr>\n";
-    std::string as = util::encode_html( a->signature->action_.c_str() );
+    std::string as = util::encode_html( a->signature_str );
     if ( !a->signature->comment_.empty() )
       as += "<br/><small><em>" +
             util::encode_html( a->signature->comment_.c_str() ) +

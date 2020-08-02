@@ -2692,19 +2692,20 @@ void player_t::create_actions()
 
   init_action_list();  // virtual function which creates the action list string
 
-  std::string modify_action_options;
+  util::string_view modify_action_name = modify_action;
+  util::string_view modify_action_options;
 
   if ( !modify_action.empty() )
   {
-    std::string::size_type cut_pt = modify_action.find( ',' );
+    util::string_view modify_action_view = modify_action;
+    util::string_view::size_type cut_pt = modify_action_view.find( ',' );
 
-    if ( cut_pt != modify_action.npos )
+    if ( cut_pt != modify_action_view.npos )
     {
-      modify_action_options = modify_action.substr( cut_pt + 1 );
-      modify_action         = modify_action.substr( 0, cut_pt );
+      modify_action_options = modify_action_view.substr( cut_pt + 1 );
+      modify_action_name         = modify_action_view.substr( 0, cut_pt );
     }
   }
-  util::tokenize( modify_action );
 
   std::vector<util::string_view> skip_actions;
   if ( !action_list_skip.empty() )
@@ -2738,12 +2739,12 @@ void player_t::create_actions()
 
     for ( auto& action_priority : apl->action_list )
     {
-      std::string& action_str = action_priority.action_;
+      util::string_view action_str = action_priority.action_;
 
-      std::string::size_type cut_pt = action_str.find( ',' );
-      std::string action_name       = action_str.substr( 0, cut_pt );
-      std::string action_options;
-      if ( cut_pt != std::string::npos )
+      util::string_view::size_type cut_pt = action_str.find( ',' );
+      util::string_view action_name       = action_str.substr( 0, cut_pt );
+      util::string_view action_options;
+      if ( cut_pt != util::string_view::npos )
         action_options = action_str.substr( cut_pt + 1 );
 
       action_t* a = nullptr;
@@ -2752,21 +2753,20 @@ void player_t::create_actions()
       if ( cut_pt != std::string::npos )
       {
         auto pet_name   = action_name.substr( 0, cut_pt );
-        auto pet_action = util::tokenize_fn( action_name.substr( cut_pt + 1 ) );
+        auto pet_action_name = action_name.substr( cut_pt + 1 );
 
-        a = new execute_pet_action_t( this, pet_name, pet_action, action_options );
+        a = new execute_pet_action_t( this, pet_name, pet_action_name, action_options );
       }
       else
       {
-        util::tokenize( action_name );
-        if ( action_name == modify_action )
+        
+        if ( !modify_action_name.empty() && action_name == modify_action_name )
         {
-          sim->print_debug( "{}: modify_action={}", *this, modify_action );
+          sim->print_debug( "{}: modify_action={},{}", *this, modify_action_name, modify_action_options );
 
           action_options = modify_action_options;
-          action_str     = modify_action + "," + modify_action_options;
         }
-        a = create_action( action_name, action_options );
+        a = create_action( action_name, std::string( action_options ) );
       }
 
       if ( !a )
@@ -2794,7 +2794,7 @@ void player_t::create_actions()
         // a -> action_list = action_priority_list[ alist ] -> name_str;
         a->action_list = apl;
 
-        a->signature_str = action_str;
+        a->signature_str = fmt::format("{},{}", action_name, action_options );
         a->signature     = &( action_priority );
 
         if ( sim->separate_stats_by_actions > 0 && !is_pet() )
