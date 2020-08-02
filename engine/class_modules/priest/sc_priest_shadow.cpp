@@ -90,7 +90,7 @@ public:
     spell_power_mod.direct *= 1.0 + player.talents.fortress_of_the_mind->effectN( 4 ).percent();
 
     // Reduces CD of Mind Blast but not SW:V
-    apply_affecting_aura(player.find_rank_spell( "Mind Blast", "Rank 2", PRIEST_SHADOW ) );
+    apply_affecting_aura( player.find_rank_spell( "Mind Blast", "Rank 2", PRIEST_SHADOW ) );
   }
 
   void init() override
@@ -314,7 +314,7 @@ struct mind_flay_t final : public priest_spell_t
 struct shadow_word_death_t final : public priest_spell_t
 {
   shadow_word_death_t( priest_t& p, util::string_view options_str )
-  : priest_spell_t( "shadow_word_death", p, p.find_class_spell( "Shadow Word: Death" ) )
+    : priest_spell_t( "shadow_word_death", p, p.find_class_spell( "Shadow Word: Death" ) )
   {
     parse_options( options_str );
 
@@ -359,8 +359,8 @@ struct shadow_word_death_t final : public priest_spell_t
 
       if ( priest().talents.death_and_madness->ok() )
       {
-  		  // NYI
-  		  // trigger death_and_madness_debuff on current target
+        // NYI
+        // trigger death_and_madness_debuff on current target
       }
 
       priest().generate_insanity( total_insanity_gain, priest().gains.insanity_shadow_word_death, s->action );
@@ -883,7 +883,7 @@ struct devouring_plague_t final : public priest_spell_t
     parse_options( options_str );
     may_crit                        = true;
     tick_zero                       = false;
-    base_costs[ RESOURCE_INSANITY ] = 0; // custom insanity handling
+    base_costs[ RESOURCE_INSANITY ] = 0;  // custom insanity handling
     tick_may_crit                   = false;
   }
 
@@ -897,7 +897,8 @@ struct devouring_plague_t final : public priest_spell_t
     }
     else
     {
-      priest().resource_loss( RESOURCE_INSANITY, insanity_cost, priest().gains.insanity_lost_devouring_plague, execute_state->action );
+      priest().resource_loss( RESOURCE_INSANITY, insanity_cost, priest().gains.insanity_lost_devouring_plague,
+                              execute_state->action );
 
       priest().insanity.adjust_end_event();
     }
@@ -998,7 +999,9 @@ struct void_bolt_t final : public priest_spell_t
         if ( priest().talents.mindbender->ok() )
         {
           priest().cooldowns.mindbender->adjust( -timespan_t::from_seconds( fae_blessings_cdr ) );
-        } else {
+        }
+        else
+        {
           priest().cooldowns.shadowfiend->adjust( -timespan_t::from_seconds( fae_blessings_cdr ) );
         }
         // Remove 1 stack of Fae Blessings
@@ -1499,9 +1502,9 @@ struct death_and_madness_debuff_t final : public priest_buff_t<buff_t>
   {
     if ( remaining_duration > timespan_t::zero() )
     {
-      if ( sim -> debug )
+      if ( sim->debug )
       {
-        sim -> out_debug.printf("%s death_and_madness insanity triggered", player -> name() );
+        sim->out_debug.printf( "%s death_and_madness insanity triggered", player->name() );
       }
 
       priest().buffs.death_and_madness_buff->trigger();
@@ -1517,11 +1520,10 @@ struct death_and_madness_buff_t final : public priest_buff_t<buff_t>
   double insanity_gain;
 
   death_and_madness_buff_t( priest_t& p )
-  : base_t( p, "death_and_madness", p.find_spell( 321973 ) ),
-    insanity_gain( p.find_spell( 321973 )->effectN( 1 ).base_value() / 55 )
+    : base_t( p, "death_and_madness", p.find_spell( 321973 ) ),
+      insanity_gain( p.find_spell( 321973 )->effectN( 1 ).base_value() / 55 )
   {
-    set_tick_callback( [ this ] ( buff_t*, int, timespan_t )
-    {
+    set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
       priest().generate_insanity( insanity_gain, priest().gains.insanity_death_and_madness, nullptr );
     } );
   }
@@ -2213,14 +2215,14 @@ void priest_t::generate_apl_shadow()
       "if=buff.harvested_thoughts.up&cooldown.void_bolt.remains>=1.5&"
       "azerite.searing_dialogue.rank>=1",
       "Use Mind Sear on ST only if you get a Thought Harvester Proc with at least 1 Searing Dialogue Trait." );
-  single->add_action( this, "Shadow Word: Death",
-                      "if=target.time_to_die<3",
-                      "Use SWD if the target is about to die." );
+  single->add_action( this, "Shadow Word: Death", "if=target.time_to_die<3", "Use SWD if the target is about to die." );
   single->add_talent( this, "Surrender to Madness", "if=buff.voidform.stack>10+(10*buff.bloodlust.up)" );
   single->add_talent( this, "Dark Void", "if=raid_event.adds.in>10",
                       "Use Dark Void on CD unless adds are incoming in 10s or less." );
-  single->add_talent( this, "Mindbender", "if=(talent.mindbender.enabled&buff.voidform.up)|(buff.voidform.stack>18|target.time_to_die<15)",
-                      "Use Shadowfiend at 19 or more stacks, or if the target will die in less than 15s. If using Minbender use on CD in Voidform" );
+  single->add_talent( this, "Mindbender",
+                      "if=(talent.mindbender.enabled&buff.voidform.up)|(buff.voidform.stack>18|target.time_to_die<15)",
+                      "Use Shadowfiend at 19 or more stacks, or if the target will die in less than 15s. If using "
+                      "Minbender use on CD in Voidform" );
   single->add_action( this, "Shadow Word: Death" );
   single->add_talent( this, "Shadow Crash", "if=raid_event.adds.in>5&raid_event.adds.duration<20",
                       "Use Shadow Crash on CD unless there are adds incoming." );

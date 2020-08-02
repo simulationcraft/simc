@@ -310,11 +310,8 @@ struct power_infusion_t final : public priest_spell_t
 
 struct fae_blessings_t final : public priest_spell_t
 {
-  int stacks;
-
   fae_blessings_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "fae_blessings", p, p.covenant.fae_blessings ),
-      stacks( (int)data().effectN( 1 ).base_value() )
+    : priest_spell_t( "fae_blessings", p, p.covenant.fae_blessings )
   {
     parse_options( options_str );
     harmful = false;
@@ -326,7 +323,7 @@ struct fae_blessings_t final : public priest_spell_t
   {
     priest_spell_t::execute();
 
-    priest().buffs.fae_blessings->trigger( stacks );
+    priest().buffs.fae_blessings->trigger( priest().buffs.fae_blessings->max_stack() );
     priest().cooldowns.fae_blessings->reset( false );
   }
 
@@ -355,8 +352,7 @@ struct unholy_nova_t final : public priest_spell_t
 
 struct mindgames_t final : public priest_spell_t
 {
-  mindgames_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "mindgames", p, p.covenant.mindgames )
+  mindgames_t( priest_t& p, util::string_view options_str ) : priest_spell_t( "mindgames", p, p.covenant.mindgames )
   {
     parse_options( options_str );
     harmful = true;
@@ -557,11 +553,11 @@ struct fae_blessings_t final : public priest_buff_t<buff_t>
 {
   int stacks;
 
-  fae_blessings_t( priest_t& p ) : base_t( p, "fae_blessings", p.covenant.fae_blessings ),
-    stacks( (int)data().effectN( 1 ).base_value() )
+  fae_blessings_t( priest_t& p )
+    : base_t( p, "fae_blessings", p.covenant.fae_blessings ), stacks( as<int>( data().effectN( 1 ).base_value() ) )
   {
     // When not night-fae this is returned as 0
-    set_max_stack( stacks >= 1 ? stacks : 1); // TODO: Add conduit stack increase
+    set_max_stack( stacks >= 1 ? stacks : 1 );  // TODO: Add conduit stack increase
   }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
@@ -774,9 +770,9 @@ void priest_t::create_procs()
   procs.serendipity_overflow            = get_proc( "Serendipity lost to overflow (Non-Tier 17 4pc)" );
   procs.power_of_the_dark_side          = get_proc( "Power of the Dark Side Penance damage buffed" );
   procs.power_of_the_dark_side_overflow = get_proc( "Power of the Dark Side lost to overflow" );
-  procs.shimmering_apparitions          = get_proc( "Shadowy Apparition Procced from Shimmering Apparition non SW:P Crit" );
-  procs.dissonant_echoes                = get_proc( "Void Bolt resets from Dissonant Echoes" );
-  procs.mind_devourer                   = get_proc( "Mind Devourer free Devouring Plague proc" );
+  procs.shimmering_apparitions = get_proc( "Shadowy Apparition Procced from Shimmering Apparition non SW:P Crit" );
+  procs.dissonant_echoes       = get_proc( "Void Bolt resets from Dissonant Echoes" );
+  procs.mind_devourer          = get_proc( "Mind Devourer free Devouring Plague proc" );
 }
 
 /** Construct priest benefits */
@@ -1318,7 +1314,7 @@ void priest_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( specs.discipline_priest );
   action.apply_affecting_aura( legendary.kiss_of_death );
   action.apply_affecting_aura( legendary.shadowflame_prism );  // Applies CD reduction
-  action.apply_affecting_aura( conduits.mind_devourer ); // Applies Mind Blast damage modifier
+  action.apply_affecting_aura( conduits.mind_devourer );       // Applies Mind Blast damage modifier
 }
 
 /// ALL Spec Pre-Combat Action Priority List

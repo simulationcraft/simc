@@ -9,6 +9,7 @@
 
 #pragma once
 #include "simulationcraft.hpp"
+
 #include "player/covenant.hpp"
 
 namespace priestspace
@@ -427,44 +428,44 @@ public:
     // Generic Priest
     item_runeforge_t twins_of_the_sun_priestess;
     // Holy
-    item_runeforge_t divine_image; // NYI
-    item_runeforge_t harmonious_apparatus; // NYI
+    item_runeforge_t divine_image;          // NYI
+    item_runeforge_t harmonious_apparatus;  // NYI
     // Disc
     item_runeforge_t kiss_of_death;
     item_runeforge_t the_penitent_one;  // Effect implemented, but not hooked up the PW:Radiance
     // Shadow
-    item_runeforge_t painbreaker_psalm; // NYI
-    item_runeforge_t shadowflame_prism; // TODO: Add 20% damage modifier
-    item_runeforge_t eternal_call_to_the_void; // NYI
+    item_runeforge_t painbreaker_psalm;         // NYI
+    item_runeforge_t shadowflame_prism;         // TODO: Add 20% damage modifier
+    item_runeforge_t eternal_call_to_the_void;  // NYI
   } legendary;
 
   struct
   {
     // Holy
-    conduit_data_t holy_oration; // NYI
+    conduit_data_t holy_oration;  // NYI
     // Discipline
-    conduit_data_t swift_penitence; // NYI
+    conduit_data_t swift_penitence;  // NYI
     // Shadow
     conduit_data_t dissonant_echoes;
     conduit_data_t mind_devourer;
-    conduit_data_t rabid_shadows; // NYI
+    conduit_data_t rabid_shadows;  // NYI
     conduit_data_t shimmering_apparitions;
     // Covenant
-    conduit_data_t courageous_ascension; // NYI
-    conduit_data_t festering_transfusion; // NYI
-    conduit_data_t blessing_of_plenty; // NYI
-    conduit_data_t shattered_perceptions; // NYI
+    conduit_data_t courageous_ascension;   // NYI
+    conduit_data_t festering_transfusion;  // NYI
+    conduit_data_t blessing_of_plenty;     // NYI
+    conduit_data_t shattered_perceptions;  // NYI
   } conduits;
 
   struct
   {
     const spell_data_t* fae_blessings;
-    const spell_data_t* unholy_nova; // needs testing
-    const spell_data_t* mindgames; // needs additional option
-    const spell_data_t* boon_of_the_ascended; // NYI
-    const spell_data_t* ascended_nova; // NYI
-    const spell_data_t* ascended_blast; // NYI
-    const spell_data_t* ascended_eruption; // NYI
+    const spell_data_t* unholy_nova;           // needs testing
+    const spell_data_t* mindgames;             // needs additional option
+    const spell_data_t* boon_of_the_ascended;  // NYI
+    const spell_data_t* ascended_nova;         // NYI
+    const spell_data_t* ascended_blast;        // NYI
+    const spell_data_t* ascended_eruption;     // NYI
   } covenant;
 
   struct insanity_end_event_t;
@@ -481,7 +482,7 @@ public:
   void create_options() override;
   std::string create_profile( save_e ) override;
   action_t* create_action( util::string_view name, const std::string& options ) override;
-  pet_t* create_pet( util::string_view name, util::string_view type = "") override;
+  pet_t* create_pet( util::string_view name, util::string_view type = "" ) override;
   void create_pets() override;
   void copy_from( player_t* source ) override;
   resource_e primary_resource() const override
@@ -1235,7 +1236,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
 
     for ( player_t* ally : sim->player_no_pet_list )
     {
-      if (ally -> current.sleeping )
+      if ( ally->current.sleeping )
       {
         continue;
       }
