@@ -1742,13 +1742,13 @@ public:
     parse_buff_effects( buff, spell_data_t::nil() );
   }
 
-  double get_buff_effects_value( const std::vector<buff_effect_t>& buffeffects, bool flat = false ) const
+  double get_buff_effects_value( const std::vector<buff_effect_t>& buffeffects, bool flat = false, bool benefit = true ) const
   {
     double value = flat ? 0.0 : 1.0;
 
     for ( auto i : buffeffects )
     {
-      if ( i.buff->up() )
+      if ( ( benefit && i.buff->up() ) || i.buff->check() )
       {
         if ( flat )
           value += i.effect->percent() * i.buff->check();
@@ -1762,7 +1762,17 @@ public:
 
   virtual void apply_buff_effects()
   {
-    // parse_buff_effects( p()->buff.ravenous_frenzy );
+    parse_buff_effects( p()->buff.ravenous_frenzy );
+    parse_buff_effects( p()->buff.heart_of_the_wild );
+    parse_buff_effects( p()->buff.moonkin_form );
+    parse_buff_effects( p()->buff.celestial_alignment );
+    parse_buff_effects( p()->buff.incarnation_moonkin );
+    parse_buff_effects( p()->buff.owlkin_frenzy );
+    parse_buff_effects( p()->buff.runecarve_3_nature_buff );
+    parse_buff_effects( p()->buff.runecarve_3_arcane_buff );
+    parse_buff_effects( p()->buff.oneths_free_starfall );
+    parse_buff_effects( p()->buff.oneths_free_starsurge );
+    parse_buff_effects( p()->buff.timeworn_dreamcatcher );
   }
 
   double target_armor( player_t* t ) const override
@@ -1774,7 +1784,7 @@ public:
 
   double cost() const override
   {
-    double c = ab::cost() * get_buff_effects_value( cost_buffeffects );
+    double c = ab::cost() * get_buff_effects_value( cost_buffeffects, false, false );
 
     if ( ( p()->buff.innervate->up() && p()->specialization() == DRUID_RESTORATION ) || free_cast )
       c *= 0;
@@ -1800,13 +1810,6 @@ public:
   {
     double ta = ab::composite_ta_multiplier( s ) * get_buff_effects_value( ta_multiplier_buffeffects );
 
-    if ( p()->buff.ravenous_frenzy->up() && ab::data().affected_by( p()->buff.ravenous_frenzy->data().effectN( 2 ) ) )
-      ta *= 1.0 + p()->buff.ravenous_frenzy->stack_value();
-
-    if ( p()->buff.heart_of_the_wild->up() &&
-         ab::data().affected_by( p()->buff.heart_of_the_wild->data().effectN( 2 ) ) )
-      ta *= 1.0 + p()->buff.heart_of_the_wild->data().effectN( 2 ).percent();
-
     if ( ( p()->buff.berserk_bear->up() || p()->buff.incarnation_bear->up() ) &&
          p()->legendary.legacy_of_the_sleeper->ok() && ab::data().affected_by( p()->spec.berserk_bear->effectN( 3 ) ) )
       ta *= 1.0 + p()->legendary.legacy_of_the_sleeper->effectN( 2 ).percent();
@@ -1817,13 +1820,6 @@ public:
   double composite_da_multiplier( const action_state_t* s ) const override
   {
     double da = ab::composite_da_multiplier( s ) * get_buff_effects_value( da_multiplier_buffeffects );
-
-    if ( p()->buff.ravenous_frenzy->up() && ab::data().affected_by( p()->buff.ravenous_frenzy->data().effectN( 1 ) ) )
-      da *= 1.0 + p()->buff.ravenous_frenzy->stack_value();
-
-    if ( p()->buff.heart_of_the_wild->up() &&
-         ab::data().affected_by( p()->buff.heart_of_the_wild->data().effectN( 1 ) ) )
-      da *= 1.0 + p()->buff.heart_of_the_wild->data().effectN( 1 ).percent();
 
     if ( ( p()->buff.berserk_bear->up() || p()->buff.incarnation_bear->up() ) &&
          p()->legendary.legacy_of_the_sleeper->ok() && ab::data().affected_by( p()->spec.berserk_bear->effectN( 2 ) ) )
@@ -2486,9 +2482,6 @@ public:
 
     if ( p()->specialization() == DRUID_BALANCE )
     {
-      if ( data().affected_by( p()->spec.moonkin_form->effectN( 10 ) ) && p()->buff.moonkin_form->up() )
-        tm *= 1.0 + p()->spec.moonkin_form->effectN( 10 ).percent();
-
       if ( data().affected_by( p()->buff.eclipse_lunar->data().effectN( 4 ) ) && p()->buff.eclipse_lunar->up() )
         tm *= 1.0 + p()->mastery.total_eclipse->ok() * p()->cache.mastery_value();
 
@@ -2505,9 +2498,6 @@ public:
 
     if ( p()->specialization() == DRUID_BALANCE )
     {
-      if ( data().affected_by( p()->spec.moonkin_form->effectN( 9 ) ) && p()->buff.moonkin_form->up() )
-        dm *= 1.0 + p()->spec.moonkin_form->effectN( 9 ).percent();
-
       if ( data().affected_by( p()->buff.eclipse_lunar->data().effectN( 3 ) ) && p()->buff.eclipse_lunar->up() )
         dm *= 1.0 + p()->mastery.total_eclipse->ok() * p()->cache.mastery_value();
 
@@ -2516,29 +2506,6 @@ public:
     }
 
     return dm;
-  }
-
-  double composite_crit_chance() const override
-  {
-    double cc = base_t::composite_crit_chance();
-
-    if ( data().affected_by( p()->buff.celestial_alignment->data().effectN( 1 ) ) &&
-         p()->buff.celestial_alignment->up() )
-      cc += p()->buff.celestial_alignment->data().effectN( 1 ).percent();
-
-    if ( data().affected_by( p()->buff.incarnation_moonkin->data().effectN( 1 ) ) &&
-         p()->buff.incarnation_moonkin->up() )
-      cc += p()->buff.incarnation_moonkin->data().effectN( 1 ).percent();
-
-    if ( data().affected_by( p()->buff.runecarve_3_nature_buff->data().effectN( 1 ) ) &&
-         p()->buff.runecarve_3_nature_buff->up() )
-      cc += p()->buff.runecarve_3_nature_buff->stack_value() / 100.0;
-
-    if ( data().affected_by( p()->buff.runecarve_3_arcane_buff->data().effectN( 1 ) ) &&
-         p()->buff.runecarve_3_arcane_buff->up() )
-      cc += p()->buff.runecarve_3_arcane_buff->stack_value() / 100.0;
-
-    return cc;
   }
 
   bool usable_moving() const override
@@ -6185,9 +6152,6 @@ struct starfire_t : public druid_spell_t
   {
     timespan_t et = druid_spell_t::execute_time();
 
-    et *= 1.0 + p()->buff.warrior_of_elune->value();
-    et *= 1.0 + p()->buff.owlkin_frenzy->value();
-
     if ( p()->buff.eclipse_lunar->check() )
       et *= 1 + p()->spec.eclipse_lunar->effectN( 1 ).percent() + p()->spec.eclipse_2->effectN( 1 ).percent() +
             p()->talent.soul_of_the_forest_moonkin->effectN( 1 ).percent();
@@ -6680,19 +6644,6 @@ struct starfall_t : public druid_spell_t
     return false;
   }
 
-  double cost() const override
-  {
-    double c = druid_spell_t::cost();
-
-    if ( p()->buff.oneths_free_starfall->check() )
-      c *= 0;
-
-    if ( p()->legendary.timeworn_dreamcatcher->ok() )
-      c *= 1.0 + p()->buff.timeworn_dreamcatcher->check_stack_value();
-
-    return c;
-  }
-
   void execute() override
   {
     if ( free_cast == free_cast_e::NONE && p()->buff.oneths_free_starfall->up() && oneth_sf )
@@ -6769,16 +6720,6 @@ struct starsurge_t : public druid_spell_t
     return action_list && action_list->name_str == "precombat" ? 100_ms : druid_spell_t::travel_time();
   }
 
-  timespan_t execute_time() const override
-  {
-    timespan_t et = druid_spell_t::execute_time();
-
-    if ( p()->talent.balance_affinity->ok() && p()->buff.heart_of_the_wild->check() )
-      et *= 1.0 + p()->buff.heart_of_the_wild->data().effectN( 3 ).percent();
-
-    return et;
-  }
-
   bool ready() override
   {
     if ( p()->in_combat )
@@ -6797,19 +6738,6 @@ struct starsurge_t : public druid_spell_t
       return false;
 
     return true;
-  }
-
-  double cost() const override
-  {
-    double c = druid_spell_t::cost();
-
-    if ( p()->buff.oneths_free_starsurge->check() )
-      c *= 0;
-
-    if ( p()->legendary.timeworn_dreamcatcher->ok() )
-      c *= 1.0 + p()->buff.timeworn_dreamcatcher->check_stack_value();
-
-    return c;
   }
 
   void execute() override
@@ -8411,8 +8339,8 @@ void druid_t::create_buffs()
     } );
 
   buff.ravenous_frenzy = make_buff( this, "ravenous_frenzy", covenant.venthyr )
+    ->set_default_value( covenant.venthyr->effectN( 4 ).percent() )
     ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
-    ->set_default_value( covenant.venthyr->effectN( 1 ).percent() )
     ->set_cooldown( 0_ms )
     ->set_period( 0_ms )
     ->add_invalidate( CACHE_HASTE );
@@ -8482,7 +8410,6 @@ void druid_t::create_buffs()
 
   buff.celestial_alignment = make_buff( this, "celestial_alignment", spec.celestial_alignment )
     ->set_cooldown( timespan_t::zero() )
-    ->set_default_value( spec.celestial_alignment->effectN( 1 ).percent() )
     ->add_invalidate( CACHE_CRIT_CHANCE )
     ->set_stack_change_callback( [this] ( buff_t* b, int, int new_ ) {
       if ( new_ )
@@ -8498,8 +8425,8 @@ void druid_t::create_buffs()
     } );
 
   buff.incarnation_moonkin = make_buff( this, "incarnation_chosen_of_elune", talent.incarnation_moonkin )
+    ->set_default_value( talent.incarnation_moonkin->effectN( 3 ).percent() )
     ->set_cooldown( timespan_t::zero() )
-    ->set_default_value( talent.incarnation_moonkin->effectN( 1 ).percent() )
     ->add_invalidate( CACHE_HASTE )
     ->add_invalidate( CACHE_CRIT_CHANCE )
     ->set_stack_change_callback( [this] ( buff_t* b, int, int new_ ) {
@@ -8526,7 +8453,6 @@ void druid_t::create_buffs()
   buff.warrior_of_elune = new warrior_of_elune_buff_t( *this );
 
   buff.owlkin_frenzy = make_buff( this, "owlkin_frenzy", spec.owlkin_frenzy )
-    ->set_default_value( spec.owlkin_frenzy->effectN( 1 ).percent() )
     ->set_chance( find_rank_spell( "Moonkin Form", "Rank 2" )->effectN( 1 ).percent() );
 
   buff.starlord = make_buff( this, "starlord", find_spell( 279709 ) )
@@ -8574,13 +8500,10 @@ void druid_t::create_buffs()
   buff.timeworn_dreamcatcher =
       make_buff( this, "timeworn_dreamcatcher", legendary.timeworn_dreamcatcher->effectN( 1 ).trigger() )
           ->set_refresh_behavior( buff_refresh_behavior::DURATION );
-  buff.timeworn_dreamcatcher->set_default_value( buff.timeworn_dreamcatcher->data().effectN( 1 ).percent() );
 
   buff.runecarve_3_nature_buff = make_buff( this, "runecarve_3_nature", find_spell( 339943 ) )->set_reverse( true );
-  buff.runecarve_3_nature_buff->set_default_value( buff.runecarve_3_nature_buff->data().effectN( 1 ).base_value() );
 
   buff.runecarve_3_arcane_buff = make_buff( this, "runecarve_3_arcane", find_spell( 339946 ) )->set_reverse( true );
-  buff.runecarve_3_arcane_buff->set_default_value( buff.runecarve_3_arcane_buff->data().effectN( 1 ).base_value() );
 
   // Feral
 
@@ -9897,8 +9820,7 @@ double druid_t::composite_spell_haste() const
 
   sh /= 1.0 + buff.ravenous_frenzy->stack_value();
 
-  if ( buff.incarnation_moonkin->check() )
-    sh /= ( 1.0 + talent.incarnation_moonkin->effectN( 3 ).percent() );
+  sh /= 1.0 + buff.incarnation_moonkin->stack_value();
 
   return sh;
 }
@@ -9909,7 +9831,11 @@ double druid_t::composite_melee_haste() const
 {
   double mh = player_t::composite_melee_haste();
 
+  mh /= 1.0 + buff.starlord->stack_value();
+
   mh /= 1.0 + buff.ravenous_frenzy->stack_value();
+
+  mh /= 1.0 + buff.incarnation_moonkin->stack_value();
 
   return mh;
 }
