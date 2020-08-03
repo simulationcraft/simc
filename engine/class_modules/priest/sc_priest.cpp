@@ -1373,9 +1373,6 @@ void priest_t::init_spells()
   covenant.ascended_nova        = find_spell( 325020 );
   covenant.ascended_blast       = find_spell( 325283 );
   covenant.ascended_eruption    = find_spell( 325326 );
-
-  // Actions
-  action.ascended_eruption = new actions::spells::ascended_eruption_t( *this );
 }
 
 void priest_t::create_buffs()
@@ -1412,6 +1409,11 @@ void priest_t::init_rng()
   init_rng_holy();
 
   player_t::init_rng();
+}
+
+void priest_t::init_background_actions()
+{
+  action.ascended_eruption = new actions::spells::ascended_eruption_t( *this );
 }
 
 void priest_t::vision_of_perfection_proc()

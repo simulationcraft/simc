@@ -488,6 +488,7 @@ public:
   void init_spells() override;
   void create_buffs() override;
   void init_scaling() override;
+  void init_background_actions() override;
   void reset() override;
   void create_options() override;
   std::string create_profile( save_e ) override;
