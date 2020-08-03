@@ -502,6 +502,7 @@ struct ascended_eruption_t final : public priest_spell_t
     harmful    = true;
     aoe        = -1;
     background = true;
+    radius     = data().effectN( 1 ).radius_max();
   }
 
   void trigger_eruption( int stacks )
