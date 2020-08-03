@@ -3877,7 +3877,7 @@ void items::azsharas_font_of_power( special_effect_t& effect )
           cdgrp->start( 1_ms );  // tap the shared group cd so we can get accurate action_ready() checks
 
         // add cast time or gcd for any following precombat action
-        std::find_if( it + 1, apl.end(), [&time, this]( action_t* a ) {
+        std::for_each( it + 1, apl.end(), [&time, this]( action_t* a ) {
           if ( a->action_ready() )
           {
             timespan_t delta =
