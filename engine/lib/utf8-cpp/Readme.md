@@ -1,5 +1,5 @@
 # UTF8-CPP 
 
-Source: utfcpp.sourceforge.net/
+Source: https://github.com/nemtrif/utfcpp
 
-Version 2.3.4 downloaded on 2019-11-10
+Version 3.1.1 downloaded on 2020-08-03
