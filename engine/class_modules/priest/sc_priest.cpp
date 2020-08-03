@@ -492,6 +492,16 @@ struct ascended_eruption_t final : public priest_spell_t
     aoe        = -1;
     background = true;
   }
+
+  bool ready() override
+  {
+    if ( !priest().options.priest_use_ascended_eruption )
+    {
+      return false;
+    }
+
+    return priest_spell_t::ready();
+  }
 };
 
 // ==========================================================================
@@ -1300,9 +1310,6 @@ void priest_t::init_scaling()
 
 void priest_t::init_spells()
 {
-  using namespace actions;
-  using namespace spells;
-
   base_t::init_spells();
 
   init_spells_shadow();
@@ -1368,7 +1375,7 @@ void priest_t::init_spells()
   covenant.ascended_eruption    = find_spell( 325326 );
 
   // Actions
-  action.ascended_eruption = new spells::ascended_eruption_t( *this );
+  action.ascended_eruption = new actions::spells::ascended_eruption_t( *this );
 }
 
 void priest_t::create_buffs()
@@ -1682,6 +1689,7 @@ void priest_t::create_options()
   add_option( opt_float( "priest_lucid_dreams_proc_chance_holy", options.priest_lucid_dreams_proc_chance_holy ) );
   add_option( opt_float( "priest_lucid_dreams_proc_chance_shadow", options.priest_lucid_dreams_proc_chance_shadow ) );
   add_option( opt_bool( "priest_use_ascended_nova", options.priest_use_ascended_nova ) );
+  add_option( opt_bool( "priest_use_ascended_eruption", options.priest_use_ascended_eruption ) );
 }
 
 std::string priest_t::create_profile( save_e type )

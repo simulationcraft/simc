@@ -395,7 +395,10 @@ public:
     double priest_lucid_dreams_proc_chance_disc   = 0.08;
     double priest_lucid_dreams_proc_chance_holy   = 0.08;
     double priest_lucid_dreams_proc_chance_shadow = 0.15;
-    bool priest_use_ascended_nova                 = true; // Easy flag to change if you are in range or not
+
+    // Add in easy options to change if you are in range or not
+    bool priest_use_ascended_nova                 = true;
+    bool priest_use_ascended_eruption             = true;
   } options;
 
   struct actions_t
@@ -458,7 +461,7 @@ public:
     conduit_data_t rabid_shadows;
     conduit_data_t shimmering_apparitions;
     // Covenant
-    conduit_data_t courageous_ascension;   // Eruption component NYI
+    conduit_data_t courageous_ascension;
     conduit_data_t festering_transfusion;  // NYI
     conduit_data_t blessing_of_plenty;     // NYI
     conduit_data_t shattered_perceptions;  // NYI
