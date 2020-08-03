@@ -789,7 +789,7 @@ public:
   druid_t( sim_t* sim, util::string_view name, race_e r = RACE_NIGHT_ELF ) :
     player_t( sim, DRUID, name, r ),
     form( NO_FORM ),
-    eclipse_handler(this),
+    eclipse_handler( this ),
     previous_streaking_stars(SS_NONE),
     lucid_dreams_proc_chance_balance( 0.15 ),
     lucid_dreams_proc_chance_feral( 0.15 ),
@@ -930,10 +930,11 @@ public:
   std::string free_cast_string( const std::string&, free_cast_e ) const;
   void trigger_natures_guardian( const action_state_t* );
   double calculate_expected_max_health() const;
-  const spelleffect_data_t* query_aura_effect( const spell_data_t* aura_spell, effect_type_t type = E_APPLY_AURA,
+  const spelleffect_data_t* query_aura_effect( const spell_data_t* aura_spell,
                                                effect_subtype_t subtype = A_ADD_PCT_MODIFIER,
-                                               property_type_t misc_value = P_GENERIC,
-                                               const spell_data_t* affected_spell = spell_data_t::nil() ) const;
+                                               int misc_value = P_GENERIC,
+                                               const spell_data_t* affected_spell = spell_data_t::nil(),
+                                               effect_type_t type = E_APPLY_AURA ) const;
 
   void vision_of_perfection_proc() override;
   void apply_affecting_auras( action_t& ) override;
@@ -2546,8 +2547,7 @@ struct moonfire_t : public druid_spell_t
       dot_duration +=
           p->find_rank_spell( "Moonfire", "Rank 2" )->effectN( 1 ).time_value() +
           p->find_rank_spell( "Moonfire", "Rank 3" )->effectN( 1 ).time_value() +
-          p->query_aura_effect( p->spec.balance, E_APPLY_AURA, A_ADD_FLAT_MODIFIER, P_DURATION, p->spec.moonfire_dmg )
-              ->time_value();
+          p->query_aura_effect( p->spec.balance, A_ADD_FLAT_MODIFIER, P_DURATION, p->spec.moonfire_dmg )->time_value();
       aoe = 1;
 
       if ( p->talent.twin_moons->ok() )
@@ -4169,9 +4169,8 @@ struct shred_t : public cat_attack_t
       stealth_mul = data().effectN( 3 ).percent();
 
     // Base spell generates 0 CP, Feral passive or Feral Affinity increase it to 1 CP.
-    energize_amount +=
-        p->query_aura_effect( p->spec.feral, E_APPLY_AURA, A_ADD_FLAT_MODIFIER, P_EFFECT_2, &data() )->base_value() +
-        p->talent.feral_affinity->effectN( 8 ).base_value();
+    energize_amount += p->query_aura_effect( p->spec.feral, A_ADD_FLAT_MODIFIER, P_EFFECT_2, &data() )->base_value() +
+                       p->talent.feral_affinity->effectN( 8 ).base_value();
   }
 
   void impact( action_state_t* s ) override
@@ -6180,8 +6179,7 @@ struct sunfire_t : public druid_spell_t
       // Moonfire Rank 3 also increase sunfire duration
       dot_duration +=
           p->find_rank_spell( "Moonfire", "Rank 3" )->effectN( 1 ).time_value() +
-          p->query_aura_effect( p->spec.balance, E_APPLY_AURA, A_ADD_FLAT_MODIFIER, P_DURATION, p->spec.sunfire_dmg )
-              ->time_value();
+          p->query_aura_effect( p->spec.balance, A_ADD_FLAT_MODIFIER, P_DURATION, p->spec.sunfire_dmg )->time_value();
 
       if ( p->azerite.high_noon.ok() )
       {
@@ -6840,7 +6838,7 @@ struct thorns_t : public druid_spell_t
       background = true;
       if ( p()->specialization() == DRUID_FERAL )
       {  // a little gnarly, TODO(xan): clean this up
-        attack_power_mod.direct = 1.2 * p()->query_aura_effect( p()->spec.feral, E_APPLY_AURA, A_366 )->percent();
+        attack_power_mod.direct = 1.2 * p()->query_aura_effect( p()->spec.feral, A_366 )->percent();
         spell_power_mod.direct = 0;
       }
     }
@@ -7962,7 +7960,7 @@ void druid_t::init_spells()
   spec.starfall                   = find_affinity_spell( "Starfall" );
   spec.starfall_2                 = find_rank_spell( "Starfall", "Rank 2" );
   // do NOT use find_affinity_spell here for spec.starsurge. eclipse extension is held within the balance version.
-  spec.starsurge                  = find_specialization_spell( "Starsurge", DRUID_BALANCE );
+  spec.starsurge                  = find_spell( 78674 );
   spec.starsurge_2                = find_rank_spell( "Starsurge", "Rank 2" ); // Adds more Eclipse extension
   spec.stellar_drift              = find_spell( 202461 ); // stellar drift mobility buff
   spec.owlkin_frenzy              = find_spell( 157228 ); // Owlkin Frenzy RAWR
@@ -8194,7 +8192,7 @@ void druid_t::init_base_stats()
   if ( specialization() == DRUID_FERAL )
   {
     resources.base_regen_per_second[ RESOURCE_ENERGY ] *=
-      1.0 + query_aura_effect( spec.feral, E_APPLY_AURA, A_MOD_POWER_REGEN_PERCENT, P_EFFECT_1 )->percent();
+      1.0 + query_aura_effect( spec.feral, A_MOD_POWER_REGEN_PERCENT, P_EFFECT_1 )->percent();
   }
   resources.base_regen_per_second[ RESOURCE_ENERGY ] *= 1.0 + talent.feral_affinity->effectN( 2 ).percent();
 
@@ -8348,11 +8346,18 @@ void druid_t::create_buffs()
     ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
 
   buff.heart_of_the_wild = make_buff( this, "heart_of_the_wild",
-    talent.balance_affinity->ok() ? find_spell( 108291 ) :
-    talent.feral_affinity->ok() ? find_spell( 108292 ) :
-    talent.guardian_affinity->ok() ? find_spell( 108293 ) :
-    talent.restoration_affinity->ok() ? find_spell( 108294 ) :
-    spell_data_t::not_found() );
+      find_spell( as<unsigned>( query_aura_effect( talent.balance_affinity->ok() ? talent.balance_affinity
+                                                 : talent.feral_affinity->ok() ? talent.feral_affinity
+                                                 : talent.guardian_affinity->ok() ? talent.guardian_affinity
+                                                 : talent.restoration_affinity,
+      A_OVERRIDE_ACTION_SPELL, talent.heart_of_the_wild->id() )->base_value() ) ) )
+      ->set_cooldown( 0_ms );
+
+  /*  talent.balance_affinity->ok() ? find_spell( 108291 ) :
+      talent.feral_affinity->ok() ? find_spell( 108292 ) :
+      talent.guardian_affinity->ok() ? find_spell( 108293 ) :
+      talent.restoration_affinity->ok() ? find_spell( 108294 ) :
+      spell_data_t::not_found() );*/
 
   // Balance
 
@@ -9607,13 +9612,13 @@ double druid_t::composite_melee_attack_power() const
   // In 8.0 Killer Instinct is gone, replaced with modifiers in balance/resto auras.
   if ( specialization() == DRUID_BALANCE )
   {
-    return query_aura_effect( spec.balance, E_APPLY_AURA, A_404 )->percent() * cache.spell_power( SCHOOL_MAX ) *
+    return query_aura_effect( spec.balance, A_404 )->percent() * cache.spell_power( SCHOOL_MAX ) *
            composite_spell_power_multiplier();
   }
 
   if ( specialization() == DRUID_RESTORATION )
   {
-    return query_aura_effect( spec.restoration, E_APPLY_AURA, A_404 )->percent() * cache.spell_power( SCHOOL_MAX ) *
+    return query_aura_effect( spec.restoration, A_404 )->percent() * cache.spell_power( SCHOOL_MAX ) *
            composite_spell_power_multiplier();
   }
 
@@ -9624,13 +9629,13 @@ double druid_t::composite_melee_attack_power( attack_power_type type ) const
 {
   if ( specialization() == DRUID_BALANCE )
   {
-    return query_aura_effect( spec.balance, E_APPLY_AURA, A_404 )->percent() * cache.spell_power( SCHOOL_MAX ) *
+    return query_aura_effect( spec.balance, A_404 )->percent() * cache.spell_power( SCHOOL_MAX ) *
            composite_spell_power_multiplier();
   }
 
   if ( specialization() == DRUID_RESTORATION )
   {
-    return query_aura_effect( spec.restoration, E_APPLY_AURA, A_404 )->percent() * cache.spell_power( SCHOOL_MAX ) *
+    return query_aura_effect( spec.restoration, A_404 )->percent() * cache.spell_power( SCHOOL_MAX ) *
            composite_spell_power_multiplier();
   }
   return player_t::composite_melee_attack_power( type );
@@ -9804,12 +9809,12 @@ double druid_t::composite_spell_power( school_e school ) const
 
   if ( specialization() == DRUID_GUARDIAN )
   {
-    ap_coeff = query_aura_effect( spec.guardian, E_APPLY_AURA, A_366 )->percent();
+    ap_coeff = query_aura_effect( spec.guardian, A_366 )->percent();
   }
 
   if ( specialization() == DRUID_FERAL )
   {
-    ap_coeff = query_aura_effect( spec.feral, E_APPLY_AURA, A_366 )->percent();
+    ap_coeff = query_aura_effect( spec.feral, A_366 )->percent();
   }
 
   if ( ap_coeff > 0 )
@@ -10248,7 +10253,8 @@ role_e druid_t::primary_role() const
     if ( player_t::primary_role() == ROLE_ATTACK )
       return ROLE_ATTACK;
 
-    return ROLE_TANK;
+    //return ROLE_TANK;
+    return ROLE_ATTACK;
   }
 
   else if ( specialization() == DRUID_RESTORATION )
@@ -10523,14 +10529,17 @@ struct affinity_spells_t
 {
   const char* name;
   unsigned int spell_id;
+  specialization_e spec;
 };
 
 const affinity_spells_t affinity_spells[] =
 {
-    { "Moonkin Form", 197625 },
-    { "Starfire", 197628 },
-    { "Starsurge", 197626 },
-    { "Wrath", 5176 },
+    { "Moonkin Form", 197625, DRUID_BALANCE },
+    { "Starfire", 197628, DRUID_BALANCE },
+    { "Starsurge", 197626, DRUID_BALANCE },
+    { "Wrath", 5176, SPEC_NONE },
+    { "Frenzied Regeneration", 22842, DRUID_GUARDIAN },
+    { "Thrash", 77758, DRUID_GUARDIAN },
 };
 
 const spell_data_t* druid_t::find_affinity_spell( const std::string& name ) const
@@ -10538,13 +10547,11 @@ const spell_data_t* druid_t::find_affinity_spell( const std::string& name ) cons
   const spell_data_t* spec_spell = find_specialization_spell( name );
 
   if ( spec_spell->found() )
-  {
     return spec_spell;
-  }
 
   for ( const auto& e : affinity_spells )
   {
-    if ( util::str_compare_ci( name, e.name ) )
+    if ( util::str_compare_ci( name, e.name ) && ( e.spec == get_affinity_spec() || e.spec == SPEC_NONE ) )
       return find_spell( e.spell_id );
   }
 
@@ -10636,9 +10643,9 @@ double druid_t::calculate_expected_max_health() const
 }
 
 // NOTE: This will return the FIRST effect that matches parameters.
-const spelleffect_data_t* druid_t::query_aura_effect( const spell_data_t* aura_spell, effect_type_t type,
-                                                      effect_subtype_t subtype, property_type_t misc_value,
-                                                      const spell_data_t* affected_spell ) const
+const spelleffect_data_t* druid_t::query_aura_effect( const spell_data_t* aura_spell, effect_subtype_t subtype,
+                                                      int misc_value, const spell_data_t* affected_spell,
+                                                      effect_type_t type ) const
 {
   for ( size_t i = 1; i <= aura_spell->effect_count(); i++ )
   {
