@@ -1137,7 +1137,7 @@ enum effect_subtype_t : unsigned {
     A_329 = 329,
     A_330 = 330,
     A_331 = 331,
-    A_332 = 332,
+    A_OVERRIDE_ACTION_SPELL = 332,
     A_333 = 333,
     A_334 = 334,
     A_335 = 335,
