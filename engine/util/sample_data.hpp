@@ -258,18 +258,16 @@ private:
   using base_t = simple_sample_data_t;
 
 protected:
-  bool _found  = false;
   value_t _min = std::numeric_limits<value_t>::max();
   value_t _max = std::numeric_limits<value_t>::lowest();
+
   void set_min( double x )
   {
-    _min   = x;
-    _found = true;
+    _min = x < _min ? x : _min;
   }
   void set_max( double x )
   {
-    _max   = x;
-    _found = true;
+    _max = x > _max ? x : _max;
   }
 
 public:
@@ -277,44 +275,32 @@ public:
   {
     base_t::add( x );
 
-    if ( x < _min )
-    {
-      set_min( x );
-    }
-    if ( x > _max )
-    {
-      set_max( x );
-    }
+    set_min( x );
+    set_max( x );
   }
 
-  bool found_min_max() const
-  {
-    return _found;
-  }
   value_t min() const
   {
-    return _found ? _min : base_t::nan();
+    return _min <= _max ? _min : base_t::nan();
   }
   value_t max() const
   {
-    return _found ? _max : base_t::nan();
+    return _min <= _max ? _max : base_t::nan();
   }
 
   void merge( const simple_sample_data_with_min_max_t& other )
   {
     base_t::merge( other );
 
-    if ( other.found_min_max() )
-    {
-      if ( other._min < _min )
-      {
-        set_min( other._min );
-      }
-      if ( other._max > _max )
-      {
-        set_max( other._max );
-      }
-    }
+    set_min( other._min );
+    set_max( other._max );
+  }
+
+  void reset()
+  {
+    base_t::reset();
+    _min = std::numeric_limits<value_t>::max();
+    _max = std::numeric_limits<value_t>::lowest();
   }
 };
 
@@ -508,8 +494,7 @@ public:
 
   void clear()
   {
-    base_t::_count = 0;
-    base_t::_sum   = 0.0;
+    base_t::reset();
     _sorted_data.clear();
     _data.clear();
     distribution.clear();
