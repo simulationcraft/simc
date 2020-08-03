@@ -413,12 +413,10 @@ struct boon_of_the_ascended_t final : public priest_spell_t
 struct ascended_nova_t final : public priest_spell_t
 {
   ascended_nova_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "ascended_nova", p, p.covenant.ascended_nova )
+    : priest_spell_t( "ascended_nova", p, p.find_spell( 325020 ) )
   {
     parse_options( options_str );
-    harmful = true;
-    aoe     = -1;
-    radius  = data().effectN( 1 ).radius_max();
+    aoe = -1;
   }
 
   void impact( action_state_t* s ) override
@@ -426,7 +424,8 @@ struct ascended_nova_t final : public priest_spell_t
     priest_spell_t::impact( s );
 
     // gain 1 stack for each target damanged
-    priest().buffs.boon_of_the_ascended->increment();
+    auto stacks = as<int>( data().effectN( 3 ).base_value() );
+    priest().buffs.boon_of_the_ascended->increment( stacks );
   }
 
   bool ready() override
@@ -445,11 +444,10 @@ struct ascended_blast_t final : public priest_spell_t
   double insanity_gain;
 
   ascended_blast_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "ascended_blast", p, p.covenant.ascended_blast ),
+    : priest_spell_t( "ascended_blast", p, p.find_spell( 325283 ) ),
       insanity_gain( data().effectN( 4 ).resource( RESOURCE_INSANITY ) )
   {
     parse_options( options_str );
-    harmful = true;
 
     if ( priest().conduits.courageous_ascension->ok() )
     {
@@ -469,7 +467,8 @@ struct ascended_blast_t final : public priest_spell_t
     priest_spell_t::impact( s );
 
     // gain 5 stacks on impact
-    priest().buffs.boon_of_the_ascended->increment( 5 );
+    auto stacks = as<int>( data().effectN( 3 ).base_value() );
+    priest().buffs.boon_of_the_ascended->increment( stacks );
   }
 
   void execute() override
@@ -497,12 +496,10 @@ struct ascended_eruption_t final : public priest_spell_t
 {
   int trigger_stacks;  // Set as action variable since this will not be triggered multiple times.
 
-  ascended_eruption_t( priest_t& p ) : priest_spell_t( "ascended_eruption", p, p.covenant.ascended_eruption )
+  ascended_eruption_t( priest_t& p ) : priest_spell_t( "ascended_eruption", p, p.find_spell( 325326 ) )
   {
-    harmful    = true;
     aoe        = -1;
     background = true;
-    radius     = data().effectN( 1 ).radius_max();
   }
 
   void trigger_eruption( int stacks )
@@ -703,13 +700,8 @@ struct fae_blessings_t final : public priest_buff_t<buff_t>
 // ==========================================================================
 struct boon_of_the_ascended_t final : public priest_buff_t<buff_t>
 {
-  int stacks;
-
-  boon_of_the_ascended_t( priest_t& p )
-    : base_t( p, "boon_of_the_ascended", p.covenant.boon_of_the_ascended ), stacks( as<int>( data().max_stacks() ) )
+  boon_of_the_ascended_t( priest_t& p ) : base_t( p, "boon_of_the_ascended", p.covenant.boon_of_the_ascended )
   {
-    // When not kyrian this is returned as 0
-    set_max_stack( stacks >= 1 ? stacks : 1 );
     // Adding stacks should not refresh the duration
     set_refresh_behavior( buff_refresh_behavior::DISABLED );
   }
@@ -1388,9 +1380,6 @@ void priest_t::init_spells()
   covenant.unholy_nova          = find_covenant_spell( "Unholy Nova" );
   covenant.mindgames            = find_covenant_spell( "Mindgames" );
   covenant.boon_of_the_ascended = find_covenant_spell( "Boon of the Ascended" );
-  covenant.ascended_nova        = find_spell( 325020 );
-  covenant.ascended_blast       = find_spell( 325283 );
-  covenant.ascended_eruption    = find_spell( 325326 );
 }
 
 void priest_t::create_buffs()

@@ -935,7 +935,7 @@ struct devouring_plague_t final : public priest_spell_t
 
 struct void_bolt_t final : public priest_spell_t
 {
-  struct void_bolt_extension_t : public priest_spell_t
+  struct void_bolt_extension_t final : public priest_spell_t
   {
     timespan_t dot_extension;
 
@@ -1701,7 +1701,7 @@ void priest_t::generate_insanity( double num_amount, gain_t* g, action_t* action
 }
 
 /// Simple insanity expiration event that kicks the actor out of Voidform
-struct priest_t::insanity_end_event_t : public event_t
+struct priest_t::insanity_end_event_t final : public event_t
 {
   priest_t& actor;
 
@@ -2180,8 +2180,8 @@ void priest_t::generate_apl_shadow()
     default_list->add_action( "bag_of_tricks" );
 
   // Choose which APL to use based on talents and fight conditions.
-  default_list->add_action( "run_action_list,name=cleave,if=active_enemies>1" );
-  default_list->add_action( "run_action_list,name=single,if=active_enemies=1" );
+  default_list->add_run_action_list( cleave, "if=active_enemies>1" );
+  default_list->add_run_action_list( single, "if=active_enemies=1" );
 
   // CDs
   cds->add_action(
@@ -2203,21 +2203,19 @@ void priest_t::generate_apl_shadow()
   cds->add_action( "ripple_in_space" );
   cds->add_action( "reaping_flames" );
   cds->add_action( "worldvein_resonance" );
-  cds->add_action(
-      "call_action_list,name=crit_cds,if=(buff.voidform.up&"
-      "buff.chorus_of_insanity.stack>20)|azerite.chorus_of_insanity.rank=0",
+  cds->add_call_action_list(
+      crit_cds, "if=(buff.voidform.up&buff.chorus_of_insanity.stack>20)|azerite.chorus_of_insanity.rank=0",
       "Use these cooldowns in between your 1st and 2nd Void Bolt in your 2nd Voidform when you have Chorus of Insanity "
       "active" );
   cds->add_action( this, "Power Infusion", "if=buff.voidform.up" );
-  cds->add_action( this, "Fae Blessings", "if=buff.voidform.up" );
-  cds->add_action( "fae_blessings,if=buff.voidform.up" );
-  cds->add_action( "mindgames" );
-  cds->add_action( "unholy_nova" );
-  cds->add_action( "boon_of_the_ascended,if=buff.voidform.up" );
+  cds->add_action( this, covenant.fae_blessings, "fae_blessings,if=buff.voidform.up" );
+  cds->add_action( this, covenant.mindgames, "mindgames" );
+  cds->add_action( this, covenant.unholy_nova, "unholy_nova" );
+  cds->add_action( this, covenant.boon_of_the_ascended, "boon_of_the_ascended,if=buff.voidform.up" );
   cds->add_action( "use_items", "Default fallback for usable items: Use on cooldown." );
 
-  boon->add_action( "ascended_blast" );
-  boon->add_action( "ascended_nova" );
+  boon->add_action( this, covenant.boon_of_the_ascended, "ascended_blast" );
+  boon->add_action( this, covenant.boon_of_the_ascended, "ascended_nova" );
 
   // Crit CDs
   crit_cds->add_action( "use_item,name=azsharas_font_of_power" );
@@ -2225,11 +2223,11 @@ void priest_t::generate_apl_shadow()
   crit_cds->add_action( "the_unbound_force" );
 
   // single APL
-  single->add_action( "call_action_list,name=boon,if=buff.boon_of_the_ascended.up" );
+  single->add_call_action_list( this, covenant.boon_of_the_ascended, boon, "if=buff.boon_of_the_ascended.up" );
   single->add_action( this, "Void Eruption" );
   single->add_talent( this, "Dark Ascension", "if=buff.voidform.down" );
   single->add_action( this, "Void Bolt" );
-  single->add_action( "call_action_list,name=cds" );
+  single->add_call_action_list( cds );
   single->add_action( this, "Devouring Plague", "if=refreshable&buff.voidform.up" );
   single->add_action(
       this, "Mind Sear",
@@ -2275,8 +2273,9 @@ void priest_t::generate_apl_shadow()
   cleave->add_action( this, "Vampiric Touch", "if=!ticking&azerite.thought_harvester.rank>=1" );
   cleave->add_action( this, "Mind Sear", "if=buff.harvested_thoughts.up" );
   cleave->add_action( this, "Void Bolt" );
-  cleave->add_action( "call_action_list,name=boon,if=buff.boon_of_the_ascended.up" );
-  cleave->add_action( "call_action_list,name=cds" );
+
+  cleave->add_call_action_list( this, covenant.boon_of_the_ascended, boon, "if=buff.boon_of_the_ascended.up" );
+  cleave->add_call_action_list( cds );
   cleave->add_action( this, "Shadow Word: Death", "target_if=target.time_to_die<3|buff.voidform.down" );
   cleave->add_talent( this, "Surrender to Madness", "if=buff.voidform.stack>10+(10*buff.bloodlust.up)" );
   cleave->add_talent( this, "Dark Void",

@@ -957,6 +957,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
                  "<li><span class=\"label\">resource:</span>%s</li>\n"
                  "<li><span class=\"label\">range:</span>%.1f</li>\n"
                  "<li><span class=\"label\">travel_speed:</span>%.4f</li>\n"
+                 "<li><span class=\"label\">radius:</span>%.1f</li>\n"
                  "<li><span class=\"label\">trigger_gcd:</span>%.4f</li>\n"
                  "<li><span class=\"label\">gcd_type:</span>%s</li>\n"
                  "<li><span class=\"label\">min_gcd:</span>%.4f</li>\n"
@@ -968,6 +969,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
                  "<li><span class=\"label\">base_execute_time:</span>%.2f</li>\n"
                  "<li><span class=\"label\">base_crit:</span>%.2f</li>\n"
                  "<li><span class=\"label\">target:</span>%s</li>\n"
+                 "<li><span class=\"label\">aoe:</span>%d</li>\n"
                  "<li><span class=\"label\">harmful:</span>%s</li>\n"
                  "</ul>\n"
                  "</div>\n",
@@ -977,6 +979,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
                  util::resource_type_string( a->current_resource() ),
                  a->range,
                  a->travel_speed,
+                 a->radius,
                  a->trigger_gcd.total_seconds(),
                  util::gcd_haste_type_string(a->gcd_type),
                  a->min_gcd.total_seconds(),
@@ -988,6 +991,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
                  a->base_execute_time.total_seconds(),
                  a->base_crit,
                  a->target ? util::encode_html( a->target->name() ).c_str() : "",
+                 a->aoe,
                  a->harmful ? "true" : "false" );
 
       os << "<div>\n";  // Wrap damage/weapon

@@ -474,9 +474,6 @@ public:
     const spell_data_t* unholy_nova;  // needs testing
     const spell_data_t* mindgames;    // needs additional option
     const spell_data_t* boon_of_the_ascended;
-    const spell_data_t* ascended_nova;
-    const spell_data_t* ascended_blast;
-    const spell_data_t* ascended_eruption;
   } covenant;
 
   struct insanity_end_event_t;
