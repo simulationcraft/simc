@@ -2962,34 +2962,6 @@ public:
       base_td_multiplier *= 1.0 + p->talent.soul_of_the_forest_feral->effectN( 3 ).percent();
       base_dd_multiplier *= 1.0 + p->talent.soul_of_the_forest_feral->effectN( 2 ).percent();
     }
-
-    // Apply all Feral Affinity damage modifiers.
-    if ( p -> talent.feral_affinity -> ok() )
-    {
-      for ( size_t i = 1; i <= p -> talent.feral_affinity -> effect_count(); i++ )
-      {
-        const spelleffect_data_t& effect = p -> talent.feral_affinity -> effectN( i );
-
-        if ( ! ( effect.type() == E_APPLY_AURA && effect.subtype() == A_ADD_PCT_MODIFIER ) )
-          continue;
-
-        if ( data().affected_by( effect ) )
-        {
-          switch(static_cast<property_type_t>(effect.misc_value1()))
-          {
-            case P_GENERIC:
-              base_dd_multiplier *= 1.0 + effect.percent();
-              break;
-            case P_TICK_DAMAGE:
-              base_td_multiplier *= 1.0 + effect.percent();
-              break;
-            default:
-              base_multiplier *= 1.0 + effect.percent();
-              break;
-          }
-        }
-      }
-    }
   }
 
   // For effects that specifically trigger only when "prowling."
@@ -10874,6 +10846,9 @@ void druid_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( spec.restoration );
   action.apply_affecting_aura( spec.balance );
   action.apply_affecting_aura( spec.guardian );
+
+  if ( talent.feral_affinity->ok() )
+    action.apply_affecting_aura( talent.feral_affinity );
 }
 
 //void druid_t::output_json_report(js::JsonOutput& root) const
