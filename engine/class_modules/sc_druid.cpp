@@ -9109,7 +9109,7 @@ void druid_t::apl_guardian()
 void druid_t::apl_restoration()
 {
   action_priority_list_t* default_list = get_action_priority_list( "default" );
-  action_priority_list_t* feral        = get_action_priority_list( "feral" );
+  //action_priority_list_t* feral        = get_action_priority_list( "feral" );
   action_priority_list_t* balance      = get_action_priority_list( "balance" );
   //action_priority_list_t* heal = get_action_priority_list("heal");
   std::vector<std::string> racial_actions     = get_racial_actions();

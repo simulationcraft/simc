@@ -1557,7 +1557,7 @@ struct pet_spell_t : public pet_action_t<T_PET, spell_t>
 
   pet_spell_t( T_PET* pet, util::string_view name,
     const spell_data_t* spell = spell_data_t::nil() ) :
-    pet_action_t<T_PET, spell_t>( pet, name )
+    pet_action_t<T_PET, spell_t>( pet, name, spell )
   {
     this -> tick_may_crit = true;
     this -> hasted_ticks  = false;

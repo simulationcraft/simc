@@ -96,32 +96,26 @@ const QString numericOperators[] =
 const QString stringOperators[] = 
 { "==", "!=", "~", "!~", nullptr };
 
-QComboBox* createChoiceFromRange( int lowerInclusive, int upperInclusive ) {
+template<typename Range>
+QComboBox* createChoiceFromList( const Range& list )
+{
   QComboBox* choice = new QComboBox();
-  for ( int i = lowerInclusive; i <= upperInclusive; i++ ) {
-    QString choiceText = QString::number(i);
-    choice -> addItem( choiceText );
+  for( const auto& entry : list )
+  {
+    
+    choice -> addItem( entry );
   }
   return choice;
 }
 
-QComboBox* createChoice( int count, ... )
+template<typename ... T>
+QComboBox* createChoice( T ... t )
 {
   QComboBox* choice = new QComboBox();
-  va_list vap;
-  va_start( vap, count );
-  for ( int i = 0; i < count; i++ )
-    choice -> addItem( va_arg( vap, char* ) );
-  va_end( vap );
-  return choice;
-}
-
-QComboBox* createChoiceFromList( const QString list[] )
-{
-  QComboBox* choice = new QComboBox();
-  for ( int i = 0; list[ i ].length() > 0; i++ )
+  for( const auto& entry : { t ... } )
   {
-    choice -> addItem( list[ i ] );
+    
+    choice -> addItem( entry );
   }
   return choice;
 }
@@ -197,13 +191,13 @@ SC_SpellQueryTab::SC_SpellQueryTab( SC_MainWindow* parent ) :
 
   // add another combo box
   label.filter = new QLabel( tr( "filter" ) );
-  choice.filter = createChoice( 2, "1", "2" );
+  choice.filter = createChoice( "1", "2" );
   inputGroupBoxLayout -> addWidget( label.filter,  0, 1 );
   inputGroupBoxLayout -> addWidget( choice.filter, 1, 1 );
 
   // add a combo box for operators
   label.operatorString = new QLabel( tr( "operator" ) );
-  choice.operatorString = createChoice( 2, "1", "2" );
+  choice.operatorString = createChoice("1", "2" );
   inputGroupBoxLayout -> addWidget( label.operatorString,  0, 2 );
   inputGroupBoxLayout -> addWidget( choice.operatorString, 1, 2 );
 
