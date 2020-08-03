@@ -286,12 +286,22 @@ struct smite_t final : public priest_spell_t
                         cooldown_base_reduction );
     }
   }
+
+  bool ready() override
+  {
+    // Ascended Blast replaces Smite when Boon of the Ascended is active
+    if ( priest().buffs.boon_of_the_ascended->check() )
+    {
+      return false;
+    }
+
+    return priest_spell_t::ready();
+  }
 };
 
 // ==========================================================================
 // Power Infusion
 // ==========================================================================
-
 struct power_infusion_t final : public priest_spell_t
 {
   power_infusion_t( priest_t& p, util::string_view options_str )
@@ -308,6 +318,9 @@ struct power_infusion_t final : public priest_spell_t
   }
 };
 
+// ==========================================================================
+// Fae Blessings - Night Fae Covenant
+// ==========================================================================
 struct fae_blessings_t final : public priest_spell_t
 {
   fae_blessings_t( priest_t& p, util::string_view options_str )
@@ -338,6 +351,9 @@ struct fae_blessings_t final : public priest_spell_t
   }
 };
 
+// ==========================================================================
+// Unholy Nova - Necrolord Covenant
+// ==========================================================================
 struct unholy_nova_t final : public priest_spell_t
 {
   unholy_nova_t( priest_t& p, util::string_view options_str )
@@ -350,6 +366,9 @@ struct unholy_nova_t final : public priest_spell_t
   // TODO: trigger Unholy Transfusion
 };
 
+// ==========================================================================
+// Mindgames - Venthyr Covenant
+// ==========================================================================
 struct mindgames_t final : public priest_spell_t
 {
   mindgames_t( priest_t& p, util::string_view options_str ) : priest_spell_t( "mindgames", p, p.covenant.mindgames )
@@ -371,6 +390,9 @@ struct mindgames_t final : public priest_spell_t
   }
 };
 
+// ==========================================================================
+// Boon of the Ascended - Kyrian Covenant
+// ==========================================================================
 struct boon_of_the_ascended_t final : public priest_spell_t
 {
   boon_of_the_ascended_t( priest_t& p, util::string_view options_str )
@@ -380,7 +402,12 @@ struct boon_of_the_ascended_t final : public priest_spell_t
     harmful = false;
   }
 
-  // TODO: trigger Boon of the Ascended buff
+  void execute() override
+  {
+    priest_spell_t::execute();
+
+    priest().buffs.boon_of_the_ascended->trigger();
+  }
 };
 
 struct ascended_nova_t final : public priest_spell_t
@@ -390,21 +417,117 @@ struct ascended_nova_t final : public priest_spell_t
   {
     parse_options( options_str );
     harmful = true;
+    aoe     = -1;
+    radius  = data().effectN( 1 ).radius_max();
   }
 
-  // TODO: adjust ready to only be when Boon of the Ascended is active
+  void impact( action_state_t* s ) override
+  {
+    priest_spell_t::impact( s );
+
+    // gain 1 stack for each target damanged
+    priest().buffs.boon_of_the_ascended->increment();
+  }
+
+  bool ready() override
+  {
+    if ( !priest().buffs.boon_of_the_ascended->check() || !priest().options.priest_use_ascended_nova )
+    {
+      return false;
+    }
+
+    return priest_spell_t::ready();
+  }
 };
 
 struct ascended_blast_t final : public priest_spell_t
 {
+  double insanity_gain;
+
   ascended_blast_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "ascended_blast", p, p.covenant.ascended_blast )
+    : priest_spell_t( "ascended_blast", p, p.covenant.ascended_blast ),
+      insanity_gain( data().effectN( 4 ).resource( RESOURCE_INSANITY ) )
   {
     parse_options( options_str );
     harmful = true;
+
+    if ( priest().conduits.courageous_ascension->ok() )
+    {
+      base_dd_multiplier *= ( 1.0 + priest().conduits.courageous_ascension.percent() );
+    }
   }
 
-  // TODO: adjust ready to only be when Boon of the Ascended is active
+  void init() override
+  {
+    priest().cooldowns.ascended_blast->hasted = true;
+
+    priest_spell_t::init();
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    priest_spell_t::impact( s );
+
+    // gain 5 stacks on impact
+    priest().buffs.boon_of_the_ascended->increment( 5 );
+  }
+
+  void execute() override
+  {
+    priest_spell_t::execute();
+
+    if ( priest().specialization() == PRIEST_SHADOW )
+    {
+      priest().generate_insanity( insanity_gain, priest().gains.insanity_ascended_blast, execute_state->action );
+    }
+  }
+
+  bool ready() override
+  {
+    if ( !priest().buffs.boon_of_the_ascended->check() )
+    {
+      return false;
+    }
+
+    return priest_spell_t::ready();
+  }
+};
+
+struct ascended_eruption_t final : public priest_spell_t
+{
+  int trigger_stacks;  // Set as action variable since this will not be triggered multiple times.
+
+  ascended_eruption_t( priest_t& p ) : priest_spell_t( "ascended_eruption", p, p.covenant.ascended_eruption )
+  {
+    harmful    = true;
+    aoe        = -1;
+    background = true;
+    radius     = data().effectN( 1 ).radius_max();
+  }
+
+  void trigger_eruption( int stacks )
+  {
+    assert( stacks > 0 );
+    trigger_stacks = stacks;
+
+    execute();
+  }
+
+  double action_da_multiplier() const override
+  {
+    double m = priest_spell_t::action_da_multiplier();
+
+    double base_increase = priest().covenant.boon_of_the_ascended->effectN( 5 ).percent();
+    if ( priest().conduits.courageous_ascension->ok() )
+    {
+      // 1% increase from Courageous Ascension not found in spelldata
+      base_increase += 0.01;
+    }
+
+    m *= 1 + ( base_increase * trigger_stacks );
+
+    return m;
+  }
 };
 
 // ==========================================================================
@@ -540,6 +663,9 @@ struct power_word_shield_t final : public priest_absorb_t
 
 namespace buffs
 {
+// ==========================================================================
+// Power Infusion
+// ==========================================================================
 struct power_infusion_t final : public priest_buff_t<buff_t>
 {
   power_infusion_t( priest_t& p ) : base_t( p, "power_infusion", p.find_class_spell( "Power Infusion" ) )
@@ -549,6 +675,9 @@ struct power_infusion_t final : public priest_buff_t<buff_t>
   }
 };
 
+// ==========================================================================
+// Fae Blessings - Night Fae Covenant
+// ==========================================================================
 struct fae_blessings_t final : public priest_buff_t<buff_t>
 {
   int stacks;
@@ -568,6 +697,34 @@ struct fae_blessings_t final : public priest_buff_t<buff_t>
     priest().cooldowns.fae_blessings->start();
   }
 };
+
+// ==========================================================================
+// Boon of the Ascended - Kyrian Covenant
+// ==========================================================================
+struct boon_of_the_ascended_t final : public priest_buff_t<buff_t>
+{
+  int stacks;
+
+  boon_of_the_ascended_t( priest_t& p )
+    : base_t( p, "boon_of_the_ascended", p.covenant.boon_of_the_ascended ), stacks( as<int>( data().max_stacks() ) )
+  {
+    // When not kyrian this is returned as 0
+    set_max_stack( stacks >= 1 ? stacks : 1 );
+    // Adding stacks should not refresh the duration
+    set_refresh_behavior( buff_refresh_behavior::DISABLED );
+  }
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    priest_buff_t<buff_t>::expire_override( expiration_stacks, remaining_duration );
+
+    if ( priest().options.priest_use_ascended_eruption )
+    {
+      priest().action.ascended_eruption->trigger_eruption( expiration_stacks );
+    }
+  }
+};
+
 }  // namespace buffs
 
 namespace items
@@ -616,7 +773,7 @@ void base_fiend_pet_t::init_action_list()
   priest_pet_t::init_action_list();
 }
 
-double base_fiend_pet_t::composite_player_multiplier(school_e school) const
+double base_fiend_pet_t::composite_player_multiplier( school_e school ) const
 {
   double m = pet_t::composite_player_multiplier( school );
 
@@ -630,7 +787,7 @@ double base_fiend_pet_t::composite_melee_haste() const
 {
   double h = pet_t::composite_melee_haste();
 
-  if (o().conduits.rabid_shadows->ok())
+  if ( o().conduits.rabid_shadows->ok() )
     h *= 1 + o().conduits.rabid_shadows.percent();
   return h;
 }
@@ -694,6 +851,7 @@ priest_t::priest_t( sim_t* sim, util::string_view name, race_e r )
     active_items(),
     pets(),
     options(),
+    action(),
     azerite(),
     azerite_essence(),
     legendary(),
@@ -731,6 +889,7 @@ void priest_t::create_cooldowns()
   cooldowns.mindbender         = get_cooldown( "mindbender" );
   cooldowns.shadowfiend        = get_cooldown( "shadowfiend" );
   cooldowns.fae_blessings      = get_cooldown( "fae_blessings" );
+  cooldowns.ascended_blast     = get_cooldown( "ascended_blast" );
 
   if ( specialization() == PRIEST_DISCIPLINE )
   {
@@ -1229,9 +1388,9 @@ void priest_t::init_spells()
   covenant.unholy_nova          = find_covenant_spell( "Unholy Nova" );
   covenant.mindgames            = find_covenant_spell( "Mindgames" );
   covenant.boon_of_the_ascended = find_covenant_spell( "Boon of the Ascended" );
-  covenant.ascended_nova        = find_covenant_spell( "Ascended Nova" );
-  covenant.ascended_blast       = find_covenant_spell( "Ascended Blast" );
-  covenant.ascended_eruption    = find_covenant_spell( "Ascended Eruption" );
+  covenant.ascended_nova        = find_spell( 325020 );
+  covenant.ascended_blast       = find_spell( 325283 );
+  covenant.ascended_eruption    = find_spell( 325326 );
 }
 
 void priest_t::create_buffs()
@@ -1253,7 +1412,8 @@ void priest_t::create_buffs()
                                ->set_trigger_spell( legendary.the_penitent_one );
 
   // Covenant Buffs
-  buffs.fae_blessings = make_buff<buffs::fae_blessings_t>( *this );
+  buffs.fae_blessings        = make_buff<buffs::fae_blessings_t>( *this );
+  buffs.boon_of_the_ascended = make_buff<buffs::boon_of_the_ascended_t>( *this );
 
   create_buffs_shadow();
   create_buffs_discipline();
@@ -1267,6 +1427,11 @@ void priest_t::init_rng()
   init_rng_holy();
 
   player_t::init_rng();
+}
+
+void priest_t::init_background_actions()
+{
+  action.ascended_eruption = new actions::spells::ascended_eruption_t( *this );
 }
 
 void priest_t::vision_of_perfection_proc()
@@ -1543,6 +1708,8 @@ void priest_t::create_options()
   add_option( opt_float( "priest_lucid_dreams_proc_chance_disc", options.priest_lucid_dreams_proc_chance_disc ) );
   add_option( opt_float( "priest_lucid_dreams_proc_chance_holy", options.priest_lucid_dreams_proc_chance_holy ) );
   add_option( opt_float( "priest_lucid_dreams_proc_chance_shadow", options.priest_lucid_dreams_proc_chance_shadow ) );
+  add_option( opt_bool( "priest_use_ascended_nova", options.priest_use_ascended_nova ) );
+  add_option( opt_bool( "priest_use_ascended_eruption", options.priest_use_ascended_eruption ) );
 }
 
 std::string priest_t::create_profile( save_e type )

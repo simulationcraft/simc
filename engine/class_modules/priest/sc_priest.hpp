@@ -33,6 +33,7 @@ struct smite_t;
 struct summon_pet_t;
 struct summon_shadowfiend_t;
 struct summon_mindbender_t;
+struct ascended_eruption_t;
 }  // namespace spells
 namespace heals
 {
@@ -277,6 +278,7 @@ public:
     // Shared
     propagate_const<cooldown_t*> power_infusion;
     propagate_const<cooldown_t*> fae_blessings;
+    propagate_const<cooldown_t*> ascended_blast;
 
     // Discipline
     propagate_const<cooldown_t*> chakra;
@@ -394,7 +396,16 @@ public:
     double priest_lucid_dreams_proc_chance_disc   = 0.08;
     double priest_lucid_dreams_proc_chance_holy   = 0.08;
     double priest_lucid_dreams_proc_chance_shadow = 0.15;
+
+    // Add in easy options to change if you are in range or not
+    bool priest_use_ascended_nova     = true;
+    bool priest_use_ascended_eruption = true;
   } options;
+
+  struct actions_t
+  {
+    actions::spells::ascended_eruption_t* ascended_eruption;
+  } action;
 
   // Azerite
   struct azerite_t
@@ -448,10 +459,10 @@ public:
     // Shadow
     conduit_data_t dissonant_echoes;
     conduit_data_t mind_devourer;
-    conduit_data_t rabid_shadows;  // NYI
+    conduit_data_t rabid_shadows;
     conduit_data_t shimmering_apparitions;
     // Covenant
-    conduit_data_t courageous_ascension;   // NYI
+    conduit_data_t courageous_ascension;
     conduit_data_t festering_transfusion;  // NYI
     conduit_data_t blessing_of_plenty;     // NYI
     conduit_data_t shattered_perceptions;  // NYI
@@ -460,12 +471,12 @@ public:
   struct
   {
     const spell_data_t* fae_blessings;
-    const spell_data_t* unholy_nova;           // needs testing
-    const spell_data_t* mindgames;             // needs additional option
-    const spell_data_t* boon_of_the_ascended;  // NYI
-    const spell_data_t* ascended_nova;         // NYI
-    const spell_data_t* ascended_blast;        // NYI
-    const spell_data_t* ascended_eruption;     // NYI
+    const spell_data_t* unholy_nova;  // needs testing
+    const spell_data_t* mindgames;    // needs additional option
+    const spell_data_t* boon_of_the_ascended;
+    const spell_data_t* ascended_nova;
+    const spell_data_t* ascended_blast;
+    const spell_data_t* ascended_eruption;
   } covenant;
 
   struct insanity_end_event_t;
@@ -478,6 +489,7 @@ public:
   void init_spells() override;
   void create_buffs() override;
   void init_scaling() override;
+  void init_background_actions() override;
   void reset() override;
   void create_options() override;
   std::string create_profile( save_e ) override;
@@ -790,7 +802,7 @@ struct base_fiend_pet_t : public priest_pet_t
     resources.current = resources.max = resources.initial;
   }
 
-  double composite_player_multiplier(school_e school) const override;
+  double composite_player_multiplier( school_e school ) const override;
   double composite_melee_haste() const override;
 
   action_t* create_action( util::string_view name, const std::string& options_str ) override;

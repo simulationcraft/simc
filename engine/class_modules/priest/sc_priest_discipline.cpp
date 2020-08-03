@@ -368,7 +368,11 @@ void priest_t::generate_apl_discipline_h()
 /** Discipline Damage Combat Action Priority List */
 void priest_t::generate_apl_discipline_d()
 {
-  action_priority_list_t* def = get_action_priority_list( "default" );
+  action_priority_list_t* def  = get_action_priority_list( "default" );
+  action_priority_list_t* boon = get_action_priority_list( "boon" );
+
+  boon->add_action( "ascended_blast" );
+  boon->add_action( "ascended_nova" );
 
   // On-Use Items
   for ( const auto& item_action : get_item_actions() )
@@ -408,6 +412,8 @@ void priest_t::generate_apl_discipline_d()
   }
 
   def->add_action( this, "Power Infusion" );
+  def->add_action( "boon_of_the_ascended" );
+  def->add_action( "call_action_list,name=boon" );
   def->add_talent( this, "Purge the Wicked", "if=!ticking" );
   def->add_action( this, "Shadow Word: Pain", "if=!ticking&!talent.purge_the_wicked.enabled" );
   def->add_action( this, "Shadow Word: Death" );

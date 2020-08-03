@@ -314,6 +314,17 @@ struct mind_flay_t final : public priest_spell_t
 
     priest().generate_insanity( insanity_gain, priest().gains.insanity_mind_flay, d->state->action );
   }
+
+  bool ready() override
+  {
+    // Ascended Blast replaces Mind Flay when Boon of the Ascended is active
+    if ( priest().buffs.boon_of_the_ascended->check() )
+    {
+      return false;
+    }
+
+    return priest_spell_t::ready();
+  }
 };
 
 struct shadow_word_death_t final : public priest_spell_t
@@ -2136,6 +2147,7 @@ void priest_t::generate_apl_shadow()
   action_priority_list_t* single       = get_action_priority_list( "single" );
   action_priority_list_t* cds          = get_action_priority_list( "cds" );
   action_priority_list_t* crit_cds     = get_action_priority_list( "crit_cds" );
+  action_priority_list_t* boon         = get_action_priority_list( "boon" );
 
   // Professions
   for ( const auto& profession_action : get_profession_actions() )
@@ -2198,11 +2210,14 @@ void priest_t::generate_apl_shadow()
       "active" );
   cds->add_action( this, "Power Infusion", "if=buff.voidform.up" );
   cds->add_action( this, "Fae Blessings", "if=buff.voidform.up" );
-  cds->add_action( "fae_blessings", "if=buff.voidform.up" );
+  cds->add_action( "fae_blessings,if=buff.voidform.up" );
   cds->add_action( "mindgames" );
   cds->add_action( "unholy_nova" );
-  cds->add_action( "boon_of_the_ascended" );
+  cds->add_action( "boon_of_the_ascended,if=buff.voidform.up" );
   cds->add_action( "use_items", "Default fallback for usable items: Use on cooldown." );
+
+  boon->add_action( "ascended_blast" );
+  boon->add_action( "ascended_nova" );
 
   // Crit CDs
   crit_cds->add_action( "use_item,name=azsharas_font_of_power" );
@@ -2210,6 +2225,7 @@ void priest_t::generate_apl_shadow()
   crit_cds->add_action( "the_unbound_force" );
 
   // single APL
+  single->add_action( "call_action_list,name=boon,if=buff.boon_of_the_ascended.up" );
   single->add_action( this, "Void Eruption" );
   single->add_talent( this, "Dark Ascension", "if=buff.voidform.down" );
   single->add_action( this, "Void Bolt" );
@@ -2259,6 +2275,7 @@ void priest_t::generate_apl_shadow()
   cleave->add_action( this, "Vampiric Touch", "if=!ticking&azerite.thought_harvester.rank>=1" );
   cleave->add_action( this, "Mind Sear", "if=buff.harvested_thoughts.up" );
   cleave->add_action( this, "Void Bolt" );
+  cleave->add_action( "call_action_list,name=boon,if=buff.boon_of_the_ascended.up" );
   cleave->add_action( "call_action_list,name=cds" );
   cleave->add_action( this, "Shadow Word: Death", "target_if=target.time_to_die<3|buff.voidform.down" );
   cleave->add_talent( this, "Surrender to Madness", "if=buff.voidform.stack>10+(10*buff.bloodlust.up)" );
