@@ -183,27 +183,27 @@ void priest_t::init_spells_holy()
   talents.enlightenment    = find_talent_spell( "Enlightenment" );
   talents.trail_of_light   = find_talent_spell( "Trail of Light" );
   talents.enduring_renewal = find_talent_spell( "Enduring Renewal" );
-  // T30
+  // T25
   talents.angels_mercy    = find_talent_spell( "Angel's Mercy" );
-  talents.perseverance    = find_talent_spell( "Perseverance" );
+  talents.body_and_soul   = find_talent_spell( "Body and Soul" );
   talents.angelic_feather = find_talent_spell( "Angelic Feather" );
-  // T45
+  // T30
   talents.cosmic_ripple  = find_talent_spell( "Cosmic Ripple" );
   talents.guardian_angel = find_talent_spell( "Guardian Angel" );
   talents.after_life     = find_talent_spell( "After Life" );
-  // T60
+  // T35
   talents.psychic_voice = find_talent_spell( "Psychic Voice" );
   talents.censure       = find_talent_spell( "Censure" );
   talents.shining_force = find_talent_spell( "Shining Force" );
-  // T75
-  talents.surge_of_light    = find_talent_spell( "Surge of Light" );
-  talents.binding_heal      = find_talent_spell( "Binding Heal" );
-  talents.circle_of_healing = find_talent_spell( "Circle of Healing" );
-  // T90
+  // T40
+  talents.surge_of_light = find_talent_spell( "Surge of Light" );
+  talents.binding_heal   = find_talent_spell( "Binding Heal" );
+  talents.prayer_circle  = find_talent_spell( "Prayer Circle" );
+  // T45
   talents.benediction = find_talent_spell( "Benediction" );
   talents.divine_star = find_talent_spell( "Divine Star" );
   talents.halo        = find_talent_spell( "Halo" );
-  // T100
+  // T50
   talents.light_of_the_naaru  = find_talent_spell( "Light of the Naaru" );
   talents.apotheosis          = find_talent_spell( "Apotheosis" );
   talents.holy_word_salvation = find_talent_spell( "Holy Word: Salvation" );

@@ -1966,27 +1966,27 @@ void priest_t::init_spells_shadow()
   talents.fortress_of_the_mind = find_talent_spell( "Fortress of the Mind" );
   talents.shadowy_insight      = find_talent_spell( "Shadowy Insight" );
   talents.shadow_word_void     = find_talent_spell( "Shadow Word: Void" );
-  // T30
-  talents.mania         = find_talent_spell( "Mania" );
+  // T25
   talents.body_and_soul = find_talent_spell( "Body and Soul" );
   talents.sanlayn       = find_talent_spell( "San'layn" );
-  // T45
-  talents.dark_void     = find_talent_spell( "Dark Void" );
-  talents.misery        = find_talent_spell( "Misery" );
+  talents.intangibility = find_talent_spell( "intangibility" );
+  // T30
   talents.twist_of_fate = find_talent_spell( "Twist of Fate" );
-  // T60
+  talents.misery        = find_talent_spell( "Misery" );
+  talents.dark_void     = find_talent_spell( "Dark Void" );
+  // T35
   talents.last_word      = find_talent_spell( "Last Word" );
   talents.mind_bomb      = find_talent_spell( "Mind Bomb" );
   talents.psychic_horror = find_talent_spell( "Psychic Horror" );
-  // T75
+  // T40
   talents.auspicious_spirits = find_talent_spell( "Auspicious Spirits" );
   talents.death_and_madness  = find_talent_spell( "Death and Madness" );
   talents.shadow_crash       = find_talent_spell( "Shadow Crash" );
-  // T90
+  // T45
   talents.lingering_insanity = find_talent_spell( "Lingering Insanity" );
   talents.mindbender         = find_talent_spell( "Mindbender" );
   talents.void_torrent       = find_talent_spell( "Void Torrent" );
-  // T100
+  // T50
   talents.legacy_of_the_void   = find_talent_spell( "Legacy of the Void" );
   talents.dark_ascension       = find_talent_spell( "Dark Ascension" );
   talents.surrender_to_madness = find_talent_spell( "Surrender to Madness" );
@@ -2210,7 +2210,7 @@ void priest_t::generate_apl_shadow()
   cds->add_action( this, "Power Infusion", "if=buff.voidform.up" );
   cds->add_covenant( this, "Fae Blessings", "if=buff.voidform.up" );
   cds->add_covenant( this, "Mindgames" );
-  cds->add_covenant( this, "Unholy Nova" );
+  cds->add_covenant( this, "Unholy Nova", "if=buff.voidform.up" );
   cds->add_covenant( this, "Boon of the Ascended", "if=buff.voidform.up" );
   cds->add_action( "use_items", "Default fallback for usable items: Use on cooldown." );
 

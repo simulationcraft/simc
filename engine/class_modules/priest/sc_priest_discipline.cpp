@@ -255,30 +255,30 @@ void priest_t::init_spells_discipline()
   talents.castigation   = find_talent_spell( "Castigation" );
   talents.twist_of_fate = find_talent_spell( "Twist of Fate" );
   talents.schism        = find_talent_spell( "Schism" );
-  // T30
-  talents.angelic_feather = find_talent_spell( "Angelic Feather" );
+  // T25
   talents.body_and_soul   = find_talent_spell( "Body and Soul" );
   talents.masochism       = find_talent_spell( "Masochism" );
-  // T45
-  talents.power_word_solace = find_talent_spell( "Power Word: Solace" );
+  talents.angelic_feather = find_talent_spell( "Angelic Feather" );
+  // T30
   talents.shield_discipline = find_talent_spell( "Shield Discipline" );
   talents.mindbender        = find_talent_spell( "Mindbender" );
-  // T60
+  talents.power_word_solace = find_talent_spell( "Power Word: Solace" );
+  // T35
   talents.psychic_voice = find_talent_spell( "Psychic Voice" );
-  talents.shining_force = find_talent_spell( "Shining Force" );
   talents.dominant_mind = find_talent_spell( "Dominant Mind" );
-  // T75
-  talents.sanctuary        = find_talent_spell( "Sanctuary" );
+  talents.shining_force = find_talent_spell( "Shining Force" );
+  // T40
   talents.sins_of_the_many = find_talent_spell( "Sins of the Many" );
-  talents.clarity_of_will  = find_talent_spell( "Clarity of Will" );
+  talents.contrition       = find_talent_spell( "Contrition" );
   talents.shadow_covenant  = find_talent_spell( "Shadow Covenant" );
-  // T90
+  // T45
   talents.purge_the_wicked = find_talent_spell( "Purge the Wicked" );
   talents.divine_star      = find_talent_spell( "Divine Star" );
   talents.halo             = find_talent_spell( "Halo" );
-  // T100
-  talents.grace      = find_talent_spell( "Grace" );
-  talents.evangelism = find_talent_spell( "Evangelism" );
+  // T50
+  talents.lights_caress    = find_talent_spell( "Light's Caress" );
+  talents.luminous_barrier = find_talent_spell( "Luminous Barrier" );
+  talents.evangelism       = find_talent_spell( "Evangelism" );
 
   // Passive spell data
   specs.discipline_priest      = find_specialization_spell( "Discipline Priest" );

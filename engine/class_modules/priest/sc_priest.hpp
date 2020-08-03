@@ -142,89 +142,85 @@ public:
   // Talents
   struct
   {
+    // Shared
+    const spell_data_t* mindbender;
+    const spell_data_t* twist_of_fate;
+    const spell_data_t* angelic_feather;
+    const spell_data_t* body_and_soul;  // NYI
     const spell_data_t* shining_force;
+    const spell_data_t* psychic_voice;
     const spell_data_t* divine_star;
     const spell_data_t* halo;
 
-    const spell_data_t* twist_of_fate;
-
-    const spell_data_t* angelic_feather;
-
-    const spell_data_t* psychic_voice;
-
-    const spell_data_t* mindbender;
-
     // Discipline
-    const spell_data_t* the_penitent;
+    // T15
     const spell_data_t* castigation;
     const spell_data_t* schism;
-
-    const spell_data_t* body_and_soul;
-    const spell_data_t* masochism;
-
+    // T25
+    const spell_data_t* masochism; // NYI
+    // T30
+    const spell_data_t* shield_discipline; // NYI
     const spell_data_t* power_word_solace;
-    const spell_data_t* shield_discipline;
-    const spell_data_t* dominant_mind;
-
+    // T35
+    const spell_data_t* dominant_mind; // NYI
+    // T40
     const spell_data_t* sins_of_the_many;
-    const spell_data_t* sanctuary;
-    const spell_data_t* clarity_of_will;
-    const spell_data_t* shadow_covenant;
-
+    const spell_data_t* contrition;      // NYI
+    const spell_data_t* shadow_covenant; // NYI
+    // T45
     const spell_data_t* purge_the_wicked;
-
-    const spell_data_t* grace;
-    const spell_data_t* evangelism;
+    // T50
+    const spell_data_t* lights_caress;    // NYI
+    const spell_data_t* luminous_barrier; // NYI
+    const spell_data_t* evangelism;       // NYI
 
     // Holy
-
-    const spell_data_t* enlightenment;
-    const spell_data_t* trail_of_light;
-    const spell_data_t* enduring_renewal;
-
+    // T15
+    const spell_data_t* enlightenment;    // NYI
+    const spell_data_t* trail_of_light;   // NYI
+    const spell_data_t* enduring_renewal; // NYI
+    // T25
     const spell_data_t* angels_mercy;  // NYI
-    const spell_data_t* perseverance;  // NYI
-
-    const spell_data_t* cosmic_ripple;
-    const spell_data_t* guardian_angel;
-    const spell_data_t* after_life;  // NYI
-
+    // T30
+    const spell_data_t* cosmic_ripple;  // NYI
+    const spell_data_t* guardian_angel; // NYI
+    const spell_data_t* after_life;     // NYI
+    // T35
     const spell_data_t* censure;  // NYI
-
-    const spell_data_t* surge_of_light;
-    const spell_data_t* binding_heal;
-    const spell_data_t* circle_of_healing;
-
-    const spell_data_t* benediction;
-
-    const spell_data_t* light_of_the_naaru;
+    // T40
+    const spell_data_t* surge_of_light; // NYI
+    const spell_data_t* binding_heal;   // NYI
+    const spell_data_t* prayer_circle;  // NYI
+    // T45
+    const spell_data_t* benediction; // NYI
+    // T50
+    const spell_data_t* light_of_the_naaru; // NYI
     const spell_data_t* apotheosis;
-    const spell_data_t* holy_word_salvation;
+    const spell_data_t* holy_word_salvation; // NYI
 
     // Shadow
     // T15
     const spell_data_t* fortress_of_the_mind;
     const spell_data_t* shadowy_insight;
     const spell_data_t* shadow_word_void;
-    // T30
-    const spell_data_t* mania;
+    // T25
     const spell_data_t* sanlayn;        // NYI
     const spell_data_t* intangibility;  // NYI
-    // T45
+    // T30
     const spell_data_t* dark_void;
     const spell_data_t* misery;
-    // T60
-    const spell_data_t* last_word;  // NYI
+    // T35
+    const spell_data_t* last_word;
     const spell_data_t* mind_bomb;
-    const spell_data_t* psychic_horror;  // NYI
-    // T75
+    const spell_data_t* psychic_horror;
+    // T40
     const spell_data_t* auspicious_spirits;
     const spell_data_t* death_and_madness;
     const spell_data_t* shadow_crash;
-    // T90
+    // T45
     const spell_data_t* lingering_insanity;
     const spell_data_t* void_torrent;
-    // T100
+    // T50
     const spell_data_t* legacy_of_the_void;
     const spell_data_t* dark_ascension;
     const spell_data_t* surrender_to_madness;

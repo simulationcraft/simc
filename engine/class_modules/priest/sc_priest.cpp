@@ -354,16 +354,40 @@ struct fae_blessings_t final : public priest_spell_t
 // ==========================================================================
 // Unholy Nova - Necrolord Covenant
 // ==========================================================================
-struct unholy_nova_t final : public priest_spell_t
+struct unholy_transfusion_t final : public priest_spell_t
 {
-  unholy_nova_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "unholy_nova", p, p.covenant.unholy_nova )
+  unholy_transfusion_t( priest_t& p, util::string_view options_str )
+    : priest_spell_t( "unholy_transfusion", p, p.find_spell( 325203 ) )
   {
     parse_options( options_str );
-    harmful = true;
-  }
+    background    = true;
+    hasted_ticks  = true;
+    tick_may_crit = true;
+    tick_zero     = false;
 
-  // TODO: trigger Unholy Transfusion
+    if ( priest().conduits.festering_transfusion->ok() )
+    {
+      dot_duration       += priest().conduits.festering_transfusion->effectN( 2 ).time_value();
+      base_dd_multiplier *= ( 1.0 + priest().conduits.festering_transfusion.percent() );
+    }
+  }
+};
+
+struct unholy_nova_t final : public priest_spell_t
+{
+  propagate_const<unholy_transfusion_t*> child_unholy_transfusion;
+
+  unholy_nova_t( priest_t& p, util::string_view options_str )
+    : priest_spell_t( "unholy_nova", p, p.covenant.unholy_nova ),
+      child_unholy_transfusion( new unholy_transfusion_t( priest(), options_str ) )
+  {
+    parse_options( options_str );
+    aoe           = -1;
+    impact_action = new unholy_transfusion_t( p, options_str );
+    add_child( impact_action );
+    // Unholy Nova itself does NOT do damage, just the DoT
+    base_dd_min = base_dd_max = spell_power_mod.direct = 0;
+  }
 };
 
 // ==========================================================================
