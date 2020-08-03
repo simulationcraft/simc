@@ -1834,7 +1834,7 @@ public:
 
   double composite_crit_chance() const override
   {
-    double cc = ab::composite_crit_chance() + get_buff_effects_value( crit_chance_buffeffects );
+    double cc = ab::composite_crit_chance() + get_buff_effects_value( crit_chance_buffeffects, true );
 
     return cc;
   }
