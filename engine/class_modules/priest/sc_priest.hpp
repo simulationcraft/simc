@@ -521,7 +521,6 @@ private:
   void create_cooldowns();
   void create_gains();
   void create_procs();
-  void create_actions();
   void create_benefits();
   void create_apl_precombat();
   void create_apl_default();

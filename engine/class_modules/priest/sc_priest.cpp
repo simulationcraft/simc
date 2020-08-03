@@ -291,7 +291,6 @@ struct smite_t final : public priest_spell_t
 // ==========================================================================
 // Power Infusion
 // ==========================================================================
-
 struct power_infusion_t final : public priest_spell_t
 {
   power_infusion_t( priest_t& p, util::string_view options_str )
@@ -308,6 +307,9 @@ struct power_infusion_t final : public priest_spell_t
   }
 };
 
+// ==========================================================================
+// Fae Blessings - Night Fae Covenant
+// ==========================================================================
 struct fae_blessings_t final : public priest_spell_t
 {
   fae_blessings_t( priest_t& p, util::string_view options_str )
@@ -338,6 +340,9 @@ struct fae_blessings_t final : public priest_spell_t
   }
 };
 
+// ==========================================================================
+// Unholy Nova - Necrolord Covenant
+// ==========================================================================
 struct unholy_nova_t final : public priest_spell_t
 {
   unholy_nova_t( priest_t& p, util::string_view options_str )
@@ -350,6 +355,9 @@ struct unholy_nova_t final : public priest_spell_t
   // TODO: trigger Unholy Transfusion
 };
 
+// ==========================================================================
+// Mindgames - Venthyr Covenant
+// ==========================================================================
 struct mindgames_t final : public priest_spell_t
 {
   mindgames_t( priest_t& p, util::string_view options_str ) : priest_spell_t( "mindgames", p, p.covenant.mindgames )
@@ -371,6 +379,9 @@ struct mindgames_t final : public priest_spell_t
   }
 };
 
+// ==========================================================================
+// Boon of the Ascended - Kyrian Covenant
+// ==========================================================================
 struct boon_of_the_ascended_t final : public priest_spell_t
 {
   boon_of_the_ascended_t( priest_t& p, util::string_view options_str )
@@ -474,12 +485,12 @@ struct ascended_blast_t final : public priest_spell_t
 
 struct ascended_eruption_t final : public priest_spell_t
 {
-  ascended_eruption_t( priest_t& p, util::string_view options_str )
+  ascended_eruption_t( priest_t& p )
     : priest_spell_t( "ascended_eruption", p, p.covenant.ascended_eruption )
   {
-    parse_options( options_str );
-    harmful = true;
-    aoe = -1;
+    harmful    = true;
+    aoe        = -1;
+    background = true;
   }
 };
 
@@ -616,6 +627,10 @@ struct power_word_shield_t final : public priest_absorb_t
 
 namespace buffs
 {
+
+// ==========================================================================
+// Power Infusion
+// ==========================================================================
 struct power_infusion_t final : public priest_buff_t<buff_t>
 {
   power_infusion_t( priest_t& p ) : base_t( p, "power_infusion", p.find_class_spell( "Power Infusion" ) )
@@ -625,6 +640,9 @@ struct power_infusion_t final : public priest_buff_t<buff_t>
   }
 };
 
+// ==========================================================================
+// Fae Blessings - Night Fae Covenant
+// ==========================================================================
 struct fae_blessings_t final : public priest_buff_t<buff_t>
 {
   int stacks;
@@ -645,6 +663,9 @@ struct fae_blessings_t final : public priest_buff_t<buff_t>
   }
 };
 
+// ==========================================================================
+// Boon of the Ascended - Kyrian Covenant
+// ==========================================================================
 struct boon_of_the_ascended_t final : public priest_buff_t<buff_t>
 {
   int stacks;
@@ -814,7 +835,6 @@ priest_t::priest_t( sim_t* sim, util::string_view name, race_e r )
   create_gains();
   create_procs();
   create_benefits();
-  create_actions();
 
   resource_regeneration = regen_type::DYNAMIC;
 }
@@ -903,11 +923,6 @@ void priest_t::create_procs()
   procs.shimmering_apparitions          = get_proc( "Shadowy Apparition Procced from Shimmering Apparition non SW:P Crit" );
   procs.dissonant_echoes                = get_proc( "Void Bolt resets from Dissonant Echoes" );
   procs.mind_devourer                   = get_proc( "Mind Devourer free Devouring Plague proc" );
-}
-
-void priest_t::create_actions()
-{
-  //action.ascended_eruption = new ascended_eruption_t( this );
 }
 
 /** Construct priest benefits */
@@ -1285,6 +1300,9 @@ void priest_t::init_scaling()
 
 void priest_t::init_spells()
 {
+  using namespace actions;
+  using namespace spells;
+
   base_t::init_spells();
 
   init_spells_shadow();
@@ -1348,6 +1366,9 @@ void priest_t::init_spells()
   covenant.ascended_nova        = find_spell( 325020 );
   covenant.ascended_blast       = find_spell( 325283 );
   covenant.ascended_eruption    = find_spell( 325326 );
+
+  // Actions
+  action.ascended_eruption = new spells::ascended_eruption_t( *this );
 }
 
 void priest_t::create_buffs()
