@@ -350,30 +350,34 @@ public:
  */
 struct sc_timeline_t : public timeline_t
 {
-  typedef timeline_t base_t;
-  using timeline_t::add;
-  double bin_size;
-
-  sc_timeline_t() : timeline_t(), bin_size( 1.0 ) {}
+  sc_timeline_t()
+  {
+    set_bin_size( 1 );
+  }
 
   // methods to modify/retrieve the bin size
   void set_bin_size( double bin )
   {
-    bin_size = bin;
+    if ( bin <= 0 )
+      bin = 1;
+    bin_size_ = bin;
+    bin_size_mul_ = ( 1 / bin_size_ ) / 1000;
   }
-  double get_bin_size() const
+  double bin_size() const
   {
-    return bin_size;
+    return bin_size_;
   }
+
+  using timeline_t::add;
 
   // Add 'value' at the corresponding time
   void add( timespan_t current_time, double value )
-  { base_t::add( static_cast<size_t>( current_time.total_millis() / 1000 / bin_size ), value ); }
+  { timeline_t::add( bin_index( current_time ), value ); }
 
   // Add 'value' at corresponding time, replacing existing entry if new value is larger
   void add_max( timespan_t current_time, double new_value )
   {
-    size_t index = static_cast<size_t>( current_time.total_millis() / 1000 / bin_size );
+    size_t index = bin_index( current_time );
     if ( data().size() == 0 || data().size() <= index )
       add( current_time, new_value );
     else if ( new_value > data().at( index ) )
@@ -386,10 +390,24 @@ struct sc_timeline_t : public timeline_t
   void adjust( const extended_sample_data_t& adjustor );
 
   void build_derivative_timeline( sc_timeline_t& out ) const
-  { base_t::build_sliding_average_timeline( out, 20 ); }
+  { timeline_t::build_sliding_average_timeline( out, 20 ); }
 
 private:
+  size_t bin_index( timespan_t time ) const
+  {
+    const double value = time.total_millis() * bin_size_mul_;
+    // Going through a signed integer here first is important.
+    // As value is a double, when converted directly to a size_t (unsigned)
+    // the negative case has to be handled in the floating point domain.
+    // Converting it to a signed integer first moves negative handling to the
+    // integer domain, where it's basically a no-op.
+    return static_cast<size_t>( static_cast<std::make_signed_t<size_t>>( value ) );
+  }
+
   static std::vector<double> build_divisor_timeline( const extended_sample_data_t& simulation_length, double bin_size );
+
+  double bin_size_;
+  double bin_size_mul_; // optimization: premultipled bin_size_
 };
 
 #endif // TIMELINE_HPP

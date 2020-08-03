@@ -101,13 +101,13 @@ struct player_collected_data_t
 
     double get_bin_size() const
     {
-      if ( timeline.get_bin_size() != timeline_normalized.get_bin_size() || timeline.get_bin_size() != merged_timeline.get_bin_size() )
+      if ( timeline.bin_size() != timeline_normalized.bin_size() || timeline.bin_size() != merged_timeline.bin_size() )
       {
         assert( false );
         return 0.0;
       }
       else
-        return timeline.get_bin_size();
+        return timeline.bin_size();
     }
   };
 
