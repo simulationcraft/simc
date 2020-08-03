@@ -286,6 +286,17 @@ struct smite_t final : public priest_spell_t
                         cooldown_base_reduction );
     }
   }
+
+  bool ready() override
+  {
+    // Ascended Blast replaces Smite when Boon of the Ascended is active
+    if ( priest().buffs.boon_of_the_ascended->check() )
+    {
+      return false;
+    }
+
+    return priest_spell_t::ready();
+  }
 };
 
 // ==========================================================================
@@ -517,16 +528,6 @@ struct ascended_eruption_t final : public priest_spell_t
 
     return m;
   }
-
-  bool ready() override
-  {
-    if ( !priest().options.priest_use_ascended_eruption )
-    {
-      return false;
-    }
-
-    return priest_spell_t::ready();
-  }
 };
 
 // ==========================================================================
@@ -717,7 +718,10 @@ struct boon_of_the_ascended_t final : public priest_buff_t<buff_t>
   {
     priest_buff_t<buff_t>::expire_override( expiration_stacks, remaining_duration );
 
-    priest().action.ascended_eruption->trigger_eruption( expiration_stacks );
+    if ( priest().options.priest_use_ascended_eruption )
+    {
+      priest().action.ascended_eruption->trigger_eruption( expiration_stacks );
+    }
   }
 };
 
