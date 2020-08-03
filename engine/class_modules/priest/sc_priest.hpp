@@ -277,6 +277,7 @@ public:
     // Shared
     propagate_const<cooldown_t*> power_infusion;
     propagate_const<cooldown_t*> fae_blessings;
+    propagate_const<cooldown_t*> ascended_blast;
 
     // Discipline
     propagate_const<cooldown_t*> chakra;
@@ -394,7 +395,13 @@ public:
     double priest_lucid_dreams_proc_chance_disc   = 0.08;
     double priest_lucid_dreams_proc_chance_holy   = 0.08;
     double priest_lucid_dreams_proc_chance_shadow = 0.15;
+    bool priest_use_ascended_nova                 = true; // Easy flag to change if you are in range or not
   } options;
+
+  struct actions_t
+  {
+    action_t* ascended_eruption;
+  } action;
 
   // Azerite
   struct azerite_t
@@ -448,10 +455,10 @@ public:
     // Shadow
     conduit_data_t dissonant_echoes;
     conduit_data_t mind_devourer;
-    conduit_data_t rabid_shadows;  // NYI
+    conduit_data_t rabid_shadows;
     conduit_data_t shimmering_apparitions;
     // Covenant
-    conduit_data_t courageous_ascension;   // NYI
+    conduit_data_t courageous_ascension;   // Eruption component NYI
     conduit_data_t festering_transfusion;  // NYI
     conduit_data_t blessing_of_plenty;     // NYI
     conduit_data_t shattered_perceptions;  // NYI
@@ -462,10 +469,10 @@ public:
     const spell_data_t* fae_blessings;
     const spell_data_t* unholy_nova;           // needs testing
     const spell_data_t* mindgames;             // needs additional option
-    const spell_data_t* boon_of_the_ascended;  // NYI
-    const spell_data_t* ascended_nova;         // NYI
-    const spell_data_t* ascended_blast;        // NYI
-    const spell_data_t* ascended_eruption;     // NYI
+    const spell_data_t* boon_of_the_ascended;
+    const spell_data_t* ascended_nova;
+    const spell_data_t* ascended_blast;
+    const spell_data_t* ascended_eruption;
   } covenant;
 
   struct insanity_end_event_t;
@@ -514,6 +521,7 @@ private:
   void create_cooldowns();
   void create_gains();
   void create_procs();
+  void create_actions();
   void create_benefits();
   void create_apl_precombat();
   void create_apl_default();
