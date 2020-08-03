@@ -668,7 +668,7 @@ public:
     const spell_data_t* sabertooth;
     const spell_data_t* lunar_inspiration;
 
-    const spell_data_t* soul_of_the_forest_feral;
+    const spell_data_t* soul_of_the_forest_cat;
     const spell_data_t* savage_roar;
     const spell_data_t* incarnation_cat;
 
@@ -685,7 +685,7 @@ public:
     const spell_data_t* warrior_of_elune;
     const spell_data_t* force_of_nature;
 
-    const spell_data_t* soul_of_the_forest_balance;
+    const spell_data_t* soul_of_the_forest_moonkin;
     const spell_data_t* starlord;
     const spell_data_t* incarnation_moonkin;
 
@@ -702,7 +702,7 @@ public:
     const spell_data_t* blood_frenzy;
     const spell_data_t* bristling_fur;
 
-    const spell_data_t* soul_of_the_forest_guardian;
+    const spell_data_t* soul_of_the_forest_bear;
     const spell_data_t* galactic_guardian;
     const spell_data_t* incarnation_bear;
 
@@ -720,7 +720,7 @@ public:
     // Restoration
     const spell_data_t* cenarion_ward;
 
-    const spell_data_t* soul_of_the_forest_restoration;
+    const spell_data_t* soul_of_the_forest_tree;
     const spell_data_t* cultivation;
     const spell_data_t* incarnation_tree;
 
@@ -2559,8 +2559,6 @@ struct moonfire_t : public druid_spell_t
            this could have an effect, those cases do exist. Possibly worth investigating
            further in the future. */
         radius = p->talent.twin_moons->effectN( 1 ).trigger()->effectN( 1 ).radius_max();
-        base_dd_multiplier *= 1.0 + p->talent.twin_moons->effectN( 2 ).percent();
-        base_td_multiplier *= 1.0 + p->talent.twin_moons->effectN( 3 ).percent();
       }
 
       /* June 2016: This hotfix is negated if you shift into Moonkin Form (ever),
@@ -2955,14 +2953,6 @@ public:
 
     if (trigger_untamed_ferocity && !p->azerite.untamed_ferocity.ok() )
       trigger_untamed_ferocity = false;
-
-    if ( p->talent.soul_of_the_forest_feral->ok() &&
-         ( data().affected_by( p->talent.soul_of_the_forest_feral->effectN( 2 ) ) ||
-           data().affected_by( p->talent.soul_of_the_forest_feral->effectN( 3 ) ) ) )
-    {
-      base_td_multiplier *= 1.0 + p->talent.soul_of_the_forest_feral->effectN( 3 ).percent();
-      base_dd_multiplier *= 1.0 + p->talent.soul_of_the_forest_feral->effectN( 2 ).percent();
-    }
   }
 
   // For effects that specifically trigger only when "prowling."
@@ -3048,10 +3038,10 @@ public:
       if ( p()->spec.predatory_swiftness->ok() )
         p()->buff.predatory_swiftness->trigger( 1, 1, consumed * 0.20 );
 
-      if ( p()->talent.soul_of_the_forest_feral->ok() )
+      if ( p()->talent.soul_of_the_forest_cat->ok() )
       {
         p()->resource_gain( RESOURCE_ENERGY,
-                            consumed * p()->talent.soul_of_the_forest_feral->effectN( 1 ).resource( RESOURCE_ENERGY ),
+                            consumed * p()->talent.soul_of_the_forest_cat->effectN( 1 ).resource( RESOURCE_ENERGY ),
                             p()->gain.soul_of_the_forest );
       }
 
@@ -3498,11 +3488,6 @@ struct ferocious_bite_t : public cat_attack_t
     parse_options( options_str );
 
     max_excess_energy = 1 * data().effectN( 2 ).base_value();
-
-    if ( p -> talent.sabertooth -> ok() )
-    {
-       base_multiplier *= 1.0 + p -> talent.sabertooth -> effectN(1).percent();
-    }
   }
 
   double maximum_energy() const
@@ -3592,10 +3577,10 @@ struct ferocious_bite_t : public cat_attack_t
     if ( p()->spec.predatory_swiftness->ok() )
       p()->buff.predatory_swiftness->trigger( 1, 1, 5 * 0.20 );
 
-    if ( p()->talent.soul_of_the_forest_feral->ok() && p()->specialization() == DRUID_FERAL )
+    if ( p()->talent.soul_of_the_forest_cat->ok() && p()->specialization() == DRUID_FERAL )
     {
       p()->resource_gain( RESOURCE_ENERGY,
-                          5 * p()->talent.soul_of_the_forest_feral->effectN( 1 ).resource( RESOURCE_ENERGY ),
+                          5 * p()->talent.soul_of_the_forest_cat->effectN( 1 ).resource( RESOURCE_ENERGY ),
                           p()->gain.soul_of_the_forest );
     }
 
@@ -4482,11 +4467,7 @@ struct mangle_t : public bear_attack_t
     if ( p()->find_rank_spell( "Mangle", "Rank 2")->ok() )
       bleeding_multiplier = data().effectN( 3 ).percent();
 
-    if ( p()->specialization() == DRUID_GUARDIAN )
-    {
-      energize_amount += player->talent.soul_of_the_forest_guardian->effectN( 1 ).resource( RESOURCE_RAGE );
-      base_multiplier *= 1.0 + player->talent.soul_of_the_forest_guardian->effectN( 2 ).percent();
-    }
+    energize_amount += player->talent.soul_of_the_forest_bear->effectN( 1 ).resource( RESOURCE_RAGE );
   }
 
   double composite_energize_amount( const action_state_t* s ) const override
@@ -5050,7 +5031,7 @@ struct swiftmend_t : public druid_heal_t
 
     if ( result_is_hit( state->result ) )
     {
-      if ( p()->talent.soul_of_the_forest_restoration->ok() )
+      if ( p()->talent.soul_of_the_forest_tree->ok() )
         p()->buff.soul_of_the_forest->trigger();
     }
   }
@@ -6042,7 +6023,7 @@ struct starfire_t : public druid_spell_t
 
     if ( p()->buff.eclipse_lunar->check() )
       et *= 1 + p()->spec.eclipse_lunar->effectN( 1 ).percent() + p()->spec.eclipse_2->effectN( 1 ).percent() +
-            p()->talent.soul_of_the_forest_balance->effectN( 1 ).percent();
+            p()->talent.soul_of_the_forest_moonkin->effectN( 1 ).percent();
 
     return et;
   }
@@ -6375,7 +6356,7 @@ struct wrath_t : public druid_spell_t
 
     if ( p()->buff.eclipse_solar->up() )
       g *= 1 + p()->spec.eclipse_solar->effectN( 1 ).percent() + p()->spec.eclipse_2->effectN( 1 ).percent() +
-           p()->talent.soul_of_the_forest_balance->effectN( 1 ).percent();
+           p()->talent.soul_of_the_forest_moonkin->effectN( 1 ).percent();
 
     g = std::max( min_gcd, g );
 
@@ -6388,7 +6369,7 @@ struct wrath_t : public druid_spell_t
 
     if ( p()->buff.eclipse_solar->up() )
       et *= 1 + p()->spec.eclipse_solar->effectN( 1 ).percent() + p()->spec.eclipse_2->effectN( 1 ).percent() +
-            p()->talent.soul_of_the_forest_balance->effectN( 1 ).percent();
+            p()->talent.soul_of_the_forest_moonkin->effectN( 1 ).percent();
 
     return et;
   }
@@ -6463,8 +6444,6 @@ struct starfall_tick_t : public druid_spell_t
     background = dual = direct_tick = true;
     aoe    = -1;
     radius = p->spec.starfall->effectN( 1 ).radius();
-
-    base_multiplier *= 1.0 + p->talent.stellar_drift->effectN( 2 ).percent();
   }
 
   timespan_t travel_time() const override
@@ -7819,13 +7798,13 @@ void druid_t::init_spells()
 
   talent.soul_of_the_forest             = find_talent_spell( "Soul of the Forest" );
 
-  talent.soul_of_the_forest_balance =
+  talent.soul_of_the_forest_moonkin =
       specialization() == DRUID_BALANCE ? talent.soul_of_the_forest : spell_data_t::not_found();
-  talent.soul_of_the_forest_feral =
+  talent.soul_of_the_forest_cat =
       specialization() == DRUID_FERAL ? talent.soul_of_the_forest : spell_data_t::not_found();
-  talent.soul_of_the_forest_guardian =
+  talent.soul_of_the_forest_bear =
       specialization() == DRUID_GUARDIAN ? talent.soul_of_the_forest : spell_data_t::not_found();
-  talent.soul_of_the_forest_restoration =
+  talent.soul_of_the_forest_tree =
       specialization() == DRUID_RESTORATION ? talent.soul_of_the_forest : spell_data_t::not_found();
 
   // Feral
@@ -8392,7 +8371,7 @@ void druid_t::create_buffs()
   buff.eclipse_solar =
       make_buff( this, "eclipse_solar", spec.eclipse_solar )
           ->set_default_value( spec.eclipse_solar->effectN( 2 ).percent() )
-          ->set_duration( spec.eclipse_solar->duration() + talent.soul_of_the_forest_balance->effectN( 2 ).time_value() )
+          ->set_duration( spec.eclipse_solar->duration() + talent.soul_of_the_forest_moonkin->effectN( 2 ).time_value() )
           ->set_stack_change_callback( [this]( buff_t*, int /* old_ */, int new_ ) {
             if ( !new_ )
               this->eclipse_handler.advance_eclipse();
@@ -8403,7 +8382,7 @@ void druid_t::create_buffs()
   buff.eclipse_lunar =
       make_buff( this, "eclipse_lunar", spec.eclipse_lunar )
           ->set_default_value( spec.eclipse_lunar->effectN( 2 ).percent() )
-          ->set_duration( spec.eclipse_lunar->duration() + talent.soul_of_the_forest_balance->effectN( 2 ).time_value() )
+          ->set_duration( spec.eclipse_lunar->duration() + talent.soul_of_the_forest_moonkin->effectN( 2 ).time_value() )
           ->set_stack_change_callback( [this]( buff_t*, int /* old_ */, int new_ ) {
             if ( !new_ )
               this->eclipse_handler.advance_eclipse();
@@ -8521,7 +8500,7 @@ void druid_t::create_buffs()
 
   buff.soul_of_the_forest =
       make_buff( this, "soul_of_the_forest",
-                 talent.soul_of_the_forest_restoration->ok() ? find_spell( 114108 ) : spell_data_t::not_found() )
+                 talent.soul_of_the_forest_tree->ok() ? find_spell( 114108 ) : spell_data_t::not_found() )
           ->set_default_value( find_spell( 114108 )->effectN( 1 ).percent() );
 
   if ( specialization() == DRUID_RESTORATION || talent.restoration_affinity -> ok() )
@@ -10461,25 +10440,17 @@ void druid_t::init_beast_weapon( weapon_t& w, double swing_time )
 // druid_t::get_affinity_spec ===============================================
 specialization_e druid_t::get_affinity_spec() const
 {
-  if ( talent.balance_affinity -> ok() )
-  {
+  if ( talent.balance_affinity->ok() )
     return DRUID_BALANCE;
-  }
 
-  if ( talent.restoration_affinity -> ok() )
-  {
+  if ( talent.restoration_affinity->ok() )
     return DRUID_RESTORATION;
-  }
 
-  if ( talent.feral_affinity -> ok() )
-  {
+  if ( talent.feral_affinity->ok() )
     return DRUID_FERAL;
-  }
 
-  if ( talent.guardian_affinity -> ok() )
-  {
+  if ( talent.guardian_affinity->ok() )
     return DRUID_GUARDIAN;
-  }
 
   return SPEC_NONE;
 }
@@ -10834,14 +10805,20 @@ void druid_t::apply_affecting_auras( action_t& action )
 {
   player_t::apply_affecting_auras( action );
 
+  // Spec-wide auras
   action.apply_affecting_aura( spec.druid );
   action.apply_affecting_aura( spec.feral );
   action.apply_affecting_aura( spec.restoration );
   action.apply_affecting_aura( spec.balance );
   action.apply_affecting_aura( spec.guardian );
 
-  if ( talent.feral_affinity->ok() )
-    action.apply_affecting_aura( talent.feral_affinity );
+  // Talents
+  action.apply_affecting_aura( talent.feral_affinity );
+  action.apply_affecting_aura( talent.stellar_drift );
+  action.apply_affecting_aura( talent.twin_moons );
+  action.apply_affecting_aura( talent.sabertooth );
+  action.apply_affecting_aura( talent.soul_of_the_forest_cat );
+  action.apply_affecting_aura( talent.soul_of_the_forest_bear );
 }
 
 //void druid_t::output_json_report(js::JsonOutput& root) const
