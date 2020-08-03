@@ -1614,10 +1614,25 @@ struct kindred_empowerment_buff_t : public druid_buff_t<buff_t>
 
 } // end namespace buffs
 
+struct buff_effect_t
+{
+  buff_t* buff;
+  const spelleffect_data_t* effect;
+
+  buff_effect_t( buff_t* b, const spelleffect_data_t* e ) : buff( b ), effect( e ) {}
+};
+
 // Template for common druid action code. See priest_action_t.
 template <class Base>
 struct druid_action_t : public Base
 {
+  std::vector<buff_effect_t> ta_multiplier_buffeffects;
+  std::vector<buff_effect_t> da_multiplier_buffeffects;
+  std::vector<buff_effect_t> execute_time_buffeffects;
+  std::vector<buff_effect_t> recharge_multiplier_buffeffects;
+  std::vector<buff_effect_t> cost_buffeffects;
+  std::vector<buff_effect_t> crit_chance_buffeffects;
+
   unsigned form_mask; // Restricts use of a spell based on form.
   bool may_autounshift; // Allows a spell that may be cast in NO_FORM but not in current form to be cast by exiting form.
   unsigned autoshift; // Allows a spell that may not be cast in the current form to be cast by automatically changing to the specified form.
@@ -1642,7 +1657,13 @@ public:
       gore_chance( player->spec.gore->effectN( 1 ).percent() ),
       triggers_galactic_guardian( true ),
       lucid_dreams_multiplier( p()->lucid_dreams->effectN( 1 ).percent() ),
-      free_cast( free_cast_e::NONE )
+      free_cast( free_cast_e::NONE ),
+      ta_multiplier_buffeffects(),
+      da_multiplier_buffeffects(),
+      execute_time_buffeffects(),
+      recharge_multiplier_buffeffects(),
+      cost_buffeffects(),
+      crit_chance_buffeffects()
   {
     ab::may_crit      = true;
     ab::tick_may_crit = true;
@@ -1653,6 +1674,8 @@ public:
       ab::base_tick_time *= 1.0 + p()->legendary.druid_runecarve_3->effectN( 1 ).percent();
       ab::dot_duration *= 1.0 + p()->legendary.druid_runecarve_3->effectN( 3 ).percent();
     }
+
+    apply_buff_effects();
   }
 
   druid_t* p()
@@ -1662,6 +1685,85 @@ public:
 
   druid_td_t* td( player_t* t ) const
   { return p() -> get_target_data( t ); }
+
+  // Will parse simple buffs that ONLY target the caster and DO NOT have multiple ranks
+  // 1: Add Percent Modifier to Spell Direct Amount
+  // 2: Add Percent Modifier to Spell Periodic Amount
+  // 3: Add Percent Modifier to Spell Cast Time
+  // 4: Add Percent Modifier to Spell Cooldown
+  // 5: Add Percent Modifier to Spell Resource Cost
+  // 6: Add Flat Modifier to Spell Critical Chance
+  void parse_buff_effects( buff_t* buff, const spell_data_t* spell )
+  {
+    if ( !buff )
+      return;
+
+    const spell_data_t* s_data = ( !spell->ok() ? &buff->data() : spell );
+
+    for ( size_t i = 1; i <= s_data->effect_count(); i++ )
+    {
+      auto eff = &s_data->effectN( i );
+
+      if ( !ab::data().affected_by( eff ) || eff->type() != E_APPLY_AURA || eff->target_1() != 1 || !eff->base_value() )
+        continue;
+
+      if ( eff->subtype() == A_ADD_PCT_MODIFIER )
+      {
+        if ( eff->misc_value1() == P_GENERIC )
+        {
+          da_multiplier_buffeffects.push_back( buff_effect_t( buff, eff ) );
+        }
+        else if ( eff->misc_value1() == P_TICK_DAMAGE )
+        {
+          ta_multiplier_buffeffects.push_back( buff_effect_t( buff, eff ) );
+        }
+        else if ( eff->misc_value1() == P_CAST_TIME )
+        {
+          execute_time_buffeffects.push_back( buff_effect_t( buff, eff ) );
+        }
+        else if ( eff->misc_value1() == P_COOLDOWN )
+        {
+          recharge_multiplier_buffeffects.push_back( buff_effect_t( buff, eff ) );
+        }
+        else if ( eff->misc_value1() == P_RESOURCE_COST )
+        {
+          cost_buffeffects.push_back( buff_effect_t( buff, eff ) );
+        }
+      }
+      else if ( eff->subtype() == A_ADD_FLAT_MODIFIER && eff->misc_value1() == P_CRIT )
+      {
+        crit_chance_buffeffects.push_back( buff_effect_t( buff, eff ) );
+      }
+    }
+  }
+
+  void parse_buff_effects( buff_t* buff )
+  {
+    parse_buff_effects( buff, spell_data_t::nil() );
+  }
+
+  double get_buff_effects_value( const std::vector<buff_effect_t>& buffeffects, bool flat = false ) const
+  {
+    double value = flat ? 0.0 : 1.0;
+
+    for ( auto i : buffeffects )
+    {
+      if ( i.buff->up() )
+      {
+        if ( flat )
+          value += i.effect->percent() * i.buff->check();
+        else
+          value *= 1.0 + i.effect->percent() * i.buff->check();
+      }
+    }
+
+    return value;
+  }
+
+  virtual void apply_buff_effects()
+  {
+    // parse_buff_effects( p()->buff.ravenous_frenzy );
+  }
 
   double target_armor( player_t* t ) const override
   {
@@ -1674,7 +1776,7 @@ public:
   {
     double c = ab::cost();
 
-    if ( (p()->buff.innervate->up() && p()->specialization() == DRUID_RESTORATION) || free_cast )
+    if ( ( p()->buff.innervate->up() && p()->specialization() == DRUID_RESTORATION ) || free_cast )
       c *= 0;
 
     return c;
@@ -1696,7 +1798,7 @@ public:
 
   double composite_ta_multiplier( const action_state_t* s ) const override
   {
-    double ta = ab::composite_ta_multiplier( s );
+    double ta = ab::composite_ta_multiplier( s ) * get_buff_effects_value( ta_multiplier_buffeffects );
 
     if ( p()->buff.ravenous_frenzy->up() && ab::data().affected_by( p()->buff.ravenous_frenzy->data().effectN( 2 ) ) )
       ta *= 1.0 + p()->buff.ravenous_frenzy->stack_value();
@@ -1714,7 +1816,7 @@ public:
 
   double composite_da_multiplier( const action_state_t* s ) const override
   {
-    double da = ab::composite_da_multiplier( s );
+    double da = ab::composite_da_multiplier( s ) * get_buff_effects_value( da_multiplier_buffeffects );
 
     if ( p()->buff.ravenous_frenzy->up() && ab::data().affected_by( p()->buff.ravenous_frenzy->data().effectN( 1 ) ) )
       da *= 1.0 + p()->buff.ravenous_frenzy->stack_value();
@@ -1728,6 +1830,34 @@ public:
       da *= 1.0 + p()->legendary.legacy_of_the_sleeper->effectN( 1 ).percent();
 
     return da;
+  }
+
+  double composite_crit_chance() const override
+  {
+    double cc = ab::composite_crit_chance() + get_buff_effects_value( crit_chance_buffeffects );
+
+    return cc;
+  }
+
+  timespan_t execute_time() const override
+  {
+    timespan_t et = ab::execute_time() * get_buff_effects_value( execute_time_buffeffects );
+
+    return et;
+  }
+
+  double recharge_multiplier( const cooldown_t& cd ) const override
+  {
+    double rm = ab::recharge_multiplier( cd ) * get_buff_effects_value( recharge_multiplier_buffeffects );
+
+    return rm;
+  }
+
+  double cost() const override
+  {
+    double c = ab::cost() * get_buff_effects_value( cost_buffeffects );
+
+    return c;
   }
 
   void impact( action_state_t* s ) override
