@@ -71,7 +71,7 @@ The Qt Toolkit (https://www.qt.io/)
 Copyright (c) 2016 The Qt Company Ltd. and other contributors. All rights reserved.
 GNU Lesser General Public License, version 3 (see LICENSE.LGPL for more information).
 
-UTF-8 CPP (http://utfcpp.sourceforge.net)
+UTF-8 CPP (https://github.com/nemtrif/utfcpp)
 
 Copyright (c) 2006 Nemanja Trifunovic. All rights reserved.
 Boost Software License, Version 1.0 (see LICENSE.BOOST for more information).

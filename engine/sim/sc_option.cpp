@@ -663,10 +663,9 @@ bool option_db_t::parse_file( std::istream& input )
       first = false;
 
       // Skip the UTF-8 BOM, if any.
-      size_t len = buffer.size();
-      if ( len >= 3 && utf8::is_bom( it ) )
+      if ( utf8::starts_with_bom( it, end ) )
       {
-        it += 3;
+        it += range::size( utf8::bom );
       }
     }
 
