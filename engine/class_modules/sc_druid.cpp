@@ -601,6 +601,8 @@ public:
     const spell_data_t* rip;
     const spell_data_t* sharpened_claws;
     const spell_data_t* swipe_cat;
+    const spell_data_t* thrash_cat;
+    const spell_data_t* berserk_cat;
     const spell_data_t* rake_dmg;
     const spell_data_t* tigers_fury;
     const spell_data_t* shred;
@@ -634,6 +636,8 @@ public:
     const spell_data_t* bear_form;
     const spell_data_t* gore;
     const spell_data_t* swipe_bear;
+    const spell_data_t* thrash_bear;
+    const spell_data_t* berserk_bear;
     const spell_data_t* thick_hide; // Guardian Affinity
     const spell_data_t* thrash_bear_dot; // For Rend and Tear modifier
     const spell_data_t* lightning_reflexes;
@@ -1359,7 +1363,7 @@ struct berserk_cat_buff_base_t : public druid_buff_t<buff_t>
 struct berserk_cat_buff_t : public berserk_cat_buff_base_t
 {
   berserk_cat_buff_t( druid_t& p ) :
-    berserk_cat_buff_base_t( p, "berserk_cat", p.find_spell( 106951 ) )
+    berserk_cat_buff_base_t( p, "berserk_cat", p.spec.berserk_cat )
   {
     default_value        = data().effectN( 1 ).percent(); // cost modifier
     increased_max_energy = data().effectN( 3 ).resource( RESOURCE_ENERGY );
@@ -1695,6 +1699,10 @@ public:
          ab::data().affected_by( p()->buff.heart_of_the_wild->data().effectN( 2 ) ) )
       ta *= 1.0 + p()->buff.heart_of_the_wild->data().effectN( 2 ).percent();
 
+    if ( ( p()->buff.berserk_bear->up() || p()->buff.incarnation_bear->up() ) &&
+         p()->legendary.legacy_of_the_sleeper->ok() && ab::data().affected_by( p()->spec.berserk_bear->effectN( 3 ) ) )
+      ta *= 1.0 + p()->legendary.legacy_of_the_sleeper->effectN( 2 ).percent();
+
     return ta;
   }
 
@@ -1708,6 +1716,10 @@ public:
     if ( p()->buff.heart_of_the_wild->up() &&
          ab::data().affected_by( p()->buff.heart_of_the_wild->data().effectN( 1 ) ) )
       da *= 1.0 + p()->buff.heart_of_the_wild->data().effectN( 1 ).percent();
+
+    if ( ( p()->buff.berserk_bear->up() || p()->buff.incarnation_bear->up() ) &&
+         p()->legendary.legacy_of_the_sleeper->ok() && ab::data().affected_by( p()->spec.berserk_bear->effectN( 2 ) ) )
+      da *= 1.0 + p()->legendary.legacy_of_the_sleeper->effectN( 1 ).percent();
 
     return da;
   }
@@ -3285,6 +3297,10 @@ struct cat_melee_t : public cat_attack_t
     if ( p()->talent.feral_affinity->ok() && p()->buff.heart_of_the_wild->up() )
       am *= 1.0 + p()->buff.heart_of_the_wild->data().effectN( 3 ).percent();
 
+    if ( ( p()->buff.berserk_bear->check() || p()->buff.incarnation_bear->check() ) &&
+         p()->legendary.legacy_of_the_sleeper->ok() )
+      am *= 1.0 + p()->legendary.legacy_of_the_sleeper->effectN( 3 ).percent();
+
     return am;
   }
 
@@ -4295,8 +4311,8 @@ struct tigers_fury_t : public cat_attack_t
 
 struct thrash_cat_t : public cat_attack_t
 {
-  thrash_cat_t( druid_t* p, const std::string& options_str ):
-    cat_attack_t( "thrash_cat", p, p -> find_spell( 106830 ), options_str )
+  thrash_cat_t( druid_t* p, const std::string& options_str )
+    : cat_attack_t( "thrash_cat", p, p->spec.thrash_cat, options_str )
   {
     aoe = -1;
     spell_power_mod.direct = 0;
@@ -4387,6 +4403,17 @@ struct bear_melee_t : public bear_attack_t
       return timespan_t::from_seconds( 0.01 );
 
     return bear_attack_t::execute_time();
+  }
+
+  double action_multiplier() const override
+  {
+    double am = bear_attack_t::action_multiplier();
+
+    if ( ( p()->buff.berserk_bear->check() || p()->buff.incarnation_bear->check() ) &&
+         p()->legendary.legacy_of_the_sleeper->ok() )
+      am *= 1.0 + p()->legendary.legacy_of_the_sleeper->effectN( 3 ).percent();
+
+    return am;
   }
 
   double composite_target_multiplier( player_t* t ) const override
@@ -4649,23 +4676,24 @@ struct thrash_bear_t : public bear_attack_t
 {
   double blood_frenzy_amount;
 
-  thrash_bear_t( druid_t* p, const std::string& options_str ) :
-    bear_attack_t( "thrash_bear", p, p -> find_spell( 77758 ), options_str ),
-    blood_frenzy_amount( 0 )
+  thrash_bear_t( druid_t* p, const std::string& options_str )
+    : bear_attack_t( "thrash_bear", p, p->spec.thrash_bear, options_str ), blood_frenzy_amount( 0 )
   {
-    aoe = -1;
+    aoe  = -1;
+    gore = hasted_ticks    = true;
+    dot_duration           = p->spec.thrash_bear_dot->duration();
+    base_tick_time         = p->spec.thrash_bear_dot->effectN( 1 ).period();
     spell_power_mod.direct = 0;
-    gore = true;
-    dot_duration = p -> spec.thrash_bear_dot -> duration();
-    base_tick_time = p -> spec.thrash_bear_dot -> effectN( 1 ).period();
-    hasted_ticks = true;
-    attack_power_mod.tick = p -> spec.thrash_bear_dot -> effectN( 1 ).ap_coeff();
-    dot_max_stack = 3;
-    // Bear Form cost modifier
-    base_costs[ RESOURCE_RAGE ] *= 1.0 + p -> buff.bear_form -> data().effectN( 7 ).percent();
+    attack_power_mod.tick  = p->spec.thrash_bear_dot->effectN( 1 ).ap_coeff();
+    dot_max_stack =
+        p->spec.thrash_bear_dot->max_stacks() + as<int>( p->legendary.guardian_runecarve_1->effectN( 4 ).base_value() );
+    radius *= 1.0 + p->legendary.guardian_runecarve_1->effectN( 3 ).percent();
 
-    if ( p -> talent.blood_frenzy -> ok() )
-      blood_frenzy_amount = p -> find_spell( 203961 ) -> effectN( 1 ).resource( RESOURCE_RAGE );
+    // Bear Form cost modifier
+    base_costs[ RESOURCE_RAGE ] *= 1.0 + p->buff.bear_form->data().effectN( 7 ).percent();
+
+    if ( p->talent.blood_frenzy->ok() )
+      blood_frenzy_amount = p->find_spell( 203961 )->effectN( 1 ).resource( RESOURCE_RAGE );
   }
 
   void tick( dot_t* d ) override
@@ -4699,12 +4727,22 @@ struct thrash_bear_t : public bear_attack_t
     return m;
   }
 
+  void execute() override
+  {
+    bear_attack_t::execute();
+
+    if ( p()->legendary.guardian_runecarve_3->ok() &&
+         rng().roll( p()->legendary.guardian_runecarve_3->effectN( 1 ).percent() ) )
+      schedule_execute();
+  }
+
   void impact( action_state_t* state ) override
   {
     bear_attack_t::impact( state );
 
-    if ( p() -> azerite.twisted_claws.ok() )
-      p() -> buff.twisted_claws -> trigger();
+    if ( p()->azerite.twisted_claws.ok() )
+      p()->buff.twisted_claws->trigger();
+
   }
 
   double recharge_multiplier( const cooldown_t& cd ) const override
@@ -5572,7 +5610,7 @@ struct thrash_proxy_t : public druid_spell_t
   action_t* thrash_bear;
 
   thrash_proxy_t( druid_t* p, const std::string& options_str )
-    : druid_spell_t( "thrash", p, p->find_spell( 106832 ), options_str )
+    : druid_spell_t( "thrash", p, p->find_specialization_spell( "Thrash" ), options_str )
   {
     thrash_cat  = new cat_attacks::thrash_cat_t( p, options_str );
     thrash_bear = new bear_attacks::thrash_bear_t( p, options_str );
@@ -5590,15 +5628,16 @@ struct thrash_proxy_t : public druid_spell_t
   {
     if ( p()->buff.cat_form->check() )
       return thrash_cat->gcd();
-    else
+    else if ( p()->buff.bear_form->check() )
       return thrash_bear->gcd();
+
+    return druid_spell_t::gcd();
   }
 
   void execute() override
   {
     if ( p()->buff.cat_form->check() )
       thrash_cat->execute();
-
     else if ( p()->buff.bear_form->check() )
       thrash_bear->execute();
   }
@@ -5607,7 +5646,6 @@ struct thrash_proxy_t : public druid_spell_t
   {
     if ( p()->buff.cat_form->check() )
       return thrash_cat->action_ready();
-
     else if ( p()->buff.bear_form->check() )
       return thrash_bear->action_ready();
 
@@ -5616,16 +5654,18 @@ struct thrash_proxy_t : public druid_spell_t
 
   dot_t* get_dot( player_t* t ) override
   {
-    if ( p()->buff.bear_form->check() )
+    if ( p()->buff.cat_form->check() )
+      return thrash_cat->get_dot( t );
+    else if ( p()->buff.bear_form->check() )
       return thrash_bear->get_dot( t );
-    return thrash_cat->get_dot( t );
+
+    return nullptr;
   }
 
   bool target_ready( player_t* candidate_target ) override
   {
     if ( p()->buff.cat_form->check() )
       return thrash_cat->target_ready( candidate_target );
-
     else if ( p()->buff.bear_form->check() )
       return thrash_bear->target_ready( candidate_target );
 
@@ -5636,7 +5676,6 @@ struct thrash_proxy_t : public druid_spell_t
   {
     if ( p()->buff.cat_form->check() )
       return thrash_cat->ready();
-
     else if ( p()->buff.bear_form->check() )
       return thrash_bear->ready();
 
@@ -5647,7 +5686,6 @@ struct thrash_proxy_t : public druid_spell_t
   {
     if ( p()->buff.cat_form->check() )
       return thrash_cat->cost();
-
     else if ( p()->buff.bear_form->check() )
       return thrash_bear->cost();
 
@@ -7919,6 +7957,8 @@ void druid_t::init_spells()
   spec.rip                        = find_specialization_spell( "Rip" );
   spec.sharpened_claws            = find_specialization_spell( "Sharpened Claws" );
   spec.swipe_cat                  = find_spell( 106785 );
+  spec.thrash_cat                 = find_spell( 106830 );
+  spec.berserk_cat                = find_spell( 106951 );
   spec.rake_dmg                   = find_spell( 155722 );
   spec.tigers_fury                = find_specialization_spell( "Tiger's Fury" );
   spec.shred                      = find_class_spell( "Shred" );
@@ -7931,6 +7971,8 @@ void druid_t::init_spells()
   spec.lightning_reflexes      = find_specialization_spell( "Lightning Reflexes" );
   spec.bear_form_2             = find_rank_spell( "Bear Form", "Rank 2" );
   spec.swipe_bear              = find_spell( 213771 );
+  spec.thrash_bear             = find_spell( 77758 );
+  spec.berserk_bear            = find_spell( 50334 );
   spec.thrash_bear_dot = find_specialization_spell( "Thrash" )->ok() ? find_spell( 192090 ) : spell_data_t::not_found();
 
   // Restoration
@@ -8452,7 +8494,9 @@ void druid_t::create_buffs()
         active.brambles_pulse->execute();
     } );
 
-  buff.berserk_bear = make_buff( this, "berserk_bear", find_specialization_spell( "Berserk" ) )->set_cooldown( 0_ms );
+  buff.berserk_bear = make_buff( this, "berserk_bear", spec.berserk_bear )->set_cooldown( 0_ms );
+  if ( legendary.legacy_of_the_sleeper->ok() )
+    buff.berserk_bear->add_invalidate( CACHE_LEECH );
 
   buff.bristling_fur         = make_buff( this, "bristling_fur", talent.bristling_fur )
     ->set_cooldown( timespan_t::zero() );
@@ -9925,6 +9969,9 @@ double druid_t::composite_leech() const
 {
   double l = player_t::composite_leech();
 
+  if ( legendary.legacy_of_the_sleeper->ok() )
+    l *= 1.0 + legendary.legacy_of_the_sleeper->effectN( 5 ).percent();
+
   return l;
 }
 
@@ -10819,6 +10866,9 @@ void druid_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.sabertooth );
   action.apply_affecting_aura( talent.soul_of_the_forest_cat );
   action.apply_affecting_aura( talent.soul_of_the_forest_bear );
+
+  // Legendaries
+  action.apply_affecting_aura( legendary.guardian_runecarve_1 );
 }
 
 //void druid_t::output_json_report(js::JsonOutput& root) const
