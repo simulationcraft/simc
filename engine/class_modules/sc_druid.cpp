@@ -1774,7 +1774,7 @@ public:
 
   double cost() const override
   {
-    double c = ab::cost();
+    double c = ab::cost() * get_buff_effects_value( cost_buffeffects );
 
     if ( ( p()->buff.innervate->up() && p()->specialization() == DRUID_RESTORATION ) || free_cast )
       c *= 0;
@@ -1851,13 +1851,6 @@ public:
     double rm = ab::recharge_multiplier( cd ) * get_buff_effects_value( recharge_multiplier_buffeffects );
 
     return rm;
-  }
-
-  double cost() const override
-  {
-    double c = ab::cost() * get_buff_effects_value( cost_buffeffects );
-
-    return c;
   }
 
   void impact( action_state_t* s ) override
