@@ -33,6 +33,7 @@ struct smite_t;
 struct summon_pet_t;
 struct summon_shadowfiend_t;
 struct summon_mindbender_t;
+struct ascended_eruption_t;
 }  // namespace spells
 namespace heals
 {
@@ -397,13 +398,13 @@ public:
     double priest_lucid_dreams_proc_chance_shadow = 0.15;
 
     // Add in easy options to change if you are in range or not
-    bool priest_use_ascended_nova                 = true;
-    bool priest_use_ascended_eruption             = true;
+    bool priest_use_ascended_nova     = true;
+    bool priest_use_ascended_eruption = true;
   } options;
 
   struct actions_t
   {
-    action_t* ascended_eruption;
+    actions::spells::ascended_eruption_t* ascended_eruption;
   } action;
 
   // Azerite
@@ -470,8 +471,8 @@ public:
   struct
   {
     const spell_data_t* fae_blessings;
-    const spell_data_t* unholy_nova;           // needs testing
-    const spell_data_t* mindgames;             // needs additional option
+    const spell_data_t* unholy_nova;  // needs testing
+    const spell_data_t* mindgames;    // needs additional option
     const spell_data_t* boon_of_the_ascended;
     const spell_data_t* ascended_nova;
     const spell_data_t* ascended_blast;
@@ -801,7 +802,7 @@ struct base_fiend_pet_t : public priest_pet_t
     resources.current = resources.max = resources.initial;
   }
 
-  double composite_player_multiplier(school_e school) const override;
+  double composite_player_multiplier( school_e school ) const override;
   double composite_melee_haste() const override;
 
   action_t* create_action( util::string_view name, const std::string& options_str ) override;

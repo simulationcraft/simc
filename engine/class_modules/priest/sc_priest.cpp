@@ -453,7 +453,6 @@ struct ascended_blast_t final : public priest_spell_t
     priest_spell_t::init();
   }
 
-
   void impact( action_state_t* s ) override
   {
     priest_spell_t::impact( s );
@@ -485,12 +484,38 @@ struct ascended_blast_t final : public priest_spell_t
 
 struct ascended_eruption_t final : public priest_spell_t
 {
-  ascended_eruption_t( priest_t& p )
-    : priest_spell_t( "ascended_eruption", p, p.covenant.ascended_eruption )
+  int trigger_stacks;  // Set as action variable since this will not be triggered multiple times.
+
+  ascended_eruption_t( priest_t& p ) : priest_spell_t( "ascended_eruption", p, p.covenant.ascended_eruption )
   {
     harmful    = true;
     aoe        = -1;
     background = true;
+  }
+
+  void trigger_eruption( int stacks )
+  {
+    assert( stacks > 0 );
+    trigger_stacks = stacks;
+
+    priest_t* p = static_cast<priest_t*>( player );
+    p->action.ascended_eruption->execute();
+  }
+
+  double action_da_multiplier() const override
+  {
+    double m = priest_spell_t::action_da_multiplier();
+
+    double base_increase = priest().covenant.boon_of_the_ascended->effectN( 5 ).percent();
+    if ( priest().conduits.courageous_ascension->ok() )
+    {
+      // 1% increase from Courageous Ascension not found in spelldata
+      base_increase += 0.01;
+    }
+
+    m *= 1 + ( base_increase * trigger_stacks );
+
+    return m;
   }
 
   bool ready() override
@@ -637,7 +662,6 @@ struct power_word_shield_t final : public priest_absorb_t
 
 namespace buffs
 {
-
 // ==========================================================================
 // Power Infusion
 // ==========================================================================
@@ -681,8 +705,7 @@ struct boon_of_the_ascended_t final : public priest_buff_t<buff_t>
   int stacks;
 
   boon_of_the_ascended_t( priest_t& p )
-    : base_t( p, "boon_of_the_ascended", p.covenant.boon_of_the_ascended ),
-      stacks( as<int>( data().max_stacks() ) )
+    : base_t( p, "boon_of_the_ascended", p.covenant.boon_of_the_ascended ), stacks( as<int>( data().max_stacks() ) )
   {
     // When not kyrian this is returned as 0
     set_max_stack( stacks >= 1 ? stacks : 1 );
@@ -694,16 +717,7 @@ struct boon_of_the_ascended_t final : public priest_buff_t<buff_t>
   {
     priest_buff_t<buff_t>::expire_override( expiration_stacks, remaining_duration );
 
-    double base_increase = priest().covenant.boon_of_the_ascended->effectN( 5 ).percent();
-    if ( priest().conduits.courageous_ascension->ok() )
-    {
-      // 1% increase from Courageous Ascension not found in spelldata
-      base_increase += 0.01;
-    }
-
-    priest_t* p = static_cast<priest_t*>( player );
-    p -> action.ascended_eruption -> base_dd_multiplier *= ( 1.0 + ( base_increase * expiration_stacks ) );
-    p -> action.ascended_eruption -> execute();
+    priest().action.ascended_eruption->trigger_eruption( expiration_stacks );
   }
 };
 
@@ -755,7 +769,7 @@ void base_fiend_pet_t::init_action_list()
   priest_pet_t::init_action_list();
 }
 
-double base_fiend_pet_t::composite_player_multiplier(school_e school) const
+double base_fiend_pet_t::composite_player_multiplier( school_e school ) const
 {
   double m = pet_t::composite_player_multiplier( school );
 
@@ -769,7 +783,7 @@ double base_fiend_pet_t::composite_melee_haste() const
 {
   double h = pet_t::composite_melee_haste();
 
-  if (o().conduits.rabid_shadows->ok())
+  if ( o().conduits.rabid_shadows->ok() )
     h *= 1 + o().conduits.rabid_shadows.percent();
   return h;
 }
@@ -833,12 +847,12 @@ priest_t::priest_t( sim_t* sim, util::string_view name, race_e r )
     active_items(),
     pets(),
     options(),
+    action(),
     azerite(),
     azerite_essence(),
     legendary(),
     conduits(),
     covenant(),
-    action(),
     insanity( *this )
 {
   create_cooldowns();
@@ -930,9 +944,9 @@ void priest_t::create_procs()
   procs.serendipity_overflow            = get_proc( "Serendipity lost to overflow (Non-Tier 17 4pc)" );
   procs.power_of_the_dark_side          = get_proc( "Power of the Dark Side Penance damage buffed" );
   procs.power_of_the_dark_side_overflow = get_proc( "Power of the Dark Side lost to overflow" );
-  procs.shimmering_apparitions          = get_proc( "Shadowy Apparition Procced from Shimmering Apparition non SW:P Crit" );
-  procs.dissonant_echoes                = get_proc( "Void Bolt resets from Dissonant Echoes" );
-  procs.mind_devourer                   = get_proc( "Mind Devourer free Devouring Plague proc" );
+  procs.shimmering_apparitions = get_proc( "Shadowy Apparition Procced from Shimmering Apparition non SW:P Crit" );
+  procs.dissonant_echoes       = get_proc( "Void Bolt resets from Dissonant Echoes" );
+  procs.mind_devourer          = get_proc( "Mind Devourer free Devouring Plague proc" );
 }
 
 /** Construct priest benefits */
