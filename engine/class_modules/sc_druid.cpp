@@ -245,6 +245,7 @@ struct eclipse_handler_t {
   void expire_both();
 
   void reset_stacks();
+  void reset_state();
   eclipse_state_e get_state();
 };
 
@@ -1052,6 +1053,11 @@ void eclipse_handler_t::reset_stacks()
 {
   wrath_counter    = 2;
   starfire_counter = 2;
+}
+
+void eclipse_handler_t::reset_state()
+{
+  state = ANY_NEXT;
 }
 
 eclipse_state_e eclipse_handler_t::get_state()
@@ -9414,6 +9420,9 @@ void druid_t::reset()
   form = NO_FORM;
   moon_stage = ( moon_stage_e ) initial_moon_stage;
   previous_streaking_stars = SS_NONE;
+  eclipse_handler.reset_stacks();
+  eclipse_handler.reset_state();
+
 
   base_gcd = timespan_t::from_seconds( 1.5 );
 
