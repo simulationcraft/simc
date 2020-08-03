@@ -509,8 +509,7 @@ struct ascended_eruption_t final : public priest_spell_t
     assert( stacks > 0 );
     trigger_stacks = stacks;
 
-    priest_t* p = static_cast<priest_t*>( player );
-    p->action.ascended_eruption->execute();
+    execute();
   }
 
   double action_da_multiplier() const override
