@@ -633,6 +633,7 @@ public:
     const spell_data_t* guardian_overrides;
     const spell_data_t* bear_form;
     const spell_data_t* gore;
+    const spell_data_t* swipe_bear;
     const spell_data_t* thick_hide; // Guardian Affinity
     const spell_data_t* thrash_bear_dot; // For Rend and Tear modifier
     const spell_data_t* lightning_reflexes;
@@ -3764,10 +3765,9 @@ struct lunar_inspiration_t : public cat_attack_t
 
 struct maim_t : public cat_attack_t
 {
-  maim_t( druid_t* player, const std::string& options_str ) :
-    cat_attack_t( "maim", player, player -> find_specialization_spell( "Maim" ), options_str )
-  {
-  }
+  maim_t( druid_t* player, const std::string& options_str )
+    : cat_attack_t( "maim", player, player->find_affinity_spell( "Maim" ), options_str )
+  {}
 
   double action_multiplier() const override
   {
@@ -3943,8 +3943,6 @@ struct rip_t : public cat_attack_t
     timespan_t t = cat_attack_t::composite_dot_duration( s );
 
     return t *= ( p()->resources.current[ RESOURCE_COMBO_POINT ] + 1 );
-
-    return t;
   }
 
   double attack_tick_power_coefficient( const action_state_t* s ) const override
@@ -3974,11 +3972,6 @@ struct rip_t : public cat_attack_t
     }
 
     return ta;
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    cat_attack_t::impact( s );
   }
 
   void tick( dot_t* d ) override
@@ -4634,8 +4627,10 @@ struct pulverize_t : public bear_attack_t
 
 struct swipe_bear_t : public bear_attack_t
 {
-  swipe_bear_t( druid_t* p, const std::string& options_str ) :
-    bear_attack_t( "swipe_bear", p, p -> find_spell( 213771 ), options_str )
+  swipe_bear_t( druid_t* p, const std::string& options_str )
+    : bear_attack_t( "swipe_bear", p,
+                     p->find_affinity_spell( "Swipe" )->ok() ? p->spec.swipe_bear : spell_data_t::not_found(),
+                     options_str )
   {
     aoe = -1;
     gore = true;
@@ -5684,28 +5679,26 @@ struct swipe_proxy_t : public druid_spell_t
   action_t* swipe_cat;
   action_t* swipe_bear;
 
-  swipe_proxy_t(druid_t* p, const std::string& options_str) : druid_spell_t("swipe", p, p->find_spell(213764), options_str)
+  swipe_proxy_t( druid_t* p, const std::string& options_str )
+    : druid_spell_t( "swipe", p, p->find_class_spell( "Swipe" ), options_str )
   {
-    swipe_cat = new cat_attacks::swipe_cat_t(p, options_str);
-    swipe_bear = new bear_attacks::swipe_bear_t(p, options_str);
+    swipe_cat  = new cat_attacks::swipe_cat_t( p, options_str );
+    swipe_bear = new bear_attacks::swipe_bear_t( p, options_str );
   }
 
   void execute() override
   {
-    if (p()->buff.cat_form->check())
+    if ( p()->buff.cat_form->check() )
       swipe_cat->execute();
-
-    else if (p()->buff.bear_form->check())
+    else if ( p()->buff.bear_form->check() )
       swipe_bear->execute();
-
   }
 
   bool action_ready() override
   {
-    if (p()->buff.cat_form->check())
+    if ( p()->buff.cat_form->check() )
       return swipe_cat->action_ready();
-
-    else if (p()->buff.bear_form->check())
+    else if ( p()->buff.bear_form->check() )
       return swipe_bear->action_ready();
 
     return false;
@@ -5713,10 +5706,9 @@ struct swipe_proxy_t : public druid_spell_t
 
   bool target_ready( player_t* candidate_target ) override
   {
-    if (p()->buff.cat_form->check())
+    if ( p()->buff.cat_form->check() )
       return swipe_cat->target_ready( candidate_target );
-
-    else if (p()->buff.bear_form->check())
+    else if ( p()->buff.bear_form->check() )
       return swipe_bear->target_ready( candidate_target );
 
     return false;
@@ -5724,10 +5716,9 @@ struct swipe_proxy_t : public druid_spell_t
 
   bool ready() override
   {
-    if (p()->buff.cat_form->check())
+    if ( p()->buff.cat_form->check() )
       return swipe_cat->ready();
-
-    else if (p()->buff.bear_form->check())
+    else if ( p()->buff.bear_form->check() )
       return swipe_bear->ready();
 
     return false;
@@ -5735,16 +5726,13 @@ struct swipe_proxy_t : public druid_spell_t
 
   double cost() const override
   {
-    if (p()->buff.cat_form->check())
+    if ( p()->buff.cat_form->check() )
       return swipe_cat->cost();
-
-    else if (p()->buff.bear_form->check())
+    else if ( p()->buff.bear_form->check() )
       return swipe_bear->cost();
 
     return 0;
   }
-
-
 };
 
 // Incarnation ==============================================================
@@ -7963,6 +7951,7 @@ void druid_t::init_spells()
   spec.guardian                = find_specialization_spell( "Guardian Druid" );
   spec.lightning_reflexes      = find_specialization_spell( "Lightning Reflexes" );
   spec.bear_form_2             = find_rank_spell( "Bear Form", "Rank 2" );
+  spec.swipe_bear              = find_spell( 213771 );
   spec.thrash_bear_dot = find_specialization_spell( "Thrash" )->ok() ? find_spell( 192090 ) : spell_data_t::not_found();
 
   // Restoration
@@ -10512,6 +10501,10 @@ const affinity_spells_t affinity_spells[] =
     { "Wrath", 5176, SPEC_NONE },
     { "Frenzied Regeneration", 22842, DRUID_GUARDIAN },
     { "Thrash", 77758, DRUID_GUARDIAN },
+    { "Rake", 1822, DRUID_FERAL },
+    { "Rip", 1079, DRUID_FERAL },
+    { "Maim", 22570, DRUID_FERAL },
+    { "Swipe", 106785, DRUID_FERAL }
 };
 
 const spell_data_t* druid_t::find_affinity_spell( const std::string& name ) const
