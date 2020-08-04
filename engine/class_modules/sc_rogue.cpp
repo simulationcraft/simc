@@ -1140,6 +1140,7 @@ public:
   void trigger_inevitability( const action_state_t* state );
   void trigger_prey_on_the_weak( const action_state_t* state );
   void trigger_find_weakness( const action_state_t* state, timespan_t duration = timespan_t::min() );
+  void trigger_grand_melee( const action_state_t* state );
 
   // General Methods ==========================================================
 
@@ -2282,6 +2283,7 @@ struct between_the_eyes_t : public rogue_attack_t
     rogue_attack_t::execute();
 
     trigger_restless_blades( execute_state );
+    trigger_grand_melee( execute_state );
 
     const rogue_action_state_t* rs = cast_state( execute_state );
     if ( result_is_hit( execute_state->result ) )
@@ -2489,6 +2491,7 @@ struct dispatch_t: public rogue_attack_t
     rogue_attack_t::execute();
 
     trigger_restless_blades( execute_state );
+    trigger_grand_melee( execute_state );
   }
 };
 
@@ -3853,6 +3856,9 @@ struct slice_and_dice_t : public rogue_spell_t
 
     double snd_mod = 1.0; // Multiplier for the SnD effects. Was changed in Legion for Loaded Dice artifact trait.
     p() -> buffs.slice_and_dice -> trigger( 1, snd_mod, -1.0, snd_duration );
+
+    // Grand melee extension goes on top of SnD buff application.
+    trigger_grand_melee( execute_state );
 
     p() -> buffs.snake_eyes -> trigger( p() -> buffs.snake_eyes -> max_stack(), cp * p() -> azerite.snake_eyes.value() );
 
@@ -5607,6 +5613,19 @@ void actions::rogue_action_t<Base>::trigger_find_weakness( const action_state_t*
   td( state->target )->debuffs.find_weakness->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, duration );
 }
 
+template <typename Base>
+void actions::rogue_action_t<Base>::trigger_grand_melee( const action_state_t* state )
+{
+  if ( !ab::result_is_hit( state->result ) || !p()->buffs.grand_melee->up() )
+    return;
+
+  timespan_t snd_extension = cast_state( state )->cp * timespan_t::from_seconds( p()->buffs.grand_melee->check_value() );
+  if ( p()->buffs.slice_and_dice->check() )
+    p()->buffs.slice_and_dice->extend_duration( p(), snd_extension );
+  else
+    p()->buffs.slice_and_dice->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, snd_extension );
+}
+
 // ==========================================================================
 // Rogue Targetdata Definitions
 // ==========================================================================
@@ -5665,11 +5684,6 @@ double rogue_t::composite_melee_speed() const
 
   if ( buffs.adrenaline_rush -> check() )
     h *= 1.0 / ( 1.0 + buffs.adrenaline_rush -> value() );
-
-  if ( buffs.grand_melee -> up() )
-  {
-    h *= buffs.grand_melee -> check_value();
-  }
 
   return h;
 }
@@ -6968,6 +6982,7 @@ void rogue_t::create_buffs()
   buffs.stealth               = new buffs::stealth_t( this );
   buffs.vanish                = new buffs::vanish_t( this );
   buffs.slice_and_dice        = make_buff( this, "slice_and_dice", spell.slice_and_dice )
+    -> set_default_value( 1.0 )
     -> set_refresh_behavior( buff_refresh_behavior::DURATION )
     -> add_invalidate( CACHE_ATTACK_SPEED );
 
@@ -6996,9 +7011,7 @@ void rogue_t::create_buffs()
                                 -> set_affects_regen( true )
                                 -> set_default_value( find_spell( 199600 ) -> effectN( 1 ).base_value() / 5.0 );
   buffs.grand_melee           = make_buff( this, "grand_melee", find_spell( 193358 ) )
-                                -> add_invalidate( CACHE_ATTACK_SPEED )
-                                -> add_invalidate( CACHE_LEECH )
-                                -> set_default_value( 1.0 / ( 1.0 + find_spell( 193358 ) -> effectN( 1 ).percent() ) );
+                                -> set_default_value( find_spell( 193358 )->effectN( 1 ).base_value() );
   buffs.skull_and_crossbones  = make_buff( this, "skull_and_crossbones", find_spell( 199603 ) )
                                 -> set_default_value( find_spell( 199603 ) -> effectN( 1 ).percent() );
   buffs.ruthless_precision    = make_buff( this, "ruthless_precision", spec.ruthless_precision )
