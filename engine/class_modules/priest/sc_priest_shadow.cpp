@@ -1011,14 +1011,17 @@ struct void_bolt_t final : public priest_spell_t
     {
       if ( priest().buffs.fae_blessings->up() )
       {
-        // Adjust CD of Shadowfiend/Mindbender
-        if ( priest().talents.mindbender->ok() )
+        if ( rng().roll( priest().options.priest_fae_blessings_cdr_chance ) )
         {
-          priest().cooldowns.mindbender->adjust( -timespan_t::from_seconds( fae_blessings_cdr ) );
-        }
-        else
-        {
-          priest().cooldowns.shadowfiend->adjust( -timespan_t::from_seconds( fae_blessings_cdr ) );
+          // Adjust CD of Shadowfiend/Mindbender
+          if ( priest().talents.mindbender->ok() )
+          {
+            priest().cooldowns.mindbender->adjust( -timespan_t::from_seconds( fae_blessings_cdr ) );
+          }
+          else
+          {
+            priest().cooldowns.shadowfiend->adjust( -timespan_t::from_seconds( fae_blessings_cdr ) );
+          }
         }
         // Remove 1 stack of Fae Blessings
         priest().buffs.fae_blessings->decrement();

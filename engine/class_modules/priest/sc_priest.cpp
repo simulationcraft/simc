@@ -416,7 +416,7 @@ struct mindgames_t final : public priest_spell_t
     // Mindgames gives a total of 40 insanity
     // 20 if the target deals enough dmg to break the shield
     // 20 if the targets heals enough to break the shield
-    double insanity;
+    double insanity = 0;
     if ( priest().options.priest_mindgames_healing_insanity )
     {
       insanity += ( total_insanity_gain / 2 );
@@ -1744,6 +1744,7 @@ void priest_t::create_options()
   add_option( opt_bool( "priest_use_ascended_eruption", options.priest_use_ascended_eruption ) );
   add_option( opt_bool( "priest_mindgames_healing_insanity", options.priest_mindgames_healing_insanity ) );
   add_option( opt_bool( "priest_mindgames_damage_insanity", options.priest_mindgames_damage_insanity ) );
+  add_option( opt_float( "priest_fae_blessings_cdr_chance", options.priest_fae_blessings_cdr_chance ) );
 }
 
 std::string priest_t::create_profile( save_e type )

@@ -402,6 +402,9 @@ public:
     /// For most content the healing part won't proc, only default damage dealt
     bool priest_mindgames_healing_insanity = false;
     bool priest_mindgames_damage_insanity  = true;
+
+    // Fae Blessings CDR is not guarenteed to go on the Priest, reduce this to make things more accurate
+    double priest_fae_blessings_cdr_chance = 1.00;
   } options;
 
   struct actions_t
