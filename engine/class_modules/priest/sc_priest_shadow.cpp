@@ -338,10 +338,12 @@ struct painbreaker_psalm_t final : public priest_spell_t
     dot_t* swp      = td.dots.shadow_word_pain;
     dot_t* vt       = td.dots.vampiric_touch;
 
-    double total_damage = 0;
-    total_damage += priest().tick_damage_over_time( consume_time, td.dots.shadow_word_pain );
-    total_damage += priest().tick_damage_over_time( consume_time, td.dots.vampiric_touch );
-    base_dd_min = base_dd_max = total_damage;
+    auto swp_damage = priest().tick_damage_over_time( consume_time, td.dots.shadow_word_pain );
+    auto vt_damage  = priest().tick_damage_over_time( consume_time, td.dots.vampiric_touch );
+    base_dd_min = base_dd_max = swp_damage + vt_damage;
+
+    sim->print_debug( "{} {} calculated dot damage sw:p={} vt={} total={}", swp_damage, vt_damage,
+                      swp_damage + vt_damage );
 
     priest_spell_t::impact( s );
 
