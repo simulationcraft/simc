@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35360 shadowlands-BETA (hotfix 2020-08-02/35360, no-networking)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35360 shadowlands-BETA (hotfix 2020-08-04/35360, git build shadowlands e7d93195b6)
 
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -7954,7 +7954,7 @@ Attributes       : ....x... ........ ..x..... ........   .....x.. ..x..... x....
                  : ........ ........ ........ ........   x....... ........ ........ ....x... 
                  : Does not break stealth (37)
 Effects          :
-#1 (id=471782)   : Apply Aura (6) | Unknown(332)
+#1 (id=471782)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
                    Base Value: 102547 | Scaled Value: 102547 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Prowl (5215), Prowl (102547)
                    Family Flags: 14
@@ -9496,7 +9496,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=733625)   : Apply Aura (6) | Unknown(332)
+#1 (id=733625)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
                    Base Value: 207349 | Scaled Value: 207349 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Summon Gargoyle (49206), Summon Gargoyle (61777)
                    Family Flags: 39
@@ -11614,7 +11614,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=799201)   : Apply Aura (6) | Unknown(332)
+#1 (id=799201)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
                    Base Value: 324128 | Scaled Value: 324128 | PvP Coefficient: 1.00000 | Misc Value: 43265 | Target: Self (1)
 Description      : Learn Death's Due, replacing Death and Decay.
 

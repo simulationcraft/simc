@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35360 shadowlands-BETA (hotfix 2020-08-02/35360, no-networking)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35360 shadowlands-BETA (hotfix 2020-08-04/35360, git build shadowlands e7d93195b6)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
@@ -3070,7 +3070,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=200657)   : Apply Aura (6) | Unknown(332)
+#1 (id=200657)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
                    Base Value: 132603 | Scaled Value: 132603 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Shadowfiend (34433)
                    Family Flags: 120
@@ -3667,11 +3667,11 @@ Effects          :
                    Family Flags: 15, 42
 #11 (id=325206)   : Unknown(203)
                    Base Value: 218413 | Scaled Value: 218413 | PvP Coefficient: 1.00000 | Trigger Spell: 218413 | Target: Self (1)
-#12 (id=343559)   : Apply Aura (6) | Unknown(332)
+#12 (id=343559)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
                    Base Value: 205448 | Scaled Value: 205448 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Void Eruption (228260), Void Eruption (228360), Void Eruption (228361), Dark Ascension (280800)
                    Family Flags: 36
-#13 (id=352180)   : Apply Aura (6) | Unknown(332)
+#13 (id=352180)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
                    Base Value: 194249 | Scaled Value: 194249 | PvP Coefficient: 1.00000 | Misc Value: 232698 | Target: Self (1)
 #14 (id=469640)   : Apply Aura (6) | Unknown(235)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -4052,7 +4052,7 @@ Attributes       : ......xx x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=294131)   : Apply Aura (6) | Unknown(332)
+#1 (id=294131)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
                    Base Value: 199911 | Scaled Value: 199911 | PvP Coefficient: 1.00000 | Misc Value: 32379 | Target: Self (1)
 #2 (id=294414)   : Apply Aura (6) | Dummy (4)
                    Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 1.00000 | Misc Value: 32379 | Target: Self (1)
@@ -4541,7 +4541,7 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=303234)   : Apply Aura (6) | Unknown(332)
+#1 (id=303234)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
                    Base Value: 205364 | Scaled Value: 205364 | PvP Coefficient: 1.00000 | Misc Value: 605 | Target: Self (1)
 Description      : You may also control your own character while Mind Control is active, but Mind Control has a $205364s3 min cooldown, and it may not be used against players.
 
@@ -8852,11 +8852,11 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=814983)   : Apply Aura (6) | Unknown(235)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-#2 (id=815010)   : Apply Aura (6) | Unknown(332)
+#2 (id=815010)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
                    Base Value: 325020 | Scaled Value: 325020 | PvP Coefficient: 1.00000 | Misc Value: 325013 | Target: Self (1)
 #3 (id=815013)   : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
-#4 (id=815072)   : Apply Aura (6) | Unknown(332)
+#4 (id=815072)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
                    Base Value: 325283 | Scaled Value: 325283 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Smite (585)
                    Family Flags: 7
@@ -8864,7 +8864,7 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
 #6 (id=819021)   : Apply Aura (6) | Root (26)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-#7 (id=819722)   : Apply Aura (6) | Unknown(332)
+#7 (id=819722)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
                    Base Value: 325283 | Scaled Value: 325283 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Mind Flay (15407)
                    Family Flags: 70

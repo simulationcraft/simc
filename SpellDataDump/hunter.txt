@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35360 shadowlands-BETA (hotfix 2020-08-02/35360, no-networking)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35360 shadowlands-BETA (hotfix 2020-08-04/35360, git build shadowlands e7d93195b6)
 
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
@@ -3719,11 +3719,11 @@ Attributes       : ....x... ........ x....... ........   .....x.. ..x..... .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : Does not break stealth (37)
 Effects          :
-#1 (id=271240)   : Apply Aura (6) | Unknown(332)
+#1 (id=271240)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
                    Base Value: 265189 | Scaled Value: 265189 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Raptor Strike (186270), Raptor Strike (265189)
                    Family Flags: 80
-#2 (id=283888)   : Apply Aura (6) | Unknown(332)
+#2 (id=283888)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
                    Base Value: 265888 | Scaled Value: 265888 | PvP Coefficient: 1.00000 | Misc Value: 259387 | Target: Self (1)
 Description      : Increases the range of your $?s259387[Mongoose Bite][Raptor Strike] to $265189r yds for $d.
 Tooltip          : The range of $?s259387[Mongoose Bite][Raptor Strike] is increased to $265189r yds.
@@ -4757,7 +4757,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Active Pet (5)
 #2 (id=310889)   : Apply Aura (6) | Stun (12)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Active Pet (5)
-#3 (id=310896)   : Apply Aura (6) | Unknown(332)
+#3 (id=310896)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
                    Base Value: 210000 | Scaled Value: 210000 | PvP Coefficient: 1.00000 | Misc Value: 209997 | Target: Self (1)
 Description      : Playing Dead, tricking enemies into ignoring them. Lasts up to $d.
 Tooltip          : Playing Dead.

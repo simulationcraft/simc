@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35360 shadowlands-BETA (hotfix 2020-08-02/35360, no-networking)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35360 shadowlands-BETA (hotfix 2020-08-04/35360, git build shadowlands e7d93195b6)
 
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -500,7 +500,7 @@ Attributes       : ....x... ........ ..x..... .....x..   ........ ........ .x...
 Effects          :
 #1 (id=110001)   : Apply Aura (6) | Unknown(373)
                    Base Value: 300 | Scaled Value: 300 | PvP Coefficient: 1.00000 | Target: Self (1)
-#2 (id=128685)   : Apply Aura (6) | Unknown(332)
+#2 (id=128685)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
                    Base Value: 115057 | Scaled Value: 115057 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Flying Serpent Kick (101545)
                    Family Flags: 6
@@ -3527,7 +3527,7 @@ Effects          :
                    Base Value: -55 | Scaled Value: -55 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=289040)   : Apply Aura (6) | Dummy (4)
                    Base Value: -55 | Scaled Value: -55 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-#5 (id=330909)   : Apply Aura (6) | Unknown(332)
+#5 (id=330909)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
                    Base Value: 221771 | Scaled Value: 221771 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
                    Affected Spells: Storm, Earth, and Fire (137639)
                    Family Flags: 124

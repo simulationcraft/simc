@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35360 shadowlands-BETA (hotfix 2020-08-02/35360, no-networking)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35360 shadowlands-BETA (hotfix 2020-08-04/35360, git build shadowlands e7d93195b6)
 
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
@@ -4946,7 +4946,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=326947)   : Apply Aura (6) | Unknown(332)
+#1 (id=326947)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
                    Base Value: 112869 | Scaled Value: 112869 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Summon Felhunter (691)
                    Family Flags: 29

@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35360 shadowlands-BETA (hotfix 2020-08-02/35360, no-networking)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35360 shadowlands-BETA (hotfix 2020-08-04/35360, git build shadowlands e7d93195b6)
 
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -209,11 +209,11 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=271791)   : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-#5 (id=296790)   : Apply Aura (6) | Unknown(332)
+#5 (id=296790)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
                    Base Value: 201427 | Scaled Value: 201427 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Chaos Strike (162794), Chaos Strike (197125), Spirit Bomb (247455)
                    Family Flags: 52, 68
-#6 (id=296792)   : Apply Aura (6) | Unknown(332)
+#6 (id=296792)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
                    Base Value: 210152 | Scaled Value: 210152 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Blade Dance (188499), Blade Dance (199552), Blade Dance (200685)
                    Family Flags: 25
@@ -2399,19 +2399,19 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=307123)   : Apply Aura (6) | Unknown(332)
+#1 (id=307123)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
                    Base Value: 207665 | Scaled Value: 207665 | PvP Coefficient: 1.00000 | Misc Value: 202138 | Misc Value 2: 0x2 | Target: Self (1)
-#2 (id=307155)   : Apply Aura (6) | Unknown(332)
+#2 (id=307155)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
                    Base Value: 207682 | Scaled Value: 207682 | PvP Coefficient: 1.00000 | Misc Value: 202137 | Misc Value 2: 0x2 | Target: Self (1)
-#3 (id=307157)   : Apply Aura (6) | Unknown(332)
+#3 (id=307157)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
                    Base Value: 204513 | Scaled Value: 204513 | PvP Coefficient: 1.00000 | Misc Value: 204596 | Misc Value 2: 0x2 | Target: Self (1)
-#4 (id=307163)   : Apply Aura (6) | Unknown(332)
+#4 (id=307163)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
                    Base Value: 202140 | Scaled Value: 202140 | PvP Coefficient: 1.00000 | Misc Value: 207684 | Misc Value 2: 0x2 | Target: Self (1)
 #5 (id=309811)   : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
                    Base Value: 2000 | Scaled Value: 2000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Sigil of Silence (204490), Sigil of Flame (204598), Sigil of Chains (204843), Sigil of Misery (207685), Elysian Decree (307046), Elysian Decree (339893), Elysian Decree (339894)
                    Family Flags: 33
-#6 (id=819508)   : Apply Aura (6) | Unknown(332)
+#6 (id=819508)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
                    Base Value: 327839 | Scaled Value: 327839 | PvP Coefficient: 1.00000 | Misc Value: 306830 | Misc Value 2: 0x2 | Target: Self (1)
 Description      : All Sigils are now targeted at your location, and the duration of their effects is increased by ${$s5/1000} sec. 
 
@@ -7700,7 +7700,7 @@ Attributes       : ........ ........ ........ .......x   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : Cannot cancel aura (31), Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
 Effects          :
-#1 (id=813285)   : Apply Aura (6) | Unknown(332)
+#1 (id=813285)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
                    Base Value: 324008 | Scaled Value: 324008 | PvP Coefficient: 1.00000 | Misc Value: 323639 | Target: Self (1)
 Description      : $@spelldesc323639
 

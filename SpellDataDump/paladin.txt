@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35360 shadowlands-BETA (hotfix 2020-08-02/35360, no-networking)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35360 shadowlands-BETA (hotfix 2020-08-04/35360, git build shadowlands e7d93195b6)
 
 Name             : Haste (id=65) [Scaling Spell (-1)] 
 Class            : Paladin
@@ -2751,7 +2751,7 @@ Attributes       : ......xx x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=201151)   : Apply Aura (6) | Unknown(332)
+#1 (id=201151)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
                    Base Value: 148039 | Scaled Value: 148039 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Family Flags: 38
 #2 (id=223119)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cooldown (11)
@@ -8649,7 +8649,7 @@ Attributes       : .......x ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ....x... 
                  : Hidden (7)
 Effects          :
-#1 (id=820433)   : Apply Aura (6) | Unknown(332)
+#1 (id=820433)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
                    Base Value: 328622 | Scaled Value: 328622 | PvP Coefficient: 1.00000 | Misc Value: 328620 | Target: Self (1)
 Description      :  
 

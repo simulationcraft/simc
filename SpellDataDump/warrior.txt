@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35360 shadowlands-BETA (hotfix 2020-08-02/35360, no-networking)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35360 shadowlands-BETA (hotfix 2020-08-04/35360, git build shadowlands e7d93195b6)
 
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
@@ -3523,7 +3523,7 @@ Effects          :
 #2 (id=290497)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 2.00000 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
-#3 (id=315075)   : Apply Aura (6) | Unknown(332)
+#3 (id=315075)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
                    Base Value: 212520 | Scaled Value: 212520 | PvP Coefficient: 1.00000 | Misc Value: 197690 | Target: Self (1)
 Description      : A defensive combat state that reduces all damage you take by $s1%, and all damage you deal by $s2%. Lasts $d.
 Tooltip          : Reduces damage taken by $s1% and damage done by $s2%.
@@ -4302,13 +4302,13 @@ Attributes       : ......xx x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=305084)   : Apply Aura (6) | Unknown(332)
+#1 (id=305084)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
                    Base Value: 280735 | Scaled Value: 280735 | PvP Coefficient: 1.00000 | Misc Value: 5308 | Target: Self (1)
 #2 (id=738457)   : Apply Aura (6) | Dummy (4)
                    Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=800237)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1500 | Scaled Value: 1500 | PvP Coefficient: 1.00000 | Target: Self (1)
-#4 (id=835424)   : Apply Aura (6) | Unknown(332)
+#4 (id=835424)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
                    Base Value: 330325 | Scaled Value: 330325 | PvP Coefficient: 1.00000 | Misc Value: 317485 | Target: Self (1)
 Description      : $?a317320[Condemn][Execute] is now usable on targets below $s2% health, and its cooldown is reduced by ${$s3/1000}.1 sec.
 
@@ -6520,7 +6520,7 @@ Attributes       : ......xx x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=728325)   : Apply Aura (6) | Unknown(332)
+#1 (id=728325)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
                    Base Value: 316593 | Scaled Value: 316593 | PvP Coefficient: 1.00000 | Misc Value: 5246 | Target: Self (1)
 Description      : Intimidating Shout will knock back all nearby enemies except your primary target, and cause them all to cower in fear for $316595d instead of fleeing.
 
@@ -7755,11 +7755,11 @@ Attributes       : ......xx x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=738985)   : Apply Aura (6) | Unknown(332)
+#1 (id=738985)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
                    Base Value: 281000 | Scaled Value: 281000 | PvP Coefficient: 1.00000 | Misc Value: 163201 | Target: Self (1)
 #2 (id=738986)   : Apply Aura (6) | Dummy (4)
                    Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 1.00000 | Target: Self (1)
-#3 (id=835434)   : Apply Aura (6) | Unknown(332)
+#3 (id=835434)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
                    Base Value: 330334 | Scaled Value: 330334 | PvP Coefficient: 1.00000 | Misc Value: 317349 | Target: Self (1)
 Description      : $?a317320[Condemn][Execute] is now usable on targets below $s2% health.
 
@@ -9084,15 +9084,15 @@ Attributes       : ......xx x....... .......x x..x...x   .....x.. ........ .....
                  : .....x.. .x...... ....x... ........   xx...... ........ ........ ........ 
                  : Passive (6), Hidden (7), Cannot cancel aura (31), Does not break stealth (37)
 Effects          :
-#1 (id=802431)   : Apply Aura (6) | Unknown(332)
+#1 (id=802431)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
                    Base Value: 317349 | Scaled Value: 317349 | PvP Coefficient: 1.00000 | Misc Value: 163201 | Misc Value 2: 0x3 | Target: Self (1)
-#2 (id=802684)   : Apply Aura (6) | Unknown(332)
+#2 (id=802684)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
                    Base Value: 317485 | Scaled Value: 317485 | PvP Coefficient: 1.00000 | Misc Value: 5308 | Misc Value 2: 0x3 | Target: Self (1)
 #3 (id=802685)   : Apply Aura (6) | Dummy (4)
                    Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Target: Self (1)
-#4 (id=836243)   : Apply Aura (6) | Unknown(332)
+#4 (id=836243)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
                    Base Value: 330325 | Scaled Value: 330325 | PvP Coefficient: 1.00000 | Misc Value: 280735 | Misc Value 2: 0x3 | Target: Self (1)
-#5 (id=836244)   : Apply Aura (6) | Unknown(332)
+#5 (id=836244)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
                    Base Value: 330334 | Scaled Value: 330334 | PvP Coefficient: 1.00000 | Misc Value: 281000 | Misc Value 2: 0x3 | Target: Self (1)
 Description      : Learn Condemn, replacing Execute. Condemn deals Shadow damage, can be used on enemies who are above 80% health or below 20% health, and weakens the target preventing some of the damage they would deal to you.
 
@@ -9159,7 +9159,7 @@ Attributes       : ....x... ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=813547)   : Apply Aura (6) | Unknown(332)
+#1 (id=813547)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
                    Base Value: 325784 | Scaled Value: 325784 | PvP Coefficient: 1.00000 | Misc Value: 324143 | Target: Self (1)
 #2 (id=816268)   : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -9698,9 +9698,9 @@ Attributes       : ........ ........ ........ .......x   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Cannot cancel aura (31)
 Effects          :
-#1 (id=831444)   : Apply Aura (6) | Unknown(332)
+#1 (id=831444)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
                    Base Value: 335096 | Scaled Value: 335096 | PvP Coefficient: 1.00000 | Misc Value: 23881 | Target: Self (1)
-#2 (id=831445)   : Apply Aura (6) | Unknown(332)
+#2 (id=831445)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
                    Base Value: 335097 | Scaled Value: 335097 | PvP Coefficient: 1.00000 | Misc Value: 85288 | Target: Self (1)
 Description      : $@spelldesc202751
 

@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35360 shadowlands-BETA (hotfix 2020-08-02/35360, no-networking)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35360 shadowlands-BETA (hotfix 2020-08-04/35360, git build shadowlands e7d93195b6)
 
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -2320,7 +2320,7 @@ Attributes       : ........ ........ x....... .......x   ........ ........ .....
 Effects          :
 #1 (id=127153)   : Apply Aura (6) | Change Model (56)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 59346 | Misc Value 2: 0x6 | Target: Self (1)
-#2 (id=127166)   : Apply Aura (6) | Unknown(332)
+#2 (id=127166)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
                    Base Value: 114074 | Scaled Value: 114074 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Chain Lightning (188443)
                    Family Flags: 1
@@ -2352,7 +2352,7 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 59347 | Misc Value 2: 0x6 | Target: Self (1)
 #2 (id=127210)   : Apply Aura (6) | Unknown(367)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 114093 | Trigger Spell: 114089 | Target: Self (1)
-#3 (id=129147)   : Apply Aura (6) | Unknown(332)
+#3 (id=129147)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
                    Base Value: 115356 | Scaled Value: 115356 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Stormstrike (17364)
                    Family Flags: 36
@@ -10088,7 +10088,7 @@ Effects          :
                    Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: Unknown(87)
 #6 (id=814137)   : Dummy (3)
                    Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: Unknown(87)
-#7 (id=814138)   : Apply Aura (6) | Unknown(332)
+#7 (id=814138)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
                    Base Value: 324519 | Scaled Value: 324519 | PvP Coefficient: 1.00000 | Misc Value: 324386 | Target: Self (1)
 Description      : Summon a totem at the target location for $d. Your next $s2 damage spells or abilities will cause the totem to radiate $324520s1 Arcane damage to up to $324520I enemies near the totem, and your next $s4 healing spells will heal up to $s6 allies near the totem for $324522s1 health.
 
@@ -10352,7 +10352,7 @@ Attributes       : ........ ........ ........ .......x   ........ ........ .....
 Effects          :
 #1 (id=821769)   : Apply Aura (6) | Periodic Dummy (226): every 0.5 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-#2 (id=821772)   : Apply Aura (6) | Unknown(332)
+#2 (id=821772)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
                    Base Value: 328930 | Scaled Value: 328930 | PvP Coefficient: 1.00000 | Misc Value: 328923 | Target: Self (1)
 Description      : $@spelldesc328923
 Tooltip          : Fae Transfusion will heal up to $328930I nearby allies for $w1.
