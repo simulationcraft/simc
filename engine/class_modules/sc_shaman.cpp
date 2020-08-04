@@ -8820,15 +8820,23 @@ void shaman_t::init_action_list_elemental()
     single_target->add_action( this, "Flame Shock", "target_if=refreshable&active_enemies>1&buff.surge_of_power.up",
                                "Utilize Surge of Power to spread Flame Shock if multiple enemies are present." );
     single_target->add_action( this, "Lightning Bolt", "if=buff.surge_of_power.up" );
+    single_target->add_action( this, "Lava Burst",
+                               "if=cooldown_react&!talent.master_of_the_elements.enabled&buff.lava_surge.up&!pet."
+                               "primal_storm_elemental.active" );
     single_target->add_talent(
         this, "Icefury",
         "if=talent.icefury.enabled&!(maelstrom>75&cooldown.lava_burst.remains<=0)&(!talent.storm_elemental.enabled|"
         "cooldown.storm_elemental.remains<cooldown.storm_elemental.duration-30)",
         "Slightly game Icefury buff to hopefully buff some empowered Frost Shocks with Master of the Elements." );
+    single_target->add_action( this, "Lava Burst",
+                               "if=cooldown_react&charges>talent.echo_of_the_elements.enabled&buff.lava_surge.up&!pet."
+                               "primal_storm_elemental.active" );
     single_target->add_action(
         this, "Frost Shock",
         "if=talent.icefury.enabled&buff.icefury.up&buff.icefury.remains<1.1*gcd*buff.icefury.stack",
         "Slightly delay using Icefury empowered Frost Shocks to empower them with Master of the Elements too." );
+    single_target->add_action( this, "Lava Burst",
+                               "if=cooldown_react&buff.lava_surge.up&!pet.primal_storm_elemental.active" );
     single_target->add_action( "concentrated_flame" );
     single_target->add_action( "reaping_flames" );
     single_target->add_action( this, "Flame Shock", "target_if=refreshable&!buff.surge_of_power.up",
