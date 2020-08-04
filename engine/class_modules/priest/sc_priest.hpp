@@ -396,6 +396,12 @@ public:
     // Add in easy options to change if you are in range or not
     bool priest_use_ascended_nova     = true;
     bool priest_use_ascended_eruption = true;
+
+    // Add in options to override insanity gained
+    // Mindgames gives 20 insanity from the healing and 20 from damage dealt
+    /// For most content the healing part won't proc, only default damage dealt
+    bool priest_mindgames_healing_insanity = false;
+    bool priest_mindgames_damage_insanity  = true;
   } options;
 
   struct actions_t
@@ -459,16 +465,16 @@ public:
     conduit_data_t shimmering_apparitions;
     // Covenant
     conduit_data_t courageous_ascension;
-    conduit_data_t festering_transfusion;  // NYI
+    conduit_data_t festering_transfusion;
     conduit_data_t blessing_of_plenty;     // NYI
-    conduit_data_t shattered_perceptions;  // NYI
+    conduit_data_t shattered_perceptions;
   } conduits;
 
   struct
   {
     const spell_data_t* fae_blessings;
-    const spell_data_t* unholy_nova;  // needs testing
-    const spell_data_t* mindgames;    // needs additional option
+    const spell_data_t* unholy_nova;
+    const spell_data_t* mindgames;
     const spell_data_t* boon_of_the_ascended;
   } covenant;
 

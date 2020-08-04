@@ -367,8 +367,8 @@ struct unholy_transfusion_t final : public priest_spell_t
 
     if ( priest().conduits.festering_transfusion->ok() )
     {
-      dot_duration       += priest().conduits.festering_transfusion->effectN( 2 ).time_value();
-      base_dd_multiplier *= ( 1.0 + priest().conduits.festering_transfusion.percent() );
+      dot_duration       += timespan_t::from_seconds( priest().conduits.festering_transfusion->effectN( 2 ).base_value() );
+      base_td_multiplier *= ( 1.0 + priest().conduits.festering_transfusion.percent() );
     }
   }
 };
@@ -395,21 +395,40 @@ struct unholy_nova_t final : public priest_spell_t
 // ==========================================================================
 struct mindgames_t final : public priest_spell_t
 {
-  mindgames_t( priest_t& p, util::string_view options_str ) : priest_spell_t( "mindgames", p, p.covenant.mindgames )
+  double total_insanity_gain;
+
+  mindgames_t( priest_t& p, util::string_view options_str )
+    : priest_spell_t( "mindgames", p, p.covenant.mindgames ),
+      total_insanity_gain( data().effectN( 6 ).base_value() / 10 )
   {
     parse_options( options_str );
-    harmful = true;
+
+    if ( priest().conduits.shattered_perceptions->ok() )
+    {
+      base_dd_multiplier *= ( 1.0 + priest().conduits.shattered_perceptions.percent() );
+    }
   }
 
   void impact( action_state_t* s ) override
   {
     priest_spell_t::impact( s );
 
-    // TODO: remove this hardcode and make it an option
-    // 20 insaniy from dmg component - 20 insanity from healing component
+    // Mindgames gives a total of 40 insanity
+    // 20 if the target deals enough dmg to break the shield
+    // 20 if the targets heals enough to break the shield
+    double insanity;
+    if ( priest().options.priest_mindgames_healing_insanity )
+    {
+      insanity += ( total_insanity_gain / 2 );
+    }
+    if ( priest().options.priest_mindgames_damage_insanity )
+    {
+      insanity += ( total_insanity_gain / 2 );
+    }
+
     if ( priest().specialization() == PRIEST_SHADOW )
     {
-      priest().generate_insanity( 20, priest().gains.insanity_mindgames, s->action );
+      priest().generate_insanity( insanity, priest().gains.insanity_mindgames, s->action );
     }
   }
 };
@@ -1723,6 +1742,8 @@ void priest_t::create_options()
   add_option( opt_float( "priest_lucid_dreams_proc_chance_shadow", options.priest_lucid_dreams_proc_chance_shadow ) );
   add_option( opt_bool( "priest_use_ascended_nova", options.priest_use_ascended_nova ) );
   add_option( opt_bool( "priest_use_ascended_eruption", options.priest_use_ascended_eruption ) );
+  add_option( opt_bool( "priest_mindgames_healing_insanity", options.priest_mindgames_healing_insanity ) );
+  add_option( opt_bool( "priest_mindgames_damage_insanity", options.priest_mindgames_damage_insanity ) );
 }
 
 std::string priest_t::create_profile( save_e type )
