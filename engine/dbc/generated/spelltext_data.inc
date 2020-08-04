@@ -1,5 +1,5 @@
 // Spell text, wow build 9.0.1.35360
-static const std::array<spelltext_data_t, 15231> __spelltext_data { {
+static const std::array<spelltext_data_t, 15232> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -8372,6 +8372,7 @@ static const std::array<spelltext_data_t, 15231> __spelltext_data { {
   { 227092, "$@spelldesc227088", 0, 0 },
   { 227098, "Your spells have a chance to increase your Intellect by $227099s1 for $227099d.", 0, 0 },
   { 227099, "$@spelldesc227098", "Intellect increased by $s1.", 0 },
+  { 227151, "$@spelldesc212283", "Your next combo point generator will critically strike.", 0 },
   { 227170, "$@spelldesc227171", 0, 0 },
   { 227171, "Chance to inflict an Arcane Blast when you damage a demon.", 0, 0 },
   { 227174, "Immolation Aura's initial burst has a chance to shatter Lesser Soul Fragments from enemies.", 0, 0 },
