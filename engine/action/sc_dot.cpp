@@ -907,7 +907,8 @@ void dot_t::tick()
       // This should capture most dot driver spells that require a target in
       // range, such as mind sear, while avoiding abilities like bladestorm that
       // do not.
-      if ( !current_action->execute_targeting( current_action ) )
+      if ( current_action->sim->distance_targeting_enabled &&
+           !current_action->execute_targeting( current_action ) )
       {
         current_action->reset();
         return;

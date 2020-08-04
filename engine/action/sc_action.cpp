@@ -1433,7 +1433,8 @@ std::vector<player_t*>& action_t::target_list() const
   {
     available_targets( target_cache.list );  // This grabs the full list of targets, which will also pickup various
                                              // awfulness that some classes have.. such as prismatic crystal.
-    check_distance_targeting( target_cache.list );
+    if ( sim->distance_targeting_enabled )
+      check_distance_targeting( target_cache.list );
     target_cache.is_valid = true;
   }
 
@@ -1523,7 +1524,7 @@ void action_t::execute()
   if ( num_targets == 0 && target->is_sleeping() )
     return;
 
-  if ( !execute_targeting( this ) )
+  if ( sim->distance_targeting_enabled && !execute_targeting( this ) )
   {
     cancel();  // This cancels the cast if the target moves out of range while the spell is casting.
     return;
