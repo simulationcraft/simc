@@ -869,6 +869,7 @@ public:
   void      init_scaling() override;
   void      init_assessors() override;
   void      create_buffs() override;
+  void      create_actions() override;
   std::string       default_flask() const override;
   std::string       default_potion() const override;
   std::string       default_food() const override;
@@ -1643,6 +1644,7 @@ public:
   double gore_chance;
   bool triggers_galactic_guardian;
   double lucid_dreams_multiplier;
+  bool is_auto_attack;
 
   free_cast_e free_cast; // convoke_the_spirits, lycaras, oneths
 
@@ -1655,6 +1657,7 @@ public:
       gore_chance( player->spec.gore->effectN( 1 ).percent() ),
       triggers_galactic_guardian( true ),
       lucid_dreams_multiplier( p()->lucid_dreams->effectN( 1 ).percent() ),
+      is_auto_attack( false ),
       free_cast( free_cast_e::NONE ),
       ta_multiplier_buffeffects(),
       da_multiplier_buffeffects(),
@@ -1672,6 +1675,10 @@ public:
       ab::base_tick_time *= 1.0 + p()->legendary.druid_runecarve_3->effectN( 1 ).percent();
       ab::dot_duration *= 1.0 + p()->legendary.druid_runecarve_3->effectN( 3 ).percent();
     }
+
+    // Ugly Ugly Ugly hack for now.
+    if ( util::str_in_str_ci( n, "_melee" ) )
+      is_auto_attack = true;
 
     apply_buff_effects();
   }
@@ -1702,7 +1709,16 @@ public:
     {
       auto eff = &s_data->effectN( i );
 
-      if ( !ab::data().affected_by( eff ) || eff->type() != E_APPLY_AURA || eff->target_1() != 1 || !eff->base_value() )
+      if ( eff->type() != E_APPLY_AURA || eff->target_1() != 1 || !eff->base_value() )
+        continue;
+
+      if ( is_auto_attack && eff->subtype() == A_MOD_AUTO_ATTACK_PCT )
+      {
+        da_multiplier_buffeffects.push_back( buff_effect_t( buff, eff ) );
+        continue;
+      }
+
+      if ( !ab::data().affected_by( eff ) )
         continue;
 
       if ( eff->subtype() == A_ADD_PCT_MODIFIER )
@@ -1780,6 +1796,7 @@ public:
     parse_buff_effects( p()->buff.sharpened_claws );
 
     // Feral
+    parse_buff_effects( p()->buff.cat_form );
     parse_buff_effects( p()->buff.berserk_cat );
     parse_buff_effects( p()->buff.incarnation_cat );
     parse_buff_effects( p()->buff.predatory_swiftness );
@@ -2981,11 +2998,11 @@ struct caster_attack_t : public druid_attack_t < melee_attack_t >
 
 struct druid_melee_t : public caster_attack_t
 {
-  druid_melee_t( druid_t* p ) :
-    caster_attack_t( "melee", p )
+  druid_melee_t( druid_t* p ) : caster_attack_t( "caster_melee", p )
   {
+    may_glance = background = repeating = true;
+
     school            = SCHOOL_PHYSICAL;
-    may_glance        = background = repeating = true;
     trigger_gcd       = timespan_t::zero();
     special           = false;
     weapon_multiplier = 1.0;
@@ -3350,9 +3367,9 @@ struct cat_melee_t : public cat_attack_t
   cat_melee_t( druid_t* player ) :
     cat_attack_t( "cat_melee", player, spell_data_t::nil(), "" )
   {
-    form_mask = CAT_FORM;
-
+    form_mask  = CAT_FORM;
     may_glance = background = repeating = true;
+
     school            = SCHOOL_PHYSICAL;
     trigger_gcd       = timespan_t::zero();
     special           = false;
@@ -3374,15 +3391,6 @@ struct cat_melee_t : public cat_attack_t
   double action_multiplier() const override
   {
     double am = cat_attack_t::action_multiplier();
-
-    if ( p()->buff.cat_form->check() )
-      am *= 1.0 + p()->buff.cat_form->data().effectN( 4 ).percent();
-
-    if ( p()->buff.savage_roar->check() )
-      am *= 1.0 + p()->spec.savage_roar->effectN( 4 ).percent();
-
-    if ( p()->talent.feral_affinity->ok() && p()->buff.heart_of_the_wild->up() )
-      am *= 1.0 + p()->buff.heart_of_the_wild->data().effectN( 3 ).percent();
 
     if ( ( p()->buff.berserk_bear->check() || p()->buff.incarnation_bear->check() ) &&
          p()->legendary.legacy_of_the_sleeper->ok() )
@@ -4456,13 +4464,12 @@ struct bear_attack_t : public druid_attack_t<melee_attack_t>
 
 struct bear_melee_t : public bear_attack_t
 {
-  bear_melee_t( druid_t* player ) :
-    bear_attack_t( "bear_melee", player )
+  bear_melee_t( druid_t* player ) : bear_attack_t( "bear_melee", player )
   {
-    form_mask = BEAR_FORM;
+    form_mask  = BEAR_FORM;
+    may_glance = background = repeating = true;
 
     school            = SCHOOL_PHYSICAL;
-    may_glance        = background = repeating = true;
     trigger_gcd       = timespan_t::zero();
     special           = false;
     weapon_multiplier = 1.0;
@@ -5248,12 +5255,6 @@ struct bear_form_t : public druid_spell_t
     harmful = false;
     min_gcd = timespan_t::from_seconds( 1.5 );
     ignore_false_positive = true;
-
-    if ( ! player -> bear_melee_attack )
-    {
-      player -> init_beast_weapon( player -> bear_weapon, 2.5 );
-      player -> bear_melee_attack = new bear_attacks::bear_melee_t( player );
-    }
   }
 
   void execute() override
@@ -5326,12 +5327,6 @@ struct cat_form_t : public druid_spell_t
     harmful = false;
     min_gcd = timespan_t::from_seconds( 1.5 );
     ignore_false_positive = true;
-
-    if ( ! player -> cat_melee_attack )
-    {
-      player -> init_beast_weapon( player -> cat_weapon, 1.0 );
-      player -> cat_melee_attack = new cat_attacks::cat_melee_t( player );
-    }
   }
 
   void execute() override
@@ -8055,61 +8050,6 @@ void druid_t::init_spells()
   mastery.natures_guardian    = find_mastery_spell( DRUID_GUARDIAN );
   mastery.natures_guardian_AP = mastery.natures_guardian -> ok() ? find_spell( 159195 ) : spell_data_t::not_found();
   mastery.total_eclipse       = find_mastery_spell( DRUID_BALANCE );
-
-  // Active Actions =========================================================
-
-  caster_melee_attack = new caster_attacks::druid_melee_t( this );
-
-  if ( !this->cat_melee_attack )
-  {
-    this->init_beast_weapon( this->cat_weapon, 1.0 );
-    this->cat_melee_attack = new cat_attacks::cat_melee_t( this );
-  }
-
-  if ( !this->bear_melee_attack )
-  {
-    this->init_beast_weapon( this->bear_weapon, 2.5 );
-    this->bear_melee_attack = new bear_attacks::bear_melee_t( this );
-  }
-
-  if ( talent.cenarion_ward->ok() )
-    active.cenarion_ward_hot = new heals::cenarion_ward_hot_t( this );
-
-  if ( spec.yseras_gift )
-    active.yseras_gift = new heals::yseras_gift_t( this );
-
-  if ( talent.brambles->ok() )
-  {
-    active.brambles = new spells::brambles_t( this );
-    active.brambles_pulse = new spells::brambles_pulse_t( this );
-
-    instant_absorb_list.insert( std::make_pair<unsigned, instant_absorb_t>(
-      talent.brambles->id(), instant_absorb_t( this, talent.brambles, "brambles", &brambles_handler ) ) );
-  }
-
-  if ( talent.galactic_guardian->ok() )
-  {
-    active.galactic_guardian = new spells::moonfire_t::galactic_guardian_damage_t( this );
-    active.galactic_guardian->stats = get_stats( "moonfire" );
-  }
-
-  if ( mastery.natures_guardian->ok() )
-    active.natures_guardian = new heals::natures_guardian_t( this );
-
-  if ( azerite.lunar_shrapnel.ok() )
-    active.lunar_shrapnel = new spells::lunar_shrapnel_t( this );
-
-  if ( azerite.streaking_stars.ok() )
-    active.streaking_stars = new spells::streaking_stars_t( this );
-
-  if ( covenant.kyrian->ok() )
-  {
-    active.kindred_empowerment = new spells::kindred_empowerment_t( this, "kindred_empowerment" );
-    active.kindred_empowerment_partner = new spells::kindred_empowerment_t( this, "kindred_empowerment_partner" );
-  }
-
-  if ( legendary.feral_runecarve_4->ok() )
-    active.feral_runecarve_4 = new cat_attacks::feral_runecarve_4_t( this );
 }
 
 // druid_t::init_base =======================================================
@@ -8523,6 +8463,64 @@ void druid_t::create_buffs()
             ->set_tick_callback( [this]( buff_t*, int, timespan_t ) { active.yseras_gift->schedule_execute(); } )
             ->set_tick_zero( true );
   }
+}
+
+void druid_t::create_actions()
+{
+  caster_melee_attack = new caster_attacks::druid_melee_t( this );
+
+  if ( !cat_melee_attack )
+  {
+    init_beast_weapon( cat_weapon, 1.0 );
+    cat_melee_attack = new cat_attacks::cat_melee_t( this );
+  }
+
+  if ( !bear_melee_attack )
+  {
+    init_beast_weapon( bear_weapon, 2.5 );
+    bear_melee_attack = new bear_attacks::bear_melee_t( this );
+  }
+
+  if ( talent.cenarion_ward->ok() )
+    active.cenarion_ward_hot = new heals::cenarion_ward_hot_t( this );
+
+  if ( spec.yseras_gift )
+    active.yseras_gift = new heals::yseras_gift_t( this );
+
+  if ( talent.brambles->ok() )
+  {
+    active.brambles = new spells::brambles_t( this );
+    active.brambles_pulse = new spells::brambles_pulse_t( this );
+
+    instant_absorb_list.insert( std::make_pair<unsigned, instant_absorb_t>(
+      talent.brambles->id(), instant_absorb_t( this, talent.brambles, "brambles", &brambles_handler ) ) );
+  }
+
+  if ( talent.galactic_guardian->ok() )
+  {
+    active.galactic_guardian = new spells::moonfire_t::galactic_guardian_damage_t( this );
+    active.galactic_guardian->stats = get_stats( "moonfire" );
+  }
+
+  if ( mastery.natures_guardian->ok() )
+    active.natures_guardian = new heals::natures_guardian_t( this );
+
+  if ( azerite.lunar_shrapnel.ok() )
+    active.lunar_shrapnel = new spells::lunar_shrapnel_t( this );
+
+  if ( azerite.streaking_stars.ok() )
+    active.streaking_stars = new spells::streaking_stars_t( this );
+
+  if ( covenant.kyrian->ok() )
+  {
+    active.kindred_empowerment = new spells::kindred_empowerment_t( this, "kindred_empowerment" );
+    active.kindred_empowerment_partner = new spells::kindred_empowerment_t( this, "kindred_empowerment_partner" );
+  }
+
+  if ( legendary.feral_runecarve_4->ok() )
+    active.feral_runecarve_4 = new cat_attacks::feral_runecarve_4_t( this );
+
+  player_t::create_actions();
 }
 
 // ALL Spec Pre-Combat Action Priority List =================================
