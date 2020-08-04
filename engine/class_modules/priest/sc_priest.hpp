@@ -450,9 +450,9 @@ public:
     item_runeforge_t harmonious_apparatus;  // NYI
     // Disc
     item_runeforge_t kiss_of_death;
-    item_runeforge_t the_penitent_one;  // Effect implemented, but not hooked up the PW:Radiance
+    item_runeforge_t the_penitent_one;  // Effect implemented, but not hooked up to PW:Radiance
     // Shadow
-    item_runeforge_t painbreaker_psalm;         // NYI
+    item_runeforge_t painbreaker_psalm;
     item_runeforge_t shadowflame_prism;         // TODO: Add 20% damage modifier
     item_runeforge_t eternal_call_to_the_void;  // NYI
   } legendary;
@@ -564,6 +564,7 @@ public:
   void trigger_lucid_dreams( double cost );
   bool insanity_drain_frozen() const;
   void adjust_holy_word_serenity_cooldown();
+  double tick_damage_over_time( timespan_t duration, dot_t* dot );
 
   /**
    * Insanity tracking

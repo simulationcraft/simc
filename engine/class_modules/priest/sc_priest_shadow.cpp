@@ -327,6 +327,50 @@ struct mind_flay_t final : public priest_spell_t
   }
 };
 
+struct painbreaker_psalm_t final : public priest_spell_t
+{
+  timespan_t consume_time;
+
+  painbreaker_psalm_t( priest_t& p )
+    : priest_spell_t( "painbreaker_psalm", p, p.legendary.painbreaker_psalm ),
+      consume_time( timespan_t::from_seconds( data().effectN( 1 ).base_value() ) )
+  {
+    background  = true;
+    base_dd_min = base_dd_max = 0;
+  }
+
+  void impact ( action_state_t* s ) override
+  {
+    priest_spell_t::impact( s );
+
+    priest_td_t& td     = get_td( s->target );
+    dot_t* swp          = td.dots.shadow_word_pain;
+    dot_t* vt           = td.dots.vampiric_touch;
+    double total_damage = 0;
+
+    if ( swp->is_ticking() )
+    {
+      double swp_damage = priest().tick_damage_over_time( consume_time, swp );
+
+
+      swp->reduce_duration( consume_time );
+    }
+
+    if ( vt->is_ticking() )
+    {
+      double vt_damage = priest().tick_damage_over_time( consume_time, vt );
+      total_damage += vt_damage;
+
+      vt->reduce_duration( consume_time );
+    }
+
+    if ( total_damage > 0 )
+    {
+      this->base_dd_min = this->base_dd_max = total_damage;
+    }
+  }
+};
+
 struct shadow_word_death_t final : public priest_spell_t
 {
   shadow_word_death_t( priest_t& p, util::string_view options_str )
@@ -338,6 +382,11 @@ struct shadow_word_death_t final : public priest_spell_t
     if ( rank2->ok() )
     {
       cooldown->duration += rank2->effectN( 1 ).time_value();
+    }
+    if ( priest().legendary.painbreaker_psalm->ok() )
+    {
+      impact_action = new painbreaker_psalm_t( p );
+      add_child( impact_action );
     }
   }
 
@@ -1647,6 +1696,20 @@ struct whispers_of_the_damned_t final : public priest_buff_t<buff_t>
 };
 }  // namespace buffs
 
+double priest_t::tick_damage_over_time( timespan_t duration, dot_t* dot )
+{
+  action_state_t* state = dot->current_action->get_state(dot->state);
+  dot->current_action->calculate_tick_amount(state, 1.0);
+  double tick_base_damage = state->result_raw;
+  timespan_t dot_tick_time = dot->current_action->tick_time(state);
+  // We don't care how much is remaining on the target, this will always deal
+  // Xs worth of DoT ticks even if the amount is currently less
+  double ticks_left = duration / dot_tick_time;
+  double total_damage = ticks_left * tick_base_damage;
+  action_state_t::release(state);
+  return total_damage;
+};
+
 // Insanity Control Methods
 void priest_t::generate_insanity( double num_amount, gain_t* g, action_t* action )
 {
@@ -2258,7 +2321,7 @@ void priest_t::generate_apl_shadow()
                       "if=(talent.mindbender.enabled&buff.voidform.up)|(buff.voidform.stack>18|target.time_to_die<15)",
                       "Use Shadowfiend at 19 or more stacks, or if the target will die in less than 15s. If using "
                       "Minbender use on CD in Voidform" );
-  single->add_action( this, "Shadow Word: Death" );
+  single->add_action( this, "Shadow Word: Death", "if=!runeforge.painbreaker_psalm.equipped|(runeforge.painbreaker_psalm.equipped&variable.dots_up)" );
   single->add_talent( this, "Shadow Crash", "if=raid_event.adds.in>5&raid_event.adds.duration<20",
                       "Use Shadow Crash on CD unless there are adds incoming." );
   single->add_action( this, "Mind Blast",
@@ -2292,7 +2355,7 @@ void priest_t::generate_apl_shadow()
 
   cleave->add_call_action_list( this, covenant.boon_of_the_ascended, boon, "if=buff.boon_of_the_ascended.up" );
   cleave->add_call_action_list( cds );
-  cleave->add_action( this, "Shadow Word: Death", "target_if=target.time_to_die<3|buff.voidform.down" );
+  cleave->add_action( this, "Shadow Word: Death", "target_if=target.time_to_die<3|(!runeforge.painbreaker_psalm.equipped|(runeforge.painbreaker_psalm.equipped&variable.dots_up))" );
   cleave->add_talent( this, "Surrender to Madness", "if=buff.voidform.stack>10+(10*buff.bloodlust.up)" );
   cleave->add_talent( this, "Dark Void",
                       "if=raid_event.adds.in>10"
