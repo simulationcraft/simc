@@ -587,6 +587,14 @@ public:
   void apply_affecting_aura(const spell_data_t*);
   void apply_affecting_effect( const spelleffect_data_t& effect );
 
+  action_state_t* get_state( const action_state_t* = nullptr );
+
+private:
+  friend struct action_state_t;
+  void release_state( action_state_t* );
+
+public:
+
   // =======================
   // Const virtual functions
   // =======================
@@ -908,11 +916,6 @@ public:
 
   virtual action_state_t* new_state();
 
-  virtual action_state_t* get_state(const action_state_t* = nullptr);
-private:
-  friend struct action_state_t;
-  virtual void release_state( action_state_t* );
-public:
   virtual void do_schedule_travel( action_state_t*, timespan_t );
 
   virtual void schedule_travel( action_state_t* );
