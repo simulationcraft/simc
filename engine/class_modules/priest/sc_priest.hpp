@@ -133,6 +133,7 @@ public:
 
     // Conduits
     propagate_const<buff_t*> mind_devourer;
+    propagate_const<buff_t*> blessing_of_plenty; // Dummy buff to track CDR from Void Bolt
 
     // Covenants
     propagate_const<buff_t*> fae_blessings;
@@ -361,6 +362,7 @@ public:
     propagate_const<proc_t*> shimmering_apparitions;
     propagate_const<proc_t*> dissonant_echoes;
     propagate_const<proc_t*> mind_devourer;
+    propagate_const<proc_t*> blessing_of_plenty;
   } procs;
 
   // Special
@@ -469,7 +471,7 @@ public:
     // Covenant
     conduit_data_t courageous_ascension;
     conduit_data_t festering_transfusion;
-    conduit_data_t blessing_of_plenty;     // NYI
+    conduit_data_t blessing_of_plenty;
     conduit_data_t shattered_perceptions;
   } conduits;
 

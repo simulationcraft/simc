@@ -725,6 +725,10 @@ struct fae_blessings_t final : public priest_buff_t<buff_t>
   fae_blessings_t( priest_t& p )
     : base_t( p, "fae_blessings", p.covenant.fae_blessings ), stacks( as<int>( data().effectN( 1 ).base_value() ) )
   {
+    if ( priest().conduits.blessing_of_plenty->ok() )
+    {
+      stacks += ( as<int>( priest().conduits.blessing_of_plenty->effectN( 2 ).base_value() ) );
+    }
     // When not night-fae this is returned as 0
     set_max_stack( stacks >= 1 ? stacks : 1 );  // TODO: Add conduit stack increase
   }
@@ -733,8 +737,13 @@ struct fae_blessings_t final : public priest_buff_t<buff_t>
   {
     priest_buff_t<buff_t>::expire_override( expiration_stacks, remaining_duration );
 
-    // check for conduit procs?
-    priest().cooldowns.fae_blessings->start();
+    // Check if we had any Blessing of Plenty procs
+    auto blessing_of_plenty_cdr = priest().conduits.blessing_of_plenty->effectN( 3 ).base_value();
+    auto blessing_of_plenty_stacks = priest().buffs.blessing_of_plenty->current_stack;
+    auto fae_blessings_cd = priest().cooldowns.fae_blessings->duration;
+
+    priest().cooldowns.fae_blessings->start( fae_blessings_cd - timespan_t::from_seconds( blessing_of_plenty_cdr * blessing_of_plenty_stacks ) );
+    priest().buffs.blessing_of_plenty->expire();
   }
 };
 
@@ -983,9 +992,10 @@ void priest_t::create_procs()
   procs.serendipity_overflow            = get_proc( "Serendipity lost to overflow (Non-Tier 17 4pc)" );
   procs.power_of_the_dark_side          = get_proc( "Power of the Dark Side Penance damage buffed" );
   procs.power_of_the_dark_side_overflow = get_proc( "Power of the Dark Side lost to overflow" );
-  procs.shimmering_apparitions = get_proc( "Shadowy Apparition Procced from Shimmering Apparition non SW:P Crit" );
-  procs.dissonant_echoes       = get_proc( "Void Bolt resets from Dissonant Echoes" );
-  procs.mind_devourer          = get_proc( "Mind Devourer free Devouring Plague proc" );
+  procs.shimmering_apparitions          = get_proc( "Shadowy Apparition Procced from Shimmering Apparition non SW:P Crit" );
+  procs.dissonant_echoes                = get_proc( "Void Bolt resets from Dissonant Echoes" );
+  procs.mind_devourer                   = get_proc( "Mind Devourer free Devouring Plague proc" );
+  procs.blessing_of_plenty              = get_proc( "Blessing of Plenty CDR on Fae Blessings" );
 }
 
 /** Construct priest benefits */

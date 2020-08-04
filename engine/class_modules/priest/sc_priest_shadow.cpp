@@ -1023,7 +1023,15 @@ struct void_bolt_t final : public priest_spell_t
             priest().cooldowns.shadowfiend->adjust( -timespan_t::from_seconds( fae_blessings_cdr ) );
           }
         }
-        // Remove 1 stack of Fae Blessings
+        if ( priest().conduits.blessing_of_plenty->ok() )
+        {
+          if ( rng().roll( priest().conduits.blessing_of_plenty.percent() ) )
+          {
+            // store CD reduction somewhere so when we start the CD it is started reduced
+            priest().buffs.blessing_of_plenty->increment();
+            priest().procs.blessing_of_plenty->occur();
+          }
+        }
         priest().buffs.fae_blessings->decrement();
       }
     }
@@ -1953,9 +1961,14 @@ void priest_t::create_buffs_shadow()
   buffs.whispers_of_the_damned = make_buff<buffs::whispers_of_the_damned_t>( *this );
 
   // Conduits
-  buffs.mind_devourer = make_buff( this, "mind_devourer", find_spell( 338333 ) )
-                            ->set_trigger_spell( conduits.mind_devourer )
-                            ->set_chance( conduits.mind_devourer->effectN( 2 ).percent() );
+  buffs.mind_devourer      = make_buff( this, "mind_devourer", find_spell( 338333 ) )
+                              ->set_trigger_spell( conduits.mind_devourer )
+                              ->set_chance( conduits.mind_devourer->effectN( 2 ).percent() );
+  // Dummy buff to track CDR from Void Bolt
+  buffs.blessing_of_plenty = make_buff( this, "blessing_of_plenty", find_spell( 338305 ) )
+                              ->set_quiet( true )
+                              ->set_duration( timespan_t::from_seconds( 70 ) )
+                              ->set_max_stack( 99 );
 }
 
 void priest_t::init_rng_shadow()
