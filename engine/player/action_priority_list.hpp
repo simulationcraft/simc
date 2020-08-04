@@ -61,8 +61,6 @@ struct action_priority_list_t
     util::string_view comment = {});
   action_priority_t* add_talent(const player_t* p, util::string_view name, util::string_view action_options = {},
     util::string_view comment = {});
-  action_priority_t* add_covenant(const player_t* p, util::string_view name, util::string_view action_options = {},
-    util::string_view comment = {});
   action_priority_t* add_run_action_list(action_priority_list_t* run_action_list, util::string_view action_options = {}, util::string_view comment = {});
   action_priority_t* add_run_action_list(const player_t* p, const spell_data_t* s, action_priority_list_t* run_action_list, util::string_view action_options = {}, util::string_view comment = {});
 

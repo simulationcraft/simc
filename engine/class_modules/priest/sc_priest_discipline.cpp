@@ -412,7 +412,7 @@ void priest_t::generate_apl_discipline_d()
   }
 
   def->add_action( this, "Power Infusion" );
-  def->add_covenant( this, "Boon of the Ascended" );
+  def->add_action( this, covenant.boon_of_the_ascended, "Boon of the Ascended" );
   def->add_call_action_list( this, covenant.boon_of_the_ascended, boon, "if=buff.boon_of_the_ascended.up" );
   def->add_talent( this, "Purge the Wicked", "if=!ticking" );
   def->add_action( this, "Shadow Word: Pain", "if=!ticking&!talent.purge_the_wicked.enabled" );

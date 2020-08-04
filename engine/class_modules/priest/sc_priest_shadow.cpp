@@ -2244,10 +2244,10 @@ void priest_t::generate_apl_shadow()
       "Use these cooldowns in between your 1st and 2nd Void Bolt in your 2nd Voidform when you have Chorus of Insanity "
       "active" );
   cds->add_action( this, "Power Infusion", "if=buff.voidform.up" );
-  cds->add_covenant( this, "Fae Blessings", "if=buff.voidform.up" );
-  cds->add_covenant( this, "Mindgames" );
-  cds->add_covenant( this, "Unholy Nova", "if=buff.voidform.up" );
-  cds->add_covenant( this, "Boon of the Ascended", "if=buff.voidform.up" );
+  cds->add_action( this, covenant.fae_blessings, "Fae Blessings", "if=buff.voidform.up" );
+  cds->add_action( this, covenant.mindgames, "Mindgames" );
+  cds->add_action( this, covenant.unholy_nova, "Unholy Nova", "if=buff.voidform.up" );
+  cds->add_action( this, covenant.boon_of_the_ascended, "Boon of the Ascended", "if=buff.voidform.up" );
   cds->add_action( "use_items", "Default fallback for usable items: Use on cooldown." );
 
   boon->add_action( this, covenant.boon_of_the_ascended, "ascended_blast" );

@@ -130,16 +130,3 @@ action_priority_t* action_priority_list_t::add_talent( const player_t* p, util::
   const spell_data_t* s = p->find_talent_spell( name, SPEC_NONE, false, false );
   return add_action( p, s, util::tokenize_fn( s->name_cstr() ), action_options, comment );
 }
-
-/**
- * @brief add to action list & check covenant spell with given name
- *
- * Check the availability of a covenant spell of "name" and the validity of it's
- * spell data before anything goes to action priority list
- */
-action_priority_t* action_priority_list_t::add_covenant( const player_t* p, util::string_view name,
-                                                         util::string_view action_options, util::string_view comment )
-{
-  const spell_data_t* s = p->find_covenant_spell( name );
-  return add_action( p, s, util::tokenize_fn( s->name_cstr() ), action_options, comment );
-}
