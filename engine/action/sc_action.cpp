@@ -322,7 +322,6 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
     dot_behavior( DOT_REFRESH ),
     ability_lag(),
     ability_lag_stddev(),
-    rp_gain(),
     min_gcd(),
     gcd_type(gcd_haste_type::NONE ),
     trigger_gcd( p->base_gcd ),

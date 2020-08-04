@@ -227,9 +227,6 @@ public:
   /// Ability specific extra player ready delay
   timespan_t ability_lag, ability_lag_stddev;
 
-  /// Deathknight specific, how much runic power is gained.
-  double rp_gain;
-
   /// The minimum gcd triggered no matter the haste.
   timespan_t min_gcd;
 
