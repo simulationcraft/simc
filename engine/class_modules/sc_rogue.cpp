@@ -389,7 +389,9 @@ public:
     const spell_data_t* sinister_strike_2;
 
     // Subtlety
+    const spell_data_t* backstab_2;
     const spell_data_t* deepening_shadows;
+    const spell_data_t* find_weakness;
     const spell_data_t* relentless_strikes;
     const spell_data_t* shadow_blades;
     const spell_data_t* shadow_dance;
@@ -401,6 +403,7 @@ public:
     const spell_data_t* eviscerate_2;
     const spell_data_t* shadowstrike;
     const spell_data_t* shadowstrike_2;
+    const spell_data_t* shuriken_storm_2;
   } spec;
 
   // Spell Data
@@ -473,7 +476,6 @@ public:
     const spell_data_t* killing_spree;
 
     // Subtlety
-    const spell_data_t* find_weakness;
     const spell_data_t* gloomblade;
 
     const spell_data_t* shadow_focus;
@@ -1137,6 +1139,7 @@ public:
   void trigger_shadow_blades_attack( action_state_t* );
   void trigger_inevitability( const action_state_t* state );
   void trigger_prey_on_the_weak( const action_state_t* state );
+  void trigger_find_weakness( const action_state_t* state, timespan_t duration = timespan_t::min() );
 
   // General Methods ==========================================================
 
@@ -2231,6 +2234,13 @@ struct backstab_t : public rogue_attack_t
 
     trigger_weaponmaster( state, p()->active.weaponmaster.backstab );
     trigger_inevitability( state );
+
+    if ( state->result == RESULT_CRIT && p()->spec.backstab_2->ok() && ( !p()->bugs || p()->position() == POSITION_BACK ) )
+    {
+      // On current beta, this still triggers 8s of FW despite spell data being 6s.
+      timespan_t duration = p()->bugs ? 8_s : timespan_t::from_seconds( p()->spec.backstab_2->effectN( 1 ).base_value() );
+      trigger_find_weakness( state, duration );
+    }
   }
 };
 
@@ -2850,7 +2860,15 @@ struct gloomblade_t : public rogue_attack_t
   void impact( action_state_t* state ) override
   {
     rogue_attack_t::impact( state );
+
     trigger_inevitability( state );
+
+    if ( state->result == RESULT_CRIT && p()->spec.backstab_2->ok() && ( !p()->bugs || p()->position() == POSITION_BACK ) )
+    {
+      // On current beta, this still triggers 8s of FW despite spell data being 6s.
+      timespan_t duration = p()->bugs ? 8_s : timespan_t::from_seconds( p()->spec.backstab_2->effectN( 1 ).base_value() );
+      trigger_find_weakness( state, duration );
+    }
   }
 };
 
@@ -3590,11 +3608,11 @@ struct shadowstrike_t : public rogue_attack_t
   {
     rogue_attack_t::impact( state );
 
-    if ( p() -> talent.find_weakness ->ok() )
-      td( state -> target ) -> debuffs.find_weakness -> trigger();
-
     trigger_weaponmaster( state, p()->active.weaponmaster.shadowstrike );
     trigger_inevitability( state );
+
+    // Appears to be applied after weaponmastered attacks.
+    trigger_find_weakness( state );
   }
 
   double bonus_da( const action_state_t* s ) const override
@@ -3671,6 +3689,18 @@ struct shuriken_storm_t: public rogue_attack_t
     }
 
     return m;
+  }
+
+  void impact(action_state_t* state) override
+  {
+    rogue_attack_t::impact( state );
+
+    if ( state->result == RESULT_CRIT && p()->spec.shuriken_storm_2->ok() )
+    {
+      // On current beta, this still triggers 8s of FW despite spell data being 6s.
+      timespan_t duration = p()->bugs ? 8_s : timespan_t::from_seconds( p()->spec.shuriken_storm_2->effectN( 1 ).base_value() );
+      trigger_find_weakness( state, duration );
+    }
   }
 };
 
@@ -4104,6 +4134,7 @@ struct cheap_shot_t : public rogue_attack_t
   {
     rogue_attack_t::impact( state );
     trigger_prey_on_the_weak( state );
+    trigger_find_weakness( state );
   }
 };
 
@@ -5560,8 +5591,20 @@ void actions::rogue_action_t<Base>::trigger_prey_on_the_weak( const action_state
   if ( state->target->type != ENEMY_ADD || !ab::result_is_hit( state->result ) || !p()->talent.prey_on_the_weak->ok() )
     return;
 
-  rogue_td_t* td = p()->get_target_data( state->target );
-  td->debuffs.prey_on_the_weak->trigger();
+  td( state->target )->debuffs.prey_on_the_weak->trigger();
+}
+
+template <typename Base>
+void actions::rogue_action_t<Base>::trigger_find_weakness( const action_state_t* state, timespan_t duration )
+{
+  if ( !ab::result_is_hit( state->result ) || !p()->spec.find_weakness->ok() )
+    return;
+
+  // If the new duration (e.g. from Backstab crits) is lower than the existing debuff duration, refresh without change.
+  if ( duration > timespan_t::zero() && duration < td( state->target )->debuffs.find_weakness->remains() )
+    duration = td( state->target )->debuffs.find_weakness->remains();
+
+  td( state->target )->debuffs.find_weakness->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, duration );
 }
 
 // ==========================================================================
@@ -5590,7 +5633,7 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
     ->set_default_value( source->spec.shiv_2_debuff->effectN( 1 ).percent() );
   debuffs.ghostly_strike = make_buff( *this, "ghostly_strike", source->talent.ghostly_strike )
     ->set_default_value( source->talent.ghostly_strike->effectN( 3 ).percent() );
-  const spell_data_t* fw_debuff = source->talent.find_weakness->effectN( 1 ).trigger();
+  const spell_data_t* fw_debuff = source->spec.find_weakness->effectN( 1 ).trigger();
   debuffs.find_weakness = make_buff( *this, "find_weakness", fw_debuff )
     ->set_default_value( fw_debuff->effectN( 1 ).percent() );
   debuffs.prey_on_the_weak = make_buff( *this, "prey_on_the_weak", source->find_spell( 255909 ) )
@@ -6641,7 +6684,9 @@ void rogue_t::init_spells()
   spec.sinister_strike_2    = find_rank_spell( "Sinister Strike", "Rank 2", ROGUE_OUTLAW );
 
   // Subtlety
+  spec.backstab_2           = find_rank_spell( "Backstab", "Rank 2" );
   spec.deepening_shadows    = find_specialization_spell( "Deepening Shadows" );
+  spec.find_weakness        = find_specialization_spell( "Find Weakness" );
   spec.relentless_strikes   = find_specialization_spell( "Relentless Strikes" );
   spec.shadow_blades        = find_specialization_spell( "Shadow Blades" );
   spec.shadow_dance         = find_specialization_spell( "Shadow Dance" );
@@ -6653,6 +6698,7 @@ void rogue_t::init_spells()
   spec.eviscerate_2         = find_rank_spell( "Eviscerate", "Rank 2" );
   spec.shadowstrike         = find_specialization_spell( "Shadowstrike" );
   spec.shadowstrike_2       = find_spell( 245623 );
+  spec.shuriken_storm_2     = find_rank_spell( "Shuriken Storm", "Rank 2" );
 
   // Masteries
   mastery.potent_assassin   = find_mastery_spell( ROGUE_ASSASSINATION );
@@ -6722,7 +6768,6 @@ void rogue_t::init_spells()
   talent.killing_spree      = find_talent_spell( "Killing Spree" );
 
   // Subtlety
-  talent.find_weakness      = find_talent_spell( "Find Weakness" );
   talent.gloomblade         = find_talent_spell( "Gloomblade" );
 
   talent.shadow_focus       = find_talent_spell( "Shadow Focus" );
