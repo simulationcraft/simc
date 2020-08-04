@@ -252,6 +252,7 @@ public:
     buff_t* shadow_blades;
     buff_t* shadow_dance;
     buff_t* symbols_of_death;
+    buff_t* symbols_of_death_autocrit;
 
 
     // Talents
@@ -399,6 +400,8 @@ public:
     const spell_data_t* shadow_techniques_2;
     const spell_data_t* shadow_techniques_effect;
     const spell_data_t* symbols_of_death;
+    const spell_data_t* symbols_of_death_2;
+    const spell_data_t* symbols_of_death_autocrit;
     const spell_data_t* eviscerate;
     const spell_data_t* eviscerate_2;
     const spell_data_t* shadowstrike;
@@ -878,6 +881,7 @@ public:
     bool master_assassin = false;
     bool shiv_2 = false;
     bool ruthless_precision = false;
+    bool symbols_of_death_autocrit = false;
 
     damage_affect_data mastery_executioner;
     damage_affect_data mastery_potent_assassin;
@@ -926,6 +930,7 @@ public:
       ab::data().affected_by( p->spec.broadside->effectN( 2 ) ) ||
       ab::data().affected_by( p->spec.broadside->effectN( 3 ) );
     affected_by.ruthless_precision = ab::data().affected_by( p->spec.ruthless_precision->effectN( 1 ) );
+    affected_by.symbols_of_death_autocrit = ab::data().affected_by( p->spec.symbols_of_death_autocrit->effectN( 1 ) );
 
     // Auto-parsing for damage affecting dynamic flags, this reads IF direct/periodic dmg is affected and stores by how much.
     // Still requires manual impl below but removes need to hardcode effect numbers.
@@ -1320,6 +1325,11 @@ public:
       c += p()->buffs.ruthless_precision->stack_value();
     }
 
+    if ( affected_by.symbols_of_death_autocrit )
+    {
+      c += p()->buffs.symbols_of_death_autocrit->stack_value();
+    }
+
     return c;
   }
 
@@ -1450,6 +1460,9 @@ public:
     }
 
     trigger_deepening_shadows( ab::execute_state );
+
+    if ( ( !p()->bugs || secondary_trigger != TRIGGER_SHURIKEN_TORNADO ) && affected_by.symbols_of_death_autocrit )
+      p()->buffs.symbols_of_death_autocrit->expire();
   }
 
   void schedule_travel( action_state_t* state ) override
@@ -3901,7 +3914,9 @@ struct symbols_of_death_t : public rogue_spell_t
   void execute() override
   {
     rogue_spell_t::execute();
-    p() -> buffs.symbols_of_death -> trigger();
+    p()->buffs.symbols_of_death->trigger();
+    if ( p()->spec.symbols_of_death_2->ok() )
+      p()->buffs.symbols_of_death_autocrit->trigger();
   }
 };
 
@@ -6708,6 +6723,8 @@ void rogue_t::init_spells()
   spec.shadow_techniques_2  = find_rank_spell( "Shadow Techniques", "Rank 2" );
   spec.shadow_techniques_effect = find_spell( 196911 );
   spec.symbols_of_death     = find_specialization_spell( "Symbols of Death" );
+  spec.symbols_of_death_2   = find_rank_spell( "Symbols of Death", "Rank 2" );
+  spec.symbols_of_death_autocrit = find_spell( 227151 );
   spec.eviscerate           = find_class_spell( "Eviscerate" );
   spec.eviscerate_2         = find_rank_spell( "Eviscerate", "Rank 2" );
   spec.shadowstrike         = find_specialization_spell( "Shadowstrike" );
@@ -7015,7 +7032,7 @@ void rogue_t::create_buffs()
   buffs.skull_and_crossbones  = make_buff( this, "skull_and_crossbones", find_spell( 199603 ) )
                                 -> set_default_value( find_spell( 199603 ) -> effectN( 1 ).percent() );
   buffs.ruthless_precision    = make_buff( this, "ruthless_precision", spec.ruthless_precision )
-                                -> set_default_value( find_spell( 193357 ) -> effectN( 1 ).percent() )
+                                -> set_default_value( spec.ruthless_precision->effectN( 1 ).percent() )
                                 -> add_invalidate( CACHE_CRIT_CHANCE );
   buffs.true_bearing          = make_buff( this, "true_bearing", find_spell( 193359 ) )
                                 -> set_default_value( find_spell( 193359 ) -> effectN( 1 ).base_value() * 0.1 );
@@ -7030,6 +7047,8 @@ void rogue_t::create_buffs()
   buffs.symbols_of_death      = make_buff( this, "symbols_of_death", spec.symbols_of_death )
                                 -> set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
                                 -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  buffs.symbols_of_death_autocrit = make_buff( this, "symbols_of_death_autocrit", spec.symbols_of_death_autocrit )
+                                    -> set_default_value( spec.symbols_of_death_autocrit->effectN( 1 ).percent() );
 
   // Talents
   // Shared
