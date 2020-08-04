@@ -428,7 +428,6 @@ public:
     buff_t* savage_roar;
     buff_t* scent_of_blood;
     buff_t* tigers_fury;
-    buff_t* fury_of_ashamane;
     buff_t* jungle_stalker;
     // Feral Legendaries
     buff_t* feral_runecarve_2;
@@ -1775,10 +1774,17 @@ public:
     parse_buff_effects( p()->buff.oneths_free_starsurge );
     parse_buff_effects( p()->buff.timeworn_dreamcatcher );
 
-    //Guardian
+    // Guardian
     parse_buff_effects( p()->buff.berserk_bear );
     parse_buff_effects( p()->buff.incarnation_bear );
     parse_buff_effects( p()->buff.sharpened_claws );
+
+    // Feral
+    parse_buff_effects( p()->buff.berserk_cat );
+    parse_buff_effects( p()->buff.incarnation_cat );
+    parse_buff_effects( p()->buff.predatory_swiftness );
+    parse_buff_effects( p()->buff.savage_roar, p()->spec.savage_roar );
+    parse_buff_effects( p()->buff.apex_predators_craving );
   }
 
   double target_armor( player_t* t ) const override
@@ -3021,10 +3027,7 @@ public:
     bool direct, tick;
   } razor_claws;
 
-  // Whether the attack benefits from TF/SR
-  struct {
-    bool direct, tick;
-  } savage_roar;
+  // Whether the attack benefits from TF
   bool    tigers_fury;
 
   cat_attack_t( util::string_view token, druid_t* p, const spell_data_t* s = spell_data_t::nil(),
@@ -3051,9 +3054,6 @@ public:
 
     razor_claws.direct = data().affected_by( p -> mastery.razor_claws -> effectN( 1 ) );
     razor_claws.tick = data().affected_by( p -> mastery.razor_claws -> effectN( 2 ) );
-
-    savage_roar.direct = data().affected_by( p -> spec.savage_roar -> effectN( 1 ) );
-    savage_roar.tick = data().affected_by( p -> spec.savage_roar -> effectN( 2 ) );
 
     /* Sanity check Tiger's Fury to assure that benefit is the same for both direct
        and periodic damage. Because we're using composite_persistent_damage_multiplier
@@ -3092,15 +3092,9 @@ public:
   {
     double c = base_t::cost();
 
-    if ( c == 0 )
-      return 0;
-
     if ( consumes_clearcasting && current_resource() == RESOURCE_ENERGY &&
       p() -> buff.clearcasting -> check() )
       return 0;
-
-    c *= 1.0 + p() -> buff.berserk_cat -> check_value();
-    c *= 1.0 + p() -> buff.incarnation_cat -> check_value();
 
     return c;
   }
@@ -3206,14 +3200,6 @@ public:
     if ( razor_claws.direct )
       dm *= 1.0 + p() -> cache.mastery_value();
 
-    if ( savage_roar.direct && p() -> buff.savage_roar -> check() )
-    {
-      if ( special )
-        dm *= 1.0 + p() -> spec.savage_roar -> effectN( 1 ).percent();
-      else
-        dm *= 1.0 + p() -> spec.savage_roar -> effectN( 3 ).percent();
-    }
-
     return dm;
   }
 
@@ -3223,9 +3209,6 @@ public:
 
     if ( razor_claws.tick ) // Don't need to check school, it modifies all periodic damage.
       tm *= 1.0 + p() -> cache.mastery_value();
-
-    if ( savage_roar.tick && p() -> buff.savage_roar -> check() )
-      tm *= 1.0 + p() -> spec.savage_roar -> effectN( 2 ).percent();
 
     return tm;
   }
@@ -3375,9 +3358,8 @@ struct cat_melee_t : public cat_attack_t
     special           = false;
     weapon_multiplier = 1.0;
 
-    // Manually enable benefit from TF & SR on autos because it isn't handled
+    // Manually enable benefit from TF on autos because it isn't handled
     // by the affected_by() magic in cat_attack_t.
-    savage_roar.direct = true;
     tigers_fury = true;
   }
 
@@ -3395,6 +3377,9 @@ struct cat_melee_t : public cat_attack_t
 
     if ( p()->buff.cat_form->check() )
       am *= 1.0 + p()->buff.cat_form->data().effectN( 4 ).percent();
+
+    if ( p()->buff.savage_roar->check() )
+      am *= 1.0 + p()->spec.savage_roar->effectN( 4 ).percent();
 
     if ( p()->talent.feral_affinity->ok() && p()->buff.heart_of_the_wild->up() )
       am *= 1.0 + p()->buff.heart_of_the_wild->data().effectN( 3 ).percent();
@@ -3629,18 +3614,6 @@ struct ferocious_bite_t : public cat_attack_t
       return false;
 
     return cat_attack_t::ready();
-  }
-
-  double cost() const override
-  {
-    double c = cat_attack_t::cost();
-
-    if ( p()->buff.apex_predators_craving->check() )
-    {
-      c *= 1.0 + p()->buff.apex_predators_craving->data().effectN( 1 ).percent();
-    }
-
-    return c;
   }
 
   void execute() override
@@ -5034,14 +5007,6 @@ struct regrowth_t: public druid_heal_t
     }
   }
 
-  double cost() const override
-  {
-    if ( p() -> buff.predatory_swiftness -> check() )
-      return 0;
-
-    return druid_heal_t::cost();
-  }
-
   void consume_resource() override
   {
     // Prevent from consuming Omen of Clarity unnecessarily
@@ -5049,16 +5014,6 @@ struct regrowth_t: public druid_heal_t
       return;
 
     druid_heal_t::consume_resource();
-  }
-
-  timespan_t execute_time() const override
-  {
-    if ( p() -> buff.predatory_swiftness -> check() )
-      return timespan_t::zero();
-
-    timespan_t et = druid_heal_t::execute_time();
-
-    return et;
   }
 
   double action_multiplier() const override
@@ -8484,7 +8439,6 @@ void druid_t::create_buffs()
     ->set_chance( spec.predatory_swiftness -> ok() );
 
   buff.savage_roar           = make_buff( this, "savage_roar", talent.savage_roar )
-    ->set_default_value( spec.savage_roar -> effectN( 1 ).percent() )
     ->set_refresh_behavior( buff_refresh_behavior::DURATION ) // Pandemic refresh is done by the action
     ->set_tick_behavior( buff_tick_behavior::NONE );
 
@@ -9471,8 +9425,9 @@ double druid_t::resource_regen_per_second( resource_e r ) const
 
   if ( r == RESOURCE_ENERGY )
   {
-    if ( buff.savage_roar->check() && buff.savage_roar->data().effectN( 3 ).subtype() == A_MOD_POWER_REGEN_PERCENT )
-      reg *= 1.0 + buff.savage_roar->data().effectN( 3 ).percent();
+    if ( buff.savage_roar->check() )
+      reg *= 1.0 + spec.savage_roar->effectN( 3 ).percent();
+
     if ( player_t::buffs.memory_of_lucid_dreams->check() )
       reg *= 1.0 + player_t::buffs.memory_of_lucid_dreams->data().effectN( 1 ).percent();
   }
