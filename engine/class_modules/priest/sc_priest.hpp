@@ -133,7 +133,7 @@ public:
 
     // Conduits
     propagate_const<buff_t*> mind_devourer;
-    propagate_const<buff_t*> blessing_of_plenty; // Dummy buff to track CDR from Void Bolt
+    propagate_const<buff_t*> blessing_of_plenty;  // Dummy buff to track CDR from Void Bolt
 
     // Covenants
     propagate_const<buff_t*> fae_blessings;
@@ -158,46 +158,46 @@ public:
     const spell_data_t* castigation;
     const spell_data_t* schism;
     // T25
-    const spell_data_t* masochism; // NYI
+    const spell_data_t* masochism;  // NYI
     // T30
-    const spell_data_t* shield_discipline; // NYI
+    const spell_data_t* shield_discipline;  // NYI
     const spell_data_t* power_word_solace;
     // T35
-    const spell_data_t* dominant_mind; // NYI
+    const spell_data_t* dominant_mind;  // NYI
     // T40
     const spell_data_t* sins_of_the_many;
-    const spell_data_t* contrition;      // NYI
-    const spell_data_t* shadow_covenant; // NYI
+    const spell_data_t* contrition;       // NYI
+    const spell_data_t* shadow_covenant;  // NYI
     // T45
     const spell_data_t* purge_the_wicked;
     // T50
-    const spell_data_t* lights_caress;    // NYI
-    const spell_data_t* luminous_barrier; // NYI
-    const spell_data_t* evangelism;       // NYI
+    const spell_data_t* lights_caress;     // NYI
+    const spell_data_t* luminous_barrier;  // NYI
+    const spell_data_t* evangelism;        // NYI
 
     // Holy
     // T15
-    const spell_data_t* enlightenment;    // NYI
-    const spell_data_t* trail_of_light;   // NYI
-    const spell_data_t* enduring_renewal; // NYI
+    const spell_data_t* enlightenment;     // NYI
+    const spell_data_t* trail_of_light;    // NYI
+    const spell_data_t* enduring_renewal;  // NYI
     // T25
     const spell_data_t* angels_mercy;  // NYI
     // T30
-    const spell_data_t* cosmic_ripple;  // NYI
-    const spell_data_t* guardian_angel; // NYI
-    const spell_data_t* after_life;     // NYI
+    const spell_data_t* cosmic_ripple;   // NYI
+    const spell_data_t* guardian_angel;  // NYI
+    const spell_data_t* after_life;      // NYI
     // T35
     const spell_data_t* censure;  // NYI
     // T40
-    const spell_data_t* surge_of_light; // NYI
-    const spell_data_t* binding_heal;   // NYI
-    const spell_data_t* prayer_circle;  // NYI
+    const spell_data_t* surge_of_light;  // NYI
+    const spell_data_t* binding_heal;    // NYI
+    const spell_data_t* prayer_circle;   // NYI
     // T45
-    const spell_data_t* benediction; // NYI
+    const spell_data_t* benediction;  // NYI
     // T50
-    const spell_data_t* light_of_the_naaru; // NYI
+    const spell_data_t* light_of_the_naaru;  // NYI
     const spell_data_t* apotheosis;
-    const spell_data_t* holy_word_salvation; // NYI
+    const spell_data_t* holy_word_salvation;  // NYI
 
     // Shadow
     // T15
@@ -273,32 +273,13 @@ public:
   struct
   {
     // Shared
-    propagate_const<cooldown_t*> power_infusion;
-    propagate_const<cooldown_t*> fae_blessings;
-    propagate_const<cooldown_t*> ascended_blast;
-
-    // Discipline
-    propagate_const<cooldown_t*> chakra;
-    propagate_const<cooldown_t*> penance;
-    propagate_const<cooldown_t*> power_word_shield;
-    propagate_const<cooldown_t*> silence;
 
     // Shadow
-    propagate_const<cooldown_t*> mind_blast;
     propagate_const<cooldown_t*> void_bolt;
-    propagate_const<cooldown_t*> mind_bomb;
-    propagate_const<cooldown_t*> psychic_horror;
-    propagate_const<cooldown_t*> dark_ascension;
-    propagate_const<cooldown_t*> shadow_word_death;
-    propagate_const<cooldown_t*> devouring_plague;
-    propagate_const<cooldown_t*> shadowfiend;
-    propagate_const<cooldown_t*> mindbender;
 
     // Holy
-    propagate_const<cooldown_t*> holy_word_chastise;
     propagate_const<cooldown_t*> holy_word_serenity;
     propagate_const<cooldown_t*> holy_fire;
-    propagate_const<cooldown_t*> apotheosis;
   } cooldowns;
 
   // Gains
@@ -1012,7 +993,7 @@ public:
     for ( const auto& a : affects )
     {
       a.affects = base_t::data().affected_by( a.effect );
-      if ( a.affects )
+      if ( a.affects && ab::sim->debug )
       {
         ab::sim->print_debug( "{} {} ({}) affected by {} (idx={}).", *ab::player, *this, ab::data().id(),
                               a.effect.spell()->name_cstr(), a.effect.spell_effect_num() + 1 );

@@ -237,11 +237,14 @@ struct smite_t final : public priest_spell_t
   const spell_data_t* holy_fire_rank2;
   const spell_data_t* holy_word_chastise;
   const spell_data_t* smite_rank2;
+  propagate_const<cooldown_t*> holy_word_chastise_cooldown;
+
   smite_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "smite", p, p.find_class_spell( "Smite" ) ),
       holy_fire_rank2( priest().find_rank_spell( "Holy Fire", "Rank 2" ) ),
       holy_word_chastise( priest().find_specialization_spell( 88625 ) ),
-      smite_rank2( priest().find_rank_spell( "Smite", "Rank 2" ) )
+      smite_rank2( priest().find_rank_spell( "Smite", "Rank 2" ) ),
+      holy_word_chastise_cooldown( p.get_cooldown( "holy_word_chastise" ) )
   {
     parse_options( options_str );
     if ( smite_rank2->ok() )
@@ -268,7 +271,7 @@ struct smite_t final : public priest_spell_t
     if ( s->result_amount > 0 && priest().buffs.apotheosis->up() )
     {
       auto cd1 = cooldown_base_reduction * ( 100 + priest().talents.apotheosis->effectN( 1 ).base_value() ) / 100.0;
-      priest().cooldowns.holy_word_chastise->adjust( cd1 );
+      holy_word_chastise_cooldown->adjust( cd1 );
 
       sim->print_debug( "{} adjusted cooldown of Chastise, by {}, with Apotheosis.", priest(), cd1 );
     }
@@ -276,12 +279,12 @@ struct smite_t final : public priest_spell_t
     {
       auto cd2 =
           cooldown_base_reduction * ( 100 + priest().talents.light_of_the_naaru->effectN( 1 ).base_value() ) / 100.0;
-      priest().cooldowns.holy_word_chastise->adjust( cd2 );
+      holy_word_chastise_cooldown->adjust( cd2 );
       sim->print_debug( "{} adjusted cooldown of Chastise, by {}, with Light of the Naaru.", priest(), cd2 );
     }
     else if ( s->result_amount > 0 )
     {
-      priest().cooldowns.holy_word_chastise->adjust( cooldown_base_reduction );
+      holy_word_chastise_cooldown->adjust( cooldown_base_reduction );
       sim->print_debug( "{} adjusted cooldown of Chastise, by {}, without Apotheosis", priest(),
                         cooldown_base_reduction );
     }
@@ -337,7 +340,7 @@ struct fae_blessings_t final : public priest_spell_t
     priest_spell_t::execute();
 
     priest().buffs.fae_blessings->trigger( priest().buffs.fae_blessings->max_stack() );
-    priest().cooldowns.fae_blessings->reset( false );
+    cooldown->reset( false );
   }
 
   bool ready() override
@@ -367,7 +370,7 @@ struct unholy_transfusion_t final : public priest_spell_t
 
     if ( priest().conduits.festering_transfusion->ok() )
     {
-      dot_duration       += timespan_t::from_seconds( priest().conduits.festering_transfusion->effectN( 2 ).base_value() );
+      dot_duration += timespan_t::from_seconds( priest().conduits.festering_transfusion->effectN( 2 ).base_value() );
       base_td_multiplier *= ( 1.0 + priest().conduits.festering_transfusion.percent() );
     }
   }
@@ -455,8 +458,11 @@ struct boon_of_the_ascended_t final : public priest_spell_t
 
 struct ascended_nova_t final : public priest_spell_t
 {
+  int grants_stacks;
+
   ascended_nova_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "ascended_nova", p, p.find_spell( 325020 ) )
+    : priest_spell_t( "ascended_nova", p, p.find_spell( 325020 ) ),
+      grants_stacks( as<int>( data().effectN( 3 ).base_value() ) )
   {
     parse_options( options_str );
     aoe = -1;
@@ -467,8 +473,7 @@ struct ascended_nova_t final : public priest_spell_t
     priest_spell_t::impact( s );
 
     // gain 1 stack for each target damanged
-    auto stacks = as<int>( data().effectN( 3 ).base_value() );
-    priest().buffs.boon_of_the_ascended->increment( stacks );
+    priest().buffs.boon_of_the_ascended->increment( grants_stacks );
   }
 
   bool ready() override
@@ -485,10 +490,12 @@ struct ascended_nova_t final : public priest_spell_t
 struct ascended_blast_t final : public priest_spell_t
 {
   double insanity_gain;
+  int grants_stacks;
 
   ascended_blast_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "ascended_blast", p, p.find_spell( 325283 ) ),
-      insanity_gain( data().effectN( 4 ).resource( RESOURCE_INSANITY ) )
+      insanity_gain( data().effectN( 4 ).resource( RESOURCE_INSANITY ) ),
+      grants_stacks( as<int>( data().effectN( 3 ).base_value() ) )
   {
     parse_options( options_str );
 
@@ -496,13 +503,7 @@ struct ascended_blast_t final : public priest_spell_t
     {
       base_dd_multiplier *= ( 1.0 + priest().conduits.courageous_ascension.percent() );
     }
-  }
-
-  void init() override
-  {
-    priest().cooldowns.ascended_blast->hasted = true;
-
-    priest_spell_t::init();
+    cooldown->hasted = true;
   }
 
   void impact( action_state_t* s ) override
@@ -510,18 +511,14 @@ struct ascended_blast_t final : public priest_spell_t
     priest_spell_t::impact( s );
 
     // gain 5 stacks on impact
-    auto stacks = as<int>( data().effectN( 3 ).base_value() );
-    priest().buffs.boon_of_the_ascended->increment( stacks );
+    priest().buffs.boon_of_the_ascended->increment( grants_stacks );
   }
 
   void execute() override
   {
     priest_spell_t::execute();
 
-    if ( priest().specialization() == PRIEST_SHADOW )
-    {
-      priest().generate_insanity( insanity_gain, priest().gains.insanity_ascended_blast, execute_state->action );
-    }
+    priest().generate_insanity( insanity_gain, priest().gains.insanity_ascended_blast, execute_state->action );
   }
 
   bool ready() override
@@ -538,8 +535,13 @@ struct ascended_blast_t final : public priest_spell_t
 struct ascended_eruption_t final : public priest_spell_t
 {
   int trigger_stacks;  // Set as action variable since this will not be triggered multiple times.
+  double base_da_increase;
 
-  ascended_eruption_t( priest_t& p ) : priest_spell_t( "ascended_eruption", p, p.find_spell( 325326 ) )
+  ascended_eruption_t( priest_t& p )
+    : priest_spell_t( "ascended_eruption", p, p.find_spell( 325326 ) ),
+      base_da_increase( p.covenant.boon_of_the_ascended->effectN( 5 ).percent() +
+                        // 1% increase from Courageous Ascension not found in spelldata
+                        p.conduits.courageous_ascension->ok() * 0.01 )
   {
     aoe        = -1;
     background = true;
@@ -557,14 +559,7 @@ struct ascended_eruption_t final : public priest_spell_t
   {
     double m = priest_spell_t::action_da_multiplier();
 
-    double base_increase = priest().covenant.boon_of_the_ascended->effectN( 5 ).percent();
-    if ( priest().conduits.courageous_ascension->ok() )
-    {
-      // 1% increase from Courageous Ascension not found in spelldata
-      base_increase += 0.01;
-    }
-
-    m *= 1 + ( base_increase * trigger_stacks );
+    m *= 1 + base_da_increase * trigger_stacks;
 
     return m;
   }
@@ -721,9 +716,12 @@ struct power_infusion_t final : public priest_buff_t<buff_t>
 struct fae_blessings_t final : public priest_buff_t<buff_t>
 {
   int stacks;
+  propagate_const<cooldown_t*> action_cooldown;
 
   fae_blessings_t( priest_t& p )
-    : base_t( p, "fae_blessings", p.covenant.fae_blessings ), stacks( as<int>( data().effectN( 1 ).base_value() ) )
+    : base_t( p, "fae_blessings", p.covenant.fae_blessings ),
+      stacks( as<int>( data().effectN( 1 ).base_value() ) ),
+      action_cooldown( p.get_cooldown( "fae_blessings" ) )
   {
     if ( priest().conduits.blessing_of_plenty->ok() )
     {
@@ -738,11 +736,12 @@ struct fae_blessings_t final : public priest_buff_t<buff_t>
     priest_buff_t<buff_t>::expire_override( expiration_stacks, remaining_duration );
 
     // Check if we had any Blessing of Plenty procs
-    auto blessing_of_plenty_cdr = priest().conduits.blessing_of_plenty->effectN( 3 ).base_value();
+    auto blessing_of_plenty_cdr    = priest().conduits.blessing_of_plenty->effectN( 3 ).base_value();
     auto blessing_of_plenty_stacks = priest().buffs.blessing_of_plenty->current_stack;
-    auto fae_blessings_cd = priest().cooldowns.fae_blessings->duration;
+    auto fae_blessings_cd          = action_cooldown->duration;
 
-    priest().cooldowns.fae_blessings->start( fae_blessings_cd - timespan_t::from_seconds( blessing_of_plenty_cdr * blessing_of_plenty_stacks ) );
+    action_cooldown->start( fae_blessings_cd -
+                            timespan_t::from_seconds( blessing_of_plenty_cdr * blessing_of_plenty_stacks ) );
     priest().buffs.blessing_of_plenty->expire();
   }
 };
@@ -871,8 +870,7 @@ void priest_td_t::target_demise()
                                 nullptr );
   }
 
-  priest().sim->print_debug( "Player '{}' demised. Priest '{}' resets targetdata for him.", target->name(),
-                             priest().name() );
+  priest().sim->print_debug( "{} demised. Priest {} resets targetdata for him.", *target, priest() );
 
   reset();
 }
@@ -914,35 +912,9 @@ priest_t::priest_t( sim_t* sim, util::string_view name, race_e r )
 /** Construct priest cooldowns */
 void priest_t::create_cooldowns()
 {
-  cooldowns.chakra             = get_cooldown( "chakra" );
-  cooldowns.penance            = get_cooldown( "penance" );
-  cooldowns.apotheosis         = get_cooldown( "apotheosis " );
   cooldowns.holy_fire          = get_cooldown( "holy_fire" );
-  cooldowns.holy_word_chastise = get_cooldown( "holy_word_chastise" );
   cooldowns.holy_word_serenity = get_cooldown( "holy_word_serenity" );
-  cooldowns.power_word_shield  = get_cooldown( "power_word_shield" );
-  cooldowns.silence            = get_cooldown( "silence" );
-  cooldowns.mind_blast         = get_cooldown( "mind_blast" );
   cooldowns.void_bolt          = get_cooldown( "void_bolt" );
-  cooldowns.mind_bomb          = get_cooldown( "mind_bomb" );
-  cooldowns.psychic_horror     = get_cooldown( "psychic_horror" );
-  cooldowns.dark_ascension     = get_cooldown( "dark_ascension" );
-  cooldowns.power_infusion     = get_cooldown( "power_infusion" );
-  cooldowns.shadow_word_death  = get_cooldown( "shadow_word_death" );
-  cooldowns.devouring_plague   = get_cooldown( "devouring_plague" );
-  cooldowns.mindbender         = get_cooldown( "mindbender" );
-  cooldowns.shadowfiend        = get_cooldown( "shadowfiend" );
-  cooldowns.fae_blessings      = get_cooldown( "fae_blessings" );
-  cooldowns.ascended_blast     = get_cooldown( "ascended_blast" );
-
-  if ( specialization() == PRIEST_DISCIPLINE )
-  {
-    cooldowns.power_word_shield->duration = timespan_t::zero();
-  }
-  else
-  {
-    cooldowns.power_word_shield->duration = timespan_t::from_seconds( 4.0 );
-  }
 }
 
 /** Construct priest gains */
@@ -992,10 +964,10 @@ void priest_t::create_procs()
   procs.serendipity_overflow            = get_proc( "Serendipity lost to overflow (Non-Tier 17 4pc)" );
   procs.power_of_the_dark_side          = get_proc( "Power of the Dark Side Penance damage buffed" );
   procs.power_of_the_dark_side_overflow = get_proc( "Power of the Dark Side lost to overflow" );
-  procs.shimmering_apparitions          = get_proc( "Shadowy Apparition Procced from Shimmering Apparition non SW:P Crit" );
-  procs.dissonant_echoes                = get_proc( "Void Bolt resets from Dissonant Echoes" );
-  procs.mind_devourer                   = get_proc( "Mind Devourer free Devouring Plague proc" );
-  procs.blessing_of_plenty              = get_proc( "Blessing of Plenty CDR on Fae Blessings" );
+  procs.shimmering_apparitions = get_proc( "Shadowy Apparition Procced from Shimmering Apparition non SW:P Crit" );
+  procs.dissonant_echoes       = get_proc( "Void Bolt resets from Dissonant Echoes" );
+  procs.mind_devourer          = get_proc( "Mind Devourer free Devouring Plague proc" );
+  procs.blessing_of_plenty     = get_proc( "Blessing of Plenty CDR on Fae Blessings" );
 }
 
 /** Construct priest benefits */
