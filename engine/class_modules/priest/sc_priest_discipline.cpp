@@ -5,6 +5,7 @@
 
 #include "simulationcraft.hpp"
 
+#include "player/covenant.hpp"
 #include "sc_priest.hpp"
 
 namespace priestspace
@@ -42,7 +43,13 @@ struct penance_t final : public priest_spell_t
 {
   struct penance_tick_t final : public priest_spell_t
   {
-    penance_tick_t( priest_t& p, stats_t* stats ) : priest_spell_t( "penance_tick", p, p.dbc->spell( 47666 ) )
+    bool first_tick;
+    const conduit_data_t swift_penitence;
+
+    penance_tick_t( priest_t& p, stats_t* stats )
+      : priest_spell_t( "penance_tick", p, p.dbc->spell( 47666 ) ),
+        first_tick( false ),
+        swift_penitence( p.find_conduit_spell( "Swift Penitence" ) )
     {
       background  = true;
       dual        = true;
@@ -51,30 +58,23 @@ struct penance_t final : public priest_spell_t
       this->stats = stats;
     }
 
-    double cost() const override
+    double action_da_multiplier() const override
     {
-      auto cost = base_t::cost();
-      if ( priest().buffs.the_penitent_one->check() )
-      {
-        cost *= ( 100 + priest().buffs.the_penitent_one->data().effectN( 2 ).base_value() ) / 100.0;
-      }
-      return cost;
-    }
+      double m = priest_spell_t::action_da_multiplier();
 
-    timespan_t tick_time( const action_state_t* s ) const override
-    {
-      auto tt = base_t::tick_time( s );
-      if ( priest().buffs.the_penitent_one->check() )
+      if ( first_tick && swift_penitence.ok() )
       {
-        tt *= ( 100 + priest().buffs.the_penitent_one->data().effectN( 1 ).base_value() ) / 100.0;
+        m *= 1 + swift_penitence.percent();
       }
-      return tt;
+
+      return m;
     }
 
     void execute() override
     {
-      base_t::execute();
-      priest().buffs.the_penitent_one->up();  // benefit tracking.
+      priest_spell_t::execute();
+
+      first_tick = false;
     }
 
     bool verify_actor_level() const override
@@ -84,8 +84,11 @@ struct penance_t final : public priest_spell_t
     }
   };
 
+  penance_tick_t* penance_tick_action;
+
   penance_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "penance", p, p.find_class_spell( "Penance" ) )
+    : priest_spell_t( "penance", p, p.find_class_spell( "Penance" ) ),
+      penance_tick_action( new penance_tick_t( p, stats ) )
   {
     parse_options( options_str );
 
@@ -104,7 +107,7 @@ struct penance_t final : public priest_spell_t
     dot_duration += priest().sets->set( PRIEST_DISCIPLINE, T17, B2 )->effectN( 1 ).time_value();
 
     dynamic_tick_action = true;
-    tick_action         = new penance_tick_t( p, stats );
+    tick_action         = penance_tick_action;
   }
 
   double bonus_da( const action_state_t* state ) const override
@@ -119,10 +122,25 @@ struct penance_t final : public priest_spell_t
     return d;
   }
 
+  double cost() const override
+  {
+    auto cost = base_t::cost();
+    if ( priest().buffs.the_penitent_one->check() )
+    {
+      cost *= ( 100 + priest().buffs.the_penitent_one->data().effectN( 2 ).base_value() ) / 100.0;
+    }
+    return cost;
+  }
+
   timespan_t tick_time( const action_state_t* ) const override
   {
     // Do not haste ticks!
-    return base_tick_time;
+    auto tt = base_tick_time;
+    if ( priest().buffs.the_penitent_one->check() )
+    {
+      tt *= ( 100 + priest().buffs.the_penitent_one->data().effectN( 1 ).base_value() ) / 100.0;
+    }
+    return tt;
   }
 
   void last_tick( dot_t* d ) override
@@ -130,12 +148,16 @@ struct penance_t final : public priest_spell_t
     priest_spell_t::last_tick( d );
 
     priest().buffs.power_of_the_dark_side->expire();
+    priest().buffs.the_penitent_one->decrement();
   }
 
   void execute() override
   {
+    penance_tick_action->first_tick = true;
+
     priest_spell_t::execute();
 
+    priest().buffs.the_penitent_one->up();        // benefit tracking
     priest().buffs.power_of_the_dark_side->up();  // benefit tracking
   }
 };
