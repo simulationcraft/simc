@@ -325,38 +325,28 @@ struct painbreaker_psalm_t final : public priest_spell_t
     : priest_spell_t( "painbreaker_psalm", p, p.legendary.painbreaker_psalm ),
       consume_time( timespan_t::from_seconds( data().effectN( 1 ).base_value() ) )
   {
-    background  = true;
-    base_dd_min = base_dd_max = 0;
+    background = true;
+
+    // TODO: check if this double dips from any multipliers or takes 100% exactly the calculated dot values.
+    // also check that the STATE_NO_MULTIPLIER does exactly what we expect.
+    snapshot_flags &= ~STATE_NO_MULTIPLIER;
   }
 
   void impact( action_state_t* s ) override
   {
+    priest_td_t& td = get_td( s->target );
+    dot_t* swp      = td.dots.shadow_word_pain;
+    dot_t* vt       = td.dots.vampiric_touch;
+
+    double total_damage = 0;
+    total_damage += priest().tick_damage_over_time( consume_time, td.dots.shadow_word_pain );
+    total_damage += priest().tick_damage_over_time( consume_time, td.dots.vampiric_touch );
+    base_dd_min = base_dd_max = total_damage;
+
     priest_spell_t::impact( s );
 
-    priest_td_t& td     = get_td( s->target );
-    dot_t* swp          = td.dots.shadow_word_pain;
-    dot_t* vt           = td.dots.vampiric_touch;
-    double total_damage = 0;
-
-    if ( swp->is_ticking() )
-    {
-      double swp_damage = priest().tick_damage_over_time( consume_time, swp );
-
-      swp->reduce_duration( consume_time );
-    }
-
-    if ( vt->is_ticking() )
-    {
-      double vt_damage = priest().tick_damage_over_time( consume_time, vt );
-      total_damage += vt_damage;
-
-      vt->reduce_duration( consume_time );
-    }
-
-    if ( total_damage > 0 )
-    {
-      this->base_dd_min = this->base_dd_max = total_damage;
-    }
+    swp->reduce_duration( consume_time );
+    vt->reduce_duration( consume_time );
   }
 };
 
@@ -1653,8 +1643,12 @@ struct whispers_of_the_damned_t final : public priest_buff_t<buff_t>
 };
 }  // namespace buffs
 
-double priest_t::tick_damage_over_time( timespan_t duration, dot_t* dot )
+double priest_t::tick_damage_over_time( timespan_t duration, const dot_t* dot ) const
 {
+  if ( !dot->is_ticking() )
+  {
+    return 0.0;
+  }
   action_state_t* state = dot->current_action->get_state( dot->state );
   dot->current_action->calculate_tick_amount( state, 1.0 );
   double tick_base_damage  = state->result_raw;

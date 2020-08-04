@@ -545,7 +545,7 @@ public:
   void trigger_lucid_dreams( double cost );
   bool insanity_drain_frozen() const;
   void adjust_holy_word_serenity_cooldown();
-  double tick_damage_over_time( timespan_t duration, dot_t* dot );
+  double tick_damage_over_time( timespan_t duration, const dot_t* dot ) const;
 
   /**
    * Insanity tracking
