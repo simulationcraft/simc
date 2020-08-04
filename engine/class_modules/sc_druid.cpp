@@ -1493,7 +1493,6 @@ struct moonkin_form_t : public druid_buff_t<buff_t>
 {
   moonkin_form_t( druid_t& p ) : base_t( p, "moonkin_form", p.spec.moonkin_form )
   {
-    add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
     add_invalidate( CACHE_ARMOR );
     set_chance( 1.0 );
   }
@@ -1764,6 +1763,8 @@ public:
   {
     parse_buff_effects( p()->buff.ravenous_frenzy );
     parse_buff_effects( p()->buff.heart_of_the_wild );
+
+    // Balance
     parse_buff_effects( p()->buff.moonkin_form );
     parse_buff_effects( p()->buff.celestial_alignment );
     parse_buff_effects( p()->buff.incarnation_moonkin );
@@ -1773,6 +1774,11 @@ public:
     parse_buff_effects( p()->buff.oneths_free_starfall );
     parse_buff_effects( p()->buff.oneths_free_starsurge );
     parse_buff_effects( p()->buff.timeworn_dreamcatcher );
+
+    //Guardian
+    parse_buff_effects( p()->buff.berserk_bear );
+    parse_buff_effects( p()->buff.incarnation_bear );
+    parse_buff_effects( p()->buff.sharpened_claws );
   }
 
   double target_armor( player_t* t ) const override
@@ -4566,16 +4572,6 @@ struct growl_t: public bear_attack_t
 
     bear_attack_t::impact( s );
   }
-
-  double recharge_multiplier( const cooldown_t& cd ) const override
-  {
-    double rm = bear_attack_t::recharge_multiplier( cd );
-
-    if ( p()->buff.berserk_bear->check() || p()->buff.incarnation_bear->check() )
-      rm *= 1.0 + p()->buff.berserk_bear->data().effectN( 1 ).percent();
-
-    return rm;
-  }
 };
 
 // Mangle ===================================================================
@@ -4640,16 +4636,6 @@ struct mangle_t : public bear_attack_t
         trigger_gore();
       }
     }
-  }
-
-  double recharge_multiplier( const cooldown_t& cd ) const override
-  {
-    double rm = bear_attack_t::recharge_multiplier( cd );
-
-    if ( p()->buff.berserk_bear->check() || p()->buff.incarnation_bear->check() )
-      rm *= 1.0 + p()->buff.berserk_bear->data().effectN( 1 ).percent();
-
-    return rm;
   }
 };
 
@@ -4840,16 +4826,6 @@ struct thrash_bear_t : public bear_attack_t
       p()->buff.twisted_claws->trigger();
 
   }
-
-  double recharge_multiplier( const cooldown_t& cd ) const override
-  {
-    double rm = bear_attack_t::recharge_multiplier( cd );
-
-    if ( p()->buff.berserk_bear->check() || p()->buff.incarnation_bear->check() )
-      rm *= 1.0 + p()->buff.berserk_bear->data().effectN( 1 ).percent();
-
-    return rm;
-  }
 };
 
 } // end namespace bear_attacks
@@ -4944,16 +4920,6 @@ struct frenzied_regeneration_t : public heals::druid_heal_t
       * p() -> buff.guardian_of_elune -> data().effectN( 2 ).percent();
 
     return am;
-  }
-
-  double recharge_multiplier( const cooldown_t& cd ) const override
-  {
-    double rm = druid_heal_t::recharge_multiplier( cd );
-
-    if ( p()->buff.berserk_bear->check() || p()->buff.incarnation_bear->check() )
-      rm *= 1.0 + p()->buff.berserk_bear->data().effectN( 7 ).percent();
-
-    return rm;
   }
 };
 
@@ -6028,9 +5994,6 @@ struct ironfur_t : public druid_spell_t
     double c = druid_spell_t::cost();
 
     c += p()->buff.guardians_wrath->check_stack_value();
-
-    if ( p()->buff.berserk_bear->check() || p()->buff.incarnation_bear->check() )
-      c *= 1.0 + p()->buff.berserk_bear->data().effectN( 6 ).percent();
 
     return c;
   }
@@ -8588,7 +8551,6 @@ void druid_t::create_buffs()
                                -> add_stat( STAT_MASTERY_RATING, azerite.burst_of_savagery.value( 1 ) );
 
   buff.sharpened_claws       = make_buff( this, "sharpened_claws", find_spell( 279943 ) )
-                               -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                                -> set_default_value( find_spell( 279943 ) -> effectN( 1 ).percent() );
 
   // Restoration
