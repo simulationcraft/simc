@@ -1537,6 +1537,7 @@ class SpellDataGenerator(DataGenerator):
             ( 257506, 0 ),          # Shot in the Dark buff for free Cheap Shot casts
             ( 282449, 0 ),          # Secret Technique clone attack
             ( 130493, 0 ),          # Nightstalker dmg increase driver
+            ( 227151, 0 ),          # Symbols of Death Rank 2 autocrit buff
         ),
 
         # Priest:
