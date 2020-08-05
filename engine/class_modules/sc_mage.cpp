@@ -2590,7 +2590,7 @@ struct arcane_blast_t : public arcane_mage_spell_t
     // Clearcasting immediately after Arcane Blast, a stack of Nether Precision
     // will be consumed by Arcane Blast will not benefit from the damage bonus.
     // Check if this is still the case closer to Shadowlands release.
-    if ( p()->buffs.nether_precision->check() )
+    if ( p()->conduits.nether_precision.ok() )
       make_event( sim, 15_ms, [ this ] { p()->buffs.nether_precision->decrement(); } );
   }
 
