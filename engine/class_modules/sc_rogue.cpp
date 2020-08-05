@@ -2543,10 +2543,38 @@ struct envenom_t : public rogue_attack_t
 
 struct eviscerate_t : public rogue_attack_t
 {
-  eviscerate_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ):
-    rogue_attack_t( name, p, p -> spec.eviscerate, options_str )
+  struct eviscerate_bonus_t : public rogue_attack_t
   {
-    base_multiplier *= 1.0 + p -> spec.eviscerate_2 -> effectN( 1 ).percent();
+    int last_eviscerate_cp;
+
+    eviscerate_bonus_t( util::string_view name, rogue_t* p ):
+      rogue_attack_t( name, p, p->find_spell( 328082 ) ),
+      last_eviscerate_cp( 1 )
+    {}
+
+    void reset() override
+    {
+      rogue_attack_t::reset();
+      last_eviscerate_cp = 1;
+    }
+
+    double combo_point_da_multiplier( const action_state_t* state ) const override
+    {
+      return as<double>( last_eviscerate_cp );
+    }
+  };
+
+  eviscerate_bonus_t* bonus_attack;
+
+  eviscerate_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ):
+    rogue_attack_t( name, p, p->spec.eviscerate, options_str ),
+    bonus_attack( nullptr )
+  {
+    if ( p->spec.eviscerate_2->ok() )
+    {
+      bonus_attack = p->get_background_action<eviscerate_bonus_t>( "eviscerate_bonus" );
+      add_child( bonus_attack );
+    }
   }
 
   double bonus_da( const action_state_t* s ) const override
@@ -2558,8 +2586,18 @@ struct eviscerate_t : public rogue_attack_t
 
   void execute() override
   {
+    // Currently triggered before regular Eviscerate. Also triggers always, no matter whether Find Weakness is applied.
+    if ( bonus_attack && ( p()->bugs || td( target )->debuffs.find_weakness->up() ) )
+    {
+      bonus_attack->set_target( target );
+      bonus_attack->execute();
+    }
+
     rogue_attack_t::execute();
     p() -> buffs.nights_vengeance -> expire();
+
+    if ( bonus_attack )
+      bonus_attack->last_eviscerate_cp = cast_state( execute_state )->cp;
   }
 };
 
