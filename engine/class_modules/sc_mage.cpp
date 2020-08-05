@@ -1541,7 +1541,7 @@ public:
     weapon_multiplier = 0.0;
     affected_by.ice_floes = data().affected_by( p->talents.ice_floes->effectN( 1 ) );
     track_cd_waste = data().cooldown() > 0_ms || data().charge_cooldown() > 0_ms;
-    energize_type = ENERGIZE_NONE;
+    energize_type = action_energize::NONE;
   }
 
   mage_t* p()

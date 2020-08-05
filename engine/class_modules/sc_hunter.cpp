@@ -947,7 +947,7 @@ public:
     const timespan_t cast_time = std::max( this -> execute_time(), this -> gcd() );
     const double regen = p() -> resource_regen_per_second( RESOURCE_FOCUS );
     size_t targets_hit = 1;
-    if ( this -> energize_type_() == ENERGIZE_PER_HIT && ab::is_aoe() )
+    if ( this -> energize_type_() == action_energize::PER_HIT && ab::is_aoe() )
     {
       size_t tl_size = this -> target_list().size();
       int num_targets = this -> n_targets();
@@ -3042,7 +3042,7 @@ struct steady_shot_t: public hunter_ranged_attack_t
     spell_data_ptr_t rank2 = p -> find_rank_spell( "Steady Shot", "Rank 2" );
     if ( rank2.ok() )
     {
-      energize_type = ENERGIZE_ON_CAST;
+      energize_type = action_energize::ON_CAST;
       energize_resource = RESOURCE_FOCUS;
       energize_amount = rank2 -> effectN( 1 ).base_value();
     }

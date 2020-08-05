@@ -1574,7 +1574,7 @@ struct bladestorm_t : public warrior_attack_t
       }
       if ( p->specialization() == WARRIOR_FURY )
       {
-        energize_type     = ENERGIZE_PER_TICK;
+        energize_type     = action_energize::PER_TICK;
         energize_resource = RESOURCE_RAGE;
         energize_amount   = data().effectN( 4 ).resource( energize_resource );
       }
@@ -1841,7 +1841,7 @@ struct charge_t : public warrior_attack_t
     ignore_false_positive   = true;
     movement_directionality = movement_direction_type::OMNI;
     energize_resource       = RESOURCE_RAGE;
-    energize_type           = ENERGIZE_ON_CAST;
+    energize_type           = action_energize::ON_CAST;
     attack_power_mod.direct = charge_damage->effectN( 2 ).ap_coeff();
 
     if ( p->talents.double_time->ok() )
@@ -1915,7 +1915,7 @@ struct intercept_t : public warrior_attack_t
     parse_options( options_str );
     ignore_false_positive   = true;
     movement_directionality = movement_direction_type::OMNI;
-    energize_type           = ENERGIZE_ON_CAST;
+    energize_type           = action_energize::ON_CAST;
     energize_resource       = RESOURCE_RAGE;
 
     cooldown-> charges += as<int>( p-> spec.prot_warrior -> effectN( 3 ).base_value() );
@@ -3447,7 +3447,7 @@ struct shield_slam_t : public warrior_attack_t
       rage_gain( data().effectN( 3 ).resource( RESOURCE_RAGE ) )
   {
     parse_options( options_str );
-    energize_type = ENERGIZE_NONE;
+    energize_type = action_energize::NONE;
   }
 
   double action_multiplier() const override
@@ -3670,7 +3670,7 @@ struct thunder_clap_t : public warrior_attack_t
     may_dodge = may_parry = may_block = false;
 
     radius *= 1.0 + p->talents.crackling_thunder->effectN( 1 ).percent();
-    energize_type = ENERGIZE_NONE;
+    energize_type = action_energize::NONE;
   }
 
   double action_multiplier() const override
@@ -4350,7 +4350,7 @@ struct recklessness_t : public warrior_spell_t
     if ( p->talents.reckless_abandon->ok() )
     {
       energize_amount   = p->talents.reckless_abandon->effectN( 2 ).base_value() / 10.0;
-      energize_type     = ENERGIZE_ON_CAST;
+      energize_type     = action_energize::ON_CAST;
       energize_resource = RESOURCE_RAGE;
     }
 

@@ -2449,19 +2449,19 @@ const char* util::buff_tick_time_behavior_string( buff_tick_time_behavior behavi
   }
 }
 
-const char* util::action_energize_type_string( action_energize_e energize_type )
+const char* util::action_energize_type_string( action_energize energize_type )
 {
   switch ( energize_type )
   {
-    case ENERGIZE_NONE:
+    case action_energize::NONE:
       return "none";
-    case ENERGIZE_ON_CAST:
+    case action_energize::ON_CAST:
       return "on_cast";
-    case ENERGIZE_ON_HIT:
+    case action_energize::ON_HIT:
       return "on_hit";
-    case ENERGIZE_PER_HIT:
+    case action_energize::PER_HIT:
       return "per_hit";
-    case ENERGIZE_PER_TICK:
+    case action_energize::PER_TICK:
       return "per_tick";
     default:
       return "unknown";

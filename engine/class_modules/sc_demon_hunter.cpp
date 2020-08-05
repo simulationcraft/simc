@@ -1683,7 +1683,7 @@ struct consume_soul_t : public demon_hunter_heal_t
     {
       may_miss = may_block = may_dodge = may_parry = callbacks = false;
       background = quiet = dual = true;
-      energize_type = ENERGIZE_ON_CAST;
+      energize_type = action_energize::ON_CAST;
     }
   };
 
@@ -1894,7 +1894,7 @@ struct consume_magic_t : public demon_hunter_spell_t
     may_miss = false;
 
     const spelleffect_data_t& effect = data().effectN( 1 );
-    energize_type = ENERGIZE_ON_CAST;
+    energize_type = action_energize::ON_CAST;
     energize_resource = effect.resource_gain_type();
     energize_amount = effect.resource( energize_resource );
   }
@@ -1934,7 +1934,7 @@ struct disrupt_t : public demon_hunter_spell_t
     may_miss = false;
 
     const spelleffect_data_t& effect = p->spec.disrupt_rank_2->effectN( 1 ).trigger()->effectN( 1 );
-    energize_type = ENERGIZE_ON_CAST;
+    energize_type = action_energize::ON_CAST;
     energize_resource = effect.resource_gain_type();
     energize_amount = effect.resource( energize_resource );
   }

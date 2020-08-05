@@ -159,7 +159,7 @@ namespace warlock {
         destruction_spell_t("soul_fire", p, p -> talents.soul_fire)
       {
         parse_options(options_str);
-        energize_type = ENERGIZE_PER_HIT;
+        energize_type = action_energize::PER_HIT;
         energize_resource = RESOURCE_SOUL_SHARD;
         energize_amount = (p->find_spell( 281490 )->effectN( 1 ).base_value()) / 10.0;
 
@@ -212,7 +212,7 @@ namespace warlock {
         destruction_spell_t("shadowburn", p, p -> talents.shadowburn)
       {
         parse_options(options_str);
-        energize_type = ENERGIZE_PER_HIT;
+        energize_type = action_energize::PER_HIT;
         energize_resource = RESOURCE_SOUL_SHARD;
         energize_amount = ( p->find_spell( 245731 )->effectN( 1 ).base_value() ) / 10.0;
         can_havoc = true;
@@ -323,7 +323,7 @@ namespace warlock {
         parse_options(options_str);
         can_havoc = true;
 
-        energize_type = ENERGIZE_PER_HIT;
+        energize_type = action_energize::PER_HIT;
         energize_resource = RESOURCE_SOUL_SHARD;
         energize_amount = ( p->find_spell( 245330 )->effectN( 1 ).base_value() ) / 10.0;
 
@@ -389,7 +389,7 @@ namespace warlock {
 
         if (p->talents.fire_and_brimstone->ok()) {
           base_multiplier *= p->talents.fire_and_brimstone->effectN(1).percent();
-          energize_type = ENERGIZE_PER_HIT;
+          energize_type = action_energize::PER_HIT;
           energize_resource = RESOURCE_SOUL_SHARD;
           energize_amount = (p->talents.fire_and_brimstone->effectN(2).base_value()) / 10.0;
           gain = p->gains.incinerate_fnb;
@@ -478,7 +478,7 @@ namespace warlock {
         backdraft_cast_time = 1.0 + p->buffs.backdraft->data().effectN(1).percent();
         backdraft_gcd = 1.0 + p->buffs.backdraft->data().effectN(2).percent();
 
-        energize_type = ENERGIZE_PER_HIT;
+        energize_type = action_energize::PER_HIT;
         energize_resource = RESOURCE_SOUL_SHARD;
         energize_amount = (p->find_spell(244670)->effectN(1).base_value()) / 10.0;
       }

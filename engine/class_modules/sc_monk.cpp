@@ -1626,7 +1626,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
       may_dodge = may_parry = may_block = may_miss = true;
       dual                                         = true;
 
-      energize_type = ENERGIZE_NONE;
+      energize_type = action_energize::NONE;
     }
 
     void impact( action_state_t* state ) override
@@ -3391,7 +3391,7 @@ struct tiger_palm_t : public monk_melee_attack_t
     if ( p->specialization() == MONK_WINDWALKER )
       energize_amount = p->spec.windwalker_monk->effectN( 4 ).base_value();
     else
-      energize_type = ENERGIZE_NONE;
+      energize_type = action_energize::NONE;
 
     spell_power_mod.direct = 0.0;
   }
@@ -5128,7 +5128,7 @@ struct energizing_elixir_t : public monk_spell_t
 
     dot_duration = trigger_gcd = timespan_t::zero();
     may_miss = may_crit = harmful = false;
-    energize_type                 = ENERGIZE_NONE;  // disable resource gain from spell data
+    energize_type                 = action_energize::NONE;  // disable resource gain from spell data
   }
 
   void execute() override
@@ -5156,7 +5156,7 @@ struct black_ox_brew_t : public monk_spell_t
     harmful       = false;
     use_off_gcd   = true;
     trigger_gcd   = timespan_t::zero();
-    energize_type = ENERGIZE_NONE;  // disable resource gain from spell data
+    energize_type = action_energize::NONE;  // disable resource gain from spell data
   }
 
   void execute() override

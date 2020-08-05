@@ -1322,13 +1322,13 @@ enum rppm_scale_e : uint8_t
   RPPM_DISABLE      = 0xff
 };
 
-enum action_energize_e
+enum class action_energize
 {
-  ENERGIZE_NONE = 0,
-  ENERGIZE_ON_CAST,
-  ENERGIZE_ON_HIT,
-  ENERGIZE_PER_HIT,
-  ENERGIZE_PER_TICK
+  NONE = 0,
+  ON_CAST,
+  ON_HIT,
+  PER_HIT,
+  PER_TICK
 };
 
 // Global cooldown speed-up type

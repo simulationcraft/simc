@@ -402,7 +402,7 @@ struct shadow_word_death_t final : public priest_spell_t
 
     cooldown->hasted = true;
 
-    energize_type     = ENERGIZE_ON_HIT;
+    energize_type     = action_energize::ON_HIT;
     energize_resource = RESOURCE_INSANITY;
     energize_amount   = data().effectN( 3 ).base_value();
     if ( priest().legendary.painbreaker_psalm->ok() )
@@ -717,7 +717,7 @@ struct shadow_word_pain_t final : public priest_spell_t
     {
       base_dd_max   = 0.0;
       base_dd_min   = 0.0;
-      energize_type = ENERGIZE_NONE;  // no insanity gain
+      energize_type = action_energize::NONE;  // no insanity gain
     }
 
     if ( priest().specs.shadowy_apparitions->ok() && !priest().active_spells.shadowy_apparitions )
@@ -940,7 +940,7 @@ struct void_bolt_t final : public priest_spell_t
       radius        = player.find_spell( 234746 )->effectN( 1 ).radius();
       may_miss      = false;
       background = dual = true;
-      energize_type     = ENERGIZE_ON_CAST;
+      energize_type     = action_energize::ON_CAST;
     }
 
     timespan_t travel_time() const override
@@ -983,7 +983,7 @@ struct void_bolt_t final : public priest_spell_t
   {
     parse_options( options_str );
     use_off_gcd      = true;
-    energize_type    = ENERGIZE_ON_CAST;
+    energize_type    = action_energize::ON_CAST;
     cooldown->hasted = true;
 
     auto rank2 = player.find_rank_spell( "Void Bolt", "Rank 2" );
@@ -1059,7 +1059,7 @@ struct dark_void_t final : public priest_spell_t
 
   {
     parse_options( options_str );
-    energize_type         = ENERGIZE_ON_CAST;
+    energize_type         = action_energize::ON_CAST;
     child_swp->background = true;
 
     may_miss = false;
@@ -1200,7 +1200,7 @@ struct void_torrent_t final : public priest_spell_t
     channeled     = true;
     use_off_gcd   = true;
     tick_zero     = true;
-    energize_type = ENERGIZE_PER_TICK;
+    energize_type = action_energize::PER_TICK;
 
     dot_duration = timespan_t::from_seconds( 4.0 );
   }

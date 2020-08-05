@@ -362,7 +362,7 @@ public:
   gain_t* gain;
 
   // Sets the behavior for when this action's resource energize occur.
-  action_energize_e energize_type;
+  action_energize energize_type;
 
   // Resource for the energize to grant.
   resource_e energize_resource;
@@ -839,7 +839,7 @@ public:
   virtual resource_e energize_resource_() const
   { return energize_resource; }
 
-  virtual action_energize_e energize_type_() const
+  virtual action_energize energize_type_() const
   { return energize_type; }
 
   virtual gain_t* energize_gain( const action_state_t* /* state */ ) const

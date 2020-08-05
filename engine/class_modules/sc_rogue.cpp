@@ -975,9 +975,9 @@ public:
       switch ( effect.type() )
       {
         case E_ADD_COMBO_POINTS:
-          if ( ab::energize_type != ENERGIZE_NONE )
+          if ( ab::energize_type != action_energize::NONE )
           {
-            ab::energize_type = ENERGIZE_ON_HIT;
+            ab::energize_type = action_energize::ON_HIT;
             ab::energize_amount = effect.base_value();
             ab::energize_resource = RESOURCE_COMBO_POINT;
           }
@@ -1071,7 +1071,7 @@ public:
   {
     double cp = 0;
 
-    if ( ab::energize_type != ENERGIZE_NONE && ab::energize_resource == RESOURCE_COMBO_POINT )
+    if ( ab::energize_type != action_energize::NONE && ab::energize_resource == RESOURCE_COMBO_POINT )
     {
       cp += ab::energize_amount;
     }
@@ -1431,7 +1431,7 @@ public:
     trigger_auto_attack( ab::execute_state );
     trigger_ruthlessness_cp( ab::execute_state );
 
-    if ( ab::energize_type != ENERGIZE_NONE && ab::energize_resource == RESOURCE_COMBO_POINT )
+    if ( ab::energize_type != action_energize::NONE && ab::energize_resource == RESOURCE_COMBO_POINT )
     {
       if ( affected_by.shadow_blades && p()->buffs.shadow_blades->up() )
       {
@@ -1469,7 +1469,7 @@ public:
   {
     ab::schedule_travel( state );
 
-    if ( ab::energize_type != ENERGIZE_NONE && ab::energize_resource == RESOURCE_COMBO_POINT )
+    if ( ab::energize_type != action_energize::NONE && ab::energize_resource == RESOURCE_COMBO_POINT )
       trigger_seal_fate( state );
   }
 
@@ -2650,7 +2650,7 @@ struct fan_of_knives_t: public rogue_attack_t
     echoing_blades_attack( nullptr ), echoing_blades_crit_count( 0 )
   {
     aoe = -1;
-    energize_type     = ENERGIZE_ON_HIT;
+    energize_type     = action_energize::ON_HIT;
     energize_resource = RESOURCE_COMBO_POINT;
     // 09/25/2019 - 8.2.5 Spelldata seemingly erroneously removed this effect from the spell data
     energize_amount   = 1; // data().effectN( 2 ).base_value();
@@ -3133,7 +3133,7 @@ struct marked_for_death_t : public rogue_spell_t
     parse_options( options_str );
 
     harmful = false;
-    energize_type = ENERGIZE_ON_CAST;
+    energize_type = action_energize::ON_CAST;
   }
 
   void execute() override
@@ -3750,7 +3750,7 @@ struct shuriken_storm_t: public rogue_attack_t
   shuriken_storm_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ):
     rogue_attack_t( name, p, p -> find_specialization_spell( "Shuriken Storm" ), options_str )
   {
-    energize_type = ENERGIZE_PER_HIT;
+    energize_type = action_energize::PER_HIT;
     energize_resource = RESOURCE_COMBO_POINT;
     energize_amount = 1;
     ap_type = attack_power_type::WEAPON_BOTH;
@@ -3836,7 +3836,7 @@ struct sinister_strike_t : public rogue_attack_t
       rogue_attack_t( name, p, p -> find_spell( 197834 ) )
     {
       // CP generation is not in the spell data for some reason
-      energize_type = ENERGIZE_ON_HIT;
+      energize_type = action_energize::ON_HIT;
       energize_amount = 1;
       energize_resource = RESOURCE_COMBO_POINT;
     }

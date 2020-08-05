@@ -7325,7 +7325,7 @@ struct arcane_torrent_t : public racial_spell_t
   {
     parse_options( options_str );
     harmful = false;
-    energize_type = ENERGIZE_ON_CAST;
+    energize_type = action_energize::ON_CAST;
     // Some specs need special handling here
     switch ( p->specialization() )
     {

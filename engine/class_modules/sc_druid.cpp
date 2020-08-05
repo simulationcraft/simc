@@ -2670,7 +2670,7 @@ struct moonfire_t : public druid_spell_t
       }
       else
       {
-        energize_type = ENERGIZE_NONE;
+        energize_type = action_energize::NONE;
       }
 
       if ( p->talent.shooting_stars->ok() && !p->active.shooting_stars )
@@ -2897,7 +2897,7 @@ struct moonfire_t : public druid_spell_t
     }
     else
     {
-      energize_type = ENERGIZE_NONE;
+      energize_type = action_energize::NONE;
     }
     // Add damage modifiers in moonfire_damage_t, not here.
   }
@@ -3476,7 +3476,7 @@ struct brutal_slash_t : public cat_attack_t
     aoe               = as<int>( data().effectN( 3 ).base_value() );
     energize_amount   = data().effectN( 2 ).base_value();
     energize_resource = RESOURCE_COMBO_POINT;
-    energize_type     = ENERGIZE_ON_HIT;
+    energize_type     = action_energize::ON_HIT;
     cooldown->hasted  = true;
   }
 
@@ -3739,7 +3739,7 @@ struct lunar_inspiration_t : public cat_attack_t
 
     snapshots_tf = true;
     hasted_ticks = true;
-    energize_type = ENERGIZE_ON_HIT;
+    energize_type = action_energize::ON_HIT;
 
     gcd_type = gcd_haste_type::ATTACK_HASTE;
   }
@@ -4294,7 +4294,7 @@ struct swipe_cat_t : public cat_attack_t
     aoe               = as<int>( data().effectN( 4 ).base_value() );
     energize_amount   = data().effectN( 1 ).base_value();
     energize_resource = RESOURCE_COMBO_POINT;
-    energize_type     = ENERGIZE_ON_HIT;
+    energize_type     = action_energize::ON_HIT;
 
     if ( player->find_rank_spell( "Swipe", "Rank 2" )->ok() )
       bleed_mul = player->spec.swipe_cat->effectN( 2 ).percent();
@@ -4352,7 +4352,7 @@ struct tigers_fury_t : public cat_attack_t
   {
     harmful = may_miss = may_parry = may_dodge = may_crit = false;
     autoshift = form_mask = CAT_FORM;
-    energize_type         = ENERGIZE_ON_CAST;
+    energize_type         = action_energize::ON_CAST;
     energize_amount += p->find_rank_spell( "Tiger's Fury", "Rank 2" )->effectN( 1 ).resource( RESOURCE_ENERGY );
 
     if ( p->talent.predator->ok() )
@@ -4396,7 +4396,7 @@ struct thrash_cat_t : public cat_attack_t
     // For some reason this is in a different spell
     energize_amount = p -> find_spell( 211141 ) -> effectN(1).base_value();
     energize_resource = RESOURCE_COMBO_POINT;
-    energize_type = ENERGIZE_ON_HIT;
+    energize_type = action_energize::ON_HIT;
 
   }
 
@@ -4465,7 +4465,7 @@ struct bear_melee_t : public bear_attack_t
     special           = false;
     weapon_multiplier = 1.0;
 
-    energize_type     = ENERGIZE_ON_HIT;
+    energize_type     = action_energize::ON_HIT;
     energize_resource = RESOURCE_RAGE;
     energize_amount   = 4;
   }
@@ -6160,7 +6160,7 @@ struct sunfire_t : public druid_spell_t
     }
     else
     {
-      energize_type = ENERGIZE_NONE;
+      energize_type = action_energize::NONE;
     }
 
     // Add damage modifiers in sunfire_damage_t, not here.
