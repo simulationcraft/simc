@@ -649,7 +649,7 @@ struct potion_t : public dbc_consumable_base_t
 
     pre_pot_time = 0_ms;
 
-    std::find_if( it + 1, apl.end(), [this]( action_t* a ) {
+    std::for_each( it + 1, apl.end(), [this]( action_t* a ) {
       if ( a->action_ready() )
       {
         timespan_t delta =

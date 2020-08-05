@@ -246,7 +246,6 @@ struct eclipse_handler_t {
 
   void reset_stacks();
   void reset_state();
-  eclipse_state_e get_state();
 };
 
 struct druid_t : public player_t
@@ -1060,11 +1059,6 @@ void eclipse_handler_t::reset_state()
   state = ANY_NEXT;
 }
 
-eclipse_state_e eclipse_handler_t::get_state()
-{
-  return state;
-}
-
 snapshot_counter_t::snapshot_counter_t( druid_t* player , buff_t* buff ) :
   sim( player -> sim ), p( player ), b( 0 ),
   exe_up( 0 ), exe_down( 0 ), tick_up( 0 ), tick_down( 0 ), is_snapped( false ), wasted_buffs( 0 )
@@ -1628,13 +1622,6 @@ struct buff_effect_t
 template <class Base>
 struct druid_action_t : public Base
 {
-  std::vector<buff_effect_t> ta_multiplier_buffeffects;
-  std::vector<buff_effect_t> da_multiplier_buffeffects;
-  std::vector<buff_effect_t> execute_time_buffeffects;
-  std::vector<buff_effect_t> recharge_multiplier_buffeffects;
-  std::vector<buff_effect_t> cost_buffeffects;
-  std::vector<buff_effect_t> crit_chance_buffeffects;
-
   unsigned form_mask; // Restricts use of a spell based on form.
   bool may_autounshift; // Allows a spell that may be cast in NO_FORM but not in current form to be cast by exiting form.
   unsigned autoshift; // Allows a spell that may not be cast in the current form to be cast by automatically changing to the specified form.
@@ -1650,6 +1637,14 @@ public:
   bool is_auto_attack;
 
   free_cast_e free_cast; // convoke_the_spirits, lycaras, oneths
+
+  std::vector<buff_effect_t> ta_multiplier_buffeffects;
+  std::vector<buff_effect_t> da_multiplier_buffeffects;
+  std::vector<buff_effect_t> execute_time_buffeffects;
+  std::vector<buff_effect_t> recharge_multiplier_buffeffects;
+  std::vector<buff_effect_t> cost_buffeffects;
+  std::vector<buff_effect_t> crit_chance_buffeffects;
+
 
   druid_action_t( util::string_view n, druid_t* player, const spell_data_t* s = spell_data_t::nil() )
     : ab( n, player, s ),

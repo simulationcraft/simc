@@ -4721,7 +4721,7 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
             break;
 
           case P_TARGET:
-            aoe += effect.base_value();
+            aoe += as<int>( effect.base_value() );
             sim->print_debug( "{} max target count modified by {}", *this, effect.base_value() );
             break;
 
