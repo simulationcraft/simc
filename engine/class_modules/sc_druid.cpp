@@ -1253,6 +1253,8 @@ public:
     add_invalidate( CACHE_STAMINA );
     add_invalidate( CACHE_ARMOR );
     add_invalidate( CACHE_CRIT_AVOIDANCE );
+    add_invalidate( CACHE_HIT );
+    add_invalidate( CACHE_EXP );
   }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
@@ -1391,6 +1393,8 @@ struct cat_form_t : public druid_buff_t< buff_t >
     base_t( p, "cat_form", p.find_class_spell( "Cat Form" ) )
   {
     add_invalidate( CACHE_ATTACK_POWER );
+    add_invalidate( CACHE_HIT );
+    add_invalidate( CACHE_EXP );
   }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
@@ -1489,7 +1493,8 @@ struct moonkin_form_t : public druid_buff_t<buff_t>
   moonkin_form_t( druid_t& p ) : base_t( p, "moonkin_form", p.spec.moonkin_form )
   {
     add_invalidate( CACHE_ARMOR );
-    set_chance( 1.0 );
+    add_invalidate( CACHE_HIT );
+    add_invalidate( CACHE_EXP );
   }
 
   void start( int stacks, double value, timespan_t duration ) override
