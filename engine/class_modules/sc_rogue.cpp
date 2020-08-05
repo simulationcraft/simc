@@ -3672,6 +3672,44 @@ struct shadowstrike_t : public rogue_attack_t
   }
 };
 
+// Shadow Vault =============================================================
+
+struct shadow_vault_t: public rogue_attack_t
+{
+  struct shadow_vault_bonus_t : public rogue_attack_t
+  {
+    shadow_vault_bonus_t( util::string_view name, rogue_t* p ) :
+      rogue_attack_t( name, p, p -> find_spell( 319190 ) )
+    {
+      background  = true;
+    }
+  };
+
+  shadow_vault_bonus_t* bonus_attack;
+
+  shadow_vault_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ):
+    rogue_attack_t( name, p, p -> find_specialization_spell( "Shadow Vault" ), options_str ),
+    bonus_attack( nullptr )
+  {
+    if ( p->find_rank_spell( "Shadow Vault", "Rank 2" )->ok() )
+    {
+      bonus_attack = p->get_background_action<shadow_vault_bonus_t>( "shadow_vault_bonus" );
+      add_child( bonus_attack );
+    }
+  }
+
+  void impact(action_state_t* state) override
+  {
+    rogue_attack_t::impact( state );
+
+    if ( bonus_attack && result_is_hit( state->result ) && td( state->target )->debuffs.find_weakness->up() )
+    {
+      bonus_attack->set_target( state->target );
+      bonus_attack->execute();
+    }
+  }
+};
+
 // Shuriken Storm ===========================================================
 
 struct shuriken_storm_t: public rogue_attack_t
@@ -3679,7 +3717,6 @@ struct shuriken_storm_t: public rogue_attack_t
   shuriken_storm_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ):
     rogue_attack_t( name, p, p -> find_specialization_spell( "Shuriken Storm" ), options_str )
   {
-    aoe = -1;
     energize_type = ENERGIZE_PER_HIT;
     energize_resource = RESOURCE_COMBO_POINT;
     energize_amount = 1;
@@ -3699,7 +3736,7 @@ struct shuriken_storm_t: public rogue_attack_t
     double m = rogue_attack_t::action_multiplier();
 
     // Stealth Buff
-    if ( p()->stealthed( STEALTH_BASIC | STEALTH_SHADOWDANCE ) )
+    if ( p()->bugs && p()->stealthed( STEALTH_BASIC | STEALTH_SHADOWDANCE ) )
     {
       m *= 1.0 + data().effectN( 3 ).percent();
     }
@@ -6188,6 +6225,7 @@ void rogue_t::init_action_list()
     finish -> add_action( this, "Rupture", "cycle_targets=1,if=!variable.use_priority_rotation&spell_targets.shuriken_storm>=2&!buff.shadow_dance.up&target.time_to_die>=(5+(2*combo_points))&refreshable", "Multidotting outside Dance on targets that will live for the duration of Rupture, refresh during pandemic." );
     finish -> add_action( this, "Rupture", "if=remains<cooldown.symbols_of_death.remains+10&cooldown.symbols_of_death.remains<=5&target.time_to_die-remains>cooldown.symbols_of_death.remains+5", "Refresh Rupture early if it will expire during Symbols. Do that refresh if SoD gets ready in the next 5s." );
     finish -> add_talent( this, "Secret Technique" );
+    finish -> add_action( this, "Shadow Vault", "if=!variable.use_priority_rotation&spell_targets>=3" );
     finish -> add_action( this, "Eviscerate" );
 
     // Builders
@@ -6243,6 +6281,7 @@ action_t* rogue_t::create_action( util::string_view name, const std::string& opt
   if ( name == "shadow_dance"        ) return new shadow_dance_t       ( name, this, options_str );
   if ( name == "shadowstep"          ) return new shadowstep_t         ( name, this, options_str );
   if ( name == "shadowstrike"        ) return new shadowstrike_t       ( name, this, options_str );
+  if ( name == "shadow_vault"        ) return new shadow_vault_t       ( name, this, options_str );
   if ( name == "shuriken_storm"      ) return new shuriken_storm_t     ( name, this, options_str );
   if ( name == "shuriken_tornado"    ) return new shuriken_tornado_t   ( name, this, options_str );
   if ( name == "shuriken_toss"       ) return new shuriken_toss_t      ( name, this, options_str );
