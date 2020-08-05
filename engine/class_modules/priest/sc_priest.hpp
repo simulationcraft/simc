@@ -1107,15 +1107,15 @@ public:
     return m;
   }
 
-  void gain_energize_resource( resource_e resource_type, double amount, gain_t* gain, action_t* action ) override
+  void gain_energize_resource( resource_e resource_type, double amount, gain_t* gain ) override
   {
     if ( resource_type == RESOURCE_INSANITY )
     {
-      priest().generate_insanity( amount, gain, action );
+      priest().generate_insanity( amount, gain, this );
     }
     else
     {
-      ab::gain_energize_resource( resource_type, amount, gain, action );
+      ab::gain_energize_resource( resource_type, amount, gain );
     }
   }
 

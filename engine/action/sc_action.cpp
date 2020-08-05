@@ -1675,7 +1675,7 @@ void action_t::execute()
     auto amount = composite_energize_amount( execute_state );
     if ( amount != 0 )
     {
-      gain_energize_resource( energize_resource_(), amount, energize_gain( execute_state ), this );
+      gain_energize_resource( energize_resource_(), amount, energize_gain( execute_state ) );
     }
   }
   else if ( energize_type_() == ENERGIZE_PER_HIT )
@@ -1683,7 +1683,7 @@ void action_t::execute()
     auto amount = composite_energize_amount( execute_state ) * num_targets_hit;
     if ( amount != 0 )
     {
-      gain_energize_resource( energize_resource_(), amount, energize_gain( execute_state ), this );
+      gain_energize_resource( energize_resource_(), amount, energize_gain( execute_state ) );
     }
   }
 
@@ -1747,7 +1747,7 @@ void action_t::tick( dot_t* d )
   if ( energize_type_() == ENERGIZE_PER_TICK && d->get_last_tick_factor() >= 1.0)
   {    
     // Partial tick is not counted for resource gain
-    gain_energize_resource( energize_resource_(), composite_energize_amount( d->state ), gain, this );
+    gain_energize_resource( energize_resource_(), composite_energize_amount( d->state ), gain );
   }
 
   stats->add_tick( d->time_to_tick, d->state->target );
@@ -4334,7 +4334,7 @@ void action_t::set_target( player_t* new_target )
   target = new_target;
 }
 
-void action_t::gain_energize_resource( resource_e resource_type, double amount, gain_t* gain, action_t* action )
+void action_t::gain_energize_resource( resource_e resource_type, double amount, gain_t* gain )
 {
   player->resource_gain( resource_type, amount, gain, this );
 }
