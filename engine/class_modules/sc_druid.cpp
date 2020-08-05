@@ -1700,7 +1700,8 @@ public:
         continue;
 
       if ( ( eff->misc_value1() == P_EFFECT_1 && idx == 1 ) || ( eff->misc_value1() == P_EFFECT_2 && idx == 2 ) ||
-           ( eff->misc_value1() == P_EFFECT_3 && idx == 3 ) || ( eff->misc_value1() == P_EFFECT_4 && idx == 4 ) )
+           ( eff->misc_value1() == P_EFFECT_3 && idx == 3 ) || ( eff->misc_value1() == P_EFFECT_4 && idx == 4 ) ||
+           ( eff->misc_value1() == P_EFFECT_5 && idx == 5 ) )
       {
         val += eff->percent();
 
@@ -1744,7 +1745,7 @@ public:
       if ( !ab::data().affected_by( eff ) )
         continue;
 
-      if ( i <= 4 )
+      if ( i <= 5 )
       {
         if ( spell->ok() )
           parse_rank_spell_effects( val, mastery, s_data, i, spell );
@@ -1881,20 +1882,12 @@ public:
   {
     double ta = ab::composite_ta_multiplier( s ) * get_buff_effects_value( ta_multiplier_buffeffects );
 
-    if ( p()->buff.incarnation_bear->up() && p()->legendary.legacy_of_the_sleeper->ok() &&
-         ab::data().affected_by( p()->spec.berserk_bear->effectN( 3 ) ) )
-      ta *= 1.0 + p()->legendary.legacy_of_the_sleeper->effectN( 2 ).percent();
-
     return ta;
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
   {
     double da = ab::composite_da_multiplier( s ) * get_buff_effects_value( da_multiplier_buffeffects );
-
-    if ( p()->buff.incarnation_bear->up() && p()->legendary.legacy_of_the_sleeper->ok() &&
-         ab::data().affected_by( p()->spec.berserk_bear->effectN( 2 ) ) )
-      da *= 1.0 + p()->legendary.legacy_of_the_sleeper->effectN( 1 ).percent();
 
     return da;
   }
@@ -3398,16 +3391,6 @@ struct cat_melee_t : public cat_attack_t
     return cat_attack_t::execute_time();
   }
 
-  double action_multiplier() const override
-  {
-    double am = cat_attack_t::action_multiplier();
-
-    if ( p()->buff.incarnation_bear->check() && p()->legendary.legacy_of_the_sleeper->ok() )
-      am *= 1.0 + p()->legendary.legacy_of_the_sleeper->effectN( 3 ).percent();
-
-    return am;
-  }
-
   double composite_target_multiplier( player_t* t ) const override
   {
     double tm = cat_attack_t::composite_target_multiplier( t );
@@ -4494,16 +4477,6 @@ struct bear_melee_t : public bear_attack_t
       return timespan_t::from_seconds( 0.01 );
 
     return bear_attack_t::execute_time();
-  }
-
-  double action_multiplier() const override
-  {
-    double am = bear_attack_t::action_multiplier();
-
-    if ( p()->buff.incarnation_bear->check() && p()->legendary.legacy_of_the_sleeper->ok() )
-      am *= 1.0 + p()->legendary.legacy_of_the_sleeper->effectN( 3 ).percent();
-
-    return am;
   }
 
   double composite_target_multiplier( player_t* t ) const override
@@ -9881,8 +9854,8 @@ double druid_t::composite_leech() const
 {
   double l = player_t::composite_leech();
 
-  if ( legendary.legacy_of_the_sleeper->ok() )
-    l *= 1.0 + legendary.legacy_of_the_sleeper->effectN( 5 ).percent();
+  if ( legendary.legacy_of_the_sleeper->ok() && buff.berserk_bear->check() )
+    l *= 1.0 + legendary.legacy_of_the_sleeper->effectN( 4 ).percent();
 
   return l;
 }
