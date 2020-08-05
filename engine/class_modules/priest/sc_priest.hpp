@@ -282,6 +282,11 @@ public:
     propagate_const<cooldown_t*> holy_fire;
   } cooldowns;
 
+  struct realppm_t
+  {
+    propagate_const<real_ppm_t*> eternal_call_to_the_void;
+  } rppm;
+
   // Gains
   struct
   {
@@ -319,6 +324,7 @@ public:
     propagate_const<gain_t*> insanity_lost_devouring_plague;
     propagate_const<gain_t*> insanity_mindgames;
     propagate_const<gain_t*> insanity_ascended_blast;
+    propagate_const<gain_t*> insanity_eternal_call_to_the_void;
   } gains;
 
   // Benefits
@@ -344,6 +350,7 @@ public:
     propagate_const<proc_t*> dissonant_echoes;
     propagate_const<proc_t*> mind_devourer;
     propagate_const<proc_t*> blessing_of_plenty;
+	propagate_const<proc_t*> void_tendril;
   } procs;
 
   // Special
@@ -351,6 +358,7 @@ public:
   {
     propagate_const<actions::spells::mind_sear_tick_t*> mind_sear_tick;
     propagate_const<actions::spells::shadowy_apparition_spell_t*> shadowy_apparitions;
+    propagate_const<action_t*> void_tendril;
   } active_spells;
 
   // Items
@@ -435,7 +443,7 @@ public:
     // Shadow
     item_runeforge_t painbreaker_psalm;
     item_runeforge_t shadowflame_prism;         // TODO: Add 20% damage modifier
-    item_runeforge_t eternal_call_to_the_void;  // NYI
+    item_runeforge_t eternal_call_to_the_void;  // Insanity effect implemeneted, doesn't do dmg
   } legendary;
 
   struct
@@ -546,6 +554,7 @@ public:
   bool insanity_drain_frozen() const;
   void adjust_holy_word_serenity_cooldown();
   double tick_damage_over_time( timespan_t duration, const dot_t* dot ) const;
+  void trigger_eternal_call_to_the_void( const dot_t* d );
 
   /**
    * Insanity tracking

@@ -278,6 +278,49 @@ struct mind_sear_t final : public priest_spell_t
   }
 };
 
+// TODO: Figure out why this isn't doing damage
+struct void_tendril_mind_flay_t final : public priest_spell_t
+{
+  const spell_data_t* void_tendril_insanity;
+
+  void_tendril_mind_flay_t( priest_t& p )
+    : priest_spell_t( "mind_flay_void_tendril", p, p.find_spell( 193470 ) ),
+    void_tendril_insanity( priest().find_spell( 336214 ) )
+  {
+    aoe                    = 1;
+    radius                 = 100;
+    dot_duration           = timespan_t::zero();
+    base_tick_time         = timespan_t::zero();
+    background             = true;
+    ground_aoe             = true;
+    school                 = SCHOOL_SHADOW;
+    may_miss               = false;
+    may_crit               = true;
+    spell_power_mod.direct = spell_power_mod.tick;
+    spell_power_mod.tick   = 0.0;
+
+    snapshot_flags &= ~( STATE_MUL_PERSISTENT | STATE_TGT_MUL_DA );
+    update_flags &= ~( STATE_MUL_PERSISTENT | STATE_TGT_MUL_DA );
+  }
+
+  timespan_t tick_time( const action_state_t* ) const override
+  {
+    return data().duration();
+  }
+
+  double composite_da_multiplier( const action_state_t* state ) const override
+  {
+    return priest().composite_player_pet_damage_multiplier( state );
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    priest_spell_t::impact( s );
+
+    priest().generate_insanity( void_tendril_insanity->effectN( 1 ).base_value(), priest().gains.insanity_eternal_call_to_the_void, s->action );
+  }
+};
+
 struct mind_flay_t final : public priest_spell_t
 {
   double insanity_gain;
@@ -296,11 +339,20 @@ struct mind_flay_t final : public priest_spell_t
     energize_type = ENERGIZE_NONE;  // disable resource generation from spell data
 
     spell_power_mod.tick *= 1.0 + p.talents.fortress_of_the_mind->effectN( 3 ).percent();
+
+    if ( priest().legendary.eternal_call_to_the_void->ok() ) {
+      priest().active_spells.void_tendril = new void_tendril_mind_flay_t( p );
+      add_child( priest().active_spells.void_tendril );
+    }
   }
 
   void tick( dot_t* d ) override
   {
     priest_spell_t::tick( d );
+
+    if ( priest().legendary.eternal_call_to_the_void->ok() ) {
+      priest().trigger_eternal_call_to_the_void( d );
+    }
 
     priest().generate_insanity( insanity_gain, priest().gains.insanity_mind_flay, d->state->action );
   }
@@ -1645,6 +1697,7 @@ struct whispers_of_the_damned_t final : public priest_buff_t<buff_t>
 };
 }  // namespace buffs
 
+// Calculate damage a DoT has left given a certain time period
 double priest_t::tick_damage_over_time( timespan_t duration, const dot_t* dot ) const
 {
   if ( !dot->is_ticking() )
@@ -1662,6 +1715,20 @@ double priest_t::tick_damage_over_time( timespan_t duration, const dot_t* dot ) 
   action_state_t::release( state );
   return total_damage;
 };
+
+// Legendary Eternal Call to the Void trigger
+void priest_t::trigger_eternal_call_to_the_void( const dot_t* d )
+{
+  if ( rppm.eternal_call_to_the_void->trigger() )
+  {
+    procs.void_tendril->occur();
+    make_event<ground_aoe_event_t>( *sim, this,
+                                    ground_aoe_params_t()
+                                        .target( d->target )
+                                        .duration( find_spell( 193470 )->duration() )
+                                        .action( active_spells.void_tendril ) );
+  }
+}
 
 // Insanity Control Methods
 void priest_t::generate_insanity( double num_amount, gain_t* g, action_t* action )
@@ -1989,6 +2056,7 @@ void priest_t::create_buffs_shadow()
 
 void priest_t::init_rng_shadow()
 {
+  rppm.eternal_call_to_the_void = get_rppm( "eteranl_call_to_the_void", legendary.eternal_call_to_the_void );
 }
 
 void priest_t::init_spells_shadow()
