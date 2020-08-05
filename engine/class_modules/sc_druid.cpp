@@ -2301,7 +2301,6 @@ public:
   bool consumes_bloodtalons;
   snapshot_counter_t* bt_counter;
   snapshot_counter_t* tf_counter;
-  snapshot_counter_t* sr_counter;
   bool direct_bleed;
 
   druid_attack_t( util::string_view n, druid_t* player,
@@ -2341,7 +2340,6 @@ public:
     {
       bt_counter = new snapshot_counter_t( ab::p(), ab::p() -> buff.bloodtalons );
       tf_counter = new snapshot_counter_t( ab::p(), ab::p() -> buff.tigers_fury );
-      sr_counter = new snapshot_counter_t( ab::p(), ab::p() -> buff.savage_roar );
     }
   }
 
@@ -2366,7 +2364,6 @@ public:
     {
       bt_counter -> count_execute();
       tf_counter -> count_execute();
-      sr_counter -> count_execute();
 
       ab::p() -> buff.bloodtalons -> decrement();
     }
@@ -2388,7 +2385,6 @@ public:
     {
       bt_counter -> count_tick();
       tf_counter -> count_tick();
-      sr_counter -> count_tick();
     }
   }
 
@@ -10680,8 +10676,6 @@ void druid_t::output_json_report( js::JsonOutput& /*root*/ ) const
     stats_t* stats = stats_list[ i ];
     double tf_exe_up = 0, tf_exe_total = 0;
     double tf_benefit_up = 0, tf_benefit_total = 0;
-    double sr_exe_up = 0, sr_exe_total = 0;
-    double sr_benefit_up = 0, sr_benefit_total = 0;
     double bt_exe_up = 0, bt_exe_total = 0;
     double bt_benefit_up = 0, bt_benefit_total = 0;
     // int n = 0;
@@ -10705,18 +10699,6 @@ void druid_t::output_json_report( js::JsonOutput& /*root*/ ) const
         tf_benefit_total += a->tf_counter->mean_exe_total();
       }
 
-      if ( talent.savage_roar->ok() )
-      {
-        sr_exe_up += a->sr_counter->mean_exe_up();
-        sr_exe_total += a->sr_counter->mean_exe_total();
-        sr_benefit_up += a->sr_counter->mean_tick_up();
-        sr_benefit_total += a->sr_counter->mean_tick_total();
-        if ( has_amount_results( stats->direct_results ) )
-        {
-          sr_benefit_up += a->sr_counter->mean_exe_up();
-          sr_benefit_total += a->sr_counter->mean_exe_total();
-        }
-      }
       if ( talent.bloodtalons->ok() )
       {
         bt_exe_up += a->bt_counter->mean_exe_up();
@@ -10730,7 +10712,7 @@ void druid_t::output_json_report( js::JsonOutput& /*root*/ ) const
         }
       }
 
-      if ( tf_exe_total > 0 || bt_exe_total > 0 || sr_exe_total > 0 )
+/*    if ( tf_exe_total > 0 || bt_exe_total > 0 )
       {
         // auto snapshot = root["snapshot_stats"].add();
         if ( talent.savage_roar->ok() )
@@ -10738,7 +10720,7 @@ void druid_t::output_json_report( js::JsonOutput& /*root*/ ) const
           // auto sr = snapshot["savage_roar"].make_array();
         }
         if ( talent.bloodtalons->ok() ) {}
-      }
+      }*/
     }
   }
 }
@@ -10810,10 +10792,7 @@ public:
        << "<tr>\n"
        << "<th></th>\n"
        << "<th colspan=\"2\">Tiger's Fury</th>\n";
-    if( p.talent.savage_roar -> ok() )
-    {
-      os << "<th colspan=\"2\">Savage Roar</th>\n";
-    }
+
     if ( p.talent.bloodtalons -> ok() )
     {
       os << "<th colspan=\"2\">Bloodtalons</th>\n";
@@ -10824,11 +10803,6 @@ public:
        << "<th class=\"toggle-sort\" data-sortdir=\"asc\" data-sorttype=\"alpha\">Ability Name</th>\n"
        << "<th class=\"toggle-sort\">Execute %</th>\n"
        << "<th class=\"toggle-sort\">Benefit %</th>\n";
-    if ( p.talent.savage_roar -> ok() )
-    {
-       os << "<th class=\"toggle-sort\">Execute %</th>\n"
-          << "<th class=\"toggle-sort\">Benefit %</th>\n";
-    }
 
     if ( p.talent.bloodtalons -> ok() )
     {
@@ -10844,8 +10818,6 @@ public:
       stats_t* stats = p.stats_list[ i ];
       double tf_exe_up = 0, tf_exe_total = 0;
       double tf_benefit_up = 0, tf_benefit_total = 0;
-      double sr_exe_up = 0, sr_exe_total = 0;
-      double sr_benefit_up = 0, sr_benefit_total = 0;
       double bt_exe_up = 0, bt_exe_total = 0;
       double bt_benefit_up = 0, bt_benefit_total = 0;
 
@@ -10868,18 +10840,6 @@ public:
           tf_benefit_total += a->tf_counter->mean_exe_total();
         }
 
-        if ( p.talent.savage_roar->ok() )
-        {
-          sr_exe_up += a->sr_counter->mean_exe_up();
-          sr_exe_total += a->sr_counter->mean_exe_total();
-          sr_benefit_up += a->sr_counter->mean_tick_up();
-          sr_benefit_total += a->sr_counter->mean_tick_total();
-          if ( has_amount_results( stats->direct_results ) )
-          {
-            sr_benefit_up += a->sr_counter->mean_exe_up();
-            sr_benefit_total += a->sr_counter->mean_exe_total();
-          }
-        }
         if ( p.talent.bloodtalons->ok() )
         {
           bt_exe_up += a->bt_counter->mean_exe_up();
@@ -10894,7 +10854,7 @@ public:
         }
       }
 
-      if ( tf_exe_total > 0 || bt_exe_total > 0 || sr_exe_total > 0 )
+      if ( tf_exe_total > 0 || bt_exe_total > 0 )
       {
         const action_t& action = *(stats->action_list[0]);
         std::string name_str = report_decorators::decorated_action(action);
@@ -10904,12 +10864,7 @@ public:
                    name_str.c_str(),
                    util::round( tf_exe_up / tf_exe_total * 100, 2 ),
                    util::round( tf_benefit_up / tf_benefit_total * 100, 2 ) );
-        if ( p.talent.savage_roar -> ok() )
-        {
-           os.printf("<td class=\"right\">%.2f %%</td><td class=\"right\">%.2f %%</td>\n",
-              util::round(sr_exe_up / sr_exe_total * 100, 2),
-              util::round(sr_benefit_up / sr_benefit_total * 100, 2));
-        }
+
         if ( p.talent.bloodtalons -> ok() )
         {
           // Table Row : Name, TF up, TF total, TF up/total, TF up/sum(TF up)
