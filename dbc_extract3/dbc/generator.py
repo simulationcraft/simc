@@ -1679,6 +1679,8 @@ class SpellDataGenerator(DataGenerator):
           ( 327478, 0 ),                            # Freezing Winds
           ( 327368, 0 ),                            # Disciplinary Command (Fire tracker)
           ( 327369, 0 ),                            # Disciplinary Command (Arcane tracker)
+          ( 336889, 0 ),                            # Nether Precision
+          ( 337090, 0 ),                            # Siphoned Malice
         ),
 
         # Warlock:
