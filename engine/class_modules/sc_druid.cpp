@@ -1728,8 +1728,8 @@ public:
 
     for ( size_t i = 1; i <= s_data->effect_count(); i++ )
     {
-      auto eff = &s_data->effectN( i );
-      double val = eff->percent();
+      auto eff     = &s_data->effectN( i );
+      double val   = eff->percent();
       bool mastery = false;
 
       if ( eff->type() != E_APPLY_AURA || eff->target_1() != 1 )
@@ -1761,25 +1761,25 @@ public:
 
       if ( eff->subtype() == A_ADD_PCT_MODIFIER )
       {
-        if ( eff->misc_value1() == P_GENERIC )
+        switch ( eff->misc_value1() )
         {
-          da_multiplier_buffeffects.push_back( buff_effect_t( buff, val, mastery ) );
-        }
-        else if ( eff->misc_value1() == P_TICK_DAMAGE )
-        {
-          ta_multiplier_buffeffects.push_back( buff_effect_t( buff, val, mastery ) );
-        }
-        else if ( eff->misc_value1() == P_CAST_TIME )
-        {
-          execute_time_buffeffects.push_back( buff_effect_t( buff, val ) );
-        }
-        else if ( eff->misc_value1() == P_COOLDOWN )
-        {
-          recharge_multiplier_buffeffects.push_back( buff_effect_t( buff, val ) );
-        }
-        else if ( eff->misc_value1() == P_RESOURCE_COST )
-        {
-          cost_buffeffects.push_back( buff_effect_t( buff, val ) );
+          case P_GENERIC:
+            da_multiplier_buffeffects.push_back( buff_effect_t( buff, val, mastery ) );
+            break;
+          case P_TICK_DAMAGE:
+            ta_multiplier_buffeffects.push_back( buff_effect_t( buff, val, mastery ) );
+            break;
+          case P_CAST_TIME:
+            execute_time_buffeffects.push_back( buff_effect_t( buff, val ) );
+            break;
+          case P_COOLDOWN:
+            recharge_multiplier_buffeffects.push_back( buff_effect_t( buff, val ) );
+            break;
+          case P_RESOURCE_COST:
+            cost_buffeffects.push_back( buff_effect_t( buff, val ) );
+            break;
+          default:
+            break;
         }
       }
       else if ( eff->subtype() == A_ADD_FLAT_MODIFIER && eff->misc_value1() == P_CRIT )
@@ -1840,7 +1840,7 @@ public:
                         p()->talent.soul_of_the_forest_moonkin );
 
     // Guardian
-    parse_buff_effects( p()->buff.berserk_bear );
+    parse_buff_effects( p()->buff.berserk_bear, p()->legendary.legacy_of_the_sleeper );
     parse_buff_effects( p()->buff.incarnation_bear );
     parse_buff_effects( p()->buff.sharpened_claws );
 
@@ -1881,8 +1881,8 @@ public:
   {
     double ta = ab::composite_ta_multiplier( s ) * get_buff_effects_value( ta_multiplier_buffeffects );
 
-    if ( ( p()->buff.berserk_bear->up() || p()->buff.incarnation_bear->up() ) &&
-         p()->legendary.legacy_of_the_sleeper->ok() && ab::data().affected_by( p()->spec.berserk_bear->effectN( 3 ) ) )
+    if ( p()->buff.incarnation_bear->up() && p()->legendary.legacy_of_the_sleeper->ok() &&
+         ab::data().affected_by( p()->spec.berserk_bear->effectN( 3 ) ) )
       ta *= 1.0 + p()->legendary.legacy_of_the_sleeper->effectN( 2 ).percent();
 
     return ta;
@@ -1892,8 +1892,8 @@ public:
   {
     double da = ab::composite_da_multiplier( s ) * get_buff_effects_value( da_multiplier_buffeffects );
 
-    if ( ( p()->buff.berserk_bear->up() || p()->buff.incarnation_bear->up() ) &&
-         p()->legendary.legacy_of_the_sleeper->ok() && ab::data().affected_by( p()->spec.berserk_bear->effectN( 2 ) ) )
+    if ( p()->buff.incarnation_bear->up() && p()->legendary.legacy_of_the_sleeper->ok() &&
+         ab::data().affected_by( p()->spec.berserk_bear->effectN( 2 ) ) )
       da *= 1.0 + p()->legendary.legacy_of_the_sleeper->effectN( 1 ).percent();
 
     return da;
@@ -3402,8 +3402,7 @@ struct cat_melee_t : public cat_attack_t
   {
     double am = cat_attack_t::action_multiplier();
 
-    if ( ( p()->buff.berserk_bear->check() || p()->buff.incarnation_bear->check() ) &&
-         p()->legendary.legacy_of_the_sleeper->ok() )
+    if ( p()->buff.incarnation_bear->check() && p()->legendary.legacy_of_the_sleeper->ok() )
       am *= 1.0 + p()->legendary.legacy_of_the_sleeper->effectN( 3 ).percent();
 
     return am;
@@ -4501,8 +4500,7 @@ struct bear_melee_t : public bear_attack_t
   {
     double am = bear_attack_t::action_multiplier();
 
-    if ( ( p()->buff.berserk_bear->check() || p()->buff.incarnation_bear->check() ) &&
-         p()->legendary.legacy_of_the_sleeper->ok() )
+    if ( p()->buff.incarnation_bear->check() && p()->legendary.legacy_of_the_sleeper->ok() )
       am *= 1.0 + p()->legendary.legacy_of_the_sleeper->effectN( 3 ).percent();
 
     return am;
@@ -4601,7 +4599,7 @@ struct mangle_t : public bear_attack_t
   int n_targets() const override
   {
     if ( p()->buff.incarnation_bear->check() )
-      return as<int>( p()->buff.incarnation_bear->data().effectN( 4 ).base_value() );
+      return as<int>( p()->talent.incarnation_bear->effectN( 4 ).base_value() );
 
     return bear_attack_t::n_targets();
   }
@@ -4716,18 +4714,6 @@ struct swipe_bear_t : public bear_attack_t
     gore = true;
   }
 
-  double composite_da_multiplier( const action_state_t* s ) const override
-  {
-    double m = bear_attack_t::composite_da_multiplier( s );
-
-    if ( p() -> buff.sharpened_claws -> up() )
-    {
-      m *= 1.0 + p() -> buff.sharpened_claws -> data().effectN( 1 ).percent();
-    }
-
-    return m;
-  }
-
   double bonus_da( const action_state_t* s ) const override
   {
     double b = bear_attack_t::bonus_da( s );
@@ -4773,30 +4759,6 @@ struct thrash_bear_t : public bear_attack_t
     bear_attack_t::tick( d );
 
     p() -> resource_gain( RESOURCE_RAGE, blood_frenzy_amount, p() -> gain.blood_frenzy );
-  }
-
-  double composite_da_multiplier( const action_state_t* s ) const override
-  {
-    double m = bear_attack_t::composite_da_multiplier( s );
-
-    if ( p() -> buff.sharpened_claws -> up() )
-    {
-      m *= 1.0 + p() -> buff.sharpened_claws -> data().effectN( 1 ).percent();
-    }
-
-    return m;
-  }
-
-  double composite_ta_multiplier( const action_state_t* s ) const override
-  {
-    double m = bear_attack_t::composite_ta_multiplier( s );
-
-    if ( p() -> buff.sharpened_claws -> up() )
-    {
-      m *= 1.0 + p() -> buff.sharpened_claws -> data().effectN( 1 ).percent();
-    }
-
-    return m;
   }
 
   void execute() override
