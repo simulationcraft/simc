@@ -1093,7 +1093,7 @@ public:
   }
 
   virtual bool procs_poison() const
-  { return ab::weapon != nullptr; }
+  { return ab::weapon != nullptr && ( !ab::player->bugs || ab::player->specialization() == ROGUE_ASSASSINATION ); }
 
   // Generic rules for proccing Main Gauche, used by rogue_t::trigger_main_gauche()
   virtual bool procs_main_gauche() const
@@ -1673,6 +1673,9 @@ struct deadly_poison_t : public rogue_poison_t
 
     proc_instant = p->get_background_action<deadly_poison_dd_t>( "deadly_poison_instant" );
     proc_dot  = p->get_background_action<deadly_poison_dot_t>( "deadly_poison_dot" );
+
+    add_child( proc_instant );
+    add_child( proc_dot );
   }
 
   void impact( action_state_t* state ) override
@@ -2042,6 +2045,9 @@ struct melee_t : public rogue_attack_t
 
     return m;
   }
+
+  bool procs_poison() const override
+  { return true; }
 };
 
 // Auto Attack ==============================================================
