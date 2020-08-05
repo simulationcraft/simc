@@ -35,8 +35,9 @@ struct elixir_data_t
 const elixir_data_t elixir_data[] =
 {
   // mop
-  { "mantid", elixir::GUARDIAN, STAT_BONUS_ARMOR, 256 },
-  { "mad_hozen", elixir::BATTLE, STAT_CRIT_RATING, 85 },
+  { "mantid", elixir::GUARDIAN, STAT_BONUS_ARMOR, 37 },
+  { "mad_hozen", elixir::BATTLE, STAT_CRIT_RATING, 37 },
+  { "ghost", elixir::BATTLE, STAT_VERSATILITY_RATING, 76 },
 };
 
 struct elixir_t : public action_t
