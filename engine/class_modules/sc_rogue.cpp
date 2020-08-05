@@ -2326,7 +2326,6 @@ struct blade_flurry_attack_t : public rogue_attack_t
     rogue_attack_t( name, p, p -> find_spell( 22482 ) )
   {
     callbacks = false;
-    background = true;
     radius = 5;
     range = -1.0;
 
@@ -2366,7 +2365,6 @@ struct blade_flurry_t : public rogue_attack_t
     blade_flurry_instant_attack_t( util::string_view name, rogue_t* p ) :
       rogue_attack_t( name, p, p -> find_spell( 331850 ) )
     {
-      background = true;
       range = -1.0;
     }
 
@@ -2591,7 +2589,6 @@ struct fan_of_knives_t: public rogue_attack_t
       rogue_attack_t( name, p, p -> find_spell(287653) )
     {
       aoe = -1;
-      background  = true;
       base_dd_min = base_dd_max = p -> azerite.echoing_blades.value( 6 );
     }
 
@@ -2913,7 +2910,6 @@ struct killing_spree_tick_t : public rogue_attack_t
   killing_spree_tick_t( util::string_view name, rogue_t* p, const spell_data_t* s ) :
     rogue_attack_t( name, p, s )
   {
-    background = true;
     direct_tick = true;
   }
 };
@@ -3056,7 +3052,6 @@ struct main_gauche_t : public rogue_attack_t
   main_gauche_t( util::string_view name, rogue_t* p ) :
     rogue_attack_t( name, p, p -> find_spell( 86392 ) )
   {
-    background = true;
   }
 
   double attack_direct_power_coefficient( const action_state_t* s ) const override
@@ -3116,34 +3111,32 @@ struct marked_for_death_t : public rogue_spell_t
 
 // Mutilate =================================================================
 
-struct mutilate_strike_t : public rogue_attack_t
-{
-  mutilate_strike_t( util::string_view name, rogue_t* p, const spell_data_t* s ) :
-    rogue_attack_t( name, p, s )
-  {
-    background  = true;
-  }
-
-  void impact( action_state_t* state ) override
-  {
-    rogue_attack_t::impact( state );
-
-    trigger_seal_fate( state );
-  }
-};
-
-struct double_dose_t : public rogue_attack_t
-{
-  double_dose_t( util::string_view name, rogue_t* p ) :
-    rogue_attack_t( name, p, p -> find_spell(273009) )
-  {
-    background  = true;
-    base_dd_min = base_dd_max = p->azerite.double_dose.value();
-  }
-};
-
 struct mutilate_t : public rogue_attack_t
 {
+  struct mutilate_strike_t : public rogue_attack_t
+  {
+    mutilate_strike_t( util::string_view name, rogue_t* p, const spell_data_t* s ) :
+      rogue_attack_t( name, p, s )
+    {
+    }
+
+    void impact( action_state_t* state ) override
+    {
+      rogue_attack_t::impact( state );
+
+      trigger_seal_fate( state );
+    }
+  };
+
+  struct double_dose_t : public rogue_attack_t
+  {
+    double_dose_t( util::string_view name, rogue_t* p ) :
+      rogue_attack_t( name, p, p -> find_spell(273009) )
+    {
+      base_dd_min = base_dd_max = p->azerite.double_dose.value();
+    }
+  };
+
   rogue_attack_t* mh_strike;
   rogue_attack_t* oh_strike;
   rogue_attack_t* double_dose;
@@ -3184,7 +3177,7 @@ struct mutilate_t : public rogue_attack_t
       if ( p()->talent.blindside->ok() )
       {
         double chance = p()->talent.blindside->effectN( 1 ).percent();
-        if ( execute_state->target->health_percentage() < p()->talent.blindside->effectN( 3 ).percent() )
+        if ( execute_state->target->health_percentage() < p()->talent.blindside->effectN( 3 ).base_value() )
         {
           chance = p()->talent.blindside->effectN( 2 ).percent();
         }
@@ -3352,7 +3345,6 @@ struct replicating_shadows_t : public rogue_spell_t
     rupture_action( nullptr )
   {
     may_miss = false;
-    background  = true;
     base_dd_min = p -> azerite.replicating_shadows.value();
     base_dd_max = p -> azerite.replicating_shadows.value();
   }
@@ -3410,7 +3402,6 @@ struct secret_technique_t : public rogue_attack_t
     secret_technique_attack_t( util::string_view name, rogue_t* p, const spell_data_t* s ) :
       rogue_attack_t( name, p, s )
     {
-      background = true;
       aoe = aoe != 0 ? aoe : -1;
     }
 
@@ -3471,7 +3462,6 @@ struct shadow_blades_attack_t : public rogue_attack_t
   shadow_blades_attack_t( util::string_view name, rogue_t* p ) :
     rogue_attack_t( name, p, p -> find_spell( 279043 ) )
   {
-    background = true;
     may_dodge = may_block = may_parry = false;
     attack_power_mod.direct = 0;
   }
@@ -3681,7 +3671,6 @@ struct shadow_vault_t: public rogue_attack_t
     shadow_vault_bonus_t( util::string_view name, rogue_t* p ) :
       rogue_attack_t( name, p, p -> find_spell( 319190 ) )
     {
-      background  = true;
     }
   };
 
@@ -3802,8 +3791,6 @@ struct sinister_strike_t : public rogue_attack_t
     sinister_strike_extra_attack_t( util::string_view name, rogue_t* p ) :
       rogue_attack_t( name, p, p -> find_spell( 197834 ) )
     {
-      background = true;
-      
       // CP generation is not in the spell data for some reason
       energize_type = ENERGIZE_ON_HIT;
       energize_amount = 1;
@@ -4013,7 +4000,6 @@ struct vendetta_t : public rogue_spell_t
     nothing_personal_t( util::string_view name, rogue_t* p ) :
       rogue_spell_t( name, p, p -> find_spell( 286581 ) )
     {
-      background = true;
       base_td = p -> azerite.nothing_personal.value();
     }
   };
@@ -4114,7 +4100,6 @@ struct kidney_shot_t : public rogue_attack_t
     internal_bleeding_t( util::string_view name, rogue_t* p ) :
       rogue_attack_t( name, p, p->find_spell( 154953 ) )
     {
-      background = true;
     }
 
     timespan_t composite_dot_duration( const action_state_t* s ) const override
@@ -4203,7 +4188,6 @@ struct poison_bomb_t : public rogue_spell_t
   poison_bomb_t( util::string_view name, rogue_t* p ) :
     rogue_spell_t( name, p, p -> find_spell( 255546 ) )
   {
-    background = true;
     aoe = -1;
   }
 };
