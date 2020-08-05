@@ -1616,9 +1616,12 @@ struct kindred_empowerment_buff_t : public druid_buff_t<buff_t>
 struct buff_effect_t
 {
   buff_t* buff;
-  const spelleffect_data_t* effect;
+  double value;
+  bool mastery;
 
-  buff_effect_t( buff_t* b, const spelleffect_data_t* e ) : buff( b ), effect( e ) {}
+  buff_effect_t( buff_t* b, double v, bool m = false )
+    : buff( b ), value( v ), mastery( m )
+  {}
 };
 
 // Template for common druid action code. See priest_action_t.
@@ -1691,6 +1694,27 @@ public:
   druid_td_t* td( player_t* t ) const
   { return p() -> get_target_data( t ); }
 
+  void parse_rank_spell_effects( double& val, bool& mastery, const spell_data_t* base_spell, size_t idx,
+                                 const spell_data_t* rank_spell )
+  {
+    for ( size_t i = 1; i <= rank_spell->effect_count(); i++ )
+    {
+      auto eff = &rank_spell->effectN( i );
+
+      if ( eff->type() != E_APPLY_AURA || eff->subtype() != A_ADD_FLAT_MODIFIER || !base_spell->affected_by( eff ) )
+        continue;
+
+      if ( ( eff->misc_value1() == P_EFFECT_1 && idx == 1 ) || ( eff->misc_value1() == P_EFFECT_2 && idx == 2 ) ||
+           ( eff->misc_value1() == P_EFFECT_3 && idx == 3 ) || ( eff->misc_value1() == P_EFFECT_4 && idx == 4 ) )
+      {
+        val += eff->percent();
+
+        if ( p()->find_mastery_spell( p()->specialization() ) == rank_spell )
+          mastery = true;
+      }
+    }
+  }
+
   // Will parse simple buffs that ONLY target the caster and DO NOT have multiple ranks
   // 1: Add Percent Modifier to Spell Direct Amount
   // 2: Add Percent Modifier to Spell Periodic Amount
@@ -1698,80 +1722,106 @@ public:
   // 4: Add Percent Modifier to Spell Cooldown
   // 5: Add Percent Modifier to Spell Resource Cost
   // 6: Add Flat Modifier to Spell Critical Chance
-  void parse_buff_effects( buff_t* buff, const spell_data_t* spell )
+  void parse_buff_effects( buff_t* buff, const spell_data_t* spell = spell_data_t::nil(),
+                           const spell_data_t* spell2 = spell_data_t::nil(),
+                           const spell_data_t* spell3 = spell_data_t::nil() )
   {
     if ( !buff )
       return;
 
-    const spell_data_t* s_data = ( !spell->ok() ? &buff->data() : spell );
+    const spell_data_t* s_data = &buff->data();
 
     for ( size_t i = 1; i <= s_data->effect_count(); i++ )
     {
       auto eff = &s_data->effectN( i );
+      double val = eff->percent();
+      bool mastery = false;
 
-      if ( eff->type() != E_APPLY_AURA || eff->target_1() != 1 || !eff->base_value() )
+      if ( eff->type() != E_APPLY_AURA || eff->target_1() != 1 )
         continue;
 
       if ( is_auto_attack && eff->subtype() == A_MOD_AUTO_ATTACK_PCT )
       {
-        da_multiplier_buffeffects.push_back( buff_effect_t( buff, eff ) );
+        da_multiplier_buffeffects.push_back( buff_effect_t( buff, val ) );
         continue;
       }
 
       if ( !ab::data().affected_by( eff ) )
         continue;
 
+      if ( i <= 4 )
+      {
+        if ( spell->ok() )
+          parse_rank_spell_effects( val, mastery, s_data, i, spell );
+
+        if ( spell2->ok() )
+          parse_rank_spell_effects( val, mastery, s_data, i, spell2 );
+
+        if ( spell3->ok() )
+          parse_rank_spell_effects( val, mastery, s_data, i, spell3 );
+      }
+
+      if ( !mastery && !val )
+        continue;
+
       if ( eff->subtype() == A_ADD_PCT_MODIFIER )
       {
         if ( eff->misc_value1() == P_GENERIC )
         {
-          da_multiplier_buffeffects.push_back( buff_effect_t( buff, eff ) );
+          da_multiplier_buffeffects.push_back( buff_effect_t( buff, val, mastery ) );
         }
         else if ( eff->misc_value1() == P_TICK_DAMAGE )
         {
-          ta_multiplier_buffeffects.push_back( buff_effect_t( buff, eff ) );
+          ta_multiplier_buffeffects.push_back( buff_effect_t( buff, val, mastery ) );
         }
         else if ( eff->misc_value1() == P_CAST_TIME )
         {
-          execute_time_buffeffects.push_back( buff_effect_t( buff, eff ) );
+          execute_time_buffeffects.push_back( buff_effect_t( buff, val ) );
         }
         else if ( eff->misc_value1() == P_COOLDOWN )
         {
-          recharge_multiplier_buffeffects.push_back( buff_effect_t( buff, eff ) );
+          recharge_multiplier_buffeffects.push_back( buff_effect_t( buff, val ) );
         }
         else if ( eff->misc_value1() == P_RESOURCE_COST )
         {
-          cost_buffeffects.push_back( buff_effect_t( buff, eff ) );
+          cost_buffeffects.push_back( buff_effect_t( buff, val ) );
         }
       }
       else if ( eff->subtype() == A_ADD_FLAT_MODIFIER && eff->misc_value1() == P_CRIT )
       {
-        crit_chance_buffeffects.push_back( buff_effect_t( buff, eff ) );
+        crit_chance_buffeffects.push_back( buff_effect_t( buff, val ) );
       }
     }
   }
 
-  void parse_buff_effects( buff_t* buff )
+  double get_buff_effects_value( const std::vector<buff_effect_t>& buffeffects, bool flat = false,
+                                 bool benefit = true ) const
   {
-    parse_buff_effects( buff, spell_data_t::nil() );
-  }
-
-  double get_buff_effects_value( const std::vector<buff_effect_t>& buffeffects, bool flat = false, bool benefit = true ) const
-  {
-    double value = flat ? 0.0 : 1.0;
+    double return_value = flat ? 0.0 : 1.0;
 
     for ( auto i : buffeffects )
     {
-      if ( ( benefit && i.buff->up() ) || i.buff->check() )
+      double eff_val = i.value;
+
+      if ( i.mastery )
+      {
+        eff_val += p()->cache.mastery_value();
+      }
+
+      if ( !i.buff )
+      {
+        return_value *= 1.0 + eff_val;
+      }
+      else if ( ( benefit && i.buff->up() ) || i.buff->check() )
       {
         if ( flat )
-          value += i.effect->percent() * i.buff->check();
+          return_value += eff_val * i.buff->check();
         else
-          value *= 1.0 + i.effect->percent() * i.buff->check();
+          return_value *= 1.0 + eff_val * i.buff->check();
       }
     }
 
-    return value;
+    return return_value;
   }
 
   virtual void apply_buff_effects()
@@ -1789,6 +1839,10 @@ public:
     parse_buff_effects( p()->buff.oneths_free_starfall );
     parse_buff_effects( p()->buff.oneths_free_starsurge );
     parse_buff_effects( p()->buff.timeworn_dreamcatcher );
+    parse_buff_effects( p()->buff.eclipse_lunar, p()->mastery.total_eclipse, p()->spec.eclipse_2,
+                        p()->talent.soul_of_the_forest_moonkin );
+    parse_buff_effects( p()->buff.eclipse_solar, p()->mastery.total_eclipse, p()->spec.eclipse_2,
+                        p()->talent.soul_of_the_forest_moonkin );
 
     // Guardian
     parse_buff_effects( p()->buff.berserk_bear );
@@ -1800,15 +1854,8 @@ public:
     parse_buff_effects( p()->buff.berserk_cat );
     parse_buff_effects( p()->buff.incarnation_cat );
     parse_buff_effects( p()->buff.predatory_swiftness );
-    parse_buff_effects( p()->buff.savage_roar, p()->spec.savage_roar );
+    parse_buff_effects( p()->buff.savage_roar );
     parse_buff_effects( p()->buff.apex_predators_craving );
-  }
-
-  double target_armor( player_t* t ) const override
-  {
-    double a = ab::target_armor( t );
-
-    return a;
   }
 
   double cost() const override
@@ -2503,38 +2550,6 @@ public:
       trigger_astral_power_consumption_effects();
 
     return ab;
-  }
-
-  double composite_ta_multiplier( const action_state_t* s ) const override
-  {
-    double tm = base_t::composite_ta_multiplier( s );
-
-    if ( p()->specialization() == DRUID_BALANCE )
-    {
-      if ( data().affected_by( p()->buff.eclipse_lunar->data().effectN( 4 ) ) && p()->buff.eclipse_lunar->up() )
-        tm *= 1.0 + p()->mastery.total_eclipse->ok() * p()->cache.mastery_value();
-
-      if ( data().affected_by( p()->buff.eclipse_solar->data().effectN( 4 ) ) && p()->buff.eclipse_solar->up() )
-        tm *= 1.0 + p()->mastery.total_eclipse->ok() * p()->cache.mastery_value();
-    }
-
-    return tm;
-  }
-
-  double composite_da_multiplier( const action_state_t* s ) const override
-  {
-    double dm = base_t::composite_da_multiplier( s );
-
-    if ( p()->specialization() == DRUID_BALANCE )
-    {
-      if ( data().affected_by( p()->buff.eclipse_lunar->data().effectN( 3 ) ) && p()->buff.eclipse_lunar->up() )
-        dm *= 1.0 + p()->mastery.total_eclipse->ok() * p()->cache.mastery_value();
-
-      if ( data().affected_by( p()->buff.eclipse_solar->data().effectN( 3 ) ) && p()->buff.eclipse_solar->up() )
-        dm *= 1.0 + p()->mastery.total_eclipse->ok() * p()->cache.mastery_value();
-    }
-
-    return dm;
   }
 
   bool usable_moving() const override
@@ -6061,17 +6076,6 @@ struct starfire_t : public druid_spell_t
     return e;
   }
 
-  timespan_t execute_time() const override
-  {
-    timespan_t et = druid_spell_t::execute_time();
-
-    if ( p()->buff.eclipse_lunar->check() )
-      et *= 1 + p()->spec.eclipse_lunar->effectN( 1 ).percent() + p()->spec.eclipse_2->effectN( 1 ).percent() +
-            p()->talent.soul_of_the_forest_moonkin->effectN( 1 ).percent();
-
-    return et;
-  }
-
   void impact( action_state_t* s ) override
   {
     druid_spell_t::impact( s );
@@ -6376,15 +6380,6 @@ struct wrath_t : public druid_spell_t
     }
   }
 
-  double action_multiplier() const override
-  {
-    double am = druid_spell_t::action_multiplier();
-
-    am *= 1.0 + p()->buff.eclipse_solar->value();
-
-    return am;
-  }
-
   timespan_t travel_time() const override
   {
     if ( !count )
@@ -6405,17 +6400,6 @@ struct wrath_t : public druid_spell_t
     g = std::max( min_gcd, g );
 
     return g;
-  }
-
-  timespan_t execute_time() const override
-  {
-    timespan_t et = druid_spell_t::execute_time();
-
-    if ( p()->buff.eclipse_solar->up() )
-      et *= 1 + p()->spec.eclipse_solar->effectN( 1 ).percent() + p()->spec.eclipse_2->effectN( 1 ).percent() +
-            p()->talent.soul_of_the_forest_moonkin->effectN( 1 ).percent();
-
-    return et;
   }
 
   void execute() override
@@ -8325,7 +8309,6 @@ void druid_t::create_buffs()
 
   buff.eclipse_solar =
       make_buff( this, "eclipse_solar", spec.eclipse_solar )
-          ->set_default_value( spec.eclipse_solar->effectN( 2 ).percent() )
           ->set_duration( spec.eclipse_solar->duration() + talent.soul_of_the_forest_moonkin->effectN( 2 ).time_value() )
           ->set_stack_change_callback( [this]( buff_t*, int /* old_ */, int new_ ) {
             if ( !new_ )
@@ -8336,7 +8319,6 @@ void druid_t::create_buffs()
 
   buff.eclipse_lunar =
       make_buff( this, "eclipse_lunar", spec.eclipse_lunar )
-          ->set_default_value( spec.eclipse_lunar->effectN( 2 ).percent() )
           ->set_duration( spec.eclipse_lunar->duration() + talent.soul_of_the_forest_moonkin->effectN( 2 ).time_value() )
           ->set_stack_change_callback( [this]( buff_t*, int /* old_ */, int new_ ) {
             if ( !new_ )
@@ -8378,7 +8360,7 @@ void druid_t::create_buffs()
   buff.predatory_swiftness   = make_buff( this, "predatory_swiftness", find_spell( 69369 ) )
     ->set_chance( spec.predatory_swiftness -> ok() );
 
-  buff.savage_roar           = make_buff( this, "savage_roar", talent.savage_roar )
+  buff.savage_roar           = make_buff( this, "savage_roar", spec.savage_roar )
     ->set_refresh_behavior( buff_refresh_behavior::DURATION ) // Pandemic refresh is done by the action
     ->set_tick_behavior( buff_tick_behavior::NONE );
 
