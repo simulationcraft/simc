@@ -5475,6 +5475,9 @@ struct full_moon_t : public druid_spell_t
       cooldown = player->cooldown.moon_cd;
     else
       cooldown->duration = 0_ms;
+
+    if ( !player->spec.astral_power->ok() )
+      energize_type = ENERGIZE_NONE;
   }
 
   double calculate_direct_amount( action_state_t* state ) const override
@@ -6894,6 +6897,9 @@ struct kindred_spirits_t : public druid_spell_t
   kindred_spirits_t( druid_t* player, const std::string& options_str )
     : druid_spell_t( "empower_bond", player, player->covenant.empower_bond, options_str )
   {
+    if ( !player->covenant.kyrian->ok() )
+      return;
+
     harmful = false;
 
     if ( player->active.kindred_empowerment )
@@ -6933,6 +6939,9 @@ struct convoke_the_spirits_t : public druid_spell_t
   convoke_the_spirits_t( druid_t* player, const std::string& options_str )
     : druid_spell_t( "convoke_the_spirits", player, player->covenant.night_fae, options_str )
   {
+    if ( !player->covenant.night_fae->ok() )
+      return;
+
     parse_options( options_str );
 
     harmful = channeled = true;
@@ -7089,6 +7098,9 @@ struct ravenous_frenzy_t : public druid_spell_t
   ravenous_frenzy_t( druid_t* player, const std::string& options_str )
     : druid_spell_t( "ravenous_frenzy", player, player->covenant.venthyr, options_str )
   {
+    if ( !player->covenant.venthyr->ok() )
+      return;
+
     harmful = false;
     dot_duration = 0_ms;
   }
@@ -7295,9 +7307,8 @@ struct adaptive_swarm_t : public druid_spell_t
     swarm_handler_t* swarm;
     bool is_heal;
 
-    adaptive_swarm_base_t( druid_t* p, util::string_view n, const spell_data_t* sd, swarm_handler_t* sw,
-                           bool h = false )
-      : druid_spell_t( n, p, sd ), swarm( sw ), is_heal( h )
+    adaptive_swarm_base_t( druid_t* p, util::string_view n, const spell_data_t* sd, bool h = false )
+      : druid_spell_t( n, p, sd ), swarm( nullptr ), is_heal( h )
     {
       dual = background = true;
       dot_behavior      = dot_behavior_e::DOT_CLIP;
@@ -7354,7 +7365,7 @@ struct adaptive_swarm_t : public druid_spell_t
     }
   };
 
-  swarm_handler_t* swarm = new swarm_handler_t( p() );
+  swarm_handler_t* swarm;
   adaptive_swarm_base_t* damage;
   adaptive_swarm_base_t* heal;
   bool cast_heal;
@@ -7362,13 +7373,21 @@ struct adaptive_swarm_t : public druid_spell_t
   adaptive_swarm_t( druid_t* player, const std::string& options_str )
     : druid_spell_t( "adaptive_swarm", player, player->covenant.necrolord, options_str ), cast_heal( false )
   {
+
     add_option( opt_bool( "cast_heal", cast_heal ) );
     parse_options( options_str );
 
-    heal =
-        new adaptive_swarm_base_t( player, "adaptive_swarm_heal", player->covenant.adaptive_swarm_damage, swarm, true );
-    damage =
-        new adaptive_swarm_base_t( player, "adaptive_swarm_damage", player->covenant.adaptive_swarm_damage, swarm );
+    // These are always necessary to allow APL parsing of dot.adaptive_swarm expressions
+    heal   = new adaptive_swarm_base_t( player, "adaptive_swarm_heal", player->covenant.adaptive_swarm_damage, true );
+    damage = new adaptive_swarm_base_t( player, "adaptive_swarm_damage", player->covenant.adaptive_swarm_damage );
+
+    if ( !player->covenant.necrolord->ok() )
+      return;
+
+    swarm = new swarm_handler_t( p() );
+    heal->swarm = swarm;
+    damage->swarm = swarm;
+
     damage->other = heal;
     damage->stats = stats;
     heal->other   = damage;
