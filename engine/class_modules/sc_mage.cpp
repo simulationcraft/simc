@@ -4,6 +4,7 @@
 // ==========================================================================
 
 #include "simulationcraft.hpp"
+#include "player/covenant.hpp"
 #include "util/util.hpp"
 
 namespace {
@@ -499,6 +500,16 @@ public:
     // Covenant Abilities
     buff_t* deathborne;
 
+
+    // Soulbind Conduits
+    buff_t* nether_precision;
+
+    buff_t* flame_accretion;
+    buff_t* infernal_cascade;
+
+    buff_t* siphoned_malice;
+
+
     // Miscellaneous Buffs
     buff_t* gbow;
     buff_t* shimmer;
@@ -507,11 +518,13 @@ public:
   // Cooldowns
   struct cooldowns_t
   {
+    cooldown_t* arcane_power;
     cooldown_t* combustion;
     cooldown_t* cone_of_cold;
     cooldown_t* fire_blast;
     cooldown_t* frost_nova;
     cooldown_t* frozen_orb;
+    cooldown_t* icy_veins;
     cooldown_t* presence_of_mind;
   } cooldowns;
 
@@ -772,6 +785,33 @@ public:
     item_runeforge_t grisly_icicle;
   } runeforge;
 
+  // Soulbind Conduits
+  struct soulbind_conduits_t
+  {
+    // Arcane
+    conduit_data_t arcane_prodigy;
+    conduit_data_t artifice_of_the_archmage;
+    conduit_data_t magis_brand;
+    conduit_data_t nether_precision;
+
+    // Fire
+    conduit_data_t flame_accretion;
+    conduit_data_t infernal_cascade;
+    conduit_data_t master_flame;
+
+    // Frost
+    conduit_data_t ice_bite;
+    conduit_data_t icy_propulsion;
+    conduit_data_t shivering_core;
+    conduit_data_t unrelenting_cold;
+
+    // Shared
+    conduit_data_t discipline_of_the_grove;
+    conduit_data_t gift_of_the_lich;
+    conduit_data_t ire_of_the_ascended;
+    conduit_data_t siphoned_malice;
+  } conduits;
+
   struct uptimes_t
   {
     uptime_t* burn_phase;
@@ -814,6 +854,7 @@ public:
   stat_e convert_hybrid_stat( stat_e ) const override;
   double resource_regen_per_second( resource_e ) const override;
   double composite_attribute_multiplier( attribute_e ) const override;
+  double composite_mastery() const override;
   double composite_player_critical_damage_multiplier( const action_state_t* ) const override;
   double composite_player_multiplier( school_e ) const override;
   double composite_player_pet_damage_multiplier( const action_state_t* ) const override;
@@ -1150,9 +1191,12 @@ struct touch_of_the_magi_t : public buff_t
 
     explosion->set_target( player );
     double damage_fraction = p->spec.touch_of_the_magi->effectN( 1 ).percent();
-    if ( p->bugs )
-      // TODO: For some reason this is dealing 30% of damage instead of 25%. Verify that this is still the case close to release.
-      damage_fraction += 0.05;
+    // TODO: For some reason the Magi's Brand conduit is always active. Verify whether this is still
+    // the case closer to release, but for now this bug is not implemented.
+    // TODO: Higher ranks of this spell use floating point values in the spell data.
+    // Verify whether we need a floor operation here to trim those values down to integers,
+    // which sometimes happens when Blizzard uses floating point numbers like this.
+    damage_fraction += p->conduits.magis_brand.percent();
     explosion->base_dd_min = explosion->base_dd_max = damage_fraction * accumulated_damage;
     explosion->execute();
 
@@ -1351,6 +1395,7 @@ struct mirrors_of_torment_t : public buff_t
           p->action.agonizing_backlash->set_target( buff->player );
           p->action.agonizing_backlash->execute();
         }
+        p->buffs.siphoned_malice->trigger();
       } );
     }
   }
@@ -1461,6 +1506,7 @@ struct mage_spell_t : public spell_t
     bool incanters_flow = true;
     bool rune_of_power = true;
     bool deathborne = true;
+    bool siphoned_malice = true;
 
     // Misc
     bool combustion = true;
@@ -1478,8 +1524,11 @@ struct mage_spell_t : public spell_t
   bool track_cd_waste;
   cooldown_waste_data_t* cd_waste;
 
+  // TODO: Need to verify what exactly triggers Fevered Incantation.
   bool triggers_fevered_incantation = true;
   bool triggers_radiant_spark = false;
+  // TODO: Need to verify what exactly triggers Icy Propulsion.
+  bool triggers_icy_propulsion = true;
 
 public:
   mage_spell_t( util::string_view n, mage_t* p, const spell_data_t* s = spell_data_t::nil() ) :
@@ -1578,6 +1627,9 @@ public:
 
     if ( affected_by.deathborne )
       m *= 1.0 + p()->buffs.deathborne->check_value();
+
+    if ( affected_by.siphoned_malice )
+      m *= 1.0 + p()->buffs.siphoned_malice->check_stack_value();
 
     return m;
   }
@@ -1722,6 +1774,9 @@ public:
       else
         p()->buffs.fevered_incantation->expire();
     }
+
+    if ( triggers_icy_propulsion && p()->buffs.icy_veins->check() && s->result_amount > 0.0 && s->result == RESULT_CRIT )
+      p()->cooldowns.icy_veins->adjust( -0.1 * timespan_t::from_seconds( p()->conduits.icy_propulsion.value() ) );
 
     if ( auto td = p()->target_data[ s->target ] )
     {
@@ -2374,13 +2429,17 @@ struct ignite_t : public residual_action_t
 
 struct arcane_barrage_t : public arcane_mage_spell_t
 {
+  int artifice_of_the_archmage_charges;
+
   arcane_barrage_t( util::string_view n, mage_t* p, util::string_view options_str ) :
-    arcane_mage_spell_t( n, p, p->find_specialization_spell( "Arcane Barrage" ) )
+    arcane_mage_spell_t( n, p, p->find_specialization_spell( "Arcane Barrage" ) ),
+    artifice_of_the_archmage_charges()
   {
     parse_options( options_str );
     cooldown->hasted = true;
     base_aoe_multiplier *= data().effectN( 2 ).percent();
     triggers_radiant_spark = true;
+    artifice_of_the_archmage_charges = as<int>( p->find_spell( 337244 )->effectN( 1 ).base_value() );
   }
 
   int n_targets() const override
@@ -2409,7 +2468,12 @@ struct arcane_barrage_t : public arcane_mage_spell_t
     arcane_mage_spell_t::impact( s );
 
     if ( result_is_hit( s->result ) )
+    {
       p()->buffs.chrono_shift->trigger();
+      // Multiply by 0.1 because for this data a value of 100 means 10%.
+      if ( rng().roll( 0.1 * p()->conduits.artifice_of_the_archmage.percent() ) )
+        p()->trigger_arcane_charge( artifice_of_the_archmage_charges );
+    }
   }
 
   double bonus_da( const action_state_t* s ) const override
@@ -2515,11 +2579,27 @@ struct arcane_blast_t : public arcane_mage_spell_t
     p()->trigger_delayed_buff( p()->buffs.expanded_potential );
   }
 
+  void impact( action_state_t* s ) override
+  {
+    arcane_mage_spell_t::impact( s );
+
+    // With Deathborne, multiple stacks of Nether Precision are removed
+    // by a single Arcane blast, but all of them will benefit from the
+    // bonus damage.
+    // Delay the decrement call because if you cast Arcane Missiles to consume
+    // Clearcasting immediately after Arcane Blast, a stack of Nether Precision
+    // will be consumed by Arcane Blast will not benefit from the damage bonus.
+    // Check if this is still the case closer to Shadowlands release.
+    if ( p()->buffs.nether_precision->check() )
+      make_event( sim, 15_ms, [ this ] { p()->buffs.nether_precision->decrement(); } );
+  }
+
   double action_multiplier() const override
   {
     double am = arcane_mage_spell_t::action_multiplier();
 
     am *= arcane_charge_multiplier();
+    am *= 1.0 + p()->buffs.nether_precision->check_value();
 
     return am;
   }
@@ -2677,7 +2757,11 @@ struct arcane_missiles_tick_t : public arcane_mage_spell_t
     arcane_mage_spell_t::impact( s );
 
     if ( result_is_hit( s->result ) )
+    {
       p()->buffs.arcane_harmony->trigger();
+      // Multiply by 100 because for this data a value of 1 represents 0.1 seconds.
+      p()->cooldowns.arcane_power->adjust( -100 * p()->conduits.arcane_prodigy.time_value() );
+    }
   }
 };
 
@@ -2893,6 +2977,8 @@ struct blizzard_shard_t : public frost_mage_spell_t
     aoe = -1;
     background = ground_aoe = chills = true;
     base_multiplier *= 1.0 + p->spec.blizzard_3->effectN( 1 ).percent();
+    base_multiplier *= 1.0 + p->conduits.shivering_core.percent();
+    triggers_icy_propulsion = false;
   }
 
   result_amount_type amount_type( const action_state_t*, bool ) const override
@@ -3421,6 +3507,7 @@ struct flamestrike_t : public hot_streak_spell_t
     triggers_ignite = triggers_radiant_spark = true;
     aoe = -1;
     base_multiplier *= 1.0 + p->spec.flamestrike_2->effectN( 1 ).percent();
+    base_multiplier *= 1.0 + p->conduits.master_flame.percent();
 
     if ( p->talents.flame_patch->ok() )
     {
@@ -3735,7 +3822,8 @@ struct frozen_orb_bolt_t : public frost_mage_spell_t
   frozen_orb_bolt_t( util::string_view n, mage_t* p ) :
     frost_mage_spell_t( n, p, p->find_spell( 84721 ) )
   {
-    aoe = as<int>( data().effectN( 2 ).base_value() );;
+    aoe = as<int>( data().effectN( 2 ).base_value() );
+    base_multiplier *= 1.0 + p->conduits.unrelenting_cold.percent();
     background = chills = true;
   }
 
@@ -4162,6 +4250,7 @@ struct ice_lance_t : public frost_mage_spell_t
     double m = frost_mage_spell_t::frozen_multiplier( s );
 
     m *= 3.0;
+    m *= 1.0 + p()->conduits.ice_bite.percent();
 
     return m;
   }
@@ -4281,7 +4370,11 @@ struct fire_blast_t : public fire_mage_spell_t
     fire_mage_spell_t::impact( s );
 
     if ( result_is_hit( s->result ) )
+    {
       p()->buffs.blaster_master->trigger();
+      if ( p()->buffs.combustion->check() )
+        p()->buffs.infernal_cascade->trigger();
+    }
   }
 
   double recharge_multiplier( const cooldown_t& cd ) const override
@@ -4854,6 +4947,7 @@ struct ray_of_frost_t : public frost_mage_spell_t
   {
     parse_options( options_str );
     channeled = chills = triggers_radiant_spark = true;
+    triggers_icy_propulsion = false;
   }
 
   void init_finished() override
@@ -5258,6 +5352,15 @@ struct shifting_power_t : public mage_spell_t
 
     for ( auto cd : shifting_power_cooldowns )
       cd->adjust( reduction );
+  }
+
+  timespan_t tick_time( const action_state_t* s ) const override
+  {
+    timespan_t t = mage_spell_t::tick_time( s );
+
+    t *= 1.0 + p()->conduits.discipline_of_the_grove.percent();
+
+    return t;
   }
 };
 
@@ -5689,7 +5792,7 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
 
   debuffs.mirrors_of_torment          = make_buff<buffs::mirrors_of_torment_t>( this );
   debuffs.radiant_spark_vulnerability = make_buff( *this, "radiant_spark_vulnerability", mage->find_spell( 307454 ) )
-                                          ->set_default_value( mage->find_spell( 307454 )->effectN( 1 ).percent() );
+                                          ->set_default_value( mage->find_spell( 307454 )->effectN( 1 ).percent() + mage->conduits.ire_of_the_ascended.percent() );
   // Azerite
   debuffs.packed_ice = make_buff( *this, "packed_ice", mage->find_spell( 272970 ) )
                          ->set_chance( mage->azerite.packed_ice.enabled() )
@@ -5728,11 +5831,13 @@ mage_t::mage_t( sim_t* sim, util::string_view name, race_e r ) :
   uptime()
 {
   // Cooldowns
+  cooldowns.arcane_power     = get_cooldown( "arcane_power"     );
   cooldowns.combustion       = get_cooldown( "combustion"       );
   cooldowns.cone_of_cold     = get_cooldown( "cone_of_cold"     );
   cooldowns.fire_blast       = get_cooldown( "fire_blast"       );
   cooldowns.frost_nova       = get_cooldown( "frost_nova"       );
   cooldowns.frozen_orb       = get_cooldown( "frozen_orb"       );
+  cooldowns.icy_veins        = get_cooldown( "icy_veins"        );
   cooldowns.presence_of_mind = get_cooldown( "presence_of_mind" );
 
   // Options
@@ -6202,6 +6307,26 @@ void mage_t::init_spells()
   runeforge.expanded_potential   = find_runeforge_legendary( "Expanded Potential"   );
   runeforge.grisly_icicle        = find_runeforge_legendary( "Grisly Icicle"        );
 
+  // Soulbind Conduits
+  conduits.arcane_prodigy           = find_conduit_spell( "Arcane Prodigy" );
+  conduits.artifice_of_the_archmage = find_conduit_spell( "Artifice of the Archmage" );
+  conduits.magis_brand              = find_conduit_spell( "Magi's Brand" );
+  conduits.nether_precision         = find_conduit_spell( "Nether Precision" );
+
+  conduits.flame_accretion          = find_conduit_spell( "Flame Accretion" );
+  conduits.infernal_cascade         = find_conduit_spell( "Infernal Cascade" );
+  conduits.master_flame             = find_conduit_spell( "Master Flame" );
+
+  conduits.ice_bite                 = find_conduit_spell( "Ice Bite" );
+  conduits.icy_propulsion           = find_conduit_spell( "Icy Propulsion" );
+  conduits.shivering_core           = find_conduit_spell( "Shivering Core" );
+  conduits.unrelenting_cold         = find_conduit_spell( "Unrelenting Cold" );
+
+  conduits.discipline_of_the_grove  = find_conduit_spell( "Discipline of the Grove" );
+  conduits.gift_of_the_lich         = find_conduit_spell( "Gift of the Lich" );
+  conduits.ire_of_the_ascended      = find_conduit_spell( "Ire of the Ascended" );
+  conduits.siphoned_malice          = find_conduit_spell( "Siphoned Malice" );
+
   auto memory = find_azerite_essence( "Memory of Lucid Dreams" );
   lucid_dreams_refund = memory.spell( 1u, essence_type::MINOR )->effectN( 1 ).percent();
 
@@ -6246,7 +6371,10 @@ void mage_t::create_buffs()
                                  ->set_duration( find_spell( 12042 )->duration() + spec.arcane_power_2->effectN( 1 ).time_value() );
   buffs.clearcasting         = make_buff<buffs::expanded_potential_buff_t>( this, "clearcasting", find_spell( 263725 ) )
                                  ->set_default_value( find_spell( 263725 )->effectN( 1 ).percent() )
-                                 ->set_max_stack( find_spell( 263725 )->max_stacks() + as<int>( spec.clearcasting_3->effectN( 1 ).base_value() ) );
+                                 ->set_max_stack( find_spell( 263725 )->max_stacks() + as<int>( spec.clearcasting_3->effectN( 1 ).base_value() ) )
+                                 ->set_stack_change_callback( [ this ] ( buff_t*, int, int cur )
+                                  // Nether Precision activates when all stacks of Clearcasting expire, regardless of how they expire.
+                                   { if ( cur == 0 ) buffs.nether_precision->trigger( buffs.nether_precision->max_stack() ); } );
   buffs.clearcasting_channel = make_buff( this, "clearcasting_channel", find_spell( 277726 ) )
                                  ->set_quiet( true );
   buffs.evocation            = make_buff( this, "evocation", find_spell( 12051 ) )
@@ -6293,9 +6421,15 @@ void mage_t::create_buffs()
                                   ->set_stack_change_callback( [ this ] ( buff_t*, int old, int cur )
                                     {
                                       if ( cur > old )
+                                      {
                                         buffs.flames_of_alacrity->trigger( cur - old );
+                                        buffs.flame_accretion->trigger( cur - old );
+                                      }
                                       else
+                                      {
                                         buffs.flames_of_alacrity->decrement( old - cur );
+                                        buffs.flame_accretion->decrement( old - cur );
+                                      }
                                     } );
   buffs.heating_up            = make_buff( this, "heating_up", find_spell( 48107 ) );
   buffs.hot_streak            = make_buff<buffs::expanded_potential_buff_t>( this, "hot_streak", find_spell( 48108 ) )
@@ -6430,7 +6564,27 @@ void mage_t::create_buffs()
 
   // Covenant Abilities
   buffs.deathborne = make_buff( this, "deathborne", find_spell( 324220 ) )
-                       ->set_default_value( find_spell( 324220 )->effectN( 1 ).percent() );
+                       ->set_default_value( find_spell( 324220 )->effectN( 1 ).percent() )
+                       ->set_duration( find_spell( 324220 )->duration() + conduits.gift_of_the_lich.time_value() );
+
+
+  // Soulbind Conduits
+  buffs.nether_precision = make_buff( this, "nether_precision", find_spell( 336889 ) )
+                             ->set_default_value( conduits.nether_precision.percent() )
+                             ->set_chance( conduits.nether_precision.ok() );
+
+  buffs.flame_accretion  = make_buff( this, "flame_accretion", find_spell( 157644 ) )
+                             ->set_default_value( conduits.flame_accretion.value() )
+                             ->set_chance( conduits.flame_accretion.ok() )
+                             ->add_invalidate( CACHE_MASTERY );
+  buffs.infernal_cascade = make_buff( this, "infernal_cascade", find_spell( 336832 ) )
+                             ->set_default_value( conduits.infernal_cascade.percent() )
+                             ->set_chance( conduits.infernal_cascade.ok() )
+                             ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+
+  buffs.siphoned_malice = make_buff( this, "siphoned_malice", find_spell( 337090 ) )
+                             ->set_default_value( conduits.siphoned_malice.percent() )
+                             ->set_chance( conduits.siphoned_malice.ok() );
 
   // Misc
   // N active GBoWs are modeled by a single buff that gives N times as much mana.
@@ -7274,6 +7428,15 @@ double mage_t::composite_attribute_multiplier( attribute_e attr ) const
   return m;
 }
 
+double mage_t::composite_mastery() const
+{
+  double m = player_t::composite_mastery();
+
+  m += buffs.flame_accretion->check_stack_value();
+
+  return m;
+}
+
 double mage_t::composite_player_critical_damage_multiplier( const action_state_t* s ) const
 {
   double m = player_t::composite_player_critical_damage_multiplier( s );
@@ -7293,6 +7456,9 @@ double mage_t::composite_player_multiplier( school_e school ) const
 
   if ( dbc::is_school( school, SCHOOL_ARCANE ) )
     m *= 1.0 + buffs.enlightened_damage->check_value();
+
+  if ( dbc::is_school( school, SCHOOL_FIRE ) )
+    m *= 1.0 + buffs.infernal_cascade->check_stack_value();
 
   return m;
 }
