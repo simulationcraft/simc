@@ -2091,7 +2091,7 @@ struct fel_barrage_t : public demon_hunter_spell_t
       : demon_hunter_spell_t( name, p, p->talent.fel_barrage->effectN( 1 ).trigger() )
     {
       background = dual = true;
-      aoe = static_cast<int>( data().effectN( 2 ).base_value() );
+      aoe = as<int>( data().effectN( 2 ).base_value() );
     }
   };
 
@@ -3309,7 +3309,9 @@ struct blade_dance_base_t : public demon_hunter_attack_t
       last_attack( false )
     {
       background = dual = true;
-      aoe = -1;
+      // Based on beta testing, it appears all spells are affected by the 5 target limit
+      // This includes Death Sweep even though the tooltip does not indicate this
+      aoe = as<int>( p->find_spell( 199552 )->effectN( 1 ).base_value() );
     }
 
     double composite_da_multiplier( const action_state_t* s ) const override
