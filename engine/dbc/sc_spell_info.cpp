@@ -699,7 +699,7 @@ static constexpr auto _mechanic_strings = util::make_static_map<unsigned, util::
   { 186, "Incapacitate"   },
   { 196, "Bleed"          },
   { 201, "Heal"           },
-  { 198, "Polymorph"      },
+  { 205, "Polymorph"      },
   { 213, "Banish"         },
   { 218, "Shield"         },
   { 223, "Shackle"        },
