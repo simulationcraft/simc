@@ -605,7 +605,8 @@ public:
     const spell_data_t* rake_dmg;
     const spell_data_t* tigers_fury;
     const spell_data_t* shred;
-    const spell_data_t* savage_roar; // Hidden buff
+    const spell_data_t* savage_roar; // talent buff spell, holds composite_multiplier data
+    const spell_data_t* bloodtalons; // talent buff spell, holds composite_multiplier data
 
     // Balance
     const spell_data_t* balance;
@@ -3468,15 +3469,14 @@ struct berserk_cat_t : public cat_attack_t
 
 struct brutal_slash_t : public cat_attack_t
 {
-  brutal_slash_t( druid_t* p, const std::string& options_str ) :
-    cat_attack_t( "brutal_slash", p, p -> talent.brutal_slash, options_str )
+  brutal_slash_t( druid_t* p, const std::string& options_str )
+    : cat_attack_t( "brutal_slash", p, p->talent.brutal_slash, options_str )
   {
-    aoe = -1;
-    energize_amount = data().effectN( 2 ).base_value();
+    aoe               = as<int>( data().effectN( 3 ).base_value() );
+    energize_amount   = data().effectN( 2 ).base_value();
     energize_resource = RESOURCE_COMBO_POINT;
-    energize_type = ENERGIZE_ON_HIT;
-    cooldown -> hasted = true;
-
+    energize_type     = ENERGIZE_ON_HIT;
+    cooldown->hasted  = true;
   }
 
   double cost() const override
@@ -3582,10 +3582,14 @@ struct ferocious_bite_t : public cat_attack_t
   double max_excess_energy;
   double combo_points;
   bool max_energy;
+  timespan_t max_sabertooth_refresh;
 
-  ferocious_bite_t( druid_t* p, const std::string& options_str ) :
-    cat_attack_t( "ferocious_bite", p, p -> find_affinity_spell( "Ferocious Bite" ) ),
-    excess_energy( 0 ), max_excess_energy( 0 ), max_energy( false )
+  ferocious_bite_t( druid_t* p, const std::string& options_str )
+    : cat_attack_t( "ferocious_bite", p, p->find_affinity_spell( "Ferocious Bite" ) ),
+      excess_energy( 0 ),
+      max_excess_energy( 0 ),
+      max_energy( false ),
+      max_sabertooth_refresh( p->spec.rip->duration() * p->resources.max[ RESOURCE_COMBO_POINT ] * 1.3 )
   {
     add_option( opt_bool( "max_energy" , max_energy ) );
     parse_options( options_str );
@@ -3651,15 +3655,12 @@ struct ferocious_bite_t : public cat_attack_t
   {
     cat_attack_t::impact( s );
 
-    if ( result_is_hit( s -> result ) )
+    if ( result_is_hit( s->result ) && p()->talent.sabertooth->ok() )
     {
-      if (p()->talent.sabertooth->ok())
-      {
-        td(s->target)
+      td( s->target )
           ->dots.rip->extend_duration(
-            timespan_t::from_seconds(p()->talent.sabertooth->effectN(2).base_value() * combo_points),
-            timespan_t::from_seconds(32), 0);
-      }
+              timespan_t::from_seconds( p()->talent.sabertooth->effectN( 2 ).base_value() * combo_points ),
+              max_sabertooth_refresh, 0 );
     }
   }
 
@@ -3996,12 +3997,10 @@ struct rip_t : public cat_attack_t
 {
   double combo_point_on_tick_proc_rate;
 
-  rip_t( druid_t* p, const std::string& options_str )
-    : cat_attack_t( "rip", p, p->find_affinity_spell( "Rip" ), options_str )
+  rip_t( druid_t* p, const std::string& options_str ) : cat_attack_t( "rip", p, p->spec.rip, options_str )
   {
     special      = true;
     may_crit     = false;
-
     hasted_ticks = true;
 
     combo_point_on_tick_proc_rate = 0.0;
@@ -4149,10 +4148,9 @@ struct primal_wrath_t : public cat_attack_t
 
 struct savage_roar_t : public cat_attack_t
 {
-  savage_roar_t( druid_t* p, const std::string& options_str ) :
-    cat_attack_t( "savage_roar", p, p -> talent.savage_roar, options_str )
+  savage_roar_t( druid_t* p, const std::string& options_str )
+    : cat_attack_t( "savage_roar", p, p->talent.savage_roar, options_str )
   {
-    consumes_combo_points = true; // Missing from spell data.
     may_crit = may_miss = harmful = false;
     dot_duration = base_tick_time = timespan_t::zero();
   }
@@ -4162,13 +4160,13 @@ struct savage_roar_t : public cat_attack_t
   timespan_t duration( int combo_points = -1 )
   {
     if ( combo_points == -1 )
-      combo_points = ( int ) p() -> resources.current[ RESOURCE_COMBO_POINT ];
+      combo_points = as<int>( p()->resources.current[ RESOURCE_COMBO_POINT ] );
 
-    timespan_t d = data().duration() + data().duration() * combo_points;
+    timespan_t d = data().duration() * ( combo_points + 1 );
 
     // Maximum duration is 130% of the raw duration of the new Savage Roar.
-    if ( p() -> buff.savage_roar -> check() )
-      d += std::min( p() -> buff.savage_roar -> remains(), d * 0.3 );
+    if ( p()->buff.savage_roar->check() )
+      d += std::min( p()->buff.savage_roar->remains(), d * 0.3 );
 
     return d;
   }
@@ -4180,13 +4178,13 @@ struct savage_roar_t : public cat_attack_t
 
     cat_attack_t::execute();
 
-    p() -> buff.savage_roar -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, d );
+    p()->buff.savage_roar->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, d );
   }
 
   bool ready() override
   {
     // Savage Roar may not be cast if the new duration is less than that of the current
-    if ( duration() < p() -> buff.savage_roar -> remains() )
+    if ( duration() < p()->buff.savage_roar->remains() )
       return false;
 
     return cat_attack_t::ready();
@@ -4292,12 +4290,12 @@ struct swipe_cat_t : public cat_attack_t
                     options_str ),
       bleed_mul( 0.0 )
   {
-    aoe = -1;
-    energize_amount = data().effectN(1).base_value();
+    aoe               = as<int>( data().effectN( 4 ).base_value() );
+    energize_amount   = data().effectN( 1 ).base_value();
     energize_resource = RESOURCE_COMBO_POINT;
-    energize_type = ENERGIZE_ON_HIT;
+    energize_type     = ENERGIZE_ON_HIT;
 
-    if ( player->find_rank_spell( "Swipe", "Rank 2")->ok())
+    if ( player->find_rank_spell( "Swipe", "Rank 2" )->ok() )
       bleed_mul = player->spec.swipe_cat->effectN( 2 ).percent();
   }
 
@@ -4683,7 +4681,8 @@ struct swipe_bear_t : public bear_attack_t
                      p->find_affinity_spell( "Swipe" )->ok() ? p->spec.swipe_bear : spell_data_t::not_found(),
                      options_str )
   {
-    aoe = -1;
+    // target hit data stored in spec.swipe_cat
+    aoe  = as<int>( p->spec.swipe_cat->effectN( 4 ).base_value() );
     gore = true;
   }
 
@@ -7832,21 +7831,22 @@ void druid_t::init_spells()
   spec.full_moon                  = find_spell( 274283 ); // not referenced in new moon talent
 
   // Feral
-  spec.cat_form                   = find_class_spell( "Cat Form" )->ok() ? find_spell( 3025   ) : spell_data_t::not_found();
-  spec.cat_form_speed             = find_class_spell( "Cat Form" )->ok() ? find_spell( 113636 ) : spell_data_t::not_found();
-  spec.feral                      = find_specialization_spell( "Feral Druid" );
-  spec.feral_overrides            = find_specialization_spell( "Feral Overrides Passive" );
-  spec.predatory_swiftness        = find_specialization_spell( "Predatory Swiftness" );
-  spec.primal_fury                = find_spell( 16953 );
-  spec.rip                        = find_specialization_spell( "Rip" );
-  spec.sharpened_claws            = find_specialization_spell( "Sharpened Claws" );
-  spec.swipe_cat                  = find_spell( 106785 );
-  spec.thrash_cat                 = find_spell( 106830 );
-  spec.berserk_cat                = find_spell( 106951 );
-  spec.rake_dmg                   = find_spell( 155722 );
-  spec.tigers_fury                = find_specialization_spell( "Tiger's Fury" );
-  spec.shred                      = find_class_spell( "Shred" );
-  spec.savage_roar                = find_spell( 62071 );
+  spec.cat_form            = find_class_spell( "Cat Form" )->ok() ? find_spell( 3025 ) : spell_data_t::not_found();
+  spec.cat_form_speed      = find_class_spell( "Cat Form" )->ok() ? find_spell( 113636 ) : spell_data_t::not_found();
+  spec.feral               = find_specialization_spell( "Feral Druid" );
+  spec.feral_overrides     = find_specialization_spell( "Feral Overrides Passive" );
+  spec.predatory_swiftness = find_specialization_spell( "Predatory Swiftness" );
+  spec.primal_fury         = find_spell( 16953 );
+  spec.rip                 = find_affinity_spell( "Rip" );
+  spec.sharpened_claws     = find_specialization_spell( "Sharpened Claws" );
+  spec.swipe_cat           = find_spell( 106785 );
+  spec.thrash_cat          = find_spell( 106830 );
+  spec.berserk_cat         = find_spell( 106951 );
+  spec.rake_dmg            = find_spell( 155722 );
+  spec.tigers_fury         = find_specialization_spell( "Tiger's Fury" );
+  spec.shred               = find_class_spell( "Shred" );
+  spec.savage_roar         = find_spell( 62071 );
+  spec.bloodtalons         = find_spell( 145152 );
 
   // Guardian
   spec.bear_form               = find_class_spell( "Bear Form" )->ok() ? find_spell( 1178 ) : spell_data_t::not_found();
@@ -8136,9 +8136,10 @@ void druid_t::create_buffs()
     ->add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER )
     ->set_cooldown( timespan_t::zero() );
 
-  buff.bloodtalons           = make_buff( this, "bloodtalons", talent.bloodtalons -> ok() ? find_spell( 145152 ) : spell_data_t::not_found() )
-    ->set_default_value( find_spell( 145152 ) -> effectN( 1 ).percent() )
-    ->set_max_stack( 2 );
+  buff.bloodtalons =
+      make_buff( this, "bloodtalons", talent.bloodtalons->ok() ? spec.bloodtalons : spell_data_t::not_found() )
+          ->set_default_value( spec.bloodtalons->effectN( 1 ).percent() )
+          ->set_max_stack( 2 );
 
   buff.galactic_guardian     = make_buff( this, "galactic_guardian", find_spell( 213708 ) )
     ->set_chance( talent.galactic_guardian -> ok() )
