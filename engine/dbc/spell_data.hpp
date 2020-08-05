@@ -90,6 +90,7 @@ struct spellpower_data_t
     switch ( type() )
     {
       case POWER_MANA:
+      case POWER_INSANITY:
         return 100.0;
       case POWER_RAGE:
       case POWER_RUNIC_POWER:
