@@ -795,6 +795,7 @@ public:
     conduit_data_t nether_precision;
 
     // Fire
+    conduit_data_t controlled_destruction;
     conduit_data_t flame_accretion;
     conduit_data_t infernal_cascade;
     conduit_data_t master_flame;
@@ -4838,6 +4839,7 @@ struct pyroblast_t : public hot_streak_spell_t
     parse_options( options_str );
     triggers_hot_streak = triggers_ignite = triggers_kindling = triggers_radiant_spark = true;
     base_dd_adder += p->azerite.wildfire.value( 2 );
+    base_multiplier *= 1.0 + p->conduits.controlled_destruction.percent();
 
     if ( p->azerite.trailing_embers.enabled() )
     {
@@ -6313,6 +6315,7 @@ void mage_t::init_spells()
   conduits.magis_brand              = find_conduit_spell( "Magi's Brand" );
   conduits.nether_precision         = find_conduit_spell( "Nether Precision" );
 
+  conduits.controlled_destruction   = find_conduit_spell( "Controlled Destruction" );
   conduits.flame_accretion          = find_conduit_spell( "Flame Accretion" );
   conduits.infernal_cascade         = find_conduit_spell( "Infernal Cascade" );
   conduits.master_flame             = find_conduit_spell( "Master Flame" );
