@@ -34,6 +34,7 @@ struct summon_pet_t;
 struct summon_shadowfiend_t;
 struct summon_mindbender_t;
 struct ascended_eruption_t;
+
 }  // namespace spells
 namespace heals
 {
@@ -319,6 +320,9 @@ public:
     propagate_const<gain_t*> insanity_lost_devouring_plague;
     propagate_const<gain_t*> insanity_mindgames;
     propagate_const<gain_t*> insanity_ascended_blast;
+	propagate_const<gain_t*> insanity_power_word_shield_hallucinations;
+	propagate_const<gain_t*> insanity_night_fae;
+
   } gains;
 
   // Benefits
