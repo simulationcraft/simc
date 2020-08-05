@@ -6940,7 +6940,9 @@ struct convoke_the_spirits_t : public druid_spell_t
     parse_options( options_str );
 
     harmful = channeled = true;
-    deck = player->get_shuffled_rng( "convoke_the_spirits", player->convoke_the_spirits_heals, 16 );
+    may_miss = may_crit = false;
+    deck = player->get_shuffled_rng( "convoke_the_spirits", player->convoke_the_spirits_heals,
+                                     as<int>( dot_duration / base_tick_time ) );
 
     // Balance
     conv_fm = player->find_action( "full_moon_convoke" );
@@ -6982,6 +6984,8 @@ struct convoke_the_spirits_t : public druid_spell_t
   void execute() override
   {
     druid_spell_t::execute();
+    p()->reset_auto_attacks( composite_dot_duration( execute_state ) );
+
     deck->reset();
 
     // Balance
