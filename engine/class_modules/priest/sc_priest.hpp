@@ -321,7 +321,7 @@ public:
     propagate_const<gain_t*> insanity_mindgames;
     propagate_const<gain_t*> insanity_ascended_blast;
 	propagate_const<gain_t*> insanity_power_word_shield_hallucinations;
-	propagate_const<gain_t*> insanity_night_fae;
+	propagate_const<gain_t*> insanity_power_word_shield_fae_blessings;
 
   } gains;
 

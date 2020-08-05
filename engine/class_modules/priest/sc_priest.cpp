@@ -667,56 +667,52 @@ struct shadow_mend_t final : public priest_heal_t
 namespace heals
 {
 
-	// ==========================================================================
-	// Power Word: Shield
-	// ==========================================================================
-	struct power_word_shield_t final : public priest_absorb_t
+// ==========================================================================
+// Power Word: Shield
+// ==========================================================================
+struct power_word_shield_t final : public priest_absorb_t
+{
+  double hallucinations_insanity_gain;
+  double nightfae_insanity_gain;
+  bool ignore_debuff;
+
+  power_word_shield_t( priest_t& p, util::string_view options_str )
+    : priest_absorb_t("power_word_shield", p, p.find_spell( 17 )), ignore_debuff( false ),
+	hallucinations_insanity_gain( priest().find_spell( 199579 )->effectN( 1 ).resource( RESOURCE_INSANITY ) ),
+	nightfae_insanity_gain(priest().find_spell( 327703 )->effectN( 3 ).base_value( ) ) // There are 12 effects for Fae Blessing, none of which correlate to insanity.
 	{
-		double hallucinations_insanity_gain;
-		double nightfae_insanity_gain;
-		bool ignore_debuff;
+	  add_option(opt_bool("ignore_debuff", ignore_debuff));
+	  parse_options(options_str);
 
+	  spell_power_mod.direct = 5.5;  // hardcoded into tooltip, last checked 2017-03-18
+	}
 
-		power_word_shield_t(priest_t& p, util::string_view options_str)
-			: priest_absorb_t("power_word_shield", p, p.find_spell(17)), ignore_debuff(false),
-			hallucinations_insanity_gain( priest().find_spell( 199579 )->effectN( 1 ).resource( RESOURCE_INSANITY ) ),
-			nightfae_insanity_gain(priest().find_spell( 327703 )->effectN( 3 ).base_value( ) ) // There are 12 effects for Fae Blessing, none of which correlate to insanity.
-		{
+  void impact(action_state_t* s) override
+  {
+	priest_absorb_t::impact(s);
 
-			add_option(opt_bool("ignore_debuff", ignore_debuff));
-			parse_options(options_str);
-
-			spell_power_mod.direct = 5.5;  // hardcoded into tooltip, last checked 2017-03-18
-		}
-
-		void impact(action_state_t* s) override
-		{
-			priest_absorb_t::impact(s);
-
-			if (priest().talents.body_and_soul->ok() && s->target->buffs.body_and_soul)
-			{
-				s->target->buffs.body_and_soul->trigger();
-			}
-			if (priest().covenant.fae_blessings->ok() && priest().buffs.fae_blessings->up())
-			{
-				priest().generate_insanity(nightfae_insanity_gain, priest().gains.insanity_night_fae, execute_state->action);
-				priest().buffs.fae_blessings->decrement();
-			}
-
-		}
+	if (priest().talents.body_and_soul->ok() && s->target->buffs.body_and_soul)
+	{
+	  s->target->buffs.body_and_soul->trigger();
+	}
+	if (priest().covenant.fae_blessings->ok() && priest().buffs.fae_blessings->up())
+	{
+	  priest().generate_insanity(nightfae_insanity_gain, priest().gains.insanity_power_word_shield_fae_blessings, execute_state->action);
+	  priest().buffs.fae_blessings->decrement();
+	}
+  }
 		
-		void execute() override
-		{
-			priest_absorb_t::execute();
+  void execute() override
+  {
+	priest_absorb_t::execute();
 
-			if (priest().specialization() == PRIEST_SHADOW)
-			{
-				priest().generate_insanity(hallucinations_insanity_gain, priest().gains.insanity_power_word_shield_hallucinations, execute_state->action);
-			}
-
-		}
+	if (priest().specialization() == PRIEST_SHADOW)
+	{
+	  priest().generate_insanity(hallucinations_insanity_gain, priest().gains.insanity_power_word_shield_hallucinations, execute_state->action);
+	}
+  }
 		
-	};
+};
 }  // namespace heals
 
 }  // namespace actions
@@ -975,7 +971,7 @@ void priest_t::create_gains()
   gains.insanity_mindgames                     = get_gain( "Insanity Gained from Mindgames" );
   gains.insanity_ascended_blast                = get_gain( "Insanity Gained from Ascended Blast" );
   gains.insanity_power_word_shield_hallucinations = get_gain( "Insanity Gained from Power Word: Shield" );
-  gains.insanity_night_fae					   = get_gain( "Insanity Gained from Power Word: Shield with Fae Blessings." );
+  gains.insanity_power_word_shield_fae_blessings					   = get_gain( "Insanity Gained from Power Word: Shield with Fae Blessings." );
 }
 
 /** Construct priest procs */
