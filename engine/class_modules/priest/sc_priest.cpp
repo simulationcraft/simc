@@ -503,6 +503,7 @@ struct ascended_blast_t final : public priest_spell_t
     {
       base_dd_multiplier *= ( 1.0 + priest().conduits.courageous_ascension.percent() );
     }
+    energize_type = ENERGIZE_NONE;
     cooldown->hasted = true;
   }
 
