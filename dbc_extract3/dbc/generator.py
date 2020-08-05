@@ -1538,6 +1538,7 @@ class SpellDataGenerator(DataGenerator):
             ( 282449, 0 ),          # Secret Technique clone attack
             ( 130493, 0 ),          # Nightstalker dmg increase driver
             ( 227151, 0 ),          # Symbols of Death Rank 2 autocrit buff
+            ( 328082, 0 ),          # Eviscerate rank 2 shadow damage spell
         ),
 
         # Priest:
