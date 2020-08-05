@@ -79,6 +79,7 @@ const char* buff_refresh_behavior_string   ( buff_refresh_behavior );
 const char* buff_stack_behavior_string   ( buff_stack_behavior );
 const char* buff_tick_behavior_string   ( buff_tick_behavior );
 const char* buff_tick_time_behavior_string   ( buff_tick_time_behavior );
+const char* action_energize_type_string( action_energize_e energize_type );
 std::string rppm_scaling_string       ( unsigned );
 std::string profile_source_string( profile_source );
 
@@ -285,6 +286,7 @@ SC_ENUM_FORMATTER( buff_refresh_behavior,   util::buff_refresh_behavior_string )
 SC_ENUM_FORMATTER( buff_stack_behavior,     util::buff_stack_behavior_string );
 SC_ENUM_FORMATTER( buff_tick_behavior,      util::buff_tick_behavior_string );
 SC_ENUM_FORMATTER( buff_tick_time_behavior, util::buff_tick_time_behavior_string );
+SC_ENUM_FORMATTER( action_energize_e,       util::action_energize_type_string );
 
 #undef SC_ENUM_FORMATTER
 } // namespace fmt
