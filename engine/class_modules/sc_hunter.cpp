@@ -1233,7 +1233,6 @@ struct hunter_main_pet_base_t : public hunter_pet_t
         -> set_default_value( find_spell( 186254 ) -> effectN( 1 ).percent() +
                               o() -> conduits.one_with_the_beast.percent() )
         -> set_cooldown( 0_ms )
-        -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
         -> set_stack_change_callback( [this]( buff_t*, int old, int cur ) {
             if ( cur == 0 )
               buffs.rylakstalkers_fangs -> expire();
@@ -5757,13 +5756,10 @@ void hunter_t::create_buffs()
       -> set_default_value( find_spell( 308498 ) -> effectN( 1 ).percent() )
       -> add_invalidate( CACHE_CRIT_CHANCE )
       -> set_activated( true );
-  if ( conduits.enfeebled_mark.ok() )
-    buffs.resonating_arrow -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   buffs.wild_spirits =
       make_buff( this, "wild_spirits", covenants.wild_spirits -> effectN( 1 ).trigger() )
         -> set_default_value( find_spell( 328275 ) -> effectN( 2 ).percent() )
-        -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
         -> set_activated( true );
   if ( conduits.spirit_attunement.ok() )
     buffs.wild_spirits -> buff_duration += conduits.spirit_attunement -> effectN( 2 ).time_value();
