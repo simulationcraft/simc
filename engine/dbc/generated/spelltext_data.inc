@@ -1,5 +1,5 @@
 // Spell text, wow build 9.0.1.35360
-static const std::array<spelltext_data_t, 15232> __spelltext_data { {
+static const std::array<spelltext_data_t, 15235> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -14326,6 +14326,7 @@ static const std::array<spelltext_data_t, 15232> __spelltext_data { {
   { 328024, "Rebirth returns the target to life with ${$s1+$20484s2}% health.", 0, "Rank 2" },
   { 328025, "Wild Growth heals $s1 additional $ltarget:targets;.", 0, "Rank 2" },
   { 328077, "Symbols of Death causes your next combo point generator to critically strike.", 0, "Rank 2" },
+  { 328082, "$@spelldesc196819", 0, 0 },
   { 328085, "Mutilate has a $s1% chance to make your next Ambush free and usable without Stealth. Chance increased to $s2% if the target is under $s3% health.", 0, 0 },
   { 328204, "Throws a hammer at your target dealing $s1 Shadow damage, and empowering your next $?c3[Templar's Verdict to automatically trigger Divine Storm]?c1[Word of Glory to automatically trigger Light of Dawn][Word of Glory to automatically trigger Shield of the Righteous].", "Your next $?c3[Templar's Verdict automatically triggers Divine Storm]?c1[Word of Glory automatically triggers Light of Dawn][Word of Glory automatically triggers Shield of the Righteous].", "Necrolord" },
   { 328210, "$@spelldesc323921", "Maximum health increased by $w%.", 0 },
@@ -14812,6 +14813,7 @@ static const std::array<spelltext_data_t, 15232> __spelltext_data { {
   { 336885, "$@spelldesc336239", "Standing in the shade makes it easier to focus, increasing your Mastery by $s1%.", 0 },
   { 336886, "Consuming Clearcasting increases the damage of your next 2 Arcane Blasts by |cFFFFFFFF$s1%|r.", 0, 0 },
   { 336887, "$spelldesc336884", "Movement speed reduced by $w%.", 0 },
+  { 336889, "$@spelldesc336886", "Arcane Blast damage increased by $w1%.", 0 },
   { 336890, "Targets affected by your Leg Sweep deal |cFFFFFFFF$s1%|r less damage for 5 sec.", 0, 0 },
   { 336892, "$@spelldesc336878", "Your next Trick Shots will not be consumed by Aimed Shot or Rapid Fire.", 0 },
   { 336895, "Wildfire Bomb drops an additional cluster of bombs around the target, each exploding for $336899s1 Fire damage.", 0, 0 },
@@ -14833,6 +14835,7 @@ static const std::array<spelltext_data_t, 15232> __spelltext_data { {
   { 337078, "Transcendence: Transfer increases your movement speed by |cFFFFFFFF$s1%|r.", 0, 0 },
   { 337084, "Blackout Kick has a |cFFFFFFFF$s1%|r chance to grant a charge of Roll.", 0, 0 },
   { 337087, "Each time a Mirror of Torment is consumed your Spell Damage is increased by |cFFFFFFFF$s1%|r for 10 seconds, stacking 3 times.", 0, 0 },
+  { 337090, "$@spelldesc337087", "Spell Damage increased by $w1%.", 0 },
   { 337099, "Rising Sun Kick reduces the remaining cooldown on Revival by 1 sec, and Revival heals targets for |cFFFFFFFF$s1%|r of Revival's heal over 10 sec.", 0, 0 },
   { 337106, "Agony has a $s1% increased chance to generate a Soul Shard.", 0, 0 },
   { 337111, "Corruption damage is increased by $s1%, and any target affected by your Corruption also has their movement speed slowed by $s1%.", 0, 0 },
