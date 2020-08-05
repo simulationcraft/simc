@@ -1884,6 +1884,7 @@ class SpellDataGenerator(DataGenerator):
           ( 333105, 1 ), # Sigil of the Illidari Legendary fake Fel Eruption aura
           ( 333110, 1 ), # Sigil of the Illidari Legendary fake Fel Eruption damage trigger
           ( 333120, 1 ), # Sigil of the Illidari Legendary fake Fel Eruption heal
+          ( 339229, 0 ), # Serrated Glaive conduit debuff
 
           # Vengeance
           ( 203557, 2 ), # Felblade proc rate
