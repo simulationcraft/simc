@@ -1499,7 +1499,8 @@ class SpellDataGenerator(DataGenerator):
           ( 206685, 0 ), # BM Spitting Cobra Cobra Spit
           ( 324156, 0 ), # Flayer's Mark (Covenenat)
           ( 328757, 0 ), # Wild Spirits (Covenenat)
-          ( 339928, 2 ), ( 339929, 2 ) # Brutal Projectiles (Conduit)
+          ( 339928, 2 ), ( 339929, 2 ), # Brutal Projectiles (Conduit)
+          ( 341223, 3 ), # Strength of the Pack (Conduit)
         ),
 
         # Rogue:

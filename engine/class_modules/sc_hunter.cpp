@@ -313,6 +313,8 @@ public:
     conduit_data_t necrotic_barrage; // NYI
     conduit_data_t spirit_attunement;
     // Beast Mastery
+    conduit_data_t bloodletting;
+    conduit_data_t echoing_call;
     conduit_data_t ferocious_appetite;
     conduit_data_t one_with_the_beast;
     // Marksmanship
@@ -321,7 +323,11 @@ public:
     conduit_data_t powerful_precision;
     conduit_data_t sharpshooters_focus;
     // Survival
+    conduit_data_t deadly_tandem;
+    conduit_data_t flame_infusion;
     conduit_data_t reversal_of_fortune;
+    conduit_data_t stinging_strike;
+    conduit_data_t strength_of_the_pack;
   } conduits;
 
   struct {
@@ -389,6 +395,10 @@ public:
     buff_t* eagletalons_true_focus;
     buff_t* flamewakers_cobra_sting;
     buff_t* secrets_of_the_vigil;
+
+    // Conduits
+    buff_t* flame_infusion;
+    buff_t* strength_of_the_pack;
 
     // Covenants
     buff_t* flayers_mark;
@@ -2418,7 +2428,8 @@ struct auto_shot_t : public auto_attack_base_t<ranged_attack_t>
     auto_attack_base_t( "auto_shot", p, p -> find_spell( 75 ) )
   {
     wild_call_chance = p -> specs.wild_call -> proc_chance() +
-                       p -> talents.one_with_the_pack -> effectN( 1 ).percent();
+                       p -> talents.one_with_the_pack -> effectN( 1 ).percent() +
+                       p -> conduits.echoing_call.percent();
   }
 
   action_state_t* new_state() override
@@ -2736,6 +2747,9 @@ struct barbed_shot_t: public hunter_ranged_attack_t
     parse_options(options_str);
 
     base_ta_adder += p -> azerite.feeding_frenzy.value( 2 );
+
+    base_td_multiplier *= 1 + p -> conduits.bloodletting.percent();
+    cooldown -> duration += p -> conduits.bloodletting -> effectN( 2 ).time_value();
 
     if ( p -> find_rank_spell( "Bestial Wrath", "Rank 2" ) -> ok() )
       bestial_wrath_r2_reduction = timespan_t::from_seconds( p -> specs.bestial_wrath -> effectN( 3 ).base_value() );
@@ -3454,6 +3468,8 @@ struct melee_focus_spender_t: hunter_melee_attack_t
     internal_bleeding( p ),
     wilderness_survival_reduction( p -> azerite.wilderness_survival.spell() -> effectN( 1 ).time_value() )
   {
+    base_dd_multiplier *= 1 + p -> conduits.stinging_strike.percent();
+
     if ( p -> legendary.latent_poison_injectors.ok() )
       latent_poison_injection = p -> get_background_action<latent_poison_injection_t>( "latent_poison_injection" );
 
@@ -3668,6 +3684,8 @@ struct carve_base_t: public hunter_melee_attack_t
 
     p() -> buffs.butchers_bone_fragments -> up(); // benefit tracking
     p() -> buffs.butchers_bone_fragments -> expire();
+
+    p() -> buffs.flame_infusion -> trigger();
   }
 
   void impact( action_state_t* s ) override
@@ -4227,6 +4245,7 @@ struct kill_command_t: public hunter_spell_t
       {
         flankers_advantage.proc -> occur();
         cooldown -> reset( true );
+        p() -> buffs.strength_of_the_pack -> trigger();
       }
     }
 
@@ -4742,11 +4761,28 @@ struct wildfire_bomb_t: public hunter_spell_t
       a -> add_child( dot_action );
     }
 
+    void execute() override
+    {
+      hunter_spell_t::execute();
+
+      p() -> buffs.flame_infusion -> up(); // benefit tracking
+      p() -> buffs.flame_infusion -> expire();
+    }
+
     void impact( action_state_t* s ) override
     {
       hunter_spell_t::impact( s );
       dot_action -> set_target( s -> target );
       dot_action -> execute();
+    }
+
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      double am = hunter_spell_t::composite_da_multiplier( s );
+
+      am *= 1 + p() -> buffs.flame_infusion -> check_stack_value();
+
+      return am;
     }
   };
 
@@ -5420,20 +5456,26 @@ void hunter_t::init_spells()
 
   // Soulbind Conduits
 
-  conduits.empowered_release   = find_conduit_spell( "Empowered Release" );
-  conduits.enfeebled_mark      = find_conduit_spell( "Enfeebled Mark" );
-  conduits.necrotic_barrage    = find_conduit_spell( "Necrotic Barrage" );
-  conduits.spirit_attunement   = find_conduit_spell( "Spirit Attunement" );
+  conduits.empowered_release    = find_conduit_spell( "Empowered Release" );
+  conduits.enfeebled_mark       = find_conduit_spell( "Enfeebled Mark" );
+  conduits.necrotic_barrage     = find_conduit_spell( "Necrotic Barrage" );
+  conduits.spirit_attunement    = find_conduit_spell( "Spirit Attunement" );
 
-  conduits.ferocious_appetite  = find_conduit_spell( "Ferocious Appetite" );
-  conduits.one_with_the_beast  = find_conduit_spell( "One With the Beast" );
+  conduits.bloodletting         = find_conduit_spell( "Bloodletting" );
+  conduits.echoing_call         = find_conduit_spell( "Echoing Call" );
+  conduits.ferocious_appetite   = find_conduit_spell( "Ferocious Appetite" );
+  conduits.one_with_the_beast   = find_conduit_spell( "One With the Beast" );
 
-  conduits.brutal_projectiles  = find_conduit_spell( "Brutal Projectiles" );
-  conduits.deadly_chain        = find_conduit_spell( "Deadly Chain" );
-  conduits.powerful_precision  = find_conduit_spell( "Powerful Precision" );
-  conduits.sharpshooters_focus = find_conduit_spell( "Sharpshooter's Focus" );
+  conduits.brutal_projectiles   = find_conduit_spell( "Brutal Projectiles" );
+  conduits.deadly_chain         = find_conduit_spell( "Deadly Chain" );
+  conduits.powerful_precision   = find_conduit_spell( "Powerful Precision" );
+  conduits.sharpshooters_focus  = find_conduit_spell( "Sharpshooter's Focus" );
 
-  conduits.reversal_of_fortune = find_conduit_spell( "Reversal of Fortune" );
+  conduits.deadly_tandem        = find_conduit_spell( "Deadly Tandem" );
+  conduits.flame_infusion       = find_conduit_spell( "Flame Infusion" );
+  conduits.reversal_of_fortune  = find_conduit_spell( "Reversal of Fortune" );
+  conduits.stinging_strike      = find_conduit_spell( "Stinging Strike" );
+  conduits.strength_of_the_pack = find_conduit_spell( "Strength of the Pack" );
 
   // Runeforge Legendaries
 
@@ -5651,6 +5693,8 @@ void hunter_t::create_buffs()
       -> set_cooldown( 0_ms )
       -> set_activated( true )
       -> set_default_value( specs.coordinated_assault -> effectN( 1 ).percent() );
+  if ( conduits.deadly_tandem.ok() )
+    buffs.coordinated_assault -> buff_duration += conduits.deadly_tandem.time_value();
 
   buffs.coordinated_assault_vision =
     make_buff( this, "coordinated_assault_vision", specs.coordinated_assault )
@@ -5686,6 +5730,19 @@ void hunter_t::create_buffs()
   buffs.aspect_of_the_eagle =
     make_buff( this, "aspect_of_the_eagle", specs.aspect_of_the_eagle )
       -> set_cooldown( 0_ms );
+
+  // Conduits
+
+  buffs.flame_infusion =
+    make_buff( this, "flame_infusion", find_spell( 341401 ) )
+      -> set_default_value( conduits.flame_infusion.percent() )
+      -> set_trigger_spell( conduits.flame_infusion );
+
+  buffs.strength_of_the_pack =
+    make_buff( this, "strength_of_the_pack", find_spell( 341223 ) )
+      -> set_default_value( conduits.strength_of_the_pack.percent() )
+      -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+      -> set_chance( conduits.strength_of_the_pack.ok() );
 
   // Covenenats
 
@@ -6482,6 +6539,8 @@ double hunter_t::composite_player_critical_damage_multiplier( const action_state
 double hunter_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
+
+  m *= 1 + buffs.strength_of_the_pack -> check_value();
 
   return m;
 }
