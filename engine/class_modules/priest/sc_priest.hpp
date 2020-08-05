@@ -442,8 +442,8 @@ public:
     item_runeforge_t the_penitent_one;  // Effect implemented, but not hooked up to PW:Radiance
     // Shadow
     item_runeforge_t painbreaker_psalm;
-    item_runeforge_t shadowflame_prism;         // TODO: Add 20% damage modifier
-    item_runeforge_t eternal_call_to_the_void;  // Insanity effect implemeneted, doesn't do dmg
+    item_runeforge_t shadowflame_prism; // TODO: Add 20% damage modifier
+    item_runeforge_t eternal_call_to_the_void;
   } legendary;
 
   struct

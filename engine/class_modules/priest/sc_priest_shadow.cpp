@@ -278,29 +278,19 @@ struct mind_sear_t final : public priest_spell_t
   }
 };
 
-// TODO: Figure out why this isn't doing damage
 struct void_tendril_mind_flay_t final : public priest_spell_t
 {
   const spell_data_t* void_tendril_insanity;
 
   void_tendril_mind_flay_t( priest_t& p )
-    : priest_spell_t( "mind_flay_void_tendril", p, p.find_spell( 193470 ) ),
+    : priest_spell_t( "mind_flay_void_tendril", p, p.find_spell( 193473 ) ),
     void_tendril_insanity( priest().find_spell( 336214 ) )
   {
     aoe                    = 1;
-    radius                 = 100;
-    dot_duration           = timespan_t::zero();
-    base_tick_time         = timespan_t::zero();
     background             = true;
     ground_aoe             = true;
-    school                 = SCHOOL_SHADOW;
-    may_miss               = false;
-    may_crit               = true;
     spell_power_mod.direct = spell_power_mod.tick;
     spell_power_mod.tick   = 0.0;
-
-    snapshot_flags &= ~( STATE_MUL_PERSISTENT | STATE_TGT_MUL_DA );
-    update_flags &= ~( STATE_MUL_PERSISTENT | STATE_TGT_MUL_DA );
   }
 
   timespan_t tick_time( const action_state_t* ) const override
