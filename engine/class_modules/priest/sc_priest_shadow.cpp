@@ -873,6 +873,7 @@ struct vampiric_touch_t final : public priest_spell_t
     : priest_spell_t( "vampiric_touch", p, p.find_class_spell( "Vampiric Touch" ) ),
       insanity_gain( data().effectN( 3 ).resource( RESOURCE_INSANITY ) ),
       harvested_thoughts_value( priest().azerite.thought_harvester.value( 2 ) ),
+      child_swp( nullptr ),
       ignore_healing( p.options.priest_ignore_healing )
   {
     parse_options( options_str );
