@@ -551,7 +551,7 @@ public:
 
   const char* name() const
   { return name_str.c_str(); }
-
+  
   size_t num_travel_events() const
   { return travel_events.size(); }
 
@@ -940,6 +940,8 @@ public:
   virtual void acquire_target( retarget_source /* event */, player_t* /* context */, player_t* /* candidate_target */ );
 
   virtual void set_target( player_t* target );
+
+  virtual void gain_energize_resource( resource_e resource_type, double amount, gain_t* gain, action_t* action );
 
   // ================
   // Static functions
