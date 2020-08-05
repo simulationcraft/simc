@@ -113,7 +113,9 @@ ol.float li {
     margin-top: 10px;
 }
 .column-tables {
-    display: inline-block;
+    display: flex;
+    flex-direction: column;
+    width: fit-content;
 }
 .column-tables table.sc:first-of-type {
     margin-top: 0;
