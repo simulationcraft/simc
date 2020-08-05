@@ -2444,7 +2444,7 @@ public:
 // Druid "Spell" Base for druid_spell_t, druid_heal_t ( and potentially druid_absorb_t )
 template <class Base>
 struct druid_spell_base_t : public druid_action_t< Base >
-{ 
+{
 private:
   using ab = druid_action_t<Base>;
 public:
@@ -5477,7 +5477,7 @@ struct full_moon_t : public druid_spell_t
       cooldown->duration = 0_ms;
 
     if ( !player->spec.astral_power->ok() )
-      energize_type = ENERGIZE_NONE;
+      energize_type = action_energize::NONE;
   }
 
   double calculate_direct_amount( action_state_t* state ) const override
