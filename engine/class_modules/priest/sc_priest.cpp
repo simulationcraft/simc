@@ -489,12 +489,10 @@ struct ascended_nova_t final : public priest_spell_t
 
 struct ascended_blast_t final : public priest_spell_t
 {
-  double insanity_gain;
   int grants_stacks;
 
   ascended_blast_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "ascended_blast", p, p.find_spell( 325283 ) ),
-      insanity_gain( data().effectN( 4 ).resource( RESOURCE_INSANITY ) ),
       grants_stacks( as<int>( data().effectN( 3 ).base_value() ) )
   {
     parse_options( options_str );
@@ -503,7 +501,6 @@ struct ascended_blast_t final : public priest_spell_t
     {
       base_dd_multiplier *= ( 1.0 + priest().conduits.courageous_ascension.percent() );
     }
-    energize_type = ENERGIZE_NONE;
     cooldown->hasted = true;
   }
 
@@ -513,13 +510,6 @@ struct ascended_blast_t final : public priest_spell_t
 
     // gain 5 stacks on impact
     priest().buffs.boon_of_the_ascended->increment( grants_stacks );
-  }
-
-  void execute() override
-  {
-    priest_spell_t::execute();
-
-    priest().generate_insanity( insanity_gain, priest().gains.insanity_ascended_blast, execute_state->action );
   }
 
   bool ready() override
@@ -927,31 +917,17 @@ void priest_t::create_gains()
   gains.insanity_auspicious_spirits            = get_gain( "Insanity Gained from Auspicious Spirits" );
   gains.insanity_dispersion                    = get_gain( "Insanity Saved by Dispersion" );
   gains.insanity_drain                         = get_gain( "Insanity Drained by Voidform" );
-  gains.insanity_mind_blast                    = get_gain( "Insanity Gained from Mind Blast" );
-  gains.insanity_mind_flay                     = get_gain( "Insanity Gained from Mind Flay" );
-  gains.insanity_mind_sear                     = get_gain( "Insanity Gained from Mind Sear" );
   gains.insanity_pet                           = get_gain( "Insanity Gained from Shadowfiend" );
-  gains.insanity_shadow_crash                  = get_gain( "Insanity Gained from Shadow Crash" );
-  gains.insanity_shadow_word_death             = get_gain( "Insanity Gained from Shadow Word: Death" );
-  gains.insanity_shadow_word_pain_onhit        = get_gain( "Insanity Gained from Shadow Word: Pain Casts" );
-  gains.insanity_shadow_word_void              = get_gain( "Insanity Gained from Shadow Word: Void" );
   gains.insanity_surrender_to_madness          = get_gain( "Insanity Gained from Surrender to Madness" );
   gains.insanity_wasted_surrendered_to_madness = get_gain( "Insanity Wasted from Surrendered to Madness" );
-  gains.insanity_vampiric_touch_ondamage       = get_gain( "Insanity Gained from Vampiric Touch Damage (T19 2P)" );
-  gains.insanity_vampiric_touch_onhit          = get_gain( "Insanity Gained from Vampiric Touch Casts" );
-  gains.insanity_void_bolt                     = get_gain( "Insanity Gained from Void Bolt" );
-  gains.insanity_void_torrent                  = get_gain( "Insanity Gained from Void Torrent" );
   gains.insanity_dark_ascension                = get_gain( "Insanity Gained from Dark Ascension" );
   gains.vampiric_touch_health                  = get_gain( "Health from Vampiric Touch Ticks" );
-  gains.insanity_dark_void                     = get_gain( "Insanity Gained from Dark Void" );
   gains.insanity_lucid_dreams                  = get_gain( "Insanity Gained from Lucid Dreams" );
   gains.insanity_memory_of_lucid_dreams        = get_gain( "Insanity Gained from Memory of Lucid Dreams" );
   gains.insanity_death_and_madness             = get_gain( "Insanity Gained from Death and Madness" );
   gains.shadow_word_death_self_damage          = get_gain( "Shadow Word: Death self inflicted damage" );
-  gains.insanity_lost_devouring_plague         = get_gain( "Insanity spent on Devouring Plague" );
   gains.insanity_mindgames                     = get_gain( "Insanity Gained from Mindgames" );
-  gains.insanity_ascended_blast                = get_gain( "Insanity Gained from Ascended Blast" );
-  gains.insanity_eternal_call_to_the_void      = get_gain( "Insanity Gained from Eternal Call to the Void Mind Flay's" );
+  gains.insanity_eternal_call_to_the_void = get_gain( "Insanity Gained from Eternal Call to the Void Mind Flay's" );
 }
 
 /** Construct priest procs */
@@ -967,11 +943,11 @@ void priest_t::create_procs()
   procs.serendipity_overflow            = get_proc( "Serendipity lost to overflow (Non-Tier 17 4pc)" );
   procs.power_of_the_dark_side          = get_proc( "Power of the Dark Side Penance damage buffed" );
   procs.power_of_the_dark_side_overflow = get_proc( "Power of the Dark Side lost to overflow" );
-  procs.shimmering_apparitions          = get_proc( "Shadowy Apparition Procced from Shimmering Apparition non SW:P Crit" );
-  procs.dissonant_echoes                = get_proc( "Void Bolt resets from Dissonant Echoes" );
-  procs.mind_devourer                   = get_proc( "Mind Devourer free Devouring Plague proc" );
-  procs.blessing_of_plenty              = get_proc( "Blessing of Plenty CDR on Fae Blessings" );
-  procs.void_tendril                    = get_proc( "Void Tendril proc from Eternal Call to the Void" );
+  procs.shimmering_apparitions = get_proc( "Shadowy Apparition Procced from Shimmering Apparition non SW:P Crit" );
+  procs.dissonant_echoes       = get_proc( "Void Bolt resets from Dissonant Echoes" );
+  procs.mind_devourer          = get_proc( "Mind Devourer free Devouring Plague proc" );
+  procs.blessing_of_plenty     = get_proc( "Blessing of Plenty CDR on Fae Blessings" );
+  procs.void_tendril           = get_proc( "Void Tendril proc from Eternal Call to the Void" );
 }
 
 /** Construct priest benefits */
