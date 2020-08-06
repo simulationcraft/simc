@@ -291,6 +291,11 @@ public:
     buff_t* scent_of_blood;
     buff_t* snake_eyes;
     buff_t* the_first_dance;
+
+    // Legendary
+    buff_t* master_assassins_mark;
+    buff_t* master_assassins_mark_aura;
+
   } buffs;
 
   // Cooldowns
@@ -545,6 +550,7 @@ public:
     // Legendary Items
     item_runeforge_t akaaris_soul_fragment;
     item_runeforge_t dashing_scoundrel;
+    item_runeforge_t master_assassins_mark;
 
     // Legendary Values
     timespan_t akaaris_soul_fragment_delay;
@@ -4822,8 +4828,14 @@ struct stealth_like_buff_t : public buff_t
 
     if ( rogue->talent.master_assassin->ok() )
     {
-        rogue->buffs.master_assassin->expire();
-        rogue->buffs.master_assassin_aura->trigger();
+      rogue->buffs.master_assassin->expire();
+      rogue->buffs.master_assassin_aura->trigger();
+    }
+
+    if ( rogue->legendary.master_assassins_mark->ok() )
+    {
+      rogue->buffs.master_assassins_mark->expire();
+      rogue->buffs.master_assassins_mark_aura->trigger();
     }
   }
 
@@ -4838,6 +4850,16 @@ struct stealth_like_buff_t : public buff_t
       {
         rogue->buffs.master_assassin_aura->expire();
         rogue->buffs.master_assassin->trigger();
+      }
+    }
+
+    if ( rogue->legendary.master_assassins_mark->ok() )
+    {
+      // Don't swap these buffs around if we are still in stealth due to Vanish expiring
+      if ( !rogue->buffs.stealth->check() )
+      {
+        rogue->buffs.master_assassins_mark_aura->expire();
+        rogue->buffs.master_assassins_mark->trigger();
       }
     }
   }
@@ -4868,8 +4890,14 @@ struct stealth_t : public stealth_like_buff_t
 
     if ( rogue->talent.master_assassin->ok() )
     {
-        rogue->buffs.master_assassin->expire();
-        rogue->buffs.master_assassin_aura->trigger();
+      rogue->buffs.master_assassin->expire();
+      rogue->buffs.master_assassin_aura->trigger();
+    }
+
+    if ( rogue->legendary.master_assassins_mark->ok() )
+    {
+      rogue->buffs.master_assassins_mark->expire();
+      rogue->buffs.master_assassins_mark_aura->trigger();
     }
   }
 };
@@ -5858,6 +5886,10 @@ double rogue_t::composite_melee_crit_chance() const
 
   crit += spell.critical_strikes -> effectN( 1 ).percent();
 
+  // TOCHECK: Currently no whitelist on beta
+  crit += buffs.master_assassins_mark->stack_value();
+  crit += buffs.master_assassins_mark_aura->stack_value();
+
   return crit;
 }
 
@@ -6056,7 +6088,7 @@ void rogue_t::init_action_list()
     cds -> add_action( "variable,name=ss_vanish_condition,value=azerite.shrouded_suffocation.enabled&(non_ss_buffed_targets>=1|spell_targets.fan_of_knives=3)&(ss_buffed_targets_above_pandemic=0|spell_targets.fan_of_knives>=6)", "See full comment on https://github.com/Ravenholdt-TC/Rogue/wiki/Assassination-APL-Research." );
     cds -> add_action( "pool_resource,for_next=1,extra_amount=45" );
     cds -> add_action( this, "Vanish", "if=talent.subterfuge.enabled&!stealthed.rogue&cooldown.garrote.up&(variable.ss_vanish_condition|!azerite.shrouded_suffocation.enabled&(dot.garrote.refreshable|debuff.vendetta.up&dot.garrote.pmultiplier<=1))&combo_points.deficit>=((1+2*azerite.shrouded_suffocation.enabled)*spell_targets.fan_of_knives)>?4&raid_event.adds.in>12" );
-    cds -> add_action( this, "Vanish", "if=talent.master_assassin.enabled&!stealthed.all&master_assassin_remains<=0&!dot.rupture.refreshable&dot.garrote.remains>3&(debuff.vendetta.up&debuff.shiv.up&(!essence.blood_of_the_enemy.major|debuff.blood_of_the_enemy.up)|essence.vision_of_perfection.enabled)", "Vanish with Master Assasin: No stealth and no active MA buff, Rupture not in refresh range, during Vendetta+TB+BotE (unless using VoP)" );
+    cds -> add_action( this, "Vanish", "if=(talent.master_assassin.enabled|equipped.mark_of_the_master_assassin)&!stealthed.all&master_assassin_remains<=0&!dot.rupture.refreshable&dot.garrote.remains>3&(debuff.vendetta.up&debuff.shiv.up&(!essence.blood_of_the_enemy.major|debuff.blood_of_the_enemy.up)|essence.vision_of_perfection.enabled)", "Vanish with Master Assasin: No stealth and no active MA buff, Rupture not in refresh range, during Vendetta+TB+BotE (unless using VoP)" );
     cds -> add_action( "shadowmeld,if=!stealthed.all&azerite.shrouded_suffocation.enabled&dot.garrote.refreshable&dot.garrote.pmultiplier<=1&combo_points.deficit>=1", "Shadowmeld for Shrouded Suffocation" );
     cds -> add_talent( this, "Exsanguinate", "if=!stealthed.rogue&(!dot.garrote.refreshable&dot.rupture.remains>4+4*cp_max_spend|dot.rupture.remains*0.5>target.time_to_die)&target.time_to_die>4", "Exsanguinate when not stealthed and both Rupture and Garrote are up for long enough." );
     cds -> add_action( this, "Shiv", "if=dot.rupture.ticking&(!equipped.azsharas_font_of_power|cooldown.vendetta.remains>10)" );
@@ -6407,17 +6439,33 @@ std::unique_ptr<expr_t> rogue_t::create_expression( util::string_view name_str )
   {
     return make_mem_fn_expr( name_str, *this, &rogue_t::consume_cp_max );
   }
-  else if ( util::str_compare_ci(name_str, "master_assassin_remains") )
+  else if ( util::str_compare_ci( name_str, "master_assassin_remains" ) && !legendary.master_assassins_mark->ok() )
   {
     return make_fn_expr( name_str, [ this ]() {
-      if ( buffs.master_assassin_aura -> check() )
+      if ( buffs.master_assassin_aura->check() )
       {
-        timespan_t nominal_master_assassin_duration = timespan_t::from_seconds( talent.master_assassin -> effectN( 1 ).base_value() );
-        timespan_t gcd_remains = timespan_t::from_seconds( std::max( ( gcd_ready - sim -> current_time() ).total_seconds(), 0.0 ) );
+        timespan_t nominal_master_assassin_duration = timespan_t::from_seconds( talent.master_assassin->effectN( 1 ).base_value() );
+        timespan_t gcd_remains = timespan_t::from_seconds( std::max( ( gcd_ready - sim->current_time() ).total_seconds(), 0.0 ) );
         return gcd_remains + nominal_master_assassin_duration;
       }
-      else if ( buffs.master_assassin -> check() )
-        return buffs.master_assassin -> remains();
+      else if ( buffs.master_assassin->check() )
+        return buffs.master_assassin->remains();
+      else
+        return timespan_t::from_seconds( 0.0 );
+    } );
+  }
+  else if ( legendary.master_assassins_mark->ok() &&
+    ( util::str_compare_ci( name_str, "master_assassins_mark_remains" ) || util::str_compare_ci( name_str, "master_assassin_remains" ) ) )
+  {
+    return make_fn_expr( name_str, [ this ]() {
+      if ( buffs.master_assassins_mark_aura->check() )
+      {
+        timespan_t nominal_master_assassin_duration = timespan_t::from_seconds( legendary.master_assassins_mark->effectN( 1 ).base_value() );
+        timespan_t gcd_remains = timespan_t::from_seconds( std::max( ( gcd_ready - sim->current_time() ).total_seconds(), 0.0 ) );
+        return gcd_remains + nominal_master_assassin_duration;
+      }
+      else if ( buffs.master_assassins_mark->check() )
+        return buffs.master_assassins_mark->remains();
       else
         return timespan_t::from_seconds( 0.0 );
     } );
@@ -6980,6 +7028,7 @@ void rogue_t::init_spells()
 
   legendary.akaaris_soul_fragment   = find_runeforge_legendary( "Akaari's Soul Fragment" );
   legendary.dashing_scoundrel       = find_runeforge_legendary( "Dashing Scoundrel" );
+  legendary.master_assassins_mark   = find_runeforge_legendary( "Mark of the Master Assassin" );
 
   if ( legendary.akaaris_soul_fragment->ok() )
   {
@@ -7253,7 +7302,8 @@ void rogue_t::create_buffs()
   buffs.shuriken_tornado        = new buffs::shuriken_tornado_t( this );
 
 
-  // Azerite
+  // Azerite ================================================================
+
   buffs.blade_in_the_shadows               = make_buff( this, "blade_in_the_shadows", find_spell( 279754 ) )
                                              -> set_trigger_spell( azerite.blade_in_the_shadows.spell_ref().effectN( 1 ).trigger() )
                                              -> set_default_value( azerite.blade_in_the_shadows.value() );
@@ -7295,6 +7345,17 @@ void rogue_t::create_buffs()
                                              -> set_default_value( azerite.snake_eyes.value() );
   buffs.the_first_dance                    = make_buff<stat_buff_t>( this, "the_first_dance", find_spell( 278981 ) )
                                              -> add_stat( STAT_HASTE_RATING, azerite.the_first_dance.value() );
+
+  // Legendary Items ========================================================
+
+  const spell_data_t* master_assassins_mark = legendary.master_assassins_mark->ok() ? find_spell( 340094 ) : spell_data_t::not_found();
+  buffs.master_assassins_mark_aura = make_buff( this, "master_assassins_mark_aura", master_assassins_mark )
+    ->add_invalidate( CACHE_CRIT_CHANCE )
+    ->set_default_value( find_spell( 340094 )->effectN( 1 ).percent() );
+  buffs.master_assassins_mark = make_buff( this, "master_assassins_mark", master_assassins_mark )
+    ->add_invalidate( CACHE_CRIT_CHANCE )
+    ->set_duration( timespan_t::from_seconds( legendary.master_assassins_mark->effectN( 1 ).base_value() ) )
+    ->set_default_value( find_spell( 340094 )->effectN( 1 ).percent() );
 }
 
 // rogue_t::create_options ==================================================
