@@ -903,7 +903,7 @@ struct devouring_plague_t final : public priest_spell_t
     parse_options( options_str );
     may_crit      = true;
     tick_zero     = false;
-    tick_may_crit = false;
+    tick_may_crit = true;
   }
 
   void consume_resource() override
