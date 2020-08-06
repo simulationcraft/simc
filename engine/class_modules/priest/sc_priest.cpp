@@ -759,6 +759,32 @@ struct boon_of_the_ascended_t final : public priest_buff_t<buff_t>
   }
 };
 
+struct death_and_madness_debuff_t final : public priest_buff_t<buff_t>
+{
+  propagate_const<cooldown_t*> swd_cooldown;
+  death_and_madness_debuff_t( priest_td_t& actor_pair )
+    : base_t( actor_pair, "death_and_madness_death_check",
+              actor_pair.priest().talents.death_and_madness->effectN( 3 ).trigger() ),
+      swd_cooldown( actor_pair.priest().get_cooldown( "shadow_word_death" ) )
+  {
+  }
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    // Fake-detect target demise by checking if buff was expired early
+    if ( remaining_duration > timespan_t::zero() )
+    {
+      sim->print_debug( "{} death_and_madness insanity gain buff triggered", priest() );
+
+      priest().buffs.death_and_madness_buff->trigger();
+
+      swd_cooldown->reset( true );
+    }
+
+    buff_t::expire_override( expiration_stacks, remaining_duration );
+  }
+};
+
 }  // namespace buffs
 
 namespace items
@@ -844,7 +870,8 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p ) : actor_target_data_t(
   dots.devouring_plague   = target->get_dot( "devouring_plague", &p );
   dots.unholy_transfusion = target->get_dot( "unholy_transfusion", &p );
 
-  buffs.schism = make_buff( *this, "schism", p.talents.schism );
+  buffs.schism                   = make_buff( *this, "schism", p.talents.schism );
+  buffs.death_and_madness_debuff = make_buff<buffs::death_and_madness_debuff_t>( *this );
 
   target->callbacks_on_demise.emplace_back( [ this ]( player_t* ) { target_demise(); } );
 }

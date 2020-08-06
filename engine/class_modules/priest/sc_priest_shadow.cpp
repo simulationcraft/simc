@@ -430,8 +430,8 @@ struct shadow_word_death_t final : public priest_spell_t
 
       if ( priest().talents.death_and_madness->ok() )
       {
-        // NYI
-        // trigger death_and_madness_debuff on current target
+        priest_td_t& td = get_td( s->target );
+        td.buffs.death_and_madness_debuff->trigger();
       }
     }
   }
@@ -1465,39 +1465,13 @@ struct lingering_insanity_t final : public priest_buff_t<buff_t>
   }
 };
 
-struct death_and_madness_debuff_t final : public priest_buff_t<buff_t>
-{
-  propagate_const<cooldown_t*> swd_cooldown;
-  death_and_madness_debuff_t( priest_t& p )
-    : base_t( p, "death_and_madness", p.talents.death_and_madness ),
-      swd_cooldown( p.get_cooldown( "shadow_word_death" ) )
-  {
-  }
-
-  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
-  {
-    if ( remaining_duration > timespan_t::zero() )
-    {
-      if ( sim->debug )
-      {
-        sim->out_debug.printf( "%s death_and_madness insanity triggered", player->name() );
-      }
-
-      priest().buffs.death_and_madness_buff->trigger();
-      swd_cooldown->reset( true );
-    }
-
-    buff_t::expire_override( expiration_stacks, remaining_duration );
-  }
-};
-
 struct death_and_madness_buff_t final : public priest_buff_t<buff_t>
 {
   double insanity_gain;
 
   death_and_madness_buff_t( priest_t& p )
-    : base_t( p, "death_and_madness", p.find_spell( 321973 ) ),
-      insanity_gain( p.find_spell( 321973 )->effectN( 1 ).base_value() / 55 )
+    : base_t( p, "death_and_madness_insanity_gain", p.find_spell( 321973 ) ),
+      insanity_gain( data().effectN( 1 ).base_value() / 55 ) // Tooltip: ${$m1/55} Insanity generated every $t1 sec
   {
     set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
       priest().generate_insanity( insanity_gain, priest().gains.insanity_death_and_madness, nullptr );
@@ -1930,12 +1904,11 @@ void priest_t::create_buffs_shadow()
   buffs.vampiric_embrace      = make_buff<buffs::vampiric_embrace_t>( *this );
 
   // Talents
-  buffs.void_torrent             = make_buff<buffs::void_torrent_t>( *this );
-  buffs.surrender_to_madness     = make_buff<buffs::surrender_to_madness_t>( *this );
-  buffs.surrendered_to_madness   = make_buff<buffs::surrendered_to_madness_t>( *this );
-  buffs.lingering_insanity       = make_buff<buffs::lingering_insanity_t>( *this );
-  buffs.death_and_madness_debuff = make_buff<buffs::death_and_madness_debuff_t>( *this );
-  buffs.death_and_madness_buff   = make_buff<buffs::death_and_madness_buff_t>( *this );
+  buffs.void_torrent           = make_buff<buffs::void_torrent_t>( *this );
+  buffs.surrender_to_madness   = make_buff<buffs::surrender_to_madness_t>( *this );
+  buffs.surrendered_to_madness = make_buff<buffs::surrendered_to_madness_t>( *this );
+  buffs.lingering_insanity     = make_buff<buffs::lingering_insanity_t>( *this );
+  buffs.death_and_madness_buff = make_buff<buffs::death_and_madness_buff_t>( *this );
 
   // Azerite Powers
   buffs.chorus_of_insanity     = make_buff<buffs::chorus_of_insanity_t>( *this );

@@ -66,6 +66,7 @@ public:
   struct buffs_t
   {
     propagate_const<buff_t*> schism;
+    propagate_const<buff_t*> death_and_madness_debuff;
   } buffs;
 
   priest_t& priest()
@@ -120,7 +121,6 @@ public:
     propagate_const<buff_t*> vampiric_embrace;
     propagate_const<buff_t*> void_torrent;
     propagate_const<buff_t*> voidform;
-    propagate_const<buff_t*> death_and_madness_debuff;
     propagate_const<buff_t*> death_and_madness_buff;
 
     // Azerite Powers
@@ -428,7 +428,7 @@ public:
     item_runeforge_t the_penitent_one;  // Effect implemented, but not hooked up to PW:Radiance
     // Shadow
     item_runeforge_t painbreaker_psalm;
-    item_runeforge_t shadowflame_prism; // TODO: Add 20% damage modifier
+    item_runeforge_t shadowflame_prism;  // TODO: Add 20% damage modifier
     item_runeforge_t eternal_call_to_the_void;
   } legendary;
 
