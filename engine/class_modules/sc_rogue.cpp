@@ -24,7 +24,8 @@ enum secondary_trigger_e
   TRIGGER_SECRET_TECHNIQUE,
   TRIGGER_SHURIKEN_TORNADO,
   TRIGGER_REPLICATING_SHADOWS,
-  TRIGGER_INTERNAL_BLEEDING
+  TRIGGER_INTERNAL_BLEEDING,
+  TRIGGER_AKAARIS_SOUL_FRAGMENT,
 };
 
 enum stealth_type_e
@@ -201,6 +202,7 @@ public:
     actions::rogue_spell_t* poison_bomb = nullptr;
     actions::rogue_spell_t* replicating_shadows = nullptr;
     actions::shadow_blades_attack_t* shadow_blades_attack = nullptr;
+    actions::rogue_attack_t* akaaris_soul_fragment = nullptr;
     struct
     {
       actions::rogue_attack_t* backstab = nullptr;
@@ -537,6 +539,8 @@ public:
   // Legendary effects
   struct legendary_t
   {
+    item_runeforge_t akaaris_soul_fragment;
+    timespan_t akaaris_soul_fragment_delay;
   } legendary;
 
   // Procs
@@ -1146,6 +1150,7 @@ public:
   void trigger_prey_on_the_weak( const action_state_t* state );
   void trigger_find_weakness( const action_state_t* state, timespan_t duration = timespan_t::min() );
   void trigger_grand_melee( const action_state_t* state );
+  void trigger_akaaris_soul_fragment( const action_state_t* state );
 
   // General Methods ==========================================================
 
@@ -3631,9 +3636,22 @@ struct shadowstrike_t : public rogue_attack_t
   shadowstrike_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ) :
     rogue_attack_t( name, p, p -> spec.shadowstrike, options_str )
   {
-    if ( p->active.weaponmaster.shadowstrike && p->active.weaponmaster.shadowstrike != this )
+  }
+
+  void init() override
+  {
+    rogue_attack_t::init();
+
+    if ( !is_secondary_action() )
     {
-      add_child( p->active.weaponmaster.shadowstrike );
+      if ( p()->active.weaponmaster.shadowstrike )
+      {
+        add_child( p()->active.weaponmaster.shadowstrike );
+      }
+      if ( p()->active.akaaris_soul_fragment )
+      {
+        add_child( p()->active.akaaris_soul_fragment );
+      }
     }
   }
 
@@ -3660,9 +3678,9 @@ struct shadowstrike_t : public rogue_attack_t
 
     trigger_weaponmaster( state, p()->active.weaponmaster.shadowstrike );
     trigger_inevitability( state );
-
     // Appears to be applied after weaponmastered attacks.
     trigger_find_weakness( state );
+    trigger_akaaris_soul_fragment( state );
   }
 
   double bonus_da( const action_state_t* s ) const override
@@ -4222,6 +4240,7 @@ struct cheap_shot_t : public rogue_attack_t
     rogue_attack_t::impact( state );
     trigger_prey_on_the_weak( state );
     trigger_find_weakness( state );
+    trigger_akaaris_soul_fragment( state );
   }
 };
 
@@ -5706,6 +5725,15 @@ void actions::rogue_action_t<Base>::trigger_grand_melee( const action_state_t* s
     p()->buffs.slice_and_dice->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, snd_extension );
 }
 
+template <typename Base>
+void actions::rogue_action_t<Base>::trigger_akaaris_soul_fragment( const action_state_t* state )
+{
+  if ( !ab::result_is_hit( state->result ) || !p()->legendary.akaaris_soul_fragment->ok() || ab::background )
+    return;
+
+  p()->active.akaaris_soul_fragment->trigger_secondary_action( state->target, 0, p()->legendary.akaaris_soul_fragment_delay );
+}
+
 // ==========================================================================
 // Rogue Targetdata Definitions
 // ==========================================================================
@@ -6819,7 +6847,8 @@ void rogue_t::init_spells()
   spell.relentless_strikes_energize   = find_spell( 98440 );
   spell.slice_and_dice                = find_class_spell( "Slice and Dice" );
 
-  // Talents
+  // Talents ================================================================
+
   // Shared
   talent.weaponmaster       = find_talent_spell( "Weaponmaster" ); // Note: this will return a different spell depending on the spec.
 
@@ -6877,7 +6906,8 @@ void rogue_t::init_spells()
   talent.secret_technique   = find_talent_spell( "Secret Technique" );
   talent.shuriken_tornado   = find_talent_spell( "Shuriken Tornado" );
 
-  // Azerite Powers
+  // Azerite Powers =========================================================
+
   azerite.ace_up_your_sleeve   = find_azerite_spell( "Ace Up Your Sleeve" );
   azerite.blade_in_the_shadows = find_azerite_spell( "Blade In The Shadows" );
   azerite.brigands_blitz       = find_azerite_spell( "Brigand's Blitz" );
@@ -6897,13 +6927,28 @@ void rogue_t::init_spells()
   azerite.the_first_dance      = find_azerite_spell( "The First Dance" );
   azerite.twist_the_knife      = find_azerite_spell( "Twist the Knife" );
 
-  // Azerite Essences
+  // Azerite Essences =======================================================
+
   azerite.memory_of_lucid_dreams  = find_azerite_essence( "Memory of Lucid Dreams" );
   spell.memory_of_lucid_dreams    = azerite.memory_of_lucid_dreams.spell( 1u, essence_type::MINOR );
 
   azerite.vision_of_perfection            = find_azerite_essence( "Vision of Perfection" );
   azerite.vision_of_perfection_percentage = azerite.vision_of_perfection.spell( 1u, essence_type::MAJOR )->effectN( 1 ).percent();
   azerite.vision_of_perfection_percentage += azerite.vision_of_perfection.spell( 2u, essence_spell::UPGRADE, essence_type::MAJOR )->effectN( 1 ).percent();
+
+  // Legendary Items ========================================================
+
+  legendary.akaaris_soul_fragment = find_runeforge_legendary( "Akaari's Soul Fragment" );
+
+  if ( legendary.akaaris_soul_fragment->ok() )
+  {
+    legendary.akaaris_soul_fragment_delay = timespan_t::from_seconds( legendary.akaaris_soul_fragment->effectN( 1 ).base_value() );
+    active.akaaris_soul_fragment = get_secondary_trigger_action<actions::shadowstrike_t>( TRIGGER_AKAARIS_SOUL_FRAGMENT, "shadowstrike_akaaris_soul_fragment" );
+    active.akaaris_soul_fragment->base_multiplier *= legendary.akaaris_soul_fragment->effectN( 2 ).percent();
+    // TOCHECK: Check if this is a real cast or a subspell, check if it generates CP
+  }
+
+  // Active Spells = ========================================================
 
   auto_attack = new actions::auto_melee_attack_t( this, "" );
 
