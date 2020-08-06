@@ -2181,14 +2181,14 @@ struct active_pets_t
   using data_t = std::array<Pet*, N>;
 
   data_t data_;
-  util::span<Pet* const> active_;
+  size_t active_;
 
   active_pets_t( data_t d, size_t n ):
-    data_( d ), active_( data_.data(), n )
+    data_( d ), active_( n )
   {}
 
-  typename util::span<Pet* const>::iterator begin() const { return active_.begin(); }
-  typename util::span<Pet* const>::iterator end() const { return active_.end(); }
+  auto begin() const { return data_.begin(); }
+  auto end() const { return data_.begin() + active_; }
 };
 
 // returns the active pets from the list 'cast' to the supplied pet type
@@ -3390,7 +3390,6 @@ struct explosive_shot_t: public hunter_ranged_attack_t
     may_miss = false;
 
     tick_action = p -> get_background_action<explosive_shot_aoe_t>( "explosive_shot_aoe" );
-    tick_action -> stats = stats;
   }
 };
 
