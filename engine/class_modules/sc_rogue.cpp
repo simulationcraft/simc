@@ -550,11 +550,28 @@ public:
   // Legendary effects
   struct legendary_t
   {
-    // Legendary Items
-    item_runeforge_t akaaris_soul_fragment;
-    item_runeforge_t dashing_scoundrel;
-    item_runeforge_t deathly_shadows;
+    // Generic
+    item_runeforge_t essence_of_bloodfang;    // NYI
     item_runeforge_t master_assassins_mark;
+    item_runeforge_t tiny_toxic_blades;       // NYI
+    item_runeforge_t invigorating_shadowdust; // NYI
+
+    // Assassination
+    item_runeforge_t dashing_scoundrel;
+    item_runeforge_t doomblade;               // NYI
+    item_runeforge_t dustwalkers_patch;       // NYI
+    item_runeforge_t zoldyck_insignia;        // NYI
+
+    // Outlaw
+    item_runeforge_t greenskins_wickers;      // NYI
+    item_runeforge_t guile_charm;             // NYI
+    item_runeforge_t celerity;                // NYI
+    item_runeforge_t concealed_blunderbuss;   // NYI
+    
+    // Subtlety
+    item_runeforge_t akaaris_soul_fragment;
+    item_runeforge_t deathly_shadows;
+    item_runeforge_t finality;                // NYI
     item_runeforge_t the_rotten;
 
     // Legendary Values
@@ -7074,15 +7091,32 @@ void rogue_t::init_spells()
 
   // Legendary Items ========================================================
 
+  // TOCHECK: A number of legendaries with seemingly generic effects are not set up in the runeforge data as being generic
+  //          As such, Celerity and Deathly Shadows fail find_runeforge_legendary() for the unintended specialization
+  //          Need to test in-game to see if these effects actually work across the different specs. They likely do.
+
   // Generic
+  legendary.essence_of_bloodfang      = find_runeforge_legendary( "Essence of Bloodfang" );
   legendary.master_assassins_mark     = find_runeforge_legendary( "Mark of the Master Assassin" );
+  legendary.tiny_toxic_blades         = find_runeforge_legendary( "Tiny Toxic Blades" );
+  legendary.invigorating_shadowdust   = find_runeforge_legendary( "Invigorating Shadowdust" );
 
   // Assassination
   legendary.dashing_scoundrel         = find_runeforge_legendary( "Dashing Scoundrel" );
+  legendary.doomblade                 = find_runeforge_legendary( "Doomblade" );
+  legendary.dustwalkers_patch         = find_runeforge_legendary( "Dustwalker's Patch" );
+  legendary.zoldyck_insignia          = find_runeforge_legendary( "Zoldyck Insignia" );
+
+  // Outlaw
+  legendary.greenskins_wickers        = find_runeforge_legendary( "Greenskin's Wickers" );
+  legendary.guile_charm               = find_runeforge_legendary( "Guile Charm" );
+  legendary.celerity                  = find_runeforge_legendary( "Celerity" );
+  legendary.concealed_blunderbuss     = find_runeforge_legendary( "Concealed Blunderbuss" );
 
   // Subtlety
   legendary.akaaris_soul_fragment     = find_runeforge_legendary( "Akaari's Soul Fragment" );
-  legendary.deathly_shadows           = find_runeforge_legendary( "Deathly Shadows" ); // Not currently marked as a "generic" legendary
+  legendary.deathly_shadows           = find_runeforge_legendary( "Deathly Shadows" );
+  legendary.finality                  = find_runeforge_legendary( "Finality" );
   legendary.the_rotten                = find_runeforge_legendary( "The Rotten" );
 
   // Spell Setup
