@@ -453,6 +453,7 @@ public:
     buff_t* twisted_claws;
     buff_t* burst_of_savagery;
     buff_t* sharpened_claws;
+    buff_t* guardian_2;
 
     // Restoration
     buff_t* incarnation_tree;
@@ -4672,8 +4673,13 @@ struct mangle_t : public bear_attack_t
   {
     bear_attack_t::impact( s );
 
-    if ( result_is_hit( s -> result ) )
-      p() -> buff.guardian_of_elune -> trigger();
+    if ( result_is_hit( s->result ) )
+    {
+      p()->buff.guardian_of_elune->trigger();
+
+      if ( p()->conduit.guardian_2->ok() )
+        p()->buff.guardian_2->trigger();
+    }
   }
 
   void execute() override
@@ -4701,6 +4707,14 @@ struct maul_t : public bear_attack_t
     gore = true;
   }
 
+  void execute() override
+  {
+    bear_attack_t::execute();
+
+    if ( p()->buff.guardian_2->up() )
+      p()->buff.guardian_2->decrement();
+  }
+
   void impact( action_state_t* s ) override
   {
     bear_attack_t::impact( s );
@@ -4719,6 +4733,16 @@ struct maul_t : public bear_attack_t
         p() -> buff.sharpened_claws -> trigger();
       }
     }
+  }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double da = bear_attack_t::composite_da_multiplier( s );
+
+    if ( p()->buff.guardian_2->check() )
+      da *= 1.0 + p()->buff.guardian_2->stack_value();
+
+    return da;
   }
 
   double bonus_da( const action_state_t* s ) const override
@@ -8482,6 +8506,8 @@ void druid_t::create_buffs()
   buff.berserk_bear = make_buff( this, "berserk_bear", spec.berserk_bear )->set_cooldown( 0_ms );
   if ( legendary.legacy_of_the_sleeper->ok() )
     buff.berserk_bear->add_invalidate( CACHE_LEECH );
+  if ( conduit.guardian_1->ok() )
+    buff.berserk_bear->add_invalidate( CACHE_HASTE );
 
   buff.bristling_fur         = make_buff( this, "bristling_fur", talent.bristling_fur )
     ->set_cooldown( timespan_t::zero() );
@@ -8522,6 +8548,9 @@ void druid_t::create_buffs()
 
   buff.sharpened_claws       = make_buff( this, "sharpened_claws", find_spell( 279943 ) )
                                -> set_default_value( find_spell( 279943 ) -> effectN( 1 ).percent() );
+
+  buff.guardian_2 = make_buff( this, "guardian_3", conduit.guardian_2->effectN( 1 ).trigger() )
+    ->set_default_value( conduit.guardian_2->effectN( 1 ).percent() );
 
   // Restoration
   buff.harmony               = make_buff( this, "harmony", mastery.harmony -> ok() ? find_spell( 100977 ) : spell_data_t::not_found() );
@@ -9816,6 +9845,9 @@ double druid_t::composite_spell_haste() const
 
   sh /= 1.0 + buff.incarnation_moonkin->stack_value();
 
+  if ( conduit.guardian_1->ok() && buff.berserk_bear->check() )
+    sh /= 1.0 + conduit.guardian_1->effectN( 1 ).percent();
+
   return sh;
 }
 
@@ -9830,6 +9862,9 @@ double druid_t::composite_melee_haste() const
   mh /= 1.0 + buff.ravenous_frenzy->stack_value();
 
   mh /= 1.0 + buff.incarnation_moonkin->stack_value();
+
+  if ( conduit.guardian_1->ok() && buff.berserk_bear->check() )
+    mh /= 1.0 + conduit.guardian_1->effectN( 1 ).percent();
 
   return mh;
 }
