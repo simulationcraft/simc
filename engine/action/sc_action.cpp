@@ -7,6 +7,7 @@
 #include "action/sc_action_state.hpp"
 #include "action/attack.hpp"
 #include "action/action_callback.hpp"
+#include "dbc/data_enums.hh"
 #include "dbc/dbc.hpp"
 #include "buff/sc_buff.hpp"
 #include "action/dot.hpp"
@@ -366,7 +367,7 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
     execute_action(),
     impact_action(),
     gain( p->get_gain( name_str ) ),
-    energize_type( ENERGIZE_NONE ),
+    energize_type( action_energize::NONE ),
     energize_resource( RESOURCE_NONE ),
     cooldown( p->get_cooldown( name_str, this ) ),
     internal_cooldown( p->get_cooldown( name_str + "_internal", this ) ),
@@ -713,6 +714,13 @@ void action_t::parse_effect_data( const spelleffect_data_t& spelleffect_data )
           radius = spelleffect_data.radius_max();
           SC_FALLTHROUGH;
         case A_PERIODIC_ENERGIZE:
+          if ( spelleffect_data.subtype() == A_PERIODIC_ENERGIZE && energize_type == action_energize::NONE && spelleffect_data.period() > timespan_t::zero() )
+          {
+            energize_type     = action_energize::PER_TICK;
+            energize_resource = spelleffect_data.resource_gain_type();
+            energize_amount   = spelleffect_data.resource( energize_resource );
+          }
+          SC_FALLTHROUGH;
         case A_PERIODIC_TRIGGER_SPELL_WITH_VALUE:
         case A_PERIODIC_HEALTH_FUNNEL:
         case A_PERIODIC_MANA_LEECH:
@@ -754,13 +762,14 @@ void action_t::parse_effect_data( const spelleffect_data_t& spelleffect_data )
       }
       break;
     case E_ENERGIZE:
-      if ( energize_type == ENERGIZE_NONE )
+      if ( energize_type == action_energize::NONE )
       {
-        energize_type     = ENERGIZE_ON_HIT;
+        energize_type     = action_energize::ON_HIT;
         energize_resource = spelleffect_data.resource_gain_type();
         energize_amount   = spelleffect_data.resource( energize_resource );
       }
       break;
+      
     default:
       break;
   }
@@ -1367,7 +1376,7 @@ void action_t::consume_resource()
   sim->print_log("{} consumes {} {} for {} ({})",
       player->name(), last_resource_cost, cr, name(), player->resources.current[ cr ] );
 
-  stats->consume_resource( current_resource(), last_resource_cost );
+  stats->consume_resource( cr, last_resource_cost );
 }
 
 timespan_t action_t::cooldown_base_duration( const cooldown_t& cd ) const
@@ -1661,20 +1670,20 @@ void action_t::execute()
     target = default_target;
   }
 
-  if ( energize_type_() == ENERGIZE_ON_CAST || ( energize_type_() == ENERGIZE_ON_HIT && hit_any_target ) )
+  if ( energize_type_() == action_energize::ON_CAST || ( energize_type_() == action_energize::ON_HIT && hit_any_target ) )
   {
     auto amount = composite_energize_amount( execute_state );
     if ( amount != 0 )
     {
-      player->resource_gain( energize_resource_(), amount, energize_gain( execute_state ), this );
+      gain_energize_resource( energize_resource_(), amount, energize_gain( execute_state ) );
     }
   }
-  else if ( energize_type_() == ENERGIZE_PER_HIT )
+  else if ( energize_type_() == action_energize::PER_HIT )
   {
     auto amount = composite_energize_amount( execute_state ) * num_targets_hit;
     if ( amount != 0 )
     {
-      player->resource_gain( energize_resource_(), amount, energize_gain( execute_state ), this );
+      gain_energize_resource( energize_resource_(), amount, energize_gain( execute_state ) );
     }
   }
 
@@ -1735,9 +1744,10 @@ void action_t::tick( dot_t* d )
       d->state->debug();
   }
 
-  if ( energize_type_() == ENERGIZE_PER_TICK )
-  {
-    player->resource_gain( energize_resource_(), composite_energize_amount( d->state ), gain, this );
+  if ( energize_type_() == action_energize::PER_TICK && d->get_last_tick_factor() >= 1.0)
+  {    
+    // Partial tick is not counted for resource gain
+    gain_energize_resource( energize_resource_(), composite_energize_amount( d->state ), gain );
   }
 
   stats->add_tick( d->time_to_tick, d->state->target );
@@ -4324,6 +4334,11 @@ void action_t::set_target( player_t* new_target )
   target = new_target;
 }
 
+void action_t::gain_energize_resource( resource_e resource_type, double amount, gain_t* gain )
+{
+  player->resource_gain( resource_type, amount, gain, this );
+}
+
 bool action_t::usable_during_current_cast() const
 {
   if ( background || !usable_while_casting || !use_while_casting )
@@ -4721,7 +4736,7 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
             break;
 
           case P_TARGET:
-            aoe += effect.base_value();
+            aoe += as<int>( effect.base_value() );
             sim->print_debug( "{} max target count modified by {}", *this, effect.base_value() );
             break;
 

@@ -2449,6 +2449,25 @@ const char* util::buff_tick_time_behavior_string( buff_tick_time_behavior behavi
   }
 }
 
+const char* util::action_energize_type_string( action_energize energize_type )
+{
+  switch ( energize_type )
+  {
+    case action_energize::NONE:
+      return "none";
+    case action_energize::ON_CAST:
+      return "on_cast";
+    case action_energize::ON_HIT:
+      return "on_hit";
+    case action_energize::PER_HIT:
+      return "per_hit";
+    case action_energize::PER_TICK:
+      return "per_tick";
+    default:
+      return "unknown";
+  }
+}
+
 /// Textual representation of rppm scaling bitfield
 std::string util::rppm_scaling_string( unsigned s )
 {

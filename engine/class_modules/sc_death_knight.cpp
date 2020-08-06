@@ -2457,7 +2457,7 @@ struct death_knight_action_t : public Base
     // amount as a negative value resource cost in spell data, so abuse that.
     if ( this -> base_costs[ RESOURCE_RUNIC_POWER ] < 0 )
     {
-      this -> energize_type = ENERGIZE_ON_CAST;
+      this -> energize_type = action_energize::ON_CAST;
       this -> energize_resource = RESOURCE_RUNIC_POWER;
 
       double rp_gain = std::fabs( this -> base_costs[ RESOURCE_RUNIC_POWER ] );
@@ -3306,7 +3306,7 @@ struct blooddrinker_heal_t : public death_knight_heal_t
     background = true;
     callbacks = may_crit = may_miss = false;
     base_costs[ RESOURCE_RUNE ] = 0;
-    energize_type = ENERGIZE_NONE;
+    energize_type = action_energize::NONE;
     cooldown -> duration = 0_ms;
     target = p;
     attack_power_mod.direct = attack_power_mod.tick = 0;
@@ -4444,7 +4444,7 @@ struct empower_rune_weapon_t : public death_knight_spell_t
 
     harmful = false;
     // Handle energize in a custom way
-    energize_type = ENERGIZE_NONE;
+    energize_type = action_energize::NONE;
 
     // Buff handles the ticking, this one just triggers the buff
     dot_duration = base_tick_time = 0_ms;
@@ -4943,7 +4943,7 @@ struct horn_of_winter_t : public death_knight_spell_t
     harmful = false;
 
     // Handle energize ourselves
-    energize_type = ENERGIZE_NONE;
+    energize_type = action_energize::NONE;
   }
 
   void execute() override
@@ -5729,7 +5729,7 @@ struct rune_strike_t : public death_knight_melee_attack_t
     death_knight_melee_attack_t( "rune_strike", p, p -> talent.rune_strike )
   {
     parse_options( options_str );
-    energize_type = ENERGIZE_NONE;
+    energize_type = action_energize::NONE;
   }
 
   void execute() override
@@ -5846,7 +5846,7 @@ struct soul_reaper_t : public death_knight_spell_t
   {
     parse_options( options_str );
 
-    energize_type = ENERGIZE_NONE;
+    energize_type = action_energize::NONE;
 
     tick_may_crit = tick_zero = true;
     may_miss = may_crit = hasted_ticks = false;

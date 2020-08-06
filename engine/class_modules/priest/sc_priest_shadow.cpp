@@ -5,6 +5,7 @@
 
 #include "simulationcraft.hpp"
 
+#include "sc_enums.hpp"
 #include "sc_priest.hpp"
 
 namespace priestspace
@@ -60,7 +61,6 @@ struct dispersion_t final : public priest_spell_t
 struct mind_blast_t final : public priest_spell_t
 {
 private:
-  double insanity_gain;
   double whispers_of_the_damned_value;
   double harvested_thoughts_value;
   double whispers_bonus_insanity;
@@ -83,9 +83,7 @@ public:
   {
     parse_options( options_str );
 
-    insanity_gain = data().effectN( 2 ).resource( RESOURCE_INSANITY );
-    insanity_gain *= ( 1.0 + priest().talents.fortress_of_the_mind->effectN( 2 ).percent() );
-    energize_type = ENERGIZE_NONE;  // disable resource generation from spell data
+    energize_amount *= 1 + priest().talents.fortress_of_the_mind->effectN( 2 ).percent();
 
     spell_power_mod.direct *= 1.0 + player.talents.fortress_of_the_mind->effectN( 4 ).percent();
 
@@ -121,22 +119,26 @@ public:
     return d;
   }
 
-  void impact( action_state_t* s ) override
+  double composite_energize_amount( const action_state_t* s ) const override
   {
-    priest_spell_t::impact( s );
-    double total_insanity_gain = insanity_gain;
+    double amount = priest_spell_t::composite_energize_amount( s );
 
     if ( s->result == RESULT_CRIT )
     {
-      total_insanity_gain += whispers_bonus_insanity;
+      amount += whispers_bonus_insanity;
     }
+
+    return amount;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    priest_spell_t::impact( s );
 
     if ( priest().buffs.mind_devourer->trigger() )
     {
       priest().procs.mind_devourer->occur();
     }
-
-    priest().generate_insanity( total_insanity_gain, priest().gains.insanity_mind_blast, s->action );
   }
 
   timespan_t execute_time() const override
@@ -179,13 +181,11 @@ public:
 
 struct mind_sear_tick_t final : public priest_spell_t
 {
-  double insanity_gain;
   double harvested_thoughts_multiplier;
   bool thought_harvester_empowered = false;
 
-  mind_sear_tick_t( priest_t& p, const spell_data_t* mind_sear )
-    : priest_spell_t( "mind_sear_tick", p, mind_sear->effectN( 1 ).trigger() ),
-      insanity_gain( p.find_spell( 208232 )->effectN( 1 ).percent() ),
+  mind_sear_tick_t( priest_t& p, const spell_data_t* s )
+    : priest_spell_t( "mind_sear_tick", p, s ),
       harvested_thoughts_multiplier( priest()
                                          .azerite.thought_harvester.spell()
                                          ->effectN( 1 )
@@ -202,7 +202,6 @@ struct mind_sear_tick_t final : public priest_spell_t
     direct_tick         = false;
     use_off_gcd         = true;
     dynamic_tick_action = true;
-    energize_type       = ENERGIZE_NONE;  // disable resource generation from spell data
   }
 
   double bonus_da( const action_state_t* state ) const override
@@ -233,22 +232,12 @@ struct mind_sear_tick_t final : public priest_spell_t
 
     return d;
   }
-
-  void impact( action_state_t* s ) override
-  {
-    priest_spell_t::impact( s );
-
-    if ( result_is_hit( s->result ) )
-    {
-      priest().generate_insanity( insanity_gain, priest().gains.insanity_mind_sear, s->action );
-    }
-  }
 };
 
 struct mind_sear_t final : public priest_spell_t
 {
   mind_sear_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "mind_sear", p, p.find_specialization_spell( ( "Mind Sear" ) ) )
+    : priest_spell_t( "mind_sear", p, p.find_class_spell( ( "Mind Sear" ) ) )
   {
     parse_options( options_str );
     channeled           = true;
@@ -257,7 +246,7 @@ struct mind_sear_t final : public priest_spell_t
     dynamic_tick_action = true;
     tick_zero           = false;
 
-    tick_action = new mind_sear_tick_t( p, p.find_class_spell( "Mind Sear" ) );
+    tick_action = new mind_sear_tick_t( p, data().effectN( 1 ).trigger() );
   }
 
   void execute() override
@@ -278,31 +267,71 @@ struct mind_sear_t final : public priest_spell_t
   }
 };
 
+struct void_tendril_mind_flay_t final : public priest_spell_t
+{
+  const spell_data_t* void_tendril_insanity;
+
+  void_tendril_mind_flay_t( priest_t& p )
+    : priest_spell_t( "mind_flay_void_tendril", p, p.find_spell( 193473 ) ),
+      void_tendril_insanity( priest().find_spell( 336214 ) )
+  {
+    aoe                    = 1;
+    background             = true;
+    ground_aoe             = true;
+    spell_power_mod.direct = spell_power_mod.tick;
+    spell_power_mod.tick   = 0.0;
+  }
+
+  timespan_t tick_time( const action_state_t* ) const override
+  {
+    return data().duration();
+  }
+
+  double composite_da_multiplier( const action_state_t* state ) const override
+  {
+    return priest().composite_player_pet_damage_multiplier( state );
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    priest_spell_t::impact( s );
+
+    priest().generate_insanity( void_tendril_insanity->effectN( 1 ).base_value(),
+                                priest().gains.insanity_eternal_call_to_the_void, s->action );
+  }
+};
+
 struct mind_flay_t final : public priest_spell_t
 {
-  double insanity_gain;
-
   mind_flay_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "mind_flay", p, p.find_specialization_spell( "Mind Flay" ) ),
-      insanity_gain( data().effectN( 3 ).resource( RESOURCE_INSANITY ) *
-                     ( 1.0 + p.talents.fortress_of_the_mind->effectN( 1 ).percent() ) )
+    : priest_spell_t( "mind_flay", p, p.find_specialization_spell( "Mind Flay" ) )
   {
     parse_options( options_str );
 
-    may_crit      = false;
-    channeled     = true;
-    hasted_ticks  = false;
-    use_off_gcd   = true;
-    energize_type = ENERGIZE_NONE;  // disable resource generation from spell data
+    may_crit     = false;
+    channeled    = true;
+    hasted_ticks = false;
+    use_off_gcd  = true;
+
+    energize_amount *= 1 + p.talents.fortress_of_the_mind->effectN( 1 ).percent();
 
     spell_power_mod.tick *= 1.0 + p.talents.fortress_of_the_mind->effectN( 3 ).percent();
+
+    if ( priest().legendary.eternal_call_to_the_void->ok() )
+    {
+      priest().active_spells.void_tendril = new void_tendril_mind_flay_t( p );
+      add_child( priest().active_spells.void_tendril );
+    }
   }
 
   void tick( dot_t* d ) override
   {
     priest_spell_t::tick( d );
 
-    priest().generate_insanity( insanity_gain, priest().gains.insanity_mind_flay, d->state->action );
+    if ( priest().legendary.eternal_call_to_the_void->ok() )
+    {
+      priest().trigger_eternal_call_to_the_void( d );
+    }
   }
 
   bool ready() override
@@ -372,6 +401,15 @@ struct shadow_word_death_t final : public priest_spell_t
     }
 
     cooldown->hasted = true;
+
+    energize_type     = action_energize::ON_HIT;
+    energize_resource = RESOURCE_INSANITY;
+    energize_amount   = data().effectN( 3 ).base_value();
+    if ( priest().legendary.painbreaker_psalm->ok() )
+    {
+      // TODO: Check if this ever gets un-hardcoded for (336165)
+      energize_amount += 10;
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -380,14 +418,7 @@ struct shadow_word_death_t final : public priest_spell_t
 
     if ( result_is_hit( s->result ) )
     {
-      double total_insanity_gain    = data().effectN( 3 ).base_value();
       double save_health_percentage = s->target->health_percentage();
-
-      if ( priest().legendary.painbreaker_psalm->ok() )
-      {
-        // TODO: Check if this ever gets un-hardcoded for (336165)
-        total_insanity_gain += 10;
-      }
 
       // TODO: Add in a custom buff that checks after 1 second to see if the target SWD was cast on is now dead.
 
@@ -402,8 +433,6 @@ struct shadow_word_death_t final : public priest_spell_t
         // NYI
         // trigger death_and_madness_debuff on current target
       }
-
-      priest().generate_insanity( total_insanity_gain, priest().gains.insanity_shadow_word_death, s->action );
     }
   }
 
@@ -419,8 +448,7 @@ struct shadow_crash_damage_t final : public priest_spell_t
   shadow_crash_damage_t( priest_t& p )
     : priest_spell_t( "shadow_crash_damage", p, p.talents.shadow_crash->effectN( 1 ).trigger() )
   {
-    energize_type = ENERGIZE_NONE;  // disable resource generation from spell data
-    background    = true;
+    background = true;
   }
 };
 
@@ -439,14 +467,6 @@ struct shadow_crash_t final : public priest_spell_t
 
     impact_action = new shadow_crash_damage_t( p );
     add_child( impact_action );
-
-    energize_type = ENERGIZE_NONE;  // disable resource generation from spell data
-  }
-
-  void execute() override
-  {
-    priest_spell_t::execute();
-    priest().generate_insanity( insanity_gain, priest().gains.insanity_shadow_crash, execute_state->action );
   }
 
   timespan_t travel_time() const override
@@ -683,13 +703,11 @@ struct shadowy_apparition_spell_t final : public priest_spell_t
 
 struct shadow_word_pain_t final : public priest_spell_t
 {
-  double insanity_gain;
   bool casted;
   timespan_t increased_time;
 
   shadow_word_pain_t( priest_t& p, bool _casted = false )
     : priest_spell_t( "shadow_word_pain", p, p.find_class_spell( "Shadow Word: Pain" ) ),
-      insanity_gain( data().effectN( 3 ).resource( RESOURCE_INSANITY ) ),
       increased_time( priest().azerite.torment_of_torments.spell()->effectN( 1 ).time_value() )
   {
     casted    = _casted;
@@ -697,10 +715,10 @@ struct shadow_word_pain_t final : public priest_spell_t
     tick_zero = false;
     if ( !casted )
     {
-      base_dd_max = 0.0;
-      base_dd_min = 0.0;
+      base_dd_max   = 0.0;
+      base_dd_min   = 0.0;
+      energize_type = action_energize::NONE;  // no insanity gain
     }
-    energize_type = ENERGIZE_NONE;  // disable resource generation from spell data
 
     if ( priest().specs.shadowy_apparitions->ok() && !priest().active_spells.shadowy_apparitions )
     {
@@ -760,16 +778,6 @@ struct shadow_word_pain_t final : public priest_spell_t
     return t;
   }
 
-  void impact( action_state_t* s ) override
-  {
-    priest_spell_t::impact( s );
-
-    if ( casted )
-    {
-      priest().generate_insanity( insanity_gain, priest().gains.insanity_shadow_word_pain_onhit, s->action );
-    }
-  }
-
   void tick( dot_t* d ) override
   {
     priest_spell_t::tick( d );
@@ -812,15 +820,14 @@ struct shadow_word_pain_t final : public priest_spell_t
 
 struct vampiric_touch_t final : public priest_spell_t
 {
-  double insanity_gain;
   double harvested_thoughts_value;
   propagate_const<shadow_word_pain_t*> child_swp;
   bool ignore_healing;
 
   vampiric_touch_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "vampiric_touch", p, p.find_class_spell( "Vampiric Touch" ) ),
-      insanity_gain( data().effectN( 3 ).resource( RESOURCE_INSANITY ) ),
       harvested_thoughts_value( priest().azerite.thought_harvester.value( 2 ) ),
+      child_swp( nullptr ),
       ignore_healing( p.options.priest_ignore_healing )
   {
     parse_options( options_str );
@@ -832,7 +839,6 @@ struct vampiric_touch_t final : public priest_spell_t
       child_swp             = new shadow_word_pain_t( priest(), false );
       child_swp->background = true;
     }
-    energize_type = ENERGIZE_NONE;  // disable resource generation from spell data
   }
 
   void trigger_heal( action_state_t* )
@@ -865,8 +871,6 @@ struct vampiric_touch_t final : public priest_spell_t
   {
     priest_spell_t::impact( s );
 
-    priest().generate_insanity( insanity_gain, priest().gains.insanity_vampiric_touch_onhit, s->action );
-
     if ( child_swp )
     {
       child_swp->target = s->target;
@@ -893,13 +897,12 @@ struct devouring_plague_t final : public priest_spell_t
 
   devouring_plague_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "devouring_plague", p, p.find_class_spell( "Devouring Plague" ) ),
-      insanity_cost( data().cost( POWER_INSANITY ) / 100.0 )
+      insanity_cost( data().cost( POWER_INSANITY ) )
   {
     parse_options( options_str );
-    may_crit                        = true;
-    tick_zero                       = false;
-    base_costs[ RESOURCE_INSANITY ] = 0;  // custom insanity handling
-    tick_may_crit                   = false;
+    may_crit      = true;
+    tick_zero     = false;
+    tick_may_crit = false;
   }
 
   void consume_resource() override
@@ -910,25 +913,16 @@ struct devouring_plague_t final : public priest_spell_t
     {
       priest().buffs.mind_devourer->decrement();
     }
-    else
-    {
-      priest().resource_loss( RESOURCE_INSANITY, insanity_cost, priest().gains.insanity_lost_devouring_plague,
-                              execute_state->action );
-
-      priest().insanity.adjust_end_event();
-    }
   }
 
-  bool ready() override
+  virtual double cost() const override
   {
-    if ( priest().buffs.mind_devourer->check() || priest().resources.current[ RESOURCE_INSANITY ] >= insanity_cost )
+    if ( priest().buffs.mind_devourer->check() )
     {
-      return priest_spell_t::ready();
+      return 0;
     }
-    else
-    {
-      return false;
-    }
+
+    return priest_spell_t::cost();
   }
 };
 
@@ -946,6 +940,7 @@ struct void_bolt_t final : public priest_spell_t
       radius        = player.find_spell( 234746 )->effectN( 1 ).radius();
       may_miss      = false;
       background = dual = true;
+      energize_type     = action_energize::ON_CAST;
     }
 
     timespan_t travel_time() const override
@@ -973,7 +968,6 @@ struct void_bolt_t final : public priest_spell_t
     }
   };
 
-  double insanity_gain;
   void_bolt_extension_t* void_bolt_extension;
   timespan_t fae_blessings_cooldown_reduction;
   propagate_const<cooldown_t*> shadowfiend_cooldown;
@@ -981,7 +975,6 @@ struct void_bolt_t final : public priest_spell_t
 
   void_bolt_t( priest_t& player, util::string_view options_str )
     : priest_spell_t( "void_bolt", player, player.find_spell( 205448 ) ),
-      insanity_gain( data().effectN( 3 ).resource( RESOURCE_INSANITY ) ),
       void_bolt_extension( nullptr ),
       fae_blessings_cooldown_reduction(
           -timespan_t::from_seconds( player.find_spell( 327710 )->effectN( 1 ).base_value() ) ),
@@ -990,7 +983,7 @@ struct void_bolt_t final : public priest_spell_t
   {
     parse_options( options_str );
     use_off_gcd      = true;
-    energize_type    = ENERGIZE_NONE;  // disable resource generation from spell data.
+    energize_type    = action_energize::ON_CAST;
     cooldown->hasted = true;
 
     auto rank2 = player.find_rank_spell( "Void Bolt", "Rank 2" );
@@ -1032,8 +1025,6 @@ struct void_bolt_t final : public priest_spell_t
         priest().buffs.fae_blessings->decrement();
       }
     }
-
-    priest().generate_insanity( insanity_gain, priest().gains.insanity_void_bolt, execute_state->action );
   }
 
   bool ready() override
@@ -1061,18 +1052,15 @@ struct void_bolt_t final : public priest_spell_t
 struct dark_void_t final : public priest_spell_t
 {
   propagate_const<shadow_word_pain_t*> child_swp;
-  double insanity_gain;
 
   dark_void_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "dark_void", p, p.find_talent_spell( "Dark Void" ) ),
-      child_swp( new shadow_word_pain_t( priest(), false ) ),
-      insanity_gain( data().effectN( 2 ).resource( RESOURCE_INSANITY ) )
+      child_swp( new shadow_word_pain_t( priest(), false ) )
 
   {
     parse_options( options_str );
-    base_costs[ RESOURCE_INSANITY ] = 0.0;
-    energize_type                   = ENERGIZE_NONE;  // disable resource generation from spell data.
-    child_swp->background           = true;
+    energize_type         = action_energize::ON_CAST;
+    child_swp->background = true;
 
     may_miss = false;
     aoe      = -1;
@@ -1085,13 +1073,6 @@ struct dark_void_t final : public priest_spell_t
 
     child_swp->target = s->target;
     child_swp->execute();
-  }
-
-  void execute() override
-  {
-    priest_spell_t::execute();
-
-    priest().generate_insanity( insanity_gain, priest().gains.insanity_dark_void, execute_state->action );
   }
 };
 
@@ -1121,8 +1102,6 @@ struct void_eruption_damage_t final : public priest_spell_t
 
 struct void_eruption_t final : public priest_spell_t
 {
-  double insanity_required;
-
   void_eruption_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "void_eruption", p, p.find_spell( 228260 ) )
   {
@@ -1130,20 +1109,11 @@ struct void_eruption_t final : public priest_spell_t
 
     if ( priest().talents.legacy_of_the_void->ok() )
     {
-      insanity_required = priest().talents.legacy_of_the_void->effectN( 6 ).base_value();
-    }
-    else
-    {
-      insanity_required = data().cost( POWER_INSANITY ) / 100.0;
+      base_costs[ RESOURCE_INSANITY ] = priest().talents.legacy_of_the_void->effectN( 6 ).base_value();
     }
 
     impact_action = new void_eruption_damage_t( p );
     add_child( impact_action );
-
-    sim->print_debug( "{} Void Eruption requires {} insanity", priest(), insanity_required );
-
-    // We don't want to lose insanity when casting it!
-    base_costs[ RESOURCE_INSANITY ] = 0;
 
     may_miss = false;
     aoe      = -1;
@@ -1158,16 +1128,19 @@ struct void_eruption_t final : public priest_spell_t
     priest().cooldowns.void_bolt->reset( true );
   }
 
+  void consume_resource() override
+  {
+    // do not consume any insanity, even though it has a cost. So do nothing.
+  }
+
   bool ready() override
   {
-    if ( !priest().buffs.voidform->check() && priest().resources.current[ RESOURCE_INSANITY ] >= insanity_required )
-    {
-      return priest_spell_t::ready();
-    }
-    else
+    if ( priest().buffs.voidform->check() )
     {
       return false;
     }
+
+    return priest_spell_t::ready();
   }
 };
 
@@ -1178,7 +1151,7 @@ struct dark_ascension_damage_t final : public priest_spell_t
     background = true;
 
     // We don't want to lose insanity when casting it!
-    base_costs[ RESOURCE_INSANITY ] = 0;
+    // base_costs[ RESOURCE_INSANITY ] = 0;
 
     may_miss = false;  // TODO: check
   }
@@ -1200,9 +1173,6 @@ struct dark_ascension_t final : public priest_spell_t
     impact_action = new dark_ascension_damage_t( p );
     add_child( impact_action );
 
-    // We don't want to lose insanity when casting it!
-    base_costs[ RESOURCE_INSANITY ] = 0;
-
     may_miss = false;
     aoe      = -1;
     radius   = data().effectN( 1 ).radius_max();
@@ -1221,11 +1191,8 @@ struct dark_ascension_t final : public priest_spell_t
 
 struct void_torrent_t final : public priest_spell_t
 {
-  double insanity_gain;
-
   void_torrent_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "void_torrent", p, p.find_talent_spell( "Void Torrent" ) ),
-      insanity_gain( p.talents.void_torrent->effectN( 3 ).trigger()->effectN( 1 ).resource( RESOURCE_INSANITY ) )
+    : priest_spell_t( "void_torrent", p, p.talents.void_torrent )
   {
     parse_options( options_str );
 
@@ -1233,7 +1200,7 @@ struct void_torrent_t final : public priest_spell_t
     channeled     = true;
     use_off_gcd   = true;
     tick_zero     = true;
-    energize_type = ENERGIZE_NONE;  // disable resource generation from spell data
+    energize_type = action_energize::PER_TICK;
 
     dot_duration = timespan_t::from_seconds( 4.0 );
   }
@@ -1273,22 +1240,6 @@ struct void_torrent_t final : public priest_spell_t
     // Adjust the Voidform end event (essentially remove it) after the Void Torrent buff is up, since it disables
     // insanity drain for the duration of the channel
     priest().insanity.adjust_end_event();
-  }
-
-  void tick( dot_t* d ) override
-  {
-    priest_spell_t::tick( d );
-
-    // Partial tick is not counted for insanity gains
-    if ( d->get_last_tick_factor() < 1.0 )
-      return;
-
-    priest().generate_insanity( insanity_gain, priest().gains.insanity_void_torrent, d->state->action );
-  }
-
-  bool ready() override
-  {
-    return priest_spell_t::ready();
   }
 };
 }  // namespace spells
@@ -1645,6 +1596,7 @@ struct whispers_of_the_damned_t final : public priest_buff_t<buff_t>
 };
 }  // namespace buffs
 
+// Calculate damage a DoT has left given a certain time period
 double priest_t::tick_damage_over_time( timespan_t duration, const dot_t* dot ) const
 {
   if ( !dot->is_ticking() )
@@ -1662,6 +1614,20 @@ double priest_t::tick_damage_over_time( timespan_t duration, const dot_t* dot ) 
   action_state_t::release( state );
   return total_damage;
 };
+
+// Legendary Eternal Call to the Void trigger
+void priest_t::trigger_eternal_call_to_the_void( const dot_t* d )
+{
+  if ( rppm.eternal_call_to_the_void->trigger() )
+  {
+    procs.void_tendril->occur();
+    make_event<ground_aoe_event_t>( *sim, this,
+                                    ground_aoe_params_t()
+                                        .target( d->target )
+                                        .duration( find_spell( 193470 )->duration() )
+                                        .action( active_spells.void_tendril ) );
+  }
+}
 
 // Insanity Control Methods
 void priest_t::generate_insanity( double num_amount, gain_t* g, action_t* action )
@@ -1808,7 +1774,7 @@ double priest_t::insanity_state_t::insanity_drain_per_second() const
 }
 
 /// Gain some insanity
-void priest_t::insanity_state_t::gain( double value, gain_t* gain_obj, action_t* source_action = nullptr )
+void priest_t::insanity_state_t::gain( double value, gain_t* gain_obj, action_t* source_action )
 {
   // Drain before gaining, but don't adjust end-event yet
   drain();
@@ -1989,6 +1955,7 @@ void priest_t::create_buffs_shadow()
 
 void priest_t::init_rng_shadow()
 {
+  rppm.eternal_call_to_the_void = get_rppm( "eteranl_call_to_the_void", legendary.eternal_call_to_the_void );
 }
 
 void priest_t::init_spells_shadow()

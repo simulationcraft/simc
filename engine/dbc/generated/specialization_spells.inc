@@ -1,5 +1,5 @@
-// Talent tree specialization abilities, wow build 9.0.1.35360
-static const std::array<specialization_spell_entry_t, 891> __specialization_spell_data { {
+// Talent tree specialization abilities, wow build 9.0.1.35432
+static const std::array<specialization_spell_entry_t, 892> __specialization_spell_data { {
   {  0,  535, 264663,      0, "Predator's Thirst"                 , 0 },
   {  0,  535, 264667,      0, "Primal Rage"                       , 0 },
   {  0,  535, 264656,      0, "Pathfinding"                       , 0 },
@@ -351,7 +351,6 @@ static const std::array<specialization_spell_entry_t, 891> __specialization_spel
   {  5,  258,  34914,      0, "Vampiric Touch"                    , 0 },
   {  5,  258,  15286,      0, "Vampiric Embrace"                  , 0 },
   {  5,  258,  77486,      0, "Mastery: Madness"                  , 0 },
-  {  5,  258,  78203,      0, "Shadowy Apparitions"               , 0 },
   {  5,  258, 137033,      0, "Shadow Priest"                     , 0 },
   {  5,  258, 185916,      0, "Voidform"                          , 0 },
   {  5,  258,   2096,      0, "Mind Vision"                       , 0 },
@@ -366,13 +365,15 @@ static const std::array<specialization_spell_entry_t, 891> __specialization_spel
   {  5,  258, 190719,      0, "Shadow Word: Death"                , 0 },
   {  5,  258,  45243,      0, "Focused Will"                      , 0 },
   {  5,  258, 280752,      0, "Hallucinations"                    , 0 },
-  {  5,  258, 319899,      0, "Mind Blast"                        , "Rank 2" },
   {  5,  258, 319908,      0, "Void Eruption"                     , "Rank 2" },
   {  5,  258, 322108,      0, "Dispersion"                        , "Rank 2" },
   {  5,  258, 322110,      0, "Vampiric Embrace"                  , "Rank 2" },
   {  5,  258, 322116,      0, "Vampiric Touch"                    , "Rank 2" },
   {  5,  258, 186263,   2061, "Shadow Mend"                       , 0 },
   {  5,  258, 335467,      0, "Devouring Plague"                  , 0 },
+  {  5,  258, 319899,      0, "Mind Blast"                        , "Rank 2" },
+  {  5,  258, 341205,      0, "Dark Thoughts"                     , 0 },
+  {  5,  258, 341491,      0, "Shadowy Apparitions"               , 0 },
   {  6,  250,  49028,      0, "Dancing Rune Weapon"               , 0 },
   {  6,  250,  86537,      0, "Plate Specialization"              , 0 },
   {  6,  250,  55233,      0, "Vampiric Blood"                    , 0 },

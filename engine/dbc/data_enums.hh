@@ -586,7 +586,10 @@ enum property_type_t {
   P_DAMAGE_TAKEN      = 27,
   P_DISPEL_CHANCE     = 28,
   P_EFFECT_4          = 32,
-  P_MAX               = 29,
+  P_EFFECT_5          = 33,
+  P_RESOURCE_GEN      = 34,
+  P_MAX_STACKS        = 35,
+  P_MAX
 };
 
 enum effect_type_t : unsigned {

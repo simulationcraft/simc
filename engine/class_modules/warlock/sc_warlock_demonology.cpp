@@ -87,7 +87,7 @@ namespace warlock {
         demonology_spell_t(p, "Shadow Bolt", p->specialization())
       {
         parse_options(options_str);
-        energize_type = ENERGIZE_ON_CAST;
+        energize_type = action_energize::ON_CAST;
         energize_resource = RESOURCE_SOUL_SHARD;
         energize_amount = 1;
       }
@@ -218,7 +218,7 @@ namespace warlock {
     struct demonbolt_t : public demonology_spell_t {
       demonbolt_t(warlock_t* p, util::string_view options_str) : demonology_spell_t(p, "Demonbolt") {
         parse_options(options_str);
-        energize_type = ENERGIZE_ON_CAST;
+        energize_type = action_energize::ON_CAST;
         energize_resource = RESOURCE_SOUL_SHARD;
         energize_amount = 2;
       }
@@ -628,7 +628,7 @@ namespace warlock {
           dot_duration = data().duration();
           spell_power_mod.tick = p->find_spell(265469)->effectN(1).sp_coeff();
 
-          energize_type = ENERGIZE_PER_TICK;
+          energize_type = action_energize::PER_TICK;
           energize_resource = RESOURCE_SOUL_SHARD;
           energize_amount = 1;
 
@@ -654,7 +654,7 @@ namespace warlock {
         demonology_spell_t("Soul Strike", p, p->talents.soul_strike)
       {
         parse_options(options_str);
-        energize_type = ENERGIZE_ON_CAST;
+        energize_type = action_energize::ON_CAST;
         energize_resource = RESOURCE_SOUL_SHARD;
         energize_amount = 1;
       }

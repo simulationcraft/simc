@@ -11,6 +11,7 @@
 #include "simulationcraft.hpp"
 
 #include "player/covenant.hpp"
+#include "sc_enums.hpp"
 
 namespace priestspace
 {
@@ -283,6 +284,11 @@ public:
     propagate_const<cooldown_t*> holy_fire;
   } cooldowns;
 
+  struct realppm_t
+  {
+    propagate_const<real_ppm_t*> eternal_call_to_the_void;
+  } rppm;
+
   // Gains
   struct
   {
@@ -290,26 +296,13 @@ public:
     propagate_const<gain_t*> power_word_solace;
     propagate_const<gain_t*> insanity_auspicious_spirits;
     propagate_const<gain_t*> insanity_dispersion;
-    propagate_const<gain_t*> insanity_void_torrent;
     propagate_const<gain_t*> insanity_drain;
-    propagate_const<gain_t*> insanity_mind_blast;
-    propagate_const<gain_t*> insanity_mind_flay;
-    propagate_const<gain_t*> insanity_mind_sear;
     propagate_const<gain_t*> insanity_pet;
-    propagate_const<gain_t*> insanity_shadow_crash;
-    propagate_const<gain_t*> insanity_shadow_word_death;
-    propagate_const<gain_t*> insanity_shadow_word_pain_ondamage;
-    propagate_const<gain_t*> insanity_shadow_word_pain_onhit;
-    propagate_const<gain_t*> insanity_shadow_word_void;
     propagate_const<gain_t*> insanity_surrender_to_madness;
     propagate_const<gain_t*> insanity_wasted_surrendered_to_madness;
-    propagate_const<gain_t*> insanity_vampiric_touch_ondamage;
-    propagate_const<gain_t*> insanity_vampiric_touch_onhit;
-    propagate_const<gain_t*> insanity_void_bolt;
     propagate_const<gain_t*> insanity_blessing;
     propagate_const<gain_t*> shadowy_insight;
     propagate_const<gain_t*> vampiric_touch_health;
-    propagate_const<gain_t*> insanity_dark_void;
     propagate_const<gain_t*> insanity_dark_ascension;
     propagate_const<gain_t*> insanity_death_throes;
     propagate_const<gain_t*> power_of_the_dark_side;
@@ -317,12 +310,12 @@ public:
     propagate_const<gain_t*> insanity_memory_of_lucid_dreams;
     propagate_const<gain_t*> shadow_word_death_self_damage;
     propagate_const<gain_t*> insanity_death_and_madness;
-    propagate_const<gain_t*> insanity_lost_devouring_plague;
     propagate_const<gain_t*> insanity_mindgames;
     propagate_const<gain_t*> insanity_ascended_blast;
-	propagate_const<gain_t*> insanity_power_word_shield_hallucinations;
-	propagate_const<gain_t*> insanity_power_word_shield_fae_blessings;
+	  propagate_const<gain_t*> insanity_power_word_shield_hallucinations;
+	  propagate_const<gain_t*> insanity_power_word_shield_fae_blessings;
 
+    propagate_const<gain_t*> insanity_eternal_call_to_the_void;
   } gains;
 
   // Benefits
@@ -348,6 +341,7 @@ public:
     propagate_const<proc_t*> dissonant_echoes;
     propagate_const<proc_t*> mind_devourer;
     propagate_const<proc_t*> blessing_of_plenty;
+    propagate_const<proc_t*> void_tendril;
   } procs;
 
   // Special
@@ -355,6 +349,7 @@ public:
   {
     propagate_const<actions::spells::mind_sear_tick_t*> mind_sear_tick;
     propagate_const<actions::spells::shadowy_apparition_spell_t*> shadowy_apparitions;
+    propagate_const<action_t*> void_tendril;
   } active_spells;
 
   // Items
@@ -438,8 +433,8 @@ public:
     item_runeforge_t the_penitent_one;  // Effect implemented, but not hooked up to PW:Radiance
     // Shadow
     item_runeforge_t painbreaker_psalm;
-    item_runeforge_t shadowflame_prism;         // TODO: Add 20% damage modifier
-    item_runeforge_t eternal_call_to_the_void;  // NYI
+    item_runeforge_t shadowflame_prism; // TODO: Add 20% damage modifier
+    item_runeforge_t eternal_call_to_the_void;
   } legendary;
 
   struct
@@ -546,10 +541,12 @@ private:
 
 public:
   void generate_insanity( double num_amount, gain_t* g, action_t* action );
+  void lose_insanity( double amount, gain_t* g, action_t* action );
   void trigger_lucid_dreams( double cost );
   bool insanity_drain_frozen() const;
   void adjust_holy_word_serenity_cooldown();
   double tick_damage_over_time( timespan_t duration, const dot_t* dot ) const;
+  void trigger_eternal_call_to_the_void( const dot_t* d );
 
   /**
    * Insanity tracking
@@ -586,7 +583,10 @@ public:
     double insanity_drain_per_second() const;
 
     /// Gain some insanity
-    void gain( double value, gain_t* gain_obj, action_t* source_action );
+    void gain( double value, gain_t* gain_obj, action_t* source_action = nullptr );
+
+    /// Lose some insanity
+    void lose( double value, gain_t* gain_obj, action_t* source_action = nullptr );
 
     /**
      * Triggers the insanity drain, and is called in places that changes the insanity state of the actor in a relevant
@@ -1112,6 +1112,18 @@ public:
     return m;
   }
 
+  void gain_energize_resource( resource_e resource_type, double amount, gain_t* gain ) override
+  {
+    if ( resource_type == RESOURCE_INSANITY )
+    {
+      priest().generate_insanity( amount, gain, this );
+    }
+    else
+    {
+      ab::gain_energize_resource( resource_type, amount, gain );
+    }
+  }
+
 protected:
   priest_t& priest()
   {
@@ -1188,7 +1200,22 @@ struct priest_spell_t : public priest_action_t<spell_t>
       return true;
     }
 
-    return spell_t::usable_moving();
+    return base_t::usable_moving();
+  }
+
+  void consume_resource() override
+  {
+    auto resource = current_resource();
+
+    base_t::consume_resource();
+
+    if ( resource == RESOURCE_INSANITY )
+    {
+      priest().insanity.adjust_end_event();
+    }
+
+    if ( priest().specialization() != PRIEST_SHADOW )
+      priest().trigger_lucid_dreams( last_resource_cost );
   }
 
   void impact( action_state_t* s ) override
@@ -1252,14 +1279,6 @@ struct priest_spell_t : public priest_action_t<spell_t>
         pet->resource_gain( RESOURCE_HEALTH, amount, pet->gains.vampiric_embrace );
       }
     }
-  }
-
-  void consume_resource() override
-  {
-    spell_t::consume_resource();
-
-    if ( priest().specialization() != PRIEST_SHADOW )
-      priest().trigger_lucid_dreams( last_resource_cost );
   }
 };
 

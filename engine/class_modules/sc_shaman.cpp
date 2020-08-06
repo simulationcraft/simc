@@ -1146,7 +1146,7 @@ public:
       }
 
       maelstrom_gain    = effect.resource( RESOURCE_MAELSTROM );
-      ab::energize_type = ENERGIZE_NONE;  // disable resource generation from spell data.
+      ab::energize_type = action_energize::NONE;  // disable resource generation from spell data.
     }
 
     affected_by_molten_weapon =
@@ -4236,7 +4236,7 @@ struct chained_overload_base_t : public elemental_overload_spell_t
     {
       chain_multiplier = data().effectN( 1 ).chain_multiplier();
     }
-    energize_type  = ENERGIZE_NONE;  // disable resource generation from spell data.
+    energize_type  = action_energize::NONE;  // disable resource generation from spell data.
     maelstrom_gain = mg;
     radius         = 10.0;
 
@@ -4294,7 +4294,7 @@ struct chained_base_t : public shaman_spell_t
     if ( p()->specialization() == SHAMAN_ELEMENTAL )
     {
       maelstrom_gain = mg;
-      energize_type  = ENERGIZE_NONE;  // disable resource generation from spell data.
+      energize_type  = action_energize::NONE;  // disable resource generation from spell data.
     }
 
     if ( data().affected_by( player->spec.chain_lightning_2->effectN( 1 ) ) )

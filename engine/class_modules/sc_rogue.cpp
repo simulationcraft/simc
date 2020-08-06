@@ -24,7 +24,8 @@ enum secondary_trigger_e
   TRIGGER_SECRET_TECHNIQUE,
   TRIGGER_SHURIKEN_TORNADO,
   TRIGGER_REPLICATING_SHADOWS,
-  TRIGGER_INTERNAL_BLEEDING
+  TRIGGER_INTERNAL_BLEEDING,
+  TRIGGER_AKAARIS_SOUL_FRAGMENT,
 };
 
 enum stealth_type_e
@@ -201,6 +202,7 @@ public:
     actions::rogue_spell_t* poison_bomb = nullptr;
     actions::rogue_spell_t* replicating_shadows = nullptr;
     actions::shadow_blades_attack_t* shadow_blades_attack = nullptr;
+    actions::rogue_attack_t* akaaris_soul_fragment = nullptr;
     struct
     {
       actions::rogue_attack_t* backstab = nullptr;
@@ -346,6 +348,9 @@ public:
     gain_t* ace_up_your_sleeve;
     gain_t* shrouded_suffocation;
     gain_t* the_first_dance;
+
+    // Legendary
+    gain_t* dashing_scoundrel;
   } gains;
 
   // Spec passives
@@ -537,6 +542,13 @@ public:
   // Legendary effects
   struct legendary_t
   {
+    // Legendary Items
+    item_runeforge_t akaaris_soul_fragment;
+    item_runeforge_t dashing_scoundrel;
+
+    // Legendary Values
+    timespan_t akaaris_soul_fragment_delay;
+    double dashing_scoundrel_gain;
   } legendary;
 
   // Procs
@@ -975,9 +987,9 @@ public:
       switch ( effect.type() )
       {
         case E_ADD_COMBO_POINTS:
-          if ( ab::energize_type != ENERGIZE_NONE )
+          if ( ab::energize_type != action_energize::NONE )
           {
-            ab::energize_type = ENERGIZE_ON_HIT;
+            ab::energize_type = action_energize::ON_HIT;
             ab::energize_amount = effect.base_value();
             ab::energize_resource = RESOURCE_COMBO_POINT;
           }
@@ -1071,7 +1083,7 @@ public:
   {
     double cp = 0;
 
-    if ( ab::energize_type != ENERGIZE_NONE && ab::energize_resource == RESOURCE_COMBO_POINT )
+    if ( ab::energize_type != action_energize::NONE && ab::energize_resource == RESOURCE_COMBO_POINT )
     {
       cp += ab::energize_amount;
     }
@@ -1093,7 +1105,7 @@ public:
   }
 
   virtual bool procs_poison() const
-  { return ab::weapon != nullptr; }
+  { return ab::weapon != nullptr && ( !ab::player->bugs || ab::player->specialization() == ROGUE_ASSASSINATION ); }
 
   // Generic rules for proccing Main Gauche, used by rogue_t::trigger_main_gauche()
   virtual bool procs_main_gauche() const
@@ -1146,6 +1158,7 @@ public:
   void trigger_prey_on_the_weak( const action_state_t* state );
   void trigger_find_weakness( const action_state_t* state, timespan_t duration = timespan_t::min() );
   void trigger_grand_melee( const action_state_t* state );
+  void trigger_akaaris_soul_fragment( const action_state_t* state );
 
   // General Methods ==========================================================
 
@@ -1431,7 +1444,7 @@ public:
     trigger_auto_attack( ab::execute_state );
     trigger_ruthlessness_cp( ab::execute_state );
 
-    if ( ab::energize_type != ENERGIZE_NONE && ab::energize_resource == RESOURCE_COMBO_POINT )
+    if ( ab::energize_type != action_energize::NONE && ab::energize_resource == RESOURCE_COMBO_POINT )
     {
       if ( affected_by.shadow_blades && p()->buffs.shadow_blades->up() )
       {
@@ -1469,7 +1482,7 @@ public:
   {
     ab::schedule_travel( state );
 
-    if ( ab::energize_type != ENERGIZE_NONE && ab::energize_resource == RESOURCE_COMBO_POINT )
+    if ( ab::energize_type != action_energize::NONE && ab::energize_resource == RESOURCE_COMBO_POINT )
       trigger_seal_fate( state );
   }
 
@@ -1560,6 +1573,18 @@ struct rogue_poison_t : public rogue_attack_t
     return timespan_t::zero();
   }
 
+  virtual double composite_crit_chance() const override
+  {
+    double c = rogue_attack_t::composite_crit_chance();
+
+    if ( p()->legendary.dashing_scoundrel->ok() && p()->buffs.envenom->check() )
+    {
+      c += p()->legendary.dashing_scoundrel->effectN( 1 ).percent();
+    }
+
+    return c;
+  }
+
   virtual double proc_chance( const action_state_t* source_state ) const
   {
     if ( p()->spec.improved_poisons_2->ok() && p()->stealthed( STEALTH_BASIC | STEALTH_ROGUE ) )
@@ -1601,6 +1626,26 @@ struct rogue_poison_t : public rogue_attack_t
         ( source_state->action->name_str == "mutilate_mh" || source_state->action->name_str == "mutilate_oh" ) )
     {
       p()->buffs.double_dose->trigger( 1 );
+    }
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    rogue_attack_t::impact( state );
+
+    if ( state->result == RESULT_CRIT && p()->legendary.dashing_scoundrel->ok() )
+    {
+      p()->resource_gain( RESOURCE_ENERGY, p()->legendary.dashing_scoundrel_gain, p()->gains.dashing_scoundrel );
+    }
+  }
+
+  void tick( dot_t* d ) override
+  {
+    rogue_attack_t::tick( d );
+
+    if ( d->state->result == RESULT_CRIT && p()->legendary.dashing_scoundrel->ok() )
+    {
+      p()->resource_gain( RESOURCE_ENERGY, p()->legendary.dashing_scoundrel_gain, p()->gains.dashing_scoundrel );
     }
   }
 };
@@ -1673,6 +1718,9 @@ struct deadly_poison_t : public rogue_poison_t
 
     proc_instant = p->get_background_action<deadly_poison_dd_t>( "deadly_poison_instant" );
     proc_dot  = p->get_background_action<deadly_poison_dot_t>( "deadly_poison_dot" );
+
+    add_child( proc_instant );
+    add_child( proc_dot );
   }
 
   void impact( action_state_t* state ) override
@@ -2042,6 +2090,9 @@ struct melee_t : public rogue_attack_t
 
     return m;
   }
+
+  bool procs_poison() const override
+  { return true; }
 };
 
 // Auto Attack ==============================================================
@@ -2326,7 +2377,6 @@ struct blade_flurry_attack_t : public rogue_attack_t
     rogue_attack_t( name, p, p -> find_spell( 22482 ) )
   {
     callbacks = false;
-    background = true;
     radius = 5;
     range = -1.0;
 
@@ -2366,7 +2416,6 @@ struct blade_flurry_t : public rogue_attack_t
     blade_flurry_instant_attack_t( util::string_view name, rogue_t* p ) :
       rogue_attack_t( name, p, p -> find_spell( 331850 ) )
     {
-      background = true;
       range = -1.0;
     }
 
@@ -2545,10 +2594,38 @@ struct envenom_t : public rogue_attack_t
 
 struct eviscerate_t : public rogue_attack_t
 {
-  eviscerate_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ):
-    rogue_attack_t( name, p, p -> spec.eviscerate, options_str )
+  struct eviscerate_bonus_t : public rogue_attack_t
   {
-    base_multiplier *= 1.0 + p -> spec.eviscerate_2 -> effectN( 1 ).percent();
+    int last_eviscerate_cp;
+
+    eviscerate_bonus_t( util::string_view name, rogue_t* p ):
+      rogue_attack_t( name, p, p->find_spell( 328082 ) ),
+      last_eviscerate_cp( 1 )
+    {}
+
+    void reset() override
+    {
+      rogue_attack_t::reset();
+      last_eviscerate_cp = 1;
+    }
+
+    double combo_point_da_multiplier( const action_state_t* state ) const override
+    {
+      return as<double>( last_eviscerate_cp );
+    }
+  };
+
+  eviscerate_bonus_t* bonus_attack;
+
+  eviscerate_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ):
+    rogue_attack_t( name, p, p->spec.eviscerate, options_str ),
+    bonus_attack( nullptr )
+  {
+    if ( p->spec.eviscerate_2->ok() )
+    {
+      bonus_attack = p->get_background_action<eviscerate_bonus_t>( "eviscerate_bonus" );
+      add_child( bonus_attack );
+    }
   }
 
   double bonus_da( const action_state_t* s ) const override
@@ -2560,8 +2637,18 @@ struct eviscerate_t : public rogue_attack_t
 
   void execute() override
   {
+    // Currently triggered before regular Eviscerate. Also triggers always, no matter whether Find Weakness is applied.
+    if ( bonus_attack && ( p()->bugs || td( target )->debuffs.find_weakness->up() ) )
+    {
+      bonus_attack->set_target( target );
+      bonus_attack->execute();
+    }
+
     rogue_attack_t::execute();
     p() -> buffs.nights_vengeance -> expire();
+
+    if ( bonus_attack )
+      bonus_attack->last_eviscerate_cp = cast_state( execute_state )->cp;
   }
 };
 
@@ -2591,7 +2678,6 @@ struct fan_of_knives_t: public rogue_attack_t
       rogue_attack_t( name, p, p -> find_spell(287653) )
     {
       aoe = -1;
-      background  = true;
       base_dd_min = base_dd_max = p -> azerite.echoing_blades.value( 6 );
     }
 
@@ -2609,7 +2695,7 @@ struct fan_of_knives_t: public rogue_attack_t
     echoing_blades_attack( nullptr ), echoing_blades_crit_count( 0 )
   {
     aoe = -1;
-    energize_type     = ENERGIZE_ON_HIT;
+    energize_type     = action_energize::ON_HIT;
     energize_resource = RESOURCE_COMBO_POINT;
     // 09/25/2019 - 8.2.5 Spelldata seemingly erroneously removed this effect from the spell data
     energize_amount   = 1; // data().effectN( 2 ).base_value();
@@ -2913,7 +2999,6 @@ struct killing_spree_tick_t : public rogue_attack_t
   killing_spree_tick_t( util::string_view name, rogue_t* p, const spell_data_t* s ) :
     rogue_attack_t( name, p, s )
   {
-    background = true;
     direct_tick = true;
   }
 };
@@ -3056,7 +3141,6 @@ struct main_gauche_t : public rogue_attack_t
   main_gauche_t( util::string_view name, rogue_t* p ) :
     rogue_attack_t( name, p, p -> find_spell( 86392 ) )
   {
-    background = true;
   }
 
   double attack_direct_power_coefficient( const action_state_t* s ) const override
@@ -3094,7 +3178,7 @@ struct marked_for_death_t : public rogue_spell_t
     parse_options( options_str );
 
     harmful = false;
-    energize_type = ENERGIZE_ON_CAST;
+    energize_type = action_energize::ON_CAST;
   }
 
   void execute() override
@@ -3116,34 +3200,32 @@ struct marked_for_death_t : public rogue_spell_t
 
 // Mutilate =================================================================
 
-struct mutilate_strike_t : public rogue_attack_t
-{
-  mutilate_strike_t( util::string_view name, rogue_t* p, const spell_data_t* s ) :
-    rogue_attack_t( name, p, s )
-  {
-    background  = true;
-  }
-
-  void impact( action_state_t* state ) override
-  {
-    rogue_attack_t::impact( state );
-
-    trigger_seal_fate( state );
-  }
-};
-
-struct double_dose_t : public rogue_attack_t
-{
-  double_dose_t( util::string_view name, rogue_t* p ) :
-    rogue_attack_t( name, p, p -> find_spell(273009) )
-  {
-    background  = true;
-    base_dd_min = base_dd_max = p->azerite.double_dose.value();
-  }
-};
-
 struct mutilate_t : public rogue_attack_t
 {
+  struct mutilate_strike_t : public rogue_attack_t
+  {
+    mutilate_strike_t( util::string_view name, rogue_t* p, const spell_data_t* s ) :
+      rogue_attack_t( name, p, s )
+    {
+    }
+
+    void impact( action_state_t* state ) override
+    {
+      rogue_attack_t::impact( state );
+
+      trigger_seal_fate( state );
+    }
+  };
+
+  struct double_dose_t : public rogue_attack_t
+  {
+    double_dose_t( util::string_view name, rogue_t* p ) :
+      rogue_attack_t( name, p, p -> find_spell(273009) )
+    {
+      base_dd_min = base_dd_max = p->azerite.double_dose.value();
+    }
+  };
+
   rogue_attack_t* mh_strike;
   rogue_attack_t* oh_strike;
   rogue_attack_t* double_dose;
@@ -3184,7 +3266,7 @@ struct mutilate_t : public rogue_attack_t
       if ( p()->talent.blindside->ok() )
       {
         double chance = p()->talent.blindside->effectN( 1 ).percent();
-        if ( execute_state->target->health_percentage() < p()->talent.blindside->effectN( 3 ).percent() )
+        if ( execute_state->target->health_percentage() < p()->talent.blindside->effectN( 3 ).base_value() )
         {
           chance = p()->talent.blindside->effectN( 2 ).percent();
         }
@@ -3352,7 +3434,6 @@ struct replicating_shadows_t : public rogue_spell_t
     rupture_action( nullptr )
   {
     may_miss = false;
-    background  = true;
     base_dd_min = p -> azerite.replicating_shadows.value();
     base_dd_max = p -> azerite.replicating_shadows.value();
   }
@@ -3410,7 +3491,6 @@ struct secret_technique_t : public rogue_attack_t
     secret_technique_attack_t( util::string_view name, rogue_t* p, const spell_data_t* s ) :
       rogue_attack_t( name, p, s )
     {
-      background = true;
       aoe = aoe != 0 ? aoe : -1;
     }
 
@@ -3471,7 +3551,6 @@ struct shadow_blades_attack_t : public rogue_attack_t
   shadow_blades_attack_t( util::string_view name, rogue_t* p ) :
     rogue_attack_t( name, p, p -> find_spell( 279043 ) )
   {
-    background = true;
     may_dodge = may_block = may_parry = false;
     attack_power_mod.direct = 0;
   }
@@ -3597,9 +3676,22 @@ struct shadowstrike_t : public rogue_attack_t
   shadowstrike_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ) :
     rogue_attack_t( name, p, p -> spec.shadowstrike, options_str )
   {
-    if ( p->active.weaponmaster.shadowstrike && p->active.weaponmaster.shadowstrike != this )
+  }
+
+  void init() override
+  {
+    rogue_attack_t::init();
+
+    if ( !is_secondary_action() )
     {
-      add_child( p->active.weaponmaster.shadowstrike );
+      if ( p()->active.weaponmaster.shadowstrike )
+      {
+        add_child( p()->active.weaponmaster.shadowstrike );
+      }
+      if ( p()->active.akaaris_soul_fragment )
+      {
+        add_child( p()->active.akaaris_soul_fragment );
+      }
     }
   }
 
@@ -3626,9 +3718,9 @@ struct shadowstrike_t : public rogue_attack_t
 
     trigger_weaponmaster( state, p()->active.weaponmaster.shadowstrike );
     trigger_inevitability( state );
-
     // Appears to be applied after weaponmastered attacks.
     trigger_find_weakness( state );
+    trigger_akaaris_soul_fragment( state );
   }
 
   double bonus_da( const action_state_t* s ) const override
@@ -3672,6 +3764,43 @@ struct shadowstrike_t : public rogue_attack_t
   }
 };
 
+// Shadow Vault =============================================================
+
+struct shadow_vault_t: public rogue_attack_t
+{
+  struct shadow_vault_bonus_t : public rogue_attack_t
+  {
+    shadow_vault_bonus_t( util::string_view name, rogue_t* p ) :
+      rogue_attack_t( name, p, p -> find_spell( 319190 ) )
+    {
+    }
+  };
+
+  shadow_vault_bonus_t* bonus_attack;
+
+  shadow_vault_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ):
+    rogue_attack_t( name, p, p -> find_specialization_spell( "Shadow Vault" ), options_str ),
+    bonus_attack( nullptr )
+  {
+    if ( p->find_rank_spell( "Shadow Vault", "Rank 2" )->ok() )
+    {
+      bonus_attack = p->get_background_action<shadow_vault_bonus_t>( "shadow_vault_bonus" );
+      add_child( bonus_attack );
+    }
+  }
+
+  void impact(action_state_t* state) override
+  {
+    rogue_attack_t::impact( state );
+
+    if ( bonus_attack && result_is_hit( state->result ) && td( state->target )->debuffs.find_weakness->up() )
+    {
+      bonus_attack->set_target( state->target );
+      bonus_attack->execute();
+    }
+  }
+};
+
 // Shuriken Storm ===========================================================
 
 struct shuriken_storm_t: public rogue_attack_t
@@ -3679,8 +3808,7 @@ struct shuriken_storm_t: public rogue_attack_t
   shuriken_storm_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ):
     rogue_attack_t( name, p, p -> find_specialization_spell( "Shuriken Storm" ), options_str )
   {
-    aoe = -1;
-    energize_type = ENERGIZE_PER_HIT;
+    energize_type = action_energize::PER_HIT;
     energize_resource = RESOURCE_COMBO_POINT;
     energize_amount = 1;
     ap_type = attack_power_type::WEAPON_BOTH;
@@ -3699,7 +3827,7 @@ struct shuriken_storm_t: public rogue_attack_t
     double m = rogue_attack_t::action_multiplier();
 
     // Stealth Buff
-    if ( p()->stealthed( STEALTH_BASIC | STEALTH_SHADOWDANCE ) )
+    if ( p()->bugs && p()->stealthed( STEALTH_BASIC | STEALTH_SHADOWDANCE ) )
     {
       m *= 1.0 + data().effectN( 3 ).percent();
     }
@@ -3765,10 +3893,8 @@ struct sinister_strike_t : public rogue_attack_t
     sinister_strike_extra_attack_t( util::string_view name, rogue_t* p ) :
       rogue_attack_t( name, p, p -> find_spell( 197834 ) )
     {
-      background = true;
-      
       // CP generation is not in the spell data for some reason
-      energize_type = ENERGIZE_ON_HIT;
+      energize_type = action_energize::ON_HIT;
       energize_amount = 1;
       energize_resource = RESOURCE_COMBO_POINT;
     }
@@ -3976,7 +4102,6 @@ struct vendetta_t : public rogue_spell_t
     nothing_personal_t( util::string_view name, rogue_t* p ) :
       rogue_spell_t( name, p, p -> find_spell( 286581 ) )
     {
-      background = true;
       base_td = p -> azerite.nothing_personal.value();
     }
   };
@@ -4077,7 +4202,6 @@ struct kidney_shot_t : public rogue_attack_t
     internal_bleeding_t( util::string_view name, rogue_t* p ) :
       rogue_attack_t( name, p, p->find_spell( 154953 ) )
     {
-      background = true;
     }
 
     timespan_t composite_dot_duration( const action_state_t* s ) const override
@@ -4156,6 +4280,7 @@ struct cheap_shot_t : public rogue_attack_t
     rogue_attack_t::impact( state );
     trigger_prey_on_the_weak( state );
     trigger_find_weakness( state );
+    trigger_akaaris_soul_fragment( state );
   }
 };
 
@@ -4166,7 +4291,6 @@ struct poison_bomb_t : public rogue_spell_t
   poison_bomb_t( util::string_view name, rogue_t* p ) :
     rogue_spell_t( name, p, p -> find_spell( 255546 ) )
   {
-    background = true;
     aoe = -1;
   }
 };
@@ -5641,6 +5765,15 @@ void actions::rogue_action_t<Base>::trigger_grand_melee( const action_state_t* s
     p()->buffs.slice_and_dice->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, snd_extension );
 }
 
+template <typename Base>
+void actions::rogue_action_t<Base>::trigger_akaaris_soul_fragment( const action_state_t* state )
+{
+  if ( !ab::result_is_hit( state->result ) || !p()->legendary.akaaris_soul_fragment->ok() || ab::background )
+    return;
+
+  p()->active.akaaris_soul_fragment->trigger_secondary_action( state->target, 0, p()->legendary.akaaris_soul_fragment_delay );
+}
+
 // ==========================================================================
 // Rogue Targetdata Definitions
 // ==========================================================================
@@ -6188,6 +6321,7 @@ void rogue_t::init_action_list()
     finish -> add_action( this, "Rupture", "cycle_targets=1,if=!variable.use_priority_rotation&spell_targets.shuriken_storm>=2&!buff.shadow_dance.up&target.time_to_die>=(5+(2*combo_points))&refreshable", "Multidotting outside Dance on targets that will live for the duration of Rupture, refresh during pandemic." );
     finish -> add_action( this, "Rupture", "if=remains<cooldown.symbols_of_death.remains+10&cooldown.symbols_of_death.remains<=5&target.time_to_die-remains>cooldown.symbols_of_death.remains+5", "Refresh Rupture early if it will expire during Symbols. Do that refresh if SoD gets ready in the next 5s." );
     finish -> add_talent( this, "Secret Technique" );
+    finish -> add_action( this, "Shadow Vault", "if=!variable.use_priority_rotation&spell_targets>=3" );
     finish -> add_action( this, "Eviscerate" );
 
     // Builders
@@ -6243,6 +6377,7 @@ action_t* rogue_t::create_action( util::string_view name, const std::string& opt
   if ( name == "shadow_dance"        ) return new shadow_dance_t       ( name, this, options_str );
   if ( name == "shadowstep"          ) return new shadowstep_t         ( name, this, options_str );
   if ( name == "shadowstrike"        ) return new shadowstrike_t       ( name, this, options_str );
+  if ( name == "shadow_vault"        ) return new shadow_vault_t       ( name, this, options_str );
   if ( name == "shuriken_storm"      ) return new shuriken_storm_t     ( name, this, options_str );
   if ( name == "shuriken_tornado"    ) return new shuriken_tornado_t   ( name, this, options_str );
   if ( name == "shuriken_toss"       ) return new shuriken_toss_t      ( name, this, options_str );
@@ -6752,7 +6887,8 @@ void rogue_t::init_spells()
   spell.relentless_strikes_energize   = find_spell( 98440 );
   spell.slice_and_dice                = find_class_spell( "Slice and Dice" );
 
-  // Talents
+  // Talents ================================================================
+
   // Shared
   talent.weaponmaster       = find_talent_spell( "Weaponmaster" ); // Note: this will return a different spell depending on the spec.
 
@@ -6810,7 +6946,8 @@ void rogue_t::init_spells()
   talent.secret_technique   = find_talent_spell( "Secret Technique" );
   talent.shuriken_tornado   = find_talent_spell( "Shuriken Tornado" );
 
-  // Azerite Powers
+  // Azerite Powers =========================================================
+
   azerite.ace_up_your_sleeve   = find_azerite_spell( "Ace Up Your Sleeve" );
   azerite.blade_in_the_shadows = find_azerite_spell( "Blade In The Shadows" );
   azerite.brigands_blitz       = find_azerite_spell( "Brigand's Blitz" );
@@ -6830,13 +6967,34 @@ void rogue_t::init_spells()
   azerite.the_first_dance      = find_azerite_spell( "The First Dance" );
   azerite.twist_the_knife      = find_azerite_spell( "Twist the Knife" );
 
-  // Azerite Essences
+  // Azerite Essences =======================================================
+
   azerite.memory_of_lucid_dreams  = find_azerite_essence( "Memory of Lucid Dreams" );
   spell.memory_of_lucid_dreams    = azerite.memory_of_lucid_dreams.spell( 1u, essence_type::MINOR );
 
   azerite.vision_of_perfection            = find_azerite_essence( "Vision of Perfection" );
   azerite.vision_of_perfection_percentage = azerite.vision_of_perfection.spell( 1u, essence_type::MAJOR )->effectN( 1 ).percent();
   azerite.vision_of_perfection_percentage += azerite.vision_of_perfection.spell( 2u, essence_spell::UPGRADE, essence_type::MAJOR )->effectN( 1 ).percent();
+
+  // Legendary Items ========================================================
+
+  legendary.akaaris_soul_fragment   = find_runeforge_legendary( "Akaari's Soul Fragment" );
+  legendary.dashing_scoundrel       = find_runeforge_legendary( "Dashing Scoundrel" );
+
+  if ( legendary.akaaris_soul_fragment->ok() )
+  {
+    legendary.akaaris_soul_fragment_delay = timespan_t::from_seconds( legendary.akaaris_soul_fragment->effectN( 1 ).base_value() );
+    active.akaaris_soul_fragment = get_secondary_trigger_action<actions::shadowstrike_t>( TRIGGER_AKAARIS_SOUL_FRAGMENT, "shadowstrike_akaaris_soul_fragment" );
+    active.akaaris_soul_fragment->base_multiplier *= legendary.akaaris_soul_fragment->effectN( 2 ).percent();
+    // TOCHECK: Check if this is a real cast or a subspell, check if it generates CP
+  }
+
+  if ( legendary.dashing_scoundrel->ok() )
+  {
+    legendary.dashing_scoundrel_gain = find_spell( 340426 )->effectN( 1 ).resource( RESOURCE_ENERGY );
+  }
+
+  // Active Spells = ========================================================
 
   auto_attack = new actions::auto_melee_attack_t( this, "" );
 
@@ -6896,6 +7054,7 @@ void rogue_t::init_gains()
   gains.the_first_dance          = get_gain( "The First Dance"          );
   gains.nothing_personal         = get_gain( "Nothing Personal"         );
   gains.memory_of_lucid_dreams   = get_gain( "Memory of Lucid Dreams"   );
+  gains.dashing_scoundrel        = get_gain( "Dashing Scoundrel"        );
 }
 
 // rogue_t::init_procs ======================================================

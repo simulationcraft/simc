@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35360 shadowlands-BETA (hotfix 2020-08-04/35360, git build shadowlands e7d93195b6)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35432 shadowlands-BETA (git build shadowlands 718abb059b)
 
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -8039,6 +8039,27 @@ Effects          :
 #1 (id=837492)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -8 | Scaled Value: -8 | PvP Coefficient: 1.00000 | Misc Value: 0x7e | Target: Self (1)
 Description      : Demonic Wards $?c2[also ][]reduces magic damage taken by $?c1[an additional ][]|cFFFFFFFF$s1%|r.
+
+Name             : Exposed Wound (id=339229) [Spell Family (107)] 
+Class            : Demon Hunter
+School           : Magic
+Spell Type       : None
+Range            : 50000 yards
+Duration         : 10 seconds
+Triggered by     : Serrated Glaive (339230)
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x......x ........ ........ ........ 
+Effects          :
+#1 (id=838410)   : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
+                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Affected Spells: Eye Beam (198030)
+                   Family Flags: 8
+Tooltip          : Damage taken from Eye Beam  increased by $w1%.
 
 Name             : Elysian Decree (desc=Kyrian) (id=339893) [Spell Family (107)] 
 Class            : Demon Hunter

@@ -362,7 +362,7 @@ public:
   gain_t* gain;
 
   // Sets the behavior for when this action's resource energize occur.
-  action_energize_e energize_type;
+  action_energize energize_type;
 
   // Resource for the energize to grant.
   resource_e energize_resource;
@@ -551,7 +551,7 @@ public:
 
   const char* name() const
   { return name_str.c_str(); }
-
+  
   size_t num_travel_events() const
   { return travel_events.size(); }
 
@@ -839,7 +839,7 @@ public:
   virtual resource_e energize_resource_() const
   { return energize_resource; }
 
-  virtual action_energize_e energize_type_() const
+  virtual action_energize energize_type_() const
   { return energize_type; }
 
   virtual gain_t* energize_gain( const action_state_t* /* state */ ) const
@@ -940,6 +940,8 @@ public:
   virtual void acquire_target( retarget_source /* event */, player_t* /* context */, player_t* /* candidate_target */ );
 
   virtual void set_target( player_t* target );
+
+  virtual void gain_energize_resource( resource_e resource_type, double amount, gain_t* gain );
 
   // ================
   // Static functions

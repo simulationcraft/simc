@@ -1683,7 +1683,7 @@ struct consume_soul_t : public demon_hunter_heal_t
     {
       may_miss = may_block = may_dodge = may_parry = callbacks = false;
       background = quiet = dual = true;
-      energize_type = ENERGIZE_ON_CAST;
+      energize_type = action_energize::ON_CAST;
     }
   };
 
@@ -1894,7 +1894,7 @@ struct consume_magic_t : public demon_hunter_spell_t
     may_miss = false;
 
     const spelleffect_data_t& effect = data().effectN( 1 );
-    energize_type = ENERGIZE_ON_CAST;
+    energize_type = action_energize::ON_CAST;
     energize_resource = effect.resource_gain_type();
     energize_amount = effect.resource( energize_resource );
   }
@@ -1934,7 +1934,7 @@ struct disrupt_t : public demon_hunter_spell_t
     may_miss = false;
 
     const spelleffect_data_t& effect = p->spec.disrupt_rank_2->effectN( 1 ).trigger()->effectN( 1 );
-    energize_type = ENERGIZE_ON_CAST;
+    energize_type = action_energize::ON_CAST;
     energize_resource = effect.resource_gain_type();
     energize_amount = effect.resource( energize_resource );
   }
@@ -2091,7 +2091,7 @@ struct fel_barrage_t : public demon_hunter_spell_t
       : demon_hunter_spell_t( name, p, p->talent.fel_barrage->effectN( 1 ).trigger() )
     {
       background = dual = true;
-      aoe = static_cast<int>( data().effectN( 2 ).base_value() );
+      aoe = as<int>( data().effectN( 2 ).base_value() );
     }
   };
 
@@ -3309,7 +3309,9 @@ struct blade_dance_base_t : public demon_hunter_attack_t
       last_attack( false )
     {
       background = dual = true;
-      aoe = -1;
+      // Based on beta testing, it appears all spells are affected by the 5 target limit
+      // This includes Death Sweep even though the tooltip does not indicate this
+      aoe = as<int>( p->find_spell( 199552 )->effectN( 1 ).base_value() );
     }
 
     double composite_da_multiplier( const action_state_t* s ) const override

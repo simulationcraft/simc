@@ -190,7 +190,7 @@ struct purge_the_wicked_t final : public priest_spell_t
     {
       may_crit = true;
       // tick_zero = false;
-      energize_type = ENERGIZE_NONE;  // disable resource generation from spell data
+      energize_type = action_energize::NONE;  // disable resource generation from spell data
       background    = true;
     }
 
@@ -220,7 +220,7 @@ struct purge_the_wicked_t final : public priest_spell_t
     parse_options( options_str );
 
     may_crit       = true;
-    energize_type  = ENERGIZE_NONE;  // disable resource generation from spell data
+    energize_type  = action_energize::NONE;  // disable resource generation from spell data
     execute_action = new purge_the_wicked_dot_t( p );
   }
 };

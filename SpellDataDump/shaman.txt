@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35360 shadowlands-BETA (hotfix 2020-08-04/35360, git build shadowlands e7d93195b6)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35432 shadowlands-BETA (git build shadowlands 718abb059b)
 
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -9839,7 +9839,7 @@ Attributes       : .......x ........ ..x..... ........   ........ ........ .....
                  : Hidden (7)
 Effects          :
 #1 (id=806487)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 326 | Scaled Value: 1333 | Points Per Level: 19 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Imbue your weapon with the element of Fire for $d, causing each of your attacks to deal ${$max(($<coeff>*$AP),1)} additional Fire damage.
 Tooltip          : Each of your weapon attacks causes up to ${$max(($<coeff>*$AP),1)} additional Fire damage.
 Variables        : $coeff=${0.0264}

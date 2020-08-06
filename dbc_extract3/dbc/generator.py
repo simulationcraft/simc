@@ -1499,7 +1499,8 @@ class SpellDataGenerator(DataGenerator):
           ( 206685, 0 ), # BM Spitting Cobra Cobra Spit
           ( 324156, 0 ), # Flayer's Mark (Covenenat)
           ( 328757, 0 ), # Wild Spirits (Covenenat)
-          ( 339928, 2 ), ( 339929, 2 ) # Brutal Projectiles (Conduit)
+          ( 339928, 2 ), ( 339929, 2 ), # Brutal Projectiles (Conduit)
+          ( 341223, 3 ), # Strength of the Pack (Conduit)
         ),
 
         # Rogue:
@@ -1538,6 +1539,7 @@ class SpellDataGenerator(DataGenerator):
             ( 282449, 0 ),          # Secret Technique clone attack
             ( 130493, 0 ),          # Nightstalker dmg increase driver
             ( 227151, 0 ),          # Symbols of Death Rank 2 autocrit buff
+            ( 328082, 0 ),          # Eviscerate rank 2 shadow damage spell
         ),
 
         # Priest:
@@ -1679,6 +1681,8 @@ class SpellDataGenerator(DataGenerator):
           ( 327478, 0 ),                            # Freezing Winds
           ( 327368, 0 ),                            # Disciplinary Command (Fire tracker)
           ( 327369, 0 ),                            # Disciplinary Command (Arcane tracker)
+          ( 336889, 0 ),                            # Nether Precision
+          ( 337090, 0 ),                            # Siphoned Malice
         ),
 
         # Warlock:
@@ -1881,6 +1885,7 @@ class SpellDataGenerator(DataGenerator):
           ( 333105, 1 ), # Sigil of the Illidari Legendary fake Fel Eruption aura
           ( 333110, 1 ), # Sigil of the Illidari Legendary fake Fel Eruption damage trigger
           ( 333120, 1 ), # Sigil of the Illidari Legendary fake Fel Eruption heal
+          ( 339229, 0 ), # Serrated Glaive conduit debuff
 
           # Vengeance
           ( 203557, 2 ), # Felblade proc rate
