@@ -293,6 +293,7 @@ public:
     buff_t* the_first_dance;
 
     // Legendary
+    buff_t* deathly_shadows;
     buff_t* master_assassins_mark;
     buff_t* master_assassins_mark_aura;
     buff_t* the_rotten;
@@ -356,6 +357,7 @@ public:
 
     // Legendary
     gain_t* dashing_scoundrel;
+    gain_t* deathly_shadows;
     gain_t* the_rotten;
   } gains;
 
@@ -551,6 +553,7 @@ public:
     // Legendary Items
     item_runeforge_t akaaris_soul_fragment;
     item_runeforge_t dashing_scoundrel;
+    item_runeforge_t deathly_shadows;
     item_runeforge_t master_assassins_mark;
     item_runeforge_t the_rotten;
 
@@ -910,6 +913,7 @@ public:
     damage_affect_data symbols_of_death;
     damage_affect_data shadow_dance;
     damage_affect_data elaborate_planning;
+    damage_affect_data deathly_shadows;
   } affected_by;
 
   // Init =====================================================================
@@ -959,9 +963,11 @@ public:
     parse_damage_affecting_spell( p->spec.broadside, affected_by.broadside );
     parse_damage_affecting_spell( p->spec.symbols_of_death, affected_by.symbols_of_death );
     parse_damage_affecting_spell( p->spec.shadow_dance, affected_by.shadow_dance );
-    parse_damage_affecting_spell( p->talent.elaborate_planning -> effectN( 1 ).trigger(), affected_by.elaborate_planning );
+    parse_damage_affecting_spell( p->talent.elaborate_planning->effectN( 1 ).trigger(), affected_by.elaborate_planning );
     if ( p->talent.nightstalker->ok() )
       parse_damage_affecting_spell( p->spell.nightstalker_dmg_amp, affected_by.nightstalker_dmg_amp );
+    if ( p->legendary.deathly_shadows->ok() )
+      parse_damage_affecting_spell( p->legendary.deathly_shadows->effectN( 1 ).trigger(), affected_by.deathly_shadows );
   }
 
   // Type Wrappers ============================================================
@@ -1239,6 +1245,10 @@ public:
     }
 
     // General
+    if ( affected_by.deathly_shadows.direct && p()->buffs.deathly_shadows->up() )
+    {
+      m *= 1.0 + affected_by.deathly_shadows.direct_percent;
+    }
 
     // Apply Nightstalker direct damage increase via the corresponding driver spell.
     // And yes, this can cause double dips with the persistent multiplier on DoTs which is the case with Crimson Tempest.
@@ -1289,6 +1299,12 @@ public:
     if ( affected_by.broadside.periodic && p()->buffs.broadside->up() )
     {
       m *= 1.0 + affected_by.broadside.periodic_percent;
+    }
+
+    // General
+    if ( affected_by.deathly_shadows.periodic && p()->buffs.deathly_shadows->up() )
+    {
+      m *= 1.0 + affected_by.deathly_shadows.periodic_percent;
     }
 
     return m;
@@ -2094,6 +2110,12 @@ struct melee_t : public rogue_attack_t
     if ( p()->buffs.elaborate_planning->up() )
     {
       m *= 1.0 + p()->buffs.elaborate_planning->data().effectN( 3 ).percent();
+    }
+
+    // General
+    if ( p()->buffs.deathly_shadows->up() )
+    {
+      m *= 1.0 + p()->buffs.deathly_shadows->data().effectN( 4 ).percent();
     }
 
     return m;
@@ -4108,6 +4130,11 @@ struct vanish_t : public rogue_spell_t
 
     p()->buffs.vanish->trigger();
     p()->cancel_auto_attack();
+
+    if ( p()->buffs.deathly_shadows->trigger() )
+    {
+      trigger_combo_point_gain( as<int>( p()->buffs.deathly_shadows->data().effectN( 3 ).base_value() ), p()->gains.deathly_shadows );
+    }
   }
 
   bool ready() override
@@ -7047,10 +7074,22 @@ void rogue_t::init_spells()
 
   // Legendary Items ========================================================
 
-  legendary.akaaris_soul_fragment   = find_runeforge_legendary( "Akaari's Soul Fragment" );
-  legendary.dashing_scoundrel       = find_runeforge_legendary( "Dashing Scoundrel" );
-  legendary.master_assassins_mark   = find_runeforge_legendary( "Mark of the Master Assassin" );
-  legendary.the_rotten              = find_runeforge_legendary( "The Rotten" );
+  // Generic
+  legendary.master_assassins_mark     = find_runeforge_legendary( "Mark of the Master Assassin" );
+
+  // Assassination
+  legendary.dashing_scoundrel         = find_runeforge_legendary( "Dashing Scoundrel" );
+
+  // Subtlety
+  legendary.akaaris_soul_fragment     = find_runeforge_legendary( "Akaari's Soul Fragment" );
+  legendary.deathly_shadows           = find_runeforge_legendary( "Deathly Shadows" ); // Not currently marked as a "generic" legendary
+  legendary.the_rotten                = find_runeforge_legendary( "The Rotten" );
+
+  // Spell Setup
+  if ( legendary.dashing_scoundrel->ok() )
+  {
+    legendary.dashing_scoundrel_gain = find_spell( 340426 )->effectN( 1 ).resource( RESOURCE_ENERGY );
+  }
 
   if ( legendary.akaaris_soul_fragment->ok() )
   {
@@ -7058,11 +7097,6 @@ void rogue_t::init_spells()
     active.akaaris_soul_fragment = get_secondary_trigger_action<actions::shadowstrike_t>( TRIGGER_AKAARIS_SOUL_FRAGMENT, "shadowstrike_akaaris_soul_fragment" );
     active.akaaris_soul_fragment->base_multiplier *= legendary.akaaris_soul_fragment->effectN( 2 ).percent();
     // TOCHECK: Check if this is a real cast or a subspell, check if it generates CP
-  }
-
-  if ( legendary.dashing_scoundrel->ok() )
-  {
-    legendary.dashing_scoundrel_gain = find_spell( 340426 )->effectN( 1 ).resource( RESOURCE_ENERGY );
   }
 
   // Active Spells = ========================================================
@@ -7127,6 +7161,7 @@ void rogue_t::init_gains()
   gains.memory_of_lucid_dreams   = get_gain( "Memory of Lucid Dreams"   );
   gains.dashing_scoundrel        = get_gain( "Dashing Scoundrel"        );
   gains.the_rotten               = get_gain( "The Rotten"               );
+  gains.deathly_shadows          = get_gain( "Deathly Shadows"          );
 }
 
 // rogue_t::init_procs ======================================================
@@ -7370,6 +7405,9 @@ void rogue_t::create_buffs()
                                              -> add_stat( STAT_HASTE_RATING, azerite.the_first_dance.value() );
 
   // Legendary Items ========================================================
+
+  buffs.deathly_shadows = make_buff( this, "deathly_shadows", legendary.deathly_shadows->effectN( 1 ).trigger() )
+    ->set_default_value( legendary.deathly_shadows->effectN( 1 ).trigger()->effectN( 1 ).percent() );
 
   const spell_data_t* master_assassins_mark = legendary.master_assassins_mark->ok() ? find_spell( 340094 ) : spell_data_t::not_found();
   buffs.master_assassins_mark_aura = make_buff( this, "master_assassins_mark_aura", master_assassins_mark )
