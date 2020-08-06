@@ -203,6 +203,7 @@ public:
     actions::rogue_spell_t* replicating_shadows = nullptr;
     actions::shadow_blades_attack_t* shadow_blades_attack = nullptr;
     actions::rogue_attack_t* akaaris_soul_fragment = nullptr;
+    actions::rogue_attack_t* bloodfang = nullptr;
     struct
     {
       actions::rogue_attack_t* backstab = nullptr;
@@ -551,7 +552,7 @@ public:
   struct legendary_t
   {
     // Generic
-    item_runeforge_t essence_of_bloodfang;    // NYI
+    item_runeforge_t essence_of_bloodfang;
     item_runeforge_t master_assassins_mark;
     item_runeforge_t tiny_toxic_blades;       // NYI
     item_runeforge_t invigorating_shadowdust; // NYI
@@ -1190,6 +1191,7 @@ public:
   void trigger_find_weakness( const action_state_t* state, timespan_t duration = timespan_t::min() );
   void trigger_grand_melee( const action_state_t* state );
   void trigger_akaaris_soul_fragment( const action_state_t* state );
+  void trigger_bloodfang( const action_state_t* state );
 
   // General Methods ==========================================================
 
@@ -2004,6 +2006,7 @@ void rogue_attack_t::impact( action_state_t* state )
   trigger_combat_potency( state );
   trigger_blade_flurry( state );
   trigger_shadow_blades_attack( state );
+  trigger_bloodfang( state ); // TOCHECK: Is this on impact or execute?
 
   if ( result_is_hit( state->result ) )
   {
@@ -4374,6 +4377,15 @@ struct poisoned_knife_t : public rogue_attack_t
   { return 1.0; }
 };
 
+// Bloodfang Legendary ======================================================
+
+struct bloodfang_t : public rogue_attack_t
+{
+  bloodfang_t( util::string_view name, rogue_t* p ) :
+    rogue_attack_t( name, p, p->legendary.essence_of_bloodfang->effectN( 1 ).trigger() )
+  {}
+};
+
 // ==========================================================================
 // Cancel AutoAttack
 // ==========================================================================
@@ -5864,6 +5876,22 @@ void actions::rogue_action_t<Base>::trigger_akaaris_soul_fragment( const action_
   p()->active.akaaris_soul_fragment->trigger_secondary_action( state->target, 0, p()->legendary.akaaris_soul_fragment_delay );
 }
 
+template <typename Base>
+void actions::rogue_action_t<Base>::trigger_bloodfang( const action_state_t* state )
+{
+  if ( !ab::result_is_hit( state->result ) || !p()->legendary.essence_of_bloodfang->ok() || !p()->active.bloodfang )
+    return;
+
+  if ( ab::energize_type == action_energize::NONE || ab::energize_resource != RESOURCE_COMBO_POINT )
+    return;
+
+  if ( !p()->rng().roll( p()->legendary.essence_of_bloodfang->proc_chance() ) )
+    return;
+
+  p()->active.bloodfang->set_target( state->target );
+  p()->active.bloodfang->execute();
+}
+
 // ==========================================================================
 // Rogue Targetdata Definitions
 // ==========================================================================
@@ -7117,6 +7145,11 @@ void rogue_t::init_spells()
   legendary.the_rotten                = find_runeforge_legendary( "The Rotten" );
 
   // Spell Setup
+  if ( legendary.essence_of_bloodfang->ok() )
+  {
+    active.bloodfang = get_background_action<actions::bloodfang_t>( "bloodfang" );
+  }
+
   if ( legendary.dashing_scoundrel->ok() )
   {
     legendary.dashing_scoundrel_gain = find_spell( 340426 )->effectN( 1 ).resource( RESOURCE_ENERGY );
