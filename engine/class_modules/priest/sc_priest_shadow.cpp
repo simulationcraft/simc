@@ -1340,6 +1340,7 @@ struct voidform_t final : public priest_buff_t<buff_t>
 
     if (priest().talents.legacy_of_the_void->ok())
     {
+      // If LotV is talented, VF ends by Insanity drained, not time
       set_duration( timespan_t::from_seconds(100) );
     }
   }
@@ -1637,6 +1638,11 @@ void priest_t::insanity_state_t::reset()
 /// Compute insanity drain per second with current state of the actor
 double priest_t::insanity_state_t::insanity_drain_per_second() const
 {
+  if ( ! actor.talents.legacy_of_the_void->ok() )
+  {
+    return true;
+  }
+
   if ( actor.buffs.voidform->check() == 0 )
   {
     return 0;
@@ -1973,10 +1979,6 @@ action_t* priest_t::create_action_shadow( util::string_view name, util::string_v
 /// Indicates whether insanity drain is reduced by 100%.
 bool priest_t::insanity_drain_frozen() const
 {
-  if ( buffs.void_torrent->check() )
-  {
-    return true;
-  }
 
   if ( buffs.dispersion->no_insanty_drain && buffs.dispersion->check() )
   {
