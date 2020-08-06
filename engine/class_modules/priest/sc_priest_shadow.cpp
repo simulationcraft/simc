@@ -100,8 +100,8 @@ public:
   void schedule_execute( action_state_t* s ) override
   {
     priest_spell_t::schedule_execute( s );
-
-    priest().buffs.shadowy_insight->expire();
+    /// TODO Check when implementing Dark Thoughts
+    // priest().buffs.shadowy_insight->expire();
   }
 
   void execute() override
