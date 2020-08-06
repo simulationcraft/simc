@@ -403,13 +403,12 @@ struct shadow_word_death_t final : public priest_spell_t
 
     cooldown->hasted = true;
 
-    energize_type     = action_energize::ON_HIT;
-    energize_resource = RESOURCE_INSANITY;
-    energize_amount   = data().effectN( 3 ).base_value();
     if ( priest().legendary.painbreaker_psalm->ok() )
     {
       // TODO: Check if this ever gets un-hardcoded for (336165)
-      energize_amount += 10;
+      energize_type = action_energize::ON_HIT;
+      energize_resource = RESOURCE_INSANITY;
+      energize_amount = 10;
     }
   }
 
