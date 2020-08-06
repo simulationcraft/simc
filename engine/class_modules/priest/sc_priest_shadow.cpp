@@ -142,10 +142,11 @@ public:
 
   timespan_t execute_time() const override
   {
-    if ( priest().buffs.shadowy_insight->check() )
-    {
-      return timespan_t::zero();
-    }
+    /// TODO Remove when implementing Dark Thoughts
+    //if ( priest().buffs.shadowy_insight->check() )
+    //{
+    //  return timespan_t::zero();
+    //}
 
     return priest_spell_t::execute_time();
   }
