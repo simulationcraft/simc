@@ -3451,6 +3451,15 @@ struct melee_focus_spender_t: hunter_melee_attack_t
 
       debuff -> expire();
     }
+
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      double m = hunter_spell_t::composite_da_multiplier( s );
+
+      m *= td( target ) -> debuffs.latent_poison_injection -> check_stack_value();
+
+      return m;
+    }
   };
 
   internal_bleeding_t internal_bleeding;
