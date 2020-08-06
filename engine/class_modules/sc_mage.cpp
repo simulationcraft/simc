@@ -6640,6 +6640,9 @@ void mage_t::init_finished()
 
 void mage_t::init_action_list()
 {
+  // TODO: Default APLs are NYI
+  return player_t::init_action_list();
+
   if ( action_list_str.empty() )
   {
     clear_action_priority_lists();
