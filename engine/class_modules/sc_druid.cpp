@@ -1762,10 +1762,7 @@ public:
   // 4: Add Percent Modifier to Spell Cooldown
   // 5: Add Percent Modifier to Spell Resource Cost
   // 6: Add Flat Modifier to Spell Critical Chance
-  void parse_buff_effects( buff_t* buff, const spell_data_t* spell = spell_data_t::nil(),
-                           const spell_data_t* spell2 = spell_data_t::nil(),
-                           const spell_data_t* spell3 = spell_data_t::nil(),
-                           const spell_data_t* spell4 = spell_data_t::nil() )
+  void parse_buff_effects( buff_t* buff, std::initializer_list<const spell_data_t*> spells = {} )
   {
     if ( !buff )
       return;
@@ -1792,17 +1789,10 @@ public:
 
       if ( i <= 5 )
       {
-        if ( spell->ok() )
-          parse_rank_spell_effects( val, mastery, s_data, i, spell );
-
-        if ( spell2->ok() )
-          parse_rank_spell_effects( val, mastery, s_data, i, spell2 );
-
-        if ( spell3->ok() )
-          parse_rank_spell_effects( val, mastery, s_data, i, spell3 );
-
-        if ( spell4->ok() )
-          parse_rank_spell_effects( val, mastery, s_data, i, spell4 );
+        for ( auto sp : spells )
+        {
+          parse_rank_spell_effects( val, mastery, s_data, i, sp );
+        }
       }
 
       if ( !mastery && !val )
@@ -1868,9 +1858,11 @@ public:
     return return_value;
   }
 
+  // Syntax: parse_buff_effects( <buff_t*>[, {spell_data_t*[, ...]}] )
   virtual void apply_buff_effects()
   {
-    parse_buff_effects( p()->buff.ravenous_frenzy, p()->conduit.venthyr );
+    parse_buff_effects( p()->buff.ravenous_frenzy,
+                        { p()->conduit.venthyr } );
     parse_buff_effects( p()->buff.heart_of_the_wild );
 
     // Balance
@@ -1883,13 +1875,19 @@ public:
     parse_buff_effects( p()->buff.oneths_free_starfall );
     parse_buff_effects( p()->buff.oneths_free_starsurge );
     parse_buff_effects( p()->buff.timeworn_dreamcatcher );
-    parse_buff_effects( p()->buff.eclipse_lunar, p()->mastery.total_eclipse, p()->spec.eclipse_2,
-                        p()->talent.soul_of_the_forest_moonkin );
-    parse_buff_effects( p()->buff.eclipse_solar, p()->mastery.total_eclipse, p()->spec.eclipse_2,
-                        p()->talent.soul_of_the_forest_moonkin, p()->conduit.balance_4 );
+    parse_buff_effects( p()->buff.eclipse_lunar,
+                        { p()->mastery.total_eclipse,
+                          p()->spec.eclipse_2,
+                          p()->talent.soul_of_the_forest_moonkin } );
+    parse_buff_effects( p()->buff.eclipse_solar,
+                        { p()->mastery.total_eclipse,
+                          p()->spec.eclipse_2,
+                          p()->talent.soul_of_the_forest_moonkin,
+                          p()->conduit.balance_4 } );
 
     // Guardian
-    parse_buff_effects( p()->buff.berserk_bear, p()->legendary.legacy_of_the_sleeper );
+    parse_buff_effects( p()->buff.berserk_bear,
+                        { p()->legendary.legacy_of_the_sleeper } );
     parse_buff_effects( p()->buff.incarnation_bear );
     parse_buff_effects( p()->buff.sharpened_claws );
 
