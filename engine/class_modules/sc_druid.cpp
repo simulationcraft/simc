@@ -10189,6 +10189,12 @@ std::unique_ptr<expr_t> druid_t::create_expression( util::string_view name_str )
     }
   }
 
+  if ( splits.size() == 2 && util::str_compare_ci( splits[ 0 ], "conduit" ) )
+  {
+    auto a = find_spell( std::atoi( splits[ 1 ].data() ) )->ok();
+    return make_fn_expr( name_str, [a]() { return a; } );
+  }
+
   // Convert talent.incarnation.* & buff.incarnation.* to spec-based incarnations. cooldown.incarnation.* doesn't need
   // name conversion.
   if ( splits.size() == 3 && util::str_compare_ci( splits[ 1 ], "incarnation" )
