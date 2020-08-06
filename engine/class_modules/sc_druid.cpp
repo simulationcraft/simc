@@ -8049,7 +8049,7 @@ void druid_t::init_spells()
   conduit.feral_4 = fake_conduit_spell( 340705 );
 
   conduit.guardian_1 = fake_conduit_spell( 340552 );
-  conduit.guardian_1 = fake_conduit_spell( 340609 );
+  conduit.guardian_2 = fake_conduit_spell( 340609 );
 
   conduit.kyrian    = fake_conduit_spell( 340609 );
   conduit.necrolord = fake_conduit_spell( 341447 );
@@ -8549,7 +8549,7 @@ void druid_t::create_buffs()
   buff.sharpened_claws       = make_buff( this, "sharpened_claws", find_spell( 279943 ) )
                                -> set_default_value( find_spell( 279943 ) -> effectN( 1 ).percent() );
 
-  buff.guardian_2 = make_buff( this, "guardian_3", conduit.guardian_2->effectN( 1 ).trigger() )
+  buff.guardian_2 = make_buff( this, "guardian_2", conduit.guardian_2->effectN( 1 ).trigger() )
     ->set_default_value( conduit.guardian_2->effectN( 1 ).percent() );
 
   // Restoration
