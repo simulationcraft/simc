@@ -111,8 +111,7 @@ public:
 
     // Shadow
     propagate_const<buffs::dispersion_t*> dispersion;
-    propagate_const<buff_t*> insanity_drain_stacks;
-    propagate_const<buff_t*> lingering_insanity;
+    propagate_const<buff_t*> insanity_drain_stacks; 
     propagate_const<buff_t*> shadowform;
     propagate_const<buff_t*> shadowform_state;  // Dummy buff to track whether player entered Shadowform initially
     propagate_const<buff_t*> shadowy_insight;
@@ -203,13 +202,13 @@ public:
     // Shadow
     // T15
     const spell_data_t* fortress_of_the_mind;
-    const spell_data_t* shadowy_insight;
-    const spell_data_t* shadow_word_void;
+    const spell_data_t* death_and_madness;
+    const spell_data_t* unfurling_darkness;
     // T25
     const spell_data_t* sanlayn;        // NYI
     const spell_data_t* intangibility;  // NYI
     // T30
-    const spell_data_t* dark_void;
+    const spell_data_t* searing_nightmare; // NYI
     const spell_data_t* misery;
     // T35
     const spell_data_t* last_word;
@@ -217,14 +216,14 @@ public:
     const spell_data_t* psychic_horror;
     // T40
     const spell_data_t* auspicious_spirits;
-    const spell_data_t* death_and_madness;
+    const spell_data_t* psychic_link;     // NYI    
     const spell_data_t* shadow_crash;
-    // T45
-    const spell_data_t* lingering_insanity;
+    // T45    
+    const spell_data_t* damnation;
     const spell_data_t* void_torrent;
     // T50
     const spell_data_t* legacy_of_the_void;
-    const spell_data_t* dark_ascension;
+    const spell_data_t* ancient_madness;
     const spell_data_t* surrender_to_madness;
   } talents;
 
@@ -277,6 +276,8 @@ public:
 
     // Shadow
     propagate_const<cooldown_t*> void_bolt;
+    propagate_const<cooldown_t*> mind_blast;
+    propagate_const<cooldown_t*> void_eruption;
 
     // Holy
     propagate_const<cooldown_t*> holy_word_serenity;
@@ -1064,7 +1065,7 @@ public:
         double vf_multiplier = priest().buffs.voidform->data().effectN( 1 ).percent();
         // TODO: add this directly into vf_multiplier after PTR
         // Grab the Legacy of the Void Damage increase
-        lotv_multiplier = priest().talents.legacy_of_the_void->effectN( 7 ).percent();
+        lotv_multiplier = priest().talents.legacy_of_the_void->effectN( 4 ).percent();
         m *= 1.0 + vf_multiplier + lotv_multiplier;
       }
       if ( affected_by.shadowform_da && priest().buffs.shadowform->check() )

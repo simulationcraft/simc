@@ -934,6 +934,8 @@ void priest_t::create_cooldowns()
   cooldowns.holy_fire          = get_cooldown( "holy_fire" );
   cooldowns.holy_word_serenity = get_cooldown( "holy_word_serenity" );
   cooldowns.void_bolt          = get_cooldown( "void_bolt" );
+  cooldowns.mind_blast         = get_cooldown( "mind_blast");
+  cooldowns.void_eruption      = get_cooldown( "void_eruption");
 }
 
 /** Construct priest gains */
@@ -954,7 +956,7 @@ void priest_t::create_gains()
   gains.insanity_death_and_madness             = get_gain( "Insanity Gained from Death and Madness" );
   gains.shadow_word_death_self_damage          = get_gain( "Shadow Word: Death self inflicted damage" );
   gains.insanity_mindgames                     = get_gain( "Insanity Gained from Mindgames" );
-  gains.insanity_eternal_call_to_the_void = get_gain( "Insanity Gained from Eternal Call to the Void Mind Flay's" );
+  gains.insanity_eternal_call_to_the_void = get_gain( "Insanity Gained from Eternal Call to the Void Mind Flays" );
 }
 
 /** Construct priest procs */
@@ -1062,16 +1064,6 @@ double priest_t::composite_spell_haste() const
   if ( buffs.power_infusion->check() )
     h /= 1.0 + buffs.power_infusion->data().effectN( 1 ).percent();
 
-  if ( buffs.lingering_insanity->check() )
-  {
-    h /= 1.0 + ( buffs.lingering_insanity->check() ) * buffs.lingering_insanity->data().effectN( 1 ).percent();
-  }
-
-  if ( buffs.voidform->check() )
-  {
-    h /= 1.0 + ( buffs.voidform->check() * find_spell( 228264 )->effectN( 2 ).percent() / 10.0 );
-  }
-
   return h;
 }
 
@@ -1082,16 +1074,6 @@ double priest_t::composite_melee_haste() const
   // TODO: Wait for spell data to see where this effect is
   if ( buffs.power_infusion->check() )
     h /= 1.0 + buffs.power_infusion->data().effectN( 1 ).percent();
-
-  if ( buffs.lingering_insanity->check() )
-  {
-    h /= 1.0 + ( buffs.lingering_insanity->check() - 1 ) * buffs.lingering_insanity->data().effectN( 1 ).percent();
-  }
-
-  if ( buffs.voidform->check() )
-  {
-    h /= 1.0 + ( buffs.voidform->check() * find_spell( 228264 )->effectN( 2 ).percent() / 10.0 );
-  }
 
   return h;
 }
