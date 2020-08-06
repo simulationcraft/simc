@@ -851,8 +851,8 @@
     "fields": [
       { "data_type": "i", "field": "id" },
       { "data_type": "i", "field": "type", "formats": { "cpp": "%1u" } },
-      { "data_type": "i", "field": "unk_0" },
-      { "data_type": "i", "field": "unk_1" }
+      { "data_type": "i", "field": "id_covenant", "ref": "Covenant" },
+      { "data_type": "i", "field": "id_spec_set" }
     ]
   },
   "SoulbindConduitItem": {
