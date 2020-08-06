@@ -2689,18 +2689,15 @@ struct eviscerate_t : public rogue_attack_t
 
   void execute() override
   {
-    // Currently triggered before regular Eviscerate. Also triggers always, no matter whether Find Weakness is applied.
-    if ( bonus_attack && ( p()->bugs || td( target )->debuffs.find_weakness->up() ) )
-    {
-      bonus_attack->set_target( target );
-      bonus_attack->execute();
-    }
-
     rogue_attack_t::execute();
     p() -> buffs.nights_vengeance -> expire();
 
-    if ( bonus_attack )
+    if ( bonus_attack && td( target )->debuffs.find_weakness->up() )
+    {
       bonus_attack->last_eviscerate_cp = cast_state( execute_state )->cp;
+      bonus_attack->set_target( target );
+      bonus_attack->execute();
+    }
   }
 };
 
