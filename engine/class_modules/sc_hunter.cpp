@@ -318,7 +318,7 @@ public:
     conduit_data_t ferocious_appetite;
     conduit_data_t one_with_the_beast;
     // Marksmanship
-    conduit_data_t brutal_projectiles; // NYI
+    conduit_data_t brutal_projectiles;
     conduit_data_t deadly_chain;
     conduit_data_t powerful_precision;
     conduit_data_t sharpshooters_focus;
@@ -397,6 +397,8 @@ public:
     buff_t* secrets_of_the_vigil;
 
     // Conduits
+    buff_t* brutal_projectiles;
+    buff_t* brutal_projectiles_hidden;
     buff_t* flame_infusion;
     buff_t* strength_of_the_pack;
 
@@ -2448,6 +2450,8 @@ struct auto_shot_t : public auto_attack_base_t<ranged_attack_t>
       p() -> cooldowns.barbed_shot -> reset( true );
       p() -> procs.wild_call -> occur();
     }
+
+    p() -> buffs.brutal_projectiles -> trigger();
   }
 };
 
@@ -3187,6 +3191,15 @@ struct rapid_fire_t: public hunter_spell_t
         p() -> resource_gain( RESOURCE_FOCUS, focused_fire.amount, focused_fire.gain, this );
     }
 
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      double m = hunter_ranged_attack_t::composite_da_multiplier( s );
+
+      m *= 1 + p() -> buffs.brutal_projectiles_hidden -> check_stack_value();
+
+      return m;
+    }
+
     double bonus_da( const action_state_t* s ) const override
     {
       double b = hunter_ranged_attack_t::bonus_da( s );
@@ -3242,6 +3255,9 @@ struct rapid_fire_t: public hunter_spell_t
     hunter_spell_t::tick( d );
     damage -> set_target( d -> target );
     damage -> execute();
+
+    if ( p() -> buffs.brutal_projectiles -> up() )
+      p() -> buffs.brutal_projectiles_hidden -> trigger();
   }
 
   void last_tick( dot_t* d ) override
@@ -3253,6 +3269,9 @@ struct rapid_fire_t: public hunter_spell_t
     if ( p() -> buffs.double_tap -> check() )
       procs.double_tap -> occur();
     p() -> buffs.double_tap -> decrement();
+
+    p() -> buffs.brutal_projectiles -> expire();
+    p() -> buffs.brutal_projectiles_hidden -> expire();
 
     // XXX: this triggers *only* after a *full* uninterrupted channel
     p() -> buffs.in_the_rhythm -> trigger();
@@ -5740,6 +5759,14 @@ void hunter_t::create_buffs()
       -> set_cooldown( 0_ms );
 
   // Conduits
+
+  buffs.brutal_projectiles =
+    make_buff( this, "brutal_projectiles", find_spell( 339928 ) )
+      -> set_chance( conduits.brutal_projectiles -> effectN( 2 ).percent() );
+
+  buffs.brutal_projectiles_hidden =
+    make_buff( this, "brutal_projectiles_hidden", find_spell( 339929 ) )
+      -> set_default_value( conduits.brutal_projectiles.percent() );
 
   buffs.flame_infusion =
     make_buff( this, "flame_infusion", find_spell( 341401 ) )
