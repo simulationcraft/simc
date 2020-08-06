@@ -3914,8 +3914,8 @@ struct blackout_kick_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::execute();
 
-    //if ( result_is_miss( execute_state->result ) )
-    //  return;
+    if ( result_is_miss( execute_state->result ) )
+      return;
 
     switch ( p()->specialization() )
     {
