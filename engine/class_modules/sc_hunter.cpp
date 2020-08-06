@@ -4847,9 +4847,12 @@ struct wildfire_bomb_t: public hunter_spell_t
       dot_action( a -> p() -> get_background_action<dot_action_t>( dot_n, dot_s ) )
     {
       dual = true;
+
       aoe = -1;
-      // XXX: It's actually a circle + cone, but we sadly can't really model that
-      radius = 5;
+      radius = 5; // XXX: It's actually a circle + cone, but we sadly can't really model that
+
+      dot_action -> aoe = aoe;
+      dot_action -> radius = radius;
 
       a -> add_child( this );
       a -> add_child( dot_action );
@@ -4859,15 +4862,17 @@ struct wildfire_bomb_t: public hunter_spell_t
     {
       hunter_spell_t::execute();
 
+      if ( num_targets_hit > 0 )
+      {
+        // Dot applies to all of the same targets hit by the main explosion
+        dot_action -> target = target;
+        dot_action -> target_cache.list = target_cache.list;
+        dot_action -> target_cache.is_valid = true;
+        dot_action -> execute();
+      }
+
       p() -> buffs.flame_infusion -> up(); // benefit tracking
       p() -> buffs.flame_infusion -> expire();
-    }
-
-    void impact( action_state_t* s ) override
-    {
-      hunter_spell_t::impact( s );
-      dot_action -> set_target( s -> target );
-      dot_action -> execute();
     }
 
     double composite_da_multiplier( const action_state_t* s ) const override
