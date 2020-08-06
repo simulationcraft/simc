@@ -949,7 +949,6 @@ void priest_t::create_gains()
   gains.insanity_pet                           = get_gain( "Insanity Gained from Shadowfiend" );
   gains.insanity_surrender_to_madness          = get_gain( "Insanity Gained from Surrender to Madness" );
   gains.insanity_wasted_surrendered_to_madness = get_gain( "Insanity Wasted from Surrendered to Madness" );
-  gains.insanity_dark_ascension                = get_gain( "Insanity Gained from Dark Ascension" );
   gains.vampiric_touch_health                  = get_gain( "Health from Vampiric Touch Ticks" );
   gains.insanity_lucid_dreams                  = get_gain( "Insanity Gained from Lucid Dreams" );
   gains.insanity_memory_of_lucid_dreams        = get_gain( "Insanity Gained from Memory of Lucid Dreams" );

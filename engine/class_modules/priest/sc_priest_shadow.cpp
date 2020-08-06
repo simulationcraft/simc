@@ -1138,51 +1138,6 @@ struct void_eruption_t final : public priest_spell_t
   }
 };
 
-struct dark_ascension_damage_t final : public priest_spell_t
-{
-  dark_ascension_damage_t( priest_t& p ) : priest_spell_t( "dark_ascension_damage", p, p.find_spell( 280800 ) )
-  {
-    background = true;
-
-    // We don't want to lose insanity when casting it!
-    // base_costs[ RESOURCE_INSANITY ] = 0;
-
-    may_miss = false;  // TODO: check
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    priest_spell_t::impact( s );
-    priest_spell_t::impact( s );
-  }
-};
-
-struct dark_ascension_t final : public priest_spell_t
-{
-  dark_ascension_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "dark_ascension", p, p.find_talent_spell( "Dark Ascension" ) )
-  {
-    parse_options( options_str );
-
-    impact_action = new dark_ascension_damage_t( p );
-    add_child( impact_action );
-
-    may_miss = false;
-    aoe      = -1;
-    radius   = data().effectN( 1 ).radius_max();
-  }
-
-  void execute() override
-  {
-    priest_spell_t::execute();
-
-    priest().buffs.voidform->expire();
-    priest().generate_insanity( data().effectN( 2 ).percent(), priest().gains.insanity_dark_ascension,
-                                execute_state->action );
-    priest().buffs.voidform->trigger();
-  }
-};
-
 struct void_torrent_t final : public priest_spell_t
 {
   void_torrent_t( priest_t& p, util::string_view options_str )
@@ -2006,10 +1961,6 @@ action_t* priest_t::create_action_shadow( util::string_view name, util::string_v
   if ( ( name == "mind_blast" ) || ( name == "shadow_word_void" ) )
   {
     return new mind_blast_t( *this, options_str );
-  }
-  if ( name == "dark_ascension" )
-  {
-    return new dark_ascension_t( *this, options_str );
   }
   if ( name == "devouring_plague" )
   {

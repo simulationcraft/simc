@@ -303,7 +303,6 @@ public:
     propagate_const<gain_t*> insanity_blessing;
     propagate_const<gain_t*> shadowy_insight;
     propagate_const<gain_t*> vampiric_touch_health;
-    propagate_const<gain_t*> insanity_dark_ascension;
     propagate_const<gain_t*> insanity_death_throes;
     propagate_const<gain_t*> power_of_the_dark_side;
     propagate_const<gain_t*> insanity_lucid_dreams;
