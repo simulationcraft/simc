@@ -2551,7 +2551,7 @@ struct crimson_tempest_t : public rogue_attack_t
   crimson_tempest_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ) :
     rogue_attack_t( name, p, p -> talent.crimson_tempest, options_str )
   {
-    aoe = -1;
+    aoe = data().effectN( 3 ).base_value();
   }
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
@@ -2743,7 +2743,7 @@ struct fan_of_knives_t: public rogue_attack_t
     rogue_attack_t( name, p, p -> find_specialization_spell( "Fan of Knives" ), options_str ),
     echoing_blades_attack( nullptr ), echoing_blades_crit_count( 0 )
   {
-    aoe = -1;
+    aoe = data().effectN( 3 ).base_value();
     energize_type     = action_energize::ON_HIT;
     energize_resource = RESOURCE_COMBO_POINT;
     // 09/25/2019 - 8.2.5 Spelldata seemingly erroneously removed this effect from the spell data
