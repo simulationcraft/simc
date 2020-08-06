@@ -433,6 +433,7 @@ public:
     // Feral Legendaries
     buff_t* feral_runecarve_2;
     buff_t* apex_predators_craving;
+    buff_t* feral_3;
 
     // Guardian
     buff_t* barkskin;
@@ -526,6 +527,7 @@ public:
     gain_t* gushing_lacerations;
     gain_t* feral_runecarve_1;
     gain_t* feral_runecarve_2;
+    gain_t* feral_2;
 
     // Guardian (Bear)
     gain_t* bear_form;
@@ -1468,7 +1470,8 @@ struct tigers_fury_buff_t : public druid_buff_t<buff_t>
 {
   tigers_fury_buff_t( druid_t& p ) : base_t( p, "tigers_fury", p.spec.tigers_fury )
   {
-    set_default_value( p.spec.tigers_fury->effectN( 1 ).percent() );
+    set_default_value( p.spec.tigers_fury->effectN( 1 ).percent() *
+                       ( 1.0 + p.conduit.feral_4->effectN( 1 ).percent() ) );
     set_cooldown( timespan_t::zero() );
   }
 
@@ -3241,6 +3244,9 @@ public:
         p()->resource_gain( RESOURCE_COMBO_POINT, p()->buff.feral_runecarve_2->check_value(),
                             p()->gain.feral_runecarve_2 );
       }
+
+      if ( p()->conduit.feral_3->ok() && rng().roll( p()->conduit.feral_3->effectN( 1 ).percent() * consumed ))
+        p()->buff.feral_3->trigger();
     }
   }
 
@@ -3248,13 +3254,8 @@ public:
   {
     double am = base_t::action_multiplier();
 
-    if ( tigers_fury && ! snapshots_tf )
-    {
-      if ( special )
-        am *= 1.0 + p() -> buff.tigers_fury -> check_value();
-      else
-        am *= 1.0 + p() -> buff.tigers_fury -> data().effectN( 4 ).percent();
-    }
+    if ( tigers_fury && !snapshots_tf )
+      am *= 1.0 + p()->buff.tigers_fury->check_value();
 
     return am;
   }
@@ -3760,6 +3761,25 @@ struct ferocious_bite_t : public cat_attack_t
     cat_attack_t::consume_resource();
   }
 
+  double composite_target_multiplier( player_t* t ) const override
+  {
+    double tm = cat_attack_t::composite_target_multiplier( t );
+
+    if ( p()->conduit.feral_1->ok() )
+    {
+        int bleeds = 0;
+        auto t_td = td( t );
+
+        if ( t_td->dots.rake->is_ticking() ) { bleeds++; }
+        if ( t_td->dots.rip->is_ticking() ) { bleeds++; }
+        if ( t_td->dots.thrash_cat->is_ticking() ) { bleeds++; }
+
+        tm *= 1.0 + p()->conduit.feral_1->effectN( 1 ).percent() * bleeds;
+    }
+
+    return tm;
+  }
+
   double action_multiplier() const override
   {
     double am = cat_attack_t::action_multiplier();
@@ -4024,7 +4044,7 @@ struct rake_t : public cat_attack_t
   {
     double pm = cat_attack_t::composite_persistent_multiplier( s );
 
-    if ( stealthed() )
+    if ( stealthed() || p()->buff.feral_3->check() )
       pm *= 1.0 + stealth_mul;
 
     return pm;
@@ -4050,6 +4070,9 @@ struct rake_t : public cat_attack_t
     {
       p()->buff.raking_ferocity->trigger( 1, p()->azerite.raking_ferocity.value() );
     }
+
+    if ( p()->buff.feral_3->up() )
+      p()->buff.feral_3->decrement();
   }
 };
 
@@ -4121,6 +4144,12 @@ struct rip_t : public cat_attack_t
      {
        p()->resource_gain( RESOURCE_COMBO_POINT, 1, p()->gain.gushing_lacerations );
        p()->proc.gushing_lacerations->occur();
+    }
+
+    if ( p()->conduit.feral_2->ok() && rng().roll( p()->conduit.feral_2->effectN( 1 ).percent() ) )
+    {
+      p()->resource_gain( RESOURCE_ENERGY, p()->conduit.feral_2->effectN( 1 ).trigger()->effectN( 1 ).base_value(),
+                          p()->gain.feral_2 );
     }
   }
 };
@@ -4289,6 +4318,8 @@ struct shred_t : public cat_attack_t
     if ( p()->buff.shredding_fury->up() )
       p()->buff.shredding_fury->decrement();
 
+    if ( p()->buff.feral_3->up() )
+      p()->buff.feral_3->decrement();
   }
 
   double bonus_da( const action_state_t* s ) const override
@@ -4333,7 +4364,7 @@ struct shred_t : public cat_attack_t
   {
     double m = cat_attack_t::action_multiplier();
 
-    if ( stealthed() )
+    if ( stealthed() || p()->buff.feral_3->check() )
       m *= 1.0 + stealth_mul;
 
     return m;
@@ -7989,7 +8020,7 @@ void druid_t::init_spells()
   conduit.balance_4 = fake_conduit_spell( 340719 );
 
   conduit.feral_1 = fake_conduit_spell( 340682 );
-  conduit.feral_2 = fake_conduit_spell( 340688 );
+  conduit.feral_2 = fake_conduit_spell( 340686 );
   conduit.feral_3 = fake_conduit_spell( 340694 );
   conduit.feral_4 = fake_conduit_spell( 340705 );
 
@@ -8415,6 +8446,8 @@ void druid_t::create_buffs()
   buff.apex_predators_craving =
       make_buff( this, "apex_predators_craving", legendary.apex_predators_craving->effectN( 1 ).trigger() )
           ->set_chance( legendary.apex_predators_craving->effectN( 1 ).percent() );
+
+  buff.feral_3 = make_buff( this, "feral_3", conduit.feral_3->effectN( 1 ).trigger() );
 
   buff.berserk_cat = new berserk_cat_buff_t( *this );
 
