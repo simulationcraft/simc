@@ -295,7 +295,7 @@ public:
     // Legendary
     buff_t* master_assassins_mark;
     buff_t* master_assassins_mark_aura;
-
+    buff_t* the_rotten;
   } buffs;
 
   // Cooldowns
@@ -356,6 +356,7 @@ public:
 
     // Legendary
     gain_t* dashing_scoundrel;
+    gain_t* the_rotten;
   } gains;
 
   // Spec passives
@@ -551,6 +552,7 @@ public:
     item_runeforge_t akaaris_soul_fragment;
     item_runeforge_t dashing_scoundrel;
     item_runeforge_t master_assassins_mark;
+    item_runeforge_t the_rotten;
 
     // Legendary Values
     timespan_t akaaris_soul_fragment_delay;
@@ -2297,6 +2299,11 @@ struct backstab_t : public rogue_attack_t
         p() -> cooldowns.shadow_blades -> adjust( v, false );
       }
     }
+
+    if ( p()->buffs.the_rotten->up() )
+    {
+      trigger_combo_point_gain( as<int>( p()->buffs.the_rotten->data().effectN( 2 ).base_value() ), p()->gains.the_rotten );
+    }
   }
 
   void impact( action_state_t* state ) override
@@ -2962,6 +2969,11 @@ struct gloomblade_t : public rogue_attack_t
         timespan_t v = - p() -> azerite.perforate.spell_ref().effectN( 2 ).time_value();
         p() -> cooldowns.shadow_blades -> adjust( v, false );
       }
+    }
+
+    if ( p()->buffs.the_rotten->up() )
+    {
+      trigger_combo_point_gain( as<int>( p()->buffs.the_rotten->data().effectN( 2 ).base_value() ), p()->gains.the_rotten );
     }
   }
 
@@ -3716,6 +3728,11 @@ struct shadowstrike_t : public rogue_attack_t
     rogue_attack_t::execute();
 
     p() -> buffs.blade_in_the_shadows -> trigger();
+
+    if ( p()->buffs.the_rotten->up() )
+    {
+      trigger_combo_point_gain( as<int>( p()->buffs.the_rotten->data().effectN( 1 ).base_value() ), p()->gains.the_rotten );
+    }
   }
 
   void impact( action_state_t* state ) override
@@ -4046,9 +4063,12 @@ struct symbols_of_death_t : public rogue_spell_t
   void execute() override
   {
     rogue_spell_t::execute();
+    
     p()->buffs.symbols_of_death->trigger();
     if ( p()->spec.symbols_of_death_2->ok() )
       p()->buffs.symbols_of_death_autocrit->trigger();
+    
+    p()->buffs.the_rotten->trigger();
   }
 };
 
@@ -4832,6 +4852,7 @@ struct stealth_like_buff_t : public buff_t
       rogue->buffs.master_assassin_aura->trigger();
     }
 
+    // TOCHECK: See if this triggers on stealth_like_buff or just Stealth/Vanish
     if ( rogue->legendary.master_assassins_mark->ok() )
     {
       rogue->buffs.master_assassins_mark->expire();
@@ -7029,6 +7050,7 @@ void rogue_t::init_spells()
   legendary.akaaris_soul_fragment   = find_runeforge_legendary( "Akaari's Soul Fragment" );
   legendary.dashing_scoundrel       = find_runeforge_legendary( "Dashing Scoundrel" );
   legendary.master_assassins_mark   = find_runeforge_legendary( "Mark of the Master Assassin" );
+  legendary.the_rotten              = find_runeforge_legendary( "The Rotten" );
 
   if ( legendary.akaaris_soul_fragment->ok() )
   {
@@ -7104,6 +7126,7 @@ void rogue_t::init_gains()
   gains.nothing_personal         = get_gain( "Nothing Personal"         );
   gains.memory_of_lucid_dreams   = get_gain( "Memory of Lucid Dreams"   );
   gains.dashing_scoundrel        = get_gain( "Dashing Scoundrel"        );
+  gains.the_rotten               = get_gain( "The Rotten"               );
 }
 
 // rogue_t::init_procs ======================================================
@@ -7356,6 +7379,8 @@ void rogue_t::create_buffs()
     ->add_invalidate( CACHE_CRIT_CHANCE )
     ->set_duration( timespan_t::from_seconds( legendary.master_assassins_mark->effectN( 1 ).base_value() ) )
     ->set_default_value( find_spell( 340094 )->effectN( 1 ).percent() );
+
+  buffs.the_rotten = make_buff( this, "the_rotten", legendary.the_rotten->effectN( 1 ).trigger() );
 }
 
 // rogue_t::create_options ==================================================
