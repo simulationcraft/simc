@@ -1641,7 +1641,7 @@ double priest_t::insanity_state_t::insanity_drain_per_second() const
 {
   if ( ! actor.talents.legacy_of_the_void->ok() )
   {
-    return true;
+    return 0;
   }
 
   if ( actor.buffs.voidform->check() == 0 )
