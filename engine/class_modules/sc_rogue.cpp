@@ -348,6 +348,9 @@ public:
     gain_t* ace_up_your_sleeve;
     gain_t* shrouded_suffocation;
     gain_t* the_first_dance;
+
+    // Legendary
+    gain_t* dashing_scoundrel;
   } gains;
 
   // Spec passives
@@ -539,8 +542,13 @@ public:
   // Legendary effects
   struct legendary_t
   {
+    // Legendary Items
     item_runeforge_t akaaris_soul_fragment;
+    item_runeforge_t dashing_scoundrel;
+
+    // Legendary Values
     timespan_t akaaris_soul_fragment_delay;
+    double dashing_scoundrel_gain;
   } legendary;
 
   // Procs
@@ -1565,6 +1573,18 @@ struct rogue_poison_t : public rogue_attack_t
     return timespan_t::zero();
   }
 
+  virtual double composite_crit_chance() const override
+  {
+    double c = rogue_attack_t::composite_crit_chance();
+
+    if ( p()->legendary.dashing_scoundrel->ok() && p()->buffs.envenom->check() )
+    {
+      c += p()->legendary.dashing_scoundrel->effectN( 1 ).percent();
+    }
+
+    return c;
+  }
+
   virtual double proc_chance( const action_state_t* source_state ) const
   {
     if ( p()->spec.improved_poisons_2->ok() && p()->stealthed( STEALTH_BASIC | STEALTH_ROGUE ) )
@@ -1606,6 +1626,26 @@ struct rogue_poison_t : public rogue_attack_t
         ( source_state->action->name_str == "mutilate_mh" || source_state->action->name_str == "mutilate_oh" ) )
     {
       p()->buffs.double_dose->trigger( 1 );
+    }
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    rogue_attack_t::impact( state );
+
+    if ( state->result == RESULT_CRIT && p()->legendary.dashing_scoundrel->ok() )
+    {
+      p()->resource_gain( RESOURCE_ENERGY, p()->legendary.dashing_scoundrel_gain, p()->gains.dashing_scoundrel );
+    }
+  }
+
+  void tick( dot_t* d ) override
+  {
+    rogue_attack_t::tick( d );
+
+    if ( d->state->result == RESULT_CRIT && p()->legendary.dashing_scoundrel->ok() )
+    {
+      p()->resource_gain( RESOURCE_ENERGY, p()->legendary.dashing_scoundrel_gain, p()->gains.dashing_scoundrel );
     }
   }
 };
@@ -6938,7 +6978,8 @@ void rogue_t::init_spells()
 
   // Legendary Items ========================================================
 
-  legendary.akaaris_soul_fragment = find_runeforge_legendary( "Akaari's Soul Fragment" );
+  legendary.akaaris_soul_fragment   = find_runeforge_legendary( "Akaari's Soul Fragment" );
+  legendary.dashing_scoundrel       = find_runeforge_legendary( "Dashing Scoundrel" );
 
   if ( legendary.akaaris_soul_fragment->ok() )
   {
@@ -6946,6 +6987,11 @@ void rogue_t::init_spells()
     active.akaaris_soul_fragment = get_secondary_trigger_action<actions::shadowstrike_t>( TRIGGER_AKAARIS_SOUL_FRAGMENT, "shadowstrike_akaaris_soul_fragment" );
     active.akaaris_soul_fragment->base_multiplier *= legendary.akaaris_soul_fragment->effectN( 2 ).percent();
     // TOCHECK: Check if this is a real cast or a subspell, check if it generates CP
+  }
+
+  if ( legendary.dashing_scoundrel->ok() )
+  {
+    legendary.dashing_scoundrel_gain = find_spell( 340426 )->effectN( 1 ).resource( RESOURCE_ENERGY );
   }
 
   // Active Spells = ========================================================
@@ -7008,6 +7054,7 @@ void rogue_t::init_gains()
   gains.the_first_dance          = get_gain( "The First Dance"          );
   gains.nothing_personal         = get_gain( "Nothing Personal"         );
   gains.memory_of_lucid_dreams   = get_gain( "Memory of Lucid Dreams"   );
+  gains.dashing_scoundrel        = get_gain( "Dashing Scoundrel"        );
 }
 
 // rogue_t::init_procs ======================================================
