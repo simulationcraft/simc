@@ -335,27 +335,15 @@ struct mage_t : public player_t
 public:
   // Icicles
   std::vector<icicle_tuple_t> icicles;
-  event_t* icicle_event;
 
-  struct icicles_t
+  // Events
+  struct events_t
   {
-    action_t* frostbolt;
-    action_t* flurry;
-    action_t* lucid_dreams;
-  } icicle;
-
-  // Enlightened
-  event_t* enlightened_event;
-
-  // Focus Magic
-  event_t* focus_magic_event;
-
-  // Ignite
-  action_t* ignite;
-  event_t* ignite_spread_event;
-
-  // Time Anomaly
-  event_t* time_anomaly_tick_event;
+    event_t* enlightened;
+    event_t* focus_magic;
+    event_t* icicle;
+    event_t* time_anomaly;
+  } events;
 
   // Active
   player_t* last_bomb_target;
@@ -384,6 +372,7 @@ public:
     action_t* arcane_assault;
     action_t* conflagration_flare_up;
     action_t* glacial_assault;
+    action_t* ignite;
     action_t* legendary_frozen_orb;
     action_t* legendary_meteor;
     action_t* living_bomb_dot;
@@ -391,6 +380,13 @@ public:
     action_t* living_bomb_explosion;
     action_t* tormenting_backlash;
     action_t* touch_of_the_magi_explosion;
+
+    struct icicles_t
+    {
+      action_t* frostbolt;
+      action_t* flurry;
+      action_t* lucid_dreams;
+    } icicle;
   } action;
 
   // Benefits
@@ -512,7 +508,6 @@ public:
 
     // Miscellaneous Buffs
     buff_t* gbow;
-    buff_t* shimmer;
   } buffs;
 
   // Cooldowns
@@ -545,7 +540,6 @@ public:
     timespan_t frozen_duration = 1.0_s;
     timespan_t scorch_delay = 15_ms;
     int gbow_count = 0;
-    bool allow_shimmer_lance = false;
     rotation_type_e rotation = ROTATION_STANDARD;
     double lucid_dreams_proc_chance_arcane = 0.075;
     double lucid_dreams_proc_chance_fire = 0.1;
@@ -580,7 +574,6 @@ public:
     proc_t* hot_streak_spell_crit_wasted; // HU/HS spell crits with HS
 
     proc_t* ignite_applied;    // Direct ignite applications
-    proc_t* ignite_spread;     // Spread events
     proc_t* ignite_new_spread; // Spread to new target
     proc_t* ignite_overwrite;  // Spread to target with existing ignite
 
@@ -1272,13 +1265,10 @@ struct expanded_potential_buff_t : public buff_t
   void decrement( int stacks, double value ) override
   {
     auto mage = debug_cast<mage_t*>( player );
-    if ( current_stack > 0 && mage->buffs.expanded_potential->check() )
-    {
+    if ( check() && mage->buffs.expanded_potential->check() )
       mage->buffs.expanded_potential->expire();
-      return;
-    }
-
-    buff_t::decrement( stacks, value );
+    else
+      buff_t::decrement( stacks, value );
   }
 };
 
@@ -1370,6 +1360,7 @@ struct mirrors_of_torment_t : public buff_t
   {
     set_cooldown( 0_ms );
     set_reverse( true );
+
     auto p = debug_cast<mage_t*>( source );
     if ( p->options.mirrors_of_torment_interval > 0_ms )
     {
@@ -1399,6 +1390,14 @@ struct mirrors_of_torment_t : public buff_t
         p->buffs.siphoned_malice->trigger();
       } );
     }
+  }
+
+  void reset() override
+  {
+    buff_t::reset();
+
+    tick_index = 0;
+    period = 0_ms;
   }
 };
 
@@ -1525,18 +1524,25 @@ struct mage_spell_t : public spell_t
   bool track_cd_waste;
   cooldown_waste_data_t* cd_waste;
 
-  // TODO: Need to verify what exactly triggers Fevered Incantation.
-  bool triggers_fevered_incantation = true;
-  bool triggers_radiant_spark = false;
-  // TODO: Need to verify what exactly triggers Icy Propulsion.
-  bool triggers_icy_propulsion = true;
+  struct triggers_t
+  {
+    // TODO: Need to verify what exactly triggers Fevered Incantation.
+    bool fevered_incantation = true;
+    bool radiant_spark = false;
+    // TODO: Need to verify what exactly triggers Icy Propulsion.
+    bool icy_propulsion = true;
+    bool hot_streak = false;
+    bool ignite = false;
+    bool kindling = false;
+  } triggers;
 
 public:
   mage_spell_t( util::string_view n, mage_t* p, const spell_data_t* s = spell_data_t::nil() ) :
     spell_t( n, p, s ),
     affected_by(),
     track_cd_waste(),
-    cd_waste()
+    cd_waste(),
+    triggers()
   {
     may_crit = tick_may_crit = true;
     weapon_multiplier = 0.0;
@@ -1746,7 +1752,7 @@ public:
 
     // TODO: Verify how this effect interacts with spells that have multiple
     // schools and how it interacts with spells that are not Mage spells.
-    if ( p()->runeforge.disciplinary_command.ok() && !background )
+    if ( !background && p()->runeforge.disciplinary_command.ok() )
     {
       if ( dbc::is_school( get_school(), SCHOOL_ARCANE ) )
         p()->buffs.disciplinary_command_arcane->trigger();
@@ -1768,7 +1774,7 @@ public:
   {
     spell_t::impact( s );
 
-    if ( triggers_fevered_incantation && s->result_amount > 0.0 )
+    if ( triggers.fevered_incantation && s->result_amount > 0.0 )
     {
       if ( s->result == RESULT_CRIT )
         p()->buffs.fevered_incantation->trigger();
@@ -1776,12 +1782,12 @@ public:
         p()->buffs.fevered_incantation->expire();
     }
 
-    if ( triggers_icy_propulsion && p()->buffs.icy_veins->check() && s->result_amount > 0.0 && s->result == RESULT_CRIT )
-      p()->cooldowns.icy_veins->adjust( -0.1 * timespan_t::from_seconds( p()->conduits.icy_propulsion.value() ) );
+    if ( triggers.icy_propulsion && p()->buffs.icy_veins->check() && s->result_amount > 0.0 && s->result == RESULT_CRIT )
+      p()->cooldowns.icy_veins->adjust( -0.1 * p()->conduits.icy_propulsion.time_value( conduit_data_t::S ) );
 
     if ( auto td = p()->target_data[ s->target ] )
     {
-      if ( triggers_radiant_spark && result_is_hit( s->result ) && td->dots.radiant_spark->is_ticking() )
+      if ( triggers.radiant_spark && result_is_hit( s->result ) && td->dots.radiant_spark->is_ticking() )
       {
         if ( td->debuffs.radiant_spark_vulnerability->check() < td->debuffs.radiant_spark_vulnerability->max_stack() )
           td->debuffs.radiant_spark_vulnerability->trigger();
@@ -1893,15 +1899,8 @@ struct arcane_mage_spell_t : public mage_spell_t
 
 struct fire_mage_spell_t : public mage_spell_t
 {
-  bool triggers_hot_streak;
-  bool triggers_ignite;
-  bool triggers_kindling;
-
   fire_mage_spell_t( util::string_view n, mage_t* p, const spell_data_t* s = spell_data_t::nil() ) :
-    mage_spell_t( n, p, s ),
-    triggers_hot_streak(),
-    triggers_ignite(),
-    triggers_kindling()
+    mage_spell_t( n, p, s )
   { }
 
   void impact( action_state_t* s ) override
@@ -1910,13 +1909,13 @@ struct fire_mage_spell_t : public mage_spell_t
 
     if ( result_is_hit( s->result ) )
     {
-      if ( triggers_ignite )
+      if ( triggers.ignite )
         trigger_ignite( s );
 
-      if ( triggers_hot_streak && s->chain_target == 0 )
+      if ( triggers.hot_streak && s->chain_target == 0 )
         handle_hot_streak( s );
 
-      if ( triggers_kindling && p()->talents.kindling->ok() && s->result == RESULT_CRIT && s->chain_target == 0 )
+      if ( triggers.kindling && p()->talents.kindling->ok() && s->result == RESULT_CRIT && s->chain_target == 0 )
         p()->cooldowns.combustion->adjust( -p()->talents.kindling->effectN( 1 ).time_value() );
     }
   }
@@ -2020,10 +2019,10 @@ struct fire_mage_spell_t : public mage_spell_t
 
     amount *= composite_ignite_multiplier( s );
 
-    if ( !p()->ignite->get_dot( s->target )->is_ticking() )
+    if ( !p()->action.ignite->get_dot( s->target )->is_ticking() )
       p()->procs.ignite_applied->occur();
 
-    residual_action::trigger( p()->ignite, s->target, amount );
+    residual_action::trigger( p()->action.ignite, s->target, amount );
 
     if ( s->chain_target > 0 )
       return;
@@ -2091,6 +2090,12 @@ struct hot_streak_spell_t : public fire_mage_spell_t
   action_state_t* new_state() override
   { return new hot_streak_state_t( this, target ); }
 
+  void reset() override
+  {
+    fire_mage_spell_t::reset();
+    last_hot_streak = false;
+  }
+
   timespan_t execute_time() const override
   {
     if ( p()->buffs.hot_streak->check() || p()->buffs.firestorm->check() )
@@ -2129,6 +2134,7 @@ struct hot_streak_spell_t : public fire_mage_spell_t
       p()->buffs.hot_streak->decrement();
       p()->buffs.pyroclasm->trigger();
       p()->buffs.firemind->trigger();
+
       if ( !p()->buffs.sun_kings_blessing_ready->check() )
       {
         if ( p()->buffs.sun_kings_blessing->check() == p()->buffs.sun_kings_blessing->max_stack() )
@@ -2137,7 +2143,9 @@ struct hot_streak_spell_t : public fire_mage_spell_t
           p()->buffs.sun_kings_blessing_ready->trigger();
         }
         else
+        {
           p()->buffs.sun_kings_blessing->trigger();
+        }
       }
 
       if ( rng().roll( p()->talents.pyromaniac->effectN( 1 ).percent() ) )
@@ -2206,6 +2214,7 @@ struct frost_mage_spell_t : public mage_spell_t
     consumes_winters_chill(),
     proc_brain_freeze(),
     proc_fof(),
+    proc_winters_chill_consumed(),
     track_shatter(),
     shatter_source(),
     impact_flags()
@@ -2439,7 +2448,7 @@ struct arcane_barrage_t : public arcane_mage_spell_t
     parse_options( options_str );
     cooldown->hasted = true;
     base_aoe_multiplier *= data().effectN( 2 ).percent();
-    triggers_radiant_spark = true;
+    triggers.radiant_spark = true;
     artifice_of_the_archmage_charges = as<int>( p->find_spell( 337244 )->effectN( 1 ).base_value() );
   }
 
@@ -2525,7 +2534,7 @@ struct arcane_blast_t : public arcane_mage_spell_t
     parse_options( options_str );
     cost_reductions = { p->buffs.rule_of_threes };
     base_dd_adder += p->azerite.galvanizing_spark.value( 2 );
-    reduced_aoe_damage = triggers_radiant_spark = true;
+    reduced_aoe_damage = triggers.radiant_spark = true;
     affected_by.deathborne_cleave = true;
 
     if ( p->azerite.equipoise.enabled() )
@@ -2629,7 +2638,7 @@ struct arcane_explosion_t : public arcane_mage_spell_t
     parse_options( options_str );
     aoe = -1;
     cost_reductions = { p->buffs.clearcasting };
-    affected_by.mastery_savant = triggers_radiant_spark = true;
+    affected_by.mastery_savant = triggers.radiant_spark = true;
     base_dd_adder += p->azerite.explosive_echo.value( 2 );
     base_multiplier *= 1.0 + p->spec.arcane_explosion_2->effectN( 1 ).percent();
   }
@@ -2732,7 +2741,7 @@ struct arcane_missiles_tick_t : public arcane_mage_spell_t
     arcane_mage_spell_t( n, p, p->find_spell( 7268 ) )
   {
     background = true;
-    affected_by.mastery_savant = triggers_radiant_spark = true;
+    affected_by.mastery_savant = triggers.radiant_spark = true;
     base_multiplier *= 1.0 + p->runeforge.arcane_harmony->effectN( 1 ).percent();
   }
 
@@ -2889,7 +2898,7 @@ struct arcane_orb_bolt_t : public arcane_mage_spell_t
     arcane_mage_spell_t( n, p, p->find_spell( 153640 ) )
   {
     background = true;
-    affected_by.mastery_savant = triggers_radiant_spark = true;
+    affected_by.mastery_savant = triggers.radiant_spark = true;
   }
 
   void impact( action_state_t* s ) override
@@ -2947,7 +2956,7 @@ struct blast_wave_t : public fire_mage_spell_t
   {
     parse_options( options_str );
     aoe = -1;
-    triggers_radiant_spark = true;
+    triggers.radiant_spark = true;
   }
 };
 
@@ -2979,7 +2988,7 @@ struct blizzard_shard_t : public frost_mage_spell_t
     background = ground_aoe = chills = true;
     base_multiplier *= 1.0 + p->spec.blizzard_3->effectN( 1 ).percent();
     base_multiplier *= 1.0 + p->conduits.shivering_core.percent();
-    triggers_icy_propulsion = false;
+    triggers.icy_propulsion = false;
   }
 
   result_amount_type amount_type( const action_state_t*, bool ) const override
@@ -3116,7 +3125,7 @@ struct comet_storm_projectile_t : public frost_mage_spell_t
     frost_mage_spell_t( n, p, p->find_spell( 153596 ) )
   {
     aoe = -1;
-    background = consumes_winters_chill = triggers_radiant_spark = true;
+    background = consumes_winters_chill = triggers.radiant_spark = true;
   }
 };
 
@@ -3165,7 +3174,7 @@ struct cone_of_cold_t : public frost_mage_spell_t
   {
     parse_options( options_str );
     aoe = -1;
-    chills = consumes_winters_chill = triggers_radiant_spark = true;
+    chills = consumes_winters_chill = triggers.radiant_spark = true;
   }
 };
 
@@ -3276,13 +3285,13 @@ struct dragons_breath_t : public fire_mage_spell_t
   {
     parse_options( options_str );
     aoe = -1;
-    triggers_radiant_spark = true;
+    triggers.radiant_spark = true;
     cooldown->duration += p->spec.dragons_breath_2->effectN( 1 ).time_value();
 
     if ( p->talents.alexstraszas_fury->ok() )
     {
       base_crit = 1.0;
-      triggers_hot_streak = true;
+      triggers.hot_streak = true;
     }
   }
 
@@ -3368,7 +3377,7 @@ struct ebonbolt_t : public frost_mage_spell_t
   {
     parse_options( options_str );
     parse_effect_data( p->find_spell( 257538 )->effectN( 1 ) );
-    calculate_on_impact = track_shatter = triggers_radiant_spark = true;
+    calculate_on_impact = track_shatter = triggers.radiant_spark = true;
 
     if ( p->talents.splitting_ice->ok() )
     {
@@ -3398,7 +3407,7 @@ struct fireball_t : public fire_mage_spell_t
     fire_mage_spell_t( n, p, p->find_class_spell( "Fireball" ) )
   {
     parse_options( options_str );
-    triggers_hot_streak = triggers_ignite = triggers_kindling = triggers_radiant_spark = true;
+    triggers.hot_streak = triggers.ignite = triggers.kindling = triggers.radiant_spark = true;
     affected_by.deathborne_cleave = true;
     base_dd_adder += p->azerite.duplicative_incineration.value( 2 );
 
@@ -3505,7 +3514,7 @@ struct flamestrike_t : public hot_streak_spell_t
     flame_patch()
   {
     parse_options( options_str );
-    triggers_ignite = triggers_radiant_spark = true;
+    triggers.ignite = triggers.radiant_spark = true;
     aoe = -1;
     base_multiplier *= 1.0 + p->spec.flamestrike_2->effectN( 1 ).percent();
     base_multiplier *= 1.0 + p->conduits.master_flame.percent();
@@ -3560,7 +3569,7 @@ struct flurry_bolt_t : public frost_mage_spell_t
     chills = true;
     base_multiplier *= 1.0 + p->talents.lonely_winter->effectN( 1 ).percent();
     glacial_assault_chance = p->azerite.glacial_assault.spell_ref().effectN( 1 ).trigger()->proc_chance();
-    consumes_winters_chill = triggers_radiant_spark = true;
+    consumes_winters_chill = triggers.radiant_spark = true;
   }
 
   void impact( action_state_t* s ) override
@@ -3622,7 +3631,7 @@ struct flurry_t : public frost_mage_spell_t
 
     add_child( flurry_bolt );
     if ( p->spec.icicles->ok() )
-      add_child( p->icicle.flurry );
+      add_child( p->action.icicle.flurry );
     if ( p->action.glacial_assault )
       add_child( p->action.glacial_assault );
   }
@@ -3646,9 +3655,9 @@ struct flurry_t : public frost_mage_spell_t
   {
     frost_mage_spell_t::execute();
 
-    p()->trigger_icicle_gain( target, p()->icicle.flurry );
+    p()->trigger_icicle_gain( target, p()->action.icicle.flurry );
     if ( p()->player_t::buffs.memory_of_lucid_dreams->check() )
-      p()->trigger_icicle_gain( target, p()->icicle.flurry );
+      p()->trigger_icicle_gain( target, p()->action.icicle.flurry );
 
     bool brain_freeze = p()->buffs.brain_freeze->up();
     p()->state.brain_freeze_active = brain_freeze;
@@ -3688,12 +3697,12 @@ struct frostbolt_t : public frost_mage_spell_t
   {
     parse_options( options_str );
     parse_effect_data( p->find_spell( 228597 )->effectN( 1 ) );
-    chills = calculate_on_impact = track_shatter = consumes_winters_chill = triggers_radiant_spark = true;
+    chills = calculate_on_impact = track_shatter = consumes_winters_chill = triggers.radiant_spark = true;
     affected_by.deathborne_cleave = true;
     base_multiplier *= 1.0 + p->talents.lonely_winter->effectN( 1 ).percent();
 
     if ( p->spec.icicles->ok() )
-      add_child( p->icicle.frostbolt );
+      add_child( p->action.icicle.frostbolt );
   }
 
   void init_finished() override
@@ -3725,9 +3734,9 @@ struct frostbolt_t : public frost_mage_spell_t
   {
     frost_mage_spell_t::execute();
 
-    p()->trigger_icicle_gain( target, p()->icicle.frostbolt );
+    p()->trigger_icicle_gain( target, p()->action.icicle.frostbolt );
     if ( p()->player_t::buffs.memory_of_lucid_dreams->check() )
-      p()->trigger_icicle_gain( target, p()->icicle.frostbolt );
+      p()->trigger_icicle_gain( target, p()->action.icicle.frostbolt );
 
     double fof_proc_chance = p()->spec.fingers_of_frost->effectN( 1 ).percent();
     fof_proc_chance *= 1.0 + p()->talents.frozen_touch->effectN( 1 ).percent();
@@ -3795,7 +3804,7 @@ struct frost_nova_t : public mage_spell_t
   {
     parse_options( options_str );
     aoe = -1;
-    affected_by.shatter = triggers_radiant_spark = true;
+    affected_by.shatter = triggers.radiant_spark = true;
     cooldown->charges += as<int>( p->talents.ice_ward->effectN( 1 ).base_value() );
   }
 
@@ -3934,7 +3943,7 @@ struct glacial_spike_t : public frost_mage_spell_t
   {
     parse_options( options_str );
     parse_effect_data( p->find_spell( 228600 )->effectN( 1 ) );
-    calculate_on_impact = track_shatter = consumes_winters_chill = triggers_radiant_spark = true;
+    calculate_on_impact = track_shatter = consumes_winters_chill = triggers.radiant_spark = true;
     base_dd_adder += p->azerite.flash_freeze.value( 2 ) * p->spec.icicles->effectN( 2 ).base_value();
 
     if ( p->talents.splitting_ice->ok() )
@@ -4087,7 +4096,7 @@ struct ice_lance_t : public frost_mage_spell_t
   {
     parse_options( options_str );
     parse_effect_data( p->find_spell( 228598 )->effectN( 1 ) );
-    calculate_on_impact = track_shatter = consumes_winters_chill = triggers_radiant_spark = true;
+    calculate_on_impact = track_shatter = consumes_winters_chill = triggers.radiant_spark = true;
     base_multiplier *= 1.0 + p->talents.lonely_winter->effectN( 1 ).percent();
     base_dd_adder += p->azerite.whiteout.value( 3 );
 
@@ -4176,19 +4185,6 @@ struct ice_lance_t : public frost_mage_spell_t
   {
     debug_cast<ice_lance_state_t*>( s )->fingers_of_frost = p()->buffs.fingers_of_frost->check() != 0;
     frost_mage_spell_t::snapshot_state( s, rt );
-  }
-
-  timespan_t travel_time() const override
-  {
-    timespan_t t = frost_mage_spell_t::travel_time();
-
-    if ( p()->options.allow_shimmer_lance && p()->buffs.shimmer->check() )
-    {
-      double shimmer_distance = p()->talents.shimmer->effectN( 1 ).radius_max();
-      t = std::max( t - timespan_t::from_seconds( shimmer_distance / travel_speed ), 1_ms );
-    }
-
-    return t;
   }
 
   void impact( action_state_t* s ) override
@@ -4285,7 +4281,7 @@ struct ice_nova_t : public frost_mage_spell_t
   {
     parse_options( options_str );
     aoe = -1;
-    consumes_winters_chill = triggers_radiant_spark = true;
+    consumes_winters_chill = triggers.radiant_spark = true;
 
     double in_mult = p->talents.ice_nova->effectN( 3 ).percent();
     base_multiplier     *= in_mult;
@@ -4356,7 +4352,7 @@ struct fire_blast_t : public fire_mage_spell_t
   {
     parse_options( options_str );
     usable_while_casting = p->spec.fire_blast_3->ok();
-    triggers_hot_streak = triggers_ignite = triggers_kindling = triggers_radiant_spark = true;
+    triggers.hot_streak = triggers.ignite = triggers.kindling = triggers.radiant_spark = true;
 
     cooldown->charges += as<int>( p->spec.fire_blast_4->effectN( 1 ).base_value() );
     cooldown->charges += as<int>( p->talents.flame_on->effectN( 1 ).base_value() );
@@ -4547,7 +4543,7 @@ struct meteor_impact_t : public fire_mage_spell_t
   {
     background = split_aoe_damage = true;
     aoe = -1;
-    triggers_ignite = triggers_radiant_spark = true;
+    triggers.ignite = triggers.radiant_spark = true;
   }
 
   timespan_t travel_time() const override
@@ -4726,13 +4722,13 @@ struct phoenix_flames_splash_t : public fire_mage_spell_t
   {
     aoe = -1;
     background = reduced_aoe_damage = true;
-    triggers_hot_streak = triggers_ignite = triggers_radiant_spark = true;
+    triggers.hot_streak = triggers.ignite = triggers.radiant_spark = true;
     max_spread_targets = as<int>( p->spec.ignite->effectN( 4 ).base_value() );
     // Phoenix Flames always crits
     base_crit = 1.0;
     // TODO: Phoenix Flames currently does not trigger fevered incantation or Kindling
     // on the beta. Verify whether this is fixed closer to shadowlands release.
-    triggers_kindling = triggers_fevered_incantation = !p->bugs;
+    triggers.kindling = triggers.fevered_incantation = !p->bugs;
   }
 
   static double ignite_bank( dot_t* ignite )
@@ -4837,7 +4833,7 @@ struct pyroblast_t : public hot_streak_spell_t
     pyroblast_dot()
   {
     parse_options( options_str );
-    triggers_hot_streak = triggers_ignite = triggers_kindling = triggers_radiant_spark = true;
+    triggers.hot_streak = triggers.ignite = triggers.kindling = triggers.radiant_spark = true;
     base_dd_adder += p->azerite.wildfire.value( 2 );
     base_multiplier *= 1.0 + p->conduits.controlled_destruction.percent();
 
@@ -4920,7 +4916,10 @@ struct pyroblast_t : public hot_streak_spell_t
         p()->action.legendary_meteor->execute();
       }
       else
+      {
         p()->buffs.molten_skyfall->trigger();
+      }
+
       if ( p()->buffs.molten_skyfall->check() == p()->buffs.molten_skyfall->max_stack() - 1 )
       {
         p()->buffs.molten_skyfall->expire();
@@ -4948,8 +4947,8 @@ struct ray_of_frost_t : public frost_mage_spell_t
     frost_mage_spell_t( n, p, p->talents.ray_of_frost )
   {
     parse_options( options_str );
-    channeled = chills = triggers_radiant_spark = true;
-    triggers_icy_propulsion = false;
+    channeled = chills = triggers.radiant_spark = true;
+    triggers.icy_propulsion = false;
   }
 
   void init_finished() override
@@ -5015,7 +5014,7 @@ struct scorch_t : public fire_mage_spell_t
     fire_mage_spell_t( n, p, p->find_specialization_spell( "Scorch" ) )
   {
     parse_options( options_str );
-    triggers_hot_streak = triggers_ignite = triggers_radiant_spark = true;
+    triggers.hot_streak = triggers.ignite = triggers.radiant_spark = true;
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -5068,12 +5067,6 @@ struct shimmer_t : public mage_spell_t
     base_teleport_distance = data().effectN( 1 ).radius_max();
     movement_directionality = movement_direction_type::OMNI;
   }
-
-  void execute() override
-  {
-    mage_spell_t::execute();
-    p()->buffs.shimmer->trigger();
-  }
 };
 
 // Slow Spell ===============================================================
@@ -5101,7 +5094,7 @@ struct supernova_t : public arcane_mage_spell_t
     double sn_mult = 1.0 + p->talents.supernova->effectN( 1 ).percent();
     base_multiplier     *= sn_mult;
     base_aoe_multiplier /= sn_mult;
-    affected_by.mastery_savant = triggers_radiant_spark = true;
+    affected_by.mastery_savant = triggers.radiant_spark = true;
   }
 };
 
@@ -5243,7 +5236,6 @@ struct deathborne_t : public mage_spell_t
   void execute() override
   {
     mage_spell_t::execute();
-
     p()->buffs.deathborne->trigger();
   }
 };
@@ -5501,12 +5493,12 @@ struct enlightened_event_t : public event_t
 
   void execute() override
   {
-    mage->enlightened_event = nullptr;
+    mage->events.enlightened = nullptr;
 
     mage->update_enlightened();
 
     if ( mage->options.enlightened_interval > 0_ms )
-      mage->enlightened_event = make_event<enlightened_event_t>( sim(), *mage, mage->options.enlightened_interval );
+      mage->events.enlightened = make_event<enlightened_event_t>( sim(), *mage, mage->options.enlightened_interval );
   }
 };
 
@@ -5524,7 +5516,7 @@ struct focus_magic_event_t : public event_t
 
   void execute() override
   {
-    mage->focus_magic_event = nullptr;
+    mage->events.focus_magic = nullptr;
 
     if ( rng().roll( mage->options.focus_magic_crit_chance ) )
     {
@@ -5536,7 +5528,7 @@ struct focus_magic_event_t : public event_t
     {
       timespan_t period = mage->options.focus_magic_interval;
       period = std::max( 1_ms, mage->rng().gauss( period, period * mage->options.focus_magic_stddev ) );
-      mage->focus_magic_event = make_event<focus_magic_event_t>( sim(), *mage, period );
+      mage->events.focus_magic = make_event<focus_magic_event_t>( sim(), *mage, period );
     }
   }
 };
@@ -5559,7 +5551,7 @@ struct icicle_event_t : public event_t
 
   void execute() override
   {
-    mage->icicle_event = nullptr;
+    mage->events.icicle = nullptr;
 
     // If the target of the icicle is dead, stop the chain
     if ( target->is_sleeping() )
@@ -5577,119 +5569,9 @@ struct icicle_event_t : public event_t
 
     if ( !mage->icicles.empty() )
     {
-      mage->icicle_event = make_event<icicle_event_t>( sim(), *mage, target );
+      mage->events.icicle = make_event<icicle_event_t>( sim(), *mage, target );
       sim().print_debug( "{} icicle use on {} (chained), total={}", mage->name(), target->name(), mage->icicles.size() );
     }
-  }
-};
-
-struct ignite_spread_event_t : public event_t
-{
-  mage_t* mage;
-
-  static double ignite_bank( dot_t* ignite )
-  {
-    if ( !ignite->is_ticking() )
-      return 0.0;
-
-    auto ignite_state = debug_cast<residual_action::residual_periodic_state_t*>( ignite->state );
-    return ignite_state->tick_amount * ignite->ticks_left();
-  }
-
-  ignite_spread_event_t( mage_t& m, timespan_t delta_time ) :
-    event_t( m, delta_time ),
-    mage( &m )
-  { }
-
-  const char* name() const override
-  { return "ignite_spread_event"; }
-
-  void execute() override
-  {
-    mage->ignite_spread_event = nullptr;
-    mage->procs.ignite_spread->occur();
-
-    sim().print_log( "{} ignite spread event occurs", mage->name() );
-
-    const auto& tl = sim().target_non_sleeping_list;
-    if ( tl.size() > 1 )
-    {
-      std::vector<dot_t*> active_ignites;
-      std::vector<dot_t*> candidates;
-      // Split ignite targets by whether ignite is ticking
-      for ( auto t : tl )
-      {
-        if ( !t->is_enemy() )
-          continue;
-
-        dot_t* ignite = t->get_dot( "ignite", mage );
-        if ( ignite->is_ticking() )
-          active_ignites.push_back( ignite );
-        else
-          candidates.push_back( ignite );
-      }
-
-      // Sort active ignites by descending bank size
-      std::stable_sort( active_ignites.begin(), active_ignites.end(), [] ( dot_t* a, dot_t* b )
-      { return ignite_bank( a ) > ignite_bank( b ); } );
-
-      // Loop over active ignites:
-      // - Pop smallest ignite for spreading
-      // - Remove equal sized ignites from tail of spread candidate list
-      // - Choose random target and execute spread
-      // - Remove spread destination from candidate list
-      // - Add spreaded ignite source to candidate list
-      // This algorithm provides random selection of the spread target, while
-      // guaranteeing that every source will have a larger ignite bank than the
-      // destination. It also guarantees that each ignite will spread to a unique
-      // target. This allows us to avoid N^2 spread validity checks.
-      while ( !active_ignites.empty() )
-      {
-        dot_t* source = active_ignites.back();
-        active_ignites.pop_back();
-        double source_bank = ignite_bank( source );
-
-        if ( !candidates.empty() )
-        {
-          // Skip candidates that have equal ignite bank size to the source
-          int index = as<int>( candidates.size() ) - 1;
-          while ( index >= 0 && ignite_bank( candidates[ index ] ) == source_bank )
-            index--;
-
-          // No valid spread targets
-          if ( index < 0 )
-            continue;
-
-          // TODO: Filter valid candidates by ignite spread range
-
-          // Randomly select spread target from remaining candidates
-          index = rng().range( index );
-          dot_t* destination = candidates[ index ];
-
-          if ( destination->is_ticking() )
-            mage->procs.ignite_overwrite->occur();
-          else
-            mage->procs.ignite_new_spread->occur();
-
-          sim().print_log( "{} ignite spreads from {} to {} ({})",
-                           mage->name(), source->target->name(), destination->target->name(),
-                           destination->is_ticking() ? "overwrite" : "new" );
-
-          destination->cancel();
-          source->copy( destination->target, DOT_COPY_CLONE );
-
-          // Remove spread destination from candidates
-          candidates.erase( candidates.begin() + index );
-        }
-
-        // Add spread source to candidates
-        candidates.push_back( source );
-      }
-    }
-
-    // Schedule next spread for 2 seconds later
-    mage->ignite_spread_event = make_event<events::ignite_spread_event_t>(
-      sim(), *mage, mage->spec.ignite->effectN( 3 ).period() );
   }
 };
 
@@ -5714,7 +5596,7 @@ struct time_anomaly_tick_event_t : public event_t
 
   void execute() override
   {
-    mage->time_anomaly_tick_event = nullptr;
+    mage->events.time_anomaly = nullptr;
     sim().print_log( "{} Time Anomaly tick event occurs.", mage->name() );
 
     if ( mage->shuffled_rng.time_anomaly->trigger() )
@@ -5759,7 +5641,7 @@ struct time_anomaly_tick_event_t : public event_t
       }
     }
 
-    mage->time_anomaly_tick_event = make_event<events::time_anomaly_tick_event_t>(
+    mage->events.time_anomaly = make_event<events::time_anomaly_tick_event_t>(
       sim(), *mage, mage->talents.time_anomaly->effectN( 1 ).period() );
   }
 };
@@ -5775,9 +5657,9 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
   dots(),
   debuffs()
 {
+  // Baseline
   dots.nether_tempest = target->get_dot( "nether_tempest", mage );
 
-  // Baseline
   debuffs.frozen            = make_buff( *this, "frozen" )
                                 ->set_duration( mage->options.frozen_duration );
   debuffs.winters_chill     = make_buff( *this, "winters_chill", mage->find_spell( 228358 ) )
@@ -5803,15 +5685,10 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
 
 mage_t::mage_t( sim_t* sim, util::string_view name, race_e r ) :
   player_t( sim, MAGE, name, r ),
-  icicle_event(),
-  icicle(),
-  enlightened_event(),
-  focus_magic_event(),
-  ignite(),
-  ignite_spread_event(),
-  time_anomaly_tick_event(),
+  events(),
   last_bomb_target(),
   last_frostbolt_target(),
+  ground_aoe_expiration(),
   distance_from_rune(),
   lucid_dreams_refund(),
   strive_for_perfection_multiplier(),
@@ -5830,6 +5707,8 @@ mage_t::mage_t( sim_t* sim, util::string_view name, race_e r ) :
   state(),
   talents(),
   azerite(),
+  runeforge(),
+  conduits(),
   uptime()
 {
   // Cooldowns
@@ -5950,13 +5829,13 @@ void mage_t::create_actions()
   using namespace actions;
 
   if ( spec.ignite->ok() )
-    ignite = get_action<ignite_t>( "ignite", this );
+    action.ignite = get_action<ignite_t>( "ignite", this );
 
   if ( spec.icicles->ok() )
   {
-    icicle.frostbolt    = get_action<icicle_t>( "frostbolt_icicle", this );
-    icicle.flurry       = get_action<icicle_t>( "flurry_icicle", this );
-    icicle.lucid_dreams = get_action<icicle_t>( "lucid_dreams_icicle", this );
+    action.icicle.frostbolt    = get_action<icicle_t>( "frostbolt_icicle", this );
+    action.icicle.flurry       = get_action<icicle_t>( "flurry_icicle", this );
+    action.icicle.lucid_dreams = get_action<icicle_t>( "lucid_dreams_icicle", this );
   }
 
   if ( talents.arcane_familiar->ok() )
@@ -5999,7 +5878,6 @@ void mage_t::create_options()
   add_option( opt_timespan( "frozen_duration", options.frozen_duration ) );
   add_option( opt_timespan( "scorch_delay", options.scorch_delay ) );
   add_option( opt_int( "greater_blessing_of_wisdom_count", options.gbow_count ) );
-  add_option( opt_bool( "allow_shimmer_lance", options.allow_shimmer_lance ) );
   add_option( opt_func( "rotation", [ this ] ( sim_t*, util::string_view, util::string_view val )
   {
     if ( util::str_compare_ci( val, "standard" ) )
@@ -6596,7 +6474,6 @@ void mage_t::create_buffs()
       { resource_gain( RESOURCE_MANA, resources.max[ RESOURCE_MANA ] * 0.002 * options.gbow_count, gains.gbow ); } )
     ->set_period( 2.0_s )
     ->set_chance( options.gbow_count > 0 );
-  buffs.shimmer = make_buff( this, "shimmer", find_spell( 212653 ) );
 
   switch ( specialization() )
   {
@@ -6640,7 +6517,6 @@ void mage_t::init_procs()
       procs.hot_streak_spell_crit_wasted = get_proc( "Hot Streak spell crits wasted" );
 
       procs.ignite_applied    = get_proc( "Direct Ignite applications" );
-      procs.ignite_spread     = get_proc( "Ignites spread" );
       procs.ignite_new_spread = get_proc( "Ignites spread to new targets" );
       procs.ignite_overwrite  = get_proc( "Ignites spread to targets with existing Ignite" );
       break;
@@ -7545,16 +7421,12 @@ void mage_t::reset()
 {
   player_t::reset();
 
-  enlightened_event = nullptr;
-  focus_magic_event = nullptr;
-  icicle_event = nullptr;
-  ignite_spread_event = nullptr;
-  time_anomaly_tick_event = nullptr;
+  icicles.clear();
+  events = events_t();
   last_bomb_target = nullptr;
   last_frostbolt_target = nullptr;
-  icicles.clear();
-  ground_aoe_expiration = std::array<timespan_t, AOE_MAX>();
   burn_phase.reset();
+  ground_aoe_expiration = std::array<timespan_t, AOE_MAX>();
   state = state_t();
 }
 
@@ -7590,20 +7462,20 @@ void mage_t::arise()
   if ( talents.enlightened->ok() && options.enlightened_interval > 0_ms )
   {
     timespan_t first_tick = rng().real() * options.enlightened_interval;
-    enlightened_event = make_event<events::enlightened_event_t>( *sim, *this, first_tick );
+    events.enlightened = make_event<events::enlightened_event_t>( *sim, *this, first_tick );
   }
 
   if ( talents.focus_magic->ok() && options.focus_magic_interval > 0_ms )
   {
     timespan_t period = options.focus_magic_interval;
     period = std::max( 1_ms, rng().gauss( period, period * options.focus_magic_stddev ) );
-    focus_magic_event = make_event<events::focus_magic_event_t>( *sim, *this, period );
+    events.focus_magic = make_event<events::focus_magic_event_t>( *sim, *this, period );
   }
 
   if ( talents.time_anomaly->ok() )
   {
     timespan_t first_tick = rng().real() * talents.time_anomaly->effectN( 1 ).period();
-    time_anomaly_tick_event = make_event<events::time_anomaly_tick_event_t>( *sim, *this, first_tick );
+    events.time_anomaly = make_event<events::time_anomaly_tick_event_t>( *sim, *this, first_tick );
   }
 }
 
@@ -7723,7 +7595,7 @@ std::unique_ptr<expr_t> mage_t::create_expression( util::string_view name )
   if ( util::str_compare_ci( name, "shooting_icicles" ) )
   {
     return make_fn_expr( name, [ this ]
-    { return icicle_event != nullptr; } );
+    { return events.icicle != nullptr; } );
   }
 
   auto splits = util::string_split<util::string_view>( name, "." );
@@ -8002,9 +7874,9 @@ void mage_t::trigger_icicle( player_t* icicle_target, bool chain )
   if ( !spec.icicles->ok() )
     return;
 
-  if ( chain && !icicle_event )
+  if ( chain && !events.icicle )
   {
-    icicle_event = make_event<events::icicle_event_t>( *sim, *this, icicle_target, true );
+    events.icicle = make_event<events::icicle_event_t>( *sim, *this, icicle_target, true );
     sim->print_debug( "{} icicle use on {} (chained), total={}", name(), icicle_target->name(), icicles.size() );
   }
 
@@ -8094,7 +7966,7 @@ void mage_t::trigger_lucid_dreams( player_t* trigger_target, double cost )
         cooldowns.fire_blast->adjust( -lucid_dreams_refund * cooldown_t::cooldown_duration( cooldowns.fire_blast ) );
         break;
       case MAGE_FROST:
-        trigger_icicle_gain( trigger_target, icicle.lucid_dreams );
+        trigger_icicle_gain( trigger_target, action.icicle.lucid_dreams );
         break;
       default:
         break;
@@ -8365,26 +8237,6 @@ public:
 
   void register_hotfixes() const override
   {
-    /*
-    hotfix::register_spell( "Mage", "2018-05-02", "Incorrect spell level for Icicle buff.", 205473 )
-      .field( "spell_level" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 78 )
-      .verification_value( 80 );
-
-    hotfix::register_spell( "Mage", "2017-11-06", "Incorrect spell level for Icicle.", 148022 )
-      .field( "spell_level" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 78 )
-      .verification_value( 80 );
-
-    hotfix::register_spell( "Mage", "2017-11-08", "Incorrect spell level for Ignite.", 12654 )
-      .field( "spell_level" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 78 )
-      .verification_value( 99 );
-    */
-
     hotfix::register_spell( "Mage", "2017-03-20", "Manually set Frozen Orb's travel speed.", 84714 )
       .field( "prj_speed" )
       .operation( hotfix::HOTFIX_SET )
