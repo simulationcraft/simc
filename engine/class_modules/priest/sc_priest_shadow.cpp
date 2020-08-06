@@ -167,13 +167,14 @@ public:
 
     // Shadowy Insight has proc'd during the cast of Mind Blast, the cooldown reset is deferred to the finished cast,
     // instead of "eating" it.
-    if ( priest().buffs.shadowy_insight->check() )
-    {
-      cd_duration            = timespan_t::zero();
-      cooldown->last_charged = sim->current_time();
-
-      sim->print_debug( "{} shadowy insight proc occured during {} cast. Deferring cooldown reset.", priest(), *this );
-    }
+    /// TODO Re-use for Dark Thoughts
+    // if ( priest().buffs.shadowy_insight->check() )
+    // {
+    //   cd_duration            = timespan_t::zero();
+    //   cooldown->last_charged = sim->current_time();
+    // 
+    //   sim->print_debug( "{} shadowy insight proc occured during {} cast. Deferring cooldown reset.", priest(), *this );
+    // }
 
     priest_spell_t::update_ready( cd_duration );
   }
