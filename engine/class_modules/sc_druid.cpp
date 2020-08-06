@@ -400,6 +400,7 @@ public:
     buff_t* kindred_empowerment;
     buff_t* kindred_empowerment_energize;
     buff_t* ravenous_frenzy;
+    buff_t* convoke_the_spirits;  // dummy buff for conduit
 
     // Balance
     buff_t* natures_balance;
@@ -1865,7 +1866,7 @@ public:
 
   virtual void apply_buff_effects()
   {
-    parse_buff_effects( p()->buff.ravenous_frenzy );
+    parse_buff_effects( p()->buff.ravenous_frenzy, p()->conduit.venthyr );
     parse_buff_effects( p()->buff.heart_of_the_wild );
 
     // Balance
@@ -1916,7 +1917,14 @@ public:
 
     if ( td( t )->dots.adaptive_swarm_damage->is_ticking() &&
          ab::data().affected_by( p()->covenant.adaptive_swarm_damage->effectN( 2 ) ) )
-      tm *= 1.0 + p()->covenant.adaptive_swarm_damage->effectN( 2 ).percent();
+    {
+      double val = p()->covenant.adaptive_swarm_damage->effectN( 2 ).percent();
+
+      if ( p()->conduit.necrolord->ok() )
+        val += p()->conduit.necrolord->effectN( 1 ).percent();
+
+      tm *= 1.0 + val;
+    }
 
     return tm;
   }
@@ -6969,6 +6977,9 @@ struct kindred_spirits_t : public druid_spell_t
       add_child( player->active.kindred_empowerment );
       add_child( player->active.kindred_empowerment_partner );
     }
+
+    if ( player->conduit.kyrian->ok() )
+      cooldown->duration *= 1.0 + player->conduit.kyrian->effectN( 1 ).percent();
   }
 
   void execute() override
@@ -7052,6 +7063,8 @@ struct convoke_the_spirits_t : public druid_spell_t
   {
     druid_spell_t::execute();
     p()->reset_auto_attacks( composite_dot_duration( execute_state ) );
+
+    p()->buff.convoke_the_spirits->trigger();
 
     deck->reset();
 
@@ -7147,6 +7160,14 @@ struct convoke_the_spirits_t : public druid_spell_t
 
     conv_cast->set_target( conv_tar );
     conv_cast->execute();
+  }
+
+  void last_tick( dot_t* d ) override
+  {
+    druid_spell_t::last_tick( d );
+
+    if ( p()->buff.convoke_the_spirits->check() )
+      p()->buff.convoke_the_spirits->expire();
   }
 
   bool usable_moving() const override
@@ -8222,6 +8243,13 @@ void druid_t::create_buffs()
     ->set_cooldown( 0_ms )
     ->set_period( 0_ms )
     ->add_invalidate( CACHE_HASTE );
+  if ( conduit.venthyr->ok() )
+    buff.ravenous_frenzy->add_invalidate( CACHE_CRIT_CHANCE );
+
+  buff.convoke_the_spirits = make_buff( this, "convoke_the_pirits", covenant.night_fae )
+    ->set_cooldown( 0_ms )
+    ->set_period( 0_ms )
+    ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   // Talent buffs
   buff.tiger_dash = new tiger_dash_buff_t( *this );
@@ -9661,6 +9689,9 @@ double druid_t::composite_armor_multiplier() const
 double druid_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
+
+  if ( conduit.night_fae->ok() && buff.convoke_the_spirits->check() )
+    m *= 1.0 + conduit.night_fae->effectN( 1 ).percent();
 
   return m;
 }
