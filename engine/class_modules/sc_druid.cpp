@@ -293,6 +293,8 @@ public:
   int convoke_the_spirits_heals;
   double convoke_the_spirits_ultimate;
 
+  std::string fake_conduit;
+
   struct active_actions_t
   {
     heals::cenarion_ward_hot_t* cenarion_ward_hot;
@@ -756,6 +758,30 @@ public:
     const spell_data_t* adaptive_swarm_heal;
   } covenant;
 
+  // Conduits
+  struct conduit_t
+  {
+    const spell_data_t* balance_1;
+    const spell_data_t* balance_2;
+    const spell_data_t* balance_3;
+    const spell_data_t* balance_4;
+
+    const spell_data_t* feral_1;
+    const spell_data_t* feral_2;
+    const spell_data_t* feral_3;
+    const spell_data_t* feral_4;
+
+    const spell_data_t* guardian_1;
+    const spell_data_t* guardian_2;
+    const spell_data_t* guardian_3;
+    const spell_data_t* guardian_4;
+
+    const spell_data_t* kyrian;
+    const spell_data_t* necrolord;
+    const spell_data_t* night_fae;
+    const spell_data_t* venthyr;
+  } conduit;
+
   struct uptimes_t
   {
     uptime_t* arcanic_pulsar;
@@ -810,6 +836,7 @@ public:
     kindred_empowerment_ratio( 1.0 ),
     convoke_the_spirits_heals( 2 ),
     convoke_the_spirits_ultimate( 0.01 ),
+    fake_conduit( "" ),
     active( active_actions_t() ),
     force_of_nature(),
     caster_form_weapon(),
@@ -825,6 +852,7 @@ public:
     spec( specializations_t() ),
     talent( talents_t() ),
     covenant( covenant_t() ),
+    conduit( conduit_t() ),
     uptime( uptimes_t() ),
     legendary( legendary_t() )
   {
@@ -945,6 +973,8 @@ public:
   void vision_of_perfection_proc() override;
   void apply_affecting_auras( action_t& ) override;
 
+  const spell_data_t* fake_conduit_spell( unsigned );
+
 private:
   void              apl_precombat();
   void              apl_default();
@@ -1016,18 +1046,16 @@ void eclipse_handler_t::advance_eclipse()
 
 void eclipse_handler_t::cast_starsurge()
 {
-  if ( state == IN_LUNAR && p->buff.eclipse_lunar->up() )
-  {
-    p->buff.eclipse_lunar->extend_duration(
-        p, timespan_t::from_seconds( p->spec.starsurge->effectN( 2 ).base_value() +
-                                     p->spec.starsurge_2->effectN( 1 ).base_value() ) );
-  }
-  if ( state == IN_SOLAR && p->buff.eclipse_solar->up() )
-  {
-    p->buff.eclipse_solar->extend_duration(
-        p, timespan_t::from_seconds( p->spec.starsurge->effectN( 2 ).base_value() +
-                                     p->spec.starsurge_2->effectN( 1 ).base_value() ) );
-  }
+  int ext = as<int>( p->spec.starsurge->effectN( 2 ).base_value() + p->spec.starsurge_2->effectN( 1 ).base_value() );
+
+  if ( p->conduit.balance_1->ok() && p->rng().roll( p->conduit.balance_1->effectN( 1 ).percent() ) )
+    ext += as<int>( p->conduit.balance_1->effectN( 2 ).base_value() );
+
+  if ( state == IN_LUNAR && p->buff.eclipse_lunar->check() )
+    p->buff.eclipse_lunar->extend_duration( p, timespan_t::from_seconds( ext ) );
+
+  if ( state == IN_SOLAR && p->buff.eclipse_solar->check() )
+    p->buff.eclipse_solar->extend_duration( p, timespan_t::from_seconds( ext ) );
 }
 
 void eclipse_handler_t::trigger_both( timespan_t d = 0_ms )
@@ -1702,14 +1730,19 @@ public:
     {
       auto eff = &rank_spell->effectN( i );
 
-      if ( eff->type() != E_APPLY_AURA || eff->subtype() != A_ADD_FLAT_MODIFIER || !base_spell->affected_by( eff ) )
+      if ( eff->type() != E_APPLY_AURA || !base_spell->affected_by( eff ) )
         continue;
 
       if ( ( eff->misc_value1() == P_EFFECT_1 && idx == 1 ) || ( eff->misc_value1() == P_EFFECT_2 && idx == 2 ) ||
            ( eff->misc_value1() == P_EFFECT_3 && idx == 3 ) || ( eff->misc_value1() == P_EFFECT_4 && idx == 4 ) ||
            ( eff->misc_value1() == P_EFFECT_5 && idx == 5 ) )
       {
-        val += eff->percent();
+        if ( eff->subtype() == A_ADD_FLAT_MODIFIER )
+          val += eff->percent();
+        else if ( eff->subtype() == A_ADD_PCT_MODIFIER )
+          val *= 1.0 + eff->percent();
+        else
+          continue;
 
         if ( p()->find_mastery_spell( p()->specialization() ) == rank_spell )
           mastery = true;
@@ -1726,7 +1759,8 @@ public:
   // 6: Add Flat Modifier to Spell Critical Chance
   void parse_buff_effects( buff_t* buff, const spell_data_t* spell = spell_data_t::nil(),
                            const spell_data_t* spell2 = spell_data_t::nil(),
-                           const spell_data_t* spell3 = spell_data_t::nil() )
+                           const spell_data_t* spell3 = spell_data_t::nil(),
+                           const spell_data_t* spell4 = spell_data_t::nil() )
   {
     if ( !buff )
       return;
@@ -1761,6 +1795,9 @@ public:
 
         if ( spell3->ok() )
           parse_rank_spell_effects( val, mastery, s_data, i, spell3 );
+
+        if ( spell4->ok() )
+          parse_rank_spell_effects( val, mastery, s_data, i, spell4 );
       }
 
       if ( !mastery && !val )
@@ -1844,7 +1881,7 @@ public:
     parse_buff_effects( p()->buff.eclipse_lunar, p()->mastery.total_eclipse, p()->spec.eclipse_2,
                         p()->talent.soul_of_the_forest_moonkin );
     parse_buff_effects( p()->buff.eclipse_solar, p()->mastery.total_eclipse, p()->spec.eclipse_2,
-                        p()->talent.soul_of_the_forest_moonkin );
+                        p()->talent.soul_of_the_forest_moonkin, p()->conduit.balance_4 );
 
     // Guardian
     parse_buff_effects( p()->buff.berserk_bear, p()->legendary.legacy_of_the_sleeper );
@@ -2525,6 +2562,22 @@ public:
     }
 
     return e;
+  }
+
+  double composite_target_multiplier( player_t* t ) const override
+  {
+    double tm = ab::composite_target_multiplier( t );
+
+    if ( p()->conduit.balance_2->ok() )
+    {
+      if ( td( t )->dots.sunfire->is_ticking() && data().affected_by( p()->spec.sunfire_dmg->effectN( 3 ) ) )
+        tm *= 1.0 + p()->conduit.balance_2->effectN( 1 ).percent();
+
+      if ( td( t )->dots.moonfire->is_ticking() && data().affected_by( p()->spec.moonfire_dmg->effectN( 3 ) ) )
+        tm *= 1.0 + p()->conduit.balance_2->effectN( 1 ).percent();
+    }
+
+    return tm;
   }
 
   void consume_resource() override
@@ -6038,8 +6091,11 @@ struct starfire_t : public druid_spell_t
   {
     double cam = druid_spell_t::composite_aoe_multiplier( state );
 
-    if ( state->target != target )
-      cam *= 1.0 + p()->buff.eclipse_lunar->value();
+    if ( state->target != target && p()->specialization() == DRUID_BALANCE && p()->buff.eclipse_lunar->up() )
+    {
+      cam *= 1.0 +
+             p()->spec.eclipse_lunar->effectN( 2 ).percent() * ( 1.0 + p()->conduit.balance_4->effectN( 1 ).percent() );
+    }
 
     return cam;
   }
@@ -6494,14 +6550,19 @@ struct starfall_t : public druid_spell_t
 
     if ( p()->spec.starfall_2->ok() )
     {
+      int ext = as<int>( p()->spec.starfall_2->effectN( 1 ).base_value() );
+
+      if ( free_cast != free_cast_e::LYCARAS && free_cast != free_cast_e::CONVOKE && p()->conduit.balance_1->ok() &&
+           rng().roll( p()->conduit.balance_1->effectN( 1 ).percent() ) )
+        ext += as<int>( p()->conduit.balance_1->effectN( 2 ).base_value() );
+
       std::vector<player_t*>& tl = target_list();
       for ( size_t i = 0, actors = tl.size(); i < actors; i++ )
       {
         player_t* t = tl[ i ];
-        td( t )->dots.moonfire->extend_duration(
-            timespan_t::from_seconds( p()->spec.starfall_2->effectN( 1 ).base_value() ) );
-        td( t )->dots.sunfire->extend_duration(
-            timespan_t::from_seconds( p()->spec.starfall_2->effectN( 1 ).base_value() ) );
+
+        td( t )->dots.moonfire->extend_duration( timespan_t::from_seconds( ext ) );
+        td( t )->dots.sunfire->extend_duration( timespan_t::from_seconds( ext ) );
       }
     }
 
@@ -7900,6 +7961,25 @@ void druid_t::init_spells()
   covenant.adaptive_swarm_damage        = find_spell( 325733 );
   covenant.adaptive_swarm_heal          = find_spell( 325748 );
 
+  // Conduits
+  conduit.balance_1 = fake_conduit_spell( 340720 );
+  conduit.balance_2 = fake_conduit_spell( 340708 );
+  conduit.balance_3 = fake_conduit_spell( 340706 );
+  conduit.balance_4 = fake_conduit_spell( 340719 );
+
+  conduit.feral_1 = fake_conduit_spell( 340682 );
+  conduit.feral_2 = fake_conduit_spell( 340688 );
+  conduit.feral_3 = fake_conduit_spell( 340694 );
+  conduit.feral_4 = fake_conduit_spell( 340705 );
+
+  conduit.guardian_1 = fake_conduit_spell( 340552 );
+  conduit.guardian_1 = fake_conduit_spell( 340609 );
+
+  conduit.kyrian    = fake_conduit_spell( 340609 );
+  conduit.necrolord = fake_conduit_spell( 341447 );
+  conduit.night_fae = fake_conduit_spell( 341446 );
+  conduit.venthyr   = fake_conduit_spell( 341383 );
+
   // Runeforge Legendaries
 
   // General
@@ -8210,6 +8290,7 @@ void druid_t::create_buffs()
   buff.celestial_alignment = make_buff( this, "celestial_alignment", spec.celestial_alignment )
     ->set_cooldown( timespan_t::zero() )
     ->add_invalidate( CACHE_CRIT_CHANCE )
+    ->set_duration( spec.celestial_alignment->duration() + conduit.balance_3->effectN( 1 ).time_value() )
     ->set_stack_change_callback( [this] ( buff_t* b, int, int new_ ) {
       if ( new_ )
       {
@@ -8228,6 +8309,7 @@ void druid_t::create_buffs()
     ->set_cooldown( timespan_t::zero() )
     ->add_invalidate( CACHE_HASTE )
     ->add_invalidate( CACHE_CRIT_CHANCE )
+    ->set_duration( talent.incarnation_moonkin->duration() + conduit.balance_3->effectN( 1 ).time_value() )
     ->set_stack_change_callback( [this] ( buff_t* b, int, int new_ ) {
       if ( new_ )
       {
@@ -10112,6 +10194,7 @@ void druid_t::create_options()
   add_option( opt_float( "kindred_empowerment_ratio", kindred_empowerment_ratio ) );
   add_option( opt_int( "convoke_the_spirits_heals", convoke_the_spirits_heals ) );
   add_option( opt_float( "convoke_the_spirits_ultimate", convoke_the_spirits_ultimate ) );
+  add_option( opt_string( "fake_conduit", fake_conduit ) );
 }
 
 // druid_t::create_profile ==================================================
@@ -10761,6 +10844,19 @@ void druid_t::apply_affecting_auras( action_t& action )
 
   // Legendaries
   action.apply_affecting_aura( legendary.guardian_runecarve_1 );
+}
+
+const spell_data_t* druid_t::fake_conduit_spell( unsigned id )
+{
+  auto split = util::string_split( fake_conduit, "|" );
+
+  for ( auto s : split )
+  {
+    if ( std::stoi( s ) == id )
+      return find_spell( id );
+  }
+
+  return spell_data_t::not_found();
 }
 
 //void druid_t::output_json_report(js::JsonOutput& root) const
