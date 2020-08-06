@@ -727,8 +727,6 @@ public:
   bool track_cd_waste;
   bool procs_wild_spirits = false;
 
-  cdwaste::action_data_t* cd_waste = nullptr;
-
   struct {
     // bm
     bool aotw_crit_chance = false;
@@ -743,6 +741,8 @@ public:
     damage_affected_by coordinated_assault;
     damage_affected_by spirit_bond;
   } affected_by;
+
+  cdwaste::action_data_t* cd_waste = nullptr;
 
   hunter_action_t( util::string_view n, hunter_t* p, const spell_data_t* s ):
     ab( n, p, s ),
@@ -963,13 +963,14 @@ public:
 
   virtual double cast_regen( const action_state_t* s ) const
   {
-    const timespan_t cast_time = std::max( this -> execute_time(), this -> gcd() );
+    const timespan_t execute_time = this -> execute_time();
+    const timespan_t cast_time = std::max( execute_time, this -> gcd() );
     const double regen = p() -> resource_regen_per_second( RESOURCE_FOCUS );
+    const int num_targets = this -> n_targets();
     size_t targets_hit = 1;
-    if ( this -> energize_type_() == action_energize::PER_HIT && ab::is_aoe() )
+    if ( ab::energize_type == action_energize::PER_HIT && ( num_targets == -1 || num_targets > 0 ) )
     {
       size_t tl_size = this -> target_list().size();
-      int num_targets = this -> n_targets();
       targets_hit = ( num_targets < 0 ) ? tl_size : std::min( tl_size, as<size_t>( num_targets ) );
     }
     double total_regen = regen * cast_time.total_seconds();
@@ -981,7 +982,7 @@ public:
 
       total_regen += regen * std::min( cast_time, remains ).total_seconds() *
                      p() -> azerite_essence.memory_of_lucid_dreams_major_mult;
-      if ( this -> execute_time() < remains )
+      if ( execute_time < remains )
         total_energize *= 1 + p() -> azerite_essence.memory_of_lucid_dreams_major_mult;
     }
 
@@ -1008,12 +1009,6 @@ public:
       return ab::create_expression( fmt::format( "dot.wildfire_bomb_dot.{}", splits[ 2 ] ) );
 
     return ab::create_expression( name );
-  }
-
-  virtual void try_steady_focus()
-  {
-    if ( !ab::background && p() -> talents.steady_focus.ok() )
-      p() -> buffs.steady_focus -> expire();
   }
 
   void add_pet_stats( pet_t* pet, std::initializer_list<util::string_view> names )
@@ -1053,6 +1048,8 @@ void trigger_bloodseeker_update( hunter_t* );
 
 struct hunter_ranged_attack_t: public hunter_action_t < ranged_attack_t >
 {
+  bool breaks_steady_focus = true;
+
   hunter_ranged_attack_t( util::string_view n, hunter_t* player,
                           const spell_data_t* s = spell_data_t::nil() ):
                           hunter_action_t( n, player, s )
@@ -1064,7 +1061,9 @@ struct hunter_ranged_attack_t: public hunter_action_t < ranged_attack_t >
   void execute() override
   {
     hunter_action_t::execute();
-    try_steady_focus();
+
+    if ( p() -> talents.steady_focus.ok() && !background && breaks_steady_focus )
+      p() -> buffs.steady_focus -> expire();
   }
 };
 
@@ -2735,7 +2734,7 @@ struct chimaera_shot_t: public hunter_ranged_attack_t
 
   double cast_regen( const action_state_t* s ) const override
   {
-    const size_t targets_hit = std::min( target_list().size(), as<size_t>( n_targets() ) );
+    const size_t targets_hit = std::min( target_list().size(), as<size_t>( aoe ) );
     return hunter_ranged_attack_t::cast_regen( s ) +
            ( targets_hit * damage[ 0 ] -> composite_energize_amount( nullptr ) );
   }
@@ -2871,7 +2870,7 @@ struct aimed_shot_base_t: public hunter_ranged_attack_t
   } careful_aim;
   struct {
     arcane_shot_sst_t* action;
-    int target_count;
+    int target_count = 0;
   } serpentstalkers_trickery;
   const int trick_shots_targets;
 
@@ -2934,7 +2933,7 @@ struct aimed_shot_base_t: public hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::schedule_travel( s );
 
-    if ( n_targets() > 0 && s -> chain_target < serpentstalkers_trickery.target_count )
+    if ( p() -> buffs.trick_shots -> check() && s -> chain_target < serpentstalkers_trickery.target_count )
     {
       serpentstalkers_trickery.action -> set_target( s -> target );
       serpentstalkers_trickery.action -> execute();
@@ -2966,7 +2965,7 @@ struct aimed_shot_t : public aimed_shot_base_t
 
   bool lock_and_loaded = false;
   struct {
-    double_tap_t* action;
+    double_tap_t* action = nullptr;
     proc_t* proc;
   } double_tap;
   struct {
@@ -3088,6 +3087,8 @@ struct steady_shot_t: public hunter_ranged_attack_t
   {
     parse_options( options_str );
 
+    breaks_steady_focus = false;
+
     spell_data_ptr_t rank2 = p -> find_rank_spell( "Steady Shot", "Rank 2" );
     if ( rank2.ok() )
     {
@@ -3117,17 +3118,19 @@ struct steady_shot_t: public hunter_ranged_attack_t
     return g < min_gcd ? min_gcd : g;
   }
 
+  void execute() override
+  {
+    hunter_ranged_attack_t::execute();
+
+    p() -> buffs.steady_focus -> trigger();
+  }
+
   void impact( action_state_t* s ) override
   {
     hunter_ranged_attack_t::impact( s );
 
     if ( p() -> azerite.steady_aim.ok() )
       td( s -> target ) -> debuffs.steady_aim -> trigger();
-  }
-
-  void try_steady_focus() override
-  {
-    p() -> buffs.steady_focus -> trigger();
   }
 };
 
