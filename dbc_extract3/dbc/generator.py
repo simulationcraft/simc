@@ -1862,6 +1862,11 @@ class SpellDataGenerator(DataGenerator):
           ( 326462, 0, True ), # Kyrian Empower Bond on Tank
           ( 326647, 0, True ), # Kyrian Empower Bond on Healer
           ( 338142, 0, True ), # Kyrian Lone Empowerment
+
+          ( 340720, 1 ), ( 340708, 1 ), ( 340706, 1 ), ( 340719, 1 ), # balance potency conduits
+          ( 340682, 2 ), ( 340688, 2 ), ( 340694, 2 ), ( 340705, 2 ), # feral potency conduits
+          ( 340552, 3 ), ( 340609, 3 ), # guardian potency conduits
+          ( 341378, 0 ), ( 341447, 0 ), ( 341446, 0 ), ( 341383, 0 ), # convenant potency conduits
         ),
         # Demon Hunter:
         (
