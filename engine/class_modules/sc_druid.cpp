@@ -402,7 +402,6 @@ public:
     // Balance
     buff_t* natures_balance;
     buff_t* celestial_alignment;
-    buff_t* fury_of_elune; // Astral Power Gain
     buff_t* incarnation_moonkin;
     buff_t* moonkin_form;
     buff_t* warrior_of_elune;
@@ -629,6 +628,7 @@ public:
     const spell_data_t* shooting_stars_dmg;
     const spell_data_t* half_moon;
     const spell_data_t* full_moon;
+    const spell_data_t* fury_of_elune;
 
     // Guardian
     const spell_data_t* guardian;
@@ -5380,36 +5380,37 @@ struct fury_of_elune_t : public druid_spell_t
 {
   struct fury_of_elune_tick_t : public druid_spell_t
   {
-    fury_of_elune_tick_t( util::string_view n, druid_t* p, const spell_data_t* s ) : druid_spell_t( n, p, s )
+    fury_of_elune_tick_t( util::string_view n, druid_t* p ) : druid_spell_t( n, p, p->spec.fury_of_elune )
     {
       background = dual = ground_aoe = reduced_aoe_damage = true;
       aoe = -1;
     }
   };
 
-  fury_of_elune_t( druid_t* p, const std::string& options_str ) :
-    druid_spell_t( "fury_of_elune", p, p -> talent.fury_of_elune, options_str )
+  fury_of_elune_t( druid_t* p, const std::string& options_str )
+    : druid_spell_t( "fury_of_elune", p, p->talent.fury_of_elune, options_str )
   {
-      if (!p->active.fury_of_elune)
-      {
-          p->active.fury_of_elune = new fury_of_elune_tick_t("fury_of_elune_tick", p, p->find_spell(211545));
-          p->active.fury_of_elune->stats = stats;
-      }
+    if ( !p->active.fury_of_elune )
+    {
+      p->active.fury_of_elune        = new fury_of_elune_tick_t( "fury_of_elune_tick", p );
+      p->active.fury_of_elune->stats = stats;
+    }
   }
 
   void execute() override
   {
-      druid_spell_t::execute();
+    druid_spell_t::execute();
 
-      streaking_stars_trigger(SS_FURY_OF_ELUNE, nullptr);
+    streaking_stars_trigger( SS_FURY_OF_ELUNE, nullptr );
 
-      timespan_t pulse_time = data().effectN(3).period();
-      make_event<ground_aoe_event_t>(*sim, p(), ground_aoe_params_t()
-          .target(execute_state->target)
-          .pulse_time(pulse_time * p()->composite_spell_haste()) //tick time is saved in an effect
-          .duration(data().duration())
-          .action(p()->active.fury_of_elune));
-      p() -> buff.fury_of_elune -> trigger();
+    // TODO: Make tick time dynamic, as fury of elune does not snapshot haste
+    timespan_t pulse_time = data().effectN( 3 ).period();
+    make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
+        .target( execute_state->target )
+        .hasted( ground_aoe_params_t::hasted_with::SPELL_HASTE )
+        .pulse_time( data().effectN( 3 ).period() )
+        .duration( data().duration() )
+        .action( p()->active.fury_of_elune ) );
   }
 };
 
@@ -7832,27 +7833,28 @@ void druid_t::init_spells()
   spec.ironfur                = find_class_spell( "Ironfur" );
 
   // Balance
-  spec.astral_power               = find_specialization_spell( "Astral Power" );
-  spec.balance                    = find_specialization_spell( "Balance Druid" );
-  spec.celestial_alignment        = find_specialization_spell( "Celestial Alignment" );
-  spec.innervate                  = find_specialization_spell( "Innervate" );
-  spec.moonkin_form               = find_affinity_spell( "Moonkin Form" );
-  spec.eclipse                    = find_specialization_spell( "Eclipse" );
-  spec.eclipse_2                  = find_rank_spell( "Eclipse", "Rank 2" );
-  spec.eclipse_solar              = find_spell( 48517 );
-  spec.eclipse_lunar              = find_spell( 48518 );
-  spec.starfall                   = find_affinity_spell( "Starfall" );
-  spec.starfall_2                 = find_rank_spell( "Starfall", "Rank 2" );
+  spec.astral_power        = find_specialization_spell( "Astral Power" );
+  spec.balance             = find_specialization_spell( "Balance Druid" );
+  spec.celestial_alignment = find_specialization_spell( "Celestial Alignment" );
+  spec.innervate           = find_specialization_spell( "Innervate" );
+  spec.moonkin_form        = find_affinity_spell( "Moonkin Form" );
+  spec.eclipse             = find_specialization_spell( "Eclipse" );
+  spec.eclipse_2           = find_rank_spell( "Eclipse", "Rank 2" );
+  spec.eclipse_solar       = find_spell( 48517 );
+  spec.eclipse_lunar       = find_spell( 48518 );
+  spec.starfall            = find_affinity_spell( "Starfall" );
+  spec.starfall_2          = find_rank_spell( "Starfall", "Rank 2" );
   // do NOT use find_affinity_spell here for spec.starsurge. eclipse extension is held within the balance version.
-  spec.starsurge                  = find_spell( 78674 );
-  spec.starsurge_2                = find_rank_spell( "Starsurge", "Rank 2" ); // Adds more Eclipse extension
-  spec.stellar_drift              = find_spell( 202461 ); // stellar drift mobility buff
-  spec.owlkin_frenzy              = find_spell( 157228 ); // Owlkin Frenzy RAWR
-  spec.sunfire_dmg                = find_spell( 164815 ); // dot debuff for sunfire
-  spec.moonfire_dmg               = find_spell( 164812 ); // dot debuff for moonfire
-  spec.shooting_stars_dmg         = find_spell( 202497 ); // not referenced in shooting stars talent
-  spec.half_moon                  = find_spell( 274282 ); // not referenced in new moon talent
-  spec.full_moon                  = find_spell( 274283 ); // not referenced in new moon talent
+  spec.starsurge          = find_spell( 78674 );
+  spec.starsurge_2        = find_rank_spell( "Starsurge", "Rank 2" );  // Adds more Eclipse extension
+  spec.stellar_drift      = find_spell( 202461 );                      // stellar drift mobility buff
+  spec.owlkin_frenzy      = find_spell( 157228 );                      // Owlkin Frenzy RAWR
+  spec.sunfire_dmg        = find_spell( 164815 );                      // dot debuff for sunfire
+  spec.moonfire_dmg       = find_spell( 164812 );                      // dot debuff for moonfire
+  spec.shooting_stars_dmg = find_spell( 202497 );                      // not referenced in shooting stars talent
+  spec.half_moon          = find_spell( 274282 );                      // not referenced in new moon talent
+  spec.full_moon          = find_spell( 274283 );                      // not referenced in new moon talent
+  spec.fury_of_elune      = find_spell( 211545 );                      // fury of elune tick damage
 
   // Feral
   spec.cat_form            = find_class_spell( "Cat Form" )->ok() ? find_spell( 3025 ) : spell_data_t::not_found();
@@ -8237,12 +8239,6 @@ void druid_t::create_buffs()
         this->eclipse_handler.expire_both();
         uptime.combined_ca_inc->update( false, sim->current_time() );
       }
-    } );
-
-  buff.fury_of_elune = make_buff( this, "fury_of_elune", talent.fury_of_elune )
-    ->set_tick_callback( [this]( buff_t*, int, timespan_t ) {
-      resource_gain( RESOURCE_ASTRAL_POWER, talent.fury_of_elune->effectN( 3 ).resource( RESOURCE_ASTRAL_POWER ),
-                      gain.fury_of_elune );
     } );
 
   buff.moonkin_form = new buffs::moonkin_form_t( *this );
