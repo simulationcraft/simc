@@ -1333,7 +1333,6 @@ struct voidform_t final : public priest_buff_t<buff_t>
     : base_t( p, "voidform", p.find_spell( 194249 ) )
   {
     add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-    add_invalidate( CACHE_HASTE );
     add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
 
     // Spelldata still has 100 stacks for VF, hardcoding to 1
