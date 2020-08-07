@@ -857,6 +857,90 @@ action_t* base_fiend_pet_t::create_action( util::string_view name, const std::st
   return priest_pet_t::create_action( name, options_str );
 }
 }  // namespace fiend
+
+struct void_tendril_t final : public priest_pet_t
+{
+  void_tendril_t( priest_t* owner ) : priest_pet_t( owner->sim, *owner, "void_tendril", PET_VOID_TENDRIL, true )
+  {
+  }
+
+  void init_action_list() override
+  {
+    priest_pet_t::init_action_list();
+
+    action_priority_list_t* def = get_action_priority_list( "default" );
+    def->add_action( "mind_flay" );
+  }
+
+  action_t* create_action( util::string_view name, const std::string& options_str ) override;
+};
+
+struct void_tendril_mind_flay_t final : public priest_pet_spell_t
+{
+  const spell_data_t* void_tendril_insanity;
+
+  void_tendril_mind_flay_t( void_tendril_t& p )
+    : priest_pet_spell_t( "mind_flay", &p, p.o().find_spell( 193473 ) ),
+      void_tendril_insanity( p.o().find_spell( 336214 ) )
+  {
+    channeled    = true;
+    hasted_ticks = false;
+
+    // Merge the stats object with other instances of the pet
+    auto first_pet = p.o().find_pet( p.name_str );
+    if ( first_pet )
+    {
+      auto first_pet_action = first_pet->find_action( name_str );
+      if ( first_pet_action )
+      {
+        if ( stats == first_pet_action->stats )
+        {
+          // This is the first pet created. Add its stat as a child to priest mind_flay
+          auto owner_mind_flay_action = p.o().find_action( "mind_flay" );
+          if ( owner_mind_flay_action )
+          {
+            owner_mind_flay_action->add_child( this );
+          }
+        }
+        if ( !sim->report_pets_separately )
+        {
+          stats = first_pet_action->stats;
+        }
+      }
+    }
+  }
+
+  timespan_t composite_dot_duration( const action_state_t* ) const override
+  {
+    // Not hasted
+    return dot_duration;
+  }
+
+  timespan_t tick_time( const action_state_t* ) const override
+  {
+    // Not hasted
+    return base_tick_time;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    priest_pet_spell_t::impact( s );
+
+    p().o().generate_insanity( void_tendril_insanity->effectN( 1 ).base_value(),
+                               p().o().gains.insanity_eternal_call_to_the_void, s->action );
+  }
+};
+
+action_t* void_tendril_t::create_action( util::string_view name, const std::string& options_str )
+{
+  if ( name == "mind_flay" )
+  {
+    return new void_tendril_mind_flay_t( *this );
+  }
+
+  return priest_pet_t::create_action( name, options_str );
+}
+
 }  // namespace pets
 
 // ==========================================================================
@@ -904,13 +988,13 @@ priest_t::priest_t( sim_t* sim, util::string_view name, race_e r )
     specs(),
     mastery_spells(),
     cooldowns(),
-    gains(),
     rppm(),
+    gains(),
     benefits(),
     procs(),
     active_spells(),
     active_items(),
-    pets(),
+    pets( *this ),
     options(),
     action(),
     azerite(),
@@ -934,8 +1018,8 @@ void priest_t::create_cooldowns()
   cooldowns.holy_fire          = get_cooldown( "holy_fire" );
   cooldowns.holy_word_serenity = get_cooldown( "holy_word_serenity" );
   cooldowns.void_bolt          = get_cooldown( "void_bolt" );
-  cooldowns.mind_blast         = get_cooldown( "mind_blast");
-  cooldowns.void_eruption      = get_cooldown( "void_eruption");
+  cooldowns.mind_blast         = get_cooldown( "mind_blast" );
+  cooldowns.void_eruption      = get_cooldown( "void_eruption" );
 }
 
 /** Construct priest gains */
@@ -955,7 +1039,7 @@ void priest_t::create_gains()
   gains.insanity_death_and_madness             = get_gain( "Insanity Gained from Death and Madness" );
   gains.shadow_word_death_self_damage          = get_gain( "Shadow Word: Death self inflicted damage" );
   gains.insanity_mindgames                     = get_gain( "Insanity Gained from Mindgames" );
-  gains.insanity_eternal_call_to_the_void = get_gain( "Insanity Gained from Eternal Call to the Void Mind Flays" );
+  gains.insanity_eternal_call_to_the_void      = get_gain( "Insanity Gained from Eternal Call to the Void Mind Flays" );
 }
 
 /** Construct priest procs */
@@ -1751,6 +1835,23 @@ void priest_t::arise()
   base_t::arise();
 
   buffs.whispers_of_the_damned->trigger();
+}
+
+// Legendary Eternal Call to the Void trigger
+void priest_t::trigger_eternal_call_to_the_void( const dot_t* )
+{
+  if ( rppm.eternal_call_to_the_void->trigger() )
+  {
+    procs.void_tendril->occur();
+    auto spawned_pets = pets.void_tendril.spawn();
+  }
+}
+
+priest_t::priest_pets_t::priest_pets_t( priest_t& p ) : shadowfiend(), mindbender(), void_tendril( "void_tendril", &p )
+{
+  auto void_tendril_spell = p.find_spell( 193473 );
+  // Add 1ms to ensure pet is dismissed after last dot tick.
+  void_tendril.set_default_duration( void_tendril_spell->duration() + timespan_t::from_millis( 1 ) );
 }
 
 buffs::dispersion_t::dispersion_t( priest_t& p )

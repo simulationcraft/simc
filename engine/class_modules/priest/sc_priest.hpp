@@ -11,6 +11,7 @@
 #include "simulationcraft.hpp"
 
 #include "player/covenant.hpp"
+#include "player/pet_spawner.hpp"
 #include "sc_enums.hpp"
 
 namespace priestspace
@@ -46,6 +47,11 @@ struct insanity_drain_stacks_t;
 namespace buffs
 {
 struct dispersion_t;
+}
+
+namespace pets
+{
+struct void_tendril_t;
 }
 
 /**
@@ -111,7 +117,7 @@ public:
 
     // Shadow
     propagate_const<buffs::dispersion_t*> dispersion;
-    propagate_const<buff_t*> insanity_drain_stacks; 
+    propagate_const<buff_t*> insanity_drain_stacks;
     propagate_const<buff_t*> shadowform;
     propagate_const<buff_t*> shadowform_state;  // Dummy buff to track whether player entered Shadowform initially
     propagate_const<buff_t*> shadowy_insight;
@@ -208,7 +214,7 @@ public:
     const spell_data_t* sanlayn;        // NYI
     const spell_data_t* intangibility;  // NYI
     // T30
-    const spell_data_t* searing_nightmare; // NYI
+    const spell_data_t* searing_nightmare;  // NYI
     const spell_data_t* misery;
     // T35
     const spell_data_t* last_word;
@@ -216,9 +222,9 @@ public:
     const spell_data_t* psychic_horror;
     // T40
     const spell_data_t* auspicious_spirits;
-    const spell_data_t* psychic_link;     // NYI    
+    const spell_data_t* psychic_link;  // NYI
     const spell_data_t* shadow_crash;
-    // T45    
+    // T45
     const spell_data_t* damnation;
     const spell_data_t* void_torrent;
     // T50
@@ -344,7 +350,6 @@ public:
   {
     propagate_const<actions::spells::mind_sear_tick_t*> mind_sear_tick;
     propagate_const<actions::spells::shadowy_apparition_spell_t*> shadowy_apparitions;
-    propagate_const<action_t*> void_tendril;
   } active_spells;
 
   // Items
@@ -353,10 +358,13 @@ public:
   } active_items;
 
   // Pets
-  struct
+  struct priest_pets_t
   {
     propagate_const<pet_t*> shadowfiend;
     propagate_const<pet_t*> mindbender;
+    spawner::pet_spawner_t<pets::void_tendril_t, priest_t> void_tendril;
+
+    priest_pets_t( priest_t& p );
   } pets;
 
   // Options
@@ -928,6 +936,7 @@ struct fiend_melee_t : public priest_pet_melee_t
 };
 }  // namespace actions
 }  // namespace fiend
+
 }  // namespace pets
 
 namespace actions

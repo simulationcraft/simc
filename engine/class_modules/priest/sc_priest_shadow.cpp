@@ -67,8 +67,7 @@ private:
 
 public:
   mind_blast_t( priest_t& player, util::string_view options_str )
-    : priest_spell_t( "mind_blast", player,
-                      player.find_class_spell( "Mind Blast" ) ),
+    : priest_spell_t( "mind_blast", player, player.find_class_spell( "Mind Blast" ) ),
       whispers_of_the_damned_value( priest().azerite.whispers_of_the_damned.value( 2 ) ),
       harvested_thoughts_value( priest().azerite.thought_harvester.value( 1 ) ),
       whispers_bonus_insanity( priest()
@@ -143,7 +142,7 @@ public:
   timespan_t execute_time() const override
   {
     /// TODO Remove when implementing Dark Thoughts
-    //if ( priest().buffs.shadowy_insight->check() )
+    // if ( priest().buffs.shadowy_insight->check() )
     //{
     //  return timespan_t::zero();
     //}
@@ -172,8 +171,9 @@ public:
     // {
     //   cd_duration            = timespan_t::zero();
     //   cooldown->last_charged = sim->current_time();
-    // 
-    //   sim->print_debug( "{} shadowy insight proc occured during {} cast. Deferring cooldown reset.", priest(), *this );
+    //
+    //   sim->print_debug( "{} shadowy insight proc occured during {} cast. Deferring cooldown reset.", priest(), *this
+    //   );
     // }
 
     priest_spell_t::update_ready( cd_duration );
@@ -268,40 +268,6 @@ struct mind_sear_t final : public priest_spell_t
   }
 };
 
-struct void_tendril_mind_flay_t final : public priest_spell_t
-{
-  const spell_data_t* void_tendril_insanity;
-
-  void_tendril_mind_flay_t( priest_t& p )
-    : priest_spell_t( "mind_flay_void_tendril", p, p.find_spell( 193473 ) ),
-      void_tendril_insanity( priest().find_spell( 336214 ) )
-  {
-    aoe                    = 1;
-    background             = true;
-    ground_aoe             = true;
-    spell_power_mod.direct = spell_power_mod.tick;
-    spell_power_mod.tick   = 0.0;
-  }
-
-  timespan_t tick_time( const action_state_t* ) const override
-  {
-    return data().duration();
-  }
-
-  double composite_da_multiplier( const action_state_t* state ) const override
-  {
-    return priest().composite_player_pet_damage_multiplier( state );
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    priest_spell_t::impact( s );
-
-    priest().generate_insanity( void_tendril_insanity->effectN( 1 ).base_value(),
-                                priest().gains.insanity_eternal_call_to_the_void, s->action );
-  }
-};
-
 struct mind_flay_t final : public priest_spell_t
 {
   mind_flay_t( priest_t& p, util::string_view options_str )
@@ -317,12 +283,6 @@ struct mind_flay_t final : public priest_spell_t
     energize_amount *= 1 + p.talents.fortress_of_the_mind->effectN( 1 ).percent();
 
     spell_power_mod.tick *= 1.0 + p.talents.fortress_of_the_mind->effectN( 3 ).percent();
-
-    if ( priest().legendary.eternal_call_to_the_void->ok() )
-    {
-      priest().active_spells.void_tendril = new void_tendril_mind_flay_t( p );
-      add_child( priest().active_spells.void_tendril );
-    }
   }
 
   void tick( dot_t* d ) override
@@ -406,9 +366,9 @@ struct shadow_word_death_t final : public priest_spell_t
     if ( priest().legendary.painbreaker_psalm->ok() )
     {
       // TODO: Check if this ever gets un-hardcoded for (336165)
-      energize_type = action_energize::ON_HIT;
+      energize_type     = action_energize::ON_HIT;
       energize_resource = RESOURCE_INSANITY;
-      energize_amount = 10;
+      energize_amount   = 10;
     }
   }
 
@@ -1111,7 +1071,7 @@ struct void_eruption_t final : public priest_spell_t
     add_child( impact_action );
 
     may_miss = false;
-    aoe      = -1;    
+    aoe      = -1;
   }
 
   void execute() override
@@ -1329,8 +1289,7 @@ struct insanity_drain_stacks_t final : public priest_buff_t<buff_t>
 
 struct voidform_t final : public priest_buff_t<buff_t>
 {
-  voidform_t( priest_t& p )
-    : base_t( p, "voidform", p.find_spell( 194249 ) )
+  voidform_t( priest_t& p ) : base_t( p, "voidform", p.find_spell( 194249 ) )
   {
     add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
     add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
@@ -1338,10 +1297,10 @@ struct voidform_t final : public priest_buff_t<buff_t>
     // Spelldata still has 100 stacks for VF, hardcoding to 1
     set_max_stack( 1 );
 
-    if (priest().talents.legacy_of_the_void->ok())
+    if ( priest().talents.legacy_of_the_void->ok() )
     {
       // If LotV is talented, VF ends by Insanity drained, not time
-      set_duration( timespan_t::from_seconds(100) );
+      set_duration( timespan_t::from_seconds( 100 ) );
     }
   }
 
@@ -1349,7 +1308,7 @@ struct voidform_t final : public priest_buff_t<buff_t>
   {
     bool r = base_t::trigger( stacks, value, chance, duration );
 
-    if( priest().talents.legacy_of_the_void->ok() ) 
+    if ( priest().talents.legacy_of_the_void->ok() )
     {
       priest().buffs.insanity_drain_stacks->trigger();
       priest().insanity.begin_tracking();
@@ -1384,7 +1343,7 @@ struct death_and_madness_buff_t final : public priest_buff_t<buff_t>
 
   death_and_madness_buff_t( priest_t& p )
     : base_t( p, "death_and_madness_insanity_gain", p.find_spell( 321973 ) ),
-      insanity_gain( data().effectN( 1 ).base_value() / 55 ) // Tooltip: ${$m1/55} Insanity generated every $t1 sec
+      insanity_gain( data().effectN( 1 ).base_value() / 55 )  // Tooltip: ${$m1/55} Insanity generated every $t1 sec
   {
     set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
       priest().generate_insanity( insanity_gain, priest().gains.insanity_death_and_madness, nullptr );
@@ -1493,20 +1452,6 @@ double priest_t::tick_damage_over_time( timespan_t duration, const dot_t* dot ) 
   action_state_t::release( state );
   return total_damage;
 };
-
-// Legendary Eternal Call to the Void trigger
-void priest_t::trigger_eternal_call_to_the_void( const dot_t* d )
-{
-  if ( rppm.eternal_call_to_the_void->trigger() )
-  {
-    procs.void_tendril->occur();
-    make_event<ground_aoe_event_t>( *sim, this,
-                                    ground_aoe_params_t()
-                                        .target( d->target )
-                                        .duration( find_spell( 193470 )->duration() )
-                                        .action( active_spells.void_tendril ) );
-  }
-}
 
 // Insanity Control Methods
 void priest_t::generate_insanity( double num_amount, gain_t* g, action_t* action )
@@ -1638,7 +1583,7 @@ void priest_t::insanity_state_t::reset()
 /// Compute insanity drain per second with current state of the actor
 double priest_t::insanity_state_t::insanity_drain_per_second() const
 {
-  if ( ! actor.talents.legacy_of_the_void->ok() )
+  if ( !actor.talents.legacy_of_the_void->ok() )
   {
     return 0;
   }
@@ -1979,7 +1924,6 @@ action_t* priest_t::create_action_shadow( util::string_view name, util::string_v
 /// Indicates whether insanity drain is reduced by 100%.
 bool priest_t::insanity_drain_frozen() const
 {
-
   if ( buffs.dispersion->no_insanty_drain && buffs.dispersion->check() )
   {
     return true;
