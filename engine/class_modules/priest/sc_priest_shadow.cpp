@@ -137,6 +137,8 @@ public:
     {
       priest().procs.mind_devourer->occur();
     }
+
+    priest().trigger_shadowy_apparitions( s );
   }
 
   timespan_t execute_time() const override
@@ -653,7 +655,7 @@ struct shadowy_apparition_spell_t final : public priest_spell_t
   /** Trigger a shadowy apparition */
   void trigger( player_t* target )
   {
-    player->sim->print_debug( "{} triggered shadowy apparition.", priest() );
+    player->sim->print_debug( "{} triggered shadowy apparition on target {}.", priest(), *target );
 
     priest().procs.shadowy_apparition->occur();
     set_target( target );
@@ -678,13 +680,6 @@ struct shadow_word_pain_t final : public priest_spell_t
       base_dd_max   = 0.0;
       base_dd_min   = 0.0;
       energize_type = action_energize::NONE;  // no insanity gain
-    }
-
-    if ( priest().specs.shadowy_apparitions->ok() && !priest().active_spells.shadowy_apparitions )
-    {
-      priest().active_spells.shadowy_apparitions = new shadowy_apparition_spell_t( p );
-      // If SW:P is the only action having SA, then we can add it as a child stat.
-      add_child( priest().active_spells.shadowy_apparitions );
     }
 
     auto rank2 = p.find_rank_spell( "Shadow Word: Pain", "Rank 2" );
@@ -744,19 +739,13 @@ struct shadow_word_pain_t final : public priest_spell_t
 
     if ( priest().active_spells.shadowy_apparitions && ( d->state->result_amount > 0 ) )
     {
-      if ( d->state->result == RESULT_CRIT )
+      // TODO: adjust to what this actually does.
+      if ( priest().conduits.shimmering_apparitions->ok() )
       {
-        priest().active_spells.shadowy_apparitions->trigger( d->target );
-      }
-      else
-      {
-        if ( priest().conduits.shimmering_apparitions->ok() )
+        if ( rng().roll( priest().conduits.shimmering_apparitions.percent() ) )
         {
-          if ( rng().roll( priest().conduits.shimmering_apparitions.percent() ) )
-          {
-            priest().active_spells.shadowy_apparitions->trigger( d->target );
-            priest().procs.shimmering_apparitions->occur();
-          }
+          priest().active_spells.shadowy_apparitions->trigger( d->target );
+          priest().procs.shimmering_apparitions->occur();
         }
       }
     }
@@ -884,6 +873,13 @@ struct devouring_plague_t final : public priest_spell_t
 
     return priest_spell_t::cost();
   }
+
+  void impact( action_state_t* s ) override
+  {
+    priest_spell_t::impact( s );
+
+    priest().trigger_shadowy_apparitions( s );
+  }
 };
 
 struct void_bolt_t final : public priest_spell_t
@@ -1000,6 +996,8 @@ struct void_bolt_t final : public priest_spell_t
   void impact( action_state_t* s ) override
   {
     priest_spell_t::impact( s );
+
+    priest().trigger_shadowy_apparitions( s );
 
     if ( void_bolt_extension )
     {
@@ -2131,4 +2129,35 @@ void priest_t::generate_apl_shadow()
                       "(cooldown.void_bolt.up|cooldown.mind_blast.up)" );
   cleave->add_action( this, "Shadow Word: Pain" );
 }
+
+void priest_t::init_background_actions_shadow()
+{
+  if ( specs.shadowy_apparitions->ok() )
+  {
+    active_spells.shadowy_apparitions = new actions::spells::shadowy_apparition_spell_t( *this );
+  }
+}
+
+/// Trigger shadowy apparitions on all targets affected by vampiric touch
+void priest_t::trigger_shadowy_apparitions( action_state_t* s )
+{
+  if ( !specs.shadowy_apparitions->ok() )
+  {
+    return;
+  }
+  // TODO: check if this procs non non-hits
+  int number_of_apparitions_to_trigger = s->result == RESULT_CRIT ? 2 : 1;
+
+  for ( priest_td_t* priest_td : _target_data.get_entries() )
+  {
+    if ( priest_td && priest_td->dots.vampiric_touch->is_ticking() )
+    {
+      for ( int i = 0; i < number_of_apparitions_to_trigger; ++i )
+      {
+        active_spells.shadowy_apparitions->trigger( priest_td->target );
+      }
+    }
+  }
+}
+
 }  // namespace priestspace

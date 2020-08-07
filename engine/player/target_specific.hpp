@@ -40,6 +40,11 @@ public:
     if ( owner_ )
       range::dispose( data );
   }
+
+  const std::vector<T*>& get_entries()
+  {
+    return data;
+  }
 private:
   mutable std::vector<T*> data;
 };

@@ -527,6 +527,8 @@ private:
   void create_buffs_discipline();
   void init_spells_discipline();
   void init_rng_discipline();
+
+  void init_background_actions_shadow();
   void generate_apl_discipline_d();
   void generate_apl_discipline_h();
   std::unique_ptr<expr_t> create_expression_discipline( action_t* a, const util::string_view name_str );
@@ -550,6 +552,7 @@ public:
   void adjust_holy_word_serenity_cooldown();
   double tick_damage_over_time( timespan_t duration, const dot_t* dot ) const;
   void trigger_eternal_call_to_the_void( const dot_t* d );
+  void trigger_shadowy_apparitions( action_state_t* );
 
   /**
    * Insanity tracking

@@ -7,6 +7,7 @@
 
 #include "sc_priest.hpp"
 
+#include "sc_enums.hpp"
 #include "tcb/span.hpp"
 
 namespace priestspace
@@ -1518,6 +1519,8 @@ void priest_t::init_rng()
 void priest_t::init_background_actions()
 {
   action.ascended_eruption = new actions::spells::ascended_eruption_t( *this );
+
+  init_background_actions_shadow();
 }
 
 void priest_t::vision_of_perfection_proc()
