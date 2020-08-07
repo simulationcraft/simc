@@ -3116,9 +3116,9 @@ public:
     if ( trigger_untamed_ferocity && !p->azerite.untamed_ferocity.ok() )
       trigger_untamed_ferocity = false;
 
-    parse_persistent_buff_effects( p->buff.bloodtalons );
-    parse_persistent_buff_effects( p->buff.tigers_fury, p->conduit.feral_4 );
-    parse_persistent_buff_effects( p->buff.clearcasting, p->talent.moment_of_clarity );
+    snapshots.bloodtalons = parse_persistent_buff_effects( p->buff.bloodtalons );
+    snapshots.tigers_fury = parse_persistent_buff_effects( p->buff.tigers_fury, p->conduit.feral_4 );
+    snapshots.clearcasting = parse_persistent_buff_effects( p->buff.clearcasting, p->talent.moment_of_clarity );
   }
 
   // For effects that specifically trigger only when "prowling."
@@ -3215,7 +3215,7 @@ public:
     }
   }
 
-  void parse_persistent_buff_effects( buff_t* buff, const spell_data_t* spell1 = spell_data_t::nil() )
+  bool parse_persistent_buff_effects( buff_t* buff, const spell_data_t* spell1 = spell_data_t::nil() )
   {
     size_t ta_old = ta_multiplier_buffeffects.size();
     size_t da_old = da_multiplier_buffeffects.size();
@@ -3248,11 +3248,13 @@ public:
         }
       }
 
-      // update snapshots.X
-      snapshots.bloodtalons  = buff == p()->buff.bloodtalons;
-      snapshots.tigers_fury  = buff == p()->buff.tigers_fury;
-      snapshots.clearcasting = buff == p()->buff.clearcasting;
+      return true;
     }
+
+    if ( da_multiplier_buffeffects.size() > da_old )  // no persistent multiplier, but does snapshot & consume the buff
+      return true;
+
+    return false;
   }
 
   double composite_persistent_multiplier( const action_state_t* s ) const override
