@@ -940,6 +940,24 @@ struct fiend_melee_t : public priest_pet_melee_t
 }  // namespace actions
 }  // namespace fiend
 
+
+struct void_tendril_t final : public priest_pet_t
+{
+  void_tendril_t( priest_t* owner ) : priest_pet_t( owner->sim, *owner, "void_tendril", PET_VOID_TENDRIL, true )
+  {
+  }
+
+  void init_action_list() override
+  {
+    priest_pet_t::init_action_list();
+
+    action_priority_list_t* def = get_action_priority_list( "default" );
+    def->add_action( "mind_flay" );
+  }
+
+  action_t* create_action( util::string_view name, const std::string& options_str ) override;
+};
+
 }  // namespace pets
 
 namespace actions
