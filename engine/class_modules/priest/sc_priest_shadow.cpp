@@ -587,6 +587,8 @@ struct shadowy_apparition_damage_t final : public priest_spell_t
     may_miss   = false;
     may_crit   = false;
 
+    base_dd_multiplier *= 1 + priest().talents.auspicious_spirits->effectN( 1 ).percent();
+
     // Hardcoded value. This is the behavior announced and tested in game
     // However the value doesn't show up anywhere in the known spelldata
     // Anshlun 2018-10-02
@@ -622,15 +624,6 @@ struct shadowy_apparition_damage_t final : public priest_spell_t
         d += spiteful_apparitions_bonus;
       }
     }
-
-    return d;
-  }
-
-  double composite_da_multiplier( const action_state_t* state ) const override
-  {
-    double d = priest_spell_t::composite_da_multiplier( state );
-
-    d *= 1.0 + priest().talents.auspicious_spirits->effectN( 1 ).percent();
 
     return d;
   }
@@ -680,6 +673,7 @@ struct shadow_word_pain_t final : public priest_spell_t
       base_dd_max   = 0.0;
       base_dd_min   = 0.0;
       energize_type = action_energize::NONE;  // no insanity gain
+      spell_power_mod.direct = 0;
     }
 
     auto rank2 = p.find_rank_spell( "Shadow Word: Pain", "Rank 2" );
@@ -687,50 +681,23 @@ struct shadow_word_pain_t final : public priest_spell_t
     {
       dot_duration += rank2->effectN( 1 ).time_value();
     }
+
+    // TODO: This assumes death_thoes doesn't affect the direct damage portion - didn't test it
+    base_ta_adder += get_death_throes_bonus();
+
+    if ( casted && priest().azerite.torment_of_torments.enabled() )
+    {
+      base_dd_adder += priest().azerite.torment_of_torments.value( 2 );
+    }
+        if ( priest().azerite.torment_of_torments.enabled() )
+    {
+      dot_duration += increased_time;
+    }
   }
 
   shadow_word_pain_t( priest_t& p, util::string_view options_str ) : shadow_word_pain_t( p, true )
   {
     parse_options( options_str );
-  }
-
-  double spell_direct_power_coefficient( const action_state_t* s ) const override
-  {
-    return casted ? priest_spell_t::spell_direct_power_coefficient( s ) : 0.0;
-  }
-
-  double bonus_ta( const action_state_t* state ) const override
-  {
-    double d = priest_spell_t::bonus_ta( state );
-
-    d += get_death_throes_bonus();
-
-    return d;
-  }
-
-  // TODO: This assumes death_thoes doesn't affect the direct damage portion - didn't test it
-  double bonus_da( const action_state_t* state ) const override
-  {
-    double d = priest_spell_t::bonus_da( state );
-
-    if ( casted && priest().azerite.torment_of_torments.enabled() )
-    {
-      d += priest().azerite.torment_of_torments.value( 2 );
-    }
-
-    return d;
-  }
-
-  timespan_t composite_dot_duration( const action_state_t* state ) const override
-  {
-    timespan_t t = priest_spell_t::composite_dot_duration( state );
-
-    if ( priest().azerite.torment_of_torments.enabled() )
-    {
-      t += increased_time;
-    }
-
-    return t;
   }
 
   void tick( dot_t* d ) override
@@ -755,16 +722,6 @@ struct shadow_word_pain_t final : public priest_spell_t
       trigger_power_of_the_dark_side();
     }
   }
-
-  double cost() const override
-  {
-    if ( priest().specialization() == PRIEST_SHADOW )
-    {
-      return 0.0;
-    }
-
-    return priest_spell_t::cost();
-  }
 };
 
 struct vampiric_touch_t final : public priest_spell_t
@@ -788,6 +745,11 @@ struct vampiric_touch_t final : public priest_spell_t
       child_swp             = new shadow_word_pain_t( priest(), false );
       child_swp->background = true;
     }
+
+    if ( priest().azerite.thought_harvester.enabled() )
+    {
+      base_ta_adder += harvested_thoughts_value;
+    }
   }
 
   void trigger_heal( action_state_t* )
@@ -802,18 +764,6 @@ struct vampiric_touch_t final : public priest_spell_t
         priest().resource_gain( RESOURCE_HEALTH, amount_to_heal, priest().gains.vampiric_touch_health );
     double overheal = amount_to_heal - actual_amount;
     */
-  }
-
-  double bonus_ta( const action_state_t* state ) const override
-  {
-    double d = priest_spell_t::bonus_ta( state );
-
-    if ( priest().azerite.thought_harvester.enabled() )
-    {
-      d += harvested_thoughts_value;
-    }
-
-    return d;
   }
 
   void impact( action_state_t* s ) override
@@ -1083,7 +1033,7 @@ struct void_eruption_t final : public priest_spell_t
 
   void consume_resource() override
   {
-    // do not consume any insanity, even though it has a cost. So do nothing.
+    // does not consume any insanity, even though it has a cost. So do nothing.
   }
 
   bool ready() override
