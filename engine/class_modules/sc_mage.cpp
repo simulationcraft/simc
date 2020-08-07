@@ -1495,16 +1495,18 @@ struct mage_spell_t : public spell_t
 {
   struct affected_by_t
   {
-    // Permanent damage increase.
+    // Permanent damage increase
     bool arcane_mage = true;
     bool fire_mage = true;
     bool frost_mage = true;
 
-    // Temporary damage increase.
+    // Temporary damage increase
     bool arcane_power = true;
     bool bone_chilling = true;
     bool incanters_flow = true;
     bool rune_of_power = true;
+    bool savant = false;
+
     bool deathborne = true;
     bool siphoned_malice = true;
 
@@ -1512,10 +1514,10 @@ struct mage_spell_t : public spell_t
     bool combustion = true;
     bool ice_floes = false;
     bool shatter = false;
-    bool mastery_savant = false;
-    bool shifting_power = true;
-    bool radiant_spark = true;
+
     bool deathborne_cleave = false;
+    bool radiant_spark = true;
+    bool shifting_power = true;
   } affected_by;
 
   static const snapshot_state_e STATE_FROZEN     = STATE_TGT_USER_1;
@@ -1526,14 +1528,14 @@ struct mage_spell_t : public spell_t
 
   struct triggers_t
   {
-    // TODO: Need to verify what exactly triggers Fevered Incantation.
-    bool fevered_incantation = true;
-    bool radiant_spark = false;
-    // TODO: Need to verify what exactly triggers Icy Propulsion.
-    bool icy_propulsion = true;
+    bool bone_chilling = false;
     bool hot_streak = false;
     bool ignite = false;
     bool kindling = false;
+
+    bool fevered_incantation = true; // TODO: Need to verify what exactly triggers Fevered Incantation.
+    bool icy_propulsion = true; // TODO: Need to verify what exactly triggers Icy Propulsion.
+    bool radiant_spark = false;
   } triggers;
 
 public:
@@ -1629,7 +1631,7 @@ public:
     if ( affected_by.rune_of_power )
       m *= 1.0 + p()->buffs.rune_of_power->check_value();
 
-    if ( affected_by.mastery_savant )
+    if ( affected_by.savant )
       m *= 1.0 + p()->cache.mastery() * p()->spec.savant->effectN( 5 ).mastery_value();
 
     if ( affected_by.deathborne )
@@ -2194,7 +2196,6 @@ struct hot_streak_spell_t : public fire_mage_spell_t
 // The previous functions are virtual and can be overridden when needed.
 struct frost_mage_spell_t : public mage_spell_t
 {
-  bool chills;
   bool calculate_on_impact;
   bool consumes_winters_chill;
 
@@ -2209,7 +2210,6 @@ struct frost_mage_spell_t : public mage_spell_t
 
   frost_mage_spell_t( util::string_view n, mage_t* p, const spell_data_t* s = spell_data_t::nil() ) :
     mage_spell_t( n, p, s ),
-    chills(),
     calculate_on_impact(),
     consumes_winters_chill(),
     proc_brain_freeze(),
@@ -2319,7 +2319,7 @@ struct frost_mage_spell_t : public mage_spell_t
       if ( s->chain_target == 0 )
         record_shatter_source( s, shatter_source );
 
-      if ( chills )
+      if ( triggers.bone_chilling )
         p()->buffs.bone_chilling->trigger();
 
       if ( auto td = p()->target_data[ s->target ] )
@@ -2638,7 +2638,7 @@ struct arcane_explosion_t : public arcane_mage_spell_t
     parse_options( options_str );
     aoe = -1;
     cost_reductions = { p->buffs.clearcasting };
-    affected_by.mastery_savant = triggers.radiant_spark = true;
+    affected_by.savant = triggers.radiant_spark = true;
     base_dd_adder += p->azerite.explosive_echo.value( 2 );
     base_multiplier *= 1.0 + p->spec.arcane_explosion_2->effectN( 1 ).percent();
   }
@@ -2741,7 +2741,7 @@ struct arcane_missiles_tick_t : public arcane_mage_spell_t
     arcane_mage_spell_t( n, p, p->find_spell( 7268 ) )
   {
     background = true;
-    affected_by.mastery_savant = triggers.radiant_spark = true;
+    affected_by.savant = triggers.radiant_spark = true;
     base_multiplier *= 1.0 + p->runeforge.arcane_harmony->effectN( 1 ).percent();
   }
 
@@ -2898,7 +2898,7 @@ struct arcane_orb_bolt_t : public arcane_mage_spell_t
     arcane_mage_spell_t( n, p, p->find_spell( 153640 ) )
   {
     background = true;
-    affected_by.mastery_savant = triggers.radiant_spark = true;
+    affected_by.savant = triggers.radiant_spark = true;
   }
 
   void impact( action_state_t* s ) override
@@ -2985,7 +2985,7 @@ struct blizzard_shard_t : public frost_mage_spell_t
     frost_mage_spell_t( n, p, p->find_spell( 190357 ) )
   {
     aoe = -1;
-    background = ground_aoe = chills = true;
+    background = ground_aoe = triggers.bone_chilling = true;
     base_multiplier *= 1.0 + p->spec.blizzard_3->effectN( 1 ).percent();
     base_multiplier *= 1.0 + p->conduits.shivering_core.percent();
     triggers.icy_propulsion = false;
@@ -3174,7 +3174,7 @@ struct cone_of_cold_t : public frost_mage_spell_t
   {
     parse_options( options_str );
     aoe = -1;
-    chills = consumes_winters_chill = triggers.radiant_spark = true;
+    triggers.bone_chilling = consumes_winters_chill = triggers.radiant_spark = true;
   }
 };
 
@@ -3566,7 +3566,7 @@ struct flurry_bolt_t : public frost_mage_spell_t
     glacial_assault_chance()
   {
     background = true;
-    chills = true;
+    triggers.bone_chilling = true;
     base_multiplier *= 1.0 + p->talents.lonely_winter->effectN( 1 ).percent();
     glacial_assault_chance = p->azerite.glacial_assault.spell_ref().effectN( 1 ).trigger()->proc_chance();
     triggers.radiant_spark = true;
@@ -3697,7 +3697,7 @@ struct frostbolt_t : public frost_mage_spell_t
   {
     parse_options( options_str );
     parse_effect_data( p->find_spell( 228597 )->effectN( 1 ) );
-    chills = calculate_on_impact = track_shatter = consumes_winters_chill = triggers.radiant_spark = true;
+    triggers.bone_chilling = calculate_on_impact = track_shatter = consumes_winters_chill = triggers.radiant_spark = true;
     affected_by.deathborne_cleave = true;
     base_multiplier *= 1.0 + p->talents.lonely_winter->effectN( 1 ).percent();
 
@@ -3834,7 +3834,7 @@ struct frozen_orb_bolt_t : public frost_mage_spell_t
   {
     aoe = as<int>( data().effectN( 2 ).base_value() );
     base_multiplier *= 1.0 + p->conduits.unrelenting_cold.percent();
-    background = chills = true;
+    background = triggers.bone_chilling = true;
   }
 
   void init_finished() override
@@ -4944,7 +4944,7 @@ struct ray_of_frost_t : public frost_mage_spell_t
     frost_mage_spell_t( n, p, p->talents.ray_of_frost )
   {
     parse_options( options_str );
-    channeled = chills = triggers.radiant_spark = true;
+    channeled = triggers.bone_chilling = triggers.radiant_spark = true;
     triggers.icy_propulsion = false;
   }
 
@@ -5091,7 +5091,7 @@ struct supernova_t : public arcane_mage_spell_t
     double sn_mult = 1.0 + p->talents.supernova->effectN( 1 ).percent();
     base_multiplier     *= sn_mult;
     base_aoe_multiplier /= sn_mult;
-    affected_by.mastery_savant = triggers.radiant_spark = true;
+    affected_by.savant = triggers.radiant_spark = true;
   }
 };
 
