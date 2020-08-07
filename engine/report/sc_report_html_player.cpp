@@ -535,6 +535,11 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
 
     if ( cAPS > s.portion_aps.mean() )
       compound_aps = "&#160;(" + util::to_string( cAPS, 0 ) + ")";
+    if ( s.player != actor )
+    {
+      // For stats not belonging to the original actor (eg. pet spells added as child to the owner), report aps / apse, similar to the pet section.
+      compound_aps = fmt::format( "&#160; / {:.0f}", s.portion_apse.mean() );
+    }
     if ( cAPSpct > s.portion_amount )
       compound_aps_pct = "&#160;(" + util::to_string( cAPSpct * 100, 1 ) + "%)";
 
