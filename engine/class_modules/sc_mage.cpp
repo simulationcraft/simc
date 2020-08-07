@@ -3855,6 +3855,7 @@ struct frozen_orb_bolt_t : public frost_mage_spell_t
   {
     double am = frost_mage_spell_t::action_multiplier();
 
+    // TODO: Icicles (Rank 2) is currently bugged and doesn't increase damage of Frozen Orb
     am *= 1.0 + p()->cache.mastery() * p()->spec.icicles_2->effectN( 1 ).mastery_value();
 
     return am;
