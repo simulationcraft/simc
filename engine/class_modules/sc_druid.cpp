@@ -112,11 +112,6 @@ struct druid_td_t : public actor_target_data_t
     buff_t* lifebloom;
   } buff;
 
-  struct debuffs_t
-  {
-    buff_t* bloodletting;
-  } debuff;
-
   druid_td_t( player_t& target, druid_t& source );
 
   bool hot_ticking()
@@ -424,6 +419,12 @@ public:
     // Feral
     buff_t* berserk_cat;
     buff_t* bloodtalons;
+    buff_t* bt_rake;          // dummy buff
+    buff_t* bt_shred;         // dummy buff
+    buff_t* bt_swipe;         // dummy buff
+    buff_t* bt_thrash;        // dummy buff
+    buff_t* bt_moonfire;      // dummy buff
+    buff_t* bt_brutal_slash;  // dummy buff
     buff_t* incarnation_cat;
     buff_t* predatory_swiftness;
     buff_t* savage_roar;
@@ -1417,6 +1418,43 @@ struct incarnation_cat_buff_t : public berserk_cat_buff_base_t
   }
 };
 
+struct bt_dummy_buff_t : public druid_buff_t<buff_t>
+{
+  int count;
+
+  bt_dummy_buff_t( druid_t& p, util::string_view n )
+    : base_t( p, n ), count( as<int>( p.talent.bloodtalons->effectN( 2 ).base_value() ) )
+  {
+    set_quiet( true );
+    set_max_stack( 1 );
+    set_duration( timespan_t::from_seconds( p.talent.bloodtalons->effectN( 1 ).base_value() ) );
+    set_refresh_behavior( buff_refresh_behavior::DURATION );
+  }
+
+  bool trigger( int s, double v, double c, timespan_t d ) override
+  {
+    if ( !p().talent.bloodtalons->ok() || p().buff.bloodtalons->check() )
+      return false;
+
+    if ( p().buff.bt_rake->check() + p().buff.bt_shred->check() + p().buff.bt_swipe->check() +
+         p().buff.bt_thrash->check() + p().buff.bt_moonfire->check() + p().buff.bt_brutal_slash->check() + 1 < count )
+    {
+      return druid_buff_t<buff_t>::trigger( s, v, c, d );
+    }
+
+    p().buff.bt_rake->expire();
+    p().buff.bt_shred->expire();
+    p().buff.bt_swipe->expire();
+    p().buff.bt_thrash->expire();
+    p().buff.bt_moonfire->expire();
+    p().buff.bt_brutal_slash->expire();
+
+    p().buff.bloodtalons->trigger( 2 );
+
+    return true;
+  }
+};
+
 // Cat Form =================================================================
 
 struct cat_form_t : public druid_buff_t< buff_t >
@@ -1471,8 +1509,6 @@ struct tigers_fury_buff_t : public druid_buff_t<buff_t>
 {
   tigers_fury_buff_t( druid_t& p ) : base_t( p, "tigers_fury", p.spec.tigers_fury )
   {
-    set_default_value( p.spec.tigers_fury->effectN( 1 ).percent() *
-                       ( 1.0 + p.conduit.feral_4->effectN( 1 ).percent() ) );
     set_cooldown( timespan_t::zero() );
   }
 
@@ -1544,9 +1580,7 @@ struct moonkin_form_t : public druid_buff_t<buff_t>
 struct warrior_of_elune_buff_t : public druid_buff_t<buff_t>
 {
   warrior_of_elune_buff_t( druid_t& p ) : base_t( p, "warrior_of_elune", p.talent.warrior_of_elune )
-  {
-    set_default_value( p.talent.warrior_of_elune->effectN( 1 ).percent() );
-  }
+  {}
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
@@ -2350,10 +2384,12 @@ public:
   snapshot_counter_t* tf_counter;
   bool direct_bleed;
 
-  druid_attack_t( util::string_view n, druid_t* player,
-                  const spell_data_t* s = spell_data_t::nil() ) :
-    ab( n, player, s ), consumes_bloodtalons( false ),
-    bt_counter( nullptr ), tf_counter( nullptr ), direct_bleed( false )
+  druid_attack_t( util::string_view n, druid_t* player, const spell_data_t* s = spell_data_t::nil() )
+    : ab( n, player, s ),
+      consumes_bloodtalons( ab::data().affected_by( player->spec.bloodtalons->effectN( 2 ) ) ),
+      bt_counter( nullptr ),
+      tf_counter( nullptr ),
+      direct_bleed( false )
   {
     ab::may_glance    = false;
     ab::special       = true;
@@ -2380,8 +2416,6 @@ public:
   void init() override
   {
     ab::init();
-
-    consumes_bloodtalons = ab::harmful && ab::special && ab::trigger_gcd > timespan_t::zero();
 
     if ( consumes_bloodtalons )
     {
@@ -2443,49 +2477,33 @@ public:
       return ab::target_armor( t );
   }
 
-  double composite_target_multiplier( player_t* t ) const override
-  {
-    double tm = ab::composite_target_multiplier( t );
-
-    /* Assume that any action that deals physical and applies a dot deals all bleed damage, so
-       that it scales direct "bleed" damage. This is a bad assumption if there is an action
-       that applies a dot but does plain physical direct damage, but there are none of those. */
-    if ( dbc::is_school( ab::school, SCHOOL_PHYSICAL ) && ab::dot_duration > timespan_t::zero() )
-      tm *= 1.0 + ab::td( t ) -> debuff.bloodletting -> value();
-
-    return tm;
-  }
-
   void trigger_clearcasting()
   {
     if ( ab::proc )
       return;
-    if ( ! ( ab::p() -> specialization() == DRUID_FERAL && ab::p() -> spec.omen_of_clarity -> ok() ) )
+    if ( !( ab::p()->specialization() == DRUID_FERAL && ab::p()->spec.omen_of_clarity->ok() ) )
       return;
 
     // 7.00 PPM via community testing (~368k auto attacks)
     // https://docs.google.com/spreadsheets/d/1vMvlq1k3aAuwC1iHyDjqAneojPZusdwkZGmatuWWZWs/edit#gid=1097586165
-    double chance = ab::weapon -> proc_chance_on_swing( 7.00 );
+    double chance = ab::weapon->proc_chance_on_swing( 7.00 );
 
-    if ( ab::p() -> talent.moment_of_clarity -> ok() )
-      chance *= 1.0 + ab::p() -> talent.moment_of_clarity -> effectN( 2 ).percent();
+    if ( ab::p()->talent.moment_of_clarity->ok() )
+      chance *= 1.0 + ab::p()->talent.moment_of_clarity->effectN( 2 ).percent();
 
-    int active = ab::p() -> buff.clearcasting -> check();
+    int active = ab::p()->buff.clearcasting->check();
 
     // Internal cooldown is handled by buff.
 
-    if ( ab::p() -> buff.clearcasting -> trigger(
-           1,
-           buff_t::DEFAULT_VALUE(),
-           chance,
-           ab::p() -> buff.clearcasting -> buff_duration ) ) {
-      ab::p() -> proc.clearcasting -> occur();
+    if ( ab::p()->buff.clearcasting->trigger( 1, buff_t::DEFAULT_VALUE(), chance,
+                                              ab::p()->buff.clearcasting->buff_duration ) )
+    {
+      ab::p()->proc.clearcasting->occur();
 
       for ( int i = 0; i < active; i++ )
-        ab::p() -> proc.clearcasting_wasted -> occur();
+        ab::p()->proc.clearcasting_wasted->occur();
     }
   }
-
 };
 
 // Druid "Spell" Base for druid_spell_t, druid_heal_t ( and potentially druid_absorb_t )
@@ -3101,19 +3119,14 @@ public:
   bool    requires_stealth;
   bool    consumes_combo_points;
   bool    consumes_clearcasting;
-  bool    snapshots_tf;
   bool    trigger_untamed_ferocity;
-
-  // whether the attack gets a damage bonus from Moment of Clarity
-  bool    moment_of_clarity;
 
   // Whether the attack benefits from mastery
   struct {
     bool direct, tick;
   } razor_claws;
 
-  // Whether the attack benefits from TF
-  bool    tigers_fury;
+  std::vector<buff_effect_t> persistent_multiplier_buffeffects;
 
   cat_attack_t( util::string_view token, druid_t* p, const spell_data_t* s = spell_data_t::nil(),
                 const std::string& options = std::string() )
@@ -3121,10 +3134,8 @@ public:
       requires_stealth( false ),
       consumes_combo_points( false ),
       consumes_clearcasting( data().affected_by( p->spec.omen_of_clarity->effectN( 1 ).trigger()->effectN( 1 ) ) ),
-      snapshots_tf( true ),
       trigger_untamed_ferocity( data().affected_by( p->azerite.untamed_ferocity.spell()->effectN( 2 ) ) ),
-      moment_of_clarity( data().affected_by( p->spec.omen_of_clarity->effectN( 1 ).trigger()->effectN( 3 ) ) ),
-      tigers_fury( data().affected_by( p->spec.tigers_fury->effectN( 1 ) ) )
+      persistent_multiplier_buffeffects()
   {
     parse_options( options );
 
@@ -3134,24 +3145,18 @@ public:
       form_mask |= CAT_FORM;
     }
 
-    if (p->specialization() == DRUID_BALANCE || p->specialization() == DRUID_RESTORATION)
+    if ( p->specialization() == DRUID_BALANCE || p->specialization() == DRUID_RESTORATION )
       ap_type = attack_power_type::NO_WEAPON;
 
-    razor_claws.direct = data().affected_by( p -> mastery.razor_claws -> effectN( 1 ) );
-    razor_claws.tick = data().affected_by( p -> mastery.razor_claws -> effectN( 2 ) );
+    razor_claws.direct = data().affected_by( p->mastery.razor_claws->effectN( 1 ) );
+    razor_claws.tick   = data().affected_by( p->mastery.razor_claws->effectN( 2 ) );
 
-    /* Sanity check Tiger's Fury to assure that benefit is the same for both direct
-       and periodic damage. Because we're using composite_persistent_damage_multiplier
-       we have to use a single value for the multiplier instead of being completely
-       faithful to the spell data. */
-    if ( tigers_fury != data().affected_by( p -> spec.tigers_fury -> effectN( 3 ) ) )
-      p -> sim -> errorf( "%s (id=%i) spell data has inconsistent Tiger's Fury benefit.", name_str, id );
-
-    if ( p -> spec.tigers_fury -> effectN( 1 ).percent() != p -> spec.tigers_fury -> effectN( 3 ).percent() )
-      p -> sim -> errorf( "%s (id=%i) spell data has inconsistent Tiger's Fury modifiers.", name_str, id );
-
-    if (trigger_untamed_ferocity && !p->azerite.untamed_ferocity.ok() )
+    if ( trigger_untamed_ferocity && !p->azerite.untamed_ferocity.ok() )
       trigger_untamed_ferocity = false;
+
+    parse_persistent_buff_effects( p->buff.bloodtalons );
+    parse_persistent_buff_effects( p->buff.tigers_fury, p->conduit.feral_4 );
+    parse_persistent_buff_effects( p->buff.clearcasting, p->talent.moment_of_clarity );
   }
 
   // For effects that specifically trigger only when "prowling."
@@ -3177,8 +3182,7 @@ public:
   {
     double c = base_t::cost();
 
-    if ( consumes_clearcasting && current_resource() == RESOURCE_ENERGY &&
-      p() -> buff.clearcasting -> check() )
+    if ( consumes_clearcasting && current_resource() == RESOURCE_ENERGY && p()->buff.clearcasting->check() )
       return 0;
 
     return c;
@@ -3249,28 +3253,44 @@ public:
     }
   }
 
-  double action_multiplier() const override
+  void parse_persistent_buff_effects( buff_t* buff, const spell_data_t* spell1 = spell_data_t::nil() )
   {
-    double am = base_t::action_multiplier();
+    size_t ta_old = ta_multiplier_buffeffects.size();
+    size_t da_old = da_multiplier_buffeffects.size();
 
-    if ( tigers_fury && !snapshots_tf )
-      am *= 1.0 + p()->buff.tigers_fury->check_value();
+    if ( spell1->ok() )
+      parse_buff_effects( buff, {spell1} );
+    else
+      parse_buff_effects( buff );
 
-    return am;
+    // If there is a new entry in the ta_mul table, move it to the pers_mul table.
+    if ( ta_multiplier_buffeffects.size() > ta_old )
+    {
+      double ta_val = ta_multiplier_buffeffects.back().value;
+      double da_val = 0;
+
+      persistent_multiplier_buffeffects.push_back( ta_multiplier_buffeffects.back() );
+      ta_multiplier_buffeffects.pop_back();
+
+      // Any corresponding increases in the da_mul table can be removed as pers_mul covers da_mul & ta_mul
+      if ( da_multiplier_buffeffects.size() > da_old )
+      {
+        da_val = da_multiplier_buffeffects.back().value;
+        da_multiplier_buffeffects.pop_back();
+
+        if ( da_val != ta_val )
+        {
+          p()->sim->print_debug(
+              "WARNING: {} (id={}) spell data has inconsistent persistent multiplier benefit for {}.", buff->name(),
+              buff->data().id(), this->name() );
+        }
+      }
+    }
   }
 
   double composite_persistent_multiplier( const action_state_t* s ) const override
   {
-    double pm = base_t::composite_persistent_multiplier( s );
-
-    if ( consumes_bloodtalons )
-      pm *= 1.0 + p() -> buff.bloodtalons -> check_value();
-
-    if ( moment_of_clarity )
-      pm *= 1.0 + p() -> buff.clearcasting -> check_value();
-
-    if ( tigers_fury && snapshots_tf )
-      pm *= 1.0 + p() -> buff.tigers_fury -> check_value();
+    double pm = base_t::composite_persistent_multiplier( s ) * get_buff_effects_value( persistent_multiplier_buffeffects );
 
     return pm;
   }
@@ -3440,10 +3460,6 @@ struct cat_melee_t : public cat_attack_t
     trigger_gcd       = timespan_t::zero();
     special           = false;
     weapon_multiplier = 1.0;
-
-    // Manually enable benefit from TF on autos because it isn't handled
-    // by the affected_by() magic in cat_attack_t.
-    tigers_fury = true;
   }
 
   timespan_t execute_time() const override
@@ -3562,6 +3578,13 @@ struct brutal_slash_t : public cat_attack_t
 
     return b;
   }
+
+  void execute() override
+  {
+    cat_attack_t::execute();
+
+    p()->buff.bt_brutal_slash->trigger();
+  }
 };
 
 //==== Feral Frenzy ==============================================
@@ -3647,7 +3670,7 @@ struct ferocious_bite_t : public cat_attack_t
   timespan_t max_sabertooth_refresh;
 
   ferocious_bite_t( druid_t* p, const std::string& options_str )
-    : cat_attack_t( "ferocious_bite", p, p->find_affinity_spell( "Ferocious Bite" ) ),
+    : cat_attack_t( "ferocious_bite", p, p->find_class_spell( "Ferocious Bite" ) ),
       excess_energy( 0 ),
       max_excess_energy( 0 ),
       max_energy( false ),
@@ -3817,18 +3840,10 @@ struct lunar_inspiration_t : public cat_attack_t
   {
     may_dodge = may_parry = may_block = may_glance = false;
 
-    snapshots_tf = true;
     hasted_ticks = true;
     energize_type = action_energize::ON_HIT;
 
     gcd_type = gcd_haste_type::ATTACK_HASTE;
-  }
-
-  void init() override
-  {
-    cat_attack_t::init();
-
-    consumes_bloodtalons = false;
   }
 
   size_t available_targets( std::vector< player_t* >& tl ) const override
@@ -3908,6 +3923,8 @@ struct lunar_inspiration_t : public cat_attack_t
     target_cache.is_valid = false;
 
     cat_attack_t::execute();
+
+    p()->buff.bt_moonfire->trigger();
   }
 
   bool ready() override
@@ -4065,6 +4082,8 @@ struct rake_t : public cat_attack_t
   {
     cat_attack_t::execute();
 
+    p()->buff.bt_rake->trigger();
+
     if ( p()->azerite.raking_ferocity.ok() )
     {
       p()->buff.raking_ferocity->trigger( 1, p()->azerite.raking_ferocity.value() );
@@ -4164,22 +4183,14 @@ struct primal_wrath_t : public cat_attack_t
   {
     parse_options( options_str );
 
-    snapshots_tf          = true;
-    consumes_bloodtalons  = true;
-    consumes_clearcasting = false;
-    special               = true;
-    aoe = -1;
+    special = true;
+    aoe     = -1;
 
     // rip = (rip_t*)p->find_action("rip");
-
-    /*if (!rip)
-    {*/
+    //if (!rip)
     rip = new rip_t( p, "" );
-    //}
     rip->stats = stats;
-
     // stats->add_child(rip->stats);
-
     // add_child(rip);
   }
 
@@ -4302,17 +4313,11 @@ struct shred_t : public cat_attack_t
                        p->talent.feral_affinity->effectN( 8 ).base_value();
   }
 
-  void impact( action_state_t* s ) override
-  {
-    cat_attack_t::impact( s );
-
-    if ( s -> result == RESULT_CRIT && p() -> sets -> has_set_bonus( DRUID_FERAL, PVP, B4 ) )
-      td( s -> target ) -> debuff.bloodletting -> trigger(); // Druid module debuff
-  }
-
   void execute() override
   {
     cat_attack_t::execute();
+
+    p()->buff.bt_shred->trigger();
 
     if ( p()->buff.shredding_fury->up() )
       p()->buff.shredding_fury->decrement();
@@ -4430,6 +4435,13 @@ struct swipe_cat_t : public cat_attack_t
 
     return cat_attack_t::ready();
   }
+
+  void execute() override
+  {
+    cat_attack_t::execute();
+
+    p()->buff.bt_swipe->trigger();
+  }
 };
 
 // Tiger's Fury =============================================================
@@ -4508,6 +4520,8 @@ struct thrash_cat_t : public cat_attack_t
     p()->buff.scent_of_blood->expire();
 
     cat_attack_t::execute();
+
+    p()->buff.bt_thrash->trigger();
   }
 };
 
@@ -5100,9 +5114,6 @@ struct regrowth_t: public druid_heal_t
   void execute() override
   {
     druid_heal_t::execute();
-
-    if ( p() -> talent.bloodtalons -> ok() )
-      p() -> buff.bloodtalons -> trigger( 2 );
 
     p() -> buff.predatory_swiftness -> decrement( 1 );
   }
@@ -6377,14 +6388,6 @@ struct skull_bash_t : public druid_spell_t
   {
     may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = false;
     ignore_false_positive = true;
-  }
-
-  void execute() override
-  {
-    druid_spell_t::execute();
-
-    if ( p() -> sets -> has_set_bonus( DRUID_FERAL, PVP, B2 ) )
-      p() -> cooldown.tigers_fury -> reset( false );
   }
 
   bool target_ready( player_t* candidate_target ) override
@@ -7685,51 +7688,48 @@ struct lycaras_fleeting_glimpse_event_t : public event_t
 // druid_t::activate ========================================================
 void druid_t::activate()
 {
-   if ( talent.predator -> ok() )
-   {
-      range::for_each( sim -> actor_list, [this] (player_t* target) -> void {
-         if ( !target -> is_enemy() )
-            return;
+  if ( talent.predator->ok() )
+  {
+    range::for_each( sim->actor_list, [this]( player_t* target ) -> void {
+      if ( !target->is_enemy() )
+        return;
 
-         target->callbacks_on_demise.emplace_back([this](player_t* target) -> void {
-            auto p = this;
-            if (p -> specialization() != DRUID_FERAL)
-               return;
+      target->callbacks_on_demise.emplace_back( [this]( player_t* target ) -> void {
+        auto p = this;
+        if ( p->specialization() != DRUID_FERAL )
+          return;
 
-            if (get_target_data(target) ->       dots.thrash_cat -> is_ticking() ||
-                get_target_data(target) ->              dots.rip -> is_ticking() ||
-                get_target_data(target) ->             dots.rake -> is_ticking() )
-            {
+        if ( get_target_data( target )->dots.thrash_cat->is_ticking() ||
+             get_target_data( target )->dots.rip->is_ticking() ||
+             get_target_data( target )->dots.rake->is_ticking() )
+        {
+          if ( !p->cooldown.tigers_fury->down() )
+            p->proc.predator_wasted->occur();
 
+          p->cooldown.tigers_fury->reset( true );
+          p->proc.predator->occur();
+        }
+      } );
+    } );
 
-               if (!p->cooldown.tigers_fury->down())
-                  p->proc.predator_wasted->occur();
+    callbacks_on_demise.emplace_back( [this]( player_t* target ) -> void {
+      if ( sim->active_player->specialization() != DRUID_FERAL )
+        return;
 
-               p->cooldown.tigers_fury->reset(true);
-               p->proc.predator->occur();
-            }
-         });
-      });
+      if ( get_target_data( target )->dots.thrash_cat->is_ticking() ||
+           get_target_data( target )->dots.rip->is_ticking() ||
+           get_target_data( target )->dots.rake->is_ticking() )
+      {
+        auto p = ( (druid_t*)sim->active_player );
 
+        if ( !p->cooldown.tigers_fury->down() )
+          p->proc.predator_wasted->occur();
 
-      callbacks_on_demise.emplace_back([this]( player_t* target ) -> void {
-         if (sim->active_player->specialization() != DRUID_FERAL)
-            return;
-
-         if ( get_target_data( target ) -> dots.thrash_cat       -> is_ticking() ||
-              get_target_data( target ) -> dots.rip              -> is_ticking() ||
-              get_target_data( target ) -> dots.rake             -> is_ticking() )
-         {
-            auto p = ( (druid_t*) sim -> active_player );
-
-            if ( !p -> cooldown.tigers_fury -> down() )
-                  p -> proc.predator_wasted -> occur( );
-
-            p -> cooldown.tigers_fury -> reset( true );
-            p -> proc.predator -> occur();
-         }
-      });
-   }
+        p->cooldown.tigers_fury->reset( true );
+        p->proc.predator->occur();
+      }
+    } );
+  }
 
    player_t::activate();
 }
@@ -8236,13 +8236,10 @@ void druid_t::create_buffs()
 
   buff.cat_form              = new buffs::cat_form_t( *this );
 
-  buff.clearcasting          = make_buff( this, "clearcasting", spec.omen_of_clarity -> effectN( 1 ).trigger() )
-    ->set_cooldown( spec.omen_of_clarity -> internal_cooldown() )
-    ->set_chance( spec.omen_of_clarity -> proc_chance() )
-    ->set_max_stack( (unsigned) ( 1 + talent.moment_of_clarity->effectN(1).base_value() ) )
-    ->set_default_value( specialization() != DRUID_RESTORATION
-                                               ? talent.moment_of_clarity -> effectN( 4 ).percent()
-                                               : 0.0 );
+  buff.clearcasting = make_buff( this, "clearcasting", spec.omen_of_clarity->effectN( 1 ).trigger() )
+    ->set_cooldown( spec.omen_of_clarity->internal_cooldown() )
+    ->set_chance( spec.omen_of_clarity->proc_chance() )
+    ->set_max_stack( as<unsigned>( 1 + talent.moment_of_clarity->effectN( 1 ).base_value() ) );
 
   buff.dash = make_buff( this, "dash", find_class_spell( "Dash" ) )
     ->set_cooldown( timespan_t::zero() )
@@ -8323,10 +8320,14 @@ void druid_t::create_buffs()
     ->add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER )
     ->set_cooldown( timespan_t::zero() );
 
-  buff.bloodtalons =
-      make_buff( this, "bloodtalons", talent.bloodtalons->ok() ? spec.bloodtalons : spell_data_t::not_found() )
-          ->set_default_value( spec.bloodtalons->effectN( 1 ).percent() )
-          ->set_max_stack( 2 );
+  buff.bloodtalons = make_buff( this, "bloodtalons", spec.bloodtalons );
+
+  buff.bt_rake         = new bt_dummy_buff_t( *this, "bt_rake" );
+  buff.bt_shred        = new bt_dummy_buff_t( *this, "bt_shred" );
+  buff.bt_swipe        = new bt_dummy_buff_t( *this, "bt_swipe" );
+  buff.bt_thrash       = new bt_dummy_buff_t( *this, "bt_thrash" );
+  buff.bt_moonfire     = new bt_dummy_buff_t( *this, "bt_moonfire" );
+  buff.bt_brutal_slash = new bt_dummy_buff_t( *this, "bt_brutal_slash" );
 
   buff.galactic_guardian     = make_buff( this, "galactic_guardian", find_spell( 213708 ) )
     ->set_chance( talent.galactic_guardian -> ok() )
@@ -8481,9 +8482,6 @@ void druid_t::create_buffs()
     ->set_tick_behavior( buff_tick_behavior::NONE );
 
   buff.tigers_fury           = new tigers_fury_buff_t( *this );
-    /*= buff_creator_t( this, "tigers_fury", spec.tigers_fury )
-                               .default_value( spec.tigers_fury -> effectN( 1 ).percent() )
-                               .cd( timespan_t::zero() );*/
 
   buff.scent_of_blood = make_buff( this, "scent_of_blood", find_spell( 285646 ) )
                             ->set_max_stack( 10 )
@@ -10277,6 +10275,19 @@ std::unique_ptr<expr_t> druid_t::create_expression( util::string_view name_str )
     }
     return player_t::create_expression( fmt::format("{}{}{}", splits[ 0 ], replacement_name, splits[ 2 ]) );
   }
+
+  if ( splits.size() == 3 && util::str_compare_ci( splits[ 1 ], "berserk" ) )
+  {
+    std::string replacement;
+    switch( specialization() )
+    {
+      case DRUID_FERAL:    replacement = ".berserk_cat.";  break;
+      case DRUID_GUARDIAN: replacement = ".berserk_bear."; break;
+      default: break;
+    }
+    return player_t::create_expression( fmt::format( "{}{}{}", splits[ 0 ], replacement, splits[ 2 ] ) );
+  }
+
   return player_t::create_expression( name_str );
 }
 
@@ -10808,7 +10819,7 @@ void druid_t::vision_of_perfection_proc()
 }
 
 druid_td_t::druid_td_t( player_t& target, druid_t& source )
-  : actor_target_data_t( &target, &source ), dots( dots_t() ), buff( buffs_t() ), debuff( debuffs_t() )
+  : actor_target_data_t( &target, &source ), dots( dots_t() ), buff( buffs_t() )
 {
   dots.fury_of_elune         = target.get_dot( "fury_of_elune", &source );
   dots.lifebloom             = target.get_dot( "lifebloom", &source );
@@ -10828,9 +10839,6 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
   dots.feral_runecarve_4     = target.get_dot( "feral_runecarve_4", &source );
 
   buff.lifebloom = make_buff( *this, "lifebloom", source.find_class_spell( "Lifebloom" ) );
-
-  debuff.bloodletting = make_buff( *this, "bloodletting", source.find_spell( 165699 ) )
-    ->set_default_value( source.find_spell( 165699 )->effectN( 1 ).percent() );
 }
 
 // Copypasta for reporting
