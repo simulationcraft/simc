@@ -2123,7 +2123,7 @@ void priest_t::generate_apl_shadow()
   single->add_action( this, "Mind Blast",
                       "if=variable.dots_up&"
                       "((raid_event.movement.in>cast_time+0.5&raid_event.movement.in<4)|"
-                      "!talent.shadow_word_void.enabled|buff.voidform.down|"
+                      "buff.voidform.down|"
                       "buff.voidform.stack>14&(insanity<70|charges_fractional>1.33)|"
                       "buff.voidform.stack<=14&(insanity<60|charges_fractional>1.33))",
                       "Bank the Shadow Word: Void charges for a bit to try and avoid overcapping on Insanity." );
@@ -2132,7 +2132,7 @@ void priest_t::generate_apl_shadow()
                       "dot.vampiric_touch.remains>4&buff.voidform.up" );
   single->add_action( this, "Shadow Word: Pain",
                       "if=refreshable&target.time_to_die>4&"
-                      "!talent.misery.enabled&!talent.dark_void.enabled" );
+                      "!talent.misery.enabled" );
   single->add_action( this, "Vampiric Touch",
                       "if=refreshable&target.time_to_die>6|"
                       "(talent.misery.enabled&"
