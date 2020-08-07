@@ -193,7 +193,8 @@
       { "data_type": "i", "field": "unk_1" },
       { "data_type": "i", "field": "unk_2" },
       { "data_type": "i", "field": "unk_3" },
-      { "data_type": "i", "field": "unk_4" }
+      { "data_type": "i", "field": "unk_4" },
+      { "data_type": "i", "field": "unk_5" }
     ]
   },
   "Curve": {
@@ -427,7 +428,8 @@
       { "data_type": "B", "field": "f4"},
       { "data_type": "i", "field": "id_display_info"},
       { "data_type": "i", "field": "id_icon"},
-      { "data_type": "i", "field": "f3"}
+      { "data_type": "i", "field": "f3"},
+      { "data_type": "i", "field": "f5" }
     ]
   },
   "ItemArmorQuality": {
@@ -698,7 +700,8 @@
   },
   "JournalTier": {
     "fields": [
-      { "data_type": "S", "field": "name" }
+      { "data_type": "S", "field": "name" },
+      { "data_type": "i", "field": "player_condition_id" }
     ]
   },
   "JournalTierXInstance": {
