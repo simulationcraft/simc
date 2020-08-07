@@ -3455,7 +3455,10 @@ struct fireball_t : public fire_mage_spell_t
         p()->action.legendary_meteor->execute();
       }
       else
+      {
         p()->buffs.molten_skyfall->trigger();
+      }
+
       if ( p()->buffs.molten_skyfall->check() == p()->buffs.molten_skyfall->max_stack() - 1 )
       {
         p()->buffs.molten_skyfall->expire();
@@ -3600,6 +3603,7 @@ struct flurry_bolt_t : public frost_mage_spell_t
     }
 
     p()->buffs.cold_front->trigger();
+
     if ( p()->buffs.cold_front->check() == p()->buffs.cold_front->max_stack() - 1 )
     {
       p()->buffs.cold_front->expire();
@@ -3775,8 +3779,10 @@ struct frostbolt_t : public frost_mage_spell_t
     if ( result_is_hit( s->result ) )
     {
       p()->buffs.tunnel_of_ice->trigger();
+
       if ( !p()->buffs.cold_front_ready->check() )
         p()->buffs.cold_front->trigger();
+
       if ( p()->buffs.cold_front->check() == p()->buffs.cold_front->max_stack() - 1 )
       {
         p()->buffs.cold_front->expire();
@@ -6098,42 +6104,42 @@ void mage_t::init_spells()
   talents.glacial_spike      = find_talent_spell( "Glacial Spike"      );
 
   // Spec Spells
-  spec.arcane_barrage_2      = find_specialization_spell( 231564 );
+  spec.arcane_barrage_2      = find_specialization_spell( "Arcane Barrage", "Rank 2" );
   spec.arcane_barrage_3      = find_specialization_spell( "Arcane Barrage", "Rank 3" );
   spec.arcane_charge         = find_spell( 36032 );
-  spec.arcane_explosion_2    = find_specialization_spell( 321752 );
-  spec.arcane_mage           = find_specialization_spell( 137021 );
+  spec.arcane_explosion_2    = find_specialization_spell( "Arcane Explosion", "Rank 2" );
+  spec.arcane_mage           = find_specialization_spell( "Arcane Mage" );
   spec.arcane_power_2        = find_specialization_spell( "Arcane Power", "Rank 2" );
   spec.clearcasting          = find_specialization_spell( "Clearcasting" );
   spec.clearcasting_2        = find_specialization_spell( "Clearcasting", "Rank 2" );
   spec.clearcasting_3        = find_specialization_spell( "Clearcasting", "Rank 3" );
-  spec.evocation_2           = find_specialization_spell( 231565 );
+  spec.evocation_2           = find_specialization_spell( "Evocation", "Rank 2" );
   spec.presence_of_mind_2    = find_specialization_spell( "Presence of Mind", "Rank 2" );
   spec.touch_of_the_magi     = find_specialization_spell( "Touch of the Magi" );
 
   spec.combustion_2          = find_specialization_spell( "Combustion", "Rank 2" );
   spec.critical_mass         = find_specialization_spell( "Critical Mass" );
-  spec.critical_mass_2       = find_specialization_spell( 231630 );
+  spec.critical_mass_2       = find_specialization_spell( "Critical Mass", "Rank 2" );
   spec.dragons_breath_2      = find_specialization_spell( "Dragon's Breath", "Rank 2" );
   spec.fireball_2            = find_specialization_spell( "Fireball", "Rank 2" );
-  spec.fire_blast_2          = find_specialization_spell( 231568 );
-  spec.fire_blast_3          = find_specialization_spell( 108853 );
-  spec.fire_blast_4          = find_specialization_spell( 231567 );
-  spec.fire_mage             = find_specialization_spell( 137019 );
+  spec.fire_blast_2          = find_specialization_spell( "Fire Blast", "Rank 2" );
+  spec.fire_blast_3          = find_specialization_spell( "Fire Blast", "Rank 3" );
+  spec.fire_blast_4          = find_specialization_spell( "Fire Blast", "Rank 4" );
+  spec.fire_mage             = find_specialization_spell( "Fire Mage" );
   spec.flamestrike_2         = find_specialization_spell( "Flamestrike", "Rank 2" );
-  spec.hot_streak            = find_specialization_spell( 195283 );
+  spec.hot_streak            = find_specialization_spell( "Hot Streak" );
   spec.pyroblast_2           = find_specialization_spell( "Pyroblast", "Rank 2" );
 
   spec.brain_freeze          = find_specialization_spell( "Brain Freeze" );
-  spec.brain_freeze_2        = find_specialization_spell( 231584 );
+  spec.brain_freeze_2        = find_specialization_spell( "Brain Freeze", "Rank 2" );
   spec.blizzard_2            = find_specialization_spell( "Blizzard", "Rank 2" );
   spec.blizzard_3            = find_specialization_spell( "Blizzard", "Rank 3" );
   spec.cold_snap_2           = find_specialization_spell( "Cold Snap", "Rank 2" );
   spec.fingers_of_frost      = find_specialization_spell( "Fingers of Frost" );
-  spec.frost_mage            = find_specialization_spell( 137020 );
+  spec.frost_mage            = find_specialization_spell( "Frost Mage" );
   spec.icy_veins_2           = find_specialization_spell( "Icy Veins", "Rank 2" );
   spec.shatter               = find_specialization_spell( "Shatter" );
-  spec.shatter_2             = find_specialization_spell( 231582 );
+  spec.shatter_2             = find_specialization_spell( "Shatter", "Rank 2" );
 
 
   // Mastery
@@ -6185,25 +6191,25 @@ void mage_t::init_spells()
   runeforge.grisly_icicle        = find_runeforge_legendary( "Grisly Icicle"        );
 
   // Soulbind Conduits
-  conduits.arcane_prodigy           = find_conduit_spell( "Arcane Prodigy" );
+  conduits.arcane_prodigy           = find_conduit_spell( "Arcane Prodigy"           );
   conduits.artifice_of_the_archmage = find_conduit_spell( "Artifice of the Archmage" );
-  conduits.magis_brand              = find_conduit_spell( "Magi's Brand" );
-  conduits.nether_precision         = find_conduit_spell( "Nether Precision" );
+  conduits.magis_brand              = find_conduit_spell( "Magi's Brand"             );
+  conduits.nether_precision         = find_conduit_spell( "Nether Precision"         );
 
-  conduits.controlled_destruction   = find_conduit_spell( "Controlled Destruction" );
-  conduits.flame_accretion          = find_conduit_spell( "Flame Accretion" );
-  conduits.infernal_cascade         = find_conduit_spell( "Infernal Cascade" );
-  conduits.master_flame             = find_conduit_spell( "Master Flame" );
+  conduits.controlled_destruction   = find_conduit_spell( "Controlled Destruction"   );
+  conduits.flame_accretion          = find_conduit_spell( "Flame Accretion"          );
+  conduits.infernal_cascade         = find_conduit_spell( "Infernal Cascade"         );
+  conduits.master_flame             = find_conduit_spell( "Master Flame"             );
 
-  conduits.ice_bite                 = find_conduit_spell( "Ice Bite" );
-  conduits.icy_propulsion           = find_conduit_spell( "Icy Propulsion" );
-  conduits.shivering_core           = find_conduit_spell( "Shivering Core" );
-  conduits.unrelenting_cold         = find_conduit_spell( "Unrelenting Cold" );
+  conduits.ice_bite                 = find_conduit_spell( "Ice Bite"                 );
+  conduits.icy_propulsion           = find_conduit_spell( "Icy Propulsion"           );
+  conduits.shivering_core           = find_conduit_spell( "Shivering Core"           );
+  conduits.unrelenting_cold         = find_conduit_spell( "Unrelenting Cold"         );
 
-  conduits.discipline_of_the_grove  = find_conduit_spell( "Discipline of the Grove" );
-  conduits.gift_of_the_lich         = find_conduit_spell( "Gift of the Lich" );
-  conduits.ire_of_the_ascended      = find_conduit_spell( "Ire of the Ascended" );
-  conduits.siphoned_malice          = find_conduit_spell( "Siphoned Malice" );
+  conduits.discipline_of_the_grove  = find_conduit_spell( "Discipline of the Grove"  );
+  conduits.gift_of_the_lich         = find_conduit_spell( "Gift of the Lich"         );
+  conduits.ire_of_the_ascended      = find_conduit_spell( "Ire of the Ascended"      );
+  conduits.siphoned_malice          = find_conduit_spell( "Siphoned Malice"          );
 
   auto memory = find_azerite_essence( "Memory of Lucid Dreams" );
   lucid_dreams_refund = memory.spell( 1u, essence_type::MINOR )->effectN( 1 ).percent();
@@ -6263,7 +6269,7 @@ void mage_t::create_buffs()
                                  ->set_cooldown( 0_ms )
                                  ->set_stack_change_callback( [ this ] ( buff_t*, int, int cur )
                                    { if ( cur == 0 ) cooldowns.presence_of_mind->start( cooldowns.presence_of_mind->action ); } )
-                                 ->set_max_stack( find_spell( 205025 )->initial_stacks() + as<int>( spec.presence_of_mind_2->effectN( 1 ).base_value() ) );
+                                 ->set_max_stack( find_spell( 205025 )->max_stacks() + as<int>( spec.presence_of_mind_2->effectN( 1 ).base_value() ) );
 
   buffs.arcane_familiar      = make_buff( this, "arcane_familiar", find_spell( 210126 ) )
                                  ->set_default_value( find_spell( 210126 )->effectN( 1 ).percent() )
