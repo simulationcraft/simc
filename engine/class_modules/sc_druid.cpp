@@ -3060,20 +3060,14 @@ namespace cat_attacks {
 // Druid Cat Attack
 // ==========================================================================
 
-struct cat_attack_t : public druid_attack_t < melee_attack_t >
+struct cat_attack_t : public druid_attack_t<melee_attack_t>
 {
 protected:
   bool    attack_critical;
 public:
   bool    requires_stealth;
   bool    consumes_combo_points;
-  bool    consumes_clearcasting;
   bool    trigger_untamed_ferocity;
-
-  // Whether the attack benefits from mastery
-  struct {
-    bool direct, tick;
-  } razor_claws;
 
   struct has_snapshot_t
   {
@@ -3092,7 +3086,6 @@ public:
     : base_t( token, p, s ),
       requires_stealth( false ),
       consumes_combo_points( false ),
-      consumes_clearcasting( data().affected_by( p->spec.omen_of_clarity->effectN( 1 ).trigger()->effectN( 1 ) ) ),
       trigger_untamed_ferocity( data().affected_by( p->azerite.untamed_ferocity.spell()->effectN( 2 ) ) ),
       snapshots( has_snapshot_t() ),
       bt_counter( nullptr ),
@@ -3110,15 +3103,24 @@ public:
     if ( p->specialization() == DRUID_BALANCE || p->specialization() == DRUID_RESTORATION )
       ap_type = attack_power_type::NO_WEAPON;
 
-    razor_claws.direct = data().affected_by( p->mastery.razor_claws->effectN( 1 ) );
-    razor_claws.tick   = data().affected_by( p->mastery.razor_claws->effectN( 2 ) );
-
     if ( trigger_untamed_ferocity && !p->azerite.untamed_ferocity.ok() )
       trigger_untamed_ferocity = false;
 
-    snapshots.bloodtalons = parse_persistent_buff_effects( p->buff.bloodtalons );
-    snapshots.tigers_fury = parse_persistent_buff_effects( p->buff.tigers_fury, p->conduit.feral_4 );
+    snapshots.bloodtalons  = parse_persistent_buff_effects( p->buff.bloodtalons );
+    snapshots.tigers_fury  = parse_persistent_buff_effects( p->buff.tigers_fury, p->conduit.feral_4 );
     snapshots.clearcasting = parse_persistent_buff_effects( p->buff.clearcasting, p->talent.moment_of_clarity );
+
+    if ( data().affected_by( p->mastery.razor_claws->effectN( 1 ) ) )
+    {
+      da_multiplier_buffeffects.push_back(
+          buff_effect_t( nullptr, p->mastery.razor_claws->effectN( 1 ).percent(), true ) );
+    }
+
+    if ( data().affected_by( p->mastery.razor_claws->effectN( 2 ) ) )
+    {
+      ta_multiplier_buffeffects.push_back(
+          buff_effect_t( nullptr, p->mastery.razor_claws->effectN( 2 ).percent(), true ) );
+    }
   }
 
   // For effects that specifically trigger only when "prowling."
@@ -3140,23 +3142,12 @@ public:
     return prowl || shadowmeld;
   }
 
-  double cost() const override
-  {
-    double c = base_t::cost();
-
-    if ( consumes_clearcasting && current_resource() == RESOURCE_ENERGY && p()->buff.clearcasting->check() )
-      return 0;
-
-    return c;
-  }
-
   void consume_resource() override
   {
-    double eff_cost = base_t::cost();
+    double eff_cost = base_cost();
 
     // Treat Omen of Clarity energy savings like an energy gain for tracking purposes.
-    if ( consumes_clearcasting && current_resource() == RESOURCE_ENERGY && base_t::cost() > 0 &&
-         p()->buff.clearcasting->up() )
+    if ( snapshots.clearcasting && current_resource() == RESOURCE_ENERGY && p()->buff.clearcasting->up() )
     {
       // Base cost doesn't factor in Berserk, but Omen of Clarity does net us less energy during it, so account for that
       // here.
@@ -3168,7 +3159,7 @@ public:
 
     base_t::consume_resource();
 
-    if ( consumes_clearcasting && current_resource() == RESOURCE_ENERGY && base_t::cost() > 0 )
+    if ( snapshots.clearcasting && current_resource() == RESOURCE_ENERGY )
     {
       p()->buff.clearcasting->decrement();
 
@@ -3219,6 +3210,7 @@ public:
   {
     size_t ta_old = ta_multiplier_buffeffects.size();
     size_t da_old = da_multiplier_buffeffects.size();
+    size_t cost_old = cost_buffeffects.size();
 
     if ( spell1->ok() )
       parse_buff_effects( buff, {spell1} );
@@ -3250,8 +3242,8 @@ public:
 
       return true;
     }
-
-    if ( da_multiplier_buffeffects.size() > da_old )  // no persistent multiplier, but does snapshot & consume the buff
+    // no persistent multiplier, but does snapshot & consume the buff
+    if ( da_multiplier_buffeffects.size() > da_old || cost_buffeffects.size() > cost_old )
       return true;
 
     return false;
@@ -3262,27 +3254,6 @@ public:
     double pm = base_t::composite_persistent_multiplier( s ) * get_buff_effects_value( persistent_multiplier_buffeffects );
 
     return pm;
-  }
-
-  double composite_da_multiplier( const action_state_t* state ) const override
-  {
-    double dm = base_t::composite_da_multiplier( state );
-
-    /* Modifiers for direct bleed damage. */
-    if ( razor_claws.direct )
-      dm *= 1.0 + p() -> cache.mastery_value();
-
-    return dm;
-  }
-
-  double composite_ta_multiplier( const action_state_t* s ) const override
-  {
-    double tm = base_t::composite_ta_multiplier( s );
-
-    if ( razor_claws.tick ) // Don't need to check school, it modifies all periodic damage.
-      tm *= 1.0 + p() -> cache.mastery_value();
-
-    return tm;
   }
 
   double bonus_da(const action_state_t* s) const override
@@ -8244,8 +8215,9 @@ void druid_t::create_buffs()
 
   buff.cat_form              = new buffs::cat_form_t( *this );
 
+  // 1.05s ICD per https://github.com/simulationcraft/simc/commit/b06d0685895adecc94e294f4e3fcdd57ac909a10
   buff.clearcasting = make_buff( this, "clearcasting", spec.omen_of_clarity->effectN( 1 ).trigger() )
-    ->set_cooldown( spec.omen_of_clarity->internal_cooldown() )
+    ->set_cooldown( 1.05_s )
     ->set_chance( spec.omen_of_clarity->proc_chance() )
     ->set_max_stack( as<unsigned>( 1 + talent.moment_of_clarity->effectN( 1 ).base_value() ) );
 
