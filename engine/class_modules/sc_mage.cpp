@@ -3569,7 +3569,7 @@ struct flurry_bolt_t : public frost_mage_spell_t
     chills = true;
     base_multiplier *= 1.0 + p->talents.lonely_winter->effectN( 1 ).percent();
     glacial_assault_chance = p->azerite.glacial_assault.spell_ref().effectN( 1 ).trigger()->proc_chance();
-    consumes_winters_chill = triggers.radiant_spark = true;
+    triggers.radiant_spark = true;
   }
 
   void impact( action_state_t* s ) override
