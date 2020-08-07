@@ -1449,7 +1449,7 @@ struct bt_dummy_buff_t : public druid_buff_t<buff_t>
     p().buff.bt_moonfire->expire();
     p().buff.bt_brutal_slash->expire();
 
-    p().buff.bloodtalons->trigger( 2 );
+    p().buff.bloodtalons->trigger( p().buff.bloodtalons->max_stack() );
 
     return true;
   }
@@ -1717,7 +1717,6 @@ public:
   std::vector<buff_effect_t> recharge_multiplier_buffeffects;
   std::vector<buff_effect_t> cost_buffeffects;
   std::vector<buff_effect_t> crit_chance_buffeffects;
-
 
   druid_action_t( util::string_view n, druid_t* player, const spell_data_t* s = spell_data_t::nil() )
     : ab( n, player, s ),
@@ -2379,22 +2378,24 @@ private:
 public:
   using base_t = druid_attack_t<Base>;
 
-  bool consumes_bloodtalons;
-  snapshot_counter_t* bt_counter;
-  snapshot_counter_t* tf_counter;
   bool direct_bleed;
+  double ooc_chance;
 
   druid_attack_t( util::string_view n, druid_t* player, const spell_data_t* s = spell_data_t::nil() )
-    : ab( n, player, s ),
-      consumes_bloodtalons( ab::data().affected_by( player->spec.bloodtalons->effectN( 2 ) ) ),
-      bt_counter( nullptr ),
-      tf_counter( nullptr ),
-      direct_bleed( false )
+    : ab( n, player, s ), direct_bleed( false ), ooc_chance( 0.0 )
   {
-    ab::may_glance    = false;
-    ab::special       = true;
+    ab::may_glance = false;
+    ab::special    = true;
 
     parse_special_effect_data();
+
+    // 7.00 PPM via community testing (~368k auto attacks)
+    // https://docs.google.com/spreadsheets/d/1vMvlq1k3aAuwC1iHyDjqAneojPZusdwkZGmatuWWZWs/edit#gid=1097586165
+    if ( player->spec.omen_of_clarity->ok() )
+      ooc_chance = 7.00;
+
+    if ( player->talent.moment_of_clarity->ok() )
+      ooc_chance *= 1.0 + player->talent.moment_of_clarity->effectN( 2 ).percent();
   }
 
   void parse_special_effect_data()
@@ -2413,17 +2414,6 @@ public:
     }
   }
 
-  void init() override
-  {
-    ab::init();
-
-    if ( consumes_bloodtalons )
-    {
-      bt_counter = new snapshot_counter_t( ab::p(), ab::p() -> buff.bloodtalons );
-      tf_counter = new snapshot_counter_t( ab::p(), ab::p() -> buff.tigers_fury );
-    }
-  }
-
   timespan_t gcd() const override
   {
     timespan_t g = ab::gcd();
@@ -2437,38 +2427,6 @@ public:
       return g;
   }
 
-  void execute() override
-  {
-    ab::execute();
-
-    if ( consumes_bloodtalons && ab::hit_any_target )
-    {
-      bt_counter -> count_execute();
-      tf_counter -> count_execute();
-
-      ab::p() -> buff.bloodtalons -> decrement();
-    }
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    ab::impact( s );
-
-    if ( ab::result_is_hit( s -> result ) && ! ab::special )
-      trigger_clearcasting();
-  }
-
-  void tick( dot_t* d ) override
-  {
-    ab::tick( d );
-
-    if ( consumes_bloodtalons )
-    {
-      bt_counter -> count_tick();
-      tf_counter -> count_tick();
-    }
-  }
-
   double target_armor( player_t* t ) const override
   {
     if ( direct_bleed )
@@ -2477,21 +2435,13 @@ public:
       return ab::target_armor( t );
   }
 
-  void trigger_clearcasting()
+  void trigger_clearcasting( action_state_t* s )
   {
-    if ( ab::proc )
-      return;
-    if ( !( ab::p()->specialization() == DRUID_FERAL && ab::p()->spec.omen_of_clarity->ok() ) )
+    if ( !ooc_chance || !ab::result_is_hit( s->result ) )
       return;
 
-    // 7.00 PPM via community testing (~368k auto attacks)
-    // https://docs.google.com/spreadsheets/d/1vMvlq1k3aAuwC1iHyDjqAneojPZusdwkZGmatuWWZWs/edit#gid=1097586165
-    double chance = ab::weapon->proc_chance_on_swing( 7.00 );
-
-    if ( ab::p()->talent.moment_of_clarity->ok() )
-      chance *= 1.0 + ab::p()->talent.moment_of_clarity->effectN( 2 ).percent();
-
-    int active = ab::p()->buff.clearcasting->check();
+    int active    = ab::p()->buff.clearcasting->check();
+    double chance = ab::weapon->proc_chance_on_swing( ooc_chance );
 
     // Internal cooldown is handled by buff.
 
@@ -3057,12 +3007,6 @@ public:
 
     return atm;
   }
-
-  void trigger_clearcasting()
-  {
-    if ( ! proc && p() -> specialization() == DRUID_RESTORATION && p() -> spec.omen_of_clarity -> ok() )
-      p() -> buff.clearcasting -> trigger(); // Proc chance is handled by buff chance
-  }
 }; // end druid_heal_t
 
 }
@@ -3071,16 +3015,15 @@ namespace caster_attacks {
 
 // Caster Form Melee Attack =================================================
 
-struct caster_attack_t : public druid_attack_t < melee_attack_t >
+struct caster_attack_t : public druid_attack_t<melee_attack_t>
 {
-  caster_attack_t( util::string_view token, druid_t* p,
-                   const spell_data_t* s = spell_data_t::nil(),
-                   const std::string& options = std::string() ) :
-    base_t( token, p, s )
+  caster_attack_t( util::string_view token, druid_t* p, const spell_data_t* s = spell_data_t::nil(),
+                   const std::string& options = std::string() )
+    : base_t( token, p, s )
   {
     parse_options( options );
   }
-}; // end druid_caster_attack_t
+};  // end druid_caster_attack_t
 
 struct druid_melee_t : public caster_attack_t
 {
@@ -3096,13 +3039,19 @@ struct druid_melee_t : public caster_attack_t
 
   timespan_t execute_time() const override
   {
-    if ( ! player -> in_combat )
+    if ( !player->in_combat )
       return timespan_t::from_seconds( 0.01 );
 
     return caster_attack_t::execute_time();
   }
-};
 
+  void impact( action_state_t* s ) override
+  {
+    caster_attack_t::impact( s );
+
+    trigger_clearcasting( s );
+  }
+};
 }
 
 namespace cat_attacks {
@@ -3126,6 +3075,16 @@ public:
     bool direct, tick;
   } razor_claws;
 
+  struct has_snapshot_t
+  {
+    bool tigers_fury;
+    bool bloodtalons;
+    bool clearcasting;
+  } snapshots;
+
+  snapshot_counter_t* bt_counter;
+  snapshot_counter_t* tf_counter;
+
   std::vector<buff_effect_t> persistent_multiplier_buffeffects;
 
   cat_attack_t( util::string_view token, druid_t* p, const spell_data_t* s = spell_data_t::nil(),
@@ -3135,6 +3094,9 @@ public:
       consumes_combo_points( false ),
       consumes_clearcasting( data().affected_by( p->spec.omen_of_clarity->effectN( 1 ).trigger()->effectN( 1 ) ) ),
       trigger_untamed_ferocity( data().affected_by( p->azerite.untamed_ferocity.spell()->effectN( 2 ) ) ),
+      snapshots( has_snapshot_t() ),
+      bt_counter( nullptr ),
+      tf_counter( nullptr ),
       persistent_multiplier_buffeffects()
   {
     parse_options( options );
@@ -3285,6 +3247,11 @@ public:
               buff->data().id(), this->name() );
         }
       }
+
+      // update snapshots.X
+      snapshots.bloodtalons  = buff == p()->buff.bloodtalons;
+      snapshots.tigers_fury  = buff == p()->buff.tigers_fury;
+      snapshots.clearcasting = buff == p()->buff.clearcasting;
     }
   }
 
@@ -3326,6 +3293,16 @@ public:
     return da;
   }
 
+  void init() override
+  {
+    base_t::init();
+
+    if ( !bt_counter && snapshots.bloodtalons )
+      bt_counter = new snapshot_counter_t( p(), p()->buff.bloodtalons );
+    if ( !tf_counter && snapshots.tigers_fury )
+      tf_counter = new snapshot_counter_t( p(), p()->buff.tigers_fury );
+  }
+
   void impact( action_state_t* s ) override
   {
     base_t::impact( s );
@@ -3348,6 +3325,11 @@ public:
     base_t::tick( d );
 
     trigger_predator();
+
+    if ( snapshots.bloodtalons )
+      bt_counter->count_tick();
+    if ( snapshots.tigers_fury )
+      tf_counter->count_tick();
   }
 
   void execute() override
@@ -3367,11 +3349,21 @@ public:
 
     if ( hit_any_target )
     {
+      if ( snapshots.bloodtalons )
+      {
+        bt_counter->count_execute();
+        p()->buff.bloodtalons->decrement();
+      }
+
+      if ( snapshots.tigers_fury )
+        tf_counter->count_execute();
+
       if ( trigger_untamed_ferocity )
       {
         p()->cooldown.berserk->adjust( -p()->azerite.untamed_ferocity.time_value( 3 ), false );
         p()->cooldown.incarnation->adjust( -p()->azerite.untamed_ferocity.time_value( 4 ), false );
       }
+
       if ( p()->legendary.feral_runecarve_4->ok() )
       {
         p()->cooldown.berserk->adjust( -p()->legendary.feral_runecarve_4->effectN( 1 ).time_value(), false );
@@ -3450,8 +3442,7 @@ public:
 
 struct cat_melee_t : public cat_attack_t
 {
-  cat_melee_t( druid_t* player ) :
-    cat_attack_t( "cat_melee", player, spell_data_t::nil(), "" )
+  cat_melee_t( druid_t* player ) : cat_attack_t( "cat_melee", player, spell_data_t::nil(), "" )
   {
     form_mask  = CAT_FORM;
     may_glance = background = repeating = true;
@@ -3462,9 +3453,16 @@ struct cat_melee_t : public cat_attack_t
     weapon_multiplier = 1.0;
   }
 
+  void impact( action_state_t* s ) override
+  {
+    cat_attack_t::impact( s );
+
+    trigger_clearcasting( s );
+  }
+
   timespan_t execute_time() const override
   {
-    if ( ! player -> in_combat )
+    if ( !player->in_combat )
       return timespan_t::from_seconds( 0.01 );
 
     return cat_attack_t::execute_time();
@@ -3474,8 +3472,8 @@ struct cat_melee_t : public cat_attack_t
   {
     double tm = cat_attack_t::composite_target_multiplier( t );
 
-    if ( p() -> talent.rend_and_tear -> ok() )
-      tm *= 1.0 + p() -> talent.rend_and_tear -> effectN( 3 ).percent() * td( t ) -> dots.thrash_bear -> current_stack();
+    if ( p()->talent.rend_and_tear->ok() )
+      tm *= 1.0 + p()->talent.rend_and_tear->effectN( 3 ).percent() * td( t )->dots.thrash_bear->current_stack();
 
     return tm;
   }
@@ -4589,6 +4587,13 @@ struct bear_melee_t : public bear_attack_t
     return bear_attack_t::execute_time();
   }
 
+  void impact( action_state_t* s ) override
+  {
+    bear_attack_t::impact( s );
+
+    trigger_clearcasting( s );
+  }
+
   double composite_target_multiplier( player_t* t ) const override
   {
     double tm = bear_attack_t::composite_target_multiplier( t );
@@ -5043,13 +5048,6 @@ struct lifebloom_t : public druid_heal_t
     td( d -> state -> target ) -> buff.lifebloom -> expire();
 
     druid_heal_t::last_tick( d );
-  }
-
-  void tick( dot_t* d ) override
-  {
-    druid_heal_t::tick( d );
-
-    trigger_clearcasting();
   }
 };
 
@@ -10901,7 +10899,7 @@ void druid_t::output_json_report( js::JsonOutput& /*root*/ ) const
       if ( !a )
         continue;
 
-      if ( !a->consumes_bloodtalons )
+      if ( !a->snapshots.tigers_fury )
         continue;
 
       tf_exe_up += a->tf_counter->mean_exe_up();
@@ -10914,7 +10912,7 @@ void druid_t::output_json_report( js::JsonOutput& /*root*/ ) const
         tf_benefit_total += a->tf_counter->mean_exe_total();
       }
 
-      if ( talent.bloodtalons->ok() )
+      if ( a->snapshots.bloodtalons )
       {
         bt_exe_up += a->bt_counter->mean_exe_up();
         bt_exe_total += a->bt_counter->mean_exe_total();
@@ -11055,7 +11053,7 @@ public:
         if ( !a )
           continue;
 
-        if ( !a->consumes_bloodtalons )
+        if ( !a->snapshots.tigers_fury )
           continue;
 
         tf_exe_up += a->tf_counter->mean_exe_up();
@@ -11068,7 +11066,7 @@ public:
           tf_benefit_total += a->tf_counter->mean_exe_total();
         }
 
-        if ( p.talent.bloodtalons->ok() )
+        if ( a->snapshots.bloodtalons )
         {
           bt_exe_up += a->bt_counter->mean_exe_up();
           bt_exe_total += a->bt_counter->mean_exe_total();
