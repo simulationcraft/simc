@@ -1,4 +1,4 @@
-// Covenant abilities, wow build 9.0.1.35432
+// Covenant abilities, wow build 9.0.1.35482
 static const std::array<covenant_ability_entry_t, 52> __covenant_ability_data { {
   {  6, 4, 0, 315443, "Abomination Limb"                   },
   { 11, 4, 0, 325727, "Adaptive Swarm"                     },
@@ -54,7 +54,7 @@ static const std::array<covenant_ability_entry_t, 52> __covenant_ability_data { 
   {  3, 3, 0, 328231, "Wild Spirits"                       },
 } };
 
-// Soulbind abilities, wow build 9.0.1.35432
+// Soulbind abilities, wow build 9.0.1.35482
 static const std::array<soulbind_ability_entry_t, 92> __soulbind_ability_data { {
   { 319191, 3, "Field of Blossoms"                  },
   { 319210, 3, "Social Butterfly"                   },
@@ -150,7 +150,7 @@ static const std::array<soulbind_ability_entry_t, 92> __soulbind_ability_data { 
   { 340159, 2, "Service In Stone"                   },
 } };
 
-// Conduits, wow build 9.0.1.35432
+// Conduits, wow build 9.0.1.35482
 static const std::array<conduit_entry_t, 230> __conduit_data { {
   {   5, 334993, "Stalwart Guardian"                  },
   {   7, 335010, "Brutal Vitality"                    },
@@ -416,7 +416,7 @@ static const std::array<uint16_t, 230> __conduit_spell_id_index { {
     227,   228,   229,   222,   223,   224,
 } };
 
-// Conduit ranks, wow build 9.0.1.35432
+// Conduit ranks, wow build 9.0.1.35482
 static const std::array<conduit_rank_entry_t, 3446> __conduit_rank_data { {
   {   5,  0, 334993, -20000.000000 },
   {   5,  1, 334993, -22000.000000 },

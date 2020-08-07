@@ -1,4 +1,4 @@
-// Spell text, wow build 9.0.1.35432
+// Spell text, wow build 9.0.1.35482
 static const std::array<spelltext_data_t, 15320> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -13949,7 +13949,7 @@ static const std::array<spelltext_data_t, 15320> __spelltext_data { {
   { 321283, "$@spelldesc321278", 0, 0 },
   { 321287, "Arcane Shot and Multi-Shot damage increased by $s1%.", 0, 0 },
   { 321290, "Wildfire Bomb deals $s1% additional damage.", 0, "Rank 2" },
-  { 321291, "If a target dies within $m1 sec after being struck by your Shadow Word: Death, you gain ${$321973o1/55} insanity over $321973d and the cooldown of your Shadow Word: Death is reset.", 0, "PvP Talent" },
+  { 321291, "If a target dies within $m1 sec after being struck by your Shadow Word: Death, you gain ${$321973o1/55} insanity over $321973d and the cooldown of your Shadow Word: Death is reset.", 0, 0 },
   { 321293, "Arcane Shot Focus cost reduced by $s1.", 0, "Rank 2" },
   { 321294, "Launch a set of tethered bombs straight ahead, wrapping around the first enemy hit and exploding after 5 seconds, dealing $s1 Fire damage to nearby enemies.", 0, 0 },
   { 321295, "$@spelldesc321294", 0, 0 },
@@ -14009,7 +14009,7 @@ static const std::array<spelltext_data_t, 15320> __spelltext_data { {
   { 321937, "Deal $s1 Shadow Fire damage to your current target.", 0, 0 },
   { 321950, "Allies are healed for $322103m1 when they gain benefit of your Power Word: Barrier, and healed again for $322103m1 if they are under your barrier when it expires.", 0, 0 },
   { 321958, "Restores $s1 health to your current target.", 0, 0 },
-  { 321973, "$@spelldesc321291", "${$m1/55} Insanity generated every $t1 sec.", 0 },
+  { 321973, "$@spelldesc321291", "${$m1/100} Insanity generated every $t1 sec.", 0 },
   { 321995, "Embrace the ice in your veins, reducing the Runic Power cost of your abilities by $s1% for $d. Does not trigger the global cooldown.", 0, 0 },
   { 321997, "Increases an enemy's physical damage done by $s1%, but increases its physical damage taken by $s2% for $d. Cursed enemies will ignore fear effects and refuse to flee from combat. \r\n\r\n|cFF8282FFCurses: A warlock can only have one Curse active per target.|r", "Physical damage dealt increased by $s1%.\r\nPhysical damage taken increased by $s2%.\r\nIgnoring fear effects.", 0 },
   { 322015, "Deal $s1 Shadow damage to all enemies within $a1 yards of the target.", 0, 0 },
@@ -15322,11 +15322,13 @@ static const std::array<spelltext_data_t, 15320> __spelltext_data { {
   { 341532, "Gaining Stealth, Vanish, or Shroud of Concealment increases movement speed by $s1 for 3 sec.", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 9.0.1.35432
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
+// spelltext hotfix entries, wow build 9.0.1.35482
+static constexpr std::array<hotfix::client_hotfix_entry_t, 2> __spelltext_hotfix_data { {
+  {  321291,  2, "PvP Talent", nullptr },
+  {  321973,  1, "${$m1/55} Insanity generated every $t1 sec.", "${$m1/100} Insanity generated every $t1 sec." },
 } };
 
-// Spell description variables, wow build 9.0.1.35432
+// Spell description variables, wow build 9.0.1.35482
 static const std::array<spelldesc_vars_data_t, 247> __spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.36}][${1}]\r\n$shield=${$SP*2*(1+$@versadmg)*$<rapture>*$<shadow>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -15577,7 +15579,7 @@ static const std::array<spelldesc_vars_data_t, 247> __spelldesc_vars_data { {
   {  340159, "$health=${40}\r\n$reduction=${10}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 9.0.1.35432
+// spelldesc_vars hotfix entries, wow build 9.0.1.35482
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 
