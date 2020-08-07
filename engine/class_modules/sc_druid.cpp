@@ -3583,7 +3583,8 @@ struct brutal_slash_t : public cat_attack_t
   {
     cat_attack_t::execute();
 
-    p()->buff.bt_brutal_slash->trigger();
+    if ( hit_any_target )
+      p()->buff.bt_brutal_slash->trigger();
   }
 };
 
@@ -3924,7 +3925,8 @@ struct lunar_inspiration_t : public cat_attack_t
 
     cat_attack_t::execute();
 
-    p()->buff.bt_moonfire->trigger();
+    if ( hit_any_target)
+      p()->buff.bt_moonfire->trigger();
   }
 
   bool ready() override
@@ -4082,7 +4084,8 @@ struct rake_t : public cat_attack_t
   {
     cat_attack_t::execute();
 
-    p()->buff.bt_rake->trigger();
+    if ( hit_any_target )
+      p()->buff.bt_rake->trigger();
 
     if ( p()->azerite.raking_ferocity.ok() )
     {
@@ -4317,7 +4320,8 @@ struct shred_t : public cat_attack_t
   {
     cat_attack_t::execute();
 
-    p()->buff.bt_shred->trigger();
+    if ( hit_any_target )
+      p()->buff.bt_shred->trigger();
 
     if ( p()->buff.shredding_fury->up() )
       p()->buff.shredding_fury->decrement();
@@ -4440,7 +4444,8 @@ struct swipe_cat_t : public cat_attack_t
   {
     cat_attack_t::execute();
 
-    p()->buff.bt_swipe->trigger();
+    if ( hit_any_target )
+      p()->buff.bt_swipe->trigger();
   }
 };
 
@@ -4521,7 +4526,8 @@ struct thrash_cat_t : public cat_attack_t
 
     cat_attack_t::execute();
 
-    p()->buff.bt_thrash->trigger();
+    if ( hit_any_target )
+      p()->buff.bt_thrash->trigger();
   }
 };
 
