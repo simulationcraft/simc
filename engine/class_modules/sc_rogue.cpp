@@ -2664,7 +2664,7 @@ struct eviscerate_t : public rogue_attack_t
       last_eviscerate_cp = 1;
     }
 
-    double combo_point_da_multiplier( const action_state_t* state ) const override
+    double combo_point_da_multiplier( const action_state_t* ) const override
     {
       return as<double>( last_eviscerate_cp );
     }
@@ -7308,7 +7308,7 @@ void rogue_t::create_buffs()
   buffs.vanish                = new buffs::vanish_t( this );
   buffs.slice_and_dice        = make_buff( this, "slice_and_dice", spell.slice_and_dice )
     -> set_default_value( 1.0 )
-    -> set_refresh_behavior( buff_refresh_behavior::DURATION )
+    -> set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
     -> add_invalidate( CACHE_ATTACK_SPEED );
 
   // Assassination
