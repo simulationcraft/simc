@@ -4899,17 +4899,12 @@ struct stealth_like_buff_t : public buff_t
                               rogue -> gains.master_of_shadows );
     }
 
-    if ( rogue->talent.master_assassin->ok() )
+    if ( rogue->stealthed( STEALTH_BASIC ) )
     {
-      rogue->buffs.master_assassin->expire();
-      rogue->buffs.master_assassin_aura->trigger();
-    }
-
-    // TOCHECK: See if this triggers on stealth_like_buff or just Stealth/Vanish
-    if ( rogue->legendary.master_assassins_mark->ok() )
-    {
-      rogue->buffs.master_assassins_mark->expire();
-      rogue->buffs.master_assassins_mark_aura->trigger();
+      if ( rogue->talent.master_assassin->ok() )
+        rogue->buffs.master_assassin_aura->trigger();
+      if ( rogue->legendary.master_assassins_mark->ok() )
+        rogue->buffs.master_assassins_mark_aura->trigger();
     }
   }
 
@@ -4917,24 +4912,11 @@ struct stealth_like_buff_t : public buff_t
   {
     buff_t::expire_override( expiration_stacks, remaining_duration );
 
-    if ( rogue->talent.master_assassin->ok() )
+    // Don't swap these buffs around if we are still in stealth due to Vanish expiring
+    if ( !rogue->stealthed( STEALTH_BASIC ) )
     {
-      // Don't swap these buffs around if we are still in stealth due to Vanish expiring
-      if ( !rogue->buffs.stealth->check() )
-      {
-        rogue->buffs.master_assassin_aura->expire();
-        rogue->buffs.master_assassin->trigger();
-      }
-    }
-
-    if ( rogue->legendary.master_assassins_mark->ok() )
-    {
-      // Don't swap these buffs around if we are still in stealth due to Vanish expiring
-      if ( !rogue->buffs.stealth->check() )
-      {
-        rogue->buffs.master_assassins_mark_aura->expire();
-        rogue->buffs.master_assassins_mark->trigger();
-      }
+      rogue->buffs.master_assassin_aura->expire();
+      rogue->buffs.master_assassins_mark_aura->expire();
     }
   }
 };
@@ -4951,6 +4933,7 @@ struct stealth_t : public stealth_like_buff_t
 
   void execute( int stacks, double value, timespan_t duration ) override
   {
+    // Note: This bypasses stealth_like_buff_t::execute()
     buff_t::execute( stacks, value, duration );
 
     if ( rogue -> in_combat && rogue -> talent.master_of_shadows -> ok() &&
@@ -4963,16 +4946,9 @@ struct stealth_t : public stealth_like_buff_t
     }
 
     if ( rogue->talent.master_assassin->ok() )
-    {
-      rogue->buffs.master_assassin->expire();
       rogue->buffs.master_assassin_aura->trigger();
-    }
-
     if ( rogue->legendary.master_assassins_mark->ok() )
-    {
-      rogue->buffs.master_assassins_mark->expire();
       rogue->buffs.master_assassins_mark_aura->trigger();
-    }
   }
 };
 
@@ -6178,7 +6154,7 @@ void rogue_t::init_action_list()
     cds -> add_action( "variable,name=ss_vanish_condition,value=azerite.shrouded_suffocation.enabled&(non_ss_buffed_targets>=1|spell_targets.fan_of_knives=3)&(ss_buffed_targets_above_pandemic=0|spell_targets.fan_of_knives>=6)", "See full comment on https://github.com/Ravenholdt-TC/Rogue/wiki/Assassination-APL-Research." );
     cds -> add_action( "pool_resource,for_next=1,extra_amount=45" );
     cds -> add_action( this, "Vanish", "if=talent.subterfuge.enabled&!stealthed.rogue&cooldown.garrote.up&(variable.ss_vanish_condition|!azerite.shrouded_suffocation.enabled&(dot.garrote.refreshable|debuff.vendetta.up&dot.garrote.pmultiplier<=1))&combo_points.deficit>=((1+2*azerite.shrouded_suffocation.enabled)*spell_targets.fan_of_knives)>?4&raid_event.adds.in>12" );
-    cds -> add_action( this, "Vanish", "if=(talent.master_assassin.enabled|equipped.mark_of_the_master_assassin)&!stealthed.all&master_assassin_remains<=0&!dot.rupture.refreshable&dot.garrote.remains>3&(debuff.vendetta.up&debuff.shiv.up&(!essence.blood_of_the_enemy.major|debuff.blood_of_the_enemy.up)|essence.vision_of_perfection.enabled)", "Vanish with Master Assasin: No stealth and no active MA buff, Rupture not in refresh range, during Vendetta+TB+BotE (unless using VoP)" );
+    cds -> add_action( this, "Vanish", "if=(talent.master_assassin.enabled|runeforge.mark_of_the_master_assassin.equipped)&!stealthed.all&master_assassin_remains<=0&!dot.rupture.refreshable&dot.garrote.remains>3&(debuff.vendetta.up&debuff.shiv.up&(!essence.blood_of_the_enemy.major|debuff.blood_of_the_enemy.up)|essence.vision_of_perfection.enabled)", "Vanish with Master Assasin: No stealth and no active MA buff, Rupture not in refresh range, during Vendetta+TB+BotE (unless using VoP)" );
     cds -> add_action( "shadowmeld,if=!stealthed.all&azerite.shrouded_suffocation.enabled&dot.garrote.refreshable&dot.garrote.pmultiplier<=1&combo_points.deficit>=1", "Shadowmeld for Shrouded Suffocation" );
     cds -> add_talent( this, "Exsanguinate", "if=!stealthed.rogue&(!dot.garrote.refreshable&dot.rupture.remains>4+4*cp_max_spend|dot.rupture.remains*0.5>target.time_to_die)&target.time_to_die>4", "Exsanguinate when not stealthed and both Rupture and Garrote are up for long enough." );
     cds -> add_action( this, "Shiv", "if=dot.rupture.ticking&(!equipped.azsharas_font_of_power|cooldown.vendetta.remains>10)" );
@@ -6374,6 +6350,7 @@ void rogue_t::init_action_list()
     action_priority_list_t* cds = get_action_priority_list( "cds", "Cooldowns" );
     cds -> add_action( this, "Shadow Dance", "use_off_gcd=1,if=!buff.shadow_dance.up&buff.shuriken_tornado.up&buff.shuriken_tornado.remains<=3.5", "Use Dance off-gcd before the first Shuriken Storm from Tornado comes in." );
     cds -> add_action( this, "Symbols of Death", "use_off_gcd=1,if=buff.shuriken_tornado.up&buff.shuriken_tornado.remains<=3.5", "(Unless already up because we took Shadow Focus) use Symbols off-gcd before the first Shuriken Storm from Tornado comes in." );
+    cds -> add_action( this, "Vanish", "if=(runeforge.mark_of_the_master_assassin.equipped|runeforge.deathly_shadows.equipped)&buff.symbols_of_death.up&buff.shadow_dance.up&master_assassin_remains=0&buff.deathly_shadows.down" );
     cds -> add_action( "call_action_list,name=essences,if=!stealthed.all&dot.rupture.ticking|essence.breath_of_the_dying.major&time>=2" );
     cds -> add_action( "pool_resource,for_next=1,if=!talent.shadow_focus.enabled", "Pool for Tornado pre-SoD with ShD ready when not running SF." );
     cds -> add_talent( this, "Shuriken Tornado", "if=energy>=60&dot.rupture.ticking&cooldown.symbols_of_death.up&cooldown.shadow_dance.charges>=1", "Use Tornado pre SoD when we have the energy whether from pooling without SF or just generally." );
@@ -7160,7 +7137,8 @@ void rogue_t::init_spells()
     legendary.akaaris_soul_fragment_delay = timespan_t::from_seconds( legendary.akaaris_soul_fragment->effectN( 1 ).base_value() );
     active.akaaris_soul_fragment = get_secondary_trigger_action<actions::shadowstrike_t>( TRIGGER_AKAARIS_SOUL_FRAGMENT, "shadowstrike_akaaris_soul_fragment" );
     active.akaaris_soul_fragment->base_multiplier *= legendary.akaaris_soul_fragment->effectN( 2 ).percent();
-    // TOCHECK: Check if this is a real cast or a subspell, check if it generates CP
+    active.akaaris_soul_fragment->energize_type = action_energize::NONE;
+    // TOCHECK: Check if this is a real cast or a subspell, check if it generates CP. Assuming none for now.
   }
 
   // Active Spells = ========================================================
@@ -7392,10 +7370,16 @@ void rogue_t::create_buffs()
   buffs.elaborate_planning      = make_buff( this, "elaborate_planning", talent.elaborate_planning -> effectN( 1 ).trigger() )
                                   -> set_default_value( 1.0 + talent.elaborate_planning -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
                                   -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-  buffs.blindside                = make_buff( this, "blindside", find_spell( 121153 ) )
+  buffs.blindside               = make_buff( this, "blindside", find_spell( 121153 ) )
                                   -> set_default_value( find_spell( 121153 ) -> effectN( 2 ).percent() );
-  buffs.master_assassin_aura    = make_buff(this, "master_assassin_aura", talent.master_assassin)
-                                  -> set_default_value( spec.master_assassin -> effectN( 1 ).percent() );
+  buffs.master_assassin_aura    = make_buff( this, "master_assassin_aura", talent.master_assassin )
+                                  ->set_default_value( spec.master_assassin->effectN( 1 ).percent() )
+                                  ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
+                                      if ( new_ == 0 )
+                                        buffs.master_assassin->trigger();
+                                      else
+                                        buffs.master_assassin->expire();
+                                    } );
   buffs.master_assassin         = make_buff( this, "master_assassin", talent.master_assassin )
                                   -> set_default_value( spec.master_assassin -> effectN( 1 ).percent() )
                                   -> set_duration( timespan_t::from_seconds( talent.master_assassin -> effectN( 1 ).base_value() ) );
@@ -7476,7 +7460,13 @@ void rogue_t::create_buffs()
   const spell_data_t* master_assassins_mark = legendary.master_assassins_mark->ok() ? find_spell( 340094 ) : spell_data_t::not_found();
   buffs.master_assassins_mark_aura = make_buff( this, "master_assassins_mark_aura", master_assassins_mark )
     ->add_invalidate( CACHE_CRIT_CHANCE )
-    ->set_default_value( find_spell( 340094 )->effectN( 1 ).percent() );
+    ->set_default_value( find_spell( 340094 )->effectN( 1 ).percent() )
+    ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
+        if ( new_ == 0 )
+          buffs.master_assassins_mark->trigger();
+        else
+          buffs.master_assassins_mark->expire();
+      } );
   buffs.master_assassins_mark = make_buff( this, "master_assassins_mark", master_assassins_mark )
     ->add_invalidate( CACHE_CRIT_CHANCE )
     ->set_duration( timespan_t::from_seconds( legendary.master_assassins_mark->effectN( 1 ).base_value() ) )
