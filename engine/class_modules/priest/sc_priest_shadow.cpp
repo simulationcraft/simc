@@ -1957,10 +1957,8 @@ std::unique_ptr<expr_t> priest_t::create_expression_shadow( util::string_view na
 void priest_t::generate_apl_shadow()
 {
   action_priority_list_t* default_list = get_action_priority_list( "default" );
-  action_priority_list_t* cleave       = get_action_priority_list( "cleave" );
-  action_priority_list_t* single       = get_action_priority_list( "single" );
+  action_priority_list_t* main         = get_action_priority_list( "main" );
   action_priority_list_t* cds          = get_action_priority_list( "cds" );
-  action_priority_list_t* crit_cds     = get_action_priority_list( "crit_cds" );
   action_priority_list_t* boon         = get_action_priority_list( "boon" );
 
   // Professions
@@ -1976,6 +1974,9 @@ void priest_t::generate_apl_shadow()
   default_list->add_action(
       "variable,name=dots_up,op=set,value="
       "dot.shadow_word_pain.ticking&dot.vampiric_touch.ticking" );
+  default_list->add_action(
+      "variable,name=all_dots_up,op=set,value="
+      "dot.shadow_word_pain.ticking&dot.vampiric_touch.ticking&dot.devouring_plague.ticking" );
 
   // Racials
   // as of 7/3/2018 Arcane Torrent being on the GCD results in a DPS loss
@@ -1993,141 +1994,43 @@ void priest_t::generate_apl_shadow()
   if ( race == RACE_VULPERA )
     default_list->add_action( "bag_of_tricks" );
 
-  // Choose which APL to use based on talents and fight conditions.
-  default_list->add_run_action_list( cleave, "if=active_enemies>1" );
-  default_list->add_run_action_list( single, "if=active_enemies=1" );
+  default_list->add_run_action_list( main );
 
   // CDs
-  cds->add_action(
-      "memory_of_lucid_dreams,if=(buff.voidform.stack>20&insanity<=50)|"
-      "(current_insanity_drain*((gcd.max*2)+action.mind_blast.cast_time))>insanity",
-      "Use Memory of Lucid Dreams right before you are about to fall out of Voidform" );
-  cds->add_action( "blood_of_the_enemy" );
-  cds->add_action( "guardian_of_azeroth,if=buff.voidform.stack>15" );
-  cds->add_action( "use_item,name=manifesto_of_madness,if=spell_targets.mind_sear>=2|raid_event.adds.in>60" );
-  cds->add_action( "focused_azerite_beam,if=spell_targets.mind_sear>=2|raid_event.adds.in>60" );
-  cds->add_action( "purifying_blast,if=spell_targets.mind_sear>=2|raid_event.adds.in>60" );
-  cds->add_action(
-      "concentrated_flame,line_cd=6,"
-      "if=time<=10|"
-      "(buff.chorus_of_insanity.stack>=15&buff.voidform.up)|full_recharge_time<gcd|target.time_to_die<5",
-      "Wait at least 6s between casting CF. Use the first cast ASAP to get it on CD,"
-      " then every subsequent cast should be used when Chorus of Insanity is active or it will recharge in the next "
-      "gcd, or the target is about to die." );
-  cds->add_action( "ripple_in_space" );
-  cds->add_action( "reaping_flames" );
-  cds->add_action( "worldvein_resonance" );
-  cds->add_call_action_list(
-      crit_cds, "if=(buff.voidform.up&buff.chorus_of_insanity.stack>20)|azerite.chorus_of_insanity.rank=0",
-      "Use these cooldowns in between your 1st and 2nd Void Bolt in your 2nd Voidform when you have Chorus of Insanity "
-      "active" );
   cds->add_action( this, "Power Infusion", "if=buff.voidform.up" );
-  cds->add_action( this, covenant.fae_blessings, "Fae Blessings", "if=buff.voidform.up" );
+  cds->add_action( this, covenant.fae_blessings, "Fae Blessings", "if=insanity>=90&cooldown.void_eruption.up", "Use right before Void Eruption" );
   cds->add_action( this, covenant.mindgames, "Mindgames" );
-  cds->add_action( this, covenant.unholy_nova, "Unholy Nova", "if=buff.voidform.up" );
-  cds->add_action( this, covenant.boon_of_the_ascended, "Boon of the Ascended", "if=buff.voidform.up" );
+  cds->add_action( this, covenant.unholy_nova, "Unholy Nova", "if=raid_event.adds.in>50" );
+  cds->add_action( this, covenant.boon_of_the_ascended, "Boon of the Ascended", "if=!buff.voidform.up&!cooldown.void_eruption.up" );
   cds->add_action( "use_items", "Default fallback for usable items: Use on cooldown." );
 
   boon->add_action( this, covenant.boon_of_the_ascended, "ascended_blast" );
   boon->add_action( this, covenant.boon_of_the_ascended, "ascended_nova" );
 
-  // Crit CDs
-  crit_cds->add_action( "use_item,name=azsharas_font_of_power" );
-  crit_cds->add_action( "use_item,effect_name=cyclotronic_blast" );
-  crit_cds->add_action( "the_unbound_force" );
-
   // single APL
-  single->add_call_action_list( this, covenant.boon_of_the_ascended, boon, "if=buff.boon_of_the_ascended.up" );
-  single->add_action( this, "Void Eruption" );
-  single->add_talent( this, "Dark Ascension", "if=buff.voidform.down" );
-  single->add_action( this, "Void Bolt" );
-  single->add_call_action_list( cds );
-  single->add_action( this, "Devouring Plague", "if=refreshable&buff.voidform.up" );
-  single->add_action(
-      this, "Mind Sear",
-      "if=buff.harvested_thoughts.up&cooldown.void_bolt.remains>=1.5&"
-      "azerite.searing_dialogue.rank>=1",
-      "Use Mind Sear on ST only if you get a Thought Harvester Proc with at least 1 Searing Dialogue Trait." );
-  single->add_action( this, "Shadow Word: Death", "if=target.time_to_die<3", "Use SWD if the target is about to die." );
-  single->add_talent( this, "Surrender to Madness", "if=buff.voidform.stack>10+(10*buff.bloodlust.up)" );
-  single->add_talent( this, "Dark Void", "if=raid_event.adds.in>10",
-                      "Use Dark Void on CD unless adds are incoming in 10s or less." );
-  single->add_talent( this, "Mindbender",
-                      "if=(talent.mindbender.enabled&buff.voidform.up)|(buff.voidform.stack>18|target.time_to_die<15)",
-                      "Use Shadowfiend at 19 or more stacks, or if the target will die in less than 15s. If using "
-                      "Minbender use on CD in Voidform" );
-  single->add_action(
-      this, "Shadow Word: Death",
-      "if=!runeforge.painbreaker_psalm.equipped|(runeforge.painbreaker_psalm.equipped&variable.dots_up)" );
-  single->add_talent( this, "Shadow Crash", "if=raid_event.adds.in>5&raid_event.adds.duration<20",
+  main->add_call_action_list( this, covenant.boon_of_the_ascended, boon, "if=buff.boon_of_the_ascended.up" );
+  main->add_action( this, "Void Eruption", "if=cooldown.power_infusion.up" );
+  main->add_action( this, "Void Bolt" );
+  main->add_call_action_list( cds );
+  main->add_action( this, "Devouring Plague", "target_if=(refreshable|insanity>75)&!cooldown.void_eruption.up",
+                      "Make sure you don't use Devouring Plague if you are trying to build into Voidform" );
+  main->add_action( this, "Shadow Word: Death", "target_if=target.health.pct<20", "Use SWD if the target is about to die." );
+  main->add_talent( this, "Surrender to Madness", "if=target.time_to_die<25&buff.voidform.down" );
+  main->add_talent( this, "Mindbender" );
+  main->add_talent( this, "Void Torrent", "target_if=variable.all_dots_up&!cooldown.void_eruption.up&target.time_to_die>4" );
+  main->add_action( this, "Shadow Word: Death",
+                      "if=(!runeforge.painbreaker_psalm.equipped|(runeforge.painbreaker_psalm.equipped&variable.dots_up))&target.health.pct>30",
+                      "TODO see if this is worth even without Painbreaker Psalm" );
+  main->add_talent( this, "Shadow Crash", "if=raid_event.adds.in>5&raid_event.adds.duration<20",
                       "Use Shadow Crash on CD unless there are adds incoming." );
-  single->add_action( this, "Mind Blast",
-                      "if=variable.dots_up&"
-                      "((raid_event.movement.in>cast_time+0.5&raid_event.movement.in<4)|"
-                      "buff.voidform.down|"
-                      "buff.voidform.stack>14&(insanity<70|charges_fractional>1.33)|"
-                      "buff.voidform.stack<=14&(insanity<60|charges_fractional>1.33))",
-                      "Bank the Shadow Word: Void charges for a bit to try and avoid overcapping on Insanity." );
-  single->add_talent( this, "Void Torrent",
-                      "if=dot.shadow_word_pain.remains>4&"
-                      "dot.vampiric_touch.remains>4&buff.voidform.up" );
-  single->add_action( this, "Shadow Word: Pain",
-                      "if=refreshable&target.time_to_die>4&"
-                      "!talent.misery.enabled" );
-  single->add_action( this, "Vampiric Touch",
-                      "if=refreshable&target.time_to_die>6|"
-                      "(talent.misery.enabled&"
-                      "dot.shadow_word_pain.refreshable)" );
-  single->add_action( this, "Mind Flay",
-                      "chain=1,interrupt_immediate=1,interrupt_if=ticks>=2&"
-                      "(cooldown.void_bolt.up|cooldown.mind_blast.up)" );
-  single->add_action( this, "Shadow Word: Pain" );
-
-  // cleave APL
-  cleave->add_action( this, "Void Eruption" );
-  cleave->add_talent( this, "Dark Ascension", "if=buff.voidform.down" );
-  cleave->add_action( this, "Vampiric Touch", "if=!ticking&azerite.thought_harvester.rank>=1" );
-  cleave->add_action( this, "Mind Sear", "if=buff.harvested_thoughts.up" );
-  cleave->add_action( this, "Void Bolt" );
-
-  cleave->add_call_action_list( this, covenant.boon_of_the_ascended, boon, "if=buff.boon_of_the_ascended.up" );
-  cleave->add_call_action_list( cds );
-  cleave->add_action( this, "Shadow Word: Death",
-                      "target_if=target.time_to_die<3|(!runeforge.painbreaker_psalm.equipped|(runeforge.painbreaker_"
-                      "psalm.equipped&variable.dots_up))" );
-  cleave->add_talent( this, "Surrender to Madness", "if=buff.voidform.stack>10+(10*buff.bloodlust.up)" );
-  cleave->add_talent( this, "Dark Void",
-                      "if=raid_event.adds.in>10"
-                      "&(dot.shadow_word_pain.refreshable|target.time_to_die>30)",
-                      "Use Dark Void on CD unless adds are incoming in 10s or less." );
-  cleave->add_talent( this, "Mindbender" );
-  cleave->add_action( this, "Mind Blast", "target_if=spell_targets.mind_sear<variable.mind_blast_targets" );
-  cleave->add_talent( this, "Shadow Crash",
-                      "if=(raid_event.adds.in>5&raid_event.adds.duration<2)|"
-                      "raid_event.adds.duration>2" );
-  cleave->add_action( this, "Shadow Word: Pain",
-                      "target_if=refreshable&target.time_to_die>"
-                      "((-1.2+3.3*spell_targets.mind_sear)*variable.swp_trait_ranks_check*"
-                      "(1-0.012*azerite.searing_dialogue.rank*spell_targets.mind_sear))"
-                      ",if=!talent.misery.enabled" );
-  cleave->add_action( this, "Vampiric Touch",
-                      "target_if=refreshable,if=target.time_to_die>"
-                      "((1+3.3*spell_targets.mind_sear)*variable.vt_trait_ranks_check*"
-                      "(1+0.10*azerite.searing_dialogue.rank*spell_targets.mind_sear))" );
-  cleave->add_action( this, "Vampiric Touch",
-                      "target_if=dot.shadow_word_pain.refreshable"
-                      ",if=(talent.misery.enabled&target.time_to_die>"
-                      "((1.0+2.0*spell_targets.mind_sear)*variable.vt_mis_trait_ranks_check*"
-                      "(variable.vt_mis_sd_check*spell_targets.mind_sear)))" );
-  cleave->add_action( this, "Devouring Plague", "target_if=refreshable,if=buff.voidform.up" );
-  cleave->add_talent( this, "Void Torrent", "if=buff.voidform.up" );
-  cleave->add_action( this, "Mind Sear",
-                      "target_if=spell_targets.mind_sear>1,"
-                      "chain=1,interrupt_immediate=1,interrupt_if=ticks>=2" );
-  cleave->add_action( this, "Mind Flay",
-                      "chain=1,interrupt_immediate=1,interrupt_if=ticks>=2&"
-                      "(cooldown.void_bolt.up|cooldown.mind_blast.up)" );
-  cleave->add_action( this, "Shadow Word: Pain" );
+  main->add_action( this, "Mind Blast",
+                      "if=variable.dots_up&raid_event.movement.in>cast_time+0.5&spell_targets.mind_sear<4",
+                      "TODO Verify target cap" );
+  main->add_action( this, "Shadow Word: Pain", "if=refreshable&target.time_to_die>4&!talent.misery.enabled" );
+  main->add_action( this, "Vampiric Touch", "if=refreshable&target.time_to_die>6|(talent.misery.enabled&dot.shadow_word_pain.refreshable)" );
+  main->add_action( this, "Mind Sear", "target_if=spell_targets.mind_sear>1,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2" );
+  main->add_action( this, "Mind Flay", "chain=1,interrupt_immediate=1,interrupt_if=ticks>=2&cooldown.void_bolt.up" );
+  main->add_action( this, "Shadow Word: Pain" );
 }
 
 void priest_t::init_background_actions_shadow()
