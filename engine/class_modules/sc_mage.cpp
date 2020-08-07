@@ -4281,11 +4281,7 @@ struct ice_nova_t : public frost_mage_spell_t
   {
     parse_options( options_str );
     aoe = -1;
-    consumes_winters_chill = triggers.radiant_spark = true;
-
-    double in_mult = p->talents.ice_nova->effectN( 3 ).percent();
-    base_multiplier     *= in_mult;
-    base_aoe_multiplier /= in_mult;
+    consumes_winters_chill = triggers.radiant_spark = reduced_aoe_damage = true;
   }
 
   void impact( action_state_t* s ) override
