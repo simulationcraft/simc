@@ -4135,7 +4135,7 @@ struct rip_t : public cat_attack_t
 
   void tick( dot_t* d ) override
   {
-     base_t::tick( d );
+     cat_attack_t::tick( d );
 
      p()->buff.apex_predators_craving->trigger();
 
