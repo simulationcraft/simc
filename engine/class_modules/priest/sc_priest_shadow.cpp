@@ -1099,18 +1099,24 @@ struct void_eruption_t final : public priest_spell_t
 
 struct void_torrent_t final : public priest_spell_t
 {
+  double insanity_gain;
+
   void_torrent_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "void_torrent", p, p.talents.void_torrent )
+    : priest_spell_t( "void_torrent", p, p.talents.void_torrent ),
+      insanity_gain( p.talents.void_torrent->effectN( 3 ).trigger()->effectN( 1 ).resource( RESOURCE_INSANITY ) )
   {
     parse_options( options_str );
 
-    may_crit      = false;
-    channeled     = true;
-    use_off_gcd   = true;
-    tick_zero     = true;
-    energize_type = action_energize::PER_TICK;
+    may_crit     = false;
+    channeled    = true;
+    use_off_gcd  = true;
+    tick_zero    = true;
+    dot_duration = data().duration();
 
-    dot_duration = timespan_t::from_seconds( 4.0 );
+    // Getting insanity from the trigger spell data, base spell doesn't have it
+    energize_type     = action_energize::PER_TICK;
+    energize_resource = RESOURCE_INSANITY;
+    energize_amount   = insanity_gain;
   }
 
   timespan_t composite_dot_duration( const action_state_t* ) const override
@@ -1298,7 +1304,7 @@ struct voidform_t final : public priest_buff_t<buff_t>
     if ( priest().talents.legacy_of_the_void->ok() )
     {
       // If LotV is talented, VF ends by Insanity drained, not time
-      set_duration( timespan_t::from_seconds( 100 ) );
+      set_duration( timespan_t::from_seconds( 90 ) );
     }
   }
 
@@ -2009,15 +2015,15 @@ void priest_t::generate_apl_shadow()
 
   // single APL
   main->add_call_action_list( this, covenant.boon_of_the_ascended, boon, "if=buff.boon_of_the_ascended.up" );
-  main->add_action( this, "Void Eruption", "if=cooldown.power_infusion.up" );
+  main->add_action( this, "Void Eruption", "if=cooldown.power_infusion.up", "Sync up Voidform and Power Infusion Cooldowns." );
   main->add_action( this, "Void Bolt" );
   main->add_call_action_list( cds );
   main->add_action( this, "Devouring Plague", "target_if=(refreshable|insanity>75)&!cooldown.void_eruption.up",
-                      "Make sure you don't use Devouring Plague if you are trying to build into Voidform" );
-  main->add_action( this, "Shadow Word: Death", "target_if=target.health.pct<20", "Use SWD if the target is about to die." );
-  main->add_talent( this, "Surrender to Madness", "if=target.time_to_die<25&buff.voidform.down" );
+                      "Make sure you don't use Devouring Plague if you are trying to build into Voidform." );
+  main->add_action( this, "Shadow Word: Death", "target_if=target.health.pct<20", "Use Shadow Word: Death if the target is about to die." );
+  main->add_talent( this, "Surrender to Madness", "if=target.time_to_die<25&buff.voidform.down", "Use Surrender to Madness on a target that is going to die at the right time." );
   main->add_talent( this, "Mindbender" );
-  main->add_talent( this, "Void Torrent", "target_if=variable.all_dots_up&!cooldown.void_eruption.up&target.time_to_die>4" );
+  main->add_talent( this, "Void Torrent", "target_if=variable.all_dots_up&!cooldown.void_eruption.up&target.time_to_die>4", "Use Void Torrent only if all DoTs are active and the target won't die during the channel." );
   main->add_action( this, "Shadow Word: Death",
                       "if=(!runeforge.painbreaker_psalm.equipped|(runeforge.painbreaker_psalm.equipped&variable.dots_up))&target.health.pct>30",
                       "TODO see if this is worth even without Painbreaker Psalm" );
