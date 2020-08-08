@@ -1686,8 +1686,16 @@ struct buff_effect_t
   double value;
   bool mastery;
 
-  buff_effect_t( buff_t* b, double v, bool m = false )
-    : buff( b ), value( v ), mastery( m )
+  buff_effect_t( buff_t* b, double v, bool m = false ) : buff( b ), value( v ), mastery( m )
+  {}
+};
+
+struct dot_debuff_t
+{
+  std::function<dot_t*(player_t*)> func;
+  double value;
+
+  dot_debuff_t( std::function<dot_t*(player_t*)> f, double v ) : func( f ), value( v )
   {}
 };
 
@@ -1703,7 +1711,6 @@ private:
 public:
   using base_t = druid_action_t<Base>;
 
-  bool rend_and_tear;
   double gore_chance;
   bool triggers_galactic_guardian;
   double lucid_dreams_multiplier;
@@ -1718,12 +1725,13 @@ public:
   std::vector<buff_effect_t> cost_buffeffects;
   std::vector<buff_effect_t> crit_chance_buffeffects;
 
+  std::vector<dot_debuff_t> target_multiplier_dotdebuffs;
+
   druid_action_t( util::string_view n, druid_t* player, const spell_data_t* s = spell_data_t::nil() )
     : ab( n, player, s ),
       form_mask( ab::data().stance_mask() ),
       may_autounshift( true ),
       autoshift( 0 ),
-      rend_and_tear( ab::data().affected_by( player->spec.thrash_bear_dot->effectN( 2 ) ) ),
       gore_chance( player->spec.gore->effectN( 1 ).percent() ),
       triggers_galactic_guardian( true ),
       lucid_dreams_multiplier( p()->lucid_dreams->effectN( 1 ).percent() ),
@@ -1734,7 +1742,8 @@ public:
       execute_time_buffeffects(),
       recharge_multiplier_buffeffects(),
       cost_buffeffects(),
-      crit_chance_buffeffects()
+      crit_chance_buffeffects(),
+      target_multiplier_dotdebuffs()
   {
     ab::may_crit      = true;
     ab::tick_may_crit = true;
@@ -1751,6 +1760,7 @@ public:
       is_auto_attack = true;
 
     apply_buff_effects();
+    apply_dot_debuffs();
   }
 
   druid_t* p()
@@ -1761,9 +1771,11 @@ public:
   druid_td_t* td( player_t* t ) const
   { return p() -> get_target_data( t ); }
 
-  void parse_rank_spell_effects( double& val, bool& mastery, const spell_data_t* base_spell, size_t idx,
+  bool parse_rank_spell_effects( double& val, const spell_data_t* base_spell, size_t idx,
                                  const spell_data_t* rank_spell )
   {
+    bool mastery = false;
+
     for ( size_t i = 1; i <= rank_spell->effect_count(); i++ )
     {
       auto eff = &rank_spell->effectN( i );
@@ -1786,6 +1798,8 @@ public:
           mastery = true;
       }
     }
+
+    return mastery;
   }
 
   // Will parse simple buffs that ONLY target the caster and DO NOT have multiple ranks
@@ -1824,7 +1838,8 @@ public:
       {
         for ( auto sp : spells )
         {
-          parse_rank_spell_effects( val, mastery, s_data, i, sp );
+          if ( parse_rank_spell_effects( val, s_data, i, sp ) )
+            mastery = true;
         }
       }
 
@@ -1933,6 +1948,57 @@ public:
     parse_buff_effects( p()->buff.apex_predators_craving );
   }
 
+  void parse_dot_debuffs( std::function<dot_t*( player_t* )> func, const spell_data_t* s_data,
+                          const spell_data_t* spell2 = spell_data_t::nil() )
+  {
+    if ( !s_data->ok() )
+      return;
+
+    for ( size_t i = 1; i <= s_data->effect_count(); i++ )
+    {
+      auto eff   = &s_data->effectN( i );
+      double val = eff->percent();
+
+      if ( eff->type() != E_APPLY_AURA || eff->subtype() != A_MOD_DAMAGE_FROM_CASTER || !ab::data().affected_by( eff ) )
+        continue;
+
+      if ( spell2->ok() && i <= 5 )
+        parse_rank_spell_effects( val, s_data, i, spell2 );
+
+      if ( !val )
+        continue;
+
+      target_multiplier_dotdebuffs.push_back( dot_debuff_t( func, val ) );
+    }
+  }
+
+  double get_dot_debuffs_value( player_t* t ) const
+  {
+    double return_value = 1.0;
+
+    for ( auto i : target_multiplier_dotdebuffs )
+    {
+      auto dot = i.func( t );
+
+      if ( dot->is_ticking() )
+        return_value *= 1.0 + i.value * dot->current_stack();
+    }
+
+    return return_value;
+  }
+
+  void apply_dot_debuffs()
+  {
+    parse_dot_debuffs( [this]( player_t* t ) -> dot_t* { return td( t )->dots.adaptive_swarm_damage; },
+                       p()->covenant.adaptive_swarm_damage, p()->conduit.necrolord );
+    parse_dot_debuffs( [this]( player_t* t ) -> dot_t* { return td( t )->dots.thrash_bear; },
+                       p()->spec.thrash_bear_dot, p()->talent.rend_and_tear );
+    parse_dot_debuffs( [this]( player_t* t ) -> dot_t* { return td( t )->dots.moonfire; },
+                       p()->spec.moonfire_dmg, p()->conduit.balance_2 );
+    parse_dot_debuffs( [this]( player_t* t ) -> dot_t* { return td( t )->dots.sunfire; },
+                       p()->spec.sunfire_dmg, p()->conduit.balance_2 );
+  }
+
   double cost() const override
   {
     double c = ab::cost() * get_buff_effects_value( cost_buffeffects, false, false );
@@ -1945,21 +2011,7 @@ public:
 
   double composite_target_multiplier( player_t* t ) const override
   {
-    double tm = ab::composite_target_multiplier( t );
-
-    if ( rend_and_tear )
-      tm *= 1.0 + p()->talent.rend_and_tear->effectN( 2 ).percent() * td( t )->dots.thrash_bear->current_stack();
-
-    if ( td( t )->dots.adaptive_swarm_damage->is_ticking() &&
-         ab::data().affected_by( p()->covenant.adaptive_swarm_damage->effectN( 2 ) ) )
-    {
-      double val = p()->covenant.adaptive_swarm_damage->effectN( 2 ).percent();
-
-      if ( p()->conduit.necrolord->ok() )
-        val += p()->conduit.necrolord->effectN( 1 ).percent();
-
-      tm *= 1.0 + val;
-    }
+    double tm = ab::composite_target_multiplier( t ) * get_dot_debuffs_value( t );
 
     return tm;
   }
@@ -2540,22 +2592,6 @@ public:
     }
 
     return e;
-  }
-
-  double composite_target_multiplier( player_t* t ) const override
-  {
-    double tm = ab::composite_target_multiplier( t );
-
-    if ( p()->conduit.balance_2->ok() )
-    {
-      if ( td( t )->dots.sunfire->is_ticking() && data().affected_by( p()->spec.sunfire_dmg->effectN( 3 ) ) )
-        tm *= 1.0 + p()->conduit.balance_2->effectN( 1 ).percent();
-
-      if ( td( t )->dots.moonfire->is_ticking() && data().affected_by( p()->spec.moonfire_dmg->effectN( 3 ) ) )
-        tm *= 1.0 + p()->conduit.balance_2->effectN( 1 ).percent();
-    }
-
-    return tm;
   }
 
   void consume_resource() override
@@ -3767,14 +3803,10 @@ struct ferocious_bite_t : public cat_attack_t
 
     if ( p()->conduit.feral_1->ok() )
     {
-        int bleeds = 0;
-        auto t_td = td( t );
+      auto t_td  = td( t );
+      int bleeds = t_td->dots.rake->is_ticking() + t_td->dots.rip->is_ticking() + t_td->dots.thrash_cat->is_ticking();
 
-        if ( t_td->dots.rake->is_ticking() ) { bleeds++; }
-        if ( t_td->dots.rip->is_ticking() ) { bleeds++; }
-        if ( t_td->dots.thrash_cat->is_ticking() ) { bleeds++; }
-
-        tm *= 1.0 + p()->conduit.feral_1->effectN( 1 ).percent() * bleeds;
+      tm *= 1.0 + p()->conduit.feral_1->effectN( 1 ).percent() * bleeds;
     }
 
     return tm;
@@ -7994,15 +8026,15 @@ void druid_t::init_spells()
   spec.bloodtalons         = find_spell( 145152 );
 
   // Guardian
-  spec.bear_form               = find_class_spell( "Bear Form" )->ok() ? find_spell( 1178 ) : spell_data_t::not_found();
-  spec.gore                    = find_specialization_spell( "Gore" );
-  spec.guardian                = find_specialization_spell( "Guardian Druid" );
-  spec.lightning_reflexes      = find_specialization_spell( "Lightning Reflexes" );
-  spec.bear_form_2             = find_rank_spell( "Bear Form", "Rank 2" );
-  spec.swipe_bear              = find_spell( 213771 );
-  spec.thrash_bear             = find_spell( 77758 );
-  spec.berserk_bear            = find_spell( 50334 );
-  spec.thrash_bear_dot = find_specialization_spell( "Thrash" )->ok() ? find_spell( 192090 ) : spell_data_t::not_found();
+  spec.bear_form          = find_class_spell( "Bear Form" )->ok() ? find_spell( 1178 ) : spell_data_t::not_found();
+  spec.gore               = find_specialization_spell( "Gore" );
+  spec.guardian           = find_specialization_spell( "Guardian Druid" );
+  spec.lightning_reflexes = find_specialization_spell( "Lightning Reflexes" );
+  spec.bear_form_2        = find_rank_spell( "Bear Form", "Rank 2" );
+  spec.swipe_bear         = find_spell( 213771 );
+  spec.thrash_bear        = find_spell( 77758 );
+  spec.berserk_bear       = find_spell( 50334 );
+  spec.thrash_bear_dot    = find_specialization_spell( "Thrash" )->ok() ? find_spell( 192090 ) : spell_data_t::not_found();
 
   // Restoration
   spec.restoration                = find_specialization_spell("Restoration Druid");
@@ -8010,14 +8042,14 @@ void druid_t::init_spells()
   // Covenants
   covenant.kyrian                       = find_covenant_spell( "Kindred Spirits" );
   covenant.empower_bond                 = covenant.kyrian->ok() ? find_spell( 326446 ) : spell_data_t::not_found();
-  covenant.kindred_empowerment          = find_spell( 327022 );
-  covenant.kindred_empowerment_energize = find_spell( 327139 );
-  covenant.kindred_empowerment_damage   = find_spell( 338411 );
+  covenant.kindred_empowerment          = covenant.kyrian->ok() ? find_spell( 327022 ) : spell_data_t::not_found();
+  covenant.kindred_empowerment_energize = covenant.kyrian->ok() ? find_spell( 327139 ) : spell_data_t::not_found();
+  covenant.kindred_empowerment_damage   = covenant.kyrian->ok() ? find_spell( 338411 ) : spell_data_t::not_found();
   covenant.night_fae                    = find_covenant_spell( "Convoke the Spirits" );
   covenant.venthyr                      = find_covenant_spell( "Ravenous Frenzy" );
   covenant.necrolord                    = find_covenant_spell( "Adaptive Swarm" );
-  covenant.adaptive_swarm_damage        = find_spell( 325733 );
-  covenant.adaptive_swarm_heal          = find_spell( 325748 );
+  covenant.adaptive_swarm_damage        = covenant.necrolord->ok() ? find_spell( 325733 ) : spell_data_t::not_found();
+  covenant.adaptive_swarm_heal          = covenant.necrolord->ok() ? find_spell( 325748 ) : spell_data_t::not_found();
 
   // Conduits
   conduit.balance_1 = fake_conduit_spell( 340720 );
