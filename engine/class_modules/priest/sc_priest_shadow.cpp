@@ -1155,6 +1155,17 @@ struct void_torrent_t final : public priest_spell_t
     // insanity drain for the duration of the channel
     priest().insanity.adjust_end_event();
   }
+
+  void impact( action_state_t* s ) override
+  {
+    priest_spell_t::impact( s );
+
+    priest_td_t& td = get_td( s->target );
+
+    td.dots.shadow_word_pain->refresh_duration();
+    td.dots.vampiric_touch->refresh_duration();
+    td.dots.devouring_plague->refresh_duration();
+  }
 };
 }  // namespace spells
 
