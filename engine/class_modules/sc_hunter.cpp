@@ -2567,7 +2567,7 @@ struct multi_shot_t: public hunter_ranged_attack_t
   {
     double am = hunter_ranged_attack_t::action_multiplier();
 
-    am *= 1 + p() -> buffs.precise_shots -> value();
+    am *= 1 + p() -> buffs.precise_shots -> check_value();
 
     return am;
   }
@@ -2576,6 +2576,7 @@ struct multi_shot_t: public hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::execute();
 
+    p() -> buffs.precise_shots -> up(); // benefit tracking
     p() -> buffs.precise_shots -> decrement();
 
     for ( auto pet : pets::active<pets::hunter_main_pet_base_t>( p() -> pets.main, p() -> pets.animal_companion ) )
@@ -2655,7 +2656,7 @@ struct arcane_shot_base_t: public hunter_ranged_attack_t
   {
     double am = hunter_ranged_attack_t::action_multiplier();
 
-    am *= 1 + p() -> buffs.precise_shots -> value();
+    am *= 1 + p() -> buffs.precise_shots -> check_value();
 
     return am;
   }
@@ -2675,6 +2676,7 @@ struct arcane_shot_t: public arcane_shot_base_t
   {
     arcane_shot_base_t::execute();
 
+    p() -> buffs.precise_shots -> up(); // benefit tracking
     p() -> buffs.precise_shots -> decrement();
 
     if ( p() -> talents.calling_the_shots.ok() )
