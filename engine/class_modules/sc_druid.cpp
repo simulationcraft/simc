@@ -1862,7 +1862,7 @@ public:
   }
 
   double get_buff_effects_value( const std::vector<buff_effect_t>& buffeffects, bool flat = false,
-                                 bool benefit = true ) const
+                                 bool benefit = true, bool stack = true ) const
   {
     double return_value = flat ? 0.0 : 1.0;
 
@@ -1882,9 +1882,9 @@ public:
       else if ( ( benefit && i.buff->up() ) || i.buff->check() )
       {
         if ( flat )
-          return_value += eff_val * i.buff->check();
+          return_value += eff_val * ( stack ? i.buff->check() : 1 );
         else
-          return_value *= 1.0 + eff_val * i.buff->check();
+          return_value *= 1.0 + eff_val * ( stack ? i.buff->check() : 1 );
       }
     }
 
@@ -3251,7 +3251,8 @@ public:
 
   double composite_persistent_multiplier( const action_state_t* s ) const override
   {
-    double pm = base_t::composite_persistent_multiplier( s ) * get_buff_effects_value( persistent_multiplier_buffeffects );
+    double pm = base_t::composite_persistent_multiplier( s ) *
+                get_buff_effects_value( persistent_multiplier_buffeffects, false, true, false );
 
     return pm;
   }
@@ -3270,9 +3271,9 @@ public:
   {
     base_t::init();
 
-    if ( !bt_counter && snapshots.bloodtalons )
+    if ( snapshots.bloodtalons )
       bt_counter = new snapshot_counter_t( p(), p()->buff.bloodtalons );
-    if ( !tf_counter && snapshots.tigers_fury )
+    if ( snapshots.tigers_fury )
       tf_counter = new snapshot_counter_t( p(), p()->buff.tigers_fury );
   }
 
@@ -3299,10 +3300,14 @@ public:
 
     trigger_predator();
 
-    if ( snapshots.bloodtalons )
-      bt_counter->count_tick();
-    if ( snapshots.tigers_fury )
-      tf_counter->count_tick();
+    if ( d->state->persistent_multiplier > 1.0 )
+    {
+      if ( snapshots.bloodtalons )
+        bt_counter->count_tick();
+
+      if ( snapshots.tigers_fury )
+        tf_counter->count_tick();
+    }
   }
 
   void execute() override
@@ -4204,8 +4209,8 @@ struct primal_wrath_t : public cat_attack_t
       td( s->target )->dots.rip->state = rip->get_state();
     }
 
-    td( s->target )->dots.rip->current_action =
-        rip;  // changes stat object to primal wraths for consistency in case of a refresh
+    // changes stat object to primal wraths for consistency in case of a refresh
+    td( s->target )->dots.rip->current_action = rip;
     td( s->target )->dots.rip->state->copy_state( b_state );
     td( s->target )->dots.rip->trigger( rip->dot_duration * 0.5 * ( combo_points + 1 ) );  // this seems to be hardcoded
 
@@ -10634,15 +10639,15 @@ public:
         // Table Row : Name, TF up, TF total, TF up/total, TF up/sum(TF up)
         os.printf( "<tr><td class=\"left\">%s</td><td class=\"right\">%.2f %%</td><td class=\"right\">%.2f %%</td>\n",
                    name_str.c_str(),
-                   util::round( tf_exe_up / tf_exe_total * 100, 2 ),
-                   util::round( tf_benefit_up / tf_benefit_total * 100, 2 ) );
+                   util::round( tf_exe_total ? ( tf_exe_up / tf_exe_total * 100 ) : 0, 2 ),
+                   util::round( tf_benefit_total ? ( tf_benefit_up / tf_benefit_total * 100 ) : 0, 2 ) );
 
         if ( p.talent.bloodtalons -> ok() )
         {
           // Table Row : Name, TF up, TF total, TF up/total, TF up/sum(TF up)
           os.printf( "<td class=\"right\">%.2f %%</td><td class=\"right\">%.2f %%</td>\n",
-                     util::round( bt_exe_up / bt_exe_total * 100, 2 ),
-                     util::round( bt_benefit_up / bt_benefit_total * 100, 2 ) );
+                     util::round( bt_exe_total ? ( bt_exe_up / bt_exe_total * 100 ) : 0, 2 ),
+                     util::round( bt_benefit_total ? ( bt_benefit_up / bt_benefit_total * 100 ) : 0, 2 ) );
         }
         os << "</tr>";
       }
