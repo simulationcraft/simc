@@ -1673,7 +1673,6 @@ private:
 public:
   using base_t = druid_action_t<Base>;
 
-  double gore_chance;
   bool triggers_galactic_guardian;
   double lucid_dreams_multiplier;
   bool is_auto_attack;
@@ -1694,7 +1693,6 @@ public:
       form_mask( ab::data().stance_mask() ),
       may_autounshift( true ),
       autoshift( 0 ),
-      gore_chance( player->spec.gore->effectN( 1 ).percent() ),
       triggers_galactic_guardian( true ),
       lucid_dreams_multiplier( p()->lucid_dreams->effectN( 1 ).percent() ),
       is_auto_attack( false ),
@@ -2132,17 +2130,16 @@ public:
     trigger_lucid_dreams();
   }
 
-  bool trigger_gore()
+  void trigger_gore()  // need this here instead of bear_attack_t because of moonfire
   {
-    if ( ab::rng().roll( gore_chance ) )
+    if ( !p()->spec.gore->ok() )
+      return;
+
+    if ( p()->buff.gore->trigger() )
     {
       p()->proc.gore->occur();
       p()->cooldown.mangle->reset( true );
-      p()->buff.gore->trigger();
-
-      return true;
     }
-    return false;
   }
 
   virtual void trigger_galactic_guardian( action_state_t* s )
@@ -2188,14 +2185,12 @@ public:
       if ( !compare_previous_streaking_stars( new_ability ) )
       {
         action_state_t* ss_s = p()->active.streaking_stars->get_state();
+
         if ( s != nullptr )
-        {
           ss_s->target = s->target;
-        }
         else
-        {
           ss_s->target = ab::target;
-        }
+
         p()->active.streaking_stars->snapshot_state( ss_s, result_amount_type::DMG_DIRECT );
         p()->active.streaking_stars->schedule_execute( ss_s );
         p()->proc.streaking_star->occur();
@@ -2207,14 +2202,10 @@ public:
   bool verify_actor_spec() const override
   {
     if ( p()->find_affinity_spell( ab::name() )->found() || free_cast )
-    {
       return true;
-    }
 #ifndef NDEBUG
     else if ( p()->sim->debug || p()->sim->log )
-    {
       p()->sim->print_log( "{} failed verification", ab::name() );
-    }
 #endif
 
     return ab::verify_actor_spec();
@@ -2401,9 +2392,10 @@ public:
 
   bool direct_bleed;
   double ooc_chance;
+  double bleed_mul;
 
   druid_attack_t( util::string_view n, druid_t* player, const spell_data_t* s = spell_data_t::nil() )
-    : ab( n, player, s ), direct_bleed( false ), ooc_chance( 0.0 )
+    : ab( n, player, s ), direct_bleed( false ), ooc_chance( 0.0 ), bleed_mul( 0.0 )
   {
     ab::may_glance = false;
     ab::special    = true;
@@ -2456,16 +2448,22 @@ public:
       return ab::target_armor( t );
   }
 
+  double composite_target_multiplier( player_t* t ) const override
+  {
+    double tm = ab::composite_target_multiplier( t );
+
+    if ( bleed_mul && t->debuffs.bleeding && t->debuffs.bleeding->up() )
+      tm *= 1.0 + bleed_mul;
+
+    return tm;
+  }
+
   void trigger_clearcasting( action_state_t* s )
   {
-    if ( !ooc_chance || !ab::result_is_hit( s->result ) )
-      return;
-
     int active    = ab::p()->buff.clearcasting->check();
     double chance = ab::weapon->proc_chance_on_swing( ooc_chance );
 
     // Internal cooldown is handled by buff.
-
     if ( ab::p()->buff.clearcasting->trigger( 1, buff_t::DEFAULT_VALUE(), chance,
                                               ab::p()->buff.clearcasting->buff_duration ) )
     {
@@ -2474,6 +2472,14 @@ public:
       for ( int i = 0; i < active; i++ )
         ab::p()->proc.clearcasting_wasted->occur();
     }
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    ab::impact( s );
+
+    if ( ab::is_auto_attack && ooc_chance && ab::result_is_hit( s->result ) )
+      trigger_clearcasting( s );
   }
 };
 
@@ -2518,9 +2524,7 @@ public:
     if ( ab::time_to_execute > timespan_t::zero() && !ab::proc && !ab::background && reset_melee_swing )
     {
       if ( ab::p()->main_hand_attack && ab::p()->main_hand_attack->execute_event )
-      {
         ab::p()->main_hand_attack->execute_event->reschedule( ab::p()->main_hand_weapon.swing_time );
-      }
       // Nothing for OH, as druids don't DW
     }
 
@@ -2793,7 +2797,7 @@ struct moonfire_t : public druid_spell_t
     void tick( dot_t* d ) override
     {
       druid_spell_t::tick( d );
-      double dr_mult = std::sqrt( p()->get_active_dots( internal_id ) ) / p()->get_active_dots( internal_id );
+      double dr_mult = 1.0 / std::sqrt( p()->get_active_dots( internal_id ) );
 
       if ( p()->talent.shooting_stars->ok() )
       {
@@ -2806,6 +2810,7 @@ struct moonfire_t : public druid_spell_t
 
       if ( !p()->azerite.power_of_the_moon.ok() )
         return;
+
       if ( !p()->rppm.power_of_the_moon->trigger() )
         return;
 
@@ -3028,7 +3033,7 @@ struct druid_melee_t : public caster_attack_t
 {
   druid_melee_t( druid_t* p ) : caster_attack_t( "caster_melee", p )
   {
-    may_glance = background = repeating = true;
+    may_glance = background = repeating = is_auto_attack = true;
 
     school            = SCHOOL_PHYSICAL;
     trigger_gcd       = timespan_t::zero();
@@ -3042,13 +3047,6 @@ struct druid_melee_t : public caster_attack_t
       return timespan_t::from_seconds( 0.01 );
 
     return caster_attack_t::execute_time();
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    caster_attack_t::impact( s );
-
-    trigger_clearcasting( s );
   }
 };
 }  // namespace caster_attacks
@@ -3421,19 +3419,12 @@ struct cat_melee_t : public cat_attack_t
   cat_melee_t( druid_t* player ) : cat_attack_t( "cat_melee", player, spell_data_t::nil(), "" )
   {
     form_mask  = CAT_FORM;
-    may_glance = background = repeating = true;
+    may_glance = background = repeating = is_auto_attack = true;
 
     school            = SCHOOL_PHYSICAL;
     trigger_gcd       = timespan_t::zero();
     special           = false;
     weapon_multiplier = 1.0;
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    cat_attack_t::impact( s );
-
-    trigger_clearcasting( s );
   }
 
   timespan_t execute_time() const override
@@ -3996,7 +3987,6 @@ struct rake_t : public cat_attack_t
       stealth_mul = data().effectN( 4 ).percent();
 
     bleed = p->find_action( "rake_bleed" );
-
     if ( !bleed )
     {
       bleed        = new rake_bleed_t( p );
@@ -4018,7 +4008,7 @@ struct rake_t : public cat_attack_t
   {
     double pm = cat_attack_t::composite_persistent_multiplier( s );
 
-    if ( stealthed() || p()->buff.feral_3->check() )
+    if ( stealth_mul && ( stealthed() || p()->buff.feral_3->check() ) )
       pm *= 1.0 + stealth_mul;
 
     return pm;
@@ -4242,11 +4232,10 @@ struct savage_roar_t : public cat_attack_t
 
 struct shred_t : public cat_attack_t
 {
-  double bleed_mul;
   double stealth_mul;
 
   shred_t( druid_t* p, const std::string& options_str )
-    : cat_attack_t( "shred", p, p->find_class_spell( "Shred" ), options_str ), bleed_mul( 0.0 ), stealth_mul( 0.0 )
+    : cat_attack_t( "shred", p, p->find_class_spell( "Shred" ), options_str ), stealth_mul( 0.0 )
   {
     if ( p->find_rank_spell( "Shred", "Rank 2" )->ok() )
       bleed_mul = data().effectN( 4 ).percent();
@@ -4286,21 +4275,11 @@ struct shred_t : public cat_attack_t
     return b;
   }
 
-  double composite_target_multiplier( player_t* t ) const override
-  {
-    double tm = cat_attack_t::composite_target_multiplier( t );
-
-    if ( t->debuffs.bleeding && t->debuffs.bleeding->up() )
-      tm *= 1.0 + bleed_mul;
-
-    return tm;
-  }
-
   double composite_crit_chance_multiplier() const override
   {
     double cm = cat_attack_t::composite_crit_chance_multiplier();
 
-    if ( stealthed() && stealth_mul )
+    if ( stealth_mul && stealthed() )  // TODO: check if feral 3 conduit applies this too
       cm *= 2.0;
 
     return cm;
@@ -4310,7 +4289,7 @@ struct shred_t : public cat_attack_t
   {
     double m = cat_attack_t::action_multiplier();
 
-    if ( stealthed() || p()->buff.feral_3->check() )
+    if ( stealth_mul && ( stealthed() || p()->buff.feral_3->check() ) )
       m *= 1.0 + stealth_mul;
 
     return m;
@@ -4321,10 +4300,8 @@ struct shred_t : public cat_attack_t
 
 struct swipe_cat_t : public cat_attack_t
 {
-  double bleed_mul;
-
   swipe_cat_t( druid_t* player, const std::string& options_str )
-    : cat_attack_t( "swipe_cat", player, player->spec.swipe_cat, options_str ), bleed_mul( 0.0 )
+    : cat_attack_t( "swipe_cat", player, player->spec.swipe_cat, options_str )
   {
     aoe               = as<int>( data().effectN( 4 ).base_value() );
     energize_amount   = data().effectN( 1 ).base_value();
@@ -4354,16 +4331,6 @@ struct swipe_cat_t : public cat_attack_t
     }
 
     return b;
-  }
-
-  double composite_target_multiplier( player_t* t ) const override
-  {
-    double tm = cat_attack_t::composite_target_multiplier( t );
-
-    if ( t->debuffs.bleeding && t->debuffs.bleeding->up() )
-      tm *= 1.0 + bleed_mul;
-
-    return tm;
   }
 
   bool ready() override
@@ -4473,11 +4440,11 @@ namespace bear_attacks {
 
 struct bear_attack_t : public druid_attack_t<melee_attack_t>
 {
-  bool gore;
+  bool proc_gore;
 
   bear_attack_t( util::string_view n, druid_t* p, const spell_data_t* s = spell_data_t::nil(),
                  const std::string& options_str = std::string() )
-    : base_t( n, p, s ), gore( false )
+    : base_t( n, p, s ), proc_gore( false )
   {
     parse_options( options_str );
 
@@ -4489,7 +4456,7 @@ struct bear_attack_t : public druid_attack_t<melee_attack_t>
   {
     base_t::impact( s );
 
-    if ( result_is_hit( s->result ) && gore )
+    if ( result_is_hit( s->result ) && proc_gore )
       trigger_gore();
   }
 };  // end bear_attack_t
@@ -4501,7 +4468,7 @@ struct bear_melee_t : public bear_attack_t
   bear_melee_t( druid_t* player ) : bear_attack_t( "bear_melee", player )
   {
     form_mask  = BEAR_FORM;
-    may_glance = background = repeating = true;
+    may_glance = background = repeating = is_auto_attack = true;
 
     school            = SCHOOL_PHYSICAL;
     trigger_gcd       = timespan_t::zero();
@@ -4519,13 +4486,6 @@ struct bear_melee_t : public bear_attack_t
       return timespan_t::from_seconds( 0.01 );
 
     return bear_attack_t::execute_time();
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    bear_attack_t::impact( s );
-
-    trigger_clearcasting( s );
   }
 };
 
@@ -4577,13 +4537,11 @@ struct growl_t : public bear_attack_t
 
 struct mangle_t : public bear_attack_t
 {
-  double bleeding_multiplier;
-
   mangle_t( druid_t* player, const std::string& options_str )
-    : bear_attack_t( "mangle", player, player->find_class_spell( "Mangle" ), options_str ), bleeding_multiplier( 0.0 )
+    : bear_attack_t( "mangle", player, player->find_class_spell( "Mangle" ), options_str )
   {
     if ( p()->find_rank_spell( "Mangle", "Rank 2" )->ok() )
-      bleeding_multiplier = data().effectN( 3 ).percent();
+      bleed_mul = data().effectN( 3 ).percent();
 
     energize_amount += player->talent.soul_of_the_forest_bear->effectN( 1 ).resource( RESOURCE_RAGE );
   }
@@ -4595,16 +4553,6 @@ struct mangle_t : public bear_attack_t
     em += p()->buff.gore->value();
 
     return em;
-  }
-
-  double composite_target_multiplier( player_t* t ) const override
-  {
-    double tm = bear_attack_t::composite_target_multiplier( t );
-
-    if ( t->debuffs.bleeding && t->debuffs.bleeding->check() )
-      tm *= 1.0 + bleeding_multiplier;
-
-    return tm;
   }
 
   int n_targets() const override
@@ -4652,7 +4600,7 @@ struct maul_t : public bear_attack_t
   maul_t( druid_t* player, const std::string& options_str )
     : bear_attack_t( "maul", player, player->find_specialization_spell( "Maul" ), options_str )
   {
-    gore = true;
+    proc_gore = true;
   }
 
   void execute() override
@@ -4743,7 +4691,7 @@ struct swipe_bear_t : public bear_attack_t
   {
     // target hit data stored in spec.swipe_cat
     aoe  = as<int>( p->spec.swipe_cat->effectN( 4 ).base_value() );
-    gore = true;
+    proc_gore = true;
   }
 
   double bonus_da( const action_state_t* s ) const override
@@ -4767,11 +4715,11 @@ struct thrash_bear_t : public bear_attack_t
     : bear_attack_t( "thrash_bear", p, p->spec.thrash_bear, options_str ), blood_frenzy_amount( 0 )
   {
     aoe  = -1;
-    gore = hasted_ticks    = true;
-    dot_duration           = p->spec.thrash_bear_dot->duration();
-    base_tick_time         = p->spec.thrash_bear_dot->effectN( 1 ).period();
-    spell_power_mod.direct = 0;
-    attack_power_mod.tick  = p->spec.thrash_bear_dot->effectN( 1 ).ap_coeff();
+    proc_gore = hasted_ticks = true;
+    dot_duration             = p->spec.thrash_bear_dot->duration();
+    base_tick_time           = p->spec.thrash_bear_dot->effectN( 1 ).period();
+    spell_power_mod.direct   = 0;
+    attack_power_mod.tick    = p->spec.thrash_bear_dot->effectN( 1 ).ap_coeff();
     dot_max_stack =
         p->spec.thrash_bear_dot->max_stacks() + as<int>( p->legendary.guardian_runecarve_1->effectN( 4 ).base_value() );
     radius *= 1.0 + p->legendary.guardian_runecarve_1->effectN( 3 ).percent();
@@ -6143,7 +6091,7 @@ struct sunfire_t : public druid_spell_t
     void tick( dot_t* d ) override
     {
       druid_spell_t::tick( d );
-      double dr_mult = std::sqrt( p()->get_active_dots( internal_id ) ) / p()->get_active_dots( internal_id );
+      double dr_mult = 1.0 / std::sqrt( p()->get_active_dots( internal_id ) );
 
       if ( p()->talent.shooting_stars->ok() )
       {
@@ -8189,8 +8137,8 @@ void druid_t::create_buffs()
     ->set_chance( talent.galactic_guardian->ok() )
     ->set_default_value( find_spell( 213708 )->effectN( 1 ).resource( RESOURCE_RAGE ) );
 
-  buff.gore = make_buff( this, "mangle", find_spell( 93622 ) )
-    ->set_default_value( find_spell( 93622 )->effectN( 1 ).resource( RESOURCE_RAGE ) );
+  buff.gore = make_buff( this, "mangle", find_spell( 93622 ) )->set_chance( spec.gore->effectN( 1 ).percent() );
+  buff.gore->set_default_value( buff.gore->data().effectN( 1 ).resource( RESOURCE_RAGE ) );
 
   buff.guardian_of_elune = make_buff( this, "guardian_of_elune", talent.guardian_of_elune->effectN( 1 ).trigger() )
     ->set_chance( talent.guardian_of_elune->ok() )
