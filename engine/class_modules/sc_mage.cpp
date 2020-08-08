@@ -1642,12 +1642,14 @@ public:
     return m;
   }
 
-  double composite_da_multiplier( const action_state_t* s ) const override
+  double composite_target_multiplier( player_t* target ) const override
   {
-    double m = spell_t::composite_da_multiplier( s );
+    double m = spell_t::composite_target_multiplier( target );
 
-    if ( auto td = p()->target_data[ s->target ] )
+    if ( auto td = p()->target_data[ target ] )
     {
+      // TODO: Confirm how Radiant Spark is supposed to interact with Ignite.
+      // Right now in beta, the damage multiplier gets factored out when triggering Ignite.
       if ( affected_by.radiant_spark )
         m *= 1.0 + td->debuffs.radiant_spark_vulnerability->check_stack_value();
     }
@@ -1785,10 +1787,18 @@ public:
 
     if ( triggers.icy_propulsion && p()->buffs.icy_veins->check() && s->result_total > 0.0 && s->result == RESULT_CRIT )
       p()->cooldowns.icy_veins->adjust( -0.1 * p()->conduits.icy_propulsion.time_value( conduit_data_t::S ) );
+  }
+
+  void assess_damage( result_amount_type rt, action_state_t* s ) override
+  {
+    spell_t::assess_damage( rt, s );
+
+    if ( s->result_total <= 0.0 )
+      return;
 
     if ( auto td = p()->target_data[ s->target ] )
     {
-      if ( triggers.radiant_spark && result_is_hit( s->result ) && td->dots.radiant_spark->is_ticking() )
+      if ( triggers.radiant_spark && td->dots.radiant_spark->is_ticking() )
       {
         if ( td->debuffs.radiant_spark_vulnerability->check() < td->debuffs.radiant_spark_vulnerability->max_stack() )
         {
@@ -4520,6 +4530,8 @@ struct meteor_burn_t : public fire_mage_spell_t
     fire_mage_spell_t( n, p, p->find_spell( 155158 ) )
   {
     background = ground_aoe = true;
+    // This spell probably shouldn't interact with Radiant Spark at all.
+    affected_by.radiant_spark = triggers.radiant_spark = p->bugs;
     aoe = -1;
     std::swap( spell_power_mod.direct, spell_power_mod.tick );
     dot_duration = 0_ms;
@@ -5095,11 +5107,11 @@ struct supernova_t : public arcane_mage_spell_t
   {
     parse_options( options_str );
     aoe = -1;
+    affected_by.savant = triggers.radiant_spark = true;
 
     double sn_mult = 1.0 + p->talents.supernova->effectN( 1 ).percent();
     base_multiplier     *= sn_mult;
     base_aoe_multiplier /= sn_mult;
-    affected_by.savant = triggers.radiant_spark = true;
   }
 };
 
