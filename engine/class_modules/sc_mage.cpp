@@ -1507,8 +1507,8 @@ struct mage_spell_t : public spell_t
     bool rune_of_power = true;
     bool savant = false;
 
-    bool deathborne = true;
-    bool siphoned_malice = true;
+    bool deathborne = true; // TODO: Does it affect periodic damage
+    bool siphoned_malice = true; // TODO: Does it affect periodic damage
 
     // Misc
     bool combustion = true;
@@ -1516,7 +1516,7 @@ struct mage_spell_t : public spell_t
     bool shatter = false;
 
     bool deathborne_cleave = false;
-    bool radiant_spark = true;
+    bool radiant_spark = true; // TODO: Does it affect periodic damage
     bool shifting_power = true;
   } affected_by;
 
@@ -1792,9 +1792,15 @@ public:
       if ( triggers.radiant_spark && result_is_hit( s->result ) && td->dots.radiant_spark->is_ticking() )
       {
         if ( td->debuffs.radiant_spark_vulnerability->check() < td->debuffs.radiant_spark_vulnerability->max_stack() )
+        {
           td->debuffs.radiant_spark_vulnerability->trigger();
+        }
         else
+        {
           td->debuffs.radiant_spark_vulnerability->expire();
+          // Prevent new applications of the vulnerability debuff until the DoT finishes ticking.
+          td->debuffs.radiant_spark_vulnerability->cooldown->start( nullptr, td->dots.radiant_spark->remains() );
+        }
       }
     }
   }
