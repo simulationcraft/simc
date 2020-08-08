@@ -1825,15 +1825,6 @@ public:
       if ( eff->type() != E_APPLY_AURA || eff->target_1() != 1 )
         continue;
 
-      if ( is_auto_attack && eff->subtype() == A_MOD_AUTO_ATTACK_PCT )
-      {
-        da_multiplier_buffeffects.push_back( buff_effect_t( buff, val ) );
-        continue;
-      }
-
-      if ( !ab::data().affected_by( eff ) )
-        continue;
-
       if ( i <= 5 )
       {
         for ( auto sp : spells )
@@ -1842,6 +1833,15 @@ public:
             mastery = true;
         }
       }
+
+      if ( is_auto_attack && eff->subtype() == A_MOD_AUTO_ATTACK_PCT )
+      {
+        da_multiplier_buffeffects.push_back( buff_effect_t( buff, val ) );
+        continue;
+      }
+
+      if ( !ab::data().affected_by( eff ) )
+        continue;
 
       if ( !mastery && !val )
         continue;
