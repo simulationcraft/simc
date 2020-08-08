@@ -1692,10 +1692,10 @@ struct buff_effect_t
 
 struct dot_debuff_t
 {
-  std::function<dot_t*(player_t*)> func;
+  std::function<dot_t*(druid_td_t*)> func;
   double value;
 
-  dot_debuff_t( std::function<dot_t*(player_t*)> f, double v ) : func( f ), value( v )
+  dot_debuff_t( std::function<dot_t*(druid_td_t*)> f, double v ) : func( f ), value( v )
   {}
 };
 
@@ -1948,7 +1948,7 @@ public:
     parse_buff_effects( p()->buff.apex_predators_craving );
   }
 
-  void parse_dot_debuffs( std::function<dot_t*( player_t* )> func, const spell_data_t* s_data,
+  void parse_dot_debuffs( std::function<dot_t*( druid_td_t* )> func, const spell_data_t* s_data,
                           const spell_data_t* spell2 = spell_data_t::nil() )
   {
     if ( !s_data->ok() )
@@ -1972,7 +1972,7 @@ public:
     }
   }
 
-  double get_dot_debuffs_value( player_t* t ) const
+  double get_dot_debuffs_value( druid_td_t* t ) const
   {
     double return_value = 1.0;
 
@@ -1989,13 +1989,13 @@ public:
 
   void apply_dot_debuffs()
   {
-    parse_dot_debuffs( [this]( player_t* t ) -> dot_t* { return td( t )->dots.adaptive_swarm_damage; },
+    parse_dot_debuffs( []( druid_td_t* t ) -> dot_t* { return t->dots.adaptive_swarm_damage; },
                        p()->covenant.adaptive_swarm_damage, p()->conduit.necrolord );
-    parse_dot_debuffs( [this]( player_t* t ) -> dot_t* { return td( t )->dots.thrash_bear; },
+    parse_dot_debuffs( []( druid_td_t* t ) -> dot_t* { return t->dots.thrash_bear; },
                        p()->spec.thrash_bear_dot, p()->talent.rend_and_tear );
-    parse_dot_debuffs( [this]( player_t* t ) -> dot_t* { return td( t )->dots.moonfire; },
+    parse_dot_debuffs( []( druid_td_t* t ) -> dot_t* { return t->dots.moonfire; },
                        p()->spec.moonfire_dmg, p()->conduit.balance_2 );
-    parse_dot_debuffs( [this]( player_t* t ) -> dot_t* { return td( t )->dots.sunfire; },
+    parse_dot_debuffs( []( druid_td_t* t ) -> dot_t* { return t->dots.sunfire; },
                        p()->spec.sunfire_dmg, p()->conduit.balance_2 );
   }
 
@@ -2011,7 +2011,7 @@ public:
 
   double composite_target_multiplier( player_t* t ) const override
   {
-    double tm = ab::composite_target_multiplier( t ) * get_dot_debuffs_value( t );
+    double tm = ab::composite_target_multiplier( t ) * get_dot_debuffs_value( td( t ) );
 
     return tm;
   }
