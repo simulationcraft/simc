@@ -4043,6 +4043,11 @@ struct slice_and_dice_t : public rogue_spell_t
     dot_duration = timespan_t::zero();
   }
 
+  timespan_t get_triggered_duration( int cp )
+  {
+    return ( cp + 1 ) * p()->buffs.slice_and_dice->data().duration();
+  }
+
   void execute() override
   {
     rogue_spell_t::execute();
@@ -4050,7 +4055,7 @@ struct slice_and_dice_t : public rogue_spell_t
     trigger_restless_blades( execute_state );
 
     int cp = cast_state( execute_state ) -> cp;
-    timespan_t snd_duration = ( cp + 1 ) * p() -> buffs.slice_and_dice -> data().duration();
+    timespan_t snd_duration = get_triggered_duration( cp );
 
     if ( precombat_seconds && ! p() -> in_combat )
       snd_duration -= timespan_t::from_seconds( precombat_seconds );
@@ -4066,6 +4071,15 @@ struct slice_and_dice_t : public rogue_spell_t
     // On Shadowlands Beta, Slice and Dice simply removes any active Paradise Lost buff. -Mystler 2020-07-31
     if ( p() -> azerite.paradise_lost.ok() )
       p() -> buffs.paradise_lost -> expire();
+  }
+
+  bool ready() override
+  {
+    // Grand Melee prevents refreshing if there would be a reduction in the post-pandemic buff duration
+    if ( p()->buffs.slice_and_dice->remains() > get_triggered_duration( as<int>( p()->resources.current[ RESOURCE_COMBO_POINT ] ) ) * 1.3 )
+      return false;
+
+    return rogue_spell_t::ready();
   }
 };
 
@@ -6417,7 +6431,7 @@ void rogue_t::init_action_list()
     finish -> add_action( "pool_resource,for_next=1" );
     finish -> add_action( this, "Slice and Dice", "if=buff.slice_and_dice.remains<target.time_to_die&buff.slice_and_dice.remains<(1+combo_points)*1.8" );
     finish -> add_action( this, "Rupture", "if=target.time_to_die-remains>6&refreshable", "Keep up Rupture if it is about to run out." );
-    finish -> add_action( this, "Rupture", "if=!variable.use_priority_rotation&spell_targets.shuriken_storm>=2&target.time_to_die>=(5+(2*combo_points))&refreshable", "Multidotting targets that will live for the duration of Rupture, refresh during pandemic." );
+    finish -> add_action( this, "Rupture", "cycle_targets=1,if=!variable.use_priority_rotation&spell_targets.shuriken_storm>=2&target.time_to_die>=(5+(2*combo_points))&refreshable", "Multidotting targets that will live for the duration of Rupture, refresh during pandemic." );
     finish -> add_action( this, "Rupture", "if=remains<cooldown.symbols_of_death.remains+10&cooldown.symbols_of_death.remains<=5&target.time_to_die-remains>cooldown.symbols_of_death.remains+5", "Refresh Rupture early if it will expire during Symbols. Do that refresh if SoD gets ready in the next 5s." );
     finish -> add_talent( this, "Secret Technique" );
     finish -> add_action( this, "Shadow Vault", "if=!variable.use_priority_rotation&spell_targets>=3" );
