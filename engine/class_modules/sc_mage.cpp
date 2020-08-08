@@ -5247,6 +5247,8 @@ struct deathborne_t : public mage_spell_t
     mage_spell_t( n, p, p->find_covenant_spell( "Deathborne" ) )
   {
     parse_options( options_str );
+    // TODO: Which Ice Floes effect allows the covenant abilities to be cast while moving?
+    affected_by.ice_floes = true;
     harmful = false;
   }
 
@@ -5283,6 +5285,7 @@ struct mirrors_of_torment_t : public mage_spell_t
     mage_spell_t( n, p, p->find_covenant_spell( "Mirrors of Torment" ) )
   {
     parse_options( options_str );
+    affected_by.ice_floes = true;
   }
 
   void impact( action_state_t* s ) override
@@ -5300,6 +5303,7 @@ struct radiant_spark_t : public mage_spell_t
     mage_spell_t( n, p, p->find_covenant_spell( "Radiant Spark" ) )
   {
     parse_options( options_str );
+    affected_by.ice_floes = true;
     affected_by.radiant_spark = false;
   }
 
@@ -5335,7 +5339,7 @@ struct shifting_power_t : public mage_spell_t
     reduction()
   {
     parse_options( options_str );
-    channeled = true;
+    channeled = affected_by.ice_floes = true;
     affected_by.shifting_power = false;
     tick_action = get_action<shifting_power_pulse_t>( "shifting_power_pulse", p );
     reduction = data().effectN( 2 ).time_value();
