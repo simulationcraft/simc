@@ -2660,7 +2660,7 @@ void print_html_resource_gains_table( report::sc_html_stream& os, const player_t
         {
           first = false;
           os << "<tr class=\"petrow\">\n"
-              << "<th colspan=\"8\" class=\"left small\">pet - " << util::encode_html( pet->name_str ) << "</th>\n"
+              << "<th colspan=\"8\" class=\"left small\">pet - " << report_decorators::decorated_npc( *pet ) << "</th>\n"
               << "</tr>\n";
         }
       }
@@ -2711,9 +2711,10 @@ void print_html_resource_usage_table( report::sc_html_stream& os, const player_t
         if ( first )
         {
           first = false;
-          os << "<tr class=\"petrow\">\n"
-             << "<th <th colspan=\"8\" class=\"left small\">pet - " << util::encode_html( pet->name_str ) << "</th>\n"
-             << "</tr>\n";
+          fmt::print(os, "<tr class=\"petrow\">\n");
+          fmt::print(os, "<th <th colspan=\"8\" class=\"left small\">pet - {}</th>\n", report_decorators::decorated_npc( *pet ));
+          fmt::print(os, "</tr>\n");
+
         }
         print_html_action_resource( os, *stat );
       }
@@ -4081,7 +4082,7 @@ void output_player_damage_summary( report::sc_html_stream& os, const player_t& a
             "<th class=\"right small\">%.0f / %.0f</th>\n"
             "<td colspan=\"%d\" class=\"filler\"></td>\n"
             "</tr>\n",
-            util::encode_html( pet->name_str ).c_str(), pet->collected_data.dps.mean(),
+            report_decorators::decorated_npc( *pet ), pet->collected_data.dps.mean(),
             pet->collected_data.dpse.mean(),
             static_columns + n_optional_columns );
         os << "</tbody>\n";
@@ -4183,7 +4184,7 @@ void output_player_heal_summary( report::sc_html_stream& os, const player_t& act
             "<th class=\"right small\">%.0f / %.0f</th>\n"
             "<td colspan=\"%d\" class=\"filler\"></td>\n"
             "</tr>\n",
-            util::encode_html( pet->name_str ).c_str(), pet->collected_data.dps.mean(),
+            report_decorators::decorated_npc( *pet ), pet->collected_data.dps.mean(),
             pet->collected_data.dpse.mean(),
             static_columns + n_optional_columns );
         os << "</tbody>\n";
@@ -4256,7 +4257,7 @@ void output_player_simple_ability_summary( report::sc_html_stream& os, const pla
         else
           os << "<tr>\n";
 
-        os << "<th <th colspan=\"3\" class=\"left small\">pet - " << util::encode_html( pet->name_str ) << "</th>\n"
+        os << "<th <th colspan=\"3\" class=\"left small\">pet - " << report_decorators::decorated_npc( *pet ) << "</th>\n"
            << "</tr>\n"
            << "</tbody>\n";
       }
