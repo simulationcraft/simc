@@ -1151,7 +1151,7 @@ enum effect_subtype_t : unsigned {
     A_340 = 340,
     A_341 = 341,
     A_342 = 342,
-    A_343 = 343,
+    A_MOD_AUTO_ATTACK_FROM_CASTER = 343,
     A_MOD_AUTO_ATTACK_PCT = 344,
     A_345 = 345,
     A_346 = 346,

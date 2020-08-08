@@ -1959,13 +1959,17 @@ public:
       auto eff   = &s_data->effectN( i );
       double val = eff->percent();
 
-      if ( eff->type() != E_APPLY_AURA || eff->subtype() != A_MOD_DAMAGE_FROM_CASTER || !ab::data().affected_by( eff ) )
+      if ( eff->type() != E_APPLY_AURA )
         continue;
 
       if ( spell2->ok() && i <= 5 )
         parse_rank_spell_effects( val, s_data, i, spell2 );
 
       if ( !val )
+        continue;
+
+      if ( !( eff->subtype() == A_MOD_DAMAGE_FROM_CASTER && ab::data().affected_by( eff ) ) &&
+           !( eff->subtype() == A_MOD_AUTO_ATTACK_FROM_CASTER && is_auto_attack ) )
         continue;
 
       target_multiplier_dotdebuffs.push_back( dot_debuff_t( func, val ) );
