@@ -1389,7 +1389,7 @@ public:
     return c;
   }
 
-  double composite_target_crit_chance( player_t* target ) const
+  double composite_target_crit_chance( player_t* target ) const override
   {
     double c = ab::composite_target_crit_chance( target );
     c += td( target )->debuffs.between_the_eyes->stack_value();
