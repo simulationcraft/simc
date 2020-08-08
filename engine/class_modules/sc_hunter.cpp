@@ -5739,7 +5739,7 @@ void hunter_t::create_buffs()
 
   buffs.dead_eye =
     make_buff( this, "dead_eye", talents.dead_eye -> effectN( 2 ).trigger() )
-      -> set_default_value( talents.dead_eye -> effectN( 2 ).trigger() -> effectN( 1 ).base_value() )
+      -> set_default_value( talents.dead_eye -> effectN( 2 ).trigger() -> effectN( 1 ).percent() )
       -> set_stack_change_callback( [this]( buff_t*, int, int ) {
           cooldowns.aimed_shot -> adjust_recharge_multiplier();
         } );
