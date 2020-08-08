@@ -940,7 +940,6 @@ struct fiend_melee_t : public priest_pet_melee_t
 }  // namespace actions
 }  // namespace fiend
 
-
 struct void_tendril_t final : public priest_pet_t
 {
   void_tendril_t( priest_t* owner ) : priest_pet_t( owner->sim, *owner, "void_tendril", PET_VOID_TENDRIL, true )
@@ -985,9 +984,12 @@ struct priest_action_t : public Base
     bool mastery_madness_ta;
   } affected_by;
 
+  double vf_da_multiplier;
+  double vf_ta_multiplier;
+
 public:
   priest_action_t( util::string_view name, priest_t& p, const spell_data_t* s = spell_data_t::nil() )
-    : ab( name, &p, s ), affected_by()
+    : ab( name, &p, s ), affected_by(), vf_da_multiplier( 1 ), vf_ta_multiplier( 1 )
   {
     init_affected_by();
     ab::may_crit          = true;
@@ -998,6 +1000,17 @@ public:
     {
       ab::base_dd_multiplier *= 1.0 + p.talents.sins_of_the_many->effectN( 1 ).percent();
       ab::base_td_multiplier *= 1.0 + p.talents.sins_of_the_many->effectN( 1 ).percent();
+    }
+
+    if ( affected_by.voidform_da )
+    {
+      vf_da_multiplier = 1 + priest().buffs.voidform->data().effectN( 1 ).percent() +
+                         priest().talents.legacy_of_the_void->effectN( 4 ).percent();
+    }
+    if ( affected_by.voidform_ta )
+    {
+      vf_ta_multiplier = 1 + priest().buffs.voidform->data().effectN( 2 ).percent() +
+                         priest().talents.legacy_of_the_void->effectN( 4 ).percent();
     }
   }
 
@@ -1080,39 +1093,30 @@ public:
 
   double action_da_multiplier() const override
   {
-    double m               = ab::action_da_multiplier();
-    double lotv_multiplier = 0.0;
+    double m = ab::action_da_multiplier();
 
-    if ( priest().specialization() == PRIEST_SHADOW )
+    if ( affected_by.mastery_madness_da )
     {
-      if ( affected_by.mastery_madness_da )
-      {
-        m *= 1.0 + priest().cache.mastery_value();
-      }
-      if ( affected_by.voidform_da && priest().buffs.voidform->check() )
-      {
-        double vf_multiplier = priest().buffs.voidform->data().effectN( 1 ).percent();
-        // TODO: add this directly into vf_multiplier after PTR
-        // Grab the Legacy of the Void Damage increase
-        lotv_multiplier = priest().talents.legacy_of_the_void->effectN( 4 ).percent();
-        m *= 1.0 + vf_multiplier + lotv_multiplier;
-      }
-      if ( affected_by.shadowform_da && priest().buffs.shadowform->check() )
-      {
-        m *= 1.0 + priest().buffs.shadowform->data().effectN( 1 ).percent();
-      }
-      if ( affected_by.twist_of_fate_da && priest().buffs.twist_of_fate->check() )
-      {
-        m *= 1.0 + priest().buffs.twist_of_fate->data().effectN( 1 ).percent();
-      }
+      m *= 1.0 + priest().cache.mastery_value();
+    }
+    if ( affected_by.voidform_da && priest().buffs.voidform->check() )
+    {
+      m *= vf_da_multiplier;
+    }
+    if ( affected_by.shadowform_da && priest().buffs.shadowform->check() )
+    {
+      m *= 1.0 + priest().buffs.shadowform->data().effectN( 1 ).percent();
+    }
+    if ( affected_by.twist_of_fate_da && priest().buffs.twist_of_fate->check() )
+    {
+      m *= 1.0 + priest().buffs.twist_of_fate->data().effectN( 1 ).percent();
     }
     return m;
   }
 
   double action_ta_multiplier() const override
   {
-    double m               = ab::action_ta_multiplier();
-    double lotv_multiplier = 0.0;
+    double m = ab::action_ta_multiplier();
 
     if ( affected_by.mastery_madness_ta )
     {
@@ -1120,11 +1124,7 @@ public:
     }
     if ( affected_by.voidform_ta && priest().buffs.voidform->check() )
     {
-      double vf_multiplier = priest().buffs.voidform->data().effectN( 2 ).percent();
-      // TODO: add this directly into vf_multiplier after PTR
-      // Grab the Legacy of the Void Damage increase
-      lotv_multiplier = priest().talents.legacy_of_the_void->effectN( 7 ).percent();
-      m *= 1.0 + vf_multiplier + lotv_multiplier;
+      m *= vf_ta_multiplier;
     }
     if ( affected_by.shadowform_ta && priest().buffs.shadowform->check() )
     {
