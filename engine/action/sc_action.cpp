@@ -1340,23 +1340,7 @@ double action_t::composite_spell_power() const
 
 double action_t::composite_target_crit_chance( player_t* target ) const
 {
-  actor_target_data_t* td = player->get_owner_or_self()->get_target_data( target );
-
-  double c = 0.0;
-
-  if ( td )
-  {
-    // Essence: Blood of the Enemy Major debuff
-    c += td->debuff.blood_of_the_enemy->stack_value();
-
-    // Consumable: Potion of Focused Resolve (TODO: Does this apply to pets as well?)
-    if ( !player->is_pet() )
-    {
-      c += td->debuff.focused_resolve->stack_value();
-    }
-  }
-
-  return c;
+  return player->composite_player_target_crit_chance( target );
 }
 
 double action_t::composite_target_multiplier(player_t* target) const

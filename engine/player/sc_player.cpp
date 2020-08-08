@@ -4071,6 +4071,25 @@ double player_t::composite_player_absorb_multiplier( const action_state_t* ) con
   return 1.0;
 }
 
+double player_t::composite_player_target_crit_chance( player_t* target ) const
+{
+  double c = 0.0;
+
+  if ( actor_target_data_t* td = get_owner_or_self()->get_target_data( target ) )
+  {
+    // Essence: Blood of the Enemy Major debuff
+    c += td->debuff.blood_of_the_enemy->stack_value();
+
+    // Consumable: Potion of Focused Resolve (TODO: Does this apply to pets as well?)
+    if ( !is_pet() )
+    {
+      c += td->debuff.focused_resolve->stack_value();
+    }
+  }
+
+  return c;
+}
+
 double player_t::composite_player_critical_damage_multiplier( const action_state_t* /* s */ ) const
 {
   double m = 1.0;

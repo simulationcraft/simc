@@ -653,6 +653,7 @@ public:
   double    composite_melee_haste() const override;
   double    composite_melee_speed() const override;
   double    composite_spell_haste() const override;
+  double    composite_player_target_crit_chance( player_t* target ) const override;
   double    composite_player_critical_damage_multiplier( const action_state_t* ) const override;
   double    composite_player_multiplier( school_e school ) const override;
   double    composite_player_target_multiplier( player_t* target, school_e school ) const override;
@@ -5880,7 +5881,6 @@ void hunter_t::create_buffs()
   buffs.resonating_arrow =
     make_buff( this, "resonating_arrow", covenants.resonating_arrow -> effectN( 1 ).trigger() )
       -> set_default_value( find_spell( 308498 ) -> effectN( 1 ).percent() )
-      -> add_invalidate( CACHE_CRIT_CHANCE )
       -> set_activated( true );
 
   buffs.wild_spirits =
@@ -6782,8 +6782,6 @@ double hunter_t::composite_melee_crit_chance() const
 
   crit += specs.critical_strikes -> effectN( 1 ).percent();
 
-  crit += buffs.resonating_arrow -> check_value();
-
   return crit;
 }
 
@@ -6794,8 +6792,6 @@ double hunter_t::composite_spell_crit_chance() const
   double crit = player_t::composite_spell_crit_chance();
 
   crit += specs.critical_strikes -> effectN( 1 ).percent();
-
-  crit += buffs.resonating_arrow -> check_value();
 
   return crit;
 }
@@ -6834,6 +6830,17 @@ double hunter_t::composite_spell_haste() const
     h *= 1.0 / ( 1 + buffs.dire_beast -> check_value() );
 
   return h;
+}
+
+// hunter_t::composite_player_target_crit_chance ============================
+
+double hunter_t::composite_player_target_crit_chance( player_t* target ) const
+{
+  double crit = player_t::composite_player_target_crit_chance( target );
+
+  crit += buffs.resonating_arrow -> check_value();
+
+  return crit;
 }
 
 // hunter_t::composite_player_critical_damage_multiplier ====================

@@ -893,6 +893,7 @@ public:
   virtual double composite_player_th_multiplier( school_e ) const;
   virtual double composite_player_absorb_multiplier( const action_state_t* s ) const;
   virtual double composite_player_pet_damage_multiplier( const action_state_t* ) const;
+  virtual double composite_player_target_crit_chance( player_t* target ) const;
   virtual double composite_player_critical_damage_multiplier( const action_state_t* s ) const;
   virtual double composite_player_critical_healing_multiplier() const;
   virtual double composite_mitigation_multiplier( school_e ) const;
