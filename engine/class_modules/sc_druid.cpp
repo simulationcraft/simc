@@ -7725,6 +7725,10 @@ void druid_t::create_pets()
 
 void druid_t::init_spells()
 {
+  auto check_spell = [this]( bool b, unsigned id ) -> const spell_data_t* {
+    return b ? find_spell( id ) : spell_data_t::not_found();
+  };
+
   player_t::init_spells();
 
   // Talents ================================================================
@@ -7807,15 +7811,15 @@ void druid_t::init_spells()
 
   // Covenants
   covenant.kyrian                       = find_covenant_spell( "Kindred Spirits" );
-  covenant.empower_bond                 = covenant.kyrian->ok() ? find_spell( 326446 ) : spell_data_t::not_found();
-  covenant.kindred_empowerment          = covenant.kyrian->ok() ? find_spell( 327022 ) : spell_data_t::not_found();
-  covenant.kindred_empowerment_energize = covenant.kyrian->ok() ? find_spell( 327139 ) : spell_data_t::not_found();
-  covenant.kindred_empowerment_damage   = covenant.kyrian->ok() ? find_spell( 338411 ) : spell_data_t::not_found();
+  covenant.empower_bond                 = check_spell( covenant.kyrian->ok(), 326446 );
+  covenant.kindred_empowerment          = check_spell( covenant.kyrian->ok(), 327022 );
+  covenant.kindred_empowerment_energize = check_spell( covenant.kyrian->ok(), 327139 );
+  covenant.kindred_empowerment_damage   = check_spell( covenant.kyrian->ok(), 338411 );
   covenant.night_fae                    = find_covenant_spell( "Convoke the Spirits" );
   covenant.venthyr                      = find_covenant_spell( "Ravenous Frenzy" );
   covenant.necrolord                    = find_covenant_spell( "Adaptive Swarm" );
-  covenant.adaptive_swarm_damage        = covenant.necrolord->ok() ? find_spell( 325733 ) : spell_data_t::not_found();
-  covenant.adaptive_swarm_heal          = covenant.necrolord->ok() ? find_spell( 325748 ) : spell_data_t::not_found();
+  covenant.adaptive_swarm_damage        = check_spell( covenant.necrolord->ok(), 325733 );
+  covenant.adaptive_swarm_heal          = check_spell( covenant.necrolord->ok(), 325748 );
 
   // Conduits
   conduit.balance_1  = fake_conduit_spell( 340720 );
@@ -7876,54 +7880,54 @@ void druid_t::init_spells()
   spec.balance                = find_specialization_spell( "Balance Druid" );
   spec.astral_power           = find_specialization_spell( "Astral Power" );
   spec.moonkin_form           = find_affinity_spell( "Moonkin Form" );
-  spec.owlkin_frenzy          = spec.moonkin_form->ok() ? find_spell( 157228 ) : spell_data_t::not_found();  // Owlkin Frenzy RAWR
+  spec.owlkin_frenzy          = check_spell( spec.moonkin_form->ok(), 157228 );  // Owlkin Frenzy RAWR
   spec.celestial_alignment    = find_specialization_spell( "Celestial Alignment" );
   spec.innervate              = find_specialization_spell( "Innervate" );
   spec.eclipse                = find_specialization_spell( "Eclipse" );
   spec.eclipse_2              = find_rank_spell( "Eclipse", "Rank 2" );
   spec.eclipse_solar          = find_spell( 48517 );
   spec.eclipse_lunar          = find_spell( 48518 );
-  spec.sunfire_dmg            = find_affinity_spell( "Sunfire" )->ok() ? find_spell( 164815 ) : spell_data_t::not_found();  // dot debuff for sunfire
-  spec.moonfire_dmg           = find_class_spell( "Moonfire" )->ok() ? find_spell( 164812 ) : spell_data_t::not_found();    // dot debuff for moonfire
+  spec.sunfire_dmg            = check_spell( find_affinity_spell( "Sunfire" )->ok(), 164815 );  // dot debuff for sunfire
+  spec.moonfire_dmg           = check_spell( find_class_spell( "Moonfire" )->ok(), 164812 );    // dot debuff for moonfire
   spec.starsurge              = find_spell( 78674 );  // do NOT use find_affinity_spell. eclipse extension is held within the balance version.
   spec.starsurge_2            = find_rank_spell( "Starsurge", "Rank 2" );  // Adds more Eclipse extension
   spec.starfall               = find_affinity_spell( "Starfall" );
   spec.starfall_2             = find_rank_spell( "Starfall", "Rank 2" );
-  spec.starfall_dmg           = spec.starfall->ok() ? find_spell( 191037 ) : spell_data_t::not_found();
-  spec.stellar_drift          = talent.stellar_drift->ok() ? find_spell( 202461 ) : spell_data_t::not_found();   // stellar drift mobility buff
-  spec.shooting_stars_dmg     = talent.shooting_stars->ok() ? find_spell( 202497 ) : spell_data_t::not_found();  // shooting stars damage
-  spec.fury_of_elune          = talent.fury_of_elune->ok() ? find_spell( 211545 ) : spell_data_t::not_found();   // fury of elune tick damage
-  spec.half_moon              = talent.new_moon->ok() ? find_spell( 274282 ) : spell_data_t::not_found();
-  spec.full_moon              = talent.new_moon->ok() || covenant.night_fae->ok() ? find_spell( 274283 ) : spell_data_t::not_found();
+  spec.starfall_dmg           = check_spell( spec.starfall->ok(), 191037 );
+  spec.stellar_drift          = check_spell( talent.stellar_drift->ok(), 202461 );   // stellar drift mobility buff
+  spec.shooting_stars_dmg     = check_spell( talent.shooting_stars->ok(), 202497 );  // shooting stars damage
+  spec.fury_of_elune          = check_spell( talent.fury_of_elune->ok(), 211545 );   // fury of elune tick damage
+  spec.half_moon              = check_spell( talent.new_moon->ok(), 274282 );
+  spec.full_moon              = check_spell( talent.new_moon->ok() || covenant.night_fae->ok(), 274283 );
 
   // Feral
   spec.feral                  = find_specialization_spell( "Feral Druid" );
   spec.feral_overrides        = find_specialization_spell( "Feral Overrides Passive" );
-  spec.cat_form               = find_class_spell( "Cat Form" )->ok() ? find_spell( 3025 ) : spell_data_t::not_found();
-  spec.cat_form_speed         = find_class_spell( "Cat Form" )->ok() ? find_spell( 113636 ) : spell_data_t::not_found();
+  spec.cat_form               = check_spell( find_class_spell( "Cat Form" )->ok(), 3025 );
+  spec.cat_form_speed         = check_spell( find_class_spell( "Cat Form" )->ok(), 113636 );
   spec.predatory_swiftness    = find_specialization_spell( "Predatory Swiftness" );
   spec.primal_fury            = find_affinity_spell( "Primary Fury" )->effectN( 1 ).trigger();
   spec.rip                    = find_affinity_spell( "Rip" );
   spec.sharpened_claws        = find_specialization_spell( "Sharpened Claws" );
-  spec.swipe_cat              = find_affinity_spell( "Swipe" )->ok() ? find_spell( 106785 ) : spell_data_t::not_found();
-  spec.thrash_cat             = find_specialization_spell( "Thrash" )->ok() ? find_spell( 106830 ) : spell_data_t::not_found();
-  spec.berserk_cat            = find_specialization_spell( "Berserk" )->ok() ? find_spell( 106951 ) : spell_data_t::not_found();
+  spec.swipe_cat              = check_spell( find_affinity_spell( "Swipe" )->ok(), 106785 );
+  spec.thrash_cat             = check_spell( find_specialization_spell( "Thrash" )->ok(), 106830 );
+  spec.berserk_cat            = check_spell( find_specialization_spell( "Berserk" )->ok(), 106951 );
   spec.rake_dmg               = find_affinity_spell( "Rake" )->effectN( 3 ).trigger();
   spec.tigers_fury            = find_specialization_spell( "Tiger's Fury" );
   spec.shred                  = find_class_spell( "Shred" );
-  spec.savage_roar            = talent.savage_roar->ok() ? find_spell( 62071 ) : spell_data_t::not_found();
-  spec.bloodtalons            = talent.bloodtalons->ok() ? find_spell( 145152 ) : spell_data_t::not_found();
+  spec.savage_roar            = check_spell( talent.savage_roar->ok(), 62071 );
+  spec.bloodtalons            = check_spell( talent.bloodtalons->ok(), 145152 );
 
   // Guardian
   spec.guardian               = find_specialization_spell( "Guardian Druid" );
   spec.lightning_reflexes     = find_specialization_spell( "Lightning Reflexes" );
-  spec.bear_form              = find_class_spell( "Bear Form" )->ok() ? find_spell( 1178 ) : spell_data_t::not_found();
+  spec.bear_form              = check_spell( find_class_spell( "Bear Form" )->ok(), 1178 );
   spec.bear_form_2            = find_rank_spell( "Bear Form", "Rank 2" );
   spec.gore                   = find_specialization_spell( "Gore" );
-  spec.swipe_bear             = find_specialization_spell( "Swipe" )->ok() ? find_spell( 213771 ) : spell_data_t::not_found();
-  spec.thrash_bear            = find_affinity_spell( "Thrash" )->ok() ? find_spell( 77758 ) : spell_data_t::not_found();
-  spec.thrash_bear_dot        = spec.thrash_bear->ok() ? find_spell( 192090 ) : spell_data_t::not_found();
-  spec.berserk_bear           = find_specialization_spell( "Berserk" )->ok() ? find_spell( 50334 ) : spell_data_t::not_found();
+  spec.swipe_bear             = check_spell( find_specialization_spell( "Swipe" )->ok(), 213771 );
+  spec.thrash_bear            = check_spell( find_affinity_spell( "Thrash" )->ok(), 77758 );
+  spec.thrash_bear_dot        = check_spell( spec.thrash_bear->ok(), 192090 );
+  spec.berserk_bear           = check_spell( find_specialization_spell( "Berserk" )->ok(), 50334 );
 
   // Restoration
   spec.restoration            = find_specialization_spell( "Restoration Druid" );
@@ -7981,7 +7985,7 @@ void druid_t::init_spells()
   mastery.razor_claws         = find_mastery_spell( DRUID_FERAL );
   mastery.harmony             = find_mastery_spell( DRUID_RESTORATION );
   mastery.natures_guardian    = find_mastery_spell( DRUID_GUARDIAN );
-  mastery.natures_guardian_AP = mastery.natures_guardian->ok() ? find_spell( 159195 ) : spell_data_t::not_found();
+  mastery.natures_guardian_AP = check_spell( mastery.natures_guardian->ok(), 159195 );
   mastery.total_eclipse       = find_mastery_spell( DRUID_BALANCE );
 }
 
