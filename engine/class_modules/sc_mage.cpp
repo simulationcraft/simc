@@ -6269,7 +6269,7 @@ void mage_t::create_buffs()
                                  ->set_cooldown( 0_ms )
                                  ->set_stack_change_callback( [ this ] ( buff_t*, int, int cur )
                                    { if ( cur == 0 ) cooldowns.presence_of_mind->start( cooldowns.presence_of_mind->action ); } )
-                                 ->set_max_stack( find_spell( 205025 )->max_stacks() + as<int>( spec.presence_of_mind_2->effectN( 1 ).base_value() ) );
+                                 ->set_max_stack( find_spell( 205025 )->initial_stacks() + as<int>( spec.presence_of_mind_2->effectN( 1 ).base_value() ) );
 
   buffs.arcane_familiar      = make_buff( this, "arcane_familiar", find_spell( 210126 ) )
                                  ->set_default_value( find_spell( 210126 )->effectN( 1 ).percent() )
