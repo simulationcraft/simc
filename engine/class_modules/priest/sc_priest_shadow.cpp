@@ -1374,6 +1374,11 @@ struct voidform_t final : public priest_buff_t<buff_t>
       priest().insanity.begin_tracking();
     }
 
+    if ( priest().talents.ancient_madness->ok() )
+    {
+      priest().buffs.ancient_madness->trigger();
+    }
+
     priest().buffs.shadowform->expire();
 
     return r;
@@ -1428,6 +1433,26 @@ struct harvested_thoughts_t final : public priest_buff_t<buff_t>
               p.azerite.thought_harvester.spell()->effectN( 1 ).trigger()->effectN( 1 ).trigger() )
   {
     set_trigger_spell( p.azerite.thought_harvester.spell()->effectN( 1 ).trigger() );
+  }
+};
+
+struct ancient_madness_t final : public priest_buff_t<buff_t>
+{
+  ancient_madness_t( priest_t& p ) : base_t( p, "ancient_madness", p.find_talent_spell( "Ancient Madness" ) )
+  {
+    set_duration( p.find_spell( 194249 )->duration() );
+    set_default_value( data().effectN( 1 ).percent() );
+    add_invalidate( CACHE_CRIT_CHANCE );
+    add_invalidate( CACHE_SPELL_CRIT_CHANCE );
+    set_period( timespan_t::from_seconds( 1 ) );
+    set_tick_callback( [ this ]( buff_t*, int total_ticks, timespan_t ) {
+      double base_crit = data().effectN( 1 ).percent();
+      double crit_reduction = data().effectN( 2 ).percent();
+      double new_value = util::round( base_crit - ( this->current_tick * crit_reduction ), 2 );
+
+      sim->print_debug( "Ancient Madness: adjusting crit to {}. base={}, crit_reduction={}, current_tick={}", new_value, base_crit, crit_reduction, this->current_tick );
+      set_default_value( new_value );
+    } );
   }
 };
 
@@ -1822,6 +1847,7 @@ void priest_t::create_buffs_shadow()
   buffs.surrender_to_madness   = make_buff<buffs::surrender_to_madness_t>( *this );
   buffs.surrendered_to_madness = make_buff<buffs::surrendered_to_madness_t>( *this );
   buffs.death_and_madness_buff = make_buff<buffs::death_and_madness_buff_t>( *this );
+  buffs.ancient_madness        = make_buff<buffs::ancient_madness_t>( *this );
   buffs.unfurling_darkness     = make_buff( this, "unfurling_darkness", find_talent_spell( "Unfurling Darkness" ) );
   buffs.unfurling_darkness_cd  = make_buff( this, "unfurling_darkness_cd", find_spell( 341291 ) );
 
