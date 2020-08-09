@@ -755,7 +755,7 @@ struct vampiric_touch_t final : public priest_spell_t
     casted   = _casted;
     may_crit = false;
 
-    if ( priest().talents.misery->ok() && !casted )
+    if ( priest().talents.misery->ok() && casted )
     {
       child_swp             = new shadow_word_pain_t( priest(), false );
       child_swp->background = true;
