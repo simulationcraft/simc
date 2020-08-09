@@ -2028,6 +2028,7 @@ void priest_t::generate_apl_shadow()
   action_priority_list_t* main         = get_action_priority_list( "main" );
   action_priority_list_t* cds          = get_action_priority_list( "cds" );
   action_priority_list_t* boon         = get_action_priority_list( "boon" );
+  action_priority_list_t* essences     = get_action_priority_list( "essences" );
 
   // Professions
   for ( const auto& profession_action : get_profession_actions() )
@@ -2063,6 +2064,20 @@ void priest_t::generate_apl_shadow()
     default_list->add_action( "bag_of_tricks" );
 
   default_list->add_run_action_list( main );
+
+  // BfA Essences for Pre-patch
+  // Delete this after Shadowlands launch
+  essences->add_action( "memory_of_lucid_dreams" );
+  essences->add_action( "blood_of_the_enemy" );
+  essences->add_action( "guardian_of_azeroth" );
+  essences->add_action( "focused_azerite_beam,if=spell_targets.mind_sear>=2|raid_event.adds.in>60" );
+  essences->add_action( "purifying_blast,if=spell_targets.mind_sear>=2|raid_event.adds.in>60" );
+  essences->add_action( "concentrated_flame,line_cd=6,"
+                    "if=time<=10|full_recharge_time<gcd|target.time_to_die<5" );
+  essences->add_action( "ripple_in_space" );
+  essences->add_action( "reaping_flames" );
+  essences->add_action( "worldvein_resonance" );
+  essences->add_action( "the_unbound_force" );
 
   // CDs
   cds->add_action( this, "Power Infusion", "if=buff.voidform.up" );
