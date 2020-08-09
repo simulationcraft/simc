@@ -1506,8 +1506,8 @@ struct mage_spell_t : public spell_t
     bool rune_of_power = true;
     bool savant = false;
 
-    bool deathborne = true; // TODO: Does it affect periodic damage
-    bool siphoned_malice = true; // TODO: Does it affect periodic damage
+    bool deathborne = true;
+    bool siphoned_malice = true;
 
     // Misc
     bool combustion = true;
@@ -1515,7 +1515,7 @@ struct mage_spell_t : public spell_t
     bool shatter = false;
 
     bool deathborne_cleave = false;
-    bool radiant_spark = true; // TODO: Does it affect periodic damage
+    bool radiant_spark = true;
     bool shifting_power = true;
   } affected_by;
 
@@ -1633,6 +1633,15 @@ public:
     if ( affected_by.savant )
       m *= 1.0 + p()->cache.mastery() * p()->spec.savant->effectN( 5 ).mastery_value();
 
+    return m;
+  }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double m = spell_t::composite_da_multiplier( s );
+
+    // TODO: These should work with ticking damage according to the tooltip,
+    // but currently don't.
     if ( affected_by.deathborne )
       m *= 1.0 + p()->buffs.deathborne->check_value();
 
