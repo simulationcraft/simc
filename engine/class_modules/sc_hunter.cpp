@@ -2726,13 +2726,17 @@ struct chimaera_shot_t: public hunter_ranged_attack_t
     school = SCHOOL_FROSTSTRIKE; // Just so the report shows a mixture of the two colors.
   }
 
-  void do_schedule_travel( action_state_t* s, timespan_t ) override
+  void schedule_travel( action_state_t* s ) override
   {
     damage[ current_damage_action ] -> set_target( s -> target );
     damage[ current_damage_action ] -> execute();
     current_damage_action = ( current_damage_action + 1 ) % damage.size();
     action_state_t::release( s );
   }
+
+  // Don't bother, the results will be discarded anyway.
+  result_e calculate_result( action_state_t* ) const override { return RESULT_NONE; }
+  double calculate_direct_amount( action_state_t* ) const override { return 0.0; }
 
   double cast_regen( const action_state_t* s ) const override
   {
