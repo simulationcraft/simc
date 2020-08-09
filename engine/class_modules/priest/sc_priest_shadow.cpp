@@ -735,12 +735,6 @@ struct unfurling_darkness_t final : public priest_spell_t
     background             = true;
     spell_power_mod.direct = vampiric_touch_sp;
   }
-
-  void execute() override
-  {
-    priest_spell_t::execute();
-    priest().buffs.unfurling_darkness_cd->trigger();
-  }
 };
 
 struct vampiric_touch_t final : public priest_spell_t
@@ -774,17 +768,7 @@ struct vampiric_touch_t final : public priest_spell_t
 
     if ( priest().talents.unfurling_darkness->ok() )
     {
-      if ( priest().buffs.unfurling_darkness->check() )
-      {
-        child_ud = new unfurling_darkness_t( priest() );
-      }
-      else
-      {
-        if ( !priest().buffs.unfurling_darkness_cd->check() )
-        {
-          priest().buffs.unfurling_darkness->trigger();
-        }
-      }
+      child_ud = new unfurling_darkness_t( priest() );
     }
   }
 
@@ -817,17 +801,26 @@ struct vampiric_touch_t final : public priest_spell_t
       child_swp->execute();
     }
 
-    if ( child_ud )
+    if ( priest().buffs.unfurling_darkness->check() )
     {
       child_ud->target = s->target;
       child_ud->execute();
       priest().buffs.unfurling_darkness->expire();
     }
+    else
+    {
+      if ( !priest().buffs.unfurling_darkness_cd->check() )
+      {
+        priest().buffs.unfurling_darkness->trigger();
+        // The CD Starts as soon as the buff is applied
+        priest().buffs.unfurling_darkness_cd->trigger();
+      }
+    }
   }
 
   timespan_t execute_time() const override
   {
-    if ( child_ud )
+    if ( priest().buffs.unfurling_darkness->check() )
     {
       return 0_ms;
     }
@@ -893,7 +886,7 @@ struct devouring_plague_t final : public priest_spell_t
   {
     priest_spell_t::impact( s );
 
-    // Damnation does not trigger a SA - 08/08/2020
+    // Damnation does not trigger a SA - 2020-08-08
     if ( casted ) {
       priest().trigger_shadowy_apparitions( s );
     }
@@ -2102,8 +2095,8 @@ void priest_t::generate_apl_shadow()
   main->add_action( this, "Mind Blast",
                       "if=variable.dots_up&raid_event.movement.in>cast_time+0.5&spell_targets.mind_sear<4",
                       "TODO Verify target cap" );
-  main->add_action( this, "Shadow Word: Pain", "if=refreshable&target.time_to_die>4&!talent.misery.enabled" );
-  main->add_action( this, "Vampiric Touch", "if=refreshable&target.time_to_die>6|(talent.misery.enabled&dot.shadow_word_pain.refreshable)" );
+  main->add_action( this, "Shadow Word: Pain", "target_if=refreshable&target.time_to_die>4&!talent.misery.enabled" );
+  main->add_action( this, "Vampiric Touch", "target_if=refreshable&target.time_to_die>6|(talent.misery.enabled&dot.shadow_word_pain.refreshable)|buff.unfurling_darkness.up" );
   main->add_action( this, "Mind Sear", "target_if=spell_targets.mind_sear>1,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2" );
   main->add_action( this, "Mind Flay", "chain=1,interrupt_immediate=1,interrupt_if=ticks>=2&cooldown.void_bolt.up" );
   main->add_action( this, "Shadow Word: Pain" );
