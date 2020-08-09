@@ -7496,8 +7496,10 @@ void mage_t::arise()
   buffs.incanters_flow->trigger();
   buffs.gbow->trigger();
 
-  if ( talents.enlightened->ok() && options.enlightened_interval > 0_ms )
+  if ( talents.enlightened->ok() )
   {
+    update_enlightened();
+
     timespan_t first_tick = rng().real() * options.enlightened_interval;
     events.enlightened = make_event<events::enlightened_event_t>( *sim, *this, first_tick );
   }
