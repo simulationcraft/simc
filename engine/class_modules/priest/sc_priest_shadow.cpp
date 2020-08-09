@@ -724,10 +724,24 @@ struct shadow_word_pain_t final : public priest_spell_t
   }
 };
 
+struct unfurling_darkness_t final : public priest_spell_t
+{
+  double vampiric_touch_sp;
+
+  unfurling_darkness_t( priest_t& p )
+    : priest_spell_t( "unfurling_darkness", p, p.find_talent_spell( "Unfurling Darkness" ) ),
+      vampiric_touch_sp( p.find_spell( 34914 )->effectN( 4 ).sp_coeff() )
+  {
+    background             = true;
+    spell_power_mod.direct = vampiric_touch_sp;
+  }
+};
+
 struct vampiric_touch_t final : public priest_spell_t
 {
   double harvested_thoughts_value;
   propagate_const<shadow_word_pain_t*> child_swp;
+  propagate_const<unfurling_darkness_t*> child_ud;
   bool ignore_healing;
   bool casted;
 
@@ -735,6 +749,7 @@ struct vampiric_touch_t final : public priest_spell_t
     : priest_spell_t( "vampiric_touch", p, p.find_class_spell( "Vampiric Touch" ) ),
       harvested_thoughts_value( priest().azerite.thought_harvester.value( 2 ) ),
       child_swp( nullptr ),
+      child_ud( nullptr),
       ignore_healing( p.options.priest_ignore_healing )
   {
     casted   = _casted;
@@ -749,6 +764,11 @@ struct vampiric_touch_t final : public priest_spell_t
     if ( priest().azerite.thought_harvester.enabled() )
     {
       base_ta_adder += harvested_thoughts_value;
+    }
+
+    if ( priest().talents.unfurling_darkness->ok() )
+    {
+      child_ud = new unfurling_darkness_t( priest() );
     }
   }
 
@@ -780,6 +800,32 @@ struct vampiric_touch_t final : public priest_spell_t
       child_swp->target = s->target;
       child_swp->execute();
     }
+
+    if ( priest().buffs.unfurling_darkness->check() )
+    {
+      child_ud->target = s->target;
+      child_ud->execute();
+      priest().buffs.unfurling_darkness->expire();
+    }
+    else
+    {
+      if ( !priest().buffs.unfurling_darkness_cd->check() )
+      {
+        priest().buffs.unfurling_darkness->trigger();
+        // The CD Starts as soon as the buff is applied
+        priest().buffs.unfurling_darkness_cd->trigger();
+      }
+    }
+  }
+
+  timespan_t execute_time() const override
+  {
+    if ( priest().buffs.unfurling_darkness->check() )
+    {
+      return 0_ms;
+    }
+
+    return priest_spell_t::execute_time();
   }
 
   void tick( dot_t* d ) override
@@ -840,7 +886,7 @@ struct devouring_plague_t final : public priest_spell_t
   {
     priest_spell_t::impact( s );
 
-    // Damnation does not trigger a SA - 08/08/2020
+    // Damnation does not trigger a SA - 2020-08-08
     if ( casted ) {
       priest().trigger_shadowy_apparitions( s );
     }
@@ -1776,6 +1822,8 @@ void priest_t::create_buffs_shadow()
   buffs.surrender_to_madness   = make_buff<buffs::surrender_to_madness_t>( *this );
   buffs.surrendered_to_madness = make_buff<buffs::surrendered_to_madness_t>( *this );
   buffs.death_and_madness_buff = make_buff<buffs::death_and_madness_buff_t>( *this );
+  buffs.unfurling_darkness     = make_buff( this, "unfurling_darkness", find_talent_spell( "Unfurling Darkness" ) );
+  buffs.unfurling_darkness_cd  = make_buff( this, "unfurling_darkness_cd", find_spell( 341291 ) );
 
   // Azerite Powers
   buffs.chorus_of_insanity     = make_buff<buffs::chorus_of_insanity_t>( *this );
@@ -2047,8 +2095,8 @@ void priest_t::generate_apl_shadow()
   main->add_action( this, "Mind Blast",
                       "if=variable.dots_up&raid_event.movement.in>cast_time+0.5&spell_targets.mind_sear<4",
                       "TODO Verify target cap" );
-  main->add_action( this, "Shadow Word: Pain", "if=refreshable&target.time_to_die>4&!talent.misery.enabled" );
-  main->add_action( this, "Vampiric Touch", "if=refreshable&target.time_to_die>6|(talent.misery.enabled&dot.shadow_word_pain.refreshable)" );
+  main->add_action( this, "Shadow Word: Pain", "target_if=refreshable&target.time_to_die>4&!talent.misery.enabled" );
+  main->add_action( this, "Vampiric Touch", "target_if=refreshable&target.time_to_die>6|(talent.misery.enabled&dot.shadow_word_pain.refreshable)|buff.unfurling_darkness.up" );
   main->add_action( this, "Mind Sear", "target_if=spell_targets.mind_sear>1,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2" );
   main->add_action( this, "Mind Flay", "chain=1,interrupt_immediate=1,interrupt_if=ticks>=2&cooldown.void_bolt.up" );
   main->add_action( this, "Shadow Word: Pain" );

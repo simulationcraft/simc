@@ -127,6 +127,8 @@ public:
     propagate_const<buff_t*> void_torrent;
     propagate_const<buff_t*> voidform;
     propagate_const<buff_t*> death_and_madness_buff;
+    propagate_const<buff_t*> unfurling_darkness;
+    propagate_const<buff_t*> unfurling_darkness_cd; // Blizzard uses a buff to track the ICD
 
     // Azerite Powers
     // Shadow
