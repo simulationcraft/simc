@@ -224,6 +224,11 @@ enum wildfire_infusion_e {
   WILDFIRE_INFUSION_VOLATILE,
 };
 
+// Wild Spirits proc type
+enum class wild_spirits_proc_e : uint8_t {
+  DEFAULT = 0, ST, MT, NONE
+};
+
 struct hunter_t;
 
 namespace pets
@@ -308,7 +313,7 @@ public:
     spell_data_ptr_t death_chakram; // NYI
     spell_data_ptr_t flayed_shot;
     spell_data_ptr_t resonating_arrow;
-    spell_data_ptr_t wild_spirits;
+    spell_data_ptr_t wild_spirits; // VERY WIP
   } covenants;
 
   struct {
@@ -583,8 +588,9 @@ public:
 
   // Wild Spitis Night Fae Covenant ability
   struct {
-    action_t* action = nullptr;
-    cooldown_t* icd = nullptr;
+    action_t* st_action = nullptr;
+    action_t* mt_action = nullptr;
+    cooldown_t* icd = nullptr; // XXX: assume the icd is shared
   } wild_spirits;
 
   cdwaste::player_data_t cd_waste;
@@ -714,7 +720,21 @@ public:
     background_actions.push_back( action );
     return action;
   }
+
+  void trigger_wild_spirits( action_state_t* s, wild_spirits_proc_e type );
 };
+
+wild_spirits_proc_e wild_spirits_proc_type( const hunter_t& p, const action_t& a )
+{
+  if ( a.proc || a.background )
+    return wild_spirits_proc_e::NONE;
+  if ( !( a.callbacks && a.may_hit && a.harmful ) )
+    return wild_spirits_proc_e::NONE;
+  auto trigger = p.covenants.wild_spirits -> effectN( 1 ).trigger();
+  if ( ( trigger -> proc_flags() & ( 1 << a.proc_type() ) ) == 0 )
+    return wild_spirits_proc_e::NONE;
+  return ( a.aoe == -1 || a.aoe > 0 ) ? wild_spirits_proc_e::MT : wild_spirits_proc_e::ST;
+}
 
 // Template for common hunter action code.
 template <class Base>
@@ -726,7 +746,7 @@ public:
 
   bool precombat = false;
   bool track_cd_waste;
-  bool procs_wild_spirits = false;
+  wild_spirits_proc_e wild_spirits_proc = wild_spirits_proc_e::DEFAULT;
 
   struct {
     // bm
@@ -797,20 +817,21 @@ public:
     if ( track_cd_waste )
       cd_waste = p() -> cd_waste.get( this );
 
-    // by default nothing procs Wild Spirits
-    // if the action did not explicitly set it to true we try to infer it
-    if ( p() -> covenants.wild_spirits.ok() && !procs_wild_spirits )
+    if ( p() -> covenants.wild_spirits.ok() )
     {
-      procs_wild_spirits = [ this ]() -> bool {
-        if ( ab::proc || ab::background )
-          return false;
-        if ( !( ab::callbacks && ab::may_hit && ab::harmful ) )
-          return false;
-        return p() -> covenants.wild_spirits -> effectN( 1 ).trigger() -> proc_flags() & ( 1 << ab::proc_type() );
-      }();
-      if ( procs_wild_spirits )
-        ab::sim -> print_debug( "{} action {} set to proc Wild Spirits on impact", ab::player -> name(), ab::name() );
+      // By default nothing procs Wild Spirits, if the action did not explicitly set
+      // it to non-default try to infer it
+      if ( wild_spirits_proc == wild_spirits_proc_e::DEFAULT )
+        wild_spirits_proc = wild_spirits_proc_type( *p(), *this );
     }
+    else
+    {
+      wild_spirits_proc = wild_spirits_proc_e::NONE;
+    }
+
+    assert( wild_spirits_proc != wild_spirits_proc_e::DEFAULT );
+    if ( wild_spirits_proc != wild_spirits_proc_e::NONE )
+      ab::sim -> print_debug( "{} action {} set to proc Wild Spirits", ab::player -> name(), ab::name() );
   }
 
   void init_finished() override
@@ -847,22 +868,8 @@ public:
   {
     ab::impact( s );
 
-    // XXX: check result_is_hit()?
-    if ( procs_wild_spirits && p() -> buffs.wild_spirits -> check() )
-    {
-      if ( p() -> wild_spirits.icd -> down() )
-        return;
-
-      if ( ab::sim -> debug )
-      {
-        ab::sim -> print_debug( "{} procs {} from {} on {}",
-          p() -> name(), p() -> wild_spirits.action -> name(), ab::name(), s -> target -> name() );
-      }
-
-      p() -> wild_spirits.action -> set_target( s -> target );
-      p() -> wild_spirits.action -> schedule_execute();
-      p() -> wild_spirits.icd -> start();
-    }
+    if ( wild_spirits_proc != wild_spirits_proc_e::NONE )
+      p() -> trigger_wild_spirits( s, wild_spirits_proc );
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -2234,6 +2241,31 @@ struct tar_trap_aoe_t : public event_t
 
 } // namespace events
 
+void hunter_t::trigger_wild_spirits( action_state_t* s, wild_spirits_proc_e type )
+{
+  assert( type == wild_spirits_proc_e::MT || type == wild_spirits_proc_e::ST );
+
+  if ( !buffs.wild_spirits -> check() )
+    return;
+
+  if ( !action_t::result_is_hit( s -> result ) )
+    return;
+
+  if ( wild_spirits.icd -> down() )
+    return;
+
+  action_t* action = type == wild_spirits_proc_e::MT ? wild_spirits.mt_action : wild_spirits.st_action;
+  if ( sim -> debug )
+  {
+    sim -> print_debug( "{} procs {} from {} on {}",
+      name(), action -> name(), s -> action -> name(), s -> target -> name() );
+  }
+
+  action -> set_target( s -> target );
+  action -> execute();
+  wild_spirits.icd -> start();
+}
+
 void trigger_birds_of_prey( hunter_t* p, player_t* t )
 {
   if ( ! p -> talents.birds_of_prey.ok() )
@@ -2402,8 +2434,8 @@ struct wild_spirits_t : hunter_spell_t
 {
   struct wild_spirits_proc_t final : hunter_spell_t
   {
-    wild_spirits_proc_t( util::string_view n, hunter_t* p ):
-      hunter_spell_t( n, p, p -> find_spell( 328523 ) )
+    wild_spirits_proc_t( util::string_view n, hunter_t* p, unsigned spell_id ):
+      hunter_spell_t( n, p, p -> find_spell( spell_id ) )
     {
       proc = true;
       callbacks = false;
@@ -2419,10 +2451,12 @@ struct wild_spirits_t : hunter_spell_t
 
     harmful = may_hit = may_miss = false;
 
-    p -> wild_spirits.action = p -> get_background_action<wild_spirits_proc_t>( "wild_spirits_proc" );
+    p -> wild_spirits.st_action = p -> get_background_action<wild_spirits_proc_t>( "wild_spirits_st_proc", 328523 );
+    p -> wild_spirits.mt_action = p -> get_background_action<wild_spirits_proc_t>( "wild_spirits_mt_proc", 328757 );
     p -> wild_spirits.icd = p -> get_cooldown( "wild_spirits_proc" );
     p -> wild_spirits.icd -> duration = p -> covenants.wild_spirits -> effectN( 1 ).trigger() -> internal_cooldown();
-    add_child( p -> wild_spirits.action );
+    add_child( p -> wild_spirits.st_action );
+    add_child( p -> wild_spirits.mt_action );
   }
 
   void execute()
