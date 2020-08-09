@@ -729,18 +729,18 @@ struct vampiric_touch_t final : public priest_spell_t
   double harvested_thoughts_value;
   propagate_const<shadow_word_pain_t*> child_swp;
   bool ignore_healing;
+  bool casted;
 
-  vampiric_touch_t( priest_t& p, util::string_view options_str )
+  vampiric_touch_t( priest_t& p, bool _casted = false )
     : priest_spell_t( "vampiric_touch", p, p.find_class_spell( "Vampiric Touch" ) ),
       harvested_thoughts_value( priest().azerite.thought_harvester.value( 2 ) ),
       child_swp( nullptr ),
       ignore_healing( p.options.priest_ignore_healing )
   {
-    parse_options( options_str );
-
+    casted   = _casted;
     may_crit = false;
 
-    if ( priest().talents.misery->ok() )
+    if ( priest().talents.misery->ok() && !casted )
     {
       child_swp             = new shadow_word_pain_t( priest(), false );
       child_swp->background = true;
@@ -750,6 +750,11 @@ struct vampiric_touch_t final : public priest_spell_t
     {
       base_ta_adder += harvested_thoughts_value;
     }
+  }
+
+  vampiric_touch_t( priest_t& p, util::string_view options_str ) : vampiric_touch_t( p, true )
+  {
+    parse_options( options_str );
   }
 
   void trigger_heal( action_state_t* )
@@ -793,21 +798,28 @@ struct vampiric_touch_t final : public priest_spell_t
 struct devouring_plague_t final : public priest_spell_t
 {
   double insanity_cost;
+  bool casted;
 
-  devouring_plague_t( priest_t& p, util::string_view options_str )
+  devouring_plague_t( priest_t& p, bool _casted = false )
     : priest_spell_t( "devouring_plague", p, p.find_class_spell( "Devouring Plague" ) ),
       insanity_cost( data().cost( POWER_INSANITY ) )
   {
-    parse_options( options_str );
+    casted        = _casted;
     may_crit      = true;
     tick_zero     = false;
     tick_may_crit = true;
+  }
+
+  devouring_plague_t( priest_t& p, util::string_view options_str ) : devouring_plague_t( p, true )
+  {
+    parse_options( options_str );
   }
 
   void consume_resource() override
   {
     priest_spell_t::consume_resource();
 
+    // TODO: Verify if Damnation can proc this
     if ( priest().buffs.mind_devourer->up() )
     {
       priest().buffs.mind_devourer->decrement();
@@ -816,7 +828,7 @@ struct devouring_plague_t final : public priest_spell_t
 
   virtual double cost() const override
   {
-    if ( priest().buffs.mind_devourer->check() )
+    if ( priest().buffs.mind_devourer->check() || !casted )
     {
       return 0;
     }
@@ -828,7 +840,10 @@ struct devouring_plague_t final : public priest_spell_t
   {
     priest_spell_t::impact( s );
 
-    priest().trigger_shadowy_apparitions( s );
+    // Damnation does not trigger a SA - 08/08/2020
+    if ( casted ) {
+      priest().trigger_shadowy_apparitions( s );
+    }
   }
 };
 
@@ -981,6 +996,40 @@ struct dark_void_t final : public priest_spell_t
 
     child_swp->target = s->target;
     child_swp->execute();
+  }
+};
+
+struct damnation_t final : public priest_spell_t
+{
+  propagate_const<shadow_word_pain_t*> child_swp;
+  propagate_const<vampiric_touch_t*> child_vt;
+  propagate_const<devouring_plague_t*> child_dp;
+
+  damnation_t( priest_t& p, util::string_view options_str )
+    : priest_spell_t( "damnation", p, p.find_talent_spell( "Damnation" ) ),
+      child_swp( new shadow_word_pain_t( priest(), false ) ),
+      child_vt( new vampiric_touch_t( priest(), false ) ),
+      child_dp( new devouring_plague_t( priest(), false ) )
+  {
+    parse_options( options_str );
+    child_swp->background = true;
+    child_vt->background  = true;
+    child_dp->background  = true;
+
+    may_miss = false;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    priest_spell_t::impact( s );
+
+    child_swp->target = s->target;
+    child_vt->target = s->target;
+    child_dp->target = s->target;
+
+    child_swp->execute();
+    child_vt->execute();
+    child_dp->execute();
   }
 };
 
@@ -1874,13 +1923,17 @@ action_t* priest_t::create_action_shadow( util::string_view name, util::string_v
   {
     return new dark_void_t( *this, options_str );
   }
-  if ( ( name == "mind_blast" ) || ( name == "shadow_word_void" ) )
+  if ( name == "mind_blast" )
   {
     return new mind_blast_t( *this, options_str );
   }
   if ( name == "devouring_plague" )
   {
     return new devouring_plague_t( *this, options_str );
+  }
+  if ( name == "damnation" )
+  {
+    return new damnation_t( *this, options_str );
   }
 
   return nullptr;
@@ -1979,6 +2032,7 @@ void priest_t::generate_apl_shadow()
   main->add_action( this, "Void Eruption", "if=cooldown.power_infusion.up", "Sync up Voidform and Power Infusion Cooldowns." );
   main->add_action( this, "Void Bolt" );
   main->add_call_action_list( cds );
+  main->add_talent( this, "Damnation", "target_if=!variable.all_dots_up", "Prefer to use Damnation ASAP if any DoT is not up" );
   main->add_action( this, "Devouring Plague", "target_if=(refreshable|insanity>75)&!cooldown.void_eruption.up",
                       "Make sure you don't use Devouring Plague if you are trying to build into Voidform." );
   main->add_action( this, "Shadow Word: Death", "target_if=target.health.pct<20", "Use Shadow Word: Death if the target is about to die." );
