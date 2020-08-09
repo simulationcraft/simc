@@ -2726,6 +2726,18 @@ struct chimaera_shot_t: public hunter_ranged_attack_t
     school = SCHOOL_FROSTSTRIKE; // Just so the report shows a mixture of the two colors.
   }
 
+  size_t available_targets( std::vector< player_t* >& tl ) const override
+  {
+    hunter_ranged_attack_t::available_targets( tl );
+
+    // XXX: 09.08.2020 Shadowlands Beta 9.0.1.35432
+    //      Chimaera Shot hits the main target twice if it can't find a second target
+    if ( p() -> bugs && tl.size() == 1 )
+      tl.push_back( tl.front() );
+
+    return tl.size();
+  }
+
   void schedule_travel( action_state_t* s ) override
   {
     damage[ current_damage_action ] -> set_target( s -> target );
