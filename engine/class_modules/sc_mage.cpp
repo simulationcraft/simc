@@ -2437,6 +2437,7 @@ struct ignite_t : public residual_action_t
     residual_action_t( n, p, p->find_spell( 12654 ) )
   {
     callbacks = true;
+    affected_by.radiant_spark = false;
   }
 
   void init() override
@@ -5345,13 +5346,12 @@ struct shifting_power_t : public mage_spell_t
   shifting_power_t( util::string_view n, mage_t* p, util::string_view options_str ) :
     mage_spell_t( n, p, p->find_covenant_spell( "Shifting Power" ) ),
     shifting_power_cooldowns(),
-    reduction()
+    reduction( data().effectN( 2 ).time_value() )
   {
     parse_options( options_str );
     channeled = affected_by.ice_floes = true;
     affected_by.shifting_power = false;
     tick_action = get_action<shifting_power_pulse_t>( "shifting_power_pulse", p );
-    reduction = data().effectN( 2 ).time_value();
   }
 
   void init_finished() override
@@ -5527,8 +5527,7 @@ struct enlightened_event_t : public event_t
 
     mage->update_enlightened();
 
-    if ( mage->options.enlightened_interval > 0_ms )
-      mage->events.enlightened = make_event<enlightened_event_t>( sim(), *mage, mage->options.enlightened_interval );
+    mage->events.enlightened = make_event<enlightened_event_t>( sim(), *mage, mage->options.enlightened_interval );
   }
 };
 
