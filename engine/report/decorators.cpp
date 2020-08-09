@@ -59,6 +59,12 @@ namespace {
       return {};
     }
 
+    // shown when data can not be decorated
+    virtual std::string undecorated_fallback() const
+    {
+      return fmt::format( "<a href=\"#\">{}</a>", token() );
+    }
+
     std::vector<std::string> params;
   };
 
@@ -70,7 +76,7 @@ namespace {
 
     if (!data.can_decorate())
     {
-      return "<a href=\"#\">" + data.token() + "</a>";
+      return data.undecorated_fallback();
     }
 
     const std::string url_name = data.url_name();
@@ -325,6 +331,11 @@ namespace {
     {
       fmt::format_to(buf, "<a href=\"https://{}.wowhead.com/npc={}",
                      report_decorators::decoration_domain(*m_sim), m_npc_id);
+    }
+
+    std::string undecorated_fallback() const override
+    {
+      return token();
     }
 
     bool can_decorate() const override
