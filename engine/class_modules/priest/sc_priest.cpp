@@ -1153,7 +1153,7 @@ double priest_t::composite_spell_crit_chance() const
   {
     if ( buffs.ancient_madness->check() )
     {
-      sim->print_debug( "Ancient Madness: adjusting crit increase to {}%.", buffs.ancient_madness->check_stack_value() );
+      sim->print_debug( "Ancient Madness - adjusting crit increase to {}", buffs.ancient_madness->check_stack_value() );
       sc += buffs.ancient_madness->check_stack_value();
     }
   }
