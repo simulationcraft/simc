@@ -4482,20 +4482,8 @@ struct living_bomb_explosion_t : public fire_mage_spell_t
     fire_mage_spell_t( n, p, p->find_spell( 44461 ) )
   {
     aoe = -1;
-    background = true;
+    background = reduced_aoe_damage = true;
     affected_by.radiant_spark = false;
-  }
-
-  double composite_aoe_multiplier( const action_state_t* s ) const override
-  {
-    double m = fire_mage_spell_t::composite_aoe_multiplier( s );
-
-    // TODO: Verify how the primary target is determined when
-    // there are multiple primary Living Bombs active at once
-    if ( s->target != p()->last_bomb_target )
-      m /= std::sqrt( s->n_targets );
-
-    return m;
   }
 };
 
@@ -4515,14 +4503,6 @@ struct living_bomb_t : public fire_mage_spell_t
       add_child( p->action.living_bomb_dot_spread );
       add_child( p->action.living_bomb_explosion );
     }
-  }
-
-  void execute() override
-  {
-    fire_mage_spell_t::execute();
-
-    if ( hit_any_target )
-      p()->last_bomb_target = target;
   }
 };
 
