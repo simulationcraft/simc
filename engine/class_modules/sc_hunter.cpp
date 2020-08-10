@@ -2455,12 +2455,14 @@ namespace death_chakram
  *
  * Some tests that would help pinpoint the behavior and confirm/deny the
  * theory would be (some require a Death Knight buddy):
- *  - engage 3 targets, DC, kill 1 target
- *  - engage 2 targets, DC, Bestial Wrath after 2-3 bounces
- *  - engage 1 targets, DC, Bestial Wrath after 2-3 "hits"
- *  - engage 2 targets, DC, grip one target off to max range
- *  - engage 2 targets, DC, grip in one target as soon as DC hits
- *  - engage 1 target, DC, grip in one target as soon as DC hits
+ *  * engage 3 targets, DC, kill 1 target
+ *  * as MM, get a huge mastery on-use trinket
+ *    - engage 2 targets, DC, trinket after 2-3 bounces
+ *    - engage 1 targets, DC, trinket after 2-3 "hits"
+ *  * get a Death Knight buddy
+ *    - engage 2 targets, DC, grip one target off to max range
+ *    - engage 2 targets, DC, grip in one target as soon as DC hits
+ *    - engage 1 target, DC, grip in one target as soon as DC hits
  *
  * Somewhat simplified (in multi-target) modeling of the theory for now:
  *  - in single-target case - let the main spell hit as usual (once), then
