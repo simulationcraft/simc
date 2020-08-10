@@ -586,7 +586,7 @@ public:
     spell_data_ptr_t spirit_bond;
   } mastery;
 
-  // Wild Spitis Night Fae Covenant ability
+  // Wild Spirits Night Fae Covenant ability
   struct {
     action_t* st_action = nullptr;
     action_t* mt_action = nullptr;
@@ -5920,7 +5920,7 @@ void hunter_t::create_buffs()
       -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
       -> set_chance( conduits.strength_of_the_pack.ok() );
 
-  // Covenenats
+  // Covenants
 
   buffs.flayers_mark =
     make_buff( this, "flayers_mark", find_spell( 324156 ) )
