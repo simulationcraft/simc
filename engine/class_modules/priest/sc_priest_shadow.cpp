@@ -1440,9 +1440,12 @@ struct ancient_madness_t final : public priest_buff_t<buff_t>
 {
   ancient_madness_t( priest_t& p ) : base_t( p, "ancient_madness", p.find_talent_spell( "Ancient Madness" ) )
   {
+    if ( !data().ok() )
+      return;
+
     add_invalidate( CACHE_CRIT_CHANCE );
     add_invalidate( CACHE_SPELL_CRIT_CHANCE );
-    
+
     set_duration( p.find_spell( 194249 )->duration() );
     set_default_value( data().effectN( 2 ).percent() ); // Each stack is worth 2% from effect 2
     set_max_stack( as<int>( data().effectN( 1 ).base_value() ) / as<int>( data().effectN( 2 ).base_value() ) ); // Set max stacks to 30 / 2
