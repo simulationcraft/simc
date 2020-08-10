@@ -2106,7 +2106,7 @@ void priest_t::generate_apl_shadow()
   cds->add_action( "use_items", "Default fallback for usable items: Use on cooldown." );
 
   boon->add_action( this, covenant.boon_of_the_ascended, "ascended_blast" );
-  boon->add_action( this, covenant.boon_of_the_ascended, "ascended_nova" );
+  boon->add_action( this, covenant.boon_of_the_ascended, "ascended_nova", "if=spell_targets.ascended_nova>1" );
 
   // single APL
   main->add_call_action_list( this, covenant.boon_of_the_ascended, boon, "if=buff.boon_of_the_ascended.up" );

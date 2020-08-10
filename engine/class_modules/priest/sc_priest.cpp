@@ -474,7 +474,10 @@ struct ascended_nova_t final : public priest_spell_t
     priest_spell_t::impact( s );
 
     // gain 1 stack for each target damanged
-    priest().buffs.boon_of_the_ascended->increment( grants_stacks );
+    if ( priest().buffs.boon_of_the_ascended->check() )
+    {
+      priest().buffs.boon_of_the_ascended->increment( grants_stacks );
+    }
   }
 
   bool ready() override
@@ -510,7 +513,10 @@ struct ascended_blast_t final : public priest_spell_t
     priest_spell_t::impact( s );
 
     // gain 5 stacks on impact
-    priest().buffs.boon_of_the_ascended->increment( grants_stacks );
+    if ( priest().buffs.boon_of_the_ascended->check() )
+    {
+      priest().buffs.boon_of_the_ascended->increment( grants_stacks );
+    }
   }
 
   bool ready() override
