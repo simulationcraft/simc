@@ -1941,7 +1941,9 @@ struct fire_mage_spell_t : public mage_spell_t
       if ( triggers.hot_streak && s->chain_target == 0 )
         handle_hot_streak( s );
 
-      if ( triggers.kindling && p()->talents.kindling->ok() && s->result == RESULT_CRIT && s->chain_target == 0 )
+      // TODO: Double check how this works with Pheonix Flames and Deathborne Fireball
+      // closer to release.
+      if ( triggers.kindling && p()->talents.kindling->ok() && s->result == RESULT_CRIT )
         p()->cooldowns.combustion->adjust( -p()->talents.kindling->effectN( 1 ).time_value() );
     }
   }
