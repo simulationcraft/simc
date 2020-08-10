@@ -522,23 +522,6 @@ struct psychic_horror_t final : public priest_spell_t
   }
 };
 
-struct surrender_to_madness_t final : public priest_spell_t
-{
-  surrender_to_madness_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "surrender_to_madness", p, p.talents.surrender_to_madness )
-  {
-    parse_options( options_str );
-    harmful = may_hit = may_crit = false;
-  }
-
-  void execute() override
-  {
-    priest_spell_t::execute();
-
-    priest().buffs.surrender_to_madness->trigger();
-  }
-};
-
 struct vampiric_embrace_t final : public priest_spell_t
 {
   vampiric_embrace_t( priest_t& p, util::string_view options_str )
@@ -1142,6 +1125,36 @@ struct void_eruption_t final : public priest_spell_t
   }
 };
 
+struct surrender_to_madness_t final : public priest_spell_t
+{
+  surrender_to_madness_t( priest_t& p, util::string_view options_str )
+    : priest_spell_t( "surrender_to_madness", p, p.talents.surrender_to_madness )
+  {
+    parse_options( options_str );
+
+    impact_action = new void_eruption_t( p, options_str );
+    add_child( impact_action );
+  }
+
+  void execute() override
+  {
+    priest_spell_t::execute();
+
+    priest().buffs.surrender_to_madness->trigger();
+    // priest().buffs.voidform->trigger();
+    // priest().cooldowns.mind_blast->reset( true );
+    // priest().cooldowns.void_bolt->reset( true );
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    priest_spell_t::impact( s );
+
+    priest_td_t& td = get_td( s->target );
+    td.buffs.surrender_to_madness_debuff->trigger();
+  }
+};
+
 struct void_torrent_t final : public priest_spell_t
 {
   double insanity_gain;
@@ -1458,17 +1471,6 @@ struct surrender_to_madness_t final : public priest_buff_t<buff_t>
 {
   surrender_to_madness_t( priest_t& p ) : base_t( p, "surrender_to_madness", p.talents.surrender_to_madness )
   {
-    set_stack_change_callback( [ this ]( buff_t*, int, int after ) {
-      if ( after == 0 )
-        priest().buffs.surrendered_to_madness->trigger();
-    } );
-  }
-};
-
-struct surrendered_to_madness_t final : public priest_buff_t<buff_t>
-{
-  surrendered_to_madness_t( priest_t& p ) : base_t( p, "surrendered_to_madness", p.find_spell( 263406 ) )
-  {
   }
 };
 
@@ -1543,15 +1545,9 @@ void priest_t::generate_insanity( double num_amount, gain_t* g, action_t* action
   {
     double amount                               = num_amount;
     double amount_from_surrender_to_madness     = 0.0;
-    double amount_wasted_surrendered_to_madness = 0.0;
     double amount_from_memory_of_lucid_dreams   = 0.0;
 
-    if ( buffs.surrendered_to_madness->check() )
-    {
-      amount_wasted_surrendered_to_madness = amount * buffs.surrendered_to_madness->data().effectN( 1 ).percent();
-      amount += amount_wasted_surrendered_to_madness;
-    }
-    else if ( buffs.surrender_to_madness->check() )
+    if ( buffs.surrender_to_madness->check() )
     {
       double total_amount = amount * ( 1.0 + talents.surrender_to_madness->effectN( 1 ).percent() );
 
@@ -1588,10 +1584,6 @@ void priest_t::generate_insanity( double num_amount, gain_t* g, action_t* action
     if ( amount_from_surrender_to_madness > 0.0 )
     {
       insanity.gain( amount_from_surrender_to_madness, gains.insanity_surrender_to_madness, action );
-    }
-    if ( amount_wasted_surrendered_to_madness )
-    {
-      insanity.gain( amount_wasted_surrendered_to_madness, gains.insanity_wasted_surrendered_to_madness, action );
     }
     if ( amount_from_memory_of_lucid_dreams > 0.0 )
     {
@@ -1843,7 +1835,6 @@ void priest_t::create_buffs_shadow()
   // Talents
   buffs.void_torrent           = make_buff<buffs::void_torrent_t>( *this );
   buffs.surrender_to_madness   = make_buff<buffs::surrender_to_madness_t>( *this );
-  buffs.surrendered_to_madness = make_buff<buffs::surrendered_to_madness_t>( *this );
   buffs.death_and_madness_buff = make_buff<buffs::death_and_madness_buff_t>( *this );
   buffs.ancient_madness        = make_buff<buffs::ancient_madness_t>( *this );
   buffs.unfurling_darkness     = make_buff( this, "unfurling_darkness", find_talent_spell( "Unfurling Darkness" ) );
@@ -2109,6 +2100,7 @@ void priest_t::generate_apl_shadow()
   cds->add_action( this, covenant.mindgames, "Mindgames" );
   cds->add_action( this, covenant.unholy_nova, "Unholy Nova", "if=raid_event.adds.in>50" );
   cds->add_action( this, covenant.boon_of_the_ascended, "Boon of the Ascended", "if=!buff.voidform.up&!cooldown.void_eruption.up" );
+  cds->add_call_action_list( essences );
   cds->add_action( "use_items", "Default fallback for usable items: Use on cooldown." );
 
   boon->add_action( this, covenant.boon_of_the_ascended, "ascended_blast" );
@@ -2120,10 +2112,10 @@ void priest_t::generate_apl_shadow()
   main->add_action( this, "Void Bolt" );
   main->add_call_action_list( cds );
   main->add_talent( this, "Damnation", "target_if=!variable.all_dots_up", "Prefer to use Damnation ASAP if any DoT is not up" );
-  main->add_action( this, "Devouring Plague", "target_if=(refreshable|insanity>75)&!cooldown.void_eruption.up",
+  main->add_action( this, "Devouring Plague", "target_if=(refreshable|insanity>75)&!cooldown.power_infusion.up",
                       "Make sure you don't use Devouring Plague if you are trying to build into Voidform." );
   main->add_action( this, "Shadow Word: Death", "target_if=target.health.pct<20", "Use Shadow Word: Death if the target is about to die." );
-  main->add_talent( this, "Surrender to Madness", "if=target.time_to_die<25&buff.voidform.down", "Use Surrender to Madness on a target that is going to die at the right time." );
+  main->add_talent( this, "Surrender to Madness", "target_if=target.time_to_die<25&buff.voidform.down", "Use Surrender to Madness on a target that is going to die at the right time." );
   main->add_talent( this, "Mindbender" );
   main->add_talent( this, "Void Torrent", "target_if=variable.all_dots_up&!cooldown.void_eruption.up&target.time_to_die>4", "Use Void Torrent only if all DoTs are active and the target won't die during the channel." );
   main->add_action( this, "Shadow Word: Death",
