@@ -1132,8 +1132,8 @@ struct surrender_to_madness_t final : public priest_spell_t
   {
     parse_options( options_str );
 
-    impact_action = new void_eruption_t( p, options_str );
-    impact_action->background = true;
+    impact_action = new void_eruption_damage_t( p );
+    impact_action->aoe = -1;
     add_child( impact_action );
   }
 
@@ -1142,6 +1142,9 @@ struct surrender_to_madness_t final : public priest_spell_t
     priest_spell_t::execute();
 
     priest().buffs.surrender_to_madness->trigger();
+    priest().buffs.voidform->trigger();
+    priest().cooldowns.mind_blast->reset( true );
+    priest().cooldowns.void_bolt->reset( true );
   }
 
   void impact( action_state_t* s ) override
@@ -1364,6 +1367,9 @@ struct voidform_t final : public priest_buff_t<buff_t>
   {
     add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
     add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
+
+    // Using Surrender within Voidform does not reset the duration - might be a bug?
+    set_refresh_behavior( buff_refresh_behavior::DISABLED );
 
     // Spelldata still has 100 stacks for VF, hardcoding to 1
     set_max_stack( 1 );
