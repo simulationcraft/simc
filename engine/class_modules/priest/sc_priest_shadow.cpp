@@ -1125,6 +1125,30 @@ struct void_eruption_t final : public priest_spell_t
   }
 };
 
+struct void_eruption_stm_damage_t final : public priest_spell_t
+{
+  propagate_const<action_t*> void_bolt;
+
+  void_eruption_damage_t( priest_t& p )
+    : priest_spell_t( "void_eruption_stm_damage", p, p.find_spell( 228360 ) ), void_bolt( nullptr )
+  {
+    may_miss   = false;
+    background = true;
+  }
+
+  void init() override
+  {
+    priest_spell_t::init();
+    void_bolt = player->find_action( "void_bolt" );
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    priest_spell_t::impact( s );
+    priest_spell_t::impact( s );
+  }
+};
+
 struct surrender_to_madness_t final : public priest_spell_t
 {
   surrender_to_madness_t( priest_t& p, util::string_view options_str )
@@ -1132,7 +1156,7 @@ struct surrender_to_madness_t final : public priest_spell_t
   {
     parse_options( options_str );
 
-    impact_action = new void_eruption_damage_t( p );
+    impact_action = new void_eruption_stm_damage_t( p );
     impact_action->aoe = -1;
     add_child( impact_action );
   }
