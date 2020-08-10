@@ -1133,6 +1133,7 @@ struct surrender_to_madness_t final : public priest_spell_t
     parse_options( options_str );
 
     impact_action = new void_eruption_t( p, options_str );
+    impact_action->background = true;
     add_child( impact_action );
   }
 

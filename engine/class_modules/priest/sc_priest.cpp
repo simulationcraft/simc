@@ -743,10 +743,15 @@ struct fae_blessings_t final : public priest_buff_t<buff_t>
 // ==========================================================================
 struct boon_of_the_ascended_t final : public priest_buff_t<buff_t>
 {
-  boon_of_the_ascended_t( priest_t& p ) : base_t( p, "boon_of_the_ascended", p.covenant.boon_of_the_ascended )
+  int stacks;
+
+  boon_of_the_ascended_t( priest_t& p )
+    : base_t( p, "boon_of_the_ascended", p.covenant.boon_of_the_ascended ),
+      stacks( as<int>( data().max_stacks() ) )
   {
     // Adding stacks should not refresh the duration
     set_refresh_behavior( buff_refresh_behavior::DISABLED );
+    set_max_stack( stacks >=1 ? stacks : 1 );
   }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
