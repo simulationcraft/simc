@@ -743,10 +743,15 @@ struct fae_blessings_t final : public priest_buff_t<buff_t>
 // ==========================================================================
 struct boon_of_the_ascended_t final : public priest_buff_t<buff_t>
 {
-  boon_of_the_ascended_t( priest_t& p ) : base_t( p, "boon_of_the_ascended", p.covenant.boon_of_the_ascended )
+  int stacks;
+
+  boon_of_the_ascended_t( priest_t& p )
+    : base_t( p, "boon_of_the_ascended", p.covenant.boon_of_the_ascended ),
+      stacks( as<int>( data().max_stacks() ) )
   {
     // Adding stacks should not refresh the duration
     set_refresh_behavior( buff_refresh_behavior::DISABLED );
+    set_max_stack( stacks >=1 ? stacks : 1 );
   }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
@@ -757,6 +762,37 @@ struct boon_of_the_ascended_t final : public priest_buff_t<buff_t>
     {
       priest().action.ascended_eruption->trigger_eruption( expiration_stacks );
     }
+  }
+};
+
+struct surrender_to_madness_debuff_t final : public priest_buff_t<buff_t>
+{
+  surrender_to_madness_debuff_t( priest_td_t& actor_pair )
+    : base_t( actor_pair, "surrender_to_madness_death_check", actor_pair.priest().talents.surrender_to_madness )
+  {
+  }
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    // Fake-detect target demise by checking if buff was expired early
+    if ( remaining_duration > timespan_t::zero() )
+    {
+      priest().buffs.surrender_to_madness->expire();
+    }
+    else
+    {
+      make_event( sim, [this]() {
+        if ( sim->log )
+        {
+          sim->out_log.printf( "%s %s: Surrender to Madness kills you. You die. Horribly.", priest().name(), name() );
+        }
+        priest().demise();
+        priest().arise();
+        priest().buffs.surrender_to_madness_death->trigger();
+      } );
+    }
+
+    buff_t::expire_override( expiration_stacks, remaining_duration );
   }
 };
 
@@ -938,8 +974,9 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p ) : actor_target_data_t(
   dots.devouring_plague   = target->get_dot( "devouring_plague", &p );
   dots.unholy_transfusion = target->get_dot( "unholy_transfusion", &p );
 
-  buffs.schism                   = make_buff( *this, "schism", p.talents.schism );
-  buffs.death_and_madness_debuff = make_buff<buffs::death_and_madness_debuff_t>( *this );
+  buffs.schism                      = make_buff( *this, "schism", p.talents.schism );
+  buffs.death_and_madness_debuff    = make_buff<buffs::death_and_madness_debuff_t>( *this );
+  buffs.surrender_to_madness_debuff = make_buff<buffs::surrender_to_madness_debuff_t>( *this );
 
   target->callbacks_on_demise.emplace_back( [ this ]( player_t* ) { target_demise(); } );
 }
@@ -1016,7 +1053,6 @@ void priest_t::create_gains()
   gains.insanity_drain                         = get_gain( "Insanity Drained by Voidform" );
   gains.insanity_pet                           = get_gain( "Insanity Gained from Shadowfiend" );
   gains.insanity_surrender_to_madness          = get_gain( "Insanity Gained from Surrender to Madness" );
-  gains.insanity_wasted_surrendered_to_madness = get_gain( "Insanity Wasted from Surrendered to Madness" );
   gains.vampiric_touch_health                  = get_gain( "Health from Vampiric Touch Ticks" );
   gains.insanity_lucid_dreams                  = get_gain( "Insanity Gained from Lucid Dreams" );
   gains.insanity_memory_of_lucid_dreams        = get_gain( "Insanity Gained from Memory of Lucid Dreams" );

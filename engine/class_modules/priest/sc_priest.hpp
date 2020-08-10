@@ -73,6 +73,7 @@ public:
   {
     propagate_const<buff_t*> schism;
     propagate_const<buff_t*> death_and_madness_debuff;
+    propagate_const<buff_t*> surrender_to_madness_debuff;
   } buffs;
 
   priest_t& priest()
@@ -122,7 +123,7 @@ public:
     propagate_const<buff_t*> shadowform_state;  // Dummy buff to track whether player entered Shadowform initially
     propagate_const<buff_t*> shadowy_insight;
     propagate_const<buff_t*> surrender_to_madness;
-    propagate_const<buff_t*> surrendered_to_madness;
+    propagate_const<buff_t*> surrender_to_madness_death;
     propagate_const<buff_t*> vampiric_embrace;
     propagate_const<buff_t*> void_torrent;
     propagate_const<buff_t*> voidform;
@@ -308,7 +309,6 @@ public:
     propagate_const<gain_t*> insanity_drain;
     propagate_const<gain_t*> insanity_pet;
     propagate_const<gain_t*> insanity_surrender_to_madness;
-    propagate_const<gain_t*> insanity_wasted_surrendered_to_madness;
     propagate_const<gain_t*> insanity_blessing;
     propagate_const<gain_t*> shadowy_insight;
     propagate_const<gain_t*> vampiric_touch_health;
@@ -916,10 +916,6 @@ struct fiend_melee_t : public priest_pet_melee_t
       if ( p().o().specialization() == PRIEST_SHADOW )
       {
         double amount = p().insanity_gain();
-        if ( p().o().buffs.surrendered_to_madness->up() )
-        {
-          amount = 0.0;  // generation with debuff is zero N1gh7h4wk 2018/01/26
-        }
         if ( p().o().buffs.surrender_to_madness->up() )
         {
           p().o().resource_gain(
@@ -1230,6 +1226,19 @@ struct priest_spell_t : public priest_action_t<spell_t>
     }
 
     return base_t::usable_moving();
+  }
+
+  bool ready() override
+  {
+    if ( priest().specialization() == PRIEST_SHADOW && priest().talents.surrender_to_madness->ok() )
+    {
+      if ( priest().buffs.surrender_to_madness_death->check() )
+      {
+        return false;
+      }
+    }
+
+    return action_t::ready();
   }
 
   void consume_resource() override
