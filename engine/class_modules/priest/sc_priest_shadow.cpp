@@ -1141,9 +1141,6 @@ struct surrender_to_madness_t final : public priest_spell_t
     priest_spell_t::execute();
 
     priest().buffs.surrender_to_madness->trigger();
-    // priest().buffs.voidform->trigger();
-    // priest().cooldowns.mind_blast->reset( true );
-    // priest().cooldowns.void_bolt->reset( true );
   }
 
   void impact( action_state_t* s ) override
@@ -1833,12 +1830,16 @@ void priest_t::create_buffs_shadow()
   buffs.vampiric_embrace      = make_buff<buffs::vampiric_embrace_t>( *this );
 
   // Talents
-  buffs.void_torrent           = make_buff<buffs::void_torrent_t>( *this );
-  buffs.surrender_to_madness   = make_buff<buffs::surrender_to_madness_t>( *this );
-  buffs.death_and_madness_buff = make_buff<buffs::death_and_madness_buff_t>( *this );
-  buffs.ancient_madness        = make_buff<buffs::ancient_madness_t>( *this );
-  buffs.unfurling_darkness     = make_buff( this, "unfurling_darkness", find_talent_spell( "Unfurling Darkness" ) );
-  buffs.unfurling_darkness_cd  = make_buff( this, "unfurling_darkness_cd", find_spell( 341291 ) );
+  buffs.void_torrent               = make_buff<buffs::void_torrent_t>( *this );
+  buffs.surrender_to_madness       = make_buff<buffs::surrender_to_madness_t>( *this );
+  buffs.death_and_madness_buff     = make_buff<buffs::death_and_madness_buff_t>( *this );
+  buffs.ancient_madness            = make_buff<buffs::ancient_madness_t>( *this );
+  buffs.unfurling_darkness         = make_buff( this, "unfurling_darkness", find_talent_spell( "Unfurling Darkness" ) );
+  buffs.unfurling_darkness_cd      = make_buff( this, "unfurling_darkness_cd", find_spell( 341291 ) );
+  buffs.surrender_to_madness_death = make_buff( this, "surrender_to_madness_death", find_talent_spell( "Surrender to Madness" ) )
+                                          ->set_duration( timespan_t::zero() )
+                                          ->set_default_value( 0.0 )
+                                          ->set_chance( 1.0 );
 
   // Azerite Powers
   buffs.chorus_of_insanity     = make_buff<buffs::chorus_of_insanity_t>( *this );
@@ -2097,7 +2098,7 @@ void priest_t::generate_apl_shadow()
   // CDs
   cds->add_action( this, "Power Infusion", "if=buff.voidform.up" );
   cds->add_action( this, covenant.fae_blessings, "Fae Blessings", "if=insanity>=90&cooldown.void_eruption.up", "Use right before Void Eruption" );
-  cds->add_action( this, covenant.mindgames, "Mindgames" );
+  cds->add_action( this, covenant.mindgames, "Mindgames", "if=insanity<90&!buff.voidform.up" );
   cds->add_action( this, covenant.unholy_nova, "Unholy Nova", "if=raid_event.adds.in>50" );
   cds->add_action( this, covenant.boon_of_the_ascended, "Boon of the Ascended", "if=!buff.voidform.up&!cooldown.void_eruption.up" );
   cds->add_call_action_list( essences );
@@ -2109,7 +2110,7 @@ void priest_t::generate_apl_shadow()
   // single APL
   main->add_call_action_list( this, covenant.boon_of_the_ascended, boon, "if=buff.boon_of_the_ascended.up" );
   main->add_action( this, "Void Eruption", "if=cooldown.power_infusion.up", "Sync up Voidform and Power Infusion Cooldowns." );
-  main->add_action( this, "Void Bolt" );
+  main->add_action( this, "Void Bolt", "if=!dot.devouring_plague.refreshable", "Only use Void Bolt if Devouring Plague doesn't need refreshed." );
   main->add_call_action_list( cds );
   main->add_talent( this, "Damnation", "target_if=!variable.all_dots_up", "Prefer to use Damnation ASAP if any DoT is not up" );
   main->add_action( this, "Devouring Plague", "target_if=(refreshable|insanity>75)&!cooldown.power_infusion.up",
