@@ -3249,31 +3249,41 @@ struct conjure_mana_gem_t : public arcane_mage_spell_t
   }
 };
 
-struct use_mana_gem_t : public arcane_mage_spell_t
+struct use_mana_gem_t : public action_t
 {
   use_mana_gem_t( util::string_view n, mage_t* p, util::string_view options_str ) :
-    arcane_mage_spell_t( n, p, p->find_spell( 5405 ) )
+    action_t( ACTION_USE, n, p, p->find_spell( 5405 ) )
   {
     parse_options( options_str );
-    harmful = false;
+    harmful = callbacks = may_crit = may_miss = false;
+    target = player;
     background = p->specialization() != MAGE_ARCANE;
   }
 
   bool ready() override
   {
-    if ( p()->state.mana_gem_charges <= 0 || p()->resources.pct( RESOURCE_MANA ) >= 1.0 )
+    mage_t* p = debug_cast<mage_t*>( player );
+
+    if ( p->state.mana_gem_charges <= 0 || p->resources.pct( RESOURCE_MANA ) >= 1.0 )
       return false;
 
-    return arcane_mage_spell_t::ready();
+    return action_t::ready();
   }
 
   void execute() override
   {
-    arcane_mage_spell_t::execute();
-    p()->resource_gain( RESOURCE_MANA, p()->resources.max[ RESOURCE_MANA ] * data().effectN( 1 ).percent(), p()->gains.mana_gem, this );
-    p()->state.mana_gem_charges--;
-    assert( p()->state.mana_gem_charges >= 0 );
+    mage_t* p = debug_cast<mage_t*>( player );
+
+    action_t::execute();
+
+    p->resource_gain( RESOURCE_MANA, p->resources.max[ RESOURCE_MANA ] * data().effectN( 1 ).percent(), p->gains.mana_gem, this );
+    p->state.mana_gem_charges--;
+    assert( p->state.mana_gem_charges >= 0 );
   }
+
+  // Needed to satisfy normal execute conditions
+  result_e calculate_result( action_state_t* ) const override
+  { return RESULT_HIT; }
 };
 
 // Counterspell Spell =======================================================
