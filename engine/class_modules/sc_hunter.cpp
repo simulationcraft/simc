@@ -4142,7 +4142,7 @@ struct interrupt_base_t: public hunter_spell_t
 
 // A Murder of Crows ========================================================
 
-struct moc_t : public hunter_spell_t
+struct a_murder_of_crows_t : public hunter_spell_t
 {
   struct peck_t final : public hunter_ranged_attack_t
   {
@@ -4153,7 +4153,7 @@ struct moc_t : public hunter_spell_t
     }
   };
 
-  moc_t( hunter_t* p, util::string_view options_str ) :
+  a_murder_of_crows_t( hunter_t* p, util::string_view options_str ) :
     hunter_spell_t( "a_murder_of_crows", p, p -> talents.a_murder_of_crows )
   {
     parse_options( options_str );
@@ -5390,7 +5390,7 @@ action_t* hunter_t::create_action( util::string_view name,
   using namespace attacks;
   using namespace spells;
 
-  if ( name == "a_murder_of_crows"     ) return new                    moc_t( this, options_str );
+  if ( name == "a_murder_of_crows"     ) return new      a_murder_of_crows_t( this, options_str );
   if ( name == "aimed_shot"            ) return new             aimed_shot_t( this, options_str );
   if ( name == "arcane_shot"           ) return new            arcane_shot_t( this, options_str );
   if ( name == "aspect_of_the_eagle"   ) return new    aspect_of_the_eagle_t( this, options_str );
