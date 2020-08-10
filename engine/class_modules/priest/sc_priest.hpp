@@ -920,7 +920,7 @@ struct fiend_melee_t : public priest_pet_melee_t
         {
           p().o().resource_gain(
               RESOURCE_INSANITY,
-              ( amount * ( 1.0 + p().o().talents.surrender_to_madness->effectN( 1 ).percent() ) ) - amount,
+              ( amount * ( 1.0 + p().o().talents.surrender_to_madness->effectN( 2 ).percent() ) ) - amount,
               p().o().gains.insanity_surrender_to_madness );
         }
         p().o().insanity.gain( amount, p().gains.fiend, nullptr );

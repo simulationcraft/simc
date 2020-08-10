@@ -1547,9 +1547,9 @@ void priest_t::generate_insanity( double num_amount, gain_t* g, action_t* action
 
     if ( buffs.surrender_to_madness->check() )
     {
-      double total_amount = amount * ( 1.0 + talents.surrender_to_madness->effectN( 1 ).percent() );
+      double total_amount = amount * ( 1.0 + talents.surrender_to_madness->effectN( 2 ).percent() );
 
-      amount_from_surrender_to_madness = amount * talents.surrender_to_madness->effectN( 1 ).percent();
+      amount_from_surrender_to_madness = amount * talents.surrender_to_madness->effectN( 2 ).percent();
 
       if ( player_t::buffs.memory_of_lucid_dreams->check() )
       {
@@ -1557,7 +1557,7 @@ void priest_t::generate_insanity( double num_amount, gain_t* g, action_t* action
         amount_from_memory_of_lucid_dreams += ( amount + amount_from_surrender_to_madness ) *
                                               ( azerite_essence.memory_of_lucid_dreams->effectN( 1 ).percent() );
 
-        total_amount = amount * ( 1.0 + talents.surrender_to_madness->effectN( 1 ).percent() ) *
+        total_amount = amount * ( 1.0 + talents.surrender_to_madness->effectN( 2 ).percent() ) *
                        ( 1.0 + azerite_essence.memory_of_lucid_dreams->effectN( 1 ).percent() );
       }
 
