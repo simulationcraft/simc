@@ -1374,6 +1374,11 @@ struct voidform_t final : public priest_buff_t<buff_t>
       priest().insanity.begin_tracking();
     }
 
+    if ( priest().talents.ancient_madness->ok() )
+    {
+      priest().buffs.ancient_madness->trigger();
+    }
+
     priest().buffs.shadowform->expire();
 
     return r;
@@ -1428,6 +1433,24 @@ struct harvested_thoughts_t final : public priest_buff_t<buff_t>
               p.azerite.thought_harvester.spell()->effectN( 1 ).trigger()->effectN( 1 ).trigger() )
   {
     set_trigger_spell( p.azerite.thought_harvester.spell()->effectN( 1 ).trigger() );
+  }
+};
+
+struct ancient_madness_t final : public priest_buff_t<buff_t>
+{
+  ancient_madness_t( priest_t& p ) : base_t( p, "ancient_madness", p.find_talent_spell( "Ancient Madness" ) )
+  {
+    if ( !data().ok() )
+      return;
+
+    add_invalidate( CACHE_CRIT_CHANCE );
+    add_invalidate( CACHE_SPELL_CRIT_CHANCE );
+
+    set_duration( p.find_spell( 194249 )->duration() );
+    set_default_value( data().effectN( 2 ).percent() ); // Each stack is worth 2% from effect 2
+    set_max_stack( as<int>( data().effectN( 1 ).base_value() ) / as<int>( data().effectN( 2 ).base_value() ) ); // Set max stacks to 30 / 2
+    set_reverse( true );
+    set_period( timespan_t::from_seconds( 1 ) );
   }
 };
 
@@ -1822,6 +1845,7 @@ void priest_t::create_buffs_shadow()
   buffs.surrender_to_madness   = make_buff<buffs::surrender_to_madness_t>( *this );
   buffs.surrendered_to_madness = make_buff<buffs::surrendered_to_madness_t>( *this );
   buffs.death_and_madness_buff = make_buff<buffs::death_and_madness_buff_t>( *this );
+  buffs.ancient_madness        = make_buff<buffs::ancient_madness_t>( *this );
   buffs.unfurling_darkness     = make_buff( this, "unfurling_darkness", find_talent_spell( "Unfurling Darkness" ) );
   buffs.unfurling_darkness_cd  = make_buff( this, "unfurling_darkness_cd", find_spell( 341291 ) );
 

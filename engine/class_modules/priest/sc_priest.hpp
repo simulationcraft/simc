@@ -129,6 +129,7 @@ public:
     propagate_const<buff_t*> death_and_madness_buff;
     propagate_const<buff_t*> unfurling_darkness;
     propagate_const<buff_t*> unfurling_darkness_cd; // Blizzard uses a buff to track the ICD
+    propagate_const<buff_t*> ancient_madness;
 
     // Azerite Powers
     // Shadow
@@ -495,6 +496,7 @@ public:
   void assess_damage( school_e school, result_amount_type dtype, action_state_t* s ) override;
   double composite_melee_haste() const override;
   double composite_spell_haste() const override;
+  double composite_spell_crit_chance() const override;
   double composite_player_pet_damage_multiplier( const action_state_t* ) const override;
   double composite_player_absorb_multiplier( const action_state_t* s ) const override;
   double composite_player_heal_multiplier( const action_state_t* s ) const override;
