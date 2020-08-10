@@ -310,7 +310,7 @@ public:
   } azerite;
 
   struct {
-    spell_data_ptr_t death_chakram; // NYI
+    spell_data_ptr_t death_chakram; // VERY WIP
     spell_data_ptr_t flayed_shot;
     spell_data_ptr_t resonating_arrow;
     spell_data_ptr_t wild_spirits; // VERY WIP
@@ -320,7 +320,7 @@ public:
     // Covenant
     conduit_data_t empowered_release;
     conduit_data_t enfeebled_mark;
-    conduit_data_t necrotic_barrage; // NYI
+    conduit_data_t necrotic_barrage;
     conduit_data_t spirit_attunement;
     // Beast Mastery
     conduit_data_t bloodletting;
@@ -2395,6 +2395,205 @@ public:
 // ==========================================================================
 // Covenant Abilities
 // ==========================================================================
+
+namespace death_chakram
+{
+/**
+ * A whole namespace for a single spell...
+ *
+ * 2020.08.10 9.0.1.35432
+ * YUGE DISCLAIMER! VERY WIP!
+ * The spell consists of at least 3 spells:
+ *   325028 - main spell, does all damage on multiple targets
+ *   325037 - additional damage done on single target
+ *   325553 - energize (amount is in 325028)
+ *
+ * Below analysis is done based on this log from beta:
+ *   https://www.warcraftlogs.com/reports/rFh9gLHqZya2YmRv
+ *
+ * The spell behaves very differently when it can hit multiple or only a
+ * single target.
+ *
+ * Observations when it hits multiple targets:
+ *   - only 325028 is in play
+ *   - damage events after the initial travel time are not instant
+ *   - all energizes happen on cast (7 total 325553 energize events)
+ *   - the spell can "bounce" to dead targets
+ *
+ * Observations when there is a single target involved:
+ *   - 325028 is only the initial hit
+ *   - 325037 starts hitting ~1 after the initial hit, doing 6 hits total
+ *     every ~745ms [*]
+ *   - only 1 325553 energize happens on cast, all others happen when 325037
+ *     hit (with a slight desync)
+ *
+ * The spell also *seems* to calculate damage in all cases dynamically on
+ * each impact.
+ *
+ * [*] period data for 325037 hitting the main target:
+ *        Min    Max  Median    Avg  Stddev
+ *      0.643  0.809   0.745  0.744  0.0357
+ *
+ * Current theory is:
+ * The spell builds the full target list ("path") on cast if there are at
+ * least 2 available targets. The projectile then travels to each target in
+ * the list (in order) doing damage. This is based off the fact that all 7
+ * energizes happen on cast in this case and the fact that it can bounce off
+ * dead targets.
+ * If there is only a single target present, it travels to it, and schedules
+ * 6 hits of 325037 (first hit in ~1s, 745ms period after)
+ *
+ * There are a bunch of unknowns:
+ *  - whats the reach of a "bounce"? there is no range data on it
+ *  - does it *really* build the full target list on cast? energize & dead
+ *    target bounces seem to suggest that, but...
+ *  - the log has bounces to a dead target only on the final "bounce", what
+ *    happens if its "mid-travel"?
+ *  - can something happen in the st case during the 1s "wait" after the
+ *    initial hit (start bouncing?)
+ *  - does it *really* update damage on each impact?
+ *
+ * Some tests that would help pinpoint the behavior and confirm/deny the
+ * theory would be (some require a Death Knight buddy):
+ *  - engage 3 targets, DC, kill 1 target
+ *  - engage 2 targets, DC, Bestial Wrath after 2-3 bounces
+ *  - engage 1 targets, DC, Bestial Wrath after 2-3 "hits"
+ *  - engage 2 targets, DC, grip one target off to max range
+ *  - engage 2 targets, DC, grip in one target as soon as DC hits
+ *  - engage 1 target, DC, grip in one target as soon as DC hits
+ *
+ * Somewhat simplified (in multi-target) modeling of the theory for now:
+ *  - in single-target case - let the main spell hit as usual (once), then
+ *    schedule 1 "secondary" hit after 1s which schedules another 5 repeating
+ *    hits with a 745ms period
+ *  - in multi-target case - just model at as a simple "instant" chained aoe
+ */
+
+struct base_t : hunter_ranged_attack_t
+{
+  base_t( util::string_view n, hunter_t* p, const spell_data_t* s ):
+    hunter_ranged_attack_t( n, p, s )
+  {
+    chain_multiplier = p -> covenants.death_chakram -> effectN( 1 ).chain_multiplier();
+
+    base_dd_multiplier *= 1 + p -> conduits.necrotic_barrage.percent();
+
+    energize_type = action_energize::ON_HIT;
+    energize_resource = RESOURCE_FOCUS;
+    energize_amount = p -> covenants.death_chakram -> effectN( 4 ).base_value() +
+                      p -> conduits.necrotic_barrage -> effectN( 2 ).base_value();
+  }
+};
+
+struct single_target_t final : base_t
+{
+  int hit_number = 0;
+
+  single_target_t( util::string_view n, hunter_t* p ):
+    base_t( n, p, p -> find_spell( 325037 ) )
+  {
+    dual = true;
+  }
+
+  double action_multiplier() const override
+  {
+    double am = base_t::action_ta_multiplier();
+
+    am *= std::pow( chain_multiplier, hit_number );
+
+    return am;
+  }
+
+  void trigger( player_t* target_, int hit_number_ )
+  {
+    hit_number = hit_number_;
+    set_target( target_ );
+    execute();
+  }
+};
+
+struct single_target_event_t final : public event_t
+{
+  single_target_t& action;
+  player_t* target;
+  int hit_number;
+
+  single_target_event_t( single_target_t& action, player_t* target, timespan_t t, int n = 1 ) :
+    event_t( *action.player -> sim , t ), action( action ), target( target ), hit_number ( n )
+  { }
+
+  const char* name() const override
+  { return "Hunter-DeathChakram-SingleTarget"; }
+
+  void execute() override
+  {
+    if ( target -> is_sleeping() )
+      return;
+
+    action.trigger( target, hit_number );
+
+    hit_number += 1;
+    if ( hit_number == action.p() -> covenants.death_chakram -> effectN( 1 ).chain_target() )
+      return;
+
+    make_event<single_target_event_t>( sim(), action, target, 745_ms, hit_number );
+  }
+};
+
+} // namespace death_chakram
+
+struct death_chakram_t : death_chakram::base_t
+{
+  death_chakram::single_target_t* single_target;
+
+  death_chakram_t( hunter_t* p, util::string_view options_str ):
+    death_chakram::base_t( "death_chakram", p, p -> covenants.death_chakram ),
+    single_target( p -> get_background_action<death_chakram::single_target_t>( "death_chakram_st" ) )
+  {
+    parse_options( options_str );
+
+    radius = 8; // XXX: just a guess
+    aoe = data().effectN( 1 ).chain_target();
+  }
+
+  void init() override
+  {
+    base_t::init();
+
+    single_target -> gain  = gain;
+    single_target -> stats = stats;
+    stats -> action_list.push_back( single_target );
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    base_t::impact( s );
+
+    if ( s -> n_targets == 1 )
+    {
+      // Hit only a single target, schedule the repeating single target hitter
+      make_event<death_chakram::single_target_event_t>( *sim, *single_target, s -> target, 1_s );
+    }
+  }
+
+  size_t available_targets( std::vector< player_t* >& tl ) const override
+  {
+    size_t tl_size = base_t::available_targets( tl );
+
+    // If we have more than 1 target, simply repeat current targets until the
+    // target cap
+    if ( tl_size > 1 && tl_size < as<size_t>( aoe ) )
+    {
+      tl.resize( as<size_t>( aoe ) );
+      do {
+        std::copy_n( tl.begin(), std::min( tl_size, tl.size() - tl_size ), tl.begin() + tl_size );
+        tl_size += tl_size;
+      } while ( tl_size < tl.size() );
+    }
+
+    return tl.size();
+  }
+};
 
 struct flayed_shot_t : hunter_ranged_attack_t
 {
@@ -5410,6 +5609,7 @@ action_t* hunter_t::create_action( util::string_view name,
   if ( name == "cobra_shot"            ) return new             cobra_shot_t( this, options_str );
   if ( name == "coordinated_assault"   ) return new    coordinated_assault_t( this, options_str );
   if ( name == "counter_shot"          ) return new           counter_shot_t( this, options_str );
+  if ( name == "death_chakram"         ) return new          death_chakram_t( this, options_str );
   if ( name == "dire_beast"            ) return new             dire_beast_t( this, options_str );
   if ( name == "double_tap"            ) return new             double_tap_t( this, options_str );
   if ( name == "explosive_shot"        ) return new         explosive_shot_t( this, options_str );
