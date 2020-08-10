@@ -1441,18 +1441,13 @@ struct ancient_madness_t final : public priest_buff_t<buff_t>
   ancient_madness_t( priest_t& p ) : base_t( p, "ancient_madness", p.find_talent_spell( "Ancient Madness" ) )
   {
     set_duration( p.find_spell( 194249 )->duration() );
-    set_default_value( data().effectN( 1 ).percent() );
+    set_default_value( data().effectN( 2 ).percent() ); // Each stack is worth 2% from effect 2
+    set_max_stack( as<int>( data().effectN( 1 ).base_value() ) / as<int>( data().effectN( 2 ).base_value() ) ); // Set max stacks to 30 / 2
+    set_reverse( true );
+    set_period( timespan_t::from_seconds( 1 ) );
+
     add_invalidate( CACHE_CRIT_CHANCE );
     add_invalidate( CACHE_SPELL_CRIT_CHANCE );
-    set_period( timespan_t::from_seconds( 1 ) );
-    set_tick_callback( [ this ]( buff_t*, int total_ticks, timespan_t ) {
-      double base_crit = data().effectN( 1 ).percent();
-      double crit_reduction = data().effectN( 2 ).percent();
-      double new_value = util::round( base_crit - ( this->current_tick * crit_reduction ), 2 );
-
-      sim->print_debug( "Ancient Madness: adjusting crit to {}. base={}, crit_reduction={}, current_tick={}", new_value, base_crit, crit_reduction, this->current_tick );
-      set_default_value( new_value );
-    } );
   }
 };
 
