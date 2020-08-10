@@ -2462,6 +2462,7 @@ namespace death_chakram
  *  * get a Death Knight buddy
  *    - engage 2 targets, DC, grip one target off to max range
  *    - engage 2 targets, DC, grip in one target as soon as DC hits
+ *    - engage 1 target, DC, grip in one target while DC is traveling
  *    - engage 1 target, DC, grip in one target as soon as DC hits
  *
  * Somewhat simplified (in multi-target) modeling of the theory for now:
@@ -2555,6 +2556,19 @@ struct death_chakram_t : death_chakram::base_t
     parse_options( options_str );
 
     radius = 8; // XXX: just a guess
+
+    /* Mark the spell as aoe to simplify multi-target implementation for now.
+     * If we were to model travel time between bounces we'd have to mark the
+     * spell single-target and go completely custom.
+     *
+     * Rough idea would be to invalidate the target cache before base::execute.
+     * On impact: inspect target_list size, if it's 1 - current single target,
+     * otherwise - schedule an event that would walk the target list with some
+     * delay (either made up or we could actually compute it with distance
+     * targeting enabled). Theoretically we'd need a custom action state to
+     * copy off the target list to. But we can get away with it (I think) as
+     * the only problem would be back-to-back casts and that's not possible atm.
+     */
     aoe = data().effectN( 1 ).chain_target();
   }
 
@@ -2583,7 +2597,7 @@ struct death_chakram_t : death_chakram::base_t
     size_t tl_size = base_t::available_targets( tl );
 
     // If we have more than 1 target, simply repeat current targets until the
-    // target cap
+    // target cap.
     if ( tl_size > 1 && tl_size < as<size_t>( aoe ) )
     {
       tl.resize( as<size_t>( aoe ) );
