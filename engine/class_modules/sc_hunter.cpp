@@ -1120,6 +1120,15 @@ struct hunter_pet_t: public pet_t
     return m;
   }
 
+  double composite_player_target_crit_chance( player_t* target ) const
+  {
+    double crit = pet_t::composite_player_target_crit_chance( target );
+
+    crit += o()->buffs.resonating_arrow->check_value();
+
+    return crit;
+  }
+
   void apply_affecting_auras( action_t& action ) override
   {
     pet_t::apply_affecting_auras(action);
