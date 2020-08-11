@@ -5086,6 +5086,12 @@ struct touch_of_the_magi_t : public arcane_mage_spell_t
       add_child( p->action.touch_of_the_magi_explosion );
   }
 
+  void execute() override
+  {
+    arcane_mage_spell_t::execute();
+    p()->buffs.arcane_charge->trigger( as<int>( data().effectN( 2 ).base_value() ) );
+  }
+
   void impact( action_state_t* s ) override
   {
     arcane_mage_spell_t::impact( s );
