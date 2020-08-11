@@ -2434,45 +2434,34 @@ namespace death_chakram
  *   - 325037 starts hitting ~1 after the initial hit, doing 6 hits total
  *     every ~745ms [*]
  *   - only 1 325553 energize happens on cast, all others happen when 325037
- *     hit (with a slight desync)
- *
- * The spell also *seems* to calculate damage in all cases dynamically on
- * each impact.
+ *     hit (sometimes with a slight desync)
  *
  * [*] period data for 325037 hitting the main target:
  *        Min    Max  Median    Avg  Stddev
  *      0.643  0.809   0.745  0.744  0.0357
  *
+ * 2020.08.11 Additional tests performed by Ghosteld, Putro, Tirrill & Laquan:
+ *   https://www.warcraftlogs.com/reports/F9ZKyQf7LWxD4vqJ
+ * Observations:
+ *   - aoe reach is 8 yards
+ *   - bringing targets in / out of range does not affect the outcome (it will
+ *     "hit" corpses if the target was alive on cast)
+ *   - animation is completely decoupled from damage events (matters only for
+ *     the multi-target case)
+ *   - damage calculation is dynamic only for 325037 (single-target case), on
+ *     multi-target the damage is snapshot on cast (like a regular aoe)
+ *   - target list building has a bunch of range-related quirks
+ *
  * Current theory is:
- * The spell builds the full target list ("path") on cast if there are at
- * least 2 available targets. The projectile then travels to each target in
- * the list (in order) doing damage. This is based off the fact that all 7
- * energizes happen on cast in this case and the fact that it can bounce off
- * dead targets.
- * If there is only a single target present, it travels to it, and schedules
- * 6 hits of 325037 (first hit in ~1s, 745ms period after)
- *
- * There are a bunch of unknowns:
- *  - whats the reach of a "bounce"? there is no range data on it
- *  - does it *really* build the full target list on cast? energize & dead
- *    target bounces seem to suggest that, but...
- *  - the log has bounces to a dead target only on the final "bounce", what
- *    happens if its "mid-travel"?
- *  - can something happen in the st case during the 1s "wait" after the
- *    initial hit (start bouncing?)
- *  - does it *really* update damage on each impact?
- *
- * Some tests that would help pinpoint the behavior and confirm/deny the
- * theory would be (some require a Death Knight buddy):
- *  * engage 3 targets, DC, kill 1 target
- *  * as MM, get a huge mastery on-use trinket
- *    - engage 2 targets, DC, trinket after 2-3 bounces
- *    - engage 1 targets, DC, trinket after 2-3 "hits"
- *  * get a Death Knight buddy
- *    - engage 2 targets, DC, grip one target off to max range
- *    - engage 2 targets, DC, grip in one target as soon as DC hits
- *    - engage 1 target, DC, grip in one target while DC is traveling
- *    - engage 1 target, DC, grip in one target as soon as DC hits
+ * The spell builds the full target list on cast.
+ * If there are at least 2 available targets it builds "some" path between them
+ * to get 7 "bounces" total. After that it works almost exactly like a typical
+ * aoe spell. The only quirk is that all 7 hits don't always happen at the same
+ * time, but there is no sane pattern to the delays (there are 3 mostly discrete
+ * delays though: 0, 100 & 200 ms).
+ * If there is only 1 available target, it hits it as usual, once, and schedules
+ * 6 hits of 325037, first hit in ~1s, 745ms period after (it may actually even
+ * be driven by a hidden dot internally)
  *
  * Somewhat simplified (in multi-target) modeling of the theory for now:
  *  - in single-target case - let the main spell hit as usual (once), then
@@ -2564,20 +2553,7 @@ struct death_chakram_t : death_chakram::base_t
   {
     parse_options( options_str );
 
-    radius = 8; // XXX: just a guess
-
-    /* Mark the spell as aoe to simplify multi-target implementation for now.
-     * If we were to model travel time between bounces we'd have to mark the
-     * spell single-target and go completely custom.
-     *
-     * Rough idea would be to invalidate the target cache before base::execute.
-     * On impact: inspect target_list size, if it's 1 - current single target,
-     * otherwise - schedule an event that would walk the target list with some
-     * delay (either made up or we could actually compute it with distance
-     * targeting enabled). Theoretically we'd need a custom action state to
-     * copy off the target list to. But we can get away with it (I think) as
-     * the only problem would be back-to-back casts and that's not possible atm.
-     */
+    radius = 8; // Tested on 2020-08-11
     aoe = data().effectN( 1 ).chain_target();
   }
 
@@ -2606,7 +2582,8 @@ struct death_chakram_t : death_chakram::base_t
     size_t tl_size = base_t::available_targets( tl );
 
     // If we have more than 1 target, simply repeat current targets until the
-    // target cap.
+    // target cap. This won't work with distance_targeting_enabled, the list
+    // would have to be rebuilt in check_distance_targeting() with range checks.
     if ( tl_size > 1 && tl_size < as<size_t>( aoe ) )
     {
       tl.resize( as<size_t>( aoe ) );
