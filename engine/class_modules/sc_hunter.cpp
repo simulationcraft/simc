@@ -3539,6 +3539,13 @@ struct rapid_fire_t: public hunter_spell_t
       event_t::cancel( p() -> main_hand_attack -> execute_event );
   }
 
+  void execute() override
+  {
+    hunter_spell_t::execute();
+
+    p() -> buffs.streamline -> trigger();
+  }
+
   void tick( dot_t* d ) override
   {
     hunter_spell_t::tick( d );
@@ -3564,9 +3571,6 @@ struct rapid_fire_t: public hunter_spell_t
 
     // XXX: this triggers *only* after a *full* uninterrupted channel
     p() -> buffs.in_the_rhythm -> trigger();
-
-    // XXX: assume this is on channel end
-    p() -> buffs.streamline -> trigger();
 
     // schedule auto shot
     if ( p() -> main_hand_attack )
