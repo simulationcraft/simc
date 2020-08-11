@@ -4,6 +4,7 @@
 // ==========================================================================
 
 #include "simulationcraft.hpp"
+#include "player/covenant.hpp"
 
 namespace { // UNNAMED NAMESPACE
 // ==========================================================================
@@ -220,7 +221,7 @@ struct eclipse_handler_t
   unsigned starfire_counter;
   eclipse_state_e state;
 
-  eclipse_handler_t( druid_t* player ) : p( player ), wrath_counter( 2 ), starfire_counter( 2 ), state( ANY_NEXT ){};
+  eclipse_handler_t( druid_t* player ) : p( player ), wrath_counter( 2 ), starfire_counter( 2 ), state( ANY_NEXT ) {}
 
   void cast_wrath();
   void cast_starfire();
@@ -278,8 +279,6 @@ public:
   double kindred_empowerment_ratio;
   int convoke_the_spirits_heals;
   double convoke_the_spirits_ultimate;
-
-  std::string fake_conduit;
 
   struct active_actions_t
   {
@@ -758,25 +757,25 @@ public:
   // Conduits
   struct conduit_t
   {
-    const spell_data_t* balance_1;
-    const spell_data_t* balance_2;
-    const spell_data_t* balance_3;
-    const spell_data_t* balance_4;
+    conduit_data_t balance_1;
+    conduit_data_t balance_2;
+    conduit_data_t balance_3;
+    conduit_data_t balance_4;
 
-    const spell_data_t* feral_1;
-    const spell_data_t* feral_2;
-    const spell_data_t* feral_3;
-    const spell_data_t* feral_4;
+    conduit_data_t feral_1;
+    conduit_data_t feral_2;
+    conduit_data_t feral_3;
+    conduit_data_t feral_4;
 
-    const spell_data_t* guardian_1;
-    const spell_data_t* guardian_2;
-    const spell_data_t* guardian_3;
-    const spell_data_t* guardian_4;
+    conduit_data_t guardian_1;
+    conduit_data_t guardian_2;
+    conduit_data_t guardian_3;
+    conduit_data_t guardian_4;
 
-    const spell_data_t* kyrian;
-    const spell_data_t* necrolord;
-    const spell_data_t* night_fae;
-    const spell_data_t* venthyr;
+    conduit_data_t kyrian;
+    conduit_data_t necrolord;
+    conduit_data_t night_fae;
+    conduit_data_t venthyr;
   } conduit;
 
   struct uptimes_t
@@ -833,7 +832,6 @@ public:
       kindred_empowerment_ratio( 1.0 ),
       convoke_the_spirits_heals( 2 ),
       convoke_the_spirits_ultimate( 0.01 ),
-      fake_conduit( "" ),
       active( active_actions_t() ),
       force_of_nature(),
       caster_form_weapon(),
@@ -967,8 +965,6 @@ public:
                                                effect_type_t type                 = E_APPLY_AURA ) const;
   void vision_of_perfection_proc() override;
   void apply_affecting_auras( action_t& ) override;
-
-  const spell_data_t* fake_conduit_spell( unsigned );
 
 private:
   void apl_precombat();
@@ -1956,9 +1952,9 @@ public:
     parse_dot_debuffs( []( druid_td_t* t ) -> dot_t* { return t->dots.thrash_bear; },
                        p()->spec.thrash_bear_dot, p()->talent.rend_and_tear );
     parse_dot_debuffs( []( druid_td_t* t ) -> dot_t* { return t->dots.moonfire; },
-                       p()->spec.moonfire_dmg, p()->conduit.balance_2 );
+                       p()->spec.moonfire_dmg, p()->conduit.balance_3 );
     parse_dot_debuffs( []( druid_td_t* t ) -> dot_t* { return t->dots.sunfire; },
-                       p()->spec.sunfire_dmg, p()->conduit.balance_2 );
+                       p()->spec.sunfire_dmg, p()->conduit.balance_3 );
   }
 
   double cost() const override
@@ -7770,20 +7766,20 @@ void druid_t::init_spells()
   covenant.adaptive_swarm_heal          = check_spell( covenant.necrolord->ok(), 325748 );
 
   // Conduits
-  conduit.balance_1  = fake_conduit_spell( 340720 );
-  conduit.balance_2  = fake_conduit_spell( 340708 );
-  conduit.balance_3  = fake_conduit_spell( 340706 );
-  conduit.balance_4  = fake_conduit_spell( 340719 );
-  conduit.feral_1    = fake_conduit_spell( 340682 );
-  conduit.feral_2    = fake_conduit_spell( 340686 );
-  conduit.feral_3    = fake_conduit_spell( 340694 );
-  conduit.feral_4    = fake_conduit_spell( 340705 );
-  conduit.guardian_1 = fake_conduit_spell( 340552 );
-  conduit.guardian_2 = fake_conduit_spell( 340609 );
-  conduit.kyrian     = fake_conduit_spell( 340609 );
-  conduit.necrolord  = fake_conduit_spell( 341447 );
-  conduit.night_fae  = fake_conduit_spell( 341446 );
-  conduit.venthyr    = fake_conduit_spell( 341383 );
+  conduit.balance_1  = find_conduit_spell( "Druid Potency Balance 1" );
+  conduit.balance_2  = find_conduit_spell( "Druid Potency Balance 2" );
+  conduit.balance_3  = find_conduit_spell( "Druid Potency Balance 3" );
+  conduit.balance_4  = find_conduit_spell( "Druid Potency Balance 4" );
+  conduit.feral_1    = find_conduit_spell( "Druid Potency Feral 1" );
+  conduit.feral_2    = find_conduit_spell( "Druid Potency Feral 2" );
+  conduit.feral_3    = find_conduit_spell( "Druid Potency Feral 3" );
+  conduit.feral_4    = find_conduit_spell( "Druid Potency Feral 4" );
+  conduit.guardian_1 = find_conduit_spell( "Druid Potency Guardian 1" );
+  conduit.guardian_2 = find_conduit_spell( "Druid Potency Guardian 2" );
+  conduit.kyrian     = find_conduit_spell( "Druid Potency Kyrian 1" );
+  conduit.necrolord  = find_conduit_spell( "Druid Potency Necrolord 1" );
+  conduit.night_fae  = find_conduit_spell( "Druid Potency Night Fae 1" );
+  conduit.venthyr    = find_conduit_spell( "Druid Potency Venthyr 1" );
 
   // Runeforge Legendaries
 
@@ -8169,7 +8165,7 @@ void druid_t::create_buffs()
   buff.celestial_alignment = make_buff( this, "celestial_alignment", spec.celestial_alignment )
     ->set_cooldown( timespan_t::zero() )
     ->add_invalidate( CACHE_CRIT_CHANCE )
-    ->set_duration( spec.celestial_alignment->duration() + conduit.balance_3->effectN( 1 ).time_value() )
+    ->set_duration( spec.celestial_alignment->duration() + conduit.balance_2->effectN( 1 ).time_value() )
     ->set_stack_change_callback( [this] ( buff_t* b, int, int new_ ) {
       if ( new_ )
       {
@@ -8188,7 +8184,7 @@ void druid_t::create_buffs()
     ->set_cooldown( timespan_t::zero() )
     ->add_invalidate( CACHE_HASTE )
     ->add_invalidate( CACHE_CRIT_CHANCE )
-    ->set_duration( talent.incarnation_moonkin->duration() + conduit.balance_3->effectN( 1 ).time_value() )
+    ->set_duration( talent.incarnation_moonkin->duration() + conduit.balance_2->effectN( 1 ).time_value() )
     ->set_stack_change_callback( [this] ( buff_t* b, int, int new_ ) {
       if ( new_ )
       {
@@ -9578,7 +9574,6 @@ void druid_t::create_options()
   add_option( opt_float( "kindred_empowerment_ratio", kindred_empowerment_ratio ) );
   add_option( opt_int( "convoke_the_spirits_heals", convoke_the_spirits_heals ) );
   add_option( opt_float( "convoke_the_spirits_ultimate", convoke_the_spirits_ultimate ) );
-  add_option( opt_string( "fake_conduit", fake_conduit ) );
 }
 
 // druid_t::create_profile ==================================================
@@ -10162,19 +10157,6 @@ void druid_t::apply_affecting_auras( action_t& action )
 
   // Legendaries
   action.apply_affecting_aura( legendary.guardian_runecarve_1 );
-}
-
-const spell_data_t* druid_t::fake_conduit_spell( unsigned id )
-{
-  auto split = util::string_split( fake_conduit, "|" );
-
-  for ( auto s : split )
-  {
-    if ( std::stoi( s ) == id )
-      return find_spell( id );
-  }
-
-  return spell_data_t::not_found();
 }
 
 //void druid_t::output_json_report(js::JsonOutput& root) const
