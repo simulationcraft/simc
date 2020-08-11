@@ -5309,6 +5309,19 @@ struct radiant_spark_t : public mage_spell_t
     affected_by.radiant_spark = false;
   }
 
+  void impact( action_state_t* s ) override
+  {
+    mage_spell_t::impact( s );
+
+    if ( auto td = p()->target_data[ s->target ] )
+    {
+      // If Radiant Spark is refreshed, the vulnerability debuff can be
+      // triggered once again. Any previous stacks of the debuff are removed.
+      td->debuffs.radiant_spark_vulnerability->cooldown->reset( false );
+      td->debuffs.radiant_spark_vulnerability->expire();
+    }
+  }
+
   void last_tick( dot_t* d ) override
   {
     mage_spell_t::last_tick( d );
