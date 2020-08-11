@@ -1040,11 +1040,8 @@ namespace mirror_image {
 
 struct mirror_image_pet_t : public mage_pet_t
 {
-  buff_t* arcane_charge;
-
   mirror_image_pet_t( sim_t* sim, mage_t* owner ) :
-    mage_pet_t( sim, owner, "mirror_image", true ),
-    arcane_charge()
+    mage_pet_t( sim, owner, "mirror_image", true )
   {
     owner_coeff.sp_from_sp = 0.55;
   }
@@ -1053,89 +1050,15 @@ struct mirror_image_pet_t : public mage_pet_t
 
   void init_action_list() override
   {
-    switch ( o()->specialization() )
-    {
-      case MAGE_ARCANE:
-        action_list_str = "arcane_blast";
-        break;
-      case MAGE_FIRE:
-        action_list_str = "fireball";
-        break;
-      case MAGE_FROST:
-        action_list_str = "frostbolt";
-        break;
-      default:
-        break;
-    }
-
+    action_list_str = "frostbolt";
     mage_pet_t::init_action_list();
   }
-
-  void create_buffs() override
-  {
-    mage_pet_t::create_buffs();
-
-    // MI Arcane Charge is hardcoded as 25% damage increase.
-    arcane_charge = make_buff( this, "arcane_charge", o()->spec.arcane_charge )
-                      ->set_default_value( 0.25 );
-  }
 };
 
-struct mirror_image_spell_t : public mage_pet_spell_t
-{
-  mirror_image_spell_t( util::string_view n, mirror_image_pet_t* p, const spell_data_t* s ) :
-    mage_pet_spell_t( n, p, s )
-  { }
-
-  void init_finished() override
-  {
-    stats = o()->pets.mirror_images.front()->get_stats( name_str );
-    mage_pet_spell_t::init_finished();
-  }
-
-  mirror_image_pet_t* p() const
-  {
-    return static_cast<mirror_image_pet_t*>( player );
-  }
-};
-
-struct arcane_blast_t : public mirror_image_spell_t
-{
-  arcane_blast_t( util::string_view n, mirror_image_pet_t* p, util::string_view options_str ) :
-    mirror_image_spell_t( n, p, p->find_spell( 88084 ) )
-  {
-    parse_options( options_str );
-  }
-
-  void execute() override
-  {
-    mirror_image_spell_t::execute();
-    p()->arcane_charge->trigger();
-  }
-
-  double action_multiplier() const override
-  {
-    double am = mirror_image_spell_t::action_multiplier();
-
-    am *= 1.0 + p()->arcane_charge->check_stack_value();
-
-    return am;
-  }
-};
-
-struct fireball_t : public mirror_image_spell_t
-{
-  fireball_t( util::string_view n, mirror_image_pet_t* p, util::string_view options_str ) :
-    mirror_image_spell_t( n, p, p->find_spell( 88082 ) )
-  {
-    parse_options( options_str );
-  }
-};
-
-struct frostbolt_t : public mirror_image_spell_t
+struct frostbolt_t : public mage_pet_spell_t
 {
   frostbolt_t( util::string_view n, mirror_image_pet_t* p, util::string_view options_str ) :
-    mirror_image_spell_t( n, p, p->find_spell( 59638 ) )
+    mage_pet_spell_t( n, p, p->find_spell( 59638 ) )
   {
     parse_options( options_str );
   }
@@ -1143,9 +1066,7 @@ struct frostbolt_t : public mirror_image_spell_t
 
 action_t* mirror_image_pet_t::create_action( util::string_view name, const std::string& options_str )
 {
-  if ( name == "arcane_blast" ) return new arcane_blast_t( name, this, options_str );
-  if ( name == "fireball"     ) return new     fireball_t( name, this, options_str );
-  if ( name == "frostbolt"    ) return new    frostbolt_t( name, this, options_str );
+  if ( name == "frostbolt" ) return new frostbolt_t( name, this, options_str );
 
   return mage_pet_t::create_action( name, options_str );
 }
