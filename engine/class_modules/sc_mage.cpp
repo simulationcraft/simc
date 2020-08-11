@@ -671,7 +671,7 @@ public:
 
     // Tier 30
     const spell_data_t* shimmer;
-    const spell_data_t* mana_shield; // NYI
+    const spell_data_t* master_of_time; // NYI
     const spell_data_t* slipstream;
     const spell_data_t* blazing_soul; // NYI
     const spell_data_t* blast_wave;
@@ -685,10 +685,11 @@ public:
 
     // Tier 60
     const spell_data_t* resonance;
-    const spell_data_t* charged_up;
-    const spell_data_t* supernova;
+    const spell_data_t* arcane_echo;
+    const spell_data_t* nether_tempest;
     const spell_data_t* flame_on;
     const spell_data_t* alexstraszas_fury;
+    const spell_data_t* from_the_ashes;
     const spell_data_t* frozen_touch;
     const spell_data_t* chain_reaction;
     const spell_data_t* ebonbolt;
@@ -703,7 +704,7 @@ public:
     // Tier 90
     const spell_data_t* reverberate;
     const spell_data_t* enlightened;
-    const spell_data_t* nether_tempest;
+    const spell_data_t* supernova;
     const spell_data_t* flame_patch;
     const spell_data_t* conflagration;
     const spell_data_t* living_bomb;
@@ -3003,24 +3004,6 @@ struct blizzard_t : public frost_mage_spell_t
   }
 };
 
-// Charged Up Spell =========================================================
-
-struct charged_up_t : public arcane_mage_spell_t
-{
-  charged_up_t( util::string_view n, mage_t* p, util::string_view options_str ) :
-    arcane_mage_spell_t( n, p, p->talents.charged_up )
-  {
-    parse_options( options_str );
-    harmful = false;
-  }
-
-  void execute() override
-  {
-    arcane_mage_spell_t::execute();
-    p()->buffs.arcane_charge->trigger( 4 );
-  }
-};
-
 // Cold Snap Spell ==========================================================
 
 struct cold_snap_t : public frost_mage_spell_t
@@ -4926,26 +4909,6 @@ struct ray_of_frost_t : public frost_mage_spell_t
   }
 };
 
-// Rune of Power Spell ======================================================
-
-struct rune_of_power_t : public mage_spell_t
-{
-  rune_of_power_t( util::string_view n, mage_t* p, util::string_view options_str ) :
-    mage_spell_t( n, p, p->talents.rune_of_power )
-  {
-    parse_options( options_str );
-    harmful = false;
-  }
-
-  void execute() override
-  {
-    mage_spell_t::execute();
-
-    p()->distance_from_rune = 0.0;
-    p()->buffs.rune_of_power->trigger();
-  }
-};
-
 // Scorch Spell =============================================================
 
 struct scorch_t : public fire_mage_spell_t
@@ -5714,7 +5677,6 @@ action_t* mage_t::create_action( util::string_view name, const std::string& opti
   if ( name == "arcane_missiles"        ) return new        arcane_missiles_t( name, this, options_str );
   if ( name == "arcane_orb"             ) return new             arcane_orb_t( name, this, options_str );
   if ( name == "arcane_power"           ) return new           arcane_power_t( name, this, options_str );
-  if ( name == "charged_up"             ) return new             charged_up_t( name, this, options_str );
   if ( name == "conjure_mana_gem"       ) return new       conjure_mana_gem_t( name, this, options_str );
   if ( name == "evocation"              ) return new              evocation_t( name, this, options_str );
   if ( name == "nether_tempest"         ) return new         nether_tempest_t( name, this, options_str );
@@ -5769,7 +5731,6 @@ action_t* mage_t::create_action( util::string_view name, const std::string& opti
   if ( name == "time_warp"              ) return new              time_warp_t( name, this, options_str );
 
   // Shared talents
-  if ( name == "rune_of_power"          ) return new          rune_of_power_t( name, this, options_str );
   if ( name == "shimmer"                ) return new                shimmer_t( name, this, options_str );
 
   // Covenant Abilities
@@ -6014,7 +5975,7 @@ void mage_t::init_spells()
   talents.ice_nova           = find_talent_spell( "Ice Nova"           );
   // Tier 25
   talents.shimmer            = find_talent_spell( "Shimmer"            );
-  talents.mana_shield        = find_talent_spell( "Mana Shield"        );
+  talents.master_of_time     = find_talent_spell( "Master of Time"     );
   talents.slipstream         = find_talent_spell( "Slipstream"         );
   talents.blazing_soul       = find_talent_spell( "Blazing Soul"       );
   talents.blast_wave         = find_talent_spell( "Blast Wave"         );
@@ -6026,11 +5987,11 @@ void mage_t::init_spells()
   talents.rune_of_power      = find_talent_spell( "Rune of Power"      );
   // Tier 35
   talents.resonance          = find_talent_spell( "Resonance"          );
-  talents.charged_up         = find_talent_spell( "Charged Up"         );
-  talents.supernova          = find_talent_spell( "Supernova"          );
+  talents.arcane_echo        = find_talent_spell( "Arcane Echo"        );
+  talents.nether_tempest     = find_talent_spell( "Nether Tempest"     );
   talents.flame_on           = find_talent_spell( "Flame On"           );
   talents.alexstraszas_fury  = find_talent_spell( "Alexstrasza's Fury" );
-  // NYI Fire Talent
+  talents.from_the_ashes     = find_talent_spell( "From the Ashes"     );
   talents.frozen_touch       = find_talent_spell( "Frozen Touch"       );
   talents.chain_reaction     = find_talent_spell( "Chain Reaction"     );
   talents.ebonbolt           = find_talent_spell( "Ebonbolt"           );
@@ -6043,7 +6004,7 @@ void mage_t::init_spells()
   // Tier 45
   talents.reverberate        = find_talent_spell( "Reverberate"        );
   talents.enlightened        = find_talent_spell( "Enlightened"        );
-  talents.nether_tempest     = find_talent_spell( "Nether Tempest"     );
+  talents.supernova          = find_talent_spell( "Supernova"          );
   talents.flame_patch        = find_talent_spell( "Flame Patch"        );
   talents.conflagration      = find_talent_spell( "Conflagration"      );
   talents.living_bomb        = find_talent_spell( "Living Bomb"        );
