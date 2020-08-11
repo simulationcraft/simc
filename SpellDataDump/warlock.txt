@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35432 shadowlands-BETA (git build shadowlands 718abb059b)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35522 shadowlands-BETA (git build shadowlands 3b8a06a81c)
 
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
@@ -687,7 +687,7 @@ Attributes       : ........ .....x.. ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ .......x ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Cannot crit (93)
 Effects          :
@@ -1001,7 +1001,7 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=831656)   : Dummy (3)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000
-Description      : Blasts a target for $s1 Shadowflame damage, gaining $s3% critical strike chance on low health targets.
+Description      : Blasts a target for $s1 Shadowflame damage, gaining $s3% critical strike chance on targets that have 20% or less health.
 
 |cFFFFFFFFRestores ${$245731s1/10} Soul Shard if the target dies within $d.|r
 Tooltip          : If the target dies and yields experience or honor, Shadowburn restores ${$245731s1/10} Soul Shard.
@@ -4563,9 +4563,6 @@ Name             : Roaring Blaze (id=205184) [Spell Family (5), Passive]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
-Proc Chance      : 100%
-Proc Flags       : ........ ........ x....... ........ 
-                 : Magic Hostile Spell
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4577,7 +4574,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=302915)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Conflagrate increases your Fire damage to the target by $265931s1% for $265931d.
+Description      : Conflagrate increases your pure Fire damage to the target by $265931s1% for $265931d.
 
 Name             : Dreadbite (id=205196) 
 Class            : Warlock
@@ -6055,12 +6052,11 @@ Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137
 Family Flags     : 49, 87, 118
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
-                 : ........ ........ ....x... ........   ........ .....x.. ........ ........ 
+                 : ........ ........ ....x... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .x..x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : x....x.. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x......x ........ ....x... ........ 
-                 : Periodic effect affected by haste (173), Periodic effect can crit (265)
+                 : ........ ........ ........ ........   x......x ........ ........ ........ 
 Effects          :
 #1 (id=710538)   : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
@@ -9219,7 +9215,7 @@ If dispelled, deals ${$s2*$s1/100} damage to the dispeller and silences them for
 |cFFFFFFFFLimit 1.|r
 
 |cFFFFFFFFGenerates $231791m1 Soul $LShard:Shards; if the target dies while afflicted.|r
-Tooltip          : Suffering $w2 Shadow damage every $t2 sec.  If dispelled, will cause ${$233490s1*$s1/100} damage to the dispeller and silence them for $196364d.
+Tooltip          : Suffering $w2 Shadow damage every $t2 sec. If dispelled, will cause ${$w2*$s1/100} damage to the dispeller and silence them for $196364d.
 
 Name             : Thunder Clap (desc=Rank 2) (id=316414) [Spell Family (4), Passive] 
 Class            : Protection Warrior, Warlock
@@ -9895,7 +9891,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=831641)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Rain of Fire (42223)
                    Family Flags: 92
 Description      : Rain of Fire deals $s1% additional damage.
