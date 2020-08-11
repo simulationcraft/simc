@@ -2997,9 +2997,9 @@ void sim_t::do_pause()
 void sim_t::set_error(std::string error)
 {
     util::replace_all( error, "\n", "" );
-    std::cerr << error << "\n";
+    std::cerr << error << std::endl;
 
-    error_list.push_back( error );
+    error_list.push_back( std::move( error ) );
 }
 
 /// merge sims
