@@ -3234,6 +3234,7 @@ struct dragons_breath_t : public fire_mage_spell_t
     parse_options( options_str );
     aoe = -1;
     triggers.radiant_spark = true;
+    crit_bonus_multiplier *= 1.0 + p->talents.alexstraszas_fury->effectN( 2 ).percent();
     cooldown->duration += p->spec.dragons_breath_2->effectN( 1 ).time_value();
 
     if ( p->talents.alexstraszas_fury->ok() )
