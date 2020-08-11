@@ -1,5 +1,5 @@
-// Item name descriptions, wow build 9.0.1.35482
-static const std::array<item_name_description_t, 355> __item_name_description_data { {
+// Item name descriptions, wow build 9.0.1.35522
+static const std::array<item_name_description_t, 371> __item_name_description_data { {
   {     2, "Now with extra description"                  },
   {    20, "Season 10"                                   },
   {   226, "Season 10 Elite"                             },
@@ -319,7 +319,7 @@ static const std::array<item_name_description_t, 355> __item_name_description_da
   { 13553, "II"                                          },
   { 13554, "I"                                           },
   { 13555, "Abominable Stitching"                        },
-  { 13556, "Soul"                                        },
+  { 13556, "Queen's Conservatory"                        },
   { 13557, "Catalyst Pod Enhancer"                       },
   { 13558, "Catalyst Pod"                                },
   { 13559, "Conduit"                                     },
@@ -355,5 +355,21 @@ static const std::array<item_name_description_t, 355> __item_name_description_da
   { 13595, "Necrolord Prestige"                          },
   { 13596, "Travel Network"                              },
   { 13597, "Ethereal"                                    },
+  { 13599, "Measured Contemplation"                      },
+  { 13600, "Twins of the Sun Priestess"                  },
+  { 13601, "X'anshi, Return of Archbishop Benedictus"    },
+  { 13602, "Call to the Void"                            },
+  { 13603, "Shadowflame Prism"                           },
+  { 13604, "Painbreaker Psalm"                           },
+  { 13605, "Clarity of Mind"                             },
+  { 13606, "Kiss of Death"                               },
+  { 13607, "Crystalline Reflection"                      },
+  { 13608, "Harmonious Apparatus"                        },
+  { 13609, "Penitent One"                                },
+  { 13610, "Cauterizing Shadows"                         },
+  { 13611, "Flash Concentration"                         },
+  { 13612, "Divine Image"                                },
+  { 13613, "Vault of Heavens"                            },
+  { 13614, "Talbadar's Stratagem"                        },
 } };
 

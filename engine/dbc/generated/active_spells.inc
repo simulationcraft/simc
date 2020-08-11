@@ -1,5 +1,5 @@
-// Active class spells, wow build 9.0.1.35482
-static const std::array<active_class_spell_t, 612> __active_spells_data { {
+// Active class spells, wow build 9.0.1.35522
+static const std::array<active_class_spell_t, 614> __active_spells_data { {
   {  1,   0,  88163,      0, "Attack"                             },
   {  1,   0,    100,      0, "Charge"                             },
   {  1,   0,   6544,      0, "Heroic Leap"                        },
@@ -384,7 +384,6 @@ static const std::array<active_class_spell_t, 612> __active_spells_data { {
   {  8,   0,    116,      0, "Frostbolt"                          },
   {  8,   0, 319836,      0, "Fire Blast"                         },
   {  8,   0,   1449,      0, "Arcane Explosion"                   },
-  {  8,   0, 108978,      0, "Alter Time"                         },
   {  8,   0,  55342,      0, "Mirror Image"                       },
   {  8,   0,     66,      0, "Invisibility"                       },
   {  8,   62,  44425,      0, "Arcane Barrage"                     },
@@ -398,6 +397,7 @@ static const std::array<active_class_spell_t, 612> __active_spells_data { {
   {  8,   62, 205025,      0, "Presence of Mind"                   },
   {  8,   62, 321507,      0, "Touch of the Magi"                  },
   {  8,   62,    759,      0, "Conjure Mana Gem"                   },
+  {  8,   62, 342245,      0, "Alter Time"                         },
   {  8,   63,    133,      0, "Fireball"                           },
   {  8,   63,  11366,      0, "Pyroblast"                          },
   {  8,   63,   2948,      0, "Scorch"                             },
@@ -407,6 +407,7 @@ static const std::array<active_class_spell_t, 612> __active_spells_data { {
   {  8,   63, 235313,      0, "Blazing Barrier"                    },
   {  8,   63, 108853, 319836, "Fire Blast"                         },
   {  8,   63, 257541,      0, "Phoenix Flames"                     },
+  {  8,   63, 108978,      0, "Alter Time"                         },
   {  8,   64,  31687,      0, "Summon Water Elemental"             },
   {  8,   64,  12472,      0, "Icy Veins"                          },
   {  8,   64,  84714,      0, "Frozen Orb"                         },
@@ -416,6 +417,7 @@ static const std::array<active_class_spell_t, 612> __active_spells_data { {
   {  8,   64,  44614,      0, "Flurry"                             },
   {  8,   64, 235219,      0, "Cold Snap"                          },
   {  8,   64,  11426,      0, "Ice Barrier"                        },
+  {  8,   64, 108978,      0, "Alter Time"                         },
   {  9,   0,    688,      0, "Summon Imp"                         },
   {  9,   0,    697,      0, "Summon Voidwalker"                  },
   {  9,   0,   6201,      0, "Create Healthstone"                 },
@@ -516,7 +518,7 @@ static const std::array<active_class_spell_t, 612> __active_spells_data { {
   { 10,  270, 212051,      0, "Reawaken"                           },
   { 10,  270, 243435,      0, "Fortifying Brew"                    },
   { 10,  270, 115175,      0, "Soothing Mist"                      },
-  { 10,  270, 322118,      0, "Invoke Yul'on, the Jade Serpent"    },
+  { 10,  270, 322118,      0, "Invoke Yu'lon, the Jade Serpent"    },
   { 11,   0,   5487,      0, "Bear Form"                          },
   { 11,   0,    768,      0, "Cat Form"                           },
   { 11,   0,    783,      0, "Travel Form"                        },
@@ -614,7 +616,7 @@ static const std::array<active_class_spell_t, 612> __active_spells_data { {
   { 12,  581, 212084,      0, "Fel Devastation"                    },
 } };
 
-// Pet active spells, wow build 9.0.1.35482
+// Pet active spells, wow build 9.0.1.35522
 static const std::array<active_pet_spell_t, 125> __active_pet_spells_data { {
   {  3,   2649, "Growl"                              },
   {  3,  16827, "Claw"                               },

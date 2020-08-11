@@ -1,5 +1,5 @@
-// Item enchantment data, wow build 9.0.1.35482
-static const std::array<item_enchantment_data_t, 4171> __spell_item_ench_data { {
+// Item enchantment data, wow build 9.0.1.35522
+static const std::array<item_enchantment_data_t, 4172> __spell_item_ench_data { {
   {   13,      0, -1,   5,   1,   0,   0, {   2,   0,   0 }, {    3,    0,    0 }, {      0,      0,      0 }, {  1.0000,  0.0000,  0.0000 },      0, "Sharpened (+$k1 Damage)"           },
   {   14,      0, -1,  15,   7,   0,   0, {   2,   0,   0 }, {    4,    0,    0 }, {      0,      0,      0 }, {  0.3637,  0.0000,  0.0000 },      0, "Sharpened (+$k1 Damage)"           },
   {   15,      0, -1,   1,  25,   0,   0, {   4,   0,   0 }, {    8,    0,    0 }, {      0,      0,      0 }, {  0.0300,  0.0000,  0.0000 },   2831, "Reinforced (+$k1 Armor)"           },
@@ -4171,5 +4171,6 @@ static const std::array<item_enchantment_data_t, 4171> __spell_item_ench_data { 
   { 6262,      0,  0,   1,  60,   0,   0, {   0,   0,   0 }, {    0,    0,    0 }, {      0,      0,      0 }, {  0.0000,  0.0000,  0.0000 },      0, "Unbreakable Resolve"               },
   { 6263,      0,  0,   1,  60,   0,   0, {   0,   0,   0 }, {    0,    0,    0 }, {      0,      0,      0 }, {  0.0000,  0.0000,  0.0000 },      0, "Wild Soul"                         },
   { 6264,      0,  0,   1,  60,   0,   0, {   0,   0,   0 }, {    0,    0,    0 }, {      0,      0,      0 }, {  0.0000,  0.0000,  0.0000 },      0, "Hunt's Favor"                      },
+  { 6265,      0, -4,   1,  62,   0,   0, {   5,   3,   0 }, {    0,    0,    0 }, {      5, 342315,      0 }, {  1.2500,  0.0000,  0.0000 }, 342316, "Eternal Insight"                   },
 } };
 

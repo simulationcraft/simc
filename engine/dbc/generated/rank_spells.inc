@@ -1,5 +1,5 @@
-// Rank class spells, wow build 9.0.1.35482
-static const std::array<rank_class_spell_t, 284> __rank_spells_data { {
+// Rank class spells, wow build 9.0.1.35522
+static const std::array<rank_class_spell_t, 286> __rank_spells_data { {
   {  9, 265, 231792,      0, "Agony"                             , "Rank 2" },
   {  6, 252, 316961,      0, "Apocalypse"                        , "Rank 2" },
   {  8,  62, 231564,      0, "Arcane Barrage"                    , "Rank 2" },
@@ -54,8 +54,10 @@ static const std::array<rank_class_spell_t, 284> __rank_spells_data { {
   {  9, 265, 317031,      0, "Corruption"                        , "Rank 2" },
   {  9, 265, 334342,      0, "Corruption"                        , "Rank 3" },
   {  8,  63, 231630,      0, "Critical Mass"                     , "Rank 2" },
-  {  2,  70, 231667,      0, "Crusader Strike"                   , "Rank 2" },
-  {  2,  65, 231667,      0, "Crusader Strike"                   , "Rank 2" },
+  {  2,  70, 342348,      0, "Crusader Strike"                   , "Rank 2" },
+  {  2,  66, 342348,      0, "Crusader Strike"                   , "Rank 2" },
+  {  2,  70, 231667,      0, "Crusader Strike"                   , "Rank 3" },
+  {  2,  65, 231667,      0, "Crusader Strike"                   , "Rank 3" },
   {  6, 252, 325554,      0, "Dark Transformation"               , "Rank 2" },
   { 12, 577, 320420,      0, "Darkness"                          , "Rank 2" },
   {  6, 252, 316941,      0, "Death Coil"                        , "Rank 2" },
