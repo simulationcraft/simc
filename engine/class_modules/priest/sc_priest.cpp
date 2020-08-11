@@ -539,7 +539,7 @@ struct ascended_eruption_t final : public priest_spell_t
     : priest_spell_t( "ascended_eruption", p, p.find_spell( 325326 ) ),
       base_da_increase( p.covenant.boon_of_the_ascended->effectN( 5 ).percent() +
                         // 1% increase from Courageous Ascension not found in spelldata
-                        p.conduits.courageous_ascension->ok() * 0.01 )
+                        p.conduits.courageous_ascension->effectN( 2 ).percent() )
   {
     aoe        = -1;
     background = true;
