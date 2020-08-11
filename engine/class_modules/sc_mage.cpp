@@ -1063,6 +1063,12 @@ struct frostbolt_t : public mage_pet_spell_t
   {
     parse_options( options_str );
   }
+
+  void init_finished() override
+  {
+    stats = o()->pets.mirror_images.front()->get_stats( name_str );
+    mage_pet_spell_t::init_finished();
+  }
 };
 
 action_t* mirror_image_pet_t::create_action( util::string_view name, const std::string& options_str )
