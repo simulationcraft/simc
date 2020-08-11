@@ -423,6 +423,7 @@ public:
     buff_t* enlightened_damage;
     buff_t* enlightened_mana;
     buff_t* rule_of_threes;
+    buff_t* time_warp;
 
 
     // Fire
@@ -5512,7 +5513,7 @@ struct time_anomaly_tick_event_t : public event_t
   {
     TA_ARCANE_POWER,
     TA_EVOCATION,
-    TA_ARCANE_CHARGE
+    TA_TIME_WARP
   };
 
   time_anomaly_tick_event_t( mage_t& m, timespan_t delta_time ) :
@@ -5538,8 +5539,7 @@ struct time_anomaly_tick_event_t : public event_t
         possible_procs.push_back( TA_ARCANE_POWER );
       if ( mage->buffs.evocation->check() == 0 )
         possible_procs.push_back( TA_EVOCATION );
-      if ( mage->buffs.arcane_charge->check() < 3 )
-        possible_procs.push_back( TA_ARCANE_CHARGE );
+      possible_procs.push_back( TA_TIME_WARP );
 
       if ( !possible_procs.empty() )
       {
@@ -5558,10 +5558,9 @@ struct time_anomaly_tick_event_t : public event_t
             mage->trigger_evocation( duration, false );
             break;
           }
-          case TA_ARCANE_CHARGE:
+          case TA_TIME_WARP:
           {
-            unsigned charges = as<unsigned>( mage->talents.time_anomaly->effectN( 3 ).base_value() );
-            mage->buffs.arcane_charge->trigger( charges );
+            mage->buffs.time_warp->trigger();
             break;
           }
           default:
@@ -6221,6 +6220,9 @@ void mage_t::create_buffs()
   buffs.rule_of_threes       = make_buff( this, "rule_of_threes", find_spell( 264774 ) )
                                  ->set_default_value( find_spell( 264774 )->effectN( 1 ).percent() )
                                  ->set_chance( talents.rule_of_threes->ok() );
+  buffs.time_warp            = make_buff( this, "time_warp", find_spell( 342242 ) )
+                                 ->set_default_value( find_spell( 342242 )->effectN( 1 ).percent() )
+                                 ->add_invalidate( CACHE_SPELL_HASTE );
 
 
   // Fire
@@ -7338,6 +7340,7 @@ double mage_t::composite_spell_haste() const
   double h = player_t::composite_spell_haste();
 
   h /= 1.0 + buffs.icy_veins->check_value();
+  h /= 1.0 + buffs.time_warp->check_value();
   h /= 1.0 + buffs.temporal_warp->check_value();
 
   return h;
