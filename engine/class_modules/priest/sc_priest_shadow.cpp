@@ -1470,7 +1470,7 @@ struct death_and_madness_buff_t final : public priest_buff_t<buff_t>
 
   death_and_madness_buff_t( priest_t& p )
     : base_t( p, "death_and_madness_insanity_gain", p.find_spell( 321973 ) ),
-      insanity_gain( data().effectN( 1 ).base_value() / 55 )  // Tooltip: ${$m1/55} Insanity generated every $t1 sec
+      insanity_gain( data().effectN( 1 ).resource( RESOURCE_INSANITY ) )
   {
     set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
       priest().generate_insanity( insanity_gain, priest().gains.insanity_death_and_madness, nullptr );
