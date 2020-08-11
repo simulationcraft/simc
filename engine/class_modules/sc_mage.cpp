@@ -1376,7 +1376,7 @@ struct mirrors_of_torment_t : public buff_t
       } );
       set_tick_callback( [ p ] ( buff_t* buff, int, timespan_t )
       {
-        if ( buff->check() == 1 )
+        if ( buff->current_tick % buff->max_stack() == 0 )
         {
           p->action.tormenting_backlash->set_target( buff->player );
           p->action.tormenting_backlash->execute();
