@@ -441,6 +441,7 @@ public:
     item_runeforge_t painbreaker_psalm;
     item_runeforge_t shadowflame_prism;  // TODO: Add 20% damage modifier
     item_runeforge_t eternal_call_to_the_void;
+    item_runeforge_t talbadars_stratagem;
   } legendary;
 
   struct

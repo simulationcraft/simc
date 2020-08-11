@@ -1501,6 +1501,7 @@ void priest_t::init_spells()
   legendary.painbreaker_psalm        = find_runeforge_legendary( "Painbreaker Psalm" );
   legendary.shadowflame_prism        = find_runeforge_legendary( "Shadowflame Prism" );
   legendary.eternal_call_to_the_void = find_runeforge_legendary( "Eternal Call to the Void" );
+  legendary.talbadars_stratagem      = find_runeforge_legendary( "Talbadar's Stratagem" );
 
   // Shadow Conduits
   conduits.dissonant_echoes       = find_conduit_spell( "Dissonant Echoes" );

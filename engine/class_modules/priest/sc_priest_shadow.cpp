@@ -129,6 +129,27 @@ public:
     return amount;
   }
 
+  double composite_da_multiplier( const action_state_t* state ) const override
+  {
+    double d = priest_spell_t::composite_da_multiplier( state );
+
+    if ( priest().legendary.talbadars_stratagem->ok() )
+    {
+      auto shadow_word_pain_dot = state->target->get_dot( "shadow_word_pain", player );
+      auto vampiric_touch_dot = state->target->get_dot( "vampiric_touch", player );
+      auto devouring_plague_dot = state->target->get_dot( "devouring_plague", player );
+
+      if ( shadow_word_pain_dot != nullptr && shadow_word_pain_dot->is_ticking() &&
+           vampiric_touch_dot != nullptr && vampiric_touch_dot->is_ticking() &&
+           devouring_plague_dot != nullptr && devouring_plague_dot->is_ticking() )
+      {
+        d *= ( 1.0 + priest().legendary.talbadars_stratagem->effectN( 1 ).percent() );
+      }
+    }
+
+    return d;
+  }
+
   void impact( action_state_t* s ) override
   {
     priest_spell_t::impact( s );
