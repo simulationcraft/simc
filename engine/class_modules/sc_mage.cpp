@@ -4654,8 +4654,6 @@ struct phoenix_flames_splash_t : public fire_mage_spell_t
     background = reduced_aoe_damage = true;
     triggers.hot_streak = triggers.ignite = triggers.radiant_spark = true;
     max_spread_targets = as<int>( p->spec.ignite->effectN( 4 ).base_value() );
-    // Phoenix Flames always crits
-    base_crit = 1.0;
     // TODO: Phoenix Flames currently does not trigger fevered incantation or Kindling
     // on the beta. Verify whether this is fixed closer to shadowlands release.
     triggers.kindling = triggers.fevered_incantation = !p->bugs;
