@@ -386,6 +386,7 @@ public:
     buff_t* lock_and_load;
     buff_t* precise_shots;
     buff_t* steady_focus;
+    buff_t* streamline;
     buff_t* trick_shots;
     buff_t* trueshot;
     buff_t* volley;
@@ -471,7 +472,7 @@ public:
     spell_data_ptr_t animal_companion;
     spell_data_ptr_t dire_beast;
 
-    spell_data_ptr_t master_marksman;
+    spell_data_ptr_t master_marksman; // NYI
     spell_data_ptr_t serpent_sting;
 
     spell_data_ptr_t vipers_venom;
@@ -597,8 +598,9 @@ public:
 
   struct {
     player_t* current_hunters_mark_target = nullptr;
-    wildfire_infusion_e next_wi_bomb = WILDFIRE_INFUSION_SHRAPNEL;
     events::tar_trap_aoe_t* tar_trap_aoe = nullptr;
+    wildfire_infusion_e next_wi_bomb = WILDFIRE_INFUSION_SHRAPNEL;
+    unsigned steady_focus_counter = 0;
   } var;
 
   struct options_t {
@@ -789,7 +791,7 @@ public:
     ab::apply_affecting_aura( p -> talents.dead_eye );
     ab::apply_affecting_aura( p -> talents.guerrilla_tactics );
     ab::apply_affecting_aura( p -> talents.hydras_bite );
-    ab::apply_affecting_aura( p -> talents.master_marksman );
+    ab::apply_affecting_aura( p -> talents.streamline );
 
     // "simple" passive rank 2 spells
     ab::apply_affecting_aura( p -> find_rank_spell( "Harpoon", "Rank 2" ) );
@@ -1070,8 +1072,8 @@ struct hunter_ranged_attack_t: public hunter_action_t < ranged_attack_t >
   {
     hunter_action_t::execute();
 
-    if ( p() -> talents.steady_focus.ok() && !background && breaks_steady_focus )
-      p() -> buffs.steady_focus -> expire();
+    if ( !background && breaks_steady_focus )
+      p() -> var.steady_focus_counter = 0;
   }
 };
 
@@ -2331,6 +2333,14 @@ void trigger_lethal_shots( hunter_t* p )
   }
 }
 
+void trigger_calling_the_shots( hunter_t* p )
+{
+  if ( !p -> talents.calling_the_shots.ok() )
+    return;
+
+  p -> cooldowns.trueshot -> adjust( - p -> talents.calling_the_shots -> effectN( 1 ).time_value() );
+}
+
 void trigger_nessingwarys_apparatus( hunter_t* p, action_t* a )
 {
   if ( !p -> legendary.nessingwarys_apparatus.ok() )
@@ -2821,9 +2831,7 @@ struct multi_shot_t: public hunter_ranged_attack_t
     if ( num_targets_hit >= p() -> specs.trick_shots -> effectN( 2 ).base_value() )
       p() -> buffs.trick_shots -> trigger();
 
-    if ( p() -> talents.calling_the_shots.ok() )
-      p() -> cooldowns.trueshot -> adjust( - p() -> talents.calling_the_shots -> effectN( 1 ).time_value() );
-
+    trigger_calling_the_shots( p() );
     trigger_lethal_shots( p() );
 
     if ( rapid_reload.action && num_targets_hit > rapid_reload.min_targets )
@@ -2915,8 +2923,7 @@ struct arcane_shot_t: public arcane_shot_base_t
     p() -> buffs.precise_shots -> up(); // benefit tracking
     p() -> buffs.precise_shots -> decrement();
 
-    if ( p() -> talents.calling_the_shots.ok() )
-      p() -> cooldowns.trueshot -> adjust( - p() -> talents.calling_the_shots -> effectN( 1 ).time_value() );
+    trigger_calling_the_shots( p() );
   }
 };
 
@@ -2938,6 +2945,15 @@ struct chimaera_shot_t: public hunter_ranged_attack_t
       // Beast Mastery focus gain
       if ( p -> specs.beast_mastery_hunter.ok() )
         parse_effect_data( p -> find_spell( 204304 ) -> effectN( 1 ) );
+    }
+
+    double action_multiplier() const override
+    {
+      double am = hunter_ranged_attack_t::action_multiplier();
+
+      am *= 1 + p() -> buffs.precise_shots -> check_value();
+
+      return am;
     }
   };
 
@@ -2961,16 +2977,15 @@ struct chimaera_shot_t: public hunter_ranged_attack_t
     school = SCHOOL_FROSTSTRIKE; // Just so the report shows a mixture of the two colors.
   }
 
-  size_t available_targets( std::vector< player_t* >& tl ) const override
+  void execute() override
   {
-    hunter_ranged_attack_t::available_targets( tl );
+    hunter_ranged_attack_t::execute();
 
-    // XXX: 09.08.2020 Shadowlands Beta 9.0.1.35432
-    //      Chimaera Shot hits the main target twice if it can't find a second target
-    if ( p() -> bugs && tl.size() == 1 )
-      tl.push_back( tl.front() );
+    p() -> buffs.precise_shots -> up(); // benefit tracking
+    p() -> buffs.precise_shots -> decrement();
 
-    return tl.size();
+    trigger_calling_the_shots( p() );
+    trigger_lethal_shots( p() );
   }
 
   void schedule_travel( action_state_t* s ) override
@@ -3142,6 +3157,7 @@ struct aimed_shot_base_t: public hunter_ranged_attack_t
       careful_aim.multiplier = p -> talents.careful_aim -> effectN( 3 ).percent();
     }
 
+    // TODO: handle Chimaera Shot
     if ( p -> legendary.serpentstalkers_trickery.ok() )
     {
       serpentstalkers_trickery.action = p -> get_background_action<arcane_shot_sst_t>( "arcane_shot_sst" );
@@ -3288,6 +3304,8 @@ struct aimed_shot_t : public aimed_shot_base_t
       p() -> buffs.lock_and_load -> decrement();
     lock_and_loaded = false;
 
+    p() -> buffs.streamline -> decrement();
+
     if ( rng().roll( surging_shots.chance ) )
     {
       surging_shots.proc -> occur();
@@ -3301,6 +3319,9 @@ struct aimed_shot_t : public aimed_shot_base_t
       return 0_ms;
 
     auto et = aimed_shot_base_t::execute_time();
+
+    if ( p() -> buffs.streamline -> check() )
+      et *= 1 + p() -> buffs.streamline -> check_value();
 
     if ( p() -> buffs.trueshot -> check() )
       et *= 1 + p() -> buffs.trueshot -> check_value();
@@ -3351,31 +3372,13 @@ struct steady_shot_t: public hunter_ranged_attack_t
     }
   }
 
-  timespan_t execute_time() const override
-  {
-    timespan_t t = hunter_ranged_attack_t::execute_time();
-
-    if ( p() -> buffs.steady_focus -> check() )
-      t *= 1 + p() -> buffs.steady_focus -> data().effectN( 1 ).percent();
-
-    return t;
-  }
-
-  timespan_t gcd() const override
-  {
-    timespan_t g = hunter_ranged_attack_t::gcd();
-
-    if ( p() -> buffs.steady_focus -> check() )
-      g *= 1 + p() -> buffs.steady_focus -> check_value();
-
-    return g < min_gcd ? min_gcd : g;
-  }
-
   void execute() override
   {
     hunter_ranged_attack_t::execute();
 
-    p() -> buffs.steady_focus -> trigger();
+    p() -> var.steady_focus_counter += 1;
+    if ( p() -> var.steady_focus_counter >= 2 )
+      p() -> buffs.steady_focus -> trigger();
   }
 
   void impact( action_state_t* s ) override
@@ -3514,9 +3517,6 @@ struct rapid_fire_t: public hunter_spell_t
     may_miss = may_crit = false;
     channeled = true;
 
-    base_num_ticks = as<int>(base_num_ticks * (1 + p -> talents.streamline -> effectN( 2 ).percent()));
-    dot_duration += p -> talents.streamline -> effectN( 1 ).time_value();
-
     procs.double_tap = p -> get_proc( "double_tap_rapid_fire" );
   }
 
@@ -3564,6 +3564,9 @@ struct rapid_fire_t: public hunter_spell_t
 
     // XXX: this triggers *only* after a *full* uninterrupted channel
     p() -> buffs.in_the_rhythm -> trigger();
+
+    // XXX: assume this is on channel end
+    p() -> buffs.streamline -> trigger();
 
     // schedule auto shot
     if ( p() -> main_hand_attack )
@@ -3880,7 +3883,6 @@ struct mongoose_bite_base_t: melee_focus_spender_t
 
   void execute() override
   {
-
     melee_focus_spender_t::execute();
 
     stats_.at_fury[ p() -> buffs.mongoose_fury -> check() ] -> occur();
@@ -6017,8 +6019,15 @@ void hunter_t::create_buffs()
 
   buffs.steady_focus =
     make_buff( this, "steady_focus", find_spell( 193534 ) )
-      -> set_default_value( find_spell( 193534 ) -> effectN( 2 ).percent() )
+      -> set_default_value( find_spell( 193534 ) -> effectN( 1 ).percent() )
+      -> set_max_stack( 1 )
+      -> add_invalidate( CACHE_HASTE )
       -> set_trigger_spell( talents.steady_focus );
+
+  buffs.streamline =
+    make_buff( this, "streamline", find_spell( 342076 ) )
+      -> set_default_value( find_spell( 342076 ) -> effectN( 1 ).percent() )
+      -> set_chance( talents.streamline.ok() );
 
   buffs.trick_shots =
     make_buff( this, "trick_shots", find_spell( 257622 ) )
@@ -6686,25 +6695,26 @@ void hunter_t::apl_mm()
     st -> add_talent( this, "Barrage", "if=active_enemies>1" );
     st -> add_talent( this, "A Murder of Crows" );
     st -> add_talent( this, "Volley" );
-    st -> add_talent( this, "Chimaera Shot" );
     st -> add_talent( this, "Serpent Sting", "if=refreshable&!action.serpent_sting.in_flight" );
     st -> add_action( this, "Rapid Fire", "if=buff.trueshot.down|focus<35|focus<60&!talent.lethal_shots.enabled|buff.in_the_rhythm.remains<execute_time");
     st -> add_action( "blood_of_the_enemy,if=buff.trueshot.up&(buff.unerring_vision.stack>4|!azerite.unerring_vision.enabled)|target.time_to_die<11" );
     st -> add_action( "focused_azerite_beam,if=!buff.trueshot.up|target.time_to_die<5" );
-    st -> add_action( this, "Arcane Shot", "if=buff.trueshot.up&!buff.memory_of_lucid_dreams.up");
+    st -> add_action( this, "Arcane Shot", "if=buff.trueshot.up&!buff.memory_of_lucid_dreams.up" );
+    st -> add_talent( this, "Chimaera Shot", "if=buff.trueshot.up&!buff.memory_of_lucid_dreams.up" );
     st -> add_action( this, "Aimed Shot", "if=buff.trueshot.up|(buff.double_tap.down|ca_execute)&buff.precise_shots.down|full_recharge_time<cast_time&cooldown.trueshot.remains" );
     st -> add_action( this, "Arcane Shot", "if=buff.trueshot.up&buff.memory_of_lucid_dreams.up" );
+    st -> add_talent( this, "Chimaera Shot", "if=buff.trueshot.up&buff.memory_of_lucid_dreams.up" );
     st -> add_action( "purifying_blast,if=!buff.trueshot.up|target.time_to_die<8" );
     st -> add_action( "concentrated_flame,if=focus+focus.regen*gcd<focus.max&buff.trueshot.down&(!dot.concentrated_flame_burn.remains&!action.concentrated_flame.in_flight)|full_recharge_time<gcd|target.time_to_die<5" );
     st -> add_action( "the_unbound_force,if=buff.reckless_force.up|buff.reckless_force_counter.stack<10|target.time_to_die<5" );
     st -> add_action( this, "Arcane Shot", "if=buff.trueshot.down&(buff.precise_shots.up&(focus>55)|focus>75|target.time_to_die<5)" );
+    st -> add_talent( this, "Chimaera Shot", "if=buff.trueshot.down&(buff.precise_shots.up&(focus>55)|focus>75|target.time_to_die<5)" );
     st -> add_action( this, "Steady Shot" );
 
     trickshots -> add_action( this, "Kill Shot" );
     trickshots -> add_talent( this, "Volley" );
     trickshots -> add_talent( this, "Barrage" );
     trickshots -> add_talent( this, "Explosive Shot" );
-    trickshots -> add_talent( this, "Chimaera Shot" );
     trickshots -> add_action( this, "Aimed Shot", "if=buff.trick_shots.up&ca_execute&buff.double_tap.up");
     trickshots -> add_action( this, "Rapid Fire", "if=buff.trick_shots.up&(azerite.focused_fire.enabled|azerite.in_the_rhythm.rank>1|azerite.surging_shots.enabled|talent.streamline.enabled)" );
     trickshots -> add_action( this, "Aimed Shot", "if=buff.trick_shots.up&(buff.precise_shots.down|cooldown.aimed_shot.full_recharge_time<action.aimed_shot.cast_time|buff.trueshot.up)" );
@@ -7058,6 +7068,9 @@ double hunter_t::composite_melee_haste() const
   if ( buffs.dire_beast -> check() )
     h *= 1.0 / ( 1 + buffs.dire_beast -> check_value() );
 
+  if ( buffs.steady_focus -> check() )
+    h *= 1.0 / ( 1 + buffs.steady_focus -> check_value() );
+
   return h;
 }
 
@@ -7081,6 +7094,9 @@ double hunter_t::composite_spell_haste() const
 
   if ( buffs.dire_beast -> check() )
     h *= 1.0 / ( 1 + buffs.dire_beast -> check_value() );
+
+  if ( buffs.steady_focus -> check() )
+    h *= 1.0 / ( 1 + buffs.steady_focus -> check_value() );
 
   return h;
 }
