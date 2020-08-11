@@ -1122,7 +1122,7 @@ struct hunter_pet_t: public pet_t
     return m;
   }
 
-  double composite_player_target_crit_chance( player_t* target ) const
+  double composite_player_target_crit_chance( player_t* target ) const override
   {
     double crit = pet_t::composite_player_target_crit_chance( target );
 
