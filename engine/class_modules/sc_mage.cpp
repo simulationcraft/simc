@@ -5329,6 +5329,11 @@ struct radiant_spark_t : public mage_spell_t
     if ( auto td = p()->target_data[ d->target ] )
       td->debuffs.radiant_spark_vulnerability->expire();
   }
+
+  timespan_t calculate_dot_refresh_duration( const dot_t* d, timespan_t duration ) const override
+  {
+    return duration + d->time_to_next_tick();
+  }
 };
 
 // Shifting Power Spell =====================================================
