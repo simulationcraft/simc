@@ -508,11 +508,6 @@ struct player_t : public actor_t
     buff_t* delirious_frenzy; // Dream's End 1H STR axe attack speed buff
     buff_t* bioelectric_charge; // Diver's Folly 1H AGI axe buff to store damage
     buff_t* razor_coral; // Ashvane's Razor Coral trinket crit rating buff
-
-    //8.3 buffs
-    buff_t* strikethrough; // Corruption effect that increases crit damage/healing
-    buff_t* flash_of_insight;  // Corruption effect that increases int
-    buff_t* obsidian_destruction; // Corruption effect that increases armor
   } buffs;
 
   struct debuffs_t
