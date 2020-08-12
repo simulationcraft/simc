@@ -1126,7 +1126,7 @@ struct hunter_ranged_attack_t: public hunter_action_t < ranged_attack_t >
       double amount = s -> result_amount * p() -> talents.master_marksman -> effectN( 1 ).percent();
       if ( amount > 0 )
       {
-        if ( p() -> options.ignite_master_marksman )
+        if ( p() -> options.rolling_master_marksman )
         {
           residual_action::trigger( p() -> actions.master_marksman, s -> target, amount );
           return;
