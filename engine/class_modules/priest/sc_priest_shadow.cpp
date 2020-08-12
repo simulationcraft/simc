@@ -1445,12 +1445,17 @@ struct voidform_t final : public priest_buff_t<buff_t>
     return r;
   }
 
-  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  void expire_override(int expiration_stacks, timespan_t remaining_duration) override
   {
-    // TODO: check if current charges is 1 and make sure to put mind blast on CD
-    priest().cooldowns.mind_blast->charges = 1;
 
-    priest().buffs.insanity_drain_stacks->expire();
+	// TODO: Verify if functionality is properly matching how it works ingame.
+
+	auto _charges = priest().cooldowns.mind_blast->charges_fractional();
+	_charges -= abs(_charges - 1);
+	priest().cooldowns.mind_blast->charges = 1;
+	priest().cooldowns.mind_blast->adjust(_charges * cooldown_t::cooldown_duration(priest().cooldowns.mind_blast));
+
+	priest().buffs.insanity_drain_stacks->expire();
 
     if ( priest().buffs.shadowform_state->check() )
     {
