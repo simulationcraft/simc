@@ -610,15 +610,13 @@ public:
     spell_data_ptr_t spirit_bond;
   } mastery;
 
-  // Wild Spirits Night Fae Covenant ability
-  struct {
-    action_t* st_action = nullptr;
-    action_t* mt_action = nullptr;
-    cooldown_t* icd = nullptr; // XXX: assume the icd is shared
-  } wild_spirits;
-
   struct {
     action_t* master_marksman = nullptr;
+    struct { // Wild Spirits Night Fae Covenant ability
+      action_t* st = nullptr;
+      action_t* mt = nullptr;
+      cooldown_t* icd = nullptr; // XXX: assume the icd is shared
+    } wild_spirits;
   } actions;
 
   cdwaste::player_data_t cd_waste;
@@ -2330,10 +2328,10 @@ void hunter_t::trigger_wild_spirits( const action_state_t* s, wild_spirits_proc_
   if ( !action_t::result_is_hit( s -> result ) )
     return;
 
-  if ( wild_spirits.icd -> down() )
+  if ( actions.wild_spirits.icd -> down() )
     return;
 
-  action_t* action = type == wild_spirits_proc_e::MT ? wild_spirits.mt_action : wild_spirits.st_action;
+  action_t* action = type == wild_spirits_proc_e::MT ? actions.wild_spirits.mt : actions.wild_spirits.st;
   if ( sim -> debug )
   {
     sim -> print_debug( "{} procs {} from {} on {}",
@@ -2342,7 +2340,7 @@ void hunter_t::trigger_wild_spirits( const action_state_t* s, wild_spirits_proc_
 
   action -> set_target( s -> target );
   action -> execute();
-  wild_spirits.icd -> start();
+  actions.wild_spirits.icd -> start();
 }
 
 void hunter_t::trigger_birds_of_prey( player_t* t )
@@ -2730,12 +2728,12 @@ struct wild_spirits_t : hunter_spell_t
 
     harmful = may_hit = may_miss = false;
 
-    p -> wild_spirits.st_action = p -> get_background_action<wild_spirits_proc_t>( "wild_spirits_st_proc", 328523 );
-    p -> wild_spirits.mt_action = p -> get_background_action<wild_spirits_proc_t>( "wild_spirits_mt_proc", 328757 );
-    p -> wild_spirits.icd = p -> get_cooldown( "wild_spirits_proc" );
-    p -> wild_spirits.icd -> duration = p -> covenants.wild_spirits -> effectN( 1 ).trigger() -> internal_cooldown();
-    add_child( p -> wild_spirits.st_action );
-    add_child( p -> wild_spirits.mt_action );
+    p -> actions.wild_spirits.st = p -> get_background_action<wild_spirits_proc_t>( "wild_spirits_st_proc", 328523 );
+    p -> actions.wild_spirits.mt = p -> get_background_action<wild_spirits_proc_t>( "wild_spirits_mt_proc", 328757 );
+    p -> actions.wild_spirits.icd = p -> get_cooldown( "wild_spirits_proc" );
+    p -> actions.wild_spirits.icd -> duration = p -> covenants.wild_spirits -> effectN( 1 ).trigger() -> internal_cooldown();
+    add_child( p -> actions.wild_spirits.st );
+    add_child( p -> actions.wild_spirits.mt );
   }
 
   void execute()
