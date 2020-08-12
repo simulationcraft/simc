@@ -2734,7 +2734,7 @@ struct moonfire_t : public druid_spell_t
         // Twin Moons seems to fire off another MF spell - sometimes concurrently, sometimes up to 100ms later. While
         // there are very limited cases where this could have an effect, those cases do exist. Possibly worth
         // investigating further in the future.
-        radius = p->talent.twin_moons->effectN( 1 ).trigger()->effectN( 1 ).radius_max();
+        radius = p->talent.twin_moons->effectN( 1 ).base_value();
       }
 
       // June 2016: This hotfix is negated if you shift into Moonkin Form (ever), so only apply it if the druid does not
@@ -4101,7 +4101,8 @@ struct rip_t : public cat_attack_t
 
     if ( p()->conduit.feral_2->ok() && rng().roll( p()->conduit.feral_2->effectN( 1 ).percent() ) )
     {
-      p()->resource_gain( RESOURCE_ENERGY, p()->conduit.feral_2->effectN( 1 ).trigger()->effectN( 1 ).base_value(),
+      p()->resource_gain( RESOURCE_ENERGY,
+                          p()->conduit.feral_2->effectN( 1 ).trigger()->effectN( 1 ).resource( RESOURCE_ENERGY ),
                           p()->gain.feral_2 );
     }
   }
