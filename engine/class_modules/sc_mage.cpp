@@ -2899,7 +2899,13 @@ struct arcane_power_t : public arcane_mage_spell_t
   void execute() override
   {
     arcane_mage_spell_t::execute();
+
     p()->buffs.arcane_power->trigger();
+
+    // TODO: TA Arcane Power proc also triggers Rune of Power, which doesn't
+    // seem intended. Check again closer to release.
+    p()->buffs.rune_of_power->trigger();
+    p()->distance_from_rune = 0.0;
   }
 };
 
@@ -3052,6 +3058,9 @@ struct combustion_t : public fire_mage_spell_t
 
     p()->buffs.combustion->trigger();
     p()->buffs.wildfire->trigger();
+
+    p()->buffs.rune_of_power->trigger();
+    p()->distance_from_rune = 0.0;
   }
 };
 
@@ -4288,6 +4297,9 @@ struct icy_veins_t : public frost_mage_spell_t
     // Frigid Grasp buff doesn't refresh.
     p()->buffs.frigid_grasp->expire();
     p()->buffs.frigid_grasp->trigger();
+
+    p()->buffs.rune_of_power->trigger();
+    p()->distance_from_rune = 0.0;
   }
 };
 
@@ -6289,7 +6301,8 @@ void mage_t::create_buffs()
   buffs.incanters_flow    = make_buff<buffs::incanters_flow_t>( this );
   buffs.rune_of_power     = make_buff( this, "rune_of_power", find_spell( 116014 ) )
                               ->set_default_value( find_spell( 116014 )->effectN( 1 ).percent() )
-                              ->set_refresh_behavior( buff_refresh_behavior::DISABLED );
+                              ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
+                              ->set_chance( talents.rune_of_power->ok() );
   buffs.focus_magic_crit  = make_buff( this, "focus_magic_crit", find_spell( 321363 ) )
                               ->set_default_value( find_spell( 321363 )->effectN( 1 ).percent() )
                               ->add_invalidate( CACHE_SPELL_CRIT_CHANCE );
