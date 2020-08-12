@@ -370,6 +370,7 @@ public:
   {
     action_t* agonizing_backlash;
     action_t* arcane_assault;
+    action_t* arcane_echo;
     action_t* conflagration_flare_up;
     action_t* glacial_assault;
     action_t* ignite;
@@ -5145,6 +5146,18 @@ struct touch_of_the_magi_explosion_t : public arcane_mage_spell_t
   }
 };
 
+struct arcane_echo_t : public arcane_mage_spell_t
+{
+  arcane_echo_t( util::string_view n, mage_t* p ) :
+    arcane_mage_spell_t( n, p, p->find_spell( 342232 ) )
+  {
+    background = true;
+    callbacks = false;
+    affected_by.radiant_spark = false;
+    aoe = as<int>( p->talents.arcane_echo->effectN( 1 ).base_value() );
+  }
+};
+
 // ==========================================================================
 // Mage Covenant Abilities
 // ==========================================================================
@@ -5784,6 +5797,9 @@ void mage_t::create_actions()
 
   if ( talents.arcane_familiar->ok() )
     action.arcane_assault = get_action<arcane_assault_t>( "arcane_assault", this );
+
+  if ( talents.arcane_echo->ok() )
+    action.arcane_echo = get_action<arcane_echo_t>( "arcane_echo", this );
 
   if ( talents.conflagration->ok() )
     action.conflagration_flare_up = get_action<conflagration_flare_up_t>( "conflagration_flare_up", this );
@@ -6561,13 +6577,25 @@ void mage_t::init_assessors()
 
   if ( spec.touch_of_the_magi->ok() )
   {
-    auto assessor_fn = [ this ] ( result_amount_type, action_state_t* s )
+    auto assessor_fn = [ this ] ( result_amount_type rt, action_state_t* s )
     {
       if ( auto td = target_data[ s->target ] )
       {
         auto buff = debug_cast<buffs::touch_of_the_magi_t*>( td->debuffs.touch_of_the_magi );
         if ( buff->check() )
+        {
           buff->accumulate_damage( s );
+
+          // TODO: Double check what exactly procs Arcane Echo
+          if ( rt == result_amount_type::DMG_DIRECT && s->action != action.arcane_echo && talents.arcane_echo->ok() )
+          {
+            make_event( *sim, 0_ms, [ this, t = s->target ]
+            {
+              action.arcane_echo->set_target( t );
+              action.arcane_echo->execute();
+            } );
+          }
+        }
       }
 
       return assessor::CONTINUE;
