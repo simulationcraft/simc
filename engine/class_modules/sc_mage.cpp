@@ -5598,7 +5598,8 @@ struct time_anomaly_tick_event_t : public event_t
         possible_procs.push_back( TA_ARCANE_POWER );
       if ( mage->buffs.evocation->check() == 0 )
         possible_procs.push_back( TA_EVOCATION );
-      possible_procs.push_back( TA_TIME_WARP );
+      if ( mage->buffs.time_warp->check() == 0 && mage->player_t::buffs.bloodlust->check() == 0 )
+        possible_procs.push_back( TA_TIME_WARP );
 
       if ( !possible_procs.empty() )
       {
