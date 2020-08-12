@@ -723,7 +723,14 @@ public:
     return action;
   }
 
-  void trigger_wild_spirits( action_state_t* s, wild_spirits_proc_e type );
+  void trigger_wild_spirits( const action_state_t* s, wild_spirits_proc_e type );
+  void trigger_birds_of_prey( player_t* t );
+  void trigger_bloodseeker_update();
+  void trigger_lethal_shots();
+  void trigger_calling_the_shots();
+  void trigger_nessingwarys_apparatus( action_t* a );
+
+  void consume_trick_shots();
 };
 
 wild_spirits_proc_e wild_spirits_proc_type( const hunter_t& p, const action_t& a )
@@ -1053,8 +1060,6 @@ public:
       ab::cooldown -> adjust( -precast_time );
   }
 };
-
-void trigger_bloodseeker_update( hunter_t* );
 
 struct hunter_ranged_attack_t: public hunter_action_t < ranged_attack_t >
 {
@@ -1891,14 +1896,14 @@ struct kill_command_sv_t: public kill_command_base_t
   {
     kill_command_base_t::trigger_dot( s );
 
-    trigger_bloodseeker_update( o() );
+    o() -> trigger_bloodseeker_update();
   }
 
   void last_tick( dot_t* d ) override
   {
     kill_command_base_t::last_tick( d );
 
-    trigger_bloodseeker_update( o() );
+    o() -> trigger_bloodseeker_update();
   }
 
   // does not pandemic
@@ -2252,7 +2257,7 @@ struct tar_trap_aoe_t : public event_t
 
 } // namespace events
 
-void hunter_t::trigger_wild_spirits( action_state_t* s, wild_spirits_proc_e type )
+void hunter_t::trigger_wild_spirits( const action_state_t* s, wild_spirits_proc_e type )
 {
   assert( type == wild_spirits_proc_e::MT || type == wild_spirits_proc_e::ST );
 
@@ -2277,92 +2282,92 @@ void hunter_t::trigger_wild_spirits( action_state_t* s, wild_spirits_proc_e type
   wild_spirits.icd -> start();
 }
 
-void trigger_birds_of_prey( hunter_t* p, player_t* t )
+void hunter_t::trigger_birds_of_prey( player_t* t )
 {
-  if ( ! p -> talents.birds_of_prey.ok() )
+  if ( !talents.birds_of_prey.ok() )
     return;
 
-  if ( ! p -> pets.main )
+  if ( !pets.main )
     return;
 
-  if ( t == p -> pets.main -> target )
+  if ( t == pets.main -> target )
   {
-    p -> buffs.coordinated_assault -> extend_duration( p, p -> talents.birds_of_prey -> effectN( 1 ).time_value() );
-    p -> buffs.coordinated_assault_vision -> extend_duration( p, p -> talents.birds_of_prey -> effectN( 1 ).time_value() );
+    buffs.coordinated_assault -> extend_duration( this, talents.birds_of_prey -> effectN( 1 ).time_value() );
+    buffs.coordinated_assault_vision -> extend_duration( this, talents.birds_of_prey -> effectN( 1 ).time_value() );
   }
 }
 
-void trigger_bloodseeker_update( hunter_t* p )
+void hunter_t::trigger_bloodseeker_update()
 {
-  if ( !p -> talents.bloodseeker.ok() )
+  if ( !talents.bloodseeker.ok() )
     return;
 
   int bleeding_targets = 0;
-  for ( const player_t* t : p -> sim -> target_non_sleeping_list )
+  for ( const player_t* t : sim -> target_non_sleeping_list )
   {
     if ( t -> is_enemy() && t -> debuffs.bleeding -> check() )
       bleeding_targets++;
   }
-  bleeding_targets = std::min( bleeding_targets, p -> buffs.predator -> max_stack() );
+  bleeding_targets = std::min( bleeding_targets, buffs.predator -> max_stack() );
 
-  const int current = p -> buffs.predator -> check();
+  const int current = buffs.predator -> check();
   if ( current < bleeding_targets )
   {
-    p -> buffs.predator -> trigger( bleeding_targets - current );
-    if ( auto pet = p -> pets.main )
+    buffs.predator -> trigger( bleeding_targets - current );
+    if ( auto pet = pets.main )
       pet -> buffs.predator -> trigger( bleeding_targets - current );
   }
   else if ( current > bleeding_targets )
   {
-    p -> buffs.predator -> decrement( current - bleeding_targets );
-    if ( auto pet = p -> pets.main )
+    buffs.predator -> decrement( current - bleeding_targets );
+    if ( auto pet = pets.main )
       pet -> buffs.predator -> decrement( current - bleeding_targets );
   }
 }
 
-void trigger_lethal_shots( hunter_t* p )
+void hunter_t::trigger_lethal_shots()
 {
-  if ( !p -> talents.lethal_shots.ok() )
+  if ( !talents.lethal_shots.ok() )
     return;
 
-  if ( p -> rng().roll( p -> talents.lethal_shots -> proc_chance() ) )
+  if ( rng().roll( talents.lethal_shots -> proc_chance() ) )
   {
-    const auto base_value = p -> talents.lethal_shots -> effectN( 1 ).base_value();
-    p -> cooldowns.rapid_fire -> adjust( -timespan_t::from_seconds( base_value / 10 ) );
-    p -> procs.lethal_shots -> occur();
+    const auto base_value = talents.lethal_shots -> effectN( 1 ).base_value();
+    cooldowns.rapid_fire -> adjust( -timespan_t::from_seconds( base_value / 10 ) );
+    procs.lethal_shots -> occur();
   }
 }
 
-void trigger_calling_the_shots( hunter_t* p )
+void hunter_t::trigger_calling_the_shots()
 {
-  if ( !p -> talents.calling_the_shots.ok() )
+  if ( !talents.calling_the_shots.ok() )
     return;
 
-  p -> cooldowns.trueshot -> adjust( - p -> talents.calling_the_shots -> effectN( 1 ).time_value() );
+  cooldowns.trueshot -> adjust( - talents.calling_the_shots -> effectN( 1 ).time_value() );
 }
 
-void trigger_nessingwarys_apparatus( hunter_t* p, action_t* a )
+void hunter_t::trigger_nessingwarys_apparatus( action_t* a )
 {
-  if ( !p -> legendary.nessingwarys_apparatus.ok() )
+  if ( !legendary.nessingwarys_apparatus.ok() )
     return;
 
-  double amount = p -> legendary.nessingwarys_apparatus -> effectN( 1 ).trigger()
-                    -> effectN( 1 ).resource( RESOURCE_FOCUS );
-  p -> resource_gain( RESOURCE_FOCUS, amount, p -> gains.nessingwarys_apparatus, a );
+  double amount = legendary.nessingwarys_apparatus -> effectN( 1 ).trigger()
+                  -> effectN( 1 ).resource( RESOURCE_FOCUS );
+  resource_gain( RESOURCE_FOCUS, amount, gains.nessingwarys_apparatus, a );
 }
 
-void consume_trick_shots( hunter_t* p )
+void hunter_t::consume_trick_shots()
 {
-  if ( p -> buffs.volley -> up() )
+  if ( buffs.volley -> up() )
     return;
 
-  if ( p -> buffs.secrets_of_the_vigil -> up() )
+  if ( buffs.secrets_of_the_vigil -> up() )
   {
-    p -> buffs.secrets_of_the_vigil -> decrement();
+    buffs.secrets_of_the_vigil -> decrement();
     return;
   }
 
-  p -> buffs.trick_shots -> decrement();
+  buffs.trick_shots -> decrement();
 }
 
 namespace attacks
@@ -2831,8 +2836,8 @@ struct multi_shot_t: public hunter_ranged_attack_t
     if ( num_targets_hit >= p() -> specs.trick_shots -> effectN( 2 ).base_value() )
       p() -> buffs.trick_shots -> trigger();
 
-    trigger_calling_the_shots( p() );
-    trigger_lethal_shots( p() );
+    p() -> trigger_calling_the_shots();
+    p() -> trigger_lethal_shots();
 
     if ( rapid_reload.action && num_targets_hit > rapid_reload.min_targets )
     {
@@ -2893,7 +2898,7 @@ struct arcane_shot_base_t: public hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::execute();
 
-    trigger_lethal_shots( p() );
+    p() -> trigger_lethal_shots();
   }
 
   double action_multiplier() const override
@@ -2923,7 +2928,7 @@ struct arcane_shot_t: public arcane_shot_base_t
     p() -> buffs.precise_shots -> up(); // benefit tracking
     p() -> buffs.precise_shots -> decrement();
 
-    trigger_calling_the_shots( p() );
+    p() -> trigger_calling_the_shots();
   }
 };
 
@@ -2984,8 +2989,8 @@ struct chimaera_shot_t: public hunter_ranged_attack_t
     p() -> buffs.precise_shots -> up(); // benefit tracking
     p() -> buffs.precise_shots -> decrement();
 
-    trigger_calling_the_shots( p() );
-    trigger_lethal_shots( p() );
+    p() -> trigger_calling_the_shots();
+    p() -> trigger_lethal_shots();
   }
 
   void schedule_travel( action_state_t* s ) override
@@ -3298,7 +3303,7 @@ struct aimed_shot_t : public aimed_shot_base_t
     }
 
     p() -> buffs.trick_shots -> up(); // benefit tracking
-    consume_trick_shots( p() );
+    p() -> consume_trick_shots();
 
     if ( lock_and_loaded )
       p() -> buffs.lock_and_load -> decrement();
@@ -3560,7 +3565,7 @@ struct rapid_fire_t: public hunter_spell_t
   {
     hunter_spell_t::last_tick( d );
 
-    consume_trick_shots( p() );
+    p() -> consume_trick_shots();
 
     if ( p() -> buffs.double_tap -> check() )
       procs.double_tap -> occur();
@@ -3833,7 +3838,8 @@ struct melee_focus_spender_t: hunter_melee_attack_t
 
     p() -> buffs.primeval_intuition -> trigger();
 
-    trigger_birds_of_prey( p(), target );
+    p() -> trigger_birds_of_prey( target );
+
     if ( wilderness_survival_reduction != 0_ms )
       p() -> cooldowns.wildfire_bomb -> adjust( -wilderness_survival_reduction );
 
@@ -4013,7 +4019,7 @@ struct carve_base_t: public hunter_melee_attack_t
   {
     hunter_melee_attack_t::impact( s );
 
-    trigger_birds_of_prey( p(), s -> target );
+    p() -> trigger_birds_of_prey( s -> target );
     internal_bleeding.trigger( s );
   }
 
@@ -4444,7 +4450,7 @@ struct tar_trap_t : public hunter_spell_t
   {
     hunter_spell_t::impact( s );
 
-    trigger_nessingwarys_apparatus( p(), this );
+    p() -> trigger_nessingwarys_apparatus( this );
 
     p() -> var.tar_trap_aoe = make_event<events::tar_trap_aoe_t>( *p() -> sim, p(), s -> target, 30_s );
   }
@@ -4466,7 +4472,8 @@ struct freezing_trap_t : public hunter_spell_t
   void impact( action_state_t* s ) override
   {
     hunter_spell_t::impact( s );
-    trigger_nessingwarys_apparatus( p(), this );
+
+    p() -> trigger_nessingwarys_apparatus( this );
   }
 };
 
@@ -5047,7 +5054,8 @@ struct steel_trap_t: public hunter_spell_t
     void execute() override
     {
       hunter_spell_t::execute();
-      trigger_nessingwarys_apparatus( p(), this );
+
+      p() -> trigger_nessingwarys_apparatus( this );
     }
   };
 
@@ -7005,10 +7013,7 @@ void hunter_t::combat_begin()
 {
   if ( talents.bloodseeker.ok() && ( talents.wildfire_infusion.ok() || sim -> player_no_pet_list.size() > 1 ) )
   {
-    make_repeating_event( *sim, 1_s,
-      [ this ]() {
-        trigger_bloodseeker_update( this );
-      } );
+    make_repeating_event( *sim, 1_s, [ this ] { trigger_bloodseeker_update(); } );
   }
 
   player_t::combat_begin();
