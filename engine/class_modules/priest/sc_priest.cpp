@@ -308,8 +308,11 @@ struct smite_t final : public priest_spell_t
 // ==========================================================================
 struct power_infusion_t final : public priest_spell_t
 {
+  propagate_const<cooldown_t*> power_infusion_cooldown;
+
   power_infusion_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "power_infusion", p, p.find_class_spell( "Power Infusion" ) )
+    : priest_spell_t( "power_infusion", p, p.find_class_spell( "Power Infusion" ) ),
+      power_infusion_cooldown( p.get_cooldown( "power_infusion" ) )
   {
     parse_options( options_str );
     harmful = false;
@@ -319,6 +322,11 @@ struct power_infusion_t final : public priest_spell_t
   {
     priest_spell_t::execute();
     priest().buffs.power_infusion->trigger();
+
+    if ( priest().legendary.twins_of_the_sun_priestess->ok() && priest().conduits.power_unto_others->ok() )
+    {
+      power_infusion_cooldown->adjust( -timespan_t::from_seconds( priest().conduits.power_unto_others.value() ) );
+    }
   }
 };
 
@@ -1494,6 +1502,8 @@ void priest_t::init_spells()
   azerite_essence.vision_of_perfection_r2 =
       azerite_essence.vision_of_perfection.spell( 2u, essence_spell::UPGRADE, essence_type::MAJOR );
 
+  // Generic Legendaries
+  legendary.twins_of_the_sun_priestess = find_runeforge_legendary( "Twins of the Sun Priestess" );
   // Disc legendaries
   legendary.kiss_of_death    = find_runeforge_legendary( "Kiss of Death" );
   legendary.the_penitent_one = find_runeforge_legendary( "The Penitent One" );
@@ -1503,6 +1513,8 @@ void priest_t::init_spells()
   legendary.eternal_call_to_the_void = find_runeforge_legendary( "Eternal Call to the Void" );
   legendary.talbadars_stratagem      = find_runeforge_legendary( "Talbadar's Stratagem" );
 
+  // Generic Conduits
+  conduits.power_unto_others = find_conduit_spell( "Power Unto Others" );
   // Shadow Conduits
   conduits.dissonant_echoes       = find_conduit_spell( "Dissonant Echoes" );
   conduits.mind_devourer          = find_conduit_spell( "Mind Devourer" );

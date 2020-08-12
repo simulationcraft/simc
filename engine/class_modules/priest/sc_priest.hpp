@@ -430,7 +430,7 @@ public:
   struct
   {
     // Generic Priest
-    item_runeforge_t twins_of_the_sun_priestess;
+    item_runeforge_t twins_of_the_sun_priestess; // only used with Conduit to reduce CD of PI
     // Holy
     item_runeforge_t divine_image;          // NYI
     item_runeforge_t harmonious_apparatus;  // NYI
@@ -446,6 +446,8 @@ public:
 
   struct
   {
+    // Generic Priest
+    conduit_data_t power_unto_others;
     // Holy
     conduit_data_t holy_oration;  // NYI
     // Discipline
