@@ -6,6 +6,7 @@
 #include "simulationcraft.hpp"
 
 #include "player/covenant.hpp"
+#include "sc_enums.hpp"
 #include "sc_priest.hpp"
 
 namespace priestspace
@@ -247,6 +248,22 @@ struct schism_t final : public priest_spell_t
   }
 };
 
+// Heal allies effect not implemented
+struct shadow_covenant_t final : public priest_spell_t
+{
+  shadow_covenant_t( priest_t& player, util::string_view options_str )
+    : priest_spell_t( "shadow_covenant", player, player.talents.shadow_covenant )
+  {
+    parse_options( options_str );
+  }
+
+  void execute() override
+  {
+    priest_spell_t::execute();
+
+    priest().buffs.shadow_covenant->trigger();
+  }
+};
 }  // namespace spells
 
 }  // namespace actions
@@ -264,6 +281,9 @@ void priest_t::create_buffs_discipline()
   buffs.sins_of_the_many = make_buff( this, "sins_of_the_many", talents.sins_of_the_many->effectN( 1 ).trigger() )
                                ->set_default_value( talents.sins_of_the_many->effectN( 1 ).percent() )
                                ->set_duration( talents.sins_of_the_many->duration() );
+
+  buffs.shadow_covenant = make_buff( this, "shadow_covenant", talents.shadow_covenant->effectN( 4 ).trigger() )
+                              ->set_trigger_spell( talents.shadow_covenant );
 }
 
 void priest_t::init_rng_discipline()
@@ -352,6 +372,10 @@ action_t* priest_t::create_action_discipline( util::string_view name, util::stri
   {
     return new purge_the_wicked_t( *this, options_str );
   }
+    if ( name == "shadow_covenant" )
+  {
+    return new shadow_covenant_t( *this, options_str );
+  }
 
   return nullptr;
 }
@@ -375,6 +399,7 @@ void priest_t::generate_apl_discipline_h()
   {
     def->add_action( this, "Shadowfiend" );
   }
+
   if ( race == RACE_TROLL )
   {
     def->add_action( "berserking" );
@@ -434,6 +459,7 @@ void priest_t::generate_apl_discipline_d()
   }
 
   def->add_action( this, "Power Infusion" );
+  def->add_talent( this, "Shadow Covenant" );
   def->add_action( this, covenant.boon_of_the_ascended, "Boon of the Ascended" );
   def->add_call_action_list( this, covenant.boon_of_the_ascended, boon, "if=buff.boon_of_the_ascended.up" );
   def->add_talent( this, "Purge the Wicked", "if=!ticking" );
