@@ -6618,7 +6618,7 @@ void mage_t::init_assessors()
           buff->accumulate_damage( s );
 
           // TODO: Double check what exactly procs Arcane Echo
-          if ( rt == result_amount_type::DMG_DIRECT
+          if ( ( bugs || rt == result_amount_type::DMG_DIRECT )
             && s->result_total > 0.0
             && s->action != action.arcane_echo
             && talents.arcane_echo->ok() )
