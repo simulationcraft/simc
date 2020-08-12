@@ -497,7 +497,6 @@ std::unique_ptr<expr_t> cooldown_t::create_expression( util::string_view name_st
 {
   if ( name_str == "remains" )
     return make_mem_fn_expr( name_str, *this, &cooldown_t::remains );
-
   else if ( name_str == "base_duration" )
   {
     return make_fn_expr( name_str, [ this ]
@@ -519,7 +518,6 @@ std::unique_ptr<expr_t> cooldown_t::create_expression( util::string_view name_st
   }
   else if ( name_str == "up" || name_str == "ready" )
     return make_mem_fn_expr( name_str, *this, &cooldown_t::up );
-
   else if ( name_str == "charges" )
   {
     return make_fn_expr( name_str, [ this ]
@@ -535,31 +533,7 @@ std::unique_ptr<expr_t> cooldown_t::create_expression( util::string_view name_st
     } );
   }
   else if ( name_str == "charges_fractional" )
-  {
-    return make_fn_expr( name_str, [ this ]
-    {
-      if ( charges > 1 )
-      {
-        double charges = current_charge;
-        if ( recharge_event )
-        {
-          charges += 1 - std::min( 1.0, current_charge_remains() / cooldown_duration( this ) );
-        }
-        return charges;
-      }
-      else
-      {
-        if ( up() )
-        {
-          return 1.0;
-        }
-        else
-        {
-          return 1 - std::min( 1.0, remains() / cooldown_duration( this ) );
-        }
-      }
-    } );
-  }
+    return make_mem_fn_expr( name_str, *this, &cooldown_t::charges_fractional );
   else if ( name_str == "recharge_time" )
   {
     return make_fn_expr( name_str, [ this ]
@@ -616,6 +590,30 @@ void cooldown_t::update_ready_thresholds()
 timespan_t cooldown_t::queueable() const
 {
   return ready - player->cooldown_tolerance();
+}
+
+double cooldown_t::charges_fractional() const
+{
+  if ( charges > 1 )
+  {
+    double c = current_charge;
+    if ( recharge_event )
+    {
+      c += 1 - std::min( 1.0, current_charge_remains() / cooldown_duration( this ) );
+    }
+    return c;
+  }
+  else
+  {
+    if ( up() )
+    {
+      return 1.0;
+    }
+    else
+    {
+      return 1 - std::min( 1.0, remains() / cooldown_duration( this ) );
+    }
+  }
 }
 
 bool cooldown_t::is_ready() const

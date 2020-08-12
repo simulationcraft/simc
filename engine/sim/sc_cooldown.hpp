@@ -87,6 +87,8 @@ struct cooldown_t
   // Point in time when the cooldown is queueable
   timespan_t queueable() const;
 
+  double charges_fractional() const;
+
   // Trigger update of specialized execute thresholds for this cooldown
   void update_ready_thresholds();
 
