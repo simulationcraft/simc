@@ -342,6 +342,7 @@ public:
     event_t* enlightened;
     event_t* focus_magic;
     event_t* icicle;
+    event_t* from_the_ashes;
     event_t* time_anomaly;
   } events;
 
@@ -522,6 +523,7 @@ public:
     cooldown_t* frost_nova;
     cooldown_t* frozen_orb;
     cooldown_t* icy_veins;
+    cooldown_t* phoenix_flames;
     cooldown_t* presence_of_mind;
   } cooldowns;
 
@@ -551,6 +553,7 @@ public:
     timespan_t focus_magic_interval = 2.0_s;
     double focus_magic_stddev = 0.1;
     double focus_magic_crit_chance = 0.5;
+    timespan_t from_the_ashes_interval = 2.0_s;
     // TODO: Determine reasonable default values for Mirrors of Torment options.
     timespan_t mirrors_of_torment_interval = 2.0_s;
     double mirrors_of_torment_stddev = 0.1;
@@ -655,6 +658,7 @@ public:
     bool brain_freeze_active;
     bool fingers_of_frost_active;
     int mana_gem_charges;
+    double from_the_ashes_mastery;
   } state;
 
   // Talents
@@ -915,6 +919,7 @@ public:
 
   void      update_rune_distance( double distance );
   void      update_enlightened();
+  void      update_from_the_ashes();
   action_t* get_icicle();
   bool      trigger_delayed_buff( buff_t* buff, double chance = -1.0, timespan_t delay = 0.15_s );
   void      trigger_brain_freeze( double chance, proc_t* source );
@@ -1458,6 +1463,7 @@ struct mage_spell_t : public spell_t
   struct triggers_t
   {
     bool bone_chilling = false;
+    bool from_the_ashes = true;
     bool hot_streak = false;
     bool ignite = false;
     bool kindling = false;
@@ -1875,6 +1881,11 @@ struct fire_mage_spell_t : public mage_spell_t
       // closer to release.
       if ( triggers.kindling && p()->talents.kindling->ok() && s->result == RESULT_CRIT )
         p()->cooldowns.combustion->adjust( -p()->talents.kindling->effectN( 1 ).time_value() );
+
+      // TODO: What currently triggers From the Ashes seems inconsistent at best. Implement
+      // it according to the tooltip and check again closer to release.
+      if ( triggers.from_the_ashes && p()->talents.from_the_ashes->ok() && s->result == RESULT_CRIT )
+        p()->cooldowns.phoenix_flames->adjust( p()->talents.from_the_ashes->effectN( 2 ).time_value() );
     }
   }
 
@@ -5455,9 +5466,7 @@ struct enlightened_event_t : public event_t
   void execute() override
   {
     mage->events.enlightened = nullptr;
-
     mage->update_enlightened();
-
     mage->events.enlightened = make_event<enlightened_event_t>( sim(), *mage, mage->options.enlightened_interval );
   }
 };
@@ -5532,6 +5541,26 @@ struct icicle_event_t : public event_t
       mage->events.icicle = make_event<icicle_event_t>( sim(), *mage, target );
       sim().print_debug( "{} icicle use on {} (chained), total={}", mage->name(), target->name(), mage->icicles.size() );
     }
+  }
+};
+
+struct from_the_ashes_event_t : public event_t
+{
+  mage_t* mage;
+
+  from_the_ashes_event_t( mage_t& m, timespan_t delta_time ) :
+    event_t( m, delta_time ),
+    mage( &m )
+  { }
+
+  const char* name() const override
+  { return "from_the_ashes_event"; }
+
+  void execute() override
+  {
+    mage->events.from_the_ashes = nullptr;
+    mage->update_from_the_ashes();
+    mage->events.from_the_ashes = make_event<from_the_ashes_event_t>( sim(), *mage, mage->options.from_the_ashes_interval );
   }
 };
 
@@ -5678,6 +5707,7 @@ mage_t::mage_t( sim_t* sim, util::string_view name, race_e r ) :
   cooldowns.frost_nova       = get_cooldown( "frost_nova"       );
   cooldowns.frozen_orb       = get_cooldown( "frozen_orb"       );
   cooldowns.icy_veins        = get_cooldown( "icy_veins"        );
+  cooldowns.phoenix_flames   = get_cooldown( "phoenix_flames"   );
   cooldowns.presence_of_mind = get_cooldown( "presence_of_mind" );
 
   // Options
@@ -5857,6 +5887,7 @@ void mage_t::create_options()
   add_option( opt_timespan( "focus_magic_interval", options.focus_magic_interval, 0_ms, timespan_t::max() ) );
   add_option( opt_float( "focus_magic_stddev", options.focus_magic_stddev, 0.0, std::numeric_limits<double>::max() ) );
   add_option( opt_float( "focus_magic_crit_chance", options.focus_magic_crit_chance, 0.0, 1.0 ) );
+  add_option( opt_timespan( "from_the_ashes_interval", options.from_the_ashes_interval, 1_ms, timespan_t::max() ) );
   add_option( opt_timespan( "mirrors_of_torment_interval", options.mirrors_of_torment_interval, 0_ms, timespan_t::max() ) );
   add_option( opt_float( "mirrors_of_torment_stddev", options.mirrors_of_torment_stddev, 0.0, std::numeric_limits<double>::max() ) );
   player_t::create_options();
@@ -7294,6 +7325,7 @@ double mage_t::composite_mastery() const
   double m = player_t::composite_mastery();
 
   m += buffs.flame_accretion->check_stack_value();
+  m += state.from_the_ashes_mastery;
 
   return m;
 }
@@ -7455,6 +7487,14 @@ void mage_t::arise()
     timespan_t period = options.focus_magic_interval;
     period = std::max( 1_ms, rng().gauss( period, period * options.focus_magic_stddev ) );
     events.focus_magic = make_event<events::focus_magic_event_t>( *sim, *this, period );
+  }
+
+  if ( talents.from_the_ashes->ok() )
+  {
+    update_from_the_ashes();
+
+    timespan_t first_tick = rng().real() * options.from_the_ashes_interval;
+    events.from_the_ashes = make_event<events::from_the_ashes_event_t>( *sim, *this, first_tick );
   }
 
   if ( talents.time_anomaly->ok() )
@@ -7777,6 +7817,18 @@ void mage_t::update_enlightened()
     buffs.enlightened_damage->expire();
     buffs.enlightened_mana->trigger();
   }
+}
+
+void mage_t::update_from_the_ashes()
+{
+  if ( !talents.from_the_ashes->ok() )
+    return;
+
+  state.from_the_ashes_mastery = talents.from_the_ashes->effectN( 3 ).base_value() * cooldowns.phoenix_flames->charges_fractional();
+  invalidate_cache( CACHE_MASTERY );
+
+  if ( sim->debug )
+    sim->print_debug( "{} updates mastery from From the Ashes, new value: {}", name_str, cache.mastery() );
 }
 
 action_t* mage_t::get_icicle()
