@@ -5290,7 +5290,7 @@ void player_t::schedule_cwc_ready( timespan_t delta_time )
   }
   else if ( channeling )
   {
-    threshold = channeling->get_dot()->end_event->occurs();
+    threshold = sim->current_time() + channeling->get_dot()->remains();
     threshold += sim->channel_lag + 4 * sim->channel_lag_stddev;
   }
   else
