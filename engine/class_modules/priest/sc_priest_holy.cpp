@@ -102,6 +102,7 @@ struct holy_nova_t final : public priest_spell_t
   {
     parse_options( options_str );
     aoe = -1;
+    apply_affecting_aura( player.find_rank_spell( "Holy Nova", "Rank 2" ) );  // GCD reduction
   }
   void execute() override
   {
