@@ -3620,11 +3620,6 @@ double player_t::composite_armor_multiplier() const
 {
   double a = current.armor_multiplier;
 
-  if ( buffs.obsidian_destruction )
-  {
-    a *= 1.0 + buffs.obsidian_destruction -> value();
-  }
-
   return a;
 }
 
@@ -4107,11 +4102,6 @@ double player_t::composite_player_critical_damage_multiplier( const action_state
   {
     m *= 1.0 + buffs.fathom_hunter->check_value();
   }
-  // Critical hit damage buff from corruption effect
-  if ( buffs.strikethrough )
-  {
-    m *= 1.0 + buffs.strikethrough->check_value();
-  }
   return m;
 }
 
@@ -4252,8 +4242,6 @@ double player_t::composite_attribute_multiplier( attribute_e attr ) const
         m *= 1.0 + buffs.archmages_incandescence_int->data().effectN( 1 ).percent();
       if ( sim->auras.arcane_intellect->check() )
         m *= 1.0 + sim->auras.arcane_intellect->value();
-      if ( buffs.flash_of_insight )
-        m *= 1.0 + buffs.flash_of_insight->stack_value();
       break;
     case ATTR_SPIRIT:
       if ( buffs.amplification )

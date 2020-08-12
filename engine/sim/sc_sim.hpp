@@ -330,18 +330,12 @@ struct sim_t : private sc_thread_t
     unsigned manifesto_allies_start = 0;
     /// Allies that increase vers buff when the first buff expires
     unsigned manifesto_allies_end = 5;
-    /// Echoing Void collapse rppm
-    double echoing_void_collapse_chance = 0.15;
-    /// Whether the increased chance via more allies is active
-    bool void_ritual_increased_chance_active = false;
     /// Approximate interval in seconds between raid member major essence uses that trigger Symbiotic Presence.
     timespan_t symbiotic_presence_interval = 22_s;
     /// Percentage of Whispered Truths reductions to be applied to offensive spells.
     double whispered_truths_offensive_chance = 0.75;
     /// Whether the player is in Ny'alotha or not.
     bool nyalotha = true;
-    /// Chance for Infinite Stars to not hit the primary target (for single target sims)
-    double infinite_stars_miss_chance = 0;
   } bfa_opts;
 
   // Auras and De-Buffs
