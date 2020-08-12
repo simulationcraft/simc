@@ -6443,7 +6443,7 @@ void mage_t::create_buffs()
 
   // Covenant Abilities
   buffs.deathborne = make_buff( this, "deathborne", find_spell( 324220 ) )
-                       ->set_default_value( find_spell( 324220 )->effectN( 1 ).percent() )
+                       ->set_default_value( find_spell( 324220 )->effectN( 2 ).percent() )
                        ->set_duration( find_spell( 324220 )->duration() + conduits.gift_of_the_lich.time_value() );
 
 
