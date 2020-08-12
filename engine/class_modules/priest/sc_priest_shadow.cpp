@@ -1126,7 +1126,8 @@ struct void_eruption_t final : public priest_spell_t
     priest_spell_t::execute();
 
     priest().buffs.voidform->trigger();
-    priest().cooldowns.mind_blast->reset( true );
+    priest().cooldowns.mind_blast->charges = 2;
+    priest().cooldowns.mind_blast->reset( true, 2 );
     priest().cooldowns.void_bolt->reset( true );
   }
 
@@ -1187,9 +1188,14 @@ struct surrender_to_madness_t final : public priest_spell_t
     priest_spell_t::execute();
 
     priest().buffs.surrender_to_madness->trigger();
-    priest().buffs.voidform->trigger();
-    priest().cooldowns.mind_blast->reset( true );
-    priest().cooldowns.void_bolt->reset( true );
+
+    if ( !priest().buffs.voidform->check() )
+    {
+      priest().buffs.voidform->trigger();
+      priest().cooldowns.mind_blast->charges = 2;
+      priest().cooldowns.mind_blast->reset( true, 2 );
+      priest().cooldowns.void_bolt->reset( true );
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -1244,9 +1250,6 @@ struct void_torrent_t final : public priest_spell_t
     priest_spell_t::last_tick( d );
 
     priest().buffs.void_torrent->expire();
-
-    // When Void Torrent ends, restart the insanity drain tracking
-    priest().insanity.begin_tracking();
   }
 
   void execute() override
@@ -1254,10 +1257,6 @@ struct void_torrent_t final : public priest_spell_t
     priest_spell_t::execute();
 
     priest().buffs.void_torrent->trigger();
-
-    // Adjust the Voidform end event (essentially remove it) after the Void Torrent buff is up, since it disables
-    // insanity drain for the duration of the channel
-    priest().insanity.adjust_end_event();
   }
 
   void impact( action_state_t* s ) override
@@ -1448,6 +1447,9 @@ struct voidform_t final : public priest_buff_t<buff_t>
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
+    // TODO: check if current charges is 1 and make sure to put mind blast on CD
+    priest().cooldowns.mind_blast->charges = 1;
+
     priest().buffs.insanity_drain_stacks->expire();
 
     if ( priest().buffs.shadowform_state->check() )
