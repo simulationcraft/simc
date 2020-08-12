@@ -229,6 +229,29 @@ enum class wild_spirits_proc_e : uint8_t {
   DEFAULT = 0, ST, MT, NONE
 };
 
+struct maybe_bool {
+  enum class value_e : uint8_t {
+    None, True, False
+  };
+
+  constexpr maybe_bool() = default;
+
+  constexpr maybe_bool& operator=( bool val ) {
+    set( val );
+    return *this;
+  }
+
+  constexpr void set( bool val ) {
+    value_ = val ? value_e::True : value_e::False;
+  }
+
+  constexpr bool is_none() const { return value_ == value_e::None; }
+
+  constexpr operator bool() const { return value_ == value_e::True; }
+
+  value_e value_ = value_e::None;
+};
+
 struct hunter_t;
 
 namespace pets
@@ -594,6 +617,10 @@ public:
     cooldown_t* icd = nullptr; // XXX: assume the icd is shared
   } wild_spirits;
 
+  struct {
+    action_t* master_marksman = nullptr;
+  } actions;
+
   cdwaste::player_data_t cd_waste;
 
   struct {
@@ -608,6 +635,7 @@ public:
     timespan_t pet_attack_speed = 2_s;
     timespan_t pet_basic_attack_delay = 0.15_s;
     double memory_of_lucid_dreams_proc_chance = 0.15;
+    bool rolling_master_marksman = false;
   } options;
 
   hunter_t( sim_t* sim, util::string_view name, race_e r = RACE_NONE ) :
@@ -640,6 +668,7 @@ public:
   // Character Definition
   void      init_spells() override;
   void      init_base_stats() override;
+  void      create_actions() override;
   void      create_buffs() override;
   void      init_gains() override;
   void      init_position() override;
@@ -1064,11 +1093,20 @@ public:
 struct hunter_ranged_attack_t: public hunter_action_t < ranged_attack_t >
 {
   bool breaks_steady_focus = true;
+  maybe_bool triggers_master_marksman;
 
   hunter_ranged_attack_t( util::string_view n, hunter_t* player,
                           const spell_data_t* s = spell_data_t::nil() ):
                           hunter_action_t( n, player, s )
   {}
+
+  void init() override
+  {
+    hunter_action_t::init();
+
+    if ( triggers_master_marksman.is_none() )
+      triggers_master_marksman = special;
+  }
 
   bool usable_moving() const override
   { return true; }
@@ -1079,6 +1117,31 @@ struct hunter_ranged_attack_t: public hunter_action_t < ranged_attack_t >
 
     if ( !background && breaks_steady_focus )
       p() -> var.steady_focus_counter = 0;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    hunter_action_t::impact( s );
+
+    if ( p() -> talents.master_marksman.ok() && triggers_master_marksman && s -> result == RESULT_CRIT )
+    {
+      double amount = s -> result_amount * p() -> talents.master_marksman -> effectN( 1 ).percent();
+      if ( amount > 0 )
+      {
+        if ( p() -> options.ignite_master_marksman )
+        {
+          residual_action::trigger( p() -> actions.master_marksman, s -> target, amount );
+          return;
+        }
+
+        // Hack, current in-game behaviour, mostly
+        action_t* a = p() -> actions.master_marksman;
+        unsigned tick_count = a -> dot_duration / a -> data().effectN( 1 ).period();
+        a -> base_td = amount / tick_count;
+        a -> set_target( s -> target );
+        a -> execute();
+      }
+    }
   }
 };
 
@@ -3111,6 +3174,44 @@ struct barbed_shot_t: public hunter_ranged_attack_t
 //==============================
 // Marksmanship attacks
 //==============================
+
+// Master Marksman ====================================================================
+
+struct broken_master_marksman_t : public hunter_ranged_attack_t
+{
+  broken_master_marksman_t( hunter_t* p ):
+    hunter_ranged_attack_t( "master_marksman", p, p -> find_spell( 269576 ) )
+  {
+    background = true;
+    callbacks = false;
+
+    attack_power_mod.tick = 0;
+    spell_power_mod.tick = 0;
+    dot_behavior = DOT_REFRESH;
+  }
+
+  virtual void init() override
+  {
+    hunter_ranged_attack_t::init();
+
+    update_flags = snapshot_flags = 0;
+    // Seems to be dinamically affected by Hunter's Mark
+    snapshot_flags |= STATE_TGT_MUL_TA;
+    update_flags   |= STATE_TGT_MUL_TA;
+  }
+
+  timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t triggered_duration ) const override
+  {
+    return dot->time_to_next_tick() + triggered_duration;
+  }
+};
+
+struct master_marksman_t : public residual_action::residual_periodic_action_t<hunter_ranged_attack_t>
+{
+  master_marksman_t( hunter_t* p ):
+    residual_periodic_action_t( "master_marksman", p, p -> find_spell( 269576 ) )
+  { }
+};
 
 // Bursting Shot ======================================================================
 
@@ -5949,7 +6050,18 @@ void hunter_t::init_base_stats()
     resources.base[RESOURCE_FOCUS] += find_spell( 288571 ) -> effectN( 2 ).base_value();
 }
 
-// hunter_t::init_buffs =====================================================
+void hunter_t::create_actions()
+{
+  player_t::create_actions();
+
+  if ( talents.master_marksman.ok() )
+  {
+    if ( options.rolling_master_marksman )
+      actions.master_marksman = new attacks::master_marksman_t( this );
+    else
+      actions.master_marksman = new attacks::broken_master_marksman_t( this );
+  }
+}
 
 void hunter_t::create_buffs()
 {
@@ -7247,6 +7359,7 @@ void hunter_t::create_options()
                             0_ms, 0.6_s ) );
   add_option( opt_float( "hunter.memory_of_lucid_dreams_proc_chance", options.memory_of_lucid_dreams_proc_chance,
                             0, 1 ) );
+  add_option( opt_bool( "hunter.rolling_master_marksman", options.rolling_master_marksman ) );
   add_option( opt_obsoleted( "hunter_fixed_time" ) );
 }
 
