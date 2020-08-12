@@ -7623,16 +7623,12 @@ action_t* druid_t::create_action( util::string_view name, const std::string& opt
   if ( name == "convoke_the_spirits"    ) return new    convoke_the_spirits_t( this, options_str );
   if ( name == "ravenous_frenzy"        ) return new        ravenous_frenzy_t( this, options_str );
   if ( name == "adaptive_swarm"         ) return new         adaptive_swarm_t( this, options_str );
+  if ( name == "celestial_alignment"    ) return new    celestial_alignment_t( this, options_str );
 
   if ( name == "berserk" )
   {
     if ( specialization() == DRUID_FERAL ) return new berserk_cat_t( this, options_str );
     else if ( specialization() == DRUID_GUARDIAN ) return new berserk_bear_t( this, options_str );
-  }
-  if ( name == "celestial_alignment" )
-  {
-    if ( talent.incarnation_moonkin->ok() ) return new incarnation_t( this, options_str );
-    else return new celestial_alignment_t( this, options_str );
   }
 
   return player_t::create_action( name, options_str );
