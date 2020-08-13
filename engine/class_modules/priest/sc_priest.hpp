@@ -132,6 +132,7 @@ public:
     propagate_const<buff_t*> unfurling_darkness;
     propagate_const<buff_t*> unfurling_darkness_cd;  // Blizzard uses a buff to track the ICD
     propagate_const<buff_t*> ancient_madness;
+	propagate_const<buff_t*> dark_thoughts;
 
     // Azerite Powers
     // Shadow
@@ -269,6 +270,7 @@ public:
     const spell_data_t* voidform;
     const spell_data_t* void_eruption;
     const spell_data_t* shadow_priest;
+	const spell_data_t* dark_thoughts;
 
   } specs;
 

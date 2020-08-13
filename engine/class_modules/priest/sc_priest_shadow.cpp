@@ -79,6 +79,8 @@ public:
                                    ->effectN( 1 )
                                    .resource( RESOURCE_INSANITY ) )
   {
+	bool cwc = false;
+	add_option(opt_bool("cwc", cwc));
     parse_options( options_str );
 
     energize_amount *= 1 + priest().talents.fortress_of_the_mind->effectN( 2 ).percent();
@@ -91,9 +93,24 @@ public:
     }
 
     cooldown->hasted = true;
+	if (cwc)
+		usable_while_casting = true;
+	/*usable_while_casting = true;
+	use_while_casting = true;
+	cooldown->add_execute_type(execute_type::CAST_WHILE_CASTING);
+	internal_cooldown->add_execute_type(execute_type::CAST_WHILE_CASTING);*/
 
     // Reduces CD of Mind Blast but not SW:V
     apply_affecting_aura( player.find_rank_spell( "Mind Blast", "Rank 2", PRIEST_SHADOW ) );
+  }
+
+  bool usable_during_current_cast() const override
+  {
+	  if (!priest_spell_t::usable_during_current_cast()) return false;
+	  if (!priest().buffs.dark_thoughts->check()) return false;
+	  if (player->channeling == nullptr) return false;
+	  if (player->channeling->name() == "mind_flay" || player->channeling->name() == "mind_sear") return true;
+	  return false;
   }
 
   void schedule_execute( action_state_t* s ) override
@@ -165,10 +182,10 @@ public:
   timespan_t execute_time() const override
   {
     /// TODO Remove when implementing Dark Thoughts
-    // if ( priest().buffs.shadowy_insight->check() )
-    //{
-    //  return timespan_t::zero();
-    //}
+     if ( priest().buffs.dark_thoughts->check() )
+    {
+      return timespan_t::zero();
+    }
 
     return priest_spell_t::execute_time();
   }
@@ -199,7 +216,10 @@ public:
     //   );
     // }
 
-    priest_spell_t::update_ready( cd_duration );
+	if (priest().buffs.dark_thoughts->check()) 
+		priest().buffs.dark_thoughts->decrement();
+	else 
+		priest_spell_t::update_ready(cd_duration);
   }
 };
 
@@ -316,6 +336,17 @@ struct mind_flay_t final : public priest_spell_t
     {
       priest().trigger_eternal_call_to_the_void( d );
     }
+
+	priest_td_t& td = get_td(d->target);
+	dot_t* swp = td.dots.shadow_word_pain;
+	dot_t* vt = td.dots.vampiric_touch;
+	dot_t* dp = td.dots.devouring_plague;
+
+	int dots = swp->is_ticking() + vt->is_ticking() + dp->is_ticking();
+	
+	if (rng().roll(priest().specs.dark_thoughts->effectN(1).percent() * dots)) {
+		priest().buffs.dark_thoughts->trigger();
+	}
   }
 
   bool ready() override
@@ -1449,10 +1480,12 @@ struct voidform_t final : public priest_buff_t<buff_t>
   {
 
 	// TODO: Verify if functionality is properly matching how it works ingame.
+	//priest().cooldowns.mind_blast->start(player->find_action("mind_blast"));
 
-	auto _charges = priest().cooldowns.mind_blast->charges_fractional();
+	double _charges = priest().cooldowns.mind_blast->charges_fractional();
 	_charges -= abs(_charges - 1);
 	priest().cooldowns.mind_blast->charges = 1;
+	priest().cooldowns.mind_blast->reset(false, 1);
 	priest().cooldowns.mind_blast->adjust(_charges * cooldown_t::cooldown_duration(priest().cooldowns.mind_blast));
 
 	priest().buffs.insanity_drain_stacks->expire();
@@ -1556,6 +1589,27 @@ struct vampiric_embrace_t final : public priest_buff_t<buff_t>
   vampiric_embrace_t( priest_t& p ) : base_t( p, "vampiric_embrace", p.find_class_spell( "Vampiric Embrace" ) )
   {
   }
+};
+
+struct dark_thoughts_t final : public priest_buff_t<buff_t>
+{
+	dark_thoughts_t(priest_t& p) : base_t(p, "dark_thoughts", p.find_spell(341205))
+	{
+		this->set_max_stack(5);
+		this->set_duration(timespan_t::from_seconds(6));
+		this->set_refresh_behavior(buff_refresh_behavior::EXTEND);
+		this->reactable = true;
+	}
+
+	bool trigger(int stacks, double value, double chance, timespan_t duration) override
+	{
+		bool r = base_t::trigger(stacks, value, chance, duration);
+
+		priest().cooldowns.mind_blast->reset(true, 1);
+
+		return r;
+	}
+
 };
 
 struct void_torrent_t final : public priest_buff_t<buff_t>
@@ -1887,6 +1941,7 @@ void priest_t::create_buffs_shadow()
   buffs.voidform              = make_buff<buffs::voidform_t>( *this );
   buffs.insanity_drain_stacks = make_buff<buffs::insanity_drain_stacks_t>( *this );
   buffs.vampiric_embrace      = make_buff<buffs::vampiric_embrace_t>( *this );
+  buffs.dark_thoughts		  = make_buff<buffs::dark_thoughts_t>( *this );
 
   // Talents
   buffs.void_torrent               = make_buff<buffs::void_torrent_t>( *this );
@@ -1895,10 +1950,10 @@ void priest_t::create_buffs_shadow()
   buffs.ancient_madness            = make_buff<buffs::ancient_madness_t>( *this );
   buffs.unfurling_darkness         = make_buff( this, "unfurling_darkness", find_talent_spell( "Unfurling Darkness" ) );
   buffs.unfurling_darkness_cd      = make_buff( this, "unfurling_darkness_cd", find_spell( 341291 ) );
-  buffs.surrender_to_madness_death = make_buff( this, "surrender_to_madness_death", find_talent_spell( "Surrender to Madness" ) )
-                                          ->set_duration( timespan_t::zero() )
-                                          ->set_default_value( 0.0 )
-                                          ->set_chance( 1.0 );
+  buffs.surrender_to_madness_death = make_buff(this, "surrender_to_madness_death", find_talent_spell("Surrender to Madness"))
+									  ->set_duration(timespan_t::zero())
+									  ->set_default_value(0.0)
+									  ->set_chance(1.0);
 
   // Azerite Powers
   buffs.chorus_of_insanity     = make_buff<buffs::chorus_of_insanity_t>( *this );
@@ -1958,6 +2013,7 @@ void priest_t::init_spells_shadow()
   specs.void_eruption       = find_specialization_spell( "Void Eruption" );
   specs.shadowy_apparitions = find_specialization_spell( "Shadowy Apparitions" );
   specs.shadow_priest       = find_specialization_spell( "Shadow Priest" );
+  specs.dark_thoughts		= find_specialization_spell( "Dark Thoughts" );
 
   // Azerite
   azerite.sanctum                = find_azerite_spell( "Sanctum" );
