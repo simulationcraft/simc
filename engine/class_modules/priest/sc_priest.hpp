@@ -132,6 +132,7 @@ public:
     propagate_const<buff_t*> unfurling_darkness;
     propagate_const<buff_t*> unfurling_darkness_cd;  // Blizzard uses a buff to track the ICD
     propagate_const<buff_t*> ancient_madness;
+    propagate_const<buff_t*> dark_thoughts;
 
     // Azerite Powers
     // Shadow
@@ -269,6 +270,7 @@ public:
     const spell_data_t* voidform;
     const spell_data_t* void_eruption;
     const spell_data_t* shadow_priest;
+    const spell_data_t* dark_thoughts;
 
   } specs;
 
@@ -347,6 +349,9 @@ public:
     propagate_const<proc_t*> mind_devourer;
     propagate_const<proc_t*> blessing_of_plenty;
     propagate_const<proc_t*> void_tendril;
+    propagate_const<proc_t*> dark_thoughts_flay;
+    propagate_const<proc_t*> dark_thoughts_sear;
+    propagate_const<proc_t*> dark_thoughts_missed;
   } procs;
 
   // Special
@@ -1029,16 +1034,16 @@ public:
     {
       const spelleffect_data_t& effect;
       bool& affects;
-    } affects[] = { { priest().buffs.voidform->data().effectN( 1 ), affected_by.voidform_da },
-                    { priest().buffs.voidform->data().effectN( 2 ), affected_by.voidform_ta },
-                    { priest().buffs.shadowform->data().effectN( 1 ), affected_by.shadowform_da },
-                    { priest().buffs.shadowform->data().effectN( 4 ), affected_by.shadowform_ta },
-                    { priest().buffs.twist_of_fate->data().effectN( 1 ), affected_by.twist_of_fate_da },
-                    { priest().buffs.twist_of_fate->data().effectN( 2 ), affected_by.twist_of_fate_ta },
-                    { priest().mastery_spells.madness->effectN( 1 ), affected_by.mastery_madness_da },
-                    { priest().mastery_spells.madness->effectN( 2 ), affected_by.mastery_madness_ta },
-                    { priest().buffs.shadow_covenant->data().effectN( 2 ), affected_by.shadow_covenant_da },
-                    { priest().buffs.shadow_covenant->data().effectN( 3 ), affected_by.shadow_covenant_ta } };
+    } affects[] = {{priest().buffs.voidform->data().effectN( 1 ), affected_by.voidform_da},
+                   {priest().buffs.voidform->data().effectN( 2 ), affected_by.voidform_ta},
+                   {priest().buffs.shadowform->data().effectN( 1 ), affected_by.shadowform_da},
+                   {priest().buffs.shadowform->data().effectN( 4 ), affected_by.shadowform_ta},
+                   {priest().buffs.twist_of_fate->data().effectN( 1 ), affected_by.twist_of_fate_da},
+                   {priest().buffs.twist_of_fate->data().effectN( 2 ), affected_by.twist_of_fate_ta},
+                   {priest().mastery_spells.madness->effectN( 1 ), affected_by.mastery_madness_da},
+                   {priest().mastery_spells.madness->effectN( 2 ), affected_by.mastery_madness_ta},
+                   {priest().buffs.shadow_covenant->data().effectN( 2 ), affected_by.shadow_covenant_da},
+                   {priest().buffs.shadow_covenant->data().effectN( 3 ), affected_by.shadow_covenant_ta}};
 
     for ( const auto& a : affects )
     {
