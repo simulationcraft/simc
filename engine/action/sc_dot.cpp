@@ -88,8 +88,8 @@ void dot_t::cancel()
 
 // dot_t::extend_duration_seconds ===========================================
 
-void dot_t::extend_duration( timespan_t extra_seconds, timespan_t max_total_time, uint32_t state_flags,
-                             bool count_refresh )
+void dot_t::extend_duration( timespan_t extra_seconds,
+                             timespan_t max_total_time, uint32_t state_flags )
 {
   if ( !ticking )
     return;
@@ -126,13 +126,12 @@ void dot_t::extend_duration( timespan_t extra_seconds, timespan_t max_total_time
   if ( remains != end_event->remains() )
     end_event->reschedule( remains );
 
-  if ( count_refresh )
-    current_action->stats->add_refresh( state->target );
+  current_action->stats->add_refresh( state->target );
 }
 
 // dot_t::reduce_duration_seconds ===========================================
 
-void dot_t::reduce_duration( timespan_t remove_seconds, uint32_t state_flags, bool count_refresh )
+void dot_t::reduce_duration( timespan_t remove_seconds, uint32_t state_flags )
 {
   if ( !ticking )
     return;
@@ -189,8 +188,7 @@ void dot_t::reduce_duration( timespan_t remove_seconds, uint32_t state_flags, bo
   }
   recalculate_num_ticks();
 
-  if ( count_refresh )
-    current_action->stats->add_refresh( state->target );
+  current_action->stats->add_refresh( state->target );
 }
 
 // dot_t::refresh_duration ==================================================

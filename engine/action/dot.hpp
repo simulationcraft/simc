@@ -51,13 +51,12 @@ public:
 
   dot_t(util::string_view n, player_t* target, player_t* source);
 
-  void extend_duration( timespan_t extra_seconds, timespan_t max_total_time = timespan_t::min(),
-                        uint32_t state_flags = -1, bool count_refresh = true );
-  void extend_duration( timespan_t extra_seconds, uint32_t state_flags )
+  void   extend_duration(timespan_t extra_seconds, timespan_t max_total_time = timespan_t::min(), uint32_t state_flags = -1);
+  void   extend_duration(timespan_t extra_seconds, uint32_t state_flags)
   {
-    extend_duration( extra_seconds, timespan_t::min(), state_flags );
+    extend_duration(extra_seconds, timespan_t::min(), state_flags);
   }
-  void reduce_duration( timespan_t remove_seconds, uint32_t state_flags = -1, bool count_refresh = true );
+  void   reduce_duration(timespan_t remove_seconds, uint32_t state_flags = -1);
   void   refresh_duration(uint32_t state_flags = -1);
   void   reset();
   void   cancel();
