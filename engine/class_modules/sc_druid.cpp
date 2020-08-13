@@ -1872,6 +1872,7 @@ public:
     parse_buff_effects( p()->buff.celestial_alignment );
     parse_buff_effects( p()->buff.incarnation_moonkin );
     parse_buff_effects( p()->buff.owlkin_frenzy );
+    parse_buff_effects( p()->buff.warrior_of_elune );
     parse_buff_effects( p()->buff.runecarve_3_nature_buff );
     parse_buff_effects( p()->buff.runecarve_3_arcane_buff );
     parse_buff_effects( p()->buff.oneths_free_starfall );
@@ -5988,11 +5989,10 @@ struct starfire_t : public druid_spell_t
   {
     druid_spell_t::execute();
 
-    if ( time_to_execute == 0_ms )
-    {
-      p()->buff.warrior_of_elune->decrement();
+    if ( p()->buff.owlkin_frenzy->up() )
       p()->buff.owlkin_frenzy->decrement();
-    }
+    else if ( p()->buff.warrior_of_elune->up() )
+      p()->buff.warrior_of_elune->decrement();
 
     p()->eclipse_handler.cast_starfire();
 
@@ -6758,7 +6758,7 @@ struct warrior_of_elune_t : public druid_spell_t
   warrior_of_elune_t( druid_t* player, const std::string& options_str )
     : druid_spell_t( "warrior_of_elune", player, player->talent.warrior_of_elune, options_str )
   {
-    harmful = false;
+    harmful = may_crit = may_miss = false;
   }
 
   void execute() override
