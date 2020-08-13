@@ -1094,6 +1094,9 @@ void priest_t::create_procs()
   procs.mind_devourer                   = get_proc( "Mind Devourer free Devouring Plague proc" );
   procs.blessing_of_plenty              = get_proc( "Blessing of Plenty CDR on Fae Blessings" );
   procs.void_tendril                    = get_proc( "Void Tendril proc from Eternal Call to the Void" );
+  procs.dark_thoughts_flay              = get_proc( "Dark Thoughts proc from Mind Flay" );
+  procs.dark_thoughts_sear              = get_proc( "Dark Thoughts proc from Mind Sear" );
+  procs.dark_thoughts_missed            = get_proc( "Dark Thoughts proc not consumed" );
 }
 
 /** Construct priest benefits */

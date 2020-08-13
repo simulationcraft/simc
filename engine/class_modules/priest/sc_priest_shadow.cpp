@@ -174,8 +174,7 @@ public:
 
   timespan_t execute_time() const override
   {
-    /// TODO Remove when implementing Dark Thoughts
-     if ( priest().buffs.dark_thoughts->check() )
+    if ( priest().buffs.dark_thoughts->check() )
     {
       return timespan_t::zero();
     }
@@ -199,7 +198,6 @@ public:
 
     // Shadowy Insight has proc'd during the cast of Mind Blast, the cooldown reset is deferred to the finished cast,
     // instead of "eating" it.
-    /// TODO Re-use for Dark Thoughts
     // if ( priest().buffs.shadowy_insight->check() )
     // {
     //   cd_duration            = timespan_t::zero();
@@ -280,9 +278,10 @@ struct mind_sear_tick_t final : public priest_spell_t
     dot_t* dp = td.dots.devouring_plague;
 
     int dots = swp->is_ticking() + vt->is_ticking() + dp->is_ticking();
-
+    /// TODO: Confirm if this is proccing on every target properly
     if (rng().roll(priest().specs.dark_thoughts->effectN(1).percent() * dots)) {
       priest().buffs.dark_thoughts->trigger();
+      priest().procs.dark_thoughts_sear->occur();
     }
   }
 
@@ -353,9 +352,14 @@ struct mind_flay_t final : public priest_spell_t
     dot_t* dp = td.dots.devouring_plague;
 
     int dots = swp->is_ticking() + vt->is_ticking() + dp->is_ticking();
-  
+
+    /// TODO: Confirm is procrate is matching ingame
+    /// TODO: Confirm if this needs to be adjusted to be on its own PRNG system or has an ICD
+
     if (rng().roll(priest().specs.dark_thoughts->effectN(1).percent() * dots)) {
+      //sim->print_log("{} rolled DT Proc success from flay with {} chance with {} dots", *player, priest().specs.dark_thoughts->effectN(1).percent() * dots, dots);
       priest().buffs.dark_thoughts->trigger();
+      priest().procs.dark_thoughts_flay->occur();
     }
   }
 
@@ -1489,14 +1493,17 @@ struct voidform_t final : public priest_buff_t<buff_t>
   void expire_override(int expiration_stacks, timespan_t remaining_duration) override
   {
 
-  // TODO: Verify if functionality is properly matching how it works ingame.
-  //priest().cooldowns.mind_blast->start(player->find_action("mind_blast"));
+    /// TODO: Verify if functionality is properly matching how it works ingame.
 
-    double _charges = priest().cooldowns.mind_blast->charges_fractional();
-    _charges -= abs(_charges - 1);
-    priest().cooldowns.mind_blast->charges = 1;
-    priest().cooldowns.mind_blast->reset(false, 1);
-    priest().cooldowns.mind_blast->adjust(_charges * cooldown_t::cooldown_duration(priest().cooldowns.mind_blast));
+    double _charges = priest().cooldowns.mind_blast->charges_fractional(); 
+    //Work out difference between current charges and new charges after voidform drops
+    _charges -= abs(_charges - 1); 
+    //Set charges to 1
+    priest().cooldowns.mind_blast->charges = 1; 
+    //Reset cooldowns to cancel events to avoid event and timing issues
+    priest().cooldowns.mind_blast->reset(false, 1); 
+    //Adjust to correct charge count
+    priest().cooldowns.mind_blast->adjust(_charges * cooldown_t::cooldown_duration(priest().cooldowns.mind_blast)); 
 
     priest().buffs.insanity_drain_stacks->expire();
 
@@ -1618,6 +1625,16 @@ struct dark_thoughts_t final : public priest_buff_t<buff_t>
     priest().cooldowns.mind_blast->reset(true, 1);
 
     return r;
+  }
+
+  void expire_override(int expiration_stacks, timespan_t remaining_duration) override
+  {
+    if (remaining_duration == timespan_t::zero()) {
+      for (int i = 0; i < expiration_stacks; i++) {
+        priest().procs.dark_thoughts_missed->occur();
+      }
+    }
+    base_t::expire_override(expiration_stacks, remaining_duration);
   }
 
 };
@@ -2249,6 +2266,11 @@ void priest_t::generate_apl_shadow()
                       "TODO see if this is worth even without Painbreaker Psalm" );
   main->add_talent( this, "Shadow Crash", "if=raid_event.adds.in>5&raid_event.adds.duration<20",
                       "Use Shadow Crash on CD unless there are adds incoming." );
+  main->add_action( this, "Mind Sear", "target_if=spell_targets.mind_sear>1&buff.dark_thoughts.up,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2" );
+  main->add_action( this, "Mind Flay", "if=buff.dark_thoughts.up&variable.dots_up,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2&cooldown.void_bolt.up" );
+  main->add_action( this, "Mind Blast",
+                      "use_while_casting=1,if=variable.dots_up",
+                      "TODO change logic on when to use instant blasts");
   main->add_action( this, "Mind Blast",
                       "if=variable.dots_up&raid_event.movement.in>cast_time+0.5&spell_targets.mind_sear<4",
                       "TODO Verify target cap" );

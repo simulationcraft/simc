@@ -349,6 +349,9 @@ public:
     propagate_const<proc_t*> mind_devourer;
     propagate_const<proc_t*> blessing_of_plenty;
     propagate_const<proc_t*> void_tendril;
+    propagate_const<proc_t*> dark_thoughts_flay;
+    propagate_const<proc_t*> dark_thoughts_sear;
+    propagate_const<proc_t*> dark_thoughts_missed;
   } procs;
 
   // Special
