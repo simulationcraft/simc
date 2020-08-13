@@ -7126,7 +7126,7 @@ struct adaptive_swarm_t : public druid_spell_t
                                      it2->stack, it2->swarm->name(), it2->swarm->target->name(), it2->UID, it->UID );
 
           it->stack = std::min( max_stacks, it->stack + it2->stack );
-          swarm_tracker.erase( it2 );
+          it2 = swarm_tracker.erase( it2 );
         }
       }
     }
