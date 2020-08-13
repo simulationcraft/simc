@@ -115,13 +115,6 @@ public:
     return false;
   }
 
-  void schedule_execute( action_state_t* s ) override
-  {
-    priest_spell_t::schedule_execute( s );
-    /// TODO Check when implementing Dark Thoughts
-    // priest().buffs.shadowy_insight->expire();
-  }
-
   void execute() override
   {
     priest_spell_t::execute();
@@ -203,17 +196,6 @@ public:
   void update_ready( timespan_t cd_duration ) override
   {
     priest().buffs.voidform->up();  // Benefit tracking
-
-    // Shadowy Insight has proc'd during the cast of Mind Blast, the cooldown reset is deferred to the finished cast,
-    // instead of "eating" it.
-    // if ( priest().buffs.shadowy_insight->check() )
-    // {
-    //   cd_duration            = timespan_t::zero();
-    //   cooldown->last_charged = sim->current_time();
-    //
-    //   sim->print_debug( "{} shadowy insight proc occured during {} cast. Deferring cooldown reset.", priest(), *this
-    //   );
-    // }
 
     if ( priest().buffs.dark_thoughts->check() )
       priest().buffs.dark_thoughts->decrement();
@@ -649,17 +631,6 @@ struct shadowy_apparition_damage_t final : public priest_spell_t
     may_crit   = false;
 
     base_dd_multiplier *= 1 + priest().talents.auspicious_spirits->effectN( 1 ).percent();
-
-    // Hardcoded value. This is the behavior announced and tested in game
-    // However the value doesn't show up anywhere in the known spelldata
-    // Anshlun 2018-10-02
-
-    // They removed this in PTR for some reason
-    // Publik 2019-10-07
-    /*if ( spiteful_apparitions_bonus > 0.0 && !priest().talents.auspicious_spirits->ok() )
-    {
-      spiteful_apparitions_bonus *= 1.75;
-    }*/
   }
 
   void impact( action_state_t* s ) override

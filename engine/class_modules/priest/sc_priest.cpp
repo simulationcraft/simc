@@ -1080,8 +1080,6 @@ void priest_t::create_procs()
 {
   procs.shadowy_apparition              = get_proc( "Shadowy Apparition Procced" );
   procs.shadowy_apparition_overflow     = get_proc( "Shadowy Apparition Insanity lost to overflow" );
-  procs.shadowy_insight                 = get_proc( "Shadowy Insight Mind Blast CD Reset from Shadow Word: Pain" );
-  procs.shadowy_insight_overflow        = get_proc( "Shadowy Insight Mind Blast CD Reset lost to overflow" );
   procs.surge_of_light                  = get_proc( "Surge of Light" );
   procs.surge_of_light_overflow         = get_proc( "Surge of Light lost to overflow" );
   procs.serendipity                     = get_proc( "Serendipity (Non-Tier 17 4pc)" );
