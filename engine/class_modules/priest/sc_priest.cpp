@@ -760,12 +760,11 @@ struct boon_of_the_ascended_t final : public priest_buff_t<buff_t>
   int stacks;
 
   boon_of_the_ascended_t( priest_t& p )
-    : base_t( p, "boon_of_the_ascended", p.covenant.boon_of_the_ascended ),
-      stacks( as<int>( data().max_stacks() ) )
+    : base_t( p, "boon_of_the_ascended", p.covenant.boon_of_the_ascended ), stacks( as<int>( data().max_stacks() ) )
   {
     // Adding stacks should not refresh the duration
     set_refresh_behavior( buff_refresh_behavior::DISABLED );
-    set_max_stack( stacks >=1 ? stacks : 1 );
+    set_max_stack( stacks >= 1 ? stacks : 1 );
   }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
@@ -992,7 +991,7 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p ) : actor_target_data_t(
   buffs.death_and_madness_debuff    = make_buff<buffs::death_and_madness_debuff_t>( *this );
   buffs.surrender_to_madness_debuff = make_buff<buffs::surrender_to_madness_debuff_t>( *this );
 
-  target->callbacks_on_demise.emplace_back( [ this ]( player_t* ) { target_demise(); } );
+  target->callbacks_on_demise.emplace_back( [this]( player_t* ) { target_demise(); } );
 }
 
 void priest_td_t::reset()
@@ -1060,20 +1059,20 @@ void priest_t::create_cooldowns()
 /** Construct priest gains */
 void priest_t::create_gains()
 {
-  gains.mindbender                             = get_gain( "Mana Gained from Mindbender" );
-  gains.power_word_solace                      = get_gain( "Mana Gained from Power Word: Solace" );
-  gains.insanity_auspicious_spirits            = get_gain( "Insanity Gained from Auspicious Spirits" );
-  gains.insanity_dispersion                    = get_gain( "Insanity Saved by Dispersion" );
-  gains.insanity_drain                         = get_gain( "Insanity Drained by Voidform" );
-  gains.insanity_pet                           = get_gain( "Insanity Gained from Shadowfiend" );
-  gains.insanity_surrender_to_madness          = get_gain( "Insanity Gained from Surrender to Madness" );
-  gains.vampiric_touch_health                  = get_gain( "Health from Vampiric Touch Ticks" );
-  gains.insanity_lucid_dreams                  = get_gain( "Insanity Gained from Lucid Dreams" );
-  gains.insanity_memory_of_lucid_dreams        = get_gain( "Insanity Gained from Memory of Lucid Dreams" );
-  gains.insanity_death_and_madness             = get_gain( "Insanity Gained from Death and Madness" );
-  gains.shadow_word_death_self_damage          = get_gain( "Shadow Word: Death self inflicted damage" );
-  gains.insanity_mindgames                     = get_gain( "Insanity Gained from Mindgames" );
-  gains.insanity_eternal_call_to_the_void      = get_gain( "Insanity Gained from Eternal Call to the Void Mind Flays" );
+  gains.mindbender                        = get_gain( "Mana Gained from Mindbender" );
+  gains.power_word_solace                 = get_gain( "Mana Gained from Power Word: Solace" );
+  gains.insanity_auspicious_spirits       = get_gain( "Insanity Gained from Auspicious Spirits" );
+  gains.insanity_dispersion               = get_gain( "Insanity Saved by Dispersion" );
+  gains.insanity_drain                    = get_gain( "Insanity Drained by Voidform" );
+  gains.insanity_pet                      = get_gain( "Insanity Gained from Shadowfiend" );
+  gains.insanity_surrender_to_madness     = get_gain( "Insanity Gained from Surrender to Madness" );
+  gains.vampiric_touch_health             = get_gain( "Health from Vampiric Touch Ticks" );
+  gains.insanity_lucid_dreams             = get_gain( "Insanity Gained from Lucid Dreams" );
+  gains.insanity_memory_of_lucid_dreams   = get_gain( "Insanity Gained from Memory of Lucid Dreams" );
+  gains.insanity_death_and_madness        = get_gain( "Insanity Gained from Death and Madness" );
+  gains.shadow_word_death_self_damage     = get_gain( "Shadow Word: Death self inflicted damage" );
+  gains.insanity_mindgames                = get_gain( "Insanity Gained from Mindgames" );
+  gains.insanity_eternal_call_to_the_void = get_gain( "Insanity Gained from Eternal Call to the Void Mind Flays" );
 }
 
 /** Construct priest procs */
@@ -1089,14 +1088,14 @@ void priest_t::create_procs()
   procs.serendipity_overflow            = get_proc( "Serendipity lost to overflow (Non-Tier 17 4pc)" );
   procs.power_of_the_dark_side          = get_proc( "Power of the Dark Side Penance damage buffed" );
   procs.power_of_the_dark_side_overflow = get_proc( "Power of the Dark Side lost to overflow" );
-  procs.shimmering_apparitions          = get_proc( "Shadowy Apparition Procced from Shimmering Apparition non SW:P Crit" );
-  procs.dissonant_echoes                = get_proc( "Void Bolt resets from Dissonant Echoes" );
-  procs.mind_devourer                   = get_proc( "Mind Devourer free Devouring Plague proc" );
-  procs.blessing_of_plenty              = get_proc( "Blessing of Plenty CDR on Fae Blessings" );
-  procs.void_tendril                    = get_proc( "Void Tendril proc from Eternal Call to the Void" );
-  procs.dark_thoughts_flay              = get_proc( "Dark Thoughts proc from Mind Flay" );
-  procs.dark_thoughts_sear              = get_proc( "Dark Thoughts proc from Mind Sear" );
-  procs.dark_thoughts_missed            = get_proc( "Dark Thoughts proc not consumed" );
+  procs.shimmering_apparitions = get_proc( "Shadowy Apparition Procced from Shimmering Apparition non SW:P Crit" );
+  procs.dissonant_echoes       = get_proc( "Void Bolt resets from Dissonant Echoes" );
+  procs.mind_devourer          = get_proc( "Mind Devourer free Devouring Plague proc" );
+  procs.blessing_of_plenty     = get_proc( "Blessing of Plenty CDR on Fae Blessings" );
+  procs.void_tendril           = get_proc( "Void Tendril proc from Eternal Call to the Void" );
+  procs.dark_thoughts_flay     = get_proc( "Dark Thoughts proc from Mind Flay" );
+  procs.dark_thoughts_sear     = get_proc( "Dark Thoughts proc from Mind Sear" );
+  procs.dark_thoughts_missed   = get_proc( "Dark Thoughts proc not consumed" );
 }
 
 /** Construct priest benefits */
@@ -1674,7 +1673,7 @@ void priest_t::create_apl_precombat()
     default:
       // Calculate these variables once to reduce sim time
       precombat->add_action( this, "Shadowform", "if=!buff.shadowform.up" );
-      if (race == RACE_BLOOD_ELF)
+      if ( race == RACE_BLOOD_ELF )
         precombat->add_action( "arcane_torrent" );
       precombat->add_action( "use_item,name=azsharas_font_of_power" );
       precombat->add_action( this, "Mind Blast" );

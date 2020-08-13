@@ -1034,16 +1034,16 @@ public:
     {
       const spelleffect_data_t& effect;
       bool& affects;
-    } affects[] = { { priest().buffs.voidform->data().effectN( 1 ), affected_by.voidform_da },
-                    { priest().buffs.voidform->data().effectN( 2 ), affected_by.voidform_ta },
-                    { priest().buffs.shadowform->data().effectN( 1 ), affected_by.shadowform_da },
-                    { priest().buffs.shadowform->data().effectN( 4 ), affected_by.shadowform_ta },
-                    { priest().buffs.twist_of_fate->data().effectN( 1 ), affected_by.twist_of_fate_da },
-                    { priest().buffs.twist_of_fate->data().effectN( 2 ), affected_by.twist_of_fate_ta },
-                    { priest().mastery_spells.madness->effectN( 1 ), affected_by.mastery_madness_da },
-                    { priest().mastery_spells.madness->effectN( 2 ), affected_by.mastery_madness_ta },
-                    { priest().buffs.shadow_covenant->data().effectN( 2 ), affected_by.shadow_covenant_da },
-                    { priest().buffs.shadow_covenant->data().effectN( 3 ), affected_by.shadow_covenant_ta } };
+    } affects[] = {{priest().buffs.voidform->data().effectN( 1 ), affected_by.voidform_da},
+                   {priest().buffs.voidform->data().effectN( 2 ), affected_by.voidform_ta},
+                   {priest().buffs.shadowform->data().effectN( 1 ), affected_by.shadowform_da},
+                   {priest().buffs.shadowform->data().effectN( 4 ), affected_by.shadowform_ta},
+                   {priest().buffs.twist_of_fate->data().effectN( 1 ), affected_by.twist_of_fate_da},
+                   {priest().buffs.twist_of_fate->data().effectN( 2 ), affected_by.twist_of_fate_ta},
+                   {priest().mastery_spells.madness->effectN( 1 ), affected_by.mastery_madness_da},
+                   {priest().mastery_spells.madness->effectN( 2 ), affected_by.mastery_madness_ta},
+                   {priest().buffs.shadow_covenant->data().effectN( 2 ), affected_by.shadow_covenant_da},
+                   {priest().buffs.shadow_covenant->data().effectN( 3 ), affected_by.shadow_covenant_ta}};
 
     for ( const auto& a : affects )
     {
