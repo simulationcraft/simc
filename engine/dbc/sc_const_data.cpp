@@ -183,7 +183,8 @@ static void generate_indices( bool ptr )
           spell_categories_index.add_effect( value, &effect, ptr );
       }
 
-      if ( effect.subtype() == A_ADD_PCT_LABEL_MODIFIER )
+      if ( effect.subtype() == A_ADD_PCT_LABEL_MODIFIER ||
+           effect.subtype() == A_ADD_FLAT_LABEL_MODIFIER )
       {
         const short value = as<short>( effect.misc_value2() );
         if ( value != 0 )

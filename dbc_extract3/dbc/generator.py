@@ -2077,6 +2077,7 @@ class SpellDataGenerator(DataGenerator):
     # Effect subtype, field name
     _label_whitelist = [
         ( 218, 'misc_value_2' ),
+        ( 219, 'misc_value_2' ),
     ]
 
     _spell_blacklist = [

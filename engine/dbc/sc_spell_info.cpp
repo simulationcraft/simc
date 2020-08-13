@@ -608,6 +608,7 @@ static constexpr auto _effect_subtype_strings = util::make_static_map<unsigned, 
   { 200, "Modify Experience Gained from Kills"          },
   { 216, "Modify Casting Speed"                         },
   { 218, "Apply Percent Modifier w/ Label"              },
+  { 219, "Apply Flat Modifier w/ Label"                 },
   { 224, "Grant Talent"                                 },
   { 226, "Periodic Dummy"                               },
   { 228, "Stealth Detection"                            },
@@ -901,6 +902,7 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
       case A_ADD_FLAT_MODIFIER:
       case A_ADD_PCT_MODIFIER:
       case A_ADD_PCT_LABEL_MODIFIER:
+      case A_ADD_FLAT_LABEL_MODIFIER:
         s << ": " << map_string( _property_type_strings, e -> misc_value1() );
         break;
       default:
@@ -1012,7 +1014,7 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
 
   if ( e -> misc_value2() != 0 )
   {
-    if ( e -> subtype() == A_ADD_PCT_LABEL_MODIFIER )
+    if ( e -> subtype() == A_ADD_PCT_LABEL_MODIFIER || e -> subtype() == A_ADD_FLAT_LABEL_MODIFIER )
     {
       snprintf( tmp_buffer, sizeof( tmp_buffer ), "%d (Label)", e -> misc_value2() );
     }
@@ -1106,7 +1108,8 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
     s << std::endl;
   }
 
-  if ( e -> type() == E_APPLY_AURA && e -> subtype() == A_ADD_PCT_LABEL_MODIFIER )
+  if ( e -> type() == E_APPLY_AURA &&
+       ( e -> subtype() == A_ADD_PCT_LABEL_MODIFIER || e -> subtype() == A_ADD_FLAT_LABEL_MODIFIER ) )
   {
     auto affected_spells = dbc.spells_by_label( e -> misc_value2() );
     s << "                   Affected Spells (Label): ";

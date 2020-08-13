@@ -1027,7 +1027,7 @@ enum effect_subtype_t : unsigned {
     A_HASTE_SPELLS = 216,
     A_217 = 217,
     A_ADD_PCT_LABEL_MODIFIER = 218,
-    A_MOD_MANA_REGEN_FROM_STAT = 219,
+    A_ADD_FLAT_LABEL_MODIFIER = 219,
     A_MOD_RATING_FROM_STAT = 220,
     A_221 = 221,
     A_222 = 222,
