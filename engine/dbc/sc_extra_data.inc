@@ -1695,8 +1695,8 @@ static double __gt_HorizontalShift[] =
 // using 1 as placeholder for unknown to avoid divide-by-zero errors
 // Pulled data from the CreatureAutoAttackDps field in the ExpectedStat table
 
-static double _gt_resolve_dps_by_level[120] = 
-{ 
+static double _gt_resolve_dps_by_level[120] =
+{
   2.1690638, 2.3859704, 2.6028767,  2.819783,  3.0366893,   // 1-5
   3.3407423, 3.6971202, 4.1481075, 4.7465677, 5.5165443,    // 6-10
   6.4468484, 7.5441976,  8.812107, 10.261451, 11.827829,    // 11-15
@@ -1749,3 +1749,4 @@ static double _gt_avoid_per_str_agi_by_level[120] = // TO-DO: Pre-SL values for 
   1/47.966167, 1/47.966167, 1/47.966167, 1/47.966167, 1/47.966167, // 106-110
   1/47.966167, 1/47.966167, 1/47.966167, 1/47.966167, 1/47.966167, // 111-115
   1/47.966167, 1/47.966167, 1/47.966167, 1/47.966167, 1/47.966167, // 116-120
+};
