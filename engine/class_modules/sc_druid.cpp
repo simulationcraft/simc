@@ -2685,8 +2685,10 @@ public:
         double ap             = p()->resources.current[ RESOURCE_ASTRAL_POWER ];
 
         ap += composite_energize_amount( state );
-        ap += p()->talent.shooting_stars->ok() ? p()->spec.shooting_stars_dmg->effectN( 2 ).base_value() / 10 : 0;
-        ap += p()->talent.natures_balance->ok() ? std::ceil( time_to_execute / 1.5_s ) : 0;
+        ap += p()->talent.shooting_stars->ok()
+                  ? p()->spec.shooting_stars_dmg->effectN( 2 ).resource( RESOURCE_ASTRAL_POWER )
+                  : 0;
+        ap += p()->talent.natures_balance->ok() ? std::ceil( time_to_execute / 2_s ) : 0;
 
         action_state_t::release( state );
         return ap <=
@@ -9500,8 +9502,10 @@ std::unique_ptr<expr_t> druid_t::create_expression( util::string_view name_str )
           action_state_t* state = action->get_state();
           double ap             = resources.current[ RESOURCE_ASTRAL_POWER ];
           ap += action->composite_energize_amount( state );
-          ap += talent.shooting_stars->ok() ? spec.shooting_stars_dmg->effectN( 2 ).base_value() / 10 : 0;
-          ap += talent.natures_balance->ok() ? std::ceil( action->time_to_execute / 1.5_s ) : 0;
+          ap += talent.shooting_stars->ok()
+                    ? spec.shooting_stars_dmg->effectN( 2 ).resource( RESOURCE_ASTRAL_POWER )
+                    : 0;
+          ap += talent.natures_balance->ok() ? std::ceil( action->time_to_execute / 2_s ) : 0;
           action_state_t::release( state );
           return ap <=
                  resources.base[ RESOURCE_ASTRAL_POWER ] + ( splits.size() >= 3 ? util::to_int( splits[ 2 ] ) : 0 );
