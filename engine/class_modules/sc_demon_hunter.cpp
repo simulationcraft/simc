@@ -1985,7 +1985,7 @@ struct eye_beam_t : public demon_hunter_spell_t
     eye_beam_tick_t( util::string_view name, demon_hunter_t* p )
       : demon_hunter_spell_t( name, p, p->find_spell( 198030 ) )
     {
-      background = dual = split_aoe_damage = true;
+      background = dual = reduced_aoe_damage = true;
       aoe = -1;
     }
 
