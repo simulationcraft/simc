@@ -1674,6 +1674,8 @@ void priest_t::create_apl_precombat()
     default:
       // Calculate these variables once to reduce sim time
       precombat->add_action( this, "Shadowform", "if=!buff.shadowform.up" );
+      if (race == RACE_BLOOD_ELF)
+        precombat->add_action( "arcane_torrent" );
       precombat->add_action( "use_item,name=azsharas_font_of_power" );
       precombat->add_action( this, "Mind Blast" );
       break;
