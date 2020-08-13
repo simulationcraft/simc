@@ -93,7 +93,39 @@ const dbc_item_data_t& find_gem( util::string_view gem, bool ptr, bool tokenized
 // Class / Spec specific passives for an actor
 const spell_data_t* get_class_passive( const player_t&, specialization_e );
 std::vector<const spell_data_t*> class_passives( const player_t* );
-}
+
+} // namespace dbc
+
+struct custom_dbc_data_t
+{
+  // Creates a tree of cloned spells and effects for a given spell, starting
+  // from the potential root spell. If there is no need to clone the tree,
+  // return the custom spell instead.
+  spell_data_t* clone_spell( const spell_data_t* spell );
+
+  spell_data_t* get_mutable_spell( unsigned spell_id );
+  const spell_data_t* find_spell( unsigned spell_id ) const;
+
+  spelleffect_data_t* get_mutable_effect( unsigned effect_id );
+  const spelleffect_data_t* find_effect( unsigned effect_id ) const;
+
+  spellpower_data_t* get_mutable_power( unsigned power_id );
+  const spellpower_data_t* find_power( unsigned power_id ) const;
+
+private:
+  spell_data_t* create_clone( const spell_data_t* s );
+
+  void add_spell( spell_data_t* spell );
+  void add_effect( spelleffect_data_t* spell );
+  void add_power( spellpower_data_t* power );
+
+  std::vector<spell_data_t*> spells_;
+  std::vector<spelleffect_data_t*> effects_;
+  std::vector<spellpower_data_t*> powers_;
+
+  util::bump_ptr_allocator_t<> allocator_;
+  std::unordered_map<unsigned, util::span<const spell_data_t*>> spell_driver_map_;
+};
 
 namespace hotfix
 {
@@ -115,35 +147,6 @@ namespace hotfix
     HOTFIX_FLAG_QUIET = 0x4,
 
     HOTFIX_FLAG_DEFAULT = HOTFIX_FLAG_LIVE | HOTFIX_FLAG_PTR
-  };
-
-  struct custom_dbc_data_t
-  {
-    auto_dispose< std::vector<spell_data_t*> > spells_[ 2 ];
-    std::vector<spelleffect_data_t*> effects_[ 2 ];
-    std::vector<spellpower_data_t*> powers_[ 2 ];
-
-    util::bump_ptr_allocator_t<> allocator_;
-    std::unordered_map<unsigned, util::span<const spell_data_t*>> spell_driver_map_[ 2 ];
-
-    bool add_spell( spell_data_t* spell, bool ptr = false );
-    spell_data_t* get_mutable_spell( unsigned spell_id, bool ptr = false );
-    const spell_data_t* find_spell( unsigned spell_id, bool ptr = false ) const;
-
-    bool add_effect( spelleffect_data_t* spell, bool ptr = false );
-    spelleffect_data_t* get_mutable_effect( unsigned effect_id, bool ptr = false );
-    const spelleffect_data_t* find_effect( unsigned effect_id, bool ptr = false ) const;
-
-    bool add_power( spellpower_data_t* power, bool ptr = false );
-    spellpower_data_t* get_mutable_power( unsigned power_id, bool ptr = false );
-    const spellpower_data_t* find_power( unsigned power_id, bool ptr = false ) const;
-
-    // Creates a tree of cloned spells and effects given a spell id, starting from the potential
-    // root spell. If there is no need to clone the tree, return the custom spell instead.
-    spell_data_t* clone_spell( unsigned spell_id, bool ptr = false );
-
-    private:
-    spell_data_t* create_clone( const spell_data_t* s, bool ptr );
   };
 
   struct hotfix_entry_t
@@ -276,7 +279,8 @@ namespace hotfix
   const spellpower_data_t* find_power( const spellpower_data_t* dbc_power, bool ptr = false );
 
   std::vector<const hotfix_entry_t*> hotfix_entries();
-}
+
+} // namespace hotfix
 
 namespace dbc_override
 {
