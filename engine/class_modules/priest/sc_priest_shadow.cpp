@@ -276,6 +276,23 @@ struct mind_sear_tick_t final : public priest_spell_t
 
     return d;
   }
+
+  void tick(dot_t* d) override
+  {
+	  priest_spell_t::tick(d);
+
+	  priest_td_t& td = get_td(d->target);
+	  dot_t* swp = td.dots.shadow_word_pain;
+	  dot_t* vt = td.dots.vampiric_touch;
+	  dot_t* dp = td.dots.devouring_plague;
+
+	  int dots = swp->is_ticking() + vt->is_ticking() + dp->is_ticking();
+
+	  if (rng().roll(priest().specs.dark_thoughts->effectN(1).percent() * dots)) {
+		  priest().buffs.dark_thoughts->trigger();
+	  }
+  }
+
 };
 
 struct mind_sear_t final : public priest_spell_t
