@@ -26,7 +26,7 @@ struct spelleffect_data_t;
 struct spelllabel_data_t;
 struct spellpower_data_t;
 
-constexpr unsigned NUM_SPELL_FLAGS = 14;
+constexpr unsigned NUM_SPELL_FLAGS = 15;
 constexpr unsigned NUM_CLASS_FAMILY_FLAGS = 4;
 
 // ==========================================================================
