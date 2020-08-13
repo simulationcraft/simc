@@ -1624,7 +1624,20 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
   const auto& conduit = conduit_entry_t::find_by_spellid( spell->id(), dbc.ptr );
   if ( conduit.spell_id && conduit.spell_id == spell->id() )
   {
-    s << "Conduit Id       : " << conduit.id << std::endl;
+    s << "Conduit Id       : " << conduit.id;
+
+    auto ranks = conduit_rank_entry_t::find( conduit.id, dbc.ptr );
+    std::vector<std::string> rank_str;
+    range::for_each( ranks, [&rank_str]( const conduit_rank_entry_t& entry ) {
+      rank_str.emplace_back( fmt::format( "{}", entry.value ) );
+    } );
+
+    if ( ranks.size() )
+    {
+      s << fmt::format( " (values={})", util::string_join( rank_str, ", " ) );
+    }
+
+    s << std::endl;
   }
 
   if ( spell -> proc_flags() > 0 )
