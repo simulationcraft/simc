@@ -64,6 +64,8 @@ private:
   double whispers_of_the_damned_value;
   double harvested_thoughts_value;
   double whispers_bonus_insanity;
+  const spell_data_t* mind_flay_spell;
+  const spell_data_t* mind_sear_spell;
 
 public:
   mind_blast_t( priest_t& player, util::string_view options_str )
@@ -77,7 +79,9 @@ public:
                                    ->effectN( 1 )
                                    .trigger()
                                    ->effectN( 1 )
-                                   .resource( RESOURCE_INSANITY ) )
+                                   .resource( RESOURCE_INSANITY ) ),
+      mind_flay_spell( player.find_specialization_spell( "Mind Flay" ) ),
+      mind_sear_spell( player.find_class_spell( "Mind Sear" ) )
   {
     parse_options( options_str );
 
@@ -99,13 +103,14 @@ public:
 
   bool usable_during_current_cast() const override
   {
-    if ( !priest_spell_t::usable_during_current_cast() )
-      return false;
     if ( !priest().buffs.dark_thoughts->check() )
       return false;
     if ( player->channeling == nullptr )
       return false;
-    if ( player->channeling->name_str == "mind_flay" || player->channeling->name_str == "mind_sear" )
+    if ( !priest_spell_t::usable_during_current_cast() )
+      return false;
+    if ( player->channeling->data().id() == mind_flay_spell->id() ||
+         player->channeling->data().id() == mind_sear_spell->id() )
       return true;
     return false;
   }
@@ -284,6 +289,8 @@ struct mind_sear_tick_t final : public priest_spell_t
     /// TODO: Confirm if this is proccing on every target properly
     if ( rng().roll( priest().specs.dark_thoughts->effectN( 1 ).percent() * dots ) )
     {
+      sim->print_debug( "{} rolled DT Proc success from sear with {} chance with {} dots", *player,
+                        priest().specs.dark_thoughts->effectN( 1 ).percent() * dots, dots );
       priest().buffs.dark_thoughts->trigger();
       priest().procs.dark_thoughts_sear->occur();
     }
@@ -361,8 +368,8 @@ struct mind_flay_t final : public priest_spell_t
 
     if ( rng().roll( priest().specs.dark_thoughts->effectN( 1 ).percent() * dots ) )
     {
-      // sim->print_log("{} rolled DT Proc success from flay with {} chance with {} dots", *player,
-      // priest().specs.dark_thoughts->effectN(1).percent() * dots, dots);
+      sim->print_debug( "{} rolled DT Proc success from flay with {} chance with {} dots", *player,
+                        priest().specs.dark_thoughts->effectN( 1 ).percent() * dots, dots );
       priest().buffs.dark_thoughts->trigger();
       priest().procs.dark_thoughts_flay->occur();
     }
@@ -1616,11 +1623,14 @@ struct vampiric_embrace_t final : public priest_buff_t<buff_t>
 
 struct dark_thoughts_t final : public priest_buff_t<buff_t>
 {
-  dark_thoughts_t( priest_t& p ) : base_t( p, "dark_thoughts", p.find_spell( 341205 ) )
+  dark_thoughts_t( priest_t& p ) : base_t( p, "dark_thoughts", p.find_specialization_spell( "Dark Thoughts" ) )
   {
+    // Spell data does not contain information about the spell, must manually set.
     this->set_max_stack( 5 );
     this->set_duration( timespan_t::from_seconds( 6 ) );
-    this->set_refresh_behavior( buff_refresh_behavior::EXTEND );
+    // Buff does not pandemic but instead refreshes to full duration with new stacks.
+    this->set_refresh_behavior( buff_refresh_behavior::DURATION );
+    // Allow player to react to the buff being applied so they can mindblast.
     this->reactable = true;
   }
 
@@ -1628,6 +1638,7 @@ struct dark_thoughts_t final : public priest_buff_t<buff_t>
   {
     bool r = base_t::trigger( stacks, value, chance, duration );
 
+    // Currently dark thoughts also resets your mindblast.
     priest().cooldowns.mind_blast->reset( true, 1 );
 
     return r;
@@ -2287,10 +2298,14 @@ void priest_t::generate_apl_shadow()
                     "Use Shadow Crash on CD unless there are adds incoming." );
   main->add_action(
       this, "Mind Sear",
-      "target_if=spell_targets.mind_sear>1&buff.dark_thoughts.up,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2" );
+      "target_if=spell_targets.mind_sear>1&buff.dark_thoughts.up,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2",
+      "Use Mind Sear to consume Dark Thoughts procs on AOE. TODO Confirm is this is a higher priority than redotting "
+      "on AOE unless dark thoughts is about to time out" );
   main->add_action( this, "Mind Flay",
                     "if=buff.dark_thoughts.up&variable.dots_up,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2&"
-                    "cooldown.void_bolt.up" );
+                    "cooldown.void_bolt.up",
+                    "Use Mind Flay to consume Dark Thoughts procs on ST. TODO Confirm if this is a higher priority "
+                    "than redotting unless dark thoughts is about to time out" );
   main->add_action( this, "Mind Blast", "use_while_casting=1,if=variable.dots_up",
                     "TODO change logic on when to use instant blasts" );
   main->add_action( this, "Mind Blast",
