@@ -2550,6 +2550,35 @@ public:
     parse_options( options );
   }
 
+  double composite_target_multiplier( player_t* t ) const override
+  {
+    double tm = ab::composite_target_multiplier( t );
+
+    if ( p()->conduit.balance_3->ok() &&
+         ( &ab::data() == p()->spec.full_moon || &ab::data() == p()->spec.half_moon ||
+           &ab::data() == p()->talent.new_moon ) &&
+         td( t )->dots.sunfire->is_ticking() )
+    {
+      tm *= 1.0 + p()->conduit.balance_3->effectN( 1 ).percent();
+    }
+
+    return tm;
+  }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double da = ab::composite_da_multiplier( s );
+
+    if ( ( &ab::data() == p()->spec.full_moon || &ab::data() == p()->spec.half_moon ||
+           &ab::data() == p()->talent.new_moon ) &&
+         p()->buff.eclipse_solar->up() )
+    {
+      da *= 1.0 + p()->cache.mastery_value();
+    }
+
+    return da;
+  }
+
   double composite_energize_amount( const action_state_t* s ) const override
   {
     double e = ab::composite_energize_amount( s );
