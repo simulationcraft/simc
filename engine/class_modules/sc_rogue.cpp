@@ -4,6 +4,7 @@
 // ==========================================================================
 
 #include "simulationcraft.hpp"
+#include "player/covenant.hpp"
 #include "util/util.hpp"
 
 namespace { // UNNAMED NAMESPACE
@@ -298,6 +299,10 @@ public:
     buff_t* master_assassins_mark;
     buff_t* master_assassins_mark_aura;
     buff_t* the_rotten;
+
+    // Conduits
+    buff_t* deeper_daggers;
+    buff_t* perforated_veins;
   } buffs;
 
   // Cooldowns
@@ -548,6 +553,30 @@ public:
   {
   } covenant;
 
+  // Conduits
+  struct conduit_t
+  {
+    conduit_data_t lethal_poisons;            // NYI
+    conduit_data_t maim_mangle;
+    conduit_data_t poisoned_finger_blades;    // NYI
+    conduit_data_t well_placed_steel;         // NYI
+
+    conduit_data_t ambidexterity;             // NYI
+    conduit_data_t count_the_odds;            // NYI
+    conduit_data_t slight_of_hand;            // NYI
+    conduit_data_t triple_threat;             // NYI
+
+    conduit_data_t deeper_daggers;
+    conduit_data_t perforated_veins;
+    conduit_data_t planned_execution;
+    conduit_data_t stiletto_staccato;
+
+    conduit_data_t reverberation;             // NYI
+    conduit_data_t slaughter_scars;           // NYI
+    conduit_data_t sudden_fractures;          // NYI
+    conduit_data_t septic_shock;              // NYI
+  } conduit;
+
   // Legendary effects
   struct legendary_t
   {
@@ -697,6 +726,7 @@ public:
   double    composite_spell_crit_chance() const override;
   double    composite_spell_haste() const override;
   double    matching_gear_multiplier( attribute_e attr ) const override;
+  double    composite_player_multiplier( school_e school ) const override;
   double    composite_player_target_multiplier( player_t* target, school_e school ) const override;
   double    resource_regen_per_second( resource_e ) const override;
   double    passive_movement_modifier() const override;
@@ -923,6 +953,7 @@ public:
     bool shiv_2 = false;
     bool ruthless_precision = false;
     bool symbols_of_death_autocrit = false;
+    bool perforated_veins = false;
 
     damage_affect_data mastery_executioner;
     damage_affect_data mastery_potent_assassin;
@@ -973,6 +1004,8 @@ public:
       ab::data().affected_by( p->spec.broadside->effectN( 3 ) );
     affected_by.ruthless_precision = ab::data().affected_by( p->spec.ruthless_precision->effectN( 1 ) );
     affected_by.symbols_of_death_autocrit = ab::data().affected_by( p->spec.symbols_of_death_autocrit->effectN( 1 ) );
+    if(p->conduit.perforated_veins.ok() )
+      affected_by.perforated_veins = ab::data().affected_by( p->conduit.perforated_veins->effectN( 1 ).trigger()->effectN( 1 ) );
 
     // Auto-parsing for damage affecting dynamic flags, this reads IF direct/periodic dmg is affected and stores by how much.
     // Still requires manual impl below but removes need to hardcode effect numbers.
@@ -1244,6 +1277,11 @@ public:
     if ( affected_by.shadow_dance.direct && p()->buffs.shadow_dance->up() )
     {
       m *= 1.0 + affected_by.shadow_dance.direct_percent + p()->talent.dark_shadow->effectN( 2 ).percent();
+    }
+
+    if ( affected_by.perforated_veins )
+    {
+      m *= 1.0 + p()->buffs.perforated_veins->stack_value();
     }
 
     // Assassination
@@ -1519,6 +1557,9 @@ public:
 
     if ( ( !p()->bugs || secondary_trigger != TRIGGER_SHURIKEN_TORNADO ) && affected_by.symbols_of_death_autocrit )
       p()->buffs.symbols_of_death_autocrit->expire();
+
+    if ( affected_by.perforated_veins )
+      p()->buffs.perforated_veins->expire();
   }
 
   void schedule_travel( action_state_t* state ) override
@@ -2693,7 +2734,8 @@ struct eviscerate_t : public rogue_attack_t
   void execute() override
   {
     rogue_attack_t::execute();
-    p() -> buffs.nights_vengeance -> expire();
+    p()->buffs.nights_vengeance->expire();
+    p()->buffs.deeper_daggers->trigger(); // TOCHECK: Does this happen before or after the bonus damage?
 
     if ( bonus_attack && td( target )->debuffs.find_weakness->up() )
     {
@@ -3272,6 +3314,21 @@ struct mutilate_t : public rogue_attack_t
 
       trigger_seal_fate( state );
     }
+
+    double composite_target_multiplier( player_t* target ) const override
+    {
+      double m = rogue_attack_t::composite_target_multiplier( target );
+
+      if ( p()->conduit.maim_mangle.ok() )
+      {
+        if ( td( target )->dots.garrote->is_ticking() )
+        {
+          m *= 1.0 + p()->conduit.maim_mangle.percent();
+        }
+      }
+
+      return m;
+    }
   };
 
   struct double_dose_t : public rogue_attack_t
@@ -3766,7 +3823,8 @@ struct shadowstrike_t : public rogue_attack_t
   {
     rogue_attack_t::execute();
 
-    p() -> buffs.blade_in_the_shadows -> trigger();
+    p()->buffs.blade_in_the_shadows->trigger();
+    p()->buffs.perforated_veins->trigger();
 
     if ( p()->buffs.the_rotten->up() )
     {
@@ -3849,6 +3907,12 @@ struct shadow_vault_t: public rogue_attack_t
       bonus_attack = p->get_background_action<shadow_vault_bonus_t>( "shadow_vault_bonus" );
       add_child( bonus_attack );
     }
+  }
+
+  void execute() override
+  {
+    rogue_attack_t::execute();
+    p()->buffs.deeper_daggers->trigger(); // TOCHECK: Does this happen before or after the impact damage?
   }
 
   void impact(action_state_t* state) override
@@ -5636,13 +5700,14 @@ void actions::rogue_action_t<Base>::trigger_shadow_techniques( const action_stat
   if ( ++p()->shadow_techniques == 5 || ( p()->shadow_techniques == 4 && p()->rng().roll( 0.5 ) ) )
   {
     if ( p()->sim->debug )
-      p()->sim->out_debug.printf( "Shadow techniques proc'd at %d", p()->shadow_techniques );
+      p()->sim->out_debug.printf( "Shadow techniques proc'd at %d, resetting counter to 0", p()->shadow_techniques );
+    
+    p()->shadow_techniques = 0;
+    p()->resource_gain( RESOURCE_ENERGY, p()->spec.shadow_techniques_effect->effectN( 2 ).base_value(), p()->gains.shadow_techniques, state->action );
     if ( p()->spec.shadow_techniques_2->ok() )
       trigger_combo_point_gain( as<int>( p()->spec.shadow_techniques_effect->effectN( 1 ).base_value() ), p()->gains.shadow_techniques );
-    p()->resource_gain( RESOURCE_ENERGY, p()->spec.shadow_techniques_effect->effectN( 2 ).base_value(), p()->gains.shadow_techniques, state->action );
-    if ( p()->sim->debug )
-      p()->sim->out_debug.printf( "Resetting shadow_techniques counter to zero." );
-    p()->shadow_techniques = 0;
+    if ( p()->conduit.stiletto_staccato.ok() )
+      p()->cooldowns.shadow_blades->adjust( -timespan_t::from_seconds( p()->conduit.stiletto_staccato.value() ), true );
   }
 }
 
@@ -5970,6 +6035,11 @@ double rogue_t::composite_melee_crit_chance() const
   crit += buffs.master_assassins_mark->stack_value();
   crit += buffs.master_assassins_mark_aura->stack_value();
 
+  if ( conduit.planned_execution.ok() && buffs.symbols_of_death->up() )
+  {
+    crit += conduit.planned_execution.percent();
+  }
+
   return crit;
 }
 
@@ -6006,6 +6076,18 @@ double rogue_t::matching_gear_multiplier( attribute_e attr ) const
     return 0.05;
 
   return 0.0;
+}
+
+// rogue_t::composite_player_multiplier =====================================
+
+double rogue_t::composite_player_multiplier( school_e school ) const
+{
+  double m = player_t::composite_player_multiplier( school );
+
+  if ( buffs.deeper_daggers->up() && buffs.deeper_daggers->data().effectN( 1 ).has_common_school( school ) )
+    m *= 1.0 + buffs.deeper_daggers->check_value();
+
+  return m;
 }
 
 // rogue_t::composite_player_target_multiplier ==============================
@@ -7105,6 +7187,28 @@ void rogue_t::init_spells()
   azerite.vision_of_perfection_percentage = azerite.vision_of_perfection.spell( 1u, essence_type::MAJOR )->effectN( 1 ).percent();
   azerite.vision_of_perfection_percentage += azerite.vision_of_perfection.spell( 2u, essence_spell::UPGRADE, essence_type::MAJOR )->effectN( 1 ).percent();
 
+  // Conduits ===============================================================
+
+  conduit.lethal_poisons          = find_conduit_spell( "Lethal Poisons" );
+  conduit.maim_mangle             = find_conduit_spell( "Maim, Mangle" );
+  conduit.poisoned_finger_blades  = find_conduit_spell( "Poisoned Finger Blades");
+  conduit.well_placed_steel       = find_conduit_spell( "Well-Placed Steel" );
+
+  conduit.ambidexterity           = find_conduit_spell( "Ambidexterity" );
+  conduit.count_the_odds          = find_conduit_spell( "Count the Odds" );
+  conduit.slight_of_hand          = find_conduit_spell( "Slight of Hand" );
+  conduit.triple_threat           = find_conduit_spell( "Triple Threat" );
+
+  conduit.deeper_daggers          = find_conduit_spell( "Deeper Daggers" );
+  conduit.perforated_veins        = find_conduit_spell( "Perforated Veins" );
+  conduit.planned_execution       = find_conduit_spell( "Planned Execution" );
+  conduit.stiletto_staccato       = find_conduit_spell( "Stiletto Staccato" );
+
+  conduit.reverberation           = find_conduit_spell( "Reverberation" );
+  conduit.slaughter_scars         = find_conduit_spell( "Slaughter Scars" );
+  conduit.sudden_fractures        = find_conduit_spell( "Sudden Fractures" );
+  conduit.septic_shock            = find_conduit_spell( "Septic Shock" );
+
   // Legendary Items ========================================================
 
   // TOCHECK: A number of legendaries with seemingly generic effects are not set up in the runeforge data as being generic
@@ -7465,6 +7569,16 @@ void rogue_t::create_buffs()
                                              -> set_default_value( azerite.snake_eyes.value() );
   buffs.the_first_dance                    = make_buff<stat_buff_t>( this, "the_first_dance", find_spell( 278981 ) )
                                              -> add_stat( STAT_HASTE_RATING, azerite.the_first_dance.value() );
+
+  // Conduits ===============================================================
+
+  buffs.deeper_daggers = make_buff( this, "deeper_daggers", conduit.deeper_daggers->effectN( 1 ).trigger() )
+    ->set_trigger_spell( conduit.deeper_daggers )
+    ->set_default_value( conduit.deeper_daggers.percent() );
+
+  buffs.perforated_veins = make_buff( this, "perforated_veins", conduit.perforated_veins->effectN( 1 ).trigger() )
+    ->set_trigger_spell( conduit.perforated_veins )
+    ->set_default_value( conduit.perforated_veins.percent() );
 
   // Legendary Items ========================================================
 
