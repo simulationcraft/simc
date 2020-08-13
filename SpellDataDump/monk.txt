@@ -1498,6 +1498,7 @@ Spell Level      : 4
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
+Labels           : 802: Devout Spirit (297412 effect#1), Devout Spirit (310530 effect#1)
 Affecting spells : Thunder Focus Tea (116680 effect#2), Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Extend Life (185158 effect#2), Lifecycles (Vivify) (197916 effect#1), Infusion of Life (199380 effect#1), Vivify (231602 effect#1), Uplifted Spirits (278576 effect#3), Lunar Glide (281521 effect#1), Celestial Brew (322507 effect#2), Soothing Focus (337476 effect#1), Extend Life (337993 effect#2)
 Family Flags     : 26, 48
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 

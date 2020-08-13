@@ -330,6 +330,7 @@ Spell Level      : 4
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
+Labels           : 802: Devout Spirit (297412 effect#1), Devout Spirit (310530 effect#1)
 Affecting spells : Earth Shield (974 effect#1), Tidal Waves (53390 effect#2), Healing Trance (60515 effect#1), Unleash Life (73685 effect#2), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#1), Elemental Shaman (137040 effect#4), Enhancement Shaman (137041 effect#5), Maelstrom Weapon (187881 effect#1), Nobundo's Redemption (208764 effect#1), Tidal Waves (211991 effect#1), Flash Flood (280615 effect#1), Refreshing Waters (337974 effect#1), Swirling Currents (338340 effect#1)
 Family Flags     : 7, 41
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -10364,6 +10365,7 @@ Class            : Shaman
 School           : Shadow
 Spell Type       : Magic
 Range            : 100 yards
+Labels           : 983: Lavish Harvest (339185 effect#1)
 Affecting spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#1), 
 Family Flags     : 41
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10384,6 +10386,7 @@ Class            : Shaman
 School           : Shadow
 Spell Type       : Magic
 Range            : 100 yards
+Labels           : 983: Lavish Harvest (339185 effect#1)
 Affecting spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Lightning Crash (242284 effect#1)
 Family Flags     : 39
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 

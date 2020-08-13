@@ -378,6 +378,7 @@ Spell Level      : 4
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
+Labels           : 802: Devout Spirit (297412 effect#1), Devout Spirit (310530 effect#1)
 Affecting spells : Avenging Wrath (31884 effect#1), Increased Flash of Light Crit Chance (38522 effect#1), Beacon of Light (53563 effect#3), Infusion of Light (54149 effect#1), Sanctuary (105805 effect#5), Selfless Healer (114250 effect#1), Retribution Paladin (137027 effect#8), Protection Paladin (137028 effect#10), Holy Paladin (137029 effect#1), Beacon of Faith (156910 effect#3), Magnifying Light (185100 effect#1), Tyr's Deliverance (200654 effect#2), Divine Favor (210294 effect#2), Rule of Law (214202 effect#1), Sacred Dawn (243174 effect#1), Purity of Light (254332 effect#1), Blessing of Dawn (337747 effect#1), Shadowbreaker, Dawn of the Sun (337815 effect#1)
 Family Flags     : 30, 46
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 

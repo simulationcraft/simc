@@ -3698,8 +3698,9 @@ Effects          :
                    Family Flags: 0, 2, 12, 15, 38, 40, 52, 74, 85, 89, 91, 92, 108, 126, 127
 #7 (id=260748)   : Apply Aura (6) | Override Attack Power per Spell Power% (404)
                    Base Value: 104 | Scaled Value: 104 | PvP Coefficient: 1.00000 | Target: Self (1)
-#8 (id=260749)   : Apply Aura (6) | Unknown(219)
-                   Base Value: -40 | Scaled Value: -40 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 0x35f | Target: Self (1)
+#8 (id=260749)   : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
+                   Base Value: -40 | Scaled Value: -40 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 863 (Label) | Target: Self (1)
+                   Affected Spells (Label): High Noon (278505)
 Description      : Restoration Druid core passive
 
 Name             : Balance Druid (id=137013) [Spell Family (7), Passive, Hidden] 
@@ -11957,6 +11958,7 @@ Resource         : -10 Runic Power (6) (id=215245)
 GCD              : 1.5 seconds
 Duration         : 8 seconds
 Cooldown         : 60 seconds
+Labels           : 1060: Impenetrable Gloom (338629 effect#1)
 Proc Chance      : 101%
 Proc Flags       : ....x... ....x... x.x..... ........ 
                  : Yellow Melee, Generic Hostile Spell, Magic Hostile Spell, Periodic

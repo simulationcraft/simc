@@ -9702,6 +9702,7 @@ GCD              : 1.5 seconds
 Duration         : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 90 seconds
+Labels           : 984: Destructive Reverberations (339939 effect#1)
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Single-Minded Fury (81099 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#2), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Deep Wounds (262115 effect#2), Siegebreaker (280773 effect#1)
 Family Flags     : 8, 9
 Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... ........ ........ 
@@ -9729,6 +9730,7 @@ School           : Nature
 Spell Type       : Magic
 Range            : 100 yards
 Duration         : 12 seconds
+Labels           : 984: Destructive Reverberations (339939 effect#1)
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Single-Minded Fury (81099 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Deep Wounds (262115 effect#2), Siegebreaker (280773 effect#1)
 Family Flags     : 9
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
