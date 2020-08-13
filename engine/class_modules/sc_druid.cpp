@@ -6505,8 +6505,8 @@ struct starfall_t : public druid_spell_t
       {
         player_t* t = tl[ i ];
 
-        td( t )->dots.moonfire->extend_duration( timespan_t::from_seconds( ext ) );
-        td( t )->dots.sunfire->extend_duration( timespan_t::from_seconds( ext ) );
+        td( t )->dots.moonfire->extend_duration( timespan_t::from_seconds( ext ), 0_ms, -1, false );
+        td( t )->dots.sunfire->extend_duration( timespan_t::from_seconds( ext ), 0_ms, -1, false );
       }
     }
 
