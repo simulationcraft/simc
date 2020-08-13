@@ -1089,11 +1089,11 @@ void priest_t::create_procs()
   procs.serendipity_overflow            = get_proc( "Serendipity lost to overflow (Non-Tier 17 4pc)" );
   procs.power_of_the_dark_side          = get_proc( "Power of the Dark Side Penance damage buffed" );
   procs.power_of_the_dark_side_overflow = get_proc( "Power of the Dark Side lost to overflow" );
-  procs.shimmering_apparitions			= get_proc( "Shadowy Apparition Procced from Shimmering Apparition non SW:P Crit" );
-  procs.dissonant_echoes				= get_proc( "Void Bolt resets from Dissonant Echoes" );
-  procs.mind_devourer					= get_proc( "Mind Devourer free Devouring Plague proc" );
-  procs.blessing_of_plenty				= get_proc( "Blessing of Plenty CDR on Fae Blessings" );
-  procs.void_tendril					= get_proc( "Void Tendril proc from Eternal Call to the Void" );
+  procs.shimmering_apparitions          = get_proc( "Shadowy Apparition Procced from Shimmering Apparition non SW:P Crit" );
+  procs.dissonant_echoes                = get_proc( "Void Bolt resets from Dissonant Echoes" );
+  procs.mind_devourer                   = get_proc( "Mind Devourer free Devouring Plague proc" );
+  procs.blessing_of_plenty              = get_proc( "Blessing of Plenty CDR on Fae Blessings" );
+  procs.void_tendril                    = get_proc( "Void Tendril proc from Eternal Call to the Void" );
 }
 
 /** Construct priest benefits */
