@@ -137,42 +137,47 @@ public:
 
   rogue_td_t( player_t* target, rogue_t* source );
 
-  bool lethal_poisoned() const
-  {
-    return dots.deadly_poison -> is_ticking() ||
-           debuffs.wound_poison -> check();
-  }
-
   timespan_t lethal_poison_remains() const
   {
-    if ( dots.deadly_poison -> is_ticking() ) {
-      return dots.deadly_poison -> remains();
-    } else if ( debuffs.wound_poison -> check() ) {
-      return debuffs.wound_poison -> remains();
-    } else {
-      return timespan_t::from_seconds( 0.0 );
-    }
-  }
+    if ( dots.deadly_poison->is_ticking() )
+      return dots.deadly_poison->remains();
 
-  bool non_lethal_poisoned() const
-  {
-    return debuffs.crippling_poison->check() || debuffs.numbing_poison->check();
+    if ( debuffs.wound_poison->check() )
+      return debuffs.wound_poison->remains();
+
+    return 0_s;
   }
 
   timespan_t non_lethal_poison_remains() const
   {
-    if ( debuffs.crippling_poison->check() ) {
+    if ( debuffs.crippling_poison->check() )
       return debuffs.crippling_poison->remains();
-    } else if ( debuffs.numbing_poison->check() ) {
+
+    if ( debuffs.numbing_poison->check() )
       return debuffs.numbing_poison->remains();
-    } else {
-      return timespan_t::from_seconds( 0.0 );
-    }
+
+    return 0_s;
   }
 
-  bool poisoned() const
+  bool is_lethal_poisoned() const
   {
-    return lethal_poisoned() || non_lethal_poisoned();
+    return dots.deadly_poison->is_ticking() || debuffs.wound_poison->check();
+  }
+
+  bool is_non_lethal_poisoned() const
+  {
+    return debuffs.crippling_poison->check() || debuffs.numbing_poison->check();
+  }
+
+  bool is_poisoned() const
+  {
+    return is_lethal_poisoned() || is_non_lethal_poisoned();
+  }
+
+  bool is_bleeding() const
+  {
+    return dots.garrote->is_ticking() || dots.rupture->is_ticking() ||
+      dots.crimson_tempest->is_ticking() || dots.internal_bleeding->is_ticking();
   }
 };
 
@@ -559,11 +564,11 @@ public:
     conduit_data_t lethal_poisons;            // NYI
     conduit_data_t maim_mangle;
     conduit_data_t poisoned_finger_blades;    // NYI
-    conduit_data_t well_placed_steel;         // NYI
+    conduit_data_t well_placed_steel;
 
-    conduit_data_t ambidexterity;             // NYI
+    conduit_data_t ambidexterity;
     conduit_data_t count_the_odds;            // NYI
-    conduit_data_t slight_of_hand;            // NYI
+    conduit_data_t slight_of_hand;
     conduit_data_t triple_threat;             // NYI
 
     conduit_data_t deeper_daggers;
@@ -3319,12 +3324,9 @@ struct mutilate_t : public rogue_attack_t
     {
       double m = rogue_attack_t::composite_target_multiplier( target );
 
-      if ( p()->conduit.maim_mangle.ok() )
+      if ( p()->conduit.maim_mangle.ok() && td( target )->dots.garrote->is_ticking() )
       {
-        if ( td( target )->dots.garrote->is_ticking() )
-        {
-          m *= 1.0 + p()->conduit.maim_mangle.percent();
-        }
+        m *= 1.0 + p()->conduit.maim_mangle.percent();
       }
 
       return m;
@@ -3402,7 +3404,7 @@ struct mutilate_t : public rogue_attack_t
         double_dose->execute();
       }
 
-      if ( p()->talent.venom_rush->ok() && p()->get_target_data( execute_state->target )->poisoned() )
+      if ( p()->talent.venom_rush->ok() && p()->get_target_data( execute_state->target )->is_poisoned() )
       {
         p()->resource_gain( RESOURCE_ENERGY,
                             p()->talent.venom_rush->effectN( 1 ).base_value(),
@@ -3442,6 +3444,9 @@ struct roll_the_bones_t : public rogue_spell_t
     // Roll the Bones still triggers Snake Eyes on Shadowlands Beta but the damage increase is zero since it does not consume CP anymore.
     // - Mystler 2020-07-31
     p() -> buffs.snake_eyes -> trigger( p() -> buffs.snake_eyes -> max_stack(), 0 );
+
+    if ( p()->conduit.slight_of_hand.ok() && p()->rng().roll( p()->conduit.slight_of_hand.percent() ) )
+      cooldown->reset( true );
   }
 };
 
@@ -4198,14 +4203,32 @@ struct shiv_t : public rogue_attack_t
   {
   }
 
+  double composite_target_multiplier( player_t* target ) const override
+  {
+    double m = rogue_attack_t::composite_target_multiplier( target );
+
+    if ( p()->conduit.well_placed_steel.ok() && td( target )->is_bleeding() )
+    {
+      // TOCHECK: Assuming this is a percentage rather than a flat value, tooltip doesn't have % though
+      m *= 1.0 + p()->conduit.well_placed_steel.percent();
+    }
+
+    return m;
+  }
+
   void impact( action_state_t* s ) override
   {
     rogue_attack_t::impact( s );
-
-    if ( p()->spec.shiv_2->ok() && result_is_hit( s->result ) )
+    
+    if ( result_is_hit( s->result ) )
     {
-      td( s->target )->debuffs.shiv->trigger();
-    }
+      if ( p()->spec.shiv_2->ok() )
+        td( s->target )->debuffs.shiv->trigger();
+
+      // TOCHECK: Does this add an Envenom buff even if one is not already up?
+      if ( p()->conduit.well_placed_steel.ok() && p()->buffs.envenom->check() )
+        p()->buffs.envenom->extend_duration( p(), p()->conduit.well_placed_steel.time_value( conduit_data_t::time_type::S ) );
+    }    
   }
 };
 
@@ -5415,7 +5438,7 @@ void rogue_t::trigger_venomous_wounds_death( player_t* target )
     return;
 
   rogue_td_t* td = get_target_data( target );
-  if ( !td->poisoned() )
+  if ( !td->is_poisoned() )
     return;
 
   // No end event means it naturally expired
@@ -5487,7 +5510,11 @@ void actions::rogue_action_t<Base>::trigger_main_gauche( const action_state_t* s
   if ( !procs_main_gauche() )
     return;
 
-  if ( !p()->rng().roll( p()->mastery.main_gauche->proc_chance() ) )
+  double proc_chance = p()->mastery.main_gauche->proc_chance();
+  if ( p()->conduit.ambidexterity.ok() && p()->buffs.blade_flurry->check() )
+    proc_chance += p()->conduit.ambidexterity.percent();
+
+  if ( !p()->rng().roll( proc_chance ) )
     return;
 
   p()->active.main_gauche->set_target( state->target );
@@ -5547,7 +5574,7 @@ void actions::rogue_action_t<Base>::trigger_venomous_wounds( const action_state_
   if ( !p()->spec.venomous_wounds->ok() )
     return;
 
-  if ( !p()->get_target_data( state->target )->poisoned() )
+  if ( !p()->get_target_data( state->target )->is_poisoned() )
     return;
 
   if ( !ab::result_is_hit( state->result ) )
@@ -6638,7 +6665,7 @@ std::unique_ptr<expr_t> rogue_t::create_expression( util::string_view name_str )
   else if ( util::str_compare_ci( name_str, "poisoned" ) )
     return make_fn_expr( name_str, [ this ]() {
       rogue_td_t* tdata = get_target_data( target );
-      return tdata -> lethal_poisoned();
+      return tdata -> is_lethal_poisoned();
     } );
   else if ( util::str_compare_ci( name_str, "poison_remains" ) )
     return make_fn_expr( name_str, [ this ]() {
@@ -6663,7 +6690,7 @@ std::unique_ptr<expr_t> rogue_t::create_expression( util::string_view name_str )
       {
         player_t* t = sim -> target_non_sleeping_list[i];
         rogue_td_t* tdata = get_target_data( t );
-        if ( tdata -> lethal_poisoned() ) {
+        if ( tdata -> is_lethal_poisoned() ) {
           poisoned_bleeds += tdata -> dots.garrote -> is_ticking() +
                              tdata -> dots.internal_bleeding -> is_ticking() +
                              tdata -> dots.rupture -> is_ticking();
