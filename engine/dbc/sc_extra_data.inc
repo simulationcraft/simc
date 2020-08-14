@@ -19,7 +19,7 @@ static int __gt_item_scaling[120] =
 };
 
 //  Base Stats (Str Agi Sta Int Spi)   // TO-DO: Add values for 101->110 and fix all Demon Hunter values
-static stat_data_t __gt_class_stats_by_level[][120] =
+static constexpr stat_data_t __gt_class_stats_by_level[][120] =
 {
   { // No Class
     //    Str     Agi     Sta     Int     Spi
@@ -1623,7 +1623,7 @@ static stat_data_t __gt_class_stats_by_level[][120] =
 };
 
 //  Racial Base Stat Modifiers (Str Agi Sta Int Spi)
-static stat_data_t __gt_race_stats[] =
+static constexpr stat_data_t __gt_race_stats[] =
 {
   // Str Agi Sta Int Spi
   {   0,  0,  0,  0,  0 }, // No Race

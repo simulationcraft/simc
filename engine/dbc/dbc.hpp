@@ -360,10 +360,10 @@ public:
   double dodge_base( pet_e t ) const;
   double resource_base( player_e t, unsigned level ) const;
   double health_base( player_e t, unsigned level ) const;
-  stat_data_t& attribute_base( player_e t, unsigned level ) const;
-  stat_data_t& attribute_base( pet_e t, unsigned level ) const;
-  stat_data_t& race_base( race_e r ) const;
-  stat_data_t& race_base( pet_e t ) const;
+  const stat_data_t& attribute_base( player_e t, unsigned level ) const;
+  const stat_data_t& attribute_base( pet_e t, unsigned level ) const;
+  const stat_data_t& race_base( race_e r ) const;
+  const stat_data_t& race_base( pet_e t ) const;
   double parry_factor( player_e t ) const;
   double dodge_factor( player_e t ) const;
   double miss_factor( player_e t ) const;
