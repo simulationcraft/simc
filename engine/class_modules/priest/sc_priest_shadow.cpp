@@ -1478,15 +1478,13 @@ struct voidform_t final : public priest_buff_t<buff_t>
   {
     /// TODO: Verify if functionality is properly matching how it works ingame.
 
-    double charges = priest().cooldowns.mind_blast->charges_fractional();
-    // Work out difference between current charges and new charges after voidform drops
-    charges -= abs( charges - 1 );
-    // Set charges to 1
-    priest().cooldowns.mind_blast->charges = 1;
-    // Reset cooldowns to cancel events to avoid event and timing issues
-    priest().cooldowns.mind_blast->reset( false, 1 );
-    // Adjust to correct charge count
-    priest().cooldowns.mind_blast->adjust( charges * cooldown_t::cooldown_duration( priest().cooldowns.mind_blast ) );
+    sim->print_debug( "{} has {} charges of mind blast as voidform ended", *player,
+                      priest().cooldowns.mind_blast->charges_fractional() );
+    //Call new generic function to adjust charges.
+    adjust_max_charges( priest().cooldowns.mind_blast, 1 );
+
+    sim->print_debug( "{} has {} charges of mind blast after voidform ended", *player,
+                      priest().cooldowns.mind_blast->charges_fractional() );
 
     priest().buffs.insanity_drain_stacks->expire();
 

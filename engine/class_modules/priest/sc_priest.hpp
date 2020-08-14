@@ -1461,4 +1461,81 @@ struct priest_module_t final : public module_t
   {
   }
 };
+
+/**
+ * Adjust maximum charges for a cooldown
+ * Takes the cooldown and new maximum charge count
+ * Function depends on the internal working of cooldown_t::reset
+ */
+static void adjust_max_charges( cooldown_t* cooldown, int new_max_charges )
+{
+  assert( new_max_charges > 0 && "Cooldown charges must be greater than 0" );
+  assert( cooldown && "Cooldown must not be null" );
+
+  int charges_max = cooldown->charges;
+
+  // Charges are not being changed, just end.
+  if ( charges_max == new_max_charges )
+    return;
+
+  /**
+   * If the cooldown ongoing we can assume that the action isn't a nullptr as otherwise the action would not be ongoing.
+   * If it has no action we cannot call cooldown->start which means we cannot set fractional charges.
+   * However, a cooldown is not ongoing at maximum charges. if we have maximum charges then the number of charges will
+   * only ever change equal to the change in maximum charges. This means we'll never need to use cooldown->start to
+   * handle the case where cooldown is not ongoing and cooldown->reset is satisfactory.
+   */
+  if ( !cooldown->ongoing() )
+  {
+    // Change charges to new max
+    cooldown->charges = new_max_charges;
+    // Call reset, which will set current charges to new max and make relevant event calls
+    cooldown->reset( false, -1 );
+  }
+  else
+  {
+    action_t* cooldown_action = cooldown->action;
+    double charges_fractional = cooldown->charges_fractional();
+
+    if ( new_max_charges < charges_max )
+    {
+      /**
+       * If our new max charges is less than current max charges, we have lost maximum charges.
+       * If we have lost maximum charges, we'll also lose current charges for charges lost but we'll keep current
+       * cooldown progress.
+       **/
+      int charges_lost   = charges_max - new_max_charges;
+      charges_fractional = charges_fractional >= charges_lost ? charges_fractional - charges_lost
+                                                              : charges_fractional - floor( charges_fractional );
+    }
+    else
+    {
+      /**
+       * Otherwise, we have gained maximum charges.
+       * Gaining maximum charges will give us those charges.
+       **/
+      int charges_gained = new_max_charges - charges_max;
+      charges_fractional += charges_gained;
+    }
+
+    // Set new maximum charges then reset to stop all events.
+    cooldown->charges = new_max_charges;
+    cooldown->reset( false, -1 );
+
+    /**
+     * This loop is used to remove all of the charges and start the cooldown recovery event properly.
+     * It does it by repetetively calling cooldown->start which will remove a current charge and restart the event
+     * timers.
+     */
+    for ( int i = 0; i < cooldown->charges; i++ )
+      cooldown->start( cooldown_action );
+
+    /**
+     * Use adjust to go from 0 charges and 0 cooldown progress to the previously calculated charges we should have after
+     * changing max charges by making the cooldown advance in time by the multiple of the cooldown.
+     */
+    cooldown->adjust( -charges_fractional * cooldown_t::cooldown_duration( cooldown ) );
+  }
+}
+
 }  // namespace priestspace
