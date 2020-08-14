@@ -2926,8 +2926,15 @@ struct kill_shot_t : hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::execute();
 
-    p() -> buffs.dead_eye -> trigger();
     p() -> buffs.flayers_mark -> decrement();
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    hunter_ranged_attack_t::impact( s );
+
+    if ( result_is_hit( s -> result ) )
+      p() -> buffs.dead_eye -> trigger();
   }
 
   bool target_ready( player_t* candidate_target ) override
