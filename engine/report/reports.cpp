@@ -174,10 +174,15 @@ void print_spell_query(std::ostream& out, const sim_t& sim, const spell_data_exp
     {
       std::ostringstream sqs;
       const spelleffect_data_t* base_effect = sim.dbc->effect(*i);
-      if (const spell_data_t* spell = dbc::find_spell(&(sim), base_effect->spell()))
+      if ( const spell_data_t* spell = dbc::find_spell( &(sim), base_effect->spell() ) )
       {
-        spell_info::effect_to_str(*sim.dbc, spell, dbc::find_effect(&(sim), base_effect), sqs, level);
-        out << sqs.str();
+        const auto spell_effects = spell->effects();
+        auto effect = range::find( spell_effects, base_effect->id(), &spelleffect_data_t::id );
+        if ( effect != spell_effects.end() )
+        {
+          spell_info::effect_to_str( *sim.dbc, spell, &( *effect ), sqs, level );
+          out << sqs.str();
+        }
       }
     }
     break;
@@ -205,9 +210,12 @@ void print_spell_query(xml_node_t* root, FILE* file, const sim_t& sim, const spe
     {
       std::ostringstream sqs;
       const spelleffect_data_t* dbc_effect = sim.dbc->effect(*i);
-      if (const spell_data_t* spell = dbc::find_spell(&(sim), dbc_effect->spell()))
+      if ( const spell_data_t* spell = dbc::find_spell( &(sim), dbc_effect->spell() ) )
       {
-        spell_info::effect_to_xml(*sim.dbc, spell, dbc::find_effect(&(sim), dbc_effect), root, level);
+        const auto spell_effects = spell->effects();
+        auto effect = range::find( spell_effects, dbc_effect->id(), &spelleffect_data_t::id );
+        if ( effect != spell_effects.end() )
+          spell_info::effect_to_xml(*sim.dbc, spell, &( *effect ), root, level);
       }
     }
     break;
