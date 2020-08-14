@@ -174,7 +174,7 @@ static void generate_indices( bool ptr )
     for ( const spelleffect_data_t& effect : spell.effects() )
     {
       static constexpr effect_subtype_t category_subtypes[] = {
-        A_411, A_453, A_454, A_HASTED_CATEGORY
+        A_MODIFY_CATEGORY_COOLDOWN, A_411, A_453, A_454, A_HASTED_CATEGORY
       };
       if ( range::contains( category_subtypes, effect.subtype() ) )
       {

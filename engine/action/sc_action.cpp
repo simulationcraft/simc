@@ -4778,6 +4778,11 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
   {
     switch ( effect.subtype() )
     {
+      case A_MODIFY_CATEGORY_COOLDOWN:  // Modify Cooldown Time
+        cooldown->duration += effect.time_value();
+        sim->print_debug( "{} cooldown duration modified by {}", *this, effect.time_value() );
+        break;
+
       case A_411:  // Modify Cooldown Charges
         cooldown->charges += as<int>( effect.base_value() );
         sim->print_debug( "{} cooldown charges modified by {}", *this, as<int>( effect.base_value() ) );
@@ -4790,7 +4795,7 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
 
       case A_453:  // Modify Recharge Time
         cooldown->duration += effect.time_value();
-        sim->print_debug( "{} cooldown duration modified by {}", *this, effect.time_value() );
+        sim->print_debug( "{} cooldown recharge time modified by {}", *this, effect.time_value() );
         break;
 
       case A_454:  // Modify Recharge Time%

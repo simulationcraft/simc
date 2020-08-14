@@ -646,6 +646,7 @@ static constexpr auto _effect_subtype_strings = util::make_static_map<unsigned, 
   { 332, "Override Action Spell (Misc /w Base)"         },
   { 334, "Modify Auto Attack Critical Chance"           },
   { 339, "Modify Crit Chance% from Caster's Pets"       },
+  { 341, "Modify Cooldown Time (Category)"              },
   { 342, "Modify Ranged and Melee Attack Speed%"        },
   { 343, "Modify Auto Attack Damage Taken% from Caster" },
   { 344, "Modify Auto Attack Damage Done%"              },
@@ -682,7 +683,7 @@ static constexpr auto _effect_subtype_strings = util::make_static_map<unsigned, 
 } );
 
 static constexpr auto _category_effect_subtypes = util::make_static_set<unsigned> ( {
-  411, 453, 454, 457
+  341, 411, 453, 454, 457
 } );
 
 static constexpr auto _mechanic_strings = util::make_static_map<unsigned, util::string_view>( {
