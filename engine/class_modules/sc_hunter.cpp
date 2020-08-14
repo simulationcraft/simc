@@ -2926,6 +2926,7 @@ struct kill_shot_t : hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::execute();
 
+    p() -> buffs.flayers_mark -> up(); // benefit tracking
     p() -> buffs.flayers_mark -> decrement();
   }
 
@@ -2940,7 +2941,7 @@ struct kill_shot_t : hunter_ranged_attack_t
   bool target_ready( player_t* candidate_target ) override
   {
     return ( candidate_target -> health_percentage() <= health_threshold_pct ||
-             p() -> buffs.flayers_mark -> up() ) &&
+             p() -> buffs.flayers_mark -> check() ) &&
            hunter_ranged_attack_t::target_ready( candidate_target );
   }
 
