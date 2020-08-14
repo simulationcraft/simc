@@ -171,6 +171,11 @@ public:
     }
 
     priest().trigger_shadowy_apparitions( s );
+
+    if ( priest().talents.psychic_link->ok() )
+    {
+      priest().trigger_psychic_link( s );
+    }
   }
 
   timespan_t execute_time() const override
@@ -347,7 +352,6 @@ struct mind_flay_t final : public priest_spell_t
 
     /// TODO: Confirm is procrate is matching ingame
     /// TODO: Confirm if this needs to be adjusted to be on its own PRNG system or has an ICD
-
     if ( rng().roll( priest().specs.dark_thoughts->effectN( 1 ).percent() * dots ) )
     {
       sim->print_debug( "{} rolled DT Proc success from flay with {} chance with {} dots", *player,
@@ -683,6 +687,26 @@ struct shadowy_apparition_spell_t final : public priest_spell_t
     player->sim->print_debug( "{} triggered shadowy apparition on target {}.", priest(), *target );
 
     priest().procs.shadowy_apparition->occur();
+    set_target( target );
+    execute();
+  }
+};
+
+struct psychic_link_t final : public priest_spell_t
+{
+  psychic_link_t( priest_t& p ) : priest_spell_t( "psychic_link", p, p.find_spell( 199486 ) )
+  {
+    background = true;
+    may_crit   = false;
+    may_miss   = false;
+    radius     = data().effectN( 1 ).radius_max();
+  }
+
+  void trigger( player_t* target, double original_amount )
+  {
+    base_dd_min = base_dd_max = ( original_amount * priest().talents.psychic_link->effectN( 1 ).percent() );
+    player->sim->print_debug( "{} triggered psychic link on target {}.", priest(), *target );
+
     set_target( target );
     execute();
   }
@@ -2296,9 +2320,14 @@ void priest_t::init_background_actions_shadow()
   {
     active_spells.shadowy_apparitions = new actions::spells::shadowy_apparition_spell_t( *this );
   }
+
+  if ( talents.psychic_link->ok() )
+  {
+    active_spells.psychic_link = new actions::spells::psychic_link_t( *this );
+  }
 }
 
-/// Trigger shadowy apparitions on all targets affected by vampiric touch
+// Trigger shadowy apparitions on all targets affected by vampiric touch
 void priest_t::trigger_shadowy_apparitions( action_state_t* s )
 {
   if ( !specs.shadowy_apparitions->ok() )
@@ -2316,6 +2345,23 @@ void priest_t::trigger_shadowy_apparitions( action_state_t* s )
       {
         active_spells.shadowy_apparitions->trigger( priest_td->target );
       }
+    }
+  }
+}
+
+// Trigger psychic link on any targets that weren't the original target and have Vampiric Touch ticking on them
+void priest_t::trigger_psychic_link( action_state_t* s )
+{
+  if ( !talents.psychic_link->ok() )
+  {
+    return;
+  }
+
+  for ( priest_td_t* priest_td : _target_data.get_entries() )
+  {
+    if ( priest_td && ( priest_td->target != s->target ) && priest_td->dots.vampiric_touch->is_ticking() )
+    {
+      active_spells.psychic_link->trigger( priest_td->target, s->result_amount );
     }
   }
 }

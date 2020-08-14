@@ -36,6 +36,7 @@ struct summon_pet_t;
 struct summon_shadowfiend_t;
 struct summon_mindbender_t;
 struct ascended_eruption_t;
+struct psychic_link_t;
 }  // namespace spells
 namespace heals
 {
@@ -228,7 +229,7 @@ public:
     const spell_data_t* psychic_horror;
     // T40
     const spell_data_t* auspicious_spirits;
-    const spell_data_t* psychic_link;  // NYI
+    const spell_data_t* psychic_link;
     const spell_data_t* shadow_crash;
     // T45
     const spell_data_t* damnation;
@@ -359,6 +360,7 @@ public:
   {
     propagate_const<actions::spells::mind_sear_tick_t*> mind_sear_tick;
     propagate_const<actions::spells::shadowy_apparition_spell_t*> shadowy_apparitions;
+	  propagate_const<actions::spells::psychic_link_t*> psychic_link;
   } active_spells;
 
   // Items
@@ -566,6 +568,7 @@ public:
   double tick_damage_over_time( timespan_t duration, const dot_t* dot ) const;
   void trigger_eternal_call_to_the_void( const dot_t* d );
   void trigger_shadowy_apparitions( action_state_t* );
+  void trigger_psychic_link( action_state_t* );
 
   /**
    * Insanity tracking
