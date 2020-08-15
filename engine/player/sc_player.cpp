@@ -1119,6 +1119,7 @@ player_t::player_t( sim_t* s, player_e t, util::string_view n, race_e r )
     world_lag_stddev_override( false ),
     cooldown_tolerance_( timespan_t::min() ),
     dbc( new dbc_t(*(s->dbc)) ),
+    dbc_override( sim->dbc_override.get() ),
     talent_points(),
     profession(),
     azerite( nullptr ),

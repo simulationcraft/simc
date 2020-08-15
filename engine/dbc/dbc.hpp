@@ -9,9 +9,12 @@
 #include "config.hpp"
 #include "util/generic.hpp"
 #include "sc_timespan.hpp"
-#include <string>
+
+#include <array>
 #include <functional>
+#include <string>
 #include <unordered_map>
+#include <vector>
 
 #include "data_definitions.hh"
 #include "data_enums.hh"
@@ -282,38 +285,6 @@ namespace hotfix
 
 } // namespace hotfix
 
-namespace dbc_override
-{
-  enum dbc_override_e
-  {
-    DBC_OVERRIDE_SPELL = 0,
-    DBC_OVERRIDE_EFFECT,
-    DBC_OVERRIDE_POWER
-  };
-
-  struct dbc_override_entry_t
-  {
-    dbc_override_e type_;
-    std::string    field_;
-    unsigned       id_;
-    double         value_;
-
-    dbc_override_entry_t( dbc_override_e et, util::string_view f, unsigned i, double v ) :
-      type_( et ), field_( f ), id_( i ), value_( v )
-    { }
-  };
-
-  void register_effect( dbc_t&, unsigned, util::string_view, double );
-  void register_spell( dbc_t&, unsigned, util::string_view, double );
-  void register_power( dbc_t&, unsigned, util::string_view, double );
-
-  const spell_data_t* find_spell( unsigned, bool ptr = false );
-  const spelleffect_data_t* find_effect( unsigned, bool ptr = false );
-  const spelleffect_data_t* find_power( unsigned, bool ptr = false );
-
-  const std::vector<dbc_override_entry_t>& override_entries();
-}
-
 // If we don't have any ptr data, don't bother to check if ptr is true
 #if SC_USE_PTR
 inline bool maybe_ptr( bool ptr ) { return ptr; }
@@ -539,6 +510,45 @@ public:
   util::span<const spell_data_t* const> spells_by_category( unsigned category ) const;
 };
 
+class dbc_override_t
+{
+public:
+  enum override_e
+  {
+    OVERRIDE_SPELL = 0,
+    OVERRIDE_EFFECT,
+    OVERRIDE_POWER
+  };
+
+  struct override_entry_t
+  {
+    override_e  type_;
+    std::string field_;
+    unsigned    id_;
+    double      value_;
+
+    override_entry_t( override_e et, util::string_view f, unsigned i, double v ) :
+      type_( et ), field_( f ), id_( i ), value_( v )
+    { }
+  };
+
+  dbc_override_t() = default;
+
+  void register_effect( const dbc_t&, unsigned, util::string_view, double );
+  void register_spell( const dbc_t&, unsigned, util::string_view, double );
+  void register_power( const dbc_t&, unsigned, util::string_view, double );
+
+  const spell_data_t* find_spell( unsigned, bool ptr = false ) const;
+  const spelleffect_data_t* find_effect( unsigned, bool ptr = false ) const;
+  const spellpower_data_t* find_power( unsigned, bool ptr = false ) const;
+
+  const std::vector<override_entry_t>& override_entries( bool ptr = false ) const;
+
+private:
+  std::array<custom_dbc_data_t, 2> override_db_;
+  std::array<std::vector<override_entry_t>, 2> override_entries_;
+};
+
 namespace dbc
 {
 
@@ -546,7 +556,7 @@ namespace dbc
 template <typename T>
 const spell_data_t* find_spell( const T* obj, const spell_data_t* spell )
 {
-  if ( const spell_data_t* override_spell = dbc_override::find_spell( spell -> id(), obj -> dbc->ptr ) )
+  if ( const spell_data_t* override_spell = obj->dbc_override->find_spell( spell -> id(), obj -> dbc->ptr ) )
   {
     return override_spell;
   }
@@ -562,7 +572,7 @@ const spell_data_t* find_spell( const T* obj, const spell_data_t* spell )
 template <typename T>
 const spell_data_t* find_spell( const T* obj, unsigned spell_id )
 {
-  if ( const spell_data_t* override_spell = dbc_override::find_spell( spell_id, obj -> dbc->ptr ) )
+  if ( const spell_data_t* override_spell = obj->dbc_override->find_spell( spell_id, obj -> dbc->ptr ) )
   {
     return override_spell;
   }

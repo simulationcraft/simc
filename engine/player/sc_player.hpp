@@ -170,6 +170,7 @@ struct player_t : public actor_t
 
   // Data access
   std::unique_ptr<dbc_t> dbc;
+  const dbc_override_t*  dbc_override;
 
   // Option Parsing
   std::vector<std::unique_ptr<option_t>> options;
