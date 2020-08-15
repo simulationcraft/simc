@@ -310,6 +310,11 @@ public:
     buff_t* master_assassins_mark_aura;
     buff_t* the_rotten;
 
+    // Covenant
+    buff_t* echoing_reprimand_2;
+    buff_t* echoing_reprimand_3;
+    buff_t* echoing_reprimand_4;
+
     // Conduits
     buff_t* deeper_daggers;
     buff_t* perforated_veins;
@@ -642,6 +647,11 @@ public:
     proc_t* deepening_shadows;
     proc_t* weaponmaster;
 
+    // Covenant
+    proc_t* echoing_reprimand_2;
+    proc_t* echoing_reprimand_3;
+    proc_t* echoing_reprimand_4;
+
     // Conduits
     proc_t* count_the_odds;
   } procs;
@@ -911,6 +921,25 @@ struct rogue_action_state_t : public action_state_t
     action_state_t::initialize();
     cp = 0;
     exsanguinated = false;
+  }
+
+  int get_combo_points( bool echoing_reprimand = true ) const
+  {
+    if ( echoing_reprimand )
+    {
+      const rogue_t* rogue = debug_cast<rogue_t*>( action->player );
+      if ( rogue->covenant.echoing_reprimand->ok() )
+      {
+        if ( cp == 2 && rogue->buffs.echoing_reprimand_2->check() ||
+             cp == 3 && rogue->buffs.echoing_reprimand_3->check() ||
+             cp == 4 && rogue->buffs.echoing_reprimand_4->check() )
+        {
+          return as<int>( rogue->covenant.echoing_reprimand->effectN( 2 ).base_value() );
+        }
+      }
+    }
+
+    return cp;
   }
 
   std::ostringstream& debug_str( std::ostringstream& s ) override
@@ -1272,7 +1301,8 @@ public:
   virtual double combo_point_da_multiplier( const action_state_t* s ) const
   {
     if ( ab::base_costs[ RESOURCE_COMBO_POINT ] )
-      return static_cast<double>( cast_state( s )->cp );
+      return static_cast<double>( cast_state( s )->get_combo_points() );
+
     return 1.0;
   }
 
@@ -2597,7 +2627,7 @@ struct crimson_tempest_t : public rogue_attack_t
 
   double combo_point_da_multiplier( const action_state_t* s ) const override
   { 
-    return static_cast<double>( cast_state( s ) -> cp + 1 );
+    return static_cast<double>( cast_state( s )->get_combo_points() + 1 );
   }
 };
 
@@ -2724,7 +2754,8 @@ struct eviscerate_t : public rogue_attack_t
 
     if ( bonus_attack && td( target )->debuffs.find_weakness->up() )
     {
-      bonus_attack->last_eviscerate_cp = cast_state( execute_state )->cp;
+      // TOCHECK: If this works correctly with Echoing Reprimand
+      bonus_attack->last_eviscerate_cp = cast_state( execute_state )->get_combo_points();
       bonus_attack->set_target( target );
       bonus_attack->execute();
     }
@@ -3447,7 +3478,7 @@ struct rupture_t : public rogue_attack_t
   {
     const rogue_action_state_t* state = cast_state( s );
 
-    timespan_t duration = data().duration() * ( 1 + state -> cp );
+    timespan_t duration = data().duration() * ( 1 + state->get_combo_points() );
     if ( state -> exsanguinated )
     {
       duration *= 1.0 / ( 1.0 + p() -> talent.exsanguinate -> effectN( 1 ).percent() );
@@ -3595,7 +3626,7 @@ struct secret_technique_t : public rogue_attack_t
 
     double combo_point_da_multiplier( const action_state_t* state ) const override
     {
-      return static_cast<double>( cast_state( state ) -> cp );
+      return static_cast<double>( cast_state( state )->get_combo_points() );
     }
 
     double composite_target_multiplier( player_t* target ) const override
@@ -4501,6 +4532,30 @@ struct bloodfang_t : public rogue_attack_t
 // Covenant Abilities
 // ==========================================================================
 
+// Echoing Reprimand ========================================================
+
+struct echoing_reprimand_t : public rogue_attack_t
+{
+  std::vector<buff_t*> buffs;
+
+  echoing_reprimand_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ) :
+    rogue_attack_t( name, p, p->covenant.echoing_reprimand, options_str )
+  {
+    buffs = { p->buffs.echoing_reprimand_2, p->buffs.echoing_reprimand_3, p->buffs.echoing_reprimand_4 };
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    rogue_attack_t::impact( state );
+
+    if ( result_is_hit( state->result ) )
+    {
+      unsigned buff_idx = static_cast<int>( rng().range( 0, as<double>( buffs.size() ) ) );
+      buffs[ buff_idx ]->trigger();
+    }
+  }
+};
+
 // Sepsis ===================================================================
 
 struct sepsis_t : public rogue_attack_t
@@ -4533,6 +4588,8 @@ struct sepsis_t : public rogue_attack_t
     p()->cancel_auto_attack(); // TOCHECK
   }
 };
+
+// Slaughter ================================================================
 
 struct slaughter_t : public rogue_attack_t
 {
@@ -5993,6 +6050,26 @@ void actions::rogue_action_t<Base>::spend_combo_points( const action_state_t* st
     p()->active.replicating_shadows->set_target( state->target );
     p()->active.replicating_shadows->execute();
   }
+
+  // Remove Echoing Reprimand Buffs
+  if ( p()->covenant.echoing_reprimand->ok() )
+  {
+    if ( max_spend == 2 && p()->buffs.echoing_reprimand_2->up() )
+    {
+      p()->buffs.echoing_reprimand_2->expire();
+      p()->procs.echoing_reprimand_2->occur();
+    }
+    else if ( max_spend == 3 && p()->buffs.echoing_reprimand_3->up() )
+    {
+      p()->buffs.echoing_reprimand_3->expire();
+      p()->procs.echoing_reprimand_3->occur();
+    }
+    else if ( max_spend == 4 && p()->buffs.echoing_reprimand_4->up() )
+    {
+      p()->buffs.echoing_reprimand_4->expire();
+      p()->procs.echoing_reprimand_4->occur();
+    }
+  }
 }
 
 template <typename Base>
@@ -6473,11 +6550,12 @@ void rogue_t::init_action_list()
 
     // Direct damage abilities
     action_priority_list_t* direct = get_action_priority_list( "direct", "Direct damage abilities" );
-    direct -> add_action( this, "Envenom", "if=combo_points>=4+talent.deeper_stratagem.enabled&(debuff.vendetta.up|debuff.shiv.up|energy.deficit<=25+variable.energy_regen_combined|!variable.single_target)&(!talent.exsanguinate.enabled|cooldown.exsanguinate.remains>2)", "Envenom at 4+ (5+ with DS) CP. Immediately on 2+ targets, with Vendetta, or with TB; otherwise wait for some energy. Also wait if Exsg combo is coming up." );
+    direct -> add_action( this, "Envenom", "if=(combo_points>=4+talent.deeper_stratagem.enabled|combo_points=animacharged_cp)&(debuff.vendetta.up|debuff.shiv.up|energy.deficit<=25+variable.energy_regen_combined|!variable.single_target)&(!talent.exsanguinate.enabled|cooldown.exsanguinate.remains>2)", "Envenom at 4+ (5+ with DS) CP. Immediately on 2+ targets, with Vendetta, or with TB; otherwise wait for some energy. Also wait if Exsg combo is coming up." );
     direct -> add_action( "variable,name=use_filler,value=combo_points.deficit>1|energy.deficit<=25+variable.energy_regen_combined|!variable.single_target" );
     direct -> add_action( this, "Fan of Knives", "if=variable.use_filler&azerite.echoing_blades.enabled&spell_targets.fan_of_knives>=2+(debuff.vendetta.up*(1+(azerite.echoing_blades.rank=1)))", "With Echoing Blades, Fan of Knives at 2+ targets, or 3-4+ targets when Vendetta is up" );
     direct -> add_action( this, "Fan of Knives", "if=variable.use_filler&(buff.hidden_blades.stack>=19|(!priority_rotation&spell_targets.fan_of_knives>=4+(azerite.double_dose.rank>2)+stealthed.rogue))", "Fan of Knives at 19+ stacks of Hidden Blades or against 4+ (5+ with Double Dose) targets." );
     direct -> add_action( this, "Fan of Knives", "target_if=!dot.deadly_poison_dot.ticking,if=variable.use_filler&spell_targets.fan_of_knives>=3", "Fan of Knives to apply Deadly Poison if inactive on any target at 3 targets." );
+    direct -> add_action( "echoing_reprimand,if=variable.use_filler" );
     direct -> add_action( "slaughter,if=variable.use_filler" );
     direct -> add_action( this, "Ambush", "if=variable.use_filler" );
     direct -> add_action( this, "Mutilate", "target_if=!dot.deadly_poison_dot.ticking,if=variable.use_filler&spell_targets.fan_of_knives=2", "Tab-Mutilate to apply Deadly Poison at 2 targets" );
@@ -6506,7 +6584,7 @@ void rogue_t::init_action_list()
     def -> add_action( "variable,name=blade_flurry_sync,value=spell_targets.blade_flurry<2&raid_event.adds.in>20|buff.blade_flurry.up", "With multiple targets, this variable is checked to decide whether some CDs should be synced with Blade Flurry" );
     def -> add_action( "call_action_list,name=stealth,if=stealthed.all" );
     def -> add_action( "call_action_list,name=cds" );
-    def -> add_action( "run_action_list,name=finish,if=combo_points>=cp_max_spend-(buff.broadside.up+buff.opportunity.up)*(talent.quick_draw.enabled&(!talent.marked_for_death.enabled|cooldown.marked_for_death.remains>1))*(azerite.ace_up_your_sleeve.rank<2|!cooldown.between_the_eyes.up|!buff.roll_the_bones.up)", "Finish at maximum CP. Substract one for each Broadside and Opportunity when Quick Draw is selected and MfD is not ready after the next second. Always max BtE with 2+ Ace." );
+    def -> add_action( "run_action_list,name=finish,if=combo_points>=cp_max_spend-(buff.broadside.up+buff.opportunity.up)*(talent.quick_draw.enabled&(!talent.marked_for_death.enabled|cooldown.marked_for_death.remains>1))*(azerite.ace_up_your_sleeve.rank<2|!cooldown.between_the_eyes.up|!buff.roll_the_bones.up)|combo_points=animacharged_cp", "Finish at maximum CP. Substract one for each Broadside and Opportunity when Quick Draw is selected and MfD is not ready after the next second. Always max BtE with 2+ Ace." );
     def -> add_action( "call_action_list,name=build" );
     def -> add_action( "arcane_torrent,if=energy.deficit>=15+energy.regen" );
     def -> add_action( "arcane_pulse" );
@@ -6569,6 +6647,7 @@ void rogue_t::init_action_list()
 
     // Builders
     action_priority_list_t* build = get_action_priority_list( "build", "Builders" );
+    build -> add_action( "echoing_reprimand" );
     build -> add_action( this, "Pistol Shot", "if=(talent.quick_draw.enabled|azerite.keep_your_wits_about_you.rank<2)&buff.opportunity.up&(buff.keep_your_wits_about_you.stack<14|energy<45)", "Use Pistol Shot if it won't cap combo points and the Opportunity buff is up. Avoid using when Keep Your Wits stacks are high or when using Weaponmaster, unless the Deadshot buff is up." );
     build -> add_action( this, "Pistol Shot", "if=buff.opportunity.up&buff.deadshot.up" );
     build -> add_action( this, "Sinister Strike" );
@@ -6706,6 +6785,7 @@ action_t* rogue_t::create_action( util::string_view name, const std::string& opt
   if ( name == "crimson_tempest"     ) return new crimson_tempest_t    ( name, this, options_str );
   if ( name == "detection"           ) return new detection_t          ( name, this, options_str );
   if ( name == "dispatch"            ) return new dispatch_t           ( name, this, options_str );
+  if ( name == "echoing_reprimand"   ) return new echoing_reprimand_t  ( name, this, options_str );
   if ( name == "envenom"             ) return new envenom_t            ( name, this, options_str );
   if ( name == "eviscerate"          ) return new eviscerate_t         ( name, this, options_str );
   if ( name == "exsanguinate"        ) return new exsanguinate_t       ( name, this, options_str );
@@ -6760,6 +6840,22 @@ std::unique_ptr<expr_t> rogue_t::create_expression( util::string_view name_str )
   else if ( util::str_compare_ci( name_str, "cp_max_spend" ) )
   {
     return make_mem_fn_expr( name_str, *this, &rogue_t::consume_cp_max );
+  }
+  else if ( util::str_compare_ci( name_str, "animacharged_cp" ) )
+  {
+    if(!covenant.echoing_reprimand->ok() )
+      return make_mem_fn_expr( name_str, *this, &rogue_t::consume_cp_max );
+
+    return make_fn_expr( name_str, [ this ]() {
+      if ( buffs.echoing_reprimand_2->check() )
+        return 2;
+      else if ( buffs.echoing_reprimand_3->check() )
+        return 3;
+      else if ( buffs.echoing_reprimand_4->check() )
+        return 4;
+
+      return as<int>( consume_cp_max() );
+    } );
   }
   else if ( util::str_compare_ci( name_str, "master_assassin_remains" ) && !legendary.master_assassins_mark->ok() )
   {
@@ -7513,6 +7609,9 @@ void rogue_t::init_procs()
 
   procs.deepening_shadows   = get_proc( "Deepening Shadows"            );
 
+  procs.echoing_reprimand_2 = get_proc( "Animacharged CP 2 Used"       );
+  procs.echoing_reprimand_3 = get_proc( "Animacharged CP 3 Used"       );
+  procs.echoing_reprimand_4 = get_proc( "Animacharged CP 4 Used"       );
   procs.count_the_odds      = get_proc( "Count the Odds"               );
 }
 
@@ -7742,6 +7841,21 @@ void rogue_t::create_buffs()
                                              -> set_default_value( azerite.snake_eyes.value() );
   buffs.the_first_dance                    = make_buff<stat_buff_t>( this, "the_first_dance", find_spell( 278981 ) )
                                              -> add_stat( STAT_HASTE_RATING, azerite.the_first_dance.value() );
+
+  // Covenants ==============================================================
+
+  buffs.echoing_reprimand_2 = make_buff( this, "echoing_reprimand_2", covenant.echoing_reprimand->ok() ?
+                                         find_spell( 323558 ) : spell_data_t::not_found() )
+                                          ->set_max_stack( 1 )
+                                          ->set_default_value( 2 );
+  buffs.echoing_reprimand_3 = make_buff( this, "echoing_reprimand_3", covenant.echoing_reprimand->ok() ?
+                                         find_spell( 323559 ) : spell_data_t::not_found() )
+                                          ->set_max_stack( 1 )
+                                          ->set_default_value( 3 );
+  buffs.echoing_reprimand_4 = make_buff( this, "echoing_reprimand_4", covenant.echoing_reprimand->ok() ?
+                                         find_spell( 323560 ) : spell_data_t::not_found() )
+                                          ->set_max_stack( 1 )
+                                          ->set_default_value( 4 );
 
   // Conduits ===============================================================
 
