@@ -1,5 +1,5 @@
 // Spell text, wow build 9.0.1.35522
-static const std::array<spelltext_data_t, 15384> __spelltext_data { {
+static const std::array<spelltext_data_t, 15387> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -14060,6 +14060,9 @@ static const std::array<spelltext_data_t, 15384> __spelltext_data { {
   { 323546, "For $d, Druid spells you cast increase your damage, healing, and haste by $s1%, stacking.\r\n\r\nIf you spend ${$s9/10}.1 sec idle, the Frenzy overcomes you, consuming $s3% of your health per stack, stunning you for $323557d, and ending.", "Damage, healing, and haste increased by $?<$w5>0>[$w1%.\r\n\r\nIf you spend ${$s9~/10}.1 sec idle, the Frenzy consumes $w3% of your health and ends.][$w6%.]", "Venthyr" },
   { 323547, "Deal $s1 Arcane damage to an enemy, extracting their anima to Animacharge a combo point.\r\n\r\nDamaging finishing moves that consume the same number of combo points as your Animacharge deal damage as if they consume $s2 combo points.\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r\r\n", 0, "Kyrian" },
   { 323557, "$@spelldesc323546", "Stunned.", "Venthyr" },
+  { 323558, 0, "Rogue's second combo point is Animacharged. \r\n\r\nDamaging finishing moves using exactly 2 combo points deal damage as if 7 combo points are consumed.", "Kyrian" },
+  { 323559, 0, "Rogue's third combo point is Animacharged. \r\n\r\nDamaging finishing moves using exactly 3 combo points deal damage as if 7 combo points are consumed.", "Kyrian" },
+  { 323560, 0, "Rogue's fourth combo point is Animacharged. \r\n\r\nDamaging finishing moves using exactly 4 combo points deal damage as if 7 combo points are consumed.", "Kyrian" },
   { 323609, "Permanently enchants boots to temporarily increase your Speed after killing an enemy.", 0, 0 },
   { 323612, "$@spelldesc323609", 0, 0 },
   { 323614, "$@spelldesc323609", "Increase Speed by $w1%.", 0 },
