@@ -858,8 +858,10 @@ struct channel_demonfire_t : public destruction_spell_t
 
 struct soul_fire_t : public destruction_spell_t
 {
+  immolate_t* immolate;
+
   soul_fire_t( warlock_t* p, util::string_view options_str )
-    : destruction_spell_t( "soul_fire", p, p->talents.soul_fire )
+    : destruction_spell_t( "soul_fire", p, p->talents.soul_fire ), immolate( new immolate_t( p, "" ) )
   {
     parse_options( options_str );
     energize_type     = action_energize::PER_HIT;
@@ -867,6 +869,22 @@ struct soul_fire_t : public destruction_spell_t
     energize_amount   = ( p->find_spell( 281490 )->effectN( 1 ).base_value() ) / 10.0;
 
     can_havoc = true;
+
+    immolate->background                  = true;
+    immolate->dual                        = true;
+    immolate->base_costs[ RESOURCE_MANA ] = 0;
+    immolate->base_dd_multiplier *= 0.0;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    destruction_spell_t::impact( s );
+
+    if ( result_is_hit( s->result ) )
+    {
+      immolate->set_target( s->target );
+      immolate->execute();
+    }
   }
 };
 
