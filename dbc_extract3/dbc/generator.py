@@ -1542,6 +1542,7 @@ class SpellDataGenerator(DataGenerator):
             ( 328082, 0 ),          # Eviscerate rank 2 shadow damage spell
             ( 341541, 0 ),          # Sinister Strike third attack from Triple Threat conduit
             ( 328306, 0 ),          # Sepsis expiry direct damage hit
+            ( 323660, 0 ),          # Slaughter instant damage
         ),
 
         # Priest:
