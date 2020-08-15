@@ -8138,7 +8138,7 @@ void druid_t::create_buffs()
   if ( conduit.venthyr->ok() )
     buff.ravenous_frenzy->add_invalidate( CACHE_CRIT_CHANCE );
 
-  buff.convoke_the_spirits = make_buff( this, "convoke_the_pirits", covenant.night_fae )
+  buff.convoke_the_spirits = make_buff( this, "convoke_the_spirits", covenant.night_fae )
     ->set_cooldown( 0_ms )
     ->set_period( 0_ms )
     ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
