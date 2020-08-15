@@ -570,6 +570,10 @@ public:
   void trigger_eternal_call_to_the_void( const dot_t* d );
   void trigger_shadowy_apparitions( action_state_t* );
   void trigger_psychic_link( action_state_t* );
+  const priest_td_t* find_target_data( player_t* target ) const
+  {
+    return _target_data[ target ];
+  }
 
   /**
    * Insanity tracking
@@ -1063,6 +1067,11 @@ public:
   priest_td_t& get_td( player_t* t )
   {
     return *( priest().get_target_data( t ) );
+  }
+
+  const priest_td_t* find_td( player_t* t ) const
+  {
+    return priest().find_target_data( t );
   }
 
   bool trigger_shadowy_insight()
