@@ -8,8 +8,6 @@ namespace warlock
 {
 struct warlock_t;
 
-constexpr int MAX_UAS = 5;
-
 struct warlock_td_t : public actor_target_data_t
 {
   propagate_const<dot_t*> dots_drain_life;
@@ -18,10 +16,10 @@ struct warlock_td_t : public actor_target_data_t
   propagate_const<dot_t*> dots_agony;
   propagate_const<dot_t*> dots_corruption;
   propagate_const<dot_t*> dots_seed_of_corruption;
-  std::array<propagate_const<dot_t*>, MAX_UAS> dots_unstable_affliction;
   propagate_const<dot_t*> dots_drain_soul;
   propagate_const<dot_t*> dots_siphon_life;
   propagate_const<dot_t*> dots_phantom_singularity;
+  propagate_const<dot_t*> dots_unstable_affliction;
   propagate_const<dot_t*> dots_vile_taint;
 
   propagate_const<buff_t*> debuffs_haunt;

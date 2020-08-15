@@ -1494,11 +1494,8 @@ struct dark_glare_t : public warlock_pet_spell_t
         dots += 1.0;
       if ( td->dots_vile_taint->is_ticking() )
         dots += 1.0;
-      for ( auto& current_ua : td->dots_unstable_affliction )
-      {
-        if ( current_ua->is_ticking() )
-          dots += 1.0;
-      }
+      if ( td->dots_unstable_affliction->is_ticking() )
+        dots += 1.0;
     }
 
     m *= 1.0 + ( dots * p()->o()->spec.summon_darkglare->effectN( 3 ).percent() );
