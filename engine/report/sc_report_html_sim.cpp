@@ -1177,7 +1177,7 @@ void print_html_hotfixes( report::sc_html_stream& os, const sim_t& sim )
 
 void print_html_overrides( report::sc_html_stream& os, const sim_t& sim )
 {
-  const auto& entries = dbc_override::override_entries();
+  const auto& entries = sim.dbc_override->override_entries();
   if ( entries.empty() )
   {
     return;
@@ -1198,7 +1198,7 @@ void print_html_overrides( report::sc_html_stream& os, const sim_t& sim )
   for ( const auto& entry : entries )
   {
     os << "<tr>\n";
-    if ( entry.type_ == dbc_override::DBC_OVERRIDE_SPELL )
+    if ( entry.type_ == dbc_override_t::OVERRIDE_SPELL )
     {
       const spell_data_t* spell = hotfix::find_spell( sim.dbc->spell( entry.id_ ), sim.dbc->ptr );
       std::string name = report_decorators::decorated_spell_name( sim, *spell );
@@ -1208,7 +1208,7 @@ void print_html_overrides( report::sc_html_stream& os, const sim_t& sim )
       os << "<td class=\"left\">" << spell->get_field( entry.field_ )
          << "</td>\n";
     }
-    else if ( entry.type_ == dbc_override::DBC_OVERRIDE_EFFECT )
+    else if ( entry.type_ == dbc_override_t::OVERRIDE_EFFECT )
     {
       const spelleffect_data_t* effect = hotfix::find_effect( sim.dbc->effect( entry.id_ ), sim.dbc->ptr );
       const spell_data_t* spell        = effect->spell();
