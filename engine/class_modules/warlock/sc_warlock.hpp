@@ -133,7 +133,7 @@ public:
     // tier 40
     const spell_data_t* darkfury;
     const spell_data_t* mortal_coil;
-    const spell_data_t* demonic_circle;
+    const spell_data_t* howl_of_terror;
 
     // tier 45
     const spell_data_t* grimoire_of_sacrifice;  // aff and destro
