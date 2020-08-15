@@ -8120,7 +8120,9 @@ void druid_t::create_buffs()
     ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
     ->set_cooldown( 0_ms )
     ->set_period( 0_ms )
-    ->add_invalidate( CACHE_HASTE );
+    ->add_invalidate( CACHE_HASTE )
+    ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+
   if ( conduit.venthyr->ok() )
     buff.ravenous_frenzy->add_invalidate( CACHE_CRIT_CHANCE );
 
@@ -8245,6 +8247,7 @@ void druid_t::create_buffs()
 
   buff.eclipse_solar = make_buff( this, "eclipse_solar", spec.eclipse_solar )
     ->set_duration( spec.eclipse_solar->duration() + talent.soul_of_the_forest_moonkin->effectN( 2 ).time_value() )
+    ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
     ->set_stack_change_callback( [this]( buff_t*, int /* old_ */, int new_ ) {
       if ( !new_ )
         this->eclipse_handler.advance_eclipse();
@@ -8254,6 +8257,7 @@ void druid_t::create_buffs()
 
   buff.eclipse_lunar = make_buff( this, "eclipse_lunar", spec.eclipse_lunar )
     ->set_duration( spec.eclipse_lunar->duration() + talent.soul_of_the_forest_moonkin->effectN( 2 ).time_value() )
+    ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
     ->set_stack_change_callback( [this]( buff_t*, int /* old_ */, int new_ ) {
       if ( !new_ )
         this->eclipse_handler.advance_eclipse();
