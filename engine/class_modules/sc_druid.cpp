@@ -1006,6 +1006,8 @@ void eclipse_handler_t::advance_eclipse()
   if ( !starfire_counter && state != IN_SOLAR )
   {
     p->buff.eclipse_solar->trigger();
+    if ( p->legendary.balance_runecarve_3->ok() )
+      p->buff.runecarve_3_nature_buff->trigger();
     state = IN_SOLAR;
     reset_stacks();
     p->uptime.eclipse->update( true, p->sim->current_time() );
@@ -1015,6 +1017,8 @@ void eclipse_handler_t::advance_eclipse()
   if ( !wrath_counter && state != IN_LUNAR )
   {
     p->buff.eclipse_lunar->trigger();
+    if ( p->legendary.balance_runecarve_3->ok() )
+      p->buff.runecarve_3_arcane_buff->trigger();
     state = IN_LUNAR;
     reset_stacks();
     p->uptime.eclipse->update( true, p->sim->current_time() );
@@ -1052,6 +1056,11 @@ void eclipse_handler_t::trigger_both( timespan_t d = 0_ms )
 {
   state = IN_BOTH;
   reset_stacks();
+
+  if ( p->legendary.balance_runecarve_3->ok() ) {
+    p->buff.runecarve_3_arcane_buff->trigger();
+    p->buff.runecarve_3_nature_buff->trigger();
+  }
 
   p->buff.eclipse_lunar->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, d );
   p->buff.eclipse_solar->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, d );
@@ -8254,8 +8263,6 @@ void druid_t::create_buffs()
     ->set_stack_change_callback( [this]( buff_t*, int /* old_ */, int new_ ) {
       if ( !new_ )
         this->eclipse_handler.advance_eclipse();
-      else if ( legendary.balance_runecarve_3->ok() )
-        buff.runecarve_3_nature_buff->trigger();
     } );
 
   buff.eclipse_lunar = make_buff( this, "eclipse_lunar", spec.eclipse_lunar )
@@ -8264,8 +8271,6 @@ void druid_t::create_buffs()
     ->set_stack_change_callback( [this]( buff_t*, int /* old_ */, int new_ ) {
       if ( !new_ )
         this->eclipse_handler.advance_eclipse();
-      else if ( legendary.balance_runecarve_3->ok() )
-        buff.runecarve_3_arcane_buff->trigger();
     } );
 
   // Balance Legendaries
