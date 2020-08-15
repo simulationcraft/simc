@@ -10386,7 +10386,14 @@ struct druid_module_t : public module_t
   }
 
   void static_init() const override {}
-  void register_hotfixes() const override {}
+  void register_hotfixes() const override
+  {
+    hotfix::register_effect( "Druid Potency Venthyr 1", "9.0.1.35522", "crit% incorrectly set to 20%", 841733 )
+        .field( "base_value" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 2 )
+        .verification_value( 20 );
+  }
   void combat_begin( sim_t* ) const override {}
   void combat_end( sim_t* ) const override {}
 };
