@@ -570,7 +570,7 @@ public:
     conduit_data_t well_placed_steel;
 
     conduit_data_t ambidexterity;
-    conduit_data_t count_the_odds;            // NYI
+    conduit_data_t count_the_odds;
     conduit_data_t slight_of_hand;
     conduit_data_t triple_threat;
 
@@ -634,6 +634,9 @@ public:
     // Subtlety
     proc_t* deepening_shadows;
     proc_t* weaponmaster;
+
+    // Conduits
+    proc_t* count_the_odds;
   } procs;
 
   // Options
@@ -1233,6 +1236,7 @@ public:
   void trigger_grand_melee( const action_state_t* state );
   void trigger_akaaris_soul_fragment( const action_state_t* state );
   void trigger_bloodfang( const action_state_t* state );
+  void trigger_count_the_odds( const action_state_t* state );
 
   // General Methods ==========================================================
 
@@ -2308,6 +2312,7 @@ struct ambush_t : public rogue_attack_t
   {
     rogue_attack_t::execute();
     p()->buffs.blindside->expire();
+    trigger_count_the_odds( execute_state );
   }
 
   double cost() const override
@@ -2658,6 +2663,7 @@ struct dispatch_t: public rogue_attack_t
 
     trigger_restless_blades( execute_state );
     trigger_grand_melee( execute_state );
+    trigger_count_the_odds( execute_state );
   }
 };
 
@@ -5309,6 +5315,7 @@ struct roll_the_bones_t : public buff_t
   rogue_t* rogue;
   std::array<buff_t*, 6> buffs;
   std::array<proc_t*, 6> procs;
+  std::vector<timespan_t> count_the_odds_remains;
 
   roll_the_bones_t( rogue_t* r ) :
     buff_t( r, "roll_the_bones", r -> spec.roll_the_bones ),
@@ -5347,6 +5354,53 @@ struct roll_the_bones_t : public buff_t
       buff->expire();
     }
     rogue -> buffs.paradise_lost -> expire();
+  }
+
+  void count_the_odds_trigger( timespan_t duration )
+  {
+    if ( !rogue->conduit.count_the_odds.ok() )
+      return;
+
+    std::vector<buff_t*> inactive_buffs;
+    for ( buff_t* buff : buffs )
+    {
+      if ( !buff->check() )
+        inactive_buffs.push_back( buff );
+    }
+
+    if ( inactive_buffs.empty() )
+      return;
+
+    unsigned buff_idx = static_cast<int>( rng().range( 0, as<double>( inactive_buffs.size() ) ) );
+    inactive_buffs[ buff_idx ]->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, duration );
+  }
+
+  void count_the_odds_check()
+  {
+    if ( !rogue->conduit.count_the_odds.ok() )
+      return;
+
+    // TOCHECK: Assuming this works the same as the T21 4pc bonus for now
+    // Collect a list of buffs with partially triggered durations
+    count_the_odds_remains.clear();
+    for ( buff_t* buff : buffs )
+    {
+      if ( buff->check() && buff->remains() != remains() )
+        count_the_odds_remains.push_back( buff->remains() );
+    }
+  }
+
+  void count_the_odds_reroll()
+  {
+    if ( count_the_odds_remains.empty() )
+      return;
+
+    // TOCHECK: Assuming this works the same as the T21 4pc bonus for now
+    // Trigger random inactive buffs with the previously remaining durations
+    for ( timespan_t remains : count_the_odds_remains )
+    {
+      count_the_odds_trigger( remains );
+    }
   }
 
   std::vector<buff_t*> random_roll( bool loaded_dice )
@@ -5436,6 +5490,8 @@ struct roll_the_bones_t : public buff_t
 
   void execute( int stacks, double value, timespan_t duration ) override
   {
+    count_the_odds_check();
+
     buff_t::execute( stacks, value, duration );
 
     expire_secondary_buffs();
@@ -5450,6 +5506,8 @@ struct roll_the_bones_t : public buff_t
     {
       rogue->buffs.paradise_lost->trigger( 1, buff_t::DEFAULT_VALUE(), ( -1.0 ), roll_duration );
     }
+
+    count_the_odds_reroll();
   }
 };
 
@@ -6005,6 +6063,20 @@ void actions::rogue_action_t<Base>::trigger_bloodfang( const action_state_t* sta
 
   p()->active.bloodfang->set_target( state->target );
   p()->active.bloodfang->execute();
+}
+
+template <typename Base>
+void actions::rogue_action_t<Base>::trigger_count_the_odds( const action_state_t* state )
+{
+  if ( !ab::result_is_hit( state->result ) || !p()->conduit.count_the_odds.ok() || p()->specialization() != ROGUE_OUTLAW )
+    return;
+
+  if ( !p()->rng().roll( p()->conduit.count_the_odds.percent() ) )
+    return;
+
+  const timespan_t trigger_duration = timespan_t::from_seconds( p()->conduit.count_the_odds->effectN( 2 ).base_value() );
+  debug_cast<buffs::roll_the_bones_t*>( p()->buffs.roll_the_bones )->count_the_odds_trigger( trigger_duration );
+  p()->procs.count_the_odds->occur();
 }
 
 // ==========================================================================
@@ -7408,6 +7480,8 @@ void rogue_t::init_procs()
   static_cast<buffs::roll_the_bones_t*>( buffs.roll_the_bones )->set_procs();
 
   procs.deepening_shadows   = get_proc( "Deepening Shadows"            );
+
+  procs.count_the_odds      = get_proc( "Count the Odds"               );
 }
 
 // rogue_t::init_scaling ====================================================
