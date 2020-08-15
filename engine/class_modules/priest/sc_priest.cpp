@@ -1073,6 +1073,7 @@ void priest_t::create_gains()
   gains.shadow_word_death_self_damage     = get_gain( "Shadow Word: Death self inflicted damage" );
   gains.insanity_mindgames                = get_gain( "Insanity Gained from Mindgames" );
   gains.insanity_eternal_call_to_the_void = get_gain( "Insanity Gained from Eternal Call to the Void Mind Flays" );
+  gains.insanity_mind_sear                = get_gain( "Insanity Gained from Mind Sear" );
 }
 
 /** Construct priest procs */

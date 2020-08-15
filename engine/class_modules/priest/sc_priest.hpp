@@ -221,7 +221,7 @@ public:
     const spell_data_t* sanlayn;        // NYI
     const spell_data_t* intangibility;  // NYI
     // T30
-    const spell_data_t* searing_nightmare;  // NYI
+    const spell_data_t* searing_nightmare;
     const spell_data_t* misery;
     // T35
     const spell_data_t* last_word;
@@ -324,6 +324,7 @@ public:
     propagate_const<gain_t*> insanity_death_and_madness;
     propagate_const<gain_t*> insanity_mindgames;
     propagate_const<gain_t*> insanity_eternal_call_to_the_void;
+    propagate_const<gain_t*> insanity_mind_sear;
   } gains;
 
   // Benefits

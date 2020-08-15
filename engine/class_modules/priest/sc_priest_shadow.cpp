@@ -209,13 +209,16 @@ public:
   }
 };
 
+// TODO: This should auto get the insanity gain
 struct mind_sear_tick_t final : public priest_spell_t
 {
+  double insanity_gain;
   double harvested_thoughts_multiplier;
   bool thought_harvester_empowered = false;
 
   mind_sear_tick_t( priest_t& p, const spell_data_t* s )
     : priest_spell_t( "mind_sear_tick", p, s ),
+      insanity_gain( p.find_spell( 208232 )->effectN( 1 ).percent() ),
       harvested_thoughts_multiplier( priest()
                                          .azerite.thought_harvester.spell()
                                          ->effectN( 1 )
@@ -232,6 +235,7 @@ struct mind_sear_tick_t final : public priest_spell_t
     direct_tick         = false;
     use_off_gcd         = true;
     dynamic_tick_action = true;
+    energize_type       = action_energize::NONE;  // no insanity gain
   }
 
   double bonus_da( const action_state_t* state ) const override
@@ -261,6 +265,16 @@ struct mind_sear_tick_t final : public priest_spell_t
     }
 
     return d;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    priest_spell_t::impact( s );
+
+    if ( result_is_hit( s->result ) )
+    {
+      priest().generate_insanity( insanity_gain, priest().gains.insanity_mind_sear, s->action );
+    }
   }
 
   void tick( dot_t* d ) override
@@ -1075,22 +1089,47 @@ struct void_bolt_t final : public priest_spell_t
   }
 };
 
-struct dark_void_t final : public priest_spell_t
+struct searing_nightmare_t final : public priest_spell_t
 {
   propagate_const<shadow_word_pain_t*> child_swp;
+  const spell_data_t* mind_sear_spell;
+  double insanity_cost;
 
-  dark_void_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "dark_void", p, p.find_talent_spell( "Dark Void" ) ),
-      child_swp( new shadow_word_pain_t( priest(), false ) )
-
+  searing_nightmare_t( priest_t& p, util::string_view options_str )
+    : priest_spell_t( "searing_nightmare", p, p.find_talent_spell( "Searing Nightmare" ) ),
+      child_swp( new shadow_word_pain_t( priest(), false ) ),
+      mind_sear_spell( p.find_class_spell( "Mind Sear" ) ),
+      insanity_cost( data().cost( POWER_INSANITY ) )
   {
     parse_options( options_str );
-    energize_type         = action_energize::ON_CAST;
     child_swp->background = true;
 
     may_miss = false;
     aoe      = -1;
-    radius   = data().effectN( 1 ).radius_max();
+    radius   = data().effectN( 2 ).radius_max();
+    usable_while_casting = use_while_casting;
+  }
+
+  bool usable_during_current_cast() const override
+  {
+    if ( player->channeling == nullptr || !priest_spell_t::usable_during_current_cast() )
+      return false;
+    if ( player->channeling->data().id() == mind_sear_spell->id() )
+      return true;
+    return false;
+  }
+
+  double composite_da_multiplier( const action_state_t* state ) const override
+  {
+    double d = priest_spell_t::composite_da_multiplier( state );
+    auto shadow_word_pain_dot = state->target->get_dot( "shadow_word_pain", player );
+
+    if ( shadow_word_pain_dot->is_ticking() )
+    {
+      d *= 2;
+    }
+
+    return d;
   }
 
   void impact( action_state_t* s ) override
@@ -2137,10 +2176,6 @@ action_t* priest_t::create_action_shadow( util::string_view name, util::string_v
   {
     return new shadowform_t( *this, options_str );
   }
-  if ( name == "dark_void" )
-  {
-    return new dark_void_t( *this, options_str );
-  }
   if ( name == "mind_blast" )
   {
     return new mind_blast_t( *this, options_str );
@@ -2152,6 +2187,10 @@ action_t* priest_t::create_action_shadow( util::string_view name, util::string_v
   if ( name == "damnation" )
   {
     return new damnation_t( *this, options_str );
+  }
+  if ( name == "searing_nightmare" )
+  {
+    return new searing_nightmare_t( *this, options_str );
   }
 
   return nullptr;
@@ -2299,6 +2338,7 @@ void priest_t::generate_apl_shadow()
                     "cooldown.void_bolt.up",
                     "Use Mind Flay to consume Dark Thoughts procs on ST. TODO Confirm if this is a higher priority "
                     "than redotting unless dark thoughts is about to time out" );
+  main->add_action( this, "Searing Nightmare", "use_while_casting=1,if=spell_targets.mind_sear>2" );
   main->add_action( this, "Mind Blast", "use_while_casting=1,if=variable.dots_up",
                     "TODO change logic on when to use instant blasts" );
   main->add_action( this, "Mind Blast",
