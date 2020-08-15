@@ -7867,6 +7867,7 @@ void death_knight_t::default_apl_unholy()
   // General Rotation
   generic -> add_action( this, "Death Coil", "if=buff.sudden_doom.react&rune.time_to_4>gcd&!variable.pooling_for_gargoyle|pet.gargoyle.active", "General Rotation" );
   generic -> add_action( this, "Death Coil", "if=runic_power.deficit<14&rune.time_to_4>gcd&!variable.pooling_for_gargoyle" );
+  generic -> add_talent( this, "Defile" );
   generic -> add_action( this, "Scourge Strike", "if=debuff.festering_wound.up&(cooldown.apocalypse.remains>5|debuff.festering_wound.stack>4)&variable.disable_aotd" );
   generic -> add_talent( this, "Clawing Shadows", "if=debuff.festering_wound.up&(cooldown.apocalypse.remains>5|debuff.festering_wound.stack>4)&variable.disable_aotd" );
   generic -> add_action( this, "Death Coil", "if=runic_power.deficit<20&!variable.pooling_for_gargoyle" );
