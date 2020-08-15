@@ -21,11 +21,11 @@ struct warlock_pet_t : public pet_t
   action_t* special_action_two;
   melee_attack_t* melee_attack;
   stats_t* summon_stats;
-  spell_t *ascendance;
+  spell_t* ascendance;
 
   struct buffs_t
   {
-    propagate_const<buff_t*> embers; // Infernal Shard Generation
+    propagate_const<buff_t*> embers;  // Infernal Shard Generation
     propagate_const<buff_t*> demonic_strength;
     propagate_const<buff_t*> demonic_consumption;
     propagate_const<buff_t*> grimoire_of_service;
@@ -33,13 +33,13 @@ struct warlock_pet_t : public pet_t
 
   struct active_t
   {
-    spell_t*        bile_spit;
+    spell_t* bile_spit;
   } active;
 
   bool is_demonbolt_enabled = true;
-  bool is_lord_of_flames = false;
-  bool is_warlock_pet = true;
-  int dreadbite_executes = 0;
+  bool is_lord_of_flames    = false;
+  bool is_warlock_pet       = true;
+  int dreadbite_executes    = 0;
 
   warlock_pet_t( warlock_t* owner, util::string_view pet_name, pet_e pt, bool guardian = false );
   void init_base_stats() override;
@@ -55,14 +55,17 @@ struct warlock_pet_t : public pet_t
 
   void create_buffs_destruction();
 
-  resource_e primary_resource() const override { return RESOURCE_ENERGY; }
+  resource_e primary_resource() const override
+  {
+    return RESOURCE_ENERGY;
+  }
 
   warlock_t* o();
   const warlock_t* o() const;
 
   virtual void arise() override
   {
-    if( melee_attack )
+    if ( melee_attack )
       melee_attack->reset();
     pet_t::arise();
   }
@@ -73,16 +76,28 @@ struct warlock_pet_t : public pet_t
     {
       trigger_gcd = timespan_t::zero();
     }
-    void execute() override { player->current.distance = 1; }
-    timespan_t execute_time() const override { return timespan_t::from_seconds( player->current.distance / 33.0 ); }
-    bool ready() override { return ( player->current.distance > 1 ); }
-    bool usable_moving() const override { return true; }
+    void execute() override
+    {
+      player->current.distance = 1;
+    }
+    timespan_t execute_time() const override
+    {
+      return timespan_t::from_seconds( player->current.distance / 33.0 );
+    }
+    bool ready() override
+    {
+      return ( player->current.distance > 1 );
+    }
+    bool usable_moving() const override
+    {
+      return true;
+    }
   };
 
-  action_t* create_action( util::string_view name,
-    const std::string& options_str ) override
+  action_t* create_action( util::string_view name, const std::string& options_str ) override
   {
-    if ( name == "travel" ) return new travel_t( this );
+    if ( name == "travel" )
+      return new travel_t( this );
 
     return pet_t::create_action( name, options_str );
   }
@@ -110,13 +125,12 @@ template <class ACTION_BASE>
 struct warlock_pet_action_t : public ACTION_BASE
 {
 private:
-  typedef ACTION_BASE ab; // action base, eg. spell_t
+  typedef ACTION_BASE ab;  // action base, eg. spell_t
 public:
   typedef warlock_pet_action_t base_t;
 
-  warlock_pet_action_t( const std::string& n, warlock_pet_t* p,
-    const spell_data_t* s = spell_data_t::nil() ) :
-    ab( n, p, s )
+  warlock_pet_action_t( const std::string& n, warlock_pet_t* p, const spell_data_t* s = spell_data_t::nil() )
+    : ab( n, p, s )
   {
     ab::may_crit = true;
 
@@ -176,34 +190,35 @@ struct warlock_pet_melee_t : public warlock_pet_action_t<melee_attack_t>
 
   struct off_hand_swing : public warlock_pet_action_t<melee_attack_t>
   {
-    off_hand_swing( warlock_pet_t* p, double wm, const char* name = "melee_oh" ) :
-      warlock_pet_action_t<melee_attack_t>( name, p, spell_data_t::nil() )
+    off_hand_swing( warlock_pet_t* p, double wm, const char* name = "melee_oh" )
+      : warlock_pet_action_t<melee_attack_t>( name, p, spell_data_t::nil() )
     {
-      school = SCHOOL_PHYSICAL;
-      weapon = &(p->off_hand_weapon);
+      school            = SCHOOL_PHYSICAL;
+      weapon            = &( p->off_hand_weapon );
       weapon_multiplier = wm;
       base_execute_time = weapon->swing_time;
       may_crit = background = true;
-      base_multiplier = 0.5;
+      base_multiplier       = 0.5;
     }
   };
 
   off_hand_swing* oh;
 
-  warlock_pet_melee_t(warlock_pet_t* p, double wm = 1.0, const char* name = "melee") :
-    warlock_pet_action_t<melee_attack_t>(name, p, spell_data_t::nil()), oh(nullptr)
+  warlock_pet_melee_t( warlock_pet_t* p, double wm = 1.0, const char* name = "melee" )
+    : warlock_pet_action_t<melee_attack_t>( name, p, spell_data_t::nil() ), oh( nullptr )
   {
-    school = SCHOOL_PHYSICAL;
-    weapon = &(p->main_hand_weapon);
+    school            = SCHOOL_PHYSICAL;
+    weapon            = &( p->main_hand_weapon );
     weapon_multiplier = wm;
     base_execute_time = weapon->swing_time;
     may_crit = background = repeating = true;
 
-    if (p->dual_wield())
-      oh = new off_hand_swing(p, weapon_multiplier);
+    if ( p->dual_wield() )
+      oh = new off_hand_swing( p, weapon_multiplier );
   }
 
-  double action_multiplier() const override {
+  double action_multiplier() const override
+  {
     double m = warlock_pet_action_t::action_multiplier();
 
     return m;
@@ -219,7 +234,7 @@ struct warlock_pet_melee_t : public warlock_pet_action_t<melee_attack_t>
   virtual timespan_t execute_time() const override
   {
     timespan_t t = warlock_pet_action_t::execute_time();
-    if (first)
+    if ( first )
     {
       return timespan_t::zero();
     }
@@ -228,7 +243,7 @@ struct warlock_pet_melee_t : public warlock_pet_action_t<melee_attack_t>
 
   void execute() override
   {
-    if (first)
+    if ( first )
     {
       first = false;
     }
@@ -253,19 +268,18 @@ struct warlock_pet_melee_attack_t : public warlock_pet_action_t<melee_attack_t>
 private:
   void _init_warlock_pet_melee_attack_t()
   {
-    weapon = &( player->main_hand_weapon );
+    weapon  = &( player->main_hand_weapon );
     special = true;
   }
 
 public:
-  warlock_pet_melee_attack_t( warlock_pet_t* p, const std::string& n ) :
-    base_t( n, p, p -> find_pet_spell( n ) )
+  warlock_pet_melee_attack_t( warlock_pet_t* p, const std::string& n ) : base_t( n, p, p->find_pet_spell( n ) )
   {
     _init_warlock_pet_melee_attack_t();
   }
 
-  warlock_pet_melee_attack_t( const std::string& token, warlock_pet_t* p, const spell_data_t* s = spell_data_t::nil() ) :
-    base_t( token, p, s )
+  warlock_pet_melee_attack_t( const std::string& token, warlock_pet_t* p, const spell_data_t* s = spell_data_t::nil() )
+    : base_t( token, p, s )
   {
     _init_warlock_pet_melee_attack_t();
   }
@@ -274,13 +288,14 @@ public:
 struct warlock_pet_spell_t : public warlock_pet_action_t<spell_t>
 {
 public:
-  warlock_pet_spell_t( warlock_pet_t* p, const std::string& n ) :
-    base_t( n, p, p -> find_pet_spell( n ) )
-  { }
+  warlock_pet_spell_t( warlock_pet_t* p, const std::string& n ) : base_t( n, p, p->find_pet_spell( n ) )
+  {
+  }
 
-  warlock_pet_spell_t( const std::string& token, warlock_pet_t* p, const spell_data_t* s = spell_data_t::nil() ) :
-    base_t( token, p, s )
-  { }
+  warlock_pet_spell_t( const std::string& token, warlock_pet_t* p, const spell_data_t* s = spell_data_t::nil() )
+    : base_t( token, p, s )
+  {
+  }
 };
 
 namespace base
@@ -315,7 +330,7 @@ struct voidwalker_pet_t : warlock_pet_t
   action_t* create_action( util::string_view name, const std::string& options_str ) override;
 };
 
-} // Namespace base ends
+}  // namespace base
 
 namespace demonology
 {
@@ -332,9 +347,9 @@ struct felguard_pet_t : public warlock_pet_t
   double min_energy_threshold;
   double max_energy_threshold;
 
-  felguard_pet_t(warlock_t* owner, util::string_view name);
+  felguard_pet_t( warlock_t* owner, util::string_view name );
   void init_base_stats() override;
-  action_t* create_action(util::string_view name, const std::string& options_str) override;
+  action_t* create_action( util::string_view name, const std::string& options_str ) override;
   timespan_t available() const override;
 
   void queue_ds_felstorm();
@@ -346,25 +361,26 @@ struct wild_imp_pet_t : public warlock_pet_t
   bool power_siphon;
   bool demonic_consumption;
 
-  wild_imp_pet_t(warlock_t* owner);
+  wild_imp_pet_t( warlock_t* owner );
   void init_base_stats() override;
   void create_actions() override;
   void schedule_ready( timespan_t delta_time = timespan_t::zero(), bool waiting = false ) override;
   void arise() override;
   void demise() override;
   void finish_moving() override;
+
 private:
   void reschedule_firebolt();
 };
 
 struct dreadstalker_t : public warlock_pet_t
 {
-  dreadstalker_t(warlock_t* owner);
+  dreadstalker_t( warlock_t* owner );
   void init_base_stats() override;
   void arise() override;
   void demise() override;
   timespan_t available() const override;
-  action_t* create_action(util::string_view name, const std::string& options_str) override;
+  action_t* create_action( util::string_view name, const std::string& options_str ) override;
 };
 
 struct vilefiend_t : public warlock_simple_pet_t
@@ -378,10 +394,10 @@ struct vilefiend_t : public warlock_simple_pet_t
 
 struct demonic_tyrant_t : public warlock_pet_t
 {
-  demonic_tyrant_t(warlock_t* owner, const std::string& name = "demonic_tyrant");
+  demonic_tyrant_t( warlock_t* owner, const std::string& name = "demonic_tyrant" );
   void init_base_stats() override;
   void demise() override;
-  action_t* create_action(util::string_view name, const std::string& options_str) override;
+  action_t* create_action( util::string_view name, const std::string& options_str ) override;
 };
 
 namespace random_demons
@@ -464,8 +480,8 @@ struct prince_malchezaar_t : public warlock_simple_pet_t
   void init_base_stats() override;
   timespan_t available() const override;
 };
-} // Namespace random_pets ends
-} // Namespace demonology ends
+}  // namespace random_demons
+}  // namespace demonology
 
 namespace destruction
 {
@@ -473,24 +489,24 @@ struct infernal_t : public warlock_pet_t
 {
   buff_t* immolation;
 
-  infernal_t(warlock_t* owner, const std::string& name = "infernal");
+  infernal_t( warlock_t* owner, const std::string& name = "infernal" );
   virtual void init_base_stats() override;
   virtual void create_buffs() override;
   virtual void arise() override;
   virtual void demise() override;
 };
-} // Namespace destruction ends
+}  // namespace destruction
 
 namespace affliction
 {
 struct darkglare_t : public warlock_pet_t
 {
-  darkglare_t(warlock_t* owner, const std::string& name = "darkglare");
-  virtual double composite_player_multiplier(school_e school) const override;
-  virtual action_t* create_action(util::string_view name, const std::string& options_str) override;
+  darkglare_t( warlock_t* owner, const std::string& name = "darkglare" );
+  virtual double composite_player_multiplier( school_e school ) const override;
+  virtual action_t* create_action( util::string_view name, const std::string& options_str ) override;
 };
-} // Namespace affliction ends
-} // Namespace pets ends
-} // Namespace warlock ends
+}  // namespace affliction
+}  // namespace pets
+}  // namespace warlock
 
 #endif /* SC_WARLOCK_PETS_HPP */
