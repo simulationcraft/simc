@@ -2338,7 +2338,7 @@ void priest_t::generate_apl_shadow()
                     "cooldown.void_bolt.up",
                     "Use Mind Flay to consume Dark Thoughts procs on ST. TODO Confirm if this is a higher priority "
                     "than redotting unless dark thoughts is about to time out" );
-  main->add_action( this, "Searing Nightmare", "use_while_casting=1,if=spell_targets.mind_sear>2" );
+  main->add_talent( this, "Searing Nightmare", "use_while_casting=1,if=spell_targets.mind_sear>2" );
   main->add_action( this, "Mind Blast", "use_while_casting=1,if=variable.dots_up",
                     "TODO change logic on when to use instant blasts" );
   main->add_action( this, "Mind Blast",
