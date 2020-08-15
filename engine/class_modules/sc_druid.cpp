@@ -8286,8 +8286,12 @@ void druid_t::create_buffs()
     ->set_refresh_behavior( buff_refresh_behavior::DURATION );
 
   buff.runecarve_3_nature_buff = make_buff( this, "runecarve_3_nature", find_spell( 339943 ) )->set_reverse( true );
+  // Default value is ONLY used for APL expression, so set via base_value() and not percent()
+  buff.runecarve_3_nature_buff->set_default_value( buff.runecarve_3_nature_buff->data().effectN( 1 ).base_value() );
 
   buff.runecarve_3_arcane_buff = make_buff( this, "runecarve_3_arcane", find_spell( 339946 ) )->set_reverse( true );
+  // Default value is ONLY used for APL expression, so set via base_value() and not percent()
+  buff.runecarve_3_arcane_buff->set_default_value( buff.runecarve_3_arcane_buff->data().effectN( 1 ).base_value() );
 
   // Feral
 
