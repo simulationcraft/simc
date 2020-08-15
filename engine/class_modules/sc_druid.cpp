@@ -1259,6 +1259,7 @@ public:
     add_invalidate( CACHE_CRIT_AVOIDANCE );
     add_invalidate( CACHE_HIT );
     add_invalidate( CACHE_EXP );
+    add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
@@ -1434,6 +1435,7 @@ struct cat_form_t : public druid_buff_t<buff_t>
     add_invalidate( CACHE_ATTACK_POWER );
     add_invalidate( CACHE_HIT );
     add_invalidate( CACHE_EXP );
+    add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
@@ -1525,6 +1527,7 @@ struct moonkin_form_t : public druid_buff_t<buff_t>
     add_invalidate( CACHE_ARMOR );
     add_invalidate( CACHE_HIT );
     add_invalidate( CACHE_EXP );
+    add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   }
 
   void start( int stacks, double value, timespan_t duration ) override
