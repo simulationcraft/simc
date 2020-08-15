@@ -1130,16 +1130,8 @@ bool chart::generate_raid_aps( highchart::bar_chart_t& bc, const sim_t& s, const
   bc.set( "yAxis.maxPadding", 0 );
   bc.set( "yAxis.minPadding", 0 );
 
-  // Compute a very naive offset for the X-axis (in the chart Y-axis) labels,
-  // and the dataLabels of
-  // the chart.
-  int n_chars = 0;
-  size_t i    = 1;
-  while ( max_value / i > 1 )
-  {
-    n_chars++;
-    i *= 10;
-  }
+  // Compute a very naive offset for the X-axis (in the chart Y-axis) labels, and the dataLabels of the chart.
+  int n_chars = util::numDigits<int>( static_cast<int>( max_value ) );
 
   // Thousands separator
   if ( n_chars > 3 )
