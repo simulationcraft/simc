@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35522 shadowlands-BETA (git build shadowlands 3b8a06a81c)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35522 shadowlands-BETA (hotfix 2020-08-15/35522, git build shadowlands 9535202862)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
@@ -9552,7 +9552,7 @@ Name             : Mind Devourer (id=338332) [Spell Family (6), Passive, Hidden]
 Class            : Priest
 School           : Physical
 Spell Type       : None
-Conduit Id       : 113
+Conduit Id       : 113 (values=5.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 15.0, 16.0, 17.0, 18.0, 19.0, 20.0)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

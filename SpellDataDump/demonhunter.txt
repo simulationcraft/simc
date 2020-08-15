@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35522 shadowlands-BETA (git build shadowlands 3b8a06a81c)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35522 shadowlands-BETA (hotfix 2020-08-15/35522, git build shadowlands 9535202862)
 
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -773,7 +773,7 @@ Spell Type       : Melee
 Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 300 seconds
-Category         : 1577
+Category         : 1577: Demonic Origins (235893 effect#1)
 Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
 Category Cooldown: 300 seconds
 Affecting spells : Soul Rending (204909 effect#2), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Demonic Origins (235893 effect#2), Metamorphosis (320421 effect#1), Metamorphosis (320422 effect#1), Demon's Touch (339153 effect#1)
@@ -8393,7 +8393,7 @@ Name             : Viscous Ink (id=338682) [Spell Family (107), Passive, Hidden]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
-Conduit Id       : 131
+Conduit Id       : 131 (values=8.0, 8.5, 9.0, 9.5, 10.0, 10.5, 11.0, 11.5, 12.0, 13.0, 14.0, 15.0)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

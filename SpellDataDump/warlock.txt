@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35522 shadowlands-BETA (git build shadowlands 3b8a06a81c)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35522 shadowlands-BETA (hotfix 2020-08-15/35522, git build shadowlands 9535202862)
 
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
@@ -10350,7 +10350,7 @@ Name             : Diabolic Bloodstone (id=340562) [Spell Family (5), Passive, H
 Class            : Warlock
 School           : Physical
 Spell Type       : None
-Conduit Id       : 222
+Conduit Id       : 222 (values=20.0, 21.0, 22.0, 23.0, 24.0, 25.0, 26.0, 27.0, 28.0, 29.0, 30.0, 31.0, 32.0, 33.0, 34.0)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

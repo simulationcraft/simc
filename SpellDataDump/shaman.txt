@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35522 shadowlands-BETA (git build shadowlands 3b8a06a81c)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35522 shadowlands-BETA (hotfix 2020-08-15/35522, git build shadowlands 9535202862)
 
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -11023,7 +11023,7 @@ Name             : Nature's Reach (id=338346) [Spell Family (11), Passive, Hidde
 Class            : Shaman
 School           : Physical
 Spell Type       : None
-Conduit Id       : 120
+Conduit Id       : 120 (values=40.0, 43.0, 46.0, 49.0, 51.0, 54.0, 57.0, 60.0, 63.0, 66.0, 69.0, 71.0, 74.0, 77.0, 80.0)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
