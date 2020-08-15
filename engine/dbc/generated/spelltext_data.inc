@@ -1,5 +1,5 @@
 // Spell text, wow build 9.0.1.35522
-static const std::array<spelltext_data_t, 15381> __spelltext_data { {
+static const std::array<spelltext_data_t, 15384> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -14067,6 +14067,7 @@ static const std::array<spelltext_data_t, 15381> __spelltext_data { {
   { 323654, "Slaughter the target, causing $s1 Physical damage.  The target's anima mixes with your lethal poison, coating your weapons for the next 5 minutes.\r\n\r\nSlaughter Poison deals Shadow damage over 12 sec. and steals 15% of healing done to the target.\r\n\r\n|cFFFFFFFFAwards $s2 combo $lpoint:points;.|r", 0, 0 },
   { 323658, "Coats your weapons with a Lethal Poison that lasts for $d. Each strike has a $h% chance to poison the enemy for ${$2818m1*$2818d/$2818t1} Shadow damage over $2818d. Subsequent poison applications will instantly deal $113780s1 Shadow damage.", "Each strike has a chance of causing the target to suffer Shadow damage every $2818t1 sec for $2818d. Subsequent poison applications deal instant Shadow damage.", 0 },
   { 323659, "$@spelldesc323658", "Suffering $w1 Shadow damage every $t1 seconds.", 0 },
+  { 323660, "Poisoned weapons have a chance to deal $s1 Nature damage to a target already affected by Deadly Poison.", 0, 0 },
   { 323673, "Assault an enemy's mind, dealing $s1 Shadow damage and briefly reversing their perception of reality.\r\n\r\n$?c3[For $d, the next $<damage> damage they deal will heal their target, and the next $<healing> healing they deal will damage their target.\r\n\r\n|cFFFFFFFFReversed damage and healing generate up to $/10;s6 Insanity.|r]\r\n][For $d, the next $<damage> damage they deal will heal their target, and the next $<healing> healing they deal will damage their target.\r\n\r\n|cFFFFFFFFReversed damage and healing restore up to $*2;323706s3% mana.|r]", "The next $w2 damage and $w3 healing dealt will be reversed.", "Venthyr" },
   { 323701, "$@spelldesc323673", 0, 0 },
   { 323705, "$@spelldesc323673", 0, 0 },
@@ -14340,6 +14341,7 @@ static const std::array<spelltext_data_t, 15381> __spelltext_data { {
   { 328278, " ", 0, "Night Fae" },
   { 328301, "Restore $s1 health for each stack of Restorative Residue. ", 0, 0 },
   { 328305, "Infect the target's blood, dealing $o1 Nature damage over $d. If the target survives its full duration, they suffer an additional ${$s1*$s4} damage and you Vanish from sight.\r\n\r\nCooldown reduced by $s3 sec if Sepsis does not last its full duration.", "Suffering $w1 Nature damage every $t1 sec, and ${$w1*$s4} when the poison ends.", "Night Fae" },
+  { 328306, "$@spelldesc328305", 0, "Night Fae" },
   { 328523, "$@spelldesc328231", 0, "Night Fae" },
   { 328547, "Embed a bone spike in the target, dealing $324073s1 Bleed damage every $324073t1 sec until they die. Deals $s1 damage and generates 1 Combo Point per active bone spike.\r\n\r\nRefunds 1 charge when target dies or is healed to full.\r\n\r\n|cFFFFFFFFAwards 1 combo point.|r", 0, "Necrolord" },
   { 328603, "Targets under $s2% health are stung dealing ${$329127s1*($329127d/$329127t1)} Shadow damage over $329127d, returning $s3% of the damage to you as healing.", 0, 0 },
@@ -15332,6 +15334,7 @@ static const std::array<spelltext_data_t, 15381> __spelltext_data { {
   { 341538, "Garrote increases the damage of your Mutilate on the target by $s1%.", 0, 0 },
   { 341539, "Increases the non-periodic damage of your lethal poisons by $s1%.", 0, 0 },
   { 341540, "Sinister Strike has a $s1% chance to strike with both weapons after it strikes an additional time.", 0, 0 },
+  { 341541, "$@spelldesc193315", 0, 0 },
   { 341542, "Main Gauche has an additional $s1% chance to strike while Blade Flurry is active.", 0, 0 },
   { 341543, "Roll the Bones has a $s1% chance of instantly resetting its cooldown.", 0, 0 },
   { 341546, "Ambush$?s323654[, Slaughter,] and Dispatch have a $s1% chance to grant you a Roll the Bones combat enhancement buff you do not already have for $s2 sec.\r\n\r\nDuration and chance tripled while Stealthed.", 0, 0 },
