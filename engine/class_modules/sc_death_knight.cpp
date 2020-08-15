@@ -7719,8 +7719,8 @@ void death_knight_t::default_apl_frost()
   cooldowns -> add_action( this, "Empower Rune Weapon", "if=cooldown.pillar_of_frost.ready&talent.obliteration.enabled&rune.time_to_5>gcd&runic_power.deficit>=10|target.1.time_to_die<20" );
   cooldowns -> add_action( this, "Empower Rune Weapon", "if=(cooldown.pillar_of_frost.ready|target.1.time_to_die<20)&talent.breath_of_sindragosa.enabled&runic_power>60" );
   cooldowns -> add_action( this, "Empower Rune Weapon", "if=talent.icecap.enabled&rune<3" );
-  cooldowns -> add_talent( this, "Frostwyrm's Fury", "if=buff.pillar_of_frost.remains<(3+talent.cold_heart.enabled*1)" );
-  cooldowns -> add_talent( this, "Frostwyrm's Fury", "if=active_enemies>=2&cooldown.pillar_of_frost.remains+15>target.time_to_die|target.1.time_to_die<gcd" );
+  cooldowns -> add_action( this, "Frostwyrm's Fury", "if=buff.pillar_of_frost.remains<(3+talent.cold_heart.enabled*1)" );
+  cooldowns -> add_action( this, "Frostwyrm's Fury", "if=active_enemies>=2&cooldown.pillar_of_frost.remains+15>target.time_to_die|target.1.time_to_die<gcd" );
   
   // Raise Dead and Sacrifical Pact
   cooldowns -> add_action( this, "Raise Dead" );
@@ -7856,7 +7856,7 @@ void death_knight_t::default_apl_unholy()
   cooldowns -> add_action( this, "Apocalypse", "if=debuff.festering_wound.stack>=4" );
   cooldowns -> add_talent( this, "Unholy Blight", "if=cooldown.apocalypse.ready&debuff.festering_wound.stack>=4|cooldown.apocalypse.remains" );
   cooldowns -> add_action( this, "Dark Transformation", "if=!raid_event.adds.exists&debuff.unholy_blight.ticking&cooldown.apocalypse.remains|raid_event.adds.in>15" );
-  cooldowns -> add_talent( this, "Summon Gargoyle", "if=runic_power.deficit<14" );
+  cooldowns -> add_action( this, "Summon Gargoyle", "if=runic_power.deficit<14" );
   cooldowns -> add_talent( this, "Unholy Frenzy", "active_enemies=1&pet.apoc_ghoul.active" );
   cooldowns -> add_talent( this, "Unholy Frenzy", "if=active_enemies>=2&((cooldown.death_and_decay.remains<=gcd&!talent.defile.enabled)|(cooldown.defile.remains<=gcd&talent.defile.enabled))" );
   cooldowns -> add_talent( this, "Soul Reaper", "target_if=target.time_to_die<8&target.time_to_die>4" );
