@@ -141,13 +141,11 @@ namespace warlock
 
         range::for_each( p.havoc_spells, [] ( action_t* a ) { a->target_cache.is_valid = false; } );
       } );
-    debuffs_chaotic_flames = make_buff(*this, "chaotic_flames", source->find_spell(253092));
 
     //Demo
     dots_doom = target->get_dot("doom", &p);
     dots_umbral_blaze = target->get_dot("umbral_blaze", &p);
 
-    debuffs_jaws_of_shadow = make_buff( *this, "jaws_of_shadow", source->find_spell( 242922 ) );
     debuffs_from_the_shadows = make_buff(*this, "from_the_shadows", source->find_spell(270569));
 
     target->callbacks_on_demise.emplace_back([this]( player_t* ) { target_demise(); } );
@@ -194,7 +192,7 @@ namespace warlock
     {
       warlock.sim->print_log( "Player {} demised. Warlock {} reset shadowburn's cooldown.", target->name(), warlock.name() );
 
-      warlock.cooldowns.shadowburn->reset( true );
+        warlock.resource_gain( RESOURCE_SOUL_SHARD, 1, warlock.gains.shadowburn_refund );
     }
   }
 
@@ -213,7 +211,7 @@ namespace warlock
     }
   }
 
-  void warlock_t::trigger_memory_of_lucid_dreams( double cost )
+  void warlock_t::trigger_memory_of_lucid_dreams( double cost ) // BFA - Essence
   {
     if ( !azerite_essence.memory_of_lucid_dreams.enabled() )
     {
@@ -256,11 +254,11 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r ):
   player_t( sim, WARLOCK, name, r ),
     havoc_target( nullptr ),
     havoc_spells(),
-    wracking_brilliance(false),
+    wracking_brilliance(false), // BFA - Azerite
     agony_accumulator( 0.0 ),
-    memory_of_lucid_dreams_accumulator( 0.0 ),
-    strive_for_perfection_multiplier(),
-    vision_of_perfection_multiplier(),
+    memory_of_lucid_dreams_accumulator( 0.0 ), // BFA - Essence
+    strive_for_perfection_multiplier(), // BFA - Essence
+    vision_of_perfection_multiplier(), // BFA - Essence
     active_pets( 0 ),
     warlock_pet_list( this ),
     active(),
@@ -276,10 +274,7 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r ):
     default_pet()
   {
     cooldowns.haunt = get_cooldown( "haunt" );
-    cooldowns.shadowburn = get_cooldown("shadowburn");
-    cooldowns.soul_fire = get_cooldown("soul_fire");
     cooldowns.call_dreadstalkers = get_cooldown("call_dreadstalkers");
-    cooldowns.deathbolt = get_cooldown("deathbolt");
     cooldowns.phantom_singularity = get_cooldown("phantom_singularity");
     cooldowns.darkglare = get_cooldown("summon_darkglare");
     cooldowns.demonic_tyrant = get_cooldown( "summon_demonic_tyrant" );
@@ -317,15 +312,6 @@ double warlock_t::composite_player_target_multiplier( player_t* target, school_e
       m *= 1.0 + td->debuffs_haunt->data().effectN(2).percent();
     if (td->debuffs_shadow_embrace->check())
       m *= 1.0 + (td->debuffs_shadow_embrace->data().effectN(1).percent() * td->debuffs_shadow_embrace->check());
-
-    for (auto& current_ua : td->dots_unstable_affliction)
-    {
-      if (current_ua->is_ticking())
-      {
-        m *= 1.0 + spec.unstable_affliction->effectN(3).percent();
-        break;
-      }
-    }
   }
 
   if (td->debuffs_from_the_shadows->check() && school == SCHOOL_SHADOWFLAME)
@@ -365,19 +351,12 @@ double warlock_t::composite_player_pet_damage_multiplier(const action_state_t* s
 double warlock_t::composite_spell_crit_chance() const
 {
   double sc = player_t::composite_spell_crit_chance();
-
-  if (buffs.dark_soul_instability->check())
-    sc += buffs.dark_soul_instability->check_value();
-
   return sc;
 }
 
 double warlock_t::composite_spell_haste() const
 {
   double h = player_t::composite_spell_haste();
-
-  if (buffs.dark_soul_misery->check())
-    h *= 1.0 / (1.0 + buffs.dark_soul_misery->check_value());
 
   if (buffs.reverse_entropy->check())
     h *= 1.0 / (1.0 + buffs.reverse_entropy->check_value());
@@ -398,10 +377,6 @@ double warlock_t::composite_melee_haste() const
 double warlock_t::composite_melee_crit_chance() const
 {
   double mc = player_t::composite_melee_crit_chance();
-
-  if (buffs.dark_soul_instability->check())
-    mc += buffs.dark_soul_instability->check_value();
-
   return mc;
 }
 
@@ -421,10 +396,11 @@ double warlock_t::resource_gain( resource_e resource_type, double amount, gain_t
 {
   if ( resource_type == RESOURCE_SOUL_SHARD )
   {
-    if ( player_t::buffs.memory_of_lucid_dreams->up() )
+    if ( player_t::buffs.memory_of_lucid_dreams->up() ) // BFA - Essence
       amount *= 1.0 + player_t::buffs.memory_of_lucid_dreams->data().effectN( 1 ).percent();
 
     int current_soul_shards = (int)resources.current[ resource_type ];
+    // BFA - Trinket
     if ( current_soul_shards % 2 == 0 )
     {
       expansion::bfa::trigger_leyshocks_grand_compilation( STAT_CRIT_RATING, this );
@@ -434,6 +410,7 @@ double warlock_t::resource_gain( resource_e resource_type, double amount, gain_t
       expansion::bfa::trigger_leyshocks_grand_compilation( STAT_VERSATILITY_RATING, this );
     }
 
+    // BFA - Azerite
     // Chaos Shards triggers for all specializations
     if ( azerite.chaos_shards.ok() )
     {
@@ -585,7 +562,7 @@ void warlock_t::init_spells()
   active.grimoire_of_sacrifice_proc     = new actions::grimoire_of_sacrifice_damage_t( this ); // grimoire of sacrifice
   talents.soul_conduit                  = find_talent_spell( "Soul Conduit" );
 
-  // Azerite Essences
+  // BFA - Essence
   azerite_essence.memory_of_lucid_dreams = find_azerite_essence( "Memory of Lucid Dreams" );
   spells.memory_of_lucid_dreams_base = azerite_essence.memory_of_lucid_dreams.spell( 1u, essence_type::MINOR );
   
@@ -1127,9 +1104,6 @@ std::unique_ptr<expr_t> warlock_t::create_expression( util::string_view name_str
   {
     return create_pet_expression(name_str);
   }
-  else if (name_str == "deathbolt_setup") {
-    return create_aff_expression(name_str);
-  }
   // TODO: Remove the deprecated buff expressions once the APL is adjusted for
   // havoc_active/havoc_remains.
   else if ( name_str == "havoc_active" || name_str == "buff.active_havoc.up" ) {
@@ -1231,6 +1205,7 @@ struct warlock_module_t : public module_t
 
   void static_init() const override
   {
+    // BFA - Trinket
     // Leyshock's!
     // Shared spells
     // Drain Life

@@ -86,21 +86,13 @@ namespace warlock {
       void consume_resource() override
       {
         warlock_spell_t::consume_resource();
-
-        if ( resource_current == RESOURCE_SOUL_SHARD && p()->in_combat )
-        {
-          if ( p()->buffs.grimoire_of_supremacy_driver->check() )
-            p()->buffs.grimoire_of_supremacy->trigger( as<int>( last_resource_cost ) );
-
-          if ( p()->talents.soul_fire->ok() )
-            p()->cooldowns.soul_fire->adjust( ( -1 * ( p()->talents.soul_fire->effectN( 2 ).time_value() * last_resource_cost ) ) );
-        }
       }
 
       void execute() override
       {
         warlock_spell_t::execute();
 
+        // BFA - Azerite
         if ( can_havoc && num_targets_hit > 1 && p()->azerite.rolling_havoc.enabled() )
           p()->buffs.rolling_havoc->trigger();
       }
@@ -141,11 +133,6 @@ namespace warlock {
           double chaotic_energies_rng = rng().range( 0, destro_mastery_value );
 
           pm *= 1.0 + chaotic_energies_rng + ( destro_mastery_value );
-        }
-
-        if ( p()->buffs.grimoire_of_supremacy->check() && this->data().affected_by( p()->find_spell( 266091 )->effectN( 1 ) ) )
-        {
-          pm *= 1.0 + p()->buffs.grimoire_of_supremacy->check_stack_value();
         }
 
         return pm;
@@ -229,17 +216,6 @@ namespace warlock {
       }
     };
 
-    //TODO: Check the status of the comment below
-    struct roaring_blaze_t : public destruction_spell_t {
-      roaring_blaze_t(warlock_t* p) :
-        destruction_spell_t("roaring_blaze", p, p -> find_spell(265931))
-      {
-        background = true;
-        destro_mastery = false;
-        hasted_ticks = true;
-      }
-    }; //damage is not correct
-
     struct dark_soul_instability_t : public destruction_spell_t
     {
       dark_soul_instability_t(warlock_t* p, util::string_view options_str) :
@@ -300,9 +276,11 @@ namespace warlock {
 
         p()->resource_gain(RESOURCE_SOUL_SHARD, 0.1, p()->gains.immolate);
 
+        // BFA - Azerite
         if (d->state->result_amount > 0.0 && p()->azerite.flashpoint.ok() && d->target->health_percentage() > p()->flashpoint_threshold * 100 )
           p()->buffs.flashpoint->trigger();
 
+        // BFA - Trinket
         // For some reason this triggers on every tick
         expansion::bfa::trigger_leyshocks_grand_compilation( STAT_CRIT_RATING, p() );
       }
@@ -312,13 +290,11 @@ namespace warlock {
     {
       timespan_t total_duration;
       timespan_t base_duration;
-      roaring_blaze_t* roaring_blaze;
 
       conflagrate_t(warlock_t* p, util::string_view options_str) :
         destruction_spell_t("Conflagrate", p, p -> find_spell(17962)),
         total_duration(),
-        base_duration(),
-        roaring_blaze(new roaring_blaze_t(p))
+        base_duration()
       {
         parse_options(options_str);
         can_havoc = true;
@@ -328,8 +304,6 @@ namespace warlock {
         energize_amount = ( p->find_spell( 245330 )->effectN( 1 ).base_value() ) / 10.0;
 
         cooldown->charges += as<int>( p->spec.conflagrate_2->effectN(1).base_value() );
-
-        add_child(roaring_blaze);
       }
 
       void init() override
@@ -342,15 +316,6 @@ namespace warlock {
       void impact(action_state_t* s) override
       {
         destruction_spell_t::impact(s);
-
-        if (result_is_hit(s->result))
-        {
-          if ( p()->talents.roaring_blaze->ok() )
-          {
-            roaring_blaze->set_target( s->target );
-            roaring_blaze->execute();
-          }
-        }
       }
 
       void execute() override
@@ -359,6 +324,7 @@ namespace warlock {
 
         p()->buffs.backdraft->trigger( as<int>( 1 + (p()->talents.flashover->ok() ? p()->talents.flashover->effectN( 1 ).base_value() : 0) ) );
 
+        // BFA - Azerite
         auto td = this->td(target);
         if (p()->azerite.bursting_flare.ok() && td->dots_immolate->is_ticking())
           p()->buffs.bursting_flare->trigger();
@@ -409,6 +375,7 @@ namespace warlock {
       {
         double da = destruction_spell_t::bonus_da( s );
 
+       // BFA - Azerite
         da += p()->azerite.chaos_shards.value( 2 );
 
         return da;
@@ -451,11 +418,6 @@ namespace warlock {
       double composite_target_crit_chance(player_t* target) const override
       {
         double m = destruction_spell_t::composite_target_crit_chance(target);
-
-        auto td = this->td(target);
-        if (td->debuffs_chaotic_flames->check())
-          m += p()->find_spell(253092)->effectN(1).percent();
-
         return m;
       }
     };
@@ -487,6 +449,7 @@ namespace warlock {
       {
         double da = destruction_spell_t::bonus_da( s );
 
+        // BFA - Azerite
         da += p()->azerite.chaos_shards.value( 2 );
 
         return da;
@@ -499,6 +462,7 @@ namespace warlock {
         if (p()->buffs.backdraft->check() && !p()->buffs.chaotic_inferno->check() )
           h *= backdraft_cast_time;
 
+        // BFA - Azerite
         if (p()->buffs.chaotic_inferno->check())
           h *= 1.0 + p()->buffs.chaotic_inferno->check_value();
 
@@ -512,6 +476,7 @@ namespace warlock {
         if (t == 0_ms)
           return t;
 
+        // BFA - Azerite
         if (p()->buffs.backdraft->check() && !p()->buffs.chaotic_inferno->check() )
           t *= backdraft_gcd;
 
@@ -525,6 +490,7 @@ namespace warlock {
       {
         destruction_spell_t::execute();
 
+        // BFA - Azerite
         if ( !p()->buffs.chaotic_inferno->check() )
           p()->buffs.backdraft->decrement();
 
@@ -548,11 +514,6 @@ namespace warlock {
       double composite_target_crit_chance(player_t* target) const override
       {
         double m = destruction_spell_t::composite_target_crit_chance(target);
-
-        auto td = this->td(target);
-        if (td->debuffs_chaotic_flames->check())
-          m += p()->find_spell(253092)->effectN(1).percent();
-
         return m;
       }
     };
@@ -639,6 +600,7 @@ namespace warlock {
       {
         destruction_spell_t::execute();
 
+        // BFA - Azerite
         if(p()->azerite.chaotic_inferno.ok())
           p()->buffs.chaotic_inferno->trigger();
 
@@ -656,6 +618,7 @@ namespace warlock {
       double bonus_da(const action_state_t* s) const override
       {
         double da = destruction_spell_t::bonus_da(s);
+        // BFA - Azerite
         da += p()->azerite.chaotic_inferno.value(2);
         da += p()->buffs.crashing_chaos->check_value();
         da += p()->buffs.crashing_chaos_vop->check_value();
@@ -694,6 +657,8 @@ namespace warlock {
       void impact(action_state_t* s) override
       {
         destruction_spell_t::impact( s );
+
+        // BFA - Trinket
         if (s->chain_target == 0)
         {
           expansion::bfa::trigger_leyshocks_grand_compilation( STAT_MASTERY_RATING, p() );
@@ -810,8 +775,10 @@ namespace warlock {
         infernal_awakening = new infernal_awakening_t(p);
         infernal_awakening->stats = stats;
         radius = infernal_awakening->radius;
+        // BFA - Azerite
         if ( p->azerite.crashing_chaos.ok() )
           cooldown->duration += p->find_spell( 277705 )->effectN( 2 ).time_value();
+        // BFA - Essence
         cooldown->duration *= 1.0 + azerite::vision_of_perfection_cdr( p->azerite_essence.vision_of_perfection );
       }
 
@@ -831,9 +798,7 @@ namespace warlock {
           }
         }
 
-        if ( p()->talents.grimoire_of_supremacy->ok() )
-          p()->buffs.grimoire_of_supremacy_driver->trigger();
-
+        // BFA - Azerite
         if ( p()->azerite.crashing_chaos.ok() )
         {
           //Cancel the Vision of Perfection version if necessary
@@ -977,24 +942,12 @@ namespace warlock {
       ->set_trigger_spell( talents.reverse_entropy )
       ->add_invalidate( CACHE_HASTE );
 
-    buffs.grimoire_of_supremacy_driver = make_buff( this, "grimoire_of_supremacy_driver", find_spell( 266091 ) )
-      ->set_duration( timespan_t::from_seconds( 30 ) )
-      ->set_max_stack( 1 )
-      ->set_refresh_behavior( buff_refresh_behavior::EXTEND )
-      ->set_stack_change_callback( [this]( buff_t*, int, int )
-        {
-          buffs.grimoire_of_supremacy->expire();
-        } );
-   
-    buffs.grimoire_of_supremacy = make_buff( this, "grimoire_of_supremacy", find_spell( 266091 ) )
-      ->set_default_value( find_spell( 266091 )->effectN( 1 ).percent() );
-
     buffs.dark_soul_instability = make_buff( this, "dark_soul_instability", talents.dark_soul_instability )
       ->add_invalidate( CACHE_SPELL_CRIT_CHANCE )
       ->add_invalidate( CACHE_CRIT_CHANCE )
       ->set_default_value( talents.dark_soul_instability->effectN( 1 ).percent() );
 
-    // Azerite
+    // BFA - Azerite
     buffs.bursting_flare = make_buff<stat_buff_t>( this, "bursting_flare", find_spell( 279913 ) )
       ->add_stat( STAT_MASTERY_RATING, azerite.bursting_flare.value() );
     buffs.chaotic_inferno = make_buff( this, "chaotic_inferno", find_spell( 279673 ) )
@@ -1019,6 +972,7 @@ namespace warlock {
 
   void warlock_t::vision_of_perfection_proc_destro()
   {
+    // BFA - Essence
     //TODO: Does the proc trigger infernal awakening?
 
     //Summoning an Infernal overwrites the previous buff with the new one
@@ -1028,14 +982,12 @@ namespace warlock {
 
     warlock_pet_list.vop_infernals.spawn( summon_duration, 1u );
 
+    // BFA - Azerite
     if ( azerite.crashing_chaos.ok() )
     {
       buffs.crashing_chaos->expire();
       buffs.crashing_chaos_vop->trigger( buffs.crashing_chaos_vop->max_stack() );
     }
-
-    if ( talents.grimoire_of_supremacy->ok() )
-      buffs.grimoire_of_supremacy_driver->trigger( 1, buffs.grimoire_of_supremacy_driver->DEFAULT_VALUE(), -1.0, summon_duration );
   }
 
   void warlock_t::init_spells_destruction() {
@@ -1061,7 +1013,6 @@ namespace warlock {
     talents.cataclysm                   = find_talent_spell( "Cataclysm" );
 
     talents.roaring_blaze               = find_talent_spell( "Roaring Blaze" );
-    talents.grimoire_of_supremacy       = find_talent_spell( "Grimoire of Supremacy" );
 
     talents.channel_demonfire           = find_talent_spell( "Channel Demonfire" );
     talents.dark_soul_instability       = find_talent_spell( "Dark Soul: Instability" );
@@ -1087,7 +1038,7 @@ namespace warlock {
     gains.incinerate_fnb_crits          = get_gain( "incinerate_fnb_crits" );
     gains.soul_fire                     = get_gain( "soul_fire" );
     gains.infernal                      = get_gain( "infernal" );
-    gains.shadowburn_shard              = get_gain( "shadowburn_shard" );
+    gains.shadowburn_refund             = get_gain( "shadowburn_refund" );
     gains.inferno                       = get_gain( "inferno" );
   }
 

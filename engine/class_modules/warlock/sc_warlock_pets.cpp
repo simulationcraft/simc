@@ -43,8 +43,6 @@ void warlock_pet_t::create_buffs()
 
   create_buffs_demonology();
 
-  buffs.rage_of_guldan = make_buff(this, "rage_of_guldan", find_spell(257926))->add_invalidate(CACHE_PLAYER_DAMAGE_MULTIPLIER); //change spell id to 253014 when whitelisted
-
   buffs.demonic_consumption = make_buff(this, "demonic_consumption", find_spell(267972))
     ->set_default_value(find_spell(267972)->effectN(1).percent())
     ->set_max_stack(1);
@@ -146,9 +144,6 @@ double warlock_pet_t::composite_player_multiplier(school_e school) const
       m *= 1.0 + o()->buffs.demonic_power->default_value;
     }
   }
-
-  if (buffs.rage_of_guldan->check())
-    m *= 1.0 + (buffs.rage_of_guldan->check_stack_value() / 100);
 
   m *= 1.0 + buffs.grimoire_of_service->check_value();
 

@@ -25,10 +25,7 @@ struct warlock_pet_t : public pet_t
 
   struct buffs_t
   {
-    propagate_const<buff_t*> embers;
-
-    propagate_const<buff_t*> the_expendables;
-    propagate_const<buff_t*> rage_of_guldan;
+    propagate_const<buff_t*> embers; // Infernal Shard Generation
     propagate_const<buff_t*> demonic_strength;
     propagate_const<buff_t*> demonic_consumption;
     propagate_const<buff_t*> grimoire_of_service;

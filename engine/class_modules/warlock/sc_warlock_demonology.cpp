@@ -120,13 +120,13 @@ namespace warlock {
         umbral_blaze_t( warlock_t* p ) :
           demonology_spell_t( "Umbral Blaze", p, p->find_spell( 273526 ) )
         {
-          base_td = p->azerite.umbral_blaze.value();
+          base_td = p->azerite.umbral_blaze.value(); // BFA - Azerite
           hasted_ticks = false;
         }
       };
 
       int shards_used;
-      umbral_blaze_t* blaze;
+      umbral_blaze_t* blaze; // BFA - Azerite
       const spell_data_t* summon_spell;
 
       hand_of_guldan_t( warlock_t* p, util::string_view options_str ) :
@@ -135,6 +135,7 @@ namespace warlock {
       {
         parse_options( options_str );
         aoe = -1;
+        // BFA - Azerite
         if ( p->azerite.umbral_blaze.ok() )
         {
           add_child( blaze );
@@ -160,6 +161,7 @@ namespace warlock {
       double bonus_da( const action_state_t* s ) const override
       {
         double da = demonology_spell_t::bonus_da( s );
+        // BFA - Azerite
         da += p()->azerite.demonic_meteor.value();
         return da;
       }
@@ -179,6 +181,7 @@ namespace warlock {
 
         shards_used = as<int>( last_resource_cost );
 
+        // BFA - Azerite
         if ( rng().roll( p()->azerite.demonic_meteor.spell_ref().effectN( 2 ).percent() * shards_used ) )
           p()->resource_gain( RESOURCE_SOUL_SHARD, 1.0, p()->gains.demonic_meteor );
 
@@ -194,6 +197,7 @@ namespace warlock {
       {
         demonology_spell_t::impact( s );
 
+        // BFA - Trinket
         // Only trigger wild imps once for the original target impact.
         // Still keep it in impact instead of execute because of travel delay.
         if ( result_is_hit( s->result ) && s->target == target )
@@ -206,6 +210,7 @@ namespace warlock {
             this->p()->wild_imp_spawns.push_back(ev);
           }
 
+           // BFA - Azerite
           if ( p()->azerite.umbral_blaze.ok() && rng().roll( p()->find_spell( 273524 )->proc_chance() ) )
           {
             blaze->set_target( target );
@@ -405,6 +410,7 @@ namespace warlock {
           }
         }
 
+        // BFA - Azerite
         if (p()->azerite.explosive_potential.ok() && imps_consumed >= 3)
           p()->buffs.explosive_potential->trigger();
       }
@@ -419,6 +425,7 @@ namespace warlock {
       {
         parse_options(options_str);
         harmful = may_crit = false;
+        // BFA - Essence
         cooldown->duration *= 1.0 + azerite::vision_of_perfection_cdr( p->azerite_essence.vision_of_perfection );
       }
 
@@ -430,6 +437,7 @@ namespace warlock {
 
         p()->buffs.demonic_power->trigger();
 
+        // BFA - Azerite
         if ( p()->azerite.baleful_invocation.ok() )
           p()->resource_gain( RESOURCE_SOUL_SHARD, p()->find_spell( 287060 )->effectN( 1 ).base_value() / 10.0, p()->gains.baleful_invocation );
 
@@ -1046,7 +1054,7 @@ namespace warlock {
     talents.demonic_consumption             = find_talent_spell( "Demonic Consumption" );
     talents.nether_portal                   = find_talent_spell( "Nether Portal" );
 
-    // Azerite
+    // BFA - Azerite
     azerite.demonic_meteor                  = find_azerite_spell( "Demonic Meteor" );
     azerite.shadows_bite                    = find_azerite_spell( "Shadow's Bite" );
     azerite.supreme_commander               = find_azerite_spell( "Supreme Commander" );

@@ -36,14 +36,13 @@ namespace warlock
       propagate_const<buff_t*> debuffs_eradication;
       propagate_const<buff_t*> debuffs_roaring_blaze;
       propagate_const<buff_t*> debuffs_havoc;
-      propagate_const<buff_t*> debuffs_chaotic_flames;
 
       //Demo
       propagate_const<dot_t*> dots_doom;
-      propagate_const<dot_t*> dots_umbral_blaze;
+      propagate_const<dot_t*> dots_umbral_blaze; // BFA - Azerite
 
       propagate_const<buff_t*> debuffs_from_the_shadows;
-      propagate_const<buff_t*> debuffs_jaws_of_shadow;
+      propagate_const<buff_t*> debuffs_jaws_of_shadow;  // BFA - Azerite
 
       double soc_threshold;
 
@@ -63,13 +62,13 @@ namespace warlock
     public:
       player_t* havoc_target;
       std::vector<action_t*> havoc_spells;  // Used for smarter target cache invalidation.
-      bool wracking_brilliance;
+      bool wracking_brilliance; // BFA - Azerite
       double agony_accumulator;
-      double memory_of_lucid_dreams_accumulator; // Memory of Lucid Dreams Azerite Essence tracking.
-      double strive_for_perfection_multiplier;
-      double vision_of_perfection_multiplier;
+      double memory_of_lucid_dreams_accumulator; // BFA - Essences
+      double strive_for_perfection_multiplier; // BFA - Essences
+      double vision_of_perfection_multiplier; // BFA - Essences
       std::vector<event_t*> wild_imp_spawns; // Used for tracking incoming imps from HoG 
-      double flashpoint_threshold; //Flashpoint (Destruction Azerite trait) does not have the 80% in spell data
+      double flashpoint_threshold;  // BFA - Azerite
 
       unsigned active_pets;
 
@@ -112,8 +111,7 @@ namespace warlock
       struct active_t
       {
         action_t* grimoire_of_sacrifice_proc;
-        action_t* chaotic_flames;
-        spell_t* pandemic_invocation;
+        spell_t* pandemic_invocation;  // BFA - Azerite
         spell_t* corruption;
         spell_t* roaring_blaze;
         spell_t* internal_combustion;
@@ -127,74 +125,97 @@ namespace warlock
       struct talents_t
       {
         // shared
-        // tier 45
+        // tier 30
         const spell_data_t* demon_skin;
         const spell_data_t* burning_rush;
         const spell_data_t* dark_pact;
-        // tier 75
+
+        // tier 40
         const spell_data_t* darkfury;
         const spell_data_t* mortal_coil;
         const spell_data_t* demonic_circle;
-        // tier 90
-        const spell_data_t* grimoire_of_sacrifice; // aff and destro
-        // tier 100
-        const spell_data_t* soul_conduit;
-        // AFF
-        const spell_data_t* nightfall;
-        const spell_data_t* drain_soul;
-        const spell_data_t* haunt;
 
+        // tier 45
+        const spell_data_t* grimoire_of_sacrifice; // aff and destro
+
+        // tier 50
+        const spell_data_t* soul_conduit;
+
+        // AFF
+        // tier 15
+        const spell_data_t* nightfall;
+        const spell_data_t* inevitable_demise;
+        const spell_data_t* drain_soul;
+
+        // tier 25
         const spell_data_t* writhe_in_agony;
         const spell_data_t* absolute_corruption;
         const spell_data_t* siphon_life;
 
+        // tier 35
         const spell_data_t* sow_the_seeds;
         const spell_data_t* phantom_singularity;
         const spell_data_t* vile_taint;
 
-        const spell_data_t* shadow_embrace;
-        const spell_data_t* deathbolt;
+        // tier 45
+        const spell_data_t* dark_caller;
+        const spell_data_t* haunt;
         // grimoire of sacrifice
 
+        // tier 50
         // soul conduit
         const spell_data_t* creeping_death;
         const spell_data_t* dark_soul_misery;
 
         // DEMO
+        // tier 15
         const spell_data_t* dreadlash;
         const spell_data_t* demonic_strength;
         const spell_data_t* bilescourge_bombers;
 
+        // tier 25
         const spell_data_t* demonic_calling;
         const spell_data_t* power_siphon;
         const spell_data_t* doom;
 
+        // tier 35
         const spell_data_t* from_the_shadows;
         const spell_data_t* soul_strike;
         const spell_data_t* summon_vilefiend;
 
+        // tier 45
+        // soul conduit
         const spell_data_t* inner_demons;
         const spell_data_t* grimoire_felguard;
 
+        // tier 50
         const spell_data_t* sacrificed_souls;
         const spell_data_t* demonic_consumption;
         const spell_data_t* nether_portal;
+
         // DESTRO
+        // tier 15
         const spell_data_t* flashover;
         const spell_data_t* eradication;
         const spell_data_t* soul_fire;
 
+        // tier 25
         const spell_data_t* reverse_entropy;
         const spell_data_t* internal_combustion;
         const spell_data_t* shadowburn;
 
+        // tier 35
         const spell_data_t* inferno;
         const spell_data_t* fire_and_brimstone;
         const spell_data_t* cataclysm;
 
+        // tier 45
         const spell_data_t* roaring_blaze;
-        const spell_data_t* grimoire_of_supremacy;
+        const spell_data_t* rain_of_chaos;
+        // grimoire of sacrifice
 
+        // tier 50
+        // soul conduit
         const spell_data_t* channel_demonfire;
         const spell_data_t* dark_soul_instability;
       } talents;
@@ -251,10 +272,7 @@ namespace warlock
       struct cooldowns_t
       {
         propagate_const<cooldown_t*> haunt;
-        propagate_const<cooldown_t*> shadowburn;
-        propagate_const<cooldown_t*> soul_fire;
         propagate_const<cooldown_t*> call_dreadstalkers;
-        propagate_const<cooldown_t*> deathbolt;
         propagate_const<cooldown_t*> phantom_singularity;
         propagate_const<cooldown_t*> darkglare;
         propagate_const<cooldown_t*> demonic_tyrant;
@@ -269,28 +287,38 @@ namespace warlock
 
         // Affliction only
         const spell_data_t* affliction;
-        const spell_data_t* nightfall;
-        const spell_data_t* unstable_affliction;
         const spell_data_t* agony;
         const spell_data_t* agony_2;
+        const spell_data_t* corruption_2;
+        const spell_data_t* corruption_3;
+        const spell_data_t* nightfall; // TOCHECK - Think this doesn't need to be here anymore?
         const spell_data_t* shadow_bite;
-        const spell_data_t* shadow_bolt; // also demo
+        const spell_data_t* shadow_bolt;
         const spell_data_t* summon_darkglare;
+        const spell_data_t* unstable_affliction;
+        const spell_data_t* unstable_affliction_2;
+        const spell_data_t* unstable_affliction_3;
 
         // Demonology only
         const spell_data_t* demonology;
-        const spell_data_t* doom;
-        const spell_data_t* wild_imps;
+        const spell_data_t* call_dreadstalkers_2;
         const spell_data_t* demonic_core;
+        const spell_data_t* doom;
+        const spell_data_t* fel_firebolt_2;
+        const spell_data_t* summon_demonic_tyrant_2;
+        const spell_data_t* wild_imps;
 
         // Destruction only
         const spell_data_t* destruction;
-        const spell_data_t* immolate;
         const spell_data_t* conflagrate;
-        const spell_data_t* conflagrate_2; // Conflagrate has 2 charges
-        const spell_data_t* havoc;
-        const spell_data_t* unending_resolve;
+        const spell_data_t* conflagrate_2;
         const spell_data_t* firebolt;
+        const spell_data_t* havoc;
+        const spell_data_t* havoc_2;
+        const spell_data_t* immolate;
+        const spell_data_t* rain_of_fire_2;
+        const spell_data_t* summon_infernal_2;
+        const spell_data_t* unending_resolve;
       } spec;
 
       // Buffs
@@ -305,9 +333,11 @@ namespace warlock
         propagate_const<buff_t*> nightfall;
         propagate_const<buff_t*> dark_soul_misery;
 
-        propagate_const<buff_t*> cascading_calamity;
-        propagate_const<buff_t*> inevitable_demise;
-        propagate_const<buff_t*> wracking_brilliance;
+        propagate_const<buff_t*> cascading_calamity;  // BFA - Azerite
+                                                      // TOCHECK - This is a talent now so not sure how they're
+                                                      // replacing the azerite for pre-patch
+        propagate_const<buff_t*> inevitable_demise;   // BFA - Azerite
+        propagate_const<buff_t*> wracking_brilliance; // BFA - Azerite
 
         //demonology buffs
         propagate_const<buff_t*> demonic_core;
@@ -323,9 +353,9 @@ namespace warlock
         propagate_const<buff_t*> prince_malchezaar;
         propagate_const<buff_t*> eyes_of_guldan;
 
-        propagate_const<buff_t*> shadows_bite;
-        propagate_const<buff_t*> supreme_commander;
-        propagate_const<buff_t*> explosive_potential;
+        propagate_const<buff_t*> shadows_bite; // BFA - Azerite
+        propagate_const<buff_t*> supreme_commander; // BFA - Azerite
+        propagate_const<buff_t*> explosive_potential; // BFA - Azerite
 
         //destruction_buffs
         propagate_const<buff_t*> backdraft;
@@ -334,13 +364,13 @@ namespace warlock
         propagate_const<buff_t*> grimoire_of_supremacy;
         propagate_const<buff_t*> dark_soul_instability;
 
-        propagate_const<buff_t*> bursting_flare;
-        propagate_const<buff_t*> chaotic_inferno;
-        propagate_const<buff_t*> crashing_chaos;
-        propagate_const<buff_t*> crashing_chaos_vop;
-        propagate_const<buff_t*> rolling_havoc;
-        propagate_const<buff_t*> flashpoint;
-        propagate_const<buff_t*> chaos_shards;
+        propagate_const<buff_t*> bursting_flare; // BFA - Azerite
+        propagate_const<buff_t*> chaotic_inferno; // BFA - Azerite
+        propagate_const<buff_t*> crashing_chaos; // BFA - Azerite
+        propagate_const<buff_t*> crashing_chaos_vop; // BFA - Azerite
+        propagate_const<buff_t*> rolling_havoc; // BFA - Azerite
+        propagate_const<buff_t*> flashpoint; // BFA - Azerite
+        propagate_const<buff_t*> chaos_shards; // BFA - Azerite
       } buffs;
 
       // Gains
@@ -352,7 +382,7 @@ namespace warlock
         gain_t* drain_soul;
         gain_t* seed_of_corruption;
         gain_t* unstable_affliction_refund;
-        gain_t* pandemic_invocation;
+        gain_t* pandemic_invocation; // BFA - Azerite
 
         gain_t* conflagrate;
         gain_t* shadowburn;
@@ -364,18 +394,18 @@ namespace warlock
         gain_t* immolate_crits;
         gain_t* soul_fire;
         gain_t* infernal;
-        gain_t* shadowburn_shard;
+        gain_t* shadowburn_refund;
         gain_t* inferno;
-        gain_t* chaos_shards;
+        gain_t* chaos_shards; // BFA - Azerite
 
         gain_t* miss_refund;
 
         gain_t* shadow_bolt;
         gain_t* doom;
-        gain_t* demonic_meteor;
-        gain_t* baleful_invocation;
+        gain_t* demonic_meteor; // BFA - Azerite
+        gain_t* baleful_invocation; // BFA - Azerite
 
-        gain_t* memory_of_lucid_dreams;
+        gain_t* memory_of_lucid_dreams; // BFA - Essence
       } gains;
 
       // Procs
@@ -391,7 +421,6 @@ namespace warlock
         proc_t* two_shard_hog;
         proc_t* three_shard_hog;
         proc_t* wild_imp;
-        proc_t* fragment_wild_imp;
         proc_t* dreadstalker_debug;
         proc_t* summon_random_demon;
         proc_t* portal_summon;
@@ -404,7 +433,7 @@ namespace warlock
         spell_t* melee;
         spell_t* seed_of_corruption_aoe;
         spell_t* implosion_aoe;
-        const spell_data_t* memory_of_lucid_dreams_base;
+        const spell_data_t* memory_of_lucid_dreams_base; // BFA - Essence
       } spells;
 
       int initial_soul_shards;
@@ -619,7 +648,7 @@ namespace warlock
 
           if (resource_current == RESOURCE_SOUL_SHARD && p()->in_combat)
           {
-            p()->trigger_memory_of_lucid_dreams( last_resource_cost );
+            p()->trigger_memory_of_lucid_dreams( last_resource_cost ); // BFA - Essence
 
             // lets try making all lock specs not react instantly to shard gen
             if (p()->talents.soul_conduit->ok())
@@ -685,38 +714,6 @@ namespace warlock
 
         std::unique_ptr<expr_t> create_expression(util::string_view name_str) override
         {
-          if (name_str == "target_uas")
-          {
-            return make_fn_expr("target_uas", [this]() {
-              double uas = 0.0;
-
-              for (int i = 0; i < MAX_UAS; i++)
-              {
-                uas += td(target)->dots_unstable_affliction[i]->is_ticking();
-              }
-
-              return uas;
-            });
-          }
-          else if (name_str == "contagion")
-          {
-            return make_fn_expr(name_str, [this]()
-            {
-              timespan_t con = 0_ms;
-
-              for (int i = 0; i < MAX_UAS; i++)
-              {
-                timespan_t rem = td(target)->dots_unstable_affliction[i]->remains();
-
-                if (rem > con)
-                {
-                  con = rem;
-                }
-              }
-              return con;
-            });
-          }
-
           return spell_t::create_expression(name_str);
         }
       };
