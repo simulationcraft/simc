@@ -27,6 +27,7 @@ enum secondary_trigger_e
   TRIGGER_REPLICATING_SHADOWS,
   TRIGGER_INTERNAL_BLEEDING,
   TRIGGER_AKAARIS_SOUL_FRAGMENT,
+  TRIGGER_TRIPLE_THREAT,
 };
 
 enum stealth_type_e
@@ -210,6 +211,8 @@ public:
     actions::shadow_blades_attack_t* shadow_blades_attack = nullptr;
     actions::rogue_attack_t* akaaris_soul_fragment = nullptr;
     actions::rogue_attack_t* bloodfang = nullptr;
+    actions::rogue_attack_t* triple_threat_mh = nullptr;
+    actions::rogue_attack_t* triple_threat_oh = nullptr;
     struct
     {
       actions::rogue_attack_t* backstab = nullptr;
@@ -569,7 +572,7 @@ public:
     conduit_data_t ambidexterity;
     conduit_data_t count_the_odds;            // NYI
     conduit_data_t slight_of_hand;
-    conduit_data_t triple_threat;             // NYI
+    conduit_data_t triple_threat;
 
     conduit_data_t deeper_daggers;
     conduit_data_t perforated_veins;
@@ -4019,6 +4022,22 @@ struct shuriken_toss_t : public rogue_attack_t
 
 struct sinister_strike_t : public rogue_attack_t
 {
+  struct triple_threat_t : public rogue_attack_t
+  {
+    triple_threat_t( util::string_view name, rogue_t* p ) :
+      rogue_attack_t( name, p, p->find_spell( 341541 ) )
+    {
+    }
+
+    void execute() override
+    {
+      rogue_attack_t::execute();
+
+      // TOCHECK: This needs to be totally re-tested at some point because it is exceptionally buggy in-game
+      p()->active.triple_threat_mh->trigger_secondary_action( execute_state->target );
+    }
+  };
+
   struct sinister_strike_extra_attack_t : public rogue_attack_t
   {
     sinister_strike_extra_attack_t( util::string_view name, rogue_t* p ) :
@@ -4044,18 +4063,35 @@ struct sinister_strike_t : public rogue_attack_t
     {
       rogue_attack_t::execute();
       p()->buffs.snake_eyes->decrement();
+
+      // TOCHECK: This needs to be totally re-tested at some point because it is exceptionally buggy in-game
+      if ( p()->active.triple_threat_oh && p()->rng().roll( p()->conduit.triple_threat.percent() ) )
+      {
+        p()->active.triple_threat_oh->trigger_secondary_action( execute_state->target, 0, 300_ms );
+      }
     }
   };
 
-  timespan_t extra_attack_delay;
   sinister_strike_extra_attack_t* extra_attack;
 
   sinister_strike_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ) :
-    rogue_attack_t( name, p, p->spec.sinister_strike, options_str ),
-    extra_attack_delay( 300_ms )
+    rogue_attack_t( name, p, p->spec.sinister_strike, options_str )
   {
     extra_attack = p->get_secondary_trigger_action<sinister_strike_extra_attack_t>( TRIGGER_SINISTER_STRIKE, "sinister_strike_extra_attack" );
-    add_child( extra_attack );
+  }
+
+  void init() override
+  {
+    rogue_attack_t::init();
+
+    if ( !is_secondary_action() )
+    {
+      add_child( extra_attack );
+      if ( p()->active.triple_threat_mh )
+        add_child( p()->active.triple_threat_mh );
+      if ( p()->active.triple_threat_oh )
+        add_child( p()->active.triple_threat_oh );
+    }
   }
 
   double extra_attack_proc_chance() const
@@ -4079,17 +4115,14 @@ struct sinister_strike_t : public rogue_attack_t
   void execute() override
   {
     rogue_attack_t::execute();
+    p()->buffs.snake_eyes->decrement();
 
     if ( !result_is_hit( execute_state->result ) )
-    {
       return;
-    }
-
-    p()->buffs.snake_eyes->decrement();
 
     if ( p()->spec.sinister_strike_2->ok() && p()->buffs.opportunity->trigger( 1, buff_t::DEFAULT_VALUE(), extra_attack_proc_chance() ) )
     {
-      extra_attack->trigger_secondary_action( execute_state->target, 0, extra_attack_delay );
+      extra_attack->trigger_secondary_action( execute_state->target, 0, 300_ms );
     }
   }
 };
@@ -7314,6 +7347,12 @@ void rogue_t::init_spells()
   {
     active.weaponmaster.backstab = get_secondary_trigger_action<actions::backstab_t>( TRIGGER_WEAPONMASTER, "backstab_weaponmaster" );
     active.weaponmaster.shadowstrike = get_secondary_trigger_action<actions::shadowstrike_t>( TRIGGER_WEAPONMASTER, "shadowstrike_weaponmaster" );
+  }
+
+  if ( conduit.triple_threat.ok() && specialization() == ROGUE_OUTLAW )
+  {
+    active.triple_threat_mh = get_secondary_trigger_action<actions::sinister_strike_t>( TRIGGER_TRIPLE_THREAT, "sinister_strike_triple_threat_mh" );
+    active.triple_threat_oh = get_secondary_trigger_action<actions::sinister_strike_t::triple_threat_t>( TRIGGER_TRIPLE_THREAT, "sinister_strike_triple_threat_oh" );
   }
 }
 
