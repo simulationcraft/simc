@@ -142,20 +142,6 @@ public:
 };
 
 // Talents
-struct soul_fire_t : public destruction_spell_t
-{
-  soul_fire_t( warlock_t* p, util::string_view options_str )
-    : destruction_spell_t( "soul_fire", p, p->talents.soul_fire )
-  {
-    parse_options( options_str );
-    energize_type     = action_energize::PER_HIT;
-    energize_resource = RESOURCE_SOUL_SHARD;
-    energize_amount   = ( p->find_spell( 281490 )->effectN( 1 ).base_value() ) / 10.0;
-
-    can_havoc = true;
-  }
-};
-
 struct internal_combustion_t : public destruction_spell_t
 {
   internal_combustion_t( warlock_t* p )
@@ -638,112 +624,6 @@ struct chaos_bolt_t : public destruction_spell_t
   }
 };
 
-struct channel_demonfire_tick_t : public destruction_spell_t
-{
-  channel_demonfire_tick_t( warlock_t* p ) : destruction_spell_t( "channel_demonfire_tick", p, p->find_spell( 196448 ) )
-  {
-    background = true;
-    may_miss   = false;
-    dual       = true;
-
-    spell_power_mod.direct = data().effectN( 1 ).sp_coeff();
-
-    aoe                 = -1;
-    base_aoe_multiplier = data().effectN( 2 ).sp_coeff() / data().effectN( 1 ).sp_coeff();
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    destruction_spell_t::impact( s );
-
-    // BFA - Trinket
-    if ( s->chain_target == 0 )
-    {
-      expansion::bfa::trigger_leyshocks_grand_compilation( STAT_MASTERY_RATING, p() );
-    }
-    else
-    {
-      expansion::bfa::trigger_leyshocks_grand_compilation( STAT_CRIT_RATING, p() );
-    }
-  }
-};
-
-struct channel_demonfire_t : public destruction_spell_t
-{
-  channel_demonfire_tick_t* channel_demonfire;
-  int immolate_action_id;
-
-  channel_demonfire_t( warlock_t* p, util::string_view options_str )
-    : destruction_spell_t( "channel_demonfire", p, p->talents.channel_demonfire ),
-      channel_demonfire( new channel_demonfire_tick_t( p ) ),
-      immolate_action_id( 0 )
-  {
-    parse_options( options_str );
-    channeled    = true;
-    hasted_ticks = true;
-    may_crit     = false;
-
-    add_child( channel_demonfire );
-  }
-
-  void init() override
-  {
-    destruction_spell_t::init();
-
-    cooldown->hasted   = true;
-    immolate_action_id = p()->find_action_id( "immolate" );
-  }
-
-  // TODO: This is suboptimal, can this be changed to available_targets() in some way?
-  std::vector<player_t*>& target_list() const override
-  {
-    target_cache.list = destruction_spell_t::target_list();
-
-    size_t i = target_cache.list.size();
-    while ( i > 0 )
-    {
-      i--;
-      player_t* current_target = target_cache.list[ i ];
-
-      auto td = this->td( current_target );
-      if ( !td->dots_immolate->is_ticking() )
-        target_cache.list.erase( target_cache.list.begin() + i );
-    }
-    return target_cache.list;
-  }
-
-  void tick( dot_t* d ) override
-  {
-    // Need to invalidate the target cache to figure out immolated targets.
-    target_cache.is_valid = false;
-
-    const auto& targets = target_list();
-
-    if ( !targets.empty() )
-    {
-      channel_demonfire->set_target( targets[ rng().range( size_t(), targets.size() ) ] );
-      channel_demonfire->execute();
-    }
-
-    destruction_spell_t::tick( d );
-  }
-
-  timespan_t composite_dot_duration( const action_state_t* s ) const override
-  {
-    return s->action->tick_time( s ) * 15.0;
-  }
-
-  bool ready() override
-  {
-    double active_immolates = p()->get_active_dots( immolate_action_id );
-
-    if ( active_immolates == 0 )
-      return false;
-
-    return destruction_spell_t::ready();
-  }
-};
-
 struct infernal_awakening_t : public destruction_spell_t
 {
   infernal_awakening_t( warlock_t* p ) : destruction_spell_t( "infernal_awakening", p, p->find_spell( 22703 ) )
@@ -869,7 +749,145 @@ struct rain_of_fire_t : public destruction_spell_t
   }
 };
 
-// AOE talents
+// Talents which need initialization after spells
+struct channel_demonfire_tick_t : public destruction_spell_t
+{
+  channel_demonfire_tick_t( warlock_t* p ) : destruction_spell_t( "channel_demonfire_tick", p, p->find_spell( 196448 ) )
+  {
+    background = true;
+    may_miss   = false;
+    dual       = true;
+
+    spell_power_mod.direct = data().effectN( 1 ).sp_coeff();
+
+    aoe                 = -1;
+    base_aoe_multiplier = data().effectN( 2 ).sp_coeff() / data().effectN( 1 ).sp_coeff();
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    destruction_spell_t::impact( s );
+
+    // BFA - Trinket
+    if ( s->chain_target == 0 )
+    {
+      expansion::bfa::trigger_leyshocks_grand_compilation( STAT_MASTERY_RATING, p() );
+    }
+    else
+    {
+      expansion::bfa::trigger_leyshocks_grand_compilation( STAT_CRIT_RATING, p() );
+    }
+  }
+};
+
+struct channel_demonfire_t : public destruction_spell_t
+{
+  channel_demonfire_tick_t* channel_demonfire;
+  int immolate_action_id;
+
+  channel_demonfire_t( warlock_t* p, util::string_view options_str )
+    : destruction_spell_t( "channel_demonfire", p, p->talents.channel_demonfire ),
+      channel_demonfire( new channel_demonfire_tick_t( p ) ),
+      immolate_action_id( 0 )
+  {
+    parse_options( options_str );
+    channeled    = true;
+    hasted_ticks = true;
+    may_crit     = false;
+
+    add_child( channel_demonfire );
+  }
+
+  void init() override
+  {
+    destruction_spell_t::init();
+
+    cooldown->hasted   = true;
+    immolate_action_id = p()->find_action_id( "immolate" );
+  }
+
+  // TODO: This is suboptimal, can this be changed to available_targets() in some way?
+  std::vector<player_t*>& target_list() const override
+  {
+    target_cache.list = destruction_spell_t::target_list();
+
+    size_t i = target_cache.list.size();
+    while ( i > 0 )
+    {
+      i--;
+      player_t* current_target = target_cache.list[ i ];
+
+      auto td = this->td( current_target );
+      if ( !td->dots_immolate->is_ticking() )
+        target_cache.list.erase( target_cache.list.begin() + i );
+    }
+    return target_cache.list;
+  }
+
+  void tick( dot_t* d ) override
+  {
+    // Need to invalidate the target cache to figure out immolated targets.
+    target_cache.is_valid = false;
+
+    const auto& targets = target_list();
+
+    if ( !targets.empty() )
+    {
+      channel_demonfire->set_target( targets[ rng().range( size_t(), targets.size() ) ] );
+      channel_demonfire->execute();
+    }
+
+    destruction_spell_t::tick( d );
+  }
+
+  timespan_t composite_dot_duration( const action_state_t* s ) const override
+  {
+    return s->action->tick_time( s ) * 15.0;
+  }
+
+  bool ready() override
+  {
+    double active_immolates = p()->get_active_dots( immolate_action_id );
+
+    if ( active_immolates == 0 )
+      return false;
+
+    return destruction_spell_t::ready();
+  }
+};
+
+struct soul_fire_t : public destruction_spell_t
+{
+  immolate_t* immolate;
+
+  soul_fire_t( warlock_t* p, util::string_view options_str )
+    : destruction_spell_t( "soul_fire", p, p->talents.soul_fire ), immolate( new immolate_t( p, "" ) )
+  {
+    parse_options( options_str );
+    energize_type     = action_energize::PER_HIT;
+    energize_resource = RESOURCE_SOUL_SHARD;
+    energize_amount   = ( p->find_spell( 281490 )->effectN( 1 ).base_value() ) / 10.0;
+
+    can_havoc = true;
+
+    immolate->background                  = true;
+    immolate->dual                        = true;
+    immolate->base_costs[ RESOURCE_MANA ] = 0;
+    immolate->base_dd_multiplier *= 0.0;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    destruction_spell_t::impact( s );
+
+    if ( result_is_hit( s->result ) )
+    {
+      immolate->set_target( s->target );
+      immolate->execute();
+    }
+  }
+};
+
 struct cataclysm_t : public destruction_spell_t
 {
   immolate_t* immolate;
@@ -897,6 +915,7 @@ struct cataclysm_t : public destruction_spell_t
     }
   }
 };
+
 }  // namespace actions_destruction
 
 namespace buffs
