@@ -119,6 +119,8 @@ public:
     dot_t* rupture;
     dot_t* crimson_tempest;
     dot_t* nothing_personal;
+    dot_t* sepsis;
+    dot_t* slaughter_poison;
   } dots;
 
   struct debuffs_t
@@ -143,6 +145,9 @@ public:
     if ( dots.deadly_poison->is_ticking() )
       return dots.deadly_poison->remains();
 
+    if ( dots.slaughter_poison->is_ticking() )
+      return dots.slaughter_poison->remains();
+
     if ( debuffs.wound_poison->check() )
       return debuffs.wound_poison->remains();
 
@@ -162,7 +167,7 @@ public:
 
   bool is_lethal_poisoned() const
   {
-    return dots.deadly_poison->is_ticking() || debuffs.wound_poison->check();
+    return dots.deadly_poison->is_ticking() || dots.slaughter_poison->is_ticking() || debuffs.wound_poison->check();
   }
 
   bool is_non_lethal_poisoned() const
@@ -195,9 +200,6 @@ public:
 
   // Shadow techniques swing counter;
   unsigned shadow_techniques;
-
-  // Venom Rush poison tracking
-  unsigned poisoned_enemies;
 
   // Active
   struct
@@ -338,6 +340,7 @@ public:
     cooldown_t* symbols_of_death;
     cooldown_t* secret_technique;
     cooldown_t* shadow_blades;
+    cooldown_t* sepsis;
   } cooldowns;
 
   // Gains
@@ -559,6 +562,10 @@ public:
   // Covenant powers
   struct covenant_t
   {
+    const spell_data_t* echoing_reprimand;
+    const spell_data_t* sepsis;
+    const spell_data_t* serrated_bone_spike;
+    const spell_data_t* slaughter;
   } covenant;
 
   // Conduits
@@ -652,7 +659,6 @@ public:
   rogue_t( sim_t* sim, util::string_view name, race_e r = RACE_NIGHT_ELF ) :
     player_t( sim, ROGUE, name, r ),
     shadow_techniques( 0 ),
-    poisoned_enemies( 0 ),
     auto_attack( nullptr ), melee_main_hand( nullptr ), melee_off_hand( nullptr ),
     last_rupture_target( nullptr ),
     restealth_allowed( false ),
@@ -689,6 +695,7 @@ public:
     cooldowns.symbols_of_death         = get_cooldown( "symbols_of_death"         );
     cooldowns.secret_technique         = get_cooldown( "secret_technique"         );
     cooldowns.shadow_blades            = get_cooldown( "shadow_blades"            );
+    cooldowns.sepsis                   = get_cooldown( "sepsis"                   );
 
     resource_regeneration = regen_type::DYNAMIC;
     regen_caches[CACHE_HASTE] = true;
@@ -1646,21 +1653,22 @@ struct rogue_attack_t : public rogue_action_t<melee_attack_t>
 
 struct rogue_poison_t : public rogue_attack_t
 {
-  double proc_chance_;
+  double base_proc_chance;
 
-  rogue_poison_t( util::string_view name, rogue_t* p, const spell_data_t* s = spell_data_t::nil() ) :
+  rogue_poison_t( util::string_view name, rogue_t* p, const spell_data_t* s = spell_data_t::nil(), bool triggers_procs = false ) :
     actions::rogue_attack_t( name, p, s ),
-    proc_chance_( 0 )
+    base_proc_chance( 0.0 )
   {
-    proc = true;
-    background = true;
-    trigger_gcd = timespan_t::zero();
-    callbacks = false;
+    background = dual = true;
+    proc = !triggers_procs;
+    callbacks = triggers_procs;
 
-    proc_chance_ = data().proc_chance();
+    trigger_gcd = timespan_t::zero();
+
+    base_proc_chance = data().proc_chance();
     if ( s->affected_by( p->spec.improved_poisons->effectN( 1 ) ) )
     {
-      proc_chance_ += p->spec.improved_poisons->effectN( 1 ).percent();
+      base_proc_chance += p->spec.improved_poisons->effectN( 1 ).percent();
     }
   }
 
@@ -1683,19 +1691,18 @@ struct rogue_poison_t : public rogue_attack_t
 
   virtual double proc_chance( const action_state_t* source_state ) const
   {
+    if ( base_proc_chance == 0.0 )
+      return 0.0;
+
     if ( p()->spec.improved_poisons_2->ok() && p()->stealthed( STEALTH_BASIC | STEALTH_ROGUE ) )
     {
       return p()->spec.improved_poisons_2->effectN( 1 ).percent();
     }
 
-    double chance = proc_chance_;
-    if ( p()->buffs.envenom->up() )
-    {
-      chance += p()->buffs.envenom->data().effectN( 2 ).percent();
-    }
+    double chance = base_proc_chance;
+    chance += p()->buffs.envenom->stack_value();
+    chance += rogue_t::cast_attack( source_state->action )->composite_poison_flat_modifier( source_state );
 
-    const rogue_attack_t* attack = rogue_t::cast_attack( source_state->action );
-    chance += attack->composite_poison_flat_modifier( source_state );
     return chance;
   }
 
@@ -1704,13 +1711,8 @@ struct rogue_poison_t : public rogue_attack_t
     bool result = rng().roll( proc_chance( source_state ) );
 
     if ( sim->debug )
-      sim->out_debug.printf( "%s attempts to proc %s, target=%s source_action=%s proc_chance=%.3f: %d",
-          player->name(),
-          name(),
-          source_state->target->name(),
-          source_state->action->name(),
-          proc_chance( source_state ),
-          result );
+      sim->out_debug.printf( "%s attempts to proc %s, target=%s source_action=%s proc_chance=%.3f: %d", player->name(), name(),
+                             source_state->target->name(), source_state->action->name(), proc_chance( source_state ), result );
 
     if ( !result )
       return;
@@ -1753,20 +1755,16 @@ struct deadly_poison_t : public rogue_poison_t
   struct deadly_poison_dd_t : public rogue_poison_t
   {
     deadly_poison_dd_t( util::string_view name, rogue_t* p ) :
-      rogue_poison_t( name, p, p->find_spell( 113780 ) )
+      rogue_poison_t( name, p, p->find_spell( 113780 ), true )
     {
-      proc = false;
-      callbacks = true;
     }
   };
 
   struct deadly_poison_dot_t : public rogue_poison_t
   {
     deadly_poison_dot_t( util::string_view name, rogue_t* p ) :
-      rogue_poison_t( name, p, p->spec.deadly_poison->effectN( 1 ).trigger() )
+      rogue_poison_t( name, p, p->spec.deadly_poison->effectN( 1 ).trigger(), true )
     {
-      proc = false;
-      callbacks = true;
     }
 
     timespan_t calculate_dot_refresh_duration(const dot_t* dot, timespan_t /* triggered_duration */) const override
@@ -1777,30 +1775,6 @@ struct deadly_poison_t : public rogue_poison_t
       const int max_ticks = (int)(additional_ticks * 1.5);
       return dot->remains() + std::min( max_ticks - dot->ticks_left(), additional_ticks ) * dot->time_to_tick;
     }
-
-    void impact( action_state_t* state ) override
-    {
-      if ( !p()->is_target_poisoned( state->target ) && result_is_hit( state->result ) )
-      {
-        p()->poisoned_enemies++;
-      }
-
-      rogue_poison_t::impact( state );
-    }
-
-    void last_tick( dot_t* d ) override
-    {
-      player_t* t = d -> state -> target;
-
-      rogue_poison_t::last_tick( d );
-
-      // Due to DOT system behavior, deliver "Deadly Poison DOT fade event" as
-      // a separate parmeter to is_target_poisoned() call.
-      if ( !p()->is_target_poisoned( t, true ) )
-      {
-        p()->poisoned_enemies--;
-      }
-    }
   };
 
   deadly_poison_dd_t*  proc_instant;
@@ -1810,8 +1784,6 @@ struct deadly_poison_t : public rogue_poison_t
     rogue_poison_t( name, p, p->spec.deadly_poison ),
     proc_instant( nullptr ), proc_dot( nullptr )
   {
-    dual = true;
-
     proc_instant = p->get_background_action<deadly_poison_dd_t>( "deadly_poison_instant" );
     proc_dot  = p->get_background_action<deadly_poison_dot_t>( "deadly_poison_dot" );
 
@@ -1821,20 +1793,73 @@ struct deadly_poison_t : public rogue_poison_t
 
   void impact( action_state_t* state ) override
   {
-    bool is_up = ( td( state -> target ) -> dots.deadly_poison -> is_ticking() != 0 );
-
     rogue_poison_t::impact( state );
 
-    if ( result_is_hit( state -> result ) )
+    if ( td( state->target )->dots.deadly_poison->is_ticking() )
     {
-      proc_dot -> set_target( state -> target );
-      proc_dot -> execute();
-      if ( is_up )
-      {
-        proc_instant -> set_target( state -> target );
-        proc_instant -> execute();
-      }
+      proc_instant->set_target( state->target );
+      proc_instant->execute();
     }
+    proc_dot -> set_target( state -> target );
+    proc_dot -> execute();
+  }
+};
+
+// Slaughter Poison =========================================================
+// TOCHECK: Just cloned from Deadly Poison for now since it appears to have the same mechanics currently
+
+struct slaughter_poison_t : public rogue_poison_t
+{
+  struct slaughter_poison_dd_t : public rogue_poison_t
+  {
+    slaughter_poison_dd_t( util::string_view name, rogue_t* p ) :
+      rogue_poison_t( name, p, p->find_spell( 323660 ), true )
+    {
+    }
+  };
+
+  struct slaughter_poison_dot_t : public rogue_poison_t
+  {
+    slaughter_poison_dot_t( util::string_view name, rogue_t* p ) :
+      rogue_poison_t( name, p, p->covenant.slaughter->effectN( 3 ).trigger()->effectN( 1 ).trigger(), true )
+    {
+    }
+
+    timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t /* triggered_duration */ ) const override
+    {
+      // 12/29/2017 - Deadly Poison uses an older style of refresh, adding the origial duration worth of ticks up to 50% more than the base number of ticks
+      //              Deadly Poison shouldn't have partial ticks, so we just add the amount of time relative to how many additional ticks we want to add
+      const int additional_ticks = (int)( data().duration() / dot->time_to_tick );
+      const int max_ticks = (int)( additional_ticks * 1.5 );
+      return dot->remains() + std::min( max_ticks - dot->ticks_left(), additional_ticks ) * dot->time_to_tick;
+    }
+  };
+
+  slaughter_poison_dd_t*  proc_instant;
+  slaughter_poison_dot_t* proc_dot;
+
+  slaughter_poison_t( util::string_view name, rogue_t* p ) :
+    rogue_poison_t( name, p, p->covenant.slaughter->effectN( 3 ).trigger() ),
+    proc_instant( nullptr ), proc_dot( nullptr )
+  {
+    proc_instant = p->get_background_action<slaughter_poison_dd_t>( "slaughter_poison_instant" );
+    proc_dot = p->get_background_action<slaughter_poison_dot_t>( "slaughter_poison_dot" );
+
+    add_child( proc_instant );
+    add_child( proc_dot );
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    rogue_poison_t::impact( state );
+
+    if ( td( state->target )->dots.slaughter_poison->is_ticking() )
+    {
+      proc_instant->set_target( state->target );
+      proc_instant->execute();
+    }
+    proc_dot->set_target( state->target );
+    proc_dot->execute();
   }
 };
 
@@ -1845,28 +1870,15 @@ struct instant_poison_t : public rogue_poison_t
   struct instant_poison_dd_t : public rogue_poison_t
   {
     instant_poison_dd_t( util::string_view name, rogue_t* p ) :
-      rogue_poison_t( name, p, p->find_class_spell( "Instant Poison" )->effectN( 1 ).trigger() )
+      rogue_poison_t( name, p, p->find_class_spell( "Instant Poison" )->effectN( 1 ).trigger(), true )
     {
-      proc = false;
-      callbacks = true;
     }
   };
-
-  instant_poison_dd_t* proc_dd;
 
   instant_poison_t( util::string_view name, rogue_t* p ) :
     rogue_poison_t( name, p, p->find_class_spell( "Instant Poison" ) )
   {
-    dual = true;
-    proc_dd = p->get_background_action<instant_poison_dd_t>( "instant_poison" );
-  }
-
-  void impact( action_state_t* state ) override
-  {
-    rogue_poison_t::impact( state );
-
-    proc_dd->set_target( state->target );
-    proc_dd->execute();
+    impact_action = p->get_background_action<instant_poison_dd_t>( "instant_poison" );
   }
 };
 
@@ -1877,43 +1889,25 @@ struct wound_poison_t : public rogue_poison_t
   struct wound_poison_dd_t : public rogue_poison_t
   {
     wound_poison_dd_t( util::string_view name, rogue_t* p ) :
-      rogue_poison_t( name, p, p -> find_class_spell( "Wound Poison" ) -> effectN( 1 ).trigger() )
+      rogue_poison_t( name, p, p -> find_class_spell( "Wound Poison" ) -> effectN( 1 ).trigger(), true )
     {
-      proc = false;
-      callbacks = true;
     }
 
     void impact( action_state_t* state ) override
     {
       rogue_poison_t::impact( state );
-
-      if ( result_is_hit( state->result ) )
+      td( state->target )->debuffs.wound_poison->trigger();
+      if ( !sim->overrides.mortal_wounds && state->target->debuffs.mortal_wounds )
       {
-        td( state->target )->debuffs.wound_poison->trigger();
-
-        if ( !sim->overrides.mortal_wounds && state->target->debuffs.mortal_wounds )
-        {
-          state->target->debuffs.mortal_wounds->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, data().duration() );
-        }
+        state->target->debuffs.mortal_wounds->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, data().duration() );
       }
     }
   };
 
-  wound_poison_dd_t* proc_dd;
-
   wound_poison_t( util::string_view name, rogue_t* p ) :
     rogue_poison_t( name, p, p->find_class_spell( "Wound Poison" ) )
   {
-    dual = true;
-    proc_dd = p->get_background_action<wound_poison_dd_t>( "wound_poison" );
-  }
-
-  void impact( action_state_t* state ) override
-  {
-    rogue_poison_t::impact( state );
-
-    proc_dd -> set_target( state -> target );
-    proc_dd -> execute();
+    impact_action = p->get_background_action<wound_poison_dd_t>( "wound_poison" );
   }
 };
 
@@ -1930,26 +1924,14 @@ struct crippling_poison_t : public rogue_poison_t
     void impact( action_state_t* state ) override
     {
       rogue_poison_t::impact( state );
-
       td( state->target )->debuffs.crippling_poison->trigger();
     }
   };
 
-  crippling_poison_proc_t* proc;
-
   crippling_poison_t( util::string_view name, rogue_t* p ) :
     rogue_poison_t( name, p, p->find_class_spell( "Crippling Poison" ) )
   {
-    dual = true;
-    proc = p->get_background_action<crippling_poison_proc_t>( "crippling_poison" );
-  }
-
-  void impact( action_state_t* state ) override
-  {
-    rogue_poison_t::impact( state );
-
-    proc -> set_target( state -> target );
-    proc -> execute();
+    impact_action = p->get_background_action<crippling_poison_proc_t>( "crippling_poison" );
   }
 };
 
@@ -1970,21 +1952,10 @@ struct numbing_poison_t : public rogue_poison_t
     }
   };
 
-  numbing_poison_proc_t* proc;
-
   numbing_poison_t( util::string_view name, rogue_t* p ) :
     rogue_poison_t( name, p, p->find_class_spell( "Numbing Poison" ) )
   {
-    dual = true;
-    proc = p->get_background_action<numbing_poison_proc_t>( "numbing_poison" );
-  }
-
-  void impact( action_state_t* state ) override
-  {
-    rogue_poison_t::impact( state );
-
-    proc->set_target( state->target );
-    proc->execute();
+    impact_action = p->get_background_action<numbing_poison_proc_t>( "numbing_poison" );
   }
 };
 
@@ -4527,6 +4498,65 @@ struct bloodfang_t : public rogue_attack_t
 };
 
 // ==========================================================================
+// Covenant Abilities
+// ==========================================================================
+
+// Sepsis ===================================================================
+
+struct sepsis_t : public rogue_attack_t
+{
+  struct sepsis_expire_damage_t : public rogue_attack_t
+  {
+    sepsis_expire_damage_t( util::string_view name, rogue_t* p ) :
+      rogue_attack_t( name, p, p->find_spell( 328306 ) )
+    {
+      dual = true;
+      base_multiplier = p->covenant.sepsis->effectN( 4 ).base_value();
+    }
+  };
+
+  sepsis_expire_damage_t* sepsis_expire_damage;
+
+  sepsis_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ) :
+    rogue_attack_t( name, p, p->covenant.sepsis, options_str )
+  {
+    sepsis_expire_damage = p->get_background_action<sepsis_expire_damage_t>( "sepsis_expire_damage" );
+    sepsis_expire_damage->stats = stats;
+  }
+
+  void last_tick( dot_t* d ) override
+  {
+    rogue_attack_t::last_tick( d );
+    sepsis_expire_damage->set_target( d->target );
+    sepsis_expire_damage->execute();
+    p()->buffs.vanish->trigger();
+    p()->cancel_auto_attack(); // TOCHECK
+  }
+};
+
+struct slaughter_t : public rogue_attack_t
+{
+  slaughter_poison_t* slaughter_poison;
+
+  slaughter_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ) :
+    rogue_attack_t( name, p, p->covenant.slaughter, options_str )
+  {
+    slaughter_poison = p->get_background_action<slaughter_poison_t>( "slaughter_poison_driver" );
+  }
+
+  void execute() override
+  {
+    rogue_attack_t::execute();
+    trigger_count_the_odds( execute_state );
+    p()->active.lethal_poison = slaughter_poison; // TODO: Support expiry?
+  }
+
+  // TOCHECK: Copied from Ambush since this ability was largely cloned
+  bool procs_main_gauche() const override
+  { return false; }
+};
+
+// ==========================================================================
 // Cancel AutoAttack
 // ==========================================================================
 
@@ -5159,24 +5189,6 @@ struct rogue_poison_buff_t : public buff_t
   rogue_poison_buff_t( rogue_td_t& r, util::string_view name, const spell_data_t* spell ) :
     buff_t( r, name, spell )
   { }
-
-  void execute( int stacks, double value, timespan_t duration ) override
-  {
-    rogue_t* rogue = debug_cast< rogue_t* >( source );
-    if ( !rogue->is_target_poisoned( player ) )
-      rogue->poisoned_enemies++;
-
-    buff_t::execute( stacks, value, duration );
-  }
-
-  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
-  {
-    buff_t::expire_override( expiration_stacks, remaining_duration );
-
-    rogue_t* rogue = debug_cast< rogue_t* >( source );
-    if ( !rogue->is_target_poisoned( player ) )
-      rogue->poisoned_enemies--;
-  }
 };
 
 struct wound_poison_t : public rogue_poison_buff_t
@@ -5825,7 +5837,7 @@ void actions::rogue_action_t<Base>::trigger_shadow_techniques( const action_stat
     if ( p()->spec.shadow_techniques_2->ok() )
       trigger_combo_point_gain( as<int>( p()->spec.shadow_techniques_effect->effectN( 1 ).base_value() ), p()->gains.shadow_techniques );
     if ( p()->conduit.stiletto_staccato.ok() )
-      p()->cooldowns.shadow_blades->adjust( -timespan_t::from_seconds( p()->conduit.stiletto_staccato.value() ), true );
+      p()->cooldowns.shadow_blades->adjust( -p()->conduit.stiletto_staccato.time_value( conduit_data_t::time_type::S ), true );
   }
 }
 
@@ -6088,37 +6100,46 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
   dots( dots_t() ),
   debuffs( debuffs_t() )
 {
-  dots.deadly_poison      = target -> get_dot( "deadly_poison_dot", source );
-  dots.garrote            = target -> get_dot( "garrote", source );
-  dots.internal_bleeding  = target -> get_dot( "internal_bleeding", source );
-  dots.rupture            = target -> get_dot( "rupture", source );
-  dots.crimson_tempest    = target -> get_dot( "crimson_tempest", source );
-  dots.nothing_personal   = target -> get_dot( "nothing_personal", source );
+  dots.deadly_poison        = target->get_dot( "deadly_poison_dot", source );
+  dots.garrote              = target->get_dot( "garrote", source );
+  dots.internal_bleeding    = target->get_dot( "internal_bleeding", source );
+  dots.rupture              = target->get_dot( "rupture", source );
+  dots.crimson_tempest      = target->get_dot( "crimson_tempest", source );
+  dots.nothing_personal     = target->get_dot( "nothing_personal", source );
+  dots.sepsis               = target->get_dot( "sepsis", source );
+  dots.slaughter_poison     = target->get_dot( "slaughter_poison_dot", source );
 
-  debuffs.marked_for_death = new buffs::marked_for_death_debuff_t( *this );
-  debuffs.wound_poison = new buffs::wound_poison_t( *this );
-  debuffs.crippling_poison = new buffs::crippling_poison_t( *this );
-  debuffs.numbing_poison = new buffs::numbing_poison_t( *this );
-  debuffs.rupture = new buffs::proxy_rupture_t( *this );
-  debuffs.vendetta = new buffs::vendetta_debuff_t( *this );
+  debuffs.marked_for_death  = new buffs::marked_for_death_debuff_t( *this );
+  debuffs.wound_poison      = new buffs::wound_poison_t( *this );
+  debuffs.crippling_poison  = new buffs::crippling_poison_t( *this );
+  debuffs.numbing_poison    = new buffs::numbing_poison_t( *this );
+  debuffs.rupture           = new buffs::proxy_rupture_t( *this );
+  debuffs.vendetta          = new buffs::vendetta_debuff_t( *this );
+
   debuffs.shiv = make_buff( *this, "shiv", source->spec.shiv_2_debuff )
     ->set_default_value( source->spec.shiv_2_debuff->effectN( 1 ).percent() );
   debuffs.ghostly_strike = make_buff( *this, "ghostly_strike", source->talent.ghostly_strike )
     ->set_default_value( source->talent.ghostly_strike->effectN( 3 ).percent() );
-  const spell_data_t* fw_debuff = source->spec.find_weakness->effectN( 1 ).trigger();
-  debuffs.find_weakness = make_buff( *this, "find_weakness", fw_debuff )
-    ->set_default_value( fw_debuff->effectN( 1 ).percent() );
+  debuffs.find_weakness = make_buff( *this, "find_weakness", source->spec.find_weakness->effectN( 1 ).trigger() )
+    ->set_default_value( source->spec.find_weakness->effectN( 1 ).trigger()->effectN( 1 ).percent() );
   debuffs.prey_on_the_weak = make_buff( *this, "prey_on_the_weak", source->find_spell( 255909 ) )
     ->set_default_value( source->find_spell( 255909 )->effectN( 1 ).percent() );
   debuffs.between_the_eyes = make_buff( *this, "between_the_eyes", source->spec.between_the_eyes )
     ->set_default_value( source->spec.between_the_eyes->effectN( 2 ).percent() )
     ->set_cooldown( timespan_t::zero() );
 
-  // Register on-demise callback for assassination to perform Venomous Wounds energy replenish on
-  // death.
+  // Register on-demise callback for assassination to perform Venomous Wounds energy replenish on death.
   if ( source->specialization() == ROGUE_ASSASSINATION && source->spec.venomous_wounds->ok() )
   {
     target->callbacks_on_demise.emplace_back( std::bind( &rogue_t::trigger_venomous_wounds_death, source, std::placeholders::_1 ) );
+  }
+
+  if ( source->covenant.sepsis->ok() )
+  {
+    target->callbacks_on_demise.emplace_back( [ this, source ]( player_t* ) {
+      if ( dots.sepsis->is_ticking() )
+        source->cooldowns.sepsis->adjust( -timespan_t::from_seconds( source->covenant.sepsis->effectN( 3 ).base_value() ) );
+    } );
   }
 }
 
@@ -6448,6 +6469,7 @@ void rogue_t::init_action_list()
     dot -> add_action( this, "Rupture", "if=!variable.skip_rupture&(combo_points>=4&refreshable|!ticking&(time>10|combo_points>=2))&(pmultiplier<=1|remains<=tick_time&spell_targets.fan_of_knives>=3+azerite.shrouded_suffocation.enabled)&(!exsanguinated|remains<=tick_time*2&spell_targets.fan_of_knives>=3+azerite.shrouded_suffocation.enabled)&target.time_to_die-remains>4", "Keep up Rupture at 4+ on all targets (when living long enough and not snapshot)" );
     dot -> add_action( this, "Rupture", "cycle_targets=1,if=!variable.skip_cycle_rupture&!variable.skip_rupture&target!=self.target&combo_points>=4&refreshable&(pmultiplier<=1|remains<=tick_time&spell_targets.fan_of_knives>=3+azerite.shrouded_suffocation.enabled)&(!exsanguinated|remains<=tick_time*2&spell_targets.fan_of_knives>=3+azerite.shrouded_suffocation.enabled)&target.time_to_die-remains>4" );
     dot -> add_talent( this, "Crimson Tempest", "if=spell_targets=1&combo_points>=(cp_max_spend-1)&refreshable&!exsanguinated&!debuff.shiv.up&master_assassin_remains=0&!azerite.twist_the_knife.enabled&target.time_to_die-remains>4", "Crimson Tempest on ST if in pandemic and it will do less damage than Envenom due to TB/MA/TtK" );
+    dot -> add_action( "sepsis" );
 
     // Direct damage abilities
     action_priority_list_t* direct = get_action_priority_list( "direct", "Direct damage abilities" );
@@ -6456,6 +6478,7 @@ void rogue_t::init_action_list()
     direct -> add_action( this, "Fan of Knives", "if=variable.use_filler&azerite.echoing_blades.enabled&spell_targets.fan_of_knives>=2+(debuff.vendetta.up*(1+(azerite.echoing_blades.rank=1)))", "With Echoing Blades, Fan of Knives at 2+ targets, or 3-4+ targets when Vendetta is up" );
     direct -> add_action( this, "Fan of Knives", "if=variable.use_filler&(buff.hidden_blades.stack>=19|(!priority_rotation&spell_targets.fan_of_knives>=4+(azerite.double_dose.rank>2)+stealthed.rogue))", "Fan of Knives at 19+ stacks of Hidden Blades or against 4+ (5+ with Double Dose) targets." );
     direct -> add_action( this, "Fan of Knives", "target_if=!dot.deadly_poison_dot.ticking,if=variable.use_filler&spell_targets.fan_of_knives>=3", "Fan of Knives to apply Deadly Poison if inactive on any target at 3 targets." );
+    direct -> add_action( "slaughter,if=variable.use_filler" );
     direct -> add_action( this, "Ambush", "if=variable.use_filler" );
     direct -> add_action( this, "Mutilate", "target_if=!dot.deadly_poison_dot.ticking,if=variable.use_filler&spell_targets.fan_of_knives=2", "Tab-Mutilate to apply Deadly Poison at 2 targets" );
     direct -> add_action( this, "Mutilate", "if=variable.use_filler" );
@@ -6503,6 +6526,7 @@ void rogue_t::init_action_list()
     cds -> add_talent( this, "Blade Rush", "if=variable.blade_flurry_sync&energy.time_to_max>2" );
     cds -> add_action( this, "Vanish", "if=!stealthed.all&variable.ambush_condition", "Using Vanish/Ambush is only a very tiny increase, so in reality, you're absolutely fine to use it as a utility spell." );
     cds -> add_action( "shadowmeld,if=!stealthed.all&variable.ambush_condition" );
+    cds -> add_action( "sepsis,if=!stealthed.all" );
 
     // Non-spec stuff with lower prio
     cds -> add_action( potion_action );
@@ -6533,6 +6557,7 @@ void rogue_t::init_action_list()
     // Stealth
     action_priority_list_t* stealth = get_action_priority_list( "stealth", "Stealth" );
     stealth -> add_action( this, "Cheap Shot", "target_if=min:debuff.prey_on_the_weak.remains,if=talent.prey_on_the_weak.enabled&!target.is_boss" );
+    stealth -> add_action( "slaughter" );
     stealth -> add_action( this, "Ambush" );
 
     // Finishers
@@ -6700,6 +6725,7 @@ action_t* rogue_t::create_action( util::string_view name, const std::string& opt
   if ( name == "roll_the_bones"      ) return new roll_the_bones_t     ( name, this, options_str );
   if ( name == "rupture"             ) return new rupture_t            ( name, this, options_str );
   if ( name == "secret_technique"    ) return new secret_technique_t   ( name, this, options_str );
+  if ( name == "sepsis"              ) return new sepsis_t             ( name, this, options_str );
   if ( name == "shadow_blades"       ) return new shadow_blades_t      ( name, this, options_str );
   if ( name == "shadow_dance"        ) return new shadow_dance_t       ( name, this, options_str );
   if ( name == "shadowstep"          ) return new shadowstep_t         ( name, this, options_str );
@@ -6709,6 +6735,7 @@ action_t* rogue_t::create_action( util::string_view name, const std::string& opt
   if ( name == "shuriken_tornado"    ) return new shuriken_tornado_t   ( name, this, options_str );
   if ( name == "shuriken_toss"       ) return new shuriken_toss_t      ( name, this, options_str );
   if ( name == "sinister_strike"     ) return new sinister_strike_t    ( name, this, options_str );
+  if ( name == "slaughter"           ) return new slaughter_t          ( name, this, options_str );
   if ( name == "slice_and_dice"      ) return new slice_and_dice_t     ( name, this, options_str );
   if ( name == "sprint"              ) return new sprint_t             ( name, this, options_str );
   if ( name == "stealth"             ) return new stealth_t            ( name, this, options_str );
@@ -6765,8 +6792,6 @@ std::unique_ptr<expr_t> rogue_t::create_expression( util::string_view name_str )
         return timespan_t::from_seconds( 0.0 );
     } );
   }
-  else if ( util::str_compare_ci( name_str, "poisoned_enemies" ) )
-    return make_ref_expr( name_str, poisoned_enemies );
   else if ( util::str_compare_ci( name_str, "poisoned" ) )
     return make_fn_expr( name_str, [ this ]() {
       rogue_td_t* tdata = get_target_data( target );
@@ -7319,6 +7344,13 @@ void rogue_t::init_spells()
   azerite.vision_of_perfection_percentage = azerite.vision_of_perfection.spell( 1u, essence_type::MAJOR )->effectN( 1 ).percent();
   azerite.vision_of_perfection_percentage += azerite.vision_of_perfection.spell( 2u, essence_spell::UPGRADE, essence_type::MAJOR )->effectN( 1 ).percent();
 
+  // Covenant Abilities =====================================================
+
+  covenant.echoing_reprimand      = find_covenant_spell( "Echoing Reprimand" );
+  covenant.sepsis                 = find_covenant_spell( "Sepsis" );
+  covenant.serrated_bone_spike    = find_covenant_spell( "Serrated Bone Spike" );
+  covenant.slaughter              = find_covenant_spell( "Slaughter" );
+
   // Conduits ===============================================================
 
   conduit.lethal_poisons          = find_conduit_spell( "Lethal Poisons" );
@@ -7571,12 +7603,13 @@ void rogue_t::create_buffs()
 
   // Assassination
   buffs.envenom               = make_buff( this, "envenom", find_specialization_spell( "Envenom" ) )
-                                -> set_duration( timespan_t::min() )
-                                -> set_period( timespan_t::zero() )
-                                -> set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
+                                ->set_default_value( find_specialization_spell( "Envenom" )->effectN( 2 ).percent() )
+                                ->set_duration( timespan_t::min() )
+                                ->set_period( timespan_t::zero() )
+                                ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
   buffs.vendetta              = make_buff( this, "vendetta_energy", spec.vendetta->effectN( 4 ).trigger() )
-                                -> set_default_value( spec.vendetta->effectN( 4 ).trigger()->effectN( 1 ).base_value() / 5.0 )
-                                -> set_affects_regen( true );
+                                ->set_default_value( spec.vendetta->effectN( 4 ).trigger()->effectN( 1 ).base_value() / 5.0 )
+                                ->set_affects_regen( true );
 
   // Outlaw
   buffs.adrenaline_rush       = new buffs::adrenaline_rush_t( this );
@@ -8027,8 +8060,6 @@ void rogue_t::init_finished()
 void rogue_t::reset()
 {
   player_t::reset();
-
-  poisoned_enemies = 0;
 
   shadow_techniques = 0;
 
