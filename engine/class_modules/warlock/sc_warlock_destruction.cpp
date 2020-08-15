@@ -142,20 +142,6 @@ public:
 };
 
 // Talents
-struct soul_fire_t : public destruction_spell_t
-{
-  soul_fire_t( warlock_t* p, util::string_view options_str )
-    : destruction_spell_t( "soul_fire", p, p->talents.soul_fire )
-  {
-    parse_options( options_str );
-    energize_type     = action_energize::PER_HIT;
-    energize_resource = RESOURCE_SOUL_SHARD;
-    energize_amount   = ( p->find_spell( 281490 )->effectN( 1 ).base_value() ) / 10.0;
-
-    can_havoc = true;
-  }
-};
-
 struct internal_combustion_t : public destruction_spell_t
 {
   internal_combustion_t( warlock_t* p )
@@ -638,6 +624,132 @@ struct chaos_bolt_t : public destruction_spell_t
   }
 };
 
+struct infernal_awakening_t : public destruction_spell_t
+{
+  infernal_awakening_t( warlock_t* p ) : destruction_spell_t( "infernal_awakening", p, p->find_spell( 22703 ) )
+  {
+    destro_mastery = false;
+    aoe            = -1;
+    background     = true;
+    dual           = true;
+    trigger_gcd    = 0_ms;
+  }
+};
+
+struct summon_infernal_t : public destruction_spell_t
+{
+  infernal_awakening_t* infernal_awakening;
+  timespan_t infernal_duration;
+
+  summon_infernal_t( warlock_t* p, util::string_view options_str )
+    : destruction_spell_t( "Summon_Infernal", p, p->find_spell( 1122 ) ), infernal_awakening( nullptr )
+  {
+    parse_options( options_str );
+
+    harmful = may_crit        = false;
+    infernal_duration         = p->find_spell( 111685 )->duration() + 1_ms;
+    infernal_awakening        = new infernal_awakening_t( p );
+    infernal_awakening->stats = stats;
+    radius                    = infernal_awakening->radius;
+    // BFA - Azerite
+    if ( p->azerite.crashing_chaos.ok() )
+      cooldown->duration += p->find_spell( 277705 )->effectN( 2 ).time_value();
+    // BFA - Essence
+    cooldown->duration *= 1.0 + azerite::vision_of_perfection_cdr( p->azerite_essence.vision_of_perfection );
+  }
+
+  void execute() override
+  {
+    destruction_spell_t::execute();
+
+    // TODO - Make infernal not spawn until after infernal awakening impacts.
+    if ( infernal_awakening )
+      infernal_awakening->execute();
+
+    for ( size_t i = 0; i < p()->warlock_pet_list.infernals.size(); i++ )
+    {
+      if ( p()->warlock_pet_list.infernals[ i ]->is_sleeping() )
+      {
+        p()->warlock_pet_list.infernals[ i ]->summon( infernal_duration );
+      }
+    }
+
+    // BFA - Azerite
+    if ( p()->azerite.crashing_chaos.ok() )
+    {
+      // Cancel the Vision of Perfection version if necessary
+      p()->buffs.crashing_chaos_vop->expire();
+      p()->buffs.crashing_chaos->trigger( p()->buffs.crashing_chaos->max_stack() );
+    }
+  }
+};
+
+// AOE Spells
+struct rain_of_fire_t : public destruction_spell_t
+{
+  struct rain_of_fire_tick_t : public destruction_spell_t
+  {
+    rain_of_fire_tick_t( warlock_t* p ) : destruction_spell_t( "rain_of_fire_tick", p, p->find_spell( 42223 ) )
+    {
+      aoe        = -1;
+      background = dual = direct_tick = true;  // Legion TOCHECK
+      callbacks                       = false;
+      radius                          = p->find_spell( 5740 )->effectN( 1 ).radius();
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      destruction_spell_t::impact( s );
+
+      if ( p()->talents.inferno && result_is_hit( s->result ) )
+      {
+        if ( rng().roll( p()->talents.inferno->effectN( 1 ).percent() ) )
+        {
+          p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1, p()->gains.inferno );
+        }
+      }
+    }
+
+    void execute() override
+    {
+      destruction_spell_t::execute();
+    }
+  };
+
+  rain_of_fire_t( warlock_t* p, util::string_view options_str )
+    : destruction_spell_t( "rain_of_fire", p, p->find_spell( 5740 ) )
+  {
+    parse_options( options_str );
+    aoe          = -1;
+    dot_duration = 0_ms;
+    may_miss = may_crit = false;
+    base_tick_time      = data().duration() / 8.0;  // ticks 8 times (missing from spell data)
+    base_execute_time   = 0_ms;                     // HOTFIX
+
+    if ( !p->active.rain_of_fire )
+    {
+      p->active.rain_of_fire        = new rain_of_fire_tick_t( p );
+      p->active.rain_of_fire->stats = stats;
+    }
+  }
+
+  void execute() override
+  {
+    destruction_spell_t::execute();
+
+    make_event<ground_aoe_event_t>( *sim, p(),
+                                    ground_aoe_params_t()
+                                        .target( execute_state->target )
+                                        .x( execute_state->target->x_position )
+                                        .y( execute_state->target->y_position )
+                                        .pulse_time( base_tick_time * player->cache.spell_haste() )
+                                        .duration( data().duration() * player->cache.spell_haste() )
+                                        .start_time( sim->current_time() )
+                                        .action( p()->active.rain_of_fire ) );
+  }
+};
+
+// Talents which need initialization after baseline spells
 struct channel_demonfire_tick_t : public destruction_spell_t
 {
   channel_demonfire_tick_t( warlock_t* p ) : destruction_spell_t( "channel_demonfire_tick", p, p->find_spell( 196448 ) )
@@ -744,132 +856,20 @@ struct channel_demonfire_t : public destruction_spell_t
   }
 };
 
-struct infernal_awakening_t : public destruction_spell_t
+struct soul_fire_t : public destruction_spell_t
 {
-  infernal_awakening_t( warlock_t* p ) : destruction_spell_t( "infernal_awakening", p, p->find_spell( 22703 ) )
-  {
-    destro_mastery = false;
-    aoe            = -1;
-    background     = true;
-    dual           = true;
-    trigger_gcd    = 0_ms;
-  }
-};
-
-struct summon_infernal_t : public destruction_spell_t
-{
-  infernal_awakening_t* infernal_awakening;
-  timespan_t infernal_duration;
-
-  summon_infernal_t( warlock_t* p, util::string_view options_str )
-    : destruction_spell_t( "Summon_Infernal", p, p->find_spell( 1122 ) ), infernal_awakening( nullptr )
+  soul_fire_t( warlock_t* p, util::string_view options_str )
+    : destruction_spell_t( "soul_fire", p, p->talents.soul_fire )
   {
     parse_options( options_str );
+    energize_type     = action_energize::PER_HIT;
+    energize_resource = RESOURCE_SOUL_SHARD;
+    energize_amount   = ( p->find_spell( 281490 )->effectN( 1 ).base_value() ) / 10.0;
 
-    harmful = may_crit        = false;
-    infernal_duration         = p->find_spell( 111685 )->duration() + 1_ms;
-    infernal_awakening        = new infernal_awakening_t( p );
-    infernal_awakening->stats = stats;
-    radius                    = infernal_awakening->radius;
-    // BFA - Azerite
-    if ( p->azerite.crashing_chaos.ok() )
-      cooldown->duration += p->find_spell( 277705 )->effectN( 2 ).time_value();
-    // BFA - Essence
-    cooldown->duration *= 1.0 + azerite::vision_of_perfection_cdr( p->azerite_essence.vision_of_perfection );
-  }
-
-  void execute() override
-  {
-    destruction_spell_t::execute();
-
-    // TODO - Make infernal not spawn until after infernal awakening impacts.
-    if ( infernal_awakening )
-      infernal_awakening->execute();
-
-    for ( size_t i = 0; i < p()->warlock_pet_list.infernals.size(); i++ )
-    {
-      if ( p()->warlock_pet_list.infernals[ i ]->is_sleeping() )
-      {
-        p()->warlock_pet_list.infernals[ i ]->summon( infernal_duration );
-      }
-    }
-
-    // BFA - Azerite
-    if ( p()->azerite.crashing_chaos.ok() )
-    {
-      // Cancel the Vision of Perfection version if necessary
-      p()->buffs.crashing_chaos_vop->expire();
-      p()->buffs.crashing_chaos->trigger( p()->buffs.crashing_chaos->max_stack() );
-    }
+    can_havoc = true;
   }
 };
 
-// AOE
-struct rain_of_fire_t : public destruction_spell_t
-{
-  struct rain_of_fire_tick_t : public destruction_spell_t
-  {
-    rain_of_fire_tick_t( warlock_t* p ) : destruction_spell_t( "rain_of_fire_tick", p, p->find_spell( 42223 ) )
-    {
-      aoe        = -1;
-      background = dual = direct_tick = true;  // Legion TOCHECK
-      callbacks                       = false;
-      radius                          = p->find_spell( 5740 )->effectN( 1 ).radius();
-    }
-
-    void impact( action_state_t* s ) override
-    {
-      destruction_spell_t::impact( s );
-
-      if ( p()->talents.inferno && result_is_hit( s->result ) )
-      {
-        if ( rng().roll( p()->talents.inferno->effectN( 1 ).percent() ) )
-        {
-          p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1, p()->gains.inferno );
-        }
-      }
-    }
-
-    void execute() override
-    {
-      destruction_spell_t::execute();
-    }
-  };
-
-  rain_of_fire_t( warlock_t* p, util::string_view options_str )
-    : destruction_spell_t( "rain_of_fire", p, p->find_spell( 5740 ) )
-  {
-    parse_options( options_str );
-    aoe          = -1;
-    dot_duration = 0_ms;
-    may_miss = may_crit = false;
-    base_tick_time      = data().duration() / 8.0;  // ticks 8 times (missing from spell data)
-    base_execute_time   = 0_ms;                     // HOTFIX
-
-    if ( !p->active.rain_of_fire )
-    {
-      p->active.rain_of_fire        = new rain_of_fire_tick_t( p );
-      p->active.rain_of_fire->stats = stats;
-    }
-  }
-
-  void execute() override
-  {
-    destruction_spell_t::execute();
-
-    make_event<ground_aoe_event_t>( *sim, p(),
-                                    ground_aoe_params_t()
-                                        .target( execute_state->target )
-                                        .x( execute_state->target->x_position )
-                                        .y( execute_state->target->y_position )
-                                        .pulse_time( base_tick_time * player->cache.spell_haste() )
-                                        .duration( data().duration() * player->cache.spell_haste() )
-                                        .start_time( sim->current_time() )
-                                        .action( p()->active.rain_of_fire ) );
-  }
-};
-
-// AOE talents
 struct cataclysm_t : public destruction_spell_t
 {
   immolate_t* immolate;
