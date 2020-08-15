@@ -1541,6 +1541,7 @@ class SpellDataGenerator(DataGenerator):
             ( 227151, 0 ),          # Symbols of Death Rank 2 autocrit buff
             ( 328082, 0 ),          # Eviscerate rank 2 shadow damage spell
             ( 341541, 0 ),          # Sinister Strike third attack from Triple Threat conduit
+            ( 328306, 0 ),          # Sepsis expiry direct damage hit
         ),
 
         # Priest:
