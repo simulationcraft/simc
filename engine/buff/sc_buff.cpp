@@ -373,6 +373,13 @@ std::unique_ptr<expr_t> create_buff_expression( util::string_view buff_name, uti
         return buff->value();
       } );
   }
+  else if ( type == "stack_value" )
+  {
+    return make_buff_expr( "buff_stack_value",
+      []( buff_t* buff ) {
+        return buff->stack_value();
+      } );
+  }
   else if ( type == "react" )
   {
     struct react_expr_t : public buff_expr_t
