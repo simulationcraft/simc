@@ -1,5 +1,5 @@
 // Spell text, wow build 9.0.1.35522
-static const std::array<spelltext_data_t, 15387> __spelltext_data { {
+static const std::array<spelltext_data_t, 15389> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -14099,6 +14099,7 @@ static const std::array<spelltext_data_t, 15387> __spelltext_data { {
   { 324064, "Increase the stamina of an item worn on the chest, legs, hands or feet by $ec for 2 hrs.\r\n\r\nCannot be applied to items higher than level $ecix.", 0, 0 },
   { 324068, "Increase the stamina of an item worn on the chest, legs, hands or feet by $ec for 2 hrs.\r\n\r\nCannot be applied to items higher than level $ecix.", 0, 0 },
   { 324073, "$@spelldesc323737", "Bleeding for $w1 every $t1 sec.", "Necrolord" },
+  { 324074, "Embed a bone spike in the target, dealing $s1 Physical damage every $t2 sec until they die.\r\n\r\nAttacking with Serrated Bone Spike causes all of your active bone spikes to fracture and strike your current target, increasing initial damage by $s3% per spike.", "Bleeding for $w2 every $t sec.", "Necrolord" },
   { 324128, "Corrupts the targeted ground, causing ${$341340m1*11} Shadow damage over $d to targets within the area.\r\n\r\nEnemies damaged deal $324164s1% reduced damage to you, up to a maximum of ${$324164s1*-$324164u}% and their power is transferred to you as an equal amount of Strength.\r\n\r\nWhile you remain within the area, your $?s223829[Necrotic Strike and ][]$?c1[Heart Strike will hit up to $188290m3 additional targets.]?s207311[Clawing Shadows will hit all enemies near the target.][Scourge Strike will hit all enemies near the target.]", 0, "Night Fae" },
   { 324143, "Brandish the banner of the Necrolords for $d, increasing your movement speed by $s2% and causing $?c1[Mortal Strike]?c2[Raging Blow]?c3[Shield Slam][one of your abilities] to grant you $@spellname325787. Killing an enemy grants $325788s1 stacks of $@spellname325787.\r\n\r\nReactivating this ability plants the banner in the ground, granting $325862s1% maximum health and $325862s2% attack speed to you and $325784s1 allies within $s3 yds of the banner. Lasts $325787s1 sec per $@spellname325787, up to $325784d.", "Movement speed increased by $w2%. Able to plant the Conqueror's Banner in the ground.", "Necrolord" },
   { 324149, "Fire a shot at your enemy, causing them to bleed for $o1 Shadow damage over $d. Each time Flayed Shot deals damage, you have a $s2% chance to gain Flayer's Mark, causing your next Kill Shot to be usable on any target, regardless of their current health.", "Bleeding for $s1 Shadow damage every $t1 sec.", "Venthyr" },
@@ -15297,6 +15298,7 @@ static const std::array<spelltext_data_t, 15387> __spelltext_data { {
   { 341264, "Echoing Reprimand's damage increased by $s1%.", 0, 0 },
   { 341272, "Serrated Bone Spike's bleed has a $s1% chance to deal its damage a second time.", 0, 0 },
   { 341273, "After casting Vampiric Touch on a target, your next Vampiric Touch is instant cast and deals $34914s4 Shadow damage immediately.\r\n\r\nThis effect cannot occur more than once every $341291d.", 0, 0 },
+  { 341277, "$@spelldesc323737", 0, "Necrolord" },
   { 341280, "Rebirth grants the target $341448s1% movement speed for $341448d sec, and Well Fed, increasing their primary stat by $s1 for $341449d.", 0, 0 },
   { 341282, "$@spelldesc341273", "Your next Vampiric Touch is instant cast and deals an additional $34914s3 Shadow damage upon application.", 0 },
   { 341291, "$@spelldesc341273", "Unfurling Darkness cannot occur.", 0 },
