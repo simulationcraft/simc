@@ -6317,6 +6317,7 @@ struct wrath_t : public druid_spell_t
       return druid_spell_t::travel_time();
 
     // for each additional wrath in precombat apl, reduce the travel time by the cast time
+    player->invalidate_cache( CACHE_SPELL_HASTE );
     return std::max( 1_ms, druid_spell_t::travel_time() - base_execute_time * composite_haste() * count );
   }
 
