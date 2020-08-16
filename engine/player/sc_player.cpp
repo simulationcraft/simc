@@ -10869,6 +10869,13 @@ void player_t::copy_from( player_t* source )
     covenant->copy_state( source->covenant );
   }
 
+  if ( source->dbc_override_ )
+  {
+    dbc_override_ = std::make_unique<dbc_override_t>( *dbc_override );
+    dbc_override_->copy_from( *source->dbc_override_ );
+    dbc_override = dbc_override_.get();
+  }
+
   talent_overrides_str = source->talent_overrides_str;
   action_list_str      = source->action_list_str;
   alist_map            = source->alist_map;
@@ -11084,6 +11091,17 @@ void player_t::create_options()
     {
       covenant->register_options( this );
     }
+
+    add_option( opt_func( "override.player.spell_data",
+        [ this ]( sim_t*, util::string_view, util::string_view value ) {
+          if ( dbc_override_ == nullptr )
+          {
+            dbc_override_ = std::make_unique<dbc_override_t>( *dbc_override );
+            dbc_override = dbc_override_.get();
+          }
+          dbc_override_->parse( *dbc, value );
+          return true;
+        } ) );
   }
 
   // Obsolete options

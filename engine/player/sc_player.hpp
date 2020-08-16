@@ -630,6 +630,9 @@ private:
   };
   std::vector<resource_callback_entry_t> resource_callbacks;
 
+  /// Per-player custom dbc data
+  std::unique_ptr<dbc_override_t> dbc_override_;
+
 public:
 
 
