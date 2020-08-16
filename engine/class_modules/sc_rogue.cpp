@@ -121,6 +121,7 @@ public:
     dot_t* nothing_personal;
     dot_t* sepsis;
     dot_t* slaughter_poison;
+    dot_t* serrated_bone_spike;
   } dots;
 
   struct debuffs_t
@@ -346,6 +347,7 @@ public:
     cooldown_t* secret_technique;
     cooldown_t* shadow_blades;
     cooldown_t* sepsis;
+    cooldown_t* serrated_bone_spike;
   } cooldowns;
 
   // Gains
@@ -376,6 +378,7 @@ public:
     gain_t* ace_up_your_sleeve;
     gain_t* shrouded_suffocation;
     gain_t* the_first_dance;
+    gain_t* serrated_bone_spike;
 
     // Legendary
     gain_t* dashing_scoundrel;
@@ -706,6 +709,7 @@ public:
     cooldowns.secret_technique         = get_cooldown( "secret_technique"         );
     cooldowns.shadow_blades            = get_cooldown( "shadow_blades"            );
     cooldowns.sepsis                   = get_cooldown( "sepsis"                   );
+    cooldowns.serrated_bone_spike      = get_cooldown( "serrated_bone_spike"      );
 
     resource_regeneration = regen_type::DYNAMIC;
     regen_caches[CACHE_HASTE] = true;
@@ -4437,7 +4441,7 @@ struct kidney_shot_t : public rogue_attack_t
     double composite_persistent_multiplier( const action_state_t* state ) const override
     {
       double m = rogue_attack_t::composite_persistent_multiplier( state );
-      m *= cast_state( state )->cp;
+      m *= cast_state( state )->cp; // TOCHECK: Does this get affected by Echoing Reprimand?
       return m;
     }
   };
@@ -4586,6 +4590,68 @@ struct sepsis_t : public rogue_attack_t
     sepsis_expire_damage->execute();
     p()->buffs.vanish->trigger();
     p()->cancel_auto_attack(); // TOCHECK
+  }
+};
+
+// Serrated Bone Spike ======================================================
+
+struct serrated_bone_spike_t : public rogue_attack_t
+{
+  struct serrated_bone_spike_shatter_t : public rogue_attack_t
+  {
+    serrated_bone_spike_shatter_t( util::string_view name, rogue_t* p ) :
+      rogue_attack_t( name, p, p->covenant.serrated_bone_spike )
+    {
+      // TOCHECK: Really need to verify this whole mechanic, tooltip is ambiguous and spells used seem wrong
+      base_costs[ RESOURCE_ENERGY ] = 0;
+      cooldown->duration = 0_s;
+    }
+  };
+
+  struct serrated_bone_spike_dot_t : public rogue_attack_t
+  {
+    serrated_bone_spike_dot_t( util::string_view name, rogue_t* p ) :
+      rogue_attack_t( name, p, p->covenant.serrated_bone_spike->effectN( 2 ).trigger() )
+    {
+      dot_duration = timespan_t::from_seconds( sim->expected_max_time() * 2 );
+    }
+  };
+
+  serrated_bone_spike_dot_t* serrated_bone_spike_dot;
+  serrated_bone_spike_shatter_t* serrated_bone_spike_shatter;
+
+  serrated_bone_spike_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ) :
+    rogue_attack_t( name, p, p->covenant.serrated_bone_spike, options_str )
+  {
+    serrated_bone_spike_dot = p->get_background_action<serrated_bone_spike_dot_t>( "serrated_bone_spike_dot" );
+    serrated_bone_spike_shatter = p->get_background_action<serrated_bone_spike_shatter_t>( "serrated_bone_spike_shatter" );
+    add_child( serrated_bone_spike_dot );
+    add_child( serrated_bone_spike_shatter );
+  }
+
+  void execute() override
+  {
+    rogue_attack_t::execute();
+
+    unsigned active_dots = p()->get_active_dots( serrated_bone_spike_dot->internal_id );
+    
+    if ( !td( target )->dots.serrated_bone_spike->is_ticking() )
+    {
+      serrated_bone_spike_dot->set_target( target );
+      serrated_bone_spike_dot->execute();
+    }
+    else
+    {
+      active_dots--;
+    }
+
+    for ( int i = 0; i < active_dots; ++i )
+    {
+      serrated_bone_spike_shatter->set_target( target );
+      serrated_bone_spike_shatter->execute();
+    }
+
+    trigger_combo_point_gain( active_dots + 1, p()->gains.serrated_bone_spike );
   }
 };
 
@@ -6185,6 +6251,7 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
   dots.nothing_personal     = target->get_dot( "nothing_personal", source );
   dots.sepsis               = target->get_dot( "sepsis", source );
   dots.slaughter_poison     = target->get_dot( "slaughter_poison_dot", source );
+  dots.serrated_bone_spike  = target->get_dot( "serrated_bone_spike_dot", source );
 
   debuffs.marked_for_death  = new buffs::marked_for_death_debuff_t( *this );
   debuffs.wound_poison      = new buffs::wound_poison_t( *this );
@@ -6216,6 +6283,14 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
     target->callbacks_on_demise.emplace_back( [ this, source ]( player_t* ) {
       if ( dots.sepsis->is_ticking() )
         source->cooldowns.sepsis->adjust( -timespan_t::from_seconds( source->covenant.sepsis->effectN( 3 ).base_value() ) );
+    } );
+  }
+
+  if ( source->covenant.serrated_bone_spike->ok() )
+  {
+    target->callbacks_on_demise.emplace_back( [ this, source ]( player_t* ) {
+      if ( dots.serrated_bone_spike->is_ticking() )
+        source->cooldowns.serrated_bone_spike->reset( false, 1 );
     } );
   }
 }
@@ -6552,6 +6627,7 @@ void rogue_t::init_action_list()
     action_priority_list_t* direct = get_action_priority_list( "direct", "Direct damage abilities" );
     direct -> add_action( this, "Envenom", "if=(combo_points>=4+talent.deeper_stratagem.enabled|combo_points=animacharged_cp)&(debuff.vendetta.up|debuff.shiv.up|energy.deficit<=25+variable.energy_regen_combined|!variable.single_target)&(!talent.exsanguinate.enabled|cooldown.exsanguinate.remains>2)", "Envenom at 4+ (5+ with DS) CP. Immediately on 2+ targets, with Vendetta, or with TB; otherwise wait for some energy. Also wait if Exsg combo is coming up." );
     direct -> add_action( "variable,name=use_filler,value=combo_points.deficit>1|energy.deficit<=25+variable.energy_regen_combined|!variable.single_target" );
+    direct -> add_action( "serrated_bone_spike,target_if=min:dot.serrated_bone_spike_dot.ticking,if=!dot.serrated_bone_spike.ticking|variable.use_filler&(active_enemies=1&raid_event.adds.in>full_recharge_time|charges>2&target.time_to_die<5)" );
     direct -> add_action( this, "Fan of Knives", "if=variable.use_filler&azerite.echoing_blades.enabled&spell_targets.fan_of_knives>=2+(debuff.vendetta.up*(1+(azerite.echoing_blades.rank=1)))", "With Echoing Blades, Fan of Knives at 2+ targets, or 3-4+ targets when Vendetta is up" );
     direct -> add_action( this, "Fan of Knives", "if=variable.use_filler&(buff.hidden_blades.stack>=19|(!priority_rotation&spell_targets.fan_of_knives>=4+(azerite.double_dose.rank>2)+stealthed.rogue))", "Fan of Knives at 19+ stacks of Hidden Blades or against 4+ (5+ with Double Dose) targets." );
     direct -> add_action( this, "Fan of Knives", "target_if=!dot.deadly_poison_dot.ticking,if=variable.use_filler&spell_targets.fan_of_knives>=3", "Fan of Knives to apply Deadly Poison if inactive on any target at 3 targets." );
@@ -6648,6 +6724,7 @@ void rogue_t::init_action_list()
     // Builders
     action_priority_list_t* build = get_action_priority_list( "build", "Builders" );
     build -> add_action( "echoing_reprimand" );
+    build -> add_action( "serrated_bone_spike,target_if=min:dot.serrated_bone_spike_dot.ticking,if=!dot.serrated_bone_spike.ticking|active_enemies=1&raid_event.adds.in>full_recharge_time|charges>2&target.time_to_die<5" );
     build -> add_action( this, "Pistol Shot", "if=(talent.quick_draw.enabled|azerite.keep_your_wits_about_you.rank<2)&buff.opportunity.up&(buff.keep_your_wits_about_you.stack<14|energy<45)", "Use Pistol Shot if it won't cap combo points and the Opportunity buff is up. Avoid using when Keep Your Wits stacks are high or when using Weaponmaster, unless the Deadshot buff is up." );
     build -> add_action( this, "Pistol Shot", "if=buff.opportunity.up&buff.deadshot.up" );
     build -> add_action( this, "Sinister Strike" );
@@ -6773,58 +6850,59 @@ action_t* rogue_t::create_action( util::string_view name, const std::string& opt
 {
   using namespace actions;
 
-  if ( name == "adrenaline_rush"     ) return new adrenaline_rush_t    ( name, this, options_str );
-  if ( name == "ambush"              ) return new ambush_t             ( name, this, options_str );
-  if ( name == "apply_poison"        ) return new apply_poison_t       ( this, options_str );
-  if ( name == "auto_attack"         ) return new auto_melee_attack_t  ( this, options_str );
-  if ( name == "backstab"            ) return new backstab_t           ( name, this, options_str );
-  if ( name == "between_the_eyes"    ) return new between_the_eyes_t   ( name, this, options_str );
-  if ( name == "blade_flurry"        ) return new blade_flurry_t       ( name, this, options_str );
-  if ( name == "blade_rush"          ) return new blade_rush_t         ( name, this, options_str );
-  if ( name == "cheap_shot"          ) return new cheap_shot_t         ( name, this, options_str );
-  if ( name == "crimson_tempest"     ) return new crimson_tempest_t    ( name, this, options_str );
-  if ( name == "detection"           ) return new detection_t          ( name, this, options_str );
-  if ( name == "dispatch"            ) return new dispatch_t           ( name, this, options_str );
-  if ( name == "echoing_reprimand"   ) return new echoing_reprimand_t  ( name, this, options_str );
-  if ( name == "envenom"             ) return new envenom_t            ( name, this, options_str );
-  if ( name == "eviscerate"          ) return new eviscerate_t         ( name, this, options_str );
-  if ( name == "exsanguinate"        ) return new exsanguinate_t       ( name, this, options_str );
-  if ( name == "fan_of_knives"       ) return new fan_of_knives_t      ( name, this, options_str );
-  if ( name == "feint"               ) return new feint_t              ( name, this, options_str );
-  if ( name == "garrote"             ) return new garrote_t            ( name, this, options_str );
-  if ( name == "gouge"               ) return new gouge_t              ( name, this, options_str );
-  if ( name == "ghostly_strike"      ) return new ghostly_strike_t     ( name, this, options_str );
-  if ( name == "gloomblade"          ) return new gloomblade_t         ( name, this, options_str );
-  if ( name == "kick"                ) return new kick_t               ( name, this, options_str );
-  if ( name == "kidney_shot"         ) return new kidney_shot_t        ( name, this, options_str );
-  if ( name == "killing_spree"       ) return new killing_spree_t      ( name, this, options_str );
-  if ( name == "marked_for_death"    ) return new marked_for_death_t   ( name, this, options_str );
-  if ( name == "mutilate"            ) return new mutilate_t           ( name, this, options_str );
-  if ( name == "pistol_shot"         ) return new pistol_shot_t        ( name, this, options_str );
-  if ( name == "poisoned_knife"      ) return new poisoned_knife_t     ( name, this, options_str );
-  if ( name == "roll_the_bones"      ) return new roll_the_bones_t     ( name, this, options_str );
-  if ( name == "rupture"             ) return new rupture_t            ( name, this, options_str );
-  if ( name == "secret_technique"    ) return new secret_technique_t   ( name, this, options_str );
-  if ( name == "sepsis"              ) return new sepsis_t             ( name, this, options_str );
-  if ( name == "shadow_blades"       ) return new shadow_blades_t      ( name, this, options_str );
-  if ( name == "shadow_dance"        ) return new shadow_dance_t       ( name, this, options_str );
-  if ( name == "shadowstep"          ) return new shadowstep_t         ( name, this, options_str );
-  if ( name == "shadowstrike"        ) return new shadowstrike_t       ( name, this, options_str );
-  if ( name == "shadow_vault"        ) return new shadow_vault_t       ( name, this, options_str );
-  if ( name == "shuriken_storm"      ) return new shuriken_storm_t     ( name, this, options_str );
-  if ( name == "shuriken_tornado"    ) return new shuriken_tornado_t   ( name, this, options_str );
-  if ( name == "shuriken_toss"       ) return new shuriken_toss_t      ( name, this, options_str );
-  if ( name == "sinister_strike"     ) return new sinister_strike_t    ( name, this, options_str );
-  if ( name == "slaughter"           ) return new slaughter_t          ( name, this, options_str );
-  if ( name == "slice_and_dice"      ) return new slice_and_dice_t     ( name, this, options_str );
-  if ( name == "sprint"              ) return new sprint_t             ( name, this, options_str );
-  if ( name == "stealth"             ) return new stealth_t            ( name, this, options_str );
-  if ( name == "symbols_of_death"    ) return new symbols_of_death_t   ( name, this, options_str );
-  if ( name == "shiv"                ) return new shiv_t               ( name, this, options_str );
-  if ( name == "vanish"              ) return new vanish_t             ( name, this, options_str );
-  if ( name == "vendetta"            ) return new vendetta_t           ( name, this, options_str );
-  if ( name == "cancel_autoattack"   ) return new cancel_autoattack_t  ( this, options_str );
-  if ( name == "swap_weapon"         ) return new weapon_swap_t        ( this, options_str );
+  if ( name == "adrenaline_rush"     ) return new adrenaline_rush_t     ( name, this, options_str );
+  if ( name == "ambush"              ) return new ambush_t              ( name, this, options_str );
+  if ( name == "apply_poison"        ) return new apply_poison_t        ( this, options_str );
+  if ( name == "auto_attack"         ) return new auto_melee_attack_t   ( this, options_str );
+  if ( name == "backstab"            ) return new backstab_t            ( name, this, options_str );
+  if ( name == "between_the_eyes"    ) return new between_the_eyes_t    ( name, this, options_str );
+  if ( name == "blade_flurry"        ) return new blade_flurry_t        ( name, this, options_str );
+  if ( name == "blade_rush"          ) return new blade_rush_t          ( name, this, options_str );
+  if ( name == "cheap_shot"          ) return new cheap_shot_t          ( name, this, options_str );
+  if ( name == "crimson_tempest"     ) return new crimson_tempest_t     ( name, this, options_str );
+  if ( name == "detection"           ) return new detection_t           ( name, this, options_str );
+  if ( name == "dispatch"            ) return new dispatch_t            ( name, this, options_str );
+  if ( name == "echoing_reprimand"   ) return new echoing_reprimand_t   ( name, this, options_str );
+  if ( name == "envenom"             ) return new envenom_t             ( name, this, options_str );
+  if ( name == "eviscerate"          ) return new eviscerate_t          ( name, this, options_str );
+  if ( name == "exsanguinate"        ) return new exsanguinate_t        ( name, this, options_str );
+  if ( name == "fan_of_knives"       ) return new fan_of_knives_t       ( name, this, options_str );
+  if ( name == "feint"               ) return new feint_t               ( name, this, options_str );
+  if ( name == "garrote"             ) return new garrote_t             ( name, this, options_str );
+  if ( name == "gouge"               ) return new gouge_t               ( name, this, options_str );
+  if ( name == "ghostly_strike"      ) return new ghostly_strike_t      ( name, this, options_str );
+  if ( name == "gloomblade"          ) return new gloomblade_t          ( name, this, options_str );
+  if ( name == "kick"                ) return new kick_t                ( name, this, options_str );
+  if ( name == "kidney_shot"         ) return new kidney_shot_t         ( name, this, options_str );
+  if ( name == "killing_spree"       ) return new killing_spree_t       ( name, this, options_str );
+  if ( name == "marked_for_death"    ) return new marked_for_death_t    ( name, this, options_str );
+  if ( name == "mutilate"            ) return new mutilate_t            ( name, this, options_str );
+  if ( name == "pistol_shot"         ) return new pistol_shot_t         ( name, this, options_str );
+  if ( name == "poisoned_knife"      ) return new poisoned_knife_t      ( name, this, options_str );
+  if ( name == "roll_the_bones"      ) return new roll_the_bones_t      ( name, this, options_str );
+  if ( name == "rupture"             ) return new rupture_t             ( name, this, options_str );
+  if ( name == "secret_technique"    ) return new secret_technique_t    ( name, this, options_str );
+  if ( name == "sepsis"              ) return new sepsis_t              ( name, this, options_str );
+  if ( name == "serrated_bone_spike" ) return new serrated_bone_spike_t ( name, this, options_str );
+  if ( name == "shadow_blades"       ) return new shadow_blades_t       ( name, this, options_str );
+  if ( name == "shadow_dance"        ) return new shadow_dance_t        ( name, this, options_str );
+  if ( name == "shadowstep"          ) return new shadowstep_t          ( name, this, options_str );
+  if ( name == "shadowstrike"        ) return new shadowstrike_t        ( name, this, options_str );
+  if ( name == "shadow_vault"        ) return new shadow_vault_t        ( name, this, options_str );
+  if ( name == "shuriken_storm"      ) return new shuriken_storm_t      ( name, this, options_str );
+  if ( name == "shuriken_tornado"    ) return new shuriken_tornado_t    ( name, this, options_str );
+  if ( name == "shuriken_toss"       ) return new shuriken_toss_t       ( name, this, options_str );
+  if ( name == "sinister_strike"     ) return new sinister_strike_t     ( name, this, options_str );
+  if ( name == "slaughter"           ) return new slaughter_t           ( name, this, options_str );
+  if ( name == "slice_and_dice"      ) return new slice_and_dice_t      ( name, this, options_str );
+  if ( name == "sprint"              ) return new sprint_t              ( name, this, options_str );
+  if ( name == "stealth"             ) return new stealth_t             ( name, this, options_str );
+  if ( name == "symbols_of_death"    ) return new symbols_of_death_t    ( name, this, options_str );
+  if ( name == "shiv"                ) return new shiv_t                ( name, this, options_str );
+  if ( name == "vanish"              ) return new vanish_t              ( name, this, options_str );
+  if ( name == "vendetta"            ) return new vendetta_t            ( name, this, options_str );
+  if ( name == "cancel_autoattack"   ) return new cancel_autoattack_t   ( this, options_str );
+  if ( name == "swap_weapon"         ) return new weapon_swap_t         ( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
@@ -7588,6 +7666,7 @@ void rogue_t::init_gains()
   gains.dashing_scoundrel        = get_gain( "Dashing Scoundrel"        );
   gains.the_rotten               = get_gain( "The Rotten"               );
   gains.deathly_shadows          = get_gain( "Deathly Shadows"          );
+  gains.serrated_bone_spike      = get_gain( "Serrated Bone Spike"      );
 }
 
 // rogue_t::init_procs ======================================================
