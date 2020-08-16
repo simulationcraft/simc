@@ -75,6 +75,7 @@ pet_t::pet_t( sim_t*             sim,
 
   // Inherit owner's dbc state
   dbc->ptr = owner -> dbc->ptr;
+  dbc_override = owner -> dbc_override;
 
   // Set pet dps data collection to level 2 or higher, so our 32bit GUI users can at least
   // do scale factor simulations with default settings.

@@ -12,6 +12,7 @@
 
 #include <array>
 #include <functional>
+#include <memory>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -114,6 +115,10 @@ struct custom_dbc_data_t
 
   spellpower_data_t* get_mutable_power( unsigned power_id );
   const spellpower_data_t* find_power( unsigned power_id ) const;
+
+  // Copies spells from another custom data
+  // Effectively a copy-assignement operator
+  void copy_from( const custom_dbc_data_t& other );
 
 private:
   spell_data_t* create_clone( const spell_data_t* s );
@@ -523,20 +528,27 @@ public:
   struct override_entry_t
   {
     override_e  type_;
-    std::string field_;
     unsigned    id_;
+    std::string field_;
     double      value_;
 
     override_entry_t( override_e et, util::string_view f, unsigned i, double v ) :
-      type_( et ), field_( f ), id_( i ), value_( v )
+      type_( et ), id_( i ), field_( f ), value_( v )
     { }
   };
 
   dbc_override_t() = default;
 
+  explicit dbc_override_t( const dbc_override_t* parent ) : parent_( parent ) {}
+
   void register_effect( const dbc_t&, unsigned, util::string_view, double );
   void register_spell( const dbc_t&, unsigned, util::string_view, double );
   void register_power( const dbc_t&, unsigned, util::string_view, double );
+
+  void parse( const dbc_t&, util::string_view );
+
+  // Creates a "deep" copy of the current override database
+  std::unique_ptr<dbc_override_t> clone() const;
 
   const spell_data_t* find_spell( unsigned, bool ptr = false ) const;
   const spelleffect_data_t* find_effect( unsigned, bool ptr = false ) const;
@@ -545,6 +557,7 @@ public:
   const std::vector<override_entry_t>& override_entries( bool ptr = false ) const;
 
 private:
+  const dbc_override_t* parent_ = nullptr;
   std::array<custom_dbc_data_t, 2> override_db_;
   std::array<std::vector<override_entry_t>, 2> override_entries_;
 };

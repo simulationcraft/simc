@@ -707,19 +707,32 @@ spell_data_t* custom_dbc_data_t::clone_spell( const spell_data_t* spell )
   return get_mutable_spell( spell->id() );
 }
 
+void custom_dbc_data_t::copy_from( const custom_dbc_data_t& other )
+{
+  spells_.clear();
+  effects_.clear();
+  powers_.clear();
+  spell_driver_map_.clear();
+
+  for ( const spell_data_t* spell : other.spells_ )
+    clone_spell( spell );
+}
+
 // Applies overrides immediately, and records an entry
 void dbc_override_t::register_spell( const dbc_t& dbc, unsigned spell_id, util::string_view field, double v )
 {
-  const spell_data_t* dbc_spell = hotfix::find_spell( dbc.spell( spell_id ), dbc.ptr );
+  const spell_data_t* dbc_spell = nullptr;
+  if ( parent_ )
+    dbc_spell = parent_->find_spell( spell_id, dbc.ptr );
+  if ( !dbc_spell )
+    dbc_spell = hotfix::find_spell( dbc.spell( spell_id ), dbc.ptr );
+
   spell_data_t* spell = override_db_[ dbc.ptr ].clone_spell( dbc_spell );
-  if (!spell)
-  {
+  if ( !spell )
     throw std::invalid_argument("Could not find spell");
-  }
-  if (!spell -> override_field( field, v ))
-  {
+
+  if ( !spell -> override_field( field, v ) )
     throw std::invalid_argument(fmt::format("Invalid field '{}'.", field));
-  }
 
   override_entries_[ dbc.ptr ].emplace_back( OVERRIDE_SPELL, field, spell_id, v );
 }
@@ -727,21 +740,22 @@ void dbc_override_t::register_spell( const dbc_t& dbc, unsigned spell_id, util::
 void dbc_override_t::register_effect( const dbc_t& dbc, unsigned effect_id, util::string_view field, double v )
 {
   spelleffect_data_t* effect = override_db_[ dbc.ptr ].get_mutable_effect( effect_id );
-  if ( ! effect )
+  if ( !effect )
   {
-    const spelleffect_data_t* dbc_effect = hotfix::find_effect( dbc.effect( effect_id ), dbc.ptr );
+    const spelleffect_data_t* dbc_effect = nullptr;
+    if ( parent_ )
+      dbc_effect = parent_->find_effect( effect_id, dbc.ptr );
+    if ( !dbc_effect )
+      dbc_effect = hotfix::find_effect( dbc.effect( effect_id ), dbc.ptr );
+
     override_db_[ dbc.ptr ].clone_spell( dbc_effect -> spell() );
     effect = override_db_[ dbc.ptr ].get_mutable_effect( effect_id );
   }
-  if (!effect)
-  {
+  if ( !effect )
     throw std::runtime_error("Could not find effect");
-  }
 
-  if (!effect -> override_field( field, v ))
-  {
+  if ( !effect -> override_field( field, v ) )
     throw std::invalid_argument(fmt::format("Invalid field '{}'.", field));
-  }
 
   override_entries_[ dbc.ptr ].emplace_back( OVERRIDE_EFFECT, field, effect_id, v );
 }
@@ -749,39 +763,99 @@ void dbc_override_t::register_effect( const dbc_t& dbc, unsigned effect_id, util
 void dbc_override_t::register_power( const dbc_t& dbc, unsigned power_id, util::string_view field, double v )
 {
   spellpower_data_t* power = override_db_[ dbc.ptr ].get_mutable_power( power_id );
-  if ( power == nullptr )
+  if ( !power )
   {
-    const spellpower_data_t& dbc_power = dbc.power( power_id );
-    const spell_data_t* dbc_spell = hotfix::find_spell( dbc.spell( dbc_power.spell_id() ), dbc.ptr );
+    const spellpower_data_t* dbc_power = nullptr;
+    if ( parent_ )
+      dbc_power = parent_->find_power( power_id, dbc.ptr );
+    if ( !dbc_power )
+      dbc_power = &dbc.power( power_id );
+
+    const spell_data_t* dbc_spell = nullptr;
+    if ( parent_ )
+      dbc_spell = parent_->find_spell( dbc_power->spell_id(), dbc.ptr );
+    if ( !dbc_spell )
+      dbc_spell = hotfix::find_spell( dbc.spell( dbc_power->spell_id() ), dbc.ptr );
+
     override_db_[ dbc.ptr ].clone_spell( dbc_spell );
     power = override_db_[ dbc.ptr ].get_mutable_power( power_id );
   }
-  if (!power)
-  {
-    throw std::runtime_error("Could not find power");
-  }
 
-  if (!power -> override_field( field, v ))
-  {
+  if ( !power )
+    throw std::runtime_error("Could not find power");
+
+  if ( !power -> override_field( field, v ) )
     throw std::invalid_argument(fmt::format("Invalid field '{}'.", field));
-  }
 
   override_entries_[ dbc.ptr ].emplace_back( OVERRIDE_POWER, field, power_id, v );
 }
 
+void dbc_override_t::parse( const dbc_t& dbc, util::string_view string )
+{
+  auto v_pos = string.find( '=' );
+  if ( v_pos == util::string_view::npos )
+    throw std::invalid_argument("Invalid form. Spell data override takes the form <spell|effect|power>.<id>.<field>=value");
+
+  auto splits = util::string_split<util::string_view>( string.substr( 0, v_pos ), "." );
+  if ( splits.size() != 3 )
+    throw std::invalid_argument("Invalid form. Spell data override takes the form <spell|effect|power>.<id>.<field>=value");
+
+  int parsed_id = util::to_int( splits[ 1 ] );
+  if ( parsed_id <= 0 )
+    throw std::invalid_argument("Invalid data id (negative or zero).");
+
+  unsigned id = as<unsigned>( parsed_id );
+  double value = util::to_double( string.substr( v_pos + 1 ) );
+
+  if ( util::str_compare_ci( splits[ 0 ], "spell" ) )
+  {
+    register_spell( dbc, id, splits[ 2 ], value );
+  }
+  else if ( util::str_compare_ci( splits[ 0 ], "effect" ) )
+  {
+    register_effect( dbc, id, splits[ 2 ], value );
+  }
+  else if ( util::str_compare_ci( splits[ 0 ], "power" ) )
+  {
+    register_power( dbc, id, splits[ 2 ], value );
+  }
+  else
+  {
+    throw std::invalid_argument("Invalid form. Spell data override takes the form <spell|effect|power>.<id>.<field>=value");
+  }
+}
+
+std::unique_ptr<dbc_override_t> dbc_override_t::clone() const
+{
+  auto clone_ = std::make_unique<dbc_override_t>( parent_ );
+  clone_->override_entries_ = override_entries_;
+  clone_->override_db_[ 0 ].copy_from( override_db_[ 0 ] );
+  clone_->override_db_[ 1 ].copy_from( override_db_[ 1 ] );
+  return clone_;
+}
+
 const spell_data_t* dbc_override_t::find_spell( unsigned spell_id, bool ptr ) const
 {
-  return override_db_[ ptr ].find_spell( spell_id );
+  const spell_data_t* spell = override_db_[ ptr ].find_spell( spell_id );
+  if ( !spell && parent_ )
+    spell = parent_->find_spell( spell_id, ptr );
+  return spell;
 }
 
 const spelleffect_data_t* dbc_override_t::find_effect( unsigned effect_id, bool ptr ) const
 {
-  return override_db_[ ptr ].find_effect( effect_id );
+  const spelleffect_data_t* effect = override_db_[ ptr ].find_effect( effect_id );
+  if ( !effect && parent_ )
+    effect = parent_->find_effect( effect_id, ptr );
+  return effect;
 }
 
 const spellpower_data_t* dbc_override_t::find_power( unsigned power_id, bool ptr ) const
 {
-  return override_db_[ ptr ].find_power( power_id );
+  const spellpower_data_t* power = override_db_[ ptr ].find_power( power_id );
+  if ( !power && parent_ )
+    power = parent_->find_power( power_id, ptr );
+  return power;
 }
 
 const std::vector<dbc_override_t::override_entry_t>& dbc_override_t::override_entries( bool ptr ) const
