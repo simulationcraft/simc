@@ -594,10 +594,10 @@ public:
     conduit_data_t planned_execution;
     conduit_data_t stiletto_staccato;
 
-    conduit_data_t reverberation;             // NYI
-    conduit_data_t slaughter_scars;           // NYI
-    conduit_data_t sudden_fractures;          // NYI
-    conduit_data_t septic_shock;              // NYI
+    conduit_data_t reverberation;
+    conduit_data_t slaughter_scars;
+    conduit_data_t sudden_fractures;
+    conduit_data_t septic_shock;
   } conduit;
 
   // Legendary effects
@@ -1005,6 +1005,7 @@ public:
     bool ruthless_precision = false;
     bool symbols_of_death_autocrit = false;
     bool perforated_veins = false;
+    bool blindside = false;
 
     damage_affect_data mastery_executioner;
     damage_affect_data mastery_potent_assassin;
@@ -1055,6 +1056,7 @@ public:
       ab::data().affected_by( p->spec.broadside->effectN( 3 ) );
     affected_by.ruthless_precision = ab::data().affected_by( p->spec.ruthless_precision->effectN( 1 ) );
     affected_by.symbols_of_death_autocrit = ab::data().affected_by( p->spec.symbols_of_death_autocrit->effectN( 1 ) );
+    affected_by.blindside = ab::data().affected_by( p->find_spell( 121153 )->effectN( 1 ) );
     if(p->conduit.perforated_veins.ok() )
       affected_by.perforated_veins = ab::data().affected_by( p->conduit.perforated_veins->effectN( 1 ).trigger()->effectN( 1 ) );
 
@@ -1243,7 +1245,12 @@ public:
 
   // Overridable wrapper for checking stealth requirement
   virtual bool requires_stealth() const
-  { return _requires_stealth; }
+  { 
+    if ( affected_by.blindside && p()->buffs.blindside->check() )
+      return false;
+
+    return _requires_stealth; 
+  }
 
 private:
   void do_exsanguinate( dot_t* dot, double coeff );
@@ -1523,6 +1530,11 @@ public:
       c *= 1.0 + p()->spell.shadow_focus->effectN( 1 ).percent();
     }
 
+    if ( affected_by.blindside )
+    {
+      c *= 1.0 + p()->buffs.blindside->check_value();
+    }
+
     if ( c <= 0 )
       c = 0;
 
@@ -1613,6 +1625,9 @@ public:
 
     if ( affected_by.perforated_veins )
       p()->buffs.perforated_veins->expire();
+
+    if ( affected_by.blindside )
+      p()->buffs.blindside->expire();
   }
 
   void schedule_travel( action_state_t* state ) override
@@ -2316,25 +2331,7 @@ struct ambush_t : public rogue_attack_t
   void execute() override
   {
     rogue_attack_t::execute();
-    p()->buffs.blindside->expire();
     trigger_count_the_odds( execute_state );
-  }
-
-  double cost() const override
-  {
-    double c = rogue_attack_t::cost();
-    c *= 1.0 + p()->buffs.blindside->check_value();
-    return c;
-  }
-
-  bool requires_stealth() const override
-  { 
-    if ( p()->buffs.blindside->check() )
-    {
-      return false;
-    }
-
-    return rogue_attack_t::requires_stealth();
   }
 
   bool procs_main_gauche() const override
@@ -4546,6 +4543,7 @@ struct echoing_reprimand_t : public rogue_attack_t
     rogue_attack_t( name, p, p->covenant.echoing_reprimand, options_str )
   {
     buffs = { p->buffs.echoing_reprimand_2, p->buffs.echoing_reprimand_3, p->buffs.echoing_reprimand_4 };
+    base_multiplier *= 1 + p->conduit.reverberation.percent(); // TODO: Move to apply_affecting when possible
   }
 
   void impact( action_state_t* state ) override
@@ -4570,7 +4568,7 @@ struct sepsis_t : public rogue_attack_t
       rogue_attack_t( name, p, p->find_spell( 328306 ) )
     {
       dual = true;
-      base_multiplier = p->covenant.sepsis->effectN( 4 ).base_value();
+      base_multiplier *= p->covenant.sepsis->effectN( 4 ).base_value();
     }
   };
 
@@ -4581,6 +4579,22 @@ struct sepsis_t : public rogue_attack_t
   {
     sepsis_expire_damage = p->get_background_action<sepsis_expire_damage_t>( "sepsis_expire_damage" );
     sepsis_expire_damage->stats = stats;
+  }
+
+  double composite_ta_multiplier( const action_state_t* state ) const override
+  {
+    double m = rogue_attack_t::composite_ta_multiplier( state );
+
+    // TOCHECK: Possibly refactor this when a proper buff is put into the game or logs are available
+    if ( p()->conduit.septic_shock.ok() )
+    {
+      const dot_t* dot = td( state->target )->dots.sepsis;
+      const double divisor = p()->conduit.septic_shock->effectN( 2 ).percent();
+      const double multiplier = std::max( 1.0 / divisor - dot->current_tick, 0.0 ) * divisor; 
+      m *= 1.0 + p()->conduit.septic_shock.percent() * multiplier;
+    }
+
+    return m;
   }
 
   void last_tick( dot_t* d ) override
@@ -4603,6 +4617,7 @@ struct serrated_bone_spike_t : public rogue_attack_t
       rogue_attack_t( name, p, p->covenant.serrated_bone_spike )
     {
       // TOCHECK: Really need to verify this whole mechanic, tooltip is ambiguous and spells used seem wrong
+      // Game currently using spell 324074 which is 200% damage per shatter
       base_costs[ RESOURCE_ENERGY ] = 0;
       cooldown->duration = 0_s;
     }
@@ -4610,10 +4625,40 @@ struct serrated_bone_spike_t : public rogue_attack_t
 
   struct serrated_bone_spike_dot_t : public rogue_attack_t
   {
+    struct sudden_fractures_t : public rogue_attack_t
+    {
+      sudden_fractures_t( util::string_view name, rogue_t* p ) :
+        rogue_attack_t( name, p, p->covenant.serrated_bone_spike )
+      {
+        // TODO: Fix to point to spell 341277, using this spell for now since it's the same coefficient
+        base_costs[ RESOURCE_ENERGY ] = 0;
+        cooldown->duration = 0_s;
+      }
+    };
+
+    sudden_fractures_t* sudden_fractures;
+
     serrated_bone_spike_dot_t( util::string_view name, rogue_t* p ) :
-      rogue_attack_t( name, p, p->covenant.serrated_bone_spike->effectN( 2 ).trigger() )
+      rogue_attack_t( name, p, p->covenant.serrated_bone_spike->effectN( 2 ).trigger() ),
+      sudden_fractures( nullptr )
     {
       dot_duration = timespan_t::from_seconds( sim->expected_max_time() * 2 );
+
+      if ( p->conduit.sudden_fractures.ok() )
+      {
+        sudden_fractures = p->get_background_action<sudden_fractures_t>( "sudden_fractures" );
+      }
+    }
+
+    void tick( dot_t* d ) override
+    {
+      rogue_attack_t::tick( d );
+
+      if ( sudden_fractures && p()->rng().roll( p()->conduit.sudden_fractures.percent() ) )
+      {
+        sudden_fractures->set_target( d->target );
+        sudden_fractures->execute();
+      }
     }
   };
 
@@ -4627,6 +4672,10 @@ struct serrated_bone_spike_t : public rogue_attack_t
     serrated_bone_spike_shatter = p->get_background_action<serrated_bone_spike_shatter_t>( "serrated_bone_spike_shatter" );
     add_child( serrated_bone_spike_dot );
     add_child( serrated_bone_spike_shatter );
+    if ( serrated_bone_spike_dot->sudden_fractures )
+    {
+      add_child( serrated_bone_spike_dot->sudden_fractures );
+    }
   }
 
   void execute() override
@@ -4645,7 +4694,7 @@ struct serrated_bone_spike_t : public rogue_attack_t
       active_dots--;
     }
 
-    for ( int i = 0; i < active_dots; ++i )
+    for ( unsigned i = 0; i < active_dots; ++i )
     {
       serrated_bone_spike_shatter->set_target( target );
       serrated_bone_spike_shatter->execute();
@@ -4667,10 +4716,34 @@ struct slaughter_t : public rogue_attack_t
     slaughter_poison = p->get_background_action<slaughter_poison_t>( "slaughter_poison_driver" );
   }
 
+  double get_slaughter_scars_multiplier() const
+  {
+    if ( !p()->conduit.slaughter_scars.ok() )
+      return 1.0;
+
+    return p()->conduit.slaughter_scars.percent() * ( p()->active.lethal_poison == slaughter_poison ) ?
+      1.0 + p()->conduit.slaughter_scars->effectN( 2 ).percent() : 1.0;
+  }
+
+  double composite_da_multiplier( const action_state_t* state ) const override
+  {
+    return rogue_attack_t::composite_da_multiplier( state ) + get_slaughter_scars_multiplier();
+  }
+
+  double composite_crit_chance() const override
+  {
+    return rogue_attack_t::composite_crit_chance() + get_slaughter_scars_multiplier();
+  }
+
   void execute() override
   {
     rogue_attack_t::execute();
     trigger_count_the_odds( execute_state );
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    rogue_attack_t::impact( state );
     p()->active.lethal_poison = slaughter_poison; // TODO: Support expiry?
   }
 
