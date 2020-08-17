@@ -1935,7 +1935,7 @@ public:
       if ( !val )
         continue;
 
-      if ( !( eff->subtype() == A_MOD_DAMAGE_FROM_CASTER && ab::data().affected_by( eff ) ) &&
+      if ( !( eff->subtype() == A_MOD_DAMAGE_FROM_CASTER_SPELLS && ab::data().affected_by( eff ) ) &&
            !( eff->subtype() == A_MOD_AUTO_ATTACK_FROM_CASTER && is_auto_attack ) )
         continue;
 

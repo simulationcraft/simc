@@ -1078,8 +1078,8 @@ enum effect_subtype_t : unsigned {
     A_MOD_IMMUNE_A_APPLY_SCHOOL = 267,
     A_MOD_ATTACK_POWER_OF_STAT_PERCENT = 268,
     A_MOD_IGNORE_DAMAGE_REDUCTION_SCHOOL = 269,
-    A_MOD_IGNORE_TARGET_RESIST = 270, // Possibly need swap vs 195 aura used only in 1 spell Chaos Bolt Passive
-    A_MOD_DAMAGE_FROM_CASTER = 271,
+    A_MOD_DAMAGE_FROM_CASTER = 270,
+    A_MOD_DAMAGE_FROM_CASTER_SPELLS = 271,
     A_MAELSTROM_WEAPON = 272,
     A_X_RAY = 273,
     A_274 = 274,

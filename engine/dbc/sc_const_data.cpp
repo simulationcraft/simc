@@ -710,7 +710,8 @@ double dbc::fmt_value( double v, effect_type_t type, effect_subtype_t sub_type )
         case A_MOD_SPELL_DAMAGE_OF_STAT_PERCENT:
         case A_MOD_SPELL_HEALING_OF_STAT_PERCENT:
         case A_MOD_DAMAGE_PERCENT_DONE:
-        case A_MOD_DAMAGE_FROM_CASTER: // vendetta
+        case A_MOD_DAMAGE_FROM_CASTER: // Hunter's Mark
+        case A_MOD_DAMAGE_FROM_CASTER_SPELLS: // vendetta
         case A_MOD_ALL_CRIT_CHANCE:
         case A_MOD_EXPERTISE:
         case A_MOD_MANA_REGEN_INTERRUPT:  // Meditation
