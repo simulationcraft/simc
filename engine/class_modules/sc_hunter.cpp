@@ -1197,6 +1197,16 @@ struct hunter_pet_t: public pet_t
     return crit;
   }
 
+  double composite_player_target_multiplier( player_t* target, school_e school ) const override
+  {
+    double m = pet_t::composite_player_target_multiplier( target, school );
+
+    if ( auto td = o() -> find_target_data( target ) )
+      m *= 1 + td -> debuffs.hunters_mark -> check_value();
+
+    return m;
+  }
+
   void apply_affecting_auras( action_t& action ) override
   {
     pet_t::apply_affecting_auras(action);
