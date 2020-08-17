@@ -3690,7 +3690,7 @@ struct shadow_blades_attack_t : public rogue_attack_t
   {
     rogue_attack_t::init();
 
-    snapshot_flags = update_flags = 0;
+    snapshot_flags = update_flags = STATE_TGT_MUL_DA;
   }
 };
 
