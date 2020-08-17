@@ -83,8 +83,20 @@ namespace buffs {
     damage_modifier = data().effectN( 1 ).percent();
 
     // Lengthen duration if Sanctified Wrath is taken
-    if ( p -> specialization() == PALADIN_HOLY )
+    switch ( p -> specialization() )
+    {
+    case PALADIN_HOLY:
       buff_duration *= 1.0 + p -> talents.holy_sanctified_wrath -> effectN( 1 ).percent();
+      break;
+    case PALADIN_RETRIBUTION:
+      buff_duration *= 1.0 + p -> talents.ret_sanctified_wrath -> effectN( 1 ).percent();
+      break;
+    case PALADIN_PROTECTION:
+      buff_duration *= 1.0 + p -> talents.prot_sanctified_wrath -> effectN( 1 ).percent();
+      break;
+    default:
+      break;
+    }
 
     // ... or if we have Light's Decree
     if ( p -> azerite.lights_decree.ok() )

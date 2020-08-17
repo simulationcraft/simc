@@ -71,6 +71,25 @@ struct lights_decree_t : public paladin_spell_t
   }
 };
 
+// 326731
+struct sanctified_wrath_t : public paladin_spell_t
+{
+  int last_holy_power_cost;
+
+  sanctified_wrath_t( paladin_t* p ) :
+    paladin_spell_t( "sanctified_wrath", p, p -> find_spell( 326731 ) ),
+    last_holy_power_cost( 0 )
+  {
+    aoe = -1;
+    background = may_crit = true;
+  }
+
+  double action_multiplier() const override
+  {
+    return paladin_spell_t::action_multiplier() * last_holy_power_cost;
+  }
+};
+
 struct holy_power_consumer_t : public paladin_melee_attack_t
 {
   bool is_divine_storm;
@@ -142,13 +161,21 @@ struct holy_power_consumer_t : public paladin_melee_attack_t
       p() -> procs.divine_purpose -> occur();
     }
 
-    if ( ( p() -> buffs.avenging_wrath -> up() || p() -> buffs.crusade -> up() ) &&
-           p() -> azerite.lights_decree.ok() )
+    if ( p() -> buffs.avenging_wrath -> up() || p() -> buffs.crusade -> up() )
     {
-      lights_decree_t* ld = debug_cast<lights_decree_t*>( p() -> active.lights_decree );
-      // Light's Decree deals damage based on the base cost of the spell (=1 for Inquisition)
-      ld -> last_holy_power_cost = as<int>( base_costs[ RESOURCE_HOLY_POWER ] );
-      ld -> execute();
+      if ( p() -> azerite.lights_decree.ok() )
+      {
+        lights_decree_t* ld = debug_cast<lights_decree_t*>( p() -> active.lights_decree );
+        ld -> last_holy_power_cost = as<int>( base_costs[ RESOURCE_HOLY_POWER ] );
+        ld -> execute();
+      }
+
+      if ( p() -> talents.ret_sanctified_wrath -> ok() )
+      {
+        sanctified_wrath_t* st = debug_cast<sanctified_wrath_t*>( p() -> active.sanctified_wrath );
+        st -> last_holy_power_cost = as<int>( base_costs[ RESOURCE_HOLY_POWER ] );
+        st -> execute();
+      }
     }
   }
 
@@ -580,6 +607,11 @@ void paladin_t::create_ret_actions()
     active.lights_decree = new lights_decree_t( this );
   }
 
+  if ( talents.ret_sanctified_wrath )
+  {
+    active.sanctified_wrath = new sanctified_wrath_t( this );
+  }
+
   if ( talents.zeal )
   {
     active.zeal = new zeal_t( this );
@@ -683,6 +715,7 @@ void paladin_t::init_spells_retribution()
 
   spells.lights_decree = find_spell( 286231 );
   spells.execution_sentence_debuff = talents.execution_sentence -> effectN( 2 ).trigger();
+  spells.sanctified_wrath_damage = find_spell( 326731 );
 
   // Azerite traits
   azerite.expurgation           = find_azerite_spell( "Expurgation" );

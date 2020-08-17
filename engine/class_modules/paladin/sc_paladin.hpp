@@ -126,6 +126,7 @@ public:
 
     action_t* inner_light_damage;
     action_t* lights_decree;
+    action_t* sanctified_wrath;
 
     // Required for seraphim
     action_t* sotr;
@@ -272,6 +273,7 @@ public:
 
     const spell_data_t* execution_sentence_debuff;
     const spell_data_t* lights_decree;
+    const spell_data_t* sanctified_wrath_damage;
   } spells;
 
   // Talents
