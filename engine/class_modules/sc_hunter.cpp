@@ -1204,6 +1204,10 @@ struct hunter_pet_t: public pet_t
     if ( auto td = o() -> find_target_data( target ) )
       m *= 1 + td -> debuffs.hunters_mark -> check_value();
 
+    m *= 1 + o() -> buffs.wild_spirits -> check_value();
+
+    // TODO: check Resonating Arrow w/ Enfeebled Mark
+
     return m;
   }
 
