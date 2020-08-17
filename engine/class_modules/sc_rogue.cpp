@@ -4719,8 +4719,10 @@ struct slaughter_t : public rogue_attack_t
     if ( !p()->conduit.slaughter_scars.ok() )
       return 1.0;
 
-    return p()->conduit.slaughter_scars.percent() * ( p()->active.lethal_poison == slaughter_poison ) ?
+    const double active_bonus = ( p()->active.lethal_poison == slaughter_poison ) ?
       1.0 + p()->conduit.slaughter_scars->effectN( 2 ).percent() : 1.0;
+    
+    return p()->conduit.slaughter_scars.percent() * active_bonus;
   }
 
   double composite_da_multiplier( const action_state_t* state ) const override
