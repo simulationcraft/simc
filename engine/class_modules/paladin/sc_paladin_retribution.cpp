@@ -136,6 +136,12 @@ struct blade_of_justice_t : public paladin_melee_attack_t
       expurgation = new expurgation_t( p );
       add_child( expurgation );
     }
+
+    const spell_data_t* blade_of_justice_2 = p -> find_specialization_spell( 327981 );
+    if ( blade_of_justice_2 )
+    {
+      energize_amount += blade_of_justice_2 -> effectN( 1 ).resource( RESOURCE_HOLY_POWER );
+    }
   }
 
   double action_multiplier() const override

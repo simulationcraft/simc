@@ -602,6 +602,7 @@ struct auto_melee_attack_t : public paladin_melee_attack_t
 
 struct crusader_strike_t : public paladin_melee_attack_t
 {
+  bool has_crusader_2;
   crusader_strike_t( paladin_t* p, const std::string& options_str ) :
     paladin_melee_attack_t( "crusader_strike", p, p -> find_class_spell( "Crusader Strike" ) )
   {
@@ -611,10 +612,21 @@ struct crusader_strike_t : public paladin_melee_attack_t
     {
       cooldown -> duration *= 1.0 + p -> talents.fires_of_justice -> effectN( 3 ).percent();
     }
-    const spell_data_t* crusader_strike_2 = p -> find_specialization_spell( 231667 );
+
+    const spell_data_t* crusader_strike_2 = p -> find_specialization_spell( 342348 );
     if ( crusader_strike_2 )
     {
-      cooldown -> charges += as<int>( crusader_strike_2 -> effectN( 1 ).base_value() );
+      has_crusader_2 = true;
+    }
+    else
+    {
+      has_crusader_2 = false;
+    }
+
+    const spell_data_t* crusader_strike_3 = p -> find_specialization_spell( 231667 );
+    if ( crusader_strike_3 )
+    {
+      cooldown -> charges += as<int>( crusader_strike_3 -> effectN( 1 ).base_value() );
     }
   }
 
@@ -644,6 +656,14 @@ struct crusader_strike_t : public paladin_melee_attack_t
         p() -> resource_gain( RESOURCE_HOLY_POWER, p() -> spec.retribution_paladin -> effectN( 14 ).base_value(), p() -> gains.hp_cs );
       }
     }
+  }
+
+  double cost() const override
+  {
+    if ( has_crusader_2 )
+      return 0;
+
+    return paladin_melee_attack_t::cost();
   }
 };
 
