@@ -756,7 +756,7 @@ public:
       }
 
       // Divine purpose damage increase handled here,
-      // Cost handled in holy_power_generator_t
+      // Cost handled in holy_power_consumer_t
       if ( affected_by.divine_purpose && p() -> buffs.divine_purpose -> up() )
       {
         am *= 1.0 + p() -> spells.divine_purpose_buff -> effectN( 2 ).percent();
@@ -921,6 +921,59 @@ struct paladin_melee_attack_t: public paladin_action_t < melee_attack_t >
     special = true;
     weapon = &( p -> main_hand_weapon );
   }
+};
+
+// holy power consumption
+// TODO(mserrano): figure out the right way to organize this longer term
+struct lights_decree_t : public paladin_spell_t
+{
+  int last_holy_power_cost;
+
+  lights_decree_t( paladin_t* p ) :
+    paladin_spell_t( "lights_decree", p, p -> find_spell( 286232 ) ),
+    last_holy_power_cost( 0 )
+  {
+    base_dd_min = base_dd_max = p -> azerite.lights_decree.value();
+    aoe = -1;
+    background = may_crit = true;
+  }
+
+  double action_multiplier() const override
+  {
+    return paladin_spell_t::action_multiplier() * last_holy_power_cost;
+  }
+};
+
+struct sanctified_wrath_t : public paladin_spell_t
+{
+  int last_holy_power_cost;
+
+  sanctified_wrath_t( paladin_t* p ) :
+    paladin_spell_t( "sanctified_wrath", p, p -> find_spell( 326731 ) ),
+    last_holy_power_cost( 0 )
+  {
+    aoe = -1;
+    background = may_crit = true;
+  }
+
+  double action_multiplier() const override
+  {
+    return paladin_spell_t::action_multiplier() * last_holy_power_cost;
+  }
+};
+
+
+struct holy_power_consumer_t : public paladin_melee_attack_t
+{
+  bool is_divine_storm;
+  holy_power_consumer_t( const std::string& n, paladin_t* p, const spell_data_t* s ) :
+    paladin_melee_attack_t( n, p, s ),
+    is_divine_storm ( false )
+  { }
+
+  double cost() const override;
+  void execute() override;
+  void consume_resource() override;
 };
 
 struct judgment_t : public paladin_melee_attack_t

@@ -684,6 +684,99 @@ struct inner_light_damage_t : public paladin_spell_t
   }
 };
 
+// Holy power consumers =====================================================
+
+double holy_power_consumer_t::cost() const
+{
+  if ( ( is_divine_storm && p() -> buffs.empyrean_power -> check() ) ||
+       p() -> buffs.divine_purpose -> check() )
+  {
+    return 0.0;
+  }
+
+  double c = paladin_melee_attack_t::cost();
+
+  if ( p() -> buffs.fires_of_justice -> check() )
+  {
+    c += p() -> buffs.fires_of_justice -> data().effectN( 1 ).base_value();
+  }
+
+  return c;
+}
+
+void holy_power_consumer_t::execute()
+{
+  double hp_used = cost();
+
+  paladin_melee_attack_t::execute();
+
+  // Crusade and Relentless Inquisitor gain full stacks from free spells, but reduced stacks with FoJ
+  if ( p() -> buffs.crusade -> check() )
+  {
+    int num_stacks = as<int>( hp_used == 0 ? base_costs[ RESOURCE_HOLY_POWER ] : hp_used );
+    p() -> buffs.crusade -> trigger( num_stacks );
+  }
+
+  if ( p() -> azerite.relentless_inquisitor.ok() )
+  {
+    int num_stacks = as<int>( hp_used == 0 ? base_costs[ RESOURCE_HOLY_POWER ] : hp_used );
+
+    p() -> buffs.relentless_inquisitor -> trigger( num_stacks );
+  }
+
+  // Consume Empyrean Power on Divine Storm, handled here for interaction with DP/FoJ
+  // Cost reduction is still in divine_storm_t
+  if ( p() -> buffs.empyrean_power -> up() && is_divine_storm )
+  {
+    p() -> buffs.empyrean_power -> expire();
+  }
+  // Divine Purpose isn't consumed on DS if EP was consumed
+  else if ( p() -> buffs.divine_purpose -> up() )
+  {
+    p() -> buffs.divine_purpose -> expire();
+  }
+  // FoJ isn't consumed if EP or DP were consumed
+  else if ( p() -> buffs.fires_of_justice -> up() )
+  {
+    p() -> buffs.fires_of_justice -> expire();
+  }
+
+  // Roll for Divine Purpose
+  if ( p() -> talents.divine_purpose -> ok() &&
+       rng().roll( p() -> talents.divine_purpose -> effectN( 1 ).percent() ) )
+  {
+    p() -> buffs.divine_purpose -> trigger();
+    p() -> procs.divine_purpose -> occur();
+  }
+
+  if ( p() -> buffs.avenging_wrath -> up() || p() -> buffs.crusade -> up() )
+  {
+    if ( p() -> azerite.lights_decree.ok() )
+    {
+      lights_decree_t* ld = debug_cast<lights_decree_t*>( p() -> active.lights_decree );
+      ld -> last_holy_power_cost = as<int>( base_costs[ RESOURCE_HOLY_POWER ] );
+      ld -> execute();
+    }
+
+    if ( p() -> talents.ret_sanctified_wrath -> ok() )
+    {
+      sanctified_wrath_t* st = debug_cast<sanctified_wrath_t*>( p() -> active.sanctified_wrath );
+      st -> last_holy_power_cost = as<int>( base_costs[ RESOURCE_HOLY_POWER ] );
+      st -> execute();
+    }
+  }
+}
+
+void holy_power_consumer_t::consume_resource()
+{
+  paladin_melee_attack_t::consume_resource();
+
+  if ( current_resource() == RESOURCE_HOLY_POWER)
+  {
+    p() -> trigger_memory_of_lucid_dreams( last_resource_cost );
+  }
+}
+
 // Base Judgment spell ======================================================
 
 judgment_t::judgment_t( paladin_t* p, const std::string& options_str ) :
