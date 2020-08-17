@@ -4289,7 +4289,6 @@ struct vanish_t : public rogue_spell_t
     rogue_spell_t::execute();
 
     p()->buffs.vanish->trigger();
-    p()->cancel_auto_attack();
 
     if ( p()->buffs.deathly_shadows->trigger() )
     {
@@ -4384,7 +4383,6 @@ struct stealth_t : public rogue_spell_t
       sim -> out_log.printf( "%s performs %s", p() -> name(), name() );
 
     p()->buffs.stealth->trigger();
-    p()->cancel_auto_attack();
   }
 
   bool ready() override
@@ -4600,10 +4598,9 @@ struct sepsis_t : public rogue_attack_t
   void last_tick( dot_t* d ) override
   {
     rogue_attack_t::last_tick( d );
+    p()->buffs.vanish->trigger(); // Vanish triggers before final burst damage
     sepsis_expire_damage->set_target( d->target );
     sepsis_expire_damage->execute();
-    p()->buffs.vanish->trigger();
-    p()->cancel_auto_attack(); // TOCHECK
   }
 };
 
@@ -5301,6 +5298,7 @@ struct stealth_t : public stealth_like_buff_t
   {
     // Note: This bypasses stealth_like_buff_t::execute()
     buff_t::execute( stacks, value, duration );
+    rogue->cancel_auto_attack();
 
     if ( rogue -> in_combat && rogue -> talent.master_of_shadows -> ok() &&
          // As of 04/08/2017, it does not proc Master of Shadows talent if Stealth is procced from Vanish
@@ -5325,13 +5323,19 @@ struct vanish_t : public stealth_like_buff_t
     stealth_like_buff_t( r, "vanish", r -> find_spell( 11327 ) )
   { }
 
+  void execute( int stacks, double value, timespan_t duration ) override
+  {
+    stealth_like_buff_t::execute( stacks, value, duration );
+    rogue->cancel_auto_attack();
+  }
+
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
     // Stealth proc if Vanish fully end (i.e. isn't break before the expiration)
     // We do it before the normal Vanish expiration to avoid on-stealth buff bugs (MoS, MoSh, Mantle).
     if ( remaining_duration == timespan_t::zero() )
     {
-      rogue -> buffs.stealth -> trigger();
+      rogue->buffs.stealth->trigger();
     }
 
     stealth_like_buff_t::expire_override( expiration_stacks, remaining_duration );
