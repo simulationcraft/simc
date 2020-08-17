@@ -4614,12 +4614,8 @@ struct serrated_bone_spike_t : public rogue_attack_t
   struct serrated_bone_spike_shatter_t : public rogue_attack_t
   {
     serrated_bone_spike_shatter_t( util::string_view name, rogue_t* p ) :
-      rogue_attack_t( name, p, p->covenant.serrated_bone_spike )
+      rogue_attack_t( name, p, p->find_spell( 324074 ) )
     {
-      // TOCHECK: Really need to verify this whole mechanic, tooltip is ambiguous and spells used seem wrong
-      // Game currently using spell 324074 which is 200% damage per shatter
-      base_costs[ RESOURCE_ENERGY ] = 0;
-      cooldown->duration = 0_s;
     }
   };
 
@@ -4628,11 +4624,8 @@ struct serrated_bone_spike_t : public rogue_attack_t
     struct sudden_fractures_t : public rogue_attack_t
     {
       sudden_fractures_t( util::string_view name, rogue_t* p ) :
-        rogue_attack_t( name, p, p->covenant.serrated_bone_spike )
+        rogue_attack_t( name, p, p->find_spell( 341277 ) )
       {
-        // TODO: Fix to point to spell 341277, using this spell for now since it's the same coefficient
-        base_costs[ RESOURCE_ENERGY ] = 0;
-        cooldown->duration = 0_s;
       }
     };
 
@@ -4694,10 +4687,15 @@ struct serrated_bone_spike_t : public rogue_attack_t
       active_dots--;
     }
 
-    for ( unsigned i = 0; i < active_dots; ++i )
+    // TOCHECK: Tooltip is quite ambiguous as to what is intended here with the shatter
+    // Right now uses 200% damage spell which is obviously wrong, marking as bugged for now
+    if ( p()->bugs )
     {
-      serrated_bone_spike_shatter->set_target( target );
-      serrated_bone_spike_shatter->execute();
+      for ( unsigned i = 0; i < active_dots; ++i )
+      {
+        serrated_bone_spike_shatter->set_target( target );
+        serrated_bone_spike_shatter->execute();
+      }
     }
 
     trigger_combo_point_gain( active_dots + 1, p()->gains.serrated_bone_spike );
