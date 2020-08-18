@@ -794,7 +794,7 @@ struct surrender_to_madness_debuff_t final : public priest_buff_t<buff_t>
     }
     else
     {
-      make_event( sim, [this]() {
+      make_event( sim, [ this ]() {
         if ( sim->log )
         {
           sim->out_log.printf( "%s %s: Surrender to Madness kills you. You die. Horribly.", priest().name(), name() );
@@ -885,14 +885,15 @@ void base_fiend_pet_t::init_action_list()
 
 void base_fiend_pet_t::init_background_actions()
 {
-  active_spell_shadowflame_prism = new actions::shadowflame_prism_t( *this );
+  active_spell_shadowflame_prism = new fiend::actions::shadowflame_prism_t( *this );
 
   priest_pet_t::init_background_actions();
 }
 
-void base_fiend_pet_t::trigger_shadowflame_prison(player_t* target, double original_amount)
+void base_fiend_pet_t::trigger_shadowflame_prison( player_t* target, double original_amount )
 {
-  active_spell_shadowflame_prism.trigger(target, original_amount);
+  assert( active_spell_shadowflame_prism );
+  active_spell_shadowflame_prism->trigger( target, original_amount );
 }
 
 double base_fiend_pet_t::composite_player_multiplier( school_e school ) const
@@ -1003,7 +1004,7 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p ) : actor_target_data_t(
   buffs.death_and_madness_debuff    = make_buff<buffs::death_and_madness_debuff_t>( *this );
   buffs.surrender_to_madness_debuff = make_buff<buffs::surrender_to_madness_debuff_t>( *this );
 
-  target->callbacks_on_demise.emplace_back( [this]( player_t* ) { target_demise(); } );
+  target->callbacks_on_demise.emplace_back( [ this ]( player_t* ) { target_demise(); } );
 }
 
 void priest_td_t::reset()

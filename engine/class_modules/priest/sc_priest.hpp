@@ -760,6 +760,11 @@ struct priest_pet_spell_t : public spell_t
 
 namespace fiend
 {
+namespace actions
+{
+struct shadowflame_prism_t;
+}
+
 /**
  * Abstract base class for Shadowfiend and Mindbender
  */
@@ -790,7 +795,7 @@ struct base_fiend_pet_t : public priest_pet_t
 
   void init_background_actions() override;
 
-  void trigger_shadowflame_prison(player_t* target, double original_amount);
+  void trigger_shadowflame_prison( player_t* target, double original_amount );
 
   void init_gains() override
   {
