@@ -984,6 +984,7 @@ struct shadowflame_prism_t final : public priest_pet_spell_t
 
   void trigger( player_t* target, double original_amount )
   {
+    // The 20% modifier is hardcoded in spelldata
     base_dd_min = base_dd_max = ( original_amount * 0.20 );
     player->sim->print_debug( "Triggered shadowflame prism damage on target {}.", *target );
 
