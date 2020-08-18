@@ -412,7 +412,6 @@ public:
   // Azerite
   struct azerite_t
   {
-    azerite_power_t sanctum;
     // Holy
     azerite_power_t sacred_flame;
     // Disc
