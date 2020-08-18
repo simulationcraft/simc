@@ -760,11 +760,18 @@ struct priest_pet_spell_t : public spell_t
 
 namespace fiend
 {
+namespace actions
+{
+struct shadowflame_prism_t;
+}
+
 /**
  * Abstract base class for Shadowfiend and Mindbender
  */
 struct base_fiend_pet_t : public priest_pet_t
 {
+  propagate_const<actions::shadowflame_prism_t*> active_spell_shadowflame_prism;
+
   struct gains_t
   {
     propagate_const<gain_t*> fiend;
@@ -785,6 +792,10 @@ struct base_fiend_pet_t : public priest_pet_t
   virtual double insanity_gain() const       = 0;
 
   void init_action_list() override;
+
+  void init_background_actions() override;
+
+  void trigger_shadowflame_prison( player_t* target, double original_amount );
 
   void init_gains() override
   {
@@ -927,6 +938,11 @@ struct fiend_melee_t : public priest_pet_melee_t
   {
     priest_pet_melee_t::impact( s );
 
+    if ( p().o().legendary.shadowflame_prism->ok() )
+    {
+      p().trigger_shadowflame_prison( s->target, s->result_amount );
+    }
+
     if ( result_is_hit( s->result ) )
     {
       if ( p().o().specialization() == PRIEST_SHADOW )
@@ -951,6 +967,29 @@ struct fiend_melee_t : public priest_pet_melee_t
         }
       }
     }
+  }
+};
+
+// ==========================================================================
+// Shadowflame Prism
+// ==========================================================================
+struct shadowflame_prism_t final : public priest_pet_spell_t
+{
+  shadowflame_prism_t( base_fiend_pet_t& p ) : priest_pet_spell_t( "shadowflame_prism", &p, p.o().find_spell( 336142 ) )
+  {
+    background = true;
+    may_crit   = false;
+    may_miss   = false;
+  }
+
+  void trigger( player_t* target, double original_amount )
+  {
+    // The 20% modifier is hardcoded in spelldata
+    base_dd_min = base_dd_max = ( original_amount * 0.20 );
+    player->sim->print_debug( "Triggered shadowflame prism damage on target {}.", *target );
+
+    set_target( target );
+    execute();
   }
 };
 }  // namespace actions
@@ -1072,26 +1111,6 @@ public:
   {
     return priest().find_target_data( t );
   }
-
-  bool trigger_shadowy_insight()
-  {
-    int stack = priest().buffs.shadowy_insight->check();
-    if ( priest().buffs.shadowy_insight->trigger() )
-    {
-      priest().cooldowns.mind_blast->reset( true );
-
-      if ( priest().buffs.shadowy_insight->check() == stack )
-      {
-        priest().procs.shadowy_insight_overflow->occur();
-      }
-      else
-      {
-        priest().procs.shadowy_insight->occur();
-      }
-      return true;
-    }
-    return false;
-  };
 
   void trigger_power_of_the_dark_side()
   {
