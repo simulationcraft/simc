@@ -3810,12 +3810,12 @@ void sim_t::create_options()
                             1_s, timespan_t::max() ) );
   add_option( opt_uint( "bfa.manifesto_allies_start", bfa_opts.manifesto_allies_start, 0, 12 ) );
   add_option( opt_uint( "bfa.manifesto_allies_end", bfa_opts.manifesto_allies_end, 0, 5 ) );
-  add_option( opt_float( "bfa.echoing_void_collapse_chance", bfa_opts.echoing_void_collapse_chance, 0.0, 1.0 ) );
-  add_option( opt_bool( "bfa.void_ritual_increased_chance_active", bfa_opts.void_ritual_increased_chance_active ) );
+  add_option( opt_obsoleted( "bfa.echoing_void_collapse_chance" ) );
+  add_option( opt_obsoleted( "bfa.void_ritual_increased_chance_active" ) );
   add_option( opt_timespan( "bfa.symbiotic_presence_interval", bfa_opts.symbiotic_presence_interval, 1_s, timespan_t::max() ) );
   add_option( opt_float( "bfa.whispered_truths_offensive_chance", bfa_opts.whispered_truths_offensive_chance, 0.0, 1.0 ) );
   add_option( opt_bool( "bfa.nyalotha", bfa_opts.nyalotha ) );
-  add_option( opt_float( "bfa.infinite_stars_miss_chance", bfa_opts.infinite_stars_miss_chance, 0.0, 1.0 ) );
+  add_option( opt_obsoleted( "bfa.infinite_stars_miss_chance" ) );
 
   // applies to: "lavish_suramar_feast", battle for azeroth feasts
   add_option( opt_bool( "feast_as_dps", feast_as_dps ) );

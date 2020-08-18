@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35522 shadowlands-BETA (git build shadowlands 3b8a06a81c)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35522 shadowlands-BETA (hotfix 2020-08-16/35522, git build shadowlands 9535202862)
 
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
@@ -11659,7 +11659,7 @@ Class            : Hunter
 School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
-Conduit Id       : 157
+Conduit Id       : 157 (values=-3.0, -3.5, -4.0, -4.5, -5.0, -5.5, -6.0, -6.5, -7.0, -7.5, -8.0, -8.5, -9.0, -9.5, -10.0)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11679,7 +11679,7 @@ Class            : Hunter
 School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
-Conduit Id       : 189
+Conduit Id       : 189 (values=1.0, 1.25, 1.5, 2.0, 2.25, 2.5, 2.75, 3.25, 3.5, 3.75, 4.0, 4.25, 4.5, 4.75, 5.0)
 Proc Flags       : ......x. ........ ........ ........ 
                  : White Ranged
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -11747,7 +11747,7 @@ Name             : Strength of the Pack (id=341222) [Spell Family (9), Passive, 
 Class            : Hunter
 School           : Physical
 Spell Type       : None
-Conduit Id       : 224
+Conduit Id       : 224 (values=3.0, 3.5, 4.0, 4.5, 5.0, 5.5, 6.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0, 9.5, 10.0)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

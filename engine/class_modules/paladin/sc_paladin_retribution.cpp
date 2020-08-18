@@ -50,119 +50,6 @@ namespace buffs {
   };
 }
 
-// Holy Power Consumer ======================================================
-
-struct lights_decree_t : public paladin_spell_t
-{
-  int last_holy_power_cost;
-
-  lights_decree_t( paladin_t* p ) :
-    paladin_spell_t( "lights_decree", p, p -> find_spell( 286232 ) ),
-    last_holy_power_cost( 0 )
-  {
-    base_dd_min = base_dd_max = p -> azerite.lights_decree.value();
-    aoe = -1;
-    background = may_crit = true;
-  }
-
-  double action_multiplier() const override
-  {
-    return paladin_spell_t::action_multiplier() * last_holy_power_cost;
-  }
-};
-
-struct holy_power_consumer_t : public paladin_melee_attack_t
-{
-  bool is_divine_storm;
-  holy_power_consumer_t( const std::string& n, paladin_t* p, const spell_data_t* s ) :
-    paladin_melee_attack_t( n, p, s ),
-    is_divine_storm ( false )
-  { }
-
-  double cost() const override
-  {
-    if ( ( is_divine_storm && p() -> buffs.empyrean_power -> check() ) ||
-         p() -> buffs.divine_purpose -> check() )
-    {
-      return 0.0;
-    }
-
-    double c = paladin_melee_attack_t::cost();
-
-    if ( p() -> buffs.fires_of_justice -> check() )
-    {
-      c += p() -> buffs.fires_of_justice -> data().effectN( 1 ).base_value();
-    }
-
-    return c;
-  }
-
-  void execute() override
-  {
-    double hp_used = cost();
-
-    paladin_melee_attack_t::execute();
-
-    // Crusade and Relentless Inquisitor gain full stacks from free spells, but reduced stacks with FoJ
-    if ( p() -> buffs.crusade -> check() )
-    {
-      int num_stacks = as<int>( hp_used == 0 ? base_costs[ RESOURCE_HOLY_POWER ] : hp_used );
-      p() -> buffs.crusade -> trigger( num_stacks );
-    }
-
-    if ( p() -> azerite.relentless_inquisitor.ok() )
-    {
-      int num_stacks = as<int>( hp_used == 0 ? base_costs[ RESOURCE_HOLY_POWER ] : hp_used );
-
-      p() -> buffs.relentless_inquisitor -> trigger( num_stacks );
-    }
-
-    // Consume Empyrean Power on Divine Storm, handled here for interaction with DP/FoJ
-    // Cost reduction is still in divine_storm_t
-    if ( p() -> buffs.empyrean_power -> up() && is_divine_storm )
-    {
-      p() -> buffs.empyrean_power -> expire();
-    }
-    // Divine Purpose isn't consumed on DS if EP was consumed
-    else if ( p() -> buffs.divine_purpose -> up() )
-    {
-      p() -> buffs.divine_purpose -> expire();
-    }
-    // FoJ isn't consumed if EP or DP were consumed
-    else if ( p() -> buffs.fires_of_justice -> up() )
-    {
-      p() -> buffs.fires_of_justice -> expire();
-    }
-
-    // Roll for Divine Purpose
-    if ( p() -> talents.divine_purpose -> ok() &&
-         rng().roll( p() -> talents.divine_purpose -> effectN( 1 ).percent() ) )
-    {
-      p() -> buffs.divine_purpose -> trigger();
-      p() -> procs.divine_purpose -> occur();
-    }
-
-    if ( ( p() -> buffs.avenging_wrath -> up() || p() -> buffs.crusade -> up() ) &&
-           p() -> azerite.lights_decree.ok() )
-    {
-      lights_decree_t* ld = debug_cast<lights_decree_t*>( p() -> active.lights_decree );
-      // Light's Decree deals damage based on the base cost of the spell (=1 for Inquisition)
-      ld -> last_holy_power_cost = as<int>( base_costs[ RESOURCE_HOLY_POWER ] );
-      ld -> execute();
-    }
-  }
-
-  void consume_resource() override
-  {
-    paladin_melee_attack_t::consume_resource();
-
-    if ( current_resource() == RESOURCE_HOLY_POWER)
-    {
-      p() -> trigger_memory_of_lucid_dreams( last_resource_cost );
-    }
-  }
-};
-
 // Crusade
 struct crusade_t : public paladin_spell_t
 {
@@ -248,6 +135,12 @@ struct blade_of_justice_t : public paladin_melee_attack_t
     {
       expurgation = new expurgation_t( p );
       add_child( expurgation );
+    }
+
+    const spell_data_t* blade_of_justice_2 = p -> find_specialization_spell( 327981 );
+    if ( blade_of_justice_2 )
+    {
+      energize_amount += blade_of_justice_2 -> effectN( 1 ).resource( RESOURCE_HOLY_POWER );
     }
   }
 
@@ -580,6 +473,11 @@ void paladin_t::create_ret_actions()
     active.lights_decree = new lights_decree_t( this );
   }
 
+  if ( talents.ret_sanctified_wrath )
+  {
+    active.sanctified_wrath = new sanctified_wrath_t( this );
+  }
+
   if ( talents.zeal )
   {
     active.zeal = new zeal_t( this );
@@ -683,6 +581,7 @@ void paladin_t::init_spells_retribution()
 
   spells.lights_decree = find_spell( 286231 );
   spells.execution_sentence_debuff = talents.execution_sentence -> effectN( 2 ).trigger();
+  spells.sanctified_wrath_damage = find_spell( 326731 );
 
   // Azerite traits
   azerite.expurgation           = find_azerite_spell( "Expurgation" );

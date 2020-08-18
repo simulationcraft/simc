@@ -1093,13 +1093,11 @@ struct searing_nightmare_t final : public priest_spell_t
 {
   propagate_const<shadow_word_pain_t*> child_swp;
   const spell_data_t* mind_sear_spell;
-  double insanity_cost;
 
   searing_nightmare_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "searing_nightmare", p, p.find_talent_spell( "Searing Nightmare" ) ),
       child_swp( new shadow_word_pain_t( priest(), false ) ),
-      mind_sear_spell( p.find_class_spell( "Mind Sear" ) ),
-      insanity_cost( data().cost( POWER_INSANITY ) )
+      mind_sear_spell( p.find_class_spell( "Mind Sear" ) )
   {
     parse_options( options_str );
     child_swp->background = true;
@@ -1122,9 +1120,10 @@ struct searing_nightmare_t final : public priest_spell_t
   double composite_da_multiplier( const action_state_t* state ) const override
   {
     double d = priest_spell_t::composite_da_multiplier( state );
-    auto shadow_word_pain_dot = state->target->get_dot( "shadow_word_pain", player );
 
-    if ( shadow_word_pain_dot->is_ticking() )
+    const priest_td_t* td = find_td( state -> target );
+
+    if ( td && td -> dots.shadow_word_pain->is_ticking() )
     {
       d *= 2;
     }

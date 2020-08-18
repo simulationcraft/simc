@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35522 shadowlands-BETA (git build shadowlands 3b8a06a81c)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35522 shadowlands-BETA (hotfix 2020-08-16/35522, git build shadowlands 9535202862)
 
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Paladin, Mage
@@ -10354,7 +10354,7 @@ Name             : Nether Precision (id=336886) [Spell Family (3), Passive, Hidd
 Class            : Mage
 School           : Physical
 Spell Type       : None
-Conduit Id       : 36
+Conduit Id       : 36 (values=10.0, 11.0, 12.0, 13.0, 14.5, 15.5, 16.5, 17.5, 19.0, 20.0, 21.0, 22.0, 23.0, 24.0, 25.0)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10398,7 +10398,7 @@ Name             : Siphoned Malice (id=337087) [Spell Family (3), Passive, Hidde
 Class            : Mage
 School           : Physical
 Spell Type       : None
-Conduit Id       : 43
+Conduit Id       : 43 (values=10.0, 11.0, 12.5, 14.0, 15.5, 17.0, 18.5, 20.0, 21.5, 23.0, 24.5, 26.0, 27.5, 28.5, 30.0)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10440,7 +10440,7 @@ Name             : Flame Accretion (id=337224) [Spell Family (3), Passive, Hidde
 Class            : Mage
 School           : Physical
 Spell Type       : None
-Conduit Id       : 53
+Conduit Id       : 53 (values=5.0, 5.5, 6.0, 6.75, 7.5, 8.25, 9.0, 9.75, 10.5, 11.25, 12.0, 12.75, 13.5, 14.25, 15.0)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

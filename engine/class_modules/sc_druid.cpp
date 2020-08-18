@@ -1006,6 +1006,8 @@ void eclipse_handler_t::advance_eclipse()
   if ( !starfire_counter && state != IN_SOLAR )
   {
     p->buff.eclipse_solar->trigger();
+    if ( p->legendary.balance_runecarve_3->ok() )
+      p->buff.runecarve_3_nature_buff->trigger();
     state = IN_SOLAR;
     reset_stacks();
     p->uptime.eclipse->update( true, p->sim->current_time() );
@@ -1015,6 +1017,8 @@ void eclipse_handler_t::advance_eclipse()
   if ( !wrath_counter && state != IN_LUNAR )
   {
     p->buff.eclipse_lunar->trigger();
+    if ( p->legendary.balance_runecarve_3->ok() )
+      p->buff.runecarve_3_arcane_buff->trigger();
     state = IN_LUNAR;
     reset_stacks();
     p->uptime.eclipse->update( true, p->sim->current_time() );
@@ -1052,6 +1056,11 @@ void eclipse_handler_t::trigger_both( timespan_t d = 0_ms )
 {
   state = IN_BOTH;
   reset_stacks();
+
+  if ( p->legendary.balance_runecarve_3->ok() ) {
+    p->buff.runecarve_3_arcane_buff->trigger();
+    p->buff.runecarve_3_nature_buff->trigger();
+  }
 
   p->buff.eclipse_lunar->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, d );
   p->buff.eclipse_solar->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, d );
@@ -1259,6 +1268,7 @@ public:
     add_invalidate( CACHE_CRIT_AVOIDANCE );
     add_invalidate( CACHE_HIT );
     add_invalidate( CACHE_EXP );
+    add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
@@ -1434,6 +1444,7 @@ struct cat_form_t : public druid_buff_t<buff_t>
     add_invalidate( CACHE_ATTACK_POWER );
     add_invalidate( CACHE_HIT );
     add_invalidate( CACHE_EXP );
+    add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
@@ -1525,6 +1536,7 @@ struct moonkin_form_t : public druid_buff_t<buff_t>
     add_invalidate( CACHE_ARMOR );
     add_invalidate( CACHE_HIT );
     add_invalidate( CACHE_EXP );
+    add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   }
 
   void start( int stacks, double value, timespan_t duration ) override
@@ -1923,7 +1935,7 @@ public:
       if ( !val )
         continue;
 
-      if ( !( eff->subtype() == A_MOD_DAMAGE_FROM_CASTER && ab::data().affected_by( eff ) ) &&
+      if ( !( eff->subtype() == A_MOD_DAMAGE_FROM_CASTER_SPELLS && ab::data().affected_by( eff ) ) &&
            !( eff->subtype() == A_MOD_AUTO_ATTACK_FROM_CASTER && is_auto_attack ) )
         continue;
 
@@ -6305,6 +6317,7 @@ struct wrath_t : public druid_spell_t
       return druid_spell_t::travel_time();
 
     // for each additional wrath in precombat apl, reduce the travel time by the cast time
+    player->invalidate_cache( CACHE_SPELL_HASTE );
     return std::max( 1_ms, druid_spell_t::travel_time() - base_execute_time * composite_haste() * count );
   }
 
@@ -6493,8 +6506,8 @@ struct starfall_t : public druid_spell_t
       {
         player_t* t = tl[ i ];
 
-        td( t )->dots.moonfire->extend_duration( timespan_t::from_seconds( ext ) );
-        td( t )->dots.sunfire->extend_duration( timespan_t::from_seconds( ext ) );
+        td( t )->dots.moonfire->extend_duration( timespan_t::from_seconds( ext ), 0_ms, -1, false );
+        td( t )->dots.sunfire->extend_duration( timespan_t::from_seconds( ext ), 0_ms, -1, false );
       }
     }
 
@@ -8120,11 +8133,13 @@ void druid_t::create_buffs()
     ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
     ->set_cooldown( 0_ms )
     ->set_period( 0_ms )
-    ->add_invalidate( CACHE_HASTE );
+    ->add_invalidate( CACHE_HASTE )
+    ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+
   if ( conduit.venthyr->ok() )
     buff.ravenous_frenzy->add_invalidate( CACHE_CRIT_CHANCE );
 
-  buff.convoke_the_spirits = make_buff( this, "convoke_the_pirits", covenant.night_fae )
+  buff.convoke_the_spirits = make_buff( this, "convoke_the_spirits", covenant.night_fae )
     ->set_cooldown( 0_ms )
     ->set_period( 0_ms )
     ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
@@ -8245,20 +8260,18 @@ void druid_t::create_buffs()
 
   buff.eclipse_solar = make_buff( this, "eclipse_solar", spec.eclipse_solar )
     ->set_duration( spec.eclipse_solar->duration() + talent.soul_of_the_forest_moonkin->effectN( 2 ).time_value() )
+    ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
     ->set_stack_change_callback( [this]( buff_t*, int /* old_ */, int new_ ) {
       if ( !new_ )
         this->eclipse_handler.advance_eclipse();
-      else if ( legendary.balance_runecarve_3->ok() )
-        buff.runecarve_3_nature_buff->trigger();
     } );
 
   buff.eclipse_lunar = make_buff( this, "eclipse_lunar", spec.eclipse_lunar )
     ->set_duration( spec.eclipse_lunar->duration() + talent.soul_of_the_forest_moonkin->effectN( 2 ).time_value() )
+    ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
     ->set_stack_change_callback( [this]( buff_t*, int /* old_ */, int new_ ) {
       if ( !new_ )
         this->eclipse_handler.advance_eclipse();
-      else if ( legendary.balance_runecarve_3->ok() )
-        buff.runecarve_3_arcane_buff->trigger();
     } );
 
   // Balance Legendaries
@@ -8274,8 +8287,12 @@ void druid_t::create_buffs()
     ->set_refresh_behavior( buff_refresh_behavior::DURATION );
 
   buff.runecarve_3_nature_buff = make_buff( this, "runecarve_3_nature", find_spell( 339943 ) )->set_reverse( true );
+  // Default value is ONLY used for APL expression, so set via base_value() and not percent()
+  buff.runecarve_3_nature_buff->set_default_value( buff.runecarve_3_nature_buff->data().effectN( 1 ).base_value() );
 
   buff.runecarve_3_arcane_buff = make_buff( this, "runecarve_3_arcane", find_spell( 339946 ) )->set_reverse( true );
+  // Default value is ONLY used for APL expression, so set via base_value() and not percent()
+  buff.runecarve_3_arcane_buff->set_default_value( buff.runecarve_3_arcane_buff->data().effectN( 1 ).base_value() );
 
   // Feral
 
@@ -10382,7 +10399,14 @@ struct druid_module_t : public module_t
   }
 
   void static_init() const override {}
-  void register_hotfixes() const override {}
+  void register_hotfixes() const override
+  {
+    hotfix::register_effect( "Druid Potency Venthyr 1", "9.0.1.35522", "crit% incorrectly set to 20%", 841733 )
+        .field( "base_value" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 2 )
+        .verification_value( 20 );
+  }
   void combat_begin( sim_t* ) const override {}
   void combat_end( sim_t* ) const override {}
 };

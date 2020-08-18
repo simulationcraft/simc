@@ -38,7 +38,6 @@ struct actor_target_data_t : public actor_pair_t, private noncopyable
     buff_t* razor_coral;
     buff_t* conductive_ink;
     buff_t* luminous_algae;
-    buff_t* infinite_stars;
     buff_t* psyche_shredder;
     // BFA - Essences
     buff_t* blood_of_the_enemy;
