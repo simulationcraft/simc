@@ -572,28 +572,6 @@ struct ascended_eruption_t final : public priest_spell_t
 };
 
 // ==========================================================================
-// Shadowflame Prism
-// ==========================================================================
-struct shadowflame_prism_t final : public priest_spell_t
-{
-  shadowflame_prism_t( priest_t& p ) : priest_spell_t( "shadowflame_prism", p, p.find_spell( 336142 ) )
-  {
-    background = true;
-    may_crit   = false;
-    may_miss   = false;
-  }
-
-  void trigger( player_t* target, double original_amount )
-  {
-    base_dd_min = base_dd_max = ( original_amount * 0.20 );
-    player->sim->print_debug( "{} triggered shadowflame prism damage on target {}.", priest(), *target );
-
-    set_target( target );
-    execute();
-  }
-};
-
-// ==========================================================================
 // Summon Pet
 // ==========================================================================
 /// Priest Pet Summon Base Spell
@@ -903,6 +881,15 @@ void base_fiend_pet_t::init_action_list()
   }
 
   priest_pet_t::init_action_list();
+}
+
+void base_fiend_pet_t::init_background_actions()
+{
+}
+
+void base_fiend_pet_t::trigger_shadowflame_prison(player_t* target, double original_amount)
+{
+  active_spell_shadowflame_prism.trigger(target, original_amount);
 }
 
 double base_fiend_pet_t::composite_player_multiplier( school_e school ) const

@@ -37,7 +37,6 @@ struct summon_shadowfiend_t;
 struct summon_mindbender_t;
 struct ascended_eruption_t;
 struct psychic_link_t;
-struct shadowflame_prism_t;
 }  // namespace spells
 namespace heals
 {
@@ -363,7 +362,6 @@ public:
     propagate_const<actions::spells::mind_sear_tick_t*> mind_sear_tick;
     propagate_const<actions::spells::shadowy_apparition_spell_t*> shadowy_apparitions;
     propagate_const<actions::spells::psychic_link_t*> psychic_link;
-    propagate_const<actions::spells::shadowflame_prism_t*> shadowflame_prism;
   } active_spells;
 
   // Items
@@ -767,6 +765,8 @@ namespace fiend
  */
 struct base_fiend_pet_t : public priest_pet_t
 {
+  propagate_const<actions::shadowflame_prism_t*> active_spell_shadowflame_prism;
+  
   struct gains_t
   {
     propagate_const<gain_t*> fiend;
@@ -787,6 +787,10 @@ struct base_fiend_pet_t : public priest_pet_t
   virtual double insanity_gain() const       = 0;
 
   void init_action_list() override;
+
+  void init_background_actions() override;
+
+  void trigger_shadowflame_prison(player_t* target, double original_amount);
 
   void init_gains() override
   {
@@ -931,7 +935,7 @@ struct fiend_melee_t : public priest_pet_melee_t
 
     if ( p().o().legendary.shadowflame_prism->ok() )
     {
-      p().o().active_spells.shadowflame_prism->trigger( s->target, s->result_amount );
+      p().trigger_shadowflame_prison( s->target, s->result_amount );
     }
 
     if ( result_is_hit( s->result ) )
@@ -958,6 +962,28 @@ struct fiend_melee_t : public priest_pet_melee_t
         }
       }
     }
+  }
+};
+
+// ==========================================================================
+// Shadowflame Prism
+// ==========================================================================
+struct shadowflame_prism_t final : public priest_pet_spell_t
+{
+  shadowflame_prism_t( base_fiend_pet_t& p ) : priest_pet_spell_t( "shadowflame_prism", &p, p.o().find_spell( 336142 ) )
+  {
+    background = true;
+    may_crit   = false;
+    may_miss   = false;
+  }
+
+  void trigger( player_t* target, double original_amount )
+  {
+    base_dd_min = base_dd_max = ( original_amount * 0.20 );
+    player->sim->print_debug( "Triggered shadowflame prism damage on target {}.", *target );
+
+    set_target( target );
+    execute();
   }
 };
 }  // namespace actions
