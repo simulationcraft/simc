@@ -766,7 +766,7 @@ namespace fiend
 struct base_fiend_pet_t : public priest_pet_t
 {
   propagate_const<actions::shadowflame_prism_t*> active_spell_shadowflame_prism;
-  
+
   struct gains_t
   {
     propagate_const<gain_t*> fiend;

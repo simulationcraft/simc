@@ -885,6 +885,9 @@ void base_fiend_pet_t::init_action_list()
 
 void base_fiend_pet_t::init_background_actions()
 {
+  active_spell_shadowflame_prism = new actions::shadowflame_prism_t( *this );
+
+  priest_pet_t::init_background_actions();
 }
 
 void base_fiend_pet_t::trigger_shadowflame_prison(player_t* target, double original_amount)
