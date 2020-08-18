@@ -5268,6 +5268,11 @@ struct shifting_power_pulse_t : public mage_spell_t
     background = true;
     aoe = -1;
   }
+
+  result_amount_type amount_type( const action_state_t*, bool ) const override
+  {
+    return result_amount_type::DMG_DIRECT;
+  }
 };
 
 struct shifting_power_t : public mage_spell_t
@@ -6609,7 +6614,7 @@ void mage_t::init_assessors()
           buff->accumulate_damage( s );
 
           // TODO: Double check what exactly procs Arcane Echo
-          if ( ( bugs || rt == result_amount_type::DMG_DIRECT )
+          if ( ( bugs || s->result_type == result_amount_type::DMG_DIRECT )
             && s->result_total > 0.0
             && s->action != action.arcane_echo
             && talents.arcane_echo->ok() )
