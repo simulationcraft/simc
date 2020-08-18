@@ -2375,7 +2375,7 @@ void priest_t::generate_apl_shadow()
                     "Use Shadow Crash on CD unless there are adds incoming." );
   main->add_action(
       this, "Mind Sear",
-      "target_if=spell_targets.mind_sear>1&buff.dark_thoughts.up,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2",
+      "target_if=spell_targets.mind_sear>(1+runeforge.eternal_call_to_the_void.equipped)&buff.dark_thoughts.up,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2",
       "Use Mind Sear to consume Dark Thoughts procs on AOE. TODO Confirm is this is a higher priority than redotting "
       "on AOE unless dark thoughts is about to time out" );
   main->add_action( this, "Mind Flay",
@@ -2394,7 +2394,7 @@ void priest_t::generate_apl_shadow()
                     "target_if=refreshable&target.time_to_die>6|(talent.misery.enabled&dot.shadow_word_pain."
                     "refreshable)|buff.unfurling_darkness.up" );
   main->add_action( this, "Mind Sear",
-                    "target_if=spell_targets.mind_sear>1,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2" );
+                    "target_if=spell_targets.mind_sear>(1+runeforge.eternal_call_to_the_void.equipped),chain=1,interrupt_immediate=1,interrupt_if=ticks>=2" );
   main->add_action( this, "Mind Flay", "chain=1,interrupt_immediate=1,interrupt_if=ticks>=2&cooldown.void_bolt.up" );
   main->add_action( this, "Shadow Word: Pain" );
 }
