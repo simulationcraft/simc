@@ -176,34 +176,6 @@ struct buff_stack_benefit_t
   }
 };
 
-struct cooldown_reduction_data_t
-{
-  const cooldown_t* cd;
-
-  sample_data_helper_t* effective;
-  sample_data_helper_t* wasted;
-
-  cooldown_reduction_data_t( const cooldown_t* cooldown, const std::string& name ) :
-    cd( cooldown )
-  {
-    effective = cd->player->get_sample_data( name + " effective cooldown reduction" );
-    wasted    = cd->player->get_sample_data( name + " wasted cooldown reduction" );
-  }
-
-  void add( timespan_t reduction )
-  {
-    timespan_t remaining = cd->recharge_event
-      ? cd->current_charge_remains() + ( cd->charges - cd->current_charge - 1 ) * cooldown_t::cooldown_duration( cd )
-      : cd->remains();
-
-    double reduction_sec = -reduction.total_seconds();
-    double remaining_sec = remaining.total_seconds();
-    double effective_sec = std::min( reduction_sec, remaining_sec );
-    effective->add( effective_sec );
-    wasted->add( reduction_sec - effective_sec );
-  }
-};
-
 struct cooldown_waste_data_t : private noncopyable
 {
   const cooldown_t* cd;
@@ -598,7 +570,6 @@ public:
   // Sample data
   struct sample_data_t
   {
-    std::unique_ptr<cooldown_reduction_data_t> blizzard;
     std::unique_ptr<extended_sample_data_t> icy_veins_duration;
     std::unique_ptr<extended_sample_data_t> burn_duration_history;
     std::unique_ptr<extended_sample_data_t> burn_initial_mana;
@@ -2977,7 +2948,6 @@ struct blizzard_shard_t : public frost_mage_spell_t
     if ( hit_any_target )
     {
       timespan_t reduction = -10 * num_targets_hit * p()->spec.blizzard_2->effectN( 1 ).time_value();
-      p()->sample_data.blizzard->add( reduction );
       p()->cooldowns.frozen_orb->adjust( reduction, false );
     }
   }
@@ -6579,8 +6549,6 @@ void mage_t::init_uptimes()
       sample_data.burn_initial_mana     = std::make_unique<extended_sample_data_t>( "Burn initial mana", false );
       break;
     case MAGE_FROST:
-      sample_data.blizzard = std::make_unique<cooldown_reduction_data_t>( cooldowns.frozen_orb, "Blizzard" );
-
       if ( talents.thermal_void->ok() )
         sample_data.icy_veins_duration = std::make_unique<extended_sample_data_t>( "Icy Veins duration", false );
       break;
