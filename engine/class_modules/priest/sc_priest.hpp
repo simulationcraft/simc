@@ -37,6 +37,7 @@ struct summon_shadowfiend_t;
 struct summon_mindbender_t;
 struct ascended_eruption_t;
 struct psychic_link_t;
+struct shadowflame_prism_t;
 }  // namespace spells
 namespace heals
 {
@@ -362,6 +363,7 @@ public:
     propagate_const<actions::spells::mind_sear_tick_t*> mind_sear_tick;
     propagate_const<actions::spells::shadowy_apparition_spell_t*> shadowy_apparitions;
     propagate_const<actions::spells::psychic_link_t*> psychic_link;
+    propagate_const<actions::spells::shadowflame_prism_t*> shadowflame_prism;
   } active_spells;
 
   // Items
@@ -927,6 +929,11 @@ struct fiend_melee_t : public priest_pet_melee_t
   {
     priest_pet_melee_t::impact( s );
 
+    if ( p().o().legendary.shadowflame_prism->ok() )
+    {
+      p().o().active_spells.shadowflame_prism->trigger( s->target, s->result_amount );
+    }
+
     if ( result_is_hit( s->result ) )
     {
       if ( p().o().specialization() == PRIEST_SHADOW )
@@ -1072,26 +1079,6 @@ public:
   {
     return priest().find_target_data( t );
   }
-
-  bool trigger_shadowy_insight()
-  {
-    int stack = priest().buffs.shadowy_insight->check();
-    if ( priest().buffs.shadowy_insight->trigger() )
-    {
-      priest().cooldowns.mind_blast->reset( true );
-
-      if ( priest().buffs.shadowy_insight->check() == stack )
-      {
-        priest().procs.shadowy_insight_overflow->occur();
-      }
-      else
-      {
-        priest().procs.shadowy_insight->occur();
-      }
-      return true;
-    }
-    return false;
-  };
 
   void trigger_power_of_the_dark_side()
   {
