@@ -2366,7 +2366,7 @@ void player_t::override_talent( util::string_view override_str )
       const talent_data_t* t = talent_data_t::find( type, j, i, specialization(), dbc->ptr );
       if ( t && ( t->spell_id() == spell_id ) )
       {
-        if ( true_level < std::min( ( j + 1 ) * 15, 100 ) )
+        if ( true_level < 20 + ( j == 0 ? -1 : j ) * 5 )
         {
           throw std::invalid_argument(fmt::format("talent_override: Override talent '{}' is too high level.\n",
               override_str ));
