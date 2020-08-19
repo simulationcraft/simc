@@ -6324,9 +6324,9 @@ struct wrath_t : public druid_spell_t
   {
     timespan_t g = druid_spell_t::gcd();
 
+    // Move this into parse_buff_effects if it becomes more prevalent. Currently only used for wrath & dash
     if ( p()->buff.eclipse_solar->up() )
-      g *= 1 + p()->spec.eclipse_solar->effectN( 1 ).percent() + p()->spec.eclipse_2->effectN( 1 ).percent() +
-           p()->talent.soul_of_the_forest_moonkin->effectN( 1 ).percent();
+      g *= 1.0 + p()->spec.eclipse_solar->effectN( 5 ).percent();
 
     g = std::max( min_gcd, g );
 
