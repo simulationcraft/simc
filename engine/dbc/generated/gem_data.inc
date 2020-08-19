@@ -1,4 +1,4 @@
-// Gem properties, wow build 9.0.1.35522
+// Gem properties, wow build 9.0.1.35598
 static const std::array<gem_property_data_t, 1857> __gem_property_data { {
   {    2,  2686, 0x00000002 }, // +$k1 Strength
   {    3,  2687, 0x00000008 }, // +$k1 Agility
@@ -1775,7 +1775,7 @@ static const std::array<gem_property_data_t, 1857> __gem_property_data { {
   { 3630,  5926, 0x0000000e }, // +$k1 Haste
   { 3631,  5927, 0x0000000e }, // +$k1 Mastery
   { 3632,  5928, 0x0000000e }, // +$k1 Versatility
-  { 3633,  5954, 0x0000000e }, // +5% Experience
+  { 3633,  5954, 0x0000000e }, // +5% Swim Speed
   { 3734,  6081, 0x0000000e }, // +$k1 Versatility
   { 3735,  6072, 0x0000000e }, // +$k1 Critical Strike
   { 3736,  6078, 0x0000000e }, // +$k1 Mastery

@@ -1,4 +1,4 @@
-// Covenant abilities, wow build 9.0.1.35522
+// Covenant abilities, wow build 9.0.1.35598
 static const std::array<covenant_ability_entry_t, 52> __covenant_ability_data { {
   {  6, 4, 0, 315443, "Abomination Limb"                   },
   { 11, 4, 0, 325727, "Adaptive Swarm"                     },
@@ -54,7 +54,7 @@ static const std::array<covenant_ability_entry_t, 52> __covenant_ability_data { 
   {  3, 3, 0, 328231, "Wild Spirits"                       },
 } };
 
-// Soulbind abilities, wow build 9.0.1.35522
+// Soulbind abilities, wow build 9.0.1.35598
 static const std::array<soulbind_ability_entry_t, 92> __soulbind_ability_data { {
   { 319191, 3, "Field of Blossoms"                  },
   { 319210, 3, "Social Butterfly"                   },
@@ -150,7 +150,7 @@ static const std::array<soulbind_ability_entry_t, 92> __soulbind_ability_data { 
   { 342270, 3, "Run Without Tiring"                 },
 } };
 
-// Conduits, wow build 9.0.1.35522
+// Conduits, wow build 9.0.1.35598
 static const std::array<conduit_entry_t, 272> __conduit_data { {
   {   5, 334993, "Stalwart Guardian"                  },
   {   7, 335010, "Brutal Vitality"                    },
@@ -253,7 +253,7 @@ static const std::array<conduit_entry_t, 272> __conduit_data { {
   { 104, 338303, "Call of Flame"                      },
   { 105, 338315, "Shattered Perceptions"              },
   { 106, 338311, "Unending Grip"                      },
-  { 107, 338319, "Shimmering Apparitions"             },
+  { 107, 338319, "Haunting Apparitions"               },
   { 108, 338330, "Insatiable Appetite"                },
   { 109, 338318, "Unruly Winds"                       },
   { 110, 338322, "Focused Lightning"                  },
@@ -380,7 +380,7 @@ static const std::array<conduit_entry_t, 272> __conduit_data { {
   { 234, 341532, "Fade to Nothing"                    },
   { 235, 341534, "Rushed Setup"                       },
   { 236, 341535, "Prepared for All"                   },
-  { 237, 341536, "Poisoned Finger Blades"             },
+  { 237, 341536, "Poisoned Katar"                     },
   { 238, 341537, "Well-Placed Steel"                  },
   { 239, 341538, "Maim, Mangle"                       },
   { 240, 341539, "Lethal Poisons"                     },
@@ -397,33 +397,33 @@ static const std::array<conduit_entry_t, 272> __conduit_data { {
   { 251, 341350, "Deadly Tandem"                      },
   { 252, 341399, "Flame Infusion"                     },
   { 253, 341440, "Bloodletting"                       },
-  { 254, 340529, "Druid Endurance 1"                  },
-  { 255, 340540, "Druid Endurance 2"                  },
-  { 256, 340543, "Druid Endurance 3"                  },
+  { 254, 340529, "Tough as Bark"                      },
+  { 255, 340540, "Ursine Vigor"                       },
+  { 256, 340543, "Innate Resolve"                     },
   { 257, 340545, "Tireless Pursuit"                   },
-  { 258, 341280, "Druid Finesse 2"                    },
-  { 259, 341450, "Druid Finesse 3"                    },
-  { 260, 341451, "Druid Finesse 4"                    },
-  { 261, 340720, "Druid Potency Balance 1"            },
-  { 262, 340706, "Druid Potency Balance 2"            },
-  { 263, 340708, "Druid Potency Balance 3"            },
-  { 264, 340719, "Druid Potency Balance 4"            },
-  { 265, 340682, "Druid Potency Feral 1"              },
-  { 266, 340686, "Druid Potency Feral 2"              },
-  { 267, 340694, "Druid Potency Feral 3"              },
-  { 268, 340705, "Druid Potency Feral 4"              },
-  { 269, 340552, "Druid Potency Guardian 1"           },
-  { 270, 340609, "Druid Potency Guardian 2"           },
-  { 271, 340553, "Druid Endurance Guardian 3"         },
-  { 272, 340605, "Druid Endurance Guardian 4"         },
-  { 273, 340549, "Druid Potency Resto 1"              },
-  { 274, 340616, "Druid Potency Resto 2"              },
-  { 275, 340621, "Druid Potency Resto 3"              },
-  { 276, 340550, "Druid Potency Resto 4"              },
-  { 277, 341378, "Druid Potency Kyrian 1"             },
-  { 278, 341447, "Druid Potency Necrolord 1"          },
-  { 279, 341446, "Druid Potency Night Fae 1"          },
-  { 280, 341383, "Druid Potency Venthyr 1"            },
+  { 258, 341280, "Born Anew"                          },
+  { 259, 341450, "Front of the Pack"                  },
+  { 260, 341451, "Born of the Wilds"                  },
+  { 261, 340720, "Stellar Inspiration"                },
+  { 262, 340706, "Precise Alignment"                  },
+  { 263, 340708, "Fury of the Skies"                  },
+  { 264, 340719, "Umbral Intensity"                   },
+  { 265, 340682, "Taste for Blood"                    },
+  { 266, 340686, "Incessant Hunter"                   },
+  { 267, 340694, "Sudden Ambush"                      },
+  { 268, 340705, "Carnivorous Instinct"               },
+  { 269, 340552, "Unchecked Aggression"               },
+  { 270, 340609, "Savage Combatant"                   },
+  { 271, 340553, "Well-Honed Instincts"               },
+  { 272, 340605, "Layered Mane"                       },
+  { 273, 340549, "Unstoppable Growth"                 },
+  { 274, 340616, "Flash of Clarity"                   },
+  { 275, 340621, "Floral Recycling"                   },
+  { 276, 340550, "Ready for Anything"                 },
+  { 277, 341378, "Deep Allegiance"                    },
+  { 278, 341447, "Evolved Swarm"                      },
+  { 279, 341446, "Conflux of Elements"                },
+  { 280, 341383, "Endless Thirst"                     },
 } };
 
 static const std::array<uint16_t, 272> __conduit_spell_id_index { {
@@ -463,7 +463,7 @@ static const std::array<uint16_t, 272> __conduit_spell_id_index { {
     232,   233,   234,   235,   236,   237,   238,   239,
 } };
 
-// Conduit ranks, wow build 9.0.1.35522
+// Conduit ranks, wow build 9.0.1.35598
 static const std::array<conduit_rank_entry_t, 4076> __conduit_rank_data { {
   {   5,  0, 334993, -20000.000000 },
   {   5,  1, 334993, -22000.000000 },
