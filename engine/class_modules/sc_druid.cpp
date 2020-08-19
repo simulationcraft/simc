@@ -7804,20 +7804,28 @@ void druid_t::init_spells()
   covenant.adaptive_swarm_heal          = check_spell( covenant.necrolord->ok(), 325748 );
 
   // Conduits
+
+  // Balance
   conduit.stellar_inspiration  = find_conduit_spell( "Stellar Inspiration" );
-  conduit.precise_alignment  = find_conduit_spell( "Precise Alignment" );
-  conduit.fury_of_the_skies  = find_conduit_spell( "Fury of the Skies" );
-  conduit.umbral_intensity  = find_conduit_spell( "Umbral Intensity" );
-  conduit.taste_for_blood    = find_conduit_spell( "Taste for Blood" );
-  conduit.incessant_hunter    = find_conduit_spell( "Incessant Hunter" );
-  conduit.sudden_ambush    = find_conduit_spell( "Sudden Ambush" );
-  conduit.carnivorous_instinct    = find_conduit_spell( "Carnivorous Instinct" );
+  conduit.precise_alignment    = find_conduit_spell( "Precise Alignment" );
+  conduit.fury_of_the_skies    = find_conduit_spell( "Fury of the Skies" );
+  conduit.umbral_intensity     = find_conduit_spell( "Umbral Intensity" );
+
+  // Feral
+  conduit.taste_for_blood      = find_conduit_spell( "Taste for Blood" );
+  conduit.incessant_hunter     = find_conduit_spell( "Incessant Hunter" );
+  conduit.sudden_ambush        = find_conduit_spell( "Sudden Ambush" );
+  conduit.carnivorous_instinct = find_conduit_spell( "Carnivorous Instinct" );
+
+  // Guardian
   conduit.unchecked_aggression = find_conduit_spell( "Unchecked Aggression" );
-  conduit.savage_combatant = find_conduit_spell( "Savage Combatant" );
-  conduit.deep_allegiance     = find_conduit_spell( "Deep Allegiance" );
-  conduit.evolved_swarm  = find_conduit_spell( "Evolved Swarm" );
+  conduit.savage_combatant     = find_conduit_spell( "Savage Combatant" );
+
+  // Covenant
+  conduit.deep_allegiance      = find_conduit_spell( "Deep Allegiance" );
+  conduit.evolved_swarm        = find_conduit_spell( "Evolved Swarm" );
   conduit.conflux_of_elements  = find_conduit_spell( "Conflux of Elements" );
-  conduit.endless_thirst    = find_conduit_spell( "Endless Thirst" );
+  conduit.endless_thirst       = find_conduit_spell( "Endless Thirst" );
 
   // Runeforge Legendaries
 
