@@ -2591,6 +2591,21 @@ public:
     return da;
   }
 
+  double composite_crit_chance() const override
+  {
+    double cc = ab::composite_crit_chance();
+
+    if ( ( &ab::data() == p()->spec.full_moon || &ab::data() == p()->spec.half_moon ||
+           &ab::data() == p()->talent.new_moon ) &&
+         p()->buff.balance_of_all_things_nature->up() )
+    {
+      // Use the base_value stored for APL purposes for now until moons are properly whitelisted
+      cc += p()->buff.balance_of_all_things_nature->stack_value() / 100.0;
+    }
+
+    return cc;
+  }
+
   double composite_energize_amount( const action_state_t* s ) const override
   {
     double e = ab::composite_energize_amount( s );
