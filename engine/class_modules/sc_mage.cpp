@@ -1627,8 +1627,8 @@ public:
 
     if ( p()->buffs.arcane_power->check() )
     {
-      c *= 1.0 + ( p()->spec.arcane_power_2->ok() ? p()->buffs.arcane_power->data().effectN( 2 ).percent() : 0.0 );
-      c *= 1.0 + p()->talents.overpowered->effectN( 2 ).percent();
+      c *= 1.0 + ( p()->spec.arcane_power_2->ok() ? p()->buffs.arcane_power->data().effectN( 2 ).percent() : 0.0 )
+               + p()->talents.overpowered->effectN( 2 ).percent();
     }
 
     return c;
