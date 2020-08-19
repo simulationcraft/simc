@@ -8253,7 +8253,7 @@ void druid_t::create_buffs()
   buff.starfall = make_buff( this, "starfall", spec.starfall )
     ->set_duration( spec.starfall->duration() + talent.stellar_drift->effectN( 1 ).time_value() )
     ->set_period( 888_ms )  // this has a random interval in game so estimate the average here
-    ->set_refresh_behavior( buff_refresh_behavior::DURATION );
+    ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
 
   buff.eclipse_solar = make_buff( this, "eclipse_solar", spec.eclipse_solar )
     ->set_duration( spec.eclipse_solar->duration() + talent.soul_of_the_forest_moonkin->effectN( 2 ).time_value() )
