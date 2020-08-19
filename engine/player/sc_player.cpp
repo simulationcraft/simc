@@ -4216,7 +4216,7 @@ double player_t::composite_attribute_multiplier( attribute_e attr ) const
   if ( is_pet() || is_enemy() || type == HEALING_ENEMY )
     return m;
 
-  if ( ( true_level >= 50 ) && matching_gear )
+  if ( ( true_level >= 27 ) && matching_gear )
   {
     m *= 1.0 + matching_gear_multiplier( attr );
   }
@@ -9222,7 +9222,7 @@ void player_t::replace_spells()
   {
     for ( int i = 0; i < MAX_TALENT_COLS; i++ )
     {
-      if ( talent_points.has_row_col( j, i ) && true_level < std::min( ( j + 1 ) * 15, 100 ) )
+      if ( talent_points.has_row_col( j, i ) && true_level < 20 + ( j == 0 ? -1 : j ) * 5 )
       {
         const talent_data_t* td = talent_data_t::find( type, j, i, specialization(), dbc->ptr );
         if ( td && td->replace_id() )
