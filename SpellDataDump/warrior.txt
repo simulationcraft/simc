@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35522 shadowlands-BETA (hotfix 2020-08-16/35522, git build shadowlands 9535202862)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35598 shadowlands-BETA (hotfix 2020-08-19/35598, no-networking)
 
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
@@ -204,6 +204,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ ..x..... .x...
 Effects          :
 #1 (id=364)      : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -40 | Scaled Value: -40 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 Description      : Reduces all damage you take by $s1% for $d.
 Tooltip          : All damage taken reduced by $w1%.
 
@@ -211,7 +212,7 @@ Name             : Demoralizing Shout (id=1160) [Spell Family (4)]
 Class            : Protection Warrior
 School           : Physical
 Spell Type       : Magic
-Spell Level      : 34
+Spell Level      : 27
 GCD              : 1.5 seconds
 Duration         : 8 seconds
 Cooldown         : 45 seconds
@@ -361,7 +362,7 @@ Name             : Recklessness (id=1719) [Spell Family (4)]
 Class            : Fury Warrior
 School           : Physical
 Spell Type       : Melee
-Spell Level      : 34
+Spell Level      : 38
 GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 90 seconds
@@ -486,7 +487,7 @@ Name             : Intimidating Shout (id=5246) [Spell Family (4)]
 Class            : Warrior
 School           : Physical
 Spell Type       : Magic
-Spell Level      : 39
+Spell Level      : 34
 Range            : 8 yards
 GCD              : 1.5 seconds
 Duration         : 8 seconds
@@ -590,7 +591,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
-                 : ........ ........ ........ ........   
+                 : x....... ........ ........ ........   
                  : Requires main-hand weapon (106)
 Effects          :
 #1 (id=1900)     : Trigger Spell (64): Execute
@@ -632,7 +633,9 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=357193)   : Energize Power (30)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: rage | Target: Self (1)
-Description      : Blasts all enemies within $6343A1 yards for $s1 Physical damage$?(s316414&s199045)[, rooting them for $199042d and reducing their movement speed by $s2% for $d.]?s199045[ and roots them for $199042d.]?s316414[ and reduces their movement speed by $s2% for $d.][.] Deals reduced damage to secondary targets.
+#5 (id=844585)   : Dummy (3)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Blasts all enemies within $6343A1 yards for $s1 Physical damage$?(s316414&s199045)[, rooting them for $199042d and reducing their movement speed by $s2% for $d.]?s199045[ and roots them for $199042d.]?s316414[ and reduces their movement speed by $s2% for $d.][.] Deals reduced damage beyond $s5 targets.
 
 |cFFFFFFFFGenerates ${$s4/10} Rage.|r
 Tooltip          : Movement speed reduced by $s2%.
@@ -714,15 +717,16 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=2316)     : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.63000 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: Cone Front (104)
-Description      : Swing in a wide arc, dealing $s1 Physical damage to all enemies in front of you. Deals reduced damage to secondary targets.
+Description      : Swing in a wide arc, dealing $s1 Physical damage to all enemies in front of you. Deals reduced damage beyond $<cap> targets.
 
 Your successful dodges and parries have a chance to make your next Revenge cost no Rage.
+Variables        : $cap=${5}
 
 Name             : Battle Shout (id=6673) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
 Spell Type       : Magic
-Spell Level      : 31
+Spell Level      : 39
 GCD              : 1.5 seconds
 Duration         : 3600 seconds
 Cooldown         : 15 seconds
@@ -859,7 +863,7 @@ Name             : Last Stand (id=12975) [Spell Family (4)]
 Class            : Protection Warrior
 School           : Physical
 Spell Type       : None
-Spell Level      : 37
+Spell Level      : 38
 Duration         : 15 seconds
 Cooldown         : 180 seconds
 Category         : 1251
@@ -934,7 +938,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=102316)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.35000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.52500 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=11313)    : Dummy (3)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : A direct strike, dealing $s1 Physical damage.
@@ -1041,6 +1045,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Value Multiplier: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=280400)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 0x7e | Target: Self (1)
+                   Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
 Description      : Raise your $?c3[shield][weapon], reflecting spells cast on you and reducing magical damage you take by $s2%. $?a188672[Lasts $d.][Lasts $d or until a spell is reflected.]
 Tooltip          : $?a188672[Reflecting all spells cast on you.][Reflects a spell cast on you.]
 Magical damage taken reduced by $s2%.
@@ -1436,7 +1441,7 @@ Name             : Heroic Throw (id=57755) [Spell Family (4)]
 Class            : Warrior
 School           : Physical
 Spell Type       : Melee
-Spell Level      : 27
+Spell Level      : 24
 Range            : 8 - 30 yards
 GCD              : 1.5 seconds
 Velocity         : 40 yards/sec
@@ -1559,7 +1564,7 @@ Name             : Shattering Throw (id=64382) [Spell Family (4)]
 Class            : Warrior
 School           : Physical
 Spell Type       : Melee
-Spell Level      : 38
+Spell Level      : 41
 Range            : 30 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
@@ -1666,6 +1671,7 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=71772)    : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -1 | Scaled Value: -1 | PvP Coefficient: 1.00000 | Misc Value: 0x28 | Target: Self (1)
+                   Affected School(s): Nature, Shadow
 Description      : Reduces Shadow and Nature damage taken by $s1%.
 Tooltip          : Reduces Shadow and Nature damage taken by $s1%.
 
@@ -2066,7 +2072,7 @@ Name             : Rallying Cry (id=97462) [Spell Family (4)]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
-Spell Level      : 41
+Spell Level      : 46
 GCD              : 1.5 seconds
 Cooldown         : 180 seconds
 Affecting spells : Bladestorm (46924 effect#3), Warrior (137047 effect#2), Bladestorm (227847 effect#3), Moment of Glory (280209 effect#2), Rallying Cry (316825 effect#1), Inspiring Presence (335034 effect#1), 
@@ -2204,7 +2210,7 @@ Name             : Avatar (id=107574) [Spell Family (4)]
 Class            : Protection Warrior
 School           : Physical
 Spell Type       : None
-Spell Level      : 26
+Spell Level      : 32
 GCD              : 1.5 seconds
 Duration         : 20 seconds
 Cooldown         : 90 seconds
@@ -2550,6 +2556,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=134225)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -30 | Scaled Value: -30 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 #3 (id=225727)   : Apply Aura (6) | Modify Attacker Crit Chance (197)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Increases your parry chance by $s1% and reduces all damage you take by $s2% for $d.
@@ -2735,6 +2742,7 @@ Effects          :
                    Family Flags: 41
 #3 (id=268763)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7e | Target: Self (1)
+                   Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
 #4 (id=738490)   : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
                    Affected Spells: Devastate (20243), Shield Slam (23922), Devastator (236282)
@@ -2836,8 +2844,10 @@ Effects          :
                    Base Value: 350 | Scaled Value: 350 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
 #5 (id=191019)   : Apply Aura (6) | Unknown(213)
                    Base Value: -56 | Scaled Value: -56 | PvP Coefficient: 1.00000 | Target: Self (1)
-#6 (id=261027)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+#6 (id=261027)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
+                   Affected Spells: Dragon Roar (118000)
+                   Family Flags: 49
 #7 (id=261028)   : Apply Aura (6) | Modify Attacker Melee Crit Chance (187)
                    Base Value: -6 | Scaled Value: -6 | PvP Coefficient: 1.00000 | Target: Self (1)
 #8 (id=261029)   : Apply Aura (6) | Modify Expertise% (240)
@@ -3383,6 +3393,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=737717)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 Description      : $@spelldesc184361
 Tooltip          : Damage done increased by $76856s1%.$?s316424[
 Haste increased by $m1%.][]$?s316425[
@@ -3410,6 +3421,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .......x x....
 Effects          :
 #1 (id=267211)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -30 | Scaled Value: -30 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 #2 (id=304657)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Bloodthirst Heal (117313)
@@ -3560,7 +3572,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
-                 : ........ ........ ........ ........   
+                 : x....... ........ ........ ........   
                  : Requires main-hand weapon (106)
 Effects          :
 #1 (id=279027)   : Dummy (3)
@@ -3661,6 +3673,7 @@ Attributes       : ....x... ........ ..x..... x..x...x   ........ ........ .....
 Effects          :
 #1 (id=290496)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 #2 (id=290497)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 2.00000 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
@@ -4737,6 +4750,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Value Multiplier: 1 | PvP Coefficient: 1.00000 | Misc Value: 4 | Radius: 20 yards | Target: Raid Members (56)
 #2 (id=371150)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -30 | Scaled Value: -30 | PvP Coefficient: 1.00000 | Misc Value: 0x7e | Radius: 20 yards | Target: Raid Members (56)
+                   Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
 Description      : Reflects all spells cast on you and on all party and raid members within $a1 yards, and reduces magical damage taken by $s2% for $d.
 Tooltip          : Reflects all spells cast on you.
 Magical damage taken reduced by $w2%.
@@ -5023,7 +5037,7 @@ Name             : Bladestorm (id=227847) [Spell Family (4)]
 Class            : Arms Warrior
 School           : Physical
 Spell Type       : Melee
-Spell Level      : 34
+Spell Level      : 38
 GCD              : 1.5 seconds
 Duration         : 6 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
@@ -5478,6 +5492,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=477698)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -1 | Scaled Value: -1 | PvP Coefficient: 1.00000 | Misc Value: 0x2 | Target: Self (1)
+                   Affected School(s): Holy
 Description      : Reduces Holy damage taken by ${$s1/-1}%.
 
 Name             : Light's Reckoning (desc=Racial Passive) (id=255652) [Passive] 
@@ -7184,7 +7199,7 @@ Name             : Seasoned Soldier (id=279423) [Spell Family (4), Passive]
 Class            : Arms Warrior
 School           : Physical
 Spell Type       : None
-Spell Level      : 26
+Spell Level      : 27
 Attributes       : ....x.x. ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8877,7 +8892,7 @@ Name             : Thunder Clap (desc=Rank 2) (id=316414) [Spell Family (4), Pas
 Class            : Protection Warrior, Warlock
 School           : Physical
 Spell Type       : None
-Spell Level      : 32
+Spell Level      : 37
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8915,7 +8930,7 @@ Name             : Enrage (desc=Rank 3) (id=316425) [Spell Family (4), Passive]
 Class            : Fury Warrior
 School           : Physical
 Spell Type       : None
-Spell Level      : 42
+Spell Level      : 49
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9085,7 +9100,7 @@ Name             : Raging Blow (desc=Rank 2) (id=316452) [Spell Family (4), Pass
 Class            : Fury Warrior
 School           : Physical
 Spell Type       : None
-Spell Level      : 26
+Spell Level      : 27
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9104,7 +9119,7 @@ Name             : Raging Blow (desc=Rank 3) (id=316453) [Spell Family (4), Pass
 Class            : Fury Warrior
 School           : Physical
 Spell Type       : None
-Spell Level      : 49
+Spell Level      : 42
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9348,7 +9363,7 @@ Name             : Ignore Pain (desc=Rank 2) (id=316778) [Spell Family (4), Pass
 Class            : Protection Warrior
 School           : Physical
 Spell Type       : None
-Spell Level      : 27
+Spell Level      : 29
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
