@@ -2300,6 +2300,7 @@ void priest_t::generate_apl_shadow()
   default_list->add_action(
       "variable,name=all_dots_up,op=set,value="
       "dot.shadow_word_pain.ticking&dot.vampiric_touch.ticking&dot.devouring_plague.ticking" );
+  default_list->add_action("variable,name=searing_nightmare_cutoff,op=set,value=spell_targets.mind_sear>2");
 
   // Racials
   // as of 7/3/2018 Arcane Torrent being on the GCD results in a DPS loss
@@ -2357,8 +2358,8 @@ void priest_t::generate_apl_shadow()
   main->add_call_action_list( cds );
   main->add_talent( this, "Damnation", "target_if=!variable.all_dots_up",
                     "Prefer to use Damnation ASAP if any DoT is not up" );
-  main->add_action( this, "Devouring Plague", "target_if=(refreshable|insanity>75)&!cooldown.power_infusion.up",
-                    "Make sure you don't use Devouring Plague if you are trying to build into Voidform." );
+  main->add_action( this, "Devouring Plague", "target_if=(refreshable|insanity>75)&!cooldown.power_infusion.up&(!talent.searing_nightmare.enabled|(talent.searing_nightmare.enabled&!variable.searing_nightmare_cutoff))",
+                    "Don't use Devouring Plague if you can get into Voidform instead, or if Searing Nightmare is talented and will hit enough targets." );
   main->add_action( this, "Shadow Word: Death", "target_if=target.health.pct<20",
                     "Use Shadow Word: Death if the target is about to die." );
   main->add_talent( this, "Surrender to Madness", "target_if=target.time_to_die<25&buff.voidform.down",
@@ -2375,7 +2376,7 @@ void priest_t::generate_apl_shadow()
                     "Use Shadow Crash on CD unless there are adds incoming." );
   main->add_action(
       this, "Mind Sear",
-      "target_if=spell_targets.mind_sear>(1+runeforge.eternal_call_to_the_void.equipped)&buff.dark_thoughts.up,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2",
+      "target_if=spell_targets.mind_sear>variable.mind_sear_cutoff&buff.dark_thoughts.up,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2",
       "Use Mind Sear to consume Dark Thoughts procs on AOE. TODO Confirm is this is a higher priority than redotting "
       "on AOE unless dark thoughts is about to time out" );
   main->add_action( this, "Mind Flay",
@@ -2383,7 +2384,8 @@ void priest_t::generate_apl_shadow()
                     "cooldown.void_bolt.up",
                     "Use Mind Flay to consume Dark Thoughts procs on ST. TODO Confirm if this is a higher priority "
                     "than redotting unless dark thoughts is about to time out" );
-  main->add_talent( this, "Searing Nightmare", "use_while_casting=1,if=spell_targets.mind_sear>2" );
+  main->add_talent( this, "Searing Nightmare", "use_while_casting=1,target_if=(variable.searing_nightmare_cutoff&!cooldown.power_infusion.up)|(dot.shadow_word_pain.refreshable&spell_targets.mind_sear>1)",
+                    "Use Searing Nightmare if you will hit at least 3 targets and Power Infusion and Voidform are not ready, or to refresh SW:P on two or more targets." );
   main->add_action( this, "Mind Blast", "use_while_casting=1,if=variable.dots_up",
                     "TODO change logic on when to use instant blasts" );
   main->add_action( this, "Mind Blast",
@@ -2394,7 +2396,7 @@ void priest_t::generate_apl_shadow()
                     "target_if=refreshable&target.time_to_die>6|(talent.misery.enabled&dot.shadow_word_pain."
                     "refreshable)|buff.unfurling_darkness.up" );
   main->add_action( this, "Mind Sear",
-                    "target_if=spell_targets.mind_sear>(1+runeforge.eternal_call_to_the_void.equipped),chain=1,interrupt_immediate=1,interrupt_if=ticks>=2" );
+                    "target_if=spell_targets.mind_sear>variable.mind_sear_cutoff,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2" );
   main->add_action( this, "Mind Flay", "chain=1,interrupt_immediate=1,interrupt_if=ticks>=2&cooldown.void_bolt.up" );
   main->add_action( this, "Shadow Word: Pain" );
 }

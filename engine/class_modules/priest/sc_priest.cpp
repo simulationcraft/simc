@@ -1688,6 +1688,7 @@ void priest_t::create_apl_precombat()
       if ( race == RACE_BLOOD_ELF )
         precombat->add_action( "arcane_torrent" );
       precombat->add_action( "use_item,name=azsharas_font_of_power" );
+      precombat->add_action("variable,name=mind_sear_cutoff,op=set,value=1+runeforge.eternal_call_to_the_void.equipped");
       precombat->add_action( this, "Mind Blast" );
       break;
   }
