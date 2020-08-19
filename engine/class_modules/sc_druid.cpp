@@ -5491,7 +5491,7 @@ struct full_moon_t : public druid_spell_t
     : druid_spell_t( player->free_cast_string( "full_moon", free ), player, player->spec.full_moon, options_str )
   {
     aoe              = -1;
-    split_aoe_damage = true;
+    reduced_aoe_damage = true;
     free_cast        = free;
 
     if ( free == free_cast_e::NONE )
