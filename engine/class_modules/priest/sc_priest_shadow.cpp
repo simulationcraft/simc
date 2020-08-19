@@ -197,6 +197,7 @@ struct mind_sear_tick_t final : public priest_spell_t
     use_off_gcd         = true;
     dynamic_tick_action = true;
     energize_type       = action_energize::NONE;  // no insanity gain
+    radius              = data().effectN( 2 ).radius(); // base radius is 100yd, actual is stored in effect 2
   }
 
   double bonus_da( const action_state_t* state ) const override
@@ -264,6 +265,7 @@ struct mind_sear_t final : public priest_spell_t
     hasted_ticks        = false;
     dynamic_tick_action = true;
     tick_zero           = false;
+    radius              = data().effectN( 1 ).trigger()->effectN( 2 ).radius(); // need to set radius in here so that the APL functions correctly
 
     tick_action = new mind_sear_tick_t( p, data().effectN( 1 ).trigger() );
   }
@@ -2369,9 +2371,8 @@ void priest_t::generate_apl_shadow()
                     "target_if=variable.all_dots_up&!cooldown.void_eruption.up&target.time_to_die>4",
                     "Use Void Torrent only if all DoTs are active and the target won't die during the channel." );
   main->add_action( this, "Shadow Word: Death",
-                    "if=(!runeforge.painbreaker_psalm.equipped|(runeforge.painbreaker_psalm.equipped&variable.dots_up))"
-                    "&target.health.pct>30",
-                    "TODO see if this is worth even without Painbreaker Psalm" );
+                    "if=(runeforge.painbreaker_psalm.equipped&variable.dots_up)&target.health.pct>30",
+                    "Use SW:D above 30% HP when Painbreaker Psalm power is active" );
   main->add_talent( this, "Shadow Crash", "if=raid_event.adds.in>5&raid_event.adds.duration<20",
                     "Use Shadow Crash on CD unless there are adds incoming." );
   main->add_action(
@@ -2391,7 +2392,10 @@ void priest_t::generate_apl_shadow()
   main->add_action( this, "Mind Blast",
                     "if=variable.dots_up&raid_event.movement.in>cast_time+0.5&spell_targets.mind_sear<4",
                     "TODO Verify target cap" );
-  main->add_action( this, "Shadow Word: Pain", "target_if=refreshable&target.time_to_die>4&!talent.misery.enabled" );
+  main->add_action( this, "Shadow Word: Pain", "if=refreshable&target.time_to_die>4&!talent.misery.enabled&talent.psychic_link.enabled&spell_targets.mind_sear>2",
+                    "Special condition to stop casting SW:P on off-targets when fighting 3 or more stacked mobs and using Psychic Link and NOT Misery." );
+  main->add_action( this, "Shadow Word: Pain", "target_if=refreshable&target.time_to_die>4&!talent.misery.enabled&(!talent.psychic_link.enabled|(talent.psychic_link.enabled&spell_targets.mind_sear<=2))",
+                    "Keep SW:P up on as many targets as possible, except when fighting 3 or more stacked mobs with Psychic Link.");
   main->add_action( this, "Vampiric Touch",
                     "target_if=refreshable&target.time_to_die>6|(talent.misery.enabled&dot.shadow_word_pain."
                     "refreshable)|buff.unfurling_darkness.up" );
