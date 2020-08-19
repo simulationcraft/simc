@@ -1545,8 +1545,11 @@ public:
     if ( affected_by.rune_of_power )
       m *= 1.0 + p()->buffs.rune_of_power->check_value();
 
-    if ( affected_by.savant )
-      m *= 1.0 + p()->cache.mastery() * p()->spec.savant->effectN( 5 ).mastery_value();
+    if ( affected_by.deathborne )
+      m *= 1.0 + p()->buffs.deathborne->check_value();
+
+    if ( affected_by.siphoned_malice )
+      m *= 1.0 + p()->buffs.siphoned_malice->check_stack_value();
 
     return m;
   }
@@ -1555,13 +1558,8 @@ public:
   {
     double m = spell_t::composite_da_multiplier( s );
 
-    // TODO: These should work with ticking damage according to the tooltip,
-    // but currently don't.
-    if ( affected_by.deathborne )
-      m *= 1.0 + p()->buffs.deathborne->check_value();
-
-    if ( affected_by.siphoned_malice )
-      m *= 1.0 + p()->buffs.siphoned_malice->check_stack_value();
+    if ( affected_by.savant )
+      m *= 1.0 + p()->cache.mastery() * p()->spec.savant->effectN( 5 ).mastery_value();
 
     return m;
   }
@@ -3814,7 +3812,6 @@ struct frozen_orb_bolt_t : public frost_mage_spell_t
   {
     double am = frost_mage_spell_t::action_multiplier();
 
-    // TODO: Icicles (Rank 2) is currently bugged and doesn't increase damage of Frozen Orb
     am *= 1.0 + p()->cache.mastery() * p()->spec.icicles_2->effectN( 1 ).mastery_value();
 
     return am;
@@ -4003,13 +4000,12 @@ struct ice_floes_t : public mage_spell_t
 
 // Ice Lance Spell ==========================================================
 
-// TODO: This is not currently a mage_spell_t because it doesn't benefit from
-// any of the Mage buffs or spec auras. Verify that this is still the case later.
-struct glacial_fragments_t : public spell_t
+struct glacial_fragments_t : public frost_mage_spell_t
 {
   glacial_fragments_t( util::string_view n, mage_t* p ) :
-    spell_t( n, p, p->find_spell( 327498 ) )
+    frost_mage_spell_t( n, p, p->find_spell( 327498 ) )
   {
+    // TODO: check shatter
     background = true;
   }
 };
@@ -5236,7 +5232,7 @@ struct radiant_spark_t : public mage_spell_t
     mage_spell_t( n, p, p->find_covenant_spell( "Radiant Spark" ) )
   {
     parse_options( options_str );
-    affected_by.ice_floes = true;
+    affected_by.ice_floes = affected_by.savant = true;
     affected_by.radiant_spark = false;
   }
 
