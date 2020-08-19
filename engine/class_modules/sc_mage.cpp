@@ -2885,8 +2885,6 @@ struct arcane_power_t : public arcane_mage_spell_t
 
     p()->buffs.arcane_power->trigger();
 
-    // TODO: TA Arcane Power proc also triggers Rune of Power, which doesn't
-    // seem intended. Check again closer to release.
     p()->buffs.rune_of_power->trigger();
     p()->distance_from_rune = 0.0;
   }
@@ -4909,6 +4907,26 @@ struct ray_of_frost_t : public frost_mage_spell_t
   }
 };
 
+// Rune of Power Spell ======================================================
+
+struct rune_of_power_t : public mage_spell_t
+{
+  rune_of_power_t( util::string_view n, mage_t* p, util::string_view options_str ) :
+    mage_spell_t( n, p, p->talents.rune_of_power )
+  {
+    parse_options( options_str );
+    harmful = false;
+  }
+
+  void execute() override
+  {
+    mage_spell_t::execute();
+
+    p()->buffs.rune_of_power->trigger();
+    p()->distance_from_rune = 0.0;
+  }
+};
+
 // Scorch Spell =============================================================
 
 struct scorch_t : public fire_mage_spell_t
@@ -5762,6 +5780,7 @@ action_t* mage_t::create_action( util::string_view name, const std::string& opti
   if ( name == "time_warp"              ) return new              time_warp_t( name, this, options_str );
 
   // Shared talents
+  if ( name == "rune_of_power"          ) return new          rune_of_power_t( name, this, options_str );
   if ( name == "shimmer"                ) return new                shimmer_t( name, this, options_str );
 
   // Covenant Abilities
@@ -7755,6 +7774,8 @@ void mage_t::vision_of_perfection_proc()
         secondary->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, secondary_duration );
       }
     }
+    // TODO: This probably isn't intended
+    buffs.rune_of_power->trigger();
   }
 }
 
