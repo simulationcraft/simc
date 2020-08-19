@@ -585,6 +585,7 @@ public:
     const spell_data_t* arcane_explosion_2;
     const spell_data_t* arcane_mage;
     const spell_data_t* arcane_power_2;
+    const spell_data_t* arcane_power_3;
     const spell_data_t* clearcasting;
     const spell_data_t* clearcasting_2;
     const spell_data_t* clearcasting_3;
@@ -592,6 +593,7 @@ public:
     const spell_data_t* presence_of_mind_2;
     const spell_data_t* savant;
     const spell_data_t* touch_of_the_magi;
+    const spell_data_t* touch_of_the_magi_2;
 
     // Fire
     const spell_data_t* combustion_2;
@@ -599,13 +601,16 @@ public:
     const spell_data_t* critical_mass_2;
     const spell_data_t* dragons_breath_2;
     const spell_data_t* fireball_2;
+    const spell_data_t* fireball_3;
     const spell_data_t* fire_blast_2;
     const spell_data_t* fire_blast_3;
     const spell_data_t* fire_blast_4;
     const spell_data_t* fire_mage;
     const spell_data_t* flamestrike_2;
+    const spell_data_t* flamestrike_3;
     const spell_data_t* hot_streak;
     const spell_data_t* ignite;
+    const spell_data_t* phoenix_flames_2;
     const spell_data_t* pyroblast_2;
 
     // Frost
@@ -616,6 +621,9 @@ public:
     const spell_data_t* cold_snap_2;
     const spell_data_t* fingers_of_frost;
     const spell_data_t* frost_mage;
+    const spell_data_t* frost_nova_2;
+    const spell_data_t* frostbolt_2;
+    const spell_data_t* ice_lance_2;
     const spell_data_t* icicles;
     const spell_data_t* icicles_2;
     const spell_data_t* icy_veins_2;
@@ -1621,8 +1629,8 @@ public:
 
     if ( p()->buffs.arcane_power->check() )
     {
-      c *= 1.0 + p()->buffs.arcane_power->data().effectN( 2 ).percent()
-               + p()->talents.overpowered->effectN( 2 ).percent();
+      c *= 1.0 + ( p()->spec.arcane_power_2->ok() ? p()->buffs.arcane_power->data().effectN( 2 ).percent() : 0.0 );
+      c *= 1.0 + p()->talents.overpowered->effectN( 2 ).percent();
     }
 
     return c;
@@ -3348,6 +3356,7 @@ struct fireball_t : public fire_mage_spell_t
     parse_options( options_str );
     triggers.hot_streak = triggers.ignite = triggers.kindling = triggers.radiant_spark = true;
     affected_by.deathborne_cleave = true;
+    base_multiplier *= 1.0 + p->spec.fireball_3->effectN( 1 ).percent();
     base_dd_adder += p->azerite.duplicative_incineration.value( 2 );
 
     if ( p->talents.conflagration->ok() )
@@ -3458,7 +3467,8 @@ struct flamestrike_t : public hot_streak_spell_t
     parse_options( options_str );
     triggers.ignite = triggers.radiant_spark = true;
     aoe = -1;
-    base_multiplier *= 1.0 + p->spec.flamestrike_2->effectN( 1 ).percent();
+    base_execute_time += p->spec.flamestrike_2->effectN( 1 ).time_value();
+    base_multiplier *= 1.0 + p->spec.flamestrike_3->effectN( 1 ).percent();
     base_multiplier *= 1.0 + p->conduits.master_flame.percent();
 
     if ( p->talents.flame_patch->ok() )
@@ -3640,6 +3650,7 @@ struct frostbolt_t : public frost_mage_spell_t
     parse_options( options_str );
     parse_effect_data( p->find_spell( 228597 )->effectN( 1 ) );
     triggers.bone_chilling = calculate_on_impact = track_shatter = consumes_winters_chill = triggers.radiant_spark = affected_by.deathborne_cleave = true;
+    base_multiplier *= 1.0 + p->spec.frostbolt_2->effectN( 1 ).percent();
     base_multiplier *= 1.0 + p->talents.lonely_winter->effectN( 1 ).percent();
 
     if ( p->spec.icicles->ok() )
@@ -3755,9 +3766,14 @@ struct frost_nova_t : public mage_spell_t
   {
     mage_spell_t::impact( s );
 
-    p()->trigger_crowd_control( s, MECHANIC_ROOT, p()->runeforge.grisly_icicle.ok() ? data().duration() : timespan_t::min() );
+    timespan_t duration = timespan_t::min();
     if ( p()->runeforge.grisly_icicle.ok() )
-      td( s->target )->debuffs.grisly_icicle->trigger();
+    {
+      auto debuff = td( s->target )->debuffs.grisly_icicle;
+      duration = debuff->buff_duration;
+      debuff->trigger();
+    }
+    p()->trigger_crowd_control( s, MECHANIC_ROOT, duration );
   }
 };
 
@@ -4042,6 +4058,7 @@ struct ice_lance_t : public frost_mage_spell_t
     parse_options( options_str );
     parse_effect_data( p->find_spell( 228598 )->effectN( 1 ) );
     calculate_on_impact = track_shatter = consumes_winters_chill = triggers.radiant_spark = true;
+    base_multiplier *= 1.0 + p->spec.ice_lance_2->effectN( 1 ).percent();
     base_multiplier *= 1.0 + p->talents.lonely_winter->effectN( 1 ).percent();
     base_dd_adder += p->azerite.whiteout.value( 3 );
 
@@ -4707,6 +4724,8 @@ struct phoenix_flames_t : public fire_mage_spell_t
     fire_mage_spell_t( n, p, p->find_specialization_spell( "Phoenix Flames" ) )
   {
     parse_options( options_str );
+    cooldown->charges += as<int>( p->spec.phoenix_flames_2->effectN( 1 ).base_value() );
+
     impact_action = get_action<phoenix_flames_splash_t>( "phoenix_flames_splash", p );
     add_child( impact_action );
   }
@@ -5101,7 +5120,9 @@ struct touch_of_the_magi_t : public arcane_mage_spell_t
   void execute() override
   {
     arcane_mage_spell_t::execute();
-    p()->buffs.arcane_charge->trigger( as<int>( data().effectN( 2 ).base_value() ) );
+
+    if ( p()->spec.touch_of_the_magi_2->ok() )
+      p()->buffs.arcane_charge->trigger( as<int>( data().effectN( 2 ).base_value() ) );
   }
 
   void impact( action_state_t* s ) override
@@ -5638,8 +5659,9 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
                                 ->set_chance( mage->spec.brain_freeze_2->ok() );
 
   // Runeforge Legendaries
-  debuffs.grisly_icicle = make_buff( *this, "grisly_icicle", mage->find_class_spell( "Frost Nova" ) )
+  debuffs.grisly_icicle = make_buff( *this, "grisly_icicle", mage->find_spell( 122 ) )
                             ->set_default_value( mage->runeforge.grisly_icicle->effectN( 2 ).percent() )
+                            ->set_duration( mage->find_spell( 122 )->duration() + mage->spec.frost_nova_2->effectN( 1 ).time_value() )
                             ->set_chance( mage->runeforge.grisly_icicle.ok() );
 
   // Covenant Abilities
@@ -6083,24 +6105,29 @@ void mage_t::init_spells()
   spec.arcane_explosion_2    = find_specialization_spell( "Arcane Explosion", "Rank 2" );
   spec.arcane_mage           = find_specialization_spell( "Arcane Mage" );
   spec.arcane_power_2        = find_specialization_spell( "Arcane Power", "Rank 2" );
+  spec.arcane_power_3        = find_specialization_spell( "Arcane Power", "Rank 3" );
   spec.clearcasting          = find_specialization_spell( "Clearcasting" );
   spec.clearcasting_2        = find_specialization_spell( "Clearcasting", "Rank 2" );
   spec.clearcasting_3        = find_specialization_spell( "Clearcasting", "Rank 3" );
   spec.evocation_2           = find_specialization_spell( "Evocation", "Rank 2" );
   spec.presence_of_mind_2    = find_specialization_spell( "Presence of Mind", "Rank 2" );
   spec.touch_of_the_magi     = find_specialization_spell( "Touch of the Magi" );
+  spec.touch_of_the_magi_2   = find_specialization_spell( "Touch of the Magi", "Rank 2" );
 
   spec.combustion_2          = find_specialization_spell( "Combustion", "Rank 2" );
   spec.critical_mass         = find_specialization_spell( "Critical Mass" );
   spec.critical_mass_2       = find_specialization_spell( "Critical Mass", "Rank 2" );
   spec.dragons_breath_2      = find_specialization_spell( "Dragon's Breath", "Rank 2" );
   spec.fireball_2            = find_specialization_spell( "Fireball", "Rank 2" );
+  spec.fireball_3            = find_specialization_spell( "Fireball", "Rank 3" );
   spec.fire_blast_2          = find_specialization_spell( "Fire Blast", "Rank 2" );
   spec.fire_blast_3          = find_specialization_spell( "Fire Blast", "Rank 3" );
   spec.fire_blast_4          = find_specialization_spell( "Fire Blast", "Rank 4" );
   spec.fire_mage             = find_specialization_spell( "Fire Mage" );
   spec.flamestrike_2         = find_specialization_spell( "Flamestrike", "Rank 2" );
+  spec.flamestrike_3         = find_specialization_spell( "Flamestrike", "Rank 3" );
   spec.hot_streak            = find_specialization_spell( "Hot Streak" );
+  spec.phoenix_flames_2      = find_specialization_spell( "Phoenix Flames", "Rank 2" );
   spec.pyroblast_2           = find_specialization_spell( "Pyroblast", "Rank 2" );
 
   spec.brain_freeze          = find_specialization_spell( "Brain Freeze" );
@@ -6110,6 +6137,9 @@ void mage_t::init_spells()
   spec.cold_snap_2           = find_specialization_spell( "Cold Snap", "Rank 2" );
   spec.fingers_of_frost      = find_specialization_spell( "Fingers of Frost" );
   spec.frost_mage            = find_specialization_spell( "Frost Mage" );
+  spec.frost_nova_2          = find_specialization_spell( "Frost Nova", "Rank 2" );
+  spec.frostbolt_2           = find_specialization_spell( "Frostbolt", "Rank 2" );
+  spec.ice_lance_2           = find_specialization_spell( "Ice Lance", "Rank 2" );
   spec.icy_veins_2           = find_specialization_spell( "Icy Veins", "Rank 2" );
   spec.shatter               = find_specialization_spell( "Shatter" );
   spec.shatter_2             = find_specialization_spell( "Shatter", "Rank 2" );
@@ -6226,7 +6256,7 @@ void mage_t::create_buffs()
   buffs.arcane_power         = make_buff( this, "arcane_power", find_spell( 12042 ) )
                                  ->set_cooldown( 0_ms )
                                  ->set_default_value( find_spell( 12042 )->effectN( 1 ).percent() + talents.overpowered->effectN( 1 ).percent() )
-                                 ->set_duration( find_spell( 12042 )->duration() + spec.arcane_power_2->effectN( 1 ).time_value() );
+                                 ->set_duration( find_spell( 12042 )->duration() + spec.arcane_power_3->effectN( 1 ).time_value() );
   buffs.clearcasting         = make_buff<buffs::expanded_potential_buff_t>( this, "clearcasting", find_spell( 263725 ) )
                                  ->set_default_value( find_spell( 263725 )->effectN( 1 ).percent() )
                                  ->set_max_stack( find_spell( 263725 )->max_stacks() + as<int>( spec.clearcasting_3->effectN( 1 ).base_value() ) )
