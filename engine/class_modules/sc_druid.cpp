@@ -1876,6 +1876,8 @@ public:
     parse_buff_effects( p()->buff.ravenous_frenzy,
                         { p()->conduit.endless_thirst } );
     parse_buff_effects( p()->buff.heart_of_the_wild );
+    parse_buff_effects( p()->buff.convoke_the_spirits,
+                        { p()->conduit.conflux_of_elements } );
 
     // Balance
     parse_buff_effects( p()->buff.moonkin_form );
@@ -8146,8 +8148,10 @@ void druid_t::create_buffs()
 
   buff.convoke_the_spirits = make_buff( this, "convoke_the_spirits", covenant.night_fae )
     ->set_cooldown( 0_ms )
-    ->set_period( 0_ms )
-    ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+    ->set_period( 0_ms );
+
+  if ( conduit.conflux_of_elements->ok() )
+    buff.convoke_the_spirits->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   // Talent buffs
   buff.tiger_dash = new tiger_dash_buff_t( *this );
@@ -9137,9 +9141,6 @@ double druid_t::passive_movement_modifier() const
 double druid_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
-
-  if ( conduit.conflux_of_elements->ok() && buff.convoke_the_spirits->check() )
-    m *= 1.0 + conduit.conflux_of_elements->effectN( 1 ).percent();
 
   return m;
 }
