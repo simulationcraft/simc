@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35598 shadowlands-BETA (hotfix 2020-08-19/35598, no-networking)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35598 shadowlands-BETA (hotfix 2020-08-20/35598)
 
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
@@ -9841,7 +9841,9 @@ School           : Physical
 Spell Type       : Melee
 Resource         : 30 Energy (3) (id=215327)
 Range            : 5 yards
+GCD              : 1 seconds
 Duration         : 10 seconds
+Cooldown         : 90 seconds
 Proc Chance      : 101%
 Proc Flags       : ....x... ..x..... ........ ........ 
                  : Yellow Melee, Generic Heal

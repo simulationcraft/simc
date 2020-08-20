@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35598 shadowlands-BETA (hotfix 2020-08-19/35598, no-networking)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35598 shadowlands-BETA (hotfix 2020-08-20/35598)
 
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -3186,7 +3186,7 @@ Effects          :
                    Family Flags: 32
 #4 (id=315238)   : Apply Aura (6) | Hasted Cooldown Duration (416)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Throw Glaive (185123), Blade Dance (188499), Shear (203782), Throw Glaive (204157), Death Sweep (210152), Felblade (232893), Immolation Aura (258920), Throw Glaive (337819)
+                   Affected Spells: Throw Glaive (185123), Blade Dance (188499), Shear (203782), Throw Glaive (204157), Death Sweep (210152), Felblade (232893), Immolation Aura (258920), Throw Glaive (337819), Glaive Tempest (342817)
                    Family Flags: 85
 #5 (id=315239)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1612 | Target: Self (1)
@@ -3220,7 +3220,7 @@ Effects          :
                    Family Flags: 32
 #4 (id=315253)   : Apply Aura (6) | Hasted Cooldown Duration (416)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Throw Glaive (185123), Blade Dance (188499), Shear (203782), Throw Glaive (204157), Death Sweep (210152), Felblade (232893), Immolation Aura (258920), Throw Glaive (337819)
+                   Affected Spells: Throw Glaive (185123), Blade Dance (188499), Shear (203782), Throw Glaive (204157), Death Sweep (210152), Felblade (232893), Immolation Aura (258920), Throw Glaive (337819), Glaive Tempest (342817)
                    Family Flags: 85
 #5 (id=315254)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1586 | Target: Self (1)
@@ -5643,7 +5643,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=728000)   : School Damage (2): chromatic
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.65000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 2.50000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
+Hotfixed         : AP Coefficient (1.65 -> 2.5)
 #2 (id=728001)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 275144
 Description      : $@spelldesc275144
@@ -8531,15 +8532,20 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 1369 | Target: Self (1)
 
 Name             : Glaive Tempest (desc=Artifact) (id=342817) [Spell Family (107)] 
+Hotfixed         : Cooldown (0 -> 20000), Category Cooldown (0 -> 20000), Category (0 -> 1908), Affecting Spells, Description
 Class            : Demon Hunter
 School           : Magic
 Spell Type       : Magic
-Resource         : 20 Fury (17) (id=215319)
+Resource         : 20 Fury (17) (id=215319)[Hotfixed: Cost (20 -> 30)]
+Resource         : 30 Fury (17) (id=215319)[Hotfixed: Cost (20 -> 30)]
 GCD              : 1.5 seconds
 Velocity         : 3 yards/sec
 Duration         : 3 seconds
+Cooldown         : 20 seconds
+Category         : 1908
+Category Cooldown: 20 seconds
 Affecting spells : Demon Soul (163073 effect#1), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Vengeance Demon Hunter (212613 effect#3), Chaos Blades (247938 effect#2), 
-Family Flags     : 16, 32, 88
+Family Flags     : 16, 32, 85, 88
 Attributes       : ........ ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
@@ -8552,13 +8558,14 @@ Attributes       : ........ ........ ........ ........   ........ .x...... .....
 Effects          :
 #1 (id=844163)   : Unknown(179)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 21832 | Target: Custom (18)
-Description      : Launch two demonic glaives in a whirlwind of energy, causing ${2*$342857s1*$d} Chaos damage over $d to all nearby enemies.
+Description      : Launch two demonic glaives in a whirlwind of energy, causing ${14*$342857s1} Chaos damage over $d to $342857i nearby enemies.
 
 Name             : Glaive Tempest (id=342857) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Chaos
 Spell Type       : Melee
 Range            : 100 yards
+Max Targets      : 5
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : x......x ........ ........ ........   ...x.... ........ .xx..... ..x..... 
@@ -8570,7 +8577,8 @@ Attributes       : ........ ........ ........ .......x   ........ ........ .....
                  : Cannot cancel aura (31), Requires line of sight (186)
 Effects          :
 #1 (id=844228)   : School Damage (2): chaos
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.00000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.18000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
+Hotfixed         : AP Coefficient (1.0 -> 0.18)
 Description      : $@spelldesc342817
 
 Name             : Unrestrained Fury (desc=Rank 2) (id=343006) [Spell Family (107), Passive] 

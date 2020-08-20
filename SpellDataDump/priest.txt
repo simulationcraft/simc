@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35598 shadowlands-BETA (hotfix 2020-08-19/35598, no-networking)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35598 shadowlands-BETA (hotfix 2020-08-20/35598)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
@@ -1198,7 +1198,8 @@ Effects          :
 #1 (id=25009)    : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=25010)    : Apply Aura (6) | Periodic Health Leech (53): every 3 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.27000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 0.5 | SP Coefficient: 0.27000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : Value Multiplier (0.0 -> 0.5)
 #3 (id=323673)   : Energize Power (30)
                    Base Value: 500 | Scaled Value: 500 | PvP Coefficient: 1.00000 | Misc Value: insanity | Target: Self (1)
 #4 (id=841601)   : School Damage (2): shadow
@@ -5166,7 +5167,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Cooldown         : 90 seconds
 Category         : 1660
-Affecting spells : Mastery: Madness (77486 effect#1), Surrender to Madness (193223 effect#2), Legacy of the Void (193225 effect#6), Voidform (194249 effect#12), Heart of the Void (248296 effect#1), Surrender to Madness (319952 effect#7)
+Affecting spells : Mastery: Madness (77486 effect#1), Surrender to Madness (193223 effect#2), Legacy of the Void (193225 effect#6), Voidform (194249 effect#12), Heart of the Void (248296 effect#1), Surrender to Madness (319952 effect#7), Dissonant Echoes (343144 effect#1)
 Family Flags     : 36
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5236,7 +5237,7 @@ Spell Type       : Magic
 Spell Level      : 10
 Range            : 100 yards
 Velocity         : 35 yards/sec
-Affecting spells : Mastery: Madness (77486 effect#1), Twist of Fate (123254 effect#1), Holy Priest (137031 effect#3), Shadow Priest (137033 effect#1), Surrender to Madness (193223 effect#2), Legacy of the Void (193225 effect#6), Voidform (194249 effect#1), Schism (214621 effect#2), Shadowform (232698 effect#1), Heart of the Void (248296 effect#1), Twist of Fate (265258 effect#1), Sins of the Many (280398 effect#1), Surrender to Madness (319952 effect#7)
+Affecting spells : Mastery: Madness (77486 effect#1), Twist of Fate (123254 effect#1), Holy Priest (137031 effect#3), Shadow Priest (137033 effect#1), Surrender to Madness (193223 effect#2), Legacy of the Void (193225 effect#6), Voidform (194249 effect#1), Schism (214621 effect#2), Shadowform (232698 effect#1), Heart of the Void (248296 effect#1), Twist of Fate (265258 effect#1), Sins of the Many (280398 effect#1), Surrender to Madness (319952 effect#7), Dissonant Echoes (343144 effect#1)
 Triggered by     : Surrender to Madness (319952)
 Family Flags     : 36, 72
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5259,7 +5260,7 @@ Spell Type       : Magic
 Spell Level      : 10
 Range            : 100 yards
 Velocity         : 40 yards/sec
-Affecting spells : Mastery: Madness (77486 effect#1), Twist of Fate (123254 effect#1), Holy Priest (137031 effect#3), Shadow Priest (137033 effect#1), Surrender to Madness (193223 effect#2), Legacy of the Void (193225 effect#6), Voidform (194249 effect#1), Schism (214621 effect#2), Shadowform (232698 effect#1), Heart of the Void (248296 effect#1), Twist of Fate (265258 effect#1), Sins of the Many (280398 effect#1), Surrender to Madness (319952 effect#7)
+Affecting spells : Mastery: Madness (77486 effect#1), Twist of Fate (123254 effect#1), Holy Priest (137031 effect#3), Shadow Priest (137033 effect#1), Surrender to Madness (193223 effect#2), Legacy of the Void (193225 effect#6), Voidform (194249 effect#1), Schism (214621 effect#2), Shadowform (232698 effect#1), Heart of the Void (248296 effect#1), Twist of Fate (265258 effect#1), Sins of the Many (280398 effect#1), Surrender to Madness (319952 effect#7), Dissonant Echoes (343144 effect#1)
 Triggered by     : Surrender to Madness (319952)
 Family Flags     : 36, 72
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9580,9 +9581,11 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Periodic effect affected by haste (173), Periodic effect can crit (265)
 Effects          :
 #1 (id=832086)   : Health Leech (9)
-                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 3 | SP Coefficient: 1.25000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 0.5 | SP Coefficient: 1.25000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : Value Multiplier (3.0 -> 0.5)
 #2 (id=832087)   : Apply Aura (6) | Periodic Health Leech (53): every 3 seconds
-                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 3 | SP Coefficient: 1.00000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 0.5 | SP Coefficient: 1.00000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : Value Multiplier (3.0 -> 0.5)
 #3 (id=832088)   : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #4 (id=832089)   : Dummy (3)
@@ -9697,6 +9700,29 @@ Effects          :
                    Family Flags: 87
 Description      : $@spelldesc338332
 Tooltip          : Your next Devouring Plague costs 0 insanity.
+
+Name             : Dissonant Echoes (id=338342) [Spell Family (6), Passive, Hidden] 
+Class            : Priest
+School           : Physical
+Spell Type       : None
+Proc Chance      : 101%
+Conduit Id       : 115 (values=5.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 15.0, 16.0, 17.0, 18.0, 19.0, 20.0)
+Proc Flags       : ........ ........ x.x..... ........ 
+                 : Magic Hostile Spell, Periodic
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ...x.... ........ ........ ........   
+                 : Passive (6), Hidden (7)
+Effects          :
+#1 (id=836873)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : While not in Void Form, Mind Flay has a |cFFFFFFFF${$s1}.1|r% chance to allow you to cast Void Bolt. 
+While in Void Form, Void Bolt has a |cFFFFFFFF${$s1}.1|r% chance to reset the cooldown on Void Bolt.
 
 Name             : Dark Thoughts (desc=Passive) (id=341205) [Spell Family (6), Passive] 
 Class            : Shadow Priest
@@ -10100,5 +10126,27 @@ Effects          :
                    Family Flags: 2, 52, 87, 126
 Description      : $@spelldesc342991
 Tooltip          : Increases healing taken by the Priests own spells by $w1%.
+
+Name             : Dissonant Echoes (id=343144) [Spell Family (6)] 
+Class            : Priest
+School           : Shadow
+Spell Type       : None
+Duration         : 10 seconds
+Attributes       : ........ ........ ..x..... ........   .....x.. ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Does not break stealth (37), Scales with item level (354)
+Effects          :
+#1 (id=844735)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
+                   Base Value: 343355 | Scaled Value: 343355 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Void Eruption (228260), Void Eruption (228360), Void Eruption (228361)
+                   Family Flags: 36
+Description      : $@spelldesc338342
+Tooltip          : You may cast Void Bolt.
 
 
