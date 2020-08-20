@@ -1167,9 +1167,18 @@ void warlock_t::apply_affecting_auras( action_t& action )
 {
   player_t::apply_affecting_auras( action );
 
-  action.apply_affecting_aura( spec.demonology );
-  action.apply_affecting_aura( spec.destruction );
-  action.apply_affecting_aura( spec.affliction );
+  if(spec.demonology)
+  {
+      action.apply_affecting_aura( spec.demonology );
+  }
+  if(spec.destruction)
+  {
+      action.apply_affecting_aura( spec.destruction );
+  }
+  if(spec.affliction)
+  {
+      action.apply_affecting_aura( spec.affliction );
+  }
 }
 
 /* Report Extension Class
