@@ -1,5 +1,5 @@
 // Spell text, wow build 9.0.1.35598
-static const std::array<spelltext_data_t, 15461> __spelltext_data { {
+static const std::array<spelltext_data_t, 15471> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -15255,6 +15255,7 @@ static const std::array<spelltext_data_t, 15461> __spelltext_data { {
   { 340348, "Soul Rot damage and radius increased by $s1%, but costs ${$s1/3}% more health.", 0, 0 },
   { 340424, "$@spelldesc340079", "Bleeding for $w1, and healing the Rogue for $w1 every $t1 sec.", 0 },
   { 340426, "$@spelldesc340081", 0, 0 },
+  { 340431, "$@spelldesc340082", "Bleeding for $w1 damage every $t sec.", 0 },
   { 340454, "$@spelldesc340159", 0, 0 },
   { 340458, "Healing with Light of Dawn causes your next Light of the Martyr to also heal your Beacon of Light. Each ally healed by Light of Dawn increases Light of the Martyr healing by $s1%.", 0, 0 },
   { 340529, "Barkskin's cooldown is reduced by ${-$s1}.1%.", 0, 0 },
@@ -15270,6 +15271,14 @@ static const std::array<spelltext_data_t, 15461> __spelltext_data { {
   { 340555, "$@spelldesc340553", 0, 0 },
   { 340562, "Your Healthstones grant you $s1% leech for 10 sec when used.", 0, 0 },
   { 340563, "$@spelldesc340562", "Leech increased by $w1%.", 0 },
+  { 340573, "$@spelldesc340085", "Your next Pistol Shot deals $s2% increased damage.", 0 },
+  { 340582, "$@spelldesc340086", "Damage dealt increased by $s1%.", 0 },
+  { 340583, "$@spelldesc340086", "Damage dealt increased by $s1%.", 0 },
+  { 340584, "$@spelldesc340086", "Damage dealt increased by $w1%.", 0 },
+  { 340587, "$@spelldesc340088", "Your next Pistol Shot fires $340088s2 additional times.", 0 },
+  { 340600, 0, "Your next Eviscerate deals $w1% increased damage.", 0 },
+  { 340601, 0, "Your next Rupture deals $w1% increased damage.", 0 },
+  { 340603, 0, "Your next Shadow Vault deals $w1% increased damage.", 0 },
   { 340605, "Ironfur has an ${$s1}.1% chance to apply two stacks.", 0, 0 },
   { 340609, "Mangle increases the damage of your next Maul by ${$s1}.1%, stacking up to $340613u.", 0, 0 },
   { 340613, "$@spelldesc340609", "Your next Maul deals $w1% increased damage.", 0 },
@@ -15286,6 +15295,7 @@ static const std::array<spelltext_data_t, 15461> __spelltext_data { {
   { 340719, "Eclipse grants Wrath and Starfire a ${$s1}.1% stronger damage increase.", 0, 0 },
   { 340720, "Starsurge and Starfall have a ${$s1}.1% chance to extend Eclipse or Moonfire and Sunfire by an additional $s2 sec.", 0, 0 },
   { 340876, "Wild Call has a|cFFFFFFFF ${$s1}.1%|r  increased chance to reset the cooldown of Barbed Shot.", 0, 0 },
+  { 341111, "$@spelldesc340090", 0, 0 },
   { 341134, "$@spelldesc340091", "Shadowstrike and $?s200758[Gloomblade][Backstab] generate $s1 additional combo points.", 0 },
   { 341202, "$@spelldesc340092", "Damage increased by $w1%.", 0 },
   { 341205, "For each of your Shadow damage over time effects on the target, your Mind Flay and Mind Sear have a $m1% chance to trigger a Dark Thought.\r\n\r\n|CFFFFFFFFDark Thought|R\r\nIncreases the number of charges of Mind Blast by 1, Mind Blast can be cast instantly, and can be cast while channelling Mind Flay or Mind Sear.", 0, "Passive" },
