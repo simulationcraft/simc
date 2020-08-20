@@ -711,6 +711,7 @@ struct rain_of_fire_t : public destruction_spell_t
       background = dual = direct_tick = true;  // Legion TOCHECK
       callbacks                       = false;
       radius                          = p->find_spell( 5740 )->effectN( 1 ).radius();
+      base_multiplier *= 1.0 + p->spec.rain_of_fire_2->effectN( 1 ).percent();
       base_multiplier *= 1.0 + p->talents.inferno->effectN( 2 ).percent();
     }
 
@@ -1045,9 +1046,9 @@ void warlock_t::init_spells_destruction()
   spec.destruction                = find_specialization_spell( 137046 );
   mastery_spells.chaotic_energies = find_mastery_spell( WARLOCK_DESTRUCTION );
 
-  spec.conflagrate   = find_specialization_spell( "Conflagrate" );
-  spec.conflagrate_2 = find_specialization_spell( 231793 );
-  spec.havoc         = find_specialization_spell( "Havoc" );
+  spec.conflagrate       = find_specialization_spell( "Conflagrate" );
+  spec.conflagrate_2     = find_specialization_spell( 231793 );
+  spec.havoc             = find_specialization_spell( "Havoc" );
   spec.havoc_2           = find_specialization_spell( 335174 );
   spec.rain_of_fire_2    = find_specialization_spell( 335189 );
   spec.summon_infernal_2 = find_specialization_spell( 335175 );
