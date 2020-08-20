@@ -1,5 +1,5 @@
 // Spell text, wow build 9.0.1.35598
-static const std::array<spelltext_data_t, 15460> __spelltext_data { {
+static const std::array<spelltext_data_t, 15461> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -15396,7 +15396,7 @@ static const std::array<spelltext_data_t, 15460> __spelltext_data { {
   { 342786, "Create hologram of King Mechagon.", "You have created a hologram of King Mechagon.", 0 },
   { 342802, "$@spelldesc322721", "$?a137005[Death's Due]?a212611[The Hunt]?a137009[Convoke the Spirits]?a137014[Wild Spirits]?a137018[Shifting Power]?a137022[Faeline Stomp]?a137026[Blessing of Seasons]?a137030[Fae Guardians]?a137034[Sepsis]?a137038[Fae Transfusion]?a137042[Soul Rot]?a137047[Ancient Aftershock][your Night Fae class ability] converts stacks to $w1% maximum health and $w2% increased Mastery.", 0 },
   { 342814, "$@spelldesc322721", "Max health increased by $w1%.\r\nMastery increased by $w2%.", 0 },
-  { 342817, "Launch two demonic glaives in a whirlwind of energy, causing ${2*$342857s1*$d} Chaos damage over $d to all nearby enemies.", 0, "Artifact" },
+  { 342817, "Launch two demonic glaives in a whirlwind of energy, causing ${14*$342857s1} Chaos damage over $d to $342857i nearby enemies.", 0, "Artifact" },
   { 342834, "Hurl a bolt of slow-moving, far-reaching Shadow energy at the destination, dealing $205386s1 Shadow damage to all targets within $205386A1 yards.\r\n\r\nIf Shadow Crash hits a lone target, they suffer $342835m2% increased damage from your next Shadow Crash within $342835d. Stacks up to $342835u.\r\n\r\n|cFFFFFFFFGenerates $/100;s2 Insanity.|r", 0, 0 },
   { 342835, "$@spelldesc342834", "Damage taken from the Priests' Shadow Crash increased by $w2%.", 0 },
   { 342855, "$@spelldesc199849", "Haste increased by $w1%.", 0 },
@@ -15417,6 +15417,7 @@ static const std::array<spelltext_data_t, 15460> __spelltext_data { {
   { 343140, "Creates a portal, teleporting group members that use it to a Major City.", 0, 0 },
   { 343142, "Strike at an enemy, dealing $s1 Physical damage and empowering your weapons for $d, causing your Sinister Strike,$?s196937[ Ghostly Strike,][]$?s323654[Slaughter, ][]$?s323547[Echoing Reprimand, ][]$?s328547[Serrated Bone Spike, ][] Ambush, and Pistol Shot to fill your combo points, but your finishing moves consume $343145s1% of your current health.", "Sinister Strike, $?s196937[Ghostly Strike, ][]Ambush, and Pistol Shot will refill all of your combo points when used.", 0 },
   { 343143, "$@spelldesc343142", 0, 0 },
+  { 343144, "$@spelldesc338342", "You may cast Void Bolt.", 0 },
   { 343145, "$@spelldesc343142", 0, 0 },
   { 343160, "After entering Stealth, your next Shadowstrike grants up to $s1 sec. of Slice and Dice, and generates $s2 additional combo points if Slice and Dice is active.", 0, 0 },
   { 343175, "Increases Ice Lance damage by $s1%.", 0, "Rank 2" },
@@ -15463,7 +15464,8 @@ static const std::array<spelltext_data_t, 15460> __spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 9.0.1.35598
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __spelltext_hotfix_data { {
+  {  342817,  0, "Launch two demonic glaives in a whirlwind of energy, causing ${2*$342857s1*$d} Chaos damage over $d to all nearby enemies.", "Launch two demonic glaives in a whirlwind of energy, causing ${14*$342857s1} Chaos damage over $d to $342857i nearby enemies." },
 } };
 
 // Spell description variables, wow build 9.0.1.35598
