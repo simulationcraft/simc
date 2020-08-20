@@ -710,6 +710,7 @@ struct rain_of_fire_t : public destruction_spell_t
       background = dual = direct_tick = true;  // Legion TOCHECK
       callbacks                       = false;
       radius                          = p->find_spell( 5740 )->effectN( 1 ).radius();
+      base_multiplier *= p->talents.inferno->effectN( 2 ).percent();
     }
 
     void impact( action_state_t* s ) override
