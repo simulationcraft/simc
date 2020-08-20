@@ -1548,6 +1548,8 @@ class SpellDataGenerator(DataGenerator):
             ( 340582, 0 ), ( 340583, 0 ), ( 340584, 0 ), # Guile Charm legendary buffs
             ( 340600, 0 ), ( 340601, 0 ), ( 340603, 0 ) # Finality legendary buffs
             ( 341111, 0 ),          # Akaari's Soul Fragment legendary debuff
+            ( 340587, 0 ),          # Concealed Blunderbuss legendary buff
+            ( 340573, 0 ),          # Greenskin's Wickers legendary buff
         ),
 
         # Priest:
