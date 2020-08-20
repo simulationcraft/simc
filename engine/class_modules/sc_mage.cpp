@@ -3702,9 +3702,7 @@ struct frostbolt_t : public frost_mage_spell_t
 
     p()->trigger_delayed_buff( p()->buffs.expanded_potential );
 
-    // TODO: Freezing Winds currently only reduces the cooldown of Frozen Orb while
-    // Frozen Orb is active, verify that this is still the case closer to release.
-    if ( ( p()->buffs.freezing_winds->check() != 0 ) == p()->bugs )
+    if ( p()->buffs.freezing_winds->check() == 0 )
       p()->cooldowns.frozen_orb->adjust( -p()->runeforge.freezing_winds->effectN( 1 ).time_value(), false );
 
     if ( p()->buffs.cold_front_ready->check() )
