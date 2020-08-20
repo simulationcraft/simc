@@ -1546,6 +1546,8 @@ class SpellDataGenerator(DataGenerator):
             ( 323558, 0 ), ( 323559, 0 ), ( 323560, 0 ), # Echoing Reprimand buffs
             ( 324074, 0 ), ( 341277, 0 ) # Serrated Bone Spike secondary instant damage spells
             ( 340582, 0 ), ( 340583, 0 ), ( 340584, 0 ), # Guile Charm legendary buffs
+            ( 340600, 0 ), ( 340601, 0 ), ( 340603, 0 ) # Finality legendary buffs
+            ( 341111, 0 ),          # Akaari's Soul Fragment legendary debuff
         ),
 
         # Priest:
