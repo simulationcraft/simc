@@ -4804,8 +4804,7 @@ struct pyroblast_t : public hot_streak_spell_t
     {
       timespan_t d = 1000 * p()->runeforge.sun_kings_blessing->effectN( 2 ).time_value();
       if ( p()->buffs.combustion->check() )
-        // If Combustion is already up, its duration is overwritten.
-        p()->buffs.combustion->extend_duration( p(), d - p()->buffs.combustion->remains() );
+        p()->buffs.combustion->extend_duration( p(), d );
       else
         p()->buffs.combustion->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, d );
 
