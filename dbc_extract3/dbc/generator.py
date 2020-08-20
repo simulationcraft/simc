@@ -1562,6 +1562,7 @@ class SpellDataGenerator(DataGenerator):
             ( 275726, 0 ),          # Whispers of the damned insanity gain
             ( 288342, 0 ),          # Thought Harvester trigger buff for Mind Sear
             ( 336142, 5 ),          # Shadowflame Prism legendary effect DMG Component
+            ( 343144, 0 ),          # Dissonant Echoes free Void Bolt proc
         ),
 
         # Death Knight:
