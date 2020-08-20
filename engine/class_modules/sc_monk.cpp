@@ -1303,16 +1303,6 @@ struct storm_earth_and_fire_pet_t : public pet_t
       base_dd_min = base_dd_max = 1;
     }
 
-    double composite_persistent_multiplier( const action_state_t* action_state ) const override
-    {
-      double pm = sef_melee_attack_t::composite_persistent_multiplier( action_state );
-
-      if ( o()->sets->has_set_bonus( MONK_WINDWALKER, T21, B4 ) && p()->buff.bok_proc_sef->up() )
-        pm *= 1 + o()->sets->set( MONK_WINDWALKER, T21, B4 )->effectN( 1 ).percent();
-
-      return pm;
-    }
-
     void impact( action_state_t* state ) override
     {
       sef_melee_attack_t::impact( state );
@@ -2381,24 +2371,6 @@ public:
     return !is_combo_strike();
   }
 
-  // The set bonus checks for last 3 unique combo strike triggering abilities
-  void t19_4pc_bonus_trigger()
-  {
-    auto n = p()->combo_strike_actions.size();
-
-    // Note that this must be called after the current action has been appended
-    if ( n < 3 )
-      return;
-
-    // Three different abilities in a row
-    auto a = p()->combo_strike_actions[ n - 3 ]->id;
-    auto b = p()->combo_strike_actions[ n - 2 ]->id;
-    auto c = p()->combo_strike_actions[ n - 1 ]->id;
-
-    if ( a != b && a != c && b != c )
-      p()->buff.combo_master->trigger();
-  }
-
   // Trigger Windwalker's Combo Strike Mastery, the Hit Combo talent,
   // and other effects that trigger from combo strikes.
   // Triggers from execute() on abilities with may_combo_strike = true
@@ -2433,9 +2405,6 @@ public:
 
     // Record the current action in the history.
     p()->combo_strike_actions.push_back( this );
-
-    if ( p()->sets->has_set_bonus( MONK_WINDWALKER, T19, B4 ) )
-      t19_4pc_bonus_trigger();
   }
 
   // Reduces Brewmaster Brew cooldowns by the time given
@@ -3350,10 +3319,6 @@ struct tiger_palm_t : public monk_melee_attack_t
         // Reduces the remaining cooldown on your Brews by 1 sec
         double time_reduction = p()->spec.tiger_palm->effectN( 3 ).base_value();
 
-        // 4 pieces (Brewmaster) : Tiger Palm reduces the remaining cooldown on your brews by an additional 1 sec.
-        if ( p()->sets->has_set_bonus( MONK_BREWMASTER, T19, B4 ) )
-          time_reduction += p()->sets->set( MONK_BREWMASTER, T19, B4 )->effectN( 1 ).base_value();
-
         brew_cooldown_reduction( time_reduction );
 
         if ( p()->buff.blackout_combo->up() )
@@ -3363,9 +3328,6 @@ struct tiger_palm_t : public monk_melee_attack_t
       default:
         break;
     }
-
-    if ( p()->sets->has_set_bonus( p()->specialization(), T19OH, B8 ) )
-      p()->buff.tier19_oh_8pc->trigger();
   }
 
   void impact( action_state_t* s ) override
@@ -3497,11 +3459,6 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
           s->target->debuffs.mortal_wounds->trigger();
         }
 
-        if ( p()->sets->has_set_bonus( MONK_WINDWALKER, T20, B2 ) && ( s->result == RESULT_CRIT ) )
-          // -1 to reduce the spell cooldown instead of increasing
-          // saved as 3000
-          p()->cooldown.fists_of_fury->adjust( -1 * p()->find_spell( 242260 )->effectN( 1 ).time_value() );
-
 		// Apply Mark of the Crane
 		if ( p()->spec.spinning_crane_kick )
           p()->trigger_mark_of_the_crane( s );
@@ -3530,9 +3487,6 @@ struct rising_sun_kick_t : public monk_melee_attack_t
     parse_options( options_str );
 
     cooldown->duration += p->spec.mistweaver_monk->effectN( 10 ).time_value();
-
-    if ( p->sets->has_set_bonus( MONK_WINDWALKER, T19, B2 ) )
-      cooldown->duration += p->sets->set( MONK_WINDWALKER, T19, B2 )->effectN( 1 ).time_value();
 
     may_combo_strike     = true;
     sef_ability          = SEF_RISING_SUN_KICK;
@@ -3744,12 +3698,6 @@ struct blackout_kick_t : public monk_melee_attack_t
         am *= 1 + p()->spec.mistweaver_monk->effectN( 12 ).percent();
         break;
       }
-      case MONK_WINDWALKER:
-      {
-        if ( p()->sets->has_set_bonus( MONK_WINDWALKER, T21, B4 ) && p()->buff.bok_proc->up() )
-          am *= 1 + p()->sets->set( MONK_WINDWALKER, T21, B4 )->effectN( 1 ).percent();
-        break;
-      }
       default:
         break;
     }
@@ -3768,10 +3716,6 @@ struct blackout_kick_t : public monk_melee_attack_t
       p()->buff.bok_proc->expire();
       if ( !p()->buff.serenity->up() )
         p()->gain.bok_proc->add( RESOURCE_CHI, base_costs[ RESOURCE_CHI ] );
-
-      if ( p()->sets->has_set_bonus( MONK_WINDWALKER, T21, B2 ) )
-        p()->resource_gain( RESOURCE_CHI, p()->passives.focus_of_xuen->effectN( 1 ).base_value(),
-                            p()->gain.focus_of_xuen );
     }
   }
 
@@ -4219,9 +4163,6 @@ struct fists_of_fury_t : public monk_melee_attack_t
   void last_tick( dot_t* dot ) override
   {
     monk_melee_attack_t::last_tick( dot );
-
-    if ( p()->sets->has_set_bonus( MONK_WINDWALKER, T20, B4 ) )
-      p()->buff.pressure_point->trigger();
   }
 };
 
@@ -5215,14 +5156,10 @@ struct breath_of_fire_t : public monk_spell_t
       dot_action->execute();
     }
 
-    // if player level >= 78
+    // if player level >= 10
     if ( p()->mastery.elusive_brawler )
     {
       p()->buff.elusive_brawler->trigger();
-
-      if ( p()->sets->has_set_bonus( MONK_BREWMASTER, T21, B2 ) &&
-           rng().roll( p()->sets->set( MONK_BREWMASTER, T21, B2 )->effectN( 1 ).percent() ) )
-        p()->buff.elusive_brawler->trigger();
     }
   }
 };
@@ -5525,9 +5462,6 @@ struct ironskin_brew_t : public monk_spell_t
           timespan_t::from_seconds( p()->buff.blackout_combo->data().effectN( 4 ).base_value() ) );
       p()->buff.blackout_combo->expire();
     }
-
-    if ( p()->sets->has_set_bonus( MONK_BREWMASTER, T20, B2 ) )
-      p()->buff.gift_of_the_ox->trigger();
   }
 };
 
@@ -5577,9 +5511,6 @@ struct purifying_brew_t : public monk_spell_t
       p()->buff.elusive_brawler->trigger( 1 );
       p()->buff.blackout_combo->expire();
     }
-
-    if ( p()->sets->has_set_bonus( MONK_BREWMASTER, T20, B2 ) )
-      p()->buff.gift_of_the_ox->trigger();
 
     if ( p()->azerite.fit_to_burst.ok() && p()->buff.heavy_stagger->check() )
     {
@@ -5800,9 +5731,6 @@ struct effuse_t : public monk_heal_t
 
     if ( p()->buff.thunder_focus_tea->up() )
       p()->buff.thunder_focus_tea->decrement();
-
-    if ( p()->sets->has_set_bonus( p()->specialization(), T19OH, B8 ) )
-      p()->buff.tier19_oh_8pc->trigger();
 
     mastery->execute();
   }
@@ -6073,9 +6001,6 @@ struct gift_of_the_ox_t : public monk_heal_t
     monk_heal_t::execute();
 
     p()->buff.gift_of_the_ox->decrement();
-
-    if ( p()->sets->has_set_bonus( MONK_BREWMASTER, T20, B4 ) )
-      p()->partial_clear_stagger_pct( p()->sets->set( MONK_BREWMASTER, T20, B4 )->effectN( 1 ).percent() );
   }
 };
 
@@ -6087,14 +6012,6 @@ struct gift_of_the_ox_trigger_t : public monk_heal_t
     target      = &p;
     trigger_gcd = timespan_t::zero();
   }
-
-  void execute() override
-  {
-    monk_heal_t::execute();
-
-    if ( p()->sets->has_set_bonus( MONK_BREWMASTER, T20, B4 ) )
-      p()->partial_clear_stagger_pct( p()->sets->set( MONK_BREWMASTER, T20, B4 )->effectN( 1 ).percent() );
-  }
 };
 
 struct gift_of_the_ox_expire_t : public monk_heal_t
@@ -6104,14 +6021,6 @@ struct gift_of_the_ox_expire_t : public monk_heal_t
     background  = true;
     target      = &p;
     trigger_gcd = timespan_t::zero();
-  }
-
-  void execute() override
-  {
-    monk_heal_t::execute();
-
-    if ( p()->sets->has_set_bonus( MONK_BREWMASTER, T20, B4 ) )
-      p()->partial_clear_stagger_pct( p()->sets->set( MONK_BREWMASTER, T20, B4 )->effectN( 1 ).percent() );
   }
 };
 
@@ -7713,10 +7622,7 @@ void monk_t::create_buffs()
                            (int)( talent.focused_thunder ? talent.focused_thunder->effectN( 1 ).base_value() : 0 ) );
 
   buff.uplifting_trance = make_buff( this, "uplifting_trance", find_spell( 197916 ) )
-                              ->set_chance( spec.renewing_mist->effectN( 2 ).percent() +
-                                            ( sets->has_set_bonus( MONK_MISTWEAVER, T19, B2 )
-                                                  ? sets->set( MONK_MISTWEAVER, T19, B2 )->effectN( 1 ).percent()
-                                                  : 0 ) )
+                              ->set_chance( spec.renewing_mist->effectN( 2 ).percent() )
                               ->set_default_value( find_spell( 197916 )->effectN( 1 ).percent() );
 
   // Windwalker
@@ -8665,11 +8571,6 @@ void monk_t::assess_damage( school_e school, result_amount_type dtype, action_st
     {
       if ( buff.elusive_brawler->up() )
         buff.elusive_brawler->expire();
-
-      if ( sets->has_set_bonus( MONK_BREWMASTER, T21, B4 ) )
-        // Value is saved as 20 instead of 2
-        cooldown.breath_of_fire->adjust(
-            -1 * timespan_t::from_seconds( sets->set( MONK_BREWMASTER, T21, B4 )->effectN( 1 ).base_value() / 10 ) );
     }
   }
 
