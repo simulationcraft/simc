@@ -4714,6 +4714,8 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
 
           case P_COOLDOWN:
             cooldown->duration += effect.time_value();
+            if ( cooldown->duration < timespan_t::zero() )
+              cooldown->duration = timespan_t::zero();
             sim->print_debug( "{} cooldown duration increase by {} to {}", *this, effect.time_value(),
                               cooldown->duration );
             break;
@@ -4749,7 +4751,7 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
 
           case P_COOLDOWN:
             base_recharge_multiplier *= 1 + effect.percent();
-            if ( base_recharge_multiplier == 0)
+            if ( base_recharge_multiplier <= 0 )
                 cooldown->duration = timespan_t::zero();
             sim->print_debug( "{} cooldown recharge multiplier modified by {}%", *this, effect.base_value() );
             break;
@@ -4780,6 +4782,8 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
     {
       case A_MODIFY_CATEGORY_COOLDOWN:  // Modify Cooldown Time
         cooldown->duration += effect.time_value();
+        if ( cooldown->duration < timespan_t::zero() )
+          cooldown->duration = timespan_t::zero();
         sim->print_debug( "{} cooldown duration modified by {}", *this, effect.time_value() );
         break;
 
@@ -4795,6 +4799,8 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
 
       case A_453:  // Modify Recharge Time
         cooldown->duration += effect.time_value();
+        if ( cooldown->duration < timespan_t::zero() )
+          cooldown->duration = timespan_t::zero();
         sim->print_debug( "{} cooldown recharge time modified by {}", *this, effect.time_value() );
         break;
 
@@ -4816,6 +4822,8 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
         {
           case P_GCD:
             trigger_gcd *= ( 100 + effect.base_value() ) / 100.0;
+            if ( trigger_gcd < timespan_t::zero() )
+              trigger_gcd = timespan_t::zero();
             sim->print_debug( "{} trigger_gcd modified by {}% to {}", *this, effect.base_value(), trigger_gcd );
             break;
 

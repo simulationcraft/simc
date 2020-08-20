@@ -1329,6 +1329,7 @@ player_t::base_initial_current_t::base_initial_current_t() :
   spell_crit_per_intellect( 0 ),
   attack_power_per_strength( 0 ),
   attack_power_per_agility( 0 ),
+  attack_power_per_spell_power( 0 ),
   attack_crit_per_agility( 0 ),
   dodge_per_agility( 0 ),
   parry_per_strength( 0 ),
@@ -1371,6 +1372,7 @@ void format_to( const player_t::base_initial_current_t& s, fmt::format_context::
   fmt::format_to( out, " spell_crit_per_intellect={}", s.spell_crit_per_intellect );
   fmt::format_to( out, " attack_power_per_strength={}", s.attack_power_per_strength );
   fmt::format_to( out, " attack_power_per_agility={}", s.attack_power_per_agility );
+  fmt::format_to( out, " attack_power_per_spell_power={}", s.attack_power_per_spell_power );
   fmt::format_to( out, " attack_crit_per_agility={}", s.attack_crit_per_agility );
   fmt::format_to( out, " dodge_per_agility={}", s.dodge_per_agility );
   fmt::format_to( out, " parry_per_strength={}", s.parry_per_strength );
@@ -3483,6 +3485,7 @@ double player_t::composite_melee_attack_power() const
 
   ap += current.attack_power_per_strength * cache.strength();
   ap += current.attack_power_per_agility * cache.agility();
+  ap += std::floor( current.attack_power_per_spell_power * cache.intellect() );
 
   return ap;
 }
