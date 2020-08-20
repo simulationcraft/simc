@@ -648,6 +648,7 @@ struct infernal_awakening_t : public destruction_spell_t
     background     = true;
     dual           = true;
     trigger_gcd    = 0_ms;
+    base_multiplier *= 1.0 + p->spec.summon_infernal_2->effectN( 1 ).percent();
   }
 };
 
@@ -1047,6 +1048,10 @@ void warlock_t::init_spells_destruction()
   spec.conflagrate   = find_specialization_spell( "Conflagrate" );
   spec.conflagrate_2 = find_specialization_spell( 231793 );
   spec.havoc         = find_specialization_spell( "Havoc" );
+  spec.havoc_2           = find_specialization_spell( 335174 );
+  spec.rain_of_fire_2    = find_specialization_spell( 335189 );
+  spec.summon_infernal_2 = find_specialization_spell( 335175 );
+
   // Talents
   talents.flashover   = find_talent_spell( "Flashover" );
   talents.eradication = find_talent_spell( "Eradication" );
