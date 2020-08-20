@@ -1699,7 +1699,10 @@ public:
   {
     spell_t::impact( s );
 
-    if ( triggers.fevered_incantation && s->result_total > 0.0 )
+    if ( s->result_total <= 0.0 )
+      return;
+
+    if ( triggers.fevered_incantation )
     {
       if ( s->result == RESULT_CRIT )
         p()->buffs.fevered_incantation->trigger();
@@ -1707,7 +1710,7 @@ public:
         p()->buffs.fevered_incantation->expire();
     }
 
-    if ( triggers.icy_propulsion && p()->buffs.icy_veins->check() && s->result_total > 0.0 && s->result == RESULT_CRIT )
+    if ( triggers.icy_propulsion && s->result == RESULT_CRIT && p()->buffs.icy_veins->check() )
       p()->cooldowns.icy_veins->adjust( -0.1 * p()->conduits.icy_propulsion.time_value( conduit_data_t::S ) );
   }
 
@@ -3321,8 +3324,8 @@ struct ebonbolt_t : public frost_mage_spell_t
   {
     parse_options( options_str );
     parse_effect_data( p->find_spell( 257538 )->effectN( 1 ) );
-    calculate_on_impact = track_shatter = triggers.radiant_spark = true;
-    consumes_winters_chill = !p->bugs;
+    calculate_on_impact = track_shatter = consumes_winters_chill = triggers.radiant_spark = true;
+    triggers.icy_propulsion = !p->bugs;
 
     if ( p->talents.splitting_ice->ok() )
     {
@@ -4003,8 +4006,8 @@ struct glacial_fragments_t : public frost_mage_spell_t
   glacial_fragments_t( util::string_view n, mage_t* p ) :
     frost_mage_spell_t( n, p, p->find_spell( 327498 ) )
   {
-    // TODO: check shatter
     background = true;
+    affected_by.shatter = triggers.icy_propulsion = false;
   }
 };
 
