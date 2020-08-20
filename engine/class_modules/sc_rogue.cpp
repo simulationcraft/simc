@@ -282,6 +282,7 @@ public:
     buff_t* hidden_blades_driver;
     buff_t* hidden_blades;
     // Outlaw
+    buff_t* dreadblades;
     buff_t* killing_spree;
     buff_t* loaded_dice;
     buff_t* slice_and_dice;
@@ -379,6 +380,7 @@ public:
     gain_t* shrouded_suffocation;
     gain_t* the_first_dance;
     gain_t* serrated_bone_spike;
+    gain_t* dreadblades;
 
     // Legendary
     gain_t* dashing_scoundrel;
@@ -511,6 +513,7 @@ public:
     const spell_data_t* dirty_tricks;
 
     const spell_data_t* loaded_dice;
+    const spell_data_t* dreadblades;
 
     const spell_data_t* dancing_steel;
     const spell_data_t* blade_rush;
@@ -1274,6 +1277,7 @@ public:
   void trigger_shadow_techniques( const action_state_t* );
   void trigger_weaponmaster( const action_state_t*, rogue_attack_t* action );
   void trigger_restless_blades( const action_state_t* );
+  void trigger_dreadblades( const action_state_t* );
   void trigger_exsanguinate( const action_state_t* );
   void trigger_relentless_strikes( const action_state_t* );
   void trigger_shadow_blades_attack( action_state_t* );
@@ -1603,6 +1607,7 @@ public:
       }
     }
 
+    trigger_dreadblades( ab::execute_state );
     trigger_relentless_strikes( ab::execute_state );
     trigger_elaborate_planning( ab::execute_state );
     trigger_alacrity( ab::execute_state );
@@ -2666,6 +2671,21 @@ struct dispatch_t: public rogue_attack_t
     trigger_restless_blades( execute_state );
     trigger_grand_melee( execute_state );
     trigger_count_the_odds( execute_state );
+  }
+};
+
+// Dreadblades ==============================================================
+
+struct dreadblades_t : public rogue_attack_t
+{
+  dreadblades_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ) :
+    rogue_attack_t( name, p, p->talent.dreadblades, options_str )
+  {}
+
+  void execute() override
+  {
+    rogue_attack_t::execute();
+    p()->buffs.dreadblades->trigger();
   }
 };
 
@@ -6117,6 +6137,22 @@ void actions::rogue_action_t<Base>::trigger_restless_blades( const action_state_
 }
 
 template <typename Base>
+void actions::rogue_action_t<Base>::trigger_dreadblades( const action_state_t* state )
+{
+  if ( !p()->talent.dreadblades->ok() )
+    return;
+
+  // TOCHECK: Double check everything triggers this correctly
+  if ( ab::energize_type == action_energize::NONE || ab::energize_resource != RESOURCE_COMBO_POINT )
+    return;
+
+  if ( !p()->buffs.dreadblades->up() )
+    return;
+
+  trigger_combo_point_gain( p()->buffs.dreadblades->check_value(), p()->gains.dreadblades );
+}
+
+template <typename Base>
 void actions::rogue_action_t<Base>::do_exsanguinate( dot_t* dot, double coeff )
 {
   if ( !dot->is_ticking() )
@@ -6287,6 +6323,7 @@ void actions::rogue_action_t<Base>::trigger_bloodfang( const action_state_t* sta
   if ( !ab::result_is_hit( state->result ) || !p()->legendary.essence_of_bloodfang->ok() || !p()->active.bloodfang )
     return;
 
+  // TOCHECK: Closer to launch, check for exceptions. Currently doesn't work with Garrote, Gloomblade, FoK, Storm
   if ( ab::energize_type == action_energize::NONE || ab::energize_resource != RESOURCE_COMBO_POINT )
     return;
 
@@ -6756,6 +6793,7 @@ void rogue_t::init_action_list()
     cds -> add_talent( this, "Killing Spree", "if=variable.blade_flurry_sync&spell_targets.blade_flurry>1&energy.time_to_max>2" );
     cds -> add_talent( this, "Blade Rush", "if=variable.blade_flurry_sync&energy.time_to_max>2" );
     cds -> add_action( this, "Vanish", "if=!stealthed.all&variable.ambush_condition", "Using Vanish/Ambush is only a very tiny increase, so in reality, you're absolutely fine to use it as a utility spell." );
+    cds -> add_talent( this, "Dreadblades", "if=!stealthed.all&combo_points<=1" );
     cds -> add_action( "shadowmeld,if=!stealthed.all&variable.ambush_condition" );
     cds -> add_action( "sepsis,if=!stealthed.all" );
 
@@ -6939,6 +6977,7 @@ action_t* rogue_t::create_action( util::string_view name, const std::string& opt
   if ( name == "crimson_tempest"     ) return new crimson_tempest_t     ( name, this, options_str );
   if ( name == "detection"           ) return new detection_t           ( name, this, options_str );
   if ( name == "dispatch"            ) return new dispatch_t            ( name, this, options_str );
+  if ( name == "dreadblades"         ) return new dreadblades_t         ( name, this, options_str );
   if ( name == "echoing_reprimand"   ) return new echoing_reprimand_t   ( name, this, options_str );
   if ( name == "envenom"             ) return new envenom_t             ( name, this, options_str );
   if ( name == "eviscerate"          ) return new eviscerate_t          ( name, this, options_str );
@@ -7548,6 +7587,7 @@ void rogue_t::init_spells()
   talent.dirty_tricks       = find_talent_spell( "Dirty Tricks" );
 
   talent.loaded_dice        = find_talent_spell( "Loaded Dice" );
+  talent.dreadblades        = find_talent_spell( "Dreadblades" );
 
   talent.dancing_steel      = find_talent_spell( "Dancing Steel" );
   talent.blade_rush         = find_talent_spell( "Blade Rush" );
@@ -7744,6 +7784,7 @@ void rogue_t::init_gains()
   gains.the_rotten               = get_gain( "The Rotten"               );
   gains.deathly_shadows          = get_gain( "Deathly Shadows"          );
   gains.serrated_bone_spike      = get_gain( "Serrated Bone Spike"      );
+  gains.dreadblades              = get_gain( "Dreadblades"              );
 }
 
 // rogue_t::init_procs ======================================================
@@ -7840,7 +7881,7 @@ void rogue_t::create_buffs()
 {
   player_t::create_buffs();
 
-  // Baseline
+  // Baseline ===============================================================
   // Shared
   buffs.feint                 = make_buff( this, "feint", find_specialization_spell( "Feint" ) )
                                 -> set_duration( find_class_spell( "Feint" ) -> duration() );
@@ -7904,7 +7945,7 @@ void rogue_t::create_buffs()
   buffs.symbols_of_death_autocrit = make_buff( this, "symbols_of_death_autocrit", spec.symbols_of_death_autocrit )
                                     -> set_default_value( spec.symbols_of_death_autocrit->effectN( 1 ).percent() );
 
-  // Talents
+  // Talents ================================================================
   // Shared
   buffs.alacrity                = make_buff( this, "alacrity", find_spell( 193538 ) )
                                   -> set_default_value( find_spell( 193538 ) -> effectN( 1 ).percent() )
@@ -7941,6 +7982,10 @@ void rogue_t::create_buffs()
   buffs.killing_spree           = make_buff( this, "killing_spree", talent.killing_spree )
                                   -> set_cooldown( timespan_t::zero() )
                                   -> set_duration( talent.killing_spree -> duration() );
+  buffs.dreadblades             = make_buff( this, "dreadblades", talent.dreadblades )
+                                  ->set_cooldown( timespan_t::zero() )
+                                  ->set_default_value( find_spell( 343143 )->effectN( 1 ).base_value() );
+
   // Subtlety
   buffs.master_of_shadows       = make_buff( this, "master_of_shadows", find_spell( 196980 ) )
                                   -> set_period( find_spell( 196980 ) -> effectN( 1 ).period() )
