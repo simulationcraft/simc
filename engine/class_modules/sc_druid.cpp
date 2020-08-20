@@ -9587,10 +9587,11 @@ std::unique_ptr<expr_t> druid_t::create_expression( util::string_view name_str )
     }
   }
 
-  if ( splits.size() == 2 && util::str_compare_ci( splits[ 0 ], "conduit" ) )
+  if ( util::str_compare_ci( name_str, "buff.starfall.refreshable" ) )
   {
-    auto a = find_spell( std::atoi( splits[ 1 ].data() ) )->ok();
-    return make_fn_expr( name_str, [a]() { return a; } );
+    return make_fn_expr( name_str, [this]() {
+      return !buff.starfall->check() || buff.starfall->remains() <= spec.starfall->duration() * 0.3;
+    } );
   }
 
   // Convert talent.incarnation.* & buff.incarnation.* to spec-based incarnations. cooldown.incarnation.* doesn't need
