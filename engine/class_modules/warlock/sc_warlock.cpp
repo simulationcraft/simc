@@ -102,8 +102,8 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
   dots_drain_life = target->get_dot( "drain_life", &p );
 
   // Aff
-  dots_corruption = target->get_dot( "corruption", &p );
-  dots_agony      = target->get_dot( "agony", &p );
+  dots_corruption          = target->get_dot( "corruption", &p );
+  dots_agony               = target->get_dot( "agony", &p );
   dots_drain_soul          = target->get_dot( "drain_soul", &p );
   dots_phantom_singularity = target->get_dot( "phantom_singularity", &p );
   dots_siphon_life         = target->get_dot( "siphon_life", &p );
@@ -155,13 +155,13 @@ void warlock_td_t::target_demise()
 
   if ( warlock.specialization() == WARLOCK_AFFLICTION )
   {
-      if ( dots_unstable_affliction->is_ticking() )
-      {
-        warlock.sim->print_log( "Player {} demised. Warlock {} gains a shard from unstable affliction.", target->name(),
-                                warlock.name() );
+    if ( dots_unstable_affliction->is_ticking() )
+    {
+      warlock.sim->print_log( "Player {} demised. Warlock {} gains a shard from unstable affliction.", target->name(),
+                              warlock.name() );
 
-        warlock.resource_gain( RESOURCE_SOUL_SHARD, 1, warlock.gains.unstable_affliction_refund );
-      }
+      warlock.resource_gain( RESOURCE_SOUL_SHARD, 1, warlock.gains.unstable_affliction_refund );
+    }
 
     if ( dots_drain_soul->is_ticking() )
     {
@@ -184,7 +184,8 @@ void warlock_td_t::target_demise()
     warlock.sim->print_log( "Player {} demised. Warlock {} reset shadowburn's cooldown.", target->name(),
                             warlock.name() );
 
-    warlock.resource_gain( RESOURCE_SOUL_SHARD, 1, warlock.gains.shadowburn_refund );
+    warlock.resource_gain( RESOURCE_SOUL_SHARD, warlock.find_spell( 245731 )->effectN( 1 ).base_value() / 10,
+                           warlock.gains.shadowburn_refund );
   }
 }
 
@@ -564,7 +565,7 @@ void warlock_t::init_spells()
   talents.dark_pact                 = find_talent_spell( "Dark Pact" );
   talents.darkfury                  = find_talent_spell( "Darkfury" );
   talents.mortal_coil               = find_talent_spell( "Mortal Coil" );
-  talents.howl_of_terror           = find_talent_spell( "Howl of Terror" );
+  talents.howl_of_terror            = find_talent_spell( "Howl of Terror" );
   talents.grimoire_of_sacrifice     = find_talent_spell( "Grimoire of Sacrifice" );         // aff and destro
   active.grimoire_of_sacrifice_proc = new actions::grimoire_of_sacrifice_damage_t( this );  // grimoire of sacrifice
   talents.soul_conduit              = find_talent_spell( "Soul Conduit" );
@@ -1167,17 +1168,17 @@ void warlock_t::apply_affecting_auras( action_t& action )
 {
   player_t::apply_affecting_auras( action );
 
-  if(spec.demonology)
+  if ( spec.demonology )
   {
-      action.apply_affecting_aura( spec.demonology );
+    action.apply_affecting_aura( spec.demonology );
   }
-  if(spec.destruction)
+  if ( spec.destruction )
   {
-      action.apply_affecting_aura( spec.destruction );
+    action.apply_affecting_aura( spec.destruction );
   }
-  if(spec.affliction)
+  if ( spec.affliction )
   {
-      action.apply_affecting_aura( spec.affliction );
+    action.apply_affecting_aura( spec.affliction );
   }
 }
 

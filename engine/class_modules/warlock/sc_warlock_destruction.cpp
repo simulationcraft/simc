@@ -187,10 +187,14 @@ struct shadowburn_t : public destruction_spell_t
     : destruction_spell_t( "shadowburn", p, p->talents.shadowburn )
   {
     parse_options( options_str );
-    energize_type     = action_energize::PER_HIT;
-    energize_resource = RESOURCE_SOUL_SHARD;
-    energize_amount   = ( p->find_spell( 245731 )->effectN( 1 ).base_value() ) / 10.0;
-    can_havoc         = true;
+    can_havoc = true;
+  }
+
+  void init() override
+  {
+    destruction_spell_t::init();
+
+    cooldown->hasted = true;
   }
 
   void impact( action_state_t* s ) override
@@ -201,6 +205,17 @@ struct shadowburn_t : public destruction_spell_t
     {
       td( s->target )->debuffs_shadowburn->trigger();
     }
+  }
+
+  double composite_target_crit_chance( player_t* target ) const override
+  {
+    double m = destruction_spell_t::composite_target_crit_chance( target );
+
+    // TOCHECK - Currently no spelldata for the health threshold 08-20-2020
+    if ( target->health_percentage() <= 20 )
+      m += p()->talents.shadowburn->effectN( 3 ).percent();
+
+    return m;
   }
 };
 
@@ -1061,7 +1076,6 @@ void warlock_t::init_spells_destruction()
 void warlock_t::init_gains_destruction()
 {
   gains.conflagrate          = get_gain( "conflagrate" );
-  gains.shadowburn           = get_gain( "shadowburn" );
   gains.immolate             = get_gain( "immolate" );
   gains.immolate_crits       = get_gain( "immolate_crits" );
   gains.incinerate           = get_gain( "incinerate" );
