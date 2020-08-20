@@ -126,7 +126,9 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
                             ->set_refresh_behavior( buff_refresh_behavior::DURATION );
   debuffs_roaring_blaze = make_buff( *this, "roaring_blaze", source->find_spell( 205690 ) )->set_max_stack( 100 );
   debuffs_shadowburn    = make_buff( *this, "shadowburn", source->find_spell( 17877 ) );
-  debuffs_havoc         = make_buff( *this, "havoc", source->find_spell( 80240 ) )
+  debuffs_havoc         = make_buff( *this, "havoc", source->find_specialization_spell( 80240 ) )
+                      ->set_duration( source->find_specialization_spell( 80240 )->duration() +
+                                      source->find_specialization_spell( 335174 )->effectN( 1 ).time_value() )
                       ->set_cooldown( 0_ms )
                       ->set_stack_change_callback( [ &p ]( buff_t* b, int, int cur ) {
                         if ( cur == 0 )
