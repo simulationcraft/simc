@@ -1786,7 +1786,8 @@ public:
       double val   = eff->percent();
       bool mastery = false;
 
-      if ( eff->type() != E_APPLY_AURA || eff->target_1() != 1 )
+      // TODO: rework party_aura & target checks
+      if ( !( eff->type() == E_APPLY_AURA || eff->type() == E_APPLY_AREA_AURA_PARTY ) || eff->target_1() != 1 )
         continue;
 
       if ( i <= 5 )
