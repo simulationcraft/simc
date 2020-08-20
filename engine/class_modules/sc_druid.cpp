@@ -516,6 +516,7 @@ public:
     gain_t* shred;
     gain_t* swipe_cat;
     gain_t* tigers_fury;
+    gain_t* berserk;
     gain_t* gushing_lacerations;
     gain_t* cateye_curio;
     gain_t* eye_of_fearful_symmetry;
@@ -1338,64 +1339,6 @@ struct incarnation_bear_buff_t : public druid_buff_t<buff_t>
   }
 };
 
-// Berserk Buff Template ====================================================
-
-struct berserk_cat_buff_base_t : public druid_buff_t<buff_t>
-{
-  double increased_max_energy;
-
-  berserk_cat_buff_base_t( druid_t& p, util::string_view name, const spell_data_t* spell )
-    : base_t( p, name, spell ), increased_max_energy( 0 )
-  // Cooldown handled by ability
-  {
-    set_cooldown( timespan_t::zero() );
-  }
-
-  bool trigger( int stacks, double value, double chance, timespan_t duration ) override
-  {
-    bool refresh = check() != 0;
-    bool success = druid_buff_t<buff_t>::trigger( stacks, value, chance, duration );
-
-    if ( !refresh && success )
-      player->resources.max[ RESOURCE_ENERGY ] += increased_max_energy;
-
-    return success;
-  }
-
-  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
-  {
-    player->resources.max[ RESOURCE_ENERGY ] -= increased_max_energy;
-    // Force energy down to cap if it's higher.
-    player->resources.current[ RESOURCE_ENERGY ] =
-        std::min( player->resources.current[ RESOURCE_ENERGY ], player->resources.max[ RESOURCE_ENERGY ] );
-
-    druid_buff_t<buff_t>::expire_override( expiration_stacks, remaining_duration );
-  }
-};
-
-// Berserk Buff =============================================================
-
-struct berserk_cat_buff_t : public berserk_cat_buff_base_t
-{
-  berserk_cat_buff_t( druid_t& p ) : berserk_cat_buff_base_t( p, "berserk_cat", p.spec.berserk_cat )
-  {
-    default_value        = data().effectN( 1 ).percent();  // cost modifier
-    increased_max_energy = data().effectN( 3 ).resource( RESOURCE_ENERGY );
-  }
-};
-
-// Incarnation: King of the Jungle ==========================================
-
-struct incarnation_cat_buff_t : public berserk_cat_buff_base_t
-{
-  incarnation_cat_buff_t( druid_t& p )
-    : berserk_cat_buff_base_t( p, "incarnation_king_of_the_jungle", p.talent.incarnation_cat )
-  {
-    default_value        = data().effectN( 1 ).percent();  // cost modifier
-    increased_max_energy = data().effectN( 2 ).resource( RESOURCE_ENERGY );
-  }
-};
-
 struct bt_dummy_buff_t : public druid_buff_t<buff_t>
 {
   int count;
@@ -1909,7 +1852,6 @@ public:
 
     // Feral
     parse_buff_effects( p()->buff.cat_form );
-    parse_buff_effects( p()->buff.berserk_cat );
     parse_buff_effects( p()->buff.incarnation_cat );
     parse_buff_effects( p()->buff.predatory_swiftness );
     parse_buff_effects( p()->buff.savage_roar );
@@ -3122,6 +3064,7 @@ public:
   bool requires_stealth;
   bool consumes_combo_points;
   bool trigger_untamed_ferocity;
+  double berserk_cp;
 
   struct has_snapshot_t
   {
@@ -3141,6 +3084,7 @@ public:
       requires_stealth( false ),
       consumes_combo_points( false ),
       trigger_untamed_ferocity( data().affected_by( p->azerite.untamed_ferocity.spell()->effectN( 2 ) ) ),
+      berserk_cp( 0.0 ),
       snapshots( has_snapshot_t() ),
       bt_counter( nullptr ),
       tf_counter( nullptr ),
@@ -3152,6 +3096,8 @@ public:
     {
       consumes_combo_points = true;
       form_mask |= CAT_FORM;
+      berserk_cp = p->spec.berserk_cat->effectN( 1 ).trigger()->effectN( 1 ).resource( RESOURCE_COMBO_POINT ) +
+                   p->find_rank_spell( "Berserk", "Rank 2" )->effectN( 1 ).resource( RESOURCE_COMBO_POINT );
     }
 
     if ( p->specialization() == DRUID_BALANCE || p->specialization() == DRUID_RESTORATION )
@@ -3177,19 +3123,12 @@ public:
     }
   }
 
-  // For effects that specifically trigger only when "prowling."
-  virtual bool prowling() const
-  {
-    // Make sure we call all three methods for accurate benefit tracking.
-    bool prowl = p()->buff.prowl->up(), inc = p()->buff.incarnation_cat->up();
-
-    return prowl || inc;
-  }
-
   virtual bool stealthed() const  // For effects that require any form of stealth.
   {
-    // Make sure we call all three methods for accurate benefit tracking.
-    bool shadowmeld = p()->buffs.shadowmeld->up(), prowl = prowling();
+    // Make sure we call all for accurate benefit tracking. Berserk/Incarn/Sudden Assault handled in shred_t & rake_t -
+    // move here if buff while stealthed becomes more widespread
+    bool shadowmeld = p()->buffs.shadowmeld->up();
+    bool prowl = p()->buff.prowl->up();
 
     return prowl || shadowmeld;
   }
@@ -3201,9 +3140,7 @@ public:
     // Treat Omen of Clarity energy savings like an energy gain for tracking purposes.
     if ( snapshots.clearcasting && current_resource() == RESOURCE_ENERGY && p()->buff.clearcasting->up() )
     {
-      // Base cost doesn't factor in Berserk, but Omen of Clarity does net us less energy during it, so account for that
-      // here.
-      eff_cost *= 1.0 + p()->buff.berserk_cat->value();
+      // Base cost doesn't factor in but Omen of Clarity does net us less energy during it, so account for that here.
       eff_cost *= 1.0 + p()->buff.incarnation_cat->check_value();
 
       p()->gain.clearcasting->add( RESOURCE_ENERGY, eff_cost );
@@ -3236,6 +3173,14 @@ public:
       }
 
       stats->consume_resource( RESOURCE_COMBO_POINT, consumed );
+
+      if ( p()->buff.berserk_cat->check() || p()->buff.incarnation_cat->check() )
+      {
+        if ( rng().roll( consumed * p()->spec.berserk_cat->effectN( 1 ).percent() ) )
+        {
+          p()->resource_gain( RESOURCE_COMBO_POINT, berserk_cp, p()->gain.berserk );
+        }
+      }
 
       if ( p()->spec.predatory_swiftness->ok() )
         p()->buff.predatory_swiftness->trigger( 1, 1, consumed * 0.20 );
@@ -3338,11 +3283,8 @@ public:
       if ( s->result == RESULT_CRIT )
         attack_critical = true;
 
-      if ( p()->legendary.frenzyband->ok() &&
-           ( p()->buff.berserk_cat->check() || p()->buff.incarnation_cat->check() ) )
-      {
+      if ( p()->legendary.frenzyband->ok() && ( p()->buff.berserk_cat->check() || p()->buff.incarnation_cat->check() ) )
         trigger_frenzyband( s->target, s->result_amount );
-      }
     }
   }
 
@@ -3414,7 +3356,7 @@ public:
       p()->buff.savage_roar->up();
 
       if ( special && base_costs[ RESOURCE_ENERGY ] > 0 )
-        p()->buff.berserk_cat->up();
+        p()->buff.incarnation_cat->up();
     }
   }
 
@@ -3542,7 +3484,7 @@ struct rip_state_t : public action_state_t
 struct berserk_cat_t : public cat_attack_t
 {
   berserk_cat_t( druid_t* player, const std::string& options_str )
-    : cat_attack_t( "berserk", player, player->find_specialization_spell( "Berserk" ), options_str )
+    : cat_attack_t( "berserk", player, player->spec.berserk_cat, options_str )
   {
     harmful = may_miss = may_parry = may_dodge = may_crit = false;
     cooldown->duration *= 1.0 + player->vision_of_perfection_cdr;
@@ -3703,7 +3645,6 @@ struct ferocious_bite_t : public cat_attack_t
   {
     double req = base_costs[ RESOURCE_ENERGY ] + max_excess_energy;
 
-    req *= 1.0 + p()->buff.berserk_cat->check_value();
     req *= 1.0 + p()->buff.incarnation_cat->check_value();
 
     if ( p()->buff.apex_predators_craving->check() )
@@ -3722,8 +3663,7 @@ struct ferocious_bite_t : public cat_attack_t
 
   void execute() override
   {
-    // Berserk does affect the additional energy consumption.
-    max_excess_energy *= 1.0 + p()->buff.berserk_cat->value();
+    // Incarn does affect the additional energy consumption.
     max_excess_energy *= 1.0 + p()->buff.incarnation_cat->check_value();
 
     excess_energy = std::min( max_excess_energy, ( p()->resources.current[ RESOURCE_ENERGY ] - cat_attack_t::cost() ) );
@@ -4049,6 +3989,12 @@ struct rake_t : public cat_attack_t
     }
   }
 
+  bool stealthed() const override
+  {
+    return p()->buff.berserk_cat->up() || p()->buff.incarnation_cat->up() || p()->buff.sudden_ambush->up() ||
+           cat_attack_t::stealthed();
+  }
+
   dot_t* get_dot( player_t* t ) override
   {
     if ( !t )
@@ -4063,7 +4009,7 @@ struct rake_t : public cat_attack_t
   {
     double pm = cat_attack_t::composite_persistent_multiplier( s );
 
-    if ( stealth_mul && ( stealthed() || p()->buff.sudden_ambush->check() ) )
+    if ( stealth_mul && stealthed() )
       pm *= 1.0 + stealth_mul;
 
     return pm;
@@ -4289,9 +4235,10 @@ struct savage_roar_t : public cat_attack_t
 struct shred_t : public cat_attack_t
 {
   double stealth_mul;
+  double stealth_cp;
 
   shred_t( druid_t* p, const std::string& options_str )
-    : cat_attack_t( "shred", p, p->find_class_spell( "Shred" ), options_str ), stealth_mul( 0.0 )
+    : cat_attack_t( "shred", p, p->find_class_spell( "Shred" ), options_str ), stealth_mul( 0.0 ), stealth_cp( 0.0 )
   {
     if ( p->find_rank_spell( "Shred", "Rank 2" )->ok() )
       bleed_mul = data().effectN( 4 ).percent();
@@ -4299,9 +4246,23 @@ struct shred_t : public cat_attack_t
     if ( p->find_rank_spell( "Shred", "Rank 3" )->ok() )
       stealth_mul = data().effectN( 3 ).percent();
 
-    // Base spell generates 0 CP, Feral passive or Feral Affinity increase it to 1 CP.
-    energize_amount += p->query_aura_effect( p->spec.feral, A_ADD_FLAT_MODIFIER, P_EFFECT_2, &data() )->base_value() +
-                       p->talent.feral_affinity->effectN( 8 ).base_value();
+    stealth_cp = p->find_rank_spell( "Shred", "Rank 4" )->effectN( 1 ).base_value();
+  }
+
+  bool stealthed() const override
+  {
+    return p()->buff.berserk_cat->up() || p()->buff.incarnation_cat->up() || p()->buff.sudden_ambush->up() ||
+           cat_attack_t::stealthed();
+  }
+
+  double composite_energize_amount( const action_state_t* s ) const override
+  {
+    double e = cat_attack_t::composite_energize_amount( s );
+
+    if ( stealth_cp && stealthed() )
+      e += stealth_cp;
+
+    return e;
   }
 
   void execute() override
@@ -4314,6 +4275,7 @@ struct shred_t : public cat_attack_t
     if ( p()->buff.shredding_fury->up() )
       p()->buff.shredding_fury->decrement();
 
+    // TODO: Check if consumed on miss
     if ( p()->buff.sudden_ambush->up() )
       p()->buff.sudden_ambush->decrement();
   }
@@ -4335,7 +4297,7 @@ struct shred_t : public cat_attack_t
   {
     double cm = cat_attack_t::composite_crit_chance_multiplier();
 
-    if ( stealth_mul && stealthed() )  // TODO: check if feral 3 conduit applies this too
+    if ( stealth_mul && stealthed() )
       cm *= 2.0;
 
     return cm;
@@ -4345,7 +4307,7 @@ struct shred_t : public cat_attack_t
   {
     double m = cat_attack_t::action_multiplier();
 
-    if ( stealth_mul && ( stealthed() || p()->buff.sudden_ambush->check() ) )
+    if ( stealth_mul && stealthed() )
       m *= 1.0 + stealth_mul;
 
     return m;
@@ -5826,11 +5788,6 @@ struct incarnation_t : public druid_spell_t
 
       spec_buff->extend_duration( p(), -time );
       cooldown->adjust( -time );
-
-      // King of the Jungle raises energy cap, so manually trigger some regen so that the actor starts with the correct
-      // amount of energy.
-      if ( p()->buff.incarnation_cat->check() )
-        p()->regen( time );
     }
   }
 };
@@ -7675,6 +7632,7 @@ action_t* druid_t::create_action( util::string_view name, const std::string& opt
   if ( name == "wild_growth"            ) return new            wild_growth_t( this, options_str );
   if ( name == "incarnation"            ) return new            incarnation_t( this, options_str );
   if ( name == "heart_of_the_wild"      ) return new      heart_of_the_wild_t( this, options_str );
+  if ( name == "celestial_alignment"    ) return new    celestial_alignment_t( this, options_str );
   if ( name == "berserk_cat"            ) return new            berserk_cat_t( this, options_str );
   if ( name == "berserk_bear"           ) return new           berserk_bear_t( this, options_str );
 
@@ -7683,7 +7641,6 @@ action_t* druid_t::create_action( util::string_view name, const std::string& opt
   if ( name == "convoke_the_spirits"    ) return new    convoke_the_spirits_t( this, options_str );
   if ( name == "ravenous_frenzy"        ) return new        ravenous_frenzy_t( this, options_str );
   if ( name == "adaptive_swarm"         ) return new         adaptive_swarm_t( this, options_str );
-  if ( name == "celestial_alignment"    ) return new    celestial_alignment_t( this, options_str );
 
   if ( name == "berserk" )
   {
@@ -7919,7 +7876,7 @@ void druid_t::init_spells()
   spec.sharpened_claws        = find_specialization_spell( "Sharpened Claws" );
   spec.swipe_cat              = check_spell( find_affinity_spell( "Swipe" )->ok(), 106785 );
   spec.thrash_cat             = check_spell( find_specialization_spell( "Thrash" )->ok(), 106830 );
-  spec.berserk_cat            = check_spell( find_specialization_spell( "Berserk" )->ok(), 106951 );
+  spec.berserk_cat            = find_specialization_spell( "Berserk" );
   spec.rake_dmg               = find_affinity_spell( "Rake" )->effectN( 3 ).trigger();
   spec.tigers_fury            = find_specialization_spell( "Tiger's Fury" );
   spec.shred                  = find_class_spell( "Shred" );
@@ -8176,9 +8133,11 @@ void druid_t::create_buffs()
 
   buff.cenarion_ward = make_buff( this, "cenarion_ward", talent.cenarion_ward );
 
-  buff.incarnation_cat = new incarnation_cat_buff_t( *this );
+  buff.incarnation_cat = make_buff( this, "incarnation_king_of_the_jungle", talent.incarnation_cat )
+    ->set_cooldown( 0_ms )
+    ->set_default_value( talent.incarnation_cat->effectN( 2 ).percent() );
 
-  buff.jungle_stalker = make_buff( this, "jungle_stalker", find_spell( 252071 ) );
+  buff.jungle_stalker = make_buff( this, "jungle_stalker", talent.incarnation_cat->effectN( 3 ).trigger() );
 
   buff.incarnation_bear = new incarnation_bear_buff_t( *this );
 
@@ -8329,7 +8288,7 @@ void druid_t::create_buffs()
 
   buff.sudden_ambush = make_buff( this, "sudden_ambush", conduit.sudden_ambush->effectN( 1 ).trigger() );
 
-  buff.berserk_cat = new berserk_cat_buff_t( *this );
+  buff.berserk_cat = make_buff( this, "berserk_cat", spec.berserk_cat )->set_cooldown( 0_ms );
 
   buff.predatory_swiftness = make_buff( this, "predatory_swiftness", find_spell( 69369 ) )
     ->set_chance( spec.predatory_swiftness->ok() );
@@ -8712,15 +8671,17 @@ void druid_t::init_gains()
   }
   else if ( specialization() == DRUID_FERAL )
   {
-    gain.brutal_slash      = get_gain( "brutal_slash" );
-    gain.energy_refund     = get_gain( "energy_refund" );
-    gain.feral_frenzy      = get_gain( "feral_frenzy" );
-    gain.primal_fury       = get_gain( "primal_fury" );
-    gain.rake              = get_gain( "rake" );
-    gain.shred             = get_gain( "shred" );
-    gain.swipe_cat         = get_gain( "swipe_cat" );
-    gain.tigers_fury       = get_gain( "tigers_fury" );
-    gain.cateye_curio      = get_gain( "cateye_curio" );
+    gain.brutal_slash            = get_gain( "brutal_slash" );
+    gain.energy_refund           = get_gain( "energy_refund" );
+    gain.feral_frenzy            = get_gain( "feral_frenzy" );
+    gain.primal_fury             = get_gain( "primal_fury" );
+    gain.rake                    = get_gain( "rake" );
+    gain.shred                   = get_gain( "shred" );
+    gain.swipe_cat               = get_gain( "swipe_cat" );
+    gain.tigers_fury             = get_gain( "tigers_fury" );
+    gain.berserk                 = get_gain( "berserk" );
+    gain.cateye_curio            = get_gain( "cateye_curio" );
+    gain.eye_of_fearful_symmetry = get_gain( "eye_of_fearful_symmetry" );
   }
   else if ( specialization() == DRUID_GUARDIAN )
   {
