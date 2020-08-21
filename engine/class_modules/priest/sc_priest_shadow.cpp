@@ -1321,17 +1321,6 @@ struct shadow_crash_damage_t final : public priest_spell_t
     background = true;
   }
 
-  void impact( action_state_t* state ) override
-  {
-    priest_spell_t::impact( state );
-
-    if ( state->n_targets == 1 )
-    {
-      priest_td_t& td = get_td( state->target );
-      td.buffs.shadow_crash_debuff->trigger();
-    }
-  }
-
   double composite_da_multiplier( const action_state_t* state ) const override
   {
     double d = priest_spell_t::composite_da_multiplier( state );
@@ -1367,6 +1356,17 @@ struct shadow_crash_t final : public priest_spell_t
 
     impact_action = new shadow_crash_damage_t( p );
     add_child( impact_action );
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    priest_spell_t::impact( state );
+
+    if ( state->n_targets == 1 )
+    {
+      priest_td_t& td = get_td( state->target );
+      td.buffs.shadow_crash_debuff->trigger();
+    }
   }
 
   timespan_t travel_time() const override
@@ -2427,7 +2427,9 @@ void priest_t::generate_apl_shadow()
   main->add_action( this, "Shadow Word: Death",
                     "if=runeforge.painbreaker_psalm.equipped&variable.dots_up&target.health.pct>30",
                     "Use SW:D above 30% HP when Painbreaker Psalm power is active" );
-  main->add_talent( this, "Shadow Crash", "if=raid_event.adds.in>5&raid_event.adds.duration<20",
+  main->add_talent( this, "Shadow Crash", "spell_targets.shadow_crash=1&(cooldown.shadow_crash.charges=3|debuff.shadow_crash_debuff.up|action.shadow_crash.in_flight|target.time_to_die<cooldown.shadow_crash.full_recharge_time)&raid_event.adds.in>30",
+                    "Use all charges of Shadow Crash in a row on Single target, or if the boss is about to die." );
+  main->add_talent( this, "Shadow Crash", "if=raid_event.adds.in>30&spell_targets.shadow_crash>1",
                     "Use Shadow Crash on CD unless there are adds incoming." );
   main->add_action(
       this, "Mind Sear",
