@@ -2344,6 +2344,9 @@ void action_t::init()
     snapshot_flags |= STATE_MUL_PET;
   }
 
+  if ( data().flags( spell_attribute::SX_DISABLE_PLAYER_MULT ) )
+    snapshot_flags &= ~( STATE_MUL_TA | STATE_MUL_DA | STATE_MUL_PERSISTENT | STATE_VERSATILITY );
+
   if ( school == SCHOOL_PHYSICAL )
     snapshot_flags |= STATE_TGT_ARMOR;
 
