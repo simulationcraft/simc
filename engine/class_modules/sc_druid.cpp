@@ -1657,11 +1657,19 @@ public:
     ab::may_crit      = true;
     ab::tick_may_crit = true;
 
-    if ( p()->legendary.circle_of_life_and_death->ok() &&
-         ab::data().affected_by( p()->legendary.circle_of_life_and_death->effectN( 1 ) ) )
+    if ( p()->legendary.circle_of_life_and_death->ok() )
     {
-      ab::base_tick_time *= 1.0 + p()->legendary.circle_of_life_and_death->effectN( 1 ).percent();
-      ab::dot_duration *= 1.0 + p()->legendary.circle_of_life_and_death->effectN( 3 ).percent();
+      if ( ab::data().affected_by( p()->legendary.circle_of_life_and_death->effectN( 1 ) ) )
+        ab::base_tick_time *= 1.0 + p()->legendary.circle_of_life_and_death->effectN( 1 ).percent();
+
+      if ( ab::data().affected_by( p()->legendary.circle_of_life_and_death->effectN( 2 ) ) )
+        ab::base_tick_time *= 1.0 + p()->legendary.circle_of_life_and_death->effectN( 2 ).percent();
+
+      if ( ab::data().affected_by( p()->legendary.circle_of_life_and_death->effectN( 3 ) ) )
+        ab::dot_duration *= 1.0 + p()->legendary.circle_of_life_and_death->effectN( 3 ).percent();
+
+      if ( ab::data().affected_by( p()->legendary.circle_of_life_and_death->effectN( 4 ) ) )
+        ab::dot_duration *= 1.0 + p()->legendary.circle_of_life_and_death->effectN( 4 ).percent();
     }
 
     // Ugly Ugly Ugly hack for now.
