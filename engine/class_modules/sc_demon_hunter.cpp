@@ -36,6 +36,7 @@ namespace
 
   Vengeance:
   * Add Fel Devastation baseline
+  * Add Revel in Pain passive
   * Check all talents
   ** Remove Razor Spikes
   ** Add Demonic
@@ -255,10 +256,10 @@ public:
     buff_t* metamorphosis;
 
     // Havoc
-    buff_t* blade_dance;
     buff_t* blind_fury;
     buff_t* blur;
     buff_t* death_sweep;
+    buff_t* furious_gaze_passive;
     buff_t* momentum;
     buff_t* out_of_range;
     buff_t* prepared;
@@ -390,6 +391,7 @@ public:
     const spell_data_t* chaos_nova;
     const spell_data_t* chaos_strike;
     const spell_data_t* chaos_strike_rank_2;
+    const spell_data_t* chaos_strike_rank_3;
     const spell_data_t* chaos_strike_refund;
     const spell_data_t* chaos_strike_fury;
     const spell_data_t* death_sweep;
@@ -399,8 +401,11 @@ public:
     const spell_data_t* eye_beam_rank_2;
     const spell_data_t* fel_rush;
     const spell_data_t* fel_rush_rank_2;
+    const spell_data_t* fel_rush_rank_3;
     const spell_data_t* fel_rush_damage;
+    const spell_data_t* furious_gaze;
     const spell_data_t* unrestrained_fury;
+    const spell_data_t* unrestrained_fury_2;
     const spell_data_t* vengeful_retreat;
     const spell_data_t* momentum_buff;
 
@@ -682,6 +687,7 @@ public:
   double composite_parry_rating() const override;
   double composite_player_multiplier( school_e ) const override;
   double composite_spell_crit_chance() const override;
+  double composite_rating_multiplier( rating_e ) const override;
   double matching_gear_multiplier( attribute_e attr ) const override;
   double passive_movement_modifier() const override;
   double temporary_movement_modifier() const override;
@@ -1261,8 +1267,10 @@ public:
     if ( p->specialization() == DEMON_HUNTER_HAVOC )
     {
       // Rank Passives
+      ab::apply_affecting_aura( p->spec.chaos_strike_rank_3 );
       ab::apply_affecting_aura( p->spec.eye_beam_rank_2 );
       ab::apply_affecting_aura( p->spec.fel_rush_rank_2 );
+      ab::apply_affecting_aura( p->spec.fel_rush_rank_3 );
       ab::apply_affecting_aura( p->spec.metamorphosis_rank_3 );
 
       // Talent Passives
@@ -2014,6 +2022,7 @@ struct eye_beam_t : public demon_hunter_spell_t
     demon_hunter_spell_t::last_tick( d );
 
     p()->buff.furious_gaze->trigger();
+    p()->buff.furious_gaze_passive->trigger();
   }
 
   void execute() override
@@ -3451,14 +3460,17 @@ struct blade_dance_base_t : public demon_hunter_attack_t
       make_event<delayed_execute_event_t>( *sim, p(), attack, target, attack->delay );
     }
 
-    dodge_buff->trigger();
+    if ( dodge_buff )
+    {
+      dodge_buff->trigger();
+    }
   }
 };
 
 struct blade_dance_t : public blade_dance_base_t
 {
   blade_dance_t( demon_hunter_t* p, const std::string& options_str )
-    : blade_dance_base_t( "blade_dance", p, p->spec.blade_dance, options_str, p->buff.blade_dance )
+    : blade_dance_base_t( "blade_dance", p, p->spec.blade_dance, options_str, nullptr )
   {
     if ( attacks.empty() )
     {
@@ -4704,11 +4716,6 @@ void demon_hunter_t::create_buffs()
 
   // Havoc ==================================================================
 
-  buff.blade_dance = make_buff( this, "blade_dance", spec.blade_dance )
-    ->set_default_value( spec.blade_dance->effectN( 2 ).percent() )
-    ->add_invalidate( CACHE_DODGE )
-    ->set_cooldown( timespan_t::zero() );
-
   buff.death_sweep = make_buff( this, "death_sweep", spec.death_sweep )
     ->set_default_value( spec.death_sweep->effectN( 2 ).percent() )
     ->add_invalidate( CACHE_DODGE )
@@ -4724,6 +4731,10 @@ void demon_hunter_t::create_buffs()
   buff.fel_rush_move = new movement_buff_t( this, "fel_rush_movement", spell_data_t::nil() );
   buff.fel_rush_move->set_chance( 1.0 )
     ->set_duration( spec.fel_rush->gcd() );
+
+  buff.furious_gaze_passive = make_buff( this, "furious_gaze_passive", spec.furious_gaze )
+    ->set_default_value( spec.furious_gaze->effectN( 1 ).percent() )
+    ->add_invalidate( CACHE_HASTE );
 
   buff.momentum = make_buff( this, "momentum", spec.momentum_buff )
     ->set_default_value( spec.momentum_buff->effectN( 1 ).percent() )
@@ -5059,7 +5070,8 @@ void demon_hunter_t::init_base_stats()
   base_t::init_base_stats();
 
   resources.base[ RESOURCE_FURY ] = 100;
-  resources.base[ RESOURCE_FURY ] += spec.unrestrained_fury->effectN(1).base_value();
+  resources.base[ RESOURCE_FURY ] += spec.unrestrained_fury->effectN( 1 ).base_value();
+  resources.base[ RESOURCE_FURY ] += spec.unrestrained_fury_2->effectN( 1 ).base_value();
 
   base.attack_power_per_strength = 0.0;
   base.attack_power_per_agility  = 1.0;
@@ -5215,7 +5227,8 @@ void demon_hunter_t::init_spells()
   spec.blur                   = find_specialization_spell( "Blur" );
   spec.chaos_nova             = find_class_spell( "Chaos Nova", DEMON_HUNTER_HAVOC );
   spec.chaos_strike           = find_class_spell( "Chaos Strike", DEMON_HUNTER_HAVOC );
-  spec.chaos_strike_rank_2    = find_rank_spell( "Chaos Strike", "Rank 3" ); // Typo in spell data
+  spec.chaos_strike_rank_2    = find_rank_spell( "Chaos Strike", "Rank 2" );
+  spec.chaos_strike_rank_3    = find_spell( 343206, DEMON_HUNTER_HAVOC ); // Name typo'd as Fel Rush (desc=Rank 3)
   spec.chaos_strike_refund    = find_spell( 197125, DEMON_HUNTER_HAVOC );
   spec.chaos_strike_fury      = find_spell( 193840, DEMON_HUNTER_HAVOC );
   spec.death_sweep            = find_spell( 210152, DEMON_HUNTER_HAVOC );
@@ -5225,9 +5238,12 @@ void demon_hunter_t::init_spells()
   spec.eye_beam_rank_2        = find_rank_spell( "Eye Beam", "Rank 2" );
   spec.fel_rush               = find_class_spell( "Fel Rush", DEMON_HUNTER_HAVOC );
   spec.fel_rush_rank_2        = find_rank_spell( "Fel Rush", "Rank 2" );
-  spec.fel_rush_damage        = find_spell( 192611, DEMON_HUNTER_HAVOC ); 
+  spec.fel_rush_rank_3        = find_rank_spell( "Fel Rush", "Rank 3" );
+  spec.fel_rush_damage        = find_spell( 192611, DEMON_HUNTER_HAVOC );
+  spec.furious_gaze           = find_spell( 343312, DEMON_HUNTER_HAVOC );
   spec.momentum_buff          = find_spell( 208628, DEMON_HUNTER_HAVOC );
-  spec.unrestrained_fury      = find_specialization_spell( "Unrestrained Fury" );
+  spec.unrestrained_fury      = find_rank_spell( "Unrestrained Fury", "Rank 1" );
+  spec.unrestrained_fury_2    = find_rank_spell( "Unrestrained Fury", "Rank 2" );
   spec.vengeful_retreat       = find_class_spell( "Vengeful Retreat", DEMON_HUNTER_HAVOC );
 
   // Vengeance
@@ -5826,7 +5842,6 @@ double demon_hunter_t::composite_dodge() const
 {
   double d = player_t::composite_dodge();
 
-  d += buff.blade_dance->check_value();
   d += buff.death_sweep->check_value();
 
   d += buff.blur->check() * buff.blur->data().effectN( 2 ).percent();
@@ -5970,6 +5985,24 @@ double demon_hunter_t::composite_spell_crit_chance() const
   sc += spec.critical_strikes->effectN( 1 ).percent();
 
   return sc;
+}
+
+// demon_hunter_t::composite_rating_multiplier ==============================
+
+double demon_hunter_t::composite_rating_multiplier( rating_e r ) const
+{
+  double rm = player_t::composite_rating_multiplier( r );
+
+  switch ( r )
+  {
+    case RATING_MELEE_HASTE:
+    case RATING_RANGED_HASTE:
+    case RATING_SPELL_HASTE:
+      rm *= 1.0 + buff.furious_gaze_passive->value();
+      break;
+  }
+
+  return rm;
 }
 
 // demon_hunter_t::matching_gear_multiplier =================================
