@@ -18,7 +18,6 @@ namespace
   Existing Issues
   ---------------
 
-  * Possibly add per-race Nemesis buffs, if any fight styles are configured in a way it matters
   * Add option for Greater Soul spawns on add demise (% chance?) simulating adds in M+/dungeon style situations
 
   New Issues
@@ -96,7 +95,6 @@ public:
   struct debuffs_t
   {
     // Havoc
-    buff_t* nemesis;
     buff_t* essence_break;
 
     // Vengeance
@@ -262,7 +260,6 @@ public:
     buff_t* blur;
     buff_t* death_sweep;
     buff_t* momentum;
-    buff_t* nemesis;
     buff_t* out_of_range;
     buff_t* prepared;
     buff_t* unbound_chaos;
@@ -303,7 +300,6 @@ public:
 
     const spell_data_t* trail_of_ruin;
     const spell_data_t* unbound_chaos;
-    const spell_data_t* fel_barrage;
 
     const spell_data_t* soul_rending;
     const spell_data_t* desperate_instincts;
@@ -319,7 +315,7 @@ public:
 
     const spell_data_t* demonic;
     const spell_data_t* momentum;
-    const spell_data_t* nemesis;
+    const spell_data_t* fel_barrage;
 
     // Vengeance
     const spell_data_t* abyssal_strike;
@@ -501,7 +497,6 @@ public:
     cooldown_t* fel_barrage;
     cooldown_t* fel_rush;
     cooldown_t* metamorphosis;
-    cooldown_t* nemesis;
     cooldown_t* netherwalk;
     cooldown_t* throw_glaive;
     cooldown_t* vengeful_retreat;
@@ -685,9 +680,6 @@ public:
   double composite_parry() const override;
   double composite_parry_rating() const override;
   double composite_player_multiplier( school_e ) const override;
-  double composite_player_dd_multiplier(school_e, const action_t* a) const override;
-  double composite_player_td_multiplier( school_e, const action_t* a ) const override;
-  double composite_player_target_multiplier(player_t* target, school_e school) const override;
   double composite_spell_crit_chance() const override;
   double matching_gear_multiplier( attribute_e attr ) const override;
   double passive_movement_modifier() const override;
@@ -1426,14 +1418,6 @@ public:
 
   void track_benefits( action_state_t* s )
   {
-    if ( ab::snapshot_flags & STATE_TGT_MUL_TA )
-    {
-      if ( p()->specialization() == DEMON_HUNTER_HAVOC )
-      {
-        td( s->target )->debuffs.nemesis->up();
-      }
-    }
-
     if ( ab::snapshot_flags & STATE_MUL_TA )
     {
       p()->buff.demon_soul->up();
@@ -2656,23 +2640,6 @@ struct metamorphosis_t : public demon_hunter_spell_t
     {
       p()->buff.metamorphosis->trigger();
     }
-  }
-};
-
-// Nemesis ==================================================================
-
-struct nemesis_t : public demon_hunter_spell_t
-{
-  nemesis_t( demon_hunter_t* p, const std::string& options_str )
-    : demon_hunter_spell_t( "nemesis", p, p->talent.nemesis, options_str )
-  {
-    may_miss = false;
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    demon_hunter_spell_t::impact( s );
-    td( s->target )->debuffs.nemesis->trigger();
   }
 };
 
@@ -4333,28 +4300,6 @@ private:
   using bb = BuffBase;
 };
 
-// Nemesis ==================================================================
-
-struct nemesis_debuff_t : public demon_hunter_buff_t<buff_t>
-{
-  nemesis_debuff_t( demon_hunter_td_t& td )
-    : base_t( td, "nemesis", td.dh().talent.nemesis )
-  {
-    set_default_value( p().talent.nemesis->effectN( 1 ).percent() );
-    set_cooldown( timespan_t::zero() );
-  }
-
-  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
-  {
-    demon_hunter_buff_t<buff_t>::expire_override( expiration_stacks, remaining_duration );
-
-    if ( remaining_duration > timespan_t::zero() )
-    {
-      p().buff.nemesis->trigger( 1, player->race, -1.0, remaining_duration );
-    }
-  }
-};
-
 // Immolation Aura ==========================================================
 
 struct immolation_aura_buff_t : public demon_hunter_buff_t<buff_t>
@@ -4541,7 +4486,6 @@ demon_hunter_td_t::demon_hunter_td_t( player_t* target, demon_hunter_t& p )
     debuffs.essence_break = make_buff( *this, "essence_break", p.find_spell( 320338 ) )
       ->set_cooldown( timespan_t::zero() )
       ->set_default_value( p.find_spell( 320338 )->effectN( 1 ).percent() );
-    debuffs.nemesis = new buffs::nemesis_debuff_t(*this);
   }
   else // DEMON_HUNTER_VENGEANCE
   {
@@ -4665,7 +4609,6 @@ action_t* demon_hunter_t::create_action( util::string_view name, const std::stri
   if ( name == "infernal_strike" )    return new infernal_strike_t( this, options_str );
   if ( name == "immolation_aura" )    return new immolation_aura_t( this, options_str );
   if ( name == "metamorphosis" )      return new metamorphosis_t( this, options_str );
-  if ( name == "nemesis" )            return new nemesis_t( this, options_str );
   if ( name == "pick_up_fragment" )   return new pick_up_fragment_t( this, options_str );
   if ( name == "sigil_of_flame" )     return new sigil_of_flame_t( this, options_str );
   if ( name == "spirit_bomb" )        return new spirit_bomb_t( this, options_str );
@@ -4742,10 +4685,6 @@ void demon_hunter_t::create_buffs()
 
   buff.out_of_range = make_buff( this, "out_of_range", spell_data_t::nil() )
     ->set_chance( 1.0 );
-
-  // TODO: Buffs for each race?
-  buff.nemesis = make_buff( this, "nemesis_buff", find_spell( 208605, DEMON_HUNTER_HAVOC ) )
-    ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   const double prepared_value = ( find_spell( 203650 )->effectN( 1 ).resource( RESOURCE_FURY ) / 50 );
   buff.prepared = make_buff( this, "prepared", find_spell( 203650, DEMON_HUNTER_HAVOC ) )
@@ -5275,7 +5214,6 @@ void demon_hunter_t::init_spells()
 
   talent.trail_of_ruin        = find_talent_spell( "Trail of Ruin" );
   talent.unbound_chaos        = find_talent_spell( "Unbound Chaos" );
-  talent.fel_barrage          = find_talent_spell( "Fel Barrage" );
 
   // talent.soul_rending
   talent.desperate_instincts  = find_talent_spell( "Desperate Instincts" );
@@ -5291,7 +5229,7 @@ void demon_hunter_t::init_spells()
 
   talent.demonic              = find_talent_spell( "Demonic" );
   talent.momentum             = find_talent_spell( "Momentum" );
-  talent.nemesis              = find_talent_spell( "Nemesis" );
+  talent.fel_barrage          = find_talent_spell( "Fel Barrage" );
 
   // Vengeance
   talent.abyssal_strike       = find_talent_spell( "Abyssal Strike" );
@@ -5551,8 +5489,7 @@ void demon_hunter_t::apl_havoc()
   action_priority_list_t* apl_default = get_action_priority_list( "default" );
   apl_default->add_action( "auto_attack" );
   apl_default->add_action( "variable,name=blade_dance,value=talent.first_blood.enabled|spell_targets.blade_dance1>=(3-talent.trail_of_ruin.enabled)" );
-  apl_default->add_action( "variable,name=waiting_for_nemesis,value=!(!talent.nemesis.enabled|cooldown.nemesis.ready|cooldown.nemesis.remains>target.time_to_die|cooldown.nemesis.remains>60)" );
-  apl_default->add_action( "variable,name=pooling_for_meta,value=!talent.demonic.enabled&cooldown.metamorphosis.remains<6&fury.deficit>30&(!variable.waiting_for_nemesis|cooldown.nemesis.remains<10)" );
+  apl_default->add_action( "variable,name=pooling_for_meta,value=!talent.demonic.enabled&cooldown.metamorphosis.remains<6&fury.deficit>30" );
   apl_default->add_action( "variable,name=pooling_for_blade_dance,value=variable.blade_dance&(fury<75-talent.first_blood.enabled*20)" );
   apl_default->add_action( "variable,name=pooling_for_eye_beam,value=talent.demonic.enabled&!talent.blind_fury.enabled&cooldown.eye_beam.remains<(gcd.max*2)&fury.deficit>20" );
   apl_default->add_action( "variable,name=waiting_for_essence_break,value=talent.essence_break.enabled&!variable.pooling_for_blade_dance&!variable.pooling_for_meta&cooldown.essence_break.up" );
@@ -5567,10 +5504,8 @@ void demon_hunter_t::apl_havoc()
   apl_default->add_action( "run_action_list,name=normal" );
   
   action_priority_list_t* apl_cooldown = get_action_priority_list( "cooldown" );
-  apl_cooldown->add_action( this, "Metamorphosis", "if=!(talent.demonic.enabled|variable.pooling_for_meta|variable.waiting_for_nemesis)|target.time_to_die<25" );
+  apl_cooldown->add_action( this, "Metamorphosis", "if=!(talent.demonic.enabled|variable.pooling_for_meta)|target.time_to_die<25" );
   apl_cooldown->add_action( this, "Metamorphosis", "if=talent.demonic.enabled&(!azerite.chaotic_transformation.enabled|(cooldown.eye_beam.remains>20&(!variable.blade_dance|cooldown.blade_dance.remains>gcd.max)))" );
-  apl_cooldown->add_talent( this, "Nemesis", "target_if=min:target.time_to_die,if=raid_event.adds.exists&debuff.nemesis.down&(active_enemies>desired_targets|raid_event.adds.in>60)" );
-  apl_cooldown->add_talent( this, "Nemesis", "if=!raid_event.adds.exists" );
   apl_cooldown->add_action( "sinful_brand,if=!dot.sinful_brand.ticking" );
   apl_cooldown->add_action( "the_hunt" );
   apl_cooldown->add_action( "fodder_to_the_flame" );
@@ -5714,7 +5649,6 @@ void demon_hunter_t::create_cooldowns()
   cooldown.fel_barrage          = get_cooldown( "fel_barrage" );
   cooldown.fel_rush             = get_cooldown( "fel_rush" );
   cooldown.metamorphosis        = get_cooldown( "metamorphosis" );
-  cooldown.nemesis              = get_cooldown( "nemesis" );
   cooldown.netherwalk           = get_cooldown( "netherwalk" );
   cooldown.throw_glaive         = get_cooldown( "throw_glaive" );
   cooldown.vengeful_retreat     = get_cooldown( "vengeful_retreat" );
@@ -5973,48 +5907,6 @@ double demon_hunter_t::composite_player_multiplier( school_e school ) const
   if ( dbc::is_school( school, SCHOOL_PHYSICAL ) && buff.demon_spikes->check() )
   {
     m *= 1.0 + talent.razor_spikes->effectN( 1 ).percent();
-  }
-
-  return m;
-}
-
-// demon_hunter_t::composite_player_dd_multiplier ===========================
-
-double demon_hunter_t::composite_player_dd_multiplier( school_e school, const action_t * a ) const
-{
-  double m = player_t::composite_player_dd_multiplier(school, a);
-
-  if ( buff.nemesis->check() && a->target->race == buff.nemesis->current_value )
-  {
-    m *= 1.0 + buff.nemesis->data().effectN( 1 ).percent();
-  }
-
-  return m;
-}
-
-// demon_hunter_t::composite_player_td_multiplier ===========================
-
-double demon_hunter_t::composite_player_td_multiplier( school_e school, const action_t * a ) const
-{
-  double m = player_t::composite_player_td_multiplier( school, a );
-
-  if ( buff.nemesis->check() && a->target->race == buff.nemesis->current_value )
-  {
-    m *= 1.0 + buff.nemesis->data().effectN( 1 ).percent();
-  }
-
-  return m;
-}
-
-// demon_hunter_t::composite_player_target_multiplier =======================
-
-double demon_hunter_t::composite_player_target_multiplier( player_t* target, school_e school ) const
-{
-  double m = player_t::composite_player_target_multiplier( target, school );
-
-  if ( specialization() == DEMON_HUNTER_HAVOC )
-  {
-    m *= 1.0 + get_target_data( target )->debuffs.nemesis->check_value();
   }
 
   return m;
