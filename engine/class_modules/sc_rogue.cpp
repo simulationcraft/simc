@@ -586,9 +586,9 @@ public:
   // Conduits
   struct conduit_t
   {
-    conduit_data_t lethal_poisons;            // NYI
+    conduit_data_t lethal_poisons;
     conduit_data_t maim_mangle;
-    conduit_data_t poisoned_finger_blades;    // NYI
+    conduit_data_t poisoned_katar;
     conduit_data_t well_placed_steel;
 
     conduit_data_t ambidexterity;
@@ -1040,10 +1040,15 @@ public:
     // Those should be set explicitly. (see Vendetta, Shadow Blades, Detection)
     ab::gcd_type = gcd_haste_type::NONE;
 
-    // Affecting passives
+    // Affecting Passive Auras
     // Put ability specific ones here; class/spec wide ones with labels that can effect things like trinkets in rogue_t::apply_affecting_auras.
     ab::apply_affecting_aura( p->talent.deeper_stratagem );
     ab::apply_affecting_aura( p->talent.master_poisoner );
+
+    // Affecting Passive Conduits
+    ab::apply_affecting_conduit( p->conduit.lethal_poisons );
+    ab::apply_affecting_conduit( p->conduit.poisoned_katar );
+    ab::apply_affecting_conduit( p->conduit.reverberation );
 
     // Dynamically affected flags
     // Special things like CP, Energy, Crit, etc.
@@ -2843,6 +2848,13 @@ struct fan_of_knives_t: public rogue_attack_t
     }
   }
 
+  double composite_poison_flat_modifier( const action_state_t* state ) const override
+  {
+    double chance = rogue_attack_t::composite_poison_flat_modifier( state ); 
+    chance += p()->conduit.poisoned_katar.percent(); // TOCHECK: Spell data is kinda iffy on if this works...
+    return chance;
+  }
+
   double bonus_da( const action_state_t* state ) const override
   {
     double b = rogue_attack_t::bonus_da( state );
@@ -4568,7 +4580,6 @@ struct echoing_reprimand_t : public rogue_attack_t
     rogue_attack_t( name, p, p->covenant.echoing_reprimand, options_str )
   {
     buffs = { p->buffs.echoing_reprimand_2, p->buffs.echoing_reprimand_3, p->buffs.echoing_reprimand_4 };
-    base_multiplier *= 1 + p->conduit.reverberation.percent(); // TODO: Move to apply_affecting when possible
   }
 
   void impact( action_state_t* state ) override
@@ -7701,7 +7712,7 @@ void rogue_t::init_spells()
 
   conduit.lethal_poisons          = find_conduit_spell( "Lethal Poisons" );
   conduit.maim_mangle             = find_conduit_spell( "Maim, Mangle" );
-  conduit.poisoned_finger_blades  = find_conduit_spell( "Poisoned Finger Blades");
+  conduit.poisoned_katar          = find_conduit_spell( "Poisoned Katar");
   conduit.well_placed_steel       = find_conduit_spell( "Well-Placed Steel" );
 
   conduit.ambidexterity           = find_conduit_spell( "Ambidexterity" );
