@@ -200,7 +200,7 @@ struct player_t : public actor_t
     gear_stats_t stats;
 
     double spell_power_per_intellect, spell_power_per_attack_power, spell_crit_per_intellect;
-    double attack_power_per_strength, attack_power_per_agility, attack_crit_per_agility;
+    double attack_power_per_strength, attack_power_per_agility, attack_crit_per_agility, attack_power_per_spell_power;
     double dodge_per_agility, parry_per_strength;
     double health_per_stamina;
     std::array<double, SCHOOL_MAX> resource_reduction;

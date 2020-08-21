@@ -1544,7 +1544,13 @@ class SpellDataGenerator(DataGenerator):
             ( 328306, 0 ),          # Sepsis expiry direct damage hit
             ( 323660, 0 ),          # Slaughter instant damage
             ( 323558, 0 ), ( 323559, 0 ), ( 323560, 0 ), # Echoing Reprimand buffs
-            ( 324074, 0 ), ( 341277, 0 ) # Serrated Bone Spike secondary instant damage spells
+            ( 324074, 0 ), ( 341277, 0 ), # Serrated Bone Spike secondary instant damage spells
+            ( 340582, 0 ), ( 340583, 0 ), ( 340584, 0 ), # Guile Charm legendary buffs
+            ( 340600, 0 ), ( 340601, 0 ), ( 340603, 0 ), # Finality legendary buffs
+            ( 341111, 0 ),          # Akaari's Soul Fragment legendary debuff
+            ( 340587, 0 ),          # Concealed Blunderbuss legendary buff
+            ( 340573, 0 ),          # Greenskin's Wickers legendary buff
+            ( 340431, 0 ),          # Doomblade legendary debuff
         ),
 
         # Priest:
@@ -1562,6 +1568,7 @@ class SpellDataGenerator(DataGenerator):
             ( 275726, 0 ),          # Whispers of the damned insanity gain
             ( 288342, 0 ),          # Thought Harvester trigger buff for Mind Sear
             ( 336142, 5 ),          # Shadowflame Prism legendary effect DMG Component
+            ( 343144, 0 ),          # Dissonant Echoes free Void Bolt proc
         ),
 
         # Death Knight:
@@ -1752,7 +1759,8 @@ class SpellDataGenerator(DataGenerator):
           ( 272012, 5 ),	# Illidari Satyr - Shadow Slash
           ( 272131, 5 ),	# Eye of Gul'dan - Eye of Gul'dan
           ( 267964, 0 ),	# new soul strike?
-          ( 289367, 1 )		# Pandemic Invocation Damage
+          ( 289367, 1 ),		# Pandemic Invocation Damage
+          ( 265391, 3 )     # Roaring Blaze Debuff
         ),
 
         # Monk:

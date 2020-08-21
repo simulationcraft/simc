@@ -88,6 +88,32 @@ damage_affected_by parse_damage_affecting_aura( action_t* a, spell_data_ptr_t sp
   return affected_by;
 }
 
+void apply_affecting_conduit_effect( action_t& a, const conduit_data_t& conduit, size_t effect_num )
+{
+  if ( !conduit.ok() )
+    return;
+
+  spelleffect_data_t effect = conduit->effectN( effect_num );
+  effect._base_value = conduit.value();
+  a.apply_affecting_effect( effect );
+}
+
+void apply_affecting_conduit( action_t& a, const conduit_data_t& conduit, int effect_num = 1 )
+{
+  assert( effect_num == -1 || effect_num > 0 );
+
+  if ( !conduit.ok() )
+    return;
+
+  for ( size_t i = 0; i <= conduit->effect_count(); i++ )
+  {
+    if ( effect_num == -1 || as<size_t>( effect_num ) == i )
+      apply_affecting_conduit_effect( a, conduit, i );
+    else
+      a.apply_affecting_effect( conduit->effectN( i ) );
+  }
+}
+
 namespace cdwaste {
 
 struct action_data_t
@@ -828,15 +854,23 @@ public:
     ab::apply_affecting_aura( p -> talents.streamline );
 
     // "simple" passive rank 2 spells
-    ab::apply_affecting_aura( p -> find_rank_spell( "Harpoon", "Rank 2" ) );
-    ab::apply_affecting_aura( p -> find_rank_spell( "Cobra Shot", "Rank 2" ) );
-    ab::apply_affecting_aura( p -> find_rank_spell( "Wildfire Bombs", "Rank 2" ) );
     ab::apply_affecting_aura( p -> find_rank_spell( "Arcane Shot", "Rank 2" ) );
+    ab::apply_affecting_aura( p -> find_rank_spell( "Cobra Shot", "Rank 2" ) );
+    ab::apply_affecting_aura( p -> find_rank_spell( "Harpoon", "Rank 2" ) );
+    ab::apply_affecting_aura( p -> find_rank_spell( "Improved Traps", "Rank 2" ) );
+    ab::apply_affecting_aura( p -> find_rank_spell( "Kill Shot", "Rank 2" ) );
+    ab::apply_affecting_aura( p -> find_rank_spell( "Wildfire Bombs", "Rank 2" ) );
     ab::apply_affecting_aura( p -> find_specialization_spell( "True Aim" ) );
 
     // passive legendary effects
     ab::apply_affecting_aura( p -> legendary.call_of_the_wild );
     ab::apply_affecting_aura( p -> legendary.surging_shots );
+
+    // passive conduits
+    apply_affecting_conduit( *this, p -> conduits.bloodletting );
+    apply_affecting_conduit( *this, p -> conduits.necrotic_barrage );
+    apply_affecting_conduit( *this, p -> conduits.spirit_attunement );
+    apply_affecting_conduit( *this, p -> conduits.stinging_strike );
   }
 
   hunter_t* p()             { return static_cast<hunter_t*>( ab::player ); }
@@ -2567,8 +2601,6 @@ struct base_t : hunter_ranged_attack_t
   {
     chain_multiplier = p -> covenants.death_chakram -> effectN( 1 ).chain_multiplier();
 
-    base_dd_multiplier *= 1 + p -> conduits.necrotic_barrage.percent();
-
     energize_type = action_energize::ON_HIT;
     energize_resource = RESOURCE_FOCUS;
     energize_amount = p -> covenants.death_chakram -> effectN( 4 ).base_value() +
@@ -2730,8 +2762,6 @@ struct wild_spirits_t : hunter_spell_t
     {
       proc = true;
       callbacks = false;
-
-      base_multiplier *= 1 + p -> conduits.spirit_attunement.percent();
     }
   };
 
@@ -3137,9 +3167,6 @@ struct barbed_shot_t: public hunter_ranged_attack_t
     parse_options(options_str);
 
     base_ta_adder += p -> azerite.feeding_frenzy.value( 2 );
-
-    base_td_multiplier *= 1 + p -> conduits.bloodletting.percent();
-    cooldown -> duration += p -> conduits.bloodletting -> effectN( 2 ).time_value();
 
     if ( p -> find_rank_spell( "Bestial Wrath", "Rank 2" ) -> ok() )
       bestial_wrath_r2_reduction = timespan_t::from_seconds( p -> specs.bestial_wrath -> effectN( 3 ).base_value() );
@@ -3916,8 +3943,6 @@ struct melee_focus_spender_t: hunter_melee_attack_t
     internal_bleeding( p ),
     wilderness_survival_reduction( p -> azerite.wilderness_survival.spell() -> effectN( 1 ).time_value() )
   {
-    base_dd_multiplier *= 1 + p -> conduits.stinging_strike.percent();
-
     if ( p -> legendary.latent_poison_injectors.ok() )
       latent_poison_injection = p -> get_background_action<latent_poison_injection_t>( "latent_poison_injection" );
 

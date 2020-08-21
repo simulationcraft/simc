@@ -190,11 +190,6 @@ public:
 
   double gift_of_the_ox_proc_chance;
 
-  // Legion Artifact effects
-  const special_effect_t* fu_zan_the_wanderers_companion;
-  const special_effect_t* sheilun_staff_of_the_mists;
-  const special_effect_t* fists_of_the_heavens;
-
   struct buffs_t
   {
     // General
@@ -242,11 +237,6 @@ public:
     buff_t* serenity;
     buff_t* touch_of_karma;
     buff_t* windwalking_driver;
-
-    // Legendaries
-    buff_t* hidden_masters_forbidden_touch;
-    buff_t* sephuzs_secret;
-    buff_t* the_emperors_capacitor;
 
     // Azerite Trait
     buff_t* dance_of_chiji;
@@ -544,48 +534,6 @@ public:
     real_ppm_t* boiling_brew;
   } rppm;
 
-  struct legendary_t
-  {
-    // General
-    const spell_data_t* archimondes_infinite_command;
-    const spell_data_t* cinidaria_the_symbiote;
-    const spell_data_t* kiljaedens_burning_wish;
-    const spell_data_t* prydaz_xavarics_magnum_opus;
-    const spell_data_t* sephuzs_secret;
-    const spell_data_t* velens_future_sight;
-
-    // Brewmaster
-    const spell_data_t* anvil_hardened_wristwraps;
-    const spell_data_t* firestone_walkers;
-    const spell_data_t* fundamental_observation;
-    const spell_data_t* gai_plins_soothing_sash;
-    const spell_data_t* jewel_of_the_lost_abbey;
-    const spell_data_t* salsalabims_lost_tunic;
-    const spell_data_t* stormstouts_last_gasp;
-
-    // Mistweaver
-    const spell_data_t* eithas_lunar_glides_of_eramas;
-    const spell_data_t* eye_of_collidus_the_warp_watcher;
-    const spell_data_t* leggings_of_the_black_flame;
-    const spell_data_t* ovyds_winter_wrap;
-    const spell_data_t* petrichor_lagniappe;
-    const spell_data_t* shelter_of_rin;
-    const spell_data_t* unison_spaulders;
-
-    // Windwalker
-    const spell_data_t* cenedril_reflector_of_hatred;  // The amount of damage that Touch of Karma can redirect is
-                                                       // increased by x% of your maximum health.
-    const spell_data_t*
-        drinking_horn_cover;  // The duration of Storm, Earth, and Fire is extended by x sec for every Chi you spend.
-    const spell_data_t* hidden_masters_forbidden_touch;  // Touch of Death can be used a second time within 3 sec before
-                                                         // its cooldown is triggered.
-    const spell_data_t* katsuos_eclipse;                 // Reduce the cost of Fists of Fury by x Chi.
-    const spell_data_t* march_of_the_legion;             // Increase the movement speed bonus of Windwalking by x%.
-    const spell_data_t* the_emperors_capacitor;          // Chi spenders increase the damage of your next Crackling Jade
-                                                         // Lightning by X%. Stacks up to Y times.
-    const spell_data_t* the_wind_blows;
-  } legendary;
-
   struct azerite_powers_t
   {
     // General
@@ -702,9 +650,6 @@ public:
       active_actions(),
       spiritual_focus_count( 0 ),
       gift_of_the_ox_proc_chance(),
-      fu_zan_the_wanderers_companion( nullptr ),
-      sheilun_staff_of_the_mists( nullptr ),
-      fists_of_the_heavens( nullptr ),
       buff(),
       gain(),
       proc(),
@@ -714,7 +659,6 @@ public:
       cooldown(),
       passives(),
       rppm(),
-      legendary(),
       azerite(),
       azerite_spells(),
       pet(),
@@ -758,29 +702,6 @@ public:
       regen_caches[ CACHE_ATTACK_HASTE ] = true;
     }
     user_options.initial_chi = 0;
-
-    talent_points.register_validity_fn( [this]( const spell_data_t* spell ) {
-      if ( find_item_by_id( 151643 ) != nullptr && level() < 120 )  // Soul of the Grandmaster Legendary
-      {
-        switch ( specialization() )
-        {
-          case MONK_BREWMASTER:
-            return spell->id() == 196737;  // High Tolerance
-            break;
-          case MONK_MISTWEAVER:
-            return spell->id() == 197900;  // Mist Wrap
-            break;
-          case MONK_WINDWALKER:
-            return spell->id() == 196607;  // Eye of the Tiger
-            break;
-          default:
-            return false;
-            break;
-        }
-      }
-
-      return false;
-    } );
   }
 
   // Default consumables
@@ -1380,16 +1301,6 @@ struct storm_earth_and_fire_pet_t : public pet_t
     {
       // Hard Code the divider
       base_dd_min = base_dd_max = 1;
-    }
-
-    double composite_persistent_multiplier( const action_state_t* action_state ) const override
-    {
-      double pm = sef_melee_attack_t::composite_persistent_multiplier( action_state );
-
-      if ( o()->sets->has_set_bonus( MONK_WINDWALKER, T21, B4 ) && p()->buff.bok_proc_sef->up() )
-        pm *= 1 + o()->sets->set( MONK_WINDWALKER, T21, B4 )->effectN( 1 ).percent();
-
-      return pm;
     }
 
     void impact( action_state_t* state ) override
@@ -2460,24 +2371,6 @@ public:
     return !is_combo_strike();
   }
 
-  // The set bonus checks for last 3 unique combo strike triggering abilities
-  void t19_4pc_bonus_trigger()
-  {
-    auto n = p()->combo_strike_actions.size();
-
-    // Note that this must be called after the current action has been appended
-    if ( n < 3 )
-      return;
-
-    // Three different abilities in a row
-    auto a = p()->combo_strike_actions[ n - 3 ]->id;
-    auto b = p()->combo_strike_actions[ n - 2 ]->id;
-    auto c = p()->combo_strike_actions[ n - 1 ]->id;
-
-    if ( a != b && a != c && b != c )
-      p()->buff.combo_master->trigger();
-  }
-
   // Trigger Windwalker's Combo Strike Mastery, the Hit Combo talent,
   // and other effects that trigger from combo strikes.
   // Triggers from execute() on abilities with may_combo_strike = true
@@ -2512,9 +2405,6 @@ public:
 
     // Record the current action in the history.
     p()->combo_strike_actions.push_back( this );
-
-    if ( p()->sets->has_set_bonus( MONK_WINDWALKER, T19, B4 ) )
-      t19_4pc_bonus_trigger();
   }
 
   // Reduces Brewmaster Brew cooldowns by the time given
@@ -2589,37 +2479,6 @@ public:
     {
       if ( ab::cost() > 0 )
       {
-        // Drinking Horn Cover Legendary
-        if ( p()->legendary.drinking_horn_cover )
-        {
-          if ( p()->buff.storm_earth_and_fire->up() )
-          {
-            // Effect is saved as 4; duration is saved as 400 milliseconds
-            double duration  = p()->legendary.drinking_horn_cover->effectN( 1 ).base_value() * 100;
-            double extension = duration * ab::cost();
-
-            // Extend the duration of the buff
-            p()->buff.storm_earth_and_fire->extend_duration( p(), timespan_t::from_millis( extension ) );
-
-            // Extend the duration of pets
-            if ( !p()->pet.sef[ SEF_EARTH ]->is_sleeping() )
-              p()->pet.sef[ SEF_EARTH ]->expiration->reschedule( p()->pet.sef[ SEF_EARTH ]->expiration->remains() +
-                                                                 timespan_t::from_millis( extension ) );
-            if ( !p()->pet.sef[ SEF_FIRE ]->is_sleeping() )
-              p()->pet.sef[ SEF_FIRE ]->expiration->reschedule( p()->pet.sef[ SEF_FIRE ]->expiration->remains() +
-                                                                timespan_t::from_millis( extension ) );
-          }
-          else if ( p()->buff.serenity->up() )
-          {
-            // Since this is extended based on chi spender instead of chi spent, extention is the duration
-            // Effect is saved as 3; extension is saved as 300 milliseconds
-            double extension = p()->legendary.drinking_horn_cover->effectN( 2 ).base_value() * 100;
-
-            // Extend the duration of the buff
-            p()->buff.serenity->extend_duration( p(), timespan_t::from_millis( extension ) );
-          }
-        }
-
         if ( p()->talent.inner_strength )
           p()->buff.inner_stength->trigger( (int)ab::cost() );
 
@@ -2633,10 +2492,6 @@ public:
             p()->spiritual_focus_count -= p()->talent.spirtual_focus->effectN( 1 ).base_value();
           }
         }
-
-        // The Emperor's Capacitor Legendary
-        if ( p()->legendary.the_emperors_capacitor )
-          p()->buff.the_emperors_capacitor->trigger();
       }
       // Dance of Chi-Ji azerite trait triggers from spending chi
       if ( p()->specialization() == MONK_WINDWALKER && p()->azerite.dance_of_chiji.ok() )
@@ -2810,13 +2665,6 @@ struct monk_spell_t : public monk_action_t<spell_t>
         am *= 1 + p()->buff.hit_combo->stack_value();
     }
 
-    // The Wind blows increases damage by 3%
-    if ( p()->legendary.the_wind_blows )
-    {
-      if ( base_t::data().affected_by( p()->passives.the_wind_blows->effectN( 1 ) ) )
-        am *= 1.0 + p()->passives.the_wind_blows->effectN( 1 ).percent();
-    }
-
     return am;
   }
 };
@@ -2872,13 +2720,6 @@ struct monk_heal_t : public monk_action_t<heal_t>
     {
       if ( base_t::data().affected_by( p()->passives.hit_combo->effectN( 1 ) ) )
         am *= 1 + p()->buff.hit_combo->stack_value();
-    }
-
-    // The Wind blows increases damage by 3%
-    if ( p()->legendary.the_wind_blows )
-    {
-      if ( base_t::data().affected_by( p()->passives.the_wind_blows->effectN( 1 ) ) )
-        am *= 1.0 + p()->passives.the_wind_blows->effectN( 1 ).percent();
     }
 
     return am;
@@ -3226,13 +3067,6 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
         am *= 1 + p()->buff.hit_combo->stack_value();
     }
 
-    // The Wind blows increases damage by 3%
-    if ( p()->legendary.the_wind_blows )
-    {
-      if ( base_t::data().affected_by( p()->passives.the_wind_blows->effectN( 1 ) ) )
-        am *= 1.0 + p()->passives.the_wind_blows->effectN( 1 ).percent();
-    }
-
     return am;
   }
 
@@ -3485,10 +3319,6 @@ struct tiger_palm_t : public monk_melee_attack_t
         // Reduces the remaining cooldown on your Brews by 1 sec
         double time_reduction = p()->spec.tiger_palm->effectN( 3 ).base_value();
 
-        // 4 pieces (Brewmaster) : Tiger Palm reduces the remaining cooldown on your brews by an additional 1 sec.
-        if ( p()->sets->has_set_bonus( MONK_BREWMASTER, T19, B4 ) )
-          time_reduction += p()->sets->set( MONK_BREWMASTER, T19, B4 )->effectN( 1 ).base_value();
-
         brew_cooldown_reduction( time_reduction );
 
         if ( p()->buff.blackout_combo->up() )
@@ -3498,9 +3328,6 @@ struct tiger_palm_t : public monk_melee_attack_t
       default:
         break;
     }
-
-    if ( p()->sets->has_set_bonus( p()->specialization(), T19OH, B8 ) )
-      p()->buff.tier19_oh_8pc->trigger();
   }
 
   void impact( action_state_t* s ) override
@@ -3632,11 +3459,6 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
           s->target->debuffs.mortal_wounds->trigger();
         }
 
-        if ( p()->sets->has_set_bonus( MONK_WINDWALKER, T20, B2 ) && ( s->result == RESULT_CRIT ) )
-          // -1 to reduce the spell cooldown instead of increasing
-          // saved as 3000
-          p()->cooldown.fists_of_fury->adjust( -1 * p()->find_spell( 242260 )->effectN( 1 ).time_value() );
-
 		// Apply Mark of the Crane
 		if ( p()->spec.spinning_crane_kick )
           p()->trigger_mark_of_the_crane( s );
@@ -3665,9 +3487,6 @@ struct rising_sun_kick_t : public monk_melee_attack_t
     parse_options( options_str );
 
     cooldown->duration += p->spec.mistweaver_monk->effectN( 10 ).time_value();
-
-    if ( p->sets->has_set_bonus( MONK_WINDWALKER, T19, B2 ) )
-      cooldown->duration += p->sets->set( MONK_WINDWALKER, T19, B2 )->effectN( 1 ).time_value();
 
     may_combo_strike     = true;
     sef_ability          = SEF_RISING_SUN_KICK;
@@ -3879,12 +3698,6 @@ struct blackout_kick_t : public monk_melee_attack_t
         am *= 1 + p()->spec.mistweaver_monk->effectN( 12 ).percent();
         break;
       }
-      case MONK_WINDWALKER:
-      {
-        if ( p()->sets->has_set_bonus( MONK_WINDWALKER, T21, B4 ) && p()->buff.bok_proc->up() )
-          am *= 1 + p()->sets->set( MONK_WINDWALKER, T21, B4 )->effectN( 1 ).percent();
-        break;
-      }
       default:
         break;
     }
@@ -3903,10 +3716,6 @@ struct blackout_kick_t : public monk_melee_attack_t
       p()->buff.bok_proc->expire();
       if ( !p()->buff.serenity->up() )
         p()->gain.bok_proc->add( RESOURCE_CHI, base_costs[ RESOURCE_CHI ] );
-
-      if ( p()->sets->has_set_bonus( MONK_WINDWALKER, T21, B2 ) )
-        p()->resource_gain( RESOURCE_CHI, p()->passives.focus_of_xuen->effectN( 1 ).base_value(),
-                            p()->gain.focus_of_xuen );
     }
   }
 
@@ -4317,26 +4126,12 @@ struct fists_of_fury_t : public monk_melee_attack_t
     return monk_melee_attack_t::ready();
   }
 
-  double cost() const override
-  {
-    double c = monk_melee_attack_t::cost();
-
-    if ( p()->legendary.katsuos_eclipse && !p()->buff.serenity->up() )
-      c += p()->legendary.katsuos_eclipse->effectN( 1 ).base_value();  // saved as -1
-
-    return c;
-  }
-
   void consume_resource() override
   {
     monk_melee_attack_t::consume_resource();
 
     if ( p()->buff.serenity->up() )
     {
-      if ( p()->legendary.katsuos_eclipse )
-        p()->gain.serenity->add(
-            RESOURCE_CHI, base_costs[ RESOURCE_CHI ] + p()->legendary.katsuos_eclipse->effectN( 1 ).base_value() );
-      else
         p()->gain.serenity->add( RESOURCE_CHI, base_costs[ RESOURCE_CHI ] );
     }
   }
@@ -4368,9 +4163,6 @@ struct fists_of_fury_t : public monk_melee_attack_t
   void last_tick( dot_t* dot ) override
   {
     monk_melee_attack_t::last_tick( dot );
-
-    if ( p()->sets->has_set_bonus( MONK_WINDWALKER, T20, B4 ) )
-      p()->buff.pressure_point->trigger();
   }
 };
 
@@ -4486,9 +4278,6 @@ struct fist_of_the_white_tiger_t : public monk_melee_attack_t
                           p()->talent.fist_of_the_white_tiger->effectN( 3 ).trigger()->effectN( 1 ).base_value(),
                           p()->gain.fist_of_the_white_tiger );
 
-      if ( p()->legendary.the_wind_blows )
-        p()->buff.bok_proc->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0 );
-
       mh_attack->execute();
     }
   }
@@ -4541,9 +4330,6 @@ struct melee_t : public monk_melee_attack_t
 
     if ( p()->buff.hit_combo->up() )
       am *= 1 + p()->buff.hit_combo->stack_value();
-
-    if ( p()->legendary.the_wind_blows )
-      am *= 1 + p()->passives.the_wind_blows->effectN( 3 ).percent();
 
     return am;
   }
@@ -4663,9 +4449,6 @@ struct keg_smash_t : public monk_melee_attack_t
   {
     double am = monk_melee_attack_t::action_multiplier();
 
-    if ( p()->legendary.stormstouts_last_gasp )
-      am *= 1 + p()->legendary.stormstouts_last_gasp->effectN( 2 ).percent();
-
     return am;
   }
 
@@ -4679,9 +4462,6 @@ struct keg_smash_t : public monk_melee_attack_t
   void execute() override
   {
     monk_melee_attack_t::execute();
-
-    if ( p()->legendary.salsalabims_lost_tunic != nullptr )
-      p()->cooldown.breath_of_fire->reset( true );
 
     // Reduces the remaining cooldown on your Brews by 4 sec.
     double time_reduction = p()->spec.keg_smash->effectN( 4 ).base_value();
@@ -4774,9 +4554,6 @@ struct touch_of_death_t : public monk_spell_t
 
     amount *= 1 + p()->cache.damage_versatility();
 
-    if ( p()->legendary.hidden_masters_forbidden_touch )
-      amount *= 1 + p()->legendary.hidden_masters_forbidden_touch->effectN( 2 ).percent();
-
     if ( p()->buff.combo_strikes->up() )
       amount *= 1 + p()->cache.mastery_value();
 
@@ -4806,22 +4583,6 @@ struct touch_of_death_t : public monk_spell_t
     }
 
     monk_spell_t::last_tick( dot );
-  }
-
-  void execute() override
-  {
-    monk_spell_t::execute();
-
-    if ( p()->legendary.hidden_masters_forbidden_touch )
-    {
-      if ( p()->buff.hidden_masters_forbidden_touch->up() )
-        p()->buff.hidden_masters_forbidden_touch->expire();
-      else
-      {
-        p()->buff.hidden_masters_forbidden_touch->execute();
-        this->cooldown->reset( true );
-      }
-    }
   }
 
   void impact( action_state_t* s ) override
@@ -4935,9 +4696,6 @@ struct touch_of_karma_t : public monk_melee_attack_t
       double damage_amount = pct_health * player->resources.max[ RESOURCE_HEALTH ];
 
       damage_amount *= data().effectN( 4 ).percent();
-
-      if ( p()->legendary.cenedril_reflector_of_hatred )
-        damage_amount *= 1 + p()->legendary.cenedril_reflector_of_hatred->effectN( 1 ).percent();
 
       residual_action::trigger( touch_of_karma_dot, execute_state->target, damage_amount );
     }
@@ -5094,10 +4852,6 @@ struct flying_serpent_kick_t : public monk_melee_attack_t
 
     monk_melee_attack_t::execute();
 
-    if ( p()->legendary.sephuzs_secret != spell_data_t::not_found() && execute_state->target->type == ENEMY_ADD )
-    {
-      p()->buff.sephuzs_secret->trigger();
-    }
     if ( first_charge )
     {
       first_charge = !first_charge;
@@ -5267,10 +5021,6 @@ struct crackling_jade_lightning_t : public monk_spell_t
   {
     double c = monk_spell_t::cost_per_tick( resource );
 
-    if ( p()->buff.the_emperors_capacitor->up() && resource == RESOURCE_ENERGY )
-      c *= 1 + ( p()->buff.the_emperors_capacitor->current_stack *
-                 p()->passives.the_emperors_capacitor->effectN( 2 ).percent() );
-
     return c;
   }
 
@@ -5278,19 +5028,12 @@ struct crackling_jade_lightning_t : public monk_spell_t
   {
     double c = monk_spell_t::cost();
 
-    if ( p()->buff.the_emperors_capacitor->up() )
-      c *= 1 + ( p()->buff.the_emperors_capacitor->current_stack *
-                 p()->passives.the_emperors_capacitor->effectN( 2 ).percent() );
-
     return c;
   }
 
   double composite_persistent_multiplier( const action_state_t* action_state ) const override
   {
     double pm = monk_spell_t::composite_persistent_multiplier( action_state );
-
-    if ( p()->buff.the_emperors_capacitor->up() )
-      pm *= 1 + p()->buff.the_emperors_capacitor->stack_value();
 
     return pm;
   }
@@ -5307,9 +5050,6 @@ struct crackling_jade_lightning_t : public monk_spell_t
   void last_tick( dot_t* dot ) override
   {
     monk_spell_t::last_tick( dot );
-
-    if ( p()->buff.the_emperors_capacitor->up() )
-      p()->buff.the_emperors_capacitor->expire();
 
     // Reset swing timer
     if ( player->main_hand_attack )
@@ -5416,14 +5156,10 @@ struct breath_of_fire_t : public monk_spell_t
       dot_action->execute();
     }
 
-    // if player level >= 78
+    // if player level >= 10
     if ( p()->mastery.elusive_brawler )
     {
       p()->buff.elusive_brawler->trigger();
-
-      if ( p()->sets->has_set_bonus( MONK_BREWMASTER, T21, B2 ) &&
-           rng().roll( p()->sets->set( MONK_BREWMASTER, T21, B2 )->effectN( 1 ).percent() ) )
-        p()->buff.elusive_brawler->trigger();
     }
   }
 };
@@ -5464,8 +5200,6 @@ struct stagger_self_damage_t : public residual_action::residual_periodic_action_
     assert( s );
 
     dot_duration = s->duration();
-    if ( p->legendary.jewel_of_the_lost_abbey )
-      dot_duration += timespan_t::from_seconds( p->legendary.jewel_of_the_lost_abbey->effectN( 1 ).base_value() / 10 );
     dot_duration += timespan_t::from_seconds( p->talent.bob_and_weave->effectN( 1 ).base_value() / 10 );
     base_tick_time = timespan_t::from_seconds( 1.0 );
     hasted_ticks = tick_may_crit = false;
@@ -5728,9 +5462,6 @@ struct ironskin_brew_t : public monk_spell_t
           timespan_t::from_seconds( p()->buff.blackout_combo->data().effectN( 4 ).base_value() ) );
       p()->buff.blackout_combo->expire();
     }
-
-    if ( p()->sets->has_set_bonus( MONK_BREWMASTER, T20, B2 ) )
-      p()->buff.gift_of_the_ox->trigger();
   }
 };
 
@@ -5780,9 +5511,6 @@ struct purifying_brew_t : public monk_spell_t
       p()->buff.elusive_brawler->trigger( 1 );
       p()->buff.blackout_combo->expire();
     }
-
-    if ( p()->sets->has_set_bonus( MONK_BREWMASTER, T20, B2 ) )
-      p()->buff.gift_of_the_ox->trigger();
 
     if ( p()->azerite.fit_to_burst.ok() && p()->buff.heavy_stagger->check() )
     {
@@ -6003,9 +5731,6 @@ struct effuse_t : public monk_heal_t
 
     if ( p()->buff.thunder_focus_tea->up() )
       p()->buff.thunder_focus_tea->decrement();
-
-    if ( p()->sets->has_set_bonus( p()->specialization(), T19OH, B8 ) )
-      p()->buff.tier19_oh_8pc->trigger();
 
     mastery->execute();
   }
@@ -6276,9 +6001,6 @@ struct gift_of_the_ox_t : public monk_heal_t
     monk_heal_t::execute();
 
     p()->buff.gift_of_the_ox->decrement();
-
-    if ( p()->sets->has_set_bonus( MONK_BREWMASTER, T20, B4 ) )
-      p()->partial_clear_stagger_pct( p()->sets->set( MONK_BREWMASTER, T20, B4 )->effectN( 1 ).percent() );
   }
 };
 
@@ -6290,14 +6012,6 @@ struct gift_of_the_ox_trigger_t : public monk_heal_t
     target      = &p;
     trigger_gcd = timespan_t::zero();
   }
-
-  void execute() override
-  {
-    monk_heal_t::execute();
-
-    if ( p()->sets->has_set_bonus( MONK_BREWMASTER, T20, B4 ) )
-      p()->partial_clear_stagger_pct( p()->sets->set( MONK_BREWMASTER, T20, B4 )->effectN( 1 ).percent() );
-  }
 };
 
 struct gift_of_the_ox_expire_t : public monk_heal_t
@@ -6307,14 +6021,6 @@ struct gift_of_the_ox_expire_t : public monk_heal_t
     background  = true;
     target      = &p;
     trigger_gcd = timespan_t::zero();
-  }
-
-  void execute() override
-  {
-    monk_heal_t::execute();
-
-    if ( p()->sets->has_set_bonus( MONK_BREWMASTER, T20, B4 ) )
-      p()->partial_clear_stagger_pct( p()->sets->set( MONK_BREWMASTER, T20, B4 )->effectN( 1 ).percent() );
   }
 };
 
@@ -7041,8 +6747,7 @@ struct windwalking_driver_t : public monk_buff_t<buff_t>
       range::for_each( p.windwalking_aura->target_list(), [&p, this]( player_t* target ) {
         target->buffs.windwalking_movement_aura->trigger(
             1,
-            ( movement_increase +
-              ( p.legendary.march_of_the_legion ? p.legendary.march_of_the_legion->effectN( 1 ).percent() : 0.0 ) ),
+            ( movement_increase  ),
             1, timespan_t::from_seconds( 10 ) );
       } );
     } );
@@ -7059,9 +6764,6 @@ struct stagger_buff_t : public monk_buff_t<buff_t>
   stagger_buff_t( monk_t& p, const std::string& n, const spell_data_t* s ) : monk_buff_t( p, n, s )
   {
     timespan_t stagger_duration = s->duration();
-    if ( p.legendary.jewel_of_the_lost_abbey )
-      stagger_duration +=
-          timespan_t::from_seconds( p.legendary.jewel_of_the_lost_abbey->effectN( 1 ).base_value() / 10 );
     stagger_duration += timespan_t::from_seconds( p.talent.bob_and_weave->effectN( 1 ).base_value() / 10 );
 
     // set_duration(stagger_duration);
@@ -7093,360 +6795,8 @@ void do_trinket_init( monk_t* player, specialization_e spec, const special_effec
   ptr = &( effect );
 }
 
-// Legion Artifact Effects --------------------------------------------------------
-
-// Brewmaster Legion Artifact
-void fu_zan_the_wanderers_companion( special_effect_t& effect )
-{
-  monk_t* monk = debug_cast<monk_t*>( effect.player );
-  do_trinket_init( monk, MONK_BREWMASTER, monk->fu_zan_the_wanderers_companion, effect );
-}
-
-// Mistweaver Legion Artifact
-void sheilun_staff_of_the_mists( special_effect_t& effect )
-{
-  monk_t* monk = debug_cast<monk_t*>( effect.player );
-  do_trinket_init( monk, MONK_MISTWEAVER, monk->sheilun_staff_of_the_mists, effect );
-}
-
-// Windwalker Legion Artifact
-void fists_of_the_heavens( special_effect_t& effect )
-{
-  monk_t* monk = debug_cast<monk_t*>( effect.player );
-  do_trinket_init( monk, MONK_WINDWALKER, monk->fists_of_the_heavens, effect );
-}
-
-// Legion Legendary Effects ---------------------------------------------------------
-// General Legendary Effects
-struct cinidaria_the_symbiote_t : public unique_gear::scoped_actor_callback_t<monk_t>
-{
-  cinidaria_the_symbiote_t() : super( MONK )
-  {
-  }
-
-  void manipulate( monk_t* monk, const special_effect_t& e ) override
-  {
-    monk->legendary.cinidaria_the_symbiote = e.driver();
-  }
-};
-
-struct prydaz_xavarics_magnum_opus_t : public unique_gear::scoped_actor_callback_t<monk_t>
-{
-  prydaz_xavarics_magnum_opus_t() : super( MONK )
-  {
-  }
-
-  void manipulate( monk_t* monk, const special_effect_t& e ) override
-  {
-    monk->legendary.prydaz_xavarics_magnum_opus = e.driver();
-  }
-};
-
-struct sephuzs_secret_enabler_t : public unique_gear::scoped_actor_callback_t<monk_t>
-{
-  sephuzs_secret_enabler_t() : scoped_actor_callback_t( MONK )
-  {
-  }
-
-  void manipulate( monk_t* monk, const special_effect_t& e ) override
-  {
-    monk->legendary.sephuzs_secret = e.driver();
-  }
-};
-
-struct sephuzs_secret_t : public unique_gear::class_buff_cb_t<monk_t, buff_t>
-{
-  sephuzs_secret_t() : super( MONK, "sephuzs_secret" )
-  {
-  }
-
-  buff_t*& buff_ptr( const special_effect_t& e ) override
-  {
-    return debug_cast<monk_t*>( e.player )->buff.sephuzs_secret;
-  }
-
-  buff_t* creator( const special_effect_t& e ) const override
-  {
-    auto buff = make_buff( e.player, buff_name, e.trigger() );
-    buff->set_cooldown( e.player->find_spell( 226262 )->duration() )
-        ->set_default_value( e.trigger()->effectN( 2 ).percent() )
-        ->add_invalidate( CACHE_RUN_SPEED )
-        ->add_invalidate( CACHE_HASTE );
-    return buff;
-  }
-};
-
-// Brewmaster Legendary Effects
-struct firestone_walkers_t : public unique_gear::scoped_actor_callback_t<monk_t>
-{
-  firestone_walkers_t() : super( MONK_BREWMASTER )
-  {
-  }
-
-  void manipulate( monk_t* monk, const special_effect_t& e ) override
-  {
-    monk->legendary.firestone_walkers = e.driver();
-  }
-};
-
-struct fundamental_observation_t : public unique_gear::scoped_actor_callback_t<monk_t>
-{
-  fundamental_observation_t() : super( MONK_BREWMASTER )
-  {
-  }
-
-  void manipulate( monk_t* monk, const special_effect_t& e ) override
-  {
-    monk->legendary.fundamental_observation = e.driver();
-  }
-};
-
-struct gai_plins_soothing_sash_t : public unique_gear::scoped_actor_callback_t<monk_t>
-{
-  gai_plins_soothing_sash_t() : super( MONK_BREWMASTER )
-  {
-  }
-
-  void manipulate( monk_t* monk, const special_effect_t& e ) override
-  {
-    monk->legendary.gai_plins_soothing_sash = e.driver();
-  }
-};
-
-struct jewel_of_the_lost_abbey_t : public unique_gear::scoped_actor_callback_t<monk_t>
-{
-  jewel_of_the_lost_abbey_t() : super( MONK_BREWMASTER )
-  {
-  }
-
-  void manipulate( monk_t* monk, const special_effect_t& e ) override
-  {
-    monk->legendary.jewel_of_the_lost_abbey = e.driver();
-  }
-};
-
-struct salsalabims_lost_tunic_t : public unique_gear::scoped_actor_callback_t<monk_t>
-{
-  salsalabims_lost_tunic_t() : super( MONK_BREWMASTER )
-  {
-  }
-
-  void manipulate( monk_t* monk, const special_effect_t& e ) override
-  {
-    monk->legendary.salsalabims_lost_tunic = e.driver();
-  }
-};
-
-struct stormstouts_last_gasp_t : public unique_gear::scoped_actor_callback_t<monk_t>
-{
-  stormstouts_last_gasp_t() : super( MONK_BREWMASTER )
-  {
-  }
-
-  void manipulate( monk_t* monk, const special_effect_t& e ) override
-  {
-    monk->legendary.stormstouts_last_gasp = e.driver();
-    monk->cooldown.keg_smash->charges += (int)monk->legendary.stormstouts_last_gasp->effectN( 1 ).base_value();
-  }
-};
-
-// Mistweaver
-struct eithas_lunar_glides_of_eramas_t : public unique_gear::scoped_actor_callback_t<monk_t>
-{
-  eithas_lunar_glides_of_eramas_t() : super( MONK_MISTWEAVER )
-  {
-  }
-
-  void manipulate( monk_t* monk, const special_effect_t& e ) override
-  {
-    monk->legendary.eithas_lunar_glides_of_eramas = e.driver();
-  }
-};
-
-struct eye_of_collidus_the_warp_watcher_t : public unique_gear::scoped_actor_callback_t<monk_t>
-{
-  eye_of_collidus_the_warp_watcher_t() : super( MONK_MISTWEAVER )
-  {
-  }
-
-  void manipulate( monk_t* monk, const special_effect_t& e ) override
-  {
-    monk->legendary.eye_of_collidus_the_warp_watcher = e.driver();
-  }
-};
-
-struct leggings_of_the_black_flame_t : public unique_gear::scoped_actor_callback_t<monk_t>
-{
-  leggings_of_the_black_flame_t() : super( MONK_MISTWEAVER )
-  {
-  }
-
-  void manipulate( monk_t* monk, const special_effect_t& e ) override
-  {
-    monk->legendary.leggings_of_the_black_flame = e.driver();
-  }
-};
-
-struct ovyds_winter_wrap_t : public unique_gear::scoped_actor_callback_t<monk_t>
-{
-  ovyds_winter_wrap_t() : super( MONK_MISTWEAVER )
-  {
-  }
-
-  void manipulate( monk_t* monk, const special_effect_t& e ) override
-  {
-    monk->legendary.ovyds_winter_wrap = e.driver();
-  }
-};
-
-struct petrichor_lagniappe_t : public unique_gear::scoped_actor_callback_t<monk_t>
-{
-  petrichor_lagniappe_t() : super( MONK_MISTWEAVER )
-  {
-  }
-
-  void manipulate( monk_t* monk, const special_effect_t& e ) override
-  {
-    monk->legendary.petrichor_lagniappe = e.driver();
-  }
-};
-
-struct unison_spaulders_t : public unique_gear::scoped_actor_callback_t<monk_t>
-{
-  unison_spaulders_t() : super( MONK_MISTWEAVER )
-  {
-  }
-
-  void manipulate( monk_t* monk, const special_effect_t& e ) override
-  {
-    monk->legendary.unison_spaulders = e.driver();
-  }
-};
-
-// Windwalker Legendary Effects
-struct cenedril_reflector_of_hatred_t : public unique_gear::scoped_actor_callback_t<monk_t>
-{
-  cenedril_reflector_of_hatred_t() : super( MONK_WINDWALKER )
-  {
-  }
-
-  void manipulate( monk_t* monk, const special_effect_t& e ) override
-  {
-    monk->legendary.cenedril_reflector_of_hatred = e.driver();
-  }
-};
-
-struct drinking_horn_cover_t : public unique_gear::scoped_actor_callback_t<monk_t>
-{
-  drinking_horn_cover_t() : super( MONK_WINDWALKER )
-  {
-  }
-
-  void manipulate( monk_t* monk, const special_effect_t& e ) override
-  {
-    monk->legendary.drinking_horn_cover = e.driver();
-  }
-};
-
-struct hidden_masters_forbidden_touch_t : public unique_gear::scoped_actor_callback_t<monk_t>
-{
-  hidden_masters_forbidden_touch_t() : super( MONK_WINDWALKER )
-  {
-  }
-
-  void manipulate( monk_t* monk, const special_effect_t& e ) override
-  {
-    monk->legendary.hidden_masters_forbidden_touch = e.driver();
-  }
-};
-
-struct katsuos_eclipse_t : public unique_gear::scoped_actor_callback_t<monk_t>
-{
-  katsuos_eclipse_t() : super( MONK_WINDWALKER )
-  {
-  }
-
-  void manipulate( monk_t* monk, const special_effect_t& e ) override
-  {
-    monk->legendary.katsuos_eclipse = e.driver();
-  }
-};
-
-struct march_of_the_legion_t : public unique_gear::scoped_actor_callback_t<monk_t>
-{
-  march_of_the_legion_t() : super( MONK_WINDWALKER )
-  {
-  }
-
-  void manipulate( monk_t* monk, const special_effect_t& e ) override
-  {
-    monk->legendary.march_of_the_legion = e.driver();
-  }
-};
-
-struct the_emperors_capacitor_t : public unique_gear::scoped_actor_callback_t<monk_t>
-{
-  the_emperors_capacitor_t() : super( MONK_WINDWALKER )
-  {
-  }
-
-  void manipulate( monk_t* monk, const special_effect_t& e ) override
-  {
-    monk->legendary.the_emperors_capacitor = e.driver();
-  }
-};
-
-struct the_wind_blows_t : public unique_gear::scoped_actor_callback_t<monk_t>
-{
-  the_wind_blows_t() : super( MONK_WINDWALKER )
-  {
-  }
-
-  void manipulate( monk_t* monk, const special_effect_t& e ) override
-  {
-    monk->legendary.the_wind_blows = e.driver();
-    monk->cooldown.fist_of_the_white_tiger->duration *= 1 - monk->legendary.the_wind_blows->effectN( 1 ).percent();
-  }
-};
-
 void init()
 {
-  // Legion Artifacts
-  unique_gear::register_special_effect( 214854, fists_of_the_heavens );
-  unique_gear::register_special_effect( 214483, sheilun_staff_of_the_mists );
-  unique_gear::register_special_effect( 214852, fu_zan_the_wanderers_companion );
-
-  // Legion Legendary Effects
-  // General
-  unique_gear::register_special_effect( 207692, cinidaria_the_symbiote_t() );
-  unique_gear::register_special_effect( 207428, prydaz_xavarics_magnum_opus_t() );
-  unique_gear::register_special_effect( 208051, sephuzs_secret_enabler_t() );
-  unique_gear::register_special_effect( 208051, sephuzs_secret_t(), true );
-
-  // Brewmaster
-  unique_gear::register_special_effect( 224489, firestone_walkers_t() );
-  unique_gear::register_special_effect( 208878, fundamental_observation_t() );
-  unique_gear::register_special_effect( 208837, gai_plins_soothing_sash_t() );
-  unique_gear::register_special_effect( 208881, jewel_of_the_lost_abbey_t() );
-  unique_gear::register_special_effect( 212935, salsalabims_lost_tunic_t() );
-  unique_gear::register_special_effect( 248044, stormstouts_last_gasp_t() );
-
-  // Mistweaver
-  unique_gear::register_special_effect( 217153, eithas_lunar_glides_of_eramas_t() );
-  unique_gear::register_special_effect( 217473, eye_of_collidus_the_warp_watcher_t() );
-  unique_gear::register_special_effect( 216506, leggings_of_the_black_flame_t() );
-  unique_gear::register_special_effect( 217634, ovyds_winter_wrap_t() );
-  unique_gear::register_special_effect( 206902, petrichor_lagniappe_t() );
-  unique_gear::register_special_effect( 212123, unison_spaulders_t() );
-
-  // Windwalker
-  unique_gear::register_special_effect( 208842, cenedril_reflector_of_hatred_t() );
-  unique_gear::register_special_effect( 209256, drinking_horn_cover_t() );
-  unique_gear::register_special_effect( 213112, hidden_masters_forbidden_touch_t() );
-  unique_gear::register_special_effect( 208045, katsuos_eclipse_t() );
-  unique_gear::register_special_effect( 212132, march_of_the_legion_t() );
-  unique_gear::register_special_effect( 235053, the_emperors_capacitor_t() );
-  unique_gear::register_special_effect( 248101, the_wind_blows_t() );
 }
 }  // namespace items
 
@@ -7654,12 +7004,12 @@ void monk_t::trigger_sephuzs_secret( const action_state_t* state, spell_mechanic
 
   // Ensure Sephuz's Secret can even be procced. If the ring is not equipped, a fallback buff with
   // proc chance of 0 (disabled) will be created
-  if ( buff.sephuzs_secret->default_chance == 0 )
-  {
-    return;
-  }
+  //if ( buff.sephuzs_secret->default_chance == 0 )
+  //{
+  //  return;
+  //}
 
-  buff.sephuzs_secret->trigger( 1, buff_t::DEFAULT_VALUE(), override_proc_chance );
+  //buff.sephuzs_secret->trigger( 1, buff_t::DEFAULT_VALUE(), override_proc_chance );
 }
 
 void monk_t::trigger_mark_of_the_crane( action_state_t* s )
@@ -8118,7 +7468,7 @@ void monk_t::init_base_stats()
     {
       base_gcd += spec.brewmaster_monk->effectN( 14 ).time_value();  // Saved as -500 milliseconds
       base.attack_power_per_agility                      = 1.0;
-      base.spell_power_per_attack_power                  = spec.brewmaster_monk->effectN( 19 ).percent();
+      base.spell_power_per_attack_power                  = spec.brewmaster_monk->effectN( 18 ).percent();
       resources.base[ RESOURCE_ENERGY ]                  = 100;
       resources.base[ RESOURCE_MANA ]                    = 0;
       resources.base[ RESOURCE_CHI ]                     = 0;
@@ -8129,6 +7479,7 @@ void monk_t::init_base_stats()
     case MONK_MISTWEAVER:
     {
       base.spell_power_per_intellect                     = 1.0;
+      base.attack_power_per_spell_power                  = spec.mistweaver_monk->effectN( 4 ).percent();
       resources.base[ RESOURCE_ENERGY ]                  = 0;
       resources.base[ RESOURCE_CHI ]                     = 0;
       resources.base_regen_per_second[ RESOURCE_ENERGY ] = 0;
@@ -8138,14 +7489,14 @@ void monk_t::init_base_stats()
     {
       if ( base.distance < 1 )
         base.distance = 5;
-      base_gcd += spec.windwalker_monk->effectN( 14 ).time_value();  // Saved as -500 milliseconds
+      //base_gcd += spec.windwalker_monk->effectN( 14 ).time_value();  // Saved as -500 milliseconds
       base.attack_power_per_agility     = 1.0;
-      base.spell_power_per_attack_power = spec.windwalker_monk->effectN( 15 ).percent();
+      base.spell_power_per_attack_power = spec.windwalker_monk->effectN( 14 ).percent();
       resources.base[ RESOURCE_ENERGY ] = 100;
       resources.base[ RESOURCE_ENERGY ] += talent.ascension->effectN( 3 ).base_value();
       resources.base[ RESOURCE_MANA ] = 0;
       resources.base[ RESOURCE_CHI ]  = 4;
-      resources.base[ RESOURCE_CHI ] += spec.windwalker_monk->effectN( 12 ).base_value();
+      resources.base[ RESOURCE_CHI ] += spec.windwalker_monk->effectN( 11 ).base_value();
       resources.base[ RESOURCE_CHI ] += talent.ascension->effectN( 1 ).base_value();
       resources.base_regen_per_second[ RESOURCE_ENERGY ] = 10.0;
       resources.base_regen_per_second[ RESOURCE_MANA ]   = 0;
@@ -8271,10 +7622,7 @@ void monk_t::create_buffs()
                            (int)( talent.focused_thunder ? talent.focused_thunder->effectN( 1 ).base_value() : 0 ) );
 
   buff.uplifting_trance = make_buff( this, "uplifting_trance", find_spell( 197916 ) )
-                              ->set_chance( spec.renewing_mist->effectN( 2 ).percent() +
-                                            ( sets->has_set_bonus( MONK_MISTWEAVER, T19, B2 )
-                                                  ? sets->set( MONK_MISTWEAVER, T19, B2 )->effectN( 1 ).percent()
-                                                  : 0 ) )
+                              ->set_chance( spec.renewing_mist->effectN( 2 ).percent() )
                               ->set_default_value( find_spell( 197916 )->effectN( 1 ).percent() );
 
   // Windwalker
@@ -8318,13 +7666,6 @@ void monk_t::create_buffs()
   buff.touch_of_karma = new buffs::touch_of_karma_buff_t( *this, "touch_of_karma", find_spell( 125174 ) );
 
   buff.windwalking_driver = new buffs::windwalking_driver_t( *this, "windwalking_aura_driver", find_spell( 166646 ) );
-
-  // Legendaries
-  buff.hidden_masters_forbidden_touch =
-      new buffs::hidden_masters_forbidden_touch_t( *this, "hidden_masters_forbidden_touch", find_spell( 213114 ) );
-
-  buff.the_emperors_capacitor = make_buff( this, "the_emperors_capacitor", passives.the_emperors_capacitor )
-                                    ->set_default_value( passives.the_emperors_capacitor->effectN( 1 ).percent() );
 
   // Azerite Traits
   buff.swift_roundhouse = make_buff( this, "swift_roundhouse", find_spell( 278710 ) )
@@ -8719,17 +8060,17 @@ double monk_t::clear_stagger()
  */
 double shared_composite_haste_modifiers( const monk_t& p, double h )
 {
-  if ( p.buff.sephuzs_secret && p.buff.sephuzs_secret->check() )
-  {
-    h *= 1.0 / ( 1.0 + p.buff.sephuzs_secret->stack_value() );
-  }
+//  if ( p.buff.sephuzs_secret && p.buff.sephuzs_secret->check() )
+//  {
+//    h *= 1.0 / ( 1.0 + p.buff.sephuzs_secret->stack_value() );
+//  }
 
   // 7.2 Sephuz's Secret passive haste. If the item is missing, default_chance will be set to 0 (by
   // the fallback buff creator).
-  if ( p.legendary.sephuzs_secret && p.level() < 120 )
-  {
-    h *= 1.0 / ( 1.0 + p.legendary.sephuzs_secret->effectN( 3 ).percent() );
-  }
+//  if ( p.legendary.sephuzs_secret && p.level() < 120 )
+//  {
+//    h *= 1.0 / ( 1.0 + p.legendary.sephuzs_secret->effectN( 3 ).percent() );
+//  }
 
   if ( p.talent.high_tolerance->ok() )
   {
@@ -8965,8 +8306,8 @@ double monk_t::temporary_movement_modifier() const
 {
   double active = player_t::temporary_movement_modifier();
 
-  if ( buff.sephuzs_secret->up() )
-    active = std::max( buff.sephuzs_secret->data().effectN( 1 ).percent(), active );
+//  if ( buff.sephuzs_secret->up() )
+//    active = std::max( buff.sephuzs_secret->data().effectN( 1 ).percent(), active );
 
   if ( buff.chi_torpedo->up() )
     active = std::max( buff.chi_torpedo->stack_value(), active );
@@ -8985,8 +8326,8 @@ double monk_t::passive_movement_modifier() const
 
   // 7.2 Sephuz's Secret passive movement speed. If the item is missing, default_chance will be set
   // to 0 (by the fallback buff creator).
-  if ( legendary.sephuzs_secret && level() < 120 )
-    ms += legendary.sephuzs_secret->effectN( 2 ).percent();
+//  if ( legendary.sephuzs_secret && level() < 120 )
+//    ms += legendary.sephuzs_secret->effectN( 2 ).percent();
 
   return ms;
 }
@@ -9179,10 +8520,15 @@ double monk_t::resource_regen_per_second( resource_e r ) const
   if ( r == RESOURCE_ENERGY )
   {
     reg *= 1.0 + talent.ascension->effectN( 2 ).percent();
-    // Memory of Lucid Dreams
-    if ( player_t::buffs.memory_of_lucid_dreams->check() )
-      reg *= 1.0 + player_t::buffs.memory_of_lucid_dreams->data().effectN( 1 ).percent();
   }
+  else if ( r == RESOURCE_MANA )
+  {
+    reg *= 1.0 + spec.mistweaver_monk->effectN( 8 ).percent();
+  }
+
+  // Memory of Lucid Dreams
+  if ( player_t::buffs.memory_of_lucid_dreams->check() )
+    reg *= 1.0 + player_t::buffs.memory_of_lucid_dreams->data().effectN( 1 ).percent();
 
   return reg;
 }
@@ -9203,8 +8549,7 @@ void monk_t::combat_begin()
     {
       buffs.windwalking_movement_aura->trigger(
           1,
-          buffs.windwalking_movement_aura->data().effectN( 1 ).percent() +
-              ( legendary.march_of_the_legion ? legendary.march_of_the_legion->effectN( 1 ).percent() : 0.0 ),
+          buffs.windwalking_movement_aura->data().effectN( 1 ).percent(),
           1, timespan_t::zero() );
     }
 
@@ -9226,21 +8571,6 @@ void monk_t::assess_damage( school_e school, result_amount_type dtype, action_st
     {
       if ( buff.elusive_brawler->up() )
         buff.elusive_brawler->expire();
-
-      if ( legendary.anvil_hardened_wristwraps && level() < 120 )
-        cooldown.brewmaster_active_mitigation->adjust(
-            -1 * timespan_t::from_seconds( legendary.anvil_hardened_wristwraps->effectN( 1 ).base_value() / 10 ) );
-
-      if ( sets->has_set_bonus( MONK_BREWMASTER, T21, B4 ) )
-        // Value is saved as 20 instead of 2
-        cooldown.breath_of_fire->adjust(
-            -1 * timespan_t::from_seconds( sets->set( MONK_BREWMASTER, T21, B4 )->effectN( 1 ).base_value() / 10 ) );
-    }
-    if ( s->result == RESULT_MISS )
-    {
-      if ( legendary.anvil_hardened_wristwraps && level() < 120 )
-        cooldown.brewmaster_active_mitigation->adjust(
-            -1 * timespan_t::from_seconds( legendary.anvil_hardened_wristwraps->effectN( 1 ).base_value() / 10 ) );
     }
   }
 

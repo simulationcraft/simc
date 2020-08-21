@@ -262,16 +262,16 @@
       { "data_type": "i", "field": "id"    },
       { "data_type": "i", "field": "id_garr_talent_tree", "ref": "GarrTalentTree" },
       { "data_type": "b", "field": "tier"  },
-      { "data_type": "b", "field": "unk_0" },
-      { "data_type": "i", "field": "unk_1" },
+      { "data_type": "b", "field": "ui_order" },
+      { "data_type": "i", "field": "id_icon_file_data" },
       { "data_type": "I", "field": "unk_2" },
       { "data_type": "I", "field": "id_garr_ability" },
       { "data_type": "b", "field": "unk_3" },
       { "data_type": "i", "field": "unk_4" },
-      { "data_type": "i", "field": "unk_5" },
+      { "data_type": "i", "field": "id_garr_talent_prereq" },
       { "data_type": "i", "field": "unk_6" },
       { "data_type": "i", "field": "unk_7" },
-      { "data_type": "b", "field": "unk_8" }
+      { "data_type": "b", "field": "conduit_type" }
     ]
   },
   "GarrTalentTree": {

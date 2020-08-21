@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35522 shadowlands-BETA (hotfix 2020-08-16/35522, git build shadowlands 9535202862)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35598 shadowlands-BETA (hotfix 2020-08-20/35598)
 
 Name             : Haste (id=65) [Scaling Spell (-1)] 
 Class            : Paladin
@@ -115,6 +115,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .....
 Effects          :
 #1 (id=211)      : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 Description      : Reduces all damage you take by $s1% for $d.
 Tooltip          : Damage taken reduced by $w1%.
 
@@ -236,6 +237,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Unknown(57)
 #3 (id=263966)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7e | Target: Unknown(57)
+                   Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
 Description      : Blesses a party or raid member, granting immunity to Physical damage and harmful effects for $d.
 
 Cannot be used on a target with Forbearance. Causes Forbearance for $25771d.
@@ -603,6 +605,7 @@ Effects          :
                    Base Value: 350 | Scaled Value: 350 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
 #2 (id=15692)    : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 Description      : Increases your threat generation while active, making you a more effective tank.
 Tooltip          : Increases your threat generation while active.
 
@@ -789,6 +792,7 @@ Attributes       : ....x... ........ ........ ........   ........ ..x..... .....
 Effects          :
 #1 (id=21513)    : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 #2 (id=21514)    : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=728128)   : Apply Aura (6) | Unknown(316)
@@ -1023,7 +1027,7 @@ Resource         : 3 Holy Power (9) (id=2444)
 Spell Level      : 23
 GCD              : 1.5 seconds
 Requires weapon  : Two-handed Axe, Two-handed Mace, Polearm, Two-handed Sword, Staff
-Affecting spells : Avenging Wrath (31884 effect#1), Inquisition (84963 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Holy Paladin (137029 effect#5), Judgment (197277 effect#1), Whisper of the Nathrezim (207635 effect#1), Fires of Justice (209785 effect#1), Divine Purpose (223819 effect#1), Crusade (231895 effect#1), Scarlet Inquisitor's Expurgation (248289 effect#1), Sacred Judgment (253806 effect#1), Wake of Ashes (255937 effect#4), Mastery: Hand of Light (267316 effect#1), Execution Sentence (267799 effect#1), Empyrean Power (286393 effect#1), Avenging Wrath (294027 effect#1), Empyrean Power (326733 effect#1), The Magistrate's Judgment (337682 effect#1), Blessing of Dawn (337747 effect#1), 
+Affecting spells : Avenging Wrath (31884 effect#1), Inquisition (84963 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Holy Paladin (137029 effect#5), Judgment (197277 effect#1), Whisper of the Nathrezim (207635 effect#1), Fires of Justice (209785 effect#1), Divine Purpose (223819 effect#1), Crusade (231895 effect#1), Scarlet Inquisitor's Expurgation (248289 effect#1), Sacred Judgment (253806 effect#1), Wake of Ashes (255937 effect#4), Mastery: Hand of Light (267316 effect#1), Execution Sentence (267799 effect#1), Empyrean Power (286393 effect#1), Avenging Wrath (294027 effect#1), Empyrean Power (326733 effect#1), Tempest of the Lightbringer (337257 effect#2), The Magistrate's Judgment (337682 effect#1), Blessing of Dawn (337747 effect#1), 
 Family Flags     : 27, 49, 65
 Attributes       : ........ ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1154,7 +1158,7 @@ Attributes       : ........ ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=46256)    : School Damage (2): holy
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.50000 | PvP Coefficient: 1.00000 | Radius: 6 yards | Target: Cone Front (104)
-Description      : Slams enemies in front of you with your shield, causing $s1 Holy damage, and increasing your Armor by ${$132403s1*$STR/100} for $132403d.
+Description      : Slams enemies in front of you with your shield, causing $s1 Holy damage, and increasing your Armor by $?c1[${$132403s1*$INT/100}][${$132403s1*$STR/100}] for $132403d.
 
 Name             : Light's Beacon (id=53651) [Spell Family (10), Passive, Hidden] 
 Class            : Holy Paladin
@@ -1478,6 +1482,7 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=71772)    : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -1 | Scaled Value: -1 | PvP Coefficient: 1.00000 | Misc Value: 0x28 | Target: Self (1)
+                   Affected School(s): Nature, Shadow
 Description      : Reduces Shadow and Nature damage taken by $s1%.
 Tooltip          : Reduces Shadow and Nature damage taken by $s1%.
 
@@ -1867,6 +1872,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=102488)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 Description      : Empowers you with the spirit of ancient kings, reducing all damage you take by $86657s2% for $d.
 Tooltip          : Damage taken reduced by $86657s2%.
 
@@ -2092,6 +2098,7 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=115800)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 #2 (id=132822)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
 #3 (id=166229)   : Apply Aura (6) | Modify Dodge% (49)
@@ -2497,9 +2504,9 @@ Attributes       : ........ ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=171373)   : Apply Aura (6) | Modify Armor by Primary Stat% (268)
-                   Base Value: 190 | Scaled Value: 190 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 190 | Scaled Value: 190 | PvP Coefficient: 1.00000 | Misc Value: -2 | Target: Self (1)
 Description      : $@spelldesc53600
-Tooltip          : Armor increased by ${$W1*$STR/100}.
+Tooltip          : Armor increased by $?c1[${$W1*$INT/100}][${$W1*$STR/100}].
 
 Name             : Paladin (id=137026) [Spell Family (10), Passive, Hidden] 
 Class            : Paladin
@@ -2895,7 +2902,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 126 | Misc Value 2: 0xffffffec | Target: Self (1)
 Description      : Your block chance is increased by $s1%, you are able to block spells, and your successful blocks deal $157122s1 Holy damage to your attacker.
 
-Name             : Seraphim (id=152262) [Scaling Spell (-1), Spell Family (10)] 
+Name             : Seraphim (id=152262) [Spell Family (10)] 
 Class            : Paladin
 School           : Holy
 Spell Type       : None
@@ -2914,10 +2921,16 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
 Effects          :
-#1 (id=210813)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 0 | Scaled Value: 307.5464 (coefficient=3.23733) | PvP Coefficient: 1.00000 | Misc Value: 1913521920 | Target: Self (1)
-Description      : The Light magnifies your power for $d, granting $s1 Haste, Critical Strike, Mastery, and Versatility.
-Tooltip          : Haste, Critical Strike, Mastery, and Versatility increased by $s1.
+#1 (id=210813)   : Apply Aura (6) | Modify Critical Strike% (290)
+                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Self (1)
+#2 (id=843936)   : Apply Aura (6) | Modify Versatility% (471)
+                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Self (1)
+#3 (id=843937)   : Apply Aura (6) | Modify All Haste% (193)
+                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Self (1)
+#4 (id=843938)   : Apply Aura (6) | Modify Mastery% (318)
+                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : The Light magnifies your power for $d, granting $s1% Haste, Critical Strike, and Versatility, and $?c1[${$s4*$183997bc1}]?c2[${$s4*$76671bc1}][${$s4*$267316bc1}]% Mastery.
+Tooltip          : Haste, Critical Strike, and Versatility increased by $s1%, and Mastery increased by $?c1[${$s4*$183997bc1}]?c2[${$s4*$76671bc1}][${$s4*$267316bc1}]%.
 
 Name             : Arcane Torrent (desc=Racial) (id=155145) 
 Class            : Paladin
@@ -4112,6 +4125,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=316391)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -35 | Scaled Value: -35 | PvP Coefficient: 1.00000 | Misc Value: 0x1 | Target: Self (1)
+                   Affected School(s): Physical
 Description      : Surround yourself with a bladed bulwark, reducing Physical damage taken by $s2% and dealing $205202sw1 Physical damage to any melee attackers for $d.
 Tooltip          : Counterattacking all melee attacks.
 
@@ -4161,7 +4175,8 @@ Effects          :
 #3 (id=324546)   : Apply Aura (6) | Periodic Damage (3): holyfire every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.29400 | PvP Coefficient: 1.00000 | Radius: 12 yards | Target: Cone Front (104)
 #4 (id=356924)   : Apply Aura (6) | Modify Damage Taken% from Caster (270)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 127 | Radius: 12 yards | Target: Cone Front (104)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Radius: 12 yards | Target: Cone Front (104)
+                   Affected School(s): All
 Description      : Lash out with the |cFFFFCC99Ashbringer|r, dealing $sw1 Radiant damage$?a179546[, and an additional $o3 Radiant damage over $d,][] to all enemies within $a1 yd in front of you, and reducing movement speed by $s2% for $d.
 
 Demon and Undead enemies are stunned for $205290d if struck by the Wake of Ashes.$?a179546[
@@ -4592,6 +4607,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .x...
 Effects          :
 #1 (id=331128)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 #2 (id=331129)   : Apply Aura (6) | Increase Mounted Speed% (172)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=331130)   : Apply Aura (6) | Dummy (4)
@@ -4678,7 +4694,7 @@ Effects          :
 #1 (id=334770)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Divine Storm (53385), Shield of the Righteous (53600), Inquisition (84963), Light of Dawn (85222), Templar's Verdict (85256), Word of Glory (85673), Seraphim (152262), Justicar's Vengeance (215661), Light of Dawn (225311), Execution Sentence (267798), Execution Sentence (267799), Final Verdict (336872)
-                   Family Flags: 10, 31, 49, 52, 55, 77, 78, 82, 88, 111
+                   Family Flags: 31, 49, 52, 55, 77, 78, 82, 88, 111
 #2 (id=739426)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.66667 | Target: Self (1)
                    Affected Spells: Divine Storm (53385), Shield of the Righteous (53600), Light of Dawn (85222), Templar's Verdict (85256), Word of Glory (85673), Seraphim (152262), Justicar's Vengeance (215661), Templar's Verdict (224266), Light of Dawn (225311), Execution Sentence (267798), Execution Sentence (267799), Final Verdict (336872)
@@ -5208,6 +5224,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=477698)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -1 | Scaled Value: -1 | PvP Coefficient: 1.00000 | Misc Value: 0x2 | Target: Self (1)
+                   Affected School(s): Holy
 Description      : Reduces Holy damage taken by ${$s1/-1}%.
 
 Name             : Light's Reckoning (desc=Racial Passive) (id=255652) [Passive] 
@@ -7733,7 +7750,7 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
 #3 (id=740279)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 0x17 | Target: Self (1)
-                   Affected School(s): Physical, Holy, Fire, Frost
+                   Affected School(s): Fire, Frost, Holy, Physical
 Description      : $@spelldesc206338
 
 Name             : Tradewinds (id=281841) [Scaling Spell (-7), Passive] 
@@ -8393,6 +8410,7 @@ Class            : Paladin
 Covenant         : Venthyr
 School           : Shadow
 Spell Type       : None
+Resource         : 20% Base Mana (0) (id=215309)
 Range            : 30 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
@@ -8472,7 +8490,7 @@ Attributes       : ........ ........ ........ ........   ...x...x ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=802277)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.68000 | PvP Coefficient: 1.00000 | Radius: 20 yards | Target: AOE friendly (31)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.25000 | PvP Coefficient: 1.00000 | Radius: 20 yards | Target: AOE friendly (31)
 Description      : $@spelldesc316958
 
 Name             : Hammer of the Righteous (desc=Rank 2) (id=317854) [Spell Family (10), Passive] 
@@ -8790,16 +8808,14 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Trigger Spell: 326733 | Target: Self (1)
 Description      : Crusader Strike has a $s1% chance to make your next Divine Storm free and deal $326733s1% additional damage.
 
-Name             : Empyrean Power (id=326733) [Scaling Spell (-1), Spell Family (10)] 
+Name             : Empyrean Power (id=326733) [Spell Family (10)] 
 Class            : Paladin
 School           : Holy
 Spell Type       : None
 Range            : 100 yards
 Duration         : 15 seconds
 Stacks           : 1 initial, 1 maximum
-Proc Chance      : 101%
-Proc Flags       : ....x... ........ ........ ........ 
-                 : Yellow Melee
+Proc Chance      : 100%
 Triggered by     : Empyrean Power (326732)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -9002,7 +9018,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=820203)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.80000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.12000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=820204)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Throws a hammer at your target dealing $s1 Shadow damage, and empowering your next $?c3[Templar's Verdict to automatically trigger Divine Storm]?c1[Word of Glory to automatically trigger Light of Dawn][Word of Glory to automatically trigger Shield of the Righteous].
@@ -9033,13 +9049,14 @@ Class            : Paladin
 Covenant         : Night Fae
 School           : Nature
 Spell Type       : None
+Resource         : 5% Base Mana (0) (id=215312)
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 30 seconds
-Cooldown         : 30 seconds
+Cooldown         : 45 seconds
 Category         : 1890
 Labels           : 1079: The Long Summer (340185 effect#1)
-Category Cooldown: 30 seconds
+Category Cooldown: 45 seconds
 Proc Chance      : 40%
 Proc Flags       : ..x.x.x. x...x... x.x..... ........ 
                  : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Periodic

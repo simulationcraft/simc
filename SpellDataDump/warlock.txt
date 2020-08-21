@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35522 shadowlands-BETA (hotfix 2020-08-16/35522, git build shadowlands 9535202862)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35598 shadowlands-BETA (hotfix 2020-08-20/35598)
 
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
@@ -63,7 +63,7 @@ Class            : Destruction Warlock
 School           : Fire
 Spell Type       : Magic
 Resource         : 1.5% Base Mana (0) (id=43)
-Spell Level      : 10
+Spell Level      : 11
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
@@ -224,7 +224,7 @@ Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
 Resource         : 5% Base Mana (0) (id=82)
-Spell Level      : 31
+Spell Level      : 33
 Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 120 seconds
@@ -280,7 +280,7 @@ Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
 Resource         : 1.5% Base Mana (0) (id=87)
-Spell Level      : 33
+Spell Level      : 46
 Range            : 30 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
@@ -382,12 +382,12 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.01120 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=198244)   : Apply Aura (6) | Periodic Dummy (226): every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Description      : Inflicts increasing agony on the target, causing up to ${$ceil($o1+2)*$u} Shadow damage over $d. Damage starts low and increases over the duration. Refreshing Agony maintains its current damage level.
+Description      : Inflicts increasing agony on the target, causing up to ${($s1+0.1)*$d/$t1*$u} Shadow damage over $d. Damage starts low and increases over the duration. Refreshing Agony maintains its current damage level.
 
 |cFFFFFFFFAgony damage sometimes generates 1 Soul Shard.|r
 Tooltip          : Suffering $w1 Shadow damage every $t1 sec. Damage increases over time.
 
-Name             : Enslave Demon (id=1098) [Spell Family (5)] 
+Name             : Subjugate Demon (id=1098) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
@@ -412,15 +412,15 @@ Effects          :
 #2 (id=327741)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Enemy (6)
                    Affected School(s): All
-Description      : Enslaves the target demon up to level $s1, forcing it to do your bidding for $d.
-Tooltip          : Enslaved.
+Description      : Subjugates the target demon up to level $s1, forcing it to do your bidding for $d.
+Tooltip          : $@auracaster's subject.
 
 Name             : Summon Infernal (desc=Guardian) (id=1122) [Spell Family (5)] 
 Class            : Destruction Warlock
 School           : Shadow
 Spell Type       : Magic
 Resource         : 2% Base Mana (0) (id=118)
-Spell Level      : 24
+Spell Level      : 42
 Range            : 30 yards
 GCD              : 1.5 seconds
 Velocity         : 1 yards/sec
@@ -429,8 +429,8 @@ Cooldown         : 180 seconds
 Category         : 731
 Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
 Category Cooldown: 180 seconds
-Affecting spells : Conflagrate (265931 effect#1), Crashing Chaos (277705 effect#2), Summon Infernal (335175 effect#1)
-Family Flags     : 50
+Affecting spells : Crashing Chaos (277705 effect#2), Summon Infernal (335175 effect#1)
+Family Flags     : 50, 105
 Attributes       : ........ ........ ........ ........   ........ ........ .x...... ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -608,7 +608,7 @@ Class            : Destruction Warlock
 School           : Fire
 Spell Type       : Magic
 Resource         : 3 Soul Shard (7) (id=247)
-Spell Level      : 15
+Spell Level      : 28
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 8 seconds
@@ -642,7 +642,7 @@ Range            : 30 yards
 Cast Time        : 1.7 seconds
 GCD              : 1.5 seconds
 Category         : 1266
-Affecting spells : Increased Fear Break Threshold (95677 effect#1)
+Affecting spells : Increased Fear Break Threshold (95677 effect#1), Fear (342914 effect#1)
 Family Flags     : 42, 111
 Attributes       : ........ ........ x....... ......x.   ........ ..x..... ........ .x...... 
                  : ........ ........ ........ ........   x....... ........ ........ ..x..... 
@@ -753,7 +753,9 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=357193)   : Energize Power (30)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: rage | Target: Self (1)
-Description      : Blasts all enemies within $6343A1 yards for $s1 Physical damage$?(s316414&s199045)[, rooting them for $199042d and reducing their movement speed by $s2% for $d.]?s199045[ and roots them for $199042d.]?s316414[ and reduces their movement speed by $s2% for $d.][.] Deals reduced damage to secondary targets.
+#5 (id=844585)   : Dummy (3)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Blasts all enemies within $6343A1 yards for $s1 Physical damage$?(s316414&s199045)[, rooting them for $199042d and reducing their movement speed by $s2% for $d.]?s199045[ and roots them for $199042d.]?s316414[ and reduces their movement speed by $s2% for $d.][.] Deals reduced damage beyond $s5 targets.
 
 |cFFFFFFFFGenerates ${$s4/10} Rage.|r
 Tooltip          : Movement speed reduced by $s2%.
@@ -1066,7 +1068,7 @@ Class            : Destruction Warlock
 School           : Fire
 Spell Type       : Magic
 Resource         : 1% Base Mana (0) (id=7367)
-Spell Level      : 10
+Spell Level      : 13
 Range            : 40 yards
 GCD              : 1.5 seconds
 Charges          : 1 (12.96 seconds cooldown)
@@ -1285,7 +1287,7 @@ Spell Type       : Magic
 Spell Level      : 22
 Range            : 50000 yards
 Duration         : 2 seconds
-Affecting spells : Conflagrate (265931 effect#1), Crashing Chaos (277705 effect#2), Summon Infernal (335175 effect#1)
+Affecting spells : Crashing Chaos (277705 effect#2), Summon Infernal (335175 effect#1)
 Triggered by     : Summon Infernal (1122)
 Family Flags     : 50
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
@@ -1310,7 +1312,7 @@ Class            : Affliction Warlock
 School           : Shadow
 Spell Type       : Magic
 Resource         : 1 Soul Shard (7) (id=1066)
-Spell Level      : 14
+Spell Level      : 27
 Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
@@ -1598,7 +1600,7 @@ Variables        : $demoMastery=$?s77219[${1+0.01*$77219m1}][${1}]
 $damage=${0.816*($SP*0.5)*$<demoMastery>*(1+$@versadmg)}
 
 Name             : Shadowfury (id=30283) [Spell Family (5)] 
-Class            : Affliction Demonology Destruction Warlock
+Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
 Resource         : 1% Base Mana (0) (id=192757)
@@ -1653,7 +1655,7 @@ Name             : Shadow Embrace (id=32388) [Spell Family (5), Passive]
 Class            : Affliction Warlock
 School           : Shadow
 Spell Type       : None
-Spell Level      : 52
+Spell Level      : 58
 Proc Chance      : 100%
 Proc Flags       : ........ ........ x.x..... ........ 
                  : Magic Hostile Spell, Periodic
@@ -1695,7 +1697,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Disable player procs (112), Disable target procs (113)
 Effects          :
 #1 (id=22181)    : Apply Aura (6) | Modify Damage Taken% from Caster (270)
-                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Enemy (6)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Enemy (6)
+                   Affected School(s): All
 Description      : $@spelldesc32388
 Tooltip          : Damage taken increased by $s1%.
 
@@ -1746,7 +1749,7 @@ School           : Fire
 Spell Type       : Magic
 Spell Level      : 14
 Range            : 100 yards
-Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Flamelicked (185229 effect#1), Conflagrate (265931 effect#1), Inferno (270545 effect#2), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), Rain of Fire (335189 effect#1), Wrath of Consumption (337130 effect#1)
+Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Flamelicked (185229 effect#1), Inferno (270545 effect#2), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), Rain of Fire (335189 effect#1), Wrath of Consumption (337130 effect#1)
 Family Flags     : 49, 92
 Attributes       : ........ ........ .......x x..x....   ...x.x.x ........ ........ ........ 
                  : ..x..... ......x. ...x.... ......x.   ........ .x...... ........ .x....x. 
@@ -1788,7 +1791,8 @@ Effects          :
 #1 (id=40331)    : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.68750 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=40332)    : Apply Aura (6) | Modify Damage Taken% from Caster (270)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Enemy (6)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Enemy (6)
+                   Affected School(s): All
 Description      : A ghostly soul haunts the target, dealing $s1 Shadow damage and increasing your damage dealt to the target by $s2% for $d.
 
 If the target dies, Haunt's cooldown is reset.
@@ -2013,6 +2017,7 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=71772)    : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -1 | Scaled Value: -1 | PvP Coefficient: 1.00000 | Misc Value: 0x28 | Target: Self (1)
+                   Affected School(s): Nature, Shadow
 Description      : Reduces Shadow and Nature damage taken by $s1%.
 Tooltip          : Reduces Shadow and Nature damage taken by $s1%.
 
@@ -2118,7 +2123,7 @@ Class            : Destruction Warlock
 School           : Shadow
 Spell Type       : Magic
 Resource         : 2% Base Mana (0) (id=3377)
-Spell Level      : 19
+Spell Level      : 27
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 10 seconds
@@ -2163,7 +2168,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=87009)    : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.68750 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 2 | Scaled Value: 2 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.68750 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=155200)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000
 Description      : Sends a shadowy bolt at the enemy, causing $s1 Shadow damage. Deals $s2% additional damage to targets below 20% health.
@@ -2565,15 +2570,15 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000
 Description      : Deals $s1 Fire damage to a target.
 
-Name             : Unending Resolve (desc=Rank 2) (id=104773) [Spell Family (5)] 
+Name             : Unending Resolve (id=104773) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
 Spell Type       : None
 Resource         : 2% Base Mana (0) (id=4978)
-Spell Level      : 39
+Spell Level      : 4
 Duration         : 8 seconds
 Cooldown         : 180 seconds
-Proc Chance      : 100%
+Affecting spells : Unending Resolve (317138 effect#1), 
 Family Flags     : 54, 67
 Attributes       : ....x... ........ ..x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2587,13 +2592,14 @@ Effects          :
 #1 (id=114369)   : Apply Aura (6) | Mechanic Immunity (77)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 26 | Target: Self (1)
 #2 (id=114370)   : Apply Aura (6) | Modify Casting Pushback (149)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 0xf | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 0xf | Target: Self (1)
 #3 (id=114371)   : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: -40 | Scaled Value: -40 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
+                   Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 #4 (id=162716)   : Apply Aura (6) | Mechanic Immunity (77)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 9 | Target: Self (1)
-Description      : Hardens your skin, reducing all damage you take by $s3% and granting immunity to interrupt and silence effects for $d.
-Tooltip          : Damage taken reduced by $w3%.
+Description      : Hardens your skin, reducing all damage you take by $s3% and granting immunity to interrupt$?s317138[, silence, and pushback][ and silence] effects for $d.
+Tooltip          : Damage taken reduced by $w3%
 Immune to interrupt and silence effects.
 
 Name             : Hand of Gul'dan (id=105174) [Spell Family (5)] 
@@ -2649,7 +2655,7 @@ Name             : Soul Leech (id=108370) [Spell Family (5), Passive]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
-Spell Level      : 20
+Spell Level      : 24
 Proc Chance      : 100%
 Proc Flags       : ..x.x... ....x... x.x..... ........ 
                  : White Melee, Yellow Melee, Generic Hostile Spell, Magic Hostile Spell, Periodic
@@ -2877,6 +2883,7 @@ Spell Type       : None
 Range            : 50000 yards
 Duration         : 30 seconds
 Triggered by     : Summon Infernal (1122)
+Family Flags     : 105
 Attributes       : ........ ........ x....... ........   ........ ........ .x...... ....x... 
                  : ..x..... ........ ...x.... ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3048,7 +3055,7 @@ Attributes       : ........ ........ ........ ........   .......x ........ .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
 Effects          :
@@ -3689,6 +3696,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=242704)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 0x1 | Target: Self (1)
+                   Affected School(s): Physical
 Description      : Intimidates any target you attack, increasing your threat generation.
 
 Also increases chance to dodge and parry by $s2%, and reduces physical damage taken by $s4%.
@@ -3744,7 +3752,6 @@ Spell Level      : 22
 Range            : 50000 yards
 Duration         : 2 seconds
 Cooldown         : 60 seconds
-Affecting spells : Conflagrate (265931 effect#1)
 Family Flags     : 17
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -4135,7 +4142,7 @@ Class            : Demonology Warlock
 School           : Shadowflame
 Spell Type       : Magic
 Resource         : 2% Base Mana (0) (id=10562)
-Spell Level      : 26
+Spell Level      : 27
 Range            : 40 yards
 GCD              : 1.5 seconds
 Affecting spells : Mastery: Master Demonologist (77219 effect#2)
@@ -4223,7 +4230,7 @@ Name             : Backdraft (id=196406) [Spell Family (5), Passive]
 Class            : Destruction Warlock
 School           : Physical
 Spell Type       : None
-Spell Level      : 12
+Spell Level      : 14
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4297,7 +4304,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=288282)   : Apply Aura (6) | Modify Damage Taken% from Caster (270)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Enemy (6)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Enemy (6)
+                   Affected School(s): All
 Description      : $@spelldesc196412
 Tooltip          : Damage taken from the Warlock increased by $s1%.
 
@@ -4759,7 +4767,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=302915)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Conflagrate increases your pure Fire damage to the target by $265931s1% for $265931d.
+Description      : Conflagrate increases your $?s6353[Soul Fire, ][]$?s196447[Channel Demonfire, ][]Immolate, Incinerate, and Conflagrate damage to the target by $265931s1% for $265931d.
 
 Name             : Dreadbite (id=205196) 
 Class            : Warlock
@@ -5221,14 +5229,14 @@ Name             : Unstable Affliction (desc=Rank 2) (id=231791) [Spell Family (
 Class            : Affliction Warlock
 School           : Fire
 Spell Type       : None
-Spell Level      : 15
+Spell Level      : 43
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ x....... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
                  : ........ ........ ........ ........   
                  : Passive (6)
 Effects          :
@@ -5240,14 +5248,14 @@ Name             : Agony (desc=Rank 2) (id=231792) [Spell Family (5), Passive]
 Class            : Affliction Warlock
 School           : Fire
 Spell Type       : None
-Spell Level      : 26
+Spell Level      : 28
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ x....... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
                  : ........ ........ ........ ........   
                  : Passive (6)
 Effects          :
@@ -5268,7 +5276,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ x....... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
                  : ........ ........ ........ ........   
                  : Passive (6)
 Effects          :
@@ -5288,7 +5296,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ x....... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
                  : ........ ........ ........ ........   
                  : Passive (6)
 Effects          :
@@ -5669,6 +5677,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=477698)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -1 | Scaled Value: -1 | PvP Coefficient: 1.00000 | Misc Value: 0x2 | Target: Self (1)
+                   Affected School(s): Holy
 Description      : Reduces Holy damage taken by ${$s1/-1}%.
 
 Name             : Light's Reckoning (desc=Racial Passive) (id=255652) [Passive] 
@@ -6208,6 +6217,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=708881)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -40 | Scaled Value: -40 | PvP Coefficient: 1.00000 | Misc Value: 0x1 | Target: Self (1)
+                   Affected School(s): Physical
 #2 (id=714434)   : Apply Aura (6) | Modify Attacker Crit Chance (197)
                    Base Value: -6 | Scaled Value: -6 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Encases the Voidwalker in shadow energy, reducing physical damage taken by $s1%.
@@ -6314,8 +6324,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=710538)   : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
-                   Affected Spells: Immolate (348), Summon Infernal (1122), Soul Fire (6353), Conflagrate (17962), Infernal Awakening (22703), Incinerate (29722), Rain of Fire (42223), Immolate (157736), Meteor Strike (171017), Channel Demonfire (196448), Incinerate (244670)
-                   Family Flags: 2, 4, 15, 17, 22, 38, 50, 55, 65, 71, 92
+                   Affected Spells: Immolate (348), Soul Fire (6353), Conflagrate (17962), Incinerate (29722), Immolate (157736), Channel Demonfire (196448), Incinerate (244670)
+                   Family Flags: 2, 4, 15, 38, 55, 65
 Description      : $@spelldesc205184
 Tooltip          : Fire damage taken increased by $s1%.
 Variables        : $mastery=$?s77220[${((100+$77220m3)/100)}][${1.00}]
@@ -7216,7 +7226,7 @@ Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
 Resource         : 2% Base Mana (0) (id=191574)
-Spell Level      : 27
+Spell Level      : 41
 Cast Time        : 0.5 seconds
 Cooldown         : 10 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9610,11 +9620,9 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.23000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=800327)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Description      : Afflicts the target with $o2 Shadow damage over $d. 
+Description      : Afflicts one target with $o2 Shadow damage over $d. 
 
 If dispelled, deals ${$s2*$s1/100} damage to the dispeller and silences them for $196364d.
-
-|cFFFFFFFFLimit 1.|r
 
 |cFFFFFFFFGenerates $231791m1 Soul $LShard:Shards; if the target dies while afflicted.|r
 Tooltip          : Suffering $w2 Shadow damage every $t2 sec. If dispelled, will cause ${$w2*$s1/100} damage to the dispeller and silence them for $196364d.
@@ -9623,7 +9631,7 @@ Name             : Thunder Clap (desc=Rank 2) (id=316414) [Spell Family (4), Pas
 Class            : Protection Warrior, Warlock
 School           : Physical
 Spell Type       : None
-Spell Level      : 32
+Spell Level      : 37
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9642,7 +9650,7 @@ Name             : Corruption (desc=Rank 2) (id=317031) [Spell Family (5), Passi
 Class            : Affliction Warlock
 School           : Shadow
 Spell Type       : Magic
-Spell Level      : 12
+Spell Level      : 14
 Range            : 40 yards
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9680,33 +9688,30 @@ Effects          :
                    Base Value: 0 | Scaled Value: 16.54624 (coefficient=0.174171) | PvP Coefficient: 0.50000 | Trigger Spell: 316101 | Target: Self (1)
 Description      : Your secondary stats are all increased by $s1 while your Corruption Level is 25 or higher.
 
-Name             : Unending Resolve (desc=Rank 1) (id=317138) [Spell Family (5)] 
+Name             : Unending Resolve (desc=Rank 2) (id=317138) [Spell Family (5), Passive] 
 Class            : Warlock
 School           : Shadow
 Spell Type       : None
-Resource         : 2% Base Mana (0) (id=192523)
-Spell Level      : 4
-Duration         : 8 seconds
-Cooldown         : 180 seconds
-Proc Chance      : 100%
-Family Flags     : 54, 67
-Attributes       : ....x... ........ ..x..... ........   ........ ..x..... ........ ........ 
+Spell Level      : 39
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ...x.... ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ x....... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
                  : ........ ........ ........ ........   
+                 : Passive (6)
 Effects          :
-#1 (id=802123)   : Apply Aura (6) | Mechanic Immunity (77)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 26 | Target: Self (1)
-#2 (id=802124)   : Apply Aura (6) | Modify Casting Pushback (149)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 0xf | Target: Self (1)
-#3 (id=802125)   : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
-Description      : Hardens your skin, reducing all damage you take by $s3%.
-Tooltip          : Damage taken reduced by $w3%.
+#1 (id=802123)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
+                   Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
+                   Affected Spells: Unending Resolve (104773)
+                   Family Flags: 54
+#2 (id=802124)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
+                   Affected Spells: Unending Resolve (104773)
+                   Family Flags: 54
+Description      : Unending Resolve now grants immunity to pushback and also reduces $s1% additional damage.
 
 Name             : Impending Catastrophe (desc=Venthyr) (id=321792) [Spell Family (5)] 
 Class            : Warlock
@@ -9734,39 +9739,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 19619 | Target: Unknown(62) -> Enemy (6)
 Description      : Call forth a cloud of chaotic anima that travels to the target enemy, dealing $322167s1 Shadow damage to enemies in its path. When the anima reaches the target it explodes, inflicting either Curse of Weakness or Curse of Tongues, and dealing $322170o1 Shadow damage over $322170d to all nearby enemies.
 
-Name             : Curse of Recklessness (id=321997) [Spell Family (5)] 
-Class            : Warlock
-School           : Shadow
-Spell Type       : Magic
-Resource         : 1% Base Mana (0) (id=192620)
-Spell Level      : 41
-Range            : 40 yards
-GCD              : 1.5 seconds
-Duration         : 120 seconds
-Family Flags     : 95
-Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   .......x ........ ......x. ........ 
-                 : ........ ........ ........ ........   
-Effects          :
-#1 (id=810068)   : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 0x1 | Target: Enemy (6)
-                   Affected School(s): Physical
-#2 (id=810069)   : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 0x1 | Target: Enemy (6)
-#3 (id=810070)   : Apply Aura (6) | Unknown(92)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Description      : Increases an enemy's physical damage done by $s1%, but increases its physical damage taken by $s2% for $d. Cursed enemies will ignore fear effects and refuse to flee from combat. 
-
-|cFF8282FFCurses: A warlock can only have one Curse active per target.|r
-Tooltip          : Physical damage dealt increased by $s1%.
-Physical damage taken increased by $s2%.
-Ignoring fear effects.
-
 Name             : Impending Catastrophe (id=322167) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -9774,7 +9746,7 @@ Spell Type       : Magic
 Range            : 100 yards
 Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), Wrath of Consumption (337130 effect#1)
 Family Flags     : 49
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ .......x ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9795,11 +9767,11 @@ Range            : 100 yards
 Duration         : 12 seconds
 Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), Wrath of Consumption (337130 effect#1)
 Family Flags     : 49
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ .......x ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .x...... ........ ........   ........ ........ ........ ........ 
+                 : ........ .x..x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x......x ........ ........ ........ 
                  : ........ ........ ........ ........   
@@ -9808,14 +9780,14 @@ Effects          :
 #1 (id=810357)   : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.43500 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
 Description      : $@spelldesc321792
-Tooltip          : Suffering $s1 Shadow damage every $t1 sec.
+Tooltip          : Suffering $w1 Shadow damage every $t1 sec.
 
 Name             : Malefic Rapture (id=324536) [Spell Family (5)] 
 Class            : Affliction Warlock
 School           : Shadow
 Spell Type       : Magic
 Resource         : 1 Soul Shard (7) (id=192685)
-Spell Level      : 10
+Spell Level      : 11
 Range            : 100 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
@@ -9917,13 +9889,13 @@ Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137
 Family Flags     : 49, 112
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ .x...... ........ ........ 
+                 : ........ ........ ........ ........   ........ .x...x.. ........ ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
                  : ........ .x...... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Tick on application (169), Periodic effect can crit (265)
+                 : Tick on application (169), Periodic effect affected by haste (173), Periodic effect can crit (265)
 Effects          :
 #1 (id=816046)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Enemy (6)
@@ -9938,7 +9910,7 @@ Description      : Wither away all life force of your current target and up to $
 For the next $d, casting Drain Life will cause you to also Drain Life from any enemy affected by your Soul Rot, and Drain Life will not consume any mana.
 
 Consumes $s4% of maximum health when cast.
-Tooltip          : Suffering $s2 Nature damage every $t1 sec.
+Tooltip          : Suffering $s2 Nature damage every $t2 sec.
 
 Name             : Decimating Bolt (desc=Necrolord) (id=327059) [Spell Family (5)] 
 Class            : Warlock
@@ -10009,7 +9981,7 @@ Name             : Fel Domination (id=333889) [Spell Family (5)]
 Class            : Warlock
 School           : Shadowstrike
 Spell Type       : Magic
-Spell Level      : 34
+Spell Level      : 22
 Duration         : 15 seconds
 Cooldown         : 180 seconds
 Stacks           : 1 initial, 1 maximum
@@ -10058,7 +10030,7 @@ Name             : Curse of Exhaustion (id=334275) [Spell Family (5)]
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
-Spell Level      : 58
+Spell Level      : 12
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 8 seconds
@@ -10120,7 +10092,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7), Scales with item level (354)
 Effects          :
 #1 (id=830188)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Damaging an enemy with Agony increases the damage of your next Drain Life by $s1%. This effect stacks up to $334320u times.
 
 Name             : Inevitable Demise (id=334320) [Spell Family (5)] 
@@ -10150,6 +10122,8 @@ Effects          :
                    Base Value: -1 | Scaled Value: -1 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Drain Life (234153)
                    Family Flags: 3
+#4 (id=844421)   : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000
 Description      : $@spelldesc273521
 Tooltip          : Drain Life deals $w1% additional damage and costs $w3% less mana.
 
@@ -10199,7 +10173,7 @@ Name             : Summon Demonic Tyrant (desc=Rank 2) (id=334585) [Spell Family
 Class            : Demonology Warlock
 School           : Shadow
 Spell Type       : None
-Spell Level      : 52
+Spell Level      : 58
 Range            : 40 yards
 Attributes       : ......x. ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -10287,7 +10261,7 @@ Name             : Summon Infernal (desc=Rank 2) (id=335175) [Spell Family (5), 
 Class            : Destruction Warlock
 School           : Shadow
 Spell Type       : None
-Spell Level      : 52
+Spell Level      : 58
 Range            : 40 yards
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -10300,7 +10274,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=831620)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Summon Infernal (1122), Infernal Awakening (22703)
                    Family Flags: 50
 Description      : Your Infernal Awakening deals $s1% additional damage on impact.
@@ -10383,5 +10357,50 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc340562
 Tooltip          : Leech increased by $w1%.
+
+Name             : Ritual of Doom (id=342601) [Spell Family (5)] 
+Class            : Warlock
+School           : Shadow
+Spell Type       : Magic
+Resource         : 1 Soul Shard (7) (id=215308)
+Spell Level      : 31
+Range            : 40 yards
+GCD              : 1.5 seconds
+Duration         : 180 seconds
+Cooldown         : 3600 seconds
+Attributes       : ........ ........ x....... ....x...   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ .....x.. ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ .x...... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Cannot be used in combat (28), Channeled (34), Periodic effect affected by haste (173)
+Effects          :
+#1 (id=843806)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Description      : Begins a ritual that sacrifices a random participant to summon a doomguard. Requires the caster and 4 additional party members to complete the ritual.
+
+Name             : Fear (desc=Rank 2) (id=342914) [Spell Family (5), Passive] 
+Class            : Warlock
+School           : Shadow
+Spell Type       : None
+Spell Level      : 52
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ x....... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6)
+Effects          :
+#1 (id=844343)   : Apply Aura (6) | Add Percent Modifier (108): Spell Pushback (9)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 9 | Target: Self (1)
+                   Affected Spells: Fear (5782)
+                   Family Flags: 111
+Description      : You no longer suffer spell pushback when casting Fear.
 
 

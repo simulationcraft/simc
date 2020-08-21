@@ -386,7 +386,6 @@ public:
     gain_t* pandemic_invocation;  // BFA - Azerite
 
     gain_t* conflagrate;
-    gain_t* shadowburn;
     gain_t* incinerate;
     gain_t* incinerate_crits;
     gain_t* incinerate_fnb;
