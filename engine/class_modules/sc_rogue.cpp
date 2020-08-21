@@ -312,6 +312,9 @@ public:
     buff_t* master_assassins_mark;
     buff_t* master_assassins_mark_aura;
     buff_t* the_rotten;
+    buff_t* guile_charm_insight_1;
+    buff_t* guile_charm_insight_2;
+    buff_t* guile_charm_insight_3;
 
     // Covenant
     buff_t* echoing_reprimand_2;
@@ -621,7 +624,7 @@ public:
 
     // Outlaw
     item_runeforge_t greenskins_wickers;      // NYI
-    item_runeforge_t guile_charm;             // NYI
+    item_runeforge_t guile_charm;
     item_runeforge_t celerity;                // NYI
     item_runeforge_t concealed_blunderbuss;   // NYI
     
@@ -632,7 +635,8 @@ public:
     item_runeforge_t the_rotten;
 
     // Legendary Values
-    double dashing_scoundrel_gain;
+    double dashing_scoundrel_gain = 0.0;
+    int guile_charm_counter = 0;
   } legendary;
 
   // Procs
@@ -1288,6 +1292,7 @@ public:
   void trigger_akaaris_soul_fragment( const action_state_t* state );
   void trigger_bloodfang( const action_state_t* state );
   void trigger_count_the_odds( const action_state_t* state );
+  void trigger_guile_charm( const action_state_t* state );
 
   // General Methods ==========================================================
 
@@ -4061,7 +4066,7 @@ struct sinister_strike_t : public rogue_attack_t
     void execute() override
     {
       rogue_attack_t::execute();
-
+      trigger_guile_charm( execute_state );
       // TOCHECK: This needs to be totally re-tested at some point because it is exceptionally buggy in-game
       p()->active.triple_threat_mh->trigger_secondary_action( execute_state->target );
     }
@@ -4092,6 +4097,7 @@ struct sinister_strike_t : public rogue_attack_t
     {
       rogue_attack_t::execute();
       p()->buffs.snake_eyes->decrement();
+      trigger_guile_charm( execute_state );
 
       // TOCHECK: This needs to be totally re-tested at some point because it is exceptionally buggy in-game
       if ( p()->active.triple_threat_oh && p()->rng().roll( p()->conduit.triple_threat.percent() ) )
@@ -4145,6 +4151,7 @@ struct sinister_strike_t : public rogue_attack_t
   {
     rogue_attack_t::execute();
     p()->buffs.snake_eyes->decrement();
+    trigger_guile_charm( execute_state );
 
     if ( !result_is_hit( execute_state->result ) )
       return;
@@ -6348,6 +6355,37 @@ void actions::rogue_action_t<Base>::trigger_count_the_odds( const action_state_t
   p()->procs.count_the_odds->occur();
 }
 
+template <typename Base>
+void actions::rogue_action_t<Base>::trigger_guile_charm( const action_state_t* state )
+{
+  if ( !ab::result_is_hit( state->result ) || !p()->legendary.guile_charm.ok() )
+    return;
+
+  if ( p()->buffs.guile_charm_insight_3->check() )
+    return;
+
+  bool trigger_next_insight = ( ++p()->legendary.guile_charm_counter >= 4 );
+
+  if ( p()->buffs.guile_charm_insight_1->check() )
+  {
+    if( trigger_next_insight )
+      p()->buffs.guile_charm_insight_2->trigger();
+    else
+      p()->buffs.guile_charm_insight_1->refresh();
+  }
+  else if ( p()->buffs.guile_charm_insight_2->check() )
+  {
+    if ( trigger_next_insight )
+      p()->buffs.guile_charm_insight_3->trigger();
+    else
+      p()->buffs.guile_charm_insight_2->refresh();
+  }
+  else if( trigger_next_insight )
+  {
+    p()->buffs.guile_charm_insight_1->trigger();
+  }
+}
+
 // ==========================================================================
 // Rogue Targetdata Definitions
 // ==========================================================================
@@ -6515,6 +6553,13 @@ double rogue_t::composite_player_multiplier( school_e school ) const
 
   if ( buffs.deeper_daggers->up() && buffs.deeper_daggers->data().effectN( 1 ).has_common_school( school ) )
     m *= 1.0 + buffs.deeper_daggers->check_value();
+
+  if ( legendary.guile_charm.ok() )
+  {
+    m *= 1.0 + buffs.guile_charm_insight_1->value();
+    m *= 1.0 + buffs.guile_charm_insight_2->value();
+    m *= 1.0 + buffs.guile_charm_insight_3->value();
+  }
 
   return m;
 }
@@ -8096,6 +8141,27 @@ void rogue_t::create_buffs()
     ->set_default_value( find_spell( 340094 )->effectN( 1 ).percent() );
 
   buffs.the_rotten = make_buff( this, "the_rotten", legendary.the_rotten->effectN( 1 ).trigger() );
+
+  buffs.guile_charm_insight_1 = make_buff( this, "shallow_insight", find_spell( 340582 ) )
+    ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+    ->set_default_value( find_spell( 340582 )->effectN( 1 ).percent() )
+    ->set_stack_change_callback( [ this ]( buff_t*, int, int ) {
+      legendary.guile_charm_counter = 0;
+    } );
+  buffs.guile_charm_insight_2 = make_buff( this, "moderate_insight", find_spell( 340583 ) )
+    ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+    ->set_default_value( find_spell( 340583 )->effectN( 1 ).percent() )
+    ->set_stack_change_callback( [ this ]( buff_t*, int, int ) {
+      buffs.guile_charm_insight_1->expire();
+      legendary.guile_charm_counter = 0; 
+    } );
+  buffs.guile_charm_insight_3 = make_buff( this, "deep_insight", find_spell( 340584 ) )
+    ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+    ->set_default_value( find_spell( 340584 )->effectN( 1 ).percent() )
+    ->set_stack_change_callback( [ this ]( buff_t*, int, int ) {
+      buffs.guile_charm_insight_2->expire();
+      legendary.guile_charm_counter = 0;
+    } );
 }
 
 // rogue_t::create_options ==================================================
