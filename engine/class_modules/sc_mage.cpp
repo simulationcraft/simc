@@ -5861,6 +5861,10 @@ void mage_t::create_actions()
   }
 
   player_t::create_actions();
+
+  // Ensure the cooldown of Phoenix Flames is properly initialized.
+  if ( talents.from_the_ashes->ok() && !find_action( "phoenix_flames" ) )
+    create_action( "phoenix_flames", "" );
 }
 
 void mage_t::create_options()
