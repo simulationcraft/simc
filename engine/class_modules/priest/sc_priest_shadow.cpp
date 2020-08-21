@@ -1320,6 +1320,35 @@ struct shadow_crash_damage_t final : public priest_spell_t
   {
     background = true;
   }
+
+  void impact( action_state_t* state ) override
+  {
+    priest_spell_t::impact( state );
+
+    if ( state->n_targets == 1 )
+    {
+      priest_td_t& td = get_td( state->target );
+      td.buffs.shadow_crash_debuff->trigger();
+    }
+  }
+
+  double composite_da_multiplier( const action_state_t* state ) const override
+  {
+    double d = priest_spell_t::composite_da_multiplier( state );
+
+    const priest_td_t* td = find_td( state->target );
+
+    if ( td && td->buffs.shadow_crash_debuff->check() )
+    {
+      int stack = td->buffs.shadow_crash_debuff->check();
+      double increase = priest().talents.shadow_crash->effectN( 1 ).trigger()->effectN( 2 ).percent();
+      double stack_increase = increase * stack;
+      player->sim->print_debug( "{} target has {} stacks of the shadow_crash_debuff. Increasing Damage by {}", *target, stack, stack_increase );
+      d *= 1 + stack_increase;
+    }
+
+    return d;
+  }
 };
 
 struct shadow_crash_t final : public priest_spell_t
@@ -1334,6 +1363,7 @@ struct shadow_crash_t final : public priest_spell_t
 
     aoe    = -1;
     radius = data().effectN( 1 ).radius();
+    range  = data().max_range();
 
     impact_action = new shadow_crash_damage_t( p );
     add_child( impact_action );
@@ -1343,6 +1373,17 @@ struct shadow_crash_t final : public priest_spell_t
   {
     // Always has the same time to land regardless of distance, probably represented there. Anshlun 2018-08-04
     return timespan_t::from_seconds( data().missile_speed() );
+  }
+
+  // Ensuring that we can't cast on a target that is too close
+  bool target_ready( player_t* candidate_target ) override
+  {
+    if ( player->get_player_distance( *candidate_target ) < data().min_range() )
+    {
+      return false;
+    }
+
+    return priest_spell_t::target_ready( candidate_target );
   }
 };
 
