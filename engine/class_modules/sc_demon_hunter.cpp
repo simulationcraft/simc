@@ -300,6 +300,7 @@ public:
 
     const spell_data_t* trail_of_ruin;
     const spell_data_t* unbound_chaos;
+    const spell_data_t* glaive_tempest;
 
     const spell_data_t* soul_rending;
     const spell_data_t* desperate_instincts;
@@ -2294,6 +2295,51 @@ struct fiery_brand_t : public demon_hunter_spell_t
     dot_action->snapshot_state( fb_state, result_amount_type::DMG_DIRECT );
     fb_state->primary = true;
     dot_action->schedule_execute( fb_state );
+  }
+};
+
+// Glaive Tempest ===========================================================
+
+struct glaive_tempest_t : public demon_hunter_spell_t
+{
+  struct glaive_tempest_damage_t : public demon_hunter_attack_t
+  {
+    glaive_tempest_damage_t( util::string_view name, demon_hunter_t* p )
+      : demon_hunter_attack_t( name, p, p->find_spell( 342857 ) )
+    {
+      background = dual = ground_aoe = true;
+    }
+  };
+
+  glaive_tempest_damage_t* glaive_tempest_mh;
+  glaive_tempest_damage_t* glaive_tempest_oh;
+
+  glaive_tempest_t( demon_hunter_t* p, const std::string& options_str )
+    : demon_hunter_spell_t( "glaive_tempest", p, p->talent.glaive_tempest, options_str )
+  {
+    school = SCHOOL_CHAOS; // Reporting purposes only
+    glaive_tempest_mh = p->get_background_action<glaive_tempest_damage_t>( "glaive_tempest_mh" );
+    glaive_tempest_oh = p->get_background_action<glaive_tempest_damage_t>( "glaive_tempest_oh" );
+    add_child( glaive_tempest_mh );
+    add_child( glaive_tempest_oh );
+  }
+
+  void make_ground_aoe_event( glaive_tempest_damage_t* action )
+  {
+    make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
+                                    .target( execute_state->target )
+                                    .x( p()->x_position )
+                                    .y( p()->y_position )
+                                    .pulse_time( 500_ms ) // Not in spell data
+                                    .duration( data().duration() )
+                                    .action( action ), true );
+  }
+
+  void execute() override
+  {
+    demon_hunter_spell_t::execute();
+    make_ground_aoe_event( glaive_tempest_mh );
+    make_ground_aoe_event( glaive_tempest_oh );
   }
 };
 
@@ -4606,6 +4652,7 @@ action_t* demon_hunter_t::create_action( util::string_view name, const std::stri
   if ( name == "fel_eruption" )       return new fel_eruption_t( this, options_str );
   if ( name == "fel_devastation" )    return new fel_devastation_t( this, options_str );
   if ( name == "fiery_brand" )        return new fiery_brand_t( this, options_str );
+  if ( name == "glaive_tempest" )     return new glaive_tempest_t( this, options_str );
   if ( name == "infernal_strike" )    return new infernal_strike_t( this, options_str );
   if ( name == "immolation_aura" )    return new immolation_aura_t( this, options_str );
   if ( name == "metamorphosis" )      return new metamorphosis_t( this, options_str );
@@ -5214,6 +5261,7 @@ void demon_hunter_t::init_spells()
 
   talent.trail_of_ruin        = find_talent_spell( "Trail of Ruin" );
   talent.unbound_chaos        = find_talent_spell( "Unbound Chaos" );
+  talent.glaive_tempest       = find_talent_spell( "Glaive Tempest" );
 
   // talent.soul_rending
   talent.desperate_instincts  = find_talent_spell( "Desperate Instincts" );
@@ -5533,9 +5581,10 @@ void demon_hunter_t::apl_havoc()
   action_priority_list_t* apl_normal = get_action_priority_list( "normal" );
   apl_normal->add_action( this, "Vengeful Retreat", "if=talent.momentum.enabled&buff.prepared.down&time>1" );
   apl_normal->add_action( this, "Fel Rush", "if=(variable.waiting_for_momentum|talent.unbound_chaos.enabled&buff.unbound_chaos.up)&(charges=2|(raid_event.movement.in>10&raid_event.adds.in>10))" );
-  apl_normal->add_talent( this, "Fel Barrage", "if=!variable.waiting_for_momentum&(active_enemies>desired_targets|raid_event.adds.in>30)" );
+  apl_normal->add_talent( this, "Fel Barrage", "if=active_enemies>desired_targets|raid_event.adds.in>30" );
   apl_normal->add_action( this, spec.death_sweep, "death_sweep", "if=variable.blade_dance" );
   apl_normal->add_action( this, "Immolation Aura" );
+  apl_normal->add_talent( this, "Glaive Tempest", "if=!variable.waiting_for_momentum&(active_enemies>desired_targets|raid_event.adds.in>10)" );
   apl_normal->add_action( this, "Eye Beam", "if=active_enemies>1&(!raid_event.adds.exists|raid_event.adds.up)&!variable.waiting_for_momentum" );
   apl_normal->add_action( this, "Blade Dance", "if=variable.blade_dance" );
   apl_normal->add_talent( this, "Felblade", "if=fury.deficit>=40" );
@@ -5555,8 +5604,8 @@ void demon_hunter_t::apl_havoc()
   action_priority_list_t* apl_demonic = get_action_priority_list( "demonic" );
   apl_demonic->add_action( this, "Fel Rush", "if=(talent.unbound_chaos.enabled&buff.unbound_chaos.up)&(charges=2|(raid_event.movement.in>10&raid_event.adds.in>10))" );
   apl_demonic->add_action( this, spec.death_sweep, "death_sweep", "if=variable.blade_dance" );
+  apl_demonic->add_talent( this, "Glaive Tempest", "if=active_enemies>desired_targets|raid_event.adds.in>10" );
   apl_demonic->add_action( this, "Eye Beam", "if=raid_event.adds.up|raid_event.adds.in>25" );
-  apl_demonic->add_talent( this, "Fel Barrage", "if=(buff.metamorphosis.up&raid_event.adds.in>30)|active_enemies>desired_targets" );
   apl_demonic->add_action( this, "Blade Dance", "if=variable.blade_dance&!cooldown.metamorphosis.ready"
                                                 "&(cooldown.eye_beam.remains>(5-azerite.revolving_blades.rank*3)|(raid_event.adds.in>cooldown&raid_event.adds.in<25))" );
   apl_demonic->add_action( this, "Immolation Aura" );
