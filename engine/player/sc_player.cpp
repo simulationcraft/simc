@@ -3959,7 +3959,7 @@ double player_t::composite_mitigation_versatility() const
 
 double player_t::composite_leech() const
 {
-  return composite_leech_rating() / current.rating.leech;
+  return apply_combat_rating_dr( RATING_LEECH, composite_leech_rating() / current.rating.leech );
 }
 
 double player_t::composite_run_speed() const

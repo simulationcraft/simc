@@ -835,11 +835,19 @@ public:
 
   virtual double resource_regen_per_second( resource_e ) const;
 
-  double apply_combat_rating_dr( rating_e /* rating */, double value ) const
+  double apply_combat_rating_dr( rating_e rating, double value ) const
   {
-    // Note, curve uses %-based values, not values divided by 100
-    return item_database::curve_point_value( *dbc,
-        DIMINISHING_RETURN_CR_CURVE, value * 100.0 ) / 100.0;
+    switch ( rating )
+    {
+      // TODO: Speed and avoidance
+      case RATING_LEECH:
+        return item_database::curve_point_value( *dbc, DIMINISHING_RETURN_TERTIARY_CR_CURVE, value * 100.0 ) / 100.0;
+      case RATING_MASTERY:
+        return item_database::curve_point_value( *dbc, DIMINISHING_RETURN_SECONDARY_CR_CURVE, value );
+      default:
+        // Note, curve uses %-based values, not values divided by 100
+        return item_database::curve_point_value( *dbc, DIMINISHING_RETURN_SECONDARY_CR_CURVE, value * 100.0 ) / 100.0;
+    }
   }
 
   virtual double composite_melee_haste() const;
