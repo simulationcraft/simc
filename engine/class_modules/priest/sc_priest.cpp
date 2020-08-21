@@ -778,6 +778,9 @@ struct boon_of_the_ascended_t final : public priest_buff_t<buff_t>
   }
 };
 
+// ==========================================================================
+// Surrender to Madness Debuff
+// ==========================================================================
 struct surrender_to_madness_debuff_t final : public priest_buff_t<buff_t>
 {
   surrender_to_madness_debuff_t( priest_td_t& actor_pair )
@@ -809,6 +812,9 @@ struct surrender_to_madness_debuff_t final : public priest_buff_t<buff_t>
   }
 };
 
+// ==========================================================================
+// Death and Madness Debuff
+// ==========================================================================
 struct death_and_madness_debuff_t final : public priest_buff_t<buff_t>
 {
   propagate_const<cooldown_t*> swd_cooldown;
@@ -1003,6 +1009,7 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p ) : actor_target_data_t(
   buffs.schism                      = make_buff( *this, "schism", p.talents.schism );
   buffs.death_and_madness_debuff    = make_buff<buffs::death_and_madness_debuff_t>( *this );
   buffs.surrender_to_madness_debuff = make_buff<buffs::surrender_to_madness_debuff_t>( *this );
+  buffs.shadow_crash_debuff         = make_buff( *this, "shadow_crash_debuff", p.talents.shadow_crash->effectN( 1 ).trigger() );
 
   target->callbacks_on_demise.emplace_back( [ this ]( player_t* ) { target_demise(); } );
 }

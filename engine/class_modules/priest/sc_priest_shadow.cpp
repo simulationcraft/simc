@@ -1320,6 +1320,24 @@ struct shadow_crash_damage_t final : public priest_spell_t
   {
     background = true;
   }
+
+  double composite_da_multiplier( const action_state_t* state ) const override
+  {
+    double d = priest_spell_t::composite_da_multiplier( state );
+
+    const priest_td_t* td = find_td( state->target );
+
+    if ( td && td->buffs.shadow_crash_debuff->check() )
+    {
+      int stack = td->buffs.shadow_crash_debuff->check();
+      double increase = priest().talents.shadow_crash->effectN( 1 ).trigger()->effectN( 2 ).percent();
+      double stack_increase = increase * stack;
+      player->sim->print_debug( "{} target has {} stacks of the shadow_crash_debuff. Increasing Damage by {}", *target, stack, stack_increase );
+      d *= 1 + stack_increase;
+    }
+
+    return d;
+  }
 };
 
 struct shadow_crash_t final : public priest_spell_t
@@ -1334,15 +1352,38 @@ struct shadow_crash_t final : public priest_spell_t
 
     aoe    = -1;
     radius = data().effectN( 1 ).radius();
+    range  = data().max_range();
 
     impact_action = new shadow_crash_damage_t( p );
     add_child( impact_action );
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    priest_spell_t::impact( state );
+
+    if ( state->n_targets == 1 )
+    {
+      priest_td_t& td = get_td( state->target );
+      td.buffs.shadow_crash_debuff->trigger();
+    }
   }
 
   timespan_t travel_time() const override
   {
     // Always has the same time to land regardless of distance, probably represented there. Anshlun 2018-08-04
     return timespan_t::from_seconds( data().missile_speed() );
+  }
+
+  // Ensuring that we can't cast on a target that is too close
+  bool target_ready( player_t* candidate_target ) override
+  {
+    if ( player->get_player_distance( *candidate_target ) < data().min_range() )
+    {
+      return false;
+    }
+
+    return priest_spell_t::target_ready( candidate_target );
   }
 };
 
@@ -2386,7 +2427,9 @@ void priest_t::generate_apl_shadow()
   main->add_action( this, "Shadow Word: Death",
                     "if=runeforge.painbreaker_psalm.equipped&variable.dots_up&target.health.pct>30",
                     "Use SW:D above 30% HP when Painbreaker Psalm power is active" );
-  main->add_talent( this, "Shadow Crash", "if=raid_event.adds.in>5&raid_event.adds.duration<20",
+  main->add_talent( this, "Shadow Crash", "spell_targets.shadow_crash=1&(cooldown.shadow_crash.charges=3|debuff.shadow_crash_debuff.up|action.shadow_crash.in_flight|target.time_to_die<cooldown.shadow_crash.full_recharge_time)&raid_event.adds.in>30",
+                    "Use all charges of Shadow Crash in a row on Single target, or if the boss is about to die." );
+  main->add_talent( this, "Shadow Crash", "if=raid_event.adds.in>30&spell_targets.shadow_crash>1",
                     "Use Shadow Crash on CD unless there are adds incoming." );
   main->add_action(
       this, "Mind Sear",
