@@ -59,9 +59,9 @@ constexpr int strcmp(const char* s1, const char* s2, size_t n) {
 #elif defined(SC_GCC) || (defined(SC_CLANG) && SC_CLANG >= 40000)
   return __builtin_memcmp(s1, s2, n);
 #else
-  for (; n; --n, ++s1, ++s2) {
-    const auto c1 = static_cast<unsigned char>(*s1);
-    const auto c2 = static_cast<unsigned char>(*s2);
+  for (size_t i = 0; i < n; i++) {
+    const auto c1 = static_cast<unsigned>(s1[i]);
+    const auto c2 = static_cast<unsigned>(s2[i]);
     if (c1 < c2) return -1;
     if (c2 < c1) return 1;
   }
