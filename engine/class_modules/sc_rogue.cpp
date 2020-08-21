@@ -941,9 +941,9 @@ struct rogue_action_state_t : public action_state_t
       const rogue_t* rogue = debug_cast<rogue_t*>( action->player );
       if ( rogue->covenant.echoing_reprimand->ok() )
       {
-        if ( cp == 2 && rogue->buffs.echoing_reprimand_2->check() ||
-             cp == 3 && rogue->buffs.echoing_reprimand_3->check() ||
-             cp == 4 && rogue->buffs.echoing_reprimand_4->check() )
+        if ( ( cp == 2 && rogue->buffs.echoing_reprimand_2->check() ) ||
+             ( cp == 3 && rogue->buffs.echoing_reprimand_3->check() ) ||
+             ( cp == 4 && rogue->buffs.echoing_reprimand_4->check() ) )
         {
           return as<int>( rogue->covenant.echoing_reprimand->effectN( 2 ).base_value() );
         }
@@ -6157,7 +6157,7 @@ void actions::rogue_action_t<Base>::trigger_restless_blades( const action_state_
 template <typename Base>
 void actions::rogue_action_t<Base>::trigger_dreadblades( const action_state_t* state )
 {
-  if ( !p()->talent.dreadblades->ok() )
+  if ( !p()->talent.dreadblades->ok() || !ab::result_is_hit( state->result ) )
     return;
 
   // TOCHECK: Double check everything triggers this correctly

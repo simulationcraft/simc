@@ -6000,6 +6000,8 @@ double demon_hunter_t::composite_rating_multiplier( rating_e r ) const
     case RATING_SPELL_HASTE:
       rm *= 1.0 + buff.furious_gaze_passive->value();
       break;
+    default:
+      break;
   }
 
   return rm;
