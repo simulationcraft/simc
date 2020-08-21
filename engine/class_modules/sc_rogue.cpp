@@ -137,6 +137,7 @@ public:
     buff_t* find_weakness;
     buff_t* prey_on_the_weak;
     buff_t* between_the_eyes;
+    buff_t* akaaris_soul_fragment;
   } debuffs;
 
   rogue_td_t( player_t* target, rogue_t* source );
@@ -631,7 +632,6 @@ public:
     item_runeforge_t the_rotten;
 
     // Legendary Values
-    timespan_t akaaris_soul_fragment_delay;
     double dashing_scoundrel_gain;
   } legendary;
 
@@ -6314,7 +6314,7 @@ void actions::rogue_action_t<Base>::trigger_akaaris_soul_fragment( const action_
   if ( !ab::result_is_hit( state->result ) || !p()->legendary.akaaris_soul_fragment->ok() || ab::background )
     return;
 
-  p()->active.akaaris_soul_fragment->trigger_secondary_action( state->target, 0, p()->legendary.akaaris_soul_fragment_delay );
+  td( state->target )->debuffs.akaaris_soul_fragment->trigger();
 }
 
 template <typename Base>
@@ -6385,6 +6385,16 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
   debuffs.between_the_eyes = make_buff( *this, "between_the_eyes", source->spec.between_the_eyes )
     ->set_default_value( source->spec.between_the_eyes->effectN( 2 ).percent() )
     ->set_cooldown( timespan_t::zero() );
+
+  if ( source->legendary.akaaris_soul_fragment.ok() )
+  {
+    debuffs.akaaris_soul_fragment = make_buff( *this, "akaaris_soul_fragment", source->find_spell( 341111 ) )
+      ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
+      ->set_tick_behavior( buff_tick_behavior::REFRESH )
+      ->set_tick_callback( [ this, source, target ]( buff_t*, int, timespan_t ) {
+        source->active.akaaris_soul_fragment->trigger_secondary_action( target );
+      } );
+  }
 
   // Register on-demise callback for assassination to perform Venomous Wounds energy replenish on death.
   if ( source->specialization() == ROGUE_ASSASSINATION && source->spec.venomous_wounds->ok() )
@@ -7707,11 +7717,8 @@ void rogue_t::init_spells()
 
   if ( legendary.akaaris_soul_fragment->ok() )
   {
-    legendary.akaaris_soul_fragment_delay = timespan_t::from_seconds( legendary.akaaris_soul_fragment->effectN( 1 ).base_value() );
     active.akaaris_soul_fragment = get_secondary_trigger_action<actions::shadowstrike_t>( TRIGGER_AKAARIS_SOUL_FRAGMENT, "shadowstrike_akaaris_soul_fragment" );
     active.akaaris_soul_fragment->base_multiplier *= legendary.akaaris_soul_fragment->effectN( 2 ).percent();
-    active.akaaris_soul_fragment->energize_type = action_energize::NONE;
-    // TOCHECK: Check if this is a real cast or a subspell, check if it generates CP. Assuming none for now.
   }
 
   // Active Spells = ========================================================
