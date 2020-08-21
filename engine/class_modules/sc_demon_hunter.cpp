@@ -1425,7 +1425,7 @@ public:
     return ea;
   }
 
-  void track_benefits( action_state_t* s )
+  void track_benefits( action_state_t* /* s */ )
   {
     if ( ab::snapshot_flags & STATE_MUL_TA )
     {
