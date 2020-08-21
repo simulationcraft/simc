@@ -4860,3 +4860,29 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
     }
   }
 }
+
+void action_t::apply_affecting_conduit( const conduit_data_t& conduit, int effect_num )
+{
+  assert( effect_num == -1 || effect_num > 0 );
+
+  if ( !conduit.ok() )
+    return;
+
+  for ( size_t i = 1; i <= conduit->effect_count(); i++ )
+  {
+    if ( effect_num == -1 || as<size_t>( effect_num ) == i )
+      apply_affecting_conduit_effect( conduit, i );
+    else
+      apply_affecting_effect( conduit->effectN( i ) );
+  }
+}
+
+void action_t::apply_affecting_conduit_effect( const conduit_data_t& conduit, size_t effect_num )
+{
+  if ( !conduit.ok() )
+    return;
+
+  spelleffect_data_t effect = conduit->effectN( effect_num );
+  effect._base_value = conduit.value();
+  apply_affecting_effect( effect );
+}

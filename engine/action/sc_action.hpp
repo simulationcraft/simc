@@ -8,6 +8,7 @@
 #include "config.hpp"
 #include "dbc/data_definitions.hh"
 #include "player/target_specific.hpp"
+#include "player/covenant.hpp"
 #include "sc_enums.hpp"
 #include "sc_timespan.hpp"
 #include "util/generic.hpp"
@@ -586,6 +587,8 @@ public:
 
   void apply_affecting_aura(const spell_data_t*);
   void apply_affecting_effect( const spelleffect_data_t& effect );
+  void apply_affecting_conduit( const conduit_data_t& conduit, int effect_num = 1 );
+  void apply_affecting_conduit_effect( const conduit_data_t& conduit, size_t effect_num );
 
   action_state_t* get_state( const action_state_t* = nullptr );
 
