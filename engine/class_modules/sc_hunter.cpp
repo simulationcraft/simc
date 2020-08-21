@@ -3019,17 +3019,13 @@ struct arcane_shot_t: public arcane_shot_base_t
   }
 };
 
-//==============================
-// Beast Mastery attacks
-//==============================
+// Chimaera Shot (Base) ===============================================================
 
-// Chimaera Shot =====================================================================
-
-struct chimaera_shot_t: public hunter_ranged_attack_t
+struct chimaera_shot_base_t: public hunter_ranged_attack_t
 {
-  struct chimaera_shot_impact_t final : public hunter_ranged_attack_t
+  struct impact_t final : public hunter_ranged_attack_t
   {
-    chimaera_shot_impact_t( util::string_view n, hunter_t* p, const spell_data_t* s ):
+    impact_t( util::string_view n, hunter_t* p, const spell_data_t* s ):
       hunter_ranged_attack_t( n, p, s )
     {
       dual = true;
@@ -3049,20 +3045,17 @@ struct chimaera_shot_t: public hunter_ranged_attack_t
     }
   };
 
-  std::array<chimaera_shot_impact_t*, 2> damage;
-  unsigned current_damage_action;
+  std::array<impact_t*, 2> damage;
+  unsigned current_damage_action = 0;
 
-  chimaera_shot_t( hunter_t* p, util::string_view options_str ):
-    hunter_ranged_attack_t( "chimaera_shot", p, p -> talents.chimaera_shot ),
-    current_damage_action( 0 )
+  chimaera_shot_base_t( util::string_view n, hunter_t* p ):
+    hunter_ranged_attack_t( n, p, p -> talents.chimaera_shot )
   {
-    parse_options( options_str );
-
     aoe = 2;
     radius = 5;
 
-    damage[ 0 ] = p -> get_background_action<chimaera_shot_impact_t>( "chimaera_shot_frost", p -> find_spell( 171454 ) );
-    damage[ 1 ] = p -> get_background_action<chimaera_shot_impact_t>( "chimaera_shot_nature", p -> find_spell( 171457 ) );
+    damage[ 0 ] = p -> get_background_action<impact_t>( fmt::format( "{}_frost", n ), p -> find_spell( 171454 ) );
+    damage[ 1 ] = p -> get_background_action<impact_t>( fmt::format( "{}_nature", n ), p -> find_spell( 171457 ) );
     for ( auto a : damage )
       add_child( a );
 
@@ -3073,9 +3066,7 @@ struct chimaera_shot_t: public hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::execute();
 
-    p() -> buffs.precise_shots -> up(); // benefit tracking
-    p() -> buffs.precise_shots -> decrement();
-
+    // TODO: Review both for the base spell & Serpenstalker's Trickery
     p() -> trigger_calling_the_shots();
     p() -> trigger_lethal_shots();
   }
@@ -3091,14 +3082,37 @@ struct chimaera_shot_t: public hunter_ranged_attack_t
   // Don't bother, the results will be discarded anyway.
   result_e calculate_result( action_state_t* ) const override { return RESULT_NONE; }
   double calculate_direct_amount( action_state_t* ) const override { return 0.0; }
+};
+
+// Chimaera Shot ======================================================================
+
+struct chimaera_shot_t : chimaera_shot_base_t
+{
+  chimaera_shot_t( hunter_t* p, util::string_view options_str ):
+    chimaera_shot_base_t( "chimaera_shot", p )
+  {
+    parse_options( options_str );
+  }
+
+  void execute() override
+  {
+    chimaera_shot_base_t::execute();
+
+    p() -> buffs.precise_shots -> up(); // benefit tracking
+    p() -> buffs.precise_shots -> decrement();
+  }
 
   double cast_regen( const action_state_t* s ) const override
   {
     const size_t targets_hit = std::min( target_list().size(), as<size_t>( aoe ) );
-    return hunter_ranged_attack_t::cast_regen( s ) +
+    return chimaera_shot_base_t::cast_regen( s ) +
            ( targets_hit * damage[ 0 ] -> composite_energize_amount( nullptr ) );
   }
 };
+
+//==============================
+// Beast Mastery attacks
+//==============================
 
 // Cobra Shot Attack =================================================================
 
@@ -3258,13 +3272,22 @@ struct aimed_shot_base_t: public hunter_ranged_attack_t
       base_costs[ RESOURCE_FOCUS ] = 0;
     }
   };
+  struct chimaera_shot_sst_t final : public chimaera_shot_base_t
+  {
+    chimaera_shot_sst_t( util::string_view n, hunter_t* p ):
+      chimaera_shot_base_t( n, p )
+    {
+      dual = true;
+      base_costs[ RESOURCE_FOCUS ] = 0;
+    }
+  };
 
   struct {
     double multiplier = 0;
     double high, low;
   } careful_aim;
   struct {
-    arcane_shot_sst_t* action;
+    hunter_ranged_attack_t* action = nullptr;
     int target_count = 0;
   } serpentstalkers_trickery;
   const int trick_shots_targets;
@@ -3284,13 +3307,14 @@ struct aimed_shot_base_t: public hunter_ranged_attack_t
       careful_aim.multiplier = p -> talents.careful_aim -> effectN( 3 ).percent();
     }
 
-    // TODO: handle Chimaera Shot
     if ( p -> legendary.serpentstalkers_trickery.ok() )
     {
-      serpentstalkers_trickery.action = p -> get_background_action<arcane_shot_sst_t>( "arcane_shot_sst" );
+      if ( p -> talents.chimaera_shot.ok() )
+        serpentstalkers_trickery.action = p -> get_background_action<chimaera_shot_sst_t>( "chimaera_shot_sst" );
+      else
+        serpentstalkers_trickery.action = p -> get_background_action<arcane_shot_sst_t>( "arcane_shot_sst" );
       serpentstalkers_trickery.target_count =
           as<int>( p -> legendary.serpentstalkers_trickery -> effectN( 1 ).base_value() );
-      add_child( serpentstalkers_trickery.action );
     }
   }
 
@@ -3391,6 +3415,9 @@ struct aimed_shot_t : public aimed_shot_base_t
       surging_shots.chance = p -> azerite.surging_shots.spell_ref().effectN( 1 ).percent();
       surging_shots.proc = p -> get_proc( "Surging Shots Rapid Fire reset" );
     }
+
+    if ( serpentstalkers_trickery.action )
+      add_child( serpentstalkers_trickery.action );
   }
 
   double cost() const override
