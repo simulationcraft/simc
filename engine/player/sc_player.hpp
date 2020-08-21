@@ -21,6 +21,7 @@
 #include "player_stat_cache.hpp"
 #include "scaling_metric_data.hpp"
 #include "util/cache.hpp"
+#include "dbc/item_database.hpp"
 #include "assessor.hpp"
 #include <map>
 #include <set>
@@ -833,6 +834,13 @@ public:
   virtual int level() const;
 
   virtual double resource_regen_per_second( resource_e ) const;
+
+  double apply_combat_rating_dr( rating_e /* rating */, double value ) const
+  {
+    // Note, curve uses %-based values, not values divided by 100
+    return item_database::curve_point_value( *dbc,
+        DIMINISHING_RETURN_CR_CURVE, value * 100.0 ) / 100.0;
+  }
 
   virtual double composite_melee_haste() const;
   virtual double composite_melee_speed() const;

@@ -3431,6 +3431,7 @@ double player_t::composite_melee_haste() const
   double h;
 
   h = std::max( 0.0, composite_melee_haste_rating() ) / current.rating.attack_haste;
+  h = apply_combat_rating_dr( RATING_MELEE_HASTE, h );
 
   h = 1.0 / ( 1.0 + h );
 
@@ -3554,7 +3555,10 @@ double player_t::composite_attack_power_multiplier() const
 
 double player_t::composite_melee_crit_chance() const
 {
-  double ac = current.attack_crit_chance + composite_melee_crit_rating() / current.rating.attack_crit;
+  double ac = current.attack_crit_chance;
+
+  ac += apply_combat_rating_dr( RATING_MELEE_CRIT,
+      composite_melee_crit_rating() / current.rating.attack_crit );
 
   if ( current.attack_crit_per_agility )
     ac += ( cache.agility() / current.attack_crit_per_agility / 100.0 );
@@ -3767,6 +3771,7 @@ double player_t::composite_spell_haste() const
   double h;
 
   h = std::max( 0.0, composite_spell_haste_rating() ) / current.rating.spell_haste;
+  h = apply_combat_rating_dr( RATING_SPELL_HASTE, h );
 
   h = 1.0 / ( 1.0 + h );
 
@@ -3836,7 +3841,10 @@ double player_t::composite_spell_power_multiplier() const
 
 double player_t::composite_spell_crit_chance() const
 {
-  double sc = current.spell_crit_chance + composite_spell_crit_rating() / current.rating.spell_crit;
+  double sc = current.spell_crit_chance;
+
+  sc += apply_combat_rating_dr( RATING_SPELL_CRIT,
+      composite_spell_crit_rating() / current.rating.spell_crit );
 
   if ( current.spell_crit_per_intellect > 0 )
   {
@@ -3873,7 +3881,9 @@ double player_t::composite_spell_hit() const
 
 double player_t::composite_mastery() const
 {
-  return current.mastery + composite_mastery_rating() / current.rating.mastery;
+  return current.mastery +
+    apply_combat_rating_dr( RATING_MASTERY,
+        composite_mastery_rating() / current.rating.mastery );
 }
 
 double player_t::composite_bonus_armor() const
@@ -3883,7 +3893,8 @@ double player_t::composite_bonus_armor() const
 
 double player_t::composite_damage_versatility() const
 {
-  double cdv = composite_damage_versatility_rating() / current.rating.damage_versatility;
+  double cdv = apply_combat_rating_dr( RATING_DAMAGE_VERSATILITY,
+      composite_damage_versatility_rating() / current.rating.damage_versatility );
 
   if ( !is_pet() && !is_enemy() && type != HEALING_ENEMY )
   {
@@ -3904,7 +3915,8 @@ double player_t::composite_damage_versatility() const
 
 double player_t::composite_heal_versatility() const
 {
-  double chv = composite_heal_versatility_rating() / current.rating.heal_versatility;
+  double chv = apply_combat_rating_dr( RATING_HEAL_VERSATILITY,
+      composite_heal_versatility_rating() / current.rating.heal_versatility );
 
   if ( !is_pet() && !is_enemy() && type != HEALING_ENEMY )
   {
@@ -3925,7 +3937,8 @@ double player_t::composite_heal_versatility() const
 
 double player_t::composite_mitigation_versatility() const
 {
-  double cmv = composite_mitigation_versatility_rating() / current.rating.mitigation_versatility;
+  double cmv = apply_combat_rating_dr( RATING_MITIGATION_VERSATILITY,
+      composite_mitigation_versatility_rating() / current.rating.mitigation_versatility );
 
   if ( !is_pet() && !is_enemy() && type != HEALING_ENEMY )
   {
