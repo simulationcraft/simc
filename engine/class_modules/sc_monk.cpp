@@ -227,6 +227,7 @@ public:
     buff_t* bok_proc;
     buff_t* combo_master;
     buff_t* combo_strikes;
+    buff_t* dance_of_chiji;
     buff_t* dizzying_kicks;
     buff_t* flying_serpent_kick_movement;
     buff_t* hit_combo;
@@ -239,7 +240,7 @@ public:
     buff_t* windwalking_driver;
 
     // Azerite Trait
-    buff_t* dance_of_chiji;
+    buff_t* dance_of_chiji_azerite;
     buff_t* fit_to_burst;
     buff_t* fury_of_xuen_stacks;
     stat_buff_t* fury_of_xuen_haste;
@@ -336,7 +337,7 @@ public:
     const spell_data_t* exploding_keg;
     // Windwalker
     const spell_data_t* hit_combo;
-    const spell_data_t* invoke_xuen;
+    const spell_data_t* dance_of_chiji;
     // Brewmaster & Windwalker
     const spell_data_t* rushing_jade_wind;
     // Mistweaver
@@ -426,6 +427,7 @@ public:
     const spell_data_t* disable;
     const spell_data_t* fists_of_fury;
     const spell_data_t* flying_serpent_kick;
+    const spell_data_t* invoke_xuen;
     const spell_data_t* reverse_harm;
     const spell_data_t* stance_of_the_fierce_tiger;
     const spell_data_t* storm_earth_and_fire;
@@ -1855,13 +1857,13 @@ private:
 
       // for future compatibility, we may want to grab Xuen and our tick spell and build this data from those (Xuen
       // summon duration, for example)
-      dot_duration        = p->o()->talent.invoke_xuen->duration();
+      dot_duration        = p->o()->spec.invoke_xuen->duration();
       hasted_ticks        = false;
       may_miss            = false;
       dynamic_tick_action = true;  // trigger tick when t == 0
       base_tick_time =
           p->o()->passives.crackling_tiger_lightning_driver->effectN( 1 ).period();  // trigger a tick every second
-      cooldown->duration      = p->o()->talent.invoke_xuen->cooldown();              // we're done after 45 seconds
+      cooldown->duration      = p->o()->spec.invoke_xuen->cooldown();              // we're done after 25 seconds
       attack_power_mod.direct = 0.0;
       attack_power_mod.tick   = 0.0;
 
@@ -2493,9 +2495,14 @@ public:
           }
         }
       }
-      // Dance of Chi-Ji azerite trait triggers from spending chi
-      if ( p()->specialization() == MONK_WINDWALKER && p()->azerite.dance_of_chiji.ok() )
+
+      // Dance of Chi-Ji talent triggers from spending chi
+      if ( p()->talent.dance_of_chiji->ok() )
         p()->buff.dance_of_chiji->trigger();
+        
+      // Dance of Chi-Ji azerite trait triggers from spending chi
+      if ( p()->azerite.dance_of_chiji.ok() )
+        p()->buff.dance_of_chiji_azerite->trigger();
 
       // Chi Savings on Dodge & Parry & Miss
       if ( ab::last_resource_cost > 0 )
@@ -2795,7 +2802,7 @@ public:
 struct xuen_spell_t : public summon_pet_t
 {
   xuen_spell_t( monk_t* p, const std::string& options_str )
-    : summon_pet_t( "invoke_xuen_the_white_tiger", "xuen_the_white_tiger", p, p->talent.invoke_xuen )
+    : summon_pet_t( "invoke_xuen_the_white_tiger", "xuen_the_white_tiger", p, p->spec.invoke_xuen )
   {
     parse_options( options_str );
 
@@ -3831,7 +3838,7 @@ struct blackout_strike_t : public monk_melee_attack_t
 
     if ( result_is_hit( s->result ) )
     {
-      // if player level >= 78
+      // if player level >= 10
       if ( p()->mastery.elusive_brawler )
       {
         p()->buff.elusive_brawler->trigger();
@@ -3961,6 +3968,9 @@ struct sck_tick_action_t : public monk_melee_attack_t
 
     am *= 1 + ( mark_of_the_crane_counter() * p()->passives.cyclone_strikes->effectN( 1 ).percent() );
 
+    if ( p()->buff.dance_of_chiji->up() )
+      am *= p()->talent.dance_of_chiji->effectN( 1 ).percent();
+
     return am;
   }
 
@@ -3968,7 +3978,7 @@ struct sck_tick_action_t : public monk_melee_attack_t
   {
     double b = monk_melee_attack_t::bonus_da( s );
 
-    if ( p()->buff.dance_of_chiji->up() )
+    if ( p()->buff.dance_of_chiji_azerite->up() )
       // The amount return is the full amount. We need to divide this by 4 ticks to get the correct per-tick amount
       b += p()->azerite.dance_of_chiji.value() / 4;
 
@@ -4009,8 +4019,17 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
   {
     double c = monk_melee_attack_t::cost();
 
-    if ( p()->buff.dance_of_chiji->up() && !p()->buff.serenity->up() )
-      c += p()->buff.dance_of_chiji->data().effectN( 3 ).base_value();  // saved as -2
+    if ( !p()->buff.serenity->up() )
+    {
+      if ( p()->buff.dance_of_chiji->up() )
+        c += p()->buff.dance_of_chiji->data().effectN( 1 ).base_value();  // saved as -2
+    
+      if ( p()->buff.dance_of_chiji_azerite->up() )
+        c += p()->buff.dance_of_chiji_azerite->data().effectN( 3 ).base_value();  // saved as -2
+
+      if ( c < 0 )
+        c = 0;
+    }
 
     return c;
   }
@@ -4036,6 +4055,9 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
 
     if ( p()->buff.dance_of_chiji->up() )
       p()->buff.dance_of_chiji->expire();
+
+    if ( p()->buff.dance_of_chiji_azerite->up() )
+      p()->buff.dance_of_chiji_azerite->expire();
   }
 };
 
@@ -7115,7 +7137,7 @@ void monk_t::create_pets()
 {
   base_t::create_pets();
 
-  if ( talent.invoke_xuen->ok() && ( find_action( "invoke_xuen" ) || find_action( "invoke_xuen_the_white_tiger" ) ) )
+  if ( spec.invoke_xuen->ok() && ( find_action( "invoke_xuen" ) || find_action( "invoke_xuen_the_white_tiger" ) ) )
   {
     create_pet( "xuen_the_white_tiger" );
   }
@@ -7217,7 +7239,7 @@ void monk_t::init_spells()
   talent.exploding_keg    = find_talent_spell( "Exploding Keg" );
   // Windwalker
   talent.hit_combo   = find_talent_spell( "Hit Combo" );
-  talent.invoke_xuen = find_talent_spell( "Invoke Xuen, the White Tiger" );
+  talent.dance_of_chiji = find_talent_spell( "Dance of Chi-Ji" );
   // Brewmaster & Windwalker
   talent.rushing_jade_wind = find_talent_spell( "Rushing Jade Wind" );
   // Mistweaver
@@ -7259,7 +7281,7 @@ void monk_t::init_spells()
   spec.rising_sun_kick_2        = find_spell( 262840 );
   spec.roll                     = find_class_spell( "Roll" );
   spec.spear_hand_strike        = find_specialization_spell( "Spear Hand Strike" );
-  spec.spinning_crane_kick      = find_specialization_spell( "Spinning Crane Kick" );
+  spec.spinning_crane_kick      = find_class_spell( "Spinning Crane Kick" );
   spec.tiger_palm               = find_class_spell( "Tiger Palm" );
 
   // Brewmaster Specialization
@@ -7272,12 +7294,12 @@ void monk_t::init_spells()
   spec.expel_harm          = find_specialization_spell( "Expel Harm" );
   spec.fortifying_brew     = find_specialization_spell( "Fortifying Brew" );
   spec.gift_of_the_ox      = find_specialization_spell( "Gift of the Ox" );
+  spec.invoke_niuzao       = find_specialization_spell( "Invoke Niuzao, the Black Ox" );
   spec.ironskin_brew       = find_spell( "Ironskin Brew" ); // find_specialization_spell( "Ironskin Brew" ); If this is truly moved to a non-spec spell, move pointer to passives instead of spec
   spec.keg_smash           = find_specialization_spell( "Keg Smash" );
   spec.purifying_brew      = find_specialization_spell( "Purifying Brew" );
   spec.stagger             = find_specialization_spell( "Stagger" );
   spec.zen_meditation      = find_specialization_spell( "Zen Meditation" );
-  spec.invoke_niuzao       = find_specialization_spell( "Invoke Niuzao, the Black Ox" );
 
   // Mistweaver Specialization
   spec.detox                      = find_specialization_spell( "Detox" );
@@ -7304,6 +7326,7 @@ void monk_t::init_spells()
   spec.disable                    = find_specialization_spell( "Disable" );
   spec.fists_of_fury              = find_specialization_spell( "Fists of Fury" );
   spec.flying_serpent_kick        = find_specialization_spell( "Flying Serpent Kick" );
+  spec.invoke_xuen                = find_specialization_spell( "Invoke Xuen, the White Tiger" );
   spec.reverse_harm               = find_spell( 287771 );
   spec.stance_of_the_fierce_tiger = find_specialization_spell( "Stance of the Fierce Tiger" );
   spec.storm_earth_and_fire       = find_specialization_spell( "Storm, Earth, and Fire" );
@@ -7589,6 +7612,7 @@ void monk_t::create_buffs()
   buff.light_stagger    = make_buff<buffs::stagger_buff_t>( *this, "light_stagger", find_spell( 124275 ) );
   buff.moderate_stagger = make_buff<buffs::stagger_buff_t>( *this, "moderate_stagger", find_spell( 124274 ) );
   buff.heavy_stagger    = make_buff<buffs::stagger_buff_t>( *this, "heavy_stagger", passives.heavy_stagger );
+
   // Mistweaver
   buff.channeling_soothing_mist = make_buff( this, "channeling_soothing_mist", passives.soothing_mist_heal );
 
@@ -7641,6 +7665,9 @@ void monk_t::create_buffs()
           ->set_quiet( true )  // In-game does not show this buff but I would like to use it for background stuff
           ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
+  buff.dance_of_chiji =
+      make_buff( this, "dance_of_chiji", find_spell( 325202 ) )->set_trigger_spell( find_spell( 325201 ) );
+
   buff.flying_serpent_kick_movement = make_buff( this, "flying_serpent_kick_movement" );  // find_spell( 115057 )
 
   buff.hit_combo = make_buff( this, "hit_combo", passives.hit_combo )
@@ -7683,8 +7710,8 @@ void monk_t::create_buffs()
   buff.training_of_niuzao->set_max_stack( 3 );
 
   // Windwalker
-  buff.dance_of_chiji =
-      make_buff( this, "dance_of_chiji", find_spell( 286587 ) )->set_trigger_spell( find_spell( 286586 ) );
+  buff.dance_of_chiji_azerite =
+      make_buff( this, "dance_of_chiji_azerite", find_spell( 286587 ) )->set_trigger_spell( find_spell( 286586 ) );
 
   buff.fury_of_xuen_stacks =
       make_buff( this, "fury_of_xuen_stacks", passives.fury_of_xuen_stacking_buff )
@@ -8986,7 +9013,7 @@ void monk_t::apl_pre_windwalker()
   pre->add_action( "use_item,name=azsharas_font_of_power" );
   pre->add_talent( this, "Chi Burst", "if=!talent.serenity.enabled|!talent.fist_of_the_white_tiger.enabled" );
   pre->add_talent( this, "Chi Wave", "if=talent.fist_of_the_white_tiger.enabled|essence.conflict_and_strife.major" );
-  pre->add_talent( this, "Invoke Xuen, the White Tiger" );
+  pre->add_action( this, "Invoke Xuen, the White Tiger" );
   pre->add_action( "guardian_of_azeroth" );
 }
 
