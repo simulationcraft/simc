@@ -88,32 +88,6 @@ damage_affected_by parse_damage_affecting_aura( action_t* a, spell_data_ptr_t sp
   return affected_by;
 }
 
-void apply_affecting_conduit_effect( action_t& a, const conduit_data_t& conduit, size_t effect_num )
-{
-  if ( !conduit.ok() )
-    return;
-
-  spelleffect_data_t effect = conduit->effectN( effect_num );
-  effect._base_value = conduit.value();
-  a.apply_affecting_effect( effect );
-}
-
-void apply_affecting_conduit( action_t& a, const conduit_data_t& conduit, int effect_num = 1 )
-{
-  assert( effect_num == -1 || effect_num > 0 );
-
-  if ( !conduit.ok() )
-    return;
-
-  for ( size_t i = 0; i <= conduit->effect_count(); i++ )
-  {
-    if ( effect_num == -1 || as<size_t>( effect_num ) == i )
-      apply_affecting_conduit_effect( a, conduit, i );
-    else
-      a.apply_affecting_effect( conduit->effectN( i ) );
-  }
-}
-
 namespace cdwaste {
 
 struct action_data_t
@@ -867,10 +841,10 @@ public:
     ab::apply_affecting_aura( p -> legendary.surging_shots );
 
     // passive conduits
-    apply_affecting_conduit( *this, p -> conduits.bloodletting );
-    apply_affecting_conduit( *this, p -> conduits.necrotic_barrage );
-    apply_affecting_conduit( *this, p -> conduits.spirit_attunement );
-    apply_affecting_conduit( *this, p -> conduits.stinging_strike );
+    ab::apply_affecting_conduit( p -> conduits.bloodletting );
+    ab::apply_affecting_conduit( p -> conduits.necrotic_barrage );
+    ab::apply_affecting_conduit( p -> conduits.spirit_attunement );
+    ab::apply_affecting_conduit( p -> conduits.stinging_strike );
   }
 
   hunter_t* p()             { return static_cast<hunter_t*>( ab::player ); }
