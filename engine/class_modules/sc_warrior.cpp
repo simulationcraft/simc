@@ -116,9 +116,6 @@ public:
     buff_t* tornados_eye;
     buff_t* protection_rage;
 
-    buff_t* raging_thirst;
-    buff_t* t20_fury_4p;
-
     // Legion Legendary
     buff_t* fujiedas_fury;
     buff_t* xavarics_magnum_opus;
@@ -879,7 +876,7 @@ public:
 
     if ( affected_by.frothing_dot && p()->buff.frothing_berserker->up() )
     {
-      tm *= 1.0 + p()->buff.frothing_berserker->data().effectN( 3 ).percent();
+      tm *= 1.0 + p()->buff.frothing_berserker->data().effectN( 1 ).percent();
     }
 
     return tm;
@@ -1695,7 +1692,6 @@ struct bloodthirst_heal_t : public warrior_heal_t
     double am = warrior_heal_t::action_multiplier();
 
     am *= 1.0 + p()->buff.furious_charge->check_value();
-    am *= 1.0 + p()->buff.t20_fury_4p->check_stack_value();
 
     return am;
   }
@@ -1758,15 +1754,6 @@ struct bloodthirst_t : public warrior_attack_t
     }
   }
 
-  double action_multiplier() const override
-  {
-    double am = warrior_attack_t::action_multiplier();
-
-    am *= 1.0 + p()->buff.t20_fury_4p->check_stack_value();
-
-    return am;
-  }
-
   int n_targets() const override
   {
     if ( p()->buff.meat_cleaver->check() )
@@ -1824,7 +1811,6 @@ struct bloodthirst_t : public warrior_attack_t
         bloodthirst_heal->execute();
         p()->buff.furious_charge->expire();
       }
-      p()->buff.t20_fury_4p->expire();
 
       if ( rng().roll( enrage_chance ) )
       {
@@ -1897,7 +1883,7 @@ struct charge_t : public warrior_attack_t
     energize_amount += p->spell.charge_rank_2->effectN( 1 ).base_value() / 10.0;
     energize_resource       = RESOURCE_RAGE;
     energize_type           = action_energize::ON_CAST;
-    attack_power_mod.direct = charge_damage->effectN( 2 ).ap_coeff();
+    attack_power_mod.direct = charge_damage->effectN( 1 ).ap_coeff();
 
     if ( p->talents.double_time->ok() )
     {
@@ -2798,15 +2784,6 @@ struct raging_blow_attack_t : public warrior_attack_t
     base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 3 ).percent();
   }
 
-  double action_multiplier() const override
-  {
-    double am = warrior_attack_t::action_multiplier();
-
-    am *= 1.0 + p()->buff.raging_thirst->check_value();
-
-    return am;
-  }
-
   int n_targets() const override
   {
     if ( p()->buff.meat_cleaver->check() )
@@ -2864,7 +2841,6 @@ struct raging_blow_t : public warrior_attack_t
     {
       cooldown->reset( true );
     }
-    p()->buff.t20_fury_4p->trigger( 1 );
     p()->buff.meat_cleaver->decrement();
 
     if ( p()->azerite.pulverizing_blows.ok() )
@@ -3244,7 +3220,7 @@ struct rampage_parent_t : public warrior_attack_t
       add_child( p->rampage_attacks[ i ] );
     }
     track_cd_waste = false;
-    base_costs[ RESOURCE_RAGE ] += p->talents.frothing_berserker->effectN( 2 ).resource( RESOURCE_RAGE );
+    base_costs[ RESOURCE_RAGE ] += p->talents.frothing_berserker->effectN( 1 ).resource( RESOURCE_RAGE );
   }
 
   void execute() override
@@ -4826,7 +4802,7 @@ void warrior_t::init_spells()
   {
     //spec.execute = find_specialization_spell( 163201 );
     spec.execute_rank_2 = find_specialization_spell( 316405 );
-    spec.execute_rank_2 = find_specialization_spell( 231830 );
+    spec.execute_rank_3 = find_specialization_spell( 231830 );
   }
   spec.hamstring        = find_specialization_spell( "Hamstring" );
   spec.ignore_pain      = find_specialization_spell( "Ignore Pain" );
@@ -5839,7 +5815,7 @@ void warrior_t::create_buffs()
       ->set_cooldown( timespan_t::zero() );
 
   buff.frothing_berserker = make_buff( this, "frothing_berserker", find_spell( 215572 ) )
-                                ->set_default_value( find_spell( 215572 )->effectN( 2 ).percent() )
+                                ->set_default_value( find_spell( 215572 )->effectN( 1 ).percent() )
                                 ->add_invalidate( CACHE_ATTACK_HASTE );
 
   buff.bounding_stride = make_buff( this, "bounding_stride", find_spell( 202164 ) )
@@ -5888,7 +5864,7 @@ void warrior_t::create_buffs()
   buff.overpower =
     make_buff(this, "overpower", spec.overpower)
     ->set_default_value(spec.overpower->effectN(2).percent() + talents.dreadnaught->effectN(2).percent() );
-  buff.overpower->set_max_stack(buff.overpower->max_stack() + spec.overpower_rank_3->effectN(3).base_value() );
+  buff.overpower->set_max_stack(buff.overpower->max_stack() + spec.overpower_rank_3->effectN(1).base_value() );
 
   buff.ravager = make_buff( this, "ravager", talents.ravager )
     -> set_cooldown( 0_ms ); // handled by the ability
@@ -5932,11 +5908,6 @@ void warrior_t::create_buffs()
   buff.vengeance_revenge = make_buff( this, "vengeance_revenge", find_spell( 202573 ) )
     ->set_chance( talents.vengeance->ok() )
     ->set_default_value( find_spell( 202573 )->effectN( 1 ).percent() );
-
-  buff.raging_thirst =
-      make_buff( this, "raging_thirst", sets->set( WARRIOR_FURY, T20, B2 )->effectN( 1 ).trigger() )
-      ->set_default_value( sets->set( WARRIOR_FURY, T20, B2 )->effectN( 1 ).trigger()->effectN( 1 ).percent() )
-      ->set_chance( sets->set( WARRIOR_FURY, T20, B2 )->proc_chance() );
 
   buff.sephuzs_secret = new buffs::sephuzs_secret_buff_t( this );
 
