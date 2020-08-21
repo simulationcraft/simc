@@ -324,13 +324,28 @@ struct mind_flay_t final : public priest_spell_t
 
     int dots = swp->is_ticking() + vt->is_ticking() + dp->is_ticking();
 
-    /// TODO: Confirm if this needs to be adjusted to be on its own PRNG system or has an ICD
+    // TODO: Confirm if this needs to be adjusted to be on its own PRNG system or has an ICD
     if ( rng().roll( priest().specs.dark_thoughts->effectN( 1 ).percent() * dots ) )
     {
       sim->print_debug( "{} activated Dark Thoughts using Mind Flay with {} chance with {} dots", *player,
                         priest().specs.dark_thoughts->effectN( 1 ).percent() * dots, dots );
       priest().buffs.dark_thoughts->trigger();
       priest().procs.dark_thoughts_flay->occur();
+    }
+  }
+
+  void execute() override
+  {
+    priest_spell_t::execute();
+
+    if ( priest().conduits.dissonant_echoes->ok() && !priest().buffs.voidform->check() )
+    {
+      if ( rng().roll( priest().conduits.dissonant_echoes.percent() ) )
+      {
+        priest().cooldowns.void_bolt->reset( true );
+        priest().buffs.dissonant_echoes->trigger();
+        priest().procs.dissonant_echoes->occur();
+      }
     }
   }
 
@@ -953,7 +968,7 @@ struct void_bolt_t final : public priest_spell_t
       td.dots.shadow_word_pain->extend_duration( dot_extension, true );
       td.dots.vampiric_touch->extend_duration( dot_extension, true );
 
-      if ( priest().conduits.dissonant_echoes->ok() )
+      if ( priest().conduits.dissonant_echoes->ok() && priest().buffs.voidform->check() )
       {
         if ( rng().roll( priest().conduits.dissonant_echoes.percent() ) )
         {
@@ -1021,11 +1036,16 @@ struct void_bolt_t final : public priest_spell_t
         priest().buffs.fae_blessings->decrement();
       }
     }
+
+    if ( priest().buffs.dissonant_echoes->check() )
+    {
+      priest().buffs.dissonant_echoes->expire();
+    }
   }
 
   bool ready() override
   {
-    if ( !( priest().buffs.voidform->check() ) )
+    if ( !priest().buffs.voidform->check() && !priest().buffs.dissonant_echoes->check() )
     {
       return false;
     }
@@ -2084,9 +2104,10 @@ void priest_t::create_buffs_shadow()
   buffs.whispers_of_the_damned = make_buff<buffs::whispers_of_the_damned_t>( *this );
 
   // Conduits (Shadowlands)
-  buffs.mind_devourer = make_buff( this, "mind_devourer", find_spell( 338333 ) )
-                            ->set_trigger_spell( conduits.mind_devourer )
-                            ->set_chance( conduits.mind_devourer->effectN( 2 ).percent() );
+  buffs.mind_devourer    = make_buff( this, "mind_devourer", find_spell( 338333 ) )
+                               ->set_trigger_spell( conduits.mind_devourer )
+                               ->set_chance( conduits.mind_devourer->effectN( 2 ).percent() );
+  buffs.dissonant_echoes = make_buff( this, "dissonant_echoes", find_spell( 343144 ) );
   // Dummy buff to track CDR from Void Bolt
   buffs.blessing_of_plenty = make_buff( this, "blessing_of_plenty", find_spell( 338305 ) )
                                  ->set_quiet( true )
@@ -2371,7 +2392,7 @@ void priest_t::generate_apl_shadow()
                     "target_if=variable.all_dots_up&!cooldown.void_eruption.up&target.time_to_die>4",
                     "Use Void Torrent only if all DoTs are active and the target won't die during the channel." );
   main->add_action( this, "Shadow Word: Death",
-                    "if=(runeforge.painbreaker_psalm.equipped&variable.dots_up)&target.health.pct>30",
+                    "if=runeforge.painbreaker_psalm.equipped&variable.dots_up&target.health.pct>30",
                     "Use SW:D above 30% HP when Painbreaker Psalm power is active" );
   main->add_talent( this, "Shadow Crash", "if=raid_event.adds.in>5&raid_event.adds.duration<20",
                     "Use Shadow Crash on CD unless there are adds incoming." );

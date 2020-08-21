@@ -146,6 +146,7 @@ public:
 
     // Conduits
     propagate_const<buff_t*> mind_devourer;
+    propagate_const<buff_t*> dissonant_echoes;
     propagate_const<buff_t*> blessing_of_plenty;  // Dummy buff to track CDR from Void Bolt
 
     // Covenants
