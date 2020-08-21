@@ -347,7 +347,6 @@ public:
     propagate_const<proc_t*> holy_fire_cd;
     propagate_const<proc_t*> power_of_the_dark_side;
     propagate_const<proc_t*> power_of_the_dark_side_overflow;
-    propagate_const<proc_t*> shimmering_apparitions;
     propagate_const<proc_t*> dissonant_echoes;
     propagate_const<proc_t*> mind_devourer;
     propagate_const<proc_t*> blessing_of_plenty;
@@ -465,7 +464,7 @@ public:
     conduit_data_t dissonant_echoes;
     conduit_data_t mind_devourer;
     conduit_data_t rabid_shadows;
-    conduit_data_t shimmering_apparitions;
+    conduit_data_t haunting_apparitions;
     // Covenant
     conduit_data_t courageous_ascension;
     conduit_data_t festering_transfusion;

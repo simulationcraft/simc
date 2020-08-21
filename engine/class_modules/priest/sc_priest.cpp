@@ -1100,7 +1100,6 @@ void priest_t::create_procs()
   procs.serendipity_overflow            = get_proc( "Serendipity lost to overflow (Non-Tier 17 4pc)" );
   procs.power_of_the_dark_side          = get_proc( "Power of the Dark Side Penance damage buffed" );
   procs.power_of_the_dark_side_overflow = get_proc( "Power of the Dark Side lost to overflow" );
-  procs.shimmering_apparitions = get_proc( "Shadowy Apparition Procced from Shimmering Apparition non SW:P Crit" );
   procs.dissonant_echoes       = get_proc( "Void Bolt resets from Dissonant Echoes" );
   procs.mind_devourer          = get_proc( "Mind Devourer free Devouring Plague proc" );
   procs.blessing_of_plenty     = get_proc( "Blessing of Plenty CDR on Fae Blessings" );
@@ -1533,7 +1532,7 @@ void priest_t::init_spells()
   conduits.dissonant_echoes       = find_conduit_spell( "Dissonant Echoes" );
   conduits.mind_devourer          = find_conduit_spell( "Mind Devourer" );
   conduits.rabid_shadows          = find_conduit_spell( "Rabid Shadows" );
-  conduits.shimmering_apparitions = find_conduit_spell( "Shimmering Apparitions" );
+  conduits.haunting_apparitions   = find_conduit_spell( "Haunting Apparitions" );
   // Covenant Conduits
   conduits.courageous_ascension  = find_conduit_spell( "Courageous Ascension" );
   conduits.festering_transfusion = find_conduit_spell( "Festering Transfusion" );

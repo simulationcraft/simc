@@ -627,6 +627,11 @@ struct shadowy_apparition_damage_t final : public priest_spell_t
     may_crit   = false;
 
     base_dd_multiplier *= 1 + priest().talents.auspicious_spirits->effectN( 1 ).percent();
+
+    if ( priest().conduits.haunting_apparitions->ok() )
+    {
+      base_dd_multiplier *= ( 1.0 + priest().conduits.haunting_apparitions.percent() );
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -734,19 +739,6 @@ struct shadow_word_pain_t final : public priest_spell_t
   void tick( dot_t* d ) override
   {
     priest_spell_t::tick( d );
-
-    if ( priest().active_spells.shadowy_apparitions && ( d->state->result_amount > 0 ) )
-    {
-      // TODO: adjust to what this actually does.
-      if ( priest().conduits.shimmering_apparitions->ok() )
-      {
-        if ( rng().roll( priest().conduits.shimmering_apparitions.percent() ) )
-        {
-          priest().active_spells.shadowy_apparitions->trigger( d->target );
-          priest().procs.shimmering_apparitions->occur();
-        }
-      }
-    }
 
     if ( d->state->result_amount > 0 )
     {
@@ -2374,7 +2366,7 @@ void priest_t::generate_apl_shadow()
 
   // single APL
   main->add_call_action_list( this, covenant.boon_of_the_ascended, boon, "if=buff.boon_of_the_ascended.up" );
-  main->add_action( this, "Void Eruption", "if=cooldown.power_infusion.up",
+  main->add_action( this, "Void Eruption", "if=cooldown.power_infusion.up&insanity>=40",
                     "Sync up Voidform and Power Infusion Cooldowns." );
   main->add_action( this, "Void Bolt", "if=!dot.devouring_plague.refreshable",
                     "Only use Void Bolt if Devouring Plague doesn't need refreshed." );
