@@ -93,10 +93,10 @@ constexpr const T* lower_bound(util::span<const T, N> items, const U& value, Com
 }
 
 template <typename T, size_t N, typename Compare = less>
-constexpr bool is_unique(const array<T, N>& items, Compare cmp = {}) {
-  if (N <= 1)
+constexpr bool is_unique(util::span<const T, N> items, Compare cmp = {}) {
+  if (items.size() <= 1)
     return true;
-  for (size_t i = 1; i < N; i++) {
+  for (size_t i = 1; i < items.size(); i++) {
     if (!cmp(items[i-1], items[i]))
       return false;
   }
@@ -122,7 +122,8 @@ public:
   constexpr static_set_base(const array<value_type, N>& items)
     : data_(sorted(items))
   {
-    assert(is_unique(data_));
+    util::span<const T, N> data(data_.begin(), N);
+    assert( is_unique(data) );
   }
 
   constexpr iterator begin() const { return cbegin(); }
