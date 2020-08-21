@@ -1448,7 +1448,7 @@ struct mage_spell_t : public spell_t
     bool kindling = false;
 
     bool fevered_incantation = true; // TODO: Need to verify what exactly triggers Fevered Incantation.
-    bool icy_propulsion = true; // TODO: Need to verify what exactly triggers Icy Propulsion.
+    bool icy_propulsion = true;
     bool radiant_spark = false;
   } triggers;
 
@@ -2449,7 +2449,6 @@ struct arcane_barrage_t : public arcane_mage_spell_t
     double m = arcane_mage_spell_t::composite_da_multiplier( s );
 
     m *= 1.0 + s->n_targets * p()->talents.resonance->effectN( 1 ).percent();
-    m *= 1.0 + p()->buffs.arcane_harmony->check_stack_value();
 
     if ( s->target->health_percentage() < p()->runeforge.arcane_bombardment->effectN( 1 ).base_value() )
       m *= 1.0 + p()->runeforge.arcane_bombardment->effectN( 2 ).percent();
@@ -2462,6 +2461,7 @@ struct arcane_barrage_t : public arcane_mage_spell_t
     double am = arcane_mage_spell_t::action_multiplier();
 
     am *= arcane_charge_multiplier( true );
+    am *= 1.0 + p()->buffs.arcane_harmony->check_stack_value();
 
     return am;
   }
@@ -4450,8 +4450,6 @@ struct meteor_burn_t : public fire_mage_spell_t
     fire_mage_spell_t( n, p, p->find_spell( 155158 ) )
   {
     background = ground_aoe = true;
-    // This spell probably shouldn't interact with Radiant Spark at all.
-    affected_by.radiant_spark = triggers.radiant_spark = p->bugs;
     aoe = -1;
     std::swap( spell_power_mod.direct, spell_power_mod.tick );
     dot_duration = 0_ms;
@@ -7346,10 +7344,7 @@ double mage_t::composite_player_critical_damage_multiplier( const action_state_t
 {
   double m = player_t::composite_player_critical_damage_multiplier( s );
 
-  // TODO: Verify whether there are damage types that this does not buff.
   m *= 1.0 + buffs.fevered_incantation->check_stack_value();
-
-  // TODO: Verify whether there are damage types that this does not buff.
   m *= 1.0 + buffs.disciplinary_command->check_value();
 
   return m;
@@ -7389,7 +7384,6 @@ double mage_t::composite_player_target_multiplier( player_t* target, school_e sc
 
   if ( auto td = target_data[ target ] )
   {
-    // TODO: Verify that the damage bonus from Frost Nova is actually applied to targets that are immune to roots.
     if ( dbc::is_school( school, SCHOOL_ARCANE ) || dbc::is_school( school, SCHOOL_FIRE ) || dbc::is_school( school, SCHOOL_FROST ) )
       m *= 1.0 + td->debuffs.grisly_icicle->check_value();
   }
