@@ -391,6 +391,8 @@ public:
     double priest_lucid_dreams_proc_chance_holy   = 0.08;
     double priest_lucid_dreams_proc_chance_shadow = 0.15;
 
+    bool priest_self_power_infusion = true;
+
     // Add in easy options to change if you are in range or not
     bool priest_use_ascended_nova     = true;
     bool priest_use_ascended_eruption = true;
@@ -401,8 +403,9 @@ public:
     bool priest_mindgames_healing_insanity = false;
     bool priest_mindgames_damage_insanity  = true;
 
-    // Fae Blessings CDR is not guarenteed to go on the Priest, reduce this to make things more accurate
-    double priest_fae_blessings_cdr_chance = 1.00;
+    // Fae Blessings CDR is not guarenteed to go on the Priest, reduce this to make things more accurate    
+    bool priest_self_benevolent_faerie = true;
+
   } options;
 
   struct actions_t

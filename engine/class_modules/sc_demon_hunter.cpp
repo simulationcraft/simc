@@ -453,6 +453,21 @@ public:
     const spell_data_t* the_hunt;
   } covenant;
 
+  // Conduits
+  struct conduit_t
+  {
+    conduit_data_t dancing_with_fate;
+    conduit_data_t demons_touch;
+    conduit_data_t growing_inferno;
+    conduit_data_t serrated_glaive;
+
+    conduit_data_t soul_furnace;
+
+    conduit_data_t repeat_decree;
+    conduit_data_t increased_scrutiny;
+    conduit_data_t brooding_pool;
+  } conduit;
+
   struct legendary_t
   {
     // General
@@ -1260,6 +1275,9 @@ public:
     // Rank Passives
     ab::apply_affecting_aura( p->spec.disrupt_rank_3 );
     ab::apply_affecting_aura( p->spec.throw_glaive_rank_2 );
+
+    // Conduit Passives
+    ab::apply_affecting_conduit( p->conduit.increased_scrutiny );
 
     // Generic Affect Flags
     parse_affect_flags( p->spec.demon_soul, affected_by.demon_soul );
@@ -2990,20 +3008,16 @@ struct elysian_decree_t : public demon_hunter_spell_t
   {
     timespan_t sigil_delay;
 
-    elysian_decree_sigil_t( util::string_view name, demon_hunter_t* p )
-      : demon_hunter_spell_t( name, p, p->find_spell( 307046 ) )
+    elysian_decree_sigil_t( util::string_view name, demon_hunter_t* p, const spell_data_t* s, timespan_t delay )
+      : demon_hunter_spell_t( name, p, s ), sigil_delay( delay )
     {
       aoe = -1;
       background = dual = ground_aoe = true;
-
-      sigil_delay = p->covenant.elysian_decree->duration();
-      sigil_delay -= p->talent.quickened_sigils->effectN( 1 ).time_value();
     }
 
     void execute() override
     {
       demon_hunter_spell_t::execute();
-      
       // TOCHECK: Currently this always spawns 3 souls on beta, but the tooltip indicates it may scale
       p()->spawn_soul_fragment( soul_fragment::LESSER, 3 );
     }
@@ -3022,18 +3036,33 @@ struct elysian_decree_t : public demon_hunter_spell_t
   };
 
   elysian_decree_sigil_t* sigil;
+  elysian_decree_sigil_t* repeat_decree_sigil;
 
   elysian_decree_t( demon_hunter_t* p, const std::string& options_str )
-    : demon_hunter_spell_t( "elysian_decree", p, p->covenant.elysian_decree, options_str )
+    : demon_hunter_spell_t( "elysian_decree", p, p->covenant.elysian_decree, options_str ),
+    repeat_decree_sigil( nullptr )
   {
-    sigil = p->get_background_action<elysian_decree_sigil_t>( "elysian_decree_sigil" );
+    timespan_t sigil_delay = data().duration() - p->talent.quickened_sigils->effectN( 1 ).time_value();
+    sigil = p->get_background_action<elysian_decree_sigil_t>( "elysian_decree_sigil", p->find_spell( 307046 ), sigil_delay );
     sigil->stats = stats;
+
+    if ( p->conduit.repeat_decree.ok() )
+    {
+      const spell_data_t* repeat_decree_driver = p->find_spell( 307046 )->effectN( 2 ).trigger();
+      timespan_t repeat_decree_delay = timespan_t::from_millis( repeat_decree_driver->effectN( 2 ).misc_value1() );
+      repeat_decree_sigil = p->get_background_action<elysian_decree_sigil_t>(
+        "elysian_decree_repeat_decree", repeat_decree_driver->effectN(2).trigger(), sigil_delay + repeat_decree_delay );
+      repeat_decree_sigil->base_multiplier = 1.0 + p->conduit.repeat_decree.percent();
+      add_child( repeat_decree_sigil );
+    }
   }
 
   void execute() override
   {
     demon_hunter_spell_t::execute();
     sigil->place_sigil( target );
+    if ( repeat_decree_sigil )
+      repeat_decree_sigil->place_sigil( target );
   }
 };
 
@@ -3060,7 +3089,8 @@ struct fodder_to_the_flame_t : public demon_hunter_spell_t
       double buff_duration_percent = p()->rng().range( p()->options.fodder_to_the_flame_min_percent, 1.0 );
       if( buff_duration_percent )
       {
-        p()->buff.fodder_to_the_flame->extend_duration( p(), data().duration() * -( 1.0 - buff_duration_percent ) );
+        timespan_t adjusted_duration = p()->buff.fodder_to_the_flame->buff_duration * ( 1.0 - buff_duration_percent );
+        p()->buff.fodder_to_the_flame->extend_duration( p(), -adjusted_duration );
       }
     }
   };
@@ -4820,7 +4850,7 @@ void demon_hunter_t::create_buffs()
   buff.fodder_to_the_flame = make_buff<buff_t>( this, "fodder_to_the_flame", fodder_to_the_flame_buff )
     ->add_invalidate( CACHE_ATTACK_SPEED )
     ->set_default_value( find_spell( 330910 )->effectN( 1 ).percent() )
-    ->set_duration( find_spell( 330846 )->duration() );
+    ->set_duration( find_spell( 330846 )->duration() + conduit.brooding_pool.time_value() );
 
   // Legendary ==============================================================
 
@@ -5350,6 +5380,19 @@ void demon_hunter_t::init_spells()
   covenant.fodder_to_the_flame  = find_covenant_spell( "Fodder to the Flame" );
   covenant.sinful_brand         = find_covenant_spell( "Sinful Brand" );
   covenant.the_hunt             = find_covenant_spell( "The Hunt" );
+
+  // Conduits ===============================================================
+
+  conduit.dancing_with_fate     = find_conduit_spell( "Dancing with Fate" );
+  conduit.demons_touch          = find_conduit_spell( "Demon's Touch" );
+  conduit.growing_inferno       = find_conduit_spell( "Growing Inferno" );
+  conduit.serrated_glaive       = find_conduit_spell( "Serrated Glaive" );
+
+  conduit.soul_furnace          = find_conduit_spell( "Soul Furnace" );
+
+  conduit.repeat_decree         = find_conduit_spell( "Repeat Decree" );
+  conduit.increased_scrutiny    = find_conduit_spell( "Increased Scrutiny" );
+  conduit.brooding_pool         = find_conduit_spell( "Brooding Pool" );
 
   // Legendary Items ========================================================
 
