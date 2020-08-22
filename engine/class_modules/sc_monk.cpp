@@ -4501,22 +4501,21 @@ struct keg_smash_t : public monk_melee_attack_t
 // ==========================================================================
 // Touch of Death
 // ==========================================================================
-struct touch_of_death_t : public monk_spell_t
+struct touch_of_death_t : public monk_melee_attack_t
 {
 
-  touch_of_death_t( monk_t* p, const std::string& options_str )
-    : monk_spell_t( "touch_of_death", p, p->spec.touch_of_death )
+  touch_of_death_t( monk_t& p, const std::string& options_str )
+    : monk_melee_attack_t( "touch_of_death", &p, p.spec.touch_of_death )
   {
     may_crit = hasted_ticks = false;
     may_combo_strike        = true;
     parse_options( options_str );
     cooldown->duration = data().cooldown();
-//    school             = SCHOOL_PHYSICAL;
   }
 
   void init() override
   {
-    monk_spell_t::init();
+    monk_melee_attack_t::init();
 
     snapshot_flags = update_flags = 0;
   }
@@ -4524,6 +4523,18 @@ struct touch_of_death_t : public monk_spell_t
   double target_armor( player_t* ) const override
   {
     return 0;
+  }
+
+  bool ready() override
+  {
+    if ( p()->spec.touch_of_death_2 &&
+         ( target->health_percentage() < p()->spec.touch_of_death->effectN( 2 ).base_value() ) )
+      return monk_melee_attack_t::ready();
+    if ( ( target->true_level <= p()->true_level ) &&
+         ( target->current_health() <= p()->resources.max[ RESOURCE_HEALTH ] ) )
+      return monk_melee_attack_t::ready();
+
+    return false;
   }
 
   virtual void impact( action_state_t* s ) override
@@ -4543,17 +4554,7 @@ struct touch_of_death_t : public monk_spell_t
       amount *= 1 + p()->cache.mastery_value();
 
     s->result_amount = amount;
-    monk_spell_t::impact( s );
-  }
-
-  bool ready() override
-  {
-    if ( p()->spec.touch_of_death_2 && ( target->health_percentage() < p()->spec.touch_of_death->effectN( 2 ).base_value() ) )
-      return monk_spell_t::ready();
-    if ( ( target->true_level <= p()->true_level ) && ( target->current_health() <= p()->resources.max[ RESOURCE_HEALTH ] ) )
-      return monk_spell_t::ready();
-
-    return false;
+    monk_melee_attack_t::impact( s );
   }
 };
 
