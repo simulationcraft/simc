@@ -289,6 +289,7 @@ public:
     buff_t* loaded_dice;
     buff_t* slice_and_dice;
     // Subtlety
+    buff_t* premeditation;
     buff_t* master_of_shadows;
     buff_t* secret_technique; // Only to simplify APL tracking
     buff_t* shuriken_tornado;
@@ -391,6 +392,7 @@ public:
     gain_t* the_first_dance;
     gain_t* serrated_bone_spike;
     gain_t* dreadblades;
+    gain_t* premeditation;
 
     // Legendary
     gain_t* dashing_scoundrel;
@@ -530,6 +532,7 @@ public:
     const spell_data_t* killing_spree;
 
     // Subtlety
+    const spell_data_t* premeditation;
     const spell_data_t* gloomblade;
 
     const spell_data_t* shadow_focus;
@@ -3957,6 +3960,14 @@ struct shadowstrike_t : public rogue_attack_t
   {
     rogue_attack_t::execute();
 
+    if ( p()->buffs.premeditation->up() )
+    {
+      if ( p()->buffs.slice_and_dice->check() )
+        trigger_combo_point_gain( as<int>( p()->talent.premeditation->effectN( 2 ).base_value() ), p()->gains.premeditation );
+      p()->buffs.slice_and_dice->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, timespan_t::from_seconds( p()->talent.premeditation->effectN( 1 ).base_value() ) );
+      p()->buffs.premeditation->expire();
+    }
+
     p()->buffs.blade_in_the_shadows->trigger();
     p()->buffs.perforated_veins->trigger();
 
@@ -5393,6 +5404,8 @@ struct stealth_like_buff_t : public buff_t
         rogue->buffs.master_assassin_aura->trigger();
       if ( rogue->legendary.master_assassins_mark->ok() )
         rogue->buffs.master_assassins_mark_aura->trigger();
+      if ( rogue->talent.premeditation->ok() )
+        rogue->buffs.premeditation->trigger();
     }
   }
 
@@ -7067,7 +7080,7 @@ void rogue_t::init_action_list()
     // Stealth Cooldowns
     action_priority_list_t* stealth_cds = get_action_priority_list( "stealth_cds", "Stealth Cooldowns" );
     stealth_cds -> add_action( "variable,name=shd_threshold,value=cooldown.shadow_dance.charges_fractional>=1.75", "Helper Variable" );
-    stealth_cds -> add_action( this, "Vanish", "if=!variable.shd_threshold&combo_points.deficit>1&debuff.find_weakness.remains<1&cooldown.symbols_of_death.remains>=3", "Vanish unless we are about to cap on Dance charges. Only when Find Weakness is about to run out." );
+    stealth_cds -> add_action( this, "Vanish", "if=!variable.shd_threshold&combo_points.deficit>1", "Vanish unless we are about to cap on Dance charges." );
     stealth_cds -> add_action( "pool_resource,for_next=1,extra_amount=40", "Pool for Shadowmeld + Shadowstrike unless we are about to cap on Dance charges. Only when Find Weakness is about to run out." );
     stealth_cds -> add_action( "shadowmeld,if=energy>=40&energy.deficit>=10&!variable.shd_threshold&combo_points.deficit>1&debuff.find_weakness.remains<1" );
     stealth_cds -> add_action( "variable,name=shd_combo_points,value=combo_points.deficit>=4-(talent.deeper_stratagem.enabled&(azerite.the_first_dance.enabled&!talent.dark_shadow.enabled&!talent.subterfuge.enabled&spell_targets.shuriken_storm<3))", "CP requirement: Dance at low CP by default. (Subtraction is a copy from the stealhed finisher call for TFD handling.)" );
@@ -7747,6 +7760,7 @@ void rogue_t::init_spells()
   talent.killing_spree      = find_talent_spell( "Killing Spree" );
 
   // Subtlety
+  talent.premeditation      = find_talent_spell( "Premeditation" );
   talent.gloomblade         = find_talent_spell( "Gloomblade" );
 
   talent.shadow_focus       = find_talent_spell( "Shadow Focus" );
@@ -7940,6 +7954,7 @@ void rogue_t::init_gains()
   gains.deathly_shadows          = get_gain( "Deathly Shadows"          );
   gains.serrated_bone_spike      = get_gain( "Serrated Bone Spike"      );
   gains.dreadblades              = get_gain( "Dreadblades"              );
+  gains.premeditation            = get_gain( "Premeditation"            );
 }
 
 // rogue_t::init_procs ======================================================
@@ -8158,6 +8173,7 @@ void rogue_t::create_buffs()
                                   ->set_default_value( find_spell( 343143 )->effectN( 1 ).base_value() );
 
   // Subtlety
+  buffs.premeditation           = make_buff( this, "premeditation", find_spell( 343173 ) );
   buffs.master_of_shadows       = make_buff( this, "master_of_shadows", find_spell( 196980 ) )
                                   -> set_period( find_spell( 196980 ) -> effectN( 1 ).period() )
                                   -> set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
