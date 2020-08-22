@@ -9494,15 +9494,9 @@ item_runeforge_t player_t::find_runeforge_legendary( util::string_view name, boo
   {
     return item_runeforge_t::nil();
   }
-
-  auto spec_it = range::find_if( entries, [this]( const runeforge_legendary_entry_t& e ) {
-    return e.specialization_id == static_cast<unsigned>( _spec );
-  } );
-
-  if ( spec_it == entries.end() )
-  {
-    return item_runeforge_t::not_found();
-  }
+  
+  // 8/22/2020 - Removed spec filtering for now since these currently have no spec limitations in-game
+  //             May need to restore some logic at some point if Blizzard points to different spells per-spec
 
   // Iterate over all items to find the bonus id on an item. Note that Simulationcraft
   // currently does not enforce the item restrictions on the legendary bonuses. This is
@@ -9511,7 +9505,7 @@ item_runeforge_t player_t::find_runeforge_legendary( util::string_view name, boo
   const item_t* item = nullptr;
   for ( const auto& i : items )
   {
-    auto it = range::find( i.parsed.bonus_id, spec_it->bonus_id );
+    auto it = range::find( i.parsed.bonus_id, entries.front().bonus_id );
     if ( it != i.parsed.bonus_id.end() )
     {
       item = &i;
@@ -9524,7 +9518,7 @@ item_runeforge_t player_t::find_runeforge_legendary( util::string_view name, boo
     return item_runeforge_t::not_found();
   }
 
-  return { *spec_it, item };
+  return { entries.front(), item };
 }
 
 /**
