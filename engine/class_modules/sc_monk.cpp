@@ -4520,11 +4520,6 @@ struct touch_of_death_t : public monk_melee_attack_t
     snapshot_flags = update_flags = 0;
   }
 
-  double target_armor( player_t* ) const override
-  {
-    return 0;
-  }
-
   bool ready() override
   {
     if ( p()->spec.touch_of_death_2 &&
@@ -4539,7 +4534,8 @@ struct touch_of_death_t : public monk_melee_attack_t
 
   virtual void impact( action_state_t* s ) override
   {
-    double amount = p()->resources.max[ RESOURCE_HEALTH ];
+    // Damage is associated with the players non-buffed max HP
+    double amount = p()->resources.initial[ RESOURCE_HEALTH ];
 
     if ( target->true_level > p()->true_level )
         amount *= p()->spec.touch_of_death->effectN( 3 ).percent();  // 35% HP
