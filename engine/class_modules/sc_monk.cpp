@@ -4902,6 +4902,8 @@ struct roll_t : public monk_spell_t
   {
     parse_options( options_str );
 
+    cooldown->charges += (int)player->spec.roll_2->effectN( 1 ).base_value();
+
     if ( player->talent.celerity )
     {
       cooldown->duration += player->talent.celerity->effectN( 1 ).time_value();
@@ -4920,6 +4922,8 @@ struct chi_torpedo_t : public monk_spell_t
     : monk_spell_t( "chi_torpedo", player, player->talent.chi_torpedo )
   {
     parse_options( options_str );
+
+    cooldown->charges += (int)player->spec.roll_2->effectN( 1 ).base_value();
   }
 
   void execute() override
