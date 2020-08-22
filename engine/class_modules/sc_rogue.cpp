@@ -309,12 +309,15 @@ public:
 
     // Legendary
     buff_t* deathly_shadows;
-    buff_t* master_assassins_mark;
-    buff_t* master_assassins_mark_aura;
-    buff_t* the_rotten;
+    buff_t* finality_eviscerate;
+    buff_t* finality_rupture;
+    buff_t* finality_shadow_vault;
     buff_t* guile_charm_insight_1;
     buff_t* guile_charm_insight_2;
     buff_t* guile_charm_insight_3;
+    buff_t* master_assassins_mark;
+    buff_t* master_assassins_mark_aura;
+    buff_t* the_rotten;
 
     // Covenant
     buff_t* echoing_reprimand_2;
@@ -631,7 +634,7 @@ public:
     // Subtlety
     item_runeforge_t akaaris_soul_fragment;
     item_runeforge_t deathly_shadows;
-    item_runeforge_t finality;                // NYI
+    item_runeforge_t finality;
     item_runeforge_t the_rotten;
 
     // Legendary Values
@@ -1013,6 +1016,8 @@ public:
     bool symbols_of_death_autocrit = false;
     bool perforated_veins = false;
     bool blindside = false;
+    bool finality_eviscerate = false;
+    bool finality_shadow_vault = false;
 
     damage_affect_data mastery_executioner;
     damage_affect_data mastery_potent_assassin;
@@ -1069,8 +1074,15 @@ public:
     affected_by.ruthless_precision = ab::data().affected_by( p->spec.ruthless_precision->effectN( 1 ) );
     affected_by.symbols_of_death_autocrit = ab::data().affected_by( p->spec.symbols_of_death_autocrit->effectN( 1 ) );
     affected_by.blindside = ab::data().affected_by( p->find_spell( 121153 )->effectN( 1 ) );
-    if(p->conduit.perforated_veins.ok() )
+    if ( p->conduit.perforated_veins.ok() )
+    {
       affected_by.perforated_veins = ab::data().affected_by( p->conduit.perforated_veins->effectN( 1 ).trigger()->effectN( 1 ) );
+    }
+    if ( p->legendary.finality.ok() )
+    {
+      affected_by.finality_eviscerate = ab::data().affected_by( p->find_spell( 340600 )->effectN( 1 ) );
+      affected_by.finality_shadow_vault = ab::data().affected_by( p->find_spell( 340603 )->effectN( 1 ) );
+    }
 
     // Auto-parsing for damage affecting dynamic flags, this reads IF direct/periodic dmg is affected and stores by how much.
     // Still requires manual impl below but removes need to hardcode effect numbers.
@@ -1356,6 +1368,16 @@ public:
     if ( affected_by.perforated_veins )
     {
       m *= 1.0 + p()->buffs.perforated_veins->stack_value();
+    }
+
+    if ( affected_by.finality_eviscerate )
+    {
+      m *= 1.0 + p()->buffs.finality_eviscerate->value();
+    }
+
+    if ( affected_by.finality_shadow_vault )
+    {
+      m *= 1.0 + p()->buffs.finality_shadow_vault->value();
     }
 
     // Assassination
@@ -2790,6 +2812,14 @@ struct eviscerate_t : public rogue_attack_t
       bonus_attack->set_target( target );
       bonus_attack->execute();
     }
+
+    if ( p()->legendary.finality.ok() )
+    {
+      if ( p()->buffs.finality_eviscerate->check() )
+        p()->buffs.finality_eviscerate->expire();
+      else
+        p()->buffs.finality_eviscerate->trigger();
+    }
   }
 };
 
@@ -3530,7 +3560,10 @@ struct rupture_t : public rogue_attack_t
     // Copy the persistent multiplier from the origin of replications.
     if ( secondary_trigger == TRIGGER_REPLICATING_SHADOWS )
       return p()->get_target_data( p()->last_rupture_target )->dots.rupture->state->persistent_multiplier;
-    return rogue_attack_t::composite_persistent_multiplier( state );
+
+    double m = rogue_attack_t::composite_persistent_multiplier( state );
+    m += 1.0 + p()->buffs.finality_rupture->value(); // Additive with Nightstalker
+    return m;
   }
 
   void execute() override
@@ -3551,6 +3584,14 @@ struct rupture_t : public rogue_attack_t
 
       // Save the target for Replicating Shadows
       p()->last_rupture_target = execute_state->target;
+    }
+
+    if ( p()->legendary.finality.ok() )
+    {
+      if ( p()->buffs.finality_rupture->check() )
+        p()->buffs.finality_rupture->expire();
+      else
+        p()->buffs.finality_rupture->trigger();
     }
   }
 
@@ -3967,6 +4008,14 @@ struct shadow_vault_t: public rogue_attack_t
   {
     rogue_attack_t::execute();
     p()->buffs.deeper_daggers->trigger(); // TOCHECK: Does this happen before or after the impact damage?
+
+    if ( p()->legendary.finality.ok() )
+    {
+      if ( p()->buffs.finality_shadow_vault->check() )
+        p()->buffs.finality_shadow_vault->expire();
+      else
+        p()->buffs.finality_shadow_vault->trigger();
+    }
   }
 
   void impact(action_state_t* state) override
@@ -8175,6 +8224,13 @@ void rogue_t::create_buffs()
       buffs.guile_charm_insight_2->expire();
       legendary.guile_charm_counter = 0;
     } );
+
+  buffs.finality_eviscerate = make_buff( this, "finality_eviscerate", find_spell( 340600 ) )
+    ->set_default_value( find_spell( 340600 )->effectN( 1 ).percent() );
+  buffs.finality_rupture = make_buff( this, "finality_rupture", find_spell( 340601 ) )
+    ->set_default_value( find_spell( 340601 )->effectN( 1 ).percent() );
+  buffs.finality_shadow_vault = make_buff( this, "finality_shadow_vault", find_spell( 340603 ) )
+    ->set_default_value( find_spell( 340603 )->effectN( 1 ).percent() );
 }
 
 // rogue_t::create_options ==================================================
