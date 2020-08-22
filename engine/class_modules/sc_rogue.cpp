@@ -366,6 +366,7 @@ public:
   struct gains_t
   {
     gain_t* adrenaline_rush;
+    gain_t* adrenaline_rush_expiry;
     gain_t* blade_rush;
     gain_t* buried_treasure;
     gain_t* combat_potency;
@@ -5342,8 +5343,10 @@ struct adrenaline_rush_t : public buff_t
     buff_t::expire_override( expiration_stacks, remaining_duration );
 
     rogue_t* rogue = debug_cast<rogue_t*>( source );
-    rogue -> resources.temporary[ RESOURCE_ENERGY ] -= data().effectN( 4 ).base_value();
-    rogue -> recalculate_resource_max( RESOURCE_ENERGY );
+    rogue->resources.temporary[ RESOURCE_ENERGY ] -= data().effectN( 4 ).base_value();
+    if ( rogue->legendary.celerity )
+      rogue->resources.temporary[ RESOURCE_ENERGY ] -= rogue->legendary.celerity->effectN( 1 ).base_value();
+    rogue->recalculate_resource_max( RESOURCE_ENERGY, rogue->gains.adrenaline_rush_expiry );
 
     // 6/22/2019 - Brigand's Blitz expires when the Adrenaline Rush buff expires, regardless of duration
     //             This is mostly relevant due to Vision of Perfection procs
@@ -7927,6 +7930,7 @@ void rogue_t::init_gains()
   player_t::init_gains();
 
   gains.adrenaline_rush          = get_gain( "Adrenaline Rush"          );
+  gains.adrenaline_rush_expiry   = get_gain( "Adrenaline Rush (Expiry)" );
   gains.blade_rush               = get_gain( "Blade Rush"               );
   gains.buried_treasure          = get_gain( "Buried Treasure"          );
   gains.combat_potency           = get_gain( "Combat Potency"           );
