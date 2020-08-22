@@ -5930,7 +5930,7 @@ bool player_t::resource_available( resource_e resource_type, double cost ) const
   return available;
 }
 
-void player_t::recalculate_resource_max( resource_e resource_type )
+void player_t::recalculate_resource_max( resource_e resource_type, gain_t* source )
 {
   resources.max[ resource_type ] = resources.base[ resource_type ];
   resources.max[ resource_type ] *= resources.base_multiplier[ resource_type ];
@@ -5951,10 +5951,16 @@ void player_t::recalculate_resource_max( resource_e resource_type )
     default:
       break;
   }
-  resources.max[ resource_type ] += resources.temporary[ resource_type ];
 
+  resources.max[ resource_type ] += resources.temporary[ resource_type ];
   resources.max[ resource_type ] *= resources.initial_multiplier[ resource_type ];
+
   // Sanity check on current values
+  if ( source && resources.current[ resource_type ] > resources.max[ resource_type ] )
+  {
+    // Track overflow from loss if applicable
+    source->add( resource_type, 0, resources.current[ resource_type ] - resources.max[ resource_type ] );
+  }
   resources.current[ resource_type ] = std::min( resources.current[ resource_type ], resources.max[ resource_type ] );
 }
 

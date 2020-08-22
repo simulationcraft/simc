@@ -943,7 +943,7 @@ public:
   void assess_damage( school_e, result_amount_type, action_state_t* ) override;
   void assess_damage_imminent_pre_absorb( school_e, result_amount_type, action_state_t* ) override;
   void assess_heal( school_e, result_amount_type, action_state_t* ) override;
-  void recalculate_resource_max( resource_e ) override;
+  void recalculate_resource_max( resource_e, gain_t* g = nullptr ) override;
   void create_options() override;
   std::string create_profile( save_e type ) override;
   druid_td_t* get_target_data( player_t* target ) const override;
@@ -8955,7 +8955,7 @@ void druid_t::combat_begin()
 
 // druid_t::recalculate_resource_max ========================================
 
-void druid_t::recalculate_resource_max( resource_e rt )
+void druid_t::recalculate_resource_max( resource_e rt, gain_t* source )
 {
   double pct_health = 0, current_health = 0;
   bool adjust_natures_guardian_health = mastery.natures_guardian->ok() && rt == RESOURCE_HEALTH;
@@ -8965,7 +8965,7 @@ void druid_t::recalculate_resource_max( resource_e rt )
     pct_health     = resources.pct( rt );
   }
 
-  player_t::recalculate_resource_max( rt );
+  player_t::recalculate_resource_max( rt, source );
 
   if ( adjust_natures_guardian_health )
   {

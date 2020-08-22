@@ -822,7 +822,7 @@ public:
   void init_resources( bool ) override;
   double resource_gain( resource_e, double, gain_t* = nullptr, action_t* = nullptr ) override;
   double resource_loss( resource_e, double, gain_t* = nullptr, action_t* = nullptr ) override;
-  void recalculate_resource_max( resource_e ) override;
+  void recalculate_resource_max( resource_e, gain_t* g = nullptr ) override;
   void reset() override;
   std::unique_ptr<expr_t> create_expression( util::string_view ) override;
   std::unique_ptr<expr_t> create_action_expression( action_t&, util::string_view ) override;
@@ -7303,12 +7303,12 @@ double mage_t::resource_loss( resource_e resource_type, double amount, gain_t* s
   return l;
 }
 
-void mage_t::recalculate_resource_max( resource_e rt )
+void mage_t::recalculate_resource_max( resource_e rt, gain_t* source )
 {
   double max = resources.max[ rt ];
   double pct = resources.pct( rt );
 
-  player_t::recalculate_resource_max( rt );
+  player_t::recalculate_resource_max( rt, source );
 
   if ( specialization() == MAGE_ARCANE && rt == RESOURCE_MANA )
   {
