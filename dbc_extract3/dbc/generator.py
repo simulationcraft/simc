@@ -1551,6 +1551,7 @@ class SpellDataGenerator(DataGenerator):
             ( 340587, 0 ),          # Concealed Blunderbuss legendary buff
             ( 340573, 0 ),          # Greenskin's Wickers legendary buff
             ( 340431, 0 ),          # Doomblade legendary debuff
+            ( 343173, 0 ),          # Premeditation buff
         ),
 
         # Priest:
