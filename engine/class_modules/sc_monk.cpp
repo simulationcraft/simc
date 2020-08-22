@@ -128,7 +128,6 @@ public:
     buff_t* storm_earth_and_fire;
     buff_t* sunrise_technique;
     buff_t* touch_of_karma;
-    buff_t* touch_of_death_amplifier;
   } debuff;
 
   monk_t& monk;
@@ -380,6 +379,8 @@ public:
     const spell_data_t* roll_2;
     const spell_data_t* spinning_crane_kick;
     const spell_data_t* spear_hand_strike;
+    const spell_data_t* touch_of_death;
+    const spell_data_t* touch_of_death_2;
     const spell_data_t* tiger_palm;
     const spell_data_t* vivify;
 
@@ -432,8 +433,6 @@ public:
     const spell_data_t* stance_of_the_fierce_tiger;
     const spell_data_t* storm_earth_and_fire;
     const spell_data_t* storm_earth_and_fire_2;
-    const spell_data_t* touch_of_death;
-    const spell_data_t* touch_of_death_amplifier;
     const spell_data_t* touch_of_karma;
     const spell_data_t* windwalker_monk;
     const spell_data_t* windwalking;
@@ -4502,54 +4501,17 @@ struct keg_smash_t : public monk_melee_attack_t
 // ==========================================================================
 // Touch of Death
 // ==========================================================================
-// Touch of Death Amplifier will not show in the combat log. Damage will be added directly to Touch of Death
-// However I am added Touch of Death Amplifier as a child of Touch of Death for statistics reasons.
-
-struct touch_of_death_amplifier_t : public monk_spell_t
-{
-  touch_of_death_amplifier_t( monk_t* p )
-    : monk_spell_t( "touch_of_death_amplifier", p, p->spec.touch_of_death_amplifier )
-  {
-    background                    = true;
-    may_crit                      = false;
-    school                        = SCHOOL_PHYSICAL;
-    ap_type                       = attack_power_type::NO_WEAPON;
-    affected_by.sunrise_technique = true;
-  }
-
-  void init() override
-  {
-    monk_spell_t::init();
-
-    snapshot_flags = update_flags = 0;
-  }
-};
-
 struct touch_of_death_t : public monk_spell_t
 {
-  touch_of_death_amplifier_t* touch_of_death_amplifier;
 
   touch_of_death_t( monk_t* p, const std::string& options_str )
-    : monk_spell_t( "touch_of_death", p, p->spec.touch_of_death ),
-      touch_of_death_amplifier( new touch_of_death_amplifier_t( p ) )
+    : monk_spell_t( "touch_of_death", p, p->spec.touch_of_death )
   {
     may_crit = hasted_ticks = false;
     may_combo_strike        = true;
     parse_options( options_str );
-    school             = SCHOOL_PHYSICAL;
-    ap_type            = attack_power_type::NO_WEAPON;
     cooldown->duration = data().cooldown();
-
-    add_child( touch_of_death_amplifier );
-  }
-
-  bool target_ready( player_t* candidate_target ) override
-  {
-    // Cannot be used on a target that has Touch of Death on them already
-    if ( td( candidate_target )->dots.touch_of_death->is_ticking() )
-      return false;
-
-    return monk_spell_t::target_ready( candidate_target );
+//    school             = SCHOOL_PHYSICAL;
   }
 
   void init() override
@@ -4564,11 +4526,12 @@ struct touch_of_death_t : public monk_spell_t
     return 0;
   }
 
-  double calculate_tick_amount( action_state_t* s, double /*dot_multiplier*/ ) const override
+  virtual void impact( action_state_t* s ) override
   {
     double amount = p()->resources.max[ RESOURCE_HEALTH ];
 
-    amount *= p()->spec.touch_of_death->effectN( 2 ).percent();  // 35% HP
+    if ( target->true_level > p()->true_level )
+        amount *= p()->spec.touch_of_death->effectN( 3 ).percent();  // 35% HP
 
     // Bonus damage happens before any multipliers
     if ( p()->azerite.meridian_strikes.ok() )
@@ -4579,43 +4542,18 @@ struct touch_of_death_t : public monk_spell_t
     if ( p()->buff.combo_strikes->up() )
       amount *= 1 + p()->cache.mastery_value();
 
-    s->result_raw   = amount;
-    s->result_total = amount;
-
-    return amount;
-  }
-
-  void last_tick( dot_t* dot ) override
-  {
-    if ( td( p()->target )->debuff.touch_of_death_amplifier->up() )
-    {
-      double touch_of_death_multiplier      = p()->spec.touch_of_death_amplifier->effectN( 1 ).percent();
-      double tod_dmg                        = td( p()->target )->debuff.touch_of_death_amplifier->current_value;
-      touch_of_death_amplifier->base_dd_min = tod_dmg * touch_of_death_multiplier;
-      touch_of_death_amplifier->base_dd_max = tod_dmg * touch_of_death_multiplier;
-
-      sim->print_debug( "{} executed {}. Amount sent before modifiers is {}.", *player,
-                               *touch_of_death_amplifier,
-                               td( p()->target )->debuff.touch_of_death_amplifier->current_value );
-
-      touch_of_death_amplifier->target = dot->target;
-      touch_of_death_amplifier->execute();
-
-      td( p()->target )->debuff.touch_of_death_amplifier->expire();
-    }
-
-    monk_spell_t::last_tick( dot );
-  }
-
-  void impact( action_state_t* s ) override
-  {
+    s->result_amount = amount;
     monk_spell_t::impact( s );
+  }
 
-    if ( result_is_hit( s->result ) )
-    {
-      td( s->target )->debuff.touch_of_death_amplifier->trigger();
-      td( s->target )->debuff.touch_of_death_amplifier->current_value = 0;
-    }
+  bool ready() override
+  {
+    if ( p()->spec.touch_of_death_2 && ( target->health_percentage() < p()->spec.touch_of_death->effectN( 2 ).base_value() ) )
+      return monk_spell_t::ready();
+    if ( ( target->true_level <= p()->true_level ) && ( target->current_health() <= p()->resources.max[ RESOURCE_HEALTH ] ) )
+      return monk_spell_t::ready();
+
+    return false;
   }
 };
 
@@ -6792,10 +6730,6 @@ monk_td_t::monk_td_t( player_t* target, monk_t* p )
     debuff.flying_serpent_kick =
         make_buff( *this, "flying_serpent_kick", p->passives.flying_serpent_kick_damage )
             ->set_default_value( p->passives.flying_serpent_kick_damage->effectN( 2 ).percent() );
-    debuff.touch_of_death_amplifier = make_buff( *this, "touch_of_death_amplifier", p->spec.touch_of_death_amplifier )
-                                          ->set_duration( p->spec.touch_of_death->duration() )
-                                          ->set_default_value( 0 )
-                                          ->set_quiet( true );
     debuff.touch_of_karma =
         make_buff( *this, "touch_of_karma_debuff", p->spec.touch_of_karma )
             // set the percent of the max hp as the default value.
@@ -6819,7 +6753,6 @@ monk_td_t::monk_td_t( player_t* target, monk_t* p )
   dots.renewing_mist           = target->get_dot( "renewing_mist", p );
   dots.rushing_jade_wind       = target->get_dot( "rushing_jade_wind", p );
   dots.soothing_mist           = target->get_dot( "soothing_mist", p );
-  dots.touch_of_death          = target->get_dot( "touch_of_death", p );
   dots.touch_of_karma          = target->get_dot( "touch_of_karma", p );
 }
 
@@ -7236,6 +7169,8 @@ void monk_t::init_spells()
   spec.spear_hand_strike        = find_specialization_spell( "Spear Hand Strike" );
   spec.spinning_crane_kick      = find_class_spell( "Spinning Crane Kick" );
   spec.tiger_palm               = find_class_spell( "Tiger Palm" );
+  spec.touch_of_death           = find_class_spell( "Touch of Death" );
+  spec.touch_of_death_2         = find_rank_spell( "Touch of Death", "Rank 2" );
   spec.vivify                   = find_class_spell( "Vivify" );
 
   // Brewmaster Specialization
@@ -7284,8 +7219,6 @@ void monk_t::init_spells()
   spec.storm_earth_and_fire       = find_specialization_spell( "Storm, Earth, and Fire" );
   spec.storm_earth_and_fire_2     = find_rank_spell( "Storm, Earth, and Fire", "Rank 2" );
   spec.touch_of_karma             = find_specialization_spell( "Touch of Karma" );
-  spec.touch_of_death             = find_specialization_spell( "Touch of Death" );
-  spec.touch_of_death_amplifier   = find_specialization_spell( "Touch of Death Amplifier" );
   spec.windwalker_monk            = find_specialization_spell( "Windwalker Monk" );
   spec.windwalking                = find_specialization_spell( "Windwalking" );
 
@@ -7877,30 +7810,8 @@ std::vector<player_t*> monk_t::create_storm_earth_and_fire_target_list() const
 
 void monk_t::accumulate_gale_burst_damage( action_state_t* s )
 {
-  if ( !get_target_data( s->target )->dots.touch_of_death->is_ticking() )
-    return;
-
   if ( !s->action->harmful )
     return;
-
-  if ( s->action->name_str == "touch_of_death_amplifier" )
-    return;
-
-  if ( !get_target_data( s->target )->debuff.touch_of_death_amplifier->up() )
-    return;
-
-  double touch_of_death_amplifier = s->result_amount;
-
-  // Having Storm, Earth and Fire out increases the amplifier by 3 which is hard coded and not in any spell
-  // effect. This is due to the fact that the SEF clones don't contribute to the amplifier.
-  if ( buff.storm_earth_and_fire->up() )
-    touch_of_death_amplifier *= 3;
-
-  get_target_data( s->target )->debuff.touch_of_death_amplifier->current_value += touch_of_death_amplifier;
-
-  sim->print_debug( "{} {} added {} towards Gale Burst. Current Gale Burst amount that is saved up is {}.",
-                           *this, *s->action, touch_of_death_amplifier,
-                           get_target_data( s->target )->debuff.touch_of_death_amplifier->current_value );
 }
 
 // monk_t::retarget_storm_earth_and_fire ====================================
