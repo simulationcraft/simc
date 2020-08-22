@@ -28,6 +28,7 @@ enum secondary_trigger_e
   TRIGGER_INTERNAL_BLEEDING,
   TRIGGER_AKAARIS_SOUL_FRAGMENT,
   TRIGGER_TRIPLE_THREAT,
+  TRIGGER_CONCEALED_BLUNDERBUSS,
 };
 
 enum stealth_type_e
@@ -217,6 +218,7 @@ public:
     actions::rogue_attack_t* bloodfang = nullptr;
     actions::rogue_attack_t* triple_threat_mh = nullptr;
     actions::rogue_attack_t* triple_threat_oh = nullptr;
+    actions::rogue_attack_t* concealed_blunderbuss = nullptr;
     struct
     {
       actions::rogue_attack_t* backstab = nullptr;
@@ -270,7 +272,6 @@ public:
     buff_t* symbols_of_death;
     buff_t* symbols_of_death_autocrit;
 
-
     // Talents
     // Shared
     buff_t* alacrity;
@@ -309,9 +310,11 @@ public:
 
     // Legendary
     buff_t* deathly_shadows;
+    buff_t* concealed_blunderbuss;
     buff_t* finality_eviscerate;
     buff_t* finality_rupture;
     buff_t* finality_shadow_vault;
+    buff_t* greenskins_wickers;
     buff_t* guile_charm_insight_1;
     buff_t* guile_charm_insight_2;
     buff_t* guile_charm_insight_3;
@@ -626,10 +629,10 @@ public:
     item_runeforge_t zoldyck_insignia;        // NYI
 
     // Outlaw
-    item_runeforge_t greenskins_wickers;      // NYI
+    item_runeforge_t greenskins_wickers;
     item_runeforge_t guile_charm;
     item_runeforge_t celerity;                // NYI
-    item_runeforge_t concealed_blunderbuss;   // NYI
+    item_runeforge_t concealed_blunderbuss;
     
     // Subtlety
     item_runeforge_t akaaris_soul_fragment;
@@ -2507,6 +2510,9 @@ struct between_the_eyes_t : public rogue_attack_t
 
       if ( p()->azerite.ace_up_your_sleeve.ok() && rng().roll( rs->cp * p()->azerite.ace_up_your_sleeve.spell_ref().effectN( 2 ).percent() ) )
         trigger_combo_point_gain( as<int>( p()->azerite.ace_up_your_sleeve.spell_ref().effectN( 3 ).base_value() ), p()->gains.ace_up_your_sleeve );
+
+      if ( p()->legendary.greenskins_wickers.ok() && rng().roll( rs->cp * p()->legendary.greenskins_wickers->effectN( 1 ).percent() ) )
+        p()->buffs.greenskins_wickers->trigger();
     }
   }
 
@@ -2903,8 +2909,7 @@ struct fan_of_knives_t: public rogue_attack_t
   {
     rogue_attack_t::execute();
 
-    if ( p() -> buffs.hidden_blades -> up() )
-      p() -> buffs.hidden_blades -> expire();
+    p()->buffs.hidden_blades->expire();
 
     echoing_blades_crit_count = 0;
   }
@@ -2917,11 +2922,11 @@ struct fan_of_knives_t: public rogue_attack_t
     {
       // 2018-01-25: Poisons are applied on cast as well
       // Note: Usual application on impact will not happen because this attack has no weapon assigned
-      if ( p() -> active.lethal_poison )
-        p() -> active.lethal_poison -> trigger( state );
+      if ( p()->active.lethal_poison )
+        p()->active.lethal_poison->trigger( state );
 
-      if ( p() -> active.nonlethal_poison )
-        p() -> active.nonlethal_poison -> trigger( state );
+      if ( p()->active.nonlethal_poison )
+        p()->active.nonlethal_poison->trigger( state );
     }
   }
 
@@ -2929,10 +2934,10 @@ struct fan_of_knives_t: public rogue_attack_t
   {
     rogue_attack_t::impact( state );
 
-    if ( echoing_blades_attack && state -> result == RESULT_CRIT && ++echoing_blades_crit_count <= p() -> azerite.echoing_blades.spell_ref().effectN( 4 ).base_value() )
+    if ( echoing_blades_attack && state->result == RESULT_CRIT && ++echoing_blades_crit_count <= p()->azerite.echoing_blades.spell_ref().effectN( 4 ).base_value() )
     {
-      echoing_blades_attack -> set_target( state -> target );
-      echoing_blades_attack -> execute();
+      echoing_blades_attack->set_target( state->target );
+      echoing_blades_attack->execute();
     }
   }
 };
@@ -3240,6 +3245,19 @@ struct pistol_shot_t : public rogue_attack_t
     ap_type = attack_power_type::WEAPON_BOTH;
   }
 
+  void init() override
+  {
+    rogue_attack_t::init();
+
+    if ( !is_secondary_action() )
+    {
+      if ( p()->active.concealed_blunderbuss )
+      {
+        add_child( p()->active.concealed_blunderbuss );
+      }
+    }
+  }
+
   // Probably a bug on Shadowlands beta but Pistol Shot now procs CP. -Mystler 2020-08-02
   bool procs_combat_potency() const override
   { return p()->bugs; }
@@ -3248,9 +3266,9 @@ struct pistol_shot_t : public rogue_attack_t
   {
     double c = rogue_attack_t::cost();
 
-    if ( p() -> buffs.opportunity -> check() )
+    if ( p()->buffs.opportunity->check() )
     {
-      c *= 1.0 + p() -> buffs.opportunity -> data().effectN( 1 ).percent();
+      c *= 1.0 + p()->buffs.opportunity->data().effectN( 1 ).percent();
     }
 
     return c;
@@ -3260,15 +3278,17 @@ struct pistol_shot_t : public rogue_attack_t
   {
     double m = rogue_attack_t::action_multiplier();
 
-    if ( p() -> buffs.opportunity -> up() )
+    if ( p()->buffs.opportunity->up() )
     {
-      double ps_mod = 1.0 + p() -> buffs.opportunity -> data().effectN( 3 ).percent();
+      double ps_mod = 1.0 + p()->buffs.opportunity->data().effectN( 3 ).percent();
 
-      if ( p() -> talent.quick_draw -> ok() )
-        ps_mod += p() -> talent.quick_draw -> effectN( 1 ).percent();
+      if ( p()->talent.quick_draw->ok() )
+        ps_mod += p()->talent.quick_draw->effectN( 1 ).percent();
 
       m *= ps_mod;
     }
+
+    m *= 1.0 + p()->buffs.greenskins_wickers->value();
 
     return m;
   }
@@ -3276,15 +3296,12 @@ struct pistol_shot_t : public rogue_attack_t
   double generate_cp() const override
   {
     double g = rogue_attack_t::generate_cp();
-
     if ( g == 0.0 )
-    {
-      return g;
-    }
+      return 0.0;
 
-    if ( p() -> talent.quick_draw -> ok() && p() -> buffs.opportunity -> check() )
+    if ( p()->talent.quick_draw->ok() && p()->buffs.opportunity->check() )
     {
-      g += p() -> talent.quick_draw -> effectN( 2 ).base_value();
+      g += p()->talent.quick_draw->effectN( 2 ).base_value();
     }
 
     return g;
@@ -3293,7 +3310,7 @@ struct pistol_shot_t : public rogue_attack_t
   double bonus_da( const action_state_t* s ) const override
   {
     double b = rogue_attack_t::bonus_da( s );
-    b += p() -> buffs.deadshot -> stack_value();
+    b += p()->buffs.deadshot->stack_value();
     return b;
   }
 
@@ -3301,19 +3318,26 @@ struct pistol_shot_t : public rogue_attack_t
   {
     rogue_attack_t::execute();
 
-    // Extra CP only if the initial attack grants CP (Blunderbuss damage events do not).
-    if ( generate_cp() > 0 )
+    if ( generate_cp() > 0 && p()->talent.quick_draw->ok() && p()->buffs.opportunity->check() )
     {
-      if ( p()->talent.quick_draw->ok() && p()->buffs.opportunity->check() )
-      {
-        const int cp_gain = as<int>( p()->talent.quick_draw->effectN( 2 ).base_value() );
-        trigger_combo_point_gain( cp_gain, p()->gains.quick_draw );
-      }
+      const int cp_gain = as<int>( p()->talent.quick_draw->effectN( 2 ).base_value() );
+      trigger_combo_point_gain( cp_gain, p()->gains.quick_draw );
     }
 
-    // Expire buffs.
-    p() -> buffs.opportunity -> expire();
-    p() -> buffs.deadshot -> expire();
+    p()->buffs.opportunity->expire();
+    p()->buffs.deadshot->expire();
+    p()->buffs.greenskins_wickers->expire();
+
+    // Concealed Blunderbuss Legendary
+    if ( p()->active.concealed_blunderbuss )
+    {
+      unsigned int num_shots = as<unsigned>( p()->buffs.concealed_blunderbuss->value() );
+      for ( unsigned i = 0; i < num_shots; ++i )
+      {
+        p()->active.concealed_blunderbuss->trigger_secondary_action( execute_state->target );
+      }
+      p()->buffs.concealed_blunderbuss->expire();
+    }
   }
 };
 
@@ -4220,6 +4244,7 @@ struct sinister_strike_t : public rogue_attack_t
     if ( p()->spec.sinister_strike_2->ok() && p()->buffs.opportunity->trigger( 1, buff_t::DEFAULT_VALUE(), extra_attack_proc_chance() ) )
     {
       extra_attack->trigger_secondary_action( execute_state->target, 0, 300_ms );
+      p()->buffs.concealed_blunderbuss->trigger();
     }
   }
 };
@@ -6885,7 +6910,7 @@ void rogue_t::init_action_list()
     def -> add_action( "variable,name=rtb_reroll,op=set,if=buff.blade_flurry.up,value=rtb_buffs-buff.skull_and_crossbones.up<2&(buff.loaded_dice.up|!buff.grand_melee.up&!buff.ruthless_precision.up&!buff.broadside.up)", "With Blade Flurry up, ignore rules above and take everything that is 2+ (not counting SaC) or single BS, GM, RP" );
     def -> add_action( "variable,name=rtb_reroll,op=set,if=buff.loaded_dice.up,value=(rtb_buffs-buff.buried_treasure.up)<2|buff.roll_the_bones.remains<10.8+(1.8*talent.deeper_stratagem.enabled)", "With Loaded Dice up, reroll any single buff, any 2 buff with Buried Treasure, or in pandemic." );
     def -> add_action( "variable,name=ambush_condition,value=combo_points.deficit>=2+2*(talent.ghostly_strike.enabled&cooldown.ghostly_strike.remains<1)+buff.broadside.up&energy>60&!buff.skull_and_crossbones.up&!buff.keep_your_wits_about_you.up" );
-    def -> add_action( "variable,name=bte_condition,value=buff.ruthless_precision.up|(azerite.deadshot.enabled|azerite.ace_up_your_sleeve.enabled)&buff.roll_the_bones.up" );
+    def -> add_action( "variable,name=bte_condition,value=buff.ruthless_precision.up|(azerite.deadshot.enabled|azerite.ace_up_your_sleeve.enabled|runeforge.greenskins_wickers.equipped)&buff.roll_the_bones.up" );
     def -> add_action( "variable,name=blade_flurry_sync,value=spell_targets.blade_flurry<2&raid_event.adds.in>20|buff.blade_flurry.up", "With multiple targets, this variable is checked to decide whether some CDs should be synced with Blade Flurry" );
     def -> add_action( "call_action_list,name=stealth,if=stealthed.all" );
     def -> add_action( "call_action_list,name=cds" );
@@ -6957,7 +6982,7 @@ void rogue_t::init_action_list()
     build -> add_action( "echoing_reprimand" );
     build -> add_action( "serrated_bone_spike,target_if=min:dot.serrated_bone_spike_dot.ticking,if=!dot.serrated_bone_spike.ticking|active_enemies=1&raid_event.adds.in>full_recharge_time|charges>2&target.time_to_die<5" );
     build -> add_action( this, "Pistol Shot", "if=(talent.quick_draw.enabled|azerite.keep_your_wits_about_you.rank<2)&buff.opportunity.up&(buff.keep_your_wits_about_you.stack<14|energy<45)", "Use Pistol Shot if it won't cap combo points and the Opportunity buff is up. Avoid using when Keep Your Wits stacks are high or when using Weaponmaster, unless the Deadshot buff is up." );
-    build -> add_action( this, "Pistol Shot", "if=buff.opportunity.up&buff.deadshot.up" );
+    build -> add_action( this, "Pistol Shot", "if=buff.opportunity.up&(buff.deadshot.up|buff.greenskins_wickers.up|buff.concealed_blunderbuss.up)" );
     build -> add_action( this, "Sinister Strike" );
   }
   else if ( specialization() == ROGUE_SUBTLETY )
@@ -7828,6 +7853,11 @@ void rogue_t::init_spells()
     active.akaaris_soul_fragment->base_multiplier *= legendary.akaaris_soul_fragment->effectN( 2 ).percent();
   }
 
+  if ( legendary.concealed_blunderbuss->ok() )
+  {
+    active.concealed_blunderbuss = get_secondary_trigger_action<actions::pistol_shot_t>( TRIGGER_CONCEALED_BLUNDERBUSS, "pistol_shot_concealed_blunderbuss" );
+  }
+
   // Active Spells = ========================================================
 
   auto_attack = new actions::auto_melee_attack_t( this, "" );
@@ -8231,6 +8261,13 @@ void rogue_t::create_buffs()
     ->set_default_value( find_spell( 340601 )->effectN( 1 ).percent() );
   buffs.finality_shadow_vault = make_buff( this, "finality_shadow_vault", find_spell( 340603 ) )
     ->set_default_value( find_spell( 340603 )->effectN( 1 ).percent() );
+
+  buffs.concealed_blunderbuss = make_buff( this, "concealed_blunderbuss", find_spell( 340587 ) )
+    ->set_chance( legendary.concealed_blunderbuss->effectN( 1 ).percent() )
+    ->set_default_value( legendary.concealed_blunderbuss->effectN( 2 ).base_value() );
+
+  buffs.greenskins_wickers = make_buff( this, "greenskins_wickers", find_spell( 340573 ) )
+    ->set_default_value( find_spell( 340573 )->effectN( 1 ).percent() );
 }
 
 // rogue_t::create_options ==================================================
