@@ -1309,6 +1309,7 @@ public:
   void trigger_prey_on_the_weak( const action_state_t* state );
   void trigger_find_weakness( const action_state_t* state, timespan_t duration = timespan_t::min() );
   void trigger_grand_melee( const action_state_t* state );
+  void trigger_master_of_shadows();
   void trigger_akaaris_soul_fragment( const action_state_t* state );
   void trigger_bloodfang( const action_state_t* state );
   void trigger_count_the_odds( const action_state_t* state );
@@ -3849,15 +3850,15 @@ struct shadow_blades_t : public rogue_spell_t
 
 struct shadow_dance_t : public rogue_spell_t
 {
-  cooldown_t* icd;
+  //cooldown_t* icd;
 
   shadow_dance_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ) :
-    rogue_spell_t( name, p, p->spec.shadow_dance, options_str ),
-    icd( p -> get_cooldown( "shadow_dance_icd" ) )
+    rogue_spell_t( name, p, p->spec.shadow_dance, options_str )
+    //icd( p -> get_cooldown( "shadow_dance_icd" ) )
   {
     harmful = false;
     dot_duration = timespan_t::zero(); // No need to have a tick here
-    icd -> duration = data().cooldown();
+    //icd -> duration = data().cooldown();
     if ( p -> talent.enveloping_shadows -> ok() )
     {
       cooldown -> charges += as<int>( p -> talent.enveloping_shadows -> effectN( 2 ).base_value() );
@@ -3869,6 +3870,7 @@ struct shadow_dance_t : public rogue_spell_t
     rogue_spell_t::execute();
 
     p() -> buffs.shadow_dance -> trigger();
+    trigger_master_of_shadows();
 
     if ( p()->azerite.the_first_dance.ok() )
     {
@@ -3877,15 +3879,19 @@ struct shadow_dance_t : public rogue_spell_t
         p() -> gains.the_first_dance );
     }
 
-    icd -> start();
+    //icd -> start();
   }
 
   bool ready() override
   {
-    if ( icd->down() )
+    /*if ( icd->down() )
     {
       return false;
-    }
+    }*/
+
+    // Cannot dance during stealth. Vanish works.
+    if ( p()->buffs.stealth->check() )
+      return false;
 
     return rogue_spell_t::ready();
   }
@@ -4411,6 +4417,7 @@ struct vanish_t : public rogue_spell_t
     rogue_spell_t::execute();
 
     p()->buffs.vanish->trigger();
+    trigger_master_of_shadows();
 
     if ( p()->buffs.deathly_shadows->trigger() )
     {
@@ -4505,6 +4512,7 @@ struct stealth_t : public rogue_spell_t
       sim -> out_log.printf( "%s performs %s", p() -> name(), name() );
 
     p()->buffs.stealth->trigger();
+    trigger_master_of_shadows();
   }
 
   bool ready() override
@@ -4720,6 +4728,7 @@ struct sepsis_t : public rogue_attack_t
   {
     rogue_attack_t::last_tick( d );
     p()->buffs.vanish->trigger(); // Vanish triggers before final burst damage
+    trigger_master_of_shadows();
     sepsis_expire_damage->set_target( d->target );
     sepsis_expire_damage->execute();
   }
@@ -5378,13 +5387,6 @@ struct stealth_like_buff_t : public buff_t
   {
     buff_t::execute( stacks, value, duration );
 
-    if ( rogue -> in_combat && rogue -> talent.master_of_shadows -> ok() )
-    {
-      rogue -> buffs.master_of_shadows -> trigger();
-      rogue -> resource_gain( RESOURCE_ENERGY, rogue -> buffs.master_of_shadows -> data().effectN( 2 ).base_value(),
-                              rogue -> gains.master_of_shadows );
-    }
-
     if ( rogue->stealthed( STEALTH_BASIC ) )
     {
       if ( rogue->talent.master_assassin->ok() )
@@ -5419,23 +5421,11 @@ struct stealth_t : public stealth_like_buff_t
 
   void execute( int stacks, double value, timespan_t duration ) override
   {
-    // Note: This bypasses stealth_like_buff_t::execute()
-    buff_t::execute( stacks, value, duration );
+    stealth_like_buff_t::execute( stacks, value, duration );
     rogue->cancel_auto_attack();
 
-    if ( rogue -> in_combat && rogue -> talent.master_of_shadows -> ok() &&
-         // As of 04/08/2017, it does not proc Master of Shadows talent if Stealth is procced from Vanish
-         // (that's why we also proc Stealth before Vanish expires).
-         // As of 04/20/2017 on 7.2.5 PTR, this hold also true for the new Master of Shadows talent.
-      ( !rogue -> bugs || !rogue -> buffs.vanish -> check() ) )
-    {
-      rogue -> buffs.master_of_shadows -> trigger();
-    }
-
-    if ( rogue->talent.master_assassin->ok() )
-      rogue->buffs.master_assassin_aura->trigger();
-    if ( rogue->legendary.master_assassins_mark->ok() )
-      rogue->buffs.master_assassins_mark_aura->trigger();
+    // Activating stealth buff (via expiring Vanish) also removes Shadow Dance. Not an issue in general since Stealth cannot be used during Dance.
+    rogue->buffs.shadow_dance->expire();
   }
 };
 
@@ -5454,8 +5444,7 @@ struct vanish_t : public stealth_like_buff_t
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
-    // Stealth proc if Vanish fully end (i.e. isn't break before the expiration)
-    // We do it before the normal Vanish expiration to avoid on-stealth buff bugs (MoS, MoSh, Mantle).
+    // Stealth proc if Vanish fully ends (i.e. isn't broken before the expiration)
     if ( remaining_duration == timespan_t::zero() )
     {
       rogue->buffs.stealth->trigger();
@@ -6409,6 +6398,17 @@ void actions::rogue_action_t<Base>::trigger_grand_melee( const action_state_t* s
     p()->buffs.slice_and_dice->extend_duration( p(), snd_extension );
   else
     p()->buffs.slice_and_dice->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, snd_extension );
+}
+
+template <typename Base>
+void actions::rogue_action_t<Base>::trigger_master_of_shadows()
+{
+  // Since Stealth from expiring Vanish cannot trigger this but expire_override already treats vanish as gone, we have to do this manually using this function.
+  if ( p()->in_combat && p()->talent.master_of_shadows->ok() )
+  {
+    p()->buffs.master_of_shadows->trigger();
+    p()->resource_gain( RESOURCE_ENERGY, p()->buffs.master_of_shadows->data().effectN( 2 ).base_value(), p()->gains.master_of_shadows );
+  }
 }
 
 template <typename Base>
