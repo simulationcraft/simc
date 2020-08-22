@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35598 shadowlands-BETA (hotfix 2020-08-20/35598)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35598 shadowlands-BETA (hotfix 2020-08-22/35598, git build shadowlands af26ce5213)
 
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
@@ -572,6 +572,7 @@ Description      : $@spelldesc6572
 Tooltip          : Your next Revenge is free.
 
 Name             : Execute (id=5308) [Spell Family (4)] 
+Hotfixed         : Affecting Spells
 Replaces         : Execute (id=163201)
 Class            : Fury Warrior
 School           : Physical
@@ -583,7 +584,7 @@ GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 6 seconds
 Affecting spells : Recklessness (1719 effect#7), Warrior (137047 effect#1), Death Sentence (144442 effect#1), Precise Strikes (209493 effect#1), Stone Heart (225947 effect#1), Execute (231827 effect#1), Deadly Calm (262228 effect#1), Execute (316402 effect#1), Execute (316403 effect#1), Execute (316405 effect#1), Ashen Juggernaut (335234 effect#1), Unnerving Focus (337155 effect#4)
-Family Flags     : 8, 18, 29, 59
+Family Flags     : 8, 18, 29, 59, 78
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ....x... ........ ........   ........ ..x..... ........ ........ 
                  : ........ .x...... ........ ........   ........ ........ ........ ........ 
@@ -3259,6 +3260,7 @@ Effects          :
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
 
 Name             : Execute (id=163201) [Spell Family (4)] 
+Hotfixed         : Affecting Spells
 Class            : Warrior
 School           : Physical
 Spell Type       : Melee
@@ -3268,7 +3270,7 @@ GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 6 seconds
 Affecting spells : Recklessness (1719 effect#7), Warrior (137047 effect#1), Death Sentence (144442 effect#1), Precise Strikes (209493 effect#1), Stone Heart (225947 effect#1), Execute (231827 effect#1), Deadly Calm (262228 effect#1), Execute (316402 effect#1), Execute (316403 effect#1), Execute (316405 effect#1), Ashen Juggernaut (335234 effect#1), Unnerving Focus (337155 effect#4)
-Family Flags     : 8, 18, 29, 59
+Family Flags     : 8, 18, 29, 59, 78
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ .x...... ........ ........   ........ ....x... ........ ........ 

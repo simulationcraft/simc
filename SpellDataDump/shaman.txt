@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35598 shadowlands-BETA (hotfix 2020-08-20/35598)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35598 shadowlands-BETA (hotfix 2020-08-22/35598, git build shadowlands af26ce5213)
 
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -4000,7 +4000,8 @@ Name             : Flame Shock (id=188389) [Spell Family (11)]
 Class            : Shaman
 School           : Fire
 Spell Type       : Magic
-Resource         : 15% Base Mana (0) (id=192571)
+Resource         : 15% Base Mana (0) (id=192571)[Hotfixed: Percent Cost (15.0 -> 1.5)]
+Resource         : 1.5% Base Mana (0) (id=192571)[Hotfixed: Percent Cost (15.0 -> 1.5)]
 Spell Level      : 3
 Range            : 40 yards
 GCD              : 1.5 seconds
