@@ -39,6 +39,11 @@ namespace runeforge {
   // Note, razorice uses a different method of initialization than the other runeforges
   void fallen_crusader( special_effect_t& );
   void stoneskin_gargoyle( special_effect_t& );
+  void apocalypse( special_effect_t& );
+  void hysteria( special_effect_t& );
+  void sanguination( special_effect_t& );
+  void spellwarding( special_effect_t& );
+  // void unending_thirst( special_effect_t& ); Effect only procs on killing blows, NYI
 }
 
 // ==========================================================================
@@ -47,6 +52,8 @@ namespace runeforge {
 
 enum disease_type { DISEASE_NONE = 0, DISEASE_BLOOD_PLAGUE, DISEASE_FROST_FEVER, DISEASE_VIRULENT_PLAGUE = 4 };
 enum rune_state { STATE_DEPLETED, STATE_REGENERATING, STATE_FULL };
+
+enum runeforge_apocalypse { DEATH, FAMINE, PESTILENCE, WAR, MAX };
 
 const double RUNIC_POWER_REFUND = 0.9;
 const double RUNE_REGEN_BASE = 10;
@@ -379,6 +386,11 @@ struct death_knight_td_t : public actor_target_data_t {
 
   struct
   {
+    // Shared
+    buff_t* apocalypse_death; // Dummy debuff, simc doesn't really care about healing reduction on enemies
+    buff_t* apocalypse_war;
+    buff_t* apocalypse_famine;
+
     // Blood
     buff_t* mark_of_blood;
     // Frost
@@ -470,6 +482,7 @@ public:
   struct runeforge_t {
     buff_t* rune_of_the_fallen_crusader;
     buff_t* rune_of_the_stoneskin_gargoyle;
+    bool rune_of_apocalypse;
   } runeforge;
 
   // Cooldowns
@@ -497,6 +510,7 @@ public:
     action_t* bone_spike_graveyard;
     action_t* razorice_mh;
     action_t* razorice_oh;
+    action_t* runeforge_pestilence;
 
     // Blood
     spell_t* blood_plague;
@@ -998,6 +1012,12 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* p
                            } );
 
   debuff.deep_cuts         = make_buff( *this, "deep_cuts", p -> find_spell( 272685 ) );
+
+  debuff.apocalypse_death  = make_buff( *this, "death", p -> find_spell( 327095 ) ); // Effect not implemented
+  debuff.apocalypse_famine = make_buff( *this, "famine", p -> find_spell( 327092 ) )
+                           -> set_default_value( p -> find_spell( 327092 ) -> effectN( 2 ).percent() );
+  debuff.apocalypse_war    = make_buff( *this, "war", p -> find_spell( 327096 ) )
+                           -> set_default_value( p -> find_spell( 327096 ) -> effectN( 1 ).percent() );
 }
 
 // ==========================================================================
@@ -1501,9 +1521,12 @@ struct pet_melee_attack_t : public pet_action_t<T_PET, melee_attack_t>
 {
   using super = pet_melee_attack_t<T_PET>;
 
+  bool triggers_runeforge_apocalypse;
+
   pet_melee_attack_t( T_PET* pet, util::string_view name,
     const spell_data_t* spell = spell_data_t::nil() ) :
-    pet_action_t<T_PET, melee_attack_t>( pet, name, spell )
+    pet_action_t<T_PET, melee_attack_t>( pet, name, spell ),
+    triggers_runeforge_apocalypse( false )
   {
     if ( this -> school == SCHOOL_NONE )
     {
@@ -1520,6 +1543,40 @@ struct pet_melee_attack_t : public pet_action_t<T_PET, melee_attack_t>
     {
       this -> trigger_gcd = 1.5_s;
     }
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    pet_action_t<T_PET, melee_attack_t>::impact( state );
+
+    if ( triggers_runeforge_apocalypse && this -> p() -> o() -> runeforge.rune_of_apocalypse )
+    {
+      // Only triggers on main target for aoe spells
+      if ( this -> target == state -> target )
+      {
+        int n = static_cast<int>( this -> p() -> rng().range( 0, runeforge_apocalypse::MAX ) );
+
+        death_knight_td_t* td = this -> p() -> o() -> get_target_data( state -> target );
+
+        switch ( n )
+        {
+        case runeforge_apocalypse::DEATH:
+          td -> debuff.apocalypse_death -> trigger();
+          break;
+        case runeforge_apocalypse::FAMINE:
+          td -> debuff.apocalypse_famine -> trigger();
+          break;
+        case runeforge_apocalypse::PESTILENCE:
+          this -> p() -> o() -> active_spells.runeforge_pestilence -> set_target( state -> target );
+          this -> p() -> o() -> active_spells.runeforge_pestilence -> execute();
+          break;
+        case runeforge_apocalypse::WAR:
+          td -> debuff.apocalypse_war -> trigger();
+          break;
+        }
+      }
+    }
+
   }
 };
 
@@ -1701,7 +1758,7 @@ struct ghoul_pet_t : public base_ghoul_pet_t
       super( player, "claw", player -> o() -> spell.pet_ghoul_claw, false )
     {
       parse_options( options_str );
-      triggers_infected_claws = true;
+      triggers_infected_claws = triggers_runeforge_apocalypse = true;
     }
   };
 
@@ -1712,7 +1769,7 @@ struct ghoul_pet_t : public base_ghoul_pet_t
     {
       parse_options( options_str );
       aoe = -1;
-      triggers_infected_claws = true;
+      triggers_infected_claws = triggers_runeforge_apocalypse = true;
     }
   };
 
@@ -1799,7 +1856,7 @@ struct army_ghoul_pet_t : public base_ghoul_pet_t
   {
     army_claw_t( army_ghoul_pet_t* player, util::string_view options_str ) :
       super( player, "claw", player -> o() -> spell.pet_army_claw )
-    { 
+    {
       parse_options( options_str );
     }
   };
@@ -1918,7 +1975,7 @@ struct gargoyle_pet_t : public death_knight_pet_t
   {
     gargoyle_strike_t( gargoyle_pet_t* player, util::string_view options_str ) :
       super( player, "gargoyle_strike", player -> o() -> spell.pet_gargoyle_strike )
-    { 
+    {
       parse_options( options_str );
     }
   };
@@ -2511,11 +2568,18 @@ struct death_knight_action_t : public Base
   {
     double m = action_base_t::composite_target_multiplier( target );
 
+    death_knight_td_t* td = p() -> get_target_data( target );
+
     if ( this -> affected_by.razorice )
     {
-      death_knight_td_t* td = p() -> get_target_data( target );
-
       m *= 1.0 + td -> debuff.razorice -> check_stack_value();
+    }
+
+    // Going by the tooltip and only increasing damage done directly by the death knight
+    // TODO: Test whether this variable uptime 1/2/3% damage increase also affects pets
+    if ( p() -> runeforge.rune_of_apocalypse )
+    {
+      m *= 1.0 + td -> debuff.apocalypse_war -> stack_value();
     }
 
     return m;
@@ -6321,6 +6385,23 @@ void runeforge::stoneskin_gargoyle( special_effect_t& effect )
   p -> runeforge.rune_of_the_stoneskin_gargoyle -> default_chance = 1.0;
 }
 
+void runeforge::apocalypse( special_effect_t& effect )
+{
+  if ( effect.player -> type != DEATH_KNIGHT )
+  {
+    effect.type = SPECIAL_EFFECT_NONE;
+    return;
+  }
+
+  death_knight_t* p = debug_cast<death_knight_t*>( effect.item -> player );
+  if ( p -> active_spells.runeforge_pestilence )
+    return;
+
+  // Everything is handled in pet_melee_attack_t
+  p -> runeforge.rune_of_apocalypse = true;
+  p -> active_spells.runeforge_pestilence = new death_knight_spell_t( "Pestilence", p, p -> find_spell( 327093 ) );
+}
+
 double death_knight_t::resource_loss( resource_e resource_type, double amount, gain_t* g, action_t* action )
 {
   double actual_amount = player_t::resource_loss( resource_type, amount, g, action );
@@ -8374,6 +8455,10 @@ void death_knight_t::target_mitigation( school_e school, result_amount_type type
   if ( buffs.icebound_fortitude -> up() )
     state -> result_amount *= 1.0 + buffs.icebound_fortitude -> data().effectN( 3 ).percent();
 
+  death_knight_td_t* td = get_target_data( state -> action -> player );
+  if ( runeforge.rune_of_apocalypse )
+    state -> result_amount *= 1.0 + td -> debuff.apocalypse_famine -> stack_value();
+
   player_t::target_mitigation( school, type, state );
 }
 
@@ -8835,6 +8920,7 @@ struct death_knight_module_t : public module_t {
     unique_gear::register_special_effect(  50401, razorice_attack_cb_t() );
     unique_gear::register_special_effect( 166441, runeforge::fallen_crusader );
     unique_gear::register_special_effect(  62157, runeforge::stoneskin_gargoyle );
+    unique_gear::register_special_effect( 327087, runeforge::apocalypse );
   }
 
   void register_hotfixes() const override
