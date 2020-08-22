@@ -631,7 +631,7 @@ public:
     // Outlaw
     item_runeforge_t greenskins_wickers;
     item_runeforge_t guile_charm;
-    item_runeforge_t celerity;                // NYI
+    item_runeforge_t celerity;
     item_runeforge_t concealed_blunderbuss;
     
     // Subtlety
@@ -2105,7 +2105,7 @@ struct apply_poison_t : public action_t
 
   bool ready() override
   {
-    return ! executed;
+    return !executed;
   }
 };
 
@@ -2310,21 +2310,21 @@ struct auto_melee_attack_t : public action_t
 
   bool ready() override
   {
-    if ( player -> is_moving() )
+    if ( player->is_moving() )
       return false;
 
-    return ( player -> main_hand_attack -> execute_event == nullptr ); // not swinging
+    return ( player->main_hand_attack->execute_event == nullptr ); // not swinging
   }
 };
 
 // Adrenaline Rush ==========================================================
 
-struct adrenaline_rush_t : public rogue_attack_t
+struct adrenaline_rush_t : public rogue_spell_t
 {
   double precombat_seconds;
 
   adrenaline_rush_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ) :
-    rogue_attack_t( name, p, p -> spec.adrenaline_rush ),
+    rogue_spell_t( name, p, p->spec.adrenaline_rush ),
     precombat_seconds( 0.0 )
   {
     add_option( opt_float( "precombat_seconds", precombat_seconds ) );
@@ -2340,22 +2340,31 @@ struct adrenaline_rush_t : public rogue_attack_t
 
   void execute() override
   {
-    rogue_attack_t::execute();
+    rogue_spell_t::execute();
 
     // 6/23/2019 - Casting while a Vision of Perfection proc is up cancels the existing buff
     //             This also means the existing Brigand's Blitz stack gets reset
     p()->buffs.adrenaline_rush->expire();
     p()->buffs.adrenaline_rush->trigger();
 
-    if ( precombat_seconds && ! p() -> in_combat ) {
-      timespan_t precombat_lost_seconds = - timespan_t::from_seconds( precombat_seconds );
-      p() -> cooldowns.adrenaline_rush -> adjust( precombat_lost_seconds, false );
-      p() -> buffs.adrenaline_rush -> extend_duration( p(), precombat_lost_seconds );
-      p() -> buffs.loaded_dice -> extend_duration( p(), precombat_lost_seconds );
-      p() -> buffs.brigands_blitz_driver -> extend_duration( p(), precombat_lost_seconds );
-      if ( p() -> azerite.brigands_blitz.ok() )
-        p() -> buffs.brigands_blitz -> trigger( as<int>(floor( -precombat_lost_seconds / p() -> buffs.brigands_blitz_driver -> buff_period ) ) );
+    if ( precombat_seconds && !p()->in_combat )
+    {
+      timespan_t precombat_lost_seconds = -timespan_t::from_seconds( precombat_seconds );
+      p()->cooldowns.adrenaline_rush->adjust( precombat_lost_seconds, false );
+      p()->buffs.adrenaline_rush->extend_duration( p(), precombat_lost_seconds );
+      p()->buffs.loaded_dice->extend_duration( p(), precombat_lost_seconds );
+      p()->buffs.brigands_blitz_driver->extend_duration( p(), precombat_lost_seconds );
+      if ( p()->azerite.brigands_blitz.ok() )
+        p()->buffs.brigands_blitz->trigger( as<int>( floor( -precombat_lost_seconds / p()->buffs.brigands_blitz_driver->buff_period ) ) );
     }
+  }
+
+  bool ready() override
+  {
+    if ( p()->specialization() != ROGUE_OUTLAW )
+      return false;
+
+    return rogue_spell_t::ready();
   }
 };
 
@@ -2416,7 +2425,7 @@ struct backstab_t : public rogue_attack_t
 
   bool ready() override
   {
-    if ( p() -> talent.gloomblade -> ok() )
+    if ( p()->talent.gloomblade->ok() )
     {
       return false;
     }
@@ -3873,7 +3882,7 @@ struct shadow_dance_t : public rogue_spell_t
 
   bool ready() override
   {
-    if ( icd -> down() )
+    if ( icd->down() )
     {
       return false;
     }
@@ -4411,7 +4420,7 @@ struct vanish_t : public rogue_spell_t
 
   bool ready() override
   {
-    if ( p() -> buffs.vanish -> check() )
+    if ( p()->buffs.vanish->check() )
       return false;
 
     return rogue_spell_t::ready();
@@ -5266,10 +5275,10 @@ struct proxy_rupture_t : public buff_t
 struct adrenaline_rush_t : public buff_t
 {
   adrenaline_rush_t( rogue_t* p ) :
-    buff_t( p, "adrenaline_rush", p -> spec.adrenaline_rush )
+    buff_t( p, "adrenaline_rush", p->spec.adrenaline_rush )
   { 
     set_cooldown( timespan_t::zero() );
-    set_default_value( p -> spec.adrenaline_rush -> effectN( 2 ).percent() );
+    set_default_value( p->spec.adrenaline_rush->effectN( 2 ).percent() );
     set_affects_regen( true );
     add_invalidate( CACHE_ATTACK_SPEED );
   }
@@ -5289,8 +5298,10 @@ struct adrenaline_rush_t : public buff_t
     buff_t::start( stacks, value, duration );
 
     rogue_t* rogue = debug_cast<rogue_t*>( source );
-    rogue -> resources.temporary[ RESOURCE_ENERGY ] += data().effectN( 4 ).base_value();
-    rogue -> recalculate_resource_max( RESOURCE_ENERGY );
+    rogue->resources.temporary[ RESOURCE_ENERGY ] += data().effectN( 4 ).base_value();
+    if ( rogue->legendary.celerity )
+      rogue->resources.temporary[ RESOURCE_ENERGY ] += rogue->legendary.celerity->effectN( 1 ).base_value();
+    rogue->recalculate_resource_max( RESOURCE_ENERGY );
     trigger_secondary_procs();
   }
 
@@ -7633,7 +7644,7 @@ void rogue_t::init_spells()
   spec.shiv_2_debuff        = find_spell( 319504 );
 
   // Outlaw
-  spec.adrenaline_rush      = find_specialization_spell( "Adrenaline Rush" );
+  spec.adrenaline_rush      = find_spell( 13750 ); // Needs to be generic due to Celerity
   spec.between_the_eyes     = find_specialization_spell( "Between the Eyes" );
   spec.blade_flurry         = find_specialization_spell( "Blade Flurry" );
   spec.blade_flurry_2       = find_rank_spell( "Blade Flurry", "Rank 2" );
@@ -8036,10 +8047,26 @@ void rogue_t::create_buffs()
                                 -> add_invalidate( CACHE_RUN_SPEED );
   buffs.stealth               = new buffs::stealth_t( this );
   buffs.vanish                = new buffs::vanish_t( this );
+  
+  // TODO: Possibly refactor into buffs::slice_and_dice_t
   buffs.slice_and_dice        = make_buff( this, "slice_and_dice", spell.slice_and_dice )
-    -> set_default_value( 1.0 )
-    -> set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
-    -> add_invalidate( CACHE_ATTACK_SPEED );
+                                -> set_default_value( 1.0 )
+                                -> set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
+                                -> add_invalidate( CACHE_ATTACK_SPEED );
+  if ( legendary.celerity.ok() )
+  {
+    buffs.slice_and_dice->set_period( spell.slice_and_dice->effectN( 2 ).period() );
+    buffs.slice_and_dice->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
+      if ( rng().roll( legendary.celerity->effectN( 2 ).percent() ) )
+      {
+        const timespan_t duration = timespan_t::from_seconds( legendary.celerity->effectN( 2 ).base_value() );
+        if ( buffs.adrenaline_rush->check() )
+          buffs.adrenaline_rush->extend_duration( this, duration );
+        else
+          buffs.adrenaline_rush->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, duration );
+      }
+    } );
+  }
 
   // Assassination
   buffs.envenom               = make_buff( this, "envenom", find_specialization_spell( "Envenom" ) )
