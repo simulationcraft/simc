@@ -4553,8 +4553,13 @@ struct touch_of_death_t : public monk_melee_attack_t
     if ( p()->buff.combo_strikes->up() )
       amount *= 1 + p()->cache.mastery_value();
 
-    s->result_amount = amount;
+    s->result_total = s->result_raw = amount;
     monk_melee_attack_t::impact( s );
+  }
+
+  void execute() override
+  {
+    monk_melee_attack_t::execute();
   }
 };
 
@@ -6835,7 +6840,7 @@ action_t* monk_t::create_action( util::string_view name, const std::string& opti
   if ( name == "touch_of_karma" )
     return new touch_of_karma_t( this, options_str );
   if ( name == "touch_of_death" )
-    return new touch_of_death_t( this, options_str );
+    return new touch_of_death_t( *this, options_str );
   if ( name == "storm_earth_and_fire" )
     return new storm_earth_and_fire_t( this, options_str );
   // Talents
