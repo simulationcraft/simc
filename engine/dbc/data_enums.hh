@@ -1261,6 +1261,7 @@ enum spell_attribute : unsigned
   SX_CHANNELED            = 34u,
   SX_NO_STEALTH_BREAK     = 37u,
   SX_CHANNELED_2          = 38u,
+  SX_MELEE_COMBAT_START   = 41u,
   SX_CANNOT_CRIT          = 93u,
   SX_FOOD_AURA            = 95u,
   SX_NOT_PROC             = 105u,
