@@ -720,15 +720,9 @@ bool parse_fight_style( sim_t*             sim,
 // parse_override_spell_data ================================================
 
 bool parse_override_spell_data( sim_t*             sim,
-                                       util::string_view /* name */,
-                                       util::string_view value )
+                                util::string_view /* name */,
+                                util::string_view value )
 {
-  // Register overrides only once, for the main thread
-  if ( sim -> parent )
-  {
-    return true;
-  }
-
   auto v_pos = value.find( '=' );
 
   if ( v_pos == util::string_view::npos )
@@ -754,15 +748,15 @@ bool parse_override_spell_data( sim_t*             sim,
 
   if ( util::str_compare_ci( splits[ 0 ], "spell" ) )
   {
-    dbc_override::register_spell( *(sim -> dbc), id, splits[ 2 ], v );
+    sim->dbc_override->register_spell( *(sim->dbc), id, splits[ 2 ], v );
   }
   else if ( util::str_compare_ci( splits[ 0 ], "effect" ) )
   {
-    dbc_override::register_effect(*(sim->dbc), id, splits[ 2 ], v );
+    sim->dbc_override->register_effect( *(sim->dbc), id, splits[ 2 ], v );
   }
   else if ( util::str_compare_ci( splits[ 0 ], "power" ) )
   {
-    dbc_override::register_power(*(sim->dbc), id, splits[ 2 ], v );
+    sim->dbc_override->register_power( *(sim->dbc), id, splits[ 2 ], v );
   }
   else
   {
@@ -1526,6 +1520,7 @@ sim_t::sim_t() :
   target_adds( 0 ), desired_targets( 1 ), enable_taunts( false ),
   use_item_verification( true ),
   dbc(new dbc_t()),
+  dbc_override( std::make_unique<dbc_override_t>() ),
   challenge_mode( false ), timewalk( -1 ), scale_to_itemlevel( -1 ), scale_itemlevel_down_only( false ),
   disable_set_bonuses( false ), disable_2_set( 1 ), disable_4_set( 1 ), enable_2_set( 1 ), enable_4_set( 1 ),
   pvp_crit( false ),

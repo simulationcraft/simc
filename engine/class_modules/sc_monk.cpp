@@ -752,7 +752,7 @@ public:
   void reset() override;
   void interrupt() override;
   double matching_gear_multiplier( attribute_e attr ) const override;
-  void recalculate_resource_max( resource_e ) override;
+  void recalculate_resource_max( resource_e, gain_t* g = nullptr ) override;
   void create_options() override;
   void copy_from( player_t* ) override;
   resource_e primary_resource() const override;
@@ -7739,9 +7739,9 @@ double monk_t::matching_gear_multiplier( attribute_e attr ) const
 
 // monk_t::recalculate_resource_max =========================================
 
-void monk_t::recalculate_resource_max( resource_e r )
+void monk_t::recalculate_resource_max( resource_e r, gain_t* source )
 {
-  player_t::recalculate_resource_max( r );
+  player_t::recalculate_resource_max( r, source );
 }
 
 // monk_t::summon_storm_earth_and_fire ================================================

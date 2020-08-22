@@ -164,7 +164,7 @@ double spellpower_data_t::get_field( util::string_view field ) const
 namespace hotfix
 {
 static auto_dispose< std::vector< hotfix_entry_t* > > hotfixes_;
-static custom_dbc_data_t hotfix_db_;
+static custom_dbc_data_t hotfix_db_[ 2 ];
 }
 
 // Very simple comparator, just checks for some equality in the data. There's no need for fanciful
@@ -204,7 +204,7 @@ void hotfix::apply()
 // Return a hotfixed spell if available, otherwise return the original dbc-based spell
 const spell_data_t* hotfix::find_spell( const spell_data_t* dbc_spell, bool ptr )
 {
-  if ( const spell_data_t* hotfixed_spell = hotfix_db_.find_spell( dbc_spell -> id(), ptr ) )
+  if ( const spell_data_t* hotfixed_spell = hotfix_db_[ ptr ].find_spell( dbc_spell -> id() ) )
   {
     return hotfixed_spell;
   }
@@ -213,7 +213,7 @@ const spell_data_t* hotfix::find_spell( const spell_data_t* dbc_spell, bool ptr 
 
 const spelleffect_data_t* hotfix::find_effect( const spelleffect_data_t* dbc_effect, bool ptr )
 {
-  if ( const spelleffect_data_t* hotfixed_effect = hotfix_db_.find_effect( dbc_effect -> id(), ptr ) )
+  if ( const spelleffect_data_t* hotfixed_effect = hotfix_db_[ ptr ].find_effect( dbc_effect -> id() ) )
   {
     return hotfixed_effect;
   }
@@ -376,7 +376,7 @@ std::string spell_hotfix_entry_t::to_str() const
   s << hotfix_entry_t::to_str();
   s << std::endl;
 
-  const spell_data_t* spell = hotfix_db_.find_spell( id_, false );
+  const spell_data_t* spell = hotfix_db_[ false ].find_spell( id_ );
   s << "             ";
   s << "Spell: " << spell -> name_cstr();
   s << " | Field: " << field_name_;
@@ -397,7 +397,7 @@ std::string effect_hotfix_entry_t::to_str() const
   s << hotfix_entry_t::to_str();
   s << std::endl;
 
-  const spelleffect_data_t* e = hotfix_db_.find_effect( id_, false );
+  const spelleffect_data_t* e = hotfix_db_[ false ].find_effect( id_ );
   s << "             ";
   s << "Spell: " << e -> spell() -> name_cstr();
   s << " effect#" << ( e -> index() + 1 );
@@ -419,7 +419,7 @@ std::string power_hotfix_entry_t::to_str() const
   s << hotfix_entry_t::to_str();
   s << std::endl;
 
-  const spellpower_data_t* p = hotfix_db_.find_power( id_, false );
+  const spellpower_data_t* p = hotfix_db_[ false ].find_power( id_ );
   s << "             ";
   s << "Power: " << p -> id();
   s << " | Field: " << field_name_;
@@ -436,7 +436,9 @@ std::string power_hotfix_entry_t::to_str() const
 
 void spell_hotfix_entry_t::apply_hotfix( bool ptr )
 {
-  spell_data_t* s = hotfix_db_.clone_spell( id_, ptr );
+  const spell_data_t* source_spell = spell_data_t::find( id_, ptr );
+
+  spell_data_t* s = hotfix_db_[ ptr ].clone_spell( source_spell );
 
   assert( s && "Could not clone spell to apply hotfix" );
 
@@ -462,10 +464,10 @@ void effect_hotfix_entry_t::apply_hotfix( bool ptr )
   const spelleffect_data_t* source_effect = spelleffect_data_t::find( id_, ptr );
 
   // Cloning the spell chain will guarantee that the effect is also always cloned
-  const spell_data_t* s = hotfix_db_.clone_spell( source_effect -> spell() -> id(), ptr );
+  const spell_data_t* s = hotfix_db_[ ptr ].clone_spell( source_effect -> spell() );
   assert( s && "Could not clone spell to apply hotfix" );
 
-  spelleffect_data_t* e = hotfix_db_.get_mutable_effect( id_, ptr );
+  spelleffect_data_t* e = hotfix_db_[ ptr ].get_mutable_effect( id_ );
   if ( !e ) { return; }
 
   dbc_value_ = e -> get_field( field_name_ );
@@ -486,12 +488,13 @@ void effect_hotfix_entry_t::apply_hotfix( bool ptr )
 void power_hotfix_entry_t::apply_hotfix( bool ptr )
 {
   const spellpower_data_t& source_power = spellpower_data_t::find( id_, ptr );
+  const spell_data_t* source_spell = spell_data_t::find( source_power.spell_id(), ptr );
 
-  // Cloning the spell chain will guarantee that the effect is also always cloned
-  const spell_data_t* s = hotfix_db_.clone_spell( source_power.spell_id(), ptr );
+  // Cloning the spell chain will guarantee that the power is also always cloned
+  const spell_data_t* s = hotfix_db_[ ptr ].clone_spell( source_spell );
   assert( s && "Could not clone spell to apply hotfix" );
 
-  spellpower_data_t* p = hotfix_db_.get_mutable_power( id_, ptr );
+  spellpower_data_t* p = hotfix_db_[ ptr ].get_mutable_power( id_ );
   if ( !p ) { return; }
 
   dbc_value_ = p -> get_field( field_name_ );
@@ -509,119 +512,61 @@ void power_hotfix_entry_t::apply_hotfix( bool ptr )
   do_hotfix( this, p );
 }
 
-spell_data_t* custom_dbc_data_t::get_mutable_spell( unsigned spell_id, bool ptr )
+spell_data_t* custom_dbc_data_t::get_mutable_spell( unsigned spell_id )
 {
-  for ( size_t i = 0, end = spells_[ ptr ].size(); i < end; ++i )
-  {
-    if ( spells_[ ptr ][ i ] -> id() == spell_id )
-    {
-      return spells_[ ptr ][ i ];
-    }
-  }
+  return const_cast<spell_data_t*>( find_spell( spell_id ) );
+}
 
+const spell_data_t* custom_dbc_data_t::find_spell( unsigned spell_id ) const
+{
+  auto spell = range::find( spells_, spell_id, &spell_data_t::id );
+  if ( spell != spells_.end() )
+    return *spell;
   return nullptr;
 }
 
-const spell_data_t* custom_dbc_data_t::find_spell( unsigned spell_id, bool ptr ) const
+void custom_dbc_data_t::add_spell( spell_data_t* spell )
 {
-  for ( size_t i = 0, end = spells_[ ptr ].size(); i < end; ++i )
-  {
-    if ( spells_[ ptr ][ i ] -> id() == spell_id )
-    {
-      return spells_[ ptr ][ i ];
-    }
-  }
+  assert( find_spell( spell->id() ) == nullptr );
+  spells_.push_back( spell );
+}
 
+spelleffect_data_t* custom_dbc_data_t::get_mutable_effect( unsigned effect_id )
+{
+  return const_cast<spelleffect_data_t*>( find_effect( effect_id ) );
+}
+
+const spelleffect_data_t* custom_dbc_data_t::find_effect( unsigned effect_id ) const
+{
+  auto effect = range::find( effects_, effect_id, &spelleffect_data_t::id );
+  if ( effect != effects_.end() )
+    return *effect;
   return nullptr;
 }
 
-bool custom_dbc_data_t::add_spell( spell_data_t* spell, bool ptr )
+void custom_dbc_data_t::add_effect( spelleffect_data_t* effect )
 {
-  if ( find_spell( spell -> id(), ptr ) )
-  {
-    return false;
-  }
-
-  spells_[ ptr ].push_back( spell );
-
-  return true;
+  assert( find_effect( effect->id() ) == nullptr );
+  effects_.push_back( effect );
 }
 
-spelleffect_data_t* custom_dbc_data_t::get_mutable_effect( unsigned effect_id, bool ptr )
+spellpower_data_t* custom_dbc_data_t::get_mutable_power( unsigned power_id )
 {
-  for ( size_t i = 0, end = effects_[ ptr ].size(); i < end; ++i )
-  {
-    if ( effects_[ ptr ][ i ] -> id() == effect_id )
-    {
-      return effects_[ ptr ][ i ];
-    }
-  }
+  return const_cast<spellpower_data_t*>( find_power( power_id ) );
+}
 
+const spellpower_data_t* custom_dbc_data_t::find_power( unsigned power_id ) const
+{
+  auto power = range::find( powers_, power_id, &spellpower_data_t::id );
+  if ( power != powers_.end() )
+    return *power;
   return nullptr;
 }
 
-const spelleffect_data_t* custom_dbc_data_t::find_effect( unsigned effect_id, bool ptr ) const
+void custom_dbc_data_t::add_power( spellpower_data_t* power )
 {
-  for ( size_t i = 0, end = effects_[ ptr ].size(); i < end; ++i )
-  {
-    if ( effects_[ ptr ][ i ] -> id() == effect_id )
-    {
-      return effects_[ ptr ][ i ];
-    }
-  }
-
-  return nullptr;
-}
-
-bool custom_dbc_data_t::add_effect( spelleffect_data_t* effect, bool ptr )
-{
-  if ( find_effect( effect -> id(), ptr ) )
-  {
-    return false;
-  }
-
-  effects_[ ptr ].push_back( effect );
-
-  return true;
-}
-
-spellpower_data_t* custom_dbc_data_t::get_mutable_power( unsigned power_id, bool ptr )
-{
-  for ( size_t i = 0, end = powers_[ ptr ].size(); i < end; ++i )
-  {
-    if ( powers_[ ptr ][ i ] -> id() == power_id )
-    {
-      return powers_[ ptr ][ i ];
-    }
-  }
-
-  return nullptr;
-}
-
-const spellpower_data_t* custom_dbc_data_t::find_power( unsigned power_id, bool ptr ) const
-{
-  auto it = range::find_if( powers_[ ptr ], [ power_id ]( spellpower_data_t* power ) {
-      return power -> id() == power_id;
-  } );
-
-  if ( it != powers_[ ptr ].end() )
-  {
-    return *it;
-  }
-
-  return nullptr;
-}
-
-bool custom_dbc_data_t::add_power( spellpower_data_t* power, bool ptr )
-{
-  if ( find_power( power -> id(), ptr ) )
-  {
-    return false;
-  }
-
-  powers_[ ptr ].push_back( power );
-
-  return true;
+  assert( find_power( power -> id() ) == nullptr );
+  powers_.push_back( power );
 }
 
 static void collect_base_spells( const spell_data_t* spell, std::vector<const spell_data_t*>& roots )
@@ -643,15 +588,15 @@ static void collect_base_spells( const spell_data_t* spell, std::vector<const sp
   }
 }
 
-spell_data_t* custom_dbc_data_t::create_clone( const spell_data_t* source, bool ptr )
+spell_data_t* custom_dbc_data_t::create_clone( const spell_data_t* source )
 {
-  spell_data_t* clone = get_mutable_spell( source -> id(), ptr );
+  spell_data_t* clone = get_mutable_spell( source -> id() );
   if ( clone )
   {
     return clone;
   }
 
-  clone = new spell_data_t( *source );
+  clone = allocator_.create<spell_data_t>( *source );
 
   spelleffect_data_t* clone_effects = nullptr;
   if ( source -> effect_count() > 0 )
@@ -670,7 +615,7 @@ spell_data_t* custom_dbc_data_t::create_clone( const spell_data_t* source, bool 
   // Drivers are set up in the parent's cloning of the trigger spell
   clone -> _driver = nullptr;
   clone -> _driver_count = 0;
-  add_spell( clone, ptr );
+  add_spell( clone );
 
   // Clone effects
   const auto source_effects = source -> effects();
@@ -684,8 +629,8 @@ spell_data_t* custom_dbc_data_t::create_clone( const spell_data_t* source, bool 
 
     spelleffect_data_t& e_clone = clone_effects[ i ];
 
-    e_clone = *spelleffect_data_t::find( e_source.id(), ptr );
-    add_effect( &e_clone, ptr );
+    e_clone = e_source;
+    add_effect( &e_clone );
 
     // Link cloned spell to cloned effect
     e_clone._spell = clone;
@@ -698,12 +643,12 @@ spell_data_t* custom_dbc_data_t::create_clone( const spell_data_t* source, bool 
 
     // Clone the trigger, and re-link drivers in the trigger spell so they also point to cloned
     // data. This is necessary because Blizzard re-uses trigger spells in multiple drivers.
-    auto e_clone_trigger = create_clone( e_source.trigger(), ptr );
+    auto e_clone_trigger = create_clone( e_source.trigger() );
     e_clone._trigger_spell = e_clone_trigger;
     assert( e_source.trigger() -> _driver );
 
     const auto e_source_trigger_drivers = e_source.trigger() -> drivers();
-    auto& e_clone_trigger_drivers = spell_driver_map_[ ptr ][ e_source.trigger() -> id() ];
+    auto& e_clone_trigger_drivers = spell_driver_map_[ e_source.trigger() -> id() ];
     if ( e_clone_trigger_drivers.empty() )
     {
       auto driver_data = allocator_.create_n<const spell_data_t*>( e_source_trigger_drivers.size(), spell_data_t::nil() );
@@ -727,42 +672,36 @@ spell_data_t* custom_dbc_data_t::create_clone( const spell_data_t* source, bool 
       continue;
     }
 
-    clone_power[ i ] = spellpower_data_t::find( p_source.id(), ptr );
-    add_power( &clone_power[ i ], ptr );
+    clone_power[ i ] = p_source;
+    add_power( &clone_power[ i ] );
   }
 
   return clone;
 }
 
-spell_data_t* custom_dbc_data_t::clone_spell( unsigned clone_spell_id, bool ptr )
+spell_data_t* custom_dbc_data_t::clone_spell( const spell_data_t* spell )
 {
   // If a spell is found, we can be sure that the whole spell chain has already been cloned, so just
   // return the base spell
-  if ( spell_data_t* c = get_mutable_spell( clone_spell_id, ptr ) )
+  if ( spell_data_t* c = get_mutable_spell( spell->id() ) )
     return c;
 
   // Get to the root of the potential chain
   std::vector<const spell_data_t*> base_spells;
-  collect_base_spells( spell_data_t::find( clone_spell_id, ptr ), base_spells );
+  collect_base_spells( spell, base_spells );
   for ( auto base_spell : base_spells )
   {
     // Create clones of the base spell chains, we don't really care about individual spells for now
-    create_clone( base_spell, ptr );
+    create_clone( base_spell );
   }
 
-  return get_mutable_spell( clone_spell_id, ptr );
-}
-
-namespace dbc_override
-{
-  custom_dbc_data_t override_db_;
-  std::vector<dbc_override_entry_t> override_entries_;
+  return get_mutable_spell( spell->id() );
 }
 
 // Applies overrides immediately, and records an entry
-void dbc_override::register_spell( dbc_t& dbc, unsigned spell_id, util::string_view field, double v )
+void dbc_override_t::register_spell( const dbc_t& dbc, unsigned spell_id, util::string_view field, double v )
 {
-  spell_data_t* spell = override_db_.clone_spell( spell_id, dbc.ptr );
+  spell_data_t* spell = override_db_[ dbc.ptr ].clone_spell( dbc.spell( spell_id ) );
   if (!spell)
   {
     throw std::invalid_argument("Could not find spell");
@@ -772,17 +711,17 @@ void dbc_override::register_spell( dbc_t& dbc, unsigned spell_id, util::string_v
     throw std::invalid_argument(fmt::format("Invalid field '{}'.", field));
   }
 
-  override_entries_.emplace_back( DBC_OVERRIDE_SPELL, field, spell_id, v );
+  override_entries_[ dbc.ptr ].emplace_back( OVERRIDE_SPELL, field, spell_id, v );
 }
 
-void dbc_override::register_effect( dbc_t& dbc, unsigned effect_id, util::string_view field, double v )
+void dbc_override_t::register_effect( const dbc_t& dbc, unsigned effect_id, util::string_view field, double v )
 {
-  spelleffect_data_t* effect = override_db_.get_mutable_effect( effect_id, dbc.ptr );
+  spelleffect_data_t* effect = override_db_[ dbc.ptr ].get_mutable_effect( effect_id );
   if ( ! effect )
   {
     const spelleffect_data_t* dbc_effect = dbc.effect( effect_id );
-    override_db_.clone_spell( dbc_effect -> spell() -> id(), dbc.ptr );
-    effect = override_db_.get_mutable_effect( effect_id, dbc.ptr );
+    override_db_[ dbc.ptr ].clone_spell( dbc_effect -> spell() );
+    effect = override_db_[ dbc.ptr ].get_mutable_effect( effect_id );
   }
   if (!effect)
   {
@@ -794,17 +733,17 @@ void dbc_override::register_effect( dbc_t& dbc, unsigned effect_id, util::string
     throw std::invalid_argument(fmt::format("Invalid field '{}'.", field));
   }
 
-  override_entries_.emplace_back( DBC_OVERRIDE_EFFECT, field, effect_id, v );
+  override_entries_[ dbc.ptr ].emplace_back( OVERRIDE_EFFECT, field, effect_id, v );
 }
 
-void dbc_override::register_power( dbc_t& dbc, unsigned power_id, util::string_view field, double v )
+void dbc_override_t::register_power( const dbc_t& dbc, unsigned power_id, util::string_view field, double v )
 {
-  auto power = override_db_.get_mutable_power( power_id, dbc.ptr );
+  auto power = override_db_[ dbc.ptr ].get_mutable_power( power_id );
   if ( power == nullptr )
   {
     const auto& dbc_power = dbc.power( power_id );
-    override_db_.clone_spell( dbc_power.spell_id(), dbc.ptr );
-    power = override_db_.get_mutable_power( power_id, dbc.ptr );
+    override_db_[ dbc.ptr ].clone_spell( dbc.spell( dbc_power.spell_id() ) );
+    power = override_db_[ dbc.ptr ].get_mutable_power( power_id );
   }
   if (!power)
   {
@@ -816,19 +755,24 @@ void dbc_override::register_power( dbc_t& dbc, unsigned power_id, util::string_v
     throw std::invalid_argument(fmt::format("Invalid field '{}'.", field));
   }
 
-  override_entries_.emplace_back( DBC_OVERRIDE_POWER, field, power_id, v );
+  override_entries_[ dbc.ptr ].emplace_back( OVERRIDE_POWER, field, power_id, v );
 }
 
-const spell_data_t* dbc_override::find_spell( unsigned spell_id, bool ptr )
+const spell_data_t* dbc_override_t::find_spell( unsigned spell_id, bool ptr ) const
 {
-  return override_db_.find_spell( spell_id, ptr );
+  return override_db_[ ptr ].find_spell( spell_id );
 }
 
-const spelleffect_data_t* dbc_override::find_effect( unsigned effect_id, bool ptr )
+const spelleffect_data_t* dbc_override_t::find_effect( unsigned effect_id, bool ptr ) const
 {
-  return override_db_.find_effect( effect_id, ptr );
+  return override_db_[ ptr ].find_effect( effect_id );
 }
 
-const std::vector<dbc_override::dbc_override_entry_t>& dbc_override::override_entries()
-{ return override_entries_; }
+const spellpower_data_t* dbc_override_t::find_power( unsigned power_id, bool ptr ) const
+{
+  return override_db_[ ptr ].find_power( power_id );
+}
+
+const std::vector<dbc_override_t::override_entry_t>& dbc_override_t::override_entries( bool ptr ) const
+{ return override_entries_[ ptr ]; }
 

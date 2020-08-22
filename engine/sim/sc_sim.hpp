@@ -27,6 +27,7 @@ struct actor_target_data_t;
 struct buff_t;
 struct cooldown_t;
 class dbc_t;
+class dbc_override_t;
 struct expr_t;
 namespace highchart {
     struct chart_t;
@@ -151,7 +152,8 @@ struct sim_t : private sc_thread_t
   bool        use_item_verification;
 
   // Data access
-  std::unique_ptr<dbc_t>       dbc;
+  std::unique_ptr<dbc_t> dbc;
+  std::unique_ptr<dbc_override_t> dbc_override;
 
   // Default stat enchants
   gear_stats_t enchant;

@@ -1119,6 +1119,7 @@ player_t::player_t( sim_t* s, player_e t, util::string_view n, race_e r )
     world_lag_stddev_override( false ),
     cooldown_tolerance_( timespan_t::min() ),
     dbc( new dbc_t(*(s->dbc)) ),
+    dbc_override( sim->dbc_override.get() ),
     talent_points(),
     profession(),
     azerite( nullptr ),
@@ -5929,7 +5930,7 @@ bool player_t::resource_available( resource_e resource_type, double cost ) const
   return available;
 }
 
-void player_t::recalculate_resource_max( resource_e resource_type )
+void player_t::recalculate_resource_max( resource_e resource_type, gain_t* source )
 {
   resources.max[ resource_type ] = resources.base[ resource_type ];
   resources.max[ resource_type ] *= resources.base_multiplier[ resource_type ];
@@ -5950,10 +5951,16 @@ void player_t::recalculate_resource_max( resource_e resource_type )
     default:
       break;
   }
-  resources.max[ resource_type ] += resources.temporary[ resource_type ];
 
+  resources.max[ resource_type ] += resources.temporary[ resource_type ];
   resources.max[ resource_type ] *= resources.initial_multiplier[ resource_type ];
+
   // Sanity check on current values
+  if ( source && resources.current[ resource_type ] > resources.max[ resource_type ] )
+  {
+    // Track overflow from loss if applicable
+    source->add( resource_type, 0, resources.current[ resource_type ] - resources.max[ resource_type ] );
+  }
   resources.current[ resource_type ] = std::min( resources.current[ resource_type ], resources.max[ resource_type ] );
 }
 
@@ -9493,15 +9500,9 @@ item_runeforge_t player_t::find_runeforge_legendary( util::string_view name, boo
   {
     return item_runeforge_t::nil();
   }
-
-  auto spec_it = range::find_if( entries, [this]( const runeforge_legendary_entry_t& e ) {
-    return e.specialization_id == static_cast<unsigned>( _spec );
-  } );
-
-  if ( spec_it == entries.end() )
-  {
-    return item_runeforge_t::not_found();
-  }
+  
+  // 8/22/2020 - Removed spec filtering for now since these currently have no spec limitations in-game
+  //             May need to restore some logic at some point if Blizzard points to different spells per-spec
 
   // Iterate over all items to find the bonus id on an item. Note that Simulationcraft
   // currently does not enforce the item restrictions on the legendary bonuses. This is
@@ -9510,7 +9511,7 @@ item_runeforge_t player_t::find_runeforge_legendary( util::string_view name, boo
   const item_t* item = nullptr;
   for ( const auto& i : items )
   {
-    auto it = range::find( i.parsed.bonus_id, spec_it->bonus_id );
+    auto it = range::find( i.parsed.bonus_id, entries.front().bonus_id );
     if ( it != i.parsed.bonus_id.end() )
     {
       item = &i;
@@ -9523,7 +9524,7 @@ item_runeforge_t player_t::find_runeforge_legendary( util::string_view name, boo
     return item_runeforge_t::not_found();
   }
 
-  return { *spec_it, item };
+  return { entries.front(), item };
 }
 
 /**

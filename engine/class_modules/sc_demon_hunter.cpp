@@ -456,12 +456,12 @@ public:
   // Conduits
   struct conduit_t
   {
-    conduit_data_t dancing_with_fate;
-    conduit_data_t demons_touch;
-    conduit_data_t growing_inferno;
-    conduit_data_t serrated_glaive;
+    conduit_data_t dancing_with_fate;   // NYI
+    conduit_data_t demons_touch;        // NYI
+    conduit_data_t growing_inferno;     // NYI
+    conduit_data_t serrated_glaive;     // NYI
 
-    conduit_data_t soul_furnace;
+    conduit_data_t soul_furnace;        // NYI
 
     conduit_data_t repeat_decree;
     conduit_data_t increased_scrutiny;
@@ -471,22 +471,22 @@ public:
   struct legendary_t
   {
     // General
-    item_runeforge_t apexis_empowerment;
+    item_runeforge_t apexis_empowerment;            // NYI
     item_runeforge_t darkglare_medallion;
-    item_runeforge_t sigil_of_the_illidari;
+    item_runeforge_t sigil_of_the_illidari;         // Vengeance NYI
     item_runeforge_t fel_bombardment;
 
     // Havoc
     item_runeforge_t chaos_theory;
     item_runeforge_t erratic_fel_core;
-    item_runeforge_t darkest_hour;
+    item_runeforge_t darkest_hour;                  // NYI
     item_runeforge_t inner_demons;
 
     // Vengeance
-    item_runeforge_t fiery_soul;
-    item_runeforge_t razelikhs_defilement;
-    item_runeforge_t cloak_of_fel_flames;
-    item_runeforge_t spirit_of_the_darkness_flame;
+    item_runeforge_t fiery_soul;                    // NYI
+    item_runeforge_t razelikhs_defilement;          // NYI
+    item_runeforge_t cloak_of_fel_flames;           // NYI
+    item_runeforge_t spirit_of_the_darkness_flame;  // NYI
   } legendary;
 
   // Mastery Spells
@@ -713,7 +713,7 @@ public:
   demon_hunter_td_t* get_target_data( player_t* target ) const override;
   void interrupt() override;
   double resource_gain( resource_e, double, gain_t* g = nullptr, action_t* a = nullptr ) override;
-  void recalculate_resource_max( resource_e ) override;
+  void recalculate_resource_max( resource_e, gain_t* g = nullptr ) override;
   void reset() override;
   void merge( player_t& other ) override;
   void datacollection_begin() override;
@@ -6186,9 +6186,9 @@ double demon_hunter_t::resource_gain( resource_e resource_type, double amount, g
 
 // demon_hunter_t::recalculate_resource_max =================================
 
-void demon_hunter_t::recalculate_resource_max( resource_e r )
+void demon_hunter_t::recalculate_resource_max( resource_e r, gain_t* source )
 {
-  player_t::recalculate_resource_max( r );
+  player_t::recalculate_resource_max( r, source );
 
   if ( r == RESOURCE_HEALTH )
   {
