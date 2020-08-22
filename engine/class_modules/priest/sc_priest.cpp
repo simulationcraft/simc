@@ -308,25 +308,27 @@ struct smite_t final : public priest_spell_t
 // ==========================================================================
 struct power_infusion_t final : public priest_spell_t
 {
-  propagate_const<cooldown_t*> power_infusion_cooldown;
-
   power_infusion_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "power_infusion", p, p.find_class_spell( "Power Infusion" ) ),
-      power_infusion_cooldown( p.get_cooldown( "power_infusion" ) )
+    : priest_spell_t( "power_infusion", p, p.find_class_spell( "Power Infusion" ) )
   {
     parse_options( options_str );
     harmful = false;
+
+    // Adjust the cooldown if using the conduit and not casting PI on yourself
+    if( priest().conduits.power_unto_others->ok() 
+      && ( priest().legendary.twins_of_the_sun_priestess->ok() || !priest().options.priest_self_power_infusion ) )
+    {
+      cooldown->duration -= timespan_t::from_seconds( priest().conduits.power_unto_others.value() );
+    }
   }
 
   void execute() override
   {
     priest_spell_t::execute();
-    priest().buffs.power_infusion->trigger();
 
-    if ( priest().legendary.twins_of_the_sun_priestess->ok() && priest().conduits.power_unto_others->ok() )
-    {
-      power_infusion_cooldown->adjust( -timespan_t::from_seconds( priest().conduits.power_unto_others.value() ) );
-    }
+    // Trigger PI on the actor only if casting on itself or having the legendary
+    if( priest().options.priest_self_power_infusion || priest().legendary.twins_of_the_sun_priestess->ok() )
+      priest().buffs.power_infusion->trigger();
   }
 };
 
@@ -1564,7 +1566,8 @@ void priest_t::create_buffs()
                             ->add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
 
   // Shared buffs
-  buffs.power_infusion = make_buff<buffs::power_infusion_t>( *this );
+  buffs.power_infusion = make_buff<buffs::power_infusion_t>( *this )
+                            ->set_cooldown(timespan_t::from_seconds( 0 ));
 
   buffs.dispersion = make_buff<buffs::dispersion_t>( *this );
 
@@ -1860,7 +1863,8 @@ void priest_t::create_options()
   add_option( opt_bool( "priest_use_ascended_eruption", options.priest_use_ascended_eruption ) );
   add_option( opt_bool( "priest_mindgames_healing_insanity", options.priest_mindgames_healing_insanity ) );
   add_option( opt_bool( "priest_mindgames_damage_insanity", options.priest_mindgames_damage_insanity ) );
-  add_option( opt_float( "priest_fae_blessings_cdr_chance", options.priest_fae_blessings_cdr_chance ) );
+  add_option( opt_bool( "priest_self_power_infusion", options.priest_self_power_infusion ) );
+  add_option( opt_bool( "priest_self_benevolent_faerie", options.priest_self_benevolent_faerie ) );
 }
 
 std::string priest_t::create_profile( save_e type )

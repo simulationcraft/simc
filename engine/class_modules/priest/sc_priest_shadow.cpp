@@ -1004,18 +1004,16 @@ struct void_bolt_t final : public priest_spell_t
     {
       if ( priest().buffs.fae_blessings->up() )
       {
-        if ( rng().roll( priest().options.priest_fae_blessings_cdr_chance ) )
+        // Adjust CD of Shadowfiend/Mindbender
+        if ( priest().talents.mindbender->ok() )
         {
-          // Adjust CD of Shadowfiend/Mindbender
-          if ( priest().talents.mindbender->ok() )
-          {
-            mindbender_cooldown->adjust( fae_blessings_cooldown_reduction );
-          }
-          else
-          {
-            shadowfiend_cooldown->adjust( fae_blessings_cooldown_reduction );
-          }
+          mindbender_cooldown->adjust( fae_blessings_cooldown_reduction );
         }
+        else
+        {
+          shadowfiend_cooldown->adjust( fae_blessings_cooldown_reduction );
+        }
+
         if ( priest().conduits.blessing_of_plenty->ok() )
         {
           if ( rng().roll( priest().conduits.blessing_of_plenty.percent() ) )
