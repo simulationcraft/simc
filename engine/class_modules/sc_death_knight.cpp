@@ -1015,7 +1015,7 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* p
 
   debuff.apocalypse_death  = make_buff( *this, "death", p -> find_spell( 327095 ) ); // Effect not implemented
   debuff.apocalypse_famine = make_buff( *this, "famine", p -> find_spell( 327092 ) )
-                           -> set_default_value( p -> find_spell( 327092 ) -> effectN( 2 ).percent() );
+                           -> set_default_value( p -> find_spell( 327092 ) -> effectN( 1 ).percent() );
   debuff.apocalypse_war    = make_buff( *this, "war", p -> find_spell( 327096 ) )
                            -> set_default_value( p -> find_spell( 327096 ) -> effectN( 1 ).percent() );
 }
@@ -5649,7 +5649,7 @@ struct pillar_of_frost_t : public death_knight_spell_t
 struct raise_dead_t : public death_knight_spell_t
 {
   raise_dead_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_spell_t( "raise_dead", p, p -> find_specialization_spell( "Raise Dead" ) )
+    death_knight_spell_t( "raise_dead", p, p -> find_specialization_spell( "Raise Dead", "Rank 2" ) )
   {
     parse_options( options_str );
 
