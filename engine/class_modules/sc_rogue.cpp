@@ -5897,7 +5897,7 @@ void actions::rogue_action_t<Base>::trigger_auto_attack( const action_state_t* /
   if ( p()->main_hand_attack->execute_event || !p()->off_hand_attack || p()->off_hand_attack->execute_event )
     return;
 
-  if ( !ab::harmful )
+  if ( !ab::data().flags( spell_attribute::SX_MELEE_COMBAT_START ) )
     return;
 
   p()->melee_main_hand->first = true;
