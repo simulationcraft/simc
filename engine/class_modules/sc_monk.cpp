@@ -367,8 +367,6 @@ public:
     const spell_data_t* blackout_kick;
     const spell_data_t* crackling_jade_lightning;
     const spell_data_t* critical_strikes;
-    const spell_data_t* effuse;
-    const spell_data_t* effuse_2;
     const spell_data_t* expel_harm;
     const spell_data_t* leather_specialization;
     const spell_data_t* leg_sweep;
@@ -5716,51 +5714,6 @@ struct gust_of_mists_t : public monk_heal_t
 };
 
 // ==========================================================================
-// Effuse
-// ==========================================================================
-
-struct effuse_t : public monk_heal_t
-{
-  gust_of_mists_t* mastery;
-
-  effuse_t( monk_t& p, const std::string& options_str ) : monk_heal_t( "effuse", p, p.spec.effuse )
-  {
-    parse_options( options_str );
-
-    mastery = new gust_of_mists_t( p );
-
-    spell_power_mod.direct = data().effectN( 1 ).ap_coeff();
-
-    may_miss = false;
-  }
-
-  double action_multiplier() const override
-  {
-    double am = monk_heal_t::action_multiplier();
-
-    if ( p()->specialization() == MONK_BREWMASTER || p()->specialization() == MONK_WINDWALKER )
-      am *= 1 + p()->spec.effuse_2->effectN( 1 ).percent();
-    else
-    {
-      if ( p()->buff.thunder_focus_tea->up() )
-        am *= 1 + p()->spec.thunder_focus_tea->effectN( 2 ).percent();  // saved as 200
-    }
-
-    return am;
-  }
-
-  void execute() override
-  {
-    monk_heal_t::execute();
-
-    if ( p()->buff.thunder_focus_tea->up() )
-      p()->buff.thunder_focus_tea->decrement();
-
-    mastery->execute();
-  }
-};
-
-// ==========================================================================
 // Enveloping Mist
 // ==========================================================================
 
@@ -6924,8 +6877,6 @@ action_t* monk_t::create_action( util::string_view name, const std::string& opti
   if ( name == "provoke" )
     return new provoke_t( this, options_str );
   // Mistweaver
-  if ( name == "effuse" )
-    return new effuse_t( *this, options_str );
   if ( name == "enveloping_mist" )
     return new enveloping_mist_t( *this, options_str );
   if ( name == "essence_font" )
@@ -7270,8 +7221,6 @@ void monk_t::init_spells()
   spec.blackout_kick_3          = find_rank_spell( "Blackout Kick", "Rank 3" );
   spec.crackling_jade_lightning = find_class_spell( "Crackling Jade Lightning" );
   spec.critical_strikes         = find_specialization_spell( "Critical Strikes" );
-  spec.effuse                   = find_specialization_spell( "Effuse" );
-  spec.effuse_2                 = find_rank_spell( "Effuse", "Rank 2" );
   spec.expel_harm               = find_class_spell( "Expel Harm" );
   spec.leather_specialization   = find_specialization_spell( "Leather Specialization" );
   spec.leg_sweep                = find_class_spell( "Leg Sweep" );
