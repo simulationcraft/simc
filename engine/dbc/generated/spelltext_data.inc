@@ -1,5 +1,5 @@
 // Spell text, wow build 9.0.1.35598
-static const std::array<spelltext_data_t, 15471> __spelltext_data { {
+static const std::array<spelltext_data_t, 15475> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -10315,6 +10315,9 @@ static const std::array<spelltext_data_t, 15471> __spelltext_data { {
   { 265327, "$@spelldesc69208", 0, 0 },
   { 265331, "$@spelldesc69210", 0, 0 },
   { 265353, "$@spelldesc89804", 0, 0 },
+  { 265391, "Smacks the target multiple times with cooked meat, inflicting $265392s1 Physical damage twice.", 0, 0 },
+  { 265392, "$@spelldesc265391", 0, 0 },
+  { 265393, "$@spelldesc265391", 0, 0 },
   { 265408, "$@spelldesc17196", 0, 0 },
   { 265409, "Deals $s1 Nature damage every $t1 sec to all enemies within an $a1 yard radius of the caster for $d.", "Taking $w1 Nature damage every $t1 sec for $d", 0 },
   { 265415, "Wounds the target for $s1 damage.", 0, 0 },
@@ -15430,6 +15433,7 @@ static const std::array<spelltext_data_t, 15471> __spelltext_data { {
   { 343144, "$@spelldesc338342", "You may cast Void Bolt.", 0 },
   { 343145, "$@spelldesc343142", 0, 0 },
   { 343160, "After entering Stealth, your next Shadowstrike grants up to $s1 sec. of Slice and Dice, and generates $s2 additional combo points if Slice and Dice is active.", 0, 0 },
+  { 343173, "$@spelldesc343160", "Shadowstrike grants up to $s1 sec. of Slice and Dice, and generate $s2 additional combo points if Slice and Dice is active.", 0 },
   { 343175, "Increases Ice Lance damage by $s1%.", 0, "Rank 2" },
   { 343177, "Increases Frostbolt damage by $s1%.", 0, "Rank 2" },
   { 343180, "Cone of Cold reduces movement speed by an additional $s1%.", 0, "Rank 2" },
