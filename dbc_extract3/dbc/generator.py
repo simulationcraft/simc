@@ -2311,7 +2311,12 @@ class SpellDataGenerator(DataGenerator):
             if not enabled_effects[effect.index]:
                 continue
 
-            trigger_spell = effect.trigger_spell
+            # Treat 'Override Action Spell' values as trigger spells for generation
+            if effect.type == 6 and effect.sub_type == 332:
+                trigger_spell = effect.base_value
+            else:
+                trigger_spell = effect.trigger_spell
+
             if trigger_spell > 0:
                 if trigger_spell in filter_list.keys():
                     continue
