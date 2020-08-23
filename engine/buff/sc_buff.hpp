@@ -221,6 +221,8 @@ public:
   bool   remains_gt( timespan_t time ) const;
   bool   remains_lt( timespan_t time ) const;
   bool   trigger  ( action_t*, int stacks = 1, double value = DEFAULT_VALUE(), timespan_t duration = timespan_t::min() );
+  bool   trigger  ( timespan_t duration );
+  bool   trigger  ( int stacks, timespan_t duration );
   virtual bool   trigger  ( int stacks = 1, double value = DEFAULT_VALUE(), double chance = -1.0, timespan_t duration = timespan_t::min() );
   virtual void   execute ( int stacks = 1, double value = DEFAULT_VALUE(), timespan_t duration = timespan_t::min() );
   virtual void   increment( int stacks = 1, double value = DEFAULT_VALUE(), timespan_t duration = timespan_t::min() );

@@ -1169,6 +1169,16 @@ bool buff_t::trigger( action_t* a, int stacks, double value, timespan_t duration
   return trigger( stacks, value, chance, duration );
 }
 
+bool buff_t::trigger( timespan_t duration )
+{
+  return buff_t::trigger( 1, duration );
+}
+
+bool buff_t::trigger( int stacks, timespan_t duration )
+{
+  return buff_t::trigger( stacks, DEFAULT_VALUE(), -1, duration );
+}
+
 bool buff_t::trigger( int stacks, double value, double chance, timespan_t duration )
 {
   if ( _max_stack == 0 || chance == 0 )

@@ -5146,7 +5146,7 @@ struct volley_t : hunter_spell_t
     hunter_spell_t::execute();
 
     p() -> buffs.volley -> trigger();
-    p() -> buffs.trick_shots -> trigger( 1, buff_t::DEFAULT_VALUE(), -1, data().duration() );
+    p() -> buffs.trick_shots -> trigger( data().duration() );
 
     make_event<ground_aoe_event_t>( *sim, player, ground_aoe_params_t()
         .target( execute_state -> target )
@@ -5591,8 +5591,8 @@ void hunter_t::vision_of_perfection_proc()
     }
     else
     {
-      buffs.aspect_of_the_wild->trigger( 1, buff_t::DEFAULT_VALUE(), -1, dur );
-      buffs.primal_instincts->trigger( 1, buff_t::DEFAULT_VALUE(), -1, dur );
+      buffs.aspect_of_the_wild->trigger( dur );
+      buffs.primal_instincts->trigger( dur );
     }
     break;
   }
@@ -5609,8 +5609,8 @@ void hunter_t::vision_of_perfection_proc()
     }
     else
     {
-      buffs.trueshot->trigger( 1, buff_t::DEFAULT_VALUE(), -1, ts_dur );
-      buffs.unerring_vision_driver->trigger( 1, buff_t::DEFAULT_VALUE(), -1, uv_dur );
+      buffs.trueshot->trigger( ts_dur );
+      buffs.unerring_vision_driver->trigger( uv_dur );
     }
     break;
   }
@@ -5628,8 +5628,8 @@ void hunter_t::vision_of_perfection_proc()
     }
     else
     {
-      buffs.coordinated_assault->trigger( 1, buff_t::DEFAULT_VALUE(), -1, dur );
-      buffs.coordinated_assault_vision->trigger( 1, buff_t::DEFAULT_VALUE(), -1, dur );
+      buffs.coordinated_assault->trigger( dur );
+      buffs.coordinated_assault_vision->trigger( dur );
     }
     break;
   }
