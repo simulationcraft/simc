@@ -22,6 +22,8 @@ struct warrior_td_t : public actor_target_data_t
   dot_t* dots_gushing_wound;
   dot_t* dots_ravager;
   dot_t* dots_rend;
+  dot_t* dots_ancient_aftershock;
+  buff_t* debuffs_ancient_aftershock;
   buff_t* debuffs_colossus_smash;
   buff_t* debuffs_siegebreaker;
   buff_t* debuffs_demoralizing_shout;
@@ -67,6 +69,8 @@ public:
   // Active
   struct active_t
   {
+    action_t* ancient_aftershock_dot;
+    action_t* spear_of_bastion_attack;
     action_t* deep_wounds_ARMS;
     action_t* deep_wounds_PROT;
     action_t* charge;
@@ -181,6 +185,10 @@ public:
     cooldown_t* storm_bolt;
     cooldown_t* thunder_clap;
     cooldown_t* warbreaker;
+    cooldown_t* ancient_aftershock;
+    cooldown_t* condemn;
+    cooldown_t* conquerors_banner;
+    cooldown_t* spear_of_bastion;
   } cooldown;
 
   // Gains
@@ -445,6 +453,14 @@ public:
     }
 
   } legendary;
+
+  struct covenant_t
+  {
+    const spell_data_t* ancient_aftershock;
+    const spell_data_t* condemn;
+    const spell_data_t* conquerors_banner;
+    const spell_data_t* spear_of_bastion;
+  } covenant;
 
   // Azerite traits
   struct
@@ -4409,6 +4425,333 @@ struct arms_whirlwind_parent_t : public warrior_attack_t
 };
 
 // ==========================================================================
+// Covenant Abilities
+// ==========================================================================
+
+// Ancient Aftershock========================================================
+
+struct ancient_aftershock_dot_t : public warrior_attack_t
+{
+  ancient_aftershock_dot_t( warrior_t* p ) : warrior_attack_t( "ancient_aftershock_dot", p, p->find_spell( 326062 ) )
+  {
+    background = tick_may_crit = true;
+    hasted_ticks               = false;
+    energize_amount   = p->find_spell( 326076 )->effectN( 1 ).base_value() / 10.0;
+    energize_type     = action_energize::PER_TICK;
+    energize_resource = RESOURCE_RAGE;
+  }
+};
+
+struct ancient_aftershock_t : public warrior_attack_t
+{
+  ancient_aftershock_t( warrior_t* p, const std::string& options_str )
+    : warrior_attack_t( "ancient_aftershock", p, p->covenant.ancient_aftershock )
+  {
+    parse_options( options_str );
+    aoe       = -1;
+    may_dodge = may_parry = may_block = false;
+    impact_action = p->active.ancient_aftershock_dot;
+  }
+};
+
+// Arms Condemn==============================================================
+
+struct condemn_damage_t : public warrior_attack_t
+{
+  double max_rage;
+  double cost_rage;
+  condemn_damage_t( warrior_t* p, const std::string& options_str )
+    : warrior_attack_t( "condemn", p, p->covenant.condemn->effectN( 1 ).trigger() ), max_rage( 40 )
+  {
+    parse_options( options_str );
+    weapon = &( p->main_hand_weapon );
+    background = true;
+  }
+
+  double action_multiplier() const override
+  {
+    double am = warrior_attack_t::action_multiplier();
+
+    if ( cost_rage == 0 )  // If it was free, it's a full damage condemn.
+      am *= 2.0;
+    else
+      am *= 2.0 * ( std::min( max_rage, cost_rage ) / max_rage );
+    return am;
+  }
+};
+
+struct condemn_arms_t : public warrior_attack_t
+{
+  condemn_damage_t* trigger_attack;
+  double max_rage;
+  double execute_pct;
+  condemn_arms_t( warrior_t* p, const std::string& options_str )
+    : warrior_attack_t( "condemn", p, p->covenant.condemn ), max_rage( 40 ), execute_pct( 20 )
+  {
+    parse_options( options_str );
+    weapon        = &( p->main_hand_weapon );
+
+    trigger_attack = new condemn_damage_t( p, options_str );
+
+    if ( p->talents.massacre->ok() )
+    {
+      execute_pct = p->talents.massacre->effectN( 2 )._base_value;
+    }
+  }
+
+  double tactician_cost() const override
+  {
+    double c = max_rage;
+
+    if ( !p()->buff.ayalas_stone_heart->check() && !p()->buff.deadly_calm->check() && !p()->buff.sudden_death->check() )
+    {
+      c = std::min( max_rage, p()->resources.current[ RESOURCE_RAGE ] );
+      c = ( c / max_rage ) * 40;
+    }
+    if ( sim->log )
+    {
+      sim->out_debug.printf( "Rage used to calculate tactician chance from ability %s: %4.4f, actual rage used: %4.4f",
+                             name(), c, cost() );
+    }
+    return c;
+  }
+
+  double cost() const override
+  {
+    double c = warrior_attack_t::cost();
+    c        = std::min( max_rage, std::max( p()->resources.current[ RESOURCE_RAGE ], c ) );
+
+    if ( p()->buff.ayalas_stone_heart->check() )
+    {
+      return c *= 1.0 + p()->buff.ayalas_stone_heart->data().effectN( 2 ).percent();
+    }
+    if ( p()->buff.sudden_death->check() )
+    {
+      return 0;  // The cost reduction isn't in the spell data
+    }
+    if ( p()->buff.deadly_calm->check() )
+    {
+      c *= 1.0 + p()->talents.deadly_calm->effectN( 1 ).percent();
+    }
+    return c;
+  }
+
+  void execute() override
+  {
+    warrior_attack_t::execute();
+
+    trigger_attack->cost_rage = last_resource_cost;
+    trigger_attack->execute();
+    p()->resource_gain( RESOURCE_RAGE, last_resource_cost * 0.2,
+                        p()->gain.execute_refund );  // Not worth the trouble to check if the target died.
+
+    p()->buff.ayalas_stone_heart->expire();
+    p()->buff.sudden_death->expire();
+
+    if ( p()->azerite.executioners_precision.ok() )
+    {
+      p()->buff.executioners_precision->trigger();
+    }
+  }
+
+  bool target_ready( player_t* candidate_target ) override
+  {
+    // Ayala's Stone Heart and Sudden Death allow execution on any target
+    bool always = p()->buff.ayalas_stone_heart->check() || p()->buff.sudden_death->check();
+
+    if ( ! always && candidate_target->health_percentage() > execute_pct )
+    {
+      return false;
+    }
+
+    return warrior_attack_t::target_ready( candidate_target );
+  }
+
+  bool ready() override
+  {
+    if ( p()->main_hand_weapon.type == WEAPON_NONE )
+    {
+      return false;
+    }
+
+    return warrior_attack_t::ready();
+  }
+};
+
+// Fury Condemn ======================================================================
+
+struct condemn_main_hand_t : public warrior_attack_t
+{
+  int aoe_targets;
+  condemn_main_hand_t( warrior_t* p, const char* name, const spell_data_t* s )
+    : warrior_attack_t( name, p, s ),
+      aoe_targets( as<int>( p->spell.whirlwind_buff->effectN( 1 ).base_value() ) )
+  {
+    background = true;
+    dual   = true;
+    weapon = &( p->main_hand_weapon );
+    //base_multiplier *= 1.0 + p->spec.execute_rank_2->effectN( 1 ).percent();
+    base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 3 ).percent();
+  }
+
+  int n_targets() const override
+  {
+    if ( p()->buff.meat_cleaver->check() )
+    {
+      return aoe_targets + 1;
+    }
+    return warrior_attack_t::n_targets();
+  }
+};
+
+struct condemn_off_hand_t : public warrior_attack_t
+{
+  int aoe_targets;
+  condemn_off_hand_t( warrior_t* p, const char* name, const spell_data_t* s )
+    : warrior_attack_t( name, p, s ),
+      aoe_targets( as<int>( p->spell.whirlwind_buff->effectN( 1 ).base_value() ) )
+  {
+    background = true;
+    dual     = true;
+    may_miss = may_dodge = may_parry = may_block = false;
+    weapon                                       = &( p->off_hand_weapon );
+    //base_multiplier *= 1.0 + p->spec.execute_rank_2->effectN( 1 ).percent();
+    base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 3 ).percent();
+  }
+
+  int n_targets() const override
+  {
+    if ( p()->buff.meat_cleaver->check() )
+    {
+      return aoe_targets + 1;
+    }
+    return warrior_attack_t::n_targets();
+  }
+};
+
+struct fury_condemn_parent_t : public warrior_attack_t
+{
+  condemn_main_hand_t* mh_attack;
+  condemn_off_hand_t* oh_attack;
+  bool execute_rank_3;
+  double execute_pct;
+  double cost_rage;
+  double max_rage;
+  double rage_from_execute_rank_3;
+  fury_condemn_parent_t( warrior_t* p, const std::string& options_str )
+    : warrior_attack_t( "condemn", p, p->covenant.condemn ), execute_pct( 20 ),
+      execute_rank_3( false ),
+      rage_from_execute_rank_3(
+      ( p->spec.execute_rank_3->effectN( 1 ).base_value() ) / 10.0 )
+  {
+    parse_options( options_str );
+    mh_attack = new condemn_main_hand_t( p, "condemn_mainhand", p->spec.execute->effectN( 1 ).trigger() );
+    oh_attack = new condemn_off_hand_t( p, "condemn_offhand", p->spec.execute->effectN( 2 ).trigger() );
+    add_child( mh_attack );
+    add_child( oh_attack );
+
+    if ( p->talents.massacre->ok() )
+    {
+      execute_pct = p->talents.massacre->effectN( 2 )._base_value;
+    }
+  }
+
+  double cost() const override
+  {
+    double c = warrior_attack_t::cost();
+    c = std::min( max_rage, std::max( p()->resources.current[RESOURCE_RAGE], c ) );
+
+    if ( p()->spec.execute_rank_2->ok() )
+    {
+      c *= 1.0 + p()->spec.execute_rank_2->effectN(1).percent();
+    }
+    return c;
+  }
+
+  void execute() override
+  {
+    warrior_attack_t::execute();
+
+    mh_attack->execute();
+
+    if ( p()->specialization() == WARRIOR_FURY && result_is_hit( execute_state->result ) &&
+         p()->off_hand_weapon.type != WEAPON_NONE )
+      // If MH fails to land, or if there is no OH weapon for Fury, oh attack does not execute.
+      oh_attack->execute();
+
+    p()->buff.meat_cleaver->decrement();
+    p()->buff.sudden_death->expire();
+    p()->buff.ayalas_stone_heart->expire();
+
+    if ( p()->spec.execute_rank_3->ok() )
+    {
+      p()->resource_gain( RESOURCE_RAGE, rage_from_execute_rank_3, p()->gain.execute );
+    }
+
+    if ( p()->talents.massacre->ok() )
+     { 
+       p()->cooldown.condemn->adjust( - timespan_t::from_millis( p()->talents.massacre->effectN( 3 ).base_value() ) );
+     }
+  }
+
+  bool target_ready( player_t* candidate_target ) override
+  {
+    // Ayala's Stone Heart and Sudden Death allow execution on any target
+    bool always = p()->buff.ayalas_stone_heart->check() || p()->buff.sudden_death->check();
+
+    if ( ! always && candidate_target->health_percentage() > execute_pct )
+    {
+      return false;
+    }
+
+    return warrior_attack_t::target_ready( candidate_target );
+  }
+
+  bool ready() override
+  {
+    if ( p()->main_hand_weapon.type == WEAPON_NONE )
+    {
+      return false;
+    }
+
+    return warrior_attack_t::ready();
+  }
+};
+
+// Conquerors Banner=========================================================
+
+
+
+// Spear of Bastion==========================================================
+
+struct spear_of_bastion_attack_t : public warrior_attack_t
+{
+  spear_of_bastion_attack_t( warrior_t* p ) : warrior_attack_t( "spear_of_bastion_attack", p, p->find_spell( 307871 ) )
+  {
+    background = tick_may_crit = true;
+    hasted_ticks               = false;
+    aoe        = -1;
+    dual       = true;
+  }
+};
+
+struct spear_of_bastion_t : public warrior_attack_t
+{
+  spear_of_bastion_t( warrior_t* p, const std::string& options_str )
+    : warrior_attack_t( "spear_of_bastion", p, p->covenant.spear_of_bastion )
+  {
+    parse_options( options_str );
+    may_dodge = may_parry = may_block = false;
+    execute_action = p->active.spear_of_bastion_attack;
+    execute_action->stats = stats;
+    energize_amount   = p->find_spell( 307871 )->effectN( 3 ).base_value() / 10.0;
+    energize_type     = action_energize::ON_CAST;
+    energize_resource = RESOURCE_RAGE;
+  }
+};
+
+
+// ==========================================================================
 // Warrior Spells
 // ==========================================================================
 
@@ -4965,6 +5308,8 @@ action_t* warrior_t::create_action( util::string_view name, const std::string& o
 {
   if ( name == "auto_attack" )
     return new auto_attack_t( this, options_str );
+  if ( name == "ancient_aftershock" )
+    return new ancient_aftershock_t( this, options_str );
   if ( name == "avatar" )
     return new avatar_t( this, options_str );
   if ( name == "battle_shout" )
@@ -4985,6 +5330,17 @@ action_t* warrior_t::create_action( util::string_view name, const std::string& o
     return new cleave_t( this, options_str );
   if ( name == "colossus_smash" )
     return new colossus_smash_t( this, options_str );
+  if ( name == "condemn" )
+  {
+    if ( specialization() == WARRIOR_ARMS )
+    {
+      return new condemn_arms_t( this, options_str );
+    }
+    else
+    {
+      return new fury_condemn_parent_t( this, options_str );
+    }
+  }
   if ( name == "deadly_calm" )
     return new deadly_calm_t( this, options_str );
   if ( name == "defensive_stance" )
@@ -5062,6 +5418,8 @@ action_t* warrior_t::create_action( util::string_view name, const std::string& o
     return new skullsplitter_t( this, options_str );
   if ( name == "slam" )
     return new slam_t( this, options_str );
+  if ( name == "spear_of_bastion" )
+    return new spear_of_bastion_t( this, options_str );
   if ( name == "spell_reflection" )
     return new spell_reflection_t( this, options_str );
   if ( name == "storm_bolt" )
@@ -5277,6 +5635,12 @@ void warrior_t::init_spells()
   azerite.vision_of_perfection_percentage +=
       azerite.vision_of_perfection.spell( 2u, essence_spell::UPGRADE, essence_type::MAJOR )->effectN( 1 ).percent();
 
+  // Convenant Abilities
+  covenant.ancient_aftershock    = find_covenant_spell( "Ancient Aftershock" );
+  covenant.condemn               = find_covenant_spell( "Condemn" );
+  covenant.conquerors_banner     = find_covenant_spell( "Conquerors Banner" );
+  covenant.spear_of_bastion      = find_covenant_spell( "Spear of Bastion" );
+
 
   // Generic spells
   spell.battle_shout          = find_class_spell( "Battle Shout" );
@@ -5299,6 +5663,7 @@ void warrior_t::init_spells()
 
 
   // Active spells
+  active.ancient_aftershock_dot = nullptr;
   active.deep_wounds_ARMS = nullptr;
   active.deep_wounds_PROT = nullptr;
   active.charge           = nullptr;
@@ -5306,6 +5671,10 @@ void warrior_t::init_spells()
 
   auto_attack_multiplier *= 1.0 + spec.fury_warrior->effectN( 4 ).percent();
 
+  if ( covenant.ancient_aftershock->ok() )
+    active.ancient_aftershock_dot = new ancient_aftershock_dot_t( this );
+  if ( covenant.spear_of_bastion->ok() )
+    active.spear_of_bastion_attack = new spear_of_bastion_attack_t( this );
   if ( spec.deep_wounds_ARMS->ok() )
     active.deep_wounds_ARMS = new deep_wounds_ARMS_t( this );
   if ( spec.deep_wounds_PROT->ok() )
@@ -6131,6 +6500,7 @@ warrior_td_t::warrior_td_t( player_t* target, warrior_t& p ) : actor_target_data
   dots_ravager     = target->get_dot( "ravager", &p );
   dots_rend        = target->get_dot( "rend", &p );
   dots_gushing_wound = target->get_dot( "gushing_wound", &p );
+  dots_ancient_aftershock = target->get_dot( "ancient_aftershock_dot", &p );
 
   debuffs_colossus_smash = make_buff( *this , "colossus_smash" )
                                ->set_default_value( p.spell.colossus_smash_debuff->effectN( 2 ).percent() )
