@@ -1,5 +1,5 @@
 // Spell text, wow build 9.0.1.35598
-static const std::array<spelltext_data_t, 15517> __spelltext_data { {
+static const std::array<spelltext_data_t, 15518> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -6706,6 +6706,7 @@ static const std::array<spelltext_data_t, 15517> __spelltext_data { {
   { 196737, "Stagger is $s1% more effective at delaying damage.\r\n\r\nYou gain up to $s4% Haste based on your current level of Stagger.", 0, 0 },
   { 196740, "Each successive attack that triggers Combo Strikes in a row grants $196741s1% increased damage, stacking up to $196741u times.", 0, 0 },
   { 196741, "$@spelldesc196740", "Damage dealt increased by $s1%.", 0 },
+  { 196742, "$@spelldesc152175", 0, 0 },
   { 196760, "Summon a portal to Mardun.", "Sending streams of imps at your enemies.", 0 },
   { 196770, "Drain the warmth of life from all nearby enemies within $196771A1 yards, dealing ${9*$196771s1*$<CAP>/$AP} Frost damage over $d and reducing their movement speed by $211793s1%.", "Dealing $196771s1 Frost damage to enemies within $196771A1 yards each second.", 0 },
   { 196771, "$@spelldesc196770", 0, 0 },
