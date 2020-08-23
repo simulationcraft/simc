@@ -1061,8 +1061,8 @@ void eclipse_handler_t::trigger_both( timespan_t d = 0_ms )
     p->buff.balance_of_all_things_nature->trigger();
   }
 
-  p->buff.eclipse_lunar->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, d );
-  p->buff.eclipse_solar->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, d );
+  p->buff.eclipse_lunar->trigger( d );
+  p->buff.eclipse_solar->trigger( d );
 
   p->uptime.eclipse->update( true, p->sim->current_time() );
 }
@@ -1434,7 +1434,7 @@ struct tigers_fury_buff_t : public druid_buff_t<buff_t>
   void start( int stacks, double value, timespan_t duration ) override
   {
     if ( p().azerite.jungle_fury.enabled() )
-      p().buff.jungle_fury->trigger( 1, DEFAULT_VALUE(), 1.0, duration );
+      p().buff.jungle_fury->trigger( duration );
 
     base_t::start( stacks, value, duration );
   }
@@ -2641,7 +2641,7 @@ public:
             p()->buff.eclipse_solar->extend_duration( p(), pulsar_dur );
           }
           else
-            proc_buff->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, pulsar_dur );
+            proc_buff->trigger( pulsar_dur );
 
           // hardcoded 12AP because 9s / 20s * 30AP = 13.5AP - 1.5 Shadowlands discount
           p()->resource_gain( RESOURCE_ASTRAL_POWER, 12, p()->gain.primordial_arcanic_pulsar );
@@ -3974,7 +3974,7 @@ struct rake_t : public cat_attack_t
         return;
 
       p()->proc.blood_mist->occur();
-      p()->buff.berserk_cat->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, timespan_t::from_seconds( 6 ) );
+      p()->buff.berserk_cat->trigger( 6_s );
     }
   };
 
@@ -4225,7 +4225,7 @@ struct savage_roar_t : public cat_attack_t
 
     cat_attack_t::execute();
 
-    p()->buff.savage_roar->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, d );
+    p()->buff.savage_roar->trigger( d );
   }
 
   bool ready() override
@@ -4407,7 +4407,7 @@ struct tigers_fury_t : public cat_attack_t
   {
     cat_attack_t::execute();
 
-    p()->buff.tigers_fury->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, duration );
+    p()->buff.tigers_fury->trigger( duration );
 
     if ( p()->legendary.eye_of_fearful_symmetry->ok() )
       p()->buff.eye_of_fearful_symmetry->trigger();
@@ -5894,7 +5894,7 @@ struct ironfur_t : public druid_spell_t
   {
     druid_spell_t::execute();
 
-    p()->buff.ironfur->trigger( 1, buff_t::DEFAULT_VALUE(), -1, composite_buff_duration() );
+    p()->buff.ironfur->trigger( composite_buff_duration() );
 
     if ( p()->buff.guardian_of_elune->up() )
       p()->buff.guardian_of_elune->expire();
@@ -5903,7 +5903,7 @@ struct ironfur_t : public druid_spell_t
       p()->buff.guardians_wrath->expire();
 
     if ( p()->azerite.layered_mane.ok() && rng().roll( p()->azerite.layered_mane.spell()->effectN( 2 ).percent() ) )
-      p()->buff.ironfur->trigger( 1, buff_t::DEFAULT_VALUE(), -1, composite_buff_duration() );
+      p()->buff.ironfur->trigger( composite_buff_duration() );
   }
 };
 
@@ -6612,7 +6612,7 @@ struct starsurge_t : public druid_spell_t
         if ( proc_buff->check() )
           proc_buff->extend_duration( p(), pulsar_dur );
         else
-          proc_buff->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, pulsar_dur );
+          proc_buff->trigger( pulsar_dur );
 
         // hardcoded 12AP because 6s / 20s * 40AP = 12AP
         p()->resource_gain( RESOURCE_ASTRAL_POWER, 12, p()->gain.arcanic_pulsar );
@@ -10044,7 +10044,7 @@ void druid_t::vision_of_perfection_proc()
   if ( vp_buff->check() )
     vp_buff->extend_duration( this, vp_dur );
   else
-    vp_buff->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, vp_dur );
+    vp_buff->trigger( vp_dur );
 
   proc.vision_of_perfection->occur();
 
