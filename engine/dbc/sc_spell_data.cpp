@@ -554,49 +554,73 @@ struct spell_list_expr_t : public spell_data_expr_t
   // Intersect two spell lists
   std::vector<uint32_t> operator&( const spell_data_expr_t& other ) override
   {
-    std::vector<uint32_t> res;
-
-    // Only or two spell lists together
+    // Only intersect two spell lists together
     if ( other.result_tok != expression::TOK_SPELL_LIST )
-    {
-      throw std::invalid_argument(fmt::format("Unsupported right side operand '{}' ({}) for operator &", other.name_str, other.result_tok));
-    }
-    else
-      range::set_intersection( result_spell_list, other.result_spell_list, std::back_inserter( res ) );
+      throw_invalid_op_arg( "&", other );
 
+    std::vector<uint32_t> res;
+    range::set_intersection( result_spell_list, other.result_spell_list, std::back_inserter( res ) );
     return res;
   }
 
   // Merge two spell lists, uniqueing entries
   std::vector<uint32_t> operator|( const spell_data_expr_t& other ) override
   {
-    std::vector<uint32_t> res;
-
-    // Only or two spell lists together
+    // Only merge two spell lists together
     if ( other.result_tok != expression::TOK_SPELL_LIST )
-    {
-      throw std::invalid_argument(fmt::format("Unsupported right side operand '{}' ({}) for operator |", other.name_str, other.result_tok));
-    }
-    else
-      range::set_union( result_spell_list, other.result_spell_list, std::back_inserter( res ) );
+      throw_invalid_op_arg( "|", other );
 
+    std::vector<uint32_t> res;
+    range::set_union( result_spell_list, other.result_spell_list, std::back_inserter( res ) );
     return res;
   }
 
   // Subtract two spell lists, other from this
-  std::vector<uint32_t>operator-( const spell_data_expr_t& other ) override
+  std::vector<uint32_t> operator-( const spell_data_expr_t& other ) override
   {
-    std::vector<uint32_t> res;
-
-    // Only or two spell lists together
+    // Only substract two spell lists together
     if ( other.result_tok != expression::TOK_SPELL_LIST )
-    {
-      throw std::invalid_argument(fmt::format("Unsupported right side operand '{}' ({}) for operator -", other.name_str, other.result_tok));
-    }
-    else
-      range::set_difference( result_spell_list, other.result_spell_list, std::back_inserter( res ) );
+      throw_invalid_op_arg( "-", other );
 
+    std::vector<uint32_t> res;
+    range::set_difference( result_spell_list, other.result_spell_list, std::back_inserter( res ) );
     return res;
+  }
+
+  template <typename Filter>
+  std::vector<uint32_t> filter_spells( Filter&& filter ) const
+  {
+    if ( data_type == DATA_TALENT || data_type == DATA_EFFECT )
+      return {};
+
+    std::vector<uint32_t> res;
+    range::copy_if( result_spell_list, std::back_inserter( res ),
+        [&]( uint32_t result_spell ) {
+          const spell_data_t* spell = dbc.spell( result_spell );
+          return spell && filter( *spell );
+        } );
+    return res;
+  }
+
+  template <typename Filter>
+  std::vector<uint32_t> filter_talents( Filter&& filter ) const
+  {
+    if ( data_type != DATA_TALENT )
+      return {};
+
+    std::vector<uint32_t> res;
+    range::copy_if( result_spell_list, std::back_inserter( res ),
+        [&]( uint32_t result_spell ) {
+          const talent_data_t* talent = dbc.talent( result_spell );
+          return talent && filter( *talent );
+        } );
+    return res;
+  }
+
+  /* [[noreturn]] */ void throw_invalid_op_arg( util::string_view op, const spell_data_expr_t& other ) {
+    throw std::invalid_argument(
+            fmt::format( "Unsupported right side operand '{}' ({}) for operator {}",
+              op, other.name_str, other.result_tok ) );
   }
 };
 
@@ -612,41 +636,37 @@ struct sd_expr_binary_t : public spell_list_expr_t
 
   int evaluate() override
   {
-    int  left_result =  left -> evaluate();
+    int left_result = left -> evaluate();
 
     right -> evaluate();
-    result_tok      = expression::TOK_UNKNOWN;
+    result_tok = expression::TOK_UNKNOWN;
 
     if ( left_result != expression::TOK_SPELL_LIST )
     {
       throw std::invalid_argument(fmt::format("Inconsistent input types ('{}' and '{}') for binary operator '{}', left must always be a spell list.\n",
                      left -> name(), right -> name(), name() ));
     }
-    else
-    {
-      result_tok = expression::TOK_SPELL_LIST;
-      // Data type follows from left side operand
-      data_type   = left -> data_type;
 
-      switch ( operation )
-      {
-        case expression::TOK_EQ:    result_spell_list = *left == *right; break;
-        case expression::TOK_NOTEQ: result_spell_list = *left != *right; break;
-        case expression::TOK_OR:    result_spell_list = *left | *right; break;
-        case expression::TOK_AND:   result_spell_list = *left & *right; break;
-        case expression::TOK_SUB:   result_spell_list = *left - *right; break;
-        case expression::TOK_LT:    result_spell_list = *left < *right; break;
-        case expression::TOK_LTEQ:  result_spell_list = *left <= *right; break;
-        case expression::TOK_GT:    result_spell_list = *left > *right; break;
-        case expression::TOK_GTEQ:  result_spell_list = *left >= *right; break;
-        case expression::TOK_IN:    result_spell_list = left -> in( *right ); break;
-        case expression::TOK_NOTIN: result_spell_list = left -> not_in( *right ); break;
-        default:
-          throw std::invalid_argument(fmt::format("Unsupported spell query operator {}", operation));
-          result_spell_list = std::vector<uint32_t>();
-          result_tok = expression::TOK_UNKNOWN;
-          break;
-      }
+    result_tok = expression::TOK_SPELL_LIST;
+    // Data type follows from left side operand
+    data_type  = left -> data_type;
+
+    switch ( operation )
+    {
+      case expression::TOK_EQ:    result_spell_list = *left == *right; break;
+      case expression::TOK_NOTEQ: result_spell_list = *left != *right; break;
+      case expression::TOK_OR:    result_spell_list = *left | *right; break;
+      case expression::TOK_AND:   result_spell_list = *left & *right; break;
+      case expression::TOK_SUB:   result_spell_list = *left - *right; break;
+      case expression::TOK_LT:    result_spell_list = *left < *right; break;
+      case expression::TOK_LTEQ:  result_spell_list = *left <= *right; break;
+      case expression::TOK_GT:    result_spell_list = *left > *right; break;
+      case expression::TOK_GTEQ:  result_spell_list = *left >= *right; break;
+      case expression::TOK_IN:    result_spell_list = left -> in( *right ); break;
+      case expression::TOK_NOTIN: result_spell_list = left -> not_in( *right ); break;
+      default:
+        throw std::invalid_argument(fmt::format("Unsupported spell query operator {}", operation));
+        break;
     }
 
     return result_tok;
@@ -840,28 +860,6 @@ struct spell_class_expr_t : public spell_list_expr_t
     return false;
   }
 
-  template <typename Cb>
-  std::vector<uint32_t> filter_talents( Cb&& filter ) const {
-    std::vector<uint32_t> res;
-    range::copy_if( result_spell_list, std::back_inserter( res ),
-        [&]( uint32_t result_spell ) {
-          const talent_data_t* talent = dbc.talent( result_spell );
-          return talent && filter( *talent );
-        } );
-    return res;
-  }
-
-  template <typename Cb>
-  std::vector<uint32_t> filter_spells( Cb&& filter ) const {
-    std::vector<uint32_t> res;
-    range::copy_if( result_spell_list, std::back_inserter( res ),
-        [&]( uint32_t result_spell ) {
-          const spell_data_t* spell = dbc.spell( result_spell );
-          return spell && filter( *spell );
-        } );
-    return res;
-  }
-
   std::vector<uint32_t> operator==( const spell_data_expr_t& other ) override
   {
     // Other types will not be allowed, e.g. you cannot do class=list
@@ -913,44 +911,26 @@ struct spell_race_expr_t : public spell_list_expr_t
 
   std::vector<uint32_t> operator==( const spell_data_expr_t& other ) override
   {
-    // Talents are not race specific
-    if ( data_type == DATA_TALENT )
-      return {};
-
     // Other types will not be allowed, e.g. you cannot do race=list
     if ( other.result_tok != expression::TOK_STR )
       return {};
 
     const uint64_t race_mask = race_str_to_mask( other.result_str );
-
-    std::vector<uint32_t> res;
-    range::copy_if( result_spell_list, std::back_inserter( res ),
-      [&]( uint32_t result_spell ) {
-        const spell_data_t* spell = dbc.spell( result_spell );
-        return spell && spell->race_mask() & race_mask;
+    return filter_spells( [&]( const spell_data_t& spell ) {
+        return spell.race_mask() & race_mask;
       } );
-    return res;
   }
 
   std::vector<uint32_t> operator!=( const spell_data_expr_t& other ) override
   {
-    // Talents are not race specific
-    if ( data_type == DATA_TALENT )
-      return {};
-
     // Other types will not be allowed, e.g. you cannot do race=list
     if ( other.result_tok != expression::TOK_STR )
       return {};
 
     const uint64_t race_mask = race_str_to_mask( other.result_str );
-
-    std::vector<uint32_t> res;
-    range::copy_if( result_spell_list, std::back_inserter( res ),
-      [&]( uint32_t result_spell ) {
-        const spell_data_t* spell = dbc.spell( result_spell );
-        return spell && ( spell->race_mask() & race_mask ) == 0;
+    return filter_spells( [&]( const spell_data_t& spell ) {
+        return ( spell.race_mask() & race_mask ) == 0;
       } );
-    return res;
   }
 };
 
@@ -960,28 +940,13 @@ struct spell_flag_expr_t : public spell_list_expr_t
 
   std::vector<uint32_t> operator==( const spell_data_expr_t& other ) override
   {
-    std::vector<uint32_t> res;
-
-    // Only for spells
-    if ( data_type == DATA_EFFECT || data_type == DATA_TALENT )
-      return res;
-
     // Numbered attributes only
     if ( other.result_tok != expression::TOK_NUM )
-      return res;
+      return {};
 
-    for ( const auto& result_spell : result_spell_list )
-    {
-      const spell_data_t* spell = dbc.spell( result_spell );
-
-      if ( ! spell )
-        continue;
-
-      if ( spell -> class_flag( as<unsigned>( other.result_num ) ) )
-        res.push_back( result_spell );
-    }
-
-    return res;
+    return filter_spells( [&]( const spell_data_t& spell ) {
+        return spell.class_flag( as<unsigned>( other.result_num ) );
+      } );
   }
 };
 
@@ -991,33 +956,17 @@ struct spell_attribute_expr_t : public spell_list_expr_t
 
   std::vector<uint32_t> operator==( const spell_data_expr_t& other ) override
   {
-    std::vector<uint32_t> res;
-
-    // Only for spells
-    if ( data_type == DATA_EFFECT || data_type == DATA_TALENT )
-      return res;
-
     // Numbered attributes only
     if ( other.result_tok != expression::TOK_NUM )
-      return res;
+      return {};
 
     uint32_t attridx = ( unsigned ) other.result_num / ( sizeof( unsigned ) * 8 );
     uint32_t flagidx = ( unsigned ) other.result_num % ( sizeof( unsigned ) * 8 );
 
     assert( attridx < NUM_SPELL_FLAGS && flagidx < 32 );
-
-    for ( const auto& result_spell : result_spell_list )
-    {
-      const spell_data_t* spell = dbc.spell( result_spell );
-
-      if ( ! spell )
-        continue;
-
-      if ( spell -> attribute( attridx ) & ( 1 << flagidx ) )
-        res.push_back( result_spell );
-    }
-
-    return res;
+    return filter_spells( [&]( const spell_data_t& spell ) {
+        return spell.attribute( attridx ) & ( 1 << flagidx );
+      } );
   }
 };
 
@@ -1027,52 +976,26 @@ struct spell_school_expr_t : public spell_list_expr_t
 
   std::vector<uint32_t> operator==( const spell_data_expr_t& other ) override
   {
-    std::vector<uint32_t> res;
-    uint32_t              school_mask;
+    // Other types will not be allowed, e.g. you cannot do school=list
+    if ( other.result_tok != expression::TOK_STR )
+      return {};
 
-    if ( other.result_tok == expression::TOK_STR )
-      school_mask = school_str_to_mask( other.result_str );
-    // Other types will not be allowed, e.g. you cannot do class=list
-    else
-      return res;
-
-    for ( const auto& result_spell : result_spell_list )
-    {
-      const spell_data_t* spell = dbc.spell( result_spell );
-
-      if ( ! spell )
-        continue;
-
-      if ( ( spell -> school_mask() & school_mask ) == school_mask )
-        res.push_back( result_spell );
-    }
-
-    return res;
+    const unsigned school_mask = school_str_to_mask( other.result_str );
+    return filter_spells( [&]( const spell_data_t& spell ) {
+        return ( spell.school_mask() & school_mask ) == school_mask;
+      } );
   }
 
   std::vector<uint32_t> operator!=( const spell_data_expr_t& other ) override
   {
-    std::vector<uint32_t> res;
-    uint32_t              school_mask;
-
-    if ( other.result_tok == expression::TOK_STR )
-      school_mask = school_str_to_mask( other.result_str );
     // Other types will not be allowed, e.g. you cannot do school=list
-    else
-      return res;
+    if ( other.result_tok != expression::TOK_STR )
+      return {};
 
-    for ( const auto& result_spell : result_spell_list )
-    {
-      const spell_data_t* spell = dbc.spell( result_spell );
-
-      if ( ! spell )
-        continue;
-
-      if ( ( spell -> school_mask() & school_mask ) == 0 )
-        res.push_back( result_spell );
-    }
-
-    return res;
+    const unsigned school_mask = school_str_to_mask( other.result_str );
+    return filter_spells( [&]( const spell_data_t& spell ) {
+        return ( spell.school_mask() & school_mask ) == 0;
+      } );
   }
 };
 
