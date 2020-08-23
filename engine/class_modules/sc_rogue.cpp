@@ -7619,7 +7619,6 @@ void rogue_t::init_base_stats()
   if ( options.rogue_ready_trigger )
   {
     ready_type = READY_TRIGGER;
-    // sim -> errorf( "[Rogue] ready_trigger=1 has been enabled. You can disable by adding rogue_ready_trigger=0 to your actor" );
   }
 }
 
@@ -8409,17 +8408,19 @@ static bool parse_fixed_rtb_odds( sim_t* sim, util::string_view /* name */, util
 
 void rogue_t::create_options()
 {
+  player_t::create_options();
+
+  // Overload default options but with a default true value
+  add_option( opt_bool( "ready_trigger", options.rogue_ready_trigger ) );
+  add_option( opt_bool( "optimize_expressions", options.rogue_optimize_expressions ) );
+
   add_option( opt_func( "off_hand_secondary", parse_offhand_secondary ) );
   add_option( opt_func( "main_hand_secondary", parse_mainhand_secondary ) );
   add_option( opt_int( "initial_combo_points", options.initial_combo_points ) );
   add_option( opt_func( "fixed_rtb", parse_fixed_rtb ) );
   add_option( opt_func( "fixed_rtb_odds", parse_fixed_rtb_odds ) );
-  add_option( opt_bool( "rogue_optimize_expressions", options.rogue_optimize_expressions ) );
-  add_option( opt_bool( "rogue_ready_trigger", options.rogue_ready_trigger ) );
   add_option( opt_bool( "priority_rotation", options.priority_rotation ) );
   add_option( opt_float( "memory_of_lucid_dreams_proc_chance", options.memory_of_lucid_dreams_proc_chance, 0.0, 1.0 ) );
-
-  player_t::create_options();
 }
 
 // rogue_t::copy_from =======================================================
@@ -8787,24 +8788,19 @@ void rogue_t::arise()
 
 void rogue_t::combat_begin()
 {
-  if ( !sim -> optimize_expressions )
+  if ( !sim->optimize_expressions && options.rogue_optimize_expressions )
   {
+    for ( auto p : sim->player_list )
+    {
+      if ( !p->is_pet() && p->specialization() != ROGUE_ASSASSINATION && p->specialization() != ROGUE_OUTLAW && p->specialization() != ROGUE_SUBTLETY )
+      {
+        options.rogue_optimize_expressions = false;
+        break;
+      }
+    }
     if ( options.rogue_optimize_expressions )
     {
-      for ( size_t i = 0; i < sim -> player_list.size(); ++i )
-      {
-        player_t* p = sim -> player_list[i];
-        if ( !p->is_pet() && p->specialization() != ROGUE_ASSASSINATION && p->specialization() != ROGUE_OUTLAW && p->specialization() != ROGUE_SUBTLETY )
-        {
-          options.rogue_optimize_expressions = false;
-          break;
-        }
-      }
-      if ( options.rogue_optimize_expressions )
-      {
-        sim->optimize_expressions = true;
-        // sim -> errorf( "[Rogue] optimize_expressions=1 has been enabled. You can disable by adding rogue_optimize_expressions=0 to every rogue actor" );
-      }
+      sim->optimize_expressions = true;
     }
   }
 
