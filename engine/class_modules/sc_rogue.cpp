@@ -415,6 +415,7 @@ public:
 
     // Assassination
     const spell_data_t* deadly_poison;
+    const spell_data_t* envenom;
     const spell_data_t* improved_poisons;
     const spell_data_t* improved_poisons_2;
     const spell_data_t* seal_fate;
@@ -1025,6 +1026,7 @@ public:
     bool blindside = false;
     bool finality_eviscerate = false;
     bool finality_shadow_vault = false;
+    bool dashing_scoundrel = false;
 
     damage_affect_data mastery_executioner;
     damage_affect_data mastery_potent_assassin;
@@ -1089,6 +1091,10 @@ public:
     {
       affected_by.finality_eviscerate = ab::data().affected_by( p->find_spell( 340600 )->effectN( 1 ) );
       affected_by.finality_shadow_vault = ab::data().affected_by( p->find_spell( 340603 )->effectN( 1 ) );
+    }
+    if ( p->legendary.dashing_scoundrel.ok() )
+    {
+      affected_by.dashing_scoundrel = ab::data().affected_by( p->spec.envenom->effectN( 3 ) );
     }
 
     // Auto-parsing for damage affecting dynamic flags, this reads IF direct/periodic dmg is affected and stores by how much.
@@ -1528,6 +1534,11 @@ public:
       c += p()->buffs.symbols_of_death_autocrit->stack_value();
     }
 
+    if ( affected_by.dashing_scoundrel && p()->buffs.envenom->check() )
+    {
+      c += p()->legendary.dashing_scoundrel->effectN( 1 ).percent();
+    }
+
     return c;
   }
 
@@ -1771,18 +1782,6 @@ struct rogue_poison_t : public rogue_attack_t
     return timespan_t::zero();
   }
 
-  virtual double composite_crit_chance() const override
-  {
-    double c = rogue_attack_t::composite_crit_chance();
-
-    if ( p()->legendary.dashing_scoundrel->ok() && p()->buffs.envenom->check() )
-    {
-      c += p()->legendary.dashing_scoundrel->effectN( 1 ).percent();
-    }
-
-    return c;
-  }
-
   virtual double proc_chance( const action_state_t* source_state ) const
   {
     if ( base_proc_chance == 0.0 )
@@ -1825,7 +1824,7 @@ struct rogue_poison_t : public rogue_attack_t
   {
     rogue_attack_t::impact( state );
 
-    if ( state->result == RESULT_CRIT && p()->legendary.dashing_scoundrel->ok() )
+    if ( state->result == RESULT_CRIT && p()->legendary.dashing_scoundrel->ok() && p()->buffs.envenom->check() )
     {
       p()->resource_gain( RESOURCE_ENERGY, p()->legendary.dashing_scoundrel_gain, p()->gains.dashing_scoundrel );
     }
@@ -1835,7 +1834,8 @@ struct rogue_poison_t : public rogue_attack_t
   {
     rogue_attack_t::tick( d );
 
-    if ( d->state->result == RESULT_CRIT && p()->legendary.dashing_scoundrel->ok() )
+    // TOCHECK: Currently doesn't proc from critical ticks on beta, possibly a bug
+    if ( d->state->result == RESULT_CRIT && p()->legendary.dashing_scoundrel->ok() && p()->buffs.envenom->check() )
     {
       p()->resource_gain( RESOURCE_ENERGY, p()->legendary.dashing_scoundrel_gain, p()->gains.dashing_scoundrel );
     }
@@ -2746,7 +2746,7 @@ struct dreadblades_t : public rogue_attack_t
 struct envenom_t : public rogue_attack_t
 {
   envenom_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ) :
-    rogue_attack_t( name, p, p -> find_specialization_spell( "Envenom" ), options_str )
+    rogue_attack_t( name, p, p->spec.envenom, options_str )
   {
     dot_duration = timespan_t::zero();
   }
@@ -2762,15 +2762,24 @@ struct envenom_t : public rogue_attack_t
   void execute() override
   {
     rogue_attack_t::execute();
-
-    timespan_t envenom_duration = p() -> buffs.envenom -> data().duration() * ( 1 + cast_state( execute_state ) -> cp );
-
-    if ( p() -> azerite.twist_the_knife.ok() && execute_state -> result == RESULT_CRIT )
-      envenom_duration += p() -> azerite.twist_the_knife.spell_ref().effectN( 2 ).time_value();
-
-    p() -> buffs.envenom -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, envenom_duration );
-
     trigger_poison_bomb( execute_state );
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    // Trigger Envenom buff before impact() so that poison procs from Envenom itself benefit
+    timespan_t envenom_duration = p()->buffs.envenom->data().duration() * ( 1 + cast_state( state )->cp );
+    if ( p()->azerite.twist_the_knife.ok() && state->result == RESULT_CRIT )
+      envenom_duration += p()->azerite.twist_the_knife.spell_ref().effectN( 2 ).time_value();
+    p()->buffs.envenom->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, envenom_duration );
+
+    rogue_attack_t::impact( state );
+
+    // TOCHECK: Envenom itself currently triggers this on beta, need to confirm closer to launch
+    if ( state->result == RESULT_CRIT && p()->legendary.dashing_scoundrel->ok() )
+    {
+      p()->resource_gain( RESOURCE_ENERGY, p()->legendary.dashing_scoundrel_gain, p()->gains.dashing_scoundrel );
+    }
   }
 };
 
@@ -7647,6 +7656,7 @@ void rogue_t::init_spells()
 
   // Assassination
   spec.deadly_poison        = find_specialization_spell( "Deadly Poison" );
+  spec.envenom              = find_specialization_spell( "Envenom" );
   spec.improved_poisons     = find_specialization_spell( "Improved Poisons" );
   spec.improved_poisons_2   = find_rank_spell( "Improved Poisons", "Rank 2" );
   spec.seal_fate            = find_specialization_spell( "Seal Fate" );
@@ -8088,8 +8098,8 @@ void rogue_t::create_buffs()
   }
 
   // Assassination
-  buffs.envenom               = make_buff( this, "envenom", find_specialization_spell( "Envenom" ) )
-                                ->set_default_value( find_specialization_spell( "Envenom" )->effectN( 2 ).percent() )
+  buffs.envenom               = make_buff( this, "envenom", spec.envenom )
+                                ->set_default_value( spec.envenom->effectN( 2 ).percent() )
                                 ->set_duration( timespan_t::min() )
                                 ->set_period( timespan_t::zero() )
                                 ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC );

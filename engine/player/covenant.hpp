@@ -62,7 +62,7 @@ public:
 
 namespace util
 {
-const char* covenant_type_string( covenant_e id );
+const char* covenant_type_string( covenant_e id, bool full = false );
 covenant_e parse_covenant_string( util::string_view covenant_str );
 }
 
