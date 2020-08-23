@@ -1547,7 +1547,7 @@ void player_t::init_base_stats()
     if ( base.distance < 1 )
       base.distance = 5;
 
-    // Armor Coefficient, based on level (6300 @ 120)
+    // Armor Coefficient, based on level (860 @ 50; 2500 @ 60-63)
     base.armor_coeff = dbc->armor_mitigation_constant( level() );
     sim->print_debug( "{} base armor coefficient set to {}.", *this, base.armor_coeff );
 
@@ -6805,7 +6805,7 @@ void player_t::target_mitigation( school_e school, result_amount_type dmg_type, 
     if ( s -> action )
     {
       double armor  = s -> target_armor;
-      double resist = armor / ( armor + s -> action -> player -> current.armor_coeff );
+      double resist = armor / ( armor + s -> target-> base.armor_coeff );
       resist        = clamp( resist, 0.0, armor_cap );
       s -> result_amount *= 1.0 - resist;
     }
