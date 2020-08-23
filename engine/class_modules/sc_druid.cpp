@@ -7320,7 +7320,10 @@ struct adaptive_swarm_t : public druid_spell_t
       // last_tick() is called via dot_t::cancel() when a new swarm CLIPs an existing swarm. As dot_t::last_tick() is
       // called before dot_t::reset(), check the remaining time on the dot to see if we're dealing with a true last_tick
       // (and thus need to check for a new jump) or just a refresh.
-      if ( d->remains() > 0_ms )
+
+      // NOTE: if demise() is called on the target d->remains() has time left, so assume that a target that is sleeping
+      // with time remaining has been demised()'d and jump to a new target
+      if ( d->remains() > 0_ms && !d->target->is_sleeping() )
         return;
 
       auto tar = swarm->new_swarm_target( d, other, other->is_heal );
