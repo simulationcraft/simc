@@ -7376,6 +7376,8 @@ struct adaptive_swarm_t : public druid_spell_t
     damage->stats = stats;
     heal->other   = damage;
     add_child( damage );
+
+    base_costs[ RESOURCE_MANA ] = 0.0;  // remove mana cost so we don't need to enable mana regen
   }
 
   void execute() override
