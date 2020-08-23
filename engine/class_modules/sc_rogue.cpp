@@ -2746,7 +2746,7 @@ struct dreadblades_t : public rogue_attack_t
 struct envenom_t : public rogue_attack_t
 {
   envenom_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ) :
-    rogue_attack_t( name, p, p -> find_specialization_spell( "Envenom" ), options_str )
+    rogue_attack_t( name, p, p->spec.envenom, options_str )
   {
     dot_duration = timespan_t::zero();
   }
@@ -2762,19 +2762,17 @@ struct envenom_t : public rogue_attack_t
   void execute() override
   {
     rogue_attack_t::execute();
-
-    timespan_t envenom_duration = p()->buffs.envenom->data().duration() * ( 1 + cast_state( execute_state )->cp );
-
-    if ( p()->azerite.twist_the_knife.ok() && execute_state->result == RESULT_CRIT )
-      envenom_duration += p()->azerite.twist_the_knife.spell_ref().effectN( 2 ).time_value();
-
-    p()->buffs.envenom->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, envenom_duration );
-
     trigger_poison_bomb( execute_state );
   }
 
   void impact( action_state_t* state ) override
   {
+    // Trigger Envenom buff before impact() so that poison procs from Envenom itself benefit
+    timespan_t envenom_duration = p()->buffs.envenom->data().duration() * ( 1 + cast_state( state )->cp );
+    if ( p()->azerite.twist_the_knife.ok() && state->result == RESULT_CRIT )
+      envenom_duration += p()->azerite.twist_the_knife.spell_ref().effectN( 2 ).time_value();
+    p()->buffs.envenom->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, envenom_duration );
+
     rogue_attack_t::impact( state );
 
     // TOCHECK: Envenom itself currently triggers this on beta, need to confirm closer to launch
