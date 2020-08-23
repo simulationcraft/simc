@@ -20,6 +20,8 @@ GENERAL:
 - Implement Vivify
 - Covenants
 - Soul Binds
+- Change Eye of the Tiger from a dot to an interaction with a buff
+- Update Whirling Dragon Punch buff and ready check
 
 WINDWALKER:
 - Implement Touch of Death Rank 2/3
@@ -1850,22 +1852,6 @@ private:
     {
       dual = direct_tick = background = may_crit = may_miss = true;
     }
-
-    // Need to disable multipliers in init() so that it doesn't double-dip on anything
-    void init() override
-    {
-      spell_t::init();
-      snapshot_flags &= STATE_NO_MULTIPLIER;
-      update_flags &= STATE_NO_MULTIPLIER;
-      snapshot_flags |= STATE_VERSATILITY;
-      update_flags |= STATE_VERSATILITY;
-    }
-
-    double composite_attack_power() const override
-    {
-      return player->cast_pet()->owner->cache.agility() + 
-          floor( player->cast_pet()->owner->main_hand_weapon.dps * 5.98 );
-    }
   };
 
   struct crackling_tiger_lightning_t : public spell_t
@@ -1904,12 +1890,6 @@ private:
       trigger_gcd = timespan_t::zero();
     }
 
-    double composite_attack_power() const override
-    {
-      return player->cast_pet()->owner->cache.agility() +
-                    floor( player->cast_pet()->owner->main_hand_weapon.dps * 5.98 );
-    }
-
     bool ready() override
     {
       if ( player->is_moving() )
@@ -1935,7 +1915,7 @@ public:
     main_hand_weapon.max_dmg    = dbc->spell_scaling( o()->type, level() );
     main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1.0 );
-    owner_coeff.ap_from_ap      = 1.00;
+    owner_coeff.ap_from_wpds    = 6.00;
   }
 
   monk_t* o()
@@ -2006,10 +1986,7 @@ private:
     crackling_tiger_lightning_tick_t( fury_of_xuen_pet_t* p )
       : spell_t( "crackling_tiger_lightning_tick", p, p->o()->passives.crackling_tiger_lightning )
     {
-      aoe  = 3;
       dual = direct_tick = background = may_crit = may_miss = true;
-      // range                                                 = radius;
-      // radius                                                = 0;
     }
   };
 
@@ -2075,7 +2052,7 @@ public:
     main_hand_weapon.max_dmg    = dbc->spell_scaling( o()->type, level() );
     main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1.0 );
-    owner_coeff.ap_from_ap      = 1.00;
+    owner_coeff.ap_from_wpds    = 6.00;
   }
 
   monk_t* o()
@@ -3267,7 +3244,7 @@ struct tiger_palm_t : public monk_melee_attack_t
   {
     double am = monk_melee_attack_t::action_multiplier();
 
-    am *= 1 + p()->spec.mistweaver_monk->effectN( 13 ).percent();
+//    am *= 1 + p()->spec.mistweaver_monk->effectN( 13 ).percent();
 
     if ( p()->buff.blackout_combo->check() )
       am *= 1 + p()->buff.blackout_combo->data().effectN( 1 ).percent();
