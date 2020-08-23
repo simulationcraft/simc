@@ -458,6 +458,7 @@ public:
   {
     const spell_data_t* ancient_aftershock;
     const spell_data_t* condemn;
+    const spell_data_t* condemn_driver;
     const spell_data_t* conquerors_banner;
     const spell_data_t* spear_of_bastion;
   } covenant;
@@ -4569,7 +4570,7 @@ struct condemn_arms_t : public warrior_attack_t
 
   bool ready() override
   {
-    if ( p()->main_hand_weapon.type == WEAPON_NONE )
+    if ( !p()->covenant.condemn_driver->ok() )
     {
       return false;
     }
@@ -4645,8 +4646,8 @@ struct fury_condemn_parent_t : public warrior_attack_t
       ( p->spec.execute_rank_3->effectN( 1 ).base_value() ) / 10.0 )
   {
     parse_options( options_str );
-    mh_attack = new condemn_main_hand_t( p, "condemn_mainhand", p->spec.execute->effectN( 1 ).trigger() );
-    oh_attack = new condemn_off_hand_t( p, "condemn_offhand", p->spec.execute->effectN( 2 ).trigger() );
+    mh_attack = new condemn_main_hand_t( p, "condemn_mainhand", p->covenant.condemn->effectN( 1 ).trigger() );
+    oh_attack = new condemn_off_hand_t( p, "condemn_offhand", p->covenant.condemn->effectN( 2 ).trigger() );
     add_child( mh_attack );
     add_child( oh_attack );
 
@@ -4743,7 +4744,7 @@ struct spear_of_bastion_t : public warrior_attack_t
     parse_options( options_str );
     may_dodge = may_parry = may_block = false;
     execute_action = p->active.spear_of_bastion_attack;
-    execute_action->stats = stats;
+    //execute_action->stats = stats;
     energize_amount   = p->find_spell( 307871 )->effectN( 3 ).base_value() / 10.0;
     energize_type     = action_energize::ON_CAST;
     energize_resource = RESOURCE_RAGE;
@@ -4872,7 +4873,6 @@ struct deadly_calm_t : public warrior_spell_t
   {
     warrior_spell_t::execute();
 
-    //p()->buff.deadly_calm->trigger( 4 ); // Deadly Calm has 4 charges in SLands
     p()->buff.deadly_calm->trigger( p()->talents.deadly_calm->initial_stacks() );
   }
 };
@@ -5637,7 +5637,15 @@ void warrior_t::init_spells()
 
   // Convenant Abilities
   covenant.ancient_aftershock    = find_covenant_spell( "Ancient Aftershock" );
-  covenant.condemn               = find_covenant_spell( "Condemn" );
+  covenant.condemn_driver        = find_covenant_spell( "Condemn" );
+  if ( specialization() == WARRIOR_FURY )
+  {
+  covenant.condemn               = find_spell( " 317485 " );
+  }
+  else
+  {
+  covenant.condemn               = find_spell( " 317349 " );
+  }
   covenant.conquerors_banner     = find_covenant_spell( "Conquerors Banner" );
   covenant.spear_of_bastion      = find_covenant_spell( "Spear of Bastion" );
 
