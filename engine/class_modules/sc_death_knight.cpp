@@ -573,6 +573,7 @@ public:
     const spell_data_t* death_and_decay;
     const spell_data_t* icebound_fortitude;
     const spell_data_t* death_strike_2;
+    const spell_data_t* raise_dead;
 
     // Blood
     const spell_data_t* blood_boil;
@@ -605,6 +606,7 @@ public:
     const spell_data_t* festering_strike;
     const spell_data_t* festering_wound;
     const spell_data_t* outbreak;
+    const spell_data_t* raise_dead_2;
     const spell_data_t* runic_corruption;
     const spell_data_t* scourge_strike;
     const spell_data_t* sudden_doom;
@@ -1830,7 +1832,9 @@ struct ghoul_pet_t : public base_ghoul_pet_t
     def -> add_action( "sweeping_claws" );
     def -> add_action( "claw,if=energy>70" );
     def -> add_action( "monstrous_blow" );
-    // def -> add_action( "Gnaw" ); Unused because it's a dps loss compared to waiting for DT and casting Monstrous Blow
+    // Using Gnaw without DT is a dps loss compared to waiting for DT and casting Monstrous Blow
+    if ( o() -> spec.dark_transformation == spell_data_t::not_found() )
+      def -> add_action( "Gnaw" );
   }
 
   action_t* create_action( util::string_view name, const std::string& options_str ) override
@@ -5649,7 +5653,9 @@ struct pillar_of_frost_t : public death_knight_spell_t
 struct raise_dead_t : public death_knight_spell_t
 {
   raise_dead_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_spell_t( "raise_dead", p, p -> find_specialization_spell( "Raise Dead", "Rank 2" ) )
+    death_knight_spell_t( "raise_dead", p,
+                          p -> spec.raise_dead_2 == spell_data_t::not_found() ?
+                          p -> spec.raise_dead : p -> spec.raise_dead_2 )
   {
     parse_options( options_str );
 
@@ -5662,7 +5668,8 @@ struct raise_dead_t : public death_knight_spell_t
   {
     death_knight_spell_t::execute();
 
-    p() -> pets.ghoul_pet -> summon( 0_ms );
+    // Summon for the duration specified in spelldata if there's one (no data = permanent pet)
+    p() -> pets.ghoul_pet -> summon( data().duration() );
     if ( p() -> talent.all_will_serve -> ok() )
     {
       p() -> pets.risen_skulker -> summon( 0_ms );
@@ -7192,18 +7199,19 @@ std::unique_ptr<expr_t> death_knight_t::create_expression( util::string_view nam
 
 void death_knight_t::create_pets()
 {
+  if ( spec.raise_dead )
+  {
+    pets.ghoul_pet = new pets::ghoul_pet_t( this );
+  }
+
   if ( specialization() == DEATH_KNIGHT_UNHOLY )
   {
     // Initialized even if the talent isn't picked for APL purpose
     pets.gargoyle = new pets::gargoyle_pet_t( this );
 
-    if ( find_action( "raise_dead" ) || find_action( "dark_transformation" ) )
+    if ( talent.all_will_serve -> ok() )
     {
-      pets.ghoul_pet = new pets::ghoul_pet_t( this );
-      if ( talent.all_will_serve -> ok() )
-      {
-        pets.risen_skulker = new pets::risen_skulker_pet_t( this );
-      }
+      pets.risen_skulker = new pets::risen_skulker_pet_t( this );
     }
 
     if ( find_action( "army_of_the_dead" ) )
@@ -7340,6 +7348,7 @@ void death_knight_t::init_spells()
   spec.icebound_fortitude   = find_specialization_spell( "Icebound Fortitude" );
   spec.death_and_decay      = find_specialization_spell( "Death and Decay" );
   spec.death_strike_2       = find_specialization_spell( 278223 );
+  spec.raise_dead           = find_class_spell( "Raise Dead" );
 
   // Blood
   spec.blood_death_knight       = find_specialization_spell( "Blood Death Knight" );
@@ -7377,6 +7386,7 @@ void death_knight_t::init_spells()
   spec.outbreak            = find_specialization_spell( "Outbreak" );
   spec.scourge_strike      = find_specialization_spell( "Scourge Strike" );
   spec.apocalypse          = find_specialization_spell( "Apocalypse" );
+  spec.raise_dead_2        = find_specialization_spell( "Raise Dead", "Rank 2" );
 
   mastery.blood_shield = find_mastery_spell( DEATH_KNIGHT_BLOOD );
   mastery.frozen_heart = find_mastery_spell( DEATH_KNIGHT_FROST );
@@ -7459,6 +7469,9 @@ void death_knight_t::init_spells()
   spell.dnd_buff        = find_spell( 188290 );
   spell.fallen_crusader = find_spell( 166441 );
   spell.razorice_debuff = find_spell( 51714 );
+  // Raise Dead abilities, used for both rank 1 and rank 2
+  spell.pet_ghoul_claw         = find_spell( 91776 );
+  spell.pet_gnaw               = find_spell( 91800 );
 
   // Blood
   spell.blood_shield        = find_spell( 77535 );
@@ -7481,10 +7494,10 @@ void death_knight_t::init_spells()
   spell.virulent_eruption      = find_spell( 191685 );
   spell.virulent_plague        = find_spell( 191587 );
 
-  spell.pet_ghoul_claw         = find_spell( 91776 );
+  // DT ghoul abilities
   spell.pet_sweeping_claws     = find_spell( 91778 );
-  spell.pet_gnaw               = find_spell( 91800 );
   spell.pet_monstrous_blow     = find_spell( 91797 );
+  // Other pets
   spell.pet_army_claw          = find_spell( 199373 );
   spell.pet_gargoyle_strike    = find_spell( 51963 );
   spell.pet_dark_empowerment   = find_spell( 211947 );
