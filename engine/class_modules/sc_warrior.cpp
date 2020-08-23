@@ -2412,7 +2412,7 @@ struct execute_arms_t : public warrior_attack_t
 
   bool ready() override
   {
-    if ( p()->main_hand_weapon.type == WEAPON_NONE )
+    if ( p()->covenant.condemn_driver->ok() )
     {
       return false;
     }
@@ -2494,7 +2494,7 @@ struct fury_execute_parent_t : public warrior_attack_t
 
     if ( p->talents.massacre->ok() )
     {
-      execute_pct = p->talents.massacre->effectN( 2 )._base_value;
+      execute_pct = p->talents.massacre->effectN( 2 ).base_value();
     }
   }
 
@@ -2551,7 +2551,7 @@ struct fury_execute_parent_t : public warrior_attack_t
 
   bool ready() override
   {
-    if ( p()->main_hand_weapon.type == WEAPON_NONE )
+    if ( p()->covenant.condemn_driver->ok() )
     {
       return false;
     }
@@ -4485,9 +4485,10 @@ struct condemn_arms_t : public warrior_attack_t
 {
   condemn_damage_t* trigger_attack;
   double max_rage;
-  double execute_pct;
+  double execute_pct_above;
+  double execute_pct_below;
   condemn_arms_t( warrior_t* p, const std::string& options_str )
-    : warrior_attack_t( "condemn", p, p->covenant.condemn ), max_rage( 40 ), execute_pct( 20 )
+    : warrior_attack_t( "condemn", p, p->covenant.condemn ), max_rage( 40 ), execute_pct_above( 80 ), execute_pct_below( 20 )
   {
     parse_options( options_str );
     weapon        = &( p->main_hand_weapon );
@@ -4496,7 +4497,7 @@ struct condemn_arms_t : public warrior_attack_t
 
     if ( p->talents.massacre->ok() )
     {
-      execute_pct = p->talents.massacre->effectN( 2 )._base_value;
+      execute_pct_below = p->talents.massacre->effectN( 2 ).base_value();
     }
   }
 
@@ -4560,7 +4561,7 @@ struct condemn_arms_t : public warrior_attack_t
     // Ayala's Stone Heart and Sudden Death allow execution on any target
     bool always = p()->buff.ayalas_stone_heart->check() || p()->buff.sudden_death->check();
 
-    if ( ! always && candidate_target->health_percentage() > execute_pct )
+if ( ! always && candidate_target->health_percentage() > execute_pct_below && candidate_target->health_percentage() < execute_pct_above )
     {
       return false;
     }
@@ -4635,12 +4636,13 @@ struct fury_condemn_parent_t : public warrior_attack_t
   condemn_main_hand_t* mh_attack;
   condemn_off_hand_t* oh_attack;
   bool execute_rank_3;
-  double execute_pct;
+  double execute_pct_above;
+  double execute_pct_below;
   double cost_rage;
   double max_rage;
   double rage_from_execute_rank_3;
   fury_condemn_parent_t( warrior_t* p, const std::string& options_str )
-    : warrior_attack_t( "condemn", p, p->covenant.condemn ), execute_pct( 20 ),
+    : warrior_attack_t( "condemn", p, p->covenant.condemn ), execute_pct_above( 80 ), execute_pct_below( 20 ),
       execute_rank_3( false ),
       rage_from_execute_rank_3(
       ( p->spec.execute_rank_3->effectN( 1 ).base_value() ) / 10.0 )
@@ -4653,7 +4655,7 @@ struct fury_condemn_parent_t : public warrior_attack_t
 
     if ( p->talents.massacre->ok() )
     {
-      execute_pct = p->talents.massacre->effectN( 2 )._base_value;
+      execute_pct_below = p->talents.massacre->effectN( 2 )._base_value;
     }
   }
 
@@ -4700,7 +4702,7 @@ struct fury_condemn_parent_t : public warrior_attack_t
     // Ayala's Stone Heart and Sudden Death allow execution on any target
     bool always = p()->buff.ayalas_stone_heart->check() || p()->buff.sudden_death->check();
 
-    if ( ! always && candidate_target->health_percentage() > execute_pct )
+if ( ! always && candidate_target->health_percentage() > execute_pct_below && candidate_target->health_percentage() < execute_pct_above )
     {
       return false;
     }
@@ -4710,7 +4712,7 @@ struct fury_condemn_parent_t : public warrior_attack_t
 
   bool ready() override
   {
-    if ( p()->main_hand_weapon.type == WEAPON_NONE )
+    if ( !p()->covenant.condemn_driver->ok() )
     {
       return false;
     }
@@ -5640,11 +5642,11 @@ void warrior_t::init_spells()
   covenant.condemn_driver        = find_covenant_spell( "Condemn" );
   if ( specialization() == WARRIOR_FURY )
   {
-  covenant.condemn               = find_spell( " 317485 " );
+  covenant.condemn               = find_spell( 317485 );
   }
   else
   {
-  covenant.condemn               = find_spell( " 317349 " );
+  covenant.condemn               = find_spell( 317349 );
   }
   covenant.conquerors_banner     = find_covenant_spell( "Conquerors Banner" );
   covenant.spear_of_bastion      = find_covenant_spell( "Spear of Bastion" );
