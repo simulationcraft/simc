@@ -358,12 +358,6 @@ double pet_t::composite_melee_attack_power() const
           owner_coeff.ap_from_ap;
   }
 
-  if ( owner_coeff.ap_from_wpds > 0.0 )
-  {
-    ap += owner->cache.agility();
-    ap += floor( owner->main_hand_weapon.dps * owner_coeff.ap_from_wpds );
-  }
-
   if ( owner_coeff.ap_from_sp > 0.0 )
     ap += owner -> cache.spell_power( SCHOOL_MAX ) * owner -> composite_spell_power_multiplier() * owner_coeff.ap_from_sp;
 
