@@ -16,21 +16,29 @@ NOTES:
 TODO:
 
 GENERAL:
+- Implement Winwalker/Mistweaver Fortifying Brew
+- Implement Vivify
+- Covenants
+- Soul Binds
 
 WINDWALKER:
+- Implement Touch of Death Rank 2/3
 - Add Cyclone Strike Counter as an expression
+- Legendaries
 
 MISTWEAVER:
 - Gusts of Mists - Check calculations
 - Vivify - Check the interation between Thunder Focus Tea and Lifecycles
 - Essence Font - See if the implementation can be corrected to the intended design.
 - Life Cocoon - Double check if the Enveloping Mists and Renewing Mists from Mists of Life proc the mastery or not.
+- Lgendaries
 - Not Modeled:
 -- Crane's Grace
 -- Invoke Chi-Ji
 -- Summon Jade Serpent Statue
 
 BREWMASTER:
+- Legendaries
 - Not Modeled:
 -- Damage part of Expel Harm
 -- Summon Black Ox Statue
@@ -1840,10 +1848,23 @@ private:
     crackling_tiger_lightning_tick_t( xuen_pet_t* p )
       : spell_t( "crackling_tiger_lightning_tick", p, p->o()->passives.crackling_tiger_lightning )
     {
-      aoe  = 3;
       dual = direct_tick = background = may_crit = may_miss = true;
-      // range                                                 = radius;
-      // radius                                                = 0;
+    }
+
+    // Need to disable multipliers in init() so that it doesn't double-dip on anything
+    void init() override
+    {
+      spell_t::init();
+      snapshot_flags &= STATE_NO_MULTIPLIER;
+      update_flags &= STATE_NO_MULTIPLIER;
+      snapshot_flags |= STATE_VERSATILITY;
+      update_flags |= STATE_VERSATILITY;
+    }
+
+    double composite_attack_power() const override
+    {
+      return player->cast_pet()->owner->cache.agility() + 
+          floor( player->cast_pet()->owner->main_hand_weapon.dps * 5.98 );
     }
   };
 
@@ -1859,7 +1880,7 @@ private:
       dot_duration        = p->o()->spec.invoke_xuen->duration();
       hasted_ticks        = false;
       may_miss            = false;
-      dynamic_tick_action = true;  // trigger tick when t == 0
+      dynamic_tick_action = true;  
       base_tick_time =
           p->o()->passives.crackling_tiger_lightning_driver->effectN( 1 ).period();  // trigger a tick every second
       cooldown->duration      = p->o()->spec.invoke_xuen->cooldown();              // we're done after 25 seconds
@@ -1881,6 +1902,12 @@ private:
       player->main_hand_attack->base_execute_time = player->main_hand_weapon.swing_time;
 
       trigger_gcd = timespan_t::zero();
+    }
+
+    double composite_attack_power() const override
+    {
+      return player->cast_pet()->owner->cache.agility() +
+                    floor( player->cast_pet()->owner->main_hand_weapon.dps * 5.98 );
     }
 
     bool ready() override
@@ -3255,10 +3282,10 @@ struct tiger_palm_t : public monk_melee_attack_t
     if ( p()->azerite.pressure_point.ok() )
     {
       double pp = p()->azerite.pressure_point.value();
-      switch ( p()->specialization() )
+/*      switch ( p()->specialization() )
       {
         case MONK_BREWMASTER:
-          b += pp * ( 1 + p()->spec.brewmaster_monk->effectN( 21 ).percent() );
+          b += pp * ( 1 + p()->spec.brewmaster_monk->effectN( 20 ).percent() );
           break;  // saved as -60
         case MONK_MISTWEAVER:
           b += pp * ( 1 + p()->spec.mistweaver_monk->effectN( 16 ).percent() );
@@ -3267,6 +3294,7 @@ struct tiger_palm_t : public monk_melee_attack_t
           b += pp;
           break;
       }
+      */
     }
 
     return b;
@@ -3685,14 +3713,6 @@ struct blackout_kick_t : public monk_melee_attack_t
     return c;
   }
 
-  bool ready() override
-  {
-    if ( p()->specialization() == MONK_BREWMASTER )
-      return false;
-
-    return monk_melee_attack_t::ready();
-  }
-
   double action_multiplier() const override
   {
     double am = monk_melee_attack_t::action_multiplier();
@@ -3742,8 +3762,9 @@ struct blackout_kick_t : public monk_melee_attack_t
       }
       case MONK_WINDWALKER:
       {
-        p()->cooldown.rising_sun_kick->adjust( -1 * p()->spec.blackout_kick->effectN( 3 ).time_value() );
-        p()->cooldown.fists_of_fury->adjust( -1 * p()->spec.blackout_kick->effectN( 3 ).time_value() );
+        timespan_t cd_reduction = -1 * p()->spec.blackout_kick->effectN( 3 ).time_value();
+        p()->cooldown.rising_sun_kick->adjust( cd_reduction );
+        p()->cooldown.fists_of_fury->adjust( cd_reduction );
         break;
       }
       default:
@@ -3927,7 +3948,7 @@ struct sck_tick_action_t : public monk_melee_attack_t
     ww_mastery                    = true;
 
     dual = background = true;
-    aoe               = -1;
+    aoe               = (int)p->spec.spinning_crane_kick->effectN( 1 ).base_value();
     radius            = data->effectN( 1 ).radius();
 
     // Reset some variables to ensure proper execution
@@ -4070,7 +4091,7 @@ struct fists_of_fury_tick_t : public monk_melee_attack_t
     : monk_melee_attack_t( name, p, p->passives.fists_of_fury_tick )
   {
     background                    = true;
-    aoe                           = -1;
+    aoe                           = (int)p->spec.fists_of_fury->effectN( 1 ).base_value();
     ww_mastery                    = true;
     affected_by.sunrise_technique = true;
 
@@ -4535,14 +4556,15 @@ struct touch_of_death_t : public monk_melee_attack_t
   virtual void impact( action_state_t* s ) override
   {
     // Damage is associated with the players non-buffed max HP
+    // Meaning using Fortifying Brew does not affect ToD's damage
     double amount = p()->resources.initial[ RESOURCE_HEALTH ];
-
-    if ( target->true_level > p()->true_level )
-        amount *= p()->spec.touch_of_death->effectN( 3 ).percent();  // 35% HP
 
     // Bonus damage happens before any multipliers
     if ( p()->azerite.meridian_strikes.ok() )
       amount += p()->azerite.meridian_strikes.value();
+
+    if ( target->true_level > p()->true_level )
+      amount *= p()->spec.touch_of_death->effectN( 3 ).percent();  // 35% HP
 
     amount *= 1 + p()->cache.damage_versatility();
 
@@ -5002,15 +5024,6 @@ struct crackling_jade_lightning_t : public monk_spell_t
     double pm = monk_spell_t::composite_persistent_multiplier( action_state );
 
     return pm;
-  }
-
-  double action_multiplier() const override
-  {
-    double am = monk_spell_t::action_multiplier();
-
-    am *= 1 + p()->spec.mistweaver_monk->effectN( 15 ).percent();
-
-    return am;
   }
 
   void last_tick( dot_t* dot ) override

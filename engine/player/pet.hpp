@@ -34,6 +34,7 @@ struct pet_t : public player_t
     double ap_from_sp = 0.0;
     double sp_from_ap = 0.0;
     double sp_from_sp = 0.0;
+    double ap_from_wpds = 0.0;
   } owner_coeff;
 
 public:
