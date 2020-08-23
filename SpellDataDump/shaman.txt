@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35598 shadowlands-BETA (hotfix 2020-08-22/35598, git build shadowlands af26ce5213)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35598 shadowlands-BETA (hotfix 2020-08-23/35598)
 
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -10485,6 +10485,26 @@ Effects          :
 Description      : Summon a totem at the target location for $d. Your next $s2 damage spells or abilities will cause the totem to radiate $324520s1 Arcane damage to up to $324520I enemies near the totem, and your next $s4 healing spells will heal up to $s6 allies near the totem for $324522s1 health.
 
 Casting this ability again while the totem is active will relocate the totem.
+
+Name             : Vesper Totem (desc=Kyrian) (id=324519) [Spell Family (11)] 
+Class            : Shaman
+School           : Arcane
+Spell Type       : Magic
+Spell Level      : 1
+Range            : 40 yards
+Cooldown         : 3 seconds
+Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....xx.. .....x.. ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+Effects          :
+#1 (id=814142)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: Unknown(87)
+Description      : $@spelldesc324386
 
 Name             : Vesper Totem (desc=Kyrian) (id=324520) [Spell Family (11)] 
 Class            : Shaman

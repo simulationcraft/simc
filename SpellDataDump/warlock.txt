@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35598 shadowlands-BETA (hotfix 2020-08-22/35598, git build shadowlands af26ce5213)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35598 shadowlands-BETA (hotfix 2020-08-23/35598)
 
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
@@ -3093,6 +3093,30 @@ Always keep this effect active.
 
 |cFF777777(Right-Click to toggle)|r
 Tooltip          : Increases your threat generation while active.
+
+Name             : Summon Observer (desc=Summon) (id=112869) [Spell Family (5)] 
+Class            : Warlock
+School           : Shadow
+Spell Type       : Magic
+Resource         : 1 Soul Shard (7) (id=5446)
+Spell Level      : 18
+Cast Time        : 6 seconds
+GCD              : 1.5 seconds
+Duration         : Aura (infinite)
+Category         : 1363
+Family Flags     : 99
+Attributes       : ........ ........ ........ ........   x....... ........ .x...... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   .x...... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ......x. ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+Effects          :
+#1 (id=125498)   : Summon Pet (56)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 58964 | Target: Unknown(32)
+Description      : Summons an Observer under your command, able to disrupt the spell casts of your enemies.
 
 Name             : Dark Soul: Instability (id=113858) [Spell Family (5)] 
 Class            : Warlock
@@ -10058,7 +10082,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .x...
 Effects          :
 #1 (id=829470)   : Apply Aura (6) | Add Flat Modifier (107): Spell Cast Time (10)
                    Base Value: -5500 | Scaled Value: -5500 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
-                   Affected Spells: Summon Imp (688), Summon Felhunter (691), Summon Voidwalker (697), Summon Succubus (712), Summon Felguard (30146)
+                   Affected Spells: Summon Imp (688), Summon Felhunter (691), Summon Voidwalker (697), Summon Succubus (712), Summon Felguard (30146), Summon Fel Succubus (240263)
                    Family Flags: 26, 27, 28, 29, 30
 Description      : Your next Imp, Voidwalker, Succubus, Felhunter, or Felguard Summon spell has its casting time reduced by $/1000;S1 sec.
 

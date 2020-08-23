@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35598 shadowlands-BETA (hotfix 2020-08-22/35598, git build shadowlands af26ce5213)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35598 shadowlands-BETA (hotfix 2020-08-23/35598)
 
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -3663,7 +3663,7 @@ Effects          :
                    Base Value: -55 | Scaled Value: -55 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
 #5 (id=330909)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
                    Base Value: 221771 | Scaled Value: 221771 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
-                   Affected Spells: Storm, Earth, and Fire (137639)
+                   Affected Spells: Storm, Earth, and Fire (137639), Storm, Earth, and Fire: Fixate (221771)
                    Family Flags: 124
 Description      : Split into 3 elemental spirits for $d, each spirit dealing ${100+$m1}% of normal damage and healing.
 
@@ -5348,6 +5348,31 @@ Effects          :
 #2 (id=328548)   : Apply Aura (6) | Unknown(408)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Trigger Spell: 101546 | Target: Self (1)
 Description      : $@spelldesc101546
+
+Name             : Storm, Earth, and Fire: Fixate (id=221771) [Spell Family (53)] 
+Class            : Monk
+School           : Nature
+Spell Type       : None
+Spell Level      : 26
+Range            : 50 yards
+Cooldown         : 1 seconds
+Affecting spells : Storm, Earth, and Fire (137639 effect#5)
+Family Flags     : 124
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ x....... ........ ......x.   ........ ........ ..x..... ........ 
+                 : .......x ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ .......x ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Always hits (114)
+Effects          :
+#1 (id=330906)   : Dummy (3)
+                   Base Value: -55 | Scaled Value: -55 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Description      : Direct your Earth and Fire spirits to focus their attacks only on the target.
+Tooltip          : Elemental spirits summoned, mirroring all of the Monk's attacks.
+The Monk and spirits each do ${100+$m1}% of normal damage and healing.
 
 Name             : Stomp (id=227291) [Spell Family (53)] 
 Class            : Monk

@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35598 shadowlands-BETA (hotfix 2020-08-22/35598, git build shadowlands af26ce5213)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35598 shadowlands-BETA (hotfix 2020-08-23/35598)
 
 Name             : Haste (id=65) [Scaling Spell (-1)] 
 Class            : Paladin
@@ -9044,6 +9044,109 @@ Effects          :
                    Base Value: 328622 | Scaled Value: 328622 | PvP Coefficient: 1.00000 | Misc Value: 328620 | Target: Self (1)
 Description      :  
 
+Name             : Blessing of Winter (desc=Night Fae) (id=328281) [Spell Family (10)] 
+Class            : Paladin
+School           : Nature
+Spell Type       : None
+Resource         : 5% Base Mana (0) (id=215313)
+Range            : 40 yards
+GCD              : 1.5 seconds
+Duration         : 30 seconds
+Cooldown         : 45 seconds
+Category         : 1890
+Category Cooldown: 45 seconds
+Internal Cooldown: 0.5 seconds
+Proc Chance      : 100%
+Proc Flags       : ..x.x.x. x...x... x....... ........ 
+                 : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
+Family Flags     : 114
+Attributes       : ........ ...x.... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+Effects          :
+#1 (id=820437)   : Apply Aura (6) | Proc Trigger Spell (42): Blessing of Winter
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Trigger Spell: 328506 | Target: Friend (21)
+#2 (id=823066)   : Dummy (3)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
+#3 (id=834165)   : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1879048192 | Target: Friend (21)
+#4 (id=840441)   : Trigger Spell (64): Blessing of the Seasons
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 329720 | Target: Self (1)
+Description      : Bless an ally for $d. Their attacks deal $<points> Frost damage and reduce enemies' movement speed by $328506s4% and attack speed by $328506s3%, stacking $328506u times.
+
+|cFFFFFFFFBlessing of the Seasons:|r Turns to Spring after use.
+Tooltip          : Attacks deal $<points> Frost damage and reduce enemies' movement speed by $328506s4% and attack speed by $328506s3%, stacking $328506u times.
+Variables        : $points=${$s2/100*$max($AP,$SP)*(1+$@versadmg)}
+
+Name             : Blessing of Spring (desc=Night Fae) (id=328282) [Spell Family (10)] 
+Class            : Paladin
+School           : Nature
+Spell Type       : None
+Resource         : 5% Base Mana (0) (id=215311)
+Range            : 40 yards
+GCD              : 1.5 seconds
+Duration         : 30 seconds
+Cooldown         : 45 seconds
+Category         : 1890
+Category Cooldown: 45 seconds
+Family Flags     : 114
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+Effects          :
+#1 (id=820438)   : Apply Aura (6) | Modify Healing% Done (136)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Friend (21)
+#2 (id=821028)   : Apply Aura (6) | Modify Healing Recevied% (118)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Friend (21)
+#3 (id=823067)   : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 33554432 | Target: Friend (21)
+#4 (id=834166)   : Unknown(164)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 329720 | Target: Self (1)
+Description      : Bless an ally for $d, increasing their healing done by $s1% and healing received by $s2%.
+
+|cFFFFFFFFBlessing of the Seasons:|r Turns to Summer after use.
+Tooltip          : Healing done increased by $w1% and healing received increased by $w2%.
+
+Name             : Blessing of Winter (desc=Night Fae) (id=328506) [Spell Family (10)] 
+Class            : Paladin
+School           : Frost
+Spell Type       : Magic
+Range            : 100 yards
+Duration         : 6 seconds
+Stacks           : 10 maximum
+Proc Chance      : 101%
+Triggered by     : Blessing of Winter (328281)
+Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ........   
+Effects          :
+#1 (id=821066)   : School Damage (2): frost
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | PvP Coefficient: 1.00000 | Target: Enemy (6)
+#2 (id=821067)   : Dummy (3)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
+#3 (id=835104)   : Apply Aura (6) | Modify Ranged and Melee Attack Speed% (342)
+                   Base Value: -2 | Scaled Value: -2 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+#4 (id=840462)   : Apply Aura (6) | Decrease Movement Speed% (33)
+                   Base Value: -3 | Scaled Value: -3 | PvP Coefficient: 1.00000 | Mechanic: Snare | Target: Enemy (6)
+Description      : $@spelldesc328281
+Tooltip          : Attack speed reduced by $w3%.
+Movement speed reduced by $w4%.
+
 Name             : Blessing of Summer (desc=Night Fae) (id=328620) [Spell Family (10)] 
 Class            : Paladin
 Covenant         : Night Fae
@@ -9080,6 +9183,81 @@ Description      : Bless an ally for $d, causing their attacks to have a $h% cha
 
 |cFFFFFFFFBlessing of the Seasons:|r Turns to Autumn after use.
 Tooltip          : Attacks have a $h% chance to deal $w1% additional damage as Holy.
+
+Name             : Blessing of Autumn (desc=Night Fae) (id=328622) [Spell Family (10)] 
+Class            : Paladin
+School           : Nature
+Spell Type       : None
+Resource         : 5% Base Mana (0) (id=215310)
+Range            : 40 yards
+GCD              : 1.5 seconds
+Duration         : 30 seconds
+Cooldown         : 45 seconds
+Category         : 1890
+Category Cooldown: 45 seconds
+Affecting spells : Righteous Might (340192 effect#1)
+Family Flags     : 114, 122
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+Effects          :
+#1 (id=821267)   : Apply Aura (6) | Modify Cooldown Recharge Rate (143)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 16 | Target: Friend (21)
+#2 (id=821268)   : Apply Aura (6) | Unknown(173)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Friend (21)
+#3 (id=823063)   : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 917504 | Target: Friend (21)
+#4 (id=833967)   : Trigger Spell (64): Blessing of the Seasons
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 329722 | Target: Self (1)
+Description      : Bless an ally for $d, causing their cooldowns to recover $s1% faster.
+
+|cFFFFFFFFBlessing of the Seasons:|r Turns to Winter after use.
+Tooltip          : Cooldowns recover $w1% faster.
+
+Name             : Blessing of the Seasons (desc=Night Fae) (id=329720) [Spell Family (10), Hidden] 
+Class            : Paladin
+School           : Nature
+Spell Type       : None
+Duration         : Aura (infinite)
+Triggered by     : Blessing of Winter (328281), Blessing of Spring (328282)
+Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ......x. ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ....x... 
+                 : ........ ........ ........ ........   
+                 : Hidden (7)
+Effects          :
+#1 (id=823062)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
+                   Base Value: 328282 | Scaled Value: 328282 | PvP Coefficient: 1.00000 | Misc Value: 328620 | Target: Self (1)
+Description      :  
+
+Name             : Blessing of the Seasons (desc=Night Fae) (id=329722) [Spell Family (10), Hidden] 
+Class            : Paladin
+School           : Nature
+Spell Type       : None
+Duration         : Aura (infinite)
+Triggered by     : Blessing of Autumn (328622)
+Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ......x. ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ....x... 
+                 : ........ ........ ........ ........   
+                 : Hidden (7)
+Effects          :
+#1 (id=823065)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
+                   Base Value: 328281 | Scaled Value: 328281 | PvP Coefficient: 1.00000 | Misc Value: 328620 | Target: Self (1)
+Description      :  
 
 Name             : Avenger's Shield (desc=Rank 2) (id=337261) [Spell Family (10), Passive] 
 Class            : Protection Paladin

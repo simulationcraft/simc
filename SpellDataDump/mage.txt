@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35598 shadowlands-BETA (hotfix 2020-08-22/35598, git build shadowlands af26ce5213)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35598 shadowlands-BETA (hotfix 2020-08-23/35598)
 
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Paladin, Mage
@@ -2668,6 +2668,27 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Your mana regeneration is increased by $s1%.
 Tooltip          : Increases your mana regeneration by $s1%.
+
+Name             : Alter Time (id=127140) [Spell Family (3)] 
+Class            : Mage
+School           : Arcane
+Spell Type       : Magic
+Spell Level      : 58
+Category         : 1388
+Affecting spells : Norgannon's Foresight (236380 effect#1)
+Family Flags     : 67
+Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+Effects          :
+#1 (id=161580)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Returns the caster to their previous location and health.
 
 Name             : Illusion (id=131784) 
 Class            : Mage
@@ -10588,6 +10609,27 @@ Effects          :
                    Base Value: 342247 | Scaled Value: 342247 | PvP Coefficient: 1.00000 | Misc Value: 342245 | Target: Self (1)
 Description      : $@spelldesc108978
 Tooltip          : Altering Time. Returning to past location and health when duration expires.
+
+Name             : Alter Time (id=342247) [Spell Family (3)] 
+Class            : Mage
+School           : Arcane
+Spell Type       : Magic
+Spell Level      : 24
+Category         : 1388
+Affecting spells : Norgannon's Foresight (236380 effect#1)
+Family Flags     : 67
+Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+Effects          :
+#1 (id=843172)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Returns the caster to their previous location and health.
 
 Name             : Master of Time (id=342249) [Spell Family (3), Passive] 
 Class            : Mage
