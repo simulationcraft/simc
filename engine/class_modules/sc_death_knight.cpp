@@ -482,6 +482,7 @@ public:
   struct runeforge_t {
     buff_t* rune_of_the_fallen_crusader;
     buff_t* rune_of_the_stoneskin_gargoyle;
+    buff_t* rune_of_hysteria;
     bool rune_of_apocalypse;
   } runeforge;
 
@@ -534,6 +535,7 @@ public:
     gain_t* power_refund; // RP refund on miss
     gain_t* rune; // Rune regeneration
     gain_t* start_of_combat_overflow;
+    gain_t* rune_of_hysteria;
 
     // Essences
     gain_t* memory_of_lucid_dreams;
@@ -923,6 +925,7 @@ public:
   role_e    primary_role() const override;
   stat_e    convert_hybrid_stat( stat_e s ) const override;
   void      invalidate_cache( cache_e ) override;
+  double    resource_gain( resource_e resource_type, double amount, gain_t* g = nullptr, action_t* a = nullptr ) override;
   double    resource_loss( resource_e resource_type, double amount, gain_t* g = nullptr, action_t* a = nullptr ) override;
   void      copy_from( player_t* other ) override;
   void      merge( player_t& other ) override;
@@ -6332,6 +6335,8 @@ struct runic_corruption_buff_t : public buff_t
 
 } // UNNAMED NAMESPACE
 
+// Runeforges ===============================================================
+
 void runeforge::fallen_crusader( special_effect_t& effect )
 {
   if ( effect.player->type != DEATH_KNIGHT )
@@ -6407,6 +6412,41 @@ void runeforge::apocalypse( special_effect_t& effect )
   // Everything is handled in pet_melee_attack_t
   p -> runeforge.rune_of_apocalypse = true;
   p -> active_spells.runeforge_pestilence = new death_knight_spell_t( "Pestilence", p, p -> find_spell( 327093 ) );
+}
+
+void runeforge::hysteria( special_effect_t& effect )
+{
+  if ( effect.player -> type != DEATH_KNIGHT )
+  {
+    effect.type = SPECIAL_EFFECT_NONE;
+    return;
+  }
+
+  // TODO: check what happens if it's runeforged on both hands
+  // Current behaviour: double max RP increase and two independant procs
+  // According to spelldata, the buff can only get a single stack
+  death_knight_t* p = debug_cast<death_knight_t*>( effect.item -> player );
+
+  p -> resources.base[ RESOURCE_RUNIC_POWER ] += p -> find_spell( effect.spell_id ) -> effectN( 2 ).resource( RESOURCE_RUNIC_POWER );
+
+  effect.custom_buff = p -> runeforge.rune_of_hysteria;
+
+  new dbc_proc_callback_t( effect.item, effect );
+}
+
+// Resource Manipulation ====================================================
+
+double death_knight_t::resource_gain( resource_e resource_type, double amount, gain_t* g, action_t* action )
+{
+  double actual_amount = player_t::resource_gain( resource_type, amount, g, action );
+
+  if ( resource_type == RESOURCE_RUNIC_POWER && runeforge.rune_of_hysteria -> up() )
+  {
+    double bonus_rp = amount * runeforge.rune_of_hysteria -> data().effectN( 1 ).percent();
+    actual_amount += player_t::resource_gain( resource_type, bonus_rp, gains.rune_of_hysteria, action );
+  }
+
+  return actual_amount;
 }
 
 double death_knight_t::resource_loss( resource_e resource_type, double amount, gain_t* g, action_t* action )
@@ -8122,6 +8162,8 @@ void death_knight_t::create_buffs()
             -> add_invalidate( CACHE_STRENGTH )
             -> set_chance( 0 );
 
+  runeforge.rune_of_hysteria = make_buff( this, "rune_of_hysteria", find_spell( 326918 ) );
+
   // Blood
   buffs.blood_shield = new blood_shield_buff_t( this );
 
@@ -8266,6 +8308,7 @@ void death_knight_t::init_gains()
   gains.power_refund                     = get_gain( "power_refund" );
   gains.rune                             = get_gain( "Rune Regeneration" );
   gains.start_of_combat_overflow         = get_gain( "Start of Combat Overflow" );
+  gains.rune_of_hysteria                 = get_gain( "Rune of Hysteria" );
 
   // Essences
   gains.memory_of_lucid_dreams           = get_gain( "Memory of Lucid Dream" );
@@ -8934,6 +8977,7 @@ struct death_knight_module_t : public module_t {
     unique_gear::register_special_effect( 166441, runeforge::fallen_crusader );
     unique_gear::register_special_effect(  62157, runeforge::stoneskin_gargoyle );
     unique_gear::register_special_effect( 327087, runeforge::apocalypse );
+    unique_gear::register_special_effect( 326913, runeforge::hysteria );
   }
 
   void register_hotfixes() const override
