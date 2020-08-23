@@ -1,6 +1,8 @@
 #include "covenant.hpp"
 
 #include "util/util.hpp"
+#include "util/io.hpp"
+#include "report/decorators.hpp"
 
 #include "sim/sc_expressions.hpp"
 
@@ -55,14 +57,14 @@ timespan_t conduit_data_t::time_value( time_type tt ) const
 
 namespace util
 {
-const char* covenant_type_string( covenant_e id )
+const char* covenant_type_string( covenant_e id, bool full )
 {
   switch ( id )
   {
-    case covenant_e::KYRIAN:    return "kyrian";
-    case covenant_e::VENTHYR:   return "venthyr";
-    case covenant_e::NIGHT_FAE: return "night_fae";
-    case covenant_e::NECROLORD: return "necrolord";
+    case covenant_e::KYRIAN:    return full ? "Kyrian" : "kyrian";
+    case covenant_e::VENTHYR:   return full ? "Venthyr" : "venthyr";
+    case covenant_e::NIGHT_FAE: return full ? "Night Fae" : "night_fae";
+    case covenant_e::NECROLORD: return full ? "Necrolord" : "necrolord";
     case covenant_e::DISABLED:  return "disabled";
     default:                    return "invalid";
   }
@@ -447,9 +449,54 @@ void covenant_state_t::register_options( player_t* player )
           this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3 ) ) );
 }
 
-// TODO: Implement
-report::sc_html_stream& generate_report( report::sc_html_stream& root )
+report::sc_html_stream& covenant_state_t::generate_report( report::sc_html_stream& root ) const
 {
+  if ( !enabled() )
+    return root;
+
+  root.format( "<tr class=\"left\"><th>{}</th><td><ul class=\"float\">\n", util::covenant_type_string( type(), true ) );
+
+  for ( auto& e : covenant_ability_entry_t::data( m_player->dbc->ptr ) )
+  {
+    if ( e.covenant_id != static_cast<unsigned>( m_covenant ) )
+      continue;
+
+    if ( e.class_id != util::class_id( m_player->type ) && !e.ability_type )
+      continue;
+
+    auto cv_spell = m_player->find_spell( e.spell_id );
+    root.format( "<li>{}</li>\n", report_decorators::decorated_spell_name( m_player->sim, *cv_spell ) );
+  }
+
+  for ( auto& e : conduit_entry_t::data( m_player->dbc->ptr ) )
+  {
+    for ( auto cd : m_conduits )
+    {
+      if ( std::get<0>( cd ) == e.id )
+      {
+        auto cd_spell = m_player->find_spell( e.spell_id );
+        root.format( "<li>{} ({})</li>\n",
+                     report_decorators::decorated_spell_name( m_player->sim, *cd_spell ),
+                     std::get<1>( cd ) + 1 );
+      }
+    }
+  }
+
+  root << "</ul></td></tr>\n";
+
+  if ( m_soulbinds.size() )
+  {
+    root << "<tr class=\"left\"><th></th><ul class=\"float\">\n";
+
+    for ( auto sb : m_soulbinds )
+    {
+      auto sb_spell = m_player->find_spell( sb );
+      root.format( "<li>{}</li>\n", report_decorators::decorated_spell_name( m_player->sim, *sb_spell ) );
+    }
+
+    root << "</ul></td></tr>\n";
+  }
+
   return root;
 }
 } // Namespace covenant ends
