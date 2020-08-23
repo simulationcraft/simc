@@ -28,6 +28,7 @@ struct warrior_td_t : public actor_target_data_t
   buff_t* debuffs_taunt;
   buff_t* debuffs_punish;
   buff_t* debuffs_callous_reprisal;
+  bool hit_by_fresh_meat;
 
   warrior_t& warrior;
   warrior_td_t( player_t* target, warrior_t& p );
@@ -79,13 +80,13 @@ public:
   {
     buff_t* avatar;
     buff_t* ayalas_stone_heart;
-    buff_t* deadly_calm;
     buff_t* bastion_of_might; // the mastery buff
     buff_t* bastion_of_might_vop; // bastion of might proc from VoP
     buff_t* berserker_rage;
     buff_t* bladestorm;
     buff_t* bounding_stride;
     buff_t* charge_movement;
+    buff_t* deadly_calm;
     buff_t* defensive_stance;
     buff_t* die_by_the_sword;
     buff_t* enrage;
@@ -1818,6 +1819,11 @@ struct bloodthirst_t : public warrior_attack_t
       {
         p()->enrage();
       }
+    }
+    if( !td( execute_state->target )->hit_by_fresh_meat )
+    {
+      p()->buff.enrage->trigger();
+      td( execute_state->target )->hit_by_fresh_meat = true;
     }
   }
 
@@ -3948,6 +3954,7 @@ struct slam_t : public warrior_attack_t
   {
     warrior_attack_t::execute();
     p()->buff.weighted_blade->expire();
+    p()->buff.deadly_calm->decrement();
   }
 
   bool ready() override
@@ -4522,7 +4529,8 @@ struct deadly_calm_t : public warrior_spell_t
   {
     warrior_spell_t::execute();
 
-    p()->buff.deadly_calm->trigger();
+    //p()->buff.deadly_calm->trigger( 4 ); // Deadly Calm has 4 charges in SLands
+    p()->buff.deadly_calm->trigger( p()->talents.deadly_calm->initial_stacks() );
   }
 };
 
@@ -5896,6 +5904,35 @@ protected:
   }
 };
 
+// Deadly Calm Buff ===================================================================
+
+struct deadly_calm_t : public warrior_buff_t<buff_t>
+{
+  double rage_change;
+  deadly_calm_t( warrior_t& p, const std::string& n, const spell_data_t* s ) :
+    base_t( p, n, s ), rage_change( p.find_spell( 314522 )->effectN( 1 ).base_value() / 10.0 )
+  { 
+   //set_initial_stacks( 4 ); trigger 4 stacks of buff instead
+   set_max_stack( 4 );
+   set_cooldown( timespan_t::zero() );
+  }
+
+  void start( int stacks, double value, timespan_t duration ) override
+  {
+    warrior_buff_t<buff_t>::start( stacks, value, duration );
+
+    warrior().resources.max [ RESOURCE_RAGE ] += rage_change;
+  }
+
+  void expire_override( int, timespan_t ) override
+  {
+    warrior().resources.max[ RESOURCE_RAGE ] -= rage_change;
+    warrior().resources.current[ RESOURCE_RAGE ] = std::min( warrior().resources.current[ RESOURCE_RAGE ],
+        warrior().resources.max[ RESOURCE_RAGE ] );
+  }
+};
+
+
 // Rallying Cry ==============================================================
 
 struct rallying_cry_t : public warrior_buff_t<buff_t>
@@ -6089,6 +6126,7 @@ warrior_td_t::warrior_td_t( player_t* target, warrior_t& p ) : actor_target_data
 {
   using namespace buffs;
 
+  hit_by_fresh_meat = false;
   dots_deep_wounds = target->get_dot( "deep_wounds", &p );
   dots_ravager     = target->get_dot( "ravager", &p );
   dots_rend        = target->get_dot( "rend", &p );
@@ -6215,8 +6253,11 @@ void warrior_t::create_buffs()
 
   buff.sudden_death = make_buff( this, "sudden_death", talents.sudden_death );
 
-  buff.deadly_calm = make_buff( this, "deadly_calm", talents.deadly_calm )
-      ->set_cooldown( timespan_t::zero() );
+  //buff.deadly_calm = make_buff( this, "deadly_calm", talents.deadly_calm )
+      //->set_cooldown( timespan_t::zero() );
+  //buff.deadly_calm->set_max_stack(buff.deadly_calm->data().max_stacks() );
+  //buff.deadly_calm = new buffs::deadly_calm_t( *this, "deadly_calm", find_spell( 314522 ) );
+  buff.deadly_calm = new buffs::deadly_calm_t( *this, "deadly_calm", talents.deadly_calm);
 
   buff.shield_block = make_buff( this, "shield_block", spell.shield_block_buff )
     ->set_cooldown( timespan_t::zero() )
