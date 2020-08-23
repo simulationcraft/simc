@@ -1788,6 +1788,7 @@ class SpellDataGenerator(DataGenerator):
           ( 125174, 3 ), # Touch of Karma redirect buff
           ( 195651, 3 ), # Crosswinds Artifact trait trigger spell
           ( 196061, 3 ), # Crosswinds Artifact trait damage spell
+          ( 196742, 3 ), # Whirling Dragon Punch Buff
           ( 211432, 3 ), # Tier 19 4-piece DPS Buff
           ( 220358, 3 ), # Cyclone Strikes info
           ( 228287, 3 ), # Spinning Crane Kick's Mark of the Crane debuff
@@ -1796,7 +1797,7 @@ class SpellDataGenerator(DataGenerator):
           ( 252768, 3 ), # Tier 21 2-piece DPS effect
           ( 261682, 3 ), # Chi Burst Chi generation cap
           ( 285594, 3 ), # Good Karma Healing Spell
-		  ( 290461, 3 ), # Reverse Harm Damage
+		      ( 290461, 3 ), # Reverse Harm Damage
           # Legendary
           ( 213114, 3 ), # Hidden Master's Forbidden Touch buff
           # Azerite Traits

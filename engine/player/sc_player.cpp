@@ -1547,7 +1547,7 @@ void player_t::init_base_stats()
     if ( base.distance < 1 )
       base.distance = 5;
 
-    // Armor Coefficient, based on level (860 @ 50; 2500 @ 60-63)
+    // Armor Coefficient, based on level (1054 @ 50; 2500 @ 60-63)
     base.armor_coeff = dbc->armor_mitigation_constant( level() );
     sim->print_debug( "{} base armor coefficient set to {}.", *this, base.armor_coeff );
 

@@ -16,7 +16,7 @@ NOTES:
 TODO:
 
 GENERAL:
-- Implement Winwalker/Mistweaver Fortifying Brew
+- Implement Windwalker/Mistweaver Fortifying Brew
 - Implement Vivify
 - Covenants
 - Soul Binds
@@ -247,6 +247,8 @@ public:
     buff_t* serenity;
     buff_t* touch_of_karma;
     buff_t* windwalking_driver;
+    buff_t* whirling_dragon_punch;
+
 
     // Azerite Trait
     buff_t* dance_of_chiji_azerite;
@@ -7574,6 +7576,9 @@ void monk_t::create_buffs()
   buff.touch_of_karma = new buffs::touch_of_karma_buff_t( *this, "touch_of_karma", find_spell( 125174 ) );
 
   buff.windwalking_driver = new buffs::windwalking_driver_t( *this, "windwalking_aura_driver", find_spell( 166646 ) );
+
+  buff.whirling_dragon_punch = make_buff( this, "whirling_dragon_punch", find_spell( 196742 ) )
+                                   ->set_refresh_behavior( buff_refresh_behavior::NONE );
 
   // Azerite Traits
   buff.swift_roundhouse = make_buff( this, "swift_roundhouse", find_spell( 278710 ) )
