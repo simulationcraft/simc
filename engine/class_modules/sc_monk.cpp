@@ -4091,7 +4091,7 @@ struct fists_of_fury_tick_t : public monk_melee_attack_t
     : monk_melee_attack_t( name, p, p->passives.fists_of_fury_tick )
   {
     background                    = true;
-    aoe                           = (int)p->spec.fists_of_fury->effectN( 1 ).base_value();
+    aoe                           = 1 + (int)p->spec.fists_of_fury->effectN( 1 ).base_value();
     ww_mastery                    = true;
     affected_by.sunrise_technique = true;
 
