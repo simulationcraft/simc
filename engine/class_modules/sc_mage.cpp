@@ -4804,7 +4804,7 @@ struct pyroblast_t : public hot_streak_spell_t
       if ( p()->buffs.combustion->check() )
         p()->buffs.combustion->extend_duration( p(), d );
       else
-        p()->buffs.combustion->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, d );
+        p()->buffs.combustion->trigger( d );
 
       p()->buffs.sun_kings_blessing_ready->expire();
     }
@@ -5607,7 +5607,7 @@ struct time_anomaly_tick_event_t : public event_t
           case TA_ARCANE_POWER:
           {
             timespan_t duration = 1000 * mage->talents.time_anomaly->effectN( 1 ).time_value();
-            mage->buffs.arcane_power->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, duration );
+            mage->buffs.arcane_power->trigger( duration );
             break;
           }
           case TA_EVOCATION:
@@ -5723,7 +5723,7 @@ bool mage_t::trigger_crowd_control( const action_state_t* s, spell_mechanic type
     && ( s->target->is_add() || s->target->level() < sim->max_player_level + 3 ) )
   {
     if ( type == MECHANIC_ROOT )
-      get_target_data( s->target )->debuffs.frozen->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, d );
+      get_target_data( s->target )->debuffs.frozen->trigger( d );
 
     return true;
   }
@@ -7784,7 +7784,7 @@ void mage_t::vision_of_perfection_proc()
   }
   else
   {
-    primary->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, primary_duration );
+    primary->trigger( primary_duration );
     if ( secondary )
     {
       // For some reason, Frigid Grasp activates at a full duration.
@@ -7795,7 +7795,7 @@ void mage_t::vision_of_perfection_proc()
       }
       else
       {
-        secondary->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, secondary_duration );
+        secondary->trigger( secondary_duration );
       }
     }
     // TODO: This probably isn't intended
