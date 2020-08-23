@@ -197,10 +197,6 @@ public:
 class rogue_t : public player_t
 {
 public:
-  // Custom options
-  std::vector<size_t> fixed_rtb;
-  std::vector<double> fixed_rtb_odds;
-
   // Shadow techniques swing counter;
   unsigned shadow_techniques;
 
@@ -680,6 +676,8 @@ public:
   // Options
   struct rogue_options_t
   {
+    std::vector<size_t> fixed_rtb;
+    std::vector<double> fixed_rtb_odds;
     int initial_combo_points = 0;
     bool rogue_optimize_expressions = true;
     bool rogue_ready_trigger = true;
@@ -5756,7 +5754,7 @@ struct roll_the_bones_t : public buff_t
   {
     std::vector<buff_t*> rolled;
 
-    if ( rogue -> fixed_rtb_odds.empty() )
+    if ( rogue->options.fixed_rtb_odds.empty() )
     {
       // RtB uses hardcoded probabilities since 7.2.5
       // As of 2017-05-18 assume these:
@@ -5766,12 +5764,12 @@ struct roll_the_bones_t : public buff_t
       // -- a roll down to 1.24 buffs (plus additional value for synergies between buffs).
       // Source: https://us.battle.net/forums/en/wow/topic/20753815486?page=2#post-21
       // Odds double checked on 2020-03-09.
-      rogue -> fixed_rtb_odds = { 79.0, 20.0, 0.0, 0.0, 1.0, 0.0 };
+      rogue->options.fixed_rtb_odds = { 79.0, 20.0, 0.0, 0.0, 1.0, 0.0 };
     }
 
-    if ( ! rogue -> fixed_rtb_odds.empty() )
+    if ( !rogue->options.fixed_rtb_odds.empty() )
     {
-      std::vector<double> current_odds = rogue->fixed_rtb_odds;
+      std::vector<double> current_odds = rogue->options.fixed_rtb_odds;
       if ( loaded_dice )
       {
         // At some point Loaded Dice were apparently changed to just convert 1 buffs straight into two buffs. (2020-03-09)
@@ -5812,7 +5810,7 @@ struct roll_the_bones_t : public buff_t
   std::vector<buff_t*> fixed_roll()
   {
     std::vector<buff_t*> rolled;
-    range::for_each( rogue -> fixed_rtb, [this, &rolled]( size_t idx )
+    range::for_each( rogue->options.fixed_rtb, [ this, &rolled ]( size_t idx )
       { rolled.push_back( buffs[ idx ] ); } );
     return rolled;
   }
@@ -5820,9 +5818,9 @@ struct roll_the_bones_t : public buff_t
   unsigned roll_the_bones( timespan_t duration )
   {
     std::vector<buff_t*> rolled;
-    if ( rogue -> fixed_rtb.size() == 0 )
+    if ( rogue->options.fixed_rtb.size() == 0 )
     {
-      rolled = random_roll(rogue -> buffs.loaded_dice -> up());
+      rolled = random_roll( rogue->buffs.loaded_dice->up() );
     }
     else
     {
@@ -7618,24 +7616,10 @@ void rogue_t::init_base_stats()
   base_gcd = timespan_t::from_seconds( 1.0 );
   min_gcd  = timespan_t::from_seconds( 1.0 );
 
-  // Force ready trigger if there is a rogue player
   if ( options.rogue_ready_trigger )
   {
-    for ( size_t i = 0; i < sim -> player_list.size(); ++i )
-    {
-      player_t* p = sim -> player_list[i];
-      if ( p -> specialization() != ROGUE_ASSASSINATION && p -> specialization() != ROGUE_OUTLAW && p -> specialization() != ROGUE_SUBTLETY )
-      {
-        options.rogue_ready_trigger = false;
-        break;
-      }
-    }
-    if ( options.rogue_ready_trigger )
-    {
-      ready_type = READY_TRIGGER;
-      // Disabled for now
-      // sim -> errorf( "[Rogue] ready_trigger=1 has been enabled. You can disable by adding rogue_ready_trigger=0 to your actor" );
-    }
+    ready_type = READY_TRIGGER;
+    // sim -> errorf( "[Rogue] ready_trigger=1 has been enabled. You can disable by adding rogue_ready_trigger=0 to your actor" );
   }
 }
 
@@ -8387,7 +8371,7 @@ static bool parse_fixed_rtb( sim_t* sim, util::string_view /* name */, util::str
     return false;
   }
 
-  debug_cast< rogue_t* >( sim -> active_player ) -> fixed_rtb = buffs;
+  debug_cast<rogue_t*>( sim->active_player )->options.fixed_rtb = buffs;
 
   return true;
 }
@@ -8419,7 +8403,7 @@ static bool parse_fixed_rtb_odds( sim_t* sim, util::string_view /* name */, util
     }
   }
 
-  debug_cast< rogue_t* >( sim -> active_player ) -> fixed_rtb_odds = buff_chances;
+  debug_cast<rogue_t*>( sim->active_player )->options.fixed_rtb_odds = buff_chances;
   return true;
 }
 
@@ -8444,26 +8428,30 @@ void rogue_t::copy_from( player_t* source )
 {
   rogue_t* rogue = static_cast<rogue_t*>( source );
   player_t::copy_from( source );
-  if ( ! rogue -> weapon_data[ WEAPON_MAIN_HAND ].secondary_weapon_data.options_str.empty() )
+
+  if ( !rogue->weapon_data[ WEAPON_MAIN_HAND ].secondary_weapon_data.options_str.empty() )
   {
     weapon_data[ WEAPON_MAIN_HAND ].secondary_weapon_data.options_str = \
-      rogue -> weapon_data[ WEAPON_MAIN_HAND ].secondary_weapon_data.options_str;
+      rogue->weapon_data[ WEAPON_MAIN_HAND ].secondary_weapon_data.options_str;
   }
 
-  if ( ! rogue -> weapon_data[ WEAPON_OFF_HAND ].secondary_weapon_data.options_str.empty() )
+  if ( !rogue->weapon_data[ WEAPON_OFF_HAND ].secondary_weapon_data.options_str.empty() )
   {
     weapon_data[ WEAPON_OFF_HAND ].secondary_weapon_data.options_str = \
-      rogue -> weapon_data[ WEAPON_OFF_HAND ].secondary_weapon_data.options_str;
+      rogue->weapon_data[ WEAPON_OFF_HAND ].secondary_weapon_data.options_str;
   }
 
-  if ( rogue -> options.initial_combo_points != 0 )
+  if ( rogue->options.initial_combo_points != 0 )
   {
-    options.initial_combo_points = rogue -> options.initial_combo_points;
+    options.initial_combo_points = rogue->options.initial_combo_points;
   }
 
-  fixed_rtb = rogue -> fixed_rtb;
-  fixed_rtb_odds = rogue -> fixed_rtb_odds;
-  options.priority_rotation = rogue -> options.priority_rotation;
+  options.fixed_rtb = rogue->options.fixed_rtb;
+  options.fixed_rtb_odds = rogue->options.fixed_rtb_odds;
+  options.rogue_optimize_expressions = rogue->options.rogue_optimize_expressions;
+  options.rogue_ready_trigger = rogue->options.rogue_ready_trigger;
+  options.priority_rotation = rogue->options.priority_rotation;
+  options.memory_of_lucid_dreams_proc_chance = rogue->options.memory_of_lucid_dreams_proc_chance;
 }
 
 // rogue_t::create_profile  =================================================
@@ -8806,7 +8794,7 @@ void rogue_t::combat_begin()
       for ( size_t i = 0; i < sim -> player_list.size(); ++i )
       {
         player_t* p = sim -> player_list[i];
-        if ( p -> specialization() != ROGUE_ASSASSINATION && p -> specialization() != ROGUE_OUTLAW && p -> specialization() != ROGUE_SUBTLETY )
+        if ( !p->is_pet() && p->specialization() != ROGUE_ASSASSINATION && p->specialization() != ROGUE_OUTLAW && p->specialization() != ROGUE_SUBTLETY )
         {
           options.rogue_optimize_expressions = false;
           break;
@@ -8814,9 +8802,8 @@ void rogue_t::combat_begin()
       }
       if ( options.rogue_optimize_expressions )
       {
-        sim -> optimize_expressions = true;
-        // Disabled for now
-        // sim -> errorf( "[Rogue] optimize_expressions=1 has been enabled. You can disable by adding rogue_ready_trigger=0 to every rogue actor" );
+        sim->optimize_expressions = true;
+        // sim -> errorf( "[Rogue] optimize_expressions=1 has been enabled. You can disable by adding rogue_optimize_expressions=0 to every rogue actor" );
       }
     }
   }
