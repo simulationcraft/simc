@@ -913,58 +913,43 @@ struct spell_race_expr_t : public spell_list_expr_t
 
   std::vector<uint32_t> operator==( const spell_data_expr_t& other ) override
   {
-    std::vector<uint32_t> res;
-    uint64_t              race_mask;
-
     // Talents are not race specific
     if ( data_type == DATA_TALENT )
-      return res;
+      return {};
 
-    if ( other.result_tok == expression::TOK_STR )
-      race_mask = race_str_to_mask( other.result_str );
     // Other types will not be allowed, e.g. you cannot do race=list
-    else
-      return res;
+    if ( other.result_tok != expression::TOK_STR )
+      return {};
 
-    for ( const auto& result_spell : result_spell_list )
-    {
-      const spell_data_t* spell = dbc.spell( result_spell );
+    const uint64_t race_mask = race_str_to_mask( other.result_str );
 
-      if ( ! spell )
-        continue;
-
-      if ( spell -> race_mask() & race_mask )
-        res.push_back( result_spell );
-    }
-
+    std::vector<uint32_t> res;
+    range::copy_if( result_spell_list, std::back_inserter( res ),
+      [&]( uint32_t result_spell ) {
+        const spell_data_t* spell = dbc.spell( result_spell );
+        return spell && spell->race_mask() & race_mask;
+      } );
     return res;
   }
 
   std::vector<uint32_t> operator!=( const spell_data_expr_t& other ) override
   {
-    std::vector<uint32_t> res;
-    uint64_t              class_mask;
-
     // Talents are not race specific
     if ( data_type == DATA_TALENT )
-      return res;
+      return {};
 
-    if ( other.result_tok == expression::TOK_STR )
-      class_mask = race_str_to_mask( other.result_str );
-    // Other types will not be allowed, e.g. you cannot do class=list
-    else
-      return res;
+    // Other types will not be allowed, e.g. you cannot do race=list
+    if ( other.result_tok != expression::TOK_STR )
+      return {};
 
-    for ( const auto& result_spell : result_spell_list )
-    {
-      const spell_data_t* spell = dbc.spell( result_spell );
-      if ( ! spell )
-        continue;
+    const uint64_t race_mask = race_str_to_mask( other.result_str );
 
-      if ( ( spell -> class_mask() & class_mask ) == 0 )
-        res.push_back( result_spell );
-    }
-
+    std::vector<uint32_t> res;
+    range::copy_if( result_spell_list, std::back_inserter( res ),
+      [&]( uint32_t result_spell ) {
+        const spell_data_t* spell = dbc.spell( result_spell );
+        return spell && ( spell->race_mask() & race_mask ) == 0;
+      } );
     return res;
   }
 };
