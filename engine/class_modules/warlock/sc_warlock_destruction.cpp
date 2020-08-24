@@ -308,6 +308,12 @@ struct conflagrate_t : public destruction_spell_t
     energize_amount   = ( p->find_spell( 245330 )->effectN( 1 ).base_value() ) / 10.0;
 
     cooldown->charges += as<int>( p->spec.conflagrate_2->effectN( 1 ).base_value() );
+
+    if ( p->legendary.cinders_of_the_azjaqir->ok() )
+    {
+      cooldown->charges += as<int>( p->legendary.cinders_of_the_azjaqir->effectN( 1 ).base_value() );
+      cooldown->duration += p->legendary.cinders_of_the_azjaqir->effectN( 2 ).time_value();
+    }
   }
 
   void init() override
