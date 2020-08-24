@@ -1516,6 +1516,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
     sef_fists_of_fury_tick_t( storm_earth_and_fire_pet_t* p )
       : sef_tick_action_t( "fists_of_fury_tick", p, p->o()->passives.fists_of_fury_tick )
     {
+      aoe = 1 + (int)p->o()->spec.fists_of_fury->effectN( 1 ).base_value();
     }
 
     double bonus_da( const action_state_t* s ) const override
@@ -1573,7 +1574,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
     sef_spinning_crane_kick_tick_t( storm_earth_and_fire_pet_t* p )
       : sef_tick_action_t( "spinning_crane_kick_tick", p, p->o()->spec.spinning_crane_kick->effectN( 1 ).trigger() )
     {
-      aoe = -1;
+      aoe = (int)p->o()->spec.spinning_crane_kick->effectN( 1 ).base_value();
     }
   };
 
