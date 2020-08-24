@@ -4789,8 +4789,7 @@ struct conquerors_frenzy_t : public warrior_spell_t
     warrior_spell_t::execute();
     timespan_t duration = timespan_t::from_seconds( p()->buff.glory->check_stack_value() );
     p()->buff.conquerors_frenzy->trigger( duration );
-    p()->cooldown.conquerors_banner->reset( false );
-    p()->cooldown.conquerors_banner->start();
+    p()->buff.conquerors_banner->expire(); 
     p()->buff.glory->expire(); 
   }
 };
@@ -5715,13 +5714,9 @@ void warrior_t::init_spells()
   covenant.ancient_aftershock    = find_covenant_spell( "Ancient Aftershock" );
   covenant.condemn_driver        = find_covenant_spell( "Condemn" );
   if ( specialization() == WARRIOR_FURY )
-  {
-  covenant.condemn               = find_spell( 317485 );
-  }
+  covenant.condemn               = find_spell( covenant.condemn_driver->effectN( 2 ).base_value() );
   else
-  {
-  covenant.condemn               = find_spell( 317349 );
-  }
+  covenant.condemn               = find_spell( covenant.condemn_driver->effectN( 1 ).base_value() );
   covenant.conquerors_banner     = find_covenant_spell( "Conqueror's Banner" );
   covenant.spear_of_bastion      = find_covenant_spell( "Spear of Bastion" );
 
