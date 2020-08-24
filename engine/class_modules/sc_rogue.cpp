@@ -123,6 +123,7 @@ public:
     dot_t* sepsis;
     dot_t* slaughter_poison;
     dot_t* serrated_bone_spike;
+    dot_t* mutilated_flesh;
   } dots;
 
   struct debuffs_t
@@ -621,13 +622,13 @@ public:
     item_runeforge_t essence_of_bloodfang;
     item_runeforge_t master_assassins_mark;
     item_runeforge_t tiny_toxic_blades;       // NYI
-    item_runeforge_t invigorating_shadowdust; // NYI
+    item_runeforge_t invigorating_shadowdust;
 
     // Assassination
     item_runeforge_t dashing_scoundrel;
-    item_runeforge_t doomblade;               // NYI
-    item_runeforge_t dustwalkers_patch;       // NYI
-    item_runeforge_t zoldyck_insignia;        // NYI
+    item_runeforge_t doomblade;
+    item_runeforge_t dustwalkers_patch;
+    item_runeforge_t zoldyck_insignia;
 
     // Outlaw
     item_runeforge_t greenskins_wickers;
@@ -643,6 +644,7 @@ public:
 
     // Legendary Values
     double dashing_scoundrel_gain = 0.0;
+    double dustwalkers_patch_counter = 0.0;
     int guile_charm_counter = 0;
   } legendary;
 
@@ -671,6 +673,9 @@ public:
 
     // Conduits
     proc_t* count_the_odds;
+
+    // Legendary
+    proc_t* dustwalker_patch;
   } procs;
 
   // Options
@@ -1025,6 +1030,7 @@ public:
     bool finality_eviscerate = false;
     bool finality_shadow_vault = false;
     bool dashing_scoundrel = false;
+    bool zoldyck_insignia = false;
 
     damage_affect_data mastery_executioner;
     damage_affect_data mastery_potent_assassin;
@@ -1093,6 +1099,13 @@ public:
     if ( p->legendary.dashing_scoundrel.ok() )
     {
       affected_by.dashing_scoundrel = ab::data().affected_by( p->spec.envenom->effectN( 3 ) );
+    }
+    if ( p->legendary.zoldyck_insignia.ok() )
+    {
+      // TOCHECK: This is just temporary, using the periodic whitelist from mastery until we are clear what it should work on
+      //          Currently on beta, it doesn't work on much of anything, so this is quite unclear
+      affected_by.zoldyck_insignia = ab::data().affected_by( p->mastery.potent_assassin->effectN( 1 ) ) ||
+                                     ab::data().affected_by( p->mastery.potent_assassin->effectN( 2 ) );
     }
 
     // Auto-parsing for damage affecting dynamic flags, this reads IF direct/periodic dmg is affected and stores by how much.
@@ -1489,6 +1502,11 @@ public:
       m *= 1.0 + td( target )->debuffs.shiv->value();
     }
 
+    if ( affected_by.zoldyck_insignia && target->health_percentage() < p()->legendary.zoldyck_insignia->effectN( 2 ).base_value() )
+    {
+      m *= 1.0 + p()->legendary.zoldyck_insignia->effectN( 1 ).percent();
+    }
+
     return m;
   }
 
@@ -1612,10 +1630,22 @@ public:
     }
     else
     {
-      // Memory of Lucid Dreams
-      if ( p()->azerite.memory_of_lucid_dreams.enabled() && ab::last_resource_cost > 0 )
+      if ( ab::current_resource() == RESOURCE_ENERGY && ab::last_resource_cost > 0 )
       {
-        if ( ab::current_resource() == RESOURCE_ENERGY )
+        // Dustwalker's Patch Legendary
+        if ( p()->legendary.dustwalkers_patch.ok() )
+        {
+          p()->legendary.dustwalkers_patch_counter += ab::last_resource_cost;
+          if ( p()->legendary.dustwalkers_patch_counter > p()->legendary.dustwalkers_patch->effectN( 2 ).base_value() )
+          {
+            p()->cooldowns.vendetta->adjust( -timespan_t::from_seconds( p()->legendary.dustwalkers_patch->effectN( 1 ).base_value() ) );
+            p()->legendary.dustwalkers_patch_counter -= p()->legendary.dustwalkers_patch->effectN( 2 ).base_value();
+            p()->procs.dustwalker_patch->occur();
+          }
+        }
+
+        // Memory of Lucid Dreams
+        if ( p()->azerite.memory_of_lucid_dreams.enabled() )
         {
           if ( p()->rng().roll( p()->options.memory_of_lucid_dreams_proc_chance ) )
           {
@@ -2658,6 +2688,15 @@ struct blade_rush_t : public rogue_attack_t
   }
 };
 
+// Bloodfang Legendary ======================================================
+
+struct bloodfang_t : public rogue_attack_t
+{
+  bloodfang_t( util::string_view name, rogue_t* p ) :
+    rogue_attack_t( name, p, p->legendary.essence_of_bloodfang->effectN( 1 ).trigger() )
+  {}
+};
+
 // Crimson Tempest ==========================================================
 
 struct crimson_tempest_t : public rogue_attack_t
@@ -2747,6 +2786,23 @@ struct envenom_t : public rogue_attack_t
     rogue_attack_t( name, p, p->spec.envenom, options_str )
   {
     dot_duration = timespan_t::zero();
+  }
+
+  double composite_target_multiplier( player_t* target ) const override
+  {
+    double m = rogue_attack_t::composite_target_multiplier( target );
+
+    if ( p()->legendary.doomblade.ok() )
+    {
+      // TOCHECK: On beta, this currently doesn't include Crimson Tempest
+      rogue_td_t* td = this->td( target );
+      int active_dots = td->dots.garrote->is_ticking() + td->dots.rupture->is_ticking() +
+        td->dots.crimson_tempest->is_ticking() + td->dots.internal_bleeding->is_ticking() +
+        td->dots.mutilated_flesh->is_ticking();
+      m *= 1.0 + p()->legendary.doomblade->effectN( 2 ).percent() * active_dots;
+    }
+
+    return m;
   }
 
   double bonus_da( const action_state_t* s ) const override
@@ -3432,16 +3488,41 @@ struct mutilate_t : public rogue_attack_t
 {
   struct mutilate_strike_t : public rogue_attack_t
   {
-    mutilate_strike_t( util::string_view name, rogue_t* p, const spell_data_t* s ) :
-      rogue_attack_t( name, p, s )
+    // Note: Uses spell_t instead of rogue_spell_t to avoid action_state casting issues
+    struct doomblade_t : public residual_action::residual_periodic_action_t<spell_t>
     {
+      doomblade_t( util::string_view name, rogue_t* p ) :
+        base_t( name, p, p->find_spell( 340431 ) )
+      {
+        dual = true;
+      }
+    };
+
+    doomblade_t* doomblade_dot;
+
+    mutilate_strike_t( util::string_view name, rogue_t* p, const spell_data_t* s ) :
+      rogue_attack_t( name, p, s ),
+      doomblade_dot( nullptr )
+    {
+      if ( p->legendary.doomblade.ok() )
+      {
+        doomblade_dot = p->get_background_action<doomblade_t>( "mutilated_flesh" );
+      }
     }
 
     void impact( action_state_t* state ) override
     {
       rogue_attack_t::impact( state );
-
       trigger_seal_fate( state );
+
+      if ( doomblade_dot && result_is_hit( state->result ) )
+      {
+        // TOCHECK: This is very, very buggy on beta with the initial DoT lasting up to 4 ticks/12 seconds
+        //          Subsequent DoTs seem correct, but the coefficient and residual behavior is quite odd
+        //          For now, implementing how it "should" work with 20% coefficient and normal ignite behavior
+        const double dot_damage = state->result_amount * p()->legendary.doomblade->effectN( 1 ).percent();
+        residual_action::trigger( doomblade_dot, state->target, dot_damage );
+      }
     }
 
     double composite_target_multiplier( player_t* target ) const override
@@ -3460,34 +3541,37 @@ struct mutilate_t : public rogue_attack_t
   struct double_dose_t : public rogue_attack_t
   {
     double_dose_t( util::string_view name, rogue_t* p ) :
-      rogue_attack_t( name, p, p -> find_spell(273009) )
+      rogue_attack_t( name, p, p -> find_spell( 273009 ) )
     {
       base_dd_min = base_dd_max = p->azerite.double_dose.value();
     }
   };
 
-  rogue_attack_t* mh_strike;
-  rogue_attack_t* oh_strike;
-  rogue_attack_t* double_dose;
+  mutilate_strike_t* mh_strike;
+  mutilate_strike_t* oh_strike;
+  double_dose_t* double_dose;
 
   mutilate_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ) :
     rogue_attack_t( name, p, p -> find_specialization_spell( "Mutilate" ), options_str ),
     mh_strike( nullptr ), oh_strike( nullptr ), double_dose( nullptr)
   {
-    if ( p -> main_hand_weapon.type != WEAPON_DAGGER ||
-         p ->  off_hand_weapon.type != WEAPON_DAGGER )
+    if ( p->main_hand_weapon.type != WEAPON_DAGGER || p->off_hand_weapon.type != WEAPON_DAGGER )
     {
       sim -> errorf( "Player %s attempting to execute Mutilate without two daggers equipped.", p -> name() );
       background = true;
     }
 
     mh_strike = p->get_background_action<mutilate_strike_t>( "mutilate_mh", data().effectN( 3 ).trigger() );
-    add_child( mh_strike );
-
     oh_strike = p->get_background_action<mutilate_strike_t>( "mutilate_oh", data().effectN( 4 ).trigger() );
+    add_child( mh_strike );
     add_child( oh_strike );
 
-    if ( p -> azerite.double_dose.ok() )
+    if ( mh_strike->doomblade_dot )
+    {
+      add_child( mh_strike->doomblade_dot );
+    }
+
+    if ( p->azerite.double_dose.ok() )
     {
       double_dose = p->get_background_action<double_dose_t>( "double_dose" );
       add_child( double_dose );
@@ -3496,12 +3580,9 @@ struct mutilate_t : public rogue_attack_t
 
   void execute() override
   {
-    // Reset Double Dose tracker before anything happens.
-    p()->buffs.double_dose->expire();
-
     rogue_attack_t::execute();
 
-    if ( result_is_hit( execute_state -> result ) )
+    if ( result_is_hit( execute_state->result ) )
     {
       if ( p()->talent.blindside->ok() )
       {
@@ -3515,6 +3596,9 @@ struct mutilate_t : public rogue_attack_t
           p()->buffs.blindside->trigger();
         }
       }
+
+      // Reset Double Dose tracker before anything happens.
+      p()->buffs.double_dose->expire();
 
       mh_strike->set_target( execute_state->target );
       mh_strike->execute();
@@ -3530,9 +3614,7 @@ struct mutilate_t : public rogue_attack_t
 
       if ( p()->talent.venom_rush->ok() && p()->get_target_data( execute_state->target )->is_poisoned() )
       {
-        p()->resource_gain( RESOURCE_ENERGY,
-                            p()->talent.venom_rush->effectN( 1 ).base_value(),
-                            p()->gains.venom_rush );
+        p()->resource_gain( RESOURCE_ENERGY, p()->talent.venom_rush->effectN( 1 ).base_value(), p()->gains.venom_rush );
       }
     }
   }
@@ -4425,6 +4507,7 @@ struct shiv_t : public rogue_attack_t
 
 struct vanish_t : public rogue_spell_t
 {
+
   vanish_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ) :
     rogue_spell_t( name, p, p -> find_class_spell( "Vanish" ), options_str )
   {
@@ -4665,15 +4748,6 @@ struct poisoned_knife_t : public rogue_attack_t
 
   double composite_poison_flat_modifier( const action_state_t* ) const override
   { return 1.0; }
-};
-
-// Bloodfang Legendary ======================================================
-
-struct bloodfang_t : public rogue_attack_t
-{
-  bloodfang_t( util::string_view name, rogue_t* p ) :
-    rogue_attack_t( name, p, p->legendary.essence_of_bloodfang->effectN( 1 ).trigger() )
-  {}
 };
 
 // ==========================================================================
@@ -5455,14 +5529,38 @@ struct stealth_t : public stealth_like_buff_t
 // Vanish now acts like "stealth like abilities".
 struct vanish_t : public stealth_like_buff_t
 {
+  std::vector<cooldown_t*> shadowdust_cooldowns;
+
   vanish_t( rogue_t* r ) :
-    stealth_like_buff_t( r, "vanish", r -> find_spell( 11327 ) )
-  { }
+    stealth_like_buff_t( r, "vanish", r->find_spell( 11327 ) )
+  {
+    if ( r->legendary.invigorating_shadowdust.ok() )
+    {
+      // TOCHECK: Double check what all this does not apply to
+      shadowdust_cooldowns = { r->cooldowns.adrenaline_rush, r->cooldowns.between_the_eyes, r->cooldowns.blade_flurry,
+        r->cooldowns.blade_rush, r->cooldowns.blind, r->cooldowns.cloak_of_shadows, r->cooldowns.garrote,
+        r->cooldowns.ghostly_strike, r->cooldowns.gouge, r->cooldowns.grappling_hook, r->cooldowns.killing_spree,
+        r->cooldowns.marked_for_death, r->cooldowns.riposte, r->cooldowns.secret_technique, r->cooldowns.sepsis,
+        r->cooldowns.serrated_bone_spike, r->cooldowns.shadow_blades, r->cooldowns.shadow_dance, r->cooldowns.shiv,
+        r->cooldowns.sprint, r->cooldowns.symbols_of_death, r->cooldowns.vendetta };
+    }
+  }
 
   void execute( int stacks, double value, timespan_t duration ) override
   {
     stealth_like_buff_t::execute( stacks, value, duration );
     rogue->cancel_auto_attack();
+
+    // Confirmed on beta this triggers from Vanish buff via Sepsis, not just Vanish casts
+    if ( rogue->legendary.invigorating_shadowdust.ok() )
+    {
+      const timespan_t reduction = timespan_t::from_seconds( rogue->legendary.invigorating_shadowdust->effectN( 1 ).base_value() );
+      for ( cooldown_t* c : shadowdust_cooldowns )
+      {
+        if ( c && c->down() )
+          c->adjust( -reduction, false );
+      }
+    }
   }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
@@ -5997,11 +6095,8 @@ void actions::rogue_action_t<Base>::trigger_poison_bomb( const action_state_t* s
   {
     make_event<ground_aoe_event_t>( *p()->sim, p(), ground_aoe_params_t()
       .target( state->target )
-      .x( state->target->x_position )
-      .y( state->target->y_position )
       .pulse_time( p()->spell.poison_bomb_driver->duration() / p()->talent.poison_bomb->effectN( 2 ).base_value() )
       .duration( p()->spell.poison_bomb_driver->duration() )
-      .start_time( p()->sim->current_time() )
       .action( p()->active.poison_bomb ) );
   }
 }
@@ -6264,7 +6359,7 @@ void actions::rogue_action_t<Base>::trigger_dreadblades( const action_state_t* s
   if ( !p()->buffs.dreadblades->up() )
     return;
 
-  trigger_combo_point_gain( p()->buffs.dreadblades->check_value(), p()->gains.dreadblades );
+  trigger_combo_point_gain( as<int>( p()->buffs.dreadblades->check_value() ), p()->gains.dreadblades );
 }
 
 template <typename Base>
@@ -6523,6 +6618,7 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
   dots.sepsis               = target->get_dot( "sepsis", source );
   dots.slaughter_poison     = target->get_dot( "slaughter_poison_dot", source );
   dots.serrated_bone_spike  = target->get_dot( "serrated_bone_spike_dot", source );
+  dots.mutilated_flesh      = target->get_dot( "mutilated_flesh", source );
 
   debuffs.marked_for_death  = new buffs::marked_for_death_debuff_t( *this );
   debuffs.wound_poison      = new buffs::wound_poison_t( *this );
@@ -7977,6 +8073,8 @@ void rogue_t::init_procs()
   procs.echoing_reprimand_3 = get_proc( "Animacharged CP 3 Used"       );
   procs.echoing_reprimand_4 = get_proc( "Animacharged CP 4 Used"       );
   procs.count_the_odds      = get_proc( "Count the Odds"               );
+
+  procs.dustwalker_patch    = get_proc( "Dustwalker Patch"             );
 }
 
 // rogue_t::init_scaling ====================================================
