@@ -2735,7 +2735,8 @@ struct moonfire_t : public druid_spell_t
 
       if ( p->talent.twin_moons->ok() )
       {
-        aoe += as<int>( p->talent.twin_moons->effectN( 1 ).base_value() );
+        // The increased target number has been removed from spell data
+        aoe += 1;
         // Twin Moons seems to fire off another MF spell - sometimes concurrently, sometimes up to 100ms later. While
         // there are very limited cases where this could have an effect, those cases do exist. Possibly worth
         // investigating further in the future.
@@ -2838,7 +2839,7 @@ struct moonfire_t : public druid_spell_t
 
     size_t available_targets( std::vector<player_t*>& tl ) const override
     {
-      /* When Lady and the Child is active, this is an AoE action meaning it will impact onto the
+      /* When Twin Moons is active, this is an AoE action meaning it will impact onto the
       first 2 targets in the target list. Instead, we want it to impact on the target of the action
       and 1 additional, so we'll override the target_list to make it so. */
       if ( is_aoe() )
@@ -2857,7 +2858,7 @@ struct moonfire_t : public druid_spell_t
 
         for ( size_t i = 0; i < full_list.size(); i++ )
         {
-          if ( full_list[ i ] == target )
+          if ( full_list[ i ] == target || full_list[i]->debuffs.invulnerable->up() )
             continue;
 
           if ( td( full_list[ i ] )->dots.moonfire->is_ticking() )
@@ -3792,62 +3793,6 @@ struct lunar_inspiration_t : public cat_attack_t
     energize_type = action_energize::ON_HIT;
 
     gcd_type = gcd_haste_type::ATTACK_HASTE;
-  }
-
-  size_t available_targets( std::vector<player_t*>& tl ) const override
-  {
-    /* When Lady and the Child is active, this is an AoE action meaning it will impact onto the
-    first 2 targets in the target list. Instead, we want it to impact on the target of the action
-    and 1 additional, so we'll override the target_list to make it so. */
-    if ( is_aoe() )
-    {
-      // Get the full target list.
-      cat_attack_t::available_targets( tl );
-      std::vector<player_t*> full_list = tl;
-
-      tl.clear();
-      // Add the target of the action.
-      tl.push_back( target );
-
-      // Loop through the full list and sort into afflicted/unafflicted.
-      std::vector<player_t*> afflicted;
-      std::vector<player_t*> unafflicted;
-
-      for ( size_t i = 0; i < full_list.size(); i++ )
-      {
-        if ( full_list[ i ] == target )
-          continue;
-
-        if ( td( full_list[ i ] )->dots.moonfire->is_ticking() )
-          afflicted.push_back( full_list[ i ] );
-        else
-          unafflicted.push_back( full_list[ i ] );
-      }
-
-      // Fill list with random unafflicted targets.
-      while ( tl.size() < as<size_t>( aoe ) && unafflicted.size() > 0 )
-      {
-        // Random target
-        size_t i = (size_t)p()->rng().range( 0, (double)unafflicted.size() );
-
-        tl.push_back( unafflicted[ i ] );
-        unafflicted.erase( unafflicted.begin() + i );
-      }
-
-      // Fill list with random afflicted targets.
-      while ( tl.size() < as<size_t>( aoe ) && afflicted.size() > 0 )
-      {
-        // Random target
-        size_t i = (size_t)p()->rng().range( 0, (double)afflicted.size() );
-
-        tl.push_back( afflicted[ i ] );
-        afflicted.erase( afflicted.begin() + i );
-      }
-
-      return tl.size();
-    }
-
-    return cat_attack_t::available_targets( tl );
   }
 
   double bonus_ta( const action_state_t* s ) const override
