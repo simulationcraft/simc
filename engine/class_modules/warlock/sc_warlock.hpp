@@ -386,19 +386,19 @@ public:
     propagate_const<buff_t*> demonic_power;
     propagate_const<buff_t*> grimoire_of_sacrifice;
 
-    // affliction buffs
+    // Affliction Buffs
     propagate_const<buff_t*> active_uas;
     propagate_const<buff_t*> drain_life;
     propagate_const<buff_t*> nightfall;
     propagate_const<buff_t*> dark_soul_misery;
 
-    propagate_const<buff_t*> cascading_calamity;   // BFA - Azerite
-                                                   // TOCHECK - This is a talent now so not sure how they're
-                                                   // replacing the azerite for pre-patch
-    propagate_const<buff_t*> inevitable_demise;    // BFA - Azerite
-    propagate_const<buff_t*> wracking_brilliance;  // BFA - Azerite
+    // BFA - Affliction Azerite
+    propagate_const<buff_t*> cascading_calamity;  // TOCHECK - This is a talent now so not sure how they're
+                                                  // replacing the azerite for pre-patch
+    propagate_const<buff_t*> inevitable_demise;
+    propagate_const<buff_t*> wracking_brilliance;
 
-    // demonology buffs
+    // Demonology Buffs
     propagate_const<buff_t*> demonic_core;
     propagate_const<buff_t*> demonic_calling;
     propagate_const<buff_t*> inner_demons;
@@ -412,24 +412,29 @@ public:
     propagate_const<buff_t*> prince_malchezaar;
     propagate_const<buff_t*> eyes_of_guldan;
 
-    propagate_const<buff_t*> shadows_bite;         // BFA - Azerite
-    propagate_const<buff_t*> supreme_commander;    // BFA - Azerite
-    propagate_const<buff_t*> explosive_potential;  // BFA - Azerite
+    // BFA - Demonology Azerite
+    propagate_const<buff_t*> shadows_bite;
+    propagate_const<buff_t*> supreme_commander;
+    propagate_const<buff_t*> explosive_potential;
 
-    // destruction_buffs
+    // Destruction Buffs
     propagate_const<buff_t*> backdraft;
     propagate_const<buff_t*> reverse_entropy;
     propagate_const<buff_t*> grimoire_of_supremacy_driver;
     propagate_const<buff_t*> grimoire_of_supremacy;
     propagate_const<buff_t*> dark_soul_instability;
 
-    propagate_const<buff_t*> bursting_flare;      // BFA - Azerite
-    propagate_const<buff_t*> chaotic_inferno;     // BFA - Azerite
-    propagate_const<buff_t*> crashing_chaos;      // BFA - Azerite
-    propagate_const<buff_t*> crashing_chaos_vop;  // BFA - Azerite
-    propagate_const<buff_t*> rolling_havoc;       // BFA - Azerite
-    propagate_const<buff_t*> flashpoint;          // BFA - Azerite
-    propagate_const<buff_t*> chaos_shards;        // BFA - Azerite
+    // BFA - Destruction Azerite
+    propagate_const<buff_t*> bursting_flare;
+    propagate_const<buff_t*> chaotic_inferno;
+    propagate_const<buff_t*> crashing_chaos;
+    propagate_const<buff_t*> crashing_chaos_vop;
+    propagate_const<buff_t*> rolling_havoc;
+    propagate_const<buff_t*> flashpoint;
+    propagate_const<buff_t*> chaos_shards;
+
+    // Legendaries
+    propagate_const<buff_t*> madness_of_the_azjaqir;
   } buffs;
 
   // Gains

@@ -563,7 +563,24 @@ struct chaos_bolt_t : public destruction_spell_t
     if ( p()->buffs.backdraft->check() )
       h *= backdraft_cast_time;
 
+    // SL - Legendary
+    if ( p()->buffs.madness_of_the_azjaqir->check() )
+      h *= 1.0 + p()->buffs.madness_of_the_azjaqir->data().effectN( 2 ).percent();
+
     return h;
+  }
+
+  double action_multiplier() const override
+  {
+    double m = destruction_spell_t::action_multiplier();
+
+    // SL - Legendary
+    if ( p()->buffs.madness_of_the_azjaqir->check() )
+    {
+      m *= 1.0 + p()->buffs.madness_of_the_azjaqir->data().effectN( 1 ).percent();
+    }
+
+    return m;
   }
 
   timespan_t gcd() const override
@@ -619,6 +636,10 @@ struct chaos_bolt_t : public destruction_spell_t
     p()->buffs.crashing_chaos->decrement();
     p()->buffs.crashing_chaos_vop->decrement();
     p()->buffs.backdraft->decrement();
+
+    // SL - Legendary
+    if ( p()->legendary.madness_of_the_azjaqir->ok() )
+      p()->buffs.madness_of_the_azjaqir->trigger();
   }
 
   // Force spell to always crit
@@ -1029,6 +1050,11 @@ void warlock_t::create_buffs_destruction()
           ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
             resource_gain( RESOURCE_SOUL_SHARD, b->data().effectN( 1 ).base_value() / 10.0, gains.chaos_shards );
           } );
+
+  // Legendaries
+  buffs.madness_of_the_azjaqir =
+      make_buff( this, "madness_of_the_azjaqir", legendary.madness_of_the_azjaqir->effectN( 1 ).trigger() )
+          ->set_trigger_spell( legendary.madness_of_the_azjaqir );
 }
 
 void warlock_t::vision_of_perfection_proc_destro()
