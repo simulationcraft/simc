@@ -472,6 +472,9 @@ public:
     cooldown_t* flying_serpent_kick;
     cooldown_t* fortifying_brew;
     cooldown_t* healing_elixir;
+    cooldown_t* invoke_niuzao;
+    cooldown_t* invoke_xuen;
+    cooldown_t* invoke_yulon;
     cooldown_t* keg_smash;
     cooldown_t* rising_sun_kick;
     cooldown_t* reverse_harm;
@@ -795,6 +798,8 @@ public:
     cooldown.fist_of_the_white_tiger      = get_cooldown( "fist_of_the_white_tiger" );
     cooldown.fists_of_fury                = get_cooldown( "fists_of_fury" );
     cooldown.healing_elixir               = get_cooldown( "healing_elixir" );
+    cooldown.invoke_niuzao                = get_cooldown( "invoke_niuzao_the_black_ox" );
+    cooldown.invoke_xuen                  = get_cooldown( "invoke_xuen_the_white_tiger" );
     cooldown.keg_smash                    = get_cooldown( "keg_smash" );
     cooldown.reverse_harm                 = get_cooldown( "reverse_harm" );
     cooldown.rising_sun_kick              = get_cooldown( "rising_sun_kick" );
@@ -2033,6 +2038,16 @@ public:
     return static_cast<monk_t*>( owner );
   }
 
+  double composite_player_multiplier( school_e school ) const override
+  {
+    double cpm = owner->cache.player_multiplier( school );
+
+    if ( o()->conduit.xuens_bond->ok() )
+      cpm *= 1 + o()->conduit.xuens_bond.percent();
+
+    return cpm;
+  }
+
   void init_action_list() override
   {
     action_list_str = "auto_attack";
@@ -2505,6 +2520,9 @@ public:
 
       if ( p()->azerite.fury_of_xuen.ok() )
         p()->buff.fury_of_xuen_stacks->trigger();
+
+      if ( p()->conduit.xuens_bond->ok() )
+        p()->cooldown.invoke_xuen->adjust( -1 * p()->conduit.xuens_bond->effectN( 2 ).time_value(), true );
     }
     else
     {
@@ -3875,7 +3893,7 @@ struct blackout_kick_t : public monk_melee_attack_t
     if ( p()->azerite.swift_roundhouse.ok() )
       p()->buff.swift_roundhouse->trigger();
 
-    if ( p()->conduit.tumbling_technique->ok() && rng().roll( p()->conduit.tumbling_technique->effectN( 1 ).percent() ) )
+    if ( p()->conduit.tumbling_technique->ok() && rng().roll( p()->conduit.tumbling_technique.percent() ) )
     {
       if ( p()->talent.chi_torpedo->ok() )
         p()->cooldown.chi_torpedo->reset( true, 1 );
