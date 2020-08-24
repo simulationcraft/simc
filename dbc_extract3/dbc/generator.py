@@ -422,36 +422,28 @@ class DataGenerator(object):
         return ''
 
 class RealPPMModifierGenerator(DataGenerator):
-    def __init__(self, options, data_store):
-        super().__init__(options, data_store)
-
-        self._dbc = [ 'ChrSpecialization', 'SpellProcsPerMinute', 'SpellProcsPerMinuteMod', 'SpellAuraOptions' ]
-
     def generate(self, ids = None):
         output_data = []
 
-        for i, data in self._spellprocsperminutemod_db.items():
-            ppm_id = data.id_parent
-            spell_id = 0
-            for aopts_id, aopts_data in self._spellauraoptions_db.items():
-                if aopts_data.id_ppm != ppm_id:
-                    continue
-
-                spell_id = aopts_data.id_parent
+        for rppm in self.db('SpellProcsPerMinute').values():
+            for aopts in rppm.child_refs('SpellAuraOptions'):
+                spell_id = aopts.id_parent
                 if spell_id == 0:
-                    continue
+                     continue
 
-                output_data.append((data.id_chr_spec, data.coefficient, spell_id, data.unk_1))
+                for data in rppm.children('SpellProcsPerMinuteMod'):
+                    output_data.append((spell_id, data.id_chr_spec, data.unk_1, data.coefficient))
 
-        self._out.write('// RPPM Modifiers, wow build level %s\n' % self._options.build)
-        self._out.write('static const std::array<rppm_modifier_t, %d> __%s_data { {\n' % (
-            len(output_data), self.format_str('rppm_modifier')))
+        self.output_header(
+                header = 'RPPM Modifiers',
+                type = 'rppm_modifier_t',
+                array = 'rppm_modifier',
+                length = len(output_data))
 
-        for data in sorted(output_data, key = lambda v: v[2]):
-            self._out.write('  { %6u, %4u, %2u, %7.4f },\n' % (
-                data[2], data[0], data[3], data[1]))
+        for data in sorted(output_data, key = lambda v: v[0]):
+            self._out.write('  { %6u, %4u, %2u, %7.4f },\n' % data)
 
-        self._out.write('} };\n')
+        self.output_footer()
 
 class SpecializationEnumGenerator(DataGenerator):
     def __init__(self, options, data_store):
