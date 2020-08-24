@@ -4269,6 +4269,16 @@ struct fists_of_fury_tick_t : public monk_melee_attack_t
     return 1.0;
   }
 
+double action_multiplier() const override
+  {
+    double am = monk_melee_attack_t::action_multiplier();
+
+    if ( p()->conduit.inner_fury->ok() )
+      am *= 1 + p()->conduit.inner_fury.percent();
+
+    return am;
+  }
+
   void execute() override
   {
     monk_melee_attack_t::execute();
