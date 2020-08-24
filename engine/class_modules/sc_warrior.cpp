@@ -148,6 +148,10 @@ public:
     // Conduits
 
     // Shadowland Legendary
+    buff_t* cadence_of_fujieda;
+    buff_t* exploiter;
+    buff_t* will_of_the_berserker;
+
   } buff;
 
   // Cooldowns
@@ -453,6 +457,21 @@ public:
         the_great_storms_eye( spell_data_t::not_found() )
     {
     }
+    // General
+    item_runeforge_t leaper;
+    item_runeforge_t misshapen_mirror;
+    item_runeforge_t seismic_reverberation;
+    item_runeforge_t signet_of_tormented_kings;
+    // Arms
+    item_runeforge_t battlelord;
+    item_runeforge_t enduring_blow;
+    item_runeforge_t exploiter;
+    item_runeforge_t unhinged;
+    // Fury
+    item_runeforge_t cadence_of_fujieda;
+    item_runeforge_t deathmaker;
+    item_runeforge_t reckless_defense;
+    item_runeforge_t will_of_the_berserker;
 
   } legendary;
 
@@ -1481,7 +1500,9 @@ struct auto_attack_t : public warrior_attack_t
 
 struct mortal_strike_t20_t : public warrior_attack_t
 {
-  mortal_strike_t20_t( warrior_t* p, const std::string& name ) : warrior_attack_t( name, p, p->spec.mortal_strike )
+  double enduring_blow_chance;
+  mortal_strike_t20_t( warrior_t* p, const std::string& name ) : warrior_attack_t( name, p, p->spec.mortal_strike ),
+  enduring_blow_chance( p->legendary.enduring_blow->proc_chance() )
   {
     cooldown->duration = timespan_t::zero();
     weapon             = &( p->main_hand_weapon );
@@ -1492,6 +1513,7 @@ struct mortal_strike_t20_t : public warrior_attack_t
     double am = warrior_attack_t::action_multiplier();
 
     am *= 1.0 + p()->buff.overpower->check_stack_value();
+    am *= 1.0 + p()->buff.exploiter->check_value();
 
     return am;
   }
@@ -1520,6 +1542,10 @@ struct mortal_strike_t20_t : public warrior_attack_t
       {
         p()->buff.glory->trigger();
       }
+      if ( p()->legendary.enduring_blow->ok() && ( result_is_hit( execute_state->result ) ) && rng().roll( enduring_blow_chance ) )
+      {
+        td( execute_state->target )->debuffs_colossus_smash->trigger();
+      }
     }
     p()->buff.overpower->expire();
     p()->buff.executioners_precision->expire();
@@ -1528,8 +1554,10 @@ struct mortal_strike_t20_t : public warrior_attack_t
 
 struct mortal_strike_t : public warrior_attack_t
 {
+  double enduring_blow_chance;
   mortal_strike_t( warrior_t* p, const std::string& options_str )
-    : warrior_attack_t( "mortal_strike", p, p->spec.mortal_strike )
+    : warrior_attack_t( "mortal_strike", p, p->spec.mortal_strike ),
+      enduring_blow_chance( p->legendary.enduring_blow->proc_chance() )
   {
     parse_options( options_str );
 
@@ -1543,6 +1571,7 @@ struct mortal_strike_t : public warrior_attack_t
     double am = warrior_attack_t::action_multiplier();
 
     am *= 1.0 + p()->buff.overpower->check_stack_value();
+    am *= 1.0 + p()->buff.exploiter->check_value();
 
     return am;
   }
@@ -1577,8 +1606,13 @@ struct mortal_strike_t : public warrior_attack_t
       {
         p()->buff.glory->trigger();
       }
+      if ( p()->legendary.enduring_blow->ok() && ( result_is_hit( execute_state->result ) ) && rng().roll( enduring_blow_chance ) )
+      {
+        td( execute_state->target )->debuffs_colossus_smash->trigger();
+      }
     }
     p()->buff.overpower->expire();
+    p()->buff.exploiter->expire();
     p()->buff.executioners_precision->expire();
     p()->buff.weighted_blade->trigger( 1 );
   }
@@ -1837,6 +1871,10 @@ struct bloodthirst_t : public warrior_attack_t
     if ( result_is_hit( execute_state->result ) )
     {
       p()->buff.fujiedas_fury->trigger( 1 );
+      if ( p()->legendary.cadence_of_fujieda->ok() )
+      {
+        p()->buff.cadence_of_fujieda->trigger( 1 );
+      }
       if ( bloodthirst_heal )
       {
         bloodthirst_heal->execute();
@@ -2405,6 +2443,10 @@ struct execute_arms_t : public warrior_attack_t
     if ( p()->azerite.executioners_precision.ok() )
     {
       p()->buff.executioners_precision->trigger();
+    }
+    if ( p()->legendary.exploiter.ok() )
+    {
+      p()->buff.exploiter->trigger();
     }
   }
 
@@ -3057,6 +3099,10 @@ struct raging_blow_t : public warrior_attack_t
     {
       p()->buff.glory->trigger();
     }
+    if ( p()->buff.will_of_the_berserker->check() )
+    {
+      ( p()->buff.will_of_the_berserker->trigger() ); // RB refreshs, but does not initially trigger 
+    } 
   }
 
   bool ready() override
@@ -3171,6 +3217,10 @@ struct crushing_blow_t : public warrior_attack_t
     {
       p()->buff.glory->trigger();
     }
+    if ( p()->buff.will_of_the_berserker->check() )
+    {
+      ( p()->buff.will_of_the_berserker->trigger() ); // CB refreshs, but does not initially trigger 
+    } 
   }
 
   bool ready() override
@@ -3438,17 +3488,17 @@ struct rampage_attack_t : public warrior_attack_t
 {
   int aoe_targets;
   bool first_attack, first_attack_missed, valarjar_berserking, simmering_rage;
-//  double unbridled_chance; //unbridled ferocity azerite trait
+  double deathmaker_chance;
   double rage_from_valarjar_berserking;
   double rage_from_simmering_rage;
   rampage_attack_t( warrior_t* p, const spell_data_t* rampage, const std::string& name )
     : warrior_attack_t( name, p, rampage ),
       aoe_targets( as<int>( p->spell.whirlwind_buff->effectN( 1 ).base_value() ) ),
-//      unbridled_chance( p->azerite.unbridled_ferocity.spell()->effectN( 2 ).percent() ),
       first_attack( false ),
       first_attack_missed( false ),
       valarjar_berserking( false ),
       simmering_rage( false ),
+      deathmaker_chance( p->legendary.deathmaker->proc_chance() ),
       rage_from_valarjar_berserking( p->find_spell( 248179 )->effectN( 1 ).base_value() / 10.0 ),
       rage_from_simmering_rage(
           ( p->azerite.simmering_rage.spell()->effectN( 1 ).base_value() ) / 10.0 )
@@ -3489,12 +3539,19 @@ struct rampage_attack_t : public warrior_attack_t
       {
         p()->resource_gain( RESOURCE_RAGE, rage_from_simmering_rage, p()->gain.simmering_rage );
       }
-
       if ( result_is_hit( s->result ) && p()->sets->has_set_bonus( WARRIOR_FURY, T21, B2 ) )
       {
         double amount = s->result_amount * p()->sets->set( WARRIOR_FURY, T21, B2 )->effectN( 1 ).percent();
 
         residual_action::trigger( p()->active.slaughter, s->target, amount );
+      }
+      if ( p()->legendary.reckless_defense->ok() && target == s->target && execute_state->result == RESULT_CRIT )
+      {
+        p() -> cooldown.recklessness -> adjust( timespan_t::from_seconds( p()->legendary.reckless_defense->effectN( 1 ).base_value() ) );
+      }
+      if ( p()->legendary.deathmaker->ok() && ( result_is_hit( s->result ) ) && rng().roll( deathmaker_chance ) )
+      {
+        td( s->target )->debuffs_siegebreaker->trigger();
       }
     }
   }
@@ -3933,8 +3990,10 @@ struct shield_slam_t : public warrior_attack_t
 struct slam_t : public warrior_attack_t
 {
   bool from_Fervor;
+  double battlelord_chance;
   slam_t( warrior_t* p, const std::string& options_str )
-    : warrior_attack_t( "slam", p, p->spec.slam ), from_Fervor( false )
+    : warrior_attack_t( "slam", p, p->spec.slam ), from_Fervor( false ),
+      battlelord_chance( p->legendary.battlelord->proc_chance() )
   {
     parse_options( options_str );
     weapon                       = &( p->main_hand_weapon );
@@ -3991,6 +4050,10 @@ struct slam_t : public warrior_attack_t
     warrior_attack_t::execute();
     p()->buff.weighted_blade->expire();
     p()->buff.deadly_calm->decrement();
+    if ( p()->legendary.battlelord->ok() && rng().roll( battlelord_chance ) )
+    {
+      p()->cooldown.mortal_strike->reset( true );
+    }
   }
 
   bool ready() override
@@ -4397,6 +4460,11 @@ struct arms_whirlwind_parent_t : public warrior_attack_t
     {
       return dot_duration + ( base_tick_time * p()->legendary.najentuss_vertebrae->effectN( 2 ).base_value() );
     }
+    if ( p()->legendary.seismic_reverberation != spell_data_t::not_found() &&
+         as<int>( target_list().size() ) >= p()->legendary.seismic_reverberation->effectN( 1 ).base_value() )
+    {
+      return dot_duration + ( base_tick_time * p()->legendary.seismic_reverberation->effectN( 2 ).base_value() );
+    }
 
     return dot_duration;
   }
@@ -4572,6 +4640,10 @@ struct condemn_arms_t : public warrior_attack_t
     if ( p()->azerite.executioners_precision.ok() )
     {
       p()->buff.executioners_precision->trigger();
+    }
+    if ( p()->legendary.exploiter.ok() )
+    {
+      p()->buff.exploiter->trigger();
     }
   }
 
@@ -5748,6 +5820,22 @@ void warrior_t::init_spells()
   active.charge           = nullptr;
   active.slaughter        = nullptr;
 
+  // Runeforged Legendary Items
+  legendary.leaper            = find_runeforge_legendary( "Leaper" );
+  legendary.misshapen_mirror  = find_runeforge_legendary( "Misshapen Mirror" );
+  legendary.seismic_reverberation = find_runeforge_legendary( "Seismic Reverberation" );
+  legendary.signet_of_tormented_kings = find_runeforge_legendary( "Signet of Tormented Kings" );
+
+  legendary.battlelord        = find_runeforge_legendary( "Battlelord" );
+  legendary.enduring_blow     = find_runeforge_legendary( "Enduring_Blow" );
+  legendary.exploiter         = find_runeforge_legendary( "Exploiter" );
+  legendary.unhinged          = find_runeforge_legendary( "Unhinged" );
+
+  legendary.cadence_of_fujieda = find_runeforge_legendary( "Cadence of Fujieda" );
+  legendary.deathmaker         = find_runeforge_legendary( "Deathmaker" );
+  legendary.reckless_defense   = find_runeforge_legendary( "Reckless Defense" );
+  legendary.will_of_the_berserker = find_runeforge_legendary( "Will of the Berserker" );
+
   auto_attack_multiplier *= 1.0 + spec.fury_warrior->effectN( 4 ).percent();
 
   if ( covenant.ancient_aftershock->ok() )
@@ -6815,6 +6903,8 @@ void warrior_t::create_buffs()
     -> add_stat( STAT_MASTERY_RATING, azerite.bastion_of_might.value( 1 ) * azerite.vision_of_perfection_percentage )
     -> set_duration( bastion_of_might_buff -> duration() * azerite.vision_of_perfection_percentage );
 
+  // Covenant Abilities====================================================================================================
+
   buff.conquerors_banner = make_buff( this, "conquerors_banner", covenant.conquerors_banner )
                                 ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ )
                                 {
@@ -6830,7 +6920,28 @@ void warrior_t::create_buffs()
 
   buff.conquerors_frenzy    = make_buff( this, "conquerors_frenzy", find_spell( 325862 ) )
                                ->set_default_value( find_spell( 325862 )->effectN( 2 ).percent() )
-                               ->add_invalidate( CACHE_ATTACK_SPEED );                                     
+                               ->add_invalidate( CACHE_ATTACK_SPEED );   
+
+  // Covenant Abilities====================================================================================================
+
+  buff.cadence_of_fujieda = make_buff( this, "cadence_of_fujieda", find_spell( 335597 ) )
+                           ->set_default_value( find_spell( 335597 )->effectN( 1 ).percent() )
+                           ->add_invalidate( CACHE_ATTACK_HASTE );
+
+  buff.exploiter = make_buff( this, "exploiter", find_spell( 335452 ) )
+          ->set_default_value( find_spell( 335452 )->effectN( 1 ).percent() );
+
+  //const spell_data_t* will_of_the_berserker_trigger = legendary.will_of_the_berserker->effectN( 1 ).trigger();
+  //const spell_data_t* will_of_the_berserker_buff    = will_of_the_berserker_trigger ->effectN( 1 ).trigger();
+  //buff.will_of_the_berserker = make_buff( this, "will_of_the_berserker", will_of_the_berserker_buff    )
+                               //->set_trigger_spell( will_of_the_berserker_trigger  )
+                               //->set_default_value( legendary.will_of_the_berserker.value() )
+                               //->add_invalidate( CACHE_CRIT_CHANCE );
+
+  buff.will_of_the_berserker = make_buff( this, "will_of_the_berserker", find_spell( 335597 ) )
+                               ->set_default_value( find_spell( 335597 )->effectN( 1 ).percent() )
+                               ->add_invalidate( CACHE_CRIT_CHANCE );
+                                  
 }
 
 // warrior_t::init_scaling ==================================================
@@ -7241,11 +7352,11 @@ double warrior_t::composite_player_multiplier( school_e school ) const
 
 double warrior_t::composite_melee_speed() const
 {
-  double a = player_t::composite_melee_speed();
+  double s = player_t::composite_melee_speed();
 
-  a *= 1.0 / ( 1.0 + buff.conquerors_frenzy->value() );
+  s *= 1.0 / ( 1.0 + buff.conquerors_frenzy->value() );
 
-  return a;
+  return s;
 }
 
 // warrior_t::composite_melee_haste ===========================================
@@ -7257,6 +7368,8 @@ double warrior_t::composite_melee_haste() const
   a *= 1.0 / ( 1.0 + buff.enrage->check_value() );
 
   a *= 1.0 / ( 1.0 + buff.frenzy->check_stack_value() );
+
+  a *= 1.0 / ( 1.0 + buff.cadence_of_fujieda->check_value() );
 
   a *= 1.0 / ( 1.0 + buff.into_the_fray->check_stack_value() );
 
@@ -7467,6 +7580,7 @@ double warrior_t::composite_melee_crit_chance() const
   double c = player_t::composite_melee_crit_chance();
 
   c += buff.recklessness->check_value();
+  c += buff.will_of_the_berserker->check_value();
 
   return c;
 }
