@@ -709,11 +709,13 @@ void warlock_t::init_spells_affliction()
   // General
   spec.affliction                   = find_specialization_spell( 137043 );
   mastery_spells.potent_afflictions = find_mastery_spell( WARLOCK_AFFLICTION );
+
   // Specialization Spells
   spec.unstable_affliction = find_specialization_spell( "Unstable Affliction" );
   spec.agony               = find_specialization_spell( "Agony" );
   spec.agony_2             = find_spell( 231792 );
   spec.summon_darkglare    = find_specialization_spell( "Summon Darkglare" );
+
   // Talents
   talents.nightfall           = find_talent_spell( "Nightfall" );
   talents.drain_soul          = find_talent_spell( "Drain Soul" );
@@ -726,6 +728,7 @@ void warlock_t::init_spells_affliction()
   talents.vile_taint          = find_talent_spell( "Vile Taint" );
   talents.creeping_death      = find_talent_spell( "Creeping Death" );
   talents.dark_soul_misery    = find_talent_spell( "Dark Soul: Misery" );
+
   // BFA - Azerite
   azerite.cascading_calamity  = find_azerite_spell( "Cascading Calamity" );
   azerite.dreadful_calling    = find_azerite_spell( "Dreadful Calling" );
@@ -733,6 +736,18 @@ void warlock_t::init_spells_affliction()
   azerite.sudden_onset        = find_azerite_spell( "Sudden Onset" );
   azerite.wracking_brilliance = find_azerite_spell( "Wracking Brilliance" );
   azerite.pandemic_invocation = find_azerite_spell( "Pandemic Invocation" );
+
+  // Legendaries
+  legendary.malefic_wrath              = find_runeforge_legendary( "Malefic Wrath" );
+  legendary.perpetual_agony_of_azjaqir = find_runeforge_legendary( "Perpetual Agony of Ajz'Aqir" );
+  legendary.wrath_of_consumption       = find_runeforge_legendary( "Wrath of Consumption" );
+
+  // Conduits
+  conduit.cold_embrace       = find_conduit_spell( "Cold Embrace" );
+  conduit.corrupting_leer    = find_conduit_spell( "Corrupting Leer" );
+  conduit.focused_malignancy = find_conduit_spell( "Focused Malginancy" );
+  conduit.rolling_agony      = find_conduit_spell( "Rolling Agony" );
+
   // Actives
   active.pandemic_invocation = new pandemic_invocation_t( this );
 }

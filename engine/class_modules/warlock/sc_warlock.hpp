@@ -258,6 +258,64 @@ public:
     azerite_essence_t vision_of_perfection;
   } azerite_essence;
 
+  struct
+  {
+    // Legendaries
+    // Cross-spec
+    item_runeforge_t claw_of_endereth;
+    item_runeforge_t mark_of_borrowed_power;
+    item_runeforge_t wilfreds_sigil_of_superior_summoning;
+    // Affliction
+    item_runeforge_t malefic_wrath;
+    item_runeforge_t perpetual_agony_of_azjaqir;
+    item_runeforge_t sacrolashs_dark_strike;
+    item_runeforge_t wrath_of_consumption;
+    // Demonology
+    item_runeforge_t balespiders_burning_core;
+    item_runeforge_t forces_of_horned_nightmare;
+    item_runeforge_t grim_inquisitors_dread_calling;
+    item_runeforge_t implosive_potential;
+    // Destruction
+    item_runeforge_t cinders_of_the_azjaqir;
+    item_runeforge_t embers_of_the_diabolic_raiment;
+    item_runeforge_t madness_of_the_azjaqir;
+    item_runeforge_t odr_shawl_of_the_ymirjar;
+  } legendary;
+
+  struct
+  {
+    // Conduits
+    // Covenant Abilities
+    conduit_data_t catastrophic_origin;   // Venthyr
+    conduit_data_t exhumed_soul;          // Night Fae
+    conduit_data_t prolonged_decimation;  // Necrolord
+    conduit_data_t soul_tithe;            // Kyrian
+    // Affliction
+    conduit_data_t cold_embrace;
+    conduit_data_t corrupting_leer;
+    conduit_data_t focused_malignancy;
+    conduit_data_t rolling_agony;
+    // Demonology
+    conduit_data_t borne_of_blood;
+    conduit_data_t carnivorous_stalkers;
+    conduit_data_t fel_commando;
+    conduit_data_t tyrants_soul;
+    // Destruction
+    conduit_data_t ashen_remains;
+    conduit_data_t combusting_engine;
+    conduit_data_t duplicitous_havoc;
+    conduit_data_t infernal_brand;
+  } conduit;
+
+  struct
+  {
+    // Covenant Abilities
+    const spell_data_t* decimating_bolt;        // Necrolord
+    const spell_data_t* impending_catastrophe;  // Venthyr
+    const spell_data_t* scouring_tithe;         // Kyrian
+    const spell_data_t* soul_rot;               // Night Fae
+  } covenant;
+
   // Mastery Spells
   struct mastery_spells_t
   {

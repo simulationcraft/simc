@@ -1084,6 +1084,18 @@ void warlock_t::init_spells_destruction()
   azerite.rolling_havoc   = find_azerite_spell( "Rolling Havoc" );
   azerite.flashpoint      = find_azerite_spell( "Flashpoint" );
   azerite.chaos_shards    = find_azerite_spell( "Chaos Shards" );
+
+  // Legendaries
+  legendary.cinders_of_the_azjaqir         = find_runeforge_legendary( "Cinders of the Azj'Aqir" );
+  legendary.embers_of_the_diabolic_raiment = find_runeforge_legendary( "Embers of the Diabolic Raiment" );
+  legendary.madness_of_the_azjaqir         = find_runeforge_legendary( "Madness of the Azj'Aqir" );
+  legendary.odr_shawl_of_the_ymirjar       = find_runeforge_legendary( "Odr, Shawl of the Ymirjar" );
+
+  // Conduits
+  conduit.ashen_remains     = find_conduit_spell( "Ashen Remains" );
+  conduit.combusting_engine = find_conduit_spell( "Combusting Engine" );
+  conduit.duplicitous_havoc = find_conduit_spell( "Duplicitous Havoc" );
+  conduit.infernal_brand    = find_conduit_spell( "Infernal Brand" );
 }
 
 void warlock_t::init_gains_destruction()

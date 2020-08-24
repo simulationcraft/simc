@@ -1100,6 +1100,18 @@ void warlock_t::init_spells_demonology()
   azerite.explosive_potential = find_azerite_spell( "Explosive Potential" );
   azerite.baleful_invocation  = find_azerite_spell( "Baleful Invocation" );
 
+  // Legendaries
+  legendary.balespiders_burning_core       = find_runeforge_legendary( "Balespider's Burning Core" );
+  legendary.forces_of_horned_nightmare     = find_runeforge_legendary( "Forces of Horned Nighhtmare" );
+  legendary.grim_inquisitors_dread_calling = find_runeforge_legendary( "Grim Inquisitor's Dread Calling" );
+  legendary.implosive_potential            = find_runeforge_legendary( "Implosive Potential" );
+
+  // Conduits
+  conduit.borne_of_blood       = find_conduit_spell( "Borne of Blood" );
+  conduit.carnivorous_stalkers = find_conduit_spell( "Carnivorous Stalkers" );
+  conduit.fel_commando         = find_conduit_spell( "Fel Commando" );
+  conduit.tyrants_soul         = find_conduit_spell( "Tyrant's Soul" );
+
   active.summon_random_demon = new actions_demonology::summon_random_demon_t( this, "" );
 
   // Initialize some default values for pet spawners
