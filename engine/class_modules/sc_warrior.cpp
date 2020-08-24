@@ -142,7 +142,9 @@ public:
     stat_buff_t* test_of_might;
     buff_t* trample_the_weak;
     // Covenant
-
+    buff_t* conquerors_banner;
+    buff_t* conquerors_frenzy;
+    buff_t* glory;
     // Conduits
 
     // Shadowland Legendary
@@ -580,6 +582,7 @@ public:
   double composite_player_multiplier( school_e school ) const override;
   // double composite_player_target_multiplier( player_t* target, school_e school ) const override;
   double matching_gear_multiplier( attribute_e attr ) const override;
+  double composite_melee_speed() const override;
   double composite_melee_haste() const override;
   // double composite_armor_multiplier() const override;
   double composite_bonus_armor() const override;
@@ -1513,6 +1516,10 @@ struct mortal_strike_t20_t : public warrior_attack_t
       {
         execute_state->target->debuffs.mortal_wounds->trigger();
       }
+      if ( p()->covenant.conquerors_banner->ok() && p()->buff.conquerors_banner->check() )
+      {
+        p()->buff.glory->trigger();
+      }
     }
     p()->buff.overpower->expire();
     p()->buff.executioners_precision->expire();
@@ -1565,6 +1572,10 @@ struct mortal_strike_t : public warrior_attack_t
       if ( !sim->overrides.mortal_wounds && execute_state->target->debuffs.mortal_wounds )
       {
         execute_state->target->debuffs.mortal_wounds->trigger();
+      }
+      if ( p()->covenant.conquerors_banner->ok() && p()->buff.conquerors_banner->check() )
+      {
+        p()->buff.glory->trigger();
       }
     }
     p()->buff.overpower->expire();
@@ -3042,6 +3053,10 @@ struct raging_blow_t : public warrior_attack_t
     {
       p()->buff.pulverizing_blows->trigger();
     }
+    if ( p()->covenant.conquerors_banner->ok() && p()->buff.conquerors_banner->check() )
+    {
+      p()->buff.glory->trigger();
+    }
   }
 
   bool ready() override
@@ -3151,6 +3166,10 @@ struct crushing_blow_t : public warrior_attack_t
     if ( p()->azerite.pulverizing_blows.ok() )
     {
       p()->buff.pulverizing_blows->trigger();
+    }
+    if ( p()->covenant.conquerors_banner->ok() && p()->buff.conquerors_banner->check() )
+    {
+      p()->buff.glory->trigger();
     }
   }
 
@@ -4723,7 +4742,58 @@ if ( ! always && candidate_target->health_percentage() > execute_pct_below && ca
 
 // Conquerors Banner=========================================================
 
+struct conquerors_banner_t : public warrior_spell_t
+{
+  conquerors_banner_t( warrior_t* p, const std::string& options_str )
+    : warrior_spell_t( "conquerors_banner", p, p->covenant.conquerors_banner )
+  {
+    parse_options( options_str );
+    callbacks  = false;
 
+    harmful = false;
+  }
+
+  void execute() override
+  {
+    warrior_spell_t::execute();
+
+    p()->buff.conquerors_banner->trigger();
+  }
+};
+
+// Conquerors Frenzy===========================================================
+
+struct conquerors_frenzy_t : public warrior_spell_t
+{
+  conquerors_frenzy_t( warrior_t* p, const std::string& options_str )
+    : warrior_spell_t( "conquerors_frenzy", p, p->find_spell( 325784 ) )
+  {
+    parse_options( options_str );
+    callbacks  = false;
+
+    harmful = false;
+  }
+
+  bool ready() override
+  {
+    if ( !p()->buff.conquerors_banner->check() )
+    {
+      return false;
+    }
+
+    return warrior_spell_t::ready();
+  }
+
+  void execute() override
+  {
+    warrior_spell_t::execute();
+    timespan_t duration = timespan_t::from_seconds( p()->buff.glory->stack_value() );
+    p()->buff.conquerors_frenzy->trigger( duration );
+    p()->cooldown.conquerors_banner->reset( false );
+    p()->cooldown.conquerors_banner->start();
+    p()->buff.glory->expire(); 
+  }
+};
 
 // Spear of Bastion==========================================================
 
@@ -5343,6 +5413,10 @@ action_t* warrior_t::create_action( util::string_view name, const std::string& o
       return new fury_condemn_parent_t( this, options_str );
     }
   }
+  if ( name == "conquerors_banner" )
+    return new conquerors_banner_t( this, options_str );
+  if ( name == "conquerors_frenzy" )
+    return new conquerors_frenzy_t( this, options_str );
   if ( name == "deadly_calm" )
     return new deadly_calm_t( this, options_str );
   if ( name == "defensive_stance" )
@@ -5648,7 +5722,7 @@ void warrior_t::init_spells()
   {
   covenant.condemn               = find_spell( 317349 );
   }
-  covenant.conquerors_banner     = find_covenant_spell( "Conquerors Banner" );
+  covenant.conquerors_banner     = find_covenant_spell( "Conqueror's Banner" );
   covenant.spear_of_bastion      = find_covenant_spell( "Spear of Bastion" );
 
 
@@ -5729,6 +5803,7 @@ void warrior_t::init_spells()
 
   cooldown.charge                           = get_cooldown( "charge" );
   cooldown.colossus_smash                   = get_cooldown( "colossus_smash" );
+  cooldown.conquerors_banner                = get_cooldown( "conquerors_banner" );
   cooldown.deadly_calm                      = get_cooldown( "deadly_calm" );
   cooldown.demoralizing_shout               = get_cooldown( "demoralizing_shout" );
   cooldown.dragon_roar                      = get_cooldown( "dragon_roar" );
@@ -6745,6 +6820,24 @@ void warrior_t::create_buffs()
     -> add_stat( STAT_MASTERY_RATING, azerite.bastion_of_might.value( 1 ) * azerite.vision_of_perfection_percentage )
     -> set_duration( bastion_of_might_buff -> duration() * azerite.vision_of_perfection_percentage );
 
+  buff.conquerors_banner = make_buff( this, "conquerors_banner", covenant.conquerors_banner )
+                                ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ )
+                                {
+                                  if ( new_ == 0 )
+                                  {
+                                    cooldown.conquerors_banner->reset( false );
+                                    cooldown.conquerors_banner->start();
+                                  }
+                                  else
+                                    buff.conquerors_banner->expire();
+                                } );
+
+  buff.glory = make_buff( this, "glory", find_spell( 325787 ) )
+                               ->set_default_value( find_spell( 325787 )->effectN( 1 ).base_value() );
+
+  buff.conquerors_frenzy    = make_buff( this, "conquerors_frenzy", find_spell( 325862 ) )
+                               ->set_default_value( find_spell( 325862 )->effectN( 2 ).percent() )
+                               ->add_invalidate( CACHE_ATTACK_SPEED );                                     
 }
 
 // warrior_t::init_scaling ==================================================
@@ -7149,6 +7242,17 @@ double warrior_t::composite_player_multiplier( school_e school ) const
   m *= 1.0 + buff.fujiedas_fury->check_stack_value();
 
   return m;
+}
+
+// warrior_t::composite_attack_speed ===========================================
+
+double warrior_t::composite_melee_speed() const
+{
+  double a = player_t::composite_melee_speed();
+
+  a *= 1.0 / ( 1.0 + buff.conquerors_frenzy->check_value() );
+
+  return a;
 }
 
 // warrior_t::composite_melee_haste ===========================================
