@@ -4,7 +4,7 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 /*
-NOTES:
+]NOTES:
 
 - To evaluate Combo Strikes in the APL, use:
     if=combo_break    true if action is a repeat and can combo strike
@@ -627,6 +627,103 @@ public:
     const spell_data_t* vision_of_perfection_2;
   } azerite_spells;
 
+  // Covenant
+  struct covenant_t
+  {
+    // Kyrian: 
+    // Weapons of Order - Increases your Mastery by X% and your
+    // Windwalker - Rising Sun Kick reduces the cost of your Chi Abilities by 1 for 5 sec
+    // Mistweaver - Essence Font heals nearby allies for (30% of Spell power) health on channel start and end
+    // Brewmaster - Keg Smash increases the damage you deal to those enemies by X%, up to 5*X% for 8 sec.
+    const spell_data_t* kyrian;
+
+    // Night Fae
+    // Faeline Stomp - Strike the ground fiercely to expose a faeline for 30 sec, dealing (X% of Attack power) Nature damage
+    // Brewmaster - and igniting enemies with Breath of Fire
+    // Mistweaver - and healing allies with an Essence Font bolt
+    // Windwalker - and ripping Chi and Energy Spheres out of enemies
+    // Your abilities have a 6% chance of resetting the cooldown of Faeline Stomp while fighting on a faeline.
+    const spell_data_t* night_fae;
+
+    // Venthyr
+    // Fallen Order
+    // Opens a mystic portal for 24 sec. Every 2 sec, it summons a spirit of your order's fallen Ox, Crane, or Tiger adepts for 4 sec.
+    // Fallen [Ox][Crane][Tiger] adepts assist for an additional 2 sec, and will [attack your enemies with Breath of Fire][heal with Enveloping Mist][assault with Fists of Fury].
+    const spell_data_t* venthyr;
+
+    // Necrolord
+    // Bonedust Brew
+    // Hurl a brew created from the bones of your enemies at the ground, coating all targets struck for 10 sec.  Your abilities have a 35% chance to affect the target a second time at 35% effectiveness as Shadow damage or healing.
+    // Mistweaver - Gust of Mists heals targets with your Bonedust Brew active for an additional (42% of Attack power)
+    // Brewmaster - Tiger Palm and Keg Smash reduces the cooldown of your brews by an additional 1 sec. when striking enemies with your Bonedust Brew active
+    // Windwalker - Spinning Crane Kick refunds 1 Chi when striking enemies with your Bonedust Brew active
+    const spell_data_t* necrolord;
+  } covenant;
+
+  // Conduits
+  struct conduit_t
+  {
+    // General
+    conduit_data_t dizzying_tumble;
+    conduit_data_t fortifying_ingredients;
+    conduit_data_t grounding_breath;
+    conduit_data_t harm_denial;
+    conduit_data_t lingering_numbness;
+    conduit_data_t swift_transference;
+    conduit_data_t tumbling_technique;
+
+    // Brewmaster
+    conduit_data_t celestial_effervescence;
+    conduit_data_t evasive_stride;
+    conduit_data_t scalding_brew;
+    conduit_data_t walk_with_the_ox;
+
+    // Mistweaver
+    conduit_data_t jade_bond;
+    conduit_data_t nourishing_chi;
+    conduit_data_t rising_sun_revival;
+    conduit_data_t resplendent_mist;
+
+    // Windwalker
+    conduit_data_t calculated_strikes;
+    conduit_data_t coordinated_offensive;
+    conduit_data_t inner_fury;
+    conduit_data_t xuens_bond;
+
+    // Covenant
+    conduit_data_t strike_with_clarity;
+    conduit_data_t imbued_reflections;
+    conduit_data_t bone_marrow_hops;
+    conduit_data_t way_of_the_fae;
+  } conduit;
+
+  struct legendary_t
+  {
+    // General
+    item_runeforge_t fatal_touch;                        // 7081
+    item_runeforge_t invokers_delight;                   // 7082
+    item_runeforge_t roll_out;                           // 7080
+    item_runeforge_t escape_from_reality;                // 7184
+
+    // Brewmaster
+    item_runeforge_t charred_passions;                   // 7076
+    item_runeforge_t mighty_pour;                        // 7078
+    item_runeforge_t shaohaos_might;                     // 7079
+    item_runeforge_t stormstouts_last_keg;               // 7077
+
+    // Mistweaver
+    item_runeforge_t ancient_teachings_of_the_monastery; // 7075
+    item_runeforge_t clouded_focus;                      // 7074
+    item_runeforge_t tear_of_morning;                    // 7072
+    item_runeforge_t yolons_whisper;                     // 7073
+
+    // Windwalker
+    item_runeforge_t jade_ignition;                      // 7071
+    item_runeforge_t keefers_skyreach;                   // 7068
+    item_runeforge_t last_emperors_capacitor;            // 7069
+    item_runeforge_t xuens_battlegear;                   // 7070
+  } legendary;
+
   struct pets_t
   {
     pets::storm_earth_and_fire_pet_t* sef[ SEF_PET_MAX ];
@@ -673,6 +770,9 @@ public:
       rppm(),
       azerite(),
       azerite_spells(),
+      covenant(),
+      conduit(),
+      legendary(),
       pet(),
       //      pet_spawner( pets_t() ),
       user_options(),
@@ -7239,7 +7339,75 @@ void monk_t::init_spells()
   spec.windwalker_monk            = find_specialization_spell( "Windwalker Monk" );
   spec.windwalking                = find_specialization_spell( "Windwalking" );
 
-  // Azerite Powers ===================================
+  // Covenant Abilities ================================
+
+  covenant.kyrian                 = find_covenant_spell( "Weapons of Order" );
+  covenant.night_fae              = find_covenant_spell( "Faeline Stomp" );;
+  covenant.venthyr                = find_covenant_spell( "Fallen Order" );;
+  covenant.necrolord              = find_covenant_spell( "Bonedust Brew" );;
+
+  // Soulbind Conduits Abilities =======================
+
+  // General
+  conduit.dizzying_tumble         = find_conduit_spell( "Dizzying Tumble" );
+  conduit.fortifying_ingredients  = find_conduit_spell( "Fortifying Ingredients" );
+  conduit.grounding_breath        = find_conduit_spell( "Grounding Breath" );
+  conduit.harm_denial             = find_conduit_spell( "Harm Denial" );
+  conduit.lingering_numbness      = find_conduit_spell( "Lingering Numbness" );
+  conduit.swift_transference      = find_conduit_spell( "Swift Transference" );
+  conduit.tumbling_technique      = find_conduit_spell( "Tumbling Technique" );
+
+  // Brewmaster
+  conduit.celestial_effervescence = find_conduit_spell( "Celestial Effervescence" );
+  conduit.evasive_stride          = find_conduit_spell( "Evasive Stride" );
+  conduit.scalding_brew           = find_conduit_spell( "Scalding Brew" );
+  conduit.walk_with_the_ox        = find_conduit_spell( "Walk with the Ox" );
+
+  // Mistweaver
+  conduit.jade_bond               = find_conduit_spell( "Jade Bond" );
+  conduit.nourishing_chi          = find_conduit_spell( "Nourishing Chi" );
+  conduit.rising_sun_revival      = find_conduit_spell( "Rising Sun Revival" );
+  conduit.resplendent_mist        = find_conduit_spell( "Resplendent Mist" );
+
+  // Windwalker
+  conduit.calculated_strikes      = find_conduit_spell( "Calculated Strikes" );
+  conduit.coordinated_offensive   = find_conduit_spell( "Coordinated Offensive" );
+  conduit.inner_fury              = find_conduit_spell( "Inner Fury" );
+  conduit.xuens_bond              = find_conduit_spell( "Xuen's Bond" );
+
+  // Covenant
+  conduit.strike_with_clarity     = find_conduit_spell( "Strike with Clarity" );
+  conduit.imbued_reflections      = find_conduit_spell( "Imbued Reflections" );
+  conduit.bone_marrow_hops        = find_conduit_spell( "Bone Marrow Hops" );
+  conduit.way_of_the_fae          = find_conduit_spell( "Way of the Fae" );
+
+  // Shadowland Legendaries ============================
+
+  // General
+  legendary.fatal_touch                        = find_runeforge_legendary( "Fatal Touch" );
+  legendary.invokers_delight                   = find_runeforge_legendary( "Invoker's Delight" );
+  legendary.roll_out                           = find_runeforge_legendary( "Roll Out" );
+  legendary.escape_from_reality                = find_runeforge_legendary( "Escape from Reality" );
+
+  // Brewmaster
+  legendary.charred_passions                   = find_runeforge_legendary( "Charred Passions" );
+  legendary.mighty_pour                        = find_runeforge_legendary( "Mighty Pour" );
+  legendary.shaohaos_might                     = find_runeforge_legendary( "Shaohao's Might" );
+  legendary.stormstouts_last_keg               = find_runeforge_legendary( "Stormstout's Last Keg" );
+
+  // Mistweaver
+  legendary.ancient_teachings_of_the_monastery = find_runeforge_legendary( "Ancient Teachings of the Monastery" );
+  legendary.clouded_focus                      = find_runeforge_legendary( "Clouded Focus" );
+  legendary.tear_of_morning                    = find_runeforge_legendary( "Tear of Morning" );
+  legendary.yolons_whisper                     = find_runeforge_legendary( "Yu'lon's Whisper" );
+
+  // Windwalker
+  legendary.jade_ignition                      = find_runeforge_legendary( "Jade Ignition" );
+  legendary.keefers_skyreach                   = find_runeforge_legendary( "Keefer's Skyreach" );
+  legendary.last_emperors_capacitor            = find_runeforge_legendary( "Last Emperor's Capacitor" );
+  legendary.xuens_battlegear                   = find_runeforge_legendary( "Xuen's Battlegear" );
+
+  // Azerite Powers ====================================
 
   // General
   azerite.sweep_the_leg = find_azerite_spell( "Sweep the Leg" );
