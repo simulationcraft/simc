@@ -1167,9 +1167,24 @@ struct force_of_nature_t : public pet_t
 
   force_of_nature_t( sim_t* sim, druid_t* owner ) : pet_t( sim, owner, "treant", true /*GUARDIAN*/, true )
   {
-    owner_coeff.ap_from_sp = 0.6;  // not confirmed
-    resource_regeneration  = regen_type::DISABLED;
-    main_hand_weapon.type  = WEAPON_BEAST;
+    // Shadowlands (needs more testing): 0.72@50, ~0.70@51, ~0.68@52, ~0.66@53,54,55,56,57, ~0.43@58, ~0.39@59, 0.33@60
+    switch ( o()->true_level )
+    {
+      case 51: owner_coeff.ap_from_sp = 0.70; break;
+      case 52: owner_coeff.ap_from_sp = 0.68; break;
+      case 53:
+      case 54:
+      case 55:
+      case 56:
+      case 57: owner_coeff.ap_from_sp = 0.66; break;
+      case 58: owner_coeff.ap_from_sp = 0.43; break;
+      case 59: owner_coeff.ap_from_sp = 0.39; break;
+      case 60: owner_coeff.ap_from_sp = 0.33; break;
+      default: owner_coeff.ap_from_sp = 0.72; break;
+    }
+
+    resource_regeneration = regen_type::DISABLED;
+    main_hand_weapon.type = WEAPON_BEAST;
   }
 
   void init_action_list() override
@@ -6830,7 +6845,7 @@ struct force_of_nature_t : public druid_spell_t
   {
     parse_options( options );
     harmful = may_crit = false;
-    summon_duration    = p->find_spell( 248280 )->duration() + timespan_t::from_millis( 1 );
+    summon_duration    = p->talent.force_of_nature->effectN( 2 ).trigger()->duration() + 1_ms;
     energize_amount    = p->talent.force_of_nature->effectN( 5 ).resource( RESOURCE_ASTRAL_POWER );
   }
 
