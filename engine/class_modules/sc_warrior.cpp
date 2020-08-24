@@ -4787,7 +4787,7 @@ struct conquerors_frenzy_t : public warrior_spell_t
   void execute() override
   {
     warrior_spell_t::execute();
-    timespan_t duration = timespan_t::from_seconds( p()->buff.glory->stack_value() );
+    timespan_t duration = timespan_t::from_seconds( p()->buff.glory->check_stack_value() );
     p()->buff.conquerors_frenzy->trigger( duration );
     p()->cooldown.conquerors_banner->reset( false );
     p()->cooldown.conquerors_banner->start();
@@ -6828,8 +6828,6 @@ void warrior_t::create_buffs()
                                     cooldown.conquerors_banner->reset( false );
                                     cooldown.conquerors_banner->start();
                                   }
-                                  else
-                                    buff.conquerors_banner->expire();
                                 } );
 
   buff.glory = make_buff( this, "glory", find_spell( 325787 ) )
@@ -7250,7 +7248,7 @@ double warrior_t::composite_melee_speed() const
 {
   double a = player_t::composite_melee_speed();
 
-  a *= 1.0 / ( 1.0 + buff.conquerors_frenzy->check_value() );
+  a *= 1.0 / ( 1.0 + buff.conquerors_frenzy->value() );
 
   return a;
 }
