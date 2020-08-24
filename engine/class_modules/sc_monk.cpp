@@ -5113,6 +5113,9 @@ struct roll_t : public monk_spell_t
       cooldown->duration += player->talent.celerity->effectN( 1 ).time_value();
       cooldown->charges += (int)player->talent.celerity->effectN( 2 ).base_value();
     }
+
+    if ( player->legendary.roll_out.ok() )
+      cooldown->charges += (int)player->legendary.roll_out->effectN( 1 ).base_value();
   }
 };
 
@@ -5128,6 +5131,9 @@ struct chi_torpedo_t : public monk_spell_t
     parse_options( options_str );
 
     cooldown->charges += (int)player->spec.roll_2->effectN( 1 ).base_value();
+
+    if ( player->legendary.roll_out.ok() )
+      cooldown->charges += (int)player->legendary.roll_out->effectN( 1 ).base_value();
   }
 
   void execute() override
