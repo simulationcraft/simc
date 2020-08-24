@@ -21,7 +21,6 @@ GENERAL:
 - Covenants
 - Soul Binds
 - Change Eye of the Tiger from a dot to an interaction with a buff
-- Update Whirling Dragon Punch buff and ready check
 
 WINDWALKER:
 - Implement Touch of Death Rank 2/3
@@ -3546,6 +3545,15 @@ struct rising_sun_kick_t : public monk_melee_attack_t
     trigger_attack->set_target( target );
     trigger_attack->execute();
 
+    if ( p()->talent.whirling_dragon_punch->ok() && p()->cooldown.fists_of_fury->down() )
+    {
+        if ( this->cooldown_duration() <= p()->cooldown.fists_of_fury->remains() )
+            p()->buff.whirling_dragon_punch->set_duration( this->cooldown_duration() );
+        else
+          p()->buff.whirling_dragon_punch->set_duration( p()->cooldown.fists_of_fury->remains() );
+        p()->buff.whirling_dragon_punch->trigger();
+    }
+
     if ( p()->azerite.glory_of_the_dawn.ok() )
     {
       if ( rng().roll( p()->azerite.glory_of_the_dawn.spell_ref().effectN( 3 ).percent() ) )
@@ -3742,8 +3750,10 @@ struct blackout_kick_t : public monk_melee_attack_t
       case MONK_WINDWALKER:
       {
         timespan_t cd_reduction = -1 * p()->spec.blackout_kick->effectN( 3 ).time_value();
-        p()->cooldown.rising_sun_kick->adjust( cd_reduction );
-        p()->cooldown.fists_of_fury->adjust( cd_reduction );
+        p()->cooldown.rising_sun_kick->adjust( cd_reduction, true );
+        p()->cooldown.fists_of_fury->adjust( cd_reduction, true );
+        if ( p()->buff.whirling_dragon_punch->up() )
+          p()->buff.whirling_dragon_punch->extend_duration( p(), cd_reduction );
         break;
       }
       default:
@@ -4174,6 +4184,15 @@ struct fists_of_fury_t : public monk_melee_attack_t
 
     monk_melee_attack_t::execute();
 
+    if ( p()->talent.whirling_dragon_punch->ok() && p()->cooldown.rising_sun_kick->down() )
+    {
+      if ( this->cooldown_duration() <= p()->cooldown.rising_sun_kick->remains() )
+        p()->buff.whirling_dragon_punch->set_duration( this->cooldown_duration() );
+      else
+        p()->buff.whirling_dragon_punch->set_duration( p()->cooldown.rising_sun_kick->remains() );
+      p()->buff.whirling_dragon_punch->trigger();
+    }
+
     // Get the number of targets from the non sleeping target list
     auto targets = sim->target_non_sleeping_list.size();
 
@@ -4228,7 +4247,7 @@ struct whirling_dragon_punch_t : public monk_melee_attack_t
   bool ready() override
   {
     // Only usable while Fists of Fury and Rising Sun Kick are on cooldown.
-    if ( p()->cooldown.fists_of_fury->down() && p()->cooldown.rising_sun_kick->down() )
+    if ( p()->buff.whirling_dragon_punch->up() )
       return monk_melee_attack_t::ready();
 
     return false;
