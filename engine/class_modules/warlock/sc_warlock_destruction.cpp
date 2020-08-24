@@ -80,7 +80,8 @@ public:
 
     if ( can_havoc )
     {
-      base_aoe_multiplier *= p()->spec.havoc->effectN( 1 ).percent();
+      // SL - Conduit
+      base_aoe_multiplier *= p()->spec.havoc->effectN( 1 ).percent() + p()->conduit.duplicitous_havoc.percent();
       p()->havoc_spells.push_back( this );
     }
   }
