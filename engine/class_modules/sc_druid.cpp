@@ -2453,13 +2453,11 @@ private:
 public:
   using base_t = druid_spell_base_t<Base>;
 
-  bool cat_form_gcd;
   bool reset_melee_swing;  // TRUE(default) to reset swing timer on execute (as most cast time spells do)
 
   druid_spell_base_t( util::string_view n, druid_t* player, const spell_data_t* s = spell_data_t::nil() )
-    : ab( n, player, s ),
-      cat_form_gcd( ab::data().affected_by( player->spec.cat_form->effectN( 4 ) ) ),
-      reset_melee_swing( true ) {}
+    : ab( n, player, s ), reset_melee_swing( true )
+  {}
 
   timespan_t gcd() const override
   {
@@ -2467,9 +2465,6 @@ public:
 
     if ( g == timespan_t::zero() )
       return g;
-
-    if ( cat_form_gcd && ab::p()->buff.cat_form->check() )
-      g += ab::p()->spec.cat_form->effectN( 4 ).time_value();
 
     g *= ab::composite_haste();
 
@@ -4977,6 +4972,16 @@ struct regrowth_t : public druid_heal_t
     }
   }
 
+  timespan_t gcd() const override
+  {
+    timespan_t g = druid_heal_t::gcd();
+
+    if ( p()->buff.cat_form->check() )
+      g -= p()->query_aura_effect( p()->spec.cat_form, A_ADD_FLAT_MODIFIER, P_GCD, &data() )->time_value();
+
+    return g;
+  }
+
   void consume_resource() override
   {
     // Prevent from consuming Omen of Clarity unnecessarily
@@ -5439,6 +5444,16 @@ struct dash_t : public druid_spell_t
     ignore_false_positive         = true;
   }
 
+  timespan_t gcd() const override
+  {
+    timespan_t g = druid_spell_t::gcd();
+
+    if ( p()->buff.cat_form->check() )
+      g *= 1.0 + p()->query_aura_effect( &p()->buff.cat_form->data(), A_ADD_PCT_MODIFIER, P_GCD, &data() )->percent();
+
+    return g;
+  }
+
   void execute() override
   {
     druid_spell_t::execute();
@@ -5461,6 +5476,16 @@ struct tiger_dash_t : public druid_spell_t
 
     harmful = may_crit = may_miss = false;
     ignore_false_positive         = true;
+  }
+
+  timespan_t gcd() const override
+  {
+    timespan_t g = druid_spell_t::gcd();
+
+    if ( p()->buff.cat_form->check() )
+      g *= 1.0 + p()->query_aura_effect( &p()->buff.cat_form->data(), A_ADD_PCT_MODIFIER, P_GCD, &data() )->percent();
+
+    return g;
   }
 
   void execute() override
@@ -6244,7 +6269,7 @@ struct skull_bash_t : public druid_spell_t
     : druid_spell_t( "skull_bash", player, player->find_specialization_spell( "Skull Bash" ), options_str )
   {
     may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = false;
-    ignore_false_positive = true;
+    ignore_false_positive = use_off_gcd = true;
   }
 
   bool target_ready( player_t* candidate_target ) override
@@ -6259,6 +6284,7 @@ struct skull_bash_t : public druid_spell_t
 struct wrath_t : public druid_spell_t
 {
   unsigned count;
+  double gcd_mul;
 
   wrath_t( druid_t* player, const std::string& options_str, free_cast_e free = free_cast_e::NONE )
     : druid_spell_t( player->free_cast_string( "wrath", free ), player, player->find_affinity_spell( "Wrath" ),
@@ -6267,6 +6293,8 @@ struct wrath_t : public druid_spell_t
     free_cast       = free;
     form_mask       = NO_FORM | MOONKIN_FORM;
     energize_amount = player->spec.astral_power->effectN( 2 ).resource( RESOURCE_ASTRAL_POWER );
+    gcd_mul =
+        player->query_aura_effect( &player->buff.eclipse_solar->data(), A_ADD_PCT_MODIFIER, P_GCD, &data() )->percent();
   }
 
   void init_finished() override
@@ -6307,7 +6335,7 @@ struct wrath_t : public druid_spell_t
 
     // Move this into parse_buff_effects if it becomes more prevalent. Currently only used for wrath & dash
     if ( p()->buff.eclipse_solar->up() )
-      g *= 1.0 + p()->spec.eclipse_solar->effectN( 5 ).percent();
+      g *= 1.0 + gcd_mul;
 
     g = std::max( min_gcd, g );
 
