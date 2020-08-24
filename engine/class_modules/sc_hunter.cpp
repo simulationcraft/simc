@@ -3924,7 +3924,7 @@ struct melee_focus_spender_t: hunter_melee_attack_t
     {
       double m = hunter_spell_t::composite_da_multiplier( s );
 
-      m *= td( target ) -> debuffs.latent_poison_injection -> check_stack_value();
+      m *= td( target ) -> debuffs.latent_poison_injection -> check();
 
       return m;
     }
