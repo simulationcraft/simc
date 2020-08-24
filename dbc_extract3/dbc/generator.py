@@ -1761,7 +1761,8 @@ class SpellDataGenerator(DataGenerator):
           ( 272131, 5 ),	# Eye of Gul'dan - Eye of Gul'dan
           ( 267964, 0 ),	# new soul strike?
           ( 289367, 1 ),		# Pandemic Invocation Damage
-          ( 265391, 3 )     # Roaring Blaze Debuff
+          ( 265391, 3 ),     # Roaring Blaze Debuff
+          ( 266087, 3 )     # Rain of Chaos Buff
         ),
 
         # Monk:
