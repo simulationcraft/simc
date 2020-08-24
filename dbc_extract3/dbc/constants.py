@@ -161,7 +161,9 @@ SPELL_NAME_BLACKLIST = [
   re.compile("^Call Pet [2-9]"),
   re.compile("^Ancient (?:Portal|Teleport)"),
   re.compile("^Zen Pilgrimage"),
-  re.compile("^Transcendence")
+  re.compile("^Transcendence"),
+  re.compile("^Contract:"),
+  re.compile("^Apply Equipment$"),
 ]
 
 SPELL_LABEL_BLACKLIST = [
