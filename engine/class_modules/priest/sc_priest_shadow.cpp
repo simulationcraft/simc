@@ -2145,7 +2145,7 @@ void priest_t::create_buffs_shadow()
   buffs.surrender_to_madness   = make_buff( this, "surrender_to_madness", find_talent_spell( "Surrender to Madness" ) );
   buffs.death_and_madness_buff = make_buff<buffs::death_and_madness_buff_t>( *this );
   buffs.ancient_madness        = make_buff<buffs::ancient_madness_t>( *this );
-  buffs.unfurling_darkness     = make_buff( this, "unfurling_darkness", find_talent_spell( "Unfurling Darkness" ) );
+  buffs.unfurling_darkness     = make_buff( this, "unfurling_darkness", find_talent_spell( "Unfurling Darkness" )->effectN( 1 ).trigger() );
   buffs.unfurling_darkness_cd  = make_buff( this, "unfurling_darkness_cd", find_spell( 341291 ) );
   buffs.dark_passion           = make_buff<buffs::dark_passion_t>( *this );
   buffs.surrender_to_madness_death =
