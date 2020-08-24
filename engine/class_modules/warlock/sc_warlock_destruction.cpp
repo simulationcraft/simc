@@ -124,6 +124,9 @@ public:
     if ( td->debuffs_roaring_blaze->check() && data().affected_by( td->debuffs_roaring_blaze->data().effectN( 1 ) ) )
       m *= 1.0 + td->debuffs_roaring_blaze->data().effectN( 1 ).percent();
 
+    if ( td->debuffs_odr->check() && data().affected_by( td->debuffs_odr->data().effectN( 1 ) ) )
+      m *= 1.0 + td->debuffs_odr->data().effectN( 1 ).percent();
+
     return m;
   }
 
@@ -251,7 +254,12 @@ struct havoc_t : public destruction_spell_t
   void impact( action_state_t* s ) override
   {
     destruction_spell_t::impact( s );
+
     td( s->target )->debuffs_havoc->trigger();
+
+    // SL - Legendary
+    if ( p()->legendary.odr_shawl_of_the_ymirjar->ok() )
+      td( s->target )->debuffs_odr->trigger();
   }
 };
 

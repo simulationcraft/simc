@@ -139,6 +139,9 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
                         range::for_each( p.havoc_spells, []( action_t* a ) { a->target_cache.is_valid = false; } );
                       } );
 
+  // SL - Legendary
+  debuffs_odr = make_buff( *this, "odr_shawl_of_the_ymirjar", source->find_spell(337164) );
+
   // Demo
   dots_doom         = target->get_dot( "doom", &p );
   dots_umbral_blaze = target->get_dot( "umbral_blaze", &p );

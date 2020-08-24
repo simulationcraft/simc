@@ -35,6 +35,9 @@ struct warlock_td_t : public actor_target_data_t
   propagate_const<buff_t*> debuffs_roaring_blaze;
   propagate_const<buff_t*> debuffs_havoc;
 
+  // SL - Legendary
+  propagate_const<buff_t*> debuffs_odr;
+
   // Demo
   propagate_const<dot_t*> dots_doom;
   propagate_const<dot_t*> dots_umbral_blaze;  // BFA - Azerite
