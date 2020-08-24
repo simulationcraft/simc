@@ -315,7 +315,7 @@ struct power_infusion_t final : public priest_spell_t
     harmful = false;
 
     // Adjust the cooldown if using the conduit and not casting PI on yourself
-    if( priest().conduits.power_unto_others->ok() 
+    if( priest().conduits.power_unto_others->ok()
       && ( priest().legendary.twins_of_the_sun_priestess->ok() || !priest().options.priest_self_power_infusion ) )
     {
       cooldown->duration -= timespan_t::from_seconds( priest().conduits.power_unto_others.value() );
@@ -1199,9 +1199,15 @@ double priest_t::composite_spell_haste() const
 {
   double h = player_t::composite_spell_haste();
 
-  // TODO: Wait for spell data to see where this effect is
   if ( buffs.power_infusion->check() )
+  {
     h /= 1.0 + buffs.power_infusion->data().effectN( 1 ).percent();
+  }
+
+  if ( buffs.dark_passion->check() )
+  {
+    h /= 1.0 + buffs.dark_passion->data().effectN( 1 ).percent();
+  }
 
   return h;
 }
@@ -1210,9 +1216,15 @@ double priest_t::composite_melee_haste() const
 {
   double h = player_t::composite_melee_haste();
 
-  // TODO: Wait for spell data to see where this effect is
   if ( buffs.power_infusion->check() )
+  {
     h /= 1.0 + buffs.power_infusion->data().effectN( 1 ).percent();
+  }
+
+  if ( buffs.dark_passion->check() )
+  {
+    h /= 1.0 + buffs.dark_passion->data().effectN( 1 ).percent();
+  }
 
   return h;
 }

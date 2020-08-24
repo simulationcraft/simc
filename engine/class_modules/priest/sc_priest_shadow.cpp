@@ -960,6 +960,13 @@ struct void_bolt_t final : public priest_spell_t
       td.dots.shadow_word_pain->extend_duration( dot_extension, true );
       td.dots.vampiric_touch->extend_duration( dot_extension, true );
 
+      if ( priest().talents.legacy_of_the_void->ok() )
+      {
+        // TODO: remove this hard code once it is in the game
+        // Assuming how this works based on the blue post
+        td.dots.devouring_plague->refresh_duration();
+      }
+
       if ( priest().conduits.dissonant_echoes->ok() && priest().buffs.voidform->check() )
       {
         if ( rng().roll( priest().conduits.dissonant_echoes.percent() ) )
@@ -1602,6 +1609,7 @@ struct voidform_t final : public priest_buff_t<buff_t>
     if ( priest().talents.legacy_of_the_void->ok() )
     {
       priest().buffs.insanity_drain_stacks->trigger();
+      priest().buffs.dark_passion->trigger();
       priest().insanity.begin_tracking();
     }
 
@@ -1618,16 +1626,20 @@ struct voidform_t final : public priest_buff_t<buff_t>
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
     /// TODO: Verify if functionality is properly matching how it works ingame.
-
     sim->print_debug( "{} has {} charges of mind blast as voidform ended", *player,
                       priest().cooldowns.mind_blast->charges_fractional() );
-    //Call new generic function to adjust charges.
+    // Call new generic function to adjust charges.
     adjust_max_charges( priest().cooldowns.mind_blast, 1 );
 
     sim->print_debug( "{} has {} charges of mind blast after voidform ended", *player,
                       priest().cooldowns.mind_blast->charges_fractional() );
 
     priest().buffs.insanity_drain_stacks->expire();
+
+    if ( priest().talents.legacy_of_the_void->ok() )
+    {
+      priest().buffs.dark_passion->expire();
+    }
 
     if ( priest().buffs.shadowform_state->check() )
     {
@@ -1703,6 +1715,18 @@ struct dark_thoughts_t final : public priest_buff_t<buff_t>
       }
     }
     base_t::expire_override( expiration_stacks, remaining_duration );
+  }
+};
+
+// ==========================================================================
+// Legacy of the Void - Dark Passion
+// ==========================================================================
+struct dark_passion_t final : public priest_buff_t<buff_t>
+{
+  dark_passion_t( priest_t& p ) : base_t( p, "dark_passion", p.find_spell( 342855 ) )
+  {
+    add_invalidate( CACHE_SPELL_HASTE );
+    add_invalidate( CACHE_HASTE );
   }
 };
 
@@ -2123,6 +2147,7 @@ void priest_t::create_buffs_shadow()
   buffs.ancient_madness        = make_buff<buffs::ancient_madness_t>( *this );
   buffs.unfurling_darkness     = make_buff( this, "unfurling_darkness", find_talent_spell( "Unfurling Darkness" ) );
   buffs.unfurling_darkness_cd  = make_buff( this, "unfurling_darkness_cd", find_spell( 341291 ) );
+  buffs.dark_passion           = make_buff<buffs::dark_passion_t>( *this );
   buffs.surrender_to_madness_death =
       make_buff( this, "surrender_to_madness_death", find_talent_spell( "Surrender to Madness" ) )
           ->set_duration( timespan_t::zero() )
@@ -2405,14 +2430,15 @@ void priest_t::generate_apl_shadow()
 
   // single APL
   main->add_call_action_list( this, covenant.boon_of_the_ascended, boon, "if=buff.boon_of_the_ascended.up" );
-  main->add_action( this, "Void Eruption", "if=cooldown.power_infusion.up&insanity>=40",
-                    "Sync up Voidform and Power Infusion Cooldowns." );
+  main->add_action( this, "Void Eruption", "if=cooldown.power_infusion.up&insanity>=40&(!talent.legacy_of_the_void.enabled|(talent.legacy_of_the_void.enabled&dot.devouring_plague.ticking))",
+                    "Sync up Voidform and Power Infusion Cooldowns and of using LotV pool insanity before casting." );
   main->add_action( this, "Void Bolt", "if=!dot.devouring_plague.refreshable",
                     "Only use Void Bolt if Devouring Plague doesn't need refreshed." );
   main->add_call_action_list( cds );
   main->add_talent( this, "Damnation", "target_if=!variable.all_dots_up",
                     "Prefer to use Damnation ASAP if any DoT is not up" );
-  main->add_action( this, "Devouring Plague", "target_if=(refreshable|insanity>75)&!cooldown.power_infusion.up&(!talent.searing_nightmare.enabled|(talent.searing_nightmare.enabled&!variable.searing_nightmare_cutoff))",
+  main->add_action( this, "Devouring Plague", "if=talent.legacy_of_the_void.enabled&cooldown.void_eruption.up&insanity=100", "Use Devouring Plague right before you go into a LotV Voidform." );
+  main->add_action( this, "Devouring Plague", "target_if=(refreshable|insanity>75)&!cooldown.power_infusion.up&(!talent.searing_nightmare.enabled|(talent.searing_nightmare.enabled&!variable.searing_nightmare_cutoff))&(!talent.legacy_of_the_void.enabled|(talent.legacy_of_the_void.enabled&buff.voidform.down))",
                     "Don't use Devouring Plague if you can get into Voidform instead, or if Searing Nightmare is talented and will hit enough targets." );
   main->add_action( this, "Shadow Word: Death", "target_if=target.health.pct<20",
                     "Use Shadow Word: Death if the target is about to die." );

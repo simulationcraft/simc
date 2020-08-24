@@ -135,6 +135,7 @@ public:
     propagate_const<buff_t*> unfurling_darkness_cd;  // Blizzard uses a buff to track the ICD
     propagate_const<buff_t*> ancient_madness;
     propagate_const<buff_t*> dark_thoughts;
+    propagate_const<buff_t*> dark_passion;
 
     // Azerite Powers
     // Shadow
@@ -403,7 +404,7 @@ public:
     bool priest_mindgames_healing_insanity = false;
     bool priest_mindgames_damage_insanity  = true;
 
-    // Fae Blessings CDR is not guarenteed to go on the Priest, reduce this to make things more accurate    
+    // Fae Blessings CDR is not guarenteed to go on the Priest, reduce this to make things more accurate
     bool priest_self_benevolent_faerie = true;
 
   } options;
