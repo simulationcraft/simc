@@ -2185,6 +2185,16 @@ public:
     return static_cast<monk_t*>( owner );
   }
 
+  double composite_player_multiplier( school_e school ) const override
+  {
+    double cpm = owner->cache.player_multiplier( school );
+
+    if ( o()->conduit.xuens_bond->ok() )
+      cpm *= 1 + o()->conduit.xuens_bond.percent();
+
+    return cpm;
+  }
+
   void init_action_list() override
   {
     action_list_str = "auto_attack";
@@ -2316,14 +2326,21 @@ public:
     return static_cast<monk_t*>( owner );
   }
 
+  const monk_t* o() const
+  {
+    return static_cast<monk_t*>( owner );
+  }
+
   double composite_player_multiplier( school_e school ) const override
   {
-    double m = pet_t::composite_player_multiplier( school );
+    double cpm = pet_t::composite_player_multiplier( school );
 
-    monk_t* o = static_cast<monk_t*>( owner );
-    m *= 1 + o->spec.brewmaster_monk->effectN( 3 ).percent();
+    cpm *= 1 + o()->spec.brewmaster_monk->effectN( 3 ).percent();
 
-    return m;
+    if ( o()->conduit.walk_with_the_ox->ok() )
+      cpm *= 1 + o()->conduit.walk_with_the_ox.percent();
+
+    return cpm;
   }
 
   void init_action_list() override
@@ -4113,7 +4130,12 @@ struct sck_tick_action_t : public monk_melee_attack_t
   {
     double am = monk_melee_attack_t::action_multiplier();
 
-    am *= 1 + ( mark_of_the_crane_counter() * p()->passives.cyclone_strikes->effectN( 1 ).percent() );
+    double motc_multiplier = p()->passives.cyclone_strikes->effectN( 1 ).percent();
+
+    if ( p()->conduit.calculated_strikes->ok() )
+      motc_multiplier += 1 + p()->conduit.calculated_strikes.percent();
+
+    am *= 1 + ( mark_of_the_crane_counter() * motc_multiplier );
 
     if ( p()->buff.dance_of_chiji->up() )
       am *= p()->talent.dance_of_chiji->effectN( 1 ).percent();
