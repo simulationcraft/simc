@@ -124,6 +124,7 @@ public:
     if ( td->debuffs_roaring_blaze->check() && data().affected_by( td->debuffs_roaring_blaze->data().effectN( 1 ) ) )
       m *= 1.0 + td->debuffs_roaring_blaze->data().effectN( 1 ).percent();
 
+    // SL - Legendary
     if ( td->debuffs_odr->check() && data().affected_by( td->debuffs_odr->data().effectN( 1 ) ) )
       m *= 1.0 + td->debuffs_odr->data().effectN( 1 ).percent();
 
@@ -447,6 +448,20 @@ struct incinerate_fnb_t : public destruction_spell_t
     double m = destruction_spell_t::composite_target_crit_chance( target );
     return m;
   }
+
+  double composite_target_multiplier( player_t* t ) const override
+  {
+    double m = destruction_spell_t::composite_target_multiplier( t );
+
+    auto td = this->td( t );
+
+    // SL - Conduit
+    // TOCHECK - Couldn't find affected_by spelldata to reference the spells 08-24-2020.
+    if ( td->dots_immolate->is_ticking() && p()->conduit.ashen_remains->ok() )
+      m *= 1.0 + p()->conduit.ashen_remains.percent();
+
+    return m;
+  }
 };
 
 struct incinerate_t : public destruction_spell_t
@@ -548,6 +563,19 @@ struct incinerate_t : public destruction_spell_t
     double m = destruction_spell_t::composite_target_crit_chance( target );
     return m;
   }
+
+  double composite_target_multiplier( player_t* t ) const override
+  {
+    double m = destruction_spell_t::composite_target_multiplier( t );
+
+    auto td = this->td( t );
+
+    // SL - Conduit
+    if ( td->dots_immolate->is_ticking() && p()->conduit.ashen_remains->ok() )
+      m *= 1.0 + p()->conduit.ashen_remains.percent();
+
+    return m;
+  }
 };
 
 struct chaos_bolt_t : public destruction_spell_t
@@ -597,6 +625,20 @@ struct chaos_bolt_t : public destruction_spell_t
     {
       m *= 1.0 + p()->buffs.madness_of_the_azjaqir->data().effectN( 1 ).percent();
     }
+
+    return m;
+  }
+
+  double composite_target_multiplier( player_t* t ) const override
+  {
+    double m = destruction_spell_t::composite_target_multiplier( t );
+
+    auto td = this->td( t );
+
+    // SL - Conduit
+    // TOCHECK - Couldn't find affected_by spelldata to reference the spells 08-24-2020.
+    if ( td->dots_immolate->is_ticking() && p()->conduit.ashen_remains->ok() )
+      m *= 1.0 + p()->conduit.ashen_remains.percent();
 
     return m;
   }
