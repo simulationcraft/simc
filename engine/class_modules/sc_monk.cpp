@@ -258,6 +258,9 @@ public:
     stat_buff_t* training_of_niuzao;
     buff_t* sunrise_technique;
     buff_t* swift_roundhouse;
+
+    // Shadowland Legendary
+    stat_buff_t* invokers_delight;
   } buff;
 
 public:
@@ -707,12 +710,12 @@ public:
     // General
     item_runeforge_t fatal_touch;                        // 7081
     item_runeforge_t invokers_delight;                   // 7082
-    item_runeforge_t roll_out;                           // 7080
+    item_runeforge_t swiftsure_wraps;                    // 7080
     item_runeforge_t escape_from_reality;                // 7184
 
     // Brewmaster
     item_runeforge_t charred_passions;                   // 7076
-    item_runeforge_t mighty_pour;                        // 7078
+    item_runeforge_t celestial_infusion;                 // 7078
     item_runeforge_t shaohaos_might;                     // 7079
     item_runeforge_t stormstouts_last_keg;               // 7077
 
@@ -726,7 +729,7 @@ public:
     item_runeforge_t jade_ignition;                      // 7071
     item_runeforge_t keefers_skyreach;                   // 7068
     item_runeforge_t last_emperors_capacitor;            // 7069
-    item_runeforge_t xuens_battlegear;                   // 7070
+    item_runeforge_t xuens_treasure;                     // 7070
   } legendary;
 
   struct pets_t
@@ -2970,6 +2973,14 @@ struct xuen_spell_t : public summon_pet_t
     min_gcd  = timespan_t::from_millis( 750 );
     gcd_type = gcd_haste_type::SPELL_HASTE;
   }
+
+  void execute() override
+  {
+    summon_pet_t::execute();
+
+    if ( p()->legendary.invokers_delight->ok() )
+      p()->buff.invokers_delight->trigger();
+  }
 };
 
 // ==========================================================================
@@ -3020,6 +3031,14 @@ struct niuzao_spell_t : public summon_pet_t
     // Forcing the minimum GCD to 750 milliseconds
     min_gcd  = timespan_t::from_millis( 750 );
     gcd_type = gcd_haste_type::SPELL_HASTE;
+  }
+
+  void execute() override
+  {
+    summon_pet_t::execute();
+
+    if ( p()->legendary.invokers_delight->ok() )
+      p()->buff.invokers_delight->trigger();
   }
 };
 
@@ -5114,8 +5133,8 @@ struct roll_t : public monk_spell_t
       cooldown->charges += (int)player->talent.celerity->effectN( 2 ).base_value();
     }
 
-    if ( player->legendary.roll_out.ok() )
-      cooldown->charges += (int)player->legendary.roll_out->effectN( 1 ).base_value();
+    if ( player->legendary.swiftsure_wraps.ok() )
+      cooldown->charges += (int)player->legendary.swiftsure_wraps->effectN( 1 ).base_value();
   }
 };
 
@@ -5132,8 +5151,8 @@ struct chi_torpedo_t : public monk_spell_t
 
     cooldown->charges += (int)player->spec.roll_2->effectN( 1 ).base_value();
 
-    if ( player->legendary.roll_out.ok() )
-      cooldown->charges += (int)player->legendary.roll_out->effectN( 1 ).base_value();
+    if ( player->legendary.swiftsure_wraps.ok() )
+      cooldown->charges += (int)player->legendary.swiftsure_wraps->effectN( 1 ).base_value();
   }
 
   void execute() override
@@ -7480,12 +7499,12 @@ void monk_t::init_spells()
   // General
   legendary.fatal_touch                        = find_runeforge_legendary( "Fatal Touch" );
   legendary.invokers_delight                   = find_runeforge_legendary( "Invoker's Delight" );
-  legendary.roll_out                           = find_runeforge_legendary( "Roll Out" );
+  legendary.swiftsure_wraps                    = find_runeforge_legendary( "Swiftsure Wraps" );
   legendary.escape_from_reality                = find_runeforge_legendary( "Escape from Reality" );
 
   // Brewmaster
   legendary.charred_passions                   = find_runeforge_legendary( "Charred Passions" );
-  legendary.mighty_pour                        = find_runeforge_legendary( "Mighty Pour" );
+  legendary.celestial_infusion                 = find_runeforge_legendary( "Celestial Infusion" );
   legendary.shaohaos_might                     = find_runeforge_legendary( "Shaohao's Might" );
   legendary.stormstouts_last_keg               = find_runeforge_legendary( "Stormstout's Last Keg" );
 
@@ -7499,7 +7518,7 @@ void monk_t::init_spells()
   legendary.jade_ignition                      = find_runeforge_legendary( "Jade Ignition" );
   legendary.keefers_skyreach                   = find_runeforge_legendary( "Keefer's Skyreach" );
   legendary.last_emperors_capacitor            = find_runeforge_legendary( "Last Emperor's Capacitor" );
-  legendary.xuens_battlegear                   = find_runeforge_legendary( "Xuen's Battlegear" );
+  legendary.xuens_treasure                     = find_runeforge_legendary( "Xuen's Treasure" );
 
   // Azerite Powers ====================================
 
@@ -7755,6 +7774,10 @@ void monk_t::create_buffs()
 
   buff.tier19_oh_8pc = make_buff<stat_buff_t>( this, "grandmasters_wisdom",
                                                sets->set( specialization(), T19OH, B8 )->effectN( 1 ).trigger() );
+  // General Shadowland Legendaries
+  buff.invokers_delight =
+      make_buff<stat_buff_t>( this, "invokers_delight", legendary.invokers_delight->effectN( 1 ).trigger() );
+
 
   // Brewmaster
   buff.bladed_armor = make_buff( this, "bladed_armor", spec.bladed_armor )
