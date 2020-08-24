@@ -4715,6 +4715,9 @@ struct touch_of_death_t : public monk_melee_attack_t
     may_combo_strike        = true;
     parse_options( options_str );
     cooldown->duration = data().cooldown();
+
+    if ( p.legendary.fatal_touch.ok() )
+      cooldown->duration -= timespan_t::from_seconds( p.legendary.fatal_touch->effectN( 1 ).base_value() );
   }
 
   void init() override
