@@ -465,6 +465,7 @@ public:
     cooldown_t* brewmaster_attack;
     cooldown_t* brewmaster_active_mitigation;
     cooldown_t* breath_of_fire;
+    cooldown_t* chi_torpedo;
     cooldown_t* desperate_measure;
     cooldown_t* fist_of_the_white_tiger;
     cooldown_t* fists_of_fury;
@@ -475,6 +476,7 @@ public:
     cooldown_t* rising_sun_kick;
     cooldown_t* reverse_harm;
     cooldown_t* refreshing_jade_wind;
+    cooldown_t* roll;
     cooldown_t* rushing_jade_wind_brm;
     cooldown_t* rushing_jade_wind_ww;
     cooldown_t* storm_earth_and_fire;
@@ -788,6 +790,7 @@ public:
     cooldown.black_ox_brew                = get_cooldown( "black_ox_brew" );
     cooldown.brewmaster_attack            = get_cooldown( "brewmaster_attack" );
     cooldown.breath_of_fire               = get_cooldown( "breath_of_fire" );
+    cooldown.chi_torpedo                  = get_cooldown( "chi_torpedo" );
     cooldown.fortifying_brew              = get_cooldown( "fortifying_brew" );
     cooldown.fist_of_the_white_tiger      = get_cooldown( "fist_of_the_white_tiger" );
     cooldown.fists_of_fury                = get_cooldown( "fists_of_fury" );
@@ -796,6 +799,7 @@ public:
     cooldown.reverse_harm                 = get_cooldown( "reverse_harm" );
     cooldown.rising_sun_kick              = get_cooldown( "rising_sun_kick" );
     cooldown.refreshing_jade_wind         = get_cooldown( "refreshing_jade_wind" );
+    cooldown.roll                         = get_cooldown( "roll" );
     cooldown.rushing_jade_wind_brm        = get_cooldown( "rushing_jade_wind" );
     cooldown.rushing_jade_wind_ww         = get_cooldown( "rushing_jade_wind" );
     cooldown.storm_earth_and_fire         = get_cooldown( "storm_earth_and_fire" );
@@ -3728,6 +3732,14 @@ struct blackout_kick_totm_proc : public monk_melee_attack_t
 
     if ( p()->azerite.swift_roundhouse.ok() )
       p()->buff.swift_roundhouse->trigger();
+
+    if ( p()->conduit.tumbling_technique->ok() && rng().roll( p()->conduit.tumbling_technique->effectN( 1 ).percent() ) )
+    {
+      if ( p()->talent.chi_torpedo->ok() )
+        p()->cooldown.chi_torpedo->reset( true, 1 );
+      else
+        p()->cooldown.roll->reset( true, 1 );
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -3862,6 +3874,14 @@ struct blackout_kick_t : public monk_melee_attack_t
 
     if ( p()->azerite.swift_roundhouse.ok() )
       p()->buff.swift_roundhouse->trigger();
+
+    if ( p()->conduit.tumbling_technique->ok() && rng().roll( p()->conduit.tumbling_technique->effectN( 1 ).percent() ) )
+    {
+      if ( p()->talent.chi_torpedo->ok() )
+        p()->cooldown.chi_torpedo->reset( true, 1 );
+      else
+        p()->cooldown.roll->reset( true, 1 );
+    }
   }
 
   void impact( action_state_t* s ) override
