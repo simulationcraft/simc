@@ -4715,6 +4715,9 @@ struct touch_of_death_t : public monk_melee_attack_t
     may_combo_strike        = true;
     parse_options( options_str );
     cooldown->duration = data().cooldown();
+
+    if ( p.legendary.fatal_touch.ok() )
+      cooldown->duration -= timespan_t::from_seconds( p.legendary.fatal_touch->effectN( 1 ).base_value() );
   }
 
   void init() override
@@ -5110,6 +5113,9 @@ struct roll_t : public monk_spell_t
       cooldown->duration += player->talent.celerity->effectN( 1 ).time_value();
       cooldown->charges += (int)player->talent.celerity->effectN( 2 ).base_value();
     }
+
+    if ( player->legendary.roll_out.ok() )
+      cooldown->charges += (int)player->legendary.roll_out->effectN( 1 ).base_value();
   }
 };
 
@@ -5125,6 +5131,9 @@ struct chi_torpedo_t : public monk_spell_t
     parse_options( options_str );
 
     cooldown->charges += (int)player->spec.roll_2->effectN( 1 ).base_value();
+
+    if ( player->legendary.roll_out.ok() )
+      cooldown->charges += (int)player->legendary.roll_out->effectN( 1 ).base_value();
   }
 
   void execute() override
