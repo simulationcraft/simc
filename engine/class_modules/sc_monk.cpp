@@ -8905,56 +8905,20 @@ std::string monk_t::default_flask() const
   switch ( specialization() )
   {
     case MONK_BREWMASTER:
-      if ( true_level > 110 )
+      if ( true_level >= 50 )
         return "currents";
-      else if ( true_level > 100 )
-        return "seventh_demon";
-      else if ( true_level > 90 )
-        return "greater_draenic_agility_flask";
-      else if ( true_level > 85 )
-        return "spring_blossoms";
-      else if ( true_level > 80 )
-        return "winds";
-      else if ( true_level > 75 )
-        return "endless_rage";
-      else if ( true_level > 70 )
-        return "relentless_assault";
       else
         return "disabled";
       break;
     case MONK_MISTWEAVER:
-      if ( true_level > 119 )
-        return "greater_flask_of_endless_fathoms";  // lvl 120 should use best flask
-      else if ( true_level > 110 )
-        return "endless_fathoms";
-      else if ( true_level > 100 )
-        return "whispered_pact";
-      else if ( true_level > 90 )
-        return "greater_draenic_intellect_flask";
-      else if ( true_level > 85 )
-        return "warm_sun";
-      else if ( true_level > 80 )
-        return "draconic_mind";
-      else if ( true_level > 70 )
-        return "blinding_light";
+      if ( true_level >= 50 )
+        return "greater_flask_of_endless_fathoms";
       else
         return "disabled";
       break;
     case MONK_WINDWALKER:
-      if ( true_level > 110 )
+      if ( true_level >= 50 )
         return "greater_flask_of_the_currents";
-      else if ( true_level > 100 )
-        return "seventh_demon";
-      else if ( true_level > 90 )
-        return "greater_draenic_agility_flask";
-      else if ( true_level > 85 )
-        return "spring_blossoms";
-      else if ( true_level > 80 )
-        return "winds";
-      else if ( true_level > 75 )
-        return "endless_rage";
-      else if ( true_level > 70 )
-        return "relentless_assault";
       else
         return "disabled";
       break;
@@ -8970,56 +8934,20 @@ std::string monk_t::default_potion() const
   switch ( specialization() )
   {
     case MONK_BREWMASTER:
-      if ( true_level > 110 )
+      if ( true_level >= 50 )
         return "unbridled_fury";
-      else if ( true_level > 100 )
-        return "prolonged_power";
-      else if ( true_level > 90 )
-        return "draenic_agility";
-      else if ( true_level > 85 )
-        return "virmens_bite";
-      else if ( true_level > 80 )
-        return "tolvir";
-      else if ( true_level > 70 )
-        return "wild_magic";
-      else if ( true_level > 60 )
-        return "haste";
       else
         return "disabled";
       break;
     case MONK_MISTWEAVER:
-      if ( true_level > 110 )
+      if ( true_level >= 50 )
         return "superior_battle_potion_of_intellect";
-      else if ( true_level > 100 )
-        return "prolonged_power";
-      else if ( true_level > 90 )
-        return "draenic_intellect";
-      else if ( true_level > 85 )
-        return "jade_serpent";
-      else if ( true_level > 80 )
-        return "volcanic";
-      else if ( true_level > 70 )
-        return "wild_magic";
-      else if ( true_level > 60 )
-        return "destruction";
       else
         return "disabled";
       break;
     case MONK_WINDWALKER:
-      if ( true_level > 110 )
+      if ( true_level >= 50 )
         return "unbridled_fury";
-      else if ( true_level > 100 )
-        return "prolonged_power";
-      else if ( true_level > 90 )
-        return "draenic_agility";
-      else if ( true_level > 85 )
-        return "virmens_bite";
-      else if ( true_level > 80 )
-        return "tolvir";
-      else if ( true_level > 70 )
-        return "wild_magic";
-      else if ( true_level > 60 )
-        return "haste";
       else
         return "disabled";
       break;
@@ -9035,56 +8963,20 @@ std::string monk_t::default_food() const
   switch ( specialization() )
   {
     case MONK_BREWMASTER:
-      if ( true_level > 110 )
+      if ( true_level > 50 )
         return "biltong";
-      else if ( true_level > 100 )
-        return "fishbrul_special";
-      else if ( true_level > 90 )
-        return "salty_squid_roll";
-      else if ( true_level > 85 )
-        return "sea_mist_rice_noodles";
-      else if ( true_level > 80 )
-        return "skewered_eel";
-      else if ( true_level > 70 )
-        return "blackened_dragonfin";
-      else if ( true_level > 60 )
-        return "warp_burger";
       else
         return "disabled";
       break;
     case MONK_MISTWEAVER:
-      if ( true_level > 110 )
+      if ( true_level > 50 )
         return "famine_evaluator_and_snack_table";
-      else if ( true_level > 100 )
-        return "lavish_suramar_feast";
-      else if ( true_level > 90 )
-        return "salty_squid_roll";
-      else if ( true_level > 85 )
-        return "sea_mist_rice_noodles";
-      else if ( true_level > 80 )
-        return "skewered_eel";
-      else if ( true_level > 70 )
-        return "blackened_dragonfin";
-      else if ( true_level > 60 )
-        return "warp_burger";
       else
         return "disabled";
       break;
     case MONK_WINDWALKER:
-      if ( true_level > 110 )
+      if ( true_level > 50 )
         return "mechdowels_big_mech";
-      else if ( true_level > 100 )
-        return "lavish_suramar_feast";
-      else if ( true_level > 90 )
-        return "salty_squid_roll";
-      else if ( true_level > 85 )
-        return "sea_mist_rice_noodles";
-      else if ( true_level > 80 )
-        return "skewered_eel";
-      else if ( true_level > 70 )
-        return "blackened_dragonfin";
-      else if ( true_level > 60 )
-        return "warp_burger";
       else
         return "disabled";
       break;
@@ -9097,8 +8989,8 @@ std::string monk_t::default_food() const
 // monk_t::default_rune ====================================================
 std::string monk_t::default_rune() const
 {
-  return ( true_level >= 120 ) ? "battle_scarred"
-                               : ( true_level >= 110 ) ? "defiled" : ( true_level >= 100 ) ? "hyper" : "disabled";
+  return ( true_level >= 50 ) ? "battle_scarred"
+                               : ( true_level >= 45 ) ? "defiled" : "disabled";
 }
 
 // Brewmaster Pre-Combat Action Priority List ============================
