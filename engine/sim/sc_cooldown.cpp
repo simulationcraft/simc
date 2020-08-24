@@ -242,6 +242,9 @@ void cooldown_t::adjust_remaining_duration( double delta )
 
 void cooldown_t::adjust( timespan_t amount, bool require_reaction )
 {
+  if ( amount == 0_ms )
+    return;
+
   // Normal cooldown, just adjust as we see fit
   if ( charges == 1 )
   {
