@@ -121,6 +121,9 @@ public:
     if ( td->debuffs_eradication->check() )
       m *= 1.0 + td->debuffs_eradication->data().effectN( 1 ).percent();
 
+    if ( td->debuffs_roaring_blaze->check() && data().affected_by( td->debuffs_roaring_blaze->data().effectN( 1 ) ) )
+      m *= 1.0 + td->debuffs_roaring_blaze->data().effectN( 1 ).percent();
+
     return m;
   }
 
@@ -317,6 +320,9 @@ struct conflagrate_t : public destruction_spell_t
   void impact( action_state_t* s ) override
   {
     destruction_spell_t::impact( s );
+
+    if ( p()->talents.roaring_blaze->ok() && result_is_hit( s->result ) )
+      td( s->target )->debuffs_roaring_blaze->trigger();
   }
 
   void execute() override
