@@ -260,6 +260,7 @@ public:
     // Shadowland Legendary
     stat_buff_t* invokers_delight;
     buff_t* pressure_point;
+    buff_t* the_emperors_capacitor;
   } buff;
 
 public:
@@ -535,10 +536,6 @@ public:
     const spell_data_t* reverse_harm_damage;
     const spell_data_t* touch_of_karma_tick;
     const spell_data_t* whirling_dragon_punch_tick;
-
-    // Legendaries
-    const spell_data_t* the_emperors_capacitor;
-    const spell_data_t* the_wind_blows;
 
     // Azerite Traits
     const spell_data_t* fury_of_xuen_stacking_buff;
@@ -2649,6 +2646,9 @@ public:
       // Dance of Chi-Ji azerite trait triggers from spending chi
       if ( p()->azerite.dance_of_chiji.ok() )
         p()->buff.dance_of_chiji_azerite->trigger();
+
+      if ( p()->legendary.last_emperors_capacitor->ok() )
+        p()->buff.the_emperors_capacitor->trigger();
 
       // Chi Savings on Dodge & Parry & Miss
       if ( ab::last_resource_cost > 0 )
@@ -5225,12 +5225,20 @@ struct crackling_jade_lightning_t : public monk_spell_t
   {
     double c = monk_spell_t::cost_per_tick( resource );
 
+    if ( p()->buff.the_emperors_capacitor->up() && resource == RESOURCE_ENERGY )
+      c *= 1 + ( p()->buff.the_emperors_capacitor->current_stack *
+                 p()->buff.the_emperors_capacitor->data().effectN( 2 ).percent() );
+
     return c;
   }
 
   double cost() const override
   {
     double c = monk_spell_t::cost();
+
+    if ( p()->buff.the_emperors_capacitor->up() )
+      c *= 1 + ( p()->buff.the_emperors_capacitor->current_stack *
+                 p()->buff.the_emperors_capacitor->data().effectN( 2 ).percent() );
 
     return c;
   }
@@ -5239,12 +5247,18 @@ struct crackling_jade_lightning_t : public monk_spell_t
   {
     double pm = monk_spell_t::composite_persistent_multiplier( action_state );
 
+    if ( p()->buff.the_emperors_capacitor->up() )
+      pm *= 1 + p()->buff.the_emperors_capacitor->stack_value();
+
     return pm;
   }
 
   void last_tick( dot_t* dot ) override
   {
     monk_spell_t::last_tick( dot );
+
+    if ( p()->buff.the_emperors_capacitor->up() )
+      p()->buff.the_emperors_capacitor->expire();
 
     // Reset swing timer
     if ( player->main_hand_attack )
@@ -7619,10 +7633,6 @@ void monk_t::init_spells()
   passives.fury_of_xuen_haste_buff    = find_spell( 287063 );
   passives.reverse_harm_damage        = find_spell( 290461 );
 
-  // Legendaries
-  passives.the_emperors_capacitor = find_spell( 235054 );
-  passives.the_wind_blows         = find_spell( 281452 );
-
   // Mastery spells =========================================
   mastery.combo_strikes   = find_mastery_spell( MONK_WINDWALKER );
   mastery.elusive_brawler = find_mastery_spell( MONK_BREWMASTER );
@@ -7781,11 +7791,6 @@ void monk_t::create_buffs()
                                  ->set_default_value( spec.spinning_crane_kick->effectN( 2 ).percent() )
                                  ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
 
-  // General Shadowland Legendaries
-  buff.invokers_delight =
-      make_buff<stat_buff_t>( this, "invokers_delight", legendary.invokers_delight->effectN( 1 ).trigger() );
-
-
   // Brewmaster
   buff.bladed_armor = make_buff( this, "bladed_armor", spec.bladed_armor )
                           ->set_default_value( spec.bladed_armor->effectN( 1 ).percent() )
@@ -7917,6 +7922,20 @@ void monk_t::create_buffs()
                         ->add_stat( STAT_CRIT_RATING, azerite.iron_fists.value() );
 
   buff.sunrise_technique = make_buff( this, "sunrise_technique", find_spell( 273298 ) );
+
+  // Shadowland Legendaries
+  // General
+  buff.invokers_delight =
+      make_buff<stat_buff_t>( this, "invokers_delight", legendary.invokers_delight->effectN( 1 ).trigger() );
+
+  // Brewmaster
+
+  // Mistweaver
+
+  // Windwalker
+  buff.the_emperors_capacitor = make_buff( this, "the_emperors_capacitor", find_spell( 337291 ) )
+                                    ->set_default_value( find_spell( 337291 )->effectN( 1 ).percent() );
+
 }
 
 // monk_t::init_gains =======================================================
