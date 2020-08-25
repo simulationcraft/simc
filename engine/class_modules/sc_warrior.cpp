@@ -1504,10 +1504,10 @@ struct auto_attack_t : public warrior_attack_t
 
 // Mortal Strike ============================================================
 
-struct mortal_strike_t20_t : public warrior_attack_t
+struct mortal_strike_unhinged_t : public warrior_attack_t
 {
   double enduring_blow_chance;
-  mortal_strike_t20_t( warrior_t* p, const std::string& name ) : warrior_attack_t( name, p, p->spec.mortal_strike ),
+  mortal_strike_unhinged_t( warrior_t* p, const std::string& name ) : warrior_attack_t( name, p, p->spec.mortal_strike ),
   enduring_blow_chance( p->legendary.enduring_blow->proc_chance() )
   {
     cooldown->duration = timespan_t::zero();
@@ -1548,7 +1548,7 @@ struct mortal_strike_t20_t : public warrior_attack_t
         p()->buff.glory->trigger();
       }
     }
-    p()->buff.overpower->expire();
+    //p()->buff.overpower->expire(); Benefits from but does not consume Overpower in game
     p()->buff.executioners_precision->expire();
 
     warrior_td_t* td = this->td( execute_state->target );
@@ -1561,7 +1561,14 @@ struct mortal_strike_t20_t : public warrior_attack_t
 
     if ( p()->legendary.enduring_blow->ok() && ( result_is_hit( s->result ) ) && rng().roll( enduring_blow_chance ) )
     {
-      td( s->target )->debuffs_colossus_smash->trigger();
+      if ( td( s->target )->debuffs_colossus_smash->up() )
+      {
+        td( s-> target )->debuffs_colossus_smash->extend_duration( p(), timespan_t::from_millis( p()->legendary.enduring_blow->effectN( 1 ).base_value() ) );
+      }
+      else
+      {
+        td( s-> target )->debuffs_colossus_smash->trigger( timespan_t::from_millis( p()->legendary.enduring_blow->effectN( 1 ).base_value() ) );
+      }
     }
   }
 };
@@ -1643,7 +1650,14 @@ struct mortal_strike_t : public warrior_attack_t
 
     if ( p()->legendary.enduring_blow->ok() && ( result_is_hit( s->result ) ) && rng().roll( enduring_blow_chance ) )
     {
-      td( s->target )->debuffs_colossus_smash->trigger();
+      if ( td( s->target )->debuffs_colossus_smash->up() )
+      {
+        td( s-> target )->debuffs_colossus_smash->extend_duration( p(), timespan_t::from_millis( p()->legendary.enduring_blow->effectN( 1 ).base_value() ) );
+      }
+      else
+      {
+        td( s-> target )->debuffs_colossus_smash->trigger( timespan_t::from_millis( p()->legendary.enduring_blow->effectN( 1 ).base_value() ) );
+      }
     }
   }
 
@@ -1680,7 +1694,7 @@ struct bladestorm_tick_t : public warrior_attack_t
 struct bladestorm_t : public warrior_attack_t
 {
   attack_t *bladestorm_mh, *bladestorm_oh;
-  mortal_strike_t20_t* mortal_strike;
+  mortal_strike_unhinged_t* mortal_strike;
   bladestorm_t( warrior_t* p, const std::string& options_str )
     : warrior_attack_t( "bladestorm", p,
                         p->specialization() == WARRIOR_FURY ? p->talents.bladestorm : p->spec.bladestorm ),
@@ -1712,9 +1726,9 @@ struct bladestorm_t : public warrior_attack_t
         energize_resource = RESOURCE_RAGE;
         energize_amount   = data().effectN( 4 ).resource( energize_resource );
       }
-      if ( p->sets->has_set_bonus( WARRIOR_ARMS, T20, B4 ) )
+      if ( p->legendary.unhinged->ok() )
       {
-        mortal_strike = new mortal_strike_t20_t( p, "bladestorm_mortal_strike" );
+        mortal_strike = new mortal_strike_unhinged_t( p, "bladestorm_mortal_strike" );
         add_child( mortal_strike );
       }
       // Vision of Perfection only reduces the cooldown for Arms
@@ -1890,6 +1904,12 @@ struct bloodthirst_t : public warrior_attack_t
     { 
       p()->resource_gain( RESOURCE_RAGE, rage_from_seethe_crit, p()->gain.seethe_crit );
     }
+
+    p()->buff.fujiedas_fury->trigger( 1 );
+    if ( p()->legendary.cadence_of_fujieda->ok() )
+    {
+      p()->buff.cadence_of_fujieda->trigger( 1 );
+    }
   }
 
   void execute() override
@@ -1900,11 +1920,6 @@ struct bloodthirst_t : public warrior_attack_t
 
     if ( result_is_hit( execute_state->result ) )
     {
-      p()->buff.fujiedas_fury->trigger( 1 );
-      if ( p()->legendary.cadence_of_fujieda->ok() )
-      {
-        p()->buff.cadence_of_fujieda->trigger( 1 );
-      }
       if ( bloodthirst_heal )
       {
         bloodthirst_heal->execute();
@@ -2016,6 +2031,12 @@ struct bloodbath_t : public warrior_attack_t
     if ( p()->talents.seethe->ok() && execute_state->result == RESULT_CRIT )
     { 
       p()->resource_gain( RESOURCE_RAGE, rage_from_seethe_crit, p()->gain.seethe_crit );
+    }
+
+    p()->buff.fujiedas_fury->trigger( 1 );
+    if ( p()->legendary.cadence_of_fujieda->ok() )
+    {
+      p()->buff.cadence_of_fujieda->trigger( 1 );
     }
   }
 
@@ -3581,8 +3602,15 @@ struct rampage_attack_t : public warrior_attack_t
       }
       if ( p()->legendary.deathmaker->ok() && ( result_is_hit( s->result ) ) && rng().roll( deathmaker_chance ) )
       {
-        td( s->target )->debuffs_siegebreaker->trigger();
-      }
+        if ( td( s->target )->debuffs_siegebreaker->up() )
+        {
+          td( s-> target )->debuffs_siegebreaker->extend_duration( p(), timespan_t::from_millis( p()->legendary.deathmaker->effectN( 1 ).base_value() ) );
+        }
+        else
+        {
+          td( s-> target )->debuffs_siegebreaker->trigger( timespan_t::from_millis( p()->legendary.deathmaker->effectN( 1 ).base_value() ) );
+        }
+    }
     }
   }
 
@@ -3749,7 +3777,7 @@ struct ravager_tick_t : public warrior_attack_t
 struct ravager_t : public warrior_attack_t
 {
   ravager_tick_t* ravager;
-  mortal_strike_t20_t* mortal_strike;
+  mortal_strike_unhinged_t* mortal_strike;
   ravager_t( warrior_t* p, const std::string& options_str )
     : warrior_attack_t( "ravager", p, p->talents.ravager ),
       ravager( new ravager_tick_t( p, "ravager_tick" ) ),
@@ -3761,9 +3789,9 @@ struct ravager_t : public warrior_attack_t
     callbacks               = false;
     attack_power_mod.direct = attack_power_mod.tick = 0;
     add_child( ravager );
-    if ( p->sets->has_set_bonus( WARRIOR_ARMS, T20, B4 ) )
+    if ( p->legendary.unhinged->ok() )
     {
-      mortal_strike = new mortal_strike_t20_t( p, "ravager_mortal_strike" );
+      mortal_strike = new mortal_strike_unhinged_t( p, "ravager_mortal_strike" );
       add_child( mortal_strike );
     }
     // Vision of Perfection only reduces the cooldown for Arms
@@ -6969,13 +6997,6 @@ void warrior_t::create_buffs()
   buff.cadence_of_fujieda = make_buff( this, "cadence_of_fujieda", find_spell( 335558 ) )
                            ->set_default_value( find_spell( 335558 )->effectN( 1 ).percent() )
                            ->add_invalidate( CACHE_ATTACK_HASTE );
-
-  //const spell_data_t* will_of_the_berserker_trigger = legendary.will_of_the_berserker->effectN( 1 ).trigger();
-  //const spell_data_t* will_of_the_berserker_buff    = will_of_the_berserker_trigger ->effectN( 1 ).trigger();
-  //buff.will_of_the_berserker = make_buff( this, "will_of_the_berserker", will_of_the_berserker_buff    )
-                               //->set_trigger_spell( will_of_the_berserker_trigger  )
-                               //->set_default_value( legendary.will_of_the_berserker.value() )
-                               //->add_invalidate( CACHE_CRIT_CHANCE );
 
   buff.will_of_the_berserker = make_buff( this, "will_of_the_berserker", find_spell( 335597 ) )
                                ->set_default_value( find_spell( 335597 )->effectN( 1 ).percent() )
