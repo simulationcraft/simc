@@ -483,6 +483,7 @@ public:
     buff_t* rune_of_the_fallen_crusader;
     buff_t* rune_of_the_stoneskin_gargoyle;
     buff_t* rune_of_hysteria;
+    heal_t* rune_of_sanguination;
     bool rune_of_apocalypse;
   } runeforge;
 
@@ -4429,6 +4430,21 @@ struct death_strike_t : public death_knight_melee_attack_t
     return m;
   }
 
+  double composite_target_multiplier( player_t* target ) const override
+  {
+    double m = death_knight_melee_attack_t::composite_target_multiplier( target );
+
+    // 2020-08-23: Seems to only affect main hand death strike, not OH hit, not DRW's spell
+    // No spelldata either, just "increase damage based on target's missing health"
+    // Testing shows a linear 1% damage increase for every 1% missing health
+    if ( p() -> runeforge.rune_of_sanguination )
+    {
+      m *= 1.0 + 1.0 - target -> resources.pct( RESOURCE_HEALTH );
+    }
+
+    return m;
+  }
+
   double cost() const override
   {
     double c = death_knight_melee_attack_t::cost();
@@ -6406,6 +6422,7 @@ void runeforge::apocalypse( special_effect_t& effect )
   }
 
   death_knight_t* p = debug_cast<death_knight_t*>( effect.item -> player );
+  // Nothing happens if the runeforge is applied on both weapons
   if ( p -> active_spells.runeforge_pestilence )
     return;
 
@@ -6422,9 +6439,9 @@ void runeforge::hysteria( special_effect_t& effect )
     return;
   }
 
-  // TODO: check what happens if it's runeforged on both hands
-  // Current behaviour: double max RP increase and two independant procs
-  // According to spelldata, the buff can only get a single stack
+  // 2020-08-23: If the runeforge is applied on both weapons:
+  // 1. The RP cap increase is applied twice and
+  // 2. It seems that there are two independant procs for the buff (seen proc twice off the same action) even though it can't stack
   death_knight_t* p = debug_cast<death_knight_t*>( effect.item -> player );
 
   p -> resources.base[ RESOURCE_RUNIC_POWER ] += p -> find_spell( effect.spell_id ) -> effectN( 2 ).resource( RESOURCE_RUNIC_POWER );
@@ -6432,6 +6449,45 @@ void runeforge::hysteria( special_effect_t& effect )
   effect.custom_buff = p -> runeforge.rune_of_hysteria;
 
   new dbc_proc_callback_t( effect.item, effect );
+}
+
+void runeforge::sanguination( special_effect_t& effect )
+{
+  if ( effect.player -> type != DEATH_KNIGHT )
+  {
+    effect.type = SPECIAL_EFFECT_NONE;
+    return;
+  }
+
+  death_knight_t* p = debug_cast<death_knight_t*>( effect.item -> player );
+  // This runeforge doesn't stack
+  if ( p -> runeforge.rune_of_sanguination )
+    return;
+
+  struct sanguination_heal_t : public death_knight_heal_t
+  {
+    double health_threshold;
+    sanguination_heal_t( special_effect_t& effect ) :
+      death_knight_heal_t( "rune_of_sanguination", static_cast<death_knight_t*>( effect.player ),
+                           effect.player -> find_spell( effect.spell_id ) -> effectN( 1 ).trigger() ),
+      health_threshold( effect.player -> find_spell( effect.spell_id ) -> effectN( 1 ).base_value() )
+    {
+      background = true;
+      tick_pct_heal = data().effectN( 1 ).percent();
+      // Sated-type debuff, for simplicity the debuff's duration is used as a simple cooldown in simc
+      cooldown -> duration = effect.player -> find_spell( 326809 ) -> duration();
+    }
+
+    bool ready() override
+    {
+      if ( p() -> health_percentage() > health_threshold )
+        return false;
+
+      return death_knight_heal_t::ready();
+    }
+  };
+
+  p -> runeforge.rune_of_sanguination = new sanguination_heal_t( effect );
 }
 
 // Resource Manipulation ====================================================
@@ -8499,6 +8555,13 @@ void death_knight_t::do_damage( action_state_t* state )
   {
     active_spells.mark_of_blood -> execute();
   }
+
+  if ( runeforge.rune_of_sanguination )
+  {
+    // Health threshold and internal cooldown handled in ready()
+    if ( runeforge.rune_of_sanguination -> ready() )
+      runeforge.rune_of_sanguination -> execute();
+  }
 }
 
 // death_knight_t::target_mitigation ========================================
@@ -8978,6 +9041,7 @@ struct death_knight_module_t : public module_t {
     unique_gear::register_special_effect(  62157, runeforge::stoneskin_gargoyle );
     unique_gear::register_special_effect( 327087, runeforge::apocalypse );
     unique_gear::register_special_effect( 326913, runeforge::hysteria );
+    unique_gear::register_special_effect( 326801, runeforge::sanguination );
   }
 
   void register_hotfixes() const override
