@@ -772,6 +772,13 @@ struct fae_guardians_t final : public priest_buff_t<buff_t>
       }
     } );
   }
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    buff_t::expire_override( expiration_stacks, remaining_duration );
+
+    priest().remove_wrathful_faerie();
+  }
 };
 
 // ==========================================================================
@@ -1032,6 +1039,7 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p ) : actor_target_data_t(
   buffs.death_and_madness_debuff    = make_buff<buffs::death_and_madness_debuff_t>( *this );
   buffs.surrender_to_madness_debuff = make_buff<buffs::surrender_to_madness_debuff_t>( *this );
   buffs.shadow_crash_debuff         = make_buff( *this, "shadow_crash_debuff", p.talents.shadow_crash->effectN( 1 ).trigger() );
+  buffs.wrathful_faerie             = make_buff( *this, "wrathful_faerie", p.find_spell( 327703 ) );
 
   target->callbacks_on_demise.emplace_back( [ this ]( player_t* ) { target_demise(); } );
 }
@@ -1116,6 +1124,7 @@ void priest_t::create_gains()
   gains.insanity_mindgames                = get_gain( "Insanity Gained from Mindgames" );
   gains.insanity_eternal_call_to_the_void = get_gain( "Insanity Gained from Eternal Call to the Void Mind Flays" );
   gains.insanity_mind_sear                = get_gain( "Insanity Gained from Mind Sear" );
+  gains.wrathful_faerie                   = get_gain( "Insanity Gained from Fae Guardians Wrathful Faerie" );
 }
 
 /** Construct priest procs */
@@ -1941,6 +1950,18 @@ void priest_t::trigger_eternal_call_to_the_void( const dot_t* )
   {
     procs.void_tendril->occur();
     auto spawned_pets = pets.void_tendril.spawn();
+  }
+}
+
+// Fae Guardian Wrathful Faerie helper
+void priest_t::remove_wrathful_faerie()
+{
+  for ( priest_td_t* priest_td : _target_data.get_entries() )
+  {
+    if ( priest_td && priest_td->buffs.wrathful_faerie->check() )
+    {
+      priest_td->buffs.wrathful_faerie->expire();
+    }
   }
 }
 

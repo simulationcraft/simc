@@ -76,6 +76,7 @@ public:
     propagate_const<buff_t*> death_and_madness_debuff;
     propagate_const<buff_t*> surrender_to_madness_debuff;
     propagate_const<buff_t*> shadow_crash_debuff;
+    propagate_const<buff_t*> wrathful_faerie;
   } buffs;
 
   priest_t& priest()
@@ -325,6 +326,7 @@ public:
     propagate_const<gain_t*> insanity_mindgames;
     propagate_const<gain_t*> insanity_eternal_call_to_the_void;
     propagate_const<gain_t*> insanity_mind_sear;
+    propagate_const<gain_t*> wrathful_faerie;
   } gains;
 
   // Benefits
@@ -570,6 +572,7 @@ public:
   void trigger_eternal_call_to_the_void( const dot_t* d );
   void trigger_shadowy_apparitions( action_state_t* );
   void trigger_psychic_link( action_state_t* );
+  void remove_wrathful_faerie();
   const priest_td_t* find_target_data( player_t* target ) const
   {
     return _target_data[ target ];
@@ -1265,8 +1268,11 @@ struct priest_heal_t : public priest_action_t<heal_t>
 
 struct priest_spell_t : public priest_action_t<spell_t>
 {
+  double wrathful_faerie_insanity;
+
   priest_spell_t( util::string_view name, priest_t& player, const spell_data_t* s = spell_data_t::nil() )
-    : base_t( name, player, s )
+    : base_t( name, player, s ),
+      wrathful_faerie_insanity( player.find_spell( 327703 )->effectN( 2 ).resource( RESOURCE_INSANITY ) )
   {
     weapon_multiplier = 0.0;
   }
@@ -1321,6 +1327,15 @@ struct priest_spell_t : public priest_action_t<spell_t>
            ( save_health_percentage < priest().talents.twist_of_fate->effectN( 1 ).base_value() ) )
       {
         priest().buffs.twist_of_fate->trigger();
+      }
+
+      if ( priest().specialization() == PRIEST_SHADOW && s->result_type == result_amount_type::DMG_DIRECT && s->result_amount > 0 )
+      {
+        const priest_td_t* td = find_td( s->target );
+        if ( td && td->buffs.wrathful_faerie->check() )
+        {
+          priest().generate_insanity( wrathful_faerie_insanity, priest().gains.wrathful_faerie, s->action );
+        }
       }
     }
   }

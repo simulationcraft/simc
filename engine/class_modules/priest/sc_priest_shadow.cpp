@@ -736,6 +736,26 @@ struct shadow_word_pain_t final : public priest_spell_t
     parse_options( options_str );
   }
 
+  void impact( action_state_t* s ) override
+  {
+    priest_spell_t::impact( s );
+
+    if ( result_is_hit( s->result ) )
+    {
+      if ( priest().buffs.fae_guardians->check() )
+      {
+        priest_td_t& td = get_td( s->target );
+
+        if ( !td.buffs.wrathful_faerie->up() )
+        {
+          // There can only be one of these out at once so clear it first
+          priest().remove_wrathful_faerie();
+          td.buffs.wrathful_faerie->trigger();
+        }
+      }
+    }
+  }
+
   void tick( dot_t* d ) override
   {
     priest_spell_t::tick( d );
