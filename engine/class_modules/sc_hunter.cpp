@@ -1890,6 +1890,12 @@ struct kill_command_base_t: public hunter_pet_action_t<hunter_main_pet_base_t, m
       p() -> resource_gain( RESOURCE_FOCUS, serrated_jaws.energize_amount, serrated_jaws.gain, this );
   }
 
+  double composite_attack_power() const override
+  {
+    // Kill Command for both Survival & Beast Mastery uses player AP directly
+    return o() -> cache.attack_power() * o() -> composite_attack_power_multiplier();
+  }
+
   double bonus_da( const action_state_t* s ) const override
   {
     double b = hunter_pet_action_t::bonus_da( s );
@@ -1935,11 +1941,6 @@ struct kill_command_bm_t: public kill_command_base_t
       o() -> cooldowns.aspect_of_the_wild -> adjust( -ferocious_appetite_reduction );
   }
 
-  double composite_attack_power() const override
-  {
-    return o() -> cache.attack_power() * o() -> composite_attack_power_multiplier();
-  }
-
   double composite_target_multiplier( player_t* t ) const override
   {
     double am = kill_command_base_t::composite_target_multiplier( t );
@@ -1970,10 +1971,6 @@ struct kill_command_sv_t: public kill_command_base_t
 
     base_dd_multiplier *= 1 + o() -> talents.alpha_predator -> effectN( 2 ).percent();
   }
-
-  // Override behavior so that Kill Command uses hunter's attack power rather than the pet's
-  double composite_attack_power() const override
-  { return o() -> cache.attack_power() * o() -> composite_attack_power_multiplier(); }
 
   void trigger_dot( action_state_t* s ) override
   {
