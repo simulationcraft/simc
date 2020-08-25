@@ -199,6 +199,7 @@ public:
     cooldown_t* condemn;
     cooldown_t* conquerors_banner;
     cooldown_t* spear_of_bastion;
+    cooldown_t* signet_of_tormented_kings;
   } cooldown;
 
   // Gains
@@ -6052,16 +6053,6 @@ void warrior_t::init_spells()
     active.bastion_of_might_ip = new ignore_pain_bom_t( this );
   }
   if ( legendary.signet_of_tormented_kings->ok() )
-  {
-    active.signet_recklessness = new recklessness_t( this, "", find_spell( 1719 ) );
-    active.signet_recklessness->background = true;
-    active.signet_bladestorm_a = new bladestorm_t( this, "", find_spell( 227847 ) );
-    active.signet_bladestorm_a->background = true;
-    active.signet_bladestorm_f = new bladestorm_t( this, "", find_spell( 46924 ) );
-    active.signet_bladestorm_f->background = true;
-    active.signet_avatar = new avatar_t( this, "", find_spell( 107574 ) );
-    active.signet_avatar->background = true;
-  }
 
   // Cooldowns
   cooldown.avatar         = get_cooldown( "avatar" );
@@ -6091,7 +6082,7 @@ void warrior_t::init_spells()
   cooldown.rage_from_crit_block             = get_cooldown( "rage_from_crit_block" );
   cooldown.rage_from_crit_block->duration   = timespan_t::from_seconds( 3.0 );
   cooldown.raging_blow                      = get_cooldown( "raging_blow" );
-  cooldown.crushing_blow                      = get_cooldown( "raging_blow" );
+  cooldown.crushing_blow                    = get_cooldown( "raging_blow" );
   cooldown.ravager                          = get_cooldown( "ravager" );
   cooldown.revenge_reset                    = get_cooldown( "revenge_reset" );
   cooldown.revenge_reset->duration          = spec.revenge_trigger->internal_cooldown();
@@ -6103,6 +6094,23 @@ void warrior_t::init_spells()
   cooldown.storm_bolt                       = get_cooldown( "storm_bolt" );
   cooldown.thunder_clap                     = get_cooldown( "thunder_clap" );
   cooldown.warbreaker                       = get_cooldown( "warbreaker" );
+  cooldown.signet_of_tormented_kings        = get_cooldown( "signet_of_tormented_kings" );
+
+  {
+    cooldown.signet_of_tormented_kings->duration = 3_s;
+    active.signet_recklessness = new recklessness_t( this, "", find_spell( 1719 ) );
+    active.signet_recklessness->background = true;
+    active.signet_recklessness->cooldown = cooldown.signet_of_tormented_kings;
+    active.signet_bladestorm_a = new bladestorm_t( this, "", find_spell( 227847 ) );
+    active.signet_bladestorm_a->background = true;
+    active.signet_bladestorm_a->cooldown = cooldown.signet_of_tormented_kings;
+    active.signet_bladestorm_f = new bladestorm_t( this, "", find_spell( 46924 ) );
+    active.signet_bladestorm_f->background = true;
+    active.signet_bladestorm_f->cooldown = cooldown.signet_of_tormented_kings;
+    active.signet_avatar = new avatar_t( this, "", find_spell( 107574 ) );
+    active.signet_avatar->background = true;
+    active.signet_avatar->cooldown = cooldown.signet_of_tormented_kings;
+  }
 }
 
 // warrior_t::init_base =====================================================
