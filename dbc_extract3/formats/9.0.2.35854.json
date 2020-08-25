@@ -978,13 +978,13 @@
     "parent": "SpellName",
     "fields": [
       { "data_type": "b", "field": "unk_1" },
-      { "data_type": "H", "field": "cooldown_category", "formats": { "cpp": "%4u" } },
+      { "data_type": "H", "field": "id_cooldown_category", "formats": { "cpp": "%4u" }, "ref": "SpellCategory" },
       { "data_type": "b", "field": "dmg_class" },
       { "data_type": "b", "field": "dispel" },
-      { "data_type": "b", "field": "mechanic" },
+      { "data_type": "b", "field": "id_mechanic", "ref": "SpellMechanic" },
       { "data_type": "b", "field": "type_prevention" },
       { "data_type": "H", "field": "start_recovery_category" },
-      { "data_type": "H", "field": "charge_category", "formats": { "cpp": "%4u" } }
+      { "data_type": "H", "field": "id_charge_category", "formats": { "cpp": "%4u" }, "ref": "SpellCategory" }
     ]
   },
   "SpellCategory": {

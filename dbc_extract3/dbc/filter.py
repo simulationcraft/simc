@@ -277,6 +277,9 @@ class CovenantAbilitySet(DataSet):
 
         return _covenant_abilities
 
+    def ids(self):
+        return list(set(v.id_spell for v in self.get()))
+
 class TalentSet(DataSet):
     def _filter(self, **kwargs):
         talents = list()
