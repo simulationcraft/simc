@@ -979,15 +979,12 @@ struct void_bolt_t final : public priest_spell_t
   };
 
   void_bolt_extension_t* void_bolt_extension;
-  timespan_t fae_blessings_cooldown_reduction;
   propagate_const<cooldown_t*> shadowfiend_cooldown;
   propagate_const<cooldown_t*> mindbender_cooldown;
 
   void_bolt_t( priest_t& player, util::string_view options_str )
     : priest_spell_t( "void_bolt", player, player.find_spell( 205448 ) ),
       void_bolt_extension( nullptr ),
-      fae_blessings_cooldown_reduction(
-          -timespan_t::from_seconds( player.find_spell( 327710 )->effectN( 1 ).base_value() ) ),
       shadowfiend_cooldown( player.get_cooldown( "mindbender" ) ),
       mindbender_cooldown( player.get_cooldown( "shadowfiend" ) )
   {
@@ -1006,33 +1003,6 @@ struct void_bolt_t final : public priest_spell_t
   void execute() override
   {
     priest_spell_t::execute();
-
-    if ( priest().covenant.fae_blessings->ok() )
-    {
-      if ( priest().buffs.fae_blessings->up() )
-      {
-        // Adjust CD of Shadowfiend/Mindbender
-        if ( priest().talents.mindbender->ok() )
-        {
-          mindbender_cooldown->adjust( fae_blessings_cooldown_reduction );
-        }
-        else
-        {
-          shadowfiend_cooldown->adjust( fae_blessings_cooldown_reduction );
-        }
-
-        if ( priest().conduits.blessing_of_plenty->ok() )
-        {
-          if ( rng().roll( priest().conduits.blessing_of_plenty.percent() ) )
-          {
-            // store CD reduction somewhere so when we start the CD it is started reduced
-            priest().buffs.blessing_of_plenty->increment();
-            priest().procs.blessing_of_plenty->occur();
-          }
-        }
-        priest().buffs.fae_blessings->decrement();
-      }
-    }
 
     if ( priest().buffs.dissonant_echoes->check() )
     {
@@ -2164,11 +2134,6 @@ void priest_t::create_buffs_shadow()
                                ->set_trigger_spell( conduits.mind_devourer )
                                ->set_chance( conduits.mind_devourer->effectN( 2 ).percent() );
   buffs.dissonant_echoes = make_buff( this, "dissonant_echoes", find_spell( 343144 ) );
-  // Dummy buff to track CDR from Void Bolt
-  buffs.blessing_of_plenty = make_buff( this, "blessing_of_plenty", find_spell( 338305 ) )
-                                 ->set_quiet( true )
-                                 ->set_duration( timespan_t::from_seconds( 70 ) )
-                                 ->set_max_stack( 99 );
 }
 
 void priest_t::init_rng_shadow()
@@ -2416,8 +2381,7 @@ void priest_t::generate_apl_shadow()
 
   // CDs
   cds->add_action( this, "Power Infusion", "if=buff.voidform.up" );
-  cds->add_action( this, covenant.fae_blessings, "Fae Blessings", "if=insanity>=90&cooldown.void_eruption.up",
-                   "Use right before Void Eruption" );
+  cds->add_action( this, covenant.fae_guardians, "Fae Guardians" );
   cds->add_action( this, covenant.mindgames, "Mindgames", "if=insanity<90&!buff.voidform.up" );
   cds->add_action( this, covenant.unholy_nova, "Unholy Nova", "if=raid_event.adds.in>50" );
   cds->add_action( this, covenant.boon_of_the_ascended, "Boon of the Ascended",

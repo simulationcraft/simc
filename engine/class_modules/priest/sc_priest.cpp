@@ -333,35 +333,23 @@ struct power_infusion_t final : public priest_spell_t
 };
 
 // ==========================================================================
-// Fae Blessings - Night Fae Covenant
+// Fae Guardians - Night Fae Covenant
 // ==========================================================================
-struct fae_blessings_t final : public priest_spell_t
+struct fae_guardians_t final : public priest_spell_t
 {
-  fae_blessings_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "fae_blessings", p, p.covenant.fae_blessings )
+  fae_guardians_t( priest_t& p, util::string_view options_str )
+    : priest_spell_t( "fae_guardians", p, p.covenant.fae_guardians )
   {
     parse_options( options_str );
-    harmful = false;
+    harmful      = false;
+    use_off_gcd  = false;
   }
-
-  // TODO: Check if conduit to increase stacks
 
   void execute() override
   {
     priest_spell_t::execute();
 
-    priest().buffs.fae_blessings->trigger( priest().buffs.fae_blessings->max_stack() );
-    cooldown->reset( false );
-  }
-
-  bool ready() override
-  {
-    if ( priest().buffs.fae_blessings->check() )
-    {
-      return false;
-    }
-
-    return priest_spell_t::ready();
+    priest().buffs.fae_guardians->trigger();
   }
 };
 
@@ -549,7 +537,6 @@ struct ascended_eruption_t final : public priest_spell_t
   ascended_eruption_t( priest_t& p )
     : priest_spell_t( "ascended_eruption", p, p.find_spell( 325326 ) ),
       base_da_increase( p.covenant.boon_of_the_ascended->effectN( 5 ).percent() +
-                        // 1% increase from Courageous Ascension not found in spelldata
                         p.conduits.courageous_ascension->effectN( 2 ).percent() )
   {
     aoe        = -1;
@@ -645,6 +632,19 @@ struct summon_shadowfiend_t final : public summon_pet_t
       summoning_duration += rank2->effectN( 1 ).time_value();
     }
   }
+
+  double recharge_multiplier( const cooldown_t& cd ) const override
+  {
+    double m = summon_pet_t::recharge_multiplier( cd );
+
+    if ( &cd == cooldown && priest().buffs.fae_guardians->check() )
+    {
+      sim->print_debug( "Setting recharge_multiplier for shadowfiend to {}", priest().find_spell( 327710 )->effectN( 1 ).percent() );
+      m /= 1.0 + priest().find_spell( 327710 )->effectN( 1 ).percent();
+    }
+
+    return m;
+  }
 };
 
 // ==========================================================================
@@ -659,6 +659,19 @@ struct summon_mindbender_t final : public summon_pet_t
     harmful            = false;
     summoning_duration = data().duration();
     cooldown->duration *= 1.0 + azerite::vision_of_perfection_cdr( p.azerite_essence.vision_of_perfection );
+  }
+
+  double recharge_multiplier( const cooldown_t& cd ) const override
+  {
+    double m = summon_pet_t::recharge_multiplier( cd );
+
+    if ( &cd == cooldown && priest().buffs.fae_guardians->check() )
+    {
+      sim->print_debug( "Setting recharge_multiplier for mindbender to {}", priest().find_spell( 327710 )->effectN( 1 ).percent() );
+      m /= 1.0 + priest().find_spell( 327710 )->effectN( 1 ).percent();
+    }
+
+    return m;
   }
 };
 
@@ -727,38 +740,33 @@ struct power_infusion_t final : public priest_buff_t<buff_t>
 };
 
 // ==========================================================================
-// Fae Blessings - Night Fae Covenant
+// Fae Guardians - Night Fae Covenant
 // ==========================================================================
-struct fae_blessings_t final : public priest_buff_t<buff_t>
+struct fae_guardians_t final : public priest_buff_t<buff_t>
 {
-  int stacks;
-  propagate_const<cooldown_t*> action_cooldown;
+  propagate_const<cooldown_t*> shadowfiend_cooldown;
+  propagate_const<cooldown_t*> mindbender_cooldown;
 
-  fae_blessings_t( priest_t& p )
-    : base_t( p, "fae_blessings", p.covenant.fae_blessings ),
-      stacks( as<int>( data().effectN( 1 ).base_value() ) ),
-      action_cooldown( p.get_cooldown( "fae_blessings" ) )
+  fae_guardians_t( priest_t& p )
+    : base_t( p, "fae_guardians", p.covenant.fae_guardians ),
+      shadowfiend_cooldown( p.get_cooldown( "shadowfiend" ) ),
+      mindbender_cooldown( p.get_cooldown( "mindbender" ) )
   {
-    if ( priest().conduits.blessing_of_plenty->ok() )
+    if ( priest().conduits.fae_fermata->ok() )
     {
-      stacks += ( as<int>( priest().conduits.blessing_of_plenty->effectN( 2 ).base_value() ) );
+      set_duration( data().duration() + priest().conduits.fae_fermata->effectN( 1 ).time_value() );
     }
-    // When not night-fae this is returned as 0
-    set_max_stack( stacks >= 1 ? stacks : 1 );  // TODO: Add conduit stack increase
-  }
 
-  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
-  {
-    priest_buff_t<buff_t>::expire_override( expiration_stacks, remaining_duration );
-
-    // Check if we had any Blessing of Plenty procs
-    auto blessing_of_plenty_cdr    = priest().conduits.blessing_of_plenty->effectN( 3 ).base_value();
-    auto blessing_of_plenty_stacks = priest().buffs.blessing_of_plenty->current_stack;
-    auto fae_blessings_cd          = action_cooldown->duration;
-
-    action_cooldown->start( fae_blessings_cd -
-                            timespan_t::from_seconds( blessing_of_plenty_cdr * blessing_of_plenty_stacks ) );
-    priest().buffs.blessing_of_plenty->expire();
+    set_stack_change_callback( [this]( buff_t*, int, int ) {
+      if ( priest().talents.mindbender->ok() )
+      {
+        mindbender_cooldown->adjust_recharge_multiplier();
+      }
+      else
+      {
+        shadowfiend_cooldown->adjust_recharge_multiplier();
+      }
+    } );
   }
 };
 
@@ -1119,7 +1127,6 @@ void priest_t::create_procs()
   procs.power_of_the_dark_side_overflow = get_proc( "Power of the Dark Side lost to overflow" );
   procs.dissonant_echoes       = get_proc( "Void Bolt resets from Dissonant Echoes" );
   procs.mind_devourer          = get_proc( "Mind Devourer free Devouring Plague proc" );
-  procs.blessing_of_plenty     = get_proc( "Blessing of Plenty CDR on Fae Blessings" );
   procs.void_tendril           = get_proc( "Void Tendril proc from Eternal Call to the Void" );
   procs.dark_thoughts_flay     = get_proc( "Dark Thoughts proc from Mind Flay" );
   procs.dark_thoughts_sear     = get_proc( "Dark Thoughts proc from Mind Sear" );
@@ -1381,9 +1388,9 @@ action_t* priest_t::create_action( util::string_view name, const std::string& op
   {
     return new power_infusion_t( *this, options_str );
   }
-  if ( name == "fae_blessings" )
+  if ( name == "fae_guardians" )
   {
-    return new fae_blessings_t( *this, options_str );
+    return new fae_guardians_t( *this, options_str );
   }
   if ( name == "unholy_nova" )
   {
@@ -1565,11 +1572,11 @@ void priest_t::init_spells()
   // Covenant Conduits
   conduits.courageous_ascension  = find_conduit_spell( "Courageous Ascension" );
   conduits.festering_transfusion = find_conduit_spell( "Festering Transfusion" );
-  conduits.blessing_of_plenty    = find_conduit_spell( "Blessing of Plenty" );
+  conduits.fae_fermata           = find_conduit_spell( "Fae Fermata" );
   conduits.shattered_perceptions = find_conduit_spell( "Shattered Perceptions" );
 
   // Covenant Abilities
-  covenant.fae_blessings        = find_covenant_spell( "Fae Blessings" );
+  covenant.fae_guardians        = find_covenant_spell( "Fae Guardians" );
   covenant.unholy_nova          = find_covenant_spell( "Unholy Nova" );
   covenant.mindgames            = find_covenant_spell( "Mindgames" );
   covenant.boon_of_the_ascended = find_covenant_spell( "Boon of the Ascended" );
@@ -1595,7 +1602,7 @@ void priest_t::create_buffs()
                                ->set_trigger_spell( legendary.the_penitent_one );
 
   // Covenant Buffs
-  buffs.fae_blessings        = make_buff<buffs::fae_blessings_t>( *this );
+  buffs.fae_guardians        = make_buff<buffs::fae_guardians_t>( *this );
   buffs.boon_of_the_ascended = make_buff<buffs::boon_of_the_ascended_t>( *this );
 
   create_buffs_shadow();

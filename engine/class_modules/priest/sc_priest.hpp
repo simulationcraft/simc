@@ -149,10 +149,9 @@ public:
     // Conduits
     propagate_const<buff_t*> mind_devourer;
     propagate_const<buff_t*> dissonant_echoes;
-    propagate_const<buff_t*> blessing_of_plenty;  // Dummy buff to track CDR from Void Bolt
 
     // Covenants
-    propagate_const<buff_t*> fae_blessings;
+    propagate_const<buff_t*> fae_guardians;
     propagate_const<buff_t*> boon_of_the_ascended;
   } buffs;
 
@@ -289,8 +288,6 @@ public:
   // Cooldowns
   struct
   {
-    // Shared
-
     // Shadow
     propagate_const<cooldown_t*> void_bolt;
     propagate_const<cooldown_t*> mind_blast;
@@ -351,7 +348,6 @@ public:
     propagate_const<proc_t*> power_of_the_dark_side_overflow;
     propagate_const<proc_t*> dissonant_echoes;
     propagate_const<proc_t*> mind_devourer;
-    propagate_const<proc_t*> blessing_of_plenty;
     propagate_const<proc_t*> void_tendril;
     propagate_const<proc_t*> dark_thoughts_flay;
     propagate_const<proc_t*> dark_thoughts_sear;
@@ -473,13 +469,13 @@ public:
     // Covenant
     conduit_data_t courageous_ascension;
     conduit_data_t festering_transfusion;
-    conduit_data_t blessing_of_plenty;
+    conduit_data_t fae_fermata;
     conduit_data_t shattered_perceptions;
   } conduits;
 
   struct
   {
-    const spell_data_t* fae_blessings;
+    const spell_data_t* fae_guardians;
     const spell_data_t* unholy_nova;
     const spell_data_t* mindgames;
     const spell_data_t* boon_of_the_ascended;
