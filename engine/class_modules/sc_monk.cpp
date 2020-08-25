@@ -258,6 +258,7 @@ public:
     buff_t* swift_roundhouse;
 
     // Shadowland Legendary
+    buff_t* chi_energy;
     stat_buff_t* invokers_delight;
     buff_t* pressure_point;
     buff_t* the_emperors_capacitor;
@@ -541,6 +542,9 @@ public:
     const spell_data_t* fury_of_xuen_stacking_buff;
     const spell_data_t* fury_of_xuen_haste_buff;
     const spell_data_t* glory_of_the_dawn_dmg;
+
+    // Shadowland Legendary
+    const spell_data_t* chi_explosion;
   } passives;
 
   // RPPM objects
@@ -4119,6 +4123,33 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
 // Spinning Crane Kick
 // ==========================================================================
 
+struct chi_explosion_t : public monk_spell_t
+{
+  chi_explosion_t( monk_t* player )
+    : monk_spell_t( "chi_explosion", player, player->passives.chi_explosion )
+  {
+    dual = background = true;
+    aoe               = -1;
+  }
+
+  double action_multiplier() const override
+  {
+    double am = monk_spell_t::action_multiplier();
+
+    if ( p()->buff.chi_energy->up() )
+        am += 1 + p()->buff.chi_energy->stack_value();
+
+    return am;
+  }
+
+  void execute() override
+  {
+    monk_spell_t::execute();
+
+    p()->buff.chi_energy->expire();
+  }
+};
+
 struct sck_tick_action_t : public monk_melee_attack_t
 {
   sck_tick_action_t( const std::string& name, monk_t* p, const spell_data_t* data )
@@ -4193,8 +4224,9 @@ struct sck_tick_action_t : public monk_melee_attack_t
 
 struct spinning_crane_kick_t : public monk_melee_attack_t
 {
+  chi_explosion_t* chi_x;
   spinning_crane_kick_t( monk_t* p, const std::string& options_str )
-    : monk_melee_attack_t( "spinning_crane_kick", p, p->spec.spinning_crane_kick )
+    : monk_melee_attack_t( "spinning_crane_kick", p, p->spec.spinning_crane_kick ), chi_x( nullptr )
   {
     parse_options( options_str );
 
@@ -4212,6 +4244,8 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
 
     if ( p->specialization() == MONK_WINDWALKER )
       base_costs[ RESOURCE_CHI ] -= p->passives.cyclone_strikes->effectN( 2 ).base_value();
+
+    chi_x = new chi_explosion_t( p );
   }
 
   // N full ticks, but never additional ones.
@@ -4252,6 +4286,9 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
     monk_melee_attack_t::execute();
 
     p()->buff.spinning_crane_kick->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, composite_dot_duration( execute_state ) );
+
+    if ( p()->buff.chi_energy->up() )
+      chi_x->execute();
   }
 
   void last_tick( dot_t* dot ) override
@@ -4323,6 +4360,9 @@ double action_multiplier() const override
          rng().roll( p()->azerite.open_palm_strikes.spell_ref().effectN( 2 ).percent() ) )
       p()->gain.open_palm_strikes->add( RESOURCE_CHI,
                                         p()->azerite.open_palm_strikes.spell_ref().effectN( 3 ).base_value() );
+
+    if ( p()->legendary.jade_ignition->ok() )
+      p()->buff.chi_energy->trigger();
   }
 };
 
@@ -7633,6 +7673,9 @@ void monk_t::init_spells()
   passives.fury_of_xuen_haste_buff    = find_spell( 287063 );
   passives.reverse_harm_damage        = find_spell( 290461 );
 
+  // Shadowland Legendary
+  passives.chi_explosion              = find_spell( 337342 );
+
   // Mastery spells =========================================
   mastery.combo_strikes   = find_mastery_spell( MONK_WINDWALKER );
   mastery.elusive_brawler = find_mastery_spell( MONK_BREWMASTER );
@@ -7933,6 +7976,9 @@ void monk_t::create_buffs()
   // Mistweaver
 
   // Windwalker
+  buff.chi_energy = make_buff( this, "chi_energy", find_spell( 337571 ) )
+                        ->set_default_value( find_spell( 337571 )->effectN( 1 ).percent() );
+
   buff.the_emperors_capacitor = make_buff( this, "the_emperors_capacitor", find_spell( 337291 ) )
                                     ->set_default_value( find_spell( 337291 )->effectN( 1 ).percent() );
 
