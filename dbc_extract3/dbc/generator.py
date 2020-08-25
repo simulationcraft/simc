@@ -446,12 +446,7 @@ class RealPPMModifierGenerator(DataGenerator):
         self.output_footer()
 
 class SpecializationEnumGenerator(DataGenerator):
-    def __init__(self, options, data_store):
-        super().__init__(options, data_store)
-
-        self._dbc = [ 'ChrSpecialization' ]
-
-    def generate(self, ids = None):
+    def filter(self):
         enum_ids = [
             [ None, None, None, None ], # pets come here
             [ None, None, None, None ],
@@ -468,138 +463,10 @@ class SpecializationEnumGenerator(DataGenerator):
             [ None, None, None, None ],
         ]
 
-        spec_translations = [
-            [],
-            [],
-            [],
-            [],
-            [],
-            [],
-            [],
-            [],
-            [],
-            [],
-            [],
-            [],
-        ]
-
-        spec_to_idx_map = [ ]
         max_specialization = 0
-        for spec_id, spec_data in self._chrspecialization_db.items():
+        for spec_id, spec_data in sorted(self.db('ChrSpecialization').items()):
             # Ignore "Initial" specializations for now
             # TODO: Revisit
-            if spec_data.name == 'Initial':
-                continue
-
-            if spec_data.class_id > 0:
-                spec_name = '%s_%s' % (
-                    DataGenerator._class_names[spec_data.class_id].upper().replace(" ", "_"),
-                    spec_data.name.upper().replace(" ", "_"),
-                )
-
-                if spec_data.index > max_specialization:
-                    max_specialization = spec_data.index
-
-                if len(spec_to_idx_map) < spec_id + 1:
-                    spec_to_idx_map += [ -1 ] * ( ( spec_id - len(spec_to_idx_map) ) + 1 )
-
-                spec_to_idx_map[ spec_id ] = spec_data.index
-            # Ugly but works for us for now
-            elif spec_data.name in [ 'Ferocity', 'Cunning', 'Tenacity' ]:
-                spec_name = 'PET_%s' % (
-                    spec_data.name.upper().replace(" ", "_")
-                )
-            else:
-                continue
-
-            for i in range(0, (max_specialization + 1) - len(enum_ids[ spec_data.class_id ] ) ):
-                enum_ids[ spec_data.class_id ].append( None )
-
-            enum_ids[spec_data.class_id][spec_data.index] = { 'id': spec_id, 'name': spec_name }
-
-        spec_arr = []
-        self._out.write('enum specialization_e {\n')
-        self._out.write('  SPEC_NONE              = 0,\n')
-        self._out.write('  SPEC_PET               = 1,\n')
-        for cls in range(0, len(enum_ids)):
-            if enum_ids[cls][0] == None:
-                continue
-
-            for spec in range(0, len(enum_ids[cls])):
-                if enum_ids[cls][spec] == None:
-                    continue
-
-                enum_str = '  %s%s= %u,\n' % (
-                    enum_ids[cls][spec]['name'],
-                    ( 23 - len(enum_ids[cls][spec]['name']) ) * ' ',
-                    enum_ids[cls][spec]['id'] )
-
-                self._out.write(enum_str)
-                spec_arr.append('%s' % enum_ids[cls][spec]['name'])
-        self._out.write('};\n\n')
-
-        spec_idx_str = ''
-        for i in range(0, len(spec_to_idx_map)):
-            if i % 25 == 0:
-                spec_idx_str += '\n  '
-
-            spec_idx_str += '%2d' % spec_to_idx_map[i]
-            if i < len(spec_to_idx_map) - 1:
-                spec_idx_str += ','
-                if (i + 1) % 25 != 0:
-                    spec_idx_str += ' '
-
-        # Ugliness abound, but the easiest way to iterate over all specs is this ...
-        self._out.write('namespace specdata {\n')
-        # enums can be negative. using int avoids warnings when comparing.
-        # src: http://stackoverflow.com/questions/159034/are-c-enums-signed-or-unsigned/159308#159308
-        self._out.write('static const int n_specs = %u;\n\n' % len(spec_arr))
-        self._out.write('static const int spec_to_idx_map_len = %u;\n\n' % len(spec_to_idx_map))
-        self._out.write('static const specialization_e __specs[%u] = {\n  %s\n};\n\n' % (len(spec_arr), ', \n  '.join(spec_arr)))
-        self._out.write('static const int __idx_specs[%u] = {%s\n};\n\n' % (len(spec_to_idx_map), spec_idx_str))
-        self._out.write('} // namespace specdata\n')
-
-class SpecializationListGenerator(DataGenerator):
-    def __init__(self, options, data_store):
-        self._dbc = [ 'ChrSpecialization' ]
-
-        super().__init__(options, data_store)
-
-    def generate(self, ids = None):
-        enum_ids = [
-            [ None, None, None, None ], # pets come here
-            [ None, None, None, None ],
-            [ None, None, None, None ],
-            [ None, None, None, None ],
-            [ None, None, None, None ],
-            [ None, None, None, None ],
-            [ None, None, None, None ],
-            [ None, None, None, None ],
-            [ None, None, None, None ],
-            [ None, None, None, None ],
-            [ None, None, None, None ],
-            [ None, None, None, None ],
-            [ None, None, None, None ],
-        ]
-
-        spec_translations = [
-            [],
-            [],
-            [],
-            [],
-            [],
-            [],
-            [],
-            [],
-            [],
-            [],
-            [],
-            [],
-            [],
-        ]
-
-        max_specialization = 0
-        for spec_id, spec_data in self._chrspecialization_db.items():
             if spec_data.name == 'Initial':
                 continue
 
@@ -623,25 +490,32 @@ class SpecializationListGenerator(DataGenerator):
 
             enum_ids[spec_data.class_id][spec_data.index] = { 'id': spec_id, 'name': spec_name }
 
-        self._out.write('#define MAX_SPECS_PER_CLASS (%u)\n' % (max_specialization + 1))
+        return enum_ids
+
+    def generate(self, enum_ids = None):
+        self._out.write('enum specialization_e {\n')
+        self._out.write('  SPEC_NONE              = 0,\n')
+        self._out.write('  SPEC_PET               = 1,\n')
+        for specs in enum_ids:
+            for spec in specs:
+                if spec:
+                    self._out.write('  {:<23}= {},\n'.format(spec['name'], spec['id']))
+        self._out.write('};\n\n')
+
+class SpecializationListGenerator(SpecializationEnumGenerator):
+    def generate(self, enum_ids = None):
+        self._out.write('#define MAX_SPECS_PER_CLASS (%u)\n' % (max(len(specs) for specs in enum_ids)))
         self._out.write('#define MAX_SPEC_CLASS  (%u)\n\n' % len(enum_ids))
 
-        self._out.write('static specialization_e __class_spec_id[MAX_SPEC_CLASS][MAX_SPECS_PER_CLASS] = \n{\n')
-        for cls in range(0, len(enum_ids)):
-            if enum_ids[cls][0] == None:
-                self._out.write('  {\n')
-                self._out.write('    SPEC_NONE,\n')
-                self._out.write('  },\n')
-                continue
+        self._out.write('static constexpr specialization_e __class_spec_id[MAX_SPEC_CLASS][MAX_SPECS_PER_CLASS] =\n{\n')
 
+        for specs in enum_ids:
             self._out.write('  {\n')
-            for spec in range(0, len(enum_ids[cls])):
-                if enum_ids[cls][spec] == None:
+            for spec in specs:
+                if spec == None:
                     self._out.write('    SPEC_NONE,\n')
-                    continue
-
-                self._out.write('    %s,\n' % enum_ids[cls][spec]['name'])
-
+                else:
+                    self._out.write('    %s,\n' % spec['name'])
             self._out.write('  },\n')
 
         self._out.write('};\n\n')

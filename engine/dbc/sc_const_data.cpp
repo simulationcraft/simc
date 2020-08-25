@@ -747,6 +747,58 @@ specialization_e dbc::spec_by_idx( const player_e c, unsigned idx )
   return __class_spec_id[ cid ][ idx ];
 }
 
+namespace {
+
+// Generate a spec -> index map from the __class_spec_id table at compile time
+// Ideally we'd use an std::array instead of a custom struct, but sadly it is
+// not fully constexpr even in C++17...
+constexpr int max_spec_index()
+{
+  int max = -1;
+  for ( size_t i = 0; i < range::size( __class_spec_id ); i++ )
+  {
+    for ( size_t index = 0; index < range::size( __class_spec_id[ i ] ); index++ )
+    {
+      specialization_e spec = __class_spec_id[ i ][ index ];
+      max = static_cast<int>( spec ) > max ? static_cast<int>( spec ) : max;
+    }
+  }
+  return max;
+}
+struct spec_index_map_t {
+  constexpr spec_index_map_t() : data_{}
+  {
+    for ( int8_t& index : data_ )
+      index = -1;
+
+    for ( size_t i = 0; i < range::size( __class_spec_id ); i++ )
+    {
+      for ( size_t index = 0; index < range::size( __class_spec_id[ i ] ); index++ )
+      {
+        specialization_e spec = __class_spec_id[ i ][ index ];
+        if ( spec != SPEC_NONE )
+          data_[ spec ] = index;
+      }
+    }
+  }
+
+  constexpr int8_t operator[]( specialization_e spec ) const
+  {
+    assert( spec < range::size( data_ ) );
+    return data_[ spec ];
+  }
+
+  int8_t data_[max_spec_index() + 1];
+};
+
+} // anon namespace
+
+int dbc::spec_idx( specialization_e spec )
+{
+  static constexpr spec_index_map_t spec_index_map;
+  return spec_index_map[ spec ];
+}
+
 uint32_t dbc::get_school_mask( school_e s )
 {
   switch ( s )
