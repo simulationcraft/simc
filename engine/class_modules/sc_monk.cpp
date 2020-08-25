@@ -135,8 +135,14 @@ public:
     buff_t* flying_serpent_kick;
     buff_t* keg_smash;
     buff_t* storm_earth_and_fire;
-    buff_t* sunrise_technique;
     buff_t* touch_of_karma;
+
+    // Azerite
+    buff_t* sunrise_technique;
+
+    // Shadowland Legendaries
+    buff_t* rushing_tiger_palm;
+    buff_t* recently_rushing_tiger_palm;
   } debuff;
 
   monk_t& monk;
@@ -3222,6 +3228,16 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
     return m;
   }
 
+  double composite_target_crit_chance( player_t* target ) const override
+  {
+    double c = player->composite_player_target_crit_chance( target );
+
+    if ( td( target )->debuff.rushing_tiger_palm->up() )
+      c += td( target )->debuff.rushing_tiger_palm->data().effectN( 1 ).percent();
+
+    return c;
+  }
+
   double composite_persistent_multiplier( const action_state_t* action_state ) const override
   {
     double pm = base_t::composite_persistent_multiplier( action_state );
@@ -3415,6 +3431,9 @@ struct tiger_palm_t : public monk_melee_attack_t
       energize_type = action_energize::NONE;
 
     spell_power_mod.direct = 0.0;
+
+    if ( p->legendary.keefers_skyreach->ok() )
+      this->range += p->legendary.keefers_skyreach->effectN( 1 ).base_value();
   }
 
   double action_multiplier() const override
@@ -3525,6 +3544,16 @@ struct tiger_palm_t : public monk_melee_attack_t
     // Apply Mark of the Crane
     if ( p()->specialization() == MONK_WINDWALKER && result_is_hit( s->result ) && p()->spec.spinning_crane_kick )
       p()->trigger_mark_of_the_crane( s );
+
+    if ( p()->legendary.keefers_skyreach->ok() )
+    {
+      if ( !td( s->target )->debuff.recently_rushing_tiger_palm->up() )
+      {
+        td( s->target )->debuff.rushing_tiger_palm->trigger();
+        td( s->target )->debuff.recently_rushing_tiger_palm->trigger();
+      }
+    }
+
   }
 };
 
@@ -7025,13 +7054,22 @@ monk_td_t::monk_td_t( player_t* target, monk_t* p )
             ->set_default_value( p->spec.touch_of_karma->effectN( 3 ).percent() +
                                  ( p->talent.good_karma->ok() ? p->talent.good_karma->effectN( 1 ).percent() : 0 ) );
   }
-  debuff.sunrise_technique = make_buff( *this, "sunrise_technique_debuff", p->find_spell( 273299 ) );
 
   if ( p->specialization() == MONK_BREWMASTER )
   {
     debuff.keg_smash = make_buff( *this, "keg_smash", p->spec.keg_smash )
                            ->set_default_value( p->spec.keg_smash->effectN( 3 ).percent() );
   }
+
+  // Azerite
+  debuff.sunrise_technique = make_buff( *this, "sunrise_technique_debuff", p->find_spell( 273299 ) );
+
+  // Shadowland Legendary
+  debuff.rushing_tiger_palm          = make_buff( *this, "rushing_tiger_palm", p->find_spell( 337340 ) )
+                                            ->add_invalidate( CACHE_ATTACK_CRIT_CHANCE )
+                                            ->set_refresh_behavior( buff_refresh_behavior::NONE );
+  debuff.recently_rushing_tiger_palm = make_buff( *this, "recently_rushing_tiger_palm", p->find_spell( 337341 ) )
+                                            ->set_refresh_behavior( buff_refresh_behavior::NONE );
 
   debuff.storm_earth_and_fire = make_buff( *this, "storm_earth_and_fire_target" )->set_cooldown( timespan_t::zero() );
 
