@@ -3547,7 +3547,7 @@ struct rampage_attack_t : public warrior_attack_t
       }
       if ( p()->legendary.reckless_defense->ok() && target == s->target && execute_state->result == RESULT_CRIT )
       {
-        p() -> cooldown.recklessness -> adjust( timespan_t::from_seconds( p()->legendary.reckless_defense->effectN( 1 ).base_value() ) );
+        p() -> cooldown.recklessness -> adjust( - timespan_t::from_seconds( p()->legendary.reckless_defense->effectN( 1 ).base_value() ) );
       }
       if ( p()->legendary.deathmaker->ok() && ( result_is_hit( s->result ) ) && rng().roll( deathmaker_chance ) )
       {
@@ -4830,6 +4830,7 @@ struct conquerors_banner_t : public warrior_spell_t
     warrior_spell_t::execute();
 
     p()->buff.conquerors_banner->trigger();
+    p()->cooldown.conquerors_banner->reset( true );
   }
 };
 
@@ -6787,7 +6788,8 @@ void warrior_t::create_buffs()
     ->add_invalidate( CACHE_CRIT_CHANCE )
     ->set_cooldown( timespan_t::zero() )
     ->set_default_value( spec.recklessness->effectN( 1 ).percent() )
-    ->set_stack_change_callback( [ this ]( buff_t*, int, int after ) { if ( after == 0 ) buff.infinite_fury->trigger(); });
+    ->set_stack_change_callback( [ this ]( buff_t*, int, int after ) { if ( after == 0 ) buff.infinite_fury->trigger(); })
+    ->set_stack_change_callback( [ this ]( buff_t*, int, int after ) { if ( after == 0 ) buff.will_of_the_berserker->trigger(); });
 
   buff.sudden_death = make_buff( this, "sudden_death", talents.sudden_death );
 
@@ -7633,7 +7635,7 @@ double warrior_t::resource_gain( resource_e r, double a, gain_t* g, action_t* ac
   if ( buff.recklessness->check() && r == RESOURCE_RAGE )
   {
     bool do_not_double_rage = false;
-    do_not_double_rage      = ( g == gain.ceannar_rage || g == gain.valarjar_berserking || g == gain.simmering_rage || g == gain.memory_of_lucid_dreams );
+    do_not_double_rage      = ( g == gain.ceannar_rage || g == gain.valarjar_berserking || g == gain.simmering_rage || g == gain.memory_of_lucid_dreams || g == gain.frothing_berserker );
 
     if ( !do_not_double_rage )  // FIXME: remove this horror after BFA launches, keep Simmering Rage
       a *= 1.0 + spec.recklessness->effectN( 4 ).percent();
