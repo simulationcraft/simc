@@ -205,7 +205,7 @@ public:
     buff_t* dampen_harm;
     buff_t* diffuse_magic;
     buff_t* rushing_jade_wind;
-    stat_buff_t* tier19_oh_8pc;  // Tier 19 Order Hall 8-piece
+    buff_t* spinning_crane_kick;
 
     // Brewmaster
     buff_t* bladed_armor;
@@ -240,8 +240,6 @@ public:
     buff_t* flying_serpent_kick_movement;
     buff_t* hit_combo;
     buff_t* inner_stength;
-    buff_t* pressure_point;
-    buff_t* spinning_crane_kick;
     buff_t* storm_earth_and_fire;
     buff_t* serenity;
     buff_t* touch_of_karma;
@@ -261,6 +259,7 @@ public:
 
     // Shadowland Legendary
     stat_buff_t* invokers_delight;
+    buff_t* pressure_point;
   } buff;
 
 public:
@@ -3644,6 +3643,9 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
           s->target->debuffs.mortal_wounds->trigger();
         }
 
+        if ( p()->legendary.xuens_treasure->ok() && ( s->result == RESULT_CRIT ) )
+          p()->cooldown.fists_of_fury->adjust( -1 * p()->legendary.xuens_treasure->effectN( 2 ).time_value() );
+
 		// Apply Mark of the Crane
 		if ( p()->spec.spinning_crane_kick )
           p()->trigger_mark_of_the_crane( s );
@@ -4407,6 +4409,9 @@ struct fists_of_fury_t : public monk_melee_attack_t
   void last_tick( dot_t* dot ) override
   {
     monk_melee_attack_t::last_tick( dot );
+
+    if ( p()->legendary.xuens_treasure->ok() )
+      p()->buff.pressure_point->trigger();
   }
 };
 
@@ -7772,8 +7777,10 @@ void monk_t::create_buffs()
   buff.diffuse_magic = make_buff( this, "diffuse_magic", talent.diffuse_magic )
                            ->set_default_value( talent.diffuse_magic->effectN( 1 ).percent() );
 
-  buff.tier19_oh_8pc = make_buff<stat_buff_t>( this, "grandmasters_wisdom",
-                                               sets->set( specialization(), T19OH, B8 )->effectN( 1 ).trigger() );
+  buff.spinning_crane_kick = make_buff( this, "spinning_crane_kick", spec.spinning_crane_kick )
+                                 ->set_default_value( spec.spinning_crane_kick->effectN( 2 ).percent() )
+                                 ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
+
   // General Shadowland Legendaries
   buff.invokers_delight =
       make_buff<stat_buff_t>( this, "invokers_delight", legendary.invokers_delight->effectN( 1 ).trigger() );
@@ -7819,10 +7826,6 @@ void monk_t::create_buffs()
       make_buff( this, "refreshing_jade_wind", talent.refreshing_jade_wind )
           ->set_default_value( talent.refreshing_jade_wind->effectN( 1 ).trigger()->effectN( 1 ).percent() )
           ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
-
-  buff.spinning_crane_kick = make_buff( this, "spinning_crane_kick", spec.spinning_crane_kick )
-                                 ->set_default_value( spec.spinning_crane_kick->effectN( 2 ).percent() )
-                                 ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
 
   buff.teachings_of_the_monastery = make_buff( this, "teachings_of_the_monastery", find_spell( 202090 ) )
                                         ->set_default_value( find_spell( 202090 )->effectN( 1 ).percent() );
@@ -7873,8 +7876,8 @@ void monk_t::create_buffs()
           ->set_can_cancel( false )  // Undocumented hotfix 28/09/2018 - SEF can no longer be canceled.
           ->set_cooldown( timespan_t::zero() );
 
-  buff.pressure_point = make_buff( this, "pressure_point", find_spell( 247255 ) )
-                            ->set_default_value( find_spell( 247255 )->effectN( 1 ).percent() )
+  buff.pressure_point = make_buff( this, "pressure_point", find_spell( 337481 ) )
+                            ->set_default_value( find_spell( 337481 )->effectN( 1 ).percent() )
                             ->set_refresh_behavior( buff_refresh_behavior::NONE );
 
   buff.touch_of_karma = new buffs::touch_of_karma_buff_t( *this, "touch_of_karma", find_spell( 125174 ) );
