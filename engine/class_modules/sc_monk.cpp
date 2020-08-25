@@ -3591,6 +3591,16 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
     return b;
   }
 
+  double composite_crit_chance() const override
+  {
+    double c = monk_melee_attack_t::composite_crit_chance();
+
+    if ( p()->buff.pressure_point->up() )
+      c += p()->buff.pressure_point->value();
+
+    return c;
+  }
+
   void init() override
   {
     monk_melee_attack_t::init();
@@ -3693,16 +3703,6 @@ struct rising_sun_kick_t : public monk_melee_attack_t
     monk_melee_attack_t::init();
 
     ap_type = attack_power_type::NONE;
-  }
-
-  double composite_crit_chance() const override
-  {
-    double c = monk_melee_attack_t::composite_crit_chance();
-
-    if ( p()->buff.pressure_point->up() )
-      c += p()->buff.pressure_point->value();
-
-    return c;
   }
 
   void consume_resource() override
