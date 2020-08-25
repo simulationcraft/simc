@@ -492,6 +492,7 @@ public:
     cooldown_t* combustion;
     cooldown_t* cone_of_cold;
     cooldown_t* fire_blast;
+    cooldown_t* from_the_ashes;
     cooldown_t* frost_nova;
     cooldown_t* frozen_orb;
     cooldown_t* icy_veins;
@@ -1442,7 +1443,7 @@ struct mage_spell_t : public spell_t
   struct triggers_t
   {
     bool bone_chilling = false;
-    bool from_the_ashes = true;
+    bool from_the_ashes = false;
     bool hot_streak = false;
     bool ignite = false;
     bool kindling = false;
@@ -1859,13 +1860,17 @@ struct fire_mage_spell_t : public mage_spell_t
 
       // TODO: Double check how this works with Pheonix Flames and Deathborne Fireball
       // closer to release.
-      if ( triggers.kindling && p()->talents.kindling->ok() && s->result == RESULT_CRIT )
+      if ( triggers.kindling && s->result == RESULT_CRIT && p()->talents.kindling->ok() )
         p()->cooldowns.combustion->adjust( -p()->talents.kindling->effectN( 1 ).time_value() );
 
-      // TODO: What currently triggers From the Ashes seems inconsistent at best. Implement
-      // it according to the tooltip and check again closer to release.
-      if ( triggers.from_the_ashes && p()->talents.from_the_ashes->ok() && s->result == RESULT_CRIT )
+      if ( triggers.from_the_ashes
+        && s->result == RESULT_CRIT
+        && p()->talents.from_the_ashes->ok()
+        && p()->cooldowns.from_the_ashes->up() )
+      {
+        p()->cooldowns.from_the_ashes->start( p()->talents.from_the_ashes->internal_cooldown() );
         p()->cooldowns.phoenix_flames->adjust( p()->talents.from_the_ashes->effectN( 2 ).time_value() );
+      }
     }
   }
 
@@ -3231,7 +3236,7 @@ struct dragons_breath_t : public fire_mage_spell_t
   {
     parse_options( options_str );
     aoe = -1;
-    triggers.radiant_spark = true;
+    triggers.from_the_ashes = triggers.radiant_spark = true;
     crit_bonus_multiplier *= 1.0 + p->talents.alexstraszas_fury->effectN( 2 ).percent();
     cooldown->duration += p->spec.dragons_breath_2->effectN( 1 ).time_value();
 
@@ -3355,7 +3360,7 @@ struct fireball_t : public fire_mage_spell_t
     fire_mage_spell_t( n, p, p->find_class_spell( "Fireball" ) )
   {
     parse_options( options_str );
-    triggers.hot_streak = triggers.ignite = triggers.kindling = triggers.radiant_spark = true;
+    triggers.hot_streak = triggers.ignite = triggers.kindling = triggers.from_the_ashes = triggers.radiant_spark = true;
     affected_by.deathborne_cleave = true;
     base_multiplier *= 1.0 + p->spec.fireball_3->effectN( 1 ).percent();
     base_dd_adder += p->azerite.duplicative_incineration.value( 2 );
@@ -4306,7 +4311,7 @@ struct fire_blast_t : public fire_mage_spell_t
   {
     parse_options( options_str );
     usable_while_casting = p->spec.fire_blast_3->ok();
-    triggers.hot_streak = triggers.ignite = triggers.kindling = triggers.radiant_spark = true;
+    triggers.hot_streak = triggers.ignite = triggers.kindling = triggers.from_the_ashes = triggers.radiant_spark = true;
 
     cooldown->charges += as<int>( p->spec.fire_blast_4->effectN( 1 ).base_value() );
     cooldown->charges += as<int>( p->talents.flame_on->effectN( 1 ).base_value() );
@@ -4767,7 +4772,7 @@ struct pyroblast_t : public hot_streak_spell_t
     pyroblast_dot()
   {
     parse_options( options_str );
-    triggers.hot_streak = triggers.ignite = triggers.kindling = triggers.radiant_spark = true;
+    triggers.hot_streak = triggers.ignite = triggers.kindling = triggers.from_the_ashes = triggers.radiant_spark = true;
     base_dd_adder += p->azerite.wildfire.value( 2 );
     base_multiplier *= 1.0 + p->conduits.controlled_destruction.percent();
 
@@ -4948,7 +4953,7 @@ struct scorch_t : public fire_mage_spell_t
     fire_mage_spell_t( n, p, p->find_specialization_spell( "Scorch" ) )
   {
     parse_options( options_str );
-    triggers.hot_streak = triggers.ignite = triggers.radiant_spark = true;
+    triggers.hot_streak = triggers.ignite = triggers.from_the_ashes = triggers.radiant_spark = true;
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -5704,6 +5709,7 @@ mage_t::mage_t( sim_t* sim, util::string_view name, race_e r ) :
   cooldowns.combustion       = get_cooldown( "combustion"       );
   cooldowns.cone_of_cold     = get_cooldown( "cone_of_cold"     );
   cooldowns.fire_blast       = get_cooldown( "fire_blast"       );
+  cooldowns.from_the_ashes   = get_cooldown( "from_the_ashes"   );
   cooldowns.frost_nova       = get_cooldown( "frost_nova"       );
   cooldowns.frozen_orb       = get_cooldown( "frozen_orb"       );
   cooldowns.icy_veins        = get_cooldown( "icy_veins"        );
