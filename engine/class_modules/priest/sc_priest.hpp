@@ -400,7 +400,7 @@ public:
     bool priest_mindgames_healing_insanity = false;
     bool priest_mindgames_damage_insanity  = true;
 
-    // Fae Blessings CDR is not guarenteed to go on the Priest, reduce this to make things more accurate
+    // Fae Blessings CDR can be given to another player, but you can still get the insanity gen
     bool priest_self_benevolent_faerie = true;
 
   } options;

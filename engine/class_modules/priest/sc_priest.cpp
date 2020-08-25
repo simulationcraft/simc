@@ -617,8 +617,11 @@ public:
 // ==========================================================================
 struct summon_shadowfiend_t final : public summon_pet_t
 {
+  double benevolent_faerie_rate;
+
   summon_shadowfiend_t( priest_t& p, util::string_view options_str )
-    : summon_pet_t( "shadowfiend", p, p.find_class_spell( "Shadowfiend" ) )
+    : summon_pet_t( "shadowfiend", p, p.find_class_spell( "Shadowfiend" ) ),
+      benevolent_faerie_rate( priest().find_spell( 327710 )->effectN( 1 ).percent() )
   {
     parse_options( options_str );
     harmful            = false;
@@ -637,10 +640,9 @@ struct summon_shadowfiend_t final : public summon_pet_t
   {
     double m = summon_pet_t::recharge_multiplier( cd );
 
-    if ( &cd == cooldown && priest().buffs.fae_guardians->check() )
+    if ( &cd == cooldown && priest().buffs.fae_guardians->check() && priest().options.priest_self_benevolent_faerie )
     {
-      sim->print_debug( "Setting recharge_multiplier for shadowfiend to {}", priest().find_spell( 327710 )->effectN( 1 ).percent() );
-      m /= 1.0 + priest().find_spell( 327710 )->effectN( 1 ).percent();
+      m /= 1.0 + benevolent_faerie_rate;
     }
 
     return m;
@@ -652,8 +654,11 @@ struct summon_shadowfiend_t final : public summon_pet_t
 // ==========================================================================
 struct summon_mindbender_t final : public summon_pet_t
 {
+  double benevolent_faerie_rate;
+
   summon_mindbender_t( priest_t& p, util::string_view options_str )
-    : summon_pet_t( "mindbender", p, p.find_talent_spell( "Mindbender" ) )
+    : summon_pet_t( "mindbender", p, p.find_talent_spell( "Mindbender" ) ),
+      benevolent_faerie_rate( priest().find_spell( 327710 )->effectN( 1 ).percent() )
   {
     parse_options( options_str );
     harmful            = false;
@@ -665,10 +670,9 @@ struct summon_mindbender_t final : public summon_pet_t
   {
     double m = summon_pet_t::recharge_multiplier( cd );
 
-    if ( &cd == cooldown && priest().buffs.fae_guardians->check() )
+    if ( &cd == cooldown && priest().buffs.fae_guardians->check() && priest().options.priest_self_benevolent_faerie )
     {
-      sim->print_debug( "Setting recharge_multiplier for mindbender to {}", priest().find_spell( 327710 )->effectN( 1 ).percent() );
-      m /= 1.0 + priest().find_spell( 327710 )->effectN( 1 ).percent();
+      m /= 1.0 + benevolent_faerie_rate;
     }
 
     return m;
