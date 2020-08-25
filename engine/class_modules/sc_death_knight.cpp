@@ -5316,6 +5316,10 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
     {
       school = SCHOOL_FROST;
     }
+    else
+    {
+      school = SCHOOL_PHYSICAL;
+    }
   }
 };
 
