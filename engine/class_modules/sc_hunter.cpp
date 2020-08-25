@@ -6802,7 +6802,7 @@ void hunter_t::apl_mm()
     trickshots -> add_action( "double_tap,if=cooldown.aimed_shot.up|cooldown.rapid_fire.remains>cooldown.aimed_shot.remains" );
     trickshots -> add_action( "tar_trap,if=runeforge.soulforge_embers.equipped&tar_trap.remains<gcd&cooldown.flare.remains<gcd" );
     trickshots -> add_action( "flare,if=tar_trap.up" );
-    trickshots -> add_action( "vowild_spiritslley" );
+    trickshots -> add_action( "wild_spirits" );
     trickshots -> add_action( "volley" );
     trickshots -> add_action( "resonating_arrow" );
     trickshots -> add_action( "barrage" );
