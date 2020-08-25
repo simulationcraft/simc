@@ -4934,6 +4934,7 @@ struct slaughter_t : public rogue_attack_t
     slaughter_poison = p->get_background_action<slaughter_poison_t>( "slaughter_poison_driver" );
   }
 
+  // TOCHECK: May need to move this to whitelist in base unless they fix it being applied to poison ticks
   double get_slaughter_scars_multiplier() const
   {
     if ( !p()->conduit.slaughter_scars.ok() )
@@ -8343,6 +8344,7 @@ void rogue_t::create_buffs()
   // Conduits ===============================================================
 
   buffs.deeper_daggers = make_buff( this, "deeper_daggers", conduit.deeper_daggers->effectN( 1 ).trigger() )
+    ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
     ->set_trigger_spell( conduit.deeper_daggers )
     ->set_default_value( conduit.deeper_daggers.percent() );
 
