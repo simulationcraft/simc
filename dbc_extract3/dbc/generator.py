@@ -585,37 +585,17 @@ class ItemDataGenerator(DataGenerator):
         "Heroic Warforged"     : 0x12,
     }
 
-    def __init__(self, options, data_store):
-        super().__init__(options, data_store)
-
-        self._dbc = [ 'Item', 'ItemEffect', 'SpellEffect', 'SpellName', 'JournalEncounterItem', 'ItemNameDescription' ]
-        if options.build < 23436:
-            self._dbc.append('Item-sparse')
-        else:
-            self._dbc.append('ItemSparse')
-
-    def initialize(self):
-        if not DataGenerator.initialize(self):
-            return False
-
-        self._data_store.link('SpellEffect',        self._options.build < 25600 and 'id_spell' or 'id_parent', 'SpellName', 'add_effect' )
-        self._data_store.link('ItemEffect', self._options.build < 25600 and 'id_item' or 'id_parent', self._options.build < 23436 and 'Item-sparse' or 'ItemSparse', 'spells')
-        self._data_store.link('JournalEncounterItem', 'id_item', self._options.build < 23436 and 'Item-sparse' or 'ItemSparse', 'journal')
-
-        return True
-
     def filter(self):
-        ids = []
-        db = self._options.build < 23436 and self._item_sparse_db or self._itemsparse_db
-        for item_id, data in db.items():
+        data = []
+
+        for item in self.db('ItemSparse').values():
             blacklist_item = False
 
-            classdata = self._item_db[item_id]
-            if item_id in self._item_blacklist:
+            if item.id in self._item_blacklist:
                 continue
 
             for pat in self._item_name_blacklist:
-                if data.name and re.search(pat, data.name):
+                if item.name and re.search(pat, item.name):
                     blacklist_item = True
 
             if blacklist_item:
@@ -623,33 +603,35 @@ class ItemDataGenerator(DataGenerator):
 
             filter_ilevel = True
 
+            classdata = self.db('Item')[item.id]
+
             # Item no longer in game
             # LEGION: Apparently no longer true?
             #if data.flags_1 & 0x10:
             #    continue
 
             # Various things in armors/weapons
-            if item_id in constants.ITEM_WHITELIST:
+            if item.id in constants.ITEM_WHITELIST:
                 filter_ilevel = False
             elif classdata.classs in [ 2, 4 ]:
                 # All shirts
-                if data.inv_type == 4:
+                if item.inv_type == 4:
                     filter_ilevel = False
                 # All tabards
-                elif data.inv_type == 19:
+                elif item.inv_type == 19:
                     filter_ilevel = False
                 # All epic+ armor/weapons
-                elif data.quality >= 4:
+                elif item.quality >= 4:
                     filter_ilevel = False
                 else:
                     # On-use item, with a valid spell (and cooldown)
-                    for item_effect in data.get_links('spells'):
+                    for item_effect in item.children('ItemEffect'):
                         if item_effect.trigger_type == 0 and item_effect.id_spell > 0 and (item_effect.cooldown_group_duration > 0 or item_effect.cooldown_duration > 0):
                             filter_ilevel = False
                             break
             # Gems
             elif classdata.classs == 3 or (classdata.classs == 7 and classdata.subclass == 4):
-                if data.gem_props == 0:
+                if item.gem_props == 0:
                     continue
                 else:
                     filter_ilevel = False
@@ -657,8 +639,8 @@ class ItemDataGenerator(DataGenerator):
             elif classdata.classs == 0:
                 # Potions, Elixirs, Flasks. Simple spells only.
                 if classdata.has_value('subclass', [1, 2, 3]):
-                    for item_effect in data.get_links('spells'):
-                        spell = self._spellname_db[item_effect.id_spell]
+                    for item_effect in item.children('ItemEffect'):
+                        spell = item_effect.ref('id_spell')
                         if not spell.has_effect('type', 6):
                             continue
 
@@ -669,8 +651,8 @@ class ItemDataGenerator(DataGenerator):
                         filter_ilevel = False
                 # Food
                 elif classdata.has_value('subclass', 5):
-                    for item_effect in data.get_links('spells'):
-                        spell = self._spellname_db[item_effect.id_spell]
+                    for item_effect in item.children('ItemEffect'):
+                        spell = item_effect.ref('id_spell')
                         for effect in spell._effects:
                             if not effect:
                                 continue
@@ -693,8 +675,8 @@ class ItemDataGenerator(DataGenerator):
             # Hunter scopes and whatnot
             elif classdata.classs == 7:
                 if classdata.has_value('subclass', 3):
-                    for item_effect in data.get_links('spells'):
-                        spell = self._spellname_db[item_effect.id_spell]
+                    for item_effect in item.children('ItemEffect'):
+                        spell = item_effect.ref('id_spell')
                         for effect in spell._effects:
                             if not effect:
                                 continue
@@ -704,12 +686,8 @@ class ItemDataGenerator(DataGenerator):
             # Only very select quest-item permanent item enchantments
             elif classdata.classs == 12:
                 valid = False
-                for spell in data.get_links('spells'):
-                    spell_id = spell.id_spell
-                    if spell_id == 0:
-                        continue
-
-                    spell = self._spellname_db[spell_id]
+                for item_effect in item.children('ItemEffect'):
+                    spell = item_effect.ref('id_spell')
                     for effect in spell._effects:
                         if not effect or effect.type != 53:
                             continue
@@ -725,20 +703,20 @@ class ItemDataGenerator(DataGenerator):
             elif classdata.classs == 16:
                 filter_ilevel = False
             # All tabards
-            elif data.inv_type == 19:
+            elif item.inv_type == 19:
                 filter_ilevel = False
             # All heirlooms
-            elif data.quality == 7:
+            elif item.quality == 7:
                 filter_ilevel = False
 
             # Item-level based non-equippable items
-            if filter_ilevel and data.inv_type == 0:
+            if filter_ilevel and item.inv_type == 0:
                 continue
             # All else is filtered based on item level
-            elif filter_ilevel and (data.ilevel < self._options.min_ilevel or data.ilevel > self._options.max_ilevel):
+            elif filter_ilevel and (item.ilevel < self._options.min_ilevel or item.ilevel > self._options.max_ilevel):
                 continue
 
-            ids.append(item_id)
+            data.append(item)
 
         # All timewalking items through JournalEncounter
         journal_item_ids = [
@@ -754,30 +732,29 @@ class ItemDataGenerator(DataGenerator):
             if item_.id == 0:
                 continue
 
-            if item_.classs in [2, 4] and item.id not in ids:
-                ids.append(item.id)
+            if item_.classs in [2, 4] and item not in data:
+                data.append(item)
 
-        return ids
+        return data
 
-    def generate(self, ids = None):
+    def generate(self, data = None):
         #if (self._options.output_type == 'cpp'):
-        self.generate_cpp(ids)
+        self.generate_cpp(data)
         #elif (self._options.output_type == 'js'):
         #    return self.generate_json(ids)
         #else:
         #    return "Unknown output type"
 
-    def generate_cpp(self, ids = None):
-        ids.sort()
+    def generate_cpp(self, data = None):
+        data.sort(key=lambda i: i.id)
 
         # filter out missing items XXX: is this possible?
-        def check_item(id):
-            item = self._itemsparse_db[id]
-            if not item.id and id > 0:
-                sys.stderr.write('Item id {} not found\n'.format(id))
+        def check_item(item):
+            if not item.id:
+                sys.stderr.write('Item id {} not found\n'.format(item.id))
                 return False
             return True
-        ids[:] = [ id for id in ids if check_item(id) ]
+        data[:] = [ item for item in data if check_item(item) ]
 
         class Index(object):
             def __init__(self):
@@ -814,8 +791,7 @@ class ItemDataGenerator(DataGenerator):
 
         items_stats_index = Index()
 
-        for id in ids:
-            item = self._itemsparse_db[id]
+        for item in data:
             stats = []
             for i in range(1, 11):
                 stat_type = getattr(item, 'stat_type_{}'.format(i))
@@ -824,7 +800,7 @@ class ItemDataGenerator(DataGenerator):
                                    getattr(item, 'stat_alloc_{}'.format(i)),
                                    item.field('stat_socket_mul_{}'.format(i))[0] ))
             if len(stats):
-                items_stats_index.add(id, sorted(stats, key=lambda s: s[:2]))
+                items_stats_index.add(item.id, sorted(stats, key=lambda s: s[:2]))
 
         self._out.write('static const dbc_item_data_t::stats_t __{}_data[{}] = {{\n'.format(
             self.format_str('item_stats'), len(items_stats_index)))
@@ -838,60 +814,57 @@ class ItemDataGenerator(DataGenerator):
                 return [ '0', '0' ]
             return [ '&__{}_data[{}]'.format(self.format_str('item_stats'), stats[0]), str(stats[1]) ]
 
-        self._out.write('// Items, ilevel %d-%d, wow build level %s\n' % (
-            self._options.min_ilevel, self._options.max_ilevel, self._options.build))
-        self._out.write('static const std::array<dbc_item_data_t, %d> __%s_data { {\n' % (
-            len(ids), self.format_str('item')))
+        self.output_header(
+                header = 'Items, ilevel {}-{}'.format(self._options.min_ilevel, self._options.max_ilevel),
+                type = 'dbc_item_data_t',
+                array = 'item',
+                length = len(data))
 
-        index = 0
-        for id in ids:
-            item = self._itemsparse_db[id]
-            item2 = self._item_db[id]
+        for item in data:
+            item2 = self.db('Item')[item.id]
 
             fields = item.field('name', 'id', 'flags_1', 'flags_2')
 
             flag_types = 0x00
 
-            for entry in item.get_links('journal'):
+            for entry in item.child_refs('JournalEncounterItem'):
                 if entry.flags_1 == 0x10:
                     flag_types |= self._type_flags['Raid Finder']
                 elif entry.flags_1 == 0xC:
                     flag_types |= self._type_flags['Heroic']
 
-            desc = self._itemnamedescription_db[item.id_name_desc]
-            flag_types |= self._type_flags.get(desc.desc, 0)
+            flag_types |= self._type_flags.get(item.ref('id_name_desc').desc, 0)
 
             fields += [ '%#.2x' % flag_types ]
             fields += item.field('ilevel', 'req_level', 'req_skill', 'req_skill_rank', 'quality', 'inv_type')
             fields += item2.field('classs', 'subclass')
             fields += item.field('bonding', 'delay', 'dmg_range', 'item_damage_modifier')
-            fields += item_stats_fields(id)
+            fields += item_stats_fields(item.id)
             fields += item.field('class_mask', 'race_mask')
             fields += [ '{ %s }' % ', '.join(item.field('socket_color_1', 'socket_color_2', 'socket_color_3')) ]
             fields += item.field('gem_props', 'socket_bonus', 'item_set', 'id_curve', 'id_artifact' )
 
-            self._out.write('  { %s },\n' % (', '.join(fields)))
+            self.output_record(fields)
 
-        self._out.write('} };\n\n')
+        self.output_footer()
 
-    def generate_json(self, ids = None):
+    def generate_json(self, data = None):
 
-        ids.sort()
+        data.sort(key=lambda i: i.id)
 
         s2 = dict()
         s2['wow_build'] = self._options.build
         s2['min_ilevel'] = self._options.min_ilevel
         s2['max_ilevel'] = self._options.max_ilevel
-        s2['num_items'] = len(ids)
+        s2['num_items'] = len(data)
 
         s2['items'] = list()
 
-        for id in ids + [0]:
-            item = self._options.build < 23436 and self._item_sparse_db[id] or self._itemsparse_db[id]
-            item2 = self._item_db[id]
+        for item in data:
+            item2 = self.db('Item')[item.id]
 
-            if not item.id and id > 0:
-                sys.stderr.write('Item id %d not found\n' % id)
+            if not item.id:
+                sys.stderr.write('Item id %d not found\n' % item.id)
                 continue
 
             # Aand, hack classs 12 (quest item) to be 0, 6
@@ -911,14 +884,13 @@ class ItemDataGenerator(DataGenerator):
 
             flag_types = 0x00
 
-            if hasattr(item, 'journal'):
-                if item.journal.flags_1 == 0x10:
+            for entry in item.child_refs('JournalEncounterItem'):
+                if entry.flags_1 == 0x10:
                     flag_types |= self._type_flags['Raid Finder']
-                elif item.journal.flags_1 == 0xC:
+                elif entry.flags_1 == 0xC:
                     flag_types |= self._type_flags['Heroic']
 
-            desc = self._itemnamedescription_db[item.id_name_desc]
-            flag_types |= self._type_flags.get(desc.desc, 0)
+            flag_types |= self._type_flags.get(item.ref('id_name_desc').desc, 0)
 
             # put the flags in as strings instead of converting them to ints.
             # this makes it more readable
@@ -954,16 +926,11 @@ class ItemDataGenerator(DataGenerator):
                     stats['socket_mul'] = float(item.field('stat_socket_mul_%d' % i)[0])
                     item_entry['stats'].append(stats)
 
-            spells = self._itemeffect_db[0].field('id_spell') * 5
-            trigger_types = self._itemeffect_db[0].field('trigger_type') * 5
-            cooldown_category = self._itemeffect_db[0].field('cooldown_category') * 5
-            cooldown_value = self._itemeffect_db[0].field('cooldown_category_duration') * 5
-            cooldown_group = self._itemeffect_db[0].field('cooldown_group') * 5
-            cooldown_shared = self._itemeffect_db[0].field('cooldown_group_duration') * 5
-            if len(item.get_links('spells')) > 0:
+            item_effects = item.children('ItemEffect')
+            if len(item_effects) > 0:
                 item_entry['spells'] = list()
-                for spell in item.get_links('spells'):
-                    spl = dict();
+                for spell in item_effects:
+                    spl = dict()
                     spl['id'] = int(spell.field('id_spell')[0])
                     spl['trigger_type'] = int(spell.field('trigger_type')[0])
                     spl['cooldown_category'] = int(spell.field('cooldown_category')[0])
@@ -3809,8 +3776,8 @@ class ItemEffectGenerator(ItemDataGenerator):
             ids.append(effect)
 
         # exported items effects
-        for id in super().filter():
-            ids.extend(self.db('ItemSparse')[id].children('ItemEffect'))
+        for item in super().filter():
+            ids.extend(item.children('ItemEffect'))
 
         return list(set(ids))
 
