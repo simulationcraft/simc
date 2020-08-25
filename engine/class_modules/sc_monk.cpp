@@ -2693,19 +2693,19 @@ public:
       switch ( pd.aura_id() )
       {
         case 137023:
-          assert( _resource_by_stance[ specdata::spec_idx( MONK_BREWMASTER ) ] == RESOURCE_MAX &&
+          assert( _resource_by_stance[ dbc::spec_idx( MONK_BREWMASTER ) ] == RESOURCE_MAX &&
                   "Two power entries per aura id." );
-          _resource_by_stance[ specdata::spec_idx( MONK_BREWMASTER ) ] = pd.resource();
+          _resource_by_stance[ dbc::spec_idx( MONK_BREWMASTER ) ] = pd.resource();
           break;
         case 137024:
-          assert( _resource_by_stance[ specdata::spec_idx( MONK_MISTWEAVER ) ] == RESOURCE_MAX &&
+          assert( _resource_by_stance[ dbc::spec_idx( MONK_MISTWEAVER ) ] == RESOURCE_MAX &&
                   "Two power entries per aura id." );
-          _resource_by_stance[ specdata::spec_idx( MONK_MISTWEAVER ) ] = pd.resource();
+          _resource_by_stance[ dbc::spec_idx( MONK_MISTWEAVER ) ] = pd.resource();
           break;
         case 137025:
-          assert( _resource_by_stance[ specdata::spec_idx( MONK_WINDWALKER ) ] == RESOURCE_MAX &&
+          assert( _resource_by_stance[ dbc::spec_idx( MONK_WINDWALKER ) ] == RESOURCE_MAX &&
                   "Two power entries per aura id." );
-          _resource_by_stance[ specdata::spec_idx( MONK_WINDWALKER ) ] = pd.resource();
+          _resource_by_stance[ dbc::spec_idx( MONK_WINDWALKER ) ] = pd.resource();
           break;
         default:
           break;
@@ -2734,7 +2734,7 @@ public:
       return ab::current_resource();
     }
 
-    resource_e resource_by_stance = _resource_by_stance[ specdata::spec_idx( p()->specialization() ) ];
+    resource_e resource_by_stance = _resource_by_stance[ dbc::spec_idx( p()->specialization() ) ];
 
     if ( resource_by_stance == RESOURCE_MAX )
       return ab::current_resource();

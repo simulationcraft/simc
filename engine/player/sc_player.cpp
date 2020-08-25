@@ -922,7 +922,7 @@ bool parse_set_bonus( sim_t* sim, util::string_view, util::string_view value )
     return false;
   }
 
-  p->sets->set_bonus_spec_data[ set_bonus ][ specdata::spec_idx( p->specialization() ) ][ bonus ].overridden = opt_val;
+  p->sets->set_bonus_spec_data[ set_bonus ][ dbc::spec_idx( p->specialization() ) ][ bonus ].overridden = opt_val;
 
   return true;
 }
