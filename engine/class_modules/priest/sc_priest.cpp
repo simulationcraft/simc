@@ -409,11 +409,12 @@ struct unholy_nova_t final : public priest_spell_t
 // ==========================================================================
 struct mindgames_t final : public priest_spell_t
 {
-  double total_insanity_gain;
+  double insanity_gain;
 
   mindgames_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "mindgames", p, p.covenant.mindgames ),
-      total_insanity_gain( data().effectN( 6 ).base_value() / 10 )
+      // this resource value is not in spell data correctly, mimicing what blizzard does
+      insanity_gain( p.find_spell( 323706 )->effectN( 2 ).base_value() * 2 )
   {
     parse_options( options_str );
 
@@ -433,11 +434,11 @@ struct mindgames_t final : public priest_spell_t
     double insanity = 0;
     if ( priest().options.priest_mindgames_healing_insanity )
     {
-      insanity += ( total_insanity_gain / 2 );
+      insanity += insanity_gain;
     }
     if ( priest().options.priest_mindgames_damage_insanity )
     {
-      insanity += ( total_insanity_gain / 2 );
+      insanity += insanity_gain;
     }
 
     if ( priest().specialization() == PRIEST_SHADOW )
