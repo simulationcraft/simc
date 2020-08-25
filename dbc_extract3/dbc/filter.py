@@ -276,3 +276,18 @@ class CovenantAbilitySet(DataSet):
             _covenant_abilities.append(entry)
 
         return _covenant_abilities
+
+class TalentSet(DataSet):
+    def _filter(self, **kwargs):
+        talents = list()
+
+        for entry in self.db('Talent').values():
+            if entry.id_spell == 0:
+                continue
+
+            if entry.ref('id_spell').id != entry.id_spell:
+                continue
+
+            talents.append(entry)
+
+        return talents
