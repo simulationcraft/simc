@@ -1547,16 +1547,22 @@ struct mortal_strike_t20_t : public warrior_attack_t
       {
         p()->buff.glory->trigger();
       }
-      if ( p()->legendary.enduring_blow->ok() && ( result_is_hit( execute_state->result ) ) && rng().roll( enduring_blow_chance ) )
-      {
-        td( execute_state->target )->debuffs_colossus_smash->trigger();
-      }
     }
     p()->buff.overpower->expire();
     p()->buff.executioners_precision->expire();
 
     warrior_td_t* td = this->td( execute_state->target );
     td->debuffs_exploiter->expire();
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    warrior_attack_t::impact( s );
+
+    if ( p()->legendary.enduring_blow->ok() && ( result_is_hit( s->result ) ) && rng().roll( enduring_blow_chance ) )
+    {
+      td( s->target )->debuffs_colossus_smash->trigger();
+    }
   }
 };
 
@@ -1622,10 +1628,6 @@ struct mortal_strike_t : public warrior_attack_t
       {
         p()->buff.glory->trigger();
       }
-      if ( p()->legendary.enduring_blow->ok() && ( result_is_hit( execute_state->result ) ) && rng().roll( enduring_blow_chance ) )
-      {
-        td( execute_state->target )->debuffs_colossus_smash->trigger();
-      }
     }
     p()->buff.overpower->expire();
     p()->buff.executioners_precision->expire();
@@ -1633,6 +1635,16 @@ struct mortal_strike_t : public warrior_attack_t
 
     warrior_td_t* td = this->td( execute_state->target );
     td->debuffs_exploiter->expire();
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    warrior_attack_t::impact( s );
+
+    if ( p()->legendary.enduring_blow->ok() && ( result_is_hit( s->result ) ) && rng().roll( enduring_blow_chance ) )
+    {
+      td( s->target )->debuffs_colossus_smash->trigger();
+    }
   }
 
   bool ready() override
@@ -4319,6 +4331,11 @@ struct fury_whirlwind_parent_t : public warrior_attack_t
     {
       return dot_duration + ( base_tick_time * p()->legendary.najentuss_vertebrae->effectN( 2 ).base_value() );
     }
+    if ( p()->legendary.seismic_reverberation != spell_data_t::not_found() &&
+         as<int>( target_list().size() ) >= p()->legendary.seismic_reverberation->effectN( 1 ).base_value() )
+    {
+      return dot_duration + ( base_tick_time * p()->legendary.seismic_reverberation->effectN( 2 ).base_value() );
+    }
 
     return dot_duration;
   }
@@ -5846,7 +5863,7 @@ void warrior_t::init_spells()
   legendary.signet_of_tormented_kings = find_runeforge_legendary( "Signet of Tormented Kings" );
 
   legendary.battlelord        = find_runeforge_legendary( "Battlelord" );
-  legendary.enduring_blow     = find_runeforge_legendary( "Enduring_Blow" );
+  legendary.enduring_blow     = find_runeforge_legendary( "Enduring Blow" );
   legendary.exploiter         = find_runeforge_legendary( "Exploiter" );
   legendary.unhinged          = find_runeforge_legendary( "Unhinged" );
 
@@ -6949,8 +6966,8 @@ void warrior_t::create_buffs()
 
   // Covenant Abilities====================================================================================================
 
-  buff.cadence_of_fujieda = make_buff( this, "cadence_of_fujieda", find_spell( 335597 ) )
-                           ->set_default_value( find_spell( 335597 )->effectN( 1 ).percent() )
+  buff.cadence_of_fujieda = make_buff( this, "cadence_of_fujieda", find_spell( 335558 ) )
+                           ->set_default_value( find_spell( 335558 )->effectN( 1 ).percent() )
                            ->add_invalidate( CACHE_ATTACK_HASTE );
 
   //const spell_data_t* will_of_the_berserker_trigger = legendary.will_of_the_berserker->effectN( 1 ).trigger();
