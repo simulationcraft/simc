@@ -141,7 +141,3 @@ env/
 
 # Visual Studio CMake settings
 CMakeSettings.json
-/SimulationCraft.ipdb
-/SimulationCraft.iobj
-/simc.ipdb
-/simc.iobj
