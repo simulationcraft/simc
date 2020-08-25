@@ -25,6 +25,7 @@ struct warrior_td_t : public actor_target_data_t
   dot_t* dots_ancient_aftershock;
   buff_t* debuffs_ancient_aftershock;
   buff_t* debuffs_colossus_smash;
+  buff_t* debuffs_exploiter;
   buff_t* debuffs_siegebreaker;
   buff_t* debuffs_demoralizing_shout;
   buff_t* debuffs_taunt;
@@ -149,7 +150,6 @@ public:
 
     // Shadowland Legendary
     buff_t* cadence_of_fujieda;
-    buff_t* exploiter;
     buff_t* will_of_the_berserker;
 
   } buff;
@@ -693,7 +693,7 @@ struct warrior_action_t : public Base
   struct affected_by_t
   {
     // mastery/buff damage increase.
-    bool fury_mastery_direct, fury_mastery_dot, arms_mastery_direct, arms_mastery_dot;
+    bool fury_mastery_direct, fury_mastery_dot, arms_mastery_direct, arms_mastery_dot, colossus_smash, siegebreaker;
     // talents
     bool avatar, sweeping_strikes, deadly_calm, booming_voice;
     // azerite
@@ -708,6 +708,8 @@ struct warrior_action_t : public Base
         sweeping_strikes( false ),
         deadly_calm( false ),
         booming_voice( false ),
+        colossus_smash( false ),
+        siegebreaker( false ),
         crushing_assault( false )
     {
     }
@@ -801,6 +803,8 @@ public:
     affected_by.arms_mastery_direct = ab::data().affected_by( p()->spell.deep_wounds_debuff->effectN( 2 ) );
     affected_by.arms_mastery_dot    = ab::data().affected_by( p()->spell.deep_wounds_debuff->effectN( 2 ) );
     affected_by.booming_voice       = ab::data().affected_by( p()->spec.demoralizing_shout->effectN( 3 ) );
+    affected_by.colossus_smash      = ab::data().affected_by( p()->spell.colossus_smash_debuff->effectN( 1 ) );
+    affected_by.siegebreaker        = ab::data().affected_by( p()->spell.siegebreaker_debuff->effectN( 1 ) );
 
     if ( p()->specialization() == WARRIOR_PROTECTION )
       affected_by.avatar              = ab::data().affected_by( p()->spec.avatar->effectN( 1 ) );
@@ -864,7 +868,7 @@ public:
 
     warrior_td_t* td = p()->get_target_data( target );
 
-    if ( td->debuffs_colossus_smash->check() )
+    if ( affected_by.colossus_smash && td->debuffs_colossus_smash->check() )
     {
       m *= 1.0 + ( td->debuffs_colossus_smash->value() );
     }
@@ -875,7 +879,7 @@ public:
       m *= 1.0 + p()->cache.mastery_value();
     }
 
-    if ( td->debuffs_siegebreaker->check() )
+    if ( affected_by.siegebreaker && td->debuffs_siegebreaker->check() )
     {
       m *= 1.0 + ( td->debuffs_siegebreaker->value() );
     }
@@ -1294,6 +1298,8 @@ struct melee_t : public warrior_attack_t
     affected_by.fury_mastery_direct = p()->mastery.unshackled_fury->ok();
     affected_by.arms_mastery_direct = p()->mastery.deep_wounds_ARMS->ok();
     affected_by.avatar              = p()->talents.avatar->ok();
+    affected_by.colossus_smash      = p()->spec.colossus_smash->ok();
+    affected_by.siegebreaker        = p()->talents.siegebreaker->ok();
     if ( p()->specialization() == WARRIOR_PROTECTION )
       affected_by.avatar              = p()->spec.avatar->ok();
     else
@@ -1513,7 +1519,6 @@ struct mortal_strike_t20_t : public warrior_attack_t
     double am = warrior_attack_t::action_multiplier();
 
     am *= 1.0 + p()->buff.overpower->check_stack_value();
-    am *= 1.0 + p()->buff.exploiter->check_value();
 
     return am;
   }
@@ -1549,6 +1554,9 @@ struct mortal_strike_t20_t : public warrior_attack_t
     }
     p()->buff.overpower->expire();
     p()->buff.executioners_precision->expire();
+
+    warrior_td_t* td = this->td( execute_state->target );
+    td->debuffs_exploiter->expire();
   }
 };
 
@@ -1571,9 +1579,17 @@ struct mortal_strike_t : public warrior_attack_t
     double am = warrior_attack_t::action_multiplier();
 
     am *= 1.0 + p()->buff.overpower->check_stack_value();
-    am *= 1.0 + p()->buff.exploiter->check_value();
 
     return am;
+  }
+
+  double composite_target_multiplier( player_t* target ) const override
+  {
+    double m = warrior_attack_t::composite_target_multiplier( target );
+
+    m *= 1.0 + td( target )->debuffs_exploiter->check_value();
+
+    return m;
   }
 
   double cost() const override
@@ -1612,9 +1628,11 @@ struct mortal_strike_t : public warrior_attack_t
       }
     }
     p()->buff.overpower->expire();
-    p()->buff.exploiter->expire();
     p()->buff.executioners_precision->expire();
     p()->buff.weighted_blade->trigger( 1 );
+
+    warrior_td_t* td = this->td( execute_state->target );
+    td->debuffs_exploiter->expire();
   }
 
   bool ready() override
@@ -2444,9 +2462,9 @@ struct execute_arms_t : public warrior_attack_t
     {
       p()->buff.executioners_precision->trigger();
     }
-    if ( p()->legendary.exploiter.ok() )
+    if ( p()->legendary.exploiter.ok() && ( result_is_hit( execute_state->result ) ) )
     {
-      p()->buff.exploiter->trigger();
+      td( execute_state->target )->debuffs_exploiter->trigger();
     }
   }
 
@@ -4641,9 +4659,9 @@ struct condemn_arms_t : public warrior_attack_t
     {
       p()->buff.executioners_precision->trigger();
     }
-    if ( p()->legendary.exploiter.ok() )
+    if ( p()->legendary.exploiter.ok() && ( result_is_hit( execute_state->result ) ) )
     {
-      p()->buff.exploiter->trigger();
+      td( execute_state->target )->debuffs_exploiter->trigger();
     }
   }
 
@@ -6691,6 +6709,11 @@ warrior_td_t::warrior_td_t( player_t* target, warrior_t& p ) : actor_target_data
     ->set_default_value( p.azerite.callous_reprisal.spell() -> effectN( 1 ).percent() );
 
   debuffs_taunt = make_buff( *this, "taunt", p.find_class_spell( "Taunt" ) );
+
+  debuffs_exploiter = make_buff( *this , "exploiter", p.find_spell( 335452 ) )
+                               ->set_default_value( p.find_spell( 335452 )->effectN( 1 ).percent() )
+                               ->set_duration( p.find_spell( 335452 )->duration() )
+                               ->set_cooldown( timespan_t::zero() );
 }
 
 // warrior_t::init_buffs ====================================================
@@ -6929,9 +6952,6 @@ void warrior_t::create_buffs()
   buff.cadence_of_fujieda = make_buff( this, "cadence_of_fujieda", find_spell( 335597 ) )
                            ->set_default_value( find_spell( 335597 )->effectN( 1 ).percent() )
                            ->add_invalidate( CACHE_ATTACK_HASTE );
-
-  buff.exploiter = make_buff( this, "exploiter", find_spell( 335452 ) )
-          ->set_default_value( find_spell( 335452 )->effectN( 1 ).percent() );
 
   //const spell_data_t* will_of_the_berserker_trigger = legendary.will_of_the_berserker->effectN( 1 ).trigger();
   //const spell_data_t* will_of_the_berserker_buff    = will_of_the_berserker_trigger ->effectN( 1 ).trigger();
