@@ -443,6 +443,7 @@ public:
     buff_t* inexorable_assault;
     buff_t* killing_machine;
     buff_t* pillar_of_frost;
+    buff_t* pillar_of_frost_rank_2;
     buff_t* pillar_of_frost_bonus;
     buff_t* remorseless_winter;
     buff_t* rime;
@@ -573,14 +574,21 @@ public:
 
     // Frost
     const spell_data_t* empower_rune_weapon;
+    const spell_data_t* empower_rune_weapon_rank_2;
     const spell_data_t* frost_fever;
     const spell_data_t* frost_strike;
+    const spell_data_t* frost_strike_rank_2;
     const spell_data_t* howling_blast;
     const spell_data_t* killing_machine;
+    const spell_data_t* killing_machine_rank_2;
     const spell_data_t* obliterate;
+    const spell_data_t* obliterate_rank_2;
     const spell_data_t* pillar_of_frost;
+    const spell_data_t* pillar_of_frost_rank_2;
     const spell_data_t* remorseless_winter;
+    const spell_data_t* remorseless_winter_rank_2;
     const spell_data_t* rime;
+    const spell_data_t* rime_rank_2;
     const spell_data_t* runic_empowerment;
 
     // Unholy
@@ -2465,6 +2473,11 @@ struct death_knight_action_t : public Base
       this -> energize_amount += rp_gain;
       this -> base_costs[ RESOURCE_RUNIC_POWER ] = 0;
     }
+
+    action_base_t::apply_affecting_aura( p->spec.frost_strike_rank_2 );
+    action_base_t::apply_affecting_aura( p->spec.obliterate_rank_2 );
+    action_base_t::apply_affecting_aura( p->spec.remorseless_winter_rank_2 );
+    action_base_t::apply_affecting_aura( p->spec.empower_rune_weapon_rank_2 );
 
     this -> affected_by.frozen_heart = this -> data().affected_by( p -> mastery.frozen_heart -> effectN( 1 ) );
     this -> affected_by.dreadblade = this -> data().affected_by( p -> mastery.dreadblade -> effectN( 1 ) );
@@ -5117,6 +5130,7 @@ struct howling_blast_t : public death_knight_spell_t
     if ( p() -> buffs.rime -> up() )
     {
       m *= 1.0 + p() -> buffs.rime -> data().effectN( 2 ).percent();
+      m *= 1.0 + p() -> spec.rime_rank_2 -> effectN( 1 ).percent();
     }
 
     return m;
@@ -5296,6 +5310,11 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
     if ( p() -> azerite.icy_citadel.enabled() && p() -> buffs.pillar_of_frost -> up() && execute_state -> result == RESULT_CRIT )
     {
       p() -> buffs.icy_citadel_builder -> trigger();
+    }
+
+    if ( p()->buffs.killing_machine->up() )
+    {
+      school = SCHOOL_FROST;
     }
   }
 };
@@ -5503,6 +5522,18 @@ struct pillar_of_frost_bonus_buff_t : public buff_t
   }
 };
 
+struct pillar_of_frost_buff_rank_2_t : public buff_t
+{
+  pillar_of_frost_buff_rank_2_t(death_knight_t* p) :
+    buff_t(p, "pillar_of_frost_rank_2")
+  {
+    set_duration( p -> spec.pillar_of_frost -> duration() );
+    set_default_value( p -> spec.pillar_of_frost_rank_2 -> effectN( 1 ).percent() );
+
+    add_invalidate( CACHE_STRENGTH );
+  }
+};
+
 struct pillar_of_frost_buff_t : public buff_t
 {
   pillar_of_frost_buff_t( death_knight_t* p ) :
@@ -5571,6 +5602,8 @@ struct pillar_of_frost_t : public death_knight_spell_t
     death_knight_spell_t::execute();
 
     p() -> buffs.pillar_of_frost -> trigger();
+    p() -> buffs.pillar_of_frost_rank_2 -> trigger();
+
 
     if ( p() -> azerite.frostwhelps_indignation.enabled() )
     {
@@ -7275,14 +7308,21 @@ void death_knight_t::init_spells()
   spec.frost_death_knight  = find_specialization_spell( "Frost Death Knight" );
   spec.frost_fever         = find_specialization_spell( "Frost Fever" );
   spec.frost_strike        = find_specialization_spell( "Frost Strike" );
+  spec.frost_strike_rank_2 = find_specialization_spell( 316803 );
   spec.howling_blast       = find_specialization_spell( "Howling Blast" );
   spec.obliterate          = find_specialization_spell( "Obliterate" );
+  spec.obliterate_rank_2   = find_specialization_spell( 317198 );
   spec.rime                = find_specialization_spell( "Rime" );
+  spec.rime_rank_2         = find_specialization_spell( 316838 );
   spec.runic_empowerment   = find_specialization_spell( "Runic Empowerment" );
   spec.killing_machine     = find_specialization_spell( "Killing Machine" );
+  spec.killing_machine_rank_2     = find_specialization_spell( 317214 );
   spec.empower_rune_weapon = find_specialization_spell( "Empower Rune Weapon" );
+  spec.empower_rune_weapon_rank_2 = find_specialization_spell( 317230 );
   spec.pillar_of_frost     = find_specialization_spell( "Pillar of Frost" );
+  spec.pillar_of_frost_rank_2    = find_specialization_spell( 316849 );
   spec.remorseless_winter  = find_specialization_spell( "Remorseless Winter" );
+  spec.remorseless_winter_rank_2 = find_specialization_spell( 316794 );
 
   // Unholy
   spec.unholy_death_knight = find_specialization_spell( "Unholy Death Knight" );
@@ -7498,14 +7538,14 @@ void death_knight_t::default_apl_dps_precombat()
 std::string death_knight_t::default_potion() const
 {
   std::string frost_potion = ( true_level > 110 ) ? "potion_of_unbridled_fury" :
-	                           ( true_level > 100 ) ? "prolonged_power" :
+                             ( true_level > 100 ) ? "prolonged_power" :
                              ( true_level >= 90 ) ? "draenic_strength" :
                              ( true_level >= 85 ) ? "mogu_power" :
                              ( true_level >= 80 ) ? "golemblood_potion" :
                              "disabled";
 
   std::string unholy_potion = ( true_level > 110 ) ? "potion_of_unbridled_fury" :
-	                            ( true_level > 100 ) ? "prolonged_power" :
+                              ( true_level > 100 ) ? "prolonged_power" :
                               ( true_level >= 90 ) ? "draenic_strength" :
                               ( true_level >= 85 ) ? "mogu_power" :
                               ( true_level >= 80 ) ? "golemblood_potion" :
@@ -7545,7 +7585,7 @@ std::string death_knight_t::default_food() const
                             "disabled";
 
   std::string blood_food =  ( true_level > 110 ) ? "mechdowels_big_mech" :
-	                          ( true_level > 100 ) ? "lavish_suramar_feast" :
+                            ( true_level > 100 ) ? "lavish_suramar_feast" :
                             ( true_level >  90 ) ? "pickled_eel" :
                             ( true_level >= 85 ) ? "sea_mist_rice_noodles" :
                             ( true_level >= 80 ) ? "seafood_magnifique_feast" :
@@ -8097,6 +8137,7 @@ void death_knight_t::create_buffs()
         -> set_default_value( find_spell( 51124 ) -> effectN( 1 ).percent() );
 
   buffs.pillar_of_frost = new pillar_of_frost_buff_t( this );
+  buffs.pillar_of_frost_rank_2 = new pillar_of_frost_buff_rank_2_t( this );
   buffs.pillar_of_frost_bonus = new pillar_of_frost_bonus_buff_t( this );
 
   buffs.remorseless_winter = new remorseless_winter_buff_t( this );
@@ -8429,7 +8470,7 @@ double death_knight_t::composite_attribute_multiplier( attribute_e attr ) const
       m *= 1.0 + runeforge.rune_of_the_stoneskin_gargoyle -> data().effectN( 2 ).percent();
     }
 
-    m *= 1.0 + buffs.pillar_of_frost -> value() + buffs.pillar_of_frost_bonus -> stack_value();
+    m *= 1.0 + buffs.pillar_of_frost -> value() + buffs.pillar_of_frost_bonus -> stack_value() + buffs.pillar_of_frost_rank_2 -> value();
   }
 
   else if ( attr == ATTR_STAMINA )
