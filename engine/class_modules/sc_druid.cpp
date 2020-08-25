@@ -1547,7 +1547,7 @@ struct kindred_empowerment_buff_t : public druid_buff_t<buff_t>
   double cumul_pool;
 
   kindred_empowerment_buff_t( druid_t& p )
-    : base_t( p, "kindred_empowerment", p.covenant.kindred_empowerment ), pool( 1.0 )
+    : base_t( p, "kindred_empowerment", p.covenant.kindred_empowerment ), pool( 1.0 ), cumul_pool( 0.0 )
   {
     set_refresh_behavior( buff_refresh_behavior::DURATION );
   }
@@ -1555,7 +1555,7 @@ struct kindred_empowerment_buff_t : public druid_buff_t<buff_t>
   void expire_override( int s, timespan_t d ) override
   {
     druid_buff_t<buff_t>::expire_override( s, d );
-    pool       = 0.0;
+    pool       = 1.0;
     cumul_pool = 0.0;
   }
 
@@ -1578,8 +1578,8 @@ struct kindred_empowerment_buff_t : public druid_buff_t<buff_t>
     if ( pool <= 1 )  // minimum pool value of 1
       return;
 
-    double amount = s->result_amount * p().covenant.kindred_empowerment->effectN( 2 ).percent();
-    amount        = std::min( amount, pool - 1 );
+    double amount = std::min( s->result_amount * p().covenant.kindred_empowerment->effectN( 2 ).percent(), pool - 1);
+
     if ( amount == 0 )
       return;
 
@@ -1596,7 +1596,7 @@ struct kindred_empowerment_buff_t : public druid_buff_t<buff_t>
 
   void snapshot()
   {
-    if ( cumul_pool )
+    if ( cumul_pool > 0 )
     {
       auto partner = p().active.kindred_empowerment_partner;
       partner->set_target( p().target );
