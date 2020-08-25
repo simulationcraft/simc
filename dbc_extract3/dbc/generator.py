@@ -5,7 +5,7 @@ from collections import defaultdict
 import dbc.db, dbc.data, dbc.parser, dbc.file
 
 from dbc import constants, util
-from dbc.filter import ActiveClassSpellSet, PetActiveSpellSet, RacialSpellSet, MasterySpellSet, RankSpellSet, ConduitSet, SoulbindAbilitySet, CovenantAbilitySet
+from dbc.filter import ActiveClassSpellSet, PetActiveSpellSet, RacialSpellSet, MasterySpellSet, RankSpellSet, ConduitSet, SoulbindAbilitySet, CovenantAbilitySet, TalentSet
 
 # Special hotfix field_id value to indicate an entry is new (added completely through the hotfix entry)
 HOTFIX_MAP_NEW_ENTRY  = 0xFFFFFFFF
@@ -521,65 +521,26 @@ class SpecializationListGenerator(SpecializationEnumGenerator):
         self._out.write('};\n\n')
 
 class TalentDataGenerator(DataGenerator):
-    def __init__(self, options, data_store):
-        super().__init__(options, data_store)
-
-        self._dbc = [ 'Talent', 'ChrSpecialization', 'SpellName' ]
-
     def filter(self):
-        ids = [ ]
+        return TalentSet(self._options).get()
 
-        for talent_id, talent_data in self._talent_db.items():
-            # Make sure at least one spell id is defined
-            if talent_data.id_spell == 0:
-                continue
-
-            # Make sure the "base spell" exists
-            if self._spellname_db[talent_data.id_spell].id != talent_data.id_spell:
-                continue
-
-            ids.append(talent_id)
-
-        return ids
-
-    def generate(self, ids = None):
-        # Sort keys
-        ids.sort()
-
-        self._out.write('// %d talents, wow build %s\n' % ( len(ids), self._options.build ))
+    def generate(self, data = None):
+        self._out.write('// %d talents, wow build %s\n' % ( len(data), self._options.build ))
         self._out.write('static std::array<talent_data_t, %d> __%s_data { {\n' % (
-            len(ids), self.format_str( 'talent' ) ))
+            len(data), self.format_str( 'talent' ) ))
 
-        index = 0
-        for id in ids:
-            talent = self._talent_db[id]
-            spell  = self._spellname_db[talent.id_spell]
-
-            if not spell.id and talent.id_spell > 0:
-                continue
-
-            #if( index % 20 == 0 ):
-            #    self._out.write('//{ Name                                ,    Id, Flgs,  Class, Spc, Col, Row, SpellID, ReplcID, S1 },\n')
-
-            fields = spell.field('name')
+        for talent in sorted(data, key=lambda v: v.id):
+            fields = talent.ref('id_spell').field('name')
             fields += talent.field('id')
             fields += [ '%#.2x' % 0 ]
             fields += [ '%#.04x' % (DataGenerator._class_masks[talent.class_id] or 0) ]
-            fields += talent.field('spec_id')
-
-            fields += talent.field('col','row', 'id_spell', 'id_replace' )
+            fields += talent.field('spec_id', 'col', 'row', 'id_spell', 'id_replace' )
             # Pad struct with empty pointers for direct rank based spell data access
             fields += [ ' 0' ]
 
-            try:
-                self._out.write('  { %s },\n' % (', '.join(fields)))
-            except:
-                sys.stderr.write('%s\n' % fields)
-                sys.exit(1)
+            self.output_record(fields)
 
-            index += 1
-
-        self._out.write('} };')
+        self.output_footer()
 
 class ItemDataGenerator(DataGenerator):
     _item_blacklist = [
