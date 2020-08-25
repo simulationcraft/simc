@@ -5303,6 +5303,11 @@ struct recklessness_t : public warrior_spell_t
 
     p()->buff.recklessness->trigger();
 
+    if ( p()->legendary.will_of_the_berserker.ok() )
+    {
+      p()->buff.will_of_the_berserker->trigger();
+    }
+
     if ( p()->legendary.signet_of_tormented_kings.ok() )
     {
       if ( p()->rng().roll( torment_chance ) )
@@ -6897,8 +6902,8 @@ void warrior_t::create_buffs()
     ->add_invalidate( CACHE_CRIT_CHANCE )
     ->set_cooldown( timespan_t::zero() )
     ->set_default_value( spec.recklessness->effectN( 1 ).percent() )
-    ->set_stack_change_callback( [ this ]( buff_t*, int, int after ) { if ( after == 0 ) buff.infinite_fury->trigger(); })
-    ->set_stack_change_callback( [ this ]( buff_t*, int, int after ) { if ( after == 0 ) buff.will_of_the_berserker->trigger(); });
+    ->set_stack_change_callback( [ this ]( buff_t*, int, int after ) { if ( after == 0 ) buff.infinite_fury->trigger(); });
+    //->set_stack_change_callback( [ this ]( buff_t*, int, int after ) { if ( after == 0 ) buff.will_of_the_berserker->trigger(); })
 
   buff.sudden_death = make_buff( this, "sudden_death", talents.sudden_death );
 
