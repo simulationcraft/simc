@@ -1693,6 +1693,7 @@ struct bladestorm_tick_t : public warrior_attack_t
 
 struct bladestorm_t : public warrior_attack_t
 {
+  double torment_chance;
   attack_t *bladestorm_mh, *bladestorm_oh;
   mortal_strike_unhinged_t* mortal_strike;
   bladestorm_t( warrior_t* p, const std::string& options_str )
@@ -1700,7 +1701,8 @@ struct bladestorm_t : public warrior_attack_t
                         p->specialization() == WARRIOR_FURY ? p->talents.bladestorm : p->spec.bladestorm ),
       bladestorm_mh( new bladestorm_tick_t( p, "bladestorm_mh" ) ),
       bladestorm_oh( nullptr ),
-      mortal_strike( nullptr )
+      mortal_strike( nullptr ),
+      torment_chance( 0.5 * p->legendary.signet_of_tormented_kings->proc_chance() )
   {
     if ( p->talents.ravager->ok() )
     {
@@ -1743,6 +1745,18 @@ struct bladestorm_t : public warrior_attack_t
   {
     warrior_attack_t::execute();
     p()->buff.bladestorm->trigger();
+
+    if ( p()->legendary.signet_of_tormented_kings.ok() )
+    {
+      if ( p()->rng().roll( torment_chance ) )
+      {
+         p()->buff.avatar->trigger( timespan_t::from_millis( p()->legendary.signet_of_tormented_kings->effectN( 2 ).base_value() ) );
+      }
+      else
+      {
+         p()->buff.recklessness->trigger( timespan_t::from_millis( p()->legendary.signet_of_tormented_kings->effectN( 4 ).base_value() ) );
+      }
+    }
   }
 
   void tick( dot_t* d ) override
@@ -4967,8 +4981,10 @@ struct spear_of_bastion_t : public warrior_attack_t
 
 struct avatar_t : public warrior_spell_t
 {
+  double torment_chance;
   avatar_t( warrior_t* p, const std::string& options_str ) :
-    warrior_spell_t( "avatar", p, p -> specialization() == WARRIOR_PROTECTION ? p -> spec.avatar : p -> talents.avatar )
+    warrior_spell_t( "avatar", p, p -> specialization() == WARRIOR_PROTECTION ? p -> spec.avatar : p -> talents.avatar ),
+    torment_chance( 0.5 * p->legendary.signet_of_tormented_kings->proc_chance() )
   {
     parse_options( options_str );
     callbacks = false;
@@ -4992,6 +5008,17 @@ struct avatar_t : public warrior_spell_t
 
       if ( p() -> specialization() == WARRIOR_PROTECTION )
         p() -> active.bastion_of_might_ip -> execute();
+    }
+    if ( p()->legendary.signet_of_tormented_kings.ok() )
+    {
+      if ( p()->rng().roll( torment_chance ) )
+      {
+         p()->buff.recklessness->trigger( timespan_t::from_millis( p()->legendary.signet_of_tormented_kings->effectN( 4 ).base_value() ) );
+      }
+      else
+      {
+         p()->buff.bladestorm->trigger( timespan_t::from_millis( p()->legendary.signet_of_tormented_kings->effectN( 3 ).base_value() ) );
+      }
     }
   }
 
@@ -5246,8 +5273,10 @@ struct rallying_cry_t : public warrior_spell_t
 struct recklessness_t : public warrior_spell_t
 {
   double bonus_crit;
+  double torment_chance;
   recklessness_t( warrior_t* p, const std::string& options_str )
-    : warrior_spell_t( "recklessness", p, p->spec.recklessness ), bonus_crit( 0.0 )
+    : warrior_spell_t( "recklessness", p, p->spec.recklessness ), bonus_crit( 0.0 ),
+      torment_chance( 0.5 * p->legendary.signet_of_tormented_kings->proc_chance() )
   {
     parse_options( options_str );
     bonus_crit = data().effectN( 1 ).percent();
@@ -5273,6 +5302,18 @@ struct recklessness_t : public warrior_spell_t
     warrior_spell_t::execute();
 
     p()->buff.recklessness->trigger();
+
+    if ( p()->legendary.signet_of_tormented_kings.ok() )
+    {
+      if ( p()->rng().roll( torment_chance ) )
+      {
+         p()->buff.avatar->trigger( timespan_t::from_millis( p()->legendary.signet_of_tormented_kings->effectN( 2 ).base_value() ) );
+      }
+      else
+      {
+         p()->buff.bladestorm->trigger( timespan_t::from_millis( p()->legendary.signet_of_tormented_kings->effectN( 3 ).base_value() ) );
+      }
+    }
   }
 };
 
