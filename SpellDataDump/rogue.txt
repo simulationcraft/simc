@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35598 shadowlands-BETA (hotfix 2020-08-23/35598)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35679 shadowlands-BETA ()
 
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
@@ -369,7 +369,7 @@ Attributes       : ....x... ........ x....... ........   ........ ........ .x...
 Effects          :
 #1 (id=553)      : Open Lock (33)
                    Base Value: 15 | Scaled Value: 60 | Points Per Level: 1 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Unknown(26)
-Description      : Allows opening of locked chests and doors that require a skill level of up to ${$PL*5}.
+Description      : Allows opening of locked chests and doors that require a skill level of up to $PL.
 
 Name             : Cheap Shot (id=1833) [Spell Family (8)] 
 Class            : Rogue
@@ -765,7 +765,7 @@ Spell Level      : 12
 Range            : 100 yards
 GCD              : 1 seconds
 Duration         : 6 seconds
-Affecting spells : Adrenaline Rush (13750 effect#3), Rogue Tier 6 Trinket (40460 effect#1), Energetic Recovery (79152 effect#1), Adrenaline Rush (186286 effect#3), Deeper Stratagem (193531 effect#1), Lesser Adrenaline Rush (246558 effect#3)
+Affecting spells : Adrenaline Rush (13750 effect#3), Rogue Tier 6 Trinket (40460 effect#1), Adrenaline Rush (186286 effect#3), Deeper Stratagem (193531 effect#1), Lesser Adrenaline Rush (246558 effect#3)
 Family Flags     : 18, 89
 Attributes       : ....x... ........ x.x..... .....x..   .....x.. ..x..... ......x. ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -799,14 +799,14 @@ Class            : Rogue, Druid
 Race             : Night Elf (0x8)
 School           : Nature
 Spell Type       : Magic
-Resource         : 3.5% Base Mana (0) (id=227)
+Resource         : 1% Base Mana (0) (id=227)
 Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
 Stance Mask      : 0x40000000
-Affecting spells : Moonkin Form (24858 effect#9), Eclipse (Solar) (48517 effect#1), Berserk (50334 effect#5), Incarnation: Chosen of Elune (102560 effect#1), Heart of the Wild (108291 effect#1), Restoration Druid (137012 effect#5), Balance Druid (137013 effect#1), Sunfire (164815 effect#3), Item - Druid T17 Balance 2P Bonus (165433 effect#1), Celestial Fury (180719 effect#2), Starfall (191034 effect#2), Thrash (192090 effect#2), Celestial Alignment (194223 effect#1), Astral Influence (197524 effect#1), Astral Power (197911 effect#2), Stellar Drift (202461 effect#1), Promise of Elune, the Moon Goddess (208283 effect#2), Ekowraith, Creator of Worlds (210667 effect#1), Solar Empowerment (211089 effect#1), Dawning Sun (276154 effect#1), Ravenous Frenzy (323546 effect#1), Convoke the Spirits (323764 effect#3), Lone Empowerment (338142 effect#1), Circle of Life and Death (338657 effect#1), Balance of All Things (339943 effect#1)
+Affecting spells : Moonkin Form (24858 effect#9), Eclipse (Solar) (48517 effect#1), Eclipse (Lunar) (48518 effect#5), Berserk (50334 effect#5), Incarnation: Chosen of Elune (102560 effect#1), Heart of the Wild (108291 effect#1), Restoration Druid (137012 effect#5), Balance Druid (137013 effect#1), Sunfire (164815 effect#3), Item - Druid T17 Balance 2P Bonus (165433 effect#1), Celestial Fury (180719 effect#2), Starfall (191034 effect#2), Thrash (192090 effect#2), Celestial Alignment (194223 effect#1), Astral Influence (197524 effect#1), Astral Power (197911 effect#2), Stellar Drift (202461 effect#1), Promise of Elune, the Moon Goddess (208283 effect#2), Ekowraith, Creator of Worlds (210667 effect#1), Solar Empowerment (211089 effect#1), Dawning Sun (276154 effect#1), Ravenous Frenzy (323546 effect#1), Convoke the Spirits (323764 effect#3), Lone Empowerment (338142 effect#1), Circle of Life and Death (338657 effect#1), Balance of All Things (339943 effect#1)
 Family Flags     : 0, 18
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -1081,7 +1081,7 @@ Effects          :
 #1 (id=3617)     : School Damage (2): nature
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.02129 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=133966)   : Apply Aura (6) | Modify Healing Recevied% (118)
-                   Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Enemy (6)
+                   Base Value: -8 | Scaled Value: -8 | PvP Coefficient: 0.50000 | Misc Value: 127 | Target: Enemy (6)
 Description      : $@spelldesc8679
 Tooltip          : Healing effects reduced by $w2%.
 
@@ -1624,7 +1624,7 @@ Proc Flags       : ....x... ....x... x.x..... ........
 Affecting spells : Master of Subtlety (31665 effect#1), Rogue Tier 6 Trinket (40460 effect#1), Mastery: Potent Assassin (76803 effect#1), Mastery: Executioner (76808 effect#1), Vendetta (79140 effect#1), Nightstalker (130493 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Cold Blood (170882 effect#1), Toxic Mutilator (184916 effect#1), Shadow Dance (185313 effect#4), Ruthless Precision (193357 effect#1), Deeper Stratagem (193531 effect#1), Elaborate Planning (193641 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Toxic Blade (245389 effect#1), Master Assassin (256735 effect#1), Twist the Knife (273488 effect#1), Shiv (319033 effect#1), Shiv (319504 effect#1), Dashing Scoundrel (340081 effect#1), Deathly Shadows (341202 effect#1), 
 Family Flags     : 35, 54
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
-                 : ........ ........ ........ ........   ........ .xx..... ........ ..x..... 
+                 : ........ ........ ........ ........   .x...... .xx..... ........ ..x..... 
                  : ...x.... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2344,27 +2344,6 @@ Description      : Marks an enemy for death for $d, increasing the damage your a
 
 Generates ${$256495s1*$256495d/5} Energy over $256495d.][]
 Tooltip          : Marked for death, increasing damage taken from the Rogue's attacks, and always visible to the Rogue.
-
-Name             : Energetic Recovery (id=79152) [Spell Family (8), Passive, Hidden] 
-Class            : Subtlety Rogue
-School           : Physical
-Spell Type       : None
-Spell Level      : 10
-Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Passive (6), Hidden (7)
-Effects          :
-#1 (id=68399)    : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
-                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
-                   Affected Spells: Slice and Dice (5171), Slice and Dice (315496)
-                   Family Flags: 18
-Description      : While your Slice and Dice ability is active, you regain $s1 Energy every $5171t2 sec.
 
 Name             : Parry (desc=Passive) (id=82245) [Spell Family (8), Passive] 
 Class            : Rogue
@@ -3666,7 +3645,7 @@ Spell Level      : 10
 Range            : 20 yards
 GCD              : 1 seconds
 Duration         : 6 seconds
-Affecting spells : Adrenaline Rush (13750 effect#3), Master of Subtlety (31665 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Broadside (193356 effect#2), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effect#1), Opportunity (195627 effect#1), Blunderbuss (202848 effect#1), Greenskin's Waterlogged Wristcuffs (209423 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Lesser Adrenaline Rush (246558 effect#3), Master Assassin (256735 effect#1), Shot in the Dark (257506 effect#1), Deadshot (272940 effect#1), Deathly Shadows (341202 effect#1), 
+Affecting spells : Adrenaline Rush (13750 effect#3), Master of Subtlety (31665 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Broadside (193356 effect#2), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effect#1), Opportunity (195627 effect#1), Blunderbuss (202848 effect#1), Greenskin's Waterlogged Wristcuffs (209423 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Lesser Adrenaline Rush (246558 effect#3), Master Assassin (256735 effect#1), Shot in the Dark (257506 effect#1), Deadshot (272940 effect#1), Greenskin's Wickers (340573 effect#1), Deathly Shadows (341202 effect#1), 
 Family Flags     : 54, 101
 Attributes       : ........ ........ ..x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8273,6 +8252,7 @@ Class            : Rogue
 School           : Physical
 Spell Type       : Melee
 Range            : 100 yards
+Max Targets      : 6
 Affecting spells : Master of Subtlety (31665 effect#1), Mastery: Executioner (76808 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Ruthless Precision (193357 effect#1), Deeper Stratagem (193531 effect#1), Elaborate Planning (193641 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Master Assassin (256735 effect#1), Deathly Shadows (341202 effect#1), 
 Family Flags     : 32, 54
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -8813,7 +8793,7 @@ Spell Level      : 9
 Range            : 100 yards
 GCD              : 1 seconds
 Duration         : 6 seconds
-Affecting spells : Adrenaline Rush (13750 effect#3), Rogue Tier 6 Trinket (40460 effect#1), Energetic Recovery (79152 effect#1), Adrenaline Rush (186286 effect#3), Deeper Stratagem (193531 effect#1), Lesser Adrenaline Rush (246558 effect#3)
+Affecting spells : Adrenaline Rush (13750 effect#3), Rogue Tier 6 Trinket (40460 effect#1), Adrenaline Rush (186286 effect#3), Deeper Stratagem (193531 effect#1), Lesser Adrenaline Rush (246558 effect#3)
 Family Flags     : 18, 89
 Attributes       : ....x... ........ x.x..... .....x..   .....x.. ..x..... ......x. ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -10028,6 +10008,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=840586)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Pistol Shot (185763)
+                   Family Flags: 101
 Description      : $@spelldesc340085
 Tooltip          : Your next Pistol Shot deals $s2% increased damage.
 
@@ -10333,7 +10315,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=841638)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Slice and Dice heals you for up to ${s1*18}% of your maximum health over 36 sec.
+Description      : Slice and Dice heals you for up to ${$s1*18}% of your maximum health over 36 sec.
 
 Name             : Cloaked in Shadows (id=341529) [Spell Family (8), Passive, Hidden] 
 School           : Physical

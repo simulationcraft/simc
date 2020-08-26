@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35598 shadowlands-BETA (hotfix 2020-08-23/35598)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35679 shadowlands-BETA ()
 
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
@@ -117,7 +117,7 @@ Description      : Inflicts impending doom upon the target, causing $o1 Shadow d
 Tooltip          : Doomed to take $w1 Shadow damage.
 
 Name             : Shadow Bolt (id=686) [Spell Family (5)] 
-Class            : Affliction Demonology Destruction Unknown (1454) Warlock
+Class            : Destruction Warlock
 School           : Shadow
 Spell Type       : Magic
 Resource         : 2% Base Mana (0) (id=74)
@@ -471,7 +471,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=521)      : Apply Aura (6) | Modify Casting Speed (216)
-                   Base Value: -30 | Scaled Value: -30 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: -30 | Scaled Value: -30 | PvP Coefficient: 0.50000 | Target: Enemy (6)
 Description      : Forces the target to speak in Demonic, increasing the casting time of all spells by $s1% for $d.$?s103112[
 
 |CFFE55BB0Soulburn: Your Curse of Tongues will affect all enemies in a $104224A yard radius around your target.|R][]
@@ -733,7 +733,7 @@ GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 6 seconds
 Proc Chance      : 101%
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Single-Minded Fury (81099 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Crackling Thunder (203201 effect#1), Kakushan's Stormscale Gauntlets (207844 effect#1), Colossus Smash (208086 effect#1), Deep Wounds (262115 effect#2), Deafening Crash (272824 effect#2), Siegebreaker (280773 effect#1), Unnerving Focus (337155 effect#5), Show of Force (339825 effect#1)
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Single-Minded Fury (81099 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Crackling Thunder (203201 effect#1), Kakushan's Stormscale Gauntlets (207844 effect#1), Colossus Smash (208086 effect#1), Deep Wounds (262115 effect#2), Deafening Crash (272824 effect#2), Siegebreaker (280773 effect#1), Glory (325787 effect#1), Unnerving Focus (337155 effect#5), Show of Force (339825 effect#1)
 Family Flags     : 7, 8, 9, 18
 Attributes       : ....x... ........ x.x..x.. ........   ...x...x .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1144,12 +1144,10 @@ Name             : Spell Lock (desc=Command Demon Ability) (id=19647) [Spell Fam
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
-Spell Level      : 18
 Range            : 40 yards
 Duration         : 6 seconds
 Cooldown         : 24 seconds
 Category         : 88
-Category Cooldown: 24 seconds
 Family Flags     : 30
 Attributes       : ........ ........ ..x..... ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ........ 
@@ -1589,7 +1587,7 @@ Effects          :
 #1 (id=175537)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.81600 | PvP Coefficient: 1.00000 | Radius: 6 yards | Target: Cone Front (104)
 #2 (id=19796)    : Apply Aura (6) | Modify Healing Recevied% (118)
-                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 127 | Radius: 6 yards | Target: Cone Front (104)
+                   Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 0.50000 | Misc Value: 127 | Radius: 6 yards | Target: Cone Front (104)
 #3 (id=319698)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : A strong attack that deals $<damage> damage to all enemies in front of it, and reduces the effectiveness of any healing the victim receives by $s2% for $d.
@@ -2192,7 +2190,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=87009)    : School Damage (2): shadow
-                   Base Value: 2 | Scaled Value: 2 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.68750 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 5 | Scaled Value: 5 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.68750 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=155200)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000
 Description      : Sends a shadowy bolt at the enemy, causing $s1 Shadow damage. Deals $s2% additional damage to targets below 20% health.
@@ -3128,6 +3126,7 @@ Cast Time        : 6 seconds
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
 Category         : 1363
+Affecting spells : Fel Domination (333889 effect#1)
 Family Flags     : 99
 Attributes       : ........ ........ ........ ........   x....... ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6473,6 +6472,28 @@ Effects          :
 #1 (id=710845)   : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : While your initial Infernal is active, every Soul Shard you spend has a $s1% chance to summon an additional Infernal that lasts $335236d.
+
+Name             : Rain of Chaos (id=266087) [Spell Family (5)] 
+Class            : Warlock
+School           : Physical
+Spell Type       : None
+Duration         : 30 seconds
+Proc Chance      : 101%
+Proc Flags       : ........ ....x.x. x.x..... ........ 
+                 : Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+Effects          :
+#1 (id=710846)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : $@spelldesc266086
+Tooltip          : Spending Soul Shards has a $266086s1% chance to summon an Infernal.
 
 Name             : Internal Combustion (id=266134) [Spell Family (5), Passive] 
 Class            : Warlock
@@ -9910,7 +9931,7 @@ Attributes       : ........ ........ x....... .....x..   ...x...x ..x..... .....
                  : Always hits (114)
 Effects          :
 #1 (id=814173)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.50000 | PvP Coefficient: 1.00000 | Radius: 0 - 100 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.33500 | PvP Coefficient: 1.00000 | Radius: 0 - 100 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 Description      : Your damaging periodic effects erupt on all targets within line of sight, causing $<damage> Shadow damage per effect.
 Variables        : $damage=${$bc1*($SP)*(1+$@versadmg)}
 
@@ -10106,8 +10127,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .x...
 Effects          :
 #1 (id=829470)   : Apply Aura (6) | Add Flat Modifier (107): Spell Cast Time (10)
                    Base Value: -5500 | Scaled Value: -5500 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
-                   Affected Spells: Summon Imp (688), Summon Felhunter (691), Summon Voidwalker (697), Summon Succubus (712), Summon Felguard (30146), Summon Fel Succubus (240263)
-                   Family Flags: 26, 27, 28, 29, 30
+                   Affected Spells: Summon Imp (688), Summon Felhunter (691), Summon Voidwalker (697), Summon Succubus (712), Summon Felguard (30146), Summon Observer (112869), Summon Fel Succubus (240263)
+                   Family Flags: 26, 27, 28, 29, 30, 96, 97, 98, 99, 100
 Description      : Your next Imp, Voidwalker, Succubus, Felhunter, or Felguard Summon spell has its casting time reduced by $/1000;S1 sec.
 
 Tooltip          : Imp, Voidwalker, Succubus, Felhunter, or Felguard casting time reduced by $/1000;S1 sec.
@@ -10786,7 +10807,7 @@ Description      : When a target dies under the effect of Scouring Tithe, gain $
 Name             : Prolonged Decimation (id=340268) [Spell Family (5), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 218 (values=20.0, 22.0, 24.0, 26.0, 28.0, 30.0, 32.0, 34.0, 36.0, 38.0, 40.0, 42.0, 44.0, 46.0, 48.0)
+Conduit Id       : 218 (values=10.0, 11.0, 24.0, 13.0, 14.0, 15.0, 16.0, 17.0, 18.0, 19.0, 20.0, 21.0, 22.0, 23.0, 24.0)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10799,7 +10820,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=840037)   : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
-Description      : $?s29722[Incinerate][Shadow Bolt] has a $s1% chance to not consume a charge of Decimating Bolt.
+Description      : $?s29722[Incinerate]?s198590[Drain Soul][Shadow Bolt] has a $s1% chance to not consume a charge of Decimating Bolt.
 
 Name             : Catastrophic Origin (id=340316) [Spell Family (5), Passive, Hidden] 
 School           : Physical

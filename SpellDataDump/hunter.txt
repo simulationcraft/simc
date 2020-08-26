@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35598 shadowlands-BETA (hotfix 2020-08-23/35598)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35679 shadowlands-BETA ()
 
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
@@ -2303,7 +2303,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Requires main-hand weapon (106)
 Effects          :
 #1 (id=129901)   : Apply Aura (6) | Modify Healing Recevied% (118)
-                   Base Value: -25 | Scaled Value: -25 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Enemy (6)
+                   Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 0.50000 | Misc Value: 127 | Target: Enemy (6)
 Description      : Grievously wounds the target, reducing the effectiveness of any healing received for $115804d.
 Tooltip          : Healing effects received reduced by $w1%.
 
