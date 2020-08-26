@@ -353,6 +353,20 @@ struct fae_guardians_t final : public priest_spell_t
   }
 };
 
+struct wrathful_faerie_t final : public priest_spell_t
+{
+  double insanity_gain;
+
+  wrathful_faerie_t( priest_t& p )
+    : priest_spell_t( "wrathful_faerie", p, p.find_spell( 342132 ) ),
+      insanity_gain( p.find_spell( 327703 )->effectN( 2 ).resource( RESOURCE_INSANITY ) )
+  {
+    energize_type     = action_energize::ON_HIT;
+    energize_resource = RESOURCE_INSANITY;
+    energize_amount   = insanity_gain;
+  }
+};
+
 // ==========================================================================
 // Unholy Nova - Necrolord Covenant
 // ==========================================================================
@@ -1124,7 +1138,6 @@ void priest_t::create_gains()
   gains.insanity_mindgames                = get_gain( "Insanity Gained from Mindgames" );
   gains.insanity_eternal_call_to_the_void = get_gain( "Insanity Gained from Eternal Call to the Void Mind Flays" );
   gains.insanity_mind_sear                = get_gain( "Insanity Gained from Mind Sear" );
-  gains.wrathful_faerie                   = get_gain( "Insanity Gained from Fae Guardians Wrathful Faerie" );
 }
 
 /** Construct priest procs */
@@ -1635,6 +1648,7 @@ void priest_t::init_rng()
 void priest_t::init_background_actions()
 {
   action.ascended_eruption = new actions::spells::ascended_eruption_t( *this );
+  action.wrathful_faerie   = new actions::spells::wrathful_faerie_t( *this );
 
   init_background_actions_shadow();
 }

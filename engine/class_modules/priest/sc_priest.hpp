@@ -36,6 +36,7 @@ struct summon_pet_t;
 struct summon_shadowfiend_t;
 struct summon_mindbender_t;
 struct ascended_eruption_t;
+struct wrathful_faerie_t;
 struct psychic_link_t;
 }  // namespace spells
 namespace heals
@@ -326,7 +327,6 @@ public:
     propagate_const<gain_t*> insanity_mindgames;
     propagate_const<gain_t*> insanity_eternal_call_to_the_void;
     propagate_const<gain_t*> insanity_mind_sear;
-    propagate_const<gain_t*> wrathful_faerie;
   } gains;
 
   // Benefits
@@ -410,6 +410,7 @@ public:
   struct actions_t
   {
     actions::spells::ascended_eruption_t* ascended_eruption;
+    actions::spells::wrathful_faerie_t* wrathful_faerie;
   } action;
 
   // Azerite
@@ -1268,11 +1269,8 @@ struct priest_heal_t : public priest_action_t<heal_t>
 
 struct priest_spell_t : public priest_action_t<spell_t>
 {
-  double wrathful_faerie_insanity;
-
   priest_spell_t( util::string_view name, priest_t& player, const spell_data_t* s = spell_data_t::nil() )
-    : base_t( name, player, s ),
-      wrathful_faerie_insanity( player.find_spell( 327703 )->effectN( 2 ).resource( RESOURCE_INSANITY ) )
+    : base_t( name, player, s )
   {
     weapon_multiplier = 0.0;
   }
@@ -1334,7 +1332,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
         const priest_td_t* td = find_td( s->target );
         if ( td && td->buffs.wrathful_faerie->check() )
         {
-          priest().generate_insanity( wrathful_faerie_insanity, priest().gains.wrathful_faerie, s->action );
+          priest().action.wrathful_faerie->execute();
         }
       }
     }
