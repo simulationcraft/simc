@@ -362,6 +362,7 @@ public:
     propagate_const<actions::spells::mind_sear_tick_t*> mind_sear_tick;
     propagate_const<actions::spells::shadowy_apparition_spell_t*> shadowy_apparitions;
     propagate_const<actions::spells::psychic_link_t*> psychic_link;
+    propagate_const<actions::spells::wrathful_faerie_t*> wrathful_faerie;
   } active_spells;
 
   // Items
@@ -410,7 +411,6 @@ public:
   struct actions_t
   {
     actions::spells::ascended_eruption_t* ascended_eruption;
-    actions::spells::wrathful_faerie_t* wrathful_faerie;
   } action;
 
   // Azerite
@@ -573,6 +573,7 @@ public:
   void trigger_eternal_call_to_the_void( const dot_t* d );
   void trigger_shadowy_apparitions( action_state_t* );
   void trigger_psychic_link( action_state_t* );
+  void trigger_wrathful_faerie();
   void remove_wrathful_faerie();
   const priest_td_t* find_target_data( player_t* target ) const
   {
@@ -1332,7 +1333,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
         const priest_td_t* td = find_td( s->target );
         if ( td && td->buffs.wrathful_faerie->check() )
         {
-          priest().action.wrathful_faerie->execute();
+          priest().trigger_wrathful_faerie();
         }
       }
     }

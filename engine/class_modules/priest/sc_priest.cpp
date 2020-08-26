@@ -1507,6 +1507,11 @@ void priest_t::trigger_lucid_dreams( double cost )
   }
 }
 
+void priest_t::trigger_wrathful_faerie()
+{
+  active_spells.wrathful_faerie->execute();
+}
+
 void priest_t::init_base_stats()
 {
   base_t::init_base_stats();
@@ -1648,7 +1653,6 @@ void priest_t::init_rng()
 void priest_t::init_background_actions()
 {
   action.ascended_eruption = new actions::spells::ascended_eruption_t( *this );
-  action.wrathful_faerie   = new actions::spells::wrathful_faerie_t( *this );
 
   init_background_actions_shadow();
 }
