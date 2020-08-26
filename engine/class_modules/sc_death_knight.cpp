@@ -7711,25 +7711,13 @@ void death_knight_t::default_apl_dps_precombat()
 
 std::string death_knight_t::default_potion() const
 {
-  std::string frost_potion = ( true_level > 110 ) ? "potion_of_unbridled_fury" :
-	                           ( true_level > 100 ) ? "prolonged_power" :
-                             ( true_level >= 90 ) ? "draenic_strength" :
-                             ( true_level >= 85 ) ? "mogu_power" :
-                             ( true_level >= 80 ) ? "golemblood_potion" :
+  std::string frost_potion = ( true_level >= 50 ) ? "potion_of_unbridled_fury" :
                              "disabled";
 
-  std::string unholy_potion = ( true_level > 110 ) ? "potion_of_unbridled_fury" :
-	                            ( true_level > 100 ) ? "prolonged_power" :
-                              ( true_level >= 90 ) ? "draenic_strength" :
-                              ( true_level >= 85 ) ? "mogu_power" :
-                              ( true_level >= 80 ) ? "golemblood_potion" :
+  std::string unholy_potion = ( true_level >= 50 ) ? "potion_of_unbridled_fury" :
                               "disabled";
 
-  std::string blood_potion =  ( true_level > 110 ) ? "potion_of_unbridled_fury" :
-                              ( true_level > 100 ) ? "old_war" :
-                              ( true_level >= 90 ) ? "draenic_strength" :
-                              ( true_level >= 85 ) ? "mogu_power" :
-                              ( true_level >= 80 ) ? "golemblood_potion" :
+  std::string blood_potion =  ( true_level >= 50 ) ? "potion_of_unbridled_fury" :
                               "disabled";
 
   switch ( specialization() )
@@ -7744,25 +7732,13 @@ std::string death_knight_t::default_potion() const
 
 std::string death_knight_t::default_food() const
 {
-  std::string frost_food = ( true_level > 110 ) ? "abyssalfried_rissole" :
-                           ( true_level > 100 ) ? "lemon_herb_filet" :
-                           ( true_level >= 90 ) ? "pickled_eel" :
-                           ( true_level >= 85 ) ? "sea_mist_rice_noodles" :
-                           ( true_level >= 80 ) ? "seafood_magnifique_feast" :
+  std::string frost_food = ( true_level >= 50 ) ? "abyssalfried_rissole" :
                            "disabled";
 
-  std::string unholy_food = ( true_level > 110 ) ? "baked_port_tato" :
-                            ( true_level > 100 ) ? "nightborne_delicacy_platter" :
-                            ( true_level >  90 ) ? "buttered_sturgeon" :
-                            ( true_level >= 85 ) ? "sea_mist_rice_noodles" :
-                            ( true_level >= 80 ) ? "seafood_magnifique_feast" :
+  std::string unholy_food = ( true_level >= 50 ) ? "baked_port_tato" :
                             "disabled";
 
-  std::string blood_food =  ( true_level > 110 ) ? "mechdowels_big_mech" :
-	                          ( true_level > 100 ) ? "lavish_suramar_feast" :
-                            ( true_level >  90 ) ? "pickled_eel" :
-                            ( true_level >= 85 ) ? "sea_mist_rice_noodles" :
-                            ( true_level >= 80 ) ? "seafood_magnifique_feast" :
+  std::string blood_food =  ( true_level >= 50 ) ? "mechdowels_big_mech" :
                             "disabled";
 
   switch ( specialization() )
@@ -7777,11 +7753,7 @@ std::string death_knight_t::default_food() const
 
 std::string death_knight_t::default_flask() const
 {
-  std::string flask_name = ( true_level >  110 ) ? "greater_flask_of_the_undertow" :
-                           ( true_level >= 100 ) ? "countless_armies" :
-                           ( true_level >= 90  ) ? "greater_draenic_strength_flask" :
-                           ( true_level >= 85  ) ? "winters_bite" :
-                           ( true_level >= 80  ) ? "titanic_strength" :
+  std::string flask_name = ( true_level >= 50 ) ? "greater_flask_of_the_undertow" :
                            "disabled";
 
   // All specs use a strength flask as default
@@ -7792,9 +7764,7 @@ std::string death_knight_t::default_flask() const
 
 std::string death_knight_t::default_rune() const
 {
-  return ( true_level >= 120 ) ? "battle_scarred" :
-         ( true_level >= 110 ) ? "defiled" :
-         ( true_level >= 100 ) ? "stout" :
+  return ( true_level >= 50 ) ? "battle_scarred" :
          "disabled";
 }
 
