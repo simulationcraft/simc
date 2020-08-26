@@ -4948,7 +4948,9 @@ struct slaughter_t : public rogue_attack_t
 
   double composite_da_multiplier( const action_state_t* state ) const override
   {
-    return rogue_attack_t::composite_da_multiplier( state ) + get_slaughter_scars_multiplier();
+    double m = rogue_attack_t::composite_da_multiplier( state );
+    m *= 1.0 + get_slaughter_scars_multiplier();
+    return m;
   }
 
   double composite_crit_chance() const override
