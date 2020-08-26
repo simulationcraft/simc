@@ -353,6 +353,31 @@ struct fae_guardians_t final : public priest_spell_t
   }
 };
 
+struct wrathful_faerie_t final : public priest_spell_t
+{
+  double insanity_gain;
+
+  wrathful_faerie_t( priest_t& p )
+    : priest_spell_t( "wrathful_faerie", p, p.find_spell( 342132 ) ),
+      insanity_gain( p.find_spell( 327703 )->effectN( 2 ).resource( RESOURCE_INSANITY ) )
+  {
+    energize_type     = action_energize::ON_HIT;
+    energize_resource = RESOURCE_INSANITY;
+    energize_amount   = insanity_gain;
+
+    cooldown->duration = data().internal_cooldown();
+  }
+
+  void trigger()
+  {
+    if ( priest().cooldowns.wrathful_faerie->is_ready() )
+    {
+      execute();
+      priest().cooldowns.wrathful_faerie->start();
+    }
+  }
+};
+
 // ==========================================================================
 // Unholy Nova - Necrolord Covenant
 // ==========================================================================
@@ -772,6 +797,13 @@ struct fae_guardians_t final : public priest_buff_t<buff_t>
       }
     } );
   }
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    buff_t::expire_override( expiration_stacks, remaining_duration );
+
+    priest().remove_wrathful_faerie();
+  }
 };
 
 // ==========================================================================
@@ -1032,6 +1064,7 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p ) : actor_target_data_t(
   buffs.death_and_madness_debuff    = make_buff<buffs::death_and_madness_debuff_t>( *this );
   buffs.surrender_to_madness_debuff = make_buff<buffs::surrender_to_madness_debuff_t>( *this );
   buffs.shadow_crash_debuff         = make_buff( *this, "shadow_crash_debuff", p.talents.shadow_crash->effectN( 1 ).trigger() );
+  buffs.wrathful_faerie             = make_buff( *this, "wrathful_faerie", p.find_spell( 327703 ) );
 
   target->callbacks_on_demise.emplace_back( [ this ]( player_t* ) { target_demise(); } );
 }
@@ -1091,6 +1124,7 @@ priest_t::priest_t( sim_t* sim, util::string_view name, race_e r )
 /** Construct priest cooldowns */
 void priest_t::create_cooldowns()
 {
+  cooldowns.wrathful_faerie    = get_cooldown( "wrathful_faerie" );
   cooldowns.holy_fire          = get_cooldown( "holy_fire" );
   cooldowns.holy_word_serenity = get_cooldown( "holy_word_serenity" );
   cooldowns.void_bolt          = get_cooldown( "void_bolt" );
@@ -1485,6 +1519,11 @@ void priest_t::trigger_lucid_dreams( double cost )
   }
 }
 
+void priest_t::trigger_wrathful_faerie()
+{
+  active_spells.wrathful_faerie->trigger();
+}
+
 void priest_t::init_base_stats()
 {
   base_t::init_base_stats();
@@ -1626,6 +1665,8 @@ void priest_t::init_rng()
 void priest_t::init_background_actions()
 {
   action.ascended_eruption = new actions::spells::ascended_eruption_t( *this );
+
+  active_spells.wrathful_faerie = new actions::spells::wrathful_faerie_t( *this );
 
   init_background_actions_shadow();
 }
@@ -1941,6 +1982,18 @@ void priest_t::trigger_eternal_call_to_the_void( const dot_t* )
   {
     procs.void_tendril->occur();
     auto spawned_pets = pets.void_tendril.spawn();
+  }
+}
+
+// Fae Guardian Wrathful Faerie helper
+void priest_t::remove_wrathful_faerie()
+{
+  for ( priest_td_t* priest_td : _target_data.get_entries() )
+  {
+    if ( priest_td && priest_td->buffs.wrathful_faerie->check() )
+    {
+      priest_td->buffs.wrathful_faerie->expire();
+    }
   }
 }
 

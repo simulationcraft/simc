@@ -36,6 +36,7 @@ struct summon_pet_t;
 struct summon_shadowfiend_t;
 struct summon_mindbender_t;
 struct ascended_eruption_t;
+struct wrathful_faerie_t;
 struct psychic_link_t;
 }  // namespace spells
 namespace heals
@@ -76,6 +77,7 @@ public:
     propagate_const<buff_t*> death_and_madness_debuff;
     propagate_const<buff_t*> surrender_to_madness_debuff;
     propagate_const<buff_t*> shadow_crash_debuff;
+    propagate_const<buff_t*> wrathful_faerie;
   } buffs;
 
   priest_t& priest()
@@ -288,6 +290,9 @@ public:
   // Cooldowns
   struct
   {
+    // Shared
+    propagate_const<cooldown_t*> wrathful_faerie;
+
     // Shadow
     propagate_const<cooldown_t*> void_bolt;
     propagate_const<cooldown_t*> mind_blast;
@@ -360,6 +365,7 @@ public:
     propagate_const<actions::spells::mind_sear_tick_t*> mind_sear_tick;
     propagate_const<actions::spells::shadowy_apparition_spell_t*> shadowy_apparitions;
     propagate_const<actions::spells::psychic_link_t*> psychic_link;
+    propagate_const<actions::spells::wrathful_faerie_t*> wrathful_faerie;
   } active_spells;
 
   // Items
@@ -570,6 +576,8 @@ public:
   void trigger_eternal_call_to_the_void( const dot_t* d );
   void trigger_shadowy_apparitions( action_state_t* );
   void trigger_psychic_link( action_state_t* );
+  void trigger_wrathful_faerie();
+  void remove_wrathful_faerie();
   const priest_td_t* find_target_data( player_t* target ) const
   {
     return _target_data[ target ];
@@ -1321,6 +1329,15 @@ struct priest_spell_t : public priest_action_t<spell_t>
            ( save_health_percentage < priest().talents.twist_of_fate->effectN( 1 ).base_value() ) )
       {
         priest().buffs.twist_of_fate->trigger();
+      }
+
+      if ( priest().specialization() == PRIEST_SHADOW && s->result_type == result_amount_type::DMG_DIRECT && s->result_amount > 0 )
+      {
+        const priest_td_t* td = find_td( s->target );
+        if ( td && td->buffs.wrathful_faerie->check() )
+        {
+          priest().trigger_wrathful_faerie();
+        }
       }
     }
   }
