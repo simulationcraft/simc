@@ -1654,6 +1654,8 @@ void priest_t::init_background_actions()
 {
   action.ascended_eruption = new actions::spells::ascended_eruption_t( *this );
 
+  active_spells.wrathful_faerie = new actions::spells::wrathful_faerie_t( *this );
+
   init_background_actions_shadow();
 }
 

@@ -2506,7 +2506,6 @@ void priest_t::trigger_shadowy_apparitions( action_state_t* s )
   }
 }
 
-// Trigger psychic link on any targets that weren't the original target and have Vampiric Touch ticking on them
 // ==========================================================================
 // Trigger Psychic Link on any targets that weren't the original target and have Vampiric Touch ticking on them
 // ==========================================================================
