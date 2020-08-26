@@ -1,4 +1,5 @@
 import os, logging, types, sys
+from collections import defaultdict
 
 import dbc
 
@@ -12,8 +13,8 @@ class DBCDB(dict):
         self.__obj = obj
         self.__parser = parser
 
-        self.__parent = {}
-        self.__references = {}
+        self.__parent = defaultdict(dict)
+        self.__references = defaultdict(lambda: defaultdict(dict))
 
         self.parent_info = dbc.data._FORMATDB.parent_dbs(parser.class_name())
 
@@ -27,34 +28,24 @@ class DBCDB(dict):
         return self.__obj.default(self.__parser)
 
     def records_for_parent(self, parent_id):
-        if parent_id not in self.__parent:
-            return []
-
-        return self.__parent[parent_id]
+        records = self.__parent.get(parent_id, ())
+        if not isinstance(records, tuple):
+            records = tuple(sorted(records.values(), key = lambda e: e._id))
+            self.__parent[parent_id] = records
+        return records
 
     def records_for_reference(self, referencedb_name, reference_id):
-        if referencedb_name not in self.__references:
-            return []
-
-        if reference_id not in self.__references[referencedb_name]:
-            return []
-
-        return self.__references[referencedb_name][reference_id]
+        records = self.__references.get(referencedb_name, {}).get(reference_id, ())
+        if not isinstance(records, tuple):
+            records = tuple(sorted(records.values(), key = lambda e: e._id))
+            self.__references[referencedb_name][reference_id] = records
+        return records
 
     def __add_parent_entry(self, value):
-        if value.id_parent not in self.__parent:
-            self.__parent[value.id_parent] = []
-
-        self.__parent[value.id_parent].append(value)
+        self.__parent[value.id_parent][value.id] = value
 
     def __add_reference_entry(self, parent_db, parent_id, value):
-        if parent_db not in self.__references:
-            self.__references[parent_db] = {}
-
-        if parent_id not in self.__references[parent_db]:
-            self.__references[parent_db][parent_id] = []
-
-        self.__references[parent_db][parent_id].append(value)
+        self.__references[parent_db][parent_id][value.id] = value
 
     # Collects parent information if we can
     def __setitem__(self, key, value):
