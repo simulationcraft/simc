@@ -4045,15 +4045,6 @@ struct blackout_strike_t : public monk_melee_attack_t
     return b;
   }
 
-  bool ready() override
-  {
-    // Only usable with 2-handed weapons
-    if ( p()->main_hand_weapon.type <= WEAPON_1H || p()->main_hand_weapon.type == WEAPON_NONE )
-      return false;
-
-    return monk_melee_attack_t::ready();
-  }
-
   void execute() override
   {
     monk_melee_attack_t::execute();
@@ -4423,16 +4414,7 @@ struct fists_of_fury_t : public monk_melee_attack_t
     xuen = new actions::pet_summon::fury_of_xuen_spell_t( p );
   }
 
-  bool ready() override
-  {
-    // Only usable with 1-handed weapons
-    if ( p()->main_hand_weapon.type > WEAPON_1H || p()->main_hand_weapon.type == WEAPON_NONE )
-      return false;
-
-    return monk_melee_attack_t::ready();
-  }
-
-  void consume_resource() override
+ void consume_resource() override
   {
     monk_melee_attack_t::consume_resource();
 
