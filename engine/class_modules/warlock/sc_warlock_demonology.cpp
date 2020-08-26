@@ -338,10 +338,11 @@ struct implosion_t : public demonology_spell_t
 
     implosion_aoe_t( warlock_t* p ) : demonology_spell_t( "implosion_aoe", p, p->find_spell( 196278 ) )
     {
-      aoe        = -1;
-      dual       = true;
-      background = true;
-      callbacks  = false;
+      aoe                = -1;
+      dual               = true;
+      background         = true;
+      callbacks          = false;
+      reduced_aoe_damage = true;
 
       p->spells.implosion_aoe = this;
     }
