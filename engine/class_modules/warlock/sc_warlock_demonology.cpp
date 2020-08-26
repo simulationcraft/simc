@@ -447,6 +447,10 @@ struct summon_demonic_tyrant_t : public demonology_spell_t
 
     p()->buffs.demonic_power->trigger();
 
+    if ( p()->spec.summon_demonic_tyrant_2->ok() )
+      p()->resource_gain( RESOURCE_SOUL_SHARD, p()->spec.summon_demonic_tyrant_2->effectN( 1 ).base_value(),
+                          p()->gains.summon_demonic_tyrant );
+
     // BFA - Azerite
     if ( p()->azerite.baleful_invocation.ok() )
       p()->resource_gain( RESOURCE_SOUL_SHARD, p()->find_spell( 287060 )->effectN( 1 ).base_value() / 10.0,
@@ -1124,8 +1128,9 @@ void warlock_t::init_spells_demonology()
 
 void warlock_t::init_gains_demonology()
 {
-  gains.demonic_meteor     = get_gain( "demonic_meteor" );
-  gains.baleful_invocation = get_gain( "baleful_invocation" );
+  gains.demonic_meteor        = get_gain( "demonic_meteor" );
+  gains.baleful_invocation    = get_gain( "baleful_invocation" );
+  gains.summon_demonic_tyrant = get_gain( "summon_demonic_tyrant" );
 }
 
 void warlock_t::init_rng_demonology()
