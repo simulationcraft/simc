@@ -4938,7 +4938,7 @@ struct slaughter_t : public rogue_attack_t
   double get_slaughter_scars_multiplier() const
   {
     if ( !p()->conduit.slaughter_scars.ok() )
-      return 1.0;
+      return 0.0;
 
     const double active_bonus = ( p()->active.lethal_poison == slaughter_poison ) ?
       1.0 + p()->conduit.slaughter_scars->effectN( 2 ).percent() : 1.0;
