@@ -289,6 +289,7 @@ struct call_dreadstalkers_t : public demonology_spell_t
     parse_options( options_str );
     may_crit           = false;
     dreadstalker_count = as<int>( data().effectN( 1 ).base_value() );
+    base_execute_time += p->spec.call_dreadstalkers_2->effectN( 1 ).time_value();
   }
 
   double cost() const override
@@ -1080,6 +1081,11 @@ void warlock_t::init_spells_demonology()
 {
   spec.demonology                    = find_specialization_spell( 137044 );
   mastery_spells.master_demonologist = find_mastery_spell( WARLOCK_DEMONOLOGY );
+
+  spec.call_dreadstalkers_2    = find_specialization_spell( 334727 );
+  spec.fel_firebolt_2          = find_specialization_spell( 334591 );
+  spec.summon_demonic_tyrant_2 = find_specialization_spell( 334585 );
+
   // spells
   // Talents
   talents.dreadlash           = find_talent_spell( "Dreadlash" );
