@@ -4881,12 +4881,20 @@ struct frost_strike_t : public death_knight_melee_attack_t
     parse_options( options_str );
     may_crit = false;
 
-    weapon_req = WEAPON_1H;
-
-    mh = new frost_strike_strike_t( p, "frost_strike_mh", &( p -> main_hand_weapon ), data().effectN( 2 ).trigger() );
-    add_child( mh );
-    oh = new frost_strike_strike_t( p, "frost_strike_offhand", &( p -> off_hand_weapon ), data().effectN( 3 ).trigger() );
-    add_child( oh );
+    if ( p->main_hand_weapon.group() == WEAPON_2H )
+    {
+      weapon_req = WEAPON_2H;
+      mh = new frost_strike_strike_t( p, "frost_strike_2h", &(p -> main_hand_weapon ), data().effectN( 4 ).trigger() );
+      add_child( mh );
+    }
+    else
+    {
+      weapon_req = WEAPON_1H;
+      mh = new frost_strike_strike_t( p, "frost_strike_mh", &( p -> main_hand_weapon ), data().effectN( 2 ).trigger() );
+      add_child( mh );
+      oh = new frost_strike_strike_t( p, "frost_strike_offhand", &( p -> off_hand_weapon ), data().effectN( 3 ).trigger() );
+      add_child( oh );  
+    }
   }
 
   void execute() override
@@ -4897,8 +4905,11 @@ struct frost_strike_t : public death_knight_melee_attack_t
     {
       mh -> set_target( execute_state -> target );
       mh -> execute();
-      oh -> set_target( execute_state -> target );
-      oh -> execute();
+      if ( p() -> main_hand_weapon.group() == WEAPON_1H )
+      {
+        oh -> set_target( execute_state -> target );
+        oh -> execute();
+      }
     }
 
     if ( p() -> buffs.pillar_of_frost -> up() && p() -> talent.obliteration -> ok() )
@@ -5397,13 +5408,23 @@ struct obliterate_t : public death_knight_melee_attack_t
   {
     parse_options( options_str );
 
-    weapon_req = WEAPON_1H;
+    if ( p -> main_hand_weapon.group() == WEAPON_2H )
+    {
+      weapon_req = WEAPON_2H;
+      mh = new obliterate_strike_t( p, "obliterate_2h", &( p -> main_hand_weapon ), data().effectN( 4 ).trigger() );
+      add_child( mh );
+    }
+    else
+    {
+      weapon_req = WEAPON_1H;
+      mh = new obliterate_strike_t( p, "obliterate_mh", &( p -> main_hand_weapon ), data().effectN( 2 ).trigger() );
+      oh = new obliterate_strike_t( p, "obliterate_offhand", &( p -> off_hand_weapon ), data().effectN( 3 ).trigger() );
 
-    mh = new obliterate_strike_t( p, "obliterate_mh", &( p -> main_hand_weapon ), data().effectN( 2 ).trigger() );
-    oh = new obliterate_strike_t( p, "obliterate_offhand", &( p -> off_hand_weapon ), data().effectN( 3 ).trigger() );
-
-    add_child( mh );
-    add_child( oh );
+      add_child( mh );
+      add_child( oh );
+    }
+    
+    
   }
 
   void execute() override
@@ -5415,8 +5436,11 @@ struct obliterate_t : public death_knight_melee_attack_t
       mh -> set_target( execute_state -> target );
       mh -> execute();
 
-      oh -> set_target( execute_state -> target );
-      oh -> execute();
+      if ( p() -> main_hand_weapon.group() == WEAPON_1H )
+      {
+        oh -> set_target( execute_state -> target );
+        oh -> execute();
+      }
 
       if ( p() -> buffs.inexorable_assault -> up() )
       {
