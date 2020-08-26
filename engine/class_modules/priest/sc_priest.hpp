@@ -290,6 +290,9 @@ public:
   // Cooldowns
   struct
   {
+    // Shared
+    propagate_const<cooldown_t*> wrathful_faerie;
+
     // Shadow
     propagate_const<cooldown_t*> void_bolt;
     propagate_const<cooldown_t*> mind_blast;

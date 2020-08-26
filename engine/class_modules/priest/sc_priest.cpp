@@ -364,6 +364,17 @@ struct wrathful_faerie_t final : public priest_spell_t
     energize_type     = action_energize::ON_HIT;
     energize_resource = RESOURCE_INSANITY;
     energize_amount   = insanity_gain;
+
+    cooldown->duration = data().internal_cooldown();
+  }
+
+  void trigger()
+  {
+    if ( priest().cooldowns.wrathful_faerie->is_ready() )
+    {
+      execute();
+      priest().cooldowns.wrathful_faerie->start();
+    }
   }
 };
 
@@ -1113,6 +1124,7 @@ priest_t::priest_t( sim_t* sim, util::string_view name, race_e r )
 /** Construct priest cooldowns */
 void priest_t::create_cooldowns()
 {
+  cooldowns.wrathful_faerie    = get_cooldown( "wrathful_faerie" );
   cooldowns.holy_fire          = get_cooldown( "holy_fire" );
   cooldowns.holy_word_serenity = get_cooldown( "holy_word_serenity" );
   cooldowns.void_bolt          = get_cooldown( "void_bolt" );
@@ -1509,7 +1521,7 @@ void priest_t::trigger_lucid_dreams( double cost )
 
 void priest_t::trigger_wrathful_faerie()
 {
-  active_spells.wrathful_faerie->execute();
+  active_spells.wrathful_faerie->trigger();
 }
 
 void priest_t::init_base_stats()
