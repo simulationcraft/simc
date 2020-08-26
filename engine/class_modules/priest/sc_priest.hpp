@@ -247,15 +247,15 @@ public:
   // Specialization Spells
   struct
   {
-    const spell_data_t* priest;  /// General priest data
+    const spell_data_t* priest;  // General priest data
 
     // Discipline
-    const spell_data_t* discipline;  /// General discipline data
+    const spell_data_t* discipline;  // General discipline data
     const spell_data_t* discipline_priest;
-    const spell_data_t* power_of_the_dark_side;  /// For buffing the damage of penance
+    const spell_data_t* power_of_the_dark_side;  // For buffing the damage of penance
 
     // Holy
-    const spell_data_t* holy;  /// General holy data
+    const spell_data_t* holy;  // General holy data
     const spell_data_t* rapid_renewal;
     const spell_data_t* holy_words;
     const spell_data_t* holy_word_chastise;
@@ -270,7 +270,7 @@ public:
     const spell_data_t* holy_priest;
 
     // Shadow
-    const spell_data_t* shadow;  /// General shadow data
+    const spell_data_t* shadow;  // General shadow data
     const spell_data_t* shadowy_apparitions;
     const spell_data_t* voidform;
     const spell_data_t* void_eruption;
@@ -402,7 +402,7 @@ public:
 
     // Add in options to override insanity gained
     // Mindgames gives 20 insanity from the healing and 20 from damage dealt
-    /// For most content the healing part won't proc, only default damage dealt
+    // For most content the healing part won't proc, only default damage dealt
     bool priest_mindgames_healing_insanity = false;
     bool priest_mindgames_damage_insanity  = true;
 
@@ -601,26 +601,26 @@ public:
 
     insanity_state_t( priest_t& a );
 
-    /// Deferred init for actor dependent stuff not ready in the ctor
+    // Deferred init for actor dependent stuff not ready in the ctor
     void init();
 
-    /// Start the insanity drain tracking
+    // Start the insanity drain tracking
     void set_last_drained();
 
-    /// Start (or re-start) tracking of the insanity drain plus end event
+    // Start (or re-start) tracking of the insanity drain plus end event
     void begin_tracking();
 
     timespan_t time_to_end() const;
 
     void reset();
 
-    /// Compute insanity drain per second with current state of the actor
+    // Compute insanity drain per second with current state of the actor
     double insanity_drain_per_second() const;
 
-    /// Gain some insanity
+    // Gain some insanity
     void gain( double value, gain_t* gain_obj, action_t* source_action = nullptr );
 
-    /// Lose some insanity
+    // Lose some insanity
     void lose( double value, gain_t* gain_obj, action_t* source_action = nullptr );
 
     /**
@@ -984,7 +984,11 @@ struct fiend_melee_t : public priest_pet_melee_t
 // ==========================================================================
 struct shadowflame_prism_t final : public priest_pet_spell_t
 {
-  shadowflame_prism_t( base_fiend_pet_t& p ) : priest_pet_spell_t( "shadowflame_prism", &p, p.o().find_spell( 336142 ) )
+  double shadowflame_increase;
+
+  shadowflame_prism_t( base_fiend_pet_t& p )
+    : priest_pet_spell_t( "shadowflame_prism", &p, p.o().find_spell( 336142 ) ),
+      shadowflame_increase( p.o().find_spell( 336144 )->effectN( 1 ).percent() )
   {
     background = true;
     may_crit   = false;
@@ -993,9 +997,8 @@ struct shadowflame_prism_t final : public priest_pet_spell_t
 
   void trigger( player_t* target, double original_amount )
   {
-    // The 20% modifier is hardcoded in spelldata
-    base_dd_min = base_dd_max = ( original_amount * 0.20 );
-    player->sim->print_debug( "Triggered shadowflame prism damage on target {}.", *target );
+    base_dd_min = base_dd_max = ( original_amount * shadowflame_increase );
+    player->sim->print_debug( "Triggered shadowflame prism damage on target {} at {} percent increase.", *target, shadowflame_increase );
 
     set_target( target );
     execute();
@@ -1220,11 +1223,11 @@ protected:
     return *debug_cast<priest_t*>( ab::player );
   }
 
-  /// typedef for priest_action_t<action_base_t>
+  // typedef for priest_action_t<action_base_t>
   using base_t = priest_action_t;
 
 private:
-  /// typedef for the templated action type, eg. spell_t, attack_t, heal_t
+  // typedef for the templated action type, eg. spell_t, attack_t, heal_t
   using ab = Base;
 };
 
