@@ -1,5 +1,5 @@
 // Spell text, wow build 9.0.1.35598
-static const std::array<spelltext_data_t, 15469> __spelltext_data { {
+static const std::array<spelltext_data_t, 15470> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -10344,6 +10344,7 @@ static const std::array<spelltext_data_t, 15469> __spelltext_data { {
   { 266030, "$@spelldesc205148", "Haste increased by $s1%.", 0 },
   { 266047, "Let out a Motivating Howl, granting $s1 Versatility for $d split among you and up to $s3 nearby allies. For each ally you motivate, you gain an additional $s2 Versatility.", "Versatility increased by ${$w1+$w2}.", 0 },
   { 266086, "While your initial Infernal is active, every Soul Shard you spend has a $s1% chance to summon an additional Infernal that lasts $335236d.", 0, 0 },
+  { 266087, "$@spelldesc266086", "Spending Soul Shards has a $266086s1% chance to summon an Infernal.", 0 },
   { 266134, "Chaos Bolt consumes up to $s1 sec of Immolate's damage over time effect on your target, instantly dealing that much damage.", 0, 0 },
   { 266180, "Your damaging abilities have a chance to grant you 25 applications of Overwhelming Power. Each stack of Overwhelming Power grants $s1 Haste. An application of Overwhelming Power is removed every 1 sec or whenever you take damage.", "Your damaging abilities have a chance to grant you 25 applications of Overwhelming Power. Each stack of Overwhelming Power grants $s1 Haste. An application of Overwhelming Power is removed every 3 sec or whenever you take damage.", 0 },
   { 266310, "Activate the goblin flamethrower, dealing fire damage to enemies in front of you over 5 seconds.", 0, 0 },
