@@ -4881,7 +4881,7 @@ struct frost_strike_t : public death_knight_melee_attack_t
     parse_options( options_str );
     may_crit = false;
 
-    if ( p->main_hand_weapon.group() == WEAPON_2H )
+    if ( p -> main_hand_weapon.group() == WEAPON_2H )
     {
       weapon_req = WEAPON_2H;
       mh = new frost_strike_strike_t( p, "frost_strike_2h", &(p -> main_hand_weapon ), data().effectN( 4 ).trigger() );
