@@ -655,7 +655,7 @@ public:
     const spell_data_t* lonely_winter;
     const spell_data_t* ice_nova;
 
-    // Tier 30
+    // Tier 25
     const spell_data_t* shimmer;
     const spell_data_t* master_of_time; // NYI
     const spell_data_t* slipstream;
@@ -664,12 +664,12 @@ public:
     const spell_data_t* glacial_insulation; // NYI
     const spell_data_t* ice_floes;
 
-    // Tier 45
+    // Tier 30
     const spell_data_t* incanters_flow;
     const spell_data_t* focus_magic;
     const spell_data_t* rune_of_power;
 
-    // Tier 60
+    // Tier 35
     const spell_data_t* resonance;
     const spell_data_t* arcane_echo;
     const spell_data_t* nether_tempest;
@@ -680,16 +680,16 @@ public:
     const spell_data_t* chain_reaction;
     const spell_data_t* ebonbolt;
 
-    // Tier 75
+    // Tier 40
     const spell_data_t* ice_ward;
     const spell_data_t* ring_of_frost; // NYI
     const spell_data_t* chrono_shift;
     const spell_data_t* frenetic_speed;
     const spell_data_t* frigid_winds; // NYI
 
-    // Tier 90
+    // Tier 45
     const spell_data_t* reverberate;
-    const spell_data_t* enlightened;
+    const spell_data_t* arcane_orb;
     const spell_data_t* supernova;
     const spell_data_t* flame_patch;
     const spell_data_t* conflagration;
@@ -698,10 +698,10 @@ public:
     const spell_data_t* splitting_ice;
     const spell_data_t* comet_storm;
 
-    // Tier 100
+    // Tier 50
     const spell_data_t* overpowered;
     const spell_data_t* time_anomaly;
-    const spell_data_t* arcane_orb;
+    const spell_data_t* enlightened;
     const spell_data_t* kindling;
     const spell_data_t* pyroclasm;
     const spell_data_t* meteor;
@@ -6083,7 +6083,7 @@ void mage_t::init_spells()
   talents.frigid_winds       = find_talent_spell( "Frigid Winds"       );
   // Tier 45
   talents.reverberate        = find_talent_spell( "Reverberate"        );
-  talents.enlightened        = find_talent_spell( "Enlightened"        );
+  talents.arcane_orb         = find_talent_spell( "Arcane Orb"         );
   talents.supernova          = find_talent_spell( "Supernova"          );
   talents.flame_patch        = find_talent_spell( "Flame Patch"        );
   talents.conflagration      = find_talent_spell( "Conflagration"      );
@@ -6094,7 +6094,7 @@ void mage_t::init_spells()
   // Tier 50
   talents.overpowered        = find_talent_spell( "Overpowered"        );
   talents.time_anomaly       = find_talent_spell( "Time Anomaly"       );
-  talents.arcane_orb         = find_talent_spell( "Arcane Orb"         );
+  talents.enlightened        = find_talent_spell( "Enlightened"        );
   talents.kindling           = find_talent_spell( "Kindling"           );
   talents.pyroclasm          = find_talent_spell( "Pyroclasm"          );
   talents.meteor             = find_talent_spell( "Meteor"             );
