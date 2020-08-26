@@ -361,7 +361,7 @@ struct felstorm_tick_t : public warlock_pet_melee_attack_t
   felstorm_tick_t( warlock_pet_t* p, const spell_data_t& s )
     : warlock_pet_melee_attack_t( "felstorm_tick", p, s.effectN( 1 ).trigger() )
   {
-    aoe        = -1;
+    aoe        = as<int>( data().effectN( 3 ).base_value() );
     background = true;
     weapon     = &( p->main_hand_weapon );
   }
