@@ -1520,10 +1520,7 @@ public:
     if ( p()->talent.nightstalker->ok() && snapshots_nightstalker() && p()->stealthed( STEALTH_BASIC | STEALTH_SHADOWDANCE ) )
     {
       double ns_mod = p()->spell.nightstalker_dmg_amp->effectN( 2 ).percent();
-      // Bug: Rupture seems to ignore the sub modifier for Nightstalker snapshot damage as of Shadowlands beta 2020-07-31.
-      // https://github.com/SimCMinMax/WoW-BugTracker/issues/472
-      if ( !p()->bugs || ab::name_str != "rupture" )
-        ns_mod += p()->spec.subtlety_rogue->effectN( 4 ).percent();
+      ns_mod += p()->spec.subtlety_rogue->effectN( 4 ).percent();
       m *= 1.0 + ns_mod;
     }
 
