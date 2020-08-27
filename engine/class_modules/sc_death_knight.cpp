@@ -4457,7 +4457,7 @@ struct empower_rune_weapon_t : public death_knight_spell_t
     dot_duration = base_tick_time = 0_ms;
 
     cooldown -> duration *= 1.0 + p -> vision_of_perfection_minor_cdr;
-    cooldown -> duration -= timespan_t::from_seconds( abs( p -> spec.empower_rune_weapon_rank_2->effectN(1).base_value() / 1000 ) );
+    cooldown -> duration += p -> spec.empower_rune_weapon_rank_2->effectN(1).time_value();
   }
 
   void execute() override
