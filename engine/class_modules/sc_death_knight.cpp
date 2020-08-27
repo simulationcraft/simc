@@ -5033,7 +5033,7 @@ struct howling_blast_aoe_t : public death_knight_spell_t
 
     if ( p() -> buffs.rime -> up() )
     {
-      m *= 1.0 + p() -> buffs.rime -> data().effectN( 2 ).percent();
+      m *= 1.0 + p() -> buffs.rime -> data().effectN( 2 ).percent() + p() -> spec.rime_rank_2 -> effectN( 1 ).percent();
     }
 
     return m;
@@ -5125,8 +5125,7 @@ struct howling_blast_t : public death_knight_spell_t
 
     if ( p() -> buffs.rime -> up() )
     {
-      m *= 1.0 + p() -> buffs.rime -> data().effectN( 2 ).percent();
-      m *= 1.0 + p() -> spec.rime_rank_2 -> effectN( 1 ).percent();
+      m *= 1.0 + p()->buffs.rime->data().effectN( 2 ).percent() + p() -> spec.rime_rank_2 -> effectN( 1 ).percent();
     }
 
     return m;
