@@ -736,6 +736,26 @@ struct shadow_word_pain_t final : public priest_spell_t
     parse_options( options_str );
   }
 
+  void impact( action_state_t* s ) override
+  {
+    priest_spell_t::impact( s );
+
+    if ( result_is_hit( s->result ) )
+    {
+      if ( priest().buffs.fae_guardians->check() )
+      {
+        priest_td_t& td = get_td( s->target );
+
+        if ( !td.buffs.wrathful_faerie->up() )
+        {
+          // There can only be one of these out at once so clear it first
+          priest().remove_wrathful_faerie();
+          td.buffs.wrathful_faerie->trigger();
+        }
+      }
+    }
+  }
+
   void tick( dot_t* d ) override
   {
     priest_spell_t::tick( d );
@@ -960,6 +980,13 @@ struct void_bolt_t final : public priest_spell_t
       td.dots.shadow_word_pain->extend_duration( dot_extension, true );
       td.dots.vampiric_touch->extend_duration( dot_extension, true );
 
+      if ( priest().talents.legacy_of_the_void->ok() )
+      {
+        // TODO: remove this hard code once it is in the game
+        // Assuming how this works based on the blue post
+        td.dots.devouring_plague->refresh_duration();
+      }
+
       if ( priest().conduits.dissonant_echoes->ok() && priest().buffs.voidform->check() )
       {
         if ( rng().roll( priest().conduits.dissonant_echoes.percent() ) )
@@ -972,15 +999,12 @@ struct void_bolt_t final : public priest_spell_t
   };
 
   void_bolt_extension_t* void_bolt_extension;
-  timespan_t fae_blessings_cooldown_reduction;
   propagate_const<cooldown_t*> shadowfiend_cooldown;
   propagate_const<cooldown_t*> mindbender_cooldown;
 
   void_bolt_t( priest_t& player, util::string_view options_str )
     : priest_spell_t( "void_bolt", player, player.find_spell( 205448 ) ),
       void_bolt_extension( nullptr ),
-      fae_blessings_cooldown_reduction(
-          -timespan_t::from_seconds( player.find_spell( 327710 )->effectN( 1 ).base_value() ) ),
       shadowfiend_cooldown( player.get_cooldown( "mindbender" ) ),
       mindbender_cooldown( player.get_cooldown( "shadowfiend" ) )
   {
@@ -999,33 +1023,6 @@ struct void_bolt_t final : public priest_spell_t
   void execute() override
   {
     priest_spell_t::execute();
-
-    if ( priest().covenant.fae_blessings->ok() )
-    {
-      if ( priest().buffs.fae_blessings->up() )
-      {
-        // Adjust CD of Shadowfiend/Mindbender
-        if ( priest().talents.mindbender->ok() )
-        {
-          mindbender_cooldown->adjust( fae_blessings_cooldown_reduction );
-        }
-        else
-        {
-          shadowfiend_cooldown->adjust( fae_blessings_cooldown_reduction );
-        }
-
-        if ( priest().conduits.blessing_of_plenty->ok() )
-        {
-          if ( rng().roll( priest().conduits.blessing_of_plenty.percent() ) )
-          {
-            // store CD reduction somewhere so when we start the CD it is started reduced
-            priest().buffs.blessing_of_plenty->increment();
-            priest().procs.blessing_of_plenty->occur();
-          }
-        }
-        priest().buffs.fae_blessings->decrement();
-      }
-    }
 
     if ( priest().buffs.dissonant_echoes->check() )
     {
@@ -1351,6 +1348,7 @@ struct shadow_crash_t final : public priest_spell_t
     aoe    = -1;
     radius = data().effectN( 1 ).radius();
     range  = data().max_range();
+    cooldown->hasted = true;
 
     impact_action = new shadow_crash_damage_t( p );
     add_child( impact_action );
@@ -1424,7 +1422,7 @@ struct searing_nightmare_t final : public priest_spell_t
 
     if ( td && td -> dots.shadow_word_pain->is_ticking() )
     {
-      d *= 2;
+      d *= data().effectN( 1 ).percent();
     }
 
     return d;
@@ -1602,6 +1600,7 @@ struct voidform_t final : public priest_buff_t<buff_t>
     if ( priest().talents.legacy_of_the_void->ok() )
     {
       priest().buffs.insanity_drain_stacks->trigger();
+      priest().buffs.dark_passion->trigger();
       priest().insanity.begin_tracking();
     }
 
@@ -1618,16 +1617,20 @@ struct voidform_t final : public priest_buff_t<buff_t>
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
     /// TODO: Verify if functionality is properly matching how it works ingame.
-
     sim->print_debug( "{} has {} charges of mind blast as voidform ended", *player,
                       priest().cooldowns.mind_blast->charges_fractional() );
-    //Call new generic function to adjust charges.
+    // Call new generic function to adjust charges.
     adjust_max_charges( priest().cooldowns.mind_blast, 1 );
 
     sim->print_debug( "{} has {} charges of mind blast after voidform ended", *player,
                       priest().cooldowns.mind_blast->charges_fractional() );
 
     priest().buffs.insanity_drain_stacks->expire();
+
+    if ( priest().talents.legacy_of_the_void->ok() )
+    {
+      priest().buffs.dark_passion->expire();
+    }
 
     if ( priest().buffs.shadowform_state->check() )
     {
@@ -1703,6 +1706,18 @@ struct dark_thoughts_t final : public priest_buff_t<buff_t>
       }
     }
     base_t::expire_override( expiration_stacks, remaining_duration );
+  }
+};
+
+// ==========================================================================
+// Legacy of the Void - Dark Passion
+// ==========================================================================
+struct dark_passion_t final : public priest_buff_t<buff_t>
+{
+  dark_passion_t( priest_t& p ) : base_t( p, "dark_passion", p.find_spell( 342855 ) )
+  {
+    add_invalidate( CACHE_SPELL_HASTE );
+    add_invalidate( CACHE_HASTE );
   }
 };
 
@@ -2121,8 +2136,9 @@ void priest_t::create_buffs_shadow()
   buffs.surrender_to_madness   = make_buff( this, "surrender_to_madness", find_talent_spell( "Surrender to Madness" ) );
   buffs.death_and_madness_buff = make_buff<buffs::death_and_madness_buff_t>( *this );
   buffs.ancient_madness        = make_buff<buffs::ancient_madness_t>( *this );
-  buffs.unfurling_darkness     = make_buff( this, "unfurling_darkness", find_talent_spell( "Unfurling Darkness" ) );
+  buffs.unfurling_darkness     = make_buff( this, "unfurling_darkness", find_talent_spell( "Unfurling Darkness" )->effectN( 1 ).trigger() );
   buffs.unfurling_darkness_cd  = make_buff( this, "unfurling_darkness_cd", find_spell( 341291 ) );
+  buffs.dark_passion           = make_buff<buffs::dark_passion_t>( *this );
   buffs.surrender_to_madness_death =
       make_buff( this, "surrender_to_madness_death", find_talent_spell( "Surrender to Madness" ) )
           ->set_duration( timespan_t::zero() )
@@ -2139,11 +2155,6 @@ void priest_t::create_buffs_shadow()
                                ->set_trigger_spell( conduits.mind_devourer )
                                ->set_chance( conduits.mind_devourer->effectN( 2 ).percent() );
   buffs.dissonant_echoes = make_buff( this, "dissonant_echoes", find_spell( 343144 ) );
-  // Dummy buff to track CDR from Void Bolt
-  buffs.blessing_of_plenty = make_buff( this, "blessing_of_plenty", find_spell( 338305 ) )
-                                 ->set_quiet( true )
-                                 ->set_duration( timespan_t::from_seconds( 70 ) )
-                                 ->set_max_stack( 99 );
 }
 
 void priest_t::init_rng_shadow()
@@ -2391,8 +2402,7 @@ void priest_t::generate_apl_shadow()
 
   // CDs
   cds->add_action( this, "Power Infusion", "if=buff.voidform.up" );
-  cds->add_action( this, covenant.fae_blessings, "Fae Blessings", "if=insanity>=90&cooldown.void_eruption.up",
-                   "Use right before Void Eruption" );
+  cds->add_action( this, covenant.fae_guardians, "Fae Guardians" );
   cds->add_action( this, covenant.mindgames, "Mindgames", "if=insanity<90&!buff.voidform.up" );
   cds->add_action( this, covenant.unholy_nova, "Unholy Nova", "if=raid_event.adds.in>50" );
   cds->add_action( this, covenant.boon_of_the_ascended, "Boon of the Ascended",
@@ -2405,14 +2415,15 @@ void priest_t::generate_apl_shadow()
 
   // single APL
   main->add_call_action_list( this, covenant.boon_of_the_ascended, boon, "if=buff.boon_of_the_ascended.up" );
-  main->add_action( this, "Void Eruption", "if=cooldown.power_infusion.up&insanity>=40",
-                    "Sync up Voidform and Power Infusion Cooldowns." );
+  main->add_action( this, "Void Eruption", "if=cooldown.power_infusion.up&insanity>=40&(!talent.legacy_of_the_void.enabled|(talent.legacy_of_the_void.enabled&dot.devouring_plague.ticking))",
+                    "Sync up Voidform and Power Infusion Cooldowns and of using LotV pool insanity before casting." );
   main->add_action( this, "Void Bolt", "if=!dot.devouring_plague.refreshable",
                     "Only use Void Bolt if Devouring Plague doesn't need refreshed." );
   main->add_call_action_list( cds );
   main->add_talent( this, "Damnation", "target_if=!variable.all_dots_up",
                     "Prefer to use Damnation ASAP if any DoT is not up" );
-  main->add_action( this, "Devouring Plague", "target_if=(refreshable|insanity>75)&!cooldown.power_infusion.up&(!talent.searing_nightmare.enabled|(talent.searing_nightmare.enabled&!variable.searing_nightmare_cutoff))",
+  main->add_action( this, "Devouring Plague", "if=talent.legacy_of_the_void.enabled&cooldown.void_eruption.up&insanity=100", "Use Devouring Plague right before you go into a LotV Voidform." );
+  main->add_action( this, "Devouring Plague", "target_if=(refreshable|insanity>75)&!cooldown.power_infusion.up&(!talent.searing_nightmare.enabled|(talent.searing_nightmare.enabled&!variable.searing_nightmare_cutoff))&(!talent.legacy_of_the_void.enabled|(talent.legacy_of_the_void.enabled&buff.voidform.down))",
                     "Don't use Devouring Plague if you can get into Voidform instead, or if Searing Nightmare is talented and will hit enough targets." );
   main->add_action( this, "Shadow Word: Death", "target_if=target.health.pct<20",
                     "Use Shadow Word: Death if the target is about to die." );
@@ -2496,7 +2507,6 @@ void priest_t::trigger_shadowy_apparitions( action_state_t* s )
   }
 }
 
-// Trigger psychic link on any targets that weren't the original target and have Vampiric Touch ticking on them
 // ==========================================================================
 // Trigger Psychic Link on any targets that weren't the original target and have Vampiric Touch ticking on them
 // ==========================================================================

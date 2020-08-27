@@ -51,20 +51,22 @@ public:
   /// Reset any state
   void reset();
 
-  /// Uniform distribution in range [0,1]
+  /// Uniform distribution in range [0..1)
   double real();
 
   /// Bernoulli Distribution
   bool roll( double chance );
 
-  /// Uniform distribution in the range [min max]
+  /// Uniform distribution in the range [min..max)
   double range( double min, double max );
 
+  /// Uniform distribution in the range [min..max)
   template <typename T, typename = std::enable_if_t<std::is_integral<T>::value>>
   T range( T min, T max ) {
     return static_cast<T>(range(static_cast<double>(min), static_cast<double>(max)));
   }
 
+  /// Uniform distribution in the range [0..max)
   template <typename T, typename = std::enable_if_t<std::is_integral<T>::value>>
   T range( T max ) {
     return range<T>( T{}, max );
@@ -79,7 +81,7 @@ public:
   /// Exponentially Modified Gaussian Distribution
   double exgauss( double gauss_mean, double gauss_stddev, double exp_nu );
 
-  /// Timespan uniform distribution in the range [min max]
+  /// Timespan uniform distribution in the range [min..max)
   timespan_t range( timespan_t min, timespan_t max );
 
   /// Timespan Gaussian Distribution
@@ -117,7 +119,7 @@ void basic_rng_t<Engine>::reset()
 // Probability Distributions
 // ==========================================================================
 
-/// Uniform distribution in range [0,1]
+/// Uniform distribution in range [0..1)
 template <typename Engine>
 inline double basic_rng_t<Engine>::real()
 {
@@ -139,7 +141,7 @@ bool basic_rng_t<Engine>::roll( double chance )
   return real() < chance;
 }
 
-/// Uniform distribution in the range [min max]
+/// Uniform distribution in the range [min..max)
 template <typename Engine>
 double basic_rng_t<Engine>::range( double min, double max )
 {
@@ -221,7 +223,7 @@ double basic_rng_t<Engine>::exgauss( double gauss_mean, double gauss_stddev, dou
   return v > 0.0 ? v : 0.0;
 }
 
-/// Timespan uniform distribution in the range [min max]
+/// Timespan uniform distribution in the range [min..max)
 template <typename Engine>
 timespan_t basic_rng_t<Engine>::range( timespan_t min, timespan_t max )
 {

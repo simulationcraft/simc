@@ -492,6 +492,7 @@ public:
     cooldown_t* combustion;
     cooldown_t* cone_of_cold;
     cooldown_t* fire_blast;
+    cooldown_t* from_the_ashes;
     cooldown_t* frost_nova;
     cooldown_t* frozen_orb;
     cooldown_t* icy_veins;
@@ -654,7 +655,7 @@ public:
     const spell_data_t* lonely_winter;
     const spell_data_t* ice_nova;
 
-    // Tier 30
+    // Tier 25
     const spell_data_t* shimmer;
     const spell_data_t* master_of_time; // NYI
     const spell_data_t* slipstream;
@@ -663,12 +664,12 @@ public:
     const spell_data_t* glacial_insulation; // NYI
     const spell_data_t* ice_floes;
 
-    // Tier 45
+    // Tier 30
     const spell_data_t* incanters_flow;
     const spell_data_t* focus_magic;
     const spell_data_t* rune_of_power;
 
-    // Tier 60
+    // Tier 35
     const spell_data_t* resonance;
     const spell_data_t* arcane_echo;
     const spell_data_t* nether_tempest;
@@ -679,16 +680,16 @@ public:
     const spell_data_t* chain_reaction;
     const spell_data_t* ebonbolt;
 
-    // Tier 75
+    // Tier 40
     const spell_data_t* ice_ward;
     const spell_data_t* ring_of_frost; // NYI
     const spell_data_t* chrono_shift;
     const spell_data_t* frenetic_speed;
     const spell_data_t* frigid_winds; // NYI
 
-    // Tier 90
+    // Tier 45
     const spell_data_t* reverberate;
-    const spell_data_t* enlightened;
+    const spell_data_t* arcane_orb;
     const spell_data_t* supernova;
     const spell_data_t* flame_patch;
     const spell_data_t* conflagration;
@@ -697,10 +698,10 @@ public:
     const spell_data_t* splitting_ice;
     const spell_data_t* comet_storm;
 
-    // Tier 100
+    // Tier 50
     const spell_data_t* overpowered;
     const spell_data_t* time_anomaly;
-    const spell_data_t* arcane_orb;
+    const spell_data_t* enlightened;
     const spell_data_t* kindling;
     const spell_data_t* pyroclasm;
     const spell_data_t* meteor;
@@ -1442,7 +1443,7 @@ struct mage_spell_t : public spell_t
   struct triggers_t
   {
     bool bone_chilling = false;
-    bool from_the_ashes = true;
+    bool from_the_ashes = false;
     bool hot_streak = false;
     bool ignite = false;
     bool kindling = false;
@@ -1859,13 +1860,17 @@ struct fire_mage_spell_t : public mage_spell_t
 
       // TODO: Double check how this works with Pheonix Flames and Deathborne Fireball
       // closer to release.
-      if ( triggers.kindling && p()->talents.kindling->ok() && s->result == RESULT_CRIT )
+      if ( triggers.kindling && s->result == RESULT_CRIT && p()->talents.kindling->ok() )
         p()->cooldowns.combustion->adjust( -p()->talents.kindling->effectN( 1 ).time_value() );
 
-      // TODO: What currently triggers From the Ashes seems inconsistent at best. Implement
-      // it according to the tooltip and check again closer to release.
-      if ( triggers.from_the_ashes && p()->talents.from_the_ashes->ok() && s->result == RESULT_CRIT )
+      if ( triggers.from_the_ashes
+        && s->result == RESULT_CRIT
+        && p()->talents.from_the_ashes->ok()
+        && p()->cooldowns.from_the_ashes->up() )
+      {
+        p()->cooldowns.from_the_ashes->start( p()->talents.from_the_ashes->internal_cooldown() );
         p()->cooldowns.phoenix_flames->adjust( p()->talents.from_the_ashes->effectN( 2 ).time_value() );
+      }
     }
   }
 
@@ -3231,7 +3236,7 @@ struct dragons_breath_t : public fire_mage_spell_t
   {
     parse_options( options_str );
     aoe = -1;
-    triggers.radiant_spark = true;
+    triggers.from_the_ashes = triggers.radiant_spark = true;
     crit_bonus_multiplier *= 1.0 + p->talents.alexstraszas_fury->effectN( 2 ).percent();
     cooldown->duration += p->spec.dragons_breath_2->effectN( 1 ).time_value();
 
@@ -3355,7 +3360,7 @@ struct fireball_t : public fire_mage_spell_t
     fire_mage_spell_t( n, p, p->find_class_spell( "Fireball" ) )
   {
     parse_options( options_str );
-    triggers.hot_streak = triggers.ignite = triggers.kindling = triggers.radiant_spark = true;
+    triggers.hot_streak = triggers.ignite = triggers.kindling = triggers.from_the_ashes = triggers.radiant_spark = true;
     affected_by.deathborne_cleave = true;
     base_multiplier *= 1.0 + p->spec.fireball_3->effectN( 1 ).percent();
     base_dd_adder += p->azerite.duplicative_incineration.value( 2 );
@@ -4306,7 +4311,7 @@ struct fire_blast_t : public fire_mage_spell_t
   {
     parse_options( options_str );
     usable_while_casting = p->spec.fire_blast_3->ok();
-    triggers.hot_streak = triggers.ignite = triggers.kindling = triggers.radiant_spark = true;
+    triggers.hot_streak = triggers.ignite = triggers.kindling = triggers.from_the_ashes = triggers.radiant_spark = true;
 
     cooldown->charges += as<int>( p->spec.fire_blast_4->effectN( 1 ).base_value() );
     cooldown->charges += as<int>( p->talents.flame_on->effectN( 1 ).base_value() );
@@ -4767,7 +4772,7 @@ struct pyroblast_t : public hot_streak_spell_t
     pyroblast_dot()
   {
     parse_options( options_str );
-    triggers.hot_streak = triggers.ignite = triggers.kindling = triggers.radiant_spark = true;
+    triggers.hot_streak = triggers.ignite = triggers.kindling = triggers.from_the_ashes = triggers.radiant_spark = true;
     base_dd_adder += p->azerite.wildfire.value( 2 );
     base_multiplier *= 1.0 + p->conduits.controlled_destruction.percent();
 
@@ -4804,7 +4809,7 @@ struct pyroblast_t : public hot_streak_spell_t
       if ( p()->buffs.combustion->check() )
         p()->buffs.combustion->extend_duration( p(), d );
       else
-        p()->buffs.combustion->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, d );
+        p()->buffs.combustion->trigger( d );
 
       p()->buffs.sun_kings_blessing_ready->expire();
     }
@@ -4948,7 +4953,7 @@ struct scorch_t : public fire_mage_spell_t
     fire_mage_spell_t( n, p, p->find_specialization_spell( "Scorch" ) )
   {
     parse_options( options_str );
-    triggers.hot_streak = triggers.ignite = triggers.radiant_spark = true;
+    triggers.hot_streak = triggers.ignite = triggers.from_the_ashes = triggers.radiant_spark = true;
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -5607,7 +5612,7 @@ struct time_anomaly_tick_event_t : public event_t
           case TA_ARCANE_POWER:
           {
             timespan_t duration = 1000 * mage->talents.time_anomaly->effectN( 1 ).time_value();
-            mage->buffs.arcane_power->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, duration );
+            mage->buffs.arcane_power->trigger( duration );
             break;
           }
           case TA_EVOCATION:
@@ -5704,6 +5709,7 @@ mage_t::mage_t( sim_t* sim, util::string_view name, race_e r ) :
   cooldowns.combustion       = get_cooldown( "combustion"       );
   cooldowns.cone_of_cold     = get_cooldown( "cone_of_cold"     );
   cooldowns.fire_blast       = get_cooldown( "fire_blast"       );
+  cooldowns.from_the_ashes   = get_cooldown( "from_the_ashes"   );
   cooldowns.frost_nova       = get_cooldown( "frost_nova"       );
   cooldowns.frozen_orb       = get_cooldown( "frozen_orb"       );
   cooldowns.icy_veins        = get_cooldown( "icy_veins"        );
@@ -5723,7 +5729,7 @@ bool mage_t::trigger_crowd_control( const action_state_t* s, spell_mechanic type
     && ( s->target->is_add() || s->target->level() < sim->max_player_level + 3 ) )
   {
     if ( type == MECHANIC_ROOT )
-      get_target_data( s->target )->debuffs.frozen->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, d );
+      get_target_data( s->target )->debuffs.frozen->trigger( d );
 
     return true;
   }
@@ -6077,7 +6083,7 @@ void mage_t::init_spells()
   talents.frigid_winds       = find_talent_spell( "Frigid Winds"       );
   // Tier 45
   talents.reverberate        = find_talent_spell( "Reverberate"        );
-  talents.enlightened        = find_talent_spell( "Enlightened"        );
+  talents.arcane_orb         = find_talent_spell( "Arcane Orb"         );
   talents.supernova          = find_talent_spell( "Supernova"          );
   talents.flame_patch        = find_talent_spell( "Flame Patch"        );
   talents.conflagration      = find_talent_spell( "Conflagration"      );
@@ -6088,7 +6094,7 @@ void mage_t::init_spells()
   // Tier 50
   talents.overpowered        = find_talent_spell( "Overpowered"        );
   talents.time_anomaly       = find_talent_spell( "Time Anomaly"       );
-  talents.arcane_orb         = find_talent_spell( "Arcane Orb"         );
+  talents.enlightened        = find_talent_spell( "Enlightened"        );
   talents.kindling           = find_talent_spell( "Kindling"           );
   talents.pyroclasm          = find_talent_spell( "Pyroclasm"          );
   talents.meteor             = find_talent_spell( "Meteor"             );
@@ -7784,7 +7790,7 @@ void mage_t::vision_of_perfection_proc()
   }
   else
   {
-    primary->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, primary_duration );
+    primary->trigger( primary_duration );
     if ( secondary )
     {
       // For some reason, Frigid Grasp activates at a full duration.
@@ -7795,7 +7801,7 @@ void mage_t::vision_of_perfection_proc()
       }
       else
       {
-        secondary->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, secondary_duration );
+        secondary->trigger( secondary_duration );
       }
     }
     // TODO: This probably isn't intended

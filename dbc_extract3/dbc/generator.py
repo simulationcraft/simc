@@ -1761,7 +1761,8 @@ class SpellDataGenerator(DataGenerator):
           ( 272131, 5 ),	# Eye of Gul'dan - Eye of Gul'dan
           ( 267964, 0 ),	# new soul strike?
           ( 289367, 1 ),		# Pandemic Invocation Damage
-          ( 265391, 3 )     # Roaring Blaze Debuff
+          ( 265391, 3 ),     # Roaring Blaze Debuff
+          ( 266087, 3 )     # Rain of Chaos Buff
         ),
 
         # Monk:
@@ -1788,6 +1789,7 @@ class SpellDataGenerator(DataGenerator):
           ( 125174, 3 ), # Touch of Karma redirect buff
           ( 195651, 3 ), # Crosswinds Artifact trait trigger spell
           ( 196061, 3 ), # Crosswinds Artifact trait damage spell
+          ( 196742, 3 ), # Whirling Dragon Punch Buff
           ( 211432, 3 ), # Tier 19 4-piece DPS Buff
           ( 220358, 3 ), # Cyclone Strikes info
           ( 228287, 3 ), # Spinning Crane Kick's Mark of the Crane debuff
@@ -1796,7 +1798,7 @@ class SpellDataGenerator(DataGenerator):
           ( 252768, 3 ), # Tier 21 2-piece DPS effect
           ( 261682, 3 ), # Chi Burst Chi generation cap
           ( 285594, 3 ), # Good Karma Healing Spell
-		  ( 290461, 3 ), # Reverse Harm Damage
+		      ( 290461, 3 ), # Reverse Harm Damage
           # Legendary
           ( 213114, 3 ), # Hidden Master's Forbidden Touch buff
           # Azerite Traits
@@ -2311,7 +2313,12 @@ class SpellDataGenerator(DataGenerator):
             if not enabled_effects[effect.index]:
                 continue
 
-            trigger_spell = effect.trigger_spell
+            # Treat 'Override Action Spell' values as trigger spells for generation
+            if effect.type == 6 and effect.sub_type == 332:
+                trigger_spell = effect.base_value
+            else:
+                trigger_spell = effect.trigger_spell
+
             if trigger_spell > 0:
                 if trigger_spell in filter_list.keys():
                     continue

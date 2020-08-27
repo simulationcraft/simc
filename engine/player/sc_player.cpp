@@ -1506,9 +1506,8 @@ void player_t::init_base_stats()
     base.stats.attribute[ STAT_STRENGTH ] += util::floor( racials.heroic_presence->effectN( 1 ).average( this ) );
     base.stats.attribute[ STAT_AGILITY ] += util::floor( racials.heroic_presence->effectN( 2 ).average( this ) );
     base.stats.attribute[ STAT_INTELLECT ] += util::floor( racials.heroic_presence->effectN( 3 ).average( this ) );
-    // so is endurance. Can't tell if this is floored, ends in 0.055 @ L100. Assuming based on symmetry w/ heroic
-    // pres.
-    base.stats.attribute[ STAT_STAMINA ] += util::floor( racials.endurance->effectN( 1 ).average( this ) );
+    // Endurance seems to be using ceiling
+    base.stats.attribute[ STAT_STAMINA ] += util::ceil( racials.endurance->effectN( 1 ).average( this ) );
 
     base.spell_crit_chance        = dbc->spell_crit_base( type, level() );
     base.attack_crit_chance       = dbc->melee_crit_base( type, level() );
@@ -1547,7 +1546,7 @@ void player_t::init_base_stats()
     if ( base.distance < 1 )
       base.distance = 5;
 
-    // Armor Coefficient, based on level (6300 @ 120)
+    // Armor Coefficient, based on level (1054 @ 50; 2500 @ 60-63)
     base.armor_coeff = dbc->armor_mitigation_constant( level() );
     sim->print_debug( "{} base armor coefficient set to {}.", *this, base.armor_coeff );
 
@@ -6805,7 +6804,7 @@ void player_t::target_mitigation( school_e school, result_amount_type dmg_type, 
     if ( s -> action )
     {
       double armor  = s -> target_armor;
-      double resist = armor / ( armor + s -> action -> player -> current.armor_coeff );
+      double resist = armor / ( armor + s -> target-> base.armor_coeff );
       resist        = clamp( resist, 0.0, armor_cap );
       s -> result_amount *= 1.0 - resist;
     }

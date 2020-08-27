@@ -398,6 +398,8 @@ public:
     buff_t* starlord;  // talent
     buff_t* eclipse_solar;
     buff_t* eclipse_lunar;
+    buff_t* starsurge;  // stacking eclipse empowerment
+    buff_t* solstice;
     // Balance Legendaries
     buff_t* primordial_arcanic_pulsar;
     buff_t* oneths_free_starsurge;
@@ -624,6 +626,7 @@ public:
     const spell_data_t* owlkin_frenzy;
     const spell_data_t* sunfire_dmg;
     const spell_data_t* moonfire_dmg;
+    const spell_data_t* shooting_stars;
     const spell_data_t* shooting_stars_dmg;
     const spell_data_t* half_moon;
     const spell_data_t* full_moon;
@@ -696,7 +699,7 @@ public:
     const spell_data_t* twin_moons;
     const spell_data_t* stellar_flare;
 
-    const spell_data_t* shooting_stars;
+    const spell_data_t* solstice;
     const spell_data_t* fury_of_elune;
     const spell_data_t* new_moon;
 
@@ -1005,22 +1008,36 @@ void eclipse_handler_t::advance_eclipse()
   if ( !starfire_counter && state != IN_SOLAR )
   {
     p->buff.eclipse_solar->trigger();
+
+    if ( p->talent.solstice->ok() )
+      p->buff.solstice->trigger();
+
     if ( p->legendary.balance_of_all_things->ok() )
       p->buff.balance_of_all_things_nature->trigger();
+
     state = IN_SOLAR;
     reset_stacks();
+
     p->uptime.eclipse->update( true, p->sim->current_time() );
+
     return;
   }
 
   if ( !wrath_counter && state != IN_LUNAR )
   {
     p->buff.eclipse_lunar->trigger();
+
+    if ( p->talent.solstice->ok() )
+      p->buff.solstice->trigger();
+
     if ( p->legendary.balance_of_all_things->ok() )
       p->buff.balance_of_all_things_arcane->trigger();
+
     state = IN_LUNAR;
     reset_stacks();
+
     p->uptime.eclipse->update( true, p->sim->current_time() );
+
     return;
   }
 
@@ -1039,16 +1056,10 @@ void eclipse_handler_t::advance_eclipse()
 
 void eclipse_handler_t::cast_starsurge()
 {
-  int ext = as<int>( p->spec.starsurge->effectN( 2 ).base_value() + p->spec.starsurge_2->effectN( 1 ).base_value() );
+  p->buff.starsurge->trigger();
 
   if ( p->conduit.stellar_inspiration->ok() && p->rng().roll( p->conduit.stellar_inspiration->effectN( 1 ).percent() ) )
-    ext += as<int>( p->conduit.stellar_inspiration->effectN( 2 ).base_value() );
-
-  if ( state == IN_LUNAR && p->buff.eclipse_lunar->check() )
-    p->buff.eclipse_lunar->extend_duration( p, timespan_t::from_seconds( ext ) );
-
-  if ( state == IN_SOLAR && p->buff.eclipse_solar->check() )
-    p->buff.eclipse_solar->extend_duration( p, timespan_t::from_seconds( ext ) );
+    p->buff.starsurge->trigger();
 }
 
 void eclipse_handler_t::trigger_both( timespan_t d = 0_ms )
@@ -1056,13 +1067,18 @@ void eclipse_handler_t::trigger_both( timespan_t d = 0_ms )
   state = IN_BOTH;
   reset_stacks();
 
-  if ( p->legendary.balance_of_all_things->ok() ) {
+  if ( p->legendary.balance_of_all_things->ok() )
+  {
     p->buff.balance_of_all_things_arcane->trigger();
     p->buff.balance_of_all_things_nature->trigger();
   }
 
-  p->buff.eclipse_lunar->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, d );
-  p->buff.eclipse_solar->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, d );
+  if ( p->talent.solstice->ok() )
+    p->buff.solstice->trigger();
+
+  p->buff.starsurge->expire();
+  p->buff.eclipse_lunar->trigger( d );
+  p->buff.eclipse_solar->trigger( d );
 
   p->uptime.eclipse->update( true, p->sim->current_time() );
 }
@@ -1167,9 +1183,27 @@ struct force_of_nature_t : public pet_t
 
   force_of_nature_t( sim_t* sim, druid_t* owner ) : pet_t( sim, owner, "treant", true /*GUARDIAN*/, true )
   {
-    owner_coeff.ap_from_sp = 0.6;  // not confirmed
-    resource_regeneration  = regen_type::DISABLED;
-    main_hand_weapon.type  = WEAPON_BEAST;
+    // Treants have base weapon damage + ap from player's sp.
+    // @50-57: 3 base + 0.6 SP
+    //    @58: 3 base + 0.375 SP (needs more testing)
+    //    @59: 3 base + 0.333 SP (needs more testing)
+    //    @60: 3.5 base + 0.28 SP
+
+    owner_coeff.ap_from_sp = 0.6;
+    main_hand_weapon.min_dmg = main_hand_weapon.max_dmg = 3.0;
+
+    if ( o()->level() == 58 )
+      owner_coeff.ap_from_sp = 0.375;
+    else if ( o()->level() == 59 )
+      owner_coeff.ap_from_sp = 0.333;
+    else if ( o()->level() == 60 )
+    {
+      owner_coeff.ap_from_sp = 0.28;
+      main_hand_weapon.min_dmg = main_hand_weapon.max_dmg = 3.5;
+    }
+
+    resource_regeneration = regen_type::DISABLED;
+    main_hand_weapon.type = WEAPON_BEAST;
   }
 
   void init_action_list() override
@@ -1406,6 +1440,39 @@ struct cat_form_t : public druid_buff_t<buff_t>
   }
 };
 
+struct eclipse_buff_t : public druid_buff_t<buff_t>
+{
+  double empowerment;
+
+  eclipse_buff_t( druid_t& p, util::string_view n, const spell_data_t* s ) : base_t( p, n, s ), empowerment( 0.0 )
+  {
+    add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+    set_default_value( s->effectN( 2 ).percent() * ( 1.0 + p.conduit.umbral_intensity.percent() ) );
+
+    if ( s == p.spec.eclipse_solar )
+      empowerment = p.spec.starsurge->effectN( 2 ).percent() + p.spec.starsurge_2->effectN( 1 ).percent();
+    else if ( s == p.spec.eclipse_lunar )
+      empowerment = p.spec.starsurge->effectN( 3 ).percent() + p.spec.starsurge_2->effectN( 2 ).percent();
+  }
+
+  double value() override
+  {
+    double v = base_t::value();
+
+    v += empowerment * p().buff.starsurge->stack();
+
+    return v;
+  }
+
+  void expire_override( int s, timespan_t d ) override
+  {
+    base_t::expire_override( s, d );
+
+    p().eclipse_handler.advance_eclipse();
+    p().buff.starsurge->expire();
+  }
+};
+
 //Innervate Buff ============================================================
 struct innervate_buff_t : public druid_buff_t<buff_t>
 {
@@ -1434,7 +1501,7 @@ struct tigers_fury_buff_t : public druid_buff_t<buff_t>
   void start( int stacks, double value, timespan_t duration ) override
   {
     if ( p().azerite.jungle_fury.enabled() )
-      p().buff.jungle_fury->trigger( 1, DEFAULT_VALUE(), 1.0, duration );
+      p().buff.jungle_fury->trigger( duration );
 
     base_t::start( stacks, value, duration );
   }
@@ -1532,7 +1599,7 @@ struct kindred_empowerment_buff_t : public druid_buff_t<buff_t>
   double cumul_pool;
 
   kindred_empowerment_buff_t( druid_t& p )
-    : base_t( p, "kindred_empowerment", p.covenant.kindred_empowerment ), pool( 1.0 )
+    : base_t( p, "kindred_empowerment", p.covenant.kindred_empowerment ), pool( 1.0 ), cumul_pool( 0.0 )
   {
     set_refresh_behavior( buff_refresh_behavior::DURATION );
   }
@@ -1540,7 +1607,7 @@ struct kindred_empowerment_buff_t : public druid_buff_t<buff_t>
   void expire_override( int s, timespan_t d ) override
   {
     druid_buff_t<buff_t>::expire_override( s, d );
-    pool       = 0.0;
+    pool       = 1.0;
     cumul_pool = 0.0;
   }
 
@@ -1563,8 +1630,8 @@ struct kindred_empowerment_buff_t : public druid_buff_t<buff_t>
     if ( pool <= 1 )  // minimum pool value of 1
       return;
 
-    double amount = s->result_amount * p().covenant.kindred_empowerment->effectN( 2 ).percent();
-    amount        = std::min( amount, pool - 1 );
+    double amount = std::min( s->result_amount * p().covenant.kindred_empowerment->effectN( 2 ).percent(), pool - 1);
+
     if ( amount == 0 )
       return;
 
@@ -1581,7 +1648,7 @@ struct kindred_empowerment_buff_t : public druid_buff_t<buff_t>
 
   void snapshot()
   {
-    if ( cumul_pool )
+    if ( cumul_pool > 0 )
     {
       auto partner = p().active.kindred_empowerment_partner;
       partner->set_target( p().target );
@@ -1724,7 +1791,7 @@ public:
   // 4: Add Percent Modifier to Spell Cooldown
   // 5: Add Percent Modifier to Spell Resource Cost
   // 6: Add Flat Modifier to Spell Critical Chance
-  void parse_buff_effects( buff_t* buff, std::initializer_list<const spell_data_t*> spells = {} )
+  void parse_buff_effects( buff_t* buff, std::initializer_list<const spell_data_t*> spells = {}, unsigned ignore = 0 )
   {
     if ( !buff )
       return;
@@ -1733,6 +1800,9 @@ public:
 
     for ( size_t i = 1; i <= s_data->effect_count(); i++ )
     {
+      if ( i == as<size_t>( ignore ) )
+        continue;
+
       auto eff     = &s_data->effectN( i );
       double val   = eff->percent();
       bool mastery = false;
@@ -1845,12 +1915,10 @@ public:
     parse_buff_effects( p()->buff.eclipse_lunar,
                         { p()->mastery.total_eclipse,
                           p()->spec.eclipse_2,
-                          p()->talent.soul_of_the_forest_moonkin } );
+                          p()->talent.soul_of_the_forest_moonkin }, 2u );
     parse_buff_effects( p()->buff.eclipse_solar,
                         { p()->mastery.total_eclipse,
-                          p()->spec.eclipse_2,
-                          p()->talent.soul_of_the_forest_moonkin,
-                          p()->conduit.umbral_intensity } );
+                          p()->spec.eclipse_2 }, 2u );
 
     // Guardian
     parse_buff_effects( p()->buff.berserk_bear,
@@ -2453,13 +2521,11 @@ private:
 public:
   using base_t = druid_spell_base_t<Base>;
 
-  bool cat_form_gcd;
   bool reset_melee_swing;  // TRUE(default) to reset swing timer on execute (as most cast time spells do)
 
   druid_spell_base_t( util::string_view n, druid_t* player, const spell_data_t* s = spell_data_t::nil() )
-    : ab( n, player, s ),
-      cat_form_gcd( ab::data().affected_by( player->spec.cat_form->effectN( 4 ) ) ),
-      reset_melee_swing( true ) {}
+    : ab( n, player, s ), reset_melee_swing( true )
+  {}
 
   timespan_t gcd() const override
   {
@@ -2467,9 +2533,6 @@ public:
 
     if ( g == timespan_t::zero() )
       return g;
-
-    if ( cat_form_gcd && ab::p()->buff.cat_form->check() )
-      g += ab::p()->spec.cat_form->effectN( 4 ).time_value();
 
     g *= ab::composite_haste();
 
@@ -2613,6 +2676,24 @@ public:
     ab::execute();
   }
 
+  void proc_shooting_stars( player_t* t )
+  {
+    if ( !p()->spec.shooting_stars->ok() || !p()->active.shooting_stars )
+      return;
+
+    double chance = p()->spec.shooting_stars->effectN( 1 ).percent();
+    chance /= std::sqrt( p()->get_active_dots( internal_id ) );
+
+    if ( p()->buff.solstice->up() )
+      chance *= 1.0 + p()->buff.solstice->data().effectN( 1 ).percent();
+
+    if ( rng().roll( chance ) )
+    {
+      p()->active.shooting_stars->set_target( t );
+      p()->active.shooting_stars->execute();
+    }
+  }
+
   virtual void trigger_astral_power_consumption_effects()
   {
     if ( p()->legendary.primordial_arcanic_pulsar->ok() )
@@ -2641,7 +2722,7 @@ public:
             p()->buff.eclipse_solar->extend_duration( p(), pulsar_dur );
           }
           else
-            proc_buff->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, pulsar_dur );
+            proc_buff->trigger( pulsar_dur );
 
           // hardcoded 12AP because 9s / 20s * 30AP = 13.5AP - 1.5 Shadowlands discount
           p()->resource_gain( RESOURCE_ASTRAL_POWER, 12, p()->gain.primordial_arcanic_pulsar );
@@ -2663,9 +2744,7 @@ public:
         double ap             = p()->resources.current[ RESOURCE_ASTRAL_POWER ];
 
         ap += composite_energize_amount( state );
-        ap += p()->talent.shooting_stars->ok()
-                  ? p()->spec.shooting_stars_dmg->effectN( 2 ).resource( RESOURCE_ASTRAL_POWER )
-                  : 0;
+        ap += p()->spec.shooting_stars_dmg->effectN( 2 ).resource( RESOURCE_ASTRAL_POWER );
         ap += p()->talent.natures_balance->ok() ? std::ceil( time_to_execute / 2_s ) : 0;
 
         action_state_t::release( state );
@@ -2720,7 +2799,7 @@ struct moonfire_t : public druid_spell_t
       else
         energize_type = action_energize::NONE;
 
-      if ( p->talent.shooting_stars->ok() && !p->active.shooting_stars )
+      if ( p->spec.shooting_stars->ok() && !p->active.shooting_stars )
         p->active.shooting_stars = new shooting_stars_t( p );
 
       if ( p->talent.galactic_guardian->ok() )
@@ -2740,7 +2819,8 @@ struct moonfire_t : public druid_spell_t
 
       if ( p->talent.twin_moons->ok() )
       {
-        aoe += as<int>( p->talent.twin_moons->effectN( 1 ).base_value() );
+        // The increased target number has been removed from spell data
+        aoe += 1;
         // Twin Moons seems to fire off another MF spell - sometimes concurrently, sometimes up to 100ms later. While
         // there are very limited cases where this could have an effect, those cases do exist. Possibly worth
         // investigating further in the future.
@@ -2803,16 +2883,8 @@ struct moonfire_t : public druid_spell_t
     void tick( dot_t* d ) override
     {
       druid_spell_t::tick( d );
-      double dr_mult = 1.0 / std::sqrt( p()->get_active_dots( internal_id ) );
 
-      if ( p()->talent.shooting_stars->ok() )
-      {
-        if ( rng().roll( p()->talent.shooting_stars->effectN( 1 ).percent() * dr_mult ) )
-        {
-          p()->active.shooting_stars->target = d->target;
-          p()->active.shooting_stars->execute();
-        }
-      }
+      proc_shooting_stars( d->target );
 
       if ( !p()->azerite.power_of_the_moon.ok() )
         return;
@@ -2843,7 +2915,7 @@ struct moonfire_t : public druid_spell_t
 
     size_t available_targets( std::vector<player_t*>& tl ) const override
     {
-      /* When Lady and the Child is active, this is an AoE action meaning it will impact onto the
+      /* When Twin Moons is active, this is an AoE action meaning it will impact onto the
       first 2 targets in the target list. Instead, we want it to impact on the target of the action
       and 1 additional, so we'll override the target_list to make it so. */
       if ( is_aoe() )
@@ -2862,7 +2934,7 @@ struct moonfire_t : public druid_spell_t
 
         for ( size_t i = 0; i < full_list.size(); i++ )
         {
-          if ( full_list[ i ] == target )
+          if ( full_list[ i ] == target || full_list[i]->debuffs.invulnerable->up() )
             continue;
 
           if ( td( full_list[ i ] )->dots.moonfire->is_ticking() )
@@ -2939,6 +3011,7 @@ struct moonfire_t : public druid_spell_t
     {
       energize_resource = RESOURCE_ASTRAL_POWER;
       energize_amount   = player->spec.astral_power->effectN( 3 ).resource( RESOURCE_ASTRAL_POWER );
+      energize_type = action_energize::ON_HIT;
     }
     else
       energize_type = action_energize::NONE;
@@ -3799,62 +3872,6 @@ struct lunar_inspiration_t : public cat_attack_t
     gcd_type = gcd_haste_type::ATTACK_HASTE;
   }
 
-  size_t available_targets( std::vector<player_t*>& tl ) const override
-  {
-    /* When Lady and the Child is active, this is an AoE action meaning it will impact onto the
-    first 2 targets in the target list. Instead, we want it to impact on the target of the action
-    and 1 additional, so we'll override the target_list to make it so. */
-    if ( is_aoe() )
-    {
-      // Get the full target list.
-      cat_attack_t::available_targets( tl );
-      std::vector<player_t*> full_list = tl;
-
-      tl.clear();
-      // Add the target of the action.
-      tl.push_back( target );
-
-      // Loop through the full list and sort into afflicted/unafflicted.
-      std::vector<player_t*> afflicted;
-      std::vector<player_t*> unafflicted;
-
-      for ( size_t i = 0; i < full_list.size(); i++ )
-      {
-        if ( full_list[ i ] == target )
-          continue;
-
-        if ( td( full_list[ i ] )->dots.moonfire->is_ticking() )
-          afflicted.push_back( full_list[ i ] );
-        else
-          unafflicted.push_back( full_list[ i ] );
-      }
-
-      // Fill list with random unafflicted targets.
-      while ( tl.size() < as<size_t>( aoe ) && unafflicted.size() > 0 )
-      {
-        // Random target
-        size_t i = (size_t)p()->rng().range( 0, (double)unafflicted.size() );
-
-        tl.push_back( unafflicted[ i ] );
-        unafflicted.erase( unafflicted.begin() + i );
-      }
-
-      // Fill list with random afflicted targets.
-      while ( tl.size() < as<size_t>( aoe ) && afflicted.size() > 0 )
-      {
-        // Random target
-        size_t i = (size_t)p()->rng().range( 0, (double)afflicted.size() );
-
-        tl.push_back( afflicted[ i ] );
-        afflicted.erase( afflicted.begin() + i );
-      }
-
-      return tl.size();
-    }
-
-    return cat_attack_t::available_targets( tl );
-  }
-
   double bonus_ta( const action_state_t* s ) const override
   {
     double ta = cat_attack_t::bonus_ta( s );
@@ -3974,7 +3991,7 @@ struct rake_t : public cat_attack_t
         return;
 
       p()->proc.blood_mist->occur();
-      p()->buff.berserk_cat->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, timespan_t::from_seconds( 6 ) );
+      p()->buff.berserk_cat->trigger( 6_s );
     }
   };
 
@@ -4225,7 +4242,7 @@ struct savage_roar_t : public cat_attack_t
 
     cat_attack_t::execute();
 
-    p()->buff.savage_roar->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, d );
+    p()->buff.savage_roar->trigger( d );
   }
 
   bool ready() override
@@ -4407,7 +4424,7 @@ struct tigers_fury_t : public cat_attack_t
   {
     cat_attack_t::execute();
 
-    p()->buff.tigers_fury->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, duration );
+    p()->buff.tigers_fury->trigger( duration );
 
     if ( p()->legendary.eye_of_fearful_symmetry->ok() )
       p()->buff.eye_of_fearful_symmetry->trigger();
@@ -4977,6 +4994,16 @@ struct regrowth_t : public druid_heal_t
     }
   }
 
+  timespan_t gcd() const override
+  {
+    timespan_t g = druid_heal_t::gcd();
+
+    if ( p()->buff.cat_form->check() )
+      g -= p()->query_aura_effect( p()->spec.cat_form, A_ADD_FLAT_MODIFIER, P_GCD, &data() )->time_value();
+
+    return g;
+  }
+
   void consume_resource() override
   {
     // Prevent from consuming Omen of Clarity unnecessarily
@@ -5439,6 +5466,16 @@ struct dash_t : public druid_spell_t
     ignore_false_positive         = true;
   }
 
+  timespan_t gcd() const override
+  {
+    timespan_t g = druid_spell_t::gcd();
+
+    if ( p()->buff.cat_form->check() )
+      g *= 1.0 + p()->query_aura_effect( &p()->buff.cat_form->data(), A_ADD_PCT_MODIFIER, P_GCD, &data() )->percent();
+
+    return g;
+  }
+
   void execute() override
   {
     druid_spell_t::execute();
@@ -5461,6 +5498,16 @@ struct tiger_dash_t : public druid_spell_t
 
     harmful = may_crit = may_miss = false;
     ignore_false_positive         = true;
+  }
+
+  timespan_t gcd() const override
+  {
+    timespan_t g = druid_spell_t::gcd();
+
+    if ( p()->buff.cat_form->check() )
+      g *= 1.0 + p()->query_aura_effect( &p()->buff.cat_form->data(), A_ADD_PCT_MODIFIER, P_GCD, &data() )->percent();
+
+    return g;
   }
 
   void execute() override
@@ -5894,7 +5941,7 @@ struct ironfur_t : public druid_spell_t
   {
     druid_spell_t::execute();
 
-    p()->buff.ironfur->trigger( 1, buff_t::DEFAULT_VALUE(), -1, composite_buff_duration() );
+    p()->buff.ironfur->trigger( composite_buff_duration() );
 
     if ( p()->buff.guardian_of_elune->up() )
       p()->buff.guardian_of_elune->expire();
@@ -5903,7 +5950,7 @@ struct ironfur_t : public druid_spell_t
       p()->buff.guardians_wrath->expire();
 
     if ( p()->azerite.layered_mane.ok() && rng().roll( p()->azerite.layered_mane.spell()->effectN( 2 ).percent() ) )
-      p()->buff.ironfur->trigger( 1, buff_t::DEFAULT_VALUE(), -1, composite_buff_duration() );
+      p()->buff.ironfur->trigger( composite_buff_duration() );
   }
 };
 
@@ -6027,11 +6074,8 @@ struct starfire_t : public druid_spell_t
   {
     double cam = druid_spell_t::composite_aoe_multiplier( state );
 
-    if ( state->target != target && p()->specialization() == DRUID_BALANCE && p()->buff.eclipse_lunar->up() )
-    {
-      cam *= 1.0 + p()->spec.eclipse_lunar->effectN( 2 ).percent() *
-                     ( 1.0 + p()->conduit.umbral_intensity->effectN( 1 ).percent() );
-    }
+    if ( state->target != target && p()->buff.eclipse_lunar->up() )
+      cam *= 1.0 + p()->buff.eclipse_lunar->value();
 
     return cam;
   }
@@ -6082,7 +6126,7 @@ struct sunfire_t : public druid_spell_t
 
     sunfire_damage_t( druid_t* p ) : druid_spell_t( "sunfire_dmg", p, p->spec.sunfire_dmg ), sunfire_action_id( 0 )
     {
-      if ( p->talent.shooting_stars->ok() && !p->active.shooting_stars )
+      if ( p->spec.shooting_stars->ok() && !p->active.shooting_stars )
         p->active.shooting_stars = new shooting_stars_t( p );
 
       dual = background   = true;
@@ -6111,16 +6155,8 @@ struct sunfire_t : public druid_spell_t
     void tick( dot_t* d ) override
     {
       druid_spell_t::tick( d );
-      double dr_mult = 1.0 / std::sqrt( p()->get_active_dots( internal_id ) );
 
-      if ( p()->talent.shooting_stars->ok() )
-      {
-        if ( rng().roll( p()->talent.shooting_stars->effectN( 1 ).percent() * dr_mult ) )
-        {
-          p()->active.shooting_stars->target = d->target;
-          p()->active.shooting_stars->execute();
-        }
-      }
+      proc_shooting_stars( d->target );
     }
 
     double bonus_ta( const action_state_t* s ) const override
@@ -6244,7 +6280,7 @@ struct skull_bash_t : public druid_spell_t
     : druid_spell_t( "skull_bash", player, player->find_specialization_spell( "Skull Bash" ), options_str )
   {
     may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = false;
-    ignore_false_positive = true;
+    ignore_false_positive = use_off_gcd = true;
   }
 
   bool target_ready( player_t* candidate_target ) override
@@ -6259,6 +6295,7 @@ struct skull_bash_t : public druid_spell_t
 struct wrath_t : public druid_spell_t
 {
   unsigned count;
+  double gcd_mul;
 
   wrath_t( druid_t* player, const std::string& options_str, free_cast_e free = free_cast_e::NONE )
     : druid_spell_t( player->free_cast_string( "wrath", free ), player, player->find_affinity_spell( "Wrath" ),
@@ -6267,6 +6304,8 @@ struct wrath_t : public druid_spell_t
     free_cast       = free;
     form_mask       = NO_FORM | MOONKIN_FORM;
     energize_amount = player->spec.astral_power->effectN( 2 ).resource( RESOURCE_ASTRAL_POWER );
+    gcd_mul =
+        player->query_aura_effect( &player->buff.eclipse_solar->data(), A_ADD_PCT_MODIFIER, P_GCD, &data() )->percent();
   }
 
   void init_finished() override
@@ -6291,6 +6330,29 @@ struct wrath_t : public druid_spell_t
     }
   }
 
+  double composite_energize_amount( const action_state_t* s ) const override
+  {
+    double e = druid_spell_t::composite_energize_amount( s );
+
+    if ( energize_resource_() == RESOURCE_ASTRAL_POWER && p()->talent.soul_of_the_forest_moonkin->ok() &&
+         p()->buff.eclipse_solar->check() )
+    {
+      e *= 1.0 + p()->talent.soul_of_the_forest_moonkin->effectN( 1 ).percent();
+    }
+
+    return e;
+  }
+
+  double composite_target_da_multiplier( player_t* t ) const override
+  {
+    double tdm = druid_spell_t::composite_target_da_multiplier( t );
+
+    if ( p()->buff.eclipse_solar->up() )
+      tdm *= 1.0 + p()->buff.eclipse_solar->value();
+
+    return tdm;
+  }
+
   timespan_t travel_time() const override
   {
     if ( !count )
@@ -6307,7 +6369,7 @@ struct wrath_t : public druid_spell_t
 
     // Move this into parse_buff_effects if it becomes more prevalent. Currently only used for wrath & dash
     if ( p()->buff.eclipse_solar->up() )
-      g *= 1.0 + p()->spec.eclipse_solar->effectN( 5 ).percent();
+      g *= 1.0 + gcd_mul;
 
     g = std::max( min_gcd, g );
 
@@ -6474,10 +6536,10 @@ struct starfall_t : public druid_spell_t
     {
       int ext = as<int>( p()->spec.starfall_2->effectN( 1 ).base_value() );
 
-      if ( free_cast != free_cast_e::LYCARAS && free_cast != free_cast_e::CONVOKE && p()->conduit.stellar_inspiration->ok() &&
-           rng().roll( p()->conduit.stellar_inspiration->effectN( 1 ).percent() ) )
+      if ( free_cast != free_cast_e::LYCARAS && free_cast != free_cast_e::CONVOKE &&
+           p()->conduit.stellar_inspiration->ok() && rng().roll( p()->conduit.stellar_inspiration.percent() ) )
       {
-        ext += as<int>( p()->conduit.stellar_inspiration->effectN( 2 ).base_value() );
+        ext *= 2;
       }
 
       std::vector<player_t*>& tl = target_list();
@@ -6612,7 +6674,7 @@ struct starsurge_t : public druid_spell_t
         if ( proc_buff->check() )
           proc_buff->extend_duration( p(), pulsar_dur );
         else
-          proc_buff->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, pulsar_dur );
+          proc_buff->trigger( pulsar_dur );
 
         // hardcoded 12AP because 6s / 20s * 40AP = 12AP
         p()->resource_gain( RESOURCE_ASTRAL_POWER, 12, p()->gain.arcanic_pulsar );
@@ -6857,7 +6919,7 @@ struct force_of_nature_t : public druid_spell_t
   {
     parse_options( options );
     harmful = may_crit = false;
-    summon_duration    = p->find_spell( 248280 )->duration() + timespan_t::from_millis( 1 );
+    summon_duration    = p->talent.force_of_nature->effectN( 2 ).trigger()->duration() + 1_ms;
     energize_amount    = p->talent.force_of_nature->effectN( 5 ).resource( RESOURCE_ASTRAL_POWER );
   }
 
@@ -6951,7 +7013,7 @@ struct convoke_the_spirits_t : public druid_spell_t
     if ( !conv_sf )
       conv_sf = new starfall_t( player, options_str, free_cast_e::CONVOKE );
 
-    conv_mf = player->find_action( "moonfire_convoke" );
+    conv_mf = player->find_action( "moonfire" );
     if ( !conv_mf )
       conv_mf = new moonfire_t( player, options_str, free_cast_e::CONVOKE );
 
@@ -6959,7 +7021,7 @@ struct convoke_the_spirits_t : public druid_spell_t
     add_child( conv_ss );
     add_child( conv_wr );
     add_child( conv_sf );
-    add_child( conv_mf );
+    //add_child( conv_mf );
 
     // Feral
     // Guardian
@@ -7320,7 +7382,10 @@ struct adaptive_swarm_t : public druid_spell_t
       // last_tick() is called via dot_t::cancel() when a new swarm CLIPs an existing swarm. As dot_t::last_tick() is
       // called before dot_t::reset(), check the remaining time on the dot to see if we're dealing with a true last_tick
       // (and thus need to check for a new jump) or just a refresh.
-      if ( d->remains() > 0_ms )
+
+      // NOTE: if demise() is called on the target d->remains() has time left, so assume that a target that is sleeping
+      // with time remaining has been demised()'d and jump to a new target
+      if ( d->remains() > 0_ms && !d->target->is_sleeping() )
         return;
 
       auto tar = swarm->new_swarm_target( d, other, other->is_heal );
@@ -7376,6 +7441,8 @@ struct adaptive_swarm_t : public druid_spell_t
     damage->stats = stats;
     heal->other   = damage;
     add_child( damage );
+
+    base_costs[ RESOURCE_MANA ] = 0.0;  // remove mana cost so we don't need to enable mana regen
   }
 
   void execute() override
@@ -7741,7 +7808,7 @@ void druid_t::init_spells()
   talent.stellar_drift           = find_talent_spell( "Stellar Drift" );
   talent.twin_moons              = find_talent_spell( "Twin Moons" );
   talent.stellar_flare           = find_talent_spell( "Stellar Flare" );
-  talent.shooting_stars          = find_talent_spell( "Shooting Stars" );
+  talent.solstice                = find_talent_spell( "Solstice" );
   talent.fury_of_elune           = find_talent_spell( "Fury of Elune" );
   talent.new_moon                = find_talent_spell( "New Moon" );
 
@@ -7862,13 +7929,14 @@ void druid_t::init_spells()
   spec.eclipse_lunar          = find_spell( 48518 );
   spec.sunfire_dmg            = check_spell( find_affinity_spell( "Sunfire" )->ok(), 164815 );  // dot debuff for sunfire
   spec.moonfire_dmg           = check_spell( find_class_spell( "Moonfire" )->ok(), 164812 );    // dot debuff for moonfire
-  spec.starsurge              = find_spell( 78674 );  // do NOT use find_affinity_spell. eclipse extension is held within the balance version.
-  spec.starsurge_2            = find_rank_spell( "Starsurge", "Rank 2" );  // Adds more Eclipse extension
+  spec.starsurge              = find_spell( 78674 );  // do NOT use find_affinity_spell. eclipse buff is held within the balance version.
+  spec.starsurge_2            = find_rank_spell( "Starsurge", "Rank 2" );  // Adds bigger eclipse buff
   spec.starfall               = find_affinity_spell( "Starfall" );
   spec.starfall_2             = find_rank_spell( "Starfall", "Rank 2" );
   spec.starfall_dmg           = check_spell( spec.starfall->ok(), 191037 );
   spec.stellar_drift          = check_spell( talent.stellar_drift->ok(), 202461 );   // stellar drift mobility buff
-  spec.shooting_stars_dmg     = check_spell( talent.shooting_stars->ok(), 202497 );  // shooting stars damage
+  spec.shooting_stars         = find_specialization_spell( "Shooting Stars" );
+  spec.shooting_stars_dmg     = check_spell( spec.shooting_stars->ok(), 202497 );  // shooting stars damage
   spec.fury_of_elune          = check_spell( talent.fury_of_elune->ok(), 211545 );   // fury of elune tick damage
   spec.half_moon              = check_spell( talent.new_moon->ok(), 274282 );
   spec.full_moon              = check_spell( talent.new_moon->ok() || covenant.night_fae->ok(), 274283 );
@@ -8200,7 +8268,7 @@ void druid_t::create_buffs()
   buff.celestial_alignment = make_buff( this, "celestial_alignment", spec.celestial_alignment )
     ->set_cooldown( timespan_t::zero() )
     ->add_invalidate( CACHE_CRIT_CHANCE )
-    ->set_duration( spec.celestial_alignment->duration() + conduit.precise_alignment->effectN( 1 ).time_value() )
+    ->set_duration( spec.celestial_alignment->duration() + conduit.precise_alignment.time_value() )
     ->set_stack_change_callback( [this] ( buff_t* b, int, int new_ ) {
       if ( new_ )
       {
@@ -8219,7 +8287,7 @@ void druid_t::create_buffs()
     ->set_cooldown( timespan_t::zero() )
     ->add_invalidate( CACHE_HASTE )
     ->add_invalidate( CACHE_CRIT_CHANCE )
-    ->set_duration( talent.incarnation_moonkin->duration() + conduit.precise_alignment->effectN( 1 ).time_value() )
+    ->set_duration( talent.incarnation_moonkin->duration() + conduit.precise_alignment.time_value() )
     ->set_stack_change_callback( [this] ( buff_t* b, int, int new_ ) {
       if ( new_ )
       {
@@ -8250,21 +8318,16 @@ void druid_t::create_buffs()
     ->set_period( 888_ms )  // this has a random interval in game so estimate the average here
     ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
 
-  buff.eclipse_solar = make_buff( this, "eclipse_solar", spec.eclipse_solar )
-    ->set_duration( spec.eclipse_solar->duration() + talent.soul_of_the_forest_moonkin->effectN( 2 ).time_value() )
-    ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
-    ->set_stack_change_callback( [this]( buff_t*, int /* old_ */, int new_ ) {
-      if ( !new_ )
-        this->eclipse_handler.advance_eclipse();
-    } );
+  buff.eclipse_solar = new eclipse_buff_t( *this, "eclipse_solar", spec.eclipse_solar );
 
-  buff.eclipse_lunar = make_buff( this, "eclipse_lunar", spec.eclipse_lunar )
-    ->set_duration( spec.eclipse_lunar->duration() + talent.soul_of_the_forest_moonkin->effectN( 2 ).time_value() )
-    ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
-    ->set_stack_change_callback( [this]( buff_t*, int /* old_ */, int new_ ) {
-      if ( !new_ )
-        this->eclipse_handler.advance_eclipse();
-    } );
+  buff.eclipse_lunar = new eclipse_buff_t( *this, "eclipse_lunar", spec.eclipse_lunar );
+
+  buff.starsurge = make_buff( this, "starsurge_empowerment" )
+    ->set_duration( 0_ms )
+    ->set_cooldown( 0_ms )
+    ->set_max_stack( 30 );  // Arbitrary cap. Current max eclipse duration is 45s (15s base + 30s inc). Adjust if needed.
+
+  buff.solstice = make_buff( this, "solstice", talent.solstice->effectN( 1 ).trigger() );
 
   // Balance Legendaries
   buff.primordial_arcanic_pulsar = make_buff( this, "primordial_arcanic_pulsar", find_spell( 338825 ) );
@@ -9510,9 +9573,7 @@ std::unique_ptr<expr_t> druid_t::create_expression( util::string_view name_str )
           action_state_t* state = action->get_state();
           double ap             = resources.current[ RESOURCE_ASTRAL_POWER ];
           ap += action->composite_energize_amount( state );
-          ap += talent.shooting_stars->ok()
-                    ? spec.shooting_stars_dmg->effectN( 2 ).resource( RESOURCE_ASTRAL_POWER )
-                    : 0;
+          ap += spec.shooting_stars_dmg->effectN( 2 ).resource( RESOURCE_ASTRAL_POWER );
           ap += talent.natures_balance->ok() ? std::ceil( action->time_to_execute / 2_s ) : 0;
           action_state_t::release( state );
           return ap <=
@@ -10044,7 +10105,7 @@ void druid_t::vision_of_perfection_proc()
   if ( vp_buff->check() )
     vp_buff->extend_duration( this, vp_dur );
   else
-    vp_buff->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, vp_dur );
+    vp_buff->trigger( vp_dur );
 
   proc.vision_of_perfection->occur();
 

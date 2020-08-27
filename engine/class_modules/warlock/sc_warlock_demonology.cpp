@@ -289,6 +289,7 @@ struct call_dreadstalkers_t : public demonology_spell_t
     parse_options( options_str );
     may_crit           = false;
     dreadstalker_count = as<int>( data().effectN( 1 ).base_value() );
+    base_execute_time += p->spec.call_dreadstalkers_2->effectN( 1 ).time_value();
   }
 
   double cost() const override
@@ -338,10 +339,11 @@ struct implosion_t : public demonology_spell_t
 
     implosion_aoe_t( warlock_t* p ) : demonology_spell_t( "implosion_aoe", p, p->find_spell( 196278 ) )
     {
-      aoe        = -1;
-      dual       = true;
-      background = true;
-      callbacks  = false;
+      aoe                = -1;
+      dual               = true;
+      background         = true;
+      callbacks          = false;
+      reduced_aoe_damage = true;
 
       p->spells.implosion_aoe = this;
     }
@@ -446,6 +448,10 @@ struct summon_demonic_tyrant_t : public demonology_spell_t
     p()->warlock_pet_list.demonic_tyrants.spawn( data().duration() );
 
     p()->buffs.demonic_power->trigger();
+
+    if ( p()->spec.summon_demonic_tyrant_2->ok() )
+      p()->resource_gain( RESOURCE_SOUL_SHARD, p()->spec.summon_demonic_tyrant_2->effectN( 1 ).base_value(),
+                          p()->gains.summon_demonic_tyrant );
 
     // BFA - Azerite
     if ( p()->azerite.baleful_invocation.ok() )
@@ -1075,6 +1081,11 @@ void warlock_t::init_spells_demonology()
 {
   spec.demonology                    = find_specialization_spell( 137044 );
   mastery_spells.master_demonologist = find_mastery_spell( WARLOCK_DEMONOLOGY );
+
+  spec.call_dreadstalkers_2    = find_specialization_spell( 334727 );
+  spec.fel_firebolt_2          = find_specialization_spell( 334591 );
+  spec.summon_demonic_tyrant_2 = find_specialization_spell( 334585 );
+
   // spells
   // Talents
   talents.dreadlash           = find_talent_spell( "Dreadlash" );
@@ -1100,6 +1111,18 @@ void warlock_t::init_spells_demonology()
   azerite.explosive_potential = find_azerite_spell( "Explosive Potential" );
   azerite.baleful_invocation  = find_azerite_spell( "Baleful Invocation" );
 
+  // Legendaries
+  legendary.balespiders_burning_core       = find_runeforge_legendary( "Balespider's Burning Core" );
+  legendary.forces_of_horned_nightmare     = find_runeforge_legendary( "Forces of Horned Nighhtmare" );
+  legendary.grim_inquisitors_dread_calling = find_runeforge_legendary( "Grim Inquisitor's Dread Calling" );
+  legendary.implosive_potential            = find_runeforge_legendary( "Implosive Potential" );
+
+  // Conduits
+  conduit.borne_of_blood       = find_conduit_spell( "Borne of Blood" );
+  conduit.carnivorous_stalkers = find_conduit_spell( "Carnivorous Stalkers" );
+  conduit.fel_commando         = find_conduit_spell( "Fel Commando" );
+  conduit.tyrants_soul         = find_conduit_spell( "Tyrant's Soul" );
+
   active.summon_random_demon = new actions_demonology::summon_random_demon_t( this, "" );
 
   // Initialize some default values for pet spawners
@@ -1112,8 +1135,9 @@ void warlock_t::init_spells_demonology()
 
 void warlock_t::init_gains_demonology()
 {
-  gains.demonic_meteor     = get_gain( "demonic_meteor" );
-  gains.baleful_invocation = get_gain( "baleful_invocation" );
+  gains.demonic_meteor        = get_gain( "demonic_meteor" );
+  gains.baleful_invocation    = get_gain( "baleful_invocation" );
+  gains.summon_demonic_tyrant = get_gain( "summon_demonic_tyrant" );
 }
 
 void warlock_t::init_rng_demonology()

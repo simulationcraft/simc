@@ -361,7 +361,7 @@ struct felstorm_tick_t : public warlock_pet_melee_attack_t
   felstorm_tick_t( warlock_pet_t* p, const spell_data_t& s )
     : warlock_pet_melee_attack_t( "felstorm_tick", p, s.effectN( 1 ).trigger() )
   {
-    aoe        = -1;
+    aoe        = as<int>( data().effectN( 3 ).base_value() );
     background = true;
     weapon     = &( p->main_hand_weapon );
   }
@@ -644,6 +644,9 @@ struct fel_firebolt_t : public warlock_pet_spell_t
   double cost() const override
   {
     double c = warlock_pet_spell_t::cost();
+
+    if ( p()->o()->spec.fel_firebolt_2->ok() )
+      c *= 1.0 + p()->o()->spec.fel_firebolt_2->effectN( 1 ).percent();
 
     if ( demonic_power_on_cast_start )
     {

@@ -124,7 +124,7 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
 
   debuffs_eradication = make_buff( *this, "eradication", source->find_spell( 196414 ) )
                             ->set_refresh_behavior( buff_refresh_behavior::DURATION );
-  debuffs_roaring_blaze = make_buff( *this, "roaring_blaze", source->find_spell( 205690 ) )->set_max_stack( 100 );
+  debuffs_roaring_blaze = make_buff( *this, "roaring_blaze", source->find_spell( 265931 ) );
   debuffs_shadowburn    = make_buff( *this, "shadowburn", source->find_spell( 17877 ) );
   debuffs_havoc         = make_buff( *this, "havoc", source->find_specialization_spell( 80240 ) )
                       ->set_duration( source->find_specialization_spell( 80240 )->duration() +
@@ -138,6 +138,9 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
 
                         range::for_each( p.havoc_spells, []( action_t* a ) { a->target_cache.is_valid = false; } );
                       } );
+
+  // SL - Legendary
+  debuffs_odr = make_buff( *this, "odr_shawl_of_the_ymirjar", source->find_spell(337164) );
 
   // Demo
   dots_doom         = target->get_dot( "doom", &p );
@@ -266,6 +269,9 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
     gains(),
     procs(),
     spells(),
+    legendary(),
+    conduit(),
+    covenant(),
     initial_soul_shards( 3 ),
     default_pet()
 {
@@ -571,6 +577,25 @@ void warlock_t::init_spells()
   talents.grimoire_of_sacrifice     = find_talent_spell( "Grimoire of Sacrifice" );         // aff and destro
   active.grimoire_of_sacrifice_proc = new actions::grimoire_of_sacrifice_damage_t( this );  // grimoire of sacrifice
   talents.soul_conduit              = find_talent_spell( "Soul Conduit" );
+
+  // Legendaries
+  legendary.claw_of_endereth                     = find_runeforge_legendary( "Claw of Endereth" );
+  legendary.mark_of_borrowed_power               = find_runeforge_legendary( "Mark of Borrowed Power" );
+  legendary.wilfreds_sigil_of_superior_summoning = find_runeforge_legendary( "Wilfred's Sigil of Superior Summoning" );
+  // Sacrolash is the only spec-specific legendary that can be used by other specs.
+  legendary.sacrolashs_dark_strike = find_runeforge_legendary( "Sacrolash's Dark Strike" );
+
+  // Conduits
+  conduit.catastrophic_origin  = find_conduit_spell( "Catastrophic Origin" );   // Venthyr
+  conduit.exhumed_soul         = find_conduit_spell( "Exhumed Soul" );          // Night Fae
+  conduit.prolonged_decimation = find_conduit_spell( "Prolonged Decimation" );  // Necrolord
+  conduit.soul_tithe           = find_conduit_spell( "Soul Tithe" );            // Kyrian
+
+  // Covenant Abilities
+  covenant.decimating_bolt       = find_covenant_spell( "Decimating Bolt" );        // Necrolord
+  covenant.impending_catastrophe = find_covenant_spell( "Impending Catastrophe" );  // Venthyr
+  covenant.scouring_tithe        = find_covenant_spell( "Scouring Tithe" );         // Kyrian
+  covenant.soul_rot              = find_covenant_spell( "Soul Rot" );               // Night Fae
 
   // BFA - Essence
   azerite_essence.memory_of_lucid_dreams = find_azerite_essence( "Memory of Lucid Dreams" );

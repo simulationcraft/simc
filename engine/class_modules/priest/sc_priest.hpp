@@ -36,6 +36,7 @@ struct summon_pet_t;
 struct summon_shadowfiend_t;
 struct summon_mindbender_t;
 struct ascended_eruption_t;
+struct wrathful_faerie_t;
 struct psychic_link_t;
 }  // namespace spells
 namespace heals
@@ -76,6 +77,7 @@ public:
     propagate_const<buff_t*> death_and_madness_debuff;
     propagate_const<buff_t*> surrender_to_madness_debuff;
     propagate_const<buff_t*> shadow_crash_debuff;
+    propagate_const<buff_t*> wrathful_faerie;
   } buffs;
 
   priest_t& priest()
@@ -135,6 +137,7 @@ public:
     propagate_const<buff_t*> unfurling_darkness_cd;  // Blizzard uses a buff to track the ICD
     propagate_const<buff_t*> ancient_madness;
     propagate_const<buff_t*> dark_thoughts;
+    propagate_const<buff_t*> dark_passion;
 
     // Azerite Powers
     // Shadow
@@ -148,10 +151,9 @@ public:
     // Conduits
     propagate_const<buff_t*> mind_devourer;
     propagate_const<buff_t*> dissonant_echoes;
-    propagate_const<buff_t*> blessing_of_plenty;  // Dummy buff to track CDR from Void Bolt
 
     // Covenants
-    propagate_const<buff_t*> fae_blessings;
+    propagate_const<buff_t*> fae_guardians;
     propagate_const<buff_t*> boon_of_the_ascended;
   } buffs;
 
@@ -245,15 +247,15 @@ public:
   // Specialization Spells
   struct
   {
-    const spell_data_t* priest;  /// General priest data
+    const spell_data_t* priest;  // General priest data
 
     // Discipline
-    const spell_data_t* discipline;  /// General discipline data
+    const spell_data_t* discipline;  // General discipline data
     const spell_data_t* discipline_priest;
-    const spell_data_t* power_of_the_dark_side;  /// For buffing the damage of penance
+    const spell_data_t* power_of_the_dark_side;  // For buffing the damage of penance
 
     // Holy
-    const spell_data_t* holy;  /// General holy data
+    const spell_data_t* holy;  // General holy data
     const spell_data_t* rapid_renewal;
     const spell_data_t* holy_words;
     const spell_data_t* holy_word_chastise;
@@ -268,7 +270,7 @@ public:
     const spell_data_t* holy_priest;
 
     // Shadow
-    const spell_data_t* shadow;  /// General shadow data
+    const spell_data_t* shadow;  // General shadow data
     const spell_data_t* shadowy_apparitions;
     const spell_data_t* voidform;
     const spell_data_t* void_eruption;
@@ -282,13 +284,14 @@ public:
   {
     const spell_data_t* grace;
     const spell_data_t* echo_of_light;
-    const spell_data_t* madness;
+    const spell_data_t* shadow_weaving;
   } mastery_spells;
 
   // Cooldowns
   struct
   {
     // Shared
+    propagate_const<cooldown_t*> wrathful_faerie;
 
     // Shadow
     propagate_const<cooldown_t*> void_bolt;
@@ -350,7 +353,6 @@ public:
     propagate_const<proc_t*> power_of_the_dark_side_overflow;
     propagate_const<proc_t*> dissonant_echoes;
     propagate_const<proc_t*> mind_devourer;
-    propagate_const<proc_t*> blessing_of_plenty;
     propagate_const<proc_t*> void_tendril;
     propagate_const<proc_t*> dark_thoughts_flay;
     propagate_const<proc_t*> dark_thoughts_sear;
@@ -363,6 +365,7 @@ public:
     propagate_const<actions::spells::mind_sear_tick_t*> mind_sear_tick;
     propagate_const<actions::spells::shadowy_apparition_spell_t*> shadowy_apparitions;
     propagate_const<actions::spells::psychic_link_t*> psychic_link;
+    propagate_const<actions::spells::wrathful_faerie_t*> wrathful_faerie;
   } active_spells;
 
   // Items
@@ -399,11 +402,11 @@ public:
 
     // Add in options to override insanity gained
     // Mindgames gives 20 insanity from the healing and 20 from damage dealt
-    /// For most content the healing part won't proc, only default damage dealt
+    // For most content the healing part won't proc, only default damage dealt
     bool priest_mindgames_healing_insanity = false;
     bool priest_mindgames_damage_insanity  = true;
 
-    // Fae Blessings CDR is not guarenteed to go on the Priest, reduce this to make things more accurate    
+    // Fae Blessings CDR can be given to another player, but you can still get the insanity gen
     bool priest_self_benevolent_faerie = true;
 
   } options;
@@ -472,13 +475,13 @@ public:
     // Covenant
     conduit_data_t courageous_ascension;
     conduit_data_t festering_transfusion;
-    conduit_data_t blessing_of_plenty;
+    conduit_data_t fae_fermata;
     conduit_data_t shattered_perceptions;
   } conduits;
 
   struct
   {
-    const spell_data_t* fae_blessings;
+    const spell_data_t* fae_guardians;
     const spell_data_t* unholy_nova;
     const spell_data_t* mindgames;
     const spell_data_t* boon_of_the_ascended;
@@ -561,6 +564,9 @@ private:
   expr_t* create_expression_holy( action_t* a, util::string_view name_str );
   action_t* create_action_holy( util::string_view name, util::string_view options_str );
 
+  int shadow_weaving_active_dots( const player_t* target ) const;
+  double shadow_weaving_multiplier( const player_t* target ) const;
+
   target_specific_t<priest_td_t> _target_data;
 
 public:
@@ -573,7 +579,9 @@ public:
   void trigger_eternal_call_to_the_void( const dot_t* d );
   void trigger_shadowy_apparitions( action_state_t* );
   void trigger_psychic_link( action_state_t* );
-  const priest_td_t* find_target_data( player_t* target ) const
+  void trigger_wrathful_faerie();
+  void remove_wrathful_faerie();
+  const priest_td_t* find_target_data( const player_t* target ) const
   {
     return _target_data[ target ];
   }
@@ -596,26 +604,26 @@ public:
 
     insanity_state_t( priest_t& a );
 
-    /// Deferred init for actor dependent stuff not ready in the ctor
+    // Deferred init for actor dependent stuff not ready in the ctor
     void init();
 
-    /// Start the insanity drain tracking
+    // Start the insanity drain tracking
     void set_last_drained();
 
-    /// Start (or re-start) tracking of the insanity drain plus end event
+    // Start (or re-start) tracking of the insanity drain plus end event
     void begin_tracking();
 
     timespan_t time_to_end() const;
 
     void reset();
 
-    /// Compute insanity drain per second with current state of the actor
+    // Compute insanity drain per second with current state of the actor
     double insanity_drain_per_second() const;
 
-    /// Gain some insanity
+    // Gain some insanity
     void gain( double value, gain_t* gain_obj, action_t* source_action = nullptr );
 
-    /// Lose some insanity
+    // Lose some insanity
     void lose( double value, gain_t* gain_obj, action_t* source_action = nullptr );
 
     /**
@@ -979,7 +987,11 @@ struct fiend_melee_t : public priest_pet_melee_t
 // ==========================================================================
 struct shadowflame_prism_t final : public priest_pet_spell_t
 {
-  shadowflame_prism_t( base_fiend_pet_t& p ) : priest_pet_spell_t( "shadowflame_prism", &p, p.o().find_spell( 336142 ) )
+  double shadowflame_increase;
+
+  shadowflame_prism_t( base_fiend_pet_t& p )
+    : priest_pet_spell_t( "shadowflame_prism", &p, p.o().find_spell( 336142 ) ),
+      shadowflame_increase( p.o().find_spell( 336144 )->effectN( 1 ).percent() )
   {
     background = true;
     may_crit   = false;
@@ -988,9 +1000,9 @@ struct shadowflame_prism_t final : public priest_pet_spell_t
 
   void trigger( player_t* target, double original_amount )
   {
-    // The 20% modifier is hardcoded in spelldata
-    base_dd_min = base_dd_max = ( original_amount * 0.20 );
-    player->sim->print_debug( "Triggered shadowflame prism damage on target {}.", *target );
+    base_dd_min = base_dd_max = ( original_amount * shadowflame_increase );
+    player->sim->print_debug( "Triggered shadowflame prism damage on target {} at {} percent increase.", *target,
+                              shadowflame_increase );
 
     set_target( target );
     execute();
@@ -1039,8 +1051,6 @@ struct priest_action_t : public Base
     bool shadowform_ta;
     bool twist_of_fate_da;
     bool twist_of_fate_ta;
-    bool mastery_madness_da;
-    bool mastery_madness_ta;
     bool shadow_covenant_da;
     bool shadow_covenant_ta;
   } affected_by;
@@ -1084,16 +1094,14 @@ public:
     {
       const spelleffect_data_t& effect;
       bool& affects;
-    } affects[] = {{priest().buffs.voidform->data().effectN( 1 ), affected_by.voidform_da},
-                   {priest().buffs.voidform->data().effectN( 2 ), affected_by.voidform_ta},
-                   {priest().buffs.shadowform->data().effectN( 1 ), affected_by.shadowform_da},
-                   {priest().buffs.shadowform->data().effectN( 4 ), affected_by.shadowform_ta},
-                   {priest().buffs.twist_of_fate->data().effectN( 1 ), affected_by.twist_of_fate_da},
-                   {priest().buffs.twist_of_fate->data().effectN( 2 ), affected_by.twist_of_fate_ta},
-                   {priest().mastery_spells.madness->effectN( 1 ), affected_by.mastery_madness_da},
-                   {priest().mastery_spells.madness->effectN( 2 ), affected_by.mastery_madness_ta},
-                   {priest().buffs.shadow_covenant->data().effectN( 2 ), affected_by.shadow_covenant_da},
-                   {priest().buffs.shadow_covenant->data().effectN( 3 ), affected_by.shadow_covenant_ta}};
+    } affects[] = { { priest().buffs.voidform->data().effectN( 1 ), affected_by.voidform_da },
+                    { priest().buffs.voidform->data().effectN( 2 ), affected_by.voidform_ta },
+                    { priest().buffs.shadowform->data().effectN( 1 ), affected_by.shadowform_da },
+                    { priest().buffs.shadowform->data().effectN( 4 ), affected_by.shadowform_ta },
+                    { priest().buffs.twist_of_fate->data().effectN( 1 ), affected_by.twist_of_fate_da },
+                    { priest().buffs.twist_of_fate->data().effectN( 2 ), affected_by.twist_of_fate_ta },
+                    { priest().buffs.shadow_covenant->data().effectN( 2 ), affected_by.shadow_covenant_da },
+                    { priest().buffs.shadow_covenant->data().effectN( 3 ), affected_by.shadow_covenant_ta } };
 
     for ( const auto& a : affects )
     {
@@ -1111,7 +1119,7 @@ public:
     return *( priest().get_target_data( t ) );
   }
 
-  const priest_td_t* find_td( player_t* t ) const
+  const priest_td_t* find_td( const player_t* t ) const
   {
     return priest().find_target_data( t );
   }
@@ -1143,10 +1151,6 @@ public:
   {
     double m = ab::action_da_multiplier();
 
-    if ( affected_by.mastery_madness_da )
-    {
-      m *= 1.0 + priest().cache.mastery_value();
-    }
     if ( affected_by.voidform_da && priest().buffs.voidform->check() )
     {
       m *= vf_da_multiplier;
@@ -1170,10 +1174,6 @@ public:
   {
     double m = ab::action_ta_multiplier();
 
-    if ( affected_by.mastery_madness_ta )
-    {
-      m *= 1.0 + priest().cache.mastery_value();
-    }
     if ( affected_by.voidform_ta && priest().buffs.voidform->check() )
     {
       m *= vf_ta_multiplier;
@@ -1215,11 +1215,11 @@ protected:
     return *debug_cast<priest_t*>( ab::player );
   }
 
-  /// typedef for priest_action_t<action_base_t>
+  // typedef for priest_action_t<action_base_t>
   using base_t = priest_action_t;
 
 private:
-  /// typedef for the templated action type, eg. spell_t, attack_t, heal_t
+  // typedef for the templated action type, eg. spell_t, attack_t, heal_t
   using ab = Base;
 };
 
@@ -1324,6 +1324,16 @@ struct priest_spell_t : public priest_action_t<spell_t>
            ( save_health_percentage < priest().talents.twist_of_fate->effectN( 1 ).base_value() ) )
       {
         priest().buffs.twist_of_fate->trigger();
+      }
+
+      if ( priest().specialization() == PRIEST_SHADOW && s->result_type == result_amount_type::DMG_DIRECT &&
+           s->result_amount > 0 )
+      {
+        const priest_td_t* td = find_td( s->target );
+        if ( td && td->buffs.wrathful_faerie->check() )
+        {
+          priest().trigger_wrathful_faerie();
+        }
       }
     }
   }

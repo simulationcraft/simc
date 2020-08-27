@@ -1231,8 +1231,8 @@ double action_t::calculate_direct_amount( action_state_t* state ) const
   amount *= composite_aoe_multiplier( state );
 
   // Spell goes over the maximum number of AOE targets - ignore for enemies
-  if ( !state->action->split_aoe_damage && state->n_targets > static_cast<size_t>( sim->max_aoe_enemies ) &&
-       !state->action->player->is_enemy() )
+  if ( !state->action->split_aoe_damage && !state->action->reduced_aoe_damage &&
+       state->n_targets > static_cast<size_t>( sim->max_aoe_enemies ) && !state->action->player->is_enemy() )
     amount *= sim->max_aoe_enemies / static_cast<double>( state->n_targets );
 
   // Record initial amount to state
@@ -4345,6 +4345,7 @@ bool action_t::usable_during_current_cast() const
   }
   else if ( player->channeling )
   {
+    assert(player->channeling->get_dot()->end_event && "player is channeling with its dot having no end event");
     threshold = player->channeling->get_dot()->end_event->occurs();
     threshold += sim->channel_lag + 4 * sim->channel_lag_stddev;
   }

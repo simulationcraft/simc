@@ -35,6 +35,9 @@ struct warlock_td_t : public actor_target_data_t
   propagate_const<buff_t*> debuffs_roaring_blaze;
   propagate_const<buff_t*> debuffs_havoc;
 
+  // SL - Legendary
+  propagate_const<buff_t*> debuffs_odr;
+
   // Demo
   propagate_const<dot_t*> dots_doom;
   propagate_const<dot_t*> dots_umbral_blaze;  // BFA - Azerite
@@ -258,6 +261,64 @@ public:
     azerite_essence_t vision_of_perfection;
   } azerite_essence;
 
+  struct
+  {
+    // Legendaries
+    // Cross-spec
+    item_runeforge_t claw_of_endereth;
+    item_runeforge_t mark_of_borrowed_power;
+    item_runeforge_t wilfreds_sigil_of_superior_summoning;
+    // Affliction
+    item_runeforge_t malefic_wrath;
+    item_runeforge_t perpetual_agony_of_azjaqir;
+    item_runeforge_t sacrolashs_dark_strike;
+    item_runeforge_t wrath_of_consumption;
+    // Demonology
+    item_runeforge_t balespiders_burning_core;
+    item_runeforge_t forces_of_horned_nightmare;
+    item_runeforge_t grim_inquisitors_dread_calling;
+    item_runeforge_t implosive_potential;
+    // Destruction
+    item_runeforge_t cinders_of_the_azjaqir;
+    item_runeforge_t embers_of_the_diabolic_raiment;
+    item_runeforge_t madness_of_the_azjaqir;
+    item_runeforge_t odr_shawl_of_the_ymirjar;
+  } legendary;
+
+  struct
+  {
+    // Conduits
+    // Covenant Abilities
+    conduit_data_t catastrophic_origin;   // Venthyr
+    conduit_data_t exhumed_soul;          // Night Fae
+    conduit_data_t prolonged_decimation;  // Necrolord
+    conduit_data_t soul_tithe;            // Kyrian
+    // Affliction
+    conduit_data_t cold_embrace;
+    conduit_data_t corrupting_leer;
+    conduit_data_t focused_malignancy;
+    conduit_data_t rolling_agony;
+    // Demonology
+    conduit_data_t borne_of_blood;
+    conduit_data_t carnivorous_stalkers;
+    conduit_data_t fel_commando;
+    conduit_data_t tyrants_soul;
+    // Destruction
+    conduit_data_t ashen_remains;
+    conduit_data_t combusting_engine;
+    conduit_data_t duplicitous_havoc;
+    conduit_data_t infernal_brand;
+  } conduit;
+
+  struct
+  {
+    // Covenant Abilities
+    const spell_data_t* decimating_bolt;        // Necrolord
+    const spell_data_t* impending_catastrophe;  // Venthyr
+    const spell_data_t* scouring_tithe;         // Kyrian
+    const spell_data_t* soul_rot;               // Night Fae
+  } covenant;
+
   // Mastery Spells
   struct mastery_spells_t
   {
@@ -328,19 +389,19 @@ public:
     propagate_const<buff_t*> demonic_power;
     propagate_const<buff_t*> grimoire_of_sacrifice;
 
-    // affliction buffs
+    // Affliction Buffs
     propagate_const<buff_t*> active_uas;
     propagate_const<buff_t*> drain_life;
     propagate_const<buff_t*> nightfall;
     propagate_const<buff_t*> dark_soul_misery;
 
-    propagate_const<buff_t*> cascading_calamity;   // BFA - Azerite
-                                                   // TOCHECK - This is a talent now so not sure how they're
-                                                   // replacing the azerite for pre-patch
-    propagate_const<buff_t*> inevitable_demise;    // BFA - Azerite
-    propagate_const<buff_t*> wracking_brilliance;  // BFA - Azerite
+    // BFA - Affliction Azerite
+    propagate_const<buff_t*> cascading_calamity;  // TOCHECK - This is a talent now so not sure how they're
+                                                  // replacing the azerite for pre-patch
+    propagate_const<buff_t*> inevitable_demise;
+    propagate_const<buff_t*> wracking_brilliance;
 
-    // demonology buffs
+    // Demonology Buffs
     propagate_const<buff_t*> demonic_core;
     propagate_const<buff_t*> demonic_calling;
     propagate_const<buff_t*> inner_demons;
@@ -354,24 +415,29 @@ public:
     propagate_const<buff_t*> prince_malchezaar;
     propagate_const<buff_t*> eyes_of_guldan;
 
-    propagate_const<buff_t*> shadows_bite;         // BFA - Azerite
-    propagate_const<buff_t*> supreme_commander;    // BFA - Azerite
-    propagate_const<buff_t*> explosive_potential;  // BFA - Azerite
+    // BFA - Demonology Azerite
+    propagate_const<buff_t*> shadows_bite;
+    propagate_const<buff_t*> supreme_commander;
+    propagate_const<buff_t*> explosive_potential;
 
-    // destruction_buffs
+    // Destruction Buffs
     propagate_const<buff_t*> backdraft;
     propagate_const<buff_t*> reverse_entropy;
     propagate_const<buff_t*> grimoire_of_supremacy_driver;
     propagate_const<buff_t*> grimoire_of_supremacy;
     propagate_const<buff_t*> dark_soul_instability;
 
-    propagate_const<buff_t*> bursting_flare;      // BFA - Azerite
-    propagate_const<buff_t*> chaotic_inferno;     // BFA - Azerite
-    propagate_const<buff_t*> crashing_chaos;      // BFA - Azerite
-    propagate_const<buff_t*> crashing_chaos_vop;  // BFA - Azerite
-    propagate_const<buff_t*> rolling_havoc;       // BFA - Azerite
-    propagate_const<buff_t*> flashpoint;          // BFA - Azerite
-    propagate_const<buff_t*> chaos_shards;        // BFA - Azerite
+    // BFA - Destruction Azerite
+    propagate_const<buff_t*> bursting_flare;
+    propagate_const<buff_t*> chaotic_inferno;
+    propagate_const<buff_t*> crashing_chaos;
+    propagate_const<buff_t*> crashing_chaos_vop;
+    propagate_const<buff_t*> rolling_havoc;
+    propagate_const<buff_t*> flashpoint;
+    propagate_const<buff_t*> chaos_shards;
+
+    // Legendaries
+    propagate_const<buff_t*> madness_of_the_azjaqir;
   } buffs;
 
   // Gains
@@ -402,6 +468,7 @@ public:
 
     gain_t* shadow_bolt;
     gain_t* doom;
+    gain_t* summon_demonic_tyrant;
     gain_t* demonic_meteor;      // BFA - Azerite
     gain_t* baleful_invocation;  // BFA - Azerite
 
