@@ -4345,6 +4345,7 @@ bool action_t::usable_during_current_cast() const
   }
   else if ( player->channeling )
   {
+    assert(player->channeling->get_dot()->end_event && "player is channeling with its dot having no end event");
     threshold = player->channeling->get_dot()->end_event->occurs();
     threshold += sim->channel_lag + 4 * sim->channel_lag_stddev;
   }
