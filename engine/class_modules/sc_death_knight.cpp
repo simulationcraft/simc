@@ -443,7 +443,6 @@ public:
     buff_t* inexorable_assault;
     buff_t* killing_machine;
     buff_t* pillar_of_frost;
-    buff_t* pillar_of_frost_rank_2;
     buff_t* pillar_of_frost_bonus;
     buff_t* remorseless_winter;
     buff_t* rime;
@@ -2474,11 +2473,6 @@ struct death_knight_action_t : public Base
       this -> base_costs[ RESOURCE_RUNIC_POWER ] = 0;
     }
 
-    action_base_t::apply_affecting_aura( p->spec.frost_strike_rank_2 );
-    action_base_t::apply_affecting_aura( p->spec.obliterate_rank_2 );
-    action_base_t::apply_affecting_aura( p->spec.remorseless_winter_rank_2 );
-    action_base_t::apply_affecting_aura( p->spec.empower_rune_weapon_rank_2 );
-
     this -> affected_by.frozen_heart = this -> data().affected_by( p -> mastery.frozen_heart -> effectN( 1 ) );
     this -> affected_by.dreadblade = this -> data().affected_by( p -> mastery.dreadblade -> effectN( 1 ) );
 
@@ -4463,6 +4457,7 @@ struct empower_rune_weapon_t : public death_knight_spell_t
     dot_duration = base_tick_time = 0_ms;
 
     cooldown -> duration *= 1.0 + p -> vision_of_perfection_minor_cdr;
+    cooldown -> adjust( timespan_t::from_seconds( abs( p -> spec.empower_rune_weapon_rank_2->effectN(1).base_value() / 1000 ) ) );
   }
 
   void execute() override
@@ -4747,6 +4742,7 @@ struct frost_strike_strike_t : public death_knight_melee_attack_t
   {
     background = special = true;
     weapon = w;
+    base_multiplier *= 1.0 + p -> spec.frost_strike_rank_2 -> effectN( 1 ).percent(); 
   }
 
   double bonus_da( const action_state_t* s ) const override
@@ -5289,7 +5285,8 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
   {
     background = special = true;
     may_miss = false;
-    weapon = w;
+    weapon = w;    
+    base_multiplier *= 1.0 + p -> spec.obliterate_rank_2 -> effectN( 1 ).percent();
   }
 
   double composite_crit_chance() const override
@@ -5303,6 +5300,11 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
 
   void execute() override
   {
+    if ( p() -> spec.killing_machine_rank_2 -> ok() && p() -> buffs.killing_machine -> up() )
+    {
+      school = SCHOOL_FROST;
+    }
+
     death_knight_melee_attack_t::execute();
 
     trigger_icecap( execute_state );
@@ -5311,15 +5313,9 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
     {
       p() -> buffs.icy_citadel_builder -> trigger();
     }
-
-    if ( p()->buffs.killing_machine->up() )
-    {
-      school = SCHOOL_FROST;
-    }
-    else
-    {
-      school = SCHOOL_PHYSICAL;
-    }
+    
+    // KM Rank 2 - revert school after the hit
+    school = SCHOOL_PHYSICAL;
   }
 };
 
@@ -5526,25 +5522,13 @@ struct pillar_of_frost_bonus_buff_t : public buff_t
   }
 };
 
-struct pillar_of_frost_buff_rank_2_t : public buff_t
-{
-  pillar_of_frost_buff_rank_2_t(death_knight_t* p) :
-    buff_t(p, "pillar_of_frost_rank_2")
-  {
-    set_duration( p -> spec.pillar_of_frost -> duration() );
-    set_default_value( p -> spec.pillar_of_frost_rank_2 -> effectN( 1 ).percent() );
-
-    add_invalidate( CACHE_STRENGTH );
-  }
-};
-
 struct pillar_of_frost_buff_t : public buff_t
 {
   pillar_of_frost_buff_t( death_knight_t* p ) :
     buff_t( p, "pillar_of_frost", p -> spec.pillar_of_frost )
   {
     cooldown -> duration = 0_ms;
-    set_default_value( p -> spec.pillar_of_frost -> effectN( 1 ).percent() );
+    set_default_value( p -> spec.pillar_of_frost -> effectN( 1 ).percent() + p -> spec.pillar_of_frost_rank_2 -> effectN( 1 ).percent() );
     add_invalidate( CACHE_STRENGTH );
   }
 
@@ -5606,8 +5590,6 @@ struct pillar_of_frost_t : public death_knight_spell_t
     death_knight_spell_t::execute();
 
     p() -> buffs.pillar_of_frost -> trigger();
-    p() -> buffs.pillar_of_frost_rank_2 -> trigger();
-
 
     if ( p() -> azerite.frostwhelps_indignation.enabled() )
     {
@@ -5663,6 +5645,7 @@ struct remorseless_winter_damage_t : public death_knight_spell_t
   {
     background = true;
     aoe = -1;
+    base_multiplier *= 1.0 + p -> spec.remorseless_winter_rank_2 -> effectN( 1 ).percent();
 
     if ( p -> azerite.frozen_tempest.enabled() )
     {
@@ -7312,19 +7295,19 @@ void death_knight_t::init_spells()
   spec.frost_death_knight  = find_specialization_spell( "Frost Death Knight" );
   spec.frost_fever         = find_specialization_spell( "Frost Fever" );
   spec.frost_strike        = find_specialization_spell( "Frost Strike" );
-  spec.frost_strike_rank_2 = find_specialization_spell( 316803 );
+  spec.frost_strike_rank_2 = find_specialization_spell( "Frost Strike", "Rank 2" );
   spec.howling_blast       = find_specialization_spell( "Howling Blast" );
   spec.obliterate          = find_specialization_spell( "Obliterate" );
-  spec.obliterate_rank_2   = find_specialization_spell( 317198 );
+  spec.obliterate_rank_2   = find_specialization_spell( "Obliterate", "Rank 2" );
   spec.rime                = find_specialization_spell( "Rime" );
-  spec.rime_rank_2         = find_specialization_spell( 316838 );
+  spec.rime_rank_2         = find_specialization_spell( "Rime", "Rank 2" );
   spec.runic_empowerment   = find_specialization_spell( "Runic Empowerment" );
   spec.killing_machine     = find_specialization_spell( "Killing Machine" );
-  spec.killing_machine_rank_2     = find_specialization_spell( 317214 );
+  spec.killing_machine_rank_2     = find_specialization_spell( "Killing Machine", "Rank 2" );
   spec.empower_rune_weapon = find_specialization_spell( "Empower Rune Weapon" );
-  spec.empower_rune_weapon_rank_2 = find_specialization_spell( 317230 );
+  spec.empower_rune_weapon_rank_2 = find_specialization_spell( "Empower Rune Weapon", "Rank 2" );
   spec.pillar_of_frost     = find_specialization_spell( "Pillar of Frost" );
-  spec.pillar_of_frost_rank_2    = find_specialization_spell( 316849 );
+  spec.pillar_of_frost_rank_2    = find_specialization_spell( "Pillar of Frost", "Rank 2" );
   spec.remorseless_winter  = find_specialization_spell( "Remorseless Winter" );
   spec.remorseless_winter_rank_2 = find_specialization_spell( 316794 );
 
@@ -8141,7 +8124,6 @@ void death_knight_t::create_buffs()
         -> set_default_value( find_spell( 51124 ) -> effectN( 1 ).percent() );
 
   buffs.pillar_of_frost = new pillar_of_frost_buff_t( this );
-  buffs.pillar_of_frost_rank_2 = new pillar_of_frost_buff_rank_2_t( this );
   buffs.pillar_of_frost_bonus = new pillar_of_frost_bonus_buff_t( this );
 
   buffs.remorseless_winter = new remorseless_winter_buff_t( this );
@@ -8474,7 +8456,7 @@ double death_knight_t::composite_attribute_multiplier( attribute_e attr ) const
       m *= 1.0 + runeforge.rune_of_the_stoneskin_gargoyle -> data().effectN( 2 ).percent();
     }
 
-    m *= 1.0 + buffs.pillar_of_frost -> value() + buffs.pillar_of_frost_bonus -> stack_value() + buffs.pillar_of_frost_rank_2 -> value();
+    m *= 1.0 + buffs.pillar_of_frost -> value() + buffs.pillar_of_frost_bonus -> stack_value();
   }
 
   else if ( attr == ATTR_STAMINA )
