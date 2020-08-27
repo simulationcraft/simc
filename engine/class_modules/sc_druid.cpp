@@ -408,6 +408,7 @@ public:
     buff_t* starlord;  // talent
     buff_t* eclipse_solar;
     buff_t* eclipse_lunar;
+    buff_t* starsurge;  // stacking eclipse empowerment
     buff_t* solstice;
     // Balance Legendaries
     buff_t* primordial_arcanic_pulsar;
@@ -1080,16 +1081,10 @@ void eclipse_handler_t::advance_eclipse()
 
 void eclipse_handler_t::cast_starsurge()
 {
-  double mul = 1.0;
+  p->buff.starsurge->trigger();
 
   if ( p->conduit.stellar_inspiration->ok() && p->rng().roll( p->conduit.stellar_inspiration->effectN( 1 ).percent() ) )
-    mul *= 2.0;
-
-  if ( p->buff.eclipse_lunar->check() )
-    p->buff.eclipse_lunar->current_value += lunar_ss_stack * mul;
-
-  if ( p->buff.eclipse_solar->check() )
-    p->buff.eclipse_solar->current_value += solar_ss_stack * mul;
+    p->buff.starsurge->trigger();
 }
 
 void eclipse_handler_t::trigger_both( timespan_t d = 0_ms )
@@ -1106,10 +1101,9 @@ void eclipse_handler_t::trigger_both( timespan_t d = 0_ms )
   if ( p->talent.solstice->ok() )
     p->buff.solstice->trigger();
 
+  p->buff.starsurge->expire();
   p->buff.eclipse_lunar->trigger( d );
-  p->buff.eclipse_lunar->current_value = p->buff.eclipse_lunar->default_value;
   p->buff.eclipse_solar->trigger( d );
-  p->buff.eclipse_solar->current_value = p->buff.eclipse_solar->default_value;
 
   p->uptime.eclipse->update( true, p->sim->current_time() );
 }
@@ -1468,6 +1462,39 @@ struct cat_form_t : public druid_buff_t<buff_t>
     swap_melee( p().cat_melee_attack, p().cat_weapon );
 
     base_t::start( stacks, value, duration );
+  }
+};
+
+struct eclipse_buff_t : public druid_buff_t<buff_t>
+{
+  double empowerment;
+
+  eclipse_buff_t( druid_t& p, util::string_view n, const spell_data_t* s ) : base_t( p, n, s ), empowerment( 0.0 )
+  {
+    add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+    set_default_value( s->effectN( 2 ).percent() * ( 1.0 + p.conduit.umbral_intensity.percent() ) );
+
+    if ( s == p.spec.eclipse_solar )
+      empowerment = p.spec.starsurge->effectN( 2 ).percent() + p.spec.starsurge_2->effectN( 1 ).percent();
+    else if ( s == p.spec.eclipse_lunar )
+      empowerment = p.spec.starsurge->effectN( 3 ).percent() + p.spec.starsurge_2->effectN( 2 ).percent();
+  }
+
+  double value() override
+  {
+    double v = base_t::value();
+
+    v += empowerment * p().buff.starsurge->stack();
+
+    return v;
+  }
+
+  void expire_override( int s, timespan_t d ) override
+  {
+    base_t::expire_override( s, d );
+
+    p().eclipse_handler.advance_eclipse();
+    p().buff.starsurge->expire();
   }
 };
 
@@ -8266,7 +8293,7 @@ void druid_t::create_buffs()
   buff.celestial_alignment = make_buff( this, "celestial_alignment", spec.celestial_alignment )
     ->set_cooldown( timespan_t::zero() )
     ->add_invalidate( CACHE_CRIT_CHANCE )
-    ->set_duration( spec.celestial_alignment->duration() + conduit.precise_alignment->effectN( 1 ).time_value() )
+    ->set_duration( spec.celestial_alignment->duration() + conduit.precise_alignment.time_value() )
     ->set_stack_change_callback( [this] ( buff_t* b, int, int new_ ) {
       if ( new_ )
       {
@@ -8285,7 +8312,7 @@ void druid_t::create_buffs()
     ->set_cooldown( timespan_t::zero() )
     ->add_invalidate( CACHE_HASTE )
     ->add_invalidate( CACHE_CRIT_CHANCE )
-    ->set_duration( talent.incarnation_moonkin->duration() + conduit.precise_alignment->effectN( 1 ).time_value() )
+    ->set_duration( talent.incarnation_moonkin->duration() + conduit.precise_alignment.time_value() )
     ->set_stack_change_callback( [this] ( buff_t* b, int, int new_ ) {
       if ( new_ )
       {
@@ -8316,21 +8343,14 @@ void druid_t::create_buffs()
     ->set_period( 888_ms )  // this has a random interval in game so estimate the average here
     ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
 
-  buff.eclipse_solar = make_buff( this, "eclipse_solar", spec.eclipse_solar )
-    ->set_default_value( spec.eclipse_solar->effectN( 2 ).percent() * ( 1.0 + conduit.umbral_intensity.percent() ) )
-    ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
-    ->set_stack_change_callback( [this]( buff_t*, int /* old_ */, int new_ ) {
-      if ( !new_ )
-        this->eclipse_handler.advance_eclipse();
-    } );
+  buff.eclipse_solar = new eclipse_buff_t( *this, "eclipse_solar", spec.eclipse_solar );
 
-  buff.eclipse_lunar = make_buff( this, "eclipse_lunar", spec.eclipse_lunar )
-    ->set_default_value( spec.eclipse_lunar->effectN( 2 ).percent() * ( 1.0 + conduit.umbral_intensity.percent() ) )
-    ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
-    ->set_stack_change_callback( [this]( buff_t*, int /* old_ */, int new_ ) {
-      if ( !new_ )
-        this->eclipse_handler.advance_eclipse();
-    } );
+  buff.eclipse_lunar = new eclipse_buff_t( *this, "eclipse_lunar", spec.eclipse_lunar );
+
+  buff.starsurge = make_buff( this, "starsurge_empowerment" )
+    ->set_duration( 0_ms )
+    ->set_cooldown( 0_ms )
+    ->set_max_stack( 30 );  // Arbitrary cap. Current max eclipse duration is 45s (15s base + 30s inc). Adjust if needed.
 
   buff.solstice = make_buff( this, "solstice", talent.solstice->effectN( 1 ).trigger() );
 
