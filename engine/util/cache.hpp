@@ -7,8 +7,7 @@
 
 #include "config.hpp"
 #include "util/generic.hpp"
-
-#include <iosfwd>
+#include "util/format.hpp"
 
 // Cache Control ============================================================
 
@@ -20,7 +19,7 @@ enum class cache_era {
 // used to mark persistent caches at load.
 };
 
-std::ostream& operator<<(std::ostream &os, const cache_era& x);
+void format_to( cache_era, fmt::format_context::iterator );
 
 enum behavior_e
 {

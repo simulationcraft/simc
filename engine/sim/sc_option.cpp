@@ -191,10 +191,9 @@ protected:
     return opts::parse_status::OK;
   }
 
-  std::ostream& do_print( std::ostream& stream ) const override
+  void do_format_to( fmt::format_context::iterator out ) const override
   {
-    fmt::print( stream, "{}={}\n", name(), _ref );
-    return stream;
+    fmt::format_to( out, "{}={}\n", name(), _ref );
   }
 private:
   std::string& _ref;
@@ -217,10 +216,9 @@ protected:
     return opts::parse_status::OK;
   }
 
-  std::ostream& do_print( std::ostream& stream ) const override
+  void do_format_to( fmt::format_context::iterator out ) const override
   {
-    fmt::print( stream, "{}+={}\n", name(), _ref );
-    return stream;
+    fmt::format_to( out, "{}+={}\n", name(), _ref );
   }
 private:
   std::string& _ref;
@@ -252,10 +250,9 @@ protected:
     return opts::parse_status::OK;
   }
 
-  std::ostream& do_print( std::ostream& stream ) const override
+  void do_format_to( fmt::format_context::iterator out ) const override
   {
-    fmt::print( stream, "{}={}\n", name(), _ref );
-    return stream;
+    fmt::format_to( out, "{}={}\n", name(), _ref );
   }
 private:
   T& _ref;
@@ -299,10 +296,9 @@ protected:
     return opts::parse_status::OK;
   }
 
-  std::ostream& do_print( std::ostream& stream ) const override
+  void do_format_to( fmt::format_context::iterator out ) const override
   {
-    fmt::print( stream, "{}={}\n", name(), _ref );
-    return stream;
+    fmt::format_to( out, "{}={}\n", name(), _ref );
   }
 private:
   T& _ref;
@@ -329,10 +325,10 @@ protected:
     _ref = util::to_int( v ) != 0;
     return opts::parse_status::OK;
   }
-  std::ostream& do_print( std::ostream& stream ) const override
+
+  void do_format_to( fmt::format_context::iterator out ) const override
   {
-    fmt::print( stream, "{}={:d}\n", name(), _ref );
-    return stream;
+    fmt::format_to( out, "{}={:d}\n", name(), _ref );
   }
 private:
   bool& _ref;
@@ -358,10 +354,10 @@ protected:
     _ref = util::to_int( v );
     return opts::parse_status::OK;
   }
-  std::ostream& do_print( std::ostream& stream ) const override
+  
+  void do_format_to( fmt::format_context::iterator out ) const override
   {
-    fmt::print( stream, "{}={}\n", name(), _ref );
-    return stream;
+    fmt::format_to( out, "{}={}\n", name(), _ref );
   }
 private:
   int& _ref;
@@ -381,10 +377,10 @@ protected:
 
      return _fun( sim, n, value ) == true ? opts::parse_status::OK : opts::parse_status::FAILURE;
   }
-  std::ostream& do_print( std::ostream& stream ) const override
+
+  void do_format_to( fmt::format_context::iterator out ) const override
   {
-    fmt::print( stream, "function option: {}\n", name() );
-    return stream;
+    fmt::format_to( out, "function option: {}\n", name() );
   }
 private:
   opts::function_t _fun;
@@ -427,11 +423,12 @@ protected:
 
     return opts::parse_status::CONTINUE;
   }
-  std::ostream& do_print( std::ostream& stream ) const override
+  void do_format_to( fmt::format_context::iterator out ) const override
   {
     for ( const auto& entry : _ref )
-      fmt::print( stream, "{}{}={}", name(), entry.first, entry.second );
-    return stream;
+    {
+      fmt::format_to( out, "{}{}={}", name(), entry.first, entry.second );
+    }
   }
   opts::map_t& _ref;
 };
@@ -480,14 +477,15 @@ protected:
     return opts::parse_status::CONTINUE;
   }
 
-  std::ostream& do_print( std::ostream& stream ) const override
+  void do_format_to( fmt::format_context::iterator out ) const override
   {
     for ( auto& entry : _ref )
     {
       for ( auto i = 0u; i < entry.second.size(); ++i )
-        fmt::print( stream, "{}{}{}{}\n", name(), entry.first, i == 0 ? "=" : "+=", entry.second[ i ] );
+      {
+        fmt::format_to( out, "{}{}{}{}\n", name(), entry.first, i == 0 ? "=" : "+=", entry.second[ i ] );
+      }
     }
-    return stream;
   }
 
   opts::map_list_t& _ref;
@@ -509,13 +507,12 @@ protected:
 
     return opts::parse_status::OK;
   }
-  std::ostream& do_print( std::ostream& stream ) const override
+  void do_format_to( fmt::format_context::iterator out ) const override
   {
-    fmt::print( stream, "{}=", name() );
+    fmt::format_to( out, "{}=", name() );
     for ( auto& entry : _ref )
-      fmt::print( stream, "{}{} ", name(), entry );
-    fmt::print( stream, "\n" );
-    return stream;
+      fmt::format_to( out, "{}{} ", name(), entry );
+    fmt::format_to( out, "\n" );
   }
 private:
   opts::list_t& _ref;
@@ -536,10 +533,9 @@ protected:
       "Option '{}' has been deprecated. Please use option '{}' instead.", name, _new_option ) );
     return opts::parse_status::DEPRECATED;
   }
-  std::ostream& do_print( std::ostream& stream ) const override
+  void do_format_to( fmt::format_context::iterator out ) const override
   {
-    fmt::print( stream, "Option '{}' has been deprecated. Please use '{}'.\n", name(), _new_option );
-    return stream;
+    fmt::format_to( out, "Option '{}' has been deprecated. Please use '{}'.\n", name(), _new_option );
   }
 private:
   std::string _new_option;
@@ -560,8 +556,11 @@ protected:
     std::cerr << std::endl;
     return opts::parse_status::OK;
   }
-  std::ostream& do_print( std::ostream& stream ) const override
-  { return stream; }
+
+  void do_format_to( fmt::format_context::iterator ) const override
+  { 
+    // do nothing
+  }
 };
 
 } // opts
@@ -574,6 +573,11 @@ opts::parse_status option_t::parse( sim_t* sim, util::string_view name, util::st
   catch ( const std::exception& ) {
     std::throw_with_nested( std::runtime_error( fmt::format( "Option '{}' with value '{}'", name, value ) ) );
   }
+}
+
+void format_to( const option_t& option, fmt::format_context::iterator out )
+{
+  option.do_format_to( out );
 }
 
 // option_t::parse ==========================================================

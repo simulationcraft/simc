@@ -10,7 +10,6 @@
 #include "dbc/data_definitions.hh"
 #include "util/string_view.hpp"
 
-#include <iosfwd>
 #include <memory>
 #include <string>
 #include <vector>
@@ -83,6 +82,6 @@ struct set_bonus_t
   std::string to_string() const;
   std::string to_profile_string(const std::string & = "\n") const;
   std::string generate_set_bonus_options() const;
-};
 
-std::ostream& operator<<(std::ostream&, const set_bonus_t&);
+  friend void format_to( const set_bonus_t&, fmt::format_context::iterator );
+};

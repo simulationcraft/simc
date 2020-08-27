@@ -1162,6 +1162,6 @@ public:
 
   spawner::base_actor_spawner_t* find_spawner( util::string_view id ) const;
   int nth_iteration() const;
+  
+  friend void format_to( const player_t&, fmt::format_context::iterator );
 };
-
-std::ostream& operator<<(std::ostream &os, const player_t& p);
