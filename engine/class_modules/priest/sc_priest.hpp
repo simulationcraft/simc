@@ -284,7 +284,7 @@ public:
   {
     const spell_data_t* grace;
     const spell_data_t* echo_of_light;
-    const spell_data_t* madness;
+    const spell_data_t* shadow_weaving;
   } mastery_spells;
 
   // Cooldowns
@@ -1047,8 +1047,6 @@ struct priest_action_t : public Base
     bool shadowform_ta;
     bool twist_of_fate_da;
     bool twist_of_fate_ta;
-    bool mastery_madness_da;
-    bool mastery_madness_ta;
     bool shadow_covenant_da;
     bool shadow_covenant_ta;
   } affected_by;
@@ -1098,8 +1096,6 @@ public:
                    {priest().buffs.shadowform->data().effectN( 4 ), affected_by.shadowform_ta},
                    {priest().buffs.twist_of_fate->data().effectN( 1 ), affected_by.twist_of_fate_da},
                    {priest().buffs.twist_of_fate->data().effectN( 2 ), affected_by.twist_of_fate_ta},
-                   {priest().mastery_spells.madness->effectN( 1 ), affected_by.mastery_madness_da},
-                   {priest().mastery_spells.madness->effectN( 2 ), affected_by.mastery_madness_ta},
                    {priest().buffs.shadow_covenant->data().effectN( 2 ), affected_by.shadow_covenant_da},
                    {priest().buffs.shadow_covenant->data().effectN( 3 ), affected_by.shadow_covenant_ta}};
 
@@ -1151,10 +1147,6 @@ public:
   {
     double m = ab::action_da_multiplier();
 
-    if ( affected_by.mastery_madness_da )
-    {
-      m *= 1.0 + priest().cache.mastery_value();
-    }
     if ( affected_by.voidform_da && priest().buffs.voidform->check() )
     {
       m *= vf_da_multiplier;
@@ -1178,10 +1170,6 @@ public:
   {
     double m = ab::action_ta_multiplier();
 
-    if ( affected_by.mastery_madness_ta )
-    {
-      m *= 1.0 + priest().cache.mastery_value();
-    }
     if ( affected_by.voidform_ta && priest().buffs.voidform->check() )
     {
       m *= vf_ta_multiplier;
@@ -1343,6 +1331,58 @@ struct priest_spell_t : public priest_action_t<spell_t>
         }
       }
     }
+  }
+
+  double composite_da_multiplier( const action_state_t* state ) const override
+  {
+    double d = base_t::composite_da_multiplier( state );
+
+    if ( priest().mastery_spells.shadow_weaving->ok() )
+    {
+      int dots;
+      if ( priest().buffs.voidform->check() )
+      {
+        dots = 3;
+      }
+      else
+      {
+        auto swp = state->target->get_dot( "shadow_word_pain", player );
+        auto vt  = state->target->get_dot( "vampiric_touch", player );
+        auto dp  = state->target->get_dot( "devouring_plague", player );
+
+        dots = swp->is_ticking() + vt->is_ticking() + dp->is_ticking();
+      }
+      double increase = dots * priest().cache.mastery_value();
+      d *= ( 1.0 + increase );
+    }
+
+    return d;
+  }
+
+  double composite_ta_multiplier( const action_state_t* state ) const override
+  {
+    double d = base_t::composite_ta_multiplier( state );
+
+    if ( priest().mastery_spells.shadow_weaving->ok() )
+    {
+      int dots;
+      if ( priest().buffs.voidform->check() )
+      {
+        dots = 3;
+      }
+      else
+      {
+        auto swp = state->target->get_dot( "shadow_word_pain", player );
+        auto vt  = state->target->get_dot( "vampiric_touch", player );
+        auto dp  = state->target->get_dot( "devouring_plague", player );
+
+        dots = swp->is_ticking() + vt->is_ticking() + dp->is_ticking();
+      }
+      double increase = dots * priest().cache.mastery_value();
+      d *= ( 1.0 + increase );
+    }
+
+    return d;
   }
 
   double get_death_throes_bonus() const

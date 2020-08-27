@@ -1571,9 +1571,9 @@ void priest_t::init_spells()
   specs.shadow     = dbc::get_class_passive( *this, PRIEST_SHADOW );
 
   // Mastery Spells
-  mastery_spells.grace         = find_mastery_spell( PRIEST_DISCIPLINE );
-  mastery_spells.echo_of_light = find_mastery_spell( PRIEST_HOLY );
-  mastery_spells.madness       = find_mastery_spell( PRIEST_SHADOW );
+  mastery_spells.grace          = find_mastery_spell( PRIEST_DISCIPLINE );
+  mastery_spells.echo_of_light  = find_mastery_spell( PRIEST_HOLY );
+  mastery_spells.shadow_weaving = find_mastery_spell( PRIEST_SHADOW );
 
   auto memory_lucid_dreams = find_azerite_essence( "Memory of Lucid Dreams" );
 

@@ -1348,6 +1348,7 @@ struct shadow_crash_t final : public priest_spell_t
     aoe    = -1;
     radius = data().effectN( 1 ).radius();
     range  = data().max_range();
+    cooldown->hasted = true;
 
     impact_action = new shadow_crash_damage_t( p );
     add_child( impact_action );
