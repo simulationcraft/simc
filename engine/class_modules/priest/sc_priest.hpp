@@ -578,7 +578,7 @@ public:
   void trigger_psychic_link( action_state_t* );
   void trigger_wrathful_faerie();
   void remove_wrathful_faerie();
-  const priest_td_t* find_target_data( player_t* target ) const
+  const priest_td_t* find_target_data( const player_t* target ) const
   {
     return _target_data[ target ];
   }
@@ -998,7 +998,8 @@ struct shadowflame_prism_t final : public priest_pet_spell_t
   void trigger( player_t* target, double original_amount )
   {
     base_dd_min = base_dd_max = ( original_amount * shadowflame_increase );
-    player->sim->print_debug( "Triggered shadowflame prism damage on target {} at {} percent increase.", *target, shadowflame_increase );
+    player->sim->print_debug( "Triggered shadowflame prism damage on target {} at {} percent increase.", *target,
+                              shadowflame_increase );
 
     set_target( target );
     execute();
@@ -1090,14 +1091,14 @@ public:
     {
       const spelleffect_data_t& effect;
       bool& affects;
-    } affects[] = {{priest().buffs.voidform->data().effectN( 1 ), affected_by.voidform_da},
-                   {priest().buffs.voidform->data().effectN( 2 ), affected_by.voidform_ta},
-                   {priest().buffs.shadowform->data().effectN( 1 ), affected_by.shadowform_da},
-                   {priest().buffs.shadowform->data().effectN( 4 ), affected_by.shadowform_ta},
-                   {priest().buffs.twist_of_fate->data().effectN( 1 ), affected_by.twist_of_fate_da},
-                   {priest().buffs.twist_of_fate->data().effectN( 2 ), affected_by.twist_of_fate_ta},
-                   {priest().buffs.shadow_covenant->data().effectN( 2 ), affected_by.shadow_covenant_da},
-                   {priest().buffs.shadow_covenant->data().effectN( 3 ), affected_by.shadow_covenant_ta}};
+    } affects[] = { { priest().buffs.voidform->data().effectN( 1 ), affected_by.voidform_da },
+                    { priest().buffs.voidform->data().effectN( 2 ), affected_by.voidform_ta },
+                    { priest().buffs.shadowform->data().effectN( 1 ), affected_by.shadowform_da },
+                    { priest().buffs.shadowform->data().effectN( 4 ), affected_by.shadowform_ta },
+                    { priest().buffs.twist_of_fate->data().effectN( 1 ), affected_by.twist_of_fate_da },
+                    { priest().buffs.twist_of_fate->data().effectN( 2 ), affected_by.twist_of_fate_ta },
+                    { priest().buffs.shadow_covenant->data().effectN( 2 ), affected_by.shadow_covenant_da },
+                    { priest().buffs.shadow_covenant->data().effectN( 3 ), affected_by.shadow_covenant_ta } };
 
     for ( const auto& a : affects )
     {
@@ -1115,7 +1116,7 @@ public:
     return *( priest().get_target_data( t ) );
   }
 
-  const priest_td_t* find_td( player_t* t ) const
+  const priest_td_t* find_td( const player_t* t ) const
   {
     return priest().find_target_data( t );
   }
@@ -1322,7 +1323,8 @@ struct priest_spell_t : public priest_action_t<spell_t>
         priest().buffs.twist_of_fate->trigger();
       }
 
-      if ( priest().specialization() == PRIEST_SHADOW && s->result_type == result_amount_type::DMG_DIRECT && s->result_amount > 0 )
+      if ( priest().specialization() == PRIEST_SHADOW && s->result_type == result_amount_type::DMG_DIRECT &&
+           s->result_amount > 0 )
       {
         const priest_td_t* td = find_td( s->target );
         if ( td && td->buffs.wrathful_faerie->check() )
@@ -1333,28 +1335,47 @@ struct priest_spell_t : public priest_action_t<spell_t>
     }
   }
 
+  int shadow_weaving_active_dots( const player_t* target ) const
+  {
+    int dots = 0;
+    if ( priest().buffs.voidform->check() )
+    {
+      dots = 3;
+    }
+    else
+    {
+      if ( const priest_td_t* td = find_td( target ) )
+      {
+        const dot_t* swp = td->dots.shadow_word_pain;
+        const dot_t* vt  = td->dots.vampiric_touch;
+        const dot_t* dp  = td->dots.devouring_plague;
+
+        dots = swp->is_ticking() + vt->is_ticking() + dp->is_ticking();
+      }
+    }
+    return dots;
+  }
+
+  double shadow_weaving_multiplier( const player_t* target ) const
+  {
+    double multiplier = 1.0;
+    if ( priest().mastery_spells.shadow_weaving->ok() )
+    {
+      auto dots = shadow_weaving_active_dots( target );
+
+      if ( dots > 0 )
+      {
+        multiplier *= 1 + dots * priest().cache.mastery_value();
+      }
+    }
+    return multiplier;
+  }
+
   double composite_da_multiplier( const action_state_t* state ) const override
   {
     double d = base_t::composite_da_multiplier( state );
 
-    if ( priest().mastery_spells.shadow_weaving->ok() )
-    {
-      int dots;
-      if ( priest().buffs.voidform->check() )
-      {
-        dots = 3;
-      }
-      else
-      {
-        auto swp = state->target->get_dot( "shadow_word_pain", player );
-        auto vt  = state->target->get_dot( "vampiric_touch", player );
-        auto dp  = state->target->get_dot( "devouring_plague", player );
-
-        dots = swp->is_ticking() + vt->is_ticking() + dp->is_ticking();
-      }
-      double increase = dots * priest().cache.mastery_value();
-      d *= ( 1.0 + increase );
-    }
+    d *= shadow_weaving_multiplier( state->target );
 
     return d;
   }
@@ -1363,24 +1384,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
   {
     double d = base_t::composite_ta_multiplier( state );
 
-    if ( priest().mastery_spells.shadow_weaving->ok() )
-    {
-      int dots;
-      if ( priest().buffs.voidform->check() )
-      {
-        dots = 3;
-      }
-      else
-      {
-        auto swp = state->target->get_dot( "shadow_word_pain", player );
-        auto vt  = state->target->get_dot( "vampiric_touch", player );
-        auto dp  = state->target->get_dot( "devouring_plague", player );
-
-        dots = swp->is_ticking() + vt->is_ticking() + dp->is_ticking();
-      }
-      double increase = dots * priest().cache.mastery_value();
-      d *= ( 1.0 + increase );
-    }
+    d *= shadow_weaving_multiplier( state->target );
 
     return d;
   }
