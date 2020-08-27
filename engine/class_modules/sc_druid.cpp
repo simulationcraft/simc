@@ -3011,6 +3011,7 @@ struct moonfire_t : public druid_spell_t
     {
       energize_resource = RESOURCE_ASTRAL_POWER;
       energize_amount   = player->spec.astral_power->effectN( 3 ).resource( RESOURCE_ASTRAL_POWER );
+      energize_type = action_energize::ON_HIT;
     }
     else
       energize_type = action_energize::NONE;
@@ -7012,7 +7013,7 @@ struct convoke_the_spirits_t : public druid_spell_t
     if ( !conv_sf )
       conv_sf = new starfall_t( player, options_str, free_cast_e::CONVOKE );
 
-    conv_mf = player->find_action( "moonfire_convoke" );
+    conv_mf = player->find_action( "moonfire" );
     if ( !conv_mf )
       conv_mf = new moonfire_t( player, options_str, free_cast_e::CONVOKE );
 
@@ -7020,7 +7021,7 @@ struct convoke_the_spirits_t : public druid_spell_t
     add_child( conv_ss );
     add_child( conv_wr );
     add_child( conv_sf );
-    add_child( conv_mf );
+    //add_child( conv_mf );
 
     // Feral
     // Guardian
