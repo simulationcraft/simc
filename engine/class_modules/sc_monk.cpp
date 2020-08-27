@@ -3824,8 +3824,8 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
     double am = monk_melee_attack_t::action_multiplier();
 
     // Rank 2 seems to be applied after Bonus Damage. Hence the reason for being in the Action Multiplier
-    if ( p()->spec.rising_sun_kick_2 )
-      am *= 1 + p()->spec.rising_sun_kick_2->effectN( 1 ).percent();
+//    if ( p()->spec.rising_sun_kick_2 )
+//      am *= 1 + p()->spec.rising_sun_kick_2->effectN( 1 ).percent();
 
     return am;
   }
@@ -4102,10 +4102,6 @@ struct blackout_kick_t : public monk_melee_attack_t
           // Saved as -1
           base_costs[ RESOURCE_CHI ] +=
               p->spec.blackout_kick_2->effectN( 1 ).base_value();  // Reduce base from 3 chi to 2
-        if ( p->spec.blackout_kick_3 )
-          // Saved as -1
-          base_costs[ RESOURCE_CHI ] +=
-              p->spec.blackout_kick_3->effectN( 1 ).base_value();  // Reduce base from 2 chi to 1
         break;
       }
       default:
@@ -4181,11 +4177,14 @@ struct blackout_kick_t : public monk_melee_attack_t
       }
       case MONK_WINDWALKER:
       {
-        timespan_t cd_reduction = -1 * p()->spec.blackout_kick->effectN( 3 ).time_value();
-        p()->cooldown.rising_sun_kick->adjust( cd_reduction, true );
-        p()->cooldown.fists_of_fury->adjust( cd_reduction, true );
-        if ( p()->buff.whirling_dragon_punch->up() )
-          p()->buff.whirling_dragon_punch->extend_duration( p(), cd_reduction );
+        if ( p()->spec.blackout_kick_3 )
+        {
+          timespan_t cd_reduction = -1 * p()->spec.blackout_kick->effectN( 3 ).time_value();
+          p()->cooldown.rising_sun_kick->adjust( cd_reduction, true );
+          p()->cooldown.fists_of_fury->adjust( cd_reduction, true );
+          if ( p()->buff.whirling_dragon_punch->up() )
+            p()->buff.whirling_dragon_punch->extend_duration( p(), cd_reduction );
+        }
         break;
       }
       default:
