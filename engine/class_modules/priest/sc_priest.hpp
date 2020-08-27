@@ -564,6 +564,9 @@ private:
   expr_t* create_expression_holy( action_t* a, util::string_view name_str );
   action_t* create_action_holy( util::string_view name, util::string_view options_str );
 
+  int shadow_weaving_active_dots( const player_t* target ) const;
+  double shadow_weaving_multiplier( const player_t* target ) const;
+
   target_specific_t<priest_td_t> _target_data;
 
 public:
@@ -1333,60 +1336,6 @@ struct priest_spell_t : public priest_action_t<spell_t>
         }
       }
     }
-  }
-
-  int shadow_weaving_active_dots( const player_t* target ) const
-  {
-    int dots = 0;
-    if ( priest().buffs.voidform->check() )
-    {
-      dots = 3;
-    }
-    else
-    {
-      if ( const priest_td_t* td = find_td( target ) )
-      {
-        const dot_t* swp = td->dots.shadow_word_pain;
-        const dot_t* vt  = td->dots.vampiric_touch;
-        const dot_t* dp  = td->dots.devouring_plague;
-
-        dots = swp->is_ticking() + vt->is_ticking() + dp->is_ticking();
-      }
-    }
-    return dots;
-  }
-
-  double shadow_weaving_multiplier( const player_t* target ) const
-  {
-    double multiplier = 1.0;
-    if ( priest().mastery_spells.shadow_weaving->ok() )
-    {
-      auto dots = shadow_weaving_active_dots( target );
-
-      if ( dots > 0 )
-      {
-        multiplier *= 1 + dots * priest().cache.mastery_value();
-      }
-    }
-    return multiplier;
-  }
-
-  double composite_da_multiplier( const action_state_t* state ) const override
-  {
-    double d = base_t::composite_da_multiplier( state );
-
-    d *= shadow_weaving_multiplier( state->target );
-
-    return d;
-  }
-
-  double composite_ta_multiplier( const action_state_t* state ) const override
-  {
-    double d = base_t::composite_ta_multiplier( state );
-
-    d *= shadow_weaving_multiplier( state->target );
-
-    return d;
   }
 
   double get_death_throes_bonus() const
