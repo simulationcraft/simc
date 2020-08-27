@@ -741,6 +741,7 @@ struct warrior_action_t : public Base
     }
   } affected_by;
 
+  bool usable_while_channeling;
   double tactician_per_rage;
 
 private:
@@ -754,6 +755,7 @@ public:
   warrior_action_t( util::string_view n, warrior_t* player, const spell_data_t* s = spell_data_t::nil() )
     : ab( n, player, s ),
       tactician_per_rage( 0 ),
+      usable_while_channeling( false ),
       track_cd_waste( s->cooldown() > timespan_t::zero() || s->charge_cooldown() > timespan_t::zero() ),
       cd_wasted_exec( nullptr ),
       cd_wasted_cumulative( nullptr ),
@@ -961,14 +963,15 @@ public:
   bool ready() override
   {
     if ( !ab::ready() )
-    {
       return false;
-    }
+
+    // -1 melee range implies that the ability can be used at any distance from the target.
     if ( p()->current.distance_to_move > ab::range && ab::range != -1 )
-    {
-      // -1 melee range implies that the ability can be used at any distance from the target.
       return false;
-    }
+
+    if ( ( p()->channeling || p()->buff.bladestorm->check() ) && !usable_while_channeling )
+      return false;
+
     return true;
   }
 
@@ -1159,7 +1162,7 @@ struct warrior_spell_t : public warrior_action_t<spell_t>
 
 struct warrior_attack_t : public warrior_action_t<melee_attack_t>
 {  // Main Warrior Attack Class
-  warrior_attack_t( const std::string& n, warrior_t* p, const spell_data_t* s = spell_data_t::nil() )
+  warrior_attack_t( util::string_view n, warrior_t* p, const spell_data_t* s = spell_data_t::nil() )
     : base_t( n, p, s )
   {
     special = true;
@@ -1297,11 +1300,11 @@ struct melee_t : public warrior_attack_t
       seasoned_soldier_crit_mult( p->spec.seasoned_soldier->effectN( 1 ).percent() ),
       devastator( nullptr )
   {
-    school     = SCHOOL_PHYSICAL;
-    special    = false;
-    background = repeating = may_glance = true;
-    trigger_gcd                         = timespan_t::zero();
-    weapon_multiplier                   = 1.0;
+    background = repeating = may_glance = usable_while_channeling = true;
+    special           = false;
+    school            = SCHOOL_PHYSICAL;
+    trigger_gcd       = timespan_t::zero();
+    weapon_multiplier = 1.0;
     if ( p->dual_wield() )
     {
       base_hit -= 0.19;
@@ -1471,8 +1474,8 @@ struct auto_attack_t : public warrior_attack_t
   {
     parse_options( options_str );
     assert( p->main_hand_weapon.type != WEAPON_NONE );
-    ignore_false_positive = true;
-    range                 = 5;
+    ignore_false_positive = usable_while_channeling = true;
+    range = 5;
 
     if ( p->main_hand_weapon.type == WEAPON_2H && p->has_shield_equipped() && p->specialization() != WARRIOR_FURY )
     {
@@ -1718,55 +1721,55 @@ struct bladestorm_tick_t : public warrior_attack_t
 
 struct bladestorm_t : public warrior_attack_t
 {
-  double torment_chance;
   attack_t *bladestorm_mh, *bladestorm_oh;
   mortal_strike_unhinged_t* mortal_strike;
-  //bladestorm_t( warrior_t* p, const std::string& options_str )
-    //: warrior_attack_t( "bladestorm", p,
-      //                  p->specialization() == WARRIOR_FURY ? p->talents.bladestorm : p->spec.bladestorm ),
+  double torment_chance;
+  bool torment_triggered;
 
-  bladestorm_t( warrior_t* p, const std::string& options_str, const spell_data_t* spell )
-    : warrior_attack_t( "bladestorm", p, spell ),
-
-      bladestorm_mh( new bladestorm_tick_t( p, "bladestorm_mh" ) ),
+  bladestorm_t( warrior_t* p, const std::string& options_str, util::string_view n, const spell_data_t* spell, bool torment_triggered = false )
+    : warrior_attack_t( n, p, spell ),
+    bladestorm_mh( new bladestorm_tick_t( p, fmt::format( "{}_mh", n ) ) ),
       bladestorm_oh( nullptr ),
       mortal_strike( nullptr ),
-      torment_chance( 0.5 * p->legendary.signet_of_tormented_kings->proc_chance() )
+      torment_chance( 0.5 * p->legendary.signet_of_tormented_kings->proc_chance() ),
+      torment_triggered( torment_triggered )
   {
-    if ( p->talents.ravager->ok() )
+    parse_options( options_str );
+    channeled = tick_zero = true;
+    callbacks = interrupt_auto_attack = false;
+    travel_speed                      = 0;
+    
+    bladestorm_mh->weapon             = &( player->main_hand_weapon );
+    add_child( bladestorm_mh );
+    if ( player->off_hand_weapon.type != WEAPON_NONE && player->specialization() == WARRIOR_FURY )
     {
-      background = true;  // Ravager replaces bladestorm for arms.
+      bladestorm_oh         = new bladestorm_tick_t( p, fmt::format( "{}_oh", n ) );
+      bladestorm_oh->weapon = &( player->off_hand_weapon );
+      add_child( bladestorm_oh );
     }
-    else
+    
+    if ( p->specialization() == WARRIOR_FURY )
     {
-      parse_options( options_str );
-      channeled = tick_zero = true;
-      callbacks = interrupt_auto_attack = false;
-      travel_speed                      = 0;
-      bladestorm_mh->weapon             = &( player->main_hand_weapon );
-      add_child( bladestorm_mh );
-      if ( player->off_hand_weapon.type != WEAPON_NONE && player->specialization() == WARRIOR_FURY )
-      {
-        bladestorm_oh         = new bladestorm_tick_t( p, "bladestorm_oh" );
-        bladestorm_oh->weapon = &( player->off_hand_weapon );
-        add_child( bladestorm_oh );
-      }
-      if ( p->specialization() == WARRIOR_FURY )
-      {
-        energize_type     = action_energize::PER_TICK;
-        energize_resource = RESOURCE_RAGE;
-        energize_amount   = data().effectN( 4 ).resource( energize_resource );
-      }
-      if ( p->legendary.unhinged->ok() )
-      {
-        mortal_strike = new mortal_strike_unhinged_t( p, "bladestorm_mortal_strike" );
-        add_child( mortal_strike );
-      }
-      // Vision of Perfection only reduces the cooldown for Arms
-      if ( p->azerite.vision_of_perfection.enabled() && p->specialization() == WARRIOR_ARMS )
-      {
-        cooldown->duration *= 1.0 + azerite::vision_of_perfection_cdr( p->azerite.vision_of_perfection );
-      }
+      energize_type     = action_energize::PER_TICK;
+      energize_resource = RESOURCE_RAGE;
+      energize_amount   = data().effectN( 4 ).resource( energize_resource );
+    }
+    
+    if ( p->legendary.unhinged->ok() )
+    {
+      mortal_strike = new mortal_strike_unhinged_t( p, "bladestorm_mortal_strike" );
+      add_child( mortal_strike );
+    }
+    
+    // Vision of Perfection only reduces the cooldown for Arms
+    if ( p->azerite.vision_of_perfection.enabled() && p->specialization() == WARRIOR_ARMS )
+    {
+      cooldown->duration *= 1.0 + azerite::vision_of_perfection_cdr( p->azerite.vision_of_perfection );
+    }
+
+    if ( torment_triggered )
+    {
+      dot_duration = p->legendary.signet_of_tormented_kings->effectN( 3 ).time_value();
     }
   }
 
@@ -1774,24 +1777,18 @@ struct bladestorm_t : public warrior_attack_t
   {
     warrior_attack_t::execute();
 
-    if( background )
+    if( torment_triggered )
     {
-      p()->buff.bladestorm->trigger( timespan_t::from_millis( p()->legendary.signet_of_tormented_kings->effectN( 3 ).base_value() ) );
+      p()->buff.bladestorm->trigger( dot_duration );
     }
     else
     {
       p()->buff.bladestorm->trigger();
-    }
 
-    if ( p()->legendary.signet_of_tormented_kings.ok() && !background )
-    {
-      if ( p()->rng().roll( torment_chance ) )
+      if ( p()->legendary.signet_of_tormented_kings.ok() )
       {
-         p()->active.signet_avatar->execute();//( timespan_t::from_millis( p()->legendary.signet_of_tormented_kings->effectN( 2 ).base_value() ) );
-      }
-      else
-      {
-         p()->active.signet_recklessness->execute();//( timespan_t::from_millis( p()->legendary.signet_of_tormented_kings->effectN( 4 ).base_value() ) );
+        action_t* tormet_ability = p()->rng().roll( torment_chance ) ? p()->active.signet_avatar : p()->active.signet_recklessness;
+        tormet_ability->schedule_execute();
       }
     }
   }
@@ -1834,6 +1831,17 @@ struct bladestorm_t : public warrior_attack_t
   {
     warrior_attack_t::last_tick( d );
     p()->buff.bladestorm->expire();
+  }
+
+  bool verify_actor_spec() const override
+  {
+    if ( torment_triggered )
+      return true;
+
+    if ( p()->talents.ravager->ok() )
+      return false;
+
+    return warrior_attack_t::verify_actor_spec();
   }
 };
 
@@ -2413,6 +2421,7 @@ struct demoralizing_shout : public warrior_attack_t
     : warrior_attack_t( "demoralizing_shout", p, p->spec.demoralizing_shout ), rage_gain( 0 )
   {
     parse_options( options_str );
+    usable_while_channeling = true;
     rage_gain += p->talents.booming_voice->effectN( 1 ).resource( RESOURCE_RAGE );
     aoe = -1;
   }
@@ -5019,18 +5028,13 @@ struct spear_of_bastion_t : public warrior_attack_t
 struct avatar_t : public warrior_spell_t
 {
   double torment_chance;
-  //recklessness_t* recklessness_attack = nullptr;
-  avatar_t( warrior_t* p, const std::string& options_str, const spell_data_t* spell ) :
-    warrior_spell_t( "avatar", p, spell ),
-    torment_chance( 0.5 * p->legendary.signet_of_tormented_kings->proc_chance() )
+  bool torment_triggered;
 
+  avatar_t( warrior_t* p, const std::string& options_str, util::string_view n, const spell_data_t* spell, bool torment_triggered = false ) :
+    warrior_spell_t( n, p, spell ),
+    torment_chance( 0.5 * p->legendary.signet_of_tormented_kings->proc_chance() ),
+    torment_triggered( torment_triggered )
   {
-
-   //if ( p->legendary.signet_of_tormented_kings.ok() )
-   //{
-     //recklessness_attack = p->get_background_action<recklessness_t>( "recklessness_torment_trigger" );
-     //recklessness_attack->torment_triggered = true;
-   //}
 
     parse_options( options_str );
     callbacks = false;
@@ -5046,13 +5050,19 @@ struct avatar_t : public warrior_spell_t
   {
     warrior_spell_t::execute();
 
-    if( background )
+    if( torment_triggered )
     {
-      p()->buff.avatar->trigger( timespan_t::from_millis( p()->legendary.signet_of_tormented_kings->effectN( 2 ).base_value() ) );
+      p()->buff.avatar->trigger( p()->legendary.signet_of_tormented_kings->effectN( 2 ).time_value() );
     }
     else
     {
       p()->buff.avatar->trigger();
+
+      if ( p()->legendary.signet_of_tormented_kings.ok() )
+      {
+        action_t* tormet_ability = p()->rng().roll( torment_chance ) ? p()->active.signet_recklessness : p()->active.signet_bladestorm_a;
+        tormet_ability->schedule_execute();
+      }
     }
 
     if ( p()->azerite.bastion_of_might.enabled() )
@@ -5062,31 +5072,18 @@ struct avatar_t : public warrior_spell_t
       if ( p() -> specialization() == WARRIOR_PROTECTION )
         p() -> active.bastion_of_might_ip -> execute();
     }
-    if ( p()->legendary.signet_of_tormented_kings.ok() && !background )
-    {
-      if ( p()->rng().roll( torment_chance ) )
-      {
-         p()->active.signet_recklessness->execute();//( timespan_t::from_millis( p()->legendary.signet_of_tormented_kings->effectN( 4 ).base_value() ) );
-      }
-      else
-      {
-         p()->active.signet_bladestorm_a->execute();//( timespan_t::from_millis( p()->legendary.signet_of_tormented_kings->effectN( 3 ).base_value() ) );
-      }
-    }
   }
 
   bool verify_actor_spec() const override
   {
-    if ( p()->talents.avatar->ok() && p() -> specialization() == WARRIOR_ARMS )
-    {
-      // Do not check spec if Arms talent avatar is available, so that spec check on the spell (required: protection)
-      // does not fail.
+    if ( torment_triggered )
       return true;
-    }
-    else
-    {
-      return warrior_spell_t::verify_actor_spec();
-    }
+
+    // Do not check spec if Arms talent avatar is available, so that spec check on the spell (required: protection) does not fail.
+    if ( p()->talents.avatar->ok() && p()->specialization() == WARRIOR_ARMS )
+      return true;
+    
+    return warrior_spell_t::verify_actor_spec();
   }
 };
 
@@ -5098,6 +5095,7 @@ struct battle_shout_t : public warrior_spell_t
     : warrior_spell_t( "battle_shout", p, p->spell.battle_shout )
   {
     parse_options( options_str );
+    usable_while_channeling = true;
     harmful = false;
 
     background = sim->overrides.battle_shout != 0;
@@ -5327,10 +5325,13 @@ struct recklessness_t : public warrior_spell_t
 {
   double bonus_crit;
   double torment_chance;
-  recklessness_t( warrior_t* p, const std::string& options_str, const spell_data_t* spell )
-    : warrior_spell_t( "recklessness", p, spell ),
+  bool torment_triggered;
+
+  recklessness_t( warrior_t* p, const std::string& options_str, util::string_view n, const spell_data_t* spell, bool torment_triggered = false )
+    : warrior_spell_t( n, p, spell ),
       bonus_crit( 0.0 ),
-      torment_chance( 0.5 * p->legendary.signet_of_tormented_kings->proc_chance() )
+      torment_chance( 0.5 * p->legendary.signet_of_tormented_kings->proc_chance() ),
+      torment_triggered( torment_triggered )
   {
     parse_options( options_str );
     bonus_crit = data().effectN( 1 ).percent();
@@ -5355,31 +5356,33 @@ struct recklessness_t : public warrior_spell_t
   {
     warrior_spell_t::execute();
 
-    if( background )
+    if( torment_triggered )
     {
-      p()->buff.recklessness->trigger( timespan_t::from_millis( p()->legendary.signet_of_tormented_kings->effectN( 4 ).base_value() ) );
+      p()->buff.recklessness->trigger( p()->legendary.signet_of_tormented_kings->effectN( 4 ).time_value() );
     }
     else
     {
       p()->buff.recklessness->trigger();
+
+      if ( p()->legendary.signet_of_tormented_kings.ok() )
+      {
+        action_t* tormet_ability = p()->rng().roll( torment_chance ) ? p()->active.signet_avatar : p()->active.signet_bladestorm_f;
+        tormet_ability->schedule_execute();
+      }
     }
 
     if ( p()->legendary.will_of_the_berserker.ok() )
     {
       p()->buff.will_of_the_berserker->trigger();
     }
+  }
 
-    if ( p()->legendary.signet_of_tormented_kings.ok() && !background )
-    {
-      if ( p()->rng().roll( torment_chance ) )
-      {
-         p()->active.signet_avatar->execute();//( timespan_t::from_millis( p()->legendary.signet_of_tormented_kings->effectN( 2 ).base_value() ) );
-      }
-      else
-      {
-         p()->active.signet_bladestorm_f->execute();//( timespan_t::from_millis( p()->legendary.signet_of_tormented_kings->effectN( 3 ).base_value() ) );
-      }
-    }
+  bool verify_actor_spec() const override
+  {
+    if ( torment_triggered )
+      return true;
+
+    return warrior_spell_t::verify_actor_spec();
   }
 };
 
@@ -5582,7 +5585,7 @@ struct spell_reflection_t : public warrior_spell_t
     : warrior_spell_t( "spell_reflection", p, p->spec.spell_reflection )
   {
     parse_options( options_str );
-    use_off_gcd = true;
+    use_off_gcd = usable_while_channeling = true;
   }
 
   void execute() override
@@ -5624,22 +5627,16 @@ action_t* warrior_t::create_action( util::string_view name, const std::string& o
     return new auto_attack_t( this, options_str );
   if ( name == "ancient_aftershock" )
     return new ancient_aftershock_t( this, options_str );
-  //if ( name == "avatar" )
-    //return new avatar_t( this, options_str );
   if ( name == "avatar" )
-    return new avatar_t( this, options_str, specialization() == WARRIOR_ARMS ? talents.avatar : spec.avatar );
+    return new avatar_t( this, options_str, name, specialization() == WARRIOR_ARMS ? talents.avatar : spec.avatar );
   if ( name == "battle_shout" )
     return new battle_shout_t( this, options_str );
-  //if ( name == "recklessness" )
-    //return new recklessness_t( this, options_str );
   if ( name == "recklessness" )
-    return new recklessness_t( this, options_str, spec.recklessness );
+    return new recklessness_t( this, options_str, name, spec.recklessness );
   if ( name == "berserker_rage" )
     return new berserker_rage_t( this, options_str );
-  //if ( name == "bladestorm" )
-    //return new bladestorm_t( this, options_str );
   if ( name == "bladestorm" )
-    return new bladestorm_t( this, options_str, specialization() == WARRIOR_FURY ? talents.bladestorm : spec.bladestorm );
+    return new bladestorm_t( this, options_str, name, specialization() == WARRIOR_FURY ? talents.bladestorm : spec.bladestorm );
   if ( name == "bloodthirst" )
     return new bloodthirst_t( this, options_str );
   if ( name == "bloodbath" )
@@ -5998,9 +5995,9 @@ void warrior_t::init_spells()
   active.slaughter        = nullptr;
 
   // Runeforged Legendary Items
-  legendary.leaper            = find_runeforge_legendary( "Leaper" );
-  legendary.misshapen_mirror  = find_runeforge_legendary( "Misshapen Mirror" );
-  legendary.seismic_reverberation = find_runeforge_legendary( "Seismic Reverberation" );
+  legendary.leaper                    = find_runeforge_legendary( "Leaper" );
+  legendary.misshapen_mirror          = find_runeforge_legendary( "Misshapen Mirror" );
+  legendary.seismic_reverberation     = find_runeforge_legendary( "Seismic Reverberation" );
   legendary.signet_of_tormented_kings = find_runeforge_legendary( "Signet of Tormented Kings" );
 
   legendary.battlelord        = find_runeforge_legendary( "Battlelord" );
@@ -6053,6 +6050,21 @@ void warrior_t::init_spells()
     active.bastion_of_might_ip = new ignore_pain_bom_t( this );
   }
   if ( legendary.signet_of_tormented_kings->ok() )
+  {
+    cooldown.signet_of_tormented_kings = get_cooldown( "signet_of_tormented_kings" );
+    cooldown.signet_of_tormented_kings->duration = legendary.signet_of_tormented_kings->internal_cooldown();
+
+    active.signet_bladestorm_a  = new bladestorm_t( this, "", "bladestorm_torment", find_spell( 227847 ), true );
+    active.signet_bladestorm_f  = new bladestorm_t( this, "", "bladestorm_torment", find_spell( 46924 ), true );
+    active.signet_recklessness  = new recklessness_t( this, "", "recklessness_torment", find_spell( 1719 ), true );
+    active.signet_avatar        = new avatar_t( this, "", "avatar_torment", find_spell( 107574 ), true );
+    for ( action_t* action : { active.signet_recklessness, active.signet_bladestorm_a, active.signet_bladestorm_f, active.signet_avatar } )
+    {
+      action->background = true;
+      action->trigger_gcd = timespan_t::zero();
+      action->cooldown = cooldown.signet_of_tormented_kings;
+    }
+  }
 
   // Cooldowns
   cooldown.avatar         = get_cooldown( "avatar" );
@@ -6094,23 +6106,6 @@ void warrior_t::init_spells()
   cooldown.storm_bolt                       = get_cooldown( "storm_bolt" );
   cooldown.thunder_clap                     = get_cooldown( "thunder_clap" );
   cooldown.warbreaker                       = get_cooldown( "warbreaker" );
-  cooldown.signet_of_tormented_kings        = get_cooldown( "signet_of_tormented_kings" );
-
-  {
-    cooldown.signet_of_tormented_kings->duration = 3_s;
-    active.signet_recklessness = new recklessness_t( this, "", find_spell( 1719 ) );
-    active.signet_recklessness->background = true;
-    active.signet_recklessness->cooldown = cooldown.signet_of_tormented_kings;
-    active.signet_bladestorm_a = new bladestorm_t( this, "", find_spell( 227847 ) );
-    active.signet_bladestorm_a->background = true;
-    active.signet_bladestorm_a->cooldown = cooldown.signet_of_tormented_kings;
-    active.signet_bladestorm_f = new bladestorm_t( this, "", find_spell( 46924 ) );
-    active.signet_bladestorm_f->background = true;
-    active.signet_bladestorm_f->cooldown = cooldown.signet_of_tormented_kings;
-    active.signet_avatar = new avatar_t( this, "", find_spell( 107574 ) );
-    active.signet_avatar->background = true;
-    active.signet_avatar->cooldown = cooldown.signet_of_tormented_kings;
-  }
 }
 
 // warrior_t::init_base =====================================================
