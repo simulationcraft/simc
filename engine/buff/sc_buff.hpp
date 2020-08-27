@@ -19,6 +19,7 @@
 #include "util/string_view.hpp"
 #include "util/timeline.hpp"
 #include "sim/uptime.hpp"
+#include "util/format.hpp"
 
 struct buff_t;
 struct stat_buff_t;
@@ -317,6 +318,7 @@ public:
   buff_t* set_reverse_stack_count( int value );
   buff_t* set_stack_behavior( buff_stack_behavior b );
 
+  friend void format_to( const buff_t&, fmt::format_context::iterator );
 private:
   void update_trigger_calculations();
   void adjust_haste();
@@ -325,8 +327,6 @@ private:
 protected:
   void update_stack_uptime_array( timespan_t current_time, int old_stacks );
 };
-
-std::ostream& operator<<(std::ostream &os, const buff_t& p);
 
 struct stat_buff_t : public buff_t
 {

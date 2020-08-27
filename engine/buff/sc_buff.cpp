@@ -2165,10 +2165,9 @@ void buff_t::update_stack_uptime_array( timespan_t current_time, int old_stacks 
   uptime_array.add( end_time, end_partial.total_seconds() * mul );
 }
 
-std::ostream& operator<<(std::ostream &os, const buff_t& b)
+void format_to( const buff_t& buff, fmt::format_context::iterator out )
 {
-  fmt::print(os, "Buff {}", b.name() );
-  return os;
+  fmt::format_to( out, "Buff {}", buff.name() );
 }
 
 // ==========================================================================

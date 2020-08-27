@@ -12708,12 +12708,6 @@ void player_t::register_combat_begin( double amount, resource_e resource, gain_t
   });
 }
 
-std::ostream& operator<<(std::ostream &os, const player_t& p)
-{
-  fmt::print(os, "player '{}'", p.name() );
-  return os;
-}
-
 spawner::base_actor_spawner_t* player_t::find_spawner( util::string_view id ) const
 {
   auto it = range::find_if( spawners, [ id ]( spawner::base_actor_spawner_t* o ) {
@@ -12798,3 +12792,7 @@ void player_t::init_distance_targeting()
   x_position = -1 * base.distance;
 }
 
+void format_to( const player_t& player, fmt::format_context::iterator out )
+{
+  fmt::format_to( out, "Player '{}'", player.name() );
+}

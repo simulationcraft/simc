@@ -15,10 +15,10 @@
 #include <cmath>
 #include <numeric>
 #include <limits>
-#include <iosfwd>
 #include <type_traits>
 #include <cassert>
 #include <cstdint>
+#include "util/format.hpp"
 
 // if timespan_t is in the global namespace, there's a name lookup issue with
 // one of the Qt headers. Problem is avoided by defining in a sub-namespace
@@ -218,9 +218,10 @@ namespace simc
       static_assert(!std::is_floating_point<time_t>::value, "");
       return timespan_t( std::numeric_limits<time_t>::min() );
     }
+
+    friend void format_to( timespan_t, fmt::format_context::iterator );
   };
 
-  std::ostream& operator<<(std::ostream &os, timespan_t x);
 } // namespace simc
 
 using simc::timespan_t;

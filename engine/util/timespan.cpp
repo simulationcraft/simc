@@ -3,15 +3,13 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
+#include "fmt/format.h"
 #include "sc_timespan.hpp"
 
-#include "fmt/format.h"
-#include "fmt/ostream.h"
-
-namespace simc {
-std::ostream& operator<<(std::ostream &os, timespan_t x)
+namespace simc
 {
-  fmt::print(os, "{:.3f}", x.total_seconds() );
-  return os;
+void format_to( timespan_t x, fmt::format_context::iterator out )
+{
+  fmt::format_to( out, "{:.3f}", x.total_seconds() );
 }
-}
+}  // namespace simc

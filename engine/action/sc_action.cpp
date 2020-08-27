@@ -4371,12 +4371,10 @@ double action_t::last_tick_factor(const dot_t* /* d */, timespan_t time_to_tick,
   return std::min(1.0, duration / time_to_tick);
 }
 
-std::ostream& operator<<(std::ostream &os, const action_t& p)
+void format_to( const action_t& action, fmt::format_context::iterator out )
 {
-  fmt::print(os, "action '{}'", p.name() );
-  return os;
+  fmt::format_to(  out, "Action {}", action.name() );
 }
-
 
 bool action_t::execute_targeting(action_t* action) const
 {
