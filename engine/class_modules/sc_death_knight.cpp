@@ -484,6 +484,7 @@ public:
     buff_t* rune_of_the_stoneskin_gargoyle;
     buff_t* rune_of_hysteria;
     heal_t* rune_of_sanguination;
+    double rune_of_spellwarding;
     bool rune_of_apocalypse;
   } runeforge;
 
@@ -1837,7 +1838,7 @@ struct ghoul_pet_t : public base_ghoul_pet_t
     def -> add_action( "claw,if=energy>70" );
     def -> add_action( "monstrous_blow" );
     // Using Gnaw without DT is a dps loss compared to waiting for DT and casting Monstrous Blow
-    if ( o() -> spec.dark_transformation == spell_data_t::not_found() )
+    if ( ! o() -> spec.dark_transformation -> ok() )
       def -> add_action( "Gnaw" );
   }
 
@@ -2584,7 +2585,7 @@ struct death_knight_action_t : public Base
     }
 
     // Going by the tooltip and only increasing damage done directly by the death knight
-    // TODO: Test whether this variable uptime 1/2/3% damage increase also affects pets
+    // 2020-27-08: Doesn't seem to affect pets' damage
     if ( p() -> runeforge.rune_of_apocalypse )
     {
       m *= 1.0 + td -> debuff.apocalypse_war -> stack_value();
@@ -5696,9 +5697,8 @@ struct pillar_of_frost_t : public death_knight_spell_t
 struct raise_dead_t : public death_knight_spell_t
 {
   raise_dead_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_spell_t( "raise_dead", p,
-                          p -> spec.raise_dead_2 == spell_data_t::not_found() ?
-                          p -> spec.raise_dead : p -> spec.raise_dead_2 )
+    death_knight_spell_t( "raise_dead", p, p -> spec.raise_dead_2 -> ok() ?
+                          p -> spec.raise_dead_2 : p -> spec.raise_dead )
   {
     parse_options( options_str );
 
@@ -6514,6 +6514,44 @@ void runeforge::sanguination( special_effect_t& effect )
   p -> runeforge.rune_of_sanguination = new sanguination_heal_t( effect );
 }
 
+void runeforge::spellwarding( special_effect_t& effect )
+{
+  if ( effect.player -> type != DEATH_KNIGHT )
+  {
+    effect.type = SPECIAL_EFFECT_NONE;
+    return;
+  }
+
+  death_knight_t* p = debug_cast<death_knight_t*>( effect.item -> player );
+  // Stacking the rune seems to create a second proc object, and doubles the damage reduction
+  p -> runeforge.rune_of_spellwarding += p -> find_spell( effect.spell_id ) -> effectN( 2 ).percent();
+
+  struct spellwarding_absorb_t : public absorb_t
+  {
+    double health_percentage;
+    spellwarding_absorb_t( special_effect_t& effect ) :
+      absorb_t( "rune_of_spellwarding", static_cast<death_knight_t*>( effect.player ),
+                           effect.player -> find_spell( effect.spell_id ) -> effectN( 1 ).trigger() ),
+      health_percentage( effect.player -> find_spell( 326855 ) -> effectN( 2 ).percent() )
+      // The absorb amount is hardcoded in the effect tooltip, the only data is in the runeforging action spell
+    {
+      target = player;
+      background = true;
+    }
+
+    void execute() override
+    {
+      base_dd_min = base_dd_max = health_percentage * player -> resources.max[ RESOURCE_HEALTH ];
+
+      absorb_t::execute();
+    }
+  };
+  effect.execute_action = new spellwarding_absorb_t( effect );
+
+  new dbc_proc_callback_t( effect.item, effect );
+}
+
+
 // Resource Manipulation ====================================================
 
 double death_knight_t::resource_gain( resource_e resource_type, double amount, gain_t* g, action_t* action )
@@ -7319,7 +7357,7 @@ std::unique_ptr<expr_t> death_knight_t::create_expression( util::string_view nam
 
 void death_knight_t::create_pets()
 {
-  if ( spec.raise_dead )
+  if ( spec.raise_dead -> ok() )
   {
     pets.ghoul_pet = new pets::ghoul_pet_t( this );
   }
@@ -8572,6 +8610,9 @@ void death_knight_t::target_mitigation( school_e school, result_amount_type type
   if ( runeforge.rune_of_apocalypse )
     state -> result_amount *= 1.0 + td -> debuff.apocalypse_famine -> stack_value();
 
+  if ( school == SCHOOL_MAGIC && runeforge.rune_of_spellwarding )
+    state -> result_amount *= 1.0 + runeforge.rune_of_spellwarding;
+
   player_t::target_mitigation( school, type, state );
 }
 
@@ -9038,6 +9079,7 @@ struct death_knight_module_t : public module_t {
     unique_gear::register_special_effect( 327087, runeforge::apocalypse );
     unique_gear::register_special_effect( 326913, runeforge::hysteria );
     unique_gear::register_special_effect( 326801, runeforge::sanguination );
+    unique_gear::register_special_effect( 326864, runeforge::spellwarding );
   }
 
   void register_hotfixes() const override
