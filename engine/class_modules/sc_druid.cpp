@@ -219,20 +219,10 @@ struct eclipse_handler_t
   druid_t* p;
   unsigned wrath_counter;
   unsigned starfire_counter;
-  double solar_ss_stack;
-  double lunar_ss_stack;
   eclipse_state_e state;
 
-  eclipse_handler_t( druid_t* player )
-    : p( player ),
-      wrath_counter( 2 ),
-      starfire_counter( 2 ),
-      solar_ss_stack( 0.0 ),
-      lunar_ss_stack( 0.0 ),
-      state( ANY_NEXT )
-  {}
+  eclipse_handler_t( druid_t* player ) : p( player ), wrath_counter( 2 ), starfire_counter( 2 ), state( ANY_NEXT ) {}
 
-  void init();
   void cast_wrath();
   void cast_starfire();
   void cast_starsurge();
@@ -995,21 +985,6 @@ druid_t::~druid_t()
 }
 
 // eclipse handler function definitions
-void eclipse_handler_t::init()
-{
-  if ( p->spec.starsurge->ok() )
-  {
-    solar_ss_stack = p->spec.starsurge->effectN( 2 ).percent();
-    lunar_ss_stack = p->spec.starsurge->effectN( 3 ).percent();
-
-    if ( p->spec.starsurge_2->ok() )
-    {
-      solar_ss_stack += p->spec.starsurge_2->effectN( 1 ).percent();
-      lunar_ss_stack += p->spec.starsurge_2->effectN( 2 ).percent();
-    }
-  }
-}
-
 void eclipse_handler_t::cast_wrath()
 {
   if ( state == ANY_NEXT || state == LUNAR_NEXT )
@@ -7955,7 +7930,6 @@ void druid_t::init_spells()
   spec.moonfire_dmg           = check_spell( find_class_spell( "Moonfire" )->ok(), 164812 );    // dot debuff for moonfire
   spec.starsurge              = find_spell( 78674 );  // do NOT use find_affinity_spell. eclipse buff is held within the balance version.
   spec.starsurge_2            = find_rank_spell( "Starsurge", "Rank 2" );  // Adds bigger eclipse buff
-  eclipse_handler.init();  // Initialize values for eclipse buff
   spec.starfall               = find_affinity_spell( "Starfall" );
   spec.starfall_2             = find_rank_spell( "Starfall", "Rank 2" );
   spec.starfall_dmg           = check_spell( spec.starfall->ok(), 191037 );
