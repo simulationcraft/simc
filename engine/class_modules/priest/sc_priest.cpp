@@ -370,7 +370,7 @@ struct wrathful_faerie_t final : public priest_spell_t
 
   void trigger()
   {
-    if ( priest().cooldowns.wrathful_faerie->is_ready() )
+    if ( priest().cooldowns.wrathful_faerie->is_ready() || priest().bugs )
     {
       execute();
       priest().cooldowns.wrathful_faerie->start();
