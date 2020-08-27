@@ -438,6 +438,7 @@ public:
     const spell_data_t* teachings_of_the_monastery;
     const spell_data_t* thunder_focus_tea;
     const spell_data_t* thunger_focus_tea_2;
+    const spell_data_t* invoke_yulon;
 
     // Windwalker
     const spell_data_t* afterlife;
@@ -2372,6 +2373,159 @@ public:
     return pet_t::create_action( name, options_str );
   }
 };
+
+// ==========================================================================
+// Chi-Ji Pet
+// ==========================================================================
+struct chiji_pet_t : public pet_t
+{
+private:
+  struct melee_t : public melee_attack_t
+  {
+    melee_t( const std::string& n, chiji_pet_t* player ) : melee_attack_t( n, player, spell_data_t::nil() )
+    {
+      background = repeating = may_crit = may_glance = true;
+      school                                         = SCHOOL_PHYSICAL;
+      weapon_multiplier                              = 1.0;
+      // Use damage numbers from the level-scaled weapon
+      weapon            = &( player->main_hand_weapon );
+      base_execute_time = weapon->swing_time;
+      trigger_gcd       = timespan_t::zero();
+      special           = false;
+    }
+
+    void execute() override
+    {
+      if ( time_to_execute > timespan_t::zero() && player->executing )
+      {
+        sim->print_debug( "Executing {} during melee ({}).", *player->executing,
+                          util::slot_type_string( weapon->slot ) );
+        schedule_execute();
+      }
+      else
+        attack_t::execute();
+    }
+  };
+
+  struct auto_attack_t : public attack_t
+  {
+    auto_attack_t( chiji_pet_t* player, const std::string& options_str )
+      : attack_t( "auto_attack", player, spell_data_t::nil() )
+    {
+      parse_options( options_str );
+
+      player->main_hand_attack                    = new melee_t( "melee_main_hand", player );
+      player->main_hand_attack->base_execute_time = player->main_hand_weapon.swing_time;
+
+      trigger_gcd = timespan_t::zero();
+    }
+
+    bool ready() override
+    {
+      if ( player->is_moving() )
+        return false;
+
+      return ( player->main_hand_attack->execute_event == nullptr );  // not swinging
+    }
+
+    void execute() override
+    {
+      player->main_hand_attack->schedule_execute();
+
+      if ( player->off_hand_attack )
+        player->off_hand_attack->schedule_execute();
+    }
+  };
+
+public:
+  chiji_pet_t( sim_t* sim, monk_t* owner ) : pet_t( sim, owner, "chiji_the_red_crane", true )
+  {
+    main_hand_weapon.type       = WEAPON_BEAST;
+    main_hand_weapon.min_dmg    = dbc->spell_scaling( o()->type, level() );
+    main_hand_weapon.max_dmg    = dbc->spell_scaling( o()->type, level() );
+    main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
+    main_hand_weapon.swing_time = timespan_t::from_seconds( 1.5 );
+    owner_coeff.ap_from_ap      = o()->spec.mistweaver_monk->effectN( 4 ).percent();
+  }
+
+  monk_t* o()
+  {
+    return static_cast<monk_t*>( owner );
+  }
+
+  const monk_t* o() const
+  {
+    return static_cast<monk_t*>( owner );
+  }
+
+  double composite_player_multiplier( school_e school ) const override
+  {
+    double cpm = pet_t::composite_player_multiplier( school );
+
+    return cpm;
+  }
+
+  void init_action_list() override
+  {
+    action_list_str = "auto_attack";
+    
+    pet_t::init_action_list();
+  }
+
+  action_t* create_action( util::string_view name, const std::string& options_str ) override
+  {
+    if ( name == "auto_attack" )
+      return new auto_attack_t( this, options_str );
+
+    return pet_t::create_action( name, options_str );
+  }
+};
+
+// ==========================================================================
+// Yu'lon Pet
+// ==========================================================================
+struct yulon_pet_t : public pet_t
+{
+private:
+
+public:
+  yulon_pet_t( sim_t* sim, monk_t* owner ) : pet_t( sim, owner, "yulon_the_jade_serpent", true )
+  {
+    main_hand_weapon.type       = WEAPON_BEAST;
+    main_hand_weapon.min_dmg    = dbc->spell_scaling( o()->type, level() );
+    main_hand_weapon.max_dmg    = dbc->spell_scaling( o()->type, level() );
+    main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
+    main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
+    owner_coeff.ap_from_ap      = o()->spec.mistweaver_monk->effectN( 4 ).percent();
+  }
+
+  monk_t* o()
+  {
+    return static_cast<monk_t*>( owner );
+  }
+
+  const monk_t* o() const
+  {
+    return static_cast<monk_t*>( owner );
+  }
+
+  double composite_player_multiplier( school_e school ) const override
+  {
+    double cpm = pet_t::composite_player_multiplier( school );
+
+    return cpm;
+  }
+
+  void init_action_list() override
+  {
+    pet_t::init_action_list();
+  }
+
+  action_t* create_action( util::string_view name, const std::string& options_str ) override
+  {
+    return pet_t::create_action( name, options_str );
+  }
+};
 }  // end namespace pets
 
 namespace actions
@@ -3040,6 +3194,68 @@ struct niuzao_spell_t : public summon_pet_t
     // Forcing the minimum GCD to 750 milliseconds
     min_gcd  = timespan_t::from_millis( 750 );
     gcd_type = gcd_haste_type::SPELL_HASTE;
+  }
+
+  void execute() override
+  {
+    summon_pet_t::execute();
+
+    if ( p()->legendary.invokers_delight->ok() )
+      p()->buff.invokers_delight->trigger();
+  }
+};
+
+// ==========================================================================
+// Invoke Chi-Ji, the Red Crane
+// ==========================================================================
+
+struct chiji_spell_t : public summon_pet_t
+{
+  chiji_spell_t( monk_t* p, const std::string& options_str )
+    : summon_pet_t( "invoke_chiji_the_red_crane", "chiji_the_red_crane", p, p->talent.invoke_chi_ji )
+  {
+    parse_options( options_str );
+
+    harmful            = false;
+    summoning_duration = data().duration();
+    // Forcing the minimum GCD to 750 milliseconds
+    min_gcd  = timespan_t::from_millis( 750 );
+    gcd_type = gcd_haste_type::SPELL_HASTE;
+  }
+
+  void execute() override
+  {
+    summon_pet_t::execute();
+
+    if ( p()->legendary.invokers_delight->ok() )
+      p()->buff.invokers_delight->trigger();
+  }
+};
+
+// ==========================================================================
+// Invoke Yu'lon, the Jade Serpent
+// ==========================================================================
+
+struct yulon_spell_t : public summon_pet_t
+{
+  yulon_spell_t( monk_t* p, const std::string& options_str )
+    : summon_pet_t( "invoke_yulon_the_jade_serpent", "yulon_the_jade_serpent", p, p->spec.invoke_yulon )
+  {
+    parse_options( options_str );
+
+    harmful            = false;
+    summoning_duration = data().duration();
+    // Forcing the minimum GCD to 750 milliseconds
+    min_gcd  = timespan_t::from_millis( 750 );
+    gcd_type = gcd_haste_type::SPELL_HASTE;
+  }
+
+  bool ready() override
+  {
+    if ( !p()->talent.invoke_chi_ji->ok() )
+      return summon_pet_t::ready();
+
+    return false;
   }
 
   void execute() override
@@ -7123,6 +7339,14 @@ action_t* monk_t::create_action( util::string_view name, const std::string& opti
     return new enveloping_mist_t( *this, options_str );
   if ( name == "essence_font" )
     return new essence_font_t( this, options_str );
+  if ( name == "invoke_chiji" )
+    return new chiji_spell_t( this, options_str );
+  if ( name == "invoke_chiji_the_red_crane" )
+    return new chiji_spell_t( this, options_str );
+  if ( name == "invoke_yulon" )
+    return new yulon_spell_t( this, options_str );
+  if ( name == "invoke_yulon_the_jade_serpent" )
+    return new yulon_spell_t( this, options_str );
   if ( name == "life_cocoon" )
     return new life_cocoon_t( *this, options_str );
   if ( name == "mana_tea" )
@@ -7322,6 +7546,10 @@ pet_t* monk_t::create_pet( util::string_view name, util::string_view /* pet_type
     return new fury_of_xuen_pet_t( sim, this, name );
   if ( name == "niuzao_the_black_ox" )
     return new niuzao_pet_t( sim, this );
+  if ( name == "chiji_the_red_crane" )
+    return new chiji_pet_t( sim, this );
+  if ( name == "yulon_the_jade_serpent" )
+    return new yulon_pet_t( sim, this );
 
   return nullptr;
 }
@@ -7345,6 +7573,16 @@ void monk_t::create_pets()
   if ( spec.invoke_niuzao->ok() && ( find_action( "invoke_niuzao" ) || find_action( "invoke_niuzao_the_black_ox" ) ) )
   {
     create_pet( "niuzao_the_black_ox" );
+  }
+
+  if ( talent.invoke_chi_ji->ok() && ( find_action( "invoke_chiji" ) || find_action( "invoke_chiji_the_red_crane" ) ) )
+  {
+    create_pet( "chiji_the_red_crane" );
+  }
+
+  if ( spec.invoke_yulon->ok() && !talent.invoke_chi_ji->ok() && ( find_action( "invoke_yulon" ) || find_action( "invoke_yulon_the_jade_serpent" ) ) )
+  {
+    create_pet( "yulon_the_jade_serpent" );
   }
 
   if ( specialization() == MONK_WINDWALKER && find_action( "storm_earth_and_fire" ) )
@@ -7513,6 +7751,7 @@ void monk_t::init_spells()
   spec.teachings_of_the_monastery = find_specialization_spell( "Teachings of the Monastery" );
   spec.thunder_focus_tea          = find_specialization_spell( "Thunder Focus Tea" );
   spec.thunger_focus_tea_2        = find_rank_spell( "Thunder Focus Tea", "Rank 2" );
+  spec.invoke_yulon               = find_specialization_spell( "Invoke Yu'lon, the Jade Serpent" );
 
   // Windwalker Specialization
   spec.afterlife                  = find_specialization_spell( "Afterlife" );
