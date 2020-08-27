@@ -1032,22 +1032,36 @@ void eclipse_handler_t::advance_eclipse()
   if ( !starfire_counter && state != IN_SOLAR )
   {
     p->buff.eclipse_solar->trigger();
+
+    if ( p->talent.solstice->ok() )
+      p->buff.solstice->trigger();
+
     if ( p->legendary.balance_of_all_things->ok() )
       p->buff.balance_of_all_things_nature->trigger();
+
     state = IN_SOLAR;
     reset_stacks();
+
     p->uptime.eclipse->update( true, p->sim->current_time() );
+
     return;
   }
 
   if ( !wrath_counter && state != IN_LUNAR )
   {
     p->buff.eclipse_lunar->trigger();
+
+    if ( p->talent.solstice->ok() )
+      p->buff.solstice->trigger();
+
     if ( p->legendary.balance_of_all_things->ok() )
       p->buff.balance_of_all_things_arcane->trigger();
+
     state = IN_LUNAR;
     reset_stacks();
+
     p->uptime.eclipse->update( true, p->sim->current_time() );
+
     return;
   }
 
@@ -1083,10 +1097,14 @@ void eclipse_handler_t::trigger_both( timespan_t d = 0_ms )
   state = IN_BOTH;
   reset_stacks();
 
-  if ( p->legendary.balance_of_all_things->ok() ) {
+  if ( p->legendary.balance_of_all_things->ok() )
+  {
     p->buff.balance_of_all_things_arcane->trigger();
     p->buff.balance_of_all_things_nature->trigger();
   }
+
+  if ( p->talent.solstice->ok() )
+    p->buff.solstice->trigger();
 
   p->buff.eclipse_lunar->trigger( d );
   p->buff.eclipse_lunar->current_value = p->buff.eclipse_lunar->default_value;
