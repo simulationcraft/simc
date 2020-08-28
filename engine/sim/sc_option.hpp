@@ -13,7 +13,7 @@
 #include <vector>
 #include <memory>
 
-#include "sc_timespan.hpp"
+#include "util/timespan.hpp"
 #include "util/string_view.hpp"
 #include "util/span.hpp"
 #include "util/format.hpp"

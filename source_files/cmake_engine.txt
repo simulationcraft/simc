@@ -124,7 +124,6 @@ report/report_timer.hpp
 report/reports.hpp
 report/sc_highchart.hpp
 sc_enums.hpp
-sc_timespan.hpp
 sim/benefit.hpp
 sim/event.hpp
 sim/event_manager.hpp
@@ -165,6 +164,7 @@ util/static_map.hpp
 util/stopwatch.hpp
 util/string_view.hpp
 util/timeline.hpp
+util/timespan.hpp
 util/util.hpp
 util/vector_with_callback.hpp
 util/xml.hpp

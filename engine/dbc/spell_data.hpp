@@ -11,7 +11,7 @@
 #include "dbc/client_hotfix_entry.hpp"
 #include "dbc/data_enums.hh"
 #include "sc_enums.hpp"
-#include "sc_timespan.hpp"
+#include "util/timespan.hpp"
 #include "util/span.hpp"
 #include "util/string_view.hpp"
 

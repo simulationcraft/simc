@@ -8,7 +8,7 @@
 #include "util/format.hpp"
 #include "util/span.hpp"
 #include "util/string_view.hpp"
-#include "sc_timespan.hpp"
+#include "util/timespan.hpp"
 
 #include "report/reports.hpp"
 

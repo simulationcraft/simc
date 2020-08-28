@@ -6,7 +6,7 @@
 #pragma once
 
 #include "config.hpp"
-#include "sc_timespan.hpp"
+#include "util/timespan.hpp"
 #include "util/chrono.hpp"
 #include "util/stopwatch.hpp"
 
