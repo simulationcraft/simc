@@ -563,7 +563,7 @@ std::string item_t::full_name() const
   for ( auto bonus_id : parsed.bonus_id )
   {
     auto bonuses = sim -> dbc->item_bonus( bonus_id );
-    for ( const auto bonus : bonuses )
+    for ( const auto& bonus : bonuses )
     {
       if ( bonus.type != ITEM_BONUS_SUFFIX )
       {
