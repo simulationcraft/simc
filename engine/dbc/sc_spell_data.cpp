@@ -14,6 +14,7 @@
 #include "spell_query/spell_data_expr.hpp"
 #include "sim/sc_sim.hpp"
 #include "player/covenant.hpp"
+#include "player/runeforge_data.hpp"
 #include "util/util.hpp"
 
 namespace { // anonymous namespace ==========================================
@@ -855,6 +856,11 @@ struct spell_class_expr_t : public spell_list_expr_t
     // conduit spells are safe to match by spell family
     const auto& conduit = conduit_entry_t::find_by_spellid( spell.id(), dbc.ptr );
     if ( conduit.spell_id && conduit.spell_id == spell.id() )
+      return true;
+
+    // legendary spells are safe to match by spell family
+    const auto legendary = runeforge_legendary_entry_t::find_by_spellid( spell.id(), dbc.ptr );
+    if ( !legendary.empty() )
       return true;
 
     return false;
