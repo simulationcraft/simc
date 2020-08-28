@@ -147,9 +147,12 @@ struct action_execute_event_t : public player_event_t
     : player_event_t( *a->player, time_to_execute ), action( a ), execute_state( state ),
     has_cast_time( time_to_execute > timespan_t::zero() )
   {
-    sim().print_debug( "New Action Execute Event: player='{}' action='{}' time_to_execute={} (target={}, marker={})",
-        p()->name(), a->name(), time_to_execute, ( state ) ? state->target->name() : a->target->name(),
-            ( a->marker ) ? a->marker : '0' );
+    if ( sim().debug )
+    {
+      sim().print_debug( "New Action Execute Event: {} {} time_to_execute={} (target={}, marker={})", *p(), *a,
+                         time_to_execute, ( state ) ? state->target->name() : a->target->name(),
+                         ( a->marker ) ? a->marker : '0' );
+    }
   }
 
   const char* name() const override
@@ -214,8 +217,8 @@ struct action_execute_event_t : public player_event_t
     {
       if ( p()->readying )
       {
-        throw std::runtime_error( fmt::format( "Non-channeling action '{}' for actor {} is trying to overwrite "
-          "player-ready-event upon execute.", action->name(), p()->name() ) );
+        throw std::runtime_error( fmt::format( "Non-channeling action {} for {} is trying to overwrite "
+          "player-ready-event upon execute.", action->name(), *p() ) );
       }
 
       p()->schedule_ready( timespan_t::zero() );
@@ -417,7 +420,7 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
   }
 
   if ( sim->debug )
-    sim->out_debug.printf( "Player %s creates action %s (%d)", player->name(), name(),
+    sim->out_debug.print( "{} creates {} ({})", *player, *this,
                            ( data().ok() ? data().id() : -1 ) );
 
   if ( !player->initialized )
@@ -968,8 +971,8 @@ double action_t::cost() const
     c = 0;
 
   if ( sim->debug )
-    sim->out_debug.printf( "action_t::cost: %s base_cost=%.2f secondary_cost=%.2f cost=%.2f resource=%s", name(),
-                           base_costs[ cr ], secondary_costs[ cr ], c, util::resource_type_string( cr ) );
+    sim->out_debug.print( "{} action_t::cost: base_cost={} secondary_cost={} cost={} resource={}", *this,
+                           base_costs[ cr ], secondary_costs[ cr ], c, cr );
 
   return floor( c );
 }
@@ -1099,8 +1102,11 @@ double action_t::total_crit_bonus( action_state_t* state ) const
   double bonus =
       ( ( 1.0 + base_crit_bonus ) * crit_multiplier_buffed - 1.0 ) * composite_crit_damage_bonus_multiplier();
 
-  sim->print_debug("{} crit_bonus for {}: total={} base={} mult_buffed={} damage_bonus_mult={}",
-      player->name(), name(), bonus, crit_bonus, crit_multiplier_buffed, composite_crit_damage_bonus_multiplier() );
+  if ( sim->debug )
+  {
+    sim->print_debug( "{} crit_bonus for {}: total={} base={} mult_buffed={} damage_bonus_mult={}", *player, *this,
+                      bonus, crit_bonus, crit_multiplier_buffed, composite_crit_damage_bonus_multiplier() );
+  }
 
   return bonus;
 }
@@ -1117,7 +1123,7 @@ double action_t::calculate_weapon_damage( double attack_power ) const
 
   sim->print_debug("{} weapon damage for {}: base=({} to {}) total={} weapon_damage={} bonus_damage={} "
       "speed={} power_damage={} ap={}",
-      player->name(), name(), weapon->min_dmg, weapon->max_dmg, total_dmg, dmg, weapon->bonus_dmg,
+      *player, *this, weapon->min_dmg, weapon->max_dmg, total_dmg, dmg, weapon->bonus_dmg,
       weapon_speed, power_damage, attack_power );
 
   return total_dmg;
@@ -1154,12 +1160,15 @@ double action_t::calculate_tick_amount( action_state_t* state, double dot_multip
   // subsequent impact).
   amount = calculate_crit_damage_bonus( state );
 
-  sim->print_debug("{} tick amount for {} on {}: amount={} initial_amount={} base={} bonus={} s_mod={} s_power={} a_mod={} "
+  if ( sim->debug )
+  {
+    sim->print_debug(
+        "{} tick amount for {} on {}: amount={} initial_amount={} base={} bonus={} s_mod={} s_power={} a_mod={} "
         "a_power={} mult={}, tick_mult={}",
-        player->name(), name(), state->target->name(),
-        amount, init_tick_amount, base_ta( state ), bonus_ta( state ),
+        *player, *this, *state->target, amount, init_tick_amount, base_ta( state ), bonus_ta( state ),
         spell_tick_power_coefficient( state ), state->composite_spell_power(), attack_tick_power_coefficient( state ),
         state->composite_attack_power(), state->composite_ta_multiplier(), dot_multiplier );
+  }
 
   return amount;
 }
@@ -1282,7 +1291,7 @@ double action_t::calculate_direct_amount( action_state_t* state ) const
     sim->print_debug(
         "{} direct amount for {}: amount={} initial_amount={} weapon={} base={} s_mod={} s_power={} "
         "a_mod={} a_power={} mult={} w_mult={} w_slot_mod={} bonus_da={}",
-        player->name(), name(), amount, state->result_raw, weapon_amount, base_direct_amount,
+        *player, *this, amount, state->result_raw, weapon_amount, base_direct_amount,
         spell_direct_power_coefficient( state ), state->composite_spell_power(),
         attack_direct_power_coefficient( state ), state->composite_attack_power(), state->composite_da_multiplier(),
         weapon_multiplier, weapon_slot_modifier, bonus_da( state ) );
@@ -1360,7 +1369,7 @@ void action_t::consume_resource()
   player->resource_loss( cr, last_resource_cost, nullptr, this );
 
   sim->print_log("{} consumes {} {} for {} ({})",
-      player->name(), last_resource_cost, cr, name(), player->resources.current[ cr ] );
+      *player, last_resource_cost, cr, *this, player->resources.current[ cr ] );
 
   stats->consume_resource( cr, last_resource_cost );
 }
@@ -1400,10 +1409,10 @@ size_t action_t::available_targets( std::vector<player_t*>& tl ) const
 
   if ( sim->debug && !sim->distance_targeting_enabled )
   {
-    sim->print_debug("{} regenerated target cache for {} ({})", player->name(), signature_str, name() );
+    sim->print_debug("{} regenerated target cache for {} ({})", *player, signature_str, *this );
     for ( size_t i = 0; i < tl.size(); i++ )
     {
-      sim->print_debug( "[{}, {} (id={})]", i, tl[ i ]->name(), tl[ i ]->actor_index );
+      sim->print_debug( "[{}, {} (id={})]", i, *tl[ i ], tl[ i ]->actor_index );
     }
   }
 
@@ -1481,7 +1490,7 @@ block_result_e action_t::calculate_block_result( action_state_t* s ) const
     }
   }
 
-  sim->print_debug("{} result for {} is {}", player->name(), name(), block_result );
+  sim->print_debug("{} result for {} is {}", *player, *this, block_result );
 
   return block_result;
 }
@@ -1494,7 +1503,7 @@ void action_t::execute()
   if ( !initialized )
   {
     throw std::runtime_error(
-        fmt::format( "action_t::execute: action {} from player {} is not initialized.\n", name(), player->name() ) );
+        fmt::format( "{} {} action_t::execute: is not initialized.\n", *player, *this ) );
   }
 #endif
 
@@ -1517,7 +1526,7 @@ void action_t::execute()
   if ( sim->log && !dual )
   {
     sim->print_log("{} performs {} ({})",
-        player->name(), name(), player->resources.current[ player->primary_resource() ] );
+        *player, *this, player->resources.current[ player->primary_resource() ] );
   }
 
   hit_any_target               = false;
@@ -1527,7 +1536,7 @@ void action_t::execute()
   if ( harmful )
   {
     if ( player->in_combat == false && sim->debug )
-      sim->out_debug.printf( "%s enters combat.", player->name() );
+      sim->print_debug( "{} enters combat.", *player );
 
     player->in_combat = true;
   }
@@ -1716,7 +1725,7 @@ void action_t::tick( dot_t* d )
     tick_action->schedule_execute( tick_state );
 
     sim->print_log("{} {} ticks ({} of {}) {}",
-        player->name(), name(), d->current_tick, d->num_ticks, d->target->name() );
+        *player, *this, d->current_tick, d->num_ticks, *d->target );
   }
   else
   {
@@ -1767,11 +1776,8 @@ void action_t::last_tick( dot_t* d )
     // current baseline target all actions share (with some exceptions, such as fixed targeting).
     if ( option.target_number == 0 && target != player->target )
     {
-      if ( sim->debug )
-      {
-        sim->out_debug.print( "{} adjust channel target on last tick, current={}, new={}",
-          player->name(), target->name(), player->target->name() );
-      }
+      sim->print_debug( "{} adjust channel target on last tick, current={}, new={}", *player, *target,
+                        *player->target );
       target = player->target;
     }
   }
@@ -1879,7 +1885,7 @@ void action_t::schedule_execute( action_state_t* execute_state )
   if ( target->is_sleeping() )
   {
     sim->print_debug( "{} action={} attempted to schedule on a dead target {}",
-      player->name(), name(), target->name() );
+      *player, *this, *target );
 
     if ( execute_state )
     {
@@ -1888,10 +1894,7 @@ void action_t::schedule_execute( action_state_t* execute_state )
     return;
   }
 
-  if ( sim->log )
-  {
-    sim->out_log.printf( "%s schedules execute for %s", player->name(), name() );
-  }
+  sim->print_log( "{} schedules execute for {}", *player, *this );
 
   time_to_execute = execute_time();
 
@@ -1947,10 +1950,7 @@ void action_t::schedule_execute( action_state_t* execute_state )
 
 void action_t::reschedule_execute( timespan_t time )
 {
-  if ( sim->log )
-  {
-    sim->out_log.printf( "%s reschedules execute for %s", player->name(), name() );
-  }
+  sim->print_log( "{} reschedules execute for {}", *player, *this );
 
   timespan_t delta_time = sim->current_time() + time - execute_event->occurs();
 
@@ -1990,9 +1990,7 @@ void action_t::update_ready( timespan_t cd_duration /* = timespan_t::min() */ )
       if ( delay > timespan_t::from_millis( 400 ) )
       {
         delay -= timespan_t::from_millis( 400 );  // Even high latency players get some benefit from CLT.
-        if ( sim->debug )
-          sim->out_debug.printf( "%s delaying the cooldown finish of %s by %f", player->name(), name(),
-                                 delay.total_seconds() );
+        sim->print_debug( "{} delaying the cooldown finish of {} by {}", *player, *this, delay );
       }
       else
         delay = timespan_t::zero();
@@ -2003,7 +2001,7 @@ void action_t::update_ready( timespan_t cd_duration /* = timespan_t::min() */ )
     sim->print_debug(
           "{} starts cooldown for {} ({}, {}/{}). Duration={} Delay={}. Will "
           "be ready at {}",
-          player->name(), name(), cooldown->name(), cooldown->current_charge, cooldown->charges,
+          *player, *this, *cooldown, cooldown->current_charge, cooldown->charges,
           cd_duration, delay, cooldown->ready );
 
     if ( internal_cooldown->duration > timespan_t::zero() )
@@ -2011,7 +2009,7 @@ void action_t::update_ready( timespan_t cd_duration /* = timespan_t::min() */ )
       internal_cooldown->start( this );
 
       sim->print_debug("{} starts internal_cooldown for {} ({}). Will be ready at {}",
-          player->name(), name(), internal_cooldown->name(), internal_cooldown->ready );
+          *player, *this, *internal_cooldown, internal_cooldown->ready );
 
     }
   }
@@ -2422,8 +2420,8 @@ void action_t::init()
   initialized = true;
 
 #ifndef NDEBUG
-  if ( sim->debug && sim->distance_targeting_enabled )
-    sim->out_debug.printf( "%s - radius %.1f - range - %.1f", name(), radius, range );
+  if ( sim->distance_targeting_enabled )
+    sim->print_debug( "{} - radius={} range={}", *this, radius, range );
 #endif
 
   consume_per_tick_ =
@@ -2608,8 +2606,7 @@ void action_t::reset()
 
 void action_t::cancel()
 {
-  if ( sim->debug )
-    sim->out_debug.printf( "action %s of %s is canceled", name(), player->name() );
+  sim->print_debug( "{} {} is canceled", *player, *this );
 
   if ( channeled )
   {
@@ -2646,8 +2643,7 @@ void action_t::cancel()
 
 void action_t::interrupt_action()
 {
-  if ( sim->debug )
-    sim->out_debug.printf( "action %s of %s is interrupted", name(), player->name() );
+  sim->print_debug( "{} {} is interrupted", *player, *this );
 
   if ( player->executing == this )
     player->executing = nullptr;
@@ -2914,11 +2910,11 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
       {
         if ( action.sim->debug )
         {
-          action.sim->out_debug.printf(
-              "%s %s cast_delay(): can_react_at=%f cur_time=%f", action.player->name_str.c_str(),
-              action.name_str.c_str(),
-              ( action.player->cast_delay_occurred + action.player->cast_delay_reaction ).total_seconds(),
-              action.sim->current_time().total_seconds() );
+          action.sim->print_debug(
+              "{} {} cast_delay(): can_react_at={} cur_time={}", *action.player,
+              action,
+              ( action.player->cast_delay_occurred + action.player->cast_delay_reaction ),
+              action.sim->current_time() );
         }
 
         if ( action.player->cast_delay_occurred == timespan_t::zero() ||
@@ -3958,8 +3954,7 @@ swap_action_list_t::swap_action_list_t( player_t* player, util::string_view opti
 
 void swap_action_list_t::execute()
 {
-  if ( sim->log )
-    sim->out_log.printf( "%s swaps to action list %s", player->name(), alist->name_str.c_str() );
+  sim->print_log( "{} swaps to action list {}", player->name(), alist->name_str );
   player->activate_action_list( alist, player->current_execute_type );
 }
 
@@ -3982,8 +3977,8 @@ void run_action_list_t::execute()
 {
   if ( sim->log )
     sim->out_log.print( "{} runs action list {}{}",
-        player->name(),
-        alist->name_str.c_str(),
+        *player,
+        alist->name_str,
         player->readying ? " (off-gcd)" : "");
 
   if ( player->restore_action_list == nullptr )
@@ -4004,8 +3999,7 @@ bool action_t::consume_cost_per_tick( const dot_t& /* dot */ )
 
   if ( player->get_active_dots( internal_id ) == 0 )
   {
-    if ( sim->debug )
-      sim->out_debug.printf( "%s: %s ticking cost ends because dot is no longer ticking.", player->name(), name() );
+    sim->print_debug( "{} {} ticking cost ends because dot is no longer ticking.", *player, *this );
     return false;
   }
 
@@ -4025,19 +4019,15 @@ bool action_t::consume_cost_per_tick( const dot_t& /* dot */ )
     bool enough_resource_available = player->resource_available( r, cost );
     if ( !enough_resource_available )
     {
-      if ( sim->log )
-        sim->out_log.printf(
-            "%s: %s not enough resource for ticking cost %.1f %s for %s (%.0f). Going to cancel the action.",
-            player->name(), name(), cost, util::resource_type_string( r ), name(), player->resources.current[ r ] );
+      sim->print_log( "{} {} not enough resource for ticking cost {} {} (current={}). Going to cancel the action.",
+                      *player, *this, cost, r, player->resources.current[ r ] );
     }
 
     last_resource_cost = player->resource_loss( r, cost, nullptr, this );
     stats->consume_resource( r, last_resource_cost );
 
-    if ( sim->log )
-      sim->out_log.printf( "%s: %s consumes ticking cost %.1f (%.1f) %s for %s (%.0f).", player->name(), name(), cost,
-                           last_resource_cost, util::resource_type_string( r ), name(),
-                           player->resources.current[ r ] );
+    sim->print_log( "{} {} consumes ticking cost {} ({}) {} (current={}).", *player, *this, cost, last_resource_cost, r,
+                    player->resources.current[ r ] );
 
     if ( !enough_resource_available )
     {
@@ -4248,7 +4238,7 @@ void action_t::reschedule_queue_event()
   }
 
   sim->print_debug( "{} {} adjusting queue-delayed execution, old={} new={}",
-      player->name(), name(), remaining.total_seconds(), new_queue_delay.total_seconds() );
+      *player, *this, remaining, new_queue_delay );
 
   if ( new_queue_delay > remaining )
   {
@@ -4302,7 +4292,7 @@ void action_t::acquire_target( retarget_source /* event */, player_t* /* context
   {
     if ( sim->debug )
     {
-      sim->out_debug.printf( "%s %s target change, current=%s candidate=%s", player->name(), name(),
+      sim->out_debug.print( "{} {} target change, current={} candidate={}", *player, *this,
                              target ? target->name() : "(none)", candidate_target->name() );
     }
     target                = candidate_target;
@@ -4381,7 +4371,7 @@ bool action_t::execute_targeting(action_t* action) const
 {
   if (action->sim->distance_targeting_enabled)
   {
-    if (action->sim->log)
+    if (action->sim->debug)
     {
       action->sim->out_debug.printf(
         "%s action %s - Range %.3f, Radius %.3f, player location "
@@ -4442,7 +4432,7 @@ std::vector<player_t*>& action_t::check_distance_targeting(
       player_t* t = tl[i];
       if (t != target)
       {
-        if (sim->log)
+        if (sim->debug)
         {
           sim->out_debug.printf(
             "%s action %s - Range %.3f, Radius %.3f, player location "
@@ -4460,7 +4450,7 @@ std::vector<player_t*>& action_t::check_distance_targeting(
         {  // Abilities with range/radius radiate from the target.
           if (ground_aoe && parent_dot && parent_dot->is_ticking())
           {  // We need to check the parents dot for location.
-            if (sim->log)
+            if (sim->debug)
               sim->out_debug.printf("parent_dot location: x=%.3f,y%.3f",
                 parent_dot->state->original_x,
                 parent_dot->state->original_y);
@@ -4498,7 +4488,7 @@ std::vector<player_t*>& action_t::check_distance_targeting(
         }
       }
     }
-    if (sim->log)
+    if (sim->debug)
     {
       sim->out_debug.printf("%s regenerated target cache for %s (%s)",
         player->name(), signature_str.c_str(), name());
@@ -4546,10 +4536,9 @@ player_t* action_t::select_target_if_target()
     {
       master_list = target_cache.list;
     }
-    if (sim->log)
-      sim->out_debug.printf("%s Number of targets found in range - %.3f",
-        player->name(),
-        static_cast<double>(master_list.size()));
+
+    sim->print_debug( "{} Number of targets found in range: {}", *player, master_list.size() );
+
     if (master_list.size() <= 1)
       return target;
   }
@@ -4610,22 +4599,13 @@ player_t* action_t::select_target_if_target()
   // action
   if (target_if_mode == TARGET_IF_FIRST && current_target_v == 0)
   {
-    if (sim->debug)
-    {
-      sim->out_debug.printf("%s target_if no target found for %s", player->name(),
-        signature_str.c_str());
-    }
+    sim->print_debug( "{} target_if no target found for {}", *player, signature_str );
+
     return nullptr;
   }
 
-  if (sim->debug)
-  {
-    sim->out_debug.printf(
-      "%s target_if best target: %s - original target - %s - current target "
-      "-%s",
-      player->name(), proposed_target->name(), original_target->name(),
-      target->name());
-  }
+  sim->print_debug( "{} target_if best: {} - original: {} - current target: {}", *player,
+                    *proposed_target, *original_target, *target );
 
   return proposed_target;
 }
@@ -4668,8 +4648,11 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
     const auto& spell_text = player->dbc->spell_text( spell.id() );
     if ( spell_text.rank() )
       desc_str = fmt::format( " (desc={})", spell_text.rank() );
-    sim->print_debug( "{} {} is affected by effect {} ({}{} (id={}) - effect #{})", *player, *this, effect.id(),
-                      spell.name_cstr(), desc_str, spell.id(), effect.spell_effect_num() + 1 );
+    if ( sim->debug )
+    {
+      sim->print_debug( "{} {} is affected by effect {} ({}{} (id={}) - effect #{})", *player, *this, effect.id(),
+                        spell.name_cstr(), desc_str, spell.id(), effect.spell_effect_num() + 1 );
+    }
   }
 
   auto apply_effect_n_multiplier = [ this ]( const spelleffect_data_t& effect, unsigned n ) {

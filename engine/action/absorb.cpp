@@ -76,8 +76,8 @@ void absorb_t::assess_damage(result_amount_type  /*heal_type*/, action_state_t* 
     target_specific[s->target]->trigger(1, s->result_amount);
 
     sim->print_log("{} {} applies absorb on {} for {} ({}) ({})",
-      player->name(), name(), s->target->name(), s->result_amount, s->result_total,
-      util::result_type_string(s->result));
+      *player, *this, *s->target, s->result_amount, s->result_total,
+      s->result);
   }
 
   stats->add_result(0.0, s->result_total, result_amount_type::ABSORB, s->result, s->block_result, s->target);
