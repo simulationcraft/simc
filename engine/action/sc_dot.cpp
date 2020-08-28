@@ -1340,3 +1340,8 @@ void dot_t::dot_end_event_t::execute()
   assert(dot->current_tick == dot->num_ticks);
   dot->last_tick();
 }
+
+void format_to( const dot_t& dot, fmt::format_context::iterator out )
+{
+  fmt::format_to( out, "Dot {}", dot.name_str );
+}
