@@ -8202,7 +8202,8 @@ void rogue_t::create_buffs()
     buffs.slice_and_dice->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
       if ( rng().roll( legendary.celerity->effectN( 2 ).percent() ) )
       {
-        const timespan_t duration = timespan_t::from_seconds( legendary.celerity->effectN( 2 ).base_value() );
+        timespan_t duration = timespan_t::from_seconds( legendary.celerity->effectN( 3 ).base_value() );
+        if ( bugs ) { duration += 1_s; }
         if ( buffs.adrenaline_rush->check() )
           buffs.adrenaline_rush->extend_duration( this, duration );
         else
