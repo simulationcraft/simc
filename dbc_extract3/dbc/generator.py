@@ -1760,9 +1760,10 @@ class SpellDataGenerator(DataGenerator):
           ( 272012, 5 ),	# Illidari Satyr - Shadow Slash
           ( 272131, 5 ),	# Eye of Gul'dan - Eye of Gul'dan
           ( 267964, 0 ),	# new soul strike?
-          ( 289367, 1 ),		# Pandemic Invocation Damage
-          ( 265391, 3 ),     # Roaring Blaze Debuff
-          ( 266087, 3 )     # Rain of Chaos Buff
+          ( 289367, 1 ),    # Pandemic Invocation Damage
+          ( 265391, 3 ),    # Roaring Blaze Debuff
+          ( 266087, 3 ),    # Rain of Chaos Buff
+          ( 339784, 2 )     # Tyrant's Soul Buff
         ),
 
         # Monk:
