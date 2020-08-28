@@ -86,7 +86,7 @@ public:
 struct shadow_bolt_t : public demonology_spell_t
 {
   shadow_bolt_t( warlock_t* p, util::string_view options_str )
-    : demonology_spell_t( p, "Shadow Bolt", p->specialization() )
+    : demonology_spell_t( "Shadow Bolt", p, p->find_spell( 686 ) )
   {
     parse_options( options_str );
     energize_type     = action_energize::ON_CAST;
