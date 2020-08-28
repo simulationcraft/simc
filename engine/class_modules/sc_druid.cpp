@@ -5630,19 +5630,6 @@ struct full_moon_t : public druid_spell_t
       energize_type = action_energize::NONE;
   }
 
-  double calculate_direct_amount( action_state_t* state ) const override
-  {
-    double da = druid_spell_t::calculate_direct_amount( state );
-
-    // Sep 3 2016: Main target takes full damage, this reverses the divisor in action_t::calculate_direct_amount
-    if ( state->chain_target == 0 )
-    {
-      da *= state->n_targets;
-    }
-
-    return da;
-  }
-
   void impact( action_state_t* s ) override
   {
     druid_spell_t::impact( s );
