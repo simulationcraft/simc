@@ -196,7 +196,9 @@ struct mind_sear_tick_t final : public priest_spell_t
     direct_tick         = false;
     use_off_gcd         = true;
     dynamic_tick_action = true;
-    energize_type       = action_energize::NONE;  // no insanity gain
+    energize_type       = action_energize::PER_HIT;
+    energize_amount     = insanity_gain;
+    energize_resource   = RESOURCE_INSANITY;
     radius              = data().effectN( 2 ).radius(); // base radius is 100yd, actual is stored in effect 2
   }
 
@@ -245,11 +247,6 @@ struct mind_sear_tick_t final : public priest_spell_t
                         priest().specs.dark_thoughts->effectN( 1 ).percent() * dots, dots );
       priest().buffs.dark_thoughts->trigger();
       priest().procs.dark_thoughts_sear->occur();
-    }
-
-    if ( result_is_hit( s->result ) )
-    {
-      priest().generate_insanity( insanity_gain, priest().gains.insanity_mind_sear, s->action );
     }
   }
 };
