@@ -100,6 +100,9 @@ struct shadow_bolt_t : public demonology_spell_t
 
     if ( p()->talents.demonic_calling->ok() )
       p()->buffs.demonic_calling->trigger();
+
+    if ( p()->legendary.balespiders_burning_core->ok() )
+      p()->buffs.balespiders_burning_core->trigger();
   }
 
   double action_multiplier() const override
@@ -136,7 +139,7 @@ struct hand_of_guldan_t : public demonology_spell_t
       shards_used( 0 ),
       blaze( new umbral_blaze_t( p ) ),
       summon_spell( p->find_spell( 104317 ) ),
-      borne_of_blood_chance( 0)
+      borne_of_blood_chance( 0 )
   {
     parse_options( options_str );
     aoe = -1;
@@ -151,7 +154,7 @@ struct hand_of_guldan_t : public demonology_spell_t
     base_multiplier *= 1.0 + p->spec.demonology->effectN( 3 ).percent();
 
     if ( p->conduit.borne_of_blood->ok() )
-      borne_of_blood_chance=p->conduit.borne_of_blood.percent();
+      borne_of_blood_chance = p->conduit.borne_of_blood.percent();
   }
 
   timespan_t travel_time() const override
@@ -278,6 +281,8 @@ struct demonbolt_t : public demonology_spell_t
 
     if ( p()->talents.demonic_calling->ok() )
       p()->buffs.demonic_calling->trigger();
+
+    p()->buffs.balespiders_burning_core->expire();
   }
 
   double action_multiplier() const override
@@ -288,6 +293,8 @@ struct demonbolt_t : public demonology_spell_t
     {
       m *= 1.0 + p()->talents.sacrificed_souls->effectN( 1 ).percent() * p()->active_pets;
     }
+
+    m *= 1.0 + p()->buffs.balespiders_burning_core->check_stack_value();
 
     return m;
   }
@@ -1018,6 +1025,12 @@ void warlock_t::create_buffs_demonology()
                                 ->set_duration( find_spell( 279885 )->duration() );
   buffs.explosive_potential = make_buff<stat_buff_t>( this, "explosive_potential", find_spell( 275398 ) )
                                   ->add_stat( STAT_HASTE_RATING, azerite.explosive_potential.value() );
+
+  // Legendaries
+  buffs.balespiders_burning_core =
+      make_buff( this, "balespiders_burning_core", legendary.balespiders_burning_core->effectN( 1 ).trigger() )
+          ->set_trigger_spell( legendary.balespiders_burning_core )
+          ->set_default_value( legendary.balespiders_burning_core->effectN( 1 ).trigger()->effectN( 1 ).percent() );
 
   // to track pets
   buffs.wild_imps = make_buff( this, "wild_imps" )->set_max_stack( 40 );

@@ -438,6 +438,7 @@ public:
 
     // Legendaries
     propagate_const<buff_t*> madness_of_the_azjaqir;
+    propagate_const<buff_t*> balespiders_burning_core;
   } buffs;
 
   // Gains
