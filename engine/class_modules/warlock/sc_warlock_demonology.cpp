@@ -129,12 +129,14 @@ struct hand_of_guldan_t : public demonology_spell_t
   int shards_used;
   umbral_blaze_t* blaze;  // BFA - Azerite
   const spell_data_t* summon_spell;
+  double borne_of_blood_chance;
 
   hand_of_guldan_t( warlock_t* p, util::string_view options_str )
     : demonology_spell_t( p, "Hand of Gul'dan" ),
       shards_used( 0 ),
       blaze( new umbral_blaze_t( p ) ),
-      summon_spell( p->find_spell( 104317 ) )
+      summon_spell( p->find_spell( 104317 ) ),
+      borne_of_blood_chance( 0)
   {
     parse_options( options_str );
     aoe = -1;
@@ -147,6 +149,9 @@ struct hand_of_guldan_t : public demonology_spell_t
 
     // TOCHECK Because of how we structure HoG spelldata we have to manually apply spec aura.
     base_multiplier *= 1.0 + p->spec.demonology->effectN( 3 ).percent();
+
+    if ( p->conduit.borne_of_blood->ok() )
+      borne_of_blood_chance=p->conduit.borne_of_blood.percent();
   }
 
   timespan_t travel_time() const override
@@ -161,6 +166,14 @@ struct hand_of_guldan_t : public demonology_spell_t
       return false;
     }
     return demonology_spell_t::ready();
+  }
+
+  void execute() override
+  {
+    demonology_spell_t::execute();
+
+    if ( p()->conduit.borne_of_blood->ok() && rng().roll( borne_of_blood_chance ) )
+      p()->buffs.demonic_core->trigger();
   }
 
   double bonus_da( const action_state_t* s ) const override
