@@ -1763,7 +1763,8 @@ class SpellDataGenerator(DataGenerator):
           ( 289367, 1 ),    # Pandemic Invocation Damage
           ( 265391, 3 ),    # Roaring Blaze Debuff
           ( 266087, 3 ),    # Rain of Chaos Buff
-          ( 339784, 2 )     # Tyrant's Soul Buff
+          ( 339784, 2 ),    # Tyrant's Soul Buff
+          ( 337142, 2 )     # Grim Inquisitor's Dread Calling Buff
         ),
 
         # Monk:
