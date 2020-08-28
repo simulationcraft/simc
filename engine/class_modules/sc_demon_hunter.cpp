@@ -23,18 +23,15 @@ namespace
   New Issues
   ----------
 
-  * Implement Covenant abilities
   * Implement Soulbinds
   * Implement Vengeance Legendaries
 
   Havoc:
   * Remap spell data from all the new Rank X subspells
-  ** Blur
-  ** Chaos Nova (?)
-  ** Darkness
-  ** Vengeful Retreat (?)
+  ** Darkness (?)
 
   Vengeance:
+  * Add AoE component to Sinful Brand Meta
   * Add Fel Devastation baseline
   * Add Revel in Pain passive
   * Check all talents
@@ -104,6 +101,7 @@ public:
 
     // Covenant
     buff_t* the_hunt;
+    buff_t* serrated_glaive;
   } debuffs;
 
   demon_hunter_td_t( player_t* target, demon_hunter_t& p );
@@ -281,6 +279,7 @@ public:
 
     // Covenant
     buff_t* fodder_to_the_flame;
+    buff_t* growing_inferno;
 
     // Legendary
     buff_t* chaos_theory;
@@ -389,6 +388,7 @@ public:
     const spell_data_t* blade_dance_rank_2;
     const spell_data_t* blur;
     const spell_data_t* chaos_nova;
+    const spell_data_t* chaos_nova_rank_2;
     const spell_data_t* chaos_strike;
     const spell_data_t* chaos_strike_rank_2;
     const spell_data_t* chaos_strike_rank_3;
@@ -456,10 +456,10 @@ public:
   // Conduits
   struct conduit_t
   {
-    conduit_data_t dancing_with_fate;   // NYI
+    conduit_data_t dancing_with_fate;
     conduit_data_t demons_touch;        // NYI
-    conduit_data_t growing_inferno;     // NYI
-    conduit_data_t serrated_glaive;     // NYI
+    conduit_data_t growing_inferno;
+    conduit_data_t serrated_glaive;
 
     conduit_data_t soul_furnace;        // NYI
 
@@ -854,8 +854,7 @@ bool movement_buff_t::trigger( int s, double v, double c, timespan_t d )
   assert( buff_duration > timespan_t::zero() );
 
   // Check if we're already moving away from the target, if so we will now be moving towards it
-  if ( dh->current.distance_to_move || dh->buff.out_of_range->check() ||
-       dh->buff.vengeful_retreat_move->check() )
+  if ( dh->current.distance_to_move || dh->buff.out_of_range->check() || dh->buff.vengeful_retreat_move->check() )
   {
     dh->set_out_of_range(timespan_t::zero());
     yards_from_melee = 0.0;
@@ -1305,7 +1304,7 @@ public:
       {
         parse_affect_flags( p->spec.momentum_buff, affected_by.momentum );
       }      
-      if ( p->talent.essence_break->ok() )
+      if ( p->talent.essence_break->ok() || p->conduit.dancing_with_fate.ok() )
       {
         affected_by.essence_break = ab::data().affected_by( p->find_spell( 320338 )->effectN( 1 ) );
       }
@@ -1882,7 +1881,7 @@ struct chaos_nova_t : public demon_hunter_spell_t
     if ( !result_is_hit( s->result ) )
       return;
 
-    if ( s->target->type == ENEMY_ADD )
+    if ( s->target->type == ENEMY_ADD && p()->spec.chaos_nova_rank_2->ok() )
     {
       if ( p()->rng().roll( data().effectN( 3 ).percent() ) )
       {
@@ -1998,6 +1997,15 @@ struct eye_beam_t : public demon_hunter_spell_t
     {
       background = dual = reduced_aoe_damage = true;
       aoe = -1;
+    }
+
+    double composite_target_multiplier( player_t* target ) const override
+    {
+      double m = demon_hunter_spell_t::composite_target_multiplier( target );
+
+      m *= 1.0 + td( target )->debuffs.serrated_glaive->value();
+
+      return m;
     }
 
     double bonus_da( const action_state_t* s ) const override
@@ -2555,6 +2563,18 @@ struct immolation_aura_t : public demon_hunter_spell_t
           energize_amount = p->talent.burning_hatred->ok() ? data().effectN( 2 ).base_value() : 0;
         }
       }
+    }
+
+    double action_multiplier() const override
+    {
+      double am = demon_hunter_spell_t::action_multiplier();
+
+      if ( p()->conduit.growing_inferno.ok() )
+      {
+        am *= 1.0 + p()->buff.growing_inferno->stack_value();
+      }
+      
+      return am;
     }
 
     void impact( action_state_t* s ) override
@@ -3361,8 +3381,8 @@ struct blade_dance_base_t : public demon_hunter_attack_t
       last_attack( false )
     {
       background = dual = true;
-      // Based on beta testing, it appears all spells are affected by the 5 target limit
-      // This includes Death Sweep even though the tooltip does not indicate this
+      // TOCHECK: Based on beta testing, it appears all spells are affected by the 5 target limit
+      //          This includes Death Sweep even though the tooltip does not indicate this
       aoe = as<int>( p->find_spell( 199552 )->effectN( 1 ).base_value() );
     }
 
@@ -3401,6 +3421,25 @@ struct blade_dance_base_t : public demon_hunter_attack_t
 
         p()->buff.revolving_blades->trigger();
       }
+    }
+
+    void execute() override
+    {
+      // Dancing With Fate Conduit - Applied before damage, rolls independant per-target, can happen on any impact
+      // Since this affects the impact damage that procs it, we need to iterate over the target list before execute()
+      // TOCHECK: Currently this only works with Blade Dance on beta.
+      if ( p()->conduit.dancing_with_fate.ok() )
+      {
+        auto tl = target_list();
+        const int max_targets = std::min( n_targets(), as<int>( tl.size() ) );
+        for ( int i = 0; i < max_targets; i++ )
+        {
+          if ( p()->rng().roll( p()->conduit.dancing_with_fate.percent() ) )
+            td( tl[ i ] )->debuffs.essence_break->trigger();
+        }
+      }
+
+      demon_hunter_attack_t::execute();
     }
   };
 
@@ -4290,6 +4329,16 @@ struct throw_glaive_t : public demon_hunter_attack_t
 
     p()->buff.fel_bombardment->expire();
   }
+
+  void impact( action_state_t* s ) override
+  {
+    demon_hunter_attack_t::impact( s );
+
+    if ( p()->conduit.serrated_glaive.ok() )
+    {
+      td( s->target )->debuffs.serrated_glaive->trigger();
+    }
+  }
 };
 
 // Vengeful Retreat =========================================================
@@ -4398,7 +4447,15 @@ struct immolation_aura_buff_t : public demon_hunter_buff_t<buff_t>
     set_cooldown( timespan_t::zero() );
     set_tick_callback( [ p ]( buff_t*, int, timespan_t ) {
       p->active.immolation_aura->execute();
+      p->buff.growing_inferno->trigger();
     } );
+
+    if ( p->conduit.growing_inferno.ok() )
+    {
+      set_stack_change_callback( [ p ]( buff_t*, int, int ) {
+        p->buff.growing_inferno->expire();
+      } );
+    }
 
     if ( p->talent.agonizing_flames->ok() )
     {
@@ -4569,7 +4626,7 @@ movement_buff_t::movement_buff_t( demon_hunter_t* p, const std::string& name, co
 demon_hunter_td_t::demon_hunter_td_t( player_t* target, demon_hunter_t& p )
   : actor_target_data_t( target, &p ), dots( dots_t() ), debuffs( debuffs_t() )
 {
-  if (p.specialization() == DEMON_HUNTER_HAVOC)
+  if ( p.specialization() == DEMON_HUNTER_HAVOC )
   {
     debuffs.essence_break = make_buff( *this, "essence_break", p.find_spell( 320338 ) )
       ->set_cooldown( timespan_t::zero() )
@@ -4588,6 +4645,8 @@ demon_hunter_td_t::demon_hunter_td_t( player_t* target, demon_hunter_t& p )
   dots.sinful_brand = target->get_dot( "sinful_brand", &p );
   debuffs.the_hunt = make_buff( *this, "the_hunt", p.covenant.the_hunt->effectN( 1 ).trigger() )
     ->set_default_value( p.covenant.the_hunt->effectN( 1 ).trigger()->effectN( 2 ).percent() );
+  debuffs.serrated_glaive = make_buff( *this, "exposed_wound", p.conduit.serrated_glaive->effectN( 1 ).trigger() )
+    ->set_default_value( p.conduit.serrated_glaive->effectN( 1 ).trigger()->effectN( 1 ).percent() );
 
   target->callbacks_on_demise.emplace_back([this]( player_t* ) { target_demise(); } );
 }
@@ -4752,8 +4811,8 @@ void demon_hunter_t::create_buffs()
     ->set_cooldown( timespan_t::zero() );
 
   buff.blur = make_buff(this, "blur", spec.blur->effectN(1).trigger())
-    ->set_default_value(spec.blur->effectN(1).trigger()->effectN(3).percent()
-      + (talent.desperate_instincts->ok() ? talent.desperate_instincts->effectN(3).percent() : 0))
+    ->set_default_value( spec.blur->effectN( 1 ).trigger()->effectN( 3 ).percent()
+      + ( talent.desperate_instincts->ok() ? talent.desperate_instincts->effectN( 3 ).percent() : 0 ) )
     ->set_cooldown(timespan_t::zero())
     ->add_invalidate(CACHE_LEECH)
     ->add_invalidate(CACHE_DODGE);
@@ -4851,6 +4910,12 @@ void demon_hunter_t::create_buffs()
     ->add_invalidate( CACHE_ATTACK_SPEED )
     ->set_default_value( find_spell( 330910 )->effectN( 1 ).percent() )
     ->set_duration( find_spell( 330846 )->duration() + conduit.brooding_pool.time_value() );
+
+  // Fake Growing Inferno buff for tracking purposes
+  buff.growing_inferno = make_buff<buff_t>( this, "growing_inferno", conduit.growing_inferno )
+    ->set_default_value( conduit.growing_inferno.percent() )
+    ->set_max_stack( 99 )
+    ->set_duration( 20_s );
 
   // Legendary ==============================================================
 
@@ -5256,9 +5321,10 @@ void demon_hunter_t::init_spells()
   spec.blade_dance_rank_2     = find_rank_spell( "Blade Dance", "Rank 2" );
   spec.blur                   = find_specialization_spell( "Blur" );
   spec.chaos_nova             = find_class_spell( "Chaos Nova", DEMON_HUNTER_HAVOC );
+  spec.chaos_nova_rank_2      = find_rank_spell( "Chaos Nova", "Rank 2" );
   spec.chaos_strike           = find_class_spell( "Chaos Strike", DEMON_HUNTER_HAVOC );
   spec.chaos_strike_rank_2    = find_rank_spell( "Chaos Strike", "Rank 2" );
-  spec.chaos_strike_rank_3    = find_spell( 343206, DEMON_HUNTER_HAVOC ); // Name typo'd as Fel Rush (desc=Rank 3)
+  spec.chaos_strike_rank_3    = find_rank_spell( "Chaos Strike", "Rank 3" );
   spec.chaos_strike_refund    = find_spell( 197125, DEMON_HUNTER_HAVOC );
   spec.chaos_strike_fury      = find_spell( 193840, DEMON_HUNTER_HAVOC );
   spec.death_sweep            = find_spell( 210152, DEMON_HUNTER_HAVOC );
@@ -5644,6 +5710,7 @@ void demon_hunter_t::apl_havoc()
   apl_normal->add_action( this, spec.death_sweep, "death_sweep", "if=variable.blade_dance" );
   apl_normal->add_action( this, "Immolation Aura" );
   apl_normal->add_talent( this, "Glaive Tempest", "if=!variable.waiting_for_momentum&(active_enemies>desired_targets|raid_event.adds.in>10)" );
+  apl_normal->add_action( this, "Throw Glaive", "if=conduit.serrated_glaive.enabled&cooldown.eye_beam.remains<6&!buff.metamorphosis.up&!debuff.exposed_wound.up" );
   apl_normal->add_action( this, "Eye Beam", "if=active_enemies>1&(!raid_event.adds.exists|raid_event.adds.up)&!variable.waiting_for_momentum" );
   apl_normal->add_action( this, "Blade Dance", "if=variable.blade_dance" );
   apl_normal->add_talent( this, "Felblade", "if=fury.deficit>=40" );
@@ -5664,6 +5731,7 @@ void demon_hunter_t::apl_havoc()
   apl_demonic->add_action( this, "Fel Rush", "if=(talent.unbound_chaos.enabled&buff.unbound_chaos.up)&(charges=2|(raid_event.movement.in>10&raid_event.adds.in>10))" );
   apl_demonic->add_action( this, spec.death_sweep, "death_sweep", "if=variable.blade_dance" );
   apl_demonic->add_talent( this, "Glaive Tempest", "if=active_enemies>desired_targets|raid_event.adds.in>10" );
+  apl_demonic->add_action( this, "Throw Glaive", "if=conduit.serrated_glaive.enabled&cooldown.eye_beam.remains<6&!buff.metamorphosis.up&!debuff.exposed_wound.up" );
   apl_demonic->add_action( this, "Eye Beam", "if=raid_event.adds.up|raid_event.adds.in>25" );
   apl_demonic->add_action( this, "Blade Dance", "if=variable.blade_dance&!cooldown.metamorphosis.ready"
                                                 "&(cooldown.eye_beam.remains>(5-azerite.revolving_blades.rank*3)|(raid_event.adds.in>cooldown&raid_event.adds.in<25))" );
