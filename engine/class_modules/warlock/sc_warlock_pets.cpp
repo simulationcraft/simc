@@ -150,6 +150,9 @@ double warlock_pet_t::composite_player_multiplier( school_e school ) const
   if ( pet_type == PET_WARLOCK_RANDOM )
     m *= 1.25;
 
+  if ( pet_type == PET_FELGUARD && o()->conduit.fel_commando->ok() )
+    m *= 1.0 + o()->conduit.fel_commando.percent();
+
   return m;
 }
 
