@@ -17,7 +17,7 @@ const char* cache_era_str( cache::cache_era x )
 }
 
 }  // namespace
-void format_to( cache::cache_era era, fmt::format_context::iterator out )
+void cache::format_to( cache_era era, fmt::format_context::iterator out )
 {
   fmt::format_to( out, "{}", cache_era_str( era ) );
 }
