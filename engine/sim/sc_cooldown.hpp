@@ -9,6 +9,7 @@
 #include "util/timespan.hpp"
 #include "sc_enums.hpp"
 #include "util/string_view.hpp"
+#include "util/format.hpp"
 
 #include <string>
 #include <memory>
@@ -104,6 +105,8 @@ struct cooldown_t
   { return timespan_t::from_seconds( -60 * 60 ); }
 
   static timespan_t cooldown_duration( const cooldown_t* cd );
+
+  friend void format_to( const cooldown_t&, fmt::format_context::iterator );
 
 private:
   void adjust_remaining_duration( double delta ); // Modify the remaining duration of an ongoing cooldown.
