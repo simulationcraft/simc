@@ -7253,9 +7253,8 @@ struct adaptive_swarm_t : public druid_spell_t
 
         if ( it2 != swarm_tracker.end() )
         {
-          if ( druid->sim->debug )
-            druid->sim->print_debug( "Adaptive Swarm Handler: Merging {} stacks of {} on {} from #{} into #{}",
-                                     it2->stack, it2->swarm->name(), it2->swarm->target->name(), it2->UID, it->UID );
+          druid->sim->print_debug( "Adaptive Swarm Handler: Merging {} stacks of {} on {} from #{} into #{}",
+                                     it2->stack, *it2->swarm, *it2->swarm->target, it2->UID, it->UID );
 
           it->stack = std::min( max_stacks, it->stack + it2->stack );
           it2 = swarm_tracker.erase( it2 );
@@ -7268,8 +7267,7 @@ struct adaptive_swarm_t : public druid_spell_t
       auto it = range::find_if( swarm_tracker, [dot]( swarm_state_t s ) { return s.swarm == dot; } );
       if ( it != swarm_tracker.end() )
       {
-        if ( druid->sim->debug )
-          druid->sim->print_debug( "Adaptive Swarm Handler: Erasing swarm_state for:{} #{}.", dot->name(), it->UID );
+        druid->sim->print_debug( "Adaptive Swarm Handler: Erasing swarm_state for {} #{}.", *dot, it->UID );
 
         swarm_tracker.erase( it );
       }
@@ -7280,8 +7278,8 @@ struct adaptive_swarm_t : public druid_spell_t
       swarm_tracker.push_back( {dot, init_stacks, druid->sim->current_time()} );
 
       if ( druid->sim->debug )
-        druid->sim->print_debug( "Adaptive Swarm Handler: Creating new swarm_state for:{} #{} on {}", dot->name(),
-                                 swarm_tracker.back().UID, dot->target->name() );
+        druid->sim->print_debug( "Adaptive Swarm Handler: Creating new swarm_state for {} #{} on {}", *dot,
+                                 swarm_tracker.back().UID, *dot->target );
     }
 
     bool jump_swarm( dot_t* old_d, dot_t* new_d )
@@ -7290,9 +7288,8 @@ struct adaptive_swarm_t : public druid_spell_t
 
       if ( !sw )
       {
-        if ( druid->sim->debug )
-          druid->sim->print_debug( "Adaptive Swarm Handler: Attempting to jump {} on {} with no swarm_state!",
-                                   old_d->name(), old_d->target->name() );
+        druid->sim->print_debug( "Adaptive Swarm Handler: Attempting to jump {} on {} with no swarm_state!",
+                                   *old_d, *old_d->target );
 
         return false;
       }
@@ -7305,7 +7302,7 @@ struct adaptive_swarm_t : public druid_spell_t
 
       if ( druid->sim->debug )
         druid->sim->print_debug( "Adaptive Swarm Handler: Jumping #{} {} on {} ---> {} on {} with {} stacks.", sw->UID,
-                                 old_d->name(), old_d->target->name(), new_d->name(), new_d->target->name(),
+                                 *old_d, *old_d->target, *new_d, *new_d->target,
                                  sw->stack );
 
       sw->swarm = new_d;
@@ -7330,8 +7327,7 @@ struct adaptive_swarm_t : public druid_spell_t
 
       if ( !sw )
       {
-        if ( druid->sim->debug )
-          druid->sim->print_debug( "Adpative Swarm Handler: Unable to find swarm:{}!", dot->name() );
+        druid->sim->print_debug( "Adpative Swarm Handler: Unable to find swarm: {}!", *dot );
 
         return nullptr;
       }
