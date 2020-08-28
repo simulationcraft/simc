@@ -4529,11 +4529,6 @@ struct vanish_t : public rogue_spell_t
 
     p()->buffs.vanish->trigger();
     trigger_master_of_shadows();
-
-    if ( p()->buffs.deathly_shadows->trigger() )
-    {
-      trigger_combo_point_gain( as<int>( p()->buffs.deathly_shadows->data().effectN( 3 ).base_value() ), p()->gains.deathly_shadows );
-    }
   }
 
   bool ready() override
@@ -5561,7 +5556,7 @@ struct vanish_t : public stealth_like_buff_t
     stealth_like_buff_t::execute( stacks, value, duration );
     rogue->cancel_auto_attack();
 
-    // Confirmed on beta this triggers from Vanish buff via Sepsis, not just Vanish casts
+    // Confirmed on beta Invigorating Shadowdust triggers from Vanish buff via Sepsis, not just Vanish casts
     if ( rogue->legendary.invigorating_shadowdust.ok() )
     {
       const timespan_t reduction = timespan_t::from_seconds( rogue->legendary.invigorating_shadowdust->effectN( 1 ).base_value() );
@@ -5570,6 +5565,13 @@ struct vanish_t : public stealth_like_buff_t
         if ( c && c->down() )
           c->adjust( -reduction, false );
       }
+    }
+
+    // Confirmed on beta Deathly Shadows triggers from Vanish buff via Sepsis, not just Vanish casts
+    if ( rogue->buffs.deathly_shadows->trigger() )
+    {
+      const int combo_points = as<int>( rogue->buffs.deathly_shadows->data().effectN( 3 ).base_value() );
+      rogue->resource_gain( RESOURCE_COMBO_POINT, combo_points, rogue->gains.deathly_shadows );
     }
   }
 
