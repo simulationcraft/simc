@@ -343,9 +343,11 @@ public:
     cooldown_t* blade_flurry;
     cooldown_t* blade_rush;
     cooldown_t* blind;
-    cooldown_t* gouge;
     cooldown_t* cloak_of_shadows;
+    cooldown_t* dreadblades;
+    cooldown_t* gouge;
     cooldown_t* riposte;
+    cooldown_t* roll_the_bones;
     cooldown_t* ghostly_strike;
     cooldown_t* grappling_hook;
     cooldown_t* marked_for_death;
@@ -505,10 +507,11 @@ public:
 
     const spell_data_t* master_assassin;
 
+    const spell_data_t* leeching_poison;
+
     const spell_data_t* internal_bleeding;
 
     const spell_data_t* venom_rush;
-    //const spell_data_t* toxic_blade;
     const spell_data_t* exsanguinate;
 
     const spell_data_t* poison_bomb;
@@ -717,12 +720,14 @@ public:
     cooldowns.blade_flurry             = get_cooldown( "blade_flurry"             );
     cooldowns.blade_rush               = get_cooldown( "blade_rush"               );
     cooldowns.blind                    = get_cooldown( "blind"                    );
-    cooldowns.gouge                    = get_cooldown( "gouge"                    );
     cooldowns.cloak_of_shadows         = get_cooldown( "cloak_of_shadows"         );
+    cooldowns.gouge                    = get_cooldown( "gouge"                    );
+    cooldowns.dreadblades              = get_cooldown( "dreadblades"              );
     cooldowns.ghostly_strike           = get_cooldown( "ghostly_strike"           );
     cooldowns.grappling_hook           = get_cooldown( "grappling_hook"           );
     cooldowns.marked_for_death         = get_cooldown( "marked_for_death"         );
     cooldowns.riposte                  = get_cooldown( "riposte"                  );
+    cooldowns.roll_the_bones           = get_cooldown( "roll_the_bones"           );
     cooldowns.weaponmaster             = get_cooldown( "weaponmaster"             );
     cooldowns.vendetta                 = get_cooldown( "vendetta"                 );
     cooldowns.shiv                     = get_cooldown( "shiv"                     );
@@ -778,6 +783,7 @@ public:
   double    composite_melee_crit_chance() const override;
   double    composite_spell_crit_chance() const override;
   double    composite_spell_haste() const override;
+  double    composite_leech() const override;
   double    matching_gear_multiplier( attribute_e attr ) const override;
   double    composite_player_multiplier( school_e school ) const override;
   double    composite_player_target_multiplier( player_t* target, school_e school ) const override;
@@ -1062,6 +1068,7 @@ public:
     // Put ability specific ones here; class/spec wide ones with labels that can effect things like trinkets in rogue_t::apply_affecting_auras.
     ab::apply_affecting_aura( p->talent.deeper_stratagem );
     ab::apply_affecting_aura( p->talent.master_poisoner );
+    ab::apply_affecting_aura( p->talent.dancing_steel );
 
     // Affecting Passive Conduits
     ab::apply_affecting_conduit( p->conduit.lethal_poisons );
@@ -2623,7 +2630,6 @@ struct blade_flurry_t : public rogue_attack_t
     instant_attack(nullptr)
   {
     harmful = false;
-    internal_cooldown -> duration += p -> talent.dancing_steel -> effectN( 4 ).time_value();
 
     add_child( p->active.blade_flurry );
 
@@ -3173,9 +3179,9 @@ struct ghostly_strike_t : public rogue_attack_t
   {
     rogue_attack_t::impact( state );
 
-    if ( result_is_hit( state -> result ) )
+    if ( result_is_hit( state->result ) )
     {
-      td( state -> target ) -> debuffs.ghostly_strike -> trigger();
+      td( state->target )->debuffs.ghostly_strike->trigger();
     }
   }
 };
@@ -5542,11 +5548,11 @@ struct vanish_t : public stealth_like_buff_t
     {
       // TOCHECK: Double check what all this does not apply to
       shadowdust_cooldowns = { r->cooldowns.adrenaline_rush, r->cooldowns.between_the_eyes, r->cooldowns.blade_flurry,
-        r->cooldowns.blade_rush, r->cooldowns.blind, r->cooldowns.cloak_of_shadows, r->cooldowns.garrote,
+        r->cooldowns.blade_rush, r->cooldowns.blind, r->cooldowns.cloak_of_shadows, r->cooldowns.dreadblades, r->cooldowns.garrote,
         r->cooldowns.ghostly_strike, r->cooldowns.gouge, r->cooldowns.grappling_hook, r->cooldowns.killing_spree,
-        r->cooldowns.marked_for_death, r->cooldowns.riposte, r->cooldowns.secret_technique, r->cooldowns.sepsis,
-        r->cooldowns.serrated_bone_spike, r->cooldowns.shadow_blades, r->cooldowns.shadow_dance, r->cooldowns.shiv,
-        r->cooldowns.sprint, r->cooldowns.symbols_of_death, r->cooldowns.vendetta };
+        r->cooldowns.marked_for_death, r->cooldowns.riposte, r->cooldowns.roll_the_bones, r->cooldowns.secret_technique,
+        r->cooldowns.sepsis, r->cooldowns.serrated_bone_spike, r->cooldowns.shadow_blades, r->cooldowns.shadow_dance,
+        r->cooldowns.shiv, r->cooldowns.sprint, r->cooldowns.symbols_of_death, r->cooldowns.vendetta };
     }
   }
 
@@ -5781,7 +5787,6 @@ struct roll_the_bones_t : public buff_t
       rogue->buffs.skull_and_crossbones,
       rogue->buffs.true_bearing
     };
-
   }
 
   void set_procs()
@@ -6341,6 +6346,7 @@ void actions::rogue_action_t<Base>::trigger_restless_blades( const action_state_
   p()->cooldowns.between_the_eyes->adjust( v, false );
   p()->cooldowns.blade_flurry->adjust( v, false );
   p()->cooldowns.grappling_hook->adjust( v, false );
+  p()->cooldowns.roll_the_bones->adjust( v, false );
   p()->cooldowns.sprint->adjust( v, false );
   p()->cooldowns.vanish->adjust( v, false );
   // Talents
@@ -6729,6 +6735,17 @@ double rogue_t::composite_melee_crit_chance() const
   return crit;
 }
 
+// rogue_t::composite_spell_crit_chance =========================================
+
+double rogue_t::composite_spell_crit_chance() const
+{
+  double crit = player_t::composite_spell_crit_chance();
+
+  crit += spell.critical_strikes->effectN( 1 ).percent();
+
+  return crit;
+}
+
 // rogue_t::composite_spell_haste ==========================================
 
 double rogue_t::composite_spell_haste() const
@@ -6743,15 +6760,20 @@ double rogue_t::composite_spell_haste() const
   return h;
 }
 
-// rogue_t::composite_spell_crit_chance =========================================
+// rogue_t::composite_leech ===============================================
 
-double rogue_t::composite_spell_crit_chance() const
+double rogue_t::composite_leech() const
 {
-  double crit = player_t::composite_spell_crit_chance();
+  double l = player_t::composite_leech();
 
-  crit += spell.critical_strikes -> effectN( 1 ).percent();
+  if ( buffs.grand_melee->check() )
+  {
+    l += buffs.grand_melee->data().effectN( 2 ).percent();
+  }
 
-  return crit;
+  l += talent.leeching_poison->effectN( 1 ).percent();
+
+  return l;
 }
 
 // rogue_t::matching_gear_multiplier ========================================
@@ -7846,10 +7868,11 @@ void rogue_t::init_spells()
 
   talent.master_assassin    = find_talent_spell( "Master Assassin" );
 
+  talent.leeching_poison    = find_talent_spell( "Leeching Poison" );
+
   talent.internal_bleeding  = find_talent_spell( "Internal Bleeding" );
 
   talent.venom_rush         = find_talent_spell( "Venom Rush" );
-  //talent.toxic_blade        = find_talent_spell( "Toxic Blade" );
   talent.exsanguinate       = find_talent_spell( "Exsanguinate" );
 
   talent.poison_bomb        = find_talent_spell( "Poison Bomb" );
@@ -8208,26 +8231,27 @@ void rogue_t::create_buffs()
   buffs.adrenaline_rush       = new buffs::adrenaline_rush_t( this );
   buffs.blade_flurry          = new buffs::blade_flurry_t( this );
   buffs.blade_rush            = make_buff( this, "blade_rush", find_spell( 271896 ) )
-                                -> set_period( find_spell( 271896 ) -> effectN( 1 ).period() )
-                                -> set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
+                                ->set_period( find_spell( 271896 )->effectN( 1 ).period() )
+                                ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
                                   resource_gain( RESOURCE_ENERGY, b -> data().effectN( 1 ).base_value(), gains.blade_rush );
                                 } );
   buffs.opportunity           = make_buff( this, "opportunity", find_spell( 195627 ) );
   // Roll the bones buffs
   buffs.broadside             = make_buff( this, "broadside", spec.broadside )
-                                -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+                                ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buffs.buried_treasure       = make_buff( this, "buried_treasure", find_spell( 199600 ) )
-                                -> set_affects_regen( true )
-                                -> set_default_value( find_spell( 199600 ) -> effectN( 1 ).base_value() / 5.0 );
+                                ->set_affects_regen( true )
+                                ->set_default_value( find_spell( 199600 )->effectN( 1 ).base_value() / 5.0 );
   buffs.grand_melee           = make_buff( this, "grand_melee", find_spell( 193358 ) )
-                                -> set_default_value( find_spell( 193358 )->effectN( 1 ).base_value() );
+                                ->add_invalidate( CACHE_LEECH )
+                                ->set_default_value( find_spell( 193358 )->effectN( 1 ).base_value() );
   buffs.skull_and_crossbones  = make_buff( this, "skull_and_crossbones", find_spell( 199603 ) )
-                                -> set_default_value( find_spell( 199603 ) -> effectN( 1 ).percent() );
+                                ->set_default_value( find_spell( 199603 )->effectN( 1 ).percent() );
   buffs.ruthless_precision    = make_buff( this, "ruthless_precision", spec.ruthless_precision )
-                                -> set_default_value( spec.ruthless_precision->effectN( 1 ).percent() )
-                                -> add_invalidate( CACHE_CRIT_CHANCE );
+                                ->set_default_value( spec.ruthless_precision->effectN( 1 ).percent() )
+                                ->add_invalidate( CACHE_CRIT_CHANCE );
   buffs.true_bearing          = make_buff( this, "true_bearing", find_spell( 193359 ) )
-                                -> set_default_value( find_spell( 193359 ) -> effectN( 1 ).base_value() * 0.1 );
+                                ->set_default_value( find_spell( 193359 )->effectN( 1 ).base_value() * 0.1 );
   // Note, since I (navv) am a slacker, this needs to be constructed after the secondary buffs.
   buffs.roll_the_bones        = new buffs::roll_the_bones_t( this );
   
