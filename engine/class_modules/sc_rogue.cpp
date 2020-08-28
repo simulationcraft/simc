@@ -3334,7 +3334,13 @@ struct pistol_shot_t : public rogue_attack_t
 
   // Probably a bug on Shadowlands beta but Pistol Shot now procs CP. -Mystler 2020-08-02
   bool procs_combat_potency() const override
-  { return p()->bugs; }
+  {
+    // TOCHECK: On beta as of 8/28, Blunderbuss procs don't trigger. Possibly only "on cast".
+    if ( secondary_trigger == TRIGGER_CONCEALED_BLUNDERBUSS )
+      return false;
+
+    return p()->bugs; 
+  }
 
   double cost() const override
   {
@@ -3403,7 +3409,7 @@ struct pistol_shot_t : public rogue_attack_t
     p()->buffs.greenskins_wickers->expire();
 
     // Concealed Blunderbuss Legendary
-    if ( p()->active.concealed_blunderbuss )
+    if ( p()->active.concealed_blunderbuss && !is_secondary_action() )
     {
       unsigned int num_shots = as<unsigned>( p()->buffs.concealed_blunderbuss->value() );
       for ( unsigned i = 0; i < num_shots; ++i )
