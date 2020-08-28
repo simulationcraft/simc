@@ -60,10 +60,7 @@ util::span<const runeforge_legendary_entry_t> runeforge_legendary_entry_t::find_
   unsigned spell_id, bool ptr )
 {
   auto __data = data( ptr );
-  auto __begin = std::find_if( __data.begin(), __data.end(),
-                  [ spell_id ]( const runeforge_legendary_entry_t& e ) {
-                    return spell_id == e.spell_id;
-                  } );
+  auto __begin = range::find( __data, spell_id, &runeforge_legendary_entry_t::spell_id );
 
   if ( __begin == __data.end() )
   {
