@@ -137,6 +137,23 @@ struct druid_td_t : public actor_target_data_t
   }
 };
 
+struct druid_action_state_t : public action_state_t
+{
+  free_cast_e free_cast;
+
+  druid_action_state_t( action_t* a, player_t* t, free_cast_e f = free_cast_e::NONE )
+    : action_state_t( a, t ), free_cast( f )
+  {}
+
+  void copy_state( const action_state_t* s ) override
+  {
+    action_state_t::copy_state( s );
+    const druid_action_state_t* druid_s = debug_cast<const druid_action_state_t*>( s );
+
+    free_cast = druid_s->free_cast;
+  }
+};
+
 struct snapshot_counter_t
 {
   const sim_t* sim;
@@ -301,6 +318,8 @@ public:
 
     // Legendary
     action_t* frenzied_assault;
+    action_t* lycaras_fleeting_glimpse;  // fake holder action for reporting
+    action_t* oneths_clear_vision;       // fake holder action for reporting
   } active;
 
   // Pets
@@ -957,7 +976,6 @@ public:
   void init_beast_weapon( weapon_t&, double );
   const spell_data_t* find_affinity_spell( const std::string& ) const;
   specialization_e get_affinity_spec() const;
-  std::string free_cast_string( const std::string&, free_cast_e ) const;
   void trigger_natures_guardian( const action_state_t* );
   double calculate_expected_max_health() const;
   const spelleffect_data_t* query_aura_effect( const spell_data_t* aura_spell,
@@ -1056,6 +1074,7 @@ void eclipse_handler_t::advance_eclipse()
 
 void eclipse_handler_t::cast_starsurge()
 {
+  if ( state == IN_SOLAR || state == IN_LUNAR || state == IN_BOTH )
   p->buff.starsurge->trigger();
 
   if ( p->conduit.stellar_inspiration->ok() && p->rng().roll( p->conduit.stellar_inspiration->effectN( 1 ).percent() ) )
@@ -1677,6 +1696,14 @@ struct dot_debuff_t
   dot_debuff_t( std::function<dot_t*( druid_td_t* )> f, double v ) : func( f ), value( v ) {}
 };
 
+struct free_cast_stats_t
+{
+  free_cast_e type;
+  stats_t* stats;
+
+  free_cast_stats_t( free_cast_e f, stats_t* s ) : type( f ), stats( s ) {}
+};
+
 // Template for common druid action code. See priest_action_t.
 template <class Base>
 struct druid_action_t : public Base
@@ -1693,7 +1720,9 @@ public:
   double lucid_dreams_multiplier;
   bool is_auto_attack;
 
-  free_cast_e free_cast;  // convoke_the_spirits, lycaras, oneths
+  free_cast_e free_cast;
+  std::vector<free_cast_stats_t> free_cast_stats;
+  stats_t* orig_stats;
 
   std::vector<buff_effect_t> ta_multiplier_buffeffects;
   std::vector<buff_effect_t> da_multiplier_buffeffects;
@@ -1713,6 +1742,8 @@ public:
       lucid_dreams_multiplier( p()->lucid_dreams->effectN( 1 ).percent() ),
       is_auto_attack( false ),
       free_cast( free_cast_e::NONE ),
+      free_cast_stats(),
+      orig_stats( ab::stats ),
       ta_multiplier_buffeffects(),
       da_multiplier_buffeffects(),
       execute_time_buffeffects(),
@@ -1752,6 +1783,86 @@ public:
   const druid_t* p() const { return static_cast<druid_t*>( ab::player ); }
 
   druid_td_t* td( player_t* t ) const { return p()->get_target_data( t ); }
+
+  action_state_t* new_state() override { return new druid_action_state_t( this, ab::target, free_cast ); }
+
+  free_cast_e get_state_free_cast( action_state_t* s ) { return debug_cast<druid_action_state_t*>( s )->free_cast; }
+
+  void set_state_free_cast( action_state_t* s ) { debug_cast<druid_action_state_t*>( s )->free_cast = free_cast; }
+
+  std::string free_cast_string( free_cast_e f ) const
+  {
+    if ( f == free_cast_e::CONVOKE )
+      return ab::name_str + "_convoke";
+
+    if ( f == free_cast_e::LYCARAS )
+      return ab::name_str + "_lycaras";
+
+    if ( f == free_cast_e::ONETHS )
+      return ab::name_str + "_oneths";
+
+    return ab::name_str;
+  }
+
+  stats_t* init_free_cast_stats( free_cast_e f )
+  {
+    for ( auto s : free_cast_stats )
+      if ( s.type == f )
+        return s.stats;
+
+    auto fc_stats = p()->get_stats( free_cast_string( f ), this );
+    free_cast_stats.push_back( free_cast_stats_t( f, fc_stats ) );
+
+    return fc_stats;
+  }
+
+  stats_t* get_free_cast_stats( free_cast_e f )
+  {
+    for ( auto s : free_cast_stats )
+      if ( s.type == f )
+        return s.stats;
+
+    return ab::stats;
+  }
+
+  void execute() override
+  {
+    if ( free_cast )
+    {
+      ab::stats = get_free_cast_stats( free_cast );
+      ab::execute();
+      ab::stats = orig_stats;
+      free_cast = free_cast_e::NONE;
+    }
+    else
+      ab::execute();
+
+    if ( !ab::background && p()->buff.ravenous_frenzy->check() )
+      p()->buff.ravenous_frenzy->trigger();
+  }
+
+  void schedule_travel( action_state_t* s ) override
+  {
+    set_state_free_cast( s );
+
+    ab::schedule_travel( s );
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    auto f = get_state_free_cast( s );
+
+    if ( f && ab::stats == orig_stats )
+    {
+      ab::stats = get_free_cast_stats( f );
+      ab::impact( s );
+      ab::stats = orig_stats;
+    }
+    else
+      ab::impact( s );
+
+    trigger_galactic_guardian( s );
+  }
 
   bool parse_rank_spell_effects( double& val, const spell_data_t* base_spell, size_t idx,
                                  const spell_data_t* rank_spell )
@@ -2041,13 +2152,6 @@ public:
     return rm;
   }
 
-  void impact( action_state_t* s ) override
-  {
-    ab::impact( s );
-
-    trigger_galactic_guardian( s );
-  }
-
   void tick( dot_t* d ) override
   {
     ab::tick( d );
@@ -2064,20 +2168,10 @@ public:
       else if ( autoshift )
         p()->shapeshift( (form_e)autoshift );
       else
-      {
         assert( false && "Action executed in wrong form with no valid form to shift to!" );
-      }
     }
 
     ab::schedule_execute( s );
-  }
-
-  void execute() override
-  {
-    ab::execute();
-
-    if ( !ab::background && p()->buff.ravenous_frenzy->check() )
-      p()->buff.ravenous_frenzy->trigger();
   }
 
   // Override this function for temporary effects that change the normal form restrictions of the spell. eg: Predatory
@@ -2769,7 +2863,7 @@ struct shooting_stars_t : public druid_spell_t
   timespan_t travel_time() const override
   {
     // has a set travel time since it spawns on the target
-    return timespan_t::from_millis( data().missile_speed() );
+    return timespan_t::from_seconds( data().missile_speed() );
   }
 };
 
@@ -2786,8 +2880,7 @@ struct moonfire_t : public druid_spell_t
     bool benefits_from_galactic_guardian;
 
   public:
-    moonfire_damage_t( druid_t* p, free_cast_e free = free_cast_e::NONE )
-      : moonfire_damage_t( p, p->free_cast_string( "moonfire_dmg", free ) ) {}
+    moonfire_damage_t( druid_t* p ) : moonfire_damage_t( p, "moonfire_dmg" ) {}
 
     moonfire_damage_t( druid_t* p, util::string_view n ) : druid_spell_t( n, p, p->spec.moonfire_dmg )
     {
@@ -2995,22 +3088,21 @@ struct moonfire_t : public druid_spell_t
 
   moonfire_damage_t* damage;  // Add damage modifiers in moonfire_damage_t, not moonfire_t
 
-  moonfire_t( druid_t* player, const std::string& options_str, free_cast_e free = free_cast_e::NONE )
-    : druid_spell_t( player->free_cast_string( "moonfire", free ), player, player->find_class_spell( "Moonfire" ),
-                     options_str )
+  moonfire_t( druid_t* p, const std::string& options_str )
+    : druid_spell_t( "moonfire", p, p->find_class_spell( "Moonfire" ), options_str )
   {
     may_miss      = false;
-    damage        = new moonfire_damage_t( player, free );
+    damage        = new moonfire_damage_t( p );
     damage->stats = stats;
     add_child( damage );
 
-    if ( player->active.galactic_guardian )
-      add_child( player->active.galactic_guardian );
+    if ( p->active.galactic_guardian )
+      add_child( p->active.galactic_guardian );
 
-    if ( player->spec.astral_power->ok() )
+    if ( p->spec.astral_power->ok() )
     {
       energize_resource = RESOURCE_ASTRAL_POWER;
-      energize_amount   = player->spec.astral_power->effectN( 3 ).resource( RESOURCE_ASTRAL_POWER );
+      energize_amount   = p->spec.astral_power->effectN( 3 ).resource( RESOURCE_ASTRAL_POWER );
       energize_type = action_energize::ON_HIT;
     }
     else
@@ -3029,6 +3121,11 @@ struct moonfire_t : public druid_spell_t
 
   void execute() override
   {
+    if ( free_cast )
+      damage->stats = get_free_cast_stats( free_cast );
+    else
+      damage->stats = orig_stats;
+
     druid_spell_t::execute();
 
     damage->target = execute_state->target;
@@ -3526,14 +3623,12 @@ struct cat_melee_t : public cat_attack_t
 
 // Rip State ================================================================
 
-struct rip_state_t : public action_state_t
+struct rip_state_t : public druid_action_state_t
 {
   int combo_points;
   druid_t* druid;
 
-  rip_state_t( druid_t* p, action_t* a, player_t* target ) : action_state_t( a, target ), combo_points( 0 ), druid( p )
-  {
-  }
+  rip_state_t( druid_t* p, action_t* a, player_t* t ) : druid_action_state_t( a, t ), combo_points( 0 ), druid( p ) {}
 
   void initialize() override
   {
@@ -5522,19 +5617,16 @@ struct tiger_dash_t : public druid_spell_t
 
 struct full_moon_t : public druid_spell_t
 {
-  full_moon_t( druid_t* player, const std::string& options_str, free_cast_e free = free_cast_e::NONE )
-    : druid_spell_t( player->free_cast_string( "full_moon", free ), player, player->spec.full_moon, options_str )
+  cooldown_t* orig_cd;
+
+  full_moon_t( druid_t* p, const std::string& options_str )
+    : druid_spell_t( "full_moon", p, p->spec.full_moon, options_str )
   {
-    aoe              = -1;
+    aoe                = -1;
     reduced_aoe_damage = true;
-    free_cast        = free;
+    cooldown = orig_cd = p->cooldown.moon_cd;
 
-    if ( free == free_cast_e::NONE )
-      cooldown = player->cooldown.moon_cd;
-    else
-      cooldown->duration = 0_ms;
-
-    if ( !player->spec.astral_power->ok() )
+    if ( !p->spec.astral_power->ok() )
       energize_type = action_energize::NONE;
   }
 
@@ -5560,16 +5652,23 @@ struct full_moon_t : public druid_spell_t
 
   void execute() override
   {
-    druid_spell_t::execute();
-
-    if ( !free_cast )
-      p()->moon_stage = NEW_MOON;  // Requires hit
+    if ( free_cast )
+    {
+      cooldown = nullptr;
+      druid_spell_t::execute();
+      cooldown = orig_cd;
+    }
+    else
+    {
+      druid_spell_t::execute();
+      p()->moon_stage = moon_stage_e::NEW_MOON;
+    }
   }
 
   timespan_t travel_time() const override
   {
     // has a set travel time since it spawns on the target
-    return timespan_t::from_millis( data().missile_speed() );
+    return timespan_t::from_seconds( data().missile_speed() );
   }
 
   bool ready() override
@@ -6297,15 +6396,12 @@ struct wrath_t : public druid_spell_t
   unsigned count;
   double gcd_mul;
 
-  wrath_t( druid_t* player, const std::string& options_str, free_cast_e free = free_cast_e::NONE )
-    : druid_spell_t( player->free_cast_string( "wrath", free ), player, player->find_affinity_spell( "Wrath" ),
-                     options_str )
+  wrath_t( druid_t* p, const std::string& options_str )
+    : druid_spell_t( "wrath", p, p->find_affinity_spell( "Wrath" ), options_str )
   {
-    free_cast       = free;
     form_mask       = NO_FORM | MOONKIN_FORM;
-    energize_amount = player->spec.astral_power->effectN( 2 ).resource( RESOURCE_ASTRAL_POWER );
-    gcd_mul =
-        player->query_aura_effect( &player->buff.eclipse_solar->data(), A_ADD_PCT_MODIFIER, P_GCD, &data() )->percent();
+    energize_amount = p->spec.astral_power->effectN( 2 ).resource( RESOURCE_ASTRAL_POWER );
+    gcd_mul = p->query_aura_effect( &p->buff.eclipse_solar->data(), A_ADD_PCT_MODIFIER, P_GCD, &data() )->percent();
   }
 
   void init_finished() override
@@ -6382,7 +6478,7 @@ struct wrath_t : public druid_spell_t
 
     streaking_stars_trigger( SS_WRATH, execute_state );
 
-    if ( free_cast == free_cast_e::NONE )
+    if ( !free_cast )
       p()->eclipse_handler.cast_wrath();
   }
 
@@ -6441,8 +6537,7 @@ struct lunar_shrapnel_t : public druid_spell_t
 
 struct starfall_tick_t : public druid_spell_t
 {
-  starfall_tick_t( druid_t* p, free_cast_e free = free_cast_e::NONE )
-    : druid_spell_t( p->free_cast_string( "starfall_tick", free ), p, p->spec.starfall_dmg )
+  starfall_tick_t( druid_t* p ) : druid_spell_t( "starfall_tick", p, p->spec.starfall_dmg )
   {
     background = dual = direct_tick = true;
     aoe    = -1;
@@ -6452,8 +6547,8 @@ struct starfall_tick_t : public druid_spell_t
 
   timespan_t travel_time() const override
   {
-    // has a set travel time since it spawns on the target
-    return timespan_t::from_millis( data().missile_speed() );
+    // seems to have a random travel time between 1x - 2x missile speed
+    return timespan_t::from_seconds( data().missile_speed() * rng().range( 1.0, 2.0 ) );
   }
 
   void impact( action_state_t* s ) override
@@ -6470,41 +6565,27 @@ struct starfall_tick_t : public druid_spell_t
 struct starfall_t : public druid_spell_t
 {
   action_t* starfall_tick;
-  action_t* oneth_sf;
 
-  starfall_t( druid_t* p, const std::string& options_str, free_cast_e free = free_cast_e::NONE )
-    : druid_spell_t( p->free_cast_string( "starfall", free ), p, p->spec.starfall, options_str )
+  starfall_t( druid_t* p, const std::string& options_str )
+    : druid_spell_t( "starfall", p, p->spec.starfall, options_str )
   {
     may_miss = may_crit = false;
-    free_cast           = free;
 
-    starfall_tick = p->find_action( p->free_cast_string( "starfall_tick", free ) );
+    starfall_tick = p->find_action( "starfall_tick" );
     if ( !starfall_tick )
     {
-      starfall_tick = new starfall_tick_t( p, free );
+      starfall_tick = new starfall_tick_t( p );
       starfall_tick->init();
     }
 
     starfall_tick->stats = stats;
     add_child( starfall_tick );
 
-    if ( free == free_cast_e::NONE )
-    {
-      if ( p->azerite.lunar_shrapnel.ok() )
-        add_child( p->active.lunar_shrapnel );
+    if ( p->azerite.lunar_shrapnel.ok() )
+      add_child( p->active.lunar_shrapnel );
 
-      if ( p->legendary.oneths_clear_vision->ok() )
-      {
-        oneth_sf = p->find_action( "starfall_oneth" );
-        if ( !oneth_sf )
-        {
-          oneth_sf = new starfall_t( p, options_str, free_cast_e::ONETHS );
-          oneth_sf->init();
-        }
-
-        add_child( oneth_sf );
-      }
-    }
+    if ( p->legendary.oneths_clear_vision->ok() )
+      p->active.oneths_clear_vision->stats->add_child( init_free_cast_stats( free_cast_e::ONETHS ) );
   }
 
   bool ready() override
@@ -6517,20 +6598,13 @@ struct starfall_t : public druid_spell_t
 
   void execute() override
   {
-    if ( free_cast == free_cast_e::NONE && p()->buff.oneths_free_starfall->up() && oneth_sf )
-    {
-      p()->buff.oneths_free_starfall->expire();
-      oneth_sf->set_target( target );
-      oneth_sf->execute();  // further handling by the oneth version
-      return;
-    }
+    if ( !free_cast && p()->buff.oneths_free_starfall->up() )
+      free_cast = free_cast_e::ONETHS;
 
-    druid_spell_t::execute();
-
-    streaking_stars_trigger( SS_STARFALL, nullptr );
-
-    p()->buff.starfall->set_tick_callback( [this]( buff_t*, int, timespan_t ) { starfall_tick->schedule_execute(); } );
-    p()->buff.starfall->trigger();
+    if ( free_cast )
+      starfall_tick->stats = get_free_cast_stats( free_cast );
+    else
+      starfall_tick->stats = orig_stats;
 
     if ( p()->spec.starfall_2->ok() )
     {
@@ -6553,8 +6627,18 @@ struct starfall_t : public druid_spell_t
       }
     }
 
-    if ( free_cast == free_cast_e::CONVOKE )
-      return;
+    druid_spell_t::execute();
+
+    streaking_stars_trigger( SS_STARFALL, nullptr );
+
+    p()->buff.starfall->set_tick_callback( [this]( buff_t*, int, timespan_t ) { starfall_tick->schedule_execute(); } );
+    p()->buff.starfall->trigger();
+
+    if ( get_state_free_cast( execute_state ) == free_cast_e::CONVOKE )
+      return;  // convoke doesn't process any further
+
+    if ( p()->buff.oneths_free_starfall->check() )
+      p()->buff.oneths_free_starfall->expire();
 
     if ( p()->talent.starlord->ok() )
       p()->buff.starlord->trigger();
@@ -6571,27 +6655,11 @@ struct starfall_t : public druid_spell_t
 
 struct starsurge_t : public druid_spell_t
 {
-  action_t* oneth_ss;
-
-  starsurge_t( druid_t* p, const std::string& options_str, free_cast_e free = free_cast_e::NONE )
-    : druid_spell_t( p->free_cast_string( "starsurge", free ), p, p->find_affinity_spell( "Starsurge" ), options_str )
+  starsurge_t( druid_t* p, const std::string& options_str )
+    : druid_spell_t( "starsurge", p, p->find_affinity_spell( "Starsurge" ), options_str )
   {
-    free_cast = free;
-
-    if ( free == free_cast_e::NONE )
-    {
-      if ( p->legendary.oneths_clear_vision->ok() )
-      {
-        oneth_ss = p->find_action( "starsurge_oneth" );
-        if ( !oneth_ss )
-        {
-          oneth_ss = new starsurge_t( p, options_str, free_cast_e::ONETHS );
-          oneth_ss->init();
-        }
-
-        add_child( oneth_ss );
-      }
-    }
+    if ( p->legendary.oneths_clear_vision->ok() )
+      p->active.oneths_clear_vision->stats->add_child( init_free_cast_stats( free_cast_e::ONETHS ) );
   }
 
   timespan_t travel_time() const override  // hack to allow bypassing of action_t::init() precombat check
@@ -6621,20 +6689,18 @@ struct starsurge_t : public druid_spell_t
 
   void execute() override
   {
-    if ( free_cast == free_cast_e::NONE && p()->buff.oneths_free_starsurge->up() && oneth_ss )
-    {
-      p()->buff.oneths_free_starsurge->expire();
-      oneth_ss->set_target( target );
-      oneth_ss->execute();  // further handling by the oneth version
-      return;
-    }
+    if ( !free_cast && p()->buff.oneths_free_starsurge->up() ) 
+      free_cast = free_cast_e::ONETHS;
 
     druid_spell_t::execute();
 
     p()->eclipse_handler.cast_starsurge();
 
-    if ( free_cast == free_cast_e::CONVOKE )
+    if ( get_state_free_cast( execute_state ) == free_cast_e::CONVOKE )
       return;  // convoke doesn't process any further
+
+    if ( p()->buff.oneths_free_starsurge->check() )
+      p()->buff.oneths_free_starsurge->expire();
 
     if ( p()->talent.starlord->ok() )
       p()->buff.starlord->trigger();
@@ -6997,35 +7063,27 @@ struct convoke_the_spirits_t : public druid_spell_t
                                      as<int>( dot_duration / base_tick_time ) );
 
     // Balance
-    conv_fm = player->find_action( "full_moon_convoke" );
-    if ( !conv_fm )
-      conv_fm = new full_moon_t( player, options_str, free_cast_e::CONVOKE );
-
-    conv_ss = player->find_action( "starsurge_convoke" );
-    if ( !conv_ss )
-      conv_ss = new starsurge_t( player, options_str, free_cast_e::CONVOKE );
-
-    conv_wr = player->find_action( "wrath_convoke" );
-    if ( !conv_wr )
-      conv_wr = new wrath_t( player, options_str, free_cast_e::CONVOKE );
-
-    conv_sf = player->find_action( "starfall_convoke" );
-    if ( !conv_sf )
-      conv_sf = new starfall_t( player, options_str, free_cast_e::CONVOKE );
-
-    conv_mf = player->find_action( "moonfire" );
-    if ( !conv_mf )
-      conv_mf = new moonfire_t( player, options_str, free_cast_e::CONVOKE );
-
-    add_child( conv_fm );
-    add_child( conv_ss );
-    add_child( conv_wr );
-    add_child( conv_sf );
-    //add_child( conv_mf );
+    conv_fm = create_convoke_action<full_moon_t>( "full_moon " );
+    conv_wr = create_convoke_action<wrath_t>( "wrath" );
+    conv_ss = create_convoke_action<starsurge_t>( "starsurge" );
+    conv_sf = create_convoke_action<starfall_t>( "starfall" );
+    conv_mf = create_convoke_action<moonfire_t>( "moonfire" );
 
     // Feral
     // Guardian
     // Restoration
+  }
+
+  template <typename T>
+  action_t* create_convoke_action( util::string_view n )
+  {
+    auto tmp = p()->find_action( n );
+    if ( !tmp )
+      tmp = new T( p(), "" );
+
+    stats->add_child( debug_cast<druid_action_t*>( tmp )->init_free_cast_stats( free_cast_e::CONVOKE ) );
+
+    return tmp;
   }
 
   double composite_haste() const override { return 1.0; }
@@ -7128,6 +7186,7 @@ struct convoke_the_spirits_t : public druid_spell_t
       return;
 
     conv_cast->set_target( conv_tar );
+    debug_cast<druid_action_t*>( conv_cast )->free_cast = free_cast_e::CONVOKE;
     conv_cast->execute();
   }
 
@@ -7552,10 +7611,39 @@ struct lycaras_fleeting_glimpse_event_t : public event_t
 {
   druid_t* druid;
   timespan_t interval;
+  action_t* lycaras;
+  action_t* moonkin;
+  action_t* cat;
+  action_t* bear;
+  action_t* tree;
 
-  lycaras_fleeting_glimpse_event_t( druid_t* p, timespan_t tm ) : event_t( *p, tm ), druid( p ), interval( tm ) {}
+  lycaras_fleeting_glimpse_event_t( druid_t* p, timespan_t tm )
+    : event_t( *p, tm ),
+      druid( p ),
+      interval( tm ),
+      lycaras( nullptr ),
+      moonkin( nullptr ),
+      cat( nullptr ),
+      bear( nullptr ),
+      tree( nullptr )
+  {
+    moonkin = create_lycara_action<spells::starfall_t, spell_t>( "starfall" );
+  }
 
   const char* name() const override { return "lycaras_fleeting_glimpse"; }
+
+  template <typename T, typename B>
+  action_t* create_lycara_action( util::string_view n )
+  {
+    auto tmp = druid->find_action( n );
+    if ( !tmp )
+      tmp = new T( druid, "" );
+
+    druid->active.lycaras_fleeting_glimpse->stats->add_child(
+        debug_cast<druid_action_t<B>*>( tmp )->init_free_cast_stats( free_cast_e::LYCARAS ) );
+
+    return tmp;
+  }
 
   void execute() override
   {
@@ -7563,12 +7651,8 @@ struct lycaras_fleeting_glimpse_event_t : public event_t
 
     if ( druid->buff.moonkin_form->up() )
     {
-      spell_action = druid->find_action( "starfall_lycaras" );
-      if ( !spell_action )
-      {
-        spell_action = new spells::starfall_t( druid, "", free_cast_e::LYCARAS );
-        spell_action->init();
-      }
+      spell_action = moonkin;
+      debug_cast<druid_action_t<spell_t>*>( spell_action )->free_cast = free_cast_e::LYCARAS;
     }
 
     if ( spell_action )
@@ -8315,7 +8399,8 @@ void druid_t::create_buffs()
 
   buff.starfall = make_buff( this, "starfall", spec.starfall )
     ->set_duration( spec.starfall->duration() + talent.stellar_drift->effectN( 1 ).time_value() )
-    ->set_period( 888_ms )  // this has a random interval in game so estimate the average here
+    ->set_tick_zero( true )
+    ->set_period( 1_s )
     ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
 
   buff.eclipse_solar = new eclipse_buff_t( *this, "eclipse_solar", spec.eclipse_solar );
@@ -8488,6 +8573,14 @@ void druid_t::create_actions()
 
   if ( legendary.frenzyband->ok() )
     active.frenzied_assault = new cat_attacks::frenzied_assault_t( this );
+
+  if ( legendary.lycaras_fleeting_glimpse->ok() )
+    active.lycaras_fleeting_glimpse =
+        new action_t( action_e::ACTION_OTHER, "lycaras_fleeting_glimpse", this, legendary.lycaras_fleeting_glimpse );
+
+  if ( legendary.oneths_clear_vision->ok() )
+    active.oneths_clear_vision =
+        new action_t( action_e::ACTION_OTHER, "oneths_clear_vision", this, legendary.oneths_clear_vision );
 
   player_t::create_actions();
 }
@@ -9958,20 +10051,6 @@ const spell_data_t* druid_t::find_affinity_spell( const std::string& name ) cons
     return spec_spell;
 
   return spell_data_t::not_found();
-}
-
-std::string druid_t::free_cast_string( const std::string& str, free_cast_e type ) const
-{
-  if ( type == free_cast_e::CONVOKE )
-    return str + "_convoke";
-
-  if ( type == free_cast_e::LYCARAS )
-    return str + "_lycaras";
-
-  if ( type == free_cast_e::ONETHS )
-    return str + "_oneths";
-
-  return str;
 }
 
 // druid_t::trigger_natures_guardian ========================================
