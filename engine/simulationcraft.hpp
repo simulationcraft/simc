@@ -16,7 +16,7 @@
 #include "lib/gsl-lite/gsl-lite.hpp"
 
 
-#include "sc_timespan.hpp" // Time class representing ingame time
+#include "util/timespan.hpp" // Time class representing ingame time
 #include "sc_enums.hpp"
 
 #include "action/sc_action_state.hpp"

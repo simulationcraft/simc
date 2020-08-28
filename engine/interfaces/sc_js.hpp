@@ -8,7 +8,7 @@
 
 #include "config.hpp"
 #include "rapidjson/document.h"
-#include "sc_timespan.hpp"
+#include "util/timespan.hpp"
 #include "util/string_view.hpp"
 
 #include <utility>

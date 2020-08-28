@@ -7,7 +7,7 @@
 
 #include "config.hpp"
 #include "action/sc_action.hpp"
-#include "sc_timespan.hpp"
+#include "util/timespan.hpp"
 #include <vector>
 #include <string>
 

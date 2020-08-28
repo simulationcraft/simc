@@ -8,7 +8,7 @@
 #include "rapidjson/prettywriter.h"
 #include "sim/sc_cooldown.hpp"
 #include "util/util.hpp"
-#include "sc_timespan.hpp"
+#include "util/timespan.hpp"
 #include "util/sample_data.hpp"
 #include "util/rng.hpp"
 #include "util/timeline.hpp"

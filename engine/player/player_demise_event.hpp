@@ -9,7 +9,7 @@
 #include "player/sc_player.hpp"
 #include "player/player_event.hpp"
 #include "sim/sc_sim.hpp"
-#include "sc_timespan.hpp"
+#include "util/timespan.hpp"
 
 /* Event which will demise the player
  * - Reason for it are that we need to finish the current action ( eg. a dot tick ) without

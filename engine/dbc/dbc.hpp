@@ -8,7 +8,7 @@
 
 #include "config.hpp"
 #include "util/generic.hpp"
-#include "sc_timespan.hpp"
+#include "util/timespan.hpp"
 
 #include <array>
 #include <functional>

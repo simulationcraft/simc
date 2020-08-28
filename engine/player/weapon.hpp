@@ -7,7 +7,7 @@
 
 #include "config.hpp"
 #include "sc_enums.hpp"
-#include "sc_timespan.hpp"
+#include "util/timespan.hpp"
 
 struct weapon_t
 {

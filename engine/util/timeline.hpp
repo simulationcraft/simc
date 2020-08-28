@@ -15,7 +15,7 @@
 
 #include "util/generic.hpp"
 #include "sample_data.hpp"
-#include "sc_timespan.hpp"
+#include "util/timespan.hpp"
 
 struct sim_t;
 

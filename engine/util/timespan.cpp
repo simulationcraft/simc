@@ -3,8 +3,9 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
+#include "util/timespan.hpp"
+
 #include "fmt/format.h"
-#include "sc_timespan.hpp"
 
 namespace simc
 {

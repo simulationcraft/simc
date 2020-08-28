@@ -10,7 +10,7 @@
 #include "player/target_specific.hpp"
 #include "player/covenant.hpp"
 #include "sc_enums.hpp"
-#include "sc_timespan.hpp"
+#include "util/timespan.hpp"
 #include "util/generic.hpp"
 #include "util/string_view.hpp"
 #include "util/format.hpp"

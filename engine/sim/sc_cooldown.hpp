@@ -6,7 +6,7 @@
 #pragma once
 
 #include "config.hpp"
-#include "sc_timespan.hpp"
+#include "util/timespan.hpp"
 #include "sc_enums.hpp"
 #include "util/string_view.hpp"
 
