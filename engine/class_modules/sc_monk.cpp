@@ -7712,7 +7712,7 @@ void monk_t::init_spells()
   spec.fists_of_fury              = find_specialization_spell( "Fists of Fury" );
   spec.flying_serpent_kick        = find_specialization_spell( "Flying Serpent Kick" );
   spec.invoke_xuen                = find_specialization_spell( "Invoke Xuen, the White Tiger" );
-  spec.reverse_harm               = find_spell( 287771 );
+  spec.reverse_harm               = find_spell( 342928 );
   spec.stance_of_the_fierce_tiger = find_specialization_spell( "Stance of the Fierce Tiger" );
   spec.storm_earth_and_fire       = find_specialization_spell( "Storm, Earth, and Fire" );
   spec.storm_earth_and_fire_2     = find_rank_spell( "Storm, Earth, and Fire", "Rank 2" );
