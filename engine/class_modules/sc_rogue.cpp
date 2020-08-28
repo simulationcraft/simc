@@ -5383,6 +5383,8 @@ struct adrenaline_rush_t : public buff_t
     set_default_value( p->spec.adrenaline_rush->effectN( 2 ).percent() );
     set_affects_regen( true );
     add_invalidate( CACHE_ATTACK_SPEED );
+    if ( p->legendary.celerity.ok() )
+      add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   }
 
   void trigger_secondary_procs()
@@ -5401,8 +5403,6 @@ struct adrenaline_rush_t : public buff_t
 
     rogue_t* rogue = debug_cast<rogue_t*>( source );
     rogue->resources.temporary[ RESOURCE_ENERGY ] += data().effectN( 4 ).base_value();
-    if ( rogue->legendary.celerity )
-      rogue->resources.temporary[ RESOURCE_ENERGY ] += rogue->legendary.celerity->effectN( 1 ).base_value();
     rogue->recalculate_resource_max( RESOURCE_ENERGY );
     trigger_secondary_procs();
   }
@@ -5425,8 +5425,6 @@ struct adrenaline_rush_t : public buff_t
 
     rogue_t* rogue = debug_cast<rogue_t*>( source );
     rogue->resources.temporary[ RESOURCE_ENERGY ] -= data().effectN( 4 ).base_value();
-    if ( rogue->legendary.celerity )
-      rogue->resources.temporary[ RESOURCE_ENERGY ] -= rogue->legendary.celerity->effectN( 1 ).base_value();
     rogue->recalculate_resource_max( RESOURCE_ENERGY, rogue->gains.adrenaline_rush_expiry );
 
     // 6/22/2019 - Brigand's Blitz expires when the Adrenaline Rush buff expires, regardless of duration
@@ -6776,6 +6774,11 @@ double rogue_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + buffs.guile_charm_insight_3->value();
   }
 
+  if ( legendary.celerity.ok() && buffs.adrenaline_rush->check() )
+  {
+    m *= 1.0 + legendary.celerity->effectN( 1 ).percent();
+  }
+
   return m;
 }
 
@@ -7935,10 +7938,6 @@ void rogue_t::init_spells()
   conduit.septic_shock            = find_conduit_spell( "Septic Shock" );
 
   // Legendary Items ========================================================
-
-  // TOCHECK: A number of legendaries with seemingly generic effects are not set up in the runeforge data as being generic
-  //          As such, Celerity and Deathly Shadows fail find_runeforge_legendary() for the unintended specialization
-  //          Need to test in-game to see if these effects actually work across the different specs. They likely do.
 
   // Generic
   legendary.essence_of_bloodfang      = find_runeforge_legendary( "Essence of Bloodfang" );
