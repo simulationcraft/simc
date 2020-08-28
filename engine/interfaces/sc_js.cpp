@@ -94,7 +94,7 @@ namespace js {
   sc_js_t& sc_js_t::set(util::string_view path, util::string_view value_)
   {
     if (rapidjson::Value* obj = path_value(path))
-      *obj = rapidjson::Value(value_.data(), value_.size(), js_.GetAllocator());
+      *obj = rapidjson::Value(value_.data(), as<rapidjson::SizeType>( value_.size() ), js_.GetAllocator());
     return *this;
   }
 
@@ -124,7 +124,7 @@ namespace js {
       if (obj->GetType() != rapidjson::kArrayType)
         obj->SetArray();
 
-      rapidjson::Value v(value_.data(), value_.size(), js_.GetAllocator());
+      rapidjson::Value v(value_.data(), as<rapidjson::SizeType>( value_.size() ), js_.GetAllocator());
       obj->PushBack(v, js_.GetAllocator());
     }
     return *this;
@@ -192,7 +192,7 @@ namespace js {
   {
     assert(obj.GetType() == rapidjson::kObjectType);
 
-    rapidjson::Value value_obj(value_.data(), value_.size(), js_.GetAllocator());
+    rapidjson::Value value_obj(value_.data(), as<rapidjson::SizeType>( value_.size() ), js_.GetAllocator());
 
     do_set(obj, name_, value_obj);
     return *this;

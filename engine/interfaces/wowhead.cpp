@@ -177,8 +177,8 @@ bool wowhead::download_item_data( item_t&            item,
       // Todo binding type, needs htmlTooltip parsing
       if (item.parsed.data.item_class == ITEM_CLASS_WEAPON)
       {
-        item.parsed.data.delay = jsonequip["speed"].GetDouble() * 1000.0;
-        item.parsed.data.dmg_range = jsonequip["dmgrange"].GetDouble();
+        item.parsed.data.delay = jsonequip["speed"].GetFloat() * 1000.0f;
+        item.parsed.data.dmg_range = jsonequip["dmgrange"].GetFloat();
       }
 
       int races = -1;

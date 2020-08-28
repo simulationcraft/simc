@@ -5169,7 +5169,7 @@ struct defensive_stance_t : public warrior_spell_t
   std::string onoff;
   bool onoffbool;
   defensive_stance_t( warrior_t* p, const std::string& options_str )
-    : warrior_spell_t( "defensive_stance", p, p->talents.defensive_stance ), onoff( nullptr ), onoffbool( false )
+    : warrior_spell_t( "defensive_stance", p, p->talents.defensive_stance ), onoff(), onoffbool( false )
   {
     add_option( opt_string( "toggle", onoff ) );
     parse_options( options_str );
@@ -5960,9 +5960,9 @@ void warrior_t::init_spells()
   covenant.ancient_aftershock    = find_covenant_spell( "Ancient Aftershock" );
   covenant.condemn_driver        = find_covenant_spell( "Condemn" );
   if ( specialization() == WARRIOR_FURY )
-  covenant.condemn               = find_spell( covenant.condemn_driver->effectN( 2 ).base_value() );
+  covenant.condemn               = find_spell( as<unsigned>( covenant.condemn_driver->effectN( 2 ).base_value() ) );
   else
-  covenant.condemn               = find_spell( covenant.condemn_driver->effectN( 1 ).base_value() );
+  covenant.condemn               = find_spell(as<unsigned>( covenant.condemn_driver->effectN( 1 ).base_value() ) );
   covenant.conquerors_banner     = find_covenant_spell( "Conqueror's Banner" );
   covenant.spear_of_bastion      = find_covenant_spell( "Spear of Bastion" );
 
@@ -6953,14 +6953,14 @@ void warrior_t::create_buffs()
   buff.last_stand = new buffs::last_stand_buff_t( *this, "last_stand", spec.last_stand );
 
   buff.meat_cleaver = make_buff( this, "meat_cleaver", spell.whirlwind_buff );
-  buff.meat_cleaver->set_max_stack(buff.meat_cleaver->max_stack() + talents.meat_cleaver->effectN( 2 ).base_value() );
+  buff.meat_cleaver->set_max_stack(buff.meat_cleaver->max_stack() + as<int>( talents.meat_cleaver->effectN( 2 ).base_value() ) );
 
   buff.rallying_cry = new buffs::rallying_cry_t( *this, "rallying_cry", find_spell( 97463 ) );
 
   buff.overpower =
     make_buff(this, "overpower", spec.overpower)
     ->set_default_value(spec.overpower->effectN(2).percent() );
-  buff.overpower->set_max_stack(buff.overpower->max_stack() + spec.overpower_rank_3->effectN(1).base_value() );
+  buff.overpower->set_max_stack(buff.overpower->max_stack() + as<int>( spec.overpower_rank_3->effectN(1).base_value() ) );
 
   buff.ravager = make_buff( this, "ravager", talents.ravager )
     -> set_cooldown( 0_ms ); // handled by the ability
