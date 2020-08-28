@@ -7063,7 +7063,7 @@ struct convoke_the_spirits_t : public druid_spell_t
                                      as<int>( dot_duration / base_tick_time ) );
 
     // Balance
-    conv_fm = create_convoke_action<full_moon_t>( "full_moon " );
+    conv_fm = create_convoke_action<full_moon_t>( "full_moon" );
     conv_wr = create_convoke_action<wrath_t>( "wrath" );
     conv_ss = create_convoke_action<starsurge_t>( "starsurge" );
     conv_sf = create_convoke_action<starfall_t>( "starfall" );
