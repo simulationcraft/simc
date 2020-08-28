@@ -3718,7 +3718,7 @@ void action_t::do_schedule_travel( action_state_t* state, timespan_t time_ )
   }
   else
   {
-    sim->print_log( "{} schedules travel ({}) for {}", player->name(), time_, name() );
+    sim->print_log( "{} schedules travel ({}) for {}", *player, time_, *this );
 
     travel_events.push_back( make_event<travel_event_t>( *sim, this, state, time_ ) );
   }
@@ -3765,8 +3765,7 @@ void action_t::impact( action_state_t* s )
   }
   else
   {
-    if ( sim->log )
-      sim->print_log( "Target {} avoids {} {} ({})", s->target->name(), player->name(), name(), s->result );
+    sim->print_log( "Target {} avoids {} {} ({})", *s->target, *player, *this, s->result );
   }
 }
 
