@@ -281,6 +281,7 @@ public:
     gain_t* energy_refund;
     gain_t* energizing_elixir_chi;
     gain_t* energizing_elixir_energy;
+    gain_t* expel_harm;
     gain_t* fist_of_the_white_tiger;
     gain_t* focus_of_xuen;
     gain_t* fortuitous_spheres;
@@ -294,7 +295,6 @@ public:
     // Azerite Traits
     gain_t* glory_of_the_dawn;
     gain_t* open_palm_strikes;
-    gain_t* reverse_harm;
     gain_t* memory_of_lucid_dreams;
     gain_t* lucid_dreams;
   } gain;
@@ -388,6 +388,9 @@ public:
     const spell_data_t* crackling_jade_lightning;
     const spell_data_t* critical_strikes;
     const spell_data_t* expel_harm;
+    const spell_data_t* expel_harm_2_brm;
+    const spell_data_t* expel_harm_2_mw;
+    const spell_data_t* expel_harm_2_ww;
     const spell_data_t* leather_specialization;
     const spell_data_t* leg_sweep;
     const spell_data_t* mystic_touch;
@@ -478,6 +481,7 @@ public:
     cooldown_t* breath_of_fire;
     cooldown_t* chi_torpedo;
     cooldown_t* desperate_measure;
+    cooldown_t* expel_harm;
     cooldown_t* fist_of_the_white_tiger;
     cooldown_t* fists_of_fury;
     cooldown_t* flying_serpent_kick;
@@ -488,7 +492,6 @@ public:
     cooldown_t* invoke_yulon;
     cooldown_t* keg_smash;
     cooldown_t* rising_sun_kick;
-    cooldown_t* reverse_harm;
     cooldown_t* refreshing_jade_wind;
     cooldown_t* roll;
     cooldown_t* rushing_jade_wind_brm;
@@ -541,7 +544,6 @@ public:
     const spell_data_t* focus_of_xuen;
     const spell_data_t* hit_combo;
     const spell_data_t* mark_of_the_crane;
-    const spell_data_t* reverse_harm_damage;
     const spell_data_t* touch_of_karma_tick;
     const spell_data_t* whirling_dragon_punch_tick;
 
@@ -632,6 +634,7 @@ public:
 
 	azerite_essence_t vision_of_perfection; 
     azerite_essence_t memory_of_lucid_dreams;
+    azerite_essence_t conflict_and_strife;
   } azerite;
 
   struct azerite_spells_t
@@ -804,6 +807,7 @@ public:
     cooldown.brewmaster_attack            = get_cooldown( "brewmaster_attack" );
     cooldown.breath_of_fire               = get_cooldown( "breath_of_fire" );
     cooldown.chi_torpedo                  = get_cooldown( "chi_torpedo" );
+    cooldown.expel_harm                   = get_cooldown( "expel_harm" );
     cooldown.fortifying_brew              = get_cooldown( "fortifying_brew" );
     cooldown.fist_of_the_white_tiger      = get_cooldown( "fist_of_the_white_tiger" );
     cooldown.fists_of_fury                = get_cooldown( "fists_of_fury" );
@@ -811,7 +815,6 @@ public:
     cooldown.invoke_niuzao                = get_cooldown( "invoke_niuzao_the_black_ox" );
     cooldown.invoke_xuen                  = get_cooldown( "invoke_xuen_the_white_tiger" );
     cooldown.keg_smash                    = get_cooldown( "keg_smash" );
-    cooldown.reverse_harm                 = get_cooldown( "reverse_harm" );
     cooldown.rising_sun_kick              = get_cooldown( "rising_sun_kick" );
     cooldown.refreshing_jade_wind         = get_cooldown( "refreshing_jade_wind" );
     cooldown.roll                         = get_cooldown( "roll" );
@@ -6473,30 +6476,29 @@ struct expel_harm_dmg_t : public monk_spell_t
   expel_harm_dmg_t( monk_t* player ) : monk_spell_t( "expel_harm_damage", player, player->find_spell( 115129 ) )
   {
     background = true;
+    may_crit   = false;
   }
 };
 
-struct expel_harm_t : public monk_spell_t
+struct expel_harm_t : public monk_heal_t
 {
   expel_harm_dmg_t* dmg;
   niuzaos_blessing_t* niuzao;
-  expel_harm_t( monk_t* p, const std::string& options_str )
-    : monk_spell_t( "expel_harm", p, p->find_spell(322101) ),
-      dmg( new expel_harm_dmg_t( p ) ),
-      niuzao( new niuzaos_blessing_t( *p ) )
+  expel_harm_t( monk_t& p, const std::string& options_str )
+    : monk_heal_t( "expel_harm", p, p.spec.expel_harm ),
+      dmg( new expel_harm_dmg_t( &p ) ),
+      niuzao( new niuzaos_blessing_t( p ) )
   {
     parse_options( options_str );
-    add_child(dmg);
-  }
 
-  bool ready() override
-  {
-    return p()->buff.gift_of_the_ox->check();
+    target = player;
+
+    add_child( dmg );
   }
 
   void execute() override
   {
-    monk_spell_t::execute();
+    monk_heal_t::execute();
 
     if ( p()->azerite.niuzaos_blessing.ok() )
     {
@@ -6506,20 +6508,42 @@ struct expel_harm_t : public monk_spell_t
       niuzao->execute();
     }
 
-    // This implementation of EH is correct *on average* but not in
-    // detail. In particular: the damage dealt is exactly 10% of the
-    // healing done and can't crit, but this gets damage dealt
-    // independently and allows it to crit, so it will have higher
-    // variance but with enough iterations will have the same mean.
-    double coeff =
-    p()->passives.gift_of_the_ox_heal->effectN( 1 ).ap_coeff() * p()->spec.expel_harm->effectN( 2 ).percent();
-        
-    double ap = p()->composite_melee_attack_power( attack_power_type::WEAPON_MAINHAND ) *
-                p()->composite_attack_power_multiplier();
-    double stacks = p()->buff.gift_of_the_ox->stack();
+    if ( p()->spec.expel_harm_2_ww )
+    {
+      if ( p()->azerite.conflict_and_strife.is_major() )
+      {
+        p()->resource_gain( RESOURCE_CHI,
+                            p()->spec.reverse_harm->effectN( 2 ).base_value(),
+                            p()->gain.expel_harm );
+      }
+      else
+      {
+        p()->resource_gain( RESOURCE_CHI, 
+                            1, // p()->spec.expel_harm->effectN( 3 ).base_value(), 
+                            p()->gain.expel_harm );
+      }
+    }
+  }
 
-    dmg->base_dd_min = ap * coeff * stacks;
-    dmg->base_dd_max = ap * coeff * stacks;
+  void impact( action_state_t* s ) override
+  {
+    monk_heal_t::impact( s );
+
+    double result = s->result_total;
+
+    result *= p()->spec.expel_harm->effectN( 2 ).percent();
+
+    if ( p()->buff.gift_of_the_ox->up() && p()->spec.expel_harm_2_brm )
+    {
+      result *= p()->passives.gift_of_the_ox_heal->effectN( 1 ).ap_coeff();
+      result *= p()->buff.gift_of_the_ox->stack();
+    }
+
+    if ( p()->azerite.conflict_and_strife.is_major() && p()->specialization() == MONK_WINDWALKER )
+      result *= 1 + p()->spec.reverse_harm->effectN( 1 ).percent();
+
+    dmg->base_dd_min  = result;
+    dmg->base_dd_max = result;
     dmg->execute();
 
     for ( int i = 0; i < p()->buff.gift_of_the_ox->stack(); i++ )
@@ -6723,80 +6747,6 @@ struct chi_burst_t : public monk_spell_t
         for ( int i = 0; i < num_targets_hit; i++ )
           p()->resource_gain( RESOURCE_CHI, p()->find_spell( 261682 )->effectN( 1 ).base_value(), p()->gain.chi_burst );
     }
-  }
-};
-
-// ==========================================================================
-// Reverse Harm
-// ==========================================================================
-// Heal is 8% of Max HP * Versatility. Mastery or other multipliers are not factored in.
-// Damage is 8% of Max HP * Mastery. Versatility is not factored in.
-
-struct reverse_harm_damage_t : public monk_spell_t
-{
-  reverse_harm_damage_t( monk_t& player )
-    : monk_spell_t( "reverse_harm_damage", &player, player.passives.reverse_harm_damage )
-  {
-    background = true;
-    ww_mastery = true;
-    may_crit   = false;
-  }
-
-  void init() override
-  {
-    monk_spell_t::init();
-    // disable the snapshot_flags for all multipliers, but specifically allow
-    // composite_persistent_multiplier() to be called so we can override.
-    snapshot_flags &= STATE_NO_MULTIPLIER;
-    snapshot_flags |= STATE_MUL_PERSISTENT;
-  }
-};
-
-struct reverse_harm_t : public monk_heal_t
-{
-  reverse_harm_damage_t* damage;
-  bool essence_equipped;
-  reverse_harm_t( monk_t& player, const std::string& options_str )
-    : monk_heal_t( "reverse_harm", player, player.spec.reverse_harm )
-  {
-    parse_options( options_str );
-    damage = new reverse_harm_damage_t( player );
-    add_child( damage );
-    target           = &player;
-    may_crit         = false;
-    may_combo_strike = true;
-    essence_equipped = player.find_azerite_essence( "Conflict and Strife" ).is_major();
-
-    base_dd_min = static_cast<int>( player.resources.max[ RESOURCE_HEALTH ] * data().effectN( 1 ).percent() );
-    base_dd_max = static_cast<int>( player.resources.max[ RESOURCE_HEALTH ] * data().effectN( 1 ).percent() );
-  }
-
-  void init() override
-  {
-    monk_heal_t::init();
-    // disable the snapshot_flags for all multipliers except for Versatility
-    snapshot_flags &= STATE_NO_MULTIPLIER;
-    snapshot_flags |= STATE_VERSATILITY;
-  }
-
-  bool ready() override
-  {
-    return essence_equipped && p()->specialization() == MONK_WINDWALKER ? monk_heal_t::ready() : false;
-  }
-
-  void execute() override
-  {
-    monk_heal_t::execute();
-
-    // p()->resource_gain( RESOURCE_CHI, p()->spec.reverse_harm->effectN( 3 ).base_value(), p()->gain.reverse_harm );
-
-    double dmg_multiplier = p()->spec.reverse_harm->effectN( 1 ).percent();  // 8%
-    dmg_multiplier *= p()->spec.reverse_harm->effectN( 2 ).percent();        // 100%
-
-    damage->base_dd_min = static_cast<int>( p()->resources.max[ RESOURCE_HEALTH ] * dmg_multiplier );
-    damage->base_dd_max = static_cast<int>( p()->resources.max[ RESOURCE_HEALTH ] * dmg_multiplier );
-
-    damage->execute();
   }
 };
 
@@ -7316,7 +7266,7 @@ action_t* monk_t::create_action( util::string_view name, const std::string& opti
   if ( name == "breath_of_fire" )
     return new breath_of_fire_t( *this, options_str );
   if ( name == "expel_harm" )
-    return new expel_harm_t( this, options_str );
+    return new expel_harm_t( *this, options_str );
   if ( name == "fortifying_brew" )
     return new fortifying_brew_t( *this, options_str );
   if ( name == "gift_of_the_ox" )
@@ -7361,8 +7311,6 @@ action_t* monk_t::create_action( util::string_view name, const std::string& opti
     return new fists_of_fury_t( this, options_str );
   if ( name == "flying_serpent_kick" )
     return new flying_serpent_kick_t( this, options_str );
-  if ( name == "reverse_harm" )
-    return new reverse_harm_t( *this, options_str );
   if ( name == "touch_of_karma" )
     return new touch_of_karma_t( this, options_str );
   if ( name == "touch_of_death" )
@@ -7701,6 +7649,9 @@ void monk_t::init_spells()
   spec.crackling_jade_lightning = find_class_spell( "Crackling Jade Lightning" );
   spec.critical_strikes         = find_specialization_spell( "Critical Strikes" );
   spec.expel_harm               = find_class_spell( "Expel Harm" );
+  spec.expel_harm_2_brm         = find_rank_spell( "Expel Harm", "Rank 2", MONK_BREWMASTER );
+  spec.expel_harm_2_mw          = find_rank_spell( "Expel Harm", "Rank 2", MONK_MISTWEAVER );
+  spec.expel_harm_2_ww          = find_rank_spell( "Expel Harm", "Rank 2", MONK_WINDWALKER );
   spec.leather_specialization   = find_specialization_spell( "Leather Specialization" );
   spec.leg_sweep                = find_class_spell( "Leg Sweep" );
   spec.mystic_touch             = find_class_spell( "Mystic Touch" );
@@ -7873,6 +7824,7 @@ void monk_t::init_spells()
   azerite.pressure_point    = find_azerite_spell( "Pressure Point" );
   azerite.swift_roundhouse  = find_azerite_spell( "Swift Roundhouse" );
 
+  azerite.conflict_and_strife           = find_azerite_essence( "Conflict and Strife" );
   azerite.memory_of_lucid_dreams        = find_azerite_essence( "Memory of Lucid Dreams" );
   azerite_spells.memory_of_lucid_dreams = azerite.memory_of_lucid_dreams.spell( 1u, essence_type::MINOR );
   azerite.vision_of_perfection          = find_azerite_essence( "Vision of Perfection" );
@@ -7929,7 +7881,6 @@ void monk_t::init_spells()
   passives.glory_of_the_dawn_dmg      = find_spell( 288636 );
   passives.fury_of_xuen_stacking_buff = find_spell( 287062 );
   passives.fury_of_xuen_haste_buff    = find_spell( 287063 );
-  passives.reverse_harm_damage        = find_spell( 290461 );
 
   // Shadowland Legendary
   passives.chi_explosion              = find_spell( 337342 );
@@ -8256,11 +8207,11 @@ void monk_t::init_gains()
   gain.energizing_elixir_energy = get_gain( "energizing_elixir_energy" );
   gain.energizing_elixir_chi    = get_gain( "energizing_elixir_chi" );
   gain.energy_refund            = get_gain( "energy_refund" );
+  gain.expel_harm               = get_gain( "expel_harm" );
   gain.fist_of_the_white_tiger  = get_gain( "fist_of_the_white_tiger" );
   gain.focus_of_xuen            = get_gain( "focus_of_xuen" );
   gain.gift_of_the_ox           = get_gain( "gift_of_the_ox" );
   gain.glory_of_the_dawn        = get_gain( "glory_of_the_dawn" );
-  gain.reverse_harm             = get_gain( "reverse_harm" );
   gain.rushing_jade_wind_tick   = get_gain( "rushing_jade_wind_tick" );
   gain.serenity                 = get_gain( "serenity" );
   gain.spirit_of_the_crane      = get_gain( "spirit_of_the_crane" );
@@ -9540,7 +9491,7 @@ void monk_t::apl_combat_windwalker()
   }
 
   def->add_action(
-      this, spec.reverse_harm, "reverse_harm",
+      this, "Expel Harm", "expel_harm",
       "if=chi.max-chi>=2&(talent.serenity.enabled|!dot.touch_of_death.remains)&buff.serenity.down&(energy.time_to_max<"
       "1|talent.serenity.enabled&cooldown.serenity.remains<2|!talent.serenity.enabled&cooldown.touch_of_death.remains<"
       "3&!variable.hold_tod|energy.time_to_max<4&cooldown.fists_of_fury.remains<1.5)" );
@@ -9792,7 +9743,7 @@ void monk_t::apl_combat_windwalker()
   serenity->add_action( this, "Rising Sun Kick", "target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike" );
   serenity->add_action( this, "Fists of Fury", "interrupt_if=gcd.remains=0", "This will cast FoF and interrupt the channel if the GCD is ready and something higher on the priority list (RSK) is avaible" );
   serenity->add_talent( this, "Fist of the White Tiger", "target_if=min:debuff.mark_of_the_crane.remains,if=chi<3" );
-  serenity->add_action( this, spec.reverse_harm, "reverse_harm", "if=chi.max-chi>1&energy.time_to_max<1" );
+  serenity->add_action( this, "Expel Harm", "expel_harm", "if=chi.max-chi>1&energy.time_to_max<1" );
   serenity->add_action( this, "Blackout Kick", "target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike|!talent.hit_combo.enabled", "Use BoK, it will only break mastery if Hit Combo is NOT talented" );
   serenity->add_action( this, "Spinning Crane Kick" );
 
@@ -9805,7 +9756,7 @@ void monk_t::apl_combat_windwalker()
   aoe->add_talent( this, "Rushing Jade Wind", "if=buff.rushing_jade_wind.down" );
   aoe->add_action( this, "Spinning Crane Kick",
                    "if=combo_strike&(((chi>3|cooldown.fists_of_fury.remains>6)&(chi>=5|cooldown.fists_of_fury.remains>2))|energy.time_to_max<=3|buff.dance_of_chiji.react)" );
-  aoe->add_action( this, spec.reverse_harm, "reverse_harm", "if=chi.max-chi>=2" );
+  aoe->add_action( this, "Expel Harm", "expel_harm", "if=chi.max-chi>=2" );
   aoe->add_talent( this, "Chi Burst", "if=chi.max-chi>=3" );
   aoe->add_talent( this, "Fist of the White Tiger", "target_if=min:debuff.mark_of_the_crane.remains,if=chi.max-chi>=3" );
   aoe->add_action( this, "Tiger Palm",
@@ -9820,7 +9771,7 @@ void monk_t::apl_combat_windwalker()
   st->add_action( this, "Fists of Fury", "if=talent.serenity.enabled|cooldown.touch_of_death.remains>6|variable.hold_tod" );
   st->add_action( this, "Rising Sun Kick", "target_if=min:debuff.mark_of_the_crane.remains,if=cooldown.touch_of_death.remains>2|variable.hold_tod", "Use RSK on targets without Mark of the Crane debuff, if possible, and if ToD is at least 2 seconds away" );
   st->add_talent( this, "Rushing Jade Wind", "if=buff.rushing_jade_wind.down&active_enemies>1" );
-  st->add_action( this, spec.reverse_harm, "reverse_harm", "if=chi.max-chi>1" );
+  st->add_action( this, "Expel Harm", "expel_harm", "if=chi.max-chi>1" );
   st->add_talent( this, "Fist of the White Tiger", "target_if=min:debuff.mark_of_the_crane.remains,if=chi<3" );
   st->add_talent( this, "Energizing Elixir", "if=chi<=3&energy<50" );
   st->add_talent( this, "Chi Burst", "if=chi.max-chi>0&active_enemies=1|chi.max-chi>1", "Use CB if you are more than 0 Chi away from max and have 1 enemy, or are more than 1 Chi away from max" );
