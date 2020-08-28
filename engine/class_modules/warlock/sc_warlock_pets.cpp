@@ -660,8 +660,7 @@ struct fel_firebolt_t : public warlock_pet_spell_t
 wild_imp_pet_t::wild_imp_pet_t( warlock_t* owner )
   : warlock_pet_t( owner, "wild_imp", PET_WILD_IMP ),
     firebolt( nullptr ),
-    power_siphon( false ),
-    demonic_consumption( false )
+    power_siphon( false )
 {
   resource_regeneration = regen_type::DISABLED;
 }
@@ -735,7 +734,6 @@ void wild_imp_pet_t::arise()
   warlock_pet_t::arise();
 
   power_siphon        = false;
-  demonic_consumption = false;
   o()->buffs.wild_imps->increment();
 
   // Start casting fel firebolts
@@ -915,19 +913,12 @@ struct demonfire_t : public warlock_pet_spell_t
 
     da += p()->o()->azerite.baleful_invocation.value( 1 );
 
-    return da;
-  }
-
-  double action_multiplier() const override
-  {
-    double m = warlock_pet_spell_t::action_multiplier();
-
-    if ( p()->buffs.demonic_consumption->check() )
+    if ( p() ->buffs.demonic_consumption->check())
     {
-      m *= 1.0 + p()->buffs.demonic_consumption->check_value();
+      da += p()->buffs.demonic_consumption->check_value();
     }
 
-    return m;
+    return da;
   }
 };
 

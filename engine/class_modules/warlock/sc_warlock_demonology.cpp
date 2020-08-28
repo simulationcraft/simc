@@ -430,15 +430,19 @@ struct implosion_t : public demonology_spell_t
 
 struct summon_demonic_tyrant_t : public demonology_spell_t
 {
-  double demonic_consumption_multiplier;
+  double demonic_consumption_added_damage;
+  double demonic_consumption_health_percentage;
 
   summon_demonic_tyrant_t( warlock_t* p, util::string_view options_str )
-    : demonology_spell_t( "summon_demonic_tyrant", p, p->find_spell( 265187 ) ), demonic_consumption_multiplier( 0 )
+    : demonology_spell_t( "summon_demonic_tyrant", p, p->find_spell( 265187 ) ),
+      demonic_consumption_added_damage( 0 ),
+      demonic_consumption_health_percentage( 0 )
   {
     parse_options( options_str );
     harmful = may_crit = false;
     // BFA - Essence
     cooldown->duration *= 1.0 + azerite::vision_of_perfection_cdr( p->azerite_essence.vision_of_perfection );
+    demonic_consumption_health_percentage = p->find_spell( 267971 )->effectN( 1 ).percent();
   }
 
   void execute() override
@@ -458,28 +462,7 @@ struct summon_demonic_tyrant_t : public demonology_spell_t
       p()->resource_gain( RESOURCE_SOUL_SHARD, p()->find_spell( 287060 )->effectN( 1 ).base_value() / 10.0,
                           p()->gains.baleful_invocation );
 
-    if ( p()->talents.demonic_consumption->ok() )
-    {
-      demonic_consumption_multiplier = 0;
-
-      for ( auto imp : p()->warlock_pet_list.wild_imps )
-      {
-        double available = imp->resources.current[ RESOURCE_ENERGY ];
-
-        // Spelldata unknown. In-game testing shows Demonic Consumption provides 10% damage per 20 energy an imp has.
-        demonic_consumption_multiplier += available / 10 * 5;
-        imp->demonic_consumption = true;
-        imp->dismiss();
-      }
-
-      for ( auto dt : p()->warlock_pet_list.demonic_tyrants )
-      {
-        if ( !dt->is_sleeping() )
-        {
-          dt->buffs.demonic_consumption->trigger( 1, demonic_consumption_multiplier / 100.0 );
-        }
-      }
-    }
+    demonic_consumption_added_damage = 0;
 
     for ( auto& pet : p()->pet_list )
     {
@@ -490,7 +473,6 @@ struct summon_demonic_tyrant_t : public demonology_spell_t
       if ( lock_pet->is_sleeping() )
         continue;
 
-      // TOCHECK Random pets are currently bugged and do not benefit from Demonic Tyrant. Live as of 10-02-2018
       if ( lock_pet->pet_type == PET_DEMONIC_TYRANT )
         continue;
 
@@ -498,6 +480,27 @@ struct summon_demonic_tyrant_t : public demonology_spell_t
       {
         timespan_t new_time = lock_pet->expiration->time + p()->buffs.demonic_power->data().effectN( 3 ).time_value();
         lock_pet->expiration->reschedule_time = new_time;
+      }
+
+      if ( p()->talents.demonic_consumption->ok() )
+      {
+        double available = pet->resources.current[ RESOURCE_HEALTH ];
+
+        // There is no spelldata for how health is converted into damage, current testing indicates the 15% of hp taken
+        // from pets is divided by 7 and added to base damage 08-26-2020.
+        // TODO - make it properly remove the health.
+        demonic_consumption_added_damage += available * demonic_consumption_health_percentage / 7.0;
+      }
+    }
+
+    if ( p()->talents.demonic_consumption->ok() )
+    {
+      for ( auto dt : p()->warlock_pet_list.demonic_tyrants )
+      {
+        if ( !dt->is_sleeping() )
+        {
+          dt->buffs.demonic_consumption->trigger( 1, demonic_consumption_added_damage );
+        }
       }
     }
 
