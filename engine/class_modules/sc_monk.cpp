@@ -391,6 +391,11 @@ public:
     const spell_data_t* expel_harm_2_brm;
     const spell_data_t* expel_harm_2_mw;
     const spell_data_t* expel_harm_2_ww;
+    const spell_data_t* fortifying_brew_brm;
+    const spell_data_t* fortifying_brew_2_brm;
+    const spell_data_t* fortifying_brew_mw_ww;
+    const spell_data_t* fortifying_brew_2_mw;
+    const spell_data_t* fortifying_brew_2_ww;
     const spell_data_t* leather_specialization;
     const spell_data_t* leg_sweep;
     const spell_data_t* mystic_touch;
@@ -415,7 +420,6 @@ public:
     const spell_data_t* brewmasters_balance;
     const spell_data_t* brewmaster_monk;
     const spell_data_t* celestial_fortune;
-    const spell_data_t* fortifying_brew;
     const spell_data_t* gift_of_the_ox;
     const spell_data_t* ironskin_brew;
     const spell_data_t* keg_smash;
@@ -510,13 +514,13 @@ public:
     const spell_data_t* chi_burst_heal;
     const spell_data_t* chi_wave_damage;
     const spell_data_t* chi_wave_heal;
+    const spell_data_t* fortifying_brew;
     const spell_data_t* healing_elixir;
     const spell_data_t* mystic_touch;
     // Brewmaster
     const spell_data_t* breath_of_fire_dot;
     const spell_data_t* celestial_fortune;
     const spell_data_t* elusive_brawler;
-    const spell_data_t* fortifying_brew;
     const spell_data_t* gift_of_the_ox_heal;
     const spell_data_t* ironskin_brew;
     const spell_data_t* keg_smash_buff;
@@ -5649,12 +5653,20 @@ struct breath_of_fire_t : public monk_spell_t
 struct fortifying_brew_t : public monk_spell_t
 {
   fortifying_brew_t( monk_t& p, const std::string& options_str )
-    : monk_spell_t( "fortifying_brew", &p, p.spec.fortifying_brew )
+    : monk_spell_t( "fortifying_brew", &p, ( p.specialization() == MONK_BREWMASTER ? p.spec.fortifying_brew_brm : p.spec.fortifying_brew_mw_ww ) )
   {
     parse_options( options_str );
 
     harmful = may_crit = false;
     trigger_gcd        = timespan_t::zero();
+
+    if ( p.spec.fortifying_brew_2_mw )
+      cooldown->duration +=
+          timespan_t::from_minutes( p.spec.fortifying_brew_2_mw->effectN( 1 ).base_value() );
+
+    if ( p.spec.fortifying_brew_2_ww )
+      cooldown->duration += 
+          timespan_t::from_minutes( p.spec.fortifying_brew_2_ww->effectN( 1 ).base_value() );
   }
 
   void execute() override
@@ -6938,8 +6950,10 @@ struct fortifying_brew_t : public monk_buff_t<buff_t>
   bool trigger( int stacks, double value, double chance, timespan_t duration ) override
   {
     // Extra Health is set by current max_health, doesn't change when max_health changes.
-    health_gain =
-        static_cast<int>( p().resources.max[ RESOURCE_HEALTH ] * ( p().spec.fortifying_brew->effectN( 1 ).percent() ) );
+    health_gain = static_cast<int>( p().resources.max[ RESOURCE_HEALTH ] * p().spec.fortifying_brew_mw_ww->effectN( 1 ).percent() );
+    // TODO: Double check later. This is potentally a bug
+    if ( p().specialization() == MONK_BREWMASTER )
+      health_gain = static_cast<int>( health_gain * 1.0206);
     p().stat_gain( STAT_MAX_HEALTH, health_gain, (gain_t*)nullptr, (action_t*)nullptr, true );
     p().stat_gain( STAT_HEALTH, health_gain, (gain_t*)nullptr, (action_t*)nullptr, true );
     return buff_t::trigger( stacks, value, chance, duration );
@@ -6950,21 +6964,6 @@ struct fortifying_brew_t : public monk_buff_t<buff_t>
     buff_t::expire_override( expiration_stacks, remaining_duration );
     p().stat_loss( STAT_MAX_HEALTH, health_gain, (gain_t*)nullptr, (action_t*)nullptr, true );
     p().stat_loss( STAT_HEALTH, health_gain, (gain_t*)nullptr, (action_t*)nullptr, true );
-  }
-};
-
-// Hidden Master's Forbidden Touch Legendary
-struct hidden_masters_forbidden_touch_t : public monk_buff_t<buff_t>
-{
-  hidden_masters_forbidden_touch_t( monk_t& p, const std::string& n, const spell_data_t* s ) : monk_buff_t( p, n, s )
-  {
-  }
-  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
-  {
-    buff_t::expire_override( expiration_stacks, remaining_duration );
-    cooldown_t* touch_of_death = source->get_cooldown( "touch_of_death" );
-    if ( touch_of_death->up() )
-      touch_of_death->start();
   }
 };
 
@@ -7652,6 +7651,11 @@ void monk_t::init_spells()
   spec.expel_harm_2_brm         = find_rank_spell( "Expel Harm", "Rank 2", MONK_BREWMASTER );
   spec.expel_harm_2_mw          = find_rank_spell( "Expel Harm", "Rank 2", MONK_MISTWEAVER );
   spec.expel_harm_2_ww          = find_rank_spell( "Expel Harm", "Rank 2", MONK_WINDWALKER );
+  spec.fortifying_brew_brm      = find_spell( 115203 );
+  spec.fortifying_brew_2_brm    = find_rank_spell( "Fortifying Brew", "Rank 2", MONK_BREWMASTER );
+  spec.fortifying_brew_mw_ww    = find_spell( 243435 );
+  spec.fortifying_brew_2_mw     = find_rank_spell( "Fortifying Brew", "Rank 2", MONK_MISTWEAVER );
+  spec.fortifying_brew_2_ww     = find_rank_spell( "Fortifying Brew", "Rank 2", MONK_WINDWALKER );
   spec.leather_specialization   = find_specialization_spell( "Leather Specialization" );
   spec.leg_sweep                = find_class_spell( "Leg Sweep" );
   spec.mystic_touch             = find_class_spell( "Mystic Touch" );
@@ -7677,7 +7681,6 @@ void monk_t::init_spells()
   spec.brewmasters_balance = find_specialization_spell( "Brewmaster's Balance" );
   spec.brewmaster_monk     = find_specialization_spell( "Brewmaster Monk" );
   spec.celestial_fortune   = find_specialization_spell( "Celestial Fortune" );
-  spec.fortifying_brew     = find_specialization_spell( "Fortifying Brew" );
   spec.gift_of_the_ox      = find_specialization_spell( "Gift of the Ox" );
   spec.invoke_niuzao       = find_specialization_spell( "Invoke Niuzao, the Black Ox" );
   spec.ironskin_brew       = find_spell( "Ironskin Brew" ); // find_specialization_spell( "Ironskin Brew" ); If this is truly moved to a non-spec spell, move pointer to passives instead of spec
@@ -7833,20 +7836,19 @@ void monk_t::init_spells()
 
   // Passives =========================================
   // General
-  passives.aura_monk        = find_spell( 137022 );
-  passives.chi_burst_damage = find_spell( 148135 );
-  passives.chi_burst_heal   = find_spell( 130654 );
-  passives.chi_wave_damage  = find_spell( 132467 );
-  passives.chi_wave_heal    = find_spell( 132463 );
-  passives.healing_elixir =
-      find_spell( 122281 );  // talent.healing_elixir -> effectN( 1 ).trigger() -> effectN( 1 ).trigger()
-  passives.mystic_touch = find_spell( 8647 );
+  passives.aura_monk             = find_spell( 137022 );
+  passives.chi_burst_damage      = find_spell( 148135 );
+  passives.chi_burst_heal        = find_spell( 130654 );
+  passives.chi_wave_damage       = find_spell( 132467 );
+  passives.chi_wave_heal         = find_spell( 132463 );
+  passives.fortifying_brew       = find_spell( 120954 );
+  passives.healing_elixir        = find_spell( 122281 );  // talent.healing_elixir -> effectN( 1 ).trigger() -> effectN( 1 ).trigger()
+  passives.mystic_touch          = find_spell( 8647 );
 
   // Brewmaster
   passives.breath_of_fire_dot  = find_spell( 123725 );
   passives.celestial_fortune   = find_spell( 216521 );
   passives.elusive_brawler     = find_spell( 195630 );
-  passives.fortifying_brew     = find_spell( 120954 );
   passives.gift_of_the_ox_heal = find_spell( 124507 );
   passives.ironskin_brew       = find_spell( 215479 );
   passives.keg_smash_buff      = find_spell( 196720 );
@@ -8030,7 +8032,8 @@ void monk_t::create_buffs()
   buff.chi_torpedo = make_buff( this, "chi_torpedo", find_spell( 119085 ) )
                          ->set_default_value( find_spell( 119085 )->effectN( 1 ).percent() );
 
-  buff.fortifying_brew = new buffs::fortifying_brew_t( *this, "fortifying_brew", passives.fortifying_brew );
+  buff.fortifying_brew = new buffs::fortifying_brew_t( *this, "fortifying_brew", 
+      ( specialization() == MONK_BREWMASTER ? passives.fortifying_brew : spec.fortifying_brew_mw_ww ) );
 
   buff.rushing_jade_wind = new buffs::rushing_jade_wind_buff_t( *this, "rushing_jade_wind", talent.rushing_jade_wind );
 
@@ -9114,7 +9117,7 @@ void monk_t::target_mitigation( school_e school, result_amount_type dt, action_s
 
   // Damage Reduction Cooldowns
   if ( buff.fortifying_brew->up() )
-    s->result_amount *= 1.0 - spec.fortifying_brew->effectN( 1 ).percent();
+    s->result_amount *= 1.0 - spec.fortifying_brew_brm->effectN( 2 ).percent();
 
   // Touch of Karma Absorbtion
   if ( buff.touch_of_karma->up() )
