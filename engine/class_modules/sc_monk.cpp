@@ -5438,6 +5438,9 @@ struct black_ox_brew_t : public monk_spell_t
     // Refill Purifying Brew charges.
     p()->cooldown.purifying_brew->reset( true, -1 );
 
+    // Refills Celestial Brew charges
+    p()->cooldown.celestial_brew->reset( true, -1 );
+
     p()->resource_gain( RESOURCE_ENERGY, p()->talent.black_ox_brew->effectN( 1 ).base_value(),
                         p()->gain.black_ox_brew_energy );
   }
@@ -10057,9 +10060,7 @@ double monk_t::stagger_pct( int target_level )
 {
   double stagger_base = stagger_base_value();
 
-  double k_value = dbc->armor_mitigation_constant( target_level );
-
-  double stagger = stagger_base / ( stagger_base + k_value );
+  double stagger = stagger_base / ( stagger_base + dbc->armor_mitigation_constant( target_level ) );
   return std::min( stagger, 0.99 );
 }
 
