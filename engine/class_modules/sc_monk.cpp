@@ -10033,10 +10033,9 @@ double monk_t::stagger_base_value()
       stagger_base *= 1 + talent.high_tolerance->effectN( 5 ).percent();
     }
 
-    if ( buff.fortifying_brew->up() )
+    if ( spec.fortifying_brew_2_brm && buff.fortifying_brew->up() )
     {
       stagger_base *= 1 + passives.fortifying_brew->effectN( 6 ).percent();
-      ;
     }
 
     if ( buff.shuffle->check() )
