@@ -4234,10 +4234,6 @@ struct blackout_kick_t : public monk_melee_attack_t
         if ( p()->mastery.elusive_brawler )
           p()->buff.elusive_brawler->trigger();
 
-        if ( p()->azerite.elusive_footwork.ok() && s->result == RESULT_CRIT )
-          p()->buff.elusive_brawler->trigger(
-              as<int>( p()->azerite.elusive_footwork.spell_ref().effectN( 2 ).base_value() ) );
-
         if ( p()->azerite.staggering_strikes.ok() )
         {
           auto amount_cleared = p()->partial_clear_stagger_amount( p()->azerite.staggering_strikes.value() );
@@ -4287,6 +4283,13 @@ struct blackout_kick_t : public monk_melee_attack_t
     {
       if ( p()->specialization() == MONK_WINDWALKER && p()->spec.spinning_crane_kick_2_ww )
         p()->trigger_mark_of_the_crane( s );
+
+      if ( p()->mastery.elusive_brawler )
+      {
+        if ( p()->azerite.elusive_footwork.ok() && s->result == RESULT_CRIT )
+          p()->buff.elusive_brawler->trigger(
+              as<int>( p()->azerite.elusive_footwork.spell_ref().effectN( 2 ).base_value() ) );
+      }
 
       if ( p()->buff.teachings_of_the_monastery->up() )
       {
