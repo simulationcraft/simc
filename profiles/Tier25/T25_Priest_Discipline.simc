@@ -9,10 +9,10 @@ talents=3020110
 azerite_essences=27:3:1/5:3:0/12:3:0/35:3:0
 
 # Default consumables
-potion=disabled
-flask=disabled
-food=disabled
-augmentation=disabled
+potion=battle_potion_of_intellect
+flask=greater_flask_of_endless_fathoms
+food=baked_port_tato
+augmentation=battle_scarred
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -38,15 +38,22 @@ actions+=/lights_judgment
 actions+=/fireblood
 actions+=/ancestral_call
 actions+=/bag_of_tricks
+actions+=/shadow_covenant
 actions+=/purge_the_wicked,if=!ticking
+actions+=/shadow_word_pain,if=!ticking&!talent.purge_the_wicked.enabled
 actions+=/shadow_word_death
 actions+=/schism
 actions+=/mind_blast
 actions+=/penance
 actions+=/purge_the_wicked,if=remains<(duration*0.3)
+actions+=/shadow_word_pain,if=remains<(duration*0.3)&!talent.purge_the_wicked.enabled
 actions+=/power_word_solace
 actions+=/divine_star,if=mana.pct>80
 actions+=/smite
+actions+=/shadow_word_pain
+
+actions.boon=ascended_blast
+actions.boon+=/ascended_nova
 
 head=cowl_of_unspeakable_horrors,id=174116,bonus_id=4824/1517/4775,azerite_powers=405/403/30/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/5814/4936/1630,azerite_level=80
@@ -66,12 +73,12 @@ main_hand=vorzz_yoqal,id=172196,bonus_id=4824/1517,enchant=quick_navigation
 off_hand=uhnish_vwah,id=172190,bonus_id=4824/1517
 
 # Gear Summary
-# gear_ilvl=142.56
-# gear_stamina=912
-# gear_intellect=618
-# gear_crit_rating=325
-# gear_haste_rating=364
-# gear_mastery_rating=220
+# gear_ilvl=139.13
+# gear_stamina=842
+# gear_intellect=549
+# gear_crit_rating=274
+# gear_haste_rating=313
+# gear_mastery_rating=169
 # gear_versatility_rating=71
 # gear_corruption=95
 # gear_corruption_resistance=50
