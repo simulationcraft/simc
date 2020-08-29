@@ -139,7 +139,7 @@ public:
 
     if ( Base::data().ok() )
     {
-      // Reparse the correct effect number, because we have two competing ones ( were 2 > 1 always wins out )
+      // Parse the correct effect number, because we have two competing ones ( were 2 > 1 always wins out )
       Base::parse_effect_data( Base::data().effectN( 1 ) );
     }
     Base::radius = 30;
@@ -426,7 +426,7 @@ struct mindgames_t final : public priest_spell_t
 
   mindgames_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "mindgames", p, p.covenant.mindgames ),
-      // this resource value is not in spell data correctly, mimicing what blizzard does
+      // this resource value is not in spell data correctly, mimicking what blizzard does
       insanity_gain( p.find_spell( 323706 )->effectN( 2 ).base_value() * 2 )
   {
     parse_options( options_str );
@@ -497,7 +497,7 @@ struct ascended_nova_t final : public priest_spell_t
   {
     priest_spell_t::impact( s );
 
-    // gain 1 stack for each target damanged
+    // gain 1 stack for each target damaged
     if ( priest().buffs.boon_of_the_ascended->check() )
     {
       priest().buffs.boon_of_the_ascended->increment( grants_stacks );
@@ -1155,7 +1155,7 @@ void priest_t::create_gains()
 /** Construct priest procs */
 void priest_t::create_procs()
 {
-  procs.shadowy_apparition              = get_proc( "Shadowy Apparition Procced" );
+  procs.shadowy_apparition              = get_proc( "Shadowy Apparition" );
   procs.shadowy_apparition_overflow     = get_proc( "Shadowy Apparition Insanity lost to overflow" );
   procs.surge_of_light                  = get_proc( "Surge of Light" );
   procs.surge_of_light_overflow         = get_proc( "Surge of Light lost to overflow" );
@@ -2018,7 +2018,7 @@ int priest_t::shadow_weaving_active_dots( const player_t* target ) const
       dots = swp->is_ticking() + vt->is_ticking() + dp->is_ticking();
     }
   }
-  
+
   return dots;
 }
 
@@ -2047,12 +2047,12 @@ priest_t::priest_pets_t::priest_pets_t( priest_t& p ) : shadowfiend(), mindbende
 }
 
 buffs::dispersion_t::dispersion_t( priest_t& p )
-  : base_t( p, "dispersion", p.find_class_spell( "Dispersion" ) ), no_insanty_drain()
+  : base_t( p, "dispersion", p.find_class_spell( "Dispersion" ) ), no_insanity_drain()
 {
   auto rank2 = p.find_specialization_spell( 322108, PRIEST_SHADOW );
   if ( rank2->ok() )
   {
-    no_insanty_drain = true;
+    no_insanity_drain = true;
   }
 }
 

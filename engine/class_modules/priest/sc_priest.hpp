@@ -445,7 +445,7 @@ public:
   struct
   {
     // Generic Priest
-    item_runeforge_t twins_of_the_sun_priestess;  // only used with Conduit to reduce CD of PI
+    item_runeforge_t twins_of_the_sun_priestess;
     // Holy
     item_runeforge_t divine_image;          // NYI
     item_runeforge_t harmonious_apparatus;  // NYI
@@ -454,7 +454,7 @@ public:
     item_runeforge_t the_penitent_one;  // Effect implemented, but not hooked up to PW:Radiance
     // Shadow
     item_runeforge_t painbreaker_psalm;
-    item_runeforge_t shadowflame_prism;  // TODO: Add 20% damage modifier
+    item_runeforge_t shadowflame_prism;
     item_runeforge_t eternal_call_to_the_void;
     item_runeforge_t talbadars_stratagem;
   } legendary;
@@ -590,7 +590,7 @@ public:
    * Insanity tracking
    *
    * Handles the resource gaining from abilities, and insanity draining and manages an event that forcibly punts the
-   * actor out of Voidform the exact moment insanity hitszero (millisecond resolution).
+   * actor out of Voidform the exact moment insanity hits zero (millisecond resolution).
    */
   struct insanity_state_t final
   {
@@ -1368,7 +1368,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
   void trigger_vampiric_embrace( action_state_t* s )
   {
     double amount = s->result_amount;
-    amount *= priest().buffs.vampiric_embrace->data().effectN( 1 ).percent();  // FIXME additive or multiplicate?
+    amount *= priest().buffs.vampiric_embrace->data().effectN( 1 ).percent();  // FIXME additive or multiplicative?
 
     for ( player_t* ally : sim->player_no_pet_list )
     {
@@ -1429,7 +1429,7 @@ protected:
 
 struct dispersion_t final : public priest_buff_t<buff_t>
 {
-  bool no_insanty_drain;
+  bool no_insanity_drain;
 
   dispersion_t( priest_t& p );
 };
@@ -1487,10 +1487,10 @@ struct priest_module_t final : public module_t
   }
   void init( player_t* p ) const override
   {
-    p->buffs.guardian_spirit = make_buff( p, "guardian_spirit",
+    p->buffs.guardian_spirit  = make_buff( p, "guardian_spirit",
                                           p->find_spell( 47788 ) );  // Let the ability handle the CD
-    p->buffs.pain_supression = make_buff( p, "pain_supression",
-                                          p->find_spell( 33206 ) );  // Let the ability handle the CD
+    p->buffs.pain_suppression = make_buff( p, "pain_suppression",
+                                           p->find_spell( 33206 ) );  // Let the ability handle the CD
   }
   void static_init() const override
   {
@@ -1569,7 +1569,7 @@ static void adjust_max_charges( cooldown_t* cooldown, int new_max_charges )
 
     /**
      * This loop is used to remove all of the charges and start the cooldown recovery event properly.
-     * It does it by repetetively calling cooldown->start which will remove a current charge and restart the event
+     * It does it by repetitively calling cooldown->start which will remove a current charge and restart the event
      * timers.
      */
     for ( int i = 0; i < cooldown->charges; i++ )
