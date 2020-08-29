@@ -8259,7 +8259,8 @@ void rogue_t::create_buffs()
                                 -> set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
                                 -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buffs.symbols_of_death_autocrit = make_buff( this, "symbols_of_death_autocrit", spec.symbols_of_death_autocrit )
-                                    -> set_default_value( spec.symbols_of_death_autocrit->effectN( 1 ).percent() );
+                                -> add_invalidate( CACHE_CRIT_CHANCE )
+                                -> set_default_value( spec.symbols_of_death_autocrit->effectN( 1 ).percent() );
 
   // Talents ================================================================
   // Shared
@@ -8385,6 +8386,9 @@ void rogue_t::create_buffs()
   buffs.perforated_veins = make_buff( this, "perforated_veins", conduit.perforated_veins->effectN( 1 ).trigger() )
     ->set_trigger_spell( conduit.perforated_veins )
     ->set_default_value( conduit.perforated_veins.percent() );
+
+  if ( conduit.planned_execution.ok() )
+    buffs.symbols_of_death->add_invalidate( CACHE_CRIT_CHANCE );
 
   // Legendary Items ========================================================
 
