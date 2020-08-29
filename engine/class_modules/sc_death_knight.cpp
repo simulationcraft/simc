@@ -592,14 +592,21 @@ public:
 
     // Frost
     const spell_data_t* empower_rune_weapon;
+    const spell_data_t* empower_rune_weapon_rank_2;
     const spell_data_t* frost_fever;
     const spell_data_t* frost_strike;
+    const spell_data_t* frost_strike_rank_2;
     const spell_data_t* howling_blast;
     const spell_data_t* killing_machine;
+    const spell_data_t* killing_machine_rank_2;
     const spell_data_t* obliterate;
+    const spell_data_t* obliterate_rank_2;
     const spell_data_t* pillar_of_frost;
+    const spell_data_t* pillar_of_frost_rank_2;
     const spell_data_t* remorseless_winter;
+    const spell_data_t* remorseless_winter_rank_2;
     const spell_data_t* rime;
+    const spell_data_t* rime_rank_2;
     const spell_data_t* runic_empowerment;
 
     // Unholy
@@ -4538,6 +4545,7 @@ struct empower_rune_weapon_t : public death_knight_spell_t
     dot_duration = base_tick_time = 0_ms;
 
     cooldown -> duration *= 1.0 + p -> vision_of_perfection_minor_cdr;
+    cooldown -> duration += p -> spec.empower_rune_weapon_rank_2->effectN(1).time_value();
   }
 
   void execute() override
@@ -4822,6 +4830,7 @@ struct frost_strike_strike_t : public death_knight_melee_attack_t
   {
     background = special = true;
     weapon = w;
+    base_multiplier *= 1.0 + p -> spec.frost_strike_rank_2 -> effectN( 1 ).percent(); 
   }
 
   double bonus_da( const action_state_t* s ) const override
@@ -5123,7 +5132,7 @@ struct howling_blast_aoe_t : public death_knight_spell_t
 
     if ( p() -> buffs.rime -> up() )
     {
-      m *= 1.0 + p() -> buffs.rime -> data().effectN( 2 ).percent();
+      m *= 1.0 + p() -> buffs.rime -> data().effectN( 2 ).percent() + p() -> spec.rime_rank_2 -> effectN( 1 ).percent();
     }
 
     return m;
@@ -5215,7 +5224,7 @@ struct howling_blast_t : public death_knight_spell_t
 
     if ( p() -> buffs.rime -> up() )
     {
-      m *= 1.0 + p() -> buffs.rime -> data().effectN( 2 ).percent();
+      m *= 1.0 + p()->buffs.rime->data().effectN( 2 ).percent() + p() -> spec.rime_rank_2 -> effectN( 1 ).percent();
     }
 
     return m;
@@ -5374,7 +5383,8 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
   {
     background = special = true;
     may_miss = false;
-    weapon = w;
+    weapon = w;    
+    base_multiplier *= 1.0 + p -> spec.obliterate_rank_2 -> effectN( 1 ).percent();
   }
 
   double composite_crit_chance() const override
@@ -5388,6 +5398,11 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
 
   void execute() override
   {
+    if ( p() -> spec.killing_machine_rank_2 -> ok() && p() -> buffs.killing_machine -> up() )
+    {
+      school = SCHOOL_FROST;
+    }
+
     death_knight_melee_attack_t::execute();
 
     trigger_icecap( execute_state );
@@ -5396,6 +5411,9 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
     {
       p() -> buffs.icy_citadel_builder -> trigger();
     }
+    
+    // KM Rank 2 - revert school after the hit
+    school = SCHOOL_PHYSICAL;
   }
 };
 
@@ -5621,7 +5639,7 @@ struct pillar_of_frost_buff_t : public buff_t
     buff_t( p, "pillar_of_frost", p -> spec.pillar_of_frost )
   {
     cooldown -> duration = 0_ms;
-    set_default_value( p -> spec.pillar_of_frost -> effectN( 1 ).percent() );
+    set_default_value( p -> spec.pillar_of_frost -> effectN( 1 ).percent() + p -> spec.pillar_of_frost_rank_2 -> effectN( 1 ).percent() );
     add_invalidate( CACHE_STRENGTH );
   }
 
@@ -5740,6 +5758,7 @@ struct remorseless_winter_damage_t : public death_knight_spell_t
   {
     background = true;
     aoe = -1;
+    base_multiplier *= 1.0 + p -> spec.remorseless_winter_rank_2 -> effectN( 1 ).percent();
 
     if ( p -> azerite.frozen_tempest.enabled() )
     {
@@ -7523,14 +7542,21 @@ void death_knight_t::init_spells()
   spec.frost_death_knight  = find_specialization_spell( "Frost Death Knight" );
   spec.frost_fever         = find_specialization_spell( "Frost Fever" );
   spec.frost_strike        = find_specialization_spell( "Frost Strike" );
+  spec.frost_strike_rank_2 = find_specialization_spell( "Frost Strike", "Rank 2" );
   spec.howling_blast       = find_specialization_spell( "Howling Blast" );
   spec.obliterate          = find_specialization_spell( "Obliterate" );
+  spec.obliterate_rank_2   = find_specialization_spell( "Obliterate", "Rank 2" );
   spec.rime                = find_specialization_spell( "Rime" );
+  spec.rime_rank_2         = find_specialization_spell( "Rime", "Rank 2" );
   spec.runic_empowerment   = find_specialization_spell( "Runic Empowerment" );
   spec.killing_machine     = find_specialization_spell( "Killing Machine" );
+  spec.killing_machine_rank_2     = find_specialization_spell( "Killing Machine", "Rank 2" );
   spec.empower_rune_weapon = find_specialization_spell( "Empower Rune Weapon" );
+  spec.empower_rune_weapon_rank_2 = find_specialization_spell( "Empower Rune Weapon", "Rank 2" );
   spec.pillar_of_frost     = find_specialization_spell( "Pillar of Frost" );
+  spec.pillar_of_frost_rank_2    = find_specialization_spell( "Pillar of Frost", "Rank 2" );
   spec.remorseless_winter  = find_specialization_spell( "Remorseless Winter" );
+  spec.remorseless_winter_rank_2 = find_specialization_spell( 316794 );
 
   // Unholy
   spec.unholy_death_knight = find_specialization_spell( "Unholy Death Knight" );
