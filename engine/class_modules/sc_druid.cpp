@@ -1077,7 +1077,7 @@ void eclipse_handler_t::cast_starsurge()
   if ( state == IN_SOLAR || state == IN_LUNAR || state == IN_BOTH )
   p->buff.starsurge->trigger();
 
-  if ( p->conduit.stellar_inspiration->ok() && p->rng().roll( p->conduit.stellar_inspiration->effectN( 1 ).percent() ) )
+  if ( p->conduit.stellar_inspiration->ok() && p->rng().roll( p->conduit.stellar_inspiration.percent() ) )
     p->buff.starsurge->trigger();
 }
 
@@ -2721,7 +2721,7 @@ public:
            &ab::data() == p()->talent.new_moon ) &&
          td( t )->dots.sunfire->is_ticking() )
     {
-      tm *= 1.0 + p()->conduit.fury_of_the_skies->effectN( 1 ).percent();
+      tm *= 1.0 + p()->conduit.fury_of_the_skies.percent();
     }
 
     return tm;
@@ -3423,7 +3423,7 @@ public:
                             p()->gain.eye_of_fearful_symmetry );
       }
 
-      if ( p()->conduit.sudden_ambush->ok() && rng().roll( p()->conduit.sudden_ambush->effectN( 1 ).percent() * consumed ) )
+      if ( p()->conduit.sudden_ambush->ok() && rng().roll( p()->conduit.sudden_ambush.percent() * consumed ) )
         p()->buff.sudden_ambush->trigger();
     }
   }
@@ -3967,7 +3967,7 @@ struct ferocious_bite_t : public cat_attack_t
       auto t_td  = td( t );
       int bleeds = t_td->dots.rake->is_ticking() + t_td->dots.rip->is_ticking() + t_td->dots.thrash_cat->is_ticking();
 
-      tm *= 1.0 + p()->conduit.taste_for_blood->effectN( 1 ).percent() * bleeds;
+      tm *= 1.0 + p()->conduit.taste_for_blood.percent() * bleeds;
     }
 
     return tm;
@@ -4269,7 +4269,7 @@ struct rip_t : public cat_attack_t
       p()->proc.gushing_lacerations->occur();
     }
 
-    if ( p()->conduit.incessant_hunter->ok() && rng().roll( p()->conduit.incessant_hunter->effectN( 1 ).percent() ) )
+    if ( p()->conduit.incessant_hunter->ok() && rng().roll( p()->conduit.incessant_hunter.percent() ) )
     {
       p()->resource_gain( RESOURCE_ENERGY,
                           p()->conduit.incessant_hunter->effectN( 1 ).trigger()->effectN( 1 ).resource( RESOURCE_ENERGY ),
@@ -7050,7 +7050,7 @@ struct kindred_spirits_t : public druid_spell_t
       add_child( player->active.kindred_empowerment_partner );
 
     if ( player->conduit.deep_allegiance->ok() )
-      cooldown->duration *= 1.0 + player->conduit.deep_allegiance->effectN( 1 ).percent();
+      cooldown->duration *= 1.0 + player->conduit.deep_allegiance.percent();
   }
 
   void execute() override
@@ -8530,7 +8530,7 @@ void druid_t::create_buffs()
     ->set_default_value( find_spell( 279943 )->effectN( 1 ).percent() );
 
   buff.savage_combatant = make_buff( this, "savage_combatant", conduit.savage_combatant->effectN( 1 ).trigger() )
-    ->set_default_value( conduit.savage_combatant->effectN( 1 ).percent() );
+    ->set_default_value( conduit.savage_combatant.percent() );
 
   // Restoration
   buff.harmony = make_buff( this, "harmony", mastery.harmony->ok() ? find_spell( 100977 ) : spell_data_t::not_found() );
@@ -9370,7 +9370,7 @@ double druid_t::composite_spell_haste() const
   sh /= 1.0 + buff.incarnation_moonkin->stack_value();
 
   if ( conduit.unchecked_aggression->ok() && buff.berserk_bear->check() )
-    sh /= 1.0 + conduit.unchecked_aggression->effectN( 1 ).percent();
+    sh /= 1.0 + conduit.unchecked_aggression.percent();
 
   return sh;
 }
@@ -9388,7 +9388,7 @@ double druid_t::composite_melee_haste() const
   mh /= 1.0 + buff.incarnation_moonkin->stack_value();
 
   if ( conduit.unchecked_aggression->ok() && buff.berserk_bear->check() )
-    mh /= 1.0 + conduit.unchecked_aggression->effectN( 1 ).percent();
+    mh /= 1.0 + conduit.unchecked_aggression.percent();
 
   return mh;
 }
