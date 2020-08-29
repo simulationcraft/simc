@@ -5321,6 +5321,29 @@ May be active on two targets at a time.
 Tooltip          : Healing $w1 every $t1 sec.
 Blooms for additional healing when effect expires or is dispelled.
 
+Name             : Memory of the Mother Tree (id=189877) [Spell Family (7)] 
+School           : Physical
+Spell Type       : None
+Duration         : 15 seconds
+Stacks           : 1 initial, 1 maximum
+Proc Chance      : 100%
+Proc Flags       : ........ ......x. ........ ........ 
+                 : Magic Heal
+Triggered by     : Memory of the Mother Tree (339064)
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+Effects          :
+#1 (id=277897)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : $@spelldesc339064
+Tooltip          : Your next Rejuvenation or Regrowth will apply to $339064s1 additional allies within $w1 yards of the target.
+
 Name             : Wrath (id=190984) [Spell Family (7)] 
 Replaces         : Wrath (id=5176)
 Class            : Balance Druid
@@ -12738,6 +12761,39 @@ Effects          :
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Trigger Spell: 339140 | Target: Self (1)
 Description      : Rip damage has a $s1% chance to make your next Ferocious Bite free and deal the maximum damage.
 
+Name             : Apex Predator's Craving (id=339140) [Spell Family (7)] 
+School           : Physical
+Spell Type       : None
+Duration         : 15 seconds
+Stacks           : 1 initial, 1 maximum
+Proc Chance      : 100%
+Proc Flags       : ....x... ........ ........ ........ 
+                 : Yellow Melee
+Triggered by     : Apex Predator's Craving (339139)
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+Effects          :
+#1 (id=838224)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
+                   Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
+                   Affected Spells: Ferocious Bite (22568)
+                   Family Flags: 108
+#2 (id=838225)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Generation (34)
+                   Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 34 | Target: Self (1)
+                   Affected Spells: Ferocious Bite (22568)
+                   Family Flags: 108
+#3 (id=838226)   : Apply Aura (6) | Modify Max Cost (63)
+                   Base Value: -4 | Scaled Value: -4 | PvP Coefficient: 1.00000 | Misc Value: 4 | Target: Self (1)
+                   Affected Spells: Ferocious Bite (22568)
+                   Family Flags: 108
+Description      : $@spelldesc339139
+Tooltip          : Your next Ferocious Bite costs no Energy or combo points and deals the maximum damage.
+
 Name             : Eye of Fearful Symmetry (id=339141) [Spell Family (7), Passive] 
 School           : Physical
 Spell Type       : None
@@ -12757,6 +12813,29 @@ Effects          :
 #1 (id=838228)   : Apply Aura (6) | Proc Trigger Spell (42): Eye of Fearful Symmetry
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 339142 | Target: Self (1)
 Description      : Tiger's Fury causes your next finishing move to restore $339143s1 combo points.
+
+Name             : Eye of Fearful Symmetry (id=339142) [Spell Family (7)] 
+School           : Physical
+Spell Type       : None
+Duration         : 15 seconds
+Stacks           : 1 initial, 1 maximum
+Proc Chance      : 100%
+Proc Flags       : ....x... ..x..... x....... ........ 
+                 : Yellow Melee, Generic Heal, Magic Hostile Spell
+Triggered by     : Eye of Fearful Symmetry (339141)
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+Effects          :
+#1 (id=838229)   : Apply Aura (6) | Proc Trigger Spell (42): Eye of Fearful Symmetry
+                   Base Value: -4 | Scaled Value: -4 | PvP Coefficient: 1.00000 | Trigger Spell: 339143 | Target: Self (1)
+Description      : $@spelldesc339141
+Tooltip          : Your next finishing move restores $339143s1 combo points.
 
 Name             : Cat-eye Curio (id=339144) [Spell Family (7), Passive] 
 School           : Physical
@@ -12919,6 +12998,29 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 340049 | Target: Self (1)
 Description      : Starsurge and Starfall reduce the cost of Starsurge and Starfall by $340049s1% for $340049d, stacking up to $340049u times.
 
+Name             : Timeworn Dreambinder (id=340049) [Spell Family (7)] 
+School           : Nature
+Spell Type       : None
+Duration         : 6 seconds
+Stacks           : 2 maximum
+Proc Chance      : 101%
+Triggered by     : Timeworn Dreambinder (339949)
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+Effects          :
+#1 (id=839664)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
+                   Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
+                   Affected Spells: Starfall (50286), Starsurge (78674), Starfall (191034), Starfall (191037), Starsurge (197626)
+                   Family Flags: 55, 89
+Description      : $@spelldesc339949
+Tooltip          : Cost of Starsurge and Starfall reduced by $w1%.
+
 Name             : Frenzyband (id=340053) [Spell Family (7), Passive] 
 School           : Physical
 Spell Type       : None
@@ -13008,6 +13110,29 @@ Effects          :
 #1 (id=840533)   : Apply Aura (6) | Trigger Spell with Value (231)
                    Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000 | Trigger Spell: 340541 | Target: Self (1)
 Description      : For $340541d after shifting into Bear Form, your health and armor are increased ${$340541s1}.1%.
+
+Name             : Ursine Vigor (id=340541) [Spell Family (7)] 
+School           : Nature
+Spell Type       : None
+Duration         : 4 seconds
+Stacks           : 2 maximum
+Proc Chance      : 101%
+Triggered by     : Ursine Vigor (340540)
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+Effects          :
+#1 (id=840534)   : Apply Aura (6) | Modify Max Health% (133)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+#2 (id=840535)   : Apply Aura (6) | Modify Base Resistance (142)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
+Description      : $@spelldesc340540
+Tooltip          : Health and armor increased by ${$w1}.1%.
 
 Name             : Innate Resolve (id=340543) [Spell Family (7), Passive, Hidden] 
 School           : Physical
@@ -13125,6 +13250,26 @@ Effects          :
 #2 (id=840556)   : Apply Aura (6) | Trigger Spell Based on Health% (468)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 1 | Trigger Spell: 340555 | Target: Self (1)
 Description      : When you fall below $s2% health, you cast Frenzied Regeneration, up to once every $s1 sec.
+
+Name             : Well-Honed Instincts (id=340555) [Spell Family (7), Hidden] 
+School           : Nature
+Spell Type       : None
+Stacks           : 2 maximum
+Proc Chance      : 101%
+Triggered by     : Well-Honed Instincts (340553)
+Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Hidden (7)
+Effects          :
+#1 (id=840558)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : $@spelldesc340553
 
 Name             : Layered Mane (id=340605) [Spell Family (7), Passive, Hidden] 
 School           : Physical

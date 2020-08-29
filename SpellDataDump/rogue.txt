@@ -10137,6 +10137,26 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 341202 | Target: Self (1)
 Description      : Vanish grants $341202s3 combo points and increases all damage dealt by $341202s1% for $341202d.
 
+Name             : Bloodfang (id=340424) [Spell Family (8)] 
+School           : Physical
+Spell Type       : None
+Range            : 100 yards
+Duration         : 6 seconds
+Triggered by     : Essence of Bloodfang (340079)
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ...x.... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+Effects          :
+#1 (id=840280)   : Apply Aura (6) | Periodic Health Leech (53): every 1 seconds
+                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | AP Coefficient: 0.06300 | PvP Coefficient: 1.00000 | Mechanic: Bleed | Target: Enemy (6)
+Description      : $@spelldesc340079
+Tooltip          : Bleeding for $w1, and healing the Rogue for $w1 every $t1 sec.
+
 Name             : Dashing Scoundrel (id=340426) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
@@ -10366,6 +10386,66 @@ Effects          :
 #1 (id=841316)   : Apply Aura (6) | Periodic Dummy (226): every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc340090
+
+Name             : The Rotten (id=341134) [Spell Family (8)] 
+School           : Physical
+Spell Type       : None
+Duration         : 2 seconds
+Proc Chance      : 100%
+Proc Flags       : ........ ........ ........ .....x.. 
+                 
+Triggered by     : The Rotten (340091)
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ...x.... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+Effects          :
+#1 (id=841348)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
+                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
+                   Affected Spells: Shadowstrike (185438)
+                   Family Flags: 104
+#2 (id=841349)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
+                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
+                   Affected Spells: Backstab (53), Gloomblade (200758)
+                   Family Flags: 2, 109
+Description      : $@spelldesc340091
+Tooltip          : Shadowstrike and $?s200758[Gloomblade][Backstab] generate $s1 additional combo points.
+
+Name             : Deathly Shadows (id=341202) [Spell Family (8)] 
+School           : Physical
+Spell Type       : None
+Duration         : 10 seconds
+Proc Chance      : 100%
+Proc Flags       : ........ ........ ........ .....x.. 
+                 
+Triggered by     : Deathly Shadows (340092)
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ...x.... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+Effects          :
+#1 (id=841446)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade Off-hand (121474), Internal Bleeding (154953), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Eviscerate (196819), Ghostly Strike (196937), Sinister Strike (197834), Shuriken Storm (197835), Between the Eyes (199804), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Secret Technique (280719), Secret Technique (280720), Secret Technique (282449), Nothing Personal (286581), Echoing Blades (287653), Between the Eyes (315341), Instant Poison (315585), Shiv (319033), Shadow Vault (319175), Shadow Vault (319190), Shiv (319504), Echoing Reprimand (323547), Echoing Reprimand (323558), Echoing Reprimand (323559), Echoing Reprimand (323560), Slaughter (323654), Slaughter Poison (323659), Slaughter Poison (323660), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Eviscerate (328082), Sepsis (328305), Sepsis (328306), Serrated Bone Spike (328547), Blade Furry (331850), Serrated Bone Spike (341277), Sinister Strike (341541)
+                   Family Flags: 54
+#2 (id=841447)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade Off-hand (121474), Internal Bleeding (154953), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Eviscerate (196819), Ghostly Strike (196937), Sinister Strike (197834), Shuriken Storm (197835), Between the Eyes (199804), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Secret Technique (280719), Secret Technique (280720), Secret Technique (282449), Nothing Personal (286581), Echoing Blades (287653), Between the Eyes (315341), Instant Poison (315585), Shiv (319033), Shadow Vault (319175), Shadow Vault (319190), Shiv (319504), Echoing Reprimand (323547), Echoing Reprimand (323558), Echoing Reprimand (323559), Echoing Reprimand (323560), Slaughter (323654), Slaughter Poison (323659), Slaughter Poison (323660), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Eviscerate (328082), Sepsis (328305), Sepsis (328306), Serrated Bone Spike (328547), Blade Furry (331850), Serrated Bone Spike (341277), Sinister Strike (341541)
+                   Family Flags: 54
+#3 (id=841448)   : Energize Power (30)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
+#4 (id=841452)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : $@spelldesc340092
+Tooltip          : Damage increased by $w1%.
 
 Name             : Reverberation (id=341264) [Spell Family (8), Passive, Hidden] 
 School           : Physical
@@ -10816,6 +10896,26 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Eviscerate and Shadow Vault increase your Shadow damage dealt by $s1% for $s2 sec.
 
+Name             : Deeper Daggers (id=341550) [Spell Family (8)] 
+School           : Physical
+Spell Type       : None
+Duration         : 5 seconds
+Triggered by     : Deeper Daggers (341549)
+Attributes       : ........ ........ ........ ...x....   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+Effects          :
+#1 (id=842021)   : Apply Aura (6) | Modify Damage Done% (79)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 0x20 | Target: Self (1)
+                   Affected School(s): Shadow
+Description      : $@spelldesc341549
+Tooltip          : Shadow damage dealt increased by $w1%.
+
 Name             : Planned Execution (id=341556) [Spell Family (8), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
@@ -10877,6 +10977,31 @@ Effects          :
 #2 (id=842042)   : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Shadowstrike increases the damage of your next Backstab by $341572s1%, stacking up to $341572u times.
+
+Name             : Perforated Veins (id=341572) [Spell Family (8)] 
+School           : Physical
+Spell Type       : None
+Duration         : 12 seconds
+Stacks           : 1 initial, 3 maximum
+Proc Chance      : 100%
+Proc Flags       : ....x... ........ ........ ........ 
+                 : Yellow Melee
+Triggered by     : Perforated Veins (341567)
+Attributes       : ........ ........ ........ ...x....   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+Effects          :
+#1 (id=842052)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Backstab (53), Gloomblade (200758)
+                   Family Flags: 2, 109
+Description      : $@spelldesc341567
+Tooltip          : Backstab damage increased by $w1%.
 
 Name             : Dreadblades (id=343142) [Spell Family (8)] 
 Class            : Rogue

@@ -11735,6 +11735,24 @@ Effects          :
                    Base Value: -25 | Scaled Value: -25 | PvP Coefficient: 1.00000 | Trigger Spell: 336744 | Target: Self (1)
 Description      : Whenever a trap is triggered, gain $336744s1 Focus.
 
+Name             : Nessingwary's Trapping Apparatus (id=336744) [Spell Family (9), Passive] 
+School           : Physical
+Spell Type       : None
+Triggered by     : Nessingwary's Trapping Apparatus (336743)
+Attributes       : ......x. ........ ........ .......x   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ....x...   ........ ........ xx..x... ........ 
+                 : ........ ........ .......x ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ...x.... 
+                 : ........ ........ ........ ........   ........ ........ ........ .x...... 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Cannot cancel aura (31), Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
+Effects          :
+#1 (id=834323)   : Energize Power (30)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: focus | Target: Self (1)
+Description      : $@spelldesc336743
+
 Name             : Soulforge Embers (id=336745) [Spell Family (9), Passive] 
 School           : Physical
 Spell Type       : None
@@ -11777,6 +11795,30 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 336748 | Target: Self (1)
 Description      : Feign Death cooldown reduced by ${$m1/-1000}.1 sec, and Feign Death now removes most negative status effects from yourself.
 
+Name             : Craven Strategem (id=336748) [Spell Family (9), Hidden] 
+School           : Physical
+Spell Type       : None
+Duration         : 0.1 seconds
+Triggered by     : Craven Strategem (336747)
+Attributes       : .......x ........ ........ .......x   ........ ..x....x ........ ........ 
+                 : ........ ........ ........ ....x...   ........ ........ xx..x... ........ 
+                 : ........ ........ .......x ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ...x.... 
+                 : ........ ........ ........ ........   ........ ....x... ........ .x...... 
+                 : ........ ........ ........ ........   
+                 : Hidden (7), Cannot cancel aura (31), Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
+Effects          :
+#1 (id=834328)   : Apply Aura (6) | School Immunity (39)
+                   Base Value: -15000 | Scaled Value: -15000 | PvP Coefficient: 1.00000 | Misc Value: 126 | Target: Self (1)
+#2 (id=834329)   : Apply Aura (6) | Mechanic Immunity (77)
+                   Base Value: -15000 | Scaled Value: -15000 | PvP Coefficient: 1.00000 | Misc Value: 15 | Target: Self (1)
+#3 (id=834330)   : Apply Aura (6) | Mechanic Immunity (77)
+                   Base Value: -15000 | Scaled Value: -15000 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
+#4 (id=834331)   : Apply Aura (6) | Mechanic Immunity (77)
+                   Base Value: -15000 | Scaled Value: -15000 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
+
 Name             : Dire Command (id=336819) [Spell Family (9), Passive] 
 School           : Physical
 Spell Type       : None
@@ -11813,6 +11855,31 @@ Effects          :
 #1 (id=834479)   : Apply Aura (6) | Proc Trigger Spell (42): Flamewaker's Cobra Sting
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Trigger Spell: 336826 | Target: Self (1)
 Description      : Cobra Shot has a $h% chance to make your next Kill Command consume no Focus.
+
+Name             : Flamewaker's Cobra Sting (id=336826) [Spell Family (9)] 
+School           : Physical
+Spell Type       : None
+Duration         : 15 seconds
+Proc Chance      : 100%
+Proc Flags       : ........ x...x... x....... ........ 
+                 : Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
+Triggered by     : Flamewaker's Cobra Sting (336822)
+Attributes       : ........ ........ ........ .......x   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ....x...   ........ ........ xx...... ........ 
+                 : ........ ........ .......x ........   ........ ........ ........ ........ 
+                 : ......x. ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Cannot cancel aura (31), Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
+Effects          :
+#1 (id=834483)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
+                   Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
+                   Affected Spells: Kill Command (34026), Kill Command (83381)
+                   Family Flags: 43
+Description      : $@spelldesc336822
+Tooltip          : Your next Kill Command will consume $s1% less Focus.
 
 Name             : Qa'pla, Eredun War Order (id=336830) [Spell Family (9), Passive] 
 School           : Physical
@@ -11870,6 +11937,26 @@ Effects          :
 #1 (id=834523)   : Apply Aura (6) | Proc Trigger Spell (42): Eagletalon's True Focus
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Trigger Spell: 336851 | Target: Self (1)
 Description      : Trueshot also reduces the Focus cost of all of your abilities by $336851s1%.
+
+Name             : Eagletalon's True Focus (id=336851) [Spell Family (9)] 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Triggered by     : Eagletalon's True Focus (336849)
+Attributes       : ........ ........ ........ .......x   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ....x...   ........ ........ xx..x... ........ 
+                 : ........ ........ .......x ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Cannot cancel aura (31), Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
+Effects          :
+#1 (id=834525)   : Apply Aura (6) | Modify Power Cost% (72)
+                   Base Value: -30 | Scaled Value: -30 | PvP Coefficient: 1.00000 | Misc Value: 127 | Misc Value 2: 0x4 | Target: Self (1)
+Description      : $@spelldesc336849
+Tooltip          : Focus cost of all abilities reduced by $s1%.
 
 Name             : Surging Shots (id=336867) [Spell Family (9), Passive] 
 School           : Physical
@@ -11934,6 +12021,26 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Trigger Spell: 336892 | Target: Self (1)
 Description      : When you gain the Trick Shots effect, you have a $h% chance for it to not be consumed by your next Aimed Shot or Rapid Fire.
 
+Name             : Secrets of the Unblinking Vigil (id=336892) [Spell Family (9)] 
+School           : Physical
+Spell Type       : None
+Duration         : 20 seconds
+Triggered by     : Secrets of the Unblinking Vigil (336878)
+Attributes       : ........ ........ ........ .......x   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ....x...   ........ ........ xx..x... ..x..... 
+                 : ........ ........ .......x ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Cannot cancel aura (31), Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
+Effects          :
+#1 (id=834578)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : $@spelldesc336878
+Tooltip          : Your next Trick Shots will not be consumed by Aimed Shot or Rapid Fire.
+
 Name             : Wildfire Cluster (id=336895) [Spell Family (9), Passive] 
 School           : Physical
 Spell Type       : None
@@ -11994,6 +12101,29 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Trigger Spell: 336903 | Target: Self (1)
 Description      : Serpent Sting's damage applies Latent Poison to the target, stacking up to $336903u times. $?s259387[Mongoose Bite][Raptor Strike] consumes all stacks of Latent Poison, dealing $336904s1 Nature damage to the target per stack consumed.
 
+Name             : Latent Poison Injectors (id=336903) [Spell Family (9)] 
+School           : Nature
+Spell Type       : None
+Range            : 100 yards
+Duration         : 15 seconds
+Stacks           : 10 maximum
+Proc Chance      : 101%
+Triggered by     : Latent Poison Injectors (336902)
+Attributes       : ........ ........ ........ .......x   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ....x...   .......x ........ xx...... ..x..... 
+                 : ........ ........ .......x ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Cannot cancel aura (31), Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
+Effects          :
+#1 (id=834598)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Description      : $@spelldesc336902
+Tooltip          : Injected with Latent Poison.
+
 Name             : Butcher's Bone Fragments (id=336907) [Spell Family (9), Passive] 
 School           : Physical
 Spell Type       : None
@@ -12013,6 +12143,32 @@ Effects          :
 #1 (id=834602)   : Apply Aura (6) | Proc Trigger Spell (42): Butcher's Bone Fragments
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Trigger Spell: 336908 | Target: Self (1)
 Description      : $?s259387[Mongoose Bite][Raptor Strike] increases the damage of your next $?s212436[Butchery][Carve] by $336908s1%, stacking up to $336908u times.
+
+Name             : Butcher's Bone Fragments (id=336908) [Spell Family (9)] 
+School           : Physical
+Spell Type       : None
+Duration         : 12 seconds
+Stacks           : 10 maximum
+Proc Chance      : 101%
+Proc Flags       : ....x... ........ ........ ........ 
+                 : Yellow Melee
+Triggered by     : Butcher's Bone Fragments (336907), Wilfred's Sigil of Superior Summoning (337020), Mark of Borrowed Power (337057)
+Attributes       : ........ ........ ........ .......x   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ....x...   ........ ........ xx..x... ..x..... 
+                 : ........ ........ .......x ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Cannot cancel aura (31), Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
+Effects          :
+#1 (id=834603)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Carve (187708), Butchery (212436)
+                   Family Flags: 38, 71
+Description      : $@spelldesc336907
+Tooltip          : Damage of your next $?s212436[Butchery][Carve] increased by $s1%.
 
 Name             : Enfeebled Mark (id=339018) [Spell Family (9), Passive, Hidden] 
 School           : Physical
@@ -12156,6 +12312,25 @@ Effects          :
 #1 (id=838653)   : Apply Aura (6) | Proc Trigger Spell (42): Rejuvenating Wind
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Trigger Spell: 339400 | Target: Self (1)
 Description      : Exhilaration heals you for an additional|cFFFFFFFF ${$s1}.1%|r of your maximum health over $339400d.
+
+Name             : Rejuvenating Wind (id=339400) [Spell Family (9)] 
+School           : Nature
+Spell Type       : None
+Duration         : 8 seconds
+Triggered by     : Rejuvenating Wind (339399)
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ..x..... ........ ........ .....x..   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ...x....   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
+                 : ........ ........ ........ ........   
+                 : Cannot crit (93)
+Effects          :
+#1 (id=838654)   : Apply Aura (6) | Periodic Heal% (20): every 1 seconds
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+Tooltip          : Heals you for $w1 every $t.
 
 Name             : Resilience of the Hunter (id=339459) [Spell Family (9), Passive, Hidden] 
 School           : Physical

@@ -10249,6 +10249,32 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000
 Description      : Ice Lance has a $s1% chance to explode into shards of ice when it hits a target, dealing $327498s1 Frost damage to up to $327498I enemies near your target. This chance is increased to $s2% if your target is standing in a Blizzard.
 
+Name             : Expanded Potential (id=327495) [Spell Family (3)] 
+School           : Physical
+Spell Type       : None
+Duration         : 300 seconds
+Stacks           : 1 initial, 1 maximum
+Proc Chance      : 101%
+Triggered by     : Expanded Potential (327489)
+Attributes       : ........ ........ ........ x..x.x..   .....x.. ..x..... ........ ........ 
+                 : ........ ......x. ...x..x. ....x...   ........ .x...... xx...... ........ 
+                 : .......x ....x... .......x ........   ...x.... ........ .xx..... ........ 
+                 : ........ .x..x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Does not break stealth (37), Not a proc (105), Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
+Effects          :
+#1 (id=818993)   : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Proc Chance (18)
+                   Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 18 | Misc Value 2: 939 (Label) | Target: Self (1)
+                   Affected Spells (Label): Clearcasting (263725)
+#2 (id=819017)   : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Proc Chance (18)
+                   Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 18 | Misc Value 2: 938 (Label) | Target: Self (1)
+                   Affected Spells (Label): Brain Freeze (190446)
+Description      : $@spelldesc327489
+Tooltip          : Your next Hot Streak, Brain Freeze or Clearcasting will not be consumed.
+
 Name             : Slick Ice (id=327508) [Spell Family (3), Passive] 
 School           : Physical
 Spell Type       : None
@@ -10268,6 +10294,28 @@ Effects          :
 #1 (id=819011)   : Apply Aura (6) | Proc Trigger Spell (42): Slick Ice
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Trigger Spell: 327511 | Target: Self (1)
 Description      : While Icy Veins is active, each Frostbolt you cast reduces the cast time of Frostbolt by $327509s1%, stacking up to $327509u times.
+
+Name             : Slick Ice (id=327511) [Spell Family (3), Hidden] 
+School           : Physical
+Spell Type       : None
+Duration         : 60 seconds
+Proc Chance      : 101%
+Proc Flags       : ........ ........ x....... ........ 
+                 : Magic Hostile Spell
+Triggered by     : Slick Ice (327508)
+Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Hidden (7)
+Effects          :
+#1 (id=819015)   : Apply Aura (6) | Proc Trigger Spell (42): Slick Ice
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 327509 | Target: Self (1)
+Description      : $@spelldesc327508
 
 Name             : Arcane Harmony (id=332769) [Spell Family (3), Passive] 
 School           : Arcane
@@ -10294,6 +10342,31 @@ Effects          :
 Description      : Increases the damage done by Arcane Missiles by $s1%. 
 
 Each time Arcane Missiles hits an enemy, the damage of your next Arcane Barrage is increased by $332777s1%. This effect stacks.
+
+Name             : Arcane Harmony (id=332777) [Spell Family (3)] 
+School           : Arcane
+Spell Type       : None
+Duration         : Aura (infinite)
+Stacks           : 100 maximum
+Proc Chance      : 101%
+Proc Flags       : ........ ........ x....... ........ 
+                 : Magic Hostile Spell
+Triggered by     : Arcane Harmony (332769)
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+Effects          :
+#1 (id=827577)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Arcane Barrage (44425)
+                   Family Flags: 47
+Description      : $@spelldesc332769
+Tooltip          : Increases the damage of your next Arcane Barrage by $s1%.
 
 Name             : Arcane Bombardment (id=332892) [Spell Family (3), Passive] 
 School           : Arcane
@@ -10371,6 +10444,31 @@ Effects          :
 #1 (id=828099)   : Apply Aura (6) | Proc Trigger Spell (42): Firestorm
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 333100 | Target: Self (1)
 Description      : When Hot Streak activates, you have a low chance to cause all Pyroblasts and Flamestrikes to have no cast time and be guaranteed critical strikes for $333100d.
+
+Name             : Firestorm (id=333100) [Spell Family (3)] 
+School           : Fire
+Spell Type       : None
+Duration         : 5 seconds
+Triggered by     : Firestorm (333097)
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+Effects          :
+#1 (id=828105)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
+                   Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
+                   Affected Spells: Flamestrike (2120), Pyroblast (11366)
+                   Family Flags: 22, 99
+#2 (id=828106)   : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
+                   Affected Spells: Flamestrike (2120), Pyroblast (11366)
+                   Family Flags: 22, 99
+Description      : $@spelldesc333097
+Tooltip          : Pyroblast and Flamestrike have no cast time and is a guaranteed critical strike.
 
 Name             : Molten Skyfall (id=333167) [Spell Family (3), Passive] 
 Class            : Mage
@@ -11095,6 +11193,25 @@ Effects          :
 #1 (id=835240)   : Apply Aura (6) | Proc Trigger Spell (42): Tempest Barrier
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Trigger Spell: 337299 | Target: Self (1)
 Description      : Gain a shield that absorbs |cFFFFFFFF$s1%|r of your maximum health for $337299d after you Blink.
+
+Name             : Tempest Barrier (id=337299) [Spell Family (3)] 
+School           : Physical
+Spell Type       : Magic
+Duration         : 15 seconds
+Triggered by     : Tempest Barrier (337293)
+Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ....x... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ...x....   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ x....... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+Effects          :
+#1 (id=835247)   : Apply Aura (6) | Absorb Damage (69)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
+Description      : $@spelldesc337293
+Tooltip          : Absorbs $w1 damage.
 
 Name             : Controlled Destruction (id=341325) [Spell Family (3), Passive, Hidden] 
 School           : Fire

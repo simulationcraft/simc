@@ -10593,6 +10593,36 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Trigger Spell: 337125 | Target: Self (1)
 Description      : Malefic Rapture increases the damage of your $?s198590[Drain Soul][Shadow Bolt] by $337125s1% for $337125d, stacking up to $337125u times.
 
+Name             : Malefic Wrath (id=337125) [Spell Family (5)] 
+School           : Physical
+Spell Type       : None
+Duration         : 8 seconds
+Stacks           : 3 maximum
+Proc Chance      : 101%
+Proc Flags       : ........ ........ x....... ........ 
+                 : Magic Hostile Spell
+Triggered by     : Malefic Wrath (337122)
+Attributes       : ........ ........ ........ .......x   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ....x...   ........ ........ xx...... ..x..... 
+                 : ........ ........ .......x ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Cannot cancel aura (31), Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
+Effects          :
+#1 (id=834935)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Shadow Bolt (686), Drain Soul (198590)
+                   Family Flags: 0, 23
+#2 (id=834936)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Shadow Bolt (686), Drain Soul (198590)
+                   Family Flags: 0, 23
+Description      : $@spelldesc337122
+Tooltip          : $?s198590[Drain Soul][Shadow Bolt] damage increased by $s1%.
+
 Name             : Wrath of Consumption (id=337128) [Spell Family (5), Passive] 
 School           : Physical
 Spell Type       : None
@@ -10689,6 +10719,32 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Trigger Spell: 337161 | Target: Self (1)
 Description      : Shadow Bolt increases the damage of your next Demonbolt by $337161s1%, stacking up to $337161u times.
 
+Name             : Balespider's Burning Core (id=337161) [Spell Family (5)] 
+School           : Physical
+Spell Type       : None
+Duration         : 15 seconds
+Stacks           : 4 maximum
+Proc Chance      : 101%
+Proc Flags       : ........ ........ x....... ........ 
+                 : Magic Hostile Spell
+Triggered by     : Balespider's Burning Core (337159)
+Attributes       : ........ ........ ........ .......x   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ....x...   ........ ........ xx..x... ..x..... 
+                 : ........ ........ .......x ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Cannot cancel aura (31), Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
+Effects          :
+#1 (id=834993)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Demonbolt (264178)
+                   Family Flags: 70
+Description      : $@spelldesc337159
+Tooltip          : Damage of your next Demonbolt increased by $s1%.
+
 Name             : Odr, Shawl of the Ymirjar (id=337163) [Spell Family (5), Passive] 
 School           : Physical
 Spell Type       : None
@@ -10708,6 +10764,29 @@ Effects          :
 #1 (id=834995)   : Apply Aura (6) | Proc Trigger Spell (42): Odr, Shawl of the Ymirjar
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Trigger Spell: 337164 | Target: Self (1)
 Description      : Enemies marked by your Havoc take $337164s1% increased damage from your single target spells.
+
+Name             : Odr, Shawl of the Ymirjar (id=337164) [Spell Family (5)] 
+School           : Shadow
+Spell Type       : Magic
+Range            : 100 yards
+Duration         : Aura (infinite)
+Triggered by     : Odr, Shawl of the Ymirjar (337163)
+Attributes       : ........ ........ ........ .......x   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ....x...   ........ ........ xx..x... ..x..... 
+                 : ........ ........ .......x ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Cannot cancel aura (31), Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
+Effects          :
+#1 (id=834996)   : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Affected Spells: Immolate (348), Soul Fire (6353), Mortal Coil (6789), Shadowburn (17877), Conflagrate (17962), Incinerate (29722), Chaos Bolt (116858), Immolate (157736), Channel Demonfire (196448), Drain Life (234153), Incinerate (244670), Conflagrate (265931)
+                   Family Flags: 2, 3, 4, 7, 15, 19, 38, 45, 55, 65, 87, 114
+Description      : $@spelldesc337163
+Tooltip          : Damage taken from the warlock's single target spells increased by $s1%.
 
 Name             : Cinders of the Azj'Aqir (id=337166) [Spell Family (5), Passive] 
 School           : Physical
@@ -10749,6 +10828,33 @@ Effects          :
 #1 (id=835002)   : Apply Aura (6) | Proc Trigger Spell (42): Madness  of the Azj'Aqir
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Trigger Spell: 337170 | Target: Self (1)
 Description      : Chaos Bolt increases the damage of Chaos Bolt by $337170s1% and reduces the cast time of Chaos Bolt by $337170s2% for $337170d.
+
+Name             : Madness  of the Azj'Aqir (id=337170) [Spell Family (5)] 
+School           : Physical
+Spell Type       : None
+Duration         : 3 seconds
+Triggered by     : Madness  of the Azj'Aqir (337169)
+Attributes       : ........ ........ ........ .......x   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ....x...   ........ ........ xx..x... ..x..... 
+                 : ........ ........ .......x ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Cannot cancel aura (31), Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
+Effects          :
+#1 (id=835003)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Chaos Bolt (116858)
+                   Family Flags: 45
+#2 (id=835004)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
+                   Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
+                   Affected Spells: Chaos Bolt (116858)
+                   Family Flags: 45
+Description      : $@spelldesc337169
+Tooltip          : Chaos Bolt damage increased by $s1%.
+Chaos Bolt cast time reduced by $s2%.
 
 Name             : Embers of the Diabolic Raiment (id=337272) [Spell Family (5), Passive] 
 School           : Physical

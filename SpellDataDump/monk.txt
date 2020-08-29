@@ -10325,6 +10325,27 @@ Effects          :
                    Base Value: -500 | Scaled Value: -500 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Abilities that grant Shuffle reduce the cooldown on Invoke Niuzao, the Black Ox by ${$s2/1000}.1 sec, and Niuzao's Stomp deals an additional |cFFFFFFFF${$s1}.1%|r damage. 
 
+Name             : Celestial Breath (id=337267) [Spell Family (53), Hidden] 
+School           : Physical
+Spell Type       : None
+Range            : 100 yards
+Duration         : 2 seconds
+Triggered by     : Yu'lon's Whisper (337225)
+Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ .x...... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Hidden (7), Tick on application (169)
+Effects          :
+#1 (id=835205)   : Apply Aura (6) | Periodic Trigger Spell (23): Celestial Breath every 1 seconds
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 199656 | Target: Self (1)
+Description      : $@spelldesc337225
+Tooltip          : Healing allies within $a1 yards for $o over $t.
+
 Name             : Strike with Clarity (id=337286) [Spell Family (53), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
@@ -10391,6 +10412,34 @@ Effects          :
 #2 (id=835236)   : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Celestial Brew increases your Armor by $3379944m1% for $337994d, and Purifying Brew has a $m2% chance to not consume a charge.
+
+Name             : The Emperor's Capacitor (id=337291) [Spell Family (53)] 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Stacks           : 20 maximum
+Proc Chance      : 101%
+Triggered by     : Last Emperor's Capacitor (337292)
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+Effects          :
+#1 (id=835237)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.50000 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Crackling Jade Lightning (117952)
+                   Family Flags: 32
+#2 (id=835238)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
+                   Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
+                   Affected Spells: Crackling Jade Lightning (117952)
+                   Family Flags: 32
+Description      : $@spelldesc235053
+Tooltip          : Damage of next Crackling Jade Lightning increased by $s1%.
+Energy cost of next Crackling Jade Lightning reduced by $s2%.
 
 Name             : Last Emperor's Capacitor (id=337292) [Spell Family (53), Passive] 
 School           : Physical
@@ -10609,6 +10658,34 @@ Description      : Renewing Mists applies Extend Life to the initial target, ins
 
 When you heal with Enveloping Mist or Vivify, $m1% of the heal is also applied to targets with your Extend Life effect.
 
+Name             : Soothing Focus (id=337476) [Spell Family (53)] 
+School           : Nature
+Spell Type       : Magic
+Spell Level      : 1
+Duration         : 8 seconds
+Stacks           : 3 maximum
+Proc Chance      : 101%
+Triggered by     : Clouded Focus (337343)
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .x......   ........ ........ ........ ........ 
+                 : ........ ....x... ........ x.......   ........ ........ ....x... ........ 
+                 : ........ ........ ........ ........   ...x.... ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+Effects          :
+#1 (id=835525)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Vivify (116670), Enveloping Mist (124682), Enveloping Breath (325209)
+                   Family Flags: 26, 79
+#2 (id=835526)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
+                   Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
+                   Affected Spells: Vivify (116670), Enveloping Mist (124682), Enveloping Breath (325209)
+                   Family Flags: 26, 79
+Description      : $@spelldesc337343
+Tooltip          : Healing done by your Enveloping Mists and Vivify increased by $w1%, and mana cost reduced by $w2%.
+
 Name             : Xuen's Battlegear (id=337481) [Spell Family (53), Passive] 
 School           : Physical
 Spell Type       : None
@@ -10678,6 +10755,50 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
 Description      : Tiger Palm has a $s1% chance to deal $227679s1% of normal damage and reduce the remaining cooldown of your Brews by $227679s2 additional sec.
 
+Name             : Chi Energy (id=337571) [Spell Family (53)] 
+School           : Physical
+Spell Type       : None
+Duration         : 45 seconds
+Stacks           : 30 maximum
+Proc Chance      : 101%
+Triggered by     : Jade Ignition (337483)
+Attributes       : ........ ........ ........ .......x   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ....x...   ........ ........ xx..x... ........ 
+                 : ........ ........ .......x ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Cannot cancel aura (31), Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
+Effects          :
+#1 (id=835673)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : $@spelldesc337483
+Tooltip          : Increases the damage done by your next Chi Explosion by $s1%.
+
+Chi Explosion is triggered whenever you use Spinning Crane Kick.
+
+Name             : Mighty Pour (id=337994) [Spell Family (53)] 
+School           : Physical
+Spell Type       : None
+Duration         : 7 seconds
+Triggered by     : Mighty Pour (337290)
+Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ xx...... ........ 
+                 : ........ ........ .......x ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
+Effects          :
+#1 (id=836306)   : Apply Aura (6) | Modify Armor% (101)
+                   Base Value: 15 | Scaled Value: 15 | Misc Value: 1 | Target: Self (1)
+Description      : $@spelldesc337290
+Tooltip          : Armor increased by $w1%.
+
 Name             : Charred Passions (id=338138) [Spell Family (53), Passive] 
 School           : Physical
 Spell Type       : None
@@ -10697,6 +10818,48 @@ Effects          :
 #1 (id=836561)   : Apply Aura (6) | Proc Trigger Spell (42): Flaming Kicks
                    Base Value: 15 | Scaled Value: 15 | Trigger Spell: 338140 | Target: Self (1)
 Description      : Your Breath of Fire ignites your right leg in flame for $338140d, causing your Blackout Kick and Spinning Crane Kick to deal $338140m1% additional damage as Fire damage and refresh the duration of your Breath of Fire on the target.
+
+Name             : Flaming Kicks (id=338140) [Spell Family (53)] 
+School           : Physical
+Spell Type       : None
+Duration         : 8 seconds
+Triggered by     : Charred Passions (338138)
+Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ xx...... ........ 
+                 : ........ ........ .......x ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
+Effects          :
+#1 (id=836563)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 30 | Scaled Value: 30 | Target: Self (1)
+#2 (id=836564)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 30 | Scaled Value: 30 | Target: Self (1)
+Description      : $@spelldesc338138
+Tooltip          : Your Blackout Kick and Spinning Crane Kick deal $w1% increased damage as Fire damage, and their damage refreshes the duration of Breath of Fire on the target.
+
+Name             : Invoker's Delight (id=338321) [Spell Family (53)] 
+School           : Nature
+Spell Type       : None
+Duration         : 15 seconds
+Triggered by     : Invoker's Delight (337298)
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ xx...... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Disable player procs (112), Disable target procs (113)
+Effects          :
+#1 (id=836835)   : Apply Aura (6) | Modify All Haste% (193)
+                   Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : $@spelldesc337298
+Tooltip          : Haste increased by $w1%.
 
 Name             : Reverse Harm (id=342928) [Spell Family (53), Passive, Hidden] 
 Class            : Monk

@@ -8304,6 +8304,24 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
 Tooltip          : Attack speed increased by $s1%.
 
+Name             : Darkest Hour (id=331492) [Spell Family (107), Hidden] 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Triggered by     : Darkest Hour (337539)
+Attributes       : .......x x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ .x...... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ....x... ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Hidden (7), Tick on application (169)
+Effects          :
+#1 (id=825746)   : Apply Aura (6) | Periodic Trigger Spell (23): Unknown(0) every 0.5 seconds
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+
 Name             : Fel Devastation (id=333105) 
 Class            : Demon Hunter
 School           : Fire
@@ -8663,6 +8681,25 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Trigger Spell: 337549 | Target: Self (1)
 Description      : Chaos Strike has a chance to unleash your inner demon, causing it to crash into your target and deal $337550s1 Chaos damage to all nearby enemies.
 
+Name             : Inner Demons (id=337549) [Spell Family (107)] 
+School           : Physical
+Spell Type       : None
+Duration         : 1.25 seconds
+Triggered by     : Inner Demons (337548)
+Attributes       : ........ ........ ........ .......x   ........ ........ ........ ....x... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : .......x ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ..x..... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Cannot cancel aura (31)
+Effects          :
+#1 (id=835637)   : Unknown(179)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 21316 | Radius: 10 yards | Target: Unknown(48)
+Description      : $@spelldesc337548
+
 Name             : Chaos Theory (id=337551) [Spell Family (107), Passive] 
 School           : Physical
 Spell Type       : None
@@ -8750,6 +8787,27 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.33345 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 2 | Target: Enemy (6)
 Description      : Throw a demonic glaive at the target, dealing $s1 Physical damage. The glaive can ricochet to $?$s320386[${$x1-1} additional enemies][an additional enemy] within 10 yards. 
 
+Name             : Fel Bombardment (id=337849) [Spell Family (107)] 
+School           : Physical
+Spell Type       : None
+Range            : 100 yards
+Duration         : Aura (infinite)
+Stacks           : 5 maximum
+Proc Chance      : 101%
+Triggered by     : Fel Bombardment (337775)
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x...x. 
+                 : ........ ........ ........ ........   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ....x... ........ ........ 
+                 : ........ ........ ........ ........   
+Effects          :
+#1 (id=836076)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
+Tooltip          : Throw Glaive damage increased by $w1% and an additional glaive is thrown at a nearby enemy.
+
 Name             : Fel Defender (id=338671) [Spell Family (107), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
@@ -8828,6 +8886,25 @@ Effects          :
 #1 (id=837658)   : Apply Aura (6) | Trigger Spell with Value (231)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Trigger Spell: 338804 | Target: Self (1)
 Description      : Your movement speed is increased by |cFFFFFFFF$s1%|r after casting $?c1[Fel Rush][Infernal Strike].
+
+Name             : Felfire Haste (id=338804) [Spell Family (107)] 
+School           : Magic
+Spell Type       : None
+Range            : 50000 yards
+Duration         : 8 seconds
+Triggered by     : Felfire Haste (338799)
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+Effects          :
+#1 (id=837665)   : Apply Aura (6) | Increase Speed% (31)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+Tooltip          : Movement speed increased by $w1%.
 
 Name             : Ravenous Consumption (id=338835) [Spell Family (107), Passive, Hidden] 
 School           : Physical
@@ -8908,6 +8985,31 @@ Effects          :
 #1 (id=838242)   : Apply Aura (6) | Trigger Spell with Value (231)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Trigger Spell: 339153 | Target: Self (1)
 Description      : Demon's Bite increases the damage of other abilities by |cFFFFFFFF$s1%|r.
+
+Name             : Demon's Touch (id=339153) [Spell Family (107)] 
+School           : Magic
+Spell Type       : None
+Range            : 50000 yards
+Duration         : 10 seconds
+Stacks           : 1 initial, 1 maximum
+Proc Chance      : 101%
+Proc Flags       : ....x... x...x... x....... ........ 
+                 : Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
+Triggered by     : Demon's Touch (339151)
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+Effects          :
+#1 (id=838244)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Metamorphosis (162264), Chaos Nova (179057), Throw Glaive (185123), Blade Dance (188499), Metamorphosis (191427), Fel Rush (192611), Eye Beam (198013), Eye Beam (198030), Chaos Strike (199547), Blade Dance (199552), Blade Dance (200685), Annihilation (201428), Sigil of Silence (202137), Sigil of Chains (202138), Sigil of Misery (202140), Throw Glaive (204157), Sigil of Flame (204513), Sigil of Flame (204596), Sigil of Chains (207665), Sigil of Silence (207682), Sigil of Misery (207684), Death Sweep (210152), Death Sweep (210153), Death Sweep (210155), Fel Devastation (212105), Felblade (213243), Chaos Strike (222031), Annihilation (227518), Felblade (232893), Immolation Aura (258920), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258925), Fel Barrage (258926), Elysian Decree (306830), Elysian Decree (327839), Fel Devastation (333110), Throw Glaive (337819)
+                   Family Flags: 5, 6, 8, 10, 11, 13, 14, 15, 17, 18, 24, 25, 29, 30, 35, 37, 38, 47, 49, 50, 55, 61, 66, 67, 127
+Tooltip          : Increases damage of abilities other than Demon's Bite by $w1%.
 
 Name             : Dancing with Fate (id=339228) [Spell Family (107), Passive, Hidden] 
 School           : Physical
@@ -9015,6 +9117,29 @@ Effects          :
 #1 (id=838693)   : Apply Aura (6) | Proc Trigger Spell (42): Soul Furnace
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Trigger Spell: 339424 | Target: Self (1)
 Description      : Every $339424u Soul Fragments you consume increases the damage of your next Soul Cleave  by |cFFFFFFFF$s1%|r.
+
+Name             : Soul Furnace (id=339424) [Spell Family (107)] 
+School           : Physical
+Spell Type       : None
+Range            : 50000 yards
+Duration         : 30 seconds
+Stacks           : 10 maximum
+Proc Chance      : 100%
+Proc Flags       : ....x... ........ ........ ........ 
+                 : Yellow Melee
+Triggered by     : Soul Furnace (339423)
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ....x... ........ ........ 
+                 : ........ ........ ........ ........   
+Effects          :
+#1 (id=838694)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+Tooltip          : $?$w1=10[The damage of your next Soul Cleave is increased by $339423s1 %.][$w1 Soul Fragments consumed. At $u, the damage of your next Soul Cleave is increased by $339423s1.]
 
 Name             : Demon Muzzle (id=339587) [Spell Family (107), Passive, Hidden] 
 School           : Physical

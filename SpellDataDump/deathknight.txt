@@ -7532,6 +7532,23 @@ Description      : Summon a Val'kyr into the area to attack the target for $s2 s
 
 The Val'kyr gains $211947s1% increased damage for every $s5 Runic Power you spend.
 
+Name             : Koltira's Newfound Will (id=208783) [Spell Family (15)] 
+School           : Physical
+Spell Type       : None
+Triggered by     : Koltira's Newfound Will (208782), Koltira's Favor (334583)
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+Effects          :
+#1 (id=308993)   : Energize Power (30)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: rune | Target: Self (1)
+Description      : $@spelldesc208782
+
 Name             : Heartbreaker (id=210738) 
 Class            : Death Knight
 School           : Shadow
@@ -13773,6 +13790,23 @@ Effects          :
                    Family Flags: 49
 Description      : Obliterate deals $s2% increased damage and has a $h% chance to refund $334584m1 $Lrune:runes;.
 
+Name             : Koltira's Favor (id=334584) [Spell Family (15)] 
+School           : Physical
+Spell Type       : None
+Triggered by     : Koltira's Favor (334583)
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+Effects          :
+#1 (id=830599)   : Energize Power (30)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: rune | Target: Self (1)
+Description      : $@spelldesc334583
+
 Name             : Biting Cold (id=334678) [Spell Family (15), Passive] 
 School           : Physical
 Spell Type       : None
@@ -14336,6 +14370,27 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Trigger Spell: 338501 | Target: Self (1)
 Description      : Frost Strike increases your strength by |cFFFFFFFF${$s1}.1%|r for 6 seconds, stacks up to $338501u times.
 
+Name             : Unleashed Frenzy (id=338501) [Spell Family (15)] 
+School           : Frost
+Spell Type       : None
+Duration         : 6 seconds
+Stacks           : 5 maximum
+Proc Chance      : 101%
+Triggered by     : Unleashed Frenzy (338492)
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+Effects          :
+#1 (id=837178)   : Apply Aura (6) | Modify Attribute% (80)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : $@spelldesc338492
+Tooltip          : Strength increased by $w1%.
+
 Name             : Debilitating Malady (id=338516) [Spell Family (15), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
@@ -14356,6 +14411,30 @@ Effects          :
 #1 (id=837208)   : Apply Aura (6) | Trigger Spell with Value (231)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Trigger Spell: 338523 | Target: Self (1)
 Description      : Blood Boil increases the damage enemies take from your Blood Plague by |cFFFFFFFF${$s1}.1%|r for $338523d, stacks up to $338523u times.
+
+Name             : Debilitating Malady (id=338523) [Spell Family (15)] 
+School           : Physical
+Spell Type       : None
+Range            : 100 yards
+Duration         : 6 seconds
+Stacks           : 3 maximum
+Proc Chance      : 101%
+Triggered by     : Debilitating Malady (338516)
+Attributes       : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   .......x ........ ........ ..x...x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ....x... ........ ........ 
+                 : ........ ........ ........ ........   
+Effects          :
+#1 (id=837216)   : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Affected Spells: Blood Plague (55078)
+                   Family Flags: 57
+Description      : $@spelldesc338516
+Tooltip          : Damage taken from Blood Plague increased by $w1%.
 
 Name             : Convocation of the Dead (id=338553) [Spell Family (15), Passive, Hidden] 
 School           : Physical
@@ -14419,6 +14498,30 @@ Effects          :
 #1 (id=837399)   : Apply Aura (6) | Trigger Spell with Value (231)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Trigger Spell: 338629 | Target: Self (1)
 Description      : Swarming Mist's damage and dodge chance is increased by |cFFFFFFFF${$s1}.1%|r  for the first $338629d. 
+
+Name             : Impenetrable Gloom (id=338629) [Spell Family (15), Hidden] 
+School           : Physical
+Spell Type       : None
+Duration         : 4 seconds
+Triggered by     : Impenetrable Gloom (338628)
+Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Hidden (7)
+Effects          :
+#1 (id=837400)   : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 1060 (Label) | Target: Self (1)
+                   Affected Spells (Label): Swarming Mist (311648)
+#2 (id=837401)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value 2: 1061 (Label) | Target: Self (1)
+                   Affected Spells (Label): Swarming Mist (311730)
+Description      : $@spelldesc338628
+Tooltip          : Swarming Mist dodge chance and damage is increased by $w1%.
 
 Name             : Brutal Grasp (id=338651) [Spell Family (15), Passive, Hidden] 
 School           : Physical
