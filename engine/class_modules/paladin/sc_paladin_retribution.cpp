@@ -106,6 +106,17 @@ struct execution_sentence_t : public holy_power_consumer_t
       td( s -> target ) -> debuff.execution_sentence -> trigger();
     }
   }
+
+  double bonus_ta( const action_state_t* s ) const override
+  {
+    double ta = holy_power_consumer_t::bonus_ta( s );
+
+    double accumulated = td( s -> target ) -> debuff.execution_sentence -> get_accumulated_damage();
+
+    ta += accumulated * data().effectN( 2 ).percent();
+
+    return ta;
+  }
 };
 
 // Blade of Justice =========================================================
@@ -275,6 +286,45 @@ struct templars_verdict_t : public holy_power_consumer_t
   }
 };
 
+// Final Reckoning
+
+struct reckoning_t : public paladin_spell_t
+{
+  reckoning_t( paladin_t* p ) : paladin_spell_t( "reckoning", p, p -> spells.reckoning ) {}
+
+  void impact( action_state_t* s ) override
+  {
+    paladin_spell_t::impact( s );
+
+    if ( result_is_hit( s -> result ) )
+    {
+      td( s -> target ) -> debuff.reckoning -> trigger();
+    }
+  }
+};
+
+struct final_reckoning_t : public paladin_spell_t
+{
+  final_reckoning_t( paladin_t* p, const std::string& options_str) :
+    paladin_spell_t( "final_reckoning", p, p -> talents.final_reckoning )
+  {
+    parse_options( options_str );
+
+    if ( ! ( p -> talents.final_reckoning -> ok() ) )
+      background = true;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    paladin_spell_t::impact( s );
+
+    if ( result_is_hit( s -> result ) )
+    {
+      td( s -> target ) -> debuff.final_reckoning -> trigger();
+    }
+  }
+};
+
 // Judgment - Retribution =================================================================
 
 struct judgment_ret_t : public judgment_t
@@ -393,52 +443,6 @@ struct wake_of_ashes_t : public paladin_spell_t
   }
 };
 
-struct inquisition_t : public holy_power_consumer_t
-{
-  inquisition_t( paladin_t* p, const std::string& options_str ) :
-    holy_power_consumer_t( "inquisition", p, p -> talents.inquisition )
-  {
-    parse_options( options_str );
-    if ( ! ( p -> talents.inquisition -> ok() ) )
-      background = true;
-    // spelldata doesn't have this
-    hasted_gcd = true;
-    harmful = false;
-
-  }
-
-  double cost() const override
-  {
-    double max_cost = base_costs[ RESOURCE_HOLY_POWER ] + secondary_costs[ RESOURCE_HOLY_POWER ];
-
-    if ( p() -> buffs.fires_of_justice -> check() )
-    {
-      // FoJ essentially reduces the max cost by 1.
-      max_cost += p() -> buffs.fires_of_justice -> data().effectN( 1 ).base_value();
-    }
-
-    // Return the available holy power of the player, if it's between 1 and 3 (minus 1 with FoJ up)
-    return clamp<double>( p() -> resources.current[ RESOURCE_HOLY_POWER ], base_costs[ RESOURCE_HOLY_POWER ], max_cost );
-  }
-
-  void execute() override
-  {
-    // Fires of Justice reduces the cost by 1 but maintains the overall duration
-    // This needs to be computed before FoJ is consumed in holy_power_consumer_t::execute();
-    double hp_spent = cost();
-
-    if ( p() -> buffs.fires_of_justice -> up() )
-    {
-      // Re-add the fires of justice cost reduction
-      hp_spent += -1.0 * p() -> buffs.fires_of_justice -> data().effectN( 1 ).base_value();
-    }
-
-    holy_power_consumer_t::execute();
-
-    p() -> buffs.inquisition -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, hp_spent * p() -> talents.inquisition -> duration() );
-  }
-};
-
 struct hammer_of_wrath_t : public paladin_melee_attack_t
 {
   hammer_of_wrath_t( paladin_t* p, const std::string& options_str ) :
@@ -483,6 +487,11 @@ void paladin_t::create_ret_actions()
     active.zeal = new zeal_t( this );
   }
 
+  if ( talents.final_reckoning )
+  {
+    active.reckoning = new reckoning_t( this );
+  }
+
   active.shield_of_vengeance_damage = new shield_of_vengeance_proc_t( this );
 }
 
@@ -493,11 +502,11 @@ action_t* paladin_t::create_action_retribution( util::string_view name, const st
   if ( name == "divine_storm"              ) return new divine_storm_t             ( this, options_str );
   if ( name == "execution_sentence"        ) return new execution_sentence_t       ( this, options_str );
   if ( name == "hammer_of_wrath"           ) return new hammer_of_wrath_t          ( this, options_str );
-  if ( name == "inquisition"               ) return new inquisition_t              ( this, options_str );
   if ( name == "templars_verdict"          ) return new templars_verdict_t         ( this, options_str );
   if ( name == "wake_of_ashes"             ) return new wake_of_ashes_t            ( this, options_str );
   if ( name == "justicars_vengeance"       ) return new justicars_vengeance_t      ( this, options_str );
   if ( name == "shield_of_vengeance"       ) return new shield_of_vengeance_t      ( this, options_str );
+  if ( name == "final_reckoning"           ) return new final_reckoning_t          ( this, options_str );
 
   if ( specialization() == PALADIN_RETRIBUTION )
   {
@@ -514,8 +523,6 @@ void paladin_t::create_buffs_retribution()
   buffs.crusade = new buffs::crusade_buff_t( this );
   buffs.fires_of_justice = make_buff( this, "fires_of_justice", talents.fires_of_justice -> effectN( 1 ).trigger() )
                          -> set_chance( talents.fires_of_justice -> ok() ? talents.fires_of_justice -> proc_chance() : 0 );
-  buffs.inquisition = make_buff( this, "inquisition", talents.inquisition )
-                    -> add_invalidate( CACHE_HASTE );
   buffs.righteous_verdict = make_buff( this, "righteous_verdict", find_spell( 267611 ) );
 
   buffs.shield_of_vengeance = new buffs::shield_of_vengeance_buff_t( this );
@@ -563,7 +570,7 @@ void paladin_t::init_spells_retribution()
 
   talents.ret_sanctified_wrath = find_spell( 317866 );
   talents.crusade              = find_talent_spell( "Crusade" );
-  talents.inquisition          = find_talent_spell( "Inquisition" );
+  talents.final_reckoning      = find_talent_spell( "Final Reckoning" );
 
   // Spec passives and useful spells
   spec.retribution_paladin = find_specialization_spell( "Retribution Paladin" );
@@ -580,7 +587,7 @@ void paladin_t::init_spells_retribution()
   passives.boundless_conviction = find_spell( 115675 );
 
   spells.lights_decree = find_spell( 286231 );
-  spells.execution_sentence_debuff = talents.execution_sentence -> effectN( 2 ).trigger();
+  spells.reckoning = find_spell( 343724 );
   spells.sanctified_wrath_damage = find_spell( 326731 );
 
   // Azerite traits

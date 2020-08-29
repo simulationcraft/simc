@@ -47,6 +47,7 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r ) :
   cooldowns.shield_of_the_righteous = get_cooldown( "shield_of_the_righteous" );
 
   cooldowns.blade_of_justice        = get_cooldown( "blade_of_justice" );
+  cooldowns.final_reckoning         = get_cooldown( "final_reckoning" );
 
   beacon_target = nullptr;
   resource_regeneration = regen_type::DYNAMIC;
@@ -523,7 +524,7 @@ struct melee_t : public paladin_melee_attack_t
     base_execute_time     = p -> main_hand_weapon.swing_time;
     weapon_multiplier     = 1.0;
 
-    affected_by.avenging_wrath = affected_by.inquisition = affected_by.crusade = true;
+    affected_by.avenging_wrath = affected_by.crusade = true;
   }
 
   timespan_t execute_time() const override
@@ -1001,9 +1002,10 @@ paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) :
   actor_target_data_t( target, paladin )
 {
   debuff.blessed_hammer = make_buff( *this, "blessed_hammer", paladin -> find_spell( 204301 ) );
-  debuff.execution_sentence = make_buff( *this, "execution_sentence", paladin -> spells.execution_sentence_debuff );
+  debuff.execution_sentence = make_buff<buffs::execution_sentence_debuff_t>( this );
   debuff.judgment = make_buff( *this, "judgment", paladin -> spells.judgment_debuff );
   debuff.judgment_of_light = make_buff( *this, "judgment_of_light", paladin -> find_spell( 196941 ) );
+  debuff.final_reckoning = make_buff( *this, "final_reckoning", paladin -> talents.final_reckoning );
 }
 
 // paladin_t::create_actions ================================================
@@ -1284,6 +1286,32 @@ void paladin_t::init_scaling()
   }
 
   scaling -> disable( STAT_AGILITY );
+}
+
+// paladin_t::init_assessors ================================================
+
+void paladin_t::init_assessors()
+{
+  player_t::init_assessors();
+
+  if ( talents.execution_sentence -> ok() )
+  {
+    auto assessor_fn = [ this ] ( result_amount_type /* rt */, action_state_t* s )
+    {
+      auto td = this -> get_target_data( s -> target );
+
+      if ( td -> debuff.execution_sentence -> check() )
+      {
+        td -> debuff.execution_sentence -> accumulate_damage( s );
+      }
+
+      return assessor::CONTINUE;
+    };
+
+    assessor_out_damage.add( assessor::TARGET_DAMAGE - 1, assessor_fn );
+    for ( auto pet : pet_list )
+      pet -> assessor_out_damage.add( assessor::TARGET_DAMAGE - 1, assessor_fn );
+  }
 }
 
 // paladin_t::init_buffs ====================================================
@@ -1661,9 +1689,6 @@ double paladin_t::composite_melee_haste() const
   if ( buffs.crusade -> up() )
     h /= 1.0 + buffs.crusade -> get_haste_bonus();
 
-  if ( buffs.inquisition -> up() )
-    h /= 1.0 + talents.inquisition -> effectN( 3 ).percent();
-
   if ( buffs.holy_avenger -> up() )
     h /= 1.0 + talents.holy_avenger -> effectN( 1 ).percent();
 
@@ -1688,9 +1713,6 @@ double paladin_t::composite_spell_haste() const
 
   if ( buffs.crusade -> up() )
     h /= 1.0 + buffs.crusade -> get_haste_bonus();
-
-  if ( buffs.inquisition -> up() )
-    h /= 1.0 + talents.inquisition -> effectN( 3 ).percent();
 
   if ( buffs.holy_avenger -> up() )
     h /= 1.0 + talents.holy_avenger -> effectN( 1 ).percent();

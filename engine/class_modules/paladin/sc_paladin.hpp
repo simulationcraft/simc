@@ -14,6 +14,7 @@ namespace buffs {
                   struct ardent_defender_buff_t;
                   struct forbearance_t;
                   struct shield_of_vengeance_buff_t;
+                  struct execution_sentence_debuff_t;
                 }
 const int MAX_START_OF_COMBAT_HOLY_POWER = 1;
 // ==========================================================================
@@ -28,10 +29,12 @@ struct paladin_td_t : public actor_target_data_t
 
   struct buffs_t
   {
-    buff_t* execution_sentence;
+    buffs::execution_sentence_debuff_t* execution_sentence;
     buff_t* judgment;
     buff_t* judgment_of_light;
     buff_t* blessed_hammer;
+    buff_t* final_reckoning;
+    buff_t* reckoning;
   } debuff;
 
   paladin_td_t( player_t* target, paladin_t* paladin );
@@ -123,6 +126,7 @@ public:
     action_t* judgment_of_light;
     action_t* shield_of_vengeance_damage;
     action_t* zeal;
+    action_t* reckoning;
 
     action_t* inner_light_damage;
     action_t* lights_decree;
@@ -170,7 +174,6 @@ public:
     buffs::shield_of_vengeance_buff_t* shield_of_vengeance;
     buff_t* blade_of_wrath;
     buff_t* fires_of_justice;
-    buff_t* inquisition;
     buff_t* righteous_verdict;
     buff_t* zeal;
 
@@ -224,6 +227,7 @@ public:
     cooldown_t* shield_of_the_righteous; // Judgment
 
     cooldown_t* blade_of_justice;
+    cooldown_t* final_reckoning;
   } cooldowns;
 
   // Passives
@@ -251,12 +255,14 @@ public:
 
   // Procs and RNG
   real_ppm_t* art_of_war_rppm;
+  real_ppm_t* final_reckoning_rppm;
 
   struct procs_t
   {
     proc_t* art_of_war;
     proc_t* divine_purpose;
     proc_t* fires_of_justice;
+    proc_t* final_reckoning;
     proc_t* grand_crusader;
     proc_t* prot_lucid_dreams;
   } procs;
@@ -271,7 +277,7 @@ public:
 
     const spell_data_t* sotr_buff;
 
-    const spell_data_t* execution_sentence_debuff;
+    const spell_data_t* reckoning;
     const spell_data_t* lights_decree;
     const spell_data_t* sanctified_wrath_damage;
   } spells;
@@ -355,7 +361,7 @@ public:
     // T50
     const spell_data_t* ret_sanctified_wrath;
     const spell_data_t* crusade;
-    const spell_data_t* inquisition;
+    const spell_data_t* final_reckoning;
   } talents;
 
   struct azerite_t
@@ -401,6 +407,7 @@ public:
 
   paladin_t( sim_t* sim, util::string_view name, race_e r = RACE_TAUREN );
 
+  virtual void      init_assessors() override;
   virtual void      init_base_stats() override;
   virtual void      init_gains() override;
   virtual void      init_procs() override;
@@ -561,6 +568,38 @@ namespace buffs {
     double haste_bonus;
   };
 
+  struct execution_sentence_debuff_t : public buff_t
+  {
+
+    execution_sentence_debuff_t( paladin_td_t* td ) :
+      buff_t( *td, "execution_sentence", debug_cast<paladin_t*>( td -> source ) -> talents.execution_sentence ),
+      accumulated_damage( 0.0 ) {}
+
+    void reset() override
+    {
+      buff_t::reset();
+      accumulated_damage = 0.0;
+    }
+
+    void accumulate_damage( const action_state_t* s )
+    {
+      sim -> print_debug(
+        "{}'s {} accumulates {} additional damage: {} -> {}",
+        player -> name(), name(), s -> result_total,
+        accumulated_damage, accumulated_damage + s -> result_total );
+
+      accumulated_damage += s -> result_total;
+    }
+
+    double get_accumulated_damage() const
+    {
+      return accumulated_damage;
+    }
+
+  private:
+    double accumulated_damage;
+  };
+
   struct forbearance_t : public buff_t
   {
     paladin_t* paladin;
@@ -599,7 +638,7 @@ public:
   struct affected_by_t
   {
     bool avenging_wrath, avenging_wrath_autocrit, judgment; // Shared
-    bool crusade, divine_purpose, execution_sentence, hand_of_light, inquisition; // Ret
+    bool crusade, divine_purpose, hand_of_light, final_reckoning, reckoning; // Ret
   } affected_by;
 
   // haste scaling bools
@@ -627,8 +666,8 @@ public:
       // Temporary damage modifiers
       this -> affected_by.crusade = this -> data().affected_by( p -> talents.crusade -> effectN( 1 ) );
       this -> affected_by.divine_purpose = this -> data().affected_by( p -> spells.divine_purpose_buff -> effectN( 2 ) );
-      this -> affected_by.execution_sentence = this -> data().affected_by( p -> spells.execution_sentence_debuff -> effectN( 1 ) );
-      this -> affected_by.inquisition = this -> data().affected_by( p -> talents.inquisition -> effectN( 1 ) );
+      this -> affected_by.reckoning = this -> data().affected_by( p -> spells.reckoning -> effectN( 1 ) );
+      this -> affected_by.final_reckoning = this -> data().affected_by( p -> talents.final_reckoning -> effectN( 3 ) );
       this -> affected_by.judgment = this -> data().affected_by( p -> spells.judgment_debuff -> effectN( 1 ) );
     }
 
@@ -731,11 +770,36 @@ public:
       p() -> cooldowns.judgment_of_light_icd -> start();
     }
 
-    if ( ab::result_is_hit( s -> result ) && affected_by.judgment )
+
+    if ( ab::result_is_hit( s -> result ) )
     {
-      paladin_td_t* td = this -> td( s -> target );
-      if ( td -> debuff.judgment -> up() )
-        td -> debuff.judgment -> expire();
+      if ( affected_by.judgment )
+      {
+        paladin_td_t* td = this -> td( s -> target );
+        if ( td -> debuff.judgment -> up() )
+          td -> debuff.judgment -> expire();
+      }
+
+      if ( affected_by.reckoning )
+      {
+        paladin_td_t* td = this -> td( s -> target );
+        if ( td -> debuff.reckoning -> up() )
+          td -> debuff.reckoning -> expire();
+      }
+
+      if ( ab::harmful )
+      {
+        if ( p() -> talents.final_reckoning -> ok() && p() -> cooldowns.final_reckoning -> up() )
+        {
+          if ( p() -> final_reckoning_rppm -> trigger() )
+          {
+            p() -> procs.final_reckoning -> occur();
+
+            p() -> active.reckoning -> set_target( s -> target );
+            p() -> active.reckoning -> schedule_execute();
+          }
+        }
+      }
     }
   }
 
@@ -760,11 +824,6 @@ public:
       if ( affected_by.divine_purpose && p() -> buffs.divine_purpose -> up() )
       {
         am *= 1.0 + p() -> spells.divine_purpose_buff -> effectN( 2 ).percent();
-      }
-
-      if ( affected_by.inquisition && p() -> buffs.inquisition -> up() )
-      {
-        am *= 1.0 + p() -> talents.inquisition -> effectN( 1 ).percent();
       }
     }
 
@@ -805,9 +864,14 @@ public:
       ctm *= 1.0 + p() -> spells.judgment_debuff -> effectN( 1 ).percent();
     }
 
-    if ( affected_by.execution_sentence && td -> debuff.execution_sentence -> up() )
+    if ( affected_by.reckoning && td -> debuff.reckoning -> up() )
     {
-      ctm *= 1.0 + p() -> spells.execution_sentence_debuff -> effectN( 1 ).percent();
+      ctm *= 1.0 + p() -> spells.reckoning -> effectN( 2 ).percent();
+    }
+
+    if ( affected_by.final_reckoning && td -> debuff.final_reckoning -> up() )
+    {
+      ctm *= 1.0 + p() -> talents.final_reckoning -> effectN( 3 ).percent();
     }
 
     return ctm;
