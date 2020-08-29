@@ -4195,6 +4195,16 @@ struct blackout_kick_t : public monk_melee_attack_t
     return am;
   }
 
+  double bonus_da( const action_state_t* s ) const override
+  {
+    double b = base_t::bonus_da( s );
+
+    if ( p()->azerite.elusive_footwork.ok() )
+      b += p()->azerite.elusive_footwork.value( 3 );
+
+    return b;
+  }
+
   void consume_resource() override
   {
     monk_melee_attack_t::consume_resource();
@@ -4219,6 +4229,22 @@ struct blackout_kick_t : public monk_melee_attack_t
 
     switch ( p()->specialization() )
     {
+      case MONK_BREWMASTER:
+      {
+        if ( p()->mastery.elusive_brawler )
+          p()->buff.elusive_brawler->trigger();
+
+        if ( p()->azerite.elusive_footwork.ok() && s->result == RESULT_CRIT )
+          p()->buff.elusive_brawler->trigger(
+              as<int>( p()->azerite.elusive_footwork.spell_ref().effectN( 2 ).base_value() ) );
+
+        if ( p()->azerite.staggering_strikes.ok() )
+        {
+          auto amount_cleared = p()->partial_clear_stagger_amount( p()->azerite.staggering_strikes.value() );
+          p()->sample_datas.staggering_strikes_cleared->add( amount_cleared );
+        }
+        break;
+      }
       case MONK_MISTWEAVER:
       {
         if ( rng().roll( p()->spec.teachings_of_the_monastery->effectN( 1 ).percent() ) )
