@@ -4234,6 +4234,9 @@ struct blackout_kick_t : public monk_melee_attack_t
         if ( p()->mastery.elusive_brawler )
           p()->buff.elusive_brawler->trigger();
 
+        if ( p()->talent.blackout_combo->ok() )
+          p()->buff.blackout_combo->trigger();
+
         if ( p()->azerite.staggering_strikes.ok() )
         {
           auto amount_cleared = p()->partial_clear_stagger_amount( p()->azerite.staggering_strikes.value() );
