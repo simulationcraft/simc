@@ -5983,6 +5983,9 @@ struct purifying_brew_t : public monk_spell_t
     harmful     = false;
     trigger_gcd = timespan_t::zero();
 
+    if ( p.talent.light_brewing->ok() )
+      cooldown->duration *= 1 + p.talent.light_brewing->effectN( 2 ).percent(); // -20
+
     if ( p.talent.special_delivery->ok() )
       delivery = new special_delivery_t( p );
   }
@@ -6922,6 +6925,10 @@ struct celestial_brew_t : public monk_absorb_t
   {
     parse_options( options_str );
     harmful = may_crit = false;
+
+    if ( p.talent.light_brewing->ok() )
+      cooldown->duration *= 1 + p.talent.light_brewing->effectN( 2 ).percent();  // -20
+
 
     if ( p.talent.special_delivery->ok() )
       delivery = new special_delivery_t( p );
