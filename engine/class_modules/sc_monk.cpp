@@ -786,6 +786,7 @@ public:
   {
     int initial_chi;
     double memory_of_lucid_dreams_proc_chance = 0.15;
+    double expel_harm_effectiveness;
   } user_options;
 
   // Blizzard rounds it's stagger damage; anything higher than half a percent beyond
@@ -860,6 +861,7 @@ public:
       regen_caches[ CACHE_ATTACK_HASTE ] = true;
     }
     user_options.initial_chi = 0;
+    user_options.expel_harm_effectiveness = 1.0;
   }
 
   // Default consumables
@@ -6606,16 +6608,20 @@ struct expel_harm_t : public monk_heal_t
 
     result *= p()->spec.expel_harm->effectN( 2 ).percent();
 
-    if ( p()->buff.gift_of_the_ox->up() && p()->spec.expel_harm_2_brm )
-    {
-      result *= p()->passives.gift_of_the_ox_heal->effectN( 1 ).ap_coeff();
-      result *= p()->buff.gift_of_the_ox->stack();
-    }
+    // Defaults to 1 but if someone wants to adjust the amount of damage
+    result *= p()->user_options.expel_harm_effectiveness;
 
     if ( p()->azerite.conflict_and_strife.is_major() && p()->specialization() == MONK_WINDWALKER )
       result *= 1 + p()->spec.reverse_harm->effectN( 1 ).percent();
 
-    dmg->base_dd_min  = result;
+    if ( p()->buff.gift_of_the_ox->up() && p()->spec.expel_harm_2_brm )
+    {
+      double goto_heal = p()->passives.gift_of_the_ox_heal->effectN( 1 ).ap_coeff();
+      goto_heal *= p()->buff.gift_of_the_ox->stack();
+      result += goto_heal;
+    }
+
+    dmg->base_dd_min = result;
     dmg->base_dd_max = result;
     dmg->execute();
 
@@ -8989,6 +8995,7 @@ void monk_t::create_options()
   add_option( opt_int( "initial_chi", user_options.initial_chi ) );
   add_option(
       opt_float( "memory_of_lucid_dreams_proc_chance", user_options.memory_of_lucid_dreams_proc_chance, 0.0, 1.0 ) );
+  add_option( opt_float( "expel_harm_effectiveness", user_options.expel_harm_effectiveness, 0.0, 1.0 ) );
 }
 
 // monk_t::copy_from =========================================================
