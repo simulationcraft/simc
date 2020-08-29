@@ -219,6 +219,7 @@ public:
     buff_t* elusive_brawler;
     buff_t* fortifying_brew;
     buff_t* gift_of_the_ox;
+    buff_t* purified_chi;
     buff_t* shuffle;
     buff_t* spitfire;
     buff_t* zen_meditation;
@@ -5697,11 +5698,40 @@ struct breath_of_fire_t : public monk_spell_t
 };
 
 // ==========================================================================
+// Special Delivery
+// ==========================================================================
+
+struct special_delivery_t : public monk_spell_t
+{
+  special_delivery_t( monk_t& p ) : monk_spell_t( "special_delivery", &p, p.passives.special_delivery )
+  {
+    may_block = may_dodge = may_parry = true;
+    background                        = true;
+    trigger_gcd                       = timespan_t::zero();
+    aoe                               = -1;
+    attack_power_mod.direct           = data().effectN( 1 ).ap_coeff();
+    radius                            = data().effectN( 1 ).radius();
+  }
+
+  timespan_t travel_time() const override
+  {
+    return timespan_t::from_seconds( p()->talent.special_delivery->effectN( 1 ).base_value() );
+  }
+
+  double cost() const override
+  {
+    return 0;
+  }
+};
+
+// ==========================================================================
 // Fortifying Brew
 // ==========================================================================
 
 struct fortifying_brew_t : public monk_spell_t
 {
+  special_delivery_t* delivery;
+
   fortifying_brew_t( monk_t& p, const std::string& options_str )
     : monk_spell_t( "fortifying_brew", &p, ( p.specialization() == MONK_BREWMASTER ? p.spec.fortifying_brew_brm : p.spec.fortifying_brew_mw_ww ) )
   {
@@ -5717,6 +5747,9 @@ struct fortifying_brew_t : public monk_spell_t
     if ( p.spec.fortifying_brew_2_ww )
       cooldown->duration += 
           timespan_t::from_minutes( p.spec.fortifying_brew_2_ww->effectN( 1 ).base_value() );
+
+    if ( p.talent.special_delivery->ok() )
+      delivery = new special_delivery_t( p );
   }
 
   void execute() override
@@ -5724,6 +5757,12 @@ struct fortifying_brew_t : public monk_spell_t
     monk_spell_t::execute();
 
     p()->buff.fortifying_brew->trigger();
+
+    if ( p()->talent.special_delivery->ok() )
+    {
+      delivery->target = target;
+      delivery->execute();
+    }
   }
 };
 
@@ -5926,38 +5965,6 @@ struct stagger_self_damage_t : public residual_action::residual_periodic_action_
 };
 
 // ==========================================================================
-// Special Delivery
-// ==========================================================================
-
-struct special_delivery_t : public monk_spell_t
-{
-  special_delivery_t( monk_t& p ) : monk_spell_t( "special_delivery", &p, p.passives.special_delivery )
-  {
-    may_block = may_dodge = may_parry = true;
-    background                        = true;
-    trigger_gcd                       = timespan_t::zero();
-    aoe                               = -1;
-    attack_power_mod.direct           = data().effectN( 1 ).ap_coeff();
-    radius                            = data().effectN( 1 ).radius();
-  }
-
-  bool ready() override
-  {
-    return p()->talent.special_delivery->ok();
-  }
-
-  timespan_t travel_time() const override
-  {
-    return timespan_t::from_seconds( p()->talent.special_delivery->effectN( 1 ).base_value() );
-  }
-
-  double cost() const override
-  {
-    return 0;
-  }
-};
-
-// ==========================================================================
 // Purifying Brew
 // ==========================================================================
 
@@ -6005,6 +6012,19 @@ struct purifying_brew_t : public monk_spell_t
     if ( p()->azerite.fit_to_burst.ok() && p()->buff.heavy_stagger->check() )
     {
       p()->buff.fit_to_burst->trigger( p()->buff.fit_to_burst->max_stack() );
+    }
+
+    if ( p()->spec.celestial_brew_2 )
+    {
+      double count = 1;
+      for ( auto&& buff : { p()->buff.light_stagger, p()->buff.moderate_stagger, p()->buff.heavy_stagger } )
+      {
+        if ( buff && buff->check() )
+        {
+          p()->buff.purified_chi->trigger( count );
+        }
+        count++;
+      }
     }
 
     // Reduce stagger damage
@@ -6865,6 +6885,68 @@ struct monk_absorb_t : public monk_action_t<absorb_t>
 };
 
 // ==========================================================================
+// Celestial Brew
+// ==========================================================================
+struct special_delivery_t : public monk_spell_t
+{
+  special_delivery_t( monk_t& p ) : monk_spell_t( "special_delivery", &p, p.passives.special_delivery )
+  {
+    may_block = may_dodge = may_parry = true;
+    background                        = true;
+    trigger_gcd                       = timespan_t::zero();
+    aoe                               = -1;
+    attack_power_mod.direct           = data().effectN( 1 ).ap_coeff();
+    radius                            = data().effectN( 1 ).radius();
+  }
+
+  timespan_t travel_time() const override
+  {
+    return timespan_t::from_seconds( p()->talent.special_delivery->effectN( 1 ).base_value() );
+  }
+
+  double cost() const override
+  {
+    return 0;
+  }
+};
+
+struct celestial_brew_t : public monk_absorb_t
+{
+  special_delivery_t* delivery;
+
+  celestial_brew_t( monk_t& p, const std::string& options_str )
+    : monk_absorb_t( "celestial_brew", p, p.spec.celestial_brew )
+  {
+    parse_options( options_str );
+    harmful = may_crit = false;
+
+    if ( p.talent.special_delivery->ok() )
+      delivery = new special_delivery_t( p );
+  }
+
+  double action_multiplier() const override
+  {
+    double am = base_t::action_multiplier();
+
+    if ( p()->buff.purified_chi->up() )
+      am *= 1 + p()->buff.purified_chi->stack_value();
+
+    return am;
+  }
+
+  void execute() override
+  {
+    monk_absorb_t::execute();
+
+    if ( p()->talent.special_delivery->ok() )
+    {
+      delivery->target = target;
+      delivery->execute();
+    }
+  }
+};
+
+// ==========================================================================
 // Life Cocoon
 // ==========================================================================
 struct life_cocoon_t : public monk_absorb_t
@@ -6873,9 +6955,11 @@ struct life_cocoon_t : public monk_absorb_t
   {
     parse_options( options_str );
     harmful = may_crit     = false;
-    cooldown->duration     = data().charge_cooldown();
-    spell_power_mod.direct = 31.164;  // Hard Code 2015-Dec-29
+
+    base_dd_min = p.resources.max[ RESOURCE_HEALTH ] * p.spec.life_cocoon->effectN( 3 ).percent();
+    base_dd_max = base_dd_min;
   }
+
 
   void impact( action_state_t* s ) override
   {
@@ -7264,6 +7348,8 @@ action_t* monk_t::create_action( util::string_view name, const std::string& opti
     return new blackout_strike_t( this, options_str );
   if ( name == "breath_of_fire" )
     return new breath_of_fire_t( *this, options_str );
+  if ( name == "celestial_brew" )
+    return new celestial_brew_t( *this, options_str );
   if ( name == "expel_harm" )
     return new expel_harm_t( *this, options_str );
   if ( name == "fortifying_brew" )
@@ -8071,6 +8157,9 @@ void monk_t::create_buffs()
       make_buff( this, "shuffle", passives.shuffle )->set_refresh_behavior( buff_refresh_behavior::EXTEND );
 
   buff.gift_of_the_ox = new buffs::gift_of_the_ox_buff_t( *this, "gift_of_the_ox", find_spell( 124503 ) );
+
+  buff.purified_chi = make_buff( this, "purified_chi", find_spell( 325092 ) )
+                          ->set_default_value( find_spell( 325092 )->effectN( 1 ).percent() );
 
   buff.spitfire = make_buff( this, "spitfire", talent.spitfire->effectN( 1 ).trigger() );
 
