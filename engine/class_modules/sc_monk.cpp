@@ -10057,11 +10057,7 @@ double monk_t::stagger_pct( int target_level )
 {
   double stagger_base = stagger_base_value();
 
-  double k_value     = 0;
-  int lvl            = level();
-  double level_check = target_level - lvl;
-
-  k_value = dbc->armor_mitigation_constant( target_level );
+  double k_value = dbc->armor_mitigation_constant( target_level );
 
   double stagger = stagger_base / ( stagger_base + k_value );
   return std::min( stagger, 0.99 );
