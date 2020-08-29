@@ -219,6 +219,7 @@ public:
     buff_t* elusive_brawler;
     buff_t* fortifying_brew;
     buff_t* gift_of_the_ox;
+    buff_t* invoke_niuzao;
     buff_t* purified_chi;
     buff_t* shuffle;
     buff_t* spitfire;
@@ -3245,6 +3246,8 @@ struct niuzao_spell_t : public summon_pet_t
   {
     summon_pet_t::execute();
 
+    p()->buff.invoke_niuzao->trigger();
+
     if ( p()->legendary.invokers_delight->ok() )
       p()->buff.invokers_delight->trigger();
   }
@@ -4192,6 +4195,16 @@ struct blackout_kick_t : public monk_melee_attack_t
     return am;
   }
 
+  double bonus_da( const action_state_t* s ) const override
+  {
+    double b = base_t::bonus_da( s );
+
+    if ( p()->azerite.elusive_footwork.ok() )
+      b += p()->azerite.elusive_footwork.value( 3 );
+
+    return b;
+  }
+
   void consume_resource() override
   {
     monk_melee_attack_t::consume_resource();
@@ -4216,6 +4229,21 @@ struct blackout_kick_t : public monk_melee_attack_t
 
     switch ( p()->specialization() )
     {
+      case MONK_BREWMASTER:
+      {
+        if ( p()->mastery.elusive_brawler )
+          p()->buff.elusive_brawler->trigger();
+
+        if ( p()->talent.blackout_combo->ok() )
+          p()->buff.blackout_combo->trigger();
+
+        if ( p()->azerite.staggering_strikes.ok() )
+        {
+          auto amount_cleared = p()->partial_clear_stagger_amount( p()->azerite.staggering_strikes.value() );
+          p()->sample_datas.staggering_strikes_cleared->add( amount_cleared );
+        }
+        break;
+      }
       case MONK_MISTWEAVER:
       {
         if ( rng().roll( p()->spec.teachings_of_the_monastery->effectN( 1 ).percent() ) )
@@ -4258,6 +4286,13 @@ struct blackout_kick_t : public monk_melee_attack_t
     {
       if ( p()->specialization() == MONK_WINDWALKER && p()->spec.spinning_crane_kick_2_ww )
         p()->trigger_mark_of_the_crane( s );
+
+      if ( p()->mastery.elusive_brawler )
+      {
+        if ( p()->azerite.elusive_footwork.ok() && s->result == RESULT_CRIT )
+          p()->buff.elusive_brawler->trigger(
+              as<int>( p()->azerite.elusive_footwork.spell_ref().effectN( 2 ).base_value() ) );
+      }
 
       if ( p()->buff.teachings_of_the_monastery->up() )
       {
@@ -8167,6 +8202,9 @@ void monk_t::create_buffs()
       make_buff( this, "shuffle", passives.shuffle )->set_refresh_behavior( buff_refresh_behavior::EXTEND );
 
   buff.gift_of_the_ox = new buffs::gift_of_the_ox_buff_t( *this, "gift_of_the_ox", find_spell( 124503 ) );
+
+  buff.invoke_niuzao = make_buff( this, "invoke_niuzao", spec.invoke_niuzao )
+                           ->set_default_value( spec.invoke_niuzao->effectN( 2 ).percent() );
 
   buff.purified_chi = make_buff( this, "purified_chi", find_spell( 325092 ) )
                           ->set_default_value( find_spell( 325092 )->effectN( 1 ).percent() );
