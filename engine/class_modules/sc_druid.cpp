@@ -1866,7 +1866,14 @@ public:
 
   double mod_spell_effects_percent( const spell_data_t* s, const spelleffect_data_t* e ) { return e->percent(); }
 
-  double mod_spell_effects_percent( const conduit_data_t& c, const spelleffect_data_t* ) { return c.percent(); }
+  double mod_spell_effects_percent( const conduit_data_t& c, const spelleffect_data_t* )
+  {
+    // HOTFIX HACK to reflect server-side scripting
+    if ( c == p()->conduit.endless_thirst )
+      return c.percent() / 10.0;
+
+    return c.percent();
+  }
 
   template <typename T>
   void parse_spell_effects_mods( double& val, bool& mastery, const spell_data_t* base, size_t idx, T mod )
@@ -2018,7 +2025,7 @@ public:
     return return_value;
   }
 
-  // Syntax: parse_buff_effects[<S|C[, S|C...]>]( buff_t* buff[, unsigned ignore][, spell_data_t* spell|conduit_data_t conduit...] )
+  // Syntax: parse_buff_effects[<S|C[,...]>]( buff_t* buff[, unsigned ignore][, spell_data_t* spell|conduit_data_t conduit][,...] )
   //  buff = buff to be checked for to see if effect applies
   //  ignore = optional effect index of buff to ignore, for effects hard-coded manually elsewhere
   //  S/C = optional list of template parameter to indicate spell or conduit with redirect effects
@@ -2028,7 +2035,7 @@ public:
     using S = const spell_data_t*;
     using C = const conduit_data_t&;
 
-    parse_buff_effects<S>( p()->buff.ravenous_frenzy,
+    parse_buff_effects<C>( p()->buff.ravenous_frenzy,
                            p()->conduit.endless_thirst );
     parse_buff_effects( p()->buff.heart_of_the_wild );
     parse_buff_effects<C>( p()->buff.convoke_the_spirits,
@@ -2111,7 +2118,7 @@ public:
     return return_value;
   }
 
-  // Syntax: parse_dot_debuffs[<S|C[, S|C...]>]( func, spell_data_t* dot[, spell_data_t* spell|conduit_data_t conduit...] )
+  // Syntax: parse_dot_debuffs[<S|C[,...]>]( func, spell_data_t* dot[, spell_data_t* spell|conduit_data_t conduit][,...] )
   //  func = function returning the dot_t* of the dot
   //  dot = spell data of the dot
   //  S/C = optional list of template parameter to indicate spell or conduit with redirect effects
@@ -10552,14 +10559,7 @@ struct druid_module_t : public module_t
   }
 
   void static_init() const override {}
-  void register_hotfixes() const override
-  {
-    hotfix::register_effect( "Druid Potency Venthyr 1", "9.0.1.35522", "crit% incorrectly set to 20%", 841733 )
-        .field( "base_value" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( 2 )
-        .verification_value( 20 );
-  }
+  void register_hotfixes() const override {}
   void combat_begin( sim_t* ) const override {}
   void combat_end( sim_t* ) const override {}
 };
