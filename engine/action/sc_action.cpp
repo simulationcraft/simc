@@ -313,6 +313,7 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
     reduced_aoe_damage(),
     normalize_weapon_speed(),
     ground_aoe(),
+    ground_aoe_duration( timespan_t::zero() ),
     round_base_dmg( true ),
     dynamic_tick_action( true ),  // WoD updates everything on tick by default. If you need snapshotted values for a
                                   // periodic effect, use persistent multipliers.
@@ -767,6 +768,9 @@ void action_t::parse_effect_data( const spelleffect_data_t& spelleffect_data )
         energize_resource = spelleffect_data.resource_gain_type();
         energize_amount   = spelleffect_data.resource( energize_resource );
       }
+      break;
+    case E_179: // Spawn Area Triggers
+      ground_aoe_duration = spelleffect_data.spell()->duration();
       break;
 
     default:
@@ -4704,6 +4708,19 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
       case A_ADD_FLAT_MODIFIER:
         switch ( effect.misc_value1() )
         {
+          case P_DURATION:
+            if ( base_tick_time > timespan_t::zero() )
+            {
+              dot_duration += effect.time_value();
+              sim->print_debug( "{} duration modified by {}", *this, effect.time_value() );
+            }
+            if ( ground_aoe_duration > timespan_t::zero() )
+            {
+              ground_aoe_duration += effect.time_value();
+              sim->print_debug( "{} ground aoe duration modified by {}", *this, effect.time_value() );
+            }
+            break;
+
           case P_RANGE:
             range += effect.base_value();
             sim->print_debug( "{} range modified by {}", *this, effect.base_value() );

@@ -205,6 +205,9 @@ public:
   /// This ability leaves a ticking dot on the ground, and doesn't move when the target moves. Used with original_x and original_y
   bool ground_aoe;
 
+  /// Duration of the ground area trigger
+  timespan_t ground_aoe_duration;
+
   /// Round spell base damage to integer before using
   bool round_base_dmg;
 
