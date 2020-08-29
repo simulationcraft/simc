@@ -219,9 +219,10 @@ public:
     buff_t* elusive_brawler;
     buff_t* fortifying_brew;
     buff_t* gift_of_the_ox;
-    buff_t* ironskin_brew;
+    buff_t* shuffle;
     buff_t* spitfire;
     buff_t* zen_meditation;
+
     buff_t* light_stagger;
     buff_t* moderate_stagger;
     buff_t* heavy_stagger;
@@ -389,6 +390,7 @@ public:
     const spell_data_t* blackout_kick_3;
     const spell_data_t* crackling_jade_lightning;
     const spell_data_t* critical_strikes;
+    const spell_data_t* detox;
     const spell_data_t* expel_harm;
     const spell_data_t* expel_harm_2_brm;
     const spell_data_t* expel_harm_2_mw;
@@ -429,19 +431,21 @@ public:
     const spell_data_t* breath_of_fire;
     const spell_data_t* brewmasters_balance;
     const spell_data_t* brewmaster_monk;
+    const spell_data_t* celestial_brew;
+    const spell_data_t* celestial_brew_2;
     const spell_data_t* celestial_fortune;
+    const spell_data_t* clash;
     const spell_data_t* gift_of_the_ox;
     const spell_data_t* invoke_niuzao;
-    // TODO: Remove
-    const spell_data_t* ironskin_brew;
     const spell_data_t* keg_smash;
     const spell_data_t* purifying_brew;
+    const spell_data_t* purifying_brew_2;
+    const spell_data_t* shuffle;
     const spell_data_t* stagger;
     const spell_data_t* stagger_2;
     const spell_data_t* zen_meditation;
 
     // Mistweaver
-    const spell_data_t* detox;
     const spell_data_t* enveloping_mist;
     const spell_data_t* envoloping_mist_2;
     const spell_data_t* essence_font;
@@ -494,9 +498,9 @@ public:
     cooldown_t* blackout_strike;
     cooldown_t* black_ox_brew;
     cooldown_t* brewmaster_attack;
-    cooldown_t* brewmaster_active_mitigation;
     cooldown_t* breath_of_fire;
     cooldown_t* chi_torpedo;
+    cooldown_t* celestial_brew;
     cooldown_t* desperate_measure;
     cooldown_t* expel_harm;
     cooldown_t* fist_of_the_white_tiger;
@@ -508,6 +512,7 @@ public:
     cooldown_t* invoke_xuen;
     cooldown_t* invoke_yulon;
     cooldown_t* keg_smash;
+    cooldown_t* purifying_brew;
     cooldown_t* rising_sun_kick;
     cooldown_t* refreshing_jade_wind;
     cooldown_t* roll;
@@ -530,13 +535,14 @@ public:
     const spell_data_t* fortifying_brew;
     const spell_data_t* healing_elixir;
     const spell_data_t* mystic_touch;
+
     // Brewmaster
     const spell_data_t* breath_of_fire_dot;
     const spell_data_t* celestial_fortune;
     const spell_data_t* elusive_brawler;
     const spell_data_t* gift_of_the_ox_heal;
-    const spell_data_t* ironskin_brew;
     const spell_data_t* keg_smash_buff;
+    const spell_data_t* shuffle;
     const spell_data_t* special_delivery;
     const spell_data_t* stagger_self_damage;
     const spell_data_t* heavy_stagger;
@@ -556,6 +562,7 @@ public:
     const spell_data_t* crackling_tiger_lightning_driver;
     const spell_data_t* cyclone_strikes;
     const spell_data_t* dizzying_kicks;
+    const spell_data_t* empowered_tiger_lightning;
     const spell_data_t* fists_of_fury_tick;
     const spell_data_t* flying_serpent_kick_damage;
     const spell_data_t* focus_of_xuen;
@@ -823,6 +830,7 @@ public:
     cooldown.black_ox_brew                = get_cooldown( "black_ox_brew" );
     cooldown.brewmaster_attack            = get_cooldown( "brewmaster_attack" );
     cooldown.breath_of_fire               = get_cooldown( "breath_of_fire" );
+    cooldown.celestial_brew               = get_cooldown( "celestial_brew" );
     cooldown.chi_torpedo                  = get_cooldown( "chi_torpedo" );
     cooldown.expel_harm                   = get_cooldown( "expel_harm" );
     cooldown.fortifying_brew              = get_cooldown( "fortifying_brew" );
@@ -832,6 +840,7 @@ public:
     cooldown.invoke_niuzao                = get_cooldown( "invoke_niuzao_the_black_ox" );
     cooldown.invoke_xuen                  = get_cooldown( "invoke_xuen_the_white_tiger" );
     cooldown.keg_smash                    = get_cooldown( "keg_smash" );
+    cooldown.purifying_brew               = get_cooldown( "purifying_brew" );
     cooldown.rising_sun_kick              = get_cooldown( "rising_sun_kick" );
     cooldown.refreshing_jade_wind         = get_cooldown( "refreshing_jade_wind" );
     cooldown.roll                         = get_cooldown( "roll" );
@@ -841,10 +850,6 @@ public:
     cooldown.thunder_focus_tea            = get_cooldown( "thunder_focus_tea" );
     cooldown.touch_of_death               = get_cooldown( "touch_of_death" );
     cooldown.serenity                     = get_cooldown( "serenity" );
-
-    
-    cooldown.brewmaster_active_mitigation = get_cooldown( "brews" );
-    
 
     resource_regeneration = regen_type::DYNAMIC;
     if ( specialization() != MONK_MISTWEAVER )
@@ -1440,7 +1445,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
     {
       sef_melee_attack_t::impact( state );
 
-      if ( result_is_hit( state->result ) )
+      if ( result_is_hit( state->result ) && o()->spec.spinning_crane_kick_2_ww )
         o()->trigger_mark_of_the_crane( state );
     }
   };
@@ -1460,7 +1465,8 @@ struct storm_earth_and_fire_pet_t : public pet_t
 
       if ( result_is_hit( state->result ) )
       {
-        o()->trigger_mark_of_the_crane( state );
+        if ( o()->spec.spinning_crane_kick_2_ww )
+          o()->trigger_mark_of_the_crane( state );
 
         if ( p()->buff.bok_proc_sef->up() )
           p()->buff.bok_proc_sef->expire();
@@ -1505,7 +1511,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
         if ( o()->spec.combat_conditioning )
           state->target->debuffs.mortal_wounds->trigger();
 
-        if ( o()->spec.spinning_crane_kick )
+        if ( o()->spec.spinning_crane_kick_2_ww )
           o()->trigger_mark_of_the_crane( state );
       }
     }
@@ -1698,7 +1704,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
 
       if ( result_is_hit( state->result ) )
       {
-        if ( o()->spec.spinning_crane_kick )
+        if ( o()->spec.spinning_crane_kick_2_ww )
           o()->trigger_mark_of_the_crane( state );
       }
     }
@@ -2742,14 +2748,32 @@ public:
     // we need to adjust the cooldown time DOWNWARD instead of UPWARD so multiply the time_reduction by -1
     time_reduction *= -1;
 
-    if ( p()->cooldown.brewmaster_active_mitigation->down() )
-      p()->cooldown.brewmaster_active_mitigation->adjust( timespan_t::from_seconds( time_reduction ), true );
+    if ( p()->cooldown.purifying_brew->down() )
+      p()->cooldown.purifying_brew->adjust( timespan_t::from_seconds( time_reduction ), true );
 
     if ( p()->cooldown.fortifying_brew->down() )
       p()->cooldown.fortifying_brew->adjust( timespan_t::from_seconds( time_reduction ), true );
 
     if ( p()->cooldown.black_ox_brew->down() )
       p()->cooldown.black_ox_brew->adjust( timespan_t::from_seconds( time_reduction ), true );
+  }
+
+  void trigger_shuffle( double time_extension )
+  {
+    if ( p()->specialization() == MONK_BREWMASTER )
+    {
+      timespan_t base_time = timespan_t::from_seconds( time_extension );
+      if ( p()->buff.shuffle->up() )
+      {
+        timespan_t max_time   = 3 * p()->buff.shuffle->buff_duration;
+        timespan_t new_length = std::min( max_time, base_time + p()->buff.shuffle->remains() );
+        p()->buff.shuffle->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, new_length );
+      }
+      else
+      {
+        p()->buff.shuffle->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, base_time );
+      }
+    }
   }
 
   double cost() const override
@@ -3778,7 +3802,7 @@ struct tiger_palm_t : public monk_melee_attack_t
     monk_melee_attack_t::impact( s );
 
     // Apply Mark of the Crane
-    if ( p()->specialization() == MONK_WINDWALKER && result_is_hit( s->result ) && p()->spec.spinning_crane_kick )
+    if ( p()->specialization() == MONK_WINDWALKER && result_is_hit( s->result ) && p()->spec.spinning_crane_kick_2_ww )
       p()->trigger_mark_of_the_crane( s );
 
     if ( p()->legendary.keefers_skyreach->ok() )
@@ -3926,7 +3950,7 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
           p()->cooldown.fists_of_fury->adjust( -1 * p()->legendary.xuens_treasure->effectN( 2 ).time_value() );
 
 		// Apply Mark of the Crane
-		if ( p()->spec.spinning_crane_kick )
+		if ( p()->spec.spinning_crane_kick_2_ww )
           p()->trigger_mark_of_the_crane( s );
       }
 
@@ -4080,6 +4104,8 @@ struct blackout_kick_totm_proc : public monk_melee_attack_t
       else
         p()->cooldown.roll->reset( true, 1 );
     }
+
+    trigger_shuffle( p()->spec.blackout_kick->effectN( 2 ).base_value() );
   }
 
   void impact( action_state_t* s ) override
@@ -4229,7 +4255,7 @@ struct blackout_kick_t : public monk_melee_attack_t
 
     if ( result_is_hit( s->result ) )
     {
-      if ( p()->specialization() == MONK_WINDWALKER && p()->spec.spinning_crane_kick )
+      if ( p()->specialization() == MONK_WINDWALKER && p()->spec.spinning_crane_kick_2_ww )
         p()->trigger_mark_of_the_crane( s );
 
       if ( p()->buff.teachings_of_the_monastery->up() )
@@ -4474,6 +4500,14 @@ struct sck_tick_action_t : public monk_melee_attack_t
       b += p()->azerite.dance_of_chiji.value() / 4;
 
     return b;
+  }
+
+  void execute() override
+  {
+    monk_melee_attack_t::execute();
+
+    if ( p()->spec.spinning_crane_kick_2_brm )
+      trigger_shuffle( p()->spec.spinning_crane_kick_2_brm->effectN( 1 ).base_value() );
   }
 };
 
@@ -4822,7 +4856,7 @@ struct fist_of_the_white_tiger_t : public monk_melee_attack_t
     monk_melee_attack_t::impact( s );
 
     // Apply Mark of the Crane
-    if ( result_is_hit( s->result ) && p()->spec.spinning_crane_kick )
+    if ( result_is_hit( s->result ) && p()->spec.spinning_crane_kick_2_ww )
       p()->trigger_mark_of_the_crane( s );
   }
 };
@@ -5007,6 +5041,8 @@ struct keg_smash_t : public monk_melee_attack_t
       time_reduction += p()->buff.blackout_combo->data().effectN( 3 ).base_value();
       p()->buff.blackout_combo->expire();
     }
+
+    trigger_shuffle( p()->spec.keg_smash->effectN( 6 ).base_value() );
 
     brew_cooldown_reduction( time_reduction );
   }
@@ -5286,6 +5322,7 @@ struct flying_serpent_kick_t : public monk_melee_attack_t
       movement_speed_increase( p->spec.flying_serpent_kick->effectN( 1 ).percent() )
   {
     parse_options( options_str );
+    ww_mastery                      = true;
     affected_by.sunrise_technique   = true;
     may_combo_strike                = true;
     ignore_false_positive           = true;
@@ -5397,8 +5434,8 @@ struct black_ox_brew_t : public monk_spell_t
   {
     monk_spell_t::execute();
 
-    // Refill Ironskin Brew and Purifying Brew charges.
-    p()->cooldown.brewmaster_active_mitigation->reset( true, -1 );
+    // Refill Purifying Brew charges.
+    p()->cooldown.purifying_brew->reset( true, -1 );
 
     p()->resource_gain( RESOURCE_ENERGY, p()->talent.black_ox_brew->effectN( 1 ).base_value(),
                         p()->gain.black_ox_brew_energy );
@@ -5712,7 +5749,7 @@ struct stagger_self_damage_t : public residual_action::residual_periodic_action_
   void impact( action_state_t* s ) override
   {
     base_t::impact( s );
-    p()->buff.ironskin_brew->up();  // benefit tracking
+    p()->buff.shuffle->up();  // benefit tracking
     p()->stagger_damage_changed();
   }
 
@@ -5921,54 +5958,6 @@ struct special_delivery_t : public monk_spell_t
 };
 
 // ==========================================================================
-// Ironskin Brew
-// ==========================================================================
-
-struct ironskin_brew_t : public monk_spell_t
-{
-  special_delivery_t* delivery;
-
-  ironskin_brew_t( monk_t& p, const std::string& options_str )
-    : monk_spell_t( "ironskin_brew", &p, p.spec.ironskin_brew ), delivery( new special_delivery_t( p ) )
-  {
-    parse_options( options_str );
-
-    harmful     = false;
-    trigger_gcd = timespan_t::zero();
-
-    cooldown = p.cooldown.brewmaster_active_mitigation;
-  }
-
-  void execute() override
-  {
-    monk_spell_t::execute();
-
-    if ( p()->buff.ironskin_brew->check() )
-    {
-      timespan_t base_time  = p()->buff.ironskin_brew->buff_duration;
-      timespan_t max_time   = p()->passives.ironskin_brew->effectN( 2 ).base_value() * base_time;
-      timespan_t new_length = std::min( max_time, base_time + p()->buff.ironskin_brew->remains() );
-      p()->buff.ironskin_brew->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, new_length );
-    }
-    else
-      p()->buff.ironskin_brew->trigger();
-
-    if ( p()->talent.special_delivery->ok() )
-    {
-      delivery->target = target;
-      delivery->execute();
-    }
-
-    if ( p()->buff.blackout_combo->up() )
-    {
-      p()->active_actions.stagger_self_damage->delay_tick(
-          timespan_t::from_seconds( p()->buff.blackout_combo->data().effectN( 4 ).base_value() ) );
-      p()->buff.blackout_combo->expire();
-    }
-  }
-};
-
-// ==========================================================================
 // Purifying Brew
 // ==========================================================================
 
@@ -5983,8 +5972,6 @@ struct purifying_brew_t : public monk_spell_t
 
     harmful     = false;
     trigger_gcd = timespan_t::zero();
-
-    cooldown = p.cooldown.brewmaster_active_mitigation;
 
     if ( p.talent.special_delivery->ok() )
       delivery = new special_delivery_t( p );
@@ -7287,8 +7274,6 @@ action_t* monk_t::create_action( util::string_view name, const std::string& opti
     return new niuzao_spell_t( this, options_str );
   if ( name == "invoke_niuzao_the_black_ox" )
     return new niuzao_spell_t( this, options_str );
-  if ( name == "ironskin_brew" )
-    return new ironskin_brew_t( *this, options_str );
   if ( name == "keg_smash" )
     return new keg_smash_t( *this, options_str );
   if ( name == "purifying_brew" )
@@ -7660,6 +7645,7 @@ void monk_t::init_spells()
   spec.blackout_kick_3           = find_rank_spell( "Blackout Kick", "Rank 3", MONK_WINDWALKER );
   spec.crackling_jade_lightning  = find_class_spell( "Crackling Jade Lightning" );
   spec.critical_strikes          = find_specialization_spell( "Critical Strikes" );
+  spec.detox                     = find_specialization_spell( "Detox" );
   spec.expel_harm                = find_class_spell( "Expel Harm" );
   spec.expel_harm_2_brm          = find_rank_spell( "Expel Harm", "Rank 2", MONK_BREWMASTER );
   spec.expel_harm_2_mw           = find_rank_spell( "Expel Harm", "Rank 2", MONK_MISTWEAVER );
@@ -7700,12 +7686,16 @@ void monk_t::init_spells()
   spec.breath_of_fire      = find_specialization_spell( "Breath of Fire" );
   spec.brewmasters_balance = find_specialization_spell( "Brewmaster's Balance" );
   spec.brewmaster_monk     = find_specialization_spell( "Brewmaster Monk" );
+  spec.celestial_brew      = find_specialization_spell( "Celestial Brew" );
+  spec.celestial_brew_2    = find_rank_spell( "Celestial Brew", "Rank 2" );
   spec.celestial_fortune   = find_specialization_spell( "Celestial Fortune" );
+  spec.clash               = find_specialization_spell( "Clash" );
   spec.gift_of_the_ox      = find_specialization_spell( "Gift of the Ox" );
   spec.invoke_niuzao       = find_specialization_spell( "Invoke Niuzao, the Black Ox" );
-  spec.ironskin_brew       = find_spell( "Ironskin Brew" ); // find_specialization_spell( "Ironskin Brew" ); If this is truly moved to a non-spec spell, move pointer to passives instead of spec
   spec.keg_smash           = find_specialization_spell( "Keg Smash" );
   spec.purifying_brew      = find_specialization_spell( "Purifying Brew" );
+  spec.purifying_brew_2    = find_rank_spell( "Purifying Brew", "Rank 2" );
+  spec.shuffle             = find_specialization_spell( "Shuffle" );
   spec.stagger             = find_specialization_spell( "Stagger" );
   spec.stagger             = find_rank_spell( "Stagger", "Rank 2" );
   spec.zen_meditation      = find_specialization_spell( "Zen Meditation" );
@@ -7876,7 +7866,7 @@ void monk_t::init_spells()
   passives.celestial_fortune   = find_spell( 216521 );
   passives.elusive_brawler     = find_spell( 195630 );
   passives.gift_of_the_ox_heal = find_spell( 124507 );
-  passives.ironskin_brew       = find_spell( 215479 );
+  passives.shuffle             = find_spell( 215479 );
   passives.keg_smash_buff      = find_spell( 196720 );
   passives.special_delivery    = find_spell( 196733 );
   passives.stagger_self_damage = find_spell( 124255 );
@@ -7897,6 +7887,7 @@ void monk_t::init_spells()
   passives.crackling_tiger_lightning_driver = find_spell( 123999 );
   passives.cyclone_strikes                  = find_spell( 220358 );
   passives.dizzying_kicks                   = find_spell( 196723 );
+  passives.empowered_tiger_lightning        = find_spell( 335913 );
   passives.fists_of_fury_tick               = find_spell( 117418 );
   passives.flying_serpent_kick_damage       = find_spell( 123586 );
   passives.focus_of_xuen                    = find_spell( 252768 );
@@ -7926,12 +7917,6 @@ void monk_t::init_spells()
   sample_datas.heavy_stagger_damage       = get_sample_data( "Effective heavy stagger damage" );
   sample_datas.purified_damage            = get_sample_data( "Stagger damage that was purified" );
   sample_datas.staggering_strikes_cleared = get_sample_data( "Stagger damage that was cleared by Staggering Strikes" );
-
-  // Brew cooldown setup
-  cooldown.brewmaster_active_mitigation->duration = spec.ironskin_brew->charge_cooldown();
-  cooldown.brewmaster_active_mitigation->charges  = spec.ironskin_brew->charges();
-  cooldown.brewmaster_active_mitigation->duration *= 1 + talent.light_brewing->effectN( 1 ).percent();
-  cooldown.brewmaster_active_mitigation->hasted = true;
 
   // Active Action Spells
   // Brewmaster
@@ -8082,8 +8067,8 @@ void monk_t::create_buffs()
   buff.elusive_brawler = make_buff( this, "elusive_brawler", mastery.elusive_brawler->effectN( 3 ).trigger() )
                              ->add_invalidate( CACHE_DODGE );
 
-  buff.ironskin_brew =
-      make_buff( this, "ironskin_brew", passives.ironskin_brew )->set_refresh_behavior( buff_refresh_behavior::EXTEND );
+  buff.shuffle =
+      make_buff( this, "shuffle", passives.shuffle )->set_refresh_behavior( buff_refresh_behavior::EXTEND );
 
   buff.gift_of_the_ox = new buffs::gift_of_the_ox_buff_t( *this, "gift_of_the_ox", find_spell( 124503 ) );
 
@@ -9432,7 +9417,7 @@ void monk_t::apl_combat_brewmaster()
   }
   // Ironskin Brew
   def->add_action( this, spec.invoke_niuzao, "invoke_niuzao_the_black_ox", "if=target.time_to_die>25" );
-  def->add_action(
+/*  def->add_action(
       this, "Ironskin Brew",
       "if=buff.blackout_combo.down&incoming_damage_1999ms>(health.max*0.1+stagger.last_tick_damage_4)&buff.elusive_"
       "brawler.stack<2&!buff.ironskin_brew.up",
@@ -9441,7 +9426,7 @@ void monk_t::apl_combat_brewmaster()
   def->add_action(
       this, "Ironskin Brew",
       "if=cooldown.brews.charges_fractional>1&cooldown.black_ox_brew.remains<3&buff.ironskin_brew.remains<15" );
-
+      */
   // Purifying Brew
   def->add_action( this, "Purifying Brew",
                    "if=stagger.pct>(6*(3-(cooldown.brews.charges_fractional)))&(stagger.last_tick_damage_1>((0.02+0."
@@ -9466,7 +9451,7 @@ void monk_t::apl_combat_brewmaster()
       this, "Tiger Palm",
       "if=(1|talent.special_delivery.enabled)&buff.blackout_combo.up" );
   def->add_action( this, "Expel Harm", "if=buff.gift_of_the_ox.stack>4" );
-  def->add_action( this, "Blackout Strike" );
+  def->add_action( this, "Blackout Kick" );
   def->add_action( this, "Keg Smash" );
   def->add_action( "concentrated_flame,if=dot.concentrated_flame.remains=0" );
   def->add_action( "heart_essence,if=!essence.the_crucible_of_flame.major" );
@@ -9965,9 +9950,9 @@ double monk_t::stagger_base_value()
       ;
     }
 
-    if ( buff.ironskin_brew->check() )
+    if ( buff.shuffle->check() )
     {
-      stagger_base *= 1.0 + passives.ironskin_brew->effectN( 1 ).percent();
+      stagger_base *= 1.0 + passives.shuffle->effectN( 1 ).percent();
     }
   }
 
