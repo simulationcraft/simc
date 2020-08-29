@@ -219,6 +219,7 @@ public:
     buff_t* elusive_brawler;
     buff_t* fortifying_brew;
     buff_t* gift_of_the_ox;
+    buff_t* invoke_niuzao;
     buff_t* purified_chi;
     buff_t* shuffle;
     buff_t* spitfire;
@@ -3244,6 +3245,8 @@ struct niuzao_spell_t : public summon_pet_t
   void execute() override
   {
     summon_pet_t::execute();
+
+    p()->buff.invoke_niuzao->trigger();
 
     if ( p()->legendary.invokers_delight->ok() )
       p()->buff.invokers_delight->trigger();
@@ -8167,6 +8170,9 @@ void monk_t::create_buffs()
       make_buff( this, "shuffle", passives.shuffle )->set_refresh_behavior( buff_refresh_behavior::EXTEND );
 
   buff.gift_of_the_ox = new buffs::gift_of_the_ox_buff_t( *this, "gift_of_the_ox", find_spell( 124503 ) );
+
+  buff.invoke_niuzao = make_buff( this, "invoke_niuzao", find_spell( 132578 ) )
+                           ->set_default_value( find_spell( 132578 )->effectN( 2 ).percent() );
 
   buff.purified_chi = make_buff( this, "purified_chi", find_spell( 325092 ) )
                           ->set_default_value( find_spell( 325092 )->effectN( 1 ).percent() );
