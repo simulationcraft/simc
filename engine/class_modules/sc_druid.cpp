@@ -7098,23 +7098,22 @@ struct convoke_the_spirits_t : public druid_spell_t
     deck = p->get_shuffled_rng( "convoke_the_spirits", heals_int, static_cast<int>( dot_duration / base_tick_time ) );
 
     // Balance
-    conv_fm = create_convoke_action<full_moon_t>( "full_moon" );
-    conv_wr = create_convoke_action<wrath_t>( "wrath" );
-    conv_ss = create_convoke_action<starsurge_t>( "starsurge" );
-    conv_sf = create_convoke_action<starfall_t>( "starfall" );
-    conv_mf = create_convoke_action<moonfire_t>( "moonfire" );
+    conv_fm = create_convoke_action( "full_moon" );
+    conv_wr = create_convoke_action( "wrath" );
+    conv_ss = create_convoke_action( "starsurge" );
+    conv_sf = create_convoke_action( "starfall" );
+    conv_mf = create_convoke_action( "moonfire" );
 
     // Feral
     // Guardian
     // Restoration
   }
 
-  template <typename T>
   action_t* create_convoke_action( util::string_view n )
   {
     auto tmp = p()->find_action( n );
     if ( !tmp )
-      tmp = new T( p(), "" );
+      tmp = p()->create_action( n, "" );
 
     stats->add_child( debug_cast<druid_action_t*>( tmp )->init_free_cast_stats( free_cast_e::CONVOKE ) );
 
@@ -7668,17 +7667,16 @@ struct lycaras_fleeting_glimpse_event_t : public event_t
       bear( nullptr ),
       tree( nullptr )
   {
-    moonkin = create_lycara_action<spells::starfall_t, spell_t>( "starfall" );
+    moonkin = create_lycara_action<spell_t>( "starfall" );
   }
 
   const char* name() const override { return "lycaras_fleeting_glimpse"; }
 
-  template <typename T, typename B>
+  template <typename B>
   action_t* create_lycara_action( util::string_view n )
   {
     auto tmp = druid->find_action( n );
-    if ( !tmp )
-      tmp = new T( druid, "" );
+    assert( tmp && "no existing action for lycara's fleeting glimpse" );
 
     druid->active.lycaras_fleeting_glimpse->stats->add_child(
         debug_cast<druid_action_t<B>*>( tmp )->init_free_cast_stats( free_cast_e::LYCARAS ) );
@@ -8615,15 +8613,19 @@ void druid_t::create_actions()
   if ( legendary.frenzyband->ok() )
     active.frenzied_assault = new cat_attacks::frenzied_assault_t( this );
 
-  if ( legendary.lycaras_fleeting_glimpse->ok() )
-    active.lycaras_fleeting_glimpse =
-        new action_t( action_e::ACTION_OTHER, "lycaras_fleeting_glimpse", this, legendary.lycaras_fleeting_glimpse );
-
   if ( legendary.oneths_clear_vision->ok() )
     active.oneths_clear_vision =
         new action_t( action_e::ACTION_OTHER, "oneths_clear_vision", this, legendary.oneths_clear_vision );
 
   player_t::create_actions();
+
+  if ( legendary.lycaras_fleeting_glimpse->ok() )
+  {
+    active.lycaras_fleeting_glimpse =
+        new action_t( action_e::ACTION_OTHER, "lycaras_fleeting_glimpse", this, legendary.lycaras_fleeting_glimpse );
+    if ( !find_action( "starfall" ) )
+      create_action( "starfall", "" );
+  }
 }
 
 // ALL Spec Pre-Combat Action Priority List =================================
