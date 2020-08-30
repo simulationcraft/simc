@@ -390,6 +390,7 @@ public:
     const spell_data_t* blackout_kick;
     const spell_data_t* blackout_kick_2;
     const spell_data_t* blackout_kick_3;
+    const spell_data_t* blackout_kick_brm;
     const spell_data_t* crackling_jade_lightning;
     const spell_data_t* critical_strikes;
     const spell_data_t* detox;
@@ -608,14 +609,14 @@ public:
     // Breath of Fire deals 60 additional damage over its duration, and has a chance to summon a Healing Sphere each
     // time it deals damage.
     azerite_power_t boiling_brew;
-    // Blackout Strike deals an additional 169 damage. Blackout Strike critical hits grant an additional 1 stack of
+    // Blackout Kick deals an additional 169 damage. Blackout Strike critical hits grant an additional 1 stack of
     // Elusive Brawler.
     azerite_power_t elusive_footwork;
     // Drinking Purifying Brew while at Heavy Stagger causes your next 3 melee abilities to heal you for 360.
     azerite_power_t fit_to_burst;
     // Expel Harm restores 60 health over 6 sec for each Healing Sphere consumed.
     azerite_power_t niuzaos_blessing;
-    // When you Blackout Strike, your Stagger is reduced by 62.
+    // When you Blackout Kick, your Stagger is reduced by 62.
     azerite_power_t staggering_strikes;
     // Gain up to 153 Mastery based on your current level of Stagger.
     azerite_power_t training_of_niuzao;
@@ -2755,6 +2756,9 @@ public:
     if ( p()->cooldown.purifying_brew->down() )
       p()->cooldown.purifying_brew->adjust( timespan_t::from_seconds( time_reduction ), true );
 
+    if ( p()->cooldown.celestial_brew->down() )
+      p()->cooldown.celestial_brew->adjust( timespan_t::from_seconds( time_reduction ), true );
+
     if ( p()->cooldown.fortifying_brew->down() )
       p()->cooldown.fortifying_brew->adjust( timespan_t::from_seconds( time_reduction ), true );
 
@@ -3790,9 +3794,7 @@ struct tiger_palm_t : public monk_melee_attack_t
         }
 
         // Reduces the remaining cooldown on your Brews by 1 sec
-        double time_reduction = p()->spec.tiger_palm->effectN( 3 ).base_value();
-
-        brew_cooldown_reduction( time_reduction );
+        brew_cooldown_reduction( p()->spec.tiger_palm->effectN( 3 ).base_value() );
 
         if ( p()->buff.blackout_combo->up() )
           p()->buff.blackout_combo->expire();
@@ -4132,7 +4134,8 @@ struct blackout_kick_t : public monk_melee_attack_t
   blackout_kick_totm_proc* bok_totm_proc;
 
   blackout_kick_t( monk_t* p, const std::string& options_str )
-    : monk_melee_attack_t( "blackout_kick", p, p->spec.blackout_kick )
+    : monk_melee_attack_t( "blackout_kick", p, 
+        ( p->specialization() == MONK_BREWMASTER ? p->spec.blackout_kick_brm : p->spec.blackout_kick ) )
   {
     ww_mastery = true;
 
@@ -4201,7 +4204,7 @@ struct blackout_kick_t : public monk_melee_attack_t
   {
     double b = base_t::bonus_da( s );
 
-    if ( p()->azerite.elusive_footwork.ok() )
+    if ( p()->specialization() == MONK_BREWMASTER && p()->azerite.elusive_footwork.ok() )
       b += p()->azerite.elusive_footwork.value( 3 );
 
     return b;
@@ -4240,10 +4243,8 @@ struct blackout_kick_t : public monk_melee_attack_t
           p()->buff.blackout_combo->trigger();
 
         if ( p()->azerite.staggering_strikes.ok() )
-        {
-          auto amount_cleared = p()->partial_clear_stagger_amount( p()->azerite.staggering_strikes.value() );
-          p()->sample_datas.staggering_strikes_cleared->add( amount_cleared );
-        }
+          p()->sample_datas.staggering_strikes_cleared->add(
+              p()->partial_clear_stagger_amount( p()->azerite.staggering_strikes.value() ) );
         break;
       }
       case MONK_MISTWEAVER:
@@ -4256,6 +4257,7 @@ struct blackout_kick_t : public monk_melee_attack_t
       {
         if ( p()->spec.blackout_kick_3 )
         {
+          // Reduce the cooldown of Rising Sun Kick, Fists of Fury and Whirling Dragon Punch
           timespan_t cd_reduction = -1 * p()->spec.blackout_kick->effectN( 3 ).time_value();
           p()->cooldown.rising_sun_kick->adjust( cd_reduction, true );
           p()->cooldown.fists_of_fury->adjust( cd_reduction, true );
@@ -7780,6 +7782,7 @@ void monk_t::init_spells()
   spec.blackout_kick             = find_class_spell( "Blackout Kick" );
   spec.blackout_kick_2           = find_rank_spell( "Blackout Kick", "Rank 2", MONK_WINDWALKER );
   spec.blackout_kick_3           = find_rank_spell( "Blackout Kick", "Rank 3", MONK_WINDWALKER );
+  spec.blackout_kick_brm         = find_specialization_spell( "Blackout Kick" );
   spec.crackling_jade_lightning  = find_class_spell( "Crackling Jade Lightning" );
   spec.critical_strikes          = find_specialization_spell( "Critical Strikes" );
   spec.detox                     = find_specialization_spell( "Detox" );
