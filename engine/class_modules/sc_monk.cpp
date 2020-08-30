@@ -217,6 +217,7 @@ public:
     // Brewmaster
     buff_t* bladed_armor;
     buff_t* blackout_combo;
+    buff_t* celestial_flames;
     buff_t* elusive_brawler;
     buff_t* fortifying_brew;
     buff_t* gift_of_the_ox;
@@ -5090,46 +5091,6 @@ struct keg_smash_t : public monk_melee_attack_t
 };
 
 // ==========================================================================
-// Exploding Keg
-// ==========================================================================
-struct exploding_keg_t : public monk_melee_attack_t
-{
-  exploding_keg_t( monk_t& p, const std::string& options_str ) 
-      : monk_melee_attack_t( "exploding_keg", &p, p.talent.exploding_keg )
-  {
-    parse_options( options_str );
-
-    aoe    = -1;
-    radius = data().effectN( 1 ).radius();
-    range  = data().max_range();
-  }
-
-  void impact( action_state_t* state ) override
-  {
-    monk_melee_attack_t::impact( state );
-
-    td( state->target )->debuff.exploding_keg->trigger();
-  }
-
-  timespan_t travel_time() const override
-  {
-    // Always has the same time to land regardless of distance, probably represented there.
-    return timespan_t::from_seconds( data().missile_speed() );
-  }
-
-  // Ensuring that we can't cast on a target that is too close
-  bool target_ready( player_t* candidate_target ) override
-  {
-    if ( player->get_player_distance( *candidate_target ) < data().min_range() )
-    {
-      return false;
-    }
-
-    return monk_melee_attack_t::target_ready( candidate_target );
-  }
-};
-
-    // ==========================================================================
 // Touch of Death
 // ==========================================================================
 struct touch_of_death_t : public monk_melee_attack_t
@@ -5523,6 +5484,11 @@ struct black_ox_brew_t : public monk_spell_t
 
     p()->resource_gain( RESOURCE_ENERGY, p()->talent.black_ox_brew->effectN( 1 ).base_value(),
                         p()->gain.black_ox_brew_energy );
+
+    if ( p()->talent.celestial_flames->ok() )
+      p()->buff.celestial_flames->trigger();
+
+
   }
 };
 
@@ -5847,8 +5813,51 @@ struct fortifying_brew_t : public monk_spell_t
       delivery->target = target;
       delivery->execute();
     }
+
+    if ( p()->talent.celestial_flames->ok() )
+      p()->buff.celestial_flames->trigger();
   }
 };
+
+// ==========================================================================
+// Exploding Keg
+// ==========================================================================
+struct exploding_keg_t : public monk_spell_t
+{
+  exploding_keg_t( monk_t& p, const std::string& options_str )
+    : monk_spell_t( "exploding_keg", &p, p.talent.exploding_keg )
+  {
+    parse_options( options_str );
+
+    aoe    = -1;
+    radius = data().effectN( 1 ).radius();
+    range  = data().max_range();
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    monk_spell_t::impact( state );
+
+    td( state->target )->debuff.exploding_keg->trigger();
+  }
+
+  timespan_t travel_time() const override
+  {
+    // Always has the same time to land regardless of distance, probably represented there.
+    return timespan_t::from_seconds( data().missile_speed() );
+  }
+
+  // Ensuring that we can't cast on a target that is too close
+  bool target_ready( player_t* candidate_target ) override
+  {
+    if ( player->get_player_distance( *candidate_target ) < data().min_range() )
+    {
+      return false;
+    }
+
+    return monk_spell_t::target_ready( candidate_target );
+  }
+};  
 
 // ==========================================================================
 // Stagger Damage
@@ -6089,6 +6098,9 @@ struct purifying_brew_t : public monk_spell_t
       delivery->target = target;
       delivery->execute();
     }
+
+    if ( p()->talent.celestial_flames->ok() )
+      p()->buff.celestial_flames->trigger();
 
     if ( p()->buff.blackout_combo->up() )
     {
@@ -6978,6 +6990,7 @@ struct monk_absorb_t : public monk_action_t<absorb_t>
 // ==========================================================================
 // Celestial Brew
 // ==========================================================================
+
 struct special_delivery_t : public monk_spell_t
 {
   special_delivery_t( monk_t& p ) : monk_spell_t( "special_delivery", &p, p.passives.special_delivery )
@@ -7014,7 +7027,6 @@ struct celestial_brew_t : public monk_absorb_t
     if ( p.talent.light_brewing->ok() )
       cooldown->duration *= 1 + p.talent.light_brewing->effectN( 2 ).percent();  // -20
 
-
     if ( p.talent.special_delivery->ok() )
       delivery = new special_delivery_t( p );
   }
@@ -7038,6 +7050,9 @@ struct celestial_brew_t : public monk_absorb_t
       delivery->target = target;
       delivery->execute();
     }
+
+    if ( p()->talent.celestial_flames->ok() )
+      p()->buff.celestial_flames->trigger();
 
     if ( p()->buff.blackout_combo->up() )
     {
@@ -8257,6 +8272,10 @@ void monk_t::create_buffs()
 
   buff.blackout_combo = make_buff( this, "blackout_combo", talent.blackout_combo->effectN( 5 ).trigger() );
 
+  buff.celestial_flames = make_buff( this, "celestial_flames", talent.celestial_flames->effectN( 1 ).trigger() )
+                              ->set_chance( talent.celestial_flames->proc_chance() )
+                              ->set_default_value( talent.celestial_flames->effectN( 2 ).percent() );
+
   buff.elusive_brawler = make_buff( this, "elusive_brawler", mastery.elusive_brawler->effectN( 3 ).trigger() )
                              ->add_invalidate( CACHE_DODGE );
 
@@ -9320,7 +9339,12 @@ void monk_t::target_mitigation( school_e school, result_amount_type dt, action_s
 
   // If Breath of Fire is ticking on the source target, the player receives 5% less damage
   if ( get_target_data( s->action->player )->dots.breath_of_fire->is_ticking() )
-    s->result_amount *= 1.0 + passives.breath_of_fire_dot->effectN( 2 ).percent();
+  {
+    double dmg_reduction = passives.breath_of_fire_dot->effectN( 2 ).percent();
+    if ( buff.celestial_flames->up() )
+      dmg_reduction += buff.celestial_flames->value();
+    s->result_amount *= 1.0 + dmg_reduction;
+  }
 
   // Inner Strength
   if ( buff.inner_stength->up() )
