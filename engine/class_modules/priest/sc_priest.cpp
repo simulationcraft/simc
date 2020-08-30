@@ -961,7 +961,7 @@ double base_fiend_pet_t::composite_player_multiplier( school_e school ) const
   double m = pet_t::composite_player_multiplier( school );
 
   if ( o().conduits.rabid_shadows->ok() )
-    m *= 1 + o().conduits.rabid_shadows->effectN( 2 ).percent();
+    m *= 1 + o().conduits.rabid_shadows.percent();
 
   return m;
 }
@@ -971,7 +971,7 @@ double base_fiend_pet_t::composite_melee_haste() const
   double h = pet_t::composite_melee_haste();
 
   if ( o().conduits.rabid_shadows->ok() )
-    h *= 1 + o().conduits.rabid_shadows.percent();
+    h *= 1 + o().conduits.rabid_shadows->effectN( 2 ).percent();
   return h;
 }
 
