@@ -132,6 +132,7 @@ public:
   struct buffs_t
   {
     buff_t* mark_of_the_crane;
+    buff_t* exploding_keg;
     buff_t* flying_serpent_kick;
     buff_t* keg_smash;
     buff_t* storm_earth_and_fire;
@@ -5089,6 +5090,29 @@ struct keg_smash_t : public monk_melee_attack_t
 };
 
 // ==========================================================================
+// Exploding Keg
+// ==========================================================================
+struct exploding_keg_t : public monk_melee_attack_t
+{
+  exploding_keg_t( monk_t& p, const std::string& options_str ) 
+      : monk_melee_attack_t( "exploding_keg", &p, p.talent.exploding_keg )
+  {
+    parse_options( options_str );
+
+    aoe    = -1;
+    radius = data().effectN( 1 ).radius();
+    range  = data().max_range();
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    monk_melee_attack_t::impact( state );
+
+    td( state->target )->debuff.exploding_keg->trigger();
+  }
+};
+
+    // ==========================================================================
 // Touch of Death
 // ==========================================================================
 struct touch_of_death_t : public monk_melee_attack_t
@@ -5704,7 +5728,8 @@ struct breath_of_fire_t : public monk_spell_t
     // Update the cooldown if Blackout Combo is up
     if ( p()->buff.blackout_combo->up() )
     {
-      cd += p()->buff.blackout_combo->data().effectN( 2 ).time_value();  // saved as -6 seconds
+      // Saved as 3 seconds
+      cd += (-1 * timespan_t::from_seconds( p()->buff.blackout_combo->data().effectN( 2 ).base_value() ) );
       p()->buff.blackout_combo->expire();
     }
 
@@ -6996,6 +7021,13 @@ struct celestial_brew_t : public monk_absorb_t
       delivery->target = target;
       delivery->execute();
     }
+
+    if ( p()->buff.blackout_combo->up() )
+    {
+      p()->active_actions.stagger_self_damage->delay_tick(
+          timespan_t::from_seconds( p()->buff.blackout_combo->data().effectN( 4 ).base_value() ) );
+      p()->buff.blackout_combo->expire();
+    }
   }
 };
 
@@ -7342,6 +7374,8 @@ monk_td_t::monk_td_t( player_t* target, monk_t* p )
   {
     debuff.keg_smash = make_buff( *this, "keg_smash", p->spec.keg_smash )
                            ->set_default_value( p->spec.keg_smash->effectN( 3 ).percent() );
+
+    debuff.exploding_keg = make_buff( *this, "exploding_keg", p->talent.exploding_keg );
   }
 
   // Azerite
@@ -7405,6 +7439,8 @@ action_t* monk_t::create_action( util::string_view name, const std::string& opti
     return new celestial_brew_t( *this, options_str );
   if ( name == "expel_harm" )
     return new expel_harm_t( *this, options_str );
+  if ( name == "exploding_keg" )
+    return new exploding_keg_t( *this, options_str );
   if ( name == "fortifying_brew" )
     return new fortifying_brew_t( *this, options_str );
   if ( name == "gift_of_the_ox" )
