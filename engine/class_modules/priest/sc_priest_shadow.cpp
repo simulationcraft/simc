@@ -153,7 +153,7 @@ public:
   {
     priest().buffs.voidform->up();  // Benefit tracking
 
-    if ( priest().buffs.dark_thoughts->check() )
+    if ( priest().buffs.dark_thoughts->up() )
       priest().buffs.dark_thoughts->decrement();
     else
       priest_spell_t::update_ready( cd_duration );
@@ -227,19 +227,7 @@ struct mind_sear_tick_t final : public priest_spell_t
   {
     priest_spell_t::impact( s );
 
-    priest_td_t& td = get_td( s->target );
-    dot_t* swp      = td.dots.shadow_word_pain;
-    dot_t* vt       = td.dots.vampiric_touch;
-    dot_t* dp       = td.dots.devouring_plague;
-
-    int dots = swp->is_ticking() + vt->is_ticking() + dp->is_ticking();
-    if ( rng().roll( priest().specs.dark_thoughts->effectN( 1 ).percent() * dots ) )
-    {
-      sim->print_debug( "{} activated Dark Thoughts using Mind Sear with {} chance with {} dots", *player,
-                        priest().specs.dark_thoughts->effectN( 1 ).percent() * dots, dots );
-      priest().buffs.dark_thoughts->trigger();
-      priest().procs.dark_thoughts_sear->occur();
-    }
+    trigger_dark_thoughts( s->target, priest().procs.dark_thoughts_sear );
   }
 };
 
@@ -307,21 +295,7 @@ struct mind_flay_t final : public priest_spell_t
       priest().trigger_eternal_call_to_the_void( d );
     }
 
-    priest_td_t& td = get_td( d->target );
-    dot_t* swp      = td.dots.shadow_word_pain;
-    dot_t* vt       = td.dots.vampiric_touch;
-    dot_t* dp       = td.dots.devouring_plague;
-
-    int dots = swp->is_ticking() + vt->is_ticking() + dp->is_ticking();
-
-    // TODO: Confirm if this needs to be adjusted to be on its own PRNG system or has an ICD
-    if ( rng().roll( priest().specs.dark_thoughts->effectN( 1 ).percent() * dots ) )
-    {
-      sim->print_debug( "{} activated Dark Thoughts using Mind Flay with {} chance with {} dots", *player,
-                        priest().specs.dark_thoughts->effectN( 1 ).percent() * dots, dots );
-      priest().buffs.dark_thoughts->trigger();
-      priest().procs.dark_thoughts_flay->occur();
-    }
+    trigger_dark_thoughts( d->target, priest().procs.dark_thoughts_flay );
   }
 
   void execute() override

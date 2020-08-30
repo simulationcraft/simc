@@ -1353,6 +1353,27 @@ struct priest_spell_t : public priest_action_t<spell_t>
     return 0.0;
   }
 
+  void trigger_dark_thoughts( const player_t* target, proc_t* proc )
+  {
+    if ( !priest().specs.dark_thoughts->ok() )
+      return;
+    const priest_td_t* td = find_td( target );
+    if ( !td )
+      return;
+    const dot_t* swp = td->dots.shadow_word_pain;
+    const dot_t* vt  = td->dots.vampiric_touch;
+    const dot_t* dp  = td->dots.devouring_plague;
+
+    int dots = swp->is_ticking() + vt->is_ticking() + dp->is_ticking();
+    if ( rng().roll( priest().specs.dark_thoughts->effectN( 1 ).percent() * dots ) )
+    {
+      sim->print_debug( "{} activated Dark Thoughts using {} with {} chance with {} dots", *player, *this,
+                        priest().specs.dark_thoughts->effectN( 1 ).percent() * dots, dots );
+      priest().buffs.dark_thoughts->trigger();
+      proc->occur();
+    }
+  }
+
   void assess_damage( result_amount_type type, action_state_t* s ) override
   {
     base_t::assess_damage( type, s );
