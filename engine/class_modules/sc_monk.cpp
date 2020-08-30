@@ -16,35 +16,22 @@
 TODO:
 
 GENERAL:
-- Implement Windwalker/Mistweaver Fortifying Brew
-- Implement Vivify
 - Covenants
-- Soul Binds
+- Covenant Conduits
 - Change Eye of the Tiger from a dot to an interaction with a buff
 
 WINDWALKER:
-- Implement Touch of Death Rank 2/3
+- Implement Xuen Rank 2 (Enhanced Tiger Lightning)
+- Implement Touch of Death Rank 3
 - Add Cyclone Strike Counter as an expression
-- Legendaries
 
 MISTWEAVER:
-- Gusts of Mists - Check calculations
-- Vivify - Check the interation between Thunder Focus Tea and Lifecycles
 - Essence Font - See if the implementation can be corrected to the intended design.
 - Life Cocoon - Double check if the Enveloping Mists and Renewing Mists from Mists of Life proc the mastery or not.
-- Lgendaries
 - Not Modeled:
--- Crane's Grace
--- Invoke Chi-Ji
--- Summon Jade Serpent Statue
 
 BREWMASTER:
-- Legendaries
 - Not Modeled:
--- Damage part of Expel Harm
--- Summon Black Ox Statue
--- Guard
--- Zen Meditation
 */
 #include "simulationcraft.hpp"
 #include "player/pet_spawner.hpp"
