@@ -1784,6 +1784,7 @@ class SpellDataGenerator(DataGenerator):
           ( 227291, 1 ), # Niuzao pet Stomp
           # Mistweaver
           ( 228649, 2 ), # Teachings of the Monastery - Blackout Proc
+          ( 343820, 2 ), # Invoke Chi-Ji, the Red Crane - Enveloping Mist cast reduction
           # Windwalker
           ( 115057, 3 ), # Flying Serpent Kick Movement spell
           ( 116768, 3 ), # Combo Breaker: Blackout Kick

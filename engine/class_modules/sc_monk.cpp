@@ -234,6 +234,8 @@ public:
     // Mistweaver
     absorb_buff_t* life_cocoon;
     buff_t* channeling_soothing_mist;
+    buff_t* invoke_chiji;
+    buff_t* invoke_chiji_evm;
     buff_t* lifecycles_enveloping_mist;
     buff_t* lifecycles_vivify;
     buff_t* mana_tea;
@@ -2608,6 +2610,7 @@ struct monk_action_t : public Base
   sef_ability_e sef_ability;
   bool ww_mastery;
   bool may_combo_strike;
+  bool trigger_chiji;
 
   // Affect flags for various dynamic effects
   struct
@@ -2623,7 +2626,7 @@ public:
   using base_t = monk_action_t<Base>;
 
   monk_action_t( util::string_view n, monk_t* player, const spell_data_t* s = spell_data_t::nil() )
-    : ab( n, player, s ), sef_ability( SEF_NONE ), ww_mastery( false ), may_combo_strike( false ), affected_by()
+    : ab( n, player, s ), sef_ability( SEF_NONE ), ww_mastery( false ), may_combo_strike( false ), trigger_chiji( false ), affected_by()
   {
     ab::may_crit = true;
     range::fill( _resource_by_stance, RESOURCE_MAX );
@@ -2948,6 +2951,9 @@ public:
   {
     if ( may_combo_strike )
       combo_strikes_trigger();
+
+    if ( trigger_chiji )
+      p()->buff.invoke_chiji_evm->trigger();
 
     ab::execute();
 
@@ -3327,6 +3333,8 @@ struct chiji_spell_t : public summon_pet_t
   void execute() override
   {
     summon_pet_t::execute();
+
+    p()->buff.invoke_chiji->trigger();
 
     if ( p()->legendary.invokers_delight->ok() )
       p()->buff.invokers_delight->trigger();
@@ -3735,6 +3743,7 @@ struct tiger_palm_t : public monk_melee_attack_t
 
     ww_mastery                    = true;
     may_combo_strike              = true;
+    trigger_chiji                 = true;
     sef_ability                   = SEF_TIGER_PALM;
     affected_by.sunrise_technique = true;
 
@@ -3926,6 +3935,7 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
 
     background = dual             = true;
     may_crit                      = true;
+    trigger_chiji                 = true;
     affected_by.sunrise_technique = true;
   }
 
@@ -4113,6 +4123,7 @@ struct blackout_kick_totm_proc : public monk_melee_attack_t
   {
     cooldown->duration = timespan_t::zero();
     background = dual             = true;
+    trigger_chiji                 = true;
     affected_by.sunrise_technique = true;
     trigger_gcd                   = timespan_t::zero();
   }
@@ -4213,6 +4224,7 @@ struct blackout_kick_t : public monk_melee_attack_t
     sef_ability                   = SEF_BLACKOUT_KICK;
     affected_by.sunrise_technique = true;
     may_combo_strike              = true;
+    trigger_chiji                 = true;
 
     switch ( p->specialization() )
     {
@@ -4522,6 +4534,7 @@ struct sck_tick_action_t : public monk_melee_attack_t
   {
     affected_by.sunrise_technique = true;
     ww_mastery                    = true;
+    trigger_chiji                 = true;
 
     dual = background = true;
     aoe               = (int)p->spec.spinning_crane_kick->effectN( 1 ).base_value();
@@ -6437,6 +6450,9 @@ struct enveloping_mist_t : public monk_heal_t
   timespan_t execute_time() const override
   {
     timespan_t et = monk_heal_t::execute_time();
+
+    if ( p()->buff.invoke_chiji_evm->up() )
+      et *= 1 + p()->buff.invoke_chiji_evm->stack_value();
 
     if ( p()->buff.thunder_focus_tea->check() )
       et *= 1 + p()->spec.thunder_focus_tea->effectN( 3 ).percent();  // saved as -100
@@ -8423,6 +8439,11 @@ void monk_t::create_buffs()
 
   // Mistweaver
   buff.channeling_soothing_mist = make_buff( this, "channeling_soothing_mist", passives.soothing_mist_heal );
+
+  buff.invoke_chiji = make_buff( this, "invoke_chiji", find_spell( 343818 ) );
+
+  buff.invoke_chiji_evm = make_buff( this, "invoke_chiji_evm", find_spell( 343820 ) )
+      ->set_default_value( find_spell( 343820 )->effectN( 1 ).percent() );
 
   buff.life_cocoon = make_buff<absorb_buff_t>( this, "life_cocoon", spec.life_cocoon );
   buff.life_cocoon->set_absorb_source( get_stats( "life_cocoon" ) )->set_cooldown( timespan_t::zero() );
