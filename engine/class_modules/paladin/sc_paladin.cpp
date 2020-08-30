@@ -765,6 +765,11 @@ struct inner_light_damage_t : public paladin_spell_t
 
 double holy_power_consumer_t::cost() const
 {
+  if ( background )
+  {
+    return 0.0;
+  }
+
   if ( ( is_divine_storm && ( p() -> buffs.empyrean_power_azerite -> check() || p() -> buffs.empyrean_power -> check() ) ) ||
        p() -> buffs.divine_purpose -> check() )
   {
@@ -973,6 +978,26 @@ struct hand_of_reckoning_t: public paladin_melee_attack_t
   }
 };
 
+// Covenants =======
+
+struct vanquishers_hammer_t : public holy_power_consumer_t
+{
+  vanquishers_hammer_t( paladin_t* p, const std::string& options_str ) :
+    holy_power_consumer_t( "vanquishers_hammer", p, p -> covenant.necrolord )
+  {
+    parse_options( options_str );
+
+    base_multiplier *= 1.0 + p -> conduit.righteous_might.percent(); // todo: implement heal
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    holy_power_consumer_t::impact( s );
+
+    p() -> buffs.vanquishers_hammer -> trigger();
+  }
+};
+
 // ==========================================================================
 // End Attacks
 // ==========================================================================
@@ -1147,6 +1172,8 @@ action_t* paladin_t::create_action( util::string_view name, const std::string& o
   if ( name == "lay_on_hands"              ) return new lay_on_hands_t             ( this, options_str );
   if ( name == "holy_avenger"              ) return new holy_avenger_t             ( this, options_str );
   if ( name == "seraphim"                  ) return new seraphim_t                 ( this, options_str );
+
+  if ( name == "vanquishers_hammer"        ) return new vanquishers_hammer_t       ( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
@@ -1423,6 +1450,10 @@ void paladin_t::create_buffs()
 
   buffs.holy_avenger = make_buff( this, "holy_avenger", talents.holy_avenger )
                      -> set_cooldown( 0_ms ); // handled by the ability
+
+  // Covenants
+  buffs.vanquishers_hammer = make_buff( this, "vanquishers_hammer", covenant.necrolord )
+                             -> set_cooldown( 0_ms );
 }
 
 // paladin_t::default_potion ================================================

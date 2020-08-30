@@ -136,6 +136,9 @@ public:
     action_t* sotr;
 
     blessing_of_sacrifice_redirect_t* blessing_of_sacrifice_redirect;
+
+    // Covenant stuff
+    action_t* necrolord_divine_storm;
   } active;
 
   // Buffs
@@ -180,6 +183,9 @@ public:
     buff_t* empyrean_power;
     buff_t* empyrean_power_azerite;
     buff_t* relentless_inquisitor;
+
+    // Covenants
+    buff_t* vanquishers_hammer;
   } buffs;
 
   // Gains

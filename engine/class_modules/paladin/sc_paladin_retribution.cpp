@@ -190,10 +190,22 @@ struct blade_of_justice_t : public paladin_melee_attack_t
 struct divine_storm_t: public holy_power_consumer_t
 {
   divine_storm_t( paladin_t* p, const std::string& options_str ) :
-    holy_power_consumer_t( "divine_storm", p, p -> find_class_spell( "Divine Storm" ) )
+    holy_power_consumer_t( "divine_storm", p, p -> find_specialization_spell( "Divine Storm" ) )
   {
     parse_options( options_str );
     is_divine_storm = true;
+
+    aoe = data().effectN( 2 ).base_value();
+  }
+
+  divine_storm_t( paladin_t* p, bool is_free, float mul ) :
+    holy_power_consumer_t( "divine_storm", p, p -> find_specialization_spell( "Divine Storm" ) )
+  {
+    is_divine_storm = true;
+    aoe = data().effectN( 2 ).base_value();
+
+    background = is_free;
+    base_multiplier *= mul;
   }
 
   double bonus_da( const action_state_t* s ) const override
@@ -272,6 +284,12 @@ struct templars_verdict_t : public holy_power_consumer_t
     {
       p() -> buffs.righteous_verdict -> expire();
       p() -> buffs.righteous_verdict -> trigger();
+    }
+
+    if ( p() -> buffs.vanquishers_hammer -> up() )
+    {
+      p() -> buffs.vanquishers_hammer -> expire();
+      p() -> active.necrolord_divine_storm -> execute();
     }
   }
 };
@@ -507,6 +525,7 @@ void paladin_t::create_ret_actions()
   }
 
   active.shield_of_vengeance_damage = new shield_of_vengeance_proc_t( this );
+  active.necrolord_divine_storm = new divine_storm_t( this, true, 1.0 );
 }
 
 action_t* paladin_t::create_action_retribution( util::string_view name, const std::string& options_str )
