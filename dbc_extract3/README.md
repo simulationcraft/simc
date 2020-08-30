@@ -5,7 +5,7 @@ Requirements
 ============
 
 - A decently new Python implementation (2.5+)
-  
+
 Extracting data
 ================
 
@@ -28,8 +28,8 @@ To extract data, the tool typically requires two things:
  1) An input path where your DBC files are located (-p switch)
  2) An extraction type, specifying what kind of output will be generated
     (-t switch)
- 3) A build number, specifying the WoW build number where your DBC data 
-    is from (-b switch). Note that some extraction types do not require 
+ 3) A build number, specifying the WoW build number where your DBC data
+    is from (-b switch). Note that some extraction types do not require
     a build number (-t header, -t patch).
 
 Some optional parameters may also be specified that modify the output (others
@@ -37,12 +37,12 @@ can be seen with dbc_extract.py --help):
  --prefix  specify a modifier for the data output variable names
  --suffix
 
-Additionally, the tool contains a "-t view" switch to view the raw data of a (known) 
+Additionally, the tool contains a "-t view" switch to view the raw data of a (known)
 DBC file. The switch takes two additional parameters:
  1) The name of the DBC file in the directory pointed by -p
- 2) An optional, numerical identifier for the record you are looking for. 
-    If omitted, all records are output. 
-    
+ 2) An optional, numerical identifier for the record you are looking for.
+    If omitted, all records are output.
+
 *NOTE* The identifier search is done as a binary search, so if a DBC file
 records are not ordered, things may not be found. *NOTE*
 
