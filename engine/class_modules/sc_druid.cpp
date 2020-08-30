@@ -986,6 +986,21 @@ public:
   void vision_of_perfection_proc() override;
   void apply_affecting_auras( action_t& ) override;
 
+  // secondary actions
+  std::vector<action_t*> secondary_action_list;
+
+  template <typename T, typename... Ts>
+  T* get_secondary_action( util::string_view n, Ts&&... args )
+  {
+    auto it = range::find( secondary_action_list, n, &action_t::name_str );
+    if ( it != secondary_action_list.cend() )
+      return dynamic_cast<T*>( *it );
+
+    auto a = new T( this, std::forward<Ts>( args )... );
+    secondary_action_list.push_back( a );
+    return a;
+  }
+
 private:
   void apl_precombat();
   void apl_default();
@@ -2443,7 +2458,6 @@ public:
       }
       else if ( splits[ 1 ] == "thrash_cat" )  // special case since pw applies in aoe
       {
-        // action_t* rip = p()->find_action("rip");
         action_t* tc = p()->find_action( "thrash_cat" );
 
         return make_fn_expr( name_str, [tc, pmult_adjusted]() -> double {
@@ -3128,15 +3142,14 @@ struct moonfire_t : public druid_spell_t
     }
   };
 
-  moonfire_damage_t* damage;  // Add damage modifiers in moonfire_damage_t, not moonfire_t
+  action_t* damage;  // Add damage modifiers in moonfire_damage_t, not moonfire_t
 
   moonfire_t( druid_t* p, const std::string& options_str )
     : druid_spell_t( "moonfire", p, p->find_class_spell( "Moonfire" ), options_str )
   {
-    may_miss      = false;
-    damage        = new moonfire_damage_t( p );
+    may_miss = may_crit = false;
+    damage = p->get_secondary_action<moonfire_damage_t>( "moonfire_dmg" );
     damage->stats = stats;
-    add_child( damage );
 
     if ( p->active.galactic_guardian )
       add_child( p->active.galactic_guardian );
@@ -3823,11 +3836,10 @@ struct feral_frenzy_driver_t : public cat_attack_t
   {
     parse_options( options_str );
 
-    tick_action        = new feral_frenzy_dot_t( p );
+    tick_action = p->get_secondary_action<feral_frenzy_dot_t>( "feral_frenzy_tick" );
     tick_action->stats = stats;
-    // hasted_ticks = true;
     dynamic_tick_action = true;
-    tick_ap_ratio       = p->find_spell( 274838 )->effectN( 3 ).ap_coeff();
+    tick_ap_ratio = p->find_spell( 274838 )->effectN( 3 ).ap_coeff();
   }
 
   bool ready() override
@@ -4146,12 +4158,8 @@ struct rake_t : public cat_attack_t
     if ( p->find_rank_spell( "Rake", "Rank 2" )->ok() )
       stealth_mul = data().effectN( 4 ).percent();
 
-    bleed = p->find_action( "rake_bleed" );
-    if ( !bleed )
-    {
-      bleed        = new rake_bleed_t( p );
-      bleed->stats = stats;
-    }
+    bleed = p->get_secondary_action<rake_bleed_t>( "rank_bleed" );
+    bleed->stats = stats;
   }
 
   bool stealthed() const override
@@ -4292,12 +4300,9 @@ struct primal_wrath_t : public cat_attack_t
     special = true;
     aoe     = -1;
 
-    // rip = (rip_t*)p->find_action("rip");
-    // if (!rip)
-    rip        = new rip_t( p, "" );
+    // TODO: consolidate into single object instead of new rip_t for every time
+    rip = new rip_t( p, "" );
     rip->stats = stats;
-    // stats->add_child(rip->stats);
-    // add_child(rip);
   }
 
   dot_t* get_dot( player_t* t ) override
@@ -5570,7 +5575,7 @@ struct fury_of_elune_t : public druid_spell_t
   {
     if ( !p->active.fury_of_elune )
     {
-      p->active.fury_of_elune        = new fury_of_elune_tick_t( "fury_of_elune_tick", p );
+      p->active.fury_of_elune = new fury_of_elune_tick_t( "fury_of_elune_tick", p );
       p->active.fury_of_elune->stats = stats;
     }
   }
@@ -6109,7 +6114,7 @@ struct lunar_beam_t : public druid_spell_t
       dual = background = ground_aoe = true;
       attack_power_mod.direct        = data().effectN( 2 ).ap_coeff();
 
-      heal = new lunar_beam_heal_t( p );
+      heal = p->get_secondary_action<lunar_beam_heal_t>( "lunar_beam_heal" );
     }
 
     void execute() override
@@ -6129,13 +6134,8 @@ struct lunar_beam_t : public druid_spell_t
     base_tick_time = timespan_t::from_seconds( 1.0 );  // TODO: Find in spell data... somewhere!
     dot_duration   = timespan_t::zero();
 
-    damage = p->find_action( "lunar_beam_damage" );
-
-    if ( !damage )
-    {
-      damage        = new lunar_beam_damage_t( p );
-      damage->stats = stats;
-    }
+    damage = p->get_secondary_action<lunar_beam_damage_t>( "lunar_beam_damage" );
+    damage->stats = stats;
   }
 
   void execute() override
@@ -6300,21 +6300,19 @@ struct sunfire_t : public druid_spell_t
     }
   };
 
-  sunfire_damage_t* damage;  // Add damage modifiers in sunfire_damage_t, not sunfire_t
+  action_t* damage;  // Add damage modifiers in sunfire_damage_t, not sunfire_t
 
-  sunfire_t( druid_t* player, const std::string& options_str )
-    : druid_spell_t( "sunfire", player, player->find_affinity_spell( "Sunfire" ), options_str )
+  sunfire_t( druid_t* p, const std::string& options_str )
+    : druid_spell_t( "sunfire", p, p->find_affinity_spell( "Sunfire" ), options_str )
   {
-    may_miss      = false;
-    damage        = new sunfire_damage_t( player );
+    may_miss = may_crit = false;
+    damage = p->get_secondary_action<sunfire_damage_t>( "sunfire_dmg" );
     damage->stats = stats;
 
-    add_child( damage );
-
-    if ( player->spec.astral_power->ok() )
+    if ( p->spec.astral_power->ok() )
     {
       energize_resource = RESOURCE_ASTRAL_POWER;
-      energize_amount   = player->spec.astral_power->effectN( 3 ).resource( RESOURCE_ASTRAL_POWER );
+      energize_amount   = p->spec.astral_power->effectN( 3 ).resource( RESOURCE_ASTRAL_POWER );
     }
     else
       energize_type = action_energize::NONE;
@@ -6602,16 +6600,8 @@ struct starfall_t : public druid_spell_t
     : druid_spell_t( "starfall", p, p->spec.starfall, options_str )
   {
     may_miss = may_crit = false;
-
-    starfall_tick = p->find_action( "starfall_tick" );
-    if ( !starfall_tick )
-    {
-      starfall_tick = new starfall_tick_t( p );
-      starfall_tick->init();
-    }
-
+    starfall_tick = p->get_secondary_action<starfall_tick_t>( "starfall_tick" );
     starfall_tick->stats = stats;
-    add_child( starfall_tick );
 
     if ( p->azerite.lunar_shrapnel.ok() )
       add_child( p->active.lunar_shrapnel );
@@ -7098,26 +7088,23 @@ struct convoke_the_spirits_t : public druid_spell_t
     deck = p->get_shuffled_rng( "convoke_the_spirits", heals_int, static_cast<int>( dot_duration / base_tick_time ) );
 
     // Balance
-    conv_fm = create_convoke_action( "full_moon" );
-    conv_wr = create_convoke_action( "wrath" );
-    conv_ss = create_convoke_action( "starsurge" );
-    conv_sf = create_convoke_action( "starfall" );
-    conv_mf = create_convoke_action( "moonfire" );
+    conv_fm = get_convoke_action<full_moon_t>( "full_moon" );
+    conv_wr = get_convoke_action<wrath_t>( "wrath" );
+    conv_ss = get_convoke_action<starsurge_t>( "starsurge" );
+    conv_sf = get_convoke_action<starfall_t>( "starfall" );
+    conv_mf = get_convoke_action<moonfire_t>( "moonfire" );
 
     // Feral
     // Guardian
     // Restoration
   }
 
-  action_t* create_convoke_action( util::string_view n )
+  template <typename T>
+  T* get_convoke_action( util::string_view n )
   {
-    auto tmp = p()->find_action( n );
-    if ( !tmp )
-      tmp = p()->create_action( n, "" );
-
-    stats->add_child( debug_cast<druid_action_t*>( tmp )->init_free_cast_stats( free_cast_e::CONVOKE ) );
-
-    return tmp;
+    auto a = p()->get_secondary_action<T>( n, "" );
+    stats->add_child( a->init_free_cast_stats( free_cast_e::CONVOKE ) );
+    return a;
   }
 
   double composite_haste() const override { return 1.0; }
@@ -7168,69 +7155,69 @@ struct convoke_the_spirits_t : public druid_spell_t
 
     conv_tar = tl[ static_cast<size_t>( rng().range( 0, as<double>( tl.size() ) ) ) ];
 
-    if ( rng().roll( p()->convoke_the_spirits_ultimate ) )  // assume 1% 'ultimate' overrides spell selection logic
+    if ( p()->buff.moonkin_form->check() )
     {
-      if ( p()->buff.moonkin_form->check() )
+      if ( rng().roll( p()->convoke_the_spirits_ultimate ) )  // assume 1% 'ultimate' overrides spell selection logic
         conv_cast = conv_fm;
-    }
-    else if ( p()->buff.moonkin_form->check() )
-    {
-      if ( !p()->buff.starfall->check() )  // always starfall if it isn't up
-        conv_cast = conv_sf;
-      else  // randomly decide on damage spell
+      else
       {
-        std::vector<player_t*> mf_tl;  // separate list for mf targets without a dot;
-        for ( auto i : tl )
+        if ( !p()->buff.starfall->check() )  // always starfall if it isn't up
+          conv_cast = conv_sf;
+        else  // randomly decide on damage spell
         {
-          if ( !td( i )->dots.moonfire->is_ticking() )
-            mf_tl.push_back( i );
-        }
+          std::vector<player_t*> mf_tl;  // separate list for mf targets without a dot;
+          for ( auto i : tl )
+          {
+            if ( !td( i )->dots.moonfire->is_ticking() )
+              mf_tl.push_back( i );
+          }
 
-        player_t* mf_tar = nullptr;
-        if ( mf_tl.size() )
-          mf_tar = mf_tl[ static_cast<size_t>( rng().range( 0, as<double>( mf_tl.size() ) ) ) ];
+          player_t* mf_tar = nullptr;
+          if ( mf_tl.size() )
+            mf_tar = mf_tl[ static_cast<size_t>( rng().range( 0, as<double>( mf_tl.size() ) ) ) ];
 
-        if ( !mf_cast && mf_tar )  // always mf once if at least one eligible target
-        {
-          conv_cast = conv_mf;
-          mf_cast   = true;
-        }
-        else  // try to keep spell count balanced
-        {
-          std::vector<action_t*> dam;
+          if ( !mf_cast && mf_tar )  // always mf once if at least one eligible target
+          {
+            conv_cast = conv_mf;
+            mf_cast = true;
+          }
+          else  // try to keep spell count balanced
+          {
+            std::vector<action_t*> dam;
 
-          if ( mf_tar && mf_count <= ss_count && mf_count <= wr_count )  // balance mf against ss & wr
-            dam.push_back( conv_mf );
+            if ( mf_tar && mf_count <= ss_count && mf_count <= wr_count )  // balance mf against ss & wr
+              dam.push_back( conv_mf );
 
-          if ( ss_count <= wr_count )  // balance ss only against wr
-            dam.push_back( conv_ss );
+            if ( ss_count <= wr_count )  // balance ss only against wr
+              dam.push_back( conv_ss );
 
-          if ( wr_count <= ss_count )  // balance wr only against ss
-            dam.push_back( conv_wr );
+            if ( wr_count <= ss_count )  // balance wr only against ss
+              dam.push_back( conv_wr );
 
-          if ( !dam.size() )  // sanity check
-            return;
+            if ( !dam.size() )  // sanity check
+              return;
 
-          conv_cast = dam[ static_cast<size_t>( rng().range( 0, as<double>( dam.size() ) ) ) ];
+            conv_cast = dam[ static_cast<size_t>( rng().range( 0, as<double>( dam.size() ) ) ) ];
+
+            if ( conv_cast == conv_mf )
+              mf_count++;
+            else if ( conv_cast == conv_ss )
+              ss_count++;
+            else if ( conv_cast == conv_wr )
+              wr_count++;
+          }
 
           if ( conv_cast == conv_mf )
-            mf_count++;
-          else if ( conv_cast == conv_ss )
-            ss_count++;
-          else if ( conv_cast == conv_wr )
-            wr_count++;
+            conv_tar = mf_tar;
         }
-
-        if ( conv_cast == conv_mf )
-          conv_tar = mf_tar;
       }
+      debug_cast<druid_action_t<spell_t>*>( conv_cast )->free_cast = free_cast_e::CONVOKE;
     }
 
     if ( !conv_cast || !conv_tar )
       return;
 
     conv_cast->set_target( conv_tar );
-    debug_cast<druid_action_t*>( conv_cast )->free_cast = free_cast_e::CONVOKE;
     conv_cast->execute();
   }
 
@@ -7520,20 +7507,23 @@ struct adaptive_swarm_t : public druid_spell_t
   adaptive_swarm_base_t* heal;
   bool cast_heal;
 
-  adaptive_swarm_t( druid_t* player, const std::string& options_str )
-    : druid_spell_t( "adaptive_swarm", player, player->covenant.necrolord, options_str ), cast_heal( false )
+  adaptive_swarm_t( druid_t* p, const std::string& options_str )
+    : druid_spell_t( "adaptive_swarm", p, p->covenant.necrolord, options_str ), cast_heal( false )
   {
     add_option( opt_bool( "cast_heal", cast_heal ) );
     parse_options( options_str );
 
     // These are always necessary to allow APL parsing of dot.adaptive_swarm expressions
-    heal   = new adaptive_swarm_base_t( player, "adaptive_swarm_heal", player->covenant.adaptive_swarm_damage, true );
-    damage = new adaptive_swarm_base_t( player, "adaptive_swarm_damage", player->covenant.adaptive_swarm_damage );
+    heal = p->get_secondary_action<adaptive_swarm_base_t>( "adaptive_swarm_heal", "adaptive_swarm_heal",
+                                                           p->covenant.adaptive_swarm_heal, true );
+    damage = p->get_secondary_action<adaptive_swarm_base_t>( "adaptive_swarm_damage", "adaptive_swarm_damage",
+                                                             p->covenant.adaptive_swarm_damage );
 
-    if ( !player->covenant.necrolord->ok() )
+    if ( !p->covenant.necrolord->ok() )
       return;
 
-    swarm         = new swarm_handler_t( p() );
+    // TODO: THIS NEEDS TO BE FIXED SO WE DON'T GET NEW OBJECT FOR EVERY ADAPTIVE SWARM ACTION
+    swarm         = new swarm_handler_t( p );
     heal->swarm   = swarm;
     damage->swarm = swarm;
     damage->other = heal;
@@ -7550,9 +7540,9 @@ struct adaptive_swarm_t : public druid_spell_t
 
     if ( cast_heal )
     {
-      heal->set_target( player );
+      heal->set_target( p() );
       heal->schedule_execute();
-      swarm->new_swarm( heal->get_dot( player ) );
+      swarm->new_swarm( heal->get_dot( p() ) );
     }
     else
     {
@@ -7667,21 +7657,17 @@ struct lycaras_fleeting_glimpse_event_t : public event_t
       bear( nullptr ),
       tree( nullptr )
   {
-    moonkin = create_lycara_action<spell_t>( "starfall" );
+    moonkin = get_lycaras_action<spells::starfall_t>( "starfall" );
   }
 
   const char* name() const override { return "lycaras_fleeting_glimpse"; }
 
-  template <typename B>
-  action_t* create_lycara_action( util::string_view n )
+  template <typename T>
+  T* get_lycaras_action( util::string_view n )
   {
-    auto tmp = druid->find_action( n );
-    assert( tmp && "no existing action for lycara's fleeting glimpse" );
-
-    druid->active.lycaras_fleeting_glimpse->stats->add_child(
-        debug_cast<druid_action_t<B>*>( tmp )->init_free_cast_stats( free_cast_e::LYCARAS ) );
-
-    return tmp;
+    auto a = druid->get_secondary_action<T>( n, "" );
+    druid->active.lycaras_fleeting_glimpse->stats->add_child( a->init_free_cast_stats( free_cast_e::LYCARAS ) );
+    return a;
   }
 
   void execute() override
@@ -8623,8 +8609,7 @@ void druid_t::create_actions()
   {
     active.lycaras_fleeting_glimpse =
         new action_t( action_e::ACTION_OTHER, "lycaras_fleeting_glimpse", this, legendary.lycaras_fleeting_glimpse );
-    if ( !find_action( "starfall" ) )
-      create_action( "starfall", "" );
+    get_secondary_action<spells::starfall_t>( "starfall", "" );
   }
 }
 
