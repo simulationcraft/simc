@@ -4473,6 +4473,38 @@ struct chi_explosion_t : public monk_spell_t
   }
 };
 
+struct breath_of_fire_celestial_flames_t : public monk_spell_t
+{
+  breath_of_fire_celestial_flames_t( monk_t& p )
+    : monk_spell_t( "breath_of_fire_dot", &p, p.passives.breath_of_fire_dot )
+  {
+    background    = true;
+    tick_may_crit = may_crit = true;
+    hasted_ticks             = false;
+  }
+
+  double bonus_ta( const action_state_t* s ) const override
+  {
+    double b = base_t::bonus_ta( s );
+
+    if ( p()->azerite.boiling_brew.ok() )
+      b += p()->azerite.boiling_brew.value( 2 );
+
+    return b;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    monk_spell_t::impact( s );
+
+    if ( p()->azerite.boiling_brew.ok() && p()->rppm.boiling_brew->trigger() )
+    {
+      p()->proc.boiling_brew_healing_sphere->occur();
+      p()->buff.gift_of_the_ox->trigger();
+    }
+  }
+};
+
 struct sck_tick_action_t : public monk_melee_attack_t
 {
   sck_tick_action_t( const std::string& name, monk_t* p, const spell_data_t* data )
@@ -4556,6 +4588,8 @@ struct sck_tick_action_t : public monk_melee_attack_t
 struct spinning_crane_kick_t : public monk_melee_attack_t
 {
   chi_explosion_t* chi_x;
+  breath_of_fire_celestial_flames_t* breath_of_fire;
+
   spinning_crane_kick_t( monk_t* p, const std::string& options_str )
     : monk_melee_attack_t( "spinning_crane_kick", p, p->spec.spinning_crane_kick ), chi_x( nullptr )
   {
@@ -4577,6 +4611,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
       base_costs[ RESOURCE_CHI ] -= p->passives.cyclone_strikes->effectN( 2 ).base_value();
 
     chi_x = new chi_explosion_t( p );
+    breath_of_fire = new breath_of_fire_celestial_flames_t( *p );
   }
 
   // N full ticks, but never additional ones.
@@ -4620,6 +4655,9 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
 
     if ( p()->buff.chi_energy->up() )
       chi_x->execute();
+
+    if ( p()->buff.celestial_flames->up() )
+      breath_of_fire->execute();
   }
 
   void last_tick( dot_t* dot ) override
@@ -5741,9 +5779,7 @@ struct breath_of_fire_t : public monk_spell_t
 
     // if player level >= 10
     if ( p()->mastery.elusive_brawler )
-    {
       p()->buff.elusive_brawler->trigger();
-    }
   }
 };
 
@@ -9340,9 +9376,10 @@ void monk_t::target_mitigation( school_e school, result_amount_type dt, action_s
   // If Breath of Fire is ticking on the source target, the player receives 5% less damage
   if ( get_target_data( s->action->player )->dots.breath_of_fire->is_ticking() )
   {
+    // Saved as -5
     double dmg_reduction = passives.breath_of_fire_dot->effectN( 2 ).percent();
     if ( buff.celestial_flames->up() )
-      dmg_reduction += buff.celestial_flames->value();
+      dmg_reduction -= buff.celestial_flames->value(); // Saved as 5
     s->result_amount *= 1.0 + dmg_reduction;
   }
 
