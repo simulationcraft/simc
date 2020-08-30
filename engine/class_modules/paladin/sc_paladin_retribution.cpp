@@ -725,7 +725,7 @@ void paladin_t::generate_action_prio_list_ret()
   generators -> add_action( this, "Blade of Justice", "if=holy_power<=2|(holy_power=3&(cooldown.hammer_of_wrath.remains>gcd*2))" );
   // generators -> add_action( "divine_toll,if=(holy_power<=2|(holy_power<=4&(cooldown.blade_of_justice.remains>gcd*2)))&debuff.judgment.down|talent.execution_sentence.enabled&cooldown.execution_sentence.remains>10&(holy_power<=4&(cooldown.blade_of_justice.remains>gcd*2))" );
   generators -> add_action( this, "Judgment", "if=holy_power<=2|(holy_power<=4&(cooldown.blade_of_justice.remains>gcd*2))" );
-  generators -> add_action( "call_action_list,name=finishers,if=talent.hammer_of_wrath.enabled&target.health.pct<=20|buff.avenging_wrath.up|buff.crusade.up" );
+  generators -> add_action( "call_action_list,name=finishers,if=target.health.pct<=20|buff.avenging_wrath.up|buff.crusade.up" );
   generators -> add_action( this, "Crusader Strike", "if=cooldown.crusader_strike.charges_fractional>=1.75&(holy_power<=2|holy_power<=3&cooldown.blade_of_justice.remains>gcd*2|holy_power=4&cooldown.blade_of_justice.remains>gcd*2&cooldown.judgment.remains>gcd*2&cooldown.consecration.remains>gcd*2)" );
   generators -> add_action( "call_action_list,name=finishers" );
   generators -> add_action( this, "Crusader Strike", "if=holy_power<=4" );
