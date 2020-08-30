@@ -121,7 +121,7 @@ namespace buffs {
 struct blessing_of_protection_t : public paladin_spell_t
 {
   blessing_of_protection_t( paladin_t* p, const std::string& options_str ) :
-    paladin_spell_t( "blessing_of_protection", p, p -> find_spell( "Blessing of Protection" ) )
+    paladin_spell_t( "blessing_of_protection", p, p -> find_class_spell( "Blessing of Protection" ) )
   {
     parse_options( options_str );
   }
@@ -416,7 +416,7 @@ struct divine_steed_t : public paladin_spell_t
 struct flash_of_light_t : public paladin_heal_t
 {
   flash_of_light_t( paladin_t* p, const std::string& options_str ) :
-    paladin_heal_t( "flash_of_light", p, p -> find_spell( "Flash of Light" ) )
+    paladin_heal_t( "flash_of_light", p, p -> find_class_spell( "Flash of Light" ) )
   {
     parse_options( options_str );
   }
@@ -427,7 +427,7 @@ struct flash_of_light_t : public paladin_heal_t
 struct blessing_of_sacrifice_redirect_t : public paladin_spell_t
 {
   blessing_of_sacrifice_redirect_t( paladin_t* p ) :
-    paladin_spell_t( "blessing_of_sacrifice_redirect", p, p -> find_spell( "Blessing of Sacrifice" ) )
+    paladin_spell_t( "blessing_of_sacrifice_redirect", p, p -> find_class_spell( "Blessing of Sacrifice" ) )
   {
     background = true;
     trigger_gcd = 0_ms;
@@ -451,7 +451,7 @@ struct blessing_of_sacrifice_redirect_t : public paladin_spell_t
 struct blessing_of_sacrifice_t : public paladin_spell_t
 {
   blessing_of_sacrifice_t( paladin_t* p, const std::string& options_str ) :
-    paladin_spell_t( "blessing_of_sacrifice", p, p -> find_spell( "Blessing of Sacrifice" ) )
+    paladin_spell_t( "blessing_of_sacrifice", p, p -> find_class_spell( "Blessing of Sacrifice" ) )
   {
     parse_options( options_str );
 
@@ -1647,7 +1647,7 @@ void paladin_t::init_spells()
   // Shared Passives and spells
   passives.plate_specialization = find_specialization_spell( "Plate Specialization" );
   passives.paladin              = find_spell( 137026 );
-  spells.avenging_wrath = find_spell( "Avenging Wrath" );
+  spells.avenging_wrath = find_class_spell( "Avenging Wrath" );
   spells.avenging_wrath_autocrit = find_spell( 294027 );
   spells.judgment_2 = find_spell( 327977 );
 
