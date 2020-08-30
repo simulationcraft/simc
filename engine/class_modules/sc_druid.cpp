@@ -4292,7 +4292,11 @@ struct primal_wrath_t : public cat_attack_t
   rip_t* rip;
 
   primal_wrath_t( druid_t* p, const std::string& options_str )
-    : cat_attack_t( "primal_wrath", p, p->talent.primal_wrath, options_str ), combo_points( 0 )
+    : primal_wrath_t( p, p->talent.primal_wrath, options_str )
+  {}
+
+  primal_wrath_t( druid_t* p, const spell_data_t* sd, const std::string& options_str )
+    : cat_attack_t( "primal_wrath", p, sd, options_str ), combo_points( 0 )
   {
     parse_options( options_str );
 
@@ -4325,6 +4329,11 @@ struct primal_wrath_t : public cat_attack_t
 
   void impact( action_state_t* s ) override
   {
+    if ( free_cast )
+      rip->stats = get_free_cast_stats( free_cast );
+    else
+      rip->stats = orig_stats;
+
     cat_attack_t::impact( s );
 
     auto b_state    = rip->get_state();
@@ -7086,21 +7095,21 @@ struct convoke_the_spirits_t : public druid_spell_t
     deck = p->get_shuffled_rng( "convoke_the_spirits", heals_int, static_cast<int>( dot_duration / base_tick_time ) );
 
     // Balance
-    conv_fm = get_convoke_action<full_moon_t>( "full_moon" );
-    conv_wr = get_convoke_action<wrath_t>( "wrath" );
-    conv_ss = get_convoke_action<starsurge_t>( "starsurge" );
-    conv_sf = get_convoke_action<starfall_t>( "starfall" );
-    conv_mf = get_convoke_action<moonfire_t>( "moonfire" );
+    conv_fm = get_convoke_action<full_moon_t>( "full_moon", options_str );
+    conv_wr = get_convoke_action<wrath_t>( "wrath", options_str );
+    conv_ss = get_convoke_action<starsurge_t>( "starsurge", options_str );
+    conv_sf = get_convoke_action<starfall_t>( "starfall", options_str );
+    conv_mf = get_convoke_action<moonfire_t>( "moonfire",options_str );
 
     // Feral
     // Guardian
     // Restoration
   }
 
-  template <typename T>
-  T* get_convoke_action( util::string_view n )
+  template <typename T, typename... Ts>
+  T* get_convoke_action( util::string_view n, Ts&&... args )
   {
-    auto a = p()->get_secondary_action<T>( n, "" );
+    auto a = p()->get_secondary_action<T>( n, std::forward<Ts>( args )... );
     stats->add_child( a->init_free_cast_stats( free_cast_e::CONVOKE ) );
     return a;
   }
@@ -7635,56 +7644,70 @@ struct persistent_buff_delay_event_t : public event_t
   void execute() override { buff->trigger(); }
 };
 
-struct lycaras_fleeting_glimpse_event_t : public event_t
+struct lycaras_fleeting_glimpse_t : public action_t
 {
-  druid_t* druid;
-  timespan_t interval;
-  action_t* lycaras;
+  druid_t* d;
   action_t* moonkin;
   action_t* cat;
   action_t* bear;
   action_t* tree;
 
-  lycaras_fleeting_glimpse_event_t( druid_t* p, timespan_t tm )
-    : event_t( *p, tm ),
-      druid( p ),
-      interval( tm ),
-      lycaras( nullptr ),
-      moonkin( nullptr ),
-      cat( nullptr ),
-      bear( nullptr ),
-      tree( nullptr )
+  lycaras_fleeting_glimpse_t( druid_t* p )
+    : action_t( action_e::ACTION_OTHER, "lycaras_fleeting_glimpse", p, p->legendary.lycaras_fleeting_glimpse ), d( p ),
+      moonkin( nullptr ), cat( nullptr ), bear( nullptr ), tree( nullptr )
   {
-    moonkin = get_lycaras_action<spells::starfall_t>( "starfall" );
+    moonkin = get_lycaras_action<spells::starfall_t>( "starfall", "" );
+    cat = get_lycaras_action<cat_attacks::primal_wrath_t>( "primal_wrath", d->find_spell( 285381 ), "" );
   }
 
-  const char* name() const override { return "lycaras_fleeting_glimpse"; }
-
-  template <typename T>
-  T* get_lycaras_action( util::string_view n )
+  template <typename T, typename... Ts>
+  T* get_lycaras_action( util::string_view n, Ts&&... args )
   {
-    auto a = druid->get_secondary_action<T>( n, "" );
-    druid->active.lycaras_fleeting_glimpse->stats->add_child( a->init_free_cast_stats( free_cast_e::LYCARAS ) );
+    auto a = d->get_secondary_action<T>( n, std::forward<Ts>( args )... );
+    stats->add_child( a->init_free_cast_stats( free_cast_e::LYCARAS ) );
     return a;
   }
 
   void execute() override
   {
-    action_t* spell_action = nullptr;
+    action_t* a;
 
-    if ( druid->buff.moonkin_form->up() )
+    if ( d->buff.moonkin_form->check() )
     {
-      spell_action = moonkin;
-      debug_cast<druid_action_t<spell_t>*>( spell_action )->free_cast = free_cast_e::LYCARAS;
+      a = moonkin;
+      debug_cast<spells::starfall_t*>( a )->free_cast = free_cast_e::LYCARAS;
     }
-
-    if ( spell_action )
+    else if ( d->buff.cat_form->check() )
     {
-      spell_action->set_target( druid->target );
-      spell_action->execute();
+      a = cat;
+      debug_cast<cat_attacks::primal_wrath_t*>( a )->free_cast = free_cast_e::LYCARAS;
     }
+    else if ( d->buff.bear_form->check() )
+      a = bear;
+    else
+      a = tree;
 
-    make_event<lycaras_fleeting_glimpse_event_t>( sim(), druid, interval );
+    if ( a )
+    {
+      a->set_target( d->target );
+      a->execute();
+    }
+  }
+};
+
+struct lycaras_fleeting_glimpse_event_t : public event_t
+{
+  druid_t* d;
+  timespan_t interval;
+
+  lycaras_fleeting_glimpse_event_t( druid_t* p, timespan_t tm ) : event_t( *p, tm ), d( p ), interval( tm ) {}
+
+  const char* name() const override { return "lycaras_fleeting_glimpse"; }
+
+  void execute() override
+  {
+    d->active.lycaras_fleeting_glimpse->execute();
+    make_event<lycaras_fleeting_glimpse_event_t>( sim(), d, interval );
   }
 };
 
@@ -8601,14 +8624,10 @@ void druid_t::create_actions()
     active.oneths_clear_vision =
         new action_t( action_e::ACTION_OTHER, "oneths_clear_vision", this, legendary.oneths_clear_vision );
 
-  player_t::create_actions();
-
   if ( legendary.lycaras_fleeting_glimpse->ok() )
-  {
-    active.lycaras_fleeting_glimpse =
-        new action_t( action_e::ACTION_OTHER, "lycaras_fleeting_glimpse", this, legendary.lycaras_fleeting_glimpse );
-    get_secondary_action<spells::starfall_t>( "starfall", "" );
-  }
+    active.lycaras_fleeting_glimpse = new lycaras_fleeting_glimpse_t( this );
+
+  player_t::create_actions();
 }
 
 // ALL Spec Pre-Combat Action Priority List =================================
