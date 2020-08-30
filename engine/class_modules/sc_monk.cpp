@@ -5185,6 +5185,9 @@ struct touch_of_death_t : public monk_melee_attack_t
 
     s->result_total = s->result_raw = amount;
     monk_melee_attack_t::impact( s );
+
+    if ( p()->spec.touch_of_death_3_brm )
+      p()->partial_clear_stagger_amount( amount * p()->spec.touch_of_death_3_brm->effectN( 1 ).percent() );
   }
 
   void execute() override
