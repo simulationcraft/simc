@@ -189,59 +189,34 @@ struct blade_of_justice_t : public paladin_melee_attack_t
 
 struct divine_storm_t: public holy_power_consumer_t
 {
-  // Divine Storm's damage is stored in a different spell than the player's cast
-  struct divine_storm_damage_t : public paladin_melee_attack_t
-  {
-    divine_storm_damage_t( paladin_t* p ) :
-      paladin_melee_attack_t( "divine_storm_dmg", p, p -> find_spell( 224239 ) )
-    {
-      dual = background = true;
-    }
-
-    double bonus_da( const action_state_t* s ) const override
-    {
-      double b = paladin_melee_attack_t::bonus_da( s );
-
-      if ( p() -> buffs.empyrean_power_azerite -> up() )
-      {
-        b += p() -> azerite.empyrean_power.value();
-      }
-
-      return b;
-    }
-
-    double action_multiplier() const override
-    {
-      double am = paladin_melee_attack_t::action_multiplier();
-
-      if ( p() -> buffs.empyrean_power -> up() )
-        am *= 1.0 + p() -> buffs.empyrean_power -> data().effectN( 1 ).percent();
-
-      return am;
-    }
-  };
-
   divine_storm_t( paladin_t* p, const std::string& options_str ) :
     holy_power_consumer_t( "divine_storm", p, p -> find_class_spell( "Divine Storm" ) )
   {
     parse_options( options_str );
     is_divine_storm = true;
-
-    may_block = false;
-    impact_action = new divine_storm_damage_t( p );
-    impact_action -> stats = stats;
-
-    weapon = &( p -> main_hand_weapon );
-
-    aoe = -1;
-
-    // TODO: Okay, when did this get reset to 1?
-    weapon_multiplier = 0;
   }
 
+  double bonus_da( const action_state_t* s ) const override
+  {
+    double b = holy_power_consumer_t::bonus_da( s );
 
+    if ( p() -> buffs.empyrean_power_azerite -> up() )
+    {
+      b += p() -> azerite.empyrean_power.value();
+    }
 
-  void record_data( action_state_t* ) override {}
+    return b;
+  }
+
+  double action_multiplier() const override
+  {
+    double am = holy_power_consumer_t::action_multiplier();
+
+    if ( p() -> buffs.empyrean_power -> up() )
+      am *= 1.0 + p() -> buffs.empyrean_power -> data().effectN( 1 ).percent();
+
+    return am;
+  }
 };
 
 struct templars_verdict_t : public holy_power_consumer_t
