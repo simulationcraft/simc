@@ -5110,6 +5110,23 @@ struct exploding_keg_t : public monk_melee_attack_t
 
     td( state->target )->debuff.exploding_keg->trigger();
   }
+
+  timespan_t travel_time() const override
+  {
+    // Always has the same time to land regardless of distance, probably represented there.
+    return timespan_t::from_seconds( data().missile_speed() );
+  }
+
+  // Ensuring that we can't cast on a target that is too close
+  bool target_ready( player_t* candidate_target ) override
+  {
+    if ( player->get_player_distance( *candidate_target ) < data().min_range() )
+    {
+      return false;
+    }
+
+    return monk_melee_attack_t::target_ready( candidate_target );
+  }
 };
 
     // ==========================================================================
