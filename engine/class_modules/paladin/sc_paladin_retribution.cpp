@@ -77,6 +77,9 @@ struct crusade_t : public paladin_spell_t
 
     if ( p() -> azerite.avengers_might.ok() )
       p() -> buffs.avengers_might -> trigger( 1, p() -> buffs.avengers_might -> default_value, -1.0, p() -> buffs.crusade -> buff_duration );
+
+    if ( p() -> legendary.liadrins_fury_reborn -> ok() )
+      p() -> resource_gain( RESOURCE_HOLY_POWER, p() -> legendary.liadrins_fury_reborn -> effectN( 1 ).base_value(), p() -> gains.liadrins_fury_reborn );
   }
 };
 
@@ -453,6 +456,9 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
     paladin_melee_attack_t( "hammer_of_wrath", p, p -> find_spell( "Hammer of Wrath" ) )
   {
     parse_options( options_str );
+
+    if ( p -> legendary.badge_of_the_mad_paragon -> ok() )
+      base_multiplier *= 1.0 + p -> legendary.badge_of_the_mad_paragon -> effectN( 2 ).percent();
   }
 
   bool target_ready( player_t* candidate_target ) override
@@ -463,6 +469,23 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
     }
 
     return paladin_melee_attack_t::target_ready( candidate_target );
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    paladin_melee_attack_t::impact( s );
+
+    if ( p() -> legendary.badge_of_the_mad_paragon -> ok() )
+    {
+      if ( p() -> buffs.avenging_wrath -> up() )
+      {
+        p() -> buffs.avenging_wrath -> extend_duration( p(), timespan_t::from_seconds( p() -> legendary.badge_of_the_mad_paragon -> effectN( 1 ).base_value() ) );
+      }
+      else if ( p() -> buffs.crusade -> up() )
+      {
+        p() -> buffs.crusade -> extend_duration( p(), timespan_t::from_seconds( p() -> legendary.badge_of_the_mad_paragon -> effectN( 1 ).base_value() ) );
+      }
+    }
   }
 };
 

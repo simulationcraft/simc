@@ -195,6 +195,7 @@ public:
     gain_t* judgment;
     gain_t* hp_cs;
     gain_t* hp_memory_of_lucid_dreams;
+    gain_t* liadrins_fury_reborn;
   } gains;
 
   // Spec Passives
@@ -395,6 +396,35 @@ public:
     azerite_essence_t memory_of_lucid_dreams;
     azerite_essence_t vision_of_perfection;
   } azerite_essence;
+
+  struct conduits_t {
+    conduit_data_t ringing_clarity;
+    conduit_data_t vengeful_shock;
+    conduit_data_t focused_light;
+    conduit_data_t lights_reach;
+    conduit_data_t templars_vindication;
+    conduit_data_t the_long_summer;
+    conduit_data_t truths_wake;
+    conduit_data_t virtuous_command;
+    conduit_data_t righteous_might;
+    conduit_data_t hallowed_discernment;
+    conduit_data_t punish_the_guilty;
+  } conduit;
+
+  struct convenants_t {
+    const spell_data_t* kyrian;
+    const spell_data_t* venthyr;
+    const spell_data_t* necrolord;
+    const spell_data_t* night_fae;
+  } covenant;
+
+  struct legendaries_t {
+    item_runeforge_t liadrins_fury_reborn;
+    item_runeforge_t badge_of_the_mad_paragon;
+    item_runeforge_t final_verdict;
+    item_runeforge_t from_dusk_till_dawn;
+    item_runeforge_t the_magistrates_judgment;
+  } legendary;
 
   // Paladin options
   struct options_t

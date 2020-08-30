@@ -174,6 +174,9 @@ struct avenging_wrath_t : public paladin_spell_t
       p() -> buffs.avengers_might -> trigger( 1, p() -> buffs.avengers_might -> default_value, -1.0, p() -> buffs.avenging_wrath -> buff_duration );
 
     p() -> buffs.avenging_wrath_autocrit -> trigger();
+
+    if ( p() -> legendary.liadrins_fury_reborn -> ok() )
+      p() -> resource_gain( RESOURCE_HOLY_POWER, p() -> legendary.liadrins_fury_reborn -> effectN( 1 ).base_value(), p() -> gains.liadrins_fury_reborn );
   }
 };
 
@@ -1141,6 +1144,9 @@ void paladin_t::trigger_forbearance( player_t* target )
 
   buff -> paladin = this;
   buff -> trigger();
+
+  if ( legendary.liadrins_fury_reborn -> ok() )
+    resource_gain( RESOURCE_HOLY_POWER, legendary.liadrins_fury_reborn -> effectN( 1 ).base_value(), gains.liadrins_fury_reborn );
 }
 
 void paladin_t::trigger_memory_of_lucid_dreams( double cost )
@@ -1303,6 +1309,7 @@ void paladin_t::init_gains()
   gains.judgment                    = get_gain( "judgment" );
   gains.hp_cs                       = get_gain( "crusader_strike" );
   gains.hp_memory_of_lucid_dreams   = get_gain( "memory_of_lucid_dreams" );
+  gains.liadrins_fury_reborn        = get_gain( "liadrins_fury_reborn" );
 }
 
 // paladin_t::init_procs ====================================================
@@ -1639,6 +1646,33 @@ void paladin_t::init_spells()
   azerite_essence.memory_of_lucid_dreams = find_azerite_essence( "Memory of Lucid Dreams" );
   lucid_dreams_minor_refund_coeff = azerite_essence.memory_of_lucid_dreams.spell( 1u, essence_type::MINOR ) -> effectN( 1 ).percent();
   azerite_essence.vision_of_perfection = find_azerite_essence( "Vision of Perfection" );
+
+  // Shadowlands legendaries
+  legendary.liadrins_fury_reborn = find_runeforge_legendary( "Liadrin's Fury Reborn" );
+  legendary.badge_of_the_mad_paragon = find_runeforge_legendary( "Badge of the Mad Paragon" );
+  legendary.final_verdict = find_runeforge_legendary( "Final Verdict" );
+  legendary.from_dusk_till_dawn = find_runeforge_legendary( "From Dusk till Dawn" );
+  legendary.the_magistrates_judgment = find_runeforge_legendary( "The Magistrate's Judgment" );
+
+  // Covenants
+  covenant.kyrian = find_covenant_spell( "Divine Toll" );
+  covenant.venthyr = find_covenant_spell( "Ashen Hollow" );
+  covenant.necrolord = find_covenant_spell( "Vanquisher's Hammer" );
+  covenant.night_fae = find_covenant_spell( "Blessing of the Seasons" ); // TODO: fix
+
+  // Conduits
+  // TODO: non-damage conduits
+  conduit.ringing_clarity = find_conduit_spell( "Ringing Clarity" );
+  conduit.vengeful_shock = find_conduit_spell( "Vengeful Shock" );
+  conduit.focused_light = find_conduit_spell( "Focused Light" );
+  conduit.lights_reach = find_conduit_spell( "Light's Reach" );
+  conduit.templars_vindication = find_conduit_spell( "Templar's Vindication" );
+  conduit.the_long_summer = find_conduit_spell( "The Long Summer" ); // TODO: implement
+  conduit.truths_wake = find_conduit_spell( "Truth's Wake" );
+  conduit.virtuous_command = find_conduit_spell( "Virtuous Command" );
+  conduit.righteous_might = find_conduit_spell( "Righteous Might" );
+  conduit.hallowed_discernment = find_conduit_spell( "Hallowed Discernment" ); // TODO: implement
+  conduit.punish_the_guilty = find_conduit_spell( "Punish the Guilty" );
 }
 
 // paladin_t::primary_role ==================================================
