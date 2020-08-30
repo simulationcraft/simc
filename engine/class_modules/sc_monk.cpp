@@ -470,7 +470,7 @@ public:
     const spell_data_t* soothing_mist;
     const spell_data_t* teachings_of_the_monastery;
     const spell_data_t* thunder_focus_tea;
-    const spell_data_t* thunger_focus_tea_2;
+    const spell_data_t* thunder_focus_tea_2;
 
     // Windwalker
     const spell_data_t* afterlife;
@@ -3986,9 +3986,9 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
     {
       case MONK_MISTWEAVER:
       {
-        if ( p()->spec.thunger_focus_tea_2 && p()->buff.thunder_focus_tea->up() )
+        if ( p()->spec.thunder_focus_tea_2 && p()->buff.thunder_focus_tea->up() )
         {
-          p()->cooldown.rising_sun_kick->adjust( p()->spec.thunger_focus_tea_2->effectN( 1 ).time_value() );
+          p()->cooldown.rising_sun_kick->adjust( p()->spec.thunder_focus_tea_2->effectN( 1 ).time_value() );
           p()->buff.thunder_focus_tea->decrement();
           break;
         }
@@ -6566,8 +6566,8 @@ struct vivify_t : public monk_heal_t
   {
     double c = monk_heal_t::cost();
 
-    if ( p()->buff.thunder_focus_tea->check() && p()->spec.thunger_focus_tea_2 )
-      c *= 1 + p()->spec.thunger_focus_tea_2->effectN( 2 ).percent();  // saved as -100
+    if ( p()->buff.thunder_focus_tea->check() && p()->spec.thunder_focus_tea_2 )
+      c *= 1 + p()->spec.thunder_focus_tea_2->effectN( 2 ).percent();  // saved as -100
 
     if ( p()->buff.lifecycles_vivify->check() )
       c *= 1 + p()->buff.lifecycles_vivify->value();  // saved as -25%
@@ -8062,7 +8062,7 @@ void monk_t::init_spells()
   spec.soothing_mist              = find_specialization_spell( "Soothing Mist" );
   spec.teachings_of_the_monastery = find_specialization_spell( "Teachings of the Monastery" );
   spec.thunder_focus_tea          = find_specialization_spell( "Thunder Focus Tea" );
-  spec.thunger_focus_tea_2        = find_rank_spell( "Thunder Focus Tea", "Rank 2" );
+  spec.thunder_focus_tea_2        = find_rank_spell( "Thunder Focus Tea", "Rank 2" );
 
   // Windwalker Specialization
   spec.afterlife                  = find_specialization_spell( "Afterlife" );
