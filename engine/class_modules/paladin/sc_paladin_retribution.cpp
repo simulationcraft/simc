@@ -351,11 +351,13 @@ struct judgment_ret_t : public judgment_t
   {
     judgment_t::impact( s );
 
-    if ( result_is_hit( s -> result ) && p() -> spec.judgment_2 -> ok() )
+    if ( result_is_hit( s -> result ) )
     {
-      td( s -> target ) -> debuff.judgment -> trigger();
+      if ( p() -> spec.judgment_4 -> ok() )
+        td( s -> target ) -> debuff.judgment -> trigger();
 
-      p() -> resource_gain( RESOURCE_HOLY_POWER, holy_power_generation, p() -> gains.judgment );
+      if ( p() -> spec.judgment_3 -> ok() )
+        p() -> resource_gain( RESOURCE_HOLY_POWER, holy_power_generation, p() -> gains.judgment );
     }
   }
 };
@@ -538,17 +540,8 @@ void paladin_t::create_buffs_retribution()
 
 void paladin_t::init_rng_retribution()
 {
-  art_of_war_rppm = get_rppm( "art_of_war", find_spell( 267344 ) );
-
-  art_of_war_rppm -> set_scaling( RPPM_ATTACK_SPEED );
-
-  // The base RPPM of Art of War in spelldata is 4+haste, reduced by half when BoW isn't talented
-  // Have to call the BoW talent spell ID's directly because it's not talented
-  if ( ! talents.blade_of_wrath -> ok() )
-  {
-    art_of_war_rppm -> set_modifier(
-      art_of_war_rppm -> get_modifier() / ( 1.0 + find_spell( 231832 ) -> effectN( 1 ).percent() ) );
-  }
+  final_reckoning_rppm = get_rppm( "final_reckoning", find_spell( 343723 ) );
+  final_reckoning_rppm -> set_scaling( RPPM_HASTE );
 }
 
 void paladin_t::init_spells_retribution()
@@ -578,13 +571,16 @@ void paladin_t::init_spells_retribution()
 
   if ( specialization() == PALADIN_RETRIBUTION )
   {
-    spec.judgment_2 = find_specialization_spell( 231663 );
+    spec.judgment_3 = find_specialization_spell( 315867 );
+    spec.judgment_4 = find_specialization_spell( 231663 );
 
     spells.judgment_debuff = find_spell( 197277 );
     spells.divine_purpose_buff = find_spell( 223819 );
   }
 
   passives.boundless_conviction = find_spell( 115675 );
+  passives.art_of_war = find_specialization_spell( 267344 );
+  passives.art_of_war_2 = find_specialization_spell( 317912 );
 
   spells.lights_decree = find_spell( 286231 );
   spells.reckoning = find_spell( 343724 );

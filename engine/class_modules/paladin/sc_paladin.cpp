@@ -548,7 +548,14 @@ struct melee_t : public paladin_melee_attack_t
       if ( p() -> specialization() == PALADIN_RETRIBUTION )
       {
         // Check for BoW procs
-        if ( p() -> art_of_war_rppm -> trigger() )
+        double aow_proc_chance = p() -> passives.art_of_war -> effectN( 1 ).percent();
+        if ( p() -> passives.art_of_war_2 -> ok() )
+          aow_proc_chance += p() -> passives.art_of_war_2 -> effectN( 1 ).percent();
+
+        if ( p() -> talents.blade_of_wrath -> ok() )
+          aow_proc_chance *= 1.0 + p() -> talents.blade_of_wrath -> effectN( 1 ).percent();
+
+        if ( rng().roll( aow_proc_chance ) )
         {
           p() -> procs.art_of_war -> occur();
 
@@ -557,6 +564,7 @@ struct melee_t : public paladin_melee_attack_t
 
           p() -> cooldowns.blade_of_justice -> reset( true );
         }
+
         if ( p() -> buffs.zeal -> up() && p() -> active.zeal )
         {
           p() -> active.zeal -> set_target( execute_state -> target );
@@ -821,6 +829,11 @@ judgment_t::judgment_t( paladin_t* p, const std::string& options_str ) :
     {
       indomitable_justice_pct = clamp<int>( p -> options.indomitable_justice_pct, -1, 100 );
     }
+  }
+
+  if ( p -> spells.judgment_2 -> ok() )
+  {
+    base_multiplier *= 1.0 + p -> spells.judgment_2 -> effectN( 1 ).percent();
   }
 }
 
@@ -1564,6 +1577,7 @@ void paladin_t::init_spells()
   passives.paladin              = find_spell( 137026 );
   spells.avenging_wrath = find_specialization_spell( "Avenging Wrath" );
   spells.avenging_wrath_autocrit = find_spell( 294027 );
+  spells.judgment_2 = find_spell( 327977 );
 
   // Shared Azerite traits
   azerite.avengers_might        = find_azerite_spell( "Avenger's Might" );

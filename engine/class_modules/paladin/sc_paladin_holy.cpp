@@ -396,7 +396,7 @@ struct judgment_holy_t : public judgment_t
   {
     judgment_t::impact( s );
 
-    if ( result_is_hit( s -> result ) && p() -> spec.judgment_2 -> ok() )
+    if ( result_is_hit( s -> result ) && p() -> spec.judgment_3 -> ok() )
     {
       td( s -> target ) -> debuff.judgment -> trigger();
     }
@@ -565,7 +565,7 @@ void paladin_t::init_spells_holy()
 
   if ( specialization() == PALADIN_HOLY )
   {
-    spec.judgment_2 = find_specialization_spell( 231644 );
+    spec.judgment_3 = find_specialization_spell( 231644 );
 
     spells.judgment_debuff = find_spell( 214222 );
     // TODO: is this still a thing?

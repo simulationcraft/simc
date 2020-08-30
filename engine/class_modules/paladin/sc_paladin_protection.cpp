@@ -286,6 +286,7 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
 
 // Judgment - Protection =================================================================
 
+// TODO(mserrano): fix judgment
 struct judgment_prot_t : public judgment_t
 {
   timespan_t sotr_cdr; // needed for sotr interaction for protection
@@ -297,8 +298,6 @@ struct judgment_prot_t : public judgment_t
     cooldown -> duration *= 1.0 + p -> spec.protection_paladin -> effectN( 4 ).percent();
 
     base_multiplier *= 1.0 + p -> spec.protection_paladin -> effectN( 12 ).percent();
-
-    sotr_cdr = -1.0 * timespan_t::from_seconds( p -> spec.judgment_2 -> effectN( 1 ).base_value() );
   }
 
   void execute() override
@@ -323,8 +322,6 @@ struct judgment_prot_t : public judgment_t
       {
         p() -> cooldowns.avengers_shield -> reset( true );
       }
-
-      p() -> cooldowns.shield_of_the_righteous -> adjust( s -> result == RESULT_CRIT ? 2.0 * sotr_cdr : sotr_cdr );
     }
 
     judgment_t::impact( s );
@@ -845,7 +842,7 @@ void paladin_t::init_spells_protection()
 
   if ( specialization() == PALADIN_PROTECTION )
   {
-    spec.judgment_2 = find_specialization_spell( 231657 );
+    spec.judgment_4 = find_specialization_spell( 231663 );
 
     // Prot doesn't have a version of Judgment debuff or Divine Purpose
     spells.divine_purpose_buff = spell_data_t::nil();

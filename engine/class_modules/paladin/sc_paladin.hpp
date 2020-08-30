@@ -200,7 +200,8 @@ public:
   // Spec Passives
   struct spec_t
   {
-    const spell_data_t* judgment_2;
+    const spell_data_t* judgment_3;
+    const spell_data_t* judgment_4;
     const spell_data_t* shield_of_the_righteous;
     const spell_data_t* holy_paladin;
     const spell_data_t* protection_paladin;
@@ -244,6 +245,9 @@ public:
     const spell_data_t* sanctuary;
 
     const spell_data_t* boundless_conviction;
+
+    const spell_data_t* art_of_war;
+    const spell_data_t* art_of_war_2;
   } passives;
 
   struct mastery_t
@@ -254,7 +258,6 @@ public:
   } mastery;
 
   // Procs and RNG
-  real_ppm_t* art_of_war_rppm;
   real_ppm_t* final_reckoning_rppm;
 
   struct procs_t
@@ -280,6 +283,8 @@ public:
     const spell_data_t* reckoning;
     const spell_data_t* lights_decree;
     const spell_data_t* sanctified_wrath_damage;
+
+    const spell_data_t* judgment_2;
   } spells;
 
   // Talents
