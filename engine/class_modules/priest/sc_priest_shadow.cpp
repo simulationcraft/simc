@@ -781,23 +781,22 @@ struct vampiric_touch_t final : public priest_spell_t
     parse_options( options_str );
   }
 
-  void trigger_heal( action_state_t* )
+  void trigger_heal( action_state_t* s )
   {
     if ( ignore_healing )
     {
       return;
     }
-    /*
+
     double amount_to_heal = s->result_amount * data().effectN( 2 ).m_value();
-    double actual_amount =
-        priest().resource_gain( RESOURCE_HEALTH, amount_to_heal, priest().gains.vampiric_touch_health );
-    double overheal = amount_to_heal - actual_amount;
-    */
+    priest().resource_gain( RESOURCE_HEALTH, amount_to_heal, priest().gains.vampiric_touch_health, this );
   }
 
   void impact( action_state_t* s ) override
   {
     priest_spell_t::impact( s );
+
+    trigger_heal( s );
 
     if ( child_swp )
     {
@@ -919,11 +918,7 @@ struct void_bolt_t final : public priest_spell_t
       may_miss      = false;
       background = dual = true;
       energize_type     = action_energize::ON_CAST;
-    }
-
-    timespan_t travel_time() const override
-    {
-      return timespan_t::zero();
+      travel_speed      = 0;
     }
 
     void impact( action_state_t* s ) override
