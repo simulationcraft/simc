@@ -6471,6 +6471,12 @@ struct vivify_t : public monk_heal_t
     if ( p()->buff.uplifting_trance->up() )
       am *= 1 + p()->buff.uplifting_trance->value();
 
+    if ( p()->spec.vivify_2_brm )
+      am *= 1 + p()->spec.vivify_2_brm->effectN( 1 ).percent();
+
+    if ( p()->spec.vivify_2_ww )
+      am *= 1 + p()->spec.vivify_2_ww->effectN( 1 ).percent();
+
     return am;
   }
 
@@ -6506,7 +6512,8 @@ struct vivify_t : public monk_heal_t
     if ( p()->buff.uplifting_trance->up() )
       p()->buff.uplifting_trance->expire();
 
-    mastery->execute();
+    if ( p()->mastery.gust_of_mists )
+        mastery->execute();
   }
 };
 
