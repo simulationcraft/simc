@@ -7895,14 +7895,14 @@ void death_knight_t::default_apl_unholy()
   aoe -> add_action( this, "Scourge Strike", "if=death_and_decay.ticking&cooldown.apocalypse.remains" );
   aoe -> add_talent( this, "Clawing Shadows", "if=death_and_decay.ticking&cooldown.apocalypse.remains" );
   aoe -> add_talent( this, "Epidemic", "if=!variable.pooling_for_gargoyle" );
-  aoe -> add_action( this, "Festering Strike", "target_if=debuff.festering_wound.stack<=2&cooldown.death_and_decay.remains&cooldown.apocalypse.remains>5&(cooldown.army_of_the_dead.remains>5|death_knight.disable_aotd)" );
+  aoe -> add_action( this, "Festering Strike", "target_if=debuff.festering_wound.stack<=2&cooldown.death_and_decay.remains&cooldown.apocalypse.remains>5&variable.disable_aotd" );
   aoe -> add_action( this, "Death Coil", "if=buff.sudden_doom.react&rune.time_to_4>gcd" );
   aoe -> add_action( this, "Death Coil", "if=buff.sudden_doom.react&!variable.pooling_for_gargoyle|pet.gargoyle.active" );
   aoe -> add_action( this, "Death Coil", "if=runic_power.deficit<14&(cooldown.apocalypse.remains>5|debuff.festering_wound.stack>4)&!variable.pooling_for_gargoyle" );
-  aoe -> add_action( this, "Scourge Strike", "target_if=((cooldown.army_of_the_dead.remains>5|death_knight.disable_aotd)&(cooldown.apocalypse.remains>5&debuff.festering_wound.stack>0|debuff.festering_wound.stack>4)&(target.1.time_to_die<cooldown.death_and_decay.remains+10|target.1.time_to_die>cooldown.apocalypse.remains))" );
-  aoe -> add_talent( this, "Clawing Shadows", "target_if=((cooldown.army_of_the_dead.remains>5|death_knight.disable_aotd)&(cooldown.apocalypse.remains>5&debuff.festering_wound.stack>0|debuff.festering_wound.stack>4)&(target.1.time_to_die<cooldown.death_and_decay.remains+10|target.1.time_to_die>cooldown.apocalypse.remains))" );
+  aoe -> add_action( this, "Scourge Strike", "target_if=(variable.disable_aotd&(cooldown.apocalypse.remains>5&debuff.festering_wound.stack>0|debuff.festering_wound.stack>4)&(target.1.time_to_die<cooldown.death_and_decay.remains+10|target.1.time_to_die>cooldown.apocalypse.remains))" );
+  aoe -> add_talent( this, "Clawing Shadows", "target_if=(variable.disable_aotd&(cooldown.apocalypse.remains>5&debuff.festering_wound.stack>0|debuff.festering_wound.stack>4)&(target.1.time_to_die<cooldown.death_and_decay.remains+10|target.1.time_to_die>cooldown.apocalypse.remains))" );
   aoe -> add_action( this, "Death Coil", "if=runic_power.deficit<20&!variable.pooling_for_gargoyle" );
-  aoe -> add_action( this, "Festering Strike", "if=((((debuff.festering_wound.stack<4&!buff.unholy_frenzy.up)|debuff.festering_wound.stack<3)&cooldown.apocalypse.remains<3)|debuff.festering_wound.stack<1)&(cooldown.army_of_the_dead.remains>5|death_knight.disable_aotd)" );
+  aoe -> add_action( this, "Festering Strike", "if=((((debuff.festering_wound.stack<4&!buff.unholy_frenzy.up)|debuff.festering_wound.stack<3)&cooldown.apocalypse.remains<3)|debuff.festering_wound.stack<1)&variable.disable_aotd" );
   aoe -> add_action( this, "Scourge Strike", "if=death_and_decay.ticking" );
   aoe -> add_action( this, "Clawing Shadows", "if=death_and_decay.ticking" );
   aoe -> add_action( this, "Death Coil", "if=!variable.pooling_for_gargoyle" );
