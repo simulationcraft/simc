@@ -265,12 +265,15 @@ public:
     stat_buff_t* fury_of_xuen_haste;
     stat_buff_t* iron_fists;
     stat_buff_t* training_of_niuzao;
+    stat_buff_t* straight_no_chaser;
     buff_t* sunrise_technique;
     buff_t* swift_roundhouse;
 
     // Shadowland Legendary
     buff_t* chi_energy;
-    stat_buff_t* invokers_delight;
+    buff_t* flaming_kicks;
+    buff_t* invokers_delight;
+    buff_t* mighty_pour;
     buff_t* pressure_point;
     buff_t* the_emperors_capacitor;
   } buff;
@@ -583,6 +586,8 @@ public:
 
     // Shadowland Legendary
     const spell_data_t* chi_explosion;
+    const spell_data_t* face_palm;
+    const spell_data_t* flaming_kicks_dmg;
   } passives;
 
   // RPPM objects
@@ -620,6 +625,8 @@ public:
     azerite_power_t niuzaos_blessing;
     // When you Blackout Kick, your Stagger is reduced by 62.
     azerite_power_t staggering_strikes;
+    // Ironskin Brew increases your Armor by 0, and has a 8 % chance to not consume a charge.
+    azerite_power_t straight_no_chaser;
     // Gain up to 153 Mastery based on your current level of Stagger.
     azerite_power_t training_of_niuzao;
 
@@ -3678,11 +3685,13 @@ struct tiger_palm_t : public monk_melee_attack_t
 {
   heal_t* eye_of_the_tiger_heal;
   spell_t* eye_of_the_tiger_damage;
+  bool shaohoas_might;
 
   tiger_palm_t( monk_t* p, const std::string& options_str )
     : monk_melee_attack_t( "tiger_palm", p, p->spec.tiger_palm ),
       eye_of_the_tiger_heal( new eye_of_the_tiger_heal_tick_t( *p, "eye_of_the_tiger_heal" ) ),
-      eye_of_the_tiger_damage( new eye_of_the_tiger_dmg_tick_t( p, "eye_of_the_tiger_damage" ) )
+      eye_of_the_tiger_damage( new eye_of_the_tiger_dmg_tick_t( p, "eye_of_the_tiger_damage" ) ),
+      shaohoas_might( false )
   {
     parse_options( options_str );
 
@@ -3717,6 +3726,9 @@ struct tiger_palm_t : public monk_melee_attack_t
     if ( p()->buff.blackout_combo->check() )
       am *= 1 + p()->buff.blackout_combo->data().effectN( 1 ).percent();
 
+    if ( shaohoas_might )
+      am *= 1 + p()->passives.face_palm->effectN( 1 ).percent();
+
     return am;
   }
 
@@ -3742,11 +3754,15 @@ struct tiger_palm_t : public monk_melee_attack_t
       */
     }
 
+
     return b;
   }
 
   void execute() override
   {
+    if ( p()->legendary.shaohaos_might->ok() && rng().roll( p()->legendary.shaohaos_might->effectN( 1 ).percent() ) )
+      shaohoas_might = true;
+
     monk_melee_attack_t::execute();
 
     if ( result_is_miss( execute_state->result ) )
@@ -3800,6 +3816,9 @@ struct tiger_palm_t : public monk_melee_attack_t
 
         if ( p()->buff.blackout_combo->up() )
           p()->buff.blackout_combo->expire();
+
+        if ( shaohoas_might )
+          brew_cooldown_reduction( p()->passives.face_palm->effectN( 2 ).base_value() );
         break;
       }
       default:
@@ -3823,7 +3842,7 @@ struct tiger_palm_t : public monk_melee_attack_t
         td( s->target )->debuff.recently_rushing_tiger_palm->trigger();
       }
     }
-
+    shaohoas_might = false;
   }
 };
 
@@ -4130,14 +4149,26 @@ struct blackout_kick_totm_proc : public monk_melee_attack_t
   }
 };
 
+// Blackout Kick Proc from Teachings of the Monastery =======================
+struct flaming_kicks_t : public monk_spell_t
+{
+  flaming_kicks_t( monk_t* p ) : monk_spell_t( "flaming_kicks", p, p->passives.flaming_kicks_dmg )
+  {
+    background = dual             = true;
+  }
+};
+
+
 // Blackout Kick Baseline ability =======================================
 struct blackout_kick_t : public monk_melee_attack_t
 {
   blackout_kick_totm_proc* bok_totm_proc;
+  flaming_kicks_t* flaming_kicks;
 
   blackout_kick_t( monk_t* p, const std::string& options_str )
     : monk_melee_attack_t( "blackout_kick", p, 
-        ( p->specialization() == MONK_BREWMASTER ? p->spec.blackout_kick_brm : p->spec.blackout_kick ) )
+        ( p->specialization() == MONK_BREWMASTER ? p->spec.blackout_kick_brm : p->spec.blackout_kick ) ),
+        flaming_kicks( new flaming_kicks_t( p ) )
   {
     ww_mastery = true;
 
@@ -4164,7 +4195,7 @@ struct blackout_kick_t : public monk_melee_attack_t
       default:
         break;
     }
-    sef_ability = SEF_BLACKOUT_KICK;
+
   }
 
   void init() override
@@ -4307,6 +4338,17 @@ struct blackout_kick_t : public monk_melee_attack_t
 
         for ( int i = 0; i < stacks; i++ )
           bok_totm_proc->execute();
+      }
+
+      if ( p()->legendary.charred_passions->ok() )
+      {
+        double dmg_percent         = p()->legendary.charred_passions->effectN( 1 ).percent();
+        flaming_kicks->base_dd_min = s->result_amount * dmg_percent;
+        flaming_kicks->base_dd_max = s->result_amount * dmg_percent;
+        flaming_kicks->execute();
+
+        if ( td( s->target )->dots.breath_of_fire->is_ticking() )
+          td( s->target )->dots.breath_of_fire->refresh_duration();
       }
     }
   }
@@ -5089,6 +5131,9 @@ struct keg_smash_t : public monk_melee_attack_t
     cooldown->duration = p.spec.keg_smash->cooldown();
     cooldown->duration = p.spec.keg_smash->charge_cooldown();
 
+    if ( p.legendary.stormstouts_last_keg->ok() )
+      cooldown->charges += p.legendary.stormstouts_last_keg->effectN( 2 ).base_value();
+
     // Keg Smash does not appear to be picking up the baseline Trigger GCD reduction
     // Forcing the trigger GCD to 1 second.
     trigger_gcd = timespan_t::from_seconds( 1 );
@@ -5097,6 +5142,9 @@ struct keg_smash_t : public monk_melee_attack_t
   double action_multiplier() const override
   {
     double am = monk_melee_attack_t::action_multiplier();
+
+    if ( p()->legendary.stormstouts_last_keg->ok() )
+      am *= 1 + p()->legendary.stormstouts_last_keg->effectN( 1 ).percent();
 
     return am;
   }
@@ -5766,6 +5814,9 @@ struct breath_of_fire_t : public monk_spell_t
 
     if ( p()->buff.spitfire->up() )
       p()->buff.spitfire->expire();
+
+    if ( p()->legendary.charred_passions->ok() )
+      p()->buff.flaming_kicks->trigger();
   }
 
   void impact( action_state_t* s ) override
@@ -5779,10 +5830,6 @@ struct breath_of_fire_t : public monk_spell_t
       dot_action->target = s->target;
       dot_action->execute();
     }
-
-    // if player level >= 10
-    if ( p()->mastery.elusive_brawler )
-      p()->buff.elusive_brawler->trigger();
   }
 };
 
@@ -6164,6 +6211,11 @@ struct purifying_brew_t : public monk_spell_t
         count++;
       }
     }
+
+    if ( p()->legendary.celestial_infusion->ok() &&
+         rng().roll( p()->legendary.celestial_infusion->effectN( 2 ).percent() ) )
+      p()->cooldown.purifying_brew->reset( true, 1 );
+
 
     // Reduce stagger damage
     auto amount_cleared =
@@ -7089,6 +7141,7 @@ struct celestial_brew_t : public monk_absorb_t
 
   void execute() override
   {
+
     monk_absorb_t::execute();
 
     if ( p()->talent.special_delivery->ok() )
@@ -7106,6 +7159,16 @@ struct celestial_brew_t : public monk_absorb_t
           timespan_t::from_seconds( p()->buff.blackout_combo->data().effectN( 4 ).base_value() ) );
       p()->buff.blackout_combo->expire();
     }
+
+    if ( p()->azerite.straight_no_chaser.ok() )
+    {
+      p()->buff.straight_no_chaser->trigger();
+      if ( rng().roll( p()->azerite.straight_no_chaser.spell_ref().effectN( 2 ).percent() ) )
+        p()->cooldown.celestial_brew->reset( true, 1 );
+    }
+
+    if ( p()->legendary.celestial_infusion->ok() )
+      p()->buff.mighty_pour->trigger();
   }
 };
 
@@ -8077,6 +8140,7 @@ void monk_t::init_spells()
   azerite.fit_to_burst       = find_azerite_spell( "Fit to Burst" );
   azerite.niuzaos_blessing   = find_azerite_spell( "Niuzao's Blessing" );
   azerite.staggering_strikes = find_azerite_spell( "Staggering Strikes" );
+  azerite.straight_no_chaser = find_azerite_spell( "Straight, No Chaser" );
   azerite.training_of_niuzao = find_azerite_spell( "Training of Niuzao" );
 
   // Mistweaver
@@ -8157,6 +8221,8 @@ void monk_t::init_spells()
 
   // Shadowland Legendary
   passives.chi_explosion              = find_spell( 337342 );
+  passives.face_palm                  = find_spell( 227679 );
+  passives.flaming_kicks_dmg          = find_spell( 338141 );
 
   // Mastery spells =========================================
   mastery.combo_strikes   = find_mastery_spell( MONK_WINDWALKER );
@@ -8430,6 +8496,8 @@ void monk_t::create_buffs()
   player_t::buffs.memory_of_lucid_dreams->set_affects_regen( true );
 
   // Brewmaster
+  buff.straight_no_chaser = make_buff<stat_buff_t>( this, "straight_no_chaser", find_spell( 285959 ) )
+                                ->add_stat( STAT_ARMOR, azerite.straight_no_chaser.value() );
   buff.fit_to_burst = make_buff( this, "fit_to_burst", find_spell( 275893 ) )
                           ->set_trigger_spell( azerite.fit_to_burst.spell() )
                           ->set_reverse( true );
@@ -8455,10 +8523,11 @@ void monk_t::create_buffs()
 
   // Shadowland Legendaries
   // General
-  buff.invokers_delight =
-      make_buff<stat_buff_t>( this, "invokers_delight", legendary.invokers_delight->effectN( 1 ).trigger() );
+  buff.flaming_kicks    = make_buff( this, "flaming_kicks", find_spell( 338140 ) );
+  buff.invokers_delight = make_buff( this, "invokers_delight", legendary.invokers_delight->effectN( 1 ).trigger() );
 
   // Brewmaster
+  buff.mighty_pour = make_buff( this, "mighty_pour", find_spell( 337994 ) );
 
   // Mistweaver
 
@@ -8835,6 +8904,9 @@ double shared_composite_haste_modifiers( const monk_t& p, double h )
     }
   }
 
+  if ( p.buff.invokers_delight->up() )
+    h *= 1.0 / ( 1.0 + p.buff.invokers_delight->data().effectN( 1 ).percent() );
+
   return h;
 }
 
@@ -9039,6 +9111,9 @@ double monk_t::composite_base_armor_multiplier() const
   double a = player_t::composite_base_armor_multiplier();
 
   a *= 1 + spec.brewmasters_balance->effectN( 1 ).percent();
+
+  if ( buff.mighty_pour->up() )
+    a *= 1 + buff.mighty_pour->data().effectN( 1 ).percent();
 
   return a;
 }

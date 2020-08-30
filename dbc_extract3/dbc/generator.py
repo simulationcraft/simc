@@ -1801,12 +1801,11 @@ class SpellDataGenerator(DataGenerator):
           ( 261682, 3 ), # Chi Burst Chi generation cap
           ( 285594, 3 ), # Good Karma Healing Spell
 		      ( 290461, 3 ), # Reverse Harm Damage
-          # Legendary
-          ( 213114, 3 ), # Hidden Master's Forbidden Touch buff
           # Azerite Traits
           ( 278710, 3 ), # Swift Roundhouse
           ( 278767, 1 ), # Training of Niuzao buff
           ( 285958, 1 ), # Straight, No Chaser trait
+          ( 285959, 1 ), # Straight, No Chaser buff
           ( 286585, 3 ), # Dance of Chi-Ji trait
           ( 286586, 3 ), # Dance of Chi-Ji RPPM
           ( 286587, 3 ), # Dance of Chi-Ji buff
@@ -1815,6 +1814,8 @@ class SpellDataGenerator(DataGenerator):
           ( 287063, 3 ), # Fury of Xuen proc
           ( 288634, 3 ), # Glory of the Dawn trait
           ( 288636, 3 ), # Glory of the Dawn proc
+          # Shadowland Legendaries
+          ( 338141, 1 ), # Flaming Kicks Legendary damage
         ),
 
         # Druid:
