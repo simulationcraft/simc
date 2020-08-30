@@ -2787,6 +2787,9 @@ public:
       {
         p()->buff.shuffle->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, base_time );
       }
+
+      if ( p()->conduit.walk_with_the_ox->ok() && p()->cooldown.invoke_niuzao->down() )
+        p()->cooldown.invoke_niuzao->adjust( true, p()->conduit.walk_with_the_ox->effectN( 2 ).time_value() );
     }
   }
 
@@ -5092,13 +5095,6 @@ struct keg_smash_t : public monk_melee_attack_t
     return am;
   }
 
-  void impact( action_state_t* s ) override
-  {
-    monk_melee_attack_t::impact( s );
-
-    td( s->target )->debuff.keg_smash->trigger();
-  }
-
   void execute() override
   {
     monk_melee_attack_t::execute();
@@ -5116,6 +5112,19 @@ struct keg_smash_t : public monk_melee_attack_t
     trigger_shuffle( p()->spec.keg_smash->effectN( 6 ).base_value() );
 
     brew_cooldown_reduction( time_reduction );
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    if ( p()->conduit.scalding_brew->ok() )
+    {
+      if ( td( s->target )->dots.breath_of_fire->is_ticking() )
+        s->result_amount *= 1 + p()->conduit.scalding_brew.percent();
+    }
+
+    monk_melee_attack_t::impact( s );
+
+    td( s->target )->debuff.keg_smash->trigger();
   }
 };
 
@@ -5154,6 +5163,7 @@ struct touch_of_death_t : public monk_melee_attack_t
       return monk_melee_attack_t::ready();
 
     return false;
+
   }
 
   virtual void impact( action_state_t* s ) override
@@ -5807,12 +5817,24 @@ struct special_delivery_t : public monk_spell_t
 // Fortifying Brew
 // ==========================================================================
 
+struct fortifying_ingredients_t : public monk_absorb_t
+{
+  fortifying_ingredients_t( monk_t& p )
+    : monk_absorb_t( "fortifying_ingredients", p, p.find_spell( 336874 ) )
+  {
+    harmful = may_crit = false;
+  }
+};
+
 struct fortifying_brew_t : public monk_spell_t
 {
   special_delivery_t* delivery;
+  fortifying_ingredients_t* fortifying_ingredients;
 
   fortifying_brew_t( monk_t& p, const std::string& options_str )
-    : monk_spell_t( "fortifying_brew", &p, ( p.specialization() == MONK_BREWMASTER ? p.spec.fortifying_brew_brm : p.spec.fortifying_brew_mw_ww ) )
+    : monk_spell_t( "fortifying_brew", &p, 
+        ( p.specialization() == MONK_BREWMASTER ? p.spec.fortifying_brew_brm : p.spec.fortifying_brew_mw_ww ) ),
+        fortifying_ingredients( new fortifying_ingredients_t( p ) )
   {
     parse_options( options_str );
 
@@ -5845,6 +5867,14 @@ struct fortifying_brew_t : public monk_spell_t
 
     if ( p()->talent.celestial_flames->ok() )
       p()->buff.celestial_flames->trigger();
+
+    if ( p()->conduit.fortifying_ingredients->ok() )
+    {
+      double absorb_percent               = p()->conduit.fortifying_ingredients.percent();
+      fortifying_ingredients->base_dd_min = p()->resources.initial[ RESOURCE_HEALTH ] * absorb_percent;
+      fortifying_ingredients->base_dd_max = p()->resources.initial[ RESOURCE_HEALTH ] * absorb_percent;
+      fortifying_ingredients->execute();
+    }
   }
 };
 
@@ -6666,6 +6696,16 @@ struct expel_harm_t : public monk_heal_t
     target = player;
 
     add_child( dmg );
+  }
+
+  double action_multiplier() const override
+  {
+    double am = monk_heal_t::action_multiplier();
+
+    if ( p()->conduit.harm_denial->ok() )
+      am *= 1 + p()->conduit.harm_denial.percent();
+
+    return am;
   }
 
   void execute() override

@@ -1814,6 +1814,8 @@ class SpellDataGenerator(DataGenerator):
           ( 287063, 3 ), # Fury of Xuen proc
           ( 288634, 3 ), # Glory of the Dawn trait
           ( 288636, 3 ), # Glory of the Dawn proc
+          # Conduits
+          ( 336874, 0 ), # Fortifying Ingredients
           # Shadowland Legendaries
           ( 338141, 1 ), # Flaming Kicks Legendary damage
         ),
