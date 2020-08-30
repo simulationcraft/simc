@@ -434,7 +434,6 @@ public:
     const spell_data_t* vivify_2_ww;
 
     // Brewmaster
-    const spell_data_t* blackout_strike;
     const spell_data_t* bladed_armor;
     const spell_data_t* breath_of_fire;
     const spell_data_t* brewmasters_balance;
@@ -503,7 +502,6 @@ public:
   struct cooldowns_t
   {
     cooldown_t* blackout_kick;
-    cooldown_t* blackout_strike;
     cooldown_t* black_ox_brew;
     cooldown_t* brewmaster_attack;
     cooldown_t* breath_of_fire;
@@ -839,7 +837,6 @@ public:
     windwalking_aura = nullptr;
 
     cooldown.blackout_kick                = get_cooldown( "blackout_kick" );
-    cooldown.blackout_strike              = get_cooldown( "blackout_stike" );
     cooldown.black_ox_brew                = get_cooldown( "black_ox_brew" );
     cooldown.brewmaster_attack            = get_cooldown( "brewmaster_attack" );
     cooldown.breath_of_fire               = get_cooldown( "breath_of_fire" );
@@ -3754,7 +3751,6 @@ struct tiger_palm_t : public monk_melee_attack_t
       */
     }
 
-
     return b;
   }
 
@@ -3798,8 +3794,8 @@ struct tiger_palm_t : public monk_melee_attack_t
       }
       case MONK_BREWMASTER:
       {
-        if ( p()->cooldown.blackout_strike->down() )
-          p()->cooldown.blackout_strike->adjust(
+        if ( p()->cooldown.blackout_kick->down() )
+          p()->cooldown.blackout_kick->adjust(
               timespan_t::from_seconds( -1 * p()->spec.tiger_palm->effectN( 3 ).base_value() ) );
 
         if ( p()->talent.spitfire )
@@ -4149,7 +4145,7 @@ struct blackout_kick_totm_proc : public monk_melee_attack_t
   }
 };
 
-// Blackout Kick Proc from Teachings of the Monastery =======================
+// Flaming Kicks ============================================================
 struct flaming_kicks_t : public monk_spell_t
 {
   flaming_kicks_t( monk_t* p ) : monk_spell_t( "flaming_kicks", p, p->passives.flaming_kicks_dmg )
@@ -4340,7 +4336,7 @@ struct blackout_kick_t : public monk_melee_attack_t
           bok_totm_proc->execute();
       }
 
-      if ( p()->legendary.charred_passions->ok() )
+      if ( p()->buff.flaming_kicks->up() )
       {
         double dmg_percent         = p()->legendary.charred_passions->effectN( 1 ).percent();
         flaming_kicks->base_dd_min = s->result_amount * dmg_percent;
@@ -4349,78 +4345,6 @@ struct blackout_kick_t : public monk_melee_attack_t
 
         if ( td( s->target )->dots.breath_of_fire->is_ticking() )
           td( s->target )->dots.breath_of_fire->refresh_duration();
-      }
-    }
-  }
-};
-
-// ==========================================================================
-// Blackout Strike
-// ==========================================================================
-
-struct blackout_strike_t : public monk_melee_attack_t
-{
-  blackout_strike_t( monk_t* p, const std::string& options_str )
-    : monk_melee_attack_t( "blackout_strike", p, p->spec.blackout_strike )
-  {
-    parse_options( options_str );
-
-    spell_power_mod.direct = 0.0;
-    cooldown->duration     = data().cooldown();
-  }
-
-  double action_multiplier() const override
-  {
-    double am = monk_melee_attack_t::action_multiplier();
-
-    // Mistweavers cannot learn this spell. However the effect to adjust this spell is in the database.
-    // Just being a completionist about this.
-    am *= 1 + p()->spec.mistweaver_monk->effectN( 12 ).percent();
-
-    return am;
-  }
-
-  double bonus_da( const action_state_t* s ) const override
-  {
-    double b = base_t::bonus_da( s );
-
-    if ( p()->azerite.elusive_footwork.ok() )
-      b += p()->azerite.elusive_footwork.value( 3 );
-
-    return b;
-  }
-
-  void execute() override
-  {
-    monk_melee_attack_t::execute();
-
-    if ( p()->talent.blackout_combo->ok() )
-      p()->buff.blackout_combo->trigger();
-
-    if ( p()->azerite.swift_roundhouse.ok() )
-      p()->buff.swift_roundhouse->trigger();
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    monk_melee_attack_t::impact( s );
-
-    if ( result_is_hit( s->result ) )
-    {
-      // if player level >= 10
-      if ( p()->mastery.elusive_brawler )
-      {
-        p()->buff.elusive_brawler->trigger();
-
-        if ( p()->azerite.elusive_footwork.ok() && s->result == RESULT_CRIT )
-          p()->buff.elusive_brawler->trigger(
-              as<int>( p()->azerite.elusive_footwork.spell_ref().effectN( 2 ).base_value() ) );
-
-        if ( p()->azerite.staggering_strikes.ok() )
-        {
-          auto amount_cleared = p()->partial_clear_stagger_amount( p()->azerite.staggering_strikes.value() );
-          p()->sample_datas.staggering_strikes_cleared->add( amount_cleared );
-        }
       }
     }
   }
@@ -4549,8 +4473,11 @@ struct breath_of_fire_celestial_flames_t : public monk_spell_t
 
 struct sck_tick_action_t : public monk_melee_attack_t
 {
+  flaming_kicks_t* flaming_kicks;
+
   sck_tick_action_t( const std::string& name, monk_t* p, const spell_data_t* data )
-    : monk_melee_attack_t( name, p, data )
+    : monk_melee_attack_t( name, p, data ),
+      flaming_kicks( new flaming_kicks_t( p ) )
   {
     affected_by.sunrise_technique = true;
     ww_mastery                    = true;
@@ -4624,6 +4551,22 @@ struct sck_tick_action_t : public monk_melee_attack_t
 
     if ( p()->spec.spinning_crane_kick_2_brm )
       trigger_shuffle( p()->spec.spinning_crane_kick_2_brm->effectN( 1 ).base_value() );
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    monk_melee_attack_t::impact( s );
+
+    if ( p()->buff.flaming_kicks->up() )
+    {
+      double dmg_percent         = p()->legendary.charred_passions->effectN( 1 ).percent();
+      flaming_kicks->base_dd_min = s->result_amount * dmg_percent;
+      flaming_kicks->base_dd_max = s->result_amount * dmg_percent;
+      flaming_kicks->execute();
+
+      if ( td( s->target )->dots.breath_of_fire->is_ticking() )
+        td( s->target )->dots.breath_of_fire->refresh_duration();
+    }
   }
 };
 
@@ -7572,8 +7515,6 @@ action_t* monk_t::create_action( util::string_view name, const std::string& opti
   if ( name == "vivify" )
     return new vivify_t( *this, options_str );
   // Brewmaster
-  if ( name == "blackout_strike" )
-    return new blackout_strike_t( this, options_str );
   if ( name == "breath_of_fire" )
     return new breath_of_fire_t( *this, options_str );
   if ( name == "celestial_brew" )
@@ -7998,7 +7939,6 @@ void monk_t::init_spells()
   spec.vivify_2_ww               = find_rank_spell( "Vivify", "Rank 2", MONK_WINDWALKER );
 
   // Brewmaster Specialization
-  spec.blackout_strike     = find_specialization_spell( "Blackout Strike" );
   spec.bladed_armor        = find_specialization_spell( "Bladed Armor" );
   spec.breath_of_fire      = find_specialization_spell( "Breath of Fire" );
   spec.brewmasters_balance = find_specialization_spell( "Brewmaster's Balance" );
