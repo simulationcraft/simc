@@ -1980,6 +1980,9 @@ void priest_t::arise()
 // Legendary Eternal Call to the Void trigger
 void priest_t::trigger_eternal_call_to_the_void( const dot_t* )
 {
+  if ( !legendary.eternal_call_to_the_void->ok() )
+    return;
+
   if ( rppm.eternal_call_to_the_void->trigger() )
   {
     procs.void_tendril->occur();

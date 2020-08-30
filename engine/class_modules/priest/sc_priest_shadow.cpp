@@ -290,10 +290,7 @@ struct mind_flay_t final : public priest_spell_t
   {
     priest_spell_t::tick( d );
 
-    if ( priest().legendary.eternal_call_to_the_void->ok() )
-    {
-      priest().trigger_eternal_call_to_the_void( d );
-    }
+    priest().trigger_eternal_call_to_the_void( d );
 
     trigger_dark_thoughts( d->target, priest().procs.dark_thoughts_flay );
   }
@@ -525,14 +522,17 @@ struct silence_t final : public priest_spell_t
 
   bool target_ready( player_t* candidate_target ) override
   {
-    return priest_spell_t::target_ready( candidate_target );
-    // Only available if the target is casting
-    // Or if the target can get blank silenced
-    if ( !( candidate_target->type != ENEMY_ADD && ( candidate_target->level() < sim->max_player_level + 3 ) &&
-            candidate_target->debuffs.casting && candidate_target->debuffs.casting->check() ) )
-    {
+    if ( !priest_spell_t::target_ready( candidate_target ) )
       return false;
-    }
+
+    if ( candidate_target->debuffs.casting && candidate_target->debuffs.casting->check() )
+      return true;
+
+    // Check if the target can get blank silenced
+    if ( candidate_target->type != ENEMY_ADD && ( candidate_target->level() < sim->max_player_level + 3 ) )
+      return true;
+
+    return false;
   }
 };
 
@@ -659,11 +659,9 @@ struct shadowy_apparition_spell_t final : public priest_spell_t
 struct shadow_word_pain_t final : public priest_spell_t
 {
   bool casted;
-  timespan_t increased_time;
 
   shadow_word_pain_t( priest_t& p, bool _casted = false )
-    : priest_spell_t( "shadow_word_pain", p, p.find_class_spell( "Shadow Word: Pain" ) ),
-      increased_time( priest().azerite.torment_of_torments.spell()->effectN( 1 ).time_value() )
+    : priest_spell_t( "shadow_word_pain", p, p.find_class_spell( "Shadow Word: Pain" ) )
   {
     casted    = _casted;
     may_crit  = true;
@@ -689,10 +687,8 @@ struct shadow_word_pain_t final : public priest_spell_t
     {
       base_dd_adder += priest().azerite.torment_of_torments.value( 2 );
     }
-    if ( priest().azerite.torment_of_torments.enabled() )
-    {
-      dot_duration += increased_time;
-    }
+
+    dot_duration += priest().azerite.torment_of_torments.spell()->effectN( 1 ).time_value();
   }
 
   shadow_word_pain_t( priest_t& p, util::string_view options_str ) : shadow_word_pain_t( p, true )
@@ -752,7 +748,6 @@ struct unfurling_darkness_t final : public priest_spell_t
 // ==========================================================================
 struct vampiric_touch_t final : public priest_spell_t
 {
-  double harvested_thoughts_value;
   propagate_const<shadow_word_pain_t*> child_swp;
   propagate_const<unfurling_darkness_t*> child_ud;
   bool ignore_healing;
@@ -760,7 +755,6 @@ struct vampiric_touch_t final : public priest_spell_t
 
   vampiric_touch_t( priest_t& p, bool _casted = false )
     : priest_spell_t( "vampiric_touch", p, p.find_class_spell( "Vampiric Touch" ) ),
-      harvested_thoughts_value( priest().azerite.thought_harvester.value( 2 ) ),
       child_swp( nullptr ),
       child_ud( nullptr ),
       ignore_healing( p.options.priest_ignore_healing )
@@ -774,10 +768,7 @@ struct vampiric_touch_t final : public priest_spell_t
       child_swp->background = true;
     }
 
-    if ( priest().azerite.thought_harvester.enabled() )
-    {
-      base_ta_adder += harvested_thoughts_value;
-    }
+    base_ta_adder += priest().azerite.thought_harvester.value( 2 );
 
     if ( priest().talents.unfurling_darkness->ok() )
     {
@@ -888,7 +879,7 @@ struct devouring_plague_t final : public priest_spell_t
     }
   }
 
-  virtual double cost() const override
+  double cost() const override
   {
     if ( priest().buffs.mind_devourer->check() || !casted )
     {
