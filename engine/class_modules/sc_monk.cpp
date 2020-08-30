@@ -2309,6 +2309,18 @@ private:
       radius                                                = 0;
       cooldown->duration                                    = timespan_t::zero();
     }
+
+    double bonus_da( const action_state_t* s ) const override
+    {
+      double b = melee_attack_t::bonus_da( s );
+
+      niuzao_pet_t* p = static_cast<niuzao_pet_t*>( player );
+
+      if ( p->buff.niuzao_2_buff->up() )
+        b += p->buff.niuzao_2_buff->value();
+
+      return b;
+    }
   };
 
   struct stomp_t : public spell_t
@@ -2362,6 +2374,11 @@ private:
   };
 
 public:
+  struct buffs_t
+  {
+    buff_t* niuzao_2_buff = nullptr;
+  } buff;
+
   niuzao_pet_t( sim_t* sim, monk_t* owner ) : pet_t( sim, owner, "niuzao_the_black_ox", true )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
@@ -2392,6 +2409,16 @@ public:
       cpm *= 1 + o()->conduit.walk_with_the_ox.percent();
 
     return cpm;
+  }
+
+  void create_buffs() override
+  {
+    pet_t::create_buffs();
+
+    buff.niuzao_2_buff =
+        make_buff( this, "stomp_buff" )
+            ->set_duration( timespan_t::from_seconds( 2 ) )
+            ->set_quiet( true );  // In-game does not show this buff but I would like to use it for background stuff;
   }
 
   void init_action_list() override
