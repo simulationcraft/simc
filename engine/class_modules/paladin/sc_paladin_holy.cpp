@@ -353,23 +353,6 @@ struct holy_shock_t : public paladin_spell_t
   }
 };
 
-// Holy Avenger
-struct holy_avenger_t : public paladin_heal_t
-{
-  holy_avenger_t( paladin_t* p, const std::string& options_str ) :
-    paladin_heal_t( "holy_avenger", p, p -> talents.holy_avenger )
-  {
-    parse_options( options_str );
-  }
-
-  void execute() override
-  {
-    paladin_heal_t::execute();
-
-    p() -> buffs.holy_avenger -> trigger();
-  }
-};
-
 // Judgment - Holy =================================================================
 
 struct judgment_holy_t : public judgment_t
@@ -512,7 +495,6 @@ action_t* paladin_t::create_action_holy( util::string_view name, const std::stri
 {
   if ( name == "beacon_of_light"           ) return new beacon_of_light_t          ( this, options_str );
   if ( name == "divine_protection"         ) return new divine_protection_t        ( this, options_str );
-  if ( name == "holy_avenger"              ) return new holy_avenger_t             ( this, options_str );
   if ( name == "holy_light"                ) return new holy_light_t               ( this, options_str );
   if ( name == "holy_prism"                ) return new holy_prism_t               ( this, options_str );
   if ( name == "holy_shock"                ) return new holy_shock_t               ( this, options_str );
@@ -531,10 +513,6 @@ void paladin_t::create_buffs_holy()
 {
   buffs.divine_protection      = make_buff( this, "divine_protection", find_class_spell( "Divine Protection" ) )
                                -> set_cooldown( 0_ms ); // Handled by the action
-  buffs.holy_avenger           = make_buff( this, "holy_avenger", talents.holy_avenger )
-                               -> set_default_value( talents.holy_avenger -> effectN( 1 ).percent() )
-                               -> add_invalidate( CACHE_HASTE )
-                               -> set_cooldown( 0_ms ); // handled by the ability
   buffs.infusion_of_light      = make_buff( this, "infusion_of_light", find_spell( 54149 ) );
 }
 

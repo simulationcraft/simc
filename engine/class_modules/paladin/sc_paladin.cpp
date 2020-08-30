@@ -177,6 +177,42 @@ struct avenging_wrath_t : public paladin_spell_t
   }
 };
 
+// Holy Avenger
+struct holy_avenger_t : public paladin_spell_t
+{
+  holy_avenger_t( paladin_t* p, const std::string& options_str ) :
+    paladin_spell_t( "holy_avenger", p, p -> talents.holy_avenger )
+  {
+    parse_options( options_str );
+    harmful = false;
+  }
+
+  void execute() override
+  {
+    paladin_spell_t::execute();
+
+    p() -> buffs.holy_avenger -> trigger();
+  }
+};
+
+// seraphim
+struct seraphim_t : public holy_power_consumer_t
+{
+  seraphim_t( paladin_t* p, const std::string& options_str) :
+    holy_power_consumer_t( "seraphim", p, p -> talents.seraphim )
+  {
+    parse_options( options_str );
+    harmful = false;
+  }
+
+  void execute() override
+  {
+    holy_power_consumer_t::execute();
+
+    p() -> buffs.seraphim -> trigger();
+  }
+};
+
 // Consecration =============================================================
 
 struct consecration_tick_t : public paladin_spell_t
@@ -1092,6 +1128,8 @@ action_t* paladin_t::create_action( util::string_view name, const std::string& o
   if ( name == "reckoning"                 ) return new reckoning_t                ( this, options_str );
   if ( name == "flash_of_light"            ) return new flash_of_light_t           ( this, options_str );
   if ( name == "lay_on_hands"              ) return new lay_on_hands_t             ( this, options_str );
+  if ( name == "holy_avenger"              ) return new holy_avenger_t             ( this, options_str );
+  if ( name == "seraphim"                  ) return new seraphim_t                 ( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
@@ -1352,6 +1390,16 @@ void paladin_t::create_buffs()
 
   buffs.avengers_might = make_buff<stat_buff_t>( this, "avengers_might", find_spell( 272903 ) )
                        -> add_stat( STAT_MASTERY_RATING, azerite.avengers_might.value() );
+
+  buffs.seraphim = make_buff( this, "seraphim", talents.seraphim )
+                 -> add_invalidate( CACHE_CRIT_CHANCE )
+                 -> add_invalidate( CACHE_HASTE )
+                 -> add_invalidate( CACHE_MASTERY )
+                 -> add_invalidate( CACHE_VERSATILITY )
+                 -> set_cooldown( 0_ms ); // let the ability handle the cooldown
+
+  buffs.holy_avenger = make_buff( this, "holy_avenger", talents.holy_avenger )
+                     -> set_cooldown( 0_ms ); // handled by the ability
 }
 
 // paladin_t::default_potion ================================================
@@ -1694,6 +1742,66 @@ double paladin_t::composite_attribute_multiplier( attribute_e attr ) const
   return m;
 }
 
+double paladin_t::composite_damage_versatility() const
+{
+  double cdv = player_t::composite_damage_versatility();
+
+  if ( buffs.seraphim -> up() )
+    cdv += buffs.seraphim -> data().effectN( 2 ).percent();
+
+  return cdv;
+}
+
+double paladin_t::composite_heal_versatility() const
+{
+  double chv = player_t::composite_heal_versatility();
+
+  if ( buffs.seraphim -> up() )
+    chv += buffs.seraphim -> data().effectN( 2 ).percent();
+
+  return chv;
+}
+
+double paladin_t::composite_mitigation_versatility() const
+{
+  double cmv = player_t::composite_mitigation_versatility();
+
+  if ( buffs.seraphim -> up() )
+    cmv += buffs.seraphim -> data().effectN( 2 ).percent() / 2;
+
+  return cmv;
+}
+
+double paladin_t::composite_mastery() const
+{
+  double m = player_t::composite_mastery();
+
+  if( buffs.seraphim -> up() )
+    m += buffs.seraphim -> data().effectN( 4 ).percent();
+
+  return m;
+}
+
+double paladin_t::composite_spell_crit_chance() const
+{
+  double h = player_t::composite_spell_crit_chance();
+
+  if ( buffs.seraphim -> up() )
+    h += buffs.seraphim -> data().effectN( 1 ).percent();
+
+  return h;
+}
+
+double paladin_t::composite_melee_crit_chance() const
+{
+  double h = player_t::composite_melee_crit_chance();
+
+  if ( buffs.seraphim -> up() )
+    h += buffs.seraphim -> data().effectN( 1 ).percent();
+
+  return h;
+}
+
 // paladin_t::composite_melee_haste =========================================
 
 double paladin_t::composite_melee_haste() const
@@ -1703,8 +1811,8 @@ double paladin_t::composite_melee_haste() const
   if ( buffs.crusade -> up() )
     h /= 1.0 + buffs.crusade -> get_haste_bonus();
 
-  if ( buffs.holy_avenger -> up() )
-    h /= 1.0 + talents.holy_avenger -> effectN( 1 ).percent();
+  if ( buffs.seraphim -> up() )
+    h /= 1.0 + buffs.seraphim -> data().effectN( 3 ).percent();
 
   return h;
 }
@@ -1728,8 +1836,8 @@ double paladin_t::composite_spell_haste() const
   if ( buffs.crusade -> up() )
     h /= 1.0 + buffs.crusade -> get_haste_bonus();
 
-  if ( buffs.holy_avenger -> up() )
-    h /= 1.0 + talents.holy_avenger -> effectN( 1 ).percent();
+  if ( buffs.seraphim -> up() )
+    h /= 1.0 + buffs.seraphim -> data().effectN( 3 ).percent();
 
   return h;
 }
@@ -1947,11 +2055,20 @@ double paladin_t::matching_gear_multiplier( attribute_e attr ) const
 
 double paladin_t::resource_gain( resource_e resource_type, double amount, gain_t* source, action_t* action )
 {
-  if ( resource_type == RESOURCE_HOLY_POWER && specialization() == PALADIN_RETRIBUTION )
+  if ( resource_type == RESOURCE_HOLY_POWER )
   {
-    if ( player_t::buffs.memory_of_lucid_dreams -> up() )
+    if ( specialization() == PALADIN_RETRIBUTION )
     {
-      amount *= 1.0 + player_t::buffs.memory_of_lucid_dreams -> data().effectN( 1 ).percent();
+      if ( player_t::buffs.memory_of_lucid_dreams -> up() )
+      {
+        amount *= 1.0 + player_t::buffs.memory_of_lucid_dreams -> data().effectN( 1 ).percent();
+      }
+
+    }
+
+    if ( buffs.holy_avenger -> up() )
+    {
+      amount *= 1.0 + buffs.holy_avenger -> data().effectN( 2 ).percent();
     }
   }
 

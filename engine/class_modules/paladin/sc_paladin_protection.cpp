@@ -395,62 +395,6 @@ struct hand_of_the_protector_t : public light_of_the_protector_base_t
   }
 };
 
-// Seraphim ( Protection ) ==================================================
-
-struct seraphim_t : public paladin_spell_t
-{
-  seraphim_t( paladin_t* p, const std::string& options_str ) :
-    paladin_spell_t( "seraphim", p, p -> talents.seraphim )
-  {
-    parse_options( options_str );
-
-    harmful = false;
-    may_miss = false;
-
-    // ugly hack required if SotR isn't found in the APL
-    if ( p -> cooldowns.shield_of_the_righteous -> charges < 3 )
-    {
-      const spell_data_t* sotr = p -> find_class_spell( "Shield of the Righteous" );
-      p -> cooldowns.shield_of_the_righteous -> charges = p -> cooldowns.shield_of_the_righteous -> current_charge = sotr -> _charges;
-      p -> cooldowns.shield_of_the_righteous -> duration = timespan_t::from_millis( sotr -> _charge_cooldown );
-    }
-  }
-
-  void execute() override
-  {
-    paladin_spell_t::execute();
-
-    // duration depends on sotr charges, need to do some math
-    timespan_t duration = 0_ms;
-    int available_charges = p() -> cooldowns.shield_of_the_righteous -> current_charge;
-    double charges_used = 0;
-    timespan_t remains = p() -> cooldowns.shield_of_the_righteous -> current_charge_remains();
-
-    if ( available_charges >= 1 )
-    {
-      charges_used += std::min( available_charges, 2 );
-      for ( int i = 0; i < charges_used; i++ )
-        p() -> cooldowns.shield_of_the_righteous -> start( p() -> active.sotr );
-    }
-
-    if ( charges_used < 2 )
-    {
-      charges_used += ( p() -> cooldowns.shield_of_the_righteous -> duration.total_seconds() - remains.total_seconds() ) / p() -> cooldowns.shield_of_the_righteous -> duration.total_seconds();
-      p() -> cooldowns.shield_of_the_righteous -> adjust( p() -> cooldowns.shield_of_the_righteous -> duration - remains );
-    }
-
-    duration = charges_used * p() -> talents.seraphim -> duration();
-
-    if ( duration > 0_ms )
-      p() -> buffs.seraphim -> trigger( 1, -1.0, -1.0, duration );
-
-    if ( p() -> azerite_essence.memory_of_lucid_dreams.enabled() && duration > 0_ms )
-    {
-      p() -> trigger_memory_of_lucid_dreams( charges_used );
-    }
-  }
-};
-
 // Shield of the Righteous ==================================================
 
 shield_of_the_righteous_buff_t::shield_of_the_righteous_buff_t( paladin_t* p ) :
@@ -767,7 +711,6 @@ action_t* paladin_t::create_action_protection( util::string_view name, const std
   if ( name == "hammer_of_the_righteous"   ) return new hammer_of_the_righteous_t  ( this, options_str );
   if ( name == "hand_of_the_protector"     ) return new hand_of_the_protector_t    ( this, options_str );
   if ( name == "light_of_the_protector"    ) return new light_of_the_protector_t   ( this, options_str );
-  if ( name == "seraphim"                  ) return new seraphim_t                 ( this, options_str );
   if ( name == "shield_of_the_righteous"   ) return new shield_of_the_righteous_t  ( this, options_str );
 
   if ( specialization() == PALADIN_PROTECTION )
@@ -793,13 +736,6 @@ void paladin_t::create_buffs_protection()
                            -> set_absorb_source( get_stats( "holy_shield_absorb" ) )
                            -> set_absorb_gain( get_gain( "holy_shield_absorb" ) );
   buffs.redoubt = make_buff( this, "redoubt", talents.redoubt -> effectN( 1 ).trigger() );
-
-  buffs.seraphim = make_buff<stat_buff_t>( this, "seraphim", talents.seraphim )
-                 -> add_stat( STAT_HASTE_RATING, talents.seraphim -> effectN( 1 ).average( this ) )
-                 -> add_stat( STAT_CRIT_RATING, talents.seraphim -> effectN( 1 ).average( this ) )
-                 -> add_stat( STAT_MASTERY_RATING, talents.seraphim -> effectN( 1 ).average( this ) )
-                 -> add_stat( STAT_VERSATILITY_RATING, talents.seraphim -> effectN( 1 ).average( this ) )
-                 -> set_cooldown( 0_ms ); // let the ability handle the cooldown
 
   buffs.shield_of_the_righteous = new shield_of_the_righteous_buff_t( this );
 
