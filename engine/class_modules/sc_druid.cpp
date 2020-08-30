@@ -305,7 +305,6 @@ public:
     spell_t* galactic_guardian;
     action_t* natures_guardian;
     spell_t* shooting_stars;
-    spell_t* fury_of_elune;
     action_t* yseras_gift;
 
     // Azerite
@@ -5563,21 +5562,20 @@ struct fury_of_elune_t : public druid_spell_t
 {
   struct fury_of_elune_tick_t : public druid_spell_t
   {
-    fury_of_elune_tick_t( util::string_view n, druid_t* p ) : druid_spell_t( n, p, p->spec.fury_of_elune )
+    fury_of_elune_tick_t( druid_t* p ) : druid_spell_t( "fury_of_elune_tick", p, p->spec.fury_of_elune )
     {
       background = dual = ground_aoe = reduced_aoe_damage = true;
       aoe = -1;
     }
   };
 
+  action_t* damage;
+
   fury_of_elune_t( druid_t* p, const std::string& options_str )
     : druid_spell_t( "fury_of_elune", p, p->talent.fury_of_elune, options_str )
   {
-    if ( !p->active.fury_of_elune )
-    {
-      p->active.fury_of_elune = new fury_of_elune_tick_t( "fury_of_elune_tick", p );
-      p->active.fury_of_elune->stats = stats;
-    }
+    damage = p->get_secondary_action<fury_of_elune_tick_t>( "fury_of_elune_tick" );
+    damage->stats = stats;
   }
 
   void execute() override
@@ -5592,7 +5590,7 @@ struct fury_of_elune_t : public druid_spell_t
                                         .hasted( ground_aoe_params_t::hasted_with::SPELL_HASTE )
                                         .pulse_time( data().effectN( 3 ).period() )
                                         .duration( data().duration() )
-                                        .action( p()->active.fury_of_elune ) );
+                                        .action( damage ) );
   }
 };
 
