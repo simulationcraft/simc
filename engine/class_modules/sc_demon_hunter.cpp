@@ -29,9 +29,7 @@ namespace
   Vengeance:
   * Add AoE component to Sinful Brand Meta
   * Add Revel in Pain passive
-  ** Add Demonic
   ** Add Infernal Armor
-  ** Add Bulk Extraction
   ** Ruinous Bulwark Absorb
   
   Maybe:
@@ -322,12 +320,12 @@ public:
     const spell_data_t* sigil_of_chains;
 
     const spell_data_t* void_reaver;
-    //                  demonic             // NYI
+    //                  demonic
     const spell_data_t* soul_barrier;
 
     const spell_data_t* last_resort;        // NYI
     const spell_data_t* ruinous_bulwark;
-    const spell_data_t* bulk_extraction;    // NYI
+    const spell_data_t* bulk_extraction;
 
     // PvP Talents
     const spell_data_t* demonic_origins;
@@ -467,7 +465,7 @@ public:
     // General
     item_runeforge_t apexis_empowerment;            // NYI
     item_runeforge_t darkglare_medallion;
-    item_runeforge_t sigil_of_the_illidari;         // Vengeance NYI
+    item_runeforge_t sigil_of_the_illidari;
     item_runeforge_t fel_bombardment;
 
     // Havoc
@@ -611,6 +609,7 @@ public:
     heal_t* consume_soul_greater;
     heal_t* consume_soul_lesser;
     spell_t* immolation_aura;
+    spell_t* sigil_of_the_illidari;
 
     // Havoc
     attack_t* demon_blades;
@@ -720,9 +719,10 @@ public:
   unsigned get_active_soul_fragments( soul_fragment = soul_fragment::ALL, bool require_demon = false ) const;
   unsigned get_total_soul_fragments( soul_fragment = soul_fragment::ALL ) const;
   void activate_soul_fragment( soul_fragment_t* );
-  void spawn_soul_fragment( soul_fragment, unsigned, bool );
-  void spawn_soul_fragment( soul_fragment, unsigned = 1 );
-  void spawn_soul_fragment( soul_fragment, unsigned, player_t* target );
+  void spawn_soul_fragment( soul_fragment, unsigned, bool, bool );
+  void spawn_soul_fragment( soul_fragment, unsigned = 1, bool = false );
+  void spawn_soul_fragment( soul_fragment, unsigned, player_t* target, bool = false );
+  void trigger_demonic();
   double get_target_reach() const
   {
     return options.target_reach >= 0 ? options.target_reach : sim->target->combat_reach;
@@ -895,11 +895,10 @@ struct soul_fragment_t
     {
       if ( sim().debug )
       {
-        sim().out_debug.printf(
-          "%s %s expires. active=%u total=%u", frag->dh->name(),
-          get_soul_fragment_str( frag->type ),
-          frag->dh->get_active_soul_fragments( frag->type ),
-          frag->dh->get_total_soul_fragments( frag->type ) );
+        sim().out_debug.printf( "%s %s expires. active=%u total=%u", frag->dh->name(),
+                                get_soul_fragment_str( frag->type ),
+                                frag->dh->get_active_soul_fragments( frag->type ),
+                                frag->dh->get_total_soul_fragments( frag->type ) );
       }
 
       frag->expiration = nullptr;
@@ -924,7 +923,7 @@ struct soul_fragment_t
     timespan_t travel_time() const
     {
       double velocity = frag->dh->spec.consume_soul_greater->missile_speed();
-      if ( velocity == 0 )
+      if ( velocity == 0 || frag->consume_on_activation )
         return timespan_t::zero();
       double distance = frag->get_distance( frag->dh );
       return timespan_t::from_seconds( distance / velocity );
@@ -934,16 +933,15 @@ struct soul_fragment_t
     {
       if (sim().debug)
       {
-        sim().out_debug.printf(
-          "%s %s becomes active. active=%u total=%u", frag->dh->name(),
-          get_soul_fragment_str(frag->type),
-          frag->dh->get_active_soul_fragments(frag->type) + 1,
-          frag->dh->get_total_soul_fragments(frag->type));
+        sim().out_debug.printf( "%s %s becomes active. active=%u total=%u", frag->dh->name(),
+                                get_soul_fragment_str( frag->type ),
+                                frag->dh->get_active_soul_fragments( frag->type ) + 1,
+                                frag->dh->get_total_soul_fragments( frag->type ) );
       }
 
       frag->activate = nullptr;
-      frag->expiration = make_event<fragment_expiration_t>(sim(), frag);
-      frag->dh->activate_soul_fragment(frag);
+      frag->expiration = make_event<fragment_expiration_t>( sim(), frag );
+      frag->dh->activate_soul_fragment( frag );
     }
   };
 
@@ -953,9 +951,10 @@ struct soul_fragment_t
   event_t* expiration;
   const soul_fragment type;
   bool from_demon;
+  bool consume_on_activation;
 
-  soul_fragment_t( demon_hunter_t* p, soul_fragment t, bool from_demon )
-    : dh( p ), type( t ), from_demon( from_demon )
+  soul_fragment_t( demon_hunter_t* p, soul_fragment t, bool from_demon, bool consume_on_activation )
+    : dh( p ), type( t ), from_demon( from_demon ), consume_on_activation( consume_on_activation )
   {
     activate = expiration = nullptr;
 
@@ -1003,7 +1002,7 @@ struct soul_fragment_t
 
   bool is_type( soul_fragment t ) const
   {
-    return t == soul_fragment::ALL || type == t;
+    return ( t == soul_fragment::ALL || type == t );
   }
 
   void set_position()
@@ -1866,6 +1865,25 @@ struct blur_t : public demon_hunter_spell_t
   }
 };
 
+// Bulk Extraction ==========================================================
+
+struct bulk_extraction_t : public demon_hunter_spell_t
+{
+  bulk_extraction_t( demon_hunter_t* p, const std::string& options_str )
+    : demon_hunter_spell_t( "bulk_extraction", p, p->talent.bulk_extraction, options_str )
+  {
+    aoe = -1;
+  }
+
+  void execute() override
+  {
+    demon_hunter_spell_t::execute();
+
+    unsigned num_souls = std::min( execute_state->n_targets, as<unsigned>( data().effectN( 2 ).base_value() ) );
+    p()->spawn_soul_fragment( soul_fragment::LESSER, num_souls, true );
+  }
+};
+
 // Chaos Nova ===============================================================
 
 struct chaos_nova_t : public demon_hunter_spell_t
@@ -1964,34 +1982,6 @@ struct disrupt_t : public demon_hunter_spell_t
 
 struct eye_beam_t : public demon_hunter_spell_t
 {
-  struct sigil_of_the_illidari_t : public demon_hunter_spell_t
-  {
-    struct sigil_of_the_illidari_tick_t : public demon_hunter_spell_t
-    {
-      sigil_of_the_illidari_tick_t( util::string_view name, demon_hunter_t* p )
-        : demon_hunter_spell_t( name, p, p->find_spell( 333105 )->effectN( 1 ).trigger() )
-      {
-        // TOCHECK: Currently does not use split damage on beta but probably will at some point
-        background = dual = true;
-        aoe = -1;
-      }
-    };
-
-    sigil_of_the_illidari_t( util::string_view name, demon_hunter_t* p )
-      : demon_hunter_spell_t( name, p, p->find_spell( 333105 ) )
-    {
-      may_miss = false;
-      background = dual = hasted_ticks = tick_on_application = true;
-      tick_action = p->get_background_action<sigil_of_the_illidari_tick_t>( "sigil_of_the_illidari_tick" );
-    }
-
-    // Behaves as a channeled spell, although we can't set channeled = true since it is background
-    timespan_t composite_dot_duration( const action_state_t* s ) const
-    {
-      return dot_duration * ( tick_time( s ) / base_tick_time );
-    }
-  };
-
   struct eye_beam_tick_t : public demon_hunter_spell_t
   {
     eye_beam_tick_t( util::string_view name, demon_hunter_t* p )
@@ -2020,11 +2010,8 @@ struct eye_beam_t : public demon_hunter_spell_t
     }
   };
 
-  sigil_of_the_illidari_t* sigil_of_the_illidari;
-
   eye_beam_t( demon_hunter_t* p, const std::string& options_str )
-    : demon_hunter_spell_t( "eye_beam", p, p->spec.eye_beam, options_str ),
-    sigil_of_the_illidari( nullptr )
+    : demon_hunter_spell_t( "eye_beam", p, p->spec.eye_beam, options_str )
   {
     may_miss = false;
     channeled = true;
@@ -2038,10 +2025,9 @@ struct eye_beam_t : public demon_hunter_spell_t
 
     tick_action = p->get_background_action<eye_beam_tick_t>( "eye_beam_tick" );
     
-    if ( p->legendary.sigil_of_the_illidari->ok() )
+    if ( p->active.sigil_of_the_illidari )
     {
-      sigil_of_the_illidari = p->get_background_action<sigil_of_the_illidari_t>( "sigil_of_the_illidari" );
-      add_child( sigil_of_the_illidari );
+      add_child( p->active.sigil_of_the_illidari );
     }
   }
 
@@ -2055,25 +2041,13 @@ struct eye_beam_t : public demon_hunter_spell_t
 
   void execute() override
   {
-    if ( p()->talent.demonic->ok() )
-    {
-      const timespan_t extend_duration = p()->talent.demonic->effectN( 1 ).time_value();
-      if ( p()->buff.metamorphosis->check() )
-      {
-        p()->buff.metamorphosis->extend_duration( p(), extend_duration );
-      }
-      else
-      {
-        // Trigger Meta before the execute so that the channel duration is affected by Meta haste
-        p()->buff.metamorphosis->trigger( 1, p()->buff.metamorphosis->default_value, -1.0, extend_duration );
-      }
-    }
+    // Trigger Meta before the execute so that the channel duration is affected by Meta haste
+    p()->trigger_demonic();
 
     demon_hunter_spell_t::execute();
     timespan_t duration = composite_dot_duration( execute_state );
 
     // Since Demonic triggers Meta with 8s + hasted duration, need to extend by the hasted duration after have an execute_state
-    // 8/30/2018 - Demonic Meta always gets the increased channel time
     if ( p()->talent.demonic->ok() )
     {
       p()->buff.metamorphosis->extend_duration( p(), duration );
@@ -2095,10 +2069,10 @@ struct eye_beam_t : public demon_hunter_spell_t
     }
 
     // Sigil of the Illidari Legendary
-    if ( sigil_of_the_illidari )
+    if ( p()->active.sigil_of_the_illidari )
     {
-      sigil_of_the_illidari->set_target( target );
-      sigil_of_the_illidari->execute();
+      p()->active.sigil_of_the_illidari->set_target( target );
+      p()->active.sigil_of_the_illidari->execute();
     }
   }
 };
@@ -2146,7 +2120,7 @@ struct fel_devastation_t : public demon_hunter_spell_t
     fel_devastation_tick_t( util::string_view name, demon_hunter_t* p )
       : demon_hunter_spell_t( name, p, p->spec.fel_devastation->effectN( 1 ).trigger() )
     {
-      background = dual = true;
+      background = dual = reduced_aoe_damage = true;
       aoe = -1;
     }
   };
@@ -2166,17 +2140,36 @@ struct fel_devastation_t : public demon_hunter_spell_t
     {
       heal = p->get_background_action<heals::fel_devastation_heal_t>( "fel_devastation_heal" );
     }
+
+    if ( p->active.sigil_of_the_illidari )
+    {
+      add_child( p->active.sigil_of_the_illidari );
+    }
   }
 
   void execute() override
   {
+    p()->trigger_demonic();
     demon_hunter_spell_t::execute();
+
+    // Since Demonic triggers Meta with 8s + hasted duration, need to extend by the hasted duration after have an execute_state
+    if ( p()->talent.demonic->ok() )
+    {
+      p()->buff.metamorphosis->extend_duration( p(), composite_dot_duration( execute_state ) );
+    }
 
     // Darkglare Medallion Legendary
     if ( p()->legendary.darkglare_medallion->ok() && p()->rng().roll( p()->legendary.darkglare_medallion->proc_chance() ) )
     {
       cooldown->reset( true );
       p()->proc.darkglare_medallion_resets->occur();
+    }
+
+    // Sigil of the Illidari Legendary
+    if ( p()->active.sigil_of_the_illidari )
+    {
+      p()->active.sigil_of_the_illidari->set_target( target );
+      p()->active.sigil_of_the_illidari->execute();
     }
   }
 
@@ -2424,6 +2417,40 @@ struct sigil_of_flame_t : public demon_hunter_spell_t
       return e;
 
     return demon_hunter_spell_t::create_expression(name);
+  }
+};
+
+// Sigil of the Illidari Legendary ==========================================
+
+struct sigil_of_the_illidari_t : public demon_hunter_spell_t
+{
+  struct sigil_of_the_illidari_tick_t : public demon_hunter_spell_t
+  {
+    sigil_of_the_illidari_tick_t( util::string_view name, demon_hunter_t* p, const spell_data_t* s )
+      : demon_hunter_spell_t( name, p, s )
+    {
+      // TOCHECK: Currently does not use split damage on beta but probably will at some point
+      background = dual = true;
+      aoe = -1;
+    }
+  };
+
+  sigil_of_the_illidari_t( util::string_view name, demon_hunter_t* p, const spell_data_t* s )
+    : demon_hunter_spell_t( name, p, s )
+  {
+    may_miss = false;
+    background = dual = hasted_ticks = tick_on_application = true;
+
+    if( p->specialization() == DEMON_HUNTER_HAVOC )
+      tick_action = p->get_background_action<sigil_of_the_illidari_tick_t>( "sigil_of_the_illidari_tick", data().effectN( 1 ).trigger() );
+    else // Trigger data not set up correctly for Vengeance
+      tick_action = p->get_background_action<sigil_of_the_illidari_tick_t>( "sigil_of_the_illidari_tick", p->find_spell( 333389 ) );
+  }
+
+  // Behaves as a channeled spell, although we can't set channeled = true since it is background
+  timespan_t composite_dot_duration( const action_state_t* s ) const
+  {
+    return dot_duration * ( tick_time( s ) / base_tick_time );
   }
 };
 
@@ -4369,13 +4396,14 @@ struct demon_hunter_buff_t : public BuffBase
 
 protected:
 
-  demon_hunter_t& p()
+  demon_hunter_t* p()
   {
-    return *debug_cast<demon_hunter_t*>( BuffBase::source );
+    return static_cast<demon_hunter_t*>( BuffBase::source );
   }
-  const demon_hunter_t& p() const
+
+  const demon_hunter_t* p() const
   {
-    return *debug_cast<demon_hunter_t*>( BuffBase::source );
+    return static_cast<const demon_hunter_t*>( BuffBase::source );
   }
 
 private:
@@ -4450,14 +4478,27 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
     }
   }
 
+  void trigger_demonic()
+  {
+    const timespan_t extend_duration = p()->talent.demonic->effectN( 1 ).time_value();
+    if ( p()->buff.metamorphosis->check() )
+    {
+      p()->buff.metamorphosis->extend_duration( p(), extend_duration );
+    }
+    else
+    {
+      p()->buff.metamorphosis->trigger( 1, p()->buff.metamorphosis->default_value, -1.0, extend_duration );
+    }
+  }
+
   void start(int stacks, double value, timespan_t duration) override
   {
     demon_hunter_buff_t<buff_t>::start(stacks, value, duration);
 
-    if ( p().specialization() == DEMON_HUNTER_VENGEANCE )
+    if ( p()->specialization() == DEMON_HUNTER_VENGEANCE )
     {
-      p().metamorphosis_health = p().max_health() * value;
-      p().stat_gain( STAT_MAX_HEALTH, p().metamorphosis_health, ( gain_t* )nullptr, ( action_t* )nullptr, true );
+      p()->metamorphosis_health = p()->max_health() * value;
+      p()->stat_gain( STAT_MAX_HEALTH, p()->metamorphosis_health, ( gain_t* )nullptr, ( action_t* )nullptr, true );
     }
   }
 
@@ -4465,10 +4506,10 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
   {
     demon_hunter_buff_t<buff_t>::expire_override(expiration_stacks, remaining_duration);
 
-    if (p().specialization() == DEMON_HUNTER_VENGEANCE)
+    if (p()->specialization() == DEMON_HUNTER_VENGEANCE)
     {
-      p().stat_loss(STAT_MAX_HEALTH, p().metamorphosis_health, (gain_t*)nullptr, (action_t*)nullptr, true);
-      p().metamorphosis_health = 0;
+      p()->stat_loss(STAT_MAX_HEALTH, p()->metamorphosis_health, (gain_t*)nullptr, (action_t*)nullptr, true);
+      p()->metamorphosis_health = 0;
     }
   }
 };
@@ -4685,6 +4726,7 @@ action_t* demon_hunter_t::create_action( util::string_view name, const std::stri
   using namespace actions::spells;
 
   if ( name == "blur" )               return new blur_t( this, options_str );
+  if ( name == "bulk_extraction" )    return new bulk_extraction_t( this, options_str );
   if ( name == "chaos_nova" )         return new chaos_nova_t( this, options_str );
   if ( name == "consume_magic" )      return new consume_magic_t( this, options_str );
   if ( name == "demon_spikes" )       return new demon_spikes_t( this, options_str );
@@ -5436,6 +5478,12 @@ void demon_hunter_t::init_spells()
   {
     active.demon_blades = new demon_blades_t( this );
   }
+
+  if ( legendary.sigil_of_the_illidari.ok() )
+  {
+    const spell_data_t* driver = ( specialization() == DEMON_HUNTER_HAVOC ) ? find_spell( 333105 ) : find_spell( 333386 );
+    active.sigil_of_the_illidari = get_background_action<sigil_of_the_illidari_t>( "sigil_of_the_illidari", driver );
+  }
 }
 
 // demon_hunter_t::invalidate_cache =========================================
@@ -5738,6 +5786,7 @@ void demon_hunter_t::apl_vengeance()
 
   action_priority_list_t* apl_normal = get_action_priority_list( "normal", "Normal Rotation" );
   apl_normal->add_action( this, "Infernal Strike" );
+  apl_normal->add_talent( this, "Bulk Extraction" );
   apl_normal->add_talent( this, "Spirit Bomb", "if=((buff.metamorphosis.up&soul_fragments>=3)|soul_fragments>=4)" );
   apl_normal->add_action( this, "Soul Cleave", "if=(!talent.spirit_bomb.enabled&((buff.metamorphosis.up&soul_fragments>=3)|soul_fragments>=4))" );
   apl_normal->add_action( this, "Soul Cleave", "if=talent.spirit_bomb.enabled&soul_fragments=0" );
@@ -6467,6 +6516,13 @@ unsigned demon_hunter_t::get_total_soul_fragments( soul_fragment type ) const
 
 void demon_hunter_t::activate_soul_fragment( soul_fragment_t* frag )
 {
+  // If we spawn a fragment with this flag, instantly consume it
+  if ( frag->consume_on_activation )
+  {
+    frag->consume( true, true );
+    return;
+  }
+
   if ( frag->type == soul_fragment::LESSER )
   {
     unsigned active_fragments = get_active_soul_fragments( frag->type );
@@ -6508,14 +6564,14 @@ void demon_hunter_t::activate_soul_fragment( soul_fragment_t* frag )
 
 // demon_hunter_t::spawn_soul_fragment ======================================
 
-void demon_hunter_t::spawn_soul_fragment( soul_fragment type, unsigned n, bool from_demon )
+void demon_hunter_t::spawn_soul_fragment( soul_fragment type, unsigned n, bool from_demon, bool consume_on_activation )
 {
   proc_t* soul_proc = ( type == soul_fragment::GREATER ) ? 
     proc.soul_fragment_greater : proc.soul_fragment_lesser;
 
   for ( unsigned i = 0; i < n; i++ )
   {
-    soul_fragments.push_back( new soul_fragment_t( this, type, from_demon ) );
+    soul_fragments.push_back( new soul_fragment_t( this, type, from_demon, consume_on_activation ) );
     soul_proc->occur();
   }
 
@@ -6526,14 +6582,24 @@ void demon_hunter_t::spawn_soul_fragment( soul_fragment type, unsigned n, bool f
   }
 }
 
-void demon_hunter_t::spawn_soul_fragment( soul_fragment type, unsigned n )
+void demon_hunter_t::spawn_soul_fragment( soul_fragment type, unsigned n, bool consume_on_activation )
 {
-  demon_hunter_t::spawn_soul_fragment( type, n, sim->target->race == RACE_DEMON );
+  demon_hunter_t::spawn_soul_fragment( type, n, sim->target->race == RACE_DEMON, consume_on_activation );
 }
 
-void demon_hunter_t::spawn_soul_fragment( soul_fragment type, unsigned n, player_t* target )
+void demon_hunter_t::spawn_soul_fragment( soul_fragment type, unsigned n, player_t* target, bool consume_on_activation )
 {
-  demon_hunter_t::spawn_soul_fragment( type, n, target->race == RACE_DEMON );
+  demon_hunter_t::spawn_soul_fragment( type, n, target->race == RACE_DEMON, consume_on_activation );
+}
+
+// demon_hunter_t::trigger_demonic ==========================================
+
+void demon_hunter_t::trigger_demonic()
+{
+  if ( !talent.demonic->ok() )
+    return;
+
+  debug_cast<buffs::metamorphosis_buff_t*>( buff.metamorphosis )->trigger_demonic();
 }
 
 // demon_hunter_sigil_t::create_sigil_expression ==================================
