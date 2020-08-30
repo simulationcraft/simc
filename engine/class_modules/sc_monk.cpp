@@ -267,6 +267,10 @@ public:
     stat_buff_t* fury_of_xuen_haste;
     stat_buff_t* iron_fists;
     stat_buff_t* training_of_niuzao;
+    stat_buff_t* secret_infusion_crit;
+    stat_buff_t* secret_infusion_haste;
+    stat_buff_t* secret_infusion_mastery;
+    stat_buff_t* secret_infusion_vers;
     stat_buff_t* straight_no_chaser;
     buff_t* sunrise_technique;
     buff_t* swift_roundhouse;
@@ -628,7 +632,7 @@ public:
     azerite_power_t niuzaos_blessing;
     // When you Blackout Kick, your Stagger is reduced by 62.
     azerite_power_t staggering_strikes;
-    // Ironskin Brew increases your Armor by 0, and has a 8 % chance to not consume a charge.
+    // Ironskin Brew increases your Armor by 0, and has a 8% chance to not consume a charge.
     azerite_power_t straight_no_chaser;
     // Gain up to 153 Mastery based on your current level of Stagger.
     azerite_power_t training_of_niuzao;
@@ -649,13 +653,19 @@ public:
     azerite_power_t misty_peaks;
     // Your Enveloping Mists heal the target for 62 each time they take damage.
     azerite_power_t overflowing_mists;
+    // After using Thunder Focus Tea, your next spell gives 695 of a stat for 10 sec:
+    // Enveloping Mist: Critical strike
+    // Renewing Mist: Haste
+    // Vivify: Mastery
+    // Rising Sun Kick: Versatility
+    azerite_power_t secret_infusion;
     // Your Vivify heals for an additional 85. Vivify critical heals reduce the cooldown of your Revival by 1.0 sec.
     azerite_power_t uplifting_spirits;
 
     // Windwalker
     // Fists of Fury grants you 0 Critical Strike for 6 sec when it hits at least 4 enemies.
     azerite_power_t iron_fists;
-    // Your Combo Strikes grant you the Fury of Xuen, giving your next Fists of Fury a 3 % chance to grant 384 Haste
+    // Your Combo Strikes grant you the Fury of Xuen, giving your next Fists of Fury a 3% chance to grant 384 Haste
     // and invoke Xuen, The White Tiger for 8 sec.Stacks up to 33 times.
     azerite_power_t fury_of_xuen;
     // When you Combo Strike, the cooldown of Touch of Death is reduced by 0.1 sec. Touch of Death deals an additional
@@ -4101,6 +4111,14 @@ struct rising_sun_kick_t : public monk_melee_attack_t
         p()->buff.whirling_dragon_punch->trigger();
     }
 
+    if ( p()->buff.thunder_focus_tea->up() )
+    {
+      if ( p()->azerite.secret_infusion.ok() )
+        p()->buff.secret_infusion_vers->trigger();
+
+      p()->buff.thunder_focus_tea->decrement();
+    }
+
     if ( p()->azerite.glory_of_the_dawn.ok() )
     {
       if ( rng().roll( p()->azerite.glory_of_the_dawn.spell_ref().effectN( 3 ).percent() ) )
@@ -6474,6 +6492,14 @@ struct enveloping_mist_t : public monk_heal_t
       p()->buff.lifecycles_vivify->trigger();
     }
 
+    if ( p()->buff.thunder_focus_tea->up() )
+    {
+      if ( p()->azerite.secret_infusion.ok() )
+        p()->buff.secret_infusion_crit->trigger();
+
+      p()->buff.thunder_focus_tea->decrement();
+    }
+
     mastery->execute();
   }
 };
@@ -6514,7 +6540,12 @@ struct renewing_mist_t : public monk_heal_t
     mastery->execute();
 
     if ( p()->buff.thunder_focus_tea->up() )
+    {
+      if ( p()->azerite.secret_infusion.ok() )
+        p()->buff.secret_infusion_haste->trigger();
+
       p()->buff.thunder_focus_tea->decrement();
+    }
   }
 
   void tick( dot_t* d ) override
@@ -6580,7 +6611,12 @@ struct vivify_t : public monk_heal_t
     monk_heal_t::execute();
 
     if ( p()->buff.thunder_focus_tea->up() )
+    {
+      if ( p()->azerite.secret_infusion.ok() )
+        p()->buff.secret_infusion_mastery->trigger();
+
       p()->buff.thunder_focus_tea->decrement();
+    }
 
     if ( p()->talent.lifecycles )
     {
@@ -8178,6 +8214,7 @@ void monk_t::init_spells()
   azerite.invigorating_brew = find_azerite_spell( "Invigorating Brew" );
   azerite.misty_peaks       = find_azerite_spell( "Misty Peaks" );
   azerite.overflowing_mists = find_azerite_spell( "Overflowing Mists" );
+  azerite.secret_infusion   = find_azerite_spell( "Secret Infusion" );
   azerite.uplifting_spirits = find_azerite_spell( "Uplifted Spirits" );
 
   // Windwalker
@@ -8540,6 +8577,16 @@ void monk_t::create_buffs()
   buff.training_of_niuzao = make_buff<stat_buff_t>( this, "training_of_niuzao", find_spell( 278767 ) )
                                 ->add_stat( STAT_MASTERY_RATING, azerite.training_of_niuzao.value() );
   buff.training_of_niuzao->set_max_stack( 3 );
+
+  // Mistweaver
+  buff.secret_infusion_crit = make_buff<stat_buff_t>( this, "secret_infusion_crit", find_spell( 287835 ) )
+                                  ->add_stat( STAT_CRIT_RATING, azerite.secret_infusion.value() );
+  buff.secret_infusion_haste = make_buff<stat_buff_t>( this, "secret_infusion_crit", find_spell( 287831 ) )
+                                  ->add_stat( STAT_HASTE_RATING, azerite.secret_infusion.value() );
+  buff.secret_infusion_mastery = make_buff<stat_buff_t>( this, "secret_infusion_crit", find_spell( 287836 ) )
+                                  ->add_stat( STAT_MASTERY_RATING, azerite.secret_infusion.value() );
+  buff.secret_infusion_vers = make_buff<stat_buff_t>( this, "secret_infusion_crit", find_spell( 287837 ) )
+                                  ->add_stat( STAT_VERSATILITY_RATING, azerite.secret_infusion.value() );
 
   // Windwalker
   buff.dance_of_chiji_azerite =
