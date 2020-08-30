@@ -3986,9 +3986,12 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
     {
       case MONK_MISTWEAVER:
       {
-        if ( p()->talent.rising_thunder->ok() )
-          p()->cooldown.thunder_focus_tea->reset( true );
-        break;
+        if ( p()->spec.thunger_focus_tea_2 && p()->buff.thunder_focus_tea->up() )
+        {
+          p()->cooldown.rising_sun_kick->adjust( p()->spec.thunger_focus_tea_2->effectN( 1 ).time_value() );
+          p()->buff.thunder_focus_tea->decrement();
+          break;
+        }
       }
       default:
         break;
@@ -6563,12 +6566,11 @@ struct vivify_t : public monk_heal_t
   {
     double c = monk_heal_t::cost();
 
-    // TODO: check the interation between Thunder Focus Tea and Lifecycles
-    if ( p()->buff.thunder_focus_tea->check() )
-      c *= 1 + p()->spec.thunder_focus_tea->effectN( 5 ).percent();  // saved as -100
+    if ( p()->buff.thunder_focus_tea->check() && p()->spec.thunger_focus_tea_2 )
+      c *= 1 + p()->spec.thunger_focus_tea_2->effectN( 2 ).percent();  // saved as -100
 
     if ( p()->buff.lifecycles_vivify->check() )
-      c *= 1 + p()->buff.lifecycles_vivify->value();  // saved as -20%
+      c *= 1 + p()->buff.lifecycles_vivify->value();  // saved as -25%
 
     return c;
   }
