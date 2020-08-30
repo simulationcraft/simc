@@ -7867,7 +7867,7 @@ void death_knight_t::default_apl_unholy()
   cooldowns -> add_action( this, "Summon Gargoyle", "if=runic_power.deficit<14" );
   cooldowns -> add_talent( this, "Unholy Assault", "active_enemies=1&pet.apoc_ghoul.active" );
   cooldowns -> add_talent( this, "Unholy Assault", "if=active_enemies>=2&((cooldown.death_and_decay.remains<=gcd&!talent.defile.enabled)|(cooldown.defile.remains<=gcd&talent.defile.enabled))" );
-  cooldowns -> add_talent( this, "Soul Reaper", "target_if=target.health_percentage<35&target.time_to_die>5" );
+  cooldowns -> add_talent( this, "Soul Reaper", "target_if=target.health.pct<35&target.time_to_die>5" );
   cooldowns -> add_action( this, "Raise Dead", "if=!pet.risen_ghoul.active" );
   cooldowns -> add_action( this, "Sacrificial Pact", "if=active_enemies>=2&!buff.dark_transformation.active&!cooldown.dark_transformation.ready&cooldown.dark_transformation.remains>cooldown.raise_dead.remains" );
   
