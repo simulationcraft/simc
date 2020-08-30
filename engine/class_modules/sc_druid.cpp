@@ -294,7 +294,7 @@ public:
   bool catweave_bear;
   bool affinity_resources;  // activate resources tied to affinities
   double kindred_empowerment_ratio;
-  int convoke_the_spirits_heals;
+  double convoke_the_spirits_heals;
   double convoke_the_spirits_ultimate;
 
   struct active_actions_t
@@ -851,7 +851,7 @@ public:
       catweave_bear( false ),
       affinity_resources( false ),
       kindred_empowerment_ratio( 1.0 ),
-      convoke_the_spirits_heals( 2 ),
+      convoke_the_spirits_heals( 3.5 ),
       convoke_the_spirits_ultimate( 0.01 ),
       active( active_actions_t() ),
       force_of_nature(),
@@ -7064,6 +7064,8 @@ struct kindred_spirits_t : public druid_spell_t
 struct convoke_the_spirits_t : public druid_spell_t
 {
   shuffled_rng_t* deck;
+  bool heal_cast;
+  double heal_chance;
 
   // Balance
   action_t* conv_fm;
@@ -7091,8 +7093,9 @@ struct convoke_the_spirits_t : public druid_spell_t
     harmful = channeled = true;
     may_miss = may_crit = false;
 
-    deck = p->get_shuffled_rng( "convoke_the_spirits", p->convoke_the_spirits_heals,
-                                static_cast<int>( dot_duration / base_tick_time ) );
+    int heals_int = as<int>( util::ceil( p->convoke_the_spirits_heals ) );
+    heal_chance = heals_int - p->convoke_the_spirits_heals;
+    deck = p->get_shuffled_rng( "convoke_the_spirits", heals_int, static_cast<int>( dot_duration / base_tick_time ) );
 
     // Balance
     conv_fm = create_convoke_action<full_moon_t>( "full_moon" );
@@ -7129,6 +7132,8 @@ struct convoke_the_spirits_t : public druid_spell_t
 
     deck->reset();
 
+    heal_cast = false;
+
     // Balance
     mf_cast  = false;
     mf_count = 0;
@@ -7148,7 +7153,15 @@ struct convoke_the_spirits_t : public druid_spell_t
     druid_spell_t::tick( d );
 
     if ( deck->trigger() )  // success == HEAL cast
-      return;
+    {
+      if ( heal_cast )
+        return;
+
+      heal_cast = true;
+
+      if ( !rng().roll( heal_chance ) )
+        return;
+    }
 
     std::vector<player_t*> tl = target_list();
     if ( !tl.size() )
@@ -9793,7 +9806,7 @@ void druid_t::create_options()
   add_option( opt_float( "thorns_attack_period", thorns_attack_period ) );
   add_option( opt_float( "thorns_hit_chance", thorns_hit_chance ) );
   add_option( opt_float( "kindred_empowerment_ratio", kindred_empowerment_ratio ) );
-  add_option( opt_int( "convoke_the_spirits_heals", convoke_the_spirits_heals ) );
+  add_option( opt_float( "convoke_the_spirits_heals", convoke_the_spirits_heals ) );
   add_option( opt_float( "convoke_the_spirits_ultimate", convoke_the_spirits_ultimate ) );
 }
 
