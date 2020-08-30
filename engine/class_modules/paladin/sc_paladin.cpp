@@ -699,6 +699,15 @@ struct crusader_strike_t : public paladin_melee_attack_t
           p() -> procs.fires_of_justice -> occur();
       }
 
+      if ( p() -> talents.empyrean_power -> ok() )
+      {
+        if ( rng().roll( p() -> talents.empyrean_power -> effectN( 1 ).percent() ) )
+        {
+          p() -> procs.empyrean_power -> occur();
+          p() -> buffs.empyrean_power -> trigger();
+        }
+      }
+
       if ( p() -> specialization() == PALADIN_RETRIBUTION )
       {
         p() -> resource_gain( RESOURCE_HOLY_POWER, p() -> spec.retribution_paladin -> effectN( 14 ).base_value(), p() -> gains.hp_cs );
@@ -756,7 +765,7 @@ struct inner_light_damage_t : public paladin_spell_t
 
 double holy_power_consumer_t::cost() const
 {
-  if ( ( is_divine_storm && p() -> buffs.empyrean_power -> check() ) ||
+  if ( ( is_divine_storm && ( p() -> buffs.empyrean_power_azerite -> check() || p() -> buffs.empyrean_power -> check() ) ) ||
        p() -> buffs.divine_purpose -> check() )
   {
     return 0.0;
@@ -794,7 +803,11 @@ void holy_power_consumer_t::execute()
 
   // Consume Empyrean Power on Divine Storm, handled here for interaction with DP/FoJ
   // Cost reduction is still in divine_storm_t
-  if ( p() -> buffs.empyrean_power -> up() && is_divine_storm )
+  if ( p() -> buffs.empyrean_power_azerite -> up() && is_divine_storm )
+  {
+    p() -> buffs.empyrean_power_azerite -> expire();
+  }
+  else if ( p() -> buffs.empyrean_power -> up() && is_divine_storm )
   {
     p() -> buffs.empyrean_power -> expire();
   }
@@ -1324,6 +1337,7 @@ void paladin_t::init_procs()
   procs.grand_crusader            = get_proc( "Grand Crusader"   );
   procs.prot_lucid_dreams         = get_proc( "Lucid Dreams SotR");
   procs.final_reckoning           = get_proc( "Final Reckoning"  );
+  procs.empyrean_power            = get_proc( "Empyrean Power"   );
 }
 
 // paladin_t::init_scaling ==================================================

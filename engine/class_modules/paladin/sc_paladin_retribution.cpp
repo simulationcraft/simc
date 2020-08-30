@@ -202,12 +202,22 @@ struct divine_storm_t: public holy_power_consumer_t
     {
       double b = paladin_melee_attack_t::bonus_da( s );
 
-      if ( p() -> buffs.empyrean_power -> up() )
+      if ( p() -> buffs.empyrean_power_azerite -> up() )
       {
         b += p() -> azerite.empyrean_power.value();
       }
 
       return b;
+    }
+
+    double action_multiplier() const override
+    {
+      double am = paladin_melee_attack_t::action_multiplier();
+
+      if ( p() -> buffs.empyrean_power -> up() )
+        am *= 1.0 + p() -> buffs.empyrean_power -> data().effectN( 1 ).percent();
+
+      return am;
     }
   };
 
@@ -228,6 +238,8 @@ struct divine_storm_t: public holy_power_consumer_t
     // TODO: Okay, when did this get reset to 1?
     weapon_multiplier = 0;
   }
+
+
 
   void record_data( action_state_t* ) override {}
 };
@@ -557,8 +569,9 @@ void paladin_t::create_buffs_retribution()
              -> add_invalidate( CACHE_ATTACK_SPEED );
 
   // Azerite
-  buffs.empyrean_power = make_buff( this, "empyrean_power", find_spell( 286393 ) )
+  buffs.empyrean_power_azerite = make_buff( this, "empyrean_power_azerite", find_spell( 286393 ) )
                        -> set_default_value( azerite.empyrean_power.value() );
+  buffs.empyrean_power = make_buff( this, "empyrean_power", find_spell( 326733 ) );
   buffs.relentless_inquisitor = make_buff<stat_buff_t>(this, "relentless_inquisitor", find_spell( 279204 ) )
                               -> add_stat( STAT_HASTE_RATING, azerite.relentless_inquisitor.value() );
 }

@@ -178,6 +178,7 @@ public:
     buff_t* zeal;
 
     buff_t* empyrean_power;
+    buff_t* empyrean_power_azerite;
     buff_t* relentless_inquisitor;
   } buffs;
 
@@ -269,6 +270,7 @@ public:
     proc_t* final_reckoning;
     proc_t* grand_crusader;
     proc_t* prot_lucid_dreams;
+    proc_t* empyrean_power;
   } procs;
 
   // Spells
