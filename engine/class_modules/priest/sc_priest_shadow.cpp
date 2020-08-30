@@ -56,7 +56,9 @@ public:
     cooldown->hasted     = true;
     usable_while_casting = use_while_casting;
 
-    // Reduces CD of Mind Blast but not SW:V
+    base_dd_adder += whispers_of_the_damned_value;
+
+    // Cooldown reduction
     apply_affecting_aura( player.find_rank_spell( "Mind Blast", "Rank 2", PRIEST_SHADOW ) );
   }
 
@@ -74,20 +76,6 @@ public:
     return false;
   }
 
-  void execute() override
-  {
-    priest_spell_t::execute();
-  }
-
-  double bonus_da( const action_state_t* state ) const override
-  {
-    double d = priest_spell_t::bonus_da( state );
-
-    d += whispers_of_the_damned_value;
-
-    return d;
-  }
-
   double composite_energize_amount( const action_state_t* s ) const override
   {
     double amount = priest_spell_t::composite_energize_amount( s );
@@ -100,21 +88,25 @@ public:
     return amount;
   }
 
+  bool talbadars_stratagem_active( const player_t* target ) const
+  {
+    if ( !priest().legendary.talbadars_stratagem->ok() )
+      return false;
+    const priest_td_t* td = find_td( target );
+    if ( !td )
+      return false;
+
+    return td->dots.shadow_word_pain->is_ticking() && td->dots.vampiric_touch->is_ticking() &&
+           td->dots.devouring_plague->is_ticking();
+  }
+
   double composite_da_multiplier( const action_state_t* state ) const override
   {
     double d = priest_spell_t::composite_da_multiplier( state );
 
-    if ( priest().legendary.talbadars_stratagem->ok() )
+    if ( talbadars_stratagem_active( state->target ) )
     {
-      auto shadow_word_pain_dot = state->target->get_dot( "shadow_word_pain", player );
-      auto vampiric_touch_dot   = state->target->get_dot( "vampiric_touch", player );
-      auto devouring_plague_dot = state->target->get_dot( "devouring_plague", player );
-
-      if ( shadow_word_pain_dot != nullptr && shadow_word_pain_dot->is_ticking() && vampiric_touch_dot != nullptr &&
-           vampiric_touch_dot->is_ticking() && devouring_plague_dot != nullptr && devouring_plague_dot->is_ticking() )
-      {
-        d *= ( 1.0 + priest().legendary.talbadars_stratagem->effectN( 1 ).percent() );
-      }
+      d *= 1 + priest().legendary.talbadars_stratagem->effectN( 1 ).percent();
     }
 
     return d;
