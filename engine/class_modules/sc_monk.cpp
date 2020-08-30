@@ -9476,6 +9476,7 @@ void monk_t::target_mitigation( school_e school, result_amount_type dt, action_s
   {
     // Saved as -5
     double dmg_reduction = passives.breath_of_fire_dot->effectN( 2 ).percent();
+
     if ( buff.celestial_flames->up() )
       dmg_reduction -= buff.celestial_flames->value(); // Saved as 5
     s->result_amount *= 1.0 + dmg_reduction;
@@ -10338,6 +10339,15 @@ double monk_t::current_stagger_tick_dmg()
   double dmg = 0;
   if ( active_actions.stagger_self_damage )
     dmg = active_actions.stagger_self_damage->tick_amount();
+
+  if ( buff.invoke_niuzao->up() )
+    dmg *= 1 - buff.invoke_niuzao->value(); // Saved as 25%
+
+  if ( conduit.evasive_stride->ok() )
+  {
+    if ( buff.shuffle->up() && buff.heavy_stagger->up() && rng().roll( conduit.evasive_stride.percent() ) )
+      dmg = 0;
+  }
   return dmg;
 }
 
