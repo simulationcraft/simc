@@ -3996,9 +3996,14 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
     {
       case MONK_MISTWEAVER:
       {
-        if ( p()->spec.thunder_focus_tea_2 && p()->buff.thunder_focus_tea->up() )
+        if ( p()->buff.thunder_focus_tea->up() )
         {
-          p()->cooldown.rising_sun_kick->adjust( p()->spec.thunder_focus_tea_2->effectN( 1 ).time_value() );
+          if ( p()->spec.thunder_focus_tea_2 )
+            p()->cooldown.rising_sun_kick->adjust( p()->spec.thunder_focus_tea_2->effectN( 1 ).time_value() );
+
+          if ( p()->azerite.secret_infusion.ok() )
+            p()->buff.secret_infusion_vers->trigger();
+
           p()->buff.thunder_focus_tea->decrement();
           break;
         }
@@ -4109,14 +4114,6 @@ struct rising_sun_kick_t : public monk_melee_attack_t
         else
           p()->buff.whirling_dragon_punch->set_duration( p()->cooldown.fists_of_fury->remains() );
         p()->buff.whirling_dragon_punch->trigger();
-    }
-
-    if ( p()->buff.thunder_focus_tea->up() )
-    {
-      if ( p()->azerite.secret_infusion.ok() )
-        p()->buff.secret_infusion_vers->trigger();
-
-      p()->buff.thunder_focus_tea->decrement();
     }
 
     if ( p()->azerite.glory_of_the_dawn.ok() )
