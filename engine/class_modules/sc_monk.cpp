@@ -2789,7 +2789,7 @@ public:
       }
 
       if ( p()->conduit.walk_with_the_ox->ok() && p()->cooldown.invoke_niuzao->down() )
-        p()->cooldown.invoke_niuzao->adjust( true, p()->conduit.walk_with_the_ox->effectN( 2 ).time_value() );
+        p()->cooldown.invoke_niuzao->adjust( p()->conduit.walk_with_the_ox->effectN( 2 ).time_value(), true );
     }
   }
 
@@ -5817,24 +5817,13 @@ struct special_delivery_t : public monk_spell_t
 // Fortifying Brew
 // ==========================================================================
 
-struct fortifying_ingredients_t : public monk_absorb_t
-{
-  fortifying_ingredients_t( monk_t& p )
-    : monk_absorb_t( "fortifying_ingredients", p, p.find_spell( 336874 ) )
-  {
-    harmful = may_crit = false;
-  }
-};
-
 struct fortifying_brew_t : public monk_spell_t
 {
   special_delivery_t* delivery;
-  fortifying_ingredients_t* fortifying_ingredients;
 
   fortifying_brew_t( monk_t& p, const std::string& options_str )
     : monk_spell_t( "fortifying_brew", &p, 
-        ( p.specialization() == MONK_BREWMASTER ? p.spec.fortifying_brew_brm : p.spec.fortifying_brew_mw_ww ) ),
-        fortifying_ingredients( new fortifying_ingredients_t( p ) )
+        ( p.specialization() == MONK_BREWMASTER ? p.spec.fortifying_brew_brm : p.spec.fortifying_brew_mw_ww ) )
   {
     parse_options( options_str );
 
@@ -5867,14 +5856,6 @@ struct fortifying_brew_t : public monk_spell_t
 
     if ( p()->talent.celestial_flames->ok() )
       p()->buff.celestial_flames->trigger();
-
-    if ( p()->conduit.fortifying_ingredients->ok() )
-    {
-      double absorb_percent               = p()->conduit.fortifying_ingredients.percent();
-      fortifying_ingredients->base_dd_min = p()->resources.initial[ RESOURCE_HEALTH ] * absorb_percent;
-      fortifying_ingredients->base_dd_max = p()->resources.initial[ RESOURCE_HEALTH ] * absorb_percent;
-      fortifying_ingredients->execute();
-    }
   }
 };
 
