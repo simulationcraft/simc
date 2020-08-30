@@ -581,7 +581,6 @@ namespace buffs {
 
   struct execution_sentence_debuff_t : public buff_t
   {
-
     execution_sentence_debuff_t( paladin_td_t* td ) :
       buff_t( *td, "execution_sentence", debug_cast<paladin_t*>( td -> source ) -> talents.execution_sentence ),
       accumulated_damage( 0.0 ) {}

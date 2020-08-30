@@ -290,7 +290,9 @@ struct templars_verdict_t : public holy_power_consumer_t
 
 struct reckoning_t : public paladin_spell_t
 {
-  reckoning_t( paladin_t* p ) : paladin_spell_t( "reckoning", p, p -> spells.reckoning ) {}
+  reckoning_t( paladin_t* p ) : paladin_spell_t( "reckoning", p, p -> spells.reckoning ) {
+    background = true;
+  }
 
   void impact( action_state_t* s ) override
   {

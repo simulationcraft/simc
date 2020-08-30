@@ -845,7 +845,7 @@ void holy_power_consumer_t::consume_resource()
 // Base Judgment spell ======================================================
 
 judgment_t::judgment_t( paladin_t* p, const std::string& options_str ) :
-    paladin_melee_attack_t( "judgment", p, p -> find_specialization_spell( "Judgment" ) )
+    paladin_melee_attack_t( "judgment", p, p -> find_spell( 20271 ) )
 {
   parse_options( options_str );
   // no weapon multiplier
@@ -939,10 +939,10 @@ struct rebuke_t : public paladin_melee_attack_t
 
 // Reckoning ==================================================================
 
-struct reckoning_t: public paladin_melee_attack_t
+struct hand_of_reckoning_t: public paladin_melee_attack_t
 {
-  reckoning_t( paladin_t* p, const std::string& options_str ) :
-    paladin_melee_attack_t( "reckoning", p, p -> find_class_spell( "Reckoning" ) )
+  hand_of_reckoning_t( paladin_t* p, const std::string& options_str ) :
+    paladin_melee_attack_t( "hand_of_reckoning", p, p -> find_class_spell( "Hand of Reckoning" ) )
   {
     parse_options( options_str );
     use_off_gcd = true;
@@ -1055,6 +1055,7 @@ paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) :
   debuff.judgment = make_buff( *this, "judgment", paladin -> spells.judgment_debuff );
   debuff.judgment_of_light = make_buff( *this, "judgment_of_light", paladin -> find_spell( 196941 ) );
   debuff.final_reckoning = make_buff( *this, "final_reckoning", paladin -> talents.final_reckoning );
+  debuff.reckoning = make_buff( *this, "reckoning", paladin -> spells.reckoning );
 }
 
 // paladin_t::create_actions ================================================
@@ -1125,7 +1126,7 @@ action_t* paladin_t::create_action( util::string_view name, const std::string& o
   if ( name == "blessing_of_sacrifice"     ) return new blessing_of_sacrifice_t    ( this, options_str );
   if ( name == "hammer_of_justice"         ) return new hammer_of_justice_t        ( this, options_str );
   if ( name == "rebuke"                    ) return new rebuke_t                   ( this, options_str );
-  if ( name == "reckoning"                 ) return new reckoning_t                ( this, options_str );
+  if ( name == "hand_of_reckoning"         ) return new hand_of_reckoning_t        ( this, options_str );
   if ( name == "flash_of_light"            ) return new flash_of_light_t           ( this, options_str );
   if ( name == "lay_on_hands"              ) return new lay_on_hands_t             ( this, options_str );
   if ( name == "holy_avenger"              ) return new holy_avenger_t             ( this, options_str );
@@ -1315,6 +1316,7 @@ void paladin_t::init_procs()
   procs.fires_of_justice          = get_proc( "Fires of Justice" );
   procs.grand_crusader            = get_proc( "Grand Crusader"   );
   procs.prot_lucid_dreams         = get_proc( "Lucid Dreams SotR");
+  procs.final_reckoning           = get_proc( "Final Reckoning"  );
 }
 
 // paladin_t::init_scaling ==================================================
@@ -1619,6 +1621,7 @@ void paladin_t::init_spells()
   talents.cavalier           = find_talent_spell( "Cavalier" );
   talents.holy_avenger       = find_talent_spell( "Holy Avenger" );
   talents.seraphim           = find_talent_spell( "Seraphim" );
+  talents.divine_purpose     = find_talent_spell( "Divine Purpose" );
 
   // Shared Passives and spells
   passives.plate_specialization = find_specialization_spell( "Plate Specialization" );
