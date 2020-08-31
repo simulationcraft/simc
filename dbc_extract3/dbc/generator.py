@@ -1473,6 +1473,7 @@ class SpellDataGenerator(DataGenerator):
             ( 184689, 0 ),          # Shield of Vengeance damage proc
             ( 286232, 0 ),          # Light's Decree damage proc
             ( 339669, 0 ),          # Seal of Command
+            ( 339376, 0 ),          # Truth's Wake
         ),
 
         # Hunter:
