@@ -42,7 +42,18 @@ struct avengers_shield_t : public paladin_spell_t
     paladin_spell_t( "avengers_shield", p, p -> find_specialization_spell( "Avenger's Shield" ) )
   {
     parse_options( options_str );
+    do_ctor_common( p );
+  }
 
+  avengers_shield_t( paladin_t* p ) :
+    paladin_spell_t( "avengers_shield", p, p -> find_specialization_spell( "Avenger's Shield" ) )
+  {
+    do_ctor_common( p );
+    background = true;
+  }
+
+  void do_ctor_common( paladin_t* p )
+  {
     if ( ! p -> has_shield_equipped() )
     {
       sim -> errorf( "%s: %s only usable with shield equipped in offhand\n", p -> name(), name() );
@@ -699,7 +710,12 @@ bool paladin_t::standing_in_consecration() const
 
 // Initialization
 void paladin_t::create_prot_actions()
-{ }
+{
+  if ( specialization() == PALADIN_PROTECTION )
+  {
+    active.divine_toll = new avengers_shield_t( this );
+  }
+}
 
 action_t* paladin_t::create_action_protection( util::string_view name, const std::string& options_str )
 {

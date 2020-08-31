@@ -865,10 +865,8 @@ void holy_power_consumer_t::consume_resource()
 
 // Base Judgment spell ======================================================
 
-judgment_t::judgment_t( paladin_t* p, const std::string& options_str ) :
-    paladin_melee_attack_t( "judgment", p, p -> find_spell( 20271 ) )
+void judgment_t::do_ctor_common( paladin_t* p )
 {
-  parse_options( options_str );
   // no weapon multiplier
   weapon_multiplier = 0.0;
   may_block = may_parry = may_dodge = false;
@@ -892,6 +890,19 @@ judgment_t::judgment_t( paladin_t* p, const std::string& options_str ) :
   {
     base_multiplier *= 1.0 + p -> spells.judgment_2 -> effectN( 1 ).percent();
   }
+}
+
+judgment_t::judgment_t( paladin_t* p, const std::string& options_str ) :
+    paladin_melee_attack_t( "judgment", p, p -> find_spell( 20271 ) )
+{
+  parse_options( options_str );
+  do_ctor_common( p );
+}
+
+judgment_t::judgment_t( paladin_t* p ) :
+    paladin_melee_attack_t( "judgment", p, p -> find_spell( 20271 ) )
+{
+  do_ctor_common( p );
 }
 
 double judgment_t::bonus_da( const action_state_t* s ) const
@@ -995,6 +1006,31 @@ struct vanquishers_hammer_t : public holy_power_consumer_t
     holy_power_consumer_t::impact( s );
 
     p() -> buffs.vanquishers_hammer -> trigger();
+  }
+};
+
+// TODO: implement divine toll conduit
+struct divine_toll_t : public paladin_spell_t
+{
+  divine_toll_t( paladin_t* p, const std::string& options_str ) :
+    paladin_spell_t( "divine_toll", p, p -> covenant.kyrian )
+  {
+    parse_options( options_str );
+
+    aoe = data().effectN( 1 ).base_value();
+
+    add_child( p -> active.divine_toll );
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    paladin_spell_t::impact( s );
+
+    if ( result_is_hit( s -> result ) )
+    {
+      p() -> active.divine_toll -> set_target( s -> target );
+      p() -> active.divine_toll -> schedule_execute();
+    }
   }
 };
 
@@ -1174,6 +1210,7 @@ action_t* paladin_t::create_action( util::string_view name, const std::string& o
   if ( name == "seraphim"                  ) return new seraphim_t                 ( this, options_str );
 
   if ( name == "vanquishers_hammer"        ) return new vanquishers_hammer_t       ( this, options_str );
+  if ( name == "divine_toll"               ) return new divine_toll_t              ( this, options_str );
 
   return player_t::create_action( name, options_str );
 }

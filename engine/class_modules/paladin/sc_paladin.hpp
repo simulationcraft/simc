@@ -139,6 +139,7 @@ public:
 
     // Covenant stuff
     action_t* necrolord_divine_storm;
+    action_t* divine_toll;
   } active;
 
   // Buffs
@@ -1092,10 +1093,13 @@ struct judgment_t : public paladin_melee_attack_t
 {
   int indomitable_justice_pct;
   judgment_t( paladin_t* p, const std::string& options_str );
+  judgment_t( paladin_t* p );
 
   virtual double bonus_da( const action_state_t* s ) const override;
   proc_types proc_type() const override;
   void impact( action_state_t* s ) override;
+private:
+  void do_ctor_common( paladin_t* p );
 };
 
 struct shield_of_the_righteous_buff_t : public buff_t

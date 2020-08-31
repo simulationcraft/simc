@@ -307,6 +307,17 @@ struct holy_shock_t : public paladin_spell_t
     add_child( heal );
   }
 
+  holy_shock_t( paladin_t* p ) :
+    paladin_spell_t( "holy_shock", p, p -> find_specialization_spell( 20473 ) ),
+    dmg( false )
+  {
+    background = true;
+    damage = new holy_shock_damage_t( p );
+    add_child( damage );
+    heal = new holy_shock_heal_t( p );
+    add_child( heal );
+  }
+
   void execute() override
   {
     paladin_spell_t::execute();
@@ -322,23 +333,6 @@ struct holy_shock_t : public paladin_spell_t
       // heal friendly
       heal -> set_target( execute_state -> target );
       heal -> execute();
-    }
-
-    if ( p() -> buffs.divine_purpose -> check() )
-    {
-        p() -> buffs.divine_purpose -> expire();
-    }
-
-    if ( p() -> talents.divine_purpose -> ok() )
-    {
-      bool success = p() -> buffs.divine_purpose -> trigger( 1,
-                                                             p() -> buffs.divine_purpose -> default_value,
-                                                             p() -> talents.divine_purpose -> effectN( 1 ).percent() );
-      if ( success )
-      {
-        p() -> procs.divine_purpose -> occur();
-        p() -> cooldowns.holy_shock -> reset (true);
-      }
     }
   }
 
@@ -489,6 +483,11 @@ void paladin_t::create_holy_actions()
 {
   if ( find_specialization_spell( "Beacon of Light" ) -> ok() )
     active.beacon_of_light = new beacon_of_light_heal_t( this );
+
+  if ( specialization() == PALADIN_HOLY )
+  {
+    active.divine_toll = new holy_shock_t( this );
+  }
 }
 
 action_t* paladin_t::create_action_holy( util::string_view name, const std::string& options_str )

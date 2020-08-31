@@ -346,6 +346,13 @@ struct judgment_ret_t : public judgment_t
     holy_power_generation( as<int>( p -> find_spell( 220637 ) -> effectN( 1 ).base_value() ) )
   {}
 
+  judgment_ret_t( paladin_t* p ) :
+    judgment_t( p ),
+    holy_power_generation( as<int>( p -> find_spell( 220637 ) -> effectN( 1 ).base_value() ) )
+  {
+    background = true;
+  }
+
   void execute() override
   {
     judgment_t::execute();
@@ -526,6 +533,11 @@ void paladin_t::create_ret_actions()
 
   active.shield_of_vengeance_damage = new shield_of_vengeance_proc_t( this );
   active.necrolord_divine_storm = new divine_storm_t( this, true, 1.0 );
+
+  if ( specialization() == PALADIN_RETRIBUTION )
+  {
+    active.divine_toll = new judgment_ret_t( this );
+  }
 }
 
 action_t* paladin_t::create_action_retribution( util::string_view name, const std::string& options_str )
