@@ -1533,7 +1533,7 @@ struct priest_module_t final : public module_t
  * Takes the cooldown and new maximum charge count
  * Function depends on the internal working of cooldown_t::reset
  */
-static void adjust_max_charges( cooldown_t* cooldown, int new_max_charges )
+inline void adjust_max_charges( cooldown_t* cooldown, int new_max_charges )
 {
   assert( new_max_charges > 0 && "Cooldown charges must be greater than 0" );
   assert( cooldown && "Cooldown must not be null" );
