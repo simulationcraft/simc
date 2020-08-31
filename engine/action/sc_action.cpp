@@ -3264,14 +3264,24 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
           }
         }
 
+        // Evaluate spell_target spell and restore original state after evaluation
+        double evaluate_spell() const
+        {
+          auto original_target = spell->target;
+          spell->target = original_spell.target;
+          spell->target_cache.is_valid = false;
+          auto n_targets = spell->target_list().size();
+          spell->target = original_target;
+          spell->target_cache.is_valid = false;
+
+          return static_cast<double>( n_targets );
+        }
+
         double evaluate() override
         {
           if ( spell )
           {
-            spell->target                = original_spell.target;
-            spell->target_cache.is_valid = false;
-            spell->target_list();
-            return static_cast<double>( spell->target_list().size() );
+            return evaluate_spell();
           }
           else if ( !second_attempt )
           {  // There are cases where spell_targets may be looking for a spell that hasn't had an action created yet.
@@ -3291,10 +3301,7 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
             }
             else
             {
-              spell->target                = original_spell.target;
-              spell->target_cache.is_valid = false;
-              spell->target_list();
-              return static_cast<double>( spell->target_list().size() );
+              return evaluate_spell();
             }
             second_attempt = true;
           }
