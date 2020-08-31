@@ -1474,6 +1474,7 @@ class SpellDataGenerator(DataGenerator):
             ( 286232, 0 ),          # Light's Decree damage proc
             ( 339669, 0 ),          # Seal of Command
             ( 339376, 0 ),          # Truth's Wake
+            ( 339538, 0 ),          # TV echo
         ),
 
         # Hunter:
