@@ -20,21 +20,6 @@ namespace { // UNNAMED NAMESPACE
 // Forward declarations
 struct druid_t;
 
-// Active actions
-namespace spells
-{
-struct moonfire_t;
-struct shooting_stars_t;
-}  // namespace spells
-namespace heals
-{
-struct cenarion_ward_hot_t;
-}
-namespace bear_attacks
-{
-struct bear_attack_t;
-}
-
 enum form_e
 {
   CAT_FORM       = 0x1,
@@ -299,7 +284,7 @@ public:
 
   struct active_actions_t
   {
-    heals::cenarion_ward_hot_t* cenarion_ward_hot;
+    heal_t* cenarion_ward_hot;
     action_t* brambles;
     action_t* brambles_pulse;
     spell_t* galactic_guardian;
@@ -339,14 +324,6 @@ public:
   // Azerite
   struct azerite_t
   {
-    // Balance
-    azerite_power_t long_night;  // seems to be removed
-
-    // Guardian
-    azerite_power_t craggy_bark;        // Low Priority
-    azerite_power_t gory_regeneration;  // Low Priority
-
-    // Implemented
     // Balance
     azerite_power_t lively_spirit;
     azerite_power_t dawning_sun;
@@ -8108,7 +8085,6 @@ void druid_t::init_spells()
   azerite.dawning_sun = find_azerite_spell("Dawning Sun");
   azerite.high_noon = find_azerite_spell("High Noon");
   azerite.lively_spirit = find_azerite_spell("Lively Spirit");
-  azerite.long_night = find_azerite_spell("Long Night");
   azerite.lunar_shrapnel = find_azerite_spell("Lunar Shrapnel");
   azerite.power_of_the_moon = find_azerite_spell("Power of the Moon");
   azerite.streaking_stars = find_azerite_spell("Streaking Stars");
@@ -8126,8 +8102,6 @@ void druid_t::init_spells()
   azerite.untamed_ferocity = find_azerite_spell("Untamed Ferocity");
 
   // Guardian
-  azerite.craggy_bark = find_azerite_spell("Craggy Bark");
-  azerite.gory_regeneration = find_azerite_spell("Gory Regeneration");
   azerite.guardians_wrath = find_azerite_spell("Guardian's Wrath");
   azerite.layered_mane = find_azerite_spell("Layered Mane");
   azerite.masterful_instincts = find_azerite_spell("Masterful Instincts");
