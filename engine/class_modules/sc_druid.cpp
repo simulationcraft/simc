@@ -4332,7 +4332,10 @@ struct primal_wrath_t : public cat_attack_t
 
   void execute() override
   {
-    combo_points = as<int>( p()->resources.current[ RESOURCE_COMBO_POINT ] );
+    if ( free_cast )
+      combo_points = as<int>( p()->resources.max[ RESOURCE_COMBO_POINT ] );
+    else
+      combo_points = as<int>( p()->resources.current[ RESOURCE_COMBO_POINT ] );
 
     cat_attack_t::execute();
   }
