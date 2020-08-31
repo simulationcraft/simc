@@ -535,6 +535,10 @@ void initialize_soulbinds( player_t* player )
 
     unique_gear::initialize_special_effect( effect, soulbind_spell );
 
+    // Ensure the soulbind has a custom special effect to protect against errant auto-inference
+    if ( !effect.is_custom() )
+      continue;
+
     player->special_effects.push_back( new special_effect_t( effect ) );
   }
 }

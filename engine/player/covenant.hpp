@@ -154,7 +154,7 @@ public:
   unsigned get_covenant_ability_spell_id( bool generic = false ) const;
 
   /// List of soulbind spells
-  std::vector<unsigned> soulbind_spells() const { return m_soulbinds; }
+  const std::vector<unsigned>& soulbind_spells() const { return m_soulbinds; }
 
   /// Callback for handling soulbinds that proc when covenant class ability is used
   dbc_proc_callback_t* cast_callback;
