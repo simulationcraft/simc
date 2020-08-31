@@ -6830,11 +6830,8 @@ double rogue_t::composite_player_target_multiplier( player_t* target, school_e s
 
 std::string rogue_t::default_flask() const
 {
-  return ( true_level >  110 ) ? "greater_flask_of_the_currents" :
-         ( true_level >  100 ) ? "seventh_demon" :
-         ( true_level >= 90  ) ? "greater_draenic_agility_flask" :
-         ( true_level >= 85  ) ? "spring_blossoms" :
-         ( true_level >= 80  ) ? "winds" :
+  return ( true_level >= 40 ) ? "greater_flask_of_the_currents" :
+         ( true_level >= 35 ) ? "greater_draenic_agility_flask" :
          "disabled";
 }
 
@@ -6842,11 +6839,8 @@ std::string rogue_t::default_flask() const
 
 std::string rogue_t::default_potion() const
 {
-  return ( true_level > 110 ) ? (specialization() == ROGUE_ASSASSINATION ? "potion_of_focused_resolve" : "potion_of_unbridled_fury") :
-         ( true_level > 100 ) ? "prolonged_power" :
-         ( true_level >= 90 ) ? "draenic_agility" :
-         ( true_level >= 85 ) ? "virmens_bite" :
-         ( true_level >= 80 ) ? "tolvir" :
+  return ( true_level >= 40 ) ? "potion_of_unbridled_fury" :
+         ( true_level >= 35 ) ? "draenic_agility" :
          "disabled";
 }
 
@@ -6854,19 +6848,18 @@ std::string rogue_t::default_potion() const
 
 std::string rogue_t::default_food() const
 {
-  return ( true_level >  110 ) ? "famine_evaluator_and_snack_table" :
-         ( true_level >  100 ) ? "lavish_suramar_feast" :
-         ( true_level >  90  ) ? "jumbo_sea_dog" :
-         ( true_level >= 90  ) ? "sea_mist_rice_noodles" :
-         ( true_level >= 80  ) ? "seafood_magnifique_feast" :
+  return ( true_level >= 45 ) ? "famine_evaluator_and_snack_table" :
+         ( true_level >= 40 ) ? "lavish_suramar_feast" :
          "disabled";
 }
 
+// rogue_t::default_rune ====================================================
+
 std::string rogue_t::default_rune() const
 {
-  return ( true_level >= 120 ) ? "battle_scarred" :
-         ( true_level >= 110 ) ? "defiled" :
-         ( true_level >= 100 ) ? "hyper" :
+  return ( true_level >= 50 ) ? "battle_scarred" :
+         ( true_level >= 45 ) ? "defiled" :
+         ( true_level >= 40 ) ? "hyper" :
          "disabled";
 }
 
