@@ -12,6 +12,9 @@
 
 #include "report/reports.hpp"
 
+#include "item/special_effect.hpp"
+#include "action/dbc_proc_callback.hpp"
+
 struct player_t;
 struct sim_t;
 struct expr_t;
@@ -144,7 +147,32 @@ public:
 
   /// Register player-scope options
   void register_options( player_t* player );
+
+  /// Returns the spell_id of the covenant class ability or the generic ability as determined via the
+  /// __covenant_ability_data dbc table. Will need to be converted into a vector if multiple class abilities are added
+  /// in later.
+  unsigned get_covenant_ability_spell_id( bool generic = false ) const;
+
+  /// List of soulbind spells
+  std::vector<unsigned> soulbind_spells() const { return m_soulbinds; }
+
+  /// Callback for handling soulbinds that proc when covenant class ability is used
+  dbc_proc_callback_t* cast_callback;
 };
+
+/// Initialize soulbinds through the generic special effect subsystem
+void initialize_soulbinds( player_t* player );
+
+/// Register soulbinds through the generic speical effect subsystem
+void register_soulbinds();
+
+/// Add a buff to be triggered when covenant class ability is cast (create the callback if necessary)
+void add_covenant_callback_buff( player_t* player, buff_t* buff );
+
+namespace soulbinds
+{
+void grove_invigoration( special_effect_t& effect );
+}
 
 std::unique_ptr<covenant_state_t> create_player_state( const player_t* player );
 

@@ -510,6 +510,10 @@ struct player_t : public actor_t
     buff_t* delirious_frenzy; // Dream's End 1H STR axe attack speed buff
     buff_t* bioelectric_charge; // Diver's Folly 1H AGI axe buff to store damage
     buff_t* razor_coral; // Ashvane's Razor Coral trinket crit rating buff
+
+    // 9.0 Soulbinds
+    buff_t* redirected_anima_stacks;  // night_fae/niya/grove_invigoration - counter procced via rppm
+    buff_t* redirected_anima;         // night_fae/niya/grove_invigoration - buff procced on covenant ability use
   } buffs;
 
   struct debuffs_t
