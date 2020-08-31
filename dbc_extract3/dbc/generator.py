@@ -1472,6 +1472,7 @@ class SpellDataGenerator(DataGenerator):
             ( 275483, 0 ),          # Inner Light azerite trait damge
             ( 184689, 0 ),          # Shield of Vengeance damage proc
             ( 286232, 0 ),          # Light's Decree damage proc
+            ( 339669, 0 ),          # Seal of Command
         ),
 
         # Hunter:
