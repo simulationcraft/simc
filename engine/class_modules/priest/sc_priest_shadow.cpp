@@ -56,7 +56,9 @@ public:
     cooldown->hasted     = true;
     usable_while_casting = use_while_casting;
 
-    // Reduces CD of Mind Blast but not SW:V
+    base_dd_adder += whispers_of_the_damned_value;
+
+    // Cooldown reduction
     apply_affecting_aura( player.find_rank_spell( "Mind Blast", "Rank 2", PRIEST_SHADOW ) );
   }
 
@@ -74,20 +76,6 @@ public:
     return false;
   }
 
-  void execute() override
-  {
-    priest_spell_t::execute();
-  }
-
-  double bonus_da( const action_state_t* state ) const override
-  {
-    double d = priest_spell_t::bonus_da( state );
-
-    d += whispers_of_the_damned_value;
-
-    return d;
-  }
-
   double composite_energize_amount( const action_state_t* s ) const override
   {
     double amount = priest_spell_t::composite_energize_amount( s );
@@ -100,21 +88,25 @@ public:
     return amount;
   }
 
+  bool talbadars_stratagem_active( const player_t* target ) const
+  {
+    if ( !priest().legendary.talbadars_stratagem->ok() )
+      return false;
+    const priest_td_t* td = find_td( target );
+    if ( !td )
+      return false;
+
+    return td->dots.shadow_word_pain->is_ticking() && td->dots.vampiric_touch->is_ticking() &&
+           td->dots.devouring_plague->is_ticking();
+  }
+
   double composite_da_multiplier( const action_state_t* state ) const override
   {
     double d = priest_spell_t::composite_da_multiplier( state );
 
-    if ( priest().legendary.talbadars_stratagem->ok() )
+    if ( talbadars_stratagem_active( state->target ) )
     {
-      auto shadow_word_pain_dot = state->target->get_dot( "shadow_word_pain", player );
-      auto vampiric_touch_dot   = state->target->get_dot( "vampiric_touch", player );
-      auto devouring_plague_dot = state->target->get_dot( "devouring_plague", player );
-
-      if ( shadow_word_pain_dot != nullptr && shadow_word_pain_dot->is_ticking() && vampiric_touch_dot != nullptr &&
-           vampiric_touch_dot->is_ticking() && devouring_plague_dot != nullptr && devouring_plague_dot->is_ticking() )
-      {
-        d *= ( 1.0 + priest().legendary.talbadars_stratagem->effectN( 1 ).percent() );
-      }
+      d *= 1 + priest().legendary.talbadars_stratagem->effectN( 1 ).percent();
     }
 
     return d;
@@ -161,7 +153,7 @@ public:
   {
     priest().buffs.voidform->up();  // Benefit tracking
 
-    if ( priest().buffs.dark_thoughts->check() )
+    if ( priest().buffs.dark_thoughts->up() )
       priest().buffs.dark_thoughts->decrement();
     else
       priest_spell_t::update_ready( cd_duration );
@@ -196,8 +188,10 @@ struct mind_sear_tick_t final : public priest_spell_t
     direct_tick         = false;
     use_off_gcd         = true;
     dynamic_tick_action = true;
-    energize_type       = action_energize::NONE;  // no insanity gain
-    radius              = data().effectN( 2 ).radius(); // base radius is 100yd, actual is stored in effect 2
+    energize_type       = action_energize::PER_HIT;
+    energize_amount     = insanity_gain;
+    energize_resource   = RESOURCE_INSANITY;
+    radius              = data().effectN( 2 ).radius();  // base radius is 100yd, actual is stored in effect 2
   }
 
   double bonus_da( const action_state_t* state ) const override
@@ -233,24 +227,7 @@ struct mind_sear_tick_t final : public priest_spell_t
   {
     priest_spell_t::impact( s );
 
-    priest_td_t& td = get_td( s->target );
-    dot_t* swp      = td.dots.shadow_word_pain;
-    dot_t* vt       = td.dots.vampiric_touch;
-    dot_t* dp       = td.dots.devouring_plague;
-
-    int dots = swp->is_ticking() + vt->is_ticking() + dp->is_ticking();
-    if ( rng().roll( priest().specs.dark_thoughts->effectN( 1 ).percent() * dots ) )
-    {
-      sim->print_debug( "{} activated Dark Thoughts using Mind Sear with {} chance with {} dots", *player,
-                        priest().specs.dark_thoughts->effectN( 1 ).percent() * dots, dots );
-      priest().buffs.dark_thoughts->trigger();
-      priest().procs.dark_thoughts_sear->occur();
-    }
-
-    if ( result_is_hit( s->result ) )
-    {
-      priest().generate_insanity( insanity_gain, priest().gains.insanity_mind_sear, s->action );
-    }
+    trigger_dark_thoughts( s->target, priest().procs.dark_thoughts_sear );
   }
 };
 
@@ -265,7 +242,8 @@ struct mind_sear_t final : public priest_spell_t
     hasted_ticks        = false;
     dynamic_tick_action = true;
     tick_zero           = false;
-    radius              = data().effectN( 1 ).trigger()->effectN( 2 ).radius(); // need to set radius in here so that the APL functions correctly
+    radius = data().effectN( 1 ).trigger()->effectN( 2 ).radius();  // need to set radius in here so that the APL
+                                                                    // functions correctly
 
     tick_action = new mind_sear_tick_t( p, data().effectN( 1 ).trigger() );
   }
@@ -312,26 +290,9 @@ struct mind_flay_t final : public priest_spell_t
   {
     priest_spell_t::tick( d );
 
-    if ( priest().legendary.eternal_call_to_the_void->ok() )
-    {
-      priest().trigger_eternal_call_to_the_void( d );
-    }
+    priest().trigger_eternal_call_to_the_void( d );
 
-    priest_td_t& td = get_td( d->target );
-    dot_t* swp      = td.dots.shadow_word_pain;
-    dot_t* vt       = td.dots.vampiric_touch;
-    dot_t* dp       = td.dots.devouring_plague;
-
-    int dots = swp->is_ticking() + vt->is_ticking() + dp->is_ticking();
-
-    // TODO: Confirm if this needs to be adjusted to be on its own PRNG system or has an ICD
-    if ( rng().roll( priest().specs.dark_thoughts->effectN( 1 ).percent() * dots ) )
-    {
-      sim->print_debug( "{} activated Dark Thoughts using Mind Flay with {} chance with {} dots", *player,
-                        priest().specs.dark_thoughts->effectN( 1 ).percent() * dots, dots );
-      priest().buffs.dark_thoughts->trigger();
-      priest().procs.dark_thoughts_flay->occur();
-    }
+    trigger_dark_thoughts( d->target, priest().procs.dark_thoughts_flay );
   }
 
   void execute() override
@@ -561,14 +522,17 @@ struct silence_t final : public priest_spell_t
 
   bool target_ready( player_t* candidate_target ) override
   {
-    return priest_spell_t::target_ready( candidate_target );
-    // Only available if the target is casting
-    // Or if the target can get blank silenced
-    if ( !( candidate_target->type != ENEMY_ADD && ( candidate_target->level() < sim->max_player_level + 3 ) &&
-            candidate_target->debuffs.casting && candidate_target->debuffs.casting->check() ) )
-    {
+    if ( !priest_spell_t::target_ready( candidate_target ) )
       return false;
-    }
+
+    if ( candidate_target->debuffs.casting && candidate_target->debuffs.casting->check() )
+      return true;
+
+    // Check if the target can get blank silenced
+    if ( candidate_target->type != ENEMY_ADD && ( candidate_target->level() < sim->max_player_level + 3 ) )
+      return true;
+
+    return false;
   }
 };
 
@@ -695,11 +659,9 @@ struct shadowy_apparition_spell_t final : public priest_spell_t
 struct shadow_word_pain_t final : public priest_spell_t
 {
   bool casted;
-  timespan_t increased_time;
 
   shadow_word_pain_t( priest_t& p, bool _casted = false )
-    : priest_spell_t( "shadow_word_pain", p, p.find_class_spell( "Shadow Word: Pain" ) ),
-      increased_time( priest().azerite.torment_of_torments.spell()->effectN( 1 ).time_value() )
+    : priest_spell_t( "shadow_word_pain", p, p.find_class_spell( "Shadow Word: Pain" ) )
   {
     casted    = _casted;
     may_crit  = true;
@@ -718,17 +680,15 @@ struct shadow_word_pain_t final : public priest_spell_t
       dot_duration += rank2->effectN( 1 ).time_value();
     }
 
-    // TODO: This assumes death_thoes doesn't affect the direct damage portion - didn't test it
+    // TODO: This assumes death_throes doesn't affect the direct damage portion - didn't test it
     base_ta_adder += get_death_throes_bonus();
 
     if ( casted && priest().azerite.torment_of_torments.enabled() )
     {
       base_dd_adder += priest().azerite.torment_of_torments.value( 2 );
     }
-    if ( priest().azerite.torment_of_torments.enabled() )
-    {
-      dot_duration += increased_time;
-    }
+
+    dot_duration += priest().azerite.torment_of_torments.spell()->effectN( 1 ).time_value();
   }
 
   shadow_word_pain_t( priest_t& p, util::string_view options_str ) : shadow_word_pain_t( p, true )
@@ -788,7 +748,6 @@ struct unfurling_darkness_t final : public priest_spell_t
 // ==========================================================================
 struct vampiric_touch_t final : public priest_spell_t
 {
-  double harvested_thoughts_value;
   propagate_const<shadow_word_pain_t*> child_swp;
   propagate_const<unfurling_darkness_t*> child_ud;
   bool ignore_healing;
@@ -796,7 +755,6 @@ struct vampiric_touch_t final : public priest_spell_t
 
   vampiric_touch_t( priest_t& p, bool _casted = false )
     : priest_spell_t( "vampiric_touch", p, p.find_class_spell( "Vampiric Touch" ) ),
-      harvested_thoughts_value( priest().azerite.thought_harvester.value( 2 ) ),
       child_swp( nullptr ),
       child_ud( nullptr ),
       ignore_healing( p.options.priest_ignore_healing )
@@ -810,10 +768,7 @@ struct vampiric_touch_t final : public priest_spell_t
       child_swp->background = true;
     }
 
-    if ( priest().azerite.thought_harvester.enabled() )
-    {
-      base_ta_adder += harvested_thoughts_value;
-    }
+    base_ta_adder += priest().azerite.thought_harvester.value( 2 );
 
     if ( priest().talents.unfurling_darkness->ok() )
     {
@@ -826,23 +781,22 @@ struct vampiric_touch_t final : public priest_spell_t
     parse_options( options_str );
   }
 
-  void trigger_heal( action_state_t* )
+  void trigger_heal( action_state_t* s )
   {
     if ( ignore_healing )
     {
       return;
     }
-    /*
+
     double amount_to_heal = s->result_amount * data().effectN( 2 ).m_value();
-    double actual_amount =
-        priest().resource_gain( RESOURCE_HEALTH, amount_to_heal, priest().gains.vampiric_touch_health );
-    double overheal = amount_to_heal - actual_amount;
-    */
+    priest().resource_gain( RESOURCE_HEALTH, amount_to_heal, priest().gains.vampiric_touch_health, this );
   }
 
   void impact( action_state_t* s ) override
   {
     priest_spell_t::impact( s );
+
+    trigger_heal( s );
 
     if ( child_swp )
     {
@@ -924,7 +878,7 @@ struct devouring_plague_t final : public priest_spell_t
     }
   }
 
-  virtual double cost() const override
+  double cost() const override
   {
     if ( priest().buffs.mind_devourer->check() || !casted )
     {
@@ -964,11 +918,7 @@ struct void_bolt_t final : public priest_spell_t
       may_miss      = false;
       background = dual = true;
       energize_type     = action_energize::ON_CAST;
-    }
-
-    timespan_t travel_time() const override
-    {
-      return timespan_t::zero();
+      travel_speed      = 0;
     }
 
     void impact( action_state_t* s ) override
@@ -1324,10 +1274,11 @@ struct shadow_crash_damage_t final : public priest_spell_t
 
     if ( td && td->buffs.shadow_crash_debuff->check() )
     {
-      int stack = td->buffs.shadow_crash_debuff->check();
-      double increase = priest().talents.shadow_crash->effectN( 1 ).trigger()->effectN( 2 ).percent();
+      int stack             = td->buffs.shadow_crash_debuff->check();
+      double increase       = priest().talents.shadow_crash->effectN( 1 ).trigger()->effectN( 2 ).percent();
       double stack_increase = increase * stack;
-      player->sim->print_debug( "{} target has {} stacks of the shadow_crash_debuff. Increasing Damage by {}", *target, stack, stack_increase );
+      player->sim->print_debug( "{} target has {} stacks of the shadow_crash_debuff. Increasing Damage by {}", *target,
+                                stack, stack_increase );
       d *= 1 + stack_increase;
     }
 
@@ -1345,9 +1296,9 @@ struct shadow_crash_t final : public priest_spell_t
   {
     parse_options( options_str );
 
-    aoe    = -1;
-    radius = data().effectN( 1 ).radius();
-    range  = data().max_range();
+    aoe              = -1;
+    radius           = data().effectN( 1 ).radius();
+    range            = data().max_range();
     cooldown->hasted = true;
 
     impact_action = new shadow_crash_damage_t( p );
@@ -1399,9 +1350,9 @@ struct searing_nightmare_t final : public priest_spell_t
     parse_options( options_str );
     child_swp->background = true;
 
-    may_miss = false;
-    aoe      = -1;
-    radius   = data().effectN( 2 ).radius_max();
+    may_miss             = false;
+    aoe                  = -1;
+    radius               = data().effectN( 2 ).radius_max();
     usable_while_casting = use_while_casting;
   }
 
@@ -1418,9 +1369,9 @@ struct searing_nightmare_t final : public priest_spell_t
   {
     double d = priest_spell_t::composite_da_multiplier( state );
 
-    const priest_td_t* td = find_td( state -> target );
+    const priest_td_t* td = find_td( state->target );
 
-    if ( td && td -> dots.shadow_word_pain->is_ticking() )
+    if ( td && td->dots.shadow_word_pain->is_ticking() )
     {
       d *= data().effectN( 1 ).percent();
     }
@@ -1523,7 +1474,7 @@ struct insanity_drain_stacks_t final : public priest_buff_t<buff_t>
       {
         ids->stack_increase = make_event<stack_increase_event_t>( sim(), ids );
       }
-      // Memory of Lucid Dreams minor effect tries to give instanity back every 1 second, lining up with
+      // Memory of Lucid Dreams minor effect tries to give insanity back every 1 second, lining up with
       // the time Drain increases.
       priest->trigger_lucid_dreams( 0.0 );
     }
@@ -1616,7 +1567,7 @@ struct voidform_t final : public priest_buff_t<buff_t>
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
-    /// TODO: Verify if functionality is properly matching how it works ingame.
+    /// TODO: Verify if functionality is properly matching how it works in game.
     sim->print_debug( "{} has {} charges of mind blast as voidform ended", *player,
                       priest().cooldowns.mind_blast->charges_fractional() );
     // Call new generic function to adjust charges.
@@ -1690,7 +1641,7 @@ struct dark_thoughts_t final : public priest_buff_t<buff_t>
   {
     bool r = base_t::trigger( stacks, value, chance, duration );
 
-    // Currently dark thoughts also resets your mindblast.
+    // Currently dark thoughts also resets your mind blast.
     priest().cooldowns.mind_blast->reset( true, 1 );
 
     return r;
@@ -1732,7 +1683,7 @@ struct death_and_madness_buff_t final : public priest_buff_t<buff_t>
     : base_t( p, "death_and_madness_insanity_gain", p.find_spell( 321973 ) ),
       insanity_gain( data().effectN( 1 ).resource( RESOURCE_INSANITY ) )
   {
-    set_tick_callback( [this]( buff_t*, int, timespan_t ) {
+    set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
       priest().generate_insanity( insanity_gain, priest().gains.insanity_death_and_madness, nullptr );
     } );
   }
@@ -1904,7 +1855,7 @@ struct priest_t::insanity_end_event_t final : public event_t
 // Insanity tracking
 // Handles the resource gaining from abilities, and insanity draining and
 // manages an event that forcibly punts the actor out of Voidform the exact
-// moment insanity hitszero (millisecond resolution).
+// moment insanity hits zero (millisecond resolution).
 // ==========================================================================
 priest_t::insanity_state_t::insanity_state_t( priest_t& a )
   : end( nullptr ),
@@ -2136,9 +2087,10 @@ void priest_t::create_buffs_shadow()
   buffs.surrender_to_madness   = make_buff( this, "surrender_to_madness", find_talent_spell( "Surrender to Madness" ) );
   buffs.death_and_madness_buff = make_buff<buffs::death_and_madness_buff_t>( *this );
   buffs.ancient_madness        = make_buff<buffs::ancient_madness_t>( *this );
-  buffs.unfurling_darkness     = make_buff( this, "unfurling_darkness", find_talent_spell( "Unfurling Darkness" )->effectN( 1 ).trigger() );
-  buffs.unfurling_darkness_cd  = make_buff( this, "unfurling_darkness_cd", find_spell( 341291 ) );
-  buffs.dark_passion           = make_buff<buffs::dark_passion_t>( *this );
+  buffs.unfurling_darkness =
+      make_buff( this, "unfurling_darkness", find_talent_spell( "Unfurling Darkness" )->effectN( 1 ).trigger() );
+  buffs.unfurling_darkness_cd = make_buff( this, "unfurling_darkness_cd", find_spell( 341291 ) );
+  buffs.dark_passion          = make_buff<buffs::dark_passion_t>( *this );
   buffs.surrender_to_madness_death =
       make_buff( this, "surrender_to_madness_death", find_talent_spell( "Surrender to Madness" ) )
           ->set_duration( timespan_t::zero() )
@@ -2151,15 +2103,15 @@ void priest_t::create_buffs_shadow()
   buffs.whispers_of_the_damned = make_buff<buffs::whispers_of_the_damned_t>( *this );
 
   // Conduits (Shadowlands)
-  buffs.mind_devourer    = make_buff( this, "mind_devourer", find_spell( 338333 ) )
-                               ->set_trigger_spell( conduits.mind_devourer )
-                               ->set_chance( conduits.mind_devourer->effectN( 2 ).percent() );
+  buffs.mind_devourer = make_buff( this, "mind_devourer", find_spell( 338333 ) )
+                            ->set_trigger_spell( conduits.mind_devourer )
+                            ->set_chance( conduits.mind_devourer->effectN( 2 ).percent() );
   buffs.dissonant_echoes = make_buff( this, "dissonant_echoes", find_spell( 343144 ) );
 }
 
 void priest_t::init_rng_shadow()
 {
-  rppm.eternal_call_to_the_void = get_rppm( "eteranl_call_to_the_void", legendary.eternal_call_to_the_void );
+  rppm.eternal_call_to_the_void = get_rppm( "eternal_call_to_the_void", legendary.eternal_call_to_the_void );
 }
 
 void priest_t::init_spells_shadow()
@@ -2309,7 +2261,7 @@ action_t* priest_t::create_action_shadow( util::string_view name, util::string_v
 // ==========================================================================
 bool priest_t::insanity_drain_frozen() const
 {
-  if ( buffs.dispersion->no_insanty_drain && buffs.dispersion->check() )
+  if ( buffs.dispersion->no_insanity_drain && buffs.dispersion->check() )
   {
     return true;
   }
@@ -2321,7 +2273,7 @@ std::unique_ptr<expr_t> priest_t::create_expression_shadow( util::string_view na
 {
   if ( name_str == "shadowy_apparitions_in_flight" )
   {
-    return make_fn_expr( name_str, [this]() {
+    return make_fn_expr( name_str, [ this ]() {
       if ( !active_spells.shadowy_apparitions )
       {
         return 0.0;
@@ -2335,7 +2287,7 @@ std::unique_ptr<expr_t> priest_t::create_expression_shadow( util::string_view na
   {
     // Current Insanity Drain for the next 1.0 sec.
     // Does not account for a new stack occurring in the middle and can be anywhere from 0.0 - 0.5 off the real value.
-    return make_fn_expr( name_str, [this]() { return ( insanity.insanity_drain_per_second() ); } );
+    return make_fn_expr( name_str, [ this ]() { return ( insanity.insanity_drain_per_second() ); } );
   }
 
   return nullptr;
@@ -2365,7 +2317,7 @@ void priest_t::generate_apl_shadow()
   default_list->add_action(
       "variable,name=all_dots_up,op=set,value="
       "dot.shadow_word_pain.ticking&dot.vampiric_touch.ticking&dot.devouring_plague.ticking" );
-  default_list->add_action("variable,name=searing_nightmare_cutoff,op=set,value=spell_targets.mind_sear>2");
+  default_list->add_action( "variable,name=searing_nightmare_cutoff,op=set,value=spell_targets.mind_sear>2" );
 
   // Racials
   // as of 7/3/2018 Arcane Torrent being on the GCD results in a DPS loss
@@ -2415,16 +2367,24 @@ void priest_t::generate_apl_shadow()
 
   // single APL
   main->add_call_action_list( this, covenant.boon_of_the_ascended, boon, "if=buff.boon_of_the_ascended.up" );
-  main->add_action( this, "Void Eruption", "if=cooldown.power_infusion.up&insanity>=40&(!talent.legacy_of_the_void.enabled|(talent.legacy_of_the_void.enabled&dot.devouring_plague.ticking))",
+  main->add_action( this, "Void Eruption",
+                    "if=cooldown.power_infusion.up&insanity>=40&(!talent.legacy_of_the_void.enabled|(talent.legacy_of_"
+                    "the_void.enabled&dot.devouring_plague.ticking))",
                     "Sync up Voidform and Power Infusion Cooldowns and of using LotV pool insanity before casting." );
   main->add_action( this, "Void Bolt", "if=!dot.devouring_plague.refreshable",
                     "Only use Void Bolt if Devouring Plague doesn't need refreshed." );
   main->add_call_action_list( cds );
   main->add_talent( this, "Damnation", "target_if=!variable.all_dots_up",
                     "Prefer to use Damnation ASAP if any DoT is not up" );
-  main->add_action( this, "Devouring Plague", "if=talent.legacy_of_the_void.enabled&cooldown.void_eruption.up&insanity=100", "Use Devouring Plague right before you go into a LotV Voidform." );
-  main->add_action( this, "Devouring Plague", "target_if=(refreshable|insanity>75)&!cooldown.power_infusion.up&(!talent.searing_nightmare.enabled|(talent.searing_nightmare.enabled&!variable.searing_nightmare_cutoff))&(!talent.legacy_of_the_void.enabled|(talent.legacy_of_the_void.enabled&buff.voidform.down))",
-                    "Don't use Devouring Plague if you can get into Voidform instead, or if Searing Nightmare is talented and will hit enough targets." );
+  main->add_action( this, "Devouring Plague",
+                    "if=talent.legacy_of_the_void.enabled&cooldown.void_eruption.up&insanity=100",
+                    "Use Devouring Plague right before you go into a LotV Voidform." );
+  main->add_action( this, "Devouring Plague",
+                    "target_if=(refreshable|insanity>75)&!cooldown.power_infusion.up&(!talent.searing_nightmare."
+                    "enabled|(talent.searing_nightmare.enabled&!variable.searing_nightmare_cutoff))&(!talent.legacy_of_"
+                    "the_void.enabled|(talent.legacy_of_the_void.enabled&buff.voidform.down))",
+                    "Don't use Devouring Plague if you can get into Voidform instead, or if Searing Nightmare is "
+                    "talented and will hit enough targets." );
   main->add_action( this, "Shadow Word: Death", "target_if=target.health.pct<20",
                     "Use Shadow Word: Death if the target is about to die." );
   main->add_talent( this, "Surrender to Madness", "target_if=target.time_to_die<25&buff.voidform.down",
@@ -2436,13 +2396,17 @@ void priest_t::generate_apl_shadow()
   main->add_action( this, "Shadow Word: Death",
                     "if=runeforge.painbreaker_psalm.equipped&variable.dots_up&target.health.pct>30",
                     "Use SW:D above 30% HP when Painbreaker Psalm power is active" );
-  main->add_talent( this, "Shadow Crash", "if=spell_targets.shadow_crash=1&(cooldown.shadow_crash.charges=3|debuff.shadow_crash_debuff.up|action.shadow_crash.in_flight|target.time_to_die<cooldown.shadow_crash.full_recharge_time)&raid_event.adds.in>30",
-                    "Use all charges of Shadow Crash in a row on Single target, or if the boss is about to die." );
+  main->add_talent(
+      this, "Shadow Crash",
+      "if=spell_targets.shadow_crash=1&(cooldown.shadow_crash.charges=3|debuff.shadow_crash_debuff.up|action.shadow_"
+      "crash.in_flight|target.time_to_die<cooldown.shadow_crash.full_recharge_time)&raid_event.adds.in>30",
+      "Use all charges of Shadow Crash in a row on Single target, or if the boss is about to die." );
   main->add_talent( this, "Shadow Crash", "if=raid_event.adds.in>30&spell_targets.shadow_crash>1",
                     "Use Shadow Crash on CD unless there are adds incoming." );
   main->add_action(
       this, "Mind Sear",
-      "target_if=spell_targets.mind_sear>variable.mind_sear_cutoff&buff.dark_thoughts.up,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2",
+      "target_if=spell_targets.mind_sear>variable.mind_sear_cutoff&buff.dark_thoughts.up,chain=1,interrupt_immediate=1,"
+      "interrupt_if=ticks>=2",
       "Use Mind Sear to consume Dark Thoughts procs on AOE. TODO Confirm is this is a higher priority than redotting "
       "on AOE unless dark thoughts is about to time out" );
   main->add_action( this, "Mind Flay",
@@ -2450,22 +2414,32 @@ void priest_t::generate_apl_shadow()
                     "cooldown.void_bolt.up",
                     "Use Mind Flay to consume Dark Thoughts procs on ST. TODO Confirm if this is a higher priority "
                     "than redotting unless dark thoughts is about to time out" );
-  main->add_talent( this, "Searing Nightmare", "use_while_casting=1,target_if=(variable.searing_nightmare_cutoff&!cooldown.power_infusion.up)|(dot.shadow_word_pain.refreshable&spell_targets.mind_sear>1)",
-                    "Use Searing Nightmare if you will hit at least 3 targets and Power Infusion and Voidform are not ready, or to refresh SW:P on two or more targets." );
+  main->add_talent( this, "Searing Nightmare",
+                    "use_while_casting=1,target_if=(variable.searing_nightmare_cutoff&!cooldown.power_infusion.up)|("
+                    "dot.shadow_word_pain.refreshable&spell_targets.mind_sear>1)",
+                    "Use Searing Nightmare if you will hit at least 3 targets and Power Infusion and Voidform are not "
+                    "ready, or to refresh SW:P on two or more targets." );
   main->add_action( this, "Mind Blast", "use_while_casting=1,if=variable.dots_up",
                     "TODO change logic on when to use instant blasts" );
   main->add_action( this, "Mind Blast",
                     "if=variable.dots_up&raid_event.movement.in>cast_time+0.5&spell_targets.mind_sear<4",
                     "TODO Verify target cap" );
-  main->add_action( this, "Shadow Word: Pain", "if=refreshable&target.time_to_die>4&!talent.misery.enabled&talent.psychic_link.enabled&spell_targets.mind_sear>2",
-                    "Special condition to stop casting SW:P on off-targets when fighting 3 or more stacked mobs and using Psychic Link and NOT Misery." );
-  main->add_action( this, "Shadow Word: Pain", "target_if=refreshable&target.time_to_die>4&!talent.misery.enabled&(!talent.psychic_link.enabled|(talent.psychic_link.enabled&spell_targets.mind_sear<=2))",
-                    "Keep SW:P up on as many targets as possible, except when fighting 3 or more stacked mobs with Psychic Link.");
+  main->add_action( this, "Shadow Word: Pain",
+                    "if=refreshable&target.time_to_die>4&!talent.misery.enabled&talent.psychic_link.enabled&spell_"
+                    "targets.mind_sear>2",
+                    "Special condition to stop casting SW:P on off-targets when fighting 3 or more stacked mobs and "
+                    "using Psychic Link and NOT Misery." );
+  main->add_action(
+      this, "Shadow Word: Pain",
+      "target_if=refreshable&target.time_to_die>4&!talent.misery.enabled&(!talent.psychic_link.enabled|(talent.psychic_"
+      "link.enabled&spell_targets.mind_sear<=2))",
+      "Keep SW:P up on as many targets as possible, except when fighting 3 or more stacked mobs with Psychic Link." );
   main->add_action( this, "Vampiric Touch",
                     "target_if=refreshable&target.time_to_die>6|(talent.misery.enabled&dot.shadow_word_pain."
                     "refreshable)|buff.unfurling_darkness.up" );
   main->add_action( this, "Mind Sear",
-                    "target_if=spell_targets.mind_sear>variable.mind_sear_cutoff,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2" );
+                    "target_if=spell_targets.mind_sear>variable.mind_sear_cutoff,chain=1,interrupt_immediate=1,"
+                    "interrupt_if=ticks>=2" );
   main->add_action( this, "Mind Flay", "chain=1,interrupt_immediate=1,interrupt_if=ticks>=2&cooldown.void_bolt.up" );
   main->add_action( this, "Shadow Word: Pain" );
 }

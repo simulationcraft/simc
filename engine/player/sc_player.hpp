@@ -416,7 +416,7 @@ struct player_t : public actor_t
     buff_t* mongoose_mh;
     buff_t* mongoose_oh;
     buff_t* nitro_boosts;
-    buff_t* pain_supression;
+    buff_t* pain_suppression;
     buff_t* movement;
     buff_t* stampeding_roar;
     buff_t* shadowmeld;
@@ -1162,6 +1162,6 @@ public:
 
   spawner::base_actor_spawner_t* find_spawner( util::string_view id ) const;
   int nth_iteration() const;
-};
 
-std::ostream& operator<<(std::ostream &os, const player_t& p);
+  friend void format_to( const player_t&, fmt::format_context::iterator );
+};

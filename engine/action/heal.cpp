@@ -179,13 +179,15 @@ double heal_t::calculate_tick_amount(action_state_t* state, double dmg_multiplie
     // Record total amount to state
     state->result_total = amount;
 
-    sim->print_debug(
-      "{} amount for {} on {}: "
-      "ta={} pct={} b_ta={} bonus_ta={} s_mod={} s_power={} a_mod={} a_power={} mult={}",
-      player->name(), name(), target->name(),
-      amount, tick_pct_heal, base_ta(state), bonus_ta(state), spell_tick_power_coefficient(state),
-      state->composite_spell_power(), attack_tick_power_coefficient(state), state->composite_attack_power(),
-      state->composite_ta_multiplier());
+    if ( sim->debug )
+    {
+      sim->print_debug(
+          "{} amount for {} on {}: "
+          "ta={} pct={} b_ta={} bonus_ta={} s_mod={} s_power={} a_mod={} a_power={} mult={}",
+          *player, *this, *target, amount, tick_pct_heal, base_ta( state ), bonus_ta( state ),
+          spell_tick_power_coefficient( state ), state->composite_spell_power(), attack_tick_power_coefficient( state ),
+          state->composite_attack_power(), state->composite_ta_multiplier() );
+    }
 
     return amount;
   }
@@ -200,8 +202,8 @@ void heal_t::assess_damage(result_amount_type heal_type, action_state_t* s)
   if (heal_type == result_amount_type::HEAL_DIRECT)
   {
     sim->print_log("{} {} heals {} for {} ({}) ({})",
-      player->name(), name(), s->target->name(), s->result_total, s->result_amount,
-      util::result_type_string(s->result));
+      *player, *this, *s->target, s->result_total, s->result_amount,
+      s->result);
   }
   else // result_amount_type::HEAL_OVER_TIME
   {
@@ -210,8 +212,8 @@ void heal_t::assess_damage(result_amount_type heal_type, action_state_t* s)
       dot_t* dot = find_dot(s->target);
       assert(dot);
       sim->print_log("{} {} ticks ({} of {}) {} for {} ({}) heal ({})",
-        player->name(), name(), dot->current_tick, dot->num_ticks, s->target->name(), s->result_total,
-        s->result_amount, util::result_type_string(s->result));
+        *player, *this, dot->current_tick, dot->num_ticks, *s->target, s->result_total,
+        s->result_amount, s->result);
     }
   }
 

@@ -6,10 +6,11 @@
 #pragma once
 
 #include "config.hpp"
-#include "sc_timespan.hpp"
+#include "util/timespan.hpp"
 #include "sc_enums.hpp"
 #include "util/generic.hpp"
 #include "util/string_view.hpp"
+#include "util/format.hpp"
 
 #include <string>
 #include <memory>
@@ -114,6 +115,7 @@ public:
   void last_tick();
   bool channel_interrupt();
 
+  friend void format_to( const dot_t&, fmt::format_context::iterator );
 private:
   void tick_zero();
   void schedule_tick();

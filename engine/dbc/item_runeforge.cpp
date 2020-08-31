@@ -55,3 +55,22 @@ util::span<const runeforge_legendary_entry_t> runeforge_legendary_entry_t::find(
 
   return { __begin, __end };
 }
+
+util::span<const runeforge_legendary_entry_t> runeforge_legendary_entry_t::find_by_spellid(
+  unsigned spell_id, bool ptr )
+{
+  auto __data = data( ptr );
+  auto __begin = range::find( __data, spell_id, &runeforge_legendary_entry_t::spell_id );
+
+  if ( __begin == __data.end() )
+  {
+    return {};
+  }
+
+  auto __end = std::find_if_not( __begin + 1, __data.end(),
+                [ spell_id ]( const runeforge_legendary_entry_t& e ) {
+                  return spell_id == e.spell_id;
+                } );
+
+  return { __begin, __end };
+}

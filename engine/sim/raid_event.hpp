@@ -8,9 +8,10 @@
 #include "config.hpp"
 
 #include "sc_enums.hpp"
-#include "sc_timespan.hpp"
+#include "util/timespan.hpp"
 #include "util/generic.hpp"
 #include "util/string_view.hpp"
+#include "util/format.hpp"
 
 #include <cstdint>
 #include <memory>
@@ -120,5 +121,6 @@ private:
   event_t* duration_event;
   event_t* start_event;
   event_t* end_event;
+  
+  friend void format_to( const raid_event_t&, fmt::format_context::iterator );
 };
-std::ostream& operator<<( std::ostream&, const raid_event_t& );

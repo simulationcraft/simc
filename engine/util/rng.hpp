@@ -14,7 +14,7 @@
 #include <cmath>
 #include <cstdint>
 
-#include "sc_timespan.hpp"
+#include "util/timespan.hpp"
 
 /** \ingroup SC_RNG
  * @brief Random number generation

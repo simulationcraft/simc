@@ -130,7 +130,6 @@ To change the list of source files run synchronize.py
 		<ClInclude Include="..\engine\report\reports.hpp" />
 		<ClInclude Include="..\engine\report\sc_highchart.hpp" />
 		<ClInclude Include="..\engine\sc_enums.hpp" />
-		<ClInclude Include="..\engine\sc_timespan.hpp" />
 		<ClInclude Include="..\engine\sim\benefit.hpp" />
 		<ClInclude Include="..\engine\sim\event.hpp" />
 		<ClInclude Include="..\engine\sim\event_manager.hpp" />
@@ -171,6 +170,7 @@ To change the list of source files run synchronize.py
 		<ClInclude Include="..\engine\util\stopwatch.hpp" />
 		<ClInclude Include="..\engine\util\string_view.hpp" />
 		<ClInclude Include="..\engine\util\timeline.hpp" />
+		<ClInclude Include="..\engine\util\timespan.hpp" />
 		<ClInclude Include="..\engine\util\util.hpp" />
 		<ClInclude Include="..\engine\util\vector_with_callback.hpp" />
 		<ClInclude Include="..\engine\util\xml.hpp" />

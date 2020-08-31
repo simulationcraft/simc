@@ -1142,7 +1142,7 @@ struct hunter_ranged_attack_t: public hunter_action_t < ranged_attack_t >
 
         // Hack, current in-game behaviour, mostly
         action_t* a = p() -> actions.master_marksman;
-        unsigned tick_count = a -> dot_duration / a -> data().effectN( 1 ).period();
+        unsigned tick_count = as<unsigned>( a -> dot_duration / a -> data().effectN( 1 ).period() );
         a -> base_td = amount / tick_count;
         a -> set_target( s -> target );
         a -> execute();
@@ -2299,14 +2299,14 @@ template <typename Pet, typename... Pets>
 auto active( Pets... pets_ ) -> active_pets_t<Pet, sizeof...(Pets)>
 {
   Pet* pets[] = { pets_... };
-  typename active_pets_t<Pet, sizeof...(Pets)>::data_t active_pets;
+  typename active_pets_t<Pet, sizeof...(Pets)>::data_t active_pets{};
   size_t active_pet_count = 0;
   for ( auto pet : pets )
   {
     if ( pet && ! pet -> is_sleeping() )
       active_pets[ active_pet_count++ ] = pet;
   }
-
+  
   return { active_pets, active_pet_count };
 }
 

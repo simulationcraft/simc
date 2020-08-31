@@ -323,7 +323,7 @@ int http::get( std::string&       result,
     std::ostream::sentry s( http_log );
     if ( s )
     {
-      http_log << cache::era() << ": get(\"" << url << "\") [";
+      fmt::print( http_log, "{}: get(\"{}\") [", cache::era(), url );
 
       if ( entry.validated != cache::cache_era::INVALID )
       {
@@ -333,7 +333,7 @@ int http::get( std::string&       result,
           http_log << "warm";
         else
           http_log << "cold";
-        http_log << ": (" << entry.modified << ", " << entry.validated << ')';
+        fmt::print( http_log, ": ({},{})", entry.modified, entry.validated );
       }
       else
         http_log << "miss";
@@ -358,7 +358,7 @@ int http::get( std::string&       result,
     {
       io::ofstream http_log;
       http_log.open( "simc_http_log.txt", std::ios::app );
-      http_log << cache::era() << ": Unmodified (" << entry.modified << ", " << entry.validated << ")\n";
+      fmt::print( http_log, "{}: Unmodified ({},{})\n", cache::era(), entry.modified, entry.validated );
     }
 
     if ( confirmation.size() && ( entry.result.find( confirmation ) == std::string::npos ) )

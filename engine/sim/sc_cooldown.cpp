@@ -640,3 +640,8 @@ bool cooldown_t::is_ready() const
   // the player's (or default) cooldown tolerance for queueing.
   return queueable() <= sim.current_time();
 }
+
+void format_to( const cooldown_t& cooldown, fmt::format_context::iterator out )
+{
+  fmt::format_to( out, "Cooldown {}", cooldown.name_str );
+}

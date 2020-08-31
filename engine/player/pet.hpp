@@ -134,4 +134,6 @@ public:
   timespan_t composite_active_time() const override;
 
   void acquire_target( retarget_source /* event */, player_t* /* context */ = nullptr ) override;
+  
+  friend void format_to( const pet_t&, fmt::format_context::iterator );
 };

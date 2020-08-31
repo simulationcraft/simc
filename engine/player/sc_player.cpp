@@ -6769,8 +6769,8 @@ void player_t::target_mitigation( school_e school, result_amount_type dmg_type, 
   if ( s->result_amount == 0 )
     return;
 
-  if ( buffs.pain_supression && buffs.pain_supression->up() )
-    s->result_amount *= 1.0 + buffs.pain_supression->data().effectN( 1 ).percent();
+  if ( buffs.pain_suppression && buffs.pain_suppression->up() )
+    s->result_amount *= 1.0 + buffs.pain_suppression->data().effectN( 1 ).percent();
 
   if ( buffs.naarus_discipline && buffs.naarus_discipline->check() )
     s->result_amount *= 1.0 + buffs.naarus_discipline->stack_value();
@@ -9499,7 +9499,7 @@ item_runeforge_t player_t::find_runeforge_legendary( util::string_view name, boo
   {
     return item_runeforge_t::nil();
   }
-  
+
   // 8/22/2020 - Removed spec filtering for now since these currently have no spec limitations in-game
   //             May need to restore some logic at some point if Blizzard points to different spells per-spec
 
@@ -12708,12 +12708,6 @@ void player_t::register_combat_begin( double amount, resource_e resource, gain_t
   });
 }
 
-std::ostream& operator<<(std::ostream &os, const player_t& p)
-{
-  fmt::print(os, "player '{}'", p.name() );
-  return os;
-}
-
 spawner::base_actor_spawner_t* player_t::find_spawner( util::string_view id ) const
 {
   auto it = range::find_if( spawners, [ id ]( spawner::base_actor_spawner_t* o ) {
@@ -12798,3 +12792,7 @@ void player_t::init_distance_targeting()
   x_position = -1 * base.distance;
 }
 
+void format_to( const player_t& player, fmt::format_context::iterator out )
+{
+  fmt::format_to( out, "Player '{}'", player.name() );
+}

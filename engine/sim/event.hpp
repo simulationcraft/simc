@@ -7,7 +7,7 @@
 
 #include "config.hpp"
 
-#include "sc_timespan.hpp"
+#include "util/timespan.hpp"
 #include "util/generic.hpp"
 #include "util/format.hpp"
 

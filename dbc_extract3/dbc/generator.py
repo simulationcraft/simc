@@ -1472,6 +1472,9 @@ class SpellDataGenerator(DataGenerator):
             ( 275483, 0 ),          # Inner Light azerite trait damge
             ( 184689, 0 ),          # Shield of Vengeance damage proc
             ( 286232, 0 ),          # Light's Decree damage proc
+            ( 339669, 0 ),          # Seal of Command
+            ( 339376, 0 ),          # Truth's Wake
+            ( 339538, 0 ),          # TV echo
         ),
 
         # Hunter:
@@ -1760,9 +1763,11 @@ class SpellDataGenerator(DataGenerator):
           ( 272012, 5 ),	# Illidari Satyr - Shadow Slash
           ( 272131, 5 ),	# Eye of Gul'dan - Eye of Gul'dan
           ( 267964, 0 ),	# new soul strike?
-          ( 289367, 1 ),		# Pandemic Invocation Damage
-          ( 265391, 3 ),     # Roaring Blaze Debuff
-          ( 266087, 3 )     # Rain of Chaos Buff
+          ( 289367, 1 ),    # Pandemic Invocation Damage
+          ( 265391, 3 ),    # Roaring Blaze Debuff
+          ( 266087, 3 ),    # Rain of Chaos Buff
+          ( 339784, 2 ),    # Tyrant's Soul Buff
+          ( 337142, 2 )     # Grim Inquisitor's Dread Calling Buff
         ),
 
         # Monk:
@@ -1782,6 +1787,7 @@ class SpellDataGenerator(DataGenerator):
           ( 227291, 1 ), # Niuzao pet Stomp
           # Mistweaver
           ( 228649, 2 ), # Teachings of the Monastery - Blackout Proc
+          ( 343820, 2 ), # Invoke Chi-Ji, the Red Crane - Enveloping Mist cast reduction
           # Windwalker
           ( 115057, 3 ), # Flying Serpent Kick Movement spell
           ( 116768, 3 ), # Combo Breaker: Blackout Kick
@@ -1799,20 +1805,27 @@ class SpellDataGenerator(DataGenerator):
           ( 261682, 3 ), # Chi Burst Chi generation cap
           ( 285594, 3 ), # Good Karma Healing Spell
 		      ( 290461, 3 ), # Reverse Harm Damage
-          # Legendary
-          ( 213114, 3 ), # Hidden Master's Forbidden Touch buff
           # Azerite Traits
           ( 278710, 3 ), # Swift Roundhouse
           ( 278767, 1 ), # Training of Niuzao buff
           ( 285958, 1 ), # Straight, No Chaser trait
+          ( 285959, 1 ), # Straight, No Chaser buff
           ( 286585, 3 ), # Dance of Chi-Ji trait
           ( 286586, 3 ), # Dance of Chi-Ji RPPM
           ( 286587, 3 ), # Dance of Chi-Ji buff
           ( 287055, 3 ), # Fury of Xuen trait
           ( 287062, 3 ), # Fury of Xuen buff
           ( 287063, 3 ), # Fury of Xuen proc
+          ( 287831, 2 ), # Secret Infusion Crit Buff
+          ( 287835, 2 ), # Secret Infusion Haste Buff
+          ( 287836, 2 ), # Secret Infusion Mastery Buff
+          ( 287837, 2 ), # Secret Infusion Versatility Buff
           ( 288634, 3 ), # Glory of the Dawn trait
           ( 288636, 3 ), # Glory of the Dawn proc
+          # Conduits
+          ( 336874, 0 ), # Fortifying Ingredients
+          # Shadowland Legendaries
+          ( 338141, 1 ), # Flaming Kicks Legendary damage
         ),
 
         # Druid:

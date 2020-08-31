@@ -86,7 +86,7 @@ public:
 struct shadow_bolt_t : public demonology_spell_t
 {
   shadow_bolt_t( warlock_t* p, util::string_view options_str )
-    : demonology_spell_t( p, "Shadow Bolt", p->specialization() )
+    : demonology_spell_t( "Shadow Bolt", p, p->find_spell( 686 ) )
   {
     parse_options( options_str );
     energize_type     = action_energize::ON_CAST;
@@ -100,6 +100,9 @@ struct shadow_bolt_t : public demonology_spell_t
 
     if ( p()->talents.demonic_calling->ok() )
       p()->buffs.demonic_calling->trigger();
+
+    if ( p()->legendary.balespiders_burning_core->ok() )
+      p()->buffs.balespiders_burning_core->trigger();
   }
 
   double action_multiplier() const override
@@ -129,12 +132,14 @@ struct hand_of_guldan_t : public demonology_spell_t
   int shards_used;
   umbral_blaze_t* blaze;  // BFA - Azerite
   const spell_data_t* summon_spell;
+  double borne_of_blood_chance;
 
   hand_of_guldan_t( warlock_t* p, util::string_view options_str )
     : demonology_spell_t( p, "Hand of Gul'dan" ),
       shards_used( 0 ),
       blaze( new umbral_blaze_t( p ) ),
-      summon_spell( p->find_spell( 104317 ) )
+      summon_spell( p->find_spell( 104317 ) ),
+      borne_of_blood_chance( 0 )
   {
     parse_options( options_str );
     aoe = -1;
@@ -147,6 +152,9 @@ struct hand_of_guldan_t : public demonology_spell_t
 
     // TOCHECK Because of how we structure HoG spelldata we have to manually apply spec aura.
     base_multiplier *= 1.0 + p->spec.demonology->effectN( 3 ).percent();
+
+    if ( p->conduit.borne_of_blood->ok() )
+      borne_of_blood_chance = p->conduit.borne_of_blood.percent();
   }
 
   timespan_t travel_time() const override
@@ -161,6 +169,14 @@ struct hand_of_guldan_t : public demonology_spell_t
       return false;
     }
     return demonology_spell_t::ready();
+  }
+
+  void execute() override
+  {
+    demonology_spell_t::execute();
+
+    if ( p()->conduit.borne_of_blood->ok() && rng().roll( borne_of_blood_chance ) )
+      p()->buffs.demonic_core->trigger();
   }
 
   double bonus_da( const action_state_t* s ) const override
@@ -265,6 +281,8 @@ struct demonbolt_t : public demonology_spell_t
 
     if ( p()->talents.demonic_calling->ok() )
       p()->buffs.demonic_calling->trigger();
+
+    p()->buffs.balespiders_burning_core->expire();
   }
 
   double action_multiplier() const override
@@ -275,6 +293,8 @@ struct demonbolt_t : public demonology_spell_t
     {
       m *= 1.0 + p()->talents.sacrificed_souls->effectN( 1 ).percent() * p()->active_pets;
     }
+
+    m *= 1.0 + p()->buffs.balespiders_burning_core->check_stack_value();
 
     return m;
   }
@@ -430,15 +450,19 @@ struct implosion_t : public demonology_spell_t
 
 struct summon_demonic_tyrant_t : public demonology_spell_t
 {
-  double demonic_consumption_multiplier;
+  double demonic_consumption_added_damage;
+  double demonic_consumption_health_percentage;
 
   summon_demonic_tyrant_t( warlock_t* p, util::string_view options_str )
-    : demonology_spell_t( "summon_demonic_tyrant", p, p->find_spell( 265187 ) ), demonic_consumption_multiplier( 0 )
+    : demonology_spell_t( "summon_demonic_tyrant", p, p->find_spell( 265187 ) ),
+      demonic_consumption_added_damage( 0 ),
+      demonic_consumption_health_percentage( 0 )
   {
     parse_options( options_str );
     harmful = may_crit = false;
     // BFA - Essence
     cooldown->duration *= 1.0 + azerite::vision_of_perfection_cdr( p->azerite_essence.vision_of_perfection );
+    demonic_consumption_health_percentage = p->find_spell( 267971 )->effectN( 1 ).percent();
   }
 
   void execute() override
@@ -458,28 +482,7 @@ struct summon_demonic_tyrant_t : public demonology_spell_t
       p()->resource_gain( RESOURCE_SOUL_SHARD, p()->find_spell( 287060 )->effectN( 1 ).base_value() / 10.0,
                           p()->gains.baleful_invocation );
 
-    if ( p()->talents.demonic_consumption->ok() )
-    {
-      demonic_consumption_multiplier = 0;
-
-      for ( auto imp : p()->warlock_pet_list.wild_imps )
-      {
-        double available = imp->resources.current[ RESOURCE_ENERGY ];
-
-        // Spelldata unknown. In-game testing shows Demonic Consumption provides 10% damage per 20 energy an imp has.
-        demonic_consumption_multiplier += available / 10 * 5;
-        imp->demonic_consumption = true;
-        imp->dismiss();
-      }
-
-      for ( auto dt : p()->warlock_pet_list.demonic_tyrants )
-      {
-        if ( !dt->is_sleeping() )
-        {
-          dt->buffs.demonic_consumption->trigger( 1, demonic_consumption_multiplier / 100.0 );
-        }
-      }
-    }
+    demonic_consumption_added_damage = 0;
 
     for ( auto& pet : p()->pet_list )
     {
@@ -490,7 +493,6 @@ struct summon_demonic_tyrant_t : public demonology_spell_t
       if ( lock_pet->is_sleeping() )
         continue;
 
-      // TOCHECK Random pets are currently bugged and do not benefit from Demonic Tyrant. Live as of 10-02-2018
       if ( lock_pet->pet_type == PET_DEMONIC_TYRANT )
         continue;
 
@@ -498,6 +500,27 @@ struct summon_demonic_tyrant_t : public demonology_spell_t
       {
         timespan_t new_time = lock_pet->expiration->time + p()->buffs.demonic_power->data().effectN( 3 ).time_value();
         lock_pet->expiration->reschedule_time = new_time;
+      }
+
+      if ( p()->talents.demonic_consumption->ok() )
+      {
+        double available = pet->resources.current[ RESOURCE_HEALTH ];
+
+        // There is no spelldata for how health is converted into damage, current testing indicates the 15% of hp taken
+        // from pets is divided by 7 and added to base damage 08-26-2020.
+        // TODO - make it properly remove the health.
+        demonic_consumption_added_damage += available * demonic_consumption_health_percentage / 7.0;
+      }
+    }
+
+    if ( p()->talents.demonic_consumption->ok() )
+    {
+      for ( auto dt : p()->warlock_pet_list.demonic_tyrants )
+      {
+        if ( !dt->is_sleeping() )
+        {
+          dt->buffs.demonic_consumption->trigger( 1, demonic_consumption_added_damage );
+        }
       }
     }
 
@@ -1002,6 +1025,12 @@ void warlock_t::create_buffs_demonology()
                                 ->set_duration( find_spell( 279885 )->duration() );
   buffs.explosive_potential = make_buff<stat_buff_t>( this, "explosive_potential", find_spell( 275398 ) )
                                   ->add_stat( STAT_HASTE_RATING, azerite.explosive_potential.value() );
+
+  // Legendaries
+  buffs.balespiders_burning_core =
+      make_buff( this, "balespiders_burning_core", legendary.balespiders_burning_core->effectN( 1 ).trigger() )
+          ->set_trigger_spell( legendary.balespiders_burning_core )
+          ->set_default_value( legendary.balespiders_burning_core->effectN( 1 ).trigger()->effectN( 1 ).percent() );
 
   // to track pets
   buffs.wild_imps = make_buff( this, "wild_imps" )->set_max_stack( 40 );

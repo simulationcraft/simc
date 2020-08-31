@@ -58,7 +58,7 @@ public:
 struct shadow_bolt_t : public affliction_spell_t
 {
   shadow_bolt_t( warlock_t* p, const std::string& options_str )
-    : affliction_spell_t( p, "Shadow Bolt", p->specialization() )
+    : affliction_spell_t( "Shadow Bolt", p, p->find_spell( 686 ) )
   {
     parse_options( options_str );
   }

@@ -220,6 +220,15 @@ const spelleffect_data_t* hotfix::find_effect( const spelleffect_data_t* dbc_eff
   return dbc_effect;
 }
 
+const spellpower_data_t* hotfix::find_power( const spellpower_data_t* dbc_power, bool ptr )
+{
+  if ( const spellpower_data_t* hotfixed_power = hotfix_db_[ ptr ].find_power( dbc_power -> id() ) )
+  {
+    return hotfixed_power;
+  }
+  return dbc_power;
+}
+
 spell_hotfix_entry_t& hotfix::register_spell( util::string_view group,
                                               util::string_view tag,
                                               util::string_view note,
@@ -701,7 +710,8 @@ spell_data_t* custom_dbc_data_t::clone_spell( const spell_data_t* spell )
 // Applies overrides immediately, and records an entry
 void dbc_override_t::register_spell( const dbc_t& dbc, unsigned spell_id, util::string_view field, double v )
 {
-  spell_data_t* spell = override_db_[ dbc.ptr ].clone_spell( dbc.spell( spell_id ) );
+  const spell_data_t* dbc_spell = hotfix::find_spell( dbc.spell( spell_id ), dbc.ptr );
+  spell_data_t* spell = override_db_[ dbc.ptr ].clone_spell( dbc_spell );
   if (!spell)
   {
     throw std::invalid_argument("Could not find spell");
@@ -719,7 +729,7 @@ void dbc_override_t::register_effect( const dbc_t& dbc, unsigned effect_id, util
   spelleffect_data_t* effect = override_db_[ dbc.ptr ].get_mutable_effect( effect_id );
   if ( ! effect )
   {
-    const spelleffect_data_t* dbc_effect = dbc.effect( effect_id );
+    const spelleffect_data_t* dbc_effect = hotfix::find_effect( dbc.effect( effect_id ), dbc.ptr );
     override_db_[ dbc.ptr ].clone_spell( dbc_effect -> spell() );
     effect = override_db_[ dbc.ptr ].get_mutable_effect( effect_id );
   }
@@ -738,11 +748,12 @@ void dbc_override_t::register_effect( const dbc_t& dbc, unsigned effect_id, util
 
 void dbc_override_t::register_power( const dbc_t& dbc, unsigned power_id, util::string_view field, double v )
 {
-  auto power = override_db_[ dbc.ptr ].get_mutable_power( power_id );
+  spellpower_data_t* power = override_db_[ dbc.ptr ].get_mutable_power( power_id );
   if ( power == nullptr )
   {
-    const auto& dbc_power = dbc.power( power_id );
-    override_db_[ dbc.ptr ].clone_spell( dbc.spell( dbc_power.spell_id() ) );
+    const spellpower_data_t& dbc_power = dbc.power( power_id );
+    const spell_data_t* dbc_spell = hotfix::find_spell( dbc.spell( dbc_power.spell_id() ), dbc.ptr );
+    override_db_[ dbc.ptr ].clone_spell( dbc_spell );
     power = override_db_[ dbc.ptr ].get_mutable_power( power_id );
   }
   if (!power)

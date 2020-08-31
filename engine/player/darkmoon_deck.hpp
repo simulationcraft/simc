@@ -6,7 +6,7 @@
 #pragma once
 
 #include "config.hpp"
-#include "sc_timespan.hpp"
+#include "util/timespan.hpp"
 #include "sim/event.hpp"
 #include "player/unique_gear_helper.hpp"
 #include "util/rng.hpp"

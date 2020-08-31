@@ -8,15 +8,15 @@
 #include "config.hpp"
 
 #include <string>
-#include <iosfwd>
 #include <unordered_map>
 #include <functional>
 #include <vector>
 #include <memory>
 
-#include "sc_timespan.hpp"
+#include "util/timespan.hpp"
 #include "util/string_view.hpp"
 #include "util/span.hpp"
+#include "util/format.hpp"
 
 struct sim_t;
 
@@ -45,11 +45,11 @@ public:
   opts::parse_status parse( sim_t* sim, util::string_view name, util::string_view value ) const;
   util::string_view name() const
   { return _name; }
-  std::ostream& print( std::ostream& stream ) const
-  { return do_print( stream ); }
+  
+  friend void format_to( const option_t&, fmt::format_context::iterator );
 protected:
   virtual opts::parse_status do_parse( sim_t*, util::string_view name, util::string_view value ) const = 0;
-  virtual std::ostream& do_print( std::ostream& stream ) const = 0;
+  virtual void do_format_to( fmt::format_context::iterator ) const = 0;
 private:
   std::string _name;
 };
@@ -67,8 +67,11 @@ parse_status parse( sim_t*, util::span<const std::unique_ptr<option_t>>, util::s
 void parse( sim_t*, util::string_view context, util::span<const std::unique_ptr<option_t>>, util::string_view options_str, const parse_status_fn_t& fn = nullptr );
 void parse( sim_t*, util::string_view context, util::span<const std::unique_ptr<option_t>>, util::span<const util::string_view> strings, const parse_status_fn_t& fn = nullptr );
 }
-inline std::ostream& operator<<( std::ostream& stream, const std::unique_ptr<option_t>& opt )
-{ return opt -> print( stream ); }
+
+inline void format_to( const std::unique_ptr<option_t>& option, fmt::format_context::iterator out )
+{ 
+  format_to(*option, out);
+}
 
 std::unique_ptr<option_t> opt_string( util::string_view n, std::string& v );
 std::unique_ptr<option_t> opt_append( util::string_view n, std::string& v );

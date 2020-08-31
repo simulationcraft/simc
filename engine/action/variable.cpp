@@ -208,7 +208,7 @@ void variable_t::reset()
     {
       sim->print_debug("{} removing variable action {} from APL because the variable value is "
         "constant (value={})",
-        player->name(), signature_str, var->current_value_);
+        *player, signature_str, var->current_value_);
 
       action_list->foreground_action_list.erase(it);
     }

@@ -906,7 +906,7 @@ bool item_database::load_item_from_data( item_t& item )
   {
     auto item_bonuses = item.player->dbc->item_bonus( item.parsed.bonus_id[ i ] );
     // Apply bonuses
-    for ( const auto bonus : item_bonuses )
+    for ( const auto& bonus : item_bonuses )
     {
       if ( !apply_item_bonus( item, bonus ) )
         return false;

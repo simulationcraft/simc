@@ -14,6 +14,7 @@
 #include "spell_query/spell_data_expr.hpp"
 #include "sim/sc_sim.hpp"
 #include "player/covenant.hpp"
+#include "player/runeforge_data.hpp"
 #include "util/util.hpp"
 
 namespace { // anonymous namespace ==========================================
@@ -852,10 +853,29 @@ struct spell_class_expr_t : public spell_list_expr_t
   // returns true for spells that should check spell class family
   bool check_spell_class_family( const spell_data_t& spell ) const
   {
-    // conduit spells are safe to match by spell family
-    const auto& conduit = conduit_entry_t::find_by_spellid( spell.id(), dbc.ptr );
-    if ( conduit.spell_id && conduit.spell_id == spell.id() )
+    auto check_spell = []( int spell_id, bool ptr ) {
+      // conduit spells are safe to match by spell family
+      const auto& conduit = conduit_entry_t::find_by_spellid( spell_id, ptr );
+      if ( conduit.spell_id && conduit.spell_id == spell_id )
+        return true;
+
+      // legendary spells are safe to match by spell family
+      const auto legendary = runeforge_legendary_entry_t::find_by_spellid( spell_id, ptr );
+      if ( !legendary.empty() )
+        return true;
+
+      return false;
+    };
+
+    if ( check_spell( spell.id(), dbc.ptr ) )
       return true;
+
+    // Also sub-spells of eligible drivers, only search one level deep
+    for ( auto driver_spell : spell.drivers() )
+    {
+      if ( check_spell( driver_spell->id(), dbc.ptr ) )
+        return true;
+    }
 
     return false;
   }
@@ -878,7 +898,7 @@ struct spell_class_expr_t : public spell_list_expr_t
     const unsigned class_family = class_str_to_family( other.result_str );
     return filter_spells( [&]( const spell_data_t& spell ) {
         return ( spell.class_mask() & class_mask ) ||
-               ( check_spell_class_family( spell ) && spell.class_family() == class_family );
+               ( spell.class_family() == class_family && check_spell_class_family( spell ) );
       } );
   }
 
@@ -900,7 +920,7 @@ struct spell_class_expr_t : public spell_list_expr_t
     const unsigned class_family = class_str_to_family( other.result_str );
     return filter_spells( [&]( const spell_data_t& spell ) {
         return ( spell.class_mask() & class_mask ) == 0 &&
-               !( check_spell_class_family( spell ) && spell.class_family() == class_family );
+               !( spell.class_family() == class_family && check_spell_class_family( spell ) );
       } );
   }
 };

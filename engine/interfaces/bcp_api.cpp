@@ -185,7 +185,7 @@ void authorize( sim_t* sim, const std::string& region )
 
     token = response[ "access_token" ].GetString();
   }
-  catch(const std::exception& e)
+  catch(const std::exception&)
   {
     std::throw_with_nested(std::runtime_error("Unable to authorize"));
   }
@@ -384,7 +384,7 @@ void parse_talents( player_t* p, const player_spec_t& spec_info, const std::stri
     {
       download( p->sim, spec, p->region_str, url + "&locale=en_US", caching );
     }
-    catch(const std::exception& e)
+    catch(const std::exception&)
     {
       std::throw_with_nested(std::runtime_error(fmt::format("Unable to download talent JSON from '{}'.",
           url )));
@@ -396,7 +396,7 @@ void parse_talents( player_t* p, const player_spec_t& spec_info, const std::stri
     {
       parse_file( p->sim, spec_info.local_json_spec, spec );
     }
-    catch(const std::exception& e)
+    catch(const std::exception&)
     {
       std::throw_with_nested( std::runtime_error( fmt::format( "Unable to parse local JSON from '{}'.",
         spec_info.local_json_spec ) ) );
@@ -475,7 +475,7 @@ void parse_items( player_t* p, const player_spec_t& spec, const std::string& url
     {
       download( p->sim, equipment_data, p->region_str, url + "&locale=en_US", caching );
     }
-    catch(const std::exception& e)
+    catch(const std::exception&)
     {
       std::throw_with_nested( std::runtime_error(fmt::format("Unable to download equipment JSON from '{}'.",
           url )) );
@@ -487,7 +487,7 @@ void parse_items( player_t* p, const player_spec_t& spec, const std::string& url
     {
       parse_file( p->sim, spec.local_json_equipment, equipment_data );
     }
-    catch(const std::exception& e)
+    catch(const std::exception&)
     {
       std::throw_with_nested(  std::runtime_error( fmt::format( "Unable to parse equipment JSON from '{}'.",
           spec.local_json_equipment )) );
@@ -618,7 +618,7 @@ void parse_media( player_t*            p,
     {
       download( p->sim, media_data, p->region_str, url + "&locale=en_US", caching );
     }
-    catch(const std::exception& e)
+    catch(const std::exception&)
     {
       std::throw_with_nested(std::runtime_error(fmt::format("Unable to download media JSON from '{}'.", url )));
     }
@@ -629,7 +629,7 @@ void parse_media( player_t*            p,
     {
       parse_file( p->sim, spec.local_json_media, media_data );
     }
-    catch(const std::exception& e)
+    catch(const std::exception&)
     {
       std::throw_with_nested( std::runtime_error( fmt::format( "Unable to parse media information JSON from '{}'.",
         spec.local_json_media ) ) );
@@ -665,7 +665,7 @@ player_t* parse_player( sim_t*            sim,
     {
       download( sim, profile, player.region, player.url + "&locale=en_US", caching );
     }
-    catch(const std::exception& e)
+    catch(const std::exception&)
     {
       std::throw_with_nested( std::runtime_error(fmt::format("Unable to download JSON from '{}'.",
           player.url )) );
@@ -677,7 +677,7 @@ player_t* parse_player( sim_t*            sim,
     {
       parse_file( sim, player.local_json, profile );
     }
-    catch(const std::exception& e)
+    catch(const std::exception&)
     {
       std::throw_with_nested( std::runtime_error( fmt::format( "Unable to parse JSON from '{}'.",
         player.local_json ) ) );
@@ -855,8 +855,8 @@ void download_item_data( item_t& item, cache::behavior_e caching )
       const rapidjson::Value& damage = weaponInfo[ "damage" ];
       if ( ! damage.HasMember( "exactMin" ) ) throw( "weapon minimum damage" );
 
-      item.parsed.data.delay = static_cast< unsigned >( weaponInfo[ "weaponSpeed" ].GetDouble() * 1000.0 );
-      item.parsed.data.dmg_range = 2 - 2 * damage[ "exactMin" ].GetDouble() / ( weaponInfo[ "dps" ].GetDouble() * weaponInfo[ "weaponSpeed" ].GetDouble() );
+      item.parsed.data.delay = weaponInfo[ "weaponSpeed" ].GetFloat() * 1000.0f;
+      item.parsed.data.dmg_range = 2 - 2 * damage[ "exactMin" ].GetFloat() / ( weaponInfo[ "dps" ].GetFloat() * weaponInfo[ "weaponSpeed" ].GetFloat() );
     }
 
     if ( js.HasMember( "allowableClasses" ) )
@@ -1197,7 +1197,7 @@ bool bcp_api::download_item( item_t& item, cache::behavior_e caching )
     {
       auto item_bonuses = item.player->dbc->item_bonus( id );
       // Apply bonuses
-      for ( const auto bonus : item_bonuses )
+      for ( const auto& bonus : item_bonuses )
       {
         if ( ! item_database::apply_item_bonus( item, bonus ) )
           return false;
@@ -1206,7 +1206,7 @@ bool bcp_api::download_item( item_t& item, cache::behavior_e caching )
 
     return true;
   }
-  catch(const std::exception& e)
+  catch(const std::exception&)
   {
     std::throw_with_nested(std::runtime_error("Error retrieving item from BCP API"));
   }
