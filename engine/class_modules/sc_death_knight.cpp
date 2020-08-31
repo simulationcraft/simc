@@ -5084,6 +5084,13 @@ struct frost_fever_t : public death_knight_spell_t
 
     tick_may_crit = background = true;
     may_miss = may_crit = hasted_ticks = false;
+
+    if ( p -> main_hand_weapon.group() == WEAPON_2H )
+    {
+      ap_type = attack_power_type::WEAPON_MAINHAND;
+      // There's a 0.98 modifier hardcoded in the tooltip if a 2H weapon is equipped, probably server side magic
+      base_multiplier *= 0.98;
+    }
   }
 
   void tick( dot_t* d ) override
