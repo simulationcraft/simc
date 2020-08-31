@@ -451,7 +451,7 @@ void covenant_state_t::register_options( player_t* player )
           this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3 ) ) );
 }
 
-unsigned covenant_state_t::get_covenant_ability_spell_id( bool generic ) const
+const spell_data_t* covenant_state_t::get_covenant_ability_spell( bool generic ) const
 {
   if ( !enabled() )
     return 0u;
@@ -467,10 +467,12 @@ unsigned covenant_state_t::get_covenant_ability_spell_id( bool generic ) const
     if ( e.ability_type != static_cast<unsigned>( generic ) )
       continue;
 
-    if ( !m_player->find_spell( e.spell_id )->ok() )
+    auto s_data = m_player->find_spell( e.spell_id );
+
+    if ( !s_data->ok() )
       continue;
 
-    return e.spell_id;
+    return s_data;
   }
 
   return 0u;
@@ -483,8 +485,7 @@ report::sc_html_stream& covenant_state_t::generate_report( report::sc_html_strea
 
   root.format( "<tr class=\"left\"><th>{}</th><td><ul class=\"float\">\n", util::covenant_type_string( type(), true ) );
 
-  auto cv_spell = m_player->find_spell( get_covenant_ability_spell_id() );
-  root.format( "<li>{}</li>\n", report_decorators::decorated_spell_name( m_player->sim, *cv_spell ) );
+  root.format( "<li>{}</li>\n", report_decorators::decorated_spell_name( m_player->sim, *get_covenant_ability_spell() ) );
 
   for ( const auto& e : conduit_entry_t::data( m_player->dbc->ptr ) )
   {
@@ -550,11 +551,11 @@ void register_soulbinds()
 
 struct covenant_ability_cast_cb_t : public dbc_proc_callback_t
 {
-  unsigned covenant_ability;
+  const spell_data_t* covenant_ability;
   std::vector<buff_t*> buff_list;
 
   covenant_ability_cast_cb_t( player_t* p, const special_effect_t& e )
-    : dbc_proc_callback_t( p, e ), covenant_ability( p->covenant->get_covenant_ability_spell_id() ), buff_list()
+    : dbc_proc_callback_t( p, e ), covenant_ability( p->covenant->get_covenant_ability_spell() ), buff_list()
   {
     p->covenant->cast_callback = this;
   }
@@ -567,7 +568,7 @@ struct covenant_ability_cast_cb_t : public dbc_proc_callback_t
 
   void trigger( action_t* a, void* call_data ) override
   {
-    if ( a->data().id() != covenant_ability )
+    if ( &a->data() != covenant_ability )
       return;
 
     // Current all soulbinds that proc off covenant ability are self-buffs, so simple trigger is sufficient.
