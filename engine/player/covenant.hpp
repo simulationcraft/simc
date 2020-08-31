@@ -148,10 +148,10 @@ public:
   /// Register player-scope options
   void register_options( player_t* player );
 
-  /// Returns the spell_id of the covenant class ability or the generic ability as determined via the
+  /// Returns the spell_data of the covenant class ability or the generic ability as determined via the
   /// __covenant_ability_data dbc table. Will need to be converted into a vector if multiple class abilities are added
   /// in later.
-  unsigned get_covenant_ability_spell_id( bool generic = false ) const;
+  const spell_data_t* get_covenant_ability_spell( bool generic = false ) const;
 
   /// List of soulbind spells
   const std::vector<unsigned>& soulbind_spells() const { return m_soulbinds; }
