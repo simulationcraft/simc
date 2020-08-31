@@ -156,6 +156,8 @@ struct blade_of_justice_t : public paladin_melee_attack_t
     {
       energize_amount += blade_of_justice_2 -> effectN( 1 ).resource( RESOURCE_HOLY_POWER );
     }
+
+    base_multiplier *= 1.0 + p -> conduit.lights_reach.percent();
   }
 
   double action_multiplier() const override
