@@ -7,6 +7,8 @@
 #include "sim/sc_expressions.hpp"
 
 #include "player/sc_player.hpp"
+#include "player/unique_gear_helper.hpp"
+#include "buff/sc_buff.hpp"
 
 #include "sim/sc_option.hpp"
 
@@ -449,14 +451,12 @@ void covenant_state_t::register_options( player_t* player )
           this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3 ) ) );
 }
 
-report::sc_html_stream& covenant_state_t::generate_report( report::sc_html_stream& root ) const
+unsigned covenant_state_t::get_covenant_ability_spell_id( bool generic ) const
 {
   if ( !enabled() )
-    return root;
+    return 0u;
 
-  root.format( "<tr class=\"left\"><th>{}</th><td><ul class=\"float\">\n", util::covenant_type_string( type(), true ) );
-
-  for ( auto& e : covenant_ability_entry_t::data( m_player->dbc->ptr ) )
+  for ( const auto& e : covenant_ability_entry_t::data( m_player->dbc->ptr ) )
   {
     if ( e.covenant_id != static_cast<unsigned>( m_covenant ) )
       continue;
@@ -464,13 +464,31 @@ report::sc_html_stream& covenant_state_t::generate_report( report::sc_html_strea
     if ( e.class_id != util::class_id( m_player->type ) && !e.ability_type )
       continue;
 
-    auto cv_spell = m_player->find_spell( e.spell_id );
-    root.format( "<li>{}</li>\n", report_decorators::decorated_spell_name( m_player->sim, *cv_spell ) );
+    if ( e.ability_type != static_cast<unsigned>( generic ) )
+      continue;
+
+    if ( !m_player->find_spell( e.spell_id )->ok() )
+      continue;
+
+    return e.spell_id;
   }
 
-  for ( auto& e : conduit_entry_t::data( m_player->dbc->ptr ) )
+  return 0u;
+}
+
+report::sc_html_stream& covenant_state_t::generate_report( report::sc_html_stream& root ) const
+{
+  if ( !enabled() )
+    return root;
+
+  root.format( "<tr class=\"left\"><th>{}</th><td><ul class=\"float\">\n", util::covenant_type_string( type(), true ) );
+
+  auto cv_spell = m_player->find_spell( get_covenant_ability_spell_id() );
+  root.format( "<li>{}</li>\n", report_decorators::decorated_spell_name( m_player->sim, *cv_spell ) );
+
+  for ( const auto& e : conduit_entry_t::data( m_player->dbc->ptr ) )
   {
-    for ( auto cd : m_conduits )
+    for ( const auto& cd : m_conduits )
     {
       if ( std::get<0>( cd ) == e.id )
       {
@@ -486,9 +504,9 @@ report::sc_html_stream& covenant_state_t::generate_report( report::sc_html_strea
 
   if ( m_soulbinds.size() )
   {
-    root << "<tr class=\"left\"><th></th><ul class=\"float\">\n";
+    root << "<tr class=\"left\"><th></th><td><ul class=\"float\">\n";
 
-    for ( auto sb : m_soulbinds )
+    for ( const auto& sb : m_soulbinds )
     {
       auto sb_spell = m_player->find_spell( sb );
       root.format( "<li>{}</li>\n", report_decorators::decorated_spell_name( m_player->sim, *sb_spell ) );
@@ -499,4 +517,123 @@ report::sc_html_stream& covenant_state_t::generate_report( report::sc_html_strea
 
   return root;
 }
-} // Namespace covenant ends
+
+void initialize_soulbinds( player_t* player )
+{
+  if ( !player->covenant )
+    return;
+
+  for ( auto soulbind_spell : player->covenant->soulbind_spells() )
+  {
+    auto spell = player->find_spell( soulbind_spell );
+    if ( !spell->ok() )
+      continue;
+
+    special_effect_t effect { player };
+    effect.type = SPECIAL_EFFECT_EQUIP;
+    effect.source = SPECIAL_EFFECT_SOURCE_SOULBIND;
+
+    unique_gear::initialize_special_effect( effect, soulbind_spell );
+
+    player->special_effects.push_back( new special_effect_t( effect ) );
+  }
+}
+
+void register_soulbinds()
+{
+  unique_gear::register_special_effect( 322721, soulbinds::grove_invigoration );
+}
+
+struct covenant_ability_cast_cb_t : public dbc_proc_callback_t
+{
+  unsigned covenant_ability;
+  std::vector<buff_t*> buff_list;
+
+  covenant_ability_cast_cb_t( player_t* p, const special_effect_t& e )
+    : dbc_proc_callback_t( p, e ), covenant_ability( p->covenant->get_covenant_ability_spell_id() ), buff_list()
+  {
+    p->covenant->cast_callback = this;
+  }
+
+  void initialize() override
+  {
+    listener->sim->print_debug( "Initializing covenant ability cast handler..." );
+    listener->callbacks.register_callback( PF_ALL_DAMAGE, PF2_CAST, this );
+  }
+
+  void trigger( action_t* a, void* call_data ) override
+  {
+    if ( a->data().id() != covenant_ability )
+      return;
+
+    // Current all soulbinds that proc off covenant ability are self-buffs, so simple trigger is sufficient.
+    // Functionality will need to be expanded if full actions are needed in the future.
+    for ( const auto& b : buff_list )
+      b->trigger();
+  }
+};
+
+void add_covenant_callback_buff( buff_t* buff )
+{
+  const auto& cov = buff->player->covenant;
+
+  if ( !buff->player->covenant->enabled() )
+    return;
+
+  if ( !buff->player->covenant->cast_callback )
+  {
+    auto eff = new special_effect_t( buff->player );
+    eff->name_str = "covenant_cast_callback";
+    eff->proc_flags_ = PF_ALL_DAMAGE;
+    eff->proc_flags2_ = PF2_CAST;
+    buff->player->covenant->cast_callback = new covenant_ability_cast_cb_t( buff->player, *eff );
+  }
+
+  auto cb = debug_cast<covenant_ability_cast_cb_t*>( buff->player->covenant->cast_callback );
+
+  if ( range::contains( cb->buff_list, buff ) )
+    return;
+
+  cb->buff_list.push_back( buff );
+}
+
+namespace soulbinds
+{
+struct redirected_anima_buff_t : public buff_t
+{
+  redirected_anima_buff_t( player_t* p ) : buff_t( p, "redirected_anima", p->find_spell( 342814 ) )
+  {
+    // Mastery is stored in 'points' so use base_value() instead of percent()
+    set_default_value( data().effectN( 2 ).base_value() );
+    add_invalidate( CACHE_MASTERY );
+  }
+
+  bool trigger( int s, double v, double c, timespan_t d ) override
+  {
+    int anima_stacks = player->buffs.redirected_anima_stacks->check();
+
+    if ( !anima_stacks )
+      return false;
+
+    player->buffs.redirected_anima_stacks->expire();
+
+    return buff_t::trigger( anima_stacks, v, c, d );
+  }
+};
+
+void grove_invigoration( special_effect_t& effect )
+{
+  auto soulbind = effect.player->find_soulbind_spell( effect.driver()->name_cstr() );
+  if ( !soulbind->ok() )
+    return;
+
+  effect.custom_buff = effect.player->buffs.redirected_anima_stacks;
+  new dbc_proc_callback_t( effect.player, effect );
+
+  if ( !effect.player->buffs.redirected_anima )
+    effect.player->buffs.redirected_anima = make_buff<redirected_anima_buff_t>( effect.player );
+
+  add_covenant_callback_buff( effect.player->buffs.redirected_anima );
+}
+}  // namespace soulbinds
+}  // namespace covenant

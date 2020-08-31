@@ -4645,7 +4645,9 @@ void unique_gear::register_special_effects()
   azerite::register_azerite_powers();
 
   register_special_effects_bfa();
+
   shadowlands::register_special_effects();
+  covenant::register_soulbinds();
 
   /* Legacy Effects, pre-5.0 */
   register_special_effect( 45481,  "ProcOn/hit_45479Trigger"            ); /* Shattered Sun Pendant of Acumen */

@@ -1981,6 +1981,8 @@ void player_t::create_special_effects()
   // initialized here.
   azerite::initialize_azerite_powers( this );
 
+  covenant::initialize_soulbinds( this );
+
   // Once all special effects are first-phase initialized, do a pass to first-phase initialize any
   // potential fallback special effects for the actor.
   unique_gear::initialize_special_effect_fallbacks( this );
@@ -3314,6 +3316,9 @@ void player_t::create_buffs()
       buffs.reality_shift->set_duration( find_spell( 302952 )->duration()
         + timespan_t::from_seconds( ripple_in_space.spell_ref( 2u, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 1 ).base_value() / 1000 ) );
       buffs.reality_shift->set_cooldown( find_spell( 302953 )->duration() );
+
+      // Soulbind buffs required for APL parsing
+      buffs.redirected_anima_stacks = make_buff( this, "redirected_anima_stacks", find_spell( 342802 ) );
     }
   }
   // .. for enemies
@@ -3881,9 +3886,13 @@ double player_t::composite_spell_hit() const
 
 double player_t::composite_mastery() const
 {
-  return current.mastery +
-    apply_combat_rating_dr( RATING_MASTERY,
-        composite_mastery_rating() / current.rating.mastery );
+  double cm =
+      current.mastery + apply_combat_rating_dr( RATING_MASTERY, composite_mastery_rating() / current.rating.mastery );
+
+  if ( buffs.redirected_anima )
+    cm += buffs.redirected_anima->check_stack_value();
+
+  return cm;
 }
 
 double player_t::composite_bonus_armor() const
