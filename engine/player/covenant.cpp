@@ -773,25 +773,23 @@ void first_strike( special_effect_t& effect )
 
   struct first_strike_cb_t : public dbc_proc_callback_t
   {
-    std::vector<player_t*> attacked_list;
+    std::vector<int> target_list;
 
-    first_strike_cb_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e ), attacked_list() {}
+    first_strike_cb_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e ), target_list() {}
 
     void trigger( action_t* a, action_state_t* s ) override
     {
-      if ( range::contains( attacked_list, s->target ) )
+      if ( range::contains( target_list, s->target->actor_spawn_index ) )
         return;
 
-      attacked_list.push_back( s->target );
-
       dbc_proc_callback_t::trigger( a, s );
+      target_list.push_back( s->target->actor_spawn_index );
     }
 
     void reset() override
     {
       dbc_proc_callback_t::reset();
-
-      attacked_list.clear();
+      target_list.clear();
     }
   };
 
