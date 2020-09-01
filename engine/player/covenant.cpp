@@ -549,16 +549,31 @@ void register_soulbinds()
   unique_gear::register_special_effect( 322721, soulbinds::grove_invigoration );
 }
 
+void covenant_cb_buff_t::trigger( action_t* a, void* call_data )
+{
+  buff->trigger();
+}
+
+void covenant_cb_action_t::trigger( action_t* a, void* call_data )
+{
+  auto state = static_cast<action_state_t*>( call_data );
+  auto t = self_target || !state->target ? action->player : state->target;
+
+  if ( t->is_sleeping() )
+    return;
+
+  action->set_target( t );
+  action->schedule_execute();
+}
+
 struct covenant_ability_cast_cb_t : public dbc_proc_callback_t
 {
   const spell_data_t* covenant_ability;
-  std::vector<buff_t*> buff_list;
+  std::vector<covenant_cb_base_t*> cb_list;
 
   covenant_ability_cast_cb_t( player_t* p, const special_effect_t& e )
-    : dbc_proc_callback_t( p, e ), covenant_ability( p->covenant->get_covenant_ability_spell() ), buff_list()
-  {
-    p->covenant->cast_callback = this;
-  }
+    : dbc_proc_callback_t( p, e ), covenant_ability( p->covenant->get_covenant_ability_spell() ), cb_list()
+  {}
 
   void initialize() override
   {
@@ -571,35 +586,31 @@ struct covenant_ability_cast_cb_t : public dbc_proc_callback_t
     if ( &a->data() != covenant_ability )
       return;
 
-    // Current all soulbinds that proc off covenant ability are self-buffs, so simple trigger is sufficient.
-    // Functionality will need to be expanded if full actions are needed in the future.
-    for ( const auto& b : buff_list )
-      b->trigger();
+    for ( const auto& t : cb_list )
+      t->trigger( a, call_data );
   }
 };
 
-void add_covenant_callback_buff( buff_t* buff )
+// Add an effect to be triggered when covenant ability is cast. Currently has has templates for buff_t & action_t, and
+// can be expanded via additional subclasses to covenant_cb_base_t.
+template <typename T, typename... S>
+void add_covenant_cast_callback( player_t* p, S&&... args )
 {
-  const auto& cov = buff->player->covenant;
-
-  if ( !buff->player->covenant->enabled() )
+  if ( !p->covenant->enabled() )
     return;
 
-  if ( !buff->player->covenant->cast_callback )
+  if ( !p->covenant->cast_callback )
   {
-    auto eff = new special_effect_t( buff->player );
+    auto eff = new special_effect_t( p );
     eff->name_str = "covenant_cast_callback";
     eff->proc_flags_ = PF_ALL_DAMAGE;
     eff->proc_flags2_ = PF2_CAST;
-    buff->player->covenant->cast_callback = new covenant_ability_cast_cb_t( buff->player, *eff );
+    p->covenant->cast_callback = new covenant_ability_cast_cb_t( p, *eff );
   }
 
-  auto cb = debug_cast<covenant_ability_cast_cb_t*>( buff->player->covenant->cast_callback );
-
-  if ( range::contains( cb->buff_list, buff ) )
-    return;
-
-  cb->buff_list.push_back( buff );
+  auto cb_entry = new T( std::forward<S>( args )... );
+  auto cb = debug_cast<covenant_ability_cast_cb_t*>( p->covenant->cast_callback );
+  cb->cb_list.push_back( cb_entry );
 }
 
 namespace soulbinds
@@ -638,7 +649,7 @@ void grove_invigoration( special_effect_t& effect )
   if ( !effect.player->buffs.redirected_anima )
     effect.player->buffs.redirected_anima = make_buff<redirected_anima_buff_t>( effect.player );
 
-  add_covenant_callback_buff( effect.player->buffs.redirected_anima );
+  add_covenant_cast_callback<covenant_cb_buff_t>( effect.player, effect.player->buffs.redirected_anima );
 }
 }  // namespace soulbinds
 }  // namespace covenant
