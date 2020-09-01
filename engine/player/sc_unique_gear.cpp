@@ -4889,6 +4889,7 @@ void unique_gear::register_target_data_initializers( sim_t* sim )
   azerite::register_azerite_target_data_initializers( sim );
   
   shadowlands::register_target_data_initializers( *sim );
+  covenant::register_target_data_initializers( sim );
 }
 
 special_effect_t* unique_gear::find_special_effect( player_t* actor, unsigned spell_id, special_effect_e type )
