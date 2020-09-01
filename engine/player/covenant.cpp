@@ -560,7 +560,7 @@ void register_soulbinds()
   unique_gear::register_special_effect( 331584, soulbinds::dauntless_duelist );
   unique_gear::register_special_effect( 331586, soulbinds::thrill_seeker );
   unique_gear::register_special_effect( 336243, soulbinds::refined_palate );  // Theotar
-  unique_gear::register_special_effect( 336243, soulbinds::soothing_shade );
+  unique_gear::register_special_effect( 336239, soulbinds::soothing_shade );
   unique_gear::register_special_effect( 319983, soulbinds::wasteland_propriety );
   unique_gear::register_special_effect( 319973, soulbinds::built_for_war );  // Draven
   unique_gear::register_special_effect( 332753, soulbinds::superior_tactics );
@@ -885,9 +885,16 @@ void refined_palate( special_effect_t& effect )
 
 void soothing_shade( special_effect_t& effect )
 {
-  if ( !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() ) return;
+  if ( !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() )
+    return;
 
+  auto buff = buff_t::find( effect.player, "soothing_shade" );
+  if ( !buff )
+    buff = make_buff<stat_buff_t>( effect.player, "soothing_shade", effect.player->find_spell( 336885 ) );
 
+  effect.custom_buff = buff;
+
+  new dbc_proc_callback_t( effect.player, effect );
 }
 
 void wasteland_propriety( special_effect_t& effect )
