@@ -1134,7 +1134,7 @@ struct combustion_buff_t : public buff_t
     multiplier( data().effectN( 3 ).percent() )
   {
     set_cooldown( 0_ms );
-    set_default_value( data().effectN( 1 ).percent() );
+    set_default_value_from_effect( 1 );
     set_tick_zero( true );
     set_refresh_behavior( buff_refresh_behavior::DURATION );
     modify_duration( p->spec.combustion_2->effectN( 1 ).time_value() );
@@ -1210,7 +1210,7 @@ struct icy_veins_buff_t : public buff_t
   icy_veins_buff_t( mage_t* p ) :
     buff_t( p, "icy_veins", p->find_spell( 12472 ) )
   {
-    set_default_value( data().effectN( 1 ).percent() );
+    set_default_value_from_effect( 1 );
     set_cooldown( 0_ms );
     add_invalidate( CACHE_SPELL_HASTE );
     modify_duration( p->spec.icy_veins_2->effectN( 1 ).time_value() );
@@ -1238,7 +1238,7 @@ struct incanters_flow_t : public buff_t
     set_duration( 0_ms );
     set_period( p->talents.incanters_flow->effectN( 1 ).period() );
     set_chance( p->talents.incanters_flow->ok() );
-    set_default_value( data().effectN( 1 ).percent() );
+    set_default_value_from_effect( 1 );
   }
 
   void reset() override
@@ -5683,7 +5683,8 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
 
   debuffs.mirrors_of_torment          = make_buff<buffs::mirrors_of_torment_t>( this );
   debuffs.radiant_spark_vulnerability = make_buff( *this, "radiant_spark_vulnerability", mage->find_spell( 307454 ) )
-                                          ->set_default_value( mage->find_spell( 307454 )->effectN( 1 ).percent() + mage->conduits.ire_of_the_ascended.percent() );
+                                          ->set_default_value_from_effect( 1 )
+                                          ->modify_default_value( mage->conduits.ire_of_the_ascended.percent() );
 
   // Azerite
   debuffs.packed_ice = make_buff( *this, "packed_ice", mage->find_spell( 272970 ) )
@@ -6274,10 +6275,11 @@ void mage_t::create_buffs()
                                    { if ( old < 3 && cur >= 3 ) buffs.rule_of_threes->trigger(); } );
   buffs.arcane_power         = make_buff( this, "arcane_power", find_spell( 12042 ) )
                                  ->set_cooldown( 0_ms )
-                                 ->set_default_value( find_spell( 12042 )->effectN( 1 ).percent() + talents.overpowered->effectN( 1 ).percent() )
+                                 ->set_default_value_from_effect( 1 )
+                                 ->modify_default_value( talents.overpowered->effectN( 1 ).percent() )
                                  ->modify_duration( spec.arcane_power_3->effectN( 1 ).time_value() );
   buffs.clearcasting         = make_buff<buffs::expanded_potential_buff_t>( this, "clearcasting", find_spell( 263725 ) )
-                                 ->set_default_value( find_spell( 263725 )->effectN( 1 ).percent() )
+                                 ->set_default_value_from_effect( 1 )
                                  ->modify_max_stack( as<int>( spec.clearcasting_3->effectN( 1 ).base_value() ) )
                                  ->set_stack_change_callback( [ this ] ( buff_t*, int, int cur )
                                   // Nether Precision activates when all stacks of Clearcasting expire, regardless of how they expire.
@@ -6285,7 +6287,7 @@ void mage_t::create_buffs()
   buffs.clearcasting_channel = make_buff( this, "clearcasting_channel", find_spell( 277726 ) )
                                  ->set_quiet( true );
   buffs.evocation            = make_buff( this, "evocation", find_spell( 12051 ) )
-                                 ->set_default_value( find_spell( 12051 )->effectN( 1 ).percent() )
+                                 ->set_default_value_from_effect( 1 )
                                  ->set_cooldown( 0_ms )
                                  ->set_affects_regen( true );
   buffs.presence_of_mind     = make_buff( this, "presence_of_mind", find_spell( 205025 ) )
@@ -6295,7 +6297,7 @@ void mage_t::create_buffs()
                                  ->modify_max_stack( as<int>( spec.presence_of_mind_2->effectN( 1 ).base_value() ) );
 
   buffs.arcane_familiar      = make_buff( this, "arcane_familiar", find_spell( 210126 ) )
-                                 ->set_default_value( find_spell( 210126 )->effectN( 1 ).percent() )
+                                 ->set_default_value_from_effect( 1 )
                                  ->set_period( 3.0_s )
                                  ->set_tick_time_behavior( buff_tick_time_behavior::HASTED )
                                  ->set_tick_callback( [ this ] ( buff_t*, int, timespan_t )
@@ -6306,20 +6308,20 @@ void mage_t::create_buffs()
                                  ->set_stack_change_callback( [ this ] ( buff_t*, int, int )
                                    { recalculate_resource_max( RESOURCE_MANA ); } );
   buffs.chrono_shift         = make_buff( this, "chrono_shift", find_spell( 236298 ) )
-                                 ->set_default_value( find_spell( 236298 )->effectN( 1 ).percent() )
+                                 ->set_default_value_from_effect( 1 )
                                  ->add_invalidate( CACHE_RUN_SPEED )
                                  ->set_chance( talents.chrono_shift->ok() );
   buffs.enlightened_damage   = make_buff( this, "enlightened_damage", find_spell( 321388 ) )
-                                 ->set_default_value( find_spell( 321388 )->effectN( 1 ).percent() )
+                                 ->set_default_value_from_effect( 1 )
                                  ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buffs.enlightened_mana     = make_buff( this, "enlightened_mana", find_spell( 321390 ) )
-                                 ->set_default_value( find_spell( 321390 )->effectN( 1 ).percent() )
+                                 ->set_default_value_from_effect( 1 )
                                  ->set_affects_regen( true );
   buffs.rule_of_threes       = make_buff( this, "rule_of_threes", find_spell( 264774 ) )
-                                 ->set_default_value( find_spell( 264774 )->effectN( 1 ).percent() )
+                                 ->set_default_value_from_effect( 1 )
                                  ->set_chance( talents.rule_of_threes->ok() );
   buffs.time_warp            = make_buff( this, "time_warp", find_spell( 342242 ) )
-                                 ->set_default_value( find_spell( 342242 )->effectN( 1 ).percent() )
+                                 ->set_default_value_from_effect( 1 )
                                  ->add_invalidate( CACHE_SPELL_HASTE );
 
 
@@ -6327,7 +6329,7 @@ void mage_t::create_buffs()
   buffs.combustion            = make_buff<buffs::combustion_buff_t>( this );
   buffs.fireball              = make_buff( this, "fireball", find_spell( 157644 ) )
                                   ->set_chance( spec.fireball_2->ok() )
-                                  ->set_default_value( find_spell( 157644 )->effectN( 1 ).percent() )
+                                  ->set_default_value_from_effect( 1 )
                                   ->set_stack_change_callback( [ this ] ( buff_t*, int old, int cur )
                                     {
                                       if ( cur > old )
@@ -6347,14 +6349,14 @@ void mage_t::create_buffs()
                                     { if ( old == 0 ) buffs.firestorm->trigger(); } );
 
   buffs.alexstraszas_fury     = make_buff( this, "alexstraszas_fury", find_spell( 334277 ) )
-                                  ->set_default_value( find_spell( 334277 )->effectN( 1 ).percent() )
+                                  ->set_default_value_from_effect( 1 )
                                   ->set_chance( talents.alexstraszas_fury->ok() );
   buffs.frenetic_speed        = make_buff( this, "frenetic_speed", find_spell( 236060 ) )
-                                  ->set_default_value( find_spell( 236060 )->effectN( 1 ).percent() )
+                                  ->set_default_value_from_effect( 1 )
                                   ->add_invalidate( CACHE_RUN_SPEED )
                                   ->set_chance( talents.frenetic_speed->ok() );
   buffs.pyroclasm             = make_buff( this, "pyroclasm", find_spell( 269651 ) )
-                                  ->set_default_value( find_spell( 269651 )->effectN( 1 ).percent() )
+                                  ->set_default_value_from_effect( 1 )
                                   ->set_chance( talents.pyroclasm->effectN( 1 ).percent() );
 
 
@@ -6368,27 +6370,27 @@ void mage_t::create_buffs()
                              ->set_default_value( 0.1 * talents.bone_chilling->effectN( 1 ).percent() )
                              ->set_chance( talents.bone_chilling->ok() );
   buffs.chain_reaction   = make_buff( this, "chain_reaction", find_spell( 278310 ) )
-                             ->set_default_value( find_spell( 278310 )->effectN( 1 ).percent() )
+                             ->set_default_value_from_effect( 1 )
                              ->set_chance( talents.chain_reaction->ok() );
   buffs.freezing_rain    = make_buff( this, "freezing_rain", find_spell( 270232 ) )
-                             ->set_default_value( find_spell( 270232 )->effectN( 2 ).percent() )
+                             ->set_default_value_from_effect( 2 )
                              ->set_chance( talents.freezing_rain->ok() );
   buffs.ice_floes        = make_buff<buffs::ice_floes_buff_t>( this );
   buffs.ray_of_frost     = make_buff( this, "ray_of_frost", find_spell( 208141 ) )
-                             ->set_default_value( find_spell( 208141 )->effectN( 1 ).percent() );
+                             ->set_default_value_from_effect( 1 );
 
 
   // Shared
   buffs.incanters_flow    = make_buff<buffs::incanters_flow_t>( this );
   buffs.rune_of_power     = make_buff( this, "rune_of_power", find_spell( 116014 ) )
-                              ->set_default_value( find_spell( 116014 )->effectN( 1 ).percent() )
+                              ->set_default_value_from_effect( 1 )
                               ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
                               ->set_chance( talents.rune_of_power->ok() );
   buffs.focus_magic_crit  = make_buff( this, "focus_magic_crit", find_spell( 321363 ) )
-                              ->set_default_value( find_spell( 321363 )->effectN( 1 ).percent() )
+                              ->set_default_value_from_effect( 1 )
                               ->add_invalidate( CACHE_SPELL_CRIT_CHANCE );
   buffs.focus_magic_int   = make_buff( this, "focus_magic_int", find_spell( 334180 ) )
-                              ->set_default_value( find_spell( 334180 )->effectN( 1 ).percent() )
+                              ->set_default_value_from_effect( 1 )
                               ->add_invalidate( CACHE_INTELLECT );
 
   // Azerite
@@ -6424,22 +6426,22 @@ void mage_t::create_buffs()
 
   // Runeforge Legendaries
   buffs.arcane_harmony = make_buff( this, "arcane_harmony", find_spell( 332777 ) )
-                           ->set_default_value( find_spell( 332777 )->effectN( 1 ).percent() )
+                           ->set_default_value_from_effect( 1 )
                            ->set_chance( runeforge.arcane_harmony.ok() );
   buffs.siphon_storm   = make_buff( this, "siphon_storm", find_spell( 332934 ) )
-                           ->set_default_value( find_spell( 332934 )->effectN( 1 ).percent() )
+                           ->set_default_value_from_effect( 1 )
                            ->add_invalidate( CACHE_INTELLECT )
                            ->set_chance( runeforge.siphon_storm.ok() );
   buffs.temporal_warp  = make_buff( this, "temporal_warp", find_spell( 327355 ) )
-                           ->set_default_value( find_spell( 327355 )->effectN( 1 ).percent() )
+                           ->set_default_value_from_effect( 1 )
                            ->add_invalidate( CACHE_SPELL_HASTE )
                            ->set_chance( runeforge.temporal_warp.ok() );
 
   buffs.fevered_incantation      = make_buff( this, "fevered_incantation", find_spell( 333049 ) )
-                                     ->set_default_value( find_spell( 333049 )->effectN( 1 ).percent() )
+                                     ->set_default_value_from_effect( 1 )
                                      ->set_chance( runeforge.fevered_incantation.ok() );
   buffs.firestorm                = make_buff( this, "firestorm", find_spell( 333100 ) )
-                                     ->set_default_value( find_spell( 333100 )->effectN( 2 ).percent() )
+                                     ->set_default_value_from_effect( 2 )
                                      ->set_trigger_spell( runeforge.firestorm );
   buffs.molten_skyfall           = make_buff( this, "molten_skyfall", find_spell( 333170 ) )
                                      ->set_chance( runeforge.molten_skyfall.ok() );
@@ -6457,11 +6459,11 @@ void mage_t::create_buffs()
                                { trigger_fof( 1.0, 1, fw_fof ); } )
                              ->set_chance( runeforge.freezing_winds.ok() );
   buffs.slick_ice        = make_buff( this, "slick_ice", find_spell( 327509 ) )
-                             ->set_default_value( find_spell( 327509 )->effectN( 1 ).percent() )
+                             ->set_default_value_from_effect( 1 )
                              ->set_chance( runeforge.slick_ice.ok() );
 
   buffs.disciplinary_command        = make_buff( this, "disciplinary_command", find_spell( 327371 ) )
-                                        ->set_default_value( find_spell( 327371 )->effectN( 1 ).percent() );
+                                        ->set_default_value_from_effect( 1 );
   buffs.disciplinary_command_arcane = make_buff( this, "disciplinary_command_arcane", find_spell( 327369  ) )
                                         ->set_quiet( true )
                                         ->set_chance( runeforge.disciplinary_command.ok() );
@@ -6476,7 +6478,7 @@ void mage_t::create_buffs()
 
   // Covenant Abilities
   buffs.deathborne = make_buff( this, "deathborne", find_spell( 324220 ) )
-                       ->set_default_value( find_spell( 324220 )->effectN( 2 ).percent() )
+                       ->set_default_value_from_effect( 2 )
                        ->modify_duration( conduits.gift_of_the_lich.time_value() );
 
 

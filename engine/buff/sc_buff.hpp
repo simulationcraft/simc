@@ -308,6 +308,8 @@ public:
   buff_t* set_quiet( bool quiet );
   buff_t* add_invalidate( cache_e );
   buff_t* set_default_value( double );
+  buff_t* set_default_value_from_effect( size_t, double = 0.01 );
+  buff_t* modify_default_value( double );
   buff_t* set_reverse( bool );
   buff_t* set_activated( bool );
   buff_t* set_can_cancel( bool cc );

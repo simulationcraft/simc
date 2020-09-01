@@ -854,6 +854,18 @@ buff_t* buff_t::set_default_value( double value )
   return this;
 }
 
+buff_t* buff_t::set_default_value_from_effect( size_t effect, double multiplier )
+{
+  set_default_value( s_data->effectN( effect ).base_value() * multiplier );
+  return this;
+}
+
+buff_t* buff_t::modify_default_value( double value )
+{
+  set_default_value( default_value + value );
+  return this;
+}
+
 buff_t* buff_t::set_reverse( bool r )
 {
   reverse = r;
