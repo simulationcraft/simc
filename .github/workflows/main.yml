@@ -192,5 +192,5 @@ jobs:
         run: MSBuild.exe /maxcpucount /p:Configuration="Debug-NoNetworking" /p:Platform=x64 vs/simc_vs2019.vcxproj 
 
       - name: Smoke Test
-        run: vs\x64\Debug-NoNetworking\simc_vs2019.exe $SIMC_PROFILE iterations=5 output=/dev/null html=/dev/null json2=/dev/null cleanup_threads=1
+        run: vs\x64\Debug-NoNetworking\simc_vs2019.exe %SIMC_PROFILE% iterations=5 output=/dev/null html=/dev/null json2=/dev/null cleanup_threads=1
 
