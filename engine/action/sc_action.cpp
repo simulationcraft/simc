@@ -4665,6 +4665,7 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
     }
   }
 
+  // Applies "Spell Effect N" auras if they directly affect damage auras
   auto apply_effect_n_multiplier = [ this ]( const spelleffect_data_t& effect, unsigned n ) {
     if ( is_direct_damage_effect( data().effectN( n ) ) )
     {
@@ -4680,6 +4681,106 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
     }
   };
 
+  // Applies "Flat Modifier" and "Flat Modifier w/ Label" auras
+  auto apply_flat_modifier = [ this ]( const spelleffect_data_t& effect ) {
+    switch ( effect.misc_value1() )
+    {
+      case P_DURATION:
+        if ( base_tick_time > timespan_t::zero() )
+        {
+          dot_duration += effect.time_value();
+          sim->print_debug( "{} duration modified by {}", *this, effect.time_value() );
+        }
+        if ( ground_aoe_duration > timespan_t::zero() )
+        {
+          ground_aoe_duration += effect.time_value();
+          sim->print_debug( "{} ground aoe duration modified by {}", *this, effect.time_value() );
+        }
+        break;
+
+      case P_RANGE:
+        range += effect.base_value();
+        sim->print_debug( "{} range modified by {}", *this, effect.base_value() );
+        break;
+
+      case P_CRIT:
+        base_crit += effect.percent();
+        sim->print_debug( "{} base crit modified by {}", *this, effect.percent() );
+        break;
+
+      case P_COOLDOWN:
+        cooldown->duration += effect.time_value();
+        if ( cooldown->duration < timespan_t::zero() )
+          cooldown->duration = timespan_t::zero();
+        sim->print_debug( "{} cooldown duration increase by {} to {}", *this, effect.time_value(), cooldown->duration );
+        break;
+
+      case P_RESOURCE_COST:
+        base_costs[ resource_current ] += effect.base_value();
+        sim->print_debug( "{} base resource cost for resource {} modified by {}", *this,
+                          resource_current, effect.base_value() );
+        break;
+
+      case P_TARGET:
+        aoe += as<int>( effect.base_value() );
+        sim->print_debug( "{} max target count modified by {}", *this, effect.base_value() );
+        break;
+
+      case P_GCD:
+        trigger_gcd += effect.time_value();
+        sim->print_debug( "{} trigger_gcd modified by {} to {}", *this, effect.time_value(), trigger_gcd );
+        break;
+
+      default:
+        break;
+    }
+  };
+
+  // Applies "Percent Modifier" and "Percent Modifier w/ Label" auras
+  auto apply_percent_modifier = [ this ]( const spelleffect_data_t& effect ) {
+    switch ( effect.misc_value1() )
+    {
+      case P_GENERIC:
+        base_dd_multiplier *= 1.0 + effect.percent();
+        sim->print_debug( "{} base_dd_multiplier modified by {}%", *this, effect.base_value() );
+        break;
+
+      case P_COOLDOWN:
+        base_recharge_multiplier *= 1.0 + effect.percent();
+        if ( base_recharge_multiplier <= 0 )
+          cooldown->duration = timespan_t::zero();
+        sim->print_debug( "{} cooldown recharge multiplier modified by {}%", *this, effect.base_value() );
+        break;
+
+      case P_RESOURCE_COST:
+        base_costs[ resource_current ] *= 1.0 + effect.percent();
+        sim->print_debug( "{} base resource cost for resource {} modified by {}", *this,
+                          resource_current, effect.base_value() );
+        break;
+
+      case P_TICK_DAMAGE:
+        base_td_multiplier *= 1.0 + effect.percent();
+        sim->print_debug( "{} base_td_multiplier modified by {}%", *this, effect.base_value() );
+        break;
+
+      case P_CRIT_DAMAGE:
+        crit_bonus_multiplier *= 1.0 + effect.percent();
+        sim->print_debug( "{} critical damage bonus multiplier modified by {}%", *this, effect.base_value() );
+        break;
+
+      case P_GCD:
+        trigger_gcd *= 1.0 + effect.percent();
+        if ( trigger_gcd < timespan_t::zero() )
+          trigger_gcd = timespan_t::zero();
+        sim->print_debug( "{} trigger_gcd modified by {}% to {}", *this, effect.base_value(), trigger_gcd );
+        break;
+
+      default:
+        break;
+    }
+  };
+
+  // Standard Affected-by Auras
   if ( data().affected_by( effect ) )
   {
     switch ( effect.subtype() )
@@ -4695,100 +4796,44 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
         break;
 
       case A_ADD_FLAT_MODIFIER:
-        switch ( effect.misc_value1() )
-        {
-          case P_DURATION:
-            if ( base_tick_time > timespan_t::zero() )
-            {
-              dot_duration += effect.time_value();
-              sim->print_debug( "{} duration modified by {}", *this, effect.time_value() );
-            }
-            if ( ground_aoe_duration > timespan_t::zero() )
-            {
-              ground_aoe_duration += effect.time_value();
-              sim->print_debug( "{} ground aoe duration modified by {}", *this, effect.time_value() );
-            }
-            break;
-
-          case P_RANGE:
-            range += effect.base_value();
-            sim->print_debug( "{} range modified by {}", *this, effect.base_value() );
-            break;
-
-          case P_CRIT:
-            base_crit += effect.percent();
-            sim->print_debug( "{} base crit modified by {}", *this, effect.percent() );
-            break;
-
-          case P_COOLDOWN:
-            cooldown->duration += effect.time_value();
-            if ( cooldown->duration < timespan_t::zero() )
-              cooldown->duration = timespan_t::zero();
-            sim->print_debug( "{} cooldown duration increase by {} to {}", *this, effect.time_value(),
-                              cooldown->duration );
-            break;
-
-          case P_RESOURCE_COST:
-            base_costs[ resource_current ] += effect.base_value();
-            sim->print_debug( "{} base resource cost for resource {} modified by {}", *this,
-                              resource_current, effect.base_value() );
-            break;
-
-          case P_TARGET:
-            aoe += as<int>( effect.base_value() );
-            sim->print_debug( "{} max target count modified by {}", *this, effect.base_value() );
-            break;
-
-          case P_GCD:
-            trigger_gcd += effect.time_value();
-            sim->print_debug( "{} trigger_gcd modified by {} to {}", *this, effect.time_value(), trigger_gcd );
-            break;
-
-          default:
-            break;
-        }
+        apply_flat_modifier( effect );
         break;
 
       case A_ADD_PCT_MODIFIER:
-        switch ( effect.misc_value1() )
-        {
-          case P_GENERIC:
-            base_dd_multiplier *= 1 + effect.percent();
-            sim->print_debug( "{} base_dd_multiplier modified by {}%", *this, effect.base_value() );
-            break;
-
-          case P_COOLDOWN:
-            base_recharge_multiplier *= 1 + effect.percent();
-            if ( base_recharge_multiplier <= 0 )
-                cooldown->duration = timespan_t::zero();
-            sim->print_debug( "{} cooldown recharge multiplier modified by {}%", *this, effect.base_value() );
-            break;
-
-          case P_RESOURCE_COST:
-            base_costs[ resource_current ] *= 1 + effect.percent();
-            sim->print_debug( "{} base resource cost for resource {} modified by {}", *this,
-                              resource_current, effect.base_value() );
-            break;
-
-          case P_TICK_DAMAGE:
-            base_td_multiplier *= 1 + effect.percent();
-            sim->print_debug( "{} base_td_multiplier modified by {}%", *this, effect.base_value() );
-            break;
-
-          case P_CRIT_DAMAGE:
-            crit_bonus_multiplier *= 1 + effect.percent();
-            sim->print_debug( "{} critical damage bonus multiplier modified by {}%", *this, effect.base_value() );
-            break;
-
-          default:
-            break;
-        }
+        apply_percent_modifier( effect );
         break;
 
       default:
         break;
     }
   }
+  // Label-based Auras
+  else if ( data().affected_by_label( effect ) )
+  {
+    switch ( effect.subtype() )
+    {
+      case A_ADD_FLAT_LABEL_MODIFIER:
+        apply_flat_modifier( effect );
+        break;
+
+      case A_ADD_PCT_LABEL_MODIFIER:
+        apply_percent_modifier( effect );
+        switch ( effect.misc_value1() )
+        {
+          case P_EFFECT_1:
+            apply_effect_n_multiplier( effect, 1 );
+            break;
+
+          default:
+            break;
+        }
+        break;
+      
+      default:
+        break;
+    }
+  }
+  // Category-based Auras
   else if ( data().category() == as<unsigned>( effect.misc_value1() ) )
   {
     switch ( effect.subtype() )
@@ -4822,44 +4867,6 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
         sim->print_debug( "{} cooldown recharge multiplier modified by {}%", *this, effect.base_value() );
         break;
 
-      default:
-        break;
-    }
-  }
-  else if ( data().affected_by_label( effect ) )
-  {
-    switch ( effect.subtype() )
-    {
-      case A_ADD_PCT_LABEL_MODIFIER:
-        switch ( effect.misc_value1() )
-        {
-          case P_GCD:
-            trigger_gcd *= ( 100 + effect.base_value() ) / 100.0;
-            if ( trigger_gcd < timespan_t::zero() )
-              trigger_gcd = timespan_t::zero();
-            sim->print_debug( "{} trigger_gcd modified by {}% to {}", *this, effect.base_value(), trigger_gcd );
-            break;
-
-          case P_EFFECT_1:
-            apply_effect_n_multiplier( effect, 1 );
-            break;
-
-          case P_GENERIC:
-            base_dd_multiplier *= ( 100 + effect.base_value() ) / 100.0;
-            sim->print_debug( "{} base_dd_multiplier modified by {}% to {}", *this, effect.base_value(),
-                              base_dd_multiplier );
-            break;
-
-          case P_TICK_DAMAGE:
-            base_td_multiplier *= ( 100 + effect.base_value() ) / 100.0;
-            sim->print_debug( "{}base_td_multiplier modified by {}% to {}", *this, effect.base_value(),
-                              base_td_multiplier );
-            break;
-
-          default:
-            break;
-        }
-        break;
       default:
         break;
     }
