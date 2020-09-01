@@ -514,6 +514,7 @@ struct player_t : public actor_t
     // 9.0 Soulbinds
     buff_t* redirected_anima_stacks;  // night_fae/niya/grove_invigoration - counter procced via rppm
     buff_t* redirected_anima;         // night_fae/niya/grove_invigoration - buff procced on covenant ability use
+    buff_t* field_of_blossoms;        // night_fae/dreamweaver - buff procced on covenant ability use
   } buffs;
 
   struct debuffs_t
