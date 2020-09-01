@@ -8,6 +8,7 @@
 // Killing Blow based mechanics (free Death Strike, Rune of Unending Thirst)
 // Defensives: Anti-Magic Zone, Lichborne
 // Disable noise from healing/defensive actions when simming a single, dps role, character
+// Automate Rune energize in death_knight_action_t::execute() instead of per spell overrides?
 // Unholy:
 // - Fix Unholy Blight reporting : currently the uptime contains both the dot uptime (24.2s every 45s)
 //   and the driver uptime (6s every 45s)
@@ -497,6 +498,7 @@ public:
     // Shared
     // Blood
     cooldown_t* bone_shield_icd;
+    cooldown_t* blood_tap;
     cooldown_t* dancing_rune_weapon;
     cooldown_t* death_and_decay;
     cooldown_t* rune_strike;
@@ -550,6 +552,7 @@ public:
     gain_t* vision_of_perfection;
 
     // Blood
+    gain_t* blood_tap;
     gain_t* drw_heart_strike;
     gain_t* heartbreaker;
     gain_t* rune_strike;
@@ -595,12 +598,15 @@ public:
 
     // Blood
     const spell_data_t* blood_boil;
+    const spell_data_t* blood_tap;
     const spell_data_t* crimson_scourge;
     const spell_data_t* dancing_rune_weapon;
     const spell_data_t* deaths_caress;
     const spell_data_t* heart_strike;
     const spell_data_t* marrowrend;
     const spell_data_t* riposte;
+    const spell_data_t* rune_tap;
+    const spell_data_t* rune_tap_2;
     const spell_data_t* vampiric_blood;
     const spell_data_t* veteran_of_the_third_war_2;
 
@@ -708,7 +714,6 @@ public:
 
     const spell_data_t* will_of_the_necropolis; // NYI
     const spell_data_t* antimagic_barrier;
-    const spell_data_t* rune_tap;
 
     const spell_data_t* voracious;
     const spell_data_t* bloodworms;
@@ -896,6 +901,7 @@ public:
   {
     cooldown.apocalypse          = get_cooldown( "apocalypse" );
     cooldown.army_of_the_dead    = get_cooldown( "army_of_the_dead" );
+    cooldown.blood_tap           = get_cooldown( "blood_tap" );
     cooldown.bone_shield_icd     = get_cooldown( "bone_shield_icd" );
     cooldown.dancing_rune_weapon = get_cooldown( "dancing_rune_weapon" );
     cooldown.dark_transformation = get_cooldown( "dark_transformation" );
@@ -2560,6 +2566,12 @@ struct death_knight_action_t : public Base
       this -> energize_amount += rp_gain;
       this -> base_costs[ RESOURCE_RUNIC_POWER ] = 0;
     }
+    // Always rely on custom handling via replenish_rune() for Rune energize
+    if ( this -> energize_resource == RESOURCE_RUNE )
+    {
+      this -> energize_type = action_energize::NONE;
+      this -> energize_resource = RESOURCE_NONE;
+    }
 
     this -> affected_by.frozen_heart = this -> data().affected_by( p -> mastery.frozen_heart -> effectN( 1 ) );
     this -> affected_by.dreadblade = this -> data().affected_by( p -> mastery.dreadblade -> effectN( 1 ) );
@@ -3396,6 +3408,24 @@ struct blood_boil_t : public death_knight_spell_t
     p() -> buffs.hemostasis -> trigger();
   }
 
+};
+
+// Blood Tap ================================================================
+
+struct blood_tap_t : public death_knight_spell_t
+{
+  blood_tap_t( death_knight_t* p, const std::string options_str ) :
+    death_knight_spell_t( "blood_tap", p, p -> spec.blood_tap )
+  {
+    parse_options( options_str );
+  }
+
+  void execute() override
+  {
+    death_knight_spell_t::execute();
+
+    p() -> replenish_rune( as<int>( p() -> spec.blood_tap -> effectN( 1 ).resource( RESOURCE_RUNE ) ), p() -> gains.blood_tap );
+  }
 };
 
 // Blooddrinker =============================================================
@@ -4555,8 +4585,6 @@ struct empower_rune_weapon_t : public death_knight_spell_t
     parse_options( options_str );
 
     harmful = false;
-    // Handle energize in a custom way
-    energize_type = action_energize::NONE;
 
     // Buff handles the ticking, this one just triggers the buff
     dot_duration = base_tick_time = 0_ms;
@@ -5066,9 +5094,6 @@ struct horn_of_winter_t : public death_knight_spell_t
   {
     parse_options( options_str );
     harmful = false;
-
-    // Handle energize ourselves
-    energize_type = action_energize::NONE;
   }
 
   void execute() override
@@ -5893,7 +5918,6 @@ struct rune_strike_t : public death_knight_melee_attack_t
     death_knight_melee_attack_t( "rune_strike", p, p -> talent.rune_strike )
   {
     parse_options( options_str );
-    energize_type = action_energize::NONE;
   }
 
   void execute() override
@@ -5920,7 +5944,7 @@ struct sacrificial_pact_damage_t : public death_knight_spell_t
     death_knight_spell_t( "sacrificial_pact", p, p -> spell.sacrificial_pact_damage )
   {
     background = true;
-    aoe = data().effectN( 2 ).base_value();
+    aoe = as<int>( data().effectN( 2 ).base_value() );
   }
 };
 
@@ -6049,8 +6073,6 @@ struct soul_reaper_t : public death_knight_spell_t
     death_knight_spell_t( "soul_reaper", p, p ->  talent.soul_reaper )
   {
     parse_options( options_str );
-
-    energize_type = action_energize::NONE;
 
     tick_may_crit = tick_zero = true;
     may_miss = may_crit = hasted_ticks = false;
@@ -6365,10 +6387,11 @@ struct mark_of_blood_t : public death_knight_spell_t
 struct rune_tap_t : public death_knight_spell_t
 {
   rune_tap_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_spell_t( "rune_tap", p, p -> talent.rune_tap )
+    death_knight_spell_t( "rune_tap", p, p -> spec.rune_tap )
   {
     parse_options( options_str );
     use_off_gcd = true;
+    cooldown -> charges += as<int>( p -> spec.rune_tap_2 -> effectN( 1 ).base_value() );
   }
 
   void execute() override
@@ -7332,6 +7355,7 @@ action_t* death_knight_t::create_action( util::string_view name, const std::stri
 
   // Blood Actions
   if ( name == "blood_boil"               ) return new blood_boil_t               ( this, options_str );
+  if ( name == "blood_tap"                ) return new blood_tap_t                ( this, options_str );
   if ( name == "blooddrinker"             ) return new blooddrinker_t             ( this, options_str );
   if ( name == "bonestorm"                ) return new bonestorm_t                ( this, options_str );
   if ( name == "consumption"              ) return new consumption_t              ( this, options_str );
@@ -7626,11 +7650,14 @@ void death_knight_t::init_spells()
   spec.blood_death_knight       = find_specialization_spell( "Blood Death Knight" );
   spec.riposte                  = find_specialization_spell( "Riposte" );
   spec.blood_boil               = find_specialization_spell( "Blood Boil" );
+  spec.blood_tap                = find_specialization_spell( "Blood Tap" );
   spec.crimson_scourge          = find_specialization_spell( "Crimson Scourge" );
   spec.dancing_rune_weapon      = find_specialization_spell( "Dancing Rune Weapon" );
   spec.deaths_caress            = find_specialization_spell( "Death's Caress" );
   spec.heart_strike             = find_specialization_spell( "Heart Strike" );
   spec.marrowrend               = find_specialization_spell( "Marrowrend" );
+  spec.rune_tap                 = find_specialization_spell( "Rune Tap" );
+  spec.rune_tap_2               = find_specialization_spell( "Rune Tap", "Rank 2" );
   spec.vampiric_blood           = find_specialization_spell( "Vampiric Blood" );
   spec.veteran_of_the_third_war_2 = find_specialization_spell( "Veteran of the Third War", "Rank 2" );
 
@@ -7732,7 +7759,6 @@ void death_knight_t::init_spells()
 
   talent.will_of_the_necropolis = find_talent_spell( "Will of the Necropolis" ); // NYI
   talent.antimagic_barrier      = find_talent_spell( "Anti-Magic Barrier" );
-  talent.rune_tap               = find_talent_spell( "Rune Tap" );
 
   talent.voracious              = find_talent_spell( "Voracious" );
   talent.bloodworms             = find_talent_spell( "Bloodworms" );
@@ -8406,7 +8432,7 @@ void death_knight_t::create_buffs()
         -> set_trigger_spell( talent.hemostasis )
         -> set_default_value( talent.hemostasis -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
 
-  buffs.rune_tap = make_buff( this, "rune_tap", talent.rune_tap )
+  buffs.rune_tap = make_buff( this, "rune_tap", spec.rune_tap )
         -> set_cooldown( 0_ms ); // Handled by the action
 
   buffs.tombstone = make_buff<absorb_buff_t>( this, "tombstone", talent.tombstone )
@@ -8528,6 +8554,7 @@ void death_knight_t::init_gains()
   gains.vision_of_perfection             = get_gain( "Vision of Perfection" );
 
   // Blood
+  gains.blood_tap                        = get_gain( "Blood Tap" );
   gains.drw_heart_strike                 = get_gain( "Rune Weapon Heart Strike" );
   gains.heartbreaker                     = get_gain( "Heartbreaker" );
   gains.rune_strike                      = get_gain( "Rune Strike" );
@@ -8669,6 +8696,8 @@ void death_knight_t::bone_shield_handler( const action_state_t* state ) const
 
   buffs.bone_shield -> decrement();
   cooldown.bone_shield_icd -> start( spell.bone_shield -> internal_cooldown() );
+  // Blood tap spelldata is a bit weird, it's not in milliseconds like other time values, and is positive even though it reduces a cooldown
+  cooldown.blood_tap -> adjust( -1.0 * timespan_t::from_seconds( spec.blood_tap -> effectN( 2 ).base_value() ) );
 
   if ( ! buffs.bone_shield -> up() && buffs.bones_of_the_damned -> up() )
   {
