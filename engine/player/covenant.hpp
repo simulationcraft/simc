@@ -13,6 +13,7 @@
 #include "report/reports.hpp"
 
 #include "item/special_effect.hpp"
+#include "action/sc_action_state.hpp"
 #include "action/dbc_proc_callback.hpp"
 
 struct player_t;
@@ -165,6 +166,29 @@ void initialize_soulbinds( player_t* player );
 
 /// Register soulbinds through the generic speical effect subsystem
 void register_soulbinds();
+
+struct covenant_cb_base_t
+{
+  covenant_cb_base_t() {}
+  virtual void trigger( action_t*, void* call_data ) = 0;
+};
+
+struct covenant_cb_buff_t : public covenant_cb_base_t
+{
+  buff_t* buff;
+
+  covenant_cb_buff_t( buff_t* b ) : covenant_cb_base_t(), buff( b ) {}
+  void trigger( action_t* a, void* call_data ) override;
+};
+
+struct covenant_cb_action_t : public covenant_cb_base_t
+{
+  action_t* action;
+  bool self_target;
+
+  covenant_cb_action_t( action_t* a, bool self = false ) : covenant_cb_base_t(), action( a ), self_target( self ) {}
+  void trigger( action_t* a, void* call_data ) override;
+};
 
 /// Add a buff to be triggered when covenant class ability is cast (create the callback if necessary)
 void add_covenant_callback_buff( player_t* player, buff_t* buff );
