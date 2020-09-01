@@ -204,6 +204,7 @@ public:
     // Brewmaster
     buff_t* bladed_armor;
     buff_t* blackout_combo;
+    absorb_buff_t* celestial_brew;
     buff_t* celestial_flames;
     buff_t* elusive_brawler;
     buff_t* fortifying_brew;
@@ -261,6 +262,9 @@ public:
     stat_buff_t* straight_no_chaser;
     buff_t* sunrise_technique;
     buff_t* swift_roundhouse;
+
+    // Covenant
+    absorb_buff_t* fortifying_ingrediences;
 
     // Shadowland Legendary
     buff_t* chi_energy;
@@ -8436,6 +8440,9 @@ void monk_t::create_buffs()
 
   buff.blackout_combo = make_buff( this, "blackout_combo", talent.blackout_combo->effectN( 5 ).trigger() );
 
+  buff.celestial_brew = make_buff<absorb_buff_t>( this, "celestial_brew", spec.celestial_brew );
+  buff.celestial_brew->set_absorb_source( get_stats( "celestial_brew" ) )->set_cooldown( timespan_t::zero() );
+
   buff.celestial_flames = make_buff( this, "celestial_flames", talent.celestial_flames->effectN( 1 ).trigger() )
                               ->set_chance( talent.celestial_flames->proc_chance() )
                               ->set_default_value( talent.celestial_flames->effectN( 2 ).percent() );
@@ -8490,8 +8497,7 @@ void monk_t::create_buffs()
 
   buff.thunder_focus_tea =
       make_buff( this, "thunder_focus_tea", spec.thunder_focus_tea )
-          ->set_max_stack( 1 +
-                           (int)( talent.focused_thunder ? talent.focused_thunder->effectN( 1 ).base_value() : 0 ) );
+          ->modify_max_stack( (int)( talent.focused_thunder ? talent.focused_thunder->effectN( 1 ).base_value() : 0 ) );
 
   buff.uplifting_trance = make_buff( this, "uplifting_trance", find_spell( 197916 ) )
                               ->set_chance( spec.renewing_mist->effectN( 2 ).percent() )
@@ -8576,9 +8582,9 @@ void monk_t::create_buffs()
   buff.dance_of_chiji_azerite =
       make_buff( this, "dance_of_chiji_azerite", find_spell( 286587 ) )->set_trigger_spell( find_spell( 286586 ) );
 
-  buff.fury_of_xuen_stacks =
-      make_buff( this, "fury_of_xuen_stacks", passives.fury_of_xuen_stacking_buff )
-          ->set_default_value( ( passives.fury_of_xuen_stacking_buff->effectN( 3 ).base_value() / 100 ) * 0.01 );
+  buff.fury_of_xuen_stacks = make_buff( this, "fury_of_xuen_stacks", passives.fury_of_xuen_stacking_buff )
+                                 ->set_default_value_from_effect(
+                                     ( passives.fury_of_xuen_stacking_buff->effectN( 3 ).base_value() / 100 ), 0.01 );
 
   buff.fury_of_xuen_haste = make_buff<stat_buff_t>( this, "fury_of_xuen_haste", passives.fury_of_xuen_haste_buff )
                                 ->add_stat( STAT_HASTE_RATING, azerite.fury_of_xuen.value() );
@@ -8588,10 +8594,17 @@ void monk_t::create_buffs()
 
   buff.sunrise_technique = make_buff( this, "sunrise_technique", find_spell( 273298 ) );
 
+  // Conduits
+  buff.fortifying_ingrediences = make_buff<absorb_buff_t>( this, "fortifying_ingredients", conduit.fortifying_ingredients );
+  buff.fortifying_ingrediences->set_absorb_source( get_stats( "fortifying_ingredients" ) )->set_cooldown( timespan_t::zero() );
+
   // Shadowland Legendaries
   // General
   buff.flaming_kicks    = make_buff( this, "flaming_kicks", find_spell( 338140 ) );
-  buff.invokers_delight = make_buff( this, "invokers_delight", legendary.invokers_delight->effectN( 1 ).trigger() );
+  buff.invokers_delight = make_buff( this, "invokers_delight", legendary.invokers_delight->effectN( 1 ).trigger() )
+      ->add_invalidate( CACHE_ATTACK_HASTE )
+      ->add_invalidate( CACHE_HASTE )
+      ->add_invalidate( CACHE_SPELL_HASTE );
 
   // Brewmaster
   buff.mighty_pour = make_buff( this, "mighty_pour", find_spell( 337994 ) );
