@@ -603,7 +603,11 @@ struct covenant_ability_cast_cb_t : public dbc_proc_callback_t
 
   covenant_ability_cast_cb_t( player_t* p, const special_effect_t& e )
     : dbc_proc_callback_t( p, e ), covenant_ability( p->covenant->get_covenant_ability_spell() ), cb_list()
-  {}
+  {
+    // Manual overrides for covenant abilities that don't utilize the spells found in __covenant_ability_data dbc table
+    if ( p->type == DRUID && p->covenant->type() == covenant_e::KYRIAN )
+      covenant_ability = p->find_spell( 326446 );
+  }
 
   void initialize() override
   {
