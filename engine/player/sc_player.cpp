@@ -4080,9 +4080,7 @@ double player_t::composite_player_target_multiplier( player_t* target, school_e 
   }
 
   if ( target->race == RACE_ABERRATION && buffs.damage_to_aberrations && buffs.damage_to_aberrations->check() )
-  {
     m *= 1.0 + buffs.damage_to_aberrations->stack_value();
-  }
 
   // percentage not found in data, hardcoded for now. this buff is never triggered so use default_value.
   if ( buffs.wild_hunt_tactics && target->health_percentage() > 75.0 )
@@ -4092,6 +4090,7 @@ double player_t::composite_player_target_multiplier( player_t* target, school_e 
   if ( td )
   {
     m *= 1.0 + td->debuff.condensed_lifeforce->check_value();
+    m *= 1.0 + td->debuff.adversary->check_value();
   }
 
   return m;

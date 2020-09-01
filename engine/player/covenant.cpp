@@ -8,6 +8,7 @@
 
 #include "player/sc_player.hpp"
 #include "player/unique_gear_helper.hpp"
+#include "player/actor_target_data.hpp"
 #include "buff/sc_buff.hpp"
 
 #include "sim/sc_option.hpp"
@@ -579,6 +580,23 @@ void register_soulbinds()
   unique_gear::register_special_effect( 326572, soulbinds::heirmirs_arsenal_marrowed_gemstone );
 }
 
+void register_target_data_initializers( sim_t* sim )
+{
+  // Dauntless Duelist
+  sim->register_target_data_initializer( []( actor_target_data_t* td ) {
+    if ( td->source->find_soulbind_spell( "Dauntless Duelist" )->ok() )
+    {
+      assert( !td->debuff.adversary );
+
+      auto s_data = td->source->find_spell( 331934 );
+      td->debuff.adversary = make_buff( *td, "adversary", s_data )->set_default_value( s_data->effectN( 1 ).percent() );
+      td->debuff.adversary->reset();
+    }
+    else
+      td->debuff.adversary = make_buff( *td, "adversary" )->set_quiet( true );
+  } );
+}
+
 void covenant_cb_buff_t::trigger( action_t* a, void* call_data )
 {
   buff->trigger();
@@ -812,10 +830,33 @@ void exacting_preparation( special_effect_t& effect )
 
 void dauntless_duelist( special_effect_t& effect )
 {
-  if ( !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() ) return;
+  if ( !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() )
+    return;
 
+  struct dauntless_duelist_cb_t : public dbc_proc_callback_t
+  {
+    dauntless_duelist_cb_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e ) {}
 
+    void trigger( action_t* a, void* cd ) override
+    {
+      auto st = static_cast<action_state_t*>( cd );
+      auto td = a->player->get_target_data( st->target );
+      td->debuff.adversary->trigger();
+
+      deactivate();
+    }
+
+    void reset() override
+    {
+      dbc_proc_callback_t::reset();
+
+      activate();
+    }
+  };
+
+  new dauntless_duelist_cb_t( effect );
 }
+
 void thrill_seeker( special_effect_t& effect )
 {
   if ( !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() ) return;

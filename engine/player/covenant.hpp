@@ -167,6 +167,9 @@ void initialize_soulbinds( player_t* player );
 /// Register soulbinds through the generic special effect subsystem
 void register_soulbinds();
 
+/// Register soulbinds target data initializers
+void register_target_data_initializers( sim_t* sim );
+
 struct covenant_cb_base_t
 {
   covenant_cb_base_t() {}
