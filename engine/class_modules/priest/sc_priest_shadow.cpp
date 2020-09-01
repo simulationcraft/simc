@@ -2424,6 +2424,9 @@ void priest_t::generate_apl_shadow()
   main->add_action( this, "Mind Blast",
                     "if=variable.dots_up&raid_event.movement.in>cast_time+0.5&spell_targets.mind_sear<4",
                     "TODO Verify target cap" );
+  main->add_action( this, "Vampiric Touch",
+                    "target_if=refreshable&target.time_to_die>6|(talent.misery.enabled&dot.shadow_word_pain."
+                    "refreshable)|buff.unfurling_darkness.up" );
   main->add_action( this, "Shadow Word: Pain",
                     "if=refreshable&target.time_to_die>4&!talent.misery.enabled&talent.psychic_link.enabled&spell_"
                     "targets.mind_sear>2",
@@ -2434,9 +2437,6 @@ void priest_t::generate_apl_shadow()
       "target_if=refreshable&target.time_to_die>4&!talent.misery.enabled&(!talent.psychic_link.enabled|(talent.psychic_"
       "link.enabled&spell_targets.mind_sear<=2))",
       "Keep SW:P up on as many targets as possible, except when fighting 3 or more stacked mobs with Psychic Link." );
-  main->add_action( this, "Vampiric Touch",
-                    "target_if=refreshable&target.time_to_die>6|(talent.misery.enabled&dot.shadow_word_pain."
-                    "refreshable)|buff.unfurling_darkness.up" );
   main->add_action( this, "Mind Sear",
                     "target_if=spell_targets.mind_sear>variable.mind_sear_cutoff,chain=1,interrupt_immediate=1,"
                     "interrupt_if=ticks>=2" );
