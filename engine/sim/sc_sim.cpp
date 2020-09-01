@@ -3775,6 +3775,10 @@ void sim_t::create_options()
 
   // applies to: "lavish_suramar_feast", battle for azeroth feasts
   add_option( opt_bool( "feast_as_dps", feast_as_dps ) );
+
+  // Shadowlands
+  add_option( opt_float( "shadowlands.combat_meditation_extend_chance",
+                         shadowlands_opts.combat_meditation_extend_chance, 0.0, 1.0 ) );
 }
 
 // sim_t::parse_option ======================================================

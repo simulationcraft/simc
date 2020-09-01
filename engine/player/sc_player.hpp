@@ -523,6 +523,7 @@ struct player_t : public actor_t
     buff_t* wasteland_propriety;      // venthyr/theotar - vers buff on covenant cast
     buff_t* built_for_war;            // venthyr/draven - stacking buff when above 80% hp
     buff_t* let_go_of_the_past;       // kyrian/pelagos - vers buff on diff spell
+    buff_t* combat_meditation;        // kyrian/pelagos - mast buff on covenant cast
   } buffs;
 
   struct debuffs_t

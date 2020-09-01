@@ -990,9 +990,31 @@ void let_go_of_the_past( special_effect_t& effect )
 
 void combat_meditation( special_effect_t& effect )
 {
-  if ( !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() ) return;
+  if ( !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() )
+    return;
 
+  struct combat_meditation_buff_t : public buff_t
+  {
+    timespan_t ext_dur;
 
+    combat_meditation_buff_t( player_t* p )
+      : buff_t( p, "combat_meditation", p->find_spell( 328908 ) ),
+        ext_dur( timespan_t::from_seconds( p->find_spell( 328913 )->effectN( 2 ).base_value() ) )
+    {
+      set_default_value_from_effect( 1, 1.0 );
+      add_invalidate( CACHE_MASTERY );
+      // TODO: add more faithful simulation of delay/reaction needed from player to walk into the sorrowful memories
+      set_tick_callback( [this]( buff_t*, int, timespan_t ) {
+        if ( rng().roll( sim->shadowlands_opts.combat_meditation_extend_chance ) )
+          extend_duration( player, ext_dur );
+      } );
+    }
+  };
+
+  if ( !effect.player->buffs.combat_meditation )
+    effect.player->buffs.combat_meditation = make_buff<combat_meditation_buff_t>( effect.player );
+
+  add_covenant_cast_callback<covenant_cb_buff_t>( effect.player, effect.player->buffs.combat_meditation );
 }
 
 void pointed_courage( special_effect_t& effect )

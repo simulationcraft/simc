@@ -3920,6 +3920,9 @@ double player_t::composite_mastery() const
   if ( buffs.redirected_anima )
     cm += buffs.redirected_anima->check_stack_value();
 
+  if ( buffs.combat_meditation )
+    cm += buffs.combat_meditation->check_value();
+
   return cm;
 }
 
