@@ -994,7 +994,7 @@ buff_t* buff_t::apply_affecting_aura( const spell_data_t* spell )
   if ( !spell->ok() )
     return this;
 
-  assert( spell->flags( SX_PASSIVE ) && "only passive spells should be affecting actions." );
+  assert( spell->flags( SX_PASSIVE ) && "only passive spells should be affecting buffs." );
 
   for ( const spelleffect_data_t& effect : spell->effects() )
   {
