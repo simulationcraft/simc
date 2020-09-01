@@ -4019,10 +4019,10 @@ double player_t::composite_mitigation_versatility() const
     cmv += buffs.social_butterfly->check_value() / 2;
 
   if ( buffs.wasteland_propriety )
-    cmv += buffs.wasteland_propriety->check_value();
+    cmv += buffs.wasteland_propriety->check_value() / 2;
 
   if ( buffs.let_go_of_the_past )
-    cmv += buffs.let_go_of_the_past->check_stack_value();
+    cmv += buffs.let_go_of_the_past->check_stack_value() / 2;
 
   cmv += racials.mountaineer->effectN( 1 ).percent() / 2;
   cmv += racials.brush_it_off->effectN( 1 ).percent() / 2;
