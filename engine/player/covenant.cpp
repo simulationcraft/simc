@@ -454,7 +454,7 @@ void covenant_state_t::register_options( player_t* player )
 const spell_data_t* covenant_state_t::get_covenant_ability_spell( bool generic ) const
 {
   if ( !enabled() )
-    return 0u;
+    return spell_data_t::not_found();
 
   for ( const auto& e : covenant_ability_entry_t::data( m_player->dbc->ptr ) )
   {
@@ -475,7 +475,7 @@ const spell_data_t* covenant_state_t::get_covenant_ability_spell( bool generic )
     return s_data;
   }
 
-  return 0u;
+  return spell_data_t::not_found();
 }
 
 report::sc_html_stream& covenant_state_t::generate_report( report::sc_html_stream& root ) const
