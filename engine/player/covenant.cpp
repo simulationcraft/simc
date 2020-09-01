@@ -546,7 +546,37 @@ void initialize_soulbinds( player_t* player )
 
 void register_soulbinds()
 {
+  // Night Fae
+  unique_gear::register_special_effect( 320659, soulbinds::niyas_tools_burrs );  // Niya
+  unique_gear::register_special_effect( 320660, soulbinds::niyas_tools_poison );
+  unique_gear::register_special_effect( 320662, soulbinds::niyas_tools_herbs );
   unique_gear::register_special_effect( 322721, soulbinds::grove_invigoration );
+  unique_gear::register_special_effect( 319191, soulbinds::field_of_blossoms );  // Dreamweaver
+  unique_gear::register_special_effect( 319210, soulbinds::social_butterfly );
+  unique_gear::register_special_effect( 325069, soulbinds::first_strike );  // Korayn
+  unique_gear::register_special_effect( 325066, soulbinds::wild_hunt_tactics );
+  // Venthyr
+  unique_gear::register_special_effect( 331580, soulbinds::exacting_preparation );  // Nadjia
+  unique_gear::register_special_effect( 331584, soulbinds::dauntless_duelist );
+  unique_gear::register_special_effect( 331586, soulbinds::thrill_seeker );
+  unique_gear::register_special_effect( 336243, soulbinds::refined_palate );  // Theotar
+  unique_gear::register_special_effect( 336243, soulbinds::soothing_shade );
+  unique_gear::register_special_effect( 319983, soulbinds::wasteland_propriety );
+  unique_gear::register_special_effect( 319973, soulbinds::built_for_war );  // Draven
+  unique_gear::register_special_effect( 332753, soulbinds::superior_tactics );
+  // Kyrian
+  unique_gear::register_special_effect( 328257, soulbinds::let_go_of_the_past );  // Pelagos
+  unique_gear::register_special_effect( 328266, soulbinds::combat_meditation );
+  unique_gear::register_special_effect( 329778, soulbinds::pointed_courage );    // Kleia
+  unique_gear::register_special_effect( 333935, soulbinds::hammer_of_genesis );  // Mikanikos
+  unique_gear::register_special_effect( 333950, soulbinds::brons_call_to_action );
+  // Necrolord
+  unique_gear::register_special_effect( 323074, soulbinds::volatile_solvent );  // Marileth
+  unique_gear::register_special_effect( 323090, soulbinds::plagueys_preemptive_strike );
+  unique_gear::register_special_effect( 323919, soulbinds::gnashing_chompers );  // Emeni
+  unique_gear::register_special_effect( 342156, soulbinds::embody_the_construct );
+  unique_gear::register_special_effect( 326504, soulbinds::serrated_spaulders );  // Heirmir
+  unique_gear::register_special_effect( 326572, soulbinds::heirmirs_arsenal_marrowed_gemstone );
 }
 
 void covenant_cb_buff_t::trigger( action_t* a, void* call_data )
@@ -615,6 +645,27 @@ void add_covenant_cast_callback( player_t* p, S&&... args )
 
 namespace soulbinds
 {
+void niyas_tools_burrs( special_effect_t& effect )
+{
+  if ( !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() ) return;
+
+
+}
+
+void niyas_tools_poison( special_effect_t& effect )
+{
+  if ( !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() ) return;
+
+
+}
+
+void niyas_tools_herbs( special_effect_t& effect )
+{
+  if ( !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() ) return;
+
+
+}
+
 struct redirected_anima_buff_t : public buff_t
 {
   redirected_anima_buff_t( player_t* p ) : buff_t( p, "redirected_anima", p->find_spell( 342814 ) )
@@ -639,9 +690,7 @@ struct redirected_anima_buff_t : public buff_t
 
 void grove_invigoration( special_effect_t& effect )
 {
-  auto soulbind = effect.player->find_soulbind_spell( effect.driver()->name_cstr() );
-  if ( !soulbind->ok() )
-    return;
+  if ( !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() ) return;
 
   effect.custom_buff = effect.player->buffs.redirected_anima_stacks;
   new dbc_proc_callback_t( effect.player, effect );
@@ -651,5 +700,166 @@ void grove_invigoration( special_effect_t& effect )
 
   add_covenant_cast_callback<covenant_cb_buff_t>( effect.player, effect.player->buffs.redirected_anima );
 }
+
+void field_of_blossoms( special_effect_t& effect )
+{
+  if ( !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() ) return;
+
+
+}
+
+void social_butterfly( special_effect_t& effect )
+{
+  if ( !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() ) return;
+
+
+}
+
+void first_strike( special_effect_t& effect )
+{
+  if ( !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() ) return;
+
+
+}
+
+void wild_hunt_tactics( special_effect_t& effect )
+{
+  if ( !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() ) return;
+
+
+}
+
+void exacting_preparation( special_effect_t& effect )
+{
+  if ( !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() ) return;
+
+
+}
+
+void dauntless_duelist( special_effect_t& effect )
+{
+  if ( !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() ) return;
+
+
+}
+void thrill_seeker( special_effect_t& effect )
+{
+  if ( !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() ) return;
+
+
+}
+
+void refined_palate( special_effect_t& effect )
+{
+  if ( !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() ) return;
+
+
+}
+
+void soothing_shade( special_effect_t& effect )
+{
+  if ( !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() ) return;
+
+
+}
+
+void wasteland_propriety( special_effect_t& effect )
+{
+  if ( !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() ) return;
+
+
+}
+
+void built_for_war( special_effect_t& effect )
+{
+  if ( !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() ) return;
+
+
+}
+
+void superior_tactics( special_effect_t& effect )
+{
+  if ( !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() ) return;
+
+
+}
+
+void let_go_of_the_past( special_effect_t& effect )
+{
+  if ( !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() ) return;
+
+
+}
+
+void combat_meditation( special_effect_t& effect )
+{
+  if ( !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() ) return;
+
+
+}
+
+void pointed_courage( special_effect_t& effect )
+{
+  if ( !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() ) return;
+
+
+}
+
+void hammer_of_genesis( special_effect_t& effect )
+{
+  if ( !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() ) return;
+
+
+}
+
+void brons_call_to_action( special_effect_t& effect )
+{
+  if ( !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() ) return;
+
+
+}
+
+void volatile_solvent( special_effect_t& effect )
+{
+  if ( !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() ) return;
+
+
+}
+
+void plagueys_preemptive_strike( special_effect_t& effect )
+{
+  if ( !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() ) return;
+
+
+}
+
+void gnashing_chompers( special_effect_t& effect )
+{
+  if ( !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() ) return;
+
+
+}
+
+void embody_the_construct( special_effect_t& effect )
+{
+  if ( !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() ) return;
+
+
+}
+
+void serrated_spaulders( special_effect_t& effect )
+{
+  if ( !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() ) return;
+
+
+}
+
+void heirmirs_arsenal_marrowed_gemstone( special_effect_t& effect )
+{
+  if ( !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() ) return;
+
+
+}
+
 }  // namespace soulbinds
 }  // namespace covenant
