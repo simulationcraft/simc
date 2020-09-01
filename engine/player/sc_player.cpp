@@ -3575,9 +3575,12 @@ double player_t::composite_melee_crit_chance() const
   if (buffs.reckless_force)
     ac += buffs.reckless_force->check_value();
 
+  if ( buffs.first_strike )
+    ac += buffs.first_strike->check_value();
+
   ac += racials.viciousness->effectN( 1 ).percent();
   ac += racials.arcane_acuity->effectN( 1 ).percent();
-  if(buffs.embrace_of_paku)
+  if ( buffs.embrace_of_paku )
     ac += buffs.embrace_of_paku->check_value();
 
   if ( timeofday == DAY_TIME )
@@ -3866,9 +3869,12 @@ double player_t::composite_spell_crit_chance() const
   if (buffs.reckless_force)
     sc += buffs.reckless_force->check_value();
 
+  if( buffs.first_strike )
+    sc += buffs.first_strike->check_value();
+
   sc += racials.viciousness->effectN( 1 ).percent();
   sc += racials.arcane_acuity->effectN( 1 ).percent();
-  if(buffs.embrace_of_paku)
+  if ( buffs.embrace_of_paku )
     sc += buffs.embrace_of_paku->check_value();
 
   if ( timeofday == DAY_TIME )
