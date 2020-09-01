@@ -709,7 +709,13 @@ void field_of_blossoms( special_effect_t& effect )
 {
   if ( !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() ) return;
 
+  if ( !effect.player->buffs.field_of_blossoms )
+    effect.player->buffs.field_of_blossoms =
+        make_buff( effect.player, "field_of_blossoms", effect.player->find_spell( 342774 ) )
+            ->set_cooldown( effect.player->find_spell( 342781 )->duration() )
+            ->add_invalidate( CACHE_HASTE );
 
+  add_covenant_cast_callback<covenant_cb_buff_t>( effect.player, effect.player->buffs.field_of_blossoms );
 }
 
 void social_butterfly( special_effect_t& effect )

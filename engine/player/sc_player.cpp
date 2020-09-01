@@ -3459,6 +3459,9 @@ double player_t::composite_melee_haste() const
     if ( buffs.guardian_of_azeroth->check() )
       h *= 1.0 / ( 1.0 + buffs.guardian_of_azeroth->check_stack_value() );
 
+    if ( buffs.field_of_blossoms->check() )
+      h *= 1.0 / ( 1.0 + buffs.field_of_blossoms->data().effectN( 1 ).percent() );
+
     h *= 1.0 / ( 1.0 + racials.nimble_fingers->effectN( 1 ).percent() );
     h *= 1.0 / ( 1.0 + racials.time_is_money->effectN( 1 ).percent() );
 
@@ -3792,6 +3795,9 @@ double player_t::composite_spell_haste() const
 
     if ( buffs.guardian_of_azeroth->check() )
       h *= 1.0 / ( 1.0 + buffs.guardian_of_azeroth->check_stack_value() );
+
+    if ( buffs.field_of_blossoms->check() )
+      h *= 1.0 / ( 1.0 + buffs.field_of_blossoms->data().effectN( 1 ).percent() );
 
     h *= 1.0 / ( 1.0 + racials.nimble_fingers->effectN( 1 ).percent() );
     h *= 1.0 / ( 1.0 + racials.time_is_money->effectN( 1 ).percent() );
