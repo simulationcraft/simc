@@ -841,7 +841,7 @@ struct exit_melee_event_t : public event_t
 bool movement_buff_t::trigger( int s, double v, double c, timespan_t d )
 {
   assert( distance_moved > 0 );
-  assert( buff_duration > timespan_t::zero() );
+  assert( buff_duration() > timespan_t::zero() );
 
   // Check if we're already moving away from the target, if so we will now be moving towards it
   if ( dh->current.distance_to_move || dh->buff.out_of_range->check() || dh->buff.vengeful_retreat_move->check() )
