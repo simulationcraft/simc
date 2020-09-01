@@ -3691,6 +3691,10 @@ struct frostbolt_t : public frost_mage_spell_t
 
     t *= 1.0 + p()->buffs.slick_ice->check_stack_value();
 
+    // TODO: This probably isn't intended since it breaks the spec even
+    // at fairly mild haste levels.
+    t = std::max( t, min_gcd );
+
     return t;
   }
 
