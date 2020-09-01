@@ -4084,6 +4084,10 @@ double player_t::composite_player_target_multiplier( player_t* target, school_e 
     m *= 1.0 + buffs.damage_to_aberrations->stack_value();
   }
 
+  // percentage not found in data, hardcoded for now. this buff is never triggered so use default_value.
+  if ( buffs.wild_hunt_tactics && target->health_percentage() > 75.0 )
+    m *= 1.0 + buffs.wild_hunt_tactics->default_value;
+
   auto td = get_target_data( target );
   if ( td )
   {

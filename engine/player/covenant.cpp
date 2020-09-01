@@ -795,9 +795,12 @@ void first_strike( special_effect_t& effect )
 
 void wild_hunt_tactics( special_effect_t& effect )
 {
-  if ( !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() ) return;
+  if ( !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() )
+    return;
 
-
+  if ( !effect.player->buffs.wild_hunt_tactics )
+    effect.player->buffs.wild_hunt_tactics = make_buff( effect.player, "wild_hunt_tactics", effect.driver() )
+                                                 ->set_default_value( effect.driver()->effectN( 1 ).percent() );
 }
 
 void exacting_preparation( special_effect_t& effect )
