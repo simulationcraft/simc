@@ -16,7 +16,7 @@ action_callback_t::action_callback_t(player_t* l, bool ap, bool asp) :
     l->callbacks.all_callbacks.push_back(this);
 }
 
-void action_callback_t::trigger(const std::vector<action_callback_t*>& v, action_t* a, void* call_data)
+void action_callback_t::trigger(const std::vector<action_callback_t*>& v, action_t* a, action_state_t* state )
 {
   if (a && !a->player->in_combat) return;
 
@@ -27,7 +27,7 @@ void action_callback_t::trigger(const std::vector<action_callback_t*>& v, action
     if (cb->active)
     {
       if (!cb->allow_procs && a && a->proc) return;
-      cb->trigger(a, call_data);
+      cb->trigger(a, state);
     }
   }
 }

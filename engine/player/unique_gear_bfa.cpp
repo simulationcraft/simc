@@ -978,23 +978,21 @@ struct bba_cb_t : public dbc_proc_callback_t
     return timespan_t::from_seconds( cost * std::get<c>( resource_tuple->second ) );
   }
 
-  void trigger( action_t* a, void* raw_state ) override
+  void trigger( action_t* a, action_state_t* state ) override
   {
-    auto state = reinterpret_cast<action_state_t*>( raw_state );
-
     if ( state->action->last_resource_cost == 0 )
     {
       // Custom call here for BoS ticks and SotR because they don't consume resources
       // The callback should probably rather check for ticks of breath_of_sindragosa, but this will do for now
       if ( state->action->data().id() == 155166u || state->action->data().id() == 53600u )
       {
-        dbc_proc_callback_t::trigger( a, raw_state );
+        dbc_proc_callback_t::trigger( a, state );
       }
 
       return;
     }
 
-    dbc_proc_callback_t::trigger( a, raw_state );
+    dbc_proc_callback_t::trigger( a, state );
   }
 
   void reset() override
@@ -3152,11 +3150,11 @@ void items::legplates_of_unbound_anguish( special_effect_t& effect )
     {
     }
 
-    void trigger( action_t* a, void* call_data ) override
+    void trigger( action_t* a, action_state_t* s ) override
     {
       if ( rng().roll( a->sim->bfa_opts.legplates_of_unbound_anguish_chance ) )
       {
-        dbc_proc_callback_t::trigger( a, call_data );
+        dbc_proc_callback_t::trigger( a, s );
       }
     }
   };
@@ -3564,16 +3562,15 @@ void items::leviathans_lure( special_effect_t& effect )
     {
     }
 
-    void trigger( action_t* a, void* cd ) override
+    void trigger( action_t* a, action_state_t* s ) override
     {
-      auto s  = static_cast<action_state_t*>( cd );
       auto td = listener->get_target_data( s->target );
       assert( td );
       assert( td->debuff.luminous_algae );
 
       // adjust the rppm before triggering
       rppm->set_modifier( 1.0 + td->debuff.luminous_algae->check_value() );
-      dbc_proc_callback_t::trigger( a, cd );
+      dbc_proc_callback_t::trigger( a, s );
     }
 
     void execute( action_t* a, action_state_t* s ) override
@@ -4086,12 +4083,12 @@ void items::anuazshara_staff_of_the_eternal( special_effect_t& effect )
     {
     }
 
-    void trigger( action_t* a, void* cd ) override
+    void trigger( action_t* a, action_state_t* s ) override
     {
       if ( lockout->check() )
         return;
 
-      dbc_proc_callback_t::trigger( a, cd );
+      dbc_proc_callback_t::trigger( a, s );
     }
   };
 
@@ -4297,12 +4294,10 @@ void items::ashvanes_razor_coral( special_effect_t& effect )
     {
     }
 
-    void trigger( action_t* a, void* cd ) override
+    void trigger( action_t* a, action_state_t* s ) override
     {
-      auto s = static_cast<action_state_t*>( cd );
-
       if ( action->debuff && s && action->debuff->player == s->target && action->debuff->check() )
-        dbc_proc_callback_t::trigger( a, cd );
+        dbc_proc_callback_t::trigger( a, s );
     }
 
     void execute( action_t* a, action_state_t* s ) override
@@ -4388,15 +4383,13 @@ void items::dribbling_inkpod( special_effect_t& effect )
     {
     }
 
-    void trigger( action_t* a, void* cd ) override
+    void trigger( action_t* a, action_state_t* s ) override
     {
-      auto s = static_cast<action_state_t*>( cd );
-
       // Conductive Ink shouldn't be able to proc on the caster (happens when a positive effect like a heal hits the
       // player)
       if ( s->target->health_percentage() > hp_pct && s->target != a->player )
       {
-        dbc_proc_callback_t::trigger( a, cd );
+        dbc_proc_callback_t::trigger( a, s );
       }
     }
 
@@ -4421,16 +4414,15 @@ void items::dribbling_inkpod( special_effect_t& effect )
     {
     }
 
-    void trigger( action_t* a, void* cd ) override
+    void trigger( action_t* a, action_state_t* s ) override
     {
-      auto s  = static_cast<action_state_t*>( cd );
       auto td = listener->get_target_data( s->target );
       assert( td );
       assert( td->debuff.conductive_ink );
 
       if ( td->debuff.conductive_ink->check() && s->target->health_percentage() <= hp_pct )
       {
-        dbc_proc_callback_t::trigger( a, cd );
+        dbc_proc_callback_t::trigger( a, s );
       }
     }
 
@@ -4551,7 +4543,7 @@ void items::divers_folly( special_effect_t& effect )
     {
     }
 
-    void trigger( action_t* a, void* s ) override
+    void trigger( action_t* a, action_state_t* s ) override
     {
       // Doesn't proc when buff is up, and doesn't seem to trigger rppm neither
       if ( listener->buffs.bioelectric_charge->check() )
@@ -4595,7 +4587,7 @@ void items::divers_folly( special_effect_t& effect )
     {
     }
 
-    void trigger( action_t* a, void* s ) override
+    void trigger( action_t* a, action_state_t* s ) override
     {
       listener->sim->print_debug( "Bioelectric Charge (Diver's Folly) discharged for {} damage!",
                                   proc_action->base_dd_min );
@@ -4864,7 +4856,7 @@ void items::subroutine_recalibration( special_effect_t& effect )
     {
     }
 
-    void trigger( action_t* a, void* call_data ) override
+    void trigger( action_t* a, action_state_t* s ) override
     {
       if ( a->background )
       {
@@ -4885,7 +4877,7 @@ void items::subroutine_recalibration( special_effect_t& effect )
 
       if ( ++casts >= req_casts )
       {
-        dbc_proc_callback_t::trigger( a, call_data );
+        dbc_proc_callback_t::trigger( a, s );
         casts = 0;
       }
     }
@@ -5285,11 +5277,11 @@ void items::logic_loop_of_division( special_effect_t& effect )
     {
     }
 
-    void trigger( action_t* a, void* s ) override
+    void trigger( action_t* a, action_state_t* state ) override
     {
       if ( listener->position() == POSITION_BACK || listener->position() == POSITION_RANGED_BACK )
       {
-        logic_loop_callback_t::trigger( a, s );
+        logic_loop_callback_t::trigger( a, state );
       }
     }
   };
@@ -5322,7 +5314,7 @@ void items::logic_loop_of_recursion( special_effect_t& effect )
     {
     }
 
-    void trigger( action_t* a, void* s ) override
+    void trigger( action_t* a, action_state_t* s ) override
     {
       int this_id = a->internal_id;
       auto it     = range::find( list, a->target, &llor_tracker_t::target );
@@ -5369,7 +5361,7 @@ void items::logic_loop_of_maintenance( special_effect_t& effect )
     {
     }
 
-    void trigger( action_t* a, void* s ) override
+    void trigger( action_t* a, action_state_t* s ) override
     {
       if ( listener->health_percentage() < 50 )
       {
@@ -5740,10 +5732,9 @@ struct shredded_psyche_cb_t : public dbc_proc_callback_t
   {
   }
 
-  void trigger( action_t* a, void* call_data ) override
+  void trigger( action_t* a, action_state_t* state ) override
   {
-    const action_state_t* s = static_cast<const action_state_t*>( call_data );
-    if ( s->target != target )
+    if ( state->target != target )
     {
       return;
     }
@@ -5753,7 +5744,7 @@ struct shredded_psyche_cb_t : public dbc_proc_callback_t
     if ( !debuff->check() )
       return;
 
-    dbc_proc_callback_t::trigger( a, call_data );
+    dbc_proc_callback_t::trigger( a, state );
   }
 
   void execute( action_t* /* a */, action_state_t* trigger_state ) override

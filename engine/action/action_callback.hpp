@@ -10,6 +10,7 @@
 #include <vector>
 
 struct action_t;
+struct action_state_t;
 struct player_t;
 
 struct action_callback_t : private noncopyable
@@ -21,13 +22,13 @@ struct action_callback_t : private noncopyable
 
   action_callback_t(player_t* l, bool ap = false, bool asp = false);
   virtual ~action_callback_t() {}
-  virtual void trigger(action_t*, void* call_data) = 0;
+  virtual void trigger(action_t*, action_state_t*) = 0;
   virtual void reset() {}
   virtual void initialize() { }
   virtual void activate() { active = true; }
   virtual void deactivate() { active = false; }
 
-  static void trigger(const std::vector<action_callback_t*>& v, action_t* a, void* call_data = nullptr);
+  static void trigger(const std::vector<action_callback_t*>& v, action_t* a, action_state_t* state);
 
   static void reset(const std::vector<action_callback_t*>& v);
 };
