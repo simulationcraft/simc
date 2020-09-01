@@ -194,8 +194,6 @@ struct shaman_td_t : public actor_target_data_t
 
     // Enhancement
     buff_t* earthen_spike;
-    buff_t* lightning_conduit;
-    buff_t* primal_primer;
   } debuff;
 
   struct heals
@@ -299,11 +297,6 @@ public:
     spell_t* searing_assault;
     spell_t* molten_weapon;
     action_t* molten_weapon_dot;
-    action_t* fury_of_air;
-
-    // Azerite
-    spell_t* lightning_conduit;
-    spell_t* strength_of_earth;
 
   } action;
 
@@ -360,20 +353,14 @@ public:
 
     // Enhancement
     buff_t* crash_lightning;
-    buff_t* feral_spirit;
     buff_t* flametongue;
-    buff_t* frostbrand;
-    buff_t* fury_of_air;
     buff_t* hot_hand;
     buff_t* lightning_shield;
-    buff_t* lightning_shield_overcharge;
     buff_t* stormbringer;
     buff_t* forceful_winds;
-    buff_t* landslide;
     buff_t* icy_edge;
     buff_t* molten_weapon;
     buff_t* crackling_surge;
-    buff_t* gathering_storms;
 
     // Restoration
     buff_t* spirit_walk;
@@ -399,7 +386,6 @@ public:
     cooldown_t* lava_burst;
     cooldown_t* storm_elemental;
     cooldown_t* strike;  // shared CD of Storm Strike and Windstrike
-    cooldown_t* rockbiter;
   } cooldown;
 
   // Gains
@@ -410,11 +396,8 @@ public:
     gain_t* resurgence;
     gain_t* feral_spirit;
     gain_t* fire_elemental;
-    gain_t* fury_of_air;
     gain_t* spirit_of_the_maelstrom;
-    gain_t* resonance_totem;
     gain_t* forceful_winds;
-    gain_t* lightning_shield_overcharge;
   } gain;
 
   // Tracked Procs
@@ -452,7 +435,6 @@ public:
     const spell_data_t* enhancement_shaman;
     const spell_data_t* feral_spirit_2;  // 7.1 Feral Spirit Maelstrom gain passive
     const spell_data_t* flametongue;
-    const spell_data_t* frostbrand;
     const spell_data_t* maelstrom_weapon;
     const spell_data_t* stormbringer;
     const spell_data_t* stormlash;
@@ -523,7 +505,6 @@ public:
     // const spell_data_t* wind_rush_totem;
 
     const spell_data_t* crashing_storm;
-    const spell_data_t* fury_of_air;
     const spell_data_t* sundering;
 
     const spell_data_t* elemental_spirits;
@@ -599,7 +580,6 @@ public:
     cooldown.feral_spirits     = get_cooldown( "feral_spirit" );
     cooldown.lava_burst        = get_cooldown( "lava_burst" );
     cooldown.strike            = get_cooldown( "strike" );
-    cooldown.rockbiter         = get_cooldown( "rockbiter" );
 
     melee_mh      = nullptr;
     melee_oh      = nullptr;
@@ -840,19 +820,6 @@ struct crackling_surge_buff_t : public buff_t
     set_default_value( s_data->effectN( 1 ).percent() );
     set_max_stack( 10 );
     set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
-  }
-};
-
-struct gathering_storms_buff_t : public buff_t
-{
-  gathering_storms_buff_t( shaman_t* p ) : buff_t( p, "gathering_storms", p->find_spell( 198300 ) )
-  {
-    set_duration( s_data->duration() );
-    // Buff applied to player is id# 198300, but appears to pull the value data from the crash lightning ability id
-    // instead.  Probably setting an override value on gathering storms from crash lightning data.
-    // set_default_value( s_data->effectN( 1 ).percent() ); --replace with this if ever changed
-    set_default_value( p->find_spell( 187874 )->effectN( 2 ).percent() );
-    // set_max_stack( 1 );
   }
 };
 
@@ -1212,14 +1179,10 @@ private:
 public:
   bool may_proc_windfury;
   bool may_proc_flametongue;
-  bool may_proc_frostbrand;
   bool may_proc_maelstrom_weapon;
   bool may_proc_stormbringer;
-  bool may_proc_lightning_shield;
   bool may_proc_hot_hand;
   bool may_proc_icy_edge;
-  bool may_proc_strength_of_earth;
-  bool may_proc_primal_primer;
   bool may_proc_ability_procs;  // For things that explicitly state they proc from "abilities" (like Ancestral
                                 // Resonance)
   double tf_proc_chance;
@@ -1230,14 +1193,10 @@ public:
     : base_t( token, p, s ),
       may_proc_windfury( p->spec.windfury->ok() ),
       may_proc_flametongue( p->spec.flametongue->ok() ),
-      may_proc_frostbrand( p->spec.frostbrand->ok() ),
       may_proc_maelstrom_weapon( false ),  // Change to whitelisting
       may_proc_stormbringer( p->spec.stormbringer->ok() ),
-      may_proc_lightning_shield( false ),
       may_proc_hot_hand( p->talent.hot_hand->ok() ),
       may_proc_icy_edge( false ),
-      may_proc_strength_of_earth( true ),
-      may_proc_primal_primer( true ),
       may_proc_ability_procs( true ),
       tf_proc_chance( 0 ),
       proc_wf( nullptr ),
@@ -1271,11 +1230,6 @@ public:
       may_proc_windfury = ab::weapon != nullptr;
     }
 
-    if ( may_proc_frostbrand )
-    {
-      may_proc_frostbrand = ab::weapon != nullptr;
-    }
-
     if ( may_proc_hot_hand )
     {
       may_proc_hot_hand = ab::weapon != nullptr;
@@ -1291,19 +1245,9 @@ public:
       proc_ft = player->get_proc( std::string( "Flametongue: " ) + full_name() );
     }
 
-    if ( may_proc_frostbrand )
-    {
-      proc_fb = player->get_proc( std::string( "Frostbrand: " ) + full_name() );
-    }
-
     if ( may_proc_hot_hand )
     {
       proc_hh = player->get_proc( std::string( "Hot Hand: " ) + full_name() );
-    }
-
-    if ( may_proc_lightning_shield )
-    {
-      proc_ls = player->get_proc( std::string( "Lightning Shield Overcharge: " ) + full_name() );
     }
 
     if ( may_proc_maelstrom_weapon )
@@ -1319,11 +1263,6 @@ public:
     if ( may_proc_windfury )
     {
       proc_wf = player->get_proc( std::string( "Windfury: " ) + full_name() );
-    }
-
-    if ( may_proc_primal_primer )
-    {
-      proc_pp = player->get_proc( std::string( "Primal Primer: " ) + full_name() );
     }
 
     base_t::init_finished();
@@ -1438,7 +1377,6 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
 
 public:
   bool may_proc_stormbringer      = false;
-  bool may_proc_strength_of_earth = false;
   proc_t* proc_sb;
   bool affected_by_master_of_the_elements = false;
   bool affected_by_stormkeeper            = false;
@@ -1470,7 +1408,6 @@ public:
     }
 
     may_proc_stormbringer      = false;
-    may_proc_strength_of_earth = false;
   }
 
   void init_finished() override
@@ -2548,7 +2485,7 @@ struct crash_lightning_attack_t : public shaman_attack_t
   {
     shaman_attack_t::init();
 
-    may_proc_windfury = may_proc_frostbrand = may_proc_flametongue = may_proc_hot_hand = false;
+    may_proc_windfury = may_proc_flametongue = may_proc_hot_hand = false;
     may_proc_stormbringer = may_proc_maelstrom_weapon = may_proc_lightning_shield = false;
   }
 };
@@ -2607,7 +2544,7 @@ struct hailstorm_attack_t : public shaman_attack_t
   {
     shaman_attack_t::init();
 
-    may_proc_windfury = may_proc_frostbrand = may_proc_flametongue = may_proc_hot_hand = false;
+    may_proc_windfury = may_proc_flametongue = may_proc_hot_hand = false;
     may_proc_stormbringer = may_proc_maelstrom_weapon = may_proc_lightning_shield = false;
   }
 };
@@ -2625,7 +2562,7 @@ struct icy_edge_attack_t : public shaman_attack_t
   {
     shaman_attack_t::init();
 
-    may_proc_windfury = may_proc_frostbrand = may_proc_flametongue = may_proc_hot_hand = false;
+    may_proc_windfury = may_proc_flametongue = may_proc_hot_hand = false;
     may_proc_stormbringer = may_proc_maelstrom_weapon = may_proc_lightning_shield = false;
   }
 };
@@ -2653,13 +2590,6 @@ struct stormstrike_attack_t : public shaman_attack_t
   {
     double m = shaman_attack_t::action_multiplier();
 
-
-
-    if ( p()->buff.landslide->up() )
-    {
-      m *= 1.0 + p()->buff.landslide->value();
-    }
-
     if ( p()->buff.crackling_surge->up() )
     {
       for ( int x = 1; x <= p()->buff.crackling_surge->check(); x++ )
@@ -2673,10 +2603,6 @@ struct stormstrike_attack_t : public shaman_attack_t
       m *= 1.0 + p()->buff.stormbringer->data().effectN( 4 ).percent();
     }
 
-    if ( p()->buff.gathering_storms->up() )
-    {
-      m *= p()->buff.gathering_storms->check_value();
-    }
 
     return m;
   }
@@ -3145,9 +3071,7 @@ struct stormstrike_base_t : public shaman_attack_t
   void init() override
   {
     shaman_attack_t::init();
-    may_proc_flametongue = may_proc_windfury = may_proc_stormbringer = may_proc_frostbrand = false;
-    may_proc_strength_of_earth                                                             = true;
-    may_proc_primal_primer                                                                 = false;
+    may_proc_flametongue = may_proc_windfury = may_proc_stormbringer = false;
   }
 
   void update_ready( timespan_t cd_duration = timespan_t::min() ) override
@@ -3192,7 +3116,6 @@ struct stormstrike_base_t : public shaman_attack_t
 
     }
 
-    p()->buff.gathering_storms->decrement();
     p()->buff.stormbringer->decrement();
   }
 
@@ -3341,7 +3264,7 @@ struct sundering_t : public shaman_attack_t
   void init() override
   {
     shaman_attack_t::init();
-    may_proc_stormbringer = may_proc_windfury = may_proc_flametongue = may_proc_frostbrand = false;
+    may_proc_stormbringer = may_proc_windfury = may_proc_flametongue = false;
     may_proc_lightning_shield                                                              = true;
     may_proc_hot_hand                                                                      = p()->talent.hot_hand->ok();
   }
@@ -3381,7 +3304,6 @@ struct rockbiter_t : public shaman_spell_t
   {
     shaman_spell_t::init();
     may_proc_stormbringer      = true;
-    may_proc_strength_of_earth = false;
   }
 
   void execute() override
@@ -3422,7 +3344,6 @@ struct flametongue_t : public shaman_spell_t
   {
     shaman_spell_t::init();
     may_proc_stormbringer      = true;
-    may_proc_strength_of_earth = true;
   }
 
   void execute() override
@@ -3440,37 +3361,6 @@ struct flametongue_t : public shaman_spell_t
     {
       p()->trigger_searing_assault( s );
     }
-  }
-};
-
-// Frostbrand Spell =========================================================
-
-struct frostbrand_t : public shaman_spell_t
-{
-  frostbrand_t( shaman_t* player, const std::string& options_str )
-    : shaman_spell_t( "frostbrand", player, player->find_specialization_spell( "Frostbrand" ), options_str )
-  {
-    dot_duration   = timespan_t::zero();
-    base_tick_time = timespan_t::zero();
-
-    if ( player->hailstorm )
-      add_child( player->hailstorm );
-  }
-
-  // TODO: If some spells are intended to proc stormbringer and becomes perm, move init and impact into spell base.
-  // Currently assumed to be bugged.
-  void init() override
-  {
-    shaman_spell_t::init();
-    may_proc_stormbringer      = true;
-    may_proc_strength_of_earth = true;
-  }
-
-  void execute() override
-  {
-    shaman_spell_t::execute();
-
-    p()->buff.frostbrand->trigger();
   }
 };
 
@@ -3537,11 +3427,6 @@ struct crash_lightning_t : public shaman_attack_t
       {
         p()->buff.crash_lightning->trigger();
       }
-
-      double v = 1.0 + p()->buff.gathering_storms->default_value *
-                           ( execute_state->n_targets +
-                             0 );  // currently bugged and acting as if there's an extra target present
-      p()->buff.gathering_storms->trigger( 1, v );
     }
   }
 };
@@ -3616,96 +3501,6 @@ struct storm_elemental_t : public shaman_spell_t
     shaman_spell_t::execute();
 
     p()->summon_storm_elemental( p()->spell.storm_elemental->duration(), false );
-  }
-};
-
-// Fury of Air ==========================================================
-
-struct fury_of_air_aoe_t : public shaman_attack_t
-{
-  fury_of_air_aoe_t( shaman_t* player ) : shaman_attack_t( "fury_of_air_damage", player, player->find_spell( 197385 ) )
-  {
-    background = true;
-    aoe        = -1;
-    school     = SCHOOL_NATURE;
-    ap_type    = attack_power_type::WEAPON_BOTH;
-  }
-
-  void init() override
-  {
-    shaman_attack_t::init();
-
-    may_proc_windfury = may_proc_flametongue = may_proc_stormbringer = may_proc_frostbrand = false;
-  }
-};
-
-struct fury_of_air_t : public shaman_spell_t
-{
-  fury_of_air_t( shaman_t* player, const std::string& options_str )
-    : shaman_spell_t( "fury_of_air", player, player->talent.fury_of_air, options_str )
-  {
-    callbacks = false;
-
-    // Handled by the buff
-    base_tick_time = timespan_t::zero();
-
-    if ( player->action.fury_of_air )
-    {
-      add_child( player->action.fury_of_air );
-    }
-  }
-
-  void init() override
-  {
-    shaman_spell_t::init();
-
-    // Set up correct gain object to collect resource spending information on the ticking buff
-    p()->gain.fury_of_air = &( stats->resource_gain );
-  }
-
-  timespan_t gcd() const override
-  {
-    // Disabling Fury of Air does not incur a global cooldown
-    if ( p()->buff.fury_of_air->check() )
-    {
-      return timespan_t::zero();
-    }
-
-    return shaman_spell_t::gcd();
-  }
-
-  double cost() const override
-  {
-    // Disabling Fury of Air costs an amount of maelstrom relative to the elapsed tick time of the
-    // on-going tick .. probably
-    if ( p()->buff.fury_of_air->check() )
-    {
-      return base_costs[ RESOURCE_MAELSTROM ] *
-             ( 1 - p()->buff.fury_of_air->tick_event->remains() / data().effectN( 1 ).period() );
-    }
-
-    return shaman_spell_t::cost();
-  }
-
-  void execute() override
-  {
-    // Don't record disables by setting dual = true before executing
-    if ( p()->buff.fury_of_air->check() )
-    {
-      dual = true;
-    }
-
-    shaman_spell_t::execute();
-
-    if ( p()->buff.fury_of_air->check() )
-    {
-      p()->buff.fury_of_air->expire();
-      dual = false;
-    }
-    else
-    {
-      p()->buff.fury_of_air->trigger();
-    }
   }
 };
 
@@ -4776,7 +4571,7 @@ struct feral_lunge_t : public shaman_spell_t
     explicit feral_lunge_attack_t( shaman_t* p ) : shaman_attack_t( "feral_lunge_attack", p, p->find_spell( 215802 ) )
     {
       background = true;
-      callbacks = may_proc_windfury = may_proc_frostbrand = may_proc_flametongue = may_proc_maelstrom_weapon = false;
+      callbacks = may_proc_windfury = may_proc_flametongue = may_proc_maelstrom_weapon = false;
     }
   };
 
@@ -5777,10 +5572,6 @@ action_t* shaman_t::create_action( util::string_view name, const std::string& op
     return new feral_spirit_spell_t( this, options_str );
   if ( name == "flametongue" )
     return new flametongue_t( this, options_str );
-  if ( name == "frostbrand" )
-    return new frostbrand_t( this, options_str );
-  if ( name == "fury_of_air" )
-    return new fury_of_air_t( this, options_str );
   if ( name == "lava_lash" )
     return new lava_lash_t( this, options_str );
   if ( name == "lightning_shield" )
@@ -6071,10 +5862,6 @@ void shaman_t::create_actions()
     action.crash_lightning_aoe = new crash_lightning_attack_t( this );
   }
 
-  // Always create the Fury of Air damage action so spell_targets.fury_of_air works with or without
-  // the talent
-  action.fury_of_air = new fury_of_air_aoe_t( this );
-
   player_t::create_actions();
 }
 
@@ -6129,7 +5916,6 @@ void shaman_t::init_spells()
   spec.enhancement_shaman = find_specialization_spell( "Enhancement Shaman" );
   spec.feral_spirit_2     = find_specialization_spell( 231723 );
   spec.flametongue        = find_specialization_spell( "Flametongue" );
-  spec.frostbrand         = find_specialization_spell( "Frostbrand" );
   spec.maelstrom_weapon   = find_specialization_spell( "Maelstrom Weapon" );
   spec.stormbringer       = find_specialization_spell( "Stormbringer" );
   spec.stormlash          = find_specialization_spell( "Stormlash" );
@@ -6193,7 +5979,6 @@ void shaman_t::init_spells()
   talent.overcharge      = find_talent_spell( "Overcharge" );
 
   talent.crashing_storm = find_talent_spell( "Crashing Storm" );
-  talent.fury_of_air    = find_talent_spell( "Fury of Air" );
   talent.sundering      = find_talent_spell( "Sundering" );
 
   talent.elemental_spirits = find_talent_spell( "Elemental Spirits" );
@@ -6299,7 +6084,6 @@ void shaman_t::summon_feral_spirits( timespan_t duration )
   if ( !talent.elemental_spirits->ok() )
   {
     pet.spirit_wolves.spawn( duration, 2u );
-    buff.feral_spirit->trigger();
     return;
   }
 
@@ -6683,17 +6467,9 @@ void shaman_t::trigger_hailstorm( const action_state_t* state )
 {
   assert( debug_cast<shaman_attack_t*>( state->action ) != nullptr && "Hailstorm called on invalid action type" );
   shaman_attack_t* attack = debug_cast<shaman_attack_t*>( state->action );
-  if ( !attack->may_proc_frostbrand )
-  {
-    return;
-  }
+
 
   if ( !talent.hailstorm->ok() )
-  {
-    return;
-  }
-
-  if ( !buff.frostbrand->up() )
   {
     return;
   }
@@ -6772,51 +6548,23 @@ void shaman_t::create_buffs()
   //
 
   buff.lightning_shield            = new lightning_shield_buff_t( this );
-  buff.lightning_shield_overcharge = new lightning_shield_overcharge_buff_t( this );
   buff.flametongue                 = new flametongue_buff_t( this );
   buff.forceful_winds              = make_buff<buff_t>( this, "forceful_winds", find_spell( 262652 ) )
                             ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
                             ->set_default_value( find_spell( 262652 )->effectN( 1 ).percent() );
 
-  buff.landslide        = new landslide_buff_t( this );
   buff.icy_edge         = new icy_edge_buff_t( this );
   buff.molten_weapon    = new molten_weapon_buff_t( this );
   buff.crackling_surge  = new crackling_surge_buff_t( this );
-  buff.gathering_storms = new gathering_storms_buff_t( this );
 
   buff.crash_lightning = make_buff( this, "crash_lightning", find_spell( 187878 ) );
-  buff.feral_spirit =
-      make_buff( this, "t17_4pc_melee", sets->set( SHAMAN_ENHANCEMENT, T17, B4 )->effectN( 1 ).trigger() )
-          ->set_cooldown( timespan_t::zero() );
   buff.hot_hand =
       make_buff( this, "hot_hand", talent.hot_hand->effectN( 1 ).trigger() )->set_trigger_spell( talent.hot_hand );
   buff.spirit_walk = make_buff( this, "spirit_walk", find_specialization_spell( "Spirit Walk" ) );
-  buff.frostbrand  = make_buff( this, "frostbrand", spec.frostbrand )
-                        ->set_period( timespan_t::zero() )
-                        ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
   buff.stormbringer = make_buff( this, "stormbringer", find_spell( 201846 ) )
                           ->set_activated( false )
                           ->set_max_stack( find_spell( 201846 )->initial_stacks() );
-  buff.fury_of_air = make_buff( this, "fury_of_air", talent.fury_of_air )
-                         ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
-                           action.fury_of_air->set_target( target );
-                           action.fury_of_air->execute();
-
-                           double actual_amount =
-                               resource_loss( RESOURCE_MAELSTROM, talent.fury_of_air->powerN( 1 ).cost() );
-                           gain.fury_of_air->add( RESOURCE_MAELSTROM, actual_amount );
-
-                           // If the actor reaches 0 maelstrom after the tick cost, cancel the buff. Otherwise, keep
-                           // going. This allows "one extra tick" with less than 3 maelstrom, which seems to mirror in
-                           // game behavior. In game, the buff only fades after the next tick (i.e., it has a one
-                           // second delay), but modeling that seems pointless. Gaining maelstrom during that delay
-                           // will not change the outcome of the fading.
-                           if ( resources.current[ RESOURCE_MAELSTROM ] == 0 )
-                           {
-                             // Separate the expiration event to happen immediately after tick processing
-                             make_event( *sim, timespan_t::zero(), [ b ]() { b->expire(); } );
-                           }
-                         } );
+  
 
   //
   // Restoration
@@ -6839,9 +6587,6 @@ void shaman_t::init_gains()
   gain.resurgence                  = get_gain( "resurgence" );
   gain.feral_spirit                = get_gain( "Feral Spirit" );
   gain.fire_elemental              = get_gain( "Fire Elemental" );
-  gain.spirit_of_the_maelstrom     = get_gain( "Spirit of the Maelstrom" );
-  gain.resonance_totem             = get_gain( "Resonance Totem" );
-  gain.lightning_shield_overcharge = get_gain( "Lightning Shield Overcharge" );
   gain.forceful_winds              = get_gain( "Forceful Winds" );
   // Note, Fury of Air gain pointer is initialized in the base action
 }
@@ -7292,9 +7037,6 @@ double shaman_t::temporary_movement_modifier() const
 
   if ( buff.spirit_walk->up() )
     ms = std::max( buff.spirit_walk->data().effectN( 1 ).percent(), ms );
-
-  if ( buff.feral_spirit->up() )
-    ms = std::max( buff.feral_spirit->data().effectN( 1 ).percent(), ms );
 
   if ( buff.ghost_wolf->up() )
   {
