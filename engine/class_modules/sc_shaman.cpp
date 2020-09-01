@@ -618,7 +618,6 @@ public:
   void trigger_icy_edge( const action_state_t* );
   void trigger_hailstorm( const action_state_t* );
   void trigger_stormbringer( const action_state_t* state, double proc_chance = -1.0, proc_t* proc_obj = nullptr );
-  void trigger_lightning_shield( const action_state_t* state );
   void trigger_hot_hand( const action_state_t* state );
 
   // Legendary
@@ -762,15 +761,6 @@ struct lightning_shield_buff_t : public buff_t
   lightning_shield_buff_t( shaman_t* p ) : buff_t( p, "lightning_shield", p->find_spell( 192106 ) )
   {
     set_chance( p->talent.lightning_shield->ok() );
-  }
-};
-
-struct lightning_shield_overcharge_buff_t : public buff_t
-{
-  lightning_shield_overcharge_buff_t( shaman_t* p )
-    : buff_t( p, "lightning_shield_overcharge", p->find_spell( 273323 ) )
-  {
-    set_duration( s_data->duration() );
   }
 };
 
@@ -1234,8 +1224,6 @@ public:
     {
       may_proc_hot_hand = ab::weapon != nullptr;
     }
-
-    may_proc_lightning_shield = ab::weapon != nullptr;
   }
 
   void init_finished() override
@@ -1286,7 +1274,6 @@ public:
     // p()->trigger_stormbringer( state );
     p()->trigger_flametongue_weapon( state );
     p()->trigger_hailstorm( state );
-    p()->trigger_lightning_shield( state );
     p()->trigger_hot_hand( state );
     p()->trigger_icy_edge( state );
   }
@@ -2486,7 +2473,7 @@ struct crash_lightning_attack_t : public shaman_attack_t
     shaman_attack_t::init();
 
     may_proc_windfury = may_proc_flametongue = may_proc_hot_hand = false;
-    may_proc_stormbringer = may_proc_maelstrom_weapon = may_proc_lightning_shield = false;
+    may_proc_stormbringer = may_proc_maelstrom_weapon = false;
   }
 };
 
@@ -2545,7 +2532,7 @@ struct hailstorm_attack_t : public shaman_attack_t
     shaman_attack_t::init();
 
     may_proc_windfury = may_proc_flametongue = may_proc_hot_hand = false;
-    may_proc_stormbringer = may_proc_maelstrom_weapon = may_proc_lightning_shield = false;
+    may_proc_stormbringer = may_proc_maelstrom_weapon = false;
   }
 };
 
@@ -2563,7 +2550,7 @@ struct icy_edge_attack_t : public shaman_attack_t
     shaman_attack_t::init();
 
     may_proc_windfury = may_proc_flametongue = may_proc_hot_hand = false;
-    may_proc_stormbringer = may_proc_maelstrom_weapon = may_proc_lightning_shield = false;
+    may_proc_stormbringer = may_proc_maelstrom_weapon = false;
   }
 };
 
@@ -2577,7 +2564,6 @@ struct stormstrike_attack_t : public shaman_attack_t
     may_miss = may_dodge = may_parry = false;
     weapon                           = w;
     base_multiplier *= 1.0;
-    may_proc_lightning_shield = true;
     school                    = SCHOOL_PHYSICAL;
   }
 
@@ -2973,15 +2959,6 @@ struct lava_lash_t : public shaman_attack_t
     may_proc_stormbringer = true;
   }
 
-  double bonus_da( const action_state_t* s ) const override
-  {
-    double b = shaman_attack_t::bonus_da( s );
-    if ( s->target )
-      b += td( s->target )->debuff.primal_primer->stack_value();
-
-    return b;
-  }
-
   double cost() const override
   {
     if ( p()->buff.hot_hand->check() )
@@ -3032,8 +3009,6 @@ struct lava_lash_t : public shaman_attack_t
     {
       trigger_molten_weapon_dot( state->target, state->result_amount );
     }
-
-    td( state->target )->debuff.primal_primer->expire();
   }
 
   virtual void trigger_molten_weapon_dot( player_t* t, double dmg )
@@ -3125,32 +3100,6 @@ struct stormstrike_base_t : public shaman_attack_t
     background = background_action;
     dual       = false;
   }
-
-  void impact( action_state_t* state ) override
-  {
-    if ( p()->buff.lightning_shield->up() )
-    {
-      if ( !state->action->result_is_hit( state->result ) )
-      {
-        return;
-      }
-
-      p()->buff.lightning_shield->trigger();
-      p()->buff.lightning_shield->trigger();
-
-      if ( p()->buff.lightning_shield->stack() >=
-           20 )  // if 20 or greater, trigger overcharge and remove all stacks, then trigger LS back to 1.
-      {          // is there a way to do this without expiring lightning shield entirely?
-        p()->buff.lightning_shield_overcharge->trigger();
-        p()->buff.lightning_shield->expire();
-        p()->buff.lightning_shield->trigger();
-      }
-    }
-
-
-
-    shaman_attack_t::impact( state );
-  }
 };
 
 struct stormstrike_t : public stormstrike_base_t
@@ -3169,13 +3118,6 @@ struct stormstrike_t : public stormstrike_base_t
                                      &( player->off_hand_weapon ) );
       add_child( oh );
     }
-  }
-
-  void execute() override
-  {
-    stormstrike_base_t::execute();
-
-    p()->buff.landslide->expire();
   }
 
   bool ready() override
@@ -3244,8 +3186,6 @@ struct windstrike_t : public stormstrike_base_t
   void execute() override
   {
     stormstrike_base_t::execute();
-
-    p()->buff.landslide->decrement();
   }
 };
 
@@ -3265,7 +3205,6 @@ struct sundering_t : public shaman_attack_t
   {
     shaman_attack_t::init();
     may_proc_stormbringer = may_proc_windfury = may_proc_flametongue = false;
-    may_proc_lightning_shield                                                              = true;
     may_proc_hot_hand                                                                      = p()->talent.hot_hand->ok();
   }
 };
@@ -3314,15 +3253,6 @@ struct rockbiter_t : public shaman_spell_t
   void impact( action_state_t* s ) override
   {
     shaman_spell_t::impact( s );
-
-    if ( p()->talent.landslide->ok() )
-    {
-      double proc_chance = p()->talent.landslide->proc_chance();
-      if ( rng().roll( proc_chance ) )
-      {
-        p()->buff.landslide->trigger();
-      }
-    }
   }
 };
 
@@ -3516,8 +3446,6 @@ struct earthen_spike_t : public shaman_attack_t
   void init() override
   {
     shaman_attack_t::init();
-
-    may_proc_primal_primer = false;
   }
 
   void impact( action_state_t* s ) override
@@ -5837,11 +5765,6 @@ std::unique_ptr<expr_t> shaman_t::create_expression( util::string_view name )
 
 void shaman_t::create_actions()
 {
-  if ( talent.lightning_shield->ok() )
-  {
-    action.lightning_shield = new lightning_shield_damage_t( this );
-  }
-
   if ( talent.crashing_storm->ok() )
   {
     action.crashing_storm = new crashing_storm_damage_t( this );
@@ -6428,39 +6351,6 @@ void shaman_t::trigger_flametongue_weapon( const action_state_t* state )
   flametongue->set_target( state->target );
   flametongue->execute();
   attack->proc_ft->occur();
-}
-
-void shaman_t::trigger_lightning_shield( const action_state_t* state )
-{
-  if ( !buff.lightning_shield->up() )
-  {
-    return;
-  }
-
-  if ( !buff.lightning_shield_overcharge->up() )
-  {
-    return;
-  }
-
-  if ( !state->action->result_is_hit( state->result ) )
-  {
-    return;
-  }
-
-  if ( state->result_amount <= 0 )
-  {
-    return;
-  }
-
-  shaman_attack_t* attack = debug_cast<shaman_attack_t*>( state->action );
-  if ( !attack->may_proc_lightning_shield )
-  {
-    return;
-  }
-
-  action.lightning_shield->set_target( state->target );
-  action.lightning_shield->execute();
-  attack->proc_ls->occur();
 }
 
 void shaman_t::trigger_hailstorm( const action_state_t* state )
