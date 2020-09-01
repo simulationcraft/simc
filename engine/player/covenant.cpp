@@ -596,14 +596,13 @@ void register_target_data_initializers( sim_t* sim )
   } );
 }
 
-void covenant_cb_buff_t::trigger( action_t* a, void* call_data )
+void covenant_cb_buff_t::trigger( action_t* a, action_state_t* s )
 {
   buff->trigger();
 }
 
-void covenant_cb_action_t::trigger( action_t* a, void* call_data )
+void covenant_cb_action_t::trigger( action_t* a, action_state_t* state )
 {
-  auto state = static_cast<action_state_t*>( call_data );
   auto t = self_target || !state->target ? action->player : state->target;
 
   if ( t->is_sleeping() )
@@ -632,13 +631,13 @@ struct covenant_ability_cast_cb_t : public dbc_proc_callback_t
     listener->callbacks.register_callback( PF_ALL_DAMAGE, PF2_CAST, this );
   }
 
-  void trigger( action_t* a, void* call_data ) override
+  void trigger( action_t* a, action_state_t* s ) override
   {
     if ( a->data().id() != covenant_ability )
       return;
 
     for ( const auto& t : cb_list )
-      t->trigger( a, call_data );
+      t->trigger( a, s );
   }
 };
 
@@ -778,16 +777,14 @@ void first_strike( special_effect_t& effect )
 
     first_strike_cb_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e ), attacked_list() {}
 
-    void trigger( action_t* a, void* cd ) override
+    void trigger( action_t* a, action_state_t* s ) override
     {
-      auto st = static_cast<action_state_t*>( cd );
-
-      if ( range::contains( attacked_list, st->target ) )
+      if ( range::contains( attacked_list, s->target ) )
         return;
 
-      attacked_list.push_back( st->target );
+      attacked_list.push_back( s->target );
 
-      dbc_proc_callback_t::trigger( a, cd );
+      dbc_proc_callback_t::trigger( a, s );
     }
 
     void reset() override
@@ -836,9 +833,8 @@ void dauntless_duelist( special_effect_t& effect )
   {
     dauntless_duelist_cb_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e ) {}
 
-    void trigger( action_t* a, void* cd ) override
+    void trigger( action_t* a, action_state_t* st ) override
     {
-      auto st = static_cast<action_state_t*>( cd );
       auto td = a->player->get_target_data( st->target );
       td->debuff.adversary->trigger();
 

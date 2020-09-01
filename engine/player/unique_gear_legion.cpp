@@ -1098,16 +1098,15 @@ void item::tarnished_sentinel_medallion( special_effect_t& effect )
     { }
 
 
-    void trigger( action_t* a, void* call_data ) override
+    void trigger( action_t* a, action_state_t* state ) override
     {
-      auto state = static_cast<action_state_t*>( call_data );
       // Owl blast triggers only on the bound target (see below)
       if ( state -> target != effect.execute_action -> target )
       {
         return;
       }
 
-      dbc_proc_callback_t::trigger( a, call_data );
+      dbc_proc_callback_t::trigger( a, state );
     }
   };
 
@@ -1671,9 +1670,8 @@ struct personnel_decimator_driver_t : public dbc_proc_callback_t
     dbc_proc_callback_t( effect.item, effect )
   { }
 
-  void trigger( action_t* a, void* call_data ) override
+  void trigger( action_t* a, action_state_t* state ) override
   {
-    auto state = static_cast<action_state_t*>( call_data );
     auto distance = effect.driver() -> effectN( 1 ).base_value();
 
     if ( listener -> get_player_distance( *state -> target ) < distance )
@@ -1681,7 +1679,7 @@ struct personnel_decimator_driver_t : public dbc_proc_callback_t
       return;
     }
 
-    dbc_proc_callback_t::trigger( a, call_data );
+    dbc_proc_callback_t::trigger( a, state );
   }
 };
 
@@ -3625,15 +3623,14 @@ struct poisoned_dreams_damage_driver_t : public dbc_proc_callback_t
 
   }
 
-  void trigger( action_t* a, void* call_data ) override
+  void trigger( action_t* a, action_state_t* s ) override
   {
-    const action_state_t* s = static_cast<const action_state_t*>( call_data );
     if ( s -> target != target )
     {
       return;
     }
 
-    dbc_proc_callback_t::trigger( a, call_data );
+    dbc_proc_callback_t::trigger( a, s );
   }
 
   void execute( action_t* /* a */ , action_state_t* trigger_state ) override
