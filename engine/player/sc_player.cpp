@@ -3320,15 +3320,11 @@ void player_t::create_buffs()
       // Soulbind buffs required for APL parsing
       buffs.redirected_anima_stacks = make_buff( this, "redirected_anima_stacks", find_spell( 342802 ) );
       buffs.thrill_seeker = make_buff( this, "thrill_seeker", find_spell( 331939 ) )
-        ->set_duration( 0_ms )
-        ->set_period( find_soulbind_spell( "Thrill Seeker" )->effectN( 1 ).period() )
         ->set_stack_change_callback( [this]( buff_t* b, int, int new_ ) {
           if ( new_ >= b->max_stack() )
           {
             buffs.euphoria->trigger();
             b->expire();
-            // TODO: do you still gain stacks while euphoria is active?
-            make_event( *sim, b->buff_period, [b]() { b->trigger(); } );
           }
         } );
     }

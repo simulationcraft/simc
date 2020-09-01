@@ -870,11 +870,14 @@ void thrill_seeker( special_effect_t& effect )
       ->add_invalidate( CACHE_HASTE );
   }
 
-  // TODO: implement gains from killing blows
+  auto eff_data = &effect.driver()->effectN( 1 );
 
-  effect.player->register_combat_begin( []( player_t* p ) {
-    make_event( *p->sim, p->buffs.thrill_seeker->buff_period, [p]() { p->buffs.thrill_seeker->trigger(); } );
+  // TODO: do you still gain stacks while euphoria is active?
+  effect.player->register_combat_begin( [eff_data]( player_t* p ) {
+    make_repeating_event( *p->sim, eff_data->period(), [p]() { p->buffs.thrill_seeker->trigger(); } );
   } );
+
+  // TODO: implement gains from killing blows
 }
 
 void refined_palate( special_effect_t& effect )
@@ -930,7 +933,7 @@ void built_for_war( special_effect_t& effect )
       ->add_invalidate( CACHE_INTELLECT );
   }
 
-  const spelleffect_data_t* eff_data = &effect.driver()->effectN( 1 );
+  auto eff_data = &effect.driver()->effectN( 1 );
 
   effect.player->register_combat_begin( [eff_data]( player_t* p ) {
     make_repeating_event( *p->sim, eff_data->period(), [p, eff_data]() {
