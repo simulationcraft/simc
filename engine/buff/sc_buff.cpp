@@ -49,9 +49,9 @@ struct buff_expr_t : public expr_t
     if ( !buff )
     {
       action->sim->error(
-          "Unable to build buff action expression for action '{}': "
-          "Reference to unknown buff/debuff '{}' by player {}.",
-          action->name(), buff_name, action->player->name() );
+          "Unable to build buff action expression for {}: "
+          "Reference to unknown buff/debuff '{}' by {}.",
+          *action, buff_name, *action->player );
       action->sim->cancel();
       // Prevent segfault
       buff = make_buff( action->player, "dummy" );
@@ -783,6 +783,12 @@ buff_t* buff_t::set_cooldown( timespan_t duration )
   return this;
 }
 
+buff_t* buff_t::modify_cooldown( timespan_t duration )
+{
+  set_cooldown( cooldown->duration + duration );
+  return this;
+}
+
 buff_t* buff_t::set_period( timespan_t period )
 {
   if ( period >= timespan_t::zero() )
@@ -845,6 +851,18 @@ buff_t* buff_t::add_invalidate( cache_e c )
 buff_t* buff_t::set_default_value( double value )
 {
   default_value = value;
+  return this;
+}
+
+buff_t* buff_t::set_default_value_from_effect( size_t effect, double multiplier )
+{
+  set_default_value( s_data->effectN( effect ).base_value() * multiplier );
+  return this;
+}
+
+buff_t* buff_t::modify_default_value( double value )
+{
+  set_default_value( default_value + value );
   return this;
 }
 
@@ -1032,92 +1050,63 @@ buff_t* buff_t::apply_affecting_effect( const spelleffect_data_t& effect )
     }
   }
 
-  if ( data().affected_by( effect ) )
-  {
-    switch ( effect.subtype() )
+  auto apply_flat_modifier = [ this ]( const spelleffect_data_t& effect ) {
+    switch ( effect.misc_value1() )
     {
-      case A_ADD_FLAT_MODIFIER:
-        switch ( effect.misc_value1() )
+      case P_DURATION:
+        modify_duration( effect.time_value() );
+        sim->print_debug( "{} duration modified by {}", *this, effect.time_value() );
+        break;
+
+      case P_COOLDOWN:
+        if ( cooldown->duration > timespan_t::zero() ) // Don't modify if cooldown is disabled
         {
-          case P_DURATION:
-            modify_duration( effect.time_value() );
-            sim->print_debug( "{} duration modified by {}", *this, effect.time_value() );
-            break;
-
-          case P_COOLDOWN:
-            if ( cooldown->duration > timespan_t::zero() )
-            {
-              set_cooldown( cooldown->duration += effect.time_value() );
-              sim->print_debug( "{} cooldown duration modified by {} to {}", *this, effect.time_value(), cooldown->duration );
-            }
-            break;
-
-          default:
-            break;
+          modify_cooldown( effect.time_value() );
+          sim->print_debug( "{} cooldown duration modified by {} to {}", *this, effect.time_value(), cooldown->duration );
         }
         break;
 
-      case A_ADD_PCT_MODIFIER:
-        switch ( effect.misc_value1() )
-        {
-          case P_DURATION:
-            set_duration_multiplier( buff_duration_multiplier *= 1.0 + effect.percent() );
-            sim->print_debug( "{} duration modified by {}%", *this, effect.base_value() );
-            break;
-
-          case P_COOLDOWN:
-            // TODO: Should buffs support a base_recharge_multiplier?
-            // base_recharge_multiplier *= 1 + effect.percent();
-            //if ( base_recharge_multiplier <= 0 )
-            //  set_cooldown( timespan_t::zero() );
-            //sim->print_debug( "{} cooldown recharge multiplier modified by {}%", *this, effect.base_value() );
-            break;
-
-          default:
-            break;
-        }
+      case P_MAX_STACKS:
+        modify_max_stack( as<int>( effect.base_value() ) );
+        sim->print_debug( "{} maximum stacks modified by {}", *this, effect.base_value() );
         break;
 
       default:
         break;
     }
-  }
-  else if ( data().category() == as<unsigned>( effect.misc_value1() ) )
-  {
-    switch ( effect.subtype() )
+  };
+
+  auto apply_percent_modifier = [ this ]( const spelleffect_data_t& effect ) {
+    switch ( effect.misc_value1() )
     {
-      case A_MODIFY_CATEGORY_COOLDOWN:  // Modify Cooldown Time
-        if ( cooldown->duration > timespan_t::zero() )
-        {
-          set_cooldown( cooldown->duration += effect.time_value() );
-          sim->print_debug( "{} cooldown duration modified by {}", *this, effect.time_value() );
-        }
+      case P_DURATION:
+        set_duration_multiplier( buff_duration_multiplier *= 1.0 + effect.percent() );
+        sim->print_debug( "{} duration modified by {}%", *this, effect.base_value() );
         break;
 
-      case A_411:  // Modify Cooldown Charges
-        cooldown->charges += as<int>( effect.base_value() );
-        sim->print_debug( "{} cooldown charges modified by {}", *this, as<int>( effect.base_value() ) );
-        break;
-
-      case A_HASTED_CATEGORY:
-        cooldown->hasted = true;
-        sim->print_debug( "{} cooldown set to hasted", *this );
-        break;
-
-      case A_453:  // Modify Recharge Time
-        if ( cooldown->duration > timespan_t::zero() )
-        {
-          set_cooldown( cooldown->duration += effect.time_value() );
-          sim->print_debug( "{} cooldown recharge time modified by {}", *this, effect.time_value() );
-        }
-        break;
-
-      case A_454:  // Modify Recharge Time%
+      case P_COOLDOWN:
         // TODO: Should buffs support a base_recharge_multiplier?
-        //base_recharge_multiplier *= 1 + effect.percent();
+        // base_recharge_multiplier *= 1 + effect.percent();
         //if ( base_recharge_multiplier <= 0 )
         //  set_cooldown( timespan_t::zero() );
         //sim->print_debug( "{} cooldown recharge multiplier modified by {}%", *this, effect.base_value() );
+        break;
+
+      default:
+        break;
+    }
+  };
+
+  if ( data().affected_by( effect ) )
+  {
+    switch ( effect.subtype() )
+    {
+      case A_ADD_FLAT_MODIFIER:
+        apply_flat_modifier( effect );
+        break;
+
+      case A_ADD_PCT_MODIFIER:
+        apply_percent_modifier( effect );
         break;
 
       default:
@@ -1128,6 +1117,56 @@ buff_t* buff_t::apply_affecting_effect( const spelleffect_data_t& effect )
   {
     switch ( effect.subtype() )
     {
+      case A_ADD_FLAT_LABEL_MODIFIER:
+        apply_flat_modifier( effect );
+        break;
+
+      case A_ADD_PCT_LABEL_MODIFIER:
+        apply_percent_modifier( effect );
+        break;
+
+      default:
+        break;
+    }
+  }
+  else if ( data().category() == as<unsigned>( effect.misc_value1() ) )
+  {
+    switch ( effect.subtype() )
+    {
+      case A_MODIFY_CATEGORY_COOLDOWN:
+        if ( cooldown->duration > timespan_t::zero() )
+        {
+          set_cooldown( cooldown->duration += effect.time_value() );
+          sim->print_debug( "{} cooldown duration modified by {}", *this, effect.time_value() );
+        }
+        break;
+
+      case A_MOD_MAX_CHARGES:
+        cooldown->charges += as<int>( effect.base_value() );
+        sim->print_debug( "{} cooldown charges modified by {}", *this, as<int>( effect.base_value() ) );
+        break;
+
+      case A_HASTED_CATEGORY:
+        cooldown->hasted = true;
+        sim->print_debug( "{} cooldown set to hasted", *this );
+        break;
+
+      case A_MOD_RECHARGE_TIME:
+        if ( cooldown->duration > timespan_t::zero() )
+        {
+          set_cooldown( cooldown->duration += effect.time_value() );
+          sim->print_debug( "{} cooldown recharge time modified by {}", *this, effect.time_value() );
+        }
+        break;
+
+      case A_MOD_RECHARGE_MULTIPLIER:
+        // TODO: Should buffs support a base_recharge_multiplier?
+        //base_recharge_multiplier *= 1 + effect.percent();
+        //if ( base_recharge_multiplier <= 0 )
+        //  set_cooldown( timespan_t::zero() );
+        //sim->print_debug( "{} cooldown recharge multiplier modified by {}%", *this, effect.base_value() );
+        break;
+
       default:
         break;
     }
@@ -1482,7 +1521,7 @@ void buff_t::execute( int stacks, double value, timespan_t duration )
   if ( cooldown->duration > timespan_t::zero() )
   {
     sim->print_debug( "{} starts {} cooldown ({}) with duration {}", source_name(),
-                             *this, cooldown->name(), cooldown->duration );
+                             *this, cooldown->name_str, cooldown->duration );
 
     cooldown->start();
   }
@@ -1567,7 +1606,7 @@ void buff_t::extend_duration( player_t* p, timespan_t extra_seconds )
 
   if ( stack_behavior == buff_stack_behavior::ASYNCHRONOUS )
   {
-    throw std::runtime_error( fmt::format( "'{}' attempts to extend asynchronous buff '{}'.", p->name(), name() ) );
+    throw std::runtime_error( fmt::format( "{} attempts to extend asynchronous {}.", *p, *this ) );
   }
 
   assert( expiration.size() == 1 );
@@ -1576,8 +1615,9 @@ void buff_t::extend_duration( player_t* p, timespan_t extra_seconds )
   {
     expiration.front()->reschedule( expiration.front()->remains() + extra_seconds );
 
-    sim->print_log( "{} extends {} by {}. New expiration time: {}",
-        *p, *this, extra_seconds, expiration.front()->occurs().total_seconds() );
+    if ( sim->log )
+      sim->print_log( "{} extends {} by {}. New expiration time: {}", *p, *this, extra_seconds,
+                      expiration.front()->occurs() );
   }
   else if ( extra_seconds < timespan_t::zero() )
   {
@@ -1600,8 +1640,9 @@ void buff_t::extend_duration( player_t* p, timespan_t extra_seconds )
 
     expiration.push_back( make_event<expiration_t>( *sim, this, reschedule_time ) );
 
-    sim->print_debug( "{} decreases {} by {}. New expiration: {}",
-        *p, *this, -extra_seconds, expiration.back()->occurs().total_seconds() );
+    if ( sim->debug )
+      sim->print_debug( "{} decreases {} by {}. New expiration: {}", *p, *this, -extra_seconds,
+                        expiration.back()->occurs() );
   }
 }
 
@@ -2387,7 +2428,7 @@ stat_buff_t::stat_buff_t(actor_pair_t q, util::string_view name)
 
 stat_buff_t::stat_buff_t( actor_pair_t q, util::string_view name, const spell_data_t* spell, const item_t* item )
   : buff_t( q, name, spell, item ),
-    stat_gain( player->get_gain( std::string( name ) + "_buff" ) ),  // append _buff for now to check usage
+    stat_gain( player->get_gain( fmt::format( "{}_buff", name ) ) ),  // append _buff for now to check usage
     manual_stats_added( false )
 {
   bool has_ap = false;

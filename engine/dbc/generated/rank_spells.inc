@@ -1,5 +1,5 @@
 // Rank class spells, wow build 9.0.1.35707
-static const std::array<rank_class_spell_t, 330> __rank_spells_data { {
+static const std::array<rank_class_spell_t, 332> __rank_spells_data { {
   { 10, 269, 322719,      0, "Afterlife"                         , "Rank 2" },
   {  9, 265, 231792,      0, "Agony"                             , "Rank 2" },
   {  6, 252, 316961,      0, "Apocalypse"                        , "Rank 2" },
@@ -264,6 +264,8 @@ static const std::array<rank_class_spell_t, 330> __rank_spells_data { {
   {  1,  71, 261901,      0, "Slam"                              , "Rank 2" },
   {  1,  71, 316534,      0, "Slam"                              , "Rank 3" },
   {  8,  62, 321747,      0, "Slow"                              , "Rank 2" },
+  {  5, 257, 262861,      0, "Smite"                             , "Rank 2" },
+  {  5, 256, 262861,      0, "Smite"                             , "Rank 2" },
   { 12, 581, 321021,      0, "Soul Cleave"                       , "Rank 2" },
   { 12, 581, 343207,      0, "Soul Cleave"                       , "Rank 3" },
   {  9, 265, 231811,      0, "Soulstone"                         , "Rank 2" },

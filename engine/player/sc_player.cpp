@@ -1983,6 +1983,8 @@ void player_t::create_special_effects()
   // initialized here.
   azerite::initialize_azerite_powers( this );
 
+  covenant::initialize_soulbinds( this );
+
   // Once all special effects are first-phase initialized, do a pass to first-phase initialize any
   // potential fallback special effects for the actor.
   unique_gear::initialize_special_effect_fallbacks( this );
@@ -3316,6 +3318,17 @@ void player_t::create_buffs()
       buffs.reality_shift->set_duration( find_spell( 302952 )->duration()
         + timespan_t::from_seconds( ripple_in_space.spell_ref( 2u, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 1 ).base_value() / 1000 ) );
       buffs.reality_shift->set_cooldown( find_spell( 302953 )->duration() );
+
+      // Soulbind buffs required for APL parsing
+      buffs.redirected_anima_stacks = make_buff( this, "redirected_anima_stacks", find_spell( 342802 ) );
+      buffs.thrill_seeker = make_buff( this, "thrill_seeker", find_spell( 331939 ) )
+        ->set_stack_change_callback( [this]( buff_t* b, int, int new_ ) {
+          if ( new_ >= b->max_stack() )
+          {
+            buffs.euphoria->trigger();
+            b->expire();
+          }
+        } );
     }
   }
   // .. for enemies
@@ -3454,6 +3467,12 @@ double player_t::composite_melee_haste() const
     if ( buffs.guardian_of_azeroth->check() )
       h *= 1.0 / ( 1.0 + buffs.guardian_of_azeroth->check_stack_value() );
 
+    if ( buffs.field_of_blossoms )
+      h *= 1.0 / ( 1.0 + buffs.field_of_blossoms->check_value() );
+
+    if ( buffs.euphoria )
+      h *= 1.0 / ( 1.0 + buffs.euphoria->check_value() );
+
     h *= 1.0 / ( 1.0 + racials.nimble_fingers->effectN( 1 ).percent() );
     h *= 1.0 / ( 1.0 + racials.time_is_money->effectN( 1 ).percent() );
 
@@ -3569,9 +3588,12 @@ double player_t::composite_melee_crit_chance() const
   if (buffs.reckless_force)
     ac += buffs.reckless_force->check_value();
 
+  if ( buffs.first_strike )
+    ac += buffs.first_strike->check_value();
+
   ac += racials.viciousness->effectN( 1 ).percent();
   ac += racials.arcane_acuity->effectN( 1 ).percent();
-  if(buffs.embrace_of_paku)
+  if ( buffs.embrace_of_paku )
     ac += buffs.embrace_of_paku->check_value();
 
   if ( timeofday == DAY_TIME )
@@ -3788,6 +3810,12 @@ double player_t::composite_spell_haste() const
     if ( buffs.guardian_of_azeroth->check() )
       h *= 1.0 / ( 1.0 + buffs.guardian_of_azeroth->check_stack_value() );
 
+    if ( buffs.field_of_blossoms )
+      h *= 1.0 / ( 1.0 + buffs.field_of_blossoms->check_value() );
+
+    if ( buffs.euphoria )
+      h *= 1.0 / ( 1.0 + buffs.euphoria->check_value() );
+
     h *= 1.0 / ( 1.0 + racials.nimble_fingers->effectN( 1 ).percent() );
     h *= 1.0 / ( 1.0 + racials.time_is_money->effectN( 1 ).percent() );
 
@@ -3857,9 +3885,12 @@ double player_t::composite_spell_crit_chance() const
   if (buffs.reckless_force)
     sc += buffs.reckless_force->check_value();
 
+  if( buffs.first_strike )
+    sc += buffs.first_strike->check_value();
+
   sc += racials.viciousness->effectN( 1 ).percent();
   sc += racials.arcane_acuity->effectN( 1 ).percent();
-  if(buffs.embrace_of_paku)
+  if ( buffs.embrace_of_paku )
     sc += buffs.embrace_of_paku->check_value();
 
   if ( timeofday == DAY_TIME )
@@ -3883,9 +3914,13 @@ double player_t::composite_spell_hit() const
 
 double player_t::composite_mastery() const
 {
-  return current.mastery +
-    apply_combat_rating_dr( RATING_MASTERY,
-        composite_mastery_rating() / current.rating.mastery );
+  double cm =
+      current.mastery + apply_combat_rating_dr( RATING_MASTERY, composite_mastery_rating() / current.rating.mastery );
+
+  if ( buffs.redirected_anima )
+    cm += buffs.redirected_anima->check_stack_value();
+
+  return cm;
 }
 
 double player_t::composite_bonus_armor() const
@@ -3905,9 +3940,13 @@ double player_t::composite_damage_versatility() const
   }
 
   if ( buffs.dmf_well_fed )
-  {
     cdv += buffs.dmf_well_fed->check_value();
-  }
+
+  if ( buffs.social_butterfly )
+    cdv += buffs.social_butterfly->check_value();
+
+  if ( buffs.wasteland_propriety )
+    cdv += buffs.wasteland_propriety->check_value();
 
   cdv += racials.mountaineer->effectN( 1 ).percent();
   cdv += racials.brush_it_off->effectN( 1 ).percent();
@@ -3927,9 +3966,13 @@ double player_t::composite_heal_versatility() const
   }
 
   if ( buffs.dmf_well_fed )
-  {
     chv += buffs.dmf_well_fed->check_value();
-  }
+
+  if ( buffs.social_butterfly )
+    chv += buffs.social_butterfly->check_value();
+
+  if ( buffs.wasteland_propriety )
+    chv += buffs.wasteland_propriety->check_value();
 
   chv += racials.mountaineer->effectN( 1 ).percent();
   chv += racials.brush_it_off->effectN( 1 ).percent();
@@ -3949,9 +3992,13 @@ double player_t::composite_mitigation_versatility() const
   }
 
   if ( buffs.dmf_well_fed )
-  {
     cmv += buffs.dmf_well_fed->check_value() / 2;
-  }
+
+  if ( buffs.social_butterfly )
+    cmv += buffs.social_butterfly->check_value() / 2;
+
+  if ( buffs.wasteland_propriety )
+    cmv += buffs.wasteland_propriety->check_value();
 
   cmv += racials.mountaineer->effectN( 1 ).percent() / 2;
   cmv += racials.brush_it_off->effectN( 1 ).percent() / 2;
@@ -4056,14 +4103,17 @@ double player_t::composite_player_target_multiplier( player_t* target, school_e 
   }
 
   if ( target->race == RACE_ABERRATION && buffs.damage_to_aberrations && buffs.damage_to_aberrations->check() )
-  {
     m *= 1.0 + buffs.damage_to_aberrations->stack_value();
-  }
+
+  // percentage not found in data, hardcoded for now. this buff is never triggered so use default_value.
+  if ( buffs.wild_hunt_tactics && target->health_percentage() > 75.0 )
+    m *= 1.0 + buffs.wild_hunt_tactics->default_value;
 
   auto td = get_target_data( target );
   if ( td )
   {
     m *= 1.0 + td->debuff.condensed_lifeforce->check_value();
+    m *= 1.0 + td->debuff.adversary->check_value();
   }
 
   return m;
@@ -4235,9 +4285,10 @@ double player_t::composite_attribute_multiplier( attribute_e attr ) const
     return m;
 
   if ( ( true_level >= 27 ) && matching_gear )
-  {
     m *= 1.0 + matching_gear_multiplier( attr );
-  }
+
+  if ( buffs.built_for_war )
+    m *= 1.0 + buffs.built_for_war->check_stack_value();
 
   switch ( attr )
   {

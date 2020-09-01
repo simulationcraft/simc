@@ -12,6 +12,10 @@
 
 #include "report/reports.hpp"
 
+#include "item/special_effect.hpp"
+#include "action/sc_action_state.hpp"
+#include "action/dbc_proc_callback.hpp"
+
 struct player_t;
 struct sim_t;
 struct expr_t;
@@ -144,7 +148,85 @@ public:
 
   /// Register player-scope options
   void register_options( player_t* player );
+
+  /// Returns the spell_id of the covenant class ability or the generic ability as determined via the
+  /// __covenant_ability_data dbc table. Will need to be converted into a vector if multiple class abilities are added
+  /// in later.
+  unsigned get_covenant_ability_spell_id( bool generic = false ) const;
+
+  /// List of soulbind spells
+  const std::vector<unsigned>& soulbind_spells() const { return m_soulbinds; }
+
+  /// Callback for handling soulbinds that proc when covenant class ability is used
+  dbc_proc_callback_t* cast_callback;
 };
+
+/// Initialize soulbinds through the generic special effect subsystem
+void initialize_soulbinds( player_t* player );
+
+/// Register soulbinds through the generic special effect subsystem
+void register_soulbinds();
+
+/// Register soulbinds target data initializers
+void register_target_data_initializers( sim_t* sim );
+
+struct covenant_cb_base_t
+{
+  covenant_cb_base_t() {}
+  virtual void trigger( action_t*, action_state_t* s ) = 0;
+};
+
+struct covenant_cb_buff_t : public covenant_cb_base_t
+{
+  buff_t* buff;
+
+  covenant_cb_buff_t( buff_t* b ) : covenant_cb_base_t(), buff( b ) {}
+  void trigger( action_t* a, action_state_t* s ) override;
+};
+
+struct covenant_cb_action_t : public covenant_cb_base_t
+{
+  action_t* action;
+  bool self_target;
+
+  covenant_cb_action_t( action_t* a, bool self = false ) : covenant_cb_base_t(), action( a ), self_target( self ) {}
+  void trigger( action_t* a, action_state_t* s ) override;
+};
+
+namespace soulbinds
+{
+// Night Fae
+void niyas_tools_burrs( special_effect_t& effect );  // Niya
+void niyas_tools_poison( special_effect_t& effect );
+void niyas_tools_herbs( special_effect_t& effect );
+void grove_invigoration( special_effect_t& effect );
+void field_of_blossoms( special_effect_t& effect );  // Dreamweaver
+void social_butterfly( special_effect_t& effect );
+void first_strike( special_effect_t& effect );  // Korayn
+void wild_hunt_tactics( special_effect_t& effect );
+// Venthyr
+void exacting_preparation( special_effect_t& effect );  // Nadjia
+void dauntless_duelist( special_effect_t& effect );
+void thrill_seeker( special_effect_t& effect );
+void refined_palate( special_effect_t& effect );  // Theotar
+void soothing_shade( special_effect_t& effect );
+void wasteland_propriety( special_effect_t& effect );
+void built_for_war( special_effect_t& effect );  // Draven
+void superior_tactics( special_effect_t& effect );
+// Kyrian
+void let_go_of_the_past( special_effect_t& effect );  // Pelagos
+void combat_meditation( special_effect_t& effect );
+void pointed_courage( special_effect_t& effect );    // Kleia
+void hammer_of_genesis( special_effect_t& effect );  // Mikanikos
+void brons_call_to_action( special_effect_t& effect );
+// Necrolord
+void volatile_solvent( special_effect_t& effect );  // Marileth
+void plagueys_preemptive_strike( special_effect_t& effect );
+void gnashing_chompers( special_effect_t& effect );  // Emeni
+void embody_the_construct( special_effect_t& effect );
+void serrated_spaulders( special_effect_t& effect );  // Heirmir
+void heirmirs_arsenal_marrowed_gemstone( special_effect_t& effect );
+}  // namespace soulbinds
 
 std::unique_ptr<covenant_state_t> create_player_state( const player_t* player );
 

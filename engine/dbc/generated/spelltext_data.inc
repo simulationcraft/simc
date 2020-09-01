@@ -1,5 +1,5 @@
 // Spell text, wow build 9.0.1.35707
-static const std::array<spelltext_data_t, 15493> __spelltext_data { {
+static const std::array<spelltext_data_t, 15507> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -10130,6 +10130,7 @@ static const std::array<spelltext_data_t, 15493> __spelltext_data { {
   { 262647, "Windfury causes each successive Windfury attack within $262652d to increase the damage of Windfury by $262652s1%, stacking up to $262652u times.", 0, 0 },
   { 262652, "$@pelldesc262647", "Windfury attack damage increased by $s1%.", 0 },
   { 262838, "Cobra Shot deals $s1% increased damage.", 0, "Rank 2" },
+  { 262861, "Smite deals $s1% increased damage.", 0, "Rank 2" },
   { 262946, "Synthesize a Legion legendary item appropriate for your loot specialization ($@lootspec).", 0, 0 },
   { 262960, "An extremely suspicious alcoholic beverage.", "Buzzed.\r\nMovement speed increased by $w3%.\r\nDamages you for $w2% of your maximum health every $t2 sec.", 0 },
   { 263135, "You and your pet's Focus spending abilities deal ${$s1}.1% increased damage.\r\n\r\nWhile your pet is active, you both regenerate ${$s4}.1% of maximum health every $t3 sec.", 0, 0 },
@@ -11841,6 +11842,7 @@ static const std::array<spelltext_data_t, 15493> __spelltext_data { {
   { 285902, "Attune yourself to the energies of the targeted Crucible of Storms raid boss, increasing your Versatility by $269268s1 when fighting that boss. This effect lasts for an entire week.\r\n\r\nYou can only use one Vantus Rune per week.", 0, 0 },
   { 285933, "Protects the caster, increasing maximum health by $m1% and increases armor by $m2%.", "Increases maximum health by $w1%.\r\nArmor increased by $w2%.", 0 },
   { 285958, "Ironskin Brew increases your Armor by $s1, and has a $s2% chance to not consume a charge.", 0, 0 },
+  { 285959, "$@spelldesc285958", "Armor increased by $w1.", 0 },
   { 286027, "While you are above $264351s1% mana, Arcane Blast deals $s1 additional damage.\r\n\r\nWhile you are below $264351s1% mana, Arcane Blast's cost is reduced by $264353s1.", 0, 0 },
   { 286050, "Set out a Sanguinated Feast to feed up to 35 people in your raid or party!\r\n\r\nRestores $257427o1 health and $257427o2 mana over $257427d.  Must remain seated while eating.  If you spend at least 10 seconds eating you will become well fed and gain $259456s1 in a stat for $259456d.", 0, 0 },
   { 286121, "Each combo point spent has a $s2% chance to cause your Nightblade to deal $s1 Shadow damage and replicate to a nearby enemy.", 0, 0 },
@@ -11973,6 +11975,9 @@ static const std::array<spelltext_data_t, 15493> __spelltext_data { {
   { 287829, "After using Thunder Focus Tea, your next spell gives $s1 of a stat for $287831d:\r\n$@spellname124682: Critical strike\r\n$@spellname115151: Haste\r\n$@spellname116670: Mastery\r\n$@spellname107428: Versatility", 0, 0 },
   { 287830, "$@spelldesc287829", 0, 0 },
   { 287831, "$@spelldesc287829", "Haste increased by $w1.", 0 },
+  { 287835, "$@spelldesc287829", "Critical strike increased by $w1.", 0 },
+  { 287836, "$@spelldesc287829", "Mastery increased by $w1.", 0 },
+  { 287837, "$@spelldesc287829", "Versatility increased by $w1.", 0 },
   { 287915, "Your Critical Strike increases by $s1 every $t1 sec, capping at ${$s1*$s2} Critical Strike for ${$t1*$s3} sec, then decreasing and turning off for ${$t1*$s3} sec, cycling every $s4 sec. \r\n", 0, 0 },
   { 287916, "Increases your Critical Strike by $s1.", "Critical Strike increased by $w1.", 0 },
   { 287917, "Maintain the current Oscillation for $d.", "Extends your current V.I.G.O.R. setting for $d.", 0 },
@@ -13824,7 +13829,9 @@ static const std::array<spelltext_data_t, 15493> __spelltext_data { {
   { 319983, "$?a137005[Swarming Mist]?a212611[Sinful Brand]?a137009[Ravenous Frenzy]?a137014[Flayed Shot]?a137018[Mirrors of Torment]?a137022[Fallen Order]?a137026[Ashen Hallow]?a137030[Mindgames]?a137034[Slaughter]?a137038[Chain Harvest]?a137042[Impending Catastrophe]?a137047[Condemn][Activating your Venthyr class ability] signals the start of tea time, granting $333218s1% Versatility to you and $333251s1% Versatility to up to $333251i nearby allies. Lasts ${$333218d*$<mod>} sec.$?a137047|a137034[\r\n\r\nYou may only serve tea every $333221d.][]", 0, 0 },
   { 320035, "$@spelldesc314793", "Movement speed and cast speed slowed by $s3%.", 0 },
   { 320125, "Shock the target for $s1 Elemental damage and create an ancestral echo, causing your next direct damage or healing spell to be cast a second time ${$m2/1000}.1 sec later for free.", "Your next direct damage or healing spell will be cast a second time ${$m1/1000}.1 sec later for free.", 0 },
+  { 320130, "$@spelldesc319210", "Versatility increased by $w1%.", 0 },
   { 320137, "Charge yourself with lightning, causing your next $n Lightning Bolts or Chain Lightnings to deal $s2% more damage and be instant cast.", "Your next Lightning Bolt or Chain Lightning will deal $s2% increased damage and be instant cast.", 0 },
+  { 320212, "$@spelldesc319210", "Versatility increased by $w1%.", 0 },
   { 320221, "$@spelldesc319217", 0, 0 },
   { 320224, "$@spelldesc319217", "Rejuvenating within a chrysalis.", 0 },
   { 320225, "$@spelldesc319217", 0, 0 },
@@ -14841,6 +14848,7 @@ static const std::array<spelltext_data_t, 15493> __spelltext_data { {
   { 337136, "Your Barriers heal you for |cFFFFFFFF$s1%|r of the damage absorbed.", 0, 0 },
   { 337139, "$@spelldesc337135", "Haste increased by $w1%.", 0 },
   { 337141, "Each Soul Shard spent on Hand of Gul'dan increases the damage of your next Call Dreadstalkers by 3%.", 0, 0 },
+  { 337142, "$@spelldesc337141", "Damage dealt increased by $w1%.", 0 },
   { 337146, "Hand of Gul'dan has a $s1% chance to cast a second time on your target for free.", 0, 0 },
   { 337154, "Last Stand increases your Rage generation by |cFFFFFFFF$s1%.|r", 0, 0 },
   { 337155, "$@spelldesc337154", "Rage generation increased by $w1%.", 0 },
@@ -14992,6 +15000,7 @@ static const std::array<spelltext_data_t, 15493> __spelltext_data { {
   { 338131, "Lightning Bolt has a |cFFFFFFFF$s1%|r chance to generate double Maelstrom.", 0, 0 },
   { 338138, "Your Breath of Fire ignites your right leg in flame for $338140d, causing your Blackout Kick and Spinning Crane Kick to deal $338140m1% additional damage as Fire damage and refresh the duration of your Breath of Fire on the target.", 0, 0 },
   { 338140, "$@spelldesc338138", "Your Blackout Kick and Spinning Crane Kick deal $w1% increased damage as Fire damage, and their damage refreshes the duration of Breath of Fire on the target.", 0 },
+  { 338141, "$@spelldesc338138", 0, 0 },
   { 338142, "Connect with your inner spirit, increasing damage done by $s1% for $d.", "Damage done increased by $s1%.", "Kyrian" },
   { 338252, "Casting Earthquake has a |cFFFFFFFF$s1%|r chance to instantly cast Chain Lightning at a random enemy in the Earthquake.", 0, 0 },
   { 338303, "$?s192249[Storm Elemental][Fire Elemental] lasts |cFFFFFFFF$s1%|r longer.", 0, 0 },
@@ -15113,6 +15122,7 @@ static const std::array<spelltext_data_t, 15493> __spelltext_data { {
   { 339370, "Condemn's damage dealt and prevented are increased by |cFFFFFFFF$s1%|r for each nearby enemy, up to |cFFFFFFFF${$s1*5}%|r.", 0, 0 },
   { 339371, "Blade of Justice's range is increased by $s2 yds and deals |cFFFFFFFF${$s1}.1|r% more damage.", 0, 0 },
   { 339374, "Wake of Ashes burns the target for an additional |cFFFFFFFF${$s1}.1|r% damage over 6 sec.", 0, 0 },
+  { 339376, "$@spelldesc339374", "Suffering $w damage every $t sec.", 0 },
   { 339377, "Aspect of the Turtle cooldown reduced by|cFFFFFFFF ${$s1/-1000}.1|r sec.", 0, 0 },
   { 339379, "Damage required to break your Fear effects is increased by $s1%.", 0, 0 },
   { 339386, "Mortal Strike has a |cFFFFFFFF$s1%|r chance to trigger a second Mortal Strike.", 0, 0 },
@@ -15134,6 +15144,7 @@ static const std::array<spelltext_data_t, 15493> __spelltext_data { {
   { 339517, "Mark a friendly player with Glimmering Dust, healing them for $s1 every ${$t1}.1 sec for $d. If they fall below $s2% health, Glimmering Dust is consumed to grant them a shield that prevents ${(1+$@versadmg)*$339516s1} damage for $339516d.", "Healing $w1 every $t1 sec. If you fall below $s2% health, this will be consumed to grant you a shield preventing ${(1+$@versadmg)*$339516s1} damage.", 0 },
   { 339518, "Judgment grants you Seal of Command for $339664d, granting your Templar's Verdict, Crusader Strike, Blade of Justice, and weapon attack a $s2% chance of dealing |cFFFFFFFF${$s1}.1|r% additional Holy damage.", 0, 0 },
   { 339531, "Templar's Verdict has a |cFFFFFFFF${$s1}.1|r% chance to strike again for $s2% of its damage.", 0, 0 },
+  { 339538, "A powerful weapon strike that deals $s1 Holy damage.", 0, 0 },
   { 339546, "$@spelldesc339547", 0, 0 },
   { 339547, "Your healing spells have a chance to trigger a beam of Twilight Restoration, healing all allies in front of you for $s1.", 0, 0 },
   { 339558, "Aspect of the Cheetah secondary movement speed lasts an addtional ${$s2/1000} sec and the cooldown is reduced by|cFFFFFFFF ${$s1/-1000}.1|r sec.", 0, 0 },
@@ -15147,6 +15158,7 @@ static const std::array<spelltext_data_t, 15493> __spelltext_data { {
   { 339654, "$@spelldesc339651", "Movement speed reduced by $w1%.", 0 },
   { 339656, "Your Dreadstalkers' attacks have a $s1% chance to trigger an additional Dreadbite.", 0, 0 },
   { 339664, "$@spelldesc339518", "Chance for Templar's Verdict, Crusader Strike, Blade of Justice, and weapon attack to deal $w% additional Holy damage.", 0 },
+  { 339669, "$@spelldesc339518", 0, 0 },
   { 339672, 0, "Movement reduced by $s1%.", 0 },
   { 339675, "Deal $s1 Holy damage to current enemy.", 0, 0 },
   { 339697, "$@spelldesc339700", "Glimmerlight is on cooldown.", 0 },
@@ -15159,6 +15171,7 @@ static const std::array<spelltext_data_t, 15493> __spelltext_data { {
   { 339738, "$@spelldesc339735", "Asleep.", 0 },
   { 339750, "Bestial Wrath increases all damage you and your pet deal by |cFFFFFFFF ${$s1}.1%|r.", 0, 0 },
   { 339766, "After your Demonic Tyrant expires, gain a Demonic Core and $s1% increased damage from your demons for 15 sec.", 0, 0 },
+  { 339784, "$@spelldesc339766", "Damage dealt by your demons increased by $w1%.", 0 },
   { 339797, "$@spelldesc338661", "Your next Starsurge costs no Astral Power.", 0 },
   { 339800, "$@spelldesc338661", "Your next Starfall costs no Astral Power.", 0 },
   { 339818, "Revenge increases the damage of your next Thunder Clap by |cFFFFFFFF$s1%|r.", 0, 0 },
@@ -15493,6 +15506,7 @@ static const std::array<spelltext_data_t, 15493> __spelltext_data { {
   { 343817, "Ensorcell the mind of a Beast found outdoors in the Shadowlands. If affected, your target will assist you for $d.", "Ensorcelled by the Charm of Eternal Winter.", 0 },
   { 343818, "$@spelldesc325197", "Physical abilities cause Chi-ji to heal the $m4 nearest allies with a Gust of Mist for $343819s1.\r\n\r\nImmune to movement-impairing effects.", 0 },
   { 343819, "$@spelldesc325216", "Cast time of Enveloping Mist reduced by $w2%.", 0 },
+  { 343820, "$@spelldesc325216", "Cast time of Enveloping Mist reduced by $w2%.", 0 },
 } };
 
 // spelltext hotfix entries, wow build 9.0.1.35707
@@ -15500,7 +15514,7 @@ static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix
 } };
 
 // Spell description variables, wow build 9.0.1.35707
-static const std::array<spelldesc_vars_data_t, 264> __spelldesc_vars_data { {
+static const std::array<spelldesc_vars_data_t, 265> __spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.36}][${1}]\r\n$shield=${$SP*2*(1+$@versadmg)*$<rapture>*$<shadow>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -15665,6 +15679,7 @@ static const std::array<spelldesc_vars_data_t, 264> __spelldesc_vars_data { {
   {  260331, "$duration= ${$s1/1000}.1" },
   {  260364, "$damage=${$cond($gt($SP,$AP),$SP*0.25,$AP*0.5)}" },
   {  260798, "$damage=${2.0*$260798s1}" },
+  {  262861, "$shield=${($SPS*$231682s1/100)*(1+$@versadmg)}" },
   {  263648, "$baseAbsorb=${5*$AP*$pctH}\r\n$fragmentAbsorb=${1*$AP*$pctH}" },
   {  264057, "$demoMastery=$?s77219[${1+0.01*$77219m1}][${1}]\r\n$demoPassive=$?s137044[${1+0.01*$137044m3}][${1}]\r\n$damage=${1*($SP*0.5)*$<demoMastery>*$<demoPassive>*(1+$@versadmg)}" },
   {  265931, "$mastery=$?s77220[${((100+$77220m3)/100)}][${1.00}]" },

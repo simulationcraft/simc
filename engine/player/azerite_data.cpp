@@ -3136,9 +3136,8 @@ void gutripper( special_effect_t& effect )
       threshold( power.spell_ref().effectN( 2 ).base_value() )
     { }
 
-    void trigger( action_t* a, void* call_data ) override
+    void trigger( action_t* a, action_state_t* state ) override
     {
-      auto state = static_cast<action_state_t*>( call_data );
       if ( state->target->health_percentage() < threshold )
       {
         rppm->set_frequency( effect.driver()->real_ppm() );
@@ -3148,7 +3147,7 @@ void gutripper( special_effect_t& effect )
         rppm->set_frequency( listener->sim->bfa_opts.gutripper_default_rppm );
       }
 
-      dbc_proc_callback_t::trigger( a, call_data );
+      dbc_proc_callback_t::trigger( a, state );
     }
   };
 
@@ -5592,9 +5591,8 @@ void breath_of_the_dying( special_effect_t& effect )
       r3_mul   = ess.spell_ref( 3u, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 1 ).percent();
     }
 
-    void trigger( action_t* a, void* cd ) override
+    void trigger( action_t* a, action_state_t* s ) override
     {
-      auto s     = static_cast<action_state_t*>( cd );
       double mod = 1.0;
 
       // TODO: confirm '400% more' means 5x multiplier
@@ -5603,7 +5601,7 @@ void breath_of_the_dying( special_effect_t& effect )
 
       rppm->set_modifier( mod );
 
-      dbc_proc_callback_t::trigger( a, cd );
+      dbc_proc_callback_t::trigger( a, s );
     }
   };
 

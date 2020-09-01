@@ -426,10 +426,12 @@ public:
     const spell_data_t* garrote_2;
     const spell_data_t* shiv_2;
     const spell_data_t* shiv_2_debuff;
+    const spell_data_t* wound_poison_2;
 
     // Outlaw
     const spell_data_t* adrenaline_rush;
     const spell_data_t* between_the_eyes;
+    const spell_data_t* between_the_eyes_2;
     const spell_data_t* blade_flurry;
     const spell_data_t* blade_flurry_2;
     const spell_data_t* broadside;
@@ -1066,6 +1068,8 @@ public:
 
     // Affecting Passive Auras
     // Put ability specific ones here; class/spec wide ones with labels that can effect things like trinkets in rogue_t::apply_affecting_auras.
+    ab::apply_affecting_aura( p->spec.between_the_eyes_2 );
+    ab::apply_affecting_aura( p->spell.sprint_2 );
     ab::apply_affecting_aura( p->talent.deeper_stratagem );
     ab::apply_affecting_aura( p->talent.master_poisoner );
     ab::apply_affecting_aura( p->talent.dancing_steel );
@@ -2514,7 +2518,6 @@ struct between_the_eyes_t : public rogue_attack_t
     rogue_attack_t( name, p, p->spec.between_the_eyes, options_str )
   {
     ap_type = attack_power_type::WEAPON_BOTH;
-    crit_bonus_multiplier *= 1.0 + p->find_rank_spell( "Between the Eyes", "Rank 2" )->effectN( 1 ).percent();
   }
 
   double bonus_da( const action_state_t* state ) const override
@@ -4440,14 +4443,13 @@ struct sprint_t : public rogue_spell_t
     rogue_spell_t( name, p, p -> spell.sprint, options_str )
   {
     harmful = callbacks = false;
-    cooldown = p -> cooldowns.sprint;
-    cooldown->duration = data().cooldown() + p->spell.sprint_2->effectN( 1 ).time_value();
+    cooldown = p->cooldowns.sprint;
   }
 
   void execute() override
   {
     rogue_spell_t::execute();
-    p() -> buffs.sprint -> trigger();
+    p()->buffs.sprint->trigger();
   }
 };
 
@@ -5639,7 +5641,9 @@ struct wound_poison_t : public rogue_poison_buff_t
 {
   wound_poison_t( rogue_td_t& r ) :
     rogue_poison_buff_t( r, "wound_poison", r.source->find_class_spell( "Wound Poison" )->effectN( 1 ).trigger() )
-  { }
+  { 
+    apply_affecting_aura( debug_cast<rogue_t*>( r.source )->spec.wound_poison_2 );
+  }
 };
 
 struct crippling_poison_t : public rogue_poison_buff_t
@@ -7775,10 +7779,12 @@ void rogue_t::init_spells()
   spec.garrote_2            = find_specialization_spell( 231719 );
   spec.shiv_2               = find_rank_spell( "Shiv", "Rank 2" );
   spec.shiv_2_debuff        = find_spell( 319504 );
+  spec.wound_poison_2       = find_rank_spell( "Wound Poison", "Rank 2" );
 
   // Outlaw
   spec.adrenaline_rush      = find_spell( 13750 ); // Needs to be generic due to Celerity
   spec.between_the_eyes     = find_specialization_spell( "Between the Eyes" );
+  spec.between_the_eyes_2   = find_rank_spell( "Between the Eyes", "Rank 2" );
   spec.blade_flurry         = find_specialization_spell( "Blade Flurry" );
   spec.blade_flurry_2       = find_rank_spell( "Blade Flurry", "Rank 2" );
   spec.broadside            = find_spell( 193356 );

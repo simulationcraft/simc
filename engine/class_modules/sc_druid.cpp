@@ -1457,7 +1457,7 @@ struct eclipse_buff_t : public druid_buff_t<buff_t>
   eclipse_buff_t( druid_t& p, util::string_view n, const spell_data_t* s ) : base_t( p, n, s ), empowerment( 0.0 )
   {
     add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-    set_default_value( s->effectN( 2 ).percent() * ( 1.0 + p.conduit.umbral_intensity.percent() ) );
+    set_default_value_from_effect( 2, 0.01 * ( 1.0 + p.conduit.umbral_intensity.percent() ) );
 
     if ( s == p.spec.eclipse_solar )
       empowerment = p.spec.starsurge->effectN( 2 ).percent() + p.spec.starsurge_2->effectN( 1 ).percent();
@@ -1537,7 +1537,7 @@ struct tiger_dash_buff_t : public druid_buff_t<buff_t>
 {
   tiger_dash_buff_t( druid_t& p ) : base_t( p, "tiger_dash", p.talent.tiger_dash )
   {
-    set_default_value( p.talent.tiger_dash->effectN( 1 ).percent() );
+    set_default_value_from_effect( 1 );
     set_cooldown( timespan_t::zero() );
     set_tick_callback( []( buff_t* b, int, timespan_t ) { b->current_value -= b->data().effectN( 2 ).percent(); } );
   }
@@ -8230,11 +8230,11 @@ void druid_t::create_buffs()
   buff.clearcasting = make_buff( this, "clearcasting", spec.omen_of_clarity->effectN( 1 ).trigger() )
     ->set_cooldown( 1.05_s )
     ->set_chance( spec.omen_of_clarity->proc_chance() )
-    ->set_max_stack( as<unsigned>( 1 + talent.moment_of_clarity->effectN( 1 ).base_value() ) );
+    ->modify_max_stack( as<int>( talent.moment_of_clarity->effectN( 1 ).base_value() ) );
 
   buff.dash = make_buff( this, "dash", find_class_spell( "Dash" ) )
-    ->set_cooldown( timespan_t::zero() )
-    ->set_default_value( find_class_spell( "Dash" )->effectN( 1 ).percent() );
+    ->set_cooldown( 0_ms )
+    ->set_default_value_from_effect( 1 );
 
   buff.prowl = make_buff( this, "prowl", find_class_spell( "Prowl" ) );
 
@@ -8292,7 +8292,7 @@ void druid_t::create_buffs()
     } );
 
   buff.ravenous_frenzy = make_buff( this, "ravenous_frenzy", covenant.venthyr )
-    ->set_default_value( covenant.venthyr->effectN( 4 ).percent() )
+    ->set_default_value_from_effect( 4 )
     ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
     ->set_cooldown( 0_ms )
     ->set_period( 0_ms )
@@ -8318,17 +8318,17 @@ void druid_t::create_buffs()
 
   buff.incarnation_cat = make_buff( this, "incarnation_king_of_the_jungle", talent.incarnation_cat )
     ->set_cooldown( 0_ms )
-    ->set_default_value( talent.incarnation_cat->effectN( 2 ).percent() );
+    ->set_default_value_from_effect( 2 );
 
   buff.jungle_stalker = make_buff( this, "jungle_stalker", talent.incarnation_cat->effectN( 3 ).trigger() );
 
   buff.incarnation_bear = new incarnation_bear_buff_t( *this );
 
   buff.incarnation_tree = make_buff( this, "incarnation_tree_of_life", talent.incarnation_tree )
-    ->set_duration( timespan_t::from_seconds( 30 ) )
-    ->set_default_value( find_spell( 5420 )->effectN( 1 ).percent() )
+    ->set_duration( 30_s )
+    ->set_default_value_from_effect( 1 )
     ->add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER )
-    ->set_cooldown( timespan_t::zero() );
+    ->set_cooldown( 0_ms );
 
   buff.bloodtalons = make_buff( this, "bloodtalons", spec.bloodtalons );
 
@@ -8352,7 +8352,7 @@ void druid_t::create_buffs()
 
   buff.pulverize = make_buff( this, "pulverize", talent.pulverize )
     ->set_cooldown( 0_ms )
-    ->set_default_value( talent.pulverize->effectN( 2 ).percent() )
+    ->set_default_value_from_effect( 2 )
     ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
 
   buff.heart_of_the_wild = make_buff( this, "heart_of_the_wild",
@@ -8375,7 +8375,7 @@ void druid_t::create_buffs()
   buff.celestial_alignment = make_buff( this, "celestial_alignment", spec.celestial_alignment )
     ->set_cooldown( timespan_t::zero() )
     ->add_invalidate( CACHE_CRIT_CHANCE )
-    ->set_duration( spec.celestial_alignment->duration() + conduit.precise_alignment.time_value() )
+    ->modify_duration( conduit.precise_alignment.time_value() )
     ->set_stack_change_callback( [this] ( buff_t* b, int, int new_ ) {
       if ( new_ )
       {
@@ -8390,11 +8390,11 @@ void druid_t::create_buffs()
     } );
 
   buff.incarnation_moonkin = make_buff( this, "incarnation_chosen_of_elune", talent.incarnation_moonkin )
-    ->set_default_value( talent.incarnation_moonkin->effectN( 3 ).percent() )
-    ->set_cooldown( timespan_t::zero() )
+    ->set_default_value_from_effect( 3 )
+    ->set_cooldown( 0_ms )
     ->add_invalidate( CACHE_HASTE )
     ->add_invalidate( CACHE_CRIT_CHANCE )
-    ->set_duration( talent.incarnation_moonkin->duration() + conduit.precise_alignment.time_value() )
+    ->modify_duration( conduit.precise_alignment.time_value() )
     ->set_stack_change_callback( [this] ( buff_t* b, int, int new_ ) {
       if ( new_ )
       {
@@ -8416,7 +8416,7 @@ void druid_t::create_buffs()
     ->set_chance( find_rank_spell( "Moonkin Form", "Rank 2" )->effectN( 1 ).percent() );
 
   buff.starlord = make_buff( this, "starlord", find_spell( 279709 ) )
-    ->set_default_value( find_spell( 279709 )->effectN( 1 ).percent() )
+    ->set_default_value_from_effect( 1 )
     ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
     ->add_invalidate( CACHE_HASTE );
 
@@ -8430,7 +8430,7 @@ void druid_t::create_buffs()
 
   buff.eclipse_lunar = new eclipse_buff_t( *this, "eclipse_lunar", spec.eclipse_lunar );
 
-  buff.starsurge = make_buff( this, "starsurge_empowerment" )
+  buff.starsurge = make_buff( this, "starsurge_empowerment", find_affinity_spell( "Starsurge" ) )
     ->set_duration( 0_ms )
     ->set_cooldown( 0_ms )
     ->set_max_stack( 30 );  // Arbitrary cap. Current max eclipse duration is 45s (15s base + 30s inc). Adjust if needed.
@@ -8449,13 +8449,15 @@ void druid_t::create_buffs()
   buff.timeworn_dreambinder = make_buff( this, "timeworn_dreambinder", legendary.timeworn_dreambinder->effectN( 1 ).trigger() )
     ->set_refresh_behavior( buff_refresh_behavior::DURATION );
 
-  buff.balance_of_all_things_nature = make_buff( this, "balance_of_all_things_nature", find_spell( 339943 ) )->set_reverse( true );
   // Default value is ONLY used for APL expression, so set via base_value() and not percent()
-  buff.balance_of_all_things_nature->set_default_value( buff.balance_of_all_things_nature->data().effectN( 1 ).base_value() );
+  buff.balance_of_all_things_nature = make_buff( this, "balance_of_all_things_nature", find_spell( 339943 ) )
+    ->set_reverse( true )
+    ->set_default_value_from_effect( 1, 1.0 );
 
-  buff.balance_of_all_things_arcane = make_buff( this, "balance_of_all_things_arcane", find_spell( 339946 ) )->set_reverse( true );
   // Default value is ONLY used for APL expression, so set via base_value() and not percent()
-  buff.balance_of_all_things_arcane->set_default_value( buff.balance_of_all_things_arcane->data().effectN( 1 ).base_value() );
+  buff.balance_of_all_things_arcane = make_buff( this, "balance_of_all_things_arcane", find_spell( 339946 ) )
+    ->set_reverse( true )
+    ->set_default_value_from_effect( 1, 1.0 );
 
   // Feral
 
@@ -8486,8 +8488,8 @@ void druid_t::create_buffs()
   // Guardian
   buff.barkskin = make_buff( this, "barkskin", spec.barkskin )
     ->set_cooldown( 0_ms )
-    ->set_default_value( spec.barkskin->effectN( 1 ).percent() )
-    ->set_duration( spec.barkskin->duration() + find_rank_spell( "Barkskin", "Rank 2")->effectN( 1 ).time_value() )
+    ->set_default_value_from_effect( 1 )
+    ->apply_affecting_aura( find_rank_spell( "Barkskin", "Rank 2") )
     ->set_tick_behavior( talent.brambles->ok() ? buff_tick_behavior::REFRESH : buff_tick_behavior::NONE )
     ->set_tick_callback( [this]( buff_t*, int, timespan_t ) {
       if ( talent.brambles->ok() )
@@ -8511,18 +8513,19 @@ void druid_t::create_buffs()
     ->set_tick_zero( true );
 
   buff.ironfur = make_buff( this, "ironfur", spec.ironfur )
-    ->set_duration( spec.ironfur->duration() )
-    ->set_default_value( spec.ironfur->effectN( 1 ).percent() )
+    ->set_default_value_from_effect( 1 )
     ->add_invalidate( CACHE_ARMOR )
     ->add_invalidate( CACHE_AGILITY )
     ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
-    ->set_cooldown( 0_ms )
-    ->set_max_stack( as<unsigned>( spec.ironfur->max_stacks() + find_rank_spell( "Ironfur", "Rank 2" )->effectN( 1 ).base_value() ) );
+    ->apply_affecting_aura( find_rank_spell( "Ironfur", "Rank 2" ) );
+    //->set_cooldown( 0_ms )
+    //->set_duration( spec.ironfur->duration() )
+    //->set_max_stack( as<unsigned>( spec.ironfur->max_stacks() + find_rank_spell( "Ironfur", "Rank 2" )->effectN( 1 ).base_value() ) );
 
   buff.survival_instincts = new survival_instincts_buff_t( *this );
 
   buff.sharpened_claws = make_buff( this, "sharpened_claws", find_spell( 279943 ) )
-    ->set_default_value( find_spell( 279943 )->effectN( 1 ).percent() );
+    ->set_default_value_from_effect( 1 );
 
   buff.savage_combatant = make_buff( this, "savage_combatant", conduit.savage_combatant->effectN( 1 ).trigger() )
     ->set_default_value( conduit.savage_combatant.percent() );
@@ -8531,7 +8534,7 @@ void druid_t::create_buffs()
   buff.harmony = make_buff( this, "harmony", mastery.harmony->ok() ? find_spell( 100977 ) : spell_data_t::not_found() );
 
   buff.soul_of_the_forest = make_buff( this, "soul_of_the_forest", talent.soul_of_the_forest_tree->ok() ? find_spell( 114108 ) : spell_data_t::not_found() )
-    ->set_default_value( find_spell( 114108 )->effectN( 1 ).percent() );
+    ->set_default_value_from_effect( 1 );
 
   if ( specialization() == DRUID_RESTORATION || talent.restoration_affinity -> ok() )
   {

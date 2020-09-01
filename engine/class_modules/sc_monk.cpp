@@ -204,6 +204,7 @@ public:
     // Brewmaster
     buff_t* bladed_armor;
     buff_t* blackout_combo;
+    absorb_buff_t* celestial_brew;
     buff_t* celestial_flames;
     buff_t* elusive_brawler;
     buff_t* fortifying_brew;
@@ -261,6 +262,9 @@ public:
     stat_buff_t* straight_no_chaser;
     buff_t* sunrise_technique;
     buff_t* swift_roundhouse;
+
+    // Covenant
+    absorb_buff_t* fortifying_ingrediences;
 
     // Shadowland Legendary
     buff_t* chi_energy;
@@ -1942,7 +1946,7 @@ public:
                                      } );
 
     buff.hit_combo_sef = make_buff( this, "hit_combo_sef", o()->passives.hit_combo )
-                             ->set_default_value( o()->passives.hit_combo->effectN( 1 ).percent() )
+                             ->set_default_value_from_effect( 1, 0.01 )
                              ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   }
 
@@ -3555,7 +3559,7 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
     double c = player->composite_player_target_crit_chance( target );
 
     if ( td( target )->debuff.rushing_tiger_palm->up() )
-      c += td( target )->debuff.rushing_tiger_palm->data().effectN( 1 ).percent();
+      c += td( target )->debuff.rushing_tiger_palm->value();
 
     return c;
   }
@@ -7336,7 +7340,7 @@ struct serenity_buff_t : public monk_buff_t<buff_t>
   serenity_buff_t( monk_t& p, const std::string& n, const spell_data_t* s )
     : monk_buff_t( p, n, s ), percent_adjust( 0 ), m( p )
   {
-    set_default_value( s->effectN( 2 ).percent() );
+    set_default_value_from_effect( 2, 0.01 );
     set_cooldown( timespan_t::zero() );
 
     set_duration( s->duration() );
@@ -7554,18 +7558,18 @@ monk_td_t::monk_td_t( player_t* target, monk_t* p )
                                    ->set_refresh_behavior( buff_refresh_behavior::DURATION );
     debuff.flying_serpent_kick =
         make_buff( *this, "flying_serpent_kick", p->passives.flying_serpent_kick_damage )
-            ->set_default_value( p->passives.flying_serpent_kick_damage->effectN( 2 ).percent() );
+            ->set_default_value_from_effect( 2, 0.01 );
     debuff.touch_of_karma =
         make_buff( *this, "touch_of_karma_debuff", p->spec.touch_of_karma )
             // set the percent of the max hp as the default value.
-            ->set_default_value( p->spec.touch_of_karma->effectN( 3 ).percent() +
-                                 ( p->talent.good_karma->ok() ? p->talent.good_karma->effectN( 1 ).percent() : 0 ) );
+            ->set_default_value_from_effect( 3, 0.01 )
+            ->modify_default_value( ( p->talent.good_karma->ok() ? p->talent.good_karma->effectN( 1 ).percent() : 0 ) );
   }
 
   if ( p->specialization() == MONK_BREWMASTER )
   {
     debuff.keg_smash = make_buff( *this, "keg_smash", p->spec.keg_smash )
-                           ->set_default_value( p->spec.keg_smash->effectN( 3 ).percent() );
+                           ->set_default_value_from_effect( 3, 0.01 );
 
     debuff.exploding_keg = make_buff( *this, "exploding_keg", p->talent.exploding_keg );
   }
@@ -7574,9 +7578,10 @@ monk_td_t::monk_td_t( player_t* target, monk_t* p )
   debuff.sunrise_technique = make_buff( *this, "sunrise_technique_debuff", p->find_spell( 273299 ) );
 
   // Shadowland Legendary
-  debuff.rushing_tiger_palm          = make_buff( *this, "rushing_tiger_palm", p->find_spell( 337340 ) )
-                                            ->add_invalidate( CACHE_ATTACK_CRIT_CHANCE )
-                                            ->set_refresh_behavior( buff_refresh_behavior::NONE );
+  debuff.rushing_tiger_palm = make_buff( *this, "rushing_tiger_palm", p->find_spell( 337340 ) )
+                                  ->set_default_value_from_effect( 1, 0.01 )
+                                  ->add_invalidate( CACHE_ATTACK_CRIT_CHANCE )
+                                  ->set_refresh_behavior( buff_refresh_behavior::NONE );
   debuff.recently_rushing_tiger_palm = make_buff( *this, "recently_rushing_tiger_palm", p->find_spell( 337341 ) )
                                             ->set_refresh_behavior( buff_refresh_behavior::NONE );
 
@@ -8413,7 +8418,7 @@ void monk_t::create_buffs()
 
   // General
   buff.chi_torpedo = make_buff( this, "chi_torpedo", find_spell( 119085 ) )
-                         ->set_default_value( find_spell( 119085 )->effectN( 1 ).percent() );
+                         ->set_default_value_from_effect( 1, 0.01 );
 
   buff.fortifying_brew = new buffs::fortifying_brew_t( *this, "fortifying_brew", 
       ( specialization() == MONK_BREWMASTER ? passives.fortifying_brew : spec.fortifying_brew_mw_ww ) );
@@ -8423,22 +8428,25 @@ void monk_t::create_buffs()
   buff.dampen_harm = make_buff( this, "dampen_harm", talent.dampen_harm );
 
   buff.diffuse_magic = make_buff( this, "diffuse_magic", talent.diffuse_magic )
-                           ->set_default_value( talent.diffuse_magic->effectN( 1 ).percent() );
+                           ->set_default_value_from_effect( 1, 0.01 );
 
   buff.spinning_crane_kick = make_buff( this, "spinning_crane_kick", spec.spinning_crane_kick )
-                                 ->set_default_value( spec.spinning_crane_kick->effectN( 2 ).percent() )
+                                 ->set_default_value_from_effect( 2, 0.01 )
                                  ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
 
   // Brewmaster
   buff.bladed_armor = make_buff( this, "bladed_armor", spec.bladed_armor )
-                          ->set_default_value( spec.bladed_armor->effectN( 1 ).percent() )
+                          ->set_default_value_from_effect( 1, 0.01 )
                           ->add_invalidate( CACHE_ATTACK_POWER );
 
   buff.blackout_combo = make_buff( this, "blackout_combo", talent.blackout_combo->effectN( 5 ).trigger() );
 
+  buff.celestial_brew = make_buff<absorb_buff_t>( this, "celestial_brew", spec.celestial_brew );
+  buff.celestial_brew->set_absorb_source( get_stats( "celestial_brew" ) )->set_cooldown( timespan_t::zero() );
+
   buff.celestial_flames = make_buff( this, "celestial_flames", talent.celestial_flames->effectN( 1 ).trigger() )
                               ->set_chance( talent.celestial_flames->proc_chance() )
-                              ->set_default_value( talent.celestial_flames->effectN( 2 ).percent() );
+                              ->set_default_value_from_effect( 2, 0.01 );
 
   buff.elusive_brawler = make_buff( this, "elusive_brawler", mastery.elusive_brawler->effectN( 3 ).trigger() )
                              ->add_invalidate( CACHE_DODGE );
@@ -8449,10 +8457,10 @@ void monk_t::create_buffs()
   buff.gift_of_the_ox = new buffs::gift_of_the_ox_buff_t( *this, "gift_of_the_ox", find_spell( 124503 ) );
 
   buff.invoke_niuzao = make_buff( this, "invoke_niuzao", spec.invoke_niuzao )
-                           ->set_default_value( spec.invoke_niuzao->effectN( 2 ).percent() );
+                           ->set_default_value_from_effect( 2, 0.01 );
 
   buff.purified_chi = make_buff( this, "purified_chi", find_spell( 325092 ) )
-                          ->set_default_value( find_spell( 325092 )->effectN( 1 ).percent() );
+                          ->set_default_value_from_effect( 1, 0.01 );
 
   buff.spitfire = make_buff( this, "spitfire", talent.spitfire->effectN( 1 ).trigger() );
 
@@ -8466,36 +8474,34 @@ void monk_t::create_buffs()
   buff.invoke_chiji = make_buff( this, "invoke_chiji", find_spell( 343818 ) );
 
   buff.invoke_chiji_evm = make_buff( this, "invoke_chiji_evm", find_spell( 343820 ) )
-      ->set_default_value( find_spell( 343820 )->effectN( 1 ).percent() );
+                              ->set_default_value_from_effect( 1, 0.01 );
 
   buff.life_cocoon = make_buff<absorb_buff_t>( this, "life_cocoon", spec.life_cocoon );
   buff.life_cocoon->set_absorb_source( get_stats( "life_cocoon" ) )->set_cooldown( timespan_t::zero() );
 
-  buff.mana_tea =
-      make_buff( this, "mana_tea", talent.mana_tea )->set_default_value( talent.mana_tea->effectN( 1 ).percent() );
+  buff.mana_tea = make_buff( this, "mana_tea", talent.mana_tea )
+                      ->set_default_value_from_effect( 1, 0.01 );
 
   buff.lifecycles_enveloping_mist = make_buff( this, "lifecycles_enveloping_mist", find_spell( 197919 ) )
-                                        ->set_default_value( find_spell( 197919 )->effectN( 1 ).percent() );
+                                        ->set_default_value_from_effect( 1, 0.01 );
 
   buff.lifecycles_vivify = make_buff( this, "lifecycles_vivify", find_spell( 197916 ) )
-                               ->set_default_value( find_spell( 197916 )->effectN( 1 ).percent() );
+                               ->set_default_value_from_effect( 1, 0.01 );
 
   buff.refreshing_jade_wind =
       make_buff( this, "refreshing_jade_wind", talent.refreshing_jade_wind )
-          ->set_default_value( talent.refreshing_jade_wind->effectN( 1 ).trigger()->effectN( 1 ).percent() )
           ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
 
   buff.teachings_of_the_monastery = make_buff( this, "teachings_of_the_monastery", find_spell( 202090 ) )
-                                        ->set_default_value( find_spell( 202090 )->effectN( 1 ).percent() );
+                                        ->set_default_value_from_effect( 1, 0.01 );
 
   buff.thunder_focus_tea =
       make_buff( this, "thunder_focus_tea", spec.thunder_focus_tea )
-          ->set_max_stack( 1 +
-                           (int)( talent.focused_thunder ? talent.focused_thunder->effectN( 1 ).base_value() : 0 ) );
+          ->modify_max_stack( (int)( talent.focused_thunder ? talent.focused_thunder->effectN( 1 ).base_value() : 0 ) );
 
   buff.uplifting_trance = make_buff( this, "uplifting_trance", find_spell( 197916 ) )
                               ->set_chance( spec.renewing_mist->effectN( 2 ).percent() )
-                              ->set_default_value( find_spell( 197916 )->effectN( 1 ).percent() );
+                              ->set_default_value_from_effect( 1, 0.01 );
 
   // Windwalker
   buff.bok_proc =
@@ -8504,7 +8510,7 @@ void monk_t::create_buffs()
                                                     : spec.combo_breaker->effectN( 1 ).percent() );
 
   buff.combo_master = make_buff( this, "combo_master", find_spell( 211432 ) )
-                          ->set_default_value( find_spell( 211432 )->effectN( 1 ).base_value() )
+                          ->set_default_value_from_effect( 1 )
                           ->add_invalidate( CACHE_MASTERY );
 
   buff.combo_strikes =
@@ -8519,11 +8525,11 @@ void monk_t::create_buffs()
   buff.flying_serpent_kick_movement = make_buff( this, "flying_serpent_kick_movement" );  // find_spell( 115057 )
 
   buff.hit_combo = make_buff( this, "hit_combo", passives.hit_combo )
-                       ->set_default_value( passives.hit_combo->effectN( 1 ).percent() )
+                       ->set_default_value_from_effect( 1, 0.01 )
                        ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   buff.inner_stength = make_buff( this, "inner_strength", find_spell( 261769 ) )
-                           ->set_default_value( find_spell( 261769 )->effectN( 1 ).base_value() );
+                           ->set_default_value_from_effect( 1 );
 
   buff.serenity = new buffs::serenity_buff_t( *this, "serenity", talent.serenity );
 
@@ -8535,7 +8541,7 @@ void monk_t::create_buffs()
           ->set_cooldown( timespan_t::zero() );
 
   buff.pressure_point = make_buff( this, "pressure_point", find_spell( 337481 ) )
-                            ->set_default_value( find_spell( 337481 )->effectN( 1 ).percent() )
+                            ->set_default_value_from_effect( 1, 0.01 )
                             ->set_refresh_behavior( buff_refresh_behavior::NONE );
 
   buff.touch_of_karma = new buffs::touch_of_karma_buff_t( *this, "touch_of_karma", find_spell( 125174 ) );
@@ -8576,9 +8582,8 @@ void monk_t::create_buffs()
   buff.dance_of_chiji_azerite =
       make_buff( this, "dance_of_chiji_azerite", find_spell( 286587 ) )->set_trigger_spell( find_spell( 286586 ) );
 
-  buff.fury_of_xuen_stacks =
-      make_buff( this, "fury_of_xuen_stacks", passives.fury_of_xuen_stacking_buff )
-          ->set_default_value( ( passives.fury_of_xuen_stacking_buff->effectN( 3 ).base_value() / 100 ) * 0.01 );
+  buff.fury_of_xuen_stacks = make_buff( this, "fury_of_xuen_stacks", passives.fury_of_xuen_stacking_buff )
+                                 ->set_default_value_from_effect( 3, 0.0001 );
 
   buff.fury_of_xuen_haste = make_buff<stat_buff_t>( this, "fury_of_xuen_haste", passives.fury_of_xuen_haste_buff )
                                 ->add_stat( STAT_HASTE_RATING, azerite.fury_of_xuen.value() );
@@ -8588,10 +8593,17 @@ void monk_t::create_buffs()
 
   buff.sunrise_technique = make_buff( this, "sunrise_technique", find_spell( 273298 ) );
 
+  // Conduits
+  buff.fortifying_ingrediences = make_buff<absorb_buff_t>( this, "fortifying_ingredients", conduit.fortifying_ingredients );
+  buff.fortifying_ingrediences->set_absorb_source( get_stats( "fortifying_ingredients" ) )->set_cooldown( timespan_t::zero() );
+
   // Shadowland Legendaries
   // General
   buff.flaming_kicks    = make_buff( this, "flaming_kicks", find_spell( 338140 ) );
-  buff.invokers_delight = make_buff( this, "invokers_delight", legendary.invokers_delight->effectN( 1 ).trigger() );
+  buff.invokers_delight = make_buff( this, "invokers_delight", legendary.invokers_delight->effectN( 1 ).trigger() )
+      ->add_invalidate( CACHE_ATTACK_HASTE )
+      ->add_invalidate( CACHE_HASTE )
+      ->add_invalidate( CACHE_SPELL_HASTE );
 
   // Brewmaster
   buff.mighty_pour = make_buff( this, "mighty_pour", find_spell( 337994 ) );
@@ -8600,10 +8612,10 @@ void monk_t::create_buffs()
 
   // Windwalker
   buff.chi_energy = make_buff( this, "chi_energy", find_spell( 337571 ) )
-                        ->set_default_value( find_spell( 337571 )->effectN( 1 ).percent() );
+                        ->set_default_value_from_effect( 1, 0.01 );
 
   buff.the_emperors_capacitor = make_buff( this, "the_emperors_capacitor", find_spell( 337291 ) )
-                                    ->set_default_value( find_spell( 337291 )->effectN( 1 ).percent() );
+                                    ->set_default_value_from_effect( 1, 0.01 );
 
 }
 

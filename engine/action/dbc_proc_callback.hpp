@@ -60,7 +60,7 @@ struct dbc_proc_callback_t : public action_callback_t
 
   virtual void initialize() override;
 
-  void trigger(action_t* a, void* call_data) override;
+  void trigger(action_t* a, action_state_t* state) override;
 
   // Determine target for the callback (action).
   virtual player_t* target(const action_state_t* state) const;
