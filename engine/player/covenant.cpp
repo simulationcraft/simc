@@ -1147,9 +1147,25 @@ void plagueys_preemptive_strike( special_effect_t& effect )
 
 void gnashing_chompers( special_effect_t& effect )
 {
-  if ( !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() ) return;
+  if ( !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() )
+    return;
 
+  auto buff = effect.player->buffs.gnashing_chompers;
+  if ( !buff )
+  {
+    buff = make_buff( effect.player, "gnashing_chompers", effect.player->find_spell( 324242 ) )
+      ->set_default_value_from_effect( 1 )
+      ->add_invalidate( CACHE_HASTE )
+      ->set_period( 0_ms )
+      ->set_refresh_behavior( buff_refresh_behavior::DURATION );
+  }
 
+  range::for_each( effect.player->sim->actor_list, [buff]( player_t* p ) {
+    if ( !p->is_enemy() )
+      return;
+
+    p->callbacks_on_demise.emplace_back( [buff]( player_t* ) { buff->trigger(); } );
+  } );
 }
 
 void embody_the_construct( special_effect_t& effect )
