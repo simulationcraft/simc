@@ -751,9 +751,46 @@ void social_butterfly( special_effect_t& effect )
 
 void first_strike( special_effect_t& effect )
 {
-  if ( !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() ) return;
+  if ( !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() )
+    return;
 
+  struct first_strike_cb_t : public dbc_proc_callback_t
+  {
+    std::vector<player_t*> attacked_list;
 
+    first_strike_cb_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e ), attacked_list() {}
+
+    void trigger( action_t* a, void* cd ) override
+    {
+      auto st = static_cast<action_state_t*>( cd );
+
+      if ( range::contains( attacked_list, st->target ) )
+        return;
+
+      attacked_list.push_back( st->target );
+
+      dbc_proc_callback_t::trigger( a, cd );
+    }
+
+    void reset() override
+    {
+      dbc_proc_callback_t::reset();
+
+      attacked_list.clear();
+    }
+  };
+
+  if ( !effect.player->buffs.first_strike )
+  {
+    auto s_data = effect.player->find_spell( 325381 );
+    effect.player->buffs.first_strike = make_buff( effect.player, "first_strike", s_data )
+                                            ->set_default_value( s_data->effectN( 1 ).percent() )
+                                            ->add_invalidate( CACHE_CRIT_CHANCE );
+  }
+
+  effect.custom_buff = effect.player->buffs.first_strike;
+
+  new first_strike_cb_t( effect );
 }
 
 void wild_hunt_tactics( special_effect_t& effect )
