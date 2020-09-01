@@ -4287,9 +4287,10 @@ double player_t::composite_attribute_multiplier( attribute_e attr ) const
     return m;
 
   if ( ( true_level >= 27 ) && matching_gear )
-  {
     m *= 1.0 + matching_gear_multiplier( attr );
-  }
+
+  if ( buffs.built_for_war )
+    m *= 1.0 + buffs.built_for_war->check_stack_value();
 
   switch ( attr )
   {
