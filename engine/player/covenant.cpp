@@ -587,8 +587,8 @@ void register_target_data_initializers( sim_t* sim )
     {
       assert( !td->debuff.adversary );
 
-      auto s_data = td->source->find_spell( 331934 );
-      td->debuff.adversary = make_buff( *td, "adversary", s_data )->set_default_value( s_data->effectN( 1 ).percent() );
+      td->debuff.adversary =
+          make_buff( *td, "adversary", td->source->find_spell( 331934 ) )->set_default_value_from_effect( 1 );
       td->debuff.adversary->reset();
     }
     else
@@ -696,7 +696,7 @@ void grove_invigoration( special_effect_t& effect )
     redirected_anima_buff_t( player_t* p ) : buff_t( p, "redirected_anima", p->find_spell( 342814 ) )
     {
       // Mastery is stored in 'points' so use base_value() instead of percent()
-      set_default_value( data().effectN( 2 ).base_value() );
+      set_default_value_from_effect( 2, 1.0 );
       add_invalidate( CACHE_MASTERY );
     }
 
@@ -730,11 +730,11 @@ void field_of_blossoms( special_effect_t& effect )
 
   if ( !effect.player->buffs.field_of_blossoms )
   {
-    auto s_data = effect.player->find_spell( 342774 );
-    effect.player->buffs.field_of_blossoms = make_buff( effect.player, "field_of_blossoms", s_data )
-      ->set_cooldown( effect.player->find_spell( 342781 )->duration() )
-      ->set_default_value( s_data->effectN( 1 ).percent() )
-      ->add_invalidate( CACHE_HASTE );
+    effect.player->buffs.field_of_blossoms =
+        make_buff( effect.player, "field_of_blossoms", effect.player->find_spell( 342774 ) )
+            ->set_cooldown( effect.player->find_spell( 342781 )->duration() )
+            ->set_default_value_from_effect( 1 )
+            ->add_invalidate( CACHE_HASTE );
   }
 
   add_covenant_cast_callback<covenant_cb_buff_t>( effect.player, effect.player->buffs.field_of_blossoms );
@@ -750,7 +750,7 @@ void social_butterfly( special_effect_t& effect )
     social_butterfly_buff_t( player_t* p ) : buff_t( p, "social_butterfly", p->find_spell( 320212 ) )
     {
       add_invalidate( CACHE_VERSATILITY );
-      set_default_value( data().effectN( 1 ).percent() );
+      set_default_value_from_effect( 1 );
     }
 
     void expire_override( int s, timespan_t d ) override
@@ -800,9 +800,8 @@ void first_strike( special_effect_t& effect )
 
   if ( !effect.player->buffs.first_strike )
   {
-    auto s_data = effect.player->find_spell( 325381 );
-    effect.player->buffs.first_strike = make_buff( effect.player, "first_strike", s_data )
-      ->set_default_value( s_data->effectN( 1 ).percent() )
+    effect.player->buffs.first_strike = make_buff( effect.player, "first_strike", effect.player->find_spell( 325381 ) )
+      ->set_default_value_from_effect( 1 )
       ->add_invalidate( CACHE_CRIT_CHANCE );
   }
 
@@ -818,7 +817,7 @@ void wild_hunt_tactics( special_effect_t& effect )
 
   if ( !effect.player->buffs.wild_hunt_tactics )
     effect.player->buffs.wild_hunt_tactics = make_buff( effect.player, "wild_hunt_tactics", effect.driver() )
-      ->set_default_value( effect.driver()->effectN( 1 ).percent() );
+      ->set_default_value_from_effect( 1 );
 }
 
 void exacting_preparation( special_effect_t& effect )
@@ -864,9 +863,8 @@ void thrill_seeker( special_effect_t& effect )
 
   if ( !effect.player->buffs.euphoria )
   {
-    auto s_data = effect.player->find_spell( 331937 );
-    effect.player->buffs.euphoria = make_buff( effect.player, "euphoria", s_data )
-      ->set_default_value( s_data->effectN( 1 ).percent() )
+    effect.player->buffs.euphoria = make_buff( effect.player, "euphoria", effect.player->find_spell( 331937 ) )
+      ->set_default_value_from_effect( 1 )
       ->add_invalidate( CACHE_HASTE );
   }
 
@@ -908,11 +906,11 @@ void wasteland_propriety( special_effect_t& effect )
 
   if ( !effect.player->buffs.wasteland_propriety )
   {
-    auto s_data = effect.player->find_spell( 333218 );
-    effect.player->buffs.wasteland_propriety = make_buff( effect.player, "wasteland_propriety", s_data )
-      ->set_cooldown( effect.player->find_spell( 333221 )->duration() )
-      ->set_default_value( s_data->effectN( 1 ).percent() )
-      ->add_invalidate( CACHE_VERSATILITY );
+    effect.player->buffs.wasteland_propriety =
+        make_buff( effect.player, "wasteland_propriety", effect.player->find_spell( 333218 ) )
+            ->set_cooldown( effect.player->find_spell( 333221 )->duration() )
+            ->set_default_value_from_effect( 1 )
+            ->add_invalidate( CACHE_VERSATILITY );
   }
 
   add_covenant_cast_callback<covenant_cb_buff_t>( effect.player, effect.player->buffs.wasteland_propriety );
@@ -925,12 +923,12 @@ void built_for_war( special_effect_t& effect )
 
   if ( !effect.player->buffs.built_for_war )
   {
-    auto s_data = effect.player->find_spell( 332842 );
-    effect.player->buffs.built_for_war = make_buff( effect.player, "built_for_war", s_data )
-      ->set_default_value( s_data->effectN( 1 ).percent() )
-      ->add_invalidate( CACHE_STRENGTH )
-      ->add_invalidate( CACHE_AGILITY )
-      ->add_invalidate( CACHE_INTELLECT );
+    effect.player->buffs.built_for_war =
+        make_buff( effect.player, "built_for_war", effect.player->find_spell( 332842 ) )
+            ->set_default_value_from_effect( 1 )
+            ->add_invalidate( CACHE_STRENGTH )
+            ->add_invalidate( CACHE_AGILITY )
+            ->add_invalidate( CACHE_INTELLECT );
   }
 
   auto eff_data = &effect.driver()->effectN( 1 );
