@@ -1421,6 +1421,9 @@ class SpellDataGenerator(DataGenerator):
          316835,
          # Searing Breath damage
          316704,
+         # Shadowlands
+         # Soulbinds
+         320130, 320212, # Social Butterfly vers buff (night fae/dreamweaver)
         ),
 
         # Warrior:
