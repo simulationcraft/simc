@@ -3949,6 +3949,9 @@ double player_t::composite_damage_versatility() const
   if ( buffs.social_butterfly )
     cdv += buffs.social_butterfly->check_value();
 
+  if ( buffs.wasteland_propriety )
+    cdv += buffs.wasteland_propriety->check_value();
+
   cdv += racials.mountaineer->effectN( 1 ).percent();
   cdv += racials.brush_it_off->effectN( 1 ).percent();
 
@@ -3972,6 +3975,9 @@ double player_t::composite_heal_versatility() const
   if ( buffs.social_butterfly )
     chv += buffs.social_butterfly->check_value();
 
+  if ( buffs.wasteland_propriety )
+    chv += buffs.wasteland_propriety->check_value();
+
   chv += racials.mountaineer->effectN( 1 ).percent();
   chv += racials.brush_it_off->effectN( 1 ).percent();
 
@@ -3994,6 +4000,9 @@ double player_t::composite_mitigation_versatility() const
 
   if ( buffs.social_butterfly )
     cmv += buffs.social_butterfly->check_value() / 2;
+
+  if ( buffs.wasteland_propriety )
+    cmv += buffs.wasteland_propriety->check_value();
 
   cmv += racials.mountaineer->effectN( 1 ).percent() / 2;
   cmv += racials.brush_it_off->effectN( 1 ).percent() / 2;
