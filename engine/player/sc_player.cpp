@@ -3591,6 +3591,9 @@ double player_t::composite_melee_crit_chance() const
   if ( buffs.first_strike )
     ac += buffs.first_strike->check_value();
 
+  if ( buffs.pointed_courage )
+    ac += buffs.pointed_courage->check_stack_value();
+
   ac += racials.viciousness->effectN( 1 ).percent();
   ac += racials.arcane_acuity->effectN( 1 ).percent();
   if ( buffs.embrace_of_paku )
@@ -3887,6 +3890,9 @@ double player_t::composite_spell_crit_chance() const
 
   if( buffs.first_strike )
     sc += buffs.first_strike->check_value();
+
+  if ( buffs.pointed_courage )
+    sc += buffs.pointed_courage->check_stack_value();
 
   sc += racials.viciousness->effectN( 1 ).percent();
   sc += racials.arcane_acuity->effectN( 1 ).percent();

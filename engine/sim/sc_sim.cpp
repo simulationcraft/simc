@@ -3778,7 +3778,9 @@ void sim_t::create_options()
 
   // Shadowlands
   add_option( opt_float( "shadowlands.combat_meditation_extend_chance",
-                         shadowlands_opts.combat_meditation_extend_chance, 0.0, 1.0 ) );
+    shadowlands_opts.combat_meditation_extend_chance, 0.0, 1.0 ) );
+  add_option( opt_uint( "shadowlands.pointed_courage_nearby",
+    shadowlands_opts.pointed_courage_nearby, 1, 5 ) );
 }
 
 // sim_t::parse_option ======================================================

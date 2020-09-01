@@ -1019,9 +1019,23 @@ void combat_meditation( special_effect_t& effect )
 
 void pointed_courage( special_effect_t& effect )
 {
-  if ( !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() ) return;
+  if ( !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() )
+    return;
 
+  if ( !effect.player->buffs.pointed_courage )
+  {
+    effect.player->buffs.pointed_courage =
+        make_buff( effect.player, "pointed_courage", effect.player->find_spell( 330511 ) )
+            ->set_default_value_from_effect( 1 )
+            ->add_invalidate( CACHE_CRIT_CHANCE )
+            // TODO: add better handling of allies/enemies nearby mechanic which is checked every tick. tick is disabled
+            // for now
+            ->set_period( 0_ms );
+  }
 
+  effect.player->register_combat_begin( []( player_t* p ) {
+    p->buffs.pointed_courage->trigger( p->sim->shadowlands_opts.pointed_courage_nearby );
+  } );
 }
 
 void hammer_of_genesis( special_effect_t& effect )
