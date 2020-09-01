@@ -4731,6 +4731,14 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
         sim->print_debug( "{} trigger_gcd modified by {} to {}", *this, effect.time_value(), trigger_gcd );
         break;
 
+      case P_MAX_STACKS:
+        if ( has_periodic_damage_effect( data() ) )
+        {
+          dot_max_stack += as<int>( effect.base_value() );
+          sim->print_debug( "{} dot_max_stack modified by {} to {}", *this, effect.base_value(), dot_max_stack );
+        }
+        break;
+
       default:
         break;
     }
