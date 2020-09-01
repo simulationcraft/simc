@@ -714,6 +714,7 @@ void grove_invigoration( special_effect_t& effect )
   };
 
   effect.custom_buff = effect.player->buffs.redirected_anima_stacks;
+
   new dbc_proc_callback_t( effect.player, effect );
 
   if ( !effect.player->buffs.redirected_anima )
@@ -731,9 +732,9 @@ void field_of_blossoms( special_effect_t& effect )
   {
     auto s_data = effect.player->find_spell( 342774 );
     effect.player->buffs.field_of_blossoms = make_buff( effect.player, "field_of_blossoms", s_data )
-                                                 ->set_cooldown( effect.player->find_spell( 342781 )->duration() )
-                                                 ->set_default_value( s_data->effectN( 1 ).percent() )
-                                                 ->add_invalidate( CACHE_HASTE );
+      ->set_cooldown( effect.player->find_spell( 342781 )->duration() )
+      ->set_default_value( s_data->effectN( 1 ).percent() )
+      ->add_invalidate( CACHE_HASTE );
   }
 
   add_covenant_cast_callback<covenant_cb_buff_t>( effect.player, effect.player->buffs.field_of_blossoms );
@@ -801,8 +802,8 @@ void first_strike( special_effect_t& effect )
   {
     auto s_data = effect.player->find_spell( 325381 );
     effect.player->buffs.first_strike = make_buff( effect.player, "first_strike", s_data )
-                                            ->set_default_value( s_data->effectN( 1 ).percent() )
-                                            ->add_invalidate( CACHE_CRIT_CHANCE );
+      ->set_default_value( s_data->effectN( 1 ).percent() )
+      ->add_invalidate( CACHE_CRIT_CHANCE );
   }
 
   effect.custom_buff = effect.player->buffs.first_strike;
@@ -817,7 +818,7 @@ void wild_hunt_tactics( special_effect_t& effect )
 
   if ( !effect.player->buffs.wild_hunt_tactics )
     effect.player->buffs.wild_hunt_tactics = make_buff( effect.player, "wild_hunt_tactics", effect.driver() )
-                                                 ->set_default_value( effect.driver()->effectN( 1 ).percent() );
+      ->set_default_value( effect.driver()->effectN( 1 ).percent() );
 }
 
 void exacting_preparation( special_effect_t& effect )
