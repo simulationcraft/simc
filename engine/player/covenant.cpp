@@ -1184,9 +1184,25 @@ void serrated_spaulders( special_effect_t& effect )
 
 void heirmirs_arsenal_marrowed_gemstone( special_effect_t& effect )
 {
-  if ( !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() ) return;
+  if ( !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() )
+    return;
 
+  if ( !effect.player->buffs.marrowed_gemstone_enhancement )
+  {
+    effect.player->buffs.marrowed_gemstone_enhancement =
+        make_buff( effect.player, "marrowed_gemstone_enhancement", effect.player->find_spell( 327069 ) )
+            ->set_default_value_from_effect( 1 )
+            ->add_invalidate( CACHE_CRIT_CHANCE );
+    // TODO: confirm if cooldown applies only to the crit buff, or to the counter as well
+    effect.player->buffs.marrowed_gemstone_enhancement->set_cooldown(
+        effect.player->buffs.marrowed_gemstone_enhancement->buff_duration() +
+        effect.player->find_spell( 327073 )->duration() );
+  }
 
+  effect.proc_flags2_ = PF2_CRIT;
+  effect.custom_buff = effect.player->buffs.marrowed_gemstone_charging;
+
+  new dbc_proc_callback_t( effect.player, effect );
 }
 
 }  // namespace soulbinds

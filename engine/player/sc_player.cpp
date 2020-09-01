@@ -3329,6 +3329,15 @@ void player_t::create_buffs()
             b->expire();
           }
         } );
+      buffs.marrowed_gemstone_charging = make_buff( this, "marrowed_gemstone_charging", find_spell( 327066 ) )
+        ->modify_max_stack( 1 )
+        ->set_stack_change_callback( [this]( buff_t* b, int, int new_ ) {
+          if ( new_ >= b->max_stack() )
+          {
+            buffs.marrowed_gemstone_enhancement->trigger();
+            b->expire();
+          }
+        } );
     }
   }
   // .. for enemies
@@ -3599,6 +3608,9 @@ double player_t::composite_melee_crit_chance() const
 
   if ( buffs.pointed_courage )
     ac += buffs.pointed_courage->check_stack_value();
+
+  if ( buffs.marrowed_gemstone_enhancement )
+    ac += buffs.marrowed_gemstone_enhancement->check_stack_value();
 
   ac += racials.viciousness->effectN( 1 ).percent();
   ac += racials.arcane_acuity->effectN( 1 ).percent();
@@ -3905,6 +3917,9 @@ double player_t::composite_spell_crit_chance() const
 
   if ( buffs.pointed_courage )
     sc += buffs.pointed_courage->check_stack_value();
+
+  if ( buffs.marrowed_gemstone_enhancement )
+    sc += buffs.marrowed_gemstone_enhancement->check_stack_value();
 
   sc += racials.viciousness->effectN( 1 ).percent();
   sc += racials.arcane_acuity->effectN( 1 ).percent();
