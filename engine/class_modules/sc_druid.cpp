@@ -2619,7 +2619,7 @@ public:
 
     // Internal cooldown is handled by buff.
     if ( ab::p()->buff.clearcasting->trigger( 1, buff_t::DEFAULT_VALUE(), chance,
-                                              ab::p()->buff.clearcasting->buff_duration ) )
+                                              ab::p()->buff.clearcasting->buff_duration() ) )
     {
       ab::p()->proc.clearcasting->occur();
 
@@ -4533,7 +4533,7 @@ struct tigers_fury_t : public cat_attack_t
   timespan_t duration;
 
   tigers_fury_t( druid_t* p, const std::string& options_str )
-    : cat_attack_t( "tigers_fury", p, p->spec.tigers_fury, options_str ), duration( p->buff.tigers_fury->buff_duration )
+    : cat_attack_t( "tigers_fury", p, p->spec.tigers_fury, options_str ), duration( p->buff.tigers_fury->buff_duration() )
   {
     harmful = may_miss = may_parry = may_dodge = may_crit = false;
     autoshift = form_mask = CAT_FORM;
@@ -6044,7 +6044,7 @@ struct ironfur_t : public druid_spell_t
 
   timespan_t composite_buff_duration()
   {
-    timespan_t bd = p()->buff.ironfur->buff_duration;
+    timespan_t bd = p()->buff.ironfur->buff_duration();
 
     bd += timespan_t::from_seconds( p()->buff.guardian_of_elune->value() );
 
@@ -8379,7 +8379,7 @@ void druid_t::create_buffs()
     ->set_stack_change_callback( [this] ( buff_t* b, int, int new_ ) {
       if ( new_ )
       {
-        this->eclipse_handler.trigger_both( b->buff_duration );
+        this->eclipse_handler.trigger_both( b->buff_duration() );
         uptime.combined_ca_inc->update( true, sim->current_time() );
       }
       else
@@ -8398,7 +8398,7 @@ void druid_t::create_buffs()
     ->set_stack_change_callback( [this] ( buff_t* b, int, int new_ ) {
       if ( new_ )
       {
-        this->eclipse_handler.trigger_both( b->buff_duration );
+        this->eclipse_handler.trigger_both( b->buff_duration() );
         uptime.combined_ca_inc->update( true, sim->current_time() );
       }
       else

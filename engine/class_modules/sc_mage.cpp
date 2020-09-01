@@ -1137,7 +1137,7 @@ struct combustion_buff_t : public buff_t
     set_default_value( data().effectN( 1 ).percent() );
     set_tick_zero( true );
     set_refresh_behavior( buff_refresh_behavior::DURATION );
-    buff_duration += p->spec.combustion_2->effectN( 1 ).time_value();
+    base_buff_duration += p->spec.combustion_2->effectN( 1 ).time_value();
 
     set_stack_change_callback( [ this ] ( buff_t*, int, int cur )
     {
@@ -1213,7 +1213,7 @@ struct icy_veins_buff_t : public buff_t
     set_default_value( data().effectN( 1 ).percent() );
     set_cooldown( 0_ms );
     add_invalidate( CACHE_SPELL_HASTE );
-    buff_duration += p->talents.thermal_void->effectN( 2 ).time_value() + p->spec.icy_veins_2->effectN( 1 ).time_value();
+    base_buff_duration += p->talents.thermal_void->effectN( 2 ).time_value() + p->spec.icy_veins_2->effectN( 1 ).time_value();
   }
 
   void expire_override( int stacks, timespan_t duration ) override
@@ -1931,7 +1931,7 @@ struct fire_mage_spell_t : public mage_spell_t
           p->procs.heating_up_generated->occur();
           p->buffs.heating_up->trigger(
             1, buff_t::DEFAULT_VALUE(), -1.0,
-            p->buffs.heating_up->buff_duration * p->cache.spell_speed() );
+            p->buffs.heating_up->buff_duration() * p->cache.spell_speed() );
           if ( guaranteed )
             p->buffs.heating_up->predict();
         }
@@ -3790,7 +3790,7 @@ struct frost_nova_t : public mage_spell_t
     if ( p()->runeforge.grisly_icicle.ok() )
     {
       auto debuff = td( s->target )->debuffs.grisly_icicle;
-      duration = debuff->buff_duration;
+      duration = debuff->buff_duration();
       debuff->trigger();
     }
     p()->trigger_crowd_control( s, MECHANIC_ROOT, duration );
@@ -7981,7 +7981,7 @@ void mage_t::trigger_icicle_gain( player_t* icicle_target, action_t* icicle_acti
     trigger_icicle( icicle_target );
 
   buffs.icicles->trigger();
-  icicles.push_back( { icicle_action, make_event( sim, buffs.icicles->buff_duration, [ this ]
+  icicles.push_back( { icicle_action, make_event( sim, buffs.icicles->buff_duration(), [ this ]
   {
     buffs.icicles->decrement();
     icicles.erase( icicles.begin() );
@@ -7996,7 +7996,7 @@ void mage_t::trigger_evocation( timespan_t duration_override, bool hasted )
 
   timespan_t duration = duration_override;
   if ( duration <= 0_ms )
-    duration = buffs.evocation->buff_duration;
+    duration = buffs.evocation->buff_duration();
 
   if ( hasted )
   {

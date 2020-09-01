@@ -3168,6 +3168,7 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b, int re
                "<li><span class=\"label\">cooldown name:</span>%s</li>\n"
                "<li><span class=\"label\">max_stacks:</span>%.i</li>\n"
                "<li><span class=\"label\">base duration:</span>%.2f</li>\n"
+               "<li><span class=\"label\">duration modifier:</span>%.2f</li>\n"
                "<li><span class=\"label\">base cooldown:</span>%.2f</li>\n"
                "<li><span class=\"label\">default_chance:</span>%.2f%%</li>\n"
                "<li><span class=\"label\">default_value:</span>%.2f</li>\n"
@@ -3182,7 +3183,8 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b, int re
                b.source ? util::encode_html( b.source->name() ).c_str() : "",
                util::encode_html( b.cooldown->name_str ).c_str(),
                b.max_stack(),
-               b.buff_duration.total_seconds(),
+               b.base_buff_duration.total_seconds(),
+               b.buff_duration_multiplier,
                b.cooldown->duration.total_seconds(),
                b.default_chance * 100,
                b.default_value,

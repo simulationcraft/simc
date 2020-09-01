@@ -442,8 +442,8 @@ bool shield_of_the_righteous_buff_t::trigger( int stacks, double value, double c
 
   if ( this -> up() && new_avengers_valor != avengers_valor_increase )
   {
-    avengers_valor_increase = avengers_valor_increase * remains().total_seconds() / ( remains().total_seconds() + buff_duration.total_seconds() )
-      + new_avengers_valor * buff_duration.total_seconds() / ( remains().total_seconds() + buff_duration.total_seconds() );
+    avengers_valor_increase = avengers_valor_increase * remains().total_seconds() / ( remains().total_seconds() + buff_duration().total_seconds() )
+      + new_avengers_valor * buff_duration().total_seconds() / ( remains().total_seconds() + buff_duration().total_seconds() );
   }
   else
   {

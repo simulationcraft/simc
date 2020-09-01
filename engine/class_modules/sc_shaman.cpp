@@ -7765,7 +7765,7 @@ void shaman_t::create_buffs()
   // Apply Azerite Trait Ancestral Resonance to Bloodlust
   if ( azerite.ancestral_resonance.ok() )
   {
-    buffs.bloodlust->buff_duration =
+    buffs.bloodlust->base_buff_duration =
         timespan_t::from_seconds( azerite.ancestral_resonance.spell_ref().effectN( 2 ).base_value() );
   }
   //

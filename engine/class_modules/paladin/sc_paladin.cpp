@@ -87,13 +87,13 @@ namespace buffs {
     switch ( p -> specialization() )
     {
     case PALADIN_HOLY:
-      buff_duration *= 1.0 + p -> talents.holy_sanctified_wrath -> effectN( 1 ).percent();
+      base_buff_duration *= 1.0 + p -> talents.holy_sanctified_wrath -> effectN( 1 ).percent();
       break;
     case PALADIN_RETRIBUTION:
-      buff_duration *= 1.0 + p -> talents.ret_sanctified_wrath -> effectN( 1 ).percent();
+      base_buff_duration *= 1.0 + p -> talents.ret_sanctified_wrath -> effectN( 1 ).percent();
       break;
     case PALADIN_PROTECTION:
-      buff_duration *= 1.0 + p -> talents.prot_sanctified_wrath -> effectN( 1 ).percent();
+      base_buff_duration *= 1.0 + p -> talents.prot_sanctified_wrath -> effectN( 1 ).percent();
       break;
     default:
       break;
@@ -101,7 +101,7 @@ namespace buffs {
 
     // ... or if we have Light's Decree
     if ( p -> azerite.lights_decree.ok() )
-      buff_duration += p -> spells.lights_decree -> effectN( 2 ).time_value();
+      base_buff_duration += p -> spells.lights_decree -> effectN( 2 ).time_value();
 
     // let the ability handle the cooldown
     cooldown -> duration = 0_ms;
@@ -171,7 +171,7 @@ struct avenging_wrath_t : public paladin_spell_t
     p() -> buffs.avenging_wrath -> trigger();
 
     if ( p() -> azerite.avengers_might.ok() )
-      p() -> buffs.avengers_might -> trigger( 1, p() -> buffs.avengers_might -> default_value, -1.0, p() -> buffs.avenging_wrath -> buff_duration );
+      p() -> buffs.avengers_might -> trigger( 1, p() -> buffs.avengers_might -> default_value, -1.0, p() -> buffs.avenging_wrath -> buff_duration() );
 
     p() -> buffs.avenging_wrath_autocrit -> trigger();
 

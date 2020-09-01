@@ -6102,13 +6102,13 @@ struct antimagic_shell_buff_t : public buff_t
 
     if ( p -> azerite.runic_barrier.enabled() )
     {
-      buff_duration = timespan_t::from_seconds( p -> azerite.runic_barrier.spell() -> effectN( 2 ).base_value() );
+      base_buff_duration = timespan_t::from_seconds( p -> azerite.runic_barrier.spell() -> effectN( 2 ).base_value() );
     }
 
-   buff_duration += p -> talent.spell_eater -> effectN( 2 ).time_value();
+    base_buff_duration += p -> talent.spell_eater -> effectN( 2 ).time_value();
 
-   // Assuming AMB's 30% increase is applied after Runic Barrier
-   buff_duration *= 1.0 + p -> talent.antimagic_barrier -> effectN( 2 ).percent();
+    // Assuming AMB's 30% increase is applied after Runic Barrier
+    base_buff_duration *= 1.0 + p -> talent.antimagic_barrier -> effectN( 2 ).percent();
   }
 
   void execute( int stacks, double value, timespan_t duration ) override
@@ -7145,7 +7145,7 @@ void death_knight_t::vision_of_perfection_proc()
 
   if ( trigger_buff )
   {
-    timespan_t trigger_duration = trigger_buff -> buff_duration * vision_of_perfection_major_coeff;
+    timespan_t trigger_duration = trigger_buff -> buff_duration() * vision_of_perfection_major_coeff;
 
     if ( trigger_buff -> check() )
       trigger_buff -> extend_duration( this, trigger_duration );

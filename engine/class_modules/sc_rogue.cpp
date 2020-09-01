@@ -5447,7 +5447,7 @@ struct blade_flurry_t : public buff_t
     buff_t( p, "blade_flurry", p -> spec.blade_flurry )
   {
     set_cooldown( timespan_t::zero() );
-    set_duration( p -> spec.blade_flurry -> duration() + p -> talent.dancing_steel -> effectN( 2 ).time_value() );
+    apply_affecting_aura( p->talent.dancing_steel );
   }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
@@ -5518,7 +5518,7 @@ struct stealth_t : public stealth_like_buff_t
   stealth_t( rogue_t* r ) :
     stealth_like_buff_t( r, "stealth", r -> find_spell( 1784 ) )
   {
-    buff_duration = sim -> max_time / 2;
+    set_duration( sim->max_time / 2 );
   }
 
   void execute( int stacks, double value, timespan_t duration ) override
@@ -5593,9 +5593,9 @@ struct shadow_dance_t : public stealth_like_buff_t
   shadow_dance_t( rogue_t* p ) :
     stealth_like_buff_t( p, "shadow_dance", p -> spec.shadow_dance )
   {
-    buff_duration += p -> talent.subterfuge -> effectN( 2 ).time_value();
+    apply_affecting_aura( p->talent.subterfuge );
 
-    if ( p -> talent.dark_shadow -> ok() )
+    if ( p->talent.dark_shadow->ok() )
     {
       add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
     }
@@ -5604,8 +5604,7 @@ struct shadow_dance_t : public stealth_like_buff_t
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
     stealth_like_buff_t::expire_override( expiration_stacks, remaining_duration );
-
-    rogue -> buffs.the_first_dance -> expire();
+    rogue->buffs.the_first_dance->expire();
   }
 };
 
@@ -6656,7 +6655,7 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
     debuffs.akaaris_soul_fragment = make_buff( *this, "akaaris_soul_fragment", source->find_spell( 341111 ) )
       ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
       ->set_tick_behavior( buff_tick_behavior::REFRESH )
-      ->set_tick_callback( [ this, source, target ]( buff_t*, int, timespan_t ) {
+      ->set_tick_callback( [ source, target ]( buff_t*, int, timespan_t ) {
         source->active.akaaris_soul_fragment->trigger_secondary_action( target );
       } );
   }

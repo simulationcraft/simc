@@ -4145,7 +4145,7 @@ struct memory_of_lucid_dreams_t : public azerite_essence_major_t
     if ( action_list -> name_str == "precombat" && !background )
     {
       double MIN_TIME = player -> base_gcd.total_seconds(); // the player's base unhasted gcd: 1.5s
-      double MAX_TIME = player -> buffs.memory_of_lucid_dreams -> buff_duration.total_seconds() - 1;
+      double MAX_TIME = player -> buffs.memory_of_lucid_dreams -> buff_duration().total_seconds() - 1;
 
       // Ensure that we're using a positive value
       if ( precombat_time < 0 )
@@ -4908,7 +4908,7 @@ void the_unbound_force(special_effect_t& effect)
   buff_t* crit_buff = effect.player->buffs.reckless_force; // id=302932
 
   if (essence.rank() >= 3)
-    crit_buff->buff_duration += timespan_t::from_millis(essence.spell_ref(3u, essence_spell::UPGRADE, essence_type::MINOR).effectN(1).base_value());
+    crit_buff->base_buff_duration += timespan_t::from_millis(essence.spell_ref(3u, essence_spell::UPGRADE, essence_type::MINOR).effectN(1).base_value());
 
   if (essence.rank() >= 2)
     crit_buff->default_value += essence.spell_ref(2u, essence_spell::UPGRADE, essence_type::MINOR).effectN(1).percent();
@@ -5080,7 +5080,7 @@ struct lifeblood_shard_t : public buff_t
     set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
     set_max_stack( 64 );  // sufficiently large enough to cover major esssence + 10 allies
     set_quiet( true );
-    buff_duration *= 1.0 + ess.spell_ref( 2, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 1 ).percent();
+    base_buff_duration *= 1.0 + ess.spell_ref( 2, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 1 ).percent();
 
     set_stack_change_callback( [this]( buff_t*, int old_, int new_ ) {
       if ( new_ > old_ )
@@ -5264,7 +5264,7 @@ struct worldvein_resonance_t : public azerite_essence_major_t
     if ( action_list -> name_str == "precombat" && !background )
     {
       double MIN_TIME = player -> base_gcd.total_seconds(); // the player's base unhasted gcd: 1.5s
-      double MAX_TIME = worldvein_resonance -> buff_duration.total_seconds() - 1;
+      double MAX_TIME = worldvein_resonance -> buff_duration().total_seconds() - 1;
 
       // Ensure that we're using a positive value
       if ( precombat_time < 0 )
@@ -5292,7 +5292,7 @@ struct worldvein_resonance_t : public azerite_essence_major_t
 
     // Apply the duration penalty directly in trigger() because lifeblood stacks are asynchronous
     lifeblood -> trigger( stacks, lifeblood -> DEFAULT_VALUE(), -1.0,
-                          lifeblood -> buff_duration - timespan_t::from_seconds( precombat_time ) );
+                          lifeblood -> buff_duration() - timespan_t::from_seconds( precombat_time ) );
     worldvein_resonance->trigger();
 
     if ( ! player -> in_combat && precombat_time > 0 )

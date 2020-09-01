@@ -2169,14 +2169,14 @@ private:
 
       // for future compatibility, we may want to grab Xuen and our tick spell and build this data from those (Xuen
       // summon duration, for example)
-      dot_duration        = p->o()->buff.fury_of_xuen_haste->buff_duration;
+      dot_duration        = p->o()->buff.fury_of_xuen_haste->buff_duration();
       hasted_ticks        = false;
       may_miss            = false;
       dynamic_tick_action = true;  // trigger tick when t == 0
       base_tick_time =
           p->o()->passives.crackling_tiger_lightning_driver->effectN( 1 ).period();  // trigger a tick every second
       cooldown->duration =
-          p->o()->buff.fury_of_xuen_haste->buff_duration + timespan_t::from_seconds( 2 );  // we're done after 9 seconds
+          p->o()->buff.fury_of_xuen_haste->buff_duration() + timespan_t::from_seconds( 2 );  // we're done after 9 seconds
       attack_power_mod.direct = 0.0;
       attack_power_mod.tick   = 0.0;
 
@@ -2809,7 +2809,7 @@ public:
       timespan_t base_time = timespan_t::from_seconds( time_extension );
       if ( p()->buff.shuffle->up() )
       {
-        timespan_t max_time   = 3 * p()->buff.shuffle->buff_duration;
+        timespan_t max_time   = 3 * p()->buff.shuffle->buff_duration();
         timespan_t new_length = std::min( max_time, base_time + p()->buff.shuffle->remains() );
         p()->buff.shuffle->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, new_length );
       }
@@ -7427,7 +7427,7 @@ struct rushing_jade_wind_buff_t : public monk_buff_t<buff_t>
 
   bool trigger( int stacks, double value, double chance, timespan_t duration ) override
   {
-    duration = ( duration >= timespan_t::zero() ? duration : this->buff_duration ) * p().cache.spell_speed();
+    duration = ( duration >= timespan_t::zero() ? duration : this->buff_duration() ) * p().cache.spell_speed();
     // RJW snapshots the tick period on cast. this + the tick_time
     // callback represent that behavior
     _period = this->buff_period * p().cache.spell_speed();

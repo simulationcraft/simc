@@ -1082,7 +1082,7 @@ public:
     const bool triggered = buff -> trigger();
     if ( triggered && precombat && !in_combat && precast_time > 0_ms )
     {
-      buff -> extend_duration( ab::player, -std::min( precast_time, buff -> buff_duration ) );
+      buff -> extend_duration( ab::player, -std::min( precast_time, buff -> buff_duration() ) );
       buff -> cooldown -> adjust( -precast_time );
     }
     return triggered;
@@ -5580,7 +5580,7 @@ void hunter_t::vision_of_perfection_proc()
       cooldowns.barbed_shot->adjust( -recharge );
     }
 
-    timespan_t dur = buffs.aspect_of_the_wild->buff_duration * azerite_essence.vision_of_perfection_major_mult;
+    timespan_t dur = buffs.aspect_of_the_wild->buff_duration() * azerite_essence.vision_of_perfection_major_mult;
     if ( buffs.aspect_of_the_wild->check() )
     {
       buffs.aspect_of_the_wild->extend_duration( this, dur );
@@ -5595,8 +5595,8 @@ void hunter_t::vision_of_perfection_proc()
   }
   case HUNTER_MARKSMANSHIP:
   {
-    timespan_t ts_dur = buffs.trueshot->buff_duration * azerite_essence.vision_of_perfection_major_mult;
-    timespan_t uv_dur = buffs.unerring_vision_driver->buff_duration * azerite_essence.vision_of_perfection_major_mult;
+    timespan_t ts_dur = buffs.trueshot->buff_duration() * azerite_essence.vision_of_perfection_major_mult;
+    timespan_t uv_dur = buffs.unerring_vision_driver->buff_duration() * azerite_essence.vision_of_perfection_major_mult;
 
     if ( buffs.trueshot->check() )
     {
@@ -5614,7 +5614,7 @@ void hunter_t::vision_of_perfection_proc()
   case HUNTER_SURVIVAL:
   {
     // the vision proc on its own starts at 35% effectiveness, upgraded to 100% if refreshed by the active cooldown
-    timespan_t dur = buffs.coordinated_assault->buff_duration * azerite_essence.vision_of_perfection_major_mult;
+    timespan_t dur = buffs.coordinated_assault->buff_duration() * azerite_essence.vision_of_perfection_major_mult;
     if ( buffs.coordinated_assault->check() )
     {
       buffs.coordinated_assault->extend_duration( this, dur );
@@ -6226,7 +6226,7 @@ void hunter_t::create_buffs()
           }
         } );
   if ( conduits.sharpshooters_focus.ok() )
-    buffs.trueshot -> buff_duration *= 1 + conduits.sharpshooters_focus.percent();
+    buffs.trueshot -> base_buff_duration *= 1 + conduits.sharpshooters_focus.percent();
 
   buffs.volley =
     make_buff( this, "volley", talents.volley )
@@ -6241,7 +6241,7 @@ void hunter_t::create_buffs()
       -> set_activated( true )
       -> set_default_value( specs.coordinated_assault -> effectN( 1 ).percent() );
   if ( conduits.deadly_tandem.ok() )
-    buffs.coordinated_assault -> buff_duration += conduits.deadly_tandem.time_value();
+    buffs.coordinated_assault -> base_buff_duration += conduits.deadly_tandem.time_value();
 
   buffs.coordinated_assault_vision =
     make_buff( this, "coordinated_assault_vision", specs.coordinated_assault )
@@ -6317,7 +6317,7 @@ void hunter_t::create_buffs()
         -> set_default_value( find_spell( 328275 ) -> effectN( 2 ).percent() )
         -> set_activated( true );
   if ( conduits.spirit_attunement.ok() )
-    buffs.wild_spirits -> buff_duration += conduits.spirit_attunement -> effectN( 2 ).time_value();
+    buffs.wild_spirits -> base_buff_duration += conduits.spirit_attunement -> effectN( 2 ).time_value();
 
   // Legendaries
 

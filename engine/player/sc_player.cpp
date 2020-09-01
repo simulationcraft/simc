@@ -8097,7 +8097,7 @@ struct use_item_t : public action_t
         // bet for now.
         if ( buff )
         {
-          cooldown_group_duration = buff->buff_duration;
+          cooldown_group_duration = buff->buff_duration();
         }
       }
     }

@@ -3013,11 +3013,11 @@ void items::lurkers_insidious_gift( special_effect_t& effect )
   timespan_t duration_override = effect.player->sim->bfa_opts.lurkers_insidious_gift_duration;
 
   // If the overriden duration is out of bounds, yell at the user
-  if ( duration_override > insidious_gift_buff->buff_duration )
+  if ( duration_override > insidious_gift_buff->buff_duration() )
   {
     effect.player->sim->error(
         "{} Lurker's Insidious duration set higher than the buff's maximum duration, setting to {} seconds",
-        effect.player->name(), insidious_gift_buff->buff_duration.total_seconds() );
+        effect.player->name(), insidious_gift_buff->buff_duration().total_seconds() );
   }
   // If the override is valid and different from 0, replace the buff's duration
   else if ( duration_override > 0_ms )
@@ -3050,12 +3050,12 @@ void items::abyssal_speakers_gauntlets( special_effect_t& effect )
       timespan_t duration_override = effect.player->sim->bfa_opts.abyssal_speakers_gauntlets_shield_duration;
 
       // If the overriden duration is out of bounds, yell at the user
-      if ( duration_override > buff_duration )
+      if ( duration_override > buff_duration() )
       {
         effect.player->sim->error(
             "{} Abyssal Speaker's Gauntlets duration set higher than the buff's maximum duration, setting to {} "
             "seconds",
-            effect.player->name(), buff_duration.total_seconds() );
+            effect.player->name(), buff_duration().total_seconds() );
       }
       // If the override is valid and different from 0, replace the buff's duration
       else if ( duration_override > 0_ms )
@@ -3109,11 +3109,11 @@ void items::trident_of_deep_ocean( special_effect_t& effect )
       timespan_t duration_override = effect.player->sim->bfa_opts.trident_of_deep_ocean_duration;
 
       // If the overriden duration is out of bounds, yell at the user
-      if ( duration_override > buff_duration )
+      if ( duration_override > buff_duration() )
       {
         effect.player->sim->error(
             "{} Trident of deep ocan duration set higher than the buff's maximum duration, setting to {} seconds",
-            effect.player->name(), buff_duration.total_seconds() );
+            effect.player->name(), buff_duration().total_seconds() );
       }
       // If the override is valid and different from 0, replace the buff's duration
       else if ( duration_override > 0_ms )
@@ -3868,7 +3868,7 @@ void items::azsharas_font_of_power( special_effect_t& effect )
       // how long you channel for (rounded down to seconds)
       auto channel = std::min( 4_s, timespan_t::from_seconds( static_cast<int>( time.total_seconds() ) ) );
       // total duration of the buff from channeling
-      auto total = buff->buff_duration * ( channel.total_seconds() + 1 );
+      auto total = buff->buff_duration() * ( channel.total_seconds() + 1 );
       // actual duration of the buff you'll get in combat
       auto actual = total + channel - time;
       // cooldown on effect/trinket at start of combat
@@ -3941,7 +3941,7 @@ void items::azsharas_font_of_power( special_effect_t& effect )
       proc_t::tick( d );
 
       buff->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0,
-                     ( d->current_tick == 1 ? buff->buff_duration : base_tick_time ) + buff->buff_duration );
+                     ( d->current_tick == 1 ? buff->buff_duration() : base_tick_time ) + buff->buff_duration() );
     }
 
     void last_tick( dot_t* d ) override
@@ -5604,7 +5604,7 @@ void items::voidtwisted_titanshard( special_effect_t& effect )
     buff = make_buff<stat_buff_t>( effect.player, "void_shroud", effect.player->find_spell( 315774 ), effect.item );
 
     timespan_t duration_override =
-        buff->buff_duration * effect.player->sim->bfa_opts.voidtwisted_titanshard_percent_duration;
+        buff->buff_duration() * effect.player->sim->bfa_opts.voidtwisted_titanshard_percent_duration;
 
     buff->set_duration( duration_override );
   }
