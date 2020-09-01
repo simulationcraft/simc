@@ -4,7 +4,7 @@ on:
   pull_request:
     branches: [ shadowlands ]
   push:
-    branches: [ shadowlands ]
+    branches: [ shadowlands, actionsVS ]
     paths-ignore:
       - 'SpellDataDump/**'
       - 'dbc_extract3/**'
