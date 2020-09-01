@@ -707,7 +707,8 @@ void grove_invigoration( special_effect_t& effect )
 
 void field_of_blossoms( special_effect_t& effect )
 {
-  if ( !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() ) return;
+  if ( !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() )
+    return;
 
   if ( !effect.player->buffs.field_of_blossoms )
   {
@@ -723,9 +724,29 @@ void field_of_blossoms( special_effect_t& effect )
 
 void social_butterfly( special_effect_t& effect )
 {
-  if ( !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() ) return;
+  if ( !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() )
+    return;
 
+  struct social_butterfly_buff_t : public buff_t
+  {
+    social_butterfly_buff_t( player_t* p ) : buff_t( p, "social_butterfly", p->find_spell( 320212 ) )
+    {
+      add_invalidate( CACHE_VERSATILITY );
+      set_default_value( data().effectN( 1 ).percent() );
+    }
 
+    void expire_override( int s, timespan_t d ) override
+    {
+      buff_t::expire_override( s, d );
+
+      make_event( *sim, buff_duration(), [this]() { trigger(); } );
+    }
+  };
+
+  if ( !effect.player->buffs.social_butterfly )
+    effect.player->buffs.social_butterfly = make_buff<social_butterfly_buff_t>( effect.player );
+
+  effect.player->register_combat_begin( []( player_t* p ) { p->buffs.social_butterfly->trigger(); } );
 }
 
 void first_strike( special_effect_t& effect )
