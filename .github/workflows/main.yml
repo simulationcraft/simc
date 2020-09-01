@@ -181,7 +181,7 @@ jobs:
         run: ./engine/simc $SIMC_PROFILE iterations=5 output=/dev/null html=/dev/null json2=/dev/null cleanup_threads=1
         
   build-VS2019:
-    name: VS2019
+    name: VS-2019
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v2
@@ -189,8 +189,8 @@ jobs:
       - uses: microsoft/setup-msbuild@v1.0.1
 
       - name: Build
-        run: MSBuild.exe /maxcpucount /p:Configuration="Debug-NoNetworking" /p:Platform=x64 vs/simc_vs2019.vcxproj 
+        run: MSBuild.exe /maxcpucount /p:Configuration="Debug-NoNetworking" /p:Platform=x64 vs/simc_vs2019.vcxproj
 
       - name: Smoke Test
-        run: vs\x64\Debug-NoNetworking\simc_vs2019.exe %SIMC_PROFILE% iterations=5 output=/dev/null html=/dev/null json2=/dev/null cleanup_threads=1
+        run: vs\x64\Debug-NoNetworking\simc_vs2019.exe $env:SIMC_PROFILE iterations=5 output=nul html=nul json2=nul cleanup_threads=1
 
