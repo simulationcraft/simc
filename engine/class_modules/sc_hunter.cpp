@@ -981,7 +981,7 @@ public:
     double c = ab::cost();
 
     if ( p() -> buffs.eagletalons_true_focus -> check() )
-      c *= p() -> buffs.eagletalons_true_focus -> check_value();
+      c *= 1 + p() -> buffs.eagletalons_true_focus -> check_value();
 
     return c;
   }
@@ -1362,14 +1362,13 @@ struct hunter_main_pet_base_t : public hunter_pet_t
 
     buffs.frenzy =
       make_buff( this, "frenzy", o() -> find_spell( 272790 ) )
-        -> set_default_value ( o() -> find_spell( 272790 ) -> effectN( 1 ).percent() )
-        -> add_invalidate( CACHE_ATTACK_SPEED );
-    if ( o() -> azerite.feeding_frenzy.ok() )
-      buffs.frenzy -> set_duration( o() -> azerite.feeding_frenzy.spell() -> effectN( 1 ).time_value() );
+        -> set_default_value_from_effect( 1 )
+        -> add_invalidate( CACHE_ATTACK_SPEED )
+        -> apply_affecting_aura( o() -> azerite.feeding_frenzy.spell() -> effectN( 1 ).trigger() );
 
     buffs.rylakstalkers_fangs =
       make_buff( this, "rylakstalkers_piercing_fangs", o() -> find_spell( 336845 ) )
-        -> set_default_value( o() -> find_spell( 336845 ) -> effectN( 1 ).percent() )
+        -> set_default_value_from_effect( 1 )
         -> set_chance( o() -> legendary.rylakstalkers_fangs.ok() );
   }
 
@@ -1521,7 +1520,7 @@ struct hunter_main_pet_t final : public hunter_main_pet_base_t
 
     buffs.predator =
       make_buff( this, "predator", o() -> find_spell( 260249 ) )
-        -> set_default_value( o() -> find_spell( 260249 ) -> effectN( 1 ).percent() )
+        -> set_default_value_from_effect( 1 )
         -> add_invalidate( CACHE_ATTACK_SPEED );
   }
 
@@ -4777,7 +4776,7 @@ struct kill_command_t: public hunter_spell_t
     double c = hunter_spell_t::cost();
 
     if ( p() -> buffs.flamewakers_cobra_sting -> check() )
-      c *= p() -> buffs.flamewakers_cobra_sting -> check_value();
+      c *= 1 + p() -> buffs.flamewakers_cobra_sting -> check_value();
 
     return c;
   }
@@ -5516,7 +5515,7 @@ hunter_td_t::hunter_td_t( player_t* target, hunter_t* p ):
 {
   debuffs.hunters_mark =
     make_buff( *this, "hunters_mark", p -> specs.hunters_mark )
-      -> set_default_value( p -> specs.hunters_mark -> effectN( 1 ).percent() );
+      -> set_default_value_from_effect( 1 );
 
   debuffs.latent_poison =
     make_buff( *this, "latent_poison", p -> find_spell( 273286 ) )
@@ -6116,7 +6115,7 @@ void hunter_t::create_buffs()
     make_buff( this, "aspect_of_the_wild", specs.aspect_of_the_wild )
       -> set_cooldown( 0_ms )
       -> set_activated( true )
-      -> set_default_value( specs.aspect_of_the_wild -> effectN( 1 ).percent() )
+      -> set_default_value_from_effect( 1 )
       -> set_tick_callback( [ this ]( buff_t *b, int, timespan_t ){
           resource_gain( RESOURCE_FOCUS, b -> data().effectN( 2 ).resource( RESOURCE_FOCUS ), gains.aspect_of_the_wild );
           if ( auto pet = pets.main )
@@ -6127,8 +6126,8 @@ void hunter_t::create_buffs()
     make_buff( this, "bestial_wrath", specs.bestial_wrath )
       -> set_cooldown( 0_ms )
       -> set_activated( true )
-      -> set_default_value( specs.bestial_wrath -> effectN( 1 ).percent() +
-                            conduits.one_with_the_beast.percent() );
+      -> set_default_value_from_effect( 1 )
+      -> modify_default_value( conduits.one_with_the_beast.percent() );
   if ( talents.spitting_cobra.ok() )
   {
     timespan_t duration = find_spell( 194407 ) -> duration();
@@ -6152,28 +6151,28 @@ void hunter_t::create_buffs()
 
   buffs.dire_beast =
     make_buff( this, "dire_beast", find_spell( 120679 ) -> effectN( 2 ).trigger() )
-      -> set_default_value( find_spell( 120679 ) -> effectN( 2 ).trigger() -> effectN( 1 ).percent() )
+      -> set_default_value_from_effect( 1 )
       -> add_invalidate( CACHE_HASTE );
 
   buffs.thrill_of_the_hunt =
     make_buff( this, "thrill_of_the_hunt", talents.thrill_of_the_hunt -> effectN( 1 ).trigger() )
-      -> set_default_value( talents.thrill_of_the_hunt -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
+      -> set_default_value_from_effect( 1 )
       -> set_trigger_spell( talents.thrill_of_the_hunt );
 
   // Marksmanship
 
   buffs.dead_eye =
     make_buff( this, "dead_eye", talents.dead_eye -> effectN( 2 ).trigger() )
-      -> set_default_value( talents.dead_eye -> effectN( 2 ).trigger() -> effectN( 1 ).percent() )
+      -> set_default_value_from_effect( 1 )
       -> set_stack_change_callback( [this]( buff_t*, int, int ) {
           cooldowns.aimed_shot -> adjust_recharge_multiplier();
         } );
 
   buffs.double_tap =
     make_buff( this, "double_tap", talents.double_tap )
+      -> set_default_value_from_effect( 1 )
       -> set_cooldown( 0_ms )
-      -> set_activated( true )
-      -> set_default_value( talents.double_tap -> effectN( 1 ).percent() );
+      -> set_activated( true );
 
   buffs.lock_and_load =
     make_buff( this, "lock_and_load", talents.lock_and_load -> effectN( 1 ).trigger() )
@@ -6181,19 +6180,19 @@ void hunter_t::create_buffs()
 
   buffs.precise_shots =
     make_buff( this, "precise_shots", find_spell( 260242 ) )
-      -> set_default_value( find_spell( 260242 ) -> effectN( 1 ).percent() +
-                            conduits.powerful_precision.percent() );
+      -> set_default_value_from_effect( 1 )
+      -> modify_default_value( conduits.powerful_precision.percent() );
 
   buffs.steady_focus =
     make_buff( this, "steady_focus", find_spell( 193534 ) )
-      -> set_default_value( find_spell( 193534 ) -> effectN( 1 ).percent() )
+      -> set_default_value_from_effect( 1 )
       -> set_max_stack( 1 )
       -> add_invalidate( CACHE_HASTE )
       -> set_trigger_spell( talents.steady_focus );
 
   buffs.streamline =
     make_buff( this, "streamline", find_spell( 342076 ) )
-      -> set_default_value( find_spell( 342076 ) -> effectN( 1 ).percent() )
+      -> set_default_value_from_effect( 1 )
       -> set_chance( talents.streamline.ok() );
 
   buffs.trick_shots =
@@ -6210,7 +6209,7 @@ void hunter_t::create_buffs()
     make_buff( this, "trueshot", specs.trueshot )
       -> set_cooldown( 0_ms )
       -> set_activated( true )
-      -> set_default_value( specs.trueshot -> effectN( 4 ).percent() )
+      -> set_default_value_from_effect( 4 )
       -> set_stack_change_callback( [this]( buff_t*, int old, int cur ) {
           cooldowns.aimed_shot -> adjust_recharge_multiplier();
           cooldowns.rapid_fire -> adjust_recharge_multiplier();
@@ -6224,9 +6223,8 @@ void hunter_t::create_buffs()
           {
             buffs.eagletalons_true_focus -> trigger();
           }
-        } );
-  if ( conduits.sharpshooters_focus.ok() )
-    buffs.trueshot -> base_buff_duration *= 1 + conduits.sharpshooters_focus.percent();
+        } )
+      -> apply_affecting_conduit( conduits.sharpshooters_focus );
 
   buffs.volley =
     make_buff( this, "volley", talents.volley )
@@ -6239,39 +6237,38 @@ void hunter_t::create_buffs()
     make_buff( this, "coordinated_assault", specs.coordinated_assault )
       -> set_cooldown( 0_ms )
       -> set_activated( true )
-      -> set_default_value( specs.coordinated_assault -> effectN( 1 ).percent() );
-  if ( conduits.deadly_tandem.ok() )
-    buffs.coordinated_assault -> base_buff_duration += conduits.deadly_tandem.time_value();
+      -> set_default_value_from_effect( 1 )
+      -> apply_affecting_conduit( conduits.deadly_tandem );
 
   buffs.coordinated_assault_vision =
     make_buff( this, "coordinated_assault_vision", specs.coordinated_assault )
       -> set_cooldown( 0_ms )
-      -> set_default_value( specs.coordinated_assault -> effectN( 1 ).percent() )
+      -> set_default_value_from_effect( 1 )
       -> set_quiet( true );
 
   buffs.vipers_venom =
     make_buff( this, "vipers_venom", talents.vipers_venom -> effectN( 1 ).trigger() )
-      -> set_default_value( talents.vipers_venom -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
+      -> set_default_value_from_effect( 1 )
       -> set_trigger_spell( talents.vipers_venom );
 
   buffs.tip_of_the_spear =
     make_buff( this, "tip_of_the_spear", find_spell( 260286 ) )
-      -> set_default_value( find_spell( 260286 ) -> effectN( 1 ).percent() )
+      -> set_default_value_from_effect( 1 )
       -> set_chance( talents.tip_of_the_spear.ok() );
 
   buffs.mongoose_fury =
     make_buff( this, "mongoose_fury", find_spell( 259388 ) )
-      -> set_default_value( find_spell( 259388 ) -> effectN( 1 ).percent() )
+      -> set_default_value_from_effect( 1 )
       -> set_refresh_behavior( buff_refresh_behavior::DISABLED );
 
   buffs.predator =
     make_buff( this, "predator", find_spell( 260249 ) )
-      -> set_default_value( find_spell( 260249 ) -> effectN( 1 ).percent() )
+      -> set_default_value_from_effect( 1 )
       -> add_invalidate( CACHE_ATTACK_SPEED );
 
   buffs.terms_of_engagement =
     make_buff( this, "terms_of_engagement", find_spell( 265898 ) )
-      -> set_default_value( find_spell( 265898 ) -> effectN( 1 ).base_value() / 5 )
+      -> set_default_value_from_effect( 1, 1 / 5.0 )
       -> set_affects_regen( true );
 
   buffs.aspect_of_the_eagle =
@@ -6315,25 +6312,24 @@ void hunter_t::create_buffs()
   buffs.wild_spirits =
       make_buff( this, "wild_spirits", covenants.wild_spirits -> effectN( 1 ).trigger() )
         -> set_default_value( find_spell( 328275 ) -> effectN( 2 ).percent() )
-        -> set_activated( true );
-  if ( conduits.spirit_attunement.ok() )
-    buffs.wild_spirits -> base_buff_duration += conduits.spirit_attunement -> effectN( 2 ).time_value();
+        -> set_activated( true )
+        -> apply_affecting_conduit( conduits.spirit_attunement );
 
   // Legendaries
 
   buffs.butchers_bone_fragments =
     make_buff( this, "butchers_bone_fragments", legendary.butchers_bone_fragments -> effectN( 1 ).trigger() )
-      -> set_default_value( legendary.butchers_bone_fragments -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
+      -> set_default_value_from_effect( 1 )
       -> set_trigger_spell( legendary.butchers_bone_fragments );
 
   buffs.eagletalons_true_focus =
     make_buff( this, "eagletalons_true_focus", legendary.eagletalons_true_focus -> effectN( 1 ).trigger() )
-      -> set_default_value( 1 + legendary.eagletalons_true_focus -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
+      -> set_default_value_from_effect( 1 )
       -> set_trigger_spell( legendary.eagletalons_true_focus );
 
   buffs.flamewakers_cobra_sting =
     make_buff( this, "flamewakers_cobra_sting", legendary.flamewakers_cobra_sting -> effectN( 1 ).trigger() )
-      -> set_default_value( 1 + legendary.flamewakers_cobra_sting -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
+      -> set_default_value_from_effect( 1 )
       -> set_trigger_spell( legendary.flamewakers_cobra_sting );
 
   buffs.secrets_of_the_vigil =
