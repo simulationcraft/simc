@@ -517,6 +517,7 @@ struct player_t : public actor_t
     buff_t* field_of_blossoms;        // night_fae/dreamweaver - buff procced on covenant ability use
     buff_t* social_butterfly;         // night_fae/dreamweaver - periodic buff when 2+ allies are nearby
     buff_t* first_strike;             // night_fae/korayn - crit buff when first hitting enemy
+    buff_t* wild_hunt_tactics;        // night_fae/korayn - dummy buff used to quickly check if soulbind is enabled
   } buffs;
 
   struct debuffs_t
