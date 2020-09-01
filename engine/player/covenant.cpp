@@ -628,7 +628,7 @@ struct covenant_ability_cast_cb_t : public dbc_proc_callback_t
   void initialize() override
   {
     listener->sim->print_debug( "Initializing covenant ability cast handler..." );
-    listener->callbacks.register_callback( PF_ALL_DAMAGE, PF2_CAST, this );
+    listener->callbacks.register_callback( effect.proc_flags(), effect.proc_flags2(), this );
   }
 
   void trigger( action_t* a, action_state_t* s ) override
@@ -654,7 +654,7 @@ void add_covenant_cast_callback( player_t* p, S&&... args )
     auto eff = new special_effect_t( p );
     eff->name_str = "covenant_cast_callback";
     eff->proc_flags_ = PF_ALL_DAMAGE;
-    eff->proc_flags2_ = PF2_CAST;
+    eff->proc_flags2_ = PF2_CAST | PF2_CAST_DAMAGE | PF2_CAST_HEAL;
     p->covenant->cast_callback = new covenant_ability_cast_cb_t( p, *eff );
   }
 
