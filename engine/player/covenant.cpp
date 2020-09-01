@@ -917,9 +917,29 @@ void wasteland_propriety( special_effect_t& effect )
 
 void built_for_war( special_effect_t& effect )
 {
-  if ( !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() ) return;
+  if ( !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() )
+    return;
 
+  if ( !effect.player->buffs.built_for_war )
+  {
+    auto s_data = effect.player->find_spell( 332842 );
+    effect.player->buffs.built_for_war = make_buff( effect.player, "built_for_war", s_data )
+      ->set_default_value( s_data->effectN( 1 ).percent() )
+      ->add_invalidate( CACHE_STRENGTH )
+      ->add_invalidate( CACHE_AGILITY )
+      ->add_invalidate( CACHE_INTELLECT );
+  }
 
+  const spelleffect_data_t* eff_data = &effect.driver()->effectN( 1 );
+
+  effect.player->register_combat_begin( [eff_data]( player_t* p ) {
+    make_repeating_event( *p->sim, eff_data->period(), [p, eff_data]() {
+      if ( p->health_percentage() > eff_data->base_value() )
+        p->buffs.built_for_war->trigger();
+    } );
+  } );
+
+  // TODO: add option to simulate losing the buff from going below 50% hp
 }
 
 void superior_tactics( special_effect_t& effect )
