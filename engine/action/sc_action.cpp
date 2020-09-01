@@ -4793,14 +4793,14 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
   {
     switch ( effect.subtype() )
     {
-      case A_MODIFY_CATEGORY_COOLDOWN:  // Modify Cooldown Time
+      case A_MODIFY_CATEGORY_COOLDOWN:
         cooldown->duration += effect.time_value();
         if ( cooldown->duration < timespan_t::zero() )
           cooldown->duration = timespan_t::zero();
         sim->print_debug( "{} cooldown duration modified by {}", *this, effect.time_value() );
         break;
 
-      case A_411:  // Modify Cooldown Charges
+      case A_MOD_MAX_CHARGES:
         cooldown->charges += as<int>( effect.base_value() );
         sim->print_debug( "{} cooldown charges modified by {}", *this, as<int>( effect.base_value() ) );
         break;
@@ -4810,14 +4810,14 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
         sim->print_debug( "{} cooldown set to hasted", *this );
         break;
 
-      case A_453:  // Modify Recharge Time
+      case A_MOD_RECHARGE_TIME:
         cooldown->duration += effect.time_value();
         if ( cooldown->duration < timespan_t::zero() )
           cooldown->duration = timespan_t::zero();
         sim->print_debug( "{} cooldown recharge time modified by {}", *this, effect.time_value() );
         break;
 
-      case A_454:  // Modify Recharge Time%
+      case A_MOD_RECHARGE_MULTIPLIER:
         base_recharge_multiplier *= 1 + effect.percent();
         sim->print_debug( "{} cooldown recharge multiplier modified by {}%", *this, effect.base_value() );
         break;
