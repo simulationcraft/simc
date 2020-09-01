@@ -327,16 +327,20 @@ public:
     // Elemental, Restoration
     buff_t* lava_surge;
 
+    // Elemental, Enhancement
+    stat_buff_t* elemental_blast_crit;
+    stat_buff_t* elemental_blast_haste;
+    stat_buff_t* elemental_blast_mastery;
+    buff_t* stormkeeper;
+
+
     // Elemental
     buff_t* earthen_rage;
+    buff_t* echoing_shock;
     buff_t* master_of_the_elements;
     buff_t* surge_of_power;
     buff_t* icefury;
     buff_t* unlimited_power;
-    buff_t* stormkeeper;
-    stat_buff_t* elemental_blast_crit;
-    stat_buff_t* elemental_blast_haste;
-    stat_buff_t* elemental_blast_mastery;
     buff_t* wind_gust;  // Storm Elemental passive 263806
 
     // Enhancement
@@ -446,7 +450,6 @@ public:
   {
     // Generic / Shared
     const spell_data_t* elemental_blast;
-    const spell_data_t* totem_mastery;
     const spell_data_t* spirit_wolf;
     const spell_data_t* earth_shield;
     const spell_data_t* static_charge;
@@ -458,11 +461,11 @@ public:
     // Elemental
     const spell_data_t* earthen_rage;
     const spell_data_t* echo_of_the_elements;
-    // elemental blast - shared
+    const spell_data_t* static_discharge;
 
     const spell_data_t* aftershock;
-    // echoing shock
-    // totem mastery - shared
+    const spell_data_t* echoing_shock;
+    // elemental blast - shared
 
     // spirit wolf - shared
     // earth shield - shared
@@ -492,7 +495,7 @@ public:
 
     // stormfury
     const spell_data_t* hot_hand;
-    // totem mastery - shared
+    const spell_data_t* ice_strike;
 
     // spirit wolf - shared
     // earth shield - shared
@@ -3222,6 +3225,17 @@ struct windstrike_t : public stormstrike_base_t
   }
 };
 
+// Ice Strike Spell ========================================================
+
+struct ice_strike_t : public shaman_spell_t
+{
+  ice_strike_t( shaman_t* player, const std::string& options_str )
+    : shaman_spell_t( "ice_strike", player, player->talent.ice_strike, options_str )
+    {
+      // placeholder
+    }
+};
+
 // Sundering Spell =========================================================
 
 struct sundering_t : public shaman_attack_t
@@ -4821,18 +4835,32 @@ struct stormkeeper_t : public shaman_spell_t
   }
 };
 
-// Totemic Mastery Spell ====================================================
-struct totem_mastery_t : public shaman_spell_t
+// Static Discharge Spell ===================================================
+
+struct static_discharge_t : public shaman_spell_t
 {
-  totem_mastery_t( shaman_t* player, const std::string& options_str )
-    : shaman_spell_t( "totem_mastery", player, player->talent.totem_mastery, options_str )
-  {
-    harmful = may_crit = callbacks = may_miss = false;
-  }
+  static_discharge_t( shaman_t* player, const std::string& options_str )
+    : shaman_spell_t( "static_discharge", player, player->talent.static_discharge, options_str )
+    {
+      // placeholder
+    }
+};
+
+// Echoing Shock Spell ======================================================
+
+struct echoing_shock_t : public shaman_spell_t
+{
+  echoing_shock_t( shaman_t* player, const std::string& options_str )
+    : shaman_spell_t( "echoing_shock", player, player->talent.echoing_shock, options_str )
+    {
+      // placeholder
+    }
 
   void execute() override
   {
     shaman_spell_t::execute();
+
+    p()->buff.echoing_shock->trigger();
   }
 };
 
@@ -5532,10 +5560,18 @@ action_t* shaman_t::create_action( util::string_view name, const std::string& op
     return new bloodlust_t( this, options_str );
   if ( name == "capacitor_totem" )
     return new shaman_totem_t( "capacitor_totem", this, options_str, find_spell( 192058 ) );
+  if ( name == "elemental_blast" )
+    return new elemental_blast_t( this, options_str );
+  if ( name == "flame_shock" )
+    return new flame_shock_t( this, options_str );
+  if ( name == "frost_shock" )
+    return new frost_shock_t( this, options_str );
   if ( name == "ghost_wolf" )
     return new ghost_wolf_t( this, options_str );
   if ( name == "lightning_bolt" )
     return new lightning_bolt_t( this, options_str );
+  if ( name == "stormkeeper" )
+    return new stormkeeper_t( this, options_str );
   if ( name == "wind_shear" )
     return new wind_shear_t( this, options_str );
 
@@ -5548,14 +5584,10 @@ action_t* shaman_t::create_action( util::string_view name, const std::string& op
     return new earth_shock_t( this, options_str );
   if ( name == "earthquake" )
     return new earthquake_t( this, options_str );
-  if ( name == "elemental_blast" )
-    return new elemental_blast_t( this, options_str );
+  if ( name == "echoing_shock" )
+    return new echoing_shock_t( this, options_str );
   if ( name == "fire_elemental" )
     return new fire_elemental_t( this, options_str );
-  if ( name == "flame_shock" )
-    return new flame_shock_t( this, options_str );
-  if ( name == "frost_shock" )
-    return new frost_shock_t( this, options_str );
   if ( name == "icefury" )
     return new icefury_t( this, options_str );
   if ( name == "lava_beam" )
@@ -5564,14 +5596,12 @@ action_t* shaman_t::create_action( util::string_view name, const std::string& op
     return new lava_burst_t( this, options_str );
   if ( name == "liquid_magma_totem" )
     return new shaman_totem_t( "liquid_magma_totem", this, options_str, talent.liquid_magma_totem );
+  if ( name == "static_discharge" )
+    return new static_discharge_t( this, options_str );
   if ( name == "storm_elemental" )
     return new storm_elemental_t( this, options_str );
-  if ( name == "stormkeeper" )
-    return new stormkeeper_t( this, options_str );
   if ( name == "thunderstorm" )
     return new thunderstorm_t( this, options_str );
-  if ( name == "totem_mastery" )
-    return new totem_mastery_t( this, options_str );
   if ( name == "lightning_lasso" )
     return new lightning_lasso_t( this, options_str );
 
@@ -5586,6 +5616,8 @@ action_t* shaman_t::create_action( util::string_view name, const std::string& op
     return new feral_spirit_spell_t( this, options_str );
   if ( name == "flametongue" )
     return new flametongue_t( this, options_str );
+  if ( name == "ice_strike" )
+    return new ice_strike_t( this, options_str );
   if ( name == "lava_lash" )
     return new lava_lash_t( this, options_str );
   if ( name == "lightning_shield" )
@@ -5939,7 +5971,6 @@ void shaman_t::init_spells()
   // Shared
   talent.ascendance      = find_talent_spell( "Ascendance" );
   talent.static_charge   = find_talent_spell( "Static Charge" );
-  talent.totem_mastery   = find_talent_spell( "Totem Mastery" );
   talent.elemental_blast = find_talent_spell( "Elemental Blast" );
   talent.spirit_wolf     = find_talent_spell( "Spirit Wolf" );
   talent.earth_shield    = find_talent_spell( "Earth Shield" );
@@ -5949,9 +5980,11 @@ void shaman_t::init_spells()
   // Elemental
   talent.earthen_rage         = find_talent_spell( "Earthen Rage" );
   talent.echo_of_the_elements = find_talent_spell( "Echo of the Elements" );
+  // static discharge
 
   talent.aftershock = find_talent_spell( "Aftershock" );
   // echoing shock
+  // elemental blast
 
   talent.master_of_the_elements = find_talent_spell( "Master of the Elements" );
   talent.storm_elemental        = find_talent_spell( "Storm Elemental" );
@@ -5968,9 +6001,11 @@ void shaman_t::init_spells()
   // Enhancement
   // lashing flames
   talent.forceful_winds = find_talent_spell( "Forceful Winds" );
+  // elemental blast
 
   // stormfury
   talent.hot_hand = find_talent_spell( "Hot Hand" );
+  talent.ice_strike = find_talent_spell( "Ice Strike" );
 
   // cycle of the elements
   talent.hailstorm = find_talent_spell( "Hailstorm" );
