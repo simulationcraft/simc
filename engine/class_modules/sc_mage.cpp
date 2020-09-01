@@ -329,6 +329,7 @@ public:
   std::array<timespan_t, AOE_MAX> ground_aoe_expiration;
 
   // Miscellaneous
+  int remaining_winters_chill;
   double distance_from_rune;
   double lucid_dreams_refund;
   double strive_for_perfection_multiplier;
@@ -638,7 +639,6 @@ public:
     bool brain_freeze_active;
     bool fingers_of_frost_active;
     int mana_gem_charges;
-    int remaining_winters_chill; // APL tracking of Winter's Chill
     double from_the_ashes_mastery;
   } state;
 
@@ -2259,7 +2259,7 @@ struct frost_mage_spell_t : public mage_spell_t
     mage_spell_t::execute();
 
     if ( consumes_winters_chill )
-      p()->state.remaining_winters_chill = std::max( p()->state.remaining_winters_chill - 1, 0 );
+      p()->remaining_winters_chill = std::max( p()->remaining_winters_chill - 1, 0 );
   }
 
   void impact( action_state_t* s ) override
@@ -3102,7 +3102,7 @@ struct comet_storm_t : public frost_mage_spell_t
   void execute() override
   {
     frost_mage_spell_t::execute();
-    p()->state.remaining_winters_chill = 0;
+    p()->remaining_winters_chill = 0;
   }
 
   void impact( action_state_t* s ) override
@@ -3634,8 +3634,8 @@ struct flurry_t : public frost_mage_spell_t
 
     bool brain_freeze = p()->buffs.brain_freeze->up();
     p()->state.brain_freeze_active = brain_freeze;
-    p()->state.remaining_winters_chill = 2;
     p()->buffs.brain_freeze->decrement();
+    p()->remaining_winters_chill = 2;
 
     if ( brain_freeze )
       p()->procs.brain_freeze_used->occur();
@@ -7658,7 +7658,7 @@ std::unique_ptr<expr_t> mage_t::create_expression( util::string_view name )
   if ( util::str_compare_ci( name, "remaining_winters_chill" ) )
   {
     return make_fn_expr( name, [ this ]
-    { return state.remaining_winters_chill; } );
+    { return remaining_winters_chill; } );
   }
 
   auto splits = util::string_split<util::string_view>( name, "." );
