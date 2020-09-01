@@ -164,7 +164,7 @@ public:
 /// Initialize soulbinds through the generic special effect subsystem
 void initialize_soulbinds( player_t* player );
 
-/// Register soulbinds through the generic speical effect subsystem
+/// Register soulbinds through the generic special effect subsystem
 void register_soulbinds();
 
 struct covenant_cb_base_t
@@ -189,9 +189,6 @@ struct covenant_cb_action_t : public covenant_cb_base_t
   covenant_cb_action_t( action_t* a, bool self = false ) : covenant_cb_base_t(), action( a ), self_target( self ) {}
   void trigger( action_t* a, void* call_data ) override;
 };
-
-/// Add a buff to be triggered when covenant class ability is cast (create the callback if necessary)
-void add_covenant_callback_buff( player_t* player, buff_t* buff );
 
 namespace soulbinds
 {

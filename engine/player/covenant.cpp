@@ -670,31 +670,31 @@ void niyas_tools_herbs( special_effect_t& effect )
 
 }
 
-struct redirected_anima_buff_t : public buff_t
-{
-  redirected_anima_buff_t( player_t* p ) : buff_t( p, "redirected_anima", p->find_spell( 342814 ) )
-  {
-    // Mastery is stored in 'points' so use base_value() instead of percent()
-    set_default_value( data().effectN( 2 ).base_value() );
-    add_invalidate( CACHE_MASTERY );
-  }
-
-  bool trigger( int s, double v, double c, timespan_t d ) override
-  {
-    int anima_stacks = player->buffs.redirected_anima_stacks->check();
-
-    if ( !anima_stacks )
-      return false;
-
-    player->buffs.redirected_anima_stacks->expire();
-
-    return buff_t::trigger( anima_stacks, v, c, d );
-  }
-};
-
 void grove_invigoration( special_effect_t& effect )
 {
   if ( !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() ) return;
+
+  struct redirected_anima_buff_t : public buff_t
+  {
+    redirected_anima_buff_t( player_t* p ) : buff_t( p, "redirected_anima", p->find_spell( 342814 ) )
+    {
+      // Mastery is stored in 'points' so use base_value() instead of percent()
+      set_default_value( data().effectN( 2 ).base_value() );
+      add_invalidate( CACHE_MASTERY );
+    }
+
+    bool trigger( int s, double v, double c, timespan_t d ) override
+    {
+      int anima_stacks = player->buffs.redirected_anima_stacks->check();
+
+      if ( !anima_stacks )
+        return false;
+
+      player->buffs.redirected_anima_stacks->expire();
+
+      return buff_t::trigger( anima_stacks, v, c, d );
+    }
+  };
 
   effect.custom_buff = effect.player->buffs.redirected_anima_stacks;
   new dbc_proc_callback_t( effect.player, effect );
