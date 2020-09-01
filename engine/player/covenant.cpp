@@ -452,10 +452,10 @@ void covenant_state_t::register_options( player_t* player )
           this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3 ) ) );
 }
 
-const spell_data_t* covenant_state_t::get_covenant_ability_spell( bool generic ) const
+unsigned covenant_state_t::get_covenant_ability_spell_id( bool generic ) const
 {
   if ( !enabled() )
-    return spell_data_t::not_found();
+    return 0u;
 
   for ( const auto& e : covenant_ability_entry_t::data( m_player->dbc->ptr ) )
   {
@@ -468,15 +468,13 @@ const spell_data_t* covenant_state_t::get_covenant_ability_spell( bool generic )
     if ( e.ability_type != static_cast<unsigned>( generic ) )
       continue;
 
-    auto s_data = m_player->find_spell( e.spell_id );
-
-    if ( !s_data->ok() )
+    if ( !m_player->find_spell( e.spell_id )->ok() )
       continue;
 
-    return s_data;
+    return e.spell_id;
   }
 
-  return spell_data_t::not_found();
+  return 0u;
 }
 
 report::sc_html_stream& covenant_state_t::generate_report( report::sc_html_stream& root ) const
@@ -486,7 +484,8 @@ report::sc_html_stream& covenant_state_t::generate_report( report::sc_html_strea
 
   root.format( "<tr class=\"left\"><th>{}</th><td><ul class=\"float\">\n", util::covenant_type_string( type(), true ) );
 
-  root.format( "<li>{}</li>\n", report_decorators::decorated_spell_name( m_player->sim, *get_covenant_ability_spell() ) );
+  auto cv_spell = m_player->find_spell( get_covenant_ability_spell_id() );
+  root.format( "<li>{}</li>\n", report_decorators::decorated_spell_name( m_player->sim, *cv_spell ) );
 
   for ( const auto& e : conduit_entry_t::data( m_player->dbc->ptr ) )
   {
@@ -616,15 +615,15 @@ void covenant_cb_action_t::trigger( action_t* a, void* call_data )
 
 struct covenant_ability_cast_cb_t : public dbc_proc_callback_t
 {
-  const spell_data_t* covenant_ability;
+  unsigned covenant_ability;
   std::vector<covenant_cb_base_t*> cb_list;
 
   covenant_ability_cast_cb_t( player_t* p, const special_effect_t& e )
-    : dbc_proc_callback_t( p, e ), covenant_ability( p->covenant->get_covenant_ability_spell() ), cb_list()
+    : dbc_proc_callback_t( p, e ), covenant_ability( p->covenant->get_covenant_ability_spell_id() ), cb_list()
   {
     // Manual overrides for covenant abilities that don't utilize the spells found in __covenant_ability_data dbc table
     if ( p->type == DRUID && p->covenant->type() == covenant_e::KYRIAN )
-      covenant_ability = p->find_spell( 326446 );
+      covenant_ability = 326446;
   }
 
   void initialize() override
@@ -635,7 +634,7 @@ struct covenant_ability_cast_cb_t : public dbc_proc_callback_t
 
   void trigger( action_t* a, void* call_data ) override
   {
-    if ( &a->data() != covenant_ability )
+    if ( a->data().id() != covenant_ability )
       return;
 
     for ( const auto& t : cb_list )
@@ -757,7 +756,7 @@ void social_butterfly( special_effect_t& effect )
     {
       buff_t::expire_override( s, d );
 
-      make_event( *sim, buff_duration(), [this]() { trigger(); } );
+      make_event( *sim, data().duration(), [this]() { trigger(); } );
     }
   };
 
