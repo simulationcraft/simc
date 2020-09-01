@@ -1,5 +1,5 @@
 // Talent tree specialization abilities, wow build 9.0.1.35707
-static const std::array<specialization_spell_entry_t, 925> __specialization_spell_data { {
+static const std::array<specialization_spell_entry_t, 927> __specialization_spell_data { {
   {  0,  535, 264663,      0, "Predator's Thirst"                 , 0 },
   {  0,  535, 264667,      0, "Primal Rage"                       , 0 },
   {  0,  535, 264656,      0, "Pathfinding"                       , 0 },
@@ -322,6 +322,7 @@ static const std::array<specialization_spell_entry_t, 925> __specialization_spel
   {  5,  256, 285485,      0, "Focused Will"                      , "Rank 2" },
   {  5,  256,  48045,      0, "Mind Sear"                         , 0 },
   {  5,  256, 343726,      0, "Shadowfiend"                       , "Rank 2" },
+  {  5,  256, 262861,      0, "Smite"                             , "Rank 2" },
   {  5,  257,  88625,      0, "Holy Word: Chastise"               , 0 },
   {  5,  257,  20711,      0, "Spirit of Redemption"              , 0 },
   {  5,  257,  34861,      0, "Holy Word: Sanctify"               , 0 },
@@ -347,6 +348,7 @@ static const std::array<specialization_spell_entry_t, 925> __specialization_spel
   {  5,  257, 322112,      0, "Holy Nova"                         , "Rank 2" },
   {  5,  257, 204883,      0, "Circle of Healing"                 , 0 },
   {  5,  257,  14914,   8092, "Holy Fire"                         , 0 },
+  {  5,  257, 262861,      0, "Smite"                             , "Rank 2" },
   {  5,  258,  15407,    585, "Mind Flay"                         , 0 },
   {  5,  258,  47585,      0, "Dispersion"                        , 0 },
   {  5,  258,  15487,      0, "Silence"                           , 0 },
