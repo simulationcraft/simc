@@ -1040,9 +1040,44 @@ void pointed_courage( special_effect_t& effect )
 
 void hammer_of_genesis( special_effect_t& effect )
 {
-  if ( !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() ) return;
+  if ( !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() )
+    return;
 
+  struct hammer_of_genesis_cb_t : public dbc_proc_callback_t
+  {
+    std::vector<int> target_list;
 
+    hammer_of_genesis_cb_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e ), target_list() {}
+
+    void trigger( action_t* a, action_state_t* s ) override
+    {
+      if ( range::contains( target_list, s->target->actor_spawn_index ) )
+        return;
+
+      dbc_proc_callback_t::trigger( a, s );
+      target_list.push_back( s->target->actor_spawn_index );
+    }
+
+    void reset() override
+    {
+      dbc_proc_callback_t::reset();
+      target_list.clear();
+    }
+  };
+
+  if ( !effect.player->buffs.hammer_of_genesis )
+  {
+    effect.player->buffs.hammer_of_genesis =
+        make_buff( effect.player, "hammer_of_genesis", effect.player->find_spell( 333943 ) )
+            ->set_default_value_from_effect( 1 )
+            ->add_invalidate( CACHE_HASTE );
+  }
+
+  // TODO: confirm that spell_data proc flags are correct (doesn't proc from white hits)
+  effect.proc_flags2_ = PF2_ALL_HIT;
+  effect.custom_buff = effect.player->buffs.hammer_of_genesis;
+
+  new hammer_of_genesis_cb_t( effect );
 }
 
 void brons_call_to_action( special_effect_t& effect )

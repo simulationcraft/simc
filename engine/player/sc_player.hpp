@@ -525,6 +525,7 @@ struct player_t : public actor_t
     buff_t* let_go_of_the_past;       // kyrian/pelagos - vers buff on diff spell
     buff_t* combat_meditation;        // kyrian/pelagos - mast buff on covenant cast
     buff_t* pointed_courage;          // kyrian/kleia - crit buff for every nearby enemy or ally
+    buff_t* hammer_of_genesis; //kyrian/mikanikos - haste on hitting new enemy
   } buffs;
 
   struct debuffs_t
