@@ -175,458 +175,156 @@ To change the list of source files run synchronize.py
 		<ClInclude Include="..\engine\util\util.hpp" />
 		<ClInclude Include="..\engine\util\vector_with_callback.hpp" />
 		<ClInclude Include="..\engine\util\xml.hpp" />
-		<ClCompile Include="..\engine\action\absorb.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\action\action_callback.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\action\dbc_proc_callback.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\action\heal.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\action\residual_action.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\action\sc_action.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\action\sc_action_state.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\action\sc_attack.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\action\sc_dot.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\action\sc_spell.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\action\sc_stats.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\action\sequence.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\action\snapshot_stats.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\action\variable.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\buff\sc_buff.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\class_modules\paladin\sc_paladin.cpp">
-			
-		</ClCompile>
-		<ClCompile Include="..\engine\class_modules\paladin\sc_paladin_holy.cpp">
-			
-		</ClCompile>
-		<ClCompile Include="..\engine\class_modules\paladin\sc_paladin_protection.cpp">
-			
-		</ClCompile>
-		<ClCompile Include="..\engine\class_modules\paladin\sc_paladin_retribution.cpp">
-			
-		</ClCompile>
-		<ClCompile Include="..\engine\class_modules\priest\sc_priest.cpp">
-			
-		</ClCompile>
-		<ClCompile Include="..\engine\class_modules\priest\sc_priest_discipline.cpp">
-			
-		</ClCompile>
-		<ClCompile Include="..\engine\class_modules\priest\sc_priest_holy.cpp">
-			
-		</ClCompile>
-		<ClCompile Include="..\engine\class_modules\priest\sc_priest_shadow.cpp">
-			
-		</ClCompile>
-		<ClCompile Include="..\engine\class_modules\sc_death_knight.cpp">
-			
-		</ClCompile>
-		<ClCompile Include="..\engine\class_modules\sc_demon_hunter.cpp">
-			
-		</ClCompile>
-		<ClCompile Include="..\engine\class_modules\sc_druid.cpp">
-			
-		</ClCompile>
-		<ClCompile Include="..\engine\class_modules\sc_enemy.cpp">
-			
-		</ClCompile>
-		<ClCompile Include="..\engine\class_modules\sc_hunter.cpp">
-			
-		</ClCompile>
-		<ClCompile Include="..\engine\class_modules\sc_mage.cpp">
-			
-		</ClCompile>
-		<ClCompile Include="..\engine\class_modules\sc_monk.cpp">
-			
-		</ClCompile>
-		<ClCompile Include="..\engine\class_modules\sc_rogue.cpp">
-			
-		</ClCompile>
-		<ClCompile Include="..\engine\class_modules\sc_shaman.cpp">
-			
-		</ClCompile>
-		<ClCompile Include="..\engine\class_modules\sc_warrior.cpp">
-			
-		</ClCompile>
-		<ClCompile Include="..\engine\class_modules\warlock\sc_warlock.cpp">
-			
-		</ClCompile>
-		<ClCompile Include="..\engine\class_modules\warlock\sc_warlock_affliction.cpp">
-			
-		</ClCompile>
-		<ClCompile Include="..\engine\class_modules\warlock\sc_warlock_demonology.cpp">
-			
-		</ClCompile>
-		<ClCompile Include="..\engine\class_modules\warlock\sc_warlock_destruction.cpp">
-			
-		</ClCompile>
-		<ClCompile Include="..\engine\class_modules\warlock\sc_warlock_pets.cpp">
-			
-		</ClCompile>
-		<ClCompile Include="..\engine\dbc\active_spells.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\dbc\azerite.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\dbc\client_data.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\dbc\client_hotfix_entry.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\dbc\covenant_data.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\dbc\gem_data.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\dbc\item_armor.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\dbc\item_bonus.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\dbc\item_child.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\dbc\item_data.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\dbc\item_effect.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\dbc\item_import.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\dbc\item_import_ptr.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\dbc\item_naming.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\dbc\item_runeforge.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\dbc\item_scaling.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\dbc\item_set_bonus.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\dbc\item_weapon.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\dbc\mastery_spells.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\dbc\racial_spells.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\dbc\rand_prop_points.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\dbc\rank_spells.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\dbc\real_ppm_data.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\dbc\sc_const_data.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\dbc\sc_data.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\dbc\sc_item_data.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\dbc\sc_spell_data.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\dbc\sc_spell_info.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\dbc\specialization_spell.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\dbc\spell_data.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\dbc\spell_item_enchantment.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\dbc\spelltext_data.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\dbc\talent_data.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\interfaces\bcp_api.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\interfaces\sc_http.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\interfaces\sc_http_curl.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\interfaces\sc_http_wininet.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\interfaces\sc_js.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\interfaces\wowhead.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\item\enchants.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\item\item.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\item\item_targetdata_initializer.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\item\special_effect.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\lib\fmt\format.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\lib\fmt\os.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\player\action_priority_list.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\player\action_variable.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\player\actor.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\player\actor_target_data.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\player\azerite_data.cpp">
-			
-		</ClCompile>
-		<ClCompile Include="..\engine\player\covenant.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\player\darkmoon_deck.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\player\ground_aoe.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\player\instant_absorb.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\player\player_event.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\player\player_stat_cache.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\player\player_talent_points.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\player\rating.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\player\runeforge_data.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\player\sc_consumable.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\player\sc_pet.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\player\sc_player.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\player\sc_set_bonus.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\player\sc_unique_gear.cpp">
-			<PrecompiledHeader>Create</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\player\soulbinds.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\player\spawner_base.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\player\target_specific.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\player\unique_gear_bfa.cpp">
-			
-		</ClCompile>
-		<ClCompile Include="..\engine\player\unique_gear_helper.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\player\unique_gear_legion.cpp">
-			
-		</ClCompile>
-		<ClCompile Include="..\engine\player\unique_gear_shadowlands.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\report\charts.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\report\color.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\report\decorators.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\report\json\report_configuration.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\report\json\report_json.cpp">
-			
-		</ClCompile>
-		<ClCompile Include="..\engine\report\report_helper.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\report\reports.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\report\sc_gear_weights.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\report\sc_highchart.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\report\sc_report_html_player.cpp">
-			
-		</ClCompile>
-		<ClCompile Include="..\engine\report\sc_report_html_sim.cpp">
-			
-		</ClCompile>
-		<ClCompile Include="..\engine\report\sc_report_text.cpp">
-			
-		</ClCompile>
-		<ClCompile Include="..\engine\sim\event_manager.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\sim\proc.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\sim\real_ppm.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\sim\sc_cooldown.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\sim\sc_event.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\sim\sc_expressions.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\sim\sc_gear_stats.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\sim\sc_option.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\sim\sc_plot.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\sim\sc_profileset.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\sim\sc_progress_bar.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\sim\sc_raid_event.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\sim\sc_reforge_plot.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\sim\sc_sim.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\sim\scale_factor_control.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\sim\shuffled_rng.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\sim\sim_ostream.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\sim\uptime_benefit.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\util\cache.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\util\chrono.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\util\concurrency.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\util\git_info.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\util\io.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\util\rng.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\util\sample_data.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\util\string_view.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\util\timeline.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\util\timespan.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\util\util.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\engine\util\xml.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
+		<ClCompile Include="..\engine\action\absorb.cpp" />
+		<ClCompile Include="..\engine\action\action_callback.cpp" />
+		<ClCompile Include="..\engine\action\dbc_proc_callback.cpp" />
+		<ClCompile Include="..\engine\action\heal.cpp" />
+		<ClCompile Include="..\engine\action\residual_action.cpp" />
+		<ClCompile Include="..\engine\action\sc_action.cpp" />
+		<ClCompile Include="..\engine\action\sc_action_state.cpp" />
+		<ClCompile Include="..\engine\action\sc_attack.cpp" />
+		<ClCompile Include="..\engine\action\sc_dot.cpp" />
+		<ClCompile Include="..\engine\action\sc_spell.cpp" />
+		<ClCompile Include="..\engine\action\sc_stats.cpp" />
+		<ClCompile Include="..\engine\action\sequence.cpp" />
+		<ClCompile Include="..\engine\action\snapshot_stats.cpp" />
+		<ClCompile Include="..\engine\action\variable.cpp" />
+		<ClCompile Include="..\engine\buff\sc_buff.cpp" />
+		<ClCompile Include="..\engine\class_modules\paladin\sc_paladin.cpp" />
+		<ClCompile Include="..\engine\class_modules\paladin\sc_paladin_holy.cpp" />
+		<ClCompile Include="..\engine\class_modules\paladin\sc_paladin_protection.cpp" />
+		<ClCompile Include="..\engine\class_modules\paladin\sc_paladin_retribution.cpp" />
+		<ClCompile Include="..\engine\class_modules\priest\sc_priest.cpp" />
+		<ClCompile Include="..\engine\class_modules\priest\sc_priest_discipline.cpp" />
+		<ClCompile Include="..\engine\class_modules\priest\sc_priest_holy.cpp" />
+		<ClCompile Include="..\engine\class_modules\priest\sc_priest_shadow.cpp" />
+		<ClCompile Include="..\engine\class_modules\sc_death_knight.cpp" />
+		<ClCompile Include="..\engine\class_modules\sc_demon_hunter.cpp" />
+		<ClCompile Include="..\engine\class_modules\sc_druid.cpp" />
+		<ClCompile Include="..\engine\class_modules\sc_enemy.cpp" />
+		<ClCompile Include="..\engine\class_modules\sc_hunter.cpp" />
+		<ClCompile Include="..\engine\class_modules\sc_mage.cpp" />
+		<ClCompile Include="..\engine\class_modules\sc_monk.cpp" />
+		<ClCompile Include="..\engine\class_modules\sc_rogue.cpp" />
+		<ClCompile Include="..\engine\class_modules\sc_shaman.cpp" />
+		<ClCompile Include="..\engine\class_modules\sc_warrior.cpp" />
+		<ClCompile Include="..\engine\class_modules\warlock\sc_warlock.cpp" />
+		<ClCompile Include="..\engine\class_modules\warlock\sc_warlock_affliction.cpp" />
+		<ClCompile Include="..\engine\class_modules\warlock\sc_warlock_demonology.cpp" />
+		<ClCompile Include="..\engine\class_modules\warlock\sc_warlock_destruction.cpp" />
+		<ClCompile Include="..\engine\class_modules\warlock\sc_warlock_pets.cpp" />
+		<ClCompile Include="..\engine\dbc\active_spells.cpp" />
+		<ClCompile Include="..\engine\dbc\azerite.cpp" />
+		<ClCompile Include="..\engine\dbc\client_data.cpp" />
+		<ClCompile Include="..\engine\dbc\client_hotfix_entry.cpp" />
+		<ClCompile Include="..\engine\dbc\covenant_data.cpp" />
+		<ClCompile Include="..\engine\dbc\gem_data.cpp" />
+		<ClCompile Include="..\engine\dbc\item_armor.cpp" />
+		<ClCompile Include="..\engine\dbc\item_bonus.cpp" />
+		<ClCompile Include="..\engine\dbc\item_child.cpp" />
+		<ClCompile Include="..\engine\dbc\item_data.cpp" />
+		<ClCompile Include="..\engine\dbc\item_effect.cpp" />
+		<ClCompile Include="..\engine\dbc\item_import.cpp" />
+		<ClCompile Include="..\engine\dbc\item_import_ptr.cpp" />
+		<ClCompile Include="..\engine\dbc\item_naming.cpp" />
+		<ClCompile Include="..\engine\dbc\item_runeforge.cpp" />
+		<ClCompile Include="..\engine\dbc\item_scaling.cpp" />
+		<ClCompile Include="..\engine\dbc\item_set_bonus.cpp" />
+		<ClCompile Include="..\engine\dbc\item_weapon.cpp" />
+		<ClCompile Include="..\engine\dbc\mastery_spells.cpp" />
+		<ClCompile Include="..\engine\dbc\racial_spells.cpp" />
+		<ClCompile Include="..\engine\dbc\rand_prop_points.cpp" />
+		<ClCompile Include="..\engine\dbc\rank_spells.cpp" />
+		<ClCompile Include="..\engine\dbc\real_ppm_data.cpp" />
+		<ClCompile Include="..\engine\dbc\sc_const_data.cpp" />
+		<ClCompile Include="..\engine\dbc\sc_data.cpp" />
+		<ClCompile Include="..\engine\dbc\sc_item_data.cpp" />
+		<ClCompile Include="..\engine\dbc\sc_spell_data.cpp" />
+		<ClCompile Include="..\engine\dbc\sc_spell_info.cpp" />
+		<ClCompile Include="..\engine\dbc\specialization_spell.cpp" />
+		<ClCompile Include="..\engine\dbc\spell_data.cpp" />
+		<ClCompile Include="..\engine\dbc\spell_item_enchantment.cpp" />
+		<ClCompile Include="..\engine\dbc\spelltext_data.cpp" />
+		<ClCompile Include="..\engine\dbc\talent_data.cpp" />
+		<ClCompile Include="..\engine\interfaces\bcp_api.cpp" />
+		<ClCompile Include="..\engine\interfaces\sc_http.cpp" />
+		<ClCompile Include="..\engine\interfaces\sc_http_curl.cpp" />
+		<ClCompile Include="..\engine\interfaces\sc_http_wininet.cpp" />
+		<ClCompile Include="..\engine\interfaces\sc_js.cpp" />
+		<ClCompile Include="..\engine\interfaces\wowhead.cpp" />
+		<ClCompile Include="..\engine\item\enchants.cpp" />
+		<ClCompile Include="..\engine\item\item.cpp" />
+		<ClCompile Include="..\engine\item\item_targetdata_initializer.cpp" />
+		<ClCompile Include="..\engine\item\special_effect.cpp" />
+		<ClCompile Include="..\engine\lib\fmt\format.cpp" />
+		<ClCompile Include="..\engine\lib\fmt\os.cpp" />
+		<ClCompile Include="..\engine\player\action_priority_list.cpp" />
+		<ClCompile Include="..\engine\player\action_variable.cpp" />
+		<ClCompile Include="..\engine\player\actor.cpp" />
+		<ClCompile Include="..\engine\player\actor_target_data.cpp" />
+		<ClCompile Include="..\engine\player\azerite_data.cpp" />
+		<ClCompile Include="..\engine\player\covenant.cpp" />
+		<ClCompile Include="..\engine\player\darkmoon_deck.cpp" />
+		<ClCompile Include="..\engine\player\ground_aoe.cpp" />
+		<ClCompile Include="..\engine\player\instant_absorb.cpp" />
+		<ClCompile Include="..\engine\player\player_event.cpp" />
+		<ClCompile Include="..\engine\player\player_stat_cache.cpp" />
+		<ClCompile Include="..\engine\player\player_talent_points.cpp" />
+		<ClCompile Include="..\engine\player\rating.cpp" />
+		<ClCompile Include="..\engine\player\runeforge_data.cpp" />
+		<ClCompile Include="..\engine\player\sc_consumable.cpp" />
+		<ClCompile Include="..\engine\player\sc_pet.cpp" />
+		<ClCompile Include="..\engine\player\sc_player.cpp" />
+		<ClCompile Include="..\engine\player\sc_set_bonus.cpp" />
+		<ClCompile Include="..\engine\player\sc_unique_gear.cpp" />
+		<ClCompile Include="..\engine\player\soulbinds.cpp" />
+		<ClCompile Include="..\engine\player\spawner_base.cpp" />
+		<ClCompile Include="..\engine\player\target_specific.cpp" />
+		<ClCompile Include="..\engine\player\unique_gear_bfa.cpp" />
+		<ClCompile Include="..\engine\player\unique_gear_helper.cpp" />
+		<ClCompile Include="..\engine\player\unique_gear_legion.cpp" />
+		<ClCompile Include="..\engine\player\unique_gear_shadowlands.cpp" />
+		<ClCompile Include="..\engine\report\charts.cpp" />
+		<ClCompile Include="..\engine\report\color.cpp" />
+		<ClCompile Include="..\engine\report\decorators.cpp" />
+		<ClCompile Include="..\engine\report\json\report_configuration.cpp" />
+		<ClCompile Include="..\engine\report\json\report_json.cpp" />
+		<ClCompile Include="..\engine\report\report_helper.cpp" />
+		<ClCompile Include="..\engine\report\reports.cpp" />
+		<ClCompile Include="..\engine\report\sc_gear_weights.cpp" />
+		<ClCompile Include="..\engine\report\sc_highchart.cpp" />
+		<ClCompile Include="..\engine\report\sc_report_html_player.cpp" />
+		<ClCompile Include="..\engine\report\sc_report_html_sim.cpp" />
+		<ClCompile Include="..\engine\report\sc_report_text.cpp" />
+		<ClCompile Include="..\engine\sim\event_manager.cpp" />
+		<ClCompile Include="..\engine\sim\proc.cpp" />
+		<ClCompile Include="..\engine\sim\real_ppm.cpp" />
+		<ClCompile Include="..\engine\sim\sc_cooldown.cpp" />
+		<ClCompile Include="..\engine\sim\sc_event.cpp" />
+		<ClCompile Include="..\engine\sim\sc_expressions.cpp" />
+		<ClCompile Include="..\engine\sim\sc_gear_stats.cpp" />
+		<ClCompile Include="..\engine\sim\sc_option.cpp" />
+		<ClCompile Include="..\engine\sim\sc_plot.cpp" />
+		<ClCompile Include="..\engine\sim\sc_profileset.cpp" />
+		<ClCompile Include="..\engine\sim\sc_progress_bar.cpp" />
+		<ClCompile Include="..\engine\sim\sc_raid_event.cpp" />
+		<ClCompile Include="..\engine\sim\sc_reforge_plot.cpp" />
+		<ClCompile Include="..\engine\sim\sc_sim.cpp" />
+		<ClCompile Include="..\engine\sim\scale_factor_control.cpp" />
+		<ClCompile Include="..\engine\sim\shuffled_rng.cpp" />
+		<ClCompile Include="..\engine\sim\sim_ostream.cpp" />
+		<ClCompile Include="..\engine\sim\uptime_benefit.cpp" />
+		<ClCompile Include="..\engine\util\cache.cpp" />
+		<ClCompile Include="..\engine\util\chrono.cpp" />
+		<ClCompile Include="..\engine\util\concurrency.cpp" />
+		<ClCompile Include="..\engine\util\git_info.cpp" />
+		<ClCompile Include="..\engine\util\io.cpp" />
+		<ClCompile Include="..\engine\util\rng.cpp" />
+		<ClCompile Include="..\engine\util\sample_data.cpp" />
+		<ClCompile Include="..\engine\util\string_view.cpp" />
+		<ClCompile Include="..\engine\util\timeline.cpp" />
+		<ClCompile Include="..\engine\util\timespan.cpp" />
+		<ClCompile Include="..\engine\util\util.cpp" />
+		<ClCompile Include="..\engine\util\xml.cpp" />
 	</ItemGroup>
 </Project>

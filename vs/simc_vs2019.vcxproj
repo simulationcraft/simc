@@ -142,7 +142,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
   </ItemGroup>
-  <Import Project="PrecompiledHeaders.props" />
   <Import Project="CommonIncludeDirectories.props" />
   <Import Project="..\source_files\VS_engine.props" />
   <Import Project="..\source_files\VS_engine_main.props" />

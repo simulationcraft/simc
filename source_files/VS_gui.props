@@ -5,126 +5,46 @@ To change the list of source files run synchronize.py
 
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 	<ItemGroup>
-		<ClCompile Include="$(IntDir)moc_sc_AddonImportTab.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="$(IntDir)moc_sc_importWidget.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="$(IntDir)moc_sc_importWindow.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="$(IntDir)moc_sc_OptionsTab.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="$(IntDir)moc_sc_SampleProfilesTab.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="$(IntDir)moc_sc_SimulateTab.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="$(IntDir)moc_sc_SimulationThread.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="$(IntDir)moc_sc_SpellQueryTab.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="$(IntDir)moc_sc_UpdateCheck.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="$(IntDir)moc_sc_WelcomeTab.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="$(IntDir)moc_sc_Workaround.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="$(IntDir)moc_simulationcraftqt.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="$(IntDir)moc_sc_hoverarea.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="$(IntDir)moc_sc_mainwindowcommandline.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="$(IntDir)moc_sc_recentlyclosed.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="$(IntDir)moc_sc_relativepopup.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="$(IntDir)moc_sc_searchbox.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="$(IntDir)moc_sc_tabbar.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="$(IntDir)moc_sc_textedit.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\qt\main.cpp">
-			
-		</ClCompile>
-		<ClCompile Include="..\qt\sc_AddonImportTab.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\qt\sc_ImportTab.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\qt\sc_ImportThread.cpp">
-			
-		</ClCompile>
-		<ClCompile Include="..\qt\sc_importWidget.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\qt\sc_importWindow.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\qt\sc_OptionsTab.cpp">
-			
-		</ClCompile>
-		<ClCompile Include="..\qt\sc_SampleProfilesTab.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\qt\sc_SimulateTab.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\qt\sc_SimulationThread.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\qt\sc_SpellQueryTab.cpp">
-			
-		</ClCompile>
-		<ClCompile Include="..\qt\sc_UpdateCheck.cpp">
-			
-		</ClCompile>
-		<ClCompile Include="..\qt\sc_WelcomeTab.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\qt\sc_window.cpp">
-			
-		</ClCompile>
-		<ClCompile Include="..\qt\sc_Workaround.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\qt\util\sc_mainwindowcommandline.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\qt\util\sc_recentlyclosed.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\qt\util\sc_relativepopup.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\qt\util\sc_searchbox.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\qt\util\sc_tabbar.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\qt\util\sc_textedit.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
+		<ClCompile Include="$(IntDir)moc_sc_AddonImportTab.cpp" />
+		<ClCompile Include="$(IntDir)moc_sc_importWidget.cpp" />
+		<ClCompile Include="$(IntDir)moc_sc_importWindow.cpp" />
+		<ClCompile Include="$(IntDir)moc_sc_OptionsTab.cpp" />
+		<ClCompile Include="$(IntDir)moc_sc_SampleProfilesTab.cpp" />
+		<ClCompile Include="$(IntDir)moc_sc_SimulateTab.cpp" />
+		<ClCompile Include="$(IntDir)moc_sc_SimulationThread.cpp" />
+		<ClCompile Include="$(IntDir)moc_sc_SpellQueryTab.cpp" />
+		<ClCompile Include="$(IntDir)moc_sc_UpdateCheck.cpp" />
+		<ClCompile Include="$(IntDir)moc_sc_WelcomeTab.cpp" />
+		<ClCompile Include="$(IntDir)moc_sc_Workaround.cpp" />
+		<ClCompile Include="$(IntDir)moc_simulationcraftqt.cpp" />
+		<ClCompile Include="$(IntDir)moc_sc_hoverarea.cpp" />
+		<ClCompile Include="$(IntDir)moc_sc_mainwindowcommandline.cpp" />
+		<ClCompile Include="$(IntDir)moc_sc_recentlyclosed.cpp" />
+		<ClCompile Include="$(IntDir)moc_sc_relativepopup.cpp" />
+		<ClCompile Include="$(IntDir)moc_sc_searchbox.cpp" />
+		<ClCompile Include="$(IntDir)moc_sc_tabbar.cpp" />
+		<ClCompile Include="$(IntDir)moc_sc_textedit.cpp" />
+		<ClCompile Include="..\qt\main.cpp" />
+		<ClCompile Include="..\qt\sc_AddonImportTab.cpp" />
+		<ClCompile Include="..\qt\sc_ImportTab.cpp" />
+		<ClCompile Include="..\qt\sc_ImportThread.cpp" />
+		<ClCompile Include="..\qt\sc_importWidget.cpp" />
+		<ClCompile Include="..\qt\sc_importWindow.cpp" />
+		<ClCompile Include="..\qt\sc_OptionsTab.cpp" />
+		<ClCompile Include="..\qt\sc_SampleProfilesTab.cpp" />
+		<ClCompile Include="..\qt\sc_SimulateTab.cpp" />
+		<ClCompile Include="..\qt\sc_SimulationThread.cpp" />
+		<ClCompile Include="..\qt\sc_SpellQueryTab.cpp" />
+		<ClCompile Include="..\qt\sc_UpdateCheck.cpp" />
+		<ClCompile Include="..\qt\sc_WelcomeTab.cpp" />
+		<ClCompile Include="..\qt\sc_window.cpp" />
+		<ClCompile Include="..\qt\sc_Workaround.cpp" />
+		<ClCompile Include="..\qt\util\sc_mainwindowcommandline.cpp" />
+		<ClCompile Include="..\qt\util\sc_recentlyclosed.cpp" />
+		<ClCompile Include="..\qt\util\sc_relativepopup.cpp" />
+		<ClCompile Include="..\qt\util\sc_searchbox.cpp" />
+		<ClCompile Include="..\qt\util\sc_tabbar.cpp" />
+		<ClCompile Include="..\qt\util\sc_textedit.cpp" />
 	</ItemGroup>
 
 	<!--Resources -->
