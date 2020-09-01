@@ -7,6 +7,7 @@
 // Class:
 // Killing Blow based mechanics (free Death Strike, Rune of Unending Thirst)
 // Defensives: Anti-Magic Zone, Lichborne
+// Disable noise from healing/defensive actions when simming a single, dps role, character
 // Unholy:
 // - Fix Unholy Blight reporting : currently the uptime contains both the dot uptime (24.2s every 45s)
 //   and the driver uptime (6s every 45s)
@@ -510,10 +511,11 @@ public:
   struct active_spells_t {
     // Shared
     action_t* bone_spike_graveyard;
+    action_t* death_coil_damage;
     action_t* razorice_mh;
     action_t* razorice_oh;
     action_t* runeforge_pestilence;
-    action_t* death_coil_damage;
+    action_t* sacrificial_pact_damage;
 
     // Blood
     spell_t* blood_plague;
@@ -584,6 +586,8 @@ public:
     const spell_data_t* death_strike_2;
     const spell_data_t* icebound_fortitude;
     const spell_data_t* raise_dead;
+    const spell_data_t* sacrificial_pact;
+    const spell_data_t* veteran_of_the_third_war;
 
     // Blood
     const spell_data_t* blood_boil;
@@ -594,7 +598,7 @@ public:
     const spell_data_t* marrowrend;
     const spell_data_t* riposte;
     const spell_data_t* vampiric_blood;
-    const spell_data_t* veteran_of_the_third_war;
+    const spell_data_t* veteran_of_the_third_war_2;
 
     // Frost
     const spell_data_t* empower_rune_weapon;
@@ -715,6 +719,7 @@ public:
     const spell_data_t* dnd_buff;
     const spell_data_t* fallen_crusader;
     const spell_data_t* razorice_debuff;
+    const spell_data_t* sacrificial_pact_damage;
 
     // Blood
     const spell_data_t* blood_plague;
@@ -5884,6 +5889,46 @@ struct rune_strike_t : public death_knight_melee_attack_t
   }
 };
 
+// Sacrificial Pact =========================================================
+
+struct sacrificial_pact_damage_t : public death_knight_spell_t
+{
+  sacrificial_pact_damage_t( death_knight_t* p ) :
+    death_knight_spell_t( "sacrificial_pact", p, p -> spell.sacrificial_pact_damage )
+  {
+    background = true;
+    aoe = data().effectN( 2 ).base_value();
+  }
+};
+
+struct sacrificial_pact_t : public death_knight_heal_t
+{
+  sacrificial_pact_t( death_knight_t* p, const std::string& options_str ) :
+    death_knight_heal_t( "sacrificial_pact_heal", p, p -> spec.sacrificial_pact )
+  {
+    target = p;
+    base_pct_heal = data().effectN( 1 ).percent();
+    parse_options( options_str );
+    execute_action = p -> active_spells.sacrificial_pact_damage;
+  }
+
+  void execute() override
+  {
+    execute_action -> set_target( player -> target );
+
+    death_knight_heal_t::execute();
+    p() -> pets.ghoul_pet -> dismiss();
+  }
+
+  bool ready() override
+  {
+    if ( p() -> pets.ghoul_pet -> is_sleeping() )
+      return false;
+
+    return death_knight_heal_t::ready();
+  }
+};
+
 // Scourge Strike and Clawing Shadows =======================================
 
 struct scourge_strike_base_t : public death_knight_melee_attack_t
@@ -7179,6 +7224,11 @@ void death_knight_t::create_actions()
     active_spells.death_coil_damage = new death_coil_damage_t( this );
   }
 
+  if ( spec.sacrificial_pact -> ok() )
+  {
+    active_spells.sacrificial_pact_damage = new sacrificial_pact_damage_t( this );
+  }
+
   // Blood
   if ( specialization() == DEATH_KNIGHT_BLOOD )
   {
@@ -7242,6 +7292,8 @@ action_t* death_knight_t::create_action( util::string_view name, const std::stri
   if ( name == "chains_of_ice"            ) return new chains_of_ice_t            ( this, options_str );
   if ( name == "death_strike"             ) return new death_strike_t             ( this, options_str );
   if ( name == "icebound_fortitude"       ) return new icebound_fortitude_t       ( this, options_str );
+  if ( name == "raise_dead"               ) return new raise_dead_t               ( this, options_str );
+  if ( name == "sacrificial_pact"         ) return new sacrificial_pact_t         ( this, options_str );
 
   // Blood Actions
   if ( name == "blood_boil"               ) return new blood_boil_t               ( this, options_str );
@@ -7286,7 +7338,6 @@ action_t* death_knight_t::create_action( util::string_view name, const std::stri
   if ( name == "epidemic"                 ) return new epidemic_t                 ( this, options_str );
   if ( name == "festering_strike"         ) return new festering_strike_t         ( this, options_str );
   if ( name == "outbreak"                 ) return new outbreak_t                 ( this, options_str );
-  if ( name == "raise_dead"               ) return new raise_dead_t               ( this, options_str );
   if ( name == "scourge_strike"           ) return new scourge_strike_t           ( this, options_str );
   if ( name == "soul_reaper"              ) return new soul_reaper_t              ( this, options_str );
   if ( name == "summon_gargoyle"          ) return new summon_gargoyle_t          ( this, options_str );
@@ -7539,6 +7590,7 @@ void death_knight_t::init_spells()
   spec.death_strike_2     = find_specialization_spell( "Death Strike", "Rank 2" );
   spec.icebound_fortitude = find_class_spell( "Icebound Fortitude" );
   spec.raise_dead         = find_class_spell( "Raise Dead" );
+  spec.sacrificial_pact   = find_class_spell( "Sacrificial Pact" );
 
   // Blood
   spec.blood_death_knight       = find_specialization_spell( "Blood Death Knight" );
@@ -7550,6 +7602,7 @@ void death_knight_t::init_spells()
   spec.heart_strike             = find_specialization_spell( "Heart Strike" );
   spec.marrowrend               = find_specialization_spell( "Marrowrend" );
   spec.vampiric_blood           = find_specialization_spell( "Vampiric Blood" );
+  spec.veteran_of_the_third_war_2 = find_specialization_spell( "Veteran of the Third War", "Rank 2" );
 
   // Frost
   spec.frost_death_knight    = find_specialization_spell( "Frost Death Knight" );
@@ -7662,6 +7715,7 @@ void death_knight_t::init_spells()
   spell.dnd_buff        = find_spell( 188290 );
   spell.fallen_crusader = find_spell( 166441 );
   spell.razorice_debuff = find_spell( 51714 );
+  spell.sacrificial_pact_damage = find_spell( 327611 );
   // Raise Dead abilities, used for both rank 1 and rank 2
   spell.pet_ghoul_claw         = find_spell( 91776 );
   spell.pet_gnaw               = find_spell( 91800 );
@@ -8708,7 +8762,9 @@ double death_knight_t::composite_attribute_multiplier( attribute_e attr ) const
 
   else if ( attr == ATTR_STAMINA )
   {
-    m *= 1.0 + spec.veteran_of_the_third_war -> effectN( 1 ).percent() + spec.blood_death_knight -> effectN( 13 ).percent();
+    m *= 1.0 + spec.veteran_of_the_third_war -> effectN( 1 ).percent()
+      + spec.veteran_of_the_third_war_2 -> effectN( 1 ).percent()
+      + spec.blood_death_knight -> effectN( 13 ).percent();
 
     if ( runeforge.rune_of_the_stoneskin_gargoyle -> check() )
     {
