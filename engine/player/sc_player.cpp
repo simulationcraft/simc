@@ -3948,6 +3948,9 @@ double player_t::composite_damage_versatility() const
   if ( buffs.wasteland_propriety )
     cdv += buffs.wasteland_propriety->check_value();
 
+  if ( buffs.let_go_of_the_past )
+    cdv += buffs.let_go_of_the_past->check_stack_value();
+
   cdv += racials.mountaineer->effectN( 1 ).percent();
   cdv += racials.brush_it_off->effectN( 1 ).percent();
 
@@ -3974,6 +3977,9 @@ double player_t::composite_heal_versatility() const
   if ( buffs.wasteland_propriety )
     chv += buffs.wasteland_propriety->check_value();
 
+  if ( buffs.let_go_of_the_past )
+    chv += buffs.let_go_of_the_past->check_stack_value();
+
   chv += racials.mountaineer->effectN( 1 ).percent();
   chv += racials.brush_it_off->effectN( 1 ).percent();
 
@@ -3999,6 +4005,9 @@ double player_t::composite_mitigation_versatility() const
 
   if ( buffs.wasteland_propriety )
     cmv += buffs.wasteland_propriety->check_value();
+
+  if ( buffs.let_go_of_the_past )
+    cmv += buffs.let_go_of_the_past->check_stack_value();
 
   cmv += racials.mountaineer->effectN( 1 ).percent() / 2;
   cmv += racials.brush_it_off->effectN( 1 ).percent() / 2;

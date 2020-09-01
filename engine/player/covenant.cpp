@@ -948,9 +948,44 @@ void superior_tactics( special_effect_t& effect )
 
 void let_go_of_the_past( special_effect_t& effect )
 {
-  if ( !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() ) return;
+  if ( !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() )
+    return;
 
+  struct let_go_of_the_past_cb_t : public dbc_proc_callback_t
+  {
+    unsigned prev_id;
 
+    let_go_of_the_past_cb_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e ), prev_id( 0 ) {}
+
+    void trigger( action_t* a, action_state_t* s ) override
+    {
+      if ( !a->id || a->background || a->id == prev_id )
+        return;
+
+      dbc_proc_callback_t::trigger( a, s );
+      prev_id = a->id;
+    }
+
+    void reset() override
+    {
+      dbc_proc_callback_t::reset();
+      prev_id = 0;
+    }
+  };
+
+  if ( !effect.player->buffs.let_go_of_the_past )
+  {
+    effect.player->buffs.let_go_of_the_past =
+        make_buff( effect.player, "let_go_of_the_past", effect.player->find_spell( 328900 ) )
+            ->set_default_value_from_effect( 1 )
+            ->add_invalidate( CACHE_VERSATILITY );
+  }
+
+  effect.proc_flags_ = PF_ALL_DAMAGE;
+  effect.proc_flags2_ = PF2_CAST | PF2_CAST_DAMAGE | PF2_CAST_HEAL;
+  effect.custom_buff = effect.player->buffs.let_go_of_the_past;
+
+  new let_go_of_the_past_cb_t( effect );
 }
 
 void combat_meditation( special_effect_t& effect )
