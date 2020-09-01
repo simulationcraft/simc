@@ -49,9 +49,9 @@ struct buff_expr_t : public expr_t
     if ( !buff )
     {
       action->sim->error(
-          "Unable to build buff action expression for action '{}': "
-          "Reference to unknown buff/debuff '{}' by player {}.",
-          action->name(), buff_name, action->player->name() );
+          "Unable to build buff action expression for {}: "
+          "Reference to unknown buff/debuff '{}' by {}.",
+          *action, buff_name, *action->player );
       action->sim->cancel();
       // Prevent segfault
       buff = make_buff( action->player, "dummy" );
@@ -1521,7 +1521,7 @@ void buff_t::execute( int stacks, double value, timespan_t duration )
   if ( cooldown->duration > timespan_t::zero() )
   {
     sim->print_debug( "{} starts {} cooldown ({}) with duration {}", source_name(),
-                             *this, cooldown->name(), cooldown->duration );
+                             *this, cooldown->name_str, cooldown->duration );
 
     cooldown->start();
   }
@@ -1606,7 +1606,7 @@ void buff_t::extend_duration( player_t* p, timespan_t extra_seconds )
 
   if ( stack_behavior == buff_stack_behavior::ASYNCHRONOUS )
   {
-    throw std::runtime_error( fmt::format( "'{}' attempts to extend asynchronous buff '{}'.", p->name(), name() ) );
+    throw std::runtime_error( fmt::format( "{} attempts to extend asynchronous {}.", *p, *this ) );
   }
 
   assert( expiration.size() == 1 );
@@ -1615,8 +1615,9 @@ void buff_t::extend_duration( player_t* p, timespan_t extra_seconds )
   {
     expiration.front()->reschedule( expiration.front()->remains() + extra_seconds );
 
-    sim->print_log( "{} extends {} by {}. New expiration time: {}",
-        *p, *this, extra_seconds, expiration.front()->occurs().total_seconds() );
+    if ( sim->log )
+      sim->print_log( "{} extends {} by {}. New expiration time: {}", *p, *this, extra_seconds,
+                      expiration.front()->occurs() );
   }
   else if ( extra_seconds < timespan_t::zero() )
   {
@@ -1639,8 +1640,9 @@ void buff_t::extend_duration( player_t* p, timespan_t extra_seconds )
 
     expiration.push_back( make_event<expiration_t>( *sim, this, reschedule_time ) );
 
-    sim->print_debug( "{} decreases {} by {}. New expiration: {}",
-        *p, *this, -extra_seconds, expiration.back()->occurs().total_seconds() );
+    if ( sim->debug )
+      sim->print_debug( "{} decreases {} by {}. New expiration: {}", *p, *this, -extra_seconds,
+                        expiration.back()->occurs() );
   }
 }
 
@@ -2426,7 +2428,7 @@ stat_buff_t::stat_buff_t(actor_pair_t q, util::string_view name)
 
 stat_buff_t::stat_buff_t( actor_pair_t q, util::string_view name, const spell_data_t* spell, const item_t* item )
   : buff_t( q, name, spell, item ),
-    stat_gain( player->get_gain( std::string( name ) + "_buff" ) ),  // append _buff for now to check usage
+    stat_gain( player->get_gain( fmt::format( "{}_buff", name ) ) ),  // append _buff for now to check usage
     manual_stats_added( false )
 {
   bool has_ap = false;
