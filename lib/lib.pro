@@ -36,9 +36,6 @@ win32|macx {
 include(../source_files/QT_engine.pri)
 
 # Fix paths in SOURCES, HEADERS, PRECOMPILED_HEADER, as they need to 
-# refer to parent directory for the respective subprojects. Additionally, 
-# simulationcraft.hpp must only be defined in PRECOMPILED_HEADER.
-HEADERS -= engine/simulationcraft.hpp
+# refer to parent directory for the respective subprojects.
 HEADERS = $$replace(HEADERS, engine/, ../engine/)
 SOURCES = $$replace(SOURCES, engine/, ../engine/)
-PRECOMPILED_HEADER = $$replace(PRECOMPILED_HEADER, engine/, ../engine/)
