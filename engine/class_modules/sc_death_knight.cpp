@@ -598,6 +598,7 @@ public:
 
     // Blood
     const spell_data_t* blood_boil;
+    const spell_data_t* blood_boil_2;
     const spell_data_t* blood_tap;
     const spell_data_t* crimson_scourge;
     const spell_data_t* dancing_rune_weapon;
@@ -669,8 +670,8 @@ public:
     const spell_data_t* frostscythe;
 
     const spell_data_t* gathering_storm;
+    const spell_data_t* hypothermic_presence; // NYI
     const spell_data_t* glacial_advance;
-    const spell_data_t* frostwyrms_fury;
 
     const spell_data_t* icecap;
     const spell_data_t* obliteration;
@@ -692,17 +693,17 @@ public:
     const spell_data_t* spell_eater;
 
     const spell_data_t* pestilence;
-    const spell_data_t* defile;
     const spell_data_t* epidemic;
+    const spell_data_t* defile;
 
     const spell_data_t* army_of_the_damned;
-    const spell_data_t* unholy_frenzy;
-    const spell_data_t* summon_gargoyle;
+    const spell_data_t* unholy_pact; // NYI
+    const spell_data_t* unholy_assault; // NYI
 
     // Blood
     const spell_data_t* heartbreaker;
     const spell_data_t* blooddrinker;
-    const spell_data_t* rune_strike;
+    const spell_data_t* tombstone;
 
     const spell_data_t* rapid_decomposition;
     const spell_data_t* hemostasis;
@@ -710,18 +711,26 @@ public:
 
     const spell_data_t* foul_bulwark;
     const spell_data_t* ossuary;
-    const spell_data_t* tombstone;
+    const spell_data_t* relish_in_blood; // NYI
 
     const spell_data_t* will_of_the_necropolis; // NYI
     const spell_data_t* antimagic_barrier;
+    const spell_data_t* mark_of_blood;
 
     const spell_data_t* voracious;
+    const spell_data_t* death_pact; // NYI
     const spell_data_t* bloodworms;
-    const spell_data_t* mark_of_blood;
 
     const spell_data_t* purgatory; // NYI
     const spell_data_t* red_thirst;
     const spell_data_t* bonestorm;
+
+    // WIP
+    const spell_data_t* frostwyrms_fury;
+    const spell_data_t* unholy_frenzy;
+    const spell_data_t* summon_gargoyle;
+    const spell_data_t* rune_strike;
+
   } talent;
 
   // Spells
@@ -3382,6 +3391,7 @@ struct blood_boil_t : public death_knight_spell_t
 
     aoe = -1;
     cooldown -> hasted = true;
+    cooldown -> charges += as<int>( p -> spec.blood_boil_2 -> effectN( 1 ).base_value() );
   }
 
   void execute() override
@@ -7650,6 +7660,7 @@ void death_knight_t::init_spells()
   spec.blood_death_knight       = find_specialization_spell( "Blood Death Knight" );
   spec.riposte                  = find_specialization_spell( "Riposte" );
   spec.blood_boil               = find_specialization_spell( "Blood Boil" );
+  spec.blood_boil_2             = find_specialization_spell( "Blood Boil", "Rank 2" );
   spec.blood_tap                = find_specialization_spell( "Blood Tap" );
   spec.crimson_scourge          = find_specialization_spell( "Crimson Scourge" );
   spec.dancing_rune_weapon      = find_specialization_spell( "Dancing Rune Weapon" );
@@ -7714,8 +7725,8 @@ void death_knight_t::init_spells()
   talent.frostscythe          = find_talent_spell( "Frostscythe" );
 
   talent.gathering_storm      = find_talent_spell( "Gathering Storm" );
+  talent.hypothermic_presence = find_talent_spell( "Hypothermic Presence" ); // NYI
   talent.glacial_advance      = find_talent_spell( "Glacial Advance" );
-  talent.frostwyrms_fury      = find_talent_spell( "Frostwyrm's Fury" );
 
   talent.icecap               = find_talent_spell( "Icecap" );
   talent.obliteration         = find_talent_spell( "Obliteration" );
@@ -7737,17 +7748,17 @@ void death_knight_t::init_spells()
   talent.spell_eater        = find_talent_spell( "Spell Eater" );
 
   talent.pestilence         = find_talent_spell( "Pestilence" );
-  talent.defile             = find_talent_spell( "Defile" );
   talent.epidemic           = find_talent_spell( "Epidemic" );
+  talent.defile             = find_talent_spell( "Defile" );
 
   talent.army_of_the_damned = find_talent_spell( "Army of the Damned" );
-  talent.unholy_frenzy      = find_talent_spell( "Unholy Frenzy" );
-  talent.summon_gargoyle    = find_talent_spell( "Summon Gargoyle" );
+  talent.unholy_pact      = find_talent_spell( "Unholy Frenzy" ); // NYI
+  talent.unholy_assault    = find_talent_spell( "Summon Gargoyle" ); // NYI
 
   // Blood Talents
   talent.heartbreaker           = find_talent_spell( "Heartbreaker" );
   talent.blooddrinker           = find_talent_spell( "Blooddrinker" );
-  talent.rune_strike            = find_talent_spell( "Rune Strike"  );
+  talent.tombstone              = find_talent_spell( "Tombstone" );
 
   talent.rapid_decomposition    = find_talent_spell( "Rapid Decomposition" );
   talent.hemostasis             = find_talent_spell( "Hemostasis" );
@@ -7755,18 +7766,25 @@ void death_knight_t::init_spells()
 
   talent.foul_bulwark           = find_talent_spell( "Foul Bulwark" );
   talent.ossuary                = find_talent_spell( "Ossuary" );
-  talent.tombstone              = find_talent_spell( "Tombstone" );
+  talent.relish_in_blood        = find_talent_spell( "Relish in Blood" ); // NYI
 
   talent.will_of_the_necropolis = find_talent_spell( "Will of the Necropolis" ); // NYI
   talent.antimagic_barrier      = find_talent_spell( "Anti-Magic Barrier" );
+  talent.mark_of_blood          = find_talent_spell( "Mark of Blood" );
 
   talent.voracious              = find_talent_spell( "Voracious" );
+  talent.death_pact             = find_talent_spell( "Death Pact" ); // NYI
   talent.bloodworms             = find_talent_spell( "Bloodworms" );
-  talent.mark_of_blood          = find_talent_spell( "Mark of Blood" );
 
   talent.purgatory              = find_talent_spell( "Purgatory" ); // NYI
   talent.red_thirst             = find_talent_spell( "Red Thirst" );
   talent.bonestorm              = find_talent_spell( "Bonestorm" );
+
+  //WIP
+  talent.frostwyrms_fury      = find_talent_spell( "Frostwyrm's Fury" );
+  talent.unholy_frenzy      = find_talent_spell( "Unholy Frenzy" );
+  talent.summon_gargoyle    = find_talent_spell( "Summon Gargoyle" );
+  talent.rune_strike            = find_talent_spell( "Rune Strike"  );
 
   // Generic spells
   // Shared
