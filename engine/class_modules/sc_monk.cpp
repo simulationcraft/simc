@@ -1946,7 +1946,7 @@ public:
                                      } );
 
     buff.hit_combo_sef = make_buff( this, "hit_combo_sef", o()->passives.hit_combo )
-                             ->set_default_value( o()->passives.hit_combo->effectN( 1 ).percent() )
+                             ->set_default_value_from_effect( o()->passives.hit_combo->effectN( 1 ).percent() )
                              ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   }
 
@@ -7558,18 +7558,18 @@ monk_td_t::monk_td_t( player_t* target, monk_t* p )
                                    ->set_refresh_behavior( buff_refresh_behavior::DURATION );
     debuff.flying_serpent_kick =
         make_buff( *this, "flying_serpent_kick", p->passives.flying_serpent_kick_damage )
-            ->set_default_value( p->passives.flying_serpent_kick_damage->effectN( 2 ).percent() );
+            ->set_default_value_from_effect( 2, 0.01 );
     debuff.touch_of_karma =
         make_buff( *this, "touch_of_karma_debuff", p->spec.touch_of_karma )
             // set the percent of the max hp as the default value.
-            ->set_default_value( p->spec.touch_of_karma->effectN( 3 ).percent() +
-                                 ( p->talent.good_karma->ok() ? p->talent.good_karma->effectN( 1 ).percent() : 0 ) );
+            ->set_default_value_from_effect( 3, 0.01 )
+            ->modify_default_value( ( p->talent.good_karma->ok() ? p->talent.good_karma->effectN( 1 ).percent() : 0 ) );
   }
 
   if ( p->specialization() == MONK_BREWMASTER )
   {
     debuff.keg_smash = make_buff( *this, "keg_smash", p->spec.keg_smash )
-                           ->set_default_value( p->spec.keg_smash->effectN( 3 ).percent() );
+                           ->set_default_value_from_effect( 3, 0.01 );
 
     debuff.exploding_keg = make_buff( *this, "exploding_keg", p->talent.exploding_keg );
   }
@@ -8417,7 +8417,7 @@ void monk_t::create_buffs()
 
   // General
   buff.chi_torpedo = make_buff( this, "chi_torpedo", find_spell( 119085 ) )
-                         ->set_default_value( find_spell( 119085 )->effectN( 1 ).percent() );
+                         ->set_default_value_from_effect( 1, 0.01 );
 
   buff.fortifying_brew = new buffs::fortifying_brew_t( *this, "fortifying_brew", 
       ( specialization() == MONK_BREWMASTER ? passives.fortifying_brew : spec.fortifying_brew_mw_ww ) );
@@ -8427,7 +8427,7 @@ void monk_t::create_buffs()
   buff.dampen_harm = make_buff( this, "dampen_harm", talent.dampen_harm );
 
   buff.diffuse_magic = make_buff( this, "diffuse_magic", talent.diffuse_magic )
-                           ->set_default_value( talent.diffuse_magic->effectN( 1 ).percent() );
+                           ->set_default_value_from_effect( 1, 0.01 );
 
   buff.spinning_crane_kick = make_buff( this, "spinning_crane_kick", spec.spinning_crane_kick )
                                  ->set_default_value( spec.spinning_crane_kick->effectN( 2 ).percent() )
@@ -8435,7 +8435,7 @@ void monk_t::create_buffs()
 
   // Brewmaster
   buff.bladed_armor = make_buff( this, "bladed_armor", spec.bladed_armor )
-                          ->set_default_value( spec.bladed_armor->effectN( 1 ).percent() )
+                          ->set_default_value_from_effect( 1, 0.01 )
                           ->add_invalidate( CACHE_ATTACK_POWER );
 
   buff.blackout_combo = make_buff( this, "blackout_combo", talent.blackout_combo->effectN( 5 ).trigger() );
@@ -8445,7 +8445,7 @@ void monk_t::create_buffs()
 
   buff.celestial_flames = make_buff( this, "celestial_flames", talent.celestial_flames->effectN( 1 ).trigger() )
                               ->set_chance( talent.celestial_flames->proc_chance() )
-                              ->set_default_value( talent.celestial_flames->effectN( 2 ).percent() );
+                              ->set_default_value_from_effect( 2, 0.01 );
 
   buff.elusive_brawler = make_buff( this, "elusive_brawler", mastery.elusive_brawler->effectN( 3 ).trigger() )
                              ->add_invalidate( CACHE_DODGE );
@@ -8456,10 +8456,10 @@ void monk_t::create_buffs()
   buff.gift_of_the_ox = new buffs::gift_of_the_ox_buff_t( *this, "gift_of_the_ox", find_spell( 124503 ) );
 
   buff.invoke_niuzao = make_buff( this, "invoke_niuzao", spec.invoke_niuzao )
-                           ->set_default_value( spec.invoke_niuzao->effectN( 2 ).percent() );
+                           ->set_default_value_from_effect( 2, 0.01 );
 
   buff.purified_chi = make_buff( this, "purified_chi", find_spell( 325092 ) )
-                          ->set_default_value( find_spell( 325092 )->effectN( 1 ).percent() );
+                          ->set_default_value_from_effect( 1, 0.01 );
 
   buff.spitfire = make_buff( this, "spitfire", talent.spitfire->effectN( 1 ).trigger() );
 
@@ -8473,7 +8473,7 @@ void monk_t::create_buffs()
   buff.invoke_chiji = make_buff( this, "invoke_chiji", find_spell( 343818 ) );
 
   buff.invoke_chiji_evm = make_buff( this, "invoke_chiji_evm", find_spell( 343820 ) )
-      ->set_default_value( find_spell( 343820 )->effectN( 1 ).percent() );
+                              ->set_default_value_from_effect( 1, 0.01 );
 
   buff.life_cocoon = make_buff<absorb_buff_t>( this, "life_cocoon", spec.life_cocoon );
   buff.life_cocoon->set_absorb_source( get_stats( "life_cocoon" ) )->set_cooldown( timespan_t::zero() );
@@ -8482,10 +8482,10 @@ void monk_t::create_buffs()
       make_buff( this, "mana_tea", talent.mana_tea )->set_default_value( talent.mana_tea->effectN( 1 ).percent() );
 
   buff.lifecycles_enveloping_mist = make_buff( this, "lifecycles_enveloping_mist", find_spell( 197919 ) )
-                                        ->set_default_value( find_spell( 197919 )->effectN( 1 ).percent() );
+                                        ->set_default_value_from_effect( 1, 0.01 );
 
   buff.lifecycles_vivify = make_buff( this, "lifecycles_vivify", find_spell( 197916 ) )
-                               ->set_default_value( find_spell( 197916 )->effectN( 1 ).percent() );
+                               ->set_default_value_from_effect( 1, 0.01 );
 
   buff.refreshing_jade_wind =
       make_buff( this, "refreshing_jade_wind", talent.refreshing_jade_wind )
@@ -8493,7 +8493,7 @@ void monk_t::create_buffs()
           ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
 
   buff.teachings_of_the_monastery = make_buff( this, "teachings_of_the_monastery", find_spell( 202090 ) )
-                                        ->set_default_value( find_spell( 202090 )->effectN( 1 ).percent() );
+                                        ->set_default_value_from_effect( 1, 0.01 );
 
   buff.thunder_focus_tea =
       make_buff( this, "thunder_focus_tea", spec.thunder_focus_tea )
@@ -8501,7 +8501,7 @@ void monk_t::create_buffs()
 
   buff.uplifting_trance = make_buff( this, "uplifting_trance", find_spell( 197916 ) )
                               ->set_chance( spec.renewing_mist->effectN( 2 ).percent() )
-                              ->set_default_value( find_spell( 197916 )->effectN( 1 ).percent() );
+                              ->set_default_value_from_effect( 1, 0.01 );
 
   // Windwalker
   buff.bok_proc =
@@ -8510,7 +8510,7 @@ void monk_t::create_buffs()
                                                     : spec.combo_breaker->effectN( 1 ).percent() );
 
   buff.combo_master = make_buff( this, "combo_master", find_spell( 211432 ) )
-                          ->set_default_value( find_spell( 211432 )->effectN( 1 ).base_value() )
+                          ->set_default_value_from_effect( 1 )
                           ->add_invalidate( CACHE_MASTERY );
 
   buff.combo_strikes =
@@ -8525,11 +8525,11 @@ void monk_t::create_buffs()
   buff.flying_serpent_kick_movement = make_buff( this, "flying_serpent_kick_movement" );  // find_spell( 115057 )
 
   buff.hit_combo = make_buff( this, "hit_combo", passives.hit_combo )
-                       ->set_default_value( passives.hit_combo->effectN( 1 ).percent() )
+                       ->set_default_value_from_effect( 1, 0.01 )
                        ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   buff.inner_stength = make_buff( this, "inner_strength", find_spell( 261769 ) )
-                           ->set_default_value( find_spell( 261769 )->effectN( 1 ).base_value() );
+                           ->set_default_value_from_effect( 1 );
 
   buff.serenity = new buffs::serenity_buff_t( *this, "serenity", talent.serenity );
 
@@ -8541,7 +8541,7 @@ void monk_t::create_buffs()
           ->set_cooldown( timespan_t::zero() );
 
   buff.pressure_point = make_buff( this, "pressure_point", find_spell( 337481 ) )
-                            ->set_default_value( find_spell( 337481 )->effectN( 1 ).percent() )
+                            ->set_default_value_from_effect( 1, 0.01 )
                             ->set_refresh_behavior( buff_refresh_behavior::NONE );
 
   buff.touch_of_karma = new buffs::touch_of_karma_buff_t( *this, "touch_of_karma", find_spell( 125174 ) );
@@ -8583,8 +8583,7 @@ void monk_t::create_buffs()
       make_buff( this, "dance_of_chiji_azerite", find_spell( 286587 ) )->set_trigger_spell( find_spell( 286586 ) );
 
   buff.fury_of_xuen_stacks = make_buff( this, "fury_of_xuen_stacks", passives.fury_of_xuen_stacking_buff )
-                                 ->set_default_value_from_effect(
-                                     ( passives.fury_of_xuen_stacking_buff->effectN( 3 ).base_value() / 100 ), 0.01 );
+                                 ->set_default_value_from_effect( 3, 0.0001 );
 
   buff.fury_of_xuen_haste = make_buff<stat_buff_t>( this, "fury_of_xuen_haste", passives.fury_of_xuen_haste_buff )
                                 ->add_stat( STAT_HASTE_RATING, azerite.fury_of_xuen.value() );
@@ -8613,10 +8612,10 @@ void monk_t::create_buffs()
 
   // Windwalker
   buff.chi_energy = make_buff( this, "chi_energy", find_spell( 337571 ) )
-                        ->set_default_value( find_spell( 337571 )->effectN( 1 ).percent() );
+                        ->set_default_value_from_effect( 1, 0.01 );
 
   buff.the_emperors_capacitor = make_buff( this, "the_emperors_capacitor", find_spell( 337291 ) )
-                                    ->set_default_value( find_spell( 337291 )->effectN( 1 ).percent() );
+                                    ->set_default_value_from_effect( 1, 0.01 );
 
 }
 
