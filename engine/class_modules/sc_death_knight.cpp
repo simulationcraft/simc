@@ -600,6 +600,8 @@ public:
     const spell_data_t* howling_blast;
     const spell_data_t* killing_machine;
     const spell_data_t* killing_machine_rank_2;
+    const spell_data_t* might_of_the_frozen_wastes;
+    const spell_data_t* might_of_the_frozen_wastes_rank_2;
     const spell_data_t* obliterate;
     const spell_data_t* obliterate_rank_2;
     const spell_data_t* pillar_of_frost;
@@ -952,7 +954,7 @@ public:
 
   double    runes_per_second() const;
   double    rune_regen_coefficient() const;
-  void      trigger_killing_machine( double chance, proc_t* proc, proc_t* wasted_proc );
+  void      trigger_killing_machine( double chance, proc_t* proc, proc_t* wasted_proc, weapon_e weapon_type );
   void      trigger_runic_empowerment( double rpcost );
   void      trigger_runic_corruption( double rpcost, double override_chance = -1.0, proc_t* proc = nullptr );
   void      trigger_festering_wound( const action_state_t* state, unsigned n_stacks = 1, proc_t* proc = nullptr );
@@ -2999,7 +3001,8 @@ struct melee_t : public death_knight_melee_attack_t
       if ( p() -> spec.killing_machine -> ok() && s -> result == RESULT_CRIT )
       {
         p() -> trigger_killing_machine( 0, p() -> procs.km_from_crit_aa,
-                                           p() -> procs.km_from_crit_aa_wasted );
+                                           p() -> procs.km_from_crit_aa_wasted,
+                                           p() -> main_hand_weapon.group() );
       }
 
       if ( weapon && p() -> buffs.frozen_pulse -> up() )
@@ -4878,7 +4881,8 @@ struct frost_strike_strike_t : public death_knight_melee_attack_t
     {
       p() -> trigger_killing_machine( p() -> azerite.killer_frost.spell() -> effectN( 2 ).percent(),
                                       p() -> procs.km_from_killer_frost,
-                                      p() -> procs.km_from_killer_frost_wasted );
+                                      p() -> procs.km_from_killer_frost_wasted,
+                                      p() -> main_hand_weapon.group() );
     }
   }
 };
@@ -4928,7 +4932,8 @@ struct frost_strike_t : public death_knight_melee_attack_t
     if ( p() -> buffs.pillar_of_frost -> up() && p() -> talent.obliteration -> ok() )
     {
       p() -> trigger_killing_machine( 1.0, p() -> procs.km_from_obliteration_fs,
-                                           p() -> procs.km_from_obliteration_fs_wasted );
+                                           p() -> procs.km_from_obliteration_fs_wasted,
+                                           p() -> main_hand_weapon.group() );
 
       // Obliteration's rune generation
       if ( rng().roll( p() -> talent.obliteration -> effectN( 2 ).percent() ) )
@@ -4985,7 +4990,8 @@ struct glacial_advance_t : public death_knight_spell_t
     if ( p() -> buffs.pillar_of_frost -> up() && p() -> talent.obliteration -> ok() )
     {
       p() -> trigger_killing_machine( 1.0, p() -> procs.km_from_obliteration_ga,
-                                           p() -> procs.km_from_obliteration_ga_wasted );
+                                           p() -> procs.km_from_obliteration_ga_wasted,
+                                           p() -> main_hand_weapon.group() );
 
       // Obliteration's rune generation
       if ( rng().roll( p() -> talent.obliteration -> effectN( 2 ).percent() ) )
@@ -5256,7 +5262,8 @@ struct howling_blast_t : public death_knight_spell_t
     if ( p() -> buffs.pillar_of_frost -> up() && p() -> talent.obliteration -> ok() )
     {
       p() -> trigger_killing_machine( 1.0, p() -> procs.km_from_obliteration_hb,
-                                           p() -> procs.km_from_obliteration_hb_wasted );
+                                           p() -> procs.km_from_obliteration_hb_wasted,
+                                           p() -> main_hand_weapon.group() );
 
       // Obliteration's rune generation
       if ( rng().roll( p() -> talent.obliteration -> effectN( 2 ).percent() ) )
@@ -5386,8 +5393,16 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
   {
     background = special = true;
     may_miss = false;
-    weapon = w;    
-    base_multiplier *= 1.0 + p -> spec.obliterate_rank_2 -> effectN( 1 ).percent();
+    weapon = w;
+    if ( p -> spec.obliterate_rank_2->ok() )
+    {
+      base_multiplier *= 1.0 + p -> spec.obliterate_rank_2 -> effectN( 1 ).percent();
+    }
+    // So rank1 of motfw is dw, rank 2 is 2h, but the effect is tied to rank 1.
+    if ( p -> spec.might_of_the_frozen_wastes_rank_2 -> ok() && p -> main_hand_weapon.group() == WEAPON_2H )
+    {
+      base_multiplier *= 1.0 + p -> spec.might_of_the_frozen_wastes -> effectN( 1 ).percent();
+    }
   }
 
   double composite_crit_chance() const override
@@ -6881,7 +6896,7 @@ unsigned death_knight_t::replenish_rune( unsigned n, gain_t* gain )
 }
 
 // Helper function to trigger Killing Machine, whether it's from a "forced" proc, a % chance, or the regular rppm proc
-void death_knight_t::trigger_killing_machine( double chance, proc_t* proc, proc_t* wasted_proc )
+void death_knight_t::trigger_killing_machine( double chance, proc_t* proc, proc_t* wasted_proc, weapon_e weapon_type )
 {
   bool triggered = false;
   bool wasted = buffs.killing_machine -> up();
@@ -6894,7 +6909,14 @@ void death_knight_t::trigger_killing_machine( double chance, proc_t* proc, proc_
   {
     if ( !options.killing_machine_rppm )
     {
-      if ( rng().roll( ++km_proc_attempts * 0.3 ) )
+      // If we are using a 1H, we use 0.3 per attempt, with 2H it looks to be 0.7 through testing
+      double km_proc_chance = 0.3;
+      if ( spec.might_of_the_frozen_wastes_rank_2 -> ok() && weapon_type == WEAPON_2H )
+      {
+        km_proc_chance = 0.7;
+      }
+
+      if ( rng().roll( ++km_proc_attempts * km_proc_chance ) )
       {
         triggered = true;
         km_proc_attempts = 0;
@@ -7560,6 +7582,8 @@ void death_knight_t::init_spells()
   spec.frost_strike        = find_specialization_spell( "Frost Strike" );
   spec.frost_strike_rank_2 = find_specialization_spell( "Frost Strike", "Rank 2" );
   spec.howling_blast       = find_specialization_spell( "Howling Blast" );
+  spec.might_of_the_frozen_wastes = find_specialization_spell( "Might of the Frozen Wastes" );
+  spec.might_of_the_frozen_wastes_rank_2 = find_specialization_spell( "Might of the Frozen Wastes", "Rank 2" );
   spec.obliterate          = find_specialization_spell( "Obliterate" );
   spec.obliterate_rank_2   = find_specialization_spell( "Obliterate", "Rank 2" );
   spec.rime                = find_specialization_spell( "Rime" );
