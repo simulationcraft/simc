@@ -8230,7 +8230,7 @@ void druid_t::create_buffs()
   buff.clearcasting = make_buff( this, "clearcasting", spec.omen_of_clarity->effectN( 1 ).trigger() )
     ->set_cooldown( 1.05_s )
     ->set_chance( spec.omen_of_clarity->proc_chance() )
-    ->set_max_stack( as<unsigned>( 1 + talent.moment_of_clarity->effectN( 1 ).base_value() ) );
+    ->modify_max_stack( as<int>( talent.moment_of_clarity->effectN( 1 ).base_value() ) );
 
   buff.dash = make_buff( this, "dash", find_class_spell( "Dash" ) )
     ->set_cooldown( 0_ms )
@@ -8325,10 +8325,10 @@ void druid_t::create_buffs()
   buff.incarnation_bear = new incarnation_bear_buff_t( *this );
 
   buff.incarnation_tree = make_buff( this, "incarnation_tree_of_life", talent.incarnation_tree )
-    ->set_duration( timespan_t::from_seconds( 30 ) )
+    ->set_duration( 30_s )
     ->set_default_value_from_effect( 1 )
     ->add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER )
-    ->set_cooldown( timespan_t::zero() );
+    ->set_cooldown( 0_ms );
 
   buff.bloodtalons = make_buff( this, "bloodtalons", spec.bloodtalons );
 
@@ -8352,7 +8352,7 @@ void druid_t::create_buffs()
 
   buff.pulverize = make_buff( this, "pulverize", talent.pulverize )
     ->set_cooldown( 0_ms )
-    ->set_default_value( 2 )
+    ->set_default_value_from_effect( 2 )
     ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
 
   buff.heart_of_the_wild = make_buff( this, "heart_of_the_wild",
@@ -8375,7 +8375,7 @@ void druid_t::create_buffs()
   buff.celestial_alignment = make_buff( this, "celestial_alignment", spec.celestial_alignment )
     ->set_cooldown( timespan_t::zero() )
     ->add_invalidate( CACHE_CRIT_CHANCE )
-    ->set_duration( spec.celestial_alignment->duration() + conduit.precise_alignment.time_value() )
+    ->modify_duration( conduit.precise_alignment.time_value() )
     ->set_stack_change_callback( [this] ( buff_t* b, int, int new_ ) {
       if ( new_ )
       {
@@ -8394,7 +8394,7 @@ void druid_t::create_buffs()
     ->set_cooldown( 0_ms )
     ->add_invalidate( CACHE_HASTE )
     ->add_invalidate( CACHE_CRIT_CHANCE )
-    ->set_duration( talent.incarnation_moonkin->duration() + conduit.precise_alignment.time_value() )
+    ->modify_duration( conduit.precise_alignment.time_value() )
     ->set_stack_change_callback( [this] ( buff_t* b, int, int new_ ) {
       if ( new_ )
       {
@@ -8416,7 +8416,7 @@ void druid_t::create_buffs()
     ->set_chance( find_rank_spell( "Moonkin Form", "Rank 2" )->effectN( 1 ).percent() );
 
   buff.starlord = make_buff( this, "starlord", find_spell( 279709 ) )
-    ->set_default_value( 1 )
+    ->set_default_value_from_effect( 1 )
     ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
     ->add_invalidate( CACHE_HASTE );
 
@@ -8430,7 +8430,7 @@ void druid_t::create_buffs()
 
   buff.eclipse_lunar = new eclipse_buff_t( *this, "eclipse_lunar", spec.eclipse_lunar );
 
-  buff.starsurge = make_buff( this, "starsurge_empowerment" )
+  buff.starsurge = make_buff( this, "starsurge_empowerment", find_affinity_spell( "Starsurge" ) )
     ->set_duration( 0_ms )
     ->set_cooldown( 0_ms )
     ->set_max_stack( 30 );  // Arbitrary cap. Current max eclipse duration is 45s (15s base + 30s inc). Adjust if needed.
@@ -8489,7 +8489,7 @@ void druid_t::create_buffs()
   buff.barkskin = make_buff( this, "barkskin", spec.barkskin )
     ->set_cooldown( 0_ms )
     ->set_default_value_from_effect( 1 )
-    ->set_duration( spec.barkskin->duration() + find_rank_spell( "Barkskin", "Rank 2")->effectN( 1 ).time_value() )
+    ->apply_affecting_aura( find_rank_spell( "Barkskin", "Rank 2") )
     ->set_tick_behavior( talent.brambles->ok() ? buff_tick_behavior::REFRESH : buff_tick_behavior::NONE )
     ->set_tick_callback( [this]( buff_t*, int, timespan_t ) {
       if ( talent.brambles->ok() )
@@ -8517,7 +8517,7 @@ void druid_t::create_buffs()
     ->add_invalidate( CACHE_ARMOR )
     ->add_invalidate( CACHE_AGILITY )
     ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
-    ->modify_max_stack( find_rank_spell( "Ironfur", "Rank 2" )->effectN( 1 ).base_value() );
+    ->apply_affecting_aura( find_rank_spell( "Ironfur", "Rank 2" ) );
     //->set_cooldown( 0_ms )
     //->set_duration( spec.ironfur->duration() )
     //->set_max_stack( as<unsigned>( spec.ironfur->max_stacks() + find_rank_spell( "Ironfur", "Rank 2" )->effectN( 1 ).base_value() ) );
