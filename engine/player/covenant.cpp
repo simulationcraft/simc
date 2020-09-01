@@ -594,6 +594,21 @@ void register_target_data_initializers( sim_t* sim )
     else
       td->debuff.adversary = make_buff( *td, "adversary" )->set_quiet( true );
   } );
+
+  // Plaguey's Preemptive Strike
+  sim->register_target_data_initializer( []( actor_target_data_t* td ) {
+    if ( td->source->find_soulbind_spell( "Plaguey's Preemptive Strike" )->ok() )
+    {
+      assert( !td->debuff.plagueys_preemptive_strike );
+
+      td->debuff.plagueys_preemptive_strike =
+          make_buff( *td, "plagueys_preemptive_strike", td->source->find_spell( 323416 ) )
+              ->set_default_value_from_effect( 1 );
+      td->debuff.plagueys_preemptive_strike->reset();
+    }
+    else
+      td->debuff.plagueys_preemptive_strike = make_buff( *td, "plagueys_preemptive_strike" )->set_quiet( true );
+  } );
 }
 
 void covenant_cb_buff_t::trigger( action_t* a, action_state_t* s )
@@ -1094,9 +1109,40 @@ void volatile_solvent( special_effect_t& effect )
 
 void plagueys_preemptive_strike( special_effect_t& effect )
 {
-  if ( !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() ) return;
+  if ( !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() )
+    return;
 
+  struct plagueys_preemptive_strike_cb_t : public dbc_proc_callback_t
+  {
+    std::vector<int> target_list;
 
+    plagueys_preemptive_strike_cb_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e ), target_list() {}
+
+    void trigger( action_t* a, action_state_t* s ) override
+    {
+      if ( !a->harmful )
+        return;
+
+      if ( range::contains( target_list, s->target->actor_spawn_index ) )
+        return;
+
+      dbc_proc_callback_t::trigger( a, s );
+      target_list.push_back( s->target->actor_spawn_index );
+
+      auto td = a->player->get_target_data( s->target );
+      td->debuff.plagueys_preemptive_strike->trigger();
+    }
+
+    void reset() override
+    {
+      dbc_proc_callback_t::reset();
+      target_list.clear();
+    }
+  };
+
+  effect.proc_flags2_ = PF2_CAST | PF2_CAST_DAMAGE;
+
+  new plagueys_preemptive_strike_cb_t( effect );
 }
 
 void gnashing_chompers( special_effect_t& effect )
