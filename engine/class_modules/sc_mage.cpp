@@ -1137,7 +1137,7 @@ struct combustion_buff_t : public buff_t
     set_default_value( data().effectN( 1 ).percent() );
     set_tick_zero( true );
     set_refresh_behavior( buff_refresh_behavior::DURATION );
-    base_buff_duration += p->spec.combustion_2->effectN( 1 ).time_value();
+    modify_duration( p->spec.combustion_2->effectN( 1 ).time_value() );
 
     set_stack_change_callback( [ this ] ( buff_t*, int, int cur )
     {
@@ -1213,7 +1213,8 @@ struct icy_veins_buff_t : public buff_t
     set_default_value( data().effectN( 1 ).percent() );
     set_cooldown( 0_ms );
     add_invalidate( CACHE_SPELL_HASTE );
-    base_buff_duration += p->talents.thermal_void->effectN( 2 ).time_value() + p->spec.icy_veins_2->effectN( 1 ).time_value();
+    modify_duration( p->spec.icy_veins_2->effectN( 1 ).time_value() );
+    modify_duration( p->talents.thermal_void->effectN( 2 ).time_value() );
   }
 
   void expire_override( int stacks, timespan_t duration ) override
@@ -1929,9 +1930,7 @@ struct fire_mage_spell_t : public mage_spell_t
         else
         {
           p->procs.heating_up_generated->occur();
-          p->buffs.heating_up->trigger(
-            1, buff_t::DEFAULT_VALUE(), -1.0,
-            p->buffs.heating_up->buff_duration() * p->cache.spell_speed() );
+          p->buffs.heating_up->trigger( p->buffs.heating_up->buff_duration() * p->cache.spell_speed() );
           if ( guaranteed )
             p->buffs.heating_up->predict();
         }
@@ -5676,7 +5675,7 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
   // Runeforge Legendaries
   debuffs.grisly_icicle = make_buff( *this, "grisly_icicle", mage->find_spell( 122 ) )
                             ->set_default_value( mage->runeforge.grisly_icicle->effectN( 2 ).percent() )
-                            ->set_duration( mage->find_spell( 122 )->duration() + mage->spec.frost_nova_2->effectN( 1 ).time_value() )
+                            ->modify_duration( mage->spec.frost_nova_2->effectN( 1 ).time_value() )
                             ->set_chance( mage->runeforge.grisly_icicle.ok() );
 
   // Covenant Abilities
@@ -6276,10 +6275,10 @@ void mage_t::create_buffs()
   buffs.arcane_power         = make_buff( this, "arcane_power", find_spell( 12042 ) )
                                  ->set_cooldown( 0_ms )
                                  ->set_default_value( find_spell( 12042 )->effectN( 1 ).percent() + talents.overpowered->effectN( 1 ).percent() )
-                                 ->set_duration( find_spell( 12042 )->duration() + spec.arcane_power_3->effectN( 1 ).time_value() );
+                                 ->modify_duration( spec.arcane_power_3->effectN( 1 ).time_value() );
   buffs.clearcasting         = make_buff<buffs::expanded_potential_buff_t>( this, "clearcasting", find_spell( 263725 ) )
                                  ->set_default_value( find_spell( 263725 )->effectN( 1 ).percent() )
-                                 ->set_max_stack( find_spell( 263725 )->max_stacks() + as<int>( spec.clearcasting_3->effectN( 1 ).base_value() ) )
+                                 ->modify_max_stack( as<int>( spec.clearcasting_3->effectN( 1 ).base_value() ) )
                                  ->set_stack_change_callback( [ this ] ( buff_t*, int, int cur )
                                   // Nether Precision activates when all stacks of Clearcasting expire, regardless of how they expire.
                                    { if ( cur == 0 ) buffs.nether_precision->trigger( buffs.nether_precision->max_stack() ); } );
@@ -6293,7 +6292,7 @@ void mage_t::create_buffs()
                                  ->set_cooldown( 0_ms )
                                  ->set_stack_change_callback( [ this ] ( buff_t*, int, int cur )
                                    { if ( cur == 0 ) cooldowns.presence_of_mind->start( cooldowns.presence_of_mind->action ); } )
-                                 ->set_max_stack( find_spell( 205025 )->initial_stacks() + as<int>( spec.presence_of_mind_2->effectN( 1 ).base_value() ) );
+                                 ->modify_max_stack( as<int>( spec.presence_of_mind_2->effectN( 1 ).base_value() ) );
 
   buffs.arcane_familiar      = make_buff( this, "arcane_familiar", find_spell( 210126 ) )
                                  ->set_default_value( find_spell( 210126 )->effectN( 1 ).percent() )
@@ -6478,7 +6477,7 @@ void mage_t::create_buffs()
   // Covenant Abilities
   buffs.deathborne = make_buff( this, "deathborne", find_spell( 324220 ) )
                        ->set_default_value( find_spell( 324220 )->effectN( 2 ).percent() )
-                       ->set_duration( find_spell( 324220 )->duration() + conduits.gift_of_the_lich.time_value() );
+                       ->modify_duration( conduits.gift_of_the_lich.time_value() );
 
 
   // Soulbind Conduits

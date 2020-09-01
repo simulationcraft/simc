@@ -300,6 +300,7 @@ public:
   buff_t* modify_duration( timespan_t duration );
   buff_t* set_duration_multiplier( double );
   buff_t* set_max_stack( int max_stack );
+  buff_t* modify_max_stack( int max_stack );
   buff_t* set_cooldown( timespan_t duration );
   buff_t* set_period( timespan_t );
   //virtual buff_t* set_chance( double chance );

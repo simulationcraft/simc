@@ -747,6 +747,12 @@ buff_t* buff_t::set_max_stack( int max_stack )
   return this;
 }
 
+buff_t* buff_t::modify_max_stack( int max_stack )
+{
+  set_max_stack( _max_stack + max_stack );
+  return this;
+}
+
 buff_t* buff_t::set_cooldown( timespan_t duration )
 {
   // Set Buff duration
