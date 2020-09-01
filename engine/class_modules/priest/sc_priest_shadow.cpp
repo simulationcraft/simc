@@ -2391,7 +2391,7 @@ void priest_t::generate_apl_shadow()
                     "Use Surrender to Madness on a target that is going to die at the right time." );
   main->add_talent( this, "Mindbender" );
   main->add_talent( this, "Void Torrent",
-                    "target_if=variable.all_dots_up&!cooldown.void_eruption.up&target.time_to_die>4",
+                    "target_if=variable.all_dots_up&!buff.voidform.up&target.time_to_die>4",
                     "Use Void Torrent only if all DoTs are active and the target won't die during the channel." );
   main->add_action( this, "Shadow Word: Death",
                     "if=runeforge.painbreaker_psalm.equipped&variable.dots_up&target.health.pct>30",
