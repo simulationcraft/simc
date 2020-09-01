@@ -900,9 +900,19 @@ void soothing_shade( special_effect_t& effect )
 
 void wasteland_propriety( special_effect_t& effect )
 {
-  if ( !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() ) return;
+  if ( !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() )
+    return;
 
+  if ( !effect.player->buffs.wasteland_propriety )
+  {
+    auto s_data = effect.player->find_spell( 333218 );
+    effect.player->buffs.wasteland_propriety = make_buff( effect.player, "wasteland_propriety", s_data )
+      ->set_cooldown( effect.player->find_spell( 333221 )->duration() )
+      ->set_default_value( s_data->effectN( 1 ).percent() )
+      ->add_invalidate( CACHE_VERSATILITY );
+  }
 
+  add_covenant_cast_callback<covenant_cb_buff_t>( effect.player, effect.player->buffs.wasteland_propriety );
 }
 
 void built_for_war( special_effect_t& effect )

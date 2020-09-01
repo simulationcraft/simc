@@ -520,6 +520,7 @@ struct player_t : public actor_t
     buff_t* wild_hunt_tactics;        // night_fae/korayn - dummy buff used to quickly check if soulbind is enabled
     buff_t* thrill_seeker;            // venthyr/nadjia - counter every 2s
     buff_t* euphoria;                 // venthyr/nadjia/thill_seeker - haste buff
+    buff_t* wasteland_propriety;      // venthry/theotar - vers buff on covenant cast
   } buffs;
 
   struct debuffs_t
