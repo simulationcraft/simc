@@ -858,9 +858,22 @@ void dauntless_duelist( special_effect_t& effect )
 
 void thrill_seeker( special_effect_t& effect )
 {
-  if ( !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() ) return;
+  if ( !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() )
+    return;
 
+  if ( !effect.player->buffs.euphoria )
+  {
+    auto s_data = effect.player->find_spell( 331937 );
+    effect.player->buffs.euphoria = make_buff( effect.player, "euphoria", s_data )
+      ->set_default_value( s_data->effectN( 1 ).percent() )
+      ->add_invalidate( CACHE_HASTE );
+  }
 
+  // TODO: implement gains from killing blows
+
+  effect.player->register_combat_begin( []( player_t* p ) {
+    make_event( *p->sim, p->buffs.thrill_seeker->buff_period, [p]() { p->buffs.thrill_seeker->trigger(); } );
+  } );
 }
 
 void refined_palate( special_effect_t& effect )

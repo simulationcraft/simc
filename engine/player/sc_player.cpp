@@ -3319,6 +3319,18 @@ void player_t::create_buffs()
 
       // Soulbind buffs required for APL parsing
       buffs.redirected_anima_stacks = make_buff( this, "redirected_anima_stacks", find_spell( 342802 ) );
+      buffs.thrill_seeker = make_buff( this, "thrill_seeker", find_spell( 331939 ) )
+        ->set_duration( 0_ms )
+        ->set_period( find_soulbind_spell( "Thrill Seeker" )->effectN( 1 ).period() )
+        ->set_stack_change_callback( [this]( buff_t* b, int, int new_ ) {
+          if ( new_ >= b->max_stack() )
+          {
+            buffs.euphoria->trigger();
+            b->expire();
+            // TODO: do you still gain stacks while euphoria is active?
+            make_event( *sim, b->buff_period, [b]() { b->trigger(); } );
+          }
+        } );
     }
   }
   // .. for enemies
@@ -3459,6 +3471,9 @@ double player_t::composite_melee_haste() const
 
     if ( buffs.field_of_blossoms )
       h *= 1.0 / ( 1.0 + buffs.field_of_blossoms->check_value() );
+
+    if ( buffs.euphoria )
+      h *= 1.0 / ( 1.0 + buffs.euphoria->check_value() );
 
     h *= 1.0 / ( 1.0 + racials.nimble_fingers->effectN( 1 ).percent() );
     h *= 1.0 / ( 1.0 + racials.time_is_money->effectN( 1 ).percent() );
@@ -3799,6 +3814,9 @@ double player_t::composite_spell_haste() const
 
     if ( buffs.field_of_blossoms )
       h *= 1.0 / ( 1.0 + buffs.field_of_blossoms->check_value() );
+
+    if ( buffs.euphoria )
+      h *= 1.0 / ( 1.0 + buffs.euphoria->check_value() );
 
     h *= 1.0 / ( 1.0 + racials.nimble_fingers->effectN( 1 ).percent() );
     h *= 1.0 / ( 1.0 + racials.time_is_money->effectN( 1 ).percent() );
