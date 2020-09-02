@@ -3,19 +3,22 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 #include "soulbinds.hpp"
-#include "sim/sc_sim.hpp"
-#include "player/unique_gear_helper.hpp"
+
 #include "player/actor_target_data.hpp"
+#include "player/unique_gear_helper.hpp"
+#include "sim/sc_sim.hpp"
 
-
-namespace covenant{
-  namespace soulbinds{
-namespace {
-
-  
+namespace covenant
+{
+namespace soulbinds
+{
+namespace
+{
 struct covenant_cb_base_t
 {
-  covenant_cb_base_t() {}
+  covenant_cb_base_t()
+  {
+  }
   virtual void trigger( action_t*, action_state_t* s ) = 0;
 };
 
@@ -23,11 +26,13 @@ struct covenant_cb_buff_t : public covenant_cb_base_t
 {
   buff_t* buff;
 
-  covenant_cb_buff_t( buff_t* b ) : covenant_cb_base_t(), buff( b ) {}
+  covenant_cb_buff_t( buff_t* b ) : covenant_cb_base_t(), buff( b )
+  {
+  }
   void trigger( action_t*, action_state_t* ) override
   {
-  buff->trigger();
-}
+    buff->trigger();
+  }
 };
 
 struct covenant_cb_action_t : public covenant_cb_base_t
@@ -35,19 +40,20 @@ struct covenant_cb_action_t : public covenant_cb_base_t
   action_t* action;
   bool self_target;
 
-  covenant_cb_action_t( action_t* a, bool self = false ) : covenant_cb_base_t(), action( a ), self_target( self ) {}
+  covenant_cb_action_t( action_t* a, bool self = false ) : covenant_cb_base_t(), action( a ), self_target( self )
+  {
+  }
   void trigger( action_t*, action_state_t* state ) override
   {
-  auto t = self_target || !state->target ? action->player : state->target;
+    auto t = self_target || !state->target ? action->player : state->target;
 
-  if ( t->is_sleeping() )
-    return;
+    if ( t->is_sleeping() )
+      return;
 
-  action->set_target( t );
-  action->schedule_execute();
-}
+    action->set_target( t );
+    action->schedule_execute();
+  }
 };
-
 
 struct covenant_ability_cast_cb_t : public dbc_proc_callback_t
 {
@@ -88,15 +94,15 @@ void add_covenant_cast_callback( player_t* p, S&&... args )
 
   if ( !p->covenant->cast_callback )
   {
-    auto eff = new special_effect_t( p );
-    eff->name_str = "covenant_cast_callback";
-    eff->proc_flags_ = PF_ALL_DAMAGE;
-    eff->proc_flags2_ = PF2_CAST | PF2_CAST_DAMAGE | PF2_CAST_HEAL;
+    auto eff                   = new special_effect_t( p );
+    eff->name_str              = "covenant_cast_callback";
+    eff->proc_flags_           = PF_ALL_DAMAGE;
+    eff->proc_flags2_          = PF2_CAST | PF2_CAST_DAMAGE | PF2_CAST_HEAL;
     p->covenant->cast_callback = new covenant_ability_cast_cb_t( p, *eff );
   }
 
   auto cb_entry = new T( std::forward<S>( args )... );
-  auto cb = debug_cast<covenant_ability_cast_cb_t*>( p->covenant->cast_callback );
+  auto cb       = debug_cast<covenant_ability_cast_cb_t*>( p->covenant->cast_callback );
   cb->cb_list.push_back( cb_entry );
 }
 
@@ -624,8 +630,8 @@ void heirmirs_arsenal_marrowed_gemstone( special_effect_t& effect )
 
   new dbc_proc_callback_t( effect.player, effect );
 }
-}
 
+}  // namespace
 
 void register_special_effects()
 {
@@ -673,8 +679,8 @@ void initialize_soulbinds( player_t* player )
     if ( !spell->ok() )
       continue;
 
-    special_effect_t effect { player };
-    effect.type = SPECIAL_EFFECT_EQUIP;
+    special_effect_t effect{ player };
+    effect.type   = SPECIAL_EFFECT_EQUIP;
     effect.source = SPECIAL_EFFECT_SOURCE_SOULBIND;
 
     unique_gear::initialize_special_effect( effect, soulbind_spell );
@@ -719,6 +725,5 @@ void register_target_data_initializers( sim_t* sim )
   } );
 }
 
-
-  }
-}
+}  // namespace soulbinds
+}  // namespace covenant
