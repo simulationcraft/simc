@@ -3050,8 +3050,11 @@ struct chimaera_shot_base_t: public hunter_ranged_attack_t
     aoe = 2;
     radius = 5;
 
-    damage[ 0 ] = p -> get_background_action<impact_t>( fmt::format( "{}_frost", n ), p -> find_spell( 171454 ) );
-    damage[ 1 ] = p -> get_background_action<impact_t>( fmt::format( "{}_nature", n ), p -> find_spell( 171457 ) );
+    constexpr std::array<unsigned, 2> bm_spells { { 171454, 171457 } };
+    constexpr std::array<unsigned, 2> mm_spells { { 344121, 344120 } };
+    const auto spells = p -> specialization() == HUNTER_MARKSMANSHIP ? mm_spells : bm_spells;
+    damage[ 0 ] = p -> get_background_action<impact_t>( fmt::format( "{}_frost", n ), p -> find_spell( spells[ 0 ] ) );
+    damage[ 1 ] = p -> get_background_action<impact_t>( fmt::format( "{}_nature", n ), p -> find_spell( spells[ 1 ] ) );
     for ( auto a : damage )
       add_child( a );
 
