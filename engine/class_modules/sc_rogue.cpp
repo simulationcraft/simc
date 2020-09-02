@@ -8201,7 +8201,6 @@ void rogue_t::create_buffs()
       if ( rng().roll( legendary.celerity->effectN( 2 ).percent() ) )
       {
         timespan_t duration = timespan_t::from_seconds( legendary.celerity->effectN( 3 ).base_value() );
-        if ( bugs ) { duration += 1_s; }
         if ( buffs.adrenaline_rush->check() )
           buffs.adrenaline_rush->extend_duration( this, duration );
         else
