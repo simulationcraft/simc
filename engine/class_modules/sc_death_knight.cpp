@@ -400,6 +400,9 @@ struct death_knight_td_t : public actor_target_data_t {
 
     // Azerite Traits
     buff_t* deep_cuts;
+
+    // Soulbinds
+    buff_t* biting_cold;
   } debuff;
 
   death_knight_td_t( player_t* target, death_knight_t* death_knight );
@@ -843,6 +846,11 @@ public:
     azerite_power_t magus_of_the_dead;
   } azerite;
 
+  struct soulbind_conduits_t
+  {
+    conduit_data_t biting_cold;
+  } conduits;
+
   // Death Knight Options
   struct options_t
   {
@@ -1032,6 +1040,9 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* p
                            -> set_default_value( p -> find_spell( 327092 ) -> effectN( 1 ).percent() );
   debuff.apocalypse_war    = make_buff( *this, "war", p -> find_spell( 327096 ) )
                            -> set_default_value( p -> find_spell( 327096 ) -> effectN( 1 ).percent() );
+
+  debuff.biting_cold       = make_buff( *this, "biting_cold", p -> find_spell( 337989 ) )
+                           -> set_default_value( p -> conduits.biting_cold.percent() );
 }
 
 // ==========================================================================
@@ -5771,6 +5782,7 @@ struct remorseless_winter_damage_t : public death_knight_spell_t
     double m = death_knight_spell_t::action_multiplier();
 
     m *= 1.0 + p() -> buffs.gathering_storm -> stack_value();
+    m *= 1.0 + p() -> get_target_data( target ) -> debuff.biting_cold -> check_stack_value();
 
     return m;
   }
@@ -5796,6 +5808,8 @@ struct remorseless_winter_damage_t : public death_knight_spell_t
       p() -> buffs.rime -> trigger();
       p() -> triggered_frozen_tempest = true;
     }
+
+    td( state->target )->debuff.biting_cold->trigger();
   }
 };
 
@@ -7748,6 +7762,10 @@ void death_knight_t::init_spells()
 
   azerite_essence_t memory_of_lucid_dreams = find_azerite_essence( "Memory of Lucid Dreams" );
   lucid_dreams_minor_refund = memory_of_lucid_dreams.spell_ref( 1u, essence_type::MINOR ).effectN( 1 ).percent();
+
+  // Conduits
+  // Frost
+  conduits.biting_cold           = find_conduit_spell( "Biting Cold" );
 }
 
 // death_knight_t::default_apl_dps_precombat ================================
