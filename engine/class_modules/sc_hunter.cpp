@@ -2968,6 +2968,7 @@ struct arcane_shot_base_t: public hunter_ranged_attack_t
     hunter_ranged_attack_t::execute();
 
     p() -> trigger_lethal_shots();
+    p() -> trigger_calling_the_shots();
   }
 
   double action_multiplier() const override
@@ -2996,8 +2997,6 @@ struct arcane_shot_t: public arcane_shot_base_t
 
     p() -> buffs.precise_shots -> up(); // benefit tracking
     p() -> buffs.precise_shots -> decrement();
-
-    p() -> trigger_calling_the_shots();
   }
 };
 
