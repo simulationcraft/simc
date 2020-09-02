@@ -420,7 +420,6 @@ public:
     const spell_data_t* seal_fate;
     const spell_data_t* venomous_wounds;
     const spell_data_t* vendetta;
-    const spell_data_t* vendetta_2;
     const spell_data_t* master_assassin;
     const spell_data_t* garrote;
     const spell_data_t* garrote_2;
@@ -5757,8 +5756,7 @@ struct vendetta_debuff_t : public buff_t
 
     // 3/25/2020 - The base 3s duration regen buff does not re-apply on refreshes
     rogue_t* rogue = debug_cast<rogue_t*>( source );
-    if ( rogue->spec.vendetta_2->ok() )
-      rogue->buffs.vendetta->trigger();
+    rogue->buffs.vendetta->trigger();
     trigger_nothing_personal( remains() );
   }
 
@@ -7771,7 +7769,6 @@ void rogue_t::init_spells()
   spec.seal_fate            = find_specialization_spell( "Seal Fate" );
   spec.venomous_wounds      = find_specialization_spell( "Venomous Wounds" );
   spec.vendetta             = find_specialization_spell( "Vendetta" );
-  spec.vendetta_2           = find_rank_spell( "Vendetta", "Rank 2" );
   spec.master_assassin      = find_spell( 256735 );
   spec.garrote              = find_specialization_spell( "Garrote" );
   spec.garrote_2            = find_specialization_spell( 231719 );
