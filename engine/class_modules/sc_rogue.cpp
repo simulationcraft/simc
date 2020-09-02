@@ -2499,10 +2499,9 @@ struct backstab_t : public rogue_attack_t
     trigger_weaponmaster( state, p()->active.weaponmaster.backstab );
     trigger_inevitability( state );
 
-    if ( state->result == RESULT_CRIT && p()->spec.backstab_2->ok() && ( !p()->bugs || p()->position() == POSITION_BACK ) )
+    if ( state->result == RESULT_CRIT && p()->spec.backstab_2->ok() && p()->position() == POSITION_BACK )
     {
-      // On current beta, this still triggers 8s of FW despite spell data being 6s.
-      timespan_t duration = p()->bugs ? 8_s : timespan_t::from_seconds( p()->spec.backstab_2->effectN( 1 ).base_value() );
+      timespan_t duration = timespan_t::from_seconds( p()->spec.backstab_2->effectN( 1 ).base_value() );
       trigger_find_weakness( state, duration );
     }
   }
@@ -3237,10 +3236,9 @@ struct gloomblade_t : public rogue_attack_t
 
     trigger_inevitability( state );
 
-    if ( state->result == RESULT_CRIT && p()->spec.backstab_2->ok() && ( !p()->bugs || p()->position() == POSITION_BACK ) )
+    if ( state->result == RESULT_CRIT && p()->spec.backstab_2->ok() )
     {
-      // On current beta, this still triggers 8s of FW despite spell data being 6s.
-      timespan_t duration = p()->bugs ? 8_s : timespan_t::from_seconds( p()->spec.backstab_2->effectN( 1 ).base_value() );
+      timespan_t duration = timespan_t::from_seconds( p()->spec.backstab_2->effectN( 1 ).base_value() );
       trigger_find_weakness( state, duration );
     }
   }
@@ -4210,8 +4208,7 @@ struct shuriken_storm_t: public rogue_attack_t
 
     if ( state->result == RESULT_CRIT && p()->spec.shuriken_storm_2->ok() )
     {
-      // On current beta, this still triggers 8s of FW despite spell data being 6s.
-      timespan_t duration = p()->bugs ? 8_s : timespan_t::from_seconds( p()->spec.shuriken_storm_2->effectN( 1 ).base_value() );
+      timespan_t duration = timespan_t::from_seconds( p()->spec.shuriken_storm_2->effectN( 1 ).base_value() );
       trigger_find_weakness( state, duration );
     }
   }
