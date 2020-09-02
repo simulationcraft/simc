@@ -415,6 +415,7 @@ public:
   // Counters
   double eternal_rune_weapon_counter;
   bool triggered_frozen_tempest;
+  unsigned int km_proc_attempts;
 
   // Enemies affected by festering wounds
   unsigned int festering_wounds_target_count;
@@ -609,6 +610,8 @@ public:
     const spell_data_t* howling_blast;
     const spell_data_t* killing_machine;
     const spell_data_t* killing_machine_2;
+    const spell_data_t* might_of_the_frozen_wastes;
+    const spell_data_t* might_of_the_frozen_wastes_2;
     const spell_data_t* obliterate;
     const spell_data_t* obliterate_2;
     const spell_data_t* pillar_of_frost;
@@ -760,7 +763,6 @@ public:
   {
     real_ppm_t* bloodworms;
     real_ppm_t* runic_attenuation;
-    real_ppm_t* killing_machine;
   } rppm;
 
   // Pets and Guardians
@@ -868,6 +870,7 @@ public:
     deprecated_dnd_expression( false ),
     eternal_rune_weapon_counter( 0 ),
     triggered_frozen_tempest( false ),
+    km_proc_attempts( 0 ),
     festering_wounds_target_count( 0 ),
     antimagic_shell( nullptr ),
     buffs( buffs_t() ),
@@ -3001,7 +3004,7 @@ struct melee_t : public death_knight_melee_attack_t
     {
       p() -> buffs.sudden_doom -> trigger();
 
-      if ( s -> result == RESULT_CRIT )
+      if ( p() -> spec.killing_machine -> ok() && s -> result == RESULT_CRIT )
       {
         p() -> trigger_killing_machine( 0, p() -> procs.km_from_crit_aa,
                                            p() -> procs.km_from_crit_aa_wasted );
@@ -5394,7 +5397,13 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
     background = special = true;
     may_miss = false;
     weapon = w;
+
     base_multiplier *= 1.0 + p -> spec.obliterate_2 -> effectN( 1 ).percent();
+    // So rank1 of motfw is dw, rank 2 is 2h, but the effect is tied to rank 1.
+    if ( p -> spec.might_of_the_frozen_wastes_2 -> ok() && p -> main_hand_weapon.group() == WEAPON_2H )
+    {
+      base_multiplier *= 1.0 + p -> spec.might_of_the_frozen_wastes -> effectN( 1 ).percent();
+    }
   }
 
   double composite_crit_chance() const override
@@ -6929,12 +6938,24 @@ void death_knight_t::trigger_killing_machine( double chance, proc_t* proc, proc_
 {
   bool triggered = false;
   bool wasted = buffs.killing_machine -> up();
-  // If the given chance is 0, use the rppm effect
+  // If the given chance is 0, use the auto attack proc mechanic (new system, or rppm if the option is selected)
+  // Melekus, 2020-06-03: It appears that Killing Machine now procs from auto attacks following a custom system
+  // Every critical auto attack has a 30% * number of missed proc attempts to trigger Killing Machine
+  // Originally found by Bicepspump, made public on 2020-05-17
+  // This may have been added to the game on patch 8.2, when rppm data from Killing Machine was removed from the game
   if ( chance == 0 )
   {
-    if ( rppm.killing_machine -> trigger() )
+    // If we are using a 1H, we use 0.3 per attempt, with 2H it looks to be 0.7 through testing
+    double km_proc_chance = 0.3;
+    if ( spec.might_of_the_frozen_wastes_2 -> ok() && main_hand_weapon.group() == WEAPON_2H )
+    {
+      km_proc_chance = 0.7;
+    }
+
+    if ( rng().roll( ++km_proc_attempts * km_proc_chance ) )
     {
       triggered = true;
+      km_proc_attempts = 0;
     }
   }
   // Else, use RNG
@@ -7533,11 +7554,6 @@ void death_knight_t::init_rng()
 
   rppm.bloodworms = get_rppm( "bloodworms", talent.bloodworms );
   rppm.runic_attenuation = get_rppm( "runic_attenuation", talent.runic_attenuation );
-  rppm.killing_machine = get_rppm( "killing_machine", spec.killing_machine );
-
-  // 2019-05-15: Killing Machine's RPPM data was removed on PTR
-  // The 4.5 rppm is re-added via a manual hotfix and the scale flags are set here
-  rppm.killing_machine -> set_scaling( RPPM_CRIT | RPPM_HASTE );
 }
 
 // death_knight_t::init_base ================================================
@@ -7612,6 +7628,8 @@ void death_knight_t::init_spells()
   spec.howling_blast         = find_specialization_spell( "Howling Blast" );
   spec.obliterate            = find_specialization_spell( "Obliterate" );
   spec.obliterate_2          = find_specialization_spell( "Obliterate", "Rank 2" );
+  spec.might_of_the_frozen_wastes = find_specialization_spell( "Might of the Frozen Wastes" );
+  spec.might_of_the_frozen_wastes_2 = find_specialization_spell( "Might of the Frozen Wastes", "Rank 2" );
   spec.rime                  = find_specialization_spell( "Rime" );
   spec.rime_2                = find_specialization_spell( "Rime", "Rank 2" );
   spec.runic_empowerment     = find_specialization_spell( "Runic Empowerment" );
@@ -8607,6 +8625,7 @@ void death_knight_t::reset()
   _runes.reset();
   active_dnd = nullptr;
   eternal_rune_weapon_counter = 0;
+  km_proc_attempts = 0;
 }
 
 // death_knight_t::assess_heal ==============================================
