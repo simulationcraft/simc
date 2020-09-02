@@ -246,7 +246,7 @@ public:
   moon_stage_e moon_stage;
   eclipse_handler_t eclipse_handler;
   // counters for snapshot tracking
-  auto_dispose<std::vector<snapshot_counter_t*>> counters;
+  std::vector<snapshot_counter_t*> counters;
 
   double expected_max_health;  // For Bristling Fur calculations.
 
