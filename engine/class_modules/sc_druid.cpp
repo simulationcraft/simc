@@ -3664,14 +3664,14 @@ struct rip_state_t : public druid_action_state_t
 
   void initialize() override
   {
-    action_state_t::initialize();
+    druid_action_state_t::initialize();
 
     combo_points = as<int>( druid->resources.current[ RESOURCE_COMBO_POINT ] );
   }
 
   void copy_state( const action_state_t* state ) override
   {
-    action_state_t::copy_state( state );
+    druid_action_state_t::copy_state( state );
     const rip_state_t* rip_state = debug_cast<const rip_state_t*>( state );
 
     combo_points = rip_state->combo_points;
@@ -3679,7 +3679,7 @@ struct rip_state_t : public druid_action_state_t
 
   std::ostringstream& debug_str( std::ostringstream& s ) override
   {
-    action_state_t::debug_str( s );
+    druid_action_state_t::debug_str( s );
 
     s << " combo_points=" << combo_points;
 
@@ -7255,6 +7255,7 @@ struct adaptive_swarm_t : public druid_spell_t
     void initialize() override
     {
       action_state_t::initialize();
+
       stacks = default_stacks;
     }
 
@@ -7264,6 +7265,15 @@ struct adaptive_swarm_t : public druid_spell_t
       const adaptive_swarm_state_t* swarm_s = debug_cast<const adaptive_swarm_state_t*>( s );
 
       stacks = swarm_s->stacks;
+    }
+
+    std::ostringstream& debug_str( std::ostringstream& s ) override
+    {
+      druid_action_state_t::debug_str( s );
+
+      s << " swarm_stacks=" << stacks;
+
+      return s;
     }
   };
 
@@ -7337,12 +7347,15 @@ struct adaptive_swarm_t : public druid_spell_t
 
     void impact( action_state_t* s ) override
     {
-      auto stacks = debug_cast<adaptive_swarm_state_t*>( s )->stacks;
-      stacks += get_dot( s->target )->current_stack();
+      auto incoming = debug_cast<adaptive_swarm_state_t*>( s )->stacks;
+      auto existing = get_dot( s->target )->current_stack();
 
       druid_spell_t::impact( s );
 
-      get_dot( s->target )->increment( stacks - 1 );
+      auto d = get_dot( s->target );
+      d->increment( incoming + existing - 1 );
+      sim->print_debug( "adaptive_swarm stacks: {} incoming:{} existing:{} final:{}", heal ? "heal" : "damage",
+                        incoming, existing, d->current_stack() );
     }
 
     void last_tick( dot_t* d ) override
@@ -7358,13 +7371,24 @@ struct adaptive_swarm_t : public druid_spell_t
       if ( d->remains() > 0_ms && !d->target->is_sleeping() )
         return;
 
-      int stacks = d->current_stack() - 1;
-      if ( !stacks )
+      int stacks = d->current_stack();
+      if ( stacks <= 1 )
+      {
+        sim->print_debug( "adaptive_swarm stacks: expiring on final stack" );
         return;
+      }
 
       auto new_target = new_swarm_target();
       if ( !new_target )
+      {
+        sim->print_debug( "adaptive_swarm stacks: expiring {} stacks with no target found", stacks );
         return;
+      }
+
+      stacks--;
+
+      sim->print_debug( "adaptive_swarm stacks: jumping {} stacks of {} to {}", stacks, heal ? "damage" : "heal",
+                        new_target->name() );
 
       auto new_state = get_state();
       debug_cast<adaptive_swarm_state_t*>( new_state )->stacks = stacks;
@@ -7406,6 +7430,7 @@ struct adaptive_swarm_t : public druid_spell_t
       : adaptive_swarm_base_t( p, "adaptive_swarm_heal", p->covenant.adaptive_swarm_heal )
     {
       quiet = heal = true;
+      may_miss = may_crit = false;
       base_td = base_td_multiplier = 0.0;
     }
 
