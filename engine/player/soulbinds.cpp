@@ -610,9 +610,6 @@ void serrated_spaulders( special_effect_t& effect )
 
 void heirmirs_arsenal_marrowed_gemstone( special_effect_t& effect )
 {
-  if ( !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() )
-    return;
-
   if ( !effect.player->buffs.marrowed_gemstone_enhancement )
   {
     effect.player->buffs.marrowed_gemstone_enhancement =
@@ -629,6 +626,16 @@ void heirmirs_arsenal_marrowed_gemstone( special_effect_t& effect )
   effect.custom_buff = effect.player->buffs.marrowed_gemstone_charging;
 
   new dbc_proc_callback_t( effect.player, effect );
+}
+
+// Helper function for registering an effect, with autoamtic skipping initialization if soulbind spell is not available
+void register_soulbind_special_effect( unsigned spell_id, custom_cb_t init_callback )
+{
+  unique_gear::register_special_effect( spell_id, [ & ]( special_effect_t& effect ) {
+    if ( !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() )
+      return;
+    init_callback( effect );
+  } );
 }
 
 }  // namespace
@@ -665,7 +672,7 @@ void register_special_effects()
   unique_gear::register_special_effect( 323919, soulbinds::gnashing_chompers );  // Emeni
   unique_gear::register_special_effect( 342156, soulbinds::embody_the_construct );
   unique_gear::register_special_effect( 326504, soulbinds::serrated_spaulders );  // Heirmir
-  unique_gear::register_special_effect( 326572, soulbinds::heirmirs_arsenal_marrowed_gemstone );
+  register_soulbind_special_effect( 326572, soulbinds::heirmirs_arsenal_marrowed_gemstone );
 }
 
 void initialize_soulbinds( player_t* player )
