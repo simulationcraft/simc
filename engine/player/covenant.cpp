@@ -554,73 +554,6 @@ void initialize_soulbinds( player_t* player )
   }
 }
 
-void register_soulbinds()
-{
-  // Night Fae
-  unique_gear::register_special_effect( 320659, soulbinds::niyas_tools_burrs );  // Niya
-  unique_gear::register_special_effect( 320660, soulbinds::niyas_tools_poison );
-  unique_gear::register_special_effect( 320662, soulbinds::niyas_tools_herbs );
-  unique_gear::register_special_effect( 322721, soulbinds::grove_invigoration );
-  unique_gear::register_special_effect( 319191, soulbinds::field_of_blossoms );  // Dreamweaver
-  unique_gear::register_special_effect( 319210, soulbinds::social_butterfly );
-  unique_gear::register_special_effect( 325069, soulbinds::first_strike );  // Korayn
-  unique_gear::register_special_effect( 325066, soulbinds::wild_hunt_tactics );
-  // Venthyr
-  unique_gear::register_special_effect( 331580, soulbinds::exacting_preparation );  // Nadjia
-  unique_gear::register_special_effect( 331584, soulbinds::dauntless_duelist );
-  unique_gear::register_special_effect( 331586, soulbinds::thrill_seeker );
-  unique_gear::register_special_effect( 336243, soulbinds::refined_palate );  // Theotar
-  unique_gear::register_special_effect( 336239, soulbinds::soothing_shade );
-  unique_gear::register_special_effect( 319983, soulbinds::wasteland_propriety );
-  unique_gear::register_special_effect( 319973, soulbinds::built_for_war );  // Draven
-  unique_gear::register_special_effect( 332753, soulbinds::superior_tactics );
-  // Kyrian
-  unique_gear::register_special_effect( 328257, soulbinds::let_go_of_the_past );  // Pelagos
-  unique_gear::register_special_effect( 328266, soulbinds::combat_meditation );
-  unique_gear::register_special_effect( 329778, soulbinds::pointed_courage );    // Kleia
-  unique_gear::register_special_effect( 333935, soulbinds::hammer_of_genesis );  // Mikanikos
-  unique_gear::register_special_effect( 333950, soulbinds::brons_call_to_action );
-  // Necrolord
-  unique_gear::register_special_effect( 323074, soulbinds::volatile_solvent );  // Marileth
-  unique_gear::register_special_effect( 323090, soulbinds::plagueys_preemptive_strike );
-  unique_gear::register_special_effect( 323919, soulbinds::gnashing_chompers );  // Emeni
-  unique_gear::register_special_effect( 342156, soulbinds::embody_the_construct );
-  unique_gear::register_special_effect( 326504, soulbinds::serrated_spaulders );  // Heirmir
-  unique_gear::register_special_effect( 326572, soulbinds::heirmirs_arsenal_marrowed_gemstone );
-}
-
-void register_target_data_initializers( sim_t* sim )
-{
-  // Dauntless Duelist
-  sim->register_target_data_initializer( []( actor_target_data_t* td ) {
-    if ( td->source->find_soulbind_spell( "Dauntless Duelist" )->ok() )
-    {
-      assert( !td->debuff.adversary );
-
-      td->debuff.adversary =
-          make_buff( *td, "adversary", td->source->find_spell( 331934 ) )->set_default_value_from_effect( 1 );
-      td->debuff.adversary->reset();
-    }
-    else
-      td->debuff.adversary = make_buff( *td, "adversary" )->set_quiet( true );
-  } );
-
-  // Plaguey's Preemptive Strike
-  sim->register_target_data_initializer( []( actor_target_data_t* td ) {
-    if ( td->source->find_soulbind_spell( "Plaguey's Preemptive Strike" )->ok() )
-    {
-      assert( !td->debuff.plagueys_preemptive_strike );
-
-      td->debuff.plagueys_preemptive_strike =
-          make_buff( *td, "plagueys_preemptive_strike", td->source->find_spell( 323416 ) )
-              ->set_default_value_from_effect( 1 );
-      td->debuff.plagueys_preemptive_strike->reset();
-    }
-    else
-      td->debuff.plagueys_preemptive_strike = make_buff( *td, "plagueys_preemptive_strike" )->set_quiet( true );
-  } );
-}
-
 void covenant_cb_buff_t::trigger( action_t* a, action_state_t* s )
 {
   buff->trigger();
@@ -688,8 +621,9 @@ void add_covenant_cast_callback( player_t* p, S&&... args )
   cb->cb_list.push_back( cb_entry );
 }
 
-namespace soulbinds
+namespace 
 {
+namespace soulbinds{
 void niyas_tools_burrs( special_effect_t& effect )
 {
   if ( !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() ) return;
@@ -1216,4 +1150,73 @@ void heirmirs_arsenal_marrowed_gemstone( special_effect_t& effect )
 }
 
 }  // namespace soulbinds
+}
+
+void register_soulbinds()
+{
+  // Night Fae
+  unique_gear::register_special_effect( 320659, soulbinds::niyas_tools_burrs );  // Niya
+  unique_gear::register_special_effect( 320660, soulbinds::niyas_tools_poison );
+  unique_gear::register_special_effect( 320662, soulbinds::niyas_tools_herbs );
+  unique_gear::register_special_effect( 322721, soulbinds::grove_invigoration );
+  unique_gear::register_special_effect( 319191, soulbinds::field_of_blossoms );  // Dreamweaver
+  unique_gear::register_special_effect( 319210, soulbinds::social_butterfly );
+  unique_gear::register_special_effect( 325069, soulbinds::first_strike );  // Korayn
+  unique_gear::register_special_effect( 325066, soulbinds::wild_hunt_tactics );
+  // Venthyr
+  unique_gear::register_special_effect( 331580, soulbinds::exacting_preparation );  // Nadjia
+  unique_gear::register_special_effect( 331584, soulbinds::dauntless_duelist );
+  unique_gear::register_special_effect( 331586, soulbinds::thrill_seeker );
+  unique_gear::register_special_effect( 336243, soulbinds::refined_palate );  // Theotar
+  unique_gear::register_special_effect( 336239, soulbinds::soothing_shade );
+  unique_gear::register_special_effect( 319983, soulbinds::wasteland_propriety );
+  unique_gear::register_special_effect( 319973, soulbinds::built_for_war );  // Draven
+  unique_gear::register_special_effect( 332753, soulbinds::superior_tactics );
+  // Kyrian
+  unique_gear::register_special_effect( 328257, soulbinds::let_go_of_the_past );  // Pelagos
+  unique_gear::register_special_effect( 328266, soulbinds::combat_meditation );
+  unique_gear::register_special_effect( 329778, soulbinds::pointed_courage );    // Kleia
+  unique_gear::register_special_effect( 333935, soulbinds::hammer_of_genesis );  // Mikanikos
+  unique_gear::register_special_effect( 333950, soulbinds::brons_call_to_action );
+  // Necrolord
+  unique_gear::register_special_effect( 323074, soulbinds::volatile_solvent );  // Marileth
+  unique_gear::register_special_effect( 323090, soulbinds::plagueys_preemptive_strike );
+  unique_gear::register_special_effect( 323919, soulbinds::gnashing_chompers );  // Emeni
+  unique_gear::register_special_effect( 342156, soulbinds::embody_the_construct );
+  unique_gear::register_special_effect( 326504, soulbinds::serrated_spaulders );  // Heirmir
+  unique_gear::register_special_effect( 326572, soulbinds::heirmirs_arsenal_marrowed_gemstone );
+}
+
+void register_target_data_initializers( sim_t* sim )
+{
+  // Dauntless Duelist
+  sim->register_target_data_initializer( []( actor_target_data_t* td ) {
+    if ( td->source->find_soulbind_spell( "Dauntless Duelist" )->ok() )
+    {
+      assert( !td->debuff.adversary );
+
+      td->debuff.adversary =
+          make_buff( *td, "adversary", td->source->find_spell( 331934 ) )->set_default_value_from_effect( 1 );
+      td->debuff.adversary->reset();
+    }
+    else
+      td->debuff.adversary = make_buff( *td, "adversary" )->set_quiet( true );
+  } );
+
+  // Plaguey's Preemptive Strike
+  sim->register_target_data_initializer( []( actor_target_data_t* td ) {
+    if ( td->source->find_soulbind_spell( "Plaguey's Preemptive Strike" )->ok() )
+    {
+      assert( !td->debuff.plagueys_preemptive_strike );
+
+      td->debuff.plagueys_preemptive_strike =
+          make_buff( *td, "plagueys_preemptive_strike", td->source->find_spell( 323416 ) )
+              ->set_default_value_from_effect( 1 );
+      td->debuff.plagueys_preemptive_strike->reset();
+    }
+    else
+      td->debuff.plagueys_preemptive_strike = make_buff( *td, "plagueys_preemptive_strike" )->set_quiet( true );
+  } );
+}
+
 }  // namespace covenant
