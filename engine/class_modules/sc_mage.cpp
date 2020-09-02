@@ -4274,43 +4274,19 @@ struct ice_nova_t : public frost_mage_spell_t
 
 struct icy_veins_t : public frost_mage_spell_t
 {
-  bool precombat;
-
   icy_veins_t( util::string_view n, mage_t* p, util::string_view options_str ) :
-    frost_mage_spell_t( n, p, p->find_specialization_spell( "Icy Veins" ) ),
-    precombat()
+    frost_mage_spell_t( n, p, p->find_specialization_spell( "Icy Veins" ) )
   {
     parse_options( options_str );
     harmful = false;
     cooldown->duration *= p->strive_for_perfection_multiplier;
   }
 
-  void init_finished() override
-  {
-    frost_mage_spell_t::init_finished();
-
-    if ( action_list && action_list->name_str == "precombat" )
-      precombat = true;
-  }
-
-  void schedule_execute( action_state_t* s ) override
-  {
-    // Icy Veins buff is applied before the spell is cast, allowing it to
-    // reduce GCD of the action that triggered it.
-    if ( !precombat )
-      p()->buffs.icy_veins->trigger();
-
-    frost_mage_spell_t::schedule_execute( s );
-  }
-
   void execute() override
   {
     frost_mage_spell_t::execute();
 
-    // Precombat actions skip schedule_execute, so the buff needs to be
-    // triggered here for precombat actions.
-    if ( precombat )
-      p()->buffs.icy_veins->trigger();
+    p()->buffs.icy_veins->trigger();
 
     // Frigid Grasp buff doesn't refresh.
     p()->buffs.frigid_grasp->expire();
