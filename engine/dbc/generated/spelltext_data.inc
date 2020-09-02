@@ -1,5 +1,5 @@
 // Spell text, wow build 9.0.1.35707
-static const std::array<spelltext_data_t, 15507> __spelltext_data { {
+static const std::array<spelltext_data_t, 15509> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -15372,6 +15372,8 @@ static const std::array<spelltext_data_t, 15507> __spelltext_data { {
   { 342132, "$@spelldesc327661\r\n", "$@auracaster's direct damage on this target restores ${$327703s1/100}.1% Mana or ${$327703s2/100} Insanity.", "Night Fae" },
   { 342156, "After using $342174u spells or abilities, your next Fleshcraft will deal $<pointsDam> Shadow damage to up to $s2 nearby enemies over the duration, and heal up to $s3 nearby allies for $<pointsHeal>.", 0, 0 },
   { 342174, "$@spelldesc342156", "Fleshcraft empowered in ${$u-$w1} damaging or healing spells or abilities.", 0 },
+  { 342181, "$@spelldesc342156", 0, 0 },
+  { 342183, "$@spelldesc342156", 0, 0 },
   { 342216, "Throw a ball of gooey gorm gunk at a target slowing their movement for $d. Only usable on creatures outdoors in the Shadowlands. ", "Movement speed slowed by $s1%.", 0 },
   { 342231, "Direct damage you deal to enemies affected by Touch of the Magi, causes an explosion that deals $342232s1 Arcane damage to $s1 nearby enemies.", 0, 0 },
   { 342232, "$@spelldesc342231", 0, 0 },

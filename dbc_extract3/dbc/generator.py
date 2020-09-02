@@ -1424,6 +1424,7 @@ class SpellDataGenerator(DataGenerator):
          # Shadowlands
          # Soulbinds
          320130, 320212, # Social Butterfly vers buff (night fae/dreamweaver)
+         342181, 342183, # Embody the Construct damage/heal (necrolord/emeni)
         ),
 
         # Warrior:
