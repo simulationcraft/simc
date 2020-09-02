@@ -604,7 +604,10 @@ public:
     const spell_data_t* dancing_rune_weapon;
     const spell_data_t* deaths_caress;
     const spell_data_t* heart_strike;
+    const spell_data_t* heart_strike_2;
+    const spell_data_t* heart_strike_3;
     const spell_data_t* marrowrend;
+    const spell_data_t* marrowrend_2;
     const spell_data_t* riposte;
     const spell_data_t* rune_tap;
     const spell_data_t* rune_tap_2;
@@ -2294,6 +2297,7 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     {
       weapon = &( p -> main_hand_weapon );
       aoe = 2;
+      base_multiplier *= 1.0 + p -> o() -> spec.heart_strike_3 -> effectN( 1 ).percent();
     }
 
     int n_targets() const override
@@ -2302,9 +2306,9 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     void impact( action_state_t* s ) override
     {
       drw_attack_t::impact( s );
-      p() -> o() -> resource_gain( RESOURCE_RUNIC_POWER, p() -> o() -> spec.heart_strike -> effectN( 3 ).base_value(),
+      p() -> o() -> resource_gain( RESOURCE_RUNIC_POWER, p() -> o() -> spec.heart_strike_2 -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER ),
                                   p() -> o() -> gains.drw_heart_strike,
-                                  nullptr );
+                                  this );
     }
   };
 
@@ -5062,6 +5066,8 @@ struct heart_strike_t : public death_knight_melee_attack_t
     parse_options( options_str );
     aoe = 2;
     weapon = &( p -> main_hand_weapon );
+    energize_amount += p -> spec.heart_strike_2 -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER );
+    base_multiplier *= 1.0 + p -> spec.heart_strike_3 -> effectN( 1 ).percent();
   }
 
   int n_targets() const override
@@ -7566,7 +7572,7 @@ double death_knight_t::composite_melee_haste() const
 
   haste *= 1.0 / ( 1.0 + buffs.empower_rune_weapon -> check_value() );
 
-  if ( buffs.bone_shield -> up() )
+  if ( buffs.bone_shield -> up() && spec.marrowrend_2 -> ok() )
   {
     haste *= buffs.bone_shield -> value();
   }
@@ -7586,7 +7592,7 @@ double death_knight_t::composite_spell_haste() const
 
   haste *= 1.0 / ( 1.0 + buffs.empower_rune_weapon -> check_value() );
 
-  if ( buffs.bone_shield -> up() )
+  if ( buffs.bone_shield -> up() && spec.marrowrend_2 -> ok() )
   {
     haste *= buffs.bone_shield -> value();
   }
@@ -7666,7 +7672,10 @@ void death_knight_t::init_spells()
   spec.dancing_rune_weapon      = find_specialization_spell( "Dancing Rune Weapon" );
   spec.deaths_caress            = find_specialization_spell( "Death's Caress" );
   spec.heart_strike             = find_specialization_spell( "Heart Strike" );
+  spec.heart_strike_2           = find_specialization_spell( "Heart Strike", "Rank 2" );
+  spec.heart_strike_3           = find_specialization_spell( "Heart Strike", "Rank 3" );
   spec.marrowrend               = find_specialization_spell( "Marrowrend" );
+  spec.marrowrend_2             = find_specialization_spell( "Marrowrend", "Rank 2" );
   spec.rune_tap                 = find_specialization_spell( "Rune Tap" );
   spec.rune_tap_2               = find_specialization_spell( "Rune Tap", "Rank 2" );
   spec.vampiric_blood           = find_specialization_spell( "Vampiric Blood" );
@@ -8425,21 +8434,28 @@ void death_knight_t::create_buffs()
   buffs.blood_shield = new blood_shield_buff_t( this );
 
   buffs.bone_shield = make_buff( this, "bone_shield", spell.bone_shield )
-        -> set_default_value( 1.0 / ( 1.0 + spell.bone_shield -> effectN( 4 ).percent() ) )
-        -> set_stack_change_callback( talent.foul_bulwark -> ok() ? [ this ]( buff_t*, int old_stacks, int new_stacks )
+        -> set_default_value( 1.0 / ( 1.0 + spec.marrowrend_2 -> effectN( 1 ).percent() ) ) // Haste buff
+        -> set_stack_change_callback( [ this ]( buff_t*, int old_stacks, int new_stacks )
           {
-            double fb_health = talent.foul_bulwark -> effectN( 1 ).percent();
-            double health_change = ( 1.0 + new_stacks * fb_health ) / ( 1.0 + old_stacks * fb_health );
+            if ( talent.foul_bulwark -> ok() ) // Change player's max health if FB is talented
+            {
+              double fb_health = talent.foul_bulwark -> effectN( 1 ).percent();
+              double health_change = ( 1.0 + new_stacks * fb_health ) / ( 1.0 + old_stacks * fb_health );
 
-            resources.initial_multiplier[ RESOURCE_HEALTH ] *= health_change;
+              resources.initial_multiplier[ RESOURCE_HEALTH ] *= health_change;
 
-            recalculate_resource_max( RESOURCE_HEALTH );
-          } : buff_stack_change_callback_t() )
+              recalculate_resource_max( RESOURCE_HEALTH );
+            }
+            // If the buff starts or expires, invalidate relevant caches
+            if ( ( ! old_stacks && new_stacks ) || ( old_stacks && ! new_stacks ) )
+            {
+              invalidate_cache( CACHE_BONUS_ARMOR );
+              if ( spec.marrowrend_2 -> ok() )
+                invalidate_cache( CACHE_HASTE );
+            }
+          } )
         // The internal cd in spelldata is for stack loss, handled in bone_shield_handler
-        -> set_cooldown( 0_ms )
-        -> set_max_stack( spell.bone_shield -> max_stacks() )
-        -> add_invalidate( CACHE_BONUS_ARMOR )
-        -> add_invalidate( CACHE_HASTE );
+        -> set_cooldown( 0_ms );
 
   buffs.crimson_scourge = make_buff( this, "crimson_scourge", find_spell( 81141 ) )
         -> set_trigger_spell( spec.crimson_scourge );
@@ -8715,7 +8731,10 @@ void death_knight_t::bone_shield_handler( const action_state_t* state ) const
   buffs.bone_shield -> decrement();
   cooldown.bone_shield_icd -> start( spell.bone_shield -> internal_cooldown() );
   // Blood tap spelldata is a bit weird, it's not in milliseconds like other time values, and is positive even though it reduces a cooldown
-  cooldown.blood_tap -> adjust( -1.0 * timespan_t::from_seconds( spec.blood_tap -> effectN( 2 ).base_value() ) );
+  if ( spec.blood_tap -> ok() )
+  {
+    cooldown.blood_tap -> adjust( -1.0 * timespan_t::from_seconds( spec.blood_tap -> effectN( 2 ).base_value() ) );
+  }
 
   if ( ! buffs.bone_shield -> up() && buffs.bones_of_the_damned -> up() )
   {
