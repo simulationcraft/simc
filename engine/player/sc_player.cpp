@@ -41,6 +41,7 @@
 #include "player/set_bonus.hpp"
 #include "player/spawner_base.hpp"
 #include "player/stats.hpp"
+#include "player/soulbinds.hpp"
 #include "player/unique_gear.hpp"
 #include "sim/benefit.hpp"
 #include "sim/event.hpp"
@@ -1983,7 +1984,7 @@ void player_t::create_special_effects()
   // initialized here.
   azerite::initialize_azerite_powers( this );
 
-  covenant::initialize_soulbinds( this );
+  covenant::soulbinds::initialize_soulbinds( this );
 
   // Once all special effects are first-phase initialized, do a pass to first-phase initialize any
   // potential fallback special effects for the actor.

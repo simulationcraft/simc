@@ -6,6 +6,7 @@
 #include "unique_gear.hpp"
 
 #include "unique_gear_shadowlands.hpp"
+#include "player/soulbinds.hpp"
 #include "simulationcraft.hpp"
 #include "dbc/racial_spells.hpp"
 #include <cctype>
@@ -4645,7 +4646,7 @@ void unique_gear::register_special_effects()
   register_special_effects_bfa();
 
   shadowlands::register_special_effects();
-  covenant::register_soulbinds();
+  covenant::soulbinds::register_special_effects();
 
   /* Legacy Effects, pre-5.0 */
   register_special_effect( 45481,  "ProcOn/hit_45479Trigger"            ); /* Shattered Sun Pendant of Acumen */
@@ -4887,7 +4888,7 @@ void unique_gear::register_target_data_initializers( sim_t* sim )
   azerite::register_azerite_target_data_initializers( sim );
   
   shadowlands::register_target_data_initializers( *sim );
-  covenant::register_target_data_initializers( sim );
+  covenant::soulbinds::register_target_data_initializers( sim );
 }
 
 special_effect_t* unique_gear::find_special_effect( player_t* actor, unsigned spell_id, special_effect_e type )

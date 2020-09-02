@@ -162,38 +162,6 @@ public:
   dbc_proc_callback_t* cast_callback;
 };
 
-/// Initialize soulbinds through the generic special effect subsystem
-void initialize_soulbinds( player_t* player );
-
-/// Register soulbinds through the generic special effect subsystem
-void register_soulbinds();
-
-/// Register soulbinds target data initializers
-void register_target_data_initializers( sim_t* sim );
-
-struct covenant_cb_base_t
-{
-  covenant_cb_base_t() {}
-  virtual void trigger( action_t*, action_state_t* s ) = 0;
-};
-
-struct covenant_cb_buff_t : public covenant_cb_base_t
-{
-  buff_t* buff;
-
-  covenant_cb_buff_t( buff_t* b ) : covenant_cb_base_t(), buff( b ) {}
-  void trigger( action_t* a, action_state_t* s ) override;
-};
-
-struct covenant_cb_action_t : public covenant_cb_base_t
-{
-  action_t* action;
-  bool self_target;
-
-  covenant_cb_action_t( action_t* a, bool self = false ) : covenant_cb_base_t(), action( a ), self_target( self ) {}
-  void trigger( action_t* a, action_state_t* s ) override;
-};
-
 std::unique_ptr<covenant_state_t> create_player_state( const player_t* player );
 
 } // Namespace covenant ends
