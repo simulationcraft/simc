@@ -763,7 +763,6 @@ public:
   {
     real_ppm_t* bloodworms;
     real_ppm_t* runic_attenuation;
-    real_ppm_t* killing_machine;
   } rppm;
 
   // Pets and Guardians
@@ -859,7 +858,6 @@ public:
   {
     double lucid_dreams_minor_proc_chance = 0.15;
     bool disable_aotd = false;
-    bool killing_machine_rppm = false;
   } options;
 
   // Runes
@@ -962,7 +960,7 @@ public:
 
   double    runes_per_second() const;
   double    rune_regen_coefficient() const;
-  void      trigger_killing_machine( double chance, proc_t* proc, proc_t* wasted_proc, weapon_e weapon_type );
+  void      trigger_killing_machine( double chance, proc_t* proc, proc_t* wasted_proc );
   void      trigger_runic_empowerment( double rpcost );
   void      trigger_runic_corruption( double rpcost, double override_chance = -1.0, proc_t* proc = nullptr );
   void      trigger_festering_wound( const action_state_t* state, unsigned n_stacks = 1, proc_t* proc = nullptr );
@@ -3009,8 +3007,7 @@ struct melee_t : public death_knight_melee_attack_t
       if ( p() -> spec.killing_machine -> ok() && s -> result == RESULT_CRIT )
       {
         p() -> trigger_killing_machine( 0, p() -> procs.km_from_crit_aa,
-                                           p() -> procs.km_from_crit_aa_wasted,
-                                           p() -> main_hand_weapon.group() );
+                                           p() -> procs.km_from_crit_aa_wasted );
       }
 
       if ( weapon && p() -> buffs.frozen_pulse -> up() )
@@ -4884,8 +4881,7 @@ struct frost_strike_strike_t : public death_knight_melee_attack_t
     {
       p() -> trigger_killing_machine( p() -> azerite.killer_frost.spell() -> effectN( 2 ).percent(),
                                       p() -> procs.km_from_killer_frost,
-                                      p() -> procs.km_from_killer_frost_wasted,
-                                      p() -> main_hand_weapon.group() );
+                                      p() -> procs.km_from_killer_frost_wasted );
     }
   }
 };
@@ -4935,8 +4931,7 @@ struct frost_strike_t : public death_knight_melee_attack_t
     if ( p() -> buffs.pillar_of_frost -> up() && p() -> talent.obliteration -> ok() )
     {
       p() -> trigger_killing_machine( 1.0, p() -> procs.km_from_obliteration_fs,
-                                           p() -> procs.km_from_obliteration_fs_wasted,
-                                           p() -> main_hand_weapon.group() );
+                                           p() -> procs.km_from_obliteration_fs_wasted );
 
       // Obliteration's rune generation
       if ( rng().roll( p() -> talent.obliteration -> effectN( 2 ).percent() ) )
@@ -4993,8 +4988,7 @@ struct glacial_advance_t : public death_knight_spell_t
     if ( p() -> buffs.pillar_of_frost -> up() && p() -> talent.obliteration -> ok() )
     {
       p() -> trigger_killing_machine( 1.0, p() -> procs.km_from_obliteration_ga,
-                                           p() -> procs.km_from_obliteration_ga_wasted,
-                                           p() -> main_hand_weapon.group() );
+                                           p() -> procs.km_from_obliteration_ga_wasted );
 
       // Obliteration's rune generation
       if ( rng().roll( p() -> talent.obliteration -> effectN( 2 ).percent() ) )
@@ -5272,8 +5266,7 @@ struct howling_blast_t : public death_knight_spell_t
     if ( p() -> buffs.pillar_of_frost -> up() && p() -> talent.obliteration -> ok() )
     {
       p() -> trigger_killing_machine( 1.0, p() -> procs.km_from_obliteration_hb,
-                                           p() -> procs.km_from_obliteration_hb_wasted,
-                                           p() -> main_hand_weapon.group() );
+                                           p() -> procs.km_from_obliteration_hb_wasted );
 
       // Obliteration's rune generation
       if ( rng().roll( p() -> talent.obliteration -> effectN( 2 ).percent() ) )
@@ -6785,7 +6778,6 @@ void death_knight_t::create_options()
 
   add_option( opt_float( "lucid_dreams_rune_proc_chance", options.lucid_dreams_minor_proc_chance, 0.0, 1.0 ) );
   add_option( opt_bool( "disable_aotd", options.disable_aotd ) );
-  add_option( opt_bool( "killing_machine_rppm", options.killing_machine_rppm ) );
 }
 
 void death_knight_t::copy_from( player_t* source )
@@ -6944,7 +6936,7 @@ unsigned death_knight_t::replenish_rune( unsigned n, gain_t* gain )
 }
 
 // Helper function to trigger Killing Machine, whether it's from a "forced" proc, a % chance, or the regular rppm proc
-void death_knight_t::trigger_killing_machine( double chance, proc_t* proc, proc_t* wasted_proc, weapon_e weapon_type )
+void death_knight_t::trigger_killing_machine( double chance, proc_t* proc, proc_t* wasted_proc )
 {
   bool triggered = false;
   bool wasted = buffs.killing_machine -> up();
@@ -6955,24 +6947,17 @@ void death_knight_t::trigger_killing_machine( double chance, proc_t* proc, proc_
   // This may have been added to the game on patch 8.2, when rppm data from Killing Machine was removed from the game
   if ( chance == 0 )
   {
-    if ( !options.killing_machine_rppm )
+    // If we are using a 1H, we use 0.3 per attempt, with 2H it looks to be 0.7 through testing
+    double km_proc_chance = 0.3;
+    if ( spec.might_of_the_frozen_wastes_2 -> ok() && main_hand_weapon.group() == WEAPON_2H )
     {
-      // If we are using a 1H, we use 0.3 per attempt, with 2H it looks to be 0.7 through testing
-      double km_proc_chance = 0.3;
-      if ( spec.might_of_the_frozen_wastes_2 -> ok() && weapon_type == WEAPON_2H )
-      {
-        km_proc_chance = 0.7;
-      }
-
-      if ( rng().roll( ++km_proc_attempts * km_proc_chance ) )
-      {
-        triggered = true;
-        km_proc_attempts = 0;
-      }
+      km_proc_chance = 0.7;
     }
-    else if ( rppm.killing_machine -> trigger() )
+
+    if ( rng().roll( ++km_proc_attempts * km_proc_chance ) )
     {
       triggered = true;
+      km_proc_attempts = 0;
     }
   }
   // Else, use RNG
@@ -7571,11 +7556,6 @@ void death_knight_t::init_rng()
 
   rppm.bloodworms = get_rppm( "bloodworms", talent.bloodworms );
   rppm.runic_attenuation = get_rppm( "runic_attenuation", talent.runic_attenuation );
-  rppm.killing_machine = get_rppm( "killing_machine", spec.killing_machine );
-
-  // 2019-05-15: Killing Machine's RPPM data was removed on PTR
-  // The 4.5 rppm is re-added via a manual hotfix and the scale flags are set here
-  rppm.killing_machine -> set_scaling( RPPM_CRIT | RPPM_HASTE );
 }
 
 // death_knight_t::init_base ================================================
