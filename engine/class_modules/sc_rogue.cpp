@@ -4063,9 +4063,16 @@ struct shadowstrike_t : public rogue_attack_t
 
     if ( p()->buffs.premeditation->up() )
     {
+      timespan_t premed_duration = timespan_t::from_seconds( p()->talent.premeditation->effectN( 1 ).base_value() );
       if ( p()->buffs.slice_and_dice->check() )
+      {
         trigger_combo_point_gain( as<int>( p()->talent.premeditation->effectN( 2 ).base_value() ), p()->gains.premeditation );
-      p()->buffs.slice_and_dice->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, timespan_t::from_seconds( p()->talent.premeditation->effectN( 1 ).base_value() ) );
+        p()->buffs.slice_and_dice->extend_duration( p(), premed_duration );
+      }
+      else
+      {
+        p()->buffs.slice_and_dice->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, premed_duration );
+      }
       p()->buffs.premeditation->expire();
     }
 
@@ -5480,9 +5487,10 @@ struct stealth_like_buff_t : public buff_t
         rogue->buffs.master_assassin_aura->trigger();
       if ( rogue->legendary.master_assassins_mark->ok() )
         rogue->buffs.master_assassins_mark_aura->trigger();
-      if ( rogue->talent.premeditation->ok() )
-        rogue->buffs.premeditation->trigger();
     }
+
+    if ( rogue->talent.premeditation->ok() && rogue->stealthed( STEALTH_BASIC | STEALTH_SHADOWDANCE ) )
+      rogue->buffs.premeditation->trigger();
   }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
