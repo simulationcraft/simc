@@ -189,10 +189,10 @@ jobs:
       - uses: microsoft/setup-msbuild@v1.0.1
 
       - name: Build
-        run: MSBuild.exe /maxcpucount /p:Configuration="WebEngine-NoNetworking" /p:Platform=x64 vs/simc_vs2017.vcxproj
+        run: MSBuild.exe /maxcpucount /p:Configuration="Debug-WebEngine" /p:Platform=x64 vs/simc_vs2017.vcxproj
 
       - name: Smoke Test
-        run: vs\x64\WebEngine-NoNetworking\simc.exe $env:SIMC_PROFILE iterations=5 output=nul html=nul json2=nul cleanup_threads=1
+        run: vs\x64\Debug-WebEngine\simc.exe $env:SIMC_PROFILE iterations=5 output=nul html=nul json2=nul cleanup_threads=1
 
   build-VS2019:
     name: VS-2019
