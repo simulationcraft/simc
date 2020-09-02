@@ -357,7 +357,19 @@ std::string covenant_state_t::soulbind_option_str() const
 {
   if ( !m_soulbind_str.empty() )
   {
-    return fmt::format( "soulbind={}", util::string_join( m_soulbind_str, "/" ) );
+    std::string output;
+
+    for ( auto it = m_soulbind_str.begin(); it != m_soulbind_str.end(); it++ )
+    {
+      auto str = *it;
+      str.erase( 0, str.find_first_not_of( "/" ) );
+      str.erase( str.find_last_not_of( "/" ) + 1 );
+
+      if ( !str.empty() )
+        output += fmt::format( "{}={}", it == m_soulbind_str.begin() ? "soulbind" : "\nsoulbind+", str );
+    }
+
+    return output;
   }
 
   if ( m_soulbinds.empty() && m_conduits.empty() )
