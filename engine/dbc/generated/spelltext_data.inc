@@ -1,5 +1,5 @@
 // Spell text, wow build 9.0.1.35755
-static const std::array<spelltext_data_t, 15539> __spelltext_data { {
+static const std::array<spelltext_data_t, 15540> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -13785,6 +13785,7 @@ static const std::array<spelltext_data_t, 15539> __spelltext_data { {
   { 319158, "Heals for an additional $s1% of maximum health.", 0, "Rank 2" },
   { 319175, "Finishing move that leaps you into the air, sprays shuriken at up to $s4 nearby targets dealing Physical damage.$?s319178[ Targets with your Find Weakness suffer an additional $319178s1% damage as Shadow][]\r\n\r\n   1 point  : ${$m1*1} damage\r\n   2 points: ${$m1*2} damage\r\n   3 points: ${$m1*3} damage\r\n   4 points: ${$m1*4} damage\r\n   5 points: ${$m1*5} damage$?s193531[\r\n   6 points: ${$m1*6} damage][]\r\n", 0, 0 },
   { 319178, "Shadow Vault now deals additional Shadow damage to targets affected by your Find Weakness.", 0, "Rank 2" },
+  { 319190, "$@spelldesc319175", 0, 0 },
   { 319191, "$?a137005[Death's Due]?a212611[The Hunt]?a137009[Convoke the Spirits]?a137014[Wild Spirits]?a137018[Shifting Power]?a137022[Faeline Stomp]?a137026[Blessing of Seasons]?a137030[Fae Guardians]?a137034[Sepsis]?a137038[Fae Transfusion]?a137042[Soul Rot]?a137047[Ancient Aftershock][Activating your Night Fae class ability] puts flowers at your feet for $342761d that increase your Haste by $342774s1% while you stand with them.$?a137018|a137022|a137005|a137026[\r\n\r\nFlowers may only bloom once every $342781d.][]", 0, 0 },
   { 319210, "When at least 2 allies are within 8 yds, your versatility increases by 5% for 5 sec. When this expires, 2 nearby allies gain this bonus for 5 sec before passing it back to you.", 0, 0 },
   { 319211, "When your roots, stuns, and incapacitating class effects end, your target's movement speed is reduced by $320267s1%, decaying rapidly over $320267d.", 0, 0 },
