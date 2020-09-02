@@ -633,7 +633,6 @@ public:
     timespan_t pet_attack_speed = 2_s;
     timespan_t pet_basic_attack_delay = 0.15_s;
     double memory_of_lucid_dreams_proc_chance = 0.15;
-    bool rolling_master_marksman = false;
   } options;
 
   hunter_t( sim_t* sim, util::string_view name, race_e r = RACE_NONE ) :
@@ -1133,20 +1132,7 @@ struct hunter_ranged_attack_t: public hunter_action_t < ranged_attack_t >
     {
       double amount = s -> result_amount * p() -> talents.master_marksman -> effectN( 1 ).percent();
       if ( amount > 0 )
-      {
-        if ( p() -> options.rolling_master_marksman )
-        {
-          residual_action::trigger( p() -> actions.master_marksman, s -> target, amount );
-          return;
-        }
-
-        // Hack, current in-game behaviour, mostly
-        action_t* a = p() -> actions.master_marksman;
-        unsigned tick_count = as<unsigned>( a -> dot_duration / a -> data().effectN( 1 ).period() );
-        a -> base_td = amount / tick_count;
-        a -> set_target( s -> target );
-        a -> execute();
-      }
+        residual_action::trigger( p() -> actions.master_marksman, s -> target, amount );
     }
   }
 };
@@ -2305,7 +2291,7 @@ auto active( Pets... pets_ ) -> active_pets_t<Pet, sizeof...(Pets)>
     if ( pet && ! pet -> is_sleeping() )
       active_pets[ active_pet_count++ ] = pet;
   }
-  
+
   return { active_pets, active_pet_count };
 }
 
@@ -3210,35 +3196,6 @@ struct barbed_shot_t: public hunter_ranged_attack_t
 //==============================
 
 // Master Marksman ====================================================================
-
-struct broken_master_marksman_t : public hunter_ranged_attack_t
-{
-  broken_master_marksman_t( hunter_t* p ):
-    hunter_ranged_attack_t( "master_marksman", p, p -> find_spell( 269576 ) )
-  {
-    background = true;
-    callbacks = false;
-
-    attack_power_mod.tick = 0;
-    spell_power_mod.tick = 0;
-    dot_behavior = DOT_REFRESH;
-  }
-
-  virtual void init() override
-  {
-    hunter_ranged_attack_t::init();
-
-    update_flags = snapshot_flags = 0;
-    // Seems to be dinamically affected by Hunter's Mark
-    snapshot_flags |= STATE_TGT_MUL_TA;
-    update_flags   |= STATE_TGT_MUL_TA;
-  }
-
-  timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t triggered_duration ) const override
-  {
-    return dot->time_to_next_tick() + triggered_duration;
-  }
-};
 
 struct master_marksman_t : public residual_action::residual_periodic_action_t<hunter_ranged_attack_t>
 {
@@ -6100,12 +6057,7 @@ void hunter_t::create_actions()
   player_t::create_actions();
 
   if ( talents.master_marksman.ok() )
-  {
-    if ( options.rolling_master_marksman )
-      actions.master_marksman = new attacks::master_marksman_t( this );
-    else
-      actions.master_marksman = new attacks::broken_master_marksman_t( this );
-  }
+    actions.master_marksman = new attacks::master_marksman_t( this );
 }
 
 void hunter_t::create_buffs()
@@ -7456,7 +7408,6 @@ void hunter_t::create_options()
                             0_ms, 0.6_s ) );
   add_option( opt_float( "hunter.memory_of_lucid_dreams_proc_chance", options.memory_of_lucid_dreams_proc_chance,
                             0, 1 ) );
-  add_option( opt_bool( "hunter.rolling_master_marksman", options.rolling_master_marksman ) );
   add_option( opt_obsoleted( "hunter_fixed_time" ) );
 }
 
