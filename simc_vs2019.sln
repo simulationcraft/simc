@@ -9,7 +9,6 @@ Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
 		Debug-NoNetworking|x64 = Debug-NoNetworking|x64
-		Debug-NoNetworking-Fast|x64 = Debug-NoNetworking-Fast|x64
 		Release|x64 = Release|x64
 		Release-NoNetworking|x64 = Release-NoNetworking|x64
 	EndGlobalSection
@@ -18,8 +17,6 @@ Global
 		{3347E740-6831-4441-A559-481FD127156F}.Debug|x64.Build.0 = Debug|x64
 		{3347E740-6831-4441-A559-481FD127156F}.Debug-NoNetworking|x64.ActiveCfg = Debug-NoNetworking|x64
 		{3347E740-6831-4441-A559-481FD127156F}.Debug-NoNetworking|x64.Build.0 = Debug-NoNetworking|x64
-		{3347E740-6831-4441-A559-481FD127156F}.Debug-NoNetworking-Fast|x64.ActiveCfg = Debug-NoNetworking-Fast|x64
-		{3347E740-6831-4441-A559-481FD127156F}.Debug-NoNetworking-Fast|x64.Build.0 = Debug-NoNetworking-Fast|x64
 		{3347E740-6831-4441-A559-481FD127156F}.Release|x64.ActiveCfg = Release|x64
 		{3347E740-6831-4441-A559-481FD127156F}.Release|x64.Build.0 = Release|x64
 		{3347E740-6831-4441-A559-481FD127156F}.Release-NoNetworking|x64.ActiveCfg = Release-NoNetworking|x64

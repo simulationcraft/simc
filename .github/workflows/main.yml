@@ -203,8 +203,8 @@ jobs:
       - uses: microsoft/setup-msbuild@v1.0.1
 
       - name: Build
-        run: MSBuild.exe /maxcpucount /p:Configuration="Debug-NoNetworking-Fast" /p:Platform=x64 vs/simc_vs2019.vcxproj
+        run: MSBuild.exe /maxcpucount /p:Configuration="Debug-NoNetworking" /p:Platform=x64 vs/simc_vs2019.vcxproj
 
       - name: Smoke Test
-        run: vs\x64\Debug-NoNetworking-Fast\simc_vs2019.exe $env:SIMC_PROFILE iterations=5 output=nul html=nul json2=nul cleanup_threads=1
+        run: vs\x64\Debug-NoNetworking\simc_vs2019.exe $env:SIMC_PROFILE iterations=5 output=nul html=nul json2=nul cleanup_threads=1
 
