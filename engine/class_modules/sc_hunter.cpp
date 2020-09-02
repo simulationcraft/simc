@@ -4882,27 +4882,12 @@ struct aspect_of_the_wild_t: public hunter_spell_t
     precast_time = clamp( precast_time, 0_ms, data().duration() );
   }
 
-  void schedule_execute( action_state_t* s ) override
-  {
-    // AotW buff is applied before the spell is cast, allowing it to
-    // reduce GCD of the action that triggered it.
-    if ( !precombat )
-    {
-      p()->buffs.aspect_of_the_wild->expire();
-      p()->buffs.aspect_of_the_wild->trigger();
-    }
-
-    hunter_spell_t::schedule_execute( s );
-  }
-
   void execute() override
   {
     hunter_spell_t::execute();
 
-    // Precombat actions skip schedule_execute, so the buff needs to be
-    // triggered here for precombat actions.
-    if ( precombat )
-      trigger_buff( p() -> buffs.aspect_of_the_wild, precast_time );
+    p() -> buffs.aspect_of_the_wild -> expire();
+    trigger_buff( p() -> buffs.aspect_of_the_wild, precast_time );
 
     p()->buffs.primal_instincts->expire();
     if ( trigger_buff( p() -> buffs.primal_instincts, precast_time ) )
