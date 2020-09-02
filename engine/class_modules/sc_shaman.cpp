@@ -19,7 +19,6 @@
 // - Update Elemental Blast
 //
 // Elemental
-// - Remove traces of VOP and co
 // - Implement Static Discharge
 // - Update Aftershock to only work on Earth Shock
 // - Implement Echoing Shock
@@ -300,9 +299,6 @@ public:
     pet_t* guardian_storm_elemental;
     pet_t* guardian_earth_elemental;
 
-    // spawner::pet_spawner_t<pet_t, shaman_t> ember_elemental;
-    // spawner::pet_spawner_t<pet_t, shaman_t> spark_elemental;
-
     spawner::pet_spawner_t<pet_t, shaman_t> spirit_wolves;
     spawner::pet_spawner_t<pet_t, shaman_t> fire_wolves;
     spawner::pet_spawner_t<pet_t, shaman_t> frost_wolves;
@@ -332,7 +328,6 @@ public:
     stat_buff_t* elemental_blast_haste;
     stat_buff_t* elemental_blast_mastery;
     buff_t* stormkeeper;
-
 
     // Elemental
     buff_t* earthen_rage;
@@ -601,8 +596,8 @@ public:
   // Misc
   bool active_elemental_pet() const;
   void summon_feral_spirits( timespan_t duration );
-  void summon_fire_elemental( timespan_t duration, bool essence_proc );
-  void summon_storm_elemental( timespan_t duration, bool essence_proc );
+  void summon_fire_elemental( timespan_t duration );
+  void summon_storm_elemental( timespan_t duration );
 
   // triggers
   void trigger_maelstrom_gain( double base, gain_t* gain = nullptr );
@@ -2098,11 +2093,8 @@ struct earth_elemental_t : public primal_elemental_t
 
 struct fire_elemental_t : public primal_elemental_t
 {
-  const spell_data_t* ember_elemental_summon;
-
   fire_elemental_t( shaman_t* owner, bool guardian )
-    : primal_elemental_t( owner, ( guardian ) ? "greater_fire_elemental" : "primal_fire_elemental", guardian, false ),
-      ember_elemental_summon( owner->find_spell( 275385 ) )
+    : primal_elemental_t( owner, ( guardian ) ? "greater_fire_elemental" : "primal_fire_elemental", guardian, false )
   {
     owner_coeff.sp_from_sp = 1.0;
   }
@@ -2170,47 +2162,6 @@ struct fire_elemental_t : public primal_elemental_t
     primal_elemental_t::dismiss( expired );
   }
 };
-
-// create baby azerite trait version
-
-// struct ember_elemental_t : public primal_elemental_t
-//{
-//  ember_elemental_t( shaman_t* owner ) : primal_elemental_t( owner, "ember_elemental", true, false )
-//  {
-//  }
-//
-//  struct ember_blast_t : public pet_spell_t<ember_elemental_t>
-//  {
-//    ember_blast_t( ember_elemental_t* player, const std::string& options )
-//      : super( player, "ember_blast", player->find_spell( 275382 ), options )
-//    {
-//      may_crit    = true;
-//      base_dd_min = base_dd_max = player->o()->azerite.echo_of_the_elementals.value();
-//    }
-//
-//    bool usable_moving() const override
-//    {
-//      return true;
-//    }
-//  };
-//
-//  void create_default_apl() override
-//  {
-//    primal_elemental_t::create_default_apl();
-//
-//    action_priority_list_t* def = get_action_priority_list( "default" );
-//
-//    def->add_action( "ember_blast" );
-//  }
-//
-//  action_t* create_action( const std::string& name, const std::string& options_str ) override
-//  {
-//    if ( name == "ember_blast" )
-//      return new ember_blast_t( this, options_str );
-//
-//    return primal_elemental_t::create_action( name, options_str );
-//  }
-//};
 
 // ==========================================================================
 // Storm Elemental
@@ -2292,13 +2243,11 @@ struct storm_elemental_t : public primal_elemental_t
   };
 
   buff_t* call_lightning;
-  const spell_data_t* spark_elemental_summon;
 
   storm_elemental_t( shaman_t* owner, bool guardian )
     : primal_elemental_t( owner, ( !guardian ) ? "primal_storm_elemental" : "greater_storm_elemental", guardian,
                           false ),
-      call_lightning( nullptr ),
-      spark_elemental_summon( owner->find_spell( 275386 ) )
+      call_lightning( nullptr )
   {
     owner_coeff.sp_from_sp = 1.0000;
   }
@@ -2351,47 +2300,6 @@ struct storm_elemental_t : public primal_elemental_t
     o()->buff.wind_gust->expire();
   }
 };
-
-// create baby azerite trait version
-
-// struct spark_elemental_t : public primal_elemental_t
-//{
-//  spark_elemental_t( shaman_t* owner ) : primal_elemental_t( owner, "spark_elemental", true, false )
-//  {
-//  }
-//
-//  struct shocking_blast_t : public pet_spell_t<spark_elemental_t>
-//  {
-//    shocking_blast_t( spark_elemental_t* player, const std::string& options )
-//      : super( player, "shocking_blast", player->find_spell( 275384 ), options )
-//    {
-//      may_crit    = true;
-//      base_dd_min = base_dd_max = player->o()->azerite.echo_of_the_elementals.value();
-//    }
-//
-//    bool usable_moving() const override
-//    {
-//      return true;
-//    }
-//  };
-//
-//  void create_default_apl() override
-//  {
-//    primal_elemental_t::create_default_apl();
-//
-//    action_priority_list_t* def = get_action_priority_list( "default" );
-//
-//    def->add_action( "shocking_blast" );
-//  }
-//
-//  action_t* create_action( const std::string& name, const std::string& options_str ) override
-//  {
-//    if ( name == "shocking_blast" )
-//      return new shocking_blast_t( this, options_str );
-//
-//    return primal_elemental_t::create_action( name, options_str );
-//  }
-//};
 
 }  // end namespace pet
 
@@ -3396,7 +3304,7 @@ struct fire_elemental_t : public shaman_spell_t
   {
     shaman_spell_t::execute();
 
-    p()->summon_fire_elemental( p()->spell.fire_elemental->duration(), false );
+    p()->summon_fire_elemental( p()->spell.fire_elemental->duration() );
   }
 
   bool ready() override
@@ -3424,7 +3332,7 @@ struct storm_elemental_t : public shaman_spell_t
   {
     shaman_spell_t::execute();
 
-    p()->summon_storm_elemental( p()->spell.storm_elemental->duration(), false );
+    p()->summon_storm_elemental( p()->spell.storm_elemental->duration() );
   }
 };
 
@@ -3500,7 +3408,6 @@ struct bloodlust_t : public shaman_spell_t
       p->buffs.bloodlust->trigger();
       p->buffs.exhaustion->trigger();
     }
-
   }
 
   bool ready() override
@@ -4644,7 +4551,6 @@ struct flame_shock_t : public shaman_spell_t
 {
   flame_shock_spreader_t* spreader;
   const spell_data_t* elemental_resource;
-  const spell_data_t* t20_4pc_bonus;
 
   flame_shock_t( shaman_t* player, const std::string& options_str = std::string() )
     : shaman_spell_t( "flame_shock", player, player->find_class_spell( "Flame Shock" ), options_str ),
@@ -5655,10 +5561,6 @@ pet_t* shaman_t::create_pet( util::string_view pet_name, util::string_view /* pe
     return new pet::fire_elemental_t( this, false );
   if ( pet_name == "greater_fire_elemental" )
     return new pet::fire_elemental_t( this, true );
-  /*if ( pet_name == "ember_elemental" )
-    return new pet::ember_elemental_t( this );
-  if ( pet_name == "spark_elemental" )
-    return new pet::spark_elemental_t( this );*/
   if ( pet_name == "primal_storm_elemental" )
     return new pet::storm_elemental_t( this, false );
   if ( pet_name == "greater_storm_elemental" )
@@ -6126,7 +6028,7 @@ void shaman_t::summon_feral_spirits( timespan_t duration )
   }
 }
 
-void shaman_t::summon_fire_elemental( timespan_t duration, bool essence_proc )
+void shaman_t::summon_fire_elemental( timespan_t duration )
 {
   if ( talent.storm_elemental->ok() )
   {
@@ -6162,7 +6064,7 @@ void shaman_t::summon_fire_elemental( timespan_t duration, bool essence_proc )
   }
 }
 
-void shaman_t::summon_storm_elemental( timespan_t duration, bool essence_proc )
+void shaman_t::summon_storm_elemental( timespan_t duration )
 {
   if ( !talent.storm_elemental->ok() )
   {
@@ -8023,8 +7925,7 @@ shaman_t::pets_t::pets_t( shaman_t* s )
     guardian_fire_elemental( nullptr ),
     guardian_storm_elemental( nullptr ),
     guardian_earth_elemental( nullptr ),
-    /*ember_elemental( "ember_elemental", s, []( shaman_t* s ) { return new pet::ember_elemental_t( s ); } ),
-    spark_elemental( "spark_elemental", s, []( shaman_t* s ) { return new pet::spark_elemental_t( s ); } ),*/
+
     spirit_wolves( "spirit_wolf", s, []( shaman_t* s ) { return new pet::spirit_wolf_t( s ); } ),
     fire_wolves( "fiery_wolf", s, []( shaman_t* s ) { return new pet::fire_wolf_t( s ); } ),
     frost_wolves( "frost_wolf", s, []( shaman_t* s ) { return new pet::frost_wolf_t( s ); } ),
@@ -8032,7 +7933,7 @@ shaman_t::pets_t::pets_t( shaman_t* s )
 {
 }
 
-}  // UNNAMED NAMESPACE
+}  // namespace
 
 const module_t* module_t::shaman()
 {
