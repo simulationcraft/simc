@@ -6,6 +6,7 @@ race=troll
 role=spell
 position=back
 talents=1111111
+covenant=night_fae
 
 # Default consumables
 potion=disabled
@@ -51,17 +52,18 @@ actions+=/bag_of_tricks,if=!talent.ascendance.enabled|!buff.ascendance.up
 actions+=/run_action_list,name=aoe,if=active_enemies>2&(spell_targets.chain_lightning>2|spell_targets.lava_beam>2)
 actions+=/run_action_list,name=single_target,if=active_enemies<=2
 
-# Multi target action priority list
 actions.aoe=stormkeeper,if=talent.stormkeeper.enabled
 actions.aoe+=/flame_shock,target_if=refreshable&spell_targets.chain_lightning<5
 actions.aoe+=/earthquake
+actions.aoe+=/fae_transfusion
 actions.aoe+=/lava_beam,if=talent.ascendance.enabled
 actions.aoe+=/chain_lightning
 actions.aoe+=/flame_shock,moving=1,target_if=refreshable
 actions.aoe+=/frost_shock,moving=1
 
-# Single Target Action Priority List
 actions.single_target=flame_shock,target_if=!ticking|dot.flame_shock.remains<=gcd&!buff.surge_of_power.up
+actions.single_target+=/fae_transfusion
+actions.single_target+=/primordial_wave
 actions.single_target+=/elemental_blast,if=talent.elemental_blast.enabled
 actions.single_target+=/lightning_bolt,if=buff.stormkeeper.up&(buff.master_of_the_elements.up&!talent.surge_of_power.enabled|buff.surge_of_power.up)
 actions.single_target+=/earthquake,if=spell_targets.chain_lightning>1
