@@ -246,7 +246,7 @@ public:
   moon_stage_e moon_stage;
   eclipse_handler_t eclipse_handler;
   // counters for snapshot tracking
-  std::vector<snapshot_counter_t*> counters;
+  auto_dispose<std::vector<snapshot_counter_t*>> counters;
 
   double expected_max_health;  // For Bristling Fur calculations.
 
@@ -2850,9 +2850,6 @@ public:
           }
           else
             proc_buff->trigger( pulsar_dur );
-
-          // hardcoded 12AP because 9s / 20s * 30AP = 13.5AP - 1.5 Shadowlands discount
-          p()->resource_gain( RESOURCE_ASTRAL_POWER, 12, p()->gain.primordial_arcanic_pulsar );
         }
       }
     }
