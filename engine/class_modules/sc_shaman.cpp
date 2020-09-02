@@ -139,6 +139,16 @@ static std::vector<player_t*>& __check_distance_targeting( const action_t* actio
 typedef std::pair<std::string, simple_sample_data_with_min_max_t> data_t;
 typedef std::pair<std::string, simple_sample_data_t> simple_data_t;
 
+template <typename Action, typename Actor, typename... Args>
+action_t* get_action( util::string_view name, Actor* actor, Args&&... args )
+{
+  action_t* a = actor->find_action( name );
+  if ( !a )
+    a = new Action( name, actor, std::forward<Args>( args )... );
+  assert( dynamic_cast<Action*>( a ) && a->name_str == name && a->background );
+  return a;
+}
+
 struct shaman_t;
 
 enum totem_e
@@ -384,6 +394,9 @@ public:
   {
     // Necrolord
     const spell_data_t* necrolord; // Primordial Wave
+
+    // Night Fae
+    const spell_data_t* night_fae; // Fae Transfusion
   } covenant;
 
   // Gains
@@ -5323,6 +5336,39 @@ struct thundercharge_t : public shaman_spell_t
 };
 
 // ==========================================================================
+// Fae Transfusion - Night Fae Covenant
+// ==========================================================================
+
+struct fae_transfusion_tick_t : public shaman_spell_t
+{
+  fae_transfusion_tick_t( util::string_view n, shaman_t* player )
+    : shaman_spell_t( n, player, player->find_spell( 328928 ) )
+  {
+    affected_by_master_of_the_elements = false;
+    aoe        = 4;
+    background = true;
+    callbacks  = false;
+  }
+
+  result_amount_type amount_type( const action_state_t*, bool ) const override
+  {
+    return result_amount_type::DMG_DIRECT;
+  }
+};
+
+struct fae_transfusion_t : public shaman_spell_t
+{
+  fae_transfusion_t( shaman_t* player, const std::string& options_str )
+    : shaman_spell_t( "fae_transfusion", player, player->find_covenant_spell( "Fae Transfusion" ), options_str )
+  {
+    parse_options( options_str );
+    affected_by_master_of_the_elements = false;
+    channeled    = true;
+    tick_action = get_action<fae_transfusion_tick_t>( "fae_transfusion_tick", player );
+  }
+};
+
+// ==========================================================================
 // Primordial Wave - Necrolord Covenant
 // ==========================================================================
 struct primordial_wave_t : public shaman_spell_t
@@ -5548,6 +5594,8 @@ action_t* shaman_t::create_action( util::string_view name, const std::string& op
   // covenants
   if ( name == "primordial_wave" )
     return new primordial_wave_t( this, options_str );
+  if ( name == "fae_transfusion" )
+    return new fae_transfusion_t( this, options_str );
 
   // elemental
   if ( name == "chain_lightning" )
@@ -5991,7 +6039,8 @@ void shaman_t::init_spells()
   talent.graceful_spirit = find_talent_spell( "Graceful Spirit" );
 
   // Covenants
-  covenant.necrolord              = find_covenant_spell( "Primordial Wave" );
+  covenant.necrolord = find_covenant_spell( "Primordial Wave" );
+  covenant.night_fae = find_covenant_spell( "Fae Transfusion" );
 
   //
   // Misc spells
@@ -6726,6 +6775,7 @@ void shaman_t::init_action_list_elemental()
   aoe->add_talent( this, "Stormkeeper", "if=talent.stormkeeper.enabled" );
   aoe->add_action( this, "Flame Shock", "target_if=refreshable&spell_targets.chain_lightning<5" );
   aoe->add_action( this, "Earthquake" );
+  aoe->add_action( "fae_transfusion" );
   aoe->add_action( "lava_beam,if=talent.ascendance.enabled" );
   aoe->add_action( this, "Chain Lightning" );
   aoe->add_action( this, "Flame Shock", "moving=1,target_if=refreshable" );
@@ -6733,6 +6783,7 @@ void shaman_t::init_action_list_elemental()
 
   // Single target APL
   single_target->add_action( this, "Flame Shock", "target_if=!ticking|dot.flame_shock.remains<=gcd&!buff.surge_of_power.up" );
+  single_target->add_action( "fae_transfusion" );
   single_target->add_action( "primordial_wave" );
   single_target->add_talent( this, "Elemental Blast", "if=talent.elemental_blast.enabled" );
   single_target->add_action( this, "Lightning Bolt",
@@ -6855,6 +6906,7 @@ void shaman_t::init_action_list_restoration_dps()
   def->add_action( "ripple_in_space" );
   def->add_action( this, "Earth Elemental" );
   def->add_action( "bag_of_tricks" );
+  def->add_action( "fae_transfusion" );
   def->add_action( this, "Lightning Bolt", "if=spell_targets.chain_lightning<2" );
   def->add_action( this, "Chain Lightning", "if=spell_targets.chain_lightning>1" );
   def->add_action( this, "Flame Shock", "moving=1" );
