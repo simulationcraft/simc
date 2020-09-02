@@ -1,4 +1,4 @@
-// 636 talents, wow build 9.0.1.35707
+// 636 talents, wow build 9.0.1.35755
 static std::array<talent_data_t, 636> __talent_data { {
   { "Second Wind"                       , 15757, 0x00, 0x0001,  71,   0,   3,   29838,       0,  0 },
   { "Punish"                            , 15759, 0x00, 0x0001,  73,   1,   0,  275334,       0,  0 },
@@ -528,7 +528,7 @@ static std::array<talent_data_t, 636> __talent_data { {
   { "War Machine"                       , 22632, 0x00, 0x0001,  72,   0,   0,  262231,       0,  0 },
   { "Sudden Death"                      , 22633, 0x00, 0x0001,  72,   1,   0,  280721,       0,  0 },
   { "Final Reckoning"                   , 22634, 0x00, 0x0002,  70,   2,   6,  343721,       0,  0 },
-  { "Stormfury"                         , 22636, 0x00, 0x0040, 263,   0,   1,  334175,       0,  0 },
+  { "Stormflurry"                       , 22636, 0x00, 0x0040, 263,   0,   1,  344357,       0,  0 },
   { "Final Stand"                       , 22645, 0x00, 0x0002,  66,   2,   6,  204077,       0,  0 },
   { "Burning Hatred"                    , 22765, 0x00, 0x0800, 577,   1,   1,  320374,       0,  0 },
   { "Fallout"                           , 22766, 0x00, 0x0800, 581,   1,   1,  227174,       0,  0 },

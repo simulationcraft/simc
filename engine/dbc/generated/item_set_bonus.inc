@@ -1,4 +1,4 @@
-// Set bonus data, wow build 9.0.1.35707
+// Set bonus data, wow build 9.0.1.35755
 static const std::array<item_set_bonus_t, 736> __set_bonus_data { {
   // SetBonusName                               , OptName              , EnumID, SetID, Tier, Bns, Cls, Spec, SpellID, ItemIDs
   { "Gladiator's Battlegear"                    , "pvp"                ,      0,  1230,    0,   2,   1,   71,  165636, { 127055, 127081, 127092, 127103, 127114,  0 } },
