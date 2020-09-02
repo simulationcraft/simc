@@ -631,14 +631,15 @@ public:
     const spell_data_t* guardian;
     const spell_data_t* guardian_overrides;
     const spell_data_t* bear_form;
+    const spell_data_t* bear_form_2;  // Rank 2
     const spell_data_t* gore;
     const spell_data_t* swipe_bear;
     const spell_data_t* thrash_bear;
     const spell_data_t* berserk_bear;
+    const spell_data_t* berserk_bear_2;   // Rank 2
     const spell_data_t* thick_hide;       // Guardian Affinity
     const spell_data_t* thrash_bear_dot;  // For Rend and Tear modifier
     const spell_data_t* lightning_reflexes;
-    const spell_data_t* bear_form_2;  // Rank 2
 
     // Resto
     const spell_data_t* restoration;
@@ -1356,6 +1357,12 @@ struct incarnation_bear_buff_t : public druid_buff_t<buff_t>
   {
     set_cooldown( 0_ms );
     hp_mul = 1.0 + data().effectN( 5 ).percent();
+
+    if ( p.conduit.unchecked_aggression->ok() )
+      add_invalidate( CACHE_HASTE );
+
+    if ( p.legendary.legacy_of_the_sleeper->ok() )
+      add_invalidate( CACHE_LEECH );
   }
 
   bool trigger( int stacks, double value, double chance, timespan_t duration ) override
@@ -2035,7 +2042,7 @@ public:
 
     // Balance
     parse_buff_effects( p()->buff.moonkin_form );
-    parse_buff_effects( p()->buff.celestial_alignment );
+    //parse_buff_effects( p()->buff.celestial_alignment );
     parse_buff_effects( p()->buff.incarnation_moonkin );
     parse_buff_effects( p()->buff.owlkin_frenzy );
     parse_buff_effects( p()->buff.warrior_of_elune );
@@ -2054,8 +2061,9 @@ public:
 
     // Guardian
     parse_buff_effects<S>( p()->buff.berserk_bear,
-                           p()->legendary.legacy_of_the_sleeper );
-    parse_buff_effects( p()->buff.incarnation_bear );
+                           p()->spec.berserk_bear_2 );
+    parse_buff_effects<S>( p()->buff.incarnation_bear,
+                           p()->spec.berserk_bear_2 );
     parse_buff_effects( p()->buff.sharpened_claws );
 
     // Feral
@@ -2708,21 +2716,6 @@ public:
     : base_t( token, p, s )
   {
     parse_options( options );
-  }
-
-  double composite_target_multiplier( player_t* t ) const override
-  {
-    double tm = ab::composite_target_multiplier( t );
-
-    if ( p()->conduit.fury_of_the_skies->ok() &&
-         ( &ab::data() == p()->spec.full_moon || &ab::data() == p()->spec.half_moon ||
-           &ab::data() == p()->talent.new_moon ) &&
-         td( t )->dots.sunfire->is_ticking() )
-    {
-      tm *= 1.0 + p()->conduit.fury_of_the_skies.percent();
-    }
-
-    return tm;
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -8000,6 +7993,7 @@ void druid_t::init_spells()
   spec.thrash_bear            = check_spell( find_affinity_spell( "Thrash" )->ok(), 77758 );
   spec.thrash_bear_dot        = check_spell( spec.thrash_bear->ok(), 192090 );
   spec.berserk_bear           = check_spell( find_specialization_spell( "Berserk" )->ok(), 50334 );
+  spec.berserk_bear_2         = check_spell( spec.berserk_bear->ok(), 343240 );
 
   // Restoration
   spec.restoration            = find_specialization_spell( "Restoration Druid" );
@@ -8243,8 +8237,6 @@ void druid_t::create_buffs()
 
   buff.jungle_stalker = make_buff( this, "jungle_stalker", talent.incarnation_cat->effectN( 3 ).trigger() );
 
-  buff.incarnation_bear = new incarnation_bear_buff_t( *this );
-
   buff.incarnation_tree = make_buff( this, "incarnation_tree_of_life", talent.incarnation_tree )
     ->set_duration( 30_s )
     ->set_default_value_from_effect( 1 )
@@ -8294,8 +8286,9 @@ void druid_t::create_buffs()
     } );
 
   buff.celestial_alignment = make_buff( this, "celestial_alignment", spec.celestial_alignment )
-    ->set_cooldown( timespan_t::zero() )
-    ->add_invalidate( CACHE_CRIT_CHANCE )
+    ->set_default_value_from_effect( 1 )
+    ->set_cooldown( 0_ms )
+    ->add_invalidate( CACHE_HASTE )
     ->modify_duration( conduit.precise_alignment.time_value() )
     ->set_stack_change_callback( [this] ( buff_t* b, int, int new_ ) {
       if ( new_ )
@@ -8311,7 +8304,7 @@ void druid_t::create_buffs()
     } );
 
   buff.incarnation_moonkin = make_buff( this, "incarnation_chosen_of_elune", talent.incarnation_moonkin )
-    ->set_default_value_from_effect( 3 )
+    ->set_default_value_from_effect( 1 )
     ->set_cooldown( 0_ms )
     ->add_invalidate( CACHE_HASTE )
     ->add_invalidate( CACHE_CRIT_CHANCE )
@@ -8422,6 +8415,8 @@ void druid_t::create_buffs()
     buff.berserk_bear->add_invalidate( CACHE_LEECH );
   if ( conduit.unchecked_aggression->ok() )
     buff.berserk_bear->add_invalidate( CACHE_HASTE );
+
+  buff.incarnation_bear = new incarnation_bear_buff_t( *this );
 
   buff.bristling_fur = make_buff( this, "bristling_fur", talent.bristling_fur )->set_cooldown( timespan_t::zero() );
 
@@ -9281,14 +9276,16 @@ double druid_t::composite_spell_haste() const
 {
   double sh = player_t::composite_spell_haste();
 
-  sh /= 1.0 + buff.starlord->stack_value();
+  sh *= 1.0 / ( 1.0 + buff.starlord->stack_value() );
 
-  sh /= 1.0 + buff.ravenous_frenzy->stack_value();
+  sh *= 1.0 / ( 1.0 + buff.ravenous_frenzy->stack_value() );
 
-  sh /= 1.0 + buff.incarnation_moonkin->stack_value();
+  sh *= 1.0 / ( 1.0 + buff.celestial_alignment->stack_value() );
+
+  sh *= 1.0 / ( 1.0 + buff.incarnation_moonkin->stack_value() );
 
   if ( conduit.unchecked_aggression->ok() && buff.berserk_bear->check() )
-    sh /= 1.0 + conduit.unchecked_aggression.percent();
+    sh *= 1.0 / ( 1.0 + conduit.unchecked_aggression.percent() );
 
   return sh;
 }
@@ -9299,14 +9296,16 @@ double druid_t::composite_melee_haste() const
 {
   double mh = player_t::composite_melee_haste();
 
-  mh /= 1.0 + buff.starlord->stack_value();
+  mh *= 1.0 / ( 1.0 + buff.starlord->stack_value() );
 
-  mh /= 1.0 + buff.ravenous_frenzy->stack_value();
+  mh *= 1.0 / ( 1.0 + buff.ravenous_frenzy->stack_value() );
 
-  mh /= 1.0 + buff.incarnation_moonkin->stack_value();
+  mh *= 1.0 / ( 1.0 + buff.celestial_alignment->stack_value() );
+
+  mh *= 1.0 / ( 1.0 + buff.incarnation_moonkin->stack_value() );
 
   if ( conduit.unchecked_aggression->ok() && buff.berserk_bear->check() )
-    mh /= 1.0 + conduit.unchecked_aggression.percent();
+    mh *= 1.0 / ( 1.0 + conduit.unchecked_aggression.percent() );
 
   return mh;
 }
@@ -9472,8 +9471,8 @@ double druid_t::composite_leech() const
 {
   double l = player_t::composite_leech();
 
-  if ( legendary.legacy_of_the_sleeper->ok() && buff.berserk_bear->check() )
-    l *= 1.0 + legendary.legacy_of_the_sleeper->effectN( 4 ).percent();
+  if ( legendary.legacy_of_the_sleeper->ok() && ( buff.berserk_bear->check() || buff.incarnation_bear->check() ) )
+    l *= 1.0 + spec.berserk_bear->effectN( 8 ).percent();
 
   return l;
 }
@@ -10282,6 +10281,7 @@ void druid_t::apply_affecting_auras( action_t& action )
 
   // Legendaries
   action.apply_affecting_aura( legendary.luffainfused_embrace );
+  action.apply_affecting_aura( legendary.legacy_of_the_sleeper );
 }
 
 //void druid_t::output_json_report(js::JsonOutput& root) const
