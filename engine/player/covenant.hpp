@@ -90,7 +90,7 @@ class covenant_state_t
   std::vector<unsigned>        m_soulbinds;
 
   /// Soulbinds option string (user input)
-  std::string                  m_soulbind_str;
+  std::vector<std::string>     m_soulbind_str;
 
   /// Covenant option string (user input)
   std::string                  m_covenant_str;
@@ -116,6 +116,7 @@ public:
 
   /// Parse player-scope "soulbind" option
   bool parse_soulbind( sim_t* sim, util::string_view name, util::string_view value );
+  bool parse_soulbind_clear( sim_t* sim, util::string_view name, util::string_view value );
 
   /// Retrieve covenant ability spell data. Returns spell_data_t::not_found if covenant
   /// ability is not enabled on the actor. Returns spell_data_t::nil if covenant ability

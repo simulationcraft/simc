@@ -156,7 +156,6 @@ bool covenant_state_t::parse_soulbind( sim_t*             sim,
                                        util::string_view /* name */,
                                        util::string_view value )
 {
-  m_conduits.clear();
   auto value_str = value;
 
   // Ignore anything before a comma character in the soulbind option to allow the
@@ -249,9 +248,18 @@ bool covenant_state_t::parse_soulbind( sim_t*             sim,
     }
   }
 
-  m_soulbind_str = std::string( value );
+  m_soulbind_str.push_back( std::string( value ) );
 
   return true;
+}
+
+bool covenant_state_t::parse_soulbind_clear( sim_t* sim, util::string_view name, util::string_view value )
+{
+  m_conduits.clear();
+  m_soulbinds.clear();
+  m_soulbind_str.clear();
+
+  return parse_soulbind( sim, name, value );
 }
 
 const spell_data_t* covenant_state_t::get_covenant_ability( util::string_view name ) const
@@ -349,7 +357,7 @@ std::string covenant_state_t::soulbind_option_str() const
 {
   if ( !m_soulbind_str.empty() )
   {
-    return fmt::format( "soulbind={}", m_soulbind_str );
+    return fmt::format( "soulbind={}", util::string_join( m_soulbind_str, "/" ) );
   }
 
   if ( m_soulbinds.empty() && m_conduits.empty() )
@@ -446,7 +454,9 @@ void covenant_state_t::copy_state( const std::unique_ptr<covenant_state_t>& othe
 
 void covenant_state_t::register_options( player_t* player )
 {
-  player->add_option( opt_func( "soulbind", std::bind( &covenant_state_t::parse_soulbind,
+  player->add_option( opt_func( "soulbind", std::bind( &covenant_state_t::parse_soulbind_clear,
+          this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3 ) ) );
+  player->add_option( opt_func( "soulbind+", std::bind( &covenant_state_t::parse_soulbind,
           this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3 ) ) );
   player->add_option( opt_func( "covenant", std::bind( &covenant_state_t::parse_covenant,
           this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3 ) ) );
