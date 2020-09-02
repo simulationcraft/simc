@@ -6148,8 +6148,7 @@ void actions::rogue_action_t<Base>::trigger_blade_flurry( const action_state_t* 
   if ( !ab::result_is_hit( state->result ) )
     return;
 
-  // TOCHECK: Beta bug, BF AoE triggers replication as well.
-  if ( ab::is_aoe() && ( !p()->bugs || ab::name_str != "blade_flurry_instant_attack" ) )
+  if ( ab::is_aoe() )
     return;
 
   if ( p()->sim->active_enemies == 1 )
