@@ -5397,10 +5397,8 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
     background = special = true;
     may_miss = false;
     weapon = w;
-    if ( p -> spec.obliterate_2->ok() )
-    {
-      base_multiplier *= 1.0 + p -> spec.obliterate_2 -> effectN( 1 ).percent();
-    }
+
+    base_multiplier *= 1.0 + p -> spec.obliterate_2 -> effectN( 1 ).percent();
     // So rank1 of motfw is dw, rank 2 is 2h, but the effect is tied to rank 1.
     if ( p -> spec.might_of_the_frozen_wastes_2 -> ok() && p -> main_hand_weapon.group() == WEAPON_2H )
     {
