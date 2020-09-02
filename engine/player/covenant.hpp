@@ -159,7 +159,7 @@ public:
   const std::vector<unsigned>& soulbind_spells() const { return m_soulbinds; }
 
   /// Callback for handling soulbinds that proc when covenant class ability is used
-  dbc_proc_callback_t* cast_callback;
+  dbc_proc_callback_t* cast_callback = nullptr;
 };
 
 std::unique_ptr<covenant_state_t> create_player_state( const player_t* player );
