@@ -1836,7 +1836,7 @@ public:
     else
       ab::execute();
 
-    if ( !ab::background && p()->buff.ravenous_frenzy->check() )
+    if ( !ab::background && ab::trigger_gcd > 0_ms && p()->buff.ravenous_frenzy->check() )
       p()->buff.ravenous_frenzy->trigger();
   }
 
@@ -8235,14 +8235,12 @@ void druid_t::create_buffs()
     ->set_period( 0_ms )
     ->add_invalidate( CACHE_HASTE )
     ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-
   if ( conduit.endless_thirst->ok() )
     buff.ravenous_frenzy->add_invalidate( CACHE_CRIT_CHANCE );
 
   buff.convoke_the_spirits = make_buff( this, "convoke_the_spirits", covenant.night_fae )
     ->set_cooldown( 0_ms )
     ->set_period( 0_ms );
-
   if ( conduit.conflux_of_elements->ok() )
     buff.convoke_the_spirits->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
