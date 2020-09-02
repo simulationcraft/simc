@@ -111,6 +111,7 @@ To change the list of source files run synchronize.py
 		<ClInclude Include="..\engine\player\sc_player.hpp" />
 		<ClInclude Include="..\engine\player\scaling_metric_data.hpp" />
 		<ClInclude Include="..\engine\player\set_bonus.hpp" />
+		<ClInclude Include="..\engine\player\soulbinds.hpp" />
 		<ClInclude Include="..\engine\player\spawner_base.hpp" />
 		<ClInclude Include="..\engine\player\special_effect_db_item.hpp" />
 		<ClInclude Include="..\engine\player\stats.hpp" />
@@ -479,6 +480,9 @@ To change the list of source files run synchronize.py
 		</ClCompile>
 		<ClCompile Include="..\engine\player\sc_unique_gear.cpp">
 			<PrecompiledHeader>Create</PrecompiledHeader>
+		</ClCompile>
+		<ClCompile Include="..\engine\player\soulbinds.cpp">
+			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>
 		<ClCompile Include="..\engine\player\spawner_base.cpp">
 			<PrecompiledHeader>NotUsing</PrecompiledHeader>

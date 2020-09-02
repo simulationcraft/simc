@@ -841,7 +841,7 @@ struct exit_melee_event_t : public event_t
 bool movement_buff_t::trigger( int s, double v, double c, timespan_t d )
 {
   assert( distance_moved > 0 );
-  assert( buff_duration > timespan_t::zero() );
+  assert( buff_duration() > timespan_t::zero() );
 
   // Check if we're already moving away from the target, if so we will now be moving towards it
   if ( dh->current.distance_to_move || dh->buff.out_of_range->check() || dh->buff.vengeful_retreat_move->check() )
@@ -862,7 +862,7 @@ bool movement_buff_t::trigger( int s, double v, double c, timespan_t d )
     assert(!dh->exit_melee_event);
 
     // Calculate the amount of time it will take for the movement to carry us out of range
-    const timespan_t delay = buff_duration * (1.0 - (yards_from_melee / distance_moved));
+    const timespan_t delay = buff_duration() * (1.0 - (yards_from_melee / distance_moved));
 
     assert(delay > timespan_t::zero() );
 
@@ -2056,8 +2056,8 @@ struct eye_beam_t : public demon_hunter_spell_t
     if ( p()->talent.blind_fury->ok() )
     {
       // Blind Fury gains scale with the duration of the channel
-      p()->buff.blind_fury->buff_duration = duration;
-      p()->buff.blind_fury->buff_period = timespan_t::from_millis( 100 ) * ( duration / dot_duration );
+      p()->buff.blind_fury->set_duration( duration );
+      p()->buff.blind_fury->set_period( timespan_t::from_millis( 100 ) * ( duration / dot_duration ) );
       p()->buff.blind_fury->trigger();
     }
 
@@ -2694,7 +2694,7 @@ struct metamorphosis_t : public demon_hunter_spell_t
       // Buff is gained at the start of the leap.
       if ( p()->buff.metamorphosis->check() )
       {
-        p()->buff.metamorphosis->extend_duration( p(), p()->buff.metamorphosis->buff_duration );
+        p()->buff.metamorphosis->extend_duration( p(), p()->buff.metamorphosis->buff_duration() );
       }
       else
       {
@@ -3076,7 +3076,7 @@ struct fodder_to_the_flame_t : public demon_hunter_spell_t
       double buff_duration_percent = p()->rng().range( p()->options.fodder_to_the_flame_min_percent, 1.0 );
       if( buff_duration_percent )
       {
-        timespan_t adjusted_duration = p()->buff.fodder_to_the_flame->buff_duration * ( 1.0 - buff_duration_percent );
+        timespan_t adjusted_duration = p()->buff.fodder_to_the_flame->buff_duration() * ( 1.0 - buff_duration_percent );
         p()->buff.fodder_to_the_flame->extend_duration( p(), -adjusted_duration );
       }
     }
@@ -3549,9 +3549,9 @@ struct death_sweep_t : public blade_dance_base_t
     assert( p()->buff.metamorphosis->check() );
 
     // If Metamorphosis has less than 1s remaining, it gets extended so the whole Death Sweep happens during Meta.
-    if ( p()->buff.metamorphosis->remains_lt( p()->buff.death_sweep->buff_duration ) )
+    if ( p()->buff.metamorphosis->remains_lt( p()->buff.death_sweep->buff_duration() ) )
     {
-      p()->buff.metamorphosis->extend_duration( p(), p()->buff.death_sweep->buff_duration - p()->buff.metamorphosis->remains() );
+      p()->buff.metamorphosis->extend_duration( p(), p()->buff.death_sweep->buff_duration() - p()->buff.metamorphosis->remains() );
     }
   }
 
@@ -4418,6 +4418,8 @@ struct immolation_aura_buff_t : public demon_hunter_buff_t<buff_t>
     : base_t( *p, "immolation_aura", p->spec.immolation_aura )
   {
     set_cooldown( timespan_t::zero() );
+    apply_affecting_aura( p->spec.immolation_aura_rank_3 );
+
     set_tick_callback( [ p ]( buff_t*, int, timespan_t ) {
       p->active.immolation_aura->execute();
       p->buff.growing_inferno->trigger();
@@ -4434,12 +4436,6 @@ struct immolation_aura_buff_t : public demon_hunter_buff_t<buff_t>
     {
       set_default_value( p->talent.agonizing_flames->effectN( 2 ).percent() );
       add_invalidate( CACHE_RUN_SPEED );
-    }
-
-    // Vengeance (Rank 3) is different than Havoc (Rank 3)
-    if ( p->specialization() == DEMON_HUNTER_HAVOC )
-    {
-      buff_duration *= 1.0 + p->spec.immolation_aura_rank_3->effectN( 1 ).percent();
     }
   }
 };
@@ -4464,7 +4460,7 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
       // Conflict and Strife -> Demonic Origins PvP Talent
       if ( p->azerite.conflict_and_strife.enabled() && p->azerite.conflict_and_strife.is_major() && p->talent.demonic_origins->ok() )
       {
-        buff_duration += p->talent.demonic_origins->effectN( 2 ).time_value();
+        apply_affecting_aura( p->talent.demonic_origins );
       }
     }
     else // DEMON_HUNTER_VENGEANCE
@@ -4522,7 +4518,7 @@ struct demon_spikes_t : public demon_hunter_buff_t<buff_t>
 
   demon_spikes_t(demon_hunter_t* p)
     : base_t( *p, "demon_spikes", p->find_spell( 203819 ) ),
-      max_duration( buff_duration * 3 ) // Demon Spikes can only be extended to 3x its base duration
+      max_duration( base_buff_duration * 3 ) // Demon Spikes can only be extended to 3x its base duration
   {
     set_default_value( p->find_spell( 203819 )->effectN( 1 ).percent() );
     set_refresh_behavior( buff_refresh_behavior::EXTEND );
@@ -4534,10 +4530,10 @@ struct demon_spikes_t : public demon_hunter_buff_t<buff_t>
   {
     if (duration == timespan_t::min())
     {
-      duration = buff_duration;
+      duration = buff_duration();
     }
 
-    if (remains() + buff_duration > max_duration)
+    if (remains() + buff_duration() > max_duration)
     {
       duration = max_duration - remains();
     }
@@ -4892,7 +4888,8 @@ void demon_hunter_t::create_buffs()
   buff.fodder_to_the_flame = make_buff<buff_t>( this, "fodder_to_the_flame", fodder_to_the_flame_buff )
     ->add_invalidate( CACHE_ATTACK_SPEED )
     ->set_default_value( find_spell( 330910 )->effectN( 1 ).percent() )
-    ->set_duration( find_spell( 330846 )->duration() + conduit.brooding_pool.time_value() );
+    ->set_duration( find_spell( 330846 )->duration() )
+    ->apply_affecting_conduit( conduit.brooding_pool );
 
   // Fake Growing Inferno buff for tracking purposes
   buff.growing_inferno = make_buff<buff_t>( this, "growing_inferno", conduit.growing_inferno )

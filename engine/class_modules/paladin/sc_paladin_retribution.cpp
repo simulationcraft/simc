@@ -18,7 +18,7 @@ namespace buffs {
     // increase duration if we have Light's Decree
     paladin_t* paladin = static_cast<paladin_t*>( p );
     if ( paladin -> azerite.lights_decree.ok() )
-      buff_duration += paladin -> spells.lights_decree -> effectN( 2 ).time_value();
+      base_buff_duration += paladin -> spells.lights_decree -> effectN( 2 ).time_value();
 
     // let the ability handle the cooldown
     cooldown -> duration = 0_ms;
@@ -76,7 +76,7 @@ struct crusade_t : public paladin_spell_t
     p() -> buffs.crusade -> trigger();
 
     if ( p() -> azerite.avengers_might.ok() )
-      p() -> buffs.avengers_might -> trigger( 1, p() -> buffs.avengers_might -> default_value, -1.0, p() -> buffs.crusade -> buff_duration );
+      p() -> buffs.avengers_might -> trigger( 1, p() -> buffs.avengers_might -> default_value, -1.0, p() -> buffs.crusade -> buff_duration() );
 
     if ( p() -> legendary.liadrins_fury_reborn -> ok() )
       p() -> resource_gain( RESOURCE_HOLY_POWER, p() -> legendary.liadrins_fury_reborn -> effectN( 1 ).base_value(), p() -> gains.liadrins_fury_reborn );

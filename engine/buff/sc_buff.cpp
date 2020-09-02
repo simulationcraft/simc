@@ -49,9 +49,9 @@ struct buff_expr_t : public expr_t
     if ( !buff )
     {
       action->sim->error(
-          "Unable to build buff action expression for action '{}': "
-          "Reference to unknown buff/debuff '{}' by player {}.",
-          action->name(), buff_name, action->player->name() );
+          "Unable to build buff action expression for {}: "
+          "Reference to unknown buff/debuff '{}' by {}.",
+          *action, buff_name, *action->player );
       action->sim->cancel();
       // Prevent segfault
       buff = make_buff( action->player, "dummy" );
@@ -153,7 +153,7 @@ struct tick_t : public buff_event_t
       : buff->current_tick + static_cast<int>( buff->remains() / buff->tick_time() );
 
     if ( buff->partial_tick &&
-         ( buff->buff_duration.total_millis() % buff->tick_time().total_millis() ) != 0 )
+         ( buff->buff_duration().total_millis() % buff->tick_time().total_millis() ) != 0 )
     {
       total_ticks++;
     }
@@ -314,7 +314,7 @@ std::unique_ptr<expr_t> create_buff_expression( util::string_view buff_name, uti
   {
     return make_buff_expr( "buff_duration",
       []( buff_t* buff ) {
-        return buff->buff_duration;
+        return buff->buff_duration();
       } );
   }
   else if ( type == "remains" )
@@ -505,7 +505,8 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, util::string_vie
     reverse_stack_reduction( 1 ),
     current_value(),
     current_stack(),
-    buff_duration( timespan_t::min() ),
+    base_buff_duration( timespan_t::min() ),
+    buff_duration_multiplier( 1.0 ),
     default_chance( 1.0 ),
     manual_chance( -1.0 ),
     current_tick( 0 ),
@@ -558,7 +559,7 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, util::string_vie
   }
 
   // Set Buff duration
-  set_duration( buff_duration );
+  set_duration( base_buff_duration );
 
   // Set Buff Cooldown
   set_cooldown( timespan_t::min() );
@@ -570,7 +571,14 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, util::string_vie
 
   set_period( timespan_t::min() );
 
+  set_tick_on_application( s_data->flags( spell_attribute::SX_TICK_ON_APPLICATION ) );
+
   set_tick_behavior( buff_tick_behavior::NONE );
+
+  if ( s_data->flags( spell_attribute::SX_DOT_HASTED ) )
+  {
+    set_tick_time_behavior( buff_tick_time_behavior::HASTED );
+  }
 
   set_refresh_behavior( buff_refresh_behavior::NONE );
 
@@ -648,22 +656,42 @@ buff_t* buff_t::set_duration( timespan_t duration )
   {
     if ( data().ok() )
     {
-      buff_duration = data().duration();
+      base_buff_duration = data().duration();
     }
     else
     {
-      buff_duration = timespan_t();
+      base_buff_duration = timespan_t();
     }
   }
   else
   {
-    buff_duration = duration;
+    base_buff_duration = duration;
   }
 
-  if ( buff_duration < timespan_t::zero() )
+  if ( base_buff_duration < timespan_t::zero() )
   {
-    buff_duration = timespan_t::zero();
+    base_buff_duration = timespan_t::zero();
   }
+
+  return this;
+}
+
+buff_t* buff_t::modify_duration( timespan_t duration )
+{
+  set_duration( base_buff_duration + duration );
+  return this;
+}
+
+buff_t* buff_t::set_duration_multiplier( double multiplier )
+{
+  assert( multiplier >= 0.0 );
+  buff_duration_multiplier = multiplier;
+
+  if ( buff_duration_multiplier < 0.0 )
+  {
+    buff_duration_multiplier = 0.0;
+  }
+
   return this;
 }
 
@@ -719,6 +747,12 @@ buff_t* buff_t::set_max_stack( int max_stack )
   return this;
 }
 
+buff_t* buff_t::modify_max_stack( int max_stack )
+{
+  set_max_stack( _max_stack + max_stack );
+  return this;
+}
+
 buff_t* buff_t::set_cooldown( timespan_t duration )
 {
   // Set Buff duration
@@ -746,6 +780,12 @@ buff_t* buff_t::set_cooldown( timespan_t duration )
     cooldown->duration = timespan_t::zero();
   }
 
+  return this;
+}
+
+buff_t* buff_t::modify_cooldown( timespan_t duration )
+{
+  set_cooldown( cooldown->duration + duration );
   return this;
 }
 
@@ -811,6 +851,18 @@ buff_t* buff_t::add_invalidate( cache_e c )
 buff_t* buff_t::set_default_value( double value )
 {
   default_value = value;
+  return this;
+}
+
+buff_t* buff_t::set_default_value_from_effect( size_t effect, double multiplier )
+{
+  set_default_value( s_data->effectN( effect ).base_value() * multiplier );
+  return this;
+}
+
+buff_t* buff_t::modify_default_value( double value )
+{
+  set_default_value( default_value + value );
   return this;
 }
 
@@ -958,6 +1010,198 @@ buff_t* buff_t::set_reverse_stack_count( int count )
 buff_t* buff_t::set_stack_behavior( buff_stack_behavior b )
 {
   stack_behavior = b;
+  return this;
+}
+
+buff_t* buff_t::apply_affecting_aura( const spell_data_t* spell )
+{
+  if ( !spell->ok() )
+    return this;
+
+  assert( spell->flags( SX_PASSIVE ) && "only passive spells should be affecting buffs." );
+
+  for ( const spelleffect_data_t& effect : spell->effects() )
+  {
+    apply_affecting_effect( effect );
+  }
+
+  return this;
+}
+
+buff_t* buff_t::apply_affecting_effect( const spelleffect_data_t& effect )
+{
+  if ( !effect.ok() || effect.type() != E_APPLY_AURA )
+    return this;
+
+  if ( !data().affected_by_all( *player->dbc, effect ) )
+    return this;
+
+  if ( sim->debug )
+  {
+    const spell_data_t& spell = *effect.spell();
+    std::string desc_str;
+    const auto& spell_text = player->dbc->spell_text( spell.id() );
+    if ( spell_text.rank() )
+      desc_str = fmt::format( " (desc={})", spell_text.rank() );
+    if ( sim->debug )
+    {
+      sim->print_debug( "{} {} is affected by effect {} ({}{} (id={}) - effect #{})", *player, *this, effect.id(),
+                        spell.name_cstr(), desc_str, spell.id(), effect.spell_effect_num() + 1 );
+    }
+  }
+
+  auto apply_flat_modifier = [ this ]( const spelleffect_data_t& effect ) {
+    switch ( effect.misc_value1() )
+    {
+      case P_DURATION:
+        modify_duration( effect.time_value() );
+        sim->print_debug( "{} duration modified by {}", *this, effect.time_value() );
+        break;
+
+      case P_COOLDOWN:
+        if ( cooldown->duration > timespan_t::zero() ) // Don't modify if cooldown is disabled
+        {
+          modify_cooldown( effect.time_value() );
+          sim->print_debug( "{} cooldown duration modified by {} to {}", *this, effect.time_value(), cooldown->duration );
+        }
+        break;
+
+      case P_MAX_STACKS:
+        modify_max_stack( as<int>( effect.base_value() ) );
+        sim->print_debug( "{} maximum stacks modified by {}", *this, effect.base_value() );
+        break;
+
+      default:
+        break;
+    }
+  };
+
+  auto apply_percent_modifier = [ this ]( const spelleffect_data_t& effect ) {
+    switch ( effect.misc_value1() )
+    {
+      case P_DURATION:
+        set_duration_multiplier( buff_duration_multiplier *= 1.0 + effect.percent() );
+        sim->print_debug( "{} duration modified by {}%", *this, effect.base_value() );
+        break;
+
+      case P_COOLDOWN:
+        // TODO: Should buffs support a base_recharge_multiplier?
+        // base_recharge_multiplier *= 1 + effect.percent();
+        //if ( base_recharge_multiplier <= 0 )
+        //  set_cooldown( timespan_t::zero() );
+        //sim->print_debug( "{} cooldown recharge multiplier modified by {}%", *this, effect.base_value() );
+        break;
+
+      default:
+        break;
+    }
+  };
+
+  if ( data().affected_by( effect ) )
+  {
+    switch ( effect.subtype() )
+    {
+      case A_ADD_FLAT_MODIFIER:
+        apply_flat_modifier( effect );
+        break;
+
+      case A_ADD_PCT_MODIFIER:
+        apply_percent_modifier( effect );
+        break;
+
+      default:
+        break;
+    }
+  }
+  else if ( data().affected_by_label( effect ) )
+  {
+    switch ( effect.subtype() )
+    {
+      case A_ADD_FLAT_LABEL_MODIFIER:
+        apply_flat_modifier( effect );
+        break;
+
+      case A_ADD_PCT_LABEL_MODIFIER:
+        apply_percent_modifier( effect );
+        break;
+
+      default:
+        break;
+    }
+  }
+  else if ( data().category() == as<unsigned>( effect.misc_value1() ) )
+  {
+    switch ( effect.subtype() )
+    {
+      case A_MODIFY_CATEGORY_COOLDOWN:
+        if ( cooldown->duration > timespan_t::zero() )
+        {
+          set_cooldown( cooldown->duration += effect.time_value() );
+          sim->print_debug( "{} cooldown duration modified by {}", *this, effect.time_value() );
+        }
+        break;
+
+      case A_MOD_MAX_CHARGES:
+        cooldown->charges += as<int>( effect.base_value() );
+        sim->print_debug( "{} cooldown charges modified by {}", *this, as<int>( effect.base_value() ) );
+        break;
+
+      case A_HASTED_CATEGORY:
+        cooldown->hasted = true;
+        sim->print_debug( "{} cooldown set to hasted", *this );
+        break;
+
+      case A_MOD_RECHARGE_TIME:
+        if ( cooldown->duration > timespan_t::zero() )
+        {
+          set_cooldown( cooldown->duration += effect.time_value() );
+          sim->print_debug( "{} cooldown recharge time modified by {}", *this, effect.time_value() );
+        }
+        break;
+
+      case A_MOD_RECHARGE_MULTIPLIER:
+        // TODO: Should buffs support a base_recharge_multiplier?
+        //base_recharge_multiplier *= 1 + effect.percent();
+        //if ( base_recharge_multiplier <= 0 )
+        //  set_cooldown( timespan_t::zero() );
+        //sim->print_debug( "{} cooldown recharge multiplier modified by {}%", *this, effect.base_value() );
+        break;
+
+      default:
+        break;
+    }
+  }
+
+  return this;
+}
+
+buff_t* buff_t::apply_affecting_conduit( const conduit_data_t& conduit, int effect_num )
+{
+  assert( effect_num == -1 || effect_num > 0 );
+
+  if ( !conduit.ok() )
+    return this;
+
+  for ( size_t i = 1; i <= conduit->effect_count(); i++ )
+  {
+    if ( effect_num == -1 || as<size_t>( effect_num ) == i )
+      apply_affecting_conduit_effect( conduit, i );
+    else
+      apply_affecting_effect( conduit->effectN( i ) );
+  }
+
+  return this;
+}
+
+buff_t* buff_t::apply_affecting_conduit_effect( const conduit_data_t& conduit, size_t effect_num )
+{
+  if ( !conduit.ok() )
+    return this;
+
+  spelleffect_data_t effect = conduit->effectN( effect_num );
+  effect._base_value = conduit.value();
+  apply_affecting_effect( effect );
+
   return this;
 }
 
@@ -1277,7 +1521,7 @@ void buff_t::execute( int stacks, double value, timespan_t duration )
   if ( cooldown->duration > timespan_t::zero() )
   {
     sim->print_debug( "{} starts {} cooldown ({}) with duration {}", source_name(),
-                             *this, cooldown->name(), cooldown->duration );
+                             *this, cooldown->name_str, cooldown->duration );
 
     cooldown->start();
   }
@@ -1362,7 +1606,7 @@ void buff_t::extend_duration( player_t* p, timespan_t extra_seconds )
 
   if ( stack_behavior == buff_stack_behavior::ASYNCHRONOUS )
   {
-    throw std::runtime_error( fmt::format( "'{}' attempts to extend asynchronous buff '{}'.", p->name(), name() ) );
+    throw std::runtime_error( fmt::format( "{} attempts to extend asynchronous {}.", *p, *this ) );
   }
 
   assert( expiration.size() == 1 );
@@ -1371,8 +1615,9 @@ void buff_t::extend_duration( player_t* p, timespan_t extra_seconds )
   {
     expiration.front()->reschedule( expiration.front()->remains() + extra_seconds );
 
-    sim->print_log( "{} extends {} by {}. New expiration time: {}",
-        *p, *this, extra_seconds, expiration.front()->occurs().total_seconds() );
+    if ( sim->log )
+      sim->print_log( "{} extends {} by {}. New expiration time: {}", *p, *this, extra_seconds,
+                      expiration.front()->occurs() );
   }
   else if ( extra_seconds < timespan_t::zero() )
   {
@@ -1395,8 +1640,9 @@ void buff_t::extend_duration( player_t* p, timespan_t extra_seconds )
 
     expiration.push_back( make_event<expiration_t>( *sim, this, reschedule_time ) );
 
-    sim->print_debug( "{} decreases {} by {}. New expiration: {}",
-        *p, *this, -extra_seconds, expiration.back()->occurs().total_seconds() );
+    if ( sim->debug )
+      sim->print_debug( "{} decreases {} by {}. New expiration: {}", *p, *this, -extra_seconds,
+                        expiration.back()->occurs() );
   }
 }
 
@@ -1414,7 +1660,7 @@ void buff_t::start( int stacks, double value, timespan_t duration )
   }
 #endif
 
-  timespan_t d = ( duration >= timespan_t::zero() ) ? duration : buff_duration;
+  timespan_t d = ( duration >= timespan_t::zero() ) ? duration : buff_duration();
 
   if ( sim->current_time() <= timespan_t::from_seconds( 0.01 ) )
   {
@@ -1508,7 +1754,7 @@ void buff_t::refresh( int stacks, double value, timespan_t duration )
   else if ( duration == timespan_t::zero() )
     d = duration;
   else
-    d = refresh_duration( buff_duration );
+    d = refresh_duration( buff_duration() );
 
   if ( refresh_behavior == buff_refresh_behavior::DISABLED && duration != timespan_t::zero() )
     return;
@@ -1725,7 +1971,7 @@ void buff_t::override_buff( int stacks, double value )
   if ( value == DEFAULT_VALUE() )
     value = default_value;
 
-  buff_duration = timespan_t::zero();
+  set_duration( timespan_t::zero() );
   start( stacks, value );
   overridden = true;
 }
@@ -1819,7 +2065,7 @@ void buff_t::expire( timespan_t delay )
       event_t::cancel( stack_react_ready_triggers[ i ] );
   }
 
-  if ( buff_duration > timespan_t::zero() && remaining_duration == timespan_t::zero() )
+  if ( buff_duration() > timespan_t::zero() && remaining_duration == timespan_t::zero() )
   {
     expire_count++;
   }
@@ -2019,7 +2265,7 @@ std::string buff_t::to_str() const
   s << " max_stack=" << _max_stack;
   s << " initial_stack=" << data().initial_stacks();
   s << " cooldown=" << cooldown->duration.total_seconds();
-  s << " duration=" << buff_duration.total_seconds();
+  s << " duration=" << buff_duration().total_seconds();
   s << " default_chance=" << default_chance;
 
   return s.str();
@@ -2182,7 +2428,7 @@ stat_buff_t::stat_buff_t(actor_pair_t q, util::string_view name)
 
 stat_buff_t::stat_buff_t( actor_pair_t q, util::string_view name, const spell_data_t* spell, const item_t* item )
   : buff_t( q, name, spell, item ),
-    stat_gain( player->get_gain( std::string( name ) + "_buff" ) ),  // append _buff for now to check usage
+    stat_gain( player->get_gain( fmt::format( "{}_buff", name ) ) ),  // append _buff for now to check usage
     manual_stats_added( false )
 {
   bool has_ap = false;
@@ -2281,11 +2527,11 @@ void stat_buff_t::bump( int stacks, double /* value */ )
     double delta = buff_stat.amount * current_stack - buff_stat.current_value;
     if ( delta > 0 )
     {
-      player->stat_gain( buff_stat.stat, delta, stat_gain, nullptr, buff_duration > timespan_t::zero() );
+      player->stat_gain( buff_stat.stat, delta, stat_gain, nullptr, buff_duration() > timespan_t::zero() );
     }
     else if ( delta < 0 )
     {
-      player->stat_loss( buff_stat.stat, std::fabs( delta ), stat_gain, nullptr, buff_duration > timespan_t::zero() );
+      player->stat_loss( buff_stat.stat, std::fabs( delta ), stat_gain, nullptr, buff_duration() > timespan_t::zero() );
     }
 
     buff_stat.current_value += delta;
@@ -2311,12 +2557,12 @@ void stat_buff_t::decrement( int stacks, double /* value */ )
       if ( delta > 0 )
       {
         player->stat_loss( buff_stat.stat, ( delta <= buff_stat.current_value ) ? delta : 0.0, stat_gain, nullptr,
-                           buff_duration > timespan_t::zero() );
+                           buff_duration() > timespan_t::zero() );
       }
       else if ( delta < 0 )
       {
         player->stat_gain( buff_stat.stat, ( delta >= buff_stat.current_value ) ? std::fabs( delta ) : 0.0, stat_gain,
-                           nullptr, buff_duration > timespan_t::zero() );
+                           nullptr, buff_duration() > timespan_t::zero() );
       }
       buff_stat.current_value -= delta;
     }
@@ -2352,12 +2598,12 @@ void stat_buff_t::expire_override( int expiration_stacks, timespan_t remaining_d
     if ( buff_stat.current_value > 0 )
     {
       player->stat_loss( buff_stat.stat, buff_stat.current_value, stat_gain, nullptr,
-                         buff_duration > timespan_t::zero() );
+                         buff_duration() > timespan_t::zero() );
     }
     else if ( buff_stat.current_value < 0 )
     {
       player->stat_gain( buff_stat.stat, std::fabs( buff_stat.current_value ), stat_gain, nullptr,
-                         buff_duration > timespan_t::zero() );
+                         buff_duration() > timespan_t::zero() );
     }
     buff_stat.current_value = 0;
   }

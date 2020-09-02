@@ -588,7 +588,7 @@ enum property_type_t {
   P_EFFECT_4          = 32,
   P_EFFECT_5          = 33,
   P_RESOURCE_GEN      = 34,
-  P_MAX_STACKS        = 35,
+  P_MAX_STACKS        = 37,
   P_MAX
 };
 
@@ -1203,7 +1203,7 @@ enum effect_subtype_t : unsigned {
     A_408 = 408,
     A_409 = 409,
     A_410 = 410,
-    A_411 = 411,
+    A_MOD_MAX_CHARGES = 411,
     A_412 = 412,
     A_HASTED_COOLDOWN = 416,
     A_HASTED_GCD = 417,
@@ -1225,8 +1225,8 @@ enum effect_subtype_t : unsigned {
     A_447 = 447,
     A_448 = 448,
     A_451 = 451,
-    A_453 = 453,
-    A_454 = 454,
+    A_MOD_RECHARGE_TIME = 453,
+    A_MOD_RECHARGE_MULTIPLIER = 454,
     A_455 = 455,
     A_HASTED_CATEGORY = 457,
     A_458 = 458,

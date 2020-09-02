@@ -13,7 +13,9 @@
 
 #include "util/timespan.hpp"
 #include "sc_enums.hpp"
+#include "dbc/dbc.hpp"
 #include "player/sc_actor_pair.hpp"
+#include "player/covenant.hpp"
 #include "util/sample_data.hpp"
 #include "util/span.hpp"
 #include "util/string_view.hpp"
@@ -87,7 +89,8 @@ public:
   // dynamic values
   double current_value;
   int current_stack;
-  timespan_t buff_duration;
+  timespan_t base_buff_duration;
+  double buff_duration_multiplier;
   double default_chance;
   double manual_chance; // user-specified "overridden" proc-chance
   std::vector<timespan_t> stack_react_time;
@@ -215,6 +218,12 @@ public:
     return false;
   }
 
+  // Get the base buff duration modified by the duration multiplier, if applicable
+  virtual timespan_t buff_duration() const
+  {
+    return base_buff_duration * buff_duration_multiplier;
+  }
+
   timespan_t remains() const;
   timespan_t elapsed( timespan_t t ) const { return t - last_start; }
   timespan_t last_trigger_time() const { return last_trigger; }
@@ -288,13 +297,19 @@ public:
 
   buff_t* set_chance( double chance );
   buff_t* set_duration( timespan_t duration );
+  buff_t* modify_duration( timespan_t duration );
+  buff_t* set_duration_multiplier( double );
   buff_t* set_max_stack( int max_stack );
+  buff_t* modify_max_stack( int max_stack );
   buff_t* set_cooldown( timespan_t duration );
+  buff_t* modify_cooldown( timespan_t duration );
   buff_t* set_period( timespan_t );
   //virtual buff_t* set_chance( double chance );
   buff_t* set_quiet( bool quiet );
   buff_t* add_invalidate( cache_e );
   buff_t* set_default_value( double );
+  buff_t* set_default_value_from_effect( size_t, double = 0.01 );
+  buff_t* modify_default_value( double );
   buff_t* set_reverse( bool );
   buff_t* set_activated( bool );
   buff_t* set_can_cancel( bool cc );
@@ -317,6 +332,11 @@ public:
   buff_t* set_stack_change_callback( const buff_stack_change_callback_t& cb );
   buff_t* set_reverse_stack_count( int value );
   buff_t* set_stack_behavior( buff_stack_behavior b );
+
+  buff_t* apply_affecting_aura( const spell_data_t* spell );
+  buff_t* apply_affecting_effect( const spelleffect_data_t& effect );
+  buff_t* apply_affecting_conduit( const conduit_data_t& conduit, int effect_num = 1 );
+  buff_t* apply_affecting_conduit_effect( const conduit_data_t& conduit, size_t effect_num );
 
   friend void format_to( const buff_t&, fmt::format_context::iterator );
 private:

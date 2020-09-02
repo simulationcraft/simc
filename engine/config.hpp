@@ -47,7 +47,7 @@
 #  define SC_CLANG ( __clang_major__ * 10000 + __clang_minor__ * 100 + __clang_patchlevel__ )
 #endif
 #if defined( _MSC_VER )
-#  define SC_VS ( _MSC_VER / 100 - 6 )
+#  define SC_VS _MSC_VER
 #pragma warning( disable : 4265)
 #endif
 
@@ -58,8 +58,8 @@
 // ==========================================================================
 // Compiler Minimal Limits
 // ==========================================================================
-#if defined( SC_VS ) && SC_VS < 13
-#  error "Visual Studio 12 ( 2013 ) or lower not supported"
+#if defined( SC_VS ) && SC_VS < 1910
+#  error "Visual Studio 2015 (14.0) or older not supported"
 #endif
 
 // Last updated 2020-05-05: Support gcc5 / clang 3.5 which hav (full) C++14 support

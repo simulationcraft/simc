@@ -6,6 +6,7 @@
 #include "unique_gear.hpp"
 
 #include "unique_gear_shadowlands.hpp"
+#include "player/soulbinds.hpp"
 #include "simulationcraft.hpp"
 #include "dbc/racial_spells.hpp"
 #include <cctype>
@@ -257,12 +258,12 @@ void enchants::mark_of_blackrock( special_effect_t& effect )
       dbc_proc_callback_t( i, effect )
     { }
 
-    void trigger( action_t* a, void* call_data ) override
+    void trigger( action_t* a, action_state_t* s ) override
     {
       if ( listener -> resources.pct( RESOURCE_HEALTH ) >= 0.6 )
         return;
 
-      dbc_proc_callback_t::trigger( a, call_data );
+      dbc_proc_callback_t::trigger( a, s );
     }
   };
 
@@ -347,11 +348,11 @@ void enchants::mark_of_the_thunderlord( special_effect_t& effect )
       dbc_proc_callback_t( item, effect )
     { }
 
-    void trigger( action_t* a, void* call_data ) override
+    void trigger( action_t* a, action_state_t* s ) override
     {
       if ( proc_buff -> check() )
       {
-        dbc_proc_callback_t::trigger( a, call_data );
+        dbc_proc_callback_t::trigger( a, s );
       }
     }
 
@@ -875,13 +876,13 @@ void gem::capacitive_primal( special_effect_t& effect )
       }
     }
 
-    void trigger( action_t* action, void* call_data ) override
+    void trigger( action_t* action, action_state_t* s ) override
     {
       // Flurry of Xuen and Capacitance cannot proc Capacitance
       if ( action -> id == 147891 || action -> id == 146194 || action -> id == 137597 )
         return;
 
-      dbc_proc_callback_t::trigger( action, call_data );
+      dbc_proc_callback_t::trigger( action, s );
     }
   };
 
@@ -913,13 +914,13 @@ void gem::courageous_primal( special_effect_t& effect )
       dbc_proc_callback_t( data.player, data )
     { }
 
-    void trigger( action_t* action, void* call_data ) override
+    void trigger( action_t* action, action_state_t* s ) override
     {
       spell_base_t* spell = debug_cast<spell_base_t*>( action );
       if ( ! spell -> procs_courageous_primal_diamond )
         return;
 
-      dbc_proc_callback_t::trigger( action, call_data );
+      dbc_proc_callback_t::trigger( action, s );
     }
   };
 
@@ -2258,13 +2259,13 @@ struct flurry_of_xuen_cb_t : public dbc_proc_callback_t
     dbc_proc_callback_t( p, effect )
   { }
 
-  void trigger( action_t* action, void* call_data ) override
+  void trigger( action_t* action, action_state_t* s ) override
   {
     // Flurry of Xuen, and Lightning Strike cannot proc Flurry of Xuen
     if ( action -> id == 147891 || action -> id == 146194 || action -> id == 137597 )
       return;
 
-    dbc_proc_callback_t::trigger( action, call_data );
+    dbc_proc_callback_t::trigger( action, s );
   }
 };
 
@@ -2317,12 +2318,12 @@ struct essence_of_yulon_cb_t : public dbc_proc_callback_t
     dbc_proc_callback_t( p, effect )
   { }
 
-  void trigger( action_t* action, void* call_data ) override
+  void trigger( action_t* action, action_state_t* s ) override
   {
     if ( action -> id == 148008 ) // dot direct damage ticks can't proc itself
       return;
 
-    dbc_proc_callback_t::trigger( action, call_data );
+    dbc_proc_callback_t::trigger( action, s );
   }
 };
 
@@ -3058,15 +3059,14 @@ struct mark_of_doom_damage_driver_t : public dbc_proc_callback_t
     dbc_proc_callback_t( effect.player, effect ), damage( d ), target( t )
   { }
 
-  void trigger( action_t* a, void* call_data ) override
+  void trigger( action_t* a, action_state_t* s ) override
   {
-    const action_state_t* s = static_cast<const action_state_t*>( call_data );
     if ( s -> target != target )
     {
       return;
     }
 
-    dbc_proc_callback_t::trigger( a, call_data );
+    dbc_proc_callback_t::trigger( a, s );
   }
 
   void execute( action_t* /* a */, action_state_t* trigger_state ) override
@@ -3535,7 +3535,7 @@ void item::tyrants_decree( special_effect_t& effect )
       cancel_threshold = effect.driver() -> effectN( 2 ).percent();
     }
 
-    void trigger( action_t* , void* ) override
+    void trigger( action_t* , action_state_t* s ) override
     {
       if ( p -> resources.pct( RESOURCE_HEALTH ) < cancel_threshold )
         p -> buffs.tyrants_immortality -> expire();
@@ -3659,15 +3659,14 @@ struct entropic_embrace_damage_cb_t : public dbc_proc_callback_t
     coeff( c )
   { }
 
-  void trigger( action_t* a, void* call_data ) override
+  void trigger( action_t* a, action_state_t* state ) override
   {
-    auto state = reinterpret_cast<action_state_t*>( call_data );
     if ( state -> result_amount <= 0 )
     {
       return;
     }
 
-    dbc_proc_callback_t::trigger( a, call_data );
+    dbc_proc_callback_t::trigger( a, state );
   }
 
   void execute( action_t* /* a */, action_state_t* state ) override
@@ -4645,7 +4644,9 @@ void unique_gear::register_special_effects()
   azerite::register_azerite_powers();
 
   register_special_effects_bfa();
+
   shadowlands::register_special_effects();
+  covenant::soulbinds::register_special_effects();
 
   /* Legacy Effects, pre-5.0 */
   register_special_effect( 45481,  "ProcOn/hit_45479Trigger"            ); /* Shattered Sun Pendant of Acumen */
@@ -4887,6 +4888,7 @@ void unique_gear::register_target_data_initializers( sim_t* sim )
   azerite::register_azerite_target_data_initializers( sim );
   
   shadowlands::register_target_data_initializers( *sim );
+  covenant::soulbinds::register_target_data_initializers( sim );
 }
 
 special_effect_t* unique_gear::find_special_effect( player_t* actor, unsigned spell_id, special_effect_e type )

@@ -510,6 +510,25 @@ struct player_t : public actor_t
     buff_t* delirious_frenzy; // Dream's End 1H STR axe attack speed buff
     buff_t* bioelectric_charge; // Diver's Folly 1H AGI axe buff to store damage
     buff_t* razor_coral; // Ashvane's Razor Coral trinket crit rating buff
+
+    // 9.0 Soulbinds
+    buff_t* redirected_anima_stacks;  // night_fae/niya/grove_invigoration - counter procced via rppm
+    buff_t* redirected_anima;         // night_fae/niya/grove_invigoration - buff procced on covenant ability use
+    buff_t* field_of_blossoms;        // night_fae/dreamweaver - buff procced on covenant ability use
+    buff_t* social_butterfly;         // night_fae/dreamweaver - periodic buff when 2+ allies are nearby
+    buff_t* first_strike;             // night_fae/korayn - crit buff when first hitting enemy
+    buff_t* wild_hunt_tactics;        // night_fae/korayn - dummy buff used to quickly check if soulbind is enabled
+    buff_t* thrill_seeker;            // venthyr/nadjia - counter every 2s
+    buff_t* euphoria;                 // venthyr/nadjia/thill_seeker - haste buff
+    buff_t* wasteland_propriety;      // venthyr/theotar - vers buff on covenant cast
+    buff_t* built_for_war;            // venthyr/draven - stacking buff when above 80% hp
+    buff_t* let_go_of_the_past;       // kyrian/pelagos - vers buff on diff spell
+    buff_t* combat_meditation;        // kyrian/pelagos - mast buff on covenant cast
+    buff_t* pointed_courage;          // kyrian/kleia - crit buff for every nearby enemy or ally
+    buff_t* hammer_of_genesis;        // kyrian/mikanikos - haste on hitting new enemy
+    buff_t* gnashing_chompers;        // necrolord/emeni - haste of enemy death
+    buff_t* marrowed_gemstone_charging;     // necrolord/heirmir - crit counter
+    buff_t* marrowed_gemstone_enhancement;  // necrolord/heirmir - crit proc after 10 crits
   } buffs;
 
   struct debuffs_t
@@ -630,6 +649,9 @@ private:
     resource_callback_function_t callback;
   };
   std::vector<resource_callback_entry_t> resource_callbacks;
+
+  /// Per-player custom dbc data
+  std::unique_ptr<dbc_override_t> dbc_override_;
 
 public:
 

@@ -723,46 +723,7 @@ bool parse_override_spell_data( sim_t*             sim,
                                 util::string_view /* name */,
                                 util::string_view value )
 {
-  auto v_pos = value.find( '=' );
-
-  if ( v_pos == util::string_view::npos )
-  {
-    throw std::invalid_argument("Invalid form. Spell data override takes the form <spell|effect|power>.<id>.<field>=value");
-  }
-
-  auto splits = util::string_split<util::string_view>( value.substr( 0, v_pos ), "." );
-
-  if ( splits.size() != 3 )
-  {
-    throw std::invalid_argument("Invalid form. Spell data override takes the form <spell|effect|power>.<id>.<field>=value");
-  }
-
-  int parsed_id = util::to_int( splits[ 1 ] );
-  if ( parsed_id <= 0 )
-  {
-    throw std::invalid_argument("Invalid spell id (negative or zero).");
-  }
-  unsigned id = as<unsigned>(parsed_id);
-
-  double v = util::to_double( value.substr( v_pos + 1 ) );
-
-  if ( util::str_compare_ci( splits[ 0 ], "spell" ) )
-  {
-    sim->dbc_override->register_spell( *(sim->dbc), id, splits[ 2 ], v );
-  }
-  else if ( util::str_compare_ci( splits[ 0 ], "effect" ) )
-  {
-    sim->dbc_override->register_effect( *(sim->dbc), id, splits[ 2 ], v );
-  }
-  else if ( util::str_compare_ci( splits[ 0 ], "power" ) )
-  {
-    sim->dbc_override->register_power( *(sim->dbc), id, splits[ 2 ], v );
-  }
-  else
-  {
-    throw std::invalid_argument("Invalid form. Spell data override takes the form <spell|effect|power>.<id>.<field>=value");
-  }
-
+  sim->dbc_override->parse( *(sim->dbc), value );
   return true;
 }
 
@@ -3814,6 +3775,12 @@ void sim_t::create_options()
 
   // applies to: "lavish_suramar_feast", battle for azeroth feasts
   add_option( opt_bool( "feast_as_dps", feast_as_dps ) );
+
+  // Shadowlands
+  add_option( opt_float( "shadowlands.combat_meditation_extend_chance",
+    shadowlands_opts.combat_meditation_extend_chance, 0.0, 1.0 ) );
+  add_option( opt_uint( "shadowlands.pointed_courage_nearby",
+    shadowlands_opts.pointed_courage_nearby, 1, 5 ) );
 }
 
 // sim_t::parse_option ======================================================

@@ -104,6 +104,7 @@ SRC += \
     player$(PATHSEP)sc_player.cpp \
     player$(PATHSEP)sc_set_bonus.cpp \
     player$(PATHSEP)sc_unique_gear.cpp \
+    player$(PATHSEP)soulbinds.cpp \
     player$(PATHSEP)spawner_base.cpp \
     player$(PATHSEP)target_specific.cpp \
     player$(PATHSEP)unique_gear_bfa.cpp \

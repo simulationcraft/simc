@@ -7,6 +7,8 @@
 #include "sim/sc_expressions.hpp"
 
 #include "player/sc_player.hpp"
+#include "player/actor_target_data.hpp"
+#include "buff/sc_buff.hpp"
 
 #include "sim/sc_option.hpp"
 
@@ -153,7 +155,6 @@ bool covenant_state_t::parse_soulbind( sim_t*             sim,
                                        util::string_view /* name */,
                                        util::string_view value )
 {
-  m_conduits.clear();
   auto value_str = value;
 
   // Ignore anything before a comma character in the soulbind option to allow the
@@ -246,9 +247,18 @@ bool covenant_state_t::parse_soulbind( sim_t*             sim,
     }
   }
 
-  m_soulbind_str = std::string( value );
+  m_soulbind_str.push_back( std::string( value ) );
 
   return true;
+}
+
+bool covenant_state_t::parse_soulbind_clear( sim_t* sim, util::string_view name, util::string_view value )
+{
+  m_conduits.clear();
+  m_soulbinds.clear();
+  m_soulbind_str.clear();
+
+  return parse_soulbind( sim, name, value );
 }
 
 const spell_data_t* covenant_state_t::get_covenant_ability( util::string_view name ) const
@@ -346,7 +356,7 @@ std::string covenant_state_t::soulbind_option_str() const
 {
   if ( !m_soulbind_str.empty() )
   {
-    return fmt::format( "soulbind={}", m_soulbind_str );
+    return fmt::format( "soulbind={}", util::string_join( m_soulbind_str, "/" ) );
   }
 
   if ( m_soulbinds.empty() && m_conduits.empty() )
@@ -443,10 +453,37 @@ void covenant_state_t::copy_state( const std::unique_ptr<covenant_state_t>& othe
 
 void covenant_state_t::register_options( player_t* player )
 {
-  player->add_option( opt_func( "soulbind", std::bind( &covenant_state_t::parse_soulbind,
+  player->add_option( opt_func( "soulbind", std::bind( &covenant_state_t::parse_soulbind_clear,
+          this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3 ) ) );
+  player->add_option( opt_func( "soulbind+", std::bind( &covenant_state_t::parse_soulbind,
           this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3 ) ) );
   player->add_option( opt_func( "covenant", std::bind( &covenant_state_t::parse_covenant,
           this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3 ) ) );
+}
+
+unsigned covenant_state_t::get_covenant_ability_spell_id( bool generic ) const
+{
+  if ( !enabled() )
+    return 0u;
+
+  for ( const auto& e : covenant_ability_entry_t::data( m_player->dbc->ptr ) )
+  {
+    if ( e.covenant_id != static_cast<unsigned>( m_covenant ) )
+      continue;
+
+    if ( e.class_id != util::class_id( m_player->type ) && !e.ability_type )
+      continue;
+
+    if ( e.ability_type != static_cast<unsigned>( generic ) )
+      continue;
+
+    if ( !m_player->find_spell( e.spell_id )->ok() )
+      continue;
+
+    return e.spell_id;
+  }
+
+  return 0u;
 }
 
 report::sc_html_stream& covenant_state_t::generate_report( report::sc_html_stream& root ) const
@@ -456,21 +493,12 @@ report::sc_html_stream& covenant_state_t::generate_report( report::sc_html_strea
 
   root.format( "<tr class=\"left\"><th>{}</th><td><ul class=\"float\">\n", util::covenant_type_string( type(), true ) );
 
-  for ( auto& e : covenant_ability_entry_t::data( m_player->dbc->ptr ) )
+  auto cv_spell = m_player->find_spell( get_covenant_ability_spell_id() );
+  root.format( "<li>{}</li>\n", report_decorators::decorated_spell_name( m_player->sim, *cv_spell ) );
+
+  for ( const auto& e : conduit_entry_t::data( m_player->dbc->ptr ) )
   {
-    if ( e.covenant_id != static_cast<unsigned>( m_covenant ) )
-      continue;
-
-    if ( e.class_id != util::class_id( m_player->type ) && !e.ability_type )
-      continue;
-
-    auto cv_spell = m_player->find_spell( e.spell_id );
-    root.format( "<li>{}</li>\n", report_decorators::decorated_spell_name( m_player->sim, *cv_spell ) );
-  }
-
-  for ( auto& e : conduit_entry_t::data( m_player->dbc->ptr ) )
-  {
-    for ( auto cd : m_conduits )
+    for ( const auto& cd : m_conduits )
     {
       if ( std::get<0>( cd ) == e.id )
       {
@@ -486,9 +514,9 @@ report::sc_html_stream& covenant_state_t::generate_report( report::sc_html_strea
 
   if ( m_soulbinds.size() )
   {
-    root << "<tr class=\"left\"><th></th><ul class=\"float\">\n";
+    root << "<tr class=\"left\"><th></th><td><ul class=\"float\">\n";
 
-    for ( auto sb : m_soulbinds )
+    for ( const auto& sb : m_soulbinds )
     {
       auto sb_spell = m_player->find_spell( sb );
       root.format( "<li>{}</li>\n", report_decorators::decorated_spell_name( m_player->sim, *sb_spell ) );
@@ -499,4 +527,5 @@ report::sc_html_stream& covenant_state_t::generate_report( report::sc_html_strea
 
   return root;
 }
-} // Namespace covenant ends
+
+}  // namespace covenant

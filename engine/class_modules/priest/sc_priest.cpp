@@ -783,7 +783,7 @@ struct fae_guardians_t final : public priest_buff_t<buff_t>
   {
     if ( priest().conduits.fae_fermata->ok() )
     {
-      set_duration( data().duration() + priest().conduits.fae_fermata->effectN( 1 ).time_value() );
+      set_duration( data().duration() + priest().conduits.fae_fermata.time_value() );
     }
 
     set_stack_change_callback( [ this ]( buff_t*, int, int ) {

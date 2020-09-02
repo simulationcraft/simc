@@ -692,7 +692,7 @@ struct potion_t : public dbc_consumable_base_t
 
     if ( consumable_buff )
     {
-      timespan_t duration = consumable_buff -> buff_duration;
+      timespan_t duration = consumable_buff -> buff_duration();
       if ( ! player -> in_combat )
       {
         duration -= pre_pot_time;

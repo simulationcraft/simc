@@ -41,6 +41,7 @@
 #include "player/set_bonus.hpp"
 #include "player/spawner_base.hpp"
 #include "player/stats.hpp"
+#include "player/soulbinds.hpp"
 #include "player/unique_gear.hpp"
 #include "sim/benefit.hpp"
 #include "sim/event.hpp"
@@ -1241,6 +1242,8 @@ player_t::player_t( sim_t* s, player_e t, util::string_view n, race_e r )
     azerite = azerite::create_state( this );
     azerite_essence = azerite::create_essence_state( this );
     covenant = covenant::create_player_state( this );
+    dbc_override_ = std::make_unique<dbc_override_t>( dbc_override );
+    dbc_override = dbc_override_.get();
   }
 
   // Set the gear object to a special default value, so we can support gear_x=0 properly.
@@ -1980,6 +1983,8 @@ void player_t::create_special_effects()
   // This means that any enabled azerite power that is not referenced in a class module will be
   // initialized here.
   azerite::initialize_azerite_powers( this );
+
+  covenant::soulbinds::initialize_soulbinds( this );
 
   // Once all special effects are first-phase initialized, do a pass to first-phase initialize any
   // potential fallback special effects for the actor.
@@ -3314,6 +3319,26 @@ void player_t::create_buffs()
       buffs.reality_shift->set_duration( find_spell( 302952 )->duration()
         + timespan_t::from_seconds( ripple_in_space.spell_ref( 2u, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 1 ).base_value() / 1000 ) );
       buffs.reality_shift->set_cooldown( find_spell( 302953 )->duration() );
+
+      // Soulbind buffs required for APL parsing
+      buffs.redirected_anima_stacks = make_buff( this, "redirected_anima_stacks", find_spell( 342802 ) );
+      buffs.thrill_seeker = make_buff( this, "thrill_seeker", find_spell( 331939 ) )
+        ->set_stack_change_callback( [this]( buff_t* b, int, int new_ ) {
+          if ( new_ >= b->max_stack() )
+          {
+            buffs.euphoria->trigger();
+            b->expire();
+          }
+        } );
+      buffs.marrowed_gemstone_charging = make_buff( this, "marrowed_gemstone_charging", find_spell( 327066 ) )
+        ->modify_max_stack( 1 )
+        ->set_stack_change_callback( [this]( buff_t* b, int, int new_ ) {
+          if ( new_ >= b->max_stack() )
+          {
+            buffs.marrowed_gemstone_enhancement->trigger();
+            b->expire();
+          }
+        } );
     }
   }
   // .. for enemies
@@ -3452,6 +3477,18 @@ double player_t::composite_melee_haste() const
     if ( buffs.guardian_of_azeroth->check() )
       h *= 1.0 / ( 1.0 + buffs.guardian_of_azeroth->check_stack_value() );
 
+    if ( buffs.field_of_blossoms )
+      h *= 1.0 / ( 1.0 + buffs.field_of_blossoms->check_value() );
+
+    if ( buffs.euphoria )
+      h *= 1.0 / ( 1.0 + buffs.euphoria->check_value() );
+
+    if ( buffs.hammer_of_genesis )
+      h *= 1.0 / ( 1.0 + buffs.hammer_of_genesis->check_stack_value() );
+
+    if ( buffs.gnashing_chompers )
+      h *= 1.0 / ( 1.0 + buffs.gnashing_chompers->check_stack_value() );
+
     h *= 1.0 / ( 1.0 + racials.nimble_fingers->effectN( 1 ).percent() );
     h *= 1.0 / ( 1.0 + racials.time_is_money->effectN( 1 ).percent() );
 
@@ -3567,9 +3604,18 @@ double player_t::composite_melee_crit_chance() const
   if (buffs.reckless_force)
     ac += buffs.reckless_force->check_value();
 
+  if ( buffs.first_strike )
+    ac += buffs.first_strike->check_value();
+
+  if ( buffs.pointed_courage )
+    ac += buffs.pointed_courage->check_stack_value();
+
+  if ( buffs.marrowed_gemstone_enhancement )
+    ac += buffs.marrowed_gemstone_enhancement->check_stack_value();
+
   ac += racials.viciousness->effectN( 1 ).percent();
   ac += racials.arcane_acuity->effectN( 1 ).percent();
-  if(buffs.embrace_of_paku)
+  if ( buffs.embrace_of_paku )
     ac += buffs.embrace_of_paku->check_value();
 
   if ( timeofday == DAY_TIME )
@@ -3786,6 +3832,18 @@ double player_t::composite_spell_haste() const
     if ( buffs.guardian_of_azeroth->check() )
       h *= 1.0 / ( 1.0 + buffs.guardian_of_azeroth->check_stack_value() );
 
+    if ( buffs.field_of_blossoms )
+      h *= 1.0 / ( 1.0 + buffs.field_of_blossoms->check_value() );
+
+    if ( buffs.euphoria )
+      h *= 1.0 / ( 1.0 + buffs.euphoria->check_value() );
+
+    if ( buffs.hammer_of_genesis )
+      h *= 1.0 / ( 1.0 + buffs.hammer_of_genesis->check_stack_value() );
+
+    if ( buffs.gnashing_chompers )
+      h *= 1.0 / ( 1.0 + buffs.gnashing_chompers->check_stack_value() );
+
     h *= 1.0 / ( 1.0 + racials.nimble_fingers->effectN( 1 ).percent() );
     h *= 1.0 / ( 1.0 + racials.time_is_money->effectN( 1 ).percent() );
 
@@ -3855,9 +3913,18 @@ double player_t::composite_spell_crit_chance() const
   if (buffs.reckless_force)
     sc += buffs.reckless_force->check_value();
 
+  if( buffs.first_strike )
+    sc += buffs.first_strike->check_value();
+
+  if ( buffs.pointed_courage )
+    sc += buffs.pointed_courage->check_stack_value();
+
+  if ( buffs.marrowed_gemstone_enhancement )
+    sc += buffs.marrowed_gemstone_enhancement->check_stack_value();
+
   sc += racials.viciousness->effectN( 1 ).percent();
   sc += racials.arcane_acuity->effectN( 1 ).percent();
-  if(buffs.embrace_of_paku)
+  if ( buffs.embrace_of_paku )
     sc += buffs.embrace_of_paku->check_value();
 
   if ( timeofday == DAY_TIME )
@@ -3881,9 +3948,16 @@ double player_t::composite_spell_hit() const
 
 double player_t::composite_mastery() const
 {
-  return current.mastery +
-    apply_combat_rating_dr( RATING_MASTERY,
-        composite_mastery_rating() / current.rating.mastery );
+  double cm =
+      current.mastery + apply_combat_rating_dr( RATING_MASTERY, composite_mastery_rating() / current.rating.mastery );
+
+  if ( buffs.redirected_anima )
+    cm += buffs.redirected_anima->check_stack_value();
+
+  if ( buffs.combat_meditation )
+    cm += buffs.combat_meditation->check_value();
+
+  return cm;
 }
 
 double player_t::composite_bonus_armor() const
@@ -3903,9 +3977,16 @@ double player_t::composite_damage_versatility() const
   }
 
   if ( buffs.dmf_well_fed )
-  {
     cdv += buffs.dmf_well_fed->check_value();
-  }
+
+  if ( buffs.social_butterfly )
+    cdv += buffs.social_butterfly->check_value();
+
+  if ( buffs.wasteland_propriety )
+    cdv += buffs.wasteland_propriety->check_value();
+
+  if ( buffs.let_go_of_the_past )
+    cdv += buffs.let_go_of_the_past->check_stack_value();
 
   cdv += racials.mountaineer->effectN( 1 ).percent();
   cdv += racials.brush_it_off->effectN( 1 ).percent();
@@ -3925,9 +4006,16 @@ double player_t::composite_heal_versatility() const
   }
 
   if ( buffs.dmf_well_fed )
-  {
     chv += buffs.dmf_well_fed->check_value();
-  }
+
+  if ( buffs.social_butterfly )
+    chv += buffs.social_butterfly->check_value();
+
+  if ( buffs.wasteland_propriety )
+    chv += buffs.wasteland_propriety->check_value();
+
+  if ( buffs.let_go_of_the_past )
+    chv += buffs.let_go_of_the_past->check_stack_value();
 
   chv += racials.mountaineer->effectN( 1 ).percent();
   chv += racials.brush_it_off->effectN( 1 ).percent();
@@ -3947,9 +4035,16 @@ double player_t::composite_mitigation_versatility() const
   }
 
   if ( buffs.dmf_well_fed )
-  {
     cmv += buffs.dmf_well_fed->check_value() / 2;
-  }
+
+  if ( buffs.social_butterfly )
+    cmv += buffs.social_butterfly->check_value() / 2;
+
+  if ( buffs.wasteland_propriety )
+    cmv += buffs.wasteland_propriety->check_value() / 2;
+
+  if ( buffs.let_go_of_the_past )
+    cmv += buffs.let_go_of_the_past->check_stack_value() / 2;
 
   cmv += racials.mountaineer->effectN( 1 ).percent() / 2;
   cmv += racials.brush_it_off->effectN( 1 ).percent() / 2;
@@ -4054,14 +4149,18 @@ double player_t::composite_player_target_multiplier( player_t* target, school_e 
   }
 
   if ( target->race == RACE_ABERRATION && buffs.damage_to_aberrations && buffs.damage_to_aberrations->check() )
-  {
     m *= 1.0 + buffs.damage_to_aberrations->stack_value();
-  }
+
+  // percentage not found in data, hardcoded for now. this buff is never triggered so use default_value.
+  if ( buffs.wild_hunt_tactics && target->health_percentage() > 75.0 )
+    m *= 1.0 + buffs.wild_hunt_tactics->default_value;
 
   auto td = get_target_data( target );
   if ( td )
   {
     m *= 1.0 + td->debuff.condensed_lifeforce->check_value();
+    m *= 1.0 + td->debuff.adversary->check_value();
+    m *= 1.0 + td->debuff.plagueys_preemptive_strike->check_value();
   }
 
   return m;
@@ -4233,9 +4332,10 @@ double player_t::composite_attribute_multiplier( attribute_e attr ) const
     return m;
 
   if ( ( true_level >= 27 ) && matching_gear )
-  {
     m *= 1.0 + matching_gear_multiplier( attr );
-  }
+
+  if ( buffs.built_for_war )
+    m *= 1.0 + buffs.built_for_war->check_stack_value();
 
   switch ( attr )
   {
@@ -8095,7 +8195,7 @@ struct use_item_t : public action_t
         // bet for now.
         if ( buff )
         {
-          cooldown_group_duration = buff->buff_duration;
+          cooldown_group_duration = buff->buff_duration();
         }
       }
     }
@@ -10884,6 +10984,12 @@ void player_t::copy_from( player_t* source )
     covenant->copy_state( source->covenant );
   }
 
+  if ( source->dbc_override_ )
+  {
+    dbc_override_ = source->dbc_override_->clone();
+    dbc_override = dbc_override_.get();
+  }
+
   talent_overrides_str = source->talent_overrides_str;
   action_list_str      = source->action_list_str;
   alist_map            = source->alist_map;
@@ -11099,6 +11205,12 @@ void player_t::create_options()
     {
       covenant->register_options( this );
     }
+
+    add_option( opt_func( "override.player.spell_data",
+        [ this ]( sim_t*, util::string_view, util::string_view value ) {
+          dbc_override_->parse( *dbc, value );
+          return true;
+        } ) );
   }
 
   // Obsolete options

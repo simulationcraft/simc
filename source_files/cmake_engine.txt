@@ -105,6 +105,7 @@ player/sc_actor_pair.hpp
 player/sc_player.hpp
 player/scaling_metric_data.hpp
 player/set_bonus.hpp
+player/soulbinds.hpp
 player/spawner_base.hpp
 player/special_effect_db_item.hpp
 player/stats.hpp
@@ -270,6 +271,7 @@ player/sc_pet.cpp
 player/sc_player.cpp
 player/sc_set_bonus.cpp
 player/sc_unique_gear.cpp
+player/soulbinds.cpp
 player/spawner_base.cpp
 player/target_specific.cpp
 player/unique_gear_bfa.cpp

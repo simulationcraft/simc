@@ -374,10 +374,6 @@ int sim_t::main( const std::vector<std::string>& args )
 int main( int argc, char** argv )
 {
   std::locale::global( std::locale( "C" ) );
-#if defined( SC_VS ) && SC_VS < 13
-  // Ensure unified scientific notation exponent rules between different VS versions
-  _set_output_format( _TWO_DIGIT_EXPONENT );
-#endif
 
   sim_t sim;
   sim_signal_handler_t::global_sim = &sim;
