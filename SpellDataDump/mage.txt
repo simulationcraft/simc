@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35707 shadowlands-BETA (hotfix 2020-08-28/35707)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35755 shadowlands-BETA (git build shadowlands 32f693baef)
 
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Paladin, Mage
@@ -572,7 +572,6 @@ Class            : Arcane Mage
 School           : Arcane
 Spell Type       : Magic
 Spell Level      : 29
-GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 120 seconds
 Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
@@ -634,7 +633,6 @@ Class            : Frost Mage
 School           : Frost
 Spell Type       : Magic
 Spell Level      : 29
-GCD              : 1.5 seconds
 Duration         : 20 seconds
 Cooldown         : 180 seconds
 Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
@@ -1859,7 +1857,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=809236)   : Apply Aura (6) | Unknown(399)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Warp the flow of time, increasing Haste by $s1% $?a320919[and time rate by $s4% ][]for all party and raid members for $d.
+Description      : Warp the flow of time, increasing haste by $s1% $?a320919[and time rate by $s4% ][]for all party and raid members for $d.
 
 Allies will be unable to benefit from Bloodlust, Heroism, or Time Warp again for $57724d.$?a320920[
 
@@ -3205,7 +3203,9 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Arcane Power (12042)
                    Family Flags: 51
-Description      : Arcane Power now increases damage by ${$12042s1+$s1}% and reduces mana costs by ${$12042s1-$s2}%.
+#4 (id=867896)   : Dummy (3)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000
+Description      : Arcane Power now increases damage by ${$s4+$s1}% and reduces mana costs by ${$s4-$s2}%.
 
 Name             : Kindling (id=155148) [Spell Family (3), Passive] 
 Class            : Mage
@@ -10757,7 +10757,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=834011)   : Apply Aura (6) | Dummy (4)
                    Base Value: 2.5 | Scaled Value: 2.5 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : While Icy Veins is active, your critical hits reduce it's cooldown by |cFFFFFFFF${$s1/10}.1 sec|r.
+Description      : While Icy Veins is active, your critical hits reduce it's cooldown by |cFFFFFFFF${$s1/10}.2 sec|r.
 
 Name             : Ice Bite (id=336569) [Spell Family (3), Passive, Hidden] 
 School           : Physical
@@ -10859,7 +10859,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=834478)   : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : While Combustion is active, your Fire Blast grants you |cFFFFFFFF$s1%|r increased Fire Damage for $336832d, stacking up to $336832u times.
+Description      : While Combustion is active, your Fire Blast grants you |cFFFFFFFF${$s1}.1% |r increased Fire Damage for $336832d, stacking up to $336832u times.
 
 Name             : Master Flame (id=336852) [Spell Family (3), Passive, Hidden] 
 School           : Fire
@@ -10927,7 +10927,7 @@ Description      : Consuming Clearcasting increases the damage of your next 2 Ar
 
 Name             : Nether Precision (id=336889) [Spell Family (3)] 
 Class            : Mage
-School           : Physical
+School           : Arcane
 Spell Type       : None
 Duration         : 10 seconds
 Stacks           : 2 initial, 2 maximum
@@ -11031,7 +11031,7 @@ Description      : Each time a Mirror of Torment is consumed your Spell Damage i
 
 Name             : Siphoned Malice (id=337090) [Spell Family (3)] 
 Class            : Mage
-School           : Physical
+School           : Shadow
 Spell Type       : None
 Duration         : 10 seconds
 Stacks           : 3 maximum
@@ -11133,7 +11133,7 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Fireball (157642), Fireball (157644)
                    Family Flags: 35
-Description      : Fireball grants |cFFFFFFFF$s1%|r Mastery when it fails to critically strike.
+Description      : Fireball grants |cFFFFFFFF${$s1}.1%|r Mastery when it fails to critically strike.
 
 Name             : Artifice of the Archmage (id=337240) [Spell Family (3), Passive, Hidden] 
 School           : Physical
@@ -11195,7 +11195,7 @@ Effects          :
 Description      : Gain a shield that absorbs |cFFFFFFFF$s1%|r of your maximum health for $337299d after you Blink.
 
 Name             : Tempest Barrier (id=337299) [Spell Family (3)] 
-School           : Physical
+School           : Arcane
 Spell Type       : Magic
 Duration         : 15 seconds
 Triggered by     : Tempest Barrier (337293)
@@ -11205,7 +11205,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ...x....   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ x....... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ..x..... 
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=835247)   : Apply Aura (6) | Absorb Damage (69)

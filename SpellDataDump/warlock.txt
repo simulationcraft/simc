@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35707 shadowlands-BETA (hotfix 2020-08-28/35707)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35755 shadowlands-BETA (git build shadowlands 32f693baef)
 
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
@@ -117,7 +117,7 @@ Description      : Inflicts impending doom upon the target, causing $o1 Shadow d
 Tooltip          : Doomed to take $w1 Shadow damage.
 
 Name             : Shadow Bolt (id=686) [Spell Family (5)] 
-Class            : Destruction Warlock
+Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
 Resource         : 2% Base Mana (0) (id=74)
@@ -132,7 +132,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ......x. ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
@@ -394,6 +394,7 @@ Spell Type       : Magic
 Resource         : 2% Base Mana (0) (id=116)
 Spell Level      : 21
 Range            : 30 yards
+Max Targets      : 1
 Cast Time        : 3 seconds
 GCD              : 1.5 seconds
 Duration         : 300 seconds
@@ -402,8 +403,8 @@ Mechanic         : Charm
 Family Flags     : 11
 Attributes       : ........ ........ x....... ......x.   x....... ..x..... .x...... ........ 
                  : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ...x.... ........ .....x..   ........ ........ ........ ........ 
-                 : ........ ........ .......x ........   ........ ........ ........ ........ 
+                 : ........ ...x.... ........ .....x..   .....x.. ........ ........ ........ 
+                 : ........ .x...... .......x ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
@@ -720,9 +721,7 @@ Attributes       : ........ .....x.. ........ ........   ........ ........ .....
 Effects          :
 #1 (id=2157)     : Direct Heal% (136)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Instantly restores $s1% health$?s262031[, plus an additional ${$262080d/$262080t1*$262080s1}% over $262080d.][.]$?s340562[
-
-Anyone that consumes your Healthstone infuses you with $340562s1% Leech for $340563d.][]
+Description      : Instantly restores $s1% health$?s262031[, plus an additional ${$262080d/$262080t1*$262080s1}% over $262080d.][.]
 
 Name             : Thunder Clap (id=6343) [Spell Family (4)] 
 Class            : Protection Warrior, Warlock
@@ -1256,7 +1255,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Unknown(121)
 #4 (id=623470)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Friend (21)
-Description      : Stores the soul of the target party or raid member, allowing resurrection upon death.$?a231811[ Also castable to resurrect a dead target.][] Targets resurrect with $3026s2% health and $3026s1% mana.
+Description      : Stores the soul of the target party or raid member, allowing resurrection upon death.$?a231811[ Also castable to resurrect a dead target.][] Targets resurrect with $3026s2% health and at least $3026s1% mana.
 Tooltip          : Soul is stored.
 
 Name             : Command (desc=Racial Passive) (id=21563) [Spell Family (9), Passive] 
@@ -1293,7 +1292,7 @@ Attributes       : ........ ........ ........ ........   ...x...x ........ .....
                  : ........ .......x ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   .x...... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x......x ........ ........ ........ 
                  : ........ ........ ........ ........   
                  : Requires line of sight (186)
@@ -1301,7 +1300,7 @@ Effects          :
 #1 (id=12912)    : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.60000 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
 #2 (id=12913)    : Apply Aura (6) | Stun (12)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.60000 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Mechanic: Stun | Target: Unknown(87) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Mechanic: Stun | Target: Unknown(87) -> AOE enemy (instant) (16)
 Description      : An infernal falls from the sky, dealing $s1 Fire damage to all targets, stunning them for $d.
 Tooltip          : Stunned.
 
@@ -1363,7 +1362,7 @@ Attributes       : ........ ........ .......x ........   ........ ........ .....
                  : Not a proc (105), Requires line of sight (186)
 Effects          :
 #1 (id=16922)    : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.30000 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.40000 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 Description      : $@spelldesc27243
 
 Name             : Strength (id=27973) [Passive, Hidden] 
@@ -1899,7 +1898,7 @@ Effects          :
                    Family Flags: 62
 Description      : Your Eye of Kilrogg is no longer stealthed and can now place your Demonic Circle.  The casting Warlock must be within line of sight of the Eye of Kilrogg to place the Demonic Circle.
 
-In addition, the movement speed of your Eye of Kilrogg is increased by $s1%.
+In addition, the movement speed of your Eye of Kilrogg is increased by |cFFFFFFFF${$s1}%|r.
 
 Name             : Glyph of Soulwell (id=58094) [Spell Family (5), Passive, Hidden] 
 Class            : Warlock
@@ -2185,7 +2184,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ .....x.. ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
 Effects          :
@@ -2563,7 +2562,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=113739)   : Summon (28)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 55659 | Misc Value 2: 0xc8a | Target: Unknown(87)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 55659 | Misc Value 2: 0xc8a | Target: Unknown(32)
 Description      : $@spelldesc105174
 
 Name             : Fel Firebolt (desc=Basic Attack) (id=104318) [Spell Family (5)] 
@@ -2654,7 +2653,7 @@ Name             : Soul Leech (desc=Talent) (id=108366) [Spell Family (5)]
 Class            : Warlock
 School           : Shadow
 Spell Type       : None
-Range            : 50000 yards
+Range            : 100 yards
 Duration         : 15 seconds
 Affecting spells : Demon Skin (219272 effect#3)
 Family Flags     : 13
@@ -3146,7 +3145,6 @@ Class            : Warlock
 School           : Fire
 Spell Type       : None
 Resource         : 1% Base Mana (0) (id=192762)
-GCD              : 1.5 seconds
 Duration         : 20 seconds
 Cooldown         : 120 seconds
 Charges          : 0 (120 seconds cooldown)
@@ -3174,7 +3172,6 @@ Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
 Resource         : 1% Base Mana (0) (id=192758)
-GCD              : 1.5 seconds
 Duration         : 20 seconds
 Cooldown         : 120 seconds
 Family Flags     : 108
@@ -4192,7 +4189,7 @@ Resource         : 2% Base Mana (0) (id=10562)
 Spell Level      : 27
 Range            : 40 yards
 GCD              : 1.5 seconds
-Affecting spells : Mastery: Master Demonologist (77219 effect#2)
+Affecting spells : Mastery: Master Demonologist (77219 effect#2), From the Shadows (270569 effect#1)
 Family Flags     : 46
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -4207,7 +4204,7 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=302944)   : Dummy (3)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Radius: 100 yards | Target: Unknown(120)
-Description      : Demonic forces suck all of your Wild Imps toward the target, and then cause them to violently explode, dealing $196278s2 Shadowflame damage to all enemies within $196278A3 yards. Deals reduced damage to secondary targets.
+Description      : Demonic forces suck all of your Wild Imps toward the target, and then cause them to violently explode, dealing $196278s2 Shadowflame damage to all enemies within $196278A3 yards.
 
 Name             : Implosion (id=196278) [Spell Family (5)] 
 Class            : Warlock
@@ -4215,7 +4212,7 @@ School           : Shadowflame
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Mastery: Master Demonologist (77219 effect#2), Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), Wrath of Consumption (337130 effect#1)
+Affecting spells : Mastery: Master Demonologist (77219 effect#2), Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), From the Shadows (270569 effect#1), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), Wrath of Consumption (337130 effect#1)
 Family Flags     : 46, 49
 Attributes       : ........ ........ .......x x..x....   .....x.. ........ ...x.... ........ 
                  : ........ ......x. ...x.... ........   ........ ........ ........ ......x. 
@@ -4824,7 +4821,7 @@ Range            : 50000 yards
 Max Targets      : 1
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   .....x.. ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6652,7 +6649,7 @@ Attributes       : ......xx ........ x....... ........   .......x ........ .....
 Effects          :
 #1 (id=713653)   : Apply Aura (6) | Dummy (4)
                    Base Value: -25 | Scaled Value: -25 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
-Description      : Casting Call Dreadstalkers causes the target to take $270569s1% additional Shadowflame damage from you for the next $270569d.
+Description      : Dreadbite causes the target to take $270569s1% additional Shadowflame damage from you for the next $270569d.
 
 Name             : Demonic Strength (id=267171) [Spell Family (5)] 
 Class            : Warlock
@@ -7594,13 +7591,13 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=720176)   : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-                   Affected Spells: Hand of Gul'dan (86040), Demonbolt (264178)
-                   Family Flags: 70, 86
+                   Affected Spells: Hand of Gul'dan (86040), Implosion (196277), Implosion (196278), Demonbolt (264178)
+                   Family Flags: 46, 70, 86
 Description      : $@spelldesc267170
 Tooltip          : Damage taken from the Warlock's Shadowflame damage spells increased by $s1%.
 
@@ -10663,6 +10660,7 @@ Effects          :
 Description      : When Implosion damages at least $s1 targets, gain $s2% Haste for $337139d for each Imp exploded.
 
 Name             : Grim Inquisitor's Dread Calling (id=337141) [Spell Family (5), Passive] 
+Class            : Warlock
 School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
@@ -10681,6 +10679,28 @@ Effects          :
 #1 (id=834957)   : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Each Soul Shard spent on Hand of Gul'dan increases the damage of your next Call Dreadstalkers by 3%.
+
+Name             : Grim Inquisitor's Dread Calling (id=337142) [Spell Family (5)] 
+Class            : Warlock
+School           : Physical
+Spell Type       : None
+Range            : 100 yards
+Duration         : Aura (infinite)
+Attributes       : ........ ........ ........ .......x   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ....x...   ........ ........ xx...... ..x..... 
+                 : ........ ........ .......x ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Cannot cancel aura (31), Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
+Effects          :
+#1 (id=834958)   : Apply Aura (6) | Modify Damage Done% (79)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Friend (21)
+                   Affected School(s): All
+Description      : $@spelldesc337141
+Tooltip          : Damage dealt increased by $w1%.
 
 Name             : Forces of the Horned Nightmare (id=337146) [Spell Family (5), Passive] 
 School           : Physical
@@ -10891,7 +10911,7 @@ Effects          :
                    Base Value: -45000 | Scaled Value: -45000 | PvP Coefficient: 1.00000 | Misc Value: 11 | Trigger Spell: 333889 | Target: Self (1)
                    Affected Spells: Fel Domination (333889)
                    Family Flags: 123
-Description      : Reduces the cooldown of Fel Domination by ${$s1/-1000} sec.
+Description      : Reduces the cooldown of Fel Domination by |cFFFFFFFF${$s1/-1000}|r sec.
 
 Name             : Resolute Barrier (id=339272) [Spell Family (5), Passive, Hidden] 
 School           : Physical
@@ -10914,8 +10934,8 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=838476)   : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Unknown(38)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 38 | Misc Value 2: 1067 (Label) | Target: Self (1)
-                   Affected Spells (Label): Resolute Barrier (339272), Accrued Vitality (339282), Shade of Terror (339379), Demonic Momentum (339411), Corrupting Leer (339455), Rolling Agony (339481), Focused Malignancy (339500), Cold Embrace (339576), Borne of Blood (339578), Carnivorous Stalkers (339656), Tyrant's Soul (339766), Fel Commando (339845), Duplicitous Havoc (339890), Ashen Remains (339892), Combusting Engine (339896), Infernal Brand (340041)
-Description      : Attacks received that deal at least 5% of your health decrease Unending Resolve's cooldown by 10 seconds. Cannot occur more than once every ${$proccooldown-$s1/-1000} sec.
+                   Affected Spells (Label): Resolute Barrier (339272), Accrued Vitality (339282), Shade of Terror (339379), Demonic Momentum (339411), Demonic Momentum (339412), Corrupting Leer (339455), Rolling Agony (339481), Focused Malignancy (339500), Cold Embrace (339576), Borne of Blood (339578), Carnivorous Stalkers (339656), Tyrant's Soul (339766), Tyrant's Soul (339784), Fel Commando (339845), Duplicitous Havoc (339890), Ashen Remains (339892), Combusting Engine (339896), Infernal Brand (340041), Infernal Brand (340045)
+Description      : Attacks received that deal at least 5% of your health decrease Unending Resolve's cooldown by 10 seconds. Cannot occur more than once every |cFFFFFFFF${$proccooldown-$s1/-1000}|r sec.
 
 
 Name             : Accrued Vitality (id=339282) [Spell Family (5), Passive, Hidden] 
@@ -10938,7 +10958,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=838489)   : Apply Aura (6) | Dummy (4)
                    Base Value: 44 | Scaled Value: 44 | PvP Coefficient: 1.00000 | Misc Value: 38 | Misc Value 2: 0x42b | Target: Self (1)
-Description      : Drain Life heals for $s1% of the amount drained over $339298d.
+Description      : Drain Life heals for |cFFFFFFFF${$s1}.1%|r of the amount drained over $339298d.
 
 Name             : Shade of Terror (id=339379) [Spell Family (5), Passive, Hidden] 
 School           : Physical
@@ -10957,7 +10977,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=838624)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 38 | Misc Value 2: 0x42b | Target: Self (1)
-Description      : Damage required to break your Fear effects is increased by $s1%.
+Description      : Damage required to break your Fear effects is increased by |cFFFFFFFF${$s1}%|r.
 
 Name             : Demonic Momentum (id=339411) [Spell Family (5), Passive, Hidden] 
 School           : Physical
@@ -10976,7 +10996,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=838672)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 38 | Misc Value 2: 0x42b | Target: Self (1)
-Description      : Demonic Circle increases movement speed by $s1% for 5 sec.
+Description      : Demonic Circle increases movement speed by |cFFFFFFFF${$s1}%|r for $339412d.
 
 Name             : Corrupting Leer (id=339455) [Spell Family (5), Passive, Hidden] 
 School           : Physical
@@ -10995,7 +11015,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=838762)   : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 38 | Misc Value 2: 0x42b | Target: Self (1)
-Description      : Agony and Unstable Affliction damage has a $s1% chance to reduce the cooldown of Summon Darkglare by 5 sec.
+Description      : Agony and Unstable Affliction damage have a |cFFFFFFFF${$s1}.1%|r chance to reduce the cooldown of Summon Darkglare by 5 sec.
 
 Name             : Rolling Agony (id=339481) [Spell Family (5), Passive, Hidden] 
 School           : Physical
@@ -11016,7 +11036,7 @@ Effects          :
                    Base Value: 4000 | Scaled Value: 4000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Agony (980)
                    Family Flags: 10
-Description      : Increases the duration of Agony by ${$s1/1000} sec.
+Description      : Increases the duration of Agony by |cFFFFFFFF${$s1/1000}.1|r sec.
 
 Name             : Focused Malignancy (id=339500) [Spell Family (5), Passive, Hidden] 
 School           : Physical
@@ -11035,13 +11055,13 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=838830)   : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
-Description      : Malefic Rapture deals $s1% increased damage to targets suffering from Unstable Affliction.
+Description      : Malefic Rapture deals |cFFFFFFFF${$s1}%|r increased damage to targets suffering from Unstable Affliction.
 
 Name             : Cold Embrace (id=339576) [Spell Family (5), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
 Labels           : 1067: Resolute Barrier (339272 effect#1)
-Conduit Id       : 203 (values=33.0, 36.0, 39.0, 42.0, 45.0, 48.0, 51.0, 54.0, 57.0, 60.0, 63.0, 66.0, 69.0, 72.0)
+Conduit Id       : 203 (values=33.0, 36.0, 39.0, 42.0, 45.0, 48.0, 51.0, 54.0, 57.0, 60.0, 63.0, 66.0, 69.0, 72.0, 75.0)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11056,7 +11076,7 @@ Effects          :
                    Base Value: 33 | Scaled Value: 33 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Shadow Embrace (32388), Shadow Embrace (32390)
                    Family Flags: 31
-Description      : Increases the effectiveness of Shadow Embrace by $s1%.
+Description      : Increases the effectiveness of Shadow Embrace by |cFFFFFFFF${$s1}%|r.
 
 Name             : Borne of Blood (id=339578) [Spell Family (5), Passive, Hidden] 
 School           : Physical
@@ -11075,7 +11095,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=838955)   : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
-Description      : Hand of Gul'dan has a $s1% chance to generate a charge of Demonic Core.
+Description      : Hand of Gul'dan has a |cFFFFFFFF${$s1}%|r chance to generate a charge of Demonic Core.
 
 Name             : Carnivorous Stalkers (id=339656) [Spell Family (5), Passive, Hidden] 
 School           : Physical
@@ -11094,9 +11114,10 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=839080)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
-Description      : Your Dreadstalkers' attacks have a $s1% chance to trigger an additional Dreadbite.
+Description      : Your Dreadstalkers' attacks have a |cFFFFFFFF${$s1}.1%|r chance to trigger an additional Dreadbite.
 
 Name             : Tyrant's Soul (id=339766) [Spell Family (5), Passive, Hidden] 
+Class            : Warlock
 School           : Physical
 Spell Type       : None
 Labels           : 1067: Resolute Barrier (339272 effect#1)
@@ -11113,7 +11134,27 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=839250)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
-Description      : After your Demonic Tyrant expires, gain a Demonic Core and $s1% increased damage from your demons for 15 sec.
+Description      : After your Demonic Tyrant expires, gain a Demonic Core and |cFFFFFFFF${$s1}.1%|r increased damage from your demons for 15 sec.
+
+Name             : Tyrant's Soul (id=339784) [Spell Family (5)] 
+Class            : Warlock
+School           : Physical
+Spell Type       : None
+Duration         : 15 seconds
+Labels           : 1067: Resolute Barrier (339272 effect#1)
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+Effects          :
+#1 (id=839274)   : Apply Aura (6) | Modify Pet Damage Done% (429)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : $@spelldesc339766
+Tooltip          : Damage dealt by your demons increased by $w1%.
 
 Name             : Fel Commando (id=339845) [Spell Family (5), Passive, Hidden] 
 School           : Physical
@@ -11132,7 +11173,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=839365)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
-Description      : Your Felguard deals $s1% more damage and takes $s1% less damage.
+Description      : Your Felguard deals |cFFFFFFFF${$s1}.1%|r more damage and takes |cFFFFFFFF${$s1}.1%|r less damage.
 
 Name             : Duplicitous Havoc (id=339890) [Spell Family (5), Passive, Hidden] 
 School           : Physical
@@ -11153,7 +11194,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Havoc (80240)
                    Family Flags: 20
-Description      : Havoc transfers $s1% more damage.
+Description      : Havoc transfers |cFFFFFFFF${$s1}.1%|r more damage.
 
 Name             : Ashen Remains (id=339892) [Spell Family (5), Passive, Hidden] 
 School           : Physical
@@ -11172,7 +11213,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=839429)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
-Description      : Chaos Bolt and Incinerate damage on targets with Immolate increased by $s1%.
+Description      : Chaos Bolt and Incinerate damage on targets with Immolate increased by |cFFFFFFFF${$s1}.1%|r.
 
 Name             : Combusting Engine (id=339896) [Spell Family (5), Passive, Hidden] 
 School           : Physical
@@ -11191,7 +11232,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=839436)   : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
-Description      : Conflagrate increases your remaining Immolate damage by $s1% until Immolate expires or is refreshed.
+Description      : Conflagrate increases your remaining Immolate damage by |cFFFFFFFF${$s1}.1%|r until Immolate expires or is refreshed.
 
 Name             : Infernal Brand (id=340041) [Spell Family (5), Passive, Hidden] 
 School           : Physical
@@ -11210,7 +11251,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=839654)   : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
-Description      : Your Infernal's melee attacks cause its target to take $s1% increased damage from its Immolation, stacking up to 15 times.
+Description      : Your Infernal's melee attacks cause its target to take |cFFFFFFFF${$s1}.1%|r increased damage from its Immolation, stacking up to $340045u times.
 
 Name             : Soul Tithe (id=340229) [Spell Family (5), Passive, Hidden] 
 School           : Physical
@@ -11228,7 +11269,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=839990)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
-Description      : When a target dies under the effect of Scouring Tithe, gain $s1% increased damage from your $?c1[Malefic Rapture][]$?c2[demons][]$?c3[Chaos Bolt][] for $340238d.
+Description      : When a target dies under the effect of Scouring Tithe, gain |cFFFFFFFF${$s1}.1%|r increased damage to your $?c1[Malefic Rapture][]$?c2[demons][]$?c3[Chaos Bolt][] for $340238d.
 
 Name             : Prolonged Decimation (id=340268) [Spell Family (5), Passive, Hidden] 
 School           : Physical
@@ -11246,7 +11287,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=840037)   : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
-Description      : $?s29722[Incinerate]?s198590[Drain Soul][Shadow Bolt] has a $s1% chance to not consume a charge of Decimating Bolt.
+Description      : $?s29722[Incinerate]?s198590[Drain Soul][Shadow Bolt] has a |cFFFFFFFF${$s1}.1%|r chance to not consume a charge of Decimating Bolt.
 
 Name             : Catastrophic Origin (id=340316) [Spell Family (5), Passive, Hidden] 
 School           : Physical
@@ -11264,7 +11305,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=840113)   : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
-Description      : Impending Catastrophe's damage over time and the inflicted Curse last $s1% longer against your primary target.
+Description      : Impending Catastrophe's damage over time and the inflicted Curse last |cFFFFFFFF${$s1}.1%|r longer against your primary target.
 
 Name             : Exhumed Soul (id=340348) [Spell Family (5), Passive, Hidden] 
 School           : Physical
@@ -11292,13 +11333,12 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 6 | Target: Self (1)
                    Affected Spells: Soul Rot (325640)
                    Family Flags: 112
-Description      : Soul Rot damage and radius increased by $s1%, but costs ${$s1/3}% more health.
+Description      : Soul Rot damage and radius increased by |cFFFFFFFF${$s1}.1%|r, but costs |cFFFFFFFF${$s1/3}.1%|r more health.
 
 Name             : Diabolic Bloodstone (id=340562) [Spell Family (5), Passive, Hidden] 
-Class            : Warlock
 School           : Physical
 Spell Type       : None
-Conduit Id       : 222 (values=20.0, 21.0, 22.0, 23.0, 24.0, 25.0, 26.0, 27.0, 28.0, 29.0, 30.0, 31.0, 32.0, 33.0, 34.0)
+Conduit Id       : 222 (values=5.0, 5.5, 6.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0, 9.5, 10.0, 10.5, 11.0, 11.5, 12.0)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11311,26 +11351,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=840570)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
-Description      : Your Healthstones grant you $s1% leech for 10 sec when used.
-
-Name             : Diabolic Bloodstone (id=340563) [Spell Family (5)] 
-Class            : Warlock
-School           : Shadow
-Spell Type       : None
-Duration         : 8 seconds
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   
-Effects          :
-#1 (id=840571)   : Apply Aura (6) | Modify Leech% (443)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : $@spelldesc340562
-Tooltip          : Leech increased by $w1%.
+Description      : Anyone that consumes your Healthstone infuses you with |cFFFFFFFF${$s1}.1%|r leech for $340563d.
 
 Name             : Ritual of Doom (id=342601) [Spell Family (5)] 
 Class            : Warlock
@@ -11353,7 +11374,7 @@ Attributes       : ........ ........ x....... ....x...   ..x..... ........ .....
                  : Cannot be used in combat (28), Channeled (34), Periodic effect affected by haste (173)
 Effects          :
 #1 (id=843806)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Begins a ritual that sacrifices a random participant to summon a doomguard. Requires the caster and 4 additional party members to complete the ritual.
 
 Name             : Fear (desc=Rank 2) (id=342914) [Spell Family (5), Passive] 
