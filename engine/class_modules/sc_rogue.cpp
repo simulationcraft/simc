@@ -4204,19 +4204,6 @@ struct shuriken_storm_t: public rogue_attack_t
     affected_by.shadow_blades = true;
   }
 
-  double action_multiplier() const override
-  {
-    double m = rogue_attack_t::action_multiplier();
-
-    // Stealth Buff
-    if ( p()->bugs && p()->stealthed( STEALTH_BASIC | STEALTH_SHADOWDANCE ) )
-    {
-      m *= 1.0 + data().effectN( 3 ).percent();
-    }
-
-    return m;
-  }
-
   void impact(action_state_t* state) override
   {
     rogue_attack_t::impact( state );
