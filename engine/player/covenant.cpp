@@ -108,9 +108,10 @@ std::unique_ptr<covenant_state_t> create_player_state( const player_t* player )
   return std::make_unique<covenant_state_t>( player );
 }
 
-covenant_state_t::covenant_state_t( const player_t* player ) :
-  m_covenant( covenant_e::INVALID ), m_player( player )
-{ }
+covenant_state_t::covenant_state_t( const player_t* player )
+  : m_covenant( covenant_e::INVALID ), m_player( player ), cast_callback( nullptr )
+{
+}
 
 bool covenant_state_t::parse_covenant( sim_t*             sim,
                                        util::string_view /* name */,
