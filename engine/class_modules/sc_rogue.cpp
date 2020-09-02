@@ -1280,7 +1280,7 @@ public:
   }
 
   virtual bool procs_poison() const
-  { return ab::weapon != nullptr && ( !ab::player->bugs || ab::player->specialization() == ROGUE_ASSASSINATION ); }
+  { return ab::weapon != nullptr; }
 
   // Generic rules for proccing Main Gauche, used by rogue_t::trigger_main_gauche()
   virtual bool procs_main_gauche() const
@@ -2590,6 +2590,9 @@ struct blade_flurry_attack_t : public rogue_attack_t
     rogue_attack_t::init();
     snapshot_flags |= STATE_TGT_MUL_DA;
   }
+
+  bool procs_poison() const override
+  { return false; }
 
   bool procs_main_gauche() const override
   { return false; }
