@@ -808,7 +808,6 @@ public:
   void init_base_stats() override;
   void create_buffs() override;
   void create_options() override;
-  void init_assessors() override;
   void init_action_list() override;
   std::string default_potion() const override;
   std::string default_flask() const override;
@@ -1100,8 +1099,6 @@ struct touch_of_the_magi_t : public buff_t
 
     explosion->set_target( player );
     double damage_fraction = p->spec.touch_of_the_magi->effectN( 1 ).percent();
-    // TODO: For some reason the Magi's Brand conduit is always active. Verify whether this is still
-    // the case closer to release, but for now this bug is not implemented.
     // TODO: Higher ranks of this spell use floating point values in the spell data.
     // Verify whether we need a floor operation here to trim those values down to integers,
     // which sometimes happens when Blizzard uses floating point numbers like this.
@@ -1726,17 +1723,34 @@ public:
 
     if ( auto td = p()->target_data[ s->target ] )
     {
-      if ( triggers.radiant_spark && td->dots.radiant_spark->is_ticking() )
+      auto spark_dot = td->dots.radiant_spark;
+      if ( triggers.radiant_spark && spark_dot->is_ticking() )
       {
-        if ( td->debuffs.radiant_spark_vulnerability->check() < td->debuffs.radiant_spark_vulnerability->max_stack() )
+        auto spark_debuff = td->debuffs.radiant_spark_vulnerability;
+        if ( spark_debuff->check() < spark_debuff->max_stack() )
         {
-          td->debuffs.radiant_spark_vulnerability->trigger();
+          spark_debuff->trigger();
         }
         else
         {
-          td->debuffs.radiant_spark_vulnerability->expire();
+          spark_debuff->expire();
           // Prevent new applications of the vulnerability debuff until the DoT finishes ticking.
-          td->debuffs.radiant_spark_vulnerability->cooldown->start( nullptr, td->dots.radiant_spark->remains() );
+          spark_debuff->cooldown->start( nullptr, spark_dot->remains() );
+        }
+      }
+
+      auto totm = debug_cast<buffs::touch_of_the_magi_t*>( td->debuffs.touch_of_the_magi );
+      if ( totm->check() )
+      {
+        totm->accumulate_damage( s );
+
+        if ( p()->talents.arcane_echo->ok() && s->action != p()->action.arcane_echo )
+        {
+          make_event( *sim, 0_ms, [ this, t = s->target ]
+          {
+            p()->action.arcane_echo->set_target( t );
+            p()->action.arcane_echo->execute();
+          } );
         }
       }
     }
@@ -6614,45 +6628,6 @@ void mage_t::init_rng()
   // TODO: There's no data about this in game. Keep an eye out in case Blizzard
   // changes this behind the scenes.
   shuffled_rng.time_anomaly = get_shuffled_rng( "time_anomaly", 1, 16 );
-}
-
-void mage_t::init_assessors()
-{
-  player_t::init_assessors();
-
-  if ( spec.touch_of_the_magi->ok() )
-  {
-    auto assessor_fn = [ this ] ( result_amount_type rt, action_state_t* s )
-    {
-      if ( auto td = target_data[ s->target ] )
-      {
-        auto buff = debug_cast<buffs::touch_of_the_magi_t*>( td->debuffs.touch_of_the_magi );
-        if ( buff->check() )
-        {
-          buff->accumulate_damage( s );
-
-          // TODO: Double check what exactly procs Arcane Echo
-          if ( ( bugs || s->result_type == result_amount_type::DMG_DIRECT )
-            && s->result_total > 0.0
-            && s->action != action.arcane_echo
-            && talents.arcane_echo->ok() )
-          {
-            make_event( *sim, 0_ms, [ this, t = s->target ]
-            {
-              action.arcane_echo->set_target( t );
-              action.arcane_echo->execute();
-            } );
-          }
-        }
-      }
-
-      return assessor::CONTINUE;
-    };
-
-    assessor_out_damage.add( assessor::TARGET_DAMAGE - 1, assessor_fn );
-    for ( auto pet : pet_list )
-      pet->assessor_out_damage.add( assessor::TARGET_DAMAGE - 1, assessor_fn );
-  }
 }
 
 void mage_t::init_finished()
