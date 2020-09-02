@@ -20,6 +20,7 @@ struct covenant_cb_base_t
   {
   }
   virtual void trigger( action_t*, action_state_t* s ) = 0;
+  virtual ~covenant_cb_base_t() { }
 };
 
 struct covenant_cb_buff_t : public covenant_cb_base_t
@@ -58,7 +59,7 @@ struct covenant_cb_action_t : public covenant_cb_base_t
 struct covenant_ability_cast_cb_t : public dbc_proc_callback_t
 {
   unsigned covenant_ability;
-  std::vector<covenant_cb_base_t*> cb_list;
+  auto_dispose< std::vector<covenant_cb_base_t*> > cb_list;
 
   covenant_ability_cast_cb_t( player_t* p, const special_effect_t& e )
     : dbc_proc_callback_t( p, e ), covenant_ability( p->covenant->get_covenant_ability_spell_id() ), cb_list()
