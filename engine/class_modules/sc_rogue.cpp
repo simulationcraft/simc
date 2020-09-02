@@ -1710,7 +1710,7 @@ public:
 
     trigger_deepening_shadows( ab::execute_state );
 
-    if ( ( !p()->bugs || secondary_trigger != TRIGGER_SHURIKEN_TORNADO ) && affected_by.symbols_of_death_autocrit )
+    if ( affected_by.symbols_of_death_autocrit )
       p()->buffs.symbols_of_death_autocrit->expire();
 
     if ( affected_by.perforated_veins )
