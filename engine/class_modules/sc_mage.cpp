@@ -3648,10 +3648,12 @@ struct flurry_t : public frost_mage_spell_t
     bool brain_freeze = p()->buffs.brain_freeze->up();
     p()->state.brain_freeze_active = brain_freeze;
     p()->buffs.brain_freeze->decrement();
-    p()->remaining_winters_chill = 2;
 
     if ( brain_freeze )
+    {
+      p()->remaining_winters_chill = 2;
       p()->procs.brain_freeze_used->occur();
+    }
 
     if ( p()->buffs.cold_front_ready->check() )
     {
