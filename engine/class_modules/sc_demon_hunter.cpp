@@ -463,9 +463,9 @@ public:
   struct legendary_t
   {
     // General
-    item_runeforge_t apexis_empowerment;            // NYI
-    item_runeforge_t darkglare_medallion;
-    item_runeforge_t sigil_of_the_illidari;
+    item_runeforge_t half_giant_empowerment;        // NYI
+    item_runeforge_t darkglare_boon;
+    item_runeforge_t collective_anguish;
     item_runeforge_t fel_bombardment;
 
     // Havoc
@@ -477,7 +477,7 @@ public:
     // Vengeance
     item_runeforge_t fiery_soul;                    // NYI
     item_runeforge_t razelikhs_defilement;          // NYI
-    item_runeforge_t cloak_of_fel_flames;           // NYI
+    item_runeforge_t fel_flame_fortification;       // NYI
     item_runeforge_t spirit_of_the_darkness_flame;  // NYI
   } legendary;
 
@@ -582,7 +582,7 @@ public:
     proc_t* soul_fragment_from_meta;
 
     // Legendary
-    proc_t* darkglare_medallion_resets;
+    proc_t* darkglare_boon_resets;
   } proc;
 
   // RPPM objects
@@ -609,7 +609,7 @@ public:
     heal_t* consume_soul_greater;
     heal_t* consume_soul_lesser;
     spell_t* immolation_aura;
-    spell_t* sigil_of_the_illidari;
+    spell_t* collective_anguish;
 
     // Havoc
     attack_t* demon_blades;
@@ -2025,9 +2025,9 @@ struct eye_beam_t : public demon_hunter_spell_t
 
     tick_action = p->get_background_action<eye_beam_tick_t>( "eye_beam_tick" );
     
-    if ( p->active.sigil_of_the_illidari )
+    if ( p->active.collective_anguish )
     {
-      add_child( p->active.sigil_of_the_illidari );
+      add_child( p->active.collective_anguish );
     }
   }
 
@@ -2061,18 +2061,18 @@ struct eye_beam_t : public demon_hunter_spell_t
       p()->buff.blind_fury->trigger();
     }
 
-    // Darkglare Medallion Legendary
-    if ( p()->legendary.darkglare_medallion->ok() && p()->rng().roll( p()->legendary.darkglare_medallion->proc_chance() ) )
+    // Darkglare Boon Legendary
+    if ( p()->legendary.darkglare_boon->ok() && p()->rng().roll( p()->legendary.darkglare_boon->proc_chance() ) )
     {
       cooldown->reset( true );
-      p()->proc.darkglare_medallion_resets->occur();
+      p()->proc.darkglare_boon_resets->occur();
     }
 
-    // Sigil of the Illidari Legendary
-    if ( p()->active.sigil_of_the_illidari )
+    // Collective Anguish Legendary
+    if ( p()->active.collective_anguish )
     {
-      p()->active.sigil_of_the_illidari->set_target( target );
-      p()->active.sigil_of_the_illidari->execute();
+      p()->active.collective_anguish->set_target( target );
+      p()->active.collective_anguish->execute();
     }
   }
 };
@@ -2141,9 +2141,9 @@ struct fel_devastation_t : public demon_hunter_spell_t
       heal = p->get_background_action<heals::fel_devastation_heal_t>( "fel_devastation_heal" );
     }
 
-    if ( p->active.sigil_of_the_illidari )
+    if ( p->active.collective_anguish )
     {
-      add_child( p->active.sigil_of_the_illidari );
+      add_child( p->active.collective_anguish );
     }
   }
 
@@ -2158,18 +2158,18 @@ struct fel_devastation_t : public demon_hunter_spell_t
       p()->buff.metamorphosis->extend_duration( p(), composite_dot_duration( execute_state ) );
     }
 
-    // Darkglare Medallion Legendary
-    if ( p()->legendary.darkglare_medallion->ok() && p()->rng().roll( p()->legendary.darkglare_medallion->proc_chance() ) )
+    // Darkglare Boon Legendary
+    if ( p()->legendary.darkglare_boon->ok() && p()->rng().roll( p()->legendary.darkglare_boon->proc_chance() ) )
     {
       cooldown->reset( true );
-      p()->proc.darkglare_medallion_resets->occur();
+      p()->proc.darkglare_boon_resets->occur();
     }
 
-    // Sigil of the Illidari Legendary
-    if ( p()->active.sigil_of_the_illidari )
+    // Collective Anquish Legendary
+    if ( p()->active.collective_anguish )
     {
-      p()->active.sigil_of_the_illidari->set_target( target );
-      p()->active.sigil_of_the_illidari->execute();
+      p()->active.collective_anguish->set_target( target );
+      p()->active.collective_anguish->execute();
     }
   }
 
@@ -2422,11 +2422,11 @@ struct sigil_of_flame_t : public demon_hunter_spell_t
 
 // Sigil of the Illidari Legendary ==========================================
 
-struct sigil_of_the_illidari_t : public demon_hunter_spell_t
+struct collective_anguish_t : public demon_hunter_spell_t
 {
-  struct sigil_of_the_illidari_tick_t : public demon_hunter_spell_t
+  struct collective_anguish_tick_t : public demon_hunter_spell_t
   {
-    sigil_of_the_illidari_tick_t( util::string_view name, demon_hunter_t* p, const spell_data_t* s )
+    collective_anguish_tick_t( util::string_view name, demon_hunter_t* p, const spell_data_t* s )
       : demon_hunter_spell_t( name, p, s )
     {
       // TOCHECK: Currently does not use split damage on beta but probably will at some point
@@ -2435,16 +2435,16 @@ struct sigil_of_the_illidari_t : public demon_hunter_spell_t
     }
   };
 
-  sigil_of_the_illidari_t( util::string_view name, demon_hunter_t* p, const spell_data_t* s )
+  collective_anguish_t( util::string_view name, demon_hunter_t* p, const spell_data_t* s )
     : demon_hunter_spell_t( name, p, s )
   {
     may_miss = false;
     background = dual = hasted_ticks = tick_on_application = true;
 
     if( p->specialization() == DEMON_HUNTER_HAVOC )
-      tick_action = p->get_background_action<sigil_of_the_illidari_tick_t>( "sigil_of_the_illidari_tick", data().effectN( 1 ).trigger() );
+      tick_action = p->get_background_action<collective_anguish_tick_t>( "collective_anguish_tick", data().effectN( 1 ).trigger() );
     else // Trigger data not set up correctly for Vengeance
-      tick_action = p->get_background_action<sigil_of_the_illidari_tick_t>( "sigil_of_the_illidari_tick", p->find_spell( 333389 ) );
+      tick_action = p->get_background_action<collective_anguish_tick_t>( "collective_anguish_tick", p->find_spell( 333389 ) );
   }
 
   // Behaves as a channeled spell, although we can't set channeled = true since it is background
@@ -4418,7 +4418,9 @@ struct immolation_aura_buff_t : public demon_hunter_buff_t<buff_t>
     : base_t( *p, "immolation_aura", p->spec.immolation_aura )
   {
     set_cooldown( timespan_t::zero() );
+    set_default_value_from_effect_type( A_MOD_SPEED_ALWAYS );
     apply_affecting_aura( p->spec.immolation_aura_rank_3 );
+    apply_affecting_aura( p->talent.agonizing_flames );
 
     set_tick_callback( [ p ]( buff_t*, int, timespan_t ) {
       p->active.immolation_aura->execute();
@@ -4434,7 +4436,6 @@ struct immolation_aura_buff_t : public demon_hunter_buff_t<buff_t>
 
     if ( p->talent.agonizing_flames->ok() )
     {
-      set_default_value( p->talent.agonizing_flames->effectN( 2 ).percent() );
       add_invalidate( CACHE_RUN_SPEED );
     }
   }
@@ -5190,7 +5191,7 @@ void demon_hunter_t::init_procs()
   proc.soul_fragment_from_meta      = get_proc( "soul_fragment_from_meta" );
 
   // Legendary
-  proc.darkglare_medallion_resets   = get_proc( "darkglare_medallion_resets" );
+  proc.darkglare_boon_resets        = get_proc( "darkglare_boon_resets" );
 }
 
 // demon_hunter_t::init_resources ===========================================
@@ -5447,9 +5448,9 @@ void demon_hunter_t::init_spells()
 
   // Legendary Items ========================================================
 
-  legendary.apexis_empowerment            = find_runeforge_legendary( "Apexis Empowerment" );
-  legendary.darkglare_medallion           = find_runeforge_legendary( "Darkglare Medallion" );
-  legendary.sigil_of_the_illidari         = find_runeforge_legendary( "Sigil of the Illidari" );
+  legendary.half_giant_empowerment        = find_runeforge_legendary( "Half-Giant Empowerment" );
+  legendary.darkglare_boon                = find_runeforge_legendary( "Darkglare Boon" );
+  legendary.collective_anguish            = find_runeforge_legendary( "Collective Anguish" );
   legendary.fel_bombardment               = find_runeforge_legendary( "Fel Bombardment" );
 
   legendary.chaos_theory                  = find_runeforge_legendary( "Chaos Theory" );
@@ -5459,7 +5460,7 @@ void demon_hunter_t::init_spells()
 
   legendary.fiery_soul                    = find_runeforge_legendary( "Fiery Soul" );
   legendary.razelikhs_defilement          = find_runeforge_legendary( "Razelikh's Defilement" );
-  legendary.cloak_of_fel_flames           = find_runeforge_legendary( "Cloak of Fel Flames" );
+  legendary.fel_flame_fortification       = find_runeforge_legendary( "Fel Flame Fortification" );
   legendary.spirit_of_the_darkness_flame  = find_runeforge_legendary( "Spirit of the Darkness Flame" );
 
   // Spell Initialization ===================================================
@@ -5476,10 +5477,10 @@ void demon_hunter_t::init_spells()
     active.demon_blades = new demon_blades_t( this );
   }
 
-  if ( legendary.sigil_of_the_illidari.ok() )
+  if ( legendary.collective_anguish.ok() )
   {
     const spell_data_t* driver = ( specialization() == DEMON_HUNTER_HAVOC ) ? find_spell( 333105 ) : find_spell( 333386 );
-    active.sigil_of_the_illidari = get_background_action<sigil_of_the_illidari_t>( "sigil_of_the_illidari", driver );
+    active.collective_anguish = get_background_action<collective_anguish_t>( "collective_anguish", driver );
   }
 }
 
