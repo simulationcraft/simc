@@ -1512,7 +1512,7 @@ struct tigers_fury_buff_t : public druid_buff_t<buff_t>
 {
   tigers_fury_buff_t( druid_t& p ) : base_t( p, "tigers_fury", p.spec.tigers_fury )
   {
-    set_cooldown( timespan_t::zero() );
+    set_cooldown( 0_ms );
   }
 
   void start( int stacks, double value, timespan_t duration ) override
@@ -1545,7 +1545,7 @@ struct tiger_dash_buff_t : public druid_buff_t<buff_t>
   tiger_dash_buff_t( druid_t& p ) : base_t( p, "tiger_dash", p.talent.tiger_dash )
   {
     set_default_value_from_effect_type( A_MOD_INCREASE_SPEED );
-    set_cooldown( timespan_t::zero() );
+    set_cooldown( 0_ms );
     set_tick_callback( []( buff_t* b, int, timespan_t ) { b->current_value -= b->data().effectN( 2 ).percent(); } );
   }
 
@@ -1581,7 +1581,7 @@ struct warrior_of_elune_buff_t : public druid_buff_t<buff_t>
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
-    druid_buff_t<buff_t>::expire_override( expiration_stacks, remaining_duration );
+    base_t::expire_override( expiration_stacks, remaining_duration );
 
     p().cooldown.warrior_of_elune->start();
   }
@@ -1594,16 +1594,14 @@ struct survival_instincts_buff_t : public druid_buff_t<buff_t>
   survival_instincts_buff_t( druid_t& p )
     : base_t( p, "survival_instincts", p.find_specialization_spell( "Survival Instincts" ) )
   {
-    set_cooldown( timespan_t::zero() );
+    set_cooldown( 0_ms );
     // Tooltip data redirects to another spell even though the defensive buff in logs is the specialization spell
-    // On top of that, the spell's original data is a positive number
-    // whereas the linked spell's data is a negative number, like other damage reductions
     set_default_value( p.find_spell( 50322 )->effectN( 1 ).percent() );
   }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
-    druid_buff_t<buff_t>::expire_override( expiration_stacks, remaining_duration );
+    base_t::expire_override( expiration_stacks, remaining_duration );
     p().buff.masterful_instincts->trigger();
   }
 };
@@ -1623,7 +1621,7 @@ struct kindred_empowerment_buff_t : public druid_buff_t<buff_t>
 
   void expire_override( int s, timespan_t d ) override
   {
-    druid_buff_t<buff_t>::expire_override( s, d );
+    base_t::expire_override( s, d );
     pool       = 1.0;
     cumul_pool = 0.0;
   }
@@ -1881,7 +1879,7 @@ public:
     {
       auto eff = &mod->effectN( i );
 
-      if ( eff->type() != E_APPLY_AURA || !base->affected_by( eff ) )
+      if ( eff->type() != E_APPLY_AURA || !base->affected_by_all( &ab::player->dbc, *eff ) )
         continue;
 
       if ( ( eff->misc_value1() == P_EFFECT_1 && idx == 1 ) || ( eff->misc_value1() == P_EFFECT_2 && idx == 2 ) ||
@@ -1939,7 +1937,7 @@ public:
       return;
     }
 
-    if ( !ab::data().affected_by( eff ) )
+    if ( !ab::data().affected_by_all( &ab::player->dbc, *eff ) )
       return;
 
     if ( !mastery && !val )
@@ -2096,7 +2094,7 @@ public:
       if ( !val )
         continue;
 
-      if ( !( eff->subtype() == A_MOD_DAMAGE_FROM_CASTER_SPELLS && ab::data().affected_by( eff ) ) &&
+      if ( !( eff->subtype() == A_MOD_DAMAGE_FROM_CASTER_SPELLS && ab::data().affected_by_all( &ab::player->dbc, *eff ) ) &&
            !( eff->subtype() == A_MOD_AUTO_ATTACK_FROM_CASTER && is_auto_attack ) )
         continue;
 
@@ -8289,7 +8287,7 @@ void druid_t::create_buffs()
     ->add_invalidate( CACHE_HASTE );
 
   buff.starfall = make_buff( this, "starfall", spec.starfall )
-    ->set_duration( spec.starfall->duration() + talent.stellar_drift->effectN( 1 ).time_value() )
+    ->apply_affecting_aura( talent.stellar_drift )
     ->set_tick_zero( true )
     ->set_period( 1_s )
     ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
@@ -10017,7 +10015,7 @@ const spelleffect_data_t* druid_t::query_aura_effect( const spell_data_t* aura_s
   {
     const spelleffect_data_t& effect = aura_spell->effectN( i );
 
-    if ( affected_spell != spell_data_t::nil() && !affected_spell->affected_by( effect ) )
+    if ( affected_spell != spell_data_t::nil() && !affected_spell->affected_by_all( *dbc, effect ) )
       continue;
 
     if ( effect.type() == type && effect.subtype() == subtype )
