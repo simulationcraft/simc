@@ -110,29 +110,21 @@ void add_covenant_cast_callback( player_t* p, S&&... args )
 
 void niyas_tools_burrs( special_effect_t& effect )
 {
-  if ( !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() ) return;
-
 
 }
 
 void niyas_tools_poison( special_effect_t& effect )
 {
-  if ( !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() ) return;
-
 
 }
 
 void niyas_tools_herbs( special_effect_t& effect )
 {
-  if ( !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() ) return;
-
 
 }
 
 void grove_invigoration( special_effect_t& effect )
 {
-  if ( !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() ) return;
-
   struct redirected_anima_buff_t : public buff_t
   {
     redirected_anima_buff_t( player_t* p ) : buff_t( p, "redirected_anima", p->find_spell( 342814 ) )
@@ -183,9 +175,6 @@ void field_of_blossoms( special_effect_t& effect )
 
 void social_butterfly( special_effect_t& effect )
 {
-  if ( !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() )
-    return;
-
   struct social_butterfly_buff_t : public buff_t
   {
     social_butterfly_buff_t( player_t* p ) : buff_t( p, "social_butterfly", p->find_spell( 320212 ) )
@@ -210,9 +199,6 @@ void social_butterfly( special_effect_t& effect )
 
 void first_strike( special_effect_t& effect )
 {
-  if ( !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() )
-    return;
-
   struct first_strike_cb_t : public dbc_proc_callback_t
   {
     std::vector<int> target_list;
@@ -249,9 +235,8 @@ void first_strike( special_effect_t& effect )
 
 void wild_hunt_tactics( special_effect_t& effect )
 {
-  if ( !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() )
-    return;
-
+  // dummy buffs to hold info, this is never triggered
+  // TODO: determine if there's a better place to hold this data
   if ( !effect.player->buffs.wild_hunt_tactics )
     effect.player->buffs.wild_hunt_tactics = make_buff( effect.player, "wild_hunt_tactics", effect.driver() )
       ->set_default_value_from_effect( 1 );
@@ -259,16 +244,11 @@ void wild_hunt_tactics( special_effect_t& effect )
 
 void exacting_preparation( special_effect_t& effect )
 {
-  if ( !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() ) return;
-
 
 }
 
 void dauntless_duelist( special_effect_t& effect )
 {
-  if ( !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() )
-    return;
-
   struct dauntless_duelist_cb_t : public dbc_proc_callback_t
   {
     dauntless_duelist_cb_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e ) {}
@@ -294,9 +274,6 @@ void dauntless_duelist( special_effect_t& effect )
 
 void thrill_seeker( special_effect_t& effect )
 {
-  if ( !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() )
-    return;
-
   if ( !effect.player->buffs.euphoria )
   {
     effect.player->buffs.euphoria = make_buff( effect.player, "euphoria", effect.player->find_spell( 331937 ) )
@@ -316,16 +293,11 @@ void thrill_seeker( special_effect_t& effect )
 
 void refined_palate( special_effect_t& effect )
 {
-  if ( !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() ) return;
-
 
 }
 
 void soothing_shade( special_effect_t& effect )
 {
-  if ( !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() )
-    return;
-
   auto buff = buff_t::find( effect.player, "soothing_shade" );
   if ( !buff )
     buff = make_buff<stat_buff_t>( effect.player, "soothing_shade", effect.player->find_spell( 336885 ) );
@@ -337,9 +309,6 @@ void soothing_shade( special_effect_t& effect )
 
 void wasteland_propriety( special_effect_t& effect )
 {
-  if ( !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() )
-    return;
-
   if ( !effect.player->buffs.wasteland_propriety )
   {
     effect.player->buffs.wasteland_propriety =
@@ -354,9 +323,6 @@ void wasteland_propriety( special_effect_t& effect )
 
 void built_for_war( special_effect_t& effect )
 {
-  if ( !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() )
-    return;
-
   if ( !effect.player->buffs.built_for_war )
   {
     effect.player->buffs.built_for_war =
@@ -381,16 +347,11 @@ void built_for_war( special_effect_t& effect )
 
 void superior_tactics( special_effect_t& effect )
 {
-  if ( !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() ) return;
-
 
 }
 
 void let_go_of_the_past( special_effect_t& effect )
 {
-  if ( !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() )
-    return;
-
   struct let_go_of_the_past_cb_t : public dbc_proc_callback_t
   {
     unsigned prev_id;
@@ -430,9 +391,6 @@ void let_go_of_the_past( special_effect_t& effect )
 
 void combat_meditation( special_effect_t& effect )
 {
-  if ( !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() )
-    return;
-
   struct combat_meditation_buff_t : public buff_t
   {
     timespan_t ext_dur;
@@ -459,9 +417,6 @@ void combat_meditation( special_effect_t& effect )
 
 void pointed_courage( special_effect_t& effect )
 {
-  if ( !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() )
-    return;
-
   if ( !effect.player->buffs.pointed_courage )
   {
     effect.player->buffs.pointed_courage =
@@ -480,9 +435,6 @@ void pointed_courage( special_effect_t& effect )
 
 void hammer_of_genesis( special_effect_t& effect )
 {
-  if ( !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() )
-    return;
-
   struct hammer_of_genesis_cb_t : public dbc_proc_callback_t
   {
     std::vector<int> target_list;
@@ -522,23 +474,16 @@ void hammer_of_genesis( special_effect_t& effect )
 
 void brons_call_to_action( special_effect_t& effect )
 {
-  if ( !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() ) return;
-
 
 }
 
 void volatile_solvent( special_effect_t& effect )
 {
-  if ( !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() ) return;
-
 
 }
 
 void plagueys_preemptive_strike( special_effect_t& effect )
 {
-  if ( !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() )
-    return;
-
   struct plagueys_preemptive_strike_cb_t : public dbc_proc_callback_t
   {
     std::vector<int> target_list;
@@ -574,9 +519,6 @@ void plagueys_preemptive_strike( special_effect_t& effect )
 
 void gnashing_chompers( special_effect_t& effect )
 {
-  if ( !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() )
-    return;
-
   auto buff = effect.player->buffs.gnashing_chompers;
   if ( !buff )
   {
@@ -597,15 +539,11 @@ void gnashing_chompers( special_effect_t& effect )
 
 void embody_the_construct( special_effect_t& effect )
 {
-  if ( !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() ) return;
-
 
 }
 
 void serrated_spaulders( special_effect_t& effect )
 {
-  if ( !effect.player->find_soulbind_spell( effect.driver()->name_cstr() )->ok() ) return;
-
 
 }
 
@@ -644,35 +582,35 @@ void register_soulbind_special_effect( unsigned spell_id, custom_cb_t init_callb
 void register_special_effects()
 {
   // Night Fae
-  unique_gear::register_special_effect( 320659, soulbinds::niyas_tools_burrs );  // Niya
-  unique_gear::register_special_effect( 320660, soulbinds::niyas_tools_poison );
-  unique_gear::register_special_effect( 320662, soulbinds::niyas_tools_herbs );
-  unique_gear::register_special_effect( 322721, soulbinds::grove_invigoration );
-  unique_gear::register_special_effect( 319191, soulbinds::field_of_blossoms );  // Dreamweaver
-  unique_gear::register_special_effect( 319210, soulbinds::social_butterfly );
-  unique_gear::register_special_effect( 325069, soulbinds::first_strike );  // Korayn
-  unique_gear::register_special_effect( 325066, soulbinds::wild_hunt_tactics );
+  register_soulbind_special_effect( 320659, soulbinds::niyas_tools_burrs );  // Niya
+  register_soulbind_special_effect( 320660, soulbinds::niyas_tools_poison );
+  register_soulbind_special_effect( 320662, soulbinds::niyas_tools_herbs );
+  register_soulbind_special_effect( 322721, soulbinds::grove_invigoration );
+  register_soulbind_special_effect( 319191, soulbinds::field_of_blossoms );  // Dreamweaver
+  register_soulbind_special_effect( 319210, soulbinds::social_butterfly );
+  register_soulbind_special_effect( 325069, soulbinds::first_strike );  // Korayn
+  register_soulbind_special_effect( 325066, soulbinds::wild_hunt_tactics );
   // Venthyr
-  unique_gear::register_special_effect( 331580, soulbinds::exacting_preparation );  // Nadjia
-  unique_gear::register_special_effect( 331584, soulbinds::dauntless_duelist );
-  unique_gear::register_special_effect( 331586, soulbinds::thrill_seeker );
-  unique_gear::register_special_effect( 336243, soulbinds::refined_palate );  // Theotar
-  unique_gear::register_special_effect( 336239, soulbinds::soothing_shade );
-  unique_gear::register_special_effect( 319983, soulbinds::wasteland_propriety );
-  unique_gear::register_special_effect( 319973, soulbinds::built_for_war );  // Draven
-  unique_gear::register_special_effect( 332753, soulbinds::superior_tactics );
+  register_soulbind_special_effect( 331580, soulbinds::exacting_preparation );  // Nadjia
+  register_soulbind_special_effect( 331584, soulbinds::dauntless_duelist );
+  register_soulbind_special_effect( 331586, soulbinds::thrill_seeker );
+  register_soulbind_special_effect( 336243, soulbinds::refined_palate );  // Theotar
+  register_soulbind_special_effect( 336239, soulbinds::soothing_shade );
+  register_soulbind_special_effect( 319983, soulbinds::wasteland_propriety );
+  register_soulbind_special_effect( 319973, soulbinds::built_for_war );  // Draven
+  register_soulbind_special_effect( 332753, soulbinds::superior_tactics );
   // Kyrian
-  unique_gear::register_special_effect( 328257, soulbinds::let_go_of_the_past );  // Pelagos
-  unique_gear::register_special_effect( 328266, soulbinds::combat_meditation );
-  unique_gear::register_special_effect( 329778, soulbinds::pointed_courage );    // Kleia
-  unique_gear::register_special_effect( 333935, soulbinds::hammer_of_genesis );  // Mikanikos
-  unique_gear::register_special_effect( 333950, soulbinds::brons_call_to_action );
+  register_soulbind_special_effect( 328257, soulbinds::let_go_of_the_past );  // Pelagos
+  register_soulbind_special_effect( 328266, soulbinds::combat_meditation );
+  register_soulbind_special_effect( 329778, soulbinds::pointed_courage );    // Kleia
+  register_soulbind_special_effect( 333935, soulbinds::hammer_of_genesis );  // Mikanikos
+  register_soulbind_special_effect( 333950, soulbinds::brons_call_to_action );
   // Necrolord
-  unique_gear::register_special_effect( 323074, soulbinds::volatile_solvent );  // Marileth
-  unique_gear::register_special_effect( 323090, soulbinds::plagueys_preemptive_strike );
-  unique_gear::register_special_effect( 323919, soulbinds::gnashing_chompers );  // Emeni
-  unique_gear::register_special_effect( 342156, soulbinds::embody_the_construct );
-  unique_gear::register_special_effect( 326504, soulbinds::serrated_spaulders );  // Heirmir
+  register_soulbind_special_effect( 323074, soulbinds::volatile_solvent );  // Marileth
+  register_soulbind_special_effect( 323090, soulbinds::plagueys_preemptive_strike );
+  register_soulbind_special_effect( 323919, soulbinds::gnashing_chompers );  // Emeni
+  register_soulbind_special_effect( 342156, soulbinds::embody_the_construct );
+  register_soulbind_special_effect( 326504, soulbinds::serrated_spaulders );  // Heirmir
   register_soulbind_special_effect( 326572, soulbinds::heirmirs_arsenal_marrowed_gemstone );
 }
 
