@@ -901,8 +901,11 @@ buff_t* buff_t::set_default_value_from_effect_type( effect_subtype_t a_type, pro
     }
 
     set_default_value( eff.base_value() * multiplier );
-    break;  // break out after matching the first effect
+    return this;  // return out after matching the first effect
   }
+
+  if ( s_data->ok() )
+    assert( false && "Attemping to set buff default value - no effect found with matching parameters." );
 
   return this;
 }

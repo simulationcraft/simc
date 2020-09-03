@@ -8229,13 +8229,13 @@ void druid_t::create_buffs()
     } );
 
   buff.ravenous_frenzy = make_buff( this, "ravenous_frenzy", covenant.venthyr )
-    //->set_default_value_from_effect_type( A_HASTE_ALL )
+    ->set_default_value_from_effect_type( A_HASTE_ALL )
     ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
     ->set_cooldown( 0_ms )
     ->set_period( 0_ms )
     ->add_invalidate( CACHE_HASTE )
     ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-  buff.ravenous_frenzy->set_default_value_from_effect_type( A_HASTE_ALL );
+
   if ( conduit.endless_thirst->ok() )
     buff.ravenous_frenzy->add_invalidate( CACHE_CRIT_CHANCE );
 
