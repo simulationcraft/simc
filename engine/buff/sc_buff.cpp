@@ -905,9 +905,9 @@ buff_t* buff_t::set_default_value_from_effect_type( effect_subtype_t a_type, pro
   return this;
 }
 
-buff_t* buff_t::modify_default_value( double value, size_t effect_idx )
+buff_t* buff_t::modify_default_value( double value )
 {
-  set_default_value( default_value + value, effect_idx );
+  set_default_value( default_value + value, default_value_effect_idx );
   return this;
 }
 
@@ -1099,7 +1099,7 @@ buff_t* buff_t::apply_affecting_effect( const spelleffect_data_t& effect )
     assert( default_value_effect_idx > 0 && default_value_effect_idx <= s_data->effect_count() );
     // Fetch the default multiplier from the current effect to multiply the flat value before applying
     // Ensures the flat modifier is 'calibrated' to the multiplier used in the default value correctly
-    modify_default_value( effect.base_value() * default_value_effect_multiplier, default_value_effect_idx );
+    modify_default_value( effect.base_value() * default_value_effect_multiplier );
     sim->print_debug( "{} default effect modified by {} to {}", *this, effect.base_value() * default_value_effect_multiplier, default_value );
   };
 

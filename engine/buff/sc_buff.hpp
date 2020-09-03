@@ -316,7 +316,7 @@ public:
                                               property_type_t p_type = P_GENERIC,
                                               double multiplier      = 0.0,
                                               effect_type_t e_type   = E_APPLY_AURA );
-  buff_t* modify_default_value( double, size_t = 0 );
+  buff_t* modify_default_value( double );
   buff_t* set_reverse( bool );
   buff_t* set_activated( bool );
   buff_t* set_can_cancel( bool cc );
