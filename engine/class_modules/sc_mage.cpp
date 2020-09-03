@@ -5227,6 +5227,12 @@ struct mirrors_of_torment_t : public mage_spell_t
   {
     parse_options( options_str );
     affected_by.ice_floes = true;
+
+    if ( data().ok() )
+    {
+      add_child( p->action.agonizing_backlash );
+      add_child( p->action.tormenting_backlash );
+    }
   }
 
   void impact( action_state_t* s ) override
