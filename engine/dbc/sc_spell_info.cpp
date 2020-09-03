@@ -670,6 +670,7 @@ static constexpr auto _effect_subtype_strings = util::make_static_map<unsigned, 
   { 468, "Trigger Spell Based on Health%"               },
   { 471, "Modify Versatility%"                          },
   { 485, "Resist Forced Movement%"                      },
+  { 501, "Modify Crit Damage Done% from Caster's Spells" },
 } );
 
 static constexpr auto _category_effect_subtypes = util::make_static_set<unsigned> ( {

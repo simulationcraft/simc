@@ -871,7 +871,7 @@ enum effect_subtype_t : unsigned {
     A_MOD_PACIFY_SILENCE = 60,
     A_MOD_SCALE = 61,
     A_PERIODIC_HEALTH_FUNNEL = 62,
-    A_63 = 63, // old A_PERIODIC_MANA_FUNNEL
+    A_MOD_MAX_RESOURCE_COST = 63, // old A_PERIODIC_MANA_FUNNEL
     A_PERIODIC_MANA_LEECH = 64,
     A_MOD_CASTING_SPEED_NOT_STACK = 65,
     A_FEIGN_DEATH = 66,
@@ -892,8 +892,8 @@ enum effect_subtype_t : unsigned {
     A_SPLIT_DAMAGE_PCT = 81,
     A_WATER_BREATHING = 82,
     A_MOD_BASE_RESISTANCE = 83,
-    A_MOD_REGEN = 84,
-    A_MOD_POWER_REGEN = 85,
+    A_RESTORE_HEALTH = 84,
+    A_RESTORE_POWER = 85,
     A_CHANNEL_DEATH_ITEM = 86,
     A_MOD_DAMAGE_PERCENT_TAKEN = 87,
     A_MOD_HEALTH_REGEN_PERCENT = 88,
@@ -1150,7 +1150,7 @@ enum effect_subtype_t : unsigned {
     A_339 = 339,
     A_340 = 340,
     A_MODIFY_CATEGORY_COOLDOWN = 341,
-    A_342 = 342,
+    A_MOD_RANGED_AND_MELEE_ATTACK_SPEED = 342,
     A_MOD_AUTO_ATTACK_FROM_CASTER = 343,
     A_MOD_AUTO_ATTACK_PCT = 344,
     A_345 = 345,
@@ -1207,7 +1207,7 @@ enum effect_subtype_t : unsigned {
     A_412 = 412,
     A_HASTED_COOLDOWN = 416,
     A_HASTED_GCD = 417,
-    A_418 = 418,
+    A_MOD_MAX_RESOURCE = 418,
     A_MOD_MANA_POOL_PCT = 419,
     A_420 = 420,
     A_421 = 421,
@@ -1242,6 +1242,7 @@ enum effect_subtype_t : unsigned {
     A_481 = 481,
     A_483 = 483,
     A_492 = 492,
+    A_MOD_CRIT_DAMAGE_PCT_FROM_CASTER_SPELLS = 501,
     A_MAX
 };
 

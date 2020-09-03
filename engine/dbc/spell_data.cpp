@@ -246,6 +246,54 @@ double spelleffect_data_t::scaled_max( double avg, double delta ) const
   return result;
 }
 
+double spelleffect_data_t::default_multiplier() const
+{
+  switch ( type() )
+  {
+    case E_APPLY_AURA:
+      switch ( subtype() )
+      {
+        case A_PERIODIC_TRIGGER_SPELL:
+        case A_PERIODIC_ENERGIZE:
+        case A_MOD_INCREASE_ENERGY:
+        case A_PROC_TRIGGER_SPELL:
+        case A_MOD_MAX_RESOURCE_COST:
+        case A_MOD_MAX_RESOURCE:
+          return 1.0; // base_value
+
+        case A_ADD_FLAT_MODIFIER:
+        case A_ADD_FLAT_LABEL_MODIFIER:
+          switch ( property_type() )
+          {
+            case P_DURATION:
+            case P_CAST_TIME:
+            case P_TICK_TIME:
+            case P_GCD:
+              return 0.001; // time_value
+
+            default:
+              return 1.0; // base_value
+          }
+          break;
+
+        case A_MOD_MASTERY_PCT:
+          return 1.0;
+
+        case A_RESTORE_HEALTH:
+        case A_RESTORE_POWER:
+          return 0.2; // Resource per 5s
+
+        default:
+          return 0.01; // percent
+      }
+
+    default:
+      break;
+  }
+
+  return 1.0; // base_value
+}
+
 const spelleffect_data_t* spelleffect_data_t::find( unsigned id, bool ptr )
 {
   const auto index = SC_DBC_GET_DATA( __spelleffect_id_index, __ptr_spelleffect_id_index, ptr );

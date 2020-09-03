@@ -207,6 +207,9 @@ struct spelleffect_data_t
   unsigned raw_subtype() const
   { return _subtype; }
 
+  property_type_t property_type() const
+  { return static_cast<property_type_t>( _misc_value ); }
+
   double base_value() const
   { return _base_value; }
 
@@ -344,6 +347,13 @@ struct spelleffect_data_t
 
   const spell_data_t* trigger() const
   { assert( _trigger_spell ); return _trigger_spell; }
+
+  // Fetch value multiplier to be used based on the spell effect type/subtype
+  // TODO: Still needs quite a few additions, test before using!
+  double default_multiplier() const;
+  // Fetch value dynamically based on the spell effect type/subtype
+  double default_value() const
+  { return base_value() * default_multiplier(); }
 
   static const spelleffect_data_t& nil();
   static const spelleffect_data_t* find( unsigned, bool ptr = false );
