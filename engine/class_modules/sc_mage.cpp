@@ -3907,6 +3907,10 @@ struct frozen_orb_t : public frost_mage_spell_t
   {
     frost_mage_spell_t::execute();
 
+    if ( background )
+      return;
+
+    // TODO: Check how Cold Front and Freezing Winds interact
     p()->buffs.freezing_rain->trigger();
     p()->buffs.freezing_winds->trigger();
   }
