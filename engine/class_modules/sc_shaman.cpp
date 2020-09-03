@@ -6613,7 +6613,6 @@ void shaman_t::init_action_list_elemental()
   precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
   precombat->add_action( this, "Earth Elemental", "if=!talent.primal_elementalist.enabled" );
-  precombat->add_action( "use_item,name=azsharas_font_of_power" );
   precombat->add_talent( this, "Stormkeeper",
                          "if=talent.stormkeeper.enabled&(raid_event.adds.count<3|raid_event.adds.in>50)",
                          "Use Stormkeeper precombat unless some adds will spawn soon." );
@@ -6823,8 +6822,6 @@ void shaman_t::init_action_list_elemental()
       this, "Frost Shock", "if=talent.icefury.enabled&buff.icefury.up&buff.icefury.remains<1.1*gcd*buff.icefury.stack",
       "Slightly delay using Icefury empowered Frost Shocks to empower them with Master of the Elements too." );
   single_target->add_action( this, "Lava Burst", "if=cooldown_react" );
-  single_target->add_action( "concentrated_flame" );
-  single_target->add_action( "reaping_flames" );
   single_target->add_action( this, "Flame Shock", "target_if=refreshable&!buff.surge_of_power.up",
                              "Don't accidentally use Surge of Power with Flame Shock during single target." );
 
