@@ -908,7 +908,11 @@ buff_t* buff_t::set_default_value_from_effect_type( effect_subtype_t a_type, pro
   }
 
   if ( s_data->ok() )
-    assert( false && "Attemping to set buff default value - no effect found with matching parameters." );
+  {
+    sim->error(
+        "ERROR SETTING BUFF DEFAULT VALUE: {} (id={}) has no matching effect with subtype:{} property:{} type:{}",
+        name(), s_data->id(), a_type, p_type, e_type );
+  }
 
   return this;
 }
