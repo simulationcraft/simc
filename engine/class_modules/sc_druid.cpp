@@ -6548,11 +6548,8 @@ struct starfall_t : public druid_spell_t
     {
       int ext = as<int>( p()->spec.starfall_2->effectN( 1 ).base_value() );
 
-      if ( free_cast != free_cast_e::LYCARAS && free_cast != free_cast_e::CONVOKE &&
-           p()->conduit.stellar_inspiration->ok() && rng().roll( p()->conduit.stellar_inspiration.percent() ) )
-      {
+      if ( p()->conduit.stellar_inspiration->ok() && rng().roll( p()->conduit.stellar_inspiration.percent() ) )
         ext *= 2;
-      }
 
       std::vector<player_t*>& tl = target_list();
 
