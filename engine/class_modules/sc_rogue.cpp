@@ -1869,7 +1869,6 @@ struct rogue_poison_t : public rogue_attack_t
   {
     rogue_attack_t::tick( d );
 
-    // TOCHECK: Currently doesn't proc from critical ticks on beta, possibly a bug
     if ( d->state->result == RESULT_CRIT && p()->legendary.dashing_scoundrel->ok() && p()->buffs.envenom->check() )
     {
       p()->resource_gain( RESOURCE_ENERGY, p()->legendary.dashing_scoundrel_gain, p()->gains.dashing_scoundrel );
@@ -4141,9 +4140,23 @@ struct shadow_vault_t: public rogue_attack_t
 {
   struct shadow_vault_bonus_t : public rogue_attack_t
   {
+    int last_cp;
+
     shadow_vault_bonus_t( util::string_view name, rogue_t* p ) :
-      rogue_attack_t( name, p, p -> find_spell( 319190 ) )
+      rogue_attack_t( name, p, p -> find_spell( 319190 ) ),
+      last_cp( 1 )
     {
+    }
+
+    void reset() override
+    {
+      rogue_attack_t::reset();
+      last_cp = 1;
+    }
+
+    double combo_point_da_multiplier( const action_state_t* ) const override
+    {
+      return as<double>( last_cp );
     }
   };
 
@@ -4174,12 +4187,14 @@ struct shadow_vault_t: public rogue_attack_t
     }
   }
 
-  void impact(action_state_t* state) override
+  void impact( action_state_t* state ) override
   {
     rogue_attack_t::impact( state );
 
     if ( bonus_attack && result_is_hit( state->result ) && td( state->target )->debuffs.find_weakness->up() )
     {
+      // TOCHECK: If this works correctly with Echoing Reprimand
+      bonus_attack->last_cp = cast_state( state )->get_combo_points();
       bonus_attack->set_target( state->target );
       bonus_attack->execute();
     }
