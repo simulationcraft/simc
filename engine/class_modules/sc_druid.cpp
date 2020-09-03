@@ -10199,6 +10199,10 @@ void druid_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( spec.balance );
   action.apply_affecting_aura( spec.guardian );
 
+  // Rank spells
+  action.apply_affecting_aura( spec.moonfire_2 );
+  action.apply_affecting_aura( spec.moonfire_3 );
+
   // Talents
   action.apply_affecting_aura( talent.feral_affinity );
   action.apply_affecting_aura( talent.stellar_drift );
@@ -10211,10 +10215,6 @@ void druid_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( legendary.luffainfused_embrace );
   action.apply_affecting_aura( legendary.legacy_of_the_sleeper );
   action.apply_affecting_aura( legendary.circle_of_life_and_death );
-
-  // Rank spells
-  action.apply_affecting_aura( spec.moonfire_2 );
-  action.apply_affecting_aura( spec.moonfire_3 );
 }
 
 //void druid_t::output_json_report(js::JsonOutput& root) const
