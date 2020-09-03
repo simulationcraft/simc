@@ -626,6 +626,8 @@ public:
     const spell_data_t* half_moon;
     const spell_data_t* full_moon;
     const spell_data_t* fury_of_elune;
+    const spell_data_t* moonfire_2;
+    const spell_data_t* moonfire_3;
 
     // Guardian
     const spell_data_t* guardian;
@@ -1751,21 +1753,6 @@ public:
   {
     ab::may_crit      = true;
     ab::tick_may_crit = true;
-
-    if ( p()->legendary.circle_of_life_and_death->ok() )
-    {
-      if ( ab::data().affected_by( p()->legendary.circle_of_life_and_death->effectN( 1 ) ) )
-        ab::base_tick_time *= 1.0 + p()->legendary.circle_of_life_and_death->effectN( 1 ).percent();
-
-      if ( ab::data().affected_by( p()->legendary.circle_of_life_and_death->effectN( 2 ) ) )
-        ab::base_tick_time *= 1.0 + p()->legendary.circle_of_life_and_death->effectN( 2 ).percent();
-
-      if ( ab::data().affected_by( p()->legendary.circle_of_life_and_death->effectN( 3 ) ) )
-        ab::dot_duration *= 1.0 + p()->legendary.circle_of_life_and_death->effectN( 3 ).percent();
-
-      if ( ab::data().affected_by( p()->legendary.circle_of_life_and_death->effectN( 4 ) ) )
-        ab::dot_duration *= 1.0 + p()->legendary.circle_of_life_and_death->effectN( 4 ).percent();
-    }
 
     // Ugly Ugly Ugly hack for now.
     if ( util::str_in_str_ci( n, "_melee" ) )
@@ -2915,11 +2902,6 @@ struct moonfire_t : public druid_spell_t
 
       triggers_galactic_guardian      = false;
       benefits_from_galactic_guardian = true;
-
-      dot_duration +=
-          p->find_rank_spell( "Moonfire", "Rank 2" )->effectN( 1 ).time_value() +
-          p->find_rank_spell( "Moonfire", "Rank 3" )->effectN( 1 ).time_value() +
-          p->query_aura_effect( p->spec.balance, A_ADD_FLAT_MODIFIER, P_DURATION, p->spec.moonfire_dmg )->time_value();
 
       if ( p->talent.twin_moons->ok() )
       {
@@ -6180,11 +6162,6 @@ struct sunfire_t : public druid_spell_t
       aoe                 = p->find_rank_spell( "Sunfire", "Rank 2" )->ok() ? -1 : 0;
       base_aoe_multiplier = 0;
 
-      // Moonfire Rank 3 also increase sunfire duration
-      dot_duration +=
-          p->find_rank_spell( "Moonfire", "Rank 3" )->effectN( 1 ).time_value() +
-          p->query_aura_effect( p->spec.balance, A_ADD_FLAT_MODIFIER, P_DURATION, p->spec.sunfire_dmg )->time_value();
-
       if ( p->azerite.high_noon.ok() )
         radius += p->azerite.high_noon.value();
     }
@@ -7914,6 +7891,8 @@ void druid_t::init_spells()
   spec.fury_of_elune          = check_spell( talent.fury_of_elune->ok(), 211545 );   // fury of elune tick damage
   spec.half_moon              = check_spell( talent.new_moon->ok(), 274282 );
   spec.full_moon              = check_spell( talent.new_moon->ok() || covenant.night_fae->ok(), 274283 );
+  spec.moonfire_2             = find_rank_spell( "Moonfire", "Rank 2" );
+  spec.moonfire_3             = find_rank_spell( "Moonfire", "Rank 3" );
 
   // Feral
   spec.feral                  = find_specialization_spell( "Feral Druid" );
@@ -10231,6 +10210,11 @@ void druid_t::apply_affecting_auras( action_t& action )
   // Legendaries
   action.apply_affecting_aura( legendary.luffainfused_embrace );
   action.apply_affecting_aura( legendary.legacy_of_the_sleeper );
+  action.apply_affecting_aura( legendary.circle_of_life_and_death );
+
+  // Rank spells
+  action.apply_affecting_aura( spec.moonfire_2 );
+  action.apply_affecting_aura( spec.moonfire_3 );
 }
 
 //void druid_t::output_json_report(js::JsonOutput& root) const
