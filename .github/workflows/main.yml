@@ -180,31 +180,34 @@ jobs:
       - name: Smoke Test
         run: ./engine/simc $SIMC_PROFILE iterations=5 output=/dev/null html=/dev/null json2=/dev/null cleanup_threads=1
         
-  build-VS2017:
-    name: VS-2017
+  windows-VS:
+    name: windows-VS-${{ matrix.cc }}
     runs-on: windows-latest
+    strategy:
+      matrix:
+        vs: [2017, 2019]
+        include:
+          - vs: 2017
+            platform: x64
+            configuration: Debug-WebEngine
+            projectFile: vs/simc_vs2017.vcxproj
+            executable: vs\x64\Debug-WebEngine\simc.exe
+            runSmokeTest: false
+          - vs: 2019
+            platform: x64
+            configuration: Debug-NoNetworking
+            projectFile: vs/simc_vs2019.vcxproj
+            executable: vs\x64\Debug-NoNetworking\simc_vs2019.exe
+            runSmokeTest: true
+
     steps:
       - uses: actions/checkout@v2
 
       - uses: microsoft/setup-msbuild@v1.0.1
 
       - name: Build
-        run: MSBuild.exe /maxcpucount /p:Configuration="Debug-WebEngine" /p:Platform=x64 vs/simc_vs2017.vcxproj
+        run: MSBuild.exe /maxcpucount /p:Configuration="${{ matrix.configuration }}" /p:Platform=${{ matrix.platform }} ${{ matrix.projectFile }}
 
       - name: Smoke Test
-        run: vs\x64\Debug-WebEngine\simc.exe $env:SIMC_PROFILE iterations=5 output=nul html=nul json2=nul cleanup_threads=1
-
-  build-VS2019:
-    name: VS-2019
-    runs-on: windows-latest
-    steps:
-      - uses: actions/checkout@v2
-
-      - uses: microsoft/setup-msbuild@v1.0.1
-
-      - name: Build
-        run: MSBuild.exe /maxcpucount /p:Configuration="Debug-NoNetworking" /p:Platform=x64 vs/simc_vs2019.vcxproj
-
-      - name: Smoke Test
-        run: vs\x64\Debug-NoNetworking\simc_vs2019.exe $env:SIMC_PROFILE iterations=5 output=nul html=nul json2=nul cleanup_threads=1
-
+        if: ${{ matrix.runSmokeTest }}
+        run: ${{ matrix.executable }}$env:SIMC_PROFILE iterations=5 output=nul html=nul json2=nul cleanup_threads=1
