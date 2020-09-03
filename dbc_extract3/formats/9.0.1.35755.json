@@ -1,0 +1,1241 @@
+{
+  "ArmorLocation": {
+    "fields": [
+      { "data_type": "f", "field": "v_1",    "formats": { "cpp": "%9.3f" } },
+      { "data_type": "f", "field": "v_2",    "formats": { "cpp": "%9.3f" } },
+      { "data_type": "f", "field": "v_3",    "formats": { "cpp": "%9.3f" } },
+      { "data_type": "f", "field": "v_4",    "formats": { "cpp": "%9.3f" } },
+      { "data_type": "f", "field": "v_5",    "formats": { "cpp": "%9.3f" } }
+    ]
+  },
+  "Artifact": {
+    "fields": [
+      { "data_type": "S", "field": "f1" },
+      { "data_type": "i", "field": "id", "formats": { "cpp": "%2u" } },
+      { "data_type": "H", "field": "f2" },
+      { "data_type": "I", "field": "f3" },
+      { "data_type": "I", "field": "unk_1" },
+      { "data_type": "i", "field": "f5" },
+      { "data_type": "H", "field": "id_spec", "formats": { "cpp": "%3u" }, "ref": "ChrSpecialization" },
+      { "data_type": "B", "field": "f7" },
+      { "data_type": "B", "field": "f8" },
+      { "data_type": "I", "field": "f9" },
+      { "data_type": "I", "field": "f10" }
+    ]
+  },
+  "ArtifactPower": {
+    "parent": "Artifact",
+    "fields": [
+      { "data_type": "f", "field": "coord", "elements": 2 },
+      { "data_type": "i", "field": "id" },
+      { "data_type": "B", "field": "id_artifact", "formats": { "cpp": "%3u" }, "ref": "Artifact" },
+      { "data_type": "B", "field": "max_rank", "formats": { "cpp": "%3u" } },
+      { "data_type": "i", "field": "index", "formats": { "cpp": "%2u" } },
+      { "data_type": "B", "field": "type", "formats": { "cpp": "%3u" } },
+      { "data_type": "B", "field": "unk" }
+    ]
+  },
+  "ArtifactPowerLink": {
+    "fields": [
+      { "data_type": "H", "field": "f1" },
+      { "data_type": "H", "field": "f2" }
+    ]
+  },
+  "ArtifactPowerRank": {
+    "parent": "ArtifactPower",
+    "fields": [
+      { "data_type": "B", "field": "index", "formats": { "cpp": "%2u" } },
+      { "data_type": "i", "field": "id_spell", "formats": { "cpp": "%6u" }, "ref": "SpellName" },
+      { "data_type": "H", "field": "f5" },
+      { "data_type": "f", "field": "value", "formats": { "cpp": "%10.3f" } }
+    ]
+  },
+  "AzeriteEmpoweredItem": {
+    "fields": [
+      { "data_type": "i", "field": "id_item", "formats": { "cpp": "%6u" }, "ref": "ItemSparse" },
+      { "data_type": "I", "field": "id_azerite_tier_unlock" },
+      { "data_type": "I", "field": "id_power_set" }
+    ]
+  },
+  "AzeriteEssence": {
+    "fields": [
+      { "data_type": "S", "field": "name",     "formats": { "cpp": "%-30s" }},
+      { "data_type": "S", "field": "desc"                                   },
+      { "data_type": "i", "field": "id",       "formats": { "cpp": "%3u" }  },
+      { "data_type": "i", "field": "category", "formats": { "cpp": "%3u" }  }
+    ]
+  },
+  "AzeriteEssencePower": {
+    "fields": [
+      { "data_type": "S", "field": "desc_alliance"                                      },
+      { "data_type": "S", "field": "desc_horde"                                         },
+      { "data_type": "i", "field": "id_essence",             "formats": { "cpp": "%3u" }, "ref": "AzeriteEssence"},
+      { "data_type": "B", "field": "rank",                   "formats": { "cpp": "%3u" }},
+      { "data_type": "i", "field": "id_spell_major_upgrade", "formats": { "cpp": "%6u" }, "ref": "SpellName" },
+      { "data_type": "i", "field": "id_spell_minor_upgrade", "formats": { "cpp": "%6u" }, "ref": "SpellName" },
+      { "data_type": "i", "field": "id_spell_major_base",    "formats": { "cpp": "%6u" }, "ref": "SpellName" },
+      { "data_type": "i", "field": "id_spell_minor_base",    "formats": { "cpp": "%6u" }, "ref": "SpellName" }
+    ]
+  },
+  "AzeriteItem": {
+    "fields": [
+      { "data_type": "i", "field": "id_item", "formats": { "cpp": "%6u" }, "ref": "ItemSparse" }
+    ]
+  },
+  "AzeriteItemMilestonePower": {
+    "fields": [
+      { "data_type": "i", "field": "id" },
+      { "data_type": "i", "field": "req_level" },
+      { "data_type": "i", "field": "id_power", "ref": "AzeritePower" },
+      { "data_type": "i", "field": "power_type" },
+      { "data_type": "i", "field": "essence_type" }
+    ]
+  },
+  "AzeritePower": {
+    "fields": [
+      { "data_type": "i", "field": "id_spell", "formats": { "cpp": "%6u" }, "ref": "SpellName" },
+      { "data_type": "i", "field": "id_bonus", "formats": { "cpp": "%5u" } },
+      { "data_type": "i", "field": "id_spec_set_member" },
+      { "data_type": "i", "field": "unk_4" }
+    ]
+  },
+  "AzeritePowerSetMember": {
+    "fields": [
+      { "data_type": "H", "field": "unk_28366" },
+      { "data_type": "H", "field": "id_power", "ref": "AzeritePower" },
+      { "data_type": "B", "field": "class_id" },
+      { "data_type": "B", "field": "tier" },
+      { "data_type": "B", "field": "index" }
+    ]
+  },
+  "AzeriteTierUnlock": {
+    "fields": [
+      { "data_type": "B", "field": "item_creation_context" },
+      { "data_type": "B", "field": "tier" },
+      { "data_type": "B", "field": "azerite_level" }
+    ]
+  },
+  "ChatChannels": {
+    "fields": [
+      { "data_type": "S", "field": "name" },
+      { "data_type": "S", "field": "shortcut" },
+      { "data_type": "i", "field": "flags" },
+      { "data_type": "b", "field": "faction" }
+    ]
+  },
+  "ChrSpecialization": {
+    "fields": [
+      { "data_type": "S", "field": "unk_4",      "formats": { } },
+      { "data_type": "S", "field": "name",       "formats": { "cpp": "%25s" } },
+      { "data_type": "S", "field": "desc",       "formats": { } },
+      { "data_type": "i", "field": "id" },
+      { "data_type": "b", "field": "class_id",   "formats": { "cpp": "%2u" } },
+      { "data_type": "b", "field": "index",      "formats": { "cpp": "%-2u" } },
+      { "data_type": "b", "field": "f9",         "formats": { } },
+      { "data_type": "b", "field": "spec_type",  "formats": { "cpp": "%-2u" } },
+      { "data_type": "i", "field": "flags",      "formats": { } },
+      { "data_type": "i", "field": "id_icon",    "formats": { "cpp": "%-5u" } },
+      { "data_type": "b", "field": "unk_6",      "formats": { } },
+      { "data_type": "i", "field": "unk_3",      "formats": { } },
+      { "data_type": "I", "field": "id_mastery", "elements": 2, "formats": { "cpp": "%6u" }, "ref": "SpellName" }
+    ]
+  },
+  "ContentTuning": {
+    "fields": [
+      { "data_type": "i", "field": "id" },
+      { "data_type": "i", "field": "flags" },
+      { "data_type": "i", "field": "unk_3" },
+      { "data_type": "i", "field": "min_level" },
+      { "data_type": "i", "field": "max_level" },
+      { "data_type": "i", "field": "unk_6" },
+      { "data_type": "i", "field": "unk_7" },
+      { "data_type": "i", "field": "unk_8" }
+    ]
+  },
+  "Covenant": {
+    "fields": [
+      { "data_type": "S", "field": "name" },
+      { "data_type": "S", "field": "desc" },
+      { "data_type": "i", "field": "id"   },
+      { "data_type": "i", "field": "id_bounty_set" },
+	  { "data_type": "i", "field": "unk_1"   }
+    ]
+  },
+  "CurrencyCategory": {
+    "fields": [
+      { "data_type": "S", "field": "name" },
+      { "data_type": "B", "field": "flags" },
+      { "data_type": "B", "field": "id_expansion" }
+    ]
+  },
+  "CurrencyContainer": {
+    "fields": [
+      { "data_type": "S", "field": "name" },
+      { "data_type": "S", "field": "description" },
+      { "data_type": "i", "field": "min_amount" },
+      { "data_type": "i", "field": "max_amount" },
+      { "data_type": "i", "field": "id_container_icon" },
+      { "data_type": "i", "field": "containter_quality" },
+      { "data_type": "i", "field": "unk_1" }
+    ]
+  },
+  "CurrencyTypes": {
+    "fields": [
+      { "data_type": "S", "field": "name" },
+      { "data_type": "S", "field": "description" },
+      { "data_type": "B", "field": "id_category" },
+      { "data_type": "i", "field": "id_inventory_icon_file" },
+      { "data_type": "I", "field": "spell_weight" },
+      { "data_type": "B", "field": "spell_category" },
+      { "data_type": "I", "field": "max_quantity" },
+      { "data_type": "i", "field": "max_earnable_per_week" },
+      { "data_type": "I", "field": "flags" },
+      { "data_type": "b", "field": "quality" },
+      { "data_type": "i", "field": "unk_1" },
+      { "data_type": "i", "field": "unk_2" },
+      { "data_type": "i", "field": "unk_3" },
+      { "data_type": "i", "field": "unk_4" },
+      { "data_type": "i", "field": "unk_5" }
+    ]
+  },
+  "Curve": {
+    "fields": [
+      { "data_type": "B", "field": "type", "formats": { "cpp": "%4u"    } },
+      { "data_type": "B", "field": "flags",     "formats": { "cpp": "%2u"    } }
+    ]
+  },
+  "CurvePoint": {
+    "fields": [
+      { "data_type": "f", "field": "val", "elements": 2, "formats": { "cpp": "%10.5f" } },
+      { "data_type": "f", "field": "level", "elements": 2, "formats": { "cpp": "%10.5f" } },
+      { "data_type": "H", "field": "id_distribution", "formats": { "cpp": "%4u"    }, "ref": "Curve" },
+      { "data_type": "B", "field": "curve_index",     "formats": { "cpp": "%2u"    } }
+    ]
+  },
+  "Difficulty": {
+    "fields": [
+      { "data_type": "S", "field": "name" },
+      { "data_type": "B", "field": "instance_type" },
+      { "data_type": "B", "field": "index" },
+      { "data_type": "b", "field": "unk_4" },
+      { "data_type": "B", "field": "id_fallback_difficulty" },
+      { "data_type": "B", "field": "min_players" },
+      { "data_type": "B", "field": "max_players" },
+      { "data_type": "h", "field": "flags" },
+      { "data_type": "B", "field": "item_context" },
+      { "data_type": "B", "field": "id_toggle_difficulty" },
+      { "data_type": "H", "field": "unk_11" },
+      { "data_type": "H", "field": "unk_12" },
+      { "data_type": "H", "field": "unk_13" }
+    ]
+  },
+  "ExpectedStat": {
+    "fields": [
+      { "data_type": "i", "field": "id_expansion" },
+      { "data_type": "f", "field": "creature_health" },
+      { "data_type": "f", "field": "player_health" },
+      { "data_type": "f", "field": "creature_auto_attack_dps" },
+      { "data_type": "f", "field": "creature_armor" },
+      { "data_type": "f", "field": "player_mana" },
+      { "data_type": "f", "field": "player_primary_stat" },
+      { "data_type": "f", "field": "player_secondary_stat" },
+      { "data_type": "f", "field": "armor_constant" },
+      { "data_type": "f", "field": "creature_spell_damage" }
+    ]
+  },
+  "ExpectedStatMod": {
+    "fields": [
+      { "data_type": "f", "field": "mod_creature_health" },
+      { "data_type": "f", "field": "mod_player_health" },
+      { "data_type": "f", "field": "mod_creature_auto_attack_dps" },
+      { "data_type": "f", "field": "mod_creature_armor" },
+      { "data_type": "f", "field": "mod_player_mana" },
+      { "data_type": "f", "field": "mod_player_primary_stat" },
+      { "data_type": "f", "field": "mod_player_secondary_stat" },
+      { "data_type": "f", "field": "mod_armor_constant" },
+      { "data_type": "f", "field": "mod_creature_spell_damage" }
+    ]
+  },
+  "GarrTalent": {
+    "fields": [
+      { "data_type": "S", "field": "name"  },
+      { "data_type": "S", "field": "desc"  },
+      { "data_type": "i", "field": "id"    },
+      { "data_type": "i", "field": "id_garr_talent_tree", "ref": "GarrTalentTree" },
+      { "data_type": "b", "field": "tier"  },
+      { "data_type": "b", "field": "ui_order" },
+      { "data_type": "i", "field": "id_icon_file_data" },
+      { "data_type": "I", "field": "unk_2" },
+      { "data_type": "I", "field": "id_garr_ability" },
+      { "data_type": "b", "field": "unk_3" },
+      { "data_type": "i", "field": "unk_4" },
+      { "data_type": "i", "field": "id_garr_talent_prereq" },
+      { "data_type": "i", "field": "unk_6" },
+      { "data_type": "i", "field": "unk_7" },
+      { "data_type": "b", "field": "conduit_type" }
+    ]
+  },
+  "GarrTalentTree": {
+    "fields": [
+      { "data_type": "S", "field": "title" },
+      { "data_type": "i", "field": "id" },
+      { "data_type": "i", "field": "id_garr_type" },
+      { "data_type": "i", "field": "id_class" },
+      { "data_type": "b", "field": "max_tiers" },
+      { "data_type": "b", "field": "unk_0" },
+      { "data_type": "b", "field": "flags" },
+      { "data_type": "H", "field": "unk_1" },
+      { "data_type": "i", "field": "garr_talent_tree_type" },
+      { "data_type": "i", "field": "unk_2" },
+      { "data_type": "i", "field": "unk_3" },
+      { "data_type": "i", "field": "unk_4" }
+    ]
+  },
+  "GarrTalentRank": {
+    "parent": "GarrTalent",
+    "fields": [
+      { "data_type": "i", "field": "rank"    },
+      { "data_type": "i", "field": "id_spell", "ref": "SpellName" },
+      { "data_type": "i", "field": "unk_0" },
+      { "data_type": "i", "field": "unk_1" },
+      { "data_type": "i", "field": "unk_2" },
+      { "data_type": "i", "field": "unk_3" },
+      { "data_type": "i", "field": "unk_4" },
+      { "data_type": "i", "field": "unk_5" },
+      { "data_type": "i", "field": "unk_6" },
+      { "data_type": "i", "field": "unk_7" },
+      { "data_type": "i", "field": "unk_8" }
+    ]
+  },
+  "GemProperties": {
+    "fields": [
+      { "data_type": "H", "field": "id_enchant", "formats": { "cpp": "%5u"   }, "ref": "SpellItemEnchantment" },
+      { "data_type": "I", "field": "color",      "formats": { "cpp": "%#.8x" } }
+    ]
+  },
+  "GlyphProperties": {
+    "fields": [
+      { "data_type": "I", "field": "id_spell",   "formats": { "cpp": "%-7u" }, "ref": "SpellName" },
+      { "data_type": "B", "field": "type" },
+      { "data_type": "B", "field": "id_exclusive_category" },
+      { "data_type": "i", "field": "id_icon" }
+    ]
+  },
+  "Item": {
+    "fields": [
+      { "data_type": "B", "field": "classs" },
+      { "data_type": "B", "field": "subclass" },
+
+      { "data_type": "B", "field": "material" },
+      { "data_type": "B", "field": "type_inv" },
+
+      { "data_type": "B", "field": "sheath" },
+      { "data_type": "B", "field": "unk_2" },
+      { "data_type": "i", "field": "unk_1" },
+
+      { "data_type": "B", "field": "unk_3" },
+
+      { "data_type": "i", "field": "unk_4" }
+    ]
+  },
+  "ItemSparse": {
+    "fields": [
+      { "data_type": "Q", "field": "race_mask", "formats": { "cpp": "%#.16x" } },
+      { "data_type": "S", "field": "desc" },
+      { "data_type": "S", "field": "pad2" },
+      { "data_type": "S", "field": "pad1" },
+      { "data_type": "S", "field": "pad0" },
+      { "data_type": "S", "field": "name" },
+
+      { "data_type": "f", "field": "dmg_range" },
+      { "data_type": "I", "field": "duration" },
+
+      { "data_type": "f", "field": "item_damage_modifier" },
+      { "data_type": "I", "field": "bag_family" },
+
+      { "data_type": "f", "field": "ranged_mod_range" },
+
+      { "data_type": "f", "field": "stat_socket_mul", "elements": 10 },
+      { "data_type": "i", "field": "stat_alloc", "elements": 10 },
+
+      { "data_type": "i", "field": "stackable" },
+
+      { "data_type": "i", "field": "max_count" },
+      { "data_type": "I", "field": "req_spell" },
+      { "data_type": "I", "field": "sell_price" },
+      { "data_type": "I", "field": "buy_price" },
+
+      { "data_type": "i", "field": "unk_3" },
+
+      { "data_type": "f", "field": "unk_2" },
+      { "data_type": "f", "field": "unk_1" },
+
+      { "data_type": "I", "field": "flags", "elements": 4, "formats": { "cpp": "%#.8x" } },
+
+      { "data_type": "i", "field": "faction_conv_id" },
+
+      { "data_type": "i", "field": "unk_901_1" },
+      { "data_type": "i", "field": "unk_901_2" },
+      { "data_type": "i", "field": "id_curve" },
+
+      { "data_type": "H", "field": "id_name_desc", "ref": "ItemNameDescription" },
+      { "data_type": "H", "field": "unk_l72_1" },
+      { "data_type": "H", "field": "id_holiday" },
+      { "data_type": "H", "field": "item_limit_category", "ref": "ItemLimitCategory" },
+      { "data_type": "H", "field": "gem_props", "ref": "GemProperties" },
+      { "data_type": "H", "field": "socket_bonus" },
+      { "data_type": "H", "field": "totem_category" },
+      { "data_type": "H", "field": "map" },
+      { "data_type": "H", "field": "area", "elements": 2 },
+      { "data_type": "H", "field": "item_set" },
+      { "data_type": "H", "field": "id_lock" },
+      { "data_type": "H", "field": "start_quest" },
+      { "data_type": "H", "field": "page_text" },
+      { "data_type": "H", "field": "delay" },
+      { "data_type": "H", "field": "req_rep_faction" },
+      { "data_type": "H", "field": "req_skill_rank" },
+      { "data_type": "H", "field": "req_skill" },
+      { "data_type": "H", "field": "ilevel" },
+      { "data_type": "H", "field": "class_mask", "formats": { "cpp": "%#.4x" } },
+
+      { "data_type": "B", "field": "id_expansion" },
+      { "data_type": "B", "field": "id_artifact" },
+      { "data_type": "B", "field": "unk_6" },
+      { "data_type": "B", "field": "unk_7" },
+
+      { "data_type": "B", "field": "socket_color", "elements": 3 },
+
+      { "data_type": "B", "field": "sheath" },
+      { "data_type": "B", "field": "material" },
+      { "data_type": "B", "field": "page_mat" },
+      { "data_type": "B", "field": "id_lang" },
+      { "data_type": "B", "field": "bonding" },
+      { "data_type": "B", "field": "damage_type" },
+
+      { "data_type": "b", "field": "stat_type", "elements": 10 },
+      { "data_type": "B", "field": "container_slots" },
+      { "data_type": "B", "field": "req_rep_rank" },
+
+      { "data_type": "B", "field": "unk_5" },
+      { "data_type": "B", "field": "unk_4" },
+
+      { "data_type": "B", "field": "req_level" },
+      { "data_type": "B", "field": "inv_type" },
+      { "data_type": "B", "field": "quality" }
+    ]
+  },
+  "ItemAppearance": {
+    "fields": [
+      { "data_type": "B", "field": "f4"},
+      { "data_type": "i", "field": "id_display_info"},
+      { "data_type": "i", "field": "id_icon"},
+      { "data_type": "i", "field": "f3"},
+      { "data_type": "i", "field": "f5" }
+    ]
+  },
+  "ItemArmorQuality": {
+    "fields": [
+      { "data_type": "f", "field": "v", "elements": 7, "formats": { "cpp": "%6.3f" } }
+    ]
+  },
+  "ItemArmorShield": {
+    "fields": [
+      { "data_type": "f", "field": "v", "elements": 7, "formats": { "cpp": "%13.5f" } },
+      { "data_type": "H", "field": "ilevel", "formats": { "cpp": "%4u"   } }
+    ]
+  },
+  "ItemArmorTotal": {
+    "fields": [
+      { "data_type": "h", "field": "ilevel", "formats": { "cpp": "%4u"   } },
+      { "data_type": "f", "field": "v_1",    "formats": { "cpp": "%14.5f" } },
+      { "data_type": "f", "field": "v_2",    "formats": { "cpp": "%14.5f" } },
+      { "data_type": "f", "field": "v_3",    "formats": { "cpp": "%14.5f" } },
+      { "data_type": "f", "field": "v_4",    "formats": { "cpp": "%14.5f" } }
+    ]
+  },
+  "ItemBonus": {
+    "fields": [
+      { "data_type": "i", "field": "val", "elements": 4, "formats": { "cpp": "%7d" } },
+      { "data_type": "H", "field": "id_node", "formats": { "cpp": "%4u" } },
+      { "data_type": "B", "field": "type",    "formats": { "cpp": "%2u" } },
+      { "data_type": "B", "field": "index",   "formats": { "cpp": "%2u" } }
+    ]
+  },
+  "ItemBonusTreeNode": {
+    "fields": [
+      { "data_type": "B", "field": "index",    "formats": { "cpp": "%2u" } },
+      { "data_type": "H", "field": "id_child", "formats": { "cpp": "%4u" } },
+      { "data_type": "H", "field": "id_node",  "formats": { "cpp": "%4u" } },
+      { "data_type": "H", "field": "unk"                                   }
+    ]
+  },
+  "ItemChildEquipment": {
+    "parent": "ItemSparse",
+    "fields": [
+      { "data_type": "i", "field": "id_item", "formats": { "cpp": "%6u" }, "ref": "ItemSparse" },
+      { "data_type": "i", "field": "id_child", "formats": { "cpp": "%6u" }, "ref": "ItemSparse" },
+      { "data_type": "B", "field": "unk_2" }
+    ]
+  },
+  "ItemDamageOneHand": {
+    "fields": [
+      { "data_type": "H", "field": "ilevel", "formats": { "cpp": "%4u"   } },
+      { "data_type": "f", "field": "v", "elements": 7, "formats": { "cpp": "%13.5f" } }
+    ]
+  },
+  "ItemDamageOneHandCaster": {
+    "fields": [
+      { "data_type": "H", "field": "ilevel", "formats": { "cpp": "%4u"   } },
+      { "data_type": "f", "field": "v", "elements": 7, "formats": { "cpp": "%13.5f" } }
+    ]
+  },
+  "ItemDamageTwoHand": {
+    "fields": [
+      { "data_type": "H", "field": "ilevel", "formats": { "cpp": "%4u"   } },
+      { "data_type": "f", "field": "v", "elements": 7, "formats": { "cpp": "%13.5f" } }
+    ]
+  },
+  "ItemDamageTwoHandCaster": {
+    "fields": [
+      { "data_type": "H", "field": "ilevel", "formats": { "cpp": "%4u"   } },
+      { "data_type": "f", "field": "v", "elements": 7, "formats": { "cpp": "%13.5f" } }
+    ]
+  },
+  "ItemEffect": {
+    "parent": "ItemSparse",
+    "fields": [
+      { "data_type": "b", "field": "index", "formats": { "cpp": "%3d" } },
+      { "data_type": "b", "field": "trigger_type", "formats": { "cpp": "%3d" } },
+      { "data_type": "h", "field": "cooldown_charges" },
+      { "data_type": "i", "field": "cooldown_duration", "formats": { "cpp": "%7d" }  },
+      { "data_type": "i", "field": "cooldown_group_duration", "formats": { "cpp": "%7d" }  },
+      { "data_type": "h", "field": "cooldown_group", "formats": { "cpp": "%4d" } },
+      { "data_type": "i", "field": "id_spell", "formats": { "cpp": "%6d" }, "ref": "SpellName" },
+      { "data_type": "h", "field": "id_specialization", "ref": "ChrSpecialization" }
+    ]
+  },
+  "ItemExtendedCost": {
+    "fields": [
+      { "data_type": "H", "field": "required_arena_rating" },
+      { "data_type": "B", "field": "arena_bracket" },
+      { "data_type": "B", "field": "flags" },
+      { "data_type": "B", "field": "id_min_faction" },
+      { "data_type": "B", "field": "min_reputation" },
+      { "data_type": "B", "field": "required_achievement" },
+      { "data_type": "i", "field": "id_item", "elements": 5, "ref": "ItemSparse" },
+      { "data_type": "H", "field": "item_count", "elements": 5 },
+      { "data_type": "H", "field": "id_currency", "elements": 5 },
+      { "data_type": "i", "field": "currency_count", "elements": 5 }
+    ]
+  },
+  "ItemLimitCategory": {
+    "fields": [
+      { "data_type": "S", "field": "name" },
+      { "data_type": "b", "field": "quantity" },
+      { "data_type": "B", "field": "flags" }
+    ]
+  },
+  "ItemModifiedAppearance": {
+    "fields": [
+      { "data_type": "i", "field": "id"},
+      { "data_type": "i", "field": "id_item", "ref": "ItemSparse" },
+      { "data_type": "B", "field": "f3"},
+      { "data_type": "H", "field": "id_appearance", "ref": "ItemAppearance" },
+      { "data_type": "B", "field": "f5"},
+      { "data_type": "b", "field": "f6"}
+    ]
+  },
+  "ItemNameDescription": {
+    "fields": [
+      { "data_type": "S", "field": "desc", "formats": { "cpp": "%-45s" } },
+      { "data_type": "I", "field": "flags"                               }
+    ]
+  },
+  "ItemSet": {
+    "fields": [
+      { "data_type": "S", "field": "name" },
+      { "data_type": "i", "field": "unk_1" },
+      { "data_type": "I", "field": "id_req_skill" },
+      { "data_type": "H", "field": "val_req_skill" },
+      { "data_type": "I", "field": "id_item", "elements": 17, "ref": "ItemSparse" }
+    ]
+  },
+  "ItemSetSpell": {
+    "parent": "ItemSet",
+    "fields": [
+      { "data_type": "H", "field": "id_spec", "ref": "ChrSpecialization" },
+      { "data_type": "I", "field": "id_spell", "ref": "SpellName" },
+      { "data_type": "B", "field": "n_req_items" }
+    ]
+  },
+  "ItemSpec": {
+    "fields": [
+      { "data_type": "B", "field": "min_level" },
+      { "data_type": "B", "field": "max_level" },
+      { "data_type": "B", "field": "item_type" },
+      { "data_type": "B", "field": "primary_stat" },
+      { "data_type": "B", "field": "secondary_stat" },
+      { "data_type": "H", "field": "id_spec", "ref": "ChrSpecialization" }
+    ]
+  },
+  "ItemSpecOverride": {
+    "fields": [
+      { "data_type": "H", "field": "id_spec", "ref": "ChrSpecialization" }
+    ]
+  },
+  "ItemClass": {
+    "fields": [
+      { "data_type": "S", "field": "name" },
+      { "data_type": "b", "field": "id_class" },
+      { "data_type": "f", "field": "price_modifier" },
+      { "data_type": "B", "field": "flags" }
+    ]
+  },
+  "ItemSubClass": {
+    "fields": [
+      { "data_type": "S", "field": "display_name" },
+      { "data_type": "S", "field": "verbose_name" },
+      { "data_type": "b", "field": "id_class" },
+      { "data_type": "b", "field": "id_sub_class" },
+      { "data_type": "B", "field": "auction_house_sort_order" },
+      { "data_type": "b", "field": "prerequisite_proficiency" },
+      { "data_type": "H", "field": "flags" },
+      { "data_type": "b", "field": "display_flags" },
+      { "data_type": "B", "field": "weapon_swing_size" },
+      { "data_type": "b", "field": "postrequisite_proficiency" }
+    ]
+  },
+  "ItemCurrencyCost": {
+    "fields": [
+      { "data_type": "i", "field": "id_item", "ref": "ItemSparse" }
+    ]
+  },
+  "ItemXBonusTree": {
+    "fields": [
+      { "data_type": "H", "field": "id_tree", "formats": { "cpp": "%4u" } }
+    ]
+  },
+  "JournalEncounter": {
+    "fields": [
+      { "data_type": "S", "field": "name" },
+      { "data_type": "S", "field": "desc" },
+      { "data_type": "f", "field": "coord", "elements": 2 },
+      { "data_type": "H", "field": "id_journal_instance" },
+      { "data_type": "h", "field": "unk_1" },
+      { "data_type": "I", "field": "order_index" },
+      { "data_type": "H", "field": "first_section_id" },
+      { "data_type": "H", "field": "ui_map_id" },
+      { "data_type": "I", "field": "map_display_condition_id" },
+      { "data_type": "B", "field": "flags" },
+      { "data_type": "B", "field": "difficulty_mask" }
+    ]
+  },
+  "JournalEncounterCreature": {
+    "parent": "JournalEncounter",
+    "fields": [
+      { "data_type": "S", "field": "name" },
+      { "data_type": "S", "field": "desc" },
+      { "data_type": "i", "field": "id" },
+      { "data_type": "I", "field": "id_journal_encounter", "ref": "JournalEncounter" },
+      { "data_type": "I", "field": "id_creature_display_info" },
+      { "data_type": "i", "field": "id_data_file" },
+      { "data_type": "I", "field": "order_index" },
+      { "data_type": "I", "field": "id_ui_model_scene" }
+    ]
+  },
+  "JournalEncounterItem": {
+    "parent": "JournalEncounter",
+    "fields": [
+      { "data_type": "I", "field": "id" },
+      { "data_type": "H", "field": "id_encounter", "ref": "JournalEncounter" },
+      { "data_type": "I", "field": "id_item", "ref": "ItemSparse" },
+      { "data_type": "B", "field": "flags_2" },
+      { "data_type": "B", "field": "unk_1" },
+      { "data_type": "B", "field": "flags_1" }
+    ]
+  },
+  "JournalEncounterSection": {
+    "fields": [
+      { "data_type": "S", "field": "title" },
+      { "data_type": "S", "field": "body_text" },
+      { "data_type": "H", "field": "id_journal_encounter", "ref": "JournalEncounter" },
+      { "data_type": "B", "field": "order_index" },
+      { "data_type": "H", "field": "id_parent_section", "ref": "JournalEncounterSection" },
+      { "data_type": "H", "field": "id_first_child_section", "ref": "JournalEncounterSection" },
+      { "data_type": "H", "field": "id_next_sibling_section", "ref": "JournalEncounterSection" },
+      { "data_type": "B", "field": "type" },
+      { "data_type": "I", "field": "id_icon_creature_display_info" },
+      { "data_type": "i", "field": "id_ui_model_scene" },
+      { "data_type": "i", "field": "id_spell", "ref": "SpellName" },
+      { "data_type": "i", "field": "id_icon_file_data" },
+      { "data_type": "H", "field": "flags" },
+      { "data_type": "H", "field": "icon_flags" },
+      { "data_type": "b", "field": "difficulty_mask" }
+    ]
+  },
+  "JournalEncounterXDifficulty": {
+    "fields": [
+      { "data_type": "B", "field": "id_difficulty", "ref": "Difficulty" }
+    ]
+  },
+  "JournalInstance": {
+    "fields": [
+      { "data_type": "S", "field": "name" },
+      { "data_type": "S", "field": "desc" },
+      { "data_type": "i", "field": "id" },
+      { "data_type": "H", "field": "map" },
+      { "data_type": "i", "field": "id_background_file_data" },
+      { "data_type": "i", "field": "id_button_file_data" },
+      { "data_type": "i", "field": "id_button_small_file_data" },
+      { "data_type": "i", "field": "id_lore_file_data" },
+      { "data_type": "b", "field": "order_index" },
+      { "data_type": "b", "field": "flags" },
+      { "data_type": "H", "field": "area_id" }
+    ]
+  },
+  "JournalItemXDifficulty": {
+    "parent": "JournalEncounterItem",
+    "fields": [
+      { "data_type": "B", "field": "id_difficulty", "ref": "Difficulty" }
+    ]
+  },
+  "JournalTier": {
+    "fields": [
+      { "data_type": "S", "field": "name" },
+      { "data_type": "i", "field": "player_condition_id" }
+    ]
+  },
+  "JournalTierXInstance": {
+    "fields": [
+      { "data_type": "H", "field": "id_journal_tier" },
+      { "data_type": "H", "field": "id_journal_instance", "ref": "JournalInstance" }
+    ]
+  },
+  "ManifestInterfaceData": {
+    "fields": [
+      { "data_type": "S", "field": "unk" },
+      { "data_type": "S", "field": "name" }
+    ]
+  },
+  "Map": {
+    "fields": [
+      { "data_type": "S", "field": "directory" },
+      { "data_type": "S", "field": "name" },
+      { "data_type": "S", "field": "name_901" },
+      { "data_type": "S", "field": "description_1" },
+      { "data_type": "S", "field": "description_2" },
+      { "data_type": "S", "field": "pvp_short_description" },
+      { "data_type": "S", "field": "pvp_long_description" },
+      { "data_type": "f", "field": "corpse", "elements": 2 },
+      { "data_type": "B", "field": "map_type" },
+      { "data_type": "b", "field": "instance_type" },
+      { "data_type": "B", "field": "id_expansion" },
+      { "data_type": "H", "field": "id_area_table" },
+      { "data_type": "h", "field": "id_loading_screen" },
+      { "data_type": "h", "field": "time_of_day_override" },
+      { "data_type": "h", "field": "id_parent_map", "ref": "Map" },
+      { "data_type": "H", "field": "id_cosmetic_parent_map" },
+      { "data_type": "B", "field": "time_offset" },
+      { "data_type": "f", "field": "minimap_icon_scale" },
+      { "data_type": "h", "field": "id_corpse_map" },
+      { "data_type": "B", "field": "max_players" },
+      { "data_type": "h", "field": "id_wind_settings" },
+      { "data_type": "i", "field": "id_zmp_file_data" },
+      { "data_type": "i", "field": "unk_1" },
+      { "data_type": "I", "field": "flags", "elements": 2 }
+    ]
+  },
+  "MinorTalent": {
+    "fields": [
+      { "data_type": "i", "field": "id_spell", "ref": "SpellName" },
+      { "data_type": "i", "field": "index" }
+    ]
+  },
+  "RandPropPoints": {
+    "fields": [
+      { "data_type": "i", "field": "damage_replace_stat", "formats": { "cpp": "%8u" } },
+      { "data_type": "i", "field": "damage_secondary", "formats": { "cpp": "%8u" } },
+      { "data_type": "I", "field": "epic_points", "elements": 5, "formats": { "cpp": "%8u" } },
+      { "data_type": "I", "field": "rare_points", "elements": 5, "formats": { "cpp": "%8u" } },
+      { "data_type": "I", "field": "uncm_points", "elements": 5, "formats": { "cpp": "%8u" } }
+    ]
+  },
+  "RelicTalent": {
+    "fields": [
+      { "data_type": "i", "field": "row" },
+      { "data_type": "H", "field": "id_power", "ref": "ArtifactPower" },
+      { "data_type": "B", "field": "power_index" },
+      { "data_type": "i", "field": "unk_3" },
+      { "data_type": "i", "field": "unk_4" }
+    ]
+  },
+  "RewardPack": {
+    "fields": [
+      { "data_type": "i", "field": "id_char_title" },
+      { "data_type": "i", "field": "money" },
+      { "data_type": "B", "field": "artifact_xp_difficulty" },
+      { "data_type": "f", "field": "artifact_xp_multiplier" },
+      { "data_type": "B", "field": "id_artifact_xp_category" },
+      { "data_type": "I", "field": "id_treasure_picker" }
+    ]
+  },
+  "RewardPackXCurrencyType": {
+    "fields": [
+      { "data_type": "I", "field": "id_currency_type", "ref": "ItemCurrency" },
+      { "data_type": "i", "field": "quantity" }
+    ]
+  },
+  "RewardPackXItem": {
+    "fields": [
+      { "data_type": "i", "field": "id_item", "ref": "ItemSparse" },
+      { "data_type": "i", "field": "quantity" }
+    ]
+  },
+  "RuneforgeLegendaryAbility": {
+    "fields": [
+      { "data_type": "S", "field": "name" },
+      { "data_type": "i", "field": "id"   },
+      { "data_type": "i", "field": "id_spec_set" },
+      { "data_type": "i", "field": "mask_inv_type", "formats": { "cpp": "%#.8x" } },
+      { "data_type": "i", "field": "id_spell", "formats": { "cpp": "%6u" }, "ref": "SpellName" },
+      { "data_type": "i", "field": "id_bonus", "formats": { "cpp": "%4d" } },
+      { "data_type": "i", "field": "id_player_cond" },
+      { "data_type": "i", "field": "unk_8" }
+    ]
+  },
+  "SkillLine": {
+    "fields": [
+      { "data_type": "S", "field": "name" },
+      { "data_type": "S", "field": "unk_2" },
+      { "data_type": "S", "field": "unk_3" },
+      { "data_type": "S", "field": "unk_4" },
+      { "data_type": "S", "field": "unk_5" },
+      { "data_type": "i", "field": "id" },
+      { "data_type": "b", "field": "unk_8" },
+      { "data_type": "i", "field": "unk_9" },
+      { "data_type": "b", "field": "unk_10" },
+      { "data_type": "I", "field": "unk_11" },
+      { "data_type": "I", "field": "unk_12" },
+      { "data_type": "H", "field": "unk_7" },
+      { "data_type": "i", "field": "unk_13" }
+    ]
+  },
+  "SkillLineAbility": {
+    "parent": "SkillLine",
+    "fields": [
+      { "data_type": "Q", "field": "mask_race", "formats": { "cpp": "%#.16x" } },
+      { "data_type": "i", "field": "id" },
+      { "data_type": "h", "field": "id_skill", "ref": "SkillLine", "formats": { "cpp": "%4u" } },
+      { "data_type": "i", "field": "id_spell", "ref": "SpellName" },
+      { "data_type": "h", "field": "req_skill_level" },
+      { "data_type": "I", "field": "mask_class", "formats": { "cpp": "%#.8x" } },
+      { "data_type": "I", "field": "id_replace", "ref": "SpellName" },
+      { "data_type": "B", "field": "unk_13" },
+      { "data_type": "H", "field": "max_learn_skill" },
+      { "data_type": "H", "field": "unk_7" },
+      { "data_type": "B", "field": "unk_14" },
+      { "data_type": "B", "field": "reward_skill_points" },
+      { "data_type": "H", "field": "index" },
+      { "data_type": "H", "field": "id_filter" },
+      { "data_type": "H", "field": "unk_15" }
+    ]
+  },
+  "Soulbind": {
+    "fields": [
+      { "data_type": "S", "field": "name" },
+      { "data_type": "i", "field": "id"   },
+      { "data_type": "i", "field": "id_covenant", "ref": "Covenant" },
+      { "data_type": "i", "field": "id_garr_talent_tree", "ref": "GarrTalentTree" },
+      { "data_type": "i", "field": "id_creature" },
+      { "data_type": "i", "field": "id_garr_follower" },
+      { "data_type": "i", "field": "unk_0" }
+    ]
+  },
+  "SoulbindConduit": {
+    "fields": [
+      { "data_type": "i", "field": "id" },
+      { "data_type": "i", "field": "type", "formats": { "cpp": "%1u" } },
+      { "data_type": "i", "field": "id_covenant", "ref": "Covenant" },
+      { "data_type": "i", "field": "id_spec_set" }
+    ]
+  },
+  "SoulbindConduitItem": {
+    "fields": [
+      { "data_type": "i", "field": "id_item",     "formats": { "cpp": "%6u" }, "ref": "ItemSparse" },
+      { "data_type": "i", "field": "id_soulbind", "formats": { "cpp": "%4u" }, "ref": "SoulbindConduit" }
+    ]
+  },
+  "SoulbindConduitRank": {
+    "parent": "SoulbindConduit",
+    "fields": [
+      { "data_type": "i", "field": "rank",     "formats": { "cpp": "%2u" } },
+      { "data_type": "i", "field": "id_spell", "formats": { "cpp": "%6u" }, "ref": "SpellName" },
+      { "data_type": "f", "field": "spell_mod" }
+    ]
+  },
+  "SpecializationSpells": {
+    "parent": "ChrSpecialization",
+    "fields": [
+      { "data_type": "S", "field": "unk_1" },
+      { "data_type": "i", "field": "id"  },
+      { "data_type": "H", "field": "spec_id", "formats": { "cpp": "%3u" }, "ref": "ChrSpecialization" },
+      { "data_type": "i", "field": "spell_id", "formats": { "cpp": "%6u" }, "ref": "SpellName" },
+      { "data_type": "I", "field": "replace_spell_id", "formats": { "cpp": "%6u" }, "ref": "SpellName" },
+      { "data_type": "B", "field": "unk_2" }
+    ]
+  },
+  "SpecSetMember": {
+    "fields": [
+      { "data_type": "i", "field": "id_spec", "ref": "ChrSpecialization" }
+    ]
+  },
+  "Spell": {
+    "fields": [
+      { "data_type": "S", "field": "rank" },
+      { "data_type": "S", "field": "desc" },
+      { "data_type": "S", "field": "tt"   }
+    ]
+  },
+  "SpellAuraOptions": {
+    "parent": "SpellName",
+    "fields": [
+      { "data_type": "b", "field": "unk_1" },
+      { "data_type": "h", "field": "stack_amount" },
+      { "data_type": "I", "field": "internal_cooldown" },
+      { "data_type": "b", "field": "proc_chance" },
+      { "data_type": "i", "field": "proc_charges" },
+      { "data_type": "h", "field": "id_ppm", "ref": "SpellProcsPerMinute" },
+      { "data_type": "I", "field": "proc_flags", "elements": 2 }
+    ]
+  },
+  "SpellCastTimes": {
+    "fields": [
+      { "data_type": "i", "field": "cast_time" },
+      { "data_type": "i", "field": "min_cast_time" }
+    ]
+  },
+  "SpellCastingRequirements": {
+    "fields": [
+      { "data_type": "i", "field": "id_spell" },
+      { "data_type": "b", "field": "facing_flags" },
+      { "data_type": "h", "field": "unk_2" },
+      { "data_type": "b", "field": "unk_6" },
+      { "data_type": "H", "field": "unk_3" },
+      { "data_type": "B", "field": "unk_8" },
+      { "data_type": "H", "field": "unk_4" }
+    ]
+  },
+  "SpellCategories": {
+    "parent": "SpellName",
+    "fields": [
+      { "data_type": "b", "field": "unk_1" },
+      { "data_type": "H", "field": "cooldown_category", "formats": { "cpp": "%4u" } },
+      { "data_type": "b", "field": "dmg_class" },
+      { "data_type": "b", "field": "dispel" },
+      { "data_type": "b", "field": "mechanic" },
+      { "data_type": "b", "field": "type_prevention" },
+      { "data_type": "H", "field": "start_recovery_category" },
+      { "data_type": "H", "field": "charge_category", "formats": { "cpp": "%4u" } }
+    ]
+  },
+  "SpellCategory": {
+    "fields": [
+      { "data_type": "S", "field": "category" },
+      { "data_type": "B", "field": "unk_1" },
+      { "data_type": "B", "field": "unk_2" },
+      { "data_type": "b", "field": "charges" },
+      { "data_type": "I", "field": "charge_cooldown" },
+      { "data_type": "i", "field": "unk_3" }
+    ]
+  },
+  "SpellClassOptions": {
+    "fields": [
+      { "data_type": "i", "field": "id_spell", "ref": "SpellName" },
+      { "data_type": "i", "field": "modal_next_spell", "ref": "SpellName" },
+      { "data_type": "B", "field": "family" },
+      { "data_type": "I", "field": "flags", "elements": 4 }
+    ]
+  },
+  "SpellCooldowns": {
+    "parent": "SpellName",
+    "fields": [
+      { "data_type": "B", "field": "unk_1" },
+      { "data_type": "I", "field": "category_cooldown" },
+      { "data_type": "I", "field": "cooldown" },
+      { "data_type": "I", "field": "gcd_cooldown" }
+    ]
+  },
+  "SpellDescriptionVariables": {
+    "fields": [
+      { "data_type": "S", "field": "desc" }
+    ]
+  },
+  "SpellDuration": {
+    "fields": [
+      { "data_type": "i", "field": "duration_1" },
+      { "data_type": "i", "field": "duration_2" }
+    ]
+  },
+  "SpellEffect": {
+    "parent": "SpellName",
+    "fields": [
+      { "data_type": "h", "field": "sub_type", "formats": { "cpp": "%3u" } },
+      { "data_type": "I", "field": "unk_3" },
+      { "data_type": "i", "field": "index", "formats": { "cpp": "%2u" } },
+      { "data_type": "i", "field": "type", "formats": { "cpp": "%3u" } },
+      { "data_type": "f", "field": "val_mul" },
+      { "data_type": "I", "field": "unk_2" },
+      { "data_type": "I", "field": "amplitude" },
+      { "data_type": "f", "field": "sp_coefficient" },
+      { "data_type": "f", "field": "dmg_multiplier" },
+      { "data_type": "i", "field": "chain_target", "formats": { "cpp": "%3d" } },
+      { "data_type": "I", "field": "item_type", "ref": "ItemSparse" },
+      { "data_type": "I", "field": "id_mechanic", "ref": "SpellMechanic" },
+      { "data_type": "f", "field": "points_per_combo_points" },
+      { "data_type": "f", "field": "unk_1" },
+      { "data_type": "f", "field": "real_ppl" },
+      { "data_type": "i", "field": "trigger_spell", "ref": "SpellName" },
+      { "data_type": "f", "field": "ap_coefficient" },
+      { "data_type": "f", "field": "pvp_coefficient" },
+      { "data_type": "f", "field": "coefficient" },
+      { "data_type": "f", "field": "delta" },
+      { "data_type": "f", "field": "bonus" },
+      { "data_type": "f", "field": "unk_24" },
+      { "data_type": "f", "field": "base_value", "formats": { "cpp": "%11.4f" } },
+      { "data_type": "i", "field": "misc_value", "elements": 2 },
+      { "data_type": "I", "field": "id_radius", "elements": 2, "ref": "SpellRadius" },
+      { "data_type": "I", "field": "class_mask", "elements": 4 },
+      { "data_type": "H", "field": "implicit_target", "elements": 2 }
+    ]
+  },
+  "SpellEffectAutoDescription": {
+    "fields": [
+      { "data_type": "S", "field": "desc" },
+      { "data_type": "S", "field": "tt" },
+      { "data_type": "I", "field": "unk_3" },
+      { "data_type": "i", "field": "unk_4" },
+      { "data_type": "b", "field": "unk_5" },
+      { "data_type": "b", "field": "unk_6" },
+      { "data_type": "b", "field": "school" },
+      { "data_type": "I", "field": "type" },
+      { "data_type": "i", "field": "sub_type" }
+    ]
+  },
+  "SpellEquippedItems": {
+    "fields": [
+      { "data_type": "i", "field": "id_spell", "ref": "SpellName" },
+      { "data_type": "B", "field": "item_class" },
+      { "data_type": "I", "field": "mask_inv_type" },
+      { "data_type": "I", "field": "mask_sub_class" }
+    ]
+  },
+  "SpellItemEnchantment": {
+    "fields": [
+      { "data_type": "S", "field": "desc", "formats": { "cpp": "%-35s" } },
+      { "data_type": "S", "field": "desc_2" },
+      { "data_type": "i", "field": "id", "formats": { "cpp": "%4d" } },
+      { "data_type": "I", "field": "id_property", "elements": 3, "formats": { "cpp": "%6u" } },
+      { "data_type": "f", "field": "coeff", "elements": 3, "formats": { "cpp": "%7.4f" } },
+      { "data_type": "I", "field": "unk_20" },
+      { "data_type": "i", "field": "unk_901_1" },
+      { "data_type": "i", "field": "unk_901_2" },
+      { "data_type": "I", "field": "unk_5" },
+      { "data_type": "I", "field": "unk_6" },
+      { "data_type": "h", "field": "amount", "elements": 3, "formats": { "cpp": "%4d" } },
+      { "data_type": "H", "field": "id_aura", "ref": "SpellName" },
+      { "data_type": "H", "field": "slot", "formats": { "cpp": "%3u" } },
+      { "data_type": "H", "field": "req_skill", "formats": { "cpp": "%3u" } },
+      { "data_type": "H", "field": "req_skill_value", "formats": { "cpp": "%3u" } },
+      { "data_type": "H", "field": "min_scaling_level", "formats": { "cpp": "%3u" } },
+      { "data_type": "B", "field": "charges", "formats": { "cpp": "%3u" } },
+      { "data_type": "B", "field": "type", "elements": 3, "formats": { "cpp": "%3u" } },
+      { "data_type": "b", "field": "scaling_type", "formats": { "cpp": "%2d" } },
+      { "data_type": "b", "field": "unk_19" },
+      { "data_type": "B", "field": "unk_15" },
+      { "data_type": "B", "field": "req_player_level", "formats": { "cpp": "%3u" } },
+      { "data_type": "B", "field": "max_scaling_level", "formats": { "cpp": "%3u" } }
+    ]
+  },
+  "SpellLabel": {
+    "parent": "SpellName",
+    "fields": [
+      { "data_type": "I", "field": "label", "formats": { "cpp": "%4d" } }
+    ]
+  },
+  "SpellLevels": {
+    "parent": "SpellName",
+    "fields": [
+      { "data_type": "B", "field": "unk_1" },
+      { "data_type": "h", "field": "max_level" },
+      { "data_type": "B", "field": "req_max_level" },
+      { "data_type": "i", "field": "base_level" },
+      { "data_type": "i", "field": "spell_level" }
+    ]
+  },
+  "SpellMechanic": {
+    "fields": [
+      { "data_type": "I", "field": "mechanic", "formats": { "cpp": "%2u" } }
+    ]
+  },
+  "SpellName": {
+    "fields": [
+      { "data_type": "S", "field": "name", "formats": { "cpp": "%-36s" } }
+    ]
+  },
+  "SpellMisc": {
+    "parent": "SpellName",
+    "fields": [
+      { "data_type": "I", "field": "flags", "elements": 15 },
+      { "data_type": "B", "field": "unk_2" },
+      { "data_type": "H", "field": "id_cast_time", "ref": "SpellCastTimes" },
+      { "data_type": "H", "field": "id_duration", "ref": "SpellDuration" },
+      { "data_type": "H", "field": "id_range", "ref": "SpellRange" },
+      { "data_type": "B", "field": "school" },
+      { "data_type": "f", "field": "proj_speed" },
+      { "data_type": "f", "field": "unk_3" },
+      { "data_type": "f", "field": "unk_1" },
+      { "data_type": "i", "field": "id_icon" },
+      { "data_type": "i", "field": "id_active_icon" },
+      { "data_type": "i", "field": "unk_4" },
+      { "data_type": "i", "field": "unk_901_1" },
+      { "data_type": "i", "field": "unk_901_2" },
+      { "data_type": "i", "field": "unk_901_3" }
+    ]
+  },
+  "SpellPower": {
+    "parent": "SpellName",
+    "fields": [
+      { "data_type": "i", "field": "id",                  "formats": { "cpp": "%5u" } },
+      { "data_type": "B", "field": "unk_5",     "formats": { "cpp": "%4u" } },
+      { "data_type": "i", "field": "cost",                "formats": { "cpp": "%5u" } },
+      { "data_type": "i", "field": "unk_6" },
+      { "data_type": "i", "field": "cost_per_second" },
+      { "data_type": "I", "field": "unk_4" },
+      { "data_type": "i", "field": "unk_3" },
+      { "data_type": "f", "field": "pct_cost",            "formats": { "cpp": "%7.3f" } },
+      { "data_type": "f", "field": "pct_cost_max",        "formats": { "cpp": "%7.3f" } },
+      { "data_type": "f", "field": "pct_cost_per_second", "formats": { "cpp": "%7.3f" } },
+
+      { "data_type": "b", "field": "type_power",          "formats": { "cpp": "%3u" } },
+      { "data_type": "i", "field": "aura_id",             "formats": { "cpp": "%7u" }, "ref": "SpellName" },
+      { "data_type": "I", "field": "cost_max",            "formats": { "cpp": "%4u" } }
+    ]
+  },
+  "SpellProcsPerMinute": {
+    "fields": [
+      { "data_type": "f", "field": "ppm" },
+      { "data_type": "B", "field": "flags" }
+    ]
+  },
+  "SpellProcsPerMinuteMod": {
+    "parent": "SpellProcsPerMinute",
+    "fields": [
+      { "data_type": "b", "field": "unk_1" },
+      { "data_type": "h", "field": "id_chr_spec" },
+      { "data_type": "f", "field": "coefficient" }
+    ]
+  },
+  "SpellRadius": {
+    "fields": [
+      { "data_type": "f", "field": "radius_1" },
+      { "data_type": "f", "field": "unk_1" },
+      { "data_type": "f", "field": "radius_2" },
+      { "data_type": "f", "field": "radius_3" }
+    ]
+  },
+  "SpellRange": {
+    "fields": [
+      { "data_type": "S", "field": "display_name" },
+      { "data_type": "S", "field": "display_name_short" },
+      { "data_type": "B", "field": "flag" },
+      { "data_type": "f", "field": "min_range", "elements": 2 },
+      { "data_type": "f", "field": "max_range", "elements": 2 }
+    ]
+  },
+  "SpellScaling": {
+    "fields": [
+      { "data_type": "i", "field": "id_spell", "ref": "SpellName" },
+      { "data_type": "i", "field": "id_class" },
+      { "data_type": "I", "field": "min_scaling_level" },
+      { "data_type": "I", "field": "max_scaling_level" },
+      { "data_type": "H", "field": "max_scaling_ilevel" }
+    ]
+  },
+  "SpellShapeshift": {
+    "fields": [
+      { "data_type": "i", "field": "id_spell", "ref": "SpellName" },
+      { "data_type": "B", "field": "unk" },
+      { "data_type": "I", "field": "flags_not", "elements": 2 },
+      { "data_type": "I", "field": "flags", "elements": 2, "formats": { "cpp": "%#.8x" } }
+    ]
+  },
+  "SpellTargetRestrictions": {
+    "parent": "SpellName",
+    "fields": [
+      { "data_type": "b", "field": "unk_5" },
+      { "data_type": "f", "field": "cone" },
+      { "data_type": "b", "field": "max_affected_targets" },
+      { "data_type": "i", "field": "max_target_level" },
+      { "data_type": "h", "field": "unk_4" },
+
+      { "data_type": "I", "field": "flags" },
+      { "data_type": "f", "field": "width" }
+    ]
+  },
+  "SpellXDescriptionVariables": {
+    "fields": [
+      { "data_type": "i", "field": "id_spell", "ref": "SpellName", "formats": { "cpp": "%7u" } },
+      { "data_type": "i", "field": "id_desc_var", "ref": "SpellDescriptionVariables" }
+    ]
+  },
+  "TactKey": {
+    "fields": [
+      { "data_type": "B", "field": "key", "elements": 16 }
+    ]
+  },
+  "TactKeyLookup": {
+    "fields": [
+      { "data_type": "B", "field": "key_name", "elements": 8 }
+    ]
+  },
+  "Talent": {
+    "fields": [
+      { "data_type": "S", "field": "desc"                                    },
+      { "data_type": "b", "field": "row",        "formats": { "cpp": "%3u" } },
+      { "data_type": "B", "field": "pet",        "formats": { "cpp": "%3u" } },
+      { "data_type": "B", "field": "col",        "formats": { "cpp": "%3u" } },
+      { "data_type": "B", "field": "class_id"                                },
+      { "data_type": "H", "field": "spec_id",    "formats": { "cpp": "%3u" } },
+      { "data_type": "i", "field": "id_spell",   "formats": { "cpp": "%7u" }, "ref": "SpellName" },
+      { "data_type": "i", "field": "id_replace", "formats": { "cpp": "%7u" }, "ref": "SpellName" },
+
+      { "data_type": "B", "field": "unk", "elements": 2                      }
+    ]
+  },
+  "UICovenantAbility": {
+    "fields": [
+      { "data_type": "i", "field": "id_covenant_preview", "ref": "UICovenantPreview" },
+      { "data_type": "i", "field": "id_spell", "formats": { "cpp": "%6u" }, "ref": "SpellName" },
+      { "data_type": "b", "field": "ability_type" }
+    ]
+  },
+  "UICovenantPreview": {
+    "fields": [
+      { "data_type": "i", "field": "id" },
+      { "data_type": "i", "field": "id_covenant" },
+      { "data_type": "i", "field": "id_ui_map" },
+      { "data_type": "i", "field": "crest" },
+      { "data_type": "i", "field": "id_transmog_set_0" },
+      { "data_type": "i", "field": "texture_kit" },
+      { "data_type": "i", "field": "id_mount" },
+      { "data_type": "i", "field": "id_player_choice_response" },
+      { "data_type": "i", "field": "unk_8" },
+      { "data_type": "i", "field": "unk_9" },
+      { "data_type": "i", "field": "id_transmog_set_1" },
+      { "data_type": "i", "field": "id_transmog_set_2" },
+      { "data_type": "i", "field": "id_transmog_set_3" }
+    ]
+  }
+}
+
+
