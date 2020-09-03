@@ -181,7 +181,7 @@ jobs:
         run: ./engine/simc $SIMC_PROFILE iterations=5 output=/dev/null html=/dev/null json2=/dev/null cleanup_threads=1
         
   windows-VS:
-    name: windows-VS-${{ matrix.cc }}
+    name: windows-VS-${{ matrix.vs }}
     runs-on: windows-latest
     strategy:
       matrix:
@@ -210,4 +210,4 @@ jobs:
 
       - name: Smoke Test
         if: ${{ matrix.runSmokeTest }}
-        run: ${{ matrix.executable }}$env:SIMC_PROFILE iterations=5 output=nul html=nul json2=nul cleanup_threads=1
+        run: ${{ matrix.executable }} $env:SIMC_PROFILE iterations=5 output=nul html=nul json2=nul cleanup_threads=1
