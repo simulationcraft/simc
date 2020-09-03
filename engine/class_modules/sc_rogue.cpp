@@ -6659,7 +6659,8 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
       ->set_tick_behavior( buff_tick_behavior::REFRESH )
       ->set_tick_callback( [ source, target ]( buff_t*, int, timespan_t ) {
         source->active.akaaris_soul_fragment->trigger_secondary_action( target );
-      } );
+      } )
+      ->set_partial_tick( true );
   }
 
   // Register on-demise callback for assassination to perform Venomous Wounds energy replenish on death.
