@@ -425,6 +425,7 @@ public:
     const spell_data_t* garrote_2;
     const spell_data_t* shiv_2;
     const spell_data_t* shiv_2_debuff;
+    const spell_data_t* slice_and_dice_2;
     const spell_data_t* wound_poison_2;
 
     // Outlaw
@@ -5436,6 +5437,7 @@ struct blade_flurry_t : public buff_t
     buff_t( p, "blade_flurry", p -> spec.blade_flurry )
   {
     set_cooldown( timespan_t::zero() );
+    set_default_value_from_effect( 2 );
     apply_affecting_aura( p->talent.dancing_steel );
   }
 
@@ -6157,15 +6159,11 @@ void actions::rogue_action_t<Base>::trigger_blade_flurry( const action_state_t* 
   }
   else
   {
-    // 3/37/2020 -- Dancing Steel increases Blade Flurry by 10% not 5%
+    multiplier = p()->buffs.blade_flurry->check_value();
     if ( p()->bugs )
     {
-      multiplier =
-          p()->spec.blade_flurry->effectN( 2 ).percent() + ( p()->talent.dancing_steel->effectN( 3 ).percent() * 2.0 );
-    }
-    else
-    {
-      multiplier = p()->spec.blade_flurry->effectN( 2 ).percent() + p()->talent.dancing_steel->effectN( 3 ).percent();
+      // 3/37/2020 -- Dancing Steel increases Blade Flurry by 10% not 5%
+      multiplier += p()->talent.dancing_steel->effectN( 3 ).percent();
     }
   }
 
@@ -7761,6 +7759,7 @@ void rogue_t::init_spells()
   spec.garrote_2            = find_specialization_spell( 231719 );
   spec.shiv_2               = find_rank_spell( "Shiv", "Rank 2" );
   spec.shiv_2_debuff        = find_spell( 319504 );
+  spec.slice_and_dice_2     = find_rank_spell( "Slice and Dice", "Rank 2" );
   spec.wound_poison_2       = find_rank_spell( "Wound Poison", "Rank 2" );
 
   // Outlaw
@@ -8172,9 +8171,10 @@ void rogue_t::create_buffs()
   
   // TODO: Possibly refactor into buffs::slice_and_dice_t
   buffs.slice_and_dice        = make_buff( this, "slice_and_dice", spell.slice_and_dice )
-                                -> set_default_value( 1.0 )
-                                -> set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
-                                -> add_invalidate( CACHE_ATTACK_SPEED );
+                                ->set_default_value_from_effect_type( A_MOD_RANGED_AND_MELEE_ATTACK_SPEED )
+                                ->apply_affecting_aura( spec.slice_and_dice_2 )
+                                ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
+                                ->add_invalidate( CACHE_ATTACK_SPEED );
   if ( legendary.celerity.ok() )
   {
     buffs.slice_and_dice->set_period( spell.slice_and_dice->effectN( 2 ).period() );
