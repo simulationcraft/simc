@@ -2786,23 +2786,6 @@ public:
     return spell_t::usable_moving();
   }
 
-  void execute() override
-  {
-    // Adjust buffs and cooldowns if we're in precombat.
-    if ( !p()->in_combat )
-    {
-      if ( p()->buff.incarnation_moonkin->check() )
-      {
-        timespan_t time =
-            std::max( std::max( min_gcd, trigger_gcd * composite_haste() ), base_execute_time * composite_haste() );
-        p()->buff.incarnation_moonkin->extend_duration( p(), -time );
-        p()->cooldown.incarnation->adjust( -time );
-      }
-    }
-
-    ab::execute();
-  }
-
   void proc_shooting_stars( player_t* t )
   {
     if ( !p()->spec.shooting_stars->ok() || !p()->active.shooting_stars )
@@ -5463,40 +5446,18 @@ struct cat_form_t : public druid_spell_t
 
 struct celestial_alignment_t : public druid_spell_t
 {
-  bool precombat;
-
   celestial_alignment_t( druid_t* player, const std::string& options_str )
-    : druid_spell_t( "celestial_alignment", player, player->spec.celestial_alignment, options_str ), precombat( false )
+    : druid_spell_t( "celestial_alignment", player, player->spec.celestial_alignment, options_str )
   {
     harmful = false;
     cooldown->duration *= 1.0 + player->vision_of_perfection_cdr;
-  }
-
-  void init_finished() override
-  {
-    druid_spell_t::init_finished();
-
-    if ( action_list->name_str == "precombat" )
-      precombat = true;
-  }
-
-  void schedule_execute( action_state_t* s ) override
-  {
-    // buff applied first to reduce GCD
-    if ( !precombat )
-      p()->buff.celestial_alignment->trigger();
-
-    druid_spell_t::schedule_execute( s );
   }
 
   void execute() override
   {
     druid_spell_t::execute();
 
-    // Precombat actions skip schedule_execute, so the buff needs to be triggered here for precombat actions.
-    if ( precombat )
-      p()->buff.celestial_alignment->trigger();
-
+    p()->buff.celestial_alignment->trigger();
     p()->uptime.arcanic_pulsar->update( false, sim->current_time() );
     p()->uptime.vision_of_perfection->update( false, sim->current_time() );
 
@@ -5889,7 +5850,6 @@ struct swipe_proxy_t : public druid_spell_t
 struct incarnation_t : public druid_spell_t
 {
   buff_t* spec_buff;
-  bool precombat;
 
   incarnation_t( druid_t* p, const std::string& options_str ) :
     druid_spell_t( "incarnation", p,
@@ -5897,7 +5857,7 @@ struct incarnation_t : public druid_spell_t
       p->specialization() == DRUID_FERAL ? p->talent.incarnation_cat :
       p->specialization() == DRUID_GUARDIAN ? p->talent.incarnation_bear :
       p->specialization() == DRUID_RESTORATION ? p->talent.incarnation_tree :
-      spell_data_t::nil(), options_str ), precombat( false )
+      spell_data_t::nil(), options_str )
   {
     switch ( p->specialization() )
     {
@@ -5922,30 +5882,11 @@ struct incarnation_t : public druid_spell_t
     harmful = false;
   }
 
-  void init_finished() override
-  {
-    druid_spell_t::init_finished();
-
-    if ( action_list->name_str == "precombat" )
-      precombat = true;
-  }
-
-  void schedule_execute( action_state_t* s ) override
-  {
-    // buff applied first to reduce GCD for moonkin
-    if ( !precombat )
-      spec_buff->trigger();
-
-    druid_spell_t::schedule_execute( s );
-  }
-
   void execute() override
   {
     druid_spell_t::execute();
 
-    // Precombat actions skip schedule_execute, so the buff needs to be triggered here for precombat actions.
-    if ( precombat )
-      spec_buff->trigger();
+    spec_buff->trigger();
 
     if ( p()->buff.incarnation_cat->check() )
       p()->buff.jungle_stalker->trigger();
@@ -5956,14 +5897,6 @@ struct incarnation_t : public druid_spell_t
       p()->uptime.vision_of_perfection->update( false, sim->current_time() );
 
       streaking_stars_trigger( SS_CELESTIAL_ALIGNMENT, nullptr );
-    }
-
-    if ( !p()->in_combat )
-    {
-      timespan_t time = std::max( min_gcd, trigger_gcd * composite_haste() );
-
-      spec_buff->extend_duration( p(), -time );
-      cooldown->adjust( -time );
     }
   }
 };
