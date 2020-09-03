@@ -860,6 +860,53 @@ buff_t* buff_t::set_default_value_from_effect( size_t effect, double multiplier 
   return this;
 }
 
+buff_t* buff_t::set_default_value_from_effect_type( effect_subtype_t a_type, property_type_t p_type, double multiplier,
+                                                    effect_type_t e_type )
+{
+  for ( size_t i = 1; i <= s_data->effect_count(); i++ )
+  {
+    const spelleffect_data_t& eff = s_data->effectN( i );
+
+    if ( eff.subtype() != a_type || eff.type() != e_type )
+      continue;
+
+    if ( p_type != property_type_t::P_GENERIC && eff.misc_value1() != p_type )
+      continue;
+
+    if ( !multiplier )
+    {
+      switch ( a_type )
+      {
+        case A_ADD_FLAT_MODIFIER:
+        case A_ADD_FLAT_LABEL_MODIFIER:
+        {
+          switch ( p_type )
+          {
+            case P_DURATION:
+            case P_CAST_TIME:
+            case P_TICK_TIME:
+            case P_GCD:
+              multiplier = 0.001;
+              break;
+            default:
+              multiplier = 1.0;
+              break;
+          }
+        }
+        break;
+        default:
+          multiplier = 0.01;
+          break;
+      }
+    }
+
+    set_default_value( eff.base_value() * multiplier );
+    break;  // break out after matching the first effect
+  }
+
+  return this;
+}
+
 buff_t* buff_t::modify_default_value( double value )
 {
   set_default_value( default_value + value );
