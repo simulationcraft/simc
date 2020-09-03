@@ -1544,7 +1544,7 @@ struct tiger_dash_buff_t : public druid_buff_t<buff_t>
 {
   tiger_dash_buff_t( druid_t& p ) : base_t( p, "tiger_dash", p.talent.tiger_dash )
   {
-    set_default_value_from_effect( 1 );
+    set_default_value_from_effect_type( A_MOD_INCREASE_SPEED );
     set_cooldown( timespan_t::zero() );
     set_tick_callback( []( buff_t* b, int, timespan_t ) { b->current_value -= b->data().effectN( 2 ).percent(); } );
   }
@@ -8171,7 +8171,7 @@ void druid_t::create_buffs()
 
   buff.dash = make_buff( this, "dash", find_class_spell( "Dash" ) )
     ->set_cooldown( 0_ms )
-    ->set_default_value_from_effect( 1 );
+    ->set_default_value_from_effect_type( A_MOD_INCREASE_SPEED );
 
   buff.prowl = make_buff( this, "prowl", find_class_spell( "Prowl" ) );
 
@@ -8229,12 +8229,13 @@ void druid_t::create_buffs()
     } );
 
   buff.ravenous_frenzy = make_buff( this, "ravenous_frenzy", covenant.venthyr )
-    ->set_default_value_from_effect( 4 )
+    //->set_default_value_from_effect_type( A_HASTE_ALL )
     ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
     ->set_cooldown( 0_ms )
     ->set_period( 0_ms )
     ->add_invalidate( CACHE_HASTE )
     ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  buff.ravenous_frenzy->set_default_value_from_effect_type( A_HASTE_ALL );
   if ( conduit.endless_thirst->ok() )
     buff.ravenous_frenzy->add_invalidate( CACHE_CRIT_CHANCE );
 
@@ -8253,7 +8254,7 @@ void druid_t::create_buffs()
 
   buff.incarnation_cat = make_buff( this, "incarnation_king_of_the_jungle", talent.incarnation_cat )
     ->set_cooldown( 0_ms )
-    ->set_default_value_from_effect( 2 );
+    ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_RESOURCE_COST );
 
   buff.jungle_stalker = make_buff( this, "jungle_stalker", talent.incarnation_cat->effectN( 3 ).trigger() );
 
@@ -8285,7 +8286,7 @@ void druid_t::create_buffs()
 
   buff.pulverize = make_buff( this, "pulverize", talent.pulverize )
     ->set_cooldown( 0_ms )
-    ->set_default_value_from_effect( 2 )
+    ->set_default_value_from_effect_type( A_MOD_IGNORE_DAMAGE_REDUCTION_SCHOOL )
     ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
 
   buff.heart_of_the_wild = make_buff( this, "heart_of_the_wild",
@@ -8306,7 +8307,7 @@ void druid_t::create_buffs()
     } );
 
   buff.celestial_alignment = make_buff( this, "celestial_alignment", spec.celestial_alignment )
-    ->set_default_value_from_effect( 1 )
+    ->set_default_value_from_effect_type( A_HASTE_ALL )
     ->set_cooldown( 0_ms )
     ->add_invalidate( CACHE_HASTE )
     ->modify_duration( conduit.precise_alignment.time_value() )
@@ -8324,7 +8325,7 @@ void druid_t::create_buffs()
     } );
 
   buff.incarnation_moonkin = make_buff( this, "incarnation_chosen_of_elune", talent.incarnation_moonkin )
-    ->set_default_value_from_effect( 1 )
+    ->set_default_value_from_effect_type( A_HASTE_ALL )
     ->set_cooldown( 0_ms )
     ->add_invalidate( CACHE_HASTE )
     ->add_invalidate( CACHE_CRIT_CHANCE )
@@ -8350,7 +8351,7 @@ void druid_t::create_buffs()
     ->set_chance( find_rank_spell( "Moonkin Form", "Rank 2" )->effectN( 1 ).percent() );
 
   buff.starlord = make_buff( this, "starlord", find_spell( 279709 ) )
-    ->set_default_value_from_effect( 1 )
+    ->set_default_value_from_effect_type( A_HASTE_ALL )
     ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
     ->add_invalidate( CACHE_HASTE );
 
@@ -8422,7 +8423,7 @@ void druid_t::create_buffs()
   // Guardian
   buff.barkskin = make_buff( this, "barkskin", spec.barkskin )
     ->set_cooldown( 0_ms )
-    ->set_default_value_from_effect( 1 )
+    ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN )
     ->apply_affecting_aura( find_rank_spell( "Barkskin", "Rank 2") )
     ->set_tick_behavior( talent.brambles->ok() ? buff_tick_behavior::REFRESH : buff_tick_behavior::NONE )
     ->set_tick_callback( [this]( buff_t*, int, timespan_t ) {
@@ -8449,7 +8450,7 @@ void druid_t::create_buffs()
     ->set_tick_zero( true );
 
   buff.ironfur = make_buff( this, "ironfur", spec.ironfur )
-    ->set_default_value_from_effect( 1 )
+    ->set_default_value_from_effect_type( A_MOD_ATTACK_POWER_OF_STAT_PERCENT )
     ->add_invalidate( CACHE_ARMOR )
     ->add_invalidate( CACHE_AGILITY )
     ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
