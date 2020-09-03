@@ -51,15 +51,17 @@ class XFTHParser(DBCParserBase):
         if record_id >= len(self.entries[sig]):
             return dbc.EMPTY_RECORD
 
-        dbc_id = self.entries[sig][record_id]['record_id']
+        entry = self.entries[sig][record_id]
+
+        dbc_id = entry['record_id']
         key_id = 0
         if wdb_parser.has_key_block() and wdb_parser.has_id_block() and dbc_id <= wdb_parser.last_id:
             real_record_info = wdb_parser.get_dbc_info(dbc_id)
             if real_record_info:
                 key_id = real_record_info.parent_id
 
-        return DBCRecordInfo(dbc_id, self.entries[sig][record_id]['offset'],
-                self.entries[sig][record_id]['length'], key_id, 0)
+        return DBCRecordInfo(dbc_id, entry['offset'],
+                entry['length'], key_id, 0)
 
     def get_record(self, dbc_id, offset, size, wdb_parser):
         sig = wdb_parser.table_hash
@@ -90,20 +92,13 @@ class XFTHParser(DBCParserBase):
         return len(self.data)
 
     def parse_blocks(self):
-        if self.options.build < dbc.WowVersion(8, 1, 5, 0):
-            entry_unpacker = struct.Struct('<4sIiIIIB3s')
-        else:
-            entry_unpacker = struct.Struct('<4sIIIIB3s')
+        entry_unpacker = struct.Struct('<4sIIIIB3s')
 
         n_entries = 0
         all_entries = []
         while self.parse_offset < len(self.data):
-            if self.options.build < dbc.WowVersion(8, 1, 5, 0):
-                magic, game_type, unk_2, length, sig, record_id, enabled, pad = \
-                        entry_unpacker.unpack_from(self.data, self.parse_offset)
-            else:
-                magic, unk_2, sig, record_id, length, enabled, pad = \
-                        entry_unpacker.unpack_from(self.data, self.parse_offset)
+            magic, unk_2, sig, record_id, length, state, pad = \
+                    entry_unpacker.unpack_from(self.data, self.parse_offset)
 
             if magic != b'XFTH':
                 logging.error('Invalid hotfix magic %s', magic.decode('utf-8'))
@@ -114,40 +109,30 @@ class XFTHParser(DBCParserBase):
             entry = {
                 'record_id': record_id,
                 'unk_2': unk_2,
-                'enabled': enabled,
+                'state': state,
                 'length': length,
                 'offset': self.parse_offset,
                 'sig': sig,
                 'pad': codecs.encode(pad, 'hex').decode('utf-8')
             }
 
-            if self.options.build < dbc.WowVersion(8, 1, 5, 0):
-                entry['game_type'] = game_type
-
             if sig not in self.entries:
                 self.entries[sig] = []
 
-            if enabled:
+            if state == 1 and length > 0:
                 self.entries[sig].append(entry)
-                all_entries.append(entry)
+            all_entries.append(entry)
 
             # Skip data
             self.parse_offset += length
             n_entries += 1
 
         if self.options.debug:
-            if self.options.build < dbc.WowVersion(8, 1, 5, 0):
-                for entry in sorted(all_entries, key = lambda e: (e['unk_2'], e['sig'], e['record_id'])):
-                    logging.debug('entry: { %s }',
-                        ('record_id=%(record_id)-6u game_type=%(game_type)u table_hash=%(sig)#.8x ' +
-                         'unk_2=%(unk_2)-5u enabled=%(enabled)u, unk_4=%(unk_4)-3u unk_5=%(unk_5)-3u ' +
-                         'unk_6=%(unk_6)-3u length=%(length)-3u offset=%(offset)-7u') % entry)
-            else:
-                for entry in sorted(all_entries, key = lambda e: (e['sig'], e['record_id'])):
-                    logging.debug('entry: { %s }',
-                            ('record_id=%(record_id)-6u table_hash=%(sig)#.8x ' +
-                             'unk_2=%(unk_2)#.8x enabled=%(enabled)u ' +
-                             'length=%(length)-3u pad=%(pad)-6s offset=%(offset)-7u') % entry)
+            for entry in sorted(all_entries, key = lambda e: (e['sig'], e['record_id'])):
+                logging.debug('entry: { %s }',
+                        ('record_id=%(record_id)-6u table_hash=%(sig)#.8x ' +
+                            'unk_2=%(unk_2)#.8x state=%(state)u ' +
+                            'length=%(length)-3u pad=%(pad)-6s offset=%(offset)-7u') % entry)
 
         logging.debug('Parsed %d hotfix entries', n_entries)
 
