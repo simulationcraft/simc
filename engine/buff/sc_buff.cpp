@@ -494,6 +494,8 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, util::string_vie
     _max_stack( -1 ),
     trigger_data( s_data ),
     default_value( DEFAULT_VALUE() ),
+    default_value_effect_idx( 0 ),
+    default_value_effect_multiplier( 1.0 ),
     activated( true ),
     reactable( false ),
     reverse(),
@@ -848,24 +850,34 @@ buff_t* buff_t::add_invalidate( cache_e c )
   return this;
 }
 
-buff_t* buff_t::set_default_value( double value )
+buff_t* buff_t::set_default_value( double value, size_t effect_idx )
 {
+  // Ensure we are not errantly overwriting a value that is already set to a given effect
+  assert( default_value_effect_idx == 0 || default_value_effect_idx == effect_idx );
+  
   default_value = value;
+  default_value_effect_idx = effect_idx;
   return this;
 }
 
-buff_t* buff_t::set_default_value_from_effect( size_t effect, double multiplier )
+buff_t* buff_t::set_default_value_from_effect( size_t effect_idx, double multiplier )
 {
-  set_default_value( s_data->effectN( effect ).base_value() * multiplier );
+  if ( !s_data->ok() )
+    return this;
+
+  assert( effect_idx > 0 && effect_idx <= s_data->effect_count() );
+  
+  set_default_value( s_data->effectN( effect_idx ).base_value() * multiplier, effect_idx );
+  default_value_effect_multiplier = multiplier;
   return this;
 }
 
 buff_t* buff_t::set_default_value_from_effect_type( effect_subtype_t a_type, property_type_t p_type, double multiplier,
                                                     effect_type_t e_type )
 {
-  for ( size_t i = 1; i <= s_data->effect_count(); i++ )
+  for ( size_t idx = 1; idx <= s_data->effect_count(); idx++ )
   {
-    const spelleffect_data_t& eff = s_data->effectN( i );
+    const spelleffect_data_t& eff = s_data->effectN( idx );
 
     if ( eff.subtype() != a_type || eff.type() != e_type )
       continue;
@@ -875,35 +887,11 @@ buff_t* buff_t::set_default_value_from_effect_type( effect_subtype_t a_type, pro
 
     if ( !multiplier )
     {
-      switch ( a_type )
-      {
-        case A_ADD_FLAT_MODIFIER:
-        case A_ADD_FLAT_LABEL_MODIFIER:
-        {
-          switch ( p_type )
-          {
-            case P_DURATION:
-            case P_CAST_TIME:
-            case P_TICK_TIME:
-            case P_GCD:
-              multiplier = 0.001;
-              break;
-            default:
-              multiplier = 1.0;
-              break;
-          }
-        }
-          break;
-        case A_MOD_MASTERY_PCT:
-          multiplier = 1.0;
-          break;
-        default:
-          multiplier = 0.01;
-          break;
-      }
+      multiplier = eff.default_multiplier();
     }
 
-    set_default_value( eff.base_value() * multiplier );
+    set_default_value( eff.base_value() * multiplier, idx );
+    default_value_effect_multiplier = multiplier;
     return this;  // return out after matching the first effect
   }
 
@@ -917,9 +905,9 @@ buff_t* buff_t::set_default_value_from_effect_type( effect_subtype_t a_type, pro
   return this;
 }
 
-buff_t* buff_t::modify_default_value( double value )
+buff_t* buff_t::modify_default_value( double value, size_t effect_idx )
 {
-  set_default_value( default_value + value );
+  set_default_value( default_value + value, effect_idx );
   return this;
 }
 
@@ -1107,7 +1095,15 @@ buff_t* buff_t::apply_affecting_effect( const spelleffect_data_t& effect )
     }
   }
 
-  auto apply_flat_modifier = [ this ]( const spelleffect_data_t& effect ) {
+  auto apply_flat_effect_modifier = [ this ]( const spelleffect_data_t& effect ) {
+    assert( default_value_effect_idx > 0 && default_value_effect_idx <= s_data->effect_count() );
+    // Fetch the default multiplier from the current effect to multiply the flat value before applying
+    // Ensures the flat modifier is 'calibrated' to the multiplier used in the default value correctly
+    modify_default_value( effect.base_value() * default_value_effect_multiplier, default_value_effect_idx );
+    sim->print_debug( "{} default effect modified by {} to {}", *this, effect.base_value() * default_value_effect_multiplier, default_value );
+  };
+
+  auto apply_flat_modifier = [ this, apply_flat_effect_modifier ]( const spelleffect_data_t& effect ) {
     switch ( effect.misc_value1() )
     {
       case P_DURATION:
@@ -1128,12 +1124,38 @@ buff_t* buff_t::apply_affecting_effect( const spelleffect_data_t& effect )
         sim->print_debug( "{} maximum stacks modified by {}", *this, effect.base_value() );
         break;
 
+      case P_EFFECT_1:
+        if ( default_value_effect_idx == 1 )
+          apply_flat_effect_modifier( effect );
+
+      case P_EFFECT_2:
+        if ( default_value_effect_idx == 2 )
+          apply_flat_effect_modifier( effect );
+
+      case P_EFFECT_3:
+        if ( default_value_effect_idx == 3 )
+          apply_flat_effect_modifier( effect );
+
+      case P_EFFECT_4:
+        if ( default_value_effect_idx == 4 )
+          apply_flat_effect_modifier( effect );
+
+      case P_EFFECT_5:
+        if ( default_value_effect_idx == 5 )
+          apply_flat_effect_modifier( effect );
+
       default:
         break;
     }
   };
 
-  auto apply_percent_modifier = [ this ]( const spelleffect_data_t& effect ) {
+  auto apply_percent_effect_modifier = [ this ]( const spelleffect_data_t& effect ) {
+    assert( default_value_effect_idx > 0 && default_value_effect_idx <= s_data->effect_count() );
+    set_default_value( default_value * effect.percent(), default_value_effect_idx );
+    sim->print_debug( "{} default effect modified by {}% to {}", *this, effect.percent(), default_value );
+  };
+
+  auto apply_percent_modifier = [ this, apply_percent_effect_modifier ]( const spelleffect_data_t& effect ) {
     switch ( effect.misc_value1() )
     {
       case P_DURATION:
@@ -1148,6 +1170,26 @@ buff_t* buff_t::apply_affecting_effect( const spelleffect_data_t& effect )
         //  set_cooldown( timespan_t::zero() );
         //sim->print_debug( "{} cooldown recharge multiplier modified by {}%", *this, effect.base_value() );
         break;
+
+      case P_EFFECT_1:
+        if ( default_value_effect_idx == 1 )
+          apply_percent_effect_modifier( effect );
+
+      case P_EFFECT_2:
+        if ( default_value_effect_idx == 2 )
+          apply_percent_effect_modifier( effect );
+
+      case P_EFFECT_3:
+        if ( default_value_effect_idx == 3 )
+          apply_percent_effect_modifier( effect );
+
+      case P_EFFECT_4:
+        if ( default_value_effect_idx == 4 )
+          apply_percent_effect_modifier( effect );
+
+      case P_EFFECT_5:
+        if ( default_value_effect_idx == 5 )
+          apply_percent_effect_modifier( effect );
 
       default:
         break;

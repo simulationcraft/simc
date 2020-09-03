@@ -75,6 +75,9 @@ private: // private because changing max_stacks requires resizing some stack-dep
 
 public:
   double default_value;
+  size_t default_value_effect_idx;
+  double default_value_effect_multiplier;
+
   /**
    * Is buff manually activated or not (eg. a proc).
    * non-activated player buffs have a delayed trigger event
@@ -307,13 +310,13 @@ public:
   //virtual buff_t* set_chance( double chance );
   buff_t* set_quiet( bool quiet );
   buff_t* add_invalidate( cache_e );
-  buff_t* set_default_value( double );
+  buff_t* set_default_value( double, size_t = 0 );
   buff_t* set_default_value_from_effect( size_t, double = 0.01 );
   buff_t* set_default_value_from_effect_type( effect_subtype_t a_type,
                                               property_type_t p_type = P_GENERIC,
                                               double multiplier      = 0.0,
                                               effect_type_t e_type   = E_APPLY_AURA );
-  buff_t* modify_default_value( double );
+  buff_t* modify_default_value( double, size_t = 0 );
   buff_t* set_reverse( bool );
   buff_t* set_activated( bool );
   buff_t* set_can_cancel( bool cc );
