@@ -137,8 +137,7 @@ void grove_invigoration( special_effect_t& effect )
   {
     redirected_anima_buff_t( player_t* p ) : buff_t( p, "redirected_anima", p->find_spell( 342814 ) )
     {
-      // Mastery is stored in 'points' so use base_value() instead of percent()
-      set_default_value_from_effect( 2, 1.0 );
+      set_default_value_from_effect_type( A_MOD_MASTERY_PCT );
       add_invalidate( CACHE_MASTERY );
     }
 
@@ -175,7 +174,7 @@ void field_of_blossoms( special_effect_t& effect )
     effect.player->buffs.field_of_blossoms =
         make_buff( effect.player, "field_of_blossoms", effect.player->find_spell( 342774 ) )
             ->set_cooldown( effect.player->find_spell( 342781 )->duration() )
-            ->set_default_value_from_effect( 1 )
+            ->set_default_value_from_effect_type( A_HASTE_ALL )
             ->add_invalidate( CACHE_HASTE );
   }
 
@@ -192,7 +191,7 @@ void social_butterfly( special_effect_t& effect )
     social_butterfly_buff_t( player_t* p ) : buff_t( p, "social_butterfly", p->find_spell( 320212 ) )
     {
       add_invalidate( CACHE_VERSATILITY );
-      set_default_value_from_effect( 1 );
+      set_default_value_from_effect_type( A_MOD_VERSATILITY_PCT );
     }
 
     void expire_override( int s, timespan_t d ) override
@@ -239,7 +238,7 @@ void first_strike( special_effect_t& effect )
   if ( !effect.player->buffs.first_strike )
   {
     effect.player->buffs.first_strike = make_buff( effect.player, "first_strike", effect.player->find_spell( 325381 ) )
-      ->set_default_value_from_effect( 1 )
+      ->set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE )
       ->add_invalidate( CACHE_CRIT_CHANCE );
   }
 
@@ -301,7 +300,7 @@ void thrill_seeker( special_effect_t& effect )
   if ( !effect.player->buffs.euphoria )
   {
     effect.player->buffs.euphoria = make_buff( effect.player, "euphoria", effect.player->find_spell( 331937 ) )
-      ->set_default_value_from_effect( 1 )
+      ->set_default_value_from_effect_type( A_HASTE_ALL )
       ->add_invalidate( CACHE_HASTE );
   }
 
@@ -346,7 +345,7 @@ void wasteland_propriety( special_effect_t& effect )
     effect.player->buffs.wasteland_propriety =
         make_buff( effect.player, "wasteland_propriety", effect.player->find_spell( 333218 ) )
             ->set_cooldown( effect.player->find_spell( 333221 )->duration() )
-            ->set_default_value_from_effect( 1 )
+            ->set_default_value_from_effect_type( A_MOD_VERSATILITY_PCT )
             ->add_invalidate( CACHE_VERSATILITY );
   }
 
@@ -362,7 +361,7 @@ void built_for_war( special_effect_t& effect )
   {
     effect.player->buffs.built_for_war =
         make_buff( effect.player, "built_for_war", effect.player->find_spell( 332842 ) )
-            ->set_default_value_from_effect( 1 )
+            ->set_default_value_from_effect_type( A_MOD_PERCENT_STAT )
             ->add_invalidate( CACHE_STRENGTH )
             ->add_invalidate( CACHE_AGILITY )
             ->add_invalidate( CACHE_INTELLECT );
@@ -418,7 +417,7 @@ void let_go_of_the_past( special_effect_t& effect )
   {
     effect.player->buffs.let_go_of_the_past =
         make_buff( effect.player, "let_go_of_the_past", effect.player->find_spell( 328900 ) )
-            ->set_default_value_from_effect( 1 )
+            ->set_default_value_from_effect_type( A_MOD_VERSATILITY_PCT )
             ->add_invalidate( CACHE_VERSATILITY );
   }
 
@@ -442,7 +441,7 @@ void combat_meditation( special_effect_t& effect )
       : buff_t( p, "combat_meditation", p->find_spell( 328908 ) ),
         ext_dur( timespan_t::from_seconds( p->find_spell( 328913 )->effectN( 2 ).base_value() ) )
     {
-      set_default_value_from_effect( 1, 1.0 );
+      set_default_value_from_effect_type( A_MOD_MASTERY_PCT );
       add_invalidate( CACHE_MASTERY );
       // TODO: add more faithful simulation of delay/reaction needed from player to walk into the sorrowful memories
       set_tick_callback( [this]( buff_t*, int, timespan_t ) {
@@ -467,7 +466,7 @@ void pointed_courage( special_effect_t& effect )
   {
     effect.player->buffs.pointed_courage =
         make_buff( effect.player, "pointed_courage", effect.player->find_spell( 330511 ) )
-            ->set_default_value_from_effect( 1 )
+            ->set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE )
             ->add_invalidate( CACHE_CRIT_CHANCE )
             // TODO: add better handling of allies/enemies nearby mechanic which is checked every tick. tick is disabled
             // for now
@@ -510,7 +509,7 @@ void hammer_of_genesis( special_effect_t& effect )
   {
     effect.player->buffs.hammer_of_genesis =
         make_buff( effect.player, "hammer_of_genesis", effect.player->find_spell( 333943 ) )
-            ->set_default_value_from_effect( 1 )
+            ->set_default_value_from_effect_type( A_HASTE_ALL )
             ->add_invalidate( CACHE_HASTE );
   }
 
@@ -582,7 +581,7 @@ void gnashing_chompers( special_effect_t& effect )
   if ( !buff )
   {
     buff = make_buff( effect.player, "gnashing_chompers", effect.player->find_spell( 324242 ) )
-      ->set_default_value_from_effect( 1 )
+      ->set_default_value_from_effect_type( A_HASTE_ALL )
       ->add_invalidate( CACHE_HASTE )
       ->set_period( 0_ms )
       ->set_refresh_behavior( buff_refresh_behavior::DURATION );
@@ -616,7 +615,7 @@ void heirmirs_arsenal_marrowed_gemstone( special_effect_t& effect )
   {
     effect.player->buffs.marrowed_gemstone_enhancement =
         make_buff( effect.player, "marrowed_gemstone_enhancement", effect.player->find_spell( 327069 ) )
-            ->set_default_value_from_effect( 1 )
+            ->set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE )
             ->add_invalidate( CACHE_CRIT_CHANCE );
     // TODO: confirm if cooldown applies only to the crit buff, or to the counter as well
     effect.player->buffs.marrowed_gemstone_enhancement->set_cooldown(
@@ -710,8 +709,8 @@ void register_target_data_initializers( sim_t* sim )
     {
       assert( !td->debuff.adversary );
 
-      td->debuff.adversary =
-          make_buff( *td, "adversary", td->source->find_spell( 331934 ) )->set_default_value_from_effect( 1 );
+      td->debuff.adversary = make_buff( *td, "adversary", td->source->find_spell( 331934 ) )
+        ->set_default_value_from_effect_type( A_MOD_DAMAGE_FROM_CASTER );
       td->debuff.adversary->reset();
     }
     else
@@ -726,7 +725,7 @@ void register_target_data_initializers( sim_t* sim )
 
       td->debuff.plagueys_preemptive_strike =
           make_buff( *td, "plagueys_preemptive_strike", td->source->find_spell( 323416 ) )
-              ->set_default_value_from_effect( 1 );
+              ->set_default_value_from_effect_type( A_MOD_DAMAGE_FROM_CASTER );
       td->debuff.plagueys_preemptive_strike->reset();
     }
     else

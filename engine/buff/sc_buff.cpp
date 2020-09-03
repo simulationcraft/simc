@@ -893,7 +893,10 @@ buff_t* buff_t::set_default_value_from_effect_type( effect_subtype_t a_type, pro
               break;
           }
         }
-        break;
+          break;
+        case A_MOD_MASTERY_PCT:
+          multiplier = 1.0;
+          break;
         default:
           multiplier = 0.01;
           break;
