@@ -6071,7 +6071,7 @@ void hunter_t::create_buffs()
       -> set_cooldown( 0_ms )
       -> set_activated( true )
       -> set_default_value_from_effect( 1 )
-      -> modify_default_value( conduits.one_with_the_beast.percent() );
+      -> apply_affecting_conduit( conduits.one_with_the_beast );
   if ( talents.spitting_cobra.ok() )
   {
     timespan_t duration = find_spell( 194407 ) -> duration();
@@ -6125,7 +6125,7 @@ void hunter_t::create_buffs()
   buffs.precise_shots =
     make_buff( this, "precise_shots", find_spell( 260242 ) )
       -> set_default_value_from_effect( 1 )
-      -> modify_default_value( conduits.powerful_precision.percent() );
+      -> apply_affecting_conduit( conduits.powerful_precision );
 
   buffs.steady_focus =
     make_buff( this, "steady_focus", find_spell( 193534 ) )

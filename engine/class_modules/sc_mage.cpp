@@ -5678,7 +5678,7 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
   debuffs.mirrors_of_torment          = make_buff<buffs::mirrors_of_torment_t>( this );
   debuffs.radiant_spark_vulnerability = make_buff( *this, "radiant_spark_vulnerability", mage->find_spell( 307454 ) )
                                           ->set_default_value_from_effect( 1 )
-                                          ->modify_default_value( mage->conduits.ire_of_the_ascended.percent() );
+                                          ->apply_affecting_conduit( mage->conduits.ire_of_the_ascended );
 
   // Azerite
   debuffs.packed_ice = make_buff( *this, "packed_ice", mage->find_spell( 272970 ) )
@@ -6270,7 +6270,7 @@ void mage_t::create_buffs()
   buffs.arcane_power         = make_buff( this, "arcane_power", find_spell( 12042 ) )
                                  ->set_cooldown( 0_ms )
                                  ->set_default_value_from_effect( 1 )
-                                 ->modify_default_value( talents.overpowered->effectN( 1 ).percent() )
+                                 ->apply_affecting_aura( talents.overpowered )
                                  ->modify_duration( spec.arcane_power_3->effectN( 1 ).time_value() );
   buffs.clearcasting         = make_buff<buffs::expanded_potential_buff_t>( this, "clearcasting", find_spell( 263725 ) )
                                  ->set_default_value_from_effect( 1 )
