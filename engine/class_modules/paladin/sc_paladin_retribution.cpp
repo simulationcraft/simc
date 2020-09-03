@@ -77,9 +77,6 @@ struct crusade_t : public paladin_spell_t
 
     if ( p() -> azerite.avengers_might.ok() )
       p() -> buffs.avengers_might -> trigger( 1, p() -> buffs.avengers_might -> default_value, -1.0, p() -> buffs.crusade -> buff_duration() );
-
-    if ( p() -> legendary.liadrins_fury_reborn -> ok() )
-      p() -> resource_gain( RESOURCE_HOLY_POWER, p() -> legendary.liadrins_fury_reborn -> effectN( 1 ).base_value(), p() -> gains.liadrins_fury_reborn );
   }
 };
 
@@ -473,6 +470,11 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
 
     if ( p -> legendary.badge_of_the_mad_paragon -> ok() )
       base_multiplier *= 1.0 + p -> legendary.badge_of_the_mad_paragon -> effectN( 2 ).percent();
+
+    if ( p -> legendary.vanguards_momentum -> ok() )
+    {
+      cooldown -> charges += p -> legendary.vanguards_momentum -> effectN( 1 ).base_value();
+    }
   }
 
   bool target_ready( player_t* candidate_target ) override

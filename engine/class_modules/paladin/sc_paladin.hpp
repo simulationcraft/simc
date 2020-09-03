@@ -203,7 +203,6 @@ public:
     gain_t* judgment;
     gain_t* hp_cs;
     gain_t* hp_memory_of_lucid_dreams;
-    gain_t* liadrins_fury_reborn;
   } gains;
 
   // Spec Passives
@@ -428,7 +427,7 @@ public:
   } covenant;
 
   struct legendaries_t {
-    item_runeforge_t liadrins_fury_reborn;
+    item_runeforge_t vanguards_momentum;
     item_runeforge_t badge_of_the_mad_paragon;
     item_runeforge_t final_verdict;
     item_runeforge_t from_dusk_till_dawn;

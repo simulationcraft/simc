@@ -174,9 +174,6 @@ struct avenging_wrath_t : public paladin_spell_t
       p() -> buffs.avengers_might -> trigger( 1, p() -> buffs.avengers_might -> default_value, -1.0, p() -> buffs.avenging_wrath -> buff_duration() );
 
     p() -> buffs.avenging_wrath_autocrit -> trigger();
-
-    if ( p() -> legendary.liadrins_fury_reborn -> ok() )
-      p() -> resource_gain( RESOURCE_HOLY_POWER, p() -> legendary.liadrins_fury_reborn -> effectN( 1 ).base_value(), p() -> gains.liadrins_fury_reborn );
   }
 };
 
@@ -1221,9 +1218,6 @@ void paladin_t::trigger_forbearance( player_t* target )
 
   buff -> paladin = this;
   buff -> trigger();
-
-  if ( legendary.liadrins_fury_reborn -> ok() )
-    resource_gain( RESOURCE_HOLY_POWER, legendary.liadrins_fury_reborn -> effectN( 1 ).base_value(), gains.liadrins_fury_reborn );
 }
 
 void paladin_t::trigger_memory_of_lucid_dreams( double cost )
@@ -1386,7 +1380,6 @@ void paladin_t::init_gains()
   gains.judgment                    = get_gain( "judgment" );
   gains.hp_cs                       = get_gain( "crusader_strike" );
   gains.hp_memory_of_lucid_dreams   = get_gain( "memory_of_lucid_dreams" );
-  gains.liadrins_fury_reborn        = get_gain( "liadrins_fury_reborn" );
 }
 
 // paladin_t::init_procs ====================================================
@@ -1730,7 +1723,7 @@ void paladin_t::init_spells()
   azerite_essence.vision_of_perfection = find_azerite_essence( "Vision of Perfection" );
 
   // Shadowlands legendaries
-  legendary.liadrins_fury_reborn = find_runeforge_legendary( "Liadrin's Fury Reborn" );
+  legendary.vanguards_momentum = find_runeforge_legendary( "Vanguard's Momentum" );
   legendary.badge_of_the_mad_paragon = find_runeforge_legendary( "Badge of the Mad Paragon" );
   legendary.final_verdict = find_runeforge_legendary( "Final Verdict" );
   legendary.from_dusk_till_dawn = find_runeforge_legendary( "From Dusk till Dawn" );
