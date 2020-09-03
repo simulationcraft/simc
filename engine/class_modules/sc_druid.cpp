@@ -1934,17 +1934,40 @@ public:
     {
       switch ( eff->misc_value1() )
       {
-        case P_GENERIC:       da_multiplier_buffeffects.push_back( buff_effect_t( buff, val, mastery ) ); break;
-        case P_TICK_DAMAGE:   ta_multiplier_buffeffects.push_back( buff_effect_t( buff, val, mastery ) ); break;
-        case P_CAST_TIME:     execute_time_buffeffects.push_back( buff_effect_t( buff, val ) );           break;
-        case P_COOLDOWN:      recharge_multiplier_buffeffects.push_back( buff_effect_t( buff, val ) );    break;
-        case P_RESOURCE_COST: cost_buffeffects.push_back( buff_effect_t( buff, val ) );                   break;
-        default: break;
+        case P_GENERIC:
+          da_multiplier_buffeffects.push_back( buff_effect_t( buff, val, mastery ) );
+          p()->sim->print_debug( "buff-effects: {} direct damage modified by {}%{} with buff {}", ab::name(),
+                                 val * 100.0, mastery ? "+mastery" : "" , buff->name() );
+          break;
+        case P_TICK_DAMAGE:
+          ta_multiplier_buffeffects.push_back( buff_effect_t( buff, val, mastery ) );
+          p()->sim->print_debug( "buff-effects: {} tick damage modified by {}%{} with buff {}", ab::name(),
+                                 val * 100.0, mastery ? "+mastery" : "" , buff->name() );
+          break;
+        case P_CAST_TIME:
+          execute_time_buffeffects.push_back( buff_effect_t( buff, val ) );
+          p()->sim->print_debug( "buff-effects: {} cast time modified by {}% with buff {}", ab::name(),
+                                 val * 100.0, buff->name() );
+          break;
+        case P_COOLDOWN:
+          recharge_multiplier_buffeffects.push_back( buff_effect_t( buff, val ) );
+          p()->sim->print_debug( "buff-effects: {} cooldown modified by {}% with buff {}", ab::name(),
+                                 val * 100.0, buff->name() );
+          break;
+        case P_RESOURCE_COST:
+          cost_buffeffects.push_back( buff_effect_t( buff, val ) );
+          p()->sim->print_debug( "buff-effects: {} cost modified by {}% with buff {}", ab::name(),
+                                 val * 100.0, buff->name() );
+          break;
+        default:
+          break;
       }
     }
     else if ( eff->subtype() == A_ADD_FLAT_MODIFIER && eff->misc_value1() == P_CRIT )
     {
       crit_chance_buffeffects.push_back( buff_effect_t( buff, val ) );
+      p()->sim->print_debug( "buff-effects: {} crit chance modified by {}% with buff {}", ab::name(),
+                             val * 100.0, buff->name() );
     }
   }
 
@@ -2085,6 +2108,8 @@ public:
            !( eff->subtype() == A_MOD_AUTO_ATTACK_FROM_CASTER && is_auto_attack ) )
         continue;
 
+      p()->sim->print_debug( "dot-debuffs: {} damage modified by {}% on targets with dot {}", ab::name(),
+                             val * 100.0, s_data->name_cstr() );
       target_multiplier_dotdebuffs.push_back( dot_debuff_t( func, val, use_stacks ) );
     }
   }
@@ -3287,14 +3312,16 @@ public:
 
     if ( data().affected_by( p->mastery.razor_claws->effectN( 1 ) ) )
     {
-      da_multiplier_buffeffects.push_back(
-          buff_effect_t( nullptr, p->mastery.razor_claws->effectN( 1 ).percent(), true ) );
+      auto val = p->mastery.razor_claws->effectN( 1 ).percent();
+      da_multiplier_buffeffects.push_back( buff_effect_t( nullptr, val, true ) );
+      p->sim->print_debug( "buff-effects: {} direct damage modified by {}%+mastery", name(), val * 100.0 );
     }
 
     if ( data().affected_by( p->mastery.razor_claws->effectN( 2 ) ) )
     {
-      ta_multiplier_buffeffects.push_back(
-          buff_effect_t( nullptr, p->mastery.razor_claws->effectN( 2 ).percent(), true ) );
+      auto val = p->mastery.razor_claws->effectN( 2 ).percent();
+      ta_multiplier_buffeffects.push_back( buff_effect_t( nullptr, val , true ) );
+      p->sim->print_debug( "buff-effects: {} tick damage modified by {}%+mastery", name(), val * 100.0 );
     }
   }
 
@@ -3393,6 +3420,8 @@ public:
       double ta_val = ta_multiplier_buffeffects.back().value;
       double da_val = 0;
 
+      p()->sim->print_debug( "persistent-buffs: {} damage modified by {}% with buff {}", name(),
+                             ta_val * 100.0, buff->name() );
       persistent_multiplier_buffeffects.push_back( ta_multiplier_buffeffects.back() );
       ta_multiplier_buffeffects.pop_back();
 
