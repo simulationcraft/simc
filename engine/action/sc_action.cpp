@@ -4753,6 +4753,19 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
         sim->print_debug( "{} base_dd_multiplier modified by {}%", *this, effect.base_value() );
         break;
 
+      case P_DURATION:
+        if ( base_tick_time > timespan_t::zero() )
+        {
+          dot_duration *= 1.0 + effect.percent();
+          sim->print_debug( "{} duration modified by {}%", *this, effect.base_value() );
+        }
+        if ( ground_aoe_duration > timespan_t::zero() )
+        {
+          ground_aoe_duration *= 1.0 + effect.percent();
+          sim->print_debug( "{} ground aoe duration modified by {}%", *this, effect.base_value() );
+        }
+        break;
+
       case P_COOLDOWN:
         base_recharge_multiplier *= 1.0 + effect.percent();
         if ( base_recharge_multiplier <= 0 )
@@ -4764,6 +4777,14 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
         base_costs[ resource_current ] *= 1.0 + effect.percent();
         sim->print_debug( "{} base resource cost for resource {} modified by {}", *this,
                           resource_current, effect.base_value() );
+        break;
+
+      case P_TICK_TIME:
+        if ( base_tick_time > timespan_t::zero() )
+        {
+          base_tick_time *= 1.0 + effect.percent();
+          sim->print_debug( "{} base tick time modified by {}%", *this, effect.base_value() );
+        }
         break;
 
       case P_TICK_DAMAGE:
