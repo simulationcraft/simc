@@ -348,7 +348,6 @@ public:
 
     // Enhancement
     buff_t* crash_lightning;
-    buff_t* feral_spirit;
     buff_t* hot_hand;
     buff_t* lightning_shield;
     buff_t* stormbringer;
@@ -4540,11 +4539,9 @@ struct earthquake_t : public shaman_spell_t
 // Earth Shock Spell ========================================================
 struct earth_shock_t : public shaman_spell_t
 {
-  action_t* t21_4pc;
 
   earth_shock_t( shaman_t* player, const std::string& options_str )
-    : shaman_spell_t( "earth_shock", player, player->find_specialization_spell( "Earth Shock" ), options_str ),
-      t21_4pc( nullptr )
+    : shaman_spell_t( "earth_shock", player, player->find_specialization_spell( "Earth Shock" ), options_str )
   {
     // hardcoded because spelldata doesn't provide the resource type
     resource_current                   = RESOURCE_MAELSTROM;
@@ -6080,7 +6077,6 @@ void shaman_t::summon_feral_spirits( timespan_t duration )
   if ( !talent.elemental_spirits->ok() )
   {
     pet.spirit_wolves.spawn( duration, 2u );
-    buff.feral_spirit->trigger();
     return;
   }
 
@@ -6492,9 +6488,6 @@ void shaman_t::create_buffs()
   buff.gathering_storms = new gathering_storms_buff_t( this );
 
   buff.crash_lightning = make_buff( this, "crash_lightning", find_spell( 187878 ) );
-  buff.feral_spirit =
-      make_buff( this, "t17_4pc_melee", sets->set( SHAMAN_ENHANCEMENT, T17, B4 )->effectN( 1 ).trigger() )
-          ->set_cooldown( timespan_t::zero() );
   buff.hot_hand =
       make_buff( this, "hot_hand", talent.hot_hand->effectN( 1 ).trigger() )->set_trigger_spell( talent.hot_hand );
   buff.spirit_walk  = make_buff( this, "spirit_walk", find_specialization_spell( "Spirit Walk" ) );
@@ -7038,9 +7031,6 @@ double shaman_t::temporary_movement_modifier() const
 
   if ( buff.spirit_walk->up() )
     ms = std::max( buff.spirit_walk->data().effectN( 1 ).percent(), ms );
-
-  if ( buff.feral_spirit->up() )
-    ms = std::max( buff.feral_spirit->data().effectN( 1 ).percent(), ms );
 
   if ( buff.ghost_wolf->up() )
   {
