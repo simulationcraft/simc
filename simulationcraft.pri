@@ -98,10 +98,10 @@ win32 {
   }
 
   # Allow PGO builds on Visual Studio 2015+
-  !isEmpty(PGO):win32-msvc:greaterThan(QMAKE_MSC_VER, 1899) {
-    QMAKE_CXXFLAGS_RELEASE += /GL
-    QMAKE_LFLAGS_RELEASE   += /LTCG /USEPROFILE /PGD:"..\SimulationCraft.pgd"
-  }
+  #!isEmpty(PGO):win32-msvc:greaterThan(QMAKE_MSC_VER, 1899) {
+  #  QMAKE_CXXFLAGS_RELEASE += /GL
+  #  QMAKE_LFLAGS_RELEASE   += /LTCG /USEPROFILE /PGD:"..\SimulationCraft.pgd"
+  #}
 }
 
 # Curl is now required for everything, on MacOS use the default system curl (library with
