@@ -6618,26 +6618,16 @@ void shaman_t::init_action_list_elemental()
   action_priority_list_t* def       = get_action_priority_list( "default" );
   action_priority_list_t* single_target =
       get_action_priority_list( "single_target", "Single Target Action Priority List" );
-  action_priority_list_t* funnel = get_action_priority_list( "funnel", "Funneling Action Priority List" );
   action_priority_list_t* aoe    = get_action_priority_list( "aoe", "Multi target action priority list" );
 
-  // Flask
+  // Consumables
   precombat->add_action( "flask" );
-
-  // Food
   precombat->add_action( "food" );
-
-  // Rune
   precombat->add_action( "augmentation" );
 
   // Snapshot stats
   precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
-
-  precombat->add_action( this, "Earth Elemental", "if=!talent.primal_elementalist.enabled" );
-  precombat->add_action( "use_item,name=azsharas_font_of_power" );
-  precombat->add_talent( this, "Stormkeeper",
-                         "if=talent.stormkeeper.enabled&(raid_event.adds.count<3|raid_event.adds.in>50)",
-                         "Use Stormkeeper precombat unless some adds will spawn soon." );
+  precombat->add_talent( this, "Stormkeeper", "if=talent.stormkeeper.enabled" );
   precombat->add_action( "potion" );
   precombat->add_talent( this, "Elemental Blast", "if=talent.elemental_blast.enabled" );
   precombat->add_action( this, "Lava Burst", "if=!talent.elemental_blast.enabled" );
@@ -6646,26 +6636,22 @@ void shaman_t::init_action_list_elemental()
   def->add_action( this, "Bloodlust" );
 
   // In-combat potion
-  def->add_action(
-      "potion,if=expected_combat_length-time<60",
-      "In-combat potion is before combat ends." );
+  def->add_action( "potion,if=expected_combat_length-time<60", "In-combat potion is before combat ends." );
 
   // "Default" APL controlling logic flow to specialized sub-APLs
   def->add_action( this, "Wind Shear", "", "Interrupt of casts." );
-  def->add_action( this, "Flame Shock",
-                   "if=!ticking&spell_targets.chainlightning<4&(cooldown.storm_elemental.remains<cooldown.storm_"
-                   "elemental.duration-30|buff.wind_gust.stack<14)" );
+  def->add_action( this, "Flame Shock", "if=!ticking&spell_targets.chainlightning<4" );
   def->add_action( "use_items" );
 
+  // Major cooldowns
   def->add_action( this, "Fire Elemental",
-                   "if=!talent.storm_elemental.enabled&"
-                   "(expected_combat_length-time<30|expected_combat_length-time<60|expected_combat_length-time>155)" );
+    "if=!talent.storm_elemental.enabled&(expected_combat_length-time<32|expected_combat_length-time>155)" );
+  def->add_talent( this, "Storm Elemental",
+    "if=talent.storm_elemental.enabled&(expected_combat_length-time<32|expected_combat_length-time>155)" );
+  def->add_talent( this, "Liquid Magma Totem", "if=talent.liquid_magma_totem.enabled" );
+  def->add_talent( this, "Ascendance", "if=talent.ascendance.enabled" );
+  def->add_talent( this, "Stormkeeper", "if=talent.stormkeeper.enabled" );
 
-  def->add_talent(
-      this, "Storm Elemental",
-      "if=talent.storm_elemental.enabled&(!cooldown.stormkeeper.up|!talent.stormkeeper.enabled)&(!talent.icefury."
-      "enabled|!buff.icefury.up&!cooldown.icefury.up)&(!talent.ascendance.enabled|!buff.ascendance.up|expected_combat_"
-      "length-time<32)&(expected_combat_length-time<30|expected_combat_length-time<60|expected_combat_length-time>155)" );
   // Racials
   def->add_action( "blood_fury,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50" );
   def->add_action( "berserking,if=!talent.ascendance.enabled|buff.ascendance.up" );
@@ -6675,327 +6661,50 @@ void shaman_t::init_action_list_elemental()
 
   // Pick APL to run
   def->add_action(
-      "run_action_list,name=aoe,if=active_enemies>2&(spell_targets.chain_lightning>2|spell_targets.lava_beam>2)" );
-  def->add_action(
-      "run_action_list,name=funnel,if=active_enemies>=2&(spell_targets.chain_lightning<2|spell_targets.lava_beam<2)" );
+    "run_action_list,name=aoe,if=active_enemies>2&(spell_targets.chain_lightning>2|spell_targets.lava_beam>2)" );
   def->add_action( "run_action_list,name=single_target,if=active_enemies<=2" );
 
   // Aoe APL
   aoe->add_talent( this, "Stormkeeper", "if=talent.stormkeeper.enabled" );
-  aoe->add_action(
-      this, "Flame Shock",
-      "target_if=refreshable&(spell_targets.chain_lightning<5|!talent.storm_elemental."
-      "enabled&(cooldown.fire_elemental.remains>(cooldown.storm_elemental.duration-30+14*spell_haste)|cooldown.fire_"
-      "elemental.remains<(24-14*spell_haste)))&(!talent.storm_elemental.enabled|cooldown.storm_elemental.remains<("
-      "cooldown.storm_elemental.duration-30)|spell_targets.chain_lightning=3&buff.wind_gust.stack<14)",
-      "Spread Flame Shock in <= 4 target fights, but not during SE uptime,"
-      "unless you're fighting 3 targets and have less than 14 Wind Gust stacks." );
-  aoe->add_talent( this, "Ascendance",
-                   "if=talent.ascendance.enabled&(talent.storm_elemental.enabled&cooldown.storm_elemental.remains<("
-                   "cooldown.storm_elemental.duration-30)&cooldown.storm_elemental.remains>15|!talent.storm_elemental."
-                   "enabled)&(!talent.icefury.enabled|!buff.icefury.up&!cooldown.icefury.up)" );
-  aoe->add_talent( this, "Liquid Magma Totem", "if=talent.liquid_magma_totem.enabled" );
-  aoe->add_action(
-      this, "Earthquake",
-      "if=!talent.master_of_the_elements.enabled|buff.stormkeeper.up|maelstrom>=(100-4*spell_targets.chain_lightning)|"
-      "buff.master_of_the_elements.up|spell_targets.chain_lightning>3",
-      "Try to game Earthquake with Master of the Elements buff when fighting 3 targets. Don't overcap Maelstrom!" );
-  aoe->add_action( this, "Chain Lightning", "if=buff.stormkeeper.remains<3*gcd*buff.stormkeeper.stack",
-                   "Make sure you don't lose a Stormkeeper buff." );
-  aoe->add_action( this, "Lava Burst",
-                   "if=buff.lava_surge.up&spell_targets.chain_lightning<4&(!talent.storm_elemental.enabled|cooldown."
-                   "storm_elemental.remains<(cooldown.storm_elemental.duration-30))&dot.flame_shock.ticking",
-                   "Only cast Lava Burst on three targets if it is an instant and Storm Elemental is NOT active." );
-  aoe->add_talent( this, "Icefury", "if=spell_targets.chain_lightning<4&!buff.ascendance.up" );
-  aoe->add_action( this, "Frost Shock", "if=spell_targets.chain_lightning<4&buff.icefury.up&!buff.ascendance.up" );
-  aoe->add_talent( this, "Elemental Blast",
-                   "if=talent.elemental_blast.enabled&spell_targets.chain_lightning<4&(!talent.storm_elemental.enabled|"
-                   "cooldown.storm_elemental.remains<(cooldown.storm_elemental.duration-30))",
-                   "Use Elemental Blast against up to 3 targets as long as Storm Elemental is not active." );
+  aoe->add_action( this, "Flame Shock", "target_if=refreshable&spell_targets.chain_lightning<5" );
+  aoe->add_action( this, "Earthquake" );
   aoe->add_action( "lava_beam,if=talent.ascendance.enabled" );
   aoe->add_action( this, "Chain Lightning" );
-  aoe->add_action( this, "Lava Burst", "moving=1,if=talent.ascendance.enabled" );
   aoe->add_action( this, "Flame Shock", "moving=1,target_if=refreshable" );
   aoe->add_action( this, "Frost Shock", "moving=1" );
 
-  // Funneling APL
-  funnel->add_action(
-      this, "Flame Shock",
-      "target_if=(!ticking|dot.flame_shock.remains<=gcd|talent.ascendance.enabled&dot.flame_shock.remains<(cooldown."
-      "ascendance.remains+buff.ascendance.duration)&cooldown.ascendance.remains<4&(!talent.storm_elemental.enabled|"
-      "talent.storm_elemental.enabled&cooldown.storm_elemental.remains<120))&(buff.wind_gust.stack<14|"
-      "buff.lava_surge.up|!buff.bloodlust.up)&!buff.surge_of_power.up",
-      "Ensure FS is active unless you have 14 or more stacks of Wind Gust from Storm Elemental. "
-      "(Edge case: upcoming Asc but active SE; don't )" );
-  funnel->add_talent( this, "Ascendance",
-                      "if=talent.ascendance.enabled&(time>=60|buff.bloodlust.up)&cooldown.lava_burst.remains>0&("
-                      "cooldown.storm_elemental.remains<(cooldown.storm_elemental.duration-30)|!talent.storm_elemental."
-                      "enabled)&(!talent.icefury.enabled|!buff.icefury.up&!cooldown.icefury.up)",
-                      "Use Ascendance after you've spent all Lava Burst charges and only if neither Storm Elemental "
-                      "nor Icefury are currently active." );
-  funnel->add_talent(
-      this, "Elemental Blast",
-      "if=talent.elemental_blast.enabled&(talent.master_of_the_elements.enabled&buff.master_of_the_elements.up&"
-      "maelstrom<60|!talent.master_of_the_elements.enabled)&(!(cooldown.storm_elemental.remains>(cooldown.storm_"
-      "elemental.duration-30)&talent.storm_elemental.enabled)&buff.wind_gust.stack<14)",
-      "Don't use Elemental Blast if you could cast a Master of the Elements empowered Earth Shock instead. "
-      "Don't cast Elemental Blast during Storm Elemental unless you have 3x Natural Harmony. "
-      "But in this case stop using Elemental Blast once you reach 14 stacks of Wind Gust." );
-  funnel->add_talent( this, "Stormkeeper",
-                      "if=talent.stormkeeper.enabled&(raid_event.adds.count<3|raid_event.adds.in>50)&(!talent.surge_of_"
-                      "power.enabled|buff.surge_of_power.up|maelstrom>=44)" );
-  funnel->add_talent( this, "Liquid Magma Totem",
-                      "if=talent.liquid_magma_totem.enabled&(raid_event.adds.count<3|raid_event.adds.in>50)" );
-  funnel->add_action(
-      this, "Lightning Bolt",
-      "if=buff.stormkeeper.up&spell_targets.chain_lightning<6&(buff."
-      "master_of_the_elements.up&!talent.surge_of_power.enabled|buff.surge_of_power.up)",
-      "Combine Stormkeeper with Master of the Elements or Surge of Power "
-      "unless you have the Lava Shock trait and multiple stacks." );
-  funnel->add_action(
-      this, "Earth Shock",
-      "if=!buff.surge_of_power.up&talent.master_of_the_elements.enabled&(buff.master_of_the_elements.up|cooldown.lava_"
-      "burst.remains>0&buff.stormkeeper.up&cooldown.lava_burst.remains<=gcd)",
-      "Cast Earth Shock with Master of the Elements talent but no active Surge of Power buff, "
-      "and active Stormkeeper buff and Lava Burst coming off CD within the next GCD, and either active Master of the "
-      "Elements buff, "
-      "or no available Lava Burst while near MS cap, or single target and multiple Lava Shock traits and many "
-      "stacks." );
-  funnel->add_action(
-      this, "Earth Shock",
-      "if=!talent.master_of_the_elements.enabled&(buff."
-      "stormkeeper.up|!(cooldown.storm_elemental.remains>(cooldown."
-      "storm_elemental.duration-30)&talent.storm_elemental.enabled)&expected_combat_length-time-cooldown.storm_"
-      "elemental.remains-cooldown.storm_elemental.duration*floor((expected_combat_length-time-cooldown.storm_elemental."
-      "remains)%cooldown.storm_elemental.duration)>=30)",
-      "You know what? I had some short explanation here once. But then the condition grew, "
-      "and I had to split the one Earth Shock line into four...so you have to deal with this abomination now: "
-      "Cast Earth Shock without Master of the Elements talent, and without having triple Igneous Potential and "
-      "active Ascendance, and active Stormkeeper buff or near MS cap, or Storm Elemental is inactive, "
-      "and we can't expect to get an additional use of Storm Elemental in the remaining fight from Surge of Power." );
-  funnel->add_action(
-      this, "Earth Shock",
-      "if=talent.surge_of_power.enabled&!buff.surge_of_power.up&cooldown.lava_burst.remains<=gcd&(!talent.storm_"
-      "elemental.enabled&!(cooldown.fire_elemental.remains>(cooldown.storm_elemental.duration-30))|talent.storm_"
-      "elemental.enabled&!(cooldown.storm_elemental.remains>(cooldown.storm_elemental.duration-30)))",
-      "Use Earth Shock if Surge of Power is talented, but neither it nor a DPS Elemental is active at the moment, "
-      "and Lava Burst is ready or will be ready within the next GCD." );
-  funnel->add_action(
-      this, "Lightning Bolt",
-      "if=cooldown.storm_elemental.remains>(cooldown.storm_elemental.duration-30)&talent.storm_elemental.enabled&("
-      "!buff.lava_surge.up&buff.bloodlust.up)",
-      "Spam Lightning Bolts during Storm Elemental duration, if you don't have Igneous Potential or have it only once, "
-      "and don't use Lightning Bolt during Bloodlust if you have a Lava Surge Proc." );
-  funnel->add_action(
-      this, "Lightning Bolt",
-      "if=(buff.stormkeeper.remains<1.1*gcd*buff.stormkeeper.stack|buff.stormkeeper.up&buff.master_of_the_elements.up)",
-      "Cast Lightning Bolt regardless of the previous condition if you'd lose a Stormkeeper stack or have "
-      "Stormkeeper and Master of the Elements active." );
-  funnel->add_action(
-      this, "Frost Shock",
-      "if=talent.icefury.enabled&talent.master_of_the_elements.enabled&buff.icefury.up&buff.master_of_the_elements.up",
-      "Use Frost Shock with Icefury and Master of the Elements." );
-  funnel->add_action( this, "Lava Burst", "if=buff.ascendance.up" );
-  funnel->add_action( this, "Flame Shock", "target_if=refreshable&active_enemies>1&buff.surge_of_power.up",
-                      "Utilize Surge of Power to spread Flame Shock if multiple enemies are present." );
-  funnel->add_action(
-      this, "Lava Burst",
-      "if=talent.storm_elemental.enabled&cooldown_react&buff.surge_of_power.up&(expected_combat_length-time-cooldown."
-      "storm_elemental.remains-(cooldown.storm_elemental.duration-30)*floor((expected_combat_length-time-cooldown."
-      "storm_elemental.remains)%(cooldown.storm_elemental.duration-30))<30"
-      "|(1.16*(expected_combat_length-time)-cooldown.storm_elemental.remains-cooldown.storm_elemental.duration*floor(("
-      "1.16*(expected_combat_length-time)-cooldown.storm_elemental.remains)%cooldown.storm_elemental.duration))<("
-      "expected_combat_length-time-cooldown.storm_elemental.remains-cooldown.storm_elemental.duration*floor((expected_"
-      "combat_length-time-cooldown.storm_elemental.remains)%cooldown.storm_elemental.duration)))",
-      "Use Lava Burst with Surge of Power if the last potential usage of Storm Elemental hasn't a full duration OR "
-      "if you could get another usage of the DPS Elemental if the remaining fight was 16% longer." );
-  funnel->add_action(
-      this, "Lava Burst",
-      "if=!talent.storm_elemental.enabled&cooldown_react&buff.surge_of_power.up&(expected_combat_length-time-cooldown."
-      "fire_elemental.remains-cooldown.fire_elemental.duration*floor((expected_combat_length-time-cooldown.fire_"
-      "elemental.remains)%cooldown.fire_elemental.duration)<30|(1.16*("
-      "expected_combat_length-time)-cooldown.fire_elemental.remains-cooldown.fire_elemental.duration*floor((1.16*("
-      "expected_combat_length-time)-cooldown.fire_elemental.remains)%cooldown.fire_elemental.duration))<(expected_"
-      "combat_length-time-cooldown.fire_elemental.remains-cooldown.fire_elemental.duration*floor((expected_combat_"
-      "length-time-cooldown.fire_elemental.remains)%cooldown.fire_elemental.duration)))",
-      "Use Lava Burst with Surge of Power if the last potential usage of Fire Elemental hasn't a full duration OR "
-      "if you could get another usage of the DPS Elemental if the remaining fight was 16% longer." );
-  funnel->add_action( this, "Lightning Bolt", "if=buff.surge_of_power.up" );
-  funnel->add_action( this, "Lava Burst", "if=cooldown_react&!talent.master_of_the_elements.enabled" );
-  funnel->add_talent(
-      this, "Icefury",
-      "if=talent.icefury.enabled&!(maelstrom>75&cooldown.lava_burst.remains<=0)&(!talent.storm_elemental.enabled|"
-      "cooldown.storm_elemental.remains<cooldown.storm_elemental.duration)",
-      "Slightly game Icefury buff to hopefully buff some empowered Frost Shocks with Master of the Elements." );
-  funnel->add_action( this, "Lava Burst", "if=cooldown_react&charges>talent.echo_of_the_elements.enabled" );
-  funnel->add_action(
-      this, "Frost Shock", "if=talent.icefury.enabled&buff.icefury.up&buff.icefury.remains<1.1*gcd*buff.icefury.stack",
-      "Slightly delay using Icefury empowered Frost Shocks to empower them with Master of the Elements too." );
-  funnel->add_action( this, "Lava Burst", "if=cooldown_react" );
-  funnel->add_action( "concentrated_flame" );
-  funnel->add_action( "reaping_flames" );
-  funnel->add_action( this, "Flame Shock", "target_if=refreshable&!buff.surge_of_power.up",
-                      "Don't accidentally use Surge of Power with Flame Shock during single target." );
-  funnel->add_action( this, "Frost Shock",
-                      "if=talent.icefury.enabled&buff.icefury.up&(buff.icefury.remains<gcd*4*buff.icefury.stack|buff."
-                      "stormkeeper.up|!talent.master_of_the_elements.enabled)" );
-  funnel->add_action(
-      this, "Earth Elemental",
-      "if=!talent.primal_elementalist.enabled|talent.primal_elementalist.enabled&(cooldown.fire_elemental.remains<("
-      "cooldown.fire_elemental.duration-30)&!talent.storm_elemental.enabled|cooldown.storm_elemental.remains<(cooldown."
-      "storm_elemental.duration-30)&talent.storm_elemental.enabled)" );
-  funnel->add_action( this, "Lightning Bolt" );
-  funnel->add_action( this, "Flame Shock", "moving=1,target_if=refreshable" );
-  funnel->add_action( this, "Flame Shock", "moving=1,if=movement.distance>6" );
-  funnel->add_action( this, "Frost Shock", "moving=1", "Frost Shock is our movement filler." );
-
   // Single target APL
-  single_target->add_action(
-      this, "Flame Shock",
-      "target_if=(!ticking|dot.flame_shock.remains<=gcd|talent.ascendance.enabled&dot.flame_shock.remains<(cooldown."
-      "ascendance.remains+buff.ascendance.duration)&cooldown.ascendance.remains<4&(!talent.storm_elemental.enabled|"
-      "talent.storm_elemental.enabled&cooldown.storm_elemental.remains<120))&(buff.wind_gust.stack<14|"
-      "buff.lava_surge.up|!buff.bloodlust.up)&!buff.surge_of_power.up",
-      "Ensure FS is active unless you have 14 or more stacks of Wind Gust from Storm Elemental. (Edge case: upcoming "
-      "Asc but active SE; don't )" );
-  single_target->add_talent( this, "Ascendance",
-                             "if=talent.ascendance.enabled&(time>=60|buff.bloodlust.up)&cooldown.lava_burst.remains>0&("
-                             "cooldown.storm_elemental.remains<(cooldown.storm_elemental.duration-30)|!talent.storm_"
-                             "elemental.enabled)&(!talent.icefury.enabled|!buff.icefury.up&!cooldown.icefury.up)",
-                             "Use Ascendance after you've spent all Lava Burst charges and only if neither Storm "
-                             "Elemental nor Icefury are currently active." );
-  single_target->add_talent(
-      this, "Elemental Blast",
-      "if=talent.elemental_blast.enabled&(talent.master_of_the_elements.enabled&(buff.master_of_the_elements.up&"
-      "maelstrom<60|!buff.master_of_the_elements.up)|!talent.master_of_the_elements.enabled)&(!(cooldown.storm_"
-      "elemental.remains>(cooldown.storm_elemental.duration-30)&talent.storm_elemental.enabled)&buff.wind_gust.stack<14)",
-      "Don't use Elemental Blast if you could cast a Master of the Elements empowered Earth Shock instead. Don't "
-      "cast Elemental Blast during Storm Elemental unless you have 3x Natural Harmony. But in this case stop using "
-      "Elemental Blast once you reach 14 stacks of Wind Gust." );
-  single_target->add_talent(
-      this, "Stormkeeper",
-      "if=talent.stormkeeper.enabled&(raid_event.adds.count<3|raid_event.adds.in>50)&(!talent.surge_of_power.enabled|"
-      "buff.surge_of_power.up|maelstrom>=44)",
-      "Keep SK for large or soon add waves. Unless you have Surge of Power, in which case you want to double buff "
-      "Lightning Bolt by pooling Maelstrom beforehand. Example sequence: 100MS, ES, SK, LB, LvB, ES, LB" );
-  single_target->add_talent( this, "Liquid Magma Totem",
-                             "if=talent.liquid_magma_totem.enabled&(raid_event.adds.count<3|raid_event.adds.in>50)" );
-  single_target->add_action(
-      this, "Lightning Bolt",
-      "if=buff.stormkeeper.up&spell_targets.chain_lightning<2&(buff."
-      "master_of_the_elements.up&!talent.surge_of_power.enabled|buff.surge_of_power.up)",
-      "Combine Stormkeeper with Master of the Elements or Surge of Power unless you have the Lava Shock trait and "
-      "multiple stacks." );
-  single_target->add_action(
-      this, "Earthquake",
-      "if=(spell_targets.chain_lightning>1&!talent.surge_of_power.enabled)&"
-      "(!talent.surge_of_power.enabled|!dot.flame_shock.refreshable|cooldown.storm_elemental."
-      "remains>(cooldown.storm_elemental.duration-30))&(!talent.master_of_the_elements.enabled|buff.master_of_the_"
-      "elements.up|cooldown.lava_burst.remains>0)",
-      "Use Earthquake versus 2 targets, unless you have Surge of Power talented." );
-  single_target->add_action(
-      this, "Earth Shock",
-      "if=!buff.surge_of_power.up&talent.master_of_the_elements.enabled&(buff.master_of_the_elements.up|cooldown.lava_"
-      "burst.remains>0|spell_targets.chain_lightning<2&buff.stormkeeper.up&cooldown.lava_burst.remains<=gcd)",
-      "Cast Earth Shock with Master of the Elements talent but no active Surge of Power buff, and active Stormkeeper "
-      "buff and Lava Burst coming off CD within the next GCD, and either active Master of the Elements buff, or no "
-      "available Lava Burst while near MS cap, or single target and multiple Lava Shock traits and many stacks." );
-  single_target->add_action(
-      this, "Earth Shock",
-      "if=!talent.master_of_the_elements.enabled&(buff."
-      "stormkeeper.up|!(cooldown.storm_elemental.remains>cooldown."
-      "storm_elemental.duration&talent.storm_elemental.enabled)&expected_combat_length-time-cooldown.storm_elemental."
-      "remains-cooldown.storm_elemental.duration*floor((expected_combat_length-time-cooldown.storm_elemental.remains)%"
-      "cooldown.storm_elemental.duration)>=30)",
-      "You know what? I had some short explanation here once. But then the condition grew, and I had to split the "
-      "one "
-      "Earth Shock line into four...so you have to deal with this abomination now: Cast Earth Shock without Master "
-      "of "
-      "the Elements talent, and without having triple Igneous Potential and active Ascendance, and active "
-      "Stormkeeper "
-      "buff or near MS cap, or Storm Elemental is inactive, and we can't expect to get an additional use of Storm "
-      "Elemental in the remaining fight from Surge of Power." );
-  single_target->add_action(
-      this, "Earth Shock",
-      "if=talent.surge_of_power.enabled&!buff.surge_of_power.up&cooldown.lava_burst.remains<=gcd&(!talent.storm_"
-      "elemental.enabled&!(cooldown.fire_elemental.remains>(cooldown.fire_elemental.duration-30))|talent.storm_"
-      "elemental.enabled&!(cooldown.storm_elemental.remains>(cooldown.storm_elemental.duration-30)))",
-      "Use Earth Shock if Surge of Power is talented, but neither it nor a DPS Elemental is active "
-      "at the moment, and Lava Burst is ready or will be ready within the next GCD." );
-  single_target->add_action( "lightning_lasso" );
-  single_target->add_action(
-      this, "Lightning Bolt",
-      "if=cooldown.storm_elemental.remains>(cooldown.storm_elemental.duration-30)&talent.storm_elemental.enabled&("
-      "!buff.lava_surge.up&buff.bloodlust.up)",
-      "Spam Lightning Bolts during Storm Elemental duration, if you don't have Igneous "
-      "Potential or have it only once, "
-      "and don't use Lightning Bolt during Bloodlust if you have a Lava Surge Proc." );
-  single_target->add_action(
-      this, "Lightning Bolt",
-      "if=(buff.stormkeeper.remains<1.1*gcd*buff.stormkeeper.stack|buff.stormkeeper.up&buff.master_of_the_elements.up)",
-      "Cast Lightning Bolt regardless of the previous condition if you'd lose a Stormkeeper "
-      "stack or have Stormkeeper and Master of the Elements active." );
-  single_target->add_action(
-      this, "Frost Shock",
-      "if=talent.icefury.enabled&talent.master_of_the_elements.enabled&buff.icefury.up&buff.master_of_the_elements.up",
-      "Use Frost Shock with Icefury and Master of the Elements." );
+  single_target->add_action( this, "Flame Shock",
+    "target_if=!ticking|dot.flame_shock.remains<=gcd&!buff.surge_of_power.up" );
+  single_target->add_talent( this, "Elemental Blast", "if=talent.elemental_blast.enabled" );
+  single_target->add_action( this, "Lightning Bolt",
+    "if=buff.stormkeeper.up&(buff.master_of_the_elements.up&!talent.surge_of_power.enabled|buff.surge_of_power.up)" );
+  single_target->add_action( this, "Earthquake", "if=spell_targets.chain_lightning>1" );
+  single_target->add_action( this, "Earth Shock",
+    "if=!buff.surge_of_power.up&talent.master_of_the_elements.enabled&buff.master_of_the_elements.up" );
+  single_target->add_action( this, "Lightning Bolt",
+    "if=cooldown.storm_elemental.remains>(cooldown.storm_elemental.duration-30)&talent.storm_elemental.enabled" );
+  single_target->add_action( this, "Lightning Bolt",
+    "if=(buff.stormkeeper.remains<1.1*gcd*buff.stormkeeper.stack|buff.stormkeeper.up&buff.master_of_the_elements.up)" );
+  single_target->add_action( this, "Frost Shock",
+    "if=talent.icefury.enabled&talent.master_of_the_elements.enabled&buff.icefury.up&buff.master_of_the_elements.up" );
   single_target->add_action( this, "Lava Burst", "if=buff.ascendance.up" );
   single_target->add_action( this, "Flame Shock", "target_if=refreshable&active_enemies>1&buff.surge_of_power.up",
-                             "Utilize Surge of Power to spread Flame Shock if multiple enemies are present." );
-  single_target->add_action(
-      this, "Lava Burst",
-      "if=talent.storm_elemental.enabled&cooldown_react&buff.surge_of_power.up&(expected_combat_length-time-cooldown."
-      "storm_elemental.remains-cooldown.storm_elemental.duration*floor((expected_combat_length-time-cooldown.storm_"
-      "elemental.remains)%cooldown.storm_elemental.duration)<30|(1.16*("
-      "expected_combat_length-time)-cooldown.storm_elemental.remains-cooldown.storm_elemental.duration*floor((1.16*("
-      "expected_combat_length-time)-cooldown.storm_elemental.remains)%cooldown.storm_elemental.duration))<(expected_"
-      "combat_length-time-cooldown.storm_elemental.remains-cooldown.storm_elemental.duration*floor((expected_combat_"
-      "length-time-cooldown.storm_elemental.remains)%cooldown.storm_elemental.duration)))",
-      "Use Lava Burst with Surge of Power if the last potential usage of Storm Elemental hasn't a full duration OR "
-      "if you could get another usage of the DPS Elemental if the remaining fight was 16% longer." );
-  single_target->add_action(
-      this, "Lava Burst",
-      "if=!talent.storm_elemental.enabled&cooldown_react&buff.surge_of_power.up&(expected_combat_length-time-cooldown."
-      "fire_elemental.remains-cooldown.fire_elemental.duration*floor((expected_combat_length-time-cooldown.fire_"
-      "elemental.remains)%cooldown.fire_elemental.duration)<30|(1.16*("
-      "expected_combat_length-time)-cooldown.fire_elemental.remains-cooldown.fire_elemental.duration*floor((1.16*("
-      "expected_combat_length-time)-cooldown.fire_elemental.remains)%cooldown.fire_elemental.duration))<(expected_"
-      "combat_length-time-cooldown.fire_elemental.remains-cooldown.fire_elemental.duration*floor((expected_combat_"
-      "length-time-cooldown.fire_elemental.remains)%cooldown.fire_elemental.duration)))",
-      "Use Lava Burst with Surge of Power if the last potential usage of Fire Elemental hasn't a full duration OR "
-      "if you could get another usage of the DPS Elemental if the remaining fight was 16% longer." );
-
+    "Utilize Surge of Power to spread Flame Shock if multiple enemies are present." );
   single_target->add_action( this, "Lightning Bolt", "if=buff.surge_of_power.up" );
   single_target->add_action( this, "Lava Burst", "if=cooldown_react&!talent.master_of_the_elements.enabled" );
-  single_target->add_talent(
-      this, "Icefury",
-      "if=talent.icefury.enabled&!(maelstrom>75&cooldown.lava_burst.remains<=0)&(!talent.storm_elemental.enabled|"
-      "cooldown.storm_elemental.remains<cooldown.storm_elemental.duration-30)",
-      "Slightly game Icefury buff to hopefully buff some empowered Frost Shocks with Master of the Elements." );
+  single_target->add_talent( this, "Icefury",
+    "if=talent.icefury.enabled&!(maelstrom>75&cooldown.lava_burst.remains<=0)" );
   single_target->add_action( this, "Lava Burst", "if=cooldown_react&charges>talent.echo_of_the_elements.enabled" );
-  single_target->add_action(
-      this, "Frost Shock", "if=talent.icefury.enabled&buff.icefury.up&buff.icefury.remains<1.1*gcd*buff.icefury.stack",
-      "Slightly delay using Icefury empowered Frost Shocks to empower them with Master of the Elements too." );
-  single_target->add_action( this, "Lava Burst", "if=cooldown_react" );
-  single_target->add_action( "concentrated_flame" );
-  single_target->add_action( "reaping_flames" );
-  single_target->add_action( this, "Flame Shock", "target_if=refreshable&!buff.surge_of_power.up",
-                             "Don't accidentally use Surge of Power with Flame Shock during single target." );
-
   single_target->add_action( this, "Frost Shock",
-                             "if=talent.icefury.enabled&buff.icefury.up&(buff.icefury.remains<gcd*4*buff.icefury.stack|"
-                             "buff.stormkeeper.up|!talent.master_of_the_elements.enabled)" );
-  single_target->add_action(
-      this, "Earth Elemental",
-      "if=!talent.primal_elementalist.enabled|talent.primal_elementalist.enabled&(cooldown.fire_elemental.remains<("
-      "cooldown.fire_elemental.duration-30)&!talent.storm_elemental.enabled|cooldown.storm_elemental.remains<(cooldown."
-      "storm_elemental.duration-30)&talent.storm_elemental.enabled)" );
-  single_target->add_action( this, "Chain Lightning",
-                             "if=!buff.stormkeeper.up&spell_targets.chain_lightning>1" );
+    "if=talent.icefury.enabled&buff.icefury.up&buff.icefury.remains<1.1*gcd*buff.icefury.stack" );
+  single_target->add_action( this, "Lava Burst", "if=cooldown_react" );
+  single_target->add_action( this, "Flame Shock", "target_if=refreshable&!buff.surge_of_power.up" );
+  single_target->add_action( this, "Chain Lightning", "if=!buff.stormkeeper.up&spell_targets.chain_lightning>1" );
   single_target->add_action( this, "Lightning Bolt" );
   single_target->add_action( this, "Flame Shock", "moving=1,target_if=refreshable" );
   single_target->add_action( this, "Flame Shock", "moving=1,if=movement.distance>6" );
-  single_target->add_action( this, "Frost Shock", "moving=1", "Frost Shock is our movement filler." );
+  single_target->add_action( this, "Frost Shock", "moving=1" );
 }
 
 // shaman_t::init_action_list_enhancement ===================================
