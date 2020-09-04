@@ -1132,22 +1132,27 @@ buff_t* buff_t::apply_affecting_effect( const spelleffect_data_t& effect )
       case P_EFFECT_1:
         if ( default_value_effect_idx == 1 )
           apply_flat_effect_modifier( effect );
+        break;
 
       case P_EFFECT_2:
         if ( default_value_effect_idx == 2 )
           apply_flat_effect_modifier( effect );
+        break;
 
       case P_EFFECT_3:
         if ( default_value_effect_idx == 3 )
           apply_flat_effect_modifier( effect );
+        break;
 
       case P_EFFECT_4:
         if ( default_value_effect_idx == 4 )
           apply_flat_effect_modifier( effect );
+        break;
 
       case P_EFFECT_5:
         if ( default_value_effect_idx == 5 )
           apply_flat_effect_modifier( effect );
+        break;
 
       default:
         break;
@@ -1179,22 +1184,27 @@ buff_t* buff_t::apply_affecting_effect( const spelleffect_data_t& effect )
       case P_EFFECT_1:
         if ( default_value_effect_idx == 1 )
           apply_percent_effect_modifier( effect );
+        break;
 
       case P_EFFECT_2:
         if ( default_value_effect_idx == 2 )
           apply_percent_effect_modifier( effect );
+        break;
 
       case P_EFFECT_3:
         if ( default_value_effect_idx == 3 )
           apply_percent_effect_modifier( effect );
+        break;
 
       case P_EFFECT_4:
         if ( default_value_effect_idx == 4 )
           apply_percent_effect_modifier( effect );
+        break;
 
       case P_EFFECT_5:
         if ( default_value_effect_idx == 5 )
           apply_percent_effect_modifier( effect );
+        break;
 
       default:
         break;
