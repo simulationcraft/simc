@@ -866,6 +866,11 @@ buff_t* buff_t::set_default_value_from_effect( size_t effect_idx, double multipl
     return this;
 
   assert( effect_idx > 0 && effect_idx <= s_data->effect_count() );
+
+  // If no multiplier is specified, use the default_multiplier() lookup function
+  // NOTE: If this does not work as expected, check the function for support. This still needs work!
+  if ( multiplier == 0.0 )
+    multiplier = s_data->effectN( effect_idx ).default_multiplier();
   
   set_default_value( s_data->effectN( effect_idx ).base_value() * multiplier, effect_idx );
   default_value_effect_multiplier = multiplier;

@@ -311,7 +311,7 @@ public:
   buff_t* set_quiet( bool quiet );
   buff_t* add_invalidate( cache_e );
   buff_t* set_default_value( double, size_t = 0 );
-  buff_t* set_default_value_from_effect( size_t, double = 0.01 );
+  buff_t* set_default_value_from_effect( size_t, double = 0.0 );
   buff_t* set_default_value_from_effect_type( effect_subtype_t a_type,
                                               property_type_t p_type = P_GENERIC,
                                               double multiplier      = 0.0,
