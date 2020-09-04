@@ -1529,12 +1529,12 @@ bool buff_t::trigger( action_t* a, int stacks, double value, timespan_t duration
 
 bool buff_t::trigger( timespan_t duration )
 {
-  return buff_t::trigger( 1, duration );
+  return trigger( 1, duration );
 }
 
 bool buff_t::trigger( int stacks, timespan_t duration )
 {
-  return buff_t::trigger( stacks, DEFAULT_VALUE(), -1, duration );
+  return trigger( stacks, DEFAULT_VALUE(), -1, duration );
 }
 
 bool buff_t::trigger( int stacks, double value, double chance, timespan_t duration )
@@ -1768,11 +1768,11 @@ void buff_t::extend_duration_or_trigger( timespan_t duration, player_t* p )
 
   if ( check() )
   {
-    buff_t::extend_duration( p == nullptr ? this->source : p, d );
+    extend_duration( p == nullptr ? this->source : p, d );
   }
   else
   {
-    buff_t::trigger( d );
+    trigger( d );
   }
 }
 
