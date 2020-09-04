@@ -1,5 +1,5 @@
 // Spell text, wow build 9.0.1.35755
-static const std::array<spelltext_data_t, 15540> __spelltext_data { {
+static const std::array<spelltext_data_t, 15541> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -13708,6 +13708,7 @@ static const std::array<spelltext_data_t, 15540> __spelltext_data { {
   { 317614, "$@spelldesc317610", 0, 0 },
   { 317741, "Crush the flower and release the mind-easing scents, reducing the rate at which your mount becomes fatigued while flying.", "Reduced fatigue while flying.", 0 },
   { 317742, "Give the carrot to your mount, restoring all fatigue.", 0, 0 },
+  { 317749, "Grants immunity to Knockback within the Maw for $d.", "Immune to Knockback.", 0 },
   { 317776, "$@spelldesc276837", 0, 0 },
   { 317795, "Increases the size of your backpack by $s1 slots.", "Increases the size of your backpack by $s1 slots.", "Racial Passive" },
   { 317854, "Hammer of the Righteous now has ${$s1+1} charges.", 0, "Rank 2" },
