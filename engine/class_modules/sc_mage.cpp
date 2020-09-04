@@ -6044,6 +6044,8 @@ void mage_t::moving()
 
 void mage_t::create_pets()
 {
+  player_t::create_pets();
+
   if ( specialization() == MAGE_FROST && !talents.lonely_winter->ok() && find_action( "summon_water_elemental" ) )
     pets.water_elemental = new pets::water_elemental::water_elemental_pet_t( sim, this );
 
