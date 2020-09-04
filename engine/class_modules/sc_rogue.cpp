@@ -4060,16 +4060,14 @@ struct shadowstrike_t : public rogue_attack_t
 
     if ( p()->buffs.premeditation->up() )
     {
-      timespan_t premed_duration = timespan_t::from_seconds( p()->talent.premeditation->effectN( 1 ).base_value() );
       if ( p()->buffs.slice_and_dice->check() )
       {
         trigger_combo_point_gain( as<int>( p()->talent.premeditation->effectN( 2 ).base_value() ), p()->gains.premeditation );
-        p()->buffs.slice_and_dice->extend_duration( p(), premed_duration );
       }
-      else
-      {
-        p()->buffs.slice_and_dice->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, premed_duration );
-      }
+
+      timespan_t premed_duration = timespan_t::from_seconds( p()->talent.premeditation->effectN( 1 ).base_value() );
+      p()->buffs.slice_and_dice->extend_duration_or_trigger( premed_duration );
+
       p()->buffs.premeditation->expire();
     }
 
@@ -6525,10 +6523,7 @@ void actions::rogue_action_t<Base>::trigger_grand_melee( const action_state_t* s
     return;
 
   timespan_t snd_extension = cast_state( state )->cp * timespan_t::from_seconds( p()->buffs.grand_melee->check_value() );
-  if ( p()->buffs.slice_and_dice->check() )
-    p()->buffs.slice_and_dice->extend_duration( p(), snd_extension );
-  else
-    p()->buffs.slice_and_dice->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, snd_extension );
+  p()->buffs.slice_and_dice->extend_duration_or_trigger( snd_extension );
 }
 
 template <typename Base>
@@ -8198,10 +8193,7 @@ void rogue_t::create_buffs()
       if ( rng().roll( legendary.celerity->effectN( 2 ).percent() ) )
       {
         timespan_t duration = timespan_t::from_seconds( legendary.celerity->effectN( 3 ).base_value() );
-        if ( buffs.adrenaline_rush->check() )
-          buffs.adrenaline_rush->extend_duration( this, duration );
-        else
-          buffs.adrenaline_rush->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, duration );
+        buffs.adrenaline_rush->extend_duration_or_trigger( duration );
       }
     } );
   }
@@ -9090,41 +9082,20 @@ void rogue_t::vision_of_perfection_proc()
     {
       rogue_td_t* td = this->get_target_data( this->target );
       const timespan_t duration = td->debuffs.vendetta->data().duration() * azerite.vision_of_perfection_percentage;
-      if ( td->debuffs.vendetta->check() )
-      {
-        td->debuffs.vendetta->extend_duration( this, duration );
-      }
-      else
-      {
-        td->debuffs.vendetta->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, duration );
-      }
+      td->debuffs.vendetta->extend_duration_or_trigger( duration, this );
       break;
     }
 
     case ROGUE_SUBTLETY:
     {
       const timespan_t duration = this->buffs.shadow_blades->data().duration() * azerite.vision_of_perfection_percentage;
-      if ( this->buffs.shadow_blades->check() )
-      {
-        this->buffs.shadow_blades->extend_duration( this, duration );
-      }
-      else
-      {
-        this->buffs.shadow_blades->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, duration );
-      }
+      this->buffs.shadow_blades->extend_duration_or_trigger( duration );
       break;
     }
     case ROGUE_OUTLAW:
     {
       const timespan_t duration = this->buffs.adrenaline_rush->data().duration() * azerite.vision_of_perfection_percentage;
-      if ( this->buffs.adrenaline_rush->check() )
-      {
-        this->buffs.adrenaline_rush->extend_duration( this, duration );
-      }
-      else
-      {
-        this->buffs.adrenaline_rush->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, duration );
-      }
+      this->buffs.adrenaline_rush->extend_duration_or_trigger( duration );
       break;
     }
 	default:

@@ -2691,14 +2691,7 @@ struct metamorphosis_t : public demon_hunter_spell_t
     if (p()->specialization() == DEMON_HUNTER_HAVOC)
     {
       // Buff is gained at the start of the leap.
-      if ( p()->buff.metamorphosis->check() )
-      {
-        p()->buff.metamorphosis->extend_duration( p(), p()->buff.metamorphosis->buff_duration() );
-      }
-      else
-      {
-        p()->buff.metamorphosis->trigger();
-      }
+      p()->buff.metamorphosis->extend_duration_or_trigger();
 
       if ( p()->azerite.chaotic_transformation.ok() || p()->spec.metamorphosis_rank_4->ok() )
       {
@@ -4473,14 +4466,7 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
   void trigger_demonic()
   {
     const timespan_t extend_duration = p()->talent.demonic->effectN( 1 ).time_value();
-    if ( p()->buff.metamorphosis->check() )
-    {
-      p()->buff.metamorphosis->extend_duration( p(), extend_duration );
-    }
-    else
-    {
-      p()->buff.metamorphosis->trigger( 1, p()->buff.metamorphosis->default_value, -1.0, extend_duration );
-    }
+    p()->buff.metamorphosis->extend_duration_or_trigger( extend_duration );
   }
 
   void start(int stacks, double value, timespan_t duration) override
@@ -5543,16 +5529,8 @@ void demon_hunter_t::vision_of_perfection_proc()
 {
   const double percentage = azerite_spells.vision_of_perfection_1->effectN( 1 ).percent() + 
                             azerite_spells.vision_of_perfection_2->effectN( 1 ).percent();
-  const timespan_t duration = buff.metamorphosis->data().duration() * percentage;
-  
-  if ( buff.metamorphosis->check() )
-  {
-    buff.metamorphosis->extend_duration( this, duration );
-  }
-  else
-  {
-    buff.metamorphosis->trigger( 1, buff.metamorphosis->default_value, -1.0, duration );
-  }
+  const timespan_t duration = buff.metamorphosis->data().duration() * percentage;  
+  buff.metamorphosis->extend_duration_or_trigger( duration );
 }
 
 // demon_hunter_t::default_flask ===================================================
