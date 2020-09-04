@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35755 shadowlands-BETA (git build shadowlands 5e2bf2f946)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35755 shadowlands-BETA (hotfix 2020-09-04/35755, no-networking)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
@@ -922,6 +922,7 @@ Effects          :
 Description      : Dispels magic in a $32375a1 yard radius, removing all harmful Magic from $s4 friendly targets and $32592m1 beneficial Magic $leffect:effects; from $s4 enemy targets. $?s327830[Potent enough to remove Magic that is normally undispellable.][]
 
 Name             : Shadow Word: Death (id=32379) [Spell Family (6)] 
+Hotfixed         : Cooldown (30000 -> 0)
 Class            : Priest
 School           : Shadow
 Spell Type       : Magic
@@ -930,13 +931,12 @@ Resource         : 1.2% Base Mana (0) (id=215323) w/ Holy Priest (id=137031)
 Spell Level      : 14
 Range            : 40 yards
 GCD              : 1.5 seconds
-Cooldown         : 30 seconds
 Charges          : 1 (30 seconds cooldown)
-Category         : 1169
+Category         : 1169: Priest (137030 effect#5), Shadow Word: Death (322107 effect#1), Kiss of Death (336133 effect#1)
 Proc Chance      : 100%
 Proc Flags       : .x...... ........ ........ ........ 
                  : Killing Blow
-Affecting spells : Twist of Fate (123254 effect#1), Priest (137030 effect#1), Holy Priest (137031 effect#3), Shadow Priest (137033 effect#1), Surrender to Madness (193223 effect#2), Voidform (194249 effect#1), Schism (214621 effect#2), Shadowform (232698 effect#1), Zeks Exterminatus (236546 effect#1), Twist of Fate (265258 effect#1), Sins of the Many (280398 effect#1), Surrender to Madness (319952 effect#7), Shadow Covenant (322105 effect#2), Shadow Word: Death (322107 effect#1), Kiss of Death (336133 effect#1)
+Affecting spells : Twist of Fate (123254 effect#1), Holy Priest (137031 effect#3), Shadow Priest (137033 effect#1), Surrender to Madness (193223 effect#2), Voidform (194249 effect#1), Schism (214621 effect#2), Shadowform (232698 effect#1), Zeks Exterminatus (236546 effect#1), Twist of Fate (265258 effect#1), Sins of the Many (280398 effect#1), Surrender to Madness (319952 effect#7), Shadow Covenant (322105 effect#2)
 Family Flags     : 33, 44, 72
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -2429,13 +2429,13 @@ Effects          :
 Description      : $@spelldesc114255
 
 Name             : Spirit Shell (id=109964) [Spell Family (6)] 
+Hotfixed         : GCD (1500 -> 0)
 Replaces         : Rapture (id=47536)
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
 Resource         : 2% Base Mana (0) (id=215334)
-GCD              : 1.5 seconds
-Duration         : 12 seconds
+Duration         : 10 seconds
 Cooldown         : 60 seconds
 Affecting spells : Rapid Healing (24546 effect#2), Healing Trance (37706 effect#1), Surrender to Madness (193223 effect#2), Surrender to Madness (319952 effect#7)
 Family Flags     : 18
@@ -3029,8 +3029,9 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179714)   : Apply Aura (6) | Hasted Cooldown Duration (416)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Shadow Word: Death (32379), Prayer of Mending (33076), Power Word: Solace (129250), Shadow Word: Death (199911), Circle of Healing (204883), Void Bolt (205448), Void Bolt (343355)
-                   Family Flags: 33, 86, 106, 108, 118
+                   Affected Spells: Prayer of Mending (33076), Power Word: Solace (129250), Circle of Healing (204883), Void Bolt (205448), Void Bolt (343355)
+                   Family Flags: 86, 106, 108, 118
+Hotfixed         : Affects Spells
 #2 (id=191080)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 1602 | Target: Self (1)
                    Affected Spells (Category): Mind Blast (8092)
@@ -3038,6 +3039,10 @@ Effects          :
                    Base Value: -36 | Scaled Value: -36 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=777113)   : Apply Aura (6) | Modify Ranged Attack Speed% (320)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 640 | Target: Self (1)
+#5 (id=868949)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 1169 | Target: Self (1)
+                   Affected Spells (Category): Shadow Word: Death (32379), Shadow Word: Death (199911)
+Hotfixed         : NEW EFFECT
 
 Name             : Holy Priest (id=137031) [Spell Family (6), Passive, Hidden] 
 Class            : Holy Priest, Death Knight
@@ -4261,8 +4266,8 @@ Spell Level      : 20
 Range            : 40 yards
 GCD              : 1.5 seconds
 Charges          : 1 (30 seconds cooldown)
-Category         : 1169
-Affecting spells : Twist of Fate (123254 effect#1), Priest (137030 effect#1), Holy Priest (137031 effect#3), Shadow Priest (137033 effect#1), Surrender to Madness (193223 effect#2), Voidform (194249 effect#1), Schism (214621 effect#2), Shadowform (232698 effect#1), Zeks Exterminatus (236546 effect#1), Twist of Fate (265258 effect#1), Sins of the Many (280398 effect#1), Surrender to Madness (319952 effect#7), Shadow Covenant (322105 effect#2), Shadow Word: Death (322107 effect#1), Kiss of Death (336133 effect#1)
+Category         : 1169: Priest (137030 effect#5), Shadow Word: Death (322107 effect#1), Kiss of Death (336133 effect#1)
+Affecting spells : Twist of Fate (123254 effect#1), Holy Priest (137031 effect#3), Shadow Priest (137033 effect#1), Surrender to Madness (193223 effect#2), Voidform (194249 effect#1), Schism (214621 effect#2), Shadowform (232698 effect#1), Zeks Exterminatus (236546 effect#1), Twist of Fate (265258 effect#1), Sins of the Many (280398 effect#1), Surrender to Madness (319952 effect#7), Shadow Covenant (322105 effect#2)
 Family Flags     : 33, 44, 72
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -8959,10 +8964,10 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Passive (6)
 Effects          :
-#1 (id=810248)   : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
-                   Base Value: -10000 | Scaled Value: -10000 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
-                   Affected Spells: Shadow Word: Death (32379), Shadow Word: Death (199911)
-                   Family Flags: 33
+#1 (id=810248)   : Apply Aura (6) | Modify Recharge Time (Category) (453)
+                   Base Value: -10000 | Scaled Value: -10000 | PvP Coefficient: 1.00000 | Misc Value: 1169 | Target: Self (1)
+                   Affected Spells (Category): Shadow Word: Death (32379), Shadow Word: Death (199911)
+Hotfixed         : Sub Type (107 -> 453), Misc Value (11 -> 1169), Affects Spells
 Description      : Shadow Word: Death's cooldown is reduced by ${$m1/-1000} sec.
 
 Name             : Dispersion (desc=Rank 2) (id=322108) [Spell Family (6), Passive] 
@@ -9712,10 +9717,10 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Passive (6)
 Effects          :
-#1 (id=833201)   : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
-                   Base Value: -8000 | Scaled Value: -8000 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
-                   Affected Spells: Shadow Word: Death (32379), Shadow Word: Death (199911)
-                   Family Flags: 33
+#1 (id=833201)   : Apply Aura (6) | Modify Recharge Time (Category) (453)
+                   Base Value: -8000 | Scaled Value: -8000 | PvP Coefficient: 1.00000 | Misc Value: 1169 | Target: Self (1)
+                   Affected Spells (Category): Shadow Word: Death (32379), Shadow Word: Death (199911)
+Hotfixed         : Sub Type (107 -> 453), Misc Value (11 -> 1169), Affects Spells
 Description      : Reduces Shadow Word: Death's cooldown by ${$s1/-1000} sec and causes its damage to trigger Atonement.
 
 Name             : Shadowflame Prism (id=336142) 

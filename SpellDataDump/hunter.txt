@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35755 shadowlands-BETA (git build shadowlands 5e2bf2f946)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35755 shadowlands-BETA (hotfix 2020-09-04/35755, no-networking)
 
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
@@ -7622,12 +7622,12 @@ Description      : Your damaging abilities have a chance to grant you 25 applica
 Tooltip          : Your damaging abilities have a chance to grant you 25 applications of Overwhelming Power. Each stack of Overwhelming Power grants $s1 Haste. An application of Overwhelming Power is removed every 3 sec or whenever you take damage.
 
 Name             : Coordinated Assault (id=266779) [Spell Family (9)] 
+Hotfixed         : GCD (1500 -> 0)
 Class            : Survival Hunter
 School           : Physical
 Spell Type       : None
 Spell Level      : 34
 Range            : 100 yards
-GCD              : 1.5 seconds
 Duration         : 20 seconds
 Cooldown         : 120 seconds
 Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
@@ -10663,11 +10663,11 @@ Description      : Your maximum Focus is increased to $<focus>, and $?s259387[Mo
 Variables        : $focus=${100+$288571s2}
 
 Name             : Trueshot (id=288613) [Spell Family (9)] 
+Hotfixed         : GCD (1500 -> 0)
 Class            : Marksmanship Hunter
 School           : Physical
 Spell Type       : None
 Spell Level      : 34
-GCD              : 1.5 seconds
 Duration         : 15 seconds
 Cooldown         : 120 seconds
 Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
