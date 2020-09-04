@@ -1907,8 +1907,8 @@ public:
     double val   = eff->percent();
     bool mastery = false;
 
-    // TODO: rework party_aura & target checks
-    if ( !( eff->type() == E_APPLY_AURA || eff->type() == E_APPLY_AREA_AURA_PARTY ) || eff->target_1() != 1 )
+    // TODO: more robust logic around 'party' buffs with radius
+    if ( !( eff->type() == E_APPLY_AURA || eff->type() == E_APPLY_AREA_AURA_PARTY ) || eff->radius() )
       return;
 
     if ( i <= 5 )
@@ -1932,28 +1932,28 @@ public:
       {
         case P_GENERIC:
           da_multiplier_buffeffects.push_back( buff_effect_t( buff, val, mastery ) );
-          p()->sim->print_debug( "buff-effects: {} direct damage modified by {}%{} with buff {}", ab::name(),
-                                 val * 100.0, mastery ? "+mastery" : "" , buff->name() );
+          p()->sim->print_debug( "buff-effects: {} ({}) direct damage modified by {}%{} with buff {} ({})", ab::name(),
+                                 ab::id, val * 100.0, mastery ? "+mastery" : "", buff->name(), buff->data().id() );
           break;
         case P_TICK_DAMAGE:
           ta_multiplier_buffeffects.push_back( buff_effect_t( buff, val, mastery ) );
-          p()->sim->print_debug( "buff-effects: {} tick damage modified by {}%{} with buff {}", ab::name(),
-                                 val * 100.0, mastery ? "+mastery" : "" , buff->name() );
+          p()->sim->print_debug( "buff-effects: {} ({}) tick damage modified by {}%{} with buff {} ({})", ab::name(),
+                                 ab::id, val * 100.0, mastery ? "+mastery" : "", buff->name(), buff->data().id() );
           break;
         case P_CAST_TIME:
           execute_time_buffeffects.push_back( buff_effect_t( buff, val ) );
-          p()->sim->print_debug( "buff-effects: {} cast time modified by {}% with buff {}", ab::name(),
-                                 val * 100.0, buff->name() );
+          p()->sim->print_debug( "buff-effects: {} ({}) cast time modified by {}% with buff {} ({})", ab::name(),
+                                 ab::id, val * 100.0, buff->name(), buff->data().id() );
           break;
         case P_COOLDOWN:
           recharge_multiplier_buffeffects.push_back( buff_effect_t( buff, val ) );
-          p()->sim->print_debug( "buff-effects: {} cooldown modified by {}% with buff {}", ab::name(),
-                                 val * 100.0, buff->name() );
+          p()->sim->print_debug( "buff-effects: {} ({}) cooldown modified by {}% with buff {} ({})", ab::name(),
+                                 ab::id, val * 100.0, buff->name(), buff->data().id() );
           break;
         case P_RESOURCE_COST:
           cost_buffeffects.push_back( buff_effect_t( buff, val ) );
-          p()->sim->print_debug( "buff-effects: {} cost modified by {}% with buff {}", ab::name(),
-                                 val * 100.0, buff->name() );
+          p()->sim->print_debug( "buff-effects: {} ({}) cost modified by {}% with buff {} ({})", ab::name(),
+                                 ab::id, val * 100.0, buff->name(), buff->data().id() );
           break;
         default:
           break;
@@ -1962,8 +1962,8 @@ public:
     else if ( eff->subtype() == A_ADD_FLAT_MODIFIER && eff->misc_value1() == P_CRIT )
     {
       crit_chance_buffeffects.push_back( buff_effect_t( buff, val ) );
-      p()->sim->print_debug( "buff-effects: {} crit chance modified by {}% with buff {}", ab::name(),
-                             val * 100.0, buff->name() );
+          p()->sim->print_debug( "buff-effects: {} ({}) crit chance modified by {}% with buff {} ({})", ab::name(),
+                                 ab::id, val * 100.0, buff->name(), buff->data().id() );
     }
   }
 
@@ -2064,6 +2064,7 @@ public:
                               p()->spec.eclipse_2 );
 
     // Guardian
+    parse_buff_effects( p()->buff.bear_form );
     parse_buff_effects<S>( p()->buff.berserk_bear,
                            p()->spec.berserk_bear_2 );
     parse_buff_effects<S>( p()->buff.incarnation_bear,
@@ -2104,8 +2105,8 @@ public:
            !( eff->subtype() == A_MOD_AUTO_ATTACK_FROM_CASTER && is_auto_attack ) )
         continue;
 
-      p()->sim->print_debug( "dot-debuffs: {} damage modified by {}% on targets with dot {}", ab::name(),
-                             val * 100.0, s_data->name_cstr() );
+      p()->sim->print_debug( "dot-debuffs: {} ({}) damage modified by {}% on targets with dot {} ({})", ab::name(),
+                             ab::id, val * 100.0, s_data->name_cstr(), s_data->id() );
       target_multiplier_dotdebuffs.push_back( dot_debuff_t( func, val, use_stacks ) );
     }
   }
@@ -3310,14 +3311,14 @@ public:
     {
       auto val = p->mastery.razor_claws->effectN( 1 ).percent();
       da_multiplier_buffeffects.push_back( buff_effect_t( nullptr, val, true ) );
-      p->sim->print_debug( "buff-effects: {} direct damage modified by {}%+mastery", name(), val * 100.0 );
+      p->sim->print_debug( "buff-effects: {} ({}) direct damage modified by {}%+mastery", name(), id, val * 100.0 );
     }
 
     if ( data().affected_by( p->mastery.razor_claws->effectN( 2 ) ) )
     {
       auto val = p->mastery.razor_claws->effectN( 2 ).percent();
       ta_multiplier_buffeffects.push_back( buff_effect_t( nullptr, val , true ) );
-      p->sim->print_debug( "buff-effects: {} tick damage modified by {}%+mastery", name(), val * 100.0 );
+      p->sim->print_debug( "buff-effects: {} ({}) tick damage modified by {}%+mastery", name(), id, val * 100.0 );
     }
   }
 
@@ -3416,8 +3417,8 @@ public:
       double ta_val = ta_multiplier_buffeffects.back().value;
       double da_val = 0;
 
-      p()->sim->print_debug( "persistent-buffs: {} damage modified by {}% with buff {}", name(),
-                             ta_val * 100.0, buff->name() );
+      p()->sim->print_debug( "persistent-buffs: {} ({}) damage modified by {}% with buff {} ({})", name(), id,
+                             ta_val * 100.0, buff->name(), buff->data().id() );
       persistent_multiplier_buffeffects.push_back( ta_multiplier_buffeffects.back() );
       ta_multiplier_buffeffects.pop_back();
 
@@ -4887,9 +4888,6 @@ struct thrash_bear_t : public bear_attack_t
         p->spec.thrash_bear_dot->max_stacks() + as<int>( p->legendary.luffainfused_embrace->effectN( 4 ).base_value() );
     radius *= 1.0 + p->legendary.luffainfused_embrace->effectN( 3 ).percent();
 
-    // Bear Form cost modifier
-    base_costs[ RESOURCE_RAGE ] *= 1.0 + p->buff.bear_form->data().effectN( 7 ).percent();
-
     if ( p->talent.blood_frenzy->ok() )
       blood_frenzy_amount = p->find_spell( 203961 )->effectN( 1 ).resource( RESOURCE_RAGE );
   }
@@ -4908,7 +4906,7 @@ struct thrash_bear_t : public bear_attack_t
     if ( p()->legendary.ursocs_lingering_spirit->ok() &&
          rng().roll( p()->legendary.ursocs_lingering_spirit->effectN( 1 ).percent() ) )
     {
-      schedule_execute();
+      schedule_execute( execute_state );
     }
   }
 
