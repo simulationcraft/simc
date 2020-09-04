@@ -56,6 +56,24 @@ resource_e spelleffect_data_t::resource_gain_type() const
   return util::translate_power_type( static_cast< power_e >( misc_value1() ) );
 }
 
+double spelleffect_data_t::resource_multiplier( resource_e resource_type ) const
+{
+  switch ( resource_type )
+  {
+    case RESOURCE_RUNIC_POWER:
+    case RESOURCE_RAGE:
+    case RESOURCE_ASTRAL_POWER:
+    case RESOURCE_PAIN:
+    case RESOURCE_SOUL_SHARD:
+      return ( 1 / 10.0 );
+    case RESOURCE_INSANITY:
+    case RESOURCE_MANA:
+      return ( 1 / 100.0 );
+    default:
+      return 1;
+  }
+}
+
 school_e spelleffect_data_t::school_type() const
 {
   return dbc::get_school_type( as<uint32_t>( misc_value1() ) );
@@ -267,12 +285,19 @@ double spelleffect_data_t::default_multiplier() const
           {
             case P_DURATION:
             case P_CAST_TIME:
+            case P_COOLDOWN:
             case P_TICK_TIME:
             case P_GCD:
               return 0.001; // time_value
 
             case P_CRIT:
-              return 0.01;
+            case P_CRIT_DAMAGE:
+            case P_PROC_CHANCE:
+              return 0.01; // percent
+
+            case P_RESOURCE_COST:
+            case P_RESOURCE_GEN:
+              return resource_multiplier( resource_gain_type() );
 
             default:
               return 1.0; // base_value

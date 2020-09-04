@@ -221,23 +221,13 @@ struct spelleffect_data_t
 
   resource_e resource_gain_type() const;
 
+  double resource_multiplier( resource_e resource_type ) const;
+
   double resource( resource_e resource_type ) const
-  {
-    switch ( resource_type )
-    {
-      case RESOURCE_RUNIC_POWER:
-      case RESOURCE_RAGE:
-      case RESOURCE_ASTRAL_POWER:
-      case RESOURCE_PAIN:
-      case RESOURCE_SOUL_SHARD:
-        return base_value() * ( 1 / 10.0 );
-      case RESOURCE_INSANITY:
-      case RESOURCE_MANA:
-        return base_value() * ( 1 / 100.0 );
-      default:
-        return base_value();
-    }
-  }
+  { return base_value() * resource_multiplier( resource_type ); }
+
+  double resource() const
+  { return resource( resource_gain_type() ); }
 
   school_e school_type() const;
 
