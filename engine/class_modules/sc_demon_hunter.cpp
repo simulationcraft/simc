@@ -83,7 +83,6 @@ public:
     buff_t* void_reaver;
 
     // Covenant
-    buff_t* the_hunt;
     buff_t* serrated_glaive;
   } debuffs;
 
@@ -458,6 +457,7 @@ public:
     conduit_data_t repeat_decree;
     conduit_data_t increased_scrutiny;
     conduit_data_t brooding_pool;
+    conduit_data_t unnatural_malice;
   } conduit;
 
   struct legendary_t
@@ -544,9 +544,6 @@ public:
     gain_t* thirsting_blades;
     gain_t* revolving_blades;
     gain_t* memory_of_lucid_dreams;
-
-    // Convenant
-    gain_t* the_hunt;
   } gain;
 
   // Benefits
@@ -1252,6 +1249,7 @@ public:
 
     // Conduit Passives
     ab::apply_affecting_conduit( p->conduit.increased_scrutiny );
+    ab::apply_affecting_conduit( p->conduit.unnatural_malice );
 
     // Generic Affect Flags
     parse_affect_flags( p->spec.demon_soul, affected_by.demon_soul );
@@ -3022,8 +3020,11 @@ struct elysian_decree_t : public demon_hunter_spell_t
     : demon_hunter_spell_t( "elysian_decree", p, p->covenant.elysian_decree, options_str ),
     repeat_decree_sigil( nullptr )
   {
-    sigil = p->get_background_action<elysian_decree_sigil_t>( "elysian_decree_sigil", p->find_spell( 307046 ), ground_aoe_duration );
-    sigil->stats = stats;
+    if ( p->covenant.elysian_decree->ok() )
+    {
+      sigil = p->get_background_action<elysian_decree_sigil_t>( "elysian_decree_sigil", p->find_spell( 307046 ), ground_aoe_duration );
+      sigil->stats = stats;
+    }
 
     if ( p->conduit.repeat_decree.ok() )
     {
@@ -3113,18 +3114,23 @@ struct sinful_brand_t: public demon_hunter_spell_t
 
 struct the_hunt_t : public demon_hunter_spell_t
 {
-  struct the_hunt_damage_t : public demon_hunter_attack_t
+  struct the_hunt_damage_t : public demon_hunter_spell_t
   {
+    struct the_hunt_dot_t : public demon_hunter_spell_t
+    {
+      the_hunt_dot_t( util::string_view name, demon_hunter_t* p )
+        : demon_hunter_spell_t( name, p, p->find_spell( 344325 ) )
+      {
+        dual = true;
+        aoe = -1;
+      }
+    };
+
     the_hunt_damage_t( util::string_view name, demon_hunter_t* p )
-      : demon_hunter_attack_t( name, p, p->covenant.the_hunt->effectN( 1 ).trigger() )
+      : demon_hunter_spell_t( name, p, p->covenant.the_hunt->effectN( 1 ).trigger() )
     {
       dual = true;
-    }
-
-    void impact( action_state_t* s ) override
-    {
-      demon_hunter_attack_t::impact( s );
-      td( s->target )->debuffs.the_hunt->trigger();
+      execute_action = p->get_background_action<the_hunt_dot_t>( "the_hunt_dot" );
     }
   };
 
@@ -3133,6 +3139,7 @@ struct the_hunt_t : public demon_hunter_spell_t
   {
     execute_action = p->get_background_action<the_hunt_damage_t>( "the_hunt_damage" );
     execute_action->stats = stats;
+    execute_action->execute_action->stats = stats;
   }
 };
 
@@ -3569,10 +3576,10 @@ struct death_sweep_t : public blade_dance_base_t
 
 struct chaos_strike_base_t : public demon_hunter_attack_t
 {
-  struct inner_demons_t : public demon_hunter_attack_t
+  struct inner_demons_t : public demon_hunter_spell_t
   {
     inner_demons_t( util::string_view name, demon_hunter_t* p )
-      : demon_hunter_attack_t( name, p, p->find_spell( 337550 ) )
+      : demon_hunter_spell_t( name, p, p->find_spell( 337550 ) )
     {
       background = dual = true;
       aoe = -1;
@@ -3817,13 +3824,6 @@ struct demons_bite_t : public demon_hunter_attack_t
                                                 1 + p()->talent.insatiable_hunger->effectN( 4 ).base_value() ) );
     }
 
-    // In-game this value is merged with the total, but split it out as its own gain for tracking purposes
-    const double the_hunt_ea = ea * td( s->target )->debuffs.the_hunt->stack_value();
-    if ( the_hunt_ea > 0 )
-    {
-      player->resource_gain( RESOURCE_FURY, the_hunt_ea, p()->gain.the_hunt );
-    }
-
     return ea;
   }
 
@@ -3954,10 +3954,10 @@ struct felblade_t : public demon_hunter_attack_t
 
 struct fel_rush_t : public demon_hunter_attack_t
 {
-  struct unbound_chaos_t : public demon_hunter_attack_t
+  struct unbound_chaos_t : public demon_hunter_spell_t
   {
     unbound_chaos_t( util::string_view name, demon_hunter_t* p )
-      : demon_hunter_attack_t( name, p, p->find_spell( 275148 ) )
+      : demon_hunter_spell_t( name, p, p->find_spell( 275148 ) )
     {
       background = dual = true;
       aoe = -1;
@@ -3965,10 +3965,10 @@ struct fel_rush_t : public demon_hunter_attack_t
     }
   };
 
-  struct fel_rush_damage_t : public demon_hunter_attack_t
+  struct fel_rush_damage_t : public demon_hunter_spell_t
   {
     fel_rush_damage_t( util::string_view name, demon_hunter_t* p )
-      : demon_hunter_attack_t( name, p, p->spec.fel_rush_damage )
+      : demon_hunter_spell_t( name, p, p->spec.fel_rush_damage )
     {
       background = dual = true;
       aoe = -1;
@@ -4154,13 +4154,6 @@ struct shear_t : public demon_hunter_attack_t
       ea += p()->spec.metamorphosis_buff->effectN( 4 ).resource( RESOURCE_FURY );
     }
 
-    // In-game this value is merged with the total, but split it out as its own gain for tracking purposes
-    const double the_hunt_ea = ea * td( s->target )->debuffs.the_hunt->stack_value();
-    if ( the_hunt_ea > 0 )
-    {
-      player->resource_gain( RESOURCE_FURY, the_hunt_ea, p()->gain.the_hunt );
-    }
-
     return ea;
   }
 
@@ -4315,12 +4308,12 @@ struct throw_glaive_t : public demon_hunter_attack_t
 
 // Vengeful Retreat =========================================================
 
-struct vengeful_retreat_t : public demon_hunter_attack_t
+struct vengeful_retreat_t : public demon_hunter_spell_t
 {
-  struct vengeful_retreat_damage_t : public demon_hunter_attack_t
+  struct vengeful_retreat_damage_t : public demon_hunter_spell_t
   {
     vengeful_retreat_damage_t( util::string_view name, demon_hunter_t* p )
-      : demon_hunter_attack_t( name, p, p->find_spell( 198813 ) )
+      : demon_hunter_spell_t( name, p, p->find_spell( 198813 ) )
     {
       background = dual = true;
       aoe = -1;
@@ -4328,7 +4321,7 @@ struct vengeful_retreat_t : public demon_hunter_attack_t
 
     void execute() override
     {
-      demon_hunter_attack_t::execute();
+      demon_hunter_spell_t::execute();
 
       if ( hit_any_target )
       {
@@ -4338,11 +4331,8 @@ struct vengeful_retreat_t : public demon_hunter_attack_t
   };
 
   vengeful_retreat_t( demon_hunter_t* p, const std::string& options_str )
-    : demon_hunter_attack_t( "vengeful_retreat", p, p->spec.vengeful_retreat, options_str )
+    : demon_hunter_spell_t( "vengeful_retreat", p, p->spec.vengeful_retreat, options_str )
   {
-    may_miss = may_dodge = may_parry = may_block = false;
-    // use_off_gcd = true;
-
     execute_action = p->get_background_action<vengeful_retreat_damage_t>( "vengeful_retreat_damage" );
     execute_action->stats = stats;
 
@@ -4357,7 +4347,7 @@ struct vengeful_retreat_t : public demon_hunter_attack_t
 
   void execute() override
   {
-    demon_hunter_attack_t::execute();
+    demon_hunter_spell_t::execute();
 
     // Fel Rush and VR shared a 1 second GCD when one or the other is triggered
     p()->cooldown.movement_shared->start( timespan_t::from_seconds( 1.0 ) );
@@ -4372,7 +4362,7 @@ struct vengeful_retreat_t : public demon_hunter_attack_t
       return false;
     }
 
-    return demon_hunter_attack_t::ready();
+    return demon_hunter_spell_t::ready();
   }
 };
 
@@ -4623,8 +4613,6 @@ demon_hunter_td_t::demon_hunter_td_t( player_t* target, demon_hunter_t& p )
   }
 
   dots.sinful_brand = target->get_dot( "sinful_brand", &p );
-  debuffs.the_hunt = make_buff( *this, "the_hunt", p.covenant.the_hunt->effectN( 1 ).trigger() )
-    ->set_default_value( p.covenant.the_hunt->effectN( 1 ).trigger()->effectN( 2 ).percent() );
   debuffs.serrated_glaive = make_buff( *this, "exposed_wound", p.conduit.serrated_glaive->effectN( 1 ).trigger() )
     ->set_default_value( p.conduit.serrated_glaive->effectN( 1 ).trigger()->effectN( 1 ).percent() );
 
@@ -5445,6 +5433,7 @@ void demon_hunter_t::init_spells()
   conduit.repeat_decree         = find_conduit_spell( "Repeat Decree" );
   conduit.increased_scrutiny    = find_conduit_spell( "Increased Scrutiny" );
   conduit.brooding_pool         = find_conduit_spell( "Brooding Pool" );
+  conduit.unnatural_malice      = find_conduit_spell( "Unnatural Mailce" ); // typo in name
 
   // Legendary Items ========================================================
 
@@ -5844,9 +5833,6 @@ void demon_hunter_t::create_gains()
   gain.thirsting_blades         = get_gain( "thirsting_blades" );
   gain.revolving_blades         = get_gain( "revolving_blades" );
   gain.memory_of_lucid_dreams   = get_gain( "memory_of_lucid_dreams_proc" );
-
-  // Covenant
-  gain.the_hunt                 = get_gain( "the_hunt" );
 }
 
 // demon_hunter_t::create_benefits ==========================================
