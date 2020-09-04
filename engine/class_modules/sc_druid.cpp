@@ -1862,7 +1862,7 @@ public:
     {
       auto eff = &mod->effectN( i );
 
-      if ( eff->type() != E_APPLY_AURA || !base->affected_by_all( &ab::player->dbc, *eff ) )
+      if ( eff->type() != E_APPLY_AURA || !base->affected_by_all( *ab::player->dbc, *eff ) )
         continue;
 
       if ( ( eff->misc_value1() == P_EFFECT_1 && idx == 1 ) || ( eff->misc_value1() == P_EFFECT_2 && idx == 2 ) ||
@@ -1920,7 +1920,7 @@ public:
       return;
     }
 
-    if ( !ab::data().affected_by_all( &ab::player->dbc, *eff ) )
+    if ( !ab::data().affected_by_all( *ab::player->dbc, *eff ) )
       return;
 
     if ( !mastery && !val )
@@ -2100,7 +2100,7 @@ public:
       if ( !val )
         continue;
 
-      if ( !( eff->subtype() == A_MOD_DAMAGE_FROM_CASTER_SPELLS && ab::data().affected_by_all( &ab::player->dbc, *eff ) ) &&
+      if ( !( eff->subtype() == A_MOD_DAMAGE_FROM_CASTER_SPELLS && ab::data().affected_by_all( *ab::player->dbc, *eff ) ) &&
            !( eff->subtype() == A_MOD_AUTO_ATTACK_FROM_CASTER && is_auto_attack ) )
         continue;
 
