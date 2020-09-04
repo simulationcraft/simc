@@ -1092,7 +1092,7 @@ timespan_t action_t::travel_time() const
   return timespan_t::from_seconds( t );
 }
 
-double action_t::total_crit_bonus( action_state_t* state ) const
+double action_t::total_crit_bonus( const action_state_t* state ) const
 {
   double crit_multiplier_buffed = crit_multiplier * composite_player_critical_multiplier( state );
   
