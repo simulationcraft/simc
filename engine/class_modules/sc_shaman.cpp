@@ -6787,28 +6787,6 @@ void shaman_t::init_action_list_elemental()
   single_target->add_action( this, "Lava Burst", "if=buff.ascendance.up" );
   single_target->add_action( this, "Flame Shock", "target_if=refreshable&active_enemies>1&buff.surge_of_power.up",
                              "Utilize Surge of Power to spread Flame Shock if multiple enemies are present." );
-  single_target->add_action(
-      this, "Lava Burst",
-      "if=talent.storm_elemental.enabled&cooldown_react&buff.surge_of_power.up&(expected_combat_length-time-cooldown."
-      "storm_elemental.remains-cooldown.storm_elemental.duration*floor((expected_combat_length-time-cooldown.storm_"
-      "elemental.remains)%cooldown.storm_elemental.duration)<30|(1.16*("
-      "expected_combat_length-time)-cooldown.storm_elemental.remains-cooldown.storm_elemental.duration*floor((1.16*("
-      "expected_combat_length-time)-cooldown.storm_elemental.remains)%cooldown.storm_elemental.duration))<(expected_"
-      "combat_length-time-cooldown.storm_elemental.remains-cooldown.storm_elemental.duration*floor((expected_combat_"
-      "length-time-cooldown.storm_elemental.remains)%cooldown.storm_elemental.duration)))",
-      "Use Lava Burst with Surge of Power if the last potential usage of Storm Elemental hasn't a full duration OR "
-      "if you could get another usage of the DPS Elemental if the remaining fight was 16% longer." );
-  single_target->add_action(
-      this, "Lava Burst",
-      "if=!talent.storm_elemental.enabled&cooldown_react&buff.surge_of_power.up&(expected_combat_length-time-cooldown."
-      "fire_elemental.remains-cooldown.fire_elemental.duration*floor((expected_combat_length-time-cooldown.fire_"
-      "elemental.remains)%cooldown.fire_elemental.duration)<30|(1.16*("
-      "expected_combat_length-time)-cooldown.fire_elemental.remains-cooldown.fire_elemental.duration*floor((1.16*("
-      "expected_combat_length-time)-cooldown.fire_elemental.remains)%cooldown.fire_elemental.duration))<(expected_"
-      "combat_length-time-cooldown.fire_elemental.remains-cooldown.fire_elemental.duration*floor((expected_combat_"
-      "length-time-cooldown.fire_elemental.remains)%cooldown.fire_elemental.duration)))",
-      "Use Lava Burst with Surge of Power if the last potential usage of Fire Elemental hasn't a full duration OR "
-      "if you could get another usage of the DPS Elemental if the remaining fight was 16% longer." );
 
   single_target->add_action( this, "Lightning Bolt", "if=buff.surge_of_power.up" );
   single_target->add_action( this, "Lava Burst", "if=cooldown_react&!talent.master_of_the_elements.enabled" );
