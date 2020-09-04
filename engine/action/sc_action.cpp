@@ -1320,7 +1320,12 @@ double action_t::calculate_crit_damage_bonus( action_state_t* state ) const
 {
   if ( state->result == RESULT_CRIT )
   {
-    state->result_total *= 1.0 + total_crit_bonus( state );
+    state->result_crit_bonus = total_crit_bonus( state );
+    state->result_total *= 1.0 + state->result_crit_bonus;
+  }
+  else
+  {
+    state->result_crit_bonus = 1.0;
   }
 
   return state->result_total;
