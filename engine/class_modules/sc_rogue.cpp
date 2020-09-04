@@ -6190,15 +6190,11 @@ void actions::rogue_action_t<Base>::trigger_blade_flurry( const action_state_t* 
   // Target multipliers do not replicate to secondary targets, need to reverse them out
   const double target_da_multiplier = ( 1.0 / state->target_da_multiplier );
   double target_crit_multipler = 1.0;
-  if ( state->result == RESULT_CRIT )
+  if ( state->result == RESULT_CRIT && affected_by.between_the_eyes && td( state->target )->debuffs.between_the_eyes->check() )
   {
-    target_crit_multipler = ( 1.0 / composite_target_crit_damage_bonus_multiplier( state->target ) );
-    if ( target_crit_multipler != 1.0 )
-    {
-      const double crit_bonus = ab::total_crit_bonus( state );
-      target_crit_multipler = ( 1.0 + crit_bonus * target_crit_multipler ) / ( 1.0 + crit_bonus );
-    }
-  } 
+    const double bonus_multiplier = ( 1.0 / ( 1.0 + p()->spec.between_the_eyes->effectN( 2 ).percent() ) );
+    target_crit_multipler = ( 1.0 + ( state->result_crit_bonus * bonus_multiplier ) ) / ( 1.0 + state->result_crit_bonus );
+  }
 
   // Note, unmitigated damage
   double damage = state->result_total * multiplier * target_da_multiplier * target_crit_multipler;
