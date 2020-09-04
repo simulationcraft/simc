@@ -6579,7 +6579,11 @@ void actions::rogue_action_t<Base>::trigger_bloodfang( const action_state_t* sta
 template <typename Base>
 void actions::rogue_action_t<Base>::trigger_count_the_odds( const action_state_t* state )
 {
-  if ( !ab::result_is_hit( state->result ) || !p()->conduit.count_the_odds.ok() || p()->specialization() != ROGUE_OUTLAW )
+  if ( !ab::result_is_hit( state->result ) || !p()->conduit.count_the_odds.ok() )
+    return;
+
+  // TOCHECK: Currently it appears all Rogues can trigger this with Ambush/Slaughter
+  if ( !p()->bugs && p()->specialization() != ROGUE_OUTLAW )
     return;
 
   if ( !p()->rng().roll( p()->conduit.count_the_odds.percent() ) )
