@@ -271,6 +271,9 @@ double spelleffect_data_t::default_multiplier() const
             case P_GCD:
               return 0.001; // time_value
 
+            case P_CRIT:
+              return 0.01;
+
             default:
               return 1.0; // base_value
           }
