@@ -5,6 +5,7 @@
 
 #include "simulationcraft.hpp"
 
+#include "player/covenant.hpp"
 #include "player/pet_spawner.hpp"
 #include "sc_enums.hpp"
 
@@ -15,15 +16,19 @@
 // Shadowlands TODO
 //
 // Shared
-// - Remove Totem Mastery
 // - Update Elemental Blast
+// - Covenants
+//   - Kyrian
+//   - Night Fae
+//   - Venthyr
+// - Class Legendaries
+// - Covenant Conduits
 //
 // Elemental
 // - Implement Static Discharge
-// - Update Aftershock to only work on Earth Shock
 // - Implement Echoing Shock
-// - Legendaries
-// - Conduits
+// - Spec Legendaries
+// - Spec Conduits
 //
 // Enhancement
 // whole huge pile of stuff to do
@@ -320,6 +325,9 @@ public:
     buff_t* ascendance;
     buff_t* ghost_wolf;
 
+    // Covenant Class Ability Buffs
+    buff_t* primordial_wave;
+
     // Elemental, Restoration
     buff_t* lava_surge;
 
@@ -371,6 +379,13 @@ public:
     cooldown_t* storm_elemental;
     cooldown_t* strike;  // shared CD of Storm Strike and Windstrike
   } cooldown;
+
+  // Covenant Class Abilities
+  struct
+  {
+    // Necrolord
+    const spell_data_t* necrolord; // Primordial Wave
+  } covenant;
 
   // Gains
   struct
@@ -550,6 +565,7 @@ public:
       constant(),
       buff(),
       cooldown(),
+      covenant(),
       gain(),
       proc(),
       spec(),
@@ -3982,6 +3998,12 @@ struct lava_burst_t : public shaman_spell_t
   {
     shaman_spell_t::execute();
 
+    if ( p()->specialization() == SHAMAN_ELEMENTAL && p()->covenant.necrolord->ok() && p()->buff.primordial_wave->up() )
+    {
+      // TODO: trigger a Lava Burst on every Flame Shocked target in the future
+      p()->buff.primordial_wave->expire();
+    }
+
     if ( p()->talent.master_of_the_elements->ok() )
     {
       p()->buff.master_of_the_elements->trigger();
@@ -4155,6 +4177,12 @@ struct lightning_bolt_t : public shaman_spell_t
   void execute() override
   {
     shaman_spell_t::execute();
+
+    if ( p()->specialization() == SHAMAN_ENHANCEMENT && p()->covenant.necrolord->ok() && p()->buff.primordial_wave->up() )
+    {
+      // TODO: trigger a Lightning Bolt on every Flame Shocked target in the future
+      p()->buff.primordial_wave->expire();
+    }
 
     p()->buff.stormkeeper->decrement();
 
@@ -5294,6 +5322,30 @@ struct thundercharge_t : public shaman_spell_t
 };
 
 // ==========================================================================
+// Primordial Wave - Necrolord Covenant
+// ==========================================================================
+struct primordial_wave_t : public shaman_spell_t
+{
+  primordial_wave_t( shaman_t* player, const std::string& options_str )
+  : shaman_spell_t( "primordial_wave", player, player->covenant.necrolord, options_str )
+  {
+    parse_options( options_str );
+
+    if ( !player->covenant.necrolord->ok() )
+      return;
+
+    // attack/spell power valujes are on a secondary spell
+    attack_power_mod.direct = player->find_spell( 327162 )->effectN( 1 ).ap_coeff();
+    spell_power_mod.direct = player->find_spell( 327162 )->effectN( 1 ).sp_coeff();
+  }
+
+  void execute() override {
+    shaman_spell_t::execute();
+    p()->buff.primordial_wave->trigger();
+  }
+};
+
+// ==========================================================================
 // Shaman Custom Buff implementation
 // ==========================================================================
 
@@ -5491,6 +5543,10 @@ action_t* shaman_t::create_action( util::string_view name, const std::string& op
     return new stormkeeper_t( this, options_str );
   if ( name == "wind_shear" )
     return new wind_shear_t( this, options_str );
+
+  // covenants
+  if ( name == "primordial_wave" )
+    return new primordial_wave_t( this, options_str );
 
   // elemental
   if ( name == "chain_lightning" )
@@ -5933,6 +5989,9 @@ void shaman_t::init_spells()
   // Restoration
   talent.graceful_spirit = find_talent_spell( "Graceful Spirit" );
 
+  // Covenants
+  covenant.necrolord              = find_covenant_spell( "Primordial Wave" );
+
   //
   // Misc spells
   //
@@ -6365,6 +6424,9 @@ void shaman_t::create_buffs()
   buff.stormkeeper = make_buff( this, "stormkeeper", talent.stormkeeper )
                          ->set_cooldown( timespan_t::zero() );  // Handled by the action
 
+  // Covenants
+  buff.primordial_wave = make_buff( this, "primordial_wave", covenant.necrolord )->set_duration( find_spell( 327164 )->duration() );
+
   //
   // Elemental
   //
@@ -6614,11 +6676,10 @@ std::string shaman_t::default_rune() const
 
 void shaman_t::init_action_list_elemental()
 {
-  action_priority_list_t* precombat = get_action_priority_list( "precombat" );
-  action_priority_list_t* def       = get_action_priority_list( "default" );
-  action_priority_list_t* single_target =
-      get_action_priority_list( "single_target", "Single Target Action Priority List" );
-  action_priority_list_t* aoe    = get_action_priority_list( "aoe", "Multi target action priority list" );
+  action_priority_list_t* precombat     = get_action_priority_list( "precombat" );
+  action_priority_list_t* def           = get_action_priority_list( "default" );
+  action_priority_list_t* single_target = get_action_priority_list( "single_target" );
+  action_priority_list_t* aoe           = get_action_priority_list( "aoe" );
 
   // Consumables
   precombat->add_action( "flask" );
@@ -6674,8 +6735,8 @@ void shaman_t::init_action_list_elemental()
   aoe->add_action( this, "Frost Shock", "moving=1" );
 
   // Single target APL
-  single_target->add_action( this, "Flame Shock",
-    "target_if=!ticking|dot.flame_shock.remains<=gcd&!buff.surge_of_power.up" );
+  single_target->add_action( this, "Flame Shock", "target_if=!ticking|dot.flame_shock.remains<=gcd&!buff.surge_of_power.up" );
+  single_target->add_action( "primordial_wave" );
   single_target->add_talent( this, "Elemental Blast", "if=talent.elemental_blast.enabled" );
   single_target->add_action( this, "Lightning Bolt",
     "if=buff.stormkeeper.up&(buff.master_of_the_elements.up&!talent.surge_of_power.enabled|buff.surge_of_power.up)" );
