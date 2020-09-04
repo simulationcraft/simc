@@ -67,7 +67,6 @@ double spelleffect_data_t::resource_multiplier( resource_e resource_type ) const
     case RESOURCE_SOUL_SHARD:
       return ( 1 / 10.0 );
     case RESOURCE_INSANITY:
-    case RESOURCE_MANA:
       return ( 1 / 100.0 );
     default:
       return 1;
