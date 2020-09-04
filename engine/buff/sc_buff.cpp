@@ -1750,6 +1750,22 @@ void buff_t::extend_duration( player_t* p, timespan_t extra_seconds )
   }
 }
 
+// Trigger the buff with the specified duration or extend it by the same amount
+// Cannot be used for negative adjustments like buff_t::extend_duration() can
+void buff_t::extend_duration_or_trigger( timespan_t duration, player_t* p )
+{
+  timespan_t d = ( duration >= timespan_t::zero() ) ? duration : buff_duration();
+
+  if ( check() )
+  {
+    buff_t::extend_duration( p == nullptr ? this->source : p, d );
+  }
+  else
+  {
+    buff_t::trigger( d );
+  }
+}
+
 void buff_t::start( int stacks, double value, timespan_t duration )
 {
   if ( _max_stack == 0 )
