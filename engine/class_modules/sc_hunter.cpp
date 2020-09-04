@@ -3297,6 +3297,28 @@ struct aimed_shot_base_t: public hunter_ranged_attack_t
     }
   }
 
+  void execute()
+  {
+    hunter_ranged_attack_t::execute();
+
+    if ( p() -> buffs.trick_shots -> check() && serpentstalkers_trickery.action )
+    {
+      const auto& targets = target_list();
+      const int target_count = std::min( serpentstalkers_trickery.target_count, as<int>( targets.size() ) );
+      for ( player_t* target : util::make_span( targets ).subspan( 0, target_count ) )
+      {
+        serpentstalkers_trickery.action -> set_target( target );
+        serpentstalkers_trickery.action -> execute();
+      }
+      /* [2020-09-04] Extra shots consume Precise Shots, but all of them
+       * are affected by the damage amp. Double Tap also procs extra shots
+       * but they are not affected by Precise Shots.
+       */
+      p() -> buffs.precise_shots -> up(); // benefit tracking
+      p() -> buffs.precise_shots -> decrement( target_count );
+    }
+  }
+
   int n_targets() const override
   {
     if ( p() -> buffs.trick_shots -> check() )
@@ -3326,17 +3348,6 @@ struct aimed_shot_base_t: public hunter_ranged_attack_t
       b += td_ -> debuffs.steady_aim -> stack_value();
 
     return b;
-  }
-
-  void schedule_travel( action_state_t* s ) override
-  {
-    hunter_ranged_attack_t::schedule_travel( s );
-
-    if ( p() -> buffs.trick_shots -> check() && s -> chain_target < serpentstalkers_trickery.target_count )
-    {
-      serpentstalkers_trickery.action -> set_target( s -> target );
-      serpentstalkers_trickery.action -> execute();
-    }
   }
 
   void impact( action_state_t* s ) override
