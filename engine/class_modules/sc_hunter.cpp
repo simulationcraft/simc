@@ -1996,6 +1996,12 @@ struct beast_cleave_attack_t: public hunter_pet_action_t<hunter_main_pet_base_t,
     weapon_multiplier = 0;
   }
 
+  void init() override
+  {
+    hunter_pet_action_t::init();
+    snapshot_flags |= STATE_TGT_MUL_DA;
+  }
+
   size_t available_targets( std::vector< player_t* >& tl ) const override
   {
     hunter_pet_action_t::available_targets( tl );
@@ -2007,7 +2013,7 @@ struct beast_cleave_attack_t: public hunter_pet_action_t<hunter_main_pet_base_t,
   }
 };
 
-static void trigger_beast_cleave( action_state_t* s )
+static void trigger_beast_cleave( const action_state_t* s )
 {
   if ( !s -> action -> result_is_hit( s -> result ) )
     return;
@@ -2020,10 +2026,15 @@ static void trigger_beast_cleave( action_state_t* s )
   if ( !p -> buffs.beast_cleave -> check() )
     return;
 
-  const double cleave = s -> result_total * p -> buffs.beast_cleave -> check_value();
+  const double multiplier = p -> buffs.beast_cleave -> check_value();
+
+  // Target multipliers do not replicate to secondary targets
+  const double target_da_multiplier = ( 1.0 / s -> target_da_multiplier );
+
+  const double amount = s -> result_total * multiplier * target_da_multiplier;
   p -> active.beast_cleave -> set_target( s -> target );
-  p -> active.beast_cleave -> base_dd_min = cleave;
-  p -> active.beast_cleave -> base_dd_max = cleave;
+  p -> active.beast_cleave -> base_dd_min = amount;
+  p -> active.beast_cleave -> base_dd_max = amount;
   p -> active.beast_cleave -> execute();
 }
 
