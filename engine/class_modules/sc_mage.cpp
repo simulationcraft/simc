@@ -4820,12 +4820,7 @@ struct pyroblast_t : public hot_streak_spell_t
     // an instant cast Pyroblast without Hot Streak is used
     if ( time_to_execute > 0_ms && p()->buffs.sun_kings_blessing_ready->check() )
     {
-      timespan_t d = 1000 * p()->runeforge.sun_kings_blessing->effectN( 2 ).time_value();
-      if ( p()->buffs.combustion->check() )
-        p()->buffs.combustion->extend_duration( p(), d );
-      else
-        p()->buffs.combustion->trigger( d );
-
+      p()->buffs.combustion->extend_duration_or_trigger( 1000 * p()->runeforge.sun_kings_blessing->effectN( 2 ).time_value() );
       p()->buffs.sun_kings_blessing_ready->expire();
     }
 
