@@ -3217,6 +3217,14 @@ struct master_marksman_t : public residual_action::residual_periodic_action_t<hu
   master_marksman_t( hunter_t* p ):
     residual_periodic_action_t( "master_marksman", p, p -> find_spell( 269576 ) )
   { }
+
+  void init() override
+  {
+    residual_periodic_action_t::init();
+
+    snapshot_flags |= STATE_TGT_MUL_TA;
+    update_flags   |= STATE_TGT_MUL_TA;
+  }
 };
 
 // Bursting Shot ======================================================================
