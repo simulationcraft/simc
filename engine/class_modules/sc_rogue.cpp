@@ -1038,6 +1038,7 @@ public:
     bool finality_shadow_vault = false;
     bool dashing_scoundrel = false;
     bool zoldyck_insignia = false;
+    bool between_the_eyes = false;
 
     damage_affect_data mastery_executioner;
     damage_affect_data mastery_potent_assassin;
@@ -1097,6 +1098,7 @@ public:
     affected_by.ruthless_precision = ab::data().affected_by( p->spec.ruthless_precision->effectN( 1 ) );
     affected_by.symbols_of_death_autocrit = ab::data().affected_by( p->spec.symbols_of_death_autocrit->effectN( 1 ) );
     affected_by.blindside = ab::data().affected_by( p->find_spell( 121153 )->effectN( 1 ) );
+    affected_by.between_the_eyes = ab::data().affected_by( p->spec.between_the_eyes->effectN( 2 ) );
     if ( p->conduit.perforated_veins.ok() )
     {
       affected_by.perforated_veins = ab::data().affected_by( p->conduit.perforated_veins->effectN( 1 ).trigger()->effectN( 1 ) );
@@ -1565,11 +1567,16 @@ public:
     return c;
   }
 
-  double composite_target_crit_chance( player_t* target ) const override
+  double composite_target_crit_damage_bonus_multiplier( player_t* target ) const override
   {
-    double c = ab::composite_target_crit_chance( target );
-    c += td( target )->debuffs.between_the_eyes->stack_value();
-    return c;
+    double m = ab::composite_target_crit_damage_bonus_multiplier( target );
+
+    if ( affected_by.between_the_eyes )
+    {
+      m *= 1.0 + td( target )->debuffs.between_the_eyes->stack_value();
+    }
+
+    return m;
   }
 
   double target_armor( player_t* target ) const override
@@ -6644,7 +6651,7 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
   debuffs.prey_on_the_weak = make_buff( *this, "prey_on_the_weak", source->find_spell( 255909 ) )
     ->set_default_value( source->find_spell( 255909 )->effectN( 1 ).percent() );
   debuffs.between_the_eyes = make_buff( *this, "between_the_eyes", source->spec.between_the_eyes )
-    ->set_default_value( source->spec.between_the_eyes->effectN( 2 ).percent() )
+    ->set_default_value_from_effect_type( A_MOD_CRIT_DAMAGE_PCT_FROM_CASTER_SPELLS )
     ->set_cooldown( timespan_t::zero() );
 
   if ( source->legendary.akaaris_soul_fragment.ok() )
