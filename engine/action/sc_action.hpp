@@ -785,14 +785,17 @@ public:
 
   virtual double composite_target_crit_chance( player_t* target ) const;
 
-  virtual double composite_target_multiplier(player_t* target) const;
+  virtual double composite_target_crit_damage_bonus_multiplier( player_t* ) const
+  { return 1.0; }
 
-  virtual double composite_target_damage_vulnerability(player_t* target) const;
+  virtual double composite_target_multiplier( player_t* target ) const;
+
+  virtual double composite_target_damage_vulnerability( player_t* target ) const;
 
   virtual double composite_versatility( const action_state_t* ) const
   { return 1.0; }
 
-  virtual double composite_leech(const action_state_t*) const;
+  virtual double composite_leech( const action_state_t* ) const;
 
   virtual double composite_run_speed() const;
 
