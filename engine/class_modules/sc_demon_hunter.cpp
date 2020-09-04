@@ -4787,6 +4787,7 @@ void demon_hunter_t::create_buffs()
   buff.momentum = make_buff( this, "momentum", spec.momentum_buff )
     ->set_trigger_spell( talent.momentum )
     ->set_default_value_from_effect( 1 )
+    ->set_refresh_behavior( buff_refresh_behavior::EXTEND )
     ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   buff.out_of_range = make_buff( this, "out_of_range", spell_data_t::nil() )
