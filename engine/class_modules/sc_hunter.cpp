@@ -5613,12 +5613,12 @@ std::unique_ptr<expr_t> hunter_t::create_action_expression ( action_t& action, u
   auto splits = util::string_split<util::string_view>( expression_str, "." );
 
   // Careful Aim expression
-  if ( splits.size() == 1 && splits[ 0 ] == "ca_execute" )
+  if ( splits.size() == 1 && splits[ 0 ] == "ca_active" )
   {
     if ( !talents.careful_aim.ok() )
-      return expr_t::create_constant( "ca_execute", false );
+      return expr_t::create_constant( "ca_active", false );
 
-    return make_fn_expr( "ca_execute",
+    return make_fn_expr( "ca_active",
       [ &action,
         high_pct = talents.careful_aim->effectN( 1 ).base_value()
       ]
@@ -6784,7 +6784,7 @@ void hunter_t::apl_mm()
     st -> add_action( "flayed_shot" );
     st -> add_action( "resonating_arrow" );
     st -> add_action( "death_chakram,if=focus+cast_regen<focus.max" );
-    st -> add_action( "trueshot,if=(buff.precise_shots.down|!talent.chimaera_shot.enabled)&cooldown.aimed_shot.remains%3.4<gcd|target.time_to_die<15" );
+    st -> add_action( "trueshot,if=(buff.precise_shots.down|!talent.chimaera_shot.enabled)&cooldown.aimed_shot.remains%3.4<gcd.max|target.time_to_die<15" );
     st -> add_action( "aimed_shot,if=(full_recharge_time<cast_time+gcd|target.time_to_pct_20<5&talent.dead_eye.enabled|buff.trueshot.up)&(buff.precise_shots.down|!talent.chimaera_shot.enabled)" );
     st -> add_action( "kill_shot,if=buff.dead_eye.down&cooldown.aimed_shot.full_recharge_time%3>gcd" );
     st -> add_action( "rapid_fire,if=buff.double_tap.down&focus+cast_regen<focus.max" );
@@ -6823,7 +6823,7 @@ void hunter_t::apl_mm()
     default_list -> add_action( "use_item,name=azsharas_font_of_power,if=(target.time_to_die>cooldown+34|target.health.pct<20|target.time_to_pct_20<15)&cooldown.trueshot.remains_guess<15|target.time_to_die<35" );
     default_list -> add_action( "use_item,name=lustrous_golden_plumage,if=cooldown.trueshot.remains_guess<5|target.time_to_die<20" );
     default_list -> add_action( "use_item,name=galecallers_boon,if=prev_gcd.1.trueshot|!talent.calling_the_shots.enabled|target.time_to_die<10" );
-    default_list -> add_action( "use_item,name=ashvanes_razor_coral,if=prev_gcd.1.trueshot&(buff.guardian_of_azeroth.up|!essence.condensed_lifeforce.major&ca_execute)|debuff.razor_coral_debuff.down|target.time_to_die<20" );
+    default_list -> add_action( "use_item,name=ashvanes_razor_coral,if=prev_gcd.1.trueshot&(buff.guardian_of_azeroth.up|!essence.condensed_lifeforce.major&ca_active)|debuff.razor_coral_debuff.down|target.time_to_die<20" );
     default_list -> add_action( "use_item,name=pocketsized_computation_device,if=!buff.trueshot.up&!essence.blood_of_the_enemy.major|debuff.blood_of_the_enemy.up|target.time_to_die<5" );
     default_list -> add_action( "use_items,if=prev_gcd.1.trueshot|!talent.calling_the_shots.enabled|target.time_to_die<20",
           "Try to line up activated trinkets with Trueshot" );
@@ -6841,7 +6841,7 @@ void hunter_t::apl_mm()
     cds -> add_action( "bag_of_tricks,if=buff.trueshot.down" );
     cds -> add_action( "reaping_flames,if=buff.trueshot.down&(target.health.pct>80|target.health.pct<=20|target.time_to_pct_20>30)" );
     cds -> add_action( "worldvein_resonance,if=(trinket.azsharas_font_of_power.cooldown.remains>20|!equipped.azsharas_font_of_power|target.time_to_die<trinket.azsharas_font_of_power.cooldown.duration+34&target.health.pct>20)&(cooldown.trueshot.remains_guess<3|(essence.vision_of_perfection.minor&target.time_to_die>cooldown+buff.worldvein_resonance.duration))|target.time_to_die<20" );
-    cds -> add_action( "guardian_of_azeroth,if=(ca_execute|target.time_to_die>cooldown+30)&(buff.trueshot.up|cooldown.trueshot.remains<16)|target.time_to_die<31" );
+    cds -> add_action( "guardian_of_azeroth,if=(ca_active|target.time_to_die>cooldown+30)&(buff.trueshot.up|cooldown.trueshot.remains<16)|target.time_to_die<31" );
     cds -> add_action( "ripple_in_space,if=cooldown.trueshot.remains<7" );
     cds -> add_action( "memory_of_lucid_dreams,if=!buff.trueshot.up" );
     cds -> add_action( "potion,if=buff.trueshot.react&buff.bloodlust.react|prev_gcd.1.trueshot&target.health.pct<20|((consumable.potion_of_unbridled_fury|consumable.unbridled_fury)&target.time_to_die<61|target.time_to_die<26)" );
@@ -6858,7 +6858,7 @@ void hunter_t::apl_mm()
     st -> add_action( "focused_azerite_beam,if=!buff.trueshot.up|target.time_to_die<5" );
     st -> add_action( this, "Arcane Shot", "if=buff.trueshot.up&!buff.memory_of_lucid_dreams.up" );
     st -> add_talent( this, "Chimaera Shot", "if=buff.trueshot.up&!buff.memory_of_lucid_dreams.up" );
-    st -> add_action( this, "Aimed Shot", "if=buff.trueshot.up|(buff.double_tap.down|ca_execute)&buff.precise_shots.down|full_recharge_time<cast_time&cooldown.trueshot.remains" );
+    st -> add_action( this, "Aimed Shot", "if=buff.trueshot.up|(buff.double_tap.down|ca_active)&buff.precise_shots.down|full_recharge_time<cast_time&cooldown.trueshot.remains" );
     st -> add_action( this, "Arcane Shot", "if=buff.trueshot.up&buff.memory_of_lucid_dreams.up" );
     st -> add_talent( this, "Chimaera Shot", "if=buff.trueshot.up&buff.memory_of_lucid_dreams.up" );
     st -> add_action( "purifying_blast,if=!buff.trueshot.up|target.time_to_die<8" );
@@ -6872,7 +6872,7 @@ void hunter_t::apl_mm()
     trickshots -> add_talent( this, "Volley" );
     trickshots -> add_talent( this, "Barrage" );
     trickshots -> add_talent( this, "Explosive Shot" );
-    trickshots -> add_action( this, "Aimed Shot", "if=buff.trick_shots.up&ca_execute&buff.double_tap.up");
+    trickshots -> add_action( this, "Aimed Shot", "if=buff.trick_shots.up&ca_active&buff.double_tap.up");
     trickshots -> add_action( this, "Rapid Fire", "if=buff.trick_shots.up&(azerite.focused_fire.enabled|azerite.in_the_rhythm.rank>1|azerite.surging_shots.enabled|talent.streamline.enabled)" );
     trickshots -> add_action( this, "Aimed Shot", "if=buff.trick_shots.up&(buff.precise_shots.down|cooldown.aimed_shot.full_recharge_time<action.aimed_shot.cast_time|buff.trueshot.up)" );
     trickshots -> add_action( this, "Rapid Fire", "if=buff.trick_shots.up" );
