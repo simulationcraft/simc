@@ -3412,9 +3412,11 @@ struct aimed_shot_t : public aimed_shot_base_t
 
   double cost() const override
   {
-    if ( lock_and_loaded )
-      return 0;
+    if ( p() -> executing && p() -> executing == this )
+      return lock_and_loaded ? 0 : aimed_shot_base_t::cost();
 
+    if ( p() -> buffs.lock_and_load -> check() )
+      return 0;
     return aimed_shot_base_t::cost();
   }
 
