@@ -5620,11 +5620,11 @@ std::unique_ptr<expr_t> hunter_t::create_action_expression ( action_t& action, u
 
     return make_fn_expr( "ca_execute",
       [ &action,
-        high_pct = talents.careful_aim->effectN( 1 ).base_value(),
-        low_pct  = talents.careful_aim->effectN( 2 ).base_value() ]
+        high_pct = talents.careful_aim->effectN( 1 ).base_value()
+      ]
       {
         const double target_health_pct = action.target->health_percentage();
-        return target_health_pct > high_pct || target_health_pct < low_pct;
+        return target_health_pct > high_pct;
       } );
   }
 
