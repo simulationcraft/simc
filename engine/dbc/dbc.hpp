@@ -315,7 +315,7 @@ public:
   uint32_t replaced_id( uint32_t id_spell ) const;
   bool replace_id( uint32_t id_spell, uint32_t replaced_by_id );
 
-  dbc_t( bool ptr = false ) :
+  explicit dbc_t( bool ptr = false ) :
     ptr( ptr ) { }
 
   const char* wow_ptr_status() const
