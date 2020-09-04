@@ -3430,8 +3430,12 @@ struct chained_overload_base_t : public elemental_overload_spell_t
     {
       chain_multiplier = data().effectN( 1 ).chain_multiplier();
     }
-    energize_type  = action_energize::NONE;  // disable resource generation from spell data.
-    maelstrom_gain = mg;
+
+    if ( p->specialization() == SHAMAN_ELEMENTAL )
+    {
+      maelstrom_gain = mg;
+      energize_type  = action_energize::NONE;  // disable resource generation from spell data.
+    }
     radius         = 10.0;
 
     if ( data().affected_by( p->spec.chain_lightning_2->effectN( 1 ) ) )
@@ -3450,7 +3454,7 @@ struct chain_lightning_overload_t : public chained_overload_base_t
 {
   chain_lightning_overload_t( shaman_t* p )
     : chained_overload_base_t( p, "chain_lightning_overload", p->find_spell( 45297 ),
-                               player->find_spell( 343725 )->effectN( 6 ).resource( RESOURCE_MAELSTROM ) )
+                               p->find_spell( 343725 )->effectN( 6 ).resource( RESOURCE_MAELSTROM ) )
   {
     affected_by_master_of_the_elements = true;
   }
@@ -3465,7 +3469,7 @@ struct lava_beam_overload_t : public chained_overload_base_t
 {
   lava_beam_overload_t( shaman_t* p )
     : chained_overload_base_t( p, "lava_beam_overload", p->find_spell( 114738 ),
-                               player->find_spell( 343725 )->effectN( 6 ).resource( RESOURCE_MAELSTROM ) )
+                               p->find_spell( 343725 )->effectN( 6 ).resource( RESOURCE_MAELSTROM ) )
   {
   }
 };
@@ -3482,7 +3486,7 @@ struct chained_base_t : public shaman_spell_t
     }
     radius = 10.0;
 
-    if ( p()->specialization() == SHAMAN_ELEMENTAL )
+    if ( player->specialization() == SHAMAN_ELEMENTAL )
     {
       maelstrom_gain = mg;
       energize_type  = action_energize::NONE;  // disable resource generation from spell data.
