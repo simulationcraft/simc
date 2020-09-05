@@ -72,9 +72,10 @@ enum eclipse_state_e
 enum free_cast_e
 {
   NONE = 0,
-  CONVOKE,  // convoke_the_spirits night_fae covenant ability
-  LYCARAS,  // lycaras fleeting glimpse legendary
-  ONETHS,   // oneths clear vision legedary
+  CONVOKE,   // convoke_the_spirits night_fae covenant ability
+  LYCARAS,   // lycaras fleeting glimpse legendary
+  ONETHS,    // oneths clear vision legedary
+  GALACTIC,  // galactic guardian talent
 };
 
 struct druid_td_t : public actor_target_data_t
@@ -288,7 +289,7 @@ public:
     heal_t* cenarion_ward_hot;
     action_t* brambles;
     action_t* brambles_pulse;
-    spell_t* galactic_guardian;
+    action_t* galactic_guardian;  // fake holder action for reporting
     action_t* natures_guardian;
     spell_t* shooting_stars;
     action_t* yseras_gift;
@@ -374,7 +375,7 @@ public:
     buff_t* innervate;
     buff_t* thorns;
     buff_t* heart_of_the_wild;
-
+    // General Legendaries
     buff_t* oath_of_the_elder_druid;
 
     // Covenants
@@ -638,11 +639,12 @@ public:
     const spell_data_t* gore;
     const spell_data_t* swipe_bear;
     const spell_data_t* thrash_bear;
+    const spell_data_t* thrash_bear_dot;
     const spell_data_t* berserk_bear;
-    const spell_data_t* berserk_bear_2;   // Rank 2
-    const spell_data_t* thick_hide;       // Guardian Affinity
-    const spell_data_t* thrash_bear_dot;  // For Rend and Tear modifier
+    const spell_data_t* berserk_bear_2;  // Rank 2
+    const spell_data_t* thick_hide;      // Guardian Affinity
     const spell_data_t* lightning_reflexes;
+    const spell_data_t* galactic_guardian;  // GG buff
 
     // Resto
     const spell_data_t* restoration;
@@ -1829,6 +1831,9 @@ public:
     if ( f == free_cast_e::ONETHS )
       return ab::name_str + "_oneths";
 
+    if ( f == free_cast_e::GALACTIC )
+      return ab::name_str + "_galactic";
+
     return ab::name_str;
   }
 
@@ -2370,26 +2375,14 @@ public:
 
   virtual void trigger_galactic_guardian( action_state_t* s )
   {
-    if ( !( triggers_galactic_guardian && !ab::proc && ab::harmful ) )
-      return;
-    if ( !p()->talent.galactic_guardian->ok() )
-      return;
-    if ( s->target == p() )
-      return;
-    if ( !ab::result_is_hit( s->result ) )
-      return;
-    if ( s->result_total <= 0 )
-      return;
-
-    if ( ab::rng().roll( p()->talent.galactic_guardian->proc_chance() ) )
+    if ( p()->talent.galactic_guardian->ok() && triggers_galactic_guardian && !ab::proc && ab::harmful &&
+         s->target != p() && ab::result_is_hit( s->result ) && s->result_total > 0 )
     {
-      // Trigger Moonfire
-      action_state_t* gg_s = p()->active.galactic_guardian->get_state();
-      gg_s->target         = s->target;
-      p()->active.galactic_guardian->snapshot_state( gg_s, result_amount_type::DMG_DIRECT );
-      p()->active.galactic_guardian->schedule_execute( gg_s );
-
-      // Buff is triggered in galactic_guardian_damage_t::execute()
+      if ( p()->buff.galactic_guardian->trigger() )
+      {
+        p()->active.galactic_guardian->set_target( s->target );
+        p()->active.galactic_guardian->execute();
+      }
     }
   }
 
@@ -2932,37 +2925,26 @@ struct moonfire_t : public druid_spell_t
 {
   struct moonfire_damage_t : public druid_spell_t
   {
-  private:
-    double galactic_guardian_dd_multiplier;
+    double gg_rage;
+    double gg_mul;
+    double feral_override_da;
+    double feral_override_ta;
+    bool is_gg;
 
-  protected:
-    bool benefits_from_galactic_guardian;
-
-  public:
-    moonfire_damage_t( druid_t* p ) : moonfire_damage_t( p, "moonfire_dmg" ) {}
-
-    moonfire_damage_t( druid_t* p, util::string_view n ) : druid_spell_t( n, p, p->spec.moonfire_dmg )
+    moonfire_damage_t( druid_t* p )
+      : druid_spell_t( "moonfire_dmg", p, p->spec.moonfire_dmg ),
+        gg_rage( p->spec.galactic_guardian->effectN( 1 ).resource( RESOURCE_RAGE ) ),
+        gg_mul( p->spec.galactic_guardian->effectN( 3 ).percent() ),
+        is_gg( false )
     {
-      if ( p->spec.astral_power->ok() )
-      {
-        energize_resource = RESOURCE_ASTRAL_POWER;
-        energize_amount   = p->spec.astral_power->effectN( 3 ).resource( RESOURCE_ASTRAL_POWER );
-      }
-      else
-        energize_type = action_energize::NONE;
-
       if ( p->spec.shooting_stars->ok() && !p->active.shooting_stars )
         p->active.shooting_stars = p->get_secondary_action<shooting_stars_t>( "shooting_stars" );
-
-      if ( p->talent.galactic_guardian->ok() )
-        galactic_guardian_dd_multiplier = p->find_spell( 213708 )->effectN( 3 ).percent();
 
       aoe      = 1;
       may_miss = false;
       dual = background = true;
 
-      triggers_galactic_guardian      = false;
-      benefits_from_galactic_guardian = true;
+      triggers_galactic_guardian = false;
 
       if ( p->talent.twin_moons->ok() )
       {
@@ -2971,13 +2953,11 @@ struct moonfire_t : public druid_spell_t
         radius = p->talent.twin_moons->effectN( 1 ).base_value();
       }
 
-      // June 2016: This hotfix is negated if you shift into Moonkin Form (ever), so only apply it if the druid does not
-      // have balance affinity. */
-      if ( !p->talent.balance_affinity->ok() )
-      {
-        base_dd_multiplier *= 1.0 + p->spec.feral_overrides->effectN( 1 ).percent();
-        base_td_multiplier *= 1.0 + p->spec.feral_overrides->effectN( 2 ).percent();
-      }
+      // Always applies when you are a feral druid unless you go into moonkin form
+      feral_override_da =
+          p->query_aura_effect( p->spec.feral_overrides, A_ADD_PCT_MODIFIER, P_GENERIC, s_data )->percent();
+      feral_override_ta =
+          p->query_aura_effect( p->spec.feral_overrides, A_ADD_PCT_MODIFIER, P_TICK_DAMAGE, s_data )->percent();
     }
 
     double action_multiplier() const override
@@ -3007,19 +2987,27 @@ struct moonfire_t : public druid_spell_t
       return td( t )->dots.moonfire;
     }
 
-    double composite_target_da_multiplier( player_t* t ) const override
+    double composite_da_multiplier( const action_state_t* s  ) const override
     {
-      double tdm = druid_spell_t::composite_target_da_multiplier( t );
+      double dam = druid_spell_t::composite_da_multiplier( s );
 
-      // IN-GAME BUG (Jan 20 2018): Lady and the Child Galactic Guardian procs benefit from both the DD modifier and the
-      // rage gain.
-      if ( ( benefits_from_galactic_guardian || ( p()->bugs && t != target ) ) && p()->buff.galactic_guardian->check() )
-      {
-        // Galactic Guardian 7.1 Damage Buff
-        tdm *= 1.0 + galactic_guardian_dd_multiplier;
-      }
+      if ( p()->buff.galactic_guardian->check() && !is_gg )
+        dam *= 1.0 + gg_mul;
 
-      return tdm;
+      if ( feral_override_da && !p()->buff.moonkin_form->check() )
+        dam *= 1.0 + feral_override_da;
+
+      return dam;
+    }
+
+    double composite_ta_multiplier( const action_state_t* s ) const override
+    {
+      double tam = druid_spell_t::composite_da_multiplier( s );
+
+      if ( feral_override_ta && !p()->buff.moonkin_form->check() )
+        tam *= 1.0 + feral_override_ta;
+
+      return tam;
     }
 
     void tick( dot_t* d ) override
@@ -3041,18 +3029,13 @@ struct moonfire_t : public druid_spell_t
     {
       druid_spell_t::impact( s );
 
-      // The buff needs to be handled with the damage handler since 7.1 since it impacts Moonfire DD
-      // IN-GAME BUG (Jan 20 2018): Lady and the Child Galactic Guardian procs benefit from both the DD modifier and the
-      // rage gain.
-      if ( ( benefits_from_galactic_guardian || ( p()->bugs && s->chain_target > 0 ) ) && result_is_hit( s->result ) &&
-           p()->buff.galactic_guardian->check() )
+      if ( p()->buff.galactic_guardian->check() && result_is_hit( s->result ) && !is_gg )
       {
-        p()->resource_gain( RESOURCE_RAGE, p()->buff.galactic_guardian->value(), p()->gain.galactic_guardian );
-
-        // buff is not consumed when bug occurs
-        if ( benefits_from_galactic_guardian )
-          p()->buff.galactic_guardian->expire();
+        p()->resource_gain( RESOURCE_RAGE, gg_rage, p()->gain.galactic_guardian );
+        p()->buff.galactic_guardian->expire();
       }
+
+      is_gg = false;
     }
 
     size_t available_targets( std::vector<player_t*>& tl ) const override
@@ -3111,6 +3094,13 @@ struct moonfire_t : public druid_spell_t
       return druid_spell_t::available_targets( tl );
     }
 
+    void schedule_gg()
+    {
+      is_gg = true;
+
+      druid_spell_t::schedule_execute();
+    }
+
     void execute() override
     {
       // Force invalidate target cache so that it will impact on the correct targets.
@@ -3120,38 +3110,21 @@ struct moonfire_t : public druid_spell_t
     }
   };
 
-  struct galactic_guardian_damage_t : public moonfire_damage_t
-  {
-    galactic_guardian_damage_t( druid_t* p ) : moonfire_damage_t( p, "galactic_guardian" )
-    {
-      benefits_from_galactic_guardian = false;
-    }
-
-    void execute() override
-    {
-      moonfire_damage_t::execute();
-
-      p()->buff.galactic_guardian->trigger();
-    }
-  };
-
-  action_t* damage;  // Add damage modifiers in moonfire_damage_t, not moonfire_t
+  moonfire_damage_t* damage;  // Add damage modifiers in moonfire_damage_t, not moonfire_t
 
   moonfire_t( druid_t* p, const std::string& options_str )
     : druid_spell_t( "moonfire", p, p->find_class_spell( "Moonfire" ), options_str )
   {
-    may_miss = may_crit = false;
+    may_miss = may_crit = triggers_galactic_guardian = false;
+
     damage = p->get_secondary_action<moonfire_damage_t>( "moonfire_dmg" );
     damage->stats = stats;
-
-    if ( p->active.galactic_guardian )
-      add_child( p->active.galactic_guardian );
 
     if ( p->spec.astral_power->ok() )
     {
       energize_resource = RESOURCE_ASTRAL_POWER;
       energize_amount   = p->spec.astral_power->effectN( 3 ).resource( RESOURCE_ASTRAL_POWER );
-      energize_type = action_energize::ON_HIT;
+      energize_type     = action_energize::ON_HIT;
     }
     else
       energize_type = action_energize::NONE;
@@ -3169,6 +3142,20 @@ struct moonfire_t : public druid_spell_t
 
   void execute() override
   {
+    if ( free_cast == free_cast_e::GALACTIC )
+    {
+      stats         = p()->active.galactic_guardian->stats;
+      damage->stats = stats;
+
+      druid_spell_t::execute();
+
+      damage->target = execute_state->target;
+      damage->schedule_gg();
+
+      stats = orig_stats;
+      return;
+    }
+
     if ( free_cast )
       damage->stats = get_free_cast_stats( free_cast );
     else
@@ -3178,6 +3165,28 @@ struct moonfire_t : public druid_spell_t
 
     damage->target = execute_state->target;
     damage->schedule_execute();
+  }
+};
+
+struct galactic_guardian_t : public action_t
+{
+  moonfire_t* mf;
+
+  galactic_guardian_t( druid_t* p )
+    : action_t( action_e::ACTION_OTHER, "galactic_guardian", p, p->talent.galactic_guardian )
+  {
+    mf = p->get_secondary_action<moonfire_t>( "moonfire", "" );
+  }
+
+  void set_target( player_t* t ) override
+  {
+    mf->set_target( t );
+  }
+
+  void execute() override
+  {
+    mf->free_cast = free_cast_e::GALACTIC;
+    mf->execute();
   }
 };
 }  // namespace spells
@@ -8046,6 +8055,7 @@ void druid_t::init_spells()
   spec.thrash_bear_dot        = check_id( spec.thrash_bear->ok(), 192090 );
   spec.berserk_bear           = check_id( find_specialization_spell( "Berserk" )->ok(), 50334 );
   spec.berserk_bear_2         = check_id( spec.berserk_bear->ok(), 343240 );
+  spec.galactic_guardian      = check_id( talent.galactic_guardian->ok(), 213708 );
 
   // Restoration
   spec.restoration            = find_specialization_spell( "Restoration Druid" );
@@ -8366,9 +8376,9 @@ void druid_t::create_buffs()
         buff.earthwarden->trigger();
       } );
 
-  buff.galactic_guardian = make_buff( this, "galactic_guardian", find_spell( 213708 ) )
-    ->set_chance( talent.galactic_guardian->ok() )
-    ->set_default_value_from_effect( 1, 0.1 /*RESOURCE_RAGE*/ );
+  buff.galactic_guardian = make_buff( this, "galactic_guardian", spec.galactic_guardian )
+    ->set_chance( talent.galactic_guardian->proc_chance() )
+    ->set_cooldown( talent.galactic_guardian->internal_cooldown() );
 
   buff.gore = make_buff( this, "gore", find_spell( 93622 ) )
     ->set_chance( spec.gore->effectN( 1 ).percent() )
@@ -8536,11 +8546,7 @@ void druid_t::create_actions()
   }
 
   if ( talent.galactic_guardian->ok() )
-  {
-    active.galactic_guardian =
-        get_secondary_action<moonfire_t::galactic_guardian_damage_t>( "galactic_guardian" );
-    active.galactic_guardian->stats = get_stats( "moonfire" );
-  }
+    active.galactic_guardian = new galactic_guardian_t( this );
 
   if ( mastery.natures_guardian->ok() )
     active.natures_guardian = new heals::natures_guardian_t( this );
