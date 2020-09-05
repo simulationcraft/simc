@@ -6621,14 +6621,22 @@ struct starsurge_t : public druid_spell_t
     return true;
   }
 
+  void schedule_travel( action_state_t* s ) override
+  {
+    druid_spell_t::schedule_travel( s );
+
+    // do this here immediately after hit_any_target is set so that empowerments are triggered early enough that any
+    // effect that follows, such as proccing pulsar, can correctly reset empowerments
+    if ( hit_any_target )
+      p()->eclipse_handler.cast_starsurge();
+  }
+
   void execute() override
   {
     if ( !free_cast && p()->buff.oneths_free_starsurge->up() ) 
       free_cast = free_cast_e::ONETHS;
 
     druid_spell_t::execute();
-
-    p()->eclipse_handler.cast_starsurge();
 
     if ( get_state_free_cast( execute_state ) == free_cast_e::CONVOKE )
       return;  // convoke doesn't process any further
