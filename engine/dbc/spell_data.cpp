@@ -271,12 +271,14 @@ double spelleffect_data_t::default_multiplier() const
       switch ( subtype() )
       {
         case A_PERIODIC_TRIGGER_SPELL:
-        case A_PERIODIC_ENERGIZE:
-        case A_MOD_INCREASE_ENERGY:
         case A_PROC_TRIGGER_SPELL:
+          return 1.0; // base_value
+
         case A_MOD_MAX_RESOURCE_COST:
         case A_MOD_MAX_RESOURCE:
-          return 1.0; // base_value
+        case A_MOD_INCREASE_ENERGY:
+        case A_PERIODIC_ENERGIZE:
+          return resource_multiplier( resource_gain_type() );
 
         case A_ADD_FLAT_MODIFIER:
         case A_ADD_FLAT_LABEL_MODIFIER:
@@ -313,6 +315,9 @@ double spelleffect_data_t::default_multiplier() const
         default:
           return 0.01; // percent
       }
+
+    case E_ENERGIZE:
+      return resource_multiplier( resource_gain_type() );
 
     default:
       break;
