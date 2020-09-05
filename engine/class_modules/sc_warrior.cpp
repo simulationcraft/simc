@@ -486,7 +486,9 @@ public:
     const spell_data_t* condemn;
     const spell_data_t* condemn_driver;
     const spell_data_t* conquerors_banner;
+    const spell_data_t* glory;
     const spell_data_t* spear_of_bastion;
+    double glory_counter = 0.0; // Track Glory rage spent
   } covenant;
 
   // Azerite traits
@@ -719,7 +721,7 @@ struct warrior_action_t : public Base
   struct affected_by_t
   {
     // mastery/buff damage increase.
-    bool fury_mastery_direct, fury_mastery_dot, arms_mastery_direct, arms_mastery_dot, colossus_smash, siegebreaker;
+    bool fury_mastery_direct, fury_mastery_dot, arms_mastery_direct, arms_mastery_dot, colossus_smash, siegebreaker, glory;
     // talents
     bool avatar, sweeping_strikes, deadly_calm, booming_voice;
     // azerite
@@ -833,6 +835,7 @@ public:
     affected_by.booming_voice       = ab::data().affected_by( p()->spec.demoralizing_shout->effectN( 3 ) );
     affected_by.colossus_smash      = ab::data().affected_by( p()->spell.colossus_smash_debuff->effectN( 1 ) );
     affected_by.siegebreaker        = ab::data().affected_by( p()->spell.siegebreaker_debuff->effectN( 1 ) );
+    affected_by.glory               = ab::data().affected_by( p()->covenant.glory->effectN( 1 ) );
 
     if ( p()->specialization() == WARRIOR_PROTECTION )
       affected_by.avatar              = ab::data().affected_by( p()->spec.avatar->effectN( 1 ) );
@@ -1091,6 +1094,21 @@ public:
         }
       }
     }
+
+    if ( ab::current_resource() == RESOURCE_RAGE && ab::last_resource_cost > 0 )
+    {
+      if ( p()->covenant.conquerors_banner->ok() && p()->buff.conquerors_banner->check() )
+      {
+        p()->covenant.glory_counter += ab::last_resource_cost;
+        double glory_threshold = p()->specialization() == WARRIOR_FURY ? 30 : 20;
+        if (p()->covenant.glory_counter >= glory_threshold)
+        {
+          int stacks = floor( p()->covenant.glory_counter / glory_threshold );
+          p()->buff.glory->trigger( stacks );
+          p()->covenant.glory_counter -= stacks * glory_threshold;
+        }
+      }
+     }
   }
 
   virtual void tactician()
@@ -1329,10 +1347,11 @@ struct melee_t : public warrior_attack_t
     affected_by.colossus_smash      = p()->spec.colossus_smash->ok();
     affected_by.siegebreaker        = p()->talents.siegebreaker->ok();
     if ( p()->specialization() == WARRIOR_PROTECTION )
-      affected_by.avatar              = p()->spec.avatar->ok();
+      affected_by.avatar            = p()->spec.avatar->ok();
     else
-      affected_by.avatar              = p()->talents.avatar->ok();
-    affected_by.booming_voice       = p() -> talents.booming_voice -> ok();
+      affected_by.avatar            = p()->talents.avatar->ok();
+    affected_by.booming_voice       = p()->talents.booming_voice->ok();
+    affected_by.glory               = p()->covenant.conquerors_banner->ok();
   }
 
   void reset() override
@@ -1571,10 +1590,6 @@ struct mortal_strike_unhinged_t : public warrior_attack_t
       {
         execute_state->target->debuffs.mortal_wounds->trigger();
       }
-      if ( p()->covenant.conquerors_banner->ok() && p()->buff.conquerors_banner->check() )
-      {
-        p()->buff.glory->trigger();
-      }
     }
     //p()->buff.overpower->expire(); Benefits from but does not consume Overpower in game
     p()->buff.executioners_precision->expire();
@@ -1658,10 +1673,6 @@ struct mortal_strike_t : public warrior_attack_t
       if ( !sim->overrides.mortal_wounds && execute_state->target->debuffs.mortal_wounds )
       {
         execute_state->target->debuffs.mortal_wounds->trigger();
-      }
-      if ( p()->covenant.conquerors_banner->ok() && p()->buff.conquerors_banner->check() )
-      {
-        p()->buff.glory->trigger();
       }
     }
     p()->buff.overpower->expire();
@@ -3206,10 +3217,6 @@ struct raging_blow_t : public warrior_attack_t
     {
       p()->buff.pulverizing_blows->trigger();
     }
-    if ( p()->covenant.conquerors_banner->ok() && p()->buff.conquerors_banner->check() )
-    {
-      p()->buff.glory->trigger();
-    }
     if ( p()->buff.will_of_the_berserker->check() )
     {
       ( p()->buff.will_of_the_berserker->trigger() ); // RB refreshs, but does not initially trigger 
@@ -3323,10 +3330,6 @@ struct crushing_blow_t : public warrior_attack_t
     if ( p()->azerite.pulverizing_blows.ok() )
     {
       p()->buff.pulverizing_blows->trigger();
-    }
-    if ( p()->covenant.conquerors_banner->ok() && p()->buff.conquerors_banner->check() )
-    {
-      p()->buff.glory->trigger();
     }
     if ( p()->buff.will_of_the_berserker->check() )
     {
@@ -4953,40 +4956,7 @@ struct conquerors_banner_t : public warrior_spell_t
     warrior_spell_t::execute();
 
     p()->buff.conquerors_banner->trigger();
-    p()->cooldown.conquerors_banner->reset( true );
-  }
-};
-
-// Conquerors Frenzy===========================================================
-
-struct conquerors_frenzy_t : public warrior_spell_t
-{
-  conquerors_frenzy_t( warrior_t* p, const std::string& options_str )
-    : warrior_spell_t( "conquerors_frenzy", p, p->find_spell( 325784 ) )
-  {
-    parse_options( options_str );
-    callbacks  = false;
-
-    harmful = false;
-  }
-
-  bool ready() override
-  {
-    if ( !p()->buff.conquerors_banner->check() )
-    {
-      return false;
-    }
-
-    return warrior_spell_t::ready();
-  }
-
-  void execute() override
-  {
-    warrior_spell_t::execute();
-    timespan_t duration = timespan_t::from_seconds( p()->buff.glory->check_stack_value() );
-    p()->buff.conquerors_frenzy->trigger( duration );
-    p()->buff.conquerors_banner->expire(); 
-    p()->buff.glory->expire(); 
+    p()->buff.conquerors_frenzy->trigger();
   }
 };
 
@@ -5660,8 +5630,6 @@ action_t* warrior_t::create_action( util::string_view name, const std::string& o
   }
   if ( name == "conquerors_banner" )
     return new conquerors_banner_t( this, options_str );
-  if ( name == "conquerors_frenzy" )
-    return new conquerors_frenzy_t( this, options_str );
   if ( name == "deadly_calm" )
     return new deadly_calm_t( this, options_str );
   if ( name == "defensive_stance" )
@@ -5964,6 +5932,7 @@ void warrior_t::init_spells()
   else
   covenant.condemn               = find_spell(as<unsigned>( covenant.condemn_driver->effectN( 1 ).base_value() ) );
   covenant.conquerors_banner     = find_covenant_spell( "Conqueror's Banner" );
+  covenant.glory                 = find_spell( 325787 );
   covenant.spear_of_bastion      = find_covenant_spell( "Spear of Bastion" );
 
 
@@ -7090,22 +7059,15 @@ void warrior_t::create_buffs()
 
   // Covenant Abilities====================================================================================================
 
-  buff.conquerors_banner = make_buff( this, "conquerors_banner", covenant.conquerors_banner )
-                                ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ )
-                                {
-                                  if ( new_ == 0 )
-                                  {
-                                    cooldown.conquerors_banner->reset( false );
-                                    cooldown.conquerors_banner->start();
-                                  }
-                                } );
+  buff.conquerors_banner = make_buff( this, "conquerors_banner", covenant.conquerors_banner );
 
   buff.glory = make_buff( this, "glory", find_spell( 325787 ) )
-                               ->set_default_value( find_spell( 325787 )->effectN( 1 ).base_value() );
+                               ->set_default_value( find_spell( 325787 )->effectN( 1 ).percent() );
+                               //->add_invalidate( CACHE_CRITICAL_DAMAGE_MULTIPLIER )
 
   buff.conquerors_frenzy    = make_buff( this, "conquerors_frenzy", find_spell( 325862 ) )
                                ->set_default_value( find_spell( 325862 )->effectN( 2 ).percent() )
-                               ->add_invalidate( CACHE_ATTACK_SPEED );   
+                               ->add_invalidate( CACHE_CRIT_CHANCE );   
 
   // Covenant Abilities====================================================================================================
 
@@ -7458,6 +7420,7 @@ void warrior_t::reset()
 
   heroic_charge  = nullptr;
   rampage_driver = nullptr;
+  covenant.glory_counter  = 0;
 }
 
 // Movement related overrides. =============================================
@@ -7529,7 +7492,7 @@ double warrior_t::composite_melee_speed() const
 {
   double s = player_t::composite_melee_speed();
 
-  s *= 1.0 / ( 1.0 + buff.conquerors_frenzy->value() );
+  //s *= 1.0 / ( 1.0 + buff.conquerors_frenzy->value() );
 
   return s;
 }
@@ -7756,6 +7719,7 @@ double warrior_t::composite_melee_crit_chance() const
 
   c += buff.recklessness->check_value();
   c += buff.will_of_the_berserker->check_value();
+  c += buff.conquerors_frenzy->check_value();
 
   return c;
 }
@@ -7780,6 +7744,10 @@ double warrior_t::composite_player_critical_damage_multiplier( const action_stat
   if ( buff.war_veteran->check() )
   {
     cdm *= 1.0 + buff.war_veteran->value();
+  }
+  if ( buff.glory->check() )
+  {
+    cdm *= 1.0 + buff.glory->stack_value();
   }
 
   return cdm;
