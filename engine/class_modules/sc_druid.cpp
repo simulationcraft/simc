@@ -232,6 +232,7 @@ struct eclipse_handler_t
   void advance_eclipse();
 
   void trigger_both( timespan_t );
+  void extend_both( timespan_t );
   void expire_both();
 
   void reset_stacks();
@@ -1096,6 +1097,12 @@ void eclipse_handler_t::trigger_both( timespan_t d = 0_ms )
   p->uptime.eclipse->update( true, p->sim->current_time() );
 }
 
+void eclipse_handler_t::extend_both( timespan_t d )
+{
+  p->buff.eclipse_solar->extend_duration( p, d );
+  p->buff.eclipse_lunar->extend_duration( p, d );
+}
+
 void eclipse_handler_t::expire_both()
 {
   p->buff.eclipse_solar->expire();
@@ -1422,6 +1429,47 @@ struct innervate_buff_t : public druid_buff_t<buff_t>
       p->buff.lively_spirit->trigger( p->lively_spirit_stacks );
     }
   }
+};
+
+// Celestial Alignment / Incarn Buff ========================================
+struct celestial_alignment_buff_t : public druid_buff_t<buff_t>
+{
+  celestial_alignment_buff_t( druid_t& p, util::string_view n, const spell_data_t* s ) : base_t( p, n, s )
+  {
+    set_cooldown( 0_ms );
+    set_default_value_from_effect_type( A_HASTE_ALL );
+    modify_duration( p.conduit.precise_alignment.time_value() );
+    add_invalidate( CACHE_HASTE );
+  }
+
+  bool trigger( int s, double v, double c, timespan_t d ) override
+  {
+    bool ret = base_t::trigger( s, v, c, d );
+
+    if ( ret )
+    {
+      p().eclipse_handler.trigger_both( buff_duration() );
+      p().uptime.combined_ca_inc->update( true, sim->current_time() );
+    }
+
+    return ret;
+  }
+
+  void extend_duration( player_t* player, timespan_t d ) override
+  {
+    base_t::extend_duration( player, d );
+
+    p().eclipse_handler.extend_both( d );
+  }
+
+  void expire_override( int s, timespan_t d ) override
+  {
+    base_t::expire_override( s, d );
+
+    p().eclipse_handler.expire_both();
+    p().uptime.combined_ca_inc->update( false, sim->current_time() );
+  }
+
 };
 
 // Eclipse Buff =============================================================
@@ -2830,14 +2878,7 @@ public:
           buff_t* proc_buff =
               p()->talent.incarnation_moonkin->ok() ? p()->buff.incarnation_moonkin : p()->buff.celestial_alignment;
 
-          if ( proc_buff->check() )
-          {
-            proc_buff->extend_duration( p(), pulsar_dur );
-            p()->buff.eclipse_lunar->extend_duration( p(), pulsar_dur );
-            p()->buff.eclipse_solar->extend_duration( p(), pulsar_dur );
-          }
-          else
-            proc_buff->trigger( pulsar_dur );
+          proc_buff->extend_duration_or_trigger( pulsar_dur, p() );
         }
       }
     }
@@ -6703,10 +6744,7 @@ struct starsurge_t : public druid_spell_t
         buff_t* proc_buff =
             p()->talent.incarnation_moonkin->ok() ? p()->buff.incarnation_moonkin : p()->buff.celestial_alignment;
 
-        if ( proc_buff->check() )
-          proc_buff->extend_duration( p(), pulsar_dur );
-        else
-          proc_buff->trigger( pulsar_dur );
+        proc_buff->extend_duration_or_trigger( pulsar_dur, p() );
 
         // hardcoded 12AP because 6s / 20s * 40AP = 12AP
         p()->resource_gain( RESOURCE_ASTRAL_POWER, 12, p()->gain.arcanic_pulsar );
@@ -8195,42 +8233,12 @@ void druid_t::create_buffs()
     ->set_default_value_from_effect( 1, 1.0 )
     ->set_reverse( true );
 
-  buff.celestial_alignment = make_buff( this, "celestial_alignment", spec.celestial_alignment )
-    ->set_cooldown( 0_ms )
-    ->set_default_value_from_effect_type( A_HASTE_ALL )
-    ->modify_duration( conduit.precise_alignment.time_value() )
-    ->add_invalidate( CACHE_HASTE )
-    ->set_stack_change_callback( [this] ( buff_t* b, int, int new_ ) {
-        if ( new_ )
-        {
-          this->eclipse_handler.trigger_both( b->buff_duration() );
-          uptime.combined_ca_inc->update( true, sim->current_time() );
-        }
-        else
-        {
-          this->eclipse_handler.expire_both();
-          uptime.combined_ca_inc->update( false, sim->current_time() );
-        }
-      } );
+  buff.celestial_alignment =
+      make_buff<celestial_alignment_buff_t>( *this, "celestial_alignment", spec.celestial_alignment );
 
-  buff.incarnation_moonkin = make_buff( this, "incarnation_chosen_of_elune", talent.incarnation_moonkin )
-    ->set_cooldown( 0_ms )
-    ->set_default_value_from_effect_type( A_HASTE_ALL )
-    ->modify_duration( conduit.precise_alignment.time_value() )
-    ->add_invalidate( CACHE_CRIT_CHANCE )
-    ->add_invalidate( CACHE_HASTE )
-    ->set_stack_change_callback( [this] ( buff_t* b, int, int new_ ) {
-        if ( new_ )
-        {
-          this->eclipse_handler.trigger_both( b->buff_duration() );
-          uptime.combined_ca_inc->update( true, sim->current_time() );
-        }
-        else
-        {
-          this->eclipse_handler.expire_both();
-          uptime.combined_ca_inc->update( false, sim->current_time() );
-      }
-      } );
+  buff.incarnation_moonkin =
+      make_buff<celestial_alignment_buff_t>( *this, "incarnation_chosen_of_elune", talent.incarnation_moonkin )
+          ->add_invalidate( CACHE_CRIT_CHANCE );
 
   buff.eclipse_solar = make_buff<eclipse_buff_t>( *this, "eclipse_solar", spec.eclipse_solar );
 
@@ -10147,10 +10155,7 @@ void druid_t::vision_of_perfection_proc()
 
   vp_dur = vp_buff->data().duration() * vision_of_perfection_dur;
 
-  if ( vp_buff->check() )
-    vp_buff->extend_duration( this, vp_dur );
-  else
-    vp_buff->trigger( vp_dur );
+  vp_buff->extend_duration_or_trigger( vp_dur, this );
 
   proc.vision_of_perfection->occur();
 
