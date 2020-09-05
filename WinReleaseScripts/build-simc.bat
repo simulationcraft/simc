@@ -55,7 +55,7 @@ if not defined PACKAGESUFFIX call :error Unable to determine target architecture
 if ERRORLEVEL 1 goto :enderror
 
 set PACKAGENAME=%INSTALL%\simc-%SIMCVERSION%-%PACKAGESUFFIX%%GITREV%
-if not defined INSTALLDIR ( set INSTALLDIR=%INSTALL%\simc-%SIMCVERSION%-%PACKAGESUFFIX% )
+set INSTALLDIR=%INSTALL%\simc-%SIMCVERSION%-%PACKAGESUFFIX%
 
 :: Begin the build process
 call :build_release %ARGS%
@@ -164,7 +164,6 @@ echo QTDIR      : Root directory of the Qt (5) release, including the platform p
 echo SZIP       : Directory containing 7-Zip compressor (optional, if omitted no compressed file)
 echo ISCC       : Diretory containing Inno Setup (optional, if omitted no setup will be built)
 echo INSTALL    : Base Directory to make an installation package in. Files will be located in directory INSTALL\simc-%SIMCVERSION%-%PACKAGESUFFIX%
-echo INSTALLDIR : Directory to place actual installation files in (optional, if ommitted path based on INSTALL dir will be used)
 echo GITREV     : Short Git-Hash identifying the source commit. If not provided, the script attempts to retrieve it
 echo RELEASE    : Set to build a "release version" (no git commit hash suffix)
 echo            : If set, set RELEASE_CREDENTIALS to the Battle.net key for the release
