@@ -9458,7 +9458,12 @@ void monk_t::combat_begin()
           1, timespan_t::zero() );
     }
 
-    resources.current[ RESOURCE_CHI ] = 0;
+    if ( user_options.initial_chi > 0 )
+      resources.current[ RESOURCE_CHI ] = 
+        clamp( as<double>( user_options.initial_chi ), 0.0, resources.max[ RESOURCE_CHI ] );
+    else
+      resources.current[ RESOURCE_CHI ] = 0;
+
   }
 
   if ( spec.bladed_armor->ok() )
