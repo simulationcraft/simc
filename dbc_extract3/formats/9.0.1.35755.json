@@ -123,6 +123,47 @@
       { "data_type": "b", "field": "faction" }
     ]
   },
+  "ChrClasses": {
+    "fields": [
+      { "data_type": "S", "field": "name_lang",               "formats": { } },
+      { "data_type": "S", "field": "filename",                "formats": { } },
+      { "data_type": "S", "field": "name_male_lang",          "formats": { } },
+      { "data_type": "S", "field": "name_female_lang",        "formats": { } },
+      { "data_type": "S", "field": "pet_name_token",          "formats": { } },
+      { "data_type": "S", "field": "desc",                    "formats": { } },
+      { "data_type": "S", "field": "roles_lang",              "formats": { } },
+      { "data_type": "S", "field": "requirements_fail_lang",  "formats": { } },
+      { "data_type": "i", "field": "id" },
+      { "data_type": "I", "field": "create_screen_file_data_id" },
+      { "data_type": "I", "field": "select_screen_file_data_id" },
+      { "data_type": "I", "field": "icon_file_data_id" },
+      { "data_type": "I", "field": "low_res_screen_file_data_id" },
+      { "data_type": "I", "field": "flags" },
+      { "data_type": "I", "field": "spell_texture_blob_file_data_id" },
+      { "data_type": "I", "field": "role_mask" },
+      { "data_type": "I", "field": "armor_type_mask" },
+      { "data_type": "i", "field": "unk_1" },
+      { "data_type": "i", "field": "char_start_kit_spell_visual_kit_id_fallback" },
+      { "data_type": "i", "field": "char_start_kit_9_0_1_34615_004_fallback" },
+      { "data_type": "i", "field": "char_start_kit_spell_visual_kit_id_female_fallback" },
+      { "data_type": "i", "field": "char_start_kit_9_0_1_34615_004_female_fallback" },
+      { "data_type": "i", "field": "unk_2" },
+      { "data_type": "i", "field": "char_start_kit_ground_spell_visual_kit_id_fallback" },
+      { "data_type": "i", "field": "unk_3" },
+      { "data_type": "i", "field": "unk_4" },
+      { "data_type": "H", "field": "cinematic_sequence_id" },
+      { "data_type": "H", "field": "default_spec" },
+      { "data_type": "B", "field": "primary_stat_priority" },
+      { "data_type": "B", "field": "display_power" },
+      { "data_type": "B", "field": "ranged_attack_power_per_agility" },
+      { "data_type": "B", "field": "attack_power_per_agility" },
+      { "data_type": "B", "field": "attack_power_per_strength" },
+      { "data_type": "B", "field": "spell_class_set" },
+      { "data_type": "B", "field": "chat_color_r" },
+      { "data_type": "B", "field": "chat_color_g" },
+      { "data_type": "B", "field": "chat_color_b" }
+    ]
+  },
   "ChrSpecialization": {
     "fields": [
       { "data_type": "S", "field": "unk_4",      "formats": { } },
