@@ -2883,7 +2883,7 @@ public:
     {
       if ( ab::cost() > 0 )
       {
-        if ( p()->talent.inner_strength )
+        if ( p()->talent.inner_strength->ok() )
           p()->buff.inner_stength->trigger( (int)ab::cost() );
 
         if ( p()->talent.spirtual_focus )
@@ -2953,7 +2953,7 @@ public:
     if ( may_combo_strike )
       combo_strikes_trigger();
 
-    if ( trigger_chiji )
+    if ( trigger_chiji && p()->buff.invoke_chiji->up() )
       p()->buff.invoke_chiji_evm->trigger();
 
     ab::execute();
@@ -9463,7 +9463,6 @@ void monk_t::combat_begin()
         clamp( as<double>( user_options.initial_chi ), 0.0, resources.max[ RESOURCE_CHI ] );
     else
       resources.current[ RESOURCE_CHI ] = 0;
-
   }
 
   if ( spec.bladed_armor->ok() )
