@@ -141,7 +141,7 @@ exit /b 0
 
 :compress
 if not defined SZIP exit /b 0
-%SZIP%\7z.exe a -r %PACKAGENAME% %INSTALLDIR% -mx9 -md=32m
+"%SZIP%\7z.exe" a -r %PACKAGENAME% %INSTALLDIR% -mx9 -md=32m
 exit /b 0
 
 :usage
