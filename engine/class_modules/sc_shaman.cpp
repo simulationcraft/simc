@@ -5285,28 +5285,6 @@ struct capacitor_totem_t : public shaman_totem_pet_t
 // ==========================================================================
 // PvP talents/abilities
 // ==========================================================================
-
-struct lightning_lasso_t : public shaman_spell_t
-{
-  lightning_lasso_t( shaman_t* player, const std::string& options_str )
-    : shaman_spell_t( "lightning_lasso", player, player->find_spell( 305485 ), options_str )
-  {
-    affected_by_master_of_the_elements = false;
-    // if the major effect is not available the action is a background action, thus can't be used in the apl
-    background         = true;
-    cooldown->duration = p()->find_spell( 305483 )->cooldown();
-    channeled          = true;
-    tick_may_crit      = true;
-    may_crit           = false;
-    trigger_gcd        = p()->find_spell( 305483 )->gcd();
-  }
-
-  timespan_t tick_time( const action_state_t* /* s */ ) const override
-  {
-    return base_tick_time;
-  }
-};
-
 struct thundercharge_t : public shaman_spell_t
 {
   thundercharge_t( shaman_t* player, const std::string& options_str )
@@ -5578,8 +5556,6 @@ action_t* shaman_t::create_action( util::string_view name, const std::string& op
     return new storm_elemental_t( this, options_str );
   if ( name == "thunderstorm" )
     return new thunderstorm_t( this, options_str );
-  if ( name == "lightning_lasso" )
-    return new lightning_lasso_t( this, options_str );
 
   // enhancement
   if ( name == "crash_lightning" )
