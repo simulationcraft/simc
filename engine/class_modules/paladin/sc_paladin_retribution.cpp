@@ -113,6 +113,8 @@ struct execution_sentence_t : public holy_power_consumer_t
 
     double accumulated = td( s -> target ) -> debuff.execution_sentence -> get_accumulated_damage();
 
+    sim -> print_debug( "{}'s {} has accumulated {} total additional damage.", player -> name(), name(), accumulated );
+
     ta += accumulated * data().effectN( 2 ).percent();
 
     return ta;

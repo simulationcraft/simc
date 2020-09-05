@@ -147,7 +147,6 @@ public:
   {
     // Shared
     buffs::avenging_wrath_buff_t* avenging_wrath;
-    buff_t* avenging_wrath_autocrit;
     buff_t* divine_purpose;
     buff_t* divine_shield;
     buff_t* divine_steed;
@@ -283,7 +282,6 @@ public:
   struct spells_t
   {
     const spell_data_t* avenging_wrath;
-    const spell_data_t* avenging_wrath_autocrit;
     const spell_data_t* divine_purpose_buff;
     const spell_data_t* judgment_debuff;
 
@@ -294,6 +292,7 @@ public:
     const spell_data_t* sanctified_wrath_damage;
 
     const spell_data_t* judgment_2;
+    const spell_data_t* avenging_wrath_2;
   } spells;
 
   // Talents
@@ -629,6 +628,13 @@ namespace buffs {
       accumulated_damage = 0.0;
     }
 
+    void expire_override( int stacks, timespan_t duration ) override
+    {
+      buff_t::expire_override( stacks, duration );
+
+      accumulated_damage = 0.0;
+    }
+
     void accumulate_damage( const action_state_t* s )
     {
       sim -> print_debug(
@@ -685,7 +691,7 @@ public:
   // Damage increase whitelists
   struct affected_by_t
   {
-    bool avenging_wrath, avenging_wrath_autocrit, judgment; // Shared
+    bool avenging_wrath, judgment; // Shared
     bool crusade, divine_purpose, hand_of_light, final_reckoning, reckoning; // Ret
   } affected_by;
 
@@ -720,7 +726,6 @@ public:
     }
 
     this -> affected_by.avenging_wrath = this -> data().affected_by( p -> spells.avenging_wrath -> effectN( 1 ) );
-    this -> affected_by.avenging_wrath_autocrit = this -> data().affected_by( p -> spells.avenging_wrath_autocrit -> effectN( 1 ) );
 
     // The whitelists for spells affected by a hasted gcd/cd are spread over a lot of different effects and spells
     // This browses the given spell data to find cd/gcd affecting effects and if they affect the current spell
@@ -785,16 +790,6 @@ public:
       {
         ab::gcd_type = gcd_haste_type::ATTACK_HASTE;
       }
-    }
-  }
-
-  void execute() override
-  {
-    ab::execute();
-
-    if ( this -> affected_by.avenging_wrath_autocrit )
-    {
-      p() -> buffs.avenging_wrath_autocrit -> expire();
     }
   }
 
@@ -885,11 +880,6 @@ public:
 
   double composite_crit_chance() const override
   {
-    if ( affected_by.avenging_wrath_autocrit && p() -> buffs.avenging_wrath_autocrit -> up() )
-    {
-      return 1.0;
-    }
-
     double cc = ab::composite_crit_chance();
 
     if ( affected_by.avenging_wrath && p() -> buffs.avenging_wrath -> up() )

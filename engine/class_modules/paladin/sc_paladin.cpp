@@ -161,6 +161,9 @@ struct avenging_wrath_t : public paladin_spell_t
     // link needed for Righteous Protector / SotR cooldown reduction
     cooldown = p -> cooldowns.avenging_wrath;
 
+    if ( p -> spells.avenging_wrath_2 -> ok() )
+      cooldown -> duration += timespan_t::from_millis( p -> spells.avenging_wrath_2 -> effectN( 1 ).base_value() );
+
     cooldown -> duration *= 1.0 + azerite::vision_of_perfection_cdr( p -> azerite_essence.vision_of_perfection );
   }
 
@@ -172,8 +175,6 @@ struct avenging_wrath_t : public paladin_spell_t
 
     if ( p() -> azerite.avengers_might.ok() )
       p() -> buffs.avengers_might -> trigger( 1, p() -> buffs.avengers_might -> default_value, -1.0, p() -> buffs.avenging_wrath -> buff_duration() );
-
-    p() -> buffs.avenging_wrath_autocrit -> trigger();
   }
 };
 
@@ -1275,8 +1276,6 @@ void paladin_t::vision_of_perfection_proc()
   if ( talents.crusade -> ok() )
     main_buff =  buffs.crusade;
 
-  buff_t* autocrit_buff = talents.crusade -> ok() ? nullptr : buffs.avenging_wrath_autocrit;
-
   // Light's Decree's duration increase to AW doesn't affect the VoP proc
   // We use the duration from spelldata rather than buff -> buff_duration
   timespan_t trigger_duration = vision_multiplier * main_buff -> data().duration();
@@ -1291,9 +1290,6 @@ void paladin_t::vision_of_perfection_proc()
   else
   {
     main_buff -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, trigger_duration );
-
-    if ( autocrit_buff )
-      autocrit_buff -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, trigger_duration );
 
     if ( azerite.avengers_might.enabled() )
       buffs.avengers_might -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, trigger_duration );
@@ -1463,7 +1459,6 @@ void paladin_t::create_buffs()
 
   // General
   buffs.avenging_wrath          = new buffs::avenging_wrath_buff_t( this );
-  buffs.avenging_wrath_autocrit = make_buff( this, "avenging_wrath_autocrit", spells.avenging_wrath_autocrit );
   buffs.divine_purpose          = make_buff( this, "divine_purpose", spells.divine_purpose_buff );
   buffs.divine_shield           = make_buff( this, "divine_shield", find_class_spell( "Divine Shield" ) )
                                 -> set_cooldown( 0_ms ); // Let the ability handle the CD
@@ -1709,8 +1704,8 @@ void paladin_t::init_spells()
   passives.plate_specialization = find_specialization_spell( "Plate Specialization" );
   passives.paladin              = find_spell( 137026 );
   spells.avenging_wrath = find_class_spell( "Avenging Wrath" );
-  spells.avenging_wrath_autocrit = find_spell( 294027 );
   spells.judgment_2 = find_spell( 327977 );
+  spells.avenging_wrath_2 = find_spell( 317872 );
 
   // Shared Azerite traits
   azerite.avengers_might        = find_azerite_spell( "Avenger's Might" );
@@ -2180,7 +2175,7 @@ double paladin_t::resource_gain( resource_e resource_type, double amount, gain_t
 
     if ( buffs.holy_avenger -> up() )
     {
-      amount *= 1.0 + buffs.holy_avenger -> data().effectN( 2 ).percent();
+      amount *= 1.0 + buffs.holy_avenger -> data().effectN( 1 ).percent();
     }
   }
 
