@@ -332,9 +332,9 @@ public:
     buff_t* lava_surge;
 
     // Elemental, Enhancement
-    stat_buff_t* elemental_blast_crit;
-    stat_buff_t* elemental_blast_haste;
-    stat_buff_t* elemental_blast_mastery;
+    buff_t* elemental_blast_crit;
+    buff_t* elemental_blast_haste;
+    buff_t* elemental_blast_mastery;
     buff_t* stormkeeper;
 
     // Elemental
@@ -668,6 +668,7 @@ public:
   double composite_player_target_multiplier( player_t* target, school_e school ) const override;
   double composite_player_pet_damage_multiplier( const action_state_t* state ) const override;
   double composite_maelstrom_gain_coefficient( const action_state_t* state = nullptr ) const;
+  double composite_mastery() const override;
   double matching_gear_multiplier( attribute_e attr ) const override;
   action_t* create_action( util::string_view name, const std::string& options ) override;
   pet_t* create_pet( util::string_view name, util::string_view type = "" ) override;
@@ -1036,6 +1037,7 @@ public:
 
     return m;
   }
+
 
   void execute() override
   {
@@ -6415,12 +6417,15 @@ void shaman_t::create_buffs()
   buff.ascendance = new ascendance_buff_t( this );
   buff.ghost_wolf = make_buff( this, "ghost_wolf", find_class_spell( "Ghost Wolf" ) );
 
-  buff.elemental_blast_crit = make_buff<stat_buff_t>( this, "elemental_blast_critical_strike", find_spell( 118522 ) );
-  buff.elemental_blast_crit->set_max_stack( 1 );
-  buff.elemental_blast_haste = make_buff<stat_buff_t>( this, "elemental_blast_haste", find_spell( 173183 ) );
-  buff.elemental_blast_haste->set_max_stack( 1 );
-  buff.elemental_blast_mastery = make_buff<stat_buff_t>( this, "elemental_blast_mastery", find_spell( 173184 ) );
-  buff.elemental_blast_mastery->set_max_stack( 1 );
+  buff.elemental_blast_crit = make_buff( this, "elemental_blast_critical_strike", find_spell( 118522 ) )
+          ->set_max_stack(1)
+          ->add_invalidate(CACHE_CRIT_CHANCE);
+  buff.elemental_blast_haste = make_buff( this, "elemental_blast_haste", find_spell( 173183 ) )
+          ->set_max_stack(1)
+          ->add_invalidate(CACHE_HASTE);
+  buff.elemental_blast_mastery = make_buff( this, "elemental_blast_mastery", find_spell( 173184 ) )
+          ->set_max_stack(1)
+          ->add_invalidate(CACHE_MASTERY);
   buff.stormkeeper = make_buff( this, "stormkeeper", talent.stormkeeper )
                          ->set_cooldown( timespan_t::zero() );  // Handled by the action
 
@@ -7008,7 +7013,8 @@ double shaman_t::composite_spell_haste() const
 
   if ( buff.unlimited_power->up() )
     h *= 1.0 / ( 1.0 + buff.unlimited_power->stack_value() );
-
+  if ( buff.elemental_blast_haste->up())
+    h *= 1.0/ (1.0+buff.elemental_blast_haste->check_value());
   return h;
 }
 
@@ -7020,7 +7026,21 @@ double shaman_t::composite_spell_crit_chance() const
 
   m += spec.critical_strikes->effectN( 1 ).percent();
 
+  if (buff.elemental_blast_crit->up())
+    m+= buff.elemental_blast_crit->check_value();
+
   return m;
+}
+
+//shaman_t::composite_mastery
+
+double shaman_t::composite_mastery() const
+{
+    double m = player_t::composite_mastery();
+
+    if(buff.elemental_blast_mastery->up())
+        m+=buff.elemental_blast_mastery->check_value();
+    return m;
 }
 
 // shaman_t::temporary_movement_modifier =======================================
@@ -7056,6 +7076,8 @@ double shaman_t::composite_melee_crit_chance() const
   double m = player_t::composite_melee_crit_chance();
 
   m += spec.critical_strikes->effectN( 1 ).percent();
+  if (buff.elemental_blast_crit->up())
+    m+= buff.elemental_blast_crit->check_value();
 
   return m;
 }
@@ -7065,6 +7087,9 @@ double shaman_t::composite_melee_crit_chance() const
 double shaman_t::composite_melee_haste() const
 {
   double h = player_t::composite_melee_haste();
+
+  if ( buff.elemental_blast_haste->up())
+    h *= 1.0/ (1.0+buff.elemental_blast_haste->check_value());
 
   return h;
 }
