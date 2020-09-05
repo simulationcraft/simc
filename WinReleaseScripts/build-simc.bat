@@ -165,8 +165,8 @@ echo SZIP       : Directory containing 7-Zip compressor (optional, if omitted no
 echo ISCC       : Diretory containing Inno Setup (optional, if omitted no setup will be built)
 echo INSTALL    : Base Directory to make an installation package in. Files will be located in directory INSTALL\simc-%SIMCVERSION%-%PACKAGESUFFIX%
 echo INSTALLDIR : Directory to place actual installation files in (optional, if ommitted path based on INSTALL dir will be used)
-echo RELEASE    : Set to build a "release version" (no git commit hash suffix)
 echo GITREV     : Short Git-Hash identifying the source commit. If not provided, the script attempts to retrieve it
+echo RELEASE    : Set to build a "release version" (no git commit hash suffix)
 echo            : If set, set RELEASE_CREDENTIALS to the Battle.net key for the release
 goto :end
 
