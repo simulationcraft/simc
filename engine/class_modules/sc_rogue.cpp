@@ -1268,9 +1268,9 @@ public:
 
     if ( cp > 0 )
     {
-      if ( affected_by.broadside_cp && p()->buffs.broadside->check() )
+      if ( affected_by.broadside_cp )
       {
-        cp += p()->buffs.broadside->data().effectN( 2 ).base_value();
+        cp += p()->buffs.broadside->check_value();
       }
 
       if ( affected_by.shadow_blades && p()->buffs.shadow_blades->check() )
@@ -1696,7 +1696,7 @@ public:
 
       if ( affected_by.broadside_cp && p()->buffs.broadside->up() )
       {
-        trigger_combo_point_gain( as<int>( p()->buffs.broadside->data().effectN( 2 ).base_value() ), p()->gains.broadside );
+        trigger_combo_point_gain( as<int>( p()->buffs.broadside->check_value() ), p()->gains.broadside );
       }
     }
 
@@ -2034,7 +2034,7 @@ struct wound_poison_t : public rogue_poison_t
       td( state->target )->debuffs.wound_poison->trigger();
       if ( !sim->overrides.mortal_wounds && state->target->debuffs.mortal_wounds )
       {
-        state->target->debuffs.mortal_wounds->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, data().duration() );
+        state->target->debuffs.mortal_wounds->trigger( data().duration() );
       }
     }
   };
@@ -2277,12 +2277,12 @@ struct melee_t : public rogue_attack_t
     // Subtlety
     if ( p()->buffs.symbols_of_death->up() )
     {
-      m *= 1.0 + p()->buffs.symbols_of_death->data().effectN( 2 ).percent();
+      m *= 1.0 + p()->buffs.symbols_of_death->check_value();
     }
 
     if ( p()->buffs.shadow_dance->up() )
     {
-      m *= 1.0 + p()->buffs.shadow_dance->data().effectN( 2 ).percent() + p()->talent.dark_shadow->effectN( 1 ).percent();
+      m *= 1.0 + p()->buffs.shadow_dance->check_value() + p()->talent.dark_shadow->effectN( 1 ).percent();
     }
 
     // Assassination
@@ -2557,7 +2557,7 @@ struct between_the_eyes_t : public rogue_attack_t
     if ( result_is_hit( execute_state->result ) )
     {
       // There is nothing about the debuff duration in spell data, so we have to hardcode the 3s base.
-      td( execute_state->target )->debuffs.between_the_eyes->trigger(1, buff_t::DEFAULT_VALUE(), -1.0, 3_s * cast_state( execute_state )->cp );
+      td( execute_state->target )->debuffs.between_the_eyes->trigger( 3_s * cast_state( execute_state )->cp );
 
       p()->buffs.deadshot->trigger();
 
@@ -2838,7 +2838,7 @@ struct envenom_t : public rogue_attack_t
     timespan_t envenom_duration = p()->buffs.envenom->data().duration() * ( 1 + cast_state( state )->cp );
     if ( p()->azerite.twist_the_knife.ok() && state->result == RESULT_CRIT )
       envenom_duration += p()->azerite.twist_the_knife.spell_ref().effectN( 2 ).time_value();
-    p()->buffs.envenom->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, envenom_duration );
+    p()->buffs.envenom->trigger( envenom_duration );
 
     rogue_attack_t::impact( state );
 
@@ -3373,16 +3373,7 @@ struct pistol_shot_t : public rogue_attack_t
   {
     double m = rogue_attack_t::action_multiplier();
 
-    if ( p()->buffs.opportunity->up() )
-    {
-      double ps_mod = 1.0 + p()->buffs.opportunity->data().effectN( 3 ).percent();
-
-      if ( p()->talent.quick_draw->ok() )
-        ps_mod += p()->talent.quick_draw->effectN( 1 ).percent();
-
-      m *= ps_mod;
-    }
-
+    m *= 1.0 + p()->buffs.opportunity->value();
     m *= 1.0 + p()->buffs.greenskins_wickers->value();
 
     return m;
@@ -3663,7 +3654,7 @@ struct roll_the_bones_t : public rogue_spell_t
     if ( precombat_seconds && ! p() -> in_combat )
       d -= timespan_t::from_seconds( precombat_seconds );
 
-    p() -> buffs.roll_the_bones -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, d );
+    p()->buffs.roll_the_bones->trigger( d );
 
     // Roll the Bones still triggers Snake Eyes on Shadowlands Beta but the damage increase is zero since it does not consume CP anymore.
     // - Mystler 2020-07-31
@@ -3892,7 +3883,7 @@ struct secret_technique_t : public rogue_attack_t
 
     // The clones seem to hit 1s and 1.3s later (no time reference in spell data though)
     // Trigger tracking buff until first clone's damage
-    p()->buffs.secret_technique->trigger( 1, buff_t::DEFAULT_VALUE(), ( -1.0 ), 1_s );
+    p()->buffs.secret_technique->trigger( 1_s );
     clone_attack->trigger_secondary_action( execute_state->target, cp, 1_s );
     clone_attack->trigger_secondary_action( execute_state->target, cp, 1.3_s );
   }
@@ -3977,14 +3968,12 @@ struct shadow_dance_t : public rogue_spell_t
   {
     rogue_spell_t::execute();
 
-    p() -> buffs.shadow_dance -> trigger();
+    p()->buffs.shadow_dance->trigger();
     trigger_master_of_shadows();
 
     if ( p()->azerite.the_first_dance.ok() )
     {
       p()->buffs.the_first_dance->trigger();
-      trigger_combo_point_gain( as<int>( p()->buffs.the_first_dance->data().effectN( 3 ).resource( RESOURCE_COMBO_POINT ) ),
-        p() -> gains.the_first_dance );
     }
 
     //icd -> start();
@@ -5397,7 +5386,7 @@ struct adrenaline_rush_t : public buff_t
     buff_t( p, "adrenaline_rush", p->spec.adrenaline_rush )
   { 
     set_cooldown( timespan_t::zero() );
-    set_default_value( p->spec.adrenaline_rush->effectN( 2 ).percent() );
+    set_default_value_from_effect_type( A_MOD_RANGED_AND_MELEE_ATTACK_SPEED );
     set_affects_regen( true );
     add_invalidate( CACHE_ATTACK_SPEED );
     if ( p->legendary.celerity.ok() )
@@ -5605,6 +5594,7 @@ struct shadow_dance_t : public stealth_like_buff_t
   shadow_dance_t( rogue_t* p ) :
     stealth_like_buff_t( p, "shadow_dance", p -> spec.shadow_dance )
   {
+    set_default_value_from_effect_type( A_MOD_AUTO_ATTACK_PCT );
     apply_affecting_aura( p->talent.subterfuge );
 
     if ( p->talent.dark_shadow->ok() )
@@ -5706,7 +5696,7 @@ struct vendetta_debuff_t : public buff_t
     nothing_personal( r.source->find_action( "nothing_personal" ) )
   {
     set_cooldown( timespan_t::zero() );
-    set_default_value( data().effectN( 1 ).percent() );
+    set_default_value_from_effect_type( A_MOD_DAMAGE_FROM_CASTER_SPELLS );
   }
 
   void trigger_nothing_personal( timespan_t duration )
@@ -5730,14 +5720,7 @@ struct vendetta_debuff_t : public buff_t
     }
 
     // Buff Trigger/Refresh
-    if ( rogue->buffs.nothing_personal->check() )
-    {
-      rogue->buffs.nothing_personal->extend_duration( rogue, duration );
-    }
-    else
-    {
-      rogue->buffs.nothing_personal->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, duration );
-    }
+    rogue->buffs.nothing_personal->extend_duration_or_trigger( duration );
   }
 
   void expire_nothing_personal()
@@ -5840,7 +5823,7 @@ struct roll_the_bones_t : public buff_t
       return;
 
     unsigned buff_idx = static_cast<int>( rng().range( 0, as<double>( inactive_buffs.size() ) ) );
-    inactive_buffs[ buff_idx ]->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, duration );
+    inactive_buffs[ buff_idx ]->trigger( duration );
   }
 
   void count_the_odds_check()
@@ -5950,7 +5933,7 @@ struct roll_the_bones_t : public buff_t
 
     for ( auto buff : rolled )
     {
-      buff->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, duration );
+      buff->trigger( duration );
     }
 
     return as<unsigned>( rolled.size() );
@@ -5972,7 +5955,7 @@ struct roll_the_bones_t : public buff_t
 
     if ( buffs_rolled == 1 && rogue->azerite.paradise_lost.ok() )
     {
-      rogue->buffs.paradise_lost->trigger( 1, buff_t::DEFAULT_VALUE(), ( -1.0 ), roll_duration );
+      rogue->buffs.paradise_lost->trigger( roll_duration );
     }
 
     count_the_odds_reroll();
@@ -6526,7 +6509,7 @@ void actions::rogue_action_t<Base>::trigger_find_weakness( const action_state_t*
   if ( duration > timespan_t::zero() && duration < td( state->target )->debuffs.find_weakness->remains() )
     duration = td( state->target )->debuffs.find_weakness->remains();
 
-  td( state->target )->debuffs.find_weakness->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, duration );
+  td( state->target )->debuffs.find_weakness->trigger( duration );
 }
 
 template <typename Base>
@@ -6546,7 +6529,6 @@ void actions::rogue_action_t<Base>::trigger_master_of_shadows()
   if ( p()->in_combat && p()->talent.master_of_shadows->ok() )
   {
     p()->buffs.master_of_shadows->trigger();
-    p()->resource_gain( RESOURCE_ENERGY, p()->buffs.master_of_shadows->data().effectN( 2 ).base_value(), p()->gains.master_of_shadows );
   }
 }
 
@@ -6653,13 +6635,13 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
   debuffs.vendetta          = new buffs::vendetta_debuff_t( *this );
 
   debuffs.shiv = make_buff( *this, "shiv", source->spec.shiv_2_debuff )
-    ->set_default_value( source->spec.shiv_2_debuff->effectN( 1 ).percent() );
+    ->set_default_value_from_effect_type( A_MOD_DAMAGE_FROM_CASTER_SPELLS );
   debuffs.ghostly_strike = make_buff( *this, "ghostly_strike", source->talent.ghostly_strike )
-    ->set_default_value( source->talent.ghostly_strike->effectN( 3 ).percent() );
+    ->set_default_value_from_effect_type( A_MOD_DAMAGE_FROM_CASTER );
   debuffs.find_weakness = make_buff( *this, "find_weakness", source->spec.find_weakness->effectN( 1 ).trigger() )
-    ->set_default_value( source->spec.find_weakness->effectN( 1 ).trigger()->effectN( 1 ).percent() );
+    ->set_default_value_from_effect_type( A_MOD_IGNORE_ARMOR_PCT );
   debuffs.prey_on_the_weak = make_buff( *this, "prey_on_the_weak", source->find_spell( 255909 ) )
-    ->set_default_value( source->find_spell( 255909 )->effectN( 1 ).percent() );
+    ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN );
   debuffs.between_the_eyes = make_buff( *this, "between_the_eyes", source->spec.between_the_eyes )
     ->set_default_value_from_effect_type( A_MOD_CRIT_DAMAGE_PCT_FROM_CASTER_SPELLS )
     ->set_cooldown( timespan_t::zero() );
@@ -8187,22 +8169,24 @@ void rogue_t::create_buffs()
 
   // Baseline ===============================================================
   // Shared
-  buffs.feint                 = make_buff( this, "feint", find_specialization_spell( "Feint" ) )
-                                -> set_duration( find_class_spell( "Feint" ) -> duration() );
-  buffs.shadowstep            = make_buff( this, "shadowstep", spec.shadowstep )
-                                -> set_cooldown( timespan_t::zero() );
-  buffs.sprint                = make_buff( this, "sprint", spell.sprint )
-                                -> set_cooldown( timespan_t::zero() )
-                                -> add_invalidate( CACHE_RUN_SPEED );
-  buffs.stealth               = new buffs::stealth_t( this );
-  buffs.vanish                = new buffs::vanish_t( this );
+  
+  buffs.feint = make_buff( this, "feint", find_specialization_spell( "Feint" ) )
+    ->set_duration( find_class_spell( "Feint" )->duration() );
+  
+  buffs.shadowstep = make_buff( this, "shadowstep", spec.shadowstep )
+    ->set_cooldown( timespan_t::zero() );
+  
+  buffs.sprint = make_buff( this, "sprint", spell.sprint )
+    ->set_cooldown( timespan_t::zero() )
+    ->add_invalidate( CACHE_RUN_SPEED );
   
   // TODO: Possibly refactor into buffs::slice_and_dice_t
-  buffs.slice_and_dice        = make_buff( this, "slice_and_dice", spell.slice_and_dice )
-                                ->set_default_value_from_effect_type( A_MOD_RANGED_AND_MELEE_ATTACK_SPEED )
-                                ->apply_affecting_aura( spec.slice_and_dice_2 )
-                                ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
-                                ->add_invalidate( CACHE_ATTACK_SPEED );
+  buffs.slice_and_dice = make_buff( this, "slice_and_dice", spell.slice_and_dice )
+    ->set_default_value_from_effect_type( A_MOD_RANGED_AND_MELEE_ATTACK_SPEED )
+    ->apply_affecting_aura( spec.slice_and_dice_2 )
+    ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
+    ->add_invalidate( CACHE_ATTACK_SPEED );
+  
   if ( legendary.celerity.ok() )
   {
     buffs.slice_and_dice->set_period( spell.slice_and_dice->effectN( 2 ).period() );
@@ -8215,110 +8199,151 @@ void rogue_t::create_buffs()
     } );
   }
 
-  // Assassination
-  buffs.envenom               = make_buff( this, "envenom", spec.envenom )
-                                ->set_default_value( spec.envenom->effectN( 2 ).percent() )
-                                ->set_duration( timespan_t::min() )
-                                ->set_period( timespan_t::zero() )
-                                ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
-  buffs.vendetta              = make_buff( this, "vendetta_energy", spec.vendetta->effectN( 4 ).trigger() )
-                                ->set_default_value( spec.vendetta->effectN( 4 ).trigger()->effectN( 1 ).base_value() / 5.0 )
-                                ->set_affects_regen( true );
+  buffs.stealth = new buffs::stealth_t( this );
+  buffs.vanish = new buffs::vanish_t( this );
 
-  // Outlaw
-  buffs.adrenaline_rush       = new buffs::adrenaline_rush_t( this );
-  buffs.blade_flurry          = new buffs::blade_flurry_t( this );
-  buffs.blade_rush            = make_buff( this, "blade_rush", find_spell( 271896 ) )
-                                ->set_period( find_spell( 271896 )->effectN( 1 ).period() )
-                                ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
-                                  resource_gain( RESOURCE_ENERGY, b -> data().effectN( 1 ).base_value(), gains.blade_rush );
-                                } );
-  buffs.opportunity           = make_buff( this, "opportunity", find_spell( 195627 ) );
-  // Roll the bones buffs
-  buffs.broadside             = make_buff( this, "broadside", spec.broadside )
-                                ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-  buffs.buried_treasure       = make_buff( this, "buried_treasure", find_spell( 199600 ) )
-                                ->set_affects_regen( true )
-                                ->set_default_value( find_spell( 199600 )->effectN( 1 ).base_value() / 5.0 );
-  buffs.grand_melee           = make_buff( this, "grand_melee", find_spell( 193358 ) )
-                                ->add_invalidate( CACHE_LEECH )
-                                ->set_default_value( find_spell( 193358 )->effectN( 1 ).base_value() );
-  buffs.skull_and_crossbones  = make_buff( this, "skull_and_crossbones", find_spell( 199603 ) )
-                                ->set_default_value( find_spell( 199603 )->effectN( 1 ).percent() );
-  buffs.ruthless_precision    = make_buff( this, "ruthless_precision", spec.ruthless_precision )
-                                ->set_default_value( spec.ruthless_precision->effectN( 1 ).percent() )
-                                ->add_invalidate( CACHE_CRIT_CHANCE );
-  buffs.true_bearing          = make_buff( this, "true_bearing", find_spell( 193359 ) )
-                                ->set_default_value( find_spell( 193359 )->effectN( 1 ).base_value() * 0.1 );
-  // Note, since I (navv) am a slacker, this needs to be constructed after the secondary buffs.
-  buffs.roll_the_bones        = new buffs::roll_the_bones_t( this );
+  // Assassination ==========================================================
   
-  // Subtlety
-  buffs.shadow_blades         = make_buff( this, "shadow_blades", spec.shadow_blades )
-                                -> set_cooldown( timespan_t::zero() )
-                                -> set_default_value( spec.shadow_blades -> effectN( 1 ).percent() );
-  buffs.shadow_dance          = new buffs::shadow_dance_t( this );
-  buffs.symbols_of_death      = make_buff( this, "symbols_of_death", spec.symbols_of_death )
-                                -> set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
-                                -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  buffs.envenom = make_buff( this, "envenom", spec.envenom )
+    ->set_default_value_from_effect_type( A_ADD_FLAT_MODIFIER, P_PROC_CHANCE )
+    ->set_duration( timespan_t::min() )
+    ->set_period( timespan_t::zero() )
+    ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
+
+  buffs.vendetta = make_buff( this, "vendetta_energy", spec.vendetta->effectN( 4 ).trigger() )
+    ->set_default_value_from_effect_type( A_RESTORE_POWER )
+    ->set_affects_regen( true );
+
+  // Outlaw =================================================================
+  
+  buffs.adrenaline_rush = new buffs::adrenaline_rush_t( this );
+  buffs.blade_flurry = new buffs::blade_flurry_t( this );
+  
+  buffs.blade_rush = make_buff( this, "blade_rush", find_spell( 271896 ) )
+    ->set_default_value_from_effect_type( A_PERIODIC_ENERGIZE )
+    ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
+      resource_gain( RESOURCE_ENERGY, b->check_value(), gains.blade_rush );
+    } );
+
+  buffs.opportunity = make_buff( this, "opportunity", find_spell( 195627 ) )
+    ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_GENERIC )
+    ->apply_affecting_aura( talent.quick_draw );
+  
+  // Roll the Bones Buffs
+  buffs.broadside = make_buff( this, "broadside", spec.broadside )
+    ->set_default_value_from_effect( 1, 1.0 )   // Extra CP Gain
+    ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  
+  buffs.buried_treasure = make_buff( this, "buried_treasure", find_spell( 199600 ) )
+    ->set_default_value_from_effect_type( A_RESTORE_POWER )
+    ->set_affects_regen( true );
+  
+  buffs.grand_melee = make_buff( this, "grand_melee", find_spell( 193358 ) )
+    ->set_default_value_from_effect( 1, 1.0 )   // SnD Extend Seconds
+    ->add_invalidate( CACHE_LEECH );
+  
+  buffs.skull_and_crossbones = make_buff( this, "skull_and_crossbones", find_spell( 199603 ) )
+    ->set_default_value_from_effect( 1, 0.01 ); // Flat Modifier to Proc%
+  
+  buffs.ruthless_precision = make_buff( this, "ruthless_precision", spec.ruthless_precision )
+    ->set_default_value_from_effect( 1 )        // Non-BtE Crit% Modifier
+    ->add_invalidate( CACHE_CRIT_CHANCE );
+  
+  buffs.true_bearing = make_buff( this, "true_bearing", find_spell( 193359 ) )
+    ->set_default_value_from_effect( 1, 0.1 );  // CDR Seconds
+  
+  buffs.roll_the_bones = new buffs::roll_the_bones_t( this );
+  
+  // Subtlety ===============================================================
+  
+  buffs.shadow_blades = make_buff( this, "shadow_blades", spec.shadow_blades )
+    ->set_default_value_from_effect( 1 ) // Bonus Damage%
+    ->set_cooldown( timespan_t::zero() );
+  
+  buffs.shadow_dance = new buffs::shadow_dance_t( this );
+  
+  buffs.symbols_of_death = make_buff( this, "symbols_of_death", spec.symbols_of_death )
+    ->set_default_value_from_effect_type( A_MOD_AUTO_ATTACK_PCT )
+    ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
+    ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  
   buffs.symbols_of_death_autocrit = make_buff( this, "symbols_of_death_autocrit", spec.symbols_of_death_autocrit )
-                                -> add_invalidate( CACHE_CRIT_CHANCE )
-                                -> set_default_value( spec.symbols_of_death_autocrit->effectN( 1 ).percent() );
+    ->set_default_value_from_effect_type( A_ADD_FLAT_MODIFIER, P_CRIT )
+    ->add_invalidate( CACHE_CRIT_CHANCE );
 
   // Talents ================================================================
   // Shared
-  buffs.alacrity                = make_buff( this, "alacrity", find_spell( 193538 ) )
-                                  -> set_default_value( find_spell( 193538 ) -> effectN( 1 ).percent() )
-                                  -> set_chance( talent.alacrity -> ok() )
-                                  -> add_invalidate( CACHE_HASTE );
-  buffs.subterfuge              = new buffs::subterfuge_t( this );
+  
+  buffs.alacrity = make_buff( this, "alacrity", find_spell( 193538 ) )
+    ->set_default_value_from_effect_type( A_HASTE_ALL )
+    ->set_chance( talent.alacrity->ok() )
+    ->add_invalidate( CACHE_HASTE );
+
+  buffs.subterfuge = new buffs::subterfuge_t( this );
 
   // Assassination
-  buffs.elaborate_planning      = make_buff( this, "elaborate_planning", talent.elaborate_planning -> effectN( 1 ).trigger() )
-                                  -> set_default_value( 1.0 + talent.elaborate_planning -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
-                                  -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-  buffs.blindside               = make_buff( this, "blindside", find_spell( 121153 ) )
-                                  -> set_default_value( find_spell( 121153 ) -> effectN( 2 ).percent() );
-  buffs.master_assassin_aura    = make_buff( this, "master_assassin_aura", talent.master_assassin )
-                                  ->set_default_value( spec.master_assassin->effectN( 1 ).percent() )
-                                  ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
-                                      if ( new_ == 0 )
-                                        buffs.master_assassin->trigger();
-                                      else
-                                        buffs.master_assassin->expire();
-                                    } );
-  buffs.master_assassin         = make_buff( this, "master_assassin", talent.master_assassin )
-                                  -> set_default_value( spec.master_assassin -> effectN( 1 ).percent() )
-                                  -> set_duration( timespan_t::from_seconds( talent.master_assassin -> effectN( 1 ).base_value() ) );
-  buffs.hidden_blades_driver    = make_buff( this, "hidden_blades_driver", talent.hidden_blades )
-                                  -> set_period( talent.hidden_blades -> effectN( 1 ).period() )
-                                  -> set_quiet( true )
-                                  -> set_tick_callback( [this]( buff_t*, int, timespan_t ) { buffs.hidden_blades -> trigger(); } )
-                                  -> set_tick_time_behavior( buff_tick_time_behavior::UNHASTED );
-  buffs.hidden_blades           = make_buff( this, "hidden_blades", find_spell( 270070 ) )
-                                  -> set_default_value( find_spell( 270070 ) -> effectN( 1 ).percent() );
+
+  buffs.blindside = make_buff( this, "blindside", find_spell( 121153 ) )
+    ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_RESOURCE_COST );
+
+  buffs.elaborate_planning = make_buff( this, "elaborate_planning", talent.elaborate_planning->effectN( 1 ).trigger() )
+    ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_GENERIC )
+    ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  
+  buffs.hidden_blades_driver = make_buff( this, "hidden_blades_driver", talent.hidden_blades )
+    ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) { buffs.hidden_blades->trigger(); } )
+    ->set_quiet( true );
+
+  buffs.hidden_blades = make_buff( this, "hidden_blades", find_spell( 270070 ) )
+    ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_GENERIC );
+
+  const spell_data_t* master_assassin = talent.master_assassin->ok() ? spec.master_assassin : spell_data_t::not_found();
+  buffs.master_assassin = make_buff( this, "master_assassin", master_assassin )
+    ->set_default_value_from_effect_type( A_ADD_FLAT_MODIFIER, P_CRIT )
+    ->add_invalidate( CACHE_CRIT_CHANCE )
+    ->set_duration( timespan_t::from_seconds( talent.master_assassin->effectN( 1 ).base_value() ) );
+  buffs.master_assassin_aura = make_buff( this, "master_assassin_aura", master_assassin )
+    ->set_default_value_from_effect_type( A_ADD_FLAT_MODIFIER, P_CRIT )
+    ->add_invalidate( CACHE_CRIT_CHANCE )
+    ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
+      if ( new_ == 0 )
+        buffs.master_assassin->trigger();
+      else
+        buffs.master_assassin->expire();
+    } );
+  
   // Outlaw
-  buffs.loaded_dice             = make_buff( this, "loaded_dice", talent.loaded_dice -> effectN( 1 ).trigger() );
-  buffs.killing_spree           = make_buff( this, "killing_spree", talent.killing_spree )
-                                  -> set_cooldown( timespan_t::zero() )
-                                  -> set_duration( talent.killing_spree -> duration() );
-  buffs.dreadblades             = make_buff( this, "dreadblades", talent.dreadblades )
-                                  ->set_cooldown( timespan_t::zero() )
-                                  ->set_default_value( find_spell( 343143 )->effectN( 1 ).base_value() );
+
+  buffs.dreadblades = make_buff( this, "dreadblades", talent.dreadblades )
+    ->set_cooldown( timespan_t::zero() )
+    ->set_default_value( talent.dreadblades->effectN( 2 ).trigger()->effectN( 1 ).resource() );
+
+  buffs.killing_spree = make_buff( this, "killing_spree", talent.killing_spree )
+    ->set_cooldown( timespan_t::zero() )
+    ->set_duration( talent.killing_spree->duration() );
+
+  buffs.loaded_dice = make_buff( this, "loaded_dice", talent.loaded_dice->effectN( 1 ).trigger() );
 
   // Subtlety
-  buffs.premeditation           = make_buff( this, "premeditation", find_spell( 343173 ) );
-  buffs.master_of_shadows       = make_buff( this, "master_of_shadows", find_spell( 196980 ) )
-                                  -> set_period( find_spell( 196980 ) -> effectN( 1 ).period() )
-                                  -> set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
-                                    resource_gain( RESOURCE_ENERGY, b -> data().effectN( 1 ).base_value(), gains.master_of_shadows );
-                                  } )
-                                  -> set_refresh_behavior( buff_refresh_behavior::DURATION );
-  buffs.secret_technique        = make_buff( this, "secret_technique", talent.secret_technique )
-                                  -> set_cooldown( timespan_t::zero() )
-                                  -> set_quiet( true );
-  buffs.shuriken_tornado        = new buffs::shuriken_tornado_t( this );
 
+  buffs.master_of_shadows = make_buff( this, "master_of_shadows", find_spell( 196980 ) )
+    ->set_default_value_from_effect_type( A_PERIODIC_ENERGIZE )
+    ->set_refresh_behavior( buff_refresh_behavior::DURATION )
+    ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
+      resource_gain( RESOURCE_ENERGY, b->check_value(), gains.master_of_shadows );
+    } )
+    ->set_stack_change_callback( [ this ]( buff_t* b, int, int new_ ) {
+      if ( new_ == 1 )
+        resource_gain( RESOURCE_ENERGY, b->data().effectN( 2 ).resource(), gains.master_of_shadows );
+    } );
+
+  buffs.premeditation = make_buff( this, "premeditation", find_spell( 343173 ) );
+  
+  buffs.secret_technique = make_buff( this, "secret_technique", talent.secret_technique )
+    ->set_cooldown( timespan_t::zero() )
+    ->set_quiet( true );
+
+  buffs.shuriken_tornado = new buffs::shuriken_tornado_t( this );
 
   // Azerite ================================================================
 
@@ -8362,7 +8387,11 @@ void rogue_t::create_buffs()
                                              -> set_trigger_spell( azerite.snake_eyes.spell_ref().effectN( 1 ).trigger() )
                                              -> set_default_value( azerite.snake_eyes.value() );
   buffs.the_first_dance                    = make_buff<stat_buff_t>( this, "the_first_dance", find_spell( 278981 ) )
-                                             -> add_stat( STAT_HASTE_RATING, azerite.the_first_dance.value() );
+                                            ->add_stat( STAT_HASTE_RATING, azerite.the_first_dance.value() )
+                                            ->set_stack_change_callback( [ this ]( buff_t* b, int, int new_ ) {
+                                                if ( new_ == 1 )
+                                                  resource_gain( RESOURCE_COMBO_POINT, as<int>( b->data().effectN( 2 ).resource() ), gains.the_first_dance );
+                                              } );
 
   // Covenants ==============================================================
 
@@ -8396,59 +8425,59 @@ void rogue_t::create_buffs()
   // Legendary Items ========================================================
 
   buffs.deathly_shadows = make_buff( this, "deathly_shadows", legendary.deathly_shadows->effectN( 1 ).trigger() )
-    ->set_default_value( legendary.deathly_shadows->effectN( 1 ).trigger()->effectN( 1 ).percent() );
+    ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_GENERIC );
 
   const spell_data_t* master_assassins_mark = legendary.master_assassins_mark->ok() ? find_spell( 340094 ) : spell_data_t::not_found();
-  buffs.master_assassins_mark_aura = make_buff( this, "master_assassins_mark_aura", master_assassins_mark )
-    ->add_invalidate( CACHE_CRIT_CHANCE )
-    ->set_default_value( find_spell( 340094 )->effectN( 1 ).percent() )
-    ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
-        if ( new_ == 0 )
-          buffs.master_assassins_mark->trigger();
-        else
-          buffs.master_assassins_mark->expire();
-      } );
   buffs.master_assassins_mark = make_buff( this, "master_assassins_mark", master_assassins_mark )
+    ->set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE )
     ->add_invalidate( CACHE_CRIT_CHANCE )
-    ->set_duration( timespan_t::from_seconds( legendary.master_assassins_mark->effectN( 1 ).base_value() ) )
-    ->set_default_value( find_spell( 340094 )->effectN( 1 ).percent() );
+    ->set_duration( timespan_t::from_seconds( legendary.master_assassins_mark->effectN( 1 ).base_value() ) );
+  buffs.master_assassins_mark_aura = make_buff( this, "master_assassins_mark_aura", master_assassins_mark )
+    ->set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE )
+    ->add_invalidate( CACHE_CRIT_CHANCE )
+    ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
+      if ( new_ == 0 )
+        buffs.master_assassins_mark->trigger();
+      else
+        buffs.master_assassins_mark->expire();
+    } );
 
   buffs.the_rotten = make_buff( this, "the_rotten", legendary.the_rotten->effectN( 1 ).trigger() );
 
   buffs.guile_charm_insight_1 = make_buff( this, "shallow_insight", find_spell( 340582 ) )
+    ->set_default_value_from_effect( 1 ) // Bonus Damage%
     ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
-    ->set_default_value( find_spell( 340582 )->effectN( 1 ).percent() )
     ->set_stack_change_callback( [ this ]( buff_t*, int, int ) {
       legendary.guile_charm_counter = 0;
     } );
   buffs.guile_charm_insight_2 = make_buff( this, "moderate_insight", find_spell( 340583 ) )
+    ->set_default_value_from_effect( 1 ) // Bonus Damage%
     ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
-    ->set_default_value( find_spell( 340583 )->effectN( 1 ).percent() )
     ->set_stack_change_callback( [ this ]( buff_t*, int, int ) {
       buffs.guile_charm_insight_1->expire();
       legendary.guile_charm_counter = 0; 
     } );
   buffs.guile_charm_insight_3 = make_buff( this, "deep_insight", find_spell( 340584 ) )
+    ->set_default_value_from_effect( 1 ) // Bonus Damage%
     ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
-    ->set_default_value( find_spell( 340584 )->effectN( 1 ).percent() )
     ->set_stack_change_callback( [ this ]( buff_t*, int, int ) {
       buffs.guile_charm_insight_2->expire();
       legendary.guile_charm_counter = 0;
     } );
 
   buffs.finality_eviscerate = make_buff( this, "finality_eviscerate", find_spell( 340600 ) )
-    ->set_default_value( find_spell( 340600 )->effectN( 1 ).percent() );
+    ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_GENERIC );
   buffs.finality_rupture = make_buff( this, "finality_rupture", find_spell( 340601 ) )
-    ->set_default_value( find_spell( 340601 )->effectN( 1 ).percent() );
+    ->set_default_value_from_effect( 1 ); // Bonus Damage%
   buffs.finality_shadow_vault = make_buff( this, "finality_shadow_vault", find_spell( 340603 ) )
-    ->set_default_value( find_spell( 340603 )->effectN( 1 ).percent() );
+    ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_GENERIC );
 
   buffs.concealed_blunderbuss = make_buff( this, "concealed_blunderbuss", find_spell( 340587 ) )
     ->set_chance( legendary.concealed_blunderbuss->effectN( 1 ).percent() )
     ->set_default_value( legendary.concealed_blunderbuss->effectN( 2 ).base_value() );
 
   buffs.greenskins_wickers = make_buff( this, "greenskins_wickers", find_spell( 340573 ) )
-    ->set_default_value( find_spell( 340573 )->effectN( 1 ).percent() );
+    ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_GENERIC );
 }
 
 // rogue_t::create_options ==================================================
