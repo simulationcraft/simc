@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35755 shadowlands-BETA (hotfix 2020-09-04/35755, no-networking)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35789 shadowlands-BETA (hotfix 2020-09-05/35789, git build shadowlands 5e2bf2f946)
 
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
@@ -5138,7 +5138,7 @@ Effects          :
 Description      : Cooldown reduced by ${$m1/-1000} sec.
 
 Name             : Eviscerate (desc=Rank 2) (id=231716) [Spell Family (8), Passive] 
-Class            : Rogue
+Class            : Subtlety Rogue
 School           : Holy
 Spell Type       : None
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 

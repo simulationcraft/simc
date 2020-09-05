@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35755 shadowlands-BETA (hotfix 2020-09-04/35755, no-networking)
+SimulationCraft 901-01 for World of Warcraft 9.0.1.35789 shadowlands-BETA (hotfix 2020-09-05/35789, git build shadowlands 5e2bf2f946)
 
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior

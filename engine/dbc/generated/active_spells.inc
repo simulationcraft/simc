@@ -1,4 +1,4 @@
-// Active class spells, wow build 9.0.1.35755
+// Active class spells, wow build 9.0.1.35789
 static const std::array<active_class_spell_t, 607> __active_spells_data { {
   {  1,   0,  88163,      0, "Attack"                             },
   {  1,   0,    100,      0, "Charge"                             },
@@ -609,7 +609,7 @@ static const std::array<active_class_spell_t, 607> __active_spells_data { {
   { 12,  581, 212084,      0, "Fel Devastation"                    },
 } };
 
-// Pet active spells, wow build 9.0.1.35755
+// Pet active spells, wow build 9.0.1.35789
 static const std::array<active_pet_spell_t, 133> __active_pet_spells_data { {
   {  3,   2649, "Growl"                              },
   {  3,  16827, "Claw"                               },
