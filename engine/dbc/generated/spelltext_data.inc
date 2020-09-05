@@ -1,5 +1,5 @@
-// Spell text, wow build 9.0.1.35755
-static const std::array<spelltext_data_t, 15541> __spelltext_data { {
+// Spell text, wow build 9.0.1.35789
+static const std::array<spelltext_data_t, 15540> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -13708,7 +13708,6 @@ static const std::array<spelltext_data_t, 15541> __spelltext_data { {
   { 317614, "$@spelldesc317610", 0, 0 },
   { 317741, "Crush the flower and release the mind-easing scents, reducing the rate at which your mount becomes fatigued while flying.", "Reduced fatigue while flying.", 0 },
   { 317742, "Give the carrot to your mount, restoring all fatigue.", 0, 0 },
-  { 317749, "Grants immunity to Knockback within the Maw for $d.", "Immune to Knockback.", 0 },
   { 317776, "$@spelldesc276837", 0, 0 },
   { 317795, "Increases the size of your backpack by $s1 slots.", "Increases the size of your backpack by $s1 slots.", "Racial Passive" },
   { 317854, "Hammer of the Righteous now has ${$s1+1} charges.", 0, "Rank 2" },
@@ -15543,11 +15542,11 @@ static const std::array<spelltext_data_t, 15541> __spelltext_data { {
   { 344363, "Dodging an attack while Evasion is active will trigger Mastery: Main Gauche. ", 0, "Rank 2" },
 } };
 
-// spelltext hotfix entries, wow build 9.0.1.35755
+// spelltext hotfix entries, wow build 9.0.1.35789
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 9.0.1.35755
+// Spell description variables, wow build 9.0.1.35789
 static const std::array<spelldesc_vars_data_t, 268> __spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.36}][${1}]\r\n$shield=${$SP*2*(1+$@versadmg)*$<rapture>*$<shadow>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -15819,7 +15818,7 @@ static const std::array<spelldesc_vars_data_t, 268> __spelldesc_vars_data { {
   {  343527, "$Mastery=$?a267316[${1+$267316s1/100}][${1}]\r\n$DP=$?a223819[${1+$223819s2/100}][${1}]\r\n$mult=${$<Mastery>*$<DP>}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 9.0.1.35755
+// spelldesc_vars hotfix entries, wow build 9.0.1.35789
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 

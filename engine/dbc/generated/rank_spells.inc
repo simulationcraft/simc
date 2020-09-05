@@ -1,5 +1,5 @@
-// Rank class spells, wow build 9.0.1.35755
-static const std::array<rank_class_spell_t, 334> __rank_spells_data { {
+// Rank class spells, wow build 9.0.1.35789
+static const std::array<rank_class_spell_t, 335> __rank_spells_data { {
   { 10, 269, 322719,      0, "Afterlife"                         , "Rank 2" },
   {  9, 265, 231792,      0, "Agony"                             , "Rank 2" },
   {  6, 252, 316961,      0, "Apocalypse"                        , "Rank 2" },
@@ -97,6 +97,7 @@ static const std::array<rank_class_spell_t, 334> __rank_spells_data { {
   { 10, 270, 231605,      0, "Enveloping Mist"                   , "Rank 2" },
   { 10, 270, 231633,      0, "Essence Font"                      , "Rank 2" },
   {  4, 260, 344363,      0, "Evasion"                           , "Rank 2" },
+  {  4, 261, 231716,      0, "Eviscerate"                        , "Rank 2" },
   {  8,  62, 231565,      0, "Evocation"                         , "Rank 2" },
   {  1,  72, 316402,      0, "Execute"                           , "Rank 2" },
   {  1,  71, 316405,      0, "Execute"                           , "Rank 2" },

@@ -1,5 +1,5 @@
-// Talent tree specialization abilities, wow build 9.0.1.35755
-static const std::array<specialization_spell_entry_t, 922> __specialization_spell_data { {
+// Talent tree specialization abilities, wow build 9.0.1.35789
+static const std::array<specialization_spell_entry_t, 923> __specialization_spell_data { {
   {  0,  535, 264663,      0, "Predator's Thirst"                 , 0 },
   {  0,  535, 264667,      0, "Primal Rage"                       , 0 },
   {  0,  535, 264656,      0, "Pathfinding"                       , 0 },
@@ -296,6 +296,7 @@ static const std::array<specialization_spell_entry_t, 922> __specialization_spel
   {  4,  261, 319951,      0, "Shuriken Storm"                    , "Rank 2" },
   {  4,  261, 212283,      0, "Symbols of Death"                  , 0 },
   {  4,  261, 328077,      0, "Symbols of Death"                  , "Rank 2" },
+  {  4,  261, 231716,      0, "Eviscerate"                        , "Rank 2" },
   {  5,  256,  62618,      0, "Power Word: Barrier"               , 0 },
   {  5,  256,  47540,      0, "Penance"                           , 0 },
   {  5,  256,  33206,      0, "Pain Suppression"                  , 0 },
