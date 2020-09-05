@@ -7011,9 +7011,9 @@ double shaman_t::composite_spell_haste() const
 {
   double h = player_t::composite_spell_haste();
 
-  if ( buff.unlimited_power->up() )
+  if ( buff.unlimited_power->check() )
     h *= 1.0 / ( 1.0 + buff.unlimited_power->stack_value() );
-  if ( buff.elemental_blast_haste->up())
+  if ( buff.elemental_blast_haste->check())
     h *= 1.0/ (1.0+buff.elemental_blast_haste->check_value());
   return h;
 }
@@ -7026,7 +7026,7 @@ double shaman_t::composite_spell_crit_chance() const
 
   m += spec.critical_strikes->effectN( 1 ).percent();
 
-  if (buff.elemental_blast_crit->up())
+  if (buff.elemental_blast_crit->check())
     m+= buff.elemental_blast_crit->check_value();
 
   return m;
@@ -7038,7 +7038,7 @@ double shaman_t::composite_mastery() const
 {
     double m = player_t::composite_mastery();
 
-    if(buff.elemental_blast_mastery->up())
+    if(buff.elemental_blast_mastery->check())
         m+=buff.elemental_blast_mastery->check_value();
     return m;
 }
