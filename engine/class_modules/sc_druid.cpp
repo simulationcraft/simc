@@ -2729,9 +2729,8 @@ public:
   {
     double da = ab::composite_da_multiplier( s );
 
-    if ( ( &ab::data() == p()->spec.full_moon || &ab::data() == p()->spec.half_moon ||
-           &ab::data() == p()->talent.new_moon ) &&
-         p()->buff.eclipse_solar->up() )
+    if ( ( ab::id == p()->spec.full_moon->id() || ab::id == p()->spec.half_moon->id() ||
+           ab::id == p()->talent.new_moon->id() ) && p()->buff.eclipse_solar->up() )
     {
       da *= 1.0 + p()->cache.mastery_value();
     }
@@ -2743,9 +2742,8 @@ public:
   {
     double cc = ab::composite_crit_chance();
 
-    if ( ( &ab::data() == p()->spec.full_moon || &ab::data() == p()->spec.half_moon ||
-           &ab::data() == p()->talent.new_moon ) &&
-         p()->buff.balance_of_all_things_nature->up() )
+    if ( ( ab::id == p()->spec.full_moon->id() || ab::id == p()->spec.half_moon->id() ||
+           ab::id == p()->talent.new_moon->id() ) && p()->buff.balance_of_all_things_nature->up() )
     {
       // Use the base_value stored for APL purposes for now until moons are properly whitelisted
       cc += p()->buff.balance_of_all_things_nature->stack_value() / 100.0;
@@ -2929,9 +2927,6 @@ struct moonfire_t : public druid_spell_t
       {
         // The increased target number has been removed from spell data
         aoe += 1;
-        // Twin Moons seems to fire off another MF spell - sometimes concurrently, sometimes up to 100ms later. While
-        // there are very limited cases where this could have an effect, those cases do exist. Possibly worth
-        // investigating further in the future.
         radius = p->talent.twin_moons->effectN( 1 ).base_value();
       }
 
@@ -2965,10 +2960,8 @@ struct moonfire_t : public druid_spell_t
 
     dot_t* get_dot( player_t* t ) override
     {
-      if ( !t )
-        t = target;
-      if ( !t )
-        return nullptr;
+      if ( !t ) t = target;
+      if ( !t ) return nullptr;
 
       return td( t )->dots.moonfire;
     }
@@ -4075,10 +4068,8 @@ struct rake_t : public cat_attack_t
 
     dot_t* get_dot( player_t* t ) override
     {
-      if ( !t )
-        t = target;
-      if ( !t )
-        return nullptr;
+      if ( !t ) t = target;
+      if ( !t ) return nullptr;
 
       return td( t )->dots.rake;
     }
@@ -4133,10 +4124,8 @@ struct rake_t : public cat_attack_t
 
   dot_t* get_dot( player_t* t ) override
   {
-    if ( !t )
-      t = target;
-    if ( !t )
-      return nullptr;
+    if ( !t ) t = target;
+    if ( !t ) return nullptr;
 
     return td( t )->dots.rake;
   }
@@ -4274,10 +4263,8 @@ struct primal_wrath_t : public cat_attack_t
 
   dot_t* get_dot( player_t* t ) override
   {
-    if ( !t )
-      t = target;
-    if ( !t )
-      return nullptr;
+    if ( !t ) t = target;
+    if ( !t ) return nullptr;
 
     return td( t )->dots.rip;
   }
@@ -4560,10 +4547,8 @@ struct thrash_cat_t : public cat_attack_t
   thrash_cat_t( druid_t* p, const std::string& options_str )
     : cat_attack_t( "thrash_cat", p, p->spec.thrash_cat, options_str )
   {
-    aoe                    = -1;
-    spell_power_mod.direct = 0;
-    // amount_delta = 0.25;
-    hasted_ticks = true;
+    aoe    = -1;
+    radius = data().effectN( 1 ).resource();
 
     // For some reason this is in a different spell
     energize_amount   = p->find_spell( 211141 )->effectN( 1 ).base_value();
@@ -4820,8 +4805,13 @@ struct maul_t : public bear_attack_t
 
 struct pulverize_t : public bear_attack_t
 {
+  int consume;
+
   pulverize_t( druid_t* player, const std::string& options_str )
-    : bear_attack_t( "pulverize", player, player->talent.pulverize, options_str ) {}
+    : bear_attack_t( "pulverize", player, player->talent.pulverize, options_str )
+  {
+    consume = as<int>( data().effectN( 3 ).base_value() );
+  }
 
   void impact( action_state_t* s ) override
   {
@@ -4830,19 +4820,18 @@ struct pulverize_t : public bear_attack_t
     if ( result_is_hit( s->result ) )
     {
       // consumes x stacks of Thrash on the target
-      td( s->target )->dots.thrash_bear->decrement( (int)data().effectN( 3 ).base_value() );
+      td( s->target )->dots.thrash_bear->decrement( consume );
 
       // and reduce damage taken by x% for y sec.
       p()->buff.pulverize->trigger();
     }
   }
 
-  bool target_ready( player_t* candidate_target ) override
+  bool target_ready( player_t* t ) override
   {
     // Call bear_attack_t::ready() first for proper targeting support.
     // Hardcode stack max since it may not be set if this code runs before Thrash is cast.
-    return bear_attack_t::target_ready( candidate_target ) &&
-           td( candidate_target )->dots.thrash_bear->current_stack() >= data().effectN( 3 ).base_value();
+    return bear_attack_t::target_ready( t ) && td( t )->dots.thrash_bear->current_stack() >= consume;
   }
 };
 
@@ -4873,40 +4862,74 @@ struct swipe_bear_t : public bear_attack_t
 
 struct thrash_bear_t : public bear_attack_t
 {
-  double blood_frenzy_amount;
+  struct thrash_bear_dot_t : public bear_attack_t
+  {
+    double bf_energize;
+
+    thrash_bear_dot_t( druid_t* p ) : bear_attack_t( "thrash_bear_dot", p, p->spec.thrash_bear_dot ), bf_energize( 0.0 )
+    {
+      dual = background = true;
+      aoe = -1;
+
+      if ( p->talent.blood_frenzy->ok() )
+        bf_energize = p->find_spell( 203961 )->effectN( 1 ).resource( RESOURCE_RAGE );
+    }
+
+    void init() override
+    {
+      bear_attack_t::init();
+
+      // Set here to apply any modification from apply_affecting_auras to the parent action
+      radius = p()->find_action( "thrash_bear" )->radius;
+    }
+
+    dot_t* get_dot( player_t* t ) override
+    {
+      if ( !t ) t = target;
+      if ( !t ) return nullptr;
+
+      return td( t )->dots.thrash_bear;
+    }
+
+    void tick( dot_t* d ) override
+    {
+      bear_attack_t::tick( d );
+
+      p()->resource_gain( RESOURCE_RAGE, bf_energize, p()->gain.blood_frenzy );
+    }
+  };
+
+  action_t* dot;
 
   thrash_bear_t( druid_t* p, const std::string& options_str )
-    : bear_attack_t( "thrash_bear", p, p->spec.thrash_bear, options_str ), blood_frenzy_amount( 0 )
+    : bear_attack_t( "thrash_bear", p, p->spec.thrash_bear, options_str )
   {
-    aoe  = -1;
-    proc_gore = hasted_ticks = true;
-    dot_duration             = p->spec.thrash_bear_dot->duration();
-    base_tick_time           = p->spec.thrash_bear_dot->effectN( 1 ).period();
-    spell_power_mod.direct   = 0;
-    attack_power_mod.tick    = p->spec.thrash_bear_dot->effectN( 1 ).ap_coeff();
-    dot_max_stack =
-        p->spec.thrash_bear_dot->max_stacks() + as<int>( p->legendary.luffainfused_embrace->effectN( 4 ).base_value() );
-    radius *= 1.0 + p->legendary.luffainfused_embrace->effectN( 3 ).percent();
+    aoe       = -1;
+    proc_gore = true;
 
-    if ( p->talent.blood_frenzy->ok() )
-      blood_frenzy_amount = p->find_spell( 203961 )->effectN( 1 ).resource( RESOURCE_RAGE );
+    dot        = p->get_secondary_action<thrash_bear_dot_t>( "thrash_bear_dot" );
+    dot->stats = stats;
   }
 
-  void tick( dot_t* d ) override
+  dot_t* get_dot( player_t* t ) override
   {
-    bear_attack_t::tick( d );
+    if ( !t ) t = target;
+    if ( !t ) return nullptr;
 
-    p()->resource_gain( RESOURCE_RAGE, blood_frenzy_amount, p()->gain.blood_frenzy );
+    return td( t )->dots.thrash_bear;
   }
 
   void execute() override
   {
     bear_attack_t::execute();
 
+    dot->target = execute_state->target;
+    dot->schedule_execute();
+
     if ( p()->legendary.ursocs_lingering_spirit->ok() &&
          rng().roll( p()->legendary.ursocs_lingering_spirit->effectN( 1 ).percent() ) )
     {
-      schedule_execute( execute_state );
+      schedule_execute();
     }
   }
 
@@ -5117,7 +5140,7 @@ struct regrowth_t : public druid_heal_t
     timespan_t g = druid_heal_t::gcd();
 
     if ( p()->buff.cat_form->check() )
-      g -= p()->query_aura_effect( p()->spec.cat_form, A_ADD_FLAT_MODIFIER, P_GCD, &data() )->time_value();
+      g -= p()->query_aura_effect( p()->spec.cat_form, A_ADD_FLAT_MODIFIER, P_GCD, s_data )->time_value();
 
     return g;
   }
@@ -5566,7 +5589,7 @@ struct dash_t : public druid_spell_t
     timespan_t g = druid_spell_t::gcd();
 
     if ( p()->buff.cat_form->check() )
-      g *= 1.0 + p()->query_aura_effect( &p()->buff.cat_form->data(), A_ADD_PCT_MODIFIER, P_GCD, &data() )->percent();
+      g *= 1.0 + p()->query_aura_effect( &p()->buff.cat_form->data(), A_ADD_PCT_MODIFIER, P_GCD, s_data )->percent();
 
     return g;
   }
@@ -5600,7 +5623,7 @@ struct tiger_dash_t : public druid_spell_t
     timespan_t g = druid_spell_t::gcd();
 
     if ( p()->buff.cat_form->check() )
-      g *= 1.0 + p()->query_aura_effect( &p()->buff.cat_form->data(), A_ADD_PCT_MODIFIER, P_GCD, &data() )->percent();
+      g *= 1.0 + p()->query_aura_effect( &p()->buff.cat_form->data(), A_ADD_PCT_MODIFIER, P_GCD, s_data )->percent();
 
     return g;
   }
@@ -6183,6 +6206,7 @@ struct sunfire_t : public druid_spell_t
       dual = background   = true;
       aoe                 = p->find_rank_spell( "Sunfire", "Rank 2" )->ok() ? -1 : 0;
       base_aoe_multiplier = 0;
+      radius              = data().effectN( 2 ).radius();
 
       if ( p->azerite.high_noon.ok() )
         radius += p->azerite.high_noon.value();
@@ -6190,10 +6214,8 @@ struct sunfire_t : public druid_spell_t
 
     dot_t* get_dot( player_t* t ) override
     {
-      if ( !t )
-        t = target;
-      if ( !t )
-        return nullptr;
+      if ( !t ) t = target;
+      if ( !t ) return nullptr;
 
       return td( t )->dots.sunfire;
     }
@@ -6221,6 +6243,7 @@ struct sunfire_t : public druid_spell_t
     : druid_spell_t( "sunfire", p, p->find_affinity_spell( "Sunfire" ), options_str )
   {
     may_miss = may_crit = false;
+
     damage = p->get_secondary_action<sunfire_damage_t>( "sunfire_dmg" );
     damage->stats = stats;
 
@@ -6346,7 +6369,8 @@ struct wrath_t : public druid_spell_t
   {
     form_mask       = NO_FORM | MOONKIN_FORM;
     energize_amount = p->spec.astral_power->effectN( 2 ).resource( RESOURCE_ASTRAL_POWER );
-    gcd_mul = p->query_aura_effect( &p->buff.eclipse_solar->data(), A_ADD_PCT_MODIFIER, P_GCD, &data() )->percent();
+
+    gcd_mul = p->query_aura_effect( p->spec.eclipse_solar, A_ADD_PCT_MODIFIER, P_GCD, s_data )->percent();
   }
 
   void init_finished() override
