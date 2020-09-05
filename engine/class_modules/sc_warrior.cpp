@@ -6118,6 +6118,10 @@ void warrior_t::init_base_stats()
   player_t::init_base_stats();
 
   resources.base[ RESOURCE_RAGE ] = 100;
+  if ( talents.deadly_calm->ok() )
+  {
+    resources.base[ RESOURCE_RAGE ] += find_spell( 314522 )->effectN( 1 ).base_value() / 10.0 ;
+  }
   resources.max[ RESOURCE_RAGE ]  = resources.base[ RESOURCE_RAGE ];
 
   base.attack_power_per_strength = 1.0;
@@ -6635,27 +6639,12 @@ protected:
 
 struct deadly_calm_t : public warrior_buff_t<buff_t>
 {
-  double rage_change;
   deadly_calm_t( warrior_t& p, const std::string& n, const spell_data_t* s ) :
-    base_t( p, n, s ), rage_change( p.find_spell( 314522 )->effectN( 1 ).base_value() / 10.0 )
+    base_t( p, n, s )
   { 
-   //set_initial_stacks( 4 ); trigger 4 stacks of buff instead
+   //set_initial_stacks( 4 ); trigger initial stacks in spell execution
    set_max_stack( 4 );
    set_cooldown( timespan_t::zero() );
-  }
-
-  void start( int stacks, double value, timespan_t duration ) override
-  {
-    warrior_buff_t<buff_t>::start( stacks, value, duration );
-
-    warrior().resources.max [ RESOURCE_RAGE ] += rage_change;
-  }
-
-  void expire_override( int, timespan_t ) override
-  {
-    warrior().resources.max[ RESOURCE_RAGE ] -= rage_change;
-    warrior().resources.current[ RESOURCE_RAGE ] = std::min( warrior().resources.current[ RESOURCE_RAGE ],
-        warrior().resources.max[ RESOURCE_RAGE ] );
   }
 };
 
