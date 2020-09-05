@@ -5209,6 +5209,7 @@ struct agonizing_backlash_t : public mage_spell_t
     mage_spell_t( n, p, p->find_spell( 320035 ) )
   {
     background = true;
+    callbacks = false;
   }
 };
 
@@ -5218,6 +5219,7 @@ struct tormenting_backlash_t : public mage_spell_t
     mage_spell_t( n, p, p->find_spell( 317589 ) )
   {
     background = true;
+    callbacks = false;
   }
 };
 
@@ -5290,6 +5292,7 @@ struct shifting_power_pulse_t : public mage_spell_t
     mage_spell_t( n, p, p->find_spell( 325130 ) )
   {
     background = true;
+    callbacks = false;
     aoe = -1;
   }
 
