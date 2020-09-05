@@ -887,7 +887,7 @@ buff_t* buff_t::set_default_value_from_effect_type( effect_subtype_t a_type, pro
     if ( eff.subtype() != a_type || eff.type() != e_type )
       continue;
 
-    if ( p_type != property_type_t::P_GENERIC && eff.misc_value1() != p_type )
+    if ( p_type != property_type_t::P_MAX && eff.property_type() != p_type )
       continue;
 
     if ( !multiplier )

@@ -314,7 +314,7 @@ public:
   buff_t* set_default_value( double, size_t = 0 );
   buff_t* set_default_value_from_effect( size_t, double = 0.0 );
   buff_t* set_default_value_from_effect_type( effect_subtype_t a_type,
-                                              property_type_t p_type = P_GENERIC,
+                                              property_type_t p_type = P_MAX,
                                               double multiplier      = 0.0,
                                               effect_type_t e_type   = E_APPLY_AURA );
   buff_t* modify_default_value( double );
