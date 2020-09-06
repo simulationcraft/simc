@@ -507,9 +507,9 @@ struct summon_demonic_tyrant_t : public demonology_spell_t
         double available = pet->resources.current[ RESOURCE_HEALTH ];
 
         // There is no spelldata for how health is converted into damage, current testing indicates the 15% of hp taken
-        // from pets is divided by 7 and added to base damage 08-26-2020.
+        // from pets is divided by 10 and added to base damage 09-05-2020.
         // TODO - make it properly remove the health.
-        demonic_consumption_added_damage += available * demonic_consumption_health_percentage / 7.0;
+        demonic_consumption_added_damage += available * demonic_consumption_health_percentage / 10.0;
       }
     }
 
