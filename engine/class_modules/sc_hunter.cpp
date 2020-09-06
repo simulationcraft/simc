@@ -3297,7 +3297,7 @@ struct aimed_shot_base_t: public hunter_ranged_attack_t
     }
   }
 
-  void execute()
+  void execute() override
   {
     hunter_ranged_attack_t::execute();
 
