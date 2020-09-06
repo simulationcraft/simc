@@ -3279,7 +3279,7 @@ struct dragons_breath_t : public fire_mage_spell_t
   {
     fire_mage_spell_t::execute();
 
-    if ( hit_any_target && p()->talents.alexstraszas_fury->ok() )
+    if ( hit_any_target )
       p()->buffs.alexstraszas_fury->trigger();
   }
 
