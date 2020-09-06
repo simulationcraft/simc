@@ -528,7 +528,7 @@ void paladin_t::init_spells_holy()
 
   talents.rule_of_law        = find_talent_spell( "Rule of Law" );
 
-  talents.holy_sanctified_wrath = find_spell( 53376 );
+  talents.holy_sanctified_wrath = find_talent_spell( "Sanctified Wrath", PALADIN_HOLY );
   talents.avenging_crusader     = find_talent_spell( "Avenging Crusader" );
   talents.awakening             = find_talent_spell( "Awakening" );
 

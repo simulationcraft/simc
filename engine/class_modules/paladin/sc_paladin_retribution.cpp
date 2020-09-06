@@ -611,7 +611,7 @@ void paladin_t::init_spells_retribution()
   talents.justicars_vengeance  = find_talent_spell( "Justicar's Vengeance" );
   talents.healing_hands        = find_talent_spell( "Healing Hands" );
 
-  talents.ret_sanctified_wrath = find_spell( 317866 );
+  talents.ret_sanctified_wrath = find_talent_spell( "Sanctified Wrath", PALADIN_RETRIBUTION ); // 317866
   talents.crusade              = find_talent_spell( "Crusade" );
   talents.final_reckoning      = find_talent_spell( "Final Reckoning" );
 

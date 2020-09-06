@@ -784,7 +784,7 @@ void paladin_t::init_spells_protection()
   talents.hand_of_the_protector      = find_talent_spell( "Hand of the Protector" );
   talents.consecrated_ground         = find_talent_spell( "Consecrated Ground" );
 
-  talents.prot_sanctified_wrath      = find_spell( 171648 );
+  talents.prot_sanctified_wrath      = find_talent_spell( "Sanctified Wrath", PALADIN_PROTECTION );
   talents.righteous_protector        = find_talent_spell( "Righteous Protector" );
   talents.final_stand                = find_talent_spell( "Final Stand" );
 
