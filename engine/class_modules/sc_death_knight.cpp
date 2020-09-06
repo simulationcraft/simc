@@ -13,7 +13,7 @@
 // - Fix Unholy Blight reporting : currently the uptime contains both the dot uptime (24.2s every 45s)
 //   and the driver uptime (6s every 45s)
 // Blood:
-//
+// - Check that VB's absorb increase is correctly implemented
 // Frost:
 //
 
@@ -612,6 +612,7 @@ public:
     const spell_data_t* rune_tap;
     const spell_data_t* rune_tap_2;
     const spell_data_t* vampiric_blood;
+    const spell_data_t* vampiric_blood_2;
     const spell_data_t* veteran_of_the_third_war_2;
 
     // Frost
@@ -6430,6 +6431,7 @@ struct vampiric_blood_buff_t : public buff_t
   {
     // Cooldown handled by the action
     cooldown -> duration = 0_ms;
+    base_buff_duration += player -> spec.vampiric_blood_2 -> effectN( 3 ).time_value();
   }
 
   void start( int stacks, double value, timespan_t duration ) override
@@ -7679,6 +7681,7 @@ void death_knight_t::init_spells()
   spec.rune_tap                 = find_specialization_spell( "Rune Tap" );
   spec.rune_tap_2               = find_specialization_spell( "Rune Tap", "Rank 2" );
   spec.vampiric_blood           = find_specialization_spell( "Vampiric Blood" );
+  spec.vampiric_blood_2         = find_specialization_spell( "Vampiric Blood", "Rank 2" );
   spec.veteran_of_the_third_war_2 = find_specialization_spell( "Veteran of the Third War", "Rank 2" );
 
   // Frost
@@ -8712,7 +8715,7 @@ void death_knight_t::reset()
 void death_knight_t::assess_heal( school_e school, result_amount_type t, action_state_t* s )
 {
   if ( buffs.vampiric_blood -> up() )
-    s -> result_total *= 1.0 + buffs.vampiric_blood -> data().effectN( 1 ).percent();
+    s -> result_total *= 1.0 + buffs.vampiric_blood -> data().effectN( 1 ).percent() + spec.vampiric_blood_2 -> effectN( 1 ).percent();
 
   player_t::assess_heal( school, t, s );
 }
