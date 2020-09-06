@@ -43,7 +43,7 @@ if defined RELEASE set SC_DEFAULT_APIKEY=%RELEASE_CREDENTIALS%
 :: Setup GIT HEAD commithash for the package name if GIT is found
 if not defined GITREV (
 where /q git.exe
-if ERRORLEVEL 0 for /F "delims=" %%i IN ('git --git-dir=%SIMCDIR%\.git\ rev-parse --short HEAD') do set GITREV=-%%i
+if ERRORLEVEL 0 for /F "delims=" %%i IN ('git --git-dir=%SIMCDIR%\.git\ rev-parse --short HEAD') do set GITREV=%%i
 if defined RELEASE set GITREV=
 )
 
@@ -54,7 +54,7 @@ if "%PLATFORM%" == "x86" set PACKAGESUFFIX=win32
 if not defined PACKAGESUFFIX call :error Unable to determine target architecture
 if ERRORLEVEL 1 goto :enderror
 
-set PACKAGENAME=%INSTALL%\simc-%SIMCVERSION%-%PACKAGESUFFIX%%GITREV%
+set PACKAGENAME=%INSTALL%\simc-%SIMCVERSION%-%PACKAGESUFFIX%-%GITREV%
 set INSTALLDIR=%INSTALL%\simc-%SIMCVERSION%-%PACKAGESUFFIX%
 
 :: Begin the build process
