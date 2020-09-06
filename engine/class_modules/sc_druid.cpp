@@ -639,6 +639,7 @@ public:
     const spell_data_t* bear_form_2;  // Rank 2
     const spell_data_t* ironfur;
     const spell_data_t* gore;
+    const spell_data_t* gore_buff;
     const spell_data_t* swipe_bear;
     const spell_data_t* thrash_bear;
     const spell_data_t* thrash_bear_dot;
@@ -2969,7 +2970,6 @@ struct moonfire_t : public druid_spell_t
 {
   struct moonfire_damage_t : public druid_spell_t
   {
-    double gg_rage;
     double gg_mul;
     double feral_override_da;
     double feral_override_ta;
@@ -2977,7 +2977,6 @@ struct moonfire_t : public druid_spell_t
 
     moonfire_damage_t( druid_t* p )
       : druid_spell_t( "moonfire_dmg", p, p->spec.moonfire_dmg ),
-        gg_rage( p->spec.galactic_guardian->effectN( 1 ).resource( RESOURCE_RAGE ) ),
         gg_mul( p->spec.galactic_guardian->effectN( 3 ).percent() ),
         is_gg( false )
     {
@@ -3069,19 +3068,6 @@ struct moonfire_t : public druid_spell_t
       p()->proc.power_of_the_moon->occur();
     }
 
-    void impact( action_state_t* s ) override
-    {
-      druid_spell_t::impact( s );
-
-      if ( p()->buff.galactic_guardian->check() && result_is_hit( s->result ) && !is_gg )
-      {
-        p()->resource_gain( RESOURCE_RAGE, gg_rage, p()->gain.galactic_guardian );
-        p()->buff.galactic_guardian->expire();
-      }
-
-      is_gg = false;
-    }
-
     size_t available_targets( std::vector<player_t*>& tl ) const override
     {
       /* When Twin Moons is active, this is an AoE action meaning it will impact onto the
@@ -3138,19 +3124,25 @@ struct moonfire_t : public druid_spell_t
       return druid_spell_t::available_targets( tl );
     }
 
-    void schedule_gg()
-    {
-      is_gg = true;
-
-      druid_spell_t::schedule_execute();
-    }
-
     void execute() override
     {
       // Force invalidate target cache so that it will impact on the correct targets.
       target_cache.is_valid = false;
 
       druid_spell_t::execute();
+
+      if ( hit_any_target && !is_gg )
+      {
+        if ( p()->buff.galactic_guardian->up() )
+        {
+          p()->resource_gain( RESOURCE_RAGE, p()->buff.galactic_guardian->value(), p()->gain.galactic_guardian );
+          p()->buff.galactic_guardian->expire();
+        }
+
+        trigger_gore();
+      }
+
+      is_gg = false;
     }
   };
 
@@ -3179,9 +3171,6 @@ struct moonfire_t : public druid_spell_t
     druid_spell_t::impact( s );
 
     streaking_stars_trigger( SS_MOONFIRE, s );
-
-    if ( result_is_hit( s->result ) )
-      trigger_gore();
   }
 
   void execute() override
@@ -3193,8 +3182,9 @@ struct moonfire_t : public druid_spell_t
 
       druid_spell_t::execute();
 
+      damage->is_gg = true;
       damage->target = execute_state->target;
-      damage->schedule_gg();
+      damage->schedule_execute();
 
       stats = orig_stats;
       return;
@@ -8087,6 +8077,7 @@ void druid_t::init_spells()
   spec.bear_form               = check_id( find_class_spell( "Bear Form" )->ok(), 1178 );
   spec.bear_form_2             = find_rank_spell( "Bear Form", "Rank 2" );
   spec.gore                    = find_specialization_spell( "Gore" );
+  spec.gore_buff               = check_id( spec.gore, 93622 );
   spec.ironfur                 = find_class_spell( "Ironfur" );
   spec.swipe_bear              = check_id( find_specialization_spell( "Swipe" )->ok(), 213771 );
   spec.thrash_bear             = check_id( find_specialization_spell( "Thrash" )->ok(), 77758 );
@@ -8414,10 +8405,10 @@ void druid_t::create_buffs()
 
   buff.galactic_guardian = make_buff( this, "galactic_guardian", spec.galactic_guardian )
     ->set_chance( talent.galactic_guardian->proc_chance() )
-    ->set_cooldown( talent.galactic_guardian->internal_cooldown() );
+    ->set_cooldown( talent.galactic_guardian->internal_cooldown() )
+    ->set_default_value_from_effect( 1, 0.1 /*RESOURCE_RAGE*/ );
 
-  buff.gore = make_buff( this, "gore", find_spell( 93622 ) )
-    ->set_chance( spec.gore->effectN( 1 ).percent() )
+  buff.gore = make_buff( this, "gore", spec.gore_buff )
     ->set_default_value_from_effect( 1, 0.1 /*RESOURCE_RAGE*/ );
 
   buff.guardian_of_elune = make_buff( this, "guardian_of_elune", talent.guardian_of_elune->effectN( 1 ).trigger() );
