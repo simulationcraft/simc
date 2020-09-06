@@ -1003,6 +1003,8 @@ struct vanquishers_hammer_t : public holy_power_consumer_t
   {
     parse_options( options_str );
 
+    hasted_gcd = true; // also not in spelldata for some reason?
+
     base_multiplier *= 1.0 + p -> conduit.righteous_might.percent(); // todo: implement heal
   }
 
