@@ -600,6 +600,7 @@ public:
     const spell_data_t* berserk_cat;
     const spell_data_t* rake_dmg;
     const spell_data_t* tigers_fury;
+    const spell_data_t* tigers_fury_2;  // +30 energize
     const spell_data_t* shred;
     const spell_data_t* savage_roar;  // talent buff spell, holds composite_multiplier data
     const spell_data_t* bloodtalons;  // talent buff spell, holds composite_multiplier data
@@ -1565,6 +1566,7 @@ struct tigers_fury_buff_t : public druid_buff_t<buff_t>
   tigers_fury_buff_t( druid_t& p ) : base_t( p, "tigers_fury", p.spec.tigers_fury )
   {
     set_cooldown( 0_ms );
+    apply_affecting_aura( p.talent.predator );
   }
 
   void start( int stacks, double value, timespan_t duration ) override
@@ -3934,10 +3936,9 @@ struct ferocious_bite_t : public cat_attack_t
 
     if ( result_is_hit( s->result ) && p()->talent.sabertooth->ok() )
     {
-      td( s->target )
-          ->dots.rip->extend_duration(
-              timespan_t::from_seconds( p()->talent.sabertooth->effectN( 2 ).base_value() * combo_points ),
-              max_sabertooth_refresh, 0 );
+      auto ext = timespan_t::from_seconds( p()->talent.sabertooth->effectN( 2 ).base_value() * combo_points );
+
+      td( s->target )->dots.rip->extend_duration( ext, max_sabertooth_refresh, 0 );
     }
   }
 
@@ -4024,10 +4025,8 @@ struct lunar_inspiration_t : public cat_attack_t
   {
     may_dodge = may_parry = may_block = may_glance = false;
 
-    hasted_ticks  = true;
     energize_type = action_energize::ON_HIT;
-
-    gcd_type = gcd_haste_type::ATTACK_HASTE;
+    gcd_type      = gcd_haste_type::ATTACK_HASTE;
   }
 
   double bonus_ta( const action_state_t* s ) const override
@@ -4562,7 +4561,6 @@ struct tigers_fury_t : public cat_attack_t
     harmful = may_miss = may_parry = may_dodge = may_crit = false;
     autoshift = form_mask = CAT_FORM;
     energize_type         = action_energize::ON_CAST;
-    energize_amount += p->find_rank_spell( "Tiger's Fury", "Rank 2" )->effectN( 1 ).resource( RESOURCE_ENERGY );
 
     if ( p->talent.predator->ok() )
       duration += p->talent.predator->effectN( 1 ).time_value();
@@ -5965,9 +5963,6 @@ struct incarnation_t : public druid_spell_t
 
     spec_buff->trigger();
 
-    if ( p()->buff.incarnation_cat->check() )
-      p()->buff.jungle_stalker->trigger();
-
     if ( p()->buff.incarnation_moonkin->check() )
     {
       p()->uptime.arcanic_pulsar->update( false, sim->current_time() );
@@ -6382,7 +6377,7 @@ struct prowl_t : public druid_spell_t
     if ( p()->buff.prowl->check() )
       return false;
 
-    if ( p()->in_combat && !( p()->specialization() == DRUID_FERAL && p()->buff.jungle_stalker->check() ) )
+    if ( p()->in_combat && !p()->buff.jungle_stalker->check() )
       return false;
 
     return druid_spell_t::ready();
@@ -8040,6 +8035,7 @@ void druid_t::init_spells()
   spec.berserk_cat            = find_specialization_spell( "Berserk" );
   spec.rake_dmg               = find_affinity_spell( "Rake" )->effectN( 3 ).trigger();
   spec.tigers_fury            = find_specialization_spell( "Tiger's Fury" );
+  spec.tigers_fury_2          = find_rank_spell( "Tiger's Fury", "Rank 2" );
   spec.shred                  = find_class_spell( "Shred" );
   spec.savage_roar            = check_id( talent.savage_roar->ok(), 62071 );
   spec.bloodtalons            = check_id( talent.bloodtalons->ok(), 145152 );
@@ -8305,7 +8301,10 @@ void druid_t::create_buffs()
 
   buff.incarnation_cat = make_buff( this, "incarnation_king_of_the_jungle", talent.incarnation_cat )
     ->set_cooldown( 0_ms )
-    ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_RESOURCE_COST );
+    ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_RESOURCE_COST )
+    ->set_stack_change_callback( [this]( buff_t*, int, int new_ ) {
+      if ( new_ ) buff.jungle_stalker->trigger();
+    } );
 
   buff.jungle_stalker = make_buff( this, "jungle_stalker", talent.incarnation_cat->effectN( 3 ).trigger() );
 
@@ -10145,14 +10144,9 @@ void druid_t::vision_of_perfection_proc()
 
     case DRUID_FERAL:
       if ( talent.incarnation_cat->ok() )
-      {
         vp_buff = buff.incarnation_cat;
-        buff.jungle_stalker->trigger();
-      }
       else
-      {
         vp_buff = buff.berserk_cat;
-      }
       break;
 
     default:
@@ -10306,6 +10300,7 @@ void druid_t::apply_affecting_auras( action_t& action )
   // Rank spells
   action.apply_affecting_aura( spec.moonfire_2 );
   action.apply_affecting_aura( spec.moonfire_3 );
+  action.apply_affecting_aura( spec.tigers_fury_2 );
 
   // Talents
   action.apply_affecting_aura( talent.feral_affinity );
