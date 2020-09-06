@@ -87,19 +87,23 @@ namespace buffs {
     switch ( p -> specialization() )
     {
     case PALADIN_HOLY:
-      base_buff_duration *= 1.0 + p -> talents.holy_sanctified_wrath -> effectN( 1 ).percent();
+      if ( p -> talents.holy_sanctified_wrath -> ok() )
+        base_buff_duration *= 1.0 + p -> talents.holy_sanctified_wrath -> effectN( 1 ).percent();
       break;
     case PALADIN_RETRIBUTION:
-      base_buff_duration *= 1.0 + p -> talents.ret_sanctified_wrath -> effectN( 1 ).percent();
+      if ( p -> talents.ret_sanctified_wrath -> ok() )
+        base_buff_duration *= 1.0 + p -> talents.ret_sanctified_wrath -> effectN( 1 ).percent();
       break;
     case PALADIN_PROTECTION:
-      base_buff_duration *= 1.0 + p -> talents.prot_sanctified_wrath -> effectN( 1 ).percent();
+      if ( p -> talents.prot_sanctified_wrath -> ok() )
+        base_buff_duration *= 1.0 + p -> talents.prot_sanctified_wrath -> effectN( 1 ).percent();
       break;
     default:
       break;
     }
 
     // ... or if we have Light's Decree
+    // TODO(mserrano): is this the right ordering?
     if ( p -> azerite.lights_decree.ok() )
       base_buff_duration += p -> spells.lights_decree -> effectN( 2 ).time_value();
 
@@ -204,6 +208,9 @@ struct seraphim_t : public holy_power_consumer_t
   {
     parse_options( options_str );
     harmful = false;
+
+    // not in spelldata for some reason, apparently?
+    hasted_gcd = true;
   }
 
   void execute() override
