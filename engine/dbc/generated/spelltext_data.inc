@@ -1,5 +1,5 @@
 // Spell text, wow build 9.0.1.35789
-static const std::array<spelltext_data_t, 15540> __spelltext_data { {
+static const std::array<spelltext_data_t, 15543> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -14456,6 +14456,8 @@ static const std::array<spelltext_data_t, 15540> __spelltext_data { {
   { 332506, "$@spelldesc331611", "Incoming stun duration reduced by $m1%.", 0 },
   { 332507, "$@spelldesc331611", "$@spelldesc331611", 0 },
   { 332514, "$@spelldesc333950", "Bron arrives in ${$332514u+1-$w1} damaging or healing spells or abilities.", 0 },
+  { 332525, "$@spelldesc331616", 0, 0 },
+  { 332526, "$@spelldesc331616", 0, 0 },
   { 332618, "Retain Well Fed effects when slain in Arenas or Battlegrounds.", 0, 0 },
   { 332684, "Chance to get an additional skill point when crafting Shadowland recipes.", 0, 0 },
   { 332744, "$@spelldesc331726", "Equipment is regenerating.", 0 },
@@ -15287,6 +15289,7 @@ static const std::array<spelltext_data_t, 15540> __spelltext_data { {
   { 340876, "Wild Call has a|cFFFFFFFF ${$s1}.1%|r  increased chance to reset the cooldown of Barbed Shot.", 0, 0 },
   { 341111, "$@spelldesc340090", 0, 0 },
   { 341134, "$@spelldesc340091", "Shadowstrike and $?s200758[Gloomblade][Backstab] generate $s1 additional combo points.", 0 },
+  { 341165, "$@spelldesc", 0, 0 },
   { 341202, "$@spelldesc340092", "Damage increased by $w1%.", 0 },
   { 341205, "For each of your Shadow damage over time effects on the target, your Mind Flay and Mind Sear have a $m1% chance to trigger a Dark Thought.\r\n\r\n|CFFFFFFFFDark Thought|R\r\nIncreases the number of charges of Mind Blast by 1, Mind Blast can be cast instantly, and can be cast while channelling Mind Flay or Mind Sear.", 0, "Passive" },
   { 341222, "When Kill Command's cooldown is reset, gain|cFFFFFFFF ${$s1}.1%|r increased damage for $d.", 0, 0 },
