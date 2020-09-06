@@ -583,7 +583,7 @@ public:
     const spell_data_t* innervate;               // Balance & Restoration
     const spell_data_t* entangling_roots;
     const spell_data_t* barkskin;
-    const spell_data_t* ironfur;
+    const spell_data_t* stampeding_roar_2;
 
     // Feral
     const spell_data_t* feral;
@@ -637,6 +637,7 @@ public:
     const spell_data_t* guardian_overrides;
     const spell_data_t* bear_form;
     const spell_data_t* bear_form_2;  // Rank 2
+    const spell_data_t* ironfur;
     const spell_data_t* gore;
     const spell_data_t* swipe_bear;
     const spell_data_t* thrash_bear;
@@ -646,6 +647,8 @@ public:
     const spell_data_t* thick_hide;      // Guardian Affinity
     const spell_data_t* lightning_reflexes;
     const spell_data_t* galactic_guardian;  // GG buff
+    const spell_data_t* frenzied_regeneration_2;  // +1 charge
+    const spell_data_t* survival_instincts_2;     // +1 charge
 
     // Resto
     const spell_data_t* restoration;
@@ -3675,16 +3678,6 @@ struct cat_melee_t : public cat_attack_t
 
     return cat_attack_t::execute_time();
   }
-
-  double composite_target_multiplier( player_t* t ) const override
-  {
-    double tm = cat_attack_t::composite_target_multiplier( t );
-
-    if ( p()->talent.rend_and_tear->ok() )
-      tm *= 1.0 + p()->talent.rend_and_tear->effectN( 3 ).percent() * td( t )->dots.thrash_bear->current_stack();
-
-    return tm;
-  }
 };
 
 // Rip State ================================================================
@@ -4919,6 +4912,7 @@ struct thrash_bear_t : public bear_attack_t
       dual = background = true;
       aoe = -1;
 
+      // energize amount is not stored in talent spell
       if ( p->talent.blood_frenzy->ok() )
         bf_energize = p->find_spell( 203961 )->effectN( 1 ).resource( RESOURCE_RAGE );
     }
@@ -5047,11 +5041,8 @@ struct frenzied_regeneration_t : public heals::druid_heal_t
   {
     /* use_off_gcd = quiet = true; */
     target           = p;
-    cooldown->hasted = true;
-    tick_zero        = true;
+    cooldown->hasted = tick_zero = true;
     may_crit = tick_may_crit = hasted_ticks = false;
-
-    cooldown->charges += as<int>( p->find_rank_spell( "Frenzied Regeneration", "Rank 2" )->effectN( 1 ).base_value() );
   }
 
   void init() override
@@ -5073,7 +5064,8 @@ struct frenzied_regeneration_t : public heals::druid_heal_t
   {
     double am = druid_heal_t::action_multiplier();
 
-    am *= 1.0 + p()->buff.guardian_of_elune->check() * p()->buff.guardian_of_elune->data().effectN( 2 ).percent();
+    if ( p()->buff.guardian_of_elune->up() )
+      am *= 1.0 + p()->buff.guardian_of_elune->data().effectN( 2 ).percent();
 
     return am;
   }
@@ -5398,11 +5390,9 @@ struct barkskin_t : public druid_spell_t
   barkskin_t( druid_t* player, const std::string& options_str )
     : druid_spell_t( "barkskin", player, player->find_specialization_spell( "Barkskin" ), options_str )
   {
-    harmful     = false;
-    use_off_gcd = true;
-
-    cooldown->duration *= 1.0 + player->talent.survival_of_the_fittest->effectN( 1 ).percent();
-    dot_duration = timespan_t::zero();
+    harmful      = false;
+    use_off_gcd  = true;
+    dot_duration = 0_ms;
 
     if ( player->talent.brambles->ok() )
       add_child( player->active.brambles_pulse );
@@ -6049,7 +6039,8 @@ struct ironfur_t : public druid_spell_t
   {
     timespan_t bd = p()->buff.ironfur->buff_duration();
 
-    bd += timespan_t::from_seconds( p()->buff.guardian_of_elune->value() );
+    if ( p()->buff.guardian_of_elune->up() )
+      bd += p()->buff.guardian_of_elune->data().effectN( 1 ).time_value();
 
     return bd;
   }
@@ -6121,8 +6112,8 @@ struct lunar_beam_t : public druid_spell_t
     : druid_spell_t( "lunar_beam", p, p->talent.lunar_beam, options_str )
   {
     may_crit = tick_may_crit = may_miss = hasted_ticks = false;
-    base_tick_time = timespan_t::from_seconds( 1.0 );  // TODO: Find in spell data... somewhere!
-    dot_duration   = timespan_t::zero();
+    base_tick_time = 1_s;  // TODO: Find in spell data... somewhere!
+    dot_duration   = 0_ms;
 
     damage = p->get_secondary_action<lunar_beam_damage_t>( "lunar_beam_damage" );
     damage->stats = stats;
@@ -6517,8 +6508,6 @@ struct stampeding_roar_t : public druid_spell_t
     autoshift = BEAR_FORM;
 
     harmful = false;
-
-    cooldown->duration -= p->find_rank_spell( "Stampeding Roar", "Rank 2" )->effectN( 1 ).time_value();
   }
 
   void execute() override
@@ -6794,15 +6783,9 @@ struct survival_instincts_t : public druid_spell_t
     harmful     = false;
     use_off_gcd = true;
 
-    cooldown->charges +=
-        as<int>( player->find_rank_spell( "Survival Instincts", "Rank 2" )->effectN( 1 ).base_value() );
-
     // Because vision of perfection does exist, but does not affect this spell for feral.
     if ( player->specialization() == DRUID_GUARDIAN )
-    {
-      cooldown->duration *= 1.0 + player->talent.survival_of_the_fittest->effectN( 2 ).percent();
       cooldown->duration *= 1.0 + player->vision_of_perfection_cdr;
-    }
   }
 
   void execute() override
@@ -8005,75 +7988,78 @@ void druid_t::init_spells()
   // Specializations ========================================================
 
   // Generic / Multiple specs
-  spec.druid                  = find_spell( 137009 );
-  spec.critical_strikes       = find_specialization_spell( "Critical Strikes" );
-  spec.leather_specialization = find_specialization_spell( "Leather Specialization" );
-  spec.omen_of_clarity        = find_specialization_spell( "Omen of Clarity" );
-  spec.entangling_roots       = find_class_spell( "Entangling Roots" );
-  spec.barkskin               = find_class_spell( "Barkskin" );
-  spec.ironfur                = find_class_spell( "Ironfur" );
+  spec.druid                   = find_spell( 137009 );
+  spec.critical_strikes        = find_specialization_spell( "Critical Strikes" );
+  spec.leather_specialization  = find_specialization_spell( "Leather Specialization" );
+  spec.omen_of_clarity         = find_specialization_spell( "Omen of Clarity" );
+  spec.entangling_roots        = find_class_spell( "Entangling Roots" );
+  spec.barkskin                = find_class_spell( "Barkskin" );
+  spec.stampeding_roar_2       = find_rank_spell( "Stampeding Roar", "Rank 2" );
 
   // Balance
-  spec.balance                = find_specialization_spell( "Balance Druid" );
-  spec.astral_power           = find_specialization_spell( "Astral Power" );
-  spec.moonkin_form           = find_affinity_spell( "Moonkin Form" );
-  spec.owlkin_frenzy          = check_id( spec.moonkin_form->ok(), 157228 );  // Owlkin Frenzy RAWR
-  spec.celestial_alignment    = find_specialization_spell( "Celestial Alignment" );
-  spec.innervate              = find_specialization_spell( "Innervate" );
-  spec.eclipse                = find_specialization_spell( "Eclipse" );
-  spec.eclipse_2              = find_rank_spell( "Eclipse", "Rank 2" );
-  spec.eclipse_solar          = find_spell( 48517 );
-  spec.eclipse_lunar          = find_spell( 48518 );
-  spec.sunfire_dmg            = check_id( find_affinity_spell( "Sunfire" )->ok(), 164815 );  // dot debuff for sunfire
-  spec.moonfire_dmg           = check_id( find_class_spell( "Moonfire" )->ok(), 164812 );    // dot debuff for moonfire
-  spec.starsurge              = find_spell( 78674 );  // do NOT use find_affinity_spell. eclipse buff is held within the balance version.
-  spec.starsurge_2            = find_rank_spell( "Starsurge", "Rank 2" );  // Adds bigger eclipse buff
-  spec.starfall               = find_affinity_spell( "Starfall" );
-  spec.starfall_2             = find_rank_spell( "Starfall", "Rank 2" );
-  spec.starfall_dmg           = check_id( spec.starfall->ok(), 191037 );
-  spec.stellar_drift          = check_id( talent.stellar_drift->ok(), 202461 );   // stellar drift mobility buff
-  spec.shooting_stars         = find_specialization_spell( "Shooting Stars" );
-  spec.shooting_stars_dmg     = check_id( spec.shooting_stars->ok(), 202497 );  // shooting stars damage
-  spec.fury_of_elune          = check_id( talent.fury_of_elune->ok(), 211545 );   // fury of elune tick damage
-  spec.half_moon              = check_id( talent.new_moon->ok(), 274282 );
-  spec.full_moon              = check_id( talent.new_moon->ok() || covenant.night_fae->ok(), 274283 );
-  spec.moonfire_2             = find_rank_spell( "Moonfire", "Rank 2" );
-  spec.moonfire_3             = find_rank_spell( "Moonfire", "Rank 3" );
+  spec.balance                 = find_specialization_spell( "Balance Druid" );
+  spec.astral_power            = find_specialization_spell( "Astral Power" );
+  spec.moonkin_form            = find_affinity_spell( "Moonkin Form" );
+  spec.owlkin_frenzy           = check_id( spec.moonkin_form->ok(), 157228 );  // Owlkin Frenzy RAWR
+  spec.celestial_alignment     = find_specialization_spell( "Celestial Alignment" );
+  spec.innervate               = find_specialization_spell( "Innervate" );
+  spec.eclipse                 = find_specialization_spell( "Eclipse" );
+  spec.eclipse_2               = find_rank_spell( "Eclipse", "Rank 2" );
+  spec.eclipse_solar           = find_spell( 48517 );
+  spec.eclipse_lunar           = find_spell( 48518 );
+  spec.sunfire_dmg             = check_id( find_affinity_spell( "Sunfire" )->ok(), 164815 );  // dot for sunfire
+  spec.moonfire_dmg            = check_id( find_class_spell( "Moonfire" )->ok(), 164812 );    // dot for moonfire
+  spec.starsurge               = find_spell( 78674 );  // do NOT use find_affinity_spell. empowerment data is here.
+  spec.starsurge_2             = find_rank_spell( "Starsurge", "Rank 2" );  // Adds bigger eclipse buff
+  spec.starfall                = find_affinity_spell( "Starfall" );
+  spec.starfall_2              = find_rank_spell( "Starfall", "Rank 2" );
+  spec.starfall_dmg            = check_id( spec.starfall->ok(), 191037 );
+  spec.stellar_drift           = check_id( talent.stellar_drift->ok(), 202461 );  // stellar drift mobility buff
+  spec.shooting_stars          = find_specialization_spell( "Shooting Stars" );
+  spec.shooting_stars_dmg      = check_id( spec.shooting_stars->ok(), 202497 );   // shooting stars damage
+  spec.fury_of_elune           = check_id( talent.fury_of_elune->ok(), 211545 );  // fury of elune tick damage
+  spec.half_moon               = check_id( talent.new_moon->ok(), 274282 );
+  spec.full_moon               = check_id( talent.new_moon->ok() || covenant.night_fae->ok(), 274283 );
+  spec.moonfire_2              = find_rank_spell( "Moonfire", "Rank 2" );
+  spec.moonfire_3              = find_rank_spell( "Moonfire", "Rank 3" );
 
   // Feral
-  spec.feral                  = find_specialization_spell( "Feral Druid" );
-  spec.feral_overrides        = find_specialization_spell( "Feral Overrides Passive" );
-  spec.cat_form               = check_id( find_class_spell( "Cat Form" )->ok(), 3025 );
-  spec.cat_form_speed         = check_id( find_class_spell( "Cat Form" )->ok(), 113636 );
-  spec.predatory_swiftness    = find_specialization_spell( "Predatory Swiftness" );
-  spec.primal_fury            = find_affinity_spell( "Primary Fury" )->effectN( 1 ).trigger();
-  spec.rip                    = find_affinity_spell( "Rip" );
-  spec.sharpened_claws        = find_specialization_spell( "Sharpened Claws" );
-  spec.swipe_cat              = check_id( find_affinity_spell( "Swipe" )->ok(), 106785 );
-  spec.thrash_cat             = check_id( find_specialization_spell( "Thrash" )->ok(), 106830 );
-  spec.berserk_cat            = find_specialization_spell( "Berserk" );
-  spec.rake_dmg               = find_affinity_spell( "Rake" )->effectN( 3 ).trigger();
-  spec.tigers_fury            = find_specialization_spell( "Tiger's Fury" );
-  spec.tigers_fury_2          = find_rank_spell( "Tiger's Fury", "Rank 2" );
-  spec.shred                  = find_class_spell( "Shred" );
-  spec.savage_roar            = check_id( talent.savage_roar->ok(), 62071 );
-  spec.bloodtalons            = check_id( talent.bloodtalons->ok(), 145152 );
+  spec.feral                   = find_specialization_spell( "Feral Druid" );
+  spec.feral_overrides         = find_specialization_spell( "Feral Overrides Passive" );
+  spec.cat_form                = check_id( find_class_spell( "Cat Form" )->ok(), 3025 );
+  spec.cat_form_speed          = check_id( find_class_spell( "Cat Form" )->ok(), 113636 );
+  spec.predatory_swiftness     = find_specialization_spell( "Predatory Swiftness" );
+  spec.primal_fury             = find_affinity_spell( "Primary Fury" )->effectN( 1 ).trigger();
+  spec.rip                     = find_affinity_spell( "Rip" );
+  spec.sharpened_claws         = find_specialization_spell( "Sharpened Claws" );
+  spec.swipe_cat               = check_id( find_affinity_spell( "Swipe" )->ok(), 106785 );
+  spec.thrash_cat              = check_id( find_specialization_spell( "Thrash" )->ok(), 106830 );
+  spec.berserk_cat             = find_specialization_spell( "Berserk" );
+  spec.rake_dmg                = find_affinity_spell( "Rake" )->effectN( 3 ).trigger();
+  spec.tigers_fury             = find_specialization_spell( "Tiger's Fury" );
+  spec.tigers_fury_2           = find_rank_spell( "Tiger's Fury", "Rank 2" );
+  spec.shred                   = find_class_spell( "Shred" );
+  spec.savage_roar             = check_id( talent.savage_roar->ok(), 62071 );
+  spec.bloodtalons             = check_id( talent.bloodtalons->ok(), 145152 );
 
   // Guardian
-  spec.guardian               = find_specialization_spell( "Guardian Druid" );
-  spec.lightning_reflexes     = find_specialization_spell( "Lightning Reflexes" );
-  spec.bear_form              = check_id( find_class_spell( "Bear Form" )->ok(), 1178 );
-  spec.bear_form_2            = find_rank_spell( "Bear Form", "Rank 2" );
-  spec.gore                   = find_specialization_spell( "Gore" );
-  spec.swipe_bear             = check_id( find_specialization_spell( "Swipe" )->ok(), 213771 );
-  spec.thrash_bear            = check_id( find_affinity_spell( "Thrash" )->ok(), 77758 );
-  spec.thrash_bear_dot        = check_id( spec.thrash_bear->ok(), 192090 );
-  spec.berserk_bear           = check_id( find_specialization_spell( "Berserk" )->ok(), 50334 );
-  spec.berserk_bear_2         = check_id( spec.berserk_bear->ok(), 343240 );
-  spec.galactic_guardian      = check_id( talent.galactic_guardian->ok(), 213708 );
+  spec.guardian                = find_specialization_spell( "Guardian Druid" );
+  spec.lightning_reflexes      = find_specialization_spell( "Lightning Reflexes" );
+  spec.bear_form               = check_id( find_class_spell( "Bear Form" )->ok(), 1178 );
+  spec.bear_form_2             = find_rank_spell( "Bear Form", "Rank 2" );
+  spec.gore                    = find_specialization_spell( "Gore" );
+  spec.ironfur                 = find_class_spell( "Ironfur" );
+  spec.swipe_bear              = check_id( find_specialization_spell( "Swipe" )->ok(), 213771 );
+  spec.thrash_bear             = check_id( find_specialization_spell( "Thrash" )->ok(), 77758 );
+  spec.thrash_bear_dot         = check_id( spec.thrash_bear->ok(), 192090 );  // dot for thrash_bear
+  spec.berserk_bear            = check_id( find_specialization_spell( "Berserk" )->ok(), 50334 );
+  spec.berserk_bear_2          = check_id( spec.berserk_bear->ok(), 343240 );
+  spec.galactic_guardian       = check_id( talent.galactic_guardian->ok(), 213708 );
+  spec.frenzied_regeneration_2 = find_rank_spell( "Frenzied Regeneration", "Rank 2" );
+  spec.survival_instincts_2    = find_rank_spell( "Survival Instincts", "Rank 2" );
 
   // Restoration
-  spec.restoration            = find_specialization_spell( "Restoration Druid" );
+  spec.restoration             = find_specialization_spell( "Restoration Druid" );
 
   // Azerite ================================================================
   // Balance
@@ -8402,9 +8388,7 @@ void druid_t::create_buffs()
     ->set_chance( spec.gore->effectN( 1 ).percent() )
     ->set_default_value_from_effect( 1, 0.1 /*RESOURCE_RAGE*/ );
 
-  buff.guardian_of_elune = make_buff( this, "guardian_of_elune", talent.guardian_of_elune->effectN( 1 ).trigger() )
-    ->set_chance( talent.guardian_of_elune->ok() )
-    ->set_default_value( talent.guardian_of_elune->effectN( 1 ).trigger()->effectN( 1 ).time_value().total_seconds() );
+  buff.guardian_of_elune = make_buff( this, "guardian_of_elune", talent.guardian_of_elune->effectN( 1 ).trigger() );
 
   buff.ironfur = make_buff( this, "ironfur", spec.ironfur )
     ->set_default_value_from_effect_type( A_MOD_ATTACK_POWER_OF_STAT_PERCENT )
@@ -8416,7 +8400,7 @@ void druid_t::create_buffs()
   buff.pulverize = make_buff( this, "pulverize", talent.pulverize )
     ->set_cooldown( 0_ms )
     ->set_default_value_from_effect_type( A_MOD_IGNORE_DAMAGE_REDUCTION_SCHOOL )
-    ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
+    ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC );  // TODO: confirm this
 
   buff.savage_combatant = make_buff( this, "savage_combatant", conduit.savage_combatant->effectN( 1 ).trigger() )
     ->set_default_value( conduit.savage_combatant.percent() );
@@ -9870,7 +9854,7 @@ void druid_t::target_mitigation( school_e school, result_amount_type type, actio
 
   s->result_amount *= 1.0 + buff.pulverize->value();
 
-  if ( spec.thick_hide )
+  if ( spec.thick_hide->ok() )
     s->result_amount *= 1.0 + spec.thick_hide->effectN( 1 ).percent();
 
   if ( talent.rend_and_tear->ok() )
@@ -10320,6 +10304,9 @@ void druid_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( spec.moonfire_2 );
   action.apply_affecting_aura( spec.moonfire_3 );
   action.apply_affecting_aura( spec.tigers_fury_2 );
+  action.apply_affecting_aura( spec.frenzied_regeneration_2 );
+  action.apply_affecting_aura( spec.stampeding_roar_2 );
+  action.apply_affecting_aura( spec.survival_instincts_2 );
 
   // Talents
   action.apply_affecting_aura( talent.feral_affinity );
@@ -10328,6 +10315,7 @@ void druid_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.sabertooth );
   action.apply_affecting_aura( talent.soul_of_the_forest_cat );
   action.apply_affecting_aura( talent.soul_of_the_forest_bear );
+  action.apply_affecting_aura( talent.survival_of_the_fittest );
 
   // Legendaries
   action.apply_affecting_aura( legendary.luffainfused_embrace );
