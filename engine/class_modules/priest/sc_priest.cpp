@@ -3,12 +3,12 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "simulationcraft.hpp"
-
 #include "sc_priest.hpp"
 
 #include "sc_enums.hpp"
 #include "tcb/span.hpp"
+
+#include "simulationcraft.hpp"
 
 namespace priestspace
 {
@@ -411,6 +411,10 @@ struct unholy_nova_t final : public priest_spell_t
     parse_options( options_str );
     aoe           = -1;
     impact_action = new unholy_transfusion_t( p, options_str );
+
+    // Radius for damage spell is stored in the DoT's spell radius
+    radius = p.find_spell( 325203 )->effectN( 1 ).radius_max();
+
     add_child( impact_action );
     // Unholy Nova itself does NOT do damage, just the DoT
     base_dd_min = base_dd_max = spell_power_mod.direct = 0;
@@ -490,7 +494,8 @@ struct ascended_nova_t final : public priest_spell_t
       grants_stacks( as<int>( data().effectN( 3 ).base_value() ) )
   {
     parse_options( options_str );
-    aoe = -1;
+    aoe    = -1;
+    radius = data().effectN( 1 ).radius_max();
   }
 
   void impact( action_state_t* s ) override
@@ -566,6 +571,7 @@ struct ascended_eruption_t final : public priest_spell_t
   {
     aoe        = -1;
     background = true;
+    radius     = data().effectN( 1 ).radius_max();
   }
 
   void trigger_eruption( int stacks )

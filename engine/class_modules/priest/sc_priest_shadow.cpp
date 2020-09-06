@@ -2163,7 +2163,7 @@ void priest_t::init_spells_shadow()
   azerite.torment_of_torments    = find_azerite_spell( "Torment of Torments" );
   azerite.whispers_of_the_damned = find_azerite_spell( "Whispers of the Damned" );
 
-  base.distance = 27.0;
+  base.distance = 0.0;
 }
 
 action_t* priest_t::create_action_shadow( util::string_view name, util::string_view options_str )
