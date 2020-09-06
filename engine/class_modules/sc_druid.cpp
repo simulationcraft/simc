@@ -1440,12 +1440,20 @@ struct innervate_buff_t : public druid_buff_t<buff_t>
 // Celestial Alignment / Incarn Buff ========================================
 struct celestial_alignment_buff_t : public druid_buff_t<buff_t>
 {
-  celestial_alignment_buff_t( druid_t& p, util::string_view n, const spell_data_t* s ) : base_t( p, n, s )
+  bool inc;
+
+  celestial_alignment_buff_t( druid_t& p, util::string_view n, const spell_data_t* s, bool b = false )
+    : base_t( p, n, s ), inc( b )
   {
     set_cooldown( 0_ms );
     set_default_value_from_effect_type( A_HASTE_ALL );
     modify_duration( p.conduit.precise_alignment.time_value() );
     add_invalidate( CACHE_HASTE );
+
+    if ( inc )
+    {
+      add_invalidate( CACHE_CRIT_CHANCE );
+    }
   }
 
   bool trigger( int s, double v, double c, timespan_t d ) override
@@ -1525,6 +1533,33 @@ struct warrior_of_elune_buff_t : public druid_buff_t<buff_t>
   }
 };
 
+// Berserk (Feral) / Incarn Buff ============================================
+struct berserk_cat_buff_t : public druid_buff_t<buff_t>
+{
+  bool inc;
+
+  berserk_cat_buff_t( druid_t& p, util::string_view n, const spell_data_t* s, bool b = false )
+    : base_t( p, n, s ), inc( b )
+  {
+    set_cooldown( 0_ms );
+
+    if ( inc )
+    {
+      set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_RESOURCE_COST );
+    }
+  }
+
+  bool trigger( int s, double v, double c, timespan_t d ) override
+  {
+    bool ret = base_t::trigger( s, v, c, d );
+
+    if ( ret && inc )
+      p().buff.jungle_stalker->trigger();
+
+    return ret;
+  }
+};
+
 // Bloodtalons Tracking Buff ================================================
 struct bt_dummy_buff_t : public druid_buff_t<buff_t>
 {
@@ -1596,47 +1631,51 @@ struct tigers_fury_buff_t : public druid_buff_t<buff_t>
   }
 };
 
-// Incarnation: Guardian of Ursoc ===========================================
-struct incarnation_bear_buff_t : public druid_buff_t<buff_t>
+// Berserk (Guardian) / Incarn Buff =========================================
+struct berserk_bear_buff_t : public druid_buff_t<buff_t>
 {
+  bool inc;
   double hp_mul;
 
-  incarnation_bear_buff_t( druid_t& p )
-    : base_t( p, "incarnation_guardian_of_ursoc",
-              p.talent.incarnation_bear->ok() ? p.talent.incarnation_bear : p.find_spell( 102558 ) )
+  berserk_bear_buff_t( druid_t& p, util::string_view n, const spell_data_t* s, bool b = false )
+    : base_t( p, n, s ), inc( b ), hp_mul( 0.0 )
   {
     set_cooldown( 0_ms );
-    hp_mul = 1.0 + data().effectN( 5 ).percent();
 
     if ( p.conduit.unchecked_aggression->ok() )
       add_invalidate( CACHE_HASTE );
 
     if ( p.legendary.legacy_of_the_sleeper->ok() )
       add_invalidate( CACHE_LEECH );
+
+    if ( inc )
+    {
+      hp_mul = 1.0 + p.query_aura_effect( s, A_MOD_INCREASE_HEALTH_PERCENT )->percent();
+    }
   }
 
-  bool trigger( int stacks, double value, double chance, timespan_t duration ) override
+  void start( int s, double v, timespan_t d ) override
   {
-    bool refresh = !check();
-    bool success = druid_buff_t<buff_t>::trigger( stacks, value, chance, duration );
+    base_t::start( s, v, d );
 
-    if ( !refresh && success )
+    if ( inc )
     {
       player->resources.max[ RESOURCE_HEALTH ] *= hp_mul;
       player->resources.current[ RESOURCE_HEALTH ] *= hp_mul;
       p().recalculate_resource_max( RESOURCE_HEALTH );
     }
-
-    return success;
   }
 
-  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  void expire_override( int s, timespan_t d ) override
   {
-    player->resources.max[ RESOURCE_HEALTH ] /= hp_mul;
-    player->resources.current[ RESOURCE_HEALTH ] /= hp_mul;
-    p().recalculate_resource_max( RESOURCE_HEALTH );
+    if ( inc )
+    {
+      player->resources.max[ RESOURCE_HEALTH ] /= hp_mul;
+      player->resources.current[ RESOURCE_HEALTH ] /= hp_mul;
+      p().recalculate_resource_max( RESOURCE_HEALTH );
+    }
 
-    druid_buff_t<buff_t>::expire_override( expiration_stacks, remaining_duration );
+    base_t::expire_override( s, d );
   }
 };
 
@@ -8248,8 +8287,7 @@ void druid_t::create_buffs()
       make_buff<celestial_alignment_buff_t>( *this, "celestial_alignment", spec.celestial_alignment );
 
   buff.incarnation_moonkin =
-      make_buff<celestial_alignment_buff_t>( *this, "incarnation_chosen_of_elune", talent.incarnation_moonkin )
-          ->add_invalidate( CACHE_CRIT_CHANCE );
+      make_buff<celestial_alignment_buff_t>( *this, "incarnation_chosen_of_elune", talent.incarnation_moonkin, true );
 
   buff.eclipse_solar = make_buff<eclipse_buff_t>( *this, "eclipse_solar", spec.eclipse_solar );
 
@@ -8294,6 +8332,7 @@ void druid_t::create_buffs()
 
   buff.timeworn_dreambinder = make_buff( this, "timeworn_dreambinder", legendary.timeworn_dreambinder->effectN( 1 ).trigger() )
     ->set_refresh_behavior( buff_refresh_behavior::DURATION );
+
   buff.warrior_of_elune = make_buff<warrior_of_elune_buff_t>( *this );
 
   // Feral buffs
@@ -8301,15 +8340,11 @@ void druid_t::create_buffs()
       make_buff( this, "apex_predators_craving", legendary.apex_predators_craving->effectN( 1 ).trigger() )
           ->set_chance( legendary.apex_predators_craving->effectN( 1 ).percent() );
 
-  buff.berserk_cat = make_buff( this, "berserk_cat", spec.berserk_cat )
-    ->set_cooldown( 0_ms );
+  buff.berserk_cat =
+      make_buff<berserk_cat_buff_t>( *this, "berserk_cat", spec.berserk_cat );
 
-  buff.incarnation_cat = make_buff( this, "incarnation_king_of_the_jungle", talent.incarnation_cat )
-    ->set_cooldown( 0_ms )
-    ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_RESOURCE_COST )
-    ->set_stack_change_callback( [this]( buff_t*, int, int new_ ) {
-      if ( new_ ) buff.jungle_stalker->trigger();
-    } );
+  buff.incarnation_cat =
+      make_buff<berserk_cat_buff_t>( *this, "incarnation_king_of_the_jungle", talent.incarnation_cat, true );
 
   buff.jungle_stalker = make_buff( this, "jungle_stalker", talent.incarnation_cat->effectN( 3 ).trigger() );
 
@@ -8348,14 +8383,11 @@ void druid_t::create_buffs()
   buff.tigers_fury = make_buff<tigers_fury_buff_t>( *this );
 
   // Guardian buffs
-  buff.berserk_bear = make_buff( this, "berserk_bear", spec.berserk_bear )
-    ->set_cooldown( 0_ms );
-  if ( legendary.legacy_of_the_sleeper->ok() )
-    buff.berserk_bear->add_invalidate( CACHE_LEECH );
-  if ( conduit.unchecked_aggression->ok() )
-    buff.berserk_bear->add_invalidate( CACHE_HASTE );
+  buff.berserk_bear =
+      make_buff<berserk_bear_buff_t>( *this, "berserk_bear", spec.berserk_bear );
 
-  buff.incarnation_bear = make_buff<incarnation_bear_buff_t>( *this );
+  buff.incarnation_bear =
+      make_buff<berserk_bear_buff_t>( *this, "incarnation_guardian_of_ursoc", talent.incarnation_bear, true );
 
   buff.barkskin = make_buff( this, "barkskin", spec.barkskin )
     ->set_cooldown( 0_ms )
