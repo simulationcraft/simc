@@ -835,7 +835,7 @@ public:
       affinity_resources( false ),
       kindred_empowerment_ratio( 1.0 ),
       convoke_the_spirits_heals( 3.5 ),
-      convoke_the_spirits_ultimate( 0.01 ),
+      convoke_the_spirits_ultimate( 0.2 ),
       active( active_actions_t() ),
       force_of_nature(),
       caster_form_weapon(),
@@ -7047,6 +7047,8 @@ struct convoke_the_spirits_t : public druid_spell_t
   shuffled_rng_t* deck;
   bool heal_cast;
   double heal_chance;
+  int max_ticks;
+  int ultimate_tick;
 
   // Balance
   action_t* conv_fm;
@@ -7057,6 +7059,7 @@ struct convoke_the_spirits_t : public druid_spell_t
   bool mf_cast;
   int mf_count;
   int ss_count;
+  bool wr_cast;
   int wr_count;
 
   // Feral
@@ -7076,7 +7079,9 @@ struct convoke_the_spirits_t : public druid_spell_t
 
     int heals_int = as<int>( util::ceil( p->convoke_the_spirits_heals ) );
     heal_chance = heals_int - p->convoke_the_spirits_heals;
-    deck = p->get_shuffled_rng( "convoke_the_spirits", heals_int, static_cast<int>( dot_duration / base_tick_time ) );
+
+    max_ticks = as<int>( util::ceil( dot_duration / base_tick_time ) );
+    deck = p->get_shuffled_rng( "convoke_the_spirits", heals_int, max_ticks );
 
     // Balance
     conv_fm = get_convoke_action<full_moon_t>( "full_moon", options_str );
@@ -7115,7 +7120,13 @@ struct convoke_the_spirits_t : public druid_spell_t
     mf_cast  = false;
     mf_count = 0;
     ss_count = 0;
+    wr_cast  = false;
     wr_count = 0;
+
+    if ( rng().roll( p()->convoke_the_spirits_ultimate ) )
+      ultimate_tick = rng().range( max_ticks );
+    else
+      ultimate_tick = 0;
 
     // Feral
     // Guardian
@@ -7129,7 +7140,16 @@ struct convoke_the_spirits_t : public druid_spell_t
 
     druid_spell_t::tick( d );
 
-    if ( deck->trigger() )  // success == HEAL cast
+    if ( d->current_tick == ultimate_tick )
+    {
+      if ( p()->buff.moonkin_form->check() )
+      {
+        conv_cast = conv_fm;
+        debug_cast<druid_action_t<spell_t>*>( conv_cast )->free_cast = free_cast_e::CONVOKE;
+      }
+    }
+
+    if ( deck->trigger() && !conv_cast )  // success == HEAL cast
     {
       if ( heal_cast )
         return;
@@ -7146,62 +7166,61 @@ struct convoke_the_spirits_t : public druid_spell_t
 
     conv_tar = tl[ static_cast<size_t>( rng().range( 0, as<double>( tl.size() ) ) ) ];
 
-    if ( p()->buff.moonkin_form->check() )
+    if ( !conv_cast && p()->buff.moonkin_form->check() )
     {
-      if ( rng().roll( p()->convoke_the_spirits_ultimate ) )  // assume 1% 'ultimate' overrides spell selection logic
-        conv_cast = conv_fm;
-      else
+      if ( !p()->buff.starfall->check() )  // always starfall if it isn't up
+        conv_cast = conv_sf;
+      else  // randomly decide on damage spell
       {
-        if ( !p()->buff.starfall->check() )  // always starfall if it isn't up
-          conv_cast = conv_sf;
-        else  // randomly decide on damage spell
+        std::vector<player_t*> mf_tl;  // separate list for mf targets without a dot;
+        for ( auto i : tl )
         {
-          std::vector<player_t*> mf_tl;  // separate list for mf targets without a dot;
-          for ( auto i : tl )
-          {
-            if ( !td( i )->dots.moonfire->is_ticking() )
-              mf_tl.push_back( i );
-          }
+          if ( !td( i )->dots.moonfire->is_ticking() ) mf_tl.push_back( i );
+        }
 
-          player_t* mf_tar = nullptr;
-          if ( mf_tl.size() )
-            mf_tar = mf_tl[ static_cast<size_t>( rng().range( 0, as<double>( mf_tl.size() ) ) ) ];
+        player_t* mf_tar = nullptr;
+        if ( mf_tl.size() ) mf_tar = mf_tl[ static_cast<size_t>( rng().range( 0, as<double>( mf_tl.size() ) ) ) ];
 
-          if ( !mf_cast && mf_tar )  // always mf once if at least one eligible target
-          {
-            conv_cast = conv_mf;
-            mf_cast = true;
-          }
-          else  // try to keep spell count balanced
-          {
-            std::vector<action_t*> dam;
+        if ( !mf_cast && mf_tar )  // always mf once if at least one eligible target
+        {
+          conv_cast = conv_mf;
+          mf_cast   = true;
+        }
+        else if ( !wr_cast )  // always one wrath
+        {
+          conv_cast = conv_wr;
+          wr_cast   = true;
+        }
+        else  // try to keep spell count balanced within 3 casts of each other
+        {
+          std::vector<action_t*> dam;
 
-            if ( mf_tar && mf_count <= ss_count && mf_count <= wr_count )  // balance mf against ss & wr
-              dam.push_back( conv_mf );
+          if ( mf_tar && mf_count <= ss_count && mf_count <= wr_count )  // balance mf against ss & wr
+            dam.push_back( conv_mf );
 
-            if ( ss_count <= wr_count )  // balance ss only against wr
-              dam.push_back( conv_ss );
+          if ( ss_count <= wr_count + 2 )  // balance ss only against wr
+            dam.push_back( conv_ss );
 
-            if ( wr_count <= ss_count )  // balance wr only against ss
-              dam.push_back( conv_wr );
+          if ( wr_count <= ss_count + 2 )  // balance wr only against ss
+            dam.push_back( conv_wr );
 
-            if ( !dam.size() )  // sanity check
-              return;
+          if ( !dam.size() )  // sanity check
+            return;
 
-            conv_cast = dam[ static_cast<size_t>( rng().range( 0, as<double>( dam.size() ) ) ) ];
-
-            if ( conv_cast == conv_mf )
-              mf_count++;
-            else if ( conv_cast == conv_ss )
-              ss_count++;
-            else if ( conv_cast == conv_wr )
-              wr_count++;
-          }
+          conv_cast = dam[ static_cast<size_t>( rng().range( 0, as<double>( dam.size() ) ) ) ];
 
           if ( conv_cast == conv_mf )
-            conv_tar = mf_tar;
+            mf_count++;
+          else if ( conv_cast == conv_ss )
+            ss_count++;
+          else if ( conv_cast == conv_wr )
+            wr_count++;
         }
+
+        if ( conv_cast == conv_mf )
+          conv_tar = mf_tar;
       }
+
       debug_cast<druid_action_t<spell_t>*>( conv_cast )->free_cast = free_cast_e::CONVOKE;
     }
 
