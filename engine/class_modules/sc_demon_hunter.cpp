@@ -1214,7 +1214,7 @@ public:
     for ( const spelleffect_data_t& effect : spell->effects() )
     {
       if ( !effect.ok() || effect.type() != E_APPLY_AURA || effect.subtype() != A_ADD_PCT_MODIFIER )
-        return;
+        continue;
 
       if ( ab::data().affected_by( effect ) )
       {
