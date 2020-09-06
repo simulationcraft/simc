@@ -205,12 +205,12 @@ void first_strike( special_effect_t& effect )
 
     first_strike_cb_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e ), target_list() {}
 
-    void trigger( action_t* a, action_state_t* s ) override
+    void execute( action_t* a, action_state_t* s ) override
     {
       if ( range::contains( target_list, s->target->actor_spawn_index ) )
         return;
 
-      dbc_proc_callback_t::trigger( a, s );
+      dbc_proc_callback_t::execute( a, s );
       target_list.push_back( s->target->actor_spawn_index );
     }
 
@@ -253,7 +253,7 @@ void dauntless_duelist( special_effect_t& effect )
   {
     dauntless_duelist_cb_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e ) {}
 
-    void trigger( action_t* a, action_state_t* st ) override
+    void execute( action_t* a, action_state_t* st ) override
     {
       auto td = a->player->get_target_data( st->target );
       td->debuff.adversary->trigger();
@@ -358,12 +358,12 @@ void let_go_of_the_past( special_effect_t& effect )
 
     let_go_of_the_past_cb_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e ), prev_id( 0 ) {}
 
-    void trigger( action_t* a, action_state_t* s ) override
+    void execute( action_t* a, action_state_t* s ) override
     {
       if ( !a->id || a->background || a->id == prev_id )
         return;
 
-      dbc_proc_callback_t::trigger( a, s );
+      dbc_proc_callback_t::execute( a, s );
       prev_id = a->id;
     }
 
@@ -441,12 +441,12 @@ void hammer_of_genesis( special_effect_t& effect )
 
     hammer_of_genesis_cb_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e ), target_list() {}
 
-    void trigger( action_t* a, action_state_t* s ) override
+    void execute( action_t* a, action_state_t* s ) override
     {
       if ( range::contains( target_list, s->target->actor_spawn_index ) )
         return;
 
-      dbc_proc_callback_t::trigger( a, s );
+      dbc_proc_callback_t::execute( a, s );
       target_list.push_back( s->target->actor_spawn_index );
     }
 
@@ -490,7 +490,7 @@ void plagueys_preemptive_strike( special_effect_t& effect )
 
     plagueys_preemptive_strike_cb_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e ), target_list() {}
 
-    void trigger( action_t* a, action_state_t* s ) override
+    void execute( action_t* a, action_state_t* s ) override
     {
       if ( !a->harmful )
         return;
@@ -498,7 +498,7 @@ void plagueys_preemptive_strike( special_effect_t& effect )
       if ( range::contains( target_list, s->target->actor_spawn_index ) )
         return;
 
-      dbc_proc_callback_t::trigger( a, s );
+      dbc_proc_callback_t::execute( a, s );
       target_list.push_back( s->target->actor_spawn_index );
 
       auto td = a->player->get_target_data( s->target );
