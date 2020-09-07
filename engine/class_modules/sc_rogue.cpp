@@ -128,14 +128,14 @@ public:
 
   struct debuffs_t
   {
-    buff_t* vendetta;
+    damage_buff_t* vendetta;
     buff_t* wound_poison;
     buff_t* crippling_poison;
     buff_t* numbing_poison;
     buff_t* marked_for_death;
     buff_t* ghostly_strike;
     buff_t* rupture; // Hidden proxy for handling Scent of Blood azerite trait
-    buff_t* shiv;
+    damage_buff_t* shiv;
     buff_t* find_weakness;
     buff_t* prey_on_the_weak;
     buff_t* between_the_eyes;
@@ -257,7 +257,7 @@ public:
     buff_t* opportunity;
     buff_t* roll_the_bones;
     // Roll the bones buffs
-    buff_t* broadside;
+    damage_buff_t* broadside;
     buff_t* buried_treasure;
     buff_t* grand_melee;
     buff_t* skull_and_crossbones;
@@ -265,16 +265,18 @@ public:
     buff_t* true_bearing;
     // Subtlety
     buff_t* shadow_blades;
-    buff_t* shadow_dance;
-    buff_t* symbols_of_death;
+    damage_buff_t* shadow_dance;
+    damage_buff_t* symbols_of_death;
     buff_t* symbols_of_death_autocrit;
 
     // Talents
     // Shared
     buff_t* alacrity;
     buff_t* subterfuge;
+    damage_buff_t* nightstalker;
+
     // Assassination
-    buff_t* elaborate_planning;
+    damage_buff_t* elaborate_planning;
     buff_t* blindside;
     buff_t* master_assassin;
     buff_t* master_assassin_aura;
@@ -307,11 +309,11 @@ public:
     buff_t* the_first_dance;
 
     // Legendary
-    buff_t* deathly_shadows;
+    damage_buff_t* deathly_shadows;
     buff_t* concealed_blunderbuss;
-    buff_t* finality_eviscerate;
+    damage_buff_t* finality_eviscerate;
     buff_t* finality_rupture;
-    buff_t* finality_shadow_vault;
+    damage_buff_t* finality_shadow_vault;
     buff_t* greenskins_wickers;
     buff_t* guile_charm_insight_1;
     buff_t* guile_charm_insight_2;
@@ -327,7 +329,7 @@ public:
 
     // Conduits
     buff_t* deeper_daggers;
-    buff_t* perforated_veins;
+    damage_buff_t* perforated_veins;
   } buffs;
 
   // Cooldowns
@@ -1032,23 +1034,19 @@ public:
     bool shiv_2 = false;
     bool ruthless_precision = false;
     bool symbols_of_death_autocrit = false;
-    bool perforated_veins = false;
     bool blindside = false;
-    bool finality_eviscerate = false;
-    bool finality_shadow_vault = false;
     bool dashing_scoundrel = false;
     bool zoldyck_insignia = false;
     bool between_the_eyes = false;
+    bool nightstalker = false;
 
     damage_affect_data mastery_executioner;
     damage_affect_data mastery_potent_assassin;
-    damage_affect_data nightstalker_dmg_amp;
-    damage_affect_data broadside;
-    damage_affect_data symbols_of_death;
-    damage_affect_data shadow_dance;
-    damage_affect_data elaborate_planning;
-    damage_affect_data deathly_shadows;
   } affected_by;
+
+  std::vector<damage_buff_t*> direct_damage_buffs;
+  std::vector<damage_buff_t*> periodic_damage_buffs;
+  std::vector<damage_buff_t*> auto_attack_damage_buffs;
 
   // Init =====================================================================
 
@@ -1099,15 +1097,6 @@ public:
     affected_by.symbols_of_death_autocrit = ab::data().affected_by( p->spec.symbols_of_death_autocrit->effectN( 1 ) );
     affected_by.blindside = ab::data().affected_by( p->find_spell( 121153 )->effectN( 1 ) );
     affected_by.between_the_eyes = ab::data().affected_by( p->spec.between_the_eyes->effectN( 2 ) );
-    if ( p->conduit.perforated_veins.ok() )
-    {
-      affected_by.perforated_veins = ab::data().affected_by( p->conduit.perforated_veins->effectN( 1 ).trigger()->effectN( 1 ) );
-    }
-    if ( p->legendary.finality.ok() )
-    {
-      affected_by.finality_eviscerate = ab::data().affected_by( p->find_spell( 340600 )->effectN( 1 ) );
-      affected_by.finality_shadow_vault = ab::data().affected_by( p->find_spell( 340603 )->effectN( 1 ) );
-    }
     if ( p->legendary.dashing_scoundrel.ok() )
     {
       affected_by.dashing_scoundrel = ab::data().affected_by( p->spec.envenom->effectN( 3 ) );
@@ -1124,14 +1113,40 @@ public:
     // Still requires manual impl below but removes need to hardcode effect numbers.
     parse_damage_affecting_spell( p->mastery.executioner, affected_by.mastery_executioner );
     parse_damage_affecting_spell( p->mastery.potent_assassin, affected_by.mastery_potent_assassin );
-    parse_damage_affecting_spell( p->spec.broadside, affected_by.broadside );
-    parse_damage_affecting_spell( p->spec.symbols_of_death, affected_by.symbols_of_death );
-    parse_damage_affecting_spell( p->spec.shadow_dance, affected_by.shadow_dance );
-    parse_damage_affecting_spell( p->talent.elaborate_planning->effectN( 1 ).trigger(), affected_by.elaborate_planning );
-    if ( p->talent.nightstalker->ok() )
-      parse_damage_affecting_spell( p->spell.nightstalker_dmg_amp, affected_by.nightstalker_dmg_amp );
-    if ( p->legendary.deathly_shadows->ok() )
-      parse_damage_affecting_spell( p->legendary.deathly_shadows->effectN( 1 ).trigger(), affected_by.deathly_shadows );
+  }
+
+  void init() override
+  {
+    ab::init();
+    
+    auto register_damage_buff = [ this ]( damage_buff_t* buff ) {
+      if ( buff->is_affecting_direct( ab::s_data ) )
+        direct_damage_buffs.push_back( buff );
+      
+      if ( buff->is_affecting_periodic( ab::s_data ) )
+        periodic_damage_buffs.push_back( buff );
+
+      if ( ab::repeating && !ab::special && !ab::s_data->ok() && buff->auto_attack_mod.multiplier != 1.0 )
+        auto_attack_damage_buffs.push_back( buff );
+    };
+
+    direct_damage_buffs.clear();
+    periodic_damage_buffs.clear();
+    auto_attack_damage_buffs.clear();
+
+    register_damage_buff( p()->buffs.symbols_of_death );
+    register_damage_buff( p()->buffs.shadow_dance );
+    register_damage_buff( p()->buffs.perforated_veins );
+    register_damage_buff( p()->buffs.finality_eviscerate );
+    register_damage_buff( p()->buffs.finality_shadow_vault );
+    register_damage_buff( p()->buffs.elaborate_planning );
+    register_damage_buff( p()->buffs.broadside );
+    register_damage_buff( p()->buffs.deathly_shadows );
+
+    if ( p()->talent.nightstalker->ok() )
+    {
+      affected_by.nightstalker = p()->buffs.nightstalker->is_affecting_direct( ab::s_data );
+    }
   }
 
   // Type Wrappers ============================================================
@@ -1386,65 +1401,21 @@ public:
 
     m *= combo_point_da_multiplier( state );
 
-    // Subtlety
-    if ( affected_by.mastery_executioner.direct )
+    // Registered Damage Buffs
+    for ( auto damage_buff : direct_damage_buffs )
+      m *= damage_buff->value_direct();
+
+    // Mastery
+    if ( affected_by.mastery_executioner.direct || affected_by.mastery_potent_assassin.direct )
     {
       m *= 1.0 + p()->cache.mastery_value();
-    }
-
-    if ( affected_by.symbols_of_death.direct && p()->buffs.symbols_of_death->up() )
-    {
-      m *= 1.0 + affected_by.symbols_of_death.direct_percent;
-    }
-
-    if ( affected_by.shadow_dance.direct && p()->buffs.shadow_dance->up() )
-    {
-      m *= 1.0 + affected_by.shadow_dance.direct_percent + p()->talent.dark_shadow->effectN( 2 ).percent();
-    }
-
-    if ( affected_by.perforated_veins )
-    {
-      m *= 1.0 + p()->buffs.perforated_veins->stack_value();
-    }
-
-    if ( affected_by.finality_eviscerate )
-    {
-      m *= 1.0 + p()->buffs.finality_eviscerate->value();
-    }
-
-    if ( affected_by.finality_shadow_vault )
-    {
-      m *= 1.0 + p()->buffs.finality_shadow_vault->value();
-    }
-
-    // Assassination
-    if ( affected_by.mastery_potent_assassin.direct )
-    {
-      m *= 1.0 + p()->cache.mastery_value();
-    }
-
-    if ( affected_by.elaborate_planning.direct && p()->buffs.elaborate_planning->up() )
-    {
-      m *= 1.0 + affected_by.elaborate_planning.direct_percent;
-    }
-
-    // Outlaw
-    if ( affected_by.broadside.direct && p()->buffs.broadside->up() )
-    {
-      m *= 1.0 + affected_by.broadside.direct_percent;
-    }
-
-    // General
-    if ( affected_by.deathly_shadows.direct && p()->buffs.deathly_shadows->up() )
-    {
-      m *= 1.0 + affected_by.deathly_shadows.direct_percent;
     }
 
     // Apply Nightstalker direct damage increase via the corresponding driver spell.
     // And yes, this can cause double dips with the persistent multiplier on DoTs which is the case with Crimson Tempest.
-    if ( affected_by.nightstalker_dmg_amp.direct && p()->stealthed( STEALTH_BASIC | STEALTH_SHADOWDANCE ) )
+    if ( affected_by.nightstalker && p()->stealthed( STEALTH_BASIC | STEALTH_SHADOWDANCE ) )
     {
-      m *= 1.0 + ( affected_by.nightstalker_dmg_amp.direct_percent + p()->spec.subtlety_rogue->effectN( 4 ).percent() );
+      m *= p()->buffs.nightstalker->direct_mod.multiplier;
     }
 
     return m;
@@ -1454,7 +1425,11 @@ public:
   {
     double m = ab::composite_ta_multiplier( state );
 
-    // Subtlety
+    // Registered Damage Buffs
+    for ( auto damage_buff : periodic_damage_buffs )
+      m *= damage_buff->value_periodic();
+
+    // Mastery
     if ( affected_by.mastery_executioner.periodic )
     {
       // 08/17/2018 - Mastery: Executioner has a different coefficient for periodic
@@ -1464,37 +1439,9 @@ public:
         m *= 1.0 + p()->cache.mastery_value();
     }
 
-    if ( affected_by.symbols_of_death.periodic && p()->buffs.symbols_of_death->up() )
-    {
-      m *= 1.0 + affected_by.symbols_of_death.periodic_percent;
-    }
-
-    if ( affected_by.shadow_dance.periodic && p()->buffs.shadow_dance->up() )
-    {
-      m *= 1.0 + affected_by.shadow_dance.periodic_percent + p()->talent.dark_shadow->effectN( 3 ).percent();
-    }
-
-    // Assassination
     if ( affected_by.mastery_potent_assassin.periodic )
     {
       m *= 1.0 + p()->cache.mastery_value();
-    }
-
-    if ( affected_by.elaborate_planning.periodic && p()->buffs.elaborate_planning->up() )
-    {
-      m *= 1.0 + affected_by.elaborate_planning.periodic_percent;
-    }
-
-    // Outlaw
-    if ( affected_by.broadside.periodic && p()->buffs.broadside->up() )
-    {
-      m *= 1.0 + affected_by.broadside.periodic_percent;
-    }
-
-    // General
-    if ( affected_by.deathly_shadows.periodic && p()->buffs.deathly_shadows->up() )
-    {
-      m *= 1.0 + affected_by.deathly_shadows.periodic_percent;
     }
 
     return m;
@@ -1506,12 +1453,12 @@ public:
 
     if ( affected_by.vendetta )
     {
-      m *= 1.0 + td( target )->debuffs.vendetta->value();
+      m *= td( target )->debuffs.vendetta->value_direct();
     }
 
     if ( affected_by.shiv_2 )
     {
-      m *= 1.0 + td( target )->debuffs.shiv->value();
+      m *= td( target )->debuffs.shiv->value_direct();
     }
 
     if ( affected_by.zoldyck_insignia && target->health_percentage() < p()->legendary.zoldyck_insignia->effectN( 2 ).base_value() )
@@ -1531,9 +1478,7 @@ public:
     // This can and will cause double dips on direct damage if a spell is whitelisted in effect #1.
     if ( p()->talent.nightstalker->ok() && snapshots_nightstalker() && p()->stealthed( STEALTH_BASIC | STEALTH_SHADOWDANCE ) )
     {
-      double ns_mod = p()->spell.nightstalker_dmg_amp->effectN( 2 ).percent();
-      ns_mod += p()->spec.subtlety_rogue->effectN( 4 ).percent();
-      m *= 1.0 + ns_mod;
+      m *= p()->buffs.nightstalker->periodic_mod.multiplier;
     }
 
     return m;
@@ -1720,9 +1665,6 @@ public:
 
     if ( affected_by.symbols_of_death_autocrit )
       p()->buffs.symbols_of_death_autocrit->expire();
-
-    if ( affected_by.perforated_veins )
-      p()->buffs.perforated_veins->expire();
 
     if ( affected_by.blindside )
       p()->buffs.blindside->expire();
@@ -2247,11 +2189,7 @@ struct melee_t : public rogue_attack_t
   {
     double m = rogue_attack_t::composite_target_multiplier( target );
 
-    rogue_td_t* tdata = td( target );
-    if ( tdata->debuffs.vendetta->up() )
-    {
-      m *= 1.0 + tdata->debuffs.vendetta->data().effectN( 2 ).percent();
-    }
+    m *= td( target )->debuffs.vendetta->value_auto_attack();
 
     return m;
   }
@@ -2274,28 +2212,9 @@ struct melee_t : public rogue_attack_t
   {
     double m = rogue_attack_t::action_multiplier();
 
-    // Subtlety
-    if ( p()->buffs.symbols_of_death->up() )
-    {
-      m *= 1.0 + p()->buffs.symbols_of_death->check_value();
-    }
-
-    if ( p()->buffs.shadow_dance->up() )
-    {
-      m *= 1.0 + p()->buffs.shadow_dance->check_value() + p()->talent.dark_shadow->effectN( 1 ).percent();
-    }
-
-    // Assassination
-    if ( p()->buffs.elaborate_planning->up() )
-    {
-      m *= 1.0 + p()->buffs.elaborate_planning->data().effectN( 3 ).percent();
-    }
-
-    // General
-    if ( p()->buffs.deathly_shadows->up() )
-    {
-      m *= 1.0 + p()->buffs.deathly_shadows->data().effectN( 4 ).percent();
-    }
+    // Registered Damage Buffs
+    for ( auto damage_buff : auto_attack_damage_buffs )
+      m *= damage_buff->value_auto_attack();
 
     return m;
   }
@@ -2497,6 +2416,8 @@ struct backstab_t : public rogue_attack_t
     {
       trigger_combo_point_gain( as<int>( p()->buffs.the_rotten->data().effectN( 2 ).base_value() ), p()->gains.the_rotten );
     }
+
+    p()->buffs.perforated_veins->expire();
   }
 
   void impact( action_state_t* state ) override
@@ -3235,6 +3156,8 @@ struct gloomblade_t : public rogue_attack_t
     {
       trigger_combo_point_gain( as<int>( p()->buffs.the_rotten->data().effectN( 2 ).base_value() ), p()->gains.the_rotten );
     }
+
+    p()->buffs.perforated_veins->expire();
   }
 
   void impact( action_state_t* state ) override
@@ -5475,17 +5398,19 @@ struct subterfuge_t : public buff_t
   }
 };
 
-struct stealth_like_buff_t : public buff_t
+template <typename BuffBase>
+struct stealth_like_buff_t : public BuffBase
 {
+  using base_t = stealth_like_buff_t<BuffBase>;
   rogue_t* rogue;
 
   stealth_like_buff_t( rogue_t* r, util::string_view name, const spell_data_t* spell ) :
-    buff_t( r, name, spell ), rogue( r )
+    BuffBase( r, name, spell ), rogue( r )
   { }
 
   void execute( int stacks, double value, timespan_t duration ) override
   {
-    buff_t::execute( stacks, value, duration );
+    bb::execute( stacks, value, duration );
 
     if ( rogue->stealthed( STEALTH_BASIC ) )
     {
@@ -5501,7 +5426,7 @@ struct stealth_like_buff_t : public buff_t
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
-    buff_t::expire_override( expiration_stacks, remaining_duration );
+    bb::expire_override( expiration_stacks, remaining_duration );
 
     // Don't swap these buffs around if we are still in stealth due to Vanish expiring
     if ( !rogue->stealthed( STEALTH_BASIC ) )
@@ -5510,21 +5435,24 @@ struct stealth_like_buff_t : public buff_t
       rogue->buffs.master_assassins_mark_aura->expire();
     }
   }
+
+private:
+  using bb = BuffBase;
 };
 
 // Note, stealth buff is set a max time of half the nominal fight duration, so it can be
 // forced to show in sample sequence tables.
-struct stealth_t : public stealth_like_buff_t
+struct stealth_t : public stealth_like_buff_t<buff_t>
 {
   stealth_t( rogue_t* r ) :
-    stealth_like_buff_t( r, "stealth", r -> find_spell( 1784 ) )
+    base_t( r, "stealth", r -> find_spell( 1784 ) )
   {
     set_duration( sim->max_time / 2 );
   }
 
   void execute( int stacks, double value, timespan_t duration ) override
   {
-    stealth_like_buff_t::execute( stacks, value, duration );
+    base_t::execute( stacks, value, duration );
     rogue->cancel_auto_attack();
 
     // Activating stealth buff (via expiring Vanish) also removes Shadow Dance. Not an issue in general since Stealth cannot be used during Dance.
@@ -5533,12 +5461,12 @@ struct stealth_t : public stealth_like_buff_t
 };
 
 // Vanish now acts like "stealth like abilities".
-struct vanish_t : public stealth_like_buff_t
+struct vanish_t : public stealth_like_buff_t<buff_t>
 {
   std::vector<cooldown_t*> shadowdust_cooldowns;
 
   vanish_t( rogue_t* r ) :
-    stealth_like_buff_t( r, "vanish", r->find_spell( 11327 ) )
+    base_t( r, "vanish", r->find_spell( 11327 ) )
   {
     if ( r->legendary.invigorating_shadowdust.ok() )
     {
@@ -5554,7 +5482,7 @@ struct vanish_t : public stealth_like_buff_t
 
   void execute( int stacks, double value, timespan_t duration ) override
   {
-    stealth_like_buff_t::execute( stacks, value, duration );
+    base_t::execute( stacks, value, duration );
     rogue->cancel_auto_attack();
 
     // Confirmed on beta Invigorating Shadowdust triggers from Vanish buff via Sepsis, not just Vanish casts
@@ -5584,28 +5512,23 @@ struct vanish_t : public stealth_like_buff_t
       rogue->buffs.stealth->trigger();
     }
 
-    stealth_like_buff_t::expire_override( expiration_stacks, remaining_duration );
+    base_t::expire_override( expiration_stacks, remaining_duration );
   }
 };
 
 // Shadow dance acts like "stealth like abilities"
-struct shadow_dance_t : public stealth_like_buff_t
+struct shadow_dance_t : public stealth_like_buff_t<damage_buff_t>
 {
   shadow_dance_t( rogue_t* p ) :
-    stealth_like_buff_t( p, "shadow_dance", p -> spec.shadow_dance )
+    base_t( p, "shadow_dance", p -> spec.shadow_dance )
   {
-    set_default_value_from_effect_type( A_MOD_AUTO_ATTACK_PCT );
     apply_affecting_aura( p->talent.subterfuge );
-
-    if ( p->talent.dark_shadow->ok() )
-    {
-      add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-    }
+    apply_affecting_aura( p->talent.dark_shadow );
   }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
-    stealth_like_buff_t::expire_override( expiration_stacks, remaining_duration );
+    base_t::expire_override( expiration_stacks, remaining_duration );
     rogue->buffs.the_first_dance->expire();
   }
 };
@@ -5687,16 +5610,15 @@ struct marked_for_death_debuff_t : public buff_t
   }
 };
 
-struct vendetta_debuff_t : public buff_t
+struct vendetta_debuff_t : public damage_buff_t
 {
   action_t* nothing_personal;
 
   vendetta_debuff_t( rogue_td_t& r ) :
-    buff_t( r, "vendetta", r.source->find_specialization_spell( "Vendetta" ) ),
+    damage_buff_t( r, "vendetta", r.source->find_specialization_spell( "Vendetta" ) ),
     nothing_personal( r.source->find_action( "nothing_personal" ) )
   {
     set_cooldown( timespan_t::zero() );
-    set_default_value_from_effect_type( A_MOD_DAMAGE_FROM_CASTER_SPELLS );
   }
 
   void trigger_nothing_personal( timespan_t duration )
@@ -5735,19 +5657,19 @@ struct vendetta_debuff_t : public buff_t
 
   void extend_duration( player_t* p, timespan_t extra_seconds ) override
   {
-    buff_t::extend_duration( p, extra_seconds );
+    damage_buff_t::extend_duration( p, extra_seconds );
     trigger_nothing_personal( extra_seconds );
   }
 
   void refresh( int stacks, double value, timespan_t duration ) override
   {
-    buff_t::refresh( stacks, value, duration );
+    damage_buff_t::refresh( stacks, value, duration );
     trigger_nothing_personal( duration );
   }
 
   void start( int stacks, double value, timespan_t duration ) override
   {
-    buff_t::start( stacks, value, duration );
+    damage_buff_t::start( stacks, value, duration );
 
     // 3/25/2020 - The base 3s duration regen buff does not re-apply on refreshes
     rogue_t* rogue = debug_cast<rogue_t*>( source );
@@ -5757,7 +5679,7 @@ struct vendetta_debuff_t : public buff_t
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
-    buff_t::expire_override( expiration_stacks, remaining_duration );
+    damage_buff_t::expire_override( expiration_stacks, remaining_duration );
     expire_nothing_personal();
   }
 };
@@ -6634,8 +6556,7 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
   debuffs.rupture           = new buffs::proxy_rupture_t( *this );
   debuffs.vendetta          = new buffs::vendetta_debuff_t( *this );
 
-  debuffs.shiv = make_buff( *this, "shiv", source->spec.shiv_2_debuff )
-    ->set_default_value_from_effect_type( A_MOD_DAMAGE_FROM_CASTER_SPELLS );
+  debuffs.shiv = make_buff<damage_buff_t>( *this, "shiv", source->spec.shiv_2_debuff );
   debuffs.ghostly_strike = make_buff( *this, "ghostly_strike", source->talent.ghostly_strike )
     ->set_default_value_from_effect_type( A_MOD_DAMAGE_FROM_CASTER );
   debuffs.find_weakness = make_buff( *this, "find_weakness", source->spec.find_weakness->effectN( 1 ).trigger() )
@@ -8230,9 +8151,8 @@ void rogue_t::create_buffs()
     ->apply_affecting_aura( talent.quick_draw );
   
   // Roll the Bones Buffs
-  buffs.broadside = make_buff( this, "broadside", spec.broadside )
-    ->set_default_value_from_effect( 1, 1.0 )   // Extra CP Gain
-    ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  buffs.broadside = make_buff<damage_buff_t>( this, "broadside", spec.broadside );
+  buffs.broadside->set_default_value_from_effect( 1, 1.0 ); // Extra CP Gain
   
   buffs.buried_treasure = make_buff( this, "buried_treasure", find_spell( 199600 ) )
     ->set_default_value_from_effect_type( A_RESTORE_POWER )
@@ -8262,10 +8182,8 @@ void rogue_t::create_buffs()
   
   buffs.shadow_dance = new buffs::shadow_dance_t( this );
   
-  buffs.symbols_of_death = make_buff( this, "symbols_of_death", spec.symbols_of_death )
-    ->set_default_value_from_effect_type( A_MOD_AUTO_ATTACK_PCT )
-    ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
-    ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  buffs.symbols_of_death = make_buff<damage_buff_t>( this, "symbols_of_death", spec.symbols_of_death );
+  buffs.symbols_of_death->set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
   
   buffs.symbols_of_death_autocrit = make_buff( this, "symbols_of_death_autocrit", spec.symbols_of_death_autocrit )
     ->set_default_value_from_effect_type( A_ADD_FLAT_MODIFIER, P_CRIT )
@@ -8281,14 +8199,16 @@ void rogue_t::create_buffs()
 
   buffs.subterfuge = new buffs::subterfuge_t( this );
 
+  buffs.nightstalker = make_buff<damage_buff_t>( this, "nightstalker", spell.nightstalker_dmg_amp )
+    ->set_periodic_mod( spell.nightstalker_dmg_amp, 2 ) // Dummy Value
+    ->apply_affecting_aura( spec.subtlety_rogue );
+
   // Assassination
 
   buffs.blindside = make_buff( this, "blindside", find_spell( 121153 ) )
     ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_RESOURCE_COST );
 
-  buffs.elaborate_planning = make_buff( this, "elaborate_planning", talent.elaborate_planning->effectN( 1 ).trigger() )
-    ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_GENERIC )
-    ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  buffs.elaborate_planning = make_buff<damage_buff_t>( this, "elaborate_planning", talent.elaborate_planning->effectN( 1 ).trigger() );
   
   buffs.hidden_blades_driver = make_buff( this, "hidden_blades_driver", talent.hidden_blades )
     ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) { buffs.hidden_blades->trigger(); } )
@@ -8415,17 +8335,16 @@ void rogue_t::create_buffs()
     ->set_trigger_spell( conduit.deeper_daggers )
     ->set_default_value( conduit.deeper_daggers.percent() );
 
-  buffs.perforated_veins = make_buff( this, "perforated_veins", conduit.perforated_veins->effectN( 1 ).trigger() )
-    ->set_trigger_spell( conduit.perforated_veins )
-    ->set_default_value( conduit.perforated_veins.percent() );
+  buffs.perforated_veins = make_buff<damage_buff_t>( this, "perforated_veins",
+                                                     conduit.perforated_veins->effectN( 1 ).trigger(),
+                                                     conduit.perforated_veins );
 
   if ( conduit.planned_execution.ok() )
     buffs.symbols_of_death->add_invalidate( CACHE_CRIT_CHANCE );
 
   // Legendary Items ========================================================
 
-  buffs.deathly_shadows = make_buff( this, "deathly_shadows", legendary.deathly_shadows->effectN( 1 ).trigger() )
-    ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_GENERIC );
+  buffs.deathly_shadows = make_buff<damage_buff_t>( this, "deathly_shadows", legendary.deathly_shadows->effectN( 1 ).trigger() );
 
   const spell_data_t* master_assassins_mark = legendary.master_assassins_mark->ok() ? find_spell( 340094 ) : spell_data_t::not_found();
   buffs.master_assassins_mark = make_buff( this, "master_assassins_mark", master_assassins_mark )
@@ -8465,12 +8384,10 @@ void rogue_t::create_buffs()
       legendary.guile_charm_counter = 0;
     } );
 
-  buffs.finality_eviscerate = make_buff( this, "finality_eviscerate", find_spell( 340600 ) )
-    ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_GENERIC );
+  buffs.finality_eviscerate = make_buff<damage_buff_t>( this, "finality_eviscerate", find_spell( 340600 ) );
   buffs.finality_rupture = make_buff( this, "finality_rupture", find_spell( 340601 ) )
     ->set_default_value_from_effect( 1 ); // Bonus Damage%
-  buffs.finality_shadow_vault = make_buff( this, "finality_shadow_vault", find_spell( 340603 ) )
-    ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_GENERIC );
+  buffs.finality_shadow_vault = make_buff<damage_buff_t>( this, "finality_shadow_vault", find_spell( 340603 ) );
 
   buffs.concealed_blunderbuss = make_buff( this, "concealed_blunderbuss", find_spell( 340587 ) )
     ->set_chance( legendary.concealed_blunderbuss->effectN( 1 ).percent() )
