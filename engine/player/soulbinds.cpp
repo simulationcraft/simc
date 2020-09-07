@@ -49,7 +49,8 @@ struct covenant_cb_action_t : public covenant_cb_base_t
   action_t* action;
   bool self_target;
 
-  covenant_cb_action_t( action_t* a, bool self = false ) : covenant_cb_base_t(), action( a ), self_target( self )
+  covenant_cb_action_t( action_t* a, bool self = false, bool on_class = true, bool on_base = false )
+    : covenant_cb_base_t( on_class, on_base ), action( a ), self_target( self )
   {
   }
   void trigger( action_t*, action_state_t* state ) override
