@@ -5,6 +5,8 @@
 
 #include "sc_mainwindowcommandline.hpp"
 
+#include "util/generic.hpp"
+
 SC_MainWindowCommandLine::SC_MainWindowCommandLine( QWidget* parent ) :
     QWidget( parent ), statesStackedLayout( nullptr ),
       current_tab( CMDLINE_TAB_WELCOME ), current_state( IDLE )

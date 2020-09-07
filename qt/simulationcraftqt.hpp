@@ -6,7 +6,6 @@
 #ifndef SIMULATIONCRAFTQT_H
 #define SIMULATIONCRAFTQT_H
 
-#include "simulationcraft.hpp"
 #include <QtGui/QtGui>
 
 #if defined( SC_USE_WEBENGINE )
@@ -29,11 +28,14 @@ class SC_SearchBox;
 class SC_TextEdit;
 class SC_RelativePopup;
 class SC_MainWindowCommandLine;
+struct player_t;
 struct sim_t;
 
 #include "util/sc_recentlyclosed.hpp" // remove once implementations are moved to source files
 #include "util/sc_searchbox.hpp" // remove once implementations are moved to source files
 #include "util/sc_textedit.hpp" // remove once implementations are moved to source files
+
+#include "util/string_view.hpp"
 
 #include "sc_importWindow.hpp"
 
@@ -620,22 +622,7 @@ public:
   void createCustomTab();
   void updateWebView( SC_WebView* );
 
-  void toggle_pause()
-  {
-    if ( ! sim )
-      return;
-
-    if ( ! sim -> paused )
-    {
-      sim -> pause_mutex -> lock();
-    }
-    else
-    {
-      sim -> pause_mutex -> unlock();
-    }
-
-    sim -> paused = ! sim -> paused;
-  }
+  void toggle_pause();
 
 protected:
   void closeEvent( QCloseEvent* ) override;
