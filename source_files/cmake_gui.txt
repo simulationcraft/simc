@@ -11,6 +11,7 @@ sc_UpdateCheck.hpp
 sc_WelcomeTab.hpp
 sc_Workaround.hpp
 simulationcraftqt.hpp
+util/ComboBoxIntegerValidator.hpp
 util/sc_hoverarea.hpp
 util/sc_mainwindowcommandline.hpp
 util/sc_recentlyclosed.hpp
@@ -33,6 +34,7 @@ sc_UpdateCheck.cpp
 sc_WelcomeTab.cpp
 sc_window.cpp
 sc_Workaround.cpp
+util/ComboBoxIntegerValidator.cpp
 util/sc_mainwindowcommandline.cpp
 util/sc_recentlyclosed.cpp
 util/sc_relativepopup.cpp

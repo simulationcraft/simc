@@ -29,6 +29,7 @@ class SC_SearchBox;
 class SC_TextEdit;
 class SC_RelativePopup;
 class SC_MainWindowCommandLine;
+struct sim_t;
 
 #include "util/sc_recentlyclosed.hpp" // remove once implementations are moved to source files
 #include "util/sc_searchbox.hpp" // remove once implementations are moved to source files
@@ -530,138 +531,6 @@ class SC_SpellQueryTab;
 // ============================================================================
 // SC_ComboBoxIntegerValidator
 // ============================================================================
-
-class SC_ComboBoxIntegerValidator: public QValidator
-{
-  Q_OBJECT
-    int lowerBoundInclusive;
-  int upperBoundInclusive;
-  int lowerBoundDigitCount;
-  int upperBoundDigitCount;
-  QRegExp nonIntegerRegExp;
-  QComboBox* comboBox;
-  public:
-  SC_ComboBoxIntegerValidator( int lowerBoundIntegerInclusive,
-    int upperBoundIntegerInclusive,
-    QComboBox* parent ):
-    QValidator( parent ),
-    lowerBoundInclusive( lowerBoundIntegerInclusive ),
-    upperBoundInclusive( upperBoundIntegerInclusive ),
-    lowerBoundDigitCount( 0 ),
-    upperBoundDigitCount( 0 ),
-    nonIntegerRegExp( "\\D*" ),
-    comboBox( parent )
-  {
-    Q_ASSERT( lowerBoundInclusive <= upperBoundInclusive && "Invalid Arguments" );
-
-    lowerBoundDigitCount = util::numDigits( lowerBoundInclusive );
-    upperBoundDigitCount = util::numDigits( upperBoundInclusive );
-  }
-
-  static SC_ComboBoxIntegerValidator* CreateBoundlessValidator( QComboBox* parent = nullptr  )
-  {
-    return new SC_ComboBoxIntegerValidator( std::numeric_limits<int>::min(), std::numeric_limits<int>::max(), parent );
-  }
-
-  static SC_ComboBoxIntegerValidator* CreateUpperBoundValidator( int upperBound, QComboBox* parent = nullptr  )
-  {
-    return new SC_ComboBoxIntegerValidator( std::numeric_limits<int>::min(), upperBound, parent );
-  }
-
-  static SC_ComboBoxIntegerValidator* CreateLowerBoundValidator( int lowerBound, QComboBox* parent = nullptr  )
-  {
-    return new SC_ComboBoxIntegerValidator( lowerBound, std::numeric_limits<int>::max(), parent );
-  }
-
-  static QComboBox* ApplyValidatorToComboBox( QValidator* validator, QComboBox* comboBox )
-  {
-    if ( comboBox != 0 )
-    {
-      if ( validator != 0 )
-      {
-        comboBox -> setEditable( true );
-        comboBox -> setValidator( validator );
-      }
-    }
-    return comboBox;
-  }
-
-  State isNumberValid( int number ) const
-  {
-    if ( isNumberInRange( number ) )
-    {
-      return QValidator::Acceptable;
-    }
-    else
-    {
-      // number is not in range... maybe it COULD be in range if the user types more
-      if ( util::numDigits( number ) < lowerBoundDigitCount )
-      {
-        return QValidator::Intermediate;
-      }
-      // has enough digits... not valid
-    }
-
-    return QValidator::Invalid;
-  }
-
-  bool isNumberInRange( int number ) const
-  {
-    return (number >= lowerBoundInclusive &&
-      number <= upperBoundInclusive);
-  }
-
-  void stripNonNumbersAndAdjustCursorPos( QString& input, int& cursorPos ) const
-  {
-    // remove erroneous characters
-    QString modifiedInput = input.remove( nonIntegerRegExp );
-    if ( cursorPos > 0 )
-    {
-      // move the cursor to the left by how many characters to the left gets removed
-      QString charactersLeftOfCursor = input.leftRef( cursorPos ).toString();
-      int characterCountLeftOfCursor = charactersLeftOfCursor.length();
-      // count how many characters are removed left of cursor
-      charactersLeftOfCursor = charactersLeftOfCursor.remove( nonIntegerRegExp );
-      int removedCharacterCountLeftOfCursor = characterCountLeftOfCursor - charactersLeftOfCursor.length();
-      int newCursorPos = qAbs( cursorPos - removedCharacterCountLeftOfCursor );
-      // just double check for sanity that it is in bounds
-      Q_ASSERT( qBound( 0, newCursorPos, modifiedInput.length() ) == newCursorPos );
-      cursorPos = newCursorPos;
-    }
-    input = modifiedInput;
-  }
-
-  void fixup( QString& input ) const override
-  {
-    int cursorPos = 0;
-    stripNonNumbersAndAdjustCursorPos( input, cursorPos );
-  }
-
-  State validate( QString& input, int& cursorPos ) const override
-  {
-    State retval = QValidator::Invalid;
-
-    if ( input.length() != 0 )
-    {
-      stripNonNumbersAndAdjustCursorPos( input, cursorPos );
-
-      bool conversionToIntWentOk;
-      int number = input.toInt( &conversionToIntWentOk );
-
-      if ( conversionToIntWentOk )
-      {
-        retval = isNumberValid( number );
-      }
-    }
-    else
-    {
-      // zero length
-      retval = QValidator::Intermediate;
-    }
-
-    return retval;
-  }
-};
 
 class SC_SimulateTab;
 

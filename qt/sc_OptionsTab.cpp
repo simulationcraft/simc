@@ -8,6 +8,7 @@
 #include "sc_OptionsTab.hpp"
 #include "sc_SimulateTab.hpp"
 #include "util/sc_mainwindowcommandline.hpp"
+#include "util/ComboBoxIntegerValidator.hpp"
 #include "dbc/client_data.hpp"
 #include <QtCore/QDateTime>
 
