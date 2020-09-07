@@ -1,7 +1,9 @@
-﻿#include "simulationcraft.hpp"
-#include "simulationcraftqt.hpp"
-#include "sc_SimulateTab.hpp"
+﻿#include "MainWindow.hpp"
 #include "interfaces/bcp_api.hpp"
+#include "sc_SimulateTab.hpp"
+#include "simulationcraftqt.hpp"
+
+#include "simulationcraft.hpp"
 
 #if 0
 #include <fstream>
@@ -23,11 +25,11 @@ void parse_additional_args( SC_MainWindow& w, QStringList args )
         QTextStream ts( &file );
         ts.setCodec( "UTF-8" );
         ts.setAutoDetectUnicode( true );
-        w.simulateTab -> add_Text( ts.readAll(), args[i] );
+        w.simulateTab->add_Text( ts.readAll(), args[ i ] );
         file.close();
       }
     }
-    w.mainTab -> setCurrentTab( TAB_SIMULATE );
+    w.mainTab->setCurrentTab( TAB_SIMULATE );
   }
 }
 
@@ -43,16 +45,16 @@ void messageOutput(QtMsgType /* type */, const QMessageLogContext& context, cons
 }
 #endif
 
-int main( int argc, char *argv[] )
+int main( int argc, char* argv[] )
 {
 #if 0
   qInstallMessageHandler(messageOutput);
 #endif
 
-  #if (QT_VERSION >= QT_VERSION_CHECK(5, 6, 0))
-    QCoreApplication::setAttribute( Qt::AA_EnableHighDpiScaling );
-    qputenv( "QT_AUTO_SCREEN_SCALE_FACTOR", "1" );
-  #endif
+#if ( QT_VERSION >= QT_VERSION_CHECK( 5, 6, 0 ) )
+  QCoreApplication::setAttribute( Qt::AA_EnableHighDpiScaling );
+  qputenv( "QT_AUTO_SCREEN_SCALE_FACTOR", "1" );
+#endif
 
   QApplication a( argc, argv );
 
@@ -65,10 +67,10 @@ int main( int argc, char *argv[] )
   unique_gear::register_hotfixes();
   unique_gear::register_special_effects();
   unique_gear::sort_special_effects();
-  
-  #ifndef SC_NO_NETWORKING
+
+#ifndef SC_NO_NETWORKING
   bcp_api::token_load();
-  #endif
+#endif
 
   hotfix::apply();
 
@@ -77,14 +79,13 @@ int main( int argc, char *argv[] )
   QCoreApplication::setApplicationVersion( SC_VERSION );
   QCoreApplication::setOrganizationDomain( "org.simulationcraft" );
   QCoreApplication::setOrganizationName( "SimulationCraft" );
-  QSettings::setDefaultFormat( QSettings::IniFormat ); // Avoid Registry entries on Windows
+  QSettings::setDefaultFormat( QSettings::IniFormat );  // Avoid Registry entries on Windows
 
   QNetworkProxyFactory::setUseSystemConfiguration( true );
 
   // Localization
   QTranslator qtTranslator;
-  qtTranslator.load( "qt_" + QLocale::system().name(),
-  QLibraryInfo::location( QLibraryInfo::TranslationsPath ) );
+  qtTranslator.load( "qt_" + QLocale::system().name(), QLibraryInfo::location( QLibraryInfo::TranslationsPath ) );
   a.installTranslator( &qtTranslator );
 
   QString lang;
@@ -94,7 +95,7 @@ int main( int argc, char *argv[] )
   if ( lang == "auto" )
   {
     QString langName = QLocale::system().name();
-    QStringList spl = langName.split( '_' );
+    QStringList spl  = langName.split( '_' );
     if ( spl.length() >= 2 )
     {
       lang = spl[ 1 ].toLower();
@@ -104,13 +105,13 @@ int main( int argc, char *argv[] )
   QTranslator myappTranslator;
   if ( !lang.isEmpty() && !lang.startsWith( "en" ) )
   {
-    for(const auto& path : SC_PATHS::getDataPaths())
+    for ( const auto& path : SC_PATHS::getDataPaths() )
     {
       QString path_to_locale = path + "/locale";
 
       QString qm_file = QString( "sc_" ) + lang;
       qDebug() << "[Localization]: Trying to load local file from: " << path_to_locale << "/" << qm_file << ".qm";
-      if (myappTranslator.load( qm_file, path_to_locale ))
+      if ( myappTranslator.load( qm_file, path_to_locale ) )
       {
         break;
       }
@@ -123,9 +124,8 @@ int main( int argc, char *argv[] )
   }
   a.installTranslator( &myappTranslator );
 
-  QString iconlocation = QStandardPaths::locate( QStandardPaths::DataLocation,
-                                                 QString( "icon" ),
-                                                 QStandardPaths::LocateDirectory );
+  QString iconlocation =
+      QStandardPaths::locate( QStandardPaths::DataLocation, QString( "icon" ), QStandardPaths::LocateDirectory );
   QDir::addSearchPath( "icon", iconlocation );
 
   SC_MainWindow w;
@@ -134,9 +134,9 @@ int main( int argc, char *argv[] )
 
   auto ret = a.exec();
 
-  #ifndef SC_NO_NETWORKING
+#ifndef SC_NO_NETWORKING
   bcp_api::token_save();
-  #endif
+#endif
 
   return ret;
 }

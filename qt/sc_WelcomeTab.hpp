@@ -3,12 +3,12 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 #pragma once
+#include "WebEngineConfig.hpp"
 #include "config.hpp"
-
-#include "simulationcraftqt.hpp"
 
 #include <QtGui/QtGui>
 #include <QtWidgets/QtWidgets>
+class SC_MainWindow;
 
 #if defined( SC_USE_WEBKIT )
 /// Webkit Webview for Welcome.html welcome page

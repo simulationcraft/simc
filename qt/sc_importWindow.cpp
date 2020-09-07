@@ -1,5 +1,6 @@
 #include "sc_importWindow.hpp"
 
+#include "MainWindow.hpp"
 #include "sc_OptionsTab.hpp"
 #include "simulationcraftqt.hpp"
 

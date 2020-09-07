@@ -5,6 +5,7 @@
 
 #include "sc_OptionsTab.hpp"
 
+#include "MainWindow.hpp"
 #include "dbc/client_data.hpp"
 #include "sc_SimulateTab.hpp"
 #include "simulationcraftqt.hpp"

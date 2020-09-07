@@ -5,6 +5,7 @@ To change the list of source files run synchronize.py
 
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 	<ItemGroup>
+		<ClCompile Include="$(IntDir)moc_MainWindow.cpp" />
 		<ClCompile Include="$(IntDir)moc_sc_AddonImportTab.cpp" />
 		<ClCompile Include="$(IntDir)moc_sc_importWidget.cpp" />
 		<ClCompile Include="$(IntDir)moc_sc_importWindow.cpp" />
@@ -25,7 +26,11 @@ To change the list of source files run synchronize.py
 		<ClCompile Include="$(IntDir)moc_sc_searchbox.cpp" />
 		<ClCompile Include="$(IntDir)moc_sc_tabbar.cpp" />
 		<ClCompile Include="$(IntDir)moc_sc_textedit.cpp" />
+		<ClCompile Include="$(IntDir)moc_WebEngineConfig.cpp" />
+		<ClCompile Include="$(IntDir)moc_WebPage.cpp" />
+		<ClCompile Include="$(IntDir)moc_WebView.cpp" />
 		<ClCompile Include="..\qt\main.cpp" />
+		<ClCompile Include="..\qt\MainWindow.cpp" />
 		<ClCompile Include="..\qt\sc_AddonImportTab.cpp" />
 		<ClCompile Include="..\qt\sc_ImportTab.cpp" />
 		<ClCompile Include="..\qt\sc_ImportThread.cpp" />
@@ -47,6 +52,7 @@ To change the list of source files run synchronize.py
 		<ClCompile Include="..\qt\util\sc_searchbox.cpp" />
 		<ClCompile Include="..\qt\util\sc_tabbar.cpp" />
 		<ClCompile Include="..\qt\util\sc_textedit.cpp" />
+		<ClCompile Include="..\qt\WebView.cpp" />
 	</ItemGroup>
 
 	<!--Resources -->
@@ -76,6 +82,13 @@ To change the list of source files run synchronize.py
 
 	<!-- Moc'ing GUI Header files -->
 	<ItemGroup>
+		<CustomBuild Include="..\qt\MainWindow.hpp">
+			<AdditionalInputs>$(QTDIR)\bin\moc.exe</AdditionalInputs>
+			<Message>Moc%27ing %(Identity)... ( with $(QTDIR)\bin\moc.exe )</Message>
+			<Command>"$(QTDIR)\bin\moc.exe" $(MOC_DEFINES) -I"$(QTDIR)\include" -I"(SolutionDir)engine" -I"$(QTDIR)\mkspecs\default" "%(Identity)" -o "$(IntDir)moc_%(Filename).cpp" </Command>
+			<AdditionalInputs>Rem;..\qt\MainWindow.hpp;%(AdditionalInputs)</AdditionalInputs>
+			<Outputs>$(IntDir)\moc_%(Filename).cpp</Outputs>
+		</CustomBuild>
 		<CustomBuild Include="..\qt\sc_AddonImportTab.hpp">
 			<AdditionalInputs>$(QTDIR)\bin\moc.exe</AdditionalInputs>
 			<Message>Moc%27ing %(Identity)... ( with $(QTDIR)\bin\moc.exe )</Message>
@@ -214,6 +227,27 @@ To change the list of source files run synchronize.py
 			<Message>Moc%27ing %(Identity)... ( with $(QTDIR)\bin\moc.exe )</Message>
 			<Command>"$(QTDIR)\bin\moc.exe" $(MOC_DEFINES) -I"$(QTDIR)\include" -I"(SolutionDir)engine" -I"$(QTDIR)\mkspecs\default" "%(Identity)" -o "$(IntDir)moc_%(Filename).cpp" </Command>
 			<AdditionalInputs>Rem;..\qt\util\sc_textedit.hpp;%(AdditionalInputs)</AdditionalInputs>
+			<Outputs>$(IntDir)\moc_%(Filename).cpp</Outputs>
+		</CustomBuild>
+		<CustomBuild Include="..\qt\WebEngineConfig.hpp">
+			<AdditionalInputs>$(QTDIR)\bin\moc.exe</AdditionalInputs>
+			<Message>Moc%27ing %(Identity)... ( with $(QTDIR)\bin\moc.exe )</Message>
+			<Command>"$(QTDIR)\bin\moc.exe" $(MOC_DEFINES) -I"$(QTDIR)\include" -I"(SolutionDir)engine" -I"$(QTDIR)\mkspecs\default" "%(Identity)" -o "$(IntDir)moc_%(Filename).cpp" </Command>
+			<AdditionalInputs>Rem;..\qt\WebEngineConfig.hpp;%(AdditionalInputs)</AdditionalInputs>
+			<Outputs>$(IntDir)\moc_%(Filename).cpp</Outputs>
+		</CustomBuild>
+		<CustomBuild Include="..\qt\WebPage.hpp">
+			<AdditionalInputs>$(QTDIR)\bin\moc.exe</AdditionalInputs>
+			<Message>Moc%27ing %(Identity)... ( with $(QTDIR)\bin\moc.exe )</Message>
+			<Command>"$(QTDIR)\bin\moc.exe" $(MOC_DEFINES) -I"$(QTDIR)\include" -I"(SolutionDir)engine" -I"$(QTDIR)\mkspecs\default" "%(Identity)" -o "$(IntDir)moc_%(Filename).cpp" </Command>
+			<AdditionalInputs>Rem;..\qt\WebPage.hpp;%(AdditionalInputs)</AdditionalInputs>
+			<Outputs>$(IntDir)\moc_%(Filename).cpp</Outputs>
+		</CustomBuild>
+		<CustomBuild Include="..\qt\WebView.hpp">
+			<AdditionalInputs>$(QTDIR)\bin\moc.exe</AdditionalInputs>
+			<Message>Moc%27ing %(Identity)... ( with $(QTDIR)\bin\moc.exe )</Message>
+			<Command>"$(QTDIR)\bin\moc.exe" $(MOC_DEFINES) -I"$(QTDIR)\include" -I"(SolutionDir)engine" -I"$(QTDIR)\mkspecs\default" "%(Identity)" -o "$(IntDir)moc_%(Filename).cpp" </Command>
+			<AdditionalInputs>Rem;..\qt\WebView.hpp;%(AdditionalInputs)</AdditionalInputs>
 			<Outputs>$(IntDir)\moc_%(Filename).cpp</Outputs>
 		</CustomBuild>
 	</ItemGroup>

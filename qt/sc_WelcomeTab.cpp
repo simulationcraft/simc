@@ -5,6 +5,11 @@
 
 #include "sc_WelcomeTab.hpp"
 
+#include "MainWindow.hpp"
+#include "simulationcraftqt.hpp"
+
+#include <QTimer>
+
 #if defined( SC_USE_WEBKIT )
 SC_WelcomeTabWidget_WebKit::SC_WelcomeTabWidget_WebKit( SC_MainWindow* parent ) : SC_WebEngineView( parent )
 {
