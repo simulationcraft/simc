@@ -341,10 +341,10 @@ public:
   buff_t* set_reverse_stack_count( int value );
   buff_t* set_stack_behavior( buff_stack_behavior b );
 
-  buff_t* apply_affecting_aura( const spell_data_t* spell );
-  buff_t* apply_affecting_effect( const spelleffect_data_t& effect );
-  buff_t* apply_affecting_conduit( const conduit_data_t& conduit, int effect_num = 1 );
-  buff_t* apply_affecting_conduit_effect( const conduit_data_t& conduit, size_t effect_num );
+  virtual buff_t* apply_affecting_aura( const spell_data_t* spell );
+  virtual buff_t* apply_affecting_effect( const spelleffect_data_t& effect );
+  virtual buff_t* apply_affecting_conduit( const conduit_data_t& conduit, int effect_num = 1 );
+  virtual buff_t* apply_affecting_conduit_effect( const conduit_data_t& conduit, size_t effect_num );
 
   friend void format_to( const buff_t&, fmt::format_context::iterator );
 private:
@@ -425,6 +425,123 @@ struct cost_reduction_buff_t : public buff_t
   cost_reduction_buff_t* set_reduction(school_e school, double amount);
 };
 
+struct movement_buff_t : public buff_t
+{
+  movement_buff_t( player_t* p ) : buff_t( p, "movement" )
+  {
+    set_max_stack( 1 );
+  }
+
+  bool trigger( int stacks, double value, double chance, timespan_t duration ) override;
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override;
+};
+
+struct damage_buff_t : public buff_t
+{
+  struct damage_buff_modifier_t
+  {
+    const spell_data_t* s_data = nullptr;
+    size_t effect_idx = 0;
+    double multiplier = 1.0;
+  };
+
+  damage_buff_modifier_t direct_mod;
+  damage_buff_modifier_t periodic_mod;
+  damage_buff_modifier_t auto_attack_mod;
+
+  damage_buff_t( actor_pair_t q, util::string_view name );
+  damage_buff_t( actor_pair_t q, util::string_view name, const spell_data_t* );
+  damage_buff_t( actor_pair_t q, util::string_view name, const spell_data_t*, const conduit_data_t& );
+
+  damage_buff_t* parse_spell_data( const spell_data_t*, double = 0.0 );
+  damage_buff_t* apply_mod_affecting_effect( damage_buff_modifier_t&, const spelleffect_data_t& );
+
+  buff_t* apply_affecting_effect( const spelleffect_data_t& effect ) override;
+
+  damage_buff_t* apply_affecting_aura( const spell_data_t* spell )
+  {
+    buff_t::apply_affecting_aura( spell );
+    return this;
+  }
+
+  damage_buff_t* apply_affecting_conduit( const conduit_data_t& conduit, int effect_num = 1 )
+  {
+    buff_t::apply_affecting_conduit( conduit, effect_num );
+    return this;
+  }
+
+  damage_buff_t* set_direct_mod( double );
+  damage_buff_t* set_direct_mod( const spell_data_t*, size_t, double = 0.0 );
+  damage_buff_t* set_periodic_mod( double );
+  damage_buff_t* set_periodic_mod( const spell_data_t*, size_t, double = 0.0 );
+  damage_buff_t* set_auto_attack_mod( double );
+  damage_buff_t* set_auto_attack_mod( const spell_data_t*, size_t, double = 0.0 );
+
+  bool is_affecting_direct( const spell_data_t* );
+  bool is_affecting_periodic( const spell_data_t* );
+
+  // Get current direct damage buff value + benefit tracking.
+  double value_direct()
+  {
+    buff_t::stack();
+    return current_stack ? direct_mod.multiplier : 1.0;
+  }
+
+  // Get current direct damage buff value multiplied by current stacks + benefit tracking.
+  double stack_value_direct()
+  { return current_stack * value_direct(); }
+
+  // Get current direct damage buff value + NO benefit tracking.
+  double check_value_direct() const
+  { return current_stack ? direct_mod.multiplier : 1.0; }
+
+  // Get current direct damage buff value multiplied by current stacks + NO benefit tracking.
+  double check_stack_value_direct() const
+  { return current_stack * check_value_direct(); }
+
+  // Get current periodic damage buff value + benefit tracking.
+  double value_periodic()
+  {
+    buff_t::stack();
+    return current_stack ? periodic_mod.multiplier : 1.0;
+  }
+
+  // Get current periodic damage buff value multiplied by current stacks + benefit tracking.
+  double stack_value_periodic()
+  { return current_stack * value_periodic(); }
+
+  // Get current periodic damage buff value + NO benefit tracking.
+  double check_value_periodic() const
+  { return current_stack ? periodic_mod.multiplier : 1.0; }
+
+  // Get current periodic damage buff value multiplied by current stacks + NO benefit tracking.
+  double check_stack_value_periodic() const
+  { return current_stack * check_value_periodic(); }
+
+  // Get current AA damage buff value + benefit tracking.
+  double value_auto_attack()
+  {
+    buff_t::stack();
+    return current_stack ? auto_attack_mod.multiplier : 1.0;
+  }
+
+  // Get current AA damage buff value multiplied by current stacks + benefit tracking.
+  double stack_value_auto_attack()
+  { return current_stack * value_auto_attack(); }
+
+  // Get current AA damage buff value + NO benefit tracking.
+  double check_value_auto_attack() const
+  { return current_stack ? auto_attack_mod.multiplier : 1.0; }
+
+  // Get current AA damage buff value multiplied by current stacks + NO benefit tracking.
+  double check_stack_value_auto_attack() const
+  { return current_stack * check_value_auto_attack(); }
+
+protected:
+  damage_buff_t* set_buff_mod( damage_buff_modifier_t&, double );
+  damage_buff_t* set_buff_mod( damage_buff_modifier_t&, const spell_data_t*, size_t, double );
+};
+
 /**
  * @brief Creates a buff
  *
@@ -439,15 +556,4 @@ inline Buff* make_buff( Args&&... args )
                  "Buff must be derived from buff_t" );
   return new Buff( std::forward<Args>(args)... );
 }
-
-struct movement_buff_t : public buff_t
-{
-  movement_buff_t( player_t* p ) : buff_t( p, "movement" )
-  {
-    set_max_stack( 1 );
-  }
-
-  bool trigger( int stacks, double value, double chance, timespan_t duration ) override;
-  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override;
-};
 
