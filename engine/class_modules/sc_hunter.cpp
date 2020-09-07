@@ -3162,7 +3162,8 @@ struct barbed_shot_t: public hunter_ranged_attack_t
 
   void init_finished() override
   {
-    for ( auto pet : p()->pet_list )
+    pet_t* pets[] = { p() -> pets.main, p() -> pets.animal_companion };
+    for ( auto pet : pets )
       add_pet_stats( pet, { "stomp" } );
 
     hunter_ranged_attack_t::init_finished();
