@@ -5,9 +5,9 @@
 
 #include "ImportTab.hpp"
 #include "MainWindow.hpp"
-#include "engine/interfaces/bcp_api.hpp"
-#include "engine/lib/fmt/format.h"
-#include "engine/player/sc_player.hpp"
+#include "interfaces/bcp_api.hpp"
+#include "lib/fmt/format.h"
+#include "player/sc_player.hpp"
 #include "sc_OptionsTab.hpp"
 #include "simulationcraftqt.hpp"
 

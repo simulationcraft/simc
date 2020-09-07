@@ -99,6 +99,11 @@
     <OutDir>$(SolutionDir)\$(PlatformShortName)\$(Configuration)\</OutDir>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(ProjectDir)../qt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
   <!-- Set Correct QT PATH -->
   <PropertyGroup Label="UserMacros" Condition="'$(Platform)'=='x64'">
     <QTDIR>$(QTDIR_x64)</QTDIR>
@@ -252,6 +257,7 @@
       <GenerateMapFile>true</GenerateMapFile>
     </Link>
   </ItemDefinitionGroup>
+  <Import Project="CommonIncludeDirectories.props" />
   <Import Project="..\source_files\VS_engine.props" />
   <Import Project="..\source_files\VS_gui.props" />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
