@@ -3,6 +3,7 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
+#include "ImportTab.hpp"
 #include "MainWindow.hpp"
 #include "engine/interfaces/bcp_api.hpp"
 #include "engine/lib/fmt/format.h"

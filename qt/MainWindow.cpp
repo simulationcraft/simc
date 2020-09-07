@@ -5,6 +5,7 @@
 
 #include "MainWindow.hpp"
 
+#include "ImportTab.hpp"
 #include "WebView.hpp"
 #include "engine/dbc/dbc.hpp"
 #include "engine/dbc/spell_query/spell_data_expr.hpp"

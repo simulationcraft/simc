@@ -12,6 +12,8 @@
 #include <QtGui/QtGui>
 #include <QtWidgets/QtWidgets>
 
+enum import_tabs_e : int;
+
 class SC_MainWindowCommandLine : public QWidget
 {
   Q_OBJECT

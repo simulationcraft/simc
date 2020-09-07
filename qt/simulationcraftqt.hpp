@@ -29,6 +29,7 @@ struct sim_t;
 #include "util/sc_recentlyclosed.hpp"  // remove once implementations are moved to source files
 #include "util/sc_searchbox.hpp"       // remove once implementations are moved to source files
 #include "util/sc_textedit.hpp"        // remove once implementations are moved to source files
+#include "EnumeratedTab.hpp"
 #include "engine/util/string_view.hpp"
 
 #if defined( Q_OS_MAC ) || defined( VS_NEW_BUILD_SYSTEM )
@@ -47,15 +48,6 @@ enum main_tabs_e
   TAB_LOG,
   TAB_SPELLQUERY,
   TAB_COUNT
-};
-
-enum import_tabs_e
-{
-  TAB_IMPORT_NEW = 0,
-  TAB_ADDON,
-  TAB_BIS,
-  TAB_RECENT,
-  TAB_CUSTOM
 };
 
 class SC_WebView;
@@ -95,85 +87,6 @@ private:
 
 private slots:
   void setSelected( int id, bool checked );
-};
-
-// ============================================================================
-// SC_enumeratedTabWidget template
-// ============================================================================
-
-template <typename E>
-class SC_enumeratedTab : public QTabWidget
-{
-  QList<QPair<Qt::Key, QList<Qt::KeyboardModifier> > > ignoreKeys;
-
-public:
-  SC_enumeratedTab( QWidget* parent = nullptr ) : QTabWidget( parent )
-  {
-  }
-
-  E currentTab()
-  {
-    return static_cast<E>( currentIndex() );
-  }
-
-  void setCurrentTab( E t )
-  {
-    return setCurrentIndex( static_cast<int>( t ) );
-  }
-
-  void addIgnoreKeyPressEvent( Qt::Key k, QList<Qt::KeyboardModifier> s )
-  {
-    QPair<Qt::Key, QList<Qt::KeyboardModifier> > p( k, s );
-    if ( !ignoreKeys.contains( p ) )
-      ignoreKeys.push_back( p );
-  }
-
-  bool removeIgnoreKeyPressEvent( Qt::Key k, QList<Qt::KeyboardModifier> s )
-  {
-    QPair<Qt::Key, QList<Qt::KeyboardModifier> > p( k, s );
-    return ignoreKeys.removeAll( p );
-  }
-
-  void removeAllIgnoreKeyPressEvent()
-  {
-    QList<QPair<Qt::Key, QList<Qt::KeyboardModifier> > > emptyList;
-    ignoreKeys = emptyList;
-  }
-
-protected:
-  void keyPressEvent( QKeyEvent* e ) override
-  {
-    int k                   = e->key();
-    Qt::KeyboardModifiers m = e->modifiers();
-
-    QList<QPair<Qt::Key, QList<Qt::KeyboardModifier> > >::iterator i = ignoreKeys.begin();
-    for ( ; i != ignoreKeys.end(); ++i )
-    {
-      if ( ( *i ).first == k )
-      {
-        bool passModifiers                      = true;
-        QList<Qt::KeyboardModifier>::iterator j = ( *i ).second.begin();
-
-        for ( ; j != ( *i ).second.end(); ++j )
-        {
-          if ( m.testFlag( ( *j ) ) == false )
-          {
-            passModifiers = false;
-            break;
-          }
-        }
-
-        if ( passModifiers )
-        {
-          // key combination matches, send key to base classe's base
-          QWidget::keyPressEvent( e );
-          return;
-        }
-      }
-    }
-    // no key match
-    QTabWidget::keyPressEvent( e );
-  }
 };
 
 // ============================================================================
@@ -435,18 +348,6 @@ public:
 
 public slots:
   void TabChanged( int index );
-};
-
-// ============================================================================
-// SC_ImportTabWidget
-// ============================================================================
-
-class SC_ImportTab : public SC_enumeratedTab<import_tabs_e>
-{
-  Q_OBJECT
-public:
-  SC_ImportTab( QWidget* parent = nullptr );
-  SC_AddonImportTab* addonTab;
 };
 
 class SC_ImportThread : public QThread

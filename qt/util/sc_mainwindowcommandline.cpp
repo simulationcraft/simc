@@ -5,6 +5,7 @@
 
 #include "sc_mainwindowcommandline.hpp"
 
+#include "ImportTab.hpp"
 #include "util/generic.hpp"
 
 SC_MainWindowCommandLine::SC_MainWindowCommandLine( QWidget* parent )
