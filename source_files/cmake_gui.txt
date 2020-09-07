@@ -1,4 +1,5 @@
 set(source_files
+MainWindow.hpp
 sc_AddonImportTab.hpp
 sc_importWidget.hpp
 sc_importWindow.hpp
@@ -19,7 +20,11 @@ util/sc_relativepopup.hpp
 util/sc_searchbox.hpp
 util/sc_tabbar.hpp
 util/sc_textedit.hpp
+WebEngineConfig.hpp
+WebPage.hpp
+WebView.hpp
 main.cpp
+MainWindow.cpp
 sc_AddonImportTab.cpp
 sc_ImportTab.cpp
 sc_ImportThread.cpp
@@ -41,5 +46,6 @@ util/sc_relativepopup.cpp
 util/sc_searchbox.cpp
 util/sc_tabbar.cpp
 util/sc_textedit.cpp
+WebView.cpp
 simcqt.qrc
 )

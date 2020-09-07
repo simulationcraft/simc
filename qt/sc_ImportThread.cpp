@@ -3,6 +3,7 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
+#include "MainWindow.hpp"
 #include "interfaces/bcp_api.hpp"
 #include "sc_OptionsTab.hpp"
 #include "simulationcraftqt.hpp"

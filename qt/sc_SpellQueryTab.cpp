@@ -3,10 +3,13 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "simulationcraft.hpp"
-#include "simulationcraftqt.hpp"
 #include "sc_SpellQueryTab.hpp"
+
+#include "MainWindow.hpp"
+#include "simulationcraftqt.hpp"
 #include "util/sc_mainwindowcommandline.hpp"
+
+#include "simulationcraft.hpp"
 
 namespace { // unnamed namespace
 
@@ -291,7 +294,7 @@ void SC_SpellQueryTab::run_spell_query()
   mainWindow->cmdLine->setCommandLineText( command );
 
   // call the sim - results will be stuffed back into textbox in SC_MainWindow::deleteSim()
-  mainWindow->simulationQueue.enqueue( "Spell Query", "", command );
+  mainWindow->simulationQueue->enqueue( "Spell Query", "", command );
 }
 
 void SC_SpellQueryTab::runSpellQuerySlot()
