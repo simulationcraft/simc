@@ -147,7 +147,7 @@
       <PreprocessorDefinitions>_WINDOWS;UNICODE;WIN32;QT_LARGEFILE_SUPPORT;Q_OS_WIN;QT_DLL;QT_WEBENGINE_LIB;QT_GUI_LIB;QT_CORE_LIB;QT_THREAD_SUPPORT;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>qtmaind.lib;wininet.lib;Qt5WebEngined.lib;Qt5Networkd.lib;Qt5Guid.lib;Qt5Cored.lib;Qt5Widgetsd.lib;Qt5WebEngineWidgetsd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>qtmaind.lib;wininet.lib;crypt32.lib;Qt5WebEngined.lib;Qt5Networkd.lib;Qt5Guid.lib;Qt5Cored.lib;Qt5Widgetsd.lib;Qt5WebEngineWidgetsd.lib;(AdditionalDependencies)</AdditionalDependencies>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -193,7 +193,7 @@
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;UNICODE;WIN32;Q_OS_WIN;QT_LARGEFILE_SUPPORT;QT_DLL;QT_NO_DEBUG_OUTPUT;QT_NO_DEBUG;QT_WEBENGINE_LIB;QT_GUI_LIB;QT_CORE_LIB;QT_THREAD_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>qtmain.lib;wininet.lib;Qt5WebEngine.lib;Qt5Network.lib;Qt5Gui.lib;Qt5Core.lib;Qt5Widgets.lib;Qt5WebEngineWidgets.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>qtmain.lib;wininet.lib;crypt32.lib;Qt5WebEngine.lib;Qt5Network.lib;Qt5Gui.lib;Qt5Core.lib;Qt5Widgets.lib;Qt5WebEngineWidgets.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -243,7 +243,7 @@
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;UNICODE;WIN32;Q_OS_WIN;QT_LARGEFILE_SUPPORT;QT_DLL;QT_NO_DEBUG_OUTPUT;QT_NO_DEBUG;QT_WEBENGINE_LIB;QT_GUI_LIB;QT_CORE_LIB;QT_THREAD_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>qtmain.lib;wininet.lib;Qt5WebEngine.lib;Qt5Network.lib;Qt5Gui.lib;Qt5Core.lib;Qt5Widgets.lib;Qt5WebEngineWidgets.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>qtmain.lib;wininet.lib;crypt32.lib;Qt5WebEngine.lib;Qt5Network.lib;Qt5Gui.lib;Qt5Core.lib;Qt5Widgets.lib;Qt5WebEngineWidgets.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
