@@ -5,6 +5,8 @@ To change the list of source files run synchronize.py
 
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 	<ItemGroup>
+		<ClCompile Include="$(IntDir)moc_EnumeratedTab.cpp" />
+		<ClCompile Include="$(IntDir)moc_ImportTab.cpp" />
 		<ClCompile Include="$(IntDir)moc_MainWindow.cpp" />
 		<ClCompile Include="$(IntDir)moc_sc_AddonImportTab.cpp" />
 		<ClCompile Include="$(IntDir)moc_sc_importWidget.cpp" />
@@ -29,10 +31,11 @@ To change the list of source files run synchronize.py
 		<ClCompile Include="$(IntDir)moc_WebEngineConfig.cpp" />
 		<ClCompile Include="$(IntDir)moc_WebPage.cpp" />
 		<ClCompile Include="$(IntDir)moc_WebView.cpp" />
+		<ClCompile Include="..\qt\EnumeratedTab.cpp" />
+		<ClCompile Include="..\qt\ImportTab.cpp" />
 		<ClCompile Include="..\qt\main.cpp" />
 		<ClCompile Include="..\qt\MainWindow.cpp" />
 		<ClCompile Include="..\qt\sc_AddonImportTab.cpp" />
-		<ClCompile Include="..\qt\sc_ImportTab.cpp" />
 		<ClCompile Include="..\qt\sc_ImportThread.cpp" />
 		<ClCompile Include="..\qt\sc_importWidget.cpp" />
 		<ClCompile Include="..\qt\sc_importWindow.cpp" />
@@ -83,6 +86,20 @@ To change the list of source files run synchronize.py
 
 	<!-- Moc'ing GUI Header files -->
 	<ItemGroup>
+		<CustomBuild Include="..\qt\EnumeratedTab.hpp">
+			<AdditionalInputs>$(QTDIR)\bin\moc.exe</AdditionalInputs>
+			<Message>Moc%27ing %(Identity)... ( with $(QTDIR)\bin\moc.exe )</Message>
+			<Command>"$(QTDIR)\bin\moc.exe" $(MOC_DEFINES) -I"$(QTDIR)\include" -I"(SolutionDir)engine" -I"$(QTDIR)\mkspecs\default" "%(Identity)" -o "$(IntDir)moc_%(Filename).cpp" </Command>
+			<AdditionalInputs>Rem;..\qt\EnumeratedTab.hpp;%(AdditionalInputs)</AdditionalInputs>
+			<Outputs>$(IntDir)\moc_%(Filename).cpp</Outputs>
+		</CustomBuild>
+		<CustomBuild Include="..\qt\ImportTab.hpp">
+			<AdditionalInputs>$(QTDIR)\bin\moc.exe</AdditionalInputs>
+			<Message>Moc%27ing %(Identity)... ( with $(QTDIR)\bin\moc.exe )</Message>
+			<Command>"$(QTDIR)\bin\moc.exe" $(MOC_DEFINES) -I"$(QTDIR)\include" -I"(SolutionDir)engine" -I"$(QTDIR)\mkspecs\default" "%(Identity)" -o "$(IntDir)moc_%(Filename).cpp" </Command>
+			<AdditionalInputs>Rem;..\qt\ImportTab.hpp;%(AdditionalInputs)</AdditionalInputs>
+			<Outputs>$(IntDir)\moc_%(Filename).cpp</Outputs>
+		</CustomBuild>
 		<CustomBuild Include="..\qt\MainWindow.hpp">
 			<AdditionalInputs>$(QTDIR)\bin\moc.exe</AdditionalInputs>
 			<Message>Moc%27ing %(Identity)... ( with $(QTDIR)\bin\moc.exe )</Message>
