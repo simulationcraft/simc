@@ -1,6 +1,11 @@
 #include "sc_SampleProfilesTab.hpp"
-#include <QDir>
+
+#include "sc_enums.hpp"
 #include "simulationcraftqt.hpp"
+#include "util/generic.hpp"
+#include "util/util.hpp"
+
+#include <QDir>
 
 SC_SampleProfilesTab::SC_SampleProfilesTab( QWidget* parent ) :
     QGroupBox( parent ),

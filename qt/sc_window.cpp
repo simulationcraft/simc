@@ -516,6 +516,22 @@ void SC_MainWindow::updateWebView( SC_WebView* wv )
   }
 }
 
+void SC_MainWindow::toggle_pause()
+{
+  if ( ! sim )
+    return;
+
+  if ( ! sim -> paused )
+  {
+    sim -> pause_mutex -> lock();
+  }
+  else
+  {
+    sim -> pause_mutex -> unlock();
+  }
+
+  sim -> paused = ! sim -> paused;
+}
 // ==========================================================================
 // Sim Initialization
 // ==========================================================================
