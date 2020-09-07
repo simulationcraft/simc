@@ -3,7 +3,6 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 #pragma once
-#include "config.hpp"
 
 #include "util/sc_recentlyclosed.hpp"
 

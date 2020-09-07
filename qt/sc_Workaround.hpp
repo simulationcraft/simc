@@ -3,7 +3,8 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 #pragma once
-#include "simulationcraft.hpp"
+
+struct sim_t;
 
 namespace workaround
 {

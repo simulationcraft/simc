@@ -29,7 +29,7 @@ struct sim_t;
 #include "util/sc_recentlyclosed.hpp"  // remove once implementations are moved to source files
 #include "util/sc_searchbox.hpp"       // remove once implementations are moved to source files
 #include "util/sc_textedit.hpp"        // remove once implementations are moved to source files
-#include "util/string_view.hpp"
+#include "engine/util/string_view.hpp"
 
 #if defined( Q_OS_MAC ) || defined( VS_NEW_BUILD_SYSTEM )
 #include "sc_importWindow.hpp"

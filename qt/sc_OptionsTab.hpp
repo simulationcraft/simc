@@ -3,7 +3,6 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 #pragma once
-#include "config.hpp"
 
 #include <QtWidgets/QTabWidget>
 

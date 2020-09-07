@@ -4,11 +4,11 @@
 // ==========================================================================
 
 #include "MainWindow.hpp"
-#include "interfaces/bcp_api.hpp"
+#include "engine/interfaces/bcp_api.hpp"
+#include "engine/lib/fmt/format.h"
+#include "engine/player/sc_player.hpp"
 #include "sc_OptionsTab.hpp"
 #include "simulationcraftqt.hpp"
-
-#include "simulationcraft.hpp"
 
 #ifdef Q_OS_MAC
 #include <CoreFoundation/CoreFoundation.h>

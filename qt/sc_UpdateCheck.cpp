@@ -1,11 +1,11 @@
 #include "sc_UpdateCheck.hpp"
 
+#include "engine/config.hpp"
+
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QNetworkReply>
-
-#include "simulationcraft.hpp"
 
 static const QString UPDATE_CHECK_URL{ "%1://www.simulationcraft.org/version.json" };
 

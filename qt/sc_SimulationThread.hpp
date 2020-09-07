@@ -1,9 +1,7 @@
 #pragma once
-#include "config.hpp"
-
-#include "simulationcraftqt.hpp"
 
 #include <QThread>
+#include <memory>
 
 class SC_MainWindow;
 struct sim_t;
