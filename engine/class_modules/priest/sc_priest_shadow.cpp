@@ -3,10 +3,11 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "simulationcraft.hpp"
-
 #include "sc_enums.hpp"
 #include "sc_priest.hpp"
+
+#include "simulationcraft.hpp"
+
 
 namespace priestspace
 {
@@ -1325,7 +1326,7 @@ struct shadow_crash_t final : public priest_spell_t
   // Ensuring that we can't cast on a target that is too close
   bool target_ready( player_t* candidate_target ) override
   {
-    if ( player->get_player_distance( *candidate_target ) < data().min_range() )
+    if ( player->get_player_distance( *candidate_target ) < ( data().min_range() - data().effectN( 1 ).radius() ) )
     {
       return false;
     }
@@ -2163,7 +2164,12 @@ void priest_t::init_spells_shadow()
   azerite.torment_of_torments    = find_azerite_spell( "Torment of Torments" );
   azerite.whispers_of_the_damned = find_azerite_spell( "Whispers of the Damned" );
 
-  base.distance = 0.0;
+  // Need to be 8 yards away for Ascended Nova
+  // Need to be 10 yards - SC radius for Shadow Crash
+  if ( specialization() == PRIEST_SHADOW )
+  {
+    base.distance = 8.0;
+  }
 }
 
 action_t* priest_t::create_action_shadow( util::string_view name, util::string_view options_str )
@@ -2390,8 +2396,7 @@ void priest_t::generate_apl_shadow()
   main->add_talent( this, "Surrender to Madness", "target_if=target.time_to_die<25&buff.voidform.down",
                     "Use Surrender to Madness on a target that is going to die at the right time." );
   main->add_talent( this, "Mindbender" );
-  main->add_talent( this, "Void Torrent",
-                    "target_if=variable.all_dots_up&!buff.voidform.up&target.time_to_die>4",
+  main->add_talent( this, "Void Torrent", "target_if=variable.all_dots_up&!buff.voidform.up&target.time_to_die>4",
                     "Use Void Torrent only if all DoTs are active and the target won't die during the channel." );
   main->add_action( this, "Shadow Word: Death",
                     "if=runeforge.painbreaker_psalm.equipped&variable.dots_up&target.health.pct>30",

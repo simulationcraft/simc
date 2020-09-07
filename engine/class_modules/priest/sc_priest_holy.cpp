@@ -224,7 +224,7 @@ void priest_t::init_spells_holy()
   specs.holy_priest = find_specialization_spell( "Holy Priest" );
 
   // Range Based on Talents
-  if ( base.distance != 5 )
+  if ( base.distance != 5 && specialization() == PRIEST_HOLY )
   {
     if ( talents.divine_star->ok() )
     {
