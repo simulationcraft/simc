@@ -2066,7 +2066,7 @@ public:
   }
 
   template <typename... Ts>
-  void parse_buff_effects( buff_t* buff, unsigned ignore, Ts... mods )
+  void parse_buff_effects( buff_t* buff, unsigned ignore_start, unsigned ignore_end, Ts... mods )
   {
     if ( !buff )
       return;
@@ -2075,7 +2075,7 @@ public:
 
     for ( size_t i = 1; i <= s_data->effect_count(); i++ )
     {
-      if ( i == as<size_t>( ignore ) )
+      if ( ignore_start && i >= as<size_t>( ignore_start ) && ( i <= as<size_t>( ignore_end ) || !ignore_end ) )
         continue;
 
       parse_buff_effect( buff, s_data, i, mods... );
@@ -2083,17 +2083,15 @@ public:
   }
 
   template <typename... Ts>
+  void parse_buff_effects( buff_t* buff, unsigned ignore, Ts... mods )
+  {
+    parse_buff_effects<Ts...>( buff, ignore, ignore, mods... );
+  }
+
+  template <typename... Ts>
   void parse_buff_effects( buff_t* buff, Ts... mods )
   {
-    if ( !buff )
-      return;
-
-    const spell_data_t* s_data = &buff->data();
-
-    for ( size_t i = 1; i <= s_data->effect_count(); i++ )
-    {
-      parse_buff_effect( buff, s_data, i, mods... );
-    }
+    parse_buff_effects<Ts...>( buff, 0u, 0u, mods... );
   }
 
   double get_buff_effects_value( const std::vector<buff_effect_t>& buffeffects, bool flat = false, bool benefit = true,
@@ -2136,15 +2134,12 @@ public:
     using S = const spell_data_t*;
     using C = const conduit_data_t&;
 
-    parse_buff_effects<C>( p()->buff.ravenous_frenzy,
-                           p()->conduit.endless_thirst );
+    parse_buff_effects<C>( p()->buff.ravenous_frenzy, p()->conduit.endless_thirst );
     parse_buff_effects( p()->buff.heart_of_the_wild );
-    parse_buff_effects<C>( p()->buff.convoke_the_spirits,
-                           p()->conduit.conflux_of_elements );
+    parse_buff_effects<C>( p()->buff.convoke_the_spirits, p()->conduit.conflux_of_elements );
 
     // Balance
     parse_buff_effects( p()->buff.moonkin_form );
-    //parse_buff_effects( p()->buff.celestial_alignment );
     parse_buff_effects( p()->buff.incarnation_moonkin );
     parse_buff_effects( p()->buff.owlkin_frenzy );
     parse_buff_effects( p()->buff.warrior_of_elune );
@@ -2153,20 +2148,24 @@ public:
     parse_buff_effects( p()->buff.oneths_free_starfall );
     parse_buff_effects( p()->buff.oneths_free_starsurge );
     parse_buff_effects( p()->buff.timeworn_dreambinder );
-    parse_buff_effects<S, S, S>( p()->buff.eclipse_lunar, 2u,
-                                 p()->mastery.total_eclipse,
-                                 p()->spec.eclipse_2,
+    // effect#2 holds the eclipse bonus effect, handled separately in eclipse_buff_t
+    parse_buff_effects<S, S>( p()->buff.eclipse_solar, 2u, p()->mastery.total_eclipse, p()->spec.eclipse_2 );
+    parse_buff_effects<S, S, S>( p()->buff.eclipse_lunar, 2u, p()->mastery.total_eclipse, p()->spec.eclipse_2,
                                  p()->talent.soul_of_the_forest_moonkin );
-    parse_buff_effects<S, S>( p()->buff.eclipse_solar, 2u,
-                              p()->mastery.total_eclipse,
-                              p()->spec.eclipse_2 );
 
     // Guardian
     parse_buff_effects( p()->buff.bear_form );
-    parse_buff_effects<S>( p()->buff.berserk_bear,
-                           p()->spec.berserk_bear_2 );
-    parse_buff_effects<S>( p()->buff.incarnation_bear,
-                           p()->spec.berserk_bear_2 );
+    // legacy of the sleeper does not use standard effect redirect methods
+    if ( p()->legendary.legacy_of_the_sleeper->ok() )
+    {
+      parse_buff_effects<S>( p()->buff.berserk_bear, p()->spec.berserk_bear_2 );
+      parse_buff_effects<S>( p()->buff.incarnation_bear, p()->spec.berserk_bear_2 );
+    }
+    else
+    {
+      parse_buff_effects<S>( p()->buff.berserk_bear, 5u, 0u, p()->spec.berserk_bear_2 );
+      parse_buff_effects<S>( p()->buff.incarnation_bear, 7u, 0u, p()->spec.berserk_bear_2 );
+    }
     parse_buff_effects( p()->buff.sharpened_claws );
 
     // Feral
