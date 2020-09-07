@@ -52,6 +52,7 @@ To change the list of source files run synchronize.py
 		<ClCompile Include="..\qt\util\sc_searchbox.cpp" />
 		<ClCompile Include="..\qt\util\sc_tabbar.cpp" />
 		<ClCompile Include="..\qt\util\sc_textedit.cpp" />
+		<ClCompile Include="..\qt\WebPage.cpp" />
 		<ClCompile Include="..\qt\WebView.cpp" />
 	</ItemGroup>
 

@@ -49,6 +49,7 @@ SOURCES += qt/util/sc_relativepopup.cpp
 SOURCES += qt/util/sc_searchbox.cpp
 SOURCES += qt/util/sc_tabbar.cpp
 SOURCES += qt/util/sc_textedit.cpp
+SOURCES += qt/WebPage.cpp
 SOURCES += qt/WebView.cpp
 
 RESOURCES += qt/simcqt.qrc
