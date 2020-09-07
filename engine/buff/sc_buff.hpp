@@ -458,13 +458,13 @@ struct damage_buff_t : public buff_t
 
   buff_t* apply_affecting_effect( const spelleffect_data_t& effect ) override;
 
-  damage_buff_t* apply_affecting_aura( const spell_data_t* spell )
+  damage_buff_t* apply_affecting_aura( const spell_data_t* spell ) override
   {
     buff_t::apply_affecting_aura( spell );
     return this;
   }
 
-  damage_buff_t* apply_affecting_conduit( const conduit_data_t& conduit, int effect_num = 1 )
+  damage_buff_t* apply_affecting_conduit( const conduit_data_t& conduit, int effect_num = 1 ) override
   {
     buff_t::apply_affecting_conduit( conduit, effect_num );
     return this;
