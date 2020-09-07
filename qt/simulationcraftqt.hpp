@@ -60,11 +60,7 @@ class SC_ImportThread;
 
 inline QString webEngineName()
 {
-#if defined( SC_USE_WEBKIT )
-  return "WebKit";
-#else
   return "WebEngine";
-#endif
 }
 
 struct SC_PATHS

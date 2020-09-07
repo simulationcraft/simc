@@ -33,15 +33,9 @@ SC_WebView::SC_WebView( SC_MainWindow* mw, QWidget* parent, const QString& h )
   connect( this, SIGNAL( loadProgress( int ) ), this, SLOT( loadProgressSlot( int ) ) );
   connect( this, SIGNAL( loadFinished( bool ) ), this, SLOT( loadFinishedSlot( bool ) ) );
   connect( this, SIGNAL( urlChanged( const QUrl& ) ), this, SLOT( urlChangedSlot( const QUrl& ) ) );
-#if defined( SC_USE_WEBKIT )
-  connect( this, SIGNAL( linkClicked( const QUrl& ) ), this, SLOT( linkClickedSlot( const QUrl& ) ) );
-#endif
 
   SC_WebPage* page = new SC_WebPage( this );
   setPage( page );
-#if defined( SC_USE_WEBKIT )
-  page->setLinkDelegationPolicy( QWebPage::DelegateExternalLinks );
-#endif
 
   // Add QT Major Version to avoid "mysterious" problems resulting in qBadAlloc.
   QDir dir( mainWindow->TmpDir + QDir::separator() + "simc_webcache_qt" +
@@ -56,9 +50,6 @@ SC_WebView::SC_WebView( SC_MainWindow* mw, QWidget* parent, const QString& h )
     QNetworkDiskCache* diskCache = new QNetworkDiskCache( this );
     diskCache->setCacheDirectory( dir.absolutePath() );
     QString test = diskCache->cacheDirectory();
-#if defined( SC_USE_WEBKIT )
-    page->networkAccessManager()->setCache( diskCache );
-#endif
   }
   else
   {
@@ -75,13 +66,6 @@ void SC_WebView::loadHtml()
 {
   setHtml( html_str );
 }
-
-#if defined( SC_USE_WEBKIT )
-QString SC_WebView::toHtml()
-{
-  return page()->currentFrame()->toHtml();
-}
-#endif
 
 void SC_WebView::enableMouseNavigation()
 {
@@ -198,23 +182,6 @@ void SC_WebView::urlChangedSlot( const QUrl& url )
   mainWindow->updateWebView( this );
 }
 
-#if defined( SC_USE_WEBKIT )
-void SC_WebView::linkClickedSlot( const QUrl& url )
-{
-  QString clickedurl = url.toString();
-
-  // Wowhead links tend to crash the gui, so we'll send them to an external browser.
-  // AMR and Lootrank links are nice to load externally too so we don't lose sim results
-  // In general, we err towards opening things externally because we are not Mozilla
-  // github.com is needed for our help tab; battle.net (us/eu) and battlenet (china) cover armory
-  if ( url.isLocalFile() || clickedurl.contains( "battle.net" ) || clickedurl.contains( "battlenet" ) ||
-       clickedurl.contains( "github.com" ) )
-    load( url );
-  else
-    QDesktopServices::openUrl( url );
-}
-#endif
-
 void SC_WebView::hideSearchBox()
 {
   previousSearch = "";  // disable clearing of highlighted text on next search
@@ -223,18 +190,6 @@ void SC_WebView::hideSearchBox()
 
 void SC_WebView::findSomeText( const QString& text, SC_WebEnginePage::FindFlags options )
 {
-#if defined( SC_USE_WEBKIT )
-  if ( !previousSearch.isEmpty() && previousSearch != text )
-  {
-    findText( "", SC_WebEnginePage::HighlightAllOccurrences );  // clears previous highlighting
-  }
-  previousSearch = text;
-
-  if ( searchBox->wrapSearch() )
-  {
-    options |= SC_WebEnginePage::FindWrapsAroundDocument;
-  }
-#endif
   findText( text, options );
 
   // If the QWebView scrolls due to searching with the SC_SearchBox visible
