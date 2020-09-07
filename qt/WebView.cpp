@@ -9,7 +9,7 @@
 #include "WebPage.hpp"
 #include "util/sc_searchbox.hpp"
 
-#include <QShortcut>
+#include <QtWidgets/QShortcut>
 
 SC_WebView::SC_WebView( SC_MainWindow* mw, QWidget* parent, const QString& h )
   : SC_WebEngineView( parent ),

@@ -30,7 +30,8 @@ struct sim_t;
 #include "util/sc_searchbox.hpp"       // remove once implementations are moved to source files
 #include "util/sc_textedit.hpp"        // remove once implementations are moved to source files
 #include "EnumeratedTab.hpp"
-#include "engine/util/string_view.hpp"
+#include "util/string_view.hpp"
+#include "util/generic.hpp"
 
 #if defined( Q_OS_MAC ) || defined( VS_NEW_BUILD_SYSTEM )
 #include "sc_importWindow.hpp"
@@ -401,7 +402,7 @@ namespace util
 // explicit conversion of string_view to QString
 inline QString to_QString( string_view sv )
 {
-  return QString::fromUtf8( sv.data(), sv.size() );
+  return QString::fromUtf8( sv.data(), as<int>( sv.size() ) );
 }
 
 }  // namespace util

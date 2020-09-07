@@ -6,8 +6,8 @@
 #include "sc_OptionsTab.hpp"
 
 #include "MainWindow.hpp"
-#include "engine/dbc/client_data.hpp"
-#include "engine/util/util.hpp"
+#include "dbc/client_data.hpp"
+#include "util/util.hpp"
 #include "sc_SimulateTab.hpp"
 #include "simulationcraftqt.hpp"
 #include "util/ComboBoxIntegerValidator.hpp"

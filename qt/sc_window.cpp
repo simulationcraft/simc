@@ -5,9 +5,9 @@
 
 #include "MainWindow.hpp"
 #include "WebView.hpp"
-#include "engine/dbc/spell_query/spell_data_expr.hpp"
-#include "engine/interfaces/sc_http.hpp"
-#include "engine/util/git_info.hpp"
+#include "dbc/spell_query/spell_data_expr.hpp"
+#include "interfaces/sc_http.hpp"
+#include "util/git_info.hpp"
 #include "sc_AddonImportTab.hpp"
 #include "sc_OptionsTab.hpp"
 #include "sc_SampleProfilesTab.hpp"

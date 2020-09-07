@@ -5,7 +5,7 @@
 
 #pragma once
 
-#include <QTabWidget>
+#include <QtWidgets/QTabWidget>
 
 class QKeyEvent;
 
