@@ -1585,50 +1585,6 @@ void SC_ReforgeButtonGroup::setSelected( int id, bool checked )
   }
 }
 
-// ==========================================================================
-// PersistentCookieJar
-// ==========================================================================
-
-void PersistentCookieJar::save()
-{
-  QFile file( fileName );
-  if ( !file.open( QIODevice::WriteOnly ) )
-  {
-    return;
-  }
-
-  QDataStream out( &file );
-  const QList<QNetworkCookie>& cookies = allCookies();
-  out << static_cast<int>( cookies.count() );
-  for ( const auto& cookie : cookies )
-  {
-    out << cookie.name();
-    out << cookie.value();
-  }
-}
-
-void PersistentCookieJar::load()
-{
-  QFile file( fileName );
-  if ( !file.open( QIODevice::ReadOnly ) )
-  {
-    return;
-  }
-
-  QDataStream in( &file );
-  QList<QNetworkCookie> cookies;
-  int count;
-  in >> count;
-  for ( int i = 0; i < count; i++ )
-  {
-    QByteArray name, value;
-    in >> name;
-    in >> value;
-    cookies.append( QNetworkCookie( name, value ) );
-  }
-  setAllCookies( cookies );
-}
-
 void SC_SingleResultTab::save_result()
 {
   QString destination;
