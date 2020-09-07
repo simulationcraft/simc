@@ -3,7 +3,7 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-// TODO as of 2020-08-30
+// TODO as of 2020-09-06
 // Class:
 // Killing Blow based mechanics (free Death Strike, Rune of Unending Thirst)
 // Defensives: Anti-Magic Zone, Lichborne
@@ -14,6 +14,7 @@
 //   and the driver uptime (6s every 45s)
 // Blood:
 // - Check that VB's absorb increase is correctly implemented
+// - Healing from Consumption damage done
 // Frost:
 //
 
@@ -526,6 +527,7 @@ public:
     // Blood
     spell_t* blood_plague;
     action_t* mark_of_blood;
+    action_t* relish_in_blood;
 
     // Frost
     action_t* cold_heart;
@@ -555,6 +557,7 @@ public:
     gain_t* blood_tap;
     gain_t* drw_heart_strike;
     gain_t* heartbreaker;
+    gain_t* relish_in_blood;
     gain_t* rune_strike;
     gain_t* tombstone;
 
@@ -749,6 +752,7 @@ public:
     const spell_data_t* blood_plague;
     const spell_data_t* blood_shield;
     const spell_data_t* bone_shield;
+    const spell_data_t* relish_in_blood;
 
     const spell_data_t* eternal_rune_weapon; // Azerite
 
@@ -3510,7 +3514,7 @@ struct bonestorm_damage_t : public death_knight_spell_t
     heal( h ), heal_count( 0 )
   {
     background = true;
-    aoe = -1;
+    aoe = as<int>( data().effectN( 2 ).base_value() );
   }
 
   void execute() override
@@ -3800,8 +3804,10 @@ struct consumption_t : public death_knight_melee_attack_t
   consumption_t( death_knight_t* p, const std::string& options_str )
     : death_knight_melee_attack_t( "consumption", p, p -> talent.consumption )
   {
+    // TODO: Healing from damage done
+
     parse_options( options_str );
-    aoe = -1;
+    aoe = as<int>( data().effectN( 3 ).base_value() );
   }
 };
 
@@ -4058,6 +4064,31 @@ struct bone_spike_graveyard_t : public death_knight_spell_t
   }
 };
 
+// Relish in Blood healing
+
+struct relish_in_blood_t : public death_knight_heal_t
+{
+  relish_in_blood_t( death_knight_t* p ) :
+    death_knight_heal_t( "relish_in_blood", p, p -> spell.relish_in_blood )
+  {
+    background = true;
+    target = p;
+  }
+
+  double action_multiplier() const override
+  {
+    double m = death_knight_heal_t::action_multiplier();
+
+    // Melekus - 2020-09-06: If Bone shield isn't up, this still heals as if you had one stack
+    if ( p() -> bugs && ! p() -> buffs.bone_shield -> up() )
+      return m;
+
+    m *= p() -> buffs.bone_shield -> stack();
+
+    return m;
+  }
+};
+
 // Main spell
 
 struct death_and_decay_base_t : public death_knight_spell_t
@@ -4108,6 +4139,14 @@ struct death_and_decay_base_t : public death_knight_spell_t
     }
 
     death_knight_spell_t::execute();
+
+    if ( p() -> buffs.crimson_scourge -> up() && p() -> talent.relish_in_blood -> ok() )
+    {
+      p() -> resource_gain( RESOURCE_RUNIC_POWER, p() -> spell.relish_in_blood -> effectN( 2 ).resource( RESOURCE_RUNIC_POWER ),
+                          p() -> gains.relish_in_blood );
+
+      p() -> active_spells.relish_in_blood -> execute();
+    }
 
     p() -> buffs.crimson_scourge -> decrement();
 
@@ -7317,6 +7356,11 @@ void death_knight_t::create_actions()
     {
       active_spells.mark_of_blood = new mark_of_blood_heal_t( this );
     }
+
+    if ( talent.relish_in_blood -> ok() )
+    {
+      active_spells.relish_in_blood = new relish_in_blood_t( this );
+    }
   }
   // Frost
   else if ( specialization() == DEATH_KNIGHT_FROST )
@@ -7812,6 +7856,7 @@ void death_knight_t::init_spells()
   spell.blood_shield        = find_spell( 77535 );
   spell.blood_plague        = find_spell( 55078 );
   spell.bone_shield         = find_spell( 195181 );
+  spell.relish_in_blood     = find_spell( 317614 );
 
   // Frost
   spell.cold_heart_damage         = find_spell( 281210 );
@@ -8594,6 +8639,7 @@ void death_knight_t::init_gains()
   gains.blood_tap                        = get_gain( "Blood Tap" );
   gains.drw_heart_strike                 = get_gain( "Rune Weapon Heart Strike" );
   gains.heartbreaker                     = get_gain( "Heartbreaker" );
+  gains.relish_in_blood                  = get_gain( "Relish in Blood" );
   gains.rune_strike                      = get_gain( "Rune Strike" );
   gains.tombstone                        = get_gain( "Tombstone" );
 
