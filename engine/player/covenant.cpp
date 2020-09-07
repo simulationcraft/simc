@@ -582,7 +582,9 @@ struct fleshcraft_t : public spell_t
 
   void execute() override
   {
-    if ( do_pulse = player->buffs.embody_the_construct->at_max_stacks() )
+    do_pulse = player->buffs.embody_the_construct->at_max_stacks();
+
+    if ( do_pulse )
       player->buffs.embody_the_construct->expire();
 
     spell_t::execute();
