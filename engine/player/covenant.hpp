@@ -164,6 +164,8 @@ public:
 
 std::unique_ptr<covenant_state_t> create_player_state( const player_t* player );
 
+action_t* create_action( player_t* player, util::string_view name, const std::string& options );
+
 } // Namespace covenant ends
 
 inline void format_to( covenant_e covenant, fmt::format_context::iterator out )

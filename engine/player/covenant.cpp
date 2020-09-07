@@ -9,6 +9,7 @@
 #include "player/sc_player.hpp"
 #include "player/actor_target_data.hpp"
 #include "buff/sc_buff.hpp"
+#include "action/spell.hpp"
 
 #include "sim/sc_option.hpp"
 
@@ -539,6 +540,34 @@ report::sc_html_stream& covenant_state_t::generate_report( report::sc_html_strea
   }
 
   return root;
+}
+
+struct fleshcraft_t : public spell_t
+{
+  fleshcraft_t( player_t* p, util::string_view opt )
+    : spell_t( "fleshcraft", p, p->find_covenant_spell( "Fleshcraft" ) )
+  {
+    harmful = may_crit = may_miss = false;
+    channeled = true;
+
+    parse_options( opt );
+  }
+
+  double composite_haste() const override { return 1.0; }
+
+  void tick( dot_t* d ) override
+  {
+    // TODO: add shielding
+    spell_t::tick( d );
+  }
+
+};
+
+action_t* create_action( player_t* player, util::string_view name, const std::string& options )
+{
+  if ( util::str_compare_ci( name, "fleshcraft" ) ) return new fleshcraft_t( player, options );
+
+  return nullptr;
 }
 
 }  // namespace covenant

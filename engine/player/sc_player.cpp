@@ -8864,6 +8864,9 @@ action_t* player_t::create_action( util::string_view name, const std::string& op
   if ( auto action = azerite::create_action( this, name, options_str ) )
     return action;
 
+  if ( auto action = covenant::create_action( this, name, options_str ) )
+    return action;
+
   return consumable::create_action( this, name, options_str );
 }
 
