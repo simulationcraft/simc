@@ -17,6 +17,7 @@ To change the list of source files run synchronize.py
 		<ClCompile Include="$(IntDir)moc_sc_WelcomeTab.cpp" />
 		<ClCompile Include="$(IntDir)moc_sc_Workaround.cpp" />
 		<ClCompile Include="$(IntDir)moc_simulationcraftqt.cpp" />
+		<ClCompile Include="$(IntDir)moc_ComboBoxIntegerValidator.cpp" />
 		<ClCompile Include="$(IntDir)moc_sc_hoverarea.cpp" />
 		<ClCompile Include="$(IntDir)moc_sc_mainwindowcommandline.cpp" />
 		<ClCompile Include="$(IntDir)moc_sc_recentlyclosed.cpp" />
@@ -39,6 +40,7 @@ To change the list of source files run synchronize.py
 		<ClCompile Include="..\qt\sc_WelcomeTab.cpp" />
 		<ClCompile Include="..\qt\sc_window.cpp" />
 		<ClCompile Include="..\qt\sc_Workaround.cpp" />
+		<ClCompile Include="..\qt\util\ComboBoxIntegerValidator.cpp" />
 		<ClCompile Include="..\qt\util\sc_mainwindowcommandline.cpp" />
 		<ClCompile Include="..\qt\util\sc_recentlyclosed.cpp" />
 		<ClCompile Include="..\qt\util\sc_relativepopup.cpp" />
@@ -156,6 +158,13 @@ To change the list of source files run synchronize.py
 			<Message>Moc%27ing %(Identity)... ( with $(QTDIR)\bin\moc.exe )</Message>
 			<Command>"$(QTDIR)\bin\moc.exe" $(MOC_DEFINES) -I"$(QTDIR)\include" -I"(SolutionDir)engine" -I"$(QTDIR)\mkspecs\default" "%(Identity)" -o "$(IntDir)moc_%(Filename).cpp" </Command>
 			<AdditionalInputs>Rem;..\qt\simulationcraftqt.hpp;%(AdditionalInputs)</AdditionalInputs>
+			<Outputs>$(IntDir)\moc_%(Filename).cpp</Outputs>
+		</CustomBuild>
+		<CustomBuild Include="..\qt\util\ComboBoxIntegerValidator.hpp">
+			<AdditionalInputs>$(QTDIR)\bin\moc.exe</AdditionalInputs>
+			<Message>Moc%27ing %(Identity)... ( with $(QTDIR)\bin\moc.exe )</Message>
+			<Command>"$(QTDIR)\bin\moc.exe" $(MOC_DEFINES) -I"$(QTDIR)\include" -I"(SolutionDir)engine" -I"$(QTDIR)\mkspecs\default" "%(Identity)" -o "$(IntDir)moc_%(Filename).cpp" </Command>
+			<AdditionalInputs>Rem;..\qt\util\ComboBoxIntegerValidator.hpp;%(AdditionalInputs)</AdditionalInputs>
 			<Outputs>$(IntDir)\moc_%(Filename).cpp</Outputs>
 		</CustomBuild>
 		<CustomBuild Include="..\qt\util\sc_hoverarea.hpp">
