@@ -3331,6 +3331,7 @@ void player_t::create_buffs()
           }
         } );
       buffs.brons_call_to_action = make_buff( this, "brons_call_to_action", find_spell( 332514 ) );
+      buffs.embody_the_construct = make_buff( this, "embody_the_construct", find_spell( 342174 ) );
       buffs.marrowed_gemstone_charging = make_buff( this, "marrowed_gemstone_charging", find_spell( 327066 ) )
         ->modify_max_stack( 1 )
         ->set_stack_change_callback( [this]( buff_t* b, int, int new_ ) {

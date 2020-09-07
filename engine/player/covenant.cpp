@@ -544,23 +544,58 @@ report::sc_html_stream& covenant_state_t::generate_report( report::sc_html_strea
 
 struct fleshcraft_t : public spell_t
 {
+  struct embody_pulse_t : public spell_t
+  {
+    embody_pulse_t( player_t* p, double divisor ) : spell_t( "embody_the_construct", p, p->find_spell( 342181 ) )
+    {
+      background = true;
+      aoe = -1;
+      spell_power_mod.direct = 1.8 / divisor;
+    }
+
+    double composite_spell_power() const override
+    {
+      return std::max( spell_t::composite_spell_power(), spell_t::composite_attack_power() );
+    }
+  };
+
+  bool do_pulse;
+  action_t* embody_pulse;
+
   fleshcraft_t( player_t* p, util::string_view opt )
-    : spell_t( "fleshcraft", p, p->find_covenant_spell( "Fleshcraft" ) )
+    : spell_t( "fleshcraft", p, p->find_covenant_spell( "Fleshcraft" ) ), do_pulse( false ), embody_pulse( nullptr )
   {
     harmful = may_crit = may_miss = false;
     channeled = true;
 
     parse_options( opt );
+
+    if ( data().ok() && p->find_soulbind_spell( "Embody the Construct" )->ok() )
+    {
+      embody_pulse = p->find_action( "embody_the_construct" );
+      if ( !embody_pulse )
+        embody_pulse = new embody_pulse_t( p, data().duration() / data().effectN( 1 ).period() );
+    }
   }
 
   double composite_haste() const override { return 1.0; }
+
+  void execute() override
+  {
+    if ( do_pulse = player->buffs.embody_the_construct->at_max_stacks() )
+      player->buffs.embody_the_construct->expire();
+
+    spell_t::execute();
+  }
 
   void tick( dot_t* d ) override
   {
     // TODO: add shielding
     spell_t::tick( d );
-  }
 
+    if ( do_pulse && embody_pulse )
+      embody_pulse->schedule_execute();
+  }
 };
 
 action_t* create_action( player_t* player, util::string_view name, const std::string& options )

@@ -742,7 +742,11 @@ void gnashing_chompers( special_effect_t& effect )
 
 void embody_the_construct( special_effect_t& effect )
 {
+  effect.proc_flags_  = PF_ALL_DAMAGE | PF_ALL_HEAL;
+  effect.proc_flags2_ = PF2_CAST_DAMAGE | PF2_CAST_HEAL;
+  effect.custom_buff  = effect.player->buffs.embody_the_construct;
 
+  new dbc_proc_callback_t( effect.player, effect );
 }
 
 void serrated_spaulders( special_effect_t& effect )
