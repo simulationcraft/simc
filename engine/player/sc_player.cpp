@@ -1333,8 +1333,8 @@ player_t::base_initial_current_t::base_initial_current_t() :
   spell_crit_per_intellect( 0 ),
   attack_power_per_strength( 0 ),
   attack_power_per_agility( 0 ),
-  attack_power_per_spell_power( 0 ),
   attack_crit_per_agility( 0 ),
+  attack_power_per_spell_power( 0 ),
   dodge_per_agility( 0 ),
   parry_per_strength( 0 ),
   health_per_stamina( 0 ),
@@ -8861,6 +8861,8 @@ action_t* player_t::create_action( util::string_view name, const std::string& op
     return new variable_t( this, options_str );
   if ( name == "cycling_variable" )
     return new cycling_variable_t( this, options_str );
+  if ( name == "wait_for_cooldown")
+    return new wait_for_cooldown_t( this, options_str );
 
   if ( auto action = azerite::create_action( this, name, options_str ) )
     return action;

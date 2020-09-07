@@ -1942,7 +1942,7 @@ public:
     trigger_galactic_guardian( s );
   }
 
-  double mod_spell_effects_percent( const spell_data_t* s, const spelleffect_data_t* e ) { return e->percent(); }
+  double mod_spell_effects_percent( const spell_data_t*, const spelleffect_data_t* e ) { return e->percent(); }
 
   double mod_spell_effects_percent( const conduit_data_t& c, const spelleffect_data_t* )
   {
@@ -2721,7 +2721,7 @@ public:
     return tm;
   }
 
-  void trigger_clearcasting( action_state_t* s )
+  void trigger_clearcasting( action_state_t* )
   {
     int active    = ab::p()->buff.clearcasting->check();
     double chance = ab::weapon->proc_chance_on_swing( ooc_chance );

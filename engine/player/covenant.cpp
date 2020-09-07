@@ -485,7 +485,7 @@ unsigned covenant_state_t::get_covenant_ability_spell_id( bool generic ) const
     if ( e.covenant_id != static_cast<unsigned>( m_covenant ) )
       continue;
 
-    if ( e.class_id != util::class_id( m_player->type ) && !e.ability_type )
+    if ( e.class_id != as<unsigned>( util::class_id( m_player->type ) ) && !e.ability_type )
       continue;
 
     if ( e.ability_type != static_cast<unsigned>( generic ) )

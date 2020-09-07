@@ -262,6 +262,11 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
     warlock_pet_list( this ),
     active(),
     talents(),
+    azerite(),
+    azerite_essence(),
+    legendary(),
+    conduit(),
+    covenant(),
     mastery_spells(),
     cooldowns(),
     spec(),
@@ -269,9 +274,6 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
     gains(),
     procs(),
     spells(),
-    legendary(),
-    conduit(),
-    covenant(),
     initial_soul_shards( 3 ),
     default_pet()
 {

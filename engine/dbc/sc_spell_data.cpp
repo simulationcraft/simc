@@ -853,7 +853,7 @@ struct spell_class_expr_t : public spell_list_expr_t
   // returns true for spells that should check spell class family
   bool check_spell_class_family( const spell_data_t& spell ) const
   {
-    auto check_spell = []( int spell_id, bool ptr ) {
+    auto check_spell = []( unsigned spell_id, bool ptr ) {
       // conduit spells are safe to match by spell family
       const auto& conduit = conduit_entry_t::find_by_spellid( spell_id, ptr );
       if ( conduit.spell_id && conduit.spell_id == spell_id )

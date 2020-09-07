@@ -732,12 +732,13 @@ struct warrior_action_t : public Base
         fury_mastery_dot( false ),
         arms_mastery_direct( false ),
         arms_mastery_dot( false ),
+        colossus_smash( false ),
+        siegebreaker( false ),
+        glory( false),
         avatar( false ),
         sweeping_strikes( false ),
         deadly_calm( false ),
         booming_voice( false ),
-        colossus_smash( false ),
-        siegebreaker( false ),
         crushing_assault( false )
     {
     }
@@ -756,8 +757,8 @@ public:
   bool initialized;
   warrior_action_t( util::string_view n, warrior_t* player, const spell_data_t* s = spell_data_t::nil() )
     : ab( n, player, s ),
-      tactician_per_rage( 0 ),
       usable_while_channeling( false ),
+      tactician_per_rage( 0 ),
       track_cd_waste( s->cooldown() > timespan_t::zero() || s->charge_cooldown() > timespan_t::zero() ),
       cd_wasted_exec( nullptr ),
       cd_wasted_cumulative( nullptr ),
@@ -2656,8 +2657,9 @@ struct fury_execute_parent_t : public warrior_attack_t
   double max_rage;
   double rage_from_execute_rank_3;
   fury_execute_parent_t( warrior_t* p, const std::string& options_str )
-    : warrior_attack_t( "execute", p, p->spec.execute ), execute_pct( 20 ),
+    : warrior_attack_t( "execute", p, p->spec.execute ), 
       execute_rank_3( false ),
+      execute_pct( 20 ),
       rage_from_execute_rank_3(
       ( p->spec.execute_rank_3->effectN( 1 ).base_value() ) / 10.0 )
   {
@@ -4859,8 +4861,8 @@ struct fury_condemn_parent_t : public warrior_attack_t
   double max_rage;
   double rage_from_execute_rank_3;
   fury_condemn_parent_t( warrior_t* p, const std::string& options_str )
-    : warrior_attack_t( "condemn", p, p->covenant.condemn ), execute_pct_above( 80 ), execute_pct_below( 20 ),
-      execute_rank_3( false ),
+    : warrior_attack_t( "condemn", p, p->covenant.condemn ),
+      execute_rank_3( false ), execute_pct_above( 80 ), execute_pct_below( 20 ),
       rage_from_execute_rank_3(
       ( p->spec.execute_rank_3->effectN( 1 ).base_value() ) / 10.0 )
   {

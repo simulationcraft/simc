@@ -3786,7 +3786,7 @@ struct tiger_palm_t : public monk_melee_attack_t
 
     if ( p()->azerite.pressure_point.ok() )
     {
-      double pp = p()->azerite.pressure_point.value();
+      /*double pp = */ p()->azerite.pressure_point.value();
 /*      switch ( p()->specialization() )
       {
         case MONK_BREWMASTER:
