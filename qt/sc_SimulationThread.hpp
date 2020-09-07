@@ -1,6 +1,8 @@
 #pragma once
 #include "config.hpp"
+
 #include "simulationcraftqt.hpp"
+
 #include <QThread>
 
 class SC_MainWindow;
@@ -22,17 +24,27 @@ public:
   void start( std::shared_ptr<sim_t> s, const QByteArray& o, QString tab_name );
   void run() override;
   QByteArray getOptions() const
-  { return utf8_options; }
+  {
+    return utf8_options;
+  }
   QString getErrorCategory() const
-  { return error_category; }
+  {
+    return error_category;
+  }
   QString getError() const
-  { return error_str; }
+  {
+    return error_str;
+  }
   QString getTabName() const
-  { return tabName; }
+  {
+    return tabName;
+  }
 
 private slots:
   void sim_finished()
-  { emit simulationFinished( sim ); }
+  {
+    emit simulationFinished( sim );
+  }
 
 signals:
   void simulationFinished( std::shared_ptr<sim_t> s );

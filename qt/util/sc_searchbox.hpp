@@ -6,20 +6,20 @@
 #pragma once
 
 #include "config.hpp"
-#include <QtWidgets/QtWidgets>
+
 #include <QtGui/QtGui>
+#include <QtWidgets/QtWidgets>
 
 class SC_SearchBoxLineEdit : public QLineEdit
 {
-    Q_OBJECT
+  Q_OBJECT
 public:
-    SC_SearchBoxLineEdit(QWidget* parent = nullptr ) :
-        QLineEdit( parent )
-    {
-
-    }
+  SC_SearchBoxLineEdit( QWidget* parent = nullptr ) : QLineEdit( parent )
+  {
+  }
 signals:
   void lostFocus();
+
 protected:
   void focusOutEvent( QFocusEvent* e ) override;
 };
@@ -48,27 +48,26 @@ class SC_SearchBox : public QWidget
   bool emitFindOnTextChange;
   bool grabFocusOnShow;
   bool highlightTextOnShow;
+
 public:
-  SC_SearchBox( QWidget* parent = 0,
-      Qt::Corner corner = Qt::BottomLeftCorner,
-      bool show_arrows = true,
-      QBoxLayout::Direction direction = QBoxLayout::LeftToRight );
+  SC_SearchBox( QWidget* parent = 0, Qt::Corner corner = Qt::BottomLeftCorner, bool show_arrows = true,
+                QBoxLayout::Direction direction = QBoxLayout::LeftToRight );
 
   void setFocus()
   {
-    searchBox -> setFocus( Qt::MouseFocusReason );
+    searchBox->setFocus( Qt::MouseFocusReason );
   }
   QString text() const
   {
-    return searchBox -> text();
+    return searchBox->text();
   }
   void setText( const QString& text )
   {
-    searchBox -> setText( text );
+    searchBox->setText( text );
   }
   void clear()
   {
-    searchBox -> clear();
+    searchBox->clear();
   }
   void setEmitFindOnTextChange( bool emitOnChange )
   {
@@ -97,6 +96,7 @@ public slots:
   void setWrapSearch( bool wrapped );
   void setHideArrows( bool hideArrows );
   void focusLostOnChild();
+
 protected:
   void keyPressEvent( QKeyEvent* e ) override;
   void showEvent( QShowEvent* e ) override;

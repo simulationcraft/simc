@@ -1,19 +1,18 @@
-#include <QNetworkReply>
-#include <QJsonDocument>
-#include <QJsonArray>
-#include <QJsonObject>
-
-#include "simulationcraft.hpp"
 #include "sc_UpdateCheck.hpp"
 
-static const QString UPDATE_CHECK_URL { "%1://www.simulationcraft.org/version.json" };
+#include <QJsonArray>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QNetworkReply>
 
-UpdateCheckWidget::UpdateCheckWidget( QWidget* parent ) :
-  QMessageBox( parent ),
-  m_manager( new QNetworkAccessManager( this ) )
+#include "simulationcraft.hpp"
+
+static const QString UPDATE_CHECK_URL{ "%1://www.simulationcraft.org/version.json" };
+
+UpdateCheckWidget::UpdateCheckWidget( QWidget* parent )
+  : QMessageBox( parent ), m_manager( new QNetworkAccessManager( this ) )
 {
-  connect( m_manager, SIGNAL( finished( QNetworkReply* ) ),
-           this,      SLOT( replyFinished( QNetworkReply* ) ) );
+  connect( m_manager, SIGNAL( finished( QNetworkReply* ) ), this, SLOT( replyFinished( QNetworkReply* ) ) );
 }
 
 void UpdateCheckWidget::start()
@@ -92,14 +91,14 @@ void UpdateCheckWidget::replyFinished( QNetworkReply* reply )
   // practically all situations, even if converting to base10 int would be better, potentially
   auto version = latest[ "version" ].toString();
   auto release = latest[ "release" ].toString();
-  auto url = latest[ "url" ].toString();
+  auto url     = latest[ "url" ].toString();
 
   if ( SC_MAJOR_VERSION < version || SC_MINOR_VERSION < release )
   {
     setText( tr( "A new version of Simulationcraft has been released" ) );
     QString info = "<p>" + tr( "Your current version is" ) + " <strong>" + SC_VERSION + "</strong></p>";
-    info        += "<p>" + tr( "The new version is" ) + " <strong>" + version + "-" + release + "</strong></p>";
-    info        += "<p>" + tr( "You can download the new release from " ) + "<a href=\"" + url + "\">" + url + "</a>.</p>";
+    info += "<p>" + tr( "The new version is" ) + " <strong>" + version + "-" + release + "</strong></p>";
+    info += "<p>" + tr( "You can download the new release from " ) + "<a href=\"" + url + "\">" + url + "</a>.</p>";
     if ( !latest[ "notes" ].isUndefined() && latest[ "notes" ].isString() )
     {
       info += "<h3>" + tr( "Release notes" ) + "</h3>";

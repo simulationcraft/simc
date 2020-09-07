@@ -7,5 +7,5 @@
 
 namespace workaround
 {
-  void apply_workarounds( sim_t* sim );
+void apply_workarounds( sim_t* sim );
 }

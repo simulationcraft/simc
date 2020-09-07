@@ -88,11 +88,12 @@ public:
   QButtonGroup* scalingButtonGroup;
   QButtonGroup* plotsButtonGroup;
   SC_ReforgeButtonGroup* reforgeplotsButtonGroup;
-  QLineEdit* api_client_id, * api_client_secret;
+  QLineEdit *api_client_id, *api_client_secret;
 public slots:
   void _resetallSettings();
   void _savefilelocation();
   void _armoryRegionChanged( const QString& );
+
 protected:
   SC_MainWindow* mainWindow;
   void createGlobalsTab();
@@ -111,5 +112,5 @@ private slots:
   void _optionsChanged();
 signals:
   void armory_region_changed( const QString& );
-  void optionsChanged(); // FIXME: hookup to everything
+  void optionsChanged();  // FIXME: hookup to everything
 };

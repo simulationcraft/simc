@@ -6,8 +6,8 @@
 #ifndef SC_IMPORTWINDOW_HPP
 #define SC_IMPORTWINDOW_HPP
 
-// Workaround for "combaseapi.h(229): error C2187: syntax error: 'identifier' was unexpected here" when using /permissive-
-// Qt includes the 8.1 SDK which is unforunately not /permissive- compliant 
+// Workaround for "combaseapi.h(229): error C2187: syntax error: 'identifier' was unexpected here" when using
+// /permissive- Qt includes the 8.1 SDK which is unforunately not /permissive- compliant
 #if defined( _WIN32 ) && !defined( _WIN32_WINNT_WINTHRESHOLD )
 struct IUnknown;
 #endif
@@ -22,24 +22,28 @@ class SC_MainWindow;
 
 class BattleNetImportWindow : public QWidget
 {
-    Q_OBJECT
+  Q_OBJECT
 
-    // Components
-    SC_MainWindow*         m_mainWindow;
-    QShortcut*             m_shortcut;
-    BattleNetImportWidget* m_importWidget;
-    bool                   m_embedded;
+  // Components
+  SC_MainWindow* m_mainWindow;
+  QShortcut* m_shortcut;
+  BattleNetImportWidget* m_importWidget;
+  bool m_embedded;
 
 public:
-    BattleNetImportWindow( SC_MainWindow* parent, bool embedded = false );
+  BattleNetImportWindow( SC_MainWindow* parent, bool embedded = false );
 
-    QSize sizeHint() const override
-    { return m_importWidget -> sizeHint(); }
+  QSize sizeHint() const override
+  {
+    return m_importWidget->sizeHint();
+  }
 
-    BattleNetImportWidget* widget() const
-    { return m_importWidget; }
+  BattleNetImportWidget* widget() const
+  {
+    return m_importWidget;
+  }
 public slots:
-    void toggle();
+  void toggle();
 };
 
 #endif /* SC_IMPORTWINDOW_HPP */
