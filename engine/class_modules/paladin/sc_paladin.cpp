@@ -797,6 +797,10 @@ void holy_power_consumer_t::execute()
 
   paladin_melee_attack_t::execute();
 
+  // if this is a vanq-hammer-based DS, don't do this stuff
+  if ( background )
+    return;
+
   // Crusade and Relentless Inquisitor gain full stacks from free spells, but reduced stacks with FoJ
   if ( p() -> buffs.crusade -> check() )
   {
