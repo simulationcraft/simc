@@ -6,7 +6,10 @@
 
 #include "player/actor_target_data.hpp"
 #include "player/unique_gear_helper.hpp"
+#include "player/pet.hpp"
+
 #include "sim/sc_sim.hpp"
+#include "sim/sc_cooldown.hpp"
 
 namespace covenant
 {
@@ -472,9 +475,196 @@ void hammer_of_genesis( special_effect_t& effect )
   new hammer_of_genesis_cb_t( effect );
 }
 
+template <typename Base>
+struct bron_action_t : public Base
+{
+  using base_t = bron_action_t<Base>;
+
+  pet_t* bron;
+
+  bron_action_t( util::string_view n, pet_t* p, const spell_data_t* s ) : Base( n, p, s ), bron( p ) {}
+
+  void execute() override
+  {
+    Base::execute();
+
+    if ( Base::player->main_hand_attack->execute_event )
+      Base::player->main_hand_attack->execute_event->reschedule( Base::player->main_hand_weapon.swing_time );
+  }
+};
+
 void brons_call_to_action( special_effect_t& effect )
 {
+  struct bron_pet_t : public pet_t
+  {
+    struct bron_anima_cannon_t : public bron_action_t<spell_t>
+    {
+      bron_anima_cannon_t( pet_t* p ) : base_t( "anima_cannon", p, p->find_spell( 332525 ) )
+      {
+        base_execute_time = 0_ms;
+        cooldown->duration = 8_s;  // TODO: confirm
+      }
+    };
 
+    struct bron_smash_t : public bron_action_t<melee_attack_t>
+    {
+      bron_smash_t( pet_t* p ) : base_t( "smash", p, p->find_spell( 341163 ) )
+      {
+        may_crit          = true;
+        aoe               = -1;
+        radius            = data().effectN( 2 ).radius();
+        travel_speed      = 0.0;
+        base_execute_time = data().cast_time();
+        weapon            = &p->main_hand_weapon;
+        weapon_multiplier = p->find_spell( 341165 )->effectN( 1 ).percent();
+      }
+    };
+
+    struct bron_goliath_support_t : public bron_action_t<heal_t>
+    {
+      bron_goliath_support_t( pet_t* p ) : base_t( "goliath_support", p, p->find_spell( 332526 ) )
+      {
+        base_execute_time = 0_ms;
+        cooldown->duration = 4_s;  // TODO: confirm
+      }
+
+      void execute() override
+      {
+        target = debug_cast<pet_t*>( player )->owner;
+
+        base_t::execute();
+      }
+    };
+
+    struct bron_melee_t : public melee_attack_t
+    {
+      bron_melee_t( pet_t* p ) : melee_attack_t( "melee", p, spell_data_t::nil() )
+      {
+        background = repeating = may_crit = may_glance = true;
+
+        school            = SCHOOL_PHYSICAL;
+        weapon            = &p->main_hand_weapon;
+        weapon_multiplier = 1.0;
+        base_execute_time = weapon->swing_time;
+      }
+    };
+
+    struct bron_auto_attack_t : public melee_attack_t
+    {
+      bron_auto_attack_t( pet_t* p ) : melee_attack_t( "auto_attack", p )
+      {
+        player->main_hand_attack = new bron_melee_t( p );
+      }
+
+      bool ready() override
+      {
+        return !player->main_hand_attack->execute_event;
+      }
+
+      void execute() override
+      {
+        player->main_hand_attack->schedule_execute();
+      }
+    };
+
+    // TODO: confirm if travel is necessary
+    struct bron_travel_t : public action_t
+    {
+      bron_travel_t( pet_t* p ) : action_t( ACTION_OTHER, "travel", p ) {}
+
+      void execute() override
+      {
+        player->current.distance = 5.0;
+      }
+
+      timespan_t execute_time() const override
+      {
+        return timespan_t::from_seconds( ( player->current.distance - 5.0 ) / 10.0 );
+      }
+
+      bool ready() override
+      {
+        return ( player->current.distance > 5.0 );
+      }
+
+      bool usable_moving() const override { return true; }
+    };
+
+    bron_pet_t( player_t* owner ) : pet_t( owner->sim, owner, "bron" )
+    {
+      main_hand_weapon.type       = WEAPON_BEAST;
+      main_hand_weapon.swing_time = 1.5_s;  // TODO: confirm
+      main_hand_weapon.min_dmg    = 60.0;   // TODO: confirm
+      main_hand_weapon.max_dmg    = 60.0;   // TODO: confirm
+      owner_coeff.sp_from_sp      = 1.0;
+      owner_coeff.ap_from_sp      = 0.25;
+    }
+
+    void init_action_list() override
+    {
+      action_list_str = "travel";
+      action_list_str += "/auto_attack";
+      action_list_str += "/goliath_support";
+      action_list_str += "/anima_cannon";
+      action_list_str += "/smash";
+
+      pet_t::init_action_list();
+    }
+
+    action_t* create_action( util::string_view name, const std::string& options_str ) override
+    {
+      if ( name == "travel" ) return new bron_travel_t( this );
+      if ( name == "auto_attack" ) return new bron_auto_attack_t( this );
+      if ( name == "goliath_support" ) return new bron_goliath_support_t( this );
+      if ( name == "anima_cannon" ) return new bron_anima_cannon_t( this );
+      if ( name == "smash" ) return new bron_smash_t( this );
+
+      return pet_t::create_action( name, options_str );
+    }
+  };
+
+  struct brons_call_to_action_cb_t : public dbc_proc_callback_t
+  {
+    unsigned counter;
+    timespan_t bron_dur;
+    pet_t* bron;
+
+    brons_call_to_action_cb_t( const special_effect_t& e )
+      : dbc_proc_callback_t( e.player, e ), counter( 0 ), bron_dur( e.player->find_spell( 333961 )->duration() )
+    {
+      bron = e.player->find_pet( "bron" );
+      if ( !bron )
+        bron = new bron_pet_t( e.player );
+    }
+
+    void execute( action_t* a, action_state_t* s ) override
+    {
+      if ( listener->buffs.brons_call_to_action->at_max_stacks() )
+      {
+        listener->buffs.brons_call_to_action->expire();
+
+        if ( bron->is_sleeping() )
+          bron->summon( bron_dur);
+      }
+      else
+      {
+        dbc_proc_callback_t::execute( a, s );
+        counter++;
+      }
+    }
+
+    void reset() override
+    {
+      dbc_proc_callback_t::reset();
+      counter = 0;
+    }
+  };
+
+  effect.proc_flags_  = PF_ALL_DAMAGE | PF_ALL_HEAL;
+  effect.proc_flags2_ = PF2_CAST | PF2_CAST_DAMAGE | PF2_CAST_HEAL;
+  effect.custom_buff  = effect.player->buffs.brons_call_to_action;
+
+  new brons_call_to_action_cb_t( effect );
 }
 
 void volatile_solvent( special_effect_t& effect )

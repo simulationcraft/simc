@@ -526,6 +526,7 @@ struct player_t : public actor_t
     buff_t* combat_meditation;        // kyrian/pelagos - mast buff on covenant cast
     buff_t* pointed_courage;          // kyrian/kleia - crit buff for every nearby enemy or ally
     buff_t* hammer_of_genesis;        // kyrian/mikanikos - haste on hitting new enemy
+    buff_t* brons_call_to_action;     // kyrian/mikanikos - bron's counter
     buff_t* gnashing_chompers;        // necrolord/emeni - haste of enemy death
     buff_t* marrowed_gemstone_charging;     // necrolord/heirmir - crit counter
     buff_t* marrowed_gemstone_enhancement;  // necrolord/heirmir - crit proc after 10 crits

@@ -1,5 +1,5 @@
 // Spell text, wow build 9.0.1.35789
-static const std::array<spelltext_data_t, 15543> __spelltext_data { {
+static const std::array<spelltext_data_t, 15544> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -15289,6 +15289,7 @@ static const std::array<spelltext_data_t, 15543> __spelltext_data { {
   { 340876, "Wild Call has a|cFFFFFFFF ${$s1}.1%|r  increased chance to reset the cooldown of Barbed Shot.", 0, 0 },
   { 341111, "$@spelldesc340090", 0, 0 },
   { 341134, "$@spelldesc340091", "Shadowstrike and $?s200758[Gloomblade][Backstab] generate $s1 additional combo points.", 0 },
+  { 341163, "Attacks the ground with a heavy smash, stunning and inflicting Physical damage to all enemies in a cone in front of the caster.", "Stunned.", 0 },
   { 341165, "$@spelldesc", 0, 0 },
   { 341202, "$@spelldesc340092", "Damage increased by $w1%.", 0 },
   { 341205, "For each of your Shadow damage over time effects on the target, your Mind Flay and Mind Sear have a $m1% chance to trigger a Dark Thought.\r\n\r\n|CFFFFFFFFDark Thought|R\r\nIncreases the number of charges of Mind Blast by 1, Mind Blast can be cast instantly, and can be cast while channelling Mind Flay or Mind Sear.", 0, "Passive" },
