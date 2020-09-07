@@ -19,7 +19,6 @@
 #include "simulationcraftqt.hpp"
 #include "util/sc_mainwindowcommandline.hpp"
 
-#include "simulationcraft.hpp"
 #if defined( Q_OS_MAC )
 #include <CoreFoundation/CoreFoundation.h>
 #endif
