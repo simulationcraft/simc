@@ -7,9 +7,8 @@
 
 #include "util/generic.hpp"
 
-SC_MainWindowCommandLine::SC_MainWindowCommandLine( QWidget* parent ) :
-    QWidget( parent ), statesStackedLayout( nullptr ),
-      current_tab( CMDLINE_TAB_WELCOME ), current_state( IDLE )
+SC_MainWindowCommandLine::SC_MainWindowCommandLine( QWidget* parent )
+  : QWidget( parent ), statesStackedLayout( nullptr ), current_tab( CMDLINE_TAB_WELCOME ), current_state( IDLE )
 {
   init();
 }
@@ -19,8 +18,7 @@ SC_MainWindowCommandLine::state_e SC_MainWindowCommandLine::currentState() const
   return current_state;
 }
 
-void SC_MainWindowCommandLine::setSimulatingProgress( int value, QString format,
-                                                      QString toolTip )
+void SC_MainWindowCommandLine::setSimulatingProgress( int value, QString format, QString toolTip )
 {
   updateProgress( PROGRESSBAR_SIMULATING, value, format, toolTip );
 }
@@ -30,8 +28,7 @@ int SC_MainWindowCommandLine::getSimulatingProgress()
   return getProgressBarProgressForState( PROGRESSBAR_SIMULATING );
 }
 
-void SC_MainWindowCommandLine::setImportingProgress( int value, QString format,
-                                                     QString toolTip )
+void SC_MainWindowCommandLine::setImportingProgress( int value, QString format, QString toolTip )
 {
   updateProgress( PROGRESSBAR_IMPORTING, value, format, toolTip );
 }
@@ -41,8 +38,7 @@ int SC_MainWindowCommandLine::getImportingProgress()
   return getProgressBarProgressForState( PROGRESSBAR_IMPORTING );
 }
 
-void SC_MainWindowCommandLine::setHelpViewProgress( int value, QString format,
-                                                    QString toolTip )
+void SC_MainWindowCommandLine::setHelpViewProgress( int value, QString format, QString toolTip )
 {
   updateProgress( PROGRESSBAR_HELP, value, format, toolTip );
 }
@@ -88,14 +84,12 @@ void SC_MainWindowCommandLine::setCommandLineText( QString text )
   setCommandLineText( current_tab, text );
 }
 
-void SC_MainWindowCommandLine::setCommandLineText( main_tabs_e tab,
-                                                   QString text )
+void SC_MainWindowCommandLine::setCommandLineText( main_tabs_e tab, QString text )
 {
   setCommandLineText( convertTabsEnum( tab ), text );
 }
 
-void SC_MainWindowCommandLine::setCommandLineText( import_tabs_e tab,
-                                                   QString text )
+void SC_MainWindowCommandLine::setCommandLineText( import_tabs_e tab, QString text )
 {
   setCommandLineText( convertTabsEnum( tab ), text );
 }
@@ -115,32 +109,32 @@ void SC_MainWindowCommandLine::setPaused( bool pause )
 {
   switch ( current_state )
   {
-  case SIMULATING:
-    if ( pause )
-    {
-      setState (SIMULATING_PAUSED);
-    }
-    break;
-  case SIMULATING_MULTIPLE:
-    if ( pause )
-    {
-      setState (SIMULATING_MULTIPLE_PAUSED);
-    }
-    break;
-  case SIMULATING_PAUSED:
-    if ( !pause )
-    {
-      setState (SIMULATING);
-    }
-    break;
-  case SIMULATING_MULTIPLE_PAUSED:
-    if ( !pause )
-    {
-      setState (SIMULATING_MULTIPLE);
-    }
-    break;
-  default:
-    break;
+    case SIMULATING:
+      if ( pause )
+      {
+        setState( SIMULATING_PAUSED );
+      }
+      break;
+    case SIMULATING_MULTIPLE:
+      if ( pause )
+      {
+        setState( SIMULATING_MULTIPLE_PAUSED );
+      }
+      break;
+    case SIMULATING_PAUSED:
+      if ( !pause )
+      {
+        setState( SIMULATING );
+      }
+      break;
+    case SIMULATING_MULTIPLE_PAUSED:
+      if ( !pause )
+      {
+        setState( SIMULATING_MULTIPLE );
+      }
+      break;
+    default:
+      break;
   }
 }
 
@@ -150,14 +144,14 @@ bool SC_MainWindowCommandLine::isPaused()
 
   switch ( current_state )
   {
-  case SIMULATING_PAUSED:
-    retval = true;
-    break;
-  case SIMULATING_MULTIPLE_PAUSED:
-    retval = true;
-    break;
-  default:
-    break;
+    case SIMULATING_PAUSED:
+      retval = true;
+      break;
+    case SIMULATING_MULTIPLE_PAUSED:
+      retval = true;
+      break;
+    default:
+      break;
   }
 
   return retval;
@@ -198,7 +192,7 @@ void SC_MainWindowCommandLine::initWidgetsToNull()
   {
     for ( widgets_e widget = BUTTON_MAIN; widget < WIDGET_COUNT; widget++ )
     {
-      widgets[state][widget] = nullptr;
+      widgets[ state ][ widget ] = nullptr;
     }
   }
 }
@@ -206,24 +200,22 @@ void SC_MainWindowCommandLine::initWidgetsToNull()
 void SC_MainWindowCommandLine::initTextStrings()
 {
   // strings shared by widgets
-  text_simulate = tr( "Simulate!" );
-  text_pause = tr( "Pause!" );
-  text_resume = tr( "Resume!" );
-  text_queue = tr( "Queue!" );
-  text_queue_tooltip = tr(
-      "Click to queue a simulation to run after the current one" );
-  text_cancel = tr( "Cancel! " );
-  text_cancel_all = tr( "Cancel All!" );
-  text_cancel_all_tooltip = tr(
-      "Cancel ALL simulations, including what is queued" );
-  text_save = tr( "Save!" );
-  text_import = tr( "Import!" );
-  text_spellquery = tr( "Query!" );
-  text_prev = tr( "<" );
-  text_next = tr( ">" );
-  text_prev_tooltip = tr( "Backwards" );
-  text_next_tooltip = tr( "Forwards" );
-  text_hide_widget = "hide_widget";
+  text_simulate           = tr( "Simulate!" );
+  text_pause              = tr( "Pause!" );
+  text_resume             = tr( "Resume!" );
+  text_queue              = tr( "Queue!" );
+  text_queue_tooltip      = tr( "Click to queue a simulation to run after the current one" );
+  text_cancel             = tr( "Cancel! " );
+  text_cancel_all         = tr( "Cancel All!" );
+  text_cancel_all_tooltip = tr( "Cancel ALL simulations, including what is queued" );
+  text_save               = tr( "Save!" );
+  text_import             = tr( "Import!" );
+  text_spellquery         = tr( "Query!" );
+  text_prev               = tr( "<" );
+  text_next               = tr( ">" );
+  text_prev_tooltip       = tr( "Backwards" );
+  text_next_tooltip       = tr( "Forwards" );
+  text_hide_widget        = "hide_widget";
   // actually manually typing in hide_widget into the command line will actually HIDE IT
   // so append some garbage to it
   text_hide_widget.append( QString::number( rand() ) );
@@ -237,9 +229,9 @@ void SC_MainWindowCommandLine::initStatesStructToNull()
     {
       for ( widgets_e widget = BUTTON_MAIN; widget < WIDGET_COUNT; widget++ )
       {
-        states[state][tab][widget].text = nullptr;
-        states[state][tab][widget].tool_tip = nullptr;
-        states[state][tab][widget].progressbar_state = PROGRESSBAR_IGNORE;
+        states[ state ][ tab ][ widget ].text              = nullptr;
+        states[ state ][ tab ][ widget ].tool_tip          = nullptr;
+        states[ state ][ tab ][ widget ].progressbar_state = PROGRESSBAR_IGNORE;
       }
     }
   }
@@ -260,9 +252,8 @@ void SC_MainWindowCommandLine::initDefaultStates()
       setText( state, tab, BUTTON_PREV, &text_prev, &text_prev_tooltip );
       setText( state, tab, BUTTON_NEXT, &text_next, &text_next_tooltip );
       // progressbar
-      setText( state, tab, PROGRESSBAR_WIDGET,
-               &progressBarFormat[PROGRESSBAR_SIMULATING].text,
-               &progressBarFormat[PROGRESSBAR_SIMULATING].tool_tip );
+      setText( state, tab, PROGRESSBAR_WIDGET, &progressBarFormat[ PROGRESSBAR_SIMULATING ].text,
+               &progressBarFormat[ PROGRESSBAR_SIMULATING ].tool_tip );
       setProgressBarState( state, tab, PROGRESSBAR_SIMULATING );
       // commandline buffer
       setText( state, tab, TEXTEDIT_CMDLINE, &commandLineBuffer_DEFAULT );
@@ -270,10 +261,10 @@ void SC_MainWindowCommandLine::initDefaultStates()
 
     // simulating defaults:
     // mainbutton: simulate => cancel
-    setText( SIMULATING, tab, BUTTON_MAIN, &text_cancel ); // instead of text_simulate
+    setText( SIMULATING, tab, BUTTON_MAIN, &text_cancel );  // instead of text_simulate
     setText( SIMULATING_PAUSED, tab, BUTTON_MAIN, &text_cancel );
-    setText( SIMULATING_MULTIPLE, tab, BUTTON_MAIN, &text_cancel ); // instead of text_simulate
-    setText( SIMULATING_MULTIPLE_PAUSED, tab, BUTTON_MAIN, &text_cancel ); // instead of text_simulate
+    setText( SIMULATING_MULTIPLE, tab, BUTTON_MAIN, &text_cancel );         // instead of text_simulate
+    setText( SIMULATING_MULTIPLE_PAUSED, tab, BUTTON_MAIN, &text_cancel );  // instead of text_simulate
     setText( SIMULATING, tab, BUTTON_PAUSE, &text_pause );
 
     // simulating_multiple defaults:
@@ -282,10 +273,8 @@ void SC_MainWindowCommandLine::initDefaultStates()
     {
       if ( getText( SIMULATING_MULTIPLE, tab, widget ) == text_cancel )
       {
-        setText( SIMULATING_MULTIPLE, tab, widget, &text_cancel_all,
-                 &text_cancel_all_tooltip );
-        setText( SIMULATING_MULTIPLE_PAUSED, tab, widget, &text_cancel_all,
-                 &text_cancel_all_tooltip );
+        setText( SIMULATING_MULTIPLE, tab, widget, &text_cancel_all, &text_cancel_all_tooltip );
+        setText( SIMULATING_MULTIPLE_PAUSED, tab, widget, &text_cancel_all, &text_cancel_all_tooltip );
       }
     }
   }
@@ -327,8 +316,7 @@ void SC_MainWindowCommandLine::initLogResultsStates()
   setText( IDLE, CMDLINE_TAB_LOG, BUTTON_MAIN, &text_save );
   setText( IDLE, CMDLINE_TAB_RESULTS, BUTTON_MAIN, &text_save );
   // SIMULATING + SIMULATING_MULTIPLE: queue button => save
-  for ( state_e state = SIMULATING; state <= SIMULATING_MULTIPLE_PAUSED;
-      state++ )
+  for ( state_e state = SIMULATING; state <= SIMULATING_MULTIPLE_PAUSED; state++ )
   {
     setText( state, CMDLINE_TAB_LOG, BUTTON_QUEUE, &text_save );
     setText( state, CMDLINE_TAB_RESULTS, BUTTON_QUEUE, &text_save );
@@ -354,8 +342,7 @@ void SC_MainWindowCommandLine::initProgressBarStates()
 
   // set default format for every progressbar state to %p%
   QString defaultProgressBarFormat = "%p%";
-  for ( progressbar_states_e state = PROGRESSBAR_IDLE;
-      state < PROGRESSBAR_STATE_COUNT; state++ )
+  for ( progressbar_states_e state = PROGRESSBAR_IDLE; state < PROGRESSBAR_STATE_COUNT; state++ )
   {
     // QProgressBar -> setFormat()
     setProgressBarFormat( state, defaultProgressBarFormat, false );
@@ -370,14 +357,11 @@ void SC_MainWindowCommandLine::initCommandLineBuffers()
   for ( state_e state = IDLE; state < STATE_COUNT; state++ )
   {
     // log has its own buffer (for save file name)
-    setText( state, CMDLINE_TAB_LOG, TEXTEDIT_CMDLINE,
-             &commandLineBuffer_TAB_LOG );
+    setText( state, CMDLINE_TAB_LOG, TEXTEDIT_CMDLINE, &commandLineBuffer_TAB_LOG );
     // help has its own buffer (for url)
-    setText( state, CMDLINE_TAB_HELP, TEXTEDIT_CMDLINE,
-             &commandLineBuffer_TAB_HELP );
+    setText( state, CMDLINE_TAB_HELP, TEXTEDIT_CMDLINE, &commandLineBuffer_TAB_HELP );
     // results has its own buffer (for save file name)
-    setText( state, CMDLINE_TAB_RESULTS, TEXTEDIT_CMDLINE,
-             &commandLineBuffer_TAB_RESULTS );
+    setText( state, CMDLINE_TAB_RESULTS, TEXTEDIT_CMDLINE, &commandLineBuffer_TAB_RESULTS );
     // everything else shares the default buffer
   }
 }
@@ -386,8 +370,7 @@ void SC_MainWindowCommandLine::initPauseStates()
 {
   for ( tabs_e tab = CMDLINE_TAB_WELCOME; tab < CMDLINE_TAB_COUNT; tab++ )
   {
-    for ( state_e state = SIMULATING_PAUSED;
-        state <= SIMULATING_MULTIPLE_PAUSED; state++ )
+    for ( state_e state = SIMULATING_PAUSED; state <= SIMULATING_MULTIPLE_PAUSED; state++ )
     {
       setText( state, tab, BUTTON_PAUSE, &text_resume );
     }
@@ -397,39 +380,39 @@ void SC_MainWindowCommandLine::initPauseStates()
 QWidget* SC_MainWindowCommandLine::createState( state_e state )
 {
   // Create the widget for the state
-  QWidget* stateWidget = new QGroupBox;
+  QWidget* stateWidget       = new QGroupBox;
   QLayout* stateWidgetLayout = new QHBoxLayout;
 
   stateWidget->setLayout( stateWidgetLayout );
 
   switch ( state )
   {
-  case STATE_COUNT:
-    break;
-  default:
-    createCommandLine( state, stateWidget );
-    break;
+    case STATE_COUNT:
+      break;
+    default:
+      createCommandLine( state, stateWidget );
+      break;
   }
 
   switch ( state )
   {
-  case IDLE:
-    createState_IDLE( stateWidget );
-    break;
-  case SIMULATING:
-    createState_SIMULATING( stateWidget );
-    break;
-  case SIMULATING_MULTIPLE:
-    createState_SIMULATING_MULTIPLE( stateWidget );
-    break;
-  case SIMULATING_PAUSED:
-    createState_SIMULATING_PAUSED( stateWidget );
-    break;
-  case SIMULATING_MULTIPLE_PAUSED:
-    createState_SIMULATING_MULTIPLE_PAUSED( stateWidget );
-    break;
-  default:
-    break;
+    case IDLE:
+      createState_IDLE( stateWidget );
+      break;
+    case SIMULATING:
+      createState_SIMULATING( stateWidget );
+      break;
+    case SIMULATING_MULTIPLE:
+      createState_SIMULATING_MULTIPLE( stateWidget );
+      break;
+    case SIMULATING_PAUSED:
+      createState_SIMULATING_PAUSED( stateWidget );
+      break;
+    case SIMULATING_MULTIPLE_PAUSED:
+      createState_SIMULATING_MULTIPLE_PAUSED( stateWidget );
+      break;
+    default:
+      break;
   }
 
   stateWidget->setLayout( stateWidgetLayout );
@@ -442,8 +425,7 @@ void SC_MainWindowCommandLine::createState_IDLE( QWidget* parent )
   // creates the IDLE state
   QLayout* parentLayout = parent->layout();
 
-  QPushButton* buttonMain = new QPushButton(
-      *getText( IDLE, CMDLINE_TAB_WELCOME, BUTTON_MAIN ), parent );
+  QPushButton* buttonMain = new QPushButton( *getText( IDLE, CMDLINE_TAB_WELCOME, BUTTON_MAIN ), parent );
   setWidget( IDLE, BUTTON_MAIN, buttonMain );
   parentLayout->addWidget( buttonMain );
 
@@ -456,37 +438,30 @@ void SC_MainWindowCommandLine::createState_SIMULATING( QWidget* parent )
   _createState_SIMULATING( SIMULATING, parent );
 }
 
-void SC_MainWindowCommandLine::createState_SIMULATING_PAUSED(
-    QWidget* parent )
+void SC_MainWindowCommandLine::createState_SIMULATING_PAUSED( QWidget* parent )
 {
   _createState_SIMULATING( SIMULATING_PAUSED, parent );
 }
 
-void SC_MainWindowCommandLine::createState_SIMULATING_MULTIPLE(
-    QWidget* parent )
+void SC_MainWindowCommandLine::createState_SIMULATING_MULTIPLE( QWidget* parent )
 {
   // creates the SIMULATING_MULTIPLE state
   _createState_SIMULATING( SIMULATING_MULTIPLE, parent );
 }
 
-void SC_MainWindowCommandLine::createState_SIMULATING_MULTIPLE_PAUSED(
-    QWidget* parent )
+void SC_MainWindowCommandLine::createState_SIMULATING_MULTIPLE_PAUSED( QWidget* parent )
 {
   _createState_SIMULATING( SIMULATING_MULTIPLE_PAUSED, parent );
 }
 
-void SC_MainWindowCommandLine::_createState_SIMULATING(
-    state_e state, QWidget* parent )
+void SC_MainWindowCommandLine::_createState_SIMULATING( state_e state, QWidget* parent )
 {
   // creates either the SIMULATING or SIMULATING_MULTIPLE states
   QLayout* parentLayout = parent->layout();
 
-  QPushButton* buttonQueue = new QPushButton(
-      *getText( IDLE, CMDLINE_TAB_WELCOME, BUTTON_QUEUE ), parent );
-  QPushButton* buttonMain = new QPushButton(
-      *getText( IDLE, CMDLINE_TAB_WELCOME, BUTTON_MAIN ), parent );
-  QPushButton* buttonPause = new QPushButton(
-      *getText( IDLE, CMDLINE_TAB_WELCOME, BUTTON_PAUSE ), parent );
+  QPushButton* buttonQueue = new QPushButton( *getText( IDLE, CMDLINE_TAB_WELCOME, BUTTON_QUEUE ), parent );
+  QPushButton* buttonMain  = new QPushButton( *getText( IDLE, CMDLINE_TAB_WELCOME, BUTTON_MAIN ), parent );
+  QPushButton* buttonPause = new QPushButton( *getText( IDLE, CMDLINE_TAB_WELCOME, BUTTON_PAUSE ), parent );
   setWidget( state, BUTTON_QUEUE, buttonQueue );
   setWidget( state, BUTTON_MAIN, buttonMain );
   setWidget( state, BUTTON_PAUSE, buttonPause );
@@ -495,20 +470,17 @@ void SC_MainWindowCommandLine::_createState_SIMULATING(
   parentLayout->addWidget( buttonPause );
 
   connect( buttonMain, SIGNAL( clicked() ), this, SLOT( mainButtonClicked() ) );
-  connect( buttonQueue, SIGNAL( clicked() ), this,
-           SLOT( queueButtonClicked() ) );
-  connect( buttonPause, SIGNAL( clicked() ), this,
-           SLOT( pauseButtonClicked() ) );
+  connect( buttonQueue, SIGNAL( clicked() ), this, SLOT( queueButtonClicked() ) );
+  connect( buttonPause, SIGNAL( clicked() ), this, SLOT( pauseButtonClicked() ) );
 }
 
-void SC_MainWindowCommandLine::createCommandLine( state_e state,
-                                                          QWidget* parent )
+void SC_MainWindowCommandLine::createCommandLine( state_e state, QWidget* parent )
 {
   // creates the commandline
   QLayout* parentLayout = parent->layout();
   // Navigation buttons + Command Line
-  QPushButton* buttonPrev = new QPushButton( tr( "<" ), parent );
-  QPushButton* buttonNext = new QPushButton( tr( ">" ), parent );
+  QPushButton* buttonPrev         = new QPushButton( tr( "<" ), parent );
+  QPushButton* buttonNext         = new QPushButton( tr( ">" ), parent );
   SC_CommandLine* commandLineEdit = new SC_CommandLine( parent );
 
   setWidget( state, BUTTON_PREV, buttonPrev );
@@ -524,15 +496,13 @@ void SC_MainWindowCommandLine::createCommandLine( state_e state,
 
   connect( buttonPrev, SIGNAL( clicked( bool ) ), this, SIGNAL( backButtonClicked() ) );
   connect( buttonNext, SIGNAL( clicked( bool ) ), this, SIGNAL( forwardButtonClicked() ) );
-  connect( commandLineEdit, SIGNAL( switchToLeftSubTab() ), this,
-           SIGNAL( switchToLeftSubTab() ) );
-  connect( commandLineEdit, SIGNAL( switchToRightSubTab() ), this,
-           SIGNAL( switchToRightSubTab() ) );
+  connect( commandLineEdit, SIGNAL( switchToLeftSubTab() ), this, SIGNAL( switchToLeftSubTab() ) );
+  connect( commandLineEdit, SIGNAL( switchToRightSubTab() ), this, SIGNAL( switchToRightSubTab() ) );
   connect( commandLineEdit, SIGNAL( currentlyViewedTabCloseRequest() ), this,
            SIGNAL( currentlyViewedTabCloseRequest() ) );
-  connect( commandLineEdit, SIGNAL( returnPressed() ), this,
-           SIGNAL( commandLineReturnPressed() ) );
-  connect( commandLineEdit, SIGNAL( textEdited( const QString& ) ), this, SLOT( commandLineTextEditedSlot( const QString& ) ) );
+  connect( commandLineEdit, SIGNAL( returnPressed() ), this, SIGNAL( commandLineReturnPressed() ) );
+  connect( commandLineEdit, SIGNAL( textEdited( const QString& ) ), this,
+           SLOT( commandLineTextEditedSlot( const QString& ) ) );
   // Progress bar
   QProgressBar* progressBar = new QProgressBar( parent );
 
@@ -544,7 +514,7 @@ void SC_MainWindowCommandLine::createCommandLine( state_e state,
   QFont override_font = QFont();
   override_font.setPixelSize( 20 );
 
-  commandLineEdit -> setFont( override_font );
+  commandLineEdit->setFont( override_font );
 
   QFont progressBarFont( progressBar->font() );
   progressBarFont.setPointSize( 14 );
@@ -563,7 +533,8 @@ bool SC_MainWindowCommandLine::tryToHideWidget( QString* text, QWidget* widget )
     {
       widget->hide();
       return true;
-    } else
+    }
+    else
     {
       widget->show();
     }
@@ -585,117 +556,112 @@ void SC_MainWindowCommandLine::emitSignal( QString* text )
       {
         emit( simulateClicked() );
       }
-    } else if ( text == text_cancel )
+    }
+    else if ( text == text_cancel )
     {
       switch ( current_tab )
       {
-      case CMDLINE_TAB_IMPORT:
-        emit( cancelImportClicked() );
-        break;
-      default:
-        emit( cancelSimulationClicked() );
-        break;
+        case CMDLINE_TAB_IMPORT:
+          emit( cancelImportClicked() );
+          break;
+        default:
+          emit( cancelSimulationClicked() );
+          break;
       }
-    } else if ( text == text_cancel_all )
+    }
+    else if ( text == text_cancel_all )
     {
       emit( cancelImportClicked() );
       emit( cancelAllSimulationClicked() );
-    } else if ( text == text_import )
+    }
+    else if ( text == text_import )
     {
       emit( importClicked() );
-    } else if ( text == text_queue )
+    }
+    else if ( text == text_queue )
     {
       emit( queueClicked() );
-    } else if ( text == text_spellquery )
+    }
+    else if ( text == text_spellquery )
     {
       emit( queryClicked() );
-    } else if ( text == text_save )
+    }
+    else if ( text == text_save )
     {
       switch ( current_tab )
       {
-      case CMDLINE_TAB_LOG:
-        emit( saveLogClicked() );
-        break;
-      case CMDLINE_TAB_RESULTS:
-        emit( saveResultsClicked() );
-        break;
-      default:
-        assert( 0 );
+        case CMDLINE_TAB_LOG:
+          emit( saveLogClicked() );
+          break;
+        case CMDLINE_TAB_RESULTS:
+          emit( saveResultsClicked() );
+          break;
+        default:
+          assert( 0 );
       }
     }
   }
 }
 
 // Accessors for widgets/displayable text; hide underlying implementation of states even from init()
-void SC_MainWindowCommandLine::setProgressBarProgress(
-    progressbar_states_e state, int value )
+void SC_MainWindowCommandLine::setProgressBarProgress( progressbar_states_e state, int value )
 {
   // update progress for the given progressbar state
-  progressBarFormat[state].progress = value;
+  progressBarFormat[ state ].progress = value;
   updateWidget( current_state, current_tab, PROGRESSBAR_WIDGET );
 }
 
-int SC_MainWindowCommandLine::getProgressBarProgressForState(
-    progressbar_states_e state )
+int SC_MainWindowCommandLine::getProgressBarProgressForState( progressbar_states_e state )
 {
-  return progressBarFormat[state].progress;
+  return progressBarFormat[ state ].progress;
 }
 
 void SC_MainWindowCommandLine::updateProgressBars()
 {
   // actually updates currently visible progressbar's progress
-  QProgressBar* progressBar = qobject_cast<QProgressBar*>(
-      getWidget( current_state, PROGRESSBAR_WIDGET ) );
+  QProgressBar* progressBar = qobject_cast<QProgressBar*>( getWidget( current_state, PROGRESSBAR_WIDGET ) );
   if ( progressBar != nullptr )
   {
     progressBar->setValue(
-        getProgressBarProgressForState(
-            getProgressBarStateForState( current_state, current_tab ) ) );
+        getProgressBarProgressForState( getProgressBarStateForState( current_state, current_tab ) ) );
   }
 }
 
-void SC_MainWindowCommandLine::adjustText( state_e state, tabs_e tab,
-                                           widgets_e widget, QString text )
+void SC_MainWindowCommandLine::adjustText( state_e state, tabs_e tab, widgets_e widget, QString text )
 {
   // only change the text's value, not where it points to, only if its not null
-  if ( states[state][tab][widget].text != nullptr )
+  if ( states[ state ][ tab ][ widget ].text != nullptr )
   {
-    ( *states[state][tab][widget].text ) = text;
+    ( *states[ state ][ tab ][ widget ].text ) = text;
   }
 }
 
-void SC_MainWindowCommandLine::setText( state_e state, tabs_e tab,
-                                        widgets_e widget, QString* text,
-                                        QString* tooltip )
+void SC_MainWindowCommandLine::setText( state_e state, tabs_e tab, widgets_e widget, QString* text, QString* tooltip )
 {
   // change the text and tooltip's pointer values
-  states[state][tab][widget].text = text;
-  states[state][tab][widget].tool_tip = tooltip;
+  states[ state ][ tab ][ widget ].text     = text;
+  states[ state ][ tab ][ widget ].tool_tip = tooltip;
 }
 
-void SC_MainWindowCommandLine::setProgressBarState(
-    state_e state, tabs_e tab, progressbar_states_e progressbar_state )
+void SC_MainWindowCommandLine::setProgressBarState( state_e state, tabs_e tab, progressbar_states_e progressbar_state )
 {
   // set the given state->tab->progressbar's state
-  states[state][tab][PROGRESSBAR_WIDGET].text =
-      &( progressBarFormat[progressbar_state].text );
-  states[state][tab][PROGRESSBAR_WIDGET].tool_tip =
-      &( progressBarFormat[progressbar_state].tool_tip );
-  states[state][tab][PROGRESSBAR_WIDGET].progressbar_state = progressbar_state;
+  states[ state ][ tab ][ PROGRESSBAR_WIDGET ].text              = &( progressBarFormat[ progressbar_state ].text );
+  states[ state ][ tab ][ PROGRESSBAR_WIDGET ].tool_tip          = &( progressBarFormat[ progressbar_state ].tool_tip );
+  states[ state ][ tab ][ PROGRESSBAR_WIDGET ].progressbar_state = progressbar_state;
 }
 
-SC_MainWindowCommandLine::progressbar_states_e SC_MainWindowCommandLine::getProgressBarStateForState(
-    state_e state, tabs_e tab )
+SC_MainWindowCommandLine::progressbar_states_e SC_MainWindowCommandLine::getProgressBarStateForState( state_e state,
+                                                                                                      tabs_e tab )
 {
   // returns state->tab->progressbar's state
-  return states[state][tab][PROGRESSBAR_WIDGET].progressbar_state;
+  return states[ state ][ tab ][ PROGRESSBAR_WIDGET ].progressbar_state;
 }
 
-void SC_MainWindowCommandLine::updateWidget( state_e state, tabs_e tab,
-                                             widgets_e widget )
+void SC_MainWindowCommandLine::updateWidget( state_e state, tabs_e tab, widgets_e widget )
 {
   // update a given widget
-  QString* text = getText( state, tab, widget );
+  QString* text    = getText( state, tab, widget );
   QString* toolTip = getToolTip( state, tab, widget );
   if ( text != nullptr )
   {
@@ -703,107 +669,93 @@ void SC_MainWindowCommandLine::updateWidget( state_e state, tabs_e tab,
     {
       switch ( widget )
       {
-      case TEXTEDIT_CMDLINE:
-      {
-        SC_CommandLine* commandLine = qobject_cast<SC_CommandLine*>(
-            getWidget( state, TEXTEDIT_CMDLINE ) );
-        if ( commandLine != nullptr )
+        case TEXTEDIT_CMDLINE:
         {
-          commandLine->setText( *text );
-          if ( toolTip != nullptr )
+          SC_CommandLine* commandLine = qobject_cast<SC_CommandLine*>( getWidget( state, TEXTEDIT_CMDLINE ) );
+          if ( commandLine != nullptr )
           {
-            commandLine->setToolTip( *toolTip );
-          }
-        }
-        break;
-      }
-      case PROGRESSBAR_WIDGET:
-      {
-        QProgressBar* progressBar = qobject_cast<QProgressBar*>(
-            getWidget( state, PROGRESSBAR_WIDGET ) );
-        if ( progressBar != nullptr )
-        {
-          progressBar->setFormat( *text );
-          progressBar->setValue(
-              getProgressBarProgressForState(
-                  getProgressBarStateForState( current_state, current_tab ) ) );
-          if ( toolTip != nullptr )
-          {
-            progressBar->setToolTip( *toolTip );
-          }
-        }
-        break;
-      }
-      default:
-        QPushButton* button = qobject_cast<QPushButton*>(
-            getWidget( state, widget ) );
-        if ( button != nullptr )
-        {
-          button->setText( *text );
-          if ( toolTip != nullptr )
-          {
-            button->setToolTip( *toolTip );
+            commandLine->setText( *text );
+            if ( toolTip != nullptr )
+            {
+              commandLine->setToolTip( *toolTip );
+            }
           }
           break;
         }
+        case PROGRESSBAR_WIDGET:
+        {
+          QProgressBar* progressBar = qobject_cast<QProgressBar*>( getWidget( state, PROGRESSBAR_WIDGET ) );
+          if ( progressBar != nullptr )
+          {
+            progressBar->setFormat( *text );
+            progressBar->setValue(
+                getProgressBarProgressForState( getProgressBarStateForState( current_state, current_tab ) ) );
+            if ( toolTip != nullptr )
+            {
+              progressBar->setToolTip( *toolTip );
+            }
+          }
+          break;
+        }
+        default:
+          QPushButton* button = qobject_cast<QPushButton*>( getWidget( state, widget ) );
+          if ( button != nullptr )
+          {
+            button->setText( *text );
+            if ( toolTip != nullptr )
+            {
+              button->setToolTip( *toolTip );
+            }
+            break;
+          }
       }
     }
   }
 }
 
-QString* SC_MainWindowCommandLine::getText( state_e state, tabs_e tab,
-                                            widgets_e widget )
+QString* SC_MainWindowCommandLine::getText( state_e state, tabs_e tab, widgets_e widget )
 {
   // returns text to set the specified widget to
-  return states[state][tab][widget].text;
+  return states[ state ][ tab ][ widget ].text;
 }
 
-QString* SC_MainWindowCommandLine::getToolTip( state_e state, tabs_e tab,
-                                               widgets_e widget )
+QString* SC_MainWindowCommandLine::getToolTip( state_e state, tabs_e tab, widgets_e widget )
 {
-  return states[state][tab][widget].tool_tip;
+  return states[ state ][ tab ][ widget ].tool_tip;
 }
 
 QWidget* SC_MainWindowCommandLine::getWidget( state_e state, widgets_e widget )
 {
   // returns the widget for the specified state
-  return widgets[state][widget];
+  return widgets[ state ][ widget ];
 }
 
-void SC_MainWindowCommandLine::setWidget( state_e state, widgets_e widget,
-                                          QWidget* widgetPointer )
+void SC_MainWindowCommandLine::setWidget( state_e state, widgets_e widget, QWidget* widgetPointer )
 {
   // sets the widget for the specified state
-  widgets[state][widget] = widgetPointer;
+  widgets[ state ][ widget ] = widgetPointer;
 }
 
-void SC_MainWindowCommandLine::setProgressBarFormat( progressbar_states_e state,
-                                                     QString format,
-                                                     bool update )
+void SC_MainWindowCommandLine::setProgressBarFormat( progressbar_states_e state, QString format, bool update )
 {
   // sets the QProgressBar->setFormat(format) text value for the specified state's progress bar
-  progressBarFormat[state].text = format;
-  if ( update
-      && getProgressBarStateForState( current_state, current_tab ) == state )
+  progressBarFormat[ state ].text = format;
+  if ( update && getProgressBarStateForState( current_state, current_tab ) == state )
   {
     updateWidget( current_state, current_tab, PROGRESSBAR_WIDGET );
   }
 }
 
-void SC_MainWindowCommandLine::setProgressBarToolTip(
-    progressbar_states_e state, QString toolTip, bool update )
+void SC_MainWindowCommandLine::setProgressBarToolTip( progressbar_states_e state, QString toolTip, bool update )
 {
-  progressBarFormat[state].tool_tip = toolTip;
-  if ( update
-      && getProgressBarStateForState( current_state, current_tab ) == state )
+  progressBarFormat[ state ].tool_tip = toolTip;
+  if ( update && getProgressBarStateForState( current_state, current_tab ) == state )
   {
     updateWidget( current_state, current_tab, PROGRESSBAR_WIDGET );
   }
 }
 
-void SC_MainWindowCommandLine::updateProgress( progressbar_states_e state,
-                                               int value, QString format,
-                                               QString toolTip )
+void SC_MainWindowCommandLine::updateProgress( progressbar_states_e state, int value, QString format, QString toolTip )
 {
   setProgressBarFormat( state, format );
   setProgressBarToolTip( state, toolTip );
@@ -847,10 +799,8 @@ void SC_MainWindowCommandLine::setTab( import_tabs_e tab )
 
 void SC_MainWindowCommandLine::setTab( tabs_e tab )
 {
-  assert(
-      static_cast<int>( tab ) >= 0
-          && static_cast<int>( tab ) < CMDLINE_TAB_COUNT
-          && "setTab argument out of bounds" );
+  assert( static_cast<int>( tab ) >= 0 && static_cast<int>( tab ) < CMDLINE_TAB_COUNT &&
+          "setTab argument out of bounds" );
   current_tab = tab;
   // sets correct text for the current_state for the given tab on all widgets
   for ( widgets_e widget = BUTTON_MAIN; widget < WIDGET_COUNT; widget++ )
@@ -858,8 +808,7 @@ void SC_MainWindowCommandLine::setTab( tabs_e tab )
     QWidget* wdgt = getWidget( current_state, widget );
     if ( wdgt != nullptr )
     {
-      if ( !tryToHideWidget( getText( current_state, current_tab, widget ),
-                             wdgt ) )
+      if ( !tryToHideWidget( getText( current_state, current_tab, widget ), wdgt ) )
       {
         // only change text if it will not be hidden
         updateWidget( current_state, current_tab, widget );
@@ -878,14 +827,14 @@ void SC_MainWindowCommandLine::setState( state_e state )
 
 void SC_MainWindowCommandLine::commandLineTextEditedSlot( const QString& text )
 {
-  QString* current_text = getText( current_state, current_tab,
-                                   TEXTEDIT_CMDLINE );
+  QString* current_text = getText( current_state, current_tab, TEXTEDIT_CMDLINE );
   if ( current_text != nullptr )
   {
     ( *current_text ) = text;
-  } else
+  }
+  else
   {
-    //TODO: something if current_text is null
+    // TODO: something if current_text is null
   }
 
   emit( commandLineTextEdited( text ) );

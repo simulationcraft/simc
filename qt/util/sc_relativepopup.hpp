@@ -6,8 +6,9 @@
 #pragma once
 
 #include "config.hpp"
-#include <QtWidgets/QtWidgets>
+
 #include <QtGui/QtGui>
+#include <QtWidgets/QtWidgets>
 
 // ============================================================================
 // SC_RelativePopupWidget
@@ -15,22 +16,21 @@
 
 class SC_RelativePopup : public QWidget
 {
-Q_OBJECT
-Q_PROPERTY( Qt::Corner parentCornerToAnchor READ parentCornerToAnchor WRITE setParentCornerToAnchor )
-Q_PROPERTY( Qt::Corner widgetCornerToAnchor READ widgetCornerToAnchor WRITE setWidgetCornerToAnchor )
-Q_PROPERTY( int timeTillHide READ timeTillHide WRITE setTimeTillHide )
-Q_PROPERTY( int timeTillFastHide READ timeTillFastHide WRITE setTimeTillFastHide )
-Q_PROPERTY( int timeFastHide READ timeFastHide WRITE setTimeFastHide )
+  Q_OBJECT
+  Q_PROPERTY( Qt::Corner parentCornerToAnchor READ parentCornerToAnchor WRITE setParentCornerToAnchor )
+  Q_PROPERTY( Qt::Corner widgetCornerToAnchor READ widgetCornerToAnchor WRITE setWidgetCornerToAnchor )
+  Q_PROPERTY( int timeTillHide READ timeTillHide WRITE setTimeTillHide )
+  Q_PROPERTY( int timeTillFastHide READ timeTillFastHide WRITE setTimeTillFastHide )
+  Q_PROPERTY( int timeFastHide READ timeFastHide WRITE setTimeFastHide )
 public:
-  SC_RelativePopup(QWidget* parent,
-      Qt::Corner parentCornerToAnchor = Qt::BottomRightCorner,
-      Qt::Corner widgetCornerToAnchor = Qt::TopRightCorner);
+  SC_RelativePopup( QWidget* parent, Qt::Corner parentCornerToAnchor = Qt::BottomRightCorner,
+                    Qt::Corner widgetCornerToAnchor = Qt::TopRightCorner );
   // Q_PROPERTIES
   Qt::Corner parentCornerToAnchor() const
   {
     return parentCornerToAnchor_;
   }
-  void setParentCornerToAnchor(Qt::Corner corner)
+  void setParentCornerToAnchor( Qt::Corner corner )
   {
     parentCornerToAnchor_ = corner;
   }
@@ -38,7 +38,7 @@ public:
   {
     return parentCornerToAnchor_;
   }
-  void setWidgetCornerToAnchor(Qt::Corner corner)
+  void setWidgetCornerToAnchor( Qt::Corner corner )
   {
     parentCornerToAnchor_ = corner;
   }
@@ -46,7 +46,7 @@ public:
   {
     return timeTillHide_;
   }
-  void setTimeTillHide(int msec)
+  void setTimeTillHide( int msec )
   {
     timeTillHide_ = msec;
   }
@@ -54,7 +54,7 @@ public:
   {
     return timeTillFastHide_;
   }
-  void setTimeTillFastHide(int msec)
+  void setTimeTillFastHide( int msec )
   {
     timeTillHide_ = msec;
   }
@@ -62,10 +62,11 @@ public:
   {
     return timeFastHide_;
   }
-  void setTimeFastHide(int msec)
+  void setTimeFastHide( int msec )
   {
     timeFastHide_ = msec;
   }
+
 private:
   Qt::Corner parentCornerToAnchor_;
   Qt::Corner widgetCornerToAnchor_;
@@ -92,24 +93,24 @@ private:
   }
   bool isWidgetUnderCursorAChild()
   {
-    QWidget* widget = qApp->widgetAt(QCursor::pos());
+    QWidget* widget       = qApp->widgetAt( QCursor::pos() );
     QObject* parentObject = parent();
-    QWidget* parentWidget = qobject_cast< QWidget* >( parentObject );
+    QWidget* parentWidget = qobject_cast<QWidget*>( parentObject );
 
-    while( widget != 0 )
+    while ( widget != 0 )
     {
       if ( widget == this )
       {
         return true;
       }
-      else if ( parentWidget != 0 ) // could be one if, but gcc complains about nullptr cast
+      else if ( parentWidget != 0 )  // could be one if, but gcc complains about nullptr cast
       {
         if ( widget == parentWidget )
         {
           return true;
         }
       }
-      widget = widget -> parentWidget();
+      widget = widget->parentWidget();
     }
 
     return false;
@@ -120,17 +121,17 @@ private:
     QObject* parent__ = parent();
     if ( parent__ == NULL )
       return;
-    QWidget* parent_ = static_cast< QWidget* >( parent__ );
-    QRect parentRect = parent_ -> geometry();
-    parentRect.moveTopLeft( parent_ -> mapToGlobal(QPoint(0,0)) );
+    QWidget* parent_ = static_cast<QWidget*>( parent__ );
+    QRect parentRect = parent_->geometry();
+    parentRect.moveTopLeft( parent_->mapToGlobal( QPoint( 0, 0 ) ) );
 
     QRect widgetRect( parentRect );
     QLayout* layout_ = layout();
     if ( layout_ != NULL )
     {
-      QApplication::instance() -> sendPostedEvents();
-      layout_ -> activate();
-      layout_ -> update();
+      QApplication::instance()->sendPostedEvents();
+      layout_->activate();
+      layout_->update();
     }
     QRect normalGeometry_ = normalGeometry();
     // Use normal geometry if there is any
@@ -141,7 +142,7 @@ private:
     }
     if ( layout_ != 0 )
     {
-      QSize sizeHint = layout_ -> sizeHint();
+      QSize sizeHint = layout_->sizeHint();
       if ( widgetRect.height() < sizeHint.height() )
         widgetRect.setHeight( sizeHint.height() );
       if ( widgetRect.width() < sizeHint.width() )
@@ -151,36 +152,44 @@ private:
 
     QPoint bindTo;
 
-    switch(parentCornerToAnchor_)
+    switch ( parentCornerToAnchor_ )
     {
       default:
       case Qt::TopLeftCorner:
-      bindTo = parentRect.topLeft(); break;
+        bindTo = parentRect.topLeft();
+        break;
       case Qt::TopRightCorner:
-      bindTo = parentRect.topRight(); break;
+        bindTo = parentRect.topRight();
+        break;
       case Qt::BottomLeftCorner:
-      bindTo = parentRect.bottomLeft(); break;
+        bindTo = parentRect.bottomLeft();
+        break;
       case Qt::BottomRightCorner:
-      bindTo = parentRect.bottomRight(); break;
+        bindTo = parentRect.bottomRight();
+        break;
     }
 
-    switch(widgetCornerToAnchor_)
+    switch ( widgetCornerToAnchor_ )
     {
       default:
       case Qt::TopLeftCorner:
-      widgetRect.moveTopLeft( bindTo ); break;
+        widgetRect.moveTopLeft( bindTo );
+        break;
       case Qt::TopRightCorner:
-      widgetRect.moveTopRight( bindTo ); break;
+        widgetRect.moveTopRight( bindTo );
+        break;
       case Qt::BottomLeftCorner:
-      widgetRect.moveBottomLeft( bindTo ); break;
+        widgetRect.moveBottomLeft( bindTo );
+        break;
       case Qt::BottomRightCorner:
-      widgetRect.moveBottomRight( bindTo ); break;
+        widgetRect.moveBottomRight( bindTo );
+        break;
     }
 
     QDesktopWidget desktopWidget;
     // If user only has one screen, ensure the popup doesn't go off screen
     // If multiple screens, this could be annoying as the popup can be viewed on a 2nd screen
-    if ( desktopWidget.screenCount() == 1)
+    if ( desktopWidget.screenCount() == 1 )
       widgetRect = desktopWidget.screenGeometry( parent_ ).intersected( widgetRect );
     setGeometry( widgetRect );
   }
@@ -191,27 +200,25 @@ public slots:
     timeToWait__ = timeTillHide_;
     if ( isVisible() )
     {
-      if ( ! isWidgetUnderCursorAChild() )
+      if ( !isWidgetUnderCursorAChild() )
       {
         hide();
         if ( hideChildren )
         {
           // Hide children that are Popups
           // If we hide all children, floating widgets will be empty when they are shown again
-          QRegExp matchAll(".*");
-          QList< QWidget* > children = findChildren< QWidget* >( matchAll );
+          QRegExp matchAll( ".*" );
+          QList<QWidget*> children = findChildren<QWidget*>( matchAll );
 
-          for ( QList< QWidget*>::iterator it = children.begin();
-              it != children.end(); ++it )
+          for ( QList<QWidget*>::iterator it = children.begin(); it != children.end(); ++it )
           {
-            if ( ( *it ) -> windowType() == Qt::Popup )
-            ( *it ) -> hide();
+            if ( ( *it )->windowType() == Qt::Popup )
+              ( *it )->hide();
           }
-          QList< SC_RelativePopup* > popupChildren = findChildren< SC_RelativePopup* >( matchAll );
-          for ( QList< SC_RelativePopup* >::iterator it = popupChildren.begin();
-              it != popupChildren.end(); ++it )
+          QList<SC_RelativePopup*> popupChildren = findChildren<SC_RelativePopup*>( matchAll );
+          for ( QList<SC_RelativePopup*>::iterator it = popupChildren.begin(); it != popupChildren.end(); ++it )
           {
-            ( *it ) -> disableChildrenHiding();
+            ( *it )->disableChildrenHiding();
           }
         }
       }
@@ -226,21 +233,22 @@ public slots:
     // set time to hide to the fast version
     timeToWait__ = timeFastHide_;
   }
+
 protected:
-  void showEvent( QShowEvent* /* event */) override
+  void showEvent( QShowEvent* /* event */ ) override
   {
     // Start waiting for the mouse
-    if ( ! underMouse() )
+    if ( !underMouse() )
     {
       if ( timerTillHide_.isActive() )
-      timerTillHide_.stop();
+        timerTillHide_.stop();
       if ( timerTillFastHide_.isActive() )
-      timerTillFastHide_.stop();
+        timerTillFastHide_.stop();
       timerTillHide_.start( timeTillHide_ );
     }
     calculateGeometry();
   }
-  void enterEvent( QEvent* /* event */) override
+  void enterEvent( QEvent* /* event */ ) override
   {
     if ( underMouse() )
     {
@@ -250,16 +258,16 @@ protected:
       // make the next hide quicker
       // most likely the user is done with the widget
       if ( timeToWait__ != timeFastHide_ )
-      timerTillFastHide_.start( timeTillFastHide_ );
+        timerTillFastHide_.start( timeTillFastHide_ );
     }
   }
-  void leaveEvent( QEvent* /* event */) override
+  void leaveEvent( QEvent* /* event */ ) override
   {
     timerTillHide_.start( timeToWait__ );
   }
   void resizeEvent( QResizeEvent* event ) override
   {
-    if ( event -> oldSize() != size() )
+    if ( event->oldSize() != size() )
     {
       calculateGeometry();
     }

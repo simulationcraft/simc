@@ -6,9 +6,10 @@
 #pragma once
 
 #include "config.hpp"
-#include <QtWidgets/QWidget>
-#include <QTimer>
+
 #include <QEvent>
+#include <QTimer>
+#include <QtWidgets/QWidget>
 
 // ============================================================================
 // SC_HoverAreaWidget
@@ -16,17 +17,16 @@
 
 class SC_HoverArea : public QWidget
 {
-Q_OBJECT
-Q_PROPERTY( int timeout READ timeout WRITE setTimeout )
+  Q_OBJECT
+  Q_PROPERTY( int timeout READ timeout WRITE setTimeout )
   int timeout_;
   QTimer timeSinceMouseEntered;
+
 public:
-  SC_HoverArea( QWidget* parent = 0, int timeout = 1000 ) :
-      QWidget( parent ), timeout_( timeout )
+  SC_HoverArea( QWidget* parent = 0, int timeout = 1000 ) : QWidget( parent ), timeout_( timeout )
   {
-    setMouseTracking(true);
-    connect( &timeSinceMouseEntered, SIGNAL( timeout() ), this,
-        SLOT( TimerTimeout() ) );
+    setMouseTracking( true );
+    connect( &timeSinceMouseEntered, SIGNAL( timeout() ), this, SLOT( TimerTimeout() ) );
     timeSinceMouseEntered.setSingleShot( true );
   }
 

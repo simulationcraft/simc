@@ -5,13 +5,12 @@
 #include "sc_Workaround.hpp"
 
 #if defined( SC_WINDOWS )
-#include <locale>
-#include <codecvt>
-
-#include <windows.h>
-#include <tlhelp32.h>
 #include <tchar.h>
+#include <tlhelp32.h>
+#include <windows.h>
 
+#include <codecvt>
+#include <locale>
 
 namespace
 {
@@ -23,7 +22,7 @@ void __unload_module( MODULEENTRY32* module, sim_t* /* sim */ )
 using dll_workaround_entry_t = std::pair<std::string, std::function<void( MODULEENTRY32*, sim_t* )>>;
 
 static const std::vector<dll_workaround_entry_t> __dll_workarounds = {
-  { "LavasoftTcpService", __unload_module },
+    { "LavasoftTcpService", __unload_module },
 };
 
 std::string convert_tchar( const TCHAR* carr )
@@ -55,11 +54,11 @@ void win32_dll_workarounds( sim_t* sim )
     return;
   }
 
-  auto handle_closer = gsl::finally([&](){CloseHandle( processHandle );});
+  auto handle_closer = gsl::finally( [ & ]() { CloseHandle( processHandle ); } );
 
   MODULEENTRY32 module;
   module.dwSize = sizeof( MODULEENTRY32 );
-  if ( ! Module32First( processHandle, &module ) )
+  if ( !Module32First( processHandle, &module ) )
   {
     return;
   }
@@ -77,7 +76,7 @@ void win32_dll_workarounds( sim_t* sim )
     }
   } while ( Module32Next( processHandle, &module ) );
 }
-}
+}  // namespace
 #endif
 
 void workaround::apply_workarounds( sim_t* sim )

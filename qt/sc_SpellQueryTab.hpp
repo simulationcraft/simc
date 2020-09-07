@@ -20,9 +20,9 @@ class SC_SpellQueryTab : public QWidget
 public:
   SC_SpellQueryTab( SC_MainWindow* parent );
 
-  void    decodeSettings();
-  void    encodeSettings();
-  void    run_spell_query();
+  void decodeSettings();
+  void encodeSettings();
+  void run_spell_query();
   void checkForSave();
 
   void createToolTips();
@@ -58,15 +58,16 @@ public:
     QPushButton* save;
   } button;
 
-//  
+  //
 public slots:
   void sourceTypeChanged( const int source_index );
   void filterTypeChanged( const int filter_index );
   void runSpellQuerySlot();
   void browseForFile();
+
 protected:
   SC_MainWindow* mainWindow;
   void load_setting( QSettings& s, const QString& name, QComboBox* choice, const QString& default_value );
-  void load_setting( QSettings& s, const QString& name, QLineEdit* textbox, const QString& default_value);
-  void load_setting( QSettings& s, const QString& name, SC_TextEdit* textbox, const QString& default_value);
+  void load_setting( QSettings& s, const QString& name, QLineEdit* textbox, const QString& default_value );
+  void load_setting( QSettings& s, const QString& name, SC_TextEdit* textbox, const QString& default_value );
 };

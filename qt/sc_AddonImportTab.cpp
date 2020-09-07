@@ -7,5 +7,5 @@
 
 SC_AddonImportTab::SC_AddonImportTab( QWidget* parent ) : SC_TextEdit( parent )
 {
-  setPlainText(tr("# Post your Simc Addon Export text here.\n"));
+  setPlainText( tr( "# Post your Simc Addon Export text here.\n" ) );
 }
