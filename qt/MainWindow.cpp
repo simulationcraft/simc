@@ -6,11 +6,13 @@
 #include "MainWindow.hpp"
 
 #include "WebView.hpp"
-#include "dbc/dbc.hpp"
-#include "dbc/spell_query/spell_data_expr.hpp"
-#include "interfaces/sc_http.hpp"
-#include "player/sc_player.hpp"
-#include "report/reports.hpp"
+#include "engine/dbc/dbc.hpp"
+#include "engine/dbc/spell_query/spell_data_expr.hpp"
+#include "engine/interfaces/sc_http.hpp"
+#include "engine/player/sc_player.hpp"
+#include "engine/report/reports.hpp"
+#include "engine/sim/sc_sim.hpp"
+#include "engine/util/git_info.hpp"
 #include "sc_AddonImportTab.hpp"
 #include "sc_OptionsTab.hpp"
 #include "sc_SampleProfilesTab.hpp"
@@ -19,9 +21,7 @@
 #include "sc_SpellQueryTab.hpp"
 #include "sc_UpdateCheck.hpp"
 #include "sc_WelcomeTab.hpp"
-#include "sim/sc_sim.hpp"
 #include "simulationcraftqt.hpp"
-#include "util/git_info.hpp"
 #include "util/sc_mainwindowcommandline.hpp"
 
 #include <QString>

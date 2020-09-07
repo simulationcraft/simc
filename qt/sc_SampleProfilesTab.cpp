@@ -1,9 +1,9 @@
 #include "sc_SampleProfilesTab.hpp"
 
-#include "sc_enums.hpp"
+#include "engine/sc_enums.hpp"
+#include "engine/util/generic.hpp"
+#include "engine/util/util.hpp"
 #include "simulationcraftqt.hpp"
-#include "util/generic.hpp"
-#include "util/util.hpp"
 
 #include <QDir>
 

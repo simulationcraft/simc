@@ -1,5 +1,12 @@
 #include "sc_SimulationThread.hpp"
 
+#include "engine/lib/fmt/format.h"
+#include "engine/report/reports.hpp"
+#include "engine/sim/plot.hpp"
+#include "engine/sim/reforge_plot.hpp"
+#include "engine/sim/sc_sim.hpp"
+#include "engine/sim/scale_factor_control.hpp"
+#include "engine/sim/sim_control.hpp"
 #include "sc_Workaround.hpp"
 #include "simulationcraftqt.hpp"
 

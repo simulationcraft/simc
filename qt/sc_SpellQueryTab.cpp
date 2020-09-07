@@ -6,10 +6,9 @@
 #include "sc_SpellQueryTab.hpp"
 
 #include "MainWindow.hpp"
+#include "engine/util/util.hpp"
 #include "simulationcraftqt.hpp"
 #include "util/sc_mainwindowcommandline.hpp"
-
-#include "simulationcraft.hpp"
 
 namespace { // unnamed namespace
 

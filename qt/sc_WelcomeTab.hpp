@@ -3,11 +3,9 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 #pragma once
-#include "WebEngineConfig.hpp"
-#include "config.hpp"
 
-#include <QtGui/QtGui>
-#include <QtWidgets/QtWidgets>
+#include "WebEngineConfig.hpp"
+
 class SC_MainWindow;
 
 #if defined( SC_USE_WEBKIT )

@@ -6,15 +6,14 @@
 #include "sc_OptionsTab.hpp"
 
 #include "MainWindow.hpp"
-#include "dbc/client_data.hpp"
+#include "engine/dbc/client_data.hpp"
+#include "engine/util/util.hpp"
 #include "sc_SimulateTab.hpp"
 #include "simulationcraftqt.hpp"
 #include "util/ComboBoxIntegerValidator.hpp"
 #include "util/sc_mainwindowcommandline.hpp"
 
 #include <QtCore/QDateTime>
-
-#include "simulationcraft.hpp"
 
 namespace
 {  // unnamed namespace

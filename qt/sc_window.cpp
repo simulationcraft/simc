@@ -5,8 +5,9 @@
 
 #include "MainWindow.hpp"
 #include "WebView.hpp"
-#include "dbc/spell_query/spell_data_expr.hpp"
-#include "interfaces/sc_http.hpp"
+#include "engine/dbc/spell_query/spell_data_expr.hpp"
+#include "engine/interfaces/sc_http.hpp"
+#include "engine/util/git_info.hpp"
 #include "sc_AddonImportTab.hpp"
 #include "sc_OptionsTab.hpp"
 #include "sc_SampleProfilesTab.hpp"
@@ -16,7 +17,6 @@
 #include "sc_UpdateCheck.hpp"
 #include "sc_WelcomeTab.hpp"
 #include "simulationcraftqt.hpp"
-#include "util/git_info.hpp"
 #include "util/sc_mainwindowcommandline.hpp"
 
 #include "simulationcraft.hpp"
