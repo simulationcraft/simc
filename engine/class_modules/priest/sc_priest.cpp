@@ -1786,7 +1786,7 @@ void priest_t::create_apl_precombat()
 // TODO: Adjust these with new consumables in Shadowlands
 std::string priest_t::default_potion() const
 {
-  std::string lvl60_potion = ( specialization() == PRIEST_SHADOW ) ? "unbridled_fury" : "battle_potion_of_intellect";
+  std::string lvl60_potion = ( specialization() == PRIEST_SHADOW ) ? "potion_of_spectral_intellect" : "potion_of_spectral_intellect";
   std::string lvl50_potion = ( specialization() == PRIEST_SHADOW ) ? "unbridled_fury" : "battle_potion_of_intellect";
 
   return ( true_level > 50 ) ? lvl60_potion : lvl50_potion;
@@ -1794,12 +1794,12 @@ std::string priest_t::default_potion() const
 
 std::string priest_t::default_flask() const
 {
-  return ( true_level > 50 ) ? "greater_flask_of_endless_fathoms" : "greater_flask_of_endless_fathoms";
+  return ( true_level > 50 ) ? "spectral_flask_of_power" : "greater_flask_of_endless_fathoms";
 }
 
 std::string priest_t::default_food() const
 {
-  return ( true_level > 50 ) ? "baked_port_tato" : "baked_port_tato";
+  return ( true_level > 50 ) ? "crawler_ravioli_with_apple_sauce" : "baked_port_tato";
 }
 
 std::string priest_t::default_rune() const
