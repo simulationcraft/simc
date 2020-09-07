@@ -1250,11 +1250,6 @@ void SC_MainWindow::backButtonClicked( bool /* checked */ )
     if ( mainTab->currentTab() == TAB_RESULTS && !visibleWebView->history()->canGoBack() )
     {
       visibleWebView->loadHtml();
-#if defined( SC_USE_WEBKIT )
-      QWebHistory* h = visibleWebView->history();
-      h->setMaximumItemCount( 0 );
-      h->setMaximumItemCount( 100 );
-#endif
     }
     else
     {

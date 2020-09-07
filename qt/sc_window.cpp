@@ -30,7 +30,6 @@
 namespace
 {  // UNNAMED NAMESPACE
 
-#if !defined( SC_USE_WEBKIT )
 struct HtmlOutputFunctor
 {
   QString fname;
@@ -52,7 +51,6 @@ struct HtmlOutputFunctor
     }
   }
 };
-#endif
 }  // UNNAMED NAMESPACE
 
 // ==========================================================================

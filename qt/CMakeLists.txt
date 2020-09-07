@@ -22,6 +22,5 @@ FILE(COPY ../Welcome.html DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
 # gui executeable
 include(../source_files/cmake_gui.txt)
 add_executable(SimulationCraft ${source_files})
-target_compile_definitions(SimulationCraft PUBLIC SC_USE_WEBENGINE)
 target_include_directories(SimulationCraft PUBLIC ../engine/ ../)
 target_link_libraries(SimulationCraft engine Qt5::Core Qt5::Gui Qt5::Widgets Qt5::WebEngine Qt5::WebEngineWidgets)

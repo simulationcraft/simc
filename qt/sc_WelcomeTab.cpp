@@ -10,33 +10,6 @@
 
 #include <QTimer>
 
-#if defined( SC_USE_WEBKIT )
-SC_WelcomeTabWidget_WebKit::SC_WelcomeTabWidget_WebKit( SC_MainWindow* parent ) : SC_WebEngineView( parent )
-{
-  QString welcomeFile = "";
-  for ( const auto& path : SC_PATHS::getDataPaths() )
-  {
-    QFile welcome_path( path + "/Welcome.html" );
-    if ( welcome_path.exists() )
-    {
-      welcomeFile = welcome_path.fileName();
-      break;
-    }
-  }
-  QString welcome_uri = "file:///" + welcomeFile;
-  setUrl( welcome_uri );
-
-  page()->setLinkDelegationPolicy( QWebPage::DelegateAllLinks );
-  connect( this, SIGNAL( linkClicked( const QUrl& ) ), this, SLOT( linkClickedSlot( const QUrl& ) ) );
-}
-
-void SC_WelcomeTabWidget_WebKit::linkClickedSlot( const QUrl& url )
-{
-  QDesktopServices::openUrl( url );
-}
-#endif  // SC_USE_WEBKIT
-
-#if defined( SC_USE_WEBENGINE )
 SC_WelcomeTabWidget_WebEngine::SC_WelcomeTabWidget_WebEngine( SC_MainWindow* parent )
   : SC_WebEngineView( parent ), welcome_uri(), welcome_timer( new QTimer( this ) )
 {
@@ -79,4 +52,3 @@ void SC_WelcomeTabWidget::urlChangedSlot( const QUrl& url )
   QDesktopServices::openUrl( url );
   page()->triggerAction( QWebEnginePage::Back );
 }
-#endif  // SC_USE_WEBENGINE

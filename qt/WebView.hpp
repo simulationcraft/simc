@@ -38,10 +38,6 @@ public:
 
   void loadHtml();
 
-#if defined( SC_USE_WEBKIT )
-  QString toHtml();
-#endif
-
   void enableMouseNavigation();
 
   void disableMouseNavigation();
@@ -68,10 +64,6 @@ private slots:
   void loadFinishedSlot( bool /* ok */ );
 
   void urlChangedSlot( const QUrl& url );
-
-#if defined( SC_USE_WEBKIT )
-  void linkClickedSlot( const QUrl& url );
-#endif
 
 public slots:
   void hideSearchBox();
