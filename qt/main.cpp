@@ -1,10 +1,10 @@
 ﻿#include "MainWindow.hpp"
+#include "engine/class_modules/class_module.hpp"
+#include "engine/dbc/dbc.hpp"
+#include "engine/player/unique_gear.hpp"
 #include "interfaces/bcp_api.hpp"
 #include "sc_SimulateTab.hpp"
 #include "simulationcraftqt.hpp"
-
-#include "simulationcraft.hpp"
-
 #if 0
 #include <fstream>
 #endif
