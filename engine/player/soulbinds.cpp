@@ -19,7 +19,11 @@ namespace
 {
 struct covenant_cb_base_t
 {
-  covenant_cb_base_t()
+  bool trigger_on_class; // proc off class ability
+  bool trigger_on_base;  // proc off base ability
+
+  covenant_cb_base_t( bool on_class = true, bool on_base = false )
+    : trigger_on_class( on_class ), trigger_on_base( on_base )
   {
   }
   virtual void trigger( action_t*, action_state_t* s ) = 0;
@@ -30,7 +34,8 @@ struct covenant_cb_buff_t : public covenant_cb_base_t
 {
   buff_t* buff;
 
-  covenant_cb_buff_t( buff_t* b ) : covenant_cb_base_t(), buff( b )
+  covenant_cb_buff_t( buff_t* b, bool on_class = true, bool on_base = false )
+    : covenant_cb_base_t( on_class, on_base ), buff( b )
   {
   }
   void trigger( action_t*, action_state_t* ) override
@@ -61,15 +66,19 @@ struct covenant_cb_action_t : public covenant_cb_base_t
 
 struct covenant_ability_cast_cb_t : public dbc_proc_callback_t
 {
-  unsigned covenant_ability;
+  unsigned class_ability;
+  unsigned base_ability;
   auto_dispose< std::vector<covenant_cb_base_t*> > cb_list;
 
   covenant_ability_cast_cb_t( player_t* p, const special_effect_t& e )
-    : dbc_proc_callback_t( p, e ), covenant_ability( p->covenant->get_covenant_ability_spell_id() ), cb_list()
+    : dbc_proc_callback_t( p, e ),
+      class_ability( p->covenant->get_covenant_ability_spell_id() ),
+      base_ability( p->covenant->get_covenant_ability_spell_id( true ) ),
+      cb_list()
   {
     // Manual overrides for covenant abilities that don't utilize the spells found in __covenant_ability_data dbc table
     if ( p->type == DRUID && p->covenant->type() == covenant_e::KYRIAN )
-      covenant_ability = 326446;
+      class_ability = 326446;
   }
 
   void initialize() override
@@ -80,11 +89,15 @@ struct covenant_ability_cast_cb_t : public dbc_proc_callback_t
 
   void trigger( action_t* a, action_state_t* s ) override
   {
-    if ( a->data().id() != covenant_ability )
+    if ( a->data().id() != class_ability && a->data().id() != base_ability )
       return;
 
-    for ( const auto& t : cb_list )
-      t->trigger( a, s );
+    for ( const auto& cb : cb_list )
+    {
+      if ( cb->trigger_on_class && a->data().id() == class_ability ||
+           cb->trigger_on_base && a->data().id() == base_ability )
+        cb->trigger( a, s );
+    }
   }
 };
 
