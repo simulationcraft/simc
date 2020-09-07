@@ -638,12 +638,11 @@ void brons_call_to_action( special_effect_t& effect )
 
   struct brons_call_to_action_cb_t : public dbc_proc_callback_t
   {
-    unsigned counter;
     timespan_t bron_dur;
     pet_t* bron;
 
     brons_call_to_action_cb_t( const special_effect_t& e )
-      : dbc_proc_callback_t( e.player, e ), counter( 0 ), bron_dur( e.player->find_spell( 333961 )->duration() )
+      : dbc_proc_callback_t( e.player, e ), bron_dur( e.player->find_spell( 333961 )->duration() )
     {
       bron = e.player->find_pet( "bron" );
       if ( !bron )
@@ -660,16 +659,7 @@ void brons_call_to_action( special_effect_t& effect )
           bron->summon( bron_dur);
       }
       else
-      {
         dbc_proc_callback_t::execute( a, s );
-        counter++;
-      }
-    }
-
-    void reset() override
-    {
-      dbc_proc_callback_t::reset();
-      counter = 0;
     }
   };
 
