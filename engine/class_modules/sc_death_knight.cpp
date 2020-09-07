@@ -502,7 +502,6 @@ public:
     cooldown_t* blood_tap;
     cooldown_t* dancing_rune_weapon;
     cooldown_t* death_and_decay;
-    cooldown_t* rune_strike;
     cooldown_t* vampiric_blood;
     // Frost
     cooldown_t* empower_rune_weapon;
@@ -558,7 +557,6 @@ public:
     gain_t* drw_heart_strike;
     gain_t* heartbreaker;
     gain_t* relish_in_blood;
-    gain_t* rune_strike;
     gain_t* tombstone;
 
     gain_t* bloody_runeblade;
@@ -736,8 +734,6 @@ public:
     const spell_data_t* frostwyrms_fury;
     const spell_data_t* unholy_frenzy;
     const spell_data_t* summon_gargoyle;
-    const spell_data_t* rune_strike;
-
   } talent;
 
   // Spells
@@ -926,7 +922,6 @@ public:
     cooldown.empower_rune_weapon = get_cooldown( "empower_rune_weapon" );
     cooldown.icecap_icd          = get_cooldown( "icecap" );
     cooldown.pillar_of_frost     = get_cooldown( "pillar_of_frost" );
-    cooldown.rune_strike         = get_cooldown( "rune_strike" );
     cooldown.vampiric_blood      = get_cooldown( "vampiric_blood" );
 
     resource_regeneration = regen_type::DYNAMIC;
@@ -2335,18 +2330,6 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     }
   };
 
-  struct rune_strike_t : public drw_attack_t
-  {
-    rune_strike_t( dancing_rune_weapon_pet_t* p ) :
-      drw_attack_t( p, "rune_strike", p -> o() -> talent.rune_strike )
-    {
-      weapon = &( p -> main_hand_weapon );
-
-      cooldown -> duration = 0_ms;
-      cooldown -> charges = 0;
-    }
-  };
-
   struct abilities_t
   {
     drw_spell_t*  blood_plague;
@@ -2356,7 +2339,6 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     drw_attack_t* death_strike;
     drw_attack_t* heart_strike;
     drw_attack_t* marrowrend;
-    drw_attack_t* rune_strike;
   } ability;
 
   dancing_rune_weapon_pet_t( death_knight_t* owner ) :
@@ -2386,7 +2368,6 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     ability.death_strike  = new death_strike_t ( this );
     ability.heart_strike  = new heart_strike_t ( this );
     ability.marrowrend    = new marrowrend_t   ( this );
-    ability.rune_strike   = new rune_strike_t  ( this );
 
     type = PLAYER_GUARDIAN; _spec = SPEC_NONE;
   }
@@ -4080,6 +4061,7 @@ struct relish_in_blood_t : public death_knight_heal_t
     double m = death_knight_heal_t::action_multiplier();
 
     // Melekus - 2020-09-06: If Bone shield isn't up, this still heals as if you had one stack
+    // https://github.com/SimCMinMax/WoW-BugTracker/issues/626
     if ( p() -> bugs && ! p() -> buffs.bone_shield -> up() )
       return m;
 
@@ -4410,15 +4392,26 @@ struct death_strike_heal_t : public death_knight_heal_t
 {
   blood_shield_t* blood_shield;
   timespan_t interval;
+  double minimum_healing;
 
   death_strike_heal_t( death_knight_t* p ) :
     death_knight_heal_t( "death_strike_heal", p, p -> find_spell( 45470 ) ),
     blood_shield( p -> specialization() == DEATH_KNIGHT_BLOOD ? new blood_shield_t( p ) : nullptr ),
-    interval( timespan_t::from_seconds( p -> spec.death_strike -> effectN( 4 ).base_value() ) )
+    interval( timespan_t::from_seconds( p -> spec.death_strike -> effectN( 4 ).base_value() ) ),
+    minimum_healing( p -> spec.death_strike -> effectN( 3 ).percent() )
   {
     may_crit = callbacks = false;
     background = true;
     target     = p;
+
+    // Melekus 2020-09-07: DS base healing with Voracious is a lot higher than expected
+    // There's a hidden effect in Voracious' spelldata that increases death strike's effect#3 (base healing) by 50%
+    // Rounded down as a percent of player's max hp (7 * 1.5 = 10.5 -> 10), this matches the healing observed ingame.
+    // https://github.com/SimCMinMax/WoW-BugTracker/issues/627
+    if ( p -> bugs && p -> talent.voracious -> ok() )
+    {
+      minimum_healing = std::floor( minimum_healing * 1.0 + p -> talent.voracious -> effectN( 3 ).percent() );
+    }
   }
 
   void init() override
@@ -4430,14 +4423,14 @@ struct death_strike_heal_t : public death_knight_heal_t
 
   double base_da_min( const action_state_t* ) const override
   {
-    return std::max( player -> resources.max[ RESOURCE_HEALTH ] * p() -> spec.death_strike -> effectN( 3 ).percent(),
-                     player -> compute_incoming_damage( interval ) * p() -> spec.death_strike -> effectN( 2 ).percent() );
+    return std::max( player -> resources.max[ RESOURCE_HEALTH ] * minimum_healing,
+                              player -> compute_incoming_damage( interval ) * p() -> spec.death_strike -> effectN( 2 ).percent() );
   }
 
   double base_da_max( const action_state_t* ) const override
   {
-    return std::max( player -> resources.max[ RESOURCE_HEALTH ] * p() -> spec.death_strike -> effectN( 3 ).percent(),
-                     player -> compute_incoming_damage( interval ) * p() -> spec.death_strike -> effectN( 2 ).percent() );
+    return std::max( player -> resources.max[ RESOURCE_HEALTH ] * minimum_healing,
+                              player -> compute_incoming_damage( interval ) * p() -> spec.death_strike -> effectN( 2 ).percent() );
   }
 
   double action_multiplier() const override
@@ -4445,6 +4438,10 @@ struct death_strike_heal_t : public death_knight_heal_t
     double m = death_knight_heal_t::action_multiplier();
 
     m *= 1.0 + p() -> buffs.hemostasis -> stack_value();
+
+    // see Voracious bug in constructor
+    if ( ! p() -> bugs )
+      m *= 1.0 + p() -> talent.voracious -> effectN( 2 ).percent();
 
     return m;
   }
@@ -5966,32 +5963,6 @@ struct remorseless_winter_t : public death_knight_spell_t
   }
 };
 
-// Rune Strike ==============================================================
-
-struct rune_strike_t : public death_knight_melee_attack_t
-{
-  rune_strike_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_melee_attack_t( "rune_strike", p, p -> talent.rune_strike )
-  {
-    parse_options( options_str );
-  }
-
-  void execute() override
-  {
-    death_knight_melee_attack_t::execute();
-
-    p() -> replenish_rune( as<unsigned int>( data().effectN( 2 ).base_value() ), p() -> gains.rune_strike );
-
-    // Bug ? Intended ? DRW copies Rune Strike now
-    // https://github.com/SimCMinMax/WoW-BugTracker/issues/323
-    if ( p() -> buffs.dancing_rune_weapon -> check() && p() -> bugs )
-    {
-      p() -> pets.dancing_rune_weapon_pet -> ability.rune_strike -> set_target( execute_state -> target );
-      p() -> pets.dancing_rune_weapon_pet -> ability.rune_strike -> execute();
-    }
-  }
-};
-
 // Sacrificial Pact =========================================================
 
 struct sacrificial_pact_damage_t : public death_knight_spell_t
@@ -6765,9 +6736,6 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
     // Effects that require the player to actually spend runes
     if ( actual_amount > 0 )
     {
-      cooldown.rune_strike -> adjust( timespan_t::from_seconds(
-        -1.0 * talent.rune_strike -> effectN( 3 ).base_value() * actual_amount ), false );
-
       if ( buffs.pillar_of_frost -> up() )
       {
         buffs.pillar_of_frost_bonus -> trigger( as<int>( actual_amount ) );
@@ -7427,7 +7395,6 @@ action_t* death_knight_t::create_action( util::string_view name, const std::stri
   if ( name == "heart_strike"             ) return new heart_strike_t             ( this, options_str );
   if ( name == "mark_of_blood"            ) return new mark_of_blood_t            ( this, options_str );
   if ( name == "marrowrend"               ) return new marrowrend_t               ( this, options_str );
-  if ( name == "rune_strike"              ) return new rune_strike_t              ( this, options_str );
   if ( name == "rune_tap"                 ) return new rune_tap_t                 ( this, options_str );
   if ( name == "tombstone"                ) return new tombstone_t                ( this, options_str );
   if ( name == "vampiric_blood"           ) return new vampiric_blood_t           ( this, options_str );
@@ -7840,7 +7807,6 @@ void death_knight_t::init_spells()
   talent.frostwyrms_fury      = find_talent_spell( "Frostwyrm's Fury" );
   talent.unholy_frenzy      = find_talent_spell( "Unholy Frenzy" );
   talent.summon_gargoyle    = find_talent_spell( "Summon Gargoyle" );
-  talent.rune_strike            = find_talent_spell( "Rune Strike"  );
 
   // Generic spells
   // Shared
@@ -8094,7 +8060,6 @@ void death_knight_t::default_apl_blood()
   standard -> add_talent( this, "Bonestorm", "if=runic_power>=100&!buff.dancing_rune_weapon.up" );
   standard -> add_action( this, "Death Strike", "if=runic_power.deficit<=(15+buff.dancing_rune_weapon.up*5+spell_targets.heart_strike*talent.heartbreaker.enabled*2)|target.1.time_to_die<10" );
   standard -> add_action( this, "Death and Decay", "if=spell_targets.death_and_decay>=3" );
-  standard -> add_talent( this, "Rune Strike", "if=(charges_fractional>=1.8|buff.dancing_rune_weapon.up)&rune.time_to_3>=gcd" );
   standard -> add_action( this, "Heart Strike", "if=buff.dancing_rune_weapon.up|rune.time_to_4<gcd" );
   standard -> add_action( this, "Blood Boil", "if=buff.dancing_rune_weapon.up" );
   standard -> add_action( this, "Death and Decay", "if=buff.crimson_scourge.up|talent.rapid_decomposition.enabled|spell_targets.death_and_decay>=2" );
@@ -8102,7 +8067,6 @@ void death_knight_t::default_apl_blood()
   standard -> add_action( this, "Blood Boil" );
   standard -> add_action( this, "Heart Strike", "if=rune.time_to_3<gcd|buff.bone_shield.stack>6" );
   standard -> add_action( "use_item,name=grongs_primal_rage" ); // Because this prevents all casting it should be used during downtime
-  standard -> add_talent( this, "Rune Strike" );
   standard -> add_action( "arcane_torrent,if=runic_power.deficit>20" );
 }
 
@@ -8640,7 +8604,6 @@ void death_knight_t::init_gains()
   gains.drw_heart_strike                 = get_gain( "Rune Weapon Heart Strike" );
   gains.heartbreaker                     = get_gain( "Heartbreaker" );
   gains.relish_in_blood                  = get_gain( "Relish in Blood" );
-  gains.rune_strike                      = get_gain( "Rune Strike" );
   gains.tombstone                        = get_gain( "Tombstone" );
 
   gains.bloody_runeblade                 = get_gain( "Bloody Runeblade" );
