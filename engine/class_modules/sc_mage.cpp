@@ -529,8 +529,8 @@ public:
     double focus_magic_crit_chance = 0.5;
     timespan_t from_the_ashes_interval = 2.0_s;
     // TODO: Determine reasonable default values for Mirrors of Torment options.
-    timespan_t mirrors_of_torment_interval = 2.0_s;
-    double mirrors_of_torment_stddev = 0.1;
+    std::vector<timespan_t> mirrors_of_torment_interval = { 2.0_s };
+    std::vector<double> mirrors_of_torment_stddev = { 0.1 };
   } options;
 
   // Pets
@@ -1275,34 +1275,40 @@ struct mirrors_of_torment_t : public buff_t
     set_reverse( true );
 
     auto p = debug_cast<mage_t*>( source );
-    if ( p->options.mirrors_of_torment_interval > 0_ms )
-    {
-      set_tick_behavior( buff_tick_behavior::REFRESH );
-      set_tick_time_callback( [ this, p ] ( const buff_t*, unsigned current_tick )
-      {
-        if ( tick_index == current_tick && period > 0_ms )
-          return period;
+    if ( p->options.mirrors_of_torment_interval.empty() || p->options.mirrors_of_torment_stddev.empty() )
+      return;
 
-        tick_index = current_tick;
-        period = p->options.mirrors_of_torment_interval;
-        period = std::max( 1_ms, p->rng().gauss( period, period * p->options.mirrors_of_torment_stddev ) );
+    set_tick_behavior( buff_tick_behavior::REFRESH );
+    set_tick_time_callback( [ this, p ] ( const buff_t*, unsigned current_tick )
+    {
+      if ( tick_index == current_tick && period > 0_ms )
         return period;
-      } );
-      set_tick_callback( [ p ] ( buff_t* buff, int, timespan_t )
+
+      size_t interval_ix = std::min( as<size_t>( current_tick ), p->options.mirrors_of_torment_interval.size() - 1 );
+      size_t stddev_ix   = std::min( as<size_t>( current_tick ), p->options.mirrors_of_torment_stddev.size() - 1 );
+
+      tick_index = current_tick;
+      period = p->options.mirrors_of_torment_interval[ interval_ix ];
+      period = std::max( 1_ms, p->rng().gauss( period, period * p->options.mirrors_of_torment_stddev[ stddev_ix ] ) );
+
+      return period;
+    } );
+    set_tick_callback( [ p ] ( buff_t* buff, int, timespan_t )
+    {
+      if ( buff->current_tick % buff->max_stack() == 0 )
       {
-        if ( buff->current_tick % buff->max_stack() == 0 )
-        {
-          p->action.tormenting_backlash->set_target( buff->player );
-          p->action.tormenting_backlash->execute();
-        }
-        else
-        {
-          p->action.agonizing_backlash->set_target( buff->player );
-          p->action.agonizing_backlash->execute();
-        }
-        p->buffs.siphoned_malice->trigger();
-      } );
-    }
+        p->action.tormenting_backlash->set_target( buff->player );
+        p->action.tormenting_backlash->execute();
+      }
+      else
+      {
+        p->action.agonizing_backlash->set_target( buff->player );
+        p->action.agonizing_backlash->execute();
+      }
+      p->buffs.siphoned_malice->trigger();
+    } );
+    set_stack_change_callback( [ this ] ( buff_t*, int, int cur )
+    { if ( cur == 0 ) period = 0_ms; } );
   }
 
   void reset() override
@@ -5919,8 +5925,33 @@ void mage_t::create_options()
   add_option( opt_float( "focus_magic_stddev", options.focus_magic_stddev, 0.0, std::numeric_limits<double>::max() ) );
   add_option( opt_float( "focus_magic_crit_chance", options.focus_magic_crit_chance, 0.0, 1.0 ) );
   add_option( opt_timespan( "from_the_ashes_interval", options.from_the_ashes_interval, 1_ms, timespan_t::max() ) );
-  add_option( opt_timespan( "mirrors_of_torment_interval", options.mirrors_of_torment_interval, 0_ms, timespan_t::max() ) );
-  add_option( opt_float( "mirrors_of_torment_stddev", options.mirrors_of_torment_stddev, 0.0, std::numeric_limits<double>::max() ) );
+  add_option( opt_func( "mirrors_of_torment_interval", [ this ] ( sim_t*, util::string_view, util::string_view val )
+  {
+    options.mirrors_of_torment_interval.clear();
+    auto splits = util::string_split<util::string_view>( val, "/" );
+    for ( auto split : splits )
+    {
+      double val = util::to_double( split );
+      if ( val < 0.0 )
+        throw std::invalid_argument( "Mirrors of Torment interval can't be negative" );
+      options.mirrors_of_torment_interval.push_back( timespan_t::from_seconds( val ) );
+    }
+    return true;
+  } ) );
+  add_option( opt_func( "mirrors_of_torment_stddev", [ this ] ( sim_t*, util::string_view, util::string_view val )
+  {
+    options.mirrors_of_torment_stddev.clear();
+    auto splits = util::string_split<util::string_view>( val, "/" );
+    for ( auto split : splits )
+    {
+      double val = util::to_double( split );
+      if ( val < 0.0 )
+        throw std::invalid_argument( "Mirrors of Torment stddev can't be negative" );
+      options.mirrors_of_torment_stddev.push_back( val );
+    }
+    return true;
+  } ) );
+
   player_t::create_options();
 }
 
