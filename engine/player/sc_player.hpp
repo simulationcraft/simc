@@ -532,6 +532,9 @@ struct player_t : public actor_t
     buff_t* embody_the_construct;     // necrolord/emeni - cast counter
     buff_t* marrowed_gemstone_charging;     // necrolord/heirmir - crit counter
     buff_t* marrowed_gemstone_enhancement;  // necrolord/heirmir - crit proc after 10 crits
+
+    // 9.0 Enchants and Consumables
+    buff_t* celestial_guidance;
   } buffs;
 
   struct debuffs_t

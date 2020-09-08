@@ -55,7 +55,19 @@ namespace enchants
 {
 void celestial_guidance( special_effect_t& effect )
 {
+  if ( !effect.player->buffs.celestial_guidance )
+  {
+    effect.player->buffs.celestial_guidance =
+        make_buff( effect.player, "celestial_guidance", effect.player->find_spell( 324748 ) )
+            ->set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
+            ->add_invalidate( CACHE_AGILITY )
+            ->add_invalidate( CACHE_INTELLECT )
+            ->add_invalidate( CACHE_STRENGTH );
+  }
 
+  effect.custom_buff = effect.player->buffs.celestial_guidance;
+
+  new dbc_proc_callback_t( effect.player, effect );
 }
 
 void lightless_force( special_effect_t& effect )
