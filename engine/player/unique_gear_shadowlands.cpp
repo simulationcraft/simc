@@ -82,7 +82,17 @@ void lightless_force( special_effect_t& effect )
 
 void sinful_revelation( special_effect_t& effect )
 {
+  if ( !effect.player->buffs.sinful_revelation )
+  {
+    effect.player->buffs.sinful_revelation =
+        make_buff( effect.player, "sinful_revelation", effect.player->find_spell( 324260 ) )
+            ->set_default_value_from_effect( A_MOD_DAMAGE_FROM_CASTER )
+            ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  }
 
+  effect.custom_buff = effect.player->buffs.sinful_revelation;
+
+  new dbc_proc_callback_t( effect.player, effect );
 }
 }  // namespace enchants
 

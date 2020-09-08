@@ -535,6 +535,7 @@ struct player_t : public actor_t
 
     // 9.0 Enchants and Consumables
     buff_t* celestial_guidance;
+    buff_t* sinful_revelation;
   } buffs;
 
   struct debuffs_t
