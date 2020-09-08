@@ -1224,7 +1224,7 @@ void enemy_t::init_base_stats()
     initial_health_percentage = 100.0;
   }
 
-  // Armor Coefficient, based on level (6300 @ 120-123)
+  // Armor Coefficient, based on level (1054 @ 50; 2500 @ 60-63)
   base.armor_coeff = custom_armor_coeff > 0 ? custom_armor_coeff : dbc->armor_mitigation_constant( level() );
   sim->print_debug( "{} base armor coefficient set to {}.", *this, base.armor_coeff );
 }

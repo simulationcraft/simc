@@ -1,4 +1,7 @@
 set(source_files
+EnumeratedTab.hpp
+ImportTab.hpp
+MainWindow.hpp
 sc_AddonImportTab.hpp
 sc_importWidget.hpp
 sc_importWindow.hpp
@@ -11,6 +14,7 @@ sc_UpdateCheck.hpp
 sc_WelcomeTab.hpp
 sc_Workaround.hpp
 simulationcraftqt.hpp
+util/ComboBoxIntegerValidator.hpp
 util/sc_hoverarea.hpp
 util/sc_mainwindowcommandline.hpp
 util/sc_recentlyclosed.hpp
@@ -18,9 +22,14 @@ util/sc_relativepopup.hpp
 util/sc_searchbox.hpp
 util/sc_tabbar.hpp
 util/sc_textedit.hpp
+WebEngineConfig.hpp
+WebPage.hpp
+WebView.hpp
+EnumeratedTab.cpp
+ImportTab.cpp
 main.cpp
+MainWindow.cpp
 sc_AddonImportTab.cpp
-sc_ImportTab.cpp
 sc_ImportThread.cpp
 sc_importWidget.cpp
 sc_importWindow.cpp
@@ -33,11 +42,14 @@ sc_UpdateCheck.cpp
 sc_WelcomeTab.cpp
 sc_window.cpp
 sc_Workaround.cpp
+util/ComboBoxIntegerValidator.cpp
 util/sc_mainwindowcommandline.cpp
 util/sc_recentlyclosed.cpp
 util/sc_relativepopup.cpp
 util/sc_searchbox.cpp
 util/sc_tabbar.cpp
 util/sc_textedit.cpp
+WebPage.cpp
+WebView.cpp
 simcqt.qrc
 )

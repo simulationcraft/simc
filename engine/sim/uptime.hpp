@@ -7,7 +7,7 @@
 
 #include "config.hpp"
 #include "util/sample_data.hpp"
-#include "sc_timespan.hpp"
+#include "util/timespan.hpp"
 #include <string>
 
 struct sim_t;

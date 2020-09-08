@@ -7,7 +7,7 @@
 
 #include "config.hpp"
 #include "sim/event.hpp"
-#include "sc_timespan.hpp"
+#include "util/timespan.hpp"
 
 struct player_t;
 

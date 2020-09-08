@@ -135,13 +135,12 @@ ForEachMacros:   [ foreach, Q_FOREACH, BOOST_FOREACH ]
 
 
 # Regular expressions denoting the different #include categories used for ordering #includes.
-# Give simulationcraft.hpp highest priority because of Visual Studio pre-compiled headers.
 IncludeCategories: 
   - Regex:           'config\.hpp'
     Priority:        5
 
   - Regex:           'simulationcraft\.hpp'
-    Priority:        -1
+    Priority:        30
 
   - Regex:           '^<.*\.h>'
     Priority:        20

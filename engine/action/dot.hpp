@@ -6,10 +6,11 @@
 #pragma once
 
 #include "config.hpp"
-#include "sc_timespan.hpp"
+#include "util/timespan.hpp"
 #include "sc_enums.hpp"
 #include "util/generic.hpp"
 #include "util/string_view.hpp"
+#include "util/format.hpp"
 
 #include <string>
 #include <memory>
@@ -51,12 +52,13 @@ public:
 
   dot_t(util::string_view n, player_t* target, player_t* source);
 
-  void   extend_duration(timespan_t extra_seconds, timespan_t max_total_time = timespan_t::min(), uint32_t state_flags = -1);
-  void   extend_duration(timespan_t extra_seconds, uint32_t state_flags)
+  void extend_duration( timespan_t extra_seconds, timespan_t max_total_time = timespan_t::min(),
+                        uint32_t state_flags = -1, bool count_refresh = true );
+  void extend_duration( timespan_t extra_seconds, uint32_t state_flags )
   {
-    extend_duration(extra_seconds, timespan_t::min(), state_flags);
+    extend_duration( extra_seconds, timespan_t::min(), state_flags );
   }
-  void   reduce_duration(timespan_t remove_seconds, uint32_t state_flags = -1);
+  void reduce_duration( timespan_t remove_seconds, uint32_t state_flags = -1, bool count_as_refresh = true );
   void   refresh_duration(uint32_t state_flags = -1);
   void   reset();
   void   cancel();
@@ -113,6 +115,7 @@ public:
   void last_tick();
   bool channel_interrupt();
 
+  friend void format_to( const dot_t&, fmt::format_context::iterator );
 private:
   void tick_zero();
   void schedule_tick();

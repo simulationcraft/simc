@@ -5,6 +5,7 @@ TARGET      = SimulationCraft
 CONFIG     += link_prl
 QT         += network widgets
 LIBS       += -L../lib -lsimcengine
+INCLUDEPATH += ../qt
 MOC_DIR     = moc
 RCC_DIR     = resources
 

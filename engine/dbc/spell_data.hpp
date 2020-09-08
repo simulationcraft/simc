@@ -11,7 +11,7 @@
 #include "dbc/client_hotfix_entry.hpp"
 #include "dbc/data_enums.hh"
 #include "sc_enums.hpp"
-#include "sc_timespan.hpp"
+#include "util/timespan.hpp"
 #include "util/span.hpp"
 #include "util/string_view.hpp"
 
@@ -207,6 +207,9 @@ struct spelleffect_data_t
   unsigned raw_subtype() const
   { return _subtype; }
 
+  property_type_t property_type() const
+  { return static_cast<property_type_t>( _misc_value ); }
+
   double base_value() const
   { return _base_value; }
 
@@ -218,23 +221,13 @@ struct spelleffect_data_t
 
   resource_e resource_gain_type() const;
 
+  double resource_multiplier( resource_e resource_type ) const;
+
   double resource( resource_e resource_type ) const
-  {
-    switch ( resource_type )
-    {
-      case RESOURCE_RUNIC_POWER:
-      case RESOURCE_RAGE:
-      case RESOURCE_ASTRAL_POWER:
-      case RESOURCE_PAIN:
-      case RESOURCE_SOUL_SHARD:
-        return base_value() * ( 1 / 10.0 );
-      case RESOURCE_INSANITY:
-      case RESOURCE_MANA:
-        return base_value() * ( 1 / 100.0 );
-      default:
-        return base_value();
-    }
-  }
+  { return base_value() * resource_multiplier( resource_type ); }
+
+  double resource() const
+  { return resource( resource_gain_type() ); }
 
   school_e school_type() const;
 
@@ -344,6 +337,13 @@ struct spelleffect_data_t
 
   const spell_data_t* trigger() const
   { assert( _trigger_spell ); return _trigger_spell; }
+
+  // Fetch value multiplier to be used based on the spell effect type/subtype
+  // TODO: Still needs quite a few additions, test before using!
+  double default_multiplier() const;
+  // Fetch value dynamically based on the spell effect type/subtype
+  double default_value() const
+  { return base_value() * default_multiplier(); }
 
   static const spelleffect_data_t& nil();
   static const spelleffect_data_t* find( unsigned, bool ptr = false );

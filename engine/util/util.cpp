@@ -1339,9 +1339,9 @@ const char* util::special_effect_string( special_effect_e type )
   switch ( type )
   {
     case SPECIAL_EFFECT_EQUIP: return "equip";
-    case SPECIAL_EFFECT_USE:   return "use";
+    case SPECIAL_EFFECT_USE: return "use";
     case SPECIAL_EFFECT_FALLBACK: return "fallback";
-    default:                   return "unknown";
+    default: return "unknown";
   }
 }
 
@@ -1351,16 +1351,17 @@ const char* util::special_effect_source_string( special_effect_source_e type )
 {
   switch ( type )
   {
-    case SPECIAL_EFFECT_SOURCE_ITEM:    return "item";
+    case SPECIAL_EFFECT_SOURCE_ITEM: return "item";
     case SPECIAL_EFFECT_SOURCE_ENCHANT: return "enchant";
-    case SPECIAL_EFFECT_SOURCE_ADDON:   return "addon";
-    case SPECIAL_EFFECT_SOURCE_GEM:     return "gem";
+    case SPECIAL_EFFECT_SOURCE_ADDON: return "addon";
+    case SPECIAL_EFFECT_SOURCE_GEM: return "gem";
     case SPECIAL_EFFECT_SOURCE_SOCKET_BONUS: return "socket_bonus";
     case SPECIAL_EFFECT_SOURCE_RACE: return "race";
     case SPECIAL_EFFECT_SOURCE_AZERITE: return "azerite";
     case SPECIAL_EFFECT_SOURCE_AZERITE_ESSENCE: return "azerite_essence";
+    case SPECIAL_EFFECT_SOURCE_SOULBIND: return "soulbind";
     case SPECIAL_EFFECT_SOURCE_FALLBACK: return "fallback";
-    default:                            return "unknown";
+    default: return "unknown";
   }
 }
 

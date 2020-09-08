@@ -174,7 +174,7 @@ static void generate_indices( bool ptr )
     for ( const spelleffect_data_t& effect : spell.effects() )
     {
       static constexpr effect_subtype_t category_subtypes[] = {
-        A_MODIFY_CATEGORY_COOLDOWN, A_411, A_453, A_454, A_HASTED_CATEGORY
+        A_MODIFY_CATEGORY_COOLDOWN, A_MOD_MAX_CHARGES, A_MOD_RECHARGE_TIME, A_MOD_RECHARGE_MULTIPLIER, A_HASTED_CATEGORY
       };
       if ( range::contains( category_subtypes, effect.subtype() ) )
       {
@@ -710,7 +710,8 @@ double dbc::fmt_value( double v, effect_type_t type, effect_subtype_t sub_type )
         case A_MOD_SPELL_DAMAGE_OF_STAT_PERCENT:
         case A_MOD_SPELL_HEALING_OF_STAT_PERCENT:
         case A_MOD_DAMAGE_PERCENT_DONE:
-        case A_MOD_DAMAGE_FROM_CASTER: // vendetta
+        case A_MOD_DAMAGE_FROM_CASTER: // Hunter's Mark
+        case A_MOD_DAMAGE_FROM_CASTER_SPELLS: // vendetta
         case A_MOD_ALL_CRIT_CHANCE:
         case A_MOD_EXPERTISE:
         case A_MOD_MANA_REGEN_INTERRUPT:  // Meditation

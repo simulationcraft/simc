@@ -1,54 +1,58 @@
 shaman="PR_Shaman_Elemental"
 spec=elemental
-level=120
+level=60
 race=troll
 role=spell
 position=back
-talents=2303023
+talents=1111111
+covenant=night_fae
 
-head=visage_of_bloody_horrors,id=159381,bonus_id=4779/1512/4786/4775,azerite_powers=457/21/14/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/1524,azerite_level=27
-shoulders=hookbarbed_spaulders,id=159376,bonus_id=4819/1512/4786/4775,azerite_powers=479/21/474/13
-back=cloak_of_questionable_intent,id=159287,bonus_id=4779/1512/4786
-chest=corrupted_hexxers_vestments,id=159370,bonus_id=4819/1512/4786/4775,azerite_powers=457/21/474/13
-wrist=raouls_barrelhook_bracers,id=159356,bonus_id=4779/1512/4786
-hands=water_shapers,id=159366,bonus_id=4779/1512/4786
-waist=waistguard_of_sanguine_fervor,id=159402,bonus_id=4779/1512/4786
-legs=chemical_blasters_legguards,id=158341,bonus_id=4779/1512/4786
-feet=souldrifting_sabatons,id=158308,bonus_id=4779/1512/4786
-finger1=ritual_binders_ring,id=159459,bonus_id=4779/1512/4786,enchant=pact_of_haste
-finger2=seal_of_questionable_loyalties,id=158314,bonus_id=4779/1512/4786,enchant=pact_of_haste
-main_hand=galvanized_stormcrusher,id=158369,bonus_id=4779/1512/4786,enchant=quick_navigation
-off_hand=g04w4y_crowd_repeller,id=159663,bonus_id=4779/1512/4786
-trinket1=lady_waycrests_music_box,id=159631,bonus_id=4779/1512/4786
-trinket2=rotcrusted_voodoo_doll,id=159624,bonus_id=4779/1512/4786
+# ilvl 138 template blue gear from beta
+head=,id=163447,bonus_id=6938
+neck=,id=177165,bonus_id=6938
+shoulder=,id=163442,bonus_id=6938
+back=,id=163365,bonus_id=6938
+chest=,id=163444,bonus_id=6938
+wrist=,id=177100,bonus_id=6938
+hands=,id=177108,bonus_id=6938
+waist=,id=163452,bonus_id=6938
+legs=,id=177107,bonus_id=6938
+feet=,id=177109,bonus_id=6938
+finger1=,id=177167,bonus_id=6938/1762
+finger2=,id=177164,bonus_id=6938
+trinket1=,id=177157,bonus_id=6938/603
+trinket2=,id=177155,bonus_id=6938/605
+main_hand=,id=177116bonus_id=6938
+off_hand=,id=177125,bonus_id=6938
 
 save=PR_Shaman_Elemental.simc
 
 
 shaman="PR_Shaman_Enhancement"
-level=120
+level=60
 race=troll
 spec=enhancement
 role=attack
 position=back
-talents=1101033
+talents=1111111
+covenant=night_fae
 
-head=sweetes_jeweled_headgear,id=155887,bonus_id=4779/1512/4786/4775,azerite_powers=179/22/15/13
-neck=heart_of_azeroth,id=158075,bonus_id=4929/1524,azerite_level=27
-shoulder=cannoneers_mantle,id=159393,bonus_id=4779/1512/4786/4775,azerite_powers=179/31/85/13
-back=cloak_of_questionable_intent,id=159287,bonus_id=4779/1512/4786
-chest=loablessed_chestguard,id=158355,bonus_id=4779/1512/4786/4775,azerite_powers=179/21/15/13
-wrists=raouls_barrelhook_bracers,id=159356,bonus_id=4779/1512/4786
-hands=water_shapers,id=159366,bonus_id=4779/1512/4786
-waist=anchor_chain_girdle,id=159386,bonus_id=4779/1512/4786
-legs=chemical_blasters_legguards,id=158341,bonus_id=4779/1512/4786
-feet=bramble_looped_boots,id=159404,bonus_id=4779/1512/4786
-finger1=seal_of_questionable_loyalties,id=158314,bonus_id=4779/1512/4786,enchant=pact_of_haste
-finger2=ritual_binders_ring,id=159459,bonus_id=4779/1512/4786,enchant=pact_of_haste
-trinket1=galecallers_boon,id=159614,bonus_id=4779/1512/4786
-trinket2=deadeye_spyglass,id=159623,bonus_id=4779/1512/4786
-main_hand=bilestained_crawg_tusks,id=159653,bonus_id=4779/1512/4786,enchant=quick_navigation
-off_hand=bilestained_crawg_tusks,id=159653,bonus_id=4779/1512/4786,enchant=deadly_navigation
+# ilvl 138 template blue gear from beta
+head=,id=163447,bonus_id=6938
+neck=,id=177165,bonus_id=6938
+shoulder=,id=163442,bonus_id=6938
+back=,id=163365,bonus_id=6938
+chest=,id=163444,bonus_id=6938
+wrist=,id=177100,bonus_id=6938
+hands=,id=177108,bonus_id=6938
+waist=,id=163452,bonus_id=6938
+legs=,id=177107,bonus_id=6938
+feet=,id=177109,bonus_id=6938
+finger1=,id=177167,bonus_id=6938/1762
+finger2=,id=177164,bonus_id=6938
+trinket1=,id=177166,bonus_id=6938/605
+trinket2=,id=177158,bonus_id=6938/603
+main_hand=,id=177144,bonus_id=6938
+off_hand=,id=177144,bonus_id=6938
 
 save=PR_Shaman_Enhancement.simc

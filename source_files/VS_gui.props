@@ -5,126 +5,58 @@ To change the list of source files run synchronize.py
 
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 	<ItemGroup>
-		<ClCompile Include="$(IntDir)moc_sc_AddonImportTab.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="$(IntDir)moc_sc_importWidget.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="$(IntDir)moc_sc_importWindow.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="$(IntDir)moc_sc_OptionsTab.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="$(IntDir)moc_sc_SampleProfilesTab.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="$(IntDir)moc_sc_SimulateTab.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="$(IntDir)moc_sc_SimulationThread.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="$(IntDir)moc_sc_SpellQueryTab.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="$(IntDir)moc_sc_UpdateCheck.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="$(IntDir)moc_sc_WelcomeTab.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="$(IntDir)moc_sc_Workaround.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="$(IntDir)moc_simulationcraftqt.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="$(IntDir)moc_sc_hoverarea.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="$(IntDir)moc_sc_mainwindowcommandline.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="$(IntDir)moc_sc_recentlyclosed.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="$(IntDir)moc_sc_relativepopup.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="$(IntDir)moc_sc_searchbox.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="$(IntDir)moc_sc_tabbar.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="$(IntDir)moc_sc_textedit.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\qt\main.cpp">
-			
-		</ClCompile>
-		<ClCompile Include="..\qt\sc_AddonImportTab.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\qt\sc_ImportTab.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\qt\sc_ImportThread.cpp">
-			
-		</ClCompile>
-		<ClCompile Include="..\qt\sc_importWidget.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\qt\sc_importWindow.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\qt\sc_OptionsTab.cpp">
-			
-		</ClCompile>
-		<ClCompile Include="..\qt\sc_SampleProfilesTab.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\qt\sc_SimulateTab.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\qt\sc_SimulationThread.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\qt\sc_SpellQueryTab.cpp">
-			
-		</ClCompile>
-		<ClCompile Include="..\qt\sc_UpdateCheck.cpp">
-			
-		</ClCompile>
-		<ClCompile Include="..\qt\sc_WelcomeTab.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\qt\sc_window.cpp">
-			
-		</ClCompile>
-		<ClCompile Include="..\qt\sc_Workaround.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\qt\util\sc_mainwindowcommandline.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\qt\util\sc_recentlyclosed.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\qt\util\sc_relativepopup.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\qt\util\sc_searchbox.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\qt\util\sc_tabbar.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\qt\util\sc_textedit.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
+		<ClCompile Include="$(IntDir)moc_EnumeratedTab.cpp" />
+		<ClCompile Include="$(IntDir)moc_ImportTab.cpp" />
+		<ClCompile Include="$(IntDir)moc_MainWindow.cpp" />
+		<ClCompile Include="$(IntDir)moc_sc_AddonImportTab.cpp" />
+		<ClCompile Include="$(IntDir)moc_sc_importWidget.cpp" />
+		<ClCompile Include="$(IntDir)moc_sc_importWindow.cpp" />
+		<ClCompile Include="$(IntDir)moc_sc_OptionsTab.cpp" />
+		<ClCompile Include="$(IntDir)moc_sc_SampleProfilesTab.cpp" />
+		<ClCompile Include="$(IntDir)moc_sc_SimulateTab.cpp" />
+		<ClCompile Include="$(IntDir)moc_sc_SimulationThread.cpp" />
+		<ClCompile Include="$(IntDir)moc_sc_SpellQueryTab.cpp" />
+		<ClCompile Include="$(IntDir)moc_sc_UpdateCheck.cpp" />
+		<ClCompile Include="$(IntDir)moc_sc_WelcomeTab.cpp" />
+		<ClCompile Include="$(IntDir)moc_sc_Workaround.cpp" />
+		<ClCompile Include="$(IntDir)moc_simulationcraftqt.cpp" />
+		<ClCompile Include="$(IntDir)moc_ComboBoxIntegerValidator.cpp" />
+		<ClCompile Include="$(IntDir)moc_sc_hoverarea.cpp" />
+		<ClCompile Include="$(IntDir)moc_sc_mainwindowcommandline.cpp" />
+		<ClCompile Include="$(IntDir)moc_sc_recentlyclosed.cpp" />
+		<ClCompile Include="$(IntDir)moc_sc_relativepopup.cpp" />
+		<ClCompile Include="$(IntDir)moc_sc_searchbox.cpp" />
+		<ClCompile Include="$(IntDir)moc_sc_tabbar.cpp" />
+		<ClCompile Include="$(IntDir)moc_sc_textedit.cpp" />
+		<ClCompile Include="$(IntDir)moc_WebEngineConfig.cpp" />
+		<ClCompile Include="$(IntDir)moc_WebPage.cpp" />
+		<ClCompile Include="$(IntDir)moc_WebView.cpp" />
+		<ClCompile Include="..\qt\EnumeratedTab.cpp" />
+		<ClCompile Include="..\qt\ImportTab.cpp" />
+		<ClCompile Include="..\qt\main.cpp" />
+		<ClCompile Include="..\qt\MainWindow.cpp" />
+		<ClCompile Include="..\qt\sc_AddonImportTab.cpp" />
+		<ClCompile Include="..\qt\sc_ImportThread.cpp" />
+		<ClCompile Include="..\qt\sc_importWidget.cpp" />
+		<ClCompile Include="..\qt\sc_importWindow.cpp" />
+		<ClCompile Include="..\qt\sc_OptionsTab.cpp" />
+		<ClCompile Include="..\qt\sc_SampleProfilesTab.cpp" />
+		<ClCompile Include="..\qt\sc_SimulateTab.cpp" />
+		<ClCompile Include="..\qt\sc_SimulationThread.cpp" />
+		<ClCompile Include="..\qt\sc_SpellQueryTab.cpp" />
+		<ClCompile Include="..\qt\sc_UpdateCheck.cpp" />
+		<ClCompile Include="..\qt\sc_WelcomeTab.cpp" />
+		<ClCompile Include="..\qt\sc_window.cpp" />
+		<ClCompile Include="..\qt\sc_Workaround.cpp" />
+		<ClCompile Include="..\qt\util\ComboBoxIntegerValidator.cpp" />
+		<ClCompile Include="..\qt\util\sc_mainwindowcommandline.cpp" />
+		<ClCompile Include="..\qt\util\sc_recentlyclosed.cpp" />
+		<ClCompile Include="..\qt\util\sc_relativepopup.cpp" />
+		<ClCompile Include="..\qt\util\sc_searchbox.cpp" />
+		<ClCompile Include="..\qt\util\sc_tabbar.cpp" />
+		<ClCompile Include="..\qt\util\sc_textedit.cpp" />
+		<ClCompile Include="..\qt\WebPage.cpp" />
+		<ClCompile Include="..\qt\WebView.cpp" />
 	</ItemGroup>
 
 	<!--Resources -->
@@ -133,27 +65,36 @@ To change the list of source files run synchronize.py
 	</ItemGroup>
 
 	<!-- Moc Definitions -->
-	<PropertyGroup Label="UserMacros" Condition="'$(Configuration)'=='Debug-WebKit'">
-		<MOC_DEFINES>-DUNICODE -DWIN32 -DWIN64 -DSC_USE_WEBKIT -DQT_VERSION_5 -DQT_DECLARATIVE_DEBUG -DQT_WIDGETS -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -DQT_NETWORK_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_OPENGL_ES_2 -DQT_OPENGL_ES_2_ANGLE -DQT_WEBKIT_LIB -DQT_WEBKITWIDGETS_LIB -D_MSC_VER=1800 -D_WIN32 -D_WIN64</MOC_DEFINES>
-	</PropertyGroup>
 	<PropertyGroup Label="UserMacros" Condition="'$(Configuration)'=='Debug-WebEngine'">
-		<MOC_DEFINES>-DUNICODE -DWIN32 -DWIN64 -DSC_USE_WEBENGINE -DQT_VERSION_5 -DQT_DECLARATIVE_DEBUG -DQT_WIDGETS -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -DQT_NETWORK_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_OPENGL_ES_2 -DQT_OPENGL_ES_2_ANGLE -D_MSC_VER=1800 -D_WIN32 -D_WIN64</MOC_DEFINES>
-	</PropertyGroup>
-	<PropertyGroup Label="UserMacros" Condition="'$(Configuration)'=='WebEngine-PGO'">
-		<MOC_DEFINES>-DUNICODE -DWIN32 -DWIN64 -DSC_USE_WEBENGINE -DQT_VERSION_5 -DQT_NO_DEBUG -DQT_WIDGETS -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -DQT_NETWORK_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_OPENGL_ES_2 -DQT_OPENGL_ES_2_ANGLE -D_MSC_VER=1800 -D_WIN32 -D_WIN64</MOC_DEFINES>
+		<MOC_DEFINES>-DUNICODE -DWIN32 -DWIN64 -DQT_VERSION_5 -DQT_DECLARATIVE_DEBUG -DQT_WIDGETS -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -DQT_NETWORK_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_OPENGL_ES_2 -DQT_OPENGL_ES_2_ANGLE -D_MSC_VER=1800 -D_WIN32 -D_WIN64</MOC_DEFINES>
 	</PropertyGroup>
 	<PropertyGroup Label="UserMacros" Condition="'$(Configuration)'=='WebEngine'">
-		<MOC_DEFINES>-DUNICODE -DWIN32 -DWIN64 -DSC_USE_WEBENGINE -DQT_VERSION_5 -DQT_NO_DEBUG -DQT_WIDGETS -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -DQT_NETWORK_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_OPENGL_ES_2 -DQT_OPENGL_ES_2_ANGLE -D_MSC_VER=1800 -D_WIN32 -D_WIN64</MOC_DEFINES>
-	</PropertyGroup>
-	<PropertyGroup Label="UserMacros" Condition="'$(Configuration)'=='WebKit'">
-		<MOC_DEFINES>-DUNICODE -DSC_USE_WEBKIT -DWIN32 -DWIN64 -DQT_VERSION_5 -DQT_NO_DEBUG -DQT_WEBKITWIDGETS_LIB -DQT_WIDGETS -DQT_MULTIMEDIAWIDGETS_LIB -DQT_OPENGL_LIB  -DQT_QML_LIB -DQT_MULTIMEDIA_LIB -DQT_WEBKIT_LIB -DQT_WIDGETS_LIB -DQT_SENSORS_LIB -DQT_NETWORK_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_OPENGL_ES_2 -DQT_OPENGL_ES_2_ANGLE -D_MSC_VER=1800 -D_WIN32 -D_WIN64</MOC_DEFINES>
-	</PropertyGroup>
-	<PropertyGroup Label="UserMacros" Condition="'$(Configuration)'=='WebKit-PGO'">
-		<MOC_DEFINES>-DUNICODE -DSC_USE_WEBKIT -DWIN32 -DWIN64 -DQT_VERSION_5 -DQT_NO_DEBUG -DQT_WEBKITWIDGETS_LIB -DQT_WIDGETS -DQT_MULTIMEDIAWIDGETS_LIB -DQT_OPENGL_LIB  -DQT_QML_LIB -DQT_MULTIMEDIA_LIB -DQT_WEBKIT_LIB -DQT_WIDGETS_LIB -DQT_SENSORS_LIB -DQT_NETWORK_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_OPENGL_ES_2 -DQT_OPENGL_ES_2_ANGLE -D_MSC_VER=1800 -D_WIN32 -D_WIN64</MOC_DEFINES>
+		<MOC_DEFINES>-DUNICODE -DWIN32 -DWIN64 -DQT_VERSION_5 -DQT_NO_DEBUG -DQT_WIDGETS -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -DQT_NETWORK_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_OPENGL_ES_2 -DQT_OPENGL_ES_2_ANGLE -D_MSC_VER=1800 -D_WIN32 -D_WIN64</MOC_DEFINES>
 	</PropertyGroup>
 
 	<!-- Moc'ing GUI Header files -->
 	<ItemGroup>
+		<CustomBuild Include="..\qt\EnumeratedTab.hpp">
+			<AdditionalInputs>$(QTDIR)\bin\moc.exe</AdditionalInputs>
+			<Message>Moc%27ing %(Identity)... ( with $(QTDIR)\bin\moc.exe )</Message>
+			<Command>"$(QTDIR)\bin\moc.exe" $(MOC_DEFINES) -I"$(QTDIR)\include" -I"(SolutionDir)engine" -I"$(QTDIR)\mkspecs\default" "%(Identity)" -o "$(IntDir)moc_%(Filename).cpp" </Command>
+			<AdditionalInputs>Rem;..\qt\EnumeratedTab.hpp;%(AdditionalInputs)</AdditionalInputs>
+			<Outputs>$(IntDir)\moc_%(Filename).cpp</Outputs>
+		</CustomBuild>
+		<CustomBuild Include="..\qt\ImportTab.hpp">
+			<AdditionalInputs>$(QTDIR)\bin\moc.exe</AdditionalInputs>
+			<Message>Moc%27ing %(Identity)... ( with $(QTDIR)\bin\moc.exe )</Message>
+			<Command>"$(QTDIR)\bin\moc.exe" $(MOC_DEFINES) -I"$(QTDIR)\include" -I"(SolutionDir)engine" -I"$(QTDIR)\mkspecs\default" "%(Identity)" -o "$(IntDir)moc_%(Filename).cpp" </Command>
+			<AdditionalInputs>Rem;..\qt\ImportTab.hpp;%(AdditionalInputs)</AdditionalInputs>
+			<Outputs>$(IntDir)\moc_%(Filename).cpp</Outputs>
+		</CustomBuild>
+		<CustomBuild Include="..\qt\MainWindow.hpp">
+			<AdditionalInputs>$(QTDIR)\bin\moc.exe</AdditionalInputs>
+			<Message>Moc%27ing %(Identity)... ( with $(QTDIR)\bin\moc.exe )</Message>
+			<Command>"$(QTDIR)\bin\moc.exe" $(MOC_DEFINES) -I"$(QTDIR)\include" -I"(SolutionDir)engine" -I"$(QTDIR)\mkspecs\default" "%(Identity)" -o "$(IntDir)moc_%(Filename).cpp" </Command>
+			<AdditionalInputs>Rem;..\qt\MainWindow.hpp;%(AdditionalInputs)</AdditionalInputs>
+			<Outputs>$(IntDir)\moc_%(Filename).cpp</Outputs>
+		</CustomBuild>
 		<CustomBuild Include="..\qt\sc_AddonImportTab.hpp">
 			<AdditionalInputs>$(QTDIR)\bin\moc.exe</AdditionalInputs>
 			<Message>Moc%27ing %(Identity)... ( with $(QTDIR)\bin\moc.exe )</Message>
@@ -238,6 +179,13 @@ To change the list of source files run synchronize.py
 			<AdditionalInputs>Rem;..\qt\simulationcraftqt.hpp;%(AdditionalInputs)</AdditionalInputs>
 			<Outputs>$(IntDir)\moc_%(Filename).cpp</Outputs>
 		</CustomBuild>
+		<CustomBuild Include="..\qt\util\ComboBoxIntegerValidator.hpp">
+			<AdditionalInputs>$(QTDIR)\bin\moc.exe</AdditionalInputs>
+			<Message>Moc%27ing %(Identity)... ( with $(QTDIR)\bin\moc.exe )</Message>
+			<Command>"$(QTDIR)\bin\moc.exe" $(MOC_DEFINES) -I"$(QTDIR)\include" -I"(SolutionDir)engine" -I"$(QTDIR)\mkspecs\default" "%(Identity)" -o "$(IntDir)moc_%(Filename).cpp" </Command>
+			<AdditionalInputs>Rem;..\qt\util\ComboBoxIntegerValidator.hpp;%(AdditionalInputs)</AdditionalInputs>
+			<Outputs>$(IntDir)\moc_%(Filename).cpp</Outputs>
+		</CustomBuild>
 		<CustomBuild Include="..\qt\util\sc_hoverarea.hpp">
 			<AdditionalInputs>$(QTDIR)\bin\moc.exe</AdditionalInputs>
 			<Message>Moc%27ing %(Identity)... ( with $(QTDIR)\bin\moc.exe )</Message>
@@ -285,6 +233,27 @@ To change the list of source files run synchronize.py
 			<Message>Moc%27ing %(Identity)... ( with $(QTDIR)\bin\moc.exe )</Message>
 			<Command>"$(QTDIR)\bin\moc.exe" $(MOC_DEFINES) -I"$(QTDIR)\include" -I"(SolutionDir)engine" -I"$(QTDIR)\mkspecs\default" "%(Identity)" -o "$(IntDir)moc_%(Filename).cpp" </Command>
 			<AdditionalInputs>Rem;..\qt\util\sc_textedit.hpp;%(AdditionalInputs)</AdditionalInputs>
+			<Outputs>$(IntDir)\moc_%(Filename).cpp</Outputs>
+		</CustomBuild>
+		<CustomBuild Include="..\qt\WebEngineConfig.hpp">
+			<AdditionalInputs>$(QTDIR)\bin\moc.exe</AdditionalInputs>
+			<Message>Moc%27ing %(Identity)... ( with $(QTDIR)\bin\moc.exe )</Message>
+			<Command>"$(QTDIR)\bin\moc.exe" $(MOC_DEFINES) -I"$(QTDIR)\include" -I"(SolutionDir)engine" -I"$(QTDIR)\mkspecs\default" "%(Identity)" -o "$(IntDir)moc_%(Filename).cpp" </Command>
+			<AdditionalInputs>Rem;..\qt\WebEngineConfig.hpp;%(AdditionalInputs)</AdditionalInputs>
+			<Outputs>$(IntDir)\moc_%(Filename).cpp</Outputs>
+		</CustomBuild>
+		<CustomBuild Include="..\qt\WebPage.hpp">
+			<AdditionalInputs>$(QTDIR)\bin\moc.exe</AdditionalInputs>
+			<Message>Moc%27ing %(Identity)... ( with $(QTDIR)\bin\moc.exe )</Message>
+			<Command>"$(QTDIR)\bin\moc.exe" $(MOC_DEFINES) -I"$(QTDIR)\include" -I"(SolutionDir)engine" -I"$(QTDIR)\mkspecs\default" "%(Identity)" -o "$(IntDir)moc_%(Filename).cpp" </Command>
+			<AdditionalInputs>Rem;..\qt\WebPage.hpp;%(AdditionalInputs)</AdditionalInputs>
+			<Outputs>$(IntDir)\moc_%(Filename).cpp</Outputs>
+		</CustomBuild>
+		<CustomBuild Include="..\qt\WebView.hpp">
+			<AdditionalInputs>$(QTDIR)\bin\moc.exe</AdditionalInputs>
+			<Message>Moc%27ing %(Identity)... ( with $(QTDIR)\bin\moc.exe )</Message>
+			<Command>"$(QTDIR)\bin\moc.exe" $(MOC_DEFINES) -I"$(QTDIR)\include" -I"(SolutionDir)engine" -I"$(QTDIR)\mkspecs\default" "%(Identity)" -o "$(IntDir)moc_%(Filename).cpp" </Command>
+			<AdditionalInputs>Rem;..\qt\WebView.hpp;%(AdditionalInputs)</AdditionalInputs>
 			<Outputs>$(IntDir)\moc_%(Filename).cpp</Outputs>
 		</CustomBuild>
 	</ItemGroup>

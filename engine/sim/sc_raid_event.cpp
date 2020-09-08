@@ -1821,8 +1821,7 @@ double raid_event_t::evaluate_raid_event_expression( sim_t* s, util::string_view
   ;
 }
 
-std::ostream& operator<<( std::ostream& os, const raid_event_t& r )
+void format_to( const raid_event_t& raid_event, fmt::format_context::iterator out )
 {
-  fmt::print( os, "Raid event (type={} name={})", r.type, r.name );
-  return os;
+  fmt::format_to( out, "Raid event (type={} name={})", raid_event.type, raid_event.name );
 }

@@ -175,7 +175,7 @@ public:
 
   double evaluate() override  // override
   {
-    return F<T>()( left->eval(), right->eval() );
+    return static_cast<double>( F<T>()( static_cast<T>( left->eval() ), static_cast<T>( right->eval() ) ) );
   }
 };
 
@@ -645,7 +645,7 @@ public:
 
   double evaluate() override  // override
   {
-    result = F<T>()( left->eval(), right->eval() );
+    result = static_cast<double>( F<T>()( static_cast<T>( left->eval() ), static_cast<T>( right->eval() ) ) );
     return result;
   }
 
@@ -663,7 +663,7 @@ public:
     bool right_constant = right->is_constant( &right_value );
     if ( left_constant && right_constant )
     {
-      result = F<T>()( left_value, right_value );
+      result = static_cast<double>( F<T>()( static_cast<T>( left_value ), static_cast<T>( right_value ) ) );
       if (EXPRESSION_DEBUG)
       {
         printf("Reduced %*d %s (%s, %s) binary expression to %f\n", spacing,
@@ -688,7 +688,7 @@ public:
         }
         double evaluate() override
         {
-          return F<T>()( left, right->eval() );
+          return static_cast<double>( F<T>()( static_cast<T>( left ), static_cast<T>( right->eval() ) ) );
         }
       };
       return std::make_unique<left_reduced_t>(
@@ -710,7 +710,7 @@ public:
         }
         double evaluate() override
         {
-          return F<T>()( left->eval(), right );
+          return static_cast<double>( F<T>()( static_cast<T>( left->eval() ), static_cast<T>( right ) ) );
         }
       };
       return std::make_unique<right_reduced_t>(

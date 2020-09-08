@@ -906,7 +906,7 @@ bool item_database::load_item_from_data( item_t& item )
   {
     auto item_bonuses = item.player->dbc->item_bonus( item.parsed.bonus_id[ i ] );
     // Apply bonuses
-    for ( const auto bonus : item_bonuses )
+    for ( const auto& bonus : item_bonuses )
     {
       if ( !apply_item_bonus( item, bonus ) )
         return false;
@@ -1307,8 +1307,8 @@ std::string dbc::bonus_ids_str( const dbc_t& dbc )
   for ( size_t i = 0; i < bonus_ids.size(); ++i )
   {
     const auto entries = dbc.item_bonus( bonus_ids[ i ] );
-    std::string desc = get_bonus_id_desc( dbc.ptr, entries );
-    std::string suffix = get_bonus_id_suffix( dbc.ptr, entries );
+    std::string desc = get_bonus_id_desc( dbc, entries );
+    std::string suffix = get_bonus_id_suffix( dbc, entries );
     std::string quality = get_bonus_id_quality( entries );
     int ilevel = get_bonus_id_ilevel( entries );
     int sockets = get_bonus_id_sockets( entries );

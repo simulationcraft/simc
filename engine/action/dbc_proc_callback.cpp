@@ -53,7 +53,7 @@ struct proc_event_t : public event_t
 
 const item_t dbc_proc_callback_t::default_item_ = item_t();
 
-void dbc_proc_callback_t::trigger( action_t* a, void* call_data )
+void dbc_proc_callback_t::trigger( action_t* a, action_state_t* state )
 {
   if ( cooldown && cooldown->down() )
     return;
@@ -64,8 +64,6 @@ void dbc_proc_callback_t::trigger( action_t* a, void* call_data )
   // without any weapon to pass through.
   if ( weapon && ( !a->weapon || ( a->weapon && a->weapon != weapon ) ) )
     return;
-
-  auto state = static_cast<action_state_t*>( call_data );
 
   // Don't allow procs to proc itself
   if ( proc_action && state->action && state->action->internal_id == proc_action->internal_id )

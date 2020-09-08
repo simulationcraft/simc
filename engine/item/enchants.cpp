@@ -318,7 +318,7 @@ void enchant::initialize_item_enchant( item_t& item, std::vector<stat_pair_t>& s
       case ITEM_ENCHANTMENT_APPLY_BONUS:
       {
         auto bonuses = item.player->dbc->item_bonus( enchant.ench_prop[ i ] );
-        for ( auto bonus : bonuses )
+        for ( auto& bonus : bonuses )
         {
           item_database::apply_item_bonus( item, bonus );
         }

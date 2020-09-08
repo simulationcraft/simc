@@ -6,8 +6,8 @@
 #ifndef SC_UPDATECHECK_HPP
 #define SC_UPDATECHECK_HPP
 
-#include <QMessageBox>
-#include <QNetworkAccessManager>
+#include <QtWidgets/QMessageBox>
+#include <QtNetwork/QNetworkAccessManager>
 
 class UpdateCheckWidget : public QMessageBox
 {

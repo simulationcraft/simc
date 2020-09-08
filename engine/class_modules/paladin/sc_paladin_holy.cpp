@@ -307,6 +307,17 @@ struct holy_shock_t : public paladin_spell_t
     add_child( heal );
   }
 
+  holy_shock_t( paladin_t* p ) :
+    paladin_spell_t( "holy_shock", p, p -> find_specialization_spell( 20473 ) ),
+    dmg( false )
+  {
+    background = true;
+    damage = new holy_shock_damage_t( p );
+    add_child( damage );
+    heal = new holy_shock_heal_t( p );
+    add_child( heal );
+  }
+
   void execute() override
   {
     paladin_spell_t::execute();
@@ -323,23 +334,6 @@ struct holy_shock_t : public paladin_spell_t
       heal -> set_target( execute_state -> target );
       heal -> execute();
     }
-
-    if ( p() -> buffs.divine_purpose -> check() )
-    {
-        p() -> buffs.divine_purpose -> expire();
-    }
-
-    if ( p() -> talents.divine_purpose -> ok() )
-    {
-      bool success = p() -> buffs.divine_purpose -> trigger( 1,
-                                                             p() -> buffs.divine_purpose -> default_value,
-                                                             p() -> talents.divine_purpose -> effectN( 1 ).percent() );
-      if ( success )
-      {
-        p() -> procs.divine_purpose -> occur();
-        p() -> cooldowns.holy_shock -> reset (true);
-      }
-    }
   }
 
   double recharge_multiplier( const cooldown_t& cd ) const override
@@ -350,23 +344,6 @@ struct holy_shock_t : public paladin_spell_t
       rm *= 1.0 + p() -> talents.holy_sanctified_wrath -> effectN( 2 ).percent();
 
     return rm;
-  }
-};
-
-// Holy Avenger
-struct holy_avenger_t : public paladin_heal_t
-{
-  holy_avenger_t( paladin_t* p, const std::string& options_str ) :
-    paladin_heal_t( "holy_avenger", p, p -> talents.holy_avenger )
-  {
-    parse_options( options_str );
-  }
-
-  void execute() override
-  {
-    paladin_heal_t::execute();
-
-    p() -> buffs.holy_avenger -> trigger();
   }
 };
 
@@ -396,7 +373,7 @@ struct judgment_holy_t : public judgment_t
   {
     judgment_t::impact( s );
 
-    if ( result_is_hit( s -> result ) && p() -> spec.judgment_2 -> ok() )
+    if ( result_is_hit( s -> result ) && p() -> spec.judgment_3 -> ok() )
     {
       td( s -> target ) -> debuff.judgment -> trigger();
     }
@@ -506,13 +483,17 @@ void paladin_t::create_holy_actions()
 {
   if ( find_specialization_spell( "Beacon of Light" ) -> ok() )
     active.beacon_of_light = new beacon_of_light_heal_t( this );
+
+  if ( specialization() == PALADIN_HOLY )
+  {
+    active.divine_toll = new holy_shock_t( this );
+  }
 }
 
 action_t* paladin_t::create_action_holy( util::string_view name, const std::string& options_str )
 {
   if ( name == "beacon_of_light"           ) return new beacon_of_light_t          ( this, options_str );
   if ( name == "divine_protection"         ) return new divine_protection_t        ( this, options_str );
-  if ( name == "holy_avenger"              ) return new holy_avenger_t             ( this, options_str );
   if ( name == "holy_light"                ) return new holy_light_t               ( this, options_str );
   if ( name == "holy_prism"                ) return new holy_prism_t               ( this, options_str );
   if ( name == "holy_shock"                ) return new holy_shock_t               ( this, options_str );
@@ -531,10 +512,6 @@ void paladin_t::create_buffs_holy()
 {
   buffs.divine_protection      = make_buff( this, "divine_protection", find_class_spell( "Divine Protection" ) )
                                -> set_cooldown( 0_ms ); // Handled by the action
-  buffs.holy_avenger           = make_buff( this, "holy_avenger", talents.holy_avenger )
-                               -> set_default_value( talents.holy_avenger -> effectN( 1 ).percent() )
-                               -> add_invalidate( CACHE_HASTE )
-                               -> set_cooldown( 0_ms ); // handled by the ability
   buffs.infusion_of_light      = make_buff( this, "infusion_of_light", find_spell( 54149 ) );
 }
 
@@ -551,7 +528,7 @@ void paladin_t::init_spells_holy()
 
   talents.rule_of_law        = find_talent_spell( "Rule of Law" );
 
-  talents.holy_sanctified_wrath = find_spell( 53376 );
+  talents.holy_sanctified_wrath = find_talent_spell( "Sanctified Wrath", PALADIN_HOLY );
   talents.avenging_crusader     = find_talent_spell( "Avenging Crusader" );
   talents.awakening             = find_talent_spell( "Awakening" );
 
@@ -565,7 +542,7 @@ void paladin_t::init_spells_holy()
 
   if ( specialization() == PALADIN_HOLY )
   {
-    spec.judgment_2 = find_specialization_spell( 231644 );
+    spec.judgment_3 = find_specialization_spell( 231644 );
 
     spells.judgment_debuff = find_spell( 214222 );
     // TODO: is this still a thing?

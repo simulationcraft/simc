@@ -88,6 +88,7 @@ void action_state_t::copy_state( const action_state_t* o )
   result_total       = o->result_total;
   result_mitigated   = o->result_mitigated;
   result_absorbed    = o->result_absorbed;
+  result_crit_bonus  = o->result_crit_bonus;
   result_amount      = o->result_amount;
   blocked_amount     = o->blocked_amount;
   self_absorb_amount = o->self_absorb_amount;
@@ -126,6 +127,7 @@ action_state_t::action_state_t( action_t* a, player_t* t )
     result_total( 0 ),
     result_mitigated( 0 ),
     result_absorbed( 0 ),
+    result_crit_bonus( 0 ),
     result_amount( 0 ),
     blocked_amount( 0 ),
     self_absorb_amount( 0 ),
@@ -195,6 +197,7 @@ std::ostringstream& action_state_t::debug_str( std::ostringstream& s )
   s << " total_amount=" << result_total;
   s << " mitigated_amount=" << result_mitigated;
   s << " absorbed_amount=" << result_absorbed;
+  s << " crit_bonus=" << result_crit_bonus;
   s << " actual_amount=" << result_amount;
   s << " only_blocked_damage=" << blocked_amount;
   s << " self_absorbed_damage=" << self_absorb_amount;
@@ -229,17 +232,14 @@ std::ostringstream& action_state_t::debug_str( std::ostringstream& s )
 void action_state_t::debug()
 {
   std::ostringstream s;
-  action->sim->out_debug.printf( "%s", debug_str( s ).str().c_str() );
+  action->sim->out_debug.print( "{}", debug_str( s ).str() );
 }
 
 travel_event_t::travel_event_t( action_t* a, action_state_t* state,
                                 timespan_t time_to_travel )
   : event_t( *a->player, time_to_travel ), action( a ), state( state )
 {
-  if ( sim().debug )
-    sim().out_debug.printf( "New Stateless Action Travel Event: %s %s %.2f",
-                            a->player->name(), a->name(),
-                            time_to_travel.total_seconds() );
+  sim().print_debug( "New Stateless Action Travel Event: {} {} {}", *a->player, *a, time_to_travel );
 }
 
 travel_event_t::~travel_event_t()

@@ -6,9 +6,11 @@
 #pragma once
 
 #include "config.hpp"
-#include <QtWidgets/QtWidgets>
-#include <QtGui/QtGui>
+
 #include "sc_relativepopup.hpp"
+
+#include <QtGui/QtGui>
+#include <QtWidgets/QtWidgets>
 class SC_TabBar;
 
 // ============================================================================
@@ -24,13 +26,13 @@ class SC_TabWidgetCloseAll : public QTabWidget
   QString closeOtherTabsTitleText;
   QString closeOtherTabsBodyText;
   SC_TabBar* scTabBar;
+
 public:
-  SC_TabWidgetCloseAll(QWidget* parent = 0,
-                       Qt::Corner corner = Qt::TopRightCorner,
-                       QString closeAllWarningTitle = "Close all tabs?",
-                       QString closeAllWarningText = "Close all tabs?",
-                       QString closeOthersWarningTitle = "Close other tabs?",
-                       QString closeOthersWarningText = "Close other tabs?" );
+  SC_TabWidgetCloseAll( QWidget* parent = 0, Qt::Corner corner = Qt::TopRightCorner,
+                        QString closeAllWarningTitle    = "Close all tabs?",
+                        QString closeAllWarningText     = "Close all tabs?",
+                        QString closeOthersWarningTitle = "Close other tabs?",
+                        QString closeOthersWarningText  = "Close other tabs?" );
 
   void setCloseAllTabsTitleText( QString text )
   {
@@ -67,6 +69,7 @@ public:
   void removeTab( int index, bool close_permanently = false );
   void enableMouseHoveredOverTabSignal( bool enable );
   void enableDragHoveredOverTabSignal( bool enable );
+
 private:
   virtual QWidget* createCloseAllTabsWidget();
   void initTabBar();
@@ -96,7 +99,7 @@ signals:
 public slots:
   void restoreTab( const QModelIndex& index );
   void restoreAllTabs();
-  void addTab( QWidget* widget, const QString& title, const QString& tooltip, const QIcon& icon);
+  void addTab( QWidget* widget, const QString& title, const QString& tooltip, const QIcon& icon );
 private slots:
   void rowsAboutToBeRemovedSlot( const QModelIndex& parent, int start, int end );
   void rowsInsertedSlot( const QModelIndex& parent, int start, int end );
@@ -107,10 +110,10 @@ private slots:
 // SC_RecentlyClosedTabWidget
 // ============================================================================
 
-class SC_RecentlyClosedTabWidget: public QWidget
+class SC_RecentlyClosedTabWidget : public QWidget
 {
   Q_OBJECT
-    QWidget* previewPaneCurrentWidget;
+  QWidget* previewPaneCurrentWidget;
   SC_RecentlyClosedTabItemModel* model;
   QBoxLayout::Direction grow;
   QListView* listView;
@@ -125,10 +128,10 @@ class SC_RecentlyClosedTabWidget: public QWidget
   bool enableClearHistoryButton;
   bool enableClearHistoryContextMenu;
   bool enableRestoreAllContextMenu;
-  public:
-  SC_RecentlyClosedTabWidget( QWidget* parent = 0,
-    QBoxLayout::Direction grow = QBoxLayout::LeftToRight,
-    SC_RecentlyClosedTabItemModel* modelToUse = 0 );
+
+public:
+  SC_RecentlyClosedTabWidget( QWidget* parent = 0, QBoxLayout::Direction grow = QBoxLayout::LeftToRight,
+                              SC_RecentlyClosedTabItemModel* modelToUse = 0 );
   SC_RecentlyClosedTabItemModel* getModel()
   {
     return model;
@@ -137,18 +140,20 @@ signals:
   void hideRequest();
   void showRequest();
   void restoreTab( QWidget* widget, const QString& title, const QString& tooltip, const QIcon& icon );
-  protected:
+
+protected:
   void init();
   QWidget* initListView();
   QModelIndex getSelectionAndMakeSureIsValidIfElementsAvailable();
-  protected:
+
+protected:
   void showEvent( QShowEvent* e ) override
   {
     Q_UNUSED( e );
     if ( previewAnItemOnShow )
       previewNext();
   }
-  public slots:
+public slots:
   void removePreview( QWidget* widget = 0 );
   bool addIndexToPreview( const QModelIndex& index );
   bool previewNext( QWidget* exclude = 0 );
@@ -166,12 +171,12 @@ signals:
 
   void restoreCurrentlySelected()
   {
-    model -> restoreTab( getSelectionAndMakeSureIsValidIfElementsAvailable() );
+    model->restoreTab( getSelectionAndMakeSureIsValidIfElementsAvailable() );
   }
 
   void addTab( QWidget* widget, const QString& title, const QString& tooltip, const QIcon& icon )
   {
-    model -> addTab( widget, title, tooltip, icon );
+    model->addTab( widget, title, tooltip, icon );
   }
 
   void previewNextOrHide( QWidget* exclude = 0 )
@@ -184,8 +189,8 @@ signals:
   {
     if ( enableContextMenu )
     {
-      if ( model -> rowCount() > 0 )
-        contextMenu -> exec( listView -> mapToGlobal( p ) );
+      if ( model->rowCount() > 0 )
+        contextMenu->exec( listView->mapToGlobal( p ) );
     }
   }
 
@@ -196,7 +201,7 @@ signals:
 
   void clearHistory()
   {
-    model -> clear();
+    model->clear();
     emit( hideRequest() );
   }
 
@@ -205,16 +210,17 @@ signals:
     QModelIndex index = getSelectionAndMakeSureIsValidIfElementsAvailable();
     removePreviousTabFromPreview();
     int selectedRow = index.row();
-    model -> removeRow( index.row() );
-    index = model -> index( selectedRow, 0 );
+    model->removeRow( index.row() );
+    index = model->index( selectedRow, 0 );
     previewNextOrHide();
   }
 
   void clearHistoryPrompt()
   {
-    if ( model -> rowCount() > 0 )
+    if ( model->rowCount() > 0 )
     {
-      int confirm = QMessageBox::warning( 0, tr( "Clear history" ), tr( "Clear entire history?" ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No );
+      int confirm = QMessageBox::warning( 0, tr( "Clear history" ), tr( "Clear entire history?" ),
+                                          QMessageBox::Yes | QMessageBox::No, QMessageBox::No );
       if ( confirm == QMessageBox::Yes )
         clearHistory();
     }
@@ -226,9 +232,9 @@ signals:
 
   void restoreAllTabs()
   {
-    if ( model -> rowCount() > 0 )
+    if ( model->rowCount() > 0 )
     {
-      model -> restoreAllTabs();
+      model->restoreAllTabs();
     }
     emit( hideRequest() );
   }
@@ -254,18 +260,17 @@ class SC_RecentlyClosedTab : public SC_TabWidgetCloseAll
   SC_HoverArea* hoverArea;
   SC_RelativePopup* recentlyClosedPopup;
   SC_RecentlyClosedTabWidget* recentlyClosedTab;
+
 public:
-  SC_RecentlyClosedTab(QWidget* parent = 0,
-                       SC_RecentlyClosedTabItemModel* modelToUse = 0,
-                       bool enableRecentlyClosedTabs = true,
-                       Qt::Corner corner = Qt::TopRightCorner );
+  SC_RecentlyClosedTab( QWidget* parent = 0, SC_RecentlyClosedTabItemModel* modelToUse = 0,
+                        bool enableRecentlyClosedTabs = true, Qt::Corner corner = Qt::TopRightCorner );
   virtual int insertAt()
   {
     return count();
   }
   SC_RecentlyClosedTabItemModel* getModel()
   {
-    return recentlyClosedTab -> getModel();
+    return recentlyClosedTab->getModel();
   }
 public slots:
   void restoreTab( QWidget* widget, const QString& title, const QString& tooltip, const QIcon& icon );

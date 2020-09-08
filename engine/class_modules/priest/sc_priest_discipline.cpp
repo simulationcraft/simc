@@ -35,7 +35,7 @@ struct pain_suppression_t final : public priest_spell_t
   {
     priest_spell_t::execute();
 
-    target->buffs.pain_supression->trigger();
+    target->buffs.pain_suppression->trigger();
   }
 };
 
@@ -330,7 +330,7 @@ void priest_t::init_spells_discipline()
   azerite.death_throes = find_azerite_spell( "Death Throes" );
 
   // Range Based on Talents
-  if ( base.distance != 5 )
+  if ( base.distance != 5 && specialization() == PRIEST_DISCIPLINE )
   {
     if ( talents.divine_star->ok() )
     {
@@ -372,7 +372,7 @@ action_t* priest_t::create_action_discipline( util::string_view name, util::stri
   {
     return new purge_the_wicked_t( *this, options_str );
   }
-    if ( name == "shadow_covenant" )
+  if ( name == "shadow_covenant" )
   {
     return new shadow_covenant_t( *this, options_str );
   }

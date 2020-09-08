@@ -3124,6 +3124,7 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b, int re
                "<td class=\"right\">%.1f</td>\n"
                "<td class=\"right\">%.1fsec</td>\n"
                "<td class=\"right\">%.1fsec</td>\n"
+               "<td class=\"right\">%.1fsec</td>\n"
                "<td class=\"right\">%.2f%%</td>\n"
                "<td class=\"right\">%.2f%%</td>\n"
                "<td class=\"right\">%.1f&#160;(%.1f)</td>\n"
@@ -3132,6 +3133,7 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b, int re
                b.avg_refresh.pretty_mean(),
                b.start_intervals.pretty_mean(),
                b.trigger_intervals.pretty_mean(),
+               b.duration_lengths.pretty_mean(),
                b.uptime_pct.pretty_mean(),
                b.benefit_pct.mean(),
                b.avg_overflow_count.mean(), b.avg_overflow_total.mean(),
@@ -3165,8 +3167,9 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b, int re
                "<li><span class=\"label\">buff initial source:</span>%s</li>\n"
                "<li><span class=\"label\">cooldown name:</span>%s</li>\n"
                "<li><span class=\"label\">max_stacks:</span>%.i</li>\n"
-               "<li><span class=\"label\">duration:</span>%.2f</li>\n"
-               "<li><span class=\"label\">cooldown:</span>%.2f</li>\n"
+               "<li><span class=\"label\">base duration:</span>%.2f</li>\n"
+               "<li><span class=\"label\">duration modifier:</span>%.2f</li>\n"
+               "<li><span class=\"label\">base cooldown:</span>%.2f</li>\n"
                "<li><span class=\"label\">default_chance:</span>%.2f%%</li>\n"
                "<li><span class=\"label\">default_value:</span>%.2f</li>\n"
                "<li><span class=\"label\">activated:</span>%s</li>\n"
@@ -3180,7 +3183,8 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b, int re
                b.source ? util::encode_html( b.source->name() ).c_str() : "",
                util::encode_html( b.cooldown->name_str ).c_str(),
                b.max_stack(),
-               b.buff_duration.total_seconds(),
+               b.base_buff_duration.total_seconds(),
+               b.buff_duration_multiplier,
                b.cooldown->duration.total_seconds(),
                b.default_chance * 100,
                b.default_value,
@@ -3250,12 +3254,15 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b, int re
                    "<li><span class=\"label\">interval_min/max:</span>%.1fs&#160;/&#160;%.1fs</li>\n"
                    "<li><span class=\"label\">trigger_min/max:</span>%.1fs&#160;/&#160;%.1fs</li>\n"
                    "<li><span class=\"label\">trigger_pct:</span>%.2f%%</li>\n"
+                   "<li><span class=\"label\">duration_min/max:</span>%.1fs&#160;/&#160;%.1fs</li>\n"
                    "</ul>\n",
                    b.start_intervals.min(),
                    b.start_intervals.max(),
                    b.trigger_intervals.min(),
                    b.trigger_intervals.max(),
-                   b.trigger_pct.mean() );
+                   b.trigger_pct.mean(),
+                   b.duration_lengths.min(),
+                   b.duration_lengths.max() );
       }
 
       if ( break_second )  // if stack rows will overflow past first column
@@ -3338,6 +3345,7 @@ void print_html_player_buffs( report::sc_html_stream& os, const player_t& p,
   sorttable_header( os, "Refresh" );
   sorttable_header( os, "Interval", SORT_FLAG_ASC );
   sorttable_header( os, "Trigger", SORT_FLAG_ASC );
+  sorttable_header( os, "Avg Dur" );
   sorttable_header( os, "Up-Time" );
   sorttable_help_header( os, "Benefit", "help-buff-benefit" );
   sorttable_header( os, "Overflow" );
@@ -3869,6 +3877,11 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, const play
     if ( p.azerite )
     {
       p.azerite->generate_report( os );
+    }
+
+    if (p.covenant )
+    {
+      p.covenant->generate_report( os );
     }
 
     // Professions

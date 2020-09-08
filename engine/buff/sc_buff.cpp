@@ -49,9 +49,9 @@ struct buff_expr_t : public expr_t
     if ( !buff )
     {
       action->sim->error(
-          "Unable to build buff action expression for action '{}': "
-          "Reference to unknown buff/debuff '{}' by player {}.",
-          action->name(), buff_name, action->player->name() );
+          "Unable to build buff action expression for {}: "
+          "Reference to unknown buff/debuff '{}' by {}.",
+          *action, buff_name, *action->player );
       action->sim->cancel();
       // Prevent segfault
       buff = make_buff( action->player, "dummy" );
@@ -153,7 +153,7 @@ struct tick_t : public buff_event_t
       : buff->current_tick + static_cast<int>( buff->remains() / buff->tick_time() );
 
     if ( buff->partial_tick &&
-         ( buff->buff_duration.total_millis() % buff->tick_time().total_millis() ) != 0 )
+         ( buff->buff_duration().total_millis() % buff->tick_time().total_millis() ) != 0 )
     {
       total_ticks++;
     }
@@ -314,7 +314,7 @@ std::unique_ptr<expr_t> create_buff_expression( util::string_view buff_name, uti
   {
     return make_buff_expr( "buff_duration",
       []( buff_t* buff ) {
-        return buff->buff_duration;
+        return buff->buff_duration();
       } );
   }
   else if ( type == "remains" )
@@ -371,6 +371,13 @@ std::unique_ptr<expr_t> create_buff_expression( util::string_view buff_name, uti
     return make_buff_expr( "buff_value",
       []( buff_t* buff ) {
         return buff->value();
+      } );
+  }
+  else if ( type == "stack_value" )
+  {
+    return make_buff_expr( "buff_stack_value",
+      []( buff_t* buff ) {
+        return buff->stack_value();
       } );
   }
   else if ( type == "react" )
@@ -487,6 +494,8 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, util::string_vie
     _max_stack( -1 ),
     trigger_data( s_data ),
     default_value( DEFAULT_VALUE() ),
+    default_value_effect_idx( 0 ),
+    default_value_effect_multiplier( 1.0 ),
     activated( true ),
     reactable( false ),
     reverse(),
@@ -498,7 +507,8 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, util::string_vie
     reverse_stack_reduction( 1 ),
     current_value(),
     current_stack(),
-    buff_duration( timespan_t::min() ),
+    base_buff_duration( timespan_t::min() ),
+    buff_duration_multiplier( 1.0 ),
     default_chance( 1.0 ),
     manual_chance( -1.0 ),
     current_tick( 0 ),
@@ -536,6 +546,7 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, util::string_vie
     uptime_pct(),
     start_intervals(),
     trigger_intervals(),
+    duration_lengths(),
     change_regen_rate( false )
 {
   if ( source )  // Player Buffs
@@ -550,7 +561,7 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, util::string_vie
   }
 
   // Set Buff duration
-  set_duration( buff_duration );
+  set_duration( base_buff_duration );
 
   // Set Buff Cooldown
   set_cooldown( timespan_t::min() );
@@ -562,7 +573,14 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, util::string_vie
 
   set_period( timespan_t::min() );
 
+  set_tick_on_application( s_data->flags( spell_attribute::SX_TICK_ON_APPLICATION ) );
+
   set_tick_behavior( buff_tick_behavior::NONE );
+
+  if ( s_data->flags( spell_attribute::SX_DOT_HASTED ) )
+  {
+    set_tick_time_behavior( buff_tick_time_behavior::HASTED );
+  }
 
   set_refresh_behavior( buff_refresh_behavior::NONE );
 
@@ -640,22 +658,42 @@ buff_t* buff_t::set_duration( timespan_t duration )
   {
     if ( data().ok() )
     {
-      buff_duration = data().duration();
+      base_buff_duration = data().duration();
     }
     else
     {
-      buff_duration = timespan_t();
+      base_buff_duration = timespan_t();
     }
   }
   else
   {
-    buff_duration = duration;
+    base_buff_duration = duration;
   }
 
-  if ( buff_duration < timespan_t::zero() )
+  if ( base_buff_duration < timespan_t::zero() )
   {
-    buff_duration = timespan_t::zero();
+    base_buff_duration = timespan_t::zero();
   }
+
+  return this;
+}
+
+buff_t* buff_t::modify_duration( timespan_t duration )
+{
+  set_duration( base_buff_duration + duration );
+  return this;
+}
+
+buff_t* buff_t::set_duration_multiplier( double multiplier )
+{
+  assert( multiplier >= 0.0 );
+  buff_duration_multiplier = multiplier;
+
+  if ( buff_duration_multiplier < 0.0 )
+  {
+    buff_duration_multiplier = 0.0;
+  }
+
   return this;
 }
 
@@ -711,6 +749,12 @@ buff_t* buff_t::set_max_stack( int max_stack )
   return this;
 }
 
+buff_t* buff_t::modify_max_stack( int max_stack )
+{
+  set_max_stack( _max_stack + max_stack );
+  return this;
+}
+
 buff_t* buff_t::set_cooldown( timespan_t duration )
 {
   // Set Buff duration
@@ -738,6 +782,12 @@ buff_t* buff_t::set_cooldown( timespan_t duration )
     cooldown->duration = timespan_t::zero();
   }
 
+  return this;
+}
+
+buff_t* buff_t::modify_cooldown( timespan_t duration )
+{
+  set_cooldown( cooldown->duration + duration );
   return this;
 }
 
@@ -800,9 +850,69 @@ buff_t* buff_t::add_invalidate( cache_e c )
   return this;
 }
 
-buff_t* buff_t::set_default_value( double value )
+buff_t* buff_t::set_default_value( double value, size_t effect_idx )
 {
+  // Ensure we are not errantly overwriting a value that is already set to a given effect
+  assert( default_value_effect_idx == 0 || default_value_effect_idx == effect_idx );
+  
   default_value = value;
+  default_value_effect_idx = effect_idx;
+  return this;
+}
+
+buff_t* buff_t::set_default_value_from_effect( size_t effect_idx, double multiplier )
+{
+  if ( !s_data->ok() )
+    return this;
+
+  assert( effect_idx > 0 && effect_idx <= s_data->effect_count() );
+
+  // If no multiplier is specified, use the default_multiplier() lookup function
+  // NOTE: If this does not work as expected, check the function for support. This still needs work!
+  if ( multiplier == 0.0 )
+    multiplier = s_data->effectN( effect_idx ).default_multiplier();
+  
+  set_default_value( s_data->effectN( effect_idx ).base_value() * multiplier, effect_idx );
+  default_value_effect_multiplier = multiplier;
+  return this;
+}
+
+buff_t* buff_t::set_default_value_from_effect_type( effect_subtype_t a_type, property_type_t p_type, double multiplier,
+                                                    effect_type_t e_type )
+{
+  for ( size_t idx = 1; idx <= s_data->effect_count(); idx++ )
+  {
+    const spelleffect_data_t& eff = s_data->effectN( idx );
+
+    if ( eff.subtype() != a_type || eff.type() != e_type )
+      continue;
+
+    if ( p_type != property_type_t::P_MAX && eff.property_type() != p_type )
+      continue;
+
+    if ( !multiplier )
+    {
+      multiplier = eff.default_multiplier();
+    }
+
+    set_default_value( eff.base_value() * multiplier, idx );
+    default_value_effect_multiplier = multiplier;
+    return this;  // return out after matching the first effect
+  }
+
+  if ( s_data->ok() )
+  {
+    sim->error(
+        "ERROR SETTING BUFF DEFAULT VALUE: {} (id={}) has no matching effect with subtype:{} property:{} type:{}",
+        name(), s_data->id(), a_type, p_type, e_type );
+  }
+
+  return this;
+}
+
+buff_t* buff_t::modify_default_value( double value )
+{
+  set_default_value( default_value + value, default_value_effect_idx );
   return this;
 }
 
@@ -950,6 +1060,266 @@ buff_t* buff_t::set_reverse_stack_count( int count )
 buff_t* buff_t::set_stack_behavior( buff_stack_behavior b )
 {
   stack_behavior = b;
+  return this;
+}
+
+buff_t* buff_t::apply_affecting_aura( const spell_data_t* spell )
+{
+  if ( !spell->ok() )
+    return this;
+
+  assert( spell->flags( SX_PASSIVE ) && "only passive spells should be affecting buffs." );
+
+  for ( const spelleffect_data_t& effect : spell->effects() )
+  {
+    apply_affecting_effect( effect );
+  }
+
+  return this;
+}
+
+buff_t* buff_t::apply_affecting_effect( const spelleffect_data_t& effect )
+{
+  if ( !effect.ok() || effect.type() != E_APPLY_AURA )
+    return this;
+
+  if ( !data().affected_by_all( *player->dbc, effect ) )
+    return this;
+
+  if ( sim->debug )
+  {
+    const spell_data_t& spell = *effect.spell();
+    std::string desc_str;
+    const auto& spell_text = player->dbc->spell_text( spell.id() );
+    if ( spell_text.rank() )
+      desc_str = fmt::format( " (desc={})", spell_text.rank() );
+    if ( sim->debug )
+    {
+      sim->print_debug( "{} {} is affected by effect {} ({}{} (id={}) - effect #{})", *player, *this, effect.id(),
+                        spell.name_cstr(), desc_str, spell.id(), effect.spell_effect_num() + 1 );
+    }
+  }
+
+  auto apply_flat_effect_modifier = [ this ]( const spelleffect_data_t& effect ) {
+    assert( default_value_effect_idx > 0 && default_value_effect_idx <= s_data->effect_count() );
+    // Fetch the default multiplier from the current effect to multiply the flat value before applying
+    // Ensures the flat modifier is 'calibrated' to the multiplier used in the default value correctly
+    auto prev = default_value;
+    modify_default_value( effect.base_value() * default_value_effect_multiplier );
+    sim->print_debug( "{} default effect modified by {} to {} (was {})",
+                      *this, effect.base_value() * default_value_effect_multiplier, default_value, prev );
+  };
+
+  auto apply_flat_modifier = [ this, apply_flat_effect_modifier ]( const spelleffect_data_t& effect ) {
+    switch ( effect.misc_value1() )
+    {
+      case P_DURATION:
+        modify_duration( effect.time_value() );
+        sim->print_debug( "{} duration modified by {}", *this, effect.time_value() );
+        break;
+
+      case P_COOLDOWN:
+        if ( cooldown->duration > timespan_t::zero() ) // Don't modify if cooldown is disabled
+        {
+          modify_cooldown( effect.time_value() );
+          sim->print_debug( "{} cooldown duration modified by {} to {}", *this, effect.time_value(), cooldown->duration );
+        }
+        break;
+
+      case P_MAX_STACKS:
+        modify_max_stack( as<int>( effect.base_value() ) );
+        sim->print_debug( "{} maximum stacks modified by {}", *this, effect.base_value() );
+        break;
+
+      case P_EFFECT_1:
+        if ( default_value_effect_idx == 1 )
+          apply_flat_effect_modifier( effect );
+        break;
+
+      case P_EFFECT_2:
+        if ( default_value_effect_idx == 2 )
+          apply_flat_effect_modifier( effect );
+        break;
+
+      case P_EFFECT_3:
+        if ( default_value_effect_idx == 3 )
+          apply_flat_effect_modifier( effect );
+        break;
+
+      case P_EFFECT_4:
+        if ( default_value_effect_idx == 4 )
+          apply_flat_effect_modifier( effect );
+        break;
+
+      case P_EFFECT_5:
+        if ( default_value_effect_idx == 5 )
+          apply_flat_effect_modifier( effect );
+        break;
+
+      default:
+        break;
+    }
+  };
+
+  auto apply_percent_effect_modifier = [ this ]( const spelleffect_data_t& effect ) {
+    assert( default_value_effect_idx > 0 && default_value_effect_idx <= s_data->effect_count() );
+    auto prev = default_value;
+    set_default_value( default_value * ( 1.0 + effect.percent() ), default_value_effect_idx );
+    sim->print_debug( "{} default effect modified by {}% to {} (was {})",
+                      *this, effect.percent(), default_value, prev );
+  };
+
+  auto apply_percent_modifier = [ this, apply_percent_effect_modifier ]( const spelleffect_data_t& effect ) {
+    switch ( effect.misc_value1() )
+    {
+      case P_DURATION:
+        set_duration_multiplier( buff_duration_multiplier *= 1.0 + effect.percent() );
+        sim->print_debug( "{} duration modified by {}%", *this, effect.base_value() );
+        break;
+
+      case P_COOLDOWN:
+        // TODO: Should buffs support a base_recharge_multiplier?
+        // base_recharge_multiplier *= 1 + effect.percent();
+        //if ( base_recharge_multiplier <= 0 )
+        //  set_cooldown( timespan_t::zero() );
+        //sim->print_debug( "{} cooldown recharge multiplier modified by {}%", *this, effect.base_value() );
+        break;
+
+      case P_EFFECT_1:
+        if ( default_value_effect_idx == 1 )
+          apply_percent_effect_modifier( effect );
+        break;
+
+      case P_EFFECT_2:
+        if ( default_value_effect_idx == 2 )
+          apply_percent_effect_modifier( effect );
+        break;
+
+      case P_EFFECT_3:
+        if ( default_value_effect_idx == 3 )
+          apply_percent_effect_modifier( effect );
+        break;
+
+      case P_EFFECT_4:
+        if ( default_value_effect_idx == 4 )
+          apply_percent_effect_modifier( effect );
+        break;
+
+      case P_EFFECT_5:
+        if ( default_value_effect_idx == 5 )
+          apply_percent_effect_modifier( effect );
+        break;
+
+      default:
+        break;
+    }
+  };
+
+  if ( data().affected_by( effect ) )
+  {
+    switch ( effect.subtype() )
+    {
+      case A_ADD_FLAT_MODIFIER:
+        apply_flat_modifier( effect );
+        break;
+
+      case A_ADD_PCT_MODIFIER:
+        apply_percent_modifier( effect );
+        break;
+
+      default:
+        break;
+    }
+  }
+  else if ( data().affected_by_label( effect ) )
+  {
+    switch ( effect.subtype() )
+    {
+      case A_ADD_FLAT_LABEL_MODIFIER:
+        apply_flat_modifier( effect );
+        break;
+
+      case A_ADD_PCT_LABEL_MODIFIER:
+        apply_percent_modifier( effect );
+        break;
+
+      default:
+        break;
+    }
+  }
+  else if ( data().category() == as<unsigned>( effect.misc_value1() ) )
+  {
+    switch ( effect.subtype() )
+    {
+      case A_MODIFY_CATEGORY_COOLDOWN:
+        if ( cooldown->duration > timespan_t::zero() )
+        {
+          set_cooldown( cooldown->duration += effect.time_value() );
+          sim->print_debug( "{} cooldown duration modified by {}", *this, effect.time_value() );
+        }
+        break;
+
+      case A_MOD_MAX_CHARGES:
+        cooldown->charges += as<int>( effect.base_value() );
+        sim->print_debug( "{} cooldown charges modified by {}", *this, as<int>( effect.base_value() ) );
+        break;
+
+      case A_HASTED_CATEGORY:
+        cooldown->hasted = true;
+        sim->print_debug( "{} cooldown set to hasted", *this );
+        break;
+
+      case A_MOD_RECHARGE_TIME:
+        if ( cooldown->duration > timespan_t::zero() )
+        {
+          set_cooldown( cooldown->duration += effect.time_value() );
+          sim->print_debug( "{} cooldown recharge time modified by {}", *this, effect.time_value() );
+        }
+        break;
+
+      case A_MOD_RECHARGE_MULTIPLIER:
+        // TODO: Should buffs support a base_recharge_multiplier?
+        //base_recharge_multiplier *= 1 + effect.percent();
+        //if ( base_recharge_multiplier <= 0 )
+        //  set_cooldown( timespan_t::zero() );
+        //sim->print_debug( "{} cooldown recharge multiplier modified by {}%", *this, effect.base_value() );
+        break;
+
+      default:
+        break;
+    }
+  }
+
+  return this;
+}
+
+buff_t* buff_t::apply_affecting_conduit( const conduit_data_t& conduit, int effect_num )
+{
+  assert( effect_num == -1 || effect_num > 0 );
+
+  if ( !conduit.ok() )
+    return this;
+
+  for ( size_t i = 1; i <= conduit->effect_count(); i++ )
+  {
+    if ( effect_num == -1 || as<size_t>( effect_num ) == i )
+      apply_affecting_conduit_effect( conduit, i );
+    else
+      apply_affecting_effect( conduit->effectN( i ) );
+  }
+
+  return this;
+}
+
+buff_t* buff_t::apply_affecting_conduit_effect( const conduit_data_t& conduit, size_t effect_num )
+{
+  if ( !conduit.ok() )
+    return this;
+
+  spelleffect_data_t effect = conduit->effectN( effect_num );
+  effect._base_value = conduit.value();
+  apply_affecting_effect( effect );
+
   return this;
 }
 
@@ -1161,6 +1531,16 @@ bool buff_t::trigger( action_t* a, int stacks, double value, timespan_t duration
   return trigger( stacks, value, chance, duration );
 }
 
+bool buff_t::trigger( timespan_t duration )
+{
+  return trigger( 1, duration );
+}
+
+bool buff_t::trigger( int stacks, timespan_t duration )
+{
+  return trigger( stacks, DEFAULT_VALUE(), -1, duration );
+}
+
 bool buff_t::trigger( int stacks, double value, double chance, timespan_t duration )
 {
   if ( _max_stack == 0 || chance == 0 )
@@ -1259,7 +1639,7 @@ void buff_t::execute( int stacks, double value, timespan_t duration )
   if ( cooldown->duration > timespan_t::zero() )
   {
     sim->print_debug( "{} starts {} cooldown ({}) with duration {}", source_name(),
-                             *this, cooldown->name(), cooldown->duration );
+                             *this, cooldown->name_str, cooldown->duration );
 
     cooldown->start();
   }
@@ -1344,7 +1724,7 @@ void buff_t::extend_duration( player_t* p, timespan_t extra_seconds )
 
   if ( stack_behavior == buff_stack_behavior::ASYNCHRONOUS )
   {
-    throw std::runtime_error( fmt::format( "'{}' attempts to extend asynchronous buff '{}'.", p->name(), name() ) );
+    throw std::runtime_error( fmt::format( "{} attempts to extend asynchronous {}.", *p, *this ) );
   }
 
   assert( expiration.size() == 1 );
@@ -1353,8 +1733,9 @@ void buff_t::extend_duration( player_t* p, timespan_t extra_seconds )
   {
     expiration.front()->reschedule( expiration.front()->remains() + extra_seconds );
 
-    sim->print_log( "{} extends {} by {}. New expiration time: {}",
-        *p, *this, extra_seconds, expiration.front()->occurs().total_seconds() );
+    if ( sim->log )
+      sim->print_log( "{} extends {} by {}. New expiration time: {}", *p, *this, extra_seconds,
+                      expiration.front()->occurs() );
   }
   else if ( extra_seconds < timespan_t::zero() )
   {
@@ -1377,8 +1758,25 @@ void buff_t::extend_duration( player_t* p, timespan_t extra_seconds )
 
     expiration.push_back( make_event<expiration_t>( *sim, this, reschedule_time ) );
 
-    sim->print_debug( "{} decreases {} by {}. New expiration: {}",
-        *p, *this, -extra_seconds, expiration.back()->occurs().total_seconds() );
+    if ( sim->debug )
+      sim->print_debug( "{} decreases {} by {}. New expiration: {}", *p, *this, -extra_seconds,
+                        expiration.back()->occurs() );
+  }
+}
+
+// Trigger the buff with the specified duration or extend it by the same amount
+// Cannot be used for negative adjustments like buff_t::extend_duration() can
+void buff_t::extend_duration_or_trigger( timespan_t duration, player_t* p )
+{
+  timespan_t d = ( duration >= timespan_t::zero() ) ? duration : buff_duration();
+
+  if ( check() )
+  {
+    extend_duration( p == nullptr ? this->source : p, d );
+  }
+  else
+  {
+    trigger( d );
   }
 }
 
@@ -1396,7 +1794,7 @@ void buff_t::start( int stacks, double value, timespan_t duration )
   }
 #endif
 
-  timespan_t d = ( duration >= timespan_t::zero() ) ? duration : buff_duration;
+  timespan_t d = ( duration >= timespan_t::zero() ) ? duration : buff_duration();
 
   if ( sim->current_time() <= timespan_t::from_seconds( 0.01 ) )
   {
@@ -1490,7 +1888,7 @@ void buff_t::refresh( int stacks, double value, timespan_t duration )
   else if ( duration == timespan_t::zero() )
     d = duration;
   else
-    d = refresh_duration( buff_duration );
+    d = refresh_duration( buff_duration() );
 
   if ( refresh_behavior == buff_refresh_behavior::DISABLED && duration != timespan_t::zero() )
     return;
@@ -1707,7 +2105,7 @@ void buff_t::override_buff( int stacks, double value )
   if ( value == DEFAULT_VALUE() )
     value = default_value;
 
-  buff_duration = timespan_t::zero();
+  set_duration( timespan_t::zero() );
   start( stacks, value );
   overridden = true;
 }
@@ -1779,7 +2177,12 @@ void buff_t::expire( timespan_t delay )
     invalidate_cache();
 
   if ( last_start >= timespan_t::zero() )
-    iteration_uptime_sum += sim->current_time() - last_start;
+  {
+    timespan_t last_duration = sim->current_time() - last_start;
+    iteration_uptime_sum += last_duration;
+    if ( last_duration > 0_ms )
+      duration_lengths.add( last_duration.total_seconds() );
+  }
 
   update_stack_uptime_array( sim->current_time(), old_stack );
   last_stack_change = sim->current_time();
@@ -1796,7 +2199,7 @@ void buff_t::expire( timespan_t delay )
       event_t::cancel( stack_react_ready_triggers[ i ] );
   }
 
-  if ( buff_duration > timespan_t::zero() && remaining_duration == timespan_t::zero() )
+  if ( buff_duration() > timespan_t::zero() && remaining_duration == timespan_t::zero() )
   {
     expire_count++;
   }
@@ -1875,6 +2278,7 @@ void buff_t::merge( const buff_t& other )
 {
   start_intervals.merge( other.start_intervals );
   trigger_intervals.merge( other.trigger_intervals );
+  duration_lengths.merge( other.duration_lengths );
 
   uptime_pct.merge( other.uptime_pct );
   benefit_pct.merge( other.benefit_pct );
@@ -1995,7 +2399,7 @@ std::string buff_t::to_str() const
   s << " max_stack=" << _max_stack;
   s << " initial_stack=" << data().initial_stacks();
   s << " cooldown=" << cooldown->duration.total_seconds();
-  s << " duration=" << buff_duration.total_seconds();
+  s << " duration=" << buff_duration().total_seconds();
   s << " default_chance=" << default_chance;
 
   return s.str();
@@ -2141,10 +2545,9 @@ void buff_t::update_stack_uptime_array( timespan_t current_time, int old_stacks 
   uptime_array.add( end_time, end_partial.total_seconds() * mul );
 }
 
-std::ostream& operator<<(std::ostream &os, const buff_t& b)
+void format_to( const buff_t& buff, fmt::format_context::iterator out )
 {
-  fmt::print(os, "Buff {}", b.name() );
-  return os;
+  fmt::format_to( out, "Buff {}", buff.name() );
 }
 
 // ==========================================================================
@@ -2159,7 +2562,7 @@ stat_buff_t::stat_buff_t(actor_pair_t q, util::string_view name)
 
 stat_buff_t::stat_buff_t( actor_pair_t q, util::string_view name, const spell_data_t* spell, const item_t* item )
   : buff_t( q, name, spell, item ),
-    stat_gain( player->get_gain( std::string( name ) + "_buff" ) ),  // append _buff for now to check usage
+    stat_gain( player->get_gain( fmt::format( "{}_buff", name ) ) ),  // append _buff for now to check usage
     manual_stats_added( false )
 {
   bool has_ap = false;
@@ -2258,11 +2661,11 @@ void stat_buff_t::bump( int stacks, double /* value */ )
     double delta = buff_stat.amount * current_stack - buff_stat.current_value;
     if ( delta > 0 )
     {
-      player->stat_gain( buff_stat.stat, delta, stat_gain, nullptr, buff_duration > timespan_t::zero() );
+      player->stat_gain( buff_stat.stat, delta, stat_gain, nullptr, buff_duration() > timespan_t::zero() );
     }
     else if ( delta < 0 )
     {
-      player->stat_loss( buff_stat.stat, std::fabs( delta ), stat_gain, nullptr, buff_duration > timespan_t::zero() );
+      player->stat_loss( buff_stat.stat, std::fabs( delta ), stat_gain, nullptr, buff_duration() > timespan_t::zero() );
     }
 
     buff_stat.current_value += delta;
@@ -2288,12 +2691,12 @@ void stat_buff_t::decrement( int stacks, double /* value */ )
       if ( delta > 0 )
       {
         player->stat_loss( buff_stat.stat, ( delta <= buff_stat.current_value ) ? delta : 0.0, stat_gain, nullptr,
-                           buff_duration > timespan_t::zero() );
+                           buff_duration() > timespan_t::zero() );
       }
       else if ( delta < 0 )
       {
         player->stat_gain( buff_stat.stat, ( delta >= buff_stat.current_value ) ? std::fabs( delta ) : 0.0, stat_gain,
-                           nullptr, buff_duration > timespan_t::zero() );
+                           nullptr, buff_duration() > timespan_t::zero() );
       }
       buff_stat.current_value -= delta;
     }
@@ -2329,12 +2732,12 @@ void stat_buff_t::expire_override( int expiration_stacks, timespan_t remaining_d
     if ( buff_stat.current_value > 0 )
     {
       player->stat_loss( buff_stat.stat, buff_stat.current_value, stat_gain, nullptr,
-                         buff_duration > timespan_t::zero() );
+                         buff_duration() > timespan_t::zero() );
     }
     else if ( buff_stat.current_value < 0 )
     {
       player->stat_gain( buff_stat.stat, std::fabs( buff_stat.current_value ), stat_gain, nullptr,
-                         buff_duration > timespan_t::zero() );
+                         buff_duration() > timespan_t::zero() );
     }
     buff_stat.current_value = 0;
   }
@@ -2420,6 +2823,10 @@ cost_reduction_buff_t* cost_reduction_buff_t::set_reduction( school_e school, do
   this->school = school;
   return this;
 }
+
+// ==========================================================================
+// ABSORB_BUFF
+// ==========================================================================
 
 absorb_buff_t::absorb_buff_t(actor_pair_t q, util::string_view name)
   : absorb_buff_t(q, name, spell_data_t::nil(), nullptr)
@@ -2545,6 +2952,10 @@ absorb_buff_t* absorb_buff_t::set_absorb_eligibility( absorb_eligibility e )
   return this;
 }
 
+// ==========================================================================
+// MOVEMENT_BUFF
+// ==========================================================================
+
 bool movement_buff_t::trigger( int stacks, double value, double chance, timespan_t duration )
 {
   if ( player->buffs.norgannons_foresight_ready )
@@ -2559,5 +2970,181 @@ void movement_buff_t::expire_override( int expiration_stacks, timespan_t remaini
 {
   buff_t::expire_override( expiration_stacks, remaining_duration );
   source->finish_moving();
+}
+
+// ==========================================================================
+// DAMAGE_BUFF
+// ==========================================================================
+
+damage_buff_t::damage_buff_t( actor_pair_t q, util::string_view name )
+  : damage_buff_t( q, name, spell_data_t::nil() )
+{
+}
+
+damage_buff_t::damage_buff_t( actor_pair_t q, util::string_view name, const spell_data_t* spell )
+  : buff_t( q, name, spell, nullptr )
+{
+  parse_spell_data( spell );
+}
+
+damage_buff_t::damage_buff_t( actor_pair_t q, util::string_view name, const spell_data_t* spell, const conduit_data_t& conduit )
+  : buff_t( q, name, spell, nullptr )
+{
+  if ( conduit.ok() )
+  {
+    parse_spell_data( spell, conduit.percent() );
+  }
+}
+
+damage_buff_t* damage_buff_t::parse_spell_data( const spell_data_t* spell, double conduit_value )
+{
+  if ( !spell->ok() )
+    return this;
+
+  for ( size_t idx = 1; idx <= spell->effect_count(); idx++ )
+  {
+    const spelleffect_data_t& e = spell->effectN( idx );
+    if ( !e.ok() || e.type() != E_APPLY_AURA )
+      continue;
+
+    // Pass down the conduit override value if this is the first effect
+    double multiplier = ( idx == 1 ) ? conduit_value : 0.0;
+
+    if ( e.subtype() == A_MOD_AUTO_ATTACK_PCT || e.subtype() == A_MOD_AUTO_ATTACK_FROM_CASTER )
+    {
+      set_auto_attack_mod( spell, idx, multiplier );
+      sim->print_debug( "{} damage buff AA multiplier initialized to {}", *this, auto_attack_mod.multiplier );
+    }
+    else if ( e.subtype() == A_ADD_PCT_MODIFIER )
+    {
+      if ( e.property_type() == P_GENERIC )
+      {
+        set_direct_mod( spell, idx, multiplier );
+        sim->print_debug( "{} damage buff direct multiplier initialized to {}", *this, direct_mod.multiplier );
+      }
+      else if ( e.property_type() == P_TICK_DAMAGE )
+      {
+        set_periodic_mod( spell, idx, multiplier );
+        sim->print_debug( "{} damage buff periodic multiplier initialized to {}", *this, periodic_mod.multiplier );
+      }
+    }
+    else if ( e.subtype() == A_MOD_DAMAGE_FROM_CASTER_SPELLS )
+    {
+      set_direct_mod( spell, idx, multiplier );
+      set_periodic_mod( spell, idx, multiplier );
+      sim->print_debug( "{} damage buff direct multiplier initialized to {}", *this, direct_mod.multiplier );
+      sim->print_debug( "{} damage buff periodic multiplier initialized to {}", *this, periodic_mod.multiplier );
+    }
+  }
+
+  return this;
+}
+
+damage_buff_t* damage_buff_t::apply_mod_affecting_effect( damage_buff_modifier_t& mod, const spelleffect_data_t& effect )
+{
+  if ( !mod.s_data || !mod.s_data->ok() )
+    return this;
+
+  if ( ( effect.subtype() == A_ADD_FLAT_MODIFIER && mod.s_data->affected_by( effect ) ) ||
+       ( effect.subtype() == A_ADD_FLAT_LABEL_MODIFIER && mod.s_data->affected_by_label( effect ) ) )
+  {
+    if ( effect.property_type() == P_EFFECTS )
+    {
+      mod.multiplier += effect.percent();
+      sim->print_debug( "{} damage buff multiplier modified by {}% to {}", *this, effect.base_value(), mod.multiplier );
+    }
+    else if( mod.effect_idx >= 1 && mod.effect_idx <= 5 )
+    {
+      constexpr property_type_t effect_types[] = { P_EFFECT_1, P_EFFECT_2, P_EFFECT_3, P_EFFECT_4, P_EFFECT_5 };
+      if ( effect.property_type() == effect_types[ mod.effect_idx - 1 ] )
+      {
+        mod.multiplier += effect.percent();
+        sim->print_debug( "{} damage buff multiplier modified by {}% to {}", *this, effect.base_value(), mod.multiplier );
+      }
+    }
+  }
+
+  return this;
+}
+
+buff_t* damage_buff_t::apply_affecting_effect( const spelleffect_data_t& effect )
+{
+  if ( !effect.ok() || effect.type() != E_APPLY_AURA )
+    return this;
+
+  apply_mod_affecting_effect( direct_mod, effect );
+  apply_mod_affecting_effect( periodic_mod, effect );
+  apply_mod_affecting_effect( auto_attack_mod, effect );
+
+  return buff_t::apply_affecting_effect( effect );
+}
+
+damage_buff_t* damage_buff_t::set_buff_mod( damage_buff_modifier_t& mod, double multiplier )
+{
+  return set_buff_mod( mod, nullptr, 0, multiplier );
+}
+
+damage_buff_t* damage_buff_t::set_buff_mod( damage_buff_modifier_t& mod, const spell_data_t* s, size_t effect_idx, double multiplier )
+{
+  assert( mod.s_data == nullptr && mod.effect_idx == 0 );
+
+  if( multiplier != 0.0 )
+    mod.multiplier = 1.0 + multiplier;
+
+  if ( !s->ok() || !s->effectN( effect_idx ).ok() || s->effectN( effect_idx ).type() != E_APPLY_AURA )
+    return this;
+
+  if ( multiplier == 0.0 )
+    mod.multiplier = 1.0 + s->effectN( effect_idx ).percent();
+
+  mod.s_data = s;
+  mod.effect_idx = effect_idx;
+  return this;
+}
+
+damage_buff_t* damage_buff_t::set_direct_mod( double multiplier )
+{ return set_direct_mod( nullptr, 0, multiplier ); }
+
+damage_buff_t* damage_buff_t::set_direct_mod( const spell_data_t* s, size_t effect_idx, double multiplier )
+{ return set_buff_mod( direct_mod, s, effect_idx, multiplier ); }
+
+damage_buff_t* damage_buff_t::set_periodic_mod( double multiplier )
+{ return set_periodic_mod( nullptr, 0, multiplier ); }
+
+damage_buff_t* damage_buff_t::set_periodic_mod( const spell_data_t* s, size_t effect_idx, double multiplier )
+{ return set_buff_mod( periodic_mod, s, effect_idx, multiplier ); }
+
+damage_buff_t* damage_buff_t::set_auto_attack_mod( double multiplier )
+{ return set_auto_attack_mod( nullptr, 0, multiplier ); }
+
+damage_buff_t* damage_buff_t::set_auto_attack_mod( const spell_data_t* s, size_t effect_idx, double multiplier )
+{ return set_buff_mod( auto_attack_mod, s, effect_idx, multiplier ); }
+
+bool damage_buff_t::is_affecting_direct( const spell_data_t* s )
+{
+  if ( !direct_mod.s_data || !direct_mod.s_data->ok() || direct_mod.effect_idx == 0 )
+    return false;
+
+  if ( s->affected_by( direct_mod.s_data->effectN( direct_mod.effect_idx ) ) )
+    return true;
+
+  if ( s->affected_by_label( direct_mod.s_data->effectN( direct_mod.effect_idx ) ) )
+    return true;
+
+  return false;
+}
+
+bool damage_buff_t::is_affecting_periodic( const spell_data_t* s )
+{
+  if ( !periodic_mod.s_data || !periodic_mod.s_data->ok() || periodic_mod.effect_idx == 0 )
+    return false;
+
+  if ( s->affected_by( periodic_mod.s_data->effectN( periodic_mod.effect_idx ) ) )
+    return true;
+
+  if ( s->affected_by_label( periodic_mod.s_data->effectN( periodic_mod.effect_idx ) ) )
+    return true;
+
+  return false;
 }
 

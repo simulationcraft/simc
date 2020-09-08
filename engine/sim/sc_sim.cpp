@@ -720,55 +720,10 @@ bool parse_fight_style( sim_t*             sim,
 // parse_override_spell_data ================================================
 
 bool parse_override_spell_data( sim_t*             sim,
-                                       util::string_view /* name */,
-                                       util::string_view value )
+                                util::string_view /* name */,
+                                util::string_view value )
 {
-  // Register overrides only once, for the main thread
-  if ( sim -> parent )
-  {
-    return true;
-  }
-
-  auto v_pos = value.find( '=' );
-
-  if ( v_pos == util::string_view::npos )
-  {
-    throw std::invalid_argument("Invalid form. Spell data override takes the form <spell|effect|power>.<id>.<field>=value");
-  }
-
-  auto splits = util::string_split<util::string_view>( value.substr( 0, v_pos ), "." );
-
-  if ( splits.size() != 3 )
-  {
-    throw std::invalid_argument("Invalid form. Spell data override takes the form <spell|effect|power>.<id>.<field>=value");
-  }
-
-  int parsed_id = util::to_int( splits[ 1 ] );
-  if ( parsed_id <= 0 )
-  {
-    throw std::invalid_argument("Invalid spell id (negative or zero).");
-  }
-  unsigned id = as<unsigned>(parsed_id);
-
-  double v = util::to_double( value.substr( v_pos + 1 ) );
-
-  if ( util::str_compare_ci( splits[ 0 ], "spell" ) )
-  {
-    dbc_override::register_spell( *(sim -> dbc), id, splits[ 2 ], v );
-  }
-  else if ( util::str_compare_ci( splits[ 0 ], "effect" ) )
-  {
-    dbc_override::register_effect(*(sim->dbc), id, splits[ 2 ], v );
-  }
-  else if ( util::str_compare_ci( splits[ 0 ], "power" ) )
-  {
-    dbc_override::register_power(*(sim->dbc), id, splits[ 2 ], v );
-  }
-  else
-  {
-    throw std::invalid_argument("Invalid form. Spell data override takes the form <spell|effect|power>.<id>.<field>=value");
-  }
-
+  sim->dbc_override->parse( *(sim->dbc), value );
   return true;
 }
 
@@ -1526,6 +1481,7 @@ sim_t::sim_t() :
   target_adds( 0 ), desired_targets( 1 ), enable_taunts( false ),
   use_item_verification( true ),
   dbc(new dbc_t()),
+  dbc_override( std::make_unique<dbc_override_t>() ),
   challenge_mode( false ), timewalk( -1 ), scale_to_itemlevel( -1 ), scale_itemlevel_down_only( false ),
   disable_set_bonuses( false ), disable_2_set( 1 ), disable_4_set( 1 ), enable_2_set( 1 ), enable_4_set( 1 ),
   pvp_crit( false ),
@@ -3810,15 +3766,21 @@ void sim_t::create_options()
                             1_s, timespan_t::max() ) );
   add_option( opt_uint( "bfa.manifesto_allies_start", bfa_opts.manifesto_allies_start, 0, 12 ) );
   add_option( opt_uint( "bfa.manifesto_allies_end", bfa_opts.manifesto_allies_end, 0, 5 ) );
-  add_option( opt_float( "bfa.echoing_void_collapse_chance", bfa_opts.echoing_void_collapse_chance, 0.0, 1.0 ) );
-  add_option( opt_bool( "bfa.void_ritual_increased_chance_active", bfa_opts.void_ritual_increased_chance_active ) );
+  add_option( opt_obsoleted( "bfa.echoing_void_collapse_chance" ) );
+  add_option( opt_obsoleted( "bfa.void_ritual_increased_chance_active" ) );
   add_option( opt_timespan( "bfa.symbiotic_presence_interval", bfa_opts.symbiotic_presence_interval, 1_s, timespan_t::max() ) );
   add_option( opt_float( "bfa.whispered_truths_offensive_chance", bfa_opts.whispered_truths_offensive_chance, 0.0, 1.0 ) );
   add_option( opt_bool( "bfa.nyalotha", bfa_opts.nyalotha ) );
-  add_option( opt_float( "bfa.infinite_stars_miss_chance", bfa_opts.infinite_stars_miss_chance, 0.0, 1.0 ) );
+  add_option( opt_obsoleted( "bfa.infinite_stars_miss_chance" ) );
 
   // applies to: "lavish_suramar_feast", battle for azeroth feasts
   add_option( opt_bool( "feast_as_dps", feast_as_dps ) );
+
+  // Shadowlands
+  add_option( opt_float( "shadowlands.combat_meditation_extend_chance",
+    shadowlands_opts.combat_meditation_extend_chance, 0.0, 1.0 ) );
+  add_option( opt_uint( "shadowlands.pointed_courage_nearby",
+    shadowlands_opts.pointed_courage_nearby, 1, 5 ) );
 }
 
 // sim_t::parse_option ======================================================

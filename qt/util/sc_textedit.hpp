@@ -6,8 +6,9 @@
 #pragma once
 
 #include "config.hpp"
-#include <QtWidgets/QtWidgets>
+
 #include <QtGui/QtGui>
+#include <QtWidgets/QtWidgets>
 
 class SC_SearchBox;
 
@@ -21,18 +22,19 @@ class SC_TextEdit : public QPlainTextEdit
 private:
   QTextCharFormat textformat_default;
   QTextCharFormat textformat_error;
-  QList< QPair< Qt::Key, QList< Qt::KeyboardModifier > > > ignoreKeys;
+  QList<QPair<Qt::Key, QList<Qt::KeyboardModifier> > > ignoreKeys;
   SC_SearchBox* searchBox;
   Qt::Corner searchBoxCorner;
   bool enable_search;
+
 public:
   bool edited_by_user;
 
   SC_TextEdit( QWidget* parent = nullptr, bool accept_drops = true, bool enable_search = true );
 
-  void addIgnoreKeyPressEvent( Qt::Key k, QList<Qt::KeyboardModifier> s);
+  void addIgnoreKeyPressEvent( Qt::Key k, QList<Qt::KeyboardModifier> s );
 
-  bool removeIgnoreKeyPressEvent( Qt::Key k, QList<Qt::KeyboardModifier> s);
+  bool removeIgnoreKeyPressEvent( Qt::Key k, QList<Qt::KeyboardModifier> s );
 
   void removeAllIgnoreKeyPressEvent();
 
@@ -52,8 +54,8 @@ public slots:
   void findNext();
   void findPrev();
   void hideSearchBox();
-private:
 
+private:
   void initSearchBox();
   void findSomeText( const QString& text, QTextDocument::FindFlags options = 0, int position = -1 );
 };

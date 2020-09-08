@@ -564,7 +564,7 @@ enum property_type_t {
   P_RANGE             = 5,
   P_RADIUS            = 6,
   P_CRIT              = 7,
-  P_UNKNOWN_1         = 8, // Unknown
+  P_EFFECTS           = 8,
   P_PUSHBACK          = 9,
   P_CAST_TIME         = 10,
   P_COOLDOWN          = 11,
@@ -574,12 +574,12 @@ enum property_type_t {
   P_CRIT_DAMAGE       = 15,
   P_PENETRATION       = 16,
   P_TARGET            = 17,
-  P_PROC_CHANCE       = 18, // Unconfirmed
-  P_TICK_TIME         = 19, // Unknown
+  P_PROC_CHANCE       = 18,
+  P_TICK_TIME         = 19,
   P_TARGET_BONUS      = 20, // Improved Revenge
   P_GCD               = 21, // Only used for flat modifiers?
   P_TICK_DAMAGE       = 22,
-  P_EFFECT_3          = 23, // Glyph of Killing Spree, Glyph of Revealing Strike (both +% damage increases)
+  P_EFFECT_3          = 23,
   P_SPELL_POWER       = 24,
   P_UNUSED_2          = 25,
   P_PROC_FREQUENCY    = 26,
@@ -588,7 +588,7 @@ enum property_type_t {
   P_EFFECT_4          = 32,
   P_EFFECT_5          = 33,
   P_RESOURCE_GEN      = 34,
-  P_MAX_STACKS        = 35,
+  P_MAX_STACKS        = 37,
   P_MAX
 };
 
@@ -871,7 +871,7 @@ enum effect_subtype_t : unsigned {
     A_MOD_PACIFY_SILENCE = 60,
     A_MOD_SCALE = 61,
     A_PERIODIC_HEALTH_FUNNEL = 62,
-    A_63 = 63, // old A_PERIODIC_MANA_FUNNEL
+    A_MOD_MAX_RESOURCE_COST = 63, // old A_PERIODIC_MANA_FUNNEL
     A_PERIODIC_MANA_LEECH = 64,
     A_MOD_CASTING_SPEED_NOT_STACK = 65,
     A_FEIGN_DEATH = 66,
@@ -892,8 +892,8 @@ enum effect_subtype_t : unsigned {
     A_SPLIT_DAMAGE_PCT = 81,
     A_WATER_BREATHING = 82,
     A_MOD_BASE_RESISTANCE = 83,
-    A_MOD_REGEN = 84,
-    A_MOD_POWER_REGEN = 85,
+    A_RESTORE_HEALTH = 84,
+    A_RESTORE_POWER = 85,
     A_CHANNEL_DEATH_ITEM = 86,
     A_MOD_DAMAGE_PERCENT_TAKEN = 87,
     A_MOD_HEALTH_REGEN_PERCENT = 88,
@@ -1078,8 +1078,8 @@ enum effect_subtype_t : unsigned {
     A_MOD_IMMUNE_A_APPLY_SCHOOL = 267,
     A_MOD_ATTACK_POWER_OF_STAT_PERCENT = 268,
     A_MOD_IGNORE_DAMAGE_REDUCTION_SCHOOL = 269,
-    A_MOD_IGNORE_TARGET_RESIST = 270, // Possibly need swap vs 195 aura used only in 1 spell Chaos Bolt Passive
-    A_MOD_DAMAGE_FROM_CASTER = 271,
+    A_MOD_DAMAGE_FROM_CASTER = 270,
+    A_MOD_DAMAGE_FROM_CASTER_SPELLS = 271,
     A_MAELSTROM_WEAPON = 272,
     A_X_RAY = 273,
     A_274 = 274,
@@ -1126,7 +1126,7 @@ enum effect_subtype_t : unsigned {
     A_315 = 315,
     A_316 = 316,
     A_317 = 317,
-    A_318 = 318,
+    A_MOD_MASTERY_PCT = 318,
     A_319 = 319,
     A_320 = 320,
     A_321 = 321,
@@ -1150,10 +1150,10 @@ enum effect_subtype_t : unsigned {
     A_339 = 339,
     A_340 = 340,
     A_MODIFY_CATEGORY_COOLDOWN = 341,
-    A_342 = 342,
+    A_MOD_RANGED_AND_MELEE_ATTACK_SPEED = 342,
     A_MOD_AUTO_ATTACK_FROM_CASTER = 343,
     A_MOD_AUTO_ATTACK_PCT = 344,
-    A_345 = 345,
+    A_MOD_IGNORE_ARMOR_PCT = 345,
     A_346 = 346,
     A_347 = 347,
     A_348 = 348,
@@ -1203,11 +1203,11 @@ enum effect_subtype_t : unsigned {
     A_408 = 408,
     A_409 = 409,
     A_410 = 410,
-    A_411 = 411,
+    A_MOD_MAX_CHARGES = 411,
     A_412 = 412,
     A_HASTED_COOLDOWN = 416,
     A_HASTED_GCD = 417,
-    A_418 = 418,
+    A_MOD_MAX_RESOURCE = 418,
     A_MOD_MANA_POOL_PCT = 419,
     A_420 = 420,
     A_421 = 421,
@@ -1225,8 +1225,8 @@ enum effect_subtype_t : unsigned {
     A_447 = 447,
     A_448 = 448,
     A_451 = 451,
-    A_453 = 453,
-    A_454 = 454,
+    A_MOD_RECHARGE_TIME = 453,
+    A_MOD_RECHARGE_MULTIPLIER = 454,
     A_455 = 455,
     A_HASTED_CATEGORY = 457,
     A_458 = 458,
@@ -1237,11 +1237,12 @@ enum effect_subtype_t : unsigned {
     A_467 = 467,
     A_468 = 468,
     A_470 = 470,
-    A_471 = 471,
+    A_MOD_VERSATILITY_PCT = 471,
     A_478 = 478,
     A_481 = 481,
     A_483 = 483,
     A_492 = 492,
+    A_MOD_CRIT_DAMAGE_PCT_FROM_CASTER_SPELLS = 501,
     A_MAX
 };
 
@@ -1261,6 +1262,7 @@ enum spell_attribute : unsigned
   SX_CHANNELED            = 34u,
   SX_NO_STEALTH_BREAK     = 37u,
   SX_CHANNELED_2          = 38u,
+  SX_MELEE_COMBAT_START   = 41u,
   SX_CANNOT_CRIT          = 93u,
   SX_FOOD_AURA            = 95u,
   SX_NOT_PROC             = 105u,

@@ -75,6 +75,7 @@ pet_t::pet_t( sim_t*             sim,
 
   // Inherit owner's dbc state
   dbc->ptr = owner -> dbc->ptr;
+  dbc_override = owner -> dbc_override;
 
   // Set pet dps data collection to level 2 or higher, so our 32bit GUI users can at least
   // do scale factor simulations with default settings.
@@ -127,7 +128,7 @@ void pet_t::init()
 
   if (resource_regeneration == regen_type::DYNAMIC && owner ->resource_regeneration == regen_type::DISABLED )
   {
-    sim -> errorf( "Pet %s has dynamic regen, while owner has disabled regen. Disabling pet regeneration also.", name() );
+    sim -> error( "{} has dynamic regen, while owner has disabled regen. Disabling pet regeneration also.", *this );
     resource_regeneration = regen_type::DISABLED;
   }
 }
@@ -159,7 +160,7 @@ void pet_t::reset()
 
 void pet_t::summon( timespan_t summon_duration )
 {
-  sim -> print_log( "{} summons {} for {}.", owner -> name(), name(), summon_duration );
+  sim -> print_log( "{} summons {} for {}.", *owner, name_str, summon_duration );
 
   current.distance = owner -> current.distance;
 
@@ -190,7 +191,7 @@ void pet_t::summon( timespan_t summon_duration )
 
 void pet_t::dismiss( bool expired )
 {
-  sim -> print_log( "{} dismisses {}", owner -> name(), name() );
+  sim -> print_log( "{} dismisses {}", *owner, name_str );
 
   // Remove from active_pets list
   auto it = range::find( owner -> active_pets, this );
@@ -235,7 +236,7 @@ void pet_t::create_buffs()
   }
   else
   {
-    sim->print_debug( "Creating Auras, Buffs, and Debuffs for pet '{}'.", name() );
+    sim->print_debug( "Creating Auras, Buffs, and Debuffs for {}.", *this );
 
     buffs.stunned  = make_buff( this, "stunned" )
       ->set_max_stack( 1 );
@@ -262,7 +263,7 @@ void pet_t::adjust_duration( timespan_t adjustment )
   if ( new_duration <= 0_ms )
   {
     sim->print_debug( "{} pet {} duration adjusted to {}, dismissing ...",
-      owner->name(), name_str, new_duration );
+      *owner, name_str, new_duration );
     dismiss();
   }
   else
@@ -270,7 +271,7 @@ void pet_t::adjust_duration( timespan_t adjustment )
     duration += adjustment;
 
     sim->print_debug( "{} pet {} duration adjusted to {}",
-      owner->name(), name_str, new_duration );
+      *owner, name_str, new_duration );
 
     if ( new_duration > expiration->remains() )
     {
@@ -418,4 +419,9 @@ void pet_t::acquire_target( retarget_source event, player_t* context )
       action->acquire_target( event, context, target );
     } );
   }
+}
+
+void format_to( const pet_t& pet, fmt::format_context::iterator out )
+{
+  fmt::format_to( out, "Pet '{}'", pet.full_name_str );
 }

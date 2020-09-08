@@ -56,6 +56,23 @@ resource_e spelleffect_data_t::resource_gain_type() const
   return util::translate_power_type( static_cast< power_e >( misc_value1() ) );
 }
 
+double spelleffect_data_t::resource_multiplier( resource_e resource_type ) const
+{
+  switch ( resource_type )
+  {
+    case RESOURCE_RUNIC_POWER:
+    case RESOURCE_RAGE:
+    case RESOURCE_ASTRAL_POWER:
+    case RESOURCE_PAIN:
+    case RESOURCE_SOUL_SHARD:
+      return ( 1 / 10.0 );
+    case RESOURCE_INSANITY:
+      return ( 1 / 100.0 );
+    default:
+      return 1;
+  }
+}
+
 school_e spelleffect_data_t::school_type() const
 {
   return dbc::get_school_type( as<uint32_t>( misc_value1() ) );
@@ -244,6 +261,69 @@ double spelleffect_data_t::scaled_max( double avg, double delta ) const
   }
 
   return result;
+}
+
+double spelleffect_data_t::default_multiplier() const
+{
+  switch ( type() )
+  {
+    case E_APPLY_AURA:
+      switch ( subtype() )
+      {
+        case A_PERIODIC_TRIGGER_SPELL:
+        case A_PROC_TRIGGER_SPELL:
+          return 1.0; // base_value
+
+        case A_MOD_MAX_RESOURCE_COST:
+        case A_MOD_MAX_RESOURCE:
+        case A_MOD_INCREASE_ENERGY:
+        case A_PERIODIC_ENERGIZE:
+          return resource_multiplier( resource_gain_type() );
+
+        case A_ADD_FLAT_MODIFIER:
+        case A_ADD_FLAT_LABEL_MODIFIER:
+          switch ( property_type() )
+          {
+            case P_DURATION:
+            case P_CAST_TIME:
+            case P_COOLDOWN:
+            case P_TICK_TIME:
+            case P_GCD:
+              return 0.001; // time_value
+
+            case P_CRIT:
+            case P_CRIT_DAMAGE:
+            case P_PROC_CHANCE:
+              return 0.01; // percent
+
+            case P_RESOURCE_COST:
+            case P_RESOURCE_GEN:
+              return resource_multiplier( resource_gain_type() );
+
+            default:
+              return 1.0; // base_value
+          }
+          break;
+
+        case A_MOD_MASTERY_PCT:
+          return 1.0;
+
+        case A_RESTORE_HEALTH:
+        case A_RESTORE_POWER:
+          return 0.2; // Resource per 5s
+
+        default:
+          return 0.01; // percent
+      }
+
+    case E_ENERGIZE:
+      return resource_multiplier( resource_gain_type() );
+
+    default:
+      break;
+  }
+
+  return 1.0; // base_value
 }
 
 const spelleffect_data_t* spelleffect_data_t::find( unsigned id, bool ptr )

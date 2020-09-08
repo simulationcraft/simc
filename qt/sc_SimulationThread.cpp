@@ -1,32 +1,40 @@
 #include "sc_SimulationThread.hpp"
-#include "simulationcraftqt.hpp"
+
+#include "lib/fmt/format.h"
+#include "report/reports.hpp"
+#include "sim/plot.hpp"
+#include "sim/reforge_plot.hpp"
+#include "sim/sc_sim.hpp"
+#include "sim/scale_factor_control.hpp"
+#include "sim/sim_control.hpp"
 #include "sc_Workaround.hpp"
+#include "simulationcraftqt.hpp"
 
-namespace {
-
+namespace
+{
 /**
  * Print chained exceptions, separated by ' :'.
  */
-void print_exception( std::string& output, const std::exception& e, int level =  0)
+void print_exception( std::string& output, const std::exception& e, int level = 0 )
 {
-  std::string tmp = fmt::format("{}{}", level > 0 ? ": " : "", e.what());
+  std::string tmp = fmt::format( "{}{}", level > 0 ? ": " : "", e.what() );
   output += tmp;
-  try {
-      std::rethrow_if_nested(e);
-  } catch(const std::exception& e) {
-      print_exception(output, e, level+1);
-  } catch(...) {}
+  try
+  {
+    std::rethrow_if_nested( e );
+  }
+  catch ( const std::exception& e )
+  {
+    print_exception( output, e, level + 1 );
+  }
+  catch ( ... )
+  {
+  }
 }
 
-}
-SC_SimulateThread::SC_SimulateThread( SC_MainWindow* mw ) :
-    mainWindow( mw ),
-    sim( nullptr ),
-    utf8_options(),
-    tabName(),
-    error_category(),
-    error_str(),
-    success( false )
+}  // namespace
+SC_SimulateThread::SC_SimulateThread( SC_MainWindow* mw )
+  : mainWindow( mw ), sim( nullptr ), utf8_options(), tabName(), error_category(), error_str(), success( false )
 {
   connect( this, SIGNAL( finished() ), this, SLOT( sim_finished() ) );
 }
@@ -44,34 +52,35 @@ void SC_SimulateThread::run()
     }
     catch ( const std::exception& e )
     {
-      std::throw_with_nested(std::invalid_argument("Incorrect option format"));
+      std::throw_with_nested( std::invalid_argument( "Incorrect option format" ) );
     }
 
     // ******** Setup ********
     try
     {
-      sim -> setup( &description );
+      sim->setup( &description );
       workaround::apply_workarounds( sim.get() );
     }
     catch ( const std::exception& e )
     {
-      std::throw_with_nested(std::runtime_error("Setup failure"));
+      std::throw_with_nested( std::runtime_error( "Setup failure" ) );
     }
 
-    if ( sim -> challenge_mode ) sim -> scale_to_itemlevel = 630;
+    if ( sim->challenge_mode )
+      sim->scale_to_itemlevel = 630;
 
-    if ( sim -> spell_query != nullptr )
+    if ( sim->spell_query != nullptr )
     {
       success = false;
       return;
     }
 
-    success = sim -> execute();
+    success = sim->execute();
     if ( success )
     {
-      sim -> scaling -> analyze();
-      sim -> plot -> analyze();
-      sim -> reforge_plot -> analyze();
+      sim->scaling->analyze();
+      sim->plot->analyze();
+      sim->reforge_plot->analyze();
       report::print_suite( sim.get() );
     }
     else
@@ -89,10 +98,10 @@ void SC_SimulateThread::run()
   }
   catch ( const std::exception& e )
   {
-    success = false;
-    error_category = tr("Simulation runtime error");
+    success        = false;
+    error_category = tr( "Simulation runtime error" );
     std::string error_str_;
-    print_exception(error_str_, e);
+    print_exception( error_str_, e );
     range::for_each( sim->error_list, [ this ]( const std::string& str ) {
       if ( !error_str.isEmpty() )
       {
@@ -101,15 +110,15 @@ void SC_SimulateThread::run()
 
       error_str += QString::fromStdString( str );
     } );
-    error_str += QString::fromStdString(error_str_);
+    error_str += QString::fromStdString( error_str_ );
   }
 }
 
 void SC_SimulateThread::start( std::shared_ptr<sim_t> s, const QByteArray& o, QString t )
 {
-    sim = s;
-    utf8_options = o;
-    success = false;
-    tabName = t;
-    QThread::start();
+  sim          = s;
+  utf8_options = o;
+  success      = false;
+  tabName      = t;
+  QThread::start();
 }

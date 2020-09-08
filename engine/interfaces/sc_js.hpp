@@ -8,8 +8,9 @@
 
 #include "config.hpp"
 #include "rapidjson/document.h"
-#include "sc_timespan.hpp"
+#include "util/timespan.hpp"
 #include "util/string_view.hpp"
+#include "util/generic.hpp"
 
 #include <utility>
 #include <string>
@@ -87,7 +88,7 @@ protected:
   {
     assert( obj.GetType() == rapidjson::kObjectType );
 
-    rapidjson::Value name_value( name_.data(), name_.size(), js_.GetAllocator() );
+    rapidjson::Value name_value( name_.data(), as<rapidjson::SizeType>( name_.size() ), js_.GetAllocator() );
 
     return obj.AddMember( name_value, value_, js_.GetAllocator() );
   }
@@ -199,11 +200,11 @@ public:
   // Create a new object member (n) to the current object (v_), and return a reference to it
   JsonOutput operator[]( util::string_view n )
   {
-    rapidjson::Value name( n.data(), n.size() );
+    rapidjson::Value name( n.data(), as<rapidjson::SizeType>( n.size() ) );
     auto member = v_.FindMember( name );
     if ( member == v_.MemberEnd() )
     {
-      rapidjson::Value key( n.data(), n.size(), d_.GetAllocator() );
+      rapidjson::Value key( n.data(), as<rapidjson::SizeType>( n.size() ), d_.GetAllocator() );
       rapidjson::Value obj( rapidjson::kObjectType );
       v_.AddMember( key, obj, d_.GetAllocator() );
       member = std::prev( v_.MemberEnd() );
@@ -229,7 +230,7 @@ public:
 
   // Assign a string to the current value (v_), and have RapidJSON do the copy.
   JsonOutput& operator=( util::string_view v )
-  { v_.SetString( v.data(), v.size(), d_.GetAllocator() ); return *this; }
+  { v_.SetString( v.data(), as<rapidjson::SizeType>( v.size() ), d_.GetAllocator() ); return *this; }
 
   // Assign an external RapidJSON Value to the current value (v_)
   JsonOutput operator=( rapidjson::Value& v )

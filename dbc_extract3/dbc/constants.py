@@ -18,14 +18,15 @@ class Class(enum.IntEnum):
 CONSUMABLE_ITEM_WHITELIST = {
   # Food
   5: [
-    62290,                            # Seafood Magnifique Feast
+    62290,                             # Seafood Magnifique Feast
     133578,                            # Hearty Feast (7.0)
     133579,                            # Lavish Suramar Feast (7.0)
     156525,                            # Galley Banquet (8.0)
     156526,                            # Bountiful Captain's Feast (8.0)
     166804,                            # Boralus Blood Sausage (8.1)
     166240,                            # Sanguinated Feast (8.1)
-    168315,                            # Famine Evaluator And Snack Table (8.2)
+    168315,                            # Famine Evaluator And Snack Table (8.2),
+    172043,                            # Feast of Gluttonous Hedonism (9.0)
     ],
   # "Other"
   8: [
@@ -40,6 +41,9 @@ CONSUMABLE_ITEM_WHITELIST = {
     152560, 152559, 152557,            # Potions of Bursting Blood, Rising Death, Steelskin
     160053,                            # Battle-Scarred Augment Rune
     168506,                            # Potion of Focused Resolve
+    # Shadowlands
+    171270, 171273, 171275,            # Spectral Stat potions (9.0)
+    171352, 171351, 171349,            # Empowered Exorcisms, Deathly Fixation, Phantom Fire
     ]
 }
 
@@ -161,7 +165,9 @@ SPELL_NAME_BLACKLIST = [
   re.compile("^Call Pet [2-9]"),
   re.compile("^Ancient (?:Portal|Teleport)"),
   re.compile("^Zen Pilgrimage"),
-  re.compile("^Transcendence")
+  re.compile("^Transcendence"),
+  re.compile("^Contract:"),
+  re.compile("^Apply Equipment$"),
 ]
 
 SPELL_LABEL_BLACKLIST = [

@@ -38,13 +38,16 @@ struct actor_target_data_t : public actor_pair_t, private noncopyable
     buff_t* razor_coral;
     buff_t* conductive_ink;
     buff_t* luminous_algae;
-    buff_t* infinite_stars;
     buff_t* psyche_shredder;
     // BFA - Essences
     buff_t* blood_of_the_enemy;
     buff_t* condensed_lifeforce;
     buff_t* focused_resolve;
     buff_t* reaping_flames_tracker;
+    // Shadowlands
+    buff_t* adversary;                   // venthyr/nadjia/dauntless duelist debuff
+    buff_t* plagueys_preemptive_strike;  // necro/marileth
+    buff_t* sinful_revelation;           // enchant
   } debuff;
 
   struct atd_dot_t

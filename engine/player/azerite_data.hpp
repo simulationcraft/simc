@@ -13,7 +13,7 @@
 #include "rapidjson/document.h"
 #include "report/reports.hpp"
 
-#include "sc_timespan.hpp"
+#include "util/timespan.hpp"
 
 #include "dbc/azerite.hpp"
 

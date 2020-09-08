@@ -66,6 +66,7 @@ contains(QMAKE_CXX, .+/clang\+\+)|contains(QMAKE_CXX, .+/g\+\+) {
 unix|macx {
   exists(.git):system(which -s git) {
     DEFINES += SC_GIT_REV="\\\"$$system(git rev-parse --short HEAD)\\\""
+    DEFINES += SC_GIT_BRANCH="\\\"$$system(git rev-parse --abbrev-ref HEAD)\\\""
   }
 }
 
@@ -92,9 +93,9 @@ win32 {
     QMAKE_CXXFLAGS += /permissive-
   }
 
-  # TODO: Mingw might want something more unixy here?
   exists(.git):system(where /q git) {
     DEFINES += SC_GIT_REV="\\\"$$system(git rev-parse --short HEAD)\\\""
+    DEFINES += SC_GIT_BRANCH="\\\"$$system(git rev-parse --abbrev-ref HEAD)\\\""
   }
 
   # Allow PGO builds on Visual Studio 2015+

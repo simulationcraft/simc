@@ -473,8 +473,8 @@ class RecordParser:
 
             decoded = decoder.size();
             if decoded < 0:
-                raise ValueError('Decoded negative bytes ({}), record={}, data={}, bytes={}'.format(
-                    decoded, dbc_id, parsed_data, binascii.hexlify(data[offset:offset+size])))
+                raise ValueError('{}: Decoded negative bytes ({}), record={}, data={}, bytes={}'.format(
+                    self.parser().class_name(), decoded, dbc_id, parsed_data, binascii.hexlify(data[offset:offset+size])))
 
             record_offset += decoded
 

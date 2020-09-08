@@ -148,6 +148,7 @@ void to_json( JsonOutput root, const buff_t* b )
   add_non_zero( root, "refresh_count", b -> avg_refresh.mean() );
   add_non_zero( root, "interval", b -> start_intervals.mean() );
   add_non_zero( root, "trigger", b -> trigger_intervals.mean() );
+  add_non_zero( root, "duration", b -> duration_lengths.mean() );
   add_non_zero( root, "uptime", b -> uptime_pct.mean() );
   add_non_zero( root, "benefit", b -> benefit_pct.mean() );
   add_non_zero( root, "overflow_stacks", b -> avg_overflow_count.mean() );

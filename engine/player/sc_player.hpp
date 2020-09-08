@@ -21,6 +21,7 @@
 #include "player_stat_cache.hpp"
 #include "scaling_metric_data.hpp"
 #include "util/cache.hpp"
+#include "dbc/item_database.hpp"
 #include "assessor.hpp"
 #include <map>
 #include <set>
@@ -108,7 +109,7 @@ public:
 
 struct player_t : public actor_t
 {
-  static const int default_level = 120;
+  static const int default_level = 60;
 
   // static values
   player_e type;
@@ -169,6 +170,7 @@ struct player_t : public actor_t
 
   // Data access
   std::unique_ptr<dbc_t> dbc;
+  const dbc_override_t*  dbc_override;
 
   // Option Parsing
   std::vector<std::unique_ptr<option_t>> options;
@@ -200,7 +202,7 @@ struct player_t : public actor_t
     gear_stats_t stats;
 
     double spell_power_per_intellect, spell_power_per_attack_power, spell_crit_per_intellect;
-    double attack_power_per_strength, attack_power_per_agility, attack_crit_per_agility;
+    double attack_power_per_strength, attack_power_per_agility, attack_crit_per_agility, attack_power_per_spell_power;
     double dodge_per_agility, parry_per_strength;
     double health_per_stamina;
     std::array<double, SCHOOL_MAX> resource_reduction;
@@ -414,7 +416,7 @@ struct player_t : public actor_t
     buff_t* mongoose_mh;
     buff_t* mongoose_oh;
     buff_t* nitro_boosts;
-    buff_t* pain_supression;
+    buff_t* pain_suppression;
     buff_t* movement;
     buff_t* stampeding_roar;
     buff_t* shadowmeld;
@@ -509,10 +511,30 @@ struct player_t : public actor_t
     buff_t* bioelectric_charge; // Diver's Folly 1H AGI axe buff to store damage
     buff_t* razor_coral; // Ashvane's Razor Coral trinket crit rating buff
 
-    //8.3 buffs
-    buff_t* strikethrough; // Corruption effect that increases crit damage/healing
-    buff_t* flash_of_insight;  // Corruption effect that increases int
-    buff_t* obsidian_destruction; // Corruption effect that increases armor
+    // 9.0 Soulbinds
+    buff_t* invigorating_herbs;       // night_fae/niya/tools - proc on direct heal
+    buff_t* redirected_anima_stacks;  // night_fae/niya/grove_invigoration - counter procced via rppm
+    buff_t* redirected_anima;         // night_fae/niya/grove_invigoration - buff procced on covenant ability use
+    buff_t* field_of_blossoms;        // night_fae/dreamweaver - buff procced on covenant ability use
+    buff_t* social_butterfly;         // night_fae/dreamweaver - periodic buff when 2+ allies are nearby
+    buff_t* first_strike;             // night_fae/korayn - crit buff when first hitting enemy
+    buff_t* wild_hunt_tactics;        // night_fae/korayn - dummy buff used to quickly check if soulbind is enabled
+    buff_t* thrill_seeker;            // venthyr/nadjia - counter every 2s
+    buff_t* euphoria;                 // venthyr/nadjia/thill_seeker - haste buff
+    buff_t* wasteland_propriety;      // venthyr/theotar - vers buff on covenant cast
+    buff_t* built_for_war;            // venthyr/draven - stacking buff when above 80% hp
+    buff_t* let_go_of_the_past;       // kyrian/pelagos - vers buff on diff spell
+    buff_t* combat_meditation;        // kyrian/pelagos - mast buff on covenant cast
+    buff_t* pointed_courage;          // kyrian/kleia - crit buff for every nearby enemy or ally
+    buff_t* hammer_of_genesis;        // kyrian/mikanikos - haste on hitting new enemy
+    buff_t* brons_call_to_action;     // kyrian/mikanikos - bron's counter
+    buff_t* gnashing_chompers;        // necrolord/emeni - haste on enemy death
+    buff_t* embody_the_construct;     // necrolord/emeni - cast counter
+    buff_t* marrowed_gemstone_charging;     // necrolord/heirmir - crit counter
+    buff_t* marrowed_gemstone_enhancement;  // necrolord/heirmir - crit proc after 10 crits
+
+    // 9.0 Enchants and Consumables
+    buff_t* celestial_guidance;
   } buffs;
 
   struct debuffs_t
@@ -633,6 +655,9 @@ private:
     resource_callback_function_t callback;
   };
   std::vector<resource_callback_entry_t> resource_callbacks;
+
+  /// Per-player custom dbc data
+  std::unique_ptr<dbc_override_t> dbc_override_;
 
 public:
 
@@ -839,6 +864,22 @@ public:
 
   virtual double resource_regen_per_second( resource_e ) const;
 
+  double apply_combat_rating_dr( rating_e rating, double value ) const
+  {
+    switch ( rating )
+    {
+      case RATING_LEECH:
+      case RATING_SPEED:
+      case RATING_AVOIDANCE:
+        return item_database::curve_point_value( *dbc, DIMINISHING_RETURN_TERTIARY_CR_CURVE, value * 100.0 ) / 100.0;
+      case RATING_MASTERY:
+        return item_database::curve_point_value( *dbc, DIMINISHING_RETURN_SECONDARY_CR_CURVE, value );
+      default:
+        // Note, curve uses %-based values, not values divided by 100
+        return item_database::curve_point_value( *dbc, DIMINISHING_RETURN_SECONDARY_CR_CURVE, value * 100.0 ) / 100.0;
+    }
+  }
+
   virtual double composite_melee_haste() const;
   virtual double composite_melee_speed() const;
   virtual double composite_melee_attack_power() const;
@@ -973,7 +1014,7 @@ public:
   virtual void   regen( timespan_t periodicity = timespan_t::from_seconds( 0.25 ) );
   virtual double resource_gain( resource_e resource_type, double amount, gain_t* g = nullptr, action_t* a = nullptr );
   virtual double resource_loss( resource_e resource_type, double amount, gain_t* g = nullptr, action_t* a = nullptr );
-  virtual void   recalculate_resource_max( resource_e resource_type );
+  virtual void   recalculate_resource_max( resource_e resource_type, gain_t* g = nullptr );
   virtual bool   resource_available( resource_e resource_type, double cost ) const;
   virtual resource_e primary_resource() const
   { return RESOURCE_NONE; }
@@ -1149,6 +1190,6 @@ public:
 
   spawner::base_actor_spawner_t* find_spawner( util::string_view id ) const;
   int nth_iteration() const;
-};
 
-std::ostream& operator<<(std::ostream &os, const player_t& p);
+  friend void format_to( const player_t&, fmt::format_context::iterator );
+};

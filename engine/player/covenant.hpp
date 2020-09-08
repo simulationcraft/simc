@@ -8,9 +8,13 @@
 #include "util/format.hpp"
 #include "util/span.hpp"
 #include "util/string_view.hpp"
-#include "sc_timespan.hpp"
+#include "util/timespan.hpp"
 
 #include "report/reports.hpp"
+
+#include "item/special_effect.hpp"
+#include "action/sc_action_state.hpp"
+#include "action/dbc_proc_callback.hpp"
 
 struct player_t;
 struct sim_t;
@@ -62,7 +66,7 @@ public:
 
 namespace util
 {
-const char* covenant_type_string( covenant_e id );
+const char* covenant_type_string( covenant_e id, bool full = false );
 covenant_e parse_covenant_string( util::string_view covenant_str );
 }
 
@@ -86,7 +90,7 @@ class covenant_state_t
   std::vector<unsigned>        m_soulbinds;
 
   /// Soulbinds option string (user input)
-  std::string                  m_soulbind_str;
+  std::vector<std::string>     m_soulbind_str;
 
   /// Covenant option string (user input)
   std::string                  m_covenant_str;
@@ -112,6 +116,7 @@ public:
 
   /// Parse player-scope "soulbind" option
   bool parse_soulbind( sim_t* sim, util::string_view name, util::string_view value );
+  bool parse_soulbind_clear( sim_t* sim, util::string_view name, util::string_view value );
 
   /// Retrieve covenant ability spell data. Returns spell_data_t::not_found if covenant
   /// ability is not enabled on the actor. Returns spell_data_t::nil if covenant ability
@@ -144,9 +149,22 @@ public:
 
   /// Register player-scope options
   void register_options( player_t* player );
+
+  /// Returns the spell_id of the covenant class ability or the generic ability as determined via the
+  /// __covenant_ability_data dbc table. Will need to be converted into a vector if multiple class abilities are added
+  /// in later.
+  unsigned get_covenant_ability_spell_id( bool generic = false ) const;
+
+  /// List of soulbind spells
+  const std::vector<unsigned>& soulbind_spells() const { return m_soulbinds; }
+
+  /// Callback for handling soulbinds that proc when covenant class ability is used
+  dbc_proc_callback_t* cast_callback = nullptr;
 };
 
 std::unique_ptr<covenant_state_t> create_player_state( const player_t* player );
+
+action_t* create_action( player_t* player, util::string_view name, const std::string& options );
 
 } // Namespace covenant ends
 

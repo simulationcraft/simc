@@ -7,8 +7,8 @@
 
 #include "config.hpp"
 
-#include <QtWidgets/QtWidgets>
 #include <QtGui/QtGui>
+#include <QtWidgets/QtWidgets>
 
 // ============================================================================
 // SC_TabBar
@@ -38,10 +38,9 @@ class SC_TabBar : public QTabBar
   QAction* closeTabAction;
   QAction* closeOthersAction;
   QAction* closeAllAction;
+
 public:
-  SC_TabBar( QWidget* parent = nullptr,
-             bool enableDraggedHover = false,
-             bool enableMouseHover = false,
+  SC_TabBar( QWidget* parent = nullptr, bool enableDraggedHover = false, bool enableMouseHover = false,
              bool enableContextMenu = true );
   void enableDraggedTextHover( bool enable );
   void setDraggedTextHoverTimeout( int milisec )
@@ -85,9 +84,11 @@ public:
     enableContextMenuCloseAll = show;
     updateContextMenu();
   }
+
 private:
   virtual void initContextMenu();
   void updateContextMenu();
+
 protected:
   virtual void dragEnterEvent( QDragEnterEvent* e ) override;
   virtual void dragLeaveEvent( QDragLeaveEvent* e ) override;
@@ -99,7 +100,7 @@ protected:
   virtual void startDraggedTextTimer( int tab );
   virtual void startHoverTimer( int tab );
   virtual bool event( QEvent* e ) override;
-  virtual void mousePressEvent(QMouseEvent * event) override;
+  virtual void mousePressEvent( QMouseEvent* event ) override;
 public slots:
   void mouseHoverTimedout();
   void draggedTextTimedout();

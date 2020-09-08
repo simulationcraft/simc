@@ -77,6 +77,10 @@ enum
   MAX_AZERITE_LEVEL = 300, // Maximum Azerite level (for Heart of Azeroth) at the start of Battle for Azeroth
 
   MAX_AZERITE_ESSENCE_RANK = 4u, // Maximum Azerite Essence power rank for patch BfA 8.2.0
+
+  // Shadowlands: Curves used to apply diminishing returns to Combat Ratings
+  DIMINISHING_RETURN_SECONDARY_CR_CURVE = 21024u,
+  DIMINISHING_RETURN_TERTIARY_CR_CURVE = 21025u,
 };
 
 // Enable/Disable azerite effects
@@ -520,6 +524,7 @@ enum special_effect_source_e
   SPECIAL_EFFECT_SOURCE_RACE,
   SPECIAL_EFFECT_SOURCE_AZERITE,
   SPECIAL_EFFECT_SOURCE_AZERITE_ESSENCE,
+  SPECIAL_EFFECT_SOURCE_SOULBIND,
   SPECIAL_EFFECT_SOURCE_FALLBACK
 };
 

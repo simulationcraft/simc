@@ -11,14 +11,17 @@
 #include <vector>
 #include <memory>
 
-#include "sc_timespan.hpp"
+#include "util/timespan.hpp"
 #include "sc_enums.hpp"
+#include "dbc/dbc.hpp"
 #include "player/sc_actor_pair.hpp"
+#include "player/covenant.hpp"
 #include "util/sample_data.hpp"
 #include "util/span.hpp"
 #include "util/string_view.hpp"
 #include "util/timeline.hpp"
 #include "sim/uptime.hpp"
+#include "util/format.hpp"
 
 struct buff_t;
 struct stat_buff_t;
@@ -72,6 +75,9 @@ private: // private because changing max_stacks requires resizing some stack-dep
 
 public:
   double default_value;
+  size_t default_value_effect_idx;
+  double default_value_effect_multiplier;
+
   /**
    * Is buff manually activated or not (eg. a proc).
    * non-activated player buffs have a delayed trigger event
@@ -86,7 +92,8 @@ public:
   // dynamic values
   double current_value;
   int current_stack;
-  timespan_t buff_duration;
+  timespan_t base_buff_duration;
+  double buff_duration_multiplier;
   double default_chance;
   double manual_chance; // user-specified "overridden" proc-chance
   std::vector<timespan_t> stack_react_time;
@@ -130,7 +137,7 @@ public:
   simple_sample_data_t avg_start, avg_refresh, avg_expire;
   simple_sample_data_t avg_overflow_count, avg_overflow_total;
   simple_sample_data_t uptime_pct;
-  simple_sample_data_with_min_max_t start_intervals, trigger_intervals;
+  simple_sample_data_with_min_max_t start_intervals, trigger_intervals, duration_lengths;
   std::vector<uptime_simple_t> stack_uptime;
 
   virtual ~buff_t() {}
@@ -214,18 +221,28 @@ public:
     return false;
   }
 
+  // Get the base buff duration modified by the duration multiplier, if applicable
+  virtual timespan_t buff_duration() const
+  {
+    return base_buff_duration * buff_duration_multiplier;
+  }
+
   timespan_t remains() const;
   timespan_t elapsed( timespan_t t ) const { return t - last_start; }
   timespan_t last_trigger_time() const { return last_trigger; }
   timespan_t last_expire_time() const { return last_expire; }
   bool   remains_gt( timespan_t time ) const;
   bool   remains_lt( timespan_t time ) const;
+  bool   at_max_stacks() const { return current_stack == _max_stack; }
   bool   trigger  ( action_t*, int stacks = 1, double value = DEFAULT_VALUE(), timespan_t duration = timespan_t::min() );
+  bool   trigger  ( timespan_t duration );
+  bool   trigger  ( int stacks, timespan_t duration );
   virtual bool   trigger  ( int stacks = 1, double value = DEFAULT_VALUE(), double chance = -1.0, timespan_t duration = timespan_t::min() );
   virtual void   execute ( int stacks = 1, double value = DEFAULT_VALUE(), timespan_t duration = timespan_t::min() );
   virtual void   increment( int stacks = 1, double value = DEFAULT_VALUE(), timespan_t duration = timespan_t::min() );
   virtual void   decrement( int stacks = 1, double value = DEFAULT_VALUE() );
   virtual void   extend_duration( player_t* p, timespan_t seconds );
+  virtual void   extend_duration_or_trigger( timespan_t duration = timespan_t::min(), player_t* p = nullptr );
 
   virtual void start    ( int stacks = 1, double value = DEFAULT_VALUE(), timespan_t duration = timespan_t::min() );
   virtual void refresh  ( int stacks = 0, double value = DEFAULT_VALUE(), timespan_t duration = timespan_t::min() );
@@ -285,13 +302,23 @@ public:
 
   buff_t* set_chance( double chance );
   buff_t* set_duration( timespan_t duration );
+  buff_t* modify_duration( timespan_t duration );
+  buff_t* set_duration_multiplier( double );
   buff_t* set_max_stack( int max_stack );
+  buff_t* modify_max_stack( int max_stack );
   buff_t* set_cooldown( timespan_t duration );
+  buff_t* modify_cooldown( timespan_t duration );
   buff_t* set_period( timespan_t );
   //virtual buff_t* set_chance( double chance );
   buff_t* set_quiet( bool quiet );
   buff_t* add_invalidate( cache_e );
-  buff_t* set_default_value( double );
+  buff_t* set_default_value( double, size_t = 0 );
+  buff_t* set_default_value_from_effect( size_t, double = 0.0 );
+  buff_t* set_default_value_from_effect_type( effect_subtype_t a_type,
+                                              property_type_t p_type = P_MAX,
+                                              double multiplier      = 0.0,
+                                              effect_type_t e_type   = E_APPLY_AURA );
+  buff_t* modify_default_value( double );
   buff_t* set_reverse( bool );
   buff_t* set_activated( bool );
   buff_t* set_can_cancel( bool cc );
@@ -315,6 +342,12 @@ public:
   buff_t* set_reverse_stack_count( int value );
   buff_t* set_stack_behavior( buff_stack_behavior b );
 
+  virtual buff_t* apply_affecting_aura( const spell_data_t* spell );
+  virtual buff_t* apply_affecting_effect( const spelleffect_data_t& effect );
+  virtual buff_t* apply_affecting_conduit( const conduit_data_t& conduit, int effect_num = 1 );
+  virtual buff_t* apply_affecting_conduit_effect( const conduit_data_t& conduit, size_t effect_num );
+
+  friend void format_to( const buff_t&, fmt::format_context::iterator );
 private:
   void update_trigger_calculations();
   void adjust_haste();
@@ -323,8 +356,6 @@ private:
 protected:
   void update_stack_uptime_array( timespan_t current_time, int old_stacks );
 };
-
-std::ostream& operator<<(std::ostream &os, const buff_t& p);
 
 struct stat_buff_t : public buff_t
 {
@@ -395,6 +426,123 @@ struct cost_reduction_buff_t : public buff_t
   cost_reduction_buff_t* set_reduction(school_e school, double amount);
 };
 
+struct movement_buff_t : public buff_t
+{
+  movement_buff_t( player_t* p ) : buff_t( p, "movement" )
+  {
+    set_max_stack( 1 );
+  }
+
+  bool trigger( int stacks, double value, double chance, timespan_t duration ) override;
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override;
+};
+
+struct damage_buff_t : public buff_t
+{
+  struct damage_buff_modifier_t
+  {
+    const spell_data_t* s_data = nullptr;
+    size_t effect_idx = 0;
+    double multiplier = 1.0;
+  };
+
+  damage_buff_modifier_t direct_mod;
+  damage_buff_modifier_t periodic_mod;
+  damage_buff_modifier_t auto_attack_mod;
+
+  damage_buff_t( actor_pair_t q, util::string_view name );
+  damage_buff_t( actor_pair_t q, util::string_view name, const spell_data_t* );
+  damage_buff_t( actor_pair_t q, util::string_view name, const spell_data_t*, const conduit_data_t& );
+
+  damage_buff_t* parse_spell_data( const spell_data_t*, double = 0.0 );
+  damage_buff_t* apply_mod_affecting_effect( damage_buff_modifier_t&, const spelleffect_data_t& );
+
+  buff_t* apply_affecting_effect( const spelleffect_data_t& effect ) override;
+
+  damage_buff_t* apply_affecting_aura( const spell_data_t* spell ) override
+  {
+    buff_t::apply_affecting_aura( spell );
+    return this;
+  }
+
+  damage_buff_t* apply_affecting_conduit( const conduit_data_t& conduit, int effect_num = 1 ) override
+  {
+    buff_t::apply_affecting_conduit( conduit, effect_num );
+    return this;
+  }
+
+  damage_buff_t* set_direct_mod( double );
+  damage_buff_t* set_direct_mod( const spell_data_t*, size_t, double = 0.0 );
+  damage_buff_t* set_periodic_mod( double );
+  damage_buff_t* set_periodic_mod( const spell_data_t*, size_t, double = 0.0 );
+  damage_buff_t* set_auto_attack_mod( double );
+  damage_buff_t* set_auto_attack_mod( const spell_data_t*, size_t, double = 0.0 );
+
+  bool is_affecting_direct( const spell_data_t* );
+  bool is_affecting_periodic( const spell_data_t* );
+
+  // Get current direct damage buff value + benefit tracking.
+  double value_direct()
+  {
+    buff_t::stack();
+    return current_stack ? direct_mod.multiplier : 1.0;
+  }
+
+  // Get current direct damage buff value multiplied by current stacks + benefit tracking.
+  double stack_value_direct()
+  { return current_stack * value_direct(); }
+
+  // Get current direct damage buff value + NO benefit tracking.
+  double check_value_direct() const
+  { return current_stack ? direct_mod.multiplier : 1.0; }
+
+  // Get current direct damage buff value multiplied by current stacks + NO benefit tracking.
+  double check_stack_value_direct() const
+  { return current_stack * check_value_direct(); }
+
+  // Get current periodic damage buff value + benefit tracking.
+  double value_periodic()
+  {
+    buff_t::stack();
+    return current_stack ? periodic_mod.multiplier : 1.0;
+  }
+
+  // Get current periodic damage buff value multiplied by current stacks + benefit tracking.
+  double stack_value_periodic()
+  { return current_stack * value_periodic(); }
+
+  // Get current periodic damage buff value + NO benefit tracking.
+  double check_value_periodic() const
+  { return current_stack ? periodic_mod.multiplier : 1.0; }
+
+  // Get current periodic damage buff value multiplied by current stacks + NO benefit tracking.
+  double check_stack_value_periodic() const
+  { return current_stack * check_value_periodic(); }
+
+  // Get current AA damage buff value + benefit tracking.
+  double value_auto_attack()
+  {
+    buff_t::stack();
+    return current_stack ? auto_attack_mod.multiplier : 1.0;
+  }
+
+  // Get current AA damage buff value multiplied by current stacks + benefit tracking.
+  double stack_value_auto_attack()
+  { return current_stack * value_auto_attack(); }
+
+  // Get current AA damage buff value + NO benefit tracking.
+  double check_value_auto_attack() const
+  { return current_stack ? auto_attack_mod.multiplier : 1.0; }
+
+  // Get current AA damage buff value multiplied by current stacks + NO benefit tracking.
+  double check_stack_value_auto_attack() const
+  { return current_stack * check_value_auto_attack(); }
+
+protected:
+  damage_buff_t* set_buff_mod( damage_buff_modifier_t&, double );
+  damage_buff_t* set_buff_mod( damage_buff_modifier_t&, const spell_data_t*, size_t, double );
+};
+
 /**
  * @brief Creates a buff
  *
@@ -409,15 +557,4 @@ inline Buff* make_buff( Args&&... args )
                  "Buff must be derived from buff_t" );
   return new Buff( std::forward<Args>(args)... );
 }
-
-struct movement_buff_t : public buff_t
-{
-  movement_buff_t( player_t* p ) : buff_t( p, "movement" )
-  {
-    set_max_stack( 1 );
-  }
-
-  bool trigger( int stacks, double value, double chance, timespan_t duration ) override;
-  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override;
-};
 

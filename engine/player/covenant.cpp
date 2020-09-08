@@ -1,10 +1,15 @@
 #include "covenant.hpp"
 
 #include "util/util.hpp"
+#include "util/io.hpp"
+#include "report/decorators.hpp"
 
 #include "sim/sc_expressions.hpp"
 
 #include "player/sc_player.hpp"
+#include "player/actor_target_data.hpp"
+#include "buff/sc_buff.hpp"
+#include "action/spell.hpp"
 
 #include "sim/sc_option.hpp"
 
@@ -55,14 +60,14 @@ timespan_t conduit_data_t::time_value( time_type tt ) const
 
 namespace util
 {
-const char* covenant_type_string( covenant_e id )
+const char* covenant_type_string( covenant_e id, bool full )
 {
   switch ( id )
   {
-    case covenant_e::KYRIAN:    return "kyrian";
-    case covenant_e::VENTHYR:   return "venthyr";
-    case covenant_e::NIGHT_FAE: return "night_fae";
-    case covenant_e::NECROLORD: return "necrolord";
+    case covenant_e::KYRIAN:    return full ? "Kyrian" : "kyrian";
+    case covenant_e::VENTHYR:   return full ? "Venthyr" : "venthyr";
+    case covenant_e::NIGHT_FAE: return full ? "Night Fae" : "night_fae";
+    case covenant_e::NECROLORD: return full ? "Necrolord" : "necrolord";
     case covenant_e::DISABLED:  return "disabled";
     default:                    return "invalid";
   }
@@ -104,9 +109,10 @@ std::unique_ptr<covenant_state_t> create_player_state( const player_t* player )
   return std::make_unique<covenant_state_t>( player );
 }
 
-covenant_state_t::covenant_state_t( const player_t* player ) :
-  m_covenant( covenant_e::INVALID ), m_player( player )
-{ }
+covenant_state_t::covenant_state_t( const player_t* player )
+  : m_covenant( covenant_e::INVALID ), m_player( player ), cast_callback( nullptr )
+{
+}
 
 bool covenant_state_t::parse_covenant( sim_t*             sim,
                                        util::string_view /* name */,
@@ -151,7 +157,6 @@ bool covenant_state_t::parse_soulbind( sim_t*             sim,
                                        util::string_view /* name */,
                                        util::string_view value )
 {
-  m_conduits.clear();
   auto value_str = value;
 
   // Ignore anything before a comma character in the soulbind option to allow the
@@ -244,9 +249,18 @@ bool covenant_state_t::parse_soulbind( sim_t*             sim,
     }
   }
 
-  m_soulbind_str = std::string( value );
+  m_soulbind_str.push_back( std::string( value ) );
 
   return true;
+}
+
+bool covenant_state_t::parse_soulbind_clear( sim_t* sim, util::string_view name, util::string_view value )
+{
+  m_conduits.clear();
+  m_soulbinds.clear();
+  m_soulbind_str.clear();
+
+  return parse_soulbind( sim, name, value );
 }
 
 const spell_data_t* covenant_state_t::get_covenant_ability( util::string_view name ) const
@@ -344,7 +358,19 @@ std::string covenant_state_t::soulbind_option_str() const
 {
   if ( !m_soulbind_str.empty() )
   {
-    return fmt::format( "soulbind={}", m_soulbind_str );
+    std::string output;
+
+    for ( auto it = m_soulbind_str.begin(); it != m_soulbind_str.end(); it++ )
+    {
+      auto str = *it;
+      str.erase( 0, str.find_first_not_of( "/" ) );
+      str.erase( str.find_last_not_of( "/" ) + 1 );
+
+      if ( !str.empty() )
+        output += fmt::format( "{}={}", it == m_soulbind_str.begin() ? "soulbind" : "\nsoulbind+", str );
+    }
+
+    return output;
   }
 
   if ( m_soulbinds.empty() && m_conduits.empty() )
@@ -441,15 +467,144 @@ void covenant_state_t::copy_state( const std::unique_ptr<covenant_state_t>& othe
 
 void covenant_state_t::register_options( player_t* player )
 {
-  player->add_option( opt_func( "soulbind", std::bind( &covenant_state_t::parse_soulbind,
+  player->add_option( opt_func( "soulbind", std::bind( &covenant_state_t::parse_soulbind_clear,
+          this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3 ) ) );
+  player->add_option( opt_func( "soulbind+", std::bind( &covenant_state_t::parse_soulbind,
           this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3 ) ) );
   player->add_option( opt_func( "covenant", std::bind( &covenant_state_t::parse_covenant,
           this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3 ) ) );
 }
 
-// TODO: Implement
-report::sc_html_stream& generate_report( report::sc_html_stream& root )
+unsigned covenant_state_t::get_covenant_ability_spell_id( bool generic ) const
 {
+  if ( !enabled() )
+    return 0u;
+
+  for ( const auto& e : covenant_ability_entry_t::data( m_player->dbc->ptr ) )
+  {
+    if ( e.covenant_id != static_cast<unsigned>( m_covenant ) )
+      continue;
+
+    if ( e.class_id != as<unsigned>( util::class_id( m_player->type ) ) && !e.ability_type )
+      continue;
+
+    if ( e.ability_type != static_cast<unsigned>( generic ) )
+      continue;
+
+    if ( !m_player->find_spell( e.spell_id )->ok() )
+      continue;
+
+    return e.spell_id;
+  }
+
+  return 0u;
+}
+
+report::sc_html_stream& covenant_state_t::generate_report( report::sc_html_stream& root ) const
+{
+  if ( !enabled() )
+    return root;
+
+  root.format( "<tr class=\"left\"><th>{}</th><td><ul class=\"float\">\n", util::covenant_type_string( type(), true ) );
+
+  auto cv_spell = m_player->find_spell( get_covenant_ability_spell_id() );
+  root.format( "<li>{}</li>\n", report_decorators::decorated_spell_name( m_player->sim, *cv_spell ) );
+
+  for ( const auto& e : conduit_entry_t::data( m_player->dbc->ptr ) )
+  {
+    for ( const auto& cd : m_conduits )
+    {
+      if ( std::get<0>( cd ) == e.id )
+      {
+        auto cd_spell = m_player->find_spell( e.spell_id );
+        root.format( "<li>{} ({})</li>\n",
+                     report_decorators::decorated_spell_name( m_player->sim, *cd_spell ),
+                     std::get<1>( cd ) + 1 );
+      }
+    }
+  }
+
+  root << "</ul></td></tr>\n";
+
+  if ( m_soulbinds.size() )
+  {
+    root << "<tr class=\"left\"><th></th><td><ul class=\"float\">\n";
+
+    for ( const auto& sb : m_soulbinds )
+    {
+      auto sb_spell = m_player->find_spell( sb );
+      root.format( "<li>{}</li>\n", report_decorators::decorated_spell_name( m_player->sim, *sb_spell ) );
+    }
+
+    root << "</ul></td></tr>\n";
+  }
+
   return root;
 }
-} // Namespace covenant ends
+
+struct fleshcraft_t : public spell_t
+{
+  struct embody_pulse_t : public spell_t
+  {
+    embody_pulse_t( player_t* p, double divisor ) : spell_t( "embody_the_construct", p, p->find_spell( 342181 ) )
+    {
+      background = true;
+      aoe = -1;
+      spell_power_mod.direct = 1.8 / divisor;
+    }
+
+    double composite_spell_power() const override
+    {
+      return std::max( spell_t::composite_spell_power(), spell_t::composite_attack_power() );
+    }
+  };
+
+  bool do_pulse;
+  action_t* embody_pulse;
+
+  fleshcraft_t( player_t* p, util::string_view opt )
+    : spell_t( "fleshcraft", p, p->find_covenant_spell( "Fleshcraft" ) ), do_pulse( false ), embody_pulse( nullptr )
+  {
+    harmful = may_crit = may_miss = false;
+    channeled = true;
+
+    parse_options( opt );
+
+    if ( data().ok() && p->find_soulbind_spell( "Embody the Construct" )->ok() )
+    {
+      embody_pulse = p->find_action( "embody_the_construct" );
+      if ( !embody_pulse )
+        embody_pulse = new embody_pulse_t( p, data().duration() / data().effectN( 1 ).period() );
+    }
+  }
+
+  double composite_haste() const override { return 1.0; }
+
+  void execute() override
+  {
+    do_pulse = player->buffs.embody_the_construct->at_max_stacks();
+
+    if ( do_pulse )
+      player->buffs.embody_the_construct->expire();
+
+    spell_t::execute();
+  }
+
+  void tick( dot_t* d ) override
+  {
+    // TODO: add shielding
+    spell_t::tick( d );
+
+    if ( do_pulse && embody_pulse )
+      embody_pulse->schedule_execute();
+  }
+};
+
+action_t* create_action( player_t* player, util::string_view name, const std::string& options )
+{
+  if ( util::str_compare_ci( name, "fleshcraft" ) ) return new fleshcraft_t( player, options );
+
+  return nullptr;
+}
+
+}  // namespace covenant

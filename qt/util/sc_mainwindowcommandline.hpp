@@ -6,26 +6,30 @@
 #pragma once
 
 #include "config.hpp"
+
 #include "../qt/simulationcraftqt.hpp"
-#include <QtWidgets/QtWidgets>
+
 #include <QtGui/QtGui>
+#include <QtWidgets/QtWidgets>
+
+enum import_tabs_e : int;
 
 class SC_MainWindowCommandLine : public QWidget
 {
   Q_OBJECT
-  Q_PROPERTY( state_e state READ currentState WRITE setState ) // Which page of the stacked layout are we on
+  Q_PROPERTY( state_e state READ currentState WRITE setState )  // Which page of the stacked layout are we on
 public:
   enum state_e
   {
     IDLE = 0,
-    SIMULATING,          // Simulating only one, nothing queued
-    SIMULATING_MULTIPLE, // Simulating but others are queued
+    SIMULATING,           // Simulating only one, nothing queued
+    SIMULATING_MULTIPLE,  // Simulating but others are queued
     SIMULATING_PAUSED,
     SIMULATING_MULTIPLE_PAUSED,
     STATE_COUNT
   };
 
-  enum tabs_e // contains main_tabs_e then import_tabs_e
+  enum tabs_e  // contains main_tabs_e then import_tabs_e
   {
     CMDLINE_TAB_WELCOME = 0,
     CMDLINE_TAB_IMPORT,
@@ -61,7 +65,7 @@ protected:
   QString text_prev_tooltip;
   QString text_next_tooltip;
   QString text_custom;
-  QString text_hide_widget; // call hide() on the button, else call show()
+  QString text_hide_widget;  // call hide() on the button, else call show()
 
   enum widgets_e
   {
@@ -75,7 +79,7 @@ protected:
     WIDGET_COUNT
   };
 
-  enum progressbar_states_e // Different states for progressbars
+  enum progressbar_states_e  // Different states for progressbars
   {
     PROGRESSBAR_IGNORE = 0,
     PROGRESSBAR_IDLE,
@@ -91,7 +95,7 @@ protected:
     QString* tool_tip;
     progressbar_states_e progressbar_state;
   };
-  _widget_state states[STATE_COUNT][CMDLINE_TAB_COUNT][WIDGET_COUNT]; // all the states
+  _widget_state states[ STATE_COUNT ][ CMDLINE_TAB_COUNT ][ WIDGET_COUNT ];  // all the states
 
   // ProgressBar state progress/format
   struct _progressbar_state
@@ -100,17 +104,17 @@ protected:
     QString tool_tip;
     int progress;
   };
-  _progressbar_state progressBarFormat[PROGRESSBAR_STATE_COUNT];
+  _progressbar_state progressBarFormat[ PROGRESSBAR_STATE_COUNT ];
 
   // CommandLine buffers
-  QString commandLineBuffer_DEFAULT; // different buffers for different tabs
+  QString commandLineBuffer_DEFAULT;  // different buffers for different tabs
   QString commandLineBuffer_TAB_RESULTS;
   QString commandLineBuffer_TAB_HELP;
   QString commandLineBuffer_TAB_LOG;
 
-  QWidget* widgets[STATE_COUNT][WIDGET_COUNT]; // holds all widgets in all states
+  QWidget* widgets[ STATE_COUNT ][ WIDGET_COUNT ];  // holds all widgets in all states
 
-  QStackedLayout* statesStackedLayout; // Contains all states
+  QStackedLayout* statesStackedLayout;  // Contains all states
   tabs_e current_tab;
   state_e current_state;
 
@@ -134,6 +138,7 @@ public:
   void togglePaused();
   void setPaused( bool pause );
   bool isPaused();
+
 protected:
   void init();
   void initStateInfo();
@@ -198,7 +203,7 @@ signals:
   void cancelAllSimulationClicked();
   void backButtonClicked();
   void forwardButtonClicked();
-// SC_CommandLine signals
+  // SC_CommandLine signals
   void switchToLeftSubTab();
   void switchToRightSubTab();
   void currentlyViewedTabCloseRequest();

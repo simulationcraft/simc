@@ -9,7 +9,7 @@
 #include "action/sc_action_state.hpp"
 #include "action/sc_action.hpp"
 #include "action/dot.hpp"
-#include "sc_timespan.hpp"
+#include "util/timespan.hpp"
 #include <iosfwd>
 
 struct player_t;

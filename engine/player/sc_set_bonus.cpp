@@ -240,7 +240,7 @@ std::string set_bonus_t::to_string() const
 }
 
 
-std::ostream& operator<<(std::ostream& os, const set_bonus_t& sb)
+void format_to( const set_bonus_t& sb, fmt::format_context::iterator out )
 {
   int i = 0;
   for ( size_t idx = 0; idx < sb.set_bonus_spec_data.size(); idx++ )
@@ -258,7 +258,7 @@ std::ostream& operator<<(std::ostream& os, const set_bonus_t& sb)
         if ( data.overridden >= 1 ||
            ( data.overridden == -1 && sb.set_bonus_spec_count[ idx ][ spec_role_idx ] >= data.bonus->bonus ) )
         {
-          fmt::print( os, "{}{{ {}, {}, {}, {} piece bonus {} }}",
+          fmt::format_to( out, "{}{{ {}, {}, {}, {} piece bonus {} }}",
               i > 0 ? ", " : "",
               data.bonus->set_name,
               data.bonus->set_opt_name,
@@ -270,8 +270,6 @@ std::ostream& operator<<(std::ostream& os, const set_bonus_t& sb)
       }
     }
   }
-
-  return os;
 }
 
 std::string set_bonus_t::to_profile_string( const std::string& newline ) const

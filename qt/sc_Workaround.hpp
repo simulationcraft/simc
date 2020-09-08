@@ -3,9 +3,10 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 #pragma once
-#include "simulationcraft.hpp"
+
+struct sim_t;
 
 namespace workaround
 {
-  void apply_workarounds( sim_t* sim );
+void apply_workarounds( sim_t* sim );
 }

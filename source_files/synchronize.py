@@ -55,34 +55,10 @@ def create_make_str(entries):
             prepare += "\n    " + fullpath + " \\"
     return prepare
 
-
-def VS_no_precompiled_header():
-    return "<PrecompiledHeader>NotUsing</PrecompiledHeader>"
-
-
-def VS_use_precompiled_header(filename):
-    """Determine what precompiled header setting to use"""
-    try:
-        if re.search(r"sc_unique_gear.cpp", filename):
-            return "<PrecompiledHeader>Create</PrecompiledHeader>"
-        transformed_filename = re.sub(r"\\", "/", filename)
-        with open(transformed_filename) as f:
-            content = f.read()
-            if re.search(r"#include \"simulationcraft.hpp\"", content):
-                return ""  # "<PrecompiledHeader />"
-            else:
-                return VS_no_precompiled_header()
-    except UnicodeDecodeError as ude:
-        logging.warning("Could not properly decode file '{}' for pre-compiled header detection: {}".format(filename, ude))
-    except Exception as e:
-        logging.error("could not open file '{}' for precompiled header settings!".format(filename), exc_info=True)
-    return VS_no_precompiled_header()
-
-
 def VS_header_str(filename, gui):
     if gui:
         moced_name = "moc_" + re.sub(r".*\\(.*?).hpp", r"\1.cpp", filename)
-        return "\n\t\t<ClCompile Include=\"$(IntDir)" + moced_name + "\">\n\t\t\t" + VS_no_precompiled_header() + "\n\t\t</ClCompile>"
+        return "\n\t\t<ClCompile Include=\"$(IntDir)" + moced_name + "\" />"
     else:
         return "\n\t\t<ClInclude Include=\"" + filename + "\" />"
 
@@ -95,11 +71,11 @@ def create_vs_str(entries, gui=False):
 \t<ItemGroup>"""
     for file_type, fullpath in modified_input:
         if re.search(r"sc_io.cpp", fullpath):
-            prepare += "\n\t\t<ClCompile Include=\"" + fullpath + "\">\n\t\t\t" + VS_use_precompiled_header(fullpath) + "\n\t\t</ClCompile>"
+            prepare += "\n\t\t<ClCompile Include=\"" + fullpath + "\" />"
         elif file_type == "HEADERS":
             prepare += VS_header_str(fullpath, gui)
         elif file_type == "SOURCES":
-            prepare += "\n\t\t<ClCompile Include=\"" + fullpath + "\">\n\t\t\t" + VS_use_precompiled_header(fullpath) + "\n\t\t</ClCompile>"
+            prepare += "\n\t\t<ClCompile Include=\"" + fullpath + "\" />"
     prepare += "\n\t</ItemGroup>"
 
     if gui:
@@ -112,28 +88,13 @@ def create_vs_str(entries, gui=False):
 
         # Moc Defines
         prepare += "\t<!-- Moc Definitions -->"
-        prepare += "\n\t<PropertyGroup Label=\"UserMacros\" Condition=\"'$(Configuration)'=='Debug-WebKit'\">"
-        prepare += "\n\t\t<MOC_DEFINES>-DUNICODE -DWIN32 -DWIN64 -DSC_USE_WEBKIT -DQT_VERSION_5 -DQT_DECLARATIVE_DEBUG -DQT_WIDGETS -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -DQT_NETWORK_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_OPENGL_ES_2 -DQT_OPENGL_ES_2_ANGLE -DQT_WEBKIT_LIB -DQT_WEBKITWIDGETS_LIB -D_MSC_VER=1800 -D_WIN32 -D_WIN64</MOC_DEFINES>"
-        prepare += "\n\t</PropertyGroup>"
 
         prepare += "\n\t<PropertyGroup Label=\"UserMacros\" Condition=\"'$(Configuration)'=='Debug-WebEngine'\">"
-        prepare += "\n\t\t<MOC_DEFINES>-DUNICODE -DWIN32 -DWIN64 -DSC_USE_WEBENGINE -DQT_VERSION_5 -DQT_DECLARATIVE_DEBUG -DQT_WIDGETS -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -DQT_NETWORK_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_OPENGL_ES_2 -DQT_OPENGL_ES_2_ANGLE -D_MSC_VER=1800 -D_WIN32 -D_WIN64</MOC_DEFINES>"
-        prepare += "\n\t</PropertyGroup>"
-
-        prepare += "\n\t<PropertyGroup Label=\"UserMacros\" Condition=\"'$(Configuration)'=='WebEngine-PGO'\">"
-        prepare += "\n\t\t<MOC_DEFINES>-DUNICODE -DWIN32 -DWIN64 -DSC_USE_WEBENGINE -DQT_VERSION_5 -DQT_NO_DEBUG -DQT_WIDGETS -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -DQT_NETWORK_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_OPENGL_ES_2 -DQT_OPENGL_ES_2_ANGLE -D_MSC_VER=1800 -D_WIN32 -D_WIN64</MOC_DEFINES>"
+        prepare += "\n\t\t<MOC_DEFINES>-DUNICODE -DWIN32 -DWIN64 -DQT_VERSION_5 -DQT_DECLARATIVE_DEBUG -DQT_WIDGETS -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -DQT_NETWORK_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_OPENGL_ES_2 -DQT_OPENGL_ES_2_ANGLE -D_MSC_VER=1800 -D_WIN32 -D_WIN64</MOC_DEFINES>"
         prepare += "\n\t</PropertyGroup>"
 
         prepare += "\n\t<PropertyGroup Label=\"UserMacros\" Condition=\"'$(Configuration)'=='WebEngine'\">"
-        prepare += "\n\t\t<MOC_DEFINES>-DUNICODE -DWIN32 -DWIN64 -DSC_USE_WEBENGINE -DQT_VERSION_5 -DQT_NO_DEBUG -DQT_WIDGETS -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -DQT_NETWORK_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_OPENGL_ES_2 -DQT_OPENGL_ES_2_ANGLE -D_MSC_VER=1800 -D_WIN32 -D_WIN64</MOC_DEFINES>"
-        prepare += "\n\t</PropertyGroup>"
-
-        prepare += "\n\t<PropertyGroup Label=\"UserMacros\" Condition=\"'$(Configuration)'=='WebKit'\">"
-        prepare += "\n\t\t<MOC_DEFINES>-DUNICODE -DSC_USE_WEBKIT -DWIN32 -DWIN64 -DQT_VERSION_5 -DQT_NO_DEBUG -DQT_WEBKITWIDGETS_LIB -DQT_WIDGETS -DQT_MULTIMEDIAWIDGETS_LIB -DQT_OPENGL_LIB  -DQT_QML_LIB -DQT_MULTIMEDIA_LIB -DQT_WEBKIT_LIB -DQT_WIDGETS_LIB -DQT_SENSORS_LIB -DQT_NETWORK_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_OPENGL_ES_2 -DQT_OPENGL_ES_2_ANGLE -D_MSC_VER=1800 -D_WIN32 -D_WIN64</MOC_DEFINES>"
-        prepare += "\n\t</PropertyGroup>"
-
-        prepare += "\n\t<PropertyGroup Label=\"UserMacros\" Condition=\"'$(Configuration)'=='WebKit-PGO'\">"
-        prepare += "\n\t\t<MOC_DEFINES>-DUNICODE -DSC_USE_WEBKIT -DWIN32 -DWIN64 -DQT_VERSION_5 -DQT_NO_DEBUG -DQT_WEBKITWIDGETS_LIB -DQT_WIDGETS -DQT_MULTIMEDIAWIDGETS_LIB -DQT_OPENGL_LIB  -DQT_QML_LIB -DQT_MULTIMEDIA_LIB -DQT_WEBKIT_LIB -DQT_WIDGETS_LIB -DQT_SENSORS_LIB -DQT_NETWORK_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_OPENGL_ES_2 -DQT_OPENGL_ES_2_ANGLE -D_MSC_VER=1800 -D_WIN32 -D_WIN64</MOC_DEFINES>"
+        prepare += "\n\t\t<MOC_DEFINES>-DUNICODE -DWIN32 -DWIN64 -DQT_VERSION_5 -DQT_NO_DEBUG -DQT_WIDGETS -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -DQT_NETWORK_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_OPENGL_ES_2 -DQT_OPENGL_ES_2_ANGLE -D_MSC_VER=1800 -D_WIN32 -D_WIN64</MOC_DEFINES>"
         prepare += "\n\t</PropertyGroup>"
 
         prepare += "\n\n"
@@ -183,7 +144,7 @@ def qmake_type_str(file_type, path, filters, prefix, exclude_match):
     header_files = [item for sublist in header_files_nested for item in sublist]
     if exclude_match is not None:
       header_files = filter(lambda x: not re.match(exclude_match, str(x)), header_files)
-    header_files = [p.relative_to("../") for p in header_files]
+    header_files = [str(p.relative_to("../")).replace('\\', '/') for p in header_files]
     header_files.sort(key=lambda p: str(p).lower())
     lines = ["{} += {}".format(prefix, entry) for entry in header_files]
     return "\n".join(lines)

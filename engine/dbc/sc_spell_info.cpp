@@ -26,16 +26,6 @@ static constexpr std::array<util::string_view, 4> _spell_type_map { {
   "None", "Magic", "Melee", "Ranged"
 } };
 
-static constexpr std::array<util::string_view, 7> _school_map { {
-  "Physical",
-  "Holy",
-  "Fire",
-  "Nature",
-  "Frost",
-  "Shadow",
-  "Arcane",
-} };
-
 static constexpr auto _hotfix_effect_map = util::make_static_map<unsigned, util::string_view>( {
   {  3, "Index" },
   {  4, "Type" },
@@ -680,6 +670,7 @@ static constexpr auto _effect_subtype_strings = util::make_static_map<unsigned, 
   { 468, "Trigger Spell Based on Health%"               },
   { 471, "Modify Versatility%"                          },
   { 485, "Resist Forced Movement%"                      },
+  { 501, "Modify Crit Damage Done% from Caster's Spells" },
 } );
 
 static constexpr auto _category_effect_subtypes = util::make_static_set<unsigned> ( {
@@ -1004,7 +995,8 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
     if ( e -> subtype() == A_MOD_DAMAGE_DONE ||
          e -> subtype() == A_MOD_DAMAGE_TAKEN ||
          e -> subtype() == A_MOD_DAMAGE_PERCENT_DONE ||
-         e -> subtype() == A_MOD_DAMAGE_PERCENT_TAKEN )
+         e -> subtype() == A_MOD_DAMAGE_PERCENT_TAKEN ||
+         e -> subtype() == A_MOD_DAMAGE_FROM_CASTER )
       snprintf( tmp_buffer, sizeof( tmp_buffer ), "%#.x", e -> misc_value1() );
     else if ( e -> type() == E_ENERGIZE )
       snprintf( tmp_buffer, sizeof( tmp_buffer ), "%s", util::resource_type_string( util::translate_power_type( static_cast<power_e>( e -> misc_value1() ) ) ) );
@@ -1070,7 +1062,10 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
 
   s << std::endl;
 
-  if ( e -> type() == E_APPLY_AURA && e -> subtype() == A_MOD_DAMAGE_PERCENT_DONE &&
+  if ( e -> type() == E_APPLY_AURA &&
+       ( e -> subtype() == A_MOD_DAMAGE_PERCENT_DONE ||
+         e -> subtype() == A_MOD_DAMAGE_PERCENT_TAKEN ||
+         e -> subtype() == A_MOD_DAMAGE_FROM_CASTER ) &&
        e -> misc_value1() != 0 )
   {
     s << "                   Affected School(s): ";
@@ -1081,12 +1076,10 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
     else
     {
       std::vector<std::string> schools;
-      for ( size_t i = 0; i < _school_map.size(); ++i )
+      for ( school_e school = SCHOOL_NONE; school < SCHOOL_MAX_PRIMARY; school++ )
       {
-        if ( e -> misc_value1() & ( 1 << i ) )
-        {
-          schools.emplace_back( _school_map[ i ] );
-        }
+        if ( e -> misc_value1() & dbc::get_school_mask( school ) )
+          schools.emplace_back( util::inverse_tokenize( util::school_type_string( school ) ) );
       }
 
       fmt::print( s, "{}", fmt::join( schools, ", " ) );

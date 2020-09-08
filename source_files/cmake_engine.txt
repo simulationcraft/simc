@@ -105,6 +105,7 @@ player/sc_actor_pair.hpp
 player/sc_player.hpp
 player/scaling_metric_data.hpp
 player/set_bonus.hpp
+player/soulbinds.hpp
 player/spawner_base.hpp
 player/special_effect_db_item.hpp
 player/stats.hpp
@@ -124,7 +125,6 @@ report/report_timer.hpp
 report/reports.hpp
 report/sc_highchart.hpp
 sc_enums.hpp
-sc_timespan.hpp
 sim/benefit.hpp
 sim/event.hpp
 sim/event_manager.hpp
@@ -165,6 +165,7 @@ util/static_map.hpp
 util/stopwatch.hpp
 util/string_view.hpp
 util/timeline.hpp
+util/timespan.hpp
 util/util.hpp
 util/vector_with_callback.hpp
 util/xml.hpp
@@ -270,6 +271,7 @@ player/sc_pet.cpp
 player/sc_player.cpp
 player/sc_set_bonus.cpp
 player/sc_unique_gear.cpp
+player/soulbinds.cpp
 player/spawner_base.cpp
 player/target_specific.cpp
 player/unique_gear_bfa.cpp

@@ -8,10 +8,14 @@
 
 #include "config.hpp"
 #include "util/generic.hpp"
-#include "sc_timespan.hpp"
-#include <string>
+#include "util/timespan.hpp"
+
+#include <array>
 #include <functional>
+#include <memory>
+#include <string>
 #include <unordered_map>
+#include <vector>
 
 #include "data_definitions.hh"
 #include "data_enums.hh"
@@ -93,7 +97,43 @@ const dbc_item_data_t& find_gem( util::string_view gem, bool ptr, bool tokenized
 // Class / Spec specific passives for an actor
 const spell_data_t* get_class_passive( const player_t&, specialization_e );
 std::vector<const spell_data_t*> class_passives( const player_t* );
-}
+
+} // namespace dbc
+
+struct custom_dbc_data_t
+{
+  // Creates a tree of cloned spells and effects for a given spell, starting
+  // from the potential root spell. If there is no need to clone the tree,
+  // return the custom spell instead.
+  spell_data_t* clone_spell( const spell_data_t* spell );
+
+  spell_data_t* get_mutable_spell( unsigned spell_id );
+  const spell_data_t* find_spell( unsigned spell_id ) const;
+
+  spelleffect_data_t* get_mutable_effect( unsigned effect_id );
+  const spelleffect_data_t* find_effect( unsigned effect_id ) const;
+
+  spellpower_data_t* get_mutable_power( unsigned power_id );
+  const spellpower_data_t* find_power( unsigned power_id ) const;
+
+  // Copies spells from another custom data
+  // Effectively a copy-assignement operator
+  void copy_from( const custom_dbc_data_t& other );
+
+private:
+  spell_data_t* create_clone( const spell_data_t* s );
+
+  void add_spell( spell_data_t* spell );
+  void add_effect( spelleffect_data_t* spell );
+  void add_power( spellpower_data_t* power );
+
+  std::vector<spell_data_t*> spells_;
+  std::vector<spelleffect_data_t*> effects_;
+  std::vector<spellpower_data_t*> powers_;
+
+  util::bump_ptr_allocator_t<> allocator_;
+  std::unordered_map<unsigned, util::span<const spell_data_t*>> spell_driver_map_;
+};
 
 namespace hotfix
 {
@@ -115,35 +155,6 @@ namespace hotfix
     HOTFIX_FLAG_QUIET = 0x4,
 
     HOTFIX_FLAG_DEFAULT = HOTFIX_FLAG_LIVE | HOTFIX_FLAG_PTR
-  };
-
-  struct custom_dbc_data_t
-  {
-    auto_dispose< std::vector<spell_data_t*> > spells_[ 2 ];
-    std::vector<spelleffect_data_t*> effects_[ 2 ];
-    std::vector<spellpower_data_t*> powers_[ 2 ];
-
-    util::bump_ptr_allocator_t<> allocator_;
-    std::unordered_map<unsigned, util::span<const spell_data_t*>> spell_driver_map_[ 2 ];
-
-    bool add_spell( spell_data_t* spell, bool ptr = false );
-    spell_data_t* get_mutable_spell( unsigned spell_id, bool ptr = false );
-    const spell_data_t* find_spell( unsigned spell_id, bool ptr = false ) const;
-
-    bool add_effect( spelleffect_data_t* spell, bool ptr = false );
-    spelleffect_data_t* get_mutable_effect( unsigned effect_id, bool ptr = false );
-    const spelleffect_data_t* find_effect( unsigned effect_id, bool ptr = false ) const;
-
-    bool add_power( spellpower_data_t* power, bool ptr = false );
-    spellpower_data_t* get_mutable_power( unsigned power_id, bool ptr = false );
-    const spellpower_data_t* find_power( unsigned power_id, bool ptr = false ) const;
-
-    // Creates a tree of cloned spells and effects given a spell id, starting from the potential
-    // root spell. If there is no need to clone the tree, return the custom spell instead.
-    spell_data_t* clone_spell( unsigned spell_id, bool ptr = false );
-
-    private:
-    spell_data_t* create_clone( const spell_data_t* s, bool ptr );
   };
 
   struct hotfix_entry_t
@@ -276,39 +287,8 @@ namespace hotfix
   const spellpower_data_t* find_power( const spellpower_data_t* dbc_power, bool ptr = false );
 
   std::vector<const hotfix_entry_t*> hotfix_entries();
-}
 
-namespace dbc_override
-{
-  enum dbc_override_e
-  {
-    DBC_OVERRIDE_SPELL = 0,
-    DBC_OVERRIDE_EFFECT,
-    DBC_OVERRIDE_POWER
-  };
-
-  struct dbc_override_entry_t
-  {
-    dbc_override_e type_;
-    std::string    field_;
-    unsigned       id_;
-    double         value_;
-
-    dbc_override_entry_t( dbc_override_e et, util::string_view f, unsigned i, double v ) :
-      type_( et ), field_( f ), id_( i ), value_( v )
-    { }
-  };
-
-  void register_effect( dbc_t&, unsigned, util::string_view, double );
-  void register_spell( dbc_t&, unsigned, util::string_view, double );
-  void register_power( dbc_t&, unsigned, util::string_view, double );
-
-  const spell_data_t* find_spell( unsigned, bool ptr = false );
-  const spelleffect_data_t* find_effect( unsigned, bool ptr = false );
-  const spelleffect_data_t* find_power( unsigned, bool ptr = false );
-
-  const std::vector<dbc_override_entry_t>& override_entries();
-}
+} // namespace hotfix
 
 // If we don't have any ptr data, don't bother to check if ptr is true
 #if SC_USE_PTR
@@ -335,7 +315,7 @@ public:
   uint32_t replaced_id( uint32_t id_spell ) const;
   bool replace_id( uint32_t id_spell, uint32_t replaced_by_id );
 
-  dbc_t( bool ptr = false ) :
+  explicit dbc_t( bool ptr = false ) :
     ptr( ptr ) { }
 
   const char* wow_ptr_status() const
@@ -535,13 +515,61 @@ public:
   util::span<const spell_data_t* const> spells_by_category( unsigned category ) const;
 };
 
+class dbc_override_t
+{
+public:
+  enum override_e
+  {
+    OVERRIDE_SPELL = 0,
+    OVERRIDE_EFFECT,
+    OVERRIDE_POWER
+  };
+
+  struct override_entry_t
+  {
+    override_e  type_;
+    unsigned    id_;
+    std::string field_;
+    double      value_;
+
+    override_entry_t( override_e et, util::string_view f, unsigned i, double v ) :
+      type_( et ), id_( i ), field_( f ), value_( v )
+    { }
+  };
+
+  dbc_override_t() = default;
+
+  explicit dbc_override_t( const dbc_override_t* parent ) : parent_( parent ) {}
+
+  void register_effect( const dbc_t&, unsigned, util::string_view, double );
+  void register_spell( const dbc_t&, unsigned, util::string_view, double );
+  void register_power( const dbc_t&, unsigned, util::string_view, double );
+
+  void parse( const dbc_t&, util::string_view );
+
+  // Creates a "deep" copy of the current override database
+  std::unique_ptr<dbc_override_t> clone() const;
+
+  const spell_data_t* find_spell( unsigned, bool ptr = false ) const;
+  const spelleffect_data_t* find_effect( unsigned, bool ptr = false ) const;
+  const spellpower_data_t* find_power( unsigned, bool ptr = false ) const;
+
+  const std::vector<override_entry_t>& override_entries( bool ptr = false ) const;
+
+private:
+  const dbc_override_t* parent_ = nullptr;
+  std::array<custom_dbc_data_t, 2> override_db_;
+  std::array<std::vector<override_entry_t>, 2> override_entries_;
+};
+
 namespace dbc
 {
+
 // Wrapper for fetching spell data through various spell data variants
 template <typename T>
 const spell_data_t* find_spell( const T* obj, const spell_data_t* spell )
 {
-  if ( const spell_data_t* override_spell = dbc_override::find_spell( spell -> id(), obj -> dbc->ptr ) )
+  if ( const spell_data_t* override_spell = obj->dbc_override->find_spell( spell -> id(), obj -> dbc->ptr ) )
   {
     return override_spell;
   }
@@ -557,7 +585,7 @@ const spell_data_t* find_spell( const T* obj, const spell_data_t* spell )
 template <typename T>
 const spell_data_t* find_spell( const T* obj, unsigned spell_id )
 {
-  if ( const spell_data_t* override_spell = dbc_override::find_spell( spell_id, obj -> dbc->ptr ) )
+  if ( const spell_data_t* override_spell = obj->dbc_override->find_spell( spell_id, obj -> dbc->ptr ) )
   {
     return override_spell;
   }
@@ -570,37 +598,6 @@ const spell_data_t* find_spell( const T* obj, unsigned spell_id )
   return obj -> dbc->spell( spell_id );
 }
 
-template <typename T>
-const spelleffect_data_t* find_effect( const T* obj, const spelleffect_data_t* effect )
-{
-  if ( const spelleffect_data_t* override_effect = dbc_override::find_effect( effect -> id(), obj -> dbc->ptr ) )
-  {
-    return override_effect;
-  }
-
-  if ( ! obj -> disable_hotfixes )
-  {
-    return hotfix::find_effect( effect, obj -> dbc->ptr );
-  }
-
-  return effect;
-}
-
-template <typename T>
-const spelleffect_data_t* find_effect( const T* obj, unsigned effect_id )
-{
-  if ( const spelleffect_data_t* override_effect = dbc_override::find_effect( effect_id, obj -> dbc->ptr ) )
-  {
-    return override_effect;
-  }
-
-  if ( ! obj -> disable_hotfixes )
-  {
-    return hotfix::find_effect( obj -> dbc.effect( effect_id ), obj -> dbc->ptr );
-  }
-
-  return obj -> dbc->effect( effect_id );
-}
 } // dbc namespace ends
 
 #endif // SC_DBC_HPP

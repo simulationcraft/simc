@@ -563,7 +563,7 @@ std::string item_t::full_name() const
   for ( auto bonus_id : parsed.bonus_id )
   {
     auto bonuses = sim -> dbc->item_bonus( bonus_id );
-    for ( const auto bonus : bonuses )
+    for ( const auto& bonus : bonuses )
     {
       if ( bonus.type != ITEM_BONUS_SUFFIX )
       {
@@ -1764,9 +1764,9 @@ void item_t::decode_weapon()
 
     parsed.data.item_class = ITEM_CLASS_WEAPON;
     parsed.data.item_subclass = util::translate_weapon( w -> type );
-    parsed.data.delay = static_cast<double>( w -> swing_time.total_millis() );
+    parsed.data.delay = static_cast<float>( w -> swing_time.total_millis() );
     if ( dps_set && min_set )
-      parsed.data.dmg_range = 2 - 2 * w -> min_dmg / ( w -> dps * parsed.data.delay );
+      parsed.data.dmg_range = static_cast<float>( 2 - 2 * w -> min_dmg / ( w -> dps * parsed.data.delay ) );
 
     if ( dps_set ) w -> damage = w -> dps    * w -> swing_time.total_seconds();
     if ( dmg_set ) w -> dps    = w -> damage / w -> swing_time.total_seconds();

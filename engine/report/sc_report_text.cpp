@@ -266,13 +266,14 @@ void print_dynamic_buffs( std::ostream& os, const player_processed_report_inform
     else
       full_name = b->name_str;
 
-    fmt::print( os, "    {:<{}} : start={:5.1f} refresh={:5.1f} interval={:5.1f} trigger={:5.1f} uptime={:6.2f}%",
+    fmt::print( os, "    {:<{}} : start={:5.1f} refresh={:5.1f} interval={:5.1f} trigger={:5.1f} duration={:5.1f} uptime={:6.2f}%",
         full_name,
         max_name_length,
         b->avg_start.mean(),
         b->avg_refresh.mean(),
         b->start_intervals.mean(),
         b->trigger_intervals.mean(),
+        b->duration_lengths.mean(),
         b->uptime_pct.mean() );
 
     if ( b->benefit_pct.sum() > 0 && b->benefit_pct.mean() < 100 )
