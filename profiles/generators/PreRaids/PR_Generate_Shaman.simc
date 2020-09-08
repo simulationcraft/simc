@@ -5,6 +5,7 @@ race=troll
 role=spell
 position=back
 talents=1111111
+covenant=night_fae
 
 # ilvl 138 template blue gear from beta
 head=,id=163447,bonus_id=6938
@@ -34,6 +35,7 @@ spec=enhancement
 role=attack
 position=back
 talents=1111111
+covenant=night_fae
 
 # ilvl 138 template blue gear from beta
 head=,id=163447,bonus_id=6938
