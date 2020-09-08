@@ -4109,22 +4109,27 @@ double player_t::composite_player_multiplier( school_e school ) const
   double m = 1.0;
 
   if ( buffs.brute_strength && buffs.brute_strength->check() )
+  {
     m *= 1.0 + buffs.brute_strength->data().effectN( 1 ).percent();
+  }
 
-  if ( buffs.legendary_aoe_ring )
-    m *= 1.0 + buffs.legendary_aoe_ring->check_value();
+  if ( buffs.legendary_aoe_ring && buffs.legendary_aoe_ring->check() )
+    m *= 1.0 + buffs.legendary_aoe_ring->default_value;
 
-  if ( buffs.taste_of_mana && school != SCHOOL_PHYSICAL )
-    m *= 1.0 + buffs.taste_of_mana->check_value();
+  if ( buffs.taste_of_mana && buffs.taste_of_mana->check() && school != SCHOOL_PHYSICAL )
+  {
+    m *= 1.0 + buffs.taste_of_mana->default_value;
+  }
 
-  if ( buffs.torrent_of_elements && school != SCHOOL_PHYSICAL )
-    m *= 1.0 + buffs.torrent_of_elements->check_value();
+  if ( buffs.torrent_of_elements && buffs.torrent_of_elements->check() && school != SCHOOL_PHYSICAL )
+  {
+    m *= 1.0 + buffs.torrent_of_elements->default_value;
+  }
 
-  if ( buffs.sinful_revelation )
-    m *= 1.0 + buffs.sinful_revelation->check_value();
-
-  if ( buffs.damage_done )
+  if ( buffs.damage_done && buffs.damage_done->check() )
+  {
     m *= 1.0 + buffs.damage_done->check_stack_value();
+  }
 
   if ( school != SCHOOL_PHYSICAL )
     m *= 1.0 + racials.magical_affinity->effectN( 1 ).percent();
