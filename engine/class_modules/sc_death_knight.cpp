@@ -2657,6 +2657,7 @@ struct death_knight_action_t : public Base
       gain = this -> player -> get_gain( util::inverse_tokenize( this -> name_str ) );
     }
 
+    // These both need review to see if the spec aura is applying or not, if it is, this will double dip
     if ( this -> data().affected_by( p() -> spec.death_knight -> effectN( 1 ) ) )
     {
       this -> cooldown -> hasted = true;
@@ -4858,10 +4859,6 @@ struct frostscythe_t : public death_knight_melee_attack_t
 
     weapon = &( player -> main_hand_weapon );
     aoe = as<int>( data().effectN( 5 ).base_value() );
-
-    weapon_req = WEAPON_1H;
-
-    crit_bonus_multiplier *= 1.0 + p -> spec.death_knight -> effectN( 5 ).percent();
   }
 
   void execute() override
@@ -7694,7 +7691,7 @@ void death_knight_t::init_spells()
 
   // Generic
   spec.plate_specialization = find_specialization_spell( "Plate Specialization" );
-  spec.death_knight         = find_class_spell( "Death Knight" ); // Class passive
+  spec.death_knight         = find_spell( 137005 );  // "Death Knight" passive
   // Veteran of the Third and Fourth War are identical, Third's data is used for the generic effect
   spec.veteran_of_the_third_war = find_class_spell( "Veteran of the Third War" );
 
