@@ -283,11 +283,8 @@ void wild_hunt_tactics( special_effect_t& effect )
     effect.player->buffs.wild_hunt_tactics = make_buff( effect.player, "wild_hunt_tactics", effect.driver() )
       ->set_default_value_from_effect( 1 );
 }
-
-void exacting_preparation( special_effect_t& effect )
-{
-
-}
+// Handled in unique_gear_shadowlands.cpp
+//void exacting_preparation( special_effect_t& effect ) {}
 
 void dauntless_duelist( special_effect_t& effect )
 {
@@ -814,7 +811,7 @@ void register_special_effects()
   register_soulbind_special_effect( 325069, soulbinds::first_strike );  // Korayn
   register_soulbind_special_effect( 325066, soulbinds::wild_hunt_tactics );
   // Venthyr
-  register_soulbind_special_effect( 331580, soulbinds::exacting_preparation );  // Nadjia
+  //register_soulbind_special_effect( 331580, soulbinds::exacting_preparation );  // Nadjia
   register_soulbind_special_effect( 331584, soulbinds::dauntless_duelist );
   register_soulbind_special_effect( 331586, soulbinds::thrill_seeker );
   register_soulbind_special_effect( 336243, soulbinds::refined_palate );  // Theotar
