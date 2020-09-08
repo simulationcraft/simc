@@ -127,7 +127,22 @@ void add_covenant_cast_callback( player_t* p, S&&... args )
 
 void niyas_tools_burrs( special_effect_t& effect )
 {
+  struct spiked_burrs_proc_t : public unique_gear::proc_spell_t
+  {
+    spiked_burrs_proc_t( player_t* p ) : proc_spell_t( "spiked_burrs", p, p->find_spell( 333526 ) )
+    {
+      spell_power_mod.tick = 0.1;
+    }
 
+    double composite_spell_power() const override
+    {
+      return std::max( spell_t::composite_spell_power(), spell_t::composite_attack_power() );
+    }
+  };
+
+  effect.execute_action = new spiked_burrs_proc_t( effect.player );
+
+  new dbc_proc_callback_t( effect.player, effect );
 }
 
 void niyas_tools_poison( special_effect_t& effect )
