@@ -497,7 +497,6 @@ public:
   // Cooldowns
   struct cooldowns_t {
     // Shared
-    cooldown_t* raise_dead;
     // Blood
     cooldown_t* bone_shield_icd;
     cooldown_t* blood_tap;
