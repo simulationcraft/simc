@@ -3549,6 +3549,15 @@ struct breath_of_sindragosa_tick_t: public death_knight_spell_t
     aoe = -1;
     background = true;
 
+    ap_type = attack_power_type::WEAPON_BOTH;
+
+    if ( p -> main_hand_weapon.group() == WEAPON_2H )
+    {
+      ap_type = attack_power_type::WEAPON_MAINHAND;
+      // There's a 0.98 modifier hardcoded in the tooltip if a 2H weapon is equipped, probably server side magic
+      base_multiplier *= 0.98;
+    }
+
     base_aoe_multiplier = 0.3;
   }
 };
@@ -5046,6 +5055,12 @@ struct glacial_advance_damage_t : public death_knight_spell_t
     aoe = -1; // TODO: Fancier targeting .. make it aoe for now
     background = true;
     ap_type = attack_power_type::WEAPON_BOTH;
+    if ( p() -> main_hand_weapon.group() == WEAPON_2H )
+    {
+      ap_type = attack_power_type::WEAPON_MAINHAND;
+      // There's a 0.98 modifier hardcoded in the tooltip if a 2H weapon is equipped, probably server side magic
+      base_multiplier *= 0.98;
+    }
   }
 
   void impact( action_state_t* state ) override
@@ -5068,7 +5083,6 @@ struct glacial_advance_t : public death_knight_spell_t
     parse_options( options_str );
 
     weapon = &( player -> main_hand_weapon );
-    weapon_req = WEAPON_1H;
 
     execute_action = new glacial_advance_damage_t( player, options_str );
   }
@@ -5225,6 +5239,12 @@ struct howling_blast_aoe_t : public death_knight_spell_t
   {
     parse_options( options_str );
     ap_type = attack_power_type::WEAPON_BOTH;
+    if ( p -> main_hand_weapon.group() == WEAPON_2H )
+    {
+      ap_type = attack_power_type::WEAPON_MAINHAND;
+      // There's a 0.98 modifier hardcoded in the tooltip if a 2H weapon is equipped, probably server side magic
+      base_multiplier *= 0.98;
+    }
 
     aoe = -1;
     background = true;
@@ -5296,6 +5316,12 @@ struct howling_blast_t : public death_knight_spell_t
     add_child( aoe_damage );
     add_child( frost_fever );
     ap_type = attack_power_type::WEAPON_BOTH;
+    if ( p -> main_hand_weapon.group() == WEAPON_2H )
+    {
+      ap_type = attack_power_type::WEAPON_MAINHAND;
+      // There's a 0.98 modifier hardcoded in the tooltip if a 2H weapon is equipped, probably server side magic
+      base_multiplier *= 0.98;
+    }
 
     if ( p -> talent.avalanche -> ok() )
     {
@@ -5948,6 +5974,13 @@ struct remorseless_winter_t : public death_knight_spell_t
     dot_duration = base_tick_time = 0_ms;
 
     ap_type = attack_power_type::WEAPON_BOTH;
+
+    if ( p -> main_hand_weapon.group() == WEAPON_2H )
+    {
+      ap_type = attack_power_type::WEAPON_MAINHAND;
+      // There's a 0.98 modifier hardcoded in the tooltip if a 2H weapon is equipped, probably server side magic
+      base_multiplier *= 0.98;
+    }
 
     if ( action_t* rw_damage = p -> find_action( "remorseless_winter_damage" ) )
     {
