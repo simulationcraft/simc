@@ -19,7 +19,6 @@
 // - Update Elemental Blast
 // - Covenants
 //   - Kyrian
-//   - Night Fae
 //   - Venthyr
 // - Class Legendaries
 // - Covenant Conduits
@@ -138,16 +137,6 @@ static std::vector<player_t*>& __check_distance_targeting( const action_t* actio
 }
 typedef std::pair<std::string, simple_sample_data_with_min_max_t> data_t;
 typedef std::pair<std::string, simple_sample_data_t> simple_data_t;
-
-template <typename Action, typename Actor, typename... Args>
-action_t* get_action( util::string_view name, Actor* actor, Args&&... args )
-{
-  action_t* a = actor->find_action( name );
-  if ( !a )
-    a = new Action( name, actor, std::forward<Args>( args )... );
-  assert( dynamic_cast<Action*>( a ) && a->name_str == name && a->background );
-  return a;
-}
 
 struct shaman_t;
 
@@ -5366,7 +5355,7 @@ struct fae_transfusion_t : public shaman_spell_t
 
     affected_by_master_of_the_elements = false;
     channeled    = true;
-    tick_action = get_action<fae_transfusion_tick_t>( "fae_transfusion_tick", player );
+    tick_action = new fae_transfusion_tick_t( "fae_transfusion_tick", player );
   }
 };
 
