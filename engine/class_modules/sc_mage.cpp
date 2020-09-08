@@ -5931,10 +5931,10 @@ void mage_t::create_options()
     auto splits = util::string_split<util::string_view>( val, "/" );
     for ( auto split : splits )
     {
-      double val = util::to_double( split );
-      if ( val < 0.0 )
+      double d = util::to_double( split );
+      if ( d < 0.0 )
         throw std::invalid_argument( "Mirrors of Torment interval can't be negative" );
-      options.mirrors_of_torment_interval.push_back( timespan_t::from_seconds( val ) );
+      options.mirrors_of_torment_interval.push_back( timespan_t::from_seconds( d ) );
     }
     return true;
   } ) );
@@ -5944,10 +5944,10 @@ void mage_t::create_options()
     auto splits = util::string_split<util::string_view>( val, "/" );
     for ( auto split : splits )
     {
-      double val = util::to_double( split );
-      if ( val < 0.0 )
+      double d = util::to_double( split );
+      if ( d < 0.0 )
         throw std::invalid_argument( "Mirrors of Torment stddev can't be negative" );
-      options.mirrors_of_torment_stddev.push_back( val );
+      options.mirrors_of_torment_stddev.push_back( d );
     }
     return true;
   } ) );
