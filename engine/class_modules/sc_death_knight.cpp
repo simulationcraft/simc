@@ -622,6 +622,7 @@ public:
     const spell_data_t* frost_fever;
     const spell_data_t* frost_strike;
     const spell_data_t* frost_strike_2;
+    const spell_data_t* frostwyrms_fury;
     const spell_data_t* howling_blast;
     const spell_data_t* killing_machine;
     const spell_data_t* killing_machine_2;
@@ -731,7 +732,6 @@ public:
     const spell_data_t* bonestorm;
 
     // WIP
-    const spell_data_t* frostwyrms_fury;
     const spell_data_t* unholy_frenzy;
     const spell_data_t* summon_gargoyle;
   } talent;
@@ -2655,6 +2655,7 @@ struct death_knight_action_t : public Base
       gain = this -> player -> get_gain( util::inverse_tokenize( this -> name_str ) );
     }
 
+    // As these are only setting a boolean, it is safe for them to be called twice, so there is no harm in leaving these here
     if ( this -> data().affected_by( p() -> spec.death_knight -> effectN( 1 ) ) )
     {
       this -> cooldown -> hasted = true;
@@ -3546,6 +3547,15 @@ struct breath_of_sindragosa_tick_t: public death_knight_spell_t
   {
     aoe = -1;
     background = true;
+
+    ap_type = attack_power_type::WEAPON_BOTH;
+
+    if ( p -> main_hand_weapon.group() == WEAPON_2H )
+    {
+      ap_type = attack_power_type::WEAPON_MAINHAND;
+      // There's a 0.98 modifier hardcoded in the tooltip if a 2H weapon is equipped, probably server side magic
+      base_multiplier *= 0.98;
+    }
 
     base_aoe_multiplier = 0.3;
   }
@@ -4846,11 +4856,8 @@ struct frostscythe_t : public death_knight_melee_attack_t
     parse_options( options_str );
 
     weapon = &( player -> main_hand_weapon );
-    aoe = -1;
-
-    weapon_req = WEAPON_1H;
-
-    crit_bonus_multiplier *= 1.0 + p -> spec.death_knight -> effectN( 5 ).percent();
+    aoe = as<int>( data().effectN( 5 ).base_value() );
+    // The crit multipier is now handled by the apply_affecting_auras( spec.death_knight ) call
   }
 
   void execute() override
@@ -4891,7 +4898,7 @@ struct frostscythe_t : public death_knight_melee_attack_t
 struct frostwyrms_fury_damage_t : public death_knight_spell_t
 {
   frostwyrms_fury_damage_t( death_knight_t* p ) :
-    death_knight_spell_t( "frostwyrms_fury", p, p -> find_spell( 279303 ) )
+    death_knight_spell_t( "frostwyrms_fury", p,  p -> find_spell( 279303 ) )
   {
     aoe = -1;
     background = true;
@@ -4903,7 +4910,7 @@ struct frostwyrms_fury_t : public death_knight_spell_t
   frostwyrms_fury_damage_t* damage;
 
   frostwyrms_fury_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_spell_t( "frostwyrms_fury_driver", p, p -> talent.frostwyrms_fury ),
+    death_knight_spell_t( "frostwyrms_fury_driver", p, p -> spec.frostwyrms_fury ),
     damage( new frostwyrms_fury_damage_t( p ) )
   {
     parse_options( options_str );
@@ -5044,6 +5051,12 @@ struct glacial_advance_damage_t : public death_knight_spell_t
     aoe = -1; // TODO: Fancier targeting .. make it aoe for now
     background = true;
     ap_type = attack_power_type::WEAPON_BOTH;
+    if ( p() -> main_hand_weapon.group() == WEAPON_2H )
+    {
+      ap_type = attack_power_type::WEAPON_MAINHAND;
+      // There's a 0.98 modifier hardcoded in the tooltip if a 2H weapon is equipped, probably server side magic
+      base_multiplier *= 0.98;
+    }
   }
 
   void impact( action_state_t* state ) override
@@ -5066,7 +5079,6 @@ struct glacial_advance_t : public death_knight_spell_t
     parse_options( options_str );
 
     weapon = &( player -> main_hand_weapon );
-    weapon_req = WEAPON_1H;
 
     execute_action = new glacial_advance_damage_t( player, options_str );
   }
@@ -5223,6 +5235,12 @@ struct howling_blast_aoe_t : public death_knight_spell_t
   {
     parse_options( options_str );
     ap_type = attack_power_type::WEAPON_BOTH;
+    if ( p -> main_hand_weapon.group() == WEAPON_2H )
+    {
+      ap_type = attack_power_type::WEAPON_MAINHAND;
+      // There's a 0.98 modifier hardcoded in the tooltip if a 2H weapon is equipped, probably server side magic
+      base_multiplier *= 0.98;
+    }
 
     aoe = -1;
     background = true;
@@ -5294,6 +5312,12 @@ struct howling_blast_t : public death_knight_spell_t
     add_child( aoe_damage );
     add_child( frost_fever );
     ap_type = attack_power_type::WEAPON_BOTH;
+    if ( p -> main_hand_weapon.group() == WEAPON_2H )
+    {
+      ap_type = attack_power_type::WEAPON_MAINHAND;
+      // There's a 0.98 modifier hardcoded in the tooltip if a 2H weapon is equipped, probably server side magic
+      base_multiplier *= 0.98;
+    }
 
     if ( p -> talent.avalanche -> ok() )
     {
@@ -5946,6 +5970,13 @@ struct remorseless_winter_t : public death_knight_spell_t
     dot_duration = base_tick_time = 0_ms;
 
     ap_type = attack_power_type::WEAPON_BOTH;
+
+    if ( p -> main_hand_weapon.group() == WEAPON_2H )
+    {
+      ap_type = attack_power_type::WEAPON_MAINHAND;
+      // There's a 0.98 modifier hardcoded in the tooltip if a 2H weapon is equipped, probably server side magic
+      base_multiplier *= 0.98;
+    }
 
     if ( action_t* rw_damage = p -> find_action( "remorseless_winter_damage" ) )
     {
@@ -7659,7 +7690,7 @@ void death_knight_t::init_spells()
 
   // Generic
   spec.plate_specialization = find_specialization_spell( "Plate Specialization" );
-  spec.death_knight         = find_class_spell( "Death Knight" ); // Class passive
+  spec.death_knight         = find_spell( 137005 );  // "Death Knight" passive
   // Veteran of the Third and Fourth War are identical, Third's data is used for the generic effect
   spec.veteran_of_the_third_war = find_class_spell( "Veteran of the Third War" );
 
@@ -7700,6 +7731,7 @@ void death_knight_t::init_spells()
   spec.frost_fever           = find_specialization_spell( "Frost Fever" );
   spec.frost_strike          = find_specialization_spell( "Frost Strike" );
   spec.frost_strike_2        = find_specialization_spell( "Frost Strike", "Rank 2" );
+  spec.frostwyrms_fury       = find_specialization_spell( "Frostwyrm's Fury" );
   spec.howling_blast         = find_specialization_spell( "Howling Blast" );
   spec.obliterate            = find_specialization_spell( "Obliterate" );
   spec.obliterate_2          = find_specialization_spell( "Obliterate", "Rank 2" );
@@ -7804,7 +7836,6 @@ void death_knight_t::init_spells()
   talent.bonestorm              = find_talent_spell( "Bonestorm" );
 
   //WIP
-  talent.frostwyrms_fury      = find_talent_spell( "Frostwyrm's Fury" );
   talent.unholy_frenzy      = find_talent_spell( "Unholy Frenzy" );
   talent.summon_gargoyle    = find_talent_spell( "Summon Gargoyle" );
 
@@ -8157,9 +8188,9 @@ void death_knight_t::default_apl_frost()
 
   // Cold Heart and Frostwyrm's Fury
   cooldowns -> add_action( "call_action_list,name=cold_heart,if=talent.cold_heart.enabled&((buff.cold_heart.stack>=10&debuff.razorice.stack=5)|target.1.time_to_die<=gcd)" );
-  cooldowns -> add_talent( this, "Frostwyrm's Fury", "if=(buff.pillar_of_frost.up&azerite.icy_citadel.rank<=1&(buff.pillar_of_frost.remains<=gcd|buff.unholy_strength.remains<=gcd&buff.unholy_strength.up))" );
-  cooldowns -> add_talent( this, "Frostwyrm's Fury", "if=(buff.icy_citadel.up&!talent.icecap.enabled&(buff.unholy_strength.up|buff.icy_citadel.remains<=gcd))|buff.icy_citadel.up&buff.icy_citadel.remains<=gcd&talent.icecap.enabled&buff.pillar_of_frost.up" );
-  cooldowns -> add_talent( this, "Frostwyrm's Fury", "if=target.1.time_to_die<gcd|(target.1.time_to_die<cooldown.pillar_of_frost.remains&buff.unholy_strength.up)" );
+  cooldowns -> add_action( this, "Frostwyrm's Fury", "if=(buff.pillar_of_frost.up&azerite.icy_citadel.rank<=1&(buff.pillar_of_frost.remains<=gcd|buff.unholy_strength.remains<=gcd&buff.unholy_strength.up))" );
+  cooldowns -> add_action( this, "Frostwyrm's Fury", "if=(buff.icy_citadel.up&!talent.icecap.enabled&(buff.unholy_strength.up|buff.icy_citadel.remains<=gcd))|buff.icy_citadel.up&buff.icy_citadel.remains<=gcd&talent.icecap.enabled&buff.pillar_of_frost.up" );
+  cooldowns -> add_action( this, "Frostwyrm's Fury", "if=target.1.time_to_die<gcd|(target.1.time_to_die<cooldown.pillar_of_frost.remains&buff.unholy_strength.up)" );
 
   // Cold Heart conditionals
   cold_heart -> add_action( this, "Chains of Ice", "if=buff.cold_heart.stack>5&target.1.time_to_die<gcd", "Cold heart conditions" );
