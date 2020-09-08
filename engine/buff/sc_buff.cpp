@@ -1104,8 +1104,10 @@ buff_t* buff_t::apply_affecting_effect( const spelleffect_data_t& effect )
     assert( default_value_effect_idx > 0 && default_value_effect_idx <= s_data->effect_count() );
     // Fetch the default multiplier from the current effect to multiply the flat value before applying
     // Ensures the flat modifier is 'calibrated' to the multiplier used in the default value correctly
+    auto prev = default_value;
     modify_default_value( effect.base_value() * default_value_effect_multiplier );
-    sim->print_debug( "{} default effect modified by {} to {}", *this, effect.base_value() * default_value_effect_multiplier, default_value );
+    sim->print_debug( "{} default effect modified by {} to {} (was {})",
+                      *this, effect.base_value() * default_value_effect_multiplier, default_value, prev );
   };
 
   auto apply_flat_modifier = [ this, apply_flat_effect_modifier ]( const spelleffect_data_t& effect ) {
@@ -1161,8 +1163,10 @@ buff_t* buff_t::apply_affecting_effect( const spelleffect_data_t& effect )
 
   auto apply_percent_effect_modifier = [ this ]( const spelleffect_data_t& effect ) {
     assert( default_value_effect_idx > 0 && default_value_effect_idx <= s_data->effect_count() );
-    set_default_value( default_value * effect.percent(), default_value_effect_idx );
-    sim->print_debug( "{} default effect modified by {}% to {}", *this, effect.percent(), default_value );
+    auto prev = default_value;
+    set_default_value( default_value * ( 1.0 + effect.percent() ), default_value_effect_idx );
+    sim->print_debug( "{} default effect modified by {}% to {} (was {})",
+                      *this, effect.percent(), default_value, prev );
   };
 
   auto apply_percent_modifier = [ this, apply_percent_effect_modifier ]( const spelleffect_data_t& effect ) {
