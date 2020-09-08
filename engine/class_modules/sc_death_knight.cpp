@@ -4848,7 +4848,7 @@ struct frostscythe_t : public death_knight_melee_attack_t
     parse_options( options_str );
 
     weapon = &( player -> main_hand_weapon );
-    aoe = -1;
+    aoe = as<int>( data().effectN( 5 ).base_value() );
 
     weapon_req = WEAPON_1H;
 
