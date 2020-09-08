@@ -5334,6 +5334,7 @@ struct fae_transfusion_tick_t : public shaman_spell_t
     : shaman_spell_t( n, player, player->find_spell( 328928 ) )
   {
     affected_by_master_of_the_elements = false;
+
     aoe        = 4;
     background = true;
     callbacks  = false;
@@ -5354,7 +5355,8 @@ struct fae_transfusion_t : public shaman_spell_t
       return;
 
     affected_by_master_of_the_elements = false;
-    channeled    = true;
+
+    channeled   = true;
     tick_action = new fae_transfusion_tick_t( "fae_transfusion_tick", player );
   }
 };
@@ -5372,7 +5374,7 @@ struct primordial_wave_t : public shaman_spell_t
 
     // attack/spell power valujes are on a secondary spell
     attack_power_mod.direct = player->find_spell( 327162 )->effectN( 1 ).ap_coeff();
-    spell_power_mod.direct = player->find_spell( 327162 )->effectN( 1 ).sp_coeff();
+    spell_power_mod.direct  = player->find_spell( 327162 )->effectN( 1 ).sp_coeff();
   }
 
   void execute() override {
