@@ -5361,6 +5361,9 @@ struct fae_transfusion_t : public shaman_spell_t
   fae_transfusion_t( shaman_t* player, const std::string& options_str )
     : shaman_spell_t( "fae_transfusion", player, player->find_covenant_spell( "Fae Transfusion" ), options_str )
   {
+    if ( !player->covenant.night_fae->ok() )
+      return;
+
     affected_by_master_of_the_elements = false;
     channeled    = true;
     tick_action = get_action<fae_transfusion_tick_t>( "fae_transfusion_tick", player );
