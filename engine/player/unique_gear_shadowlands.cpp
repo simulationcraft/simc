@@ -72,7 +72,12 @@ void celestial_guidance( special_effect_t& effect )
 
 void lightless_force( special_effect_t& effect )
 {
+  effect.trigger_spell_id = 324184;
+  effect.execute_action = create_proc_action<proc_spell_t>( "lightless_force", effect );
+  effect.execute_action->aoe = -1;
+  // TODO: adjust to frontal wave for distance targetting
 
+  new dbc_proc_callback_t( effect.player, effect );
 }
 
 void sinful_revelation( special_effect_t& effect )
