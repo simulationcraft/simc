@@ -6654,7 +6654,7 @@ struct starfall_t : public druid_spell_t
     p()->buff.starfall->set_tick_callback( [this]( buff_t*, int, timespan_t ) { starfall_tick->schedule_execute(); } );
     p()->buff.starfall->trigger();
 
-    if ( get_state_free_cast( execute_state ) == free_cast_e::CONVOKE )
+    if ( get_state_free_cast( execute_state ) == free_cast_e::CONVOKE || get_state_free_cast( execute_state ) == free_cast_e::LYCARAS )
       return;  // convoke doesn't process any further
 
     if ( p()->buff.oneths_free_starfall->check() )
