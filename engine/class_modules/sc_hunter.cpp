@@ -396,6 +396,11 @@ public:
   // Buffs
   struct buffs_t
   {
+    // Pet family buffs
+    buff_t* endurance_training;
+    buff_t* pathfinding;
+    buff_t* predators_thirst;
+
     // Beast Mastery
     buff_t* aspect_of_the_wild;
     std::array<buff_t*, BARBED_SHOT_BUFFS_MAX> barbed_shot;
@@ -694,7 +699,9 @@ public:
   double    composite_player_multiplier( school_e school ) const override;
   double    composite_player_target_multiplier( player_t* target, school_e school ) const override;
   double    composite_player_pet_damage_multiplier( const action_state_t* ) const override;
+  double    composite_leech() const override;
   double    matching_gear_multiplier( attribute_e attr ) const override;
+  double    passive_movement_modifier() const override;
   void      invalidate_cache( cache_e ) override;
   void      regen( timespan_t periodicity ) override;
   double    resource_gain( resource_e resource_type, double amount, gain_t* g = nullptr, action_t* a = nullptr ) override;
@@ -1466,20 +1473,12 @@ struct hunter_main_pet_t final : public hunter_main_pet_base_t
     spell_data_ptr_t bloodshed;
   } spells;
 
-  double owner_hp_mult = 1;
-
   hunter_main_pet_t( hunter_t* owner, util::string_view pet_name, pet_e pt ):
     hunter_main_pet_base_t( owner, pet_name, pt )
   {
     // FIXME work around assert in pet specs
     // Set default specs
     _spec = default_spec();
-
-    if ( _spec == PET_TENACITY )
-    {
-      spell_data_ptr_t endurance_training = find_spell( 264662 );
-      owner_hp_mult = 1 + endurance_training->effectN( 2 ).percent() * ( 1 + o() -> talents.aspect_of_the_beast->effectN( 4 ).percent() );
-    }
   }
 
   specialization_e default_spec()
@@ -1488,6 +1487,18 @@ struct hunter_main_pet_t final : public hunter_main_pet_base_t
     if ( pet_type > PET_FEROCITY_TYPE && pet_type < PET_TENACITY_TYPE ) return PET_TENACITY;
     if ( pet_type > PET_TENACITY_TYPE && pet_type < PET_CUNNING_TYPE ) return PET_CUNNING;
     return PET_FEROCITY;
+  }
+
+  buff_t* spec_passive() const
+  {
+    switch ( specialization() )
+    {
+      case PET_CUNNING:  return o() -> buffs.pathfinding;
+      case PET_FEROCITY: return o() -> buffs.predators_thirst;
+      case PET_TENACITY: return o() -> buffs.endurance_training;
+      default: assert( false && "Invalid pet spec" );
+    }
+    return nullptr;
   }
 
   void init_base_stats() override
@@ -1569,8 +1580,7 @@ struct hunter_main_pet_t final : public hunter_main_pet_base_t
     if ( o() -> pets.animal_companion )
       o() -> pets.animal_companion -> summon();
 
-    o() -> resources.initial_multiplier[ RESOURCE_HEALTH ] *= owner_hp_mult;
-    o() -> recalculate_resource_max( RESOURCE_HEALTH );
+    spec_passive() -> trigger();
   }
 
   void demise() override
@@ -1581,8 +1591,7 @@ struct hunter_main_pet_t final : public hunter_main_pet_base_t
     {
       o() -> pets.main = nullptr;
 
-      o() -> resources.initial_multiplier[ RESOURCE_HEALTH ] /= owner_hp_mult;
-      o() -> recalculate_resource_max( RESOURCE_HEALTH );
+      spec_passive() -> expire();
     }
     if ( o() -> pets.animal_companion )
       o() -> pets.animal_companion -> demise();
@@ -6089,6 +6098,34 @@ void hunter_t::create_buffs()
 {
   player_t::create_buffs();
 
+  // Pet family buffs
+
+  buffs.endurance_training =
+    make_buff( this, "endurance_training", find_spell( 264662 ) )
+      -> set_default_value_from_effect( 2 )
+      -> apply_affecting_aura( talents.aspect_of_the_beast )
+      -> set_stack_change_callback(
+          []( buff_t* b, int old, int cur ) {
+            player_t* p = b -> player;
+            if ( cur == 0 )
+              p -> resources.initial_multiplier[ RESOURCE_HEALTH ] /= 1 + b -> default_value;
+            else if ( old == 0 )
+              p -> resources.initial_multiplier[ RESOURCE_HEALTH ] *= 1 + b -> default_value;
+            p -> recalculate_resource_max( RESOURCE_HEALTH );
+          } );
+
+  buffs.pathfinding =
+    make_buff( this, "pathfinding", find_spell( 264656 ) )
+      -> set_default_value_from_effect( 2 )
+      -> apply_affecting_aura( talents.aspect_of_the_beast )
+      -> add_invalidate( CACHE_RUN_SPEED );
+
+  buffs.predators_thirst =
+    make_buff( this, "predators_thirst", find_spell( 264663 ) )
+      -> set_default_value_from_effect( 2 )
+      -> apply_affecting_aura( talents.aspect_of_the_beast )
+      -> add_invalidate( CACHE_LEECH );
+
   // Beast Mastery
 
   buffs.aspect_of_the_wild =
@@ -7360,6 +7397,15 @@ double hunter_t::composite_player_pet_damage_multiplier( const action_state_t* s
   return m;
 }
 
+double hunter_t::composite_leech() const
+{
+  double l = player_t::composite_leech();
+
+  l += buffs.predators_thirst -> check_value();
+
+  return l;
+}
+
 // hunter_t::invalidate_cache ==============================================
 
 void hunter_t::invalidate_cache( cache_e c )
@@ -7419,6 +7465,15 @@ double hunter_t::matching_gear_multiplier( attribute_e attr ) const
     return 0.05;
 
   return 0;
+}
+
+double hunter_t::passive_movement_modifier() const
+{
+  double ms = player_t::passive_movement_modifier();
+
+  ms += buffs.pathfinding -> check_value();
+
+  return ms;
 }
 
 // hunter_t::create_options =================================================
