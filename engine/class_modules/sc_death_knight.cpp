@@ -923,7 +923,6 @@ public:
     cooldown.empower_rune_weapon = get_cooldown( "empower_rune_weapon" );
     cooldown.icecap_icd          = get_cooldown( "icecap" );
     cooldown.pillar_of_frost     = get_cooldown( "pillar_of_frost" );
-    cooldown.raise_dead          = get_cooldown( "raise_dead" );
     cooldown.vampiric_blood      = get_cooldown( "vampiric_blood" );
 
     resource_regeneration = regen_type::DYNAMIC;
