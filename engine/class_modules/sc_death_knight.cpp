@@ -4858,6 +4858,7 @@ struct frostscythe_t : public death_knight_melee_attack_t
 
     weapon = &( player -> main_hand_weapon );
     aoe = as<int>( data().effectN( 5 ).base_value() );
+    // The crit multipier is now handled by the apply_affecting_auras( spec.death_knight ) call
   }
 
   void execute() override
