@@ -3479,6 +3479,9 @@ double player_t::composite_melee_haste() const
     if ( buffs.guardian_of_azeroth->check() )
       h *= 1.0 / ( 1.0 + buffs.guardian_of_azeroth->check_stack_value() );
 
+    if ( buffs.invigorating_herbs )
+      h *= 1.0 / ( 1.0 + buffs.invigorating_herbs->check_value() );
+
     if ( buffs.field_of_blossoms )
       h *= 1.0 / ( 1.0 + buffs.field_of_blossoms->check_value() );
 
@@ -3833,6 +3836,9 @@ double player_t::composite_spell_haste() const
 
     if ( buffs.guardian_of_azeroth->check() )
       h *= 1.0 / ( 1.0 + buffs.guardian_of_azeroth->check_stack_value() );
+
+    if ( buffs.invigorating_herbs )
+      h *= 1.0 / ( 1.0 + buffs.invigorating_herbs->check_value() );
 
     if ( buffs.field_of_blossoms )
       h *= 1.0 / ( 1.0 + buffs.field_of_blossoms->check_value() );

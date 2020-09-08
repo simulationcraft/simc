@@ -152,7 +152,17 @@ void niyas_tools_poison( special_effect_t& effect )
 
 void niyas_tools_herbs( special_effect_t& effect )
 {
+  if ( !effect.player->buffs.invigorating_herbs )
+  {
+    effect.player->buffs.invigorating_herbs = make_buff( effect.player, "invigorating_herbs", effect.trigger() )
+      ->set_default_value_from_effect_type( A_HASTE_ALL );
+  }
 
+  // TODO: confirm proc flags
+  effect.proc_flags2_ = PF2_CAST_HEAL;
+  effect.custom_buff  = effect.player->buffs.invigorating_herbs;
+
+  new dbc_proc_callback_t( effect.player, effect );
 }
 
 void grove_invigoration( special_effect_t& effect )
