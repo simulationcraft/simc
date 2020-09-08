@@ -497,6 +497,7 @@ public:
   // Cooldowns
   struct cooldowns_t {
     // Shared
+    cooldown_t* raise_dead;
     // Blood
     cooldown_t* bone_shield_icd;
     cooldown_t* blood_tap;
@@ -622,6 +623,7 @@ public:
     const spell_data_t* frost_fever;
     const spell_data_t* frost_strike;
     const spell_data_t* frost_strike_2;
+    const spell_data_t* frostwyrms_fury;
     const spell_data_t* howling_blast;
     const spell_data_t* killing_machine;
     const spell_data_t* killing_machine_2;
@@ -731,7 +733,6 @@ public:
     const spell_data_t* bonestorm;
 
     // WIP
-    const spell_data_t* frostwyrms_fury;
     const spell_data_t* unholy_frenzy;
     const spell_data_t* summon_gargoyle;
   } talent;
@@ -922,6 +923,7 @@ public:
     cooldown.empower_rune_weapon = get_cooldown( "empower_rune_weapon" );
     cooldown.icecap_icd          = get_cooldown( "icecap" );
     cooldown.pillar_of_frost     = get_cooldown( "pillar_of_frost" );
+    cooldown.raise_dead          = get_cooldown( "raise_dead" );
     cooldown.vampiric_blood      = get_cooldown( "vampiric_blood" );
 
     resource_regeneration = regen_type::DYNAMIC;
@@ -4891,7 +4893,7 @@ struct frostscythe_t : public death_knight_melee_attack_t
 struct frostwyrms_fury_damage_t : public death_knight_spell_t
 {
   frostwyrms_fury_damage_t( death_knight_t* p ) :
-    death_knight_spell_t( "frostwyrms_fury", p, p -> find_spell( 279303 ) )
+    death_knight_spell_t( "frostwyrms_fury", p,  p -> find_spell( 279303 ) )
   {
     aoe = -1;
     background = true;
@@ -4903,7 +4905,7 @@ struct frostwyrms_fury_t : public death_knight_spell_t
   frostwyrms_fury_damage_t* damage;
 
   frostwyrms_fury_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_spell_t( "frostwyrms_fury_driver", p, p -> talent.frostwyrms_fury ),
+    death_knight_spell_t( "frostwyrms_fury_driver", p, p -> spec.frostwyrms_fury ),
     damage( new frostwyrms_fury_damage_t( p ) )
   {
     parse_options( options_str );
@@ -7700,6 +7702,7 @@ void death_knight_t::init_spells()
   spec.frost_fever           = find_specialization_spell( "Frost Fever" );
   spec.frost_strike          = find_specialization_spell( "Frost Strike" );
   spec.frost_strike_2        = find_specialization_spell( "Frost Strike", "Rank 2" );
+  spec.frostwyrms_fury       = find_specialization_spell( "Frostwyrm's Fury" );
   spec.howling_blast         = find_specialization_spell( "Howling Blast" );
   spec.obliterate            = find_specialization_spell( "Obliterate" );
   spec.obliterate_2          = find_specialization_spell( "Obliterate", "Rank 2" );
@@ -7804,7 +7807,6 @@ void death_knight_t::init_spells()
   talent.bonestorm              = find_talent_spell( "Bonestorm" );
 
   //WIP
-  talent.frostwyrms_fury      = find_talent_spell( "Frostwyrm's Fury" );
   talent.unholy_frenzy      = find_talent_spell( "Unholy Frenzy" );
   talent.summon_gargoyle    = find_talent_spell( "Summon Gargoyle" );
 
