@@ -626,7 +626,7 @@ public:
     events::tar_trap_aoe_t* tar_trap_aoe = nullptr;
     wildfire_infusion_e next_wi_bomb = WILDFIRE_INFUSION_SHRAPNEL;
     unsigned steady_focus_counter = 0;
-  } var;
+  } state;
 
   struct options_t {
     std::string summon_pet_str = "turtle";
@@ -1121,7 +1121,7 @@ struct hunter_ranged_attack_t: public hunter_action_t < ranged_attack_t >
     hunter_action_t::execute();
 
     if ( !background && breaks_steady_focus )
-      p() -> var.steady_focus_counter = 0;
+      p() -> state.steady_focus_counter = 0;
   }
 
   void impact( action_state_t* s ) override
@@ -2325,8 +2325,8 @@ struct tar_trap_aoe_t : public event_t
 
   void execute() override
   {
-    if ( p -> var.tar_trap_aoe == this )
-      p -> var.tar_trap_aoe = nullptr;
+    if ( p -> state.tar_trap_aoe == this )
+      p -> state.tar_trap_aoe = nullptr;
     p -> sim -> print_debug( "{} Tar Trap at {:.3f}:{:.3f} expired ({})", p -> name(), x_position, y_position, *this );
   }
 };
@@ -3523,8 +3523,8 @@ struct steady_shot_t: public hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::execute();
 
-    p() -> var.steady_focus_counter += 1;
-    if ( p() -> var.steady_focus_counter >= 2 )
+    p() -> state.steady_focus_counter += 1;
+    if ( p() -> state.steady_focus_counter >= 2 )
       p() -> buffs.steady_focus -> trigger();
   }
 
@@ -4592,7 +4592,7 @@ struct tar_trap_t : public hunter_spell_t
 
     p() -> trigger_nessingwarys_apparatus( this );
 
-    p() -> var.tar_trap_aoe = make_event<events::tar_trap_aoe_t>( *p() -> sim, p(), s -> target, 30_s );
+    p() -> state.tar_trap_aoe = make_event<events::tar_trap_aoe_t>( *p() -> sim, p(), s -> target, 30_s );
   }
 };
 
@@ -4659,12 +4659,12 @@ struct flare_t : hunter_spell_t
   {
     hunter_spell_t::execute();
 
-    if ( p() -> var.tar_trap_aoe )
+    if ( p() -> state.tar_trap_aoe )
     {
       make_event<ground_aoe_event_t>( *sim, player, ground_aoe_params_t()
         .target( execute_state -> target )
-        .x( p() -> var.tar_trap_aoe -> x_position )
-        .y( p() -> var.tar_trap_aoe -> y_position )
+        .x( p() -> state.tar_trap_aoe -> x_position )
+        .y( p() -> state.tar_trap_aoe -> y_position )
         .pulse_time( 1_ms )
         .n_pulses( 1 )
         .action( soulforge_embers )
@@ -5054,10 +5054,10 @@ struct hunters_mark_t: public hunter_spell_t
   {
     hunter_spell_t::execute();
 
-    if ( p() -> var.current_hunters_mark_target != nullptr )
-      td( p() -> var.current_hunters_mark_target ) -> debuffs.hunters_mark -> expire();
+    if ( p() -> state.current_hunters_mark_target != nullptr )
+      td( p() -> state.current_hunters_mark_target ) -> debuffs.hunters_mark -> expire();
 
-    p() -> var.current_hunters_mark_target = target;
+    p() -> state.current_hunters_mark_target = target;
     td( target ) -> debuffs.hunters_mark -> trigger();
   }
 };
@@ -5380,7 +5380,7 @@ struct wildfire_bomb_t: public hunter_spell_t
 
   void execute() override
   {
-    current_bomb = bombs[ p() -> var.next_wi_bomb ];
+    current_bomb = bombs[ p() -> state.next_wi_bomb ];
 
     hunter_spell_t::execute();
 
@@ -5388,9 +5388,9 @@ struct wildfire_bomb_t: public hunter_spell_t
     {
       // assume that we can't get 2 same bombs in a row
       int slot = rng().range( 2 );
-      if ( slot == p() -> var.next_wi_bomb )
-        slot += 2 - p() -> var.next_wi_bomb;
-      p() -> var.next_wi_bomb = static_cast<wildfire_infusion_e>( slot );
+      if ( slot == p() -> state.next_wi_bomb )
+        slot += 2 - p() -> state.next_wi_bomb;
+      p() -> state.next_wi_bomb = static_cast<wildfire_infusion_e>( slot );
     }
   }
 
@@ -5537,7 +5537,7 @@ void hunter_td_t::target_demise()
 
   if ( debuffs.hunters_mark -> check() )
   {
-    p -> var.current_hunters_mark_target = nullptr;
+    p -> state.current_hunters_mark_target = nullptr;
   }
 
   if ( p -> talents.terms_of_engagement.ok() && damaged )
@@ -5691,24 +5691,24 @@ std::unique_ptr<expr_t> hunter_t::create_expression( util::string_view expressio
   else if ( splits.size() == 2 && splits[ 0 ] == "next_wi_bomb" )
   {
     if ( splits[ 1 ] == "shrapnel" )
-      return make_fn_expr( expression_str, [ this ] { return talents.wildfire_infusion.ok() && var.next_wi_bomb == WILDFIRE_INFUSION_SHRAPNEL; } );
+      return make_fn_expr( expression_str, [ this ] { return talents.wildfire_infusion.ok() && state.next_wi_bomb == WILDFIRE_INFUSION_SHRAPNEL; } );
     if ( splits[ 1 ] == "pheromone" )
-      return make_fn_expr( expression_str, [ this ] { return var.next_wi_bomb == WILDFIRE_INFUSION_PHEROMONE; } );
+      return make_fn_expr( expression_str, [ this ] { return state.next_wi_bomb == WILDFIRE_INFUSION_PHEROMONE; } );
     if ( splits[ 1 ] == "volatile" )
-      return make_fn_expr( expression_str, [ this ] { return var.next_wi_bomb == WILDFIRE_INFUSION_VOLATILE; } );
+      return make_fn_expr( expression_str, [ this ] { return state.next_wi_bomb == WILDFIRE_INFUSION_VOLATILE; } );
   }
   else if ( splits.size() == 2 && splits[ 0 ] == "tar_trap" )
   {
     if ( splits[ 1 ] == "up" )
-      return make_fn_expr( expression_str, [ this ] { return var.tar_trap_aoe != nullptr; } );
+      return make_fn_expr( expression_str, [ this ] { return state.tar_trap_aoe != nullptr; } );
 
     if ( splits[ 1 ] == "remains" )
     {
       return make_fn_expr( expression_str,
         [ this ]() -> timespan_t {
-          if ( var.tar_trap_aoe == nullptr )
+          if ( state.tar_trap_aoe == nullptr )
             return 0_ms;
-          return var.tar_trap_aoe -> remains();
+          return state.tar_trap_aoe -> remains();
         } );
     }
   }
@@ -7179,7 +7179,7 @@ void hunter_t::reset()
 
   // Active
   pets.main = nullptr;
-  var = {};
+  state = {};
 }
 
 // hunter_t::merge ==========================================================
