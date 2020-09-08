@@ -3162,7 +3162,7 @@ struct barbed_shot_t: public hunter_ranged_attack_t
 
   void init_finished() override
   {
-    pet_t* pets[] = { p() -> pets.main, p() -> pets.animal_companion };
+    pet_t* pets[] = { p() -> find_pet( p() -> options.summon_pet_str ), p() -> pets.animal_companion };
     for ( auto pet : pets )
       add_pet_stats( pet, { "stomp" } );
 
