@@ -2656,7 +2656,7 @@ struct death_knight_action_t : public Base
       gain = this -> player -> get_gain( util::inverse_tokenize( this -> name_str ) );
     }
 
-    // These both need review to see if the spec aura is applying or not, if it is, this will double dip
+    // As these are only setting a boolean, it is safe for them to be called twice, so there is no harm in leaving these here
     if ( this -> data().affected_by( p() -> spec.death_knight -> effectN( 1 ) ) )
     {
       this -> cooldown -> hasted = true;
