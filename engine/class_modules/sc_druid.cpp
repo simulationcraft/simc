@@ -9710,8 +9710,26 @@ std::unique_ptr<expr_t> druid_t::create_expression( util::string_view name_str )
         return make_fn_expr( name_str, [this]() { return eclipse_handler.state == IN_BOTH; } );
       else if ( util::str_compare_ci( splits[ 1 ], "solar_next" ) )
         return make_fn_expr( name_str, [this]() { return eclipse_handler.state == SOLAR_NEXT; } );
+      else if ( util::str_compare_ci( splits[ 1 ], "solar_in" ) )
+        return make_fn_expr( name_str, [this]() {
+          return eclipse_handler.state == SOLAR_NEXT ? eclipse_handler.starfire_counter : 0; } );
+      else if ( util::str_compare_ci( splits[ 1 ], "solar_in_2" ) )
+        return make_fn_expr( name_str, [this]() {
+          return eclipse_handler.state == SOLAR_NEXT && eclipse_handler.starfire_counter == 2; } );
+      else if ( util::str_compare_ci( splits[ 1 ], "solar_in_1" ) )
+        return make_fn_expr( name_str, [this]() {
+          return eclipse_handler.state == SOLAR_NEXT && eclipse_handler.starfire_counter == 1; } );
       else if ( util::str_compare_ci( splits[ 1 ], "lunar_next" ) )
         return make_fn_expr( name_str, [this]() { return eclipse_handler.state == LUNAR_NEXT; } );
+      else if ( util::str_compare_ci( splits[ 1 ], "lunar_in" ) )
+        return make_fn_expr( name_str, [this]() {
+          return eclipse_handler.state == LUNAR_NEXT ? eclipse_handler.wrath_counter : 0; } );
+      else if ( util::str_compare_ci( splits[ 1 ], "lunar_in_2" ) )
+        return make_fn_expr( name_str, [this]() {
+          return eclipse_handler.state == LUNAR_NEXT && eclipse_handler.wrath_counter == 2; } );
+      else if ( util::str_compare_ci( splits[ 1 ], "lunar_in_1" ) )
+        return make_fn_expr( name_str, [this]() {
+          return eclipse_handler.state == LUNAR_NEXT && eclipse_handler.wrath_counter == 1; } );
     }
   }
 
