@@ -5361,7 +5361,6 @@ struct fae_transfusion_t : public shaman_spell_t
   fae_transfusion_t( shaman_t* player, const std::string& options_str )
     : shaman_spell_t( "fae_transfusion", player, player->find_covenant_spell( "Fae Transfusion" ), options_str )
   {
-    parse_options( options_str );
     affected_by_master_of_the_elements = false;
     channeled    = true;
     tick_action = get_action<fae_transfusion_tick_t>( "fae_transfusion_tick", player );
@@ -5376,8 +5375,6 @@ struct primordial_wave_t : public shaman_spell_t
   primordial_wave_t( shaman_t* player, const std::string& options_str )
   : shaman_spell_t( "primordial_wave", player, player->covenant.necrolord, options_str )
   {
-    parse_options( options_str );
-
     if ( !player->covenant.necrolord->ok() )
       return;
 
