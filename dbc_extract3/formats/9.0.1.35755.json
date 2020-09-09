@@ -592,6 +592,12 @@
       { "data_type": "I", "field": "flags"                               }
     ]
   },
+  "ItemNameSlotOverride": {
+    "fields": [
+      { "data_type": "S", "field": "name", "formats": { "cpp": "%-45s" } },
+      { "data_type": "I", "field": "inventory_type_mask"                 }
+    ]
+  },
   "ItemSet": {
     "fields": [
       { "data_type": "S", "field": "name" },
