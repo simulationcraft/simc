@@ -697,10 +697,8 @@ struct potion_t : public dbc_consumable_base_t
     if ( dynamic_prepot && !player->in_combat )
       adjust_dynamic_prepot_time();
 
-    // If the player is in combat, just make a very long CD
-    if ( player -> in_combat )
-      cd_duration = sim -> max_time * 3;
-    else
+    // adjust for prepot
+    if ( !player -> in_combat )
       cd_duration = cooldown -> duration - pre_pot_time;
 
     action_t::update_ready( cd_duration );
