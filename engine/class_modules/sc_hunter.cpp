@@ -463,6 +463,7 @@ public:
     cooldown_t* bestial_wrath;
     cooldown_t* harpoon;
     cooldown_t* kill_command;
+    cooldown_t* kill_shot;
     cooldown_t* rapid_fire;
     cooldown_t* trueshot;
     cooldown_t* wildfire_bomb;
@@ -651,6 +652,7 @@ public:
     cooldowns.bestial_wrath       = get_cooldown( "bestial_wrath" );
     cooldowns.harpoon             = get_cooldown( "harpoon" );
     cooldowns.kill_command        = get_cooldown( "kill_command" );
+    cooldowns.kill_shot           = get_cooldown( "kill_shot" );
     cooldowns.rapid_fire          = get_cooldown( "rapid_fire" );
     cooldowns.trueshot            = get_cooldown( "trueshot" );
     cooldowns.wildfire_bomb       = get_cooldown( "wildfire_bomb" );
@@ -2698,7 +2700,8 @@ struct flayed_shot_t : hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::tick( d );
 
-    p() -> buffs.flayers_mark -> trigger();
+    if ( p() -> buffs.flayers_mark -> trigger() )
+      p() -> cooldowns.kill_shot -> reset( true );
   }
 };
 
