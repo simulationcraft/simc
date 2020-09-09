@@ -326,6 +326,8 @@ public:
 
     // Covenant Class Ability Buffs
     buff_t* primordial_wave;
+    buff_t* vesper_totem_damage;
+    // buff_t* vesper_totem_healing;
 
     // Elemental, Restoration
     buff_t* lava_surge;
@@ -381,6 +383,8 @@ public:
   // Covenant Class Abilities
   struct
   {
+    // Kyrian
+    const spell_data_t* kyrian; // Vesper Totem
     // Necrolord
     const spell_data_t* necrolord; // Primordial Wave
 
@@ -1432,6 +1436,12 @@ public:
     if ( affected_by_master_of_the_elements && !background )
     {
       p()->buff.master_of_the_elements->decrement();
+    }
+
+    // Shadowlands Kyrian Covenant - Vesper Totem
+    if ( !background && p()->covenant.kyrian->ok() && p()->buff.vesper_totem_damage->up() )
+    {
+      // TODO: execute a pulse from the totem
     }
   }
 
@@ -5362,6 +5372,54 @@ struct fae_transfusion_t : public shaman_spell_t
 };
 
 // ==========================================================================
+// Vesper Totem - Kyrian Covenant
+// ==========================================================================
+struct vesper_totem_damage_pulse_t : public totem_pulse_action_t
+{
+  vesper_totem_damage_pulse_t( shaman_totem_pet_t* totem )
+    : totem_pulse_action_t( "vesper_totem_damage_pulse", totem, totem->find_spell( 324520 ) )
+  {
+    aoe = 6;
+    background = may_crit = true;
+    callbacks = false;
+  }
+
+  void execute() override
+  {
+    totem_pulse_action_t::execute();
+
+    totem->o()->buff.vesper_totem_damage->decrement();
+  }
+};
+
+struct vesper_totem_t : public shaman_totem_pet_t
+{
+  vesper_totem_t( shaman_t* owner ) : shaman_totem_pet_t( owner, "vesper_totem" )
+  {
+    pulse_amplitude = o()->covenant.kyrian->duration();
+  }
+
+  void init_spells() override
+  {
+    shaman_totem_pet_t::init_spells();
+
+    pulse_action = new vesper_totem_damage_pulse_t( this );
+  }
+
+  void summon(timespan_t t) override
+  {
+    shaman_totem_pet_t::summon(t);
+
+    o()->buff.vesper_totem_damage->trigger( o()->buff.vesper_totem_damage->max_stack() );
+  }
+
+  void pulse()
+  {
+    pulse_action->execute();
+  }
+};
+
+// ==========================================================================
 // Primordial Wave - Necrolord Covenant
 // ==========================================================================
 struct primordial_wave_t : public shaman_spell_t
@@ -5583,6 +5641,8 @@ action_t* shaman_t::create_action( util::string_view name, const std::string& op
     return new wind_shear_t( this, options_str );
 
   // covenants
+  if ( name == "vesper_totem" )
+    return new shaman_totem_t( "vesper_totem", this, options_str, covenant.kyrian );
   if ( name == "primordial_wave" )
     return new primordial_wave_t( this, options_str );
   if ( name == "fae_transfusion" )
@@ -5690,6 +5750,8 @@ pet_t* shaman_t::create_pet( util::string_view pet_name, util::string_view /* pe
     return new liquid_magma_totem_t( this );
   if ( pet_name == "capacitor_totem" )
     return new capacitor_totem_t( this );
+  if ( pet_name == "vesper_totem" )
+    return new vesper_totem_t( this );
 
   return nullptr;
 }
@@ -5741,6 +5803,11 @@ void shaman_t::create_pets()
   if ( find_action( "capacitor_totem" ) )
   {
     create_pet( "capacitor_totem" );
+  }
+
+  if ( covenant.kyrian->ok() && find_action( "vesper_totem" ) )
+  {
+    create_pet( "vesper_totem" );
   }
 }
 
@@ -6030,6 +6097,7 @@ void shaman_t::init_spells()
   talent.graceful_spirit = find_talent_spell( "Graceful Spirit" );
 
   // Covenants
+  covenant.kyrian    = find_covenant_spell( "Vesper Totem" );
   covenant.necrolord = find_covenant_spell( "Primordial Wave" );
   covenant.night_fae = find_covenant_spell( "Fae Transfusion" );
 
@@ -6465,6 +6533,10 @@ void shaman_t::create_buffs()
                          ->set_cooldown( timespan_t::zero() );  // Handled by the action
 
   // Covenants
+  buff.vesper_totem_damage = make_buff( this, "vesper_totem_damage", covenant.kyrian )
+                               ->set_duration( find_spell(324386)->duration() )
+                               ->set_max_stack( find_spell(324386)->effectN( 2 ).base_value() )
+                               ->set_quiet( true );
   buff.primordial_wave = make_buff( this, "primordial_wave", covenant.necrolord )->set_duration( find_spell( 327164 )->duration() );
 
   //
@@ -6764,6 +6836,7 @@ void shaman_t::init_action_list_elemental()
 
   // Aoe APL
   aoe->add_talent( this, "Stormkeeper", "if=talent.stormkeeper.enabled" );
+  aoe->add_action( "vesper_totem" );
   aoe->add_action( this, "Flame Shock", "target_if=refreshable&spell_targets.chain_lightning<5" );
   aoe->add_action( this, "Earthquake" );
   aoe->add_action( "fae_transfusion" );
@@ -6775,6 +6848,7 @@ void shaman_t::init_action_list_elemental()
   // Single target APL
   single_target->add_action( this, "Flame Shock", "target_if=!ticking|dot.flame_shock.remains<=gcd&!buff.surge_of_power.up" );
   single_target->add_action( "fae_transfusion" );
+  single_target->add_action( "vesper_totem" );
   single_target->add_action( "primordial_wave" );
   single_target->add_talent( this, "Elemental Blast", "if=talent.elemental_blast.enabled" );
   single_target->add_action( this, "Lightning Bolt",
