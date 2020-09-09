@@ -388,6 +388,13 @@ public:
     const spell_data_t* night_fae; // Fae Transfusion
   } covenant;
 
+  // Conduits
+  struct conduit_t
+  {
+    // Elemental
+    conduit_data_t high_voltage;
+  } conduit;
+
   // Gains
   struct
   {
@@ -567,6 +574,7 @@ public:
       buff(),
       cooldown(),
       covenant(),
+      conduit( conduit_t() ),
       gain(),
       proc(),
       spec(),
@@ -4087,6 +4095,16 @@ struct lightning_bolt_t : public shaman_spell_t
     }
   }
 
+  double composite_maelstrom_gain_coefficient( const action_state_t* state ) const override
+  {
+    double coeff = shaman_spell_t::composite_maelstrom_gain_coefficient( state );
+
+    if ( p()->conduit.high_voltage->ok() && rng().roll( p()->conduit.high_voltage.percent() ) )
+      coeff *= 2.0;
+
+    return coeff;
+  }
+
   double overload_chance( const action_state_t* s ) const override
   {
     double chance = shaman_spell_t::overload_chance( s );
@@ -6032,6 +6050,9 @@ void shaman_t::init_spells()
   // Covenants
   covenant.necrolord = find_covenant_spell( "Primordial Wave" );
   covenant.night_fae = find_covenant_spell( "Fae Transfusion" );
+
+  // Conduits
+  conduit.high_voltage = find_conduit_spell( "High Voltage" );
 
   //
   // Misc spells
