@@ -85,31 +85,14 @@ public:
 
   timespan_t remains() const;
   timespan_t time_to_next_tick() const;
-  timespan_t duration() const
-  {
-    return !is_ticking() ? timespan_t::zero() : current_duration;
-  }
-  int    ticks_left() const;
-  const char* name() const
-  {
-    return name_str.c_str();
-  }
-  bool is_ticking() const
-  {
-    return ticking;
-  }
-  timespan_t get_extended_time() const
-  {
-    return extended_time;
-  }
-  double get_last_tick_factor() const
-  {
-    return last_tick_factor;
-  }
-  int current_stack() const
-  {
-    return ticking ? stack : 0;
-  }
+  timespan_t duration() const { return !is_ticking() ? timespan_t::zero() : current_duration; }
+  int ticks_left() const;
+  const char* name() const { return name_str.c_str(); }
+  bool is_ticking() const { return ticking; }
+  timespan_t get_extended_time() const { return extended_time; }
+  double get_last_tick_factor() const { return last_tick_factor; }
+  int current_stack() const { return ticking ? stack : 0; }
+  bool at_max_stacks() const { return current_stack() == max_stack; }
 
   void tick();
   void last_tick();

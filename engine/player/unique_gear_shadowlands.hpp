@@ -16,7 +16,7 @@ namespace consumables
 {
 void smothered_shank( special_effect_t& );
 void feast_of_gluttonous_hedonism( special_effect_t& );
-void potion_of_deadly_fixation( special_effect_t& );
+void potion_of_deathly_fixation( special_effect_t& );
 void potion_of_empowered_exorcism( special_effect_t& );
 void potion_of_phantom_fire( special_effect_t& );
 void embalmers_oil( special_effect_t& );

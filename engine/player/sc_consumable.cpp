@@ -439,10 +439,10 @@ struct dbc_consumable_base_t : public action_t
       effect = create_special_effect();
       unique_gear::initialize_special_effect( *effect, driver() -> id() );
 
-      // First special effect initialization phase could not decude a proper consumable to create
+      // First special effect initialization phase could not deduce a proper consumable to create
       if ( effect -> type == SPECIAL_EFFECT_NONE )
       {
-        throw std::invalid_argument("First special effect initialization phase could not decude a proper consumable to create.");
+        throw std::invalid_argument("First special effect initialization phase could not deduce a proper consumable to create.");
       }
 
       // Note, this needs to be added before initializing the (potentially) custom special effect,

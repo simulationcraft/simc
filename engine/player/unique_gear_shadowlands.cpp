@@ -8,6 +8,7 @@
 #include "sim/sc_sim.hpp"
 
 #include "buff/sc_buff.hpp"
+#include "action/dot.hpp"
 
 #include "actor_target_data.hpp"
 #include "unique_gear.hpp"
@@ -86,9 +87,61 @@ void feast_of_gluttonous_hedonism( special_effect_t& effect )
 
 }
 
-void potion_of_deadly_fixation( special_effect_t& effect )
+void potion_of_deathly_fixation( special_effect_t& effect )
 {
+  struct deathly_eruption_t: public proc_spell_t
+  {
+    deathly_eruption_t( const special_effect_t& e )
+      : proc_spell_t( "deathly_eruption", e.player, e.player->find_spell( 322256 ) )
+    {
+      // TODO: add interaction with shadowcore oil
+    }
+  };
 
+  struct deathly_fixation_t : public proc_spell_t
+  {
+    action_t* eruption;
+
+    deathly_fixation_t( const special_effect_t& e )
+      : proc_spell_t( "deathly_fixation", e.player, e.player->find_spell( 322253 ) ),
+        eruption( create_proc_action<deathly_eruption_t>( "deathly_eruption", e ) )
+    {
+      add_child( eruption );
+    }
+
+    // TODO: confirm eruption mechanics, when it happens, what happens to stacks, etc.
+    void impact( action_state_t* s ) override
+    {
+      proc_spell_t::impact( s );
+
+      auto d = get_dot( s->target );
+      if ( d->at_max_stacks() )
+      {
+        eruption->set_target( s->target );
+        eruption->schedule_execute();
+        d->cancel();
+      }
+    }
+  };
+
+  auto potion              = new special_effect_t( effect.player );
+  potion->type             = SPECIAL_EFFECT_EQUIP;
+  potion->spell_id         = effect.spell_id;
+  potion->cooldown_        = 0_ms;
+  potion->execute_action   = create_proc_action<deathly_fixation_t>( "potion_of_deathly_fixation", effect );
+  effect.player->special_effects.push_back( potion );
+
+  auto proc = new dbc_proc_callback_t( effect.player, *potion );
+  proc->deactivate();
+  proc->initialize();
+
+  effect.custom_buff = make_buff( effect.player, effect.name(), effect.driver() )
+    ->set_cooldown( 0_ms )
+    ->set_chance( 1.0 )
+    ->set_stack_change_callback( [proc]( buff_t*, int, int new_ ) {
+      if ( new_ ) proc->activate();
+      else proc->deactivate();
+    } );
 }
 
 void potion_of_empowered_exorcism( special_effect_t& effect )
@@ -168,6 +221,9 @@ void register_special_effects()
 {
     // Food
     unique_gear::register_special_effect( 308637, consumables::smothered_shank );
+
+    // Potion
+    unique_gear::register_special_effect( 307497, consumables::potion_of_deathly_fixation );
 
     // Enchants
     unique_gear::register_special_effect( 324747, enchants::celestial_guidance );
