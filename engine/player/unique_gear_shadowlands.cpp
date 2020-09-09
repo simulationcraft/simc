@@ -124,11 +124,11 @@ void potion_of_deathly_fixation( special_effect_t& effect )
     }
   };
 
-  auto potion              = new special_effect_t( effect.player );
-  potion->type             = SPECIAL_EFFECT_EQUIP;
-  potion->spell_id         = effect.spell_id;
-  potion->cooldown_        = 0_ms;
-  potion->execute_action   = create_proc_action<deathly_fixation_t>( "potion_of_deathly_fixation", effect );
+  auto potion            = new special_effect_t( effect.player );
+  potion->type           = SPECIAL_EFFECT_EQUIP;
+  potion->spell_id       = effect.spell_id;
+  potion->cooldown_      = 0_ms;
+  potion->execute_action = create_proc_action<deathly_fixation_t>( "potion_of_deathly_fixation", effect );
   effect.player->special_effects.push_back( potion );
 
   auto proc = new dbc_proc_callback_t( effect.player, *potion );
@@ -144,9 +144,35 @@ void potion_of_deathly_fixation( special_effect_t& effect )
     } );
 }
 
-void potion_of_empowered_exorcism( special_effect_t& effect )
+void potion_of_empowered_exorcisms( special_effect_t& effect )
 {
+  struct empowered_exorcisms : public proc_spell_t
+  {
+    empowered_exorcisms( const special_effect_t& e )
+      : proc_spell_t( "empowered_exorcisms", e.player, e.player->find_spell( 322015 ) )
+    {
+      // TODO: add interaction with shadowcore oil
+    }
+  };
 
+  auto potion            = new special_effect_t( effect.player );
+  potion->type           = SPECIAL_EFFECT_EQUIP;
+  potion->spell_id       = effect.spell_id;
+  potion->cooldown_      = 0_ms;
+  potion->execute_action = create_proc_action<empowered_exorcisms>( "potion_of_empowered_exorcisms", effect );
+  effect.player->special_effects.push_back( potion );
+
+  auto proc = new dbc_proc_callback_t( effect.player, *potion );
+  proc->deactivate();
+  proc->initialize();
+
+  effect.custom_buff = make_buff( effect.player, effect.name(), effect.driver() )
+    ->set_cooldown( 0_ms )
+    ->set_chance( 1.0 )
+    ->set_stack_change_callback( [proc]( buff_t*, int, int new_ ) {
+      if ( new_ ) proc->activate();
+      else proc->deactivate();
+    } );
 }
 
 void potion_of_phantom_fire( special_effect_t& effect )
@@ -224,6 +250,7 @@ void register_special_effects()
 
     // Potion
     unique_gear::register_special_effect( 307497, consumables::potion_of_deathly_fixation );
+    unique_gear::register_special_effect( 307494, consumables::potion_of_empowered_exorcisms );
 
     // Enchants
     unique_gear::register_special_effect( 324747, enchants::celestial_guidance );
