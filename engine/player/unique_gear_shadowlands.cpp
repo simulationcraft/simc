@@ -53,7 +53,6 @@ struct SL_proc_spell_t : public proc_spell_t
       if ( data().affected_by_label( eff ) )
       {
         base_multiplier *= 1.0 + eff.percent();
-        break;  // assumption is only one effect will apply, even if 'mistakenly' multiple effects are present
       }
     }
   }
