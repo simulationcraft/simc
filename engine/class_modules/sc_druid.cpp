@@ -1723,14 +1723,15 @@ struct kindred_empowerment_buff_t : public druid_buff_t<buff_t>
   {
     trigger();
 
-    double amount = s->result_amount * p().covenant.kindred_empowerment_energize->effectN( 1 ).percent() *
-                    p().kindred_empowerment_ratio;
+    double amount = s->result_amount * p().covenant.kindred_empowerment_energize->effectN( 1 ).percent();
+
+    // since kindred_empowerment_ratio is meant to apply to the pool you RECEIVE and not to the pool you send, don't
+    // apply it to cumul_pool, which is meant to represent the damage the other person does.
+    pool += amount * p().kindred_empowerment_ratio;
+    cumul_pool += amount;
 
     if ( sim->debug )
       sim->print_debug( "Kindred Empowerment: Adding {} from {} to pool of {}", amount, s->action->name(), pool );
-
-    pool += amount;
-    cumul_pool += amount;
   }
 
   void use_pool( const action_state_t* s )
