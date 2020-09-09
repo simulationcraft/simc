@@ -388,6 +388,13 @@ public:
     const spell_data_t* night_fae; // Fae Transfusion
   } covenant;
 
+  // Conduits
+  struct conduit_t
+  {
+    // Elemental
+    conduit_data_t call_of_flame;
+  } conduit;
+
   // Gains
   struct
   {
@@ -567,6 +574,7 @@ public:
       buff(),
       cooldown(),
       covenant(),
+      conduit( conduit_t() ),
       gain(),
       proc(),
       spec(),
@@ -3320,7 +3328,14 @@ struct fire_elemental_t : public shaman_spell_t
   {
     shaman_spell_t::execute();
 
-    p()->summon_fire_elemental( p()->spell.fire_elemental->duration() );
+    timespan_t fire_elemental_duration = p()->spell.fire_elemental->duration();
+
+    if ( p()->conduit.call_of_flame->ok() )
+    {
+      fire_elemental_duration *= (1.0 + p()->conduit.call_of_flame.percent());
+    }
+
+    p()->summon_fire_elemental( fire_elemental_duration );
   }
 
   bool ready() override
@@ -3348,7 +3363,14 @@ struct storm_elemental_t : public shaman_spell_t
   {
     shaman_spell_t::execute();
 
-    p()->summon_storm_elemental( p()->spell.storm_elemental->duration() );
+    timespan_t storm_elemental_duration = p()->spell.storm_elemental->duration();
+
+    if ( p()->conduit.call_of_flame->ok() )
+    {
+      storm_elemental_duration *= (1.0 + p()->conduit.call_of_flame.percent());
+    }
+
+    p()->summon_storm_elemental( storm_elemental_duration );
   }
 };
 
@@ -6032,6 +6054,9 @@ void shaman_t::init_spells()
   // Covenants
   covenant.necrolord = find_covenant_spell( "Primordial Wave" );
   covenant.night_fae = find_covenant_spell( "Fae Transfusion" );
+
+  // Conduits
+  conduit.call_of_flame = find_conduit_spell( "Call of Flame" );
 
   //
   // Misc spells
