@@ -239,9 +239,13 @@ void celestial_guidance( special_effect_t& effect )
 void lightless_force( special_effect_t& effect )
 {
   effect.trigger_spell_id = 324184;
-  effect.execute_action = create_proc_action<SL_proc_spell_t>( "lightless_force", effect );
-  // TODO: adjust to frontal wave for distance targetting
-  effect.execute_action->aoe = -1;
+  effect.execute_action   = create_proc_action<SL_proc_spell_t>( "lightless_force", effect );
+  // Spell projectile travels along a narrow beam and does not spread out with distance. Although data has a 40yd range,
+  // the 1.5s duration seems to prevent the projectile from surviving beyond ~30yd.
+  // TODO: confirm maximum effective range & radius
+  effect.execute_action->aoe    = -1;
+  effect.execute_action->radius = 5.0;
+  effect.execute_action->range  = 30.0;
 
   new dbc_proc_callback_t( effect.player, effect );
 }
