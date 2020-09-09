@@ -19,7 +19,6 @@
 // - Update Elemental Blast
 // - Covenants
 //   - Kyrian
-//   - Venthyr
 // - Class Legendaries
 // - Covenant Conduits
 //
@@ -386,6 +385,9 @@ public:
 
     // Night Fae
     const spell_data_t* night_fae; // Fae Transfusion
+
+    // Venthyr
+    const spell_data_t* venthyr; // Chain Harvest
   } covenant;
 
   // Gains
@@ -5384,6 +5386,50 @@ struct primordial_wave_t : public shaman_spell_t
 };
 
 // ==========================================================================
+// Chain Harvest - Venthyr Covenant
+// ==========================================================================
+struct chain_harvest_t : public chained_base_t
+{
+  int critical_hits = 0;
+
+  chain_harvest_t( shaman_t* player, const std::string& options_str )
+    : chained_base_t( player, "chain_harvest", player->covenant.venthyr, 0, options_str )
+  {
+    if ( !player->covenant.venthyr->ok() )
+      return;
+
+    aoe = 5;
+    spell_power_mod.direct = player->find_spell( 320752 )->effectN( 1 ).sp_coeff();
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    chained_base_t::impact( s );
+
+    if ( s->result == RESULT_CRIT )
+    {
+      critical_hits++;
+    }
+  }
+
+  void update_ready( timespan_t ) override
+  {
+    auto cd = cooldown_duration();
+    cd -= critical_hits * timespan_t::from_seconds( 5 );
+
+    critical_hits = 0;
+
+    chained_base_t::update_ready( cd );
+  }
+
+  void execute() override
+  {
+    // do not consume stormkeeper, as happens in chained_base_t
+    shaman_spell_t::execute();
+  }
+};
+
+// ==========================================================================
 // Shaman Custom Buff implementation
 // ==========================================================================
 
@@ -5587,6 +5633,8 @@ action_t* shaman_t::create_action( util::string_view name, const std::string& op
     return new primordial_wave_t( this, options_str );
   if ( name == "fae_transfusion" )
     return new fae_transfusion_t( this, options_str );
+  if ( name == "chain_harvest" )
+    return new chain_harvest_t( this, options_str );
 
   // elemental
   if ( name == "chain_lightning" )
@@ -6032,6 +6080,7 @@ void shaman_t::init_spells()
   // Covenants
   covenant.necrolord = find_covenant_spell( "Primordial Wave" );
   covenant.night_fae = find_covenant_spell( "Fae Transfusion" );
+  covenant.venthyr   = find_covenant_spell( "Chain Harvest" );
 
   //
   // Misc spells
@@ -6766,6 +6815,7 @@ void shaman_t::init_action_list_elemental()
   aoe->add_talent( this, "Stormkeeper", "if=talent.stormkeeper.enabled" );
   aoe->add_action( this, "Flame Shock", "target_if=refreshable&spell_targets.chain_lightning<5" );
   aoe->add_action( this, "Earthquake" );
+  aoe->add_action( "chain_harvest" );
   aoe->add_action( "fae_transfusion" );
   aoe->add_action( "lava_beam,if=talent.ascendance.enabled" );
   aoe->add_action( this, "Chain Lightning" );
@@ -6774,6 +6824,7 @@ void shaman_t::init_action_list_elemental()
 
   // Single target APL
   single_target->add_action( this, "Flame Shock", "target_if=!ticking|dot.flame_shock.remains<=gcd&!buff.surge_of_power.up" );
+  single_target->add_action( "chain_harvest" );
   single_target->add_action( "fae_transfusion" );
   single_target->add_action( "primordial_wave" );
   single_target->add_talent( this, "Elemental Blast", "if=talent.elemental_blast.enabled" );
