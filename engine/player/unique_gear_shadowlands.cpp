@@ -62,7 +62,23 @@ namespace consumables
 {
 void smothered_shank( special_effect_t& effect )
 {
+  struct smothered_shank_buff_t : public buff_t
+  {
+    action_t* belch;
 
+    smothered_shank_buff_t( const special_effect_t& e ) : buff_t( e.player, "smothered_shank", e.driver() )
+    {
+      belch = create_proc_action<SL_proc_spell_t>( "pungent_belch", e );
+
+      set_tick_callback( [this]( buff_t*, int, timespan_t ) {
+        belch->set_target( player->target );
+        belch->schedule_execute();
+      } );
+    }
+  };
+
+  effect.name_str = "pungent_belch";
+  effect.custom_buff = make_buff<smothered_shank_buff_t>( effect );
 }
 
 void feast_of_gluttonous_hedonism( special_effect_t& effect )
@@ -150,6 +166,10 @@ void register_hotfixes()
 
 void register_special_effects()
 {
+    // Food
+    unique_gear::register_special_effect( 308637, consumables::smothered_shank );
+
+    // Enchants
     unique_gear::register_special_effect( 324747, enchants::celestial_guidance );
     unique_gear::register_special_effect( 323932, enchants::lightless_force );
     unique_gear::register_special_effect( 324250, enchants::sinful_revelation );
