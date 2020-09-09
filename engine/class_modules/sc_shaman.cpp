@@ -5511,19 +5511,19 @@ struct vesper_totem_t : public shaman_spell_t
         .n_pulses( data().effectN( 2 ).base_value() )
         .action( damage )
         .state_callback (
-          [this]( auto event_type, ground_aoe_event_t* ptr ) {
+          [this]( ground_aoe_params_t::state_type event_type, ground_aoe_event_t* ptr ) {
             switch ( event_type )
             {
               case ground_aoe_params_t::state_type::EVENT_CREATED:
-                assert( p()->vesper_totem == nullptr );
-                p()->vesper_totem = ptr;
+                assert( this->p()->vesper_totem == nullptr );
+                this->p()->vesper_totem = ptr;
                 break;
               case ground_aoe_params_t::state_type::EVENT_DESTRUCTED:
-                assert( p()->vesper_totem == ptr );
-                p()->vesper_totem = nullptr;
+                assert( this->p()->vesper_totem == ptr );
+                this->p()->vesper_totem = nullptr;
                 break;
               case ground_aoe_params_t::state_type::EVENT_STOPPED:
-                p()->buff.vesper_totem->expire();
+                this->p()->buff.vesper_totem->expire();
                 break;
               default:
                 break;
