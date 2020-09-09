@@ -400,6 +400,7 @@ public:
   struct
   {
     gain_t* aftershock;
+    gain_t* high_voltage;
     gain_t* ascendance;
     gain_t* resurgence;
     gain_t* feral_spirit;
@@ -4110,15 +4111,14 @@ struct lightning_bolt_t : public shaman_spell_t
     }
   }
 
-  double composite_maelstrom_gain_coefficient( const action_state_t* state ) const override
-  {
-    double coeff = shaman_spell_t::composite_maelstrom_gain_coefficient( state );
-
-    if ( p()->conduit.high_voltage->ok() && rng().roll( p()->conduit.high_voltage.percent() ) )
-      coeff *= 2.0;
-
-    return coeff;
-  }
+  // TODO: once bug is fixed, uncomment this
+  // double composite_maelstrom_gain_coefficient( const action_state_t* state ) const override
+  // {
+  //   double coeff = shaman_spell_t::composite_maelstrom_gain_coefficient( state );
+  //   if ( p()->conduit.high_voltage->ok() && rng().roll( p()->conduit.high_voltage.percent() ) )
+  //     coeff *= 2.0;
+  //   return coeff;
+  // }
 
   double overload_chance( const action_state_t* s ) const override
   {
@@ -4215,6 +4215,12 @@ struct lightning_bolt_t : public shaman_spell_t
   void execute() override
   {
     shaman_spell_t::execute();
+
+    // TODO: remove this when the high voltage bug is fixed and it properly generates double instead of 5
+    if ( p()->conduit.high_voltage->ok() && rng().roll( p()->conduit.high_voltage.percent() ) )
+    {
+      p()->trigger_maelstrom_gain( 5.0, p()->gain.high_voltage );
+    }
 
     if ( p()->specialization() == SHAMAN_ENHANCEMENT && p()->covenant.necrolord->ok() && p()->buff.primordial_wave->up() )
     {
@@ -6589,6 +6595,7 @@ void shaman_t::init_gains()
   player_t::init_gains();
 
   gain.aftershock              = get_gain( "Aftershock" );
+  gain.high_voltage            = get_gain( "High Voltage" );
   gain.ascendance              = get_gain( "Ascendance" );
   gain.resurgence              = get_gain( "resurgence" );
   gain.feral_spirit            = get_gain( "Feral Spirit" );
