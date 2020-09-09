@@ -3547,6 +3547,7 @@ struct breath_of_sindragosa_tick_t: public death_knight_spell_t
   {
     aoe = -1;
     background = true;
+    reduced_aoe_damage = true;
 
     ap_type = attack_power_type::WEAPON_BOTH;
 
@@ -3556,8 +3557,6 @@ struct breath_of_sindragosa_tick_t: public death_knight_spell_t
       // There's a 0.98 modifier hardcoded in the tooltip if a 2H weapon is equipped, probably server side magic
       base_multiplier *= 0.98;
     }
-
-    base_aoe_multiplier = 0.3;
   }
 };
 
