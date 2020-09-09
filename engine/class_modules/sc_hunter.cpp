@@ -6995,7 +6995,7 @@ void hunter_t::apl_surv()
     st -> add_action( "chakrams" );
     st -> add_action( "a_murder_of_crows" );
     st -> add_action( "wildfire_bomb,if=next_wi_bomb.volatile&dot.serpent_sting.ticking&dot.serpent_sting.refreshable" );
-    st -> add_action( "serpent_sting,if=refreshable|buff.vipers_venom.up" );
+    st -> add_action( "serpent_sting,if=refreshable&(buff.mongoose_fury.stack<5|!talent.mongoose_bite.enabled)&(!buff.coordinated_assault.up|!talent.birds_of_prey.enabled)|buff.vipers_venom.up" );
     st -> add_action( "wildfire_bomb,if=next_wi_bomb.shrapnel&focus>60|next_wi_bomb.pheromone&(focus+cast_regen+action.kill_command.cast_regen*3<focus.max|talent.mongoose_bite.enabled&!buff.mongoose_fury.up)|!dot.wildfire_bomb.ticking&full_recharge_time<gcd" );
     st -> add_action( "kill_command,if=focus+cast_regen<focus.max&buff.tip_of_the_spear.stack<3" );
     st -> add_action( "steel_trap,if=!runeforge.nessingwarys_trapping_apparatus.equipped|focus+cast_regen+25<focus.max" );
@@ -7017,21 +7017,23 @@ void hunter_t::apl_surv()
     cleave -> add_action( "carve,if=dot.shrapnel_bomb.ticking" );
     cleave -> add_action( "death_chakram,if=focus+cast_regen<focus.max" );
     cleave -> add_action( "coordinated_assault" );
-    cleave -> add_action( "butchery,if=charges_fractional>2.5" );
-    cleave -> add_action( "kill_command,target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max&full_recharge_time<gcd" );
+    cleave -> add_action( "butchery,if=charges_fractional>2.5&cooldown.wildfire_bomb.full_recharge_time>spell_targets%2" );
     cleave -> add_action( "flanking_strike,if=focus+cast_regen<focus.max" );
+    cleave -> add_action( "kill_command,target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max&full_recharge_time<gcd" );
     cleave -> add_action( "wildfire_bomb,if=!dot.wildfire_bomb.ticking" );
-    cleave -> add_action( "butchery,if=!talent.wildfire_infusion.enabled" );
+    cleave -> add_action( "butchery,if=(!next_wi_bomb.shrapnel|!talent.wildfire_infusion.enabled)&cooldown.wildfire_bomb.full_recharge_time>spell_targets%2" );
+    cleave -> add_action( "carve,if=cooldown.wildfire_bomb.full_recharge_time>spell_targets%2" );
     cleave -> add_action( "kill_shot" );
     cleave -> add_action( "flayed_shot" );
     cleave -> add_action( "a_murder_of_crows" );
     cleave -> add_action( "steel_trap,if=!runeforge.nessingwarys_trapping_apparatus.equipped|focus+cast_regen+25<focus.max" );
-    cleave -> add_action( "serpent_sting,target_if=min:remains,if=refreshable&talent.flanking_strike.enabled|buff.vipers_venom.up" );
+    cleave -> add_action( "serpent_sting,target_if=min:remains,if=refreshable&talent.hydras_bite.enabled" );
+    cleave -> add_action( "carve" );
     cleave -> add_action( "kill_command,target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max" );
+    cleave -> add_action( "serpent_sting,target_if=min:remains,if=refreshable&(!talent.birds_of_prey.enabled|!buff.coordinated_assault.up)&(!runeforge.rylakstalkers_confounding_strikes.equipped|next_wi_bomb.volatile|talent.butchery.enabled)|buff.vipers_venom.up" );
     cleave -> add_action( "mongoose_bite,target_if=max:debuff.latent_poison_injection.stack,if=debuff.latent_poison_injection.stack>9" );
     cleave -> add_action( "raptor_strike,target_if=max:debuff.latent_poison_injection.stack,if=debuff.latent_poison_injection.stack>9" );
-    cleave -> add_action( "carve" );
-    cleave -> add_action( "serpent_sting,target_if=min:remains,if=!talent.vipers_venom.enabled&!runeforge.latent_poison_injectors.equipped&!runeforge.rylakstalkers_confounding_strikes.equipped&!runeforge.butchers_bone_fragments.equipped" );
+    cleave -> add_action( "serpent_sting,target_if=min:remains,if=!talent.birds_of_prey.enabled&!talent.vipers_venom.enabled&!runeforge.latent_poison_injectors.equipped&!runeforge.rylakstalkers_confounding_strikes.equipped" );
     cleave -> add_action( "mongoose_bite,target_if=max:debuff.latent_poison_injection.stack" );
     cleave -> add_action( "raptor_strike,target_if=max:debuff.latent_poison_injection.stack" );
   }
