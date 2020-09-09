@@ -526,6 +526,32 @@ struct flask_base_t : public dbc_consumable_base_t
     }
   }
 
+  void initialize_consumable() override
+  {
+    dbc_consumable_base_t::initialize_consumable();
+
+    if ( !consumable_buff )
+      return;
+
+    // Apply modifiers on the buff stats. Note, presumes that there's a single flask APL line in the profile or bad
+    // things will happen, but that's a relatively good presumption.
+    if ( auto buff = dynamic_cast<stat_buff_t*>( consumable_buff ) )
+    {
+      double mul = 1.0;
+
+      auto ep = player->find_soulbind_spell( "Exacting Prepartion" );
+      if ( ep->ok() )
+        mul *= 1.0 + ep->effectN( 1 ).percent();  // While all effects have the same value, effect#1 applies to flasks
+
+      range::for_each( buff->stats, [mul]( stat_buff_t::buff_stat_t& s ) { s.amount *= mul; } );
+    }
+
+
+    auto ep = player->find_soulbind_spell( "Exacting Prepartion" );
+    if ( !ep->ok() )
+      return;
+  }
+
   bool ready() override
   {
     if ( ! player -> consumables.flask )
@@ -870,25 +896,31 @@ struct food_t : public dbc_consumable_base_t
     return driver;
   }
 
-  // Initialize the food buff, and if it's a stat buff, apply epicurean on it for Pandaren. On
-  // action-based or non-stat-buff food, Epicurean must be applied manually. Note that even if the
-  // food uses a custom initialization, if the resulting buff is a stat buff, Epicurean will be
-  // automatically applied.
+  // Initialize the food buff, and if it's a stat buff, apply epicurean on it for Pandaren and exacting preparation
+  // soulbind. On action-based or non-stat-buff food, these must be applied manually. Note that even if the food uses a
+  // custom initialization, if the resulting buff is a stat buff, modifiers will be automatically applied.
   void initialize_consumable() override
   {
     dbc_consumable_base_t::initialize_consumable();
 
-    // No buff, or non-Pandaren so we are finished here
-    if ( ! consumable_buff || ! is_pandaren( player -> race ) )
-    {
+    if ( !consumable_buff )
       return;
-    }
 
-    // Apply epicurean on the buff stats. Note, presumes that there's a single food APL line in the
-    // profile or bad things will happen, but that's a relatively good presumption.
+    // Apply modifiers on the buff stats. Note, presumes that there's a single food APL line in the profile or bad
+    // things will happen, but that's a relatively good presumption.
     if ( auto buff = dynamic_cast<stat_buff_t*>( consumable_buff ) )
     {
-      range::for_each( buff -> stats, []( stat_buff_t::buff_stat_t& s ) { s.amount *= 2.0; } );
+      double mul = 1.0;
+
+      if ( is_pandaren( player->race ) )
+        mul *= 2.0;
+
+      // TODO: confirm if these two modifiers are multiplicative or additive
+      auto ep = player->find_soulbind_spell( "Exacting Prepartion" );
+      if ( ep->ok() )
+        mul *= 1.0 + ep->effectN( 2 ).percent();  // While all effects have the same value, effect#2 applies to well fed
+
+      range::for_each( buff->stats, [mul]( stat_buff_t::buff_stat_t& s ) { s.amount *= mul; } );
     }
   }
 
