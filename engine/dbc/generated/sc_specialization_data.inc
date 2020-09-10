@@ -1,9 +1,9 @@
 enum specialization_e {
   SPEC_NONE              = 0,
   SPEC_PET               = 1,
-  PET_FEROCITY           = 74,
-  PET_TENACITY           = 81,
-  PET_CUNNING            = 79,
+  PET_FEROCITY           = 535,
+  PET_TENACITY           = 537,
+  PET_CUNNING            = 536,
   WARRIOR_ARMS           = 71,
   WARRIOR_FURY           = 72,
   WARRIOR_PROTECTION     = 73,
