@@ -133,8 +133,8 @@ jobs:
             simc_flags: $SIMC_PROFILE log=1 debug=1
           - type: patchwerk
             simc_flags: $SIMC_PROFILE iterations=10 cleanup_threads=1
-          #- type: dungeon_slice
-          #  simc_flags: $SIMC_PROFILE iterations=10 fight_style=DungeonSlice cleanup_threads=1
+          - type: dungeon_slice
+            simc_flags: $SIMC_PROFILE iterations=10 fight_style=DungeonSlice cleanup_threads=1
 
     steps:
       - uses: actions/cache@v2
