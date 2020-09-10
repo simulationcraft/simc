@@ -199,7 +199,8 @@
       { "data_type": "S", "field": "desc" },
       { "data_type": "i", "field": "id"   },
       { "data_type": "i", "field": "id_bounty_set" },
-	  { "data_type": "i", "field": "unk_1"   }
+      { "data_type": "i", "field": "unk_1"},
+      { "data_type": "i", "field": "unk_2"}
     ]
   },
   "CurrencyCategory": {
