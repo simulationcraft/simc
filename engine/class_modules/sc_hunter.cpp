@@ -4338,8 +4338,6 @@ struct serpent_sting_sv_t: public hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::init();
 
-    update_flags &= ~STATE_HASTE;
-
     if ( action_t* lpi = p() -> find_action( "latent_poison_injection" ) )
       add_child( lpi );
 
@@ -4374,11 +4372,6 @@ struct serpent_sting_sv_t: public hunter_ranged_attack_t
     m *= 1 + p() -> buffs.vipers_venom -> check_value();
 
     return m;
-  }
-
-  timespan_t composite_dot_duration( const action_state_t* s ) const override
-  {
-    return dot_duration * ( tick_time( s ) / base_tick_time );
   }
 
   void assess_damage( result_amount_type type, action_state_t* s ) override
