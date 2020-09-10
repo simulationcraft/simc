@@ -1,5 +1,5 @@
-// Item name descriptions, wow build 9.0.1.35789
-static const std::array<item_name_description_t, 543> __item_name_description_data { {
+// Item name descriptions, wow build 9.0.2.35854
+static const std::array<item_name_description_t, 544> __item_name_description_data { {
   {     2, "Now with extra description"                  },
   {    20, "Season 10"                                   },
   {   226, "Season 10 Elite"                             },
@@ -543,5 +543,6 @@ static const std::array<item_name_description_t, 543> __item_name_description_da
   { 13784, "Razelikh's Defilement"                       },
   { 13785, "Fel Flame Fortification"                     },
   { 13786, "Fiery Soul"                                  },
+  { 13787, "Winterborn"                                  },
 } };
 

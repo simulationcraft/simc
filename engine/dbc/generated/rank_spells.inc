@@ -1,9 +1,10 @@
-// Rank class spells, wow build 9.0.1.35789
-static const std::array<rank_class_spell_t, 335> __rank_spells_data { {
+// Rank class spells, wow build 9.0.2.35854
+static const std::array<rank_class_spell_t, 334> __rank_spells_data { {
   { 10, 269, 322719,      0, "Afterlife"                         , "Rank 2" },
   {  9, 265, 231792,      0, "Agony"                             , "Rank 2" },
-  {  6, 252, 316961,      0, "Apocalypse"                        , "Rank 2" },
-  {  6, 252, 343755,      0, "Apocalypse"                        , "Rank 3" },
+  {  6, 252, 344712,      0, "Apocalypse"                        , "Rank 2" },
+  {  6, 252, 316961,      0, "Apocalypse"                        , "Rank 3" },
+  {  6, 252, 343755,      0, "Apocalypse"                        , "Rank 4" },
   {  8,  62, 231564,      0, "Arcane Barrage"                    , "Rank 2" },
   {  8,  62, 321526,      0, "Arcane Barrage"                    , "Rank 3" },
   {  8,  62, 321752,      0, "Arcane Explosion"                  , "Rank 2" },
@@ -67,7 +68,6 @@ static const std::array<rank_class_spell_t, 335> __rank_spells_data { {
   {  2,  66, 342348,      0, "Crusader Strike"                   , "Rank 2" },
   {  2,  70, 231667,      0, "Crusader Strike"                   , "Rank 3" },
   {  2,  65, 231667,      0, "Crusader Strike"                   , "Rank 3" },
-  {  6, 252, 325554,      0, "Dark Transformation"               , "Rank 2" },
   { 12, 577, 320420,      0, "Darkness"                          , "Rank 2" },
   {  6, 252, 316941,      0, "Death Coil"                        , "Rank 2" },
   {  6, 251, 278223,      0, "Death Strike"                      , "Rank 2" },
@@ -131,6 +131,7 @@ static const std::array<rank_class_spell_t, 335> __rank_spells_data { {
   {  8,  63, 343194,      0, "Fireball"                          , "Rank 3" },
   {  8,  63, 343230,      0, "Flamestrike"                       , "Rank 2" },
   {  8,  63, 321709,      0, "Flamestrike"                       , "Rank 3" },
+  { 10, 269, 344487,      0, "Flying Serpent Kick"               , "Rank 2" },
   {  5, 257, 285485,      0, "Focused Will"                      , "Rank 2" },
   {  5, 256, 285485,      0, "Focused Will"                      , "Rank 2" },
   { 10, 268, 322960,      0, "Fortifying Brew"                   , "Rank 2" },
@@ -286,7 +287,6 @@ static const std::array<rank_class_spell_t, 335> __rank_spells_data { {
   { 10, 269, 231627,      0, "Storm, Earth, and Fire"            , "Rank 2" },
   {  7, 263, 319930,      0, "Stormbringer"                      , "Rank 2" },
   {  9, 266, 334585,      0, "Summon Demonic Tyrant"             , "Rank 2" },
-  {  6, 252, 317250,      0, "Summon Gargoyle"                   , "Rank 2" },
   {  9, 267, 335175,      0, "Summon Infernal"                   , "Rank 2" },
   { 11, 102, 231050,      0, "Sunfire"                           , "Rank 2" },
   { 11, 105, 231050,      0, "Sunfire"                           , "Rank 2" },
@@ -304,7 +304,6 @@ static const std::array<rank_class_spell_t, 335> __rank_spells_data { {
   { 10,   0, 322113,      0, "Touch of Death"                    , "Rank 2" },
   { 10, 268, 325095,      0, "Touch of Death"                    , "Rank 3" },
   { 10, 269, 325215,      0, "Touch of Death"                    , "Rank 3" },
-  { 10, 269, 344360,      0, "Touch of Death"                    , "Rank 3" },
   { 10, 270, 344360,      0, "Touch of Death"                    , "Rank 3" },
   {  8,  62, 343215,      0, "Touch of the Magi"                 , "Rank 2" },
   {  3,   0, 343244,      0, "Tranquilizing Shot"                , "Rank 2" },

@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35789 shadowlands-BETA (hotfix 2020-09-05/35789, git build shadowlands 5e2bf2f946)
+SimulationCraft 901-01 for World of Warcraft 9.0.2.35854 shadowlands-BETA (, no-networking)
 
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -187,7 +187,7 @@ Effects          :
 #1 (id=227730)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=227731)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.45279 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.49807 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=287985)   : Energize Power (30)
                    Base Value: 25 | Scaled Value: 25 (coefficient=0, delta coefficient=0.4) | PvP Coefficient: 1.00000 | Misc Value: fury | Target: Self (1)
 Description      : Quickly attack for $s2 Physical damage.
@@ -424,7 +424,7 @@ Effects          :
 #1 (id=257307)   : Apply Aura (6) | Stun (12)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Mechanic: Stun | Target: Custom (18) -> AOE enemy (instant) (16)
 #2 (id=267052)   : School Damage (2): chromatic
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.20475 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.22523 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 #3 (id=738282)   : Dummy (3)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 Description      : Unleash an eruption of fel energy, dealing $s2 Chaos damage and stunning all nearby enemies for $d.$?s320412[
@@ -503,7 +503,7 @@ Attributes       : ....x... ........ ..x..x.. ........   ........ .x...... .....
                  : Cannot dodge/parry/block (21)
 Effects          :
 #1 (id=268504)   : Trigger Spell (64): Throw Glaive
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.33345 | PvP Coefficient: 1.00000 | Trigger Spell: 337819 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.36679 | PvP Coefficient: 1.00000 | Trigger Spell: 337819 | Target: Enemy (6)
 Description      : Throw a demonic glaive at the target, dealing $337819s1 Physical damage. The glaive can ricochet to $?$s320386[${$337819x1-1} additional enemies][an additional enemy] within 10 yards. 
 
 Name             : Mastery: Demonic Presence (id=185164) [Spell Family (107), Passive] 
@@ -818,7 +818,7 @@ Attributes       : ....x... ........ ........ ........   ........ .x...... .....
                  : Not a proc (105), Requires line of sight (186)
 Effects          :
 #1 (id=282602)   : School Damage (2): chaos
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.23000 | PvP Coefficient: 1.00000 | Radius: 0 - 23 yards | Target: Unknown(87) -> Unknown(134)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.25300 | PvP Coefficient: 1.00000 | Radius: 0 - 23 yards | Target: Unknown(87) -> Unknown(134)
 Description      : $@spelldesc195072
 
 Name             : Chaos Strike (id=193840) [Spell Family (107)] 
@@ -1026,7 +1026,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Not a proc (105), Requires line of sight (186), Periodic effect can crit (265)
 Effects          :
 #1 (id=291051)   : School Damage (2): chromatic
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.11250 | PvP Coefficient: 1.00000 | Radius: 20 yards | Target: Unknown(129)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.12375 | PvP Coefficient: 1.00000 | Radius: 20 yards | Target: Unknown(129)
 Description      : $@spelldesc198013
 
 Name             : Blur (id=198589) [Spell Family (107)] 
@@ -1103,7 +1103,7 @@ Effects          :
 #1 (id=292270)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -70 | Scaled Value: -70 | PvP Coefficient: 1.00000 | Radius: 0 - 5 yards | Mechanic: Snare | Target: At Caster (22) -> AOE enemy (15)
 #2 (id=292271)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.11934 | PvP Coefficient: 1.00000 | Radius: 0 - 5 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.13127 | PvP Coefficient: 1.00000 | Radius: 0 - 5 yards | Target: At Caster (22) -> AOE enemy (15)
 Description      : $@spelldesc198793
 Tooltip          : Movement speed reduced by $s1%.
 
@@ -1127,7 +1127,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Not a proc (105), Requires off-hand weapon (120)
 Effects          :
 #1 (id=293648)   : School Damage (2): chaos
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.55000 | PvP Coefficient: 1.00000 | Chain Multiplier: 0.5 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.60500 | PvP Coefficient: 1.00000 | Chain Multiplier: 0.5 | Chain Targets: 1 | Target: Enemy (6)
 Description      : $@spelldesc162794
 
 Name             : Blade Dance (id=199552) [Spell Family (107)] 
@@ -1151,7 +1151,7 @@ Effects          :
 #1 (id=293656)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 #2 (id=293657)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.10000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.11000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 Description      : $@spelldesc188499
 
 Name             : Metamorphosis (id=200166) [Spell Family (107)] 
@@ -1173,7 +1173,7 @@ Effects          :
 #1 (id=294655)   : Apply Aura (6) | Stun (12)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Mechanic: Stun | Target: At Caster (22) -> AOE enemy (15)
 #2 (id=294659)   : School Damage (2): chromatic
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.32760 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.36036 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 #3 (id=376438)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Mechanic: Snare
 Description      : $@spelldesc191427
@@ -1200,7 +1200,7 @@ Effects          :
 #1 (id=295486)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 #2 (id=295487)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.30000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.33000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 Description      : $@spelldesc188499
 
 Name             : Activating Specialization (id=200749) [Hidden] 
@@ -1275,7 +1275,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Not a proc (105), Requires off-hand weapon (120)
 Effects          :
 #1 (id=296759)   : School Damage (2): chaos
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.71500 | PvP Coefficient: 1.00000 | Chain Multiplier: 0.5 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.78650 | PvP Coefficient: 1.00000 | Chain Multiplier: 0.5 | Chain Targets: 1 | Target: Enemy (6)
 Description      : $@spelldesc201427
 
 Name             : Metamorphosis (id=201453) [Spell Family (107), Hidden] 
@@ -1863,7 +1863,7 @@ Effects          :
 #1 (id=300628)   : Apply Aura (6) | Proc Trigger Spell (42)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=706162)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=706163)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=706164)   : Apply Aura (6) | Dummy (4)
@@ -1940,7 +1940,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=300651)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.12000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.13200 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=300652)   : Energize Power (30)
                    Base Value: 16 | Scaled Value: 16 (coefficient=0, delta coefficient=0.5) | PvP Coefficient: 1.00000 | Misc Value: fury | Target: Self (1)
 Description      : Inflicts $s1 Shadow damage and generates $m2 to $M2 Fury.
@@ -2654,7 +2654,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ..x..... .....
                  : Tick on application (169)
 Effects          :
 #1 (id=307173)   : Apply Aura (6) | Periodic Heal (8): every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.22500 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.18000 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc207697
 Tooltip          : Healing $w1 health every $t1 sec.
 
@@ -2721,7 +2721,7 @@ Effects          :
                    Affected Spells: Infernal Strike (189110), Infernal Strike (189112), Fiery Brand (204021), Sigil of Silence (204490), Sigil of Flame (204598), Sigil of Chains (204843), Sigil of Misery (207685), Fiery Brand (207744), Fiery Brand (207771), Fel Devastation (212105), Felblade (213243), Felblade (232893), Spirit Bomb (247455), Immolation Aura (258921), Immolation Aura (258922), Elysian Decree (307046), Fel Devastation (333110), Elysian Decree (339893), Elysian Decree (339894)
                    Family Flags: 1, 30, 33, 36, 49, 55, 61, 67, 68
 Description      : $@spelldesc204021
-Tooltip          : Branded, dealing $204021s1% less damage to the branding Demon Hunter$?s264002[ and taking $s2% more Fire damage from them][].
+Tooltip          : Branded, dealing $204021s1% less damage to $@auracaster$?s264002[ and taking $s2% more Fire damage from them][].
 
 Name             : Burning Alive (id=207760) [Spell Family (107)] 
 Class            : Demon Hunter
@@ -2770,7 +2770,7 @@ Effects          :
 #3 (id=707094)   : Apply Aura (6) | Periodic Damage (3): fire every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.05000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc204021
-Tooltip          : Branded, taking $w3 Fire damage every $t3 sec, and dealing $204021s1% less damage to the branding Demon Hunter$?s264002[ and taking $s2% more Fire damage from them][].
+Tooltip          : Branded, taking $w3 Fire damage every $t3 sec, and dealing $204021s1% less damage to $@auracaster$?s264002[ and taking $s2% more Fire damage from them][].
 
 Name             : Nemesis (id=208605) [Spell Family (107)] 
 Class            : Demon Hunter
@@ -3059,7 +3059,7 @@ Effects          :
 #1 (id=311156)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 #2 (id=311157)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.17400 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.19140 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 Description      : $@spelldesc210152
 
 Name             : Death Sweep (id=210155) [Spell Family (107)] 
@@ -3083,7 +3083,7 @@ Effects          :
 #1 (id=311159)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 #2 (id=311160)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.52000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.57500 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 Description      : $@spelldesc210152
 
 Name             : Soul Fragments (id=210788) [Spell Family (107), Hidden] 
@@ -3186,7 +3186,7 @@ Spell Level      : 11
 Range            : 20 yards
 GCD              : 1.5 seconds
 Duration         : 2 seconds
-Cooldown         : 45 seconds
+Cooldown         : 60 seconds
 Family Flags     : 78
 Attributes       : ........ ........ ........ ........   ..x...x. .x...... ........ ....xx.. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3281,11 +3281,11 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=315235)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 11 | Scaled Value: 11 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Demon's Bite (162243), Chaos Nova (179057), Throw Glaive (185123), Fel Rush (192611), Eye Beam (198030), Vengeful Retreat (198813), Chaos Strike (199547), Blade Dance (199552), Metamorphosis (200166), Blade Dance (200685), Annihilation (201428), Demon Blades (203796), Death Sweep (210153), Death Sweep (210155), Felblade (213243), Chaos Strike (222031), Annihilation (227518), Essence Break (258860), Trail of Ruin (258883), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926), Unbound Chaos (275148), Elysian Decree (307046), Sinful Brand (317009), The Hunt (323802), Throw Glaive (337819), Elysian Decree (339893), Elysian Decree (339894), Glaive Tempest (342817), The Hunt (344325)
                    Family Flags: 16
 #2 (id=315236)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 11 | Scaled Value: 11 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Demon's Bite (162243), Chaos Nova (179057), Throw Glaive (185123), Fel Rush (192611), Eye Beam (198030), Vengeful Retreat (198813), Chaos Strike (199547), Blade Dance (199552), Metamorphosis (200166), Blade Dance (200685), Annihilation (201428), Demon Blades (203796), Death Sweep (210153), Death Sweep (210155), Felblade (213243), Chaos Strike (222031), Annihilation (227518), Essence Break (258860), Trail of Ruin (258883), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926), Unbound Chaos (275148), Elysian Decree (307046), Sinful Brand (317009), The Hunt (323802), Throw Glaive (337819), Elysian Decree (339893), Elysian Decree (339894), Glaive Tempest (342817), The Hunt (344325)
                    Family Flags: 16
 #3 (id=315237)   : Apply Aura (6) | Hasted Global Cooldown (417)
@@ -3894,7 +3894,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Not a proc (105), Requires main-hand weapon (106)
 Effects          :
 #1 (id=342015)   : School Damage (2): chaos
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.45500 | PvP Coefficient: 1.00000 | Chain Multiplier: 0.5 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.50050 | PvP Coefficient: 1.00000 | Chain Multiplier: 0.5 | Chain Targets: 1 | Target: Enemy (6)
 Description      : $@spelldesc201427
 
 Name             : Soul Cleave (id=228477) [Spell Family (107)] 
@@ -3926,9 +3926,9 @@ Effects          :
 #3 (id=344030)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #4 (id=344031)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.05000 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.50000 | PvP Coefficient: 1.00000 | Target: Self (1)
 #5 (id=808444)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.35000 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.50000 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Viciously strike $228478s2 enemies in front of you for $228478s1 Physical damage and heal yourself for $s4.
 
 Consumes up to $s3 Soul Fragments within $s1 yds$?s321021[ and heals you for an additional $s5 for each Soul Fragment consumed][].
@@ -4378,7 +4378,7 @@ Attributes       : ....x... ........ ........ ........   ........ .x...... .....
                  : Requires main-hand weapon (106)
 Effects          :
 #1 (id=483076)   : School Damage (2): none
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.53703 | PvP Coefficient: 1.00000 | Radius: 10 yards | Target: Cone Front (104)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.59073 | PvP Coefficient: 1.00000 | Radius: 10 yards | Target: Cone Front (104)
 Description      : Slash all enemies in front of you for $s1 Chaos damage, and increase the damage your Chaos Strike and Blade Dance deal to them by $320338s1% for $320338d.
 
 Name             : Insatiable Hunger (id=258876) [Spell Family (107), Passive, Hidden] 
@@ -4448,7 +4448,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Periodic effect can crit (265)
 Effects          :
 #1 (id=483108)   : Apply Aura (6) | Periodic Damage (3): chromatic every 1 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.13400 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.14740 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc258881
 Tooltip          : Suffering $w1 Chaos damage every $t1 sec.
 
@@ -4535,7 +4535,7 @@ Attributes       : ........ ........ ..x..... ........   ...x...x .x...... .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=483170)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.24570 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.27027 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 Description      : $@spelldesc258920
 
 Name             : Immolation Aura (id=258922) [Spell Family (107)] 
@@ -4555,7 +4555,7 @@ Attributes       : ....x... ........ ..x..... ........   ...x...x ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=483172)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.09173 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.10090 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 #2 (id=483173)   : Energize Power (30)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: fury | Target: Self (1)
 #3 (id=807415)   : Energize Power (30)
@@ -4607,7 +4607,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=483180)   : School Damage (2): chromatic
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.22000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.24200 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 #2 (id=819793)   : Dummy (3)
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc258925
@@ -5680,7 +5680,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=728000)   : School Damage (2): chromatic
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 2.50000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 2.75000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
 #2 (id=728001)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 275144
 Description      : $@spelldesc275144
@@ -7066,7 +7066,7 @@ Attributes       : ........ ........ ........ x..x....   .....x.. ........ .....
                  : Does not break stealth (37), Requires line of sight (186)
 Effects          :
 #1 (id=785367)   : School Damage (2): arcane
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.20000 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.32000 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: AOE enemy (instant) (16)
 #2 (id=839432)   : Trigger Spell (64): Elysian Decree
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 339893 | Target: Unknown(87)
 Description      : $@spelldesc306830
@@ -7093,7 +7093,7 @@ Attributes       : ....x... ........ ........ ..x.....   ........ ........ .....
                  : Periodic effect affected by haste (173), Periodic effect can crit (265)
 Effects          :
 #1 (id=801896)   : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.00000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.10000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 #2 (id=802000)   : Apply Aura (6) | Modify Casting Speed (216)
                    Base Value: -30 | Scaled Value: -30 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=802001)   : Apply Aura (6) | Modify Ranged and Melee Attack Speed% (342)
@@ -7393,7 +7393,7 @@ Effects          :
                    Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Demonic Wards (203513), Darkness (209426), Demonic Wards (278386)
                    Family Flags: 63
-Description      : Your tattoos reduce all damage taken by 10%.
+Description      : Your tattoos reduce all damage taken by ${$abs($203513s1+$s1)}%.
 
 Name             : Demonic Wards (desc=Rank 3) (id=320382) [Spell Family (107), Passive] 
 Class            : Vengeance Demon Hunter
@@ -7414,7 +7414,7 @@ Effects          :
                    Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Demonic Wards (203513), Darkness (209426), Demonic Wards (278386)
                    Family Flags: 63
-Description      : Your tattoos reduce all damage taken by 15%.
+Description      : Your tattoos reduce all damage taken by ${$abs($203513s1+$320381s1+$s1)}%.
 
 Name             : Demonic Wards (desc=Rank 2) (id=320383) [Spell Family (107), Passive] 
 Class            : Havoc Demon Hunter
@@ -7974,7 +7974,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=809187)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 8000 | Scaled Value: 8000 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 6000 | Scaled Value: 6000 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Fel Devastation causes you to enter demon form for ${$s1/1000} sec after it finishes dealing damage.
 
 Name             : The Hunt (desc=Night Fae) (id=323639) [Spell Family (107)] 
@@ -8023,7 +8023,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=812977)   : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 2.50000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 2.75000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=812978)   : Apply Aura (6) | Dummy (4)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=813286)   : Trigger Spell (64): The Hunt
@@ -8703,7 +8703,7 @@ Attributes       : ........ ........ ..x..x.. ........   ........ .x...... .....
                  : Cannot dodge/parry/block (21)
 Effects          :
 #1 (id=836037)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.33345 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 2 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.36679 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 2 | Target: Enemy (6)
 Description      : Throw a demonic glaive at the target, dealing $s1 Physical damage. The glaive can ricochet to $?$s320386[${$x1-1} additional enemies][an additional enemy] within 10 yards. 
 
 Name             : Fel Bombardment (id=337849) [Spell Family (107)] 
@@ -9148,7 +9148,7 @@ Attributes       : ........ ........ ........ x..x....   .....x.. ........ .....
                  : Does not break stealth (37), Requires line of sight (186)
 Effects          :
 #1 (id=839433)   : School Damage (2): arcane
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.20000 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.32000 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: AOE enemy (instant) (16)
 Description      : $@spelldesc306830
 
 Name             : Repeat Decree (id=339895) [Spell Family (107), Passive, Hidden] 
@@ -9526,7 +9526,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Tick on application (169), Periodic effect can crit (265)
 Effects          :
 #1 (id=868538)   : Apply Aura (6) | Periodic Damage (3): magic every 1 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.14500 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.15950 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc323802
 Tooltip          : Suffering $w1 Chaos damage every $t1 sec.
 

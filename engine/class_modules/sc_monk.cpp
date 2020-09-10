@@ -58,6 +58,11 @@ namespace pets
 {
 struct storm_earth_and_fire_pet_t;
 }
+namespace orbs
+{
+struct chi_orb_t;
+struct energy_orb_t;
+}  // namespace orbs
 struct monk_t;
 
 enum sef_pet_e
@@ -229,6 +234,7 @@ public:
     buff_t* mana_tea;
     buff_t* refreshing_jade_wind;
     buff_t* teachings_of_the_monastery;
+    buff_t* touch_of_death;
     buff_t* thunder_focus_tea;
     buff_t* uplifting_trance;
 
@@ -424,6 +430,7 @@ public:
     const spell_data_t* touch_of_death;
     const spell_data_t* touch_of_death_2;
     const spell_data_t* touch_of_death_3_brm;
+    const spell_data_t* touch_of_death_3_mw;
     const spell_data_t* touch_of_death_3_ww;
     const spell_data_t* vivify;
     const spell_data_t* vivify_2_brm;
@@ -477,6 +484,7 @@ public:
     const spell_data_t* disable_2;
     const spell_data_t* fists_of_fury;
     const spell_data_t* flying_serpent_kick;
+    const spell_data_t* flying_serpent_kick_2;
     const spell_data_t* invoke_xuen;
     const spell_data_t* invoke_xuen_2;
     const spell_data_t* reverse_harm;
@@ -990,6 +998,10 @@ public:
 
   void accumulate_gale_burst_damage( action_state_t* );
 };
+
+namespace orbs
+{
+}
 
 // ==========================================================================
 // Monk Pets & Statues
@@ -2774,7 +2786,7 @@ public:
         p()->buff.fury_of_xuen_stacks->trigger();
 
       if ( p()->conduit.xuens_bond->ok() )
-        p()->cooldown.invoke_xuen->adjust( -1 * p()->conduit.xuens_bond->effectN( 2 ).time_value(), true );
+        p()->cooldown.invoke_xuen->adjust( p()->conduit.xuens_bond->effectN( 2 ).time_value(), true ); // Saved as -100
     }
     else
     {
@@ -3595,6 +3607,10 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
       if ( base_t::data().affected_by( p()->passives.hit_combo->effectN( 1 ) ) )
         am *= 1 + p()->buff.hit_combo->stack_value();
     }
+
+    // Increases just physical damage
+    if ( p()->buff.touch_of_death->up() )
+      am *= 1 + p()->buff.touch_of_death->value();
 
     return am;
   }
@@ -5226,6 +5242,14 @@ struct touch_of_death_t : public monk_melee_attack_t
 
   }
 
+  void execute() override
+  {
+    monk_melee_attack_t::execute();
+
+    if ( p()->spec.touch_of_death_3_mw )
+      p()->buff.touch_of_death->trigger();
+  }
+
   virtual void impact( action_state_t* s ) override
   {
     // Damage is associated with the players non-buffed max HP
@@ -5249,11 +5273,6 @@ struct touch_of_death_t : public monk_melee_attack_t
 
     if ( p()->spec.touch_of_death_3_brm )
       p()->partial_clear_stagger_amount( amount * p()->spec.touch_of_death_3_brm->effectN( 1 ).percent() );
-  }
-
-  void execute() override
-  {
-    monk_melee_attack_t::execute();
   }
 };
 
@@ -5474,6 +5493,9 @@ struct flying_serpent_kick_t : public monk_melee_attack_t
     attack_power_mod.direct         = p->passives.flying_serpent_kick_damage->effectN( 1 ).ap_coeff();
     aoe                             = -1;
     p->cooldown.flying_serpent_kick = cooldown;
+
+    if ( p->spec.flying_serpent_kick_2 )
+      p->cooldown.flying_serpent_kick->duration += p->spec.flying_serpent_kick_2->effectN( 1 ).time_value(); // Saved as -5000
   }
 
   void reset() override
@@ -8045,6 +8067,7 @@ void monk_t::init_spells()
   spec.touch_of_death            = find_class_spell( "Touch of Death" );
   spec.touch_of_death_2          = find_rank_spell( "Touch of Death", "Rank 2" );
   spec.touch_of_death_3_brm      = find_rank_spell( "Touch of Death", "Rank 2", MONK_BREWMASTER );
+  spec.touch_of_death_3_mw       = find_rank_spell( "Touch of Death", "Rank 2", MONK_MISTWEAVER );
   spec.touch_of_death_3_ww       = find_rank_spell( "Touch of Death", "Rank 2", MONK_WINDWALKER );
   spec.vivify                    = find_class_spell( "Vivify" );
   spec.vivify_2_brm              = find_rank_spell( "Vivify", "Rank 2", MONK_BREWMASTER );
@@ -8099,6 +8122,7 @@ void monk_t::init_spells()
   spec.disable_2                  = find_rank_spell( "Disable", "Rank 2" );
   spec.fists_of_fury              = find_specialization_spell( "Fists of Fury" );
   spec.flying_serpent_kick        = find_specialization_spell( "Flying Serpent Kick" );
+  spec.flying_serpent_kick_2      = find_rank_spell( "Flying Serpent Kick", "Rank 2" );
   spec.invoke_xuen                = find_specialization_spell( "Invoke Xuen, the White Tiger" );
   spec.invoke_xuen_2              = find_rank_spell( "Invoke Xuen, the White Tiger", "Rank 2" );
   spec.reverse_harm               = find_spell( 342928 );
@@ -8498,6 +8522,10 @@ void monk_t::create_buffs()
   buff.thunder_focus_tea =
       make_buff( this, "thunder_focus_tea", spec.thunder_focus_tea )
           ->modify_max_stack( (int)( talent.focused_thunder ? talent.focused_thunder->effectN( 1 ).base_value() : 0 ) );
+
+  buff.touch_of_death = make_buff( this, "touch_of_death", find_spell( 344361 ) )
+                            ->set_default_value_from_effect( 1 )
+                            ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   buff.uplifting_trance = make_buff( this, "uplifting_trance", find_spell( 197916 ) )
                               ->set_chance( spec.renewing_mist->effectN( 2 ).percent() )

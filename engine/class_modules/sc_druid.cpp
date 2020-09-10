@@ -1703,10 +1703,10 @@ struct survival_instincts_buff_t : public druid_buff_t<buff_t>
 struct kindred_empowerment_buff_t : public druid_buff_t<buff_t>
 {
   double pool;
-  double cumul_pool;
+  double partner_pool;
 
   kindred_empowerment_buff_t( druid_t& p )
-    : base_t( p, "kindred_empowerment", p.covenant.kindred_empowerment ), pool( 1.0 ), cumul_pool( 0.0 )
+    : base_t( p, "kindred_empowerment", p.covenant.kindred_empowerment ), pool( 1.0 ), partner_pool( 0.0 )
   {
     set_refresh_behavior( buff_refresh_behavior::DURATION );
   }
@@ -1715,54 +1715,52 @@ struct kindred_empowerment_buff_t : public druid_buff_t<buff_t>
   {
     base_t::expire_override( s, d );
 
-    pool       = 1.0;
-    cumul_pool = 0.0;
+    pool         = 1.0;
+    partner_pool = 1.0;
   }
 
   void add_pool( const action_state_t* s )
   {
     trigger();
 
-    double amount = s->result_amount * p().covenant.kindred_empowerment_energize->effectN( 1 ).percent() *
-                    p().kindred_empowerment_ratio;
+    double partner_amount = s->result_amount * p().covenant.kindred_empowerment_energize->effectN( 1 ).percent();
+    double amount         = partner_amount * p().kindred_empowerment_ratio;
 
-    if ( sim->debug )
-      sim->print_debug( "Kindred Empowerment: Adding {} from {} to pool of {}", amount, s->action->name(), pool );
+    sim->print_debug( "Kindred Empowerment: Adding {} from {} to pool of {}", amount, s->action->name(), pool );
 
+    // since kindred_empowerment_ratio is meant to apply to the pool you RECEIVE and not to the pool you send, don't
+    // apply it to partner_pool, which is meant to represent the damage the other person does.
     pool += amount;
-    cumul_pool += amount;
+    partner_pool += amount;
+
   }
 
   void use_pool( const action_state_t* s )
   {
-    if ( pool <= 1 )  // minimum pool value of 1
+    if ( pool <= 1.0 )  // minimum pool value of 1
       return;
 
-    double amount = std::min( s->result_amount * p().covenant.kindred_empowerment->effectN( 2 ).percent(), pool - 1);
+    double amount = s->result_amount * p().covenant.kindred_empowerment->effectN( 2 ).percent();
 
     if ( amount == 0 )
       return;
 
-    if ( sim->debug )
-      sim->print_debug( "Kindred Empowerment: Using {} from pool of {} on {}", amount, pool, s->action->name() );
+    sim->print_debug( "Kindred Empowerment: Using {} from pool of {} on {}", amount, pool, s->action->name() );
 
     auto damage = p().active.kindred_empowerment;
     damage->set_target( s->target );
-    damage->base_dd_min = damage->base_dd_max = amount;
-    damage->execute();
-
+    damage->base_dd_min = damage->base_dd_max = std::min( amount, pool - 1.0 );
+    damage->schedule_execute();
     pool -= amount;
-  }
 
-  void snapshot()
-  {
-    if ( cumul_pool > 0 )
-    {
-      auto partner = p().active.kindred_empowerment_partner;
-      partner->set_target( p().target );
-      partner->base_dd_min = partner->base_dd_max = cumul_pool;
-      partner->execute();
-    }
+    if ( partner_pool <= 1.0 )
+      return;
+
+    auto partner = p().active.kindred_empowerment_partner;
+    partner->set_target( s->target );
+    partner->base_dd_min = partner->base_dd_max = std::min( amount, partner_pool - 1.0 );
+    partner->schedule_execute();
+    partner_pool -= amount;
   }
 };
 
@@ -5590,7 +5588,7 @@ struct kindred_empowerment_t : public druid_spell_t
   kindred_empowerment_t( druid_t* p, util::string_view n )
     : druid_spell_t( n, p, p->covenant.kindred_empowerment_damage )
   {
-    background = true;
+    background = dual = true;
     may_miss = may_crit = callbacks = false;
     snapshot_flags |= STATE_TGT_MUL_DA;
     update_flags |= STATE_TGT_MUL_DA;
@@ -8210,7 +8208,7 @@ void druid_t::init_assessors()
         return assessor::CONTINUE;
 
       // TODO: Confirm added damage doesn't add to the pool
-      if ( s_action == active.kindred_empowerment )
+      if ( s_action->id == active.kindred_empowerment->id || s_action->id == active.kindred_empowerment_partner->id )
         return assessor::CONTINUE;
 
       if ( buff.kindred_empowerment_energize->up() )
@@ -8305,10 +8303,10 @@ void druid_t::create_buffs()
   buff.solstice = make_buff( this, "solstice", talent.solstice->effectN( 1 ).trigger() );
 
   buff.starfall = make_buff( this, "starfall", spec.starfall )
-    ->apply_affecting_aura( talent.stellar_drift )
     ->set_period( 1_s )
     ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
-    ->set_tick_zero( true );
+    ->set_tick_zero( true )
+    ->apply_affecting_aura( talent.stellar_drift );
 
   buff.starlord = make_buff( this, "starlord", find_spell( 279709 ) )
     ->set_default_value_from_effect_type( A_HASTE_ALL )
@@ -8460,11 +8458,7 @@ void druid_t::create_buffs()
   buff.kindred_empowerment = make_buff<kindred_empowerment_buff_t>( *this );
 
   buff.kindred_empowerment_energize =
-      make_buff( this, "kindred_empowerment_energize", covenant.kindred_empowerment_energize )
-          ->set_stack_change_callback( [this]( buff_t*, int, int new_ ) {
-            if ( !new_ )
-              debug_cast<buffs::kindred_empowerment_buff_t*>( buff.kindred_empowerment )->snapshot();
-          } );
+      make_buff( this, "kindred_empowerment_energize", covenant.kindred_empowerment_energize );
 
   buff.convoke_the_spirits = make_buff( this, "convoke_the_spirits", covenant.night_fae )
     ->set_cooldown( 0_ms )
