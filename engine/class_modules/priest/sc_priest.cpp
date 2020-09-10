@@ -1063,6 +1063,7 @@ struct void_lasher_mind_sear_t final : public priest_pet_spell_t
   {
     channeled    = true;
     hasted_ticks = false;
+    aoe          = -1;
 
     // TODO: Not found in spell data, roughly approximating this value
     spell_power_mod.direct = 0.2;
