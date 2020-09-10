@@ -119,6 +119,7 @@ enum proc_types2
   PROC2_CAST,                   // Any proc_types1 cast finished
   PROC2_CAST_DAMAGE,            // Damaging proc_types1 cast finished
   PROC2_CAST_HEAL,              // Healing proc_types1 cast finished
+  PROC2_CAST_INTERRUPT,         // actions with 'is_interrupt' set to true
   PROC2_TYPE_MAX,
 
   // Pseudo types
@@ -198,6 +199,7 @@ enum proc_flag2
   PF2_CAST                    = 1 << PROC2_CAST,
   PF2_CAST_DAMAGE             = 1 << PROC2_CAST_DAMAGE,
   PF2_CAST_HEAL               = 1 << PROC2_CAST_HEAL,
+  PF2_CAST_INTERRUPT          = 1 << PROC2_CAST_INTERRUPT,
 
   // Pseudo types
   PF2_PERIODIC_HEAL           = 1 << PROC2_PERIODIC_HEAL,
@@ -757,7 +759,7 @@ enum effect_type_t : unsigned {
     E_TALENT_SPEC_COUNT = 161,
     E_TALENT_SPEC_SELECT = 162,
     E_163 = 163,
-    E_164 = 164,
+    E_CANCEL_AURA = 164,
     E_165 = 165,
     E_166 = 166,
     E_167 = 167,

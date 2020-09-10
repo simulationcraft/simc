@@ -1424,9 +1424,10 @@ class SpellDataGenerator(DataGenerator):
          316704,
          # Shadowlands
          # Soulbinds
+         321524, # Niya's Tools: Poison (night fae/niya)
          320130, 320212, # Social Butterfly vers buff (night fae/dreamweaver)
          342181, 342183, # Embody the Construct damage/heal (necrolord/emeni)
-         332525, 341163, 341165, 332526, # Bron's Call to Action
+         332525, 341163, 341165, 332526, # Bron's Call to Action (kyrian/mikanikos)
         ),
 
         # Warrior:
@@ -1580,6 +1581,7 @@ class SpellDataGenerator(DataGenerator):
             ( 288342, 0 ),          # Thought Harvester trigger buff for Mind Sear
             ( 336142, 5 ),          # Shadowflame Prism legendary effect DMG Component
             ( 343144, 0 ),          # Dissonant Echoes free Void Bolt proc
+            ( 344752, 5 ),          # Void Lasher "Mind Sear"
         ),
 
         # Death Knight:

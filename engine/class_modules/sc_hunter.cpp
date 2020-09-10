@@ -2111,10 +2111,7 @@ struct basic_attack_t : public hunter_main_pet_attack_t
     parse_options( options_str );
 
     school = SCHOOL_PHYSICAL;
-
     attack_power_mod.direct = 1 / 3.0;
-    // 28-06-2018: While spell data says it has a base damage in-game testing shows that it doesn't use it.
-    base_dd_min = base_dd_max = 0;
 
     auto wild_hunt_spell = p -> find_spell( 62762 );
     wild_hunt.cost_pct = 1 + wild_hunt_spell -> effectN( 2 ).percent();
@@ -3027,6 +3024,9 @@ struct arcane_shot_t: public arcane_shot_base_t
     arcane_shot_base_t( "arcane_shot", p )
   {
     parse_options( options_str );
+
+    if ( p -> specialization() == HUNTER_MARKSMANSHIP )
+      background = p -> talents.chimaera_shot.ok();
   }
 
   void execute() override
@@ -4907,10 +4907,12 @@ struct bestial_wrath_t: public hunter_spell_t
 
     for ( auto pet : pets::active<pets::hunter_main_pet_base_t>( p() -> pets.main, p() -> pets.animal_companion ) )
     {
-      // TODO: in-game the pet should be in 10y and engaged with the target,
-      //       so it's actually still possible to precast it
-      pet -> active.bestial_wrath -> set_target( target );
-      pet -> active.bestial_wrath -> execute();
+      // Assume the pet is out of range / not engaged when precasting.
+      if ( !precombat )
+      {
+        pet -> active.bestial_wrath -> set_target( target );
+        pet -> active.bestial_wrath -> execute();
+      }
       trigger_buff( pet -> buffs.bestial_wrath, precast_time );
     }
 

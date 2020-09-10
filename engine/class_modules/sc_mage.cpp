@@ -7347,7 +7347,6 @@ double mage_t::composite_attribute_multiplier( attribute_e attr ) const
 
   if ( attr == ATTR_INTELLECT )
   {
-    // TODO: Focus Magic (and probably also Siphon Storm) only increase base Intellect at the moment
     m *= 1.0 + buffs.focus_magic_int->check_stack_value();
     m *= 1.0 + buffs.siphon_storm->check_stack_value();
   }

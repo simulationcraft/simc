@@ -8,7 +8,6 @@
 
 #include "simulationcraft.hpp"
 
-
 namespace priestspace
 {
 namespace actions
@@ -228,6 +227,8 @@ struct mind_sear_tick_t final : public priest_spell_t
   {
     priest_spell_t::impact( s );
 
+    priest().trigger_eternal_call_to_the_void( "mind_sear" );
+    
     trigger_dark_thoughts( s->target, priest().procs.dark_thoughts_sear );
   }
 };
@@ -291,7 +292,7 @@ struct mind_flay_t final : public priest_spell_t
   {
     priest_spell_t::tick( d );
 
-    priest().trigger_eternal_call_to_the_void( d );
+    priest().trigger_eternal_call_to_the_void( "mind_flay" );
 
     trigger_dark_thoughts( d->target, priest().procs.dark_thoughts_flay );
   }

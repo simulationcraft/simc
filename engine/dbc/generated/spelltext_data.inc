@@ -1,5 +1,5 @@
 // Spell text, wow build 9.0.2.35854
-static const std::array<spelltext_data_t, 15556> __spelltext_data { {
+static const std::array<spelltext_data_t, 15559> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -13929,6 +13929,7 @@ static const std::array<spelltext_data_t, 15556> __spelltext_data { {
   { 321507, "Applies Touch of the Magi to your current target, accumulating $s1% of the damage you deal to the target for $210824d, and then exploding for that amount of Arcane damage to the target and reduced damage to all nearby enemies.$?a343215[\r\n\r\n|cFFFFFFFFGenerates $s2 Arcane Charges.|r][]", 0, 0 },
   { 321510, "$@spelldesc320662", "Haste increased by $w1%.", 0 },
   { 321519, "$@spelldesc320660", "Suffering $w1 Nature damage every $t1 sec.", 0 },
+  { 321524, "$@spelldesc320660", 0, 0 },
   { 321526, "Arcane Barrage grants you $s1% of your maximum mana per Arcane Charge spent.", 0, "Rank 3" },
   { 321527, "$@spelldesc320687", "Movement speed increased by $m1%.", 0 },
   { 321530, "Command your pet to tear into your target, causing your target to bleed for $<damage> over $321538d and increase all damage taken from your pet by $321538s2% for $321538d.", 0, 0 },
@@ -14680,6 +14681,7 @@ static const std::array<spelltext_data_t, 15556> __spelltext_data { {
   { 335902, "Dropping Windfury Totem grants you $335903s1% inceased chance to gain Windfury Weapon for $335903d. \r\n\r\nThis can only occur once every $335904d.", 0, 0 },
   { 335903, "$@spelldesc335902", "Chance to activate Windfury Weapon increased by $s1%.", 0 },
   { 335904, "$@spelldesc335902", "Unable to gain effects of Doom Winds.", 0 },
+  { 335913, "$@spelldesc323999", 0, 0 },
   { 336009, "$@spelldesc336011", "Penance is free and will fire ${$s1/-20} extra bolts of light.", 0 },
   { 336011, "Power Word: Radiance has a $s1% chance to cause your next Penance to be free and fire $s2 extra bolts.", "Penance will fire for ${$s1/1000} additional seconds.", 0 },
   { 336054, "$@spelldesc336055", "Mastery increased by $w1. Only usable outdoors in the Shadowlands.", 0 },
@@ -15556,6 +15558,7 @@ static const std::array<spelltext_data_t, 15556> __spelltext_data { {
   { 344712, "Apocalypse transforms your $?s207313[abomination]?s58640[geist][ghoul] into a powerful hulking monstrosity for $63560d.", 0, "Rank 2" },
   { 344732, "Unleash 3 incendiary flames at your target inflicting $s1 Fire damage.", 0, 0 },
   { 344748, "$@spelldesc336143", 0, 0 },
+  { 344752, "$@spelldesc336214", 0, 0 },
 } };
 
 // spelltext hotfix entries, wow build 9.0.2.35854

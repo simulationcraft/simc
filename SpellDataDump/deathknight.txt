@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.2.35854 shadowlands-BETA (, no-networking)
+SimulationCraft 901-01 for World of Warcraft 9.0.2.35854 shadowlands-BETA (hotfix 2020-09-10/35854)
 
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -976,11 +976,13 @@ $@spelldesc55095
 Variables        : $CAP=$?$OWB==0[${$AP*0.98}][${($AP+$OAP)*2/3}]--2H, DW
 
 Name             : Summon Gargoyle (id=49206) [Spell Family (15)] 
+Hotfixed         : GCD (0 -> 1500)
 Class            : Death Knight
 School           : Shadow
 Spell Type       : None
 Spell Level      : 34
 Range            : 30 yards
+GCD              : 1.5 seconds
 Duration         : 35 seconds
 Cooldown         : 180 seconds
 Category         : 1834
