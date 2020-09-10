@@ -4910,10 +4910,12 @@ struct bestial_wrath_t: public hunter_spell_t
 
     for ( auto pet : pets::active<pets::hunter_main_pet_base_t>( p() -> pets.main, p() -> pets.animal_companion ) )
     {
-      // TODO: in-game the pet should be in 10y and engaged with the target,
-      //       so it's actually still possible to precast it
-      pet -> active.bestial_wrath -> set_target( target );
-      pet -> active.bestial_wrath -> execute();
+      // Assume the pet is out of range / not engaged when precasting.
+      if ( !precombat )
+      {
+        pet -> active.bestial_wrath -> set_target( target );
+        pet -> active.bestial_wrath -> execute();
+      }
       trigger_buff( pet -> buffs.bestial_wrath, precast_time );
     }
 
