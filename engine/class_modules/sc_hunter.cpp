@@ -2111,10 +2111,7 @@ struct basic_attack_t : public hunter_main_pet_attack_t
     parse_options( options_str );
 
     school = SCHOOL_PHYSICAL;
-
     attack_power_mod.direct = 1 / 3.0;
-    // 28-06-2018: While spell data says it has a base damage in-game testing shows that it doesn't use it.
-    base_dd_min = base_dd_max = 0;
 
     auto wild_hunt_spell = p -> find_spell( 62762 );
     wild_hunt.cost_pct = 1 + wild_hunt_spell -> effectN( 2 ).percent();
