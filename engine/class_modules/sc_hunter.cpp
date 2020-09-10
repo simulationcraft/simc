@@ -333,7 +333,7 @@ public:
   } azerite;
 
   struct {
-    spell_data_ptr_t death_chakram; // VERY WIP
+    spell_data_ptr_t death_chakram;
     spell_data_ptr_t flayed_shot;
     spell_data_ptr_t resonating_arrow;
     spell_data_ptr_t wild_spirits; // VERY WIP
@@ -501,7 +501,7 @@ public:
     spell_data_ptr_t animal_companion;
     spell_data_ptr_t dire_beast;
 
-    spell_data_ptr_t master_marksman; // NYI
+    spell_data_ptr_t master_marksman;
     spell_data_ptr_t serpent_sting;
 
     spell_data_ptr_t vipers_venom;
