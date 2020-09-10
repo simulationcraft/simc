@@ -4049,7 +4049,7 @@ class ActiveClassSpellGenerator(DataGenerator):
         return ActiveClassSpellSet(self._options).get()
 
     def generate(self, data = None):
-        data.sort(key = lambda v: isinstance(v[0], int) and (v[0], 0) or (v[0].class_id, v[0].id))
+        data.sort(key = lambda v: isinstance(v[0], int) and (v[0], 0, v[1].id) or (v[0].class_id, v[0].id, v[1].id))
 
         self.output_header(
                 header = 'Active class spells',
@@ -4060,7 +4060,7 @@ class ActiveClassSpellGenerator(DataGenerator):
         for spec_data, spell, replace_spell in data:
             fields = []
             if isinstance(spec_data, int):
-                fields += ['{:2d}'.format(spec_data), '{:3d}'.format(0)]
+                fields += ['{:2d}'.format(spec_data), '{:4d}'.format(0)]
             else:
                 fields += spec_data.field('class_id', 'id')
             fields += spell.field('id')
