@@ -3621,7 +3621,7 @@ struct rupture_t : public rogue_attack_t
       return p()->get_target_data( p()->last_rupture_target )->dots.rupture->state->persistent_multiplier;
 
     double m = rogue_attack_t::composite_persistent_multiplier( state );
-    m += 1.0 + p()->buffs.finality_rupture->value(); // Additive with Nightstalker
+    m += p()->buffs.finality_rupture->value(); // Additive with Nightstalker
     return m;
   }
 
