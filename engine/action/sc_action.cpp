@@ -299,7 +299,6 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
     repeating(),
     harmful( true ),
     proc(),
-    is_interrupt( false ),
     initialized(),
     may_hit( true ),
     may_miss(),
@@ -1666,13 +1665,6 @@ void action_t::execute()
       if ( ( pt2 = execute_state->execute_proc_type2() ) != PROC2_INVALID )
       {
         action_callback_t::trigger( player->callbacks.procs[ pt ][ pt2 ], this, execute_state );
-      }
-
-      // "On interrupt cast result"
-      if ( ( pt2 = execute_state->interrupt_proc_type2() ) != PROC2_INVALID )
-      {
-        if ( execute_state->target->debuffs.casting->check() )
-          action_callback_t::trigger( player->callbacks.procs[ pt ][ pt2 ], this, execute_state );
       }
     }
   }
