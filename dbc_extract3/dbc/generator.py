@@ -1580,6 +1580,7 @@ class SpellDataGenerator(DataGenerator):
             ( 288342, 0 ),          # Thought Harvester trigger buff for Mind Sear
             ( 336142, 5 ),          # Shadowflame Prism legendary effect DMG Component
             ( 343144, 0 ),          # Dissonant Echoes free Void Bolt proc
+            ( 344752, 5 ),          # Void Lasher "Mind Sear"
         ),
 
         # Death Knight:
