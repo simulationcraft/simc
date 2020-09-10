@@ -45,7 +45,7 @@ namespace runeforge {
   void hysteria( special_effect_t& );
   void sanguination( special_effect_t& );
   void spellwarding( special_effect_t& );
-  // void unending_thirst( special_effect_t& ); Effect only procs on killing blows, NYI
+  void unending_thirst( special_effect_t& ); // Effect only procs on killing blows, NYI
 }
 
 // ==========================================================================
@@ -416,6 +416,7 @@ public:
   double runic_power_decay_rate;
   ground_aoe_event_t* active_dnd;
   bool deprecated_dnd_expression;
+  bool runeforge_expression_warning;
 
   // Counters
   double eternal_rune_weapon_counter;
@@ -492,6 +493,7 @@ public:
     heal_t* rune_of_sanguination;
     double rune_of_spellwarding;
     bool rune_of_apocalypse;
+    bool rune_of_unending_thirst;
   } runeforge;
 
   // Cooldowns
@@ -894,6 +896,7 @@ public:
     runic_power_decay_rate(),
     active_dnd( nullptr ),
     deprecated_dnd_expression( false ),
+    runeforge_expression_warning( false ),
     eternal_rune_weapon_counter( 0 ),
     triggered_frozen_tempest( false ),
     km_proc_attempts( 0 ),
@@ -1007,6 +1010,7 @@ public:
   // Actor is standing in their own Death and Decay or Defile
   bool      in_death_and_decay() const;
   std::unique_ptr<expr_t>   create_death_and_decay_expression( util::string_view expr_str );
+  std::unique_ptr<expr_t>   create_runeforge_expression( util::string_view expr_str );
 
   unsigned  replenish_rune( unsigned n, gain_t* gain = nullptr );
 
@@ -6643,6 +6647,7 @@ void runeforge::hysteria( special_effect_t& effect )
   p -> resources.base[ RESOURCE_RUNIC_POWER ] += p -> find_spell( effect.spell_id ) -> effectN( 2 ).resource( RESOURCE_RUNIC_POWER );
 
   effect.custom_buff = p -> runeforge.rune_of_hysteria;
+  p -> runeforge.rune_of_hysteria -> default_chance = 1.0;
 
   new dbc_proc_callback_t( effect.item, effect );
 }
@@ -6721,6 +6726,19 @@ void runeforge::spellwarding( special_effect_t& effect )
   effect.execute_action = new spellwarding_absorb_t( effect );
 
   new dbc_proc_callback_t( effect.item, effect );
+}
+
+// NYI
+void runeforge::unending_thirst( special_effect_t& effect )
+{
+  if ( effect.player -> type != DEATH_KNIGHT )
+  {
+    effect.type = SPECIAL_EFFECT_NONE;
+    return;
+  }
+
+  // Placeholder for APL tracking purpose, effect NYI
+  static_cast<death_knight_t*>( effect.player ) -> runeforge.rune_of_unending_thirst = true;
 }
 
 
@@ -7505,6 +7523,69 @@ std::unique_ptr<expr_t> death_knight_t::create_death_and_decay_expression( util:
   return nullptr;
 }
 
+std::unique_ptr<expr_t> death_knight_t::create_runeforge_expression( util::string_view name_str )
+{
+  // Razorice, looks for the damage procs related to MH and OH
+  if ( util::str_compare_ci( name_str, "razorice" ) )
+    return make_fn_expr( "razorice_runforge_expression", [ this ]() {
+      return active_spells.razorice_mh || active_spells.razorice_oh;
+    } );
+
+  // Razorice MH and OH expressions (this can matter for razorice application)
+  if ( util::str_compare_ci( name_str, "razorice_mh" ) )
+    return make_fn_expr( "razorice_mh_runforge_expression", [ this ]() {
+      return active_spells.razorice_mh != nullptr;
+    } );
+  if ( util::str_compare_ci( name_str, "razorice_oh" ) )
+    return make_fn_expr( "razorice_oh_runforge_expression", [ this ]() {
+      return active_spells.razorice_oh != nullptr;
+    } );
+
+  // Fallen Crusader, looks for the unholy strength healing action
+  if ( util::str_compare_ci( name_str, "fallen_crusader" ) )
+    return make_fn_expr( "fallen_crusader_runforge_expression", [ this ]() {
+      return find_action( "unholy_strength" ) != nullptr;
+    } );
+
+  // Stoneskin Gargoyle
+  if ( util::str_compare_ci( name_str, "stoneskin_gargoyle" ) )
+    return make_fn_expr( "stoneskin_gargoyle_runforge_expression", [ this ]() {
+      return runeforge.rune_of_the_stoneskin_gargoyle -> default_chance;
+    } );
+
+  // Apocalypse
+  if ( util::str_compare_ci( name_str, "apocalypse" ) )
+    return make_fn_expr( "apocalypse_runforge_expression", [ this ]() {
+      return runeforge.rune_of_apocalypse;
+    } );
+
+  // Hysteria
+  if ( util::str_compare_ci( name_str, "hysteria" ) )
+    return make_fn_expr( "hysteria_runeforge_expression", [ this ]() {
+      return runeforge.rune_of_hysteria -> default_chance;
+    } );
+
+  // Sanguination
+  if ( util::str_compare_ci( name_str, "sanguination" ) )
+    return make_fn_expr( "sanguination_runeforge_expression", [ this ]() {
+      return runeforge.rune_of_sanguination != nullptr;
+    } );
+
+  // Spellwarding
+  if ( util::str_compare_ci( name_str, "spellwarding" ) )
+    return make_fn_expr( "spellwarding_runeforge_expression", [ this ]() {
+      return runeforge.rune_of_spellwarding != 0;
+    } );
+
+  // Unending Thirst, effect NYI
+  if ( util::str_compare_ci( name_str, "unending_thirst" ) )
+    return make_fn_expr( "unending_thirst_runeforge_expression", [ this ]() {
+      return runeforge.rune_of_unending_thirst;
+    } );
+
+  return nullptr;
+}
+
 std::unique_ptr<expr_t> death_knight_t::create_expression( util::string_view name_str )
 {
   auto splits = util::string_split<util::string_view>( name_str, "." );
@@ -7545,6 +7626,23 @@ std::unique_ptr<expr_t> death_knight_t::create_expression( util::string_view nam
       return make_fn_expr( "festering_wounds_target_count_expression", [ this ]() {
         return this -> festering_wounds_target_count;
       } );
+
+    if ( util::str_compare_ci( splits[ 1 ], "runeforge" ) && splits.size() == 3 )
+    {
+      auto runeforge_expr = create_runeforge_expression( splits[ 2 ] );
+      if ( runeforge_expr )
+        return runeforge_expr;
+    }
+  }
+
+  if ( util::str_compare_ci( splits[ 0 ], "runeforge" ) && splits.size() == 2 )
+  {
+    auto runeforge_expr = create_runeforge_expression( splits[ 1 ] );
+    if ( runeforge_expr )
+    {
+      runeforge_expression_warning = true;
+      return runeforge_expr;
+    }
   }
 
   return player_t::create_expression( name_str );
@@ -8469,9 +8567,10 @@ void death_knight_t::create_buffs()
             -> add_invalidate( CACHE_ARMOR )
             -> add_invalidate( CACHE_STAMINA )
             -> add_invalidate( CACHE_STRENGTH )
-            -> set_chance( 0 );
+            -> set_chance( 0 ); // tracks the runeforge, enabled by the runeforge special effect
 
-  runeforge.rune_of_hysteria = make_buff( this, "rune_of_hysteria", find_spell( 326918 ) );
+  runeforge.rune_of_hysteria = make_buff( this, "rune_of_hysteria", find_spell( 326918 ) )
+            -> set_chance( 0 ); // tracks the runeforge, enabled by the runeforge special effect
 
   // Blood
   buffs.blood_shield = new blood_shield_buff_t( this );
@@ -8701,6 +8800,13 @@ void death_knight_t::init_finished()
     sim -> errorf( "Player %s, Death and Decay and Defile expressions of the form "
                    "'dot.death_and_decay.X' have been deprecated. Use 'death_and_decay.ticking' "
                    "or death_and_decay.remains' instead.", name() );
+  }
+
+  if ( runeforge_expression_warning )
+  {
+    sim -> errorf( "Player %s, Death Knight runeforge expressions of the form "
+                  "runeforge.name are to be used with Shadowlands Runeforge legendaries only. "
+                  "Use death_knight.runeforge.name instead.", name() );
   }
 }
 
@@ -9317,6 +9423,7 @@ struct death_knight_module_t : public module_t {
     unique_gear::register_special_effect( 326913, runeforge::hysteria );
     unique_gear::register_special_effect( 326801, runeforge::sanguination );
     unique_gear::register_special_effect( 326864, runeforge::spellwarding );
+    unique_gear::register_special_effect( 326982, runeforge::unending_thirst );
   }
 
   void register_hotfixes() const override
