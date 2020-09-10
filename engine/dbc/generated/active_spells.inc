@@ -1,5 +1,5 @@
-// Active class spells, wow build 9.0.1.35789
-static const std::array<active_class_spell_t, 607> __active_spells_data { {
+// Active class spells, wow build 9.0.2.35854
+static const std::array<active_class_spell_t, 605> __active_spells_data { {
   {  1,   0,  88163,      0, "Attack"                             },
   {  1,   0,    100,      0, "Charge"                             },
   {  1,   0,   6544,      0, "Heroic Leap"                        },
@@ -302,7 +302,6 @@ static const std::array<active_class_spell_t, 607> __active_spells_data { {
   {  6,  250, 206930, 316239, "Heart Strike"                       },
   {  6,  250, 221562,      0, "Asphyxiate"                         },
   {  6,  250, 194679,      0, "Rune Tap"                           },
-  {  6,  250, 221699,      0, "Blood Tap"                          },
   {  6,  251,  49143,      0, "Frost Strike"                       },
   {  6,  251,  49020,      0, "Obliterate"                         },
   {  6,  251, 196770,      0, "Remorseless Winter"                 },
@@ -310,14 +309,13 @@ static const std::array<active_class_spell_t, 607> __active_spells_data { {
   {  6,  251, 279302,      0, "Frostwyrm's Fury"                   },
   {  6,  251,  47568,      0, "Empower Rune Weapon"                },
   {  6,  251,  49184, 316239, "Howling Blast"                      },
-  {  6,  252,  63560,      0, "Dark Transformation"                },
   {  6,  252,  55090,      0, "Scourge Strike"                     },
   {  6,  252,  42650,      0, "Army of the Dead"                   },
   {  6,  252,  77575,      0, "Outbreak"                           },
   {  6,  252, 275699,      0, "Apocalypse"                         },
-  {  6,  252,  49206,      0, "Summon Gargoyle"                    },
   {  6,  252,  85948, 316239, "Festering Strike"                   },
   {  6,  252,  46584,  46585, "Raise Dead"                         },
+  {  6,  252, 207317,      0, "Epidemic"                           },
   {  7,   0,    556,      0, "Astral Recall"                      },
   {  7,   0,   2825,      0, "Bloodlust"                          },
   {  7,   0,   6196,      0, "Far Sight"                          },
@@ -609,7 +607,7 @@ static const std::array<active_class_spell_t, 607> __active_spells_data { {
   { 12,  581, 212084,      0, "Fel Devastation"                    },
 } };
 
-// Pet active spells, wow build 9.0.1.35789
+// Pet active spells, wow build 9.0.2.35854
 static const std::array<active_pet_spell_t, 133> __active_pet_spells_data { {
   {  3,   2649, "Growl"                              },
   {  3,  16827, "Claw"                               },
