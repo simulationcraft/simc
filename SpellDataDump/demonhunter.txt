@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.2.35854 shadowlands-BETA (, no-networking)
+SimulationCraft 901-01 for World of Warcraft 9.0.2.35854 shadowlands-BETA (hotfix 2020-09-10/35854)
 
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -599,8 +599,6 @@ Attributes       : ....x... ........ ..x..... ........   ........ ........ .x...
                  : ........ ........ ........ ........   x......x ........ ....x... ........ 
                  : x....... ........ ........ ........   
 Effects          :
-#1 (id=273949)   : Apply Aura (6) | Change Model (56)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Misc Value: 104712 | Misc Value 2: 0x6 | Target: Self (1)
 #2 (id=273950)   : Apply Aura (6) | Modify Max Health% (133)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=283617)   : Apply Aura (6) | Modify Leech% (443)

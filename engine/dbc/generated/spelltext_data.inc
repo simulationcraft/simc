@@ -1,5 +1,5 @@
 // Spell text, wow build 9.0.2.35854
-static const std::array<spelltext_data_t, 15556> __spelltext_data { {
+static const std::array<spelltext_data_t, 15557> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -13394,7 +13394,6 @@ static const std::array<spelltext_data_t, 15556> __spelltext_data { {
   { 311648, "A heavy mist surrounds you for $d, increasing your Dodge by $s2%. \r\n\r\nDeals $311730s1 Shadow damage every $t1 sec to enemies within $311730A1 yds. Every time it deals damage you gain ${$312546s1/10} Runic Power, up to a maximum of ${$312546s1/10*$s3} Runic Power.", "Surrounded by a mist of Anima, increasing your chance to Dodge by $s2% and dealing $311730s1 Shadow damage every $t1 sec to nearby enemies.", "Venthyr" },
   { 311650, "Allows opening of locks that require up to $s1 lockpicking skill.  The lockpick is consumed in the process.", 0, 0 },
   { 311685, "Attune yourself to the energies of the targeted Castle Nathria raid boss, increasing your Versatility by $311500s1 when fighting that boss. This effect lasts for an entire week.\r\n\r\nYou can only use one Vantus Rune per week.", 0, 0 },
-  { 311724, "Grants the title \"Veteran of the Fourth War\".", 0, 0 },
   { 311730, "$@spelldesc311648", 0, 0 },
   { 311947, 0, 0, "Azerite Essence" },
   { 312049, "Consumes a sip of Nomi's Vintage, delivering a fiery burst to the senses! Only useable within Zandalar, Kul Tiras, and Nazjatar.", "It burns!", 0 },
@@ -14680,6 +14679,7 @@ static const std::array<spelltext_data_t, 15556> __spelltext_data { {
   { 335902, "Dropping Windfury Totem grants you $335903s1% inceased chance to gain Windfury Weapon for $335903d. \r\n\r\nThis can only occur once every $335904d.", 0, 0 },
   { 335903, "$@spelldesc335902", "Chance to activate Windfury Weapon increased by $s1%.", 0 },
   { 335904, "$@spelldesc335902", "Unable to gain effects of Doom Winds.", 0 },
+  { 335913, "$@spelldesc323999", 0, 0 },
   { 336009, "$@spelldesc336011", "Penance is free and will fire ${$s1/-20} extra bolts of light.", 0 },
   { 336011, "Power Word: Radiance has a $s1% chance to cause your next Penance to be free and fire $s2 extra bolts.", "Penance will fire for ${$s1/1000} additional seconds.", 0 },
   { 336054, "$@spelldesc336055", "Mastery increased by $w1. Only usable outdoors in the Shadowlands.", 0 },
@@ -15556,6 +15556,7 @@ static const std::array<spelltext_data_t, 15556> __spelltext_data { {
   { 344712, "Apocalypse transforms your $?s207313[abomination]?s58640[geist][ghoul] into a powerful hulking monstrosity for $63560d.", 0, "Rank 2" },
   { 344732, "Unleash 3 incendiary flames at your target inflicting $s1 Fire damage.", 0, 0 },
   { 344748, "$@spelldesc336143", 0, 0 },
+  { 344752, "$@spelldesc336214", 0, 0 },
 } };
 
 // spelltext hotfix entries, wow build 9.0.2.35854

@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.2.35854 shadowlands-BETA (, no-networking)
+SimulationCraft 901-01 for World of Warcraft 9.0.2.35854 shadowlands-BETA (hotfix 2020-09-10/35854)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
@@ -3696,6 +3696,48 @@ Effects          :
 Description      : Voidform no longer has a duration, but your Insanity will drain increasingly fast until it reaches 0, causing Voidform to end.
 
 While in Voidform, you gain $342855m1% haste every $342855t2 sec and your Void Bolt will also refresh the duration of your Devouring Plague on the target.
+
+Name             : Call to the Void (id=193371) [Spell Family (6), Passive] 
+Class            : Priest
+School           : Physical
+Spell Type       : None
+Range            : 100 yards
+Proc Chance      : 100%
+Real PPM         : 1 (Haste multiplier)
+Proc Flags       : ........ ........ x.x..... ........ 
+                 : Magic Hostile Spell, Periodic
+Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Cannot cancel aura (31)
+Effects          :
+#1 (id=283702)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : $?s73510[Mind Spike][Mind Flay] has a chance to spawn a Void Tendril that channels Mind Flay at your target for $193470d.
+
+Name             : Eternal Call to the Void (id=193470) [Spell Family (6)] 
+Class            : Priest
+School           : Physical
+Spell Type       : None
+Range            : 100 yards
+Duration         : 15 seconds
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : .......x ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+Effects          :
+#1 (id=283825)   : Summon (28)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 98167 | Misc Value 2: 0xe67 | Radius: 15 yards | Target: Unknown(73)
+Description      : $@spelldesc193371
 
 Name             : Mind Flay (id=193473) [Spell Family (6)] 
 Class            : Priest
@@ -9702,6 +9744,7 @@ Effects          :
 Description      : Shadow Word: Death consumes $s1 sec of Shadow Word: Pain and Vampiric Touch, instantly dealing that damage to the target and generating 10 Insanity.
 
 Name             : Eternal Call to the Void (id=336214) [Spell Family (6), Passive] 
+Class            : Priest
 School           : Physical
 Spell Type       : None
 Proc Chance      : 100%
@@ -10996,5 +11039,27 @@ Effects          :
 #1 (id=869342)   : School Damage (2): shadowflame
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.00000 | AP Coefficient: 3.00000 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
 Description      : $@spelldesc336143
+
+Name             : Mind Sear (id=344752) [Spell Family (6)] 
+Class            : Priest
+School           : Shadow
+Spell Type       : Magic
+Range            : 100 yards
+Cooldown         : 1 seconds
+Attributes       : ........ ........ ........ ........   ...x...x .x...... ........ ........ 
+                 : ........ ........ ........ ......x.   x....... .x...... ........ .x....x. 
+                 : x....... .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Not a proc (105), Treat as periodic (121)
+Effects          :
+#1 (id=869350)   : Dummy (3)
+                   Base Value: -30 | Scaled Value: -30 | PvP Coefficient: 1.00000 | Mechanic: Snare | Target: Unknown(77)
+#2 (id=869351)   : School Damage (2): shadow
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.02000 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: Unknown(76) -> AOE enemy (instant) (16)
+Description      : $@spelldesc336214
 
 
