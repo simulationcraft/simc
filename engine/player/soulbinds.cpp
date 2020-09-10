@@ -431,7 +431,18 @@ void built_for_war( special_effect_t& effect )
 
 void superior_tactics( special_effect_t& effect )
 {
+  if ( !effect.player->buffs.superior_tactics )
+  {
+    effect.player->buffs.superior_tactics = make_buff( effect.player, "superior_tactics", effect.trigger() )
+      ->set_cooldown( effect.trigger()->effectN( 2 ).trigger()->duration() )
+      ->set_default_value_from_effect( A_MOD_ALL_CRIT_CHANCE );
+  }
 
+  // TODO: implement proc'ing from dispels
+  effect.proc_flags2_ |= PF2_CAST_INTERRUPT;
+  effect.custom_buff = effect.player->buffs.superior_tactics;
+
+  new dbc_proc_callback_t( effect.player, effect );
 }
 
 void let_go_of_the_past( special_effect_t& effect )

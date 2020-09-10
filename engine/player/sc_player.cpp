@@ -3612,6 +3612,9 @@ double player_t::composite_melee_crit_chance() const
   if ( buffs.first_strike )
     ac += buffs.first_strike->check_value();
 
+  if ( buffs.superior_tactics )
+    ac += buffs.superior_tactics->check_value();
+
   if ( buffs.pointed_courage )
     ac += buffs.pointed_courage->check_stack_value();
 
@@ -3921,8 +3924,11 @@ double player_t::composite_spell_crit_chance() const
   if (buffs.reckless_force)
     sc += buffs.reckless_force->check_value();
 
-  if( buffs.first_strike )
+  if ( buffs.first_strike )
     sc += buffs.first_strike->check_value();
+
+  if ( buffs.superior_tactics )
+    sc += buffs.superior_tactics->check_value();
 
   if ( buffs.pointed_courage )
     sc += buffs.pointed_courage->check_stack_value();
