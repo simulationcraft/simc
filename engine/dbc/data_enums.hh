@@ -757,7 +757,7 @@ enum effect_type_t : unsigned {
     E_TALENT_SPEC_COUNT = 161,
     E_TALENT_SPEC_SELECT = 162,
     E_163 = 163,
-    E_164 = 164,
+    E_CANCEL_AURA = 164,
     E_165 = 165,
     E_166 = 166,
     E_167 = 167,
