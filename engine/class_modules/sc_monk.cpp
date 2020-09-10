@@ -234,6 +234,7 @@ public:
     buff_t* mana_tea;
     buff_t* refreshing_jade_wind;
     buff_t* teachings_of_the_monastery;
+    buff_t* touch_of_death;
     buff_t* thunder_focus_tea;
     buff_t* uplifting_trance;
 
@@ -429,6 +430,7 @@ public:
     const spell_data_t* touch_of_death;
     const spell_data_t* touch_of_death_2;
     const spell_data_t* touch_of_death_3_brm;
+    const spell_data_t* touch_of_death_3_mw;
     const spell_data_t* touch_of_death_3_ww;
     const spell_data_t* vivify;
     const spell_data_t* vivify_2_brm;
@@ -3606,6 +3608,10 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
         am *= 1 + p()->buff.hit_combo->stack_value();
     }
 
+    // Increases just physical damage
+    if ( p()->buff.touch_of_death->up() )
+      am *= 1 + p()->buff.touch_of_death->value();
+
     return am;
   }
 
@@ -5236,6 +5242,14 @@ struct touch_of_death_t : public monk_melee_attack_t
 
   }
 
+  void execute() override
+  {
+    monk_melee_attack_t::execute();
+
+    if ( p()->spec.touch_of_death_3_mw )
+      p()->buff.touch_of_death->trigger();
+  }
+
   virtual void impact( action_state_t* s ) override
   {
     // Damage is associated with the players non-buffed max HP
@@ -5259,11 +5273,6 @@ struct touch_of_death_t : public monk_melee_attack_t
 
     if ( p()->spec.touch_of_death_3_brm )
       p()->partial_clear_stagger_amount( amount * p()->spec.touch_of_death_3_brm->effectN( 1 ).percent() );
-  }
-
-  void execute() override
-  {
-    monk_melee_attack_t::execute();
   }
 };
 
@@ -8058,6 +8067,7 @@ void monk_t::init_spells()
   spec.touch_of_death            = find_class_spell( "Touch of Death" );
   spec.touch_of_death_2          = find_rank_spell( "Touch of Death", "Rank 2" );
   spec.touch_of_death_3_brm      = find_rank_spell( "Touch of Death", "Rank 2", MONK_BREWMASTER );
+  spec.touch_of_death_3_mw       = find_rank_spell( "Touch of Death", "Rank 2", MONK_MISTWEAVER );
   spec.touch_of_death_3_ww       = find_rank_spell( "Touch of Death", "Rank 2", MONK_WINDWALKER );
   spec.vivify                    = find_class_spell( "Vivify" );
   spec.vivify_2_brm              = find_rank_spell( "Vivify", "Rank 2", MONK_BREWMASTER );
@@ -8512,6 +8522,10 @@ void monk_t::create_buffs()
   buff.thunder_focus_tea =
       make_buff( this, "thunder_focus_tea", spec.thunder_focus_tea )
           ->modify_max_stack( (int)( talent.focused_thunder ? talent.focused_thunder->effectN( 1 ).base_value() : 0 ) );
+
+  buff.touch_of_death = make_buff( this, "touch_of_death", find_spell( 344361 ) )
+                            ->set_default_value_from_effect( 1 )
+                            ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   buff.uplifting_trance = make_buff( this, "uplifting_trance", find_spell( 197916 ) )
                               ->set_chance( spec.renewing_mist->effectN( 2 ).percent() )
