@@ -1812,6 +1812,7 @@ class SpellDataGenerator(DataGenerator):
           ( 261682, 3 ), # Chi Burst Chi generation cap
           ( 285594, 3 ), # Good Karma Healing Spell
 		      ( 290461, 3 ), # Reverse Harm Damage
+		      ( 335913, 3 ), # Empowered Tiger Lightning Damage spell
           # Azerite Traits
           ( 278710, 3 ), # Swift Roundhouse
           ( 278767, 1 ), # Training of Niuzao buff
