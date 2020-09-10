@@ -602,7 +602,6 @@ public:
     // Blood
     const spell_data_t* blood_boil;
     const spell_data_t* blood_boil_2;
-    const spell_data_t* blood_tap;
     const spell_data_t* crimson_scourge;
     const spell_data_t* dancing_rune_weapon;
     const spell_data_t* deaths_caress;
@@ -611,6 +610,7 @@ public:
     const spell_data_t* heart_strike_3;
     const spell_data_t* marrowrend;
     const spell_data_t* marrowrend_2;
+    const spell_data_t* ossuary;
     const spell_data_t* riposte;
     const spell_data_t* rune_tap;
     const spell_data_t* rune_tap_2;
@@ -718,8 +718,8 @@ public:
     const spell_data_t* consumption;
 
     const spell_data_t* foul_bulwark;
-    const spell_data_t* ossuary;
     const spell_data_t* relish_in_blood; // NYI
+    const spell_data_t* blood_tap;
 
     const spell_data_t* will_of_the_necropolis; // NYI
     const spell_data_t* antimagic_barrier;
@@ -3420,7 +3420,7 @@ struct blood_boil_t : public death_knight_spell_t
 struct blood_tap_t : public death_knight_spell_t
 {
   blood_tap_t( death_knight_t* p, const std::string options_str ) :
-    death_knight_spell_t( "blood_tap", p, p -> spec.blood_tap )
+    death_knight_spell_t( "blood_tap", p, p -> talent.blood_tap )
   {
     parse_options( options_str );
   }
@@ -3429,7 +3429,7 @@ struct blood_tap_t : public death_knight_spell_t
   {
     death_knight_spell_t::execute();
 
-    p() -> replenish_rune( as<int>( p() -> spec.blood_tap -> effectN( 1 ).resource( RESOURCE_RUNE ) ), p() -> gains.blood_tap );
+    p() -> replenish_rune( as<int>( p() -> talent.blood_tap -> effectN( 1 ).resource( RESOURCE_RUNE ) ), p() -> gains.blood_tap );
   }
 };
 
@@ -4569,8 +4569,8 @@ struct death_strike_t : public death_knight_melee_attack_t
   {
     double c = death_knight_melee_attack_t::cost();
 
-    if ( p() -> talent.ossuary -> ok() &&
-         p() -> buffs.bone_shield -> stack() >= p() -> talent.ossuary -> effectN( 1 ).base_value() )
+    if ( p() -> spec.ossuary -> ok() &&
+         p() -> buffs.bone_shield -> stack() >= p() -> spec.ossuary -> effectN( 1 ).base_value() )
     {
       c += ossuary_cost_reduction;
     }
@@ -7767,8 +7767,8 @@ void death_knight_t::init_base_stats()
   resources.base[ RESOURCE_RUNIC_POWER ] = 100;
   resources.base[ RESOURCE_RUNIC_POWER ] += spec.blood_death_knight -> effectN( 12 ).resource( RESOURCE_RUNIC_POWER );
 
-  if ( talent.ossuary -> ok() )
-    resources.base [ RESOURCE_RUNIC_POWER ] += ( talent.ossuary -> effectN( 2 ).resource( RESOURCE_RUNIC_POWER ) );
+  if ( spec.ossuary -> ok() )
+    resources.base [ RESOURCE_RUNIC_POWER ] += ( spec.ossuary -> effectN( 2 ).resource( RESOURCE_RUNIC_POWER ) );
 
 
   resources.base[ RESOURCE_RUNE        ] = MAX_RUNES;
@@ -7809,7 +7809,6 @@ void death_knight_t::init_spells()
   spec.riposte                  = find_specialization_spell( "Riposte" );
   spec.blood_boil               = find_specialization_spell( "Blood Boil" );
   spec.blood_boil_2             = find_specialization_spell( "Blood Boil", "Rank 2" );
-  spec.blood_tap                = find_specialization_spell( "Blood Tap" );
   spec.crimson_scourge          = find_specialization_spell( "Crimson Scourge" );
   spec.dancing_rune_weapon      = find_specialization_spell( "Dancing Rune Weapon" );
   spec.deaths_caress            = find_specialization_spell( "Death's Caress" );
@@ -7818,6 +7817,7 @@ void death_knight_t::init_spells()
   spec.heart_strike_3           = find_specialization_spell( "Heart Strike", "Rank 3" );
   spec.marrowrend               = find_specialization_spell( "Marrowrend" );
   spec.marrowrend_2             = find_specialization_spell( "Marrowrend", "Rank 2" );
+  spec.ossuary                  = find_specialization_spell( "Ossuary" );
   spec.rune_tap                 = find_specialization_spell( "Rune Tap" );
   spec.rune_tap_2               = find_specialization_spell( "Rune Tap", "Rank 2" );
   spec.vampiric_blood           = find_specialization_spell( "Vampiric Blood" );
@@ -7918,8 +7918,8 @@ void death_knight_t::init_spells()
   talent.consumption            = find_talent_spell( "Consumption" );
 
   talent.foul_bulwark           = find_talent_spell( "Foul Bulwark" );
-  talent.ossuary                = find_talent_spell( "Ossuary" );
   talent.relish_in_blood        = find_talent_spell( "Relish in Blood" ); // NYI
+  talent.blood_tap              = find_talent_spell( "Blood Tap" );
 
   talent.will_of_the_necropolis = find_talent_spell( "Will of the Necropolis" ); // NYI
   talent.antimagic_barrier      = find_talent_spell( "Anti-Magic Barrier" );
@@ -8185,7 +8185,7 @@ void death_knight_t::default_apl_blood()
   standard -> add_talent( this, "Blooddrinker", "if=!buff.dancing_rune_weapon.up" );
   standard -> add_action( this, "Marrowrend", "if=(buff.bone_shield.remains<=rune.time_to_3|buff.bone_shield.remains<=(gcd+cooldown.blooddrinker.ready*talent.blooddrinker.enabled*2)|buff.bone_shield.stack<3)&runic_power.deficit>=20" );
   standard -> add_action( this, "Blood Boil", "if=charges_fractional>=1.8&(buff.hemostasis.stack<=(5-spell_targets.blood_boil)|spell_targets.blood_boil>2)" );
-  standard -> add_action( this, "Marrowrend", "if=buff.bone_shield.stack<5&talent.ossuary.enabled&runic_power.deficit>=15" );
+  standard -> add_action( this, "Marrowrend", "if=buff.bone_shield.stack<5&runic_power.deficit>=15" );
   standard -> add_talent( this, "Bonestorm", "if=runic_power>=100&!buff.dancing_rune_weapon.up" );
   standard -> add_action( this, "Death Strike", "if=runic_power.deficit<=(15+buff.dancing_rune_weapon.up*5+spell_targets.heart_strike*talent.heartbreaker.enabled*2)|target.1.time_to_die<10" );
   standard -> add_action( this, "Death and Decay", "if=spell_targets.death_and_decay>=3" );
@@ -8880,9 +8880,9 @@ void death_knight_t::bone_shield_handler( const action_state_t* state ) const
   buffs.bone_shield -> decrement();
   cooldown.bone_shield_icd -> start( spell.bone_shield -> internal_cooldown() );
   // Blood tap spelldata is a bit weird, it's not in milliseconds like other time values, and is positive even though it reduces a cooldown
-  if ( spec.blood_tap -> ok() )
+  if ( talent.blood_tap -> ok() )
   {
-    cooldown.blood_tap -> adjust( -1.0 * timespan_t::from_seconds( spec.blood_tap -> effectN( 2 ).base_value() ) );
+    cooldown.blood_tap -> adjust( -1.0 * timespan_t::from_seconds( talent.blood_tap -> effectN( 2 ).base_value() ) );
   }
 
   if ( ! buffs.bone_shield -> up() && buffs.bones_of_the_damned -> up() )
