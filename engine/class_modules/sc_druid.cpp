@@ -6374,24 +6374,40 @@ struct prowl_t : public druid_spell_t
   }
 };
 
-// Skull Bash ===============================================================
-
-struct skull_bash_t : public druid_spell_t
+struct druid_interrupt_t : public druid_spell_t
 {
-  skull_bash_t( druid_t* player, const std::string& options_str )
-    : druid_spell_t( "skull_bash", player, player->find_specialization_spell( "Skull Bash" ), options_str )
+  druid_interrupt_t( util::string_view n, druid_t* p, const spell_data_t* s, const std::string& options_str )
+    : druid_spell_t( n, p, s, options_str )
   {
     may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = false;
-    ignore_false_positive = use_off_gcd = true;
+    ignore_false_positive = use_off_gcd = is_interrupt = true;
   }
 
-  bool target_ready( player_t* candidate_target ) override
+  bool target_ready( player_t* t ) override
   {
-    if ( !candidate_target->debuffs.casting || !candidate_target->debuffs.casting->check() )
+    if ( !t->debuffs.casting->check() )
       return false;
 
-    return druid_spell_t::target_ready( candidate_target );
+    return druid_spell_t::target_ready( t );
   }
+};
+
+struct solar_beam_t : public druid_interrupt_t
+{
+  solar_beam_t( druid_t* p, const std::string& options_str )
+    : druid_interrupt_t( "solar_beam", p, p->find_specialization_spell( "Solar Beam" ), options_str )
+  {
+    base_costs[ RESOURCE_MANA ] = 0.0;  // remove mana cost so we don't need to enable mana regen
+  }
+};
+
+// Skull Bash ===============================================================
+
+struct skull_bash_t : public druid_interrupt_t
+{
+  skull_bash_t( druid_t* p, const std::string& options_str )
+    : druid_interrupt_t( "skull_bash", p, p->find_specialization_spell( "Skull Bash" ), options_str )
+  {}
 };
 
 struct wrath_t : public druid_spell_t
@@ -7729,6 +7745,7 @@ action_t* druid_t::create_action( util::string_view name, const std::string& opt
   if ( name == "new_moon"               ) return new               new_moon_t( this, options_str );
   if ( name == "half_moon"              ) return new              half_moon_t( this, options_str );
   if ( name == "full_moon"              ) return new              full_moon_t( this, options_str );
+  if ( name == "solar_beam"             ) return new             solar_beam_t( this, options_str );
   if ( name == "starfall"               ) return new               starfall_t( this, options_str );
   if ( name == "starfire"               ) return new               starfire_t( this, options_str );
   if ( name == "starsurge"              ) return new              starsurge_t( this, options_str );
