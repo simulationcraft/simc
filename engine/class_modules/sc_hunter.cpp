@@ -1303,17 +1303,18 @@ struct hunter_main_pet_base_t : public hunter_pet_t
   struct actives_t
   {
     action_t* basic_attack = nullptr;
-    action_t* kill_command = nullptr;
-    attack_t* beast_cleave = nullptr;
-    action_t* stomp = nullptr;
-    action_t* flanking_strike = nullptr;
+    action_t* beast_cleave = nullptr;
+    action_t* bestial_wrath = nullptr;
     action_t* bloodshed = nullptr;
+    action_t* flanking_strike = nullptr;
+    action_t* kill_command = nullptr;
+    action_t* stomp = nullptr;
   } active;
 
   struct buffs_t
   {
-    buff_t* bestial_wrath = nullptr;
     buff_t* beast_cleave = nullptr;
+    buff_t* bestial_wrath = nullptr;
     buff_t* frenzy = nullptr;
     buff_t* predator = nullptr;
     buff_t* rylakstalkers_fangs = nullptr;
@@ -2211,6 +2212,17 @@ struct bloodshed_t : hunter_main_pet_attack_t
   }
 };
 
+// Bestial Wrath ===========================================================
+
+struct bestial_wrath_t : hunter_pet_action_t<hunter_main_pet_base_t, melee_attack_t>
+{
+  bestial_wrath_t( hunter_main_pet_base_t* p ):
+    hunter_pet_action_t( "bestial_wrath", p, p -> find_spell( 344572 ) )
+  {
+    background = true;
+  }
+};
+
 } // end namespace pets::actions
 
 hunter_main_pet_td_t::hunter_main_pet_td_t( player_t* target, hunter_main_pet_t* p ):
@@ -2249,6 +2261,9 @@ void hunter_main_pet_base_t::init_spells()
   hunter_pet_t::init_spells();
 
   spells.thrill_of_the_hunt = find_spell( 312365 );
+
+  if ( o() -> specialization() == HUNTER_BEAST_MASTERY )
+    active.bestial_wrath = new actions::bestial_wrath_t( this );
 
   if ( o() -> specialization() == HUNTER_BEAST_MASTERY )
     active.kill_command = new actions::kill_command_bm_t( this );
@@ -4875,6 +4890,14 @@ struct bestial_wrath_t: public hunter_spell_t
     precast_time = clamp( precast_time, 0_ms, data().duration() );
   }
 
+  void init_finished() override
+  {
+    for ( auto pet : p() -> pet_list )
+      add_pet_stats( pet, { "bestial_wrath" } );
+
+    hunter_spell_t::init_finished();
+  }
+
   void execute() override
   {
     hunter_spell_t::execute();
@@ -4883,7 +4906,13 @@ struct bestial_wrath_t: public hunter_spell_t
     trigger_buff( p() -> buffs.haze_of_rage, precast_time );
 
     for ( auto pet : pets::active<pets::hunter_main_pet_base_t>( p() -> pets.main, p() -> pets.animal_companion ) )
+    {
+      // TODO: in-game the pet should be in 10y and engaged with the target,
+      //       so it's actually still possible to precast it
+      pet -> active.bestial_wrath -> set_target( target );
+      pet -> active.bestial_wrath -> execute();
       trigger_buff( pet -> buffs.bestial_wrath, precast_time );
+    }
 
     adjust_precast_cooldown( precast_time );
 
