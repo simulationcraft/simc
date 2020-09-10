@@ -362,11 +362,3 @@ proc_types2 action_state_t::cast_proc_type2() const
   // Generic fallback "on any cast"
   return PROC2_CAST;
 }
-
-proc_types2 action_state_t::interrupt_proc_type2() const
-{
-  if ( action->is_interrupt )
-    return PROC2_CAST_INTERRUPT;
-  else
-    return PROC2_INVALID;
-}
