@@ -124,6 +124,8 @@ struct action_state_t : private noncopyable
   }
 
   virtual proc_types2 cast_proc_type2() const;
+
+  virtual proc_types2 interrupt_proc_type2() const;
 };
 
 struct travel_event_t : public event_t
