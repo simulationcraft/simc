@@ -3027,6 +3027,9 @@ struct arcane_shot_t: public arcane_shot_base_t
     arcane_shot_base_t( "arcane_shot", p )
   {
     parse_options( options_str );
+
+    if ( p -> specialization() == HUNTER_MARKSMANSHIP )
+      background = p -> talents.chimaera_shot.ok();
   }
 
   void execute() override
