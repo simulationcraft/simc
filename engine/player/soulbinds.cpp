@@ -200,7 +200,8 @@ void niyas_tools_herbs( special_effect_t& effect )
   if ( !effect.player->buffs.invigorating_herbs )
   {
     effect.player->buffs.invigorating_herbs = make_buff( effect.player, "invigorating_herbs", effect.trigger() )
-      ->set_default_value_from_effect_type( A_HASTE_ALL );
+      ->set_default_value_from_effect_type( A_HASTE_ALL )
+      ->add_invalidate( CACHE_HASTE );
   }
 
   // TODO: confirm proc flags
@@ -266,8 +267,8 @@ void social_butterfly( special_effect_t& effect )
   {
     social_butterfly_buff_t( player_t* p ) : buff_t( p, "social_butterfly", p->find_spell( 320212 ) )
     {
-      add_invalidate( CACHE_VERSATILITY );
       set_default_value_from_effect_type( A_MOD_VERSATILITY_PCT );
+      add_invalidate( CACHE_VERSATILITY );
     }
 
     void expire_override( int s, timespan_t d ) override
@@ -435,7 +436,8 @@ void superior_tactics( special_effect_t& effect )
   {
     effect.player->buffs.superior_tactics = make_buff( effect.player, "superior_tactics", effect.trigger() )
       ->set_cooldown( effect.trigger()->effectN( 2 ).trigger()->duration() )
-      ->set_default_value_from_effect( A_MOD_ALL_CRIT_CHANCE );
+      ->set_default_value_from_effect( A_MOD_ALL_CRIT_CHANCE )
+      ->add_invalidate( CACHE_CRIT_CHANCE );
   }
 
   // TODO: implement proc'ing from dispels
