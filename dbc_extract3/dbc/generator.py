@@ -3284,7 +3284,7 @@ class SpecializationSpellGenerator(DataGenerator):
                 array = 'specialization_spell',
                 length = len(data))
 
-        for chrspec, spell_data in sorted(data, key = lambda e: (e[0].class_id, e[0].index)):
+        for chrspec, spell_data in sorted(data, key = lambda e: (e[0].class_id, e[0].index, e[0].id, e[1].spell_id)):
             spell = self.db('Spell').get(spell_data.spell_id)
             fields = chrspec.field('class_id', 'id')
             fields += spell_data.ref('spell_id').field('id')
