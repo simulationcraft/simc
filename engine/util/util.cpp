@@ -1302,17 +1302,18 @@ const char* util::proc_type2_string( proc_types2 type )
 {
   switch ( type )
   {
-    case PROC2_HIT:    return "HitAmount";
-    case PROC2_CRIT:   return "CritAmount";
+    case PROC2_HIT: return "HitAmount";
+    case PROC2_CRIT: return "CritAmount";
     case PROC2_GLANCE: return "GlanceAmount";
-    case PROC2_DODGE:  return "Dodge";
-    case PROC2_PARRY:  return "Parry";
-    case PROC2_MISS:   return "Miss";
+    case PROC2_DODGE: return "Dodge";
+    case PROC2_PARRY: return "Parry";
+    case PROC2_MISS: return "Miss";
     case PROC2_LANDED: return "Impact";
-    case PROC2_CAST:   return "Cast";
+    case PROC2_CAST: return "Cast";
     case PROC2_CAST_DAMAGE: return "DamageCast";
     case PROC2_CAST_HEAL: return "HealCast";
-    default:           return "Unknown";
+    case PROC2_CAST_INTERRUPT: return "InterruptCast";
+    default: return "Unknown";
   }
 }
 
