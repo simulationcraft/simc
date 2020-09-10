@@ -2808,33 +2808,6 @@ public:
     parse_options( options );
   }
 
-  double composite_da_multiplier( const action_state_t* s ) const override
-  {
-    double da = ab::composite_da_multiplier( s );
-
-    if ( ( ab::id == p()->spec.full_moon->id() || ab::id == p()->spec.half_moon->id() ||
-           ab::id == p()->talent.new_moon->id() ) && p()->buff.eclipse_solar->up() )
-    {
-      da *= 1.0 + p()->cache.mastery_value();
-    }
-
-    return da;
-  }
-
-  double composite_crit_chance() const override
-  {
-    double cc = ab::composite_crit_chance();
-
-    if ( ( ab::id == p()->spec.full_moon->id() || ab::id == p()->spec.half_moon->id() ||
-           ab::id == p()->talent.new_moon->id() ) && p()->buff.balance_of_all_things_nature->up() )
-    {
-      // Use the base_value stored for APL purposes for now until moons are properly whitelisted
-      cc += p()->buff.balance_of_all_things_nature->stack_value() / 100.0;
-    }
-
-    return cc;
-  }
-
   double composite_energize_amount( const action_state_t* s ) const override
   {
     double e = ab::composite_energize_amount( s );
