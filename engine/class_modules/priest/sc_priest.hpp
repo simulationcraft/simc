@@ -110,9 +110,6 @@ public:
     // Talents
     propagate_const<buff_t*> twist_of_fate;
 
-    // Shared
-    propagate_const<buff_t*> power_infusion;
-
     // Discipline
     propagate_const<buff_t*> inner_focus;
     propagate_const<buff_t*> power_of_the_dark_side;

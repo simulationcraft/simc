@@ -3326,7 +3326,7 @@ void player_t::create_buffs()
         ->set_default_value_from_effect( 1 )
         ->add_invalidate( CACHE_SPELL_CRIT_CHANCE );
 
-      buffs.power_infusion = make_buff( this, "power_infusion_external", find_spell( 10060 ) )
+      buffs.power_infusion = make_buff( this, "power_infusion", find_spell( 10060 ) )
         ->set_default_value_from_effect( 1 )
         ->set_cooldown( 0_ms )
         ->add_invalidate( CACHE_HASTE );

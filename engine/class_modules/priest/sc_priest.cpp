@@ -328,7 +328,7 @@ struct power_infusion_t final : public priest_spell_t
 
     // Trigger PI on the actor only if casting on itself or having the legendary
     if ( priest().options.priest_self_power_infusion || priest().legendary.twins_of_the_sun_priestess->ok() )
-      priest().buffs.power_infusion->trigger();
+      player->buffs.power_infusion->trigger();
   }
 };
 
@@ -762,18 +762,6 @@ struct power_word_shield_t final : public priest_absorb_t
 
 namespace buffs
 {
-// ==========================================================================
-// Power Infusion
-// ==========================================================================
-struct power_infusion_t final : public priest_buff_t<buff_t>
-{
-  power_infusion_t( priest_t& p ) : base_t( p, "power_infusion", p.find_class_spell( "Power Infusion" ) )
-  {
-    add_invalidate( CACHE_SPELL_HASTE );
-    add_invalidate( CACHE_HASTE );
-  }
-};
-
 // ==========================================================================
 // Fae Guardians - Night Fae Covenant
 // ==========================================================================
@@ -1332,11 +1320,6 @@ double priest_t::composite_spell_haste() const
 {
   double h = player_t::composite_spell_haste();
 
-  if ( buffs.power_infusion->check() )
-  {
-    h /= 1.0 + buffs.power_infusion->data().effectN( 1 ).percent();
-  }
-
   if ( buffs.dark_passion->check() )
   {
     h /= 1.0 + buffs.dark_passion->data().effectN( 1 ).percent();
@@ -1348,11 +1331,6 @@ double priest_t::composite_spell_haste() const
 double priest_t::composite_melee_haste() const
 {
   double h = player_t::composite_melee_haste();
-
-  if ( buffs.power_infusion->check() )
-  {
-    h /= 1.0 + buffs.power_infusion->data().effectN( 1 ).percent();
-  }
 
   if ( buffs.dark_passion->check() )
   {
@@ -1718,8 +1696,6 @@ void priest_t::create_buffs()
                             ->add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
 
   // Shared buffs
-  buffs.power_infusion = make_buff<buffs::power_infusion_t>( *this )->set_cooldown( timespan_t::from_seconds( 0 ) );
-
   buffs.dispersion = make_buff<buffs::dispersion_t>( *this );
 
   buffs.the_penitent_one = make_buff( this, "the_penitent_one", legendary.the_penitent_one->effectN( 1 ).trigger() )
