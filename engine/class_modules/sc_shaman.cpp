@@ -1370,6 +1370,12 @@ public:
 
     // for benefit tracking purpose
     ab::p()->buff.spiritwalkers_grace->up();
+
+    if ( ab::p()->talent.aftershock->ok() && ab::current_resource() == RESOURCE_MAELSTROM &&
+         ab::last_resource_cost > 0 && ab::rng().roll( ab::p()->talent.aftershock->effectN( 1 ).percent() ) )
+    {
+      ab::p()->trigger_maelstrom_gain( ab::last_resource_cost, ab::p()->gain.aftershock );
+    }
   }
 };
 
@@ -4626,11 +4632,6 @@ struct earth_shock_t : public shaman_spell_t
   void execute() override
   {
     shaman_spell_t::execute();
-
-    if (p()->talent.aftershock->ok() && p()->rng().roll( p()->talent.aftershock->effectN( 1 ).percent() ) )
-    {
-      p()->trigger_maelstrom_gain( last_resource_cost, p()->gain.aftershock );
-    }
 
     if ( p()->talent.surge_of_power->ok() )
     {
