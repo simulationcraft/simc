@@ -5436,7 +5436,7 @@ struct primordial_wave_t : public shaman_spell_t
 
     if ( p()->conduit.tumbling_waves->ok() && rng().roll( p()->conduit.tumbling_waves.percent() ) )
     {
-      cooldown->reset( false );
+      cooldown->reset( true );
     }
   }
 };
