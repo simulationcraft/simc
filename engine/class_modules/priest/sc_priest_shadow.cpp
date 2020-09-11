@@ -500,7 +500,7 @@ struct silence_t final : public priest_spell_t
   {
     parse_options( options_str );
     may_miss = may_crit   = false;
-    ignore_false_positive = true;
+    ignore_false_positive = is_interrupt = true;
 
     if ( priest().talents.last_word->ok() )
     {
