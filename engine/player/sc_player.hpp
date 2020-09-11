@@ -511,6 +511,10 @@ struct player_t : public actor_t
     buff_t* bioelectric_charge; // Diver's Folly 1H AGI axe buff to store damage
     buff_t* razor_coral; // Ashvane's Razor Coral trinket crit rating buff
 
+    // 9.0 class buffs
+    buff_t* focus_magic; // Mage talent
+    buff_t* power_infusion; // Priest spell
+
     // 9.0 Soulbinds
     buff_t* invigorating_herbs;       // night_fae/niya/tools - proc on direct heal
     buff_t* redirected_anima_stacks;  // night_fae/niya/grove_invigoration - counter procced via rppm
@@ -555,6 +559,12 @@ struct player_t : public actor_t
     buff_t* chaos_brand;  // Demon Hunter
     buff_t* mystic_touch; // Monk
   } debuffs;
+
+  struct external_buffs_t
+  {
+    bool focus_magic;
+    std::vector<timespan_t> power_infusion;
+  } external_buffs;
 
   struct gains_t
   {

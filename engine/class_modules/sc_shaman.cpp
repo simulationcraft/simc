@@ -399,6 +399,7 @@ public:
   struct conduit_t
   {
     // Covenant-specific
+    conduit_data_t lavish_harvest; // Venthyr
     conduit_data_t tumbling_waves; // Necrolord
 
     // Elemental
@@ -1370,6 +1371,12 @@ public:
 
     // for benefit tracking purpose
     ab::p()->buff.spiritwalkers_grace->up();
+
+    if ( ab::p()->talent.aftershock->ok() && ab::current_resource() == RESOURCE_MAELSTROM &&
+         ab::last_resource_cost > 0 && ab::rng().roll( ab::p()->talent.aftershock->effectN( 1 ).percent() ) )
+    {
+      ab::p()->trigger_maelstrom_gain( ab::last_resource_cost, ab::p()->gain.aftershock );
+    }
   }
 };
 
@@ -4317,6 +4324,7 @@ struct elemental_blast_overload_t : public elemental_overload_spell_t
     : elemental_overload_spell_t( p, "elemental_blast_overload", p->find_spell( 120588 ) )
   {
     affected_by_master_of_the_elements = true;
+    maelstrom_gain                     = player->find_spell( 343725 )->effectN( 11 ).resource( RESOURCE_MAELSTROM );
   }
 
   void execute() override
@@ -4333,9 +4341,14 @@ struct elemental_blast_t : public shaman_spell_t
   elemental_blast_t( shaman_t* player, const std::string& options_str )
     : shaman_spell_t( "elemental_blast", player, player->talent.elemental_blast, options_str )
   {
-    overload = new elemental_blast_overload_t( player );
-    add_child( overload );
-    affected_by_master_of_the_elements = true;
+    if ( player->specialization() == SHAMAN_ELEMENTAL )
+    {
+      affected_by_master_of_the_elements = true;
+      maelstrom_gain                     = player->find_spell( 343725 )->effectN( 10 ).resource( RESOURCE_MAELSTROM );
+
+      overload = new elemental_blast_overload_t( player );
+      add_child( overload );
+    }
   }
 
   void execute() override
@@ -4626,11 +4639,6 @@ struct earth_shock_t : public shaman_spell_t
   void execute() override
   {
     shaman_spell_t::execute();
-
-    if (p()->talent.aftershock->ok() && p()->rng().roll( p()->talent.aftershock->effectN( 1 ).percent() ) )
-    {
-      p()->trigger_maelstrom_gain( last_resource_cost, p()->gain.aftershock );
-    }
 
     if ( p()->talent.surge_of_power->ok() )
     {
@@ -5458,6 +5466,18 @@ struct chain_harvest_t : public chained_base_t
     spell_power_mod.direct = player->find_spell( 320752 )->effectN( 1 ).sp_coeff();
   }
 
+  double composite_crit_chance() const override
+  {
+    double c = chained_base_t::composite_crit_chance();
+
+    if ( p()->conduit.lavish_harvest->ok() )
+    {
+      c += p()->conduit.lavish_harvest.percent();
+    }
+
+    return c;
+  }
+
   void impact( action_state_t* s ) override
   {
     chained_base_t::impact( s );
@@ -6200,6 +6220,7 @@ void shaman_t::init_spells()
   covenant.kyrian    = find_covenant_spell( "Vesper Totem" );
 
   // Covenant-specific conduits
+  conduit.lavish_harvest = find_conduit_spell( "Lavish Harvest" );
   conduit.tumbling_waves = find_conduit_spell( "Tumbling Waves" );
 
   // Elemental Conduits

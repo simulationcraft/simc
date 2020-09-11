@@ -1215,6 +1215,7 @@ player_t::player_t( sim_t* s, player_e t, util::string_view n, race_e r )
     consumables(),
     buffs(),
     debuffs(),
+    external_buffs(),
     gains(),
     spells(),
     procs(),
@@ -3320,6 +3321,16 @@ void player_t::create_buffs()
         + timespan_t::from_seconds( ripple_in_space.spell_ref( 2u, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 1 ).base_value() / 1000 ) );
       buffs.reality_shift->set_cooldown( find_spell( 302953 )->duration() );
 
+      // 9.0 class buffs
+      buffs.focus_magic = make_buff( this, "focus_magic", find_spell( 321358 ) )
+        ->set_default_value_from_effect( 1 )
+        ->add_invalidate( CACHE_SPELL_CRIT_CHANCE );
+
+      buffs.power_infusion = make_buff( this, "power_infusion", find_spell( 10060 ) )
+        ->set_default_value_from_effect( 1 )
+        ->set_cooldown( 0_ms )
+        ->add_invalidate( CACHE_HASTE );
+
       // Soulbind buffs required for APL parsing
       buffs.redirected_anima_stacks = make_buff( this, "redirected_anima_stacks", find_spell( 342802 ) );
       buffs.thrill_seeker = make_buff( this, "thrill_seeker", find_spell( 331939 ) )
@@ -3499,6 +3510,9 @@ double player_t::composite_melee_haste() const
 
     if ( timeofday == NIGHT_TIME )
       h *= 1.0 / ( 1.0 + racials.touch_of_elune->effectN( 1 ).percent() );
+
+    if ( buffs.power_infusion )
+      h *= 1.0 / ( 1.0 + buffs.power_infusion->check_value() );
   }
 
   return h;
@@ -3860,6 +3874,9 @@ double player_t::composite_spell_haste() const
 
     if ( timeofday == NIGHT_TIME )
       h *= 1.0 / ( 1.0 + racials.touch_of_elune->effectN( 1 ).percent() );
+
+    if ( buffs.power_infusion )
+      h *= 1.0 / ( 1.0 + buffs.power_infusion->check_value() );
   }
 
   return h;
@@ -3945,6 +3962,9 @@ double player_t::composite_spell_crit_chance() const
   {
     sc += racials.touch_of_elune->effectN( 1 ).percent();
   }
+
+  if ( buffs.focus_magic )
+    sc += buffs.focus_magic->check_value();
 
   return sc;
 }
@@ -4760,6 +4780,10 @@ void player_t::combat_begin()
     buffs.tyrants_decree_driver->trigger();
     buffs.tyrants_immortality->trigger( buffs.tyrants_immortality->max_stack() );
   }
+
+  if ( buffs.power_infusion )
+    for ( auto t : external_buffs.power_infusion )
+      make_event( *sim, t, [ this ] { buffs.power_infusion->trigger(); } );
 
   // Trigger registered combat-begin functions
   for ( const auto& f : combat_begin_functions)
@@ -5591,6 +5615,9 @@ void player_t::arise()
 
   arise_time = sim->current_time();
   last_regen = sim->current_time();
+
+  if ( buffs.focus_magic && external_buffs.focus_magic )
+    buffs.focus_magic->override_buff();
 
   if ( is_enemy() )
   {
@@ -11040,6 +11067,8 @@ void player_t::copy_from( player_t* source )
   flask_str  = source->flask_str;
   food_str   = source->food_str;
   rune_str   = source->rune_str;
+
+  external_buffs = source->external_buffs;
 }
 
 void player_t::create_options()
@@ -11215,6 +11244,20 @@ void player_t::create_options()
   add_option( opt_timespan( "reaction_time_max", reaction_max ) );
   add_option( opt_bool( "stat_cache", cache.active ) );
   add_option( opt_bool( "karazhan_trinkets_paired", karazhan_trinkets_paired ) );
+  add_option( opt_bool( "external_buffs.focus_magic", external_buffs.focus_magic ) );
+  add_option( opt_func( "external_buffs.power_infusion", [ this ] ( sim_t*, util::string_view, util::string_view val )
+  {
+    external_buffs.power_infusion.clear();
+    auto splits = util::string_split<util::string_view>( val, "/" );
+    for ( auto split : splits )
+    {
+      double t = util::to_double( split );
+      if ( t < 0.0 )
+        throw std::invalid_argument( "The external Power Infusion buff cannot be applied at a negative time" );
+      external_buffs.power_infusion.push_back( timespan_t::from_seconds( t ) );
+    }
+    return true;
+  } ) );
 
   // Azerite options
   if ( ! is_enemy() && ! is_pet() )

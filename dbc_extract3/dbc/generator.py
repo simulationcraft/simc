@@ -1273,7 +1273,6 @@ class SpellDataGenerator(DataGenerator):
          # 8.0 Galley Banquet food buffs
          259448, 259449, 259452, 259453,
          # 8.0 Bountiful Captain's Feast food buffs
-         # 9.0 Feast of Gluttonous Hedonism
          259454, 259455, 259456, 259457,
          # 8.1 Boralus Blood Sausage food buffs
          290469, 290467, 290468,
@@ -1423,6 +1422,10 @@ class SpellDataGenerator(DataGenerator):
          # Searing Breath damage
          316704,
          # Shadowlands
+         # Surprisingly Palatable Feast
+         327702, 327704, 327705,
+         # Feast of Gluttonous Hedonism
+         327707, 327708, 327709,
          # Soulbinds
          321524, # Niya's Tools: Poison (night fae/niya)
          320130, 320212, # Social Butterfly vers buff (night fae/dreamweaver)

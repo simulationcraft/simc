@@ -4497,6 +4497,7 @@ struct interrupt_base_t: public hunter_spell_t
     hunter_spell_t( n, p, s )
   {
     may_miss = may_block = may_dodge = may_parry = false;
+    is_interrupt = true;
   }
 
   void execute() override

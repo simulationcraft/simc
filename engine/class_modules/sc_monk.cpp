@@ -5495,6 +5495,7 @@ struct spear_hand_strike_t : public monk_melee_attack_t
     parse_options( options_str );
     ignore_false_positive = true;
     trigger_gcd           = timespan_t::zero();
+    is_interrupt          = true;
     may_miss = may_block = may_dodge = may_parry = false;
   }
 
@@ -8741,11 +8742,11 @@ void monk_t::create_buffs()
 
   // Covenant Abilities
   buff.weapons_of_order = make_buff( this, "weapons_of_order", find_spell( 310454 ) )
-                              ->set_default_value( find_spell( 310454 )->effectN( 1 ).base_value() + 
-                                  ( conduit.strike_with_clarity ? conduit.strike_with_clarity.value() : 0 ) )
-                              ->set_duration( find_spell( 310454 )->duration() + ( 
-                                  conduit.strike_with_clarity ? conduit.strike_with_clarity->effectN( 2 ).time_value() : timespan_t::zero() ) )
-                              ->add_invalidate( CACHE_MASTERY );
+                        ->set_default_value( find_spell( 310454 )->effectN( 1 ).base_value() + 
+                            ( conduit.strike_with_clarity->ok() ? conduit.strike_with_clarity.value() : 0 ) )
+                        ->set_duration( find_spell( 310454 )->duration() + ( 
+                            conduit.strike_with_clarity->ok() ? conduit.strike_with_clarity->effectN( 2 ).time_value() : timespan_t::zero() ) )
+                        ->add_invalidate( CACHE_MASTERY );
 
   buff.weapons_of_order_ww = make_buff( this, "weapons_of_order_ww", find_spell( 311054 ) )
                                  ->set_default_value( find_spell( 311054 )->effectN( 1 ).base_value() );
