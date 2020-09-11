@@ -101,6 +101,12 @@ void smothered_shank( special_effect_t& effect )
   effect.custom_buff = make_buff<smothered_shank_buff_t>( effect );
 }
 
+void surprisingly_palatable_feast( special_effect_t& effect )
+{
+  init_feast( effect,
+              {{STAT_STRENGTH, 327701}, {STAT_STAMINA, 327702}, {STAT_INTELLECT, 327704}, {STAT_AGILITY, 327705}} );
+}
+
 void feast_of_gluttonous_hedonism( special_effect_t& effect )
 {
   init_feast( effect,
@@ -304,6 +310,7 @@ void register_special_effects()
 {
     // Food
     unique_gear::register_special_effect( 308637, consumables::smothered_shank );
+    unique_gear::register_special_effect( 308458, consumables::surprisingly_palatable_feast );
     unique_gear::register_special_effect( 308462, consumables::feast_of_gluttonous_hedonism );
 
     // Potion

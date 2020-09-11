@@ -1422,6 +1422,8 @@ class SpellDataGenerator(DataGenerator):
          # Searing Breath damage
          316704,
          # Shadowlands
+         # Surprisingly Palatable Feast
+         327702, 327704, 327705,
          # Feast of Gluttonous Hedonism
          327707, 327708, 327709,
          # Soulbinds

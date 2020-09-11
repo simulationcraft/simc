@@ -1,5 +1,5 @@
 // Spell text, wow build 9.0.2.35854
-static const std::array<spelltext_data_t, 15562> __spelltext_data { {
+static const std::array<spelltext_data_t, 15565> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -14252,7 +14252,10 @@ static const std::array<spelltext_data_t, 15562> __spelltext_data { {
   { 327661, "Call forth three faerie guardians to attend your targets for $d.\r\n\r\n$@spellname342132: Direct attacks against the target restore ${$327703s1/100}.1% Mana or ${$327703s2/100} Insanity. Follows your Shadow Word: Pain.\r\n\r\n$@spellname327694: Reduces damage taken by $327694s1%. Follows your Power Word: Shield.\r\n\r\n$@spellname327710: Increases the cooldown recovery rate of a major ability by $327710s1%. Follows your $?c2[Flash Heal][Shadow Mend].", "Commanding faerie guardians.", "Night Fae" },
   { 327694, "$@spelldesc327661", "Reduces damage taken by $s1%.", "Night Fae" },
   { 327701, "Strength increased by $s1.  Lasts $d.", "Strength increased by $w1.", 0 },
+  { 327702, "Stamina increased by $s1.  Lasts $d.", "Stamina increased by $w1.", 0 },
   { 327703, "$@spelldesc327661\r\n", 0, "Night Fae" },
+  { 327704, "Intellect increased by $s1.  Lasts $d.", "Intellect increased by $w1.", 0 },
+  { 327705, "Agility increased by $s1.  Lasts $d.", "Agility increased by $w1.", 0 },
   { 327706, "Strength increased by $s1.  Lasts $d.", "Strength increased by $w1.", 0 },
   { 327707, "Stamina increased by $s1.  Lasts $d.", "Stamina increased by $w1.", 0 },
   { 327708, "Intellect increased by $s1.  Lasts $d.", "Intellect increased by $w1.", 0 },
