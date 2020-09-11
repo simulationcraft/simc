@@ -398,6 +398,9 @@ public:
   // Conduits
   struct conduit_t
   {
+    // Covenant-specific
+    conduit_data_t tumbling_waves; // Necrolord
+
     // Elemental
     conduit_data_t call_of_flame;
     conduit_data_t high_voltage;
@@ -5428,7 +5431,13 @@ struct primordial_wave_t : public shaman_spell_t
 
   void execute() override {
     shaman_spell_t::execute();
+
     p()->buff.primordial_wave->trigger();
+
+    if ( p()->conduit.tumbling_waves->ok() && rng().roll( p()->conduit.tumbling_waves.percent() ) )
+    {
+      cooldown->reset( false );
+    }
   }
 };
 
@@ -6190,7 +6199,10 @@ void shaman_t::init_spells()
   covenant.venthyr   = find_covenant_spell( "Chain Harvest" );
   covenant.kyrian    = find_covenant_spell( "Vesper Totem" );
 
-  // Conduits
+  // Covenant-specific conduits
+  conduit.tumbling_waves = find_conduit_spell( "Tumbling Waves" );
+
+  // Elemental Conduits
   conduit.call_of_flame = find_conduit_spell( "Call of Flame" );
   conduit.high_voltage  = find_conduit_spell( "High Voltage" );
 
