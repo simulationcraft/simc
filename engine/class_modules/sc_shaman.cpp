@@ -398,6 +398,9 @@ public:
   // Conduits
   struct conduit_t
   {
+    // Covenant-specific
+    conduit_data_t essential_extraction; // Night Fae
+
     // Elemental
     conduit_data_t call_of_flame;
     conduit_data_t high_voltage;
@@ -5389,6 +5392,18 @@ struct fae_transfusion_tick_t : public shaman_spell_t
     callbacks  = false;
   }
 
+  double action_multiplier() const override
+  {
+    double m = shaman_spell_t::action_multiplier();
+
+    if ( p()->conduit.essential_extraction->ok() )
+    {
+      m *= 1.0 + p()->conduit.essential_extraction->effectN( 1 ).percent();
+    }
+
+    return m;
+  }
+
   result_amount_type amount_type( const action_state_t*, bool ) const override
   {
     return result_amount_type::DMG_DIRECT;
@@ -5407,6 +5422,11 @@ struct fae_transfusion_t : public shaman_spell_t
 
     channeled   = true;
     tick_action = new fae_transfusion_tick_t( "fae_transfusion_tick", player );
+
+    if ( player->conduit.essential_extraction->ok() )
+    {
+      base_tick_time *= 1.0 + p()->conduit.essential_extraction->effectN( 3 ).percent();
+    }
   }
 };
 
@@ -6190,7 +6210,10 @@ void shaman_t::init_spells()
   covenant.venthyr   = find_covenant_spell( "Chain Harvest" );
   covenant.kyrian    = find_covenant_spell( "Vesper Totem" );
 
-  // Conduits
+  // Covenant-specific conduits
+  conduit.essential_extraction = find_conduit_spell( "Essential Extraction" );
+
+  // Elemental Conduits
   conduit.call_of_flame = find_conduit_spell( "Call of Flame" );
   conduit.high_voltage  = find_conduit_spell( "High Voltage" );
 
