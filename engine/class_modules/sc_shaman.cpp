@@ -4323,6 +4323,7 @@ struct elemental_blast_overload_t : public elemental_overload_spell_t
     : elemental_overload_spell_t( p, "elemental_blast_overload", p->find_spell( 120588 ) )
   {
     affected_by_master_of_the_elements = true;
+    maelstrom_gain                     = player->find_spell( 343725 )->effectN( 11 ).resource( RESOURCE_MAELSTROM );
   }
 
   void execute() override
@@ -4339,9 +4340,14 @@ struct elemental_blast_t : public shaman_spell_t
   elemental_blast_t( shaman_t* player, const std::string& options_str )
     : shaman_spell_t( "elemental_blast", player, player->talent.elemental_blast, options_str )
   {
-    overload = new elemental_blast_overload_t( player );
-    add_child( overload );
-    affected_by_master_of_the_elements = true;
+    if ( player->specialization() == SHAMAN_ELEMENTAL )
+    {
+      affected_by_master_of_the_elements = true;
+      maelstrom_gain                     = player->find_spell( 343725 )->effectN( 10 ).resource( RESOURCE_MAELSTROM );
+
+      overload = new elemental_blast_overload_t( player );
+      add_child( overload );
+    }
   }
 
   void execute() override
