@@ -5258,8 +5258,9 @@ struct howling_blast_aoe_t : public death_knight_spell_t
       m *= 1.0 + p() -> buffs.rime -> data().effectN( 2 ).percent() + p() -> spec.rime_2 -> effectN( 1 ).percent();
     }
 
-    // Handle sqrt scaling for aoe, since all aoe is handled in this spell, we need to hit all targets, not skip the first one
-    // We also add one to this size, as for the purpose of scaling, we need to include the main target not hit by aoe
+    // Handle sqrt scaling for aoe.  Since this spell already hits everything except your main target,  we can not simply set the
+    // reduced_aoe_damage flag.  We need to apply the sqrt scaled damage to all targets this spell hits.
+    // We also add one to the number of targets to include the main target, for the purpose of scaling.
     m *= (1 / sqrt(target_list().size() + 1));
 
     return m;
