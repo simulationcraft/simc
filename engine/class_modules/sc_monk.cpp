@@ -7756,6 +7756,7 @@ action_t* monk_t::create_action( util::string_view name, const std::string& opti
     return new spinning_crane_kick_t( this, options_str );
   if ( name == "vivify" )
     return new vivify_t( *this, options_str );
+
   // Brewmaster
   if ( name == "breath_of_fire" )
     return new breath_of_fire_t( *this, options_str );
@@ -7779,6 +7780,7 @@ action_t* monk_t::create_action( util::string_view name, const std::string& opti
     return new purifying_brew_t( *this, options_str );
   if ( name == "provoke" )
     return new provoke_t( this, options_str );
+
   // Mistweaver
   if ( name == "enveloping_mist" )
     return new enveloping_mist_t( *this, options_str );
@@ -7802,6 +7804,7 @@ action_t* monk_t::create_action( util::string_view name, const std::string& opti
     return new revival_t( *this, options_str );
   if ( name == "thunder_focus_tea" )
     return new thunder_focus_tea_t( *this, options_str );
+
   // Windwalker
   if ( name == "fists_of_fury" )
     return new fists_of_fury_t( this, options_str );
@@ -7813,6 +7816,7 @@ action_t* monk_t::create_action( util::string_view name, const std::string& opti
     return new touch_of_death_t( *this, options_str );
   if ( name == "storm_earth_and_fire" )
     return new storm_earth_and_fire_t( this, options_str );
+
   // Talents
   if ( name == "chi_burst" )
     return new chi_burst_t( this, options_str );
@@ -7842,6 +7846,11 @@ action_t* monk_t::create_action( util::string_view name, const std::string& opti
     return new whirling_dragon_punch_t( this, options_str );
   if ( name == "serenity" )
     return new serenity_t( this, options_str );
+
+  // Covenant Abilities
+  if ( name == "weapons_of_order" )
+    return new weapons_of_order_t( *this, options_str );
+
   return base_t::create_action( name, options_str );
 }
 
