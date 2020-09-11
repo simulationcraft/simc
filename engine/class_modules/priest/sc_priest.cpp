@@ -939,15 +939,7 @@ void base_fiend_pet_t::init_action_list()
 
 void base_fiend_pet_t::init_background_actions()
 {
-  active_spell_shadowflame_prism = new fiend::actions::shadowflame_prism_t( *this );
-
   priest_pet_t::init_background_actions();
-}
-
-void base_fiend_pet_t::trigger_shadowflame_prison( player_t* target, double original_amount )
-{
-  assert( active_spell_shadowflame_prism );
-  active_spell_shadowflame_prism->trigger( target, original_amount );
 }
 
 double base_fiend_pet_t::composite_player_multiplier( school_e school ) const
@@ -971,6 +963,11 @@ double base_fiend_pet_t::composite_melee_haste() const
 
 action_t* base_fiend_pet_t::create_action( util::string_view name, const std::string& options_str )
 {
+  if ( name == "shadowflame_prism" )
+  {
+    return new fiend::actions::shadowflame_prism_t( *this );
+  }
+
   return priest_pet_t::create_action( name, options_str );
 }
 }  // namespace fiend
@@ -2032,6 +2029,13 @@ void priest_t::arise()
   base_t::arise();
 
   buffs.whispers_of_the_damned->trigger();
+}
+
+void priest_t::trigger_shadowflame_prism( player_t* target )
+{
+  auto current_pet = talents.mindbender->ok() ? pets.mindbender : pets.shadowfiend;
+  // current_pet->shadowflame_prism->set_target( target );
+  // current_pet->shadowflame_prism->execute();
 }
 
 // Legendary Eternal Call to the Void trigger

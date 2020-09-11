@@ -577,6 +577,7 @@ public:
   bool insanity_drain_frozen() const;
   void adjust_holy_word_serenity_cooldown();
   double tick_damage_over_time( timespan_t duration, const dot_t* dot ) const;
+  void trigger_shadowflame_prism( player_t* target );
   void trigger_eternal_call_to_the_void( action_state_t* );
   void trigger_shadowy_apparitions( action_state_t* );
   void trigger_psychic_link( action_state_t* );
@@ -783,7 +784,7 @@ struct shadowflame_prism_t;
  */
 struct base_fiend_pet_t : public priest_pet_t
 {
-  propagate_const<actions::shadowflame_prism_t*> active_spell_shadowflame_prism;
+  propagate_const<actions::shadowflame_prism_t*> shadowflame_prism;
 
   struct gains_t
   {
@@ -807,8 +808,6 @@ struct base_fiend_pet_t : public priest_pet_t
   void init_action_list() override;
 
   void init_background_actions() override;
-
-  void trigger_shadowflame_prison( player_t* target, double original_amount );
 
   void init_gains() override
   {
@@ -951,11 +950,6 @@ struct fiend_melee_t : public priest_pet_melee_t
   {
     priest_pet_melee_t::impact( s );
 
-    if ( p().o().legendary.shadowflame_prism->ok() )
-    {
-      p().trigger_shadowflame_prison( s->target, s->result_amount );
-    }
-
     if ( result_is_hit( s->result ) )
     {
       if ( p().o().specialization() == PRIEST_SHADOW )
@@ -984,27 +978,49 @@ struct fiend_melee_t : public priest_pet_melee_t
 };
 
 // ==========================================================================
+// Shadowflame Rift
+// ==========================================================================
+struct shadowflame_rift_t final : public priest_pet_spell_t
+{
+  shadowflame_rift_t( base_fiend_pet_t& p )
+    : priest_pet_spell_t( "shadowflame_rift", &p, p.o().find_spell( 344748 ) )
+  {
+  }
+};
+
+// ==========================================================================
 // Shadowflame Prism
 // ==========================================================================
 struct shadowflame_prism_t final : public priest_pet_spell_t
 {
-  double shadowflame_increase;
+  int duration;
 
   shadowflame_prism_t( base_fiend_pet_t& p )
-    : priest_pet_spell_t( "shadowflame_prism", &p, p.o().find_spell( 336142 ) ),
-      shadowflame_increase( p.o().find_spell( 336144 )->effectN( 1 ).percent() )
+    : priest_pet_spell_t( "shadowflame_prism", &p, p.o().find_spell( 336143 ) ),
+      duration( data().effectN( 3 ).base_value() + 0.5 ) // This 0.5 is hardcoded in spell data
   {
     background = true;
-    may_crit   = false;
-    may_miss   = false;
+
+    impact_action = new shadowflame_rift_t( p );
+    add_child( impact_action );
   }
 
-  void trigger( player_t* target, double original_amount )
+  void execute() override
   {
-    base_dd_min = base_dd_max = ( original_amount * shadowflame_increase );
-    player->sim->print_debug( "Triggered shadowflame prism damage on target {} at {} percent increase.", *target,
-                              shadowflame_increase );
+    priest_pet_spell_t::execute();
 
+    auto current_pet = p().o().talents.mindbender->ok() ? p().o().pets.mindbender : p().o().pets.shadowfiend;
+
+    if ( !current_pet->is_sleeping() )
+    {
+      auto new_duration = current_pet->expiration->remains();
+      new_duration += timespan_t::from_seconds( duration );
+      current_pet->expiration->reschedule( new_duration );
+    }
+  }
+
+  void trigger( player_t* target )
+  {
     set_target( target );
     execute();
   }

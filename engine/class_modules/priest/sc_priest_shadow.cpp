@@ -120,6 +120,11 @@ public:
   {
     priest_spell_t::impact( s );
 
+    if ( priest().legendary.shadowflame_prism->ok() )
+    {
+      priest().trigger_shadowflame_prism( s->target );
+    }
+
     if ( priest().buffs.mind_devourer->trigger() )
     {
       priest().procs.mind_devourer->occur();
@@ -399,6 +404,11 @@ struct shadow_word_death_t final : public priest_spell_t
   void impact( action_state_t* s ) override
   {
     priest_spell_t::impact( s );
+
+    if ( priest().legendary.shadowflame_prism->ok() )
+    {
+      priest().trigger_shadowflame_prism( s->target );
+    }
 
     if ( result_is_hit( s->result ) )
     {
