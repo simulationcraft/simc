@@ -480,10 +480,6 @@ public:
     buff_t* infernal_cascade;
 
     buff_t* siphoned_malice;
-
-
-    // Miscellaneous Buffs
-    buff_t* gbow;
   } buffs;
 
   // Cooldowns
@@ -504,7 +500,6 @@ public:
   // Gains
   struct gains_t
   {
-    gain_t* gbow;
     gain_t* evocation;
     gain_t* lucid_dreams;
     gain_t* mana_gem;
@@ -517,7 +512,6 @@ public:
     timespan_t firestarter_time = 0_ms;
     timespan_t frozen_duration = 1.0_s;
     timespan_t scorch_delay = 15_ms;
-    int gbow_count = 0;
     rotation_type_e rotation = ROTATION_STANDARD;
     double lucid_dreams_proc_chance_arcane = 0.075;
     double lucid_dreams_proc_chance_fire = 0.1;
@@ -5903,7 +5897,6 @@ void mage_t::create_options()
   add_option( opt_timespan( "firestarter_time", options.firestarter_time ) );
   add_option( opt_timespan( "frozen_duration", options.frozen_duration ) );
   add_option( opt_timespan( "scorch_delay", options.scorch_delay ) );
-  add_option( opt_int( "greater_blessing_of_wisdom_count", options.gbow_count ) );
   add_option( opt_func( "rotation", [ this ] ( sim_t*, util::string_view, util::string_view val )
   {
     if ( util::str_compare_ci( val, "standard" ) )
@@ -6536,14 +6529,6 @@ void mage_t::create_buffs()
                              ->set_default_value( conduits.siphoned_malice.percent() )
                              ->set_chance( conduits.siphoned_malice.ok() );
 
-  // Misc
-  // N active GBoWs are modeled by a single buff that gives N times as much mana.
-  buffs.gbow    = make_buff( this, "greater_blessing_of_wisdom", find_spell( 203539 ) )
-    ->set_tick_callback( [ this ] ( buff_t*, int, timespan_t )
-      { resource_gain( RESOURCE_MANA, resources.max[ RESOURCE_MANA ] * 0.002 * options.gbow_count, gains.gbow ); } )
-    ->set_period( 2.0_s )
-    ->set_chance( options.gbow_count > 0 );
-
   switch ( specialization() )
   {
     case MAGE_ARCANE:
@@ -6563,7 +6548,6 @@ void mage_t::init_gains()
   player_t::init_gains();
 
   gains.evocation      = get_gain( "Evocation"                  );
-  gains.gbow           = get_gain( "Greater Blessing of Wisdom" );
   gains.lucid_dreams   = get_gain( "Lucid Dreams"               );
   gains.mana_gem       = get_gain( "Mana Gem"                   );
   gains.arcane_barrage = get_gain( "Arcane Barrage"             );
@@ -7501,7 +7485,6 @@ void mage_t::arise()
   player_t::arise();
 
   buffs.incanters_flow->trigger();
-  buffs.gbow->trigger();
 
   if ( talents.enlightened->ok() )
   {
