@@ -59,6 +59,25 @@ struct SL_proc_spell_t : public proc_spell_t
   }
 };
 
+// feasts initialization helper
+void init_feast( special_effect_t& effect, std::initializer_list<std::pair<stat_e, int>> stat_map )
+{
+  effect.stat = effect.player->convert_hybrid_stat( STAT_STR_AGI_INT );
+  // TODO: Is this actually spec specific?
+  if ( effect.player->role == ROLE_TANK && !effect.player->sim->feast_as_dps )
+    effect.stat = STAT_STAMINA;
+
+  for ( auto&& stat : stat_map )
+  {
+    if ( stat.first == effect.stat )
+    {
+      effect.trigger_spell_id = stat.second;
+      break;
+    }
+  }
+  effect.stat_amount = effect.player->find_spell( effect.trigger_spell_id )->effectN( 1 ).average( effect.player );
+}
+
 namespace consumables
 {
 void smothered_shank( special_effect_t& effect )
@@ -82,9 +101,16 @@ void smothered_shank( special_effect_t& effect )
   effect.custom_buff = make_buff<smothered_shank_buff_t>( effect );
 }
 
+void surprisingly_palatable_feast( special_effect_t& effect )
+{
+  init_feast( effect,
+              {{STAT_STRENGTH, 327701}, {STAT_STAMINA, 327702}, {STAT_INTELLECT, 327704}, {STAT_AGILITY, 327705}} );
+}
+
 void feast_of_gluttonous_hedonism( special_effect_t& effect )
 {
-
+  init_feast( effect,
+              {{STAT_STRENGTH, 327707}, {STAT_STAMINA, 327707}, {STAT_INTELLECT, 327708}, {STAT_AGILITY, 327709}} );
 }
 
 void potion_of_deathly_fixation( special_effect_t& effect )
@@ -152,6 +178,13 @@ void potion_of_empowered_exorcisms( special_effect_t& effect )
       : proc_spell_t( "empowered_exorcisms", e.player, e.player->find_spell( 322015 ) )
     {
       // TODO: add interaction with shadowcore oil
+    }
+
+    // manually adjust for aoe reduction here instead of via action_t::reduced_aoe_damage as all targets receive reduced
+    // damage, including the primary
+    double composite_aoe_multiplier( const action_state_t* s ) const override
+    {
+      return proc_spell_t::composite_aoe_multiplier( s ) / std::sqrt( s->n_targets );
     }
   };
 
@@ -277,6 +310,8 @@ void register_special_effects()
 {
     // Food
     unique_gear::register_special_effect( 308637, consumables::smothered_shank );
+    unique_gear::register_special_effect( 308458, consumables::surprisingly_palatable_feast );
+    unique_gear::register_special_effect( 308462, consumables::feast_of_gluttonous_hedonism );
 
     // Potion
     unique_gear::register_special_effect( 307497, consumables::potion_of_deathly_fixation );
