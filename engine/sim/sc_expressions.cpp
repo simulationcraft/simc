@@ -1060,22 +1060,16 @@ std::vector<expr_token_t> parse_tokens( action_t* action, util::string_view expr
 
 // print_tokens =============================================================
 
-void print_tokens( std::vector<expr_token_t>& tokens, sim_t* sim )
+void print_tokens( util::span<const expr_token_t> tokens, sim_t* sim )
 {
-  std::string str;
-  if ( !tokens.empty() )
-    str += "tokens: ";
+  if ( tokens.empty() )
+    return;
 
-  for ( size_t i = 0; i < tokens.size(); i++ )
-  {
-    expr_token_t& t = tokens[ i ];
-    auto labels = fmt::format("{:2d} '{}'", t.type, t.label );
-    str += labels;
-    if ( i < tokens.size() - 1 )
-      str += " | ";
-  }
+  std::vector<std::string> strings;
+  for ( const expr_token_t& token : tokens )
+    strings.push_back( fmt::format("{:2d} '{}'", token.type, token.label ) );
 
-  sim->out_debug << str;
+  sim->out_debug.print( "{}", fmt::join( strings, " | " ) );
 }
 
 // convert_to_rpn ===========================================================
