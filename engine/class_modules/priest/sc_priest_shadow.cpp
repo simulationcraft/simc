@@ -45,7 +45,8 @@ public:
       mind_sear_spell( player.find_class_spell( "Mind Sear" ) )
   {
     parse_options( options_str );
-    
+
+    // This was removed from the Mind Blast spell and put on the Shadow Priest spell instead
     energize_amount = mind_blast_insanity;
     energize_amount *= 1 + priest().talents.fortress_of_the_mind->effectN( 2 ).percent();
 
