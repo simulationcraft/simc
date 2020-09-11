@@ -6547,10 +6547,10 @@ void mage_t::init_gains()
 {
   player_t::init_gains();
 
-  gains.evocation      = get_gain( "Evocation"                  );
-  gains.lucid_dreams   = get_gain( "Lucid Dreams"               );
-  gains.mana_gem       = get_gain( "Mana Gem"                   );
-  gains.arcane_barrage = get_gain( "Arcane Barrage"             );
+  gains.evocation      = get_gain( "Evocation"      );
+  gains.lucid_dreams   = get_gain( "Lucid Dreams"   );
+  gains.mana_gem       = get_gain( "Mana Gem"       );
+  gains.arcane_barrage = get_gain( "Arcane Barrage" );
 }
 
 void mage_t::init_procs()
