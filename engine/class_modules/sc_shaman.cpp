@@ -328,6 +328,9 @@ public:
     buff_t* primordial_wave;
     buff_t* vesper_totem;
 
+    // Legendaries
+    buff_t* echoes_of_great_sundering;
+
     // Elemental, Restoration
     buff_t* lava_surge;
 
@@ -407,6 +410,28 @@ public:
     conduit_data_t call_of_flame;
     conduit_data_t high_voltage;
   } conduit;
+
+  // Legendaries
+  struct legendary_t
+  {
+    // Shared
+    item_runeforge_t ancestral_reminder;     // NYI
+    item_runeforge_t chains_of_devastation;  // NYI
+    item_runeforge_t deeptremor_stone;       // NYI
+    item_runeforge_t deeply_rooted_elements; // NYI
+
+    // Elemental
+    item_runeforge_t skybreakers_fiery_demise;     // NYI
+    item_runeforge_t elemental_equilibrium;        // NYI
+    item_runeforge_t echoes_of_great_sundering;
+    item_runeforge_t windspeakers_lava_resurgence; // NYI
+
+    // Enhancement
+    item_runeforge_t doom_winds;                // NYI
+    item_runeforge_t legacy_of_the_frost_witch; // NYI
+    item_runeforge_t primal_lava_actuators;     // NYI
+    item_runeforge_t witch_doctors_wolf_bones;  // NYI
+  } legendary;
 
   // Gains
   struct
@@ -589,6 +614,7 @@ public:
       cooldown(),
       covenant(),
       conduit( conduit_t() ),
+      legendary( legendary_t() ),
       gain(),
       proc(),
       spec(),
@@ -4559,6 +4585,11 @@ struct earthquake_damage_t : public shaman_spell_t
 
     m *= 1.0 + p()->buff.master_of_the_elements->value();
 
+    if ( p()->buff.echoes_of_great_sundering->up() )
+    {
+      m *= 1.0 + p()->buff.echoes_of_great_sundering->value();
+    }
+
     return m;
   }
 
@@ -4597,6 +4628,7 @@ struct earthquake_t : public shaman_spell_t
     // Note, needs to be decremented after ground_aoe_event_t is created so that the rumble gets the
     // buff multiplier as persistent.
     p()->buff.master_of_the_elements->expire();
+    p()->buff.echoes_of_great_sundering->expire();
   }
 };
 
@@ -4644,6 +4676,11 @@ struct earth_shock_t : public shaman_spell_t
     if ( p()->talent.surge_of_power->ok() )
     {
       p()->buff.surge_of_power->trigger();
+    }
+
+    if ( p()->legendary.echoes_of_great_sundering->ok() )
+    {
+      p()->buff.echoes_of_great_sundering->trigger();
     }
   }
 
@@ -6246,6 +6283,24 @@ void shaman_t::init_spells()
   conduit.call_of_flame = find_conduit_spell( "Call of Flame" );
   conduit.high_voltage  = find_conduit_spell( "High Voltage" );
 
+  // Shared Legendaries
+  legendary.ancestral_reminder     = find_runeforge_legendary( "Ancestral Reminder" );
+  legendary.chains_of_devastation  = find_runeforge_legendary( "Chains of Devastation" );
+  legendary.deeptremor_stone       = find_runeforge_legendary( "Deeptremor Stone" );
+  legendary.deeply_rooted_elements = find_runeforge_legendary( "Deeply Rooted Elements" );
+
+  // Elemental Legendaries
+  legendary.skybreakers_fiery_demise     = find_runeforge_legendary( "Skybreaker's Fiery Demise" );
+  legendary.elemental_equilibrium        = find_runeforge_legendary( "Elemental Equilibrium" );
+  legendary.echoes_of_great_sundering    = find_runeforge_legendary( "Echoes of Great Sundering" );
+  legendary.windspeakers_lava_resurgence = find_runeforge_legendary( "Windspeaker's Lava Resurgence" );
+
+  // Enhancement Legendaries
+  legendary.doom_winds                = find_runeforge_legendary( "Doom Winds" );
+  legendary.legacy_of_the_frost_witch = find_runeforge_legendary( "Legacy of the Frost Witch" );
+  legendary.primal_lava_actuators     = find_runeforge_legendary( "Primal Lava Actuators" );
+  legendary.witch_doctors_wolf_bones  = find_runeforge_legendary( "Witch Doctor's Wolf Bones" );
+
   //
   // Misc spells
   //
@@ -6746,6 +6801,9 @@ void shaman_t::create_buffs()
 
   buff.wind_gust = make_buff( this, "wind_gust", find_spell( 263806 ) )
                        ->set_default_value( find_spell( 263806 )->effectN( 1 ).percent() );
+
+  buff.echoes_of_great_sundering = make_buff( this, "echoes_of_great_sundering", find_spell( 336217 ) )
+                                     ->set_default_value( find_spell(336217)->effectN( 2 ).percent() );
 
   // PvP
   buff.thundercharge = make_buff( this, "thundercharge", find_spell( 204366 ) )
