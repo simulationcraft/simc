@@ -131,6 +131,32 @@ struct SL_potion_proc_t : public Base
   }
 };
 
+// proc potion initialization helper
+template <typename T>
+void init_proc_potion( special_effect_t& effect, util::string_view name )
+{
+  auto potion            = new special_effect_t( effect.player );
+  potion->type           = SPECIAL_EFFECT_EQUIP;
+  potion->spell_id       = effect.spell_id;
+  potion->cooldown_      = 0_ms;
+  potion->execute_action = create_proc_action<T>( name, effect );
+  effect.player->special_effects.push_back( potion );
+
+  auto proc = new dbc_proc_callback_t( effect.player, *potion );
+  proc->deactivate();
+  proc->initialize();
+
+  effect.custom_buff = make_buff( effect.player, effect.name(), effect.driver() )
+    ->set_cooldown( 0_ms )
+    ->set_chance( 1.0 )
+    ->set_stack_change_callback( [proc]( buff_t*, int, int new_ ) {
+      if ( new_ )
+        proc->activate();
+      else
+        proc->deactivate();
+    } );
+}
+
 void potion_of_deathly_fixation( special_effect_t& effect )
 {
   struct deathly_eruption_t : public SL_potion_proc_t<proc_spell_t>
@@ -169,24 +195,7 @@ void potion_of_deathly_fixation( special_effect_t& effect )
     }
   };
 
-  auto potion            = new special_effect_t( effect.player );
-  potion->type           = SPECIAL_EFFECT_EQUIP;
-  potion->spell_id       = effect.spell_id;
-  potion->cooldown_      = 0_ms;
-  potion->execute_action = create_proc_action<deathly_fixation_t>( "potion_of_deathly_fixation", effect );
-  effect.player->special_effects.push_back( potion );
-
-  auto proc = new dbc_proc_callback_t( effect.player, *potion );
-  proc->deactivate();
-  proc->initialize();
-
-  effect.custom_buff = make_buff( effect.player, effect.name(), effect.driver() )
-    ->set_cooldown( 0_ms )
-    ->set_chance( 1.0 )
-    ->set_stack_change_callback( [proc]( buff_t*, int, int new_ ) {
-      if ( new_ ) proc->activate();
-      else proc->deactivate();
-    } );
+  init_proc_potion<deathly_fixation_t>( effect, "potion_of_deathly_fixation" );
 }
 
 void potion_of_empowered_exorcisms( special_effect_t& effect )
@@ -211,24 +220,7 @@ void potion_of_empowered_exorcisms( special_effect_t& effect )
     }
   };
 
-  auto potion            = new special_effect_t( effect.player );
-  potion->type           = SPECIAL_EFFECT_EQUIP;
-  potion->spell_id       = effect.spell_id;
-  potion->cooldown_      = 0_ms;
-  potion->execute_action = create_proc_action<empowered_exorcisms_t>( "potion_of_empowered_exorcisms", effect );
-  effect.player->special_effects.push_back( potion );
-
-  auto proc = new dbc_proc_callback_t( effect.player, *potion );
-  proc->deactivate();
-  proc->initialize();
-
-  effect.custom_buff = make_buff( effect.player, effect.name(), effect.driver() )
-    ->set_cooldown( 0_ms )
-    ->set_chance( 1.0 )
-    ->set_stack_change_callback( [proc]( buff_t*, int, int new_ ) {
-      if ( new_ ) proc->activate();
-      else proc->deactivate();
-    } );
+  init_proc_potion<empowered_exorcisms_t>( effect, "potion_of_empowered_exorcisms" );
 }
 
 void potion_of_phantom_fire( special_effect_t& effect )
@@ -243,24 +235,7 @@ void potion_of_phantom_fire( special_effect_t& effect )
     }
   };
 
-  auto potion            = new special_effect_t( effect.player );
-  potion->type           = SPECIAL_EFFECT_EQUIP;
-  potion->spell_id       = effect.spell_id;
-  potion->cooldown_      = 0_ms;
-  potion->execute_action = create_proc_action<phantom_fire_t>( "potion_of_phantom_fire", effect );
-  effect.player->special_effects.push_back( potion );
-
-  auto proc = new dbc_proc_callback_t( effect.player, *potion );
-  proc->deactivate();
-  proc->initialize();
-
-  effect.custom_buff = make_buff( effect.player, effect.name(), effect.driver() )
-    ->set_cooldown( 0_ms )
-    ->set_chance( 1.0 )
-    ->set_stack_change_callback( [proc]( buff_t*, int, int new_ ) {
-      if ( new_ ) proc->activate();
-      else proc->deactivate();
-    } );
+  init_proc_potion<phantom_fire_t>( effect, "potion_of_phantom_fire" );
 }
 }  // namespace consumables
 
