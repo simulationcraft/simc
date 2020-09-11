@@ -4944,9 +4944,9 @@ struct frost_strike_strike_t : public death_knight_melee_attack_t
   {
     double m = death_knight_melee_attack_t::action_multiplier();
 
-    if ( p() -> buffs.eradicating_blow -> up() )
+    if ( p() -> buffs.eradicating_blow -> check() )
     {
-      m *= 1.0 + p() -> buffs.eradicating_blow -> value();
+      m *= 1.0 + (p() -> buffs.eradicating_blow -> value() * p() -> buffs.eradicating_blow -> stack());
     }
 
     return m;
@@ -5041,6 +5041,11 @@ struct frost_strike_t : public death_knight_melee_attack_t
       }
     }
 
+    if ( p() -> buffs.eradicating_blow -> up() )
+    {
+      p() -> buffs.eradicating_blow -> expire();
+    }
+
     if ( p() -> buffs.pillar_of_frost -> up() && p() -> talent.obliteration -> ok() )
     {
       p() -> trigger_killing_machine( 1.0, p() -> procs.km_from_obliteration_fs,
@@ -5052,11 +5057,6 @@ struct frost_strike_t : public death_knight_melee_attack_t
         // WTB spelldata for the rune gain
         p() -> replenish_rune( 1, p() -> gains.obliteration );
       }
-    }
-
-    if ( p() -> buffs.eradicating_blow -> up() )
-    {
-      p()->buffs.eradicating_blow->decrement();
     }
   }
 };
