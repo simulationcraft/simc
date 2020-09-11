@@ -4698,6 +4698,11 @@ struct flame_shock_t : public shaman_spell_t
   {
     double m = shaman_spell_t::composite_crit_chance();
 
+    if ( p()->legendary.skybreakers_fiery_demise->ok() && p()->active_elemental_pet() )
+    {
+      m += p()->find_spell( 336734 )->effectN( 3 ).percent();
+    }
+
     return m;
   }
 
