@@ -580,7 +580,7 @@ public:
   bool insanity_drain_frozen() const;
   void adjust_holy_word_serenity_cooldown();
   double tick_damage_over_time( timespan_t duration, const dot_t* dot ) const;
-  void trigger_eternal_call_to_the_void( const std::string action_name );
+  void trigger_eternal_call_to_the_void( action_state_t* );
   void trigger_shadowy_apparitions( action_state_t* );
   void trigger_psychic_link( action_state_t* );
   void trigger_wrathful_faerie();

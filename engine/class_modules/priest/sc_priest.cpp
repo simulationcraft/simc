@@ -2059,8 +2059,9 @@ void priest_t::arise()
 }
 
 // Legendary Eternal Call to the Void trigger
-void priest_t::trigger_eternal_call_to_the_void( const std::string action_name )
+void priest_t::trigger_eternal_call_to_the_void( action_state_t* s )
 {
+  auto action_name = s->action->name_str;
   if ( !legendary.eternal_call_to_the_void->ok() )
     return;
 
@@ -2071,7 +2072,7 @@ void priest_t::trigger_eternal_call_to_the_void( const std::string action_name )
       procs.void_tendril->occur();
       auto spawned_pets = pets.void_tendril.spawn();
     }
-    else if ( action_name == "mind_sear" )
+    else if ( action_name == "mind_sear_tick" )
     {
       procs.void_lasher->occur();
       auto spawned_pets = pets.void_lasher.spawn();
