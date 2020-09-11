@@ -401,6 +401,7 @@ public:
     // Covenant-specific
     conduit_data_t essential_extraction; // Night Fae
     conduit_data_t lavish_harvest; // Venthyr
+    conduit_data_t tumbling_waves; // Necrolord
 
     // Elemental
     conduit_data_t call_of_flame;
@@ -5456,7 +5457,13 @@ struct primordial_wave_t : public shaman_spell_t
 
   void execute() override {
     shaman_spell_t::execute();
+
     p()->buff.primordial_wave->trigger();
+
+    if ( p()->conduit.tumbling_waves->ok() && rng().roll( p()->conduit.tumbling_waves.percent() ) )
+    {
+      cooldown->reset( true );
+    }
   }
 };
 
@@ -6233,6 +6240,7 @@ void shaman_t::init_spells()
   // Covenant-specific conduits
   conduit.essential_extraction = find_conduit_spell( "Essential Extraction" );
   conduit.lavish_harvest       = find_conduit_spell( "Lavish Harvest" );
+  conduit.tumbling_waves       = find_conduit_spell( "Tumbling Waves" );
 
   // Elemental Conduits
   conduit.call_of_flame = find_conduit_spell( "Call of Flame" );
