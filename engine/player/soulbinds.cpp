@@ -344,6 +344,7 @@ void dauntless_duelist( special_effect_t& effect )
       td->debuff.adversary->trigger();
 
       deactivate();
+      st->target->callbacks_on_demise.emplace_back( [this]( player_t* ) { activate(); } );
     }
 
     void reset() override
