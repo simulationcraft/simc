@@ -1,5 +1,5 @@
 // Spell text, wow build 9.0.2.35854
-static const std::array<spelltext_data_t, 15559> __spelltext_data { {
+static const std::array<spelltext_data_t, 15562> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -14254,6 +14254,9 @@ static const std::array<spelltext_data_t, 15559> __spelltext_data { {
   { 327701, "Strength increased by $s1.  Lasts $d.", "Strength increased by $w1.", 0 },
   { 327703, "$@spelldesc327661\r\n", 0, "Night Fae" },
   { 327706, "Strength increased by $s1.  Lasts $d.", "Strength increased by $w1.", 0 },
+  { 327707, "Stamina increased by $s1.  Lasts $d.", "Stamina increased by $w1.", 0 },
+  { 327708, "Intellect increased by $s1.  Lasts $d.", "Intellect increased by $w1.", 0 },
+  { 327709, "Agility increased by $s1.  Lasts $d.", "Agility increased by $w1.", 0 },
   { 327710, "$@spelldesc327661", "The cooldown of your major ability recovers $s1% faster.", "Night Fae" },
   { 327714, "$@spelldesc308433 If you spend at least 10 seconds eating you will become Well Fed and while out of combat heal for $327851s1 every $327851t1 sec for $327851d.", 0, 0 },
   { 327715, "Increased Speed for a short time after killing an enemy.", "Increased Speed for a short time after killing an enemy.", 0 },
