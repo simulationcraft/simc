@@ -3243,7 +3243,7 @@ struct counterspell_t : public mage_spell_t
   {
     parse_options( options_str );
     may_miss = may_crit = false;
-    ignore_false_positive = true;
+    ignore_false_positive = is_interrupt = true;
   }
 
   void impact( action_state_t* s ) override
