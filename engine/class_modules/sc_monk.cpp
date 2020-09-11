@@ -8741,11 +8741,11 @@ void monk_t::create_buffs()
 
   // Covenant Abilities
   buff.weapons_of_order = make_buff( this, "weapons_of_order", find_spell( 310454 ) )
-                              ->set_default_value( find_spell( 310454 )->effectN( 1 ).base_value() + 
-                                  ( conduit.strike_with_clarity ? conduit.strike_with_clarity.value() : 0 ) )
-                              ->set_duration( find_spell( 310454 )->duration() + ( 
-                                  conduit.strike_with_clarity ? conduit.strike_with_clarity->effectN( 2 ).time_value() : timespan_t::zero() ) )
-                              ->add_invalidate( CACHE_MASTERY );
+                        ->set_default_value( find_spell( 310454 )->effectN( 1 ).base_value() + 
+                            ( conduit.strike_with_clarity->ok() ? conduit.strike_with_clarity.value() : 0 ) )
+                        ->set_duration( find_spell( 310454 )->duration() + ( 
+                            conduit.strike_with_clarity->ok() ? conduit.strike_with_clarity->effectN( 2 ).time_value() : timespan_t::zero() ) )
+                        ->add_invalidate( CACHE_MASTERY );
 
   buff.weapons_of_order_ww = make_buff( this, "weapons_of_order_ww", find_spell( 311054 ) )
                                  ->set_default_value( find_spell( 311054 )->effectN( 1 ).base_value() );
