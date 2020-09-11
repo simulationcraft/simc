@@ -133,6 +133,9 @@ public:
     // Azerite
     buff_t* sunrise_technique;
 
+    // Covenant Abilities
+    buff_t* weapons_of_order;
+
     // Shadowland Legendaries
     buff_t* rushing_tiger_palm;
     buff_t* recently_rushing_tiger_palm;
@@ -269,7 +272,11 @@ public:
     buff_t* sunrise_technique;
     buff_t* swift_roundhouse;
 
-    // Covenant
+    // Covenant Abilities
+    buff_t* weapons_of_order;
+    buff_t* weapons_of_order_ww;
+
+    // Covenant Conduits
     absorb_buff_t* fortifying_ingrediences;
 
     // Shadowland Legendary
@@ -308,6 +315,9 @@ public:
     gain_t* open_palm_strikes;
     gain_t* memory_of_lucid_dreams;
     gain_t* lucid_dreams;
+
+    // Covenants
+    gain_t* weapons_of_order;
   } gain;
 
   struct procs_t
@@ -3057,6 +3067,9 @@ struct monk_spell_t : public monk_action_t<spell_t>
   {
     double m = base_t::composite_target_multiplier( t );
 
+    if ( td( t )->debuff.weapons_of_order->up() )
+      m *= 1 + td( t )->debuff.weapons_of_order->stack_value();
+
     return m;
   }
 
@@ -3562,6 +3575,9 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
   double composite_target_multiplier( player_t* t ) const override
   {
     double m = base_t::composite_target_multiplier( t );
+
+    if ( td( t )->debuff.weapons_of_order->up() )
+      m *= 1 + td( t )->debuff.weapons_of_order->stack_value();
 
     return m;
   }
@@ -4099,12 +4115,29 @@ struct rising_sun_kick_t : public monk_melee_attack_t
     ap_type = attack_power_type::NONE;
   }
 
+  virtual double cost() const override
+  {
+    double c = monk_melee_attack_t::cost();
+
+    if ( p()->buff.weapons_of_order_ww->up() && !p()->buff.serenity->up() )
+      c += p()->buff.weapons_of_order_ww->value();  // saved as -1
+
+    return c;
+  }
+
   void consume_resource() override
   {
     monk_melee_attack_t::consume_resource();
 
     if ( p()->buff.serenity->up() )
-      p()->gain.serenity->add( RESOURCE_CHI, base_costs[ RESOURCE_CHI ] );
+    {
+      if ( p()->buff.weapons_of_order_ww->up() )
+        p()->gain.serenity->add( RESOURCE_CHI, 
+            base_costs[ RESOURCE_CHI ] - p()->buff.weapons_of_order_ww->value() );
+      else
+        p()->gain.serenity->add( RESOURCE_CHI, base_costs[ RESOURCE_CHI ] );
+    }
+
   }
 
   void execute() override
@@ -4134,6 +4167,9 @@ struct rising_sun_kick_t : public monk_melee_attack_t
         gotd->execute();
       }
     }
+
+    if ( p()->specialization() == MONK_WINDWALKER && p()->buff.weapons_of_order->up() )
+      p()->buff.weapons_of_order_ww->trigger();
   }
 };
 
@@ -4284,6 +4320,9 @@ struct blackout_kick_t : public monk_melee_attack_t
   {
     double c = monk_melee_attack_t::cost();
 
+    if ( p()->buff.weapons_of_order_ww->up() )
+      c += p()->buff.weapons_of_order_ww->value();
+
     if ( c <= 0 )
       return 0;
 
@@ -4322,7 +4361,12 @@ struct blackout_kick_t : public monk_melee_attack_t
     monk_melee_attack_t::consume_resource();
 
     if ( p()->buff.serenity->up() )
-      p()->gain.serenity->add( RESOURCE_CHI, base_costs[ RESOURCE_CHI ] );
+    {
+      if ( p()->buff.weapons_of_order_ww->up() )
+        p()->gain.serenity->add( RESOURCE_CHI, base_costs[ RESOURCE_CHI ] - p()->buff.weapons_of_order_ww->value() );
+      else
+        p()->gain.serenity->add( RESOURCE_CHI, base_costs[ RESOURCE_CHI ] );
+    }
 
     if ( p()->buff.bok_proc->up() )
     {
@@ -4688,17 +4732,17 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
   {
     double c = monk_melee_attack_t::cost();
 
-    if ( !p()->buff.serenity->up() )
-    {
-      if ( p()->buff.dance_of_chiji->up() )
-        c += p()->buff.dance_of_chiji->data().effectN( 1 ).base_value();  // saved as -2
-    
-      if ( p()->buff.dance_of_chiji_azerite->up() )
-        c += p()->buff.dance_of_chiji_azerite->data().effectN( 3 ).base_value();  // saved as -2
+    if ( p()->buff.weapons_of_order_ww->up() )
+      c += p()->buff.weapons_of_order_ww->value();
 
-      if ( c < 0 )
-        c = 0;
-    }
+    if ( p()->buff.dance_of_chiji->up() )
+      c += p()->buff.dance_of_chiji->value();  // saved as -2
+    
+    if ( p()->buff.dance_of_chiji_azerite->up() )
+      c += p()->buff.dance_of_chiji_azerite->value();  // saved as -2
+
+    if ( c < 0 )
+      c = 0;
 
     return c;
   }
@@ -4708,7 +4752,23 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
     monk_melee_attack_t::consume_resource();
 
     if ( p()->buff.serenity->up() )
-      p()->gain.serenity->add( RESOURCE_CHI, base_costs[ RESOURCE_CHI ] );
+    {
+      double cost = base_costs[ RESOURCE_CHI ];
+
+      if ( p()->buff.weapons_of_order_ww->up() )
+        cost -= p()->buff.weapons_of_order_ww->value();
+
+      if ( p()->buff.dance_of_chiji->up() )
+        cost -= p()->buff.dance_of_chiji->value();
+
+      if ( p()->buff.dance_of_chiji_azerite->up() )
+        cost -= p()->buff.dance_of_chiji_azerite->value();
+
+      if ( cost < 0 )
+        cost = 0;
+
+      p()->gain.serenity->add( RESOURCE_CHI, cost );
+    }
   }
 
   void execute() override
@@ -4827,12 +4887,29 @@ struct fists_of_fury_t : public monk_melee_attack_t
     xuen = new actions::pet_summon::fury_of_xuen_spell_t( p );
   }
 
- void consume_resource() override
+  double cost() const override
+  {
+    double c = monk_melee_attack_t::cost();
+
+    if ( p()->buff.weapons_of_order_ww->up() )
+      c += p()->buff.weapons_of_order_ww->value();
+
+    if ( c <= 0 )
+      return 0;
+
+    return c;
+  }
+
+  void consume_resource() override
   {
     monk_melee_attack_t::consume_resource();
 
     if ( p()->buff.serenity->up() )
     {
+      if ( p()->buff.weapons_of_order_ww->up() )
+        p()->gain.serenity->add( RESOURCE_CHI, base_costs[ RESOURCE_CHI ] -
+                                                   p()->buff.weapons_of_order_ww->value() );
+      else
         p()->gain.serenity->add( RESOURCE_CHI, base_costs[ RESOURCE_CHI ] );
     }
   }
@@ -5201,6 +5278,9 @@ struct keg_smash_t : public monk_melee_attack_t
     monk_melee_attack_t::impact( s );
 
     td( s->target )->debuff.keg_smash->trigger();
+
+    if ( p()->buff.weapons_of_order->up() )
+      td( s->target )->debuff.weapons_of_order->trigger();
   }
 };
 
@@ -6374,6 +6454,29 @@ struct diffuse_magic_t : public monk_spell_t
   void execute() override
   {
     p()->buff.diffuse_magic->trigger();
+    monk_spell_t::execute();
+  }
+};
+
+// ==========================================================================
+// Weapons of Order - Kyrian Covenant Ability
+// ==========================================================================
+
+struct weapons_of_order_t : public monk_spell_t
+{
+  weapons_of_order_t( monk_t& p, const std::string& options_str )
+    : monk_spell_t( "diffuse_magic", &p, p.covenant.kyrian )
+  {
+    parse_options( options_str );
+    trigger_gcd = timespan_t::zero();
+    harmful     = false;
+    base_dd_min = 0;
+    base_dd_max = 0;
+  }
+
+  void execute() override
+  {
+    p()->buff.weapons_of_order->trigger();
     monk_spell_t::execute();
   }
 };
@@ -7599,6 +7702,10 @@ monk_td_t::monk_td_t( player_t* target, monk_t* p )
   // Azerite
   debuff.sunrise_technique = make_buff( *this, "sunrise_technique_debuff", p->find_spell( 273299 ) );
 
+  // Covenant Abilities
+  debuff.weapons_of_order = make_buff( *this, "weapons_of_order", p->find_spell( 312106 ) )
+                                ->set_default_value_from_effect( 1 );
+
   // Shadowland Legendary
   debuff.rushing_tiger_palm = make_buff( *this, "rushing_tiger_palm", p->find_spell( 337340 ) )
                                   ->set_default_value_from_effect( 1 )
@@ -8547,8 +8654,9 @@ void monk_t::create_buffs()
           ->set_quiet( true )  // In-game does not show this buff but I would like to use it for background stuff
           ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
-  buff.dance_of_chiji =
-      make_buff( this, "dance_of_chiji", find_spell( 325202 ) )->set_trigger_spell( find_spell( 325201 ) );
+  buff.dance_of_chiji = make_buff( this, "dance_of_chiji", find_spell( 325202 ) )
+                            ->set_trigger_spell( find_spell( 325201 ) )
+                            ->set_default_value( find_spell( 325202 )->effectN( 1 ).base_value() );
 
   buff.flying_serpent_kick_movement = make_buff( this, "flying_serpent_kick_movement" );  // find_spell( 115057 )
 
@@ -8607,8 +8715,9 @@ void monk_t::create_buffs()
                                   ->add_stat( STAT_VERSATILITY_RATING, azerite.secret_infusion.value() );
 
   // Windwalker
-  buff.dance_of_chiji_azerite =
-      make_buff( this, "dance_of_chiji_azerite", find_spell( 286587 ) )->set_trigger_spell( find_spell( 286586 ) );
+  buff.dance_of_chiji_azerite = make_buff( this, "dance_of_chiji_azerite", find_spell( 286587 ) )
+                                    ->set_trigger_spell( find_spell( 286586 ) )
+                                    ->set_default_value( find_spell( 286587 )->effectN( 3 ).base_value() );
 
   buff.fury_of_xuen_stacks = make_buff( this, "fury_of_xuen_stacks", passives.fury_of_xuen_stacking_buff )
                                  ->set_default_value_from_effect( 3, 0.0001 );
@@ -8621,7 +8730,18 @@ void monk_t::create_buffs()
 
   buff.sunrise_technique = make_buff( this, "sunrise_technique", find_spell( 273298 ) );
 
-  // Conduits
+  // Covenant Abilities
+  buff.weapons_of_order = make_buff( this, "weapons_of_order", find_spell( 310454 ) )
+                              ->set_default_value( find_spell( 310454 )->effectN( 1 ).base_value() + 
+                                  ( conduit.strike_with_clarity ? conduit.strike_with_clarity.value() : 0 ) )
+                              ->set_duration( find_spell( 310454 )->duration() + ( 
+                                  conduit.strike_with_clarity ? conduit.strike_with_clarity->effectN( 2 ).time_value() : timespan_t::zero() ) )
+                              ->add_invalidate( CACHE_MASTERY );
+
+  buff.weapons_of_order_ww = make_buff( this, "weapons_of_order_ww", find_spell( 311054 ) )
+                                 ->set_default_value( find_spell( 311054 )->effectN( 1 ).base_value() );
+
+  // Covenant Conduits
   buff.fortifying_ingrediences = make_buff<absorb_buff_t>( this, "fortifying_ingredients", conduit.fortifying_ingredients );
   buff.fortifying_ingrediences->set_absorb_source( get_stats( "fortifying_ingredients" ) )->set_cooldown( timespan_t::zero() );
 
@@ -8675,6 +8795,9 @@ void monk_t::init_gains()
   gain.open_palm_strikes      = get_gain( "open_palm_strikes" );
   gain.memory_of_lucid_dreams = get_gain( "memory_of_lucid_dreams_proc" );
   gain.lucid_dreams           = get_gain( "lucid_dreams" );
+
+  // Covenants
+  gain.weapons_of_order         = get_gain( "weapons_of_order" );
 }
 
 // monk_t::init_procs =======================================================
@@ -9186,6 +9309,30 @@ double monk_t::composite_crit_avoidance() const
 double monk_t::composite_mastery() const
 {
   double m = player_t::composite_mastery();
+
+  if ( buff.weapons_of_order->up() )
+  {
+    switch ( specialization() )
+    {
+      case MONK_BREWMASTER:
+      {
+        m += mastery.elusive_brawler->effectN( 1 ).mastery_value() * buff.weapons_of_order->value();
+        break;
+      }
+      case MONK_MISTWEAVER:
+      {
+        m += mastery.gust_of_mists->effectN( 1 ).mastery_value() * buff.weapons_of_order->value();
+        break;
+      }
+      case MONK_WINDWALKER:
+      {
+        m += mastery.combo_strikes->effectN( 1 ).mastery_value() * buff.weapons_of_order->value();
+        break;
+      }
+      default:
+        break;
+    }
+  }
 
   return m;
 }
