@@ -97,8 +97,8 @@ struct covenant_ability_cast_cb_t : public dbc_proc_callback_t
 
     for ( const auto& cb : cb_list )
     {
-      if ( cb->trigger_on_class && a->data().id() == class_ability ||
-           cb->trigger_on_base && a->data().id() == base_ability )
+      if ( ( cb->trigger_on_class && a->data().id() == class_ability ) ||
+           ( cb->trigger_on_base && a->data().id() == base_ability ) )
         cb->trigger( a, s );
     }
   }
@@ -221,7 +221,7 @@ void grove_invigoration( special_effect_t& effect )
       add_invalidate( CACHE_MASTERY );
     }
 
-    bool trigger( int s, double v, double c, timespan_t d ) override
+    bool trigger( int, double v, double c, timespan_t d ) override
     {
       int anima_stacks = player->buffs.redirected_anima_stacks->check();
 

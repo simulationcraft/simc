@@ -153,6 +153,13 @@ void potion_of_empowered_exorcisms( special_effect_t& effect )
     {
       // TODO: add interaction with shadowcore oil
     }
+
+    // manually adjust for aoe reduction here instead of via action_t::reduced_aoe_damage as all targets receive reduced
+    // damage, including the primary
+    double composite_aoe_multiplier( const action_state_t* s ) const override
+    {
+      return proc_spell_t::composite_aoe_multiplier( s ) / std::sqrt( s->n_targets );
+    }
   };
 
   auto potion            = new special_effect_t( effect.player );
