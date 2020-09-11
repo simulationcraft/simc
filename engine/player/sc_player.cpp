@@ -3328,7 +3328,8 @@ void player_t::create_buffs()
 
       buffs.power_infusion = make_buff( this, "power_infusion_external", find_spell( 10060 ) )
         ->set_default_value_from_effect( 1 )
-        ->set_cooldown( 0_ms );
+        ->set_cooldown( 0_ms )
+        ->add_invalidate( CACHE_HASTE );
 
       // Soulbind buffs required for APL parsing
       buffs.redirected_anima_stacks = make_buff( this, "redirected_anima_stacks", find_spell( 342802 ) );
