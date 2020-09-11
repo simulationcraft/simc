@@ -416,7 +416,7 @@ public:
     item_runeforge_t deeply_rooted_elements; // NYI
 
     // Elemental
-    item_runeforge_t skybreakers_fiery_demise;     // NYI
+    item_runeforge_t skybreakers_fiery_demise;
     item_runeforge_t elemental_equilibrium;        // NYI
     item_runeforge_t echoes_of_great_sundering;
     item_runeforge_t windspeakers_lava_resurgence; // NYI
@@ -4757,6 +4757,14 @@ struct flame_shock_t : public shaman_spell_t
       {
         p()->trigger_maelstrom_gain( elemental_resource->effectN( 1 ).base_value(), p()->gain.fire_elemental );
       }
+    }
+
+    if ( d->state->result == RESULT_CRIT && p()->legendary.skybreakers_fiery_demise->ok() )
+    {
+      p()->cooldown.storm_elemental->adjust(
+          timespan_t::from_millis( -1.0 * p()->find_spell( 336734 )->effectN( 1 ).base_value() ) );
+      p()->cooldown.fire_elemental->adjust(
+          timespan_t::from_millis( -1.0 * p()->find_spell( 336734 )->effectN( 2 ).base_value() ) );
     }
   }
 
