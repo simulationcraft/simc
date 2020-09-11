@@ -523,10 +523,9 @@ public:
     double lucid_dreams_proc_chance_fire = 0.1;
     double lucid_dreams_proc_chance_frost = 0.075;
     timespan_t enlightened_interval = 2.0_s;
-    // TODO: Determine reasonable default values for Focus Magic options.
-    timespan_t focus_magic_interval = 2.0_s;
+    timespan_t focus_magic_interval = 1.5_s;
     double focus_magic_stddev = 0.1;
-    double focus_magic_crit_chance = 0.5;
+    double focus_magic_crit_chance = 0.85;
     timespan_t from_the_ashes_interval = 2.0_s;
     // TODO: Determine reasonable default values for Mirrors of Torment options.
     std::vector<timespan_t> mirrors_of_torment_interval = { 2.0_s };
