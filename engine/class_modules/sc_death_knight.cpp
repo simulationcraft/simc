@@ -5009,8 +5009,12 @@ struct frost_strike_t : public death_knight_melee_attack_t
       weapon_req = WEAPON_1H;
       mh = new frost_strike_strike_t( p, "frost_strike_mh", &( p -> main_hand_weapon ), data().effectN( 2 ).trigger() );
       add_child( mh );
-      oh = new frost_strike_strike_t( p, "frost_strike_offhand", &( p -> off_hand_weapon ), data().effectN( 3 ).trigger() );
-      add_child( oh );
+
+      if ( p -> off_hand_weapon.type != WEAPON_NONE )
+      {
+        oh = new frost_strike_strike_t( p, "frost_strike_offhand", &( p -> off_hand_weapon ), data().effectN( 3 ).trigger() );
+        add_child( oh );
+      }
     }
   }
 
@@ -5022,7 +5026,8 @@ struct frost_strike_t : public death_knight_melee_attack_t
     {
       mh -> set_target( execute_state -> target );
       mh -> execute();
-      if ( p() -> main_hand_weapon.group() == WEAPON_1H )
+
+      if ( oh )
       {
         oh -> set_target( execute_state -> target );
         oh -> execute();
@@ -5573,10 +5578,13 @@ struct obliterate_t : public death_knight_melee_attack_t
     {
       weapon_req = WEAPON_1H;
       mh = new obliterate_strike_t( p, "obliterate_mh", &( p -> main_hand_weapon ), data().effectN( 2 ).trigger() );
-      oh = new obliterate_strike_t( p, "obliterate_offhand", &( p -> off_hand_weapon ), data().effectN( 3 ).trigger() );
-
       add_child( mh );
-      add_child( oh );
+
+      if ( p -> off_hand_weapon.type != WEAPON_NONE )
+      {
+        oh = new obliterate_strike_t( p, "obliterate_offhand", &( p -> off_hand_weapon ), data().effectN( 3 ).trigger() );
+        add_child( oh );
+      }
     }
   }
 
@@ -5589,7 +5597,7 @@ struct obliterate_t : public death_knight_melee_attack_t
       mh -> set_target( execute_state -> target );
       mh -> execute();
 
-      if ( p() -> main_hand_weapon.group() == WEAPON_1H )
+      if ( oh )
       {
         oh -> set_target( execute_state -> target );
         oh -> execute();
@@ -5894,6 +5902,15 @@ struct remorseless_winter_damage_t : public death_knight_spell_t
     aoe = -1;
     base_multiplier *= 1.0 + p -> spec.remorseless_winter_2 -> effectN( 1 ).percent();
 
+    ap_type = attack_power_type::WEAPON_BOTH;
+
+    if ( p -> main_hand_weapon.group() == WEAPON_2H )
+    {
+      ap_type = attack_power_type::WEAPON_MAINHAND;
+      // There's a 0.98 modifier hardcoded in the tooltip if a 2H weapon is equipped, probably server side magic
+      base_multiplier *= 0.98;
+    }
+
     if ( p -> azerite.frozen_tempest.enabled() )
     {
       frozen_tempest_target_threshold = p -> azerite.frozen_tempest.spell() -> effectN( 1 ).base_value();
@@ -5905,7 +5922,15 @@ struct remorseless_winter_damage_t : public death_knight_spell_t
     double m = death_knight_spell_t::action_multiplier();
 
     m *= 1.0 + p() -> buffs.gathering_storm -> stack_value();
-    m *= 1.0 + p() -> get_target_data( target ) -> debuff.biting_cold -> check_stack_value();
+
+    return m;
+  }
+
+  double composite_target_multiplier( player_t* t ) const override
+  {
+    double m = death_knight_spell_t::composite_target_multiplier( t );
+
+    m *= 1.0 + p() -> get_target_data( t ) -> debuff.biting_cold -> check_stack_value();
 
     return m;
   }
@@ -5932,7 +5957,8 @@ struct remorseless_winter_damage_t : public death_knight_spell_t
       p() -> triggered_frozen_tempest = true;
     }
 
-    td( state->target )->debuff.biting_cold->trigger();
+    if ( p() -> conduits.biting_cold.ok() )
+      td( state -> target ) -> debuff.biting_cold -> trigger();
   }
 };
 
@@ -5972,15 +5998,6 @@ struct remorseless_winter_t : public death_knight_spell_t
 
     // Periodic behavior handled by the buff
     dot_duration = base_tick_time = 0_ms;
-
-    ap_type = attack_power_type::WEAPON_BOTH;
-
-    if ( p -> main_hand_weapon.group() == WEAPON_2H )
-    {
-      ap_type = attack_power_type::WEAPON_MAINHAND;
-      // There's a 0.98 modifier hardcoded in the tooltip if a 2H weapon is equipped, probably server side magic
-      base_multiplier *= 0.98;
-    }
 
     if ( action_t* rw_damage = p -> find_action( "remorseless_winter_damage" ) )
     {
