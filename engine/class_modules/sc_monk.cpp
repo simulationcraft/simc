@@ -4119,7 +4119,7 @@ struct rising_sun_kick_t : public monk_melee_attack_t
   {
     double c = monk_melee_attack_t::cost();
 
-    if ( p()->buff.weapons_of_order_ww->up() && !p()->buff.serenity->up() )
+    if ( p()->buff.weapons_of_order_ww->up() )
       c += p()->buff.weapons_of_order_ww->value();  // saved as -1
 
     return c;
@@ -6465,7 +6465,7 @@ struct diffuse_magic_t : public monk_spell_t
 struct weapons_of_order_t : public monk_spell_t
 {
   weapons_of_order_t( monk_t& p, const std::string& options_str )
-    : monk_spell_t( "diffuse_magic", &p, p.covenant.kyrian )
+    : monk_spell_t( "weapons_of_order", &p, p.covenant.kyrian )
   {
     parse_options( options_str );
     trigger_gcd = timespan_t::zero();
