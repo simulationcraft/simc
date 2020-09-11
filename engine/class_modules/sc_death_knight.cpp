@@ -5233,7 +5233,7 @@ struct howling_blast_aoe_t : public death_knight_spell_t
   frost_fever_t* frost_fever;
 
   howling_blast_aoe_t( death_knight_t* p, const std::string& options_str, frost_fever_t* frf ) :
-    death_knight_spell_t( "howling_blast_aoe", p, p -> find_spell( 237680 ) ),
+    death_knight_spell_t( "howling_blast_aoe", p, p -> spec.howling_blast ),
     frost_fever( frf )
   {
     parse_options( options_str );
@@ -5258,7 +5258,17 @@ struct howling_blast_aoe_t : public death_knight_spell_t
       m *= 1.0 + p() -> buffs.rime -> data().effectN( 2 ).percent() + p() -> spec.rime_2 -> effectN( 1 ).percent();
     }
 
+    // Handle sqrt scaling for aoe, since all aoe is handled in this spell, we need to hit all targets, not skip the first one
+    // We also add one to this size, as for the purpose of scaling, we need to include the main target not hit by aoe
+    m *= (1 / sqrt(target_list().size() + 1));
+
     return m;
+  }
+
+  // Since we use the main Howling Blast spell for the coeff now, we have to set cost to 0 to avoid using runes.
+  double cost() const override
+  {
+      return 0;
   }
 
   size_t available_targets( std::vector< player_t* >& tl ) const override
