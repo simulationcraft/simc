@@ -1039,12 +1039,14 @@ std::vector<expr_token_t> parse_tokens( action_t* action,
                                         util::string_view expr_str )
 {
   std::vector<expr_token_t> tokens;
+  // Make a copy to ensure the string is null-terminated.
+  std::string str( expr_str );
 
   expr_token_t token;
   int current_index = 0;
   token_e t         = TOK_UNKNOWN;
 
-  while ( ( token.type = next_token( action, expr_str, current_index,
+  while ( ( token.type = next_token( action, str, current_index,
                                      token.label, t ) ) != TOK_UNKNOWN )
   {
     t = token.type;
