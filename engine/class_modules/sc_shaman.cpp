@@ -398,6 +398,9 @@ public:
   // Conduits
   struct conduit_t
   {
+    // Covenant-specific
+    conduit_data_t lavish_harvest;
+
     // Elemental
     conduit_data_t call_of_flame;
     conduit_data_t high_voltage;
@@ -5449,6 +5452,18 @@ struct chain_harvest_t : public chained_base_t
     spell_power_mod.direct = player->find_spell( 320752 )->effectN( 1 ).sp_coeff();
   }
 
+  double composite_crit_chance() const override
+  {
+    double c = chained_base_t::composite_crit_chance();
+
+    if ( p()->conduit.lavish_harvest->ok() )
+    {
+      c += p()->conduit.lavish_harvest.percent();
+    }
+
+    return c;
+  }
+
   void impact( action_state_t* s ) override
   {
     chained_base_t::impact( s );
@@ -6190,7 +6205,10 @@ void shaman_t::init_spells()
   covenant.venthyr   = find_covenant_spell( "Chain Harvest" );
   covenant.kyrian    = find_covenant_spell( "Vesper Totem" );
 
-  // Conduits
+  // Covenant-specific conduits
+  conduit.lavish_harvest = find_conduit_spell( "Lavish Harvest" );
+
+  // Elemental Conduits
   conduit.call_of_flame = find_conduit_spell( "Call of Flame" );
   conduit.high_voltage  = find_conduit_spell( "High Voltage" );
 
