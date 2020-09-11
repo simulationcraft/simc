@@ -132,7 +132,7 @@ class CSVDataGenerator(object):
             dimensions = '[][%d]' % self.max_rows(dbc)
         else:
             dimensions = '[%d]' % self.max_rows(dbc)
-        return 'static %s _%s%s%s%s = {\n' % (
+        return 'static constexpr %s _%s%s%s%s = {\n' % (
             self.base_type(dbc),
             self._options.prefix and ('%s_' % self._options.prefix) or '',
             self.struct_name(dbc),
