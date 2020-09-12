@@ -17,7 +17,7 @@ waist=waistcord_of_dark_devotion,id=178823,bonus_id=6807/1500
 legs=soulfeather_breeches,id=179324,bonus_id=6807/1500
 feet=primeval_souls_ankleguards,id=179352,bonus_id=6807/1500
 finger1=arachnid_cipher_ring,id=178933,bonus_id=6805/1474
-finger1=signet_of_the_false_accuser,id=178824,bonus_id=6807/1500
+finger2=signet_of_the_false_accuser,id=178824,bonus_id=6807/1500
 trinket1=infinitely_divisible_ooze,id=178769,bonus_id=6807/1500
 trinket2=phial_of_putrefaction,id=178771,bonus_id=6807/1500
 main_hand=dominas_oozing_shiv,id=178928,bonus_id=6807/1500
@@ -44,7 +44,7 @@ waist=waistcord_of_dark_devotion,id=178823,bonus_id=6807/1500
 legs=soulfeather_breeches,id=179324,bonus_id=6807/1500
 feet=primeval_souls_ankleguards,id=179352,bonus_id=6807/1500
 finger1=arachnid_cipher_ring,id=178933,bonus_id=6805/1474
-finger1=signet_of_the_false_accuser,id=178824,bonus_id=6807/1500
+finger2=signet_of_the_false_accuser,id=178824,bonus_id=6807/1500
 trinket1=infinitely_divisible_ooze,id=178769,bonus_id=6807/1500
 trinket2=phial_of_putrefaction,id=178771,bonus_id=6807/1500
 main_hand=bloodspiller,id=179328,bonus_id=6807/1500
@@ -71,7 +71,7 @@ waist=waistcord_of_dark_devotion,id=178823,bonus_id=6807/1500
 legs=soulfeather_breeches,id=179324,bonus_id=6807/1500
 feet=primeval_souls_ankleguards,id=179352,bonus_id=6807/1500
 finger1=arachnid_cipher_ring,id=178933,bonus_id=6805/1474
-finger1=signet_of_the_false_accuser,id=178824,bonus_id=6807/1500
+finger2=signet_of_the_false_accuser,id=178824,bonus_id=6807/1500
 trinket1=infinitely_divisible_ooze,id=178769,bonus_id=6807/1500
 trinket2=phial_of_putrefaction,id=178771,bonus_id=6807/1500
 main_hand=dominas_oozing_shiv,id=178928,bonus_id=6807/1500
