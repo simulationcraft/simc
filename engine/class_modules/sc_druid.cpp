@@ -963,6 +963,7 @@ public:
   void init_beast_weapon( weapon_t&, double );
   const spell_data_t* find_affinity_spell( const std::string& ) const;
   specialization_e get_affinity_spec() const;
+  void moving() override;
   void trigger_natures_guardian( const action_state_t* );
   double calculate_expected_max_health() const;
   const spelleffect_data_t* query_aura_effect( const spell_data_t* aura_spell,
@@ -10057,6 +10058,12 @@ const spell_data_t* druid_t::find_affinity_spell( const std::string& name ) cons
     return spec_spell;
 
   return spell_data_t::not_found();
+}
+
+void druid_t::moving()
+{
+  if ( ( executing && !executing->usable_moving() ) || ( channeling && !channeling->usable_moving() ) )
+    player_t::interrupt();
 }
 
 // druid_t::trigger_natures_guardian ========================================
