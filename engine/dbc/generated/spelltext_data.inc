@@ -1,5 +1,5 @@
 // Spell text, wow build 9.0.2.35854
-static const std::array<spelltext_data_t, 15565> __spelltext_data { {
+static const std::array<spelltext_data_t, 15564> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -14273,7 +14273,6 @@ static const std::array<spelltext_data_t, 15565> __spelltext_data { {
   { 327860, "$@spelldesc308433 If you spend at least 10 seconds eating you will become Well Fed and gain Speed for a short time after killing an enemy.", 0, 0 },
   { 327864, "Increases Speed by $s1 for $d.", "Speed increased by $s1.", 0 },
   { 327877, "$@spelldesc308433 If you spend at least 10 seconds eating you will become Well Fed causing you to periodically belch, disgusting nearby allies in front of you.", 0, 0 },
-  { 327941, "Grants $s1 extra attack on your next swing.", 0, 0 },
   { 327942, "$@spelldesc8512", "Your auto-attacks have a $h% chance to instantly attack again.", 0 },
   { 327977, "Damage increased $s1%.", 0, "Rank 2" },
   { 327979, "Effects increased $s1%.", 0, "Rank 3" },
