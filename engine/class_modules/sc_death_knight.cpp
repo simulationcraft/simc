@@ -573,6 +573,7 @@ public:
     gain_t* empower_rune_weapon;
     gain_t* frost_fever;
     gain_t* horn_of_winter;
+    gain_t* koltiras_favor;
     gain_t* murderous_efficiency;
     gain_t* obliteration;
     gain_t* runic_attenuation;
@@ -886,6 +887,18 @@ public:
     conduit_data_t biting_cold;
     conduit_data_t eradicating_blow;
   } conduits;
+
+  struct legendary_t
+  {
+    // Generic
+
+    // Blood
+
+    // Frost
+    item_runeforge_t koltiras_favor;  // 6944
+
+    // Unholy
+  } legendary;
 
   // Death Knight Options
   struct options_t
@@ -5496,6 +5509,10 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
     {
       base_multiplier *= 1.0 + p -> spec.might_of_the_frozen_wastes -> effectN( 1 ).percent();
     }
+    if ( p -> legendary.koltiras_favor-> ok() )
+    {
+      base_multiplier *= 1.0 + p -> legendary.koltiras_favor -> effectN ( 2 ).percent();
+    }
   }
 
   double composite_crit_chance() const override
@@ -5521,6 +5538,15 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
     if ( p() -> azerite.icy_citadel.enabled() && p() -> buffs.pillar_of_frost -> up() && execute_state -> result == RESULT_CRIT )
     {
       p() -> buffs.icy_citadel_builder -> trigger();
+    }
+
+    if ( p() -> legendary.koltiras_favor -> ok() )
+    {
+      if ( p() -> rng().roll(p() -> legendary.koltiras_favor->proc_chance()))
+      {
+        // # of runes to restore was stored in a secondary affect
+        p() -> replenish_rune( as<unsigned int>( p() -> legendary.koltiras_favor->effectN( 1 ).trigger()->effectN( 1 ).base_value() ), p() -> gains.koltiras_favor );
+      }
     }
 
     // KM Rank 2 - revert school after the hit
@@ -8043,9 +8069,18 @@ void death_knight_t::init_spells()
   lucid_dreams_minor_refund = memory_of_lucid_dreams.spell_ref( 1u, essence_type::MINOR ).effectN( 1 ).percent();
 
   // Conduits
+  // Blood
   // Frost
   conduits.biting_cold           = find_conduit_spell( "Biting Cold" );
   conduits.eradicating_blow      = find_conduit_spell( "Eradicating Blow" );
+  // Unholy
+
+  // Legendary Items
+  // Generic
+  // Blood
+  // Frost
+  legendary.koltiras_favor       = find_runeforge_legendary( "Koltira's Favor" );
+  // Unholy
 }
 
 // death_knight_t::default_apl_dps_precombat ================================
@@ -8758,6 +8793,7 @@ void death_knight_t::init_gains()
   gains.obliteration                     = get_gain( "Obliteration" );
   gains.runic_attenuation                = get_gain( "Runic Attenuation" );
   gains.runic_empowerment                = get_gain( "Runic Empowerment" );
+  gains.koltiras_favor                   = get_gain( "Koltira's Favor" );
 
   // Unholy
   gains.festering_wound                  = get_gain( "Festering Wound" );
