@@ -485,6 +485,9 @@ public:
 
     buff_t* festermight;
     buff_t* helchains;
+
+    // Conduits
+    buff_t* eradicating_blow;
   } buffs;
 
   struct runeforge_t {
@@ -881,6 +884,7 @@ public:
   struct soulbind_conduits_t
   {
     conduit_data_t biting_cold;
+    conduit_data_t eradicating_blow;
   } conduits;
 
   // Death Knight Options
@@ -4941,6 +4945,18 @@ struct frost_strike_strike_t : public death_knight_melee_attack_t
     base_multiplier *= 1.0 + p -> spec.frost_strike_2 -> effectN( 1 ).percent();
   }
 
+  double action_multiplier() const override
+  {
+    double m = death_knight_melee_attack_t::action_multiplier();
+
+    if ( p() -> buffs.eradicating_blow -> check() )
+    {
+      m *= 1.0 + ( p() -> buffs.eradicating_blow -> stack_value() );
+    }
+
+    return m;
+  }
+
   double bonus_da( const action_state_t* s ) const override
   {
     double da = death_knight_melee_attack_t::bonus_da( s );
@@ -5033,6 +5049,11 @@ struct frost_strike_t : public death_knight_melee_attack_t
         oh -> set_target( execute_state -> target );
         oh -> execute();
       }
+    }
+
+    if ( p() -> buffs.eradicating_blow -> up() )
+    {
+      p() -> buffs.eradicating_blow -> expire();
     }
 
     if ( p() -> buffs.pillar_of_frost -> up() && p() -> talent.obliteration -> ok() )
@@ -5628,6 +5649,7 @@ struct obliterate_t : public death_knight_melee_attack_t
       }
 
       p() -> buffs.rime -> trigger();
+      p() -> buffs.eradicating_blow -> trigger();
     }
 
     consume_killing_machine( execute_state, p() -> procs.killing_machine_oblit );
@@ -5947,7 +5969,7 @@ struct remorseless_winter_damage_t : public death_knight_spell_t
   {
     double m = death_knight_spell_t::composite_target_multiplier( t );
 
-    m *= 1.0 + p() -> get_target_data( t ) -> debuff.biting_cold -> check_stack_value();
+    m *= 1.0 + p() -> get_target_data( t ) -> debuff.biting_cold -> stack_value();
 
     return m;
   }
@@ -8091,6 +8113,7 @@ void death_knight_t::init_spells()
   // Conduits
   // Frost
   conduits.biting_cold           = find_conduit_spell( "Biting Cold" );
+  conduits.eradicating_blow      = find_conduit_spell( "Eradicating Blow" );
 }
 
 // death_knight_t::default_apl_dps_precombat ================================
@@ -8761,6 +8784,11 @@ void death_knight_t::create_buffs()
   {
     _runes.update_coefficient();
   } );
+
+  // Conduits
+  buffs.eradicating_blow = make_buff( this, "eradicating_blow", find_spell( 337936 ) )
+        -> set_default_value( conduits.eradicating_blow.percent() )
+        -> set_trigger_spell( spec.obliterate );
 }
 
 // death_knight_t::init_gains ===============================================
