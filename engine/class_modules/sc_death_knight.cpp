@@ -5227,77 +5227,6 @@ struct frost_fever_t : public death_knight_spell_t
   }
 };
 
-
-struct howling_blast_aoe_t : public death_knight_spell_t
-{
-  frost_fever_t* frost_fever;
-
-  howling_blast_aoe_t( death_knight_t* p, const std::string& options_str, frost_fever_t* frf ) :
-    death_knight_spell_t( "howling_blast_aoe", p, p -> spec.howling_blast ),
-    frost_fever( frf )
-  {
-    parse_options( options_str );
-    ap_type = attack_power_type::WEAPON_BOTH;
-    if ( p -> main_hand_weapon.group() == WEAPON_2H )
-    {
-      ap_type = attack_power_type::WEAPON_MAINHAND;
-      // There's a 0.98 modifier hardcoded in the tooltip if a 2H weapon is equipped, probably server side magic
-      base_multiplier *= 0.98;
-    }
-
-    aoe = -1;
-    background = true;
-  }
-
-  double action_multiplier() const override
-  {
-    double m = death_knight_spell_t::action_multiplier();
-
-    if ( p() -> buffs.rime -> up() )
-    {
-      m *= 1.0 + p() -> buffs.rime -> data().effectN( 2 ).percent() + p() -> spec.rime_2 -> effectN( 1 ).percent();
-    }
-
-    // Handle sqrt scaling for aoe.  Since this spell already hits everything except your main target,  we can not simply set the
-    // reduced_aoe_damage flag.  We need to apply the sqrt scaled damage to all targets this spell hits.
-    // We also add one to the number of targets to include the main target, for the purpose of scaling.
-    m *= (1 / sqrt(target_list().size() + 1));
-
-    return m;
-  }
-
-  // Since we use the main Howling Blast spell for the coeff now, we have to set cost to 0 to avoid using runes.
-  double cost() const override
-  {
-      return 0;
-  }
-
-  size_t available_targets( std::vector< player_t* >& tl ) const override
-  {
-    death_knight_spell_t::available_targets( tl );
-
-    // Does not hit the main target
-    auto it = range::find( tl, target );
-    if ( it != tl.end() )
-    {
-      tl.erase( it );
-    }
-
-    return tl.size();
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    death_knight_spell_t::impact( s );
-
-    if ( result_is_hit( s -> result ) )
-    {
-      frost_fever -> set_target( s -> target );
-      frost_fever -> execute();
-    }
-  }
-};
-
 struct echoing_howl_t : public death_knight_spell_t
 {
   echoing_howl_t( death_knight_t* p ) :
@@ -5311,20 +5240,20 @@ struct echoing_howl_t : public death_knight_spell_t
 struct howling_blast_t : public death_knight_spell_t
 {
   frost_fever_t* frost_fever;
-  howling_blast_aoe_t* aoe_damage;
   avalanche_t* avalanche;
   echoing_howl_t* echoing_howl;
 
   howling_blast_t( death_knight_t* p, const std::string& options_str ) :
     death_knight_spell_t( "howling_blast", p, p -> spec.howling_blast ),
-    frost_fever( new frost_fever_t( p ) ),
-    aoe_damage( new howling_blast_aoe_t( p, options_str, frost_fever ) )
+    frost_fever( new frost_fever_t( p ) )
   {
     parse_options( options_str );
 
-    aoe = 0;
-    add_child( aoe_damage );
+    aoe = -1;
+    reduced_aoe_damage = true;
+
     add_child( frost_fever );
+
     ap_type = attack_power_type::WEAPON_BOTH;
     if ( p -> main_hand_weapon.group() == WEAPON_2H )
     {
@@ -5401,13 +5330,6 @@ struct howling_blast_t : public death_knight_spell_t
         // WTB spelldata for the rune gain
         p() -> replenish_rune( 1, p() -> gains.obliteration );
       }
-    }
-
-    // Don't trigger aoe when there's only one target
-    if ( aoe_damage -> target_list().size() > 0 )
-    {
-      aoe_damage -> set_target( execute_state -> target );
-      aoe_damage -> execute();
     }
 
     if ( p() -> talent.avalanche -> ok() && p() -> buffs.rime -> up() )
