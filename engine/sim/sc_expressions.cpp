@@ -104,6 +104,7 @@ struct lexer_t
       case '*': return yield_token( TOK_MULT );
       case '%':
       {
+        // as '/' is taken by option separators we use '%' as division and '%%' as modulus
         if ( match( '%' ) )
           return yield_token( TOK_MOD );
         return yield_token( TOK_DIV );
