@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.2.35854 shadowlands-BETA (hotfix 2020-09-10/35854)
+SimulationCraft 901-01 for World of Warcraft 9.0.2.35854 shadowlands-BETA (hotfix 2020-09-12/35854, git build shadowlands a3c99b0cc6)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
@@ -3845,7 +3845,7 @@ Attributes       : .......x ........ ........ ........   ........ ..x..... .....
                  : ........ ........ ........ ........   
                  : Hidden (7)
 Effects          :
-#1 (id=285135)   : Unknown(164)
+#1 (id=285135)   : Cancel Aura (164)
                    Base Value: 194249 | Scaled Value: 194249 | PvP Coefficient: 1.00000 | Trigger Spell: 194249 | Target: Self (1)
 
 Name             : Atonement (id=194384) [Spell Family (6)] 
