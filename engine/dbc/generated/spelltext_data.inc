@@ -1,5 +1,5 @@
 // Spell text, wow build 9.0.2.35854
-static const std::array<spelltext_data_t, 15564> __spelltext_data { {
+static const std::array<spelltext_data_t, 15565> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -14309,6 +14309,7 @@ static const std::array<spelltext_data_t, 15564> __spelltext_data { {
   { 328506, "$@spelldesc328281", "Attack speed reduced by $w3%.\r\nMovement speed reduced by $w4%.", "Night Fae" },
   { 328523, "$@spelldesc328231", 0, "Night Fae" },
   { 328547, "Embed a bone spike in the target, dealing $324073s1 Bleed damage every $324073t1 sec until they die. Deals $s1 damage and generates 1 Combo Point per active bone spike.\r\n\r\nRefunds 1 charge when target dies or is healed to full.\r\n\r\n|cFFFFFFFFAwards 1 combo point.|r", 0, "Necrolord" },
+  { 328548, "$@spelldesc328547", 0, 0 },
   { 328603, "Targets under $s2% health are stung dealing ${$329127s1*($329127d/$329127t1)} Shadow damage over $329127d, returning $s3% of the damage to you as healing.", 0, 0 },
   { 328620, "Bless an ally for $d, causing their attacks to have a $h% chance to deal $s1% additional damage as Holy.\r\n\r\n|cFFFFFFFFBlessing of the Seasons:|r Turns to Autumn after use.", "Attacks have a $h% chance to deal $w1% additional damage as Holy.", "Night Fae" },
   { 328622, "Bless an ally for $d, causing their cooldowns to recover $s1% faster.\r\n\r\n|cFFFFFFFFBlessing of the Seasons:|r Turns to Winter after use.", "Cooldowns recover $w1% faster.", "Night Fae" },
