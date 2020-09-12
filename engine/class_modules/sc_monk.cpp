@@ -7467,10 +7467,9 @@ struct fortifying_brew_t : public monk_buff_t<buff_t>
 // Serenity Buff ==========================================================
 struct serenity_buff_t : public monk_buff_t<buff_t>
 {
-//  double percent_adjust;
   monk_t& m;
   serenity_buff_t( monk_t& p, const std::string& n, const spell_data_t* s )
-    : monk_buff_t( p, n, s ), /* percent_adjust( 0 ), */ m( p )
+    : monk_buff_t( p, n, s ), m( p )
   {
     set_default_value_from_effect( 2 );
     set_cooldown( timespan_t::zero() );
