@@ -531,6 +531,7 @@ public:
     action_t* relish_in_blood;
 
     // Frost
+    action_t* breath_of_sindragosa;
     action_t* cold_heart;
     action_t* inexorable_assault;
 
@@ -3567,14 +3568,14 @@ struct breath_of_sindragosa_tick_t: public death_knight_spell_t
 
 struct breath_of_sindragosa_buff_t : public buff_t
 {
-  breath_of_sindragosa_tick_t* damage;
+  action_t* damage;
   double ticking_cost;
   const timespan_t tick_period;
   int rune_gen;
 
   breath_of_sindragosa_buff_t( death_knight_t* player ) :
     buff_t( player, "breath_of_sindragosa", player -> talent.breath_of_sindragosa ),
-    damage( new breath_of_sindragosa_tick_t( player ) ),
+    damage( player -> active_spells.breath_of_sindragosa ),
     tick_period( player -> talent.breath_of_sindragosa -> effectN( 1 ).period() ),
     rune_gen( as<int>( player -> find_spell( 303753 ) -> effectN( 1 ).base_value() ) )
   {
@@ -3599,10 +3600,9 @@ struct breath_of_sindragosa_buff_t : public buff_t
       // Currently use the player's target which is the first non invulnerable, active enemy found.
       player_t* bos_target = player -> target;
 
-      // Damage is executed on cast for no cost
+      // On cast, generate two runes and execute damage for no cost
       if ( this -> current_tick == 0 )
       {
-        // BoS generates 2 on start
         player -> replenish_rune( rune_gen, player -> gains.breath_of_sindragosa );
 
         this -> damage -> set_target( bos_target );
@@ -3611,10 +3611,10 @@ struct breath_of_sindragosa_buff_t : public buff_t
       }
 
       // If the player doesn't have enough RP to fuel this tick, BoS is cancelled and no RP is consumed
-      // This happens if you cast Frost Strike between two ticks and are left with < 15 RP
+      // This can happen if the player uses another RP spender between two ticks and is left with < 15 RP
       if ( ! player -> resource_available( RESOURCE_RUNIC_POWER, this -> ticking_cost ) )
       {
-        sim -> print_log( "Player {} doesn't have the {} Runic Power required for next tick. Breath of Sindragosa was cancelled.",
+        sim -> print_log( "Player {} doesn't have the {} Runic Power required for current tick. Breath of Sindragosa was cancelled.",
                           player -> name_str, this -> ticking_cost );
 
         // Separate the expiration event to happen immediately after tick processing
@@ -7407,6 +7407,11 @@ void death_knight_t::create_actions()
     if ( talent.inexorable_assault -> ok() )
     {
       active_spells.inexorable_assault = new inexorable_assault_damage_t( this );
+    }
+
+    if ( talent.breath_of_sindragosa -> ok() )
+    {
+      active_spells.breath_of_sindragosa = new breath_of_sindragosa_tick_t( this );
     }
   }
   // Unholy
