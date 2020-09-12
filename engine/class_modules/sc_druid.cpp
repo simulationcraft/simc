@@ -8276,8 +8276,12 @@ void druid_t::create_buffs()
     ->set_quiet( true )
     ->set_tick_zero( true )
     ->set_tick_callback( [this]( buff_t*, int, timespan_t ) {
-        resource_gain( RESOURCE_ASTRAL_POWER, talent.natures_balance->effectN( 1 ).resource( RESOURCE_ASTRAL_POWER ),
-                        gain.natures_balance );
+        auto ap = talent.natures_balance->effectN( 1 ).resource( RESOURCE_ASTRAL_POWER );
+
+        if ( sim->target_non_sleeping_list.empty() )
+          ap *= 3.0;  // simulate triple regen when out of combat for 'M+' fight models utilizing invuln
+
+        resource_gain( RESOURCE_ASTRAL_POWER, ap, gain.natures_balance );
       } );
 
   buff.oneths_free_starsurge = make_buff( this, "oneths_clear_vision", find_spell( 339797 ) )
