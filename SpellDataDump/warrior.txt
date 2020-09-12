@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.2.35854 shadowlands-BETA (hotfix 2020-09-10/35854)
+SimulationCraft 901-01 for World of Warcraft 9.0.2.35854 shadowlands-BETA (hotfix 2020-09-12/35854, git build shadowlands a3c99b0cc6)
 
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
@@ -4729,7 +4729,7 @@ Attributes       : .......x ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Hidden (7)
 Effects          :
-#1 (id=312498)   : Unknown(164)
+#1 (id=312498)   : Cancel Aura (164)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 209697 | Target: Self (1)
 
 Name             : Defensive Stance (id=212520) [Spell Family (4)] 
@@ -4751,7 +4751,7 @@ Attributes       : ....x... ........ ..x..... x..x....   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
 Effects          :
-#1 (id=315072)   : Unknown(164)
+#1 (id=315072)   : Cancel Aura (164)
                    Base Value: 197690 | Scaled Value: 197690 | PvP Coefficient: 1.00000 | Trigger Spell: 197690 | Target: Self (1)
 Description      : $@spelldesc197690
 
@@ -11431,7 +11431,7 @@ Attributes       : .......x ........ ........ .......x   ........ ..x..... .....
 Effects          :
 #1 (id=845743)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-#2 (id=845744)   : Unknown(164)
+#2 (id=845744)   : Cancel Aura (164)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 343666 | Target: Self (1)
 Description      : $@spelldesc343672
 

@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.2.35854 shadowlands-BETA (hotfix 2020-09-10/35854)
+SimulationCraft 901-01 for World of Warcraft 9.0.2.35854 shadowlands-BETA (hotfix 2020-09-12/35854, git build shadowlands a3c99b0cc6)
 
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
@@ -1337,7 +1337,7 @@ Effects          :
 Description      : You master the art of beast training, teaching you the ability to tame Exotic pets.
 
 Name             : Master's Call (desc=Cunning Ability) (id=53271) [Spell Family (9)] 
-Class            : Unknown (536) Hunter
+Class            : Cunning Hunter Pet
 School           : Physical
 Spell Type       : None
 Spell Level      : 28
@@ -7320,7 +7320,7 @@ Description      : The Wind Serpent takes on a defensive posture, increasing dod
 Tooltip          : Dodge chance increased by $s1%.
 
 Name             : Pathfinding (desc=Cunning Passive) (id=264656) [Spell Family (9), Passive] 
-Class            : Unknown (535) Unknown (537) Unknown (536) Hunter
+Class            : Ferocity Tenacity Cunning Hunter Pet
 School           : Physical
 Spell Type       : None
 Range            : 50000 yards
@@ -7344,7 +7344,7 @@ Description      : You and your pet gain $s1% increased movement speed.
 Tooltip          : Movement speed increased by $w2%.
 
 Name             : Endurance Training (desc=Tenacity Passive) (id=264662) [Spell Family (9), Passive] 
-Class            : Unknown (535) Unknown (537) Unknown (536) Hunter
+Class            : Ferocity Tenacity Cunning Hunter Pet
 School           : Physical
 Spell Type       : None
 Range            : 50000 yards
@@ -7368,7 +7368,7 @@ Description      : You and your pet gain $s1% increased maximum health.
 Tooltip          : Maximum health increased by $w2%.
 
 Name             : Predator's Thirst (desc=Ferocity Passive) (id=264663) [Spell Family (9), Passive] 
-Class            : Unknown (535) Unknown (537) Unknown (536) Hunter
+Class            : Ferocity Tenacity Cunning Hunter Pet
 School           : Physical
 Spell Type       : None
 Range            : 50000 yards
@@ -7392,7 +7392,7 @@ Description      : You and your pet gain $s1% Leech.
 Tooltip          : Leech increased by $w2%.
 
 Name             : Primal Rage (desc=Ferocity Ability) (id=264667) [Spell Family (9)] 
-Class            : Unknown (535) Hunter
+Class            : Ferocity Hunter Pet
 School           : Fire
 Spell Type       : None
 Spell Level      : 26
@@ -7419,7 +7419,7 @@ Allies receiving this effect will become Sated and unable to benefit from Primal
 Tooltip          : Haste increased by $s1%.
 
 Name             : Survival of the Fittest (desc=Tenacity Ability) (id=264735) [Spell Family (9)] 
-Class            : Unknown (537) Hunter
+Class            : Tenacity Hunter Pet
 School           : Physical
 Spell Type       : None
 Range            : 50000 yards

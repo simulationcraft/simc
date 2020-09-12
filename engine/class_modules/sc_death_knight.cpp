@@ -16,7 +16,7 @@
 // - Check that VB's absorb increase is correctly implemented
 // - Healing from Consumption damage done
 // Frost:
-//
+// - Revisit Hypothetic Presence once Blizzard fixes it
 
 #include "simulationcraft.hpp"
 #include "player/pet_spawner.hpp"
@@ -458,6 +458,7 @@ public:
     buff_t* empower_rune_weapon;
     buff_t* frozen_pulse;
     buff_t* gathering_storm;
+    buff_t* hypothermic_presence;
     buff_t* icy_talons;
     buff_t* inexorable_assault;
     buff_t* killing_machine;
@@ -484,6 +485,9 @@ public:
 
     buff_t* festermight;
     buff_t* helchains;
+
+    // Conduits
+    buff_t* eradicating_blow;
   } buffs;
 
   struct runeforge_t {
@@ -531,6 +535,7 @@ public:
     action_t* relish_in_blood;
 
     // Frost
+    action_t* breath_of_sindragosa;
     action_t* cold_heart;
     action_t* inexorable_assault;
 
@@ -679,7 +684,7 @@ public:
     const spell_data_t* frostscythe;
 
     const spell_data_t* gathering_storm;
-    const spell_data_t* hypothermic_presence; // NYI
+    const spell_data_t* hypothermic_presence;
     const spell_data_t* glacial_advance;
 
     const spell_data_t* icecap;
@@ -880,6 +885,7 @@ public:
   struct soulbind_conduits_t
   {
     conduit_data_t biting_cold;
+    conduit_data_t eradicating_blow;
   } conduits;
 
   struct legendary_t
@@ -3580,14 +3586,14 @@ struct breath_of_sindragosa_tick_t: public death_knight_spell_t
 
 struct breath_of_sindragosa_buff_t : public buff_t
 {
-  breath_of_sindragosa_tick_t* damage;
+  action_t* damage;
   double ticking_cost;
   const timespan_t tick_period;
   int rune_gen;
 
   breath_of_sindragosa_buff_t( death_knight_t* player ) :
     buff_t( player, "breath_of_sindragosa", player -> talent.breath_of_sindragosa ),
-    damage( new breath_of_sindragosa_tick_t( player ) ),
+    damage( player -> active_spells.breath_of_sindragosa ),
     tick_period( player -> talent.breath_of_sindragosa -> effectN( 1 ).period() ),
     rune_gen( as<int>( player -> find_spell( 303753 ) -> effectN( 1 ).base_value() ) )
   {
@@ -3612,10 +3618,9 @@ struct breath_of_sindragosa_buff_t : public buff_t
       // Currently use the player's target which is the first non invulnerable, active enemy found.
       player_t* bos_target = player -> target;
 
-      // Damage is executed on cast for no cost
+      // On cast, generate two runes and execute damage for no cost
       if ( this -> current_tick == 0 )
       {
-        // BoS generates 2 on start
         player -> replenish_rune( rune_gen, player -> gains.breath_of_sindragosa );
 
         this -> damage -> set_target( bos_target );
@@ -3624,10 +3629,10 @@ struct breath_of_sindragosa_buff_t : public buff_t
       }
 
       // If the player doesn't have enough RP to fuel this tick, BoS is cancelled and no RP is consumed
-      // This happens if you cast Frost Strike between two ticks and are left with < 15 RP
+      // This can happen if the player uses another RP spender between two ticks and is left with < 15 RP
       if ( ! player -> resource_available( RESOURCE_RUNIC_POWER, this -> ticking_cost ) )
       {
-        sim -> print_log( "Player {} doesn't have the {} Runic Power required for next tick. Breath of Sindragosa was cancelled.",
+        sim -> print_log( "Player {} doesn't have the {} Runic Power required for current tick. Breath of Sindragosa was cancelled.",
                           player -> name_str, this -> ticking_cost );
 
         // Separate the expiration event to happen immediately after tick processing
@@ -4953,6 +4958,18 @@ struct frost_strike_strike_t : public death_knight_melee_attack_t
     base_multiplier *= 1.0 + p -> spec.frost_strike_2 -> effectN( 1 ).percent();
   }
 
+  double action_multiplier() const override
+  {
+    double m = death_knight_melee_attack_t::action_multiplier();
+
+    if ( p() -> buffs.eradicating_blow -> check() )
+    {
+      m *= 1.0 + ( p() -> buffs.eradicating_blow -> stack_value() );
+    }
+
+    return m;
+  }
+
   double bonus_da( const action_state_t* s ) const override
   {
     double da = death_knight_melee_attack_t::bonus_da( s );
@@ -5022,8 +5039,12 @@ struct frost_strike_t : public death_knight_melee_attack_t
       weapon_req = WEAPON_1H;
       mh = new frost_strike_strike_t( p, "frost_strike_mh", &( p -> main_hand_weapon ), data().effectN( 2 ).trigger() );
       add_child( mh );
-      oh = new frost_strike_strike_t( p, "frost_strike_offhand", &( p -> off_hand_weapon ), data().effectN( 3 ).trigger() );
-      add_child( oh );
+
+      if ( p -> off_hand_weapon.type != WEAPON_NONE )
+      {
+        oh = new frost_strike_strike_t( p, "frost_strike_offhand", &( p -> off_hand_weapon ), data().effectN( 3 ).trigger() );
+        add_child( oh );
+      }
     }
   }
 
@@ -5035,11 +5056,17 @@ struct frost_strike_t : public death_knight_melee_attack_t
     {
       mh -> set_target( execute_state -> target );
       mh -> execute();
-      if ( p() -> main_hand_weapon.group() == WEAPON_1H )
+
+      if ( oh )
       {
         oh -> set_target( execute_state -> target );
         oh -> execute();
       }
+    }
+
+    if ( p() -> buffs.eradicating_blow -> up() )
+    {
+      p() -> buffs.eradicating_blow -> expire();
     }
 
     if ( p() -> buffs.pillar_of_frost -> up() && p() -> talent.obliteration -> ok() )
@@ -5440,6 +5467,22 @@ struct howling_blast_t : public death_knight_spell_t
   }
 };
 
+// Hypothermic Presence =====================================================
+
+struct hypothermic_presence_t : public death_knight_spell_t
+{
+  hypothermic_presence_t( death_knight_t* p, const std::string& options_str ) :
+    death_knight_spell_t( "hypothetic_presence", p, p -> talent.hypothermic_presence )
+  { }
+
+  void execute() override
+  {
+    sim -> print_log( "{} used Hypothetic Presence! Nothing happens!!", p() -> name_str );
+    death_knight_spell_t::execute();
+    p() -> buffs.hypothermic_presence -> trigger();
+  }
+};
+
 // Marrowrend ===============================================================
 
 struct marrowrend_t : public death_knight_melee_attack_t
@@ -5599,10 +5642,13 @@ struct obliterate_t : public death_knight_melee_attack_t
     {
       weapon_req = WEAPON_1H;
       mh = new obliterate_strike_t( p, "obliterate_mh", &( p -> main_hand_weapon ), data().effectN( 2 ).trigger() );
-      oh = new obliterate_strike_t( p, "obliterate_offhand", &( p -> off_hand_weapon ), data().effectN( 3 ).trigger() );
-
       add_child( mh );
-      add_child( oh );
+
+      if ( p -> off_hand_weapon.type != WEAPON_NONE )
+      {
+        oh = new obliterate_strike_t( p, "obliterate_offhand", &( p -> off_hand_weapon ), data().effectN( 3 ).trigger() );
+        add_child( oh );
+      }
     }
   }
 
@@ -5615,7 +5661,7 @@ struct obliterate_t : public death_knight_melee_attack_t
       mh -> set_target( execute_state -> target );
       mh -> execute();
 
-      if ( p() -> main_hand_weapon.group() == WEAPON_1H )
+      if ( oh )
       {
         oh -> set_target( execute_state -> target );
         oh -> execute();
@@ -5629,6 +5675,7 @@ struct obliterate_t : public death_knight_melee_attack_t
       }
 
       p() -> buffs.rime -> trigger();
+      p() -> buffs.eradicating_blow -> trigger();
     }
 
     consume_killing_machine( execute_state, p() -> procs.killing_machine_oblit );
@@ -5920,6 +5967,15 @@ struct remorseless_winter_damage_t : public death_knight_spell_t
     aoe = -1;
     base_multiplier *= 1.0 + p -> spec.remorseless_winter_2 -> effectN( 1 ).percent();
 
+    ap_type = attack_power_type::WEAPON_BOTH;
+
+    if ( p -> main_hand_weapon.group() == WEAPON_2H )
+    {
+      ap_type = attack_power_type::WEAPON_MAINHAND;
+      // There's a 0.98 modifier hardcoded in the tooltip if a 2H weapon is equipped, probably server side magic
+      base_multiplier *= 0.98;
+    }
+
     if ( p -> azerite.frozen_tempest.enabled() )
     {
       frozen_tempest_target_threshold = p -> azerite.frozen_tempest.spell() -> effectN( 1 ).base_value();
@@ -5931,7 +5987,15 @@ struct remorseless_winter_damage_t : public death_knight_spell_t
     double m = death_knight_spell_t::action_multiplier();
 
     m *= 1.0 + p() -> buffs.gathering_storm -> stack_value();
-    m *= 1.0 + p() -> get_target_data( target ) -> debuff.biting_cold -> check_stack_value();
+
+    return m;
+  }
+
+  double composite_target_multiplier( player_t* t ) const override
+  {
+    double m = death_knight_spell_t::composite_target_multiplier( t );
+
+    m *= 1.0 + p() -> get_target_data( t ) -> debuff.biting_cold -> stack_value();
 
     return m;
   }
@@ -5958,7 +6022,8 @@ struct remorseless_winter_damage_t : public death_knight_spell_t
       p() -> triggered_frozen_tempest = true;
     }
 
-    td( state->target )->debuff.biting_cold->trigger();
+    if ( p() -> conduits.biting_cold.ok() )
+      td( state -> target ) -> debuff.biting_cold -> trigger();
   }
 };
 
@@ -5998,15 +6063,6 @@ struct remorseless_winter_t : public death_knight_spell_t
 
     // Periodic behavior handled by the buff
     dot_duration = base_tick_time = 0_ms;
-
-    ap_type = attack_power_type::WEAPON_BOTH;
-
-    if ( p -> main_hand_weapon.group() == WEAPON_2H )
-    {
-      ap_type = attack_power_type::WEAPON_MAINHAND;
-      // There's a 0.98 modifier hardcoded in the tooltip if a 2H weapon is equipped, probably server side magic
-      base_multiplier *= 0.98;
-    }
 
     if ( action_t* rw_damage = p -> find_action( "remorseless_winter_damage" ) )
     {
@@ -6785,6 +6841,14 @@ double death_knight_t::resource_gain( resource_e resource_type, double amount, g
 
 double death_knight_t::resource_loss( resource_e resource_type, double amount, gain_t* g, action_t* action )
 {
+  if ( resource_type == RESOURCE_RUNIC_POWER )
+  {
+    // Nothing changes ingame when the buff is up
+    // What is a resource talent doing on an aoe row anyway?
+    // https://github.com/SimCMinMax/WoW-BugTracker/issues/447
+    if ( ! bugs ) amount *= 1.0 + buffs.hypothermic_presence -> value();
+  }
+
   double actual_amount = player_t::resource_loss( resource_type, amount, g, action );
   if ( resource_type == RESOURCE_RUNE )
   {
@@ -7417,6 +7481,11 @@ void death_knight_t::create_actions()
     {
       active_spells.inexorable_assault = new inexorable_assault_damage_t( this );
     }
+
+    if ( talent.breath_of_sindragosa -> ok() )
+    {
+      active_spells.breath_of_sindragosa = new breath_of_sindragosa_tick_t( this );
+    }
   }
   // Unholy
   else if ( specialization() == DEATH_KNIGHT_UNHOLY )
@@ -7455,6 +7524,7 @@ action_t* death_knight_t::create_action( util::string_view name, const std::stri
   if ( name == "chains_of_ice"            ) return new chains_of_ice_t            ( this, options_str );
   if ( name == "death_strike"             ) return new death_strike_t             ( this, options_str );
   if ( name == "icebound_fortitude"       ) return new icebound_fortitude_t       ( this, options_str );
+  if ( name == "mind_freeze"              ) return new mind_freeze_t              ( this, options_str );
   if ( name == "raise_dead"               ) return new raise_dead_t               ( this, options_str );
   if ( name == "sacrificial_pact"         ) return new sacrificial_pact_t         ( this, options_str );
 
@@ -7483,7 +7553,7 @@ action_t* death_knight_t::create_action( util::string_view name, const std::stri
   if ( name == "glacial_advance"          ) return new glacial_advance_t          ( this, options_str );
   if ( name == "horn_of_winter"           ) return new horn_of_winter_t           ( this, options_str );
   if ( name == "howling_blast"            ) return new howling_blast_t            ( this, options_str );
-  if ( name == "mind_freeze"              ) return new mind_freeze_t              ( this, options_str );
+  if ( name == "hypothermic_presence"     ) return new hypothermic_presence_t     ( this, options_str );
   if ( name == "obliterate"               ) return new obliterate_t               ( this, options_str );
   if ( name == "pillar_of_frost"          ) return new pillar_of_frost_t          ( this, options_str );
   if ( name == "remorseless_winter"       ) return new remorseless_winter_t       ( this, options_str );
@@ -7904,7 +7974,7 @@ void death_knight_t::init_spells()
   talent.frostscythe          = find_talent_spell( "Frostscythe" );
 
   talent.gathering_storm      = find_talent_spell( "Gathering Storm" );
-  talent.hypothermic_presence = find_talent_spell( "Hypothermic Presence" ); // NYI
+  talent.hypothermic_presence = find_talent_spell( "Hypothermic Presence" );
   talent.glacial_advance      = find_talent_spell( "Glacial Advance" );
 
   talent.icecap               = find_talent_spell( "Icecap" );
@@ -8067,8 +8137,11 @@ void death_knight_t::init_spells()
   lucid_dreams_minor_refund = memory_of_lucid_dreams.spell_ref( 1u, essence_type::MINOR ).effectN( 1 ).percent();
 
   // Conduits
+  // Blood
   // Frost
   conduits.biting_cold           = find_conduit_spell( "Biting Cold" );
+  conduits.eradicating_blow      = find_conduit_spell( "Eradicating Blow" );
+  // Unholy
 
   // Legendary Items
   // Generic
@@ -8667,6 +8740,9 @@ void death_knight_t::create_buffs()
         -> set_trigger_spell( talent.gathering_storm )
         -> set_default_value( find_spell( 211805 ) -> effectN( 1 ).percent() );
 
+  buffs.hypothermic_presence = make_buff( this, "hypothetic_presence", talent.hypothermic_presence )
+        -> set_default_value_from_effect( 1 );
+
   buffs.icy_talons = make_buff( this, "icy_talons", talent.icy_talons -> effectN( 1 ).trigger() )
         -> add_invalidate( CACHE_ATTACK_SPEED )
         -> set_default_value( talent.icy_talons -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
@@ -8743,6 +8819,11 @@ void death_knight_t::create_buffs()
   {
     _runes.update_coefficient();
   } );
+
+  // Conduits
+  buffs.eradicating_blow = make_buff( this, "eradicating_blow", find_spell( 337936 ) )
+        -> set_default_value( conduits.eradicating_blow.percent() )
+        -> set_trigger_spell( spec.obliterate );
 }
 
 // death_knight_t::init_gains ===============================================

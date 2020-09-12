@@ -5326,7 +5326,7 @@ struct touch_of_death_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::execute();
 
-    if ( p()->spec.touch_of_death_3_mw )
+    if ( p()->specialization() == MONK_MISTWEAVER && p()->spec.touch_of_death_3_mw )
       p()->buff.touch_of_death->trigger();
   }
 
@@ -5495,6 +5495,7 @@ struct spear_hand_strike_t : public monk_melee_attack_t
     parse_options( options_str );
     ignore_false_positive = true;
     trigger_gcd           = timespan_t::zero();
+    is_interrupt          = true;
     may_miss = may_block = may_dodge = may_parry = false;
   }
 
@@ -8182,9 +8183,9 @@ void monk_t::init_spells()
   spec.tiger_palm                = find_class_spell( "Tiger Palm" );
   spec.touch_of_death            = find_class_spell( "Touch of Death" );
   spec.touch_of_death_2          = find_rank_spell( "Touch of Death", "Rank 2" );
-  spec.touch_of_death_3_brm      = find_rank_spell( "Touch of Death", "Rank 2", MONK_BREWMASTER );
-  spec.touch_of_death_3_mw       = find_rank_spell( "Touch of Death", "Rank 2", MONK_MISTWEAVER );
-  spec.touch_of_death_3_ww       = find_rank_spell( "Touch of Death", "Rank 2", MONK_WINDWALKER );
+  spec.touch_of_death_3_brm      = find_rank_spell( "Touch of Death", "Rank 3", MONK_BREWMASTER );
+  spec.touch_of_death_3_mw       = find_rank_spell( "Touch of Death", "Rank 3", MONK_MISTWEAVER );
+  spec.touch_of_death_3_ww       = find_rank_spell( "Touch of Death", "Rank 3", MONK_WINDWALKER );
   spec.vivify                    = find_class_spell( "Vivify" );
   spec.vivify_2_brm              = find_rank_spell( "Vivify", "Rank 2", MONK_BREWMASTER );
   spec.vivify_2_mw               = find_rank_spell( "Vivify", "Rank 2", MONK_MISTWEAVER );

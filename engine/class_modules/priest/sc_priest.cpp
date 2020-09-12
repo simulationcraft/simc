@@ -2037,18 +2037,20 @@ void priest_t::arise()
 // Legendary Eternal Call to the Void trigger
 void priest_t::trigger_eternal_call_to_the_void( action_state_t* s )
 {
-  auto action_name = s->action->name_str;
+  auto mind_sear_id = find_class_spell( "Mind Sear" )->effectN( 1 ).trigger()->id();
+  auto mind_flay_id = find_specialization_spell( "Mind Flay" )->id();
+  auto action_id = s->action->id;
   if ( !legendary.eternal_call_to_the_void->ok() )
     return;
 
   if ( rppm.eternal_call_to_the_void->trigger() )
   {
-    if ( action_name == "mind_flay" )
+    if ( action_id == mind_flay_id )
     {
       procs.void_tendril->occur();
       auto spawned_pets = pets.void_tendril.spawn();
     }
-    else if ( action_name == "mind_sear_tick" )
+    else if ( action_id == mind_sear_id )
     {
       procs.void_lasher->occur();
       auto spawned_pets = pets.void_lasher.spawn();

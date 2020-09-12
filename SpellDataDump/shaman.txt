@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.2.35854 shadowlands-BETA (hotfix 2020-09-10/35854)
+SimulationCraft 901-01 for World of Warcraft 9.0.2.35854 shadowlands-BETA (hotfix 2020-09-12/35854, git build shadowlands a3c99b0cc6)
 
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -10797,25 +10797,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.65000 | AP Coefficient: 0.65000 | PvP Coefficient: 1.00000 | Target: Unknown(25)
 Description      : $@spelldesc326059
 
-Name             : Windfury Totem (id=327941) 
-Class            : Shaman
-School           : Physical
-Spell Type       : None
-Triggered by     : Windfury Totem (327942)
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   
-Effects          :
-#1 (id=819682)   : Extra Attacks (19)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.00000 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Grants $s1 extra attack on your next swing.
-
 Name             : Windfury Totem (id=327942) [Spell Family (11)] 
+Hotfixed         : Attributes
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -10827,7 +10810,7 @@ Proc Flags       : ..x..... ........ ........ ........
                  : White Melee
 Affecting spells : Windfury Totem (343211 effect#1)
 Family Flags     : 40
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ ........ ........   ........ ...x.... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : .......x ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10836,8 +10819,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
 Effects          :
-#1 (id=819684)   : Apply Aura (6) | Proc Trigger Spell (42): Windfury Totem
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Trigger Spell: 327941 | Target: Unknown(35)
+#1 (id=819684)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Unknown(35)
+Hotfixed         : Sub Type (42 -> 4), Trigger Spell (327941 -> 0)
 Description      : $@spelldesc8512
 Tooltip          : Your auto-attacks have a $h% chance to instantly attack again.
 
