@@ -4946,7 +4946,7 @@ struct frost_strike_strike_t : public death_knight_melee_attack_t
 
     if ( p() -> buffs.eradicating_blow -> check() )
     {
-      m *= 1.0 + (p() -> buffs.eradicating_blow -> value() * p() -> buffs.eradicating_blow -> stack());
+      m *= 1.0 + ( p() -> buffs.eradicating_blow -> stack_value() );
     }
 
     return m;
