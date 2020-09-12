@@ -1,4 +1,4 @@
-// 636 talents, wow build 9.0.1.35789
+// 636 talents, wow build 9.0.2.35854
 static std::array<talent_data_t, 636> __talent_data { {
   { "Second Wind"                       , 15757, 0x00, 0x0001,  71,   0,   3,   29838,       0,  0 },
   { "Punish"                            , 15759, 0x00, 0x0001,  73,   1,   0,  275334,       0,  0 },
@@ -245,7 +245,7 @@ static std::array<talent_data_t, 636> __talent_data { {
   { "Spiritual Focus"                   , 22107, 0x00, 0x0200, 269,   0,   6,  280197,       0,  0 },
   { "Blackout Combo"                    , 22108, 0x00, 0x0200, 268,   2,   6,  196736,       0,  0 },
   { "Obliteration"                      , 22109, 0x00, 0x0020, 251,   1,   6,  281238,       0,  0 },
-  { "Unholy Pact"                       , 22110, 0x00, 0x0020, 252,   1,   6,  319230,       0,  0 },
+  { "Summon Gargoyle"                   , 22110, 0x00, 0x0020, 252,   1,   6,   49206,       0,  0 },
   { "Blinding Powder"                   , 22114, 0x00, 0x0008, 260,   1,   4,  256165,       0,  0 },
   { "Prey on the Weak"                  , 22115, 0x00, 0x0008,   0,   2,   4,  131511,       0,  0 },
   { "Weaponmaster"                      , 22118, 0x00, 0x0008, 260,   0,   0,  200733,       0,  0 },
@@ -259,8 +259,8 @@ static std::array<talent_data_t, 636> __talent_data { {
   { "Soothing Darkness"                 , 22128, 0x00, 0x0008, 261,   0,   3,  200759,       0,  0 },
   { "Master of Shadows"                 , 22132, 0x00, 0x0008, 261,   0,   6,  196976,       0,  0 },
   { "Hidden Blades"                     , 22133, 0x00, 0x0008, 259,   1,   6,  270061,       0,  0 },
-  { "Ossuary"                           , 22134, 0x00, 0x0020, 250,   1,   2,  219786,       0,  0 },
-  { "Relish in Blood"                   , 22135, 0x00, 0x0020, 250,   2,   2,  317610,       0,  0 },
+  { "Relish in Blood"                   , 22134, 0x00, 0x0020, 250,   1,   2,  317610,       0,  0 },
+  { "Blood Tap"                         , 22135, 0x00, 0x0020, 250,   2,   2,  221699,       0,  0 },
   { "Death and Madness"                 , 22136, 0x00, 0x0010, 258,   1,   0,  321291,       0,  0 },
   { "Nature's Guardian"                 , 22144, 0x00, 0x0040,   0,   0,   4,   30884,       0,  0 },
   { "Surge of Power"                    , 22145, 0x00, 0x0040, 262,   0,   5,  262303,       0,  0 },
@@ -501,7 +501,7 @@ static std::array<talent_data_t, 636> __talent_data { {
   { "Gathering Storm"                   , 22531, 0x00, 0x0020, 251,   0,   5,  194912,       0,  0 },
   { "Pestilence"                        , 22532, 0x00, 0x0020, 252,   0,   5,  277234,       0,  0 },
   { "Hypothermic Presence"              , 22533, 0x00, 0x0020, 251,   1,   5,  321995,       0,  0 },
-  { "Epidemic"                          , 22534, 0x00, 0x0020, 252,   1,   5,  207317,       0,  0 },
+  { "Unholy Pact"                       , 22534, 0x00, 0x0020, 252,   1,   5,  319230,       0,  0 },
   { "Glacial Advance"                   , 22535, 0x00, 0x0020, 251,   2,   5,  194913,       0,  0 },
   { "Defile"                            , 22536, 0x00, 0x0020, 252,   2,   5,  152280,   43265,  0 },
   { "Breath of Sindragosa"              , 22537, 0x00, 0x0020, 251,   2,   6,  152279,       0,  0 },

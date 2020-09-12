@@ -8,6 +8,8 @@
 #include "player/unique_gear_helper.hpp"
 #include "player/pet.hpp"
 
+#include "action/dot.hpp"
+
 #include "sim/sc_sim.hpp"
 #include "sim/sc_cooldown.hpp"
 
@@ -95,8 +97,8 @@ struct covenant_ability_cast_cb_t : public dbc_proc_callback_t
 
     for ( const auto& cb : cb_list )
     {
-      if ( cb->trigger_on_class && a->data().id() == class_ability ||
-           cb->trigger_on_base && a->data().id() == base_ability )
+      if ( ( cb->trigger_on_class && a->data().id() == class_ability ) ||
+           ( cb->trigger_on_base && a->data().id() == base_ability ) )
         cb->trigger( a, s );
     }
   }
@@ -125,29 +127,72 @@ void add_covenant_cast_callback( player_t* p, S&&... args )
   cb->cb_list.push_back( cb_entry );
 }
 
+struct niyas_tools_proc_t : public unique_gear::proc_spell_t
+{
+  niyas_tools_proc_t( util::string_view n, player_t* p, const spell_data_t* s, double mod ) : proc_spell_t( n, p, s )
+  {
+    spell_power_mod.direct = mod;
+    spell_power_mod.tick   = mod;
+  }
+
+  double composite_spell_power() const override
+  {
+    return std::max( proc_spell_t::composite_spell_power(), proc_spell_t::composite_attack_power() );
+  }
+};
+
 void niyas_tools_burrs( special_effect_t& effect )
 {
-  struct spiked_burrs_proc_t : public unique_gear::proc_spell_t
-  {
-    spiked_burrs_proc_t( player_t* p ) : proc_spell_t( "spiked_burrs", p, p->find_spell( 333526 ) )
-    {
-      spell_power_mod.tick = 0.1;
-    }
+  auto action = effect.player->find_action( "spiked_burrs" );
+  if ( !action )
+    action = new niyas_tools_proc_t( "spiked_burrs", effect.player, effect.player->find_spell( 333526 ), 0.1 );
 
-    double composite_spell_power() const override
-    {
-      return std::max( spell_t::composite_spell_power(), spell_t::composite_attack_power() );
-    }
-  };
-
-  effect.execute_action = new spiked_burrs_proc_t( effect.player );
+  effect.execute_action = action;
 
   new dbc_proc_callback_t( effect.player, effect );
 }
 
 void niyas_tools_poison( special_effect_t& effect )
 {
+  struct niyas_tools_poison_cb_t : public dbc_proc_callback_t
+  {
+    action_t* dot;
+    action_t* direct;
 
+    niyas_tools_poison_cb_t( special_effect_t& e ) : dbc_proc_callback_t( e.player, e )
+    {
+      dot = e.player->find_action( "paralytic_poison" );
+      if ( !dot )
+        dot = new niyas_tools_proc_t( "paralytic_poison", e.player, e.player->find_spell( 321519 ), 0.1 );
+
+      direct = e.player->find_action( "paralytic_poison_interrupt" );
+      if ( !direct )
+        direct = new niyas_tools_proc_t( "paralytic_poison_interrupt", e.player, e.player->find_spell( 321524 ), 0.3 );
+    }
+
+    void execute( action_t* a, action_state_t* s ) override
+    {
+      dbc_proc_callback_t::execute( a, s );
+
+      if ( !dot->get_dot( s->target )->is_ticking() )
+      {
+        dot->set_target( s->target );
+        dot->schedule_execute();
+      }
+      else
+      {
+        direct->set_target( s->target );
+        direct->schedule_execute();
+      }
+    }
+  };
+
+  // TODO: confirm if you need to successfully interrupt to apply the poison
+  // TODO: confirm what happens if you interrupt again - does it refresh/remove dot, can it be reapeatedly proc'd
+  effect.proc_flags2_ |= PF2_CAST_INTERRUPT;
+  effect.disable_action();
+
+  new niyas_tools_poison_cb_t( effect );
 }
 
 void niyas_tools_herbs( special_effect_t& effect )
@@ -155,7 +200,8 @@ void niyas_tools_herbs( special_effect_t& effect )
   if ( !effect.player->buffs.invigorating_herbs )
   {
     effect.player->buffs.invigorating_herbs = make_buff( effect.player, "invigorating_herbs", effect.trigger() )
-      ->set_default_value_from_effect_type( A_HASTE_ALL );
+      ->set_default_value_from_effect_type( A_HASTE_ALL )
+      ->add_invalidate( CACHE_HASTE );
   }
 
   // TODO: confirm proc flags
@@ -175,7 +221,7 @@ void grove_invigoration( special_effect_t& effect )
       add_invalidate( CACHE_MASTERY );
     }
 
-    bool trigger( int s, double v, double c, timespan_t d ) override
+    bool trigger( int, double v, double c, timespan_t d ) override
     {
       int anima_stacks = player->buffs.redirected_anima_stacks->check();
 
@@ -221,8 +267,8 @@ void social_butterfly( special_effect_t& effect )
   {
     social_butterfly_buff_t( player_t* p ) : buff_t( p, "social_butterfly", p->find_spell( 320212 ) )
     {
-      add_invalidate( CACHE_VERSATILITY );
       set_default_value_from_effect_type( A_MOD_VERSATILITY_PCT );
+      add_invalidate( CACHE_VERSATILITY );
     }
 
     void expire_override( int s, timespan_t d ) override
@@ -298,6 +344,7 @@ void dauntless_duelist( special_effect_t& effect )
       td->debuff.adversary->trigger();
 
       deactivate();
+      st->target->callbacks_on_demise.emplace_back( [this]( player_t* ) { activate(); } );
     }
 
     void reset() override
@@ -386,7 +433,19 @@ void built_for_war( special_effect_t& effect )
 
 void superior_tactics( special_effect_t& effect )
 {
+  if ( !effect.player->buffs.superior_tactics )
+  {
+    effect.player->buffs.superior_tactics = make_buff( effect.player, "superior_tactics", effect.trigger() )
+      ->set_cooldown( effect.trigger()->effectN( 2 ).trigger()->duration() )
+      ->set_default_value_from_effect( A_MOD_ALL_CRIT_CHANCE )
+      ->add_invalidate( CACHE_CRIT_CHANCE );
+  }
 
+  // TODO: implement proc'ing from dispels
+  effect.proc_flags2_ |= PF2_CAST_INTERRUPT;
+  effect.custom_buff = effect.player->buffs.superior_tactics;
+
+  new dbc_proc_callback_t( effect.player, effect );
 }
 
 void let_go_of_the_past( special_effect_t& effect )

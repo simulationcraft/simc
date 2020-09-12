@@ -511,6 +511,10 @@ struct player_t : public actor_t
     buff_t* bioelectric_charge; // Diver's Folly 1H AGI axe buff to store damage
     buff_t* razor_coral; // Ashvane's Razor Coral trinket crit rating buff
 
+    // 9.0 class buffs
+    buff_t* focus_magic; // Mage talent
+    buff_t* power_infusion; // Priest spell
+
     // 9.0 Soulbinds
     buff_t* invigorating_herbs;       // night_fae/niya/tools - proc on direct heal
     buff_t* redirected_anima_stacks;  // night_fae/niya/grove_invigoration - counter procced via rppm
@@ -523,6 +527,7 @@ struct player_t : public actor_t
     buff_t* euphoria;                 // venthyr/nadjia/thill_seeker - haste buff
     buff_t* wasteland_propriety;      // venthyr/theotar - vers buff on covenant cast
     buff_t* built_for_war;            // venthyr/draven - stacking buff when above 80% hp
+    buff_t* superior_tactics;         // venthyr/draven - crit buff on interrupt
     buff_t* let_go_of_the_past;       // kyrian/pelagos - vers buff on diff spell
     buff_t* combat_meditation;        // kyrian/pelagos - mast buff on covenant cast
     buff_t* pointed_courage;          // kyrian/kleia - crit buff for every nearby enemy or ally
@@ -554,6 +559,12 @@ struct player_t : public actor_t
     buff_t* chaos_brand;  // Demon Hunter
     buff_t* mystic_touch; // Monk
   } debuffs;
+
+  struct external_buffs_t
+  {
+    bool focus_magic;
+    std::vector<timespan_t> power_infusion;
+  } external_buffs;
 
   struct gains_t
   {

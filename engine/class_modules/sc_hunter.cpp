@@ -333,7 +333,7 @@ public:
   } azerite;
 
   struct {
-    spell_data_ptr_t death_chakram; // VERY WIP
+    spell_data_ptr_t death_chakram;
     spell_data_ptr_t flayed_shot;
     spell_data_ptr_t resonating_arrow;
     spell_data_ptr_t wild_spirits; // VERY WIP
@@ -501,7 +501,7 @@ public:
     spell_data_ptr_t animal_companion;
     spell_data_ptr_t dire_beast;
 
-    spell_data_ptr_t master_marksman; // NYI
+    spell_data_ptr_t master_marksman;
     spell_data_ptr_t serpent_sting;
 
     spell_data_ptr_t vipers_venom;
@@ -1303,17 +1303,18 @@ struct hunter_main_pet_base_t : public hunter_pet_t
   struct actives_t
   {
     action_t* basic_attack = nullptr;
-    action_t* kill_command = nullptr;
-    attack_t* beast_cleave = nullptr;
-    action_t* stomp = nullptr;
-    action_t* flanking_strike = nullptr;
+    action_t* beast_cleave = nullptr;
+    action_t* bestial_wrath = nullptr;
     action_t* bloodshed = nullptr;
+    action_t* flanking_strike = nullptr;
+    action_t* kill_command = nullptr;
+    action_t* stomp = nullptr;
   } active;
 
   struct buffs_t
   {
-    buff_t* bestial_wrath = nullptr;
     buff_t* beast_cleave = nullptr;
+    buff_t* bestial_wrath = nullptr;
     buff_t* frenzy = nullptr;
     buff_t* predator = nullptr;
     buff_t* rylakstalkers_fangs = nullptr;
@@ -2110,10 +2111,7 @@ struct basic_attack_t : public hunter_main_pet_attack_t
     parse_options( options_str );
 
     school = SCHOOL_PHYSICAL;
-
     attack_power_mod.direct = 1 / 3.0;
-    // 28-06-2018: While spell data says it has a base damage in-game testing shows that it doesn't use it.
-    base_dd_min = base_dd_max = 0;
 
     auto wild_hunt_spell = p -> find_spell( 62762 );
     wild_hunt.cost_pct = 1 + wild_hunt_spell -> effectN( 2 ).percent();
@@ -2211,6 +2209,17 @@ struct bloodshed_t : hunter_main_pet_attack_t
   }
 };
 
+// Bestial Wrath ===========================================================
+
+struct bestial_wrath_t : hunter_pet_action_t<hunter_main_pet_base_t, melee_attack_t>
+{
+  bestial_wrath_t( hunter_main_pet_base_t* p ):
+    hunter_pet_action_t( "bestial_wrath", p, p -> find_spell( 344572 ) )
+  {
+    background = true;
+  }
+};
+
 } // end namespace pets::actions
 
 hunter_main_pet_td_t::hunter_main_pet_td_t( player_t* target, hunter_main_pet_t* p ):
@@ -2249,6 +2258,9 @@ void hunter_main_pet_base_t::init_spells()
   hunter_pet_t::init_spells();
 
   spells.thrill_of_the_hunt = find_spell( 312365 );
+
+  if ( o() -> specialization() == HUNTER_BEAST_MASTERY )
+    active.bestial_wrath = new actions::bestial_wrath_t( this );
 
   if ( o() -> specialization() == HUNTER_BEAST_MASTERY )
     active.kill_command = new actions::kill_command_bm_t( this );
@@ -3012,6 +3024,9 @@ struct arcane_shot_t: public arcane_shot_base_t
     arcane_shot_base_t( "arcane_shot", p )
   {
     parse_options( options_str );
+
+    if ( p -> specialization() == HUNTER_MARKSMANSHIP )
+      background = p -> talents.chimaera_shot.ok();
   }
 
   void execute() override
@@ -4338,8 +4353,6 @@ struct serpent_sting_sv_t: public hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::init();
 
-    update_flags &= ~STATE_HASTE;
-
     if ( action_t* lpi = p() -> find_action( "latent_poison_injection" ) )
       add_child( lpi );
 
@@ -4374,11 +4387,6 @@ struct serpent_sting_sv_t: public hunter_ranged_attack_t
     m *= 1 + p() -> buffs.vipers_venom -> check_value();
 
     return m;
-  }
-
-  timespan_t composite_dot_duration( const action_state_t* s ) const override
-  {
-    return dot_duration * ( tick_time( s ) / base_tick_time );
   }
 
   void assess_damage( result_amount_type type, action_state_t* s ) override
@@ -4489,6 +4497,7 @@ struct interrupt_base_t: public hunter_spell_t
     hunter_spell_t( n, p, s )
   {
     may_miss = may_block = may_dodge = may_parry = false;
+    is_interrupt = true;
   }
 
   void execute() override
@@ -4882,6 +4891,14 @@ struct bestial_wrath_t: public hunter_spell_t
     precast_time = clamp( precast_time, 0_ms, data().duration() );
   }
 
+  void init_finished() override
+  {
+    for ( auto pet : p() -> pet_list )
+      add_pet_stats( pet, { "bestial_wrath" } );
+
+    hunter_spell_t::init_finished();
+  }
+
   void execute() override
   {
     hunter_spell_t::execute();
@@ -4890,7 +4907,15 @@ struct bestial_wrath_t: public hunter_spell_t
     trigger_buff( p() -> buffs.haze_of_rage, precast_time );
 
     for ( auto pet : pets::active<pets::hunter_main_pet_base_t>( p() -> pets.main, p() -> pets.animal_companion ) )
+    {
+      // Assume the pet is out of range / not engaged when precasting.
+      if ( !precombat )
+      {
+        pet -> active.bestial_wrath -> set_target( target );
+        pet -> active.bestial_wrath -> execute();
+      }
       trigger_buff( pet -> buffs.bestial_wrath, precast_time );
+    }
 
     adjust_precast_cooldown( precast_time );
 

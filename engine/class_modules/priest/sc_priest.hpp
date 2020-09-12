@@ -54,7 +54,8 @@ struct dispersion_t;
 namespace pets
 {
 struct void_tendril_t;
-}
+struct void_lasher_t;
+}  // namespace pets
 
 /**
  * Priest target data
@@ -108,9 +109,6 @@ public:
   {
     // Talents
     propagate_const<buff_t*> twist_of_fate;
-
-    // Shared
-    propagate_const<buff_t*> power_infusion;
 
     // Discipline
     propagate_const<buff_t*> inner_focus;
@@ -328,7 +326,8 @@ public:
     propagate_const<gain_t*> shadow_word_death_self_damage;
     propagate_const<gain_t*> insanity_death_and_madness;
     propagate_const<gain_t*> insanity_mindgames;
-    propagate_const<gain_t*> insanity_eternal_call_to_the_void;
+    propagate_const<gain_t*> insanity_eternal_call_to_the_void_mind_flay;
+    propagate_const<gain_t*> insanity_eternal_call_to_the_void_mind_sear;
     propagate_const<gain_t*> insanity_mind_sear;
   } gains;
 
@@ -354,6 +353,7 @@ public:
     propagate_const<proc_t*> dissonant_echoes;
     propagate_const<proc_t*> mind_devourer;
     propagate_const<proc_t*> void_tendril;
+    propagate_const<proc_t*> void_lasher;
     propagate_const<proc_t*> dark_thoughts_flay;
     propagate_const<proc_t*> dark_thoughts_sear;
     propagate_const<proc_t*> dark_thoughts_missed;
@@ -379,6 +379,7 @@ public:
     propagate_const<pet_t*> shadowfiend;
     propagate_const<pet_t*> mindbender;
     spawner::pet_spawner_t<pets::void_tendril_t, priest_t> void_tendril;
+    spawner::pet_spawner_t<pets::void_lasher_t, priest_t> void_lasher;
 
     priest_pets_t( priest_t& p );
   } pets;
@@ -576,7 +577,7 @@ public:
   bool insanity_drain_frozen() const;
   void adjust_holy_word_serenity_cooldown();
   double tick_damage_over_time( timespan_t duration, const dot_t* dot ) const;
-  void trigger_eternal_call_to_the_void( const dot_t* d );
+  void trigger_eternal_call_to_the_void( action_state_t* );
   void trigger_shadowy_apparitions( action_state_t* );
   void trigger_psychic_link( action_state_t* );
   void trigger_wrathful_faerie();
@@ -1023,6 +1024,23 @@ struct void_tendril_t final : public priest_pet_t
 
     action_priority_list_t* def = get_action_priority_list( "default" );
     def->add_action( "mind_flay" );
+  }
+
+  action_t* create_action( util::string_view name, const std::string& options_str ) override;
+};
+
+struct void_lasher_t final : public priest_pet_t
+{
+  void_lasher_t( priest_t* owner ) : priest_pet_t( owner->sim, *owner, "void_lasher", PET_VOID_LASHER, true )
+  {
+  }
+
+  void init_action_list() override
+  {
+    priest_pet_t::init_action_list();
+
+    action_priority_list_t* def = get_action_priority_list( "default" );
+    def->add_action( "mind_sear" );
   }
 
   action_t* create_action( util::string_view name, const std::string& options_str ) override;

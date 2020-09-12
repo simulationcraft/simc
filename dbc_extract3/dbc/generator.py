@@ -1273,7 +1273,6 @@ class SpellDataGenerator(DataGenerator):
          # 8.0 Galley Banquet food buffs
          259448, 259449, 259452, 259453,
          # 8.0 Bountiful Captain's Feast food buffs
-         # 9.0 Feast of Gluttonous Hedonism
          259454, 259455, 259456, 259457,
          # 8.1 Boralus Blood Sausage food buffs
          290469, 290467, 290468,
@@ -1423,10 +1422,15 @@ class SpellDataGenerator(DataGenerator):
          # Searing Breath damage
          316704,
          # Shadowlands
+         # Surprisingly Palatable Feast
+         327702, 327704, 327705,
+         # Feast of Gluttonous Hedonism
+         327707, 327708, 327709,
          # Soulbinds
+         321524, # Niya's Tools: Poison (night fae/niya)
          320130, 320212, # Social Butterfly vers buff (night fae/dreamweaver)
          342181, 342183, # Embody the Construct damage/heal (necrolord/emeni)
-         332525, 341163, 341165, 332526, # Bron's Call to Action
+         332525, 341163, 341165, 332526, # Bron's Call to Action (kyrian/mikanikos)
         ),
 
         # Warrior:
@@ -1580,6 +1584,7 @@ class SpellDataGenerator(DataGenerator):
             ( 288342, 0 ),          # Thought Harvester trigger buff for Mind Sear
             ( 336142, 5 ),          # Shadowflame Prism legendary effect DMG Component
             ( 343144, 0 ),          # Dissonant Echoes free Void Bolt proc
+            ( 344752, 5 ),          # Void Lasher "Mind Sear"
         ),
 
         # Death Knight:
@@ -1812,6 +1817,7 @@ class SpellDataGenerator(DataGenerator):
           ( 261682, 3 ), # Chi Burst Chi generation cap
           ( 285594, 3 ), # Good Karma Healing Spell
 		      ( 290461, 3 ), # Reverse Harm Damage
+		      ( 335913, 3 ), # Empowered Tiger Lightning Damage spell
           # Azerite Traits
           ( 278710, 3 ), # Swift Roundhouse
           ( 278767, 1 ), # Training of Niuzao buff
@@ -3281,7 +3287,7 @@ class SpecializationSpellGenerator(DataGenerator):
                 array = 'specialization_spell',
                 length = len(data))
 
-        for chrspec, spell_data in sorted(data, key = lambda e: (e[0].class_id, e[0].index)):
+        for chrspec, spell_data in sorted(data, key = lambda e: (e[0].class_id, e[0].index, e[0].id, e[1].spell_id)):
             spell = self.db('Spell').get(spell_data.spell_id)
             fields = chrspec.field('class_id', 'id')
             fields += spell_data.ref('spell_id').field('id')
@@ -4046,7 +4052,7 @@ class ActiveClassSpellGenerator(DataGenerator):
         return ActiveClassSpellSet(self._options).get()
 
     def generate(self, data = None):
-        data.sort(key = lambda v: isinstance(v[0], int) and (v[0], 0) or (v[0].class_id, v[0].id))
+        data.sort(key = lambda v: isinstance(v[0], int) and (v[0], 0, v[1].id) or (v[0].class_id, v[0].id, v[1].id))
 
         self.output_header(
                 header = 'Active class spells',
@@ -4057,7 +4063,7 @@ class ActiveClassSpellGenerator(DataGenerator):
         for spec_data, spell, replace_spell in data:
             fields = []
             if isinstance(spec_data, int):
-                fields += ['{:2d}'.format(spec_data), '{:3d}'.format(0)]
+                fields += ['{:2d}'.format(spec_data), '{:4d}'.format(0)]
             else:
                 fields += spec_data.field('class_id', 'id')
             fields += spell.field('id')
@@ -4147,7 +4153,7 @@ class RankSpellGenerator(DataGenerator):
         return RankSpellSet(self._options).get()
 
     def generate(self, data = None):
-        data.sort(key = lambda v: (v[2].name, self.db('Spell')[v[2].id].rank))
+        data.sort(key = lambda v: (v[2].name, self.db('Spell')[v[2].id].rank, v[0], v[1], v[2].id))
 
         self.output_header(
                 header = 'Rank class spells',

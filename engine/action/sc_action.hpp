@@ -166,6 +166,9 @@ public:
    */
   bool proc;
 
+  /// Whether or not the action is an interrupt (specifically triggers PF2_CAST_INTERRUPT callbacks)
+  bool is_interrupt;
+
   /// Is the action initialized? (action_t::init ran successfully)
   bool initialized;
 

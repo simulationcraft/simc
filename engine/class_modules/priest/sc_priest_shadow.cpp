@@ -8,7 +8,6 @@
 
 #include "simulationcraft.hpp"
 
-
 namespace priestspace
 {
 namespace actions
@@ -21,6 +20,7 @@ namespace spells
 struct mind_blast_t final : public priest_spell_t
 {
 private:
+  double mind_blast_insanity;
   double whispers_of_the_damned_value;
   double harvested_thoughts_value;
   double whispers_bonus_insanity;
@@ -30,6 +30,7 @@ private:
 public:
   mind_blast_t( priest_t& player, util::string_view options_str )
     : priest_spell_t( "mind_blast", player, player.find_class_spell( "Mind Blast" ) ),
+      mind_blast_insanity( priest().find_spell( 137033 )->effectN( 12 ).resource( RESOURCE_INSANITY ) ),
       whispers_of_the_damned_value( priest().azerite.whispers_of_the_damned.value( 2 ) ),
       harvested_thoughts_value( priest().azerite.thought_harvester.value( 1 ) ),
       whispers_bonus_insanity( priest()
@@ -45,6 +46,8 @@ public:
   {
     parse_options( options_str );
 
+    // This was removed from the Mind Blast spell and put on the Shadow Priest spell instead
+    energize_amount = mind_blast_insanity;
     energize_amount *= 1 + priest().talents.fortress_of_the_mind->effectN( 2 ).percent();
 
     spell_power_mod.direct *= 1.0 + player.talents.fortress_of_the_mind->effectN( 4 ).percent();
@@ -228,6 +231,8 @@ struct mind_sear_tick_t final : public priest_spell_t
   {
     priest_spell_t::impact( s );
 
+    priest().trigger_eternal_call_to_the_void( s );
+    
     trigger_dark_thoughts( s->target, priest().procs.dark_thoughts_sear );
   }
 };
@@ -291,7 +296,7 @@ struct mind_flay_t final : public priest_spell_t
   {
     priest_spell_t::tick( d );
 
-    priest().trigger_eternal_call_to_the_void( d );
+    priest().trigger_eternal_call_to_the_void( d->state );
 
     trigger_dark_thoughts( d->target, priest().procs.dark_thoughts_flay );
   }
@@ -499,7 +504,7 @@ struct silence_t final : public priest_spell_t
   {
     parse_options( options_str );
     may_miss = may_crit   = false;
-    ignore_false_positive = true;
+    ignore_false_positive = is_interrupt = true;
 
     if ( priest().talents.last_word->ok() )
     {
@@ -701,7 +706,8 @@ struct shadow_word_pain_t final : public priest_spell_t
   {
     priest_spell_t::impact( s );
 
-    if ( result_is_hit( s->result ) )
+    // Only applied if you hard cast SW:P, Misery and Damnation do not trigger this
+    if ( casted && result_is_hit( s->result ) )
     {
       if ( priest().buffs.fae_guardians->check() )
       {
@@ -2377,6 +2383,7 @@ void priest_t::generate_apl_shadow()
                     "if=cooldown.power_infusion.up&insanity>=40&(!talent.legacy_of_the_void.enabled|(talent.legacy_of_"
                     "the_void.enabled&dot.devouring_plague.ticking))",
                     "Sync up Voidform and Power Infusion Cooldowns and of using LotV pool insanity before casting." );
+  main->add_action( this, "Shadow Word: Pain", "if=buff.fae_guardians.up&!debuff.wrathful_faerie.up");
   main->add_action( this, "Void Bolt", "if=!dot.devouring_plague.refreshable",
                     "Only use Void Bolt if Devouring Plague doesn't need refreshed." );
   main->add_call_action_list( cds );

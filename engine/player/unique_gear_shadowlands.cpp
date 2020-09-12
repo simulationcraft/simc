@@ -59,6 +59,25 @@ struct SL_proc_spell_t : public proc_spell_t
   }
 };
 
+// feasts initialization helper
+void init_feast( special_effect_t& effect, std::initializer_list<std::pair<stat_e, int>> stat_map )
+{
+  effect.stat = effect.player->convert_hybrid_stat( STAT_STR_AGI_INT );
+  // TODO: Is this actually spec specific?
+  if ( effect.player->role == ROLE_TANK && !effect.player->sim->feast_as_dps )
+    effect.stat = STAT_STAMINA;
+
+  for ( auto&& stat : stat_map )
+  {
+    if ( stat.first == effect.stat )
+    {
+      effect.trigger_spell_id = stat.second;
+      break;
+    }
+  }
+  effect.stat_amount = effect.player->find_spell( effect.trigger_spell_id )->effectN( 1 ).average( effect.player );
+}
+
 namespace consumables
 {
 void smothered_shank( special_effect_t& effect )
@@ -82,19 +101,71 @@ void smothered_shank( special_effect_t& effect )
   effect.custom_buff = make_buff<smothered_shank_buff_t>( effect );
 }
 
+void surprisingly_palatable_feast( special_effect_t& effect )
+{
+  init_feast( effect,
+              {{STAT_STRENGTH, 327701}, {STAT_STAMINA, 327702}, {STAT_INTELLECT, 327704}, {STAT_AGILITY, 327705}} );
+}
+
 void feast_of_gluttonous_hedonism( special_effect_t& effect )
 {
+  init_feast( effect,
+              {{STAT_STRENGTH, 327707}, {STAT_STAMINA, 327707}, {STAT_INTELLECT, 327708}, {STAT_AGILITY, 327709}} );
+}
 
+// For things that require check for oils, the effect must be passed as first parameter of the constructor, but this
+// parameter is not passed onto the base constructor
+template <typename Base>
+struct SL_potion_proc_t : public Base
+{
+  using base_t = SL_potion_proc_t<Base>;
+
+  bool shadowcore;
+  bool embalmers;
+
+  template <typename... Args>
+  SL_potion_proc_t( const special_effect_t& e, Args&&... args ) : Base( std::forward<Args>( args )... )
+  {
+    shadowcore = unique_gear::find_special_effect( e.player, 321382 );
+    embalmers  = unique_gear::find_special_effect( e.player, 321393 );
+  }
+};
+
+// proc potion initialization helper
+template <typename T>
+void init_proc_potion( special_effect_t& effect, util::string_view name )
+{
+  auto potion            = new special_effect_t( effect.player );
+  potion->type           = SPECIAL_EFFECT_EQUIP;
+  potion->spell_id       = effect.spell_id;
+  potion->cooldown_      = 0_ms;
+  potion->execute_action = create_proc_action<T>( name, effect );
+  effect.player->special_effects.push_back( potion );
+
+  auto proc = new dbc_proc_callback_t( effect.player, *potion );
+  proc->deactivate();
+  proc->initialize();
+
+  effect.custom_buff = make_buff( effect.player, effect.name(), effect.driver() )
+    ->set_cooldown( 0_ms )
+    ->set_chance( 1.0 )
+    ->set_stack_change_callback( [proc]( buff_t*, int, int new_ ) {
+      if ( new_ )
+        proc->activate();
+      else
+        proc->deactivate();
+    } );
 }
 
 void potion_of_deathly_fixation( special_effect_t& effect )
 {
-  struct deathly_eruption_t: public proc_spell_t
+  struct deathly_eruption_t : public SL_potion_proc_t<proc_spell_t>
   {
     deathly_eruption_t( const special_effect_t& e )
-      : proc_spell_t( "deathly_eruption", e.player, e.player->find_spell( 322256 ) )
+      : base_t( e, "deathly_eruption", e.player, e.player->find_spell( 322256 ) )
     {
-      // TODO: add interaction with shadowcore oil
+      if ( shadowcore )
+        base_multiplier *= 1.0 + e.driver()->effectN( 2 ).percent();
     }
   };
 
@@ -124,96 +195,47 @@ void potion_of_deathly_fixation( special_effect_t& effect )
     }
   };
 
-  auto potion            = new special_effect_t( effect.player );
-  potion->type           = SPECIAL_EFFECT_EQUIP;
-  potion->spell_id       = effect.spell_id;
-  potion->cooldown_      = 0_ms;
-  potion->execute_action = create_proc_action<deathly_fixation_t>( "potion_of_deathly_fixation", effect );
-  effect.player->special_effects.push_back( potion );
-
-  auto proc = new dbc_proc_callback_t( effect.player, *potion );
-  proc->deactivate();
-  proc->initialize();
-
-  effect.custom_buff = make_buff( effect.player, effect.name(), effect.driver() )
-    ->set_cooldown( 0_ms )
-    ->set_chance( 1.0 )
-    ->set_stack_change_callback( [proc]( buff_t*, int, int new_ ) {
-      if ( new_ ) proc->activate();
-      else proc->deactivate();
-    } );
+  init_proc_potion<deathly_fixation_t>( effect, "potion_of_deathly_fixation" );
 }
 
 void potion_of_empowered_exorcisms( special_effect_t& effect )
 {
-  struct empowered_exorcisms : public proc_spell_t
+  struct empowered_exorcisms_t : public SL_potion_proc_t<proc_spell_t>
   {
-    empowered_exorcisms( const special_effect_t& e )
-      : proc_spell_t( "empowered_exorcisms", e.player, e.player->find_spell( 322015 ) )
+    empowered_exorcisms_t( const special_effect_t& e )
+      : base_t( e, "empowered_exorcisms", e.player, e.player->find_spell( 322015 ) )
     {
-      // TODO: add interaction with shadowcore oil
+      if ( shadowcore )
+      {
+        base_multiplier *= 1.0 + e.driver()->effectN( 2 ).percent();
+        radius *= 1.0 + e.driver()->effectN( 2 ).percent();
+      }
+    }
+
+    // manually adjust for aoe reduction here instead of via action_t::reduced_aoe_damage as all targets receive reduced
+    // damage, including the primary
+    double composite_aoe_multiplier( const action_state_t* s ) const override
+    {
+      return proc_spell_t::composite_aoe_multiplier( s ) / std::sqrt( s->n_targets );
     }
   };
 
-  auto potion            = new special_effect_t( effect.player );
-  potion->type           = SPECIAL_EFFECT_EQUIP;
-  potion->spell_id       = effect.spell_id;
-  potion->cooldown_      = 0_ms;
-  potion->execute_action = create_proc_action<empowered_exorcisms>( "potion_of_empowered_exorcisms", effect );
-  effect.player->special_effects.push_back( potion );
-
-  auto proc = new dbc_proc_callback_t( effect.player, *potion );
-  proc->deactivate();
-  proc->initialize();
-
-  effect.custom_buff = make_buff( effect.player, effect.name(), effect.driver() )
-    ->set_cooldown( 0_ms )
-    ->set_chance( 1.0 )
-    ->set_stack_change_callback( [proc]( buff_t*, int, int new_ ) {
-      if ( new_ ) proc->activate();
-      else proc->deactivate();
-    } );
+  init_proc_potion<empowered_exorcisms_t>( effect, "potion_of_empowered_exorcisms" );
 }
 
 void potion_of_phantom_fire( special_effect_t& effect )
 {
-  struct phantom_fire_t : public proc_spell_t
+  struct phantom_fire_t : public SL_potion_proc_t<proc_spell_t>
   {
     phantom_fire_t( const special_effect_t& e )
-      : proc_spell_t( "phantom_fire", e.player, e.player->find_spell( 321937 ) )
+      : base_t( e, "phantom_fire", e.player, e.player->find_spell( 321937 ) )
     {
-      // TODO: add interaction with shadowcore oil
+      if ( shadowcore )
+        base_multiplier *= 1.0 + e.driver()->effectN( 2 ).percent();
     }
   };
 
-  auto potion            = new special_effect_t( effect.player );
-  potion->type           = SPECIAL_EFFECT_EQUIP;
-  potion->spell_id       = effect.spell_id;
-  potion->cooldown_      = 0_ms;
-  potion->execute_action = create_proc_action<phantom_fire_t>( "potion_of_phantom_fire", effect );
-  effect.player->special_effects.push_back( potion );
-
-  auto proc = new dbc_proc_callback_t( effect.player, *potion );
-  proc->deactivate();
-  proc->initialize();
-
-  effect.custom_buff = make_buff( effect.player, effect.name(), effect.driver() )
-    ->set_cooldown( 0_ms )
-    ->set_chance( 1.0 )
-    ->set_stack_change_callback( [proc]( buff_t*, int, int new_ ) {
-      if ( new_ ) proc->activate();
-      else proc->deactivate();
-    } );
-}
-
-void embalmers_oil( special_effect_t& effect )
-{
-
-}
-
-void shadowcore_oil( special_effect_t& effect )
-{
-
+  init_proc_potion<phantom_fire_t>( effect, "potion_of_phantom_fire" );
 }
 }  // namespace consumables
 
@@ -277,13 +299,15 @@ void register_special_effects()
 {
     // Food
     unique_gear::register_special_effect( 308637, consumables::smothered_shank );
+    unique_gear::register_special_effect( 308458, consumables::surprisingly_palatable_feast );
+    unique_gear::register_special_effect( 308462, consumables::feast_of_gluttonous_hedonism );
 
     // Potion
     unique_gear::register_special_effect( 307497, consumables::potion_of_deathly_fixation );
     unique_gear::register_special_effect( 307494, consumables::potion_of_empowered_exorcisms );
     unique_gear::register_special_effect( 307495, consumables::potion_of_phantom_fire );
 
-    // Enchants
+    // Enchant
     unique_gear::register_special_effect( 324747, enchants::celestial_guidance );
     unique_gear::register_special_effect( 323932, enchants::lightless_force );
     unique_gear::register_special_effect( 324250, enchants::sinful_revelation );

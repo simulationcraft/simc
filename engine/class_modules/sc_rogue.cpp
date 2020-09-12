@@ -607,7 +607,7 @@ public:
 
     conduit_data_t ambidexterity;
     conduit_data_t count_the_odds;
-    conduit_data_t slight_of_hand;
+    conduit_data_t sleight_of_hand;
     conduit_data_t triple_threat;
 
     conduit_data_t deeper_daggers;
@@ -679,6 +679,7 @@ public:
 
     // Conduits
     proc_t* count_the_odds;
+    proc_t* sleight_of_hand;
 
     // Legendary
     proc_t* dustwalker_patch;
@@ -3583,8 +3584,11 @@ struct roll_the_bones_t : public rogue_spell_t
     // - Mystler 2020-07-31
     p() -> buffs.snake_eyes -> trigger( p() -> buffs.snake_eyes -> max_stack(), 0 );
 
-    if ( p()->conduit.slight_of_hand.ok() && p()->rng().roll( p()->conduit.slight_of_hand.percent() ) )
+    if ( p()->conduit.sleight_of_hand.ok() && p()->rng().roll( p()->conduit.sleight_of_hand.percent() ) )
+    {
       cooldown->reset( true );
+      p()->procs.sleight_of_hand->occur();
+    }
   }
 };
 
@@ -3621,7 +3625,7 @@ struct rupture_t : public rogue_attack_t
       return p()->get_target_data( p()->last_rupture_target )->dots.rupture->state->persistent_multiplier;
 
     double m = rogue_attack_t::composite_persistent_multiplier( state );
-    m += 1.0 + p()->buffs.finality_rupture->value(); // Additive with Nightstalker
+    m += p()->buffs.finality_rupture->value(); // Additive with Nightstalker
     return m;
   }
 
@@ -5695,6 +5699,7 @@ struct roll_the_bones_t : public buff_t
     buff_t( r, "roll_the_bones", r -> spec.roll_the_bones ),
     rogue( r )
   {
+    set_cooldown( timespan_t::zero() );
     set_period( timespan_t::zero() ); // Disable ticking
     set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
 
@@ -7856,7 +7861,7 @@ void rogue_t::init_spells()
 
   conduit.ambidexterity           = find_conduit_spell( "Ambidexterity" );
   conduit.count_the_odds          = find_conduit_spell( "Count the Odds" );
-  conduit.slight_of_hand          = find_conduit_spell( "Slight of Hand" );
+  conduit.sleight_of_hand         = find_conduit_spell( "Sleight of Hand" );
   conduit.triple_threat           = find_conduit_spell( "Triple Threat" );
 
   conduit.deeper_daggers          = find_conduit_spell( "Deeper Daggers" );
@@ -8015,6 +8020,7 @@ void rogue_t::init_procs()
   procs.echoing_reprimand_3 = get_proc( "Animacharged CP 3 Used"       );
   procs.echoing_reprimand_4 = get_proc( "Animacharged CP 4 Used"       );
   procs.count_the_odds      = get_proc( "Count the Odds"               );
+  procs.sleight_of_hand     = get_proc( "Sleight of Hand"              );
 
   procs.dustwalker_patch    = get_proc( "Dustwalker Patch"             );
 }
