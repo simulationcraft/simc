@@ -16,7 +16,7 @@
 // - Check that VB's absorb increase is correctly implemented
 // - Healing from Consumption damage done
 // Frost:
-//
+// - Revisit Hypothetic Presence once Blizzard fixes it
 
 #include "simulationcraft.hpp"
 #include "player/pet_spawner.hpp"
@@ -458,6 +458,7 @@ public:
     buff_t* empower_rune_weapon;
     buff_t* frozen_pulse;
     buff_t* gathering_storm;
+    buff_t* hypothermic_presence;
     buff_t* icy_talons;
     buff_t* inexorable_assault;
     buff_t* killing_machine;
@@ -679,7 +680,7 @@ public:
     const spell_data_t* frostscythe;
 
     const spell_data_t* gathering_storm;
-    const spell_data_t* hypothermic_presence; // NYI
+    const spell_data_t* hypothermic_presence;
     const spell_data_t* glacial_advance;
 
     const spell_data_t* icecap;
@@ -5432,6 +5433,22 @@ struct howling_blast_t : public death_knight_spell_t
   }
 };
 
+// Hypothermic Presence =====================================================
+
+struct hypothermic_presence_t : public death_knight_spell_t
+{
+  hypothermic_presence_t( death_knight_t* p, const std::string& options_str ) :
+    death_knight_spell_t( "hypothetic_presence", p, p -> talent.hypothermic_presence )
+  { }
+
+  void execute() override
+  {
+    sim -> print_log( "{} used Hypothetic Presence! Nothing happens!!", p() -> name_str );
+    death_knight_spell_t::execute();
+    p() -> buffs.hypothermic_presence -> trigger();
+  }
+};
+
 // Marrowrend ===============================================================
 
 struct marrowrend_t : public death_knight_melee_attack_t
@@ -6776,6 +6793,14 @@ double death_knight_t::resource_gain( resource_e resource_type, double amount, g
 
 double death_knight_t::resource_loss( resource_e resource_type, double amount, gain_t* g, action_t* action )
 {
+  if ( resource_type == RESOURCE_RUNIC_POWER )
+  {
+    // Nothing changes ingame when the buff is up
+    // What is a resource talent doing on an aoe row anyway?
+    // https://github.com/SimCMinMax/WoW-BugTracker/issues/447
+    if ( ! bugs ) amount *= 1.0 + buffs.hypothermic_presence -> value();
+  }
+
   double actual_amount = player_t::resource_loss( resource_type, amount, g, action );
   if ( resource_type == RESOURCE_RUNE )
   {
@@ -7451,6 +7476,7 @@ action_t* death_knight_t::create_action( util::string_view name, const std::stri
   if ( name == "chains_of_ice"            ) return new chains_of_ice_t            ( this, options_str );
   if ( name == "death_strike"             ) return new death_strike_t             ( this, options_str );
   if ( name == "icebound_fortitude"       ) return new icebound_fortitude_t       ( this, options_str );
+  if ( name == "mind_freeze"              ) return new mind_freeze_t              ( this, options_str );
   if ( name == "raise_dead"               ) return new raise_dead_t               ( this, options_str );
   if ( name == "sacrificial_pact"         ) return new sacrificial_pact_t         ( this, options_str );
 
@@ -7479,7 +7505,7 @@ action_t* death_knight_t::create_action( util::string_view name, const std::stri
   if ( name == "glacial_advance"          ) return new glacial_advance_t          ( this, options_str );
   if ( name == "horn_of_winter"           ) return new horn_of_winter_t           ( this, options_str );
   if ( name == "howling_blast"            ) return new howling_blast_t            ( this, options_str );
-  if ( name == "mind_freeze"              ) return new mind_freeze_t              ( this, options_str );
+  if ( name == "hypothermic_presence"     ) return new hypothermic_presence_t     ( this, options_str );
   if ( name == "obliterate"               ) return new obliterate_t               ( this, options_str );
   if ( name == "pillar_of_frost"          ) return new pillar_of_frost_t          ( this, options_str );
   if ( name == "remorseless_winter"       ) return new remorseless_winter_t       ( this, options_str );
@@ -7900,7 +7926,7 @@ void death_knight_t::init_spells()
   talent.frostscythe          = find_talent_spell( "Frostscythe" );
 
   talent.gathering_storm      = find_talent_spell( "Gathering Storm" );
-  talent.hypothermic_presence = find_talent_spell( "Hypothermic Presence" ); // NYI
+  talent.hypothermic_presence = find_talent_spell( "Hypothermic Presence" );
   talent.glacial_advance      = find_talent_spell( "Glacial Advance" );
 
   talent.icecap               = find_talent_spell( "Icecap" );
@@ -8655,6 +8681,9 @@ void death_knight_t::create_buffs()
   buffs.gathering_storm = make_buff( this, "gathering_storm", find_spell( 211805 ) )
         -> set_trigger_spell( talent.gathering_storm )
         -> set_default_value( find_spell( 211805 ) -> effectN( 1 ).percent() );
+
+  buffs.hypothermic_presence = make_buff( this, "hypothetic_presence", talent.hypothermic_presence )
+        -> set_default_value_from_effect( 1 );
 
   buffs.icy_talons = make_buff( this, "icy_talons", talent.icy_talons -> effectN( 1 ).trigger() )
         -> add_invalidate( CACHE_ATTACK_SPEED )
