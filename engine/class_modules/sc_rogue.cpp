@@ -4811,8 +4811,16 @@ struct serrated_bone_spike_t : public rogue_attack_t
   serrated_bone_spike_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ) :
     rogue_attack_t( name, p, p->covenant.serrated_bone_spike, options_str )
   {
+    // Combo Point generation is in a secondary spell due to scripting logic
+    // TOCHECK: Still not affected by Shadow Blades on beta
+    affected_by.broadside_cp = true;
+    energize_type = action_energize::ON_HIT;
+    energize_resource = RESOURCE_COMBO_POINT;
+    energize_amount = p->find_spell( 328548 )->effectN( 1 ).base_value();
+
     serrated_bone_spike_dot = p->get_background_action<serrated_bone_spike_dot_t>( "serrated_bone_spike_dot" );
     serrated_bone_spike_shatter = p->get_background_action<serrated_bone_spike_shatter_t>( "serrated_bone_spike_shatter" );
+    
     add_child( serrated_bone_spike_dot );
     add_child( serrated_bone_spike_shatter );
     if ( serrated_bone_spike_dot->sudden_fractures )
@@ -4826,7 +4834,13 @@ struct serrated_bone_spike_t : public rogue_attack_t
     rogue_attack_t::execute();
 
     unsigned active_dots = p()->get_active_dots( serrated_bone_spike_dot->internal_id );
-    
+    if ( active_dots > 0 )
+    {
+      // Bonus CP gain includes the primary target DoT
+      trigger_combo_point_gain( active_dots, p()->gains.serrated_bone_spike );
+    }
+
+    // Shatter damage does not include the primary target DoT
     if ( !td( target )->dots.serrated_bone_spike->is_ticking() )
     {
       serrated_bone_spike_dot->set_target( target );
@@ -4847,8 +4861,6 @@ struct serrated_bone_spike_t : public rogue_attack_t
         serrated_bone_spike_shatter->execute();
       }
     }
-
-    trigger_combo_point_gain( active_dots + 1, p()->gains.serrated_bone_spike );
   }
 };
 
@@ -7001,7 +7013,7 @@ void rogue_t::init_action_list()
     cds -> add_action( this, "Blade Flurry", "if=spell_targets>=2&!buff.blade_flurry.up&(!raid_event.adds.exists|raid_event.adds.remains>8|raid_event.adds.in>(2-cooldown.blade_flurry.charges_fractional)*25)", "Blade Flurry on 2+ enemies. With adds: Use if they stay for 8+ seconds or if your next charge will be ready in time for the next wave." );
     cds -> add_action( this, "Blade Flurry", "if=spell_targets=1&raid_event.adds.in>(2-cooldown.blade_flurry.charges_fractional)*25", "Blade Flurry on 1T if your next charge will be ready in time for the next wave." );
     cds -> add_talent( this, "Ghostly Strike", "if=combo_points.deficit>=1+buff.broadside.up" );
-    cds -> add_talent( this, "Killing Spree", "if=variable.blade_flurry_sync&spell_targets.blade_flurry>1&energy.time_to_max>2" );
+    cds -> add_talent( this, "Killing Spree", "if=variable.blade_flurry_sync&energy.time_to_max>2" );
     cds -> add_talent( this, "Blade Rush", "if=variable.blade_flurry_sync&energy.time_to_max>2" );
     cds -> add_action( this, "Vanish", "if=!stealthed.all&variable.ambush_condition", "Using Vanish/Ambush is only a very tiny increase, so in reality, you're absolutely fine to use it as a utility spell." );
     cds -> add_talent( this, "Dreadblades", "if=!stealthed.all&combo_points<=1" );
@@ -7992,7 +8004,7 @@ void rogue_t::init_gains()
   gains.dashing_scoundrel        = get_gain( "Dashing Scoundrel"        );
   gains.the_rotten               = get_gain( "The Rotten"               );
   gains.deathly_shadows          = get_gain( "Deathly Shadows"          );
-  gains.serrated_bone_spike      = get_gain( "Serrated Bone Spike"      );
+  gains.serrated_bone_spike      = get_gain( "Serrated Bone Spike (DoT)");
   gains.dreadblades              = get_gain( "Dreadblades"              );
   gains.premeditation            = get_gain( "Premeditation"            );
 }
