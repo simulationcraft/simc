@@ -45,15 +45,6 @@ struct lexer_t
     return false;
   }
 
-  bool match( util::string_view str, int consume_mod = 0 )
-  {
-    if ( util::str_prefix_ci( input.substr( current_len ), str ) ) {
-      current_len += ( str.size() + consume_mod );
-      return true;
-    }
-    return false;
-  }
-
   token_t yield_token( token_e type )
   {
     token_t token;
@@ -81,12 +72,6 @@ struct lexer_t
       }
       return yield_token( TOK_NUM );
     }
-
-    // special case floor & ceil "pseudo-functions"
-    if ( lowercase( ch ) == 'f' && match( "loor(", -1 ) )
-      return yield_token( TOK_FLOOR );
-    if ( lowercase( ch ) == 'c' && match( "eil(", -1 ) )
-      return yield_token( TOK_CEIL );
 
     // "strings" (identifiers, really)
     if ( is_alpha( ch ) ) {
@@ -1042,6 +1027,15 @@ std::vector<expr_token_t> parse_tokens( action_t* action, util::string_view expr
       token.type = TOK_SUB;
     if ( token.type == TOK_PLUS && prev_is_left_side )
       token.type = TOK_ADD;
+
+    // lexer never produces FLOOR/CEIL "pseudo-functions", match them here
+    if ( token.type == TOK_LPAR && prev_token == TOK_STR )
+    {
+      if ( util::str_compare_ci( tokens.back().label, "floor" ) )
+        tokens.back().type = TOK_FLOOR;
+      else if ( util::str_compare_ci( tokens.back().label, "ceil" ) )
+        tokens.back().type = TOK_CEIL;
+    }
 
     // optimization: fold minus followed by a number together into a single number token
     if ( token.type == TOK_NUM && prev_token == TOK_MINUS )
