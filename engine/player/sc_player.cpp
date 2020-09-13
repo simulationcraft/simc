@@ -12967,9 +12967,6 @@ double player_t::get_ground_aoe_distance(const action_state_t& a) const
 
 void player_t::init_distance_targeting()
 {
-  if (!sim->distance_targeting_enabled)
-    return;
-
   if (default_x_position == std::numeric_limits<decltype(default_x_position)>::lowest())
   {
     default_x_position = -1 * base.distance;
