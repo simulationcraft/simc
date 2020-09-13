@@ -4,6 +4,8 @@
 // ==========================================================================
 #include "pet_spawner.hpp"
 
+#include "sim/sc_expressions.hpp"
+
 namespace
 {
 template <typename T>
