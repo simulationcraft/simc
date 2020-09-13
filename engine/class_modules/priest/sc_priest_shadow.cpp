@@ -1343,6 +1343,7 @@ struct shadow_crash_t final : public priest_spell_t
   bool target_ready( player_t* candidate_target ) override
   {
     auto effective_min_range = data().min_range() - data().effectN( 1 ).radius();
+    sim->print_debug( "Shadow Crash eval: {} < {}", player->get_player_distance( *candidate_target ), effective_min_range );
     if ( player->get_player_distance( *candidate_target ) < effective_min_range )
     {
       return false;
@@ -2406,7 +2407,7 @@ void priest_t::generate_apl_shadow()
                     "the_void.enabled|(talent.legacy_of_the_void.enabled&buff.voidform.down))",
                     "Don't use Devouring Plague if you can get into Voidform instead, or if Searing Nightmare is "
                     "talented and will hit enough targets." );
-  main->add_action( this, "Shadow Word: Death", "target_if=target.health.pct<20",
+  main->add_action( this, "Shadow Word: Death", "target_if=target.health.pct<20|(pet.fiend.active&runeforge.shadowflame_prism.equipped)",
                     "Use Shadow Word: Death if the target is about to die." );
   main->add_talent( this, "Surrender to Madness", "target_if=target.time_to_die<25&buff.voidform.down",
                     "Use Surrender to Madness on a target that is going to die at the right time." );

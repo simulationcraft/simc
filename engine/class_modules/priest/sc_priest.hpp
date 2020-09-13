@@ -998,11 +998,12 @@ struct shadowflame_rift_t final : public priest_pet_spell_t
 // ==========================================================================
 struct shadowflame_prism_t final : public priest_pet_spell_t
 {
-  double duration;
+  timespan_t duration;
 
   shadowflame_prism_t( base_fiend_pet_t& p )
     : priest_pet_spell_t( "shadowflame_prism", &p, p.o().find_spell( 336143 ) ),
-      duration( as<double>( data().effectN( 3 ).base_value() ) + 0.5 )  // This 0.5 is hardcoded in spell data
+      duration( timespan_t::from_seconds( as<double>( data().effectN( 3 ).base_value() ) +
+                                          0.5 ) )  // This 0.5 is hardcoded in spell data
   {
     background = true;
 
@@ -1014,12 +1015,12 @@ struct shadowflame_prism_t final : public priest_pet_spell_t
   {
     priest_pet_spell_t::execute();
 
-    auto current_pet = p().o().talents.mindbender->ok() ? p().o().pets.mindbender : p().o().pets.shadowfiend;
+    auto current_pet = p().o().get_current_main_pet();
 
     if ( !current_pet->is_sleeping() )
     {
       auto remaining_duration = current_pet->expiration->remains();
-      auto new_duration       = remaining_duration + timespan_t::from_seconds( duration );
+      auto new_duration       = remaining_duration + duration;
       sim->print_debug( "Increasing {} duration by {}, new duration is {} up from {}.", current_pet->full_name_str,
                         duration, new_duration, remaining_duration );
       current_pet->expiration->reschedule( new_duration );

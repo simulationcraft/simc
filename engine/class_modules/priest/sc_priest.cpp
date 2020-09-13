@@ -2110,10 +2110,10 @@ void priest_t::arise()
 void priest_t::trigger_shadowflame_prism( player_t* target )
 {
   auto current_pet = get_current_main_pet();
-  assert( current_pet->shadowflame_prism );
-
+  assert( current_pet );
   if ( !current_pet->is_sleeping() )
   {
+    assert( current_pet->shadowflame_prism );
     current_pet->shadowflame_prism->set_target( target );
     current_pet->shadowflame_prism->execute();
   }
