@@ -3879,10 +3879,14 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, const play
       p.azerite->generate_report( os );
     }
 
-    if (p.covenant )
+    // Covenant, Soulbinds, and Conduits
+    if ( p.covenant )
     {
       p.covenant->generate_report( os );
     }
+
+    // Runeforge Legendaries
+    runeforge::generate_report( p, os );
 
     // Professions
     if ( !p.professions_str.empty() )
