@@ -2370,12 +2370,12 @@ void priest_t::generate_apl_shadow()
   cds->add_action( this, covenant.mindgames, "Mindgames", "if=insanity<90&!buff.voidform.up" );
   cds->add_action( this, covenant.unholy_nova, "Unholy Nova", "if=raid_event.adds.in>50" );
   cds->add_action( this, covenant.boon_of_the_ascended, "Boon of the Ascended",
-                   "if=!buff.voidform.up&!cooldown.void_eruption.up" );
+                   "if=!buff.voidform.up&!cooldown.void_eruption.up&spell_targets.mind_sear>1&!talent.searing_nightmare.enabled|(buff.voidform.up&spell_targets.mind_sear<2&!talent.searing_nightmare.enabled)|(buff.voidform.up&talent.searing_nightmare.enabled)" );
   cds->add_call_action_list( essences );
   cds->add_action( "use_items", "Default fallback for usable items: Use on cooldown." );
 
-  boon->add_action( this, covenant.boon_of_the_ascended, "ascended_blast" );
-  boon->add_action( this, covenant.boon_of_the_ascended, "ascended_nova", "if=spell_targets.ascended_nova>1" );
+  boon->add_action( this, covenant.boon_of_the_ascended, "ascended_blast", "if=spell_targets.mind_sear<=3" );
+  boon->add_action( this, covenant.boon_of_the_ascended, "ascended_nova", "if=(spell_targets.mind_sear>2&talent.searing_nightmare.enabled|(spell_targets.mind_sear>1&!talent.searing_nightmare.enabled))&spell_targets.ascended_nova>1" );
 
   // single APL
   main->add_call_action_list( this, covenant.boon_of_the_ascended, boon, "if=buff.boon_of_the_ascended.up" );
