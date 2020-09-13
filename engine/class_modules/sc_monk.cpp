@@ -1486,7 +1486,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
     {
       sef_melee_attack_t::impact( state );
 
-      if ( result_is_hit( state->result ) && o()->spec.spinning_crane_kick_2_ww )
+      if ( result_is_hit( state->result ) && o()->spec.spinning_crane_kick_2_ww->ok() )
         o()->trigger_mark_of_the_crane( state );
     }
   };
@@ -1506,7 +1506,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
 
       if ( result_is_hit( state->result ) )
       {
-        if ( o()->spec.spinning_crane_kick_2_ww )
+        if ( o()->spec.spinning_crane_kick_2_ww->ok() )
           o()->trigger_mark_of_the_crane( state );
 
         if ( p()->buff.bok_proc_sef->up() )
@@ -1549,10 +1549,10 @@ struct storm_earth_and_fire_pet_t : public pet_t
 
       if ( result_is_hit( state->result ) )
       {
-        if ( o()->spec.combat_conditioning )
+        if ( o()->spec.combat_conditioning->ok() )
           state->target->debuffs.mortal_wounds->trigger();
 
-        if ( o()->spec.spinning_crane_kick_2_ww )
+        if ( o()->spec.spinning_crane_kick_2_ww->ok() )
           o()->trigger_mark_of_the_crane( state );
       }
     }
@@ -1745,7 +1745,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
 
       if ( result_is_hit( state->result ) )
       {
-        if ( o()->spec.spinning_crane_kick_2_ww )
+        if ( o()->spec.spinning_crane_kick_2_ww->ok() )
           o()->trigger_mark_of_the_crane( state );
       }
     }
@@ -2910,7 +2910,7 @@ public:
         if ( p()->talent.inner_strength->ok() )
           p()->buff.inner_stength->trigger( (int)ab::cost() );
 
-        if ( p()->talent.spirtual_focus )
+        if ( p()->talent.spirtual_focus->ok() )
         {
           p()->spiritual_focus_count += ab::cost();
 
@@ -3150,7 +3150,7 @@ struct monk_heal_t : public monk_action_t<heal_t>
 
       if ( td( t )->dots.enveloping_mist->is_ticking() )
       {
-        if ( p()->talent.mist_wrap )
+        if ( p()->talent.mist_wrap->ok() )
           am *= 1.0 + p()->spec.enveloping_mist->effectN( 2 ).percent() + p()->talent.mist_wrap->effectN( 2 ).percent();
         else
           am *= 1.0 + p()->spec.enveloping_mist->effectN( 2 ).percent();
@@ -3865,7 +3865,7 @@ struct tiger_palm_t : public monk_melee_attack_t
       case MONK_WINDWALKER:
       {
         // Combo Breaker calculation
-        if ( p()->spec.combo_breaker && p()->buff.bok_proc->trigger() )
+        if ( p()->spec.combo_breaker->ok() && p()->buff.bok_proc->trigger() )
         {
           p()->proc.bok_proc->occur();
 
@@ -3883,7 +3883,7 @@ struct tiger_palm_t : public monk_melee_attack_t
           p()->cooldown.blackout_kick->adjust(
               timespan_t::from_seconds( -1 * p()->spec.tiger_palm->effectN( 3 ).base_value() ) );
 
-        if ( p()->talent.spitfire )
+        if ( p()->talent.spitfire->ok() )
         {
           if ( rng().roll( p()->talent.spitfire->proc_chance() ) )
           {
@@ -3912,7 +3912,7 @@ struct tiger_palm_t : public monk_melee_attack_t
     monk_melee_attack_t::impact( s );
 
     // Apply Mark of the Crane
-    if ( p()->specialization() == MONK_WINDWALKER && result_is_hit( s->result ) && p()->spec.spinning_crane_kick_2_ww )
+    if ( p()->specialization() == MONK_WINDWALKER && result_is_hit( s->result ) && p()->spec.spinning_crane_kick_2_ww->ok() )
       p()->trigger_mark_of_the_crane( s );
 
     if ( p()->legendary.keefers_skyreach->ok() )
@@ -3979,7 +3979,7 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
     double am = monk_melee_attack_t::action_multiplier();
 
     // Rank 2 seems to be applied after Bonus Damage. Hence the reason for being in the Action Multiplier
-//    if ( p()->spec.rising_sun_kick_2 )
+//    if ( p()->spec.rising_sun_kick_2->ok() )
 //      am *= 1 + p()->spec.rising_sun_kick_2->effectN( 1 ).percent();
 
     return am;
@@ -4023,7 +4023,7 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
       {
         if ( p()->buff.thunder_focus_tea->up() )
         {
-          if ( p()->spec.thunder_focus_tea_2 )
+          if ( p()->spec.thunder_focus_tea_2->ok() )
             p()->cooldown.rising_sun_kick->adjust( p()->spec.thunder_focus_tea_2->effectN( 1 ).time_value() );
 
           if ( p()->azerite.secret_infusion.ok() )
@@ -4069,7 +4069,7 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
           p()->cooldown.fists_of_fury->adjust( -1 * p()->legendary.xuens_treasure->effectN( 2 ).time_value() );
 
 		// Apply Mark of the Crane
-		if ( p()->spec.spinning_crane_kick_2_ww )
+		if ( p()->spec.spinning_crane_kick_2_ww->ok() )
           p()->trigger_mark_of_the_crane( s );
       }
 
@@ -4389,7 +4389,7 @@ struct blackout_kick_t : public monk_melee_attack_t
     {
       case MONK_BREWMASTER:
       {
-        if ( p()->mastery.elusive_brawler )
+        if ( p()->mastery.elusive_brawler->ok() )
           p()->buff.elusive_brawler->trigger();
 
         if ( p()->talent.blackout_combo->ok() )
@@ -4408,7 +4408,7 @@ struct blackout_kick_t : public monk_melee_attack_t
       }
       case MONK_WINDWALKER:
       {
-        if ( p()->spec.blackout_kick_3 )
+        if ( p()->spec.blackout_kick_3->ok() )
         {
           // Reduce the cooldown of Rising Sun Kick, Fists of Fury and Whirling Dragon Punch
           timespan_t cd_reduction = -1 * p()->spec.blackout_kick->effectN( 3 ).time_value();
@@ -4441,10 +4441,10 @@ struct blackout_kick_t : public monk_melee_attack_t
 
     if ( result_is_hit( s->result ) )
     {
-      if ( p()->specialization() == MONK_WINDWALKER && p()->spec.spinning_crane_kick_2_ww )
+      if ( p()->specialization() == MONK_WINDWALKER && p()->spec.spinning_crane_kick_2_ww->ok() )
         p()->trigger_mark_of_the_crane( s );
 
-      if ( p()->mastery.elusive_brawler )
+      if ( p()->mastery.elusive_brawler->ok() )
       {
         if ( p()->azerite.elusive_footwork.ok() && s->result == RESULT_CRIT )
           p()->buff.elusive_brawler->trigger(
@@ -4674,7 +4674,7 @@ struct sck_tick_action_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::execute();
 
-    if ( p()->spec.spinning_crane_kick_2_brm )
+    if ( p()->spec.spinning_crane_kick_2_brm->ok() )
       trigger_shuffle( p()->spec.spinning_crane_kick_2_brm->effectN( 1 ).base_value() );
   }
 
@@ -5085,7 +5085,7 @@ struct fist_of_the_white_tiger_t : public monk_melee_attack_t
     monk_melee_attack_t::impact( s );
 
     // Apply Mark of the Crane
-    if ( result_is_hit( s->result ) && p()->spec.spinning_crane_kick_2_ww )
+    if ( result_is_hit( s->result ) && p()->spec.spinning_crane_kick_2_ww->ok() )
       p()->trigger_mark_of_the_crane( s );
   }
 };
@@ -5319,7 +5319,7 @@ struct touch_of_death_t : public monk_melee_attack_t
 
   bool ready() override
   {
-    if ( p()->spec.touch_of_death_2 &&
+    if ( p()->spec.touch_of_death_2->ok() &&
          ( target->health_percentage() < p()->spec.touch_of_death->effectN( 2 ).base_value() ) )
       return monk_melee_attack_t::ready();
     if ( ( target->true_level <= p()->true_level ) &&
@@ -5334,7 +5334,7 @@ struct touch_of_death_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::execute();
 
-    if ( p()->specialization() == MONK_MISTWEAVER && p()->spec.touch_of_death_3_mw )
+    if ( p()->specialization() == MONK_MISTWEAVER && p()->spec.touch_of_death_3_mw->ok() )
       p()->buff.touch_of_death->trigger();
   }
 
@@ -5359,7 +5359,7 @@ struct touch_of_death_t : public monk_melee_attack_t
     s->result_total = s->result_raw = amount;
     monk_melee_attack_t::impact( s );
 
-    if ( p()->spec.touch_of_death_3_brm )
+    if ( p()->spec.touch_of_death_3_brm->ok() )
       p()->partial_clear_stagger_amount( amount * p()->spec.touch_of_death_3_brm->effectN( 1 ).percent() );
   }
 };
@@ -5511,8 +5511,8 @@ struct spear_hand_strike_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::execute();
 
-    if ( p()->level() <= 115 )
-      p()->trigger_sephuzs_secret( execute_state, MECHANIC_INTERRUPT );
+//    if ( p()->level() <= 50 )
+//      p()->trigger_sephuzs_secret( execute_state, MECHANIC_INTERRUPT );
   }
 };
 
@@ -5533,8 +5533,8 @@ struct leg_sweep_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::execute();
 
-    if ( p()->level() <= 115 )
-      p()->trigger_sephuzs_secret( execute_state, MECHANIC_STUN );
+//    if ( p()->level() <= 50 )
+//      p()->trigger_sephuzs_secret( execute_state, MECHANIC_STUN );
   }
 };
 
@@ -5555,8 +5555,8 @@ struct paralysis_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::execute();
 
-    if ( p()->level() <= 115 )
-      p()->trigger_sephuzs_secret( execute_state, MECHANIC_INCAPACITATE );
+//    if ( p()->level() <= 50 )
+//      p()->trigger_sephuzs_secret( execute_state, MECHANIC_INCAPACITATE );
   }
 };
 
@@ -6343,7 +6343,7 @@ struct purifying_brew_t : public monk_spell_t
       p()->buff.fit_to_burst->trigger( p()->buff.fit_to_burst->max_stack() );
     }
 
-    if ( p()->spec.celestial_brew_2 )
+    if ( p()->spec.celestial_brew_2->ok() )
     {
       double count = 1;
       for ( auto&& buff : { p()->buff.light_stagger, p()->buff.moderate_stagger, p()->buff.heavy_stagger } )
@@ -6607,7 +6607,7 @@ struct enveloping_mist_t : public monk_heal_t
   {
     monk_heal_t::execute();
 
-    if ( p()->talent.lifecycles )
+    if ( p()->talent.lifecycles->ok() )
     {
       if ( p()->buff.lifecycles_enveloping_mist->up() )
         p()->buff.lifecycles_enveloping_mist->expire();
@@ -6706,10 +6706,10 @@ struct vivify_t : public monk_heal_t
     if ( p()->buff.uplifting_trance->up() )
       am *= 1 + p()->buff.uplifting_trance->value();
 
-    if ( p()->spec.vivify_2_brm )
+    if ( p()->spec.vivify_2_brm->ok() )
       am *= 1 + p()->spec.vivify_2_brm->effectN( 1 ).percent();
 
-    if ( p()->spec.vivify_2_ww )
+    if ( p()->spec.vivify_2_ww->ok() )
       am *= 1 + p()->spec.vivify_2_ww->effectN( 1 ).percent();
 
     return am;
@@ -6719,7 +6719,7 @@ struct vivify_t : public monk_heal_t
   {
     double c = monk_heal_t::cost();
 
-    if ( p()->buff.thunder_focus_tea->check() && p()->spec.thunder_focus_tea_2 )
+    if ( p()->buff.thunder_focus_tea->check() && p()->spec.thunder_focus_tea_2->ok() )
       c *= 1 + p()->spec.thunder_focus_tea_2->effectN( 2 ).percent();  // saved as -100
 
     if ( p()->buff.lifecycles_vivify->check() )
@@ -6751,7 +6751,7 @@ struct vivify_t : public monk_heal_t
     if ( p()->buff.uplifting_trance->up() )
       p()->buff.uplifting_trance->expire();
 
-    if ( p()->mastery.gust_of_mists )
+    if ( p()->mastery.gust_of_mists->ok() )
         mastery->execute();
   }
 };
@@ -6934,7 +6934,7 @@ struct expel_harm_t : public monk_heal_t
       niuzao->execute();
     }
 
-    if ( p()->spec.expel_harm_2_ww )
+    if ( p()->spec.expel_harm_2_ww->ok() )
     {
       if ( p()->azerite.conflict_and_strife.is_major() )
       {
@@ -6965,7 +6965,7 @@ struct expel_harm_t : public monk_heal_t
     if ( p()->azerite.conflict_and_strife.is_major() && p()->specialization() == MONK_WINDWALKER )
       result *= 1 + p()->spec.reverse_harm->effectN( 1 ).percent();
 
-    if ( p()->buff.gift_of_the_ox->up() && p()->spec.expel_harm_2_brm )
+    if ( p()->buff.gift_of_the_ox->up() && p()->spec.expel_harm_2_brm->ok() )
     {
       double goto_heal = p()->passives.gift_of_the_ox_heal->effectN( 1 ).ap_coeff();
       goto_heal *= p()->buff.gift_of_the_ox->stack();
