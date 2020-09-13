@@ -1580,6 +1580,32 @@ void priest_t::trigger_wrathful_faerie()
 
 void priest_t::init_base_stats()
 {
+  if ( base.distance < 1 )
+  {
+    if ( specialization() == PRIEST_DISCIPLINE || specialization() == PRIEST_HOLY )
+    {
+      // Range Based on Talents
+      if ( talents.divine_star->ok() )
+      {
+        base.distance = 24.0;
+      }
+      else if ( talents.halo->ok() )
+      {
+        base.distance = 27.0;
+      }
+      else
+      {
+        base.distance = 27.0;
+      }
+    }
+    else if ( specialization() == PRIEST_SHADOW )
+    {
+      // Need to be 8 yards away for Ascended Nova
+      // Need to be 10 yards - SC radius for Shadow Crash
+      base.distance = 8.0;
+    }
+  }
+
   base_t::init_base_stats();
 
   base.attack_power_per_strength = 0.0;

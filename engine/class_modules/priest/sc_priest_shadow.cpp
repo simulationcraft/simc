@@ -1343,19 +1343,9 @@ struct shadow_crash_t final : public priest_spell_t
   bool target_ready( player_t* candidate_target ) override
   {
     auto effective_min_range = data().min_range() - data().effectN( 1 ).radius();
-    if ( sim->distance_targeting_enabled )
+    if ( player->get_player_distance( *candidate_target ) < effective_min_range )
     {
-      if ( player->get_player_distance( *candidate_target ) < effective_min_range )
-      {
-        return false;
-      }
-    }
-    else
-    {
-      if ( priest().base.distance < effective_min_range )
-      {
-        return false;
-      }
+      return false;
     }
 
     return priest_spell_t::target_ready( candidate_target );
@@ -2190,13 +2180,6 @@ void priest_t::init_spells_shadow()
   azerite.thought_harvester      = find_azerite_spell( "Thought Harvester" );
   azerite.torment_of_torments    = find_azerite_spell( "Torment of Torments" );
   azerite.whispers_of_the_damned = find_azerite_spell( "Whispers of the Damned" );
-
-  // Need to be 8 yards away for Ascended Nova
-  // Need to be 10 yards - SC radius for Shadow Crash
-  if ( specialization() == PRIEST_SHADOW )
-  {
-    base.distance = 8.0;
-  }
 }
 
 action_t* priest_t::create_action_shadow( util::string_view name, util::string_view options_str )
