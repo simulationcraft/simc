@@ -246,6 +246,7 @@ public:
     buff_t* combo_master;
     buff_t* combo_strikes;
     buff_t* dance_of_chiji;
+    buff_t* dance_of_chiji_hidden; // Used for trigger DoCJ ticks
     buff_t* dizzying_kicks;
     buff_t* flying_serpent_kick_movement;
     buff_t* hit_combo;
@@ -259,6 +260,7 @@ public:
 
     // Azerite Trait
     buff_t* dance_of_chiji_azerite;
+    buff_t* dance_of_chiji_azerite_hidden; // Used for trigger DoCJ ticks
     buff_t* fit_to_burst;
     buff_t* fury_of_xuen_stacks;
     stat_buff_t* fury_of_xuen_haste;
@@ -4651,7 +4653,7 @@ struct sck_tick_action_t : public monk_melee_attack_t
 
     am *= 1 + ( mark_of_the_crane_counter() * motc_multiplier );
 
-    if ( p()->buff.dance_of_chiji->up() )
+    if ( p()->buff.dance_of_chiji_hidden->up() )
       am *= p()->talent.dance_of_chiji->effectN( 1 ).percent();
 
     return am;
@@ -4661,7 +4663,7 @@ struct sck_tick_action_t : public monk_melee_attack_t
   {
     double b = monk_melee_attack_t::bonus_da( s );
 
-    if ( p()->buff.dance_of_chiji_azerite->up() )
+    if ( p()->buff.dance_of_chiji_azerite_hidden->up() )
       // The amount return is the full amount. We need to divide this by 4 ticks to get the correct per-tick amount
       b += p()->azerite.dance_of_chiji.value() / 4;
 
@@ -4777,6 +4779,18 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
 
     p()->buff.spinning_crane_kick->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, composite_dot_duration( execute_state ) );
 
+    if ( p()->buff.dance_of_chiji->up() )
+    {
+      p()->buff.dance_of_chiji->expire();
+      p()->buff.dance_of_chiji_hidden->trigger();
+    }
+
+    if ( p()->buff.dance_of_chiji_azerite->up() )
+    {
+      p()->buff.dance_of_chiji_azerite->expire();
+      p()->buff.dance_of_chiji_azerite_hidden->trigger();
+    }
+
     if ( p()->buff.chi_energy->up() )
       chi_x->execute();
 
@@ -4787,12 +4801,6 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
   void last_tick( dot_t* dot ) override
   {
     monk_melee_attack_t::last_tick( dot );
-
-    if ( p()->buff.dance_of_chiji->up() )
-      p()->buff.dance_of_chiji->expire();
-
-    if ( p()->buff.dance_of_chiji_azerite->up() )
-      p()->buff.dance_of_chiji_azerite->expire();
   }
 };
 
@@ -8655,6 +8663,12 @@ void monk_t::create_buffs()
                             ->set_trigger_spell( find_spell( 325201 ) )
                             ->set_default_value( find_spell( 325202 )->effectN( 1 ).base_value() );
 
+  buff.dance_of_chiji_hidden = make_buff( this, "dance_of_chiji", find_spell( 325202 ) )
+                                   ->set_quiet( true )
+                                   ->set_duration( timespan_t::from_seconds( 1.5 ) )
+                                   ->set_trigger_spell( find_spell( 325201 ) )
+                                   ->set_default_value( find_spell( 325202 )->effectN( 1 ).base_value() );
+
   buff.flying_serpent_kick_movement = make_buff( this, "flying_serpent_kick_movement" );  // find_spell( 115057 )
 
   buff.hit_combo = make_buff( this, "hit_combo", passives.hit_combo )
@@ -8715,6 +8729,12 @@ void monk_t::create_buffs()
   buff.dance_of_chiji_azerite = make_buff( this, "dance_of_chiji_azerite", find_spell( 286587 ) )
                                     ->set_trigger_spell( find_spell( 286586 ) )
                                     ->set_default_value( find_spell( 286587 )->effectN( 3 ).base_value() );
+
+  buff.dance_of_chiji_azerite_hidden = make_buff( this, "dance_of_chiji_azerite", find_spell( 286587 ) )
+                                           ->set_quiet( true )
+                                           ->set_duration( timespan_t::from_seconds( 1.5 ) )
+                                           ->set_trigger_spell( find_spell( 286586 ) )
+                                           ->set_default_value( find_spell( 286587 )->effectN( 3 ).base_value() );
 
   buff.fury_of_xuen_stacks = make_buff( this, "fury_of_xuen_stacks", passives.fury_of_xuen_stacking_buff )
                                  ->set_default_value_from_effect( 3, 0.0001 );
