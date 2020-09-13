@@ -2040,7 +2040,7 @@ void priest_t::trigger_shadowflame_prism( player_t* target )
 
   if ( !current_pet->is_sleeping() )
   {
-    // current_pet->shadowflame_prism->set_target( target );
+    current_pet->shadowflame_prism->set_target( target );
     current_pet->shadowflame_prism->execute();
   }
 }
