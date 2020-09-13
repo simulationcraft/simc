@@ -989,6 +989,7 @@ struct shadowflame_rift_t final : public priest_pet_spell_t
 {
   shadowflame_rift_t( base_fiend_pet_t& p ) : priest_pet_spell_t( "shadowflame_rift", &p, p.o().find_spell( 344748 ) )
   {
+    background = true;
   }
 };
 
@@ -997,11 +998,11 @@ struct shadowflame_rift_t final : public priest_pet_spell_t
 // ==========================================================================
 struct shadowflame_prism_t final : public priest_pet_spell_t
 {
-  int duration;
+  double duration;
 
   shadowflame_prism_t( base_fiend_pet_t& p )
     : priest_pet_spell_t( "shadowflame_prism", &p, p.o().find_spell( 336143 ) ),
-      duration( data().effectN( 3 ).base_value() + 0.5 )  // This 0.5 is hardcoded in spell data
+      duration( as<double>( data().effectN( 3 ).base_value() ) + 0.5 )  // This 0.5 is hardcoded in spell data
   {
     background = true;
 
@@ -1017,16 +1018,12 @@ struct shadowflame_prism_t final : public priest_pet_spell_t
 
     if ( !current_pet->is_sleeping() )
     {
-      auto new_duration = current_pet->expiration->remains();
-      new_duration += timespan_t::from_seconds( duration );
+      auto remaining_duration = current_pet->expiration->remains();
+      auto new_duration       = remaining_duration + timespan_t::from_seconds( duration );
+      sim->print_debug( "Increasing {} duration by {}, new duration is {} up from {}.", current_pet->full_name_str,
+                        duration, new_duration, remaining_duration );
       current_pet->expiration->reschedule( new_duration );
     }
-  }
-
-  void trigger( player_t* target )
-  {
-    set_target( target );
-    execute();
   }
 };
 }  // namespace actions

@@ -940,6 +940,8 @@ void base_fiend_pet_t::init_action_list()
 void base_fiend_pet_t::init_background_actions()
 {
   priest_pet_t::init_background_actions();
+
+  shadowflame_prism = new fiend::actions::shadowflame_prism_t( *this );
 }
 
 double base_fiend_pet_t::composite_player_multiplier( school_e school ) const
@@ -963,11 +965,6 @@ double base_fiend_pet_t::composite_melee_haste() const
 
 action_t* base_fiend_pet_t::create_action( util::string_view name, const std::string& options_str )
 {
-  if ( name == "shadowflame_prism" )
-  {
-    return new fiend::actions::shadowflame_prism_t( *this );
-  }
-
   return priest_pet_t::create_action( name, options_str );
 }
 }  // namespace fiend
@@ -2039,8 +2036,13 @@ void priest_t::arise()
 void priest_t::trigger_shadowflame_prism( player_t* target )
 {
   auto current_pet = get_current_main_pet();
-  current_pet->shadowflame_prism->set_target( target );
-  current_pet->shadowflame_prism->execute();
+  assert( current_pet->shadowflame_prism );
+
+  if ( !current_pet->is_sleeping() )
+  {
+    // current_pet->shadowflame_prism->set_target( target );
+    current_pet->shadowflame_prism->execute();
+  }
 }
 
 // Legendary Eternal Call to the Void trigger
