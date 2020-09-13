@@ -119,6 +119,7 @@ enum proc_types2
   PROC2_CAST,                   // Any proc_types1 cast finished
   PROC2_CAST_DAMAGE,            // Damaging proc_types1 cast finished
   PROC2_CAST_HEAL,              // Healing proc_types1 cast finished
+  PROC2_CAST_INTERRUPT,         // actions with 'is_interrupt' set to true
   PROC2_TYPE_MAX,
 
   // Pseudo types
@@ -198,6 +199,7 @@ enum proc_flag2
   PF2_CAST                    = 1 << PROC2_CAST,
   PF2_CAST_DAMAGE             = 1 << PROC2_CAST_DAMAGE,
   PF2_CAST_HEAL               = 1 << PROC2_CAST_HEAL,
+  PF2_CAST_INTERRUPT          = 1 << PROC2_CAST_INTERRUPT,
 
   // Pseudo types
   PF2_PERIODIC_HEAL           = 1 << PROC2_PERIODIC_HEAL,
@@ -757,7 +759,7 @@ enum effect_type_t : unsigned {
     E_TALENT_SPEC_COUNT = 161,
     E_TALENT_SPEC_SELECT = 162,
     E_163 = 163,
-    E_164 = 164,
+    E_CANCEL_AURA = 164,
     E_165 = 165,
     E_166 = 166,
     E_167 = 167,
@@ -1076,8 +1078,8 @@ enum effect_subtype_t : unsigned {
     A_265 = 265,
     A_266 = 266,
     A_MOD_IMMUNE_A_APPLY_SCHOOL = 267,
-    A_MOD_ATTACK_POWER_OF_STAT_PERCENT = 268,
-    A_MOD_IGNORE_DAMAGE_REDUCTION_SCHOOL = 269,
+    A_MOD_ARMOR_BY_PRIMARY_STAT_PCT = 268,
+    A_MOD_DAMAGE_TO_CASTER = 269,
     A_MOD_DAMAGE_FROM_CASTER = 270,
     A_MOD_DAMAGE_FROM_CASTER_SPELLS = 271,
     A_MAELSTROM_WEAPON = 272,

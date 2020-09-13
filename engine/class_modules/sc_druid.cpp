@@ -963,6 +963,7 @@ public:
   void init_beast_weapon( weapon_t&, double );
   const spell_data_t* find_affinity_spell( const std::string& ) const;
   specialization_e get_affinity_spec() const;
+  void moving() override;
   void trigger_natures_guardian( const action_state_t* );
   double calculate_expected_max_health() const;
   const spelleffect_data_t* query_aura_effect( const spell_data_t* aura_spell,
@@ -1703,10 +1704,10 @@ struct survival_instincts_buff_t : public druid_buff_t<buff_t>
 struct kindred_empowerment_buff_t : public druid_buff_t<buff_t>
 {
   double pool;
-  double cumul_pool;
+  double partner_pool;
 
   kindred_empowerment_buff_t( druid_t& p )
-    : base_t( p, "kindred_empowerment", p.covenant.kindred_empowerment ), pool( 1.0 ), cumul_pool( 0.0 )
+    : base_t( p, "kindred_empowerment", p.covenant.kindred_empowerment ), pool( 1.0 ), partner_pool( 0.0 )
   {
     set_refresh_behavior( buff_refresh_behavior::DURATION );
   }
@@ -1715,54 +1716,52 @@ struct kindred_empowerment_buff_t : public druid_buff_t<buff_t>
   {
     base_t::expire_override( s, d );
 
-    pool       = 1.0;
-    cumul_pool = 0.0;
+    pool         = 1.0;
+    partner_pool = 1.0;
   }
 
   void add_pool( const action_state_t* s )
   {
     trigger();
 
-    double amount = s->result_amount * p().covenant.kindred_empowerment_energize->effectN( 1 ).percent() *
-                    p().kindred_empowerment_ratio;
+    double partner_amount = s->result_amount * p().covenant.kindred_empowerment_energize->effectN( 1 ).percent();
+    double amount         = partner_amount * p().kindred_empowerment_ratio;
 
-    if ( sim->debug )
-      sim->print_debug( "Kindred Empowerment: Adding {} from {} to pool of {}", amount, s->action->name(), pool );
+    sim->print_debug( "Kindred Empowerment: Adding {} from {} to pool of {}", amount, s->action->name(), pool );
 
+    // since kindred_empowerment_ratio is meant to apply to the pool you RECEIVE and not to the pool you send, don't
+    // apply it to partner_pool, which is meant to represent the damage the other person does.
     pool += amount;
-    cumul_pool += amount;
+    partner_pool += amount;
+
   }
 
   void use_pool( const action_state_t* s )
   {
-    if ( pool <= 1 )  // minimum pool value of 1
+    if ( pool <= 1.0 )  // minimum pool value of 1
       return;
 
-    double amount = std::min( s->result_amount * p().covenant.kindred_empowerment->effectN( 2 ).percent(), pool - 1);
+    double amount = s->result_amount * p().covenant.kindred_empowerment->effectN( 2 ).percent();
 
     if ( amount == 0 )
       return;
 
-    if ( sim->debug )
-      sim->print_debug( "Kindred Empowerment: Using {} from pool of {} on {}", amount, pool, s->action->name() );
+    sim->print_debug( "Kindred Empowerment: Using {} from pool of {} on {}", amount, pool, s->action->name() );
 
     auto damage = p().active.kindred_empowerment;
     damage->set_target( s->target );
-    damage->base_dd_min = damage->base_dd_max = amount;
-    damage->execute();
-
+    damage->base_dd_min = damage->base_dd_max = std::min( amount, pool - 1.0 );
+    damage->schedule_execute();
     pool -= amount;
-  }
 
-  void snapshot()
-  {
-    if ( cumul_pool > 0 )
-    {
-      auto partner = p().active.kindred_empowerment_partner;
-      partner->set_target( p().target );
-      partner->base_dd_min = partner->base_dd_max = cumul_pool;
-      partner->execute();
-    }
+    if ( partner_pool <= 1.0 )
+      return;
+
+    auto partner = p().active.kindred_empowerment_partner;
+    partner->set_target( s->target );
+    partner->base_dd_min = partner->base_dd_max = std::min( amount, partner_pool - 1.0 );
+    partner->schedule_execute();
+    partner_pool -= amount;
   }
 };
 
@@ -2808,33 +2807,6 @@ public:
     : base_t( token, p, s )
   {
     parse_options( options );
-  }
-
-  double composite_da_multiplier( const action_state_t* s ) const override
-  {
-    double da = ab::composite_da_multiplier( s );
-
-    if ( ( ab::id == p()->spec.full_moon->id() || ab::id == p()->spec.half_moon->id() ||
-           ab::id == p()->talent.new_moon->id() ) && p()->buff.eclipse_solar->up() )
-    {
-      da *= 1.0 + p()->cache.mastery_value();
-    }
-
-    return da;
-  }
-
-  double composite_crit_chance() const override
-  {
-    double cc = ab::composite_crit_chance();
-
-    if ( ( ab::id == p()->spec.full_moon->id() || ab::id == p()->spec.half_moon->id() ||
-           ab::id == p()->talent.new_moon->id() ) && p()->buff.balance_of_all_things_nature->up() )
-    {
-      // Use the base_value stored for APL purposes for now until moons are properly whitelisted
-      cc += p()->buff.balance_of_all_things_nature->stack_value() / 100.0;
-    }
-
-    return cc;
   }
 
   double composite_energize_amount( const action_state_t* s ) const override
@@ -5590,7 +5562,7 @@ struct kindred_empowerment_t : public druid_spell_t
   kindred_empowerment_t( druid_t* p, util::string_view n )
     : druid_spell_t( n, p, p->covenant.kindred_empowerment_damage )
   {
-    background = true;
+    background = dual = true;
     may_miss = may_crit = callbacks = false;
     snapshot_flags |= STATE_TGT_MUL_DA;
     update_flags |= STATE_TGT_MUL_DA;
@@ -6403,24 +6375,40 @@ struct prowl_t : public druid_spell_t
   }
 };
 
-// Skull Bash ===============================================================
-
-struct skull_bash_t : public druid_spell_t
+struct druid_interrupt_t : public druid_spell_t
 {
-  skull_bash_t( druid_t* player, const std::string& options_str )
-    : druid_spell_t( "skull_bash", player, player->find_specialization_spell( "Skull Bash" ), options_str )
+  druid_interrupt_t( util::string_view n, druid_t* p, const spell_data_t* s, const std::string& options_str )
+    : druid_spell_t( n, p, s, options_str )
   {
     may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = false;
-    ignore_false_positive = use_off_gcd = true;
+    ignore_false_positive = use_off_gcd = is_interrupt = true;
   }
 
-  bool target_ready( player_t* candidate_target ) override
+  bool target_ready( player_t* t ) override
   {
-    if ( !candidate_target->debuffs.casting || !candidate_target->debuffs.casting->check() )
+    if ( !t->debuffs.casting->check() )
       return false;
 
-    return druid_spell_t::target_ready( candidate_target );
+    return druid_spell_t::target_ready( t );
   }
+};
+
+struct solar_beam_t : public druid_interrupt_t
+{
+  solar_beam_t( druid_t* p, const std::string& options_str )
+    : druid_interrupt_t( "solar_beam", p, p->find_specialization_spell( "Solar Beam" ), options_str )
+  {
+    base_costs[ RESOURCE_MANA ] = 0.0;  // remove mana cost so we don't need to enable mana regen
+  }
+};
+
+// Skull Bash ===============================================================
+
+struct skull_bash_t : public druid_interrupt_t
+{
+  skull_bash_t( druid_t* p, const std::string& options_str )
+    : druid_interrupt_t( "skull_bash", p, p->find_specialization_spell( "Skull Bash" ), options_str )
+  {}
 };
 
 struct wrath_t : public druid_spell_t
@@ -7758,6 +7746,7 @@ action_t* druid_t::create_action( util::string_view name, const std::string& opt
   if ( name == "new_moon"               ) return new               new_moon_t( this, options_str );
   if ( name == "half_moon"              ) return new              half_moon_t( this, options_str );
   if ( name == "full_moon"              ) return new              full_moon_t( this, options_str );
+  if ( name == "solar_beam"             ) return new             solar_beam_t( this, options_str );
   if ( name == "starfall"               ) return new               starfall_t( this, options_str );
   if ( name == "starfire"               ) return new               starfire_t( this, options_str );
   if ( name == "starsurge"              ) return new              starsurge_t( this, options_str );
@@ -8210,7 +8199,7 @@ void druid_t::init_assessors()
         return assessor::CONTINUE;
 
       // TODO: Confirm added damage doesn't add to the pool
-      if ( s_action == active.kindred_empowerment )
+      if ( s_action->id == active.kindred_empowerment->id || s_action->id == active.kindred_empowerment_partner->id )
         return assessor::CONTINUE;
 
       if ( buff.kindred_empowerment_energize->up() )
@@ -8287,8 +8276,12 @@ void druid_t::create_buffs()
     ->set_quiet( true )
     ->set_tick_zero( true )
     ->set_tick_callback( [this]( buff_t*, int, timespan_t ) {
-        resource_gain( RESOURCE_ASTRAL_POWER, talent.natures_balance->effectN( 1 ).resource( RESOURCE_ASTRAL_POWER ),
-                        gain.natures_balance );
+        auto ap = talent.natures_balance->effectN( 1 ).resource( RESOURCE_ASTRAL_POWER );
+
+        if ( sim->target_non_sleeping_list.empty() )
+          ap *= 3.0;  // simulate triple regen when out of combat for 'M+' fight models utilizing invuln
+
+        resource_gain( RESOURCE_ASTRAL_POWER, ap, gain.natures_balance );
       } );
 
   buff.oneths_free_starsurge = make_buff( this, "oneths_clear_vision", find_spell( 339797 ) )
@@ -8305,10 +8298,10 @@ void druid_t::create_buffs()
   buff.solstice = make_buff( this, "solstice", talent.solstice->effectN( 1 ).trigger() );
 
   buff.starfall = make_buff( this, "starfall", spec.starfall )
-    ->apply_affecting_aura( talent.stellar_drift )
     ->set_period( 1_s )
     ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
-    ->set_tick_zero( true );
+    ->set_tick_zero( true )
+    ->apply_affecting_aura( talent.stellar_drift );
 
   buff.starlord = make_buff( this, "starlord", find_spell( 279709 ) )
     ->set_default_value_from_effect_type( A_HASTE_ALL )
@@ -8413,7 +8406,7 @@ void druid_t::create_buffs()
   buff.guardian_of_elune = make_buff( this, "guardian_of_elune", talent.guardian_of_elune->effectN( 1 ).trigger() );
 
   buff.ironfur = make_buff( this, "ironfur", spec.ironfur )
-    ->set_default_value_from_effect_type( A_MOD_ATTACK_POWER_OF_STAT_PERCENT )
+    ->set_default_value_from_effect_type( A_MOD_ARMOR_BY_PRIMARY_STAT_PCT )
     ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
     ->apply_affecting_aura( find_rank_spell( "Ironfur", "Rank 2" ) )
     ->add_invalidate( CACHE_AGILITY )
@@ -8421,7 +8414,7 @@ void druid_t::create_buffs()
 
   buff.pulverize = make_buff( this, "pulverize", talent.pulverize )
     ->set_cooldown( 0_ms )
-    ->set_default_value_from_effect_type( A_MOD_IGNORE_DAMAGE_REDUCTION_SCHOOL )
+    ->set_default_value_from_effect_type( A_MOD_DAMAGE_TO_CASTER )
     ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC );  // TODO: confirm this
 
   buff.savage_combatant = make_buff( this, "savage_combatant", conduit.savage_combatant->effectN( 1 ).trigger() )
@@ -8460,11 +8453,7 @@ void druid_t::create_buffs()
   buff.kindred_empowerment = make_buff<kindred_empowerment_buff_t>( *this );
 
   buff.kindred_empowerment_energize =
-      make_buff( this, "kindred_empowerment_energize", covenant.kindred_empowerment_energize )
-          ->set_stack_change_callback( [this]( buff_t*, int, int new_ ) {
-            if ( !new_ )
-              debug_cast<buffs::kindred_empowerment_buff_t*>( buff.kindred_empowerment )->snapshot();
-          } );
+      make_buff( this, "kindred_empowerment_energize", covenant.kindred_empowerment_energize );
 
   buff.convoke_the_spirits = make_buff( this, "convoke_the_spirits", covenant.night_fae )
     ->set_cooldown( 0_ms )
@@ -10073,6 +10062,12 @@ const spell_data_t* druid_t::find_affinity_spell( const std::string& name ) cons
     return spec_spell;
 
   return spell_data_t::not_found();
+}
+
+void druid_t::moving()
+{
+  if ( ( executing && !executing->usable_moving() ) || ( channeling && !channeling->usable_moving() ) )
+    player_t::interrupt();
 }
 
 // druid_t::trigger_natures_guardian ========================================

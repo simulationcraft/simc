@@ -328,7 +328,7 @@ struct power_infusion_t final : public priest_spell_t
 
     // Trigger PI on the actor only if casting on itself or having the legendary
     if ( priest().options.priest_self_power_infusion || priest().legendary.twins_of_the_sun_priestess->ok() )
-      priest().buffs.power_infusion->trigger();
+      player->buffs.power_infusion->trigger();
   }
 };
 
@@ -763,18 +763,6 @@ struct power_word_shield_t final : public priest_absorb_t
 namespace buffs
 {
 // ==========================================================================
-// Power Infusion
-// ==========================================================================
-struct power_infusion_t final : public priest_buff_t<buff_t>
-{
-  power_infusion_t( priest_t& p ) : base_t( p, "power_infusion", p.find_class_spell( "Power Infusion" ) )
-  {
-    add_invalidate( CACHE_SPELL_HASTE );
-    add_invalidate( CACHE_HASTE );
-  }
-};
-
-// ==========================================================================
 // Fae Guardians - Night Fae Covenant
 // ==========================================================================
 struct fae_guardians_t final : public priest_buff_t<buff_t>
@@ -1039,7 +1027,7 @@ struct void_tendril_mind_flay_t final : public priest_pet_spell_t
     priest_pet_spell_t::impact( s );
 
     p().o().generate_insanity( void_tendril_insanity->effectN( 1 ).base_value(),
-                               p().o().gains.insanity_eternal_call_to_the_void, s->action );
+                               p().o().gains.insanity_eternal_call_to_the_void_mind_flay, s->action );
   }
 };
 
@@ -1048,6 +1036,76 @@ action_t* void_tendril_t::create_action( util::string_view name, const std::stri
   if ( name == "mind_flay" )
   {
     return new void_tendril_mind_flay_t( *this );
+  }
+
+  return priest_pet_t::create_action( name, options_str );
+}
+
+struct void_lasher_mind_sear_t final : public priest_pet_spell_t
+{
+  const spell_data_t* void_lasher_insanity;
+
+  void_lasher_mind_sear_t( void_lasher_t& p )
+    : priest_pet_spell_t( "mind_sear", &p, p.o().find_spell( 344752 ) ),
+      void_lasher_insanity( p.o().find_spell( 336214 ) )
+  {
+    channeled    = true;
+    hasted_ticks = false;
+    aoe          = -1;
+
+    // TODO: Not found in spell data, roughly approximating this value
+    spell_power_mod.direct = 0.2;
+
+    // Merge the stats object with other instances of the pet
+    auto first_pet = p.o().find_pet( p.name_str );
+    if ( first_pet )
+    {
+      auto first_pet_action = first_pet->find_action( name_str );
+      if ( first_pet_action )
+      {
+        if ( stats == first_pet_action->stats )
+        {
+          // This is the first pet created. Add its stat as a child to priest mind_sear
+          auto owner_mind_sear_action = p.o().find_action( "mind_sear" );
+          if ( owner_mind_sear_action )
+          {
+            owner_mind_sear_action->add_child( this );
+          }
+        }
+        if ( !sim->report_pets_separately )
+        {
+          stats = first_pet_action->stats;
+        }
+      }
+    }
+  }
+
+  timespan_t composite_dot_duration( const action_state_t* ) const override
+  {
+    // Not hasted
+    return dot_duration;
+  }
+
+  timespan_t tick_time( const action_state_t* ) const override
+  {
+    // Not hasted
+    return base_tick_time;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    priest_pet_spell_t::impact( s );
+
+    p().o().generate_insanity( void_lasher_insanity->effectN( 1 ).base_value(),
+                               p().o().gains.insanity_eternal_call_to_the_void_mind_sear, s->action );
+  }
+};
+
+action_t* void_lasher_t::create_action( util::string_view name, const std::string& options_str )
+{
+  if ( name == "mind_sear" )
+  {
+    return new void_lasher_mind_sear_t( *this );
   }
 
   return priest_pet_t::create_action( name, options_str );
@@ -1141,21 +1199,24 @@ void priest_t::create_cooldowns()
 /** Construct priest gains */
 void priest_t::create_gains()
 {
-  gains.mindbender                        = get_gain( "Mana Gained from Mindbender" );
-  gains.power_word_solace                 = get_gain( "Mana Gained from Power Word: Solace" );
-  gains.insanity_auspicious_spirits       = get_gain( "Insanity Gained from Auspicious Spirits" );
-  gains.insanity_dispersion               = get_gain( "Insanity Saved by Dispersion" );
-  gains.insanity_drain                    = get_gain( "Insanity Drained by Voidform" );
-  gains.insanity_pet                      = get_gain( "Insanity Gained from Shadowfiend" );
-  gains.insanity_surrender_to_madness     = get_gain( "Insanity Gained from Surrender to Madness" );
-  gains.vampiric_touch_health             = get_gain( "Health from Vampiric Touch" );
-  gains.insanity_lucid_dreams             = get_gain( "Insanity Gained from Lucid Dreams" );
-  gains.insanity_memory_of_lucid_dreams   = get_gain( "Insanity Gained from Memory of Lucid Dreams" );
-  gains.insanity_death_and_madness        = get_gain( "Insanity Gained from Death and Madness" );
-  gains.shadow_word_death_self_damage     = get_gain( "Shadow Word: Death self inflicted damage" );
-  gains.insanity_mindgames                = get_gain( "Insanity Gained from Mindgames" );
-  gains.insanity_eternal_call_to_the_void = get_gain( "Insanity Gained from Eternal Call to the Void Mind Flays" );
-  gains.insanity_mind_sear                = get_gain( "Insanity Gained from Mind Sear" );
+  gains.mindbender                      = get_gain( "Mana Gained from Mindbender" );
+  gains.power_word_solace               = get_gain( "Mana Gained from Power Word: Solace" );
+  gains.insanity_auspicious_spirits     = get_gain( "Insanity Gained from Auspicious Spirits" );
+  gains.insanity_dispersion             = get_gain( "Insanity Saved by Dispersion" );
+  gains.insanity_drain                  = get_gain( "Insanity Drained by Voidform" );
+  gains.insanity_pet                    = get_gain( "Insanity Gained from Shadowfiend" );
+  gains.insanity_surrender_to_madness   = get_gain( "Insanity Gained from Surrender to Madness" );
+  gains.vampiric_touch_health           = get_gain( "Health from Vampiric Touch" );
+  gains.insanity_lucid_dreams           = get_gain( "Insanity Gained from Lucid Dreams" );
+  gains.insanity_memory_of_lucid_dreams = get_gain( "Insanity Gained from Memory of Lucid Dreams" );
+  gains.insanity_death_and_madness      = get_gain( "Insanity Gained from Death and Madness" );
+  gains.shadow_word_death_self_damage   = get_gain( "Shadow Word: Death self inflicted damage" );
+  gains.insanity_mindgames              = get_gain( "Insanity Gained from Mindgames" );
+  gains.insanity_eternal_call_to_the_void_mind_flay =
+      get_gain( "Insanity Gained from Eternal Call to the Void Mind Flay's" );
+  gains.insanity_eternal_call_to_the_void_mind_sear =
+      get_gain( "Insanity Gained from Eternal Call to the Void Mind Sear's" );
+  gains.insanity_mind_sear = get_gain( "Insanity Gained from Mind Sear" );
 }
 
 /** Construct priest procs */
@@ -1172,6 +1233,7 @@ void priest_t::create_procs()
   procs.dissonant_echoes                = get_proc( "Void Bolt resets from Dissonant Echoes" );
   procs.mind_devourer                   = get_proc( "Mind Devourer free Devouring Plague proc" );
   procs.void_tendril                    = get_proc( "Void Tendril proc from Eternal Call to the Void" );
+  procs.void_lasher                     = get_proc( "Void Lasher proc from Eternal Call to the Void" );
   procs.dark_thoughts_flay              = get_proc( "Dark Thoughts proc from Mind Flay" );
   procs.dark_thoughts_sear              = get_proc( "Dark Thoughts proc from Mind Sear" );
   procs.dark_thoughts_missed            = get_proc( "Dark Thoughts proc not consumed" );
@@ -1258,11 +1320,6 @@ double priest_t::composite_spell_haste() const
 {
   double h = player_t::composite_spell_haste();
 
-  if ( buffs.power_infusion->check() )
-  {
-    h /= 1.0 + buffs.power_infusion->data().effectN( 1 ).percent();
-  }
-
   if ( buffs.dark_passion->check() )
   {
     h /= 1.0 + buffs.dark_passion->data().effectN( 1 ).percent();
@@ -1274,11 +1331,6 @@ double priest_t::composite_spell_haste() const
 double priest_t::composite_melee_haste() const
 {
   double h = player_t::composite_melee_haste();
-
-  if ( buffs.power_infusion->check() )
-  {
-    h /= 1.0 + buffs.power_infusion->data().effectN( 1 ).percent();
-  }
 
   if ( buffs.dark_passion->check() )
   {
@@ -1644,8 +1696,6 @@ void priest_t::create_buffs()
                             ->add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
 
   // Shared buffs
-  buffs.power_infusion = make_buff<buffs::power_infusion_t>( *this )->set_cooldown( timespan_t::from_seconds( 0 ) );
-
   buffs.dispersion = make_buff<buffs::dispersion_t>( *this );
 
   buffs.the_penitent_one = make_buff( this, "the_penitent_one", legendary.the_penitent_one->effectN( 1 ).trigger() )
@@ -1777,7 +1827,7 @@ void priest_t::create_apl_precombat()
         precombat->add_action( "arcane_torrent" );
       precombat->add_action( "use_item,name=azsharas_font_of_power" );
       precombat->add_action(
-          "variable,name=mind_sear_cutoff,op=set,value=1+runeforge.eternal_call_to_the_void.equipped" );
+          "variable,name=mind_sear_cutoff,op=set,value=1" );
       precombat->add_action( this, "Mind Blast" );
       break;
   }
@@ -1786,7 +1836,8 @@ void priest_t::create_apl_precombat()
 // TODO: Adjust these with new consumables in Shadowlands
 std::string priest_t::default_potion() const
 {
-  std::string lvl60_potion = ( specialization() == PRIEST_SHADOW ) ? "potion_of_spectral_intellect" : "potion_of_spectral_intellect";
+  std::string lvl60_potion =
+      ( specialization() == PRIEST_SHADOW ) ? "potion_of_spectral_intellect" : "potion_of_spectral_intellect";
   std::string lvl50_potion = ( specialization() == PRIEST_SHADOW ) ? "unbridled_fury" : "battle_potion_of_intellect";
 
   return ( true_level > 50 ) ? lvl60_potion : lvl50_potion;
@@ -1984,15 +2035,26 @@ void priest_t::arise()
 }
 
 // Legendary Eternal Call to the Void trigger
-void priest_t::trigger_eternal_call_to_the_void( const dot_t* )
+void priest_t::trigger_eternal_call_to_the_void( action_state_t* s )
 {
+  auto mind_sear_id = find_class_spell( "Mind Sear" )->effectN( 1 ).trigger()->id();
+  auto mind_flay_id = find_specialization_spell( "Mind Flay" )->id();
+  auto action_id = s->action->id;
   if ( !legendary.eternal_call_to_the_void->ok() )
     return;
 
   if ( rppm.eternal_call_to_the_void->trigger() )
   {
-    procs.void_tendril->occur();
-    auto spawned_pets = pets.void_tendril.spawn();
+    if ( action_id == mind_flay_id )
+    {
+      procs.void_tendril->occur();
+      auto spawned_pets = pets.void_tendril.spawn();
+    }
+    else if ( action_id == mind_sear_id )
+    {
+      procs.void_lasher->occur();
+      auto spawned_pets = pets.void_lasher.spawn();
+    }
   }
 }
 
@@ -2048,11 +2110,16 @@ double priest_t::shadow_weaving_multiplier( const player_t* target ) const
   return multiplier;
 }
 
-priest_t::priest_pets_t::priest_pets_t( priest_t& p ) : shadowfiend(), mindbender(), void_tendril( "void_tendril", &p )
+priest_t::priest_pets_t::priest_pets_t( priest_t& p )
+  : shadowfiend(), mindbender(), void_tendril( "void_tendril", &p ), void_lasher( "void_lasher", &p )
 {
   auto void_tendril_spell = p.find_spell( 193473 );
   // Add 1ms to ensure pet is dismissed after last dot tick.
   void_tendril.set_default_duration( void_tendril_spell->duration() + timespan_t::from_millis( 1 ) );
+
+  // The duration is found in the 193470 spell
+  auto void_lasher_spell = p.find_spell( 344752 );
+  void_lasher.set_default_duration( p.find_spell( 193470 )->duration() + timespan_t::from_millis( 1 ) );
 }
 
 buffs::dispersion_t::dispersion_t( priest_t& p )

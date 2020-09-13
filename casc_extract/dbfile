@@ -742,4 +742,9 @@
 3594380, DBFilesClient\SoulbindConduit.db2
 3604984, DBFilesClient\SoulbindConduitItem.db2
 3620681, DBFilesClient\SoulbindConduitRank.db2
-
+3612617, DBFilesClient\GarrTalentSocketProperties.db2
+3723474, DBFilesClient\ItemNameSlotOverride.db2
+3743117, DBFilesClient\RenownRewards.db2
+3752002, DBFilesClient\GlobalCurve.db2
+3755382, DBFilesClient\ItemBonusListGroup.db2
+3756368, DBFilesClient\GlobalGameContentTuning.db2

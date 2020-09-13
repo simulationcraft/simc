@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.1.35789 shadowlands-BETA (hotfix 2020-09-05/35789, git build shadowlands 5e2bf2f946)
+SimulationCraft 901-01 for World of Warcraft 9.0.2.35854 shadowlands-BETA (hotfix 2020-09-12/35854, git build shadowlands a3c99b0cc6)
 
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -139,7 +139,7 @@ Duration         : 20 seconds
 Cooldown         : 30 seconds
 Affecting spells : Totemic Surge (338042 effect#1)
 Family Flags     : 15, 29, 69
-Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
+Attributes       : ....x... ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .....x.. ........ ........ ........ 
@@ -250,13 +250,12 @@ Affecting spells : Praetorian's Tidecallers (210604 effect#1)
 Family Flags     : 6, 15, 19, 29
 Attributes       : ....x... ........ x....... ........   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ .x...x.. ........ ........ 
-                 : ........ ........ ........ ........   .....x.. ........ ........ ........ 
-                 : ........ ........ ........ ........   .....x.. ...x.... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ....x... ........ 
+                 : ........ ........ ........ ........   .....x.. ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ...x.... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Tick on application (169), Periodic effect affected by haste (173)
 Effects          :
 #1 (id=1925)     : Summon (28)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 3527 | Misc Value 2: 0xd4a | Target: Water Totem (42)
@@ -382,7 +381,7 @@ Duration         : 10 seconds
 Cooldown         : 60 seconds
 Affecting spells : Totemic Surge (338042 effect#1)
 Family Flags     : 15, 57
-Attributes       : ........ ........ x....... ........   ........ ........ ........ ....x... 
+Attributes       : ....x... ........ x....... ........   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ..x..... ........ ........   .....x.. ........ ........ ........ 
@@ -428,7 +427,7 @@ Spell Level      : 49
 GCD              : 1 seconds
 Duration         : 120 seconds
 Family Flags     : 29
-Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
+Attributes       : ....x... ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -491,12 +490,12 @@ Class            : Restoration Shaman
 School           : Nature
 Spell Type       : None
 Spell Level      : 38
-GCD              : 1.5 seconds
+GCD              : 1 seconds
 Duration         : 8 seconds
 Cooldown         : 180 seconds
 Affecting spells : Mana Tide Totem (343182 effect#1)
 Family Flags     : 29, 117
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1893,7 +1892,7 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=68076)    : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.00000 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Flametongue Attack (10444), Lava Lash (60103), Elemental Blast (117014), Crash Lightning (187874), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Shield (192109), Flametongue (193796), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Crashing Storm (210801), Stormlash (213307), Icy Edge (271920), Strength of Earth (273466), Lightning Conduit (275394), Fae Transfusion (328928), Fire Nova (333974), Fire Nova (333977), Lashing Flames (334046), Hailstorm (334195), Hailstorm (334196), Ice Strike (342240), Stormflurry (344357)
+                   Affected Spells: Flametongue Attack (10444), Lava Lash (60103), Elemental Blast (117014), Crash Lightning (187874), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Shield (192109), Flametongue (193796), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Crashing Storm (210801), Stormlash (213307), Icy Edge (271920), Strength of Earth (273466), Lightning Conduit (275394), Fae Transfusion (328928), Fire Nova (333974), Fire Nova (333977), Lashing Flames (334046), Hailstorm (334195), Hailstorm (334196), Ice Strike (342240), Stormflurry (344357), Ascendance (344548)
                    Family Flags: 56
 #2 (id=92143)    : Apply Aura (6) | Dummy (4)
                    Base Value: 250 | Scaled Value: 250 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -1907,7 +1906,7 @@ Effects          :
                    Family Flags: 72
 #5 (id=479847)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.00000 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Flametongue Attack (10444), Lava Lash (60103), Elemental Blast (117014), Crash Lightning (187874), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Shield (192109), Flametongue (193796), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Crashing Storm (210801), Stormlash (213307), Icy Edge (271920), Strength of Earth (273466), Lightning Conduit (275394), Fae Transfusion (328928), Fire Nova (333974), Fire Nova (333977), Lashing Flames (334046), Hailstorm (334195), Hailstorm (334196), Ice Strike (342240), Stormflurry (344357)
+                   Affected Spells: Flametongue Attack (10444), Lava Lash (60103), Elemental Blast (117014), Crash Lightning (187874), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Shield (192109), Flametongue (193796), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Crashing Storm (210801), Stormlash (213307), Icy Edge (271920), Strength of Earth (273466), Lightning Conduit (275394), Fae Transfusion (328928), Fire Nova (333974), Fire Nova (333977), Lashing Flames (334046), Hailstorm (334195), Hailstorm (334196), Ice Strike (342240), Stormflurry (344357), Ascendance (344548)
                    Family Flags: 56
 Description      : Increases your chance to trigger Stormbringer and Windfury by ${$m3}.2%, and increases all Fire, Frost, and Nature damage you deal by ${$77223m1}.1%.
 
@@ -2082,7 +2081,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .....
 Effects          :
 #1 (id=68406)    : Apply Aura (6) | Cast while Moving (Whitelist) (330)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
-                   Affected Spells: Earth Shield (379), Chain Heal (1064), Ghost Wolf (2645), Healing Surge (8004), Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Healing Stream Totem (52042), Lava Lash (60103), Riptide (61295), Earthquake (61882), Unleash Life (73685), Healing Rain (73920), Healing Rain (73921), Healing Wave (77472), Earthquake (77478), Lava Beam (114074), Lava Beam Overload (114738), Healing Tide (114942), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Crash Lightning (187874), Earthen Spike (188089), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Stormkeeper (191634), Lightning Shield (192109), Flametongue (193796), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Wellspring (197995), Wellspring (197997), Downpour (207778), Icefury (210714), Crashing Storm (210801), Ancestral Vision (212048), Stormlash (213307), Lightning Bolt (214815), Lightning Bolt Overload (214816), Feral Lunge (215802), Icefury Overload (219271), Rainfall (252154), Icy Edge (271920), Strength of Earth (273466), Serene Spirit (274416), Lightning Conduit (275394), Swelling Stream (275499), Overflowing Shores (278095), Rumbling Tremors (279556), Pack Spirit (280205), Lava Burst (285452), Lava Burst Overload (285466), Restorative Mists (294020), Echoing Shock (320125), Stormkeeper (320137), Surge of Earth (320747), Chain Harvest (320751), Chain Harvest (320752), Vesper Totem (324522), Fae Transfusion (328928), Fae Transfusion (328930), Fire Nova (333974), Fire Nova (333977), Lashing Flames (334046), Hailstorm (334195), Hailstorm (334196), Ice Strike (342240), Static Discharge (342244), Stormflurry (344357)
+                   Affected Spells: Earth Shield (379), Chain Heal (1064), Ghost Wolf (2645), Healing Surge (8004), Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Healing Stream Totem (52042), Lava Lash (60103), Riptide (61295), Earthquake (61882), Unleash Life (73685), Healing Rain (73920), Healing Rain (73921), Healing Wave (77472), Earthquake (77478), Lava Beam (114074), Lava Beam Overload (114738), Healing Tide (114942), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Crash Lightning (187874), Earthen Spike (188089), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Stormkeeper (191634), Lightning Shield (192109), Flametongue (193796), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Wellspring (197995), Wellspring (197997), Downpour (207778), Icefury (210714), Crashing Storm (210801), Ancestral Vision (212048), Stormlash (213307), Lightning Bolt (214815), Lightning Bolt Overload (214816), Feral Lunge (215802), Icefury Overload (219271), Rainfall (252154), Icy Edge (271920), Strength of Earth (273466), Serene Spirit (274416), Lightning Conduit (275394), Swelling Stream (275499), Overflowing Shores (278095), Rumbling Tremors (279556), Pack Spirit (280205), Lava Burst (285452), Lava Burst Overload (285466), Restorative Mists (294020), Echoing Shock (320125), Stormkeeper (320137), Surge of Earth (320747), Chain Harvest (320751), Chain Harvest (320752), Vesper Totem (324522), Fae Transfusion (328928), Fae Transfusion (328930), Fire Nova (333974), Fire Nova (333977), Lashing Flames (334046), Hailstorm (334195), Hailstorm (334196), Ice Strike (342240), Static Discharge (342244), Stormflurry (344357), Ascendance (344548)
                    Family Flags: 0, 1, 4, 7, 8, 11, 34, 39, 41, 44, 47, 51, 62, 80, 83, 84, 92, 98, 111
 #2 (id=289427)   : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -2431,7 +2430,9 @@ Effects          :
 #3 (id=127189)   : Apply Aura (6) | Modify Recharge Time (Category) (453)
                    Base Value: -8000 | Scaled Value: -8000 | PvP Coefficient: 1.00000 | Misc Value: 1536 | Target: Self (1)
                    Affected Spells (Category): Lava Burst (51505)
-Description      : Transform into a Flame Ascendant for $d, replacing Chain Lightning with Lava Beam, removing the cooldown on Lava Burst, and increasing the damage of Lava Burst by an amount equal to your critical strike chance.
+Description      : Transform into a Flame Ascendant for $d, replacing Chain Lightning with Lava Beam, removing the cooldown on Lava Burst, and increasing the damage of Lava Burst by an amount equal to your critical strike chance.
+
+When you transform into the Flame Ascendant, instantly cast a Lava Burst at all enemies affected by your Flame Shock, and refresh your Flame Shock durations to $188389d.
 Tooltip          : Transformed into a powerful Fire ascendant. Chain Lightning is transformed into Lava Beam.
 
 Name             : Ascendance (id=114051) [Spell Family (11)] 
@@ -2469,7 +2470,9 @@ Effects          :
                    Base Value: -66 | Scaled Value: -66 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Stormstrike (17364), Windstrike (115356)
                    Family Flags: 36, 112
-Description      : Transform into an Air Ascendant for $114051d, reducing the cooldown and cost of Stormstrike by $s4%, and transforming your auto attack and Stormstrike into Wind attacks which bypass armor and have a $s1 yd range.
+#6 (id=869021)   : Trigger Spell (64): Ascendance
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 344548 | Target: Self (1)
+Description      : Transform into an Air Ascendant for $114051d, immediately dealing $344548s1 Nature damage to any enemy within $344548A1 yds, reducing the cooldown and cost of Stormstrike by $s4%, and transforming your auto attack and Stormstrike into Wind attacks which bypass armor and have a $s1 yd range.
 Tooltip          : Transformed into a powerful Air ascendant. Auto attacks have a $114089r yard range. Stormstrike is empowered and has a $114089r yard range.
 
 Name             : Ascendance (id=114052) [Spell Family (11)] 
@@ -2798,8 +2801,7 @@ Name             : Elemental Blast (id=117014) [Spell Family (11)]
 Class            : Shaman
 School           : Elemental
 Spell Type       : Magic
-Resource         : 2.75% Base Mana (0) (id=215299) w/ Enhancement Shaman (id=137041)
-Resource         : 30 Maelstrom (11) (id=215337) w/ Elemental Shaman (id=137040)
+Resource         : 2.75% Base Mana (0) (id=215299)
 Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
@@ -2818,9 +2820,9 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=132332)   : School Damage (2): elemental
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.40000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Description      : Harnesses the raw power of the elements, dealing $s1 Elemental damage and increasing your Critical Strike or Haste by $118522s1% or Mastery by ${$173184s1*$168534bc1}% for $118522d.$?a190493[
+Description      : Harnesses the raw power of the elements, dealing $s1 Elemental damage and increasing your Critical Strike or Haste by $118522s1% or Mastery by ${$173184s1*$168534bc1}% for $118522d.$?a343725[
 
-Elemental Blast will consume all stacks of Fulmination to deal extra Nature damage to your target.][]
+|cFFFFFFFFGenerates $343725s10 Maelstrom.|r][]
 
 Name             : Meteor (id=117588) [Spell Family (11)] 
 Class            : Shaman
@@ -3054,11 +3056,11 @@ Effects          :
                    Family Flags: 41
 #3 (id=191047)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Lava Lash (60103), Earthquake (77478), Lava Beam (114074), Lava Beam Overload (114738), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Crash Lightning (187874), Earthen Spike (188089), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Shield (192109), Flametongue (193796), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Icefury (210714), Crashing Storm (210801), Stormlash (213307), Feral Lunge (215802), Icefury Overload (219271), Icy Edge (271920), Strength of Earth (273466), Lightning Conduit (275394), Rumbling Tremors (279556), Lava Burst (285452), Lava Burst Overload (285466), Echoing Shock (320125), Chain Harvest (320752), Fae Transfusion (328928), Fire Nova (333974), Fire Nova (333977), Lashing Flames (334046), Hailstorm (334195), Hailstorm (334196), Ice Strike (342240), Static Discharge (342244), Stormflurry (344357)
+                   Affected Spells: Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Lava Lash (60103), Earthquake (77478), Lava Beam (114074), Lava Beam Overload (114738), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Crash Lightning (187874), Earthen Spike (188089), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Shield (192109), Flametongue (193796), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Icefury (210714), Crashing Storm (210801), Stormlash (213307), Feral Lunge (215802), Icefury Overload (219271), Icy Edge (271920), Strength of Earth (273466), Lightning Conduit (275394), Rumbling Tremors (279556), Lava Burst (285452), Lava Burst Overload (285466), Echoing Shock (320125), Chain Harvest (320752), Fae Transfusion (328928), Fire Nova (333974), Fire Nova (333977), Lashing Flames (334046), Hailstorm (334195), Hailstorm (334196), Ice Strike (342240), Static Discharge (342244), Stormflurry (344357), Ascendance (344548)
                    Family Flags: 39
 #4 (id=191048)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Lava Lash (60103), Earthquake (77478), Lava Beam (114074), Lava Beam Overload (114738), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Crash Lightning (187874), Earthen Spike (188089), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Shield (192109), Flametongue (193796), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Icefury (210714), Crashing Storm (210801), Stormlash (213307), Feral Lunge (215802), Icefury Overload (219271), Icy Edge (271920), Strength of Earth (273466), Lightning Conduit (275394), Rumbling Tremors (279556), Lava Burst (285452), Lava Burst Overload (285466), Echoing Shock (320125), Chain Harvest (320752), Fae Transfusion (328928), Fire Nova (333974), Fire Nova (333977), Lashing Flames (334046), Hailstorm (334195), Hailstorm (334196), Ice Strike (342240), Static Discharge (342244), Stormflurry (344357)
+                   Affected Spells: Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Lava Lash (60103), Earthquake (77478), Lava Beam (114074), Lava Beam Overload (114738), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Crash Lightning (187874), Earthen Spike (188089), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Shield (192109), Flametongue (193796), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Icefury (210714), Crashing Storm (210801), Stormlash (213307), Feral Lunge (215802), Icefury Overload (219271), Icy Edge (271920), Strength of Earth (273466), Lightning Conduit (275394), Rumbling Tremors (279556), Lava Burst (285452), Lava Burst Overload (285466), Echoing Shock (320125), Chain Harvest (320752), Fae Transfusion (328928), Fire Nova (333974), Fire Nova (333977), Lashing Flames (334046), Hailstorm (334195), Hailstorm (334196), Ice Strike (342240), Static Discharge (342244), Stormflurry (344357), Ascendance (344548)
                    Family Flags: 39
 #5 (id=191049)   : Apply Aura (6) | Modify Max Mana% (178)
                    Base Value: 400 | Scaled Value: 400 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -3094,11 +3096,11 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179724)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Lava Lash (60103), Earthquake (77478), Lava Beam (114074), Lava Beam Overload (114738), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Crash Lightning (187874), Earthen Spike (188089), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Shield (192109), Flametongue (193796), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Icefury (210714), Crashing Storm (210801), Stormlash (213307), Feral Lunge (215802), Icefury Overload (219271), Icy Edge (271920), Strength of Earth (273466), Lightning Conduit (275394), Rumbling Tremors (279556), Lava Burst (285452), Lava Burst Overload (285466), Echoing Shock (320125), Chain Harvest (320752), Fae Transfusion (328928), Fire Nova (333974), Fire Nova (333977), Lashing Flames (334046), Hailstorm (334195), Hailstorm (334196), Ice Strike (342240), Static Discharge (342244), Stormflurry (344357)
+                   Affected Spells: Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Lava Lash (60103), Earthquake (77478), Lava Beam (114074), Lava Beam Overload (114738), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Crash Lightning (187874), Earthen Spike (188089), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Shield (192109), Flametongue (193796), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Icefury (210714), Crashing Storm (210801), Stormlash (213307), Feral Lunge (215802), Icefury Overload (219271), Icy Edge (271920), Strength of Earth (273466), Lightning Conduit (275394), Rumbling Tremors (279556), Lava Burst (285452), Lava Burst Overload (285466), Echoing Shock (320125), Chain Harvest (320752), Fae Transfusion (328928), Fire Nova (333974), Fire Nova (333977), Lashing Flames (334046), Hailstorm (334195), Hailstorm (334196), Ice Strike (342240), Static Discharge (342244), Stormflurry (344357), Ascendance (344548)
                    Family Flags: 39
 #2 (id=191042)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Lava Lash (60103), Earthquake (77478), Lava Beam (114074), Lava Beam Overload (114738), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Crash Lightning (187874), Earthen Spike (188089), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Shield (192109), Flametongue (193796), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Icefury (210714), Crashing Storm (210801), Stormlash (213307), Feral Lunge (215802), Icefury Overload (219271), Icy Edge (271920), Strength of Earth (273466), Lightning Conduit (275394), Rumbling Tremors (279556), Lava Burst (285452), Lava Burst Overload (285466), Echoing Shock (320125), Chain Harvest (320752), Fae Transfusion (328928), Fire Nova (333974), Fire Nova (333977), Lashing Flames (334046), Hailstorm (334195), Hailstorm (334196), Ice Strike (342240), Static Discharge (342244), Stormflurry (344357)
+                   Affected Spells: Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Lava Lash (60103), Earthquake (77478), Lava Beam (114074), Lava Beam Overload (114738), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Crash Lightning (187874), Earthen Spike (188089), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Shield (192109), Flametongue (193796), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Icefury (210714), Crashing Storm (210801), Stormlash (213307), Feral Lunge (215802), Icefury Overload (219271), Icy Edge (271920), Strength of Earth (273466), Lightning Conduit (275394), Rumbling Tremors (279556), Lava Burst (285452), Lava Burst Overload (285466), Echoing Shock (320125), Chain Harvest (320752), Fae Transfusion (328928), Fire Nova (333974), Fire Nova (333977), Lashing Flames (334046), Hailstorm (334195), Hailstorm (334196), Ice Strike (342240), Static Discharge (342244), Stormflurry (344357), Ascendance (344548)
                    Family Flags: 39
 #3 (id=191043)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -3132,11 +3134,11 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179725)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Lava Lash (60103), Earthquake (77478), Lava Beam (114074), Lava Beam Overload (114738), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Crash Lightning (187874), Earthen Spike (188089), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Shield (192109), Flametongue (193796), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Icefury (210714), Crashing Storm (210801), Stormlash (213307), Feral Lunge (215802), Icefury Overload (219271), Icy Edge (271920), Strength of Earth (273466), Lightning Conduit (275394), Rumbling Tremors (279556), Lava Burst (285452), Lava Burst Overload (285466), Echoing Shock (320125), Chain Harvest (320752), Fae Transfusion (328928), Fire Nova (333974), Fire Nova (333977), Lashing Flames (334046), Hailstorm (334195), Hailstorm (334196), Ice Strike (342240), Static Discharge (342244), Stormflurry (344357)
+                   Affected Spells: Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Lava Lash (60103), Earthquake (77478), Lava Beam (114074), Lava Beam Overload (114738), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Crash Lightning (187874), Earthen Spike (188089), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Shield (192109), Flametongue (193796), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Icefury (210714), Crashing Storm (210801), Stormlash (213307), Feral Lunge (215802), Icefury Overload (219271), Icy Edge (271920), Strength of Earth (273466), Lightning Conduit (275394), Rumbling Tremors (279556), Lava Burst (285452), Lava Burst Overload (285466), Echoing Shock (320125), Chain Harvest (320752), Fae Transfusion (328928), Fire Nova (333974), Fire Nova (333977), Lashing Flames (334046), Hailstorm (334195), Hailstorm (334196), Ice Strike (342240), Static Discharge (342244), Stormflurry (344357), Ascendance (344548)
                    Family Flags: 39
 #2 (id=191038)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Lava Lash (60103), Earthquake (77478), Lava Beam (114074), Lava Beam Overload (114738), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Crash Lightning (187874), Earthen Spike (188089), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Shield (192109), Flametongue (193796), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Icefury (210714), Crashing Storm (210801), Stormlash (213307), Feral Lunge (215802), Icefury Overload (219271), Icy Edge (271920), Strength of Earth (273466), Lightning Conduit (275394), Rumbling Tremors (279556), Lava Burst (285452), Lava Burst Overload (285466), Echoing Shock (320125), Chain Harvest (320752), Fae Transfusion (328928), Fire Nova (333974), Fire Nova (333977), Lashing Flames (334046), Hailstorm (334195), Hailstorm (334196), Ice Strike (342240), Static Discharge (342244), Stormflurry (344357)
+                   Affected Spells: Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Lava Lash (60103), Earthquake (77478), Lava Beam (114074), Lava Beam Overload (114738), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Crash Lightning (187874), Earthen Spike (188089), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Shield (192109), Flametongue (193796), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Icefury (210714), Crashing Storm (210801), Stormlash (213307), Feral Lunge (215802), Icefury Overload (219271), Icy Edge (271920), Strength of Earth (273466), Lightning Conduit (275394), Rumbling Tremors (279556), Lava Burst (285452), Lava Burst Overload (285466), Echoing Shock (320125), Chain Harvest (320752), Fae Transfusion (328928), Fire Nova (333974), Fire Nova (333977), Lashing Flames (334046), Hailstorm (334195), Hailstorm (334196), Ice Strike (342240), Static Discharge (342244), Stormflurry (344357), Ascendance (344548)
                    Family Flags: 39
 #3 (id=191039)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -3931,9 +3933,9 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=829582)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
-Description      : When you deal damage with a melee weapon, you have a chance to gain Maelstrom Weapon, stacking up to $187881u times. Each stack of Maelstrom Weapon reduces the cast time of your next damage or healing spell by $187881s1% and increase the damage or healing of your next spell by $187881s3%. A maximum of $s2 stacks of Maelstrom Weapon can be consumed at a time.
+Description      : When you deal damage with a melee weapon, you have a chance to gain Maelstrom Weapon, stacking up to $344179u times. Each stack of Maelstrom Weapon reduces the cast time of your next damage or healing spell by $187881s1% and increase the damage or healing of your next spell by $187881s3%. A maximum of $s2 stacks of Maelstrom Weapon can be consumed at a time.
 
-Name             : Maelstrom Weapon (id=187881) [Spell Family (11)] 
+Name             : Maelstrom Weapon (id=187881) [Spell Family (11), Hidden] 
 Class            : Shaman
 School           : Physical
 Spell Type       : Magic
@@ -3942,7 +3944,7 @@ Stacks           : 5 maximum
 Proc Chance      : 101%
 Affecting spells : Focused Lightning (338322 effect#1)
 Family Flags     : 100
-Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
+Attributes       : .......x ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3950,6 +3952,7 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ....x... ........ ........ 
                  : ........ ........ ........ ........   
+                 : Hidden (7)
 Effects          :
 #1 (id=274048)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
                    Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
@@ -4041,8 +4044,8 @@ Attributes       : ........ ........ x.x..... ..x.....   ........ ........ .....
 Effects          :
 #1 (id=274966)   : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.19500 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-#2 (id=274967)   : Apply Aura (6) | Periodic Damage (3): fire every 3 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.17500 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+#2 (id=274967)   : Apply Aura (6) | Periodic Damage (3): fire every 2 seconds
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.11600 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=322658)   : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Sears the target with fire, causing $s1 Fire damage and then an additional $o2 Fire damage over $d.
@@ -4325,7 +4328,7 @@ Class            : Shaman
 School           : Nature
 Spell Type       : None
 Resource         : 10% Base Mana (0) (id=10389)
-Spell Level      : 41
+Spell Level      : 23
 Range            : 40 yards
 GCD              : 1 seconds
 Duration         : 3 seconds
@@ -6005,7 +6008,7 @@ Effects          :
                    Family Flags: 31
 #3 (id=845774)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: maelstrom | Target: Self (1)
-Description      : Hurls frigid ice at the target, dealing $s1 Frost damage and causing your next $n Frost Shocks to deal $s2% increased damage.
+Description      : Hurls frigid ice at the target, dealing $s1 Frost damage and causing your next $n Frost Shocks to deal $s2% increased damage and generate $343725s7 Maelstrom.
 
 |cFFFFFFFFGenerates $343725s8 Maelstrom.|r
 Tooltip          : Frost Shock damage increased by $s2%.
@@ -8033,7 +8036,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=724675)   : Apply Aura (6) | Dummy (4)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Earth Shock has a $s1% chance to refund all Maelstrom spent.
+Description      : Earth Shock and Earthquake have a $s1% chance to refund all Maelstrom spent.
 
 Name             : Lava Shock (id=273448) [Scaling Spell (-8), Spell Family (11), Passive] 
 Class            : Shaman
@@ -10428,8 +10431,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.65000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=807041)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1000 | Scaled Value: 1000 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Shock the target for $s1 Elemental damage and create an ancestral echo, causing your next direct damage or healing spell to be cast a second time ${$m2/1000}.1 sec later for free.
-Tooltip          : Your next direct damage or healing spell will be cast a second time ${$m1/1000}.1 sec later for free.
+Description      : Shock the target for $s1 Elemental damage and create an ancestral echo, causing your next damage or healing spell to be cast a second time ${$m2/1000}.1 sec later for free.
+Tooltip          : Your next damage or healing spell will be cast a second time ${$m1/1000}.1 sec later for free.
 
 Name             : Stormkeeper (id=320137) [Spell Family (11)] 
 Class            : Shaman
@@ -10794,37 +10797,20 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.65000 | AP Coefficient: 0.65000 | PvP Coefficient: 1.00000 | Target: Unknown(25)
 Description      : $@spelldesc326059
 
-Name             : Windfury Totem (id=327941) 
-Class            : Shaman
-School           : Physical
-Spell Type       : None
-Triggered by     : Windfury Totem (327942)
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   
-Effects          :
-#1 (id=819682)   : Extra Attacks (19)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.00000 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Grants $s1 extra attack on your next swing.
-
 Name             : Windfury Totem (id=327942) [Spell Family (11)] 
+Hotfixed         : Attributes
 Class            : Shaman
 School           : Physical
 Spell Type       : None
 Range            : 40 yards
 Duration         : 120 seconds
-Internal Cooldown: 1 seconds
+Internal Cooldown: 0.5 seconds
 Proc Chance      : 10%
 Proc Flags       : ..x..... ........ ........ ........ 
                  : White Melee
 Affecting spells : Windfury Totem (343211 effect#1)
 Family Flags     : 40
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ ........ ........   ........ ...x.... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : .......x ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10833,8 +10819,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
 Effects          :
-#1 (id=819684)   : Apply Aura (6) | Proc Trigger Spell (42): Windfury Totem
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Trigger Spell: 327941 | Radius: 30 yards | Target: Unknown(20)
+#1 (id=819684)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Unknown(35)
+Hotfixed         : Sub Type (42 -> 4), Trigger Spell (327941 -> 0)
 Description      : $@spelldesc8512
 Tooltip          : Your auto-attacks have a $h% chance to instantly attack again.
 
@@ -11961,7 +11948,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=836836)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
-                   Affected Spells: Maelstrom Weapon (187881)
+                   Affected Spells: Maelstrom Weapon (187881), Maelstrom Weapon (344179)
                    Family Flags: 100
 Description      : Maelstrom Weapon increases the damage or healing of your next spell by an additional |cFFFFFFFF${$s1}.1%|r per stack.
 
@@ -12291,6 +12278,7 @@ School           : Nature
 Spell Type       : Magic
 Spell Level      : 1
 Max Targets      : 1
+Velocity         : 35 yards/sec
 Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Lightning Crash (242284 effect#1)
 Triggered by     : Static Discharge (342243)
 Family Flags     : 39, 121
@@ -12304,7 +12292,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=843167)   : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.15000 | PvP Coefficient: 1.00000 | Radius: 0 - 40 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.23000 | PvP Coefficient: 1.00000 | Radius: 0 - 40 yards | Target: At Caster (22) -> AOE enemy (15)
 Description      : $@spelldesc342243
 
 Name             : Mana Tide Totem (desc=Rank 2) (id=343182) [Spell Family (11), Passive] 
@@ -12475,6 +12463,35 @@ Effects          :
                    Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Icefury Overload (219271)
                    Family Flags: 5
+#10 (id=869146)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
+#11 (id=869147)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
+
+Name             : Maelstrom Weapon (id=344179) [Spell Family (11)] 
+Class            : Shaman
+School           : Physical
+Spell Type       : Magic
+Duration         : 30 seconds
+Stacks           : 10 maximum
+Proc Chance      : 101%
+Proc Flags       : ....x... x.x.x.x. x....... ........ 
+                 : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
+Affecting spells : Focused Lightning (338322 effect#1)
+Family Flags     : 100
+Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x......x ....x... ........ ........ 
+                 : ........ ........ ........ ........   
+Effects          :
+#1 (id=868298)   : Apply Aura (6) | Dummy (4)
+                   Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
+Description      : $@spelldesc187880
+Tooltip          : Your next damage or healing spell has its cast time reduced by ${$max($187881s1, -100)*-1}% and damage or healing increased by ${$min($187881s2, 100)}%.
 
 Name             : Stormflurry (id=344357) [Spell Family (11), Passive] 
 Class            : Shaman
@@ -12498,5 +12515,27 @@ Effects          :
 #2 (id=868592)   : Apply Aura (6) | Dummy (4)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Stormstrike has a $s1% chance to strike the target an additional time for $s2% of normal damage. This effect can chain off of itself.
+
+Name             : Ascendance (id=344548) [Spell Family (11)] 
+Class            : Shaman
+School           : Nature
+Spell Type       : Magic
+Spell Level      : 50
+Affecting spells : Mastery: Enhanced Elements (77223 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Lightning Crash (242284 effect#1)
+Triggered by     : Ascendance (114051)
+Family Flags     : 39, 56, 102
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Requires line of sight (186)
+Effects          :
+#1 (id=869020)   : School Damage (2): nature
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 2.50000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
+Description      : $@spelldesc114051
 
 

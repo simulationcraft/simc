@@ -1035,7 +1035,8 @@ void download_roster( rapidjson::Document& d,
 
 slot_e bcp_api::translate_api_slot( const std::string& slot_str )
 {
-  static constexpr auto slot_map = util::make_static_map<util::string_view, slot_e>( {
+  using record_t = std::pair<util::string_view, slot_e>;
+  static constexpr record_t slot_map[] = {
     { "HEAD",      SLOT_HEAD      },
     { "NECK",      SLOT_NECK      },
     { "SHOULDER",  SLOT_SHOULDERS },
@@ -1054,10 +1055,10 @@ slot_e bcp_api::translate_api_slot( const std::string& slot_str )
     { "MAIN_HAND", SLOT_MAIN_HAND },
     { "OFF_HAND",  SLOT_OFF_HAND  },
     { "TABARD",    SLOT_TABARD    }
-  } );
+  };
 
-  auto it = slot_map.find( slot_str );
-  if ( it == slot_map.end() )
+  auto it = range::find( slot_map, slot_str, &record_t::first );
+  if ( it == range::end( slot_map ) )
   {
     return SLOT_INVALID;
   }

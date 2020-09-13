@@ -55,7 +55,8 @@ enum token_e
   TOK_FLOOR,
   TOK_CEIL,
   TOK_MAX,
-  TOK_MIN
+  TOK_MIN,
+  TOK_EOF, // "end of stream"
 };
 
 struct expr_token_t
@@ -66,10 +67,8 @@ struct expr_token_t
 
 bool is_unary( token_e );
 bool is_binary( token_e );
-std::vector<expr_token_t> parse_tokens( action_t* action,
-                                        util::string_view expr_str );
-void print_tokens( std::vector<expr_token_t>& tokens, sim_t* sim );
-void convert_to_unary( std::vector<expr_token_t>& tokens );
+std::vector<expr_token_t> parse_tokens( action_t* action, util::string_view expr_str );
+void print_tokens( util::span<const expr_token_t> tokens, sim_t* sim );
 bool convert_to_rpn( std::vector<expr_token_t>& tokens );
 std::unique_ptr<expr_t> build_player_expression_tree(
     player_t& player, std::vector<expression::expr_token_t>& tokens,
@@ -173,7 +172,7 @@ private:
   Should return null if no improved version can be built.
   */
   virtual std::unique_ptr<expr_t> build_optimized_expression( int /* spacing */ )
-  { 
+  {
     return {};
   }
 #if !defined( NDEBUG )

@@ -1143,10 +1143,6 @@ std::unique_ptr<spell_data_expr_t> spell_data_expr_t::parse( sim_t* sim, util::s
 
   if ( sim -> debug ) expression::print_tokens( tokens, sim );
 
-  expression::convert_to_unary( tokens );
-
-  if ( sim -> debug ) expression::print_tokens( tokens, sim );
-
   if ( ! expression::convert_to_rpn( tokens ) )
   {
     throw std::invalid_argument(fmt::format("Unable to convert '{}' into RPN.", expr_str ));

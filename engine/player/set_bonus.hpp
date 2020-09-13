@@ -68,15 +68,7 @@ struct set_bonus_t
   const spell_data_t* set(specialization_e spec, set_bonus_type_e set_bonus, set_bonus_e bonus) const;
 
   // Fast accessor for checking whether a set bonus is enabled
-  bool has_set_bonus(specialization_e spec, set_bonus_type_e set_bonus, set_bonus_e bonus) const
-  {
-    if (specdata::spec_idx(spec) < 0)
-    {
-      return false;
-    }
-
-    return set_bonus_spec_data[set_bonus][specdata::spec_idx(spec)][bonus].enabled;
-  }
+  bool has_set_bonus(specialization_e spec, set_bonus_type_e set_bonus, set_bonus_e bonus) const;
 
   bool parse_set_bonus_option(util::string_view opt_str, set_bonus_type_e& set_bonus, set_bonus_e& bonus);
   std::string to_string() const;

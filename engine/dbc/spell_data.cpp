@@ -268,6 +268,7 @@ double spelleffect_data_t::default_multiplier() const
   switch ( type() )
   {
     case E_APPLY_AURA:
+    case E_APPLY_AREA_AURA_OWNER:
       switch ( subtype() )
       {
         case A_PERIODIC_TRIGGER_SPELL:

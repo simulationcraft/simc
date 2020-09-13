@@ -16,6 +16,131 @@ namespace
 {  // ANONYMOUS ====================================================
 
 constexpr bool EXPRESSION_DEBUG = false;
+
+struct lexer_t
+{
+  struct token_t {
+    token_e type = TOK_UNKNOWN;
+    util::string_view str;
+  };
+
+  util::string_view input;
+  size_t current_len = 0;
+
+  explicit lexer_t( util::string_view s )
+    : input( s )
+  {}
+
+  char peek() const
+  {
+    return current_len < input.size() ? input[ current_len ] : '\0';
+  }
+
+  bool match( char c )
+  {
+    if ( starts_with( input.substr( current_len ), c ) ) {
+      current_len++;
+      return true;
+    }
+    return false;
+  }
+
+  token_t yield_token( token_e type )
+  {
+    token_t token;
+    token.type = type;
+    token.str = input.substr( 0, current_len );
+    input.remove_prefix( current_len );
+    return token;
+  }
+
+  token_t next()
+  {
+    if ( input.empty() )
+      return yield_token( TOK_EOF );
+
+    const char ch = input.front();
+    current_len = 1;
+
+    // numbers
+    if ( is_digit( ch ) ) {
+      while ( is_digit( peek() ) )
+        current_len++;
+      if ( match( '.' ) ) {
+        while ( is_digit( peek() ) )
+          current_len++;
+      }
+      return yield_token( TOK_NUM );
+    }
+
+    // "strings" (identifiers, really)
+    if ( is_alpha( ch ) ) {
+      for ( char c = peek(); is_alpha( c ) || is_digit( c ) || c == '_' || c == '.'; c = peek() )
+        current_len++;
+      return yield_token( TOK_STR );
+    }
+
+    switch ( ch )
+    {
+      case '(': return yield_token( TOK_LPAR );
+      case ')': return yield_token( TOK_RPAR );
+      case '+': return yield_token( TOK_PLUS );
+      case '-': return yield_token( TOK_MINUS );
+      case '*': return yield_token( TOK_MULT );
+      case '%':
+      {
+        // as '/' is taken by option separators we use '%' as division and '%%' as modulus
+        if ( match( '%' ) )
+          return yield_token( TOK_MOD );
+        return yield_token( TOK_DIV );
+      }
+      case '@': return yield_token( TOK_ABS );
+      case '&': match( '&' ); return yield_token( TOK_AND );
+      case '|': match( '|' ); return yield_token( TOK_OR );
+      case '^': match( '^' ); return yield_token( TOK_XOR );
+      case '~': match( '~' ); return yield_token( TOK_IN );
+      case '=': match( '=' ); return yield_token( TOK_EQ );
+      case '!':
+      {
+        if ( match( '=' ) )
+          return yield_token( TOK_NOTEQ );
+        if ( match( '~' ) )
+          return yield_token( TOK_NOTIN );
+        return yield_token( TOK_NOT );
+      }
+      case '<':
+      {
+        if ( match( '=' ) )
+          return yield_token( TOK_LTEQ );
+        if ( match( '?' ) )
+          return yield_token( TOK_MAX );
+        return yield_token( TOK_LT );
+      }
+      case '>':
+      {
+        if ( match( '=' ) )
+          return yield_token( TOK_GTEQ );
+        if ( match( '?' ) )
+          return yield_token( TOK_MIN );
+        return yield_token( TOK_GT );
+      }
+
+      default: break;
+    }
+    return yield_token( TOK_UNKNOWN );
+  }
+
+  static constexpr bool is_digit( char c ) {
+    return c >= '0' && c <= '9';
+  }
+  static constexpr bool is_alpha( char c ) {
+    return ( c >= 'a' && c <= 'z' ) || ( c >= 'A' && c <= 'Z' );
+  }
+  static constexpr char lowercase( char c ) {
+    return ( c >= 'A' && c <= 'Z' ) ? ( (char)(int(c) | 0x20) ) : c;
+  }
+};
+
 // Unary Operators ==========================================================
 
 template <class F>
@@ -239,7 +364,7 @@ public:
   {
     assert( input );
   }
-  
+
   double evaluate() override  // override
   {
     return F()( input->eval() );
@@ -820,170 +945,7 @@ int precedence( token_e expr_token_type )
   }
 }
 
-// next_token ===============================================================
-
-token_e next_token( action_t* action, util::string_view expr_str,
-                    int& current_index, std::string& token_str,
-                    token_e prev_token )
-{
-  unsigned char c = expr_str[ current_index++ ];
-
-  if ( c == '\0' )
-    return TOK_UNKNOWN;
-  if ( ( prev_token == TOK_FLOOR || prev_token == TOK_CEIL ) && c != '(' )
-    return TOK_UNKNOWN;
-
-  token_str = c;
-
-  if ( c == '@' )
-    return TOK_ABS;
-  if ( c == '+' )
-    return TOK_ADD;
-  if ( c == '-' && ( prev_token == TOK_STR || prev_token == TOK_NUM || prev_token == TOK_RPAR ) )
-    return TOK_SUB;
-  if ( c == '-' && prev_token != TOK_STR && prev_token != TOK_NUM && prev_token != TOK_RPAR &&
-       !isdigit( static_cast<unsigned char>( expr_str[ current_index ] ) ) )
-    return TOK_SUB;
-  if ( c == '*' )
-    return TOK_MULT;
-  if ( c == '%' )
-  {
-    if ( expr_str[ current_index ] == '%' )
-    {
-      current_index++;
-      token_str += "%";
-      return TOK_MOD;
-    }
-    return TOK_DIV;
-  }
-  if ( c == '&' )
-  {
-    if ( expr_str[ current_index ] == '&' )
-      current_index++;
-    return TOK_AND;
-  }
-  if ( c == '|' )
-  {
-    if ( expr_str[ current_index ] == '|' )
-      current_index++;
-    return TOK_OR;
-  }
-  if ( c == '^' )
-  {
-    if ( expr_str[ current_index ] == '^' )
-      current_index++;
-    return TOK_XOR;
-  }
-  if ( c == '~' )
-  {
-    if ( expr_str[ current_index ] == '~' )
-      current_index++;
-    return TOK_IN;
-  }
-  if ( c == '!' )
-  {
-    if ( expr_str[ current_index ] == '=' )
-    {
-      current_index++;
-      token_str += "=";
-      return TOK_NOTEQ;
-    }
-    if ( expr_str[ current_index ] == '~' )
-    {
-      current_index++;
-      token_str += "~";
-      return TOK_NOTIN;
-    }
-    return TOK_NOT;
-  }
-  if ( c == '=' )
-  {
-    if ( expr_str[ current_index ] == '=' )
-      current_index++;
-    return TOK_EQ;
-  }
-  if ( c == '<' )
-  {
-    if ( expr_str[ current_index ] == '=' )
-    {
-      current_index++;
-      token_str += "=";
-      return TOK_LTEQ;
-    }
-    else if (expr_str[current_index] == '?')
-    {
-      current_index++;
-      token_str += '?';
-      return TOK_MAX;
-    }
-    return TOK_LT;
-  }
-  if ( c == '>' )
-  {
-    if ( expr_str[ current_index ] == '=' )
-    {
-      current_index++;
-      token_str += "=";
-      return TOK_GTEQ;
-    }
-    else if (expr_str[current_index] == '?')
-    {
-      current_index++;
-      token_str += '?';
-      return TOK_MIN;
-    }
-    return TOK_GT;
-  }
-  if ( c == '(' )
-    return TOK_LPAR;
-  if ( c == ')' )
-    return TOK_RPAR;
-
-  if ( isalpha( c ) )
-  {
-    c = expr_str[ current_index ];
-    while ( isalpha( c ) || isdigit( c ) || c == '_' || c == '.' )
-    {
-      token_str += c;
-      c = expr_str[ ++current_index ];
-    }
-
-    if ( util::str_compare_ci( token_str, "floor" ) )
-      return TOK_FLOOR;
-    else if ( util::str_compare_ci( token_str, "ceil" ) )
-      return TOK_CEIL;
-    else
-      return TOK_STR;
-  }
-
-  if ( isdigit( c ) || c == '-' )
-  {
-    c = expr_str[ current_index ];
-    while ( isdigit( c ) || c == '.' )
-    {
-      token_str += c;
-      c = expr_str[ ++current_index ];
-    }
-
-    return TOK_NUM;
-  }
-
-  if ( action )
-  {
-    action->sim->error( "{}-{}: Unexpected token ({}) in {}\n",
-                         action->player->name(), action->name(), c,
-                         expr_str );
-  }
-  else
-  {
-    fmt::print( "Unexpected token ({}) in {}\n", c, expr_str );
-  }
-
-  return TOK_UNKNOWN;
-}
-
 }  // UNNAMED NAMESPACE ====================================================
-
 
 // is_unary =================================================================
 
@@ -1035,20 +997,57 @@ bool is_binary( token_e expr_token_type )
 
 // parse_tokens =============================================================
 
-std::vector<expr_token_t> parse_tokens( action_t* action,
-                                        util::string_view expr_str )
+std::vector<expr_token_t> parse_tokens( action_t* action, util::string_view expr_str )
 {
   std::vector<expr_token_t> tokens;
+  lexer_t lexer( expr_str );
 
-  expr_token_t token;
-  int current_index = 0;
-  token_e t         = TOK_UNKNOWN;
-
-  while ( ( token.type = next_token( action, expr_str, current_index,
-                                     token.label, t ) ) != TOK_UNKNOWN )
+  token_e prev_token = TOK_UNKNOWN;
+  lexer_t::token_t token = lexer.next();
+  for (; token.type != TOK_EOF; token = lexer.next() )
   {
-    t = token.type;
-    tokens.push_back( token );
+    if ( token.type == TOK_UNKNOWN )
+    {
+      if ( action )
+      {
+        action->sim->error( "{}-{}: Unexpected token ({}) in {}\n",
+                            action->player->name(), action->name(), token.str, expr_str );
+      }
+      else
+      {
+        fmt::print( "Unexpected token ({}) in {}\n", token.str, expr_str );
+      }
+      break;
+    }
+
+    // lexer never produces binary SUB/ADD. convert unary MINUS/PLUS to them
+    // when they can "bind" to the previous token as a binary op
+    const bool prev_is_left_side = prev_token == TOK_STR || prev_token == TOK_NUM || prev_token == TOK_RPAR;
+    if ( token.type == TOK_MINUS && prev_is_left_side )
+      token.type = TOK_SUB;
+    if ( token.type == TOK_PLUS && prev_is_left_side )
+      token.type = TOK_ADD;
+
+    // lexer never produces FLOOR/CEIL "pseudo-functions", match them here
+    if ( token.type == TOK_LPAR && prev_token == TOK_STR )
+    {
+      if ( util::str_compare_ci( tokens.back().label, "floor" ) )
+        tokens.back().type = TOK_FLOOR;
+      else if ( util::str_compare_ci( tokens.back().label, "ceil" ) )
+        tokens.back().type = TOK_CEIL;
+    }
+
+    // optimization: fold minus followed by a number together into a single number token
+    if ( token.type == TOK_NUM && prev_token == TOK_MINUS )
+    {
+      tokens.back().type = TOK_NUM;
+      tokens.back().label.append( token.str.data(), token.str.size() );
+      prev_token = TOK_NUM;
+      continue;
+    }
+
+    tokens.push_back( { token.type, std::string( token.str ) } );
+    prev_token = token.type;
   }
 
   return tokens;
@@ -1056,46 +1055,16 @@ std::vector<expr_token_t> parse_tokens( action_t* action,
 
 // print_tokens =============================================================
 
-void print_tokens( std::vector<expr_token_t>& tokens, sim_t* sim )
+void print_tokens( util::span<const expr_token_t> tokens, sim_t* sim )
 {
-  std::string str;
-  if ( !tokens.empty() )
-    str += "tokens: ";
+  if ( tokens.empty() )
+    return;
 
-  for ( size_t i = 0; i < tokens.size(); i++ )
-  {
-    expr_token_t& t = tokens[ i ];
-    auto labels = fmt::format("{:2d} '{}'", t.type, t.label );
-    str += labels;
-    if ( i < tokens.size() - 1 )
-      str += " | ";
-  }
+  std::vector<std::string> strings;
+  for ( const expr_token_t& token : tokens )
+    strings.push_back( fmt::format("{:2d} '{}'", token.type, token.label ) );
 
-  sim->out_debug << str;
-}
-
-// convert_to_unary =========================================================
-
-void convert_to_unary( std::vector<expr_token_t>& tokens )
-{
-  size_t num_tokens = tokens.size();
-  for ( size_t i = 0; i < num_tokens; i++ )
-  {
-    expr_token_t& t = tokens[ i ];
-
-    bool left_side = false;
-
-    if ( i > 0 )
-      if ( tokens[ i - 1 ].type == TOK_NUM || tokens[ i - 1 ].type == TOK_STR ||
-           tokens[ i - 1 ].type == TOK_RPAR )
-        left_side = true;
-
-    if ( !left_side && ( t.type == TOK_ADD || t.type == TOK_SUB ) )
-    {
-      // Must be unary.
-      t.type = ( t.type == TOK_ADD ) ? TOK_PLUS : TOK_MINUS;
-    }
-  }
+  sim->out_debug.print( "{}", fmt::join( strings, " | " ) );
 }
 
 // convert_to_rpn ===========================================================
@@ -1324,8 +1293,6 @@ std::unique_ptr<expr_t> expr_t::parse( action_t* action, util::string_view expr_
     if ( action->sim->debug )
       expression::print_tokens( tokens, action->sim );
 
-    expression::convert_to_unary( tokens );
-
     if ( action->sim->debug )
       expression::print_tokens( tokens, action->sim );
 
@@ -1386,7 +1353,6 @@ namespace
 expr_t* parse_expression( const char* arg )
 {
   std::vector<expr_token_t> tokens = expression_t::parse_tokens( 0, arg );
-  expression_t::convert_to_unary( tokens );
   expression_t::print_tokens( tokens, 0 );
 
   if ( expression_t::convert_to_rpn( tokens ) )

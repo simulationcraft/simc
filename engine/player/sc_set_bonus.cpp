@@ -68,7 +68,7 @@ set_bonus_t::set_bonus_t( player_t* player ) :
       assert( bonus.spec > 0 );
       specialization_e spec = static_cast< specialization_e >( bonus.spec );
 
-      set_bonus_spec_data[ bonus.enum_id ][ specdata::spec_idx( spec ) ][ bonus.bonus - 1 ].bonus = &bonus;
+      set_bonus_spec_data[ bonus.enum_id ][ dbc::spec_idx( spec ) ][ bonus.bonus - 1 ].bonus = &bonus;
     }
   }
 }
@@ -103,7 +103,7 @@ void set_bonus_t::initialize_items()
       }
 
       // T17+ and PVP is spec specific, T16 and lower is "role specific"
-      set_bonus_spec_count[ bonus.enum_id ][ specdata::spec_idx( actor->_spec ) ]++;
+      set_bonus_spec_count[ bonus.enum_id ][ dbc::spec_idx( actor->_spec ) ]++;
       item_ids.push_back( item.parsed.data.id );
       break;
     }
@@ -149,16 +149,16 @@ std::vector<const item_set_bonus_t*> set_bonus_t::enabled_set_bonus_data() const
 
 const spell_data_t* set_bonus_t::set(specialization_e spec, set_bonus_type_e set_bonus, set_bonus_e bonus) const
 {
-  if (specdata::spec_idx(spec) < 0)
+  if ( dbc::spec_idx(spec) < 0 )
   {
     return spell_data_t::nil();
   }
 #ifndef NDEBUG
   assert(set_bonus_spec_data.size() > (unsigned)set_bonus);
-  assert(set_bonus_spec_data[set_bonus].size() > (unsigned)specdata::spec_idx(spec));
-  assert(set_bonus_spec_data[set_bonus][specdata::spec_idx(spec)].size() > (unsigned)bonus);
+  assert(set_bonus_spec_data[set_bonus].size() > (unsigned)dbc::spec_idx(spec));
+  assert(set_bonus_spec_data[set_bonus][dbc::spec_idx(spec)].size() > (unsigned)bonus);
 #endif
-  return set_bonus_spec_data[set_bonus][specdata::spec_idx(spec)][bonus].spell;
+  return set_bonus_spec_data[set_bonus][dbc::spec_idx(spec)][bonus].spell;
 }
 
 void set_bonus_t::initialize()
@@ -232,6 +232,16 @@ void set_bonus_t::initialize()
   }
 
   actor->sim->print_debug("Initialized set bonus: {}", *this);
+}
+
+bool set_bonus_t::has_set_bonus(specialization_e spec, set_bonus_type_e set_bonus, set_bonus_e bonus) const
+{
+  if ( dbc::spec_idx(spec) < 0 )
+  {
+    return false;
+  }
+
+  return set_bonus_spec_data[set_bonus][dbc::spec_idx(spec)][bonus].enabled;
 }
 
 std::string set_bonus_t::to_string() const
@@ -313,7 +323,7 @@ std::unique_ptr<expr_t> set_bonus_t::create_expression( const player_t* , util::
     throw std::invalid_argument(fmt::format("Cannot parse set bonus '{}'.", type));
   }
 
-  bool state = set_bonus_spec_data[ set_bonus ][ specdata::spec_idx( actor->specialization() ) ][ bonus ].spell->id() > 0;
+  bool state = set_bonus_spec_data[ set_bonus ][ dbc::spec_idx( actor->specialization() ) ][ bonus ].spell->id() > 0;
 
   return expr_t::create_constant( type, static_cast<double>(state) );
 }
