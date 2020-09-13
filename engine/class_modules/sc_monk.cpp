@@ -1801,8 +1801,31 @@ struct storm_earth_and_fire_pet_t : public pet_t
       : sef_spell_t( "crackling_jade_lightning", player, player->o()->spec.crackling_jade_lightning )
     {
       tick_may_crit         = true;
+      channeled = tick_zero = true;
       hasted_ticks          = false;
       interrupt_auto_attack = true;
+      dot_duration          = data().duration();
+    }
+
+    // Base tick_time(action_t) is somehow pulling the Owner's base_tick_time instead of the pet's
+    // Forcing SEF to use it's own base_tick_time for tick_time.
+    timespan_t tick_time( const action_state_t* state ) const override
+    {
+      timespan_t t = base_tick_time;
+      if ( channeled || hasted_ticks )
+      {
+        t *= state->haste;
+      }
+      return t;
+    }
+
+    double cost_per_tick( resource_e resource ) const override
+    {
+      double c = sef_spell_t::cost_per_tick( resource );
+
+     c = 0;
+
+      return c;
     }
   };
 
@@ -5800,13 +5823,24 @@ struct crackling_jade_lightning_t : public monk_spell_t
 
     parse_options( options_str );
 
-    channeled = tick_may_crit = true;
+    channeled = tick_zero = tick_may_crit = true;
+    dot_duration                          = data().duration();
     hasted_ticks = false;  // Channeled spells always have hasted ticks. Use hasted_ticks = false to disable the
                            // increase in the number of ticks.
     interrupt_auto_attack = true;
     // Forcing the minimum GCD to 750 milliseconds for all 3 specs
     min_gcd  = timespan_t::from_millis( 750 );
     gcd_type = gcd_haste_type::SPELL_HASTE;
+  }
+
+  timespan_t tick_time( const action_state_t* state ) const override
+  {
+    timespan_t t = base_tick_time;
+    if ( channeled || hasted_ticks )
+    {
+      t *= state->haste;
+    }
+    return t;
   }
 
   double cost_per_tick( resource_e resource ) const override
