@@ -4777,18 +4777,20 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::execute();
 
-    p()->buff.spinning_crane_kick->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, composite_dot_duration( execute_state ) );
+    timespan_t buff_duration = composite_dot_duration( execute_state );
+
+    p()->buff.spinning_crane_kick->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, buff_duration );
 
     if ( p()->buff.dance_of_chiji->up() )
     {
       p()->buff.dance_of_chiji->expire();
-      p()->buff.dance_of_chiji_hidden->trigger();
+      p()->buff.dance_of_chiji_hidden->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, buff_duration );
     }
 
     if ( p()->buff.dance_of_chiji_azerite->up() )
     {
       p()->buff.dance_of_chiji_azerite->expire();
-      p()->buff.dance_of_chiji_azerite_hidden->trigger();
+      p()->buff.dance_of_chiji_azerite_hidden->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, buff_duration );
     }
 
     if ( p()->buff.chi_energy->up() )
@@ -8665,7 +8667,6 @@ void monk_t::create_buffs()
 
   buff.dance_of_chiji_hidden = make_buff( this, "dance_of_chiji", find_spell( 325202 ) )
                                    ->set_quiet( true )
-                                   ->set_duration( timespan_t::from_seconds( 1.5 ) )
                                    ->set_trigger_spell( find_spell( 325201 ) )
                                    ->set_default_value( find_spell( 325202 )->effectN( 1 ).base_value() );
 
@@ -8732,7 +8733,6 @@ void monk_t::create_buffs()
 
   buff.dance_of_chiji_azerite_hidden = make_buff( this, "dance_of_chiji_azerite", find_spell( 286587 ) )
                                            ->set_quiet( true )
-                                           ->set_duration( timespan_t::from_seconds( 1.5 ) )
                                            ->set_trigger_spell( find_spell( 286586 ) )
                                            ->set_default_value( find_spell( 286587 )->effectN( 3 ).base_value() );
 
@@ -9793,7 +9793,7 @@ void monk_t::assess_damage_imminent_pre_absorb( school_e school, result_amount_t
       if ( school == SCHOOL_PHYSICAL )
         stagger_dmg += s->result_amount * stagger_pct( s->target->level() );
 
-      else if ( spec.stagger_2 && school != SCHOOL_PHYSICAL )
+      else if ( spec.stagger_2->ok() && school != SCHOOL_PHYSICAL )
       {
         double stagger_magic = stagger_pct( s->target->level() ) * spec.stagger_2->effectN( 1 ).percent();
 
@@ -10566,7 +10566,7 @@ double monk_t::stagger_base_value()
       stagger_base *= 1 + talent.high_tolerance->effectN( 5 ).percent();
     }
 
-    if ( spec.fortifying_brew_2_brm && buff.fortifying_brew->up() )
+    if ( spec.fortifying_brew_2_brm->ok() && buff.fortifying_brew->up() )
     {
       stagger_base *= 1 + passives.fortifying_brew->effectN( 6 ).percent();
     }
