@@ -1294,15 +1294,63 @@ stat_e priest_t::convert_hybrid_stat( stat_e s ) const
   }
 }
 
-std::unique_ptr<expr_t> priest_t::create_expression( util::string_view name_str )
+std::unique_ptr<expr_t> priest_t::create_expression( util::string_view expression_str )
 {
-  auto shadow_expression = create_expression_shadow( name_str );
+  auto shadow_expression = create_expression_shadow( expression_str );
   if ( shadow_expression )
   {
     return shadow_expression;
   }
 
-  return player_t::create_expression( name_str );
+  auto splits = util::string_split<util::string_view>( expression_str, "." );
+  // pet.fiend.X refers to either shadowfiend or mindbender
+  if ( splits.size() >= 2 && splits[ 0 ] == "pet" )
+  {
+    if ( util::str_compare_ci( splits[ 1 ], "fiend" ) )
+    {
+      pet_t* pet = get_current_main_pet();
+      if ( !pet )
+      {
+        throw std::invalid_argument( "Cannot find any summoned fiend (shadowfiend/mindbender) pet ." );
+      }
+      if ( splits.size() == 2 )
+      {
+        return expr_t::create_constant( "pet_index_expr", static_cast<double>( pet->actor_index ) );
+      }
+      // pet.foo.blah
+      else
+      {
+        if ( splits[ 2 ] == "active" )
+        {
+          return make_fn_expr( expression_str, [ pet ] { return !pet->is_sleeping(); } );
+        }
+        else if ( splits[ 2 ] == "remains" )
+        {
+          return make_fn_expr( expression_str, [ pet ] {
+            if ( pet->expiration && pet->expiration->remains() > timespan_t::zero() )
+            {
+              return pet->expiration->remains().total_seconds();
+            }
+            else
+            {
+              return 0.0;
+            };
+          } );
+        }
+
+        // build player/pet expression from the tail of the expression string.
+        auto tail = expression_str.substr( splits[ 1 ].length() + 5 );
+        if ( auto e = pet->create_expression( tail ) )
+        {
+          return e;
+        }
+
+        throw std::invalid_argument( fmt::format( "Unsupported pet expression '{}'.", tail ) );
+      }
+    }
+  }
+
+  return player_t::create_expression( expression_str );
 }
 
 void priest_t::assess_damage( school_e school, result_amount_type dtype, action_state_t* s )
