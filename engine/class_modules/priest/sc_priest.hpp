@@ -8,11 +8,11 @@
 // in the respective spec file if they are limited to one spec only.
 
 #pragma once
-#include "simulationcraft.hpp"
-
 #include "player/covenant.hpp"
 #include "player/pet_spawner.hpp"
 #include "sc_enums.hpp"
+
+#include "simulationcraft.hpp"
 
 namespace priestspace
 {
@@ -55,6 +55,10 @@ namespace pets
 {
 struct void_tendril_t;
 struct void_lasher_t;
+namespace fiend
+{
+struct base_fiend_pet_t;
+}
 }  // namespace pets
 
 /**
@@ -583,6 +587,7 @@ public:
   void trigger_psychic_link( action_state_t* );
   void trigger_wrathful_faerie();
   void remove_wrathful_faerie();
+  pets::fiend::base_fiend_pet_t* get_current_main_pet();
   const priest_td_t* find_target_data( const player_t* target ) const
   {
     return _target_data[ target ];
@@ -794,8 +799,7 @@ struct base_fiend_pet_t : public priest_pet_t
   double direct_power_mod;
 
   base_fiend_pet_t( sim_t* sim, priest_t& owner, pet_e pt, util::string_view name )
-    : priest_pet_t( sim, owner, name, pt ), gains(), direct_power_mod( 0.0 ),
-      shadowflame_prism( nullptr )
+    : priest_pet_t( sim, owner, name, pt ), gains(), direct_power_mod( 0.0 ), shadowflame_prism( nullptr )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1.5 );
@@ -983,8 +987,7 @@ struct fiend_melee_t : public priest_pet_melee_t
 // ==========================================================================
 struct shadowflame_rift_t final : public priest_pet_spell_t
 {
-  shadowflame_rift_t( base_fiend_pet_t& p )
-    : priest_pet_spell_t( "shadowflame_rift", &p, p.o().find_spell( 344748 ) )
+  shadowflame_rift_t( base_fiend_pet_t& p ) : priest_pet_spell_t( "shadowflame_rift", &p, p.o().find_spell( 344748 ) )
   {
   }
 };
@@ -998,7 +1001,7 @@ struct shadowflame_prism_t final : public priest_pet_spell_t
 
   shadowflame_prism_t( base_fiend_pet_t& p )
     : priest_pet_spell_t( "shadowflame_prism", &p, p.o().find_spell( 336143 ) ),
-      duration( data().effectN( 3 ).base_value() + 0.5 ) // This 0.5 is hardcoded in spell data
+      duration( data().effectN( 3 ).base_value() + 0.5 )  // This 0.5 is hardcoded in spell data
   {
     background = true;
 

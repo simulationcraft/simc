@@ -1755,7 +1755,7 @@ void priest_t::vision_of_perfection_proc()
 
   if ( specialization() == PRIEST_SHADOW )
   {
-    auto current_pet = talents.mindbender->ok() ? pets.mindbender : pets.shadowfiend;
+    auto current_pet = get_current_main_pet();
     // check if the pet is active or not
     if ( current_pet->is_sleeping() )
     {
@@ -1769,6 +1769,12 @@ void priest_t::vision_of_perfection_proc()
       current_pet->expiration->reschedule( new_duration );
     }
   }
+}
+
+pets::fiend::base_fiend_pet_t* priest_t::get_current_main_pet()
+{
+  pet_t* current_main_pet = talents.mindbender->ok() ? pets.mindbender : pets.shadowfiend;
+  return debug_cast<pets::fiend::base_fiend_pet_t*>( current_main_pet );
 }
 
 void priest_t::do_dynamic_regen()
@@ -1823,8 +1829,7 @@ void priest_t::create_apl_precombat()
       if ( race == RACE_BLOOD_ELF )
         precombat->add_action( "arcane_torrent" );
       precombat->add_action( "use_item,name=azsharas_font_of_power" );
-      precombat->add_action(
-          "variable,name=mind_sear_cutoff,op=set,value=1" );
+      precombat->add_action( "variable,name=mind_sear_cutoff,op=set,value=1" );
       precombat->add_action( this, "Mind Blast" );
       break;
   }
@@ -2033,9 +2038,9 @@ void priest_t::arise()
 
 void priest_t::trigger_shadowflame_prism( player_t* target )
 {
-  // auto current_pet = debug_cast<pets::fiend::base_fiend_pet_t*>( talents.mindbender->ok() ? pets.mindbender : pets.shadowfiend );
-  // current_pet->shadowflame_prism->set_target( target );
-  // current_pet->shadowflame_prism->execute();
+  auto current_pet = get_current_main_pet();
+  current_pet->shadowflame_prism->set_target( target );
+  current_pet->shadowflame_prism->execute();
 }
 
 // Legendary Eternal Call to the Void trigger
@@ -2043,7 +2048,7 @@ void priest_t::trigger_eternal_call_to_the_void( action_state_t* s )
 {
   auto mind_sear_id = find_class_spell( "Mind Sear" )->effectN( 1 ).trigger()->id();
   auto mind_flay_id = find_specialization_spell( "Mind Flay" )->id();
-  auto action_id = s->action->id;
+  auto action_id    = s->action->id;
   if ( !legendary.eternal_call_to_the_void->ok() )
     return;
 
