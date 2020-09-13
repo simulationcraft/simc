@@ -2033,7 +2033,7 @@ void priest_t::arise()
 
 void priest_t::trigger_shadowflame_prism( player_t* target )
 {
-  auto current_pet = talents.mindbender->ok() ? pets.mindbender : pets.shadowfiend;
+  // auto current_pet = debug_cast<pets::fiend::base_fiend_pet_t*>( talents.mindbender->ok() ? pets.mindbender : pets.shadowfiend );
   // current_pet->shadowflame_prism->set_target( target );
   // current_pet->shadowflame_prism->execute();
 }

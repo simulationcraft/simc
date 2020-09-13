@@ -794,7 +794,8 @@ struct base_fiend_pet_t : public priest_pet_t
   double direct_power_mod;
 
   base_fiend_pet_t( sim_t* sim, priest_t& owner, pet_e pt, util::string_view name )
-    : priest_pet_t( sim, owner, name, pt ), gains(), direct_power_mod( 0.0 )
+    : priest_pet_t( sim, owner, name, pt ), gains(), direct_power_mod( 0.0 ),
+      shadowflame_prism( nullptr )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1.5 );
