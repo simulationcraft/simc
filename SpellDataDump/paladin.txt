@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.2.35854 shadowlands-BETA (hotfix 2020-09-10/35854)
+SimulationCraft 901-01 for World of Warcraft 9.0.2.35854 shadowlands-BETA (hotfix 2020-09-12/35854, git build shadowlands a3c99b0cc6)
 
 Name             : Haste (id=65) [Scaling Spell (-1)] 
 Class            : Paladin
@@ -9026,7 +9026,7 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Friend (21)
 #3 (id=823067)   : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 33554432 | Target: Friend (21)
-#4 (id=834166)   : Unknown(164)
+#4 (id=834166)   : Cancel Aura (164)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 329720 | Target: Self (1)
 Description      : Bless an ally for $d, increasing their healing done by $s1% and healing received by $s2%.
 

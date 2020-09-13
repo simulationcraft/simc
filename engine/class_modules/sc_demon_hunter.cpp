@@ -688,7 +688,6 @@ public:
   double composite_parry_rating() const override;
   double composite_player_multiplier( school_e ) const override;
   double composite_spell_crit_chance() const override;
-  double composite_rating_multiplier( rating_e ) const override;
   double matching_gear_multiplier( attribute_e attr ) const override;
   double passive_movement_modifier() const override;
   double temporary_movement_modifier() const override;
@@ -2119,7 +2118,7 @@ struct fel_devastation_t : public demon_hunter_spell_t
     fel_devastation_tick_t( util::string_view name, demon_hunter_t* p )
       : demon_hunter_spell_t( name, p, p->spec.fel_devastation->effectN( 1 ).trigger() )
     {
-      background = dual = reduced_aoe_damage = true;
+      background = dual = true;
       aoe = -1;
     }
   };
@@ -4600,7 +4599,7 @@ demon_hunter_td_t::demon_hunter_td_t( player_t* target, demon_hunter_t& p )
     debuffs.frailty = make_buff( *this, "frailty", p.find_spell( 247456 ) )
       ->set_default_value_from_effect( 1 );
     debuffs.void_reaver = make_buff( *this, "void_reaver", p.find_spell( 268178 ) )
-      ->set_default_value_from_effect_type( A_MOD_DAMAGE_FROM_CASTER );
+      ->set_default_value_from_effect_type( A_MOD_DAMAGE_TO_CASTER );
   }
 
   dots.sinful_brand = target->get_dot( "sinful_brand", &p );
@@ -5936,6 +5935,8 @@ double demon_hunter_t::composite_melee_haste() const
     mh /= 1.0 + buff.metamorphosis->check_value();
   }
 
+  mh /= 1.0 + buff.furious_gaze_passive->value();
+
   return mh;
 }
 
@@ -5949,6 +5950,8 @@ double demon_hunter_t::composite_spell_haste() const
   {
     sh /= 1.0 + buff.metamorphosis->check_value();
   }
+
+  sh /= 1.0 + buff.furious_gaze_passive->value();
 
   return sh;
 }
@@ -6042,26 +6045,6 @@ double demon_hunter_t::composite_spell_crit_chance() const
   sc += spec.critical_strikes->effectN( 1 ).percent();
 
   return sc;
-}
-
-// demon_hunter_t::composite_rating_multiplier ==============================
-
-double demon_hunter_t::composite_rating_multiplier( rating_e r ) const
-{
-  double rm = player_t::composite_rating_multiplier( r );
-
-  switch ( r )
-  {
-    case RATING_MELEE_HASTE:
-    case RATING_RANGED_HASTE:
-    case RATING_SPELL_HASTE:
-      rm *= 1.0 + buff.furious_gaze_passive->value();
-      break;
-    default:
-      break;
-  }
-
-  return rm;
 }
 
 // demon_hunter_t::matching_gear_multiplier =================================

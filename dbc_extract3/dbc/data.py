@@ -93,16 +93,38 @@ class RawDBCRecord:
         db = dbc.db.datastore().get(child_db)
         records = db.records_for_parent(self._id)
         if len(records) > 1:
-            logging.warning('Record "%s"(%d) associated with more than one child in "%s"',
-                            self.dbc_name(), self._id, child_db)
+            logging.warning('Record "%s"(%d) associated with more than one child in "%s" [%s]',
+                            self.dbc_name(), self._id, child_db, ', '.join(str(r.id) for r in records))
         return len(records) and records[0] or db.default()
 
-    def child_refs(self, child_db):
+    def child_refs(self, child_db, field = None):
         if not dbc.db.datastore():
             return []
 
         db = dbc.db.datastore().get(child_db)
-        return db.records_for_reference(self.dbc_name(), self._id)
+        records = db.records_for_reference(self.dbc_name(), self._id)
+
+        # filter out records by the passed in field if not None
+        if field is not None:
+            records = tuple(r for r in records if getattr(r, field, None) == self._id)
+
+        return records
+
+    def child_ref(self, child_db, field = None):
+        if not dbc.db.datastore():
+            raise ValueError
+
+        db = dbc.db.datastore().get(child_db)
+        records = db.records_for_reference(self.dbc_name(), self._id)
+
+        # filter out records by the passed in field if not None
+        if field is not None:
+            records = tuple(r for r in records if getattr(r, field, None) == self._id)
+
+        if len(records) > 1:
+            logging.warning('Record "%s"(%d) referenced by more than one entry in "%s" [%s]',
+                            self.dbc_name(), self._id, child_db, ', '.join(str(r.id) for r in records))
+        return len(records) and records[0] or db.default()
 
     # Get the parent object if defined by the data format
     def parent_record(self, field = None):

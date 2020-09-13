@@ -76,6 +76,7 @@ bool is_school( school_e s, school_e s2 );
 bool has_common_school( school_e s1, school_e s2 );
 unsigned specialization_max_per_class();
 specialization_e spec_by_idx( const player_e c, unsigned idx );
+int spec_idx( specialization_e spec );
 
 // Data Access
 const char* wow_version( bool ptr );

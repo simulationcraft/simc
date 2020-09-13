@@ -2693,19 +2693,19 @@ public:
       switch ( pd.aura_id() )
       {
         case 137023:
-          assert( _resource_by_stance[ specdata::spec_idx( MONK_BREWMASTER ) ] == RESOURCE_MAX &&
+          assert( _resource_by_stance[ dbc::spec_idx( MONK_BREWMASTER ) ] == RESOURCE_MAX &&
                   "Two power entries per aura id." );
-          _resource_by_stance[ specdata::spec_idx( MONK_BREWMASTER ) ] = pd.resource();
+          _resource_by_stance[ dbc::spec_idx( MONK_BREWMASTER ) ] = pd.resource();
           break;
         case 137024:
-          assert( _resource_by_stance[ specdata::spec_idx( MONK_MISTWEAVER ) ] == RESOURCE_MAX &&
+          assert( _resource_by_stance[ dbc::spec_idx( MONK_MISTWEAVER ) ] == RESOURCE_MAX &&
                   "Two power entries per aura id." );
-          _resource_by_stance[ specdata::spec_idx( MONK_MISTWEAVER ) ] = pd.resource();
+          _resource_by_stance[ dbc::spec_idx( MONK_MISTWEAVER ) ] = pd.resource();
           break;
         case 137025:
-          assert( _resource_by_stance[ specdata::spec_idx( MONK_WINDWALKER ) ] == RESOURCE_MAX &&
+          assert( _resource_by_stance[ dbc::spec_idx( MONK_WINDWALKER ) ] == RESOURCE_MAX &&
                   "Two power entries per aura id." );
-          _resource_by_stance[ specdata::spec_idx( MONK_WINDWALKER ) ] = pd.resource();
+          _resource_by_stance[ dbc::spec_idx( MONK_WINDWALKER ) ] = pd.resource();
           break;
         default:
           break;
@@ -2734,7 +2734,7 @@ public:
       return ab::current_resource();
     }
 
-    resource_e resource_by_stance = _resource_by_stance[ specdata::spec_idx( p()->specialization() ) ];
+    resource_e resource_by_stance = _resource_by_stance[ dbc::spec_idx( p()->specialization() ) ];
 
     if ( resource_by_stance == RESOURCE_MAX )
       return ab::current_resource();
@@ -2889,7 +2889,7 @@ public:
     }
 
     // Update the cooldown while Serenity is active
-    if ( p()->buff.serenity->up() && ab::data().affected_by( p()->talent.serenity->effectN( 5 ) ) )
+    if ( p()->buff.serenity->up() && ab::data().affected_by( p()->talent.serenity->effectN( 2 ) ) )
       cd *= ( 1 / ( 1 + p()->talent.serenity->effectN( 4 ).percent() ) );  // saved as 100
     ab::update_ready( cd );
   }
@@ -3566,7 +3566,7 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
     double rm = base_t::recharge_multiplier( cd );
     if ( p()->buff.serenity->up() )
     {
-      rm *= 1.0 / ( 1 + p()->talent.serenity->effectN( 5 ).percent() );
+      rm *= 1.0 / ( 1 + p()->talent.serenity->effectN( 4 ).percent() );
     }
 
     return rm;
@@ -5326,7 +5326,7 @@ struct touch_of_death_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::execute();
 
-    if ( p()->spec.touch_of_death_3_mw )
+    if ( p()->specialization() == MONK_MISTWEAVER && p()->spec.touch_of_death_3_mw )
       p()->buff.touch_of_death->trigger();
   }
 
@@ -7440,11 +7440,17 @@ struct fortifying_brew_t : public monk_buff_t<buff_t>
 
   bool trigger( int stacks, double value, double chance, timespan_t duration ) override
   {
-    // Extra Health is set by current max_health, doesn't change when max_health changes.
-    health_gain = static_cast<int>( p().resources.max[ RESOURCE_HEALTH ] * p().spec.fortifying_brew_mw_ww->effectN( 1 ).percent() );
+    double health_multiplier = p().spec.fortifying_brew_mw_ww->effectN( 1 ).percent();
+
     // TODO: Double check later. This is potentally a bug
-    if ( p().specialization() == MONK_BREWMASTER )
-      health_gain = static_cast<int>( health_gain * 1.0206);
+    if ( p().specialization() == MONK_BREWMASTER && p().spec.fortifying_brew_brm )
+      // hard-coded the 20% into the spell
+      // health_multiplier = health_multiplier * ( 0.20 * ( 1 / health_multiplier ) );
+      health_multiplier = 1.0 + ( 0.20 * ( 1 / health_multiplier ) );
+
+    // Extra Health is set by current max_health, doesn't change when max_health changes.
+    health_gain = static_cast<int>( p().resources.max[ RESOURCE_HEALTH ] * health_multiplier );
+
     p().stat_gain( STAT_MAX_HEALTH, health_gain, (gain_t*)nullptr, (action_t*)nullptr, true );
     p().stat_gain( STAT_HEALTH, health_gain, (gain_t*)nullptr, (action_t*)nullptr, true );
     return buff_t::trigger( stacks, value, chance, duration );
@@ -7461,10 +7467,9 @@ struct fortifying_brew_t : public monk_buff_t<buff_t>
 // Serenity Buff ==========================================================
 struct serenity_buff_t : public monk_buff_t<buff_t>
 {
-  double percent_adjust;
   monk_t& m;
   serenity_buff_t( monk_t& p, const std::string& n, const spell_data_t* s )
-    : monk_buff_t( p, n, s ), percent_adjust( 0 ), m( p )
+    : monk_buff_t( p, n, s ), m( p )
   {
     set_default_value_from_effect( 2 );
     set_cooldown( timespan_t::zero() );
@@ -7472,27 +7477,9 @@ struct serenity_buff_t : public monk_buff_t<buff_t>
     set_duration( s->duration() );
     add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
     add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
-
-    percent_adjust = s->effectN( 4 ).percent();  // saved as 100%
-  }
-
-  void execute( int stacks, double value, timespan_t duration ) override
-  {
-    buff_t::execute( stacks, value, duration );
-
-    range::for_each( m.serenity_cooldowns, []( cooldown_t* cd ) { cd->adjust_recharge_multiplier(); } );
-  }
-
-  void expire( timespan_t delay ) override
-  {
-    bool expired = check() != 0;
-
-    buff_t::expire( delay );
-
-    if ( expired )
-    {
-      range::for_each( m.serenity_cooldowns, []( cooldown_t* cd ) { cd->adjust_recharge_multiplier(); } );
-    }
+    set_stack_change_callback( [ this ]( buff_t*, int, int ) { 
+        range::for_each( m.serenity_cooldowns, []( cooldown_t* cd ) { cd->adjust_recharge_multiplier(); } );
+    } );
   }
 };
 
@@ -8183,9 +8170,9 @@ void monk_t::init_spells()
   spec.tiger_palm                = find_class_spell( "Tiger Palm" );
   spec.touch_of_death            = find_class_spell( "Touch of Death" );
   spec.touch_of_death_2          = find_rank_spell( "Touch of Death", "Rank 2" );
-  spec.touch_of_death_3_brm      = find_rank_spell( "Touch of Death", "Rank 2", MONK_BREWMASTER );
-  spec.touch_of_death_3_mw       = find_rank_spell( "Touch of Death", "Rank 2", MONK_MISTWEAVER );
-  spec.touch_of_death_3_ww       = find_rank_spell( "Touch of Death", "Rank 2", MONK_WINDWALKER );
+  spec.touch_of_death_3_brm      = find_rank_spell( "Touch of Death", "Rank 3", MONK_BREWMASTER );
+  spec.touch_of_death_3_mw       = find_rank_spell( "Touch of Death", "Rank 3", MONK_MISTWEAVER );
+  spec.touch_of_death_3_ww       = find_rank_spell( "Touch of Death", "Rank 3", MONK_WINDWALKER );
   spec.vivify                    = find_class_spell( "Vivify" );
   spec.vivify_2_brm              = find_rank_spell( "Vivify", "Rank 2", MONK_BREWMASTER );
   spec.vivify_2_mw               = find_rank_spell( "Vivify", "Rank 2", MONK_MISTWEAVER );

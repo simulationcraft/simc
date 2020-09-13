@@ -963,6 +963,7 @@ public:
   void init_beast_weapon( weapon_t&, double );
   const spell_data_t* find_affinity_spell( const std::string& ) const;
   specialization_e get_affinity_spec() const;
+  void moving() override;
   void trigger_natures_guardian( const action_state_t* );
   double calculate_expected_max_health() const;
   const spelleffect_data_t* query_aura_effect( const spell_data_t* aura_spell,
@@ -8275,8 +8276,12 @@ void druid_t::create_buffs()
     ->set_quiet( true )
     ->set_tick_zero( true )
     ->set_tick_callback( [this]( buff_t*, int, timespan_t ) {
-        resource_gain( RESOURCE_ASTRAL_POWER, talent.natures_balance->effectN( 1 ).resource( RESOURCE_ASTRAL_POWER ),
-                        gain.natures_balance );
+        auto ap = talent.natures_balance->effectN( 1 ).resource( RESOURCE_ASTRAL_POWER );
+
+        if ( sim->target_non_sleeping_list.empty() )
+          ap *= 3.0;  // simulate triple regen when out of combat for 'M+' fight models utilizing invuln
+
+        resource_gain( RESOURCE_ASTRAL_POWER, ap, gain.natures_balance );
       } );
 
   buff.oneths_free_starsurge = make_buff( this, "oneths_clear_vision", find_spell( 339797 ) )
@@ -8401,7 +8406,7 @@ void druid_t::create_buffs()
   buff.guardian_of_elune = make_buff( this, "guardian_of_elune", talent.guardian_of_elune->effectN( 1 ).trigger() );
 
   buff.ironfur = make_buff( this, "ironfur", spec.ironfur )
-    ->set_default_value_from_effect_type( A_MOD_ATTACK_POWER_OF_STAT_PERCENT )
+    ->set_default_value_from_effect_type( A_MOD_ARMOR_BY_PRIMARY_STAT_PCT )
     ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
     ->apply_affecting_aura( find_rank_spell( "Ironfur", "Rank 2" ) )
     ->add_invalidate( CACHE_AGILITY )
@@ -8409,7 +8414,7 @@ void druid_t::create_buffs()
 
   buff.pulverize = make_buff( this, "pulverize", talent.pulverize )
     ->set_cooldown( 0_ms )
-    ->set_default_value_from_effect_type( A_MOD_IGNORE_DAMAGE_REDUCTION_SCHOOL )
+    ->set_default_value_from_effect_type( A_MOD_DAMAGE_TO_CASTER )
     ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC );  // TODO: confirm this
 
   buff.savage_combatant = make_buff( this, "savage_combatant", conduit.savage_combatant->effectN( 1 ).trigger() )
@@ -10057,6 +10062,12 @@ const spell_data_t* druid_t::find_affinity_spell( const std::string& name ) cons
     return spec_spell;
 
   return spell_data_t::not_found();
+}
+
+void druid_t::moving()
+{
+  if ( ( executing && !executing->usable_moving() ) || ( channeling && !channeling->usable_moving() ) )
+    player_t::interrupt();
 }
 
 // druid_t::trigger_natures_guardian ========================================

@@ -637,3 +637,4 @@ static std::array<talent_data_t, 636> __talent_data { {
   { "Blessed Hammer"                    , 23469, 0x00, 0x0002,  66,   2,   0,  204019,   53595,  0 },
   { "Acrobatic Strikes"                 , 23470, 0x00, 0x0008, 260,   0,   1,  196924,       0,  0 },
 } };
+
