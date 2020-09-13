@@ -4701,11 +4701,13 @@ struct flame_shock_t : public shaman_spell_t
 {
   flame_shock_spreader_t* spreader;
   const spell_data_t* elemental_resource;
+  const spell_data_t* skybreakers_effect;
 
   flame_shock_t( shaman_t* player, const std::string& options_str = std::string() )
     : shaman_spell_t( "flame_shock", player, player->find_class_spell( "Flame Shock" ), options_str ),
       spreader( player->talent.surge_of_power->ok() ? new flame_shock_spreader_t( player ) : nullptr ),
-      elemental_resource( player->find_spell( 263819 ) )
+      elemental_resource( player->find_spell( 263819 ) ),
+      skybreakers_effect( player->find_spell( 336734 ) )
   {
     tick_may_crit  = true;
     track_cd_waste = false;
@@ -4715,9 +4717,9 @@ struct flame_shock_t : public shaman_spell_t
   {
     double m = shaman_spell_t::composite_crit_chance();
 
-    if ( p()->legendary.skybreakers_fiery_demise->ok() && p()->active_elemental_pet() )
+    if ( p()->legendary.skybreakers_fiery_demise->ok())
     {
-      m += p()->find_spell( 336734 )->effectN( 3 ).percent();
+      m += skybreakers_effect->effectN( 3 ).percent();
     }
 
     return m;
@@ -4778,10 +4780,8 @@ struct flame_shock_t : public shaman_spell_t
 
     if ( d->state->result == RESULT_CRIT && p()->legendary.skybreakers_fiery_demise->ok() )
     {
-      p()->cooldown.storm_elemental->adjust(
-          timespan_t::from_millis( -1.0 * p()->find_spell( 336734 )->effectN( 1 ).base_value() ) );
-      p()->cooldown.fire_elemental->adjust(
-          timespan_t::from_millis( -1.0 * p()->find_spell( 336734 )->effectN( 2 ).base_value() ) );
+      p()->cooldown.storm_elemental->adjust( -1.0 * skybreakers_effect->effectN( 1 ).time_value() );
+      p()->cooldown.fire_elemental->adjust( -1.0 * skybreakers_effect->effectN( 2 ).time_value() );
     }
   }
 
