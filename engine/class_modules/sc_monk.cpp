@@ -793,7 +793,7 @@ public:
     item_runeforge_t ancient_teachings_of_the_monastery; // 7075
     item_runeforge_t clouded_focus;                      // 7074
     item_runeforge_t tear_of_morning;                    // 7072
-    item_runeforge_t yolons_whisper;                     // 7073
+    item_runeforge_t yulons_whisper;                     // 7073
 
     // Windwalker
     item_runeforge_t jade_ignition;                      // 7071
@@ -8307,7 +8307,7 @@ void monk_t::init_spells()
   legendary.ancient_teachings_of_the_monastery = find_runeforge_legendary( "Ancient Teachings of the Monastery" );
   legendary.clouded_focus                      = find_runeforge_legendary( "Clouded Focus" );
   legendary.tear_of_morning                    = find_runeforge_legendary( "Tear of Morning" );
-  legendary.yolons_whisper                     = find_runeforge_legendary( "Yu'lon's Whisper" );
+  legendary.yulons_whisper                     = find_runeforge_legendary( "Yu'lon's Whisper" );
 
   // Windwalker
   legendary.jade_ignition                      = find_runeforge_legendary( "Jade Ignition" );
