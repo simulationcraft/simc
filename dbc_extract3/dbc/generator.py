@@ -1220,6 +1220,8 @@ class SpellDataGenerator(DataGenerator):
          327702, 327704, 327705,
          # Feast of Gluttonous Hedonism
          327707, 327708, 327709,
+         # Darkmoon Deck Putrescence
+         311465, 311466, 311467, 311468, 311469, 311470,
          # Soulbinds
          321524, # Niya's Tools: Poison (night fae/niya)
          320130, 320212, # Social Butterfly vers buff (night fae/dreamweaver)
