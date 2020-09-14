@@ -939,15 +939,9 @@ void base_fiend_pet_t::init_action_list()
 
 void base_fiend_pet_t::init_background_actions()
 {
-  active_spell_shadowflame_prism = new fiend::actions::shadowflame_prism_t( *this );
-
   priest_pet_t::init_background_actions();
-}
 
-void base_fiend_pet_t::trigger_shadowflame_prison( player_t* target, double original_amount )
-{
-  assert( active_spell_shadowflame_prism );
-  active_spell_shadowflame_prism->trigger( target, original_amount );
+  shadowflame_prism = new fiend::actions::shadowflame_prism_t( *this );
 }
 
 double base_fiend_pet_t::composite_player_multiplier( school_e school ) const
@@ -1300,15 +1294,63 @@ stat_e priest_t::convert_hybrid_stat( stat_e s ) const
   }
 }
 
-std::unique_ptr<expr_t> priest_t::create_expression( util::string_view name_str )
+std::unique_ptr<expr_t> priest_t::create_expression( util::string_view expression_str )
 {
-  auto shadow_expression = create_expression_shadow( name_str );
+  auto shadow_expression = create_expression_shadow( expression_str );
   if ( shadow_expression )
   {
     return shadow_expression;
   }
 
-  return player_t::create_expression( name_str );
+  auto splits = util::string_split<util::string_view>( expression_str, "." );
+  // pet.fiend.X refers to either shadowfiend or mindbender
+  if ( splits.size() >= 2 && splits[ 0 ] == "pet" )
+  {
+    if ( util::str_compare_ci( splits[ 1 ], "fiend" ) )
+    {
+      pet_t* pet = get_current_main_pet();
+      if ( !pet )
+      {
+        throw std::invalid_argument( "Cannot find any summoned fiend (shadowfiend/mindbender) pet ." );
+      }
+      if ( splits.size() == 2 )
+      {
+        return expr_t::create_constant( "pet_index_expr", static_cast<double>( pet->actor_index ) );
+      }
+      // pet.foo.blah
+      else
+      {
+        if ( splits[ 2 ] == "active" )
+        {
+          return make_fn_expr( expression_str, [ pet ] { return !pet->is_sleeping(); } );
+        }
+        else if ( splits[ 2 ] == "remains" )
+        {
+          return make_fn_expr( expression_str, [ pet ] {
+            if ( pet->expiration && pet->expiration->remains() > timespan_t::zero() )
+            {
+              return pet->expiration->remains().total_seconds();
+            }
+            else
+            {
+              return 0.0;
+            };
+          } );
+        }
+
+        // build player/pet expression from the tail of the expression string.
+        auto tail = expression_str.substr( splits[ 1 ].length() + 5 );
+        if ( auto e = pet->create_expression( tail ) )
+        {
+          return e;
+        }
+
+        throw std::invalid_argument( fmt::format( "Unsupported pet expression '{}'.", tail ) );
+      }
+    }
+  }
+
+  return player_t::create_expression( expression_str );
 }
 
 void priest_t::assess_damage( school_e school, result_amount_type dtype, action_state_t* s )
@@ -1586,6 +1628,32 @@ void priest_t::trigger_wrathful_faerie()
 
 void priest_t::init_base_stats()
 {
+  if ( base.distance < 1 )
+  {
+    if ( specialization() == PRIEST_DISCIPLINE || specialization() == PRIEST_HOLY )
+    {
+      // Range Based on Talents
+      if ( talents.divine_star->ok() )
+      {
+        base.distance = 24.0;
+      }
+      else if ( talents.halo->ok() )
+      {
+        base.distance = 27.0;
+      }
+      else
+      {
+        base.distance = 27.0;
+      }
+    }
+    else if ( specialization() == PRIEST_SHADOW )
+    {
+      // Need to be 8 yards away for Ascended Nova
+      // Need to be 10 yards - SC radius for Shadow Crash
+      base.distance = 8.0;
+    }
+  }
+
   base_t::init_base_stats();
 
   base.attack_power_per_strength = 0.0;
@@ -1758,7 +1826,7 @@ void priest_t::vision_of_perfection_proc()
 
   if ( specialization() == PRIEST_SHADOW )
   {
-    auto current_pet = talents.mindbender->ok() ? pets.mindbender : pets.shadowfiend;
+    auto current_pet = get_current_main_pet();
     // check if the pet is active or not
     if ( current_pet->is_sleeping() )
     {
@@ -1772,6 +1840,12 @@ void priest_t::vision_of_perfection_proc()
       current_pet->expiration->reschedule( new_duration );
     }
   }
+}
+
+pets::fiend::base_fiend_pet_t* priest_t::get_current_main_pet()
+{
+  pet_t* current_main_pet = talents.mindbender->ok() ? pets.mindbender : pets.shadowfiend;
+  return debug_cast<pets::fiend::base_fiend_pet_t*>( current_main_pet );
 }
 
 void priest_t::do_dynamic_regen()
@@ -1826,8 +1900,7 @@ void priest_t::create_apl_precombat()
       if ( race == RACE_BLOOD_ELF )
         precombat->add_action( "arcane_torrent" );
       precombat->add_action( "use_item,name=azsharas_font_of_power" );
-      precombat->add_action(
-          "variable,name=mind_sear_cutoff,op=set,value=1" );
+      precombat->add_action( "variable,name=mind_sear_cutoff,op=set,value=1" );
       precombat->add_action( this, "Mind Blast" );
       break;
   }
@@ -2034,12 +2107,24 @@ void priest_t::arise()
   buffs.whispers_of_the_damned->trigger();
 }
 
+void priest_t::trigger_shadowflame_prism( player_t* target )
+{
+  auto current_pet = get_current_main_pet();
+  assert( current_pet );
+  if ( !current_pet->is_sleeping() )
+  {
+    assert( current_pet->shadowflame_prism );
+    current_pet->shadowflame_prism->set_target( target );
+    current_pet->shadowflame_prism->execute();
+  }
+}
+
 // Legendary Eternal Call to the Void trigger
 void priest_t::trigger_eternal_call_to_the_void( action_state_t* s )
 {
   auto mind_sear_id = find_class_spell( "Mind Sear" )->effectN( 1 ).trigger()->id();
   auto mind_flay_id = find_specialization_spell( "Mind Flay" )->id();
-  auto action_id = s->action->id;
+  auto action_id    = s->action->id;
   if ( !legendary.eternal_call_to_the_void->ok() )
     return;
 

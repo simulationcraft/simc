@@ -120,6 +120,11 @@ public:
   {
     priest_spell_t::impact( s );
 
+    if ( priest().legendary.shadowflame_prism->ok() )
+    {
+      priest().trigger_shadowflame_prism( s->target );
+    }
+
     if ( priest().buffs.mind_devourer->trigger() )
     {
       priest().procs.mind_devourer->occur();
@@ -232,7 +237,7 @@ struct mind_sear_tick_t final : public priest_spell_t
     priest_spell_t::impact( s );
 
     priest().trigger_eternal_call_to_the_void( s );
-    
+
     trigger_dark_thoughts( s->target, priest().procs.dark_thoughts_sear );
   }
 };
@@ -399,6 +404,11 @@ struct shadow_word_death_t final : public priest_spell_t
   void impact( action_state_t* s ) override
   {
     priest_spell_t::impact( s );
+
+    if ( priest().legendary.shadowflame_prism->ok() )
+    {
+      priest().trigger_shadowflame_prism( s->target );
+    }
 
     if ( result_is_hit( s->result ) )
     {
@@ -1332,7 +1342,9 @@ struct shadow_crash_t final : public priest_spell_t
   // Ensuring that we can't cast on a target that is too close
   bool target_ready( player_t* candidate_target ) override
   {
-    if ( player->get_player_distance( *candidate_target ) < ( data().min_range() - data().effectN( 1 ).radius() ) )
+    auto effective_min_range = data().min_range() - data().effectN( 1 ).radius();
+    sim->print_debug( "Shadow Crash eval: {} < {}", player->get_player_distance( *candidate_target ), effective_min_range );
+    if ( player->get_player_distance( *candidate_target ) < effective_min_range )
     {
       return false;
     }
@@ -2169,13 +2181,6 @@ void priest_t::init_spells_shadow()
   azerite.thought_harvester      = find_azerite_spell( "Thought Harvester" );
   azerite.torment_of_torments    = find_azerite_spell( "Torment of Torments" );
   azerite.whispers_of_the_damned = find_azerite_spell( "Whispers of the Damned" );
-
-  // Need to be 8 yards away for Ascended Nova
-  // Need to be 10 yards - SC radius for Shadow Crash
-  if ( specialization() == PRIEST_SHADOW )
-  {
-    base.distance = 8.0;
-  }
 }
 
 action_t* priest_t::create_action_shadow( util::string_view name, util::string_view options_str )
@@ -2370,12 +2375,16 @@ void priest_t::generate_apl_shadow()
   cds->add_action( this, covenant.mindgames, "Mindgames", "if=insanity<90&!buff.voidform.up" );
   cds->add_action( this, covenant.unholy_nova, "Unholy Nova", "if=raid_event.adds.in>50" );
   cds->add_action( this, covenant.boon_of_the_ascended, "Boon of the Ascended",
-                   "if=!buff.voidform.up&!cooldown.void_eruption.up&spell_targets.mind_sear>1&!talent.searing_nightmare.enabled|(buff.voidform.up&spell_targets.mind_sear<2&!talent.searing_nightmare.enabled)|(buff.voidform.up&talent.searing_nightmare.enabled)" );
+                   "if=!buff.voidform.up&!cooldown.void_eruption.up&spell_targets.mind_sear>1&!talent.searing_"
+                   "nightmare.enabled|(buff.voidform.up&spell_targets.mind_sear<2&!talent.searing_nightmare.enabled)|("
+                   "buff.voidform.up&talent.searing_nightmare.enabled)" );
   cds->add_call_action_list( essences );
   cds->add_action( "use_items", "Default fallback for usable items: Use on cooldown." );
 
   boon->add_action( this, covenant.boon_of_the_ascended, "ascended_blast", "if=spell_targets.mind_sear<=3" );
-  boon->add_action( this, covenant.boon_of_the_ascended, "ascended_nova", "if=(spell_targets.mind_sear>2&talent.searing_nightmare.enabled|(spell_targets.mind_sear>1&!talent.searing_nightmare.enabled))&spell_targets.ascended_nova>1" );
+  boon->add_action( this, covenant.boon_of_the_ascended, "ascended_nova",
+                    "if=(spell_targets.mind_sear>2&talent.searing_nightmare.enabled|(spell_targets.mind_sear>1&!talent."
+                    "searing_nightmare.enabled))&spell_targets.ascended_nova>1" );
 
   // single APL
   main->add_call_action_list( this, covenant.boon_of_the_ascended, boon, "if=buff.boon_of_the_ascended.up" );
@@ -2383,7 +2392,7 @@ void priest_t::generate_apl_shadow()
                     "if=cooldown.power_infusion.up&insanity>=40&(!talent.legacy_of_the_void.enabled|(talent.legacy_of_"
                     "the_void.enabled&dot.devouring_plague.ticking))",
                     "Sync up Voidform and Power Infusion Cooldowns and of using LotV pool insanity before casting." );
-  main->add_action( this, "Shadow Word: Pain", "if=buff.fae_guardians.up&!debuff.wrathful_faerie.up");
+  main->add_action( this, "Shadow Word: Pain", "if=buff.fae_guardians.up&!debuff.wrathful_faerie.up" );
   main->add_action( this, "Void Bolt", "if=!dot.devouring_plague.refreshable",
                     "Only use Void Bolt if Devouring Plague doesn't need refreshed." );
   main->add_call_action_list( cds );
@@ -2398,7 +2407,7 @@ void priest_t::generate_apl_shadow()
                     "the_void.enabled|(talent.legacy_of_the_void.enabled&buff.voidform.down))",
                     "Don't use Devouring Plague if you can get into Voidform instead, or if Searing Nightmare is "
                     "talented and will hit enough targets." );
-  main->add_action( this, "Shadow Word: Death", "target_if=target.health.pct<20",
+  main->add_action( this, "Shadow Word: Death", "target_if=target.health.pct<20|(pet.fiend.active&runeforge.shadowflame_prism.equipped)",
                     "Use Shadow Word: Death if the target is about to die." );
   main->add_talent( this, "Surrender to Madness", "target_if=target.time_to_die<25&buff.voidform.down",
                     "Use Surrender to Madness on a target that is going to die at the right time." );

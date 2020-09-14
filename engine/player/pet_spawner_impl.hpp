@@ -4,6 +4,9 @@
 // ==========================================================================
 #include "pet_spawner.hpp"
 
+#include "sim/sc_expressions.hpp"
+#include "dbc/spell_data.hpp"
+
 namespace
 {
 template <typename T>

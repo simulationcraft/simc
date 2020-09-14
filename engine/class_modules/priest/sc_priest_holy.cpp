@@ -222,23 +222,6 @@ void priest_t::init_spells_holy()
 
   // Spec Core
   specs.holy_priest = find_specialization_spell( "Holy Priest" );
-
-  // Range Based on Talents
-  if ( base.distance != 5 && specialization() == PRIEST_HOLY )
-  {
-    if ( talents.divine_star->ok() )
-    {
-      base.distance = 24.0;
-    }
-    else if ( talents.halo->ok() )
-    {
-      base.distance = 27.0;
-    }
-    else
-    {
-      base.distance = 27.0;
-    }
-  }
 }
 
 action_t* priest_t::create_action_holy( util::string_view name, util::string_view options_str )
