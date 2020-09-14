@@ -488,6 +488,7 @@ public:
 
     // Conduits
     buff_t* eradicating_blow;
+    buff_t* unleashed_frenzy;
   } buffs;
 
   struct runeforge_t {
@@ -884,8 +885,11 @@ public:
 
   struct soulbind_conduits_t
   {
-    conduit_data_t biting_cold;
-    conduit_data_t eradicating_blow;
+                                     // ConduitID for soulbind=
+    conduit_data_t accelerated_cold; // 79
+    conduit_data_t biting_cold;      // 91
+    conduit_data_t eradicating_blow; // 83
+    conduit_data_t unleashed_frenzy; // 122
   } conduits;
 
   struct legendary_t
@@ -4628,7 +4632,7 @@ struct empower_rune_weapon_buff_t : public buff_t
     cooldown -> duration = 0_ms; // Handled in the action
     set_period( p -> spec.empower_rune_weapon -> effectN( 1 ).period() );
     set_trigger_spell( p -> spec.empower_rune_weapon );
-    set_default_value( p -> spec.empower_rune_weapon -> effectN( 3 ).percent() );
+    set_default_value( p -> spec.empower_rune_weapon -> effectN( 3 ).percent() + ( p -> conduits.accelerated_cold->ok() ? p -> conduits.accelerated_cold.percent() : 0 ));
     add_invalidate( CACHE_HASTE );
     set_refresh_behavior( buff_refresh_behavior::EXTEND);
     set_tick_behavior( buff_tick_behavior::REFRESH );
@@ -4670,6 +4674,11 @@ struct empower_rune_weapon_t : public death_knight_spell_t
 
     cooldown -> duration *= 1.0 + p -> vision_of_perfection_minor_cdr;
     cooldown -> duration += p -> spec.empower_rune_weapon_2->effectN( 1 ).time_value();
+    if ( p -> conduits.accelerated_cold->ok() )
+    {
+      cooldown -> duration *= 1.0 + p -> conduits.accelerated_cold->effectN( 2 ).percent();
+    }
+
   }
 
   void execute() override
@@ -4998,6 +5007,10 @@ struct frost_strike_strike_t : public death_knight_melee_attack_t
     death_knight_melee_attack_t::execute();
 
     trigger_icecap( execute_state );
+
+    if ( p() -> conduits.unleashed_frenzy->ok() )
+      p() -> buffs.unleashed_frenzy->trigger();
+
   }
 
   void impact( action_state_t* state ) override
@@ -5532,6 +5545,9 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
 
     trigger_icecap( execute_state );
 
+    if ( p() -> conduits.eradicating_blow->ok() )
+      p() -> buffs.eradicating_blow -> trigger();
+
     if ( p() -> azerite.icy_citadel.enabled() && p() -> buffs.pillar_of_frost -> up() && execute_state -> result == RESULT_CRIT )
     {
       p() -> buffs.icy_citadel_builder -> trigger();
@@ -5604,7 +5620,6 @@ struct obliterate_t : public death_knight_melee_attack_t
       }
 
       p() -> buffs.rime -> trigger();
-      p() -> buffs.eradicating_blow -> trigger();
     }
 
     consume_killing_machine( execute_state, p() -> procs.killing_machine_oblit );
@@ -8068,8 +8083,10 @@ void death_knight_t::init_spells()
   // Conduits
   // Blood
   // Frost
+  conduits.accelerated_cold      = find_conduit_spell( "Accelerated Cold" );
   conduits.biting_cold           = find_conduit_spell( "Biting Cold" );
   conduits.eradicating_blow      = find_conduit_spell( "Eradicating Blow" );
+  conduits.unleashed_frenzy      = find_conduit_spell( "Unleashed Frenzy" );
   // Unholy
 
   // Legendary Items
@@ -8752,7 +8769,11 @@ void death_knight_t::create_buffs()
   // Conduits
   buffs.eradicating_blow = make_buff( this, "eradicating_blow", find_spell( 337936 ) )
         -> set_default_value( conduits.eradicating_blow.percent() )
-        -> set_trigger_spell( spec.obliterate );
+        -> set_trigger_spell( conduits.eradicating_blow );
+
+  buffs.unleashed_frenzy = make_buff( this, "unleashed_frenzy", find_spell( 338501 ) )
+        -> add_invalidate( CACHE_STRENGTH )
+        -> set_default_value( conduits.unleashed_frenzy.percent() );
 }
 
 // death_knight_t::init_gains ===============================================
@@ -9054,6 +9075,8 @@ double death_knight_t::composite_attribute_multiplier( attribute_e attr ) const
     }
 
     m *= 1.0 + buffs.pillar_of_frost -> value() + buffs.pillar_of_frost_bonus -> stack_value();
+
+    m *= 1.0 + buffs.unleashed_frenzy -> stack_value();
   }
 
   else if ( attr == ATTR_STAMINA )
