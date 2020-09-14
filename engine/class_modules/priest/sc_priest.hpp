@@ -990,6 +990,9 @@ struct shadowflame_rift_t final : public priest_pet_spell_t
   shadowflame_rift_t( base_fiend_pet_t& p ) : priest_pet_spell_t( "shadowflame_rift", &p, p.o().find_spell( 344748 ) )
   {
     background = true;
+    // TODO: Spell data does not match in game...at all
+    spell_power_mod.direct  = 1.02;
+    attack_power_mod.direct = 1.02;
   }
 };
 
