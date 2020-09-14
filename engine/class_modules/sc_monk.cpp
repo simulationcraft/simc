@@ -6929,28 +6929,6 @@ struct expel_harm_dmg_t : public monk_spell_t
   {
     background = true;
     may_crit   = false;
-    ww_mastery = true;
-    may_combo_strike = true;
-  }
-
-  void init() override
-  {
-    monk_spell_t::init();
-    // disable the snapshot_flags for all multipliers, but specifically allow
-    // action_multiplier() to be called so we can override.
-    snapshot_flags |= STATE_MUL_DA;
-  }
-
-  // Some reason ww_mastery is not working here; have to manually trigger
-  // combo strike calculation
-  double action_multiplier() const override
-  {
-    double am = monk_spell_t::action_multiplier();
-
-    if ( p()->buff.combo_strikes->up() )
-      am *= 1 + p()->cache.mastery_value();
-
-    return am;
   }
  };
 
@@ -6965,7 +6943,8 @@ struct expel_harm_t : public monk_heal_t
   {
     parse_options( options_str );
 
-    target = player;
+    target           = player;
+    may_combo_strike = true;
 
     add_child( dmg );
   }
@@ -7019,6 +6998,10 @@ struct expel_harm_t : public monk_heal_t
 
     // Defaults to 1 but if someone wants to adjust the amount of damage
     result *= p()->user_options.expel_harm_effectiveness;
+
+    // Have to manually set the combo strike mastery multiplier
+    if ( p()->buff.combo_strikes->up() )
+      result *= 1 + p()->cache.mastery_value();
 
     if ( p()->azerite.conflict_and_strife.is_major() && p()->specialization() == MONK_WINDWALKER )
       result *= 1 + p()->spec.reverse_harm->effectN( 1 ).percent();
