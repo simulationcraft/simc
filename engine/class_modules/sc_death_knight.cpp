@@ -3585,14 +3585,12 @@ struct breath_of_sindragosa_tick_t: public death_knight_spell_t
 
 struct breath_of_sindragosa_buff_t : public buff_t
 {
-  action_t* damage;
   double ticking_cost;
   const timespan_t tick_period;
   int rune_gen;
 
   breath_of_sindragosa_buff_t( death_knight_t* player ) :
     buff_t( player, "breath_of_sindragosa", player -> talent.breath_of_sindragosa ),
-    damage( player -> active_spells.breath_of_sindragosa ),
     tick_period( player -> talent.breath_of_sindragosa -> effectN( 1 ).period() ),
     rune_gen( as<int>( player -> find_spell( 303753 ) -> effectN( 1 ).base_value() ) )
   {
@@ -3621,9 +3619,8 @@ struct breath_of_sindragosa_buff_t : public buff_t
       if ( this -> current_tick == 0 )
       {
         player -> replenish_rune( rune_gen, player -> gains.breath_of_sindragosa );
-
-        this -> damage -> set_target( bos_target );
-        this -> damage -> execute();
+        player -> active_spells.breath_of_sindragosa -> set_target( bos_target );
+        player -> active_spells.breath_of_sindragosa -> execute();
         return;
       }
 
@@ -3640,8 +3637,8 @@ struct breath_of_sindragosa_buff_t : public buff_t
       }
 
       // Else, consume the resource and update the damage tick's resource stats
-      player -> resource_loss( RESOURCE_RUNIC_POWER, this -> ticking_cost, nullptr, this -> damage );
-      this -> damage -> stats -> consume_resource( RESOURCE_RUNIC_POWER, this -> ticking_cost );
+      player -> resource_loss( RESOURCE_RUNIC_POWER, this -> ticking_cost, nullptr, player -> active_spells.breath_of_sindragosa );
+      player -> active_spells.breath_of_sindragosa -> stats -> consume_resource( RESOURCE_RUNIC_POWER, this -> ticking_cost );
 
       // If the player doesn't have enough RP to fuel the next tick, BoS is cancelled
       // after the RP consumption and before the damage event
@@ -3657,8 +3654,8 @@ struct breath_of_sindragosa_buff_t : public buff_t
       }
 
       // If there's enough resources for another tick, deal damage
-      this -> damage -> set_target( bos_target );
-      this -> damage -> execute();
+      player -> active_spells.breath_of_sindragosa -> set_target( bos_target );
+      player -> active_spells.breath_of_sindragosa -> execute();
     } );
   }
 
