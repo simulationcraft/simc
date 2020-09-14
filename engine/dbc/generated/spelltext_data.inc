@@ -1,5 +1,5 @@
 // Spell text, wow build 9.0.2.35854
-static const std::array<spelltext_data_t, 15565> __spelltext_data { {
+static const std::array<spelltext_data_t, 15571> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -13383,6 +13383,12 @@ static const std::array<spelltext_data_t, 15565> __spelltext_data { {
   { 311461, "Increases the target's Stamina by $s1% for $d.  \r\n\r\nIf target is in your party or raid, all party and raid members will be affected.", "Stamina increased by $w1%.", 0 },
   { 311462, "Increases the target's attack power by $s1% for $d.  \r\n\r\nIf target is in your party or raid, all party and raid members will be affected.", "Attack power increased by $w1%.", 0 },
   { 311464, 0, "$@spellaura333885 ${$s1*0.01}.1%", 0 },
+  { 311465, 0, "$@spellaura333885 ${$s1*0.01}.1%", 0 },
+  { 311466, 0, "$@spellaura333885 ${$s1*0.01}.1%", 0 },
+  { 311467, 0, "$@spellaura333885 ${$s1*0.01}.1%", 0 },
+  { 311468, 0, "$@spellaura333885 ${$s1*0.01}.1%", 0 },
+  { 311469, 0, "$@spellaura333885 ${$s1*0.01}.1%", 0 },
+  { 311470, 0, "$@spellaura333885 ${$s1*0.01}.1%", 0 },
   { 311471, 0, "$@spellaura333885 ${$s1*0.01}.1%", 0 },
   { 311483, 0, "$@spellaura329446 $s1", 0 },
   { 311490, 0, "$@spellaura329446 $s1", 0 },
