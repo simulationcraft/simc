@@ -10,10 +10,10 @@ talents=2120031
 azerite_essences=4:3:1/27:3:0/32:3:0/35:3:0
 
 # Default consumables
-potion=disabled
-flask=disabled
-food=disabled
-augmentation=disabled
+potion=potion_of_unbridled_fury
+flask=greater_flask_of_the_currents
+food=famine_evaluator_and_snack_table
+augmentation=battle_scarred
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -30,8 +30,7 @@ actions.precombat+=/food
 actions.precombat+=/snapshot_stats
 actions.precombat+=/stealth
 actions.precombat+=/marked_for_death,precombat_seconds=15
-actions.precombat+=/slice_and_dice,precombat_seconds=2
-actions.precombat+=/shadow_blades,precombat_seconds=1
+actions.precombat+=/slice_and_dice,precombat_seconds=1
 actions.precombat+=/potion
 actions.precombat+=/use_item,name=azsharas_font_of_power
 
@@ -54,6 +53,7 @@ actions+=/variable,name=stealth_threshold,value=25+talent.vigor.enabled*20+talen
 actions+=/variable,name=stealth_threshold,op=set,if=conduit.slaughter_scars.enabled&conduit.slaughter_scars.rank>=1+talent.weaponmaster.enabled,value=20+talent.vigor.enabled*5+talent.master_of_shadows.enabled*5+talent.shadow_focus.enabled*10+talent.alacrity.enabled*20+30*(spell_targets.shuriken_storm>=3)
 # Consider using a Stealth CD when reaching the energy threshold
 actions+=/call_action_list,name=stealth_cds,if=energy.deficit<=variable.stealth_threshold
+actions+=/call_action_list,name=finish,if=runeforge.deathly_shadows.equipped&dot.sepsis.ticking&dot.sepsis.remains<=2&combo_points>=2
 actions+=/call_action_list,name=finish,if=combo_points=animacharged_cp
 # Finish at 4+ without DS, 5+ with DS (outside stealth)
 actions+=/call_action_list,name=finish,if=combo_points.deficit<=1|target.time_to_die<=1&combo_points>=3
@@ -79,13 +79,13 @@ actions.build+=/backstab
 actions.cds=shadow_dance,use_off_gcd=1,if=!buff.shadow_dance.up&buff.shuriken_tornado.up&buff.shuriken_tornado.remains<=3.5
 # (Unless already up because we took Shadow Focus) use Symbols off-gcd before the first Shuriken Storm from Tornado comes in.
 actions.cds+=/symbols_of_death,use_off_gcd=1,if=buff.shuriken_tornado.up&buff.shuriken_tornado.remains<=3.5
-actions.cds+=/vanish,if=(runeforge.mark_of_the_master_assassin.equipped|runeforge.deathly_shadows.equipped)&buff.symbols_of_death.up&buff.shadow_dance.up&master_assassin_remains=0&buff.deathly_shadows.down
+actions.cds+=/vanish,if=(runeforge.mark_of_the_master_assassin.equipped|runeforge.deathly_shadows.equipped)&buff.symbols_of_death.up&buff.shadow_dance.up&master_assassin_remains=0&buff.deathly_shadows.down&(combo_points<1|!runeforge.deathly_shadows.equipped)
 actions.cds+=/call_action_list,name=essences,if=!stealthed.all&buff.slice_and_dice.up|essence.breath_of_the_dying.major&time>=2
 # Pool for Tornado pre-SoD with ShD ready when not running SF.
 actions.cds+=/pool_resource,for_next=1,if=!talent.shadow_focus.enabled
 # Use Tornado pre SoD when we have the energy whether from pooling without SF or just generally.
 actions.cds+=/shuriken_tornado,if=energy>=60&buff.slice_and_dice.up&cooldown.symbols_of_death.up&cooldown.shadow_dance.charges>=1
-actions.cds+=/serrated_bone_spike,target_if=min:target.time_to_die,if=buff.slice_and_dice.up&!dot.serrated_bone_spike_dot.ticking|fight_remains<=5
+actions.cds+=/serrated_bone_spike,cycle_targets=1,if=buff.slice_and_dice.up&!dot.serrated_bone_spike_dot.ticking|fight_remains<=5
 # Use Symbols on cooldown (after first SnD) unless we are going to pop Tornado and do not have Shadow Focus.
 actions.cds+=/symbols_of_death,if=buff.slice_and_dice.up&!cooldown.shadow_blades.up&(talent.enveloping_shadows.enabled|cooldown.shadow_dance.charges>=1)&(!talent.shuriken_tornado.enabled|talent.shadow_focus.enabled|cooldown.shuriken_tornado.remains>2)&(!essence.blood_of_the_enemy.major|cooldown.blood_of_the_enemy.remains>2)
 # If adds are up, snipe the one with lowest TTD. Use when dying faster than CP deficit or not stealthed without any CP.
@@ -124,15 +124,16 @@ actions.essences+=/cycling_variable,name=reaping_delay,op=min,if=essence.breath_
 actions.essences+=/reaping_flames,target_if=target.time_to_die<1.5|((target.health.pct>80|target.health.pct<=20)&(active_enemies=1|variable.reaping_delay>29))|(target.time_to_pct_20>30&(active_enemies=1|variable.reaping_delay>44))
 
 # Finishers
-actions.finish=pool_resource,for_next=1
-actions.finish+=/slice_and_dice,if=buff.slice_and_dice.remains<target.time_to_die&buff.slice_and_dice.remains<(1+combo_points)*1.8
+actions.finish=slice_and_dice,if=(!talent.premeditation.enabled|!buff.shadow_dance.up)&buff.slice_and_dice.remains<fight_remains&buff.slice_and_dice.remains<(1+combo_points)*1.8
+# Helper Variable for Rupture
+actions.finish+=/variable,name=skip_rupture,value=spell_targets.shuriken_storm>=5
 # Keep up Rupture if it is about to run out.
-actions.finish+=/rupture,if=target.time_to_die-remains>6&refreshable
-# Multidotting targets that will live for the duration of Rupture, refresh during pandemic.
-actions.finish+=/rupture,cycle_targets=1,if=!variable.use_priority_rotation&spell_targets.shuriken_storm>=2&target.time_to_die>=(5+(2*combo_points))&refreshable
-# Refresh Rupture early if it will expire during Symbols. Do that refresh if SoD gets ready in the next 5s.
-actions.finish+=/rupture,if=remains<cooldown.symbols_of_death.remains+10&cooldown.symbols_of_death.remains<=5&target.time_to_die-remains>cooldown.symbols_of_death.remains+5
+actions.finish+=/rupture,if=!variable.skip_rupture&target.time_to_die-remains>6&refreshable
 actions.finish+=/secret_technique
+# Multidotting targets that will live for the duration of Rupture, refresh during pandemic.
+actions.finish+=/rupture,cycle_targets=1,if=!variable.skip_rupture&!variable.use_priority_rotation&spell_targets.shuriken_storm>=2&target.time_to_die>=(5+(2*combo_points))&refreshable
+# Refresh Rupture early if it will expire during Symbols. Do that refresh if SoD gets ready in the next 5s.
+actions.finish+=/rupture,if=!variable.skip_rupture&remains<cooldown.symbols_of_death.remains+10&cooldown.symbols_of_death.remains<=5&target.time_to_die-remains>cooldown.symbols_of_death.remains+5
 actions.finish+=/eviscerate
 
 # Stealth Cooldowns
@@ -144,10 +145,10 @@ actions.stealth_cds+=/sepsis,if=!variable.shd_threshold
 # Pool for Shadowmeld + Shadowstrike unless we are about to cap on Dance charges. Only when Find Weakness is about to run out.
 actions.stealth_cds+=/pool_resource,for_next=1,extra_amount=40
 actions.stealth_cds+=/shadowmeld,if=energy>=40&energy.deficit>=10&!variable.shd_threshold&combo_points.deficit>1&debuff.find_weakness.remains<1
-# CP requirement: Dance at low CP by default. (Subtraction is a copy from the stealhed finisher call for TFD handling.)
-actions.stealth_cds+=/variable,name=shd_combo_points,value=combo_points.deficit>=4-(talent.deeper_stratagem.enabled&(azerite.the_first_dance.enabled&!talent.dark_shadow.enabled&!talent.subterfuge.enabled&spell_targets.shuriken_storm<3))
-# CP requirement: Dance only before finishers if we have amp talents and priority rotation.
-actions.stealth_cds+=/variable,name=shd_combo_points,value=combo_points.deficit<=1+2*azerite.the_first_dance.enabled,if=variable.use_priority_rotation&(talent.nightstalker.enabled|talent.dark_shadow.enabled)
+# CP requirement: Dance at low CP by default.
+actions.stealth_cds+=/variable,name=shd_combo_points,value=combo_points.deficit>=4
+# CP requirement: Dance only before finishers if we have priority rotation.
+actions.stealth_cds+=/variable,name=shd_combo_points,value=combo_points.deficit<=1,if=variable.use_priority_rotation
 # Dance during Symbols or above threshold.
 actions.stealth_cds+=/shadow_dance,if=variable.shd_combo_points&(variable.shd_threshold|buff.symbols_of_death.remains>=1.2|spell_targets.shuriken_storm>=4&cooldown.symbols_of_death.remains>10)
 # Burn remaining Dances before the target dies if SoD won't be ready in time.
@@ -162,20 +163,20 @@ actions.stealthed+=/shadowstrike,if=(buff.stealth.up|buff.vanish.up)
 actions.stealthed+=/call_action_list,name=finish,if=buff.shuriken_tornado.up&combo_points.deficit<=2
 # Also safe to finish at 4+ CP with exactly 4 targets. (Same as outside stealth.)
 actions.stealthed+=/call_action_list,name=finish,if=spell_targets.shuriken_storm=4&combo_points>=4
-# Finish at 4+ CP without DS, 5+ with DS, and 6 with DS after Vanish or The First Dance + Nights Vegeance
-actions.stealthed+=/call_action_list,name=finish,if=combo_points.deficit<=1-(talent.deeper_stratagem.enabled&(buff.vanish.up|azerite.the_first_dance.enabled&spell_targets.shuriken_storm<3))
+# Finish at 4+ CP without DS, 5+ with DS, and 6 with DS after Vanish
+actions.stealthed+=/call_action_list,name=finish,if=combo_points.deficit<=1-(talent.deeper_stratagem.enabled&buff.vanish.up)
 # At 2 targets with Secret Technique keep up Find Weakness by cycling Shadowstrike.
 actions.stealthed+=/shadowstrike,cycle_targets=1,if=talent.secret_technique.enabled&debuff.find_weakness.remains<1&spell_targets.shuriken_storm=2&target.time_to_die-remains>6
 # Without Deeper Stratagem and 3 Ranks of Blade in the Shadows it is worth using Shadowstrike on 3 targets.
 actions.stealthed+=/shadowstrike,if=!talent.deeper_stratagem.enabled&azerite.blade_in_the_shadows.rank=3&spell_targets.shuriken_storm=3
 # For priority rotation, use Shadowstrike over Storm 1) with WM against up to 4 targets, 2) if FW is running off (on any amount of targets), or 3) to maximize SoD extension with Inevitability on 3 targets (4 with BitS).
 actions.stealthed+=/shadowstrike,if=variable.use_priority_rotation&(debuff.find_weakness.remains<1|talent.weaponmaster.enabled&spell_targets.shuriken_storm<=4|azerite.inevitability.enabled&buff.symbols_of_death.up&spell_targets.shuriken_storm<=3+azerite.blade_in_the_shadows.enabled)
-actions.stealthed+=/shuriken_storm,if=spell_targets>=3
+actions.stealthed+=/shuriken_storm,if=spell_targets>=3+(conduit.slaughter_scars.rank>12|buff.premeditation.up)
 # Shadowstrike to refresh Find Weakness and to ensure we can carry over a full FW into the next SoD if possible.
 actions.stealthed+=/shadowstrike,if=debuff.find_weakness.remains<=1|cooldown.symbols_of_death.remains<18&debuff.find_weakness.remains<cooldown.symbols_of_death.remains
 actions.stealthed+=/pool_resource,for_next=1
 actions.stealthed+=/slaughter,if=!runeforge.akaaris_soul_fragment.equipped&conduit.slaughter_scars.enabled&conduit.slaughter_scars.rank>=1+talent.weaponmaster.enabled
-actions.stealthed+=/gloomblade,if=!runeforge.akaaris_soul_fragment.equipped&(azerite.perforate.rank>=2&spell_targets.shuriken_storm<=2&position_back|buff.perforated_veins.stack>=3&conduit.perforated_veins.rank>=(3-conduit.deeper_daggers.enabled*2))
+actions.stealthed+=/gloomblade,if=!runeforge.akaaris_soul_fragment.equipped&(azerite.perforate.rank>=2|buff.perforated_veins.stack>=3&conduit.perforated_veins.rank>=(3-conduit.deeper_daggers.enabled*2))
 actions.stealthed+=/backstab,if=!runeforge.akaaris_soul_fragment.equipped&buff.perforated_veins.stack>=3&conduit.perforated_veins.rank>=8-talent.weaponmaster.enabled*2
 actions.stealthed+=/shadowstrike
 

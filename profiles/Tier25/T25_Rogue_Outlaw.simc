@@ -9,10 +9,10 @@ talents=2020022
 azerite_essences=14:3:1/27:3:0/32:3:0/35:3:0
 
 # Default consumables
-potion=disabled
-flask=disabled
-food=disabled
-augmentation=disabled
+potion=potion_of_unbridled_fury
+flask=greater_flask_of_the_currents
+food=famine_evaluator_and_snack_table
+augmentation=battle_scarred
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -30,9 +30,8 @@ actions.precombat+=/snapshot_stats
 actions.precombat+=/potion
 actions.precombat+=/marked_for_death,precombat_seconds=5,if=raid_event.adds.in>40
 actions.precombat+=/stealth,if=(!equipped.pocketsized_computation_device|!cooldown.cyclotronic_blast.duration|raid_event.invulnerable.exists)
-actions.precombat+=/roll_the_bones,precombat_seconds=2
-actions.precombat+=/slice_and_dice,precombat_seconds=2
-actions.precombat+=/adrenaline_rush,precombat_seconds=1,if=(!equipped.pocketsized_computation_device|!cooldown.cyclotronic_blast.duration|raid_event.invulnerable.exists)
+actions.precombat+=/roll_the_bones,precombat_seconds=1
+actions.precombat+=/slice_and_dice,precombat_seconds=1
 actions.precombat+=/use_item,name=azsharas_font_of_power
 actions.precombat+=/use_item,effect_name=cyclotronic_blast,if=!raid_event.invulnerable.exists
 
@@ -56,7 +55,7 @@ actions+=/bag_of_tricks
 
 # Builders
 actions.build=echoing_reprimand
-actions.build+=/serrated_bone_spike,target_if=min:dot.serrated_bone_spike_dot.ticking,if=!dot.serrated_bone_spike.ticking|active_enemies=1&raid_event.adds.in>full_recharge_time|charges>2&target.time_to_die<5
+actions.build+=/serrated_bone_spike,cycle_targets=1,if=buff.slice_and_dice.up&!dot.serrated_bone_spike_dot.ticking|fight_remains<=5|cooldown.serrated_bone_spike.charges_fractional>=2.75
 # Use Pistol Shot if it won't cap combo points and the Opportunity buff is up. Avoid using when Keep Your Wits stacks are high or when using Weaponmaster, unless the Deadshot buff is up.
 actions.build+=/pistol_shot,if=(talent.quick_draw.enabled|azerite.keep_your_wits_about_you.rank<2)&buff.opportunity.up&(buff.keep_your_wits_about_you.stack<14|energy<45)
 actions.build+=/pistol_shot,if=buff.opportunity.up&(buff.deadshot.up|buff.greenskins_wickers.up|buff.concealed_blunderbuss.up)
@@ -75,7 +74,7 @@ actions.cds+=/blade_flurry,if=spell_targets>=2&!buff.blade_flurry.up&(!raid_even
 # Blade Flurry on 1T if your next charge will be ready in time for the next wave.
 actions.cds+=/blade_flurry,if=spell_targets=1&raid_event.adds.in>(2-cooldown.blade_flurry.charges_fractional)*25
 actions.cds+=/ghostly_strike,if=combo_points.deficit>=1+buff.broadside.up
-actions.cds+=/killing_spree,if=variable.blade_flurry_sync&spell_targets.blade_flurry>1&energy.time_to_max>2
+actions.cds+=/killing_spree,if=variable.blade_flurry_sync&energy.time_to_max>2
 actions.cds+=/blade_rush,if=variable.blade_flurry_sync&energy.time_to_max>2
 # Using Vanish/Ambush is only a very tiny increase, so in reality, you're absolutely fine to use it as a utility spell.
 actions.cds+=/vanish,if=!stealthed.all&variable.ambush_condition

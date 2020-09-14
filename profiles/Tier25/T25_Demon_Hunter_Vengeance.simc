@@ -1,7 +1,7 @@
 demonhunter="T25_Demon_Hunter_Vengeance"
 source=default
 spec=vengeance
-level=120
+level=50
 race=blood_elf
 role=tank
 position=front
@@ -32,7 +32,7 @@ actions.precombat+=/use_item,name=azsharas_font_of_power
 # Executed every time the actor is available.
 actions=auto_attack
 actions+=/consume_magic
-actions+=/call_action_list,name=brand,if=talent.charred_flesh.enabled
+actions+=/call_action_list,name=brand
 actions+=/call_action_list,name=defensives
 actions+=/call_action_list,name=cooldowns
 actions+=/call_action_list,name=normal
@@ -42,7 +42,6 @@ actions.brand=sigil_of_flame,if=cooldown.fiery_brand.remains<2
 actions.brand+=/infernal_strike,if=cooldown.fiery_brand.remains=0
 actions.brand+=/fiery_brand
 actions.brand+=/immolation_aura,if=dot.fiery_brand.ticking
-actions.brand+=/fel_devastation,if=dot.fiery_brand.ticking
 actions.brand+=/infernal_strike,if=dot.fiery_brand.ticking
 actions.brand+=/sigil_of_flame,if=dot.fiery_brand.ticking
 
@@ -63,14 +62,14 @@ actions.defensives+=/metamorphosis
 actions.defensives+=/fiery_brand
 
 # Normal Rotation
-actions.normal=infernal_strike,if=(!talent.flame_crash.enabled|(dot.sigil_of_flame.remains<3&!action.infernal_strike.sigil_placed))
+actions.normal=infernal_strike
+actions.normal+=/bulk_extraction
 actions.normal+=/spirit_bomb,if=((buff.metamorphosis.up&soul_fragments>=3)|soul_fragments>=4)
 actions.normal+=/soul_cleave,if=(!talent.spirit_bomb.enabled&((buff.metamorphosis.up&soul_fragments>=3)|soul_fragments>=4))
 actions.normal+=/soul_cleave,if=talent.spirit_bomb.enabled&soul_fragments=0
-actions.normal+=/immolation_aura,if=pain<=90
-actions.normal+=/felblade,if=pain<=70
+actions.normal+=/immolation_aura,if=fury<=90
+actions.normal+=/felblade,if=fury<=70
 actions.normal+=/fracture,if=soul_fragments<=3
-actions.normal+=/fel_devastation
 actions.normal+=/sigil_of_flame
 actions.normal+=/shear
 actions.normal+=/throw_glaive
@@ -93,13 +92,13 @@ main_hand=bilestained_crawg_tusks,id=159653,bonus_id=4824/1637,enchant=deadly_na
 off_hand=bilestained_crawg_tusks,id=159653,bonus_id=4824/1637,enchant=versatile_navigation
 
 # Gear Summary
-# gear_ilvl=476.75
-# gear_agility=9497
-# gear_stamina=19534
-# gear_crit_rating=1269
-# gear_haste_rating=1407
-# gear_mastery_rating=528
-# gear_versatility_rating=915
+# gear_ilvl=163.06
+# gear_agility=566
+# gear_stamina=1162
+# gear_crit_rating=296
+# gear_haste_rating=275
+# gear_mastery_rating=148
+# gear_versatility_rating=168
 # gear_corruption=95
 # gear_corruption_resistance=50
-# gear_armor=3854
+# gear_armor=356

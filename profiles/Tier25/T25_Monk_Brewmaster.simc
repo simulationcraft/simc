@@ -9,10 +9,10 @@ talents=1010021
 azerite_essences=12:3:1/13:3:0/32:3:0/37:3:0
 
 # Default consumables
-potion=disabled
-flask=disabled
+potion=unbridled_fury
+flask=currents
 food=disabled
-augmentation=disabled
+augmentation=battle_scarred
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -55,6 +55,7 @@ actions+=/keg_smash,if=spell_targets>=2
 actions+=/tiger_palm,if=talent.rushing_jade_wind.enabled&buff.blackout_combo.up&buff.rushing_jade_wind.up
 actions+=/tiger_palm,if=(1|talent.special_delivery.enabled)&buff.blackout_combo.up
 actions+=/expel_harm,if=buff.gift_of_the_ox.stack>4
+actions+=/blackout_kick
 actions+=/keg_smash
 actions+=/concentrated_flame,if=dot.concentrated_flame.remains=0
 actions+=/heart_essence,if=!essence.the_crucible_of_flame.major
@@ -86,13 +87,13 @@ trinket2=psyche_shredder,id=174060,bonus_id=4824/1517
 main_hand=qwor_nlyeth,id=174106,bonus_id=4824/1517/6550,enchant=versatile_navigation
 
 # Gear Summary
-# gear_ilvl=175.40
-# gear_agility=659
-# gear_stamina=1375
+# gear_ilvl=171.73
+# gear_agility=590
+# gear_stamina=1305
 # gear_intellect=31
-# gear_crit_rating=486
-# gear_haste_rating=261
-# gear_mastery_rating=181
+# gear_crit_rating=435
+# gear_haste_rating=210
+# gear_mastery_rating=130
 # gear_versatility_rating=376
 # gear_corruption=90
 # gear_corruption_resistance=50

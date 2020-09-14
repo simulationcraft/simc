@@ -1,7 +1,7 @@
 warlock="T25_Warlock_Demonology"
 source=default
 spec=demonology
-level=120
+level=50
 race=troll
 role=spell
 position=ranged_back
@@ -9,10 +9,10 @@ talents=3302032
 azerite_essences=14:3:1/35:3:0/5:3:0/32:3:0
 
 # Default consumables
-potion=unbridled_fury
-flask=greater_flask_of_endless_fathoms
-food=baked_port_tato
-augmentation=battle_scarred
+potion=disabled
+flask=disabled
+food=disabled
+augmentation=disabled
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -158,14 +158,14 @@ main_hand=shglayos_astral_malignity,id=174108,bonus_id=4824/1517/6554,enchant=ma
 off_hand=uhnish_vwah,id=172190,bonus_id=4824/1517/6552
 
 # Gear Summary
-# gear_ilvl=479.88
-# gear_stamina=19925
-# gear_intellect=13480
-# gear_crit_rating=1370
-# gear_haste_rating=1173
-# gear_mastery_rating=1164
-# gear_versatility_rating=473
+# gear_ilvl=140.13
+# gear_stamina=849
+# gear_intellect=568
+# gear_crit_rating=274
+# gear_haste_rating=244
+# gear_mastery_rating=247
+# gear_versatility_rating=77
 # gear_corruption=95
 # gear_corruption_resistance=50
-# gear_armor=2408
+# gear_armor=178
 default_pet=felguard
