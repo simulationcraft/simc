@@ -4228,6 +4228,9 @@ double player_t::composite_player_target_crit_chance( player_t* target ) const
 
     // Consumable: Potion of Focused Resolve
     c += td->debuff.focused_resolve->stack_value();
+
+    // Darkmoon Deck: Putrescence
+    c += td->debuff.putrid_burst->stack_value();
   }
 
   return c;

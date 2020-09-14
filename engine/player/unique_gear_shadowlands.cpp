@@ -9,8 +9,10 @@
 
 #include "buff/sc_buff.hpp"
 #include "action/dot.hpp"
+#include "item/item.hpp"
 
 #include "actor_target_data.hpp"
+#include "darkmoon_deck.hpp"
 #include "unique_gear.hpp"
 #include "unique_gear_helper.hpp"
 
@@ -291,6 +293,92 @@ void sinful_revelation( special_effect_t& effect )
 }
 }  // namespace enchants
 
+namespace items
+{
+void darkmoon_deck_shuffle( special_effect_t& effect )
+{
+  // Disable the effect, as we handle shuffling within the on-use effect
+  effect.type = SPECIAL_EFFECT_NONE;
+}
+
+struct SL_darkmoon_deck_t : public darkmoon_deck_t
+{
+  std::vector<unsigned> card_ids;
+  std::vector<const spell_data_t*> cards;
+  const spell_data_t* top;
+
+  SL_darkmoon_deck_t( const special_effect_t& e, const std::vector<unsigned>& c )
+    : darkmoon_deck_t( e ), card_ids( c ), top( spell_data_t::nil() )
+  {}
+
+  void initialize() override
+  {
+    for ( auto c : card_ids )
+    {
+      auto s = player->find_spell( c );
+      cards.push_back( s );
+    }
+
+    top = cards[ player->rng().range( cards.size() ) ];
+
+    player->register_combat_begin( [this]( player_t* ) {
+      make_event<shuffle_event_t>( *player->sim, this, true );
+    } );
+  }
+
+  void shuffle() override
+  {
+    top = cards[ player->rng().range( cards.size() ) ];
+
+    player->sim->print_debug( "{} top card is now {} ({})", player->name(), top->name_cstr(), top->id() );
+  }
+};
+
+struct SL_darkmoon_deck_proc_t : public proc_spell_t
+{
+  SL_darkmoon_deck_t* deck;
+
+  SL_darkmoon_deck_proc_t( const special_effect_t& e, util::string_view n, unsigned shuffle_id,
+                           std::initializer_list<unsigned> card_list )
+    : proc_spell_t( n, e.player, e.trigger(), e.item )
+  {
+    auto shuffle = unique_gear::find_special_effect( player, shuffle_id );
+    if ( !shuffle )
+      return;
+
+    deck = new SL_darkmoon_deck_t( *shuffle, card_list );
+    deck->initialize();
+  }
+
+  ~SL_darkmoon_deck_proc_t() { delete deck; }
+};
+
+void darkmoon_deck_putrescence( special_effect_t& effect )
+{
+  struct putrid_burst_t : public SL_darkmoon_deck_proc_t
+  {
+    putrid_burst_t( const special_effect_t& e )
+      : SL_darkmoon_deck_proc_t( e, "putrid_burst", 333885,
+                                 {311464, 311465, 311466, 311467, 311468, 311469, 311470, 311471} )
+    {
+      split_aoe_damage = true;
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      proc_spell_t::impact( s );
+
+      auto td = player->get_target_data( s->target );
+      // Crit debuff value uses player level scaling, not item scaling
+      td->debuff.putrid_burst->trigger( 1, deck->top->effectN( 1 ).average( player ) * 0.0001 );
+    }
+  };
+
+  effect.trigger_spell_id = effect.spell_id;
+  effect.execute_action   = new putrid_burst_t( effect );
+}
+}  // namespace items
+
 void register_hotfixes()
 {
 }
@@ -311,6 +399,10 @@ void register_special_effects()
     unique_gear::register_special_effect( 324747, enchants::celestial_guidance );
     unique_gear::register_special_effect( 323932, enchants::lightless_force );
     unique_gear::register_special_effect( 324250, enchants::sinful_revelation );
+
+    // Trinkets
+    unique_gear::register_special_effect( 333885, items::darkmoon_deck_shuffle );
+    unique_gear::register_special_effect( 334058, items::darkmoon_deck_putrescence );
 }
 
 void register_target_data_initializers( sim_t& sim )
@@ -327,6 +419,20 @@ void register_target_data_initializers( sim_t& sim )
     }
     else
       td->debuff.sinful_revelation = make_buff( *td, "sinful_revelation" )->set_quiet( true );
+  } );
+
+  // Darkmoon Deck: Putrescence
+  sim.register_target_data_initializer( []( actor_target_data_t* td ) {
+    if ( unique_gear::find_special_effect( td->source, 334058 ) )
+    {
+      assert( !td->debuff.putrid_burst );
+
+      td->debuff.putrid_burst = make_buff<buff_t>( *td, "putrid_burst", td->source->find_spell( 334058 ) )
+        ->set_cooldown( 0_ms );
+      td->debuff.putrid_burst->reset();
+    }
+    else
+      td->debuff.putrid_burst = make_buff( *td, "putrid_burst" )->set_quiet( true );
   } );
 }
 
