@@ -1933,7 +1933,7 @@ std::string priest_t::default_food() const
 
 std::string priest_t::default_rune() const
 {
-  return ( true_level > 50 ) ? "battle_scarred" : "battle_scarred";
+  return ( true_level > 50 ) ? "disabled" : "battle_scarred";
 }
 
 /** NO Spec Combat Action Priority List */
