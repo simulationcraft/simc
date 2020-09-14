@@ -1026,6 +1026,8 @@ public:
   virtual double resource_gain( resource_e resource_type, double amount, gain_t* g = nullptr, action_t* a = nullptr );
   virtual double resource_loss( resource_e resource_type, double amount, gain_t* g = nullptr, action_t* a = nullptr );
   virtual void   recalculate_resource_max( resource_e resource_type, gain_t* g = nullptr );
+  // Check whether the player has enough of a given resource.
+  // The caller needs to ensure current resources are up to date (in particular with dynamic regen).
   virtual bool   resource_available( resource_e resource_type, double cost ) const;
   virtual resource_e primary_resource() const
   { return RESOURCE_NONE; }

@@ -4028,6 +4028,9 @@ bool action_t::consume_cost_per_tick( const dot_t& /* dot */ )
     return false;
   }
 
+  if ( player->resource_regeneration == regen_type::DYNAMIC )
+    player->do_dynamic_regen();
+
   // Consume resources
   /*
    * Assumption: If not enough resource is available, still consume as much as possible
