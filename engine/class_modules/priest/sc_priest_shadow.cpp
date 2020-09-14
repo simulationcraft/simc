@@ -831,7 +831,7 @@ struct vampiric_touch_t final : public priest_spell_t
     }
     else
     {
-      if ( !priest().buffs.unfurling_darkness_cd->check() )
+      if ( priest().talents.unfurling_darkness->ok() && !priest().buffs.unfurling_darkness_cd->check() )
       {
         priest().buffs.unfurling_darkness->trigger();
         // The CD Starts as soon as the buff is applied
