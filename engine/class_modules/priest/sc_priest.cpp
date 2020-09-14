@@ -1827,21 +1827,26 @@ void priest_t::vision_of_perfection_proc()
   if ( specialization() == PRIEST_SHADOW )
   {
     auto current_pet = get_current_main_pet();
-    // check if the pet is active or not
-    if ( current_pet->is_sleeping() )
+    if ( current_pet )
     {
-      current_pet->summon( duration );
-    }
-    else
-    {
-      // if the pet is currently active, just add to the existing duration
-      auto new_duration = current_pet->expiration->remains();
-      new_duration += duration;
-      current_pet->expiration->reschedule( new_duration );
+      // check if the pet is active or not
+      if ( current_pet->is_sleeping() )
+      {
+        current_pet->summon( duration );
+      }
+      else
+      {
+        // if the pet is currently active, just add to the existing duration
+        auto new_duration = current_pet->expiration->remains();
+        new_duration += duration;
+        current_pet->expiration->reschedule( new_duration );
+      }
     }
   }
 }
 
+// Returns mindbender or shadowfiend, depending on talent choice. The returned pointer can be null if no fiend is
+// summoned through the action list, so please check for null.
 pets::fiend::base_fiend_pet_t* priest_t::get_current_main_pet()
 {
   pet_t* current_main_pet = talents.mindbender->ok() ? pets.mindbender : pets.shadowfiend;
@@ -2110,8 +2115,7 @@ void priest_t::arise()
 void priest_t::trigger_shadowflame_prism( player_t* target )
 {
   auto current_pet = get_current_main_pet();
-  assert( current_pet );
-  if ( !current_pet->is_sleeping() )
+  if ( current_pet && !current_pet->is_sleeping() )
   {
     assert( current_pet->shadowflame_prism );
     current_pet->shadowflame_prism->set_target( target );

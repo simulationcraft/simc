@@ -1020,7 +1020,7 @@ struct shadowflame_prism_t final : public priest_pet_spell_t
 
     auto current_pet = p().o().get_current_main_pet();
 
-    if ( !current_pet->is_sleeping() )
+    if ( current_pet && !current_pet->is_sleeping() )
     {
       auto remaining_duration = current_pet->expiration->remains();
       auto new_duration       = remaining_duration + duration;
