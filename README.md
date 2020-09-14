@@ -80,3 +80,7 @@ Boost Software License, Version 1.0 (see LICENSE.BOOST for more information).
 
 Copyright (c) 2012 - 2016, Victor Zverovich. All rights reserved.
 BSD 2-Clause "Simplified" License (see LICENSE.BSD2 for more information).
+
+utf8.h (https://github.com/sheredom/utf8.h)
+
+Unlicense License (see LICENSE.UNLICENSE for more information).
