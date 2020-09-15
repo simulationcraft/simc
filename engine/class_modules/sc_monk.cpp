@@ -948,7 +948,6 @@ public:
   double resource_gain( resource_e, double, gain_t* = nullptr, action_t* = nullptr ) override;
   double temporary_movement_modifier() const override;
   double passive_movement_modifier() const override;
-  pet_t* create_pet( util::string_view name, util::string_view type = "" ) override;
   void create_pets() override;
   void init_spells() override;
   void init_base_stats() override;
