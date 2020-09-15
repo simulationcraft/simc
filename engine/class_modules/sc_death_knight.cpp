@@ -5016,7 +5016,9 @@ struct frost_strike_strike_t : public death_knight_melee_attack_t
     trigger_icecap( execute_state );
 
     if ( p() -> conduits.unleashed_frenzy->ok() )
+    {
       p() -> buffs.unleashed_frenzy->trigger();
+    }
 
   }
 
@@ -5553,7 +5555,9 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
     trigger_icecap( execute_state );
 
     if ( p() -> conduits.eradicating_blow->ok() )
+    {
       p() -> buffs.eradicating_blow -> trigger();
+    }
 
     if ( p() -> azerite.icy_citadel.enabled() && p() -> buffs.pillar_of_frost -> up() && execute_state -> result == RESULT_CRIT )
     {
