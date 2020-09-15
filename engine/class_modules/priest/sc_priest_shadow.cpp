@@ -1343,7 +1343,8 @@ struct shadow_crash_t final : public priest_spell_t
   bool target_ready( player_t* candidate_target ) override
   {
     auto effective_min_range = data().min_range() - data().effectN( 1 ).radius();
-    sim->print_debug( "Shadow Crash eval: {} < {}", player->get_player_distance( *candidate_target ), effective_min_range );
+    sim->print_debug( "Shadow Crash eval: {} < {}", player->get_player_distance( *candidate_target ),
+                      effective_min_range );
     if ( player->get_player_distance( *candidate_target ) < effective_min_range )
     {
       return false;
@@ -2392,12 +2393,13 @@ void priest_t::generate_apl_shadow()
                     "if=cooldown.power_infusion.up&insanity>=40&(!talent.legacy_of_the_void.enabled|(talent.legacy_of_"
                     "the_void.enabled&dot.devouring_plague.ticking))",
                     "Sync up Voidform and Power Infusion Cooldowns and of using LotV pool insanity before casting." );
-  main->add_action( this, "Shadow Word: Pain", "if=buff.fae_guardians.up&!debuff.wrathful_faerie.up" );
+  main->add_action( this, "Shadow Word: Pain", "if=buff.fae_guardians.up&!debuff.wrathful_faerie.up",
+                    "Make sure you put up SW:P ASAP on the target if Wrathful Faerie isn't active." );
   main->add_action( this, "Void Bolt", "if=!dot.devouring_plague.refreshable",
                     "Only use Void Bolt if Devouring Plague doesn't need refreshed." );
   main->add_call_action_list( cds );
   main->add_talent( this, "Damnation", "target_if=!variable.all_dots_up",
-                    "Prefer to use Damnation ASAP if any DoT is not up" );
+                    "Prefer to use Damnation ASAP if any DoT is not up." );
   main->add_action( this, "Devouring Plague",
                     "if=talent.legacy_of_the_void.enabled&cooldown.void_eruption.up&insanity=100",
                     "Use Devouring Plague right before you go into a LotV Voidform." );
@@ -2407,16 +2409,20 @@ void priest_t::generate_apl_shadow()
                     "the_void.enabled|(talent.legacy_of_the_void.enabled&buff.voidform.down))",
                     "Don't use Devouring Plague if you can get into Voidform instead, or if Searing Nightmare is "
                     "talented and will hit enough targets." );
-  main->add_action( this, "Shadow Word: Death", "target_if=target.health.pct<20|(pet.fiend.active&runeforge.shadowflame_prism.equipped)",
-                    "Use Shadow Word: Death if the target is about to die." );
+  main->add_action( this, "Shadow Word: Death",
+                    "target_if=target.health.pct<20|(pet.fiend.active&runeforge.shadowflame_prism.equipped)",
+                    "Use Shadow Word: Death if the target is about to die or you have Shadowflame Prism equipped with "
+                    "Mindbender or Shadowfiend active." );
   main->add_talent( this, "Surrender to Madness", "target_if=target.time_to_die<25&buff.voidform.down",
                     "Use Surrender to Madness on a target that is going to die at the right time." );
   main->add_talent( this, "Mindbender" );
   main->add_talent( this, "Void Torrent", "target_if=variable.all_dots_up&!buff.voidform.up&target.time_to_die>4",
                     "Use Void Torrent only if all DoTs are active and the target won't die during the channel." );
-  main->add_action( this, "Shadow Word: Death",
-                    "if=runeforge.painbreaker_psalm.equipped&variable.dots_up&target.health.pct>30",
-                    "Use SW:D above 30% HP when Painbreaker Psalm power is active" );
+  main->add_action(
+      this, "Shadow Word: Death",
+      "if=runeforge.painbreaker_psalm.equipped&variable.dots_up&target.time_to_pct_20>(cooldown.shadow_word_death."
+      "duration+gcd)",
+      "Use SW:D with Painbreaker Psalm unless the target will be below 20% before the cooldown comes back" );
   main->add_talent(
       this, "Shadow Crash",
       "if=spell_targets.shadow_crash=1&(cooldown.shadow_crash.charges=3|debuff.shadow_crash_debuff.up|action.shadow_"
