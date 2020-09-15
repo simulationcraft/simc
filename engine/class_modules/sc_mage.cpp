@@ -1022,7 +1022,7 @@ namespace mirror_image {
 struct mirror_image_pet_t : public mage_pet_t
 {
   mirror_image_pet_t( sim_t* sim, mage_t* owner ) :
-    mage_pet_t( sim, owner, "mirror_image", true )
+    mage_pet_t( sim, owner, "mirror_image", true, true )
   {
     owner_coeff.sp_from_sp = 0.55;
   }
