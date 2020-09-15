@@ -4364,8 +4364,7 @@ struct death_coil_t : public death_knight_spell_t
     // Reduces the cooldown on Apocalypse by 1.5s
     if ( p() -> spec.death_coil_2 -> ok() )
     {
-      p()->cooldown.apocalypse->adjust(
-        -timespan_t::from_seconds( p() -> spec.death_coil -> effectN( 2 ).base_value() / 10) );
+      p()->cooldown.apocalypse->adjust( -p() -> spec.death_coil -> effectN( 2 ).time_value() );
     }   
 
     // Reduce the cooldown on Apocalypse and Army of the Dead if Army of the Damned is talented
@@ -6026,6 +6025,7 @@ struct clawing_shadows_t : public scourge_strike_base_t
     scourge_strike_base_t( "clawing_shadows", p, p -> talent.clawing_shadows )
   {
     parse_options( options_str );
+    base_multiplier *= 1.0 + p -> spec.scourge_strike_2 -> effectN( 1 ).percent();
   }
 };
 
