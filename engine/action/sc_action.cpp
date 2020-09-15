@@ -3528,7 +3528,7 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
     std::vector<action_t*> in_flight_list;
     bool in_flight_singleton = ( splits[ 0 ] == "in_flight" ||
       splits[ 0 ] == "in_flight_to_target" || splits[ 0 ] == "in_flight_remains" );
-    auto action_name  = ( in_flight_singleton ) ? name_str : splits[ 1 ];
+    auto action_name  = ( in_flight_singleton ) ? this->name_str : splits[ 1 ];
     for ( size_t i = 0; i < player->action_list.size(); ++i )
     {
       action_t* action = player->action_list[ i ];
