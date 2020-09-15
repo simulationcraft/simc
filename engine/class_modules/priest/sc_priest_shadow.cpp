@@ -1343,8 +1343,11 @@ struct shadow_crash_t final : public priest_spell_t
   bool target_ready( player_t* candidate_target ) override
   {
     auto effective_min_range = data().min_range() - data().effectN( 1 ).radius();
-    sim->print_debug( "Shadow Crash eval: {} < {}", player->get_player_distance( *candidate_target ),
-                      effective_min_range );
+    if ( sim->debug )
+    {
+      sim->print_debug( "Shadow Crash eval: {} < {}", player->get_player_distance( *candidate_target ),
+                        effective_min_range );
+    }
     if ( player->get_player_distance( *candidate_target ) < effective_min_range )
     {
       return false;
@@ -1588,14 +1591,18 @@ struct voidform_t final : public priest_buff_t<buff_t>
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
     /// TODO: Verify if functionality is properly matching how it works in game.
-    sim->print_debug( "{} has {} charges of mind blast as voidform ended", *player,
-                      priest().cooldowns.mind_blast->charges_fractional() );
+    if ( sim->debug )
+    {
+      sim->print_debug( "{} has {} charges of mind blast as voidform ended", *player,
+                        priest().cooldowns.mind_blast->charges_fractional() );
+    }
     // Call new generic function to adjust charges.
     adjust_max_charges( priest().cooldowns.mind_blast, 1 );
-
-    sim->print_debug( "{} has {} charges of mind blast after voidform ended", *player,
-                      priest().cooldowns.mind_blast->charges_fractional() );
-
+    if ( sim->debug )
+    {
+      sim->print_debug( "{} has {} charges of mind blast after voidform ended", *player,
+                        priest().cooldowns.mind_blast->charges_fractional() );
+    }
     priest().buffs.insanity_drain_stacks->expire();
 
     if ( priest().talents.legacy_of_the_void->ok() )

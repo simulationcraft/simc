@@ -1406,8 +1406,11 @@ struct priest_spell_t : public priest_action_t<spell_t>
     int dots = swp->is_ticking() + vt->is_ticking() + dp->is_ticking();
     if ( rng().roll( priest().specs.dark_thoughts->effectN( 1 ).percent() * dots ) )
     {
-      sim->print_debug( "{} activated Dark Thoughts using {} with {} chance with {} dots", *player, *this,
-                        priest().specs.dark_thoughts->effectN( 1 ).percent() * dots, dots );
+      if ( sim->debug )
+      {
+        sim->print_debug( "{} activated Dark Thoughts using {} with {} chance with {} dots", *player, *this,
+                          priest().specs.dark_thoughts->effectN( 1 ).percent() * dots, dots );
+      }
       priest().buffs.dark_thoughts->trigger();
       proc->occur();
     }
