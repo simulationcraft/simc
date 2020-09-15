@@ -4363,7 +4363,6 @@ struct death_coil_t : public death_knight_spell_t
     // Reduces the cooldown Dark Transformation by 1s
     p() -> cooldown.dark_transformation -> adjust( -timespan_t::from_seconds(
       p() -> spec.death_coil -> effectN( 2 ).base_value() ) );
-    printf("DEBUGME: %f\n", p() -> spec.death_coil -> effectN( 2 ).base_value() / 10);
 
     // Reduce the cooldown on Apocalypse and Army of the Dead if Army of the Damned is talented
 
