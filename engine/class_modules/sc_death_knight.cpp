@@ -4674,11 +4674,18 @@ struct empower_rune_weapon_t : public death_knight_spell_t
 
     cooldown -> duration *= 1.0 + p -> vision_of_perfection_minor_cdr;
     cooldown -> duration += p -> spec.empower_rune_weapon_2->effectN( 1 ).time_value();
-    if ( p -> conduits.accelerated_cold->ok() )
+  }
+
+  double recharge_multiplier( const cooldown_t& cd ) const override
+  {
+    double m = death_knight_spell_t::recharge_multiplier( cd );
+
+    if ( p() -> conduits.accelerated_cold->ok() )
     {
-      cooldown -> duration *= 1.0 + p -> conduits.accelerated_cold->effectN( 2 ).percent();
+      m *= 1.0 + p()->conduits.accelerated_cold->effectN( 2 ).percent();
     }
 
+    return m;
   }
 
   void execute() override
