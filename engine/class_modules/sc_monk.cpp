@@ -56,12 +56,24 @@ struct storm_earth_and_fire_t;
 }  // namespace actions
 namespace pets
 {
-struct storm_earth_and_fire_pet_t;
+  struct storm_earth_and_fire_pet_t;
+  struct xuen_pet_t;
+  struct niuzao_pet_t;
+  struct yulon_pet_t;
+  struct chiji_pet_t;
+
+  // Azerite
+  struct fury_of_xuen_pet_t;
+
+  // Covenant
+  //struct fallen_monk_ww_pet_t;
+  //struct fallen_monk_mw_pet_t;
+  //struct fallen_monk_brm_pet_t;
 }
 namespace orbs
 {
-struct chi_orb_t;
-struct energy_orb_t;
+  struct chi_orb_t;
+  struct energy_orb_t;
 }  // namespace orbs
 struct monk_t;
 
@@ -805,15 +817,23 @@ public:
   struct pets_t
   {
     pets::storm_earth_and_fire_pet_t* sef[ SEF_PET_MAX ];
-    //    spawner::pet_spawner_t<pets::fury_of_xuen_pet_t, monk_t> fury_of_xuen;
-    //    pets_t( monk_t* m );
-  } pet;
+    pets::xuen_pet_t* xuen = nullptr;
+    pets::niuzao_pet_t* niuzao = nullptr;
+    pets::yulon_pet_t* yulon   = nullptr;
+    pets::chiji_pet_t* chiji   = nullptr;
+    spawner::pet_spawner_t<pets::fury_of_xuen_pet_t, monk_t> fury_of_xuen;
+//    spawner::pet_spawner_t<pets::fallen_monk_ww_pet_t, monk_t> fallen_monk_ww;
+//    spawner::pet_spawner_t<pets::fallen_monk_mw_pet_t, monk_t> fallen_monk_mw;
+//    spawner::pet_spawner_t<pets::fallen_monk_brm_pet_t, monk_t> fallen_monk_brm;
 
-  /*  struct pets_t
-    {
-      spawner::pet_spawner_t<pets::fury_of_xuen_pet_t, monk_t> fury_of_xuen;
-    } pet_spawner;
-    */
+    pets_t( monk_t* p )
+      : fury_of_xuen( "fury_of_xuen", p )
+//        ,
+//        fallen_monk_ww( "fallen_monk_ww", p ),
+//        fallen_monk_mw( "fallen_monk_mw", p ),
+//        fallen_monk_brm( "fallen_monk_brm", p )
+   {}
+  } pets;
 
   // Options
   struct options_t
@@ -852,8 +872,7 @@ public:
       covenant(),
       conduit(),
       legendary(),
-      pet(),
-      //      pet_spawner( pets_t() ),
+      pets( pets_t( this ) ),
       user_options(),
       light_stagger_threshold( 0 ),
       moderate_stagger_threshold( 0.01666 ),  // Moderate transfers at 33.3% Stagger; 1.67% every 1/2 sec
@@ -929,7 +948,6 @@ public:
   double resource_gain( resource_e, double, gain_t* = nullptr, action_t* = nullptr ) override;
   double temporary_movement_modifier() const override;
   double passive_movement_modifier() const override;
-  pet_t* create_pet( util::string_view name, util::string_view type = "" ) override;
   void create_pets() override;
   void init_spells() override;
   void init_base_stats() override;
@@ -2119,7 +2137,7 @@ private:
   };
 
 public:
-  xuen_pet_t( sim_t* sim, monk_t* owner, util::string_view name ) : pet_t( sim, owner, name, true )
+  xuen_pet_t( monk_t* owner ) : pet_t( owner->sim, owner, "xuen_the_white_tiger", true, true )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.min_dmg    = dbc->spell_scaling( o()->type, level() );
@@ -2266,7 +2284,7 @@ private:
   };
 
 public:
-  fury_of_xuen_pet_t( sim_t* sim, monk_t* owner, util::string_view name ) : pet_t( sim, owner, name, true )
+  fury_of_xuen_pet_t( monk_t* owner ) : pet_t( owner->sim, owner, "fury_of_xuen", true, false )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.min_dmg    = dbc->spell_scaling( o()->type, level() );
@@ -2429,7 +2447,7 @@ public:
     buff_t* niuzao_2_buff = nullptr;
   } buff;
 
-  niuzao_pet_t( sim_t* sim, monk_t* owner ) : pet_t( sim, owner, "niuzao_the_black_ox", true )
+  niuzao_pet_t( monk_t* owner ) : pet_t( owner->sim, owner, "niuzao_the_black_ox", true, true )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.min_dmg    = dbc->spell_scaling( o()->type, level() );
@@ -2555,7 +2573,7 @@ private:
   };
 
 public:
-  chiji_pet_t( sim_t* sim, monk_t* owner ) : pet_t( sim, owner, "chiji_the_red_crane", true )
+  chiji_pet_t( monk_t* owner ) : pet_t( owner->sim, owner, "chiji_the_red_crane", true, true )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.min_dmg    = dbc->spell_scaling( o()->type, level() );
@@ -2606,7 +2624,7 @@ struct yulon_pet_t : public pet_t
 private:
 
 public:
-  yulon_pet_t( sim_t* sim, monk_t* owner ) : pet_t( sim, owner, "yulon_the_jade_serpent", true )
+  yulon_pet_t( monk_t* owner ) : pet_t( owner->sim, owner, "yulon_the_jade_serpent", true, true )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.min_dmg    = dbc->spell_scaling( o()->type, level() );
@@ -3045,11 +3063,11 @@ public:
       return;
     }
 
-    p()->pet.sef[ SEF_EARTH ]->trigger_attack( sef_ability, a );
-    p()->pet.sef[ SEF_FIRE ]->trigger_attack( sef_ability, a );
+    p()->pets.sef[ SEF_EARTH ]->trigger_attack( sef_ability, a );
+    p()->pets.sef[ SEF_FIRE ]->trigger_attack( sef_ability, a );
     // Trigger pet retargeting if sticky target is not defined, and the Monk used one of the Cyclone
     // Strike triggering abilities
-    if ( !p()->pet.sef[ SEF_EARTH ]->sticky_target &&
+    if ( !p()->pets.sef[ SEF_EARTH ]->sticky_target &&
          ( sef_ability == SEF_TIGER_PALM || sef_ability == SEF_BLACKOUT_KICK || sef_ability == SEF_RISING_SUN_KICK ) )
     {
       p()->retarget_storm_earth_and_fire_pets();
@@ -3118,7 +3136,7 @@ struct monk_spell_t : public monk_action_t<spell_t>
       {
         double sef_multiplier = p()->spec.storm_earth_and_fire->effectN( 1 ).percent();
 
-        if ( p()->conduit.coordinated_offensive->ok() && p()->pet.sef[ SEF_EARTH ]->sticky_target )
+        if ( p()->conduit.coordinated_offensive->ok() && p()->pets.sef[ SEF_EARTH ]->sticky_target )
           sef_multiplier += p()->conduit.coordinated_offensive.percent();
 
         am *= 1 + sef_multiplier;
@@ -3276,158 +3294,6 @@ public:
 };
 
 // ==========================================================================
-// Invoke Xuen, the White Tiger
-// ==========================================================================
-
-struct xuen_spell_t : public summon_pet_t
-{
-  xuen_spell_t( monk_t* p, const std::string& options_str )
-    : summon_pet_t( "invoke_xuen_the_white_tiger", "xuen_the_white_tiger", p, p->spec.invoke_xuen )
-  {
-    parse_options( options_str );
-
-    harmful            = false;
-    summoning_duration = data().duration();
-    // Forcing the minimum GCD to 750 milliseconds
-    min_gcd  = timespan_t::from_millis( 750 );
-    gcd_type = gcd_haste_type::SPELL_HASTE;
-  }
-
-  void execute() override
-  {
-    summon_pet_t::execute();
-
-    if ( p()->legendary.invokers_delight->ok() )
-      p()->buff.invokers_delight->trigger();
-  }
-};
-
-// ==========================================================================
-// Fury of Xuen
-// ==========================================================================
-
-struct fury_of_xuen_spell_t : public summon_pet_t
-{
-  fury_of_xuen_spell_t( monk_t* p ) : summon_pet_t( "fury_of_xuen", "fury_of_xuen", p, p->azerite.fury_of_xuen )
-  {
-    background = true;
-
-    harmful            = false;
-    summoning_duration = p->passives.fury_of_xuen_haste_buff->duration();
-    min_gcd            = timespan_t::zero();
-  }
-
-  // Fully override this summon mechanism for now to prevent potential crashes/issues
-  // TODO: What is the proper behavior for procs during Xuen out?
-  void execute() override
-  {
-    if ( pet->is_sleeping() )
-    {
-      pet->summon( summoning_duration );
-    }
-    else
-    {
-      pet->adjust_duration( summoning_duration );
-    }
-
-    monk_spell_t::execute();
-  }
-};
-
-// ==========================================================================
-// Invoke Niuzao, the Black Ox
-// ==========================================================================
-
-struct niuzao_spell_t : public summon_pet_t
-{
-  niuzao_spell_t( monk_t* p, const std::string& options_str )
-    : summon_pet_t( "invoke_niuzao_the_black_ox", "niuzao_the_black_ox", p, p->spec.invoke_niuzao )
-  {
-    parse_options( options_str );
-
-    harmful            = false;
-    summoning_duration = data().duration();
-    // Forcing the minimum GCD to 750 milliseconds
-    min_gcd  = timespan_t::from_millis( 750 );
-    gcd_type = gcd_haste_type::SPELL_HASTE;
-  }
-
-  void execute() override
-  {
-    summon_pet_t::execute();
-
-    p()->buff.invoke_niuzao->trigger();
-
-    if ( p()->legendary.invokers_delight->ok() )
-      p()->buff.invokers_delight->trigger();
-  }
-};
-
-// ==========================================================================
-// Invoke Chi-Ji, the Red Crane
-// ==========================================================================
-
-struct chiji_spell_t : public summon_pet_t
-{
-  chiji_spell_t( monk_t* p, const std::string& options_str )
-    : summon_pet_t( "invoke_chiji_the_red_crane", "chiji_the_red_crane", p, p->talent.invoke_chi_ji )
-  {
-    parse_options( options_str );
-
-    harmful            = false;
-    summoning_duration = data().duration();
-    // Forcing the minimum GCD to 750 milliseconds
-    min_gcd  = timespan_t::from_millis( 750 );
-    gcd_type = gcd_haste_type::SPELL_HASTE;
-  }
-
-  void execute() override
-  {
-    summon_pet_t::execute();
-
-    p()->buff.invoke_chiji->trigger();
-
-    if ( p()->legendary.invokers_delight->ok() )
-      p()->buff.invokers_delight->trigger();
-  }
-};
-
-// ==========================================================================
-// Invoke Yu'lon, the Jade Serpent
-// ==========================================================================
-
-struct yulon_spell_t : public summon_pet_t
-{
-  yulon_spell_t( monk_t* p, const std::string& options_str )
-    : summon_pet_t( "invoke_yulon_the_jade_serpent", "yulon_the_jade_serpent", p, p->spec.invoke_yulon )
-  {
-    parse_options( options_str );
-
-    harmful            = false;
-    summoning_duration = data().duration();
-    // Forcing the minimum GCD to 750 milliseconds
-    min_gcd  = timespan_t::from_millis( 750 );
-    gcd_type = gcd_haste_type::SPELL_HASTE;
-  }
-
-  bool ready() override
-  {
-    if ( !p()->talent.invoke_chi_ji->ok() )
-      return summon_pet_t::ready();
-
-    return false;
-  }
-
-  void execute() override
-  {
-    summon_pet_t::execute();
-
-    if ( p()->legendary.invokers_delight->ok() )
-      p()->buff.invokers_delight->trigger();
-  }
-};
-
-// ==========================================================================
 // Storm, Earth, and Fire
 // ==========================================================================
 
@@ -3468,7 +3334,7 @@ struct storm_earth_and_fire_t : public monk_spell_t
     // Don't let user needlessly trigger SEF sticky targeting mode, if the user would just be
     // triggering it on the same sticky target
     if ( p()->buff.storm_earth_and_fire->check() &&
-         ( p()->pet.sef[ SEF_EARTH ]->sticky_target && candidate_target == p()->pet.sef[ SEF_EARTH ]->target ) )
+         ( p()->pets.sef[ SEF_EARTH ]->sticky_target && candidate_target == p()->pets.sef[ SEF_EARTH ]->target ) )
     {
       return false;
     }
@@ -3488,18 +3354,18 @@ struct storm_earth_and_fire_t : public monk_spell_t
   void sticky_targeting()
   {
     sim->print_debug( "{} storm_earth_and_fire sticky target {} to {} (old={})", *player,
-                             p()->pet.sef[ SEF_EARTH ]->name(), target->name(),
-                             p()->pet.sef[ SEF_EARTH ]->target->name() );
+                             p()->pets.sef[ SEF_EARTH ]->name(), target->name(),
+                             p()->pets.sef[ SEF_EARTH ]->target->name() );
 
-    p()->pet.sef[ SEF_EARTH ]->target        = target;
-    p()->pet.sef[ SEF_EARTH ]->sticky_target = true;
+    p()->pets.sef[ SEF_EARTH ]->target        = target;
+    p()->pets.sef[ SEF_EARTH ]->sticky_target = true;
 
     sim ->print_debug( "{} storm_earth_and_fire sticky target {} to {} (old={})", *player,
-                             p()->pet.sef[ SEF_FIRE ]->name(), target->name(),
-                             p()->pet.sef[ SEF_FIRE ]->target->name() );
+                             p()->pets.sef[ SEF_FIRE ]->name(), target->name(),
+                             p()->pets.sef[ SEF_FIRE ]->target->name() );
 
-    p()->pet.sef[ SEF_FIRE ]->target        = target;
-    p()->pet.sef[ SEF_FIRE ]->sticky_target = true;
+    p()->pets.sef[ SEF_FIRE ]->target        = target;
+    p()->pets.sef[ SEF_FIRE ]->sticky_target = true;
   }
 
   void execute() override
@@ -3541,7 +3407,7 @@ struct sef_despawn_cb_t
     // If the active clone's target is sleeping, reset it's targeting, and jump it to a new target.
     // Note that if sticky targeting is used, both targets will jump (since both are going to be
     // stickied to the dead target)
-    range::for_each( monk->pet.sef, [this, &targets, &n_targets]( pets::storm_earth_and_fire_pet_t* pet ) {
+    range::for_each( monk->pets.sef, [this, &targets, &n_targets]( pets::storm_earth_and_fire_pet_t* pet ) {
       // Arise time went negative, so the target is sleeping. Can't check "is_sleeping" here, because
       // the callback is called before the target goes to sleep.
       if ( pet->target->arise_time < timespan_t::zero() )
@@ -3894,8 +3760,8 @@ struct tiger_palm_t : public monk_melee_attack_t
 
           if ( p()->buff.storm_earth_and_fire->up() )
           {
-            p()->pet.sef[ SEF_FIRE ]->buff.bok_proc_sef->trigger();
-            p()->pet.sef[ SEF_EARTH ]->buff.bok_proc_sef->trigger();
+            p()->pets.sef[ SEF_FIRE ]->buff.bok_proc_sef->trigger();
+            p()->pets.sef[ SEF_EARTH ]->buff.bok_proc_sef->trigger();
           }
         }
         break;
@@ -4828,7 +4694,39 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
     monk_melee_attack_t::last_tick( dot );
   }
 };
+/*
+// ==========================================================================
+// Fury of Xuen
+// ==========================================================================
 
+struct fury_of_xuen_spell_t : public summon_pet_t
+{
+  fury_of_xuen_spell_t( monk_t* p ) : summon_pet_t( "fury_of_xuen", "fury_of_xuen", p, p->azerite.fury_of_xuen )
+  {
+    background = true;
+
+    harmful            = false;
+    summoning_duration = p->passives.fury_of_xuen_haste_buff->duration();
+    min_gcd            = timespan_t::zero();
+  }
+
+  // Fully override this summon mechanism for now to prevent potential crashes/issues
+  // TODO: What is the proper behavior for procs during Xuen out?
+  void execute() override
+  {
+    if ( pet->is_sleeping() )
+    {
+      pet->summon( summoning_duration );
+    }
+    else
+    {
+      pet->adjust_duration( summoning_duration );
+    }
+
+    monk_spell_t::execute();
+  }
+};
+*/
 // ==========================================================================
 // Fists of Fury
 // ==========================================================================
@@ -4894,7 +4792,7 @@ double action_multiplier() const override
 
 struct fists_of_fury_t : public monk_melee_attack_t
 {
-  actions::pet_summon::fury_of_xuen_spell_t* xuen;
+  //actions::pet_summon::fury_of_xuen_spell_t* xuen;
 
   fists_of_fury_t( monk_t* p, const std::string& options_str )
     : monk_melee_attack_t( "fists_of_fury", p, p->spec.fists_of_fury )
@@ -4917,7 +4815,7 @@ struct fists_of_fury_t : public monk_melee_attack_t
 
     tick_action = new fists_of_fury_tick_t( p, "fists_of_fury_tick" );
 
-    xuen = new actions::pet_summon::fury_of_xuen_spell_t( p );
+    //xuen = new actions::pet_summon::fury_of_xuen_spell_t( p );
   }
 
   double cost() const override
@@ -4955,7 +4853,8 @@ struct fists_of_fury_t : public monk_melee_attack_t
       if ( rng().roll( p()->buff.fury_of_xuen_stacks->stack_value() ) )
       {
         p()->buff.fury_of_xuen_haste->trigger();
-        xuen->execute();
+        p()->pets.fury_of_xuen.spawn( p()->passives.fury_of_xuen_haste_buff->duration(), 1 );
+        //xuen->execute();
         //        p()->pet_spawner.fury_of_xuen.spawn( p()->passives.fury_of_xuen_haste_buff->duration() +
         //        timespan_t::from_seconds( 1 ), 1 );
         p()->buff.fury_of_xuen_stacks->expire();
@@ -6504,6 +6403,130 @@ struct diffuse_magic_t : public monk_spell_t
 };
 
 // ==========================================================================
+// Invoke Xuen, the White Tiger
+// ==========================================================================
+
+struct xuen_spell_t : public monk_spell_t
+{
+  xuen_spell_t( monk_t* p, const std::string& options_str )
+    : monk_spell_t( "invoke_xuen_the_white_tiger", p, p->spec.invoke_xuen )
+  {
+    parse_options( options_str );
+
+    harmful = false;
+    // Forcing the minimum GCD to 750 milliseconds
+    min_gcd  = timespan_t::from_millis( 750 );
+    gcd_type = gcd_haste_type::SPELL_HASTE;
+  }
+
+  void execute() override
+  {
+    monk_spell_t::execute();
+
+    p()->pets.xuen->summon( p()->spec.invoke_xuen->duration() );
+
+    if ( p()->legendary.invokers_delight->ok() )
+      p()->buff.invokers_delight->trigger();
+  }
+};
+
+// ==========================================================================
+// Invoke Niuzao, the Black Ox
+// ==========================================================================
+
+struct niuzao_spell_t : public monk_spell_t
+{
+  niuzao_spell_t( monk_t* p, const std::string& options_str )
+    : monk_spell_t( "invoke_niuzao_the_black_ox", p, p->spec.invoke_niuzao )
+  {
+    parse_options( options_str );
+
+    harmful            = false;
+    // Forcing the minimum GCD to 750 milliseconds
+    min_gcd  = timespan_t::from_millis( 750 );
+    gcd_type = gcd_haste_type::SPELL_HASTE;
+  }
+
+  void execute() override
+  {
+    monk_spell_t::execute();
+
+    p()->pets.niuzao->summon( p()->spec.invoke_niuzao->duration() );
+
+    p()->buff.invoke_niuzao->trigger();
+
+    if ( p()->legendary.invokers_delight->ok() )
+      p()->buff.invokers_delight->trigger();
+  }
+};
+
+// ==========================================================================
+// Invoke Chi-Ji, the Red Crane
+// ==========================================================================
+
+struct chiji_spell_t : public monk_spell_t
+{
+  chiji_spell_t( monk_t* p, const std::string& options_str )
+    : monk_spell_t( "invoke_chiji_the_red_crane", p, p->talent.invoke_chi_ji )
+  {
+    parse_options( options_str );
+
+    harmful            = false;
+    // Forcing the minimum GCD to 750 milliseconds
+    min_gcd  = timespan_t::from_millis( 750 );
+    gcd_type = gcd_haste_type::SPELL_HASTE;
+  }
+
+  void execute() override
+  {
+    monk_spell_t::execute();
+
+    p()->pets.chiji->summon( p()->talent.invoke_chi_ji->duration() );
+
+    p()->buff.invoke_chiji->trigger();
+
+    if ( p()->legendary.invokers_delight->ok() )
+      p()->buff.invokers_delight->trigger();
+  }
+};
+
+// ==========================================================================
+// Invoke Yu'lon, the Jade Serpent
+// ==========================================================================
+
+struct yulon_spell_t : public monk_spell_t
+{
+  yulon_spell_t( monk_t* p, const std::string& options_str )
+    : monk_spell_t( "invoke_yulon_the_jade_serpent", p, p->spec.invoke_yulon )
+  {
+    parse_options( options_str );
+
+    harmful            = false;
+    // Forcing the minimum GCD to 750 milliseconds
+    min_gcd  = timespan_t::from_millis( 750 );
+    gcd_type = gcd_haste_type::SPELL_HASTE;
+  }
+
+  bool ready() override
+  {
+    if ( !p()->talent.invoke_chi_ji->ok() )
+      return monk_spell_t::ready();
+
+    return false;
+  }
+
+  void execute() override
+  {
+    monk_spell_t::execute();
+
+    p()->pets.yulon->summon( p()->spec.invoke_yulon->duration() );
+
+    if ( p()->legendary.invokers_delight->ok() )
+      p()->buff.invokers_delight->trigger();
+  }
+};
+
+// ==========================================================================
 // Weapons of Order - Kyrian Covenant Ability
 // ==========================================================================
 
@@ -8019,68 +8042,60 @@ int monk_t::mark_of_the_crane_counter()
   return mark_of_the_crane_counter;
 }
 
-// monk_t::create_pet =======================================================
-
-pet_t* monk_t::create_pet( util::string_view name, util::string_view /* pet_type */ )
-{
-  pet_t* p = find_pet( name );
-
-  if ( p )
-    return p;
-
-  using namespace pets;
-  if ( name == "xuen_the_white_tiger" )
-    return new xuen_pet_t( sim, this, name );
-  if ( name == "fury_of_xuen" )
-    return new fury_of_xuen_pet_t( sim, this, name );
-  if ( name == "niuzao_the_black_ox" )
-    return new niuzao_pet_t( sim, this );
-  if ( name == "chiji_the_red_crane" )
-    return new chiji_pet_t( sim, this );
-  if ( name == "yulon_the_jade_serpent" )
-    return new yulon_pet_t( sim, this );
-
-  return nullptr;
-}
-
 // monk_t::create_pets ======================================================
 
 void monk_t::create_pets()
 {
   base_t::create_pets();
 
+  monk_t* p = this;
+
   if ( spec.invoke_xuen->ok() && ( find_action( "invoke_xuen" ) || find_action( "invoke_xuen_the_white_tiger" ) ) )
   {
-    create_pet( "xuen_the_white_tiger" );
+    pets.xuen = new pets::xuen_pet_t( p );
   }
 
   if ( specialization() == MONK_WINDWALKER && azerite.fury_of_xuen.ok() )
   {
-    create_pet( "fury_of_xuen" );
+    pets.fury_of_xuen.set_creation_callback(
+        []( monk_t* p ) { return new pets::fury_of_xuen_pet_t( p ); } );
   }
 
   if ( spec.invoke_niuzao->ok() && ( find_action( "invoke_niuzao" ) || find_action( "invoke_niuzao_the_black_ox" ) ) )
   {
-    create_pet( "niuzao_the_black_ox" );
+    pets.niuzao = new pets::niuzao_pet_t( p );
   }
 
   if ( talent.invoke_chi_ji->ok() && ( find_action( "invoke_chiji" ) || find_action( "invoke_chiji_the_red_crane" ) ) )
   {
-    create_pet( "chiji_the_red_crane" );
+    pets.chiji = new pets::chiji_pet_t( p );
   }
 
-  if ( spec.invoke_yulon->ok() && !talent.invoke_chi_ji->ok() && ( find_action( "invoke_yulon" ) || find_action( "invoke_yulon_the_jade_serpent" ) ) )
+  if ( spec.invoke_yulon->ok() && !talent.invoke_chi_ji->ok() &&
+       ( find_action( "invoke_yulon" ) || find_action( "invoke_yulon_the_jade_serpent" ) ) )
   {
-    create_pet( "yulon_the_jade_serpent" );
+    pets.yulon = new pets::yulon_pet_t( p );
   }
 
   if ( specialization() == MONK_WINDWALKER && find_action( "storm_earth_and_fire" ) )
   {
-    pet.sef[ SEF_FIRE ] = new pets::storm_earth_and_fire_pet_t( "fire_spirit", sim, this, true, WEAPON_SWORD );
+    pets.sef[ SEF_FIRE ] = new pets::storm_earth_and_fire_pet_t( "fire_spirit", p->sim, p, true, WEAPON_SWORD );
     // The player BECOMES the Storm Spirit
     // SEF EARTH was changed from 2-handed user to dual welding in Legion
-    pet.sef[ SEF_EARTH ] = new pets::storm_earth_and_fire_pet_t( "earth_spirit", sim, this, true, WEAPON_MACE );
+    pets.sef[ SEF_EARTH ] = new pets::storm_earth_and_fire_pet_t( "earth_spirit", p->sim, p, true, WEAPON_MACE );
   }
+
+  /*  if ( find_action( "army_of_the_dead" ) )
+    {
+      pets.army_ghouls.set_creation_callback(
+          []( death_knight_t* p ) { return new pets::army_ghoul_pet_t( p, "army_ghoul" ); } );
+    }
+
+    if ( find_action( "apocalypse" ) )
+    {
+      pets.apoc_ghouls.set_creation_callback(
+          []( death_knight_t* p ) { return new pets::army_ghoul_pet_t( p, "apoc_ghoul" ); } );
+    } */
 }
 
 // monk_t::activate =========================================================
@@ -8961,16 +8976,16 @@ void monk_t::summon_storm_earth_and_fire( timespan_t duration )
   auto n_targets = targets.size();
 
   // Start targeting logic from "owner" always
-  pet.sef[ SEF_EARTH ]->reset_targeting();
-  pet.sef[ SEF_EARTH ]->target = target;
-  retarget_storm_earth_and_fire( pet.sef[ SEF_EARTH ], targets, n_targets );
-  pet.sef[ SEF_EARTH ]->summon( duration );
+  pets.sef[ SEF_EARTH ]->reset_targeting();
+  pets.sef[ SEF_EARTH ]->target = target;
+  retarget_storm_earth_and_fire( pets.sef[ SEF_EARTH ], targets, n_targets );
+  pets.sef[ SEF_EARTH ]->summon( duration );
 
   // Start targeting logic from "owner" always
-  pet.sef[ SEF_FIRE ]->reset_targeting();
-  pet.sef[ SEF_FIRE ]->target = target;
-  retarget_storm_earth_and_fire( pet.sef[ SEF_FIRE ], targets, n_targets );
-  pet.sef[ SEF_FIRE ]->summon( duration );
+  pets.sef[ SEF_FIRE ]->reset_targeting();
+  pets.sef[ SEF_FIRE ]->target = target;
+  retarget_storm_earth_and_fire( pets.sef[ SEF_FIRE ], targets, n_targets );
+  pets.sef[ SEF_FIRE ]->summon( duration );
 }
 
 // monk_t::create_storm_earth_and_fire_target_list ====================================
@@ -9121,15 +9136,15 @@ void monk_t::retarget_storm_earth_and_fire( pet_t* pet, std::vector<player_t*>& 
 
 void monk_t::retarget_storm_earth_and_fire_pets() const
 {
-  if ( pet.sef[ SEF_EARTH ]->sticky_target == true )
+  if ( pets.sef[ SEF_EARTH ]->sticky_target == true )
   {
     return;
   }
 
   auto targets   = create_storm_earth_and_fire_target_list();
   auto n_targets = targets.size();
-  retarget_storm_earth_and_fire( pet.sef[ SEF_EARTH ], targets, n_targets );
-  retarget_storm_earth_and_fire( pet.sef[ SEF_FIRE ], targets, n_targets );
+  retarget_storm_earth_and_fire( pets.sef[ SEF_EARTH ], targets, n_targets );
+  retarget_storm_earth_and_fire( pets.sef[ SEF_FIRE ], targets, n_targets );
 }
 
 // monk_t::has_stagger ======================================================
@@ -9623,7 +9638,7 @@ void monk_t::vision_of_perfection_proc()
           name(), sef_duration );
 
         buff.storm_earth_and_fire->extend_duration( this, sef_duration );
-        range::for_each( pet.sef, [&sef_duration]( auto* pet ) {
+        range::for_each( pets.sef, [&sef_duration]( auto* pet ) {
           pet->adjust_duration( sef_duration );
         } );
       }
