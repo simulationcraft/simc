@@ -34,6 +34,7 @@ namespace items
 // Trinkets
 void darkmoon_deck_shuffle( special_effect_t& );
 void darkmoon_deck_putrescence( special_effect_t& );
+void darkmoon_deck_voracity( special_effect_t& );
 }  // namespace items
 
 void register_hotfixes();

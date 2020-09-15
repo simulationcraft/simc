@@ -316,7 +316,8 @@ struct SL_darkmoon_deck_t : public darkmoon_deck_t
     for ( auto c : card_ids )
     {
       auto s = player->find_spell( c );
-      cards.push_back( s );
+      if ( s->ok () )
+        cards.push_back( s );
     }
 
     top = cards[ player->rng().range( cards.size() ) ];
@@ -377,6 +378,35 @@ void darkmoon_deck_putrescence( special_effect_t& effect )
   effect.trigger_spell_id = effect.spell_id;
   effect.execute_action   = new putrid_burst_t( effect );
 }
+
+void darkmoon_deck_voracity( special_effect_t& effect )
+{
+  struct voracious_hunger_t : public SL_darkmoon_deck_proc_t
+  {
+    stat_buff_t* buff;
+
+    voracious_hunger_t( const special_effect_t& e )
+      : SL_darkmoon_deck_proc_t( e, "voracous_hunger", 329446,
+                                 {311483, 311484, 311485, 311486, 311487, 311488, 311489, 311490} )
+    {
+      may_crit = false;
+
+      buff = make_buff<stat_buff_t>( player, "voracious_haste", e.driver()->effectN( 2 ).trigger(), item )
+                 ->add_stat( STAT_HASTE_RATING, 0 );
+    }
+
+    void execute() override
+    {
+      proc_spell_t::execute();
+
+      buff->stats[ 0 ].amount = deck->top->effectN( 1 ).average( player );
+      buff->trigger();
+    }
+  };
+
+  effect.trigger_spell_id = effect.spell_id;
+  effect.execute_action   = new voracious_hunger_t( effect );
+}
 }  // namespace items
 
 void register_hotfixes()
@@ -403,6 +433,8 @@ void register_special_effects()
     // Trinkets
     unique_gear::register_special_effect( 333885, items::darkmoon_deck_shuffle );
     unique_gear::register_special_effect( 334058, items::darkmoon_deck_putrescence );
+    unique_gear::register_special_effect( 329446, items::darkmoon_deck_shuffle );
+    unique_gear::register_special_effect( 331624, items::darkmoon_deck_voracity );
 }
 
 void register_target_data_initializers( sim_t& sim )
