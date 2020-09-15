@@ -386,13 +386,13 @@ void darkmoon_deck_voracity( special_effect_t& effect )
     stat_buff_t* buff;
 
     voracious_hunger_t( const special_effect_t& e )
-      : SL_darkmoon_deck_proc_t( e, "voracous_hunger", 329446,
+      : SL_darkmoon_deck_proc_t( e, "voracious_hunger", 329446,
                                  {311483, 311484, 311485, 311486, 311487, 311488, 311489, 311490} )
     {
       may_crit = false;
 
       buff = make_buff<stat_buff_t>( player, "voracious_haste", e.driver()->effectN( 2 ).trigger(), item )
-                 ->add_stat( STAT_HASTE_RATING, 0 );
+        ->add_stat( STAT_HASTE_RATING, 0 );
     }
 
     void execute() override
@@ -406,6 +406,18 @@ void darkmoon_deck_voracity( special_effect_t& effect )
 
   effect.trigger_spell_id = effect.spell_id;
   effect.execute_action   = new voracious_hunger_t( effect );
+}
+
+void nathria_trinket_184027( special_effect_t& effect )
+{
+  double amount   = effect.driver()->effectN( 1 ).average( effect.item );
+  unsigned allies = effect.player->sim->shadowlands_opts.stone_legionnaires_in_party;
+  double mul      = 1.0 + effect.driver()->effectN( 2 ).percent() * allies;
+
+  effect.player->passive.versatility_rating += amount * mul;
+
+  // Disable further effect handling
+  effect.type = SPECIAL_EFFECT_NONE;
 }
 }  // namespace items
 
@@ -435,6 +447,7 @@ void register_special_effects()
     unique_gear::register_special_effect( 334058, items::darkmoon_deck_putrescence );
     unique_gear::register_special_effect( 329446, items::darkmoon_deck_shuffle );
     unique_gear::register_special_effect( 331624, items::darkmoon_deck_voracity );
+    unique_gear::register_special_effect( 344686, items::nathria_trinket_184027 );
 }
 
 void register_target_data_initializers( sim_t& sim )

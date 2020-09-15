@@ -347,6 +347,8 @@ struct sim_t : private sc_thread_t
     double combat_meditation_extend_chance = 0.5;
     /// Number of nearby allies & enemies for the pointed courage soulbind
     unsigned pointed_courage_nearby = 5;
+    /// Number of Stone Legionnaires in party (Nathria trinket)
+    unsigned stone_legionnaires_in_party = 0;
   } shadowlands_opts;
 
   // Auras and De-Buffs
