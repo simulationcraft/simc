@@ -406,6 +406,9 @@ public:
   /** Marker for sample action priority list reporting */
   char marker;
 
+  /* The last time the action was executed */
+  timespan_t last_used;
+
   // Options
   struct options_t {
     /**
@@ -559,7 +562,7 @@ public:
 
   const char* name() const
   { return name_str.c_str(); }
-  
+
   size_t num_travel_events() const
   { return travel_events.size(); }
 
@@ -982,7 +985,7 @@ public:
   {
     return( r == BLOCK_RESULT_BLOCKED || r == BLOCK_RESULT_CRIT_BLOCKED );
   }
-  
+
   friend void format_to( const action_t&, fmt::format_context::iterator );
 };
 
