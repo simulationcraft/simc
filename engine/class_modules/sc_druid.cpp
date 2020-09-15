@@ -3130,7 +3130,6 @@ struct moonfire_t : public druid_spell_t
     if ( p->active.galactic_guardian )
       stats->add_child( p->active.galactic_guardian->stats );
 
-
     if ( p->spec.astral_power->ok() )
     {
       energize_resource = RESOURCE_ASTRAL_POWER;
@@ -4975,7 +4974,7 @@ struct thrash_bear_t : public bear_attack_t
     if ( p()->legendary.ursocs_lingering_spirit->ok() &&
          rng().roll( p()->legendary.ursocs_lingering_spirit->effectN( 1 ).percent() ) )
     {
-      schedule_execute();
+      execute();
     }
   }
 
@@ -8669,8 +8668,6 @@ void druid_t::apl_precombat()
       precombat->add_action( this, "Moonkin Form" );
     }
   }
-
-  precombat->add_action( "potion" );
 }
 
 // NO Spec Combat Action Priority List ======================================
@@ -8723,23 +8720,25 @@ void druid_t::apl_guardian()
   action_priority_list_t* def = get_action_priority_list( "default" );
 
   def->add_action( "auto_attack" );
+  def->add_action( this, "Ironfur", "if=buff.ironfur.remains<1.5" );
   def->add_action( "ravenous_frenzy" );
   def->add_action( "empower_bond" );
   def->add_action( "adaptive_swarm" );
   //def->add_action( "convoke_the_spirits" );
-  def->add_action( "berserk_bear", "if=buff.ravenous_frenzy.up|!covenant.venthyr" );
-  def->add_action( "incarnation", "if=buff.ravenous_frenzy.up|!covenant.venthyr" );
-  def->add_action( "potion" );
-  def->add_action( "use_items" );
-  def->add_action( this, "Moonfire", "target_if=refreshable" );
-  def->add_action( this, "Moonfire", "if=buff.galactic_guardian.up&buff.galactic_guardian.remains<2" );
+  def->add_action( "potion,if=buff.berserk_bear.up|buff.incarnation_guardian_of_ursoc.up" );
+  def->add_action( "use_items,if=buff.berserk_bear.up|buff.incarnation_guardian_of_ursoc.up" );
+  def->add_action( "berserk_bear,if=buff.ravenous_frenzy.up|!covenant.venthyr" );
+  def->add_action( "incarnation,if=buff.ravenous_frenzy.up|!covenant.venthyr" );
   def->add_talent( this, "Pulverize", "target_if=dot.thrash_bear.stack>2" );
   def->add_talent( this, "Lunar Beam" );
-  def->add_action( "thrash_bear", "target_if=refreshable|dot.thrash_bear.stack<3" );
-  def->add_action( "thrash_bear", "if=spell_targets>3" );
-  def->add_action( this, "Mangle", "if=talent.soul_of_the_forest.enabled|rage<=40" );
-  def->add_action( this, "Maul" );
-  def->add_action( this, "Swipe" );
+  def->add_action( "thrash_bear,if=spell_targets>3" );
+  def->add_action( this, "Moonfire", "target_if=refreshable" );
+  def->add_action( this, "Moonfire", "if=buff.galactic_guardian.up&buff.galactic_guardian.remains<1.5" );
+  def->add_action( "thrash_bear,target_if=refreshable|dot.thrash_bear.stack<3|dot.thrash_bear.stack<4&runeforge.luffainfused_embrace.equipped" );
+  def->add_action( this, "Mangle", "if=talent.soul_of_the_forest.enabled|rage<80|!buff.berserk_bear.up&!buff.incarnation_guardian_of_ursoc.up" );
+  def->add_action( "thrash_bear" );
+  def->add_action( this, "Maul", "if=rage>=80" );
+  def->add_action( "swipe_bear" );
 }
 
 // Restoration Combat Action Priority List ==================================
