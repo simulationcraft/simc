@@ -7641,6 +7641,48 @@ std::unique_ptr<expr_t> mage_t::create_expression( util::string_view name )
     { return remaining_winters_chill; } );
   }
 
+  if ( util::str_compare_ci( name, "hot_streak_spells_in_flight" ) )
+  {
+    std::vector<action_t*> in_flight_list;
+    for ( auto a : action_list )
+    {
+      auto m = dynamic_cast<actions::mage_spell_t*>( a );
+      if ( m )
+      {
+        if ( m->triggers.hot_streak )
+          in_flight_list.push_back( a );
+        for ( auto ca : a->child_action )
+        {
+          auto mc = dynamic_cast<actions::mage_spell_t*>( ca );
+          if ( mc && mc->triggers.hot_streak )
+          {
+            in_flight_list.push_back( ca );
+            if ( !m->triggers.hot_streak )
+              in_flight_list.push_back( a );
+          }
+        }
+      }
+    }
+
+    struct hot_streak_spells_in_flight_expr_t : public expr_t
+    {
+      const std::vector<action_t*> action_list;
+      hot_streak_spells_in_flight_expr_t( const std::vector<action_t*>& al ) : expr_t( "hot_streak_spells_in_flight" ), action_list( al )
+      {
+      }
+      double evaluate() override
+      {
+        size_t spells = 0;
+        for ( size_t i = 0; i < action_list.size(); i++ )
+          if ( action_list[ i ]->has_travel_events() )
+            spells++;
+        return as<double>( spells );
+      }
+    };
+
+    return std::make_unique<hot_streak_spells_in_flight_expr_t>( in_flight_list );
+  }
+
   auto splits = util::string_split<util::string_view>( name, "." );
 
   if ( splits.size() == 3 && util::str_compare_ci( splits[ 0 ], "ground_aoe" ) )
