@@ -1642,9 +1642,11 @@ class SpellDataGenerator(DataGenerator):
           ( 330898, 0 ), # Venthyr Fallen Monk Fists of Fury
           ( 330901, 0 ), # Venthyr Fallen Monk Spinning Crane Kick
           ( 330903, 0 ), # Venthyr Fallen Monk Spinning Crane Kick Damage
+          ( 330907, 0 ), # Venthyr Fallen Monk Breath of Fire
           ( 330909, 0 ), # Venthyr Fallen Monk Clash
           ( 330911, 0 ), # Venthyr Fallen Monk Keg Smash
           ( 344239, 0 ), # Venthyr Fallen Monk Soothing Mist
+          ( 344340, 0 ), # Venthyr Fallen Monk Enveloping Mist
 
           # Conduits
           ( 336874, 0 ), # Fortifying Ingredients

@@ -612,7 +612,9 @@ public:
     const spell_data_t* glory_of_the_dawn_dmg;
 
     // Covenants
+    const spell_data_t* fallen_monk_breath_of_fire;
     const spell_data_t* fallen_monk_clash;
+    const spell_data_t* fallen_monk_enveloping_mist;
     const spell_data_t* fallen_monk_fists_of_fury;
     const spell_data_t* fallen_monk_keg_smash;
     const spell_data_t* fallen_monk_soothing_mist;
@@ -8656,7 +8658,9 @@ void monk_t::init_spells()
   passives.fury_of_xuen_haste_buff    = find_spell( 287063 );
 
   // Covenants
+  passives.fallen_monk_breath_of_fire           = find_spell( 330907 );
   passives.fallen_monk_clash                    = find_spell( 330909 );
+  passives.fallen_monk_enveloping_mist          = find_spell( 344240 );
   passives.fallen_monk_fists_of_fury            = find_spell( 330898 );
   passives.fallen_monk_keg_smash                = find_spell( 330911 );
   passives.fallen_monk_soothing_mist            = find_spell( 344239 );
