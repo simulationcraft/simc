@@ -304,12 +304,24 @@ struct mind_flay_t final : public priest_spell_t
     priest().trigger_eternal_call_to_the_void( d->state );
 
     trigger_dark_thoughts( d->target, priest().procs.dark_thoughts_flay );
+    
+    if ( priest().conduits.dissonant_echoes->ok() && !priest().buffs.voidform->check() )
+    {
+      if ( rng().roll( priest().conduits.dissonant_echoes.percent() ) )
+      {
+        priest().cooldowns.void_bolt->reset( true );
+        priest().buffs.dissonant_echoes->trigger();
+        priest().procs.dissonant_echoes->occur();
+      }
+    }
   }
 
   void execute() override
   {
     priest_spell_t::execute();
 
+    // Dissonant Echoes can proc on tick or on initial execute
+    // since it doesnt have a tick_zero we put it in both places
     if ( priest().conduits.dissonant_echoes->ok() && !priest().buffs.voidform->check() )
     {
       if ( rng().roll( priest().conduits.dissonant_echoes.percent() ) )
