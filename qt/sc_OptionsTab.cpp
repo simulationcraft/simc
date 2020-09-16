@@ -59,6 +59,14 @@ QComboBox* createChoice( int count, ... )
   return choice;
 }
 
+QComboBox* createChoice( std::initializer_list<const char*> choices )
+{
+  QComboBox* choice = new QComboBox();
+  for ( const auto& entry : choices)
+    choice->addItem( entry );
+  return choice;
+}
+
 void appendCheckBox( const QString& label, const QString& option, const QString& tooltip, QLayout* layout,
                      QButtonGroup* group )
 {
@@ -532,7 +540,7 @@ void SC_OptionsTab::createScalingTab()
   choice.center_scale_delta = createChoice( 2, "Yes", "No" );
   scalingOptionsGroupBoxLayout->addRow( tr( "Center Scale Delta" ), choice.center_scale_delta );
 
-  choice.scale_over = createChoice( 9, "Default", "DPS", "HPS", "DTPS", "HTPS", "Raid_DPS", "Raid_HPS", "TMI", "ETMI" );
+  choice.scale_over = createChoice( {"Default", "Dps", "PriorityDps", "Dpse", "Hps", "Hpse", "Aps", "Haps", "Dtps", "Dmg_Taken", "Htps", "Tmi", "Etmi", "Deaths" } );
   scalingOptionsGroupBoxLayout->addRow( tr( "Scale Over" ), choice.scale_over );
 
   scalingOptionsGroupBox->setLayout( scalingOptionsGroupBoxLayout );
