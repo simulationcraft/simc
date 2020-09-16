@@ -576,6 +576,7 @@ public:
     gain_t* koltiras_favor;
     gain_t* murderous_efficiency;
     gain_t* obliteration;
+    gain_t* rage_of_the_frozen_champion;
     gain_t* runic_attenuation;
     gain_t* runic_empowerment;
 
@@ -765,6 +766,7 @@ public:
     const spell_data_t* frost_fever;
     const spell_data_t* inexorable_assault_damage;
     const spell_data_t* murderous_efficiency_gain;
+    const spell_data_t* rage_of_the_frozen_champion;
 
     // Unholy
     const spell_data_t* death_coil_damage;
@@ -894,8 +896,9 @@ public:
 
     // Blood
 
-    // Frost
-    item_runeforge_t koltiras_favor;  // 6944
+    // Frost                                      // bonus_id
+    item_runeforge_t koltiras_favor;              // 6944
+    item_runeforge_t rage_of_the_frozen_champion; // 7160
 
     // Unholy
   } legendary;
@@ -4898,7 +4901,7 @@ struct frostscythe_t : public death_knight_melee_attack_t
     }
 
     // Frostscythe procs rime at half the chance of Obliterate
-    p() -> buffs.rime -> trigger( 1, buff_t::DEFAULT_VALUE(), p() -> spec.rime -> effectN( 2 ).percent() / 2.0 );
+    p() -> buffs.rime -> trigger( 1, buff_t::DEFAULT_VALUE(), p() -> buffs.rime->manual_chance / 2.0 );
   }
 
   double composite_crit_chance() const override
@@ -5379,6 +5382,13 @@ struct howling_blast_t : public death_knight_spell_t
     {
       echoing_howl -> set_target( execute_state -> target );
       echoing_howl -> execute();
+    }
+
+    if ( p() -> buffs.rime -> check() && p() -> legendary.rage_of_the_frozen_champion->ok() )
+    {
+      p() -> resource_gain( RESOURCE_RUNIC_POWER,
+                            p() -> spell.rage_of_the_frozen_champion -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER ),
+                            p() -> gains.rage_of_the_frozen_champion );
     }
 
     p() -> buffs.rime -> decrement();
@@ -7983,6 +7993,7 @@ void death_knight_t::init_spells()
   spell.frost_fever               = find_spell( 55095 );
   spell.inexorable_assault_damage = find_spell( 253597 );
   spell.murderous_efficiency_gain = find_spell( 207062 );
+  spell.rage_of_the_frozen_champion = find_spell( 341725 );
 
   // Unholy
   spell.bursting_sores         = find_spell( 207267 );
@@ -8077,6 +8088,7 @@ void death_knight_t::init_spells()
   // Blood
   // Frost
   legendary.koltiras_favor       = find_runeforge_legendary( "Koltira's Favor" );
+  legendary.rage_of_the_frozen_champion = find_runeforge_legendary( "Rage of the Frozen Champion" );
   // Unholy
 }
 
@@ -8692,7 +8704,7 @@ void death_knight_t::create_buffs()
 
   buffs.rime = make_buff( this, "rime", spec.rime -> effectN( 1 ).trigger() )
         -> set_trigger_spell( spec.rime )
-        -> set_chance( spec.rime -> effectN( 2 ).percent() );
+        -> set_chance( spec.rime -> effectN( 2 ).percent() + legendary.rage_of_the_frozen_champion ->effectN( 1 ).percent() );
 
   // Unholy
   buffs.dark_transformation = make_buff( this, "dark_transformation", spec.dark_transformation )
@@ -8788,6 +8800,7 @@ void death_knight_t::init_gains()
   gains.horn_of_winter                   = get_gain( "Horn of Winter" );
   gains.murderous_efficiency             = get_gain( "Murderous Efficiency" );
   gains.obliteration                     = get_gain( "Obliteration" );
+  gains.rage_of_the_frozen_champion      = get_gain( "Rage of the Frozen Champion" );
   gains.runic_attenuation                = get_gain( "Runic Attenuation" );
   gains.runic_empowerment                = get_gain( "Runic Empowerment" );
   gains.koltiras_favor                   = get_gain( "Koltira's Favor" );
