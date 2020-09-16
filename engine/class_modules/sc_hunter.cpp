@@ -1657,7 +1657,7 @@ struct dire_critter_t final : public hunter_pet_t
   } active;
 
   dire_critter_t( hunter_t* owner, util::string_view n = "dire_beast" ):
-    hunter_pet_t( owner, n, PET_HUNTER, true /*GUARDIAN*/ )
+    hunter_pet_t( owner, n, PET_HUNTER, true /* GUARDIAN */, true /* dynamic */ )
   {
     owner_coeff.ap_from_ap = 0.15;
     resource_regeneration = regen_type::DISABLED;
@@ -1734,7 +1734,7 @@ struct spitting_cobra_t final : public hunter_pet_t
   double active_damage_multiplier = 0;
 
   spitting_cobra_t( hunter_t* o ):
-    hunter_pet_t( o, "spitting_cobra", PET_HUNTER, true )
+    hunter_pet_t( o, "spitting_cobra", PET_HUNTER, true /* GUARDIAN */, true /* dynamic */ )
   {
     owner_coeff.ap_from_ap = 0.15;
     resource_regeneration = regen_type::DISABLED;
@@ -5670,12 +5670,8 @@ std::unique_ptr<expr_t> hunter_t::create_action_expression ( action_t& action, u
       return expr_t::create_constant( "ca_active", false );
 
     return make_fn_expr( "ca_active",
-      [ &action,
-        high_pct = talents.careful_aim->effectN( 1 ).base_value()
-      ]
-      {
-        const double target_health_pct = action.target->health_percentage();
-        return target_health_pct > high_pct;
+      [ &action, high_pct = talents.careful_aim->effectN( 1 ).base_value() ] {
+        return action.target->health_percentage() > high_pct;
       } );
   }
 
