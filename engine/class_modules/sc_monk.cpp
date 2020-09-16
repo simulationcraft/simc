@@ -611,6 +611,14 @@ public:
     const spell_data_t* fury_of_xuen_haste_buff;
     const spell_data_t* glory_of_the_dawn_dmg;
 
+    // Covenants
+    const spell_data_t* fallen_monk_clash;
+    const spell_data_t* fallen_monk_fists_of_fury;
+    const spell_data_t* fallen_monk_keg_smash;
+    const spell_data_t* fallen_monk_soothing_mist;
+    const spell_data_t* fallen_monk_spinning_crane_kick;
+    const spell_data_t* fallen_monk_spinning_crane_kick_tick;
+
     // Conduits
     const spell_data_t* fortifying_ingredients;
 
@@ -2137,7 +2145,7 @@ private:
   };
 
 public:
-  xuen_pet_t( monk_t* owner ) : pet_t( owner->sim, owner, "xuen_the_white_tiger", true, true )
+  xuen_pet_t( monk_t* owner ) : pet_t( owner->sim, owner, "xuen_the_white_tiger", PET_XUEN, true, true )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.min_dmg    = dbc->spell_scaling( o()->type, level() );
@@ -2284,7 +2292,7 @@ private:
   };
 
 public:
-  fury_of_xuen_pet_t( monk_t* owner ) : pet_t( owner->sim, owner, "fury_of_xuen", true, false )
+  fury_of_xuen_pet_t( monk_t* owner ) : pet_t( owner->sim, owner, "fury_of_xuen", PET_XUEN,  true, false )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.min_dmg    = dbc->spell_scaling( o()->type, level() );
@@ -2447,7 +2455,7 @@ public:
     buff_t* niuzao_2_buff = nullptr;
   } buff;
 
-  niuzao_pet_t( monk_t* owner ) : pet_t( owner->sim, owner, "niuzao_the_black_ox", true, true )
+  niuzao_pet_t( monk_t* owner ) : pet_t( owner->sim, owner, "niuzao_the_black_ox", PET_NIUZAO, true, true )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.min_dmg    = dbc->spell_scaling( o()->type, level() );
@@ -2573,7 +2581,7 @@ private:
   };
 
 public:
-  chiji_pet_t( monk_t* owner ) : pet_t( owner->sim, owner, "chiji_the_red_crane", true, true )
+  chiji_pet_t( monk_t* owner ) : pet_t( owner->sim, owner, "chiji_the_red_crane", PET_CHIJI,  true, true )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.min_dmg    = dbc->spell_scaling( o()->type, level() );
@@ -2624,7 +2632,7 @@ struct yulon_pet_t : public pet_t
 private:
 
 public:
-  yulon_pet_t( monk_t* owner ) : pet_t( owner->sim, owner, "yulon_the_jade_serpent", true, true )
+  yulon_pet_t( monk_t* owner ) : pet_t( owner->sim, owner, "yulon_the_jade_serpent", PET_YULON, true, true )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.min_dmg    = dbc->spell_scaling( o()->type, level() );
@@ -2658,6 +2666,188 @@ public:
 
   action_t* create_action( util::string_view name, const std::string& options_str ) override
   {
+    return pet_t::create_action( name, options_str );
+  }
+};
+
+// ==========================================================================
+// Fallen Monk - Windwalker (Venthyr)
+// ==========================================================================
+struct fallen_monk_ww_pet_t : public pet_t
+{
+private:
+  struct melee_t : public melee_attack_t
+  {
+    melee_t( const std::string& n, fallen_monk_ww_pet_t* player ) : melee_attack_t( n, player, spell_data_t::nil() )
+    {
+      background = repeating = may_crit = may_glance = true;
+      school                                         = SCHOOL_PHYSICAL;
+      weapon_multiplier                              = 1.0;
+      // Use damage numbers from the level-scaled weapon
+      weapon            = &( player->main_hand_weapon );
+      base_execute_time = weapon->swing_time;
+      trigger_gcd       = timespan_t::zero();
+      special           = false;
+    }
+
+    void execute() override
+    {
+      if ( time_to_execute > timespan_t::zero() && player->executing )
+      {
+        sim->print_debug( "Executing {} during melee ({}).", *player->executing,
+                          util::slot_type_string( weapon->slot ) );
+        schedule_execute();
+      }
+      else
+        attack_t::execute();
+    }
+  };
+
+  struct auto_attack_t : public attack_t
+  {
+    auto_attack_t( fallen_monk_ww_pet_t* player, const std::string& options_str )
+      : attack_t( "auto_attack", player, spell_data_t::nil() )
+    {
+      parse_options( options_str );
+
+      player->main_hand_attack                    = new melee_t( "melee_main_hand", player );
+      player->main_hand_attack->base_execute_time = player->main_hand_weapon.swing_time;
+
+      trigger_gcd = timespan_t::zero();
+    }
+
+    bool ready() override
+    {
+      if ( player->is_moving() )
+        return false;
+
+      return ( player->main_hand_attack->execute_event == nullptr );  // not swinging
+    }
+
+    void execute() override
+    {
+      player->main_hand_attack->schedule_execute();
+
+      if ( player->off_hand_attack )
+        player->off_hand_attack->schedule_execute();
+    }
+  };
+
+public:
+  fallen_monk_ww_pet_t( monk_t* owner ) : pet_t( owner->sim, owner, "fallen_monk_windwalker", PET_FALLEN_MONK, true, false )
+  {
+    main_hand_weapon.type       = WEAPON_1H;
+    main_hand_weapon.min_dmg    = dbc->spell_scaling( o()->type, level() );
+    main_hand_weapon.max_dmg    = dbc->spell_scaling( o()->type, level() );
+    main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
+    main_hand_weapon.swing_time = timespan_t::from_seconds( 2.6 );
+
+    off_hand_weapon.type       = WEAPON_1H;
+    off_hand_weapon.min_dmg     = dbc->spell_scaling( o()->type, level() );
+    off_hand_weapon.max_dmg     = dbc->spell_scaling( o()->type, level() );
+    off_hand_weapon.damage      = ( off_hand_weapon.min_dmg + off_hand_weapon.max_dmg ) / 2;
+    off_hand_weapon.swing_time  = timespan_t::from_seconds( 2.6 );
+
+    if ( owner->specialization() == MONK_MISTWEAVER )
+      owner_coeff.sp_from_ap    = 1.121;
+    else
+      owner_coeff.ap_from_ap    = 1.121;
+  }
+
+  monk_t* o()
+  {
+    return static_cast<monk_t*>( owner );
+  }
+
+  const monk_t* o() const
+  {
+    return static_cast<monk_t*>( owner );
+  }
+
+  double composite_player_multiplier( school_e school ) const override
+  {
+    double cpm = owner->cache.player_multiplier( school );
+
+    if ( o()->conduit.xuens_bond->ok() )
+      cpm *= 1 + o()->conduit.xuens_bond.percent();
+
+    return cpm;
+  }
+
+  struct fists_of_fury_tick_t : public melee_attack_t
+  {
+    monk_t* owner;
+    fists_of_fury_tick_t( fallen_monk_ww_pet_t* p )
+      : melee_attack_t( "fists_of_fury_tick", p, p->o()->passives.fists_of_fury_tick )
+    {
+      dual = direct_tick = background = may_crit = may_miss = true;
+      aoe                     = 1 + (int)p->o()->spec.fists_of_fury->effectN( 1 ).base_value();
+      attack_power_mod.direct = p->o()->spec.fists_of_fury->effectN( 5 ).ap_coeff();
+      ap_type                 = attack_power_type::WEAPON_MAINHAND;
+      dot_duration            = timespan_t::zero();
+      trigger_gcd             = timespan_t::zero();
+      owner                   = p->o();
+    }
+
+    double composite_aoe_multiplier( const action_state_t* state ) const override
+    {
+      if ( state->target != target )
+        return owner->spec.fists_of_fury->effectN( 6 ).percent();
+
+      return 1.0;
+    }
+
+    double action_multiplier() const override
+    {
+      double am = melee_attack_t::action_multiplier();
+
+      // monk_t* o = static_cast<monk_t*>( player );
+      if ( owner->conduit.inner_fury->ok() )
+        am *= 1 + owner->conduit.inner_fury.percent();
+
+      return am;
+    }
+  };
+
+  struct fists_of_fury_t : public spell_t
+  {
+    fists_of_fury_t( fallen_monk_ww_pet_t* p, const std::string& options_str )
+      : spell_t( "fists_of_fury", p, p->find_spell( 330898 ) )
+    {
+      parse_options( options_str );
+
+      channeled = tick_zero = true;
+      interrupt_auto_attack = true;
+
+      attack_power_mod.direct = 0;
+      weapon_power_mod        = 0;
+
+      // Effect 2 shows a period of 166 milliseconds which appears to refer to the visual and not the tick period
+      base_tick_time = dot_duration / 4;
+      may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
+      attack_power_mod.direct                                             = 0.0;
+      attack_power_mod.tick                                               = 0.0;
+
+      tick_action = new fists_of_fury_tick_t( p );
+    }
+  };
+
+  void init_action_list() override
+  {
+    action_list_str = "auto_attack";
+    action_list_str += "/fists_of_fury";
+
+    pet_t::init_action_list();
+  }
+
+  action_t* create_action( util::string_view name, const std::string& options_str ) override
+  {
+    if ( name == "fists_of_fury" )
+      return new fists_of_fury_t( this, options_str );
+
+    if ( name == "auto_attack" )
+      return new auto_attack_t( this, options_str );
+
     return pet_t::create_action( name, options_str );
   }
 };
@@ -4766,7 +4956,7 @@ struct fists_of_fury_tick_t : public monk_melee_attack_t
     return 1.0;
   }
 
-double action_multiplier() const override
+  double action_multiplier() const override
   {
     double am = monk_melee_attack_t::action_multiplier();
 
@@ -8464,6 +8654,14 @@ void monk_t::init_spells()
   passives.glory_of_the_dawn_dmg      = find_spell( 288636 );
   passives.fury_of_xuen_stacking_buff = find_spell( 287062 );
   passives.fury_of_xuen_haste_buff    = find_spell( 287063 );
+
+  // Covenants
+  passives.fallen_monk_clash                    = find_spell( 330909 );
+  passives.fallen_monk_fists_of_fury            = find_spell( 330898 );
+  passives.fallen_monk_keg_smash                = find_spell( 330911 );
+  passives.fallen_monk_soothing_mist            = find_spell( 344239 );
+  passives.fallen_monk_spinning_crane_kick      = find_spell( 330901 );
+  passives.fallen_monk_spinning_crane_kick_tick = find_spell( 330903 );
 
   // Conduits
   passives.fortifying_ingredients     = find_spell( 336874 );

@@ -1596,9 +1596,11 @@ class SpellDataGenerator(DataGenerator):
           ( 216521, 1 ), # Celestial Fortune Heal
           ( 227679, 1 ), # Face Palm
           ( 227291, 1 ), # Niuzao pet Stomp
+
           # Mistweaver
           ( 228649, 2 ), # Teachings of the Monastery - Blackout Proc
           ( 343820, 2 ), # Invoke Chi-Ji, the Red Crane - Enveloping Mist cast reduction
+
           # Windwalker
           ( 115057, 3 ), # Flying Serpent Kick Movement spell
           ( 116768, 3 ), # Combo Breaker: Blackout Kick
@@ -1615,8 +1617,9 @@ class SpellDataGenerator(DataGenerator):
           ( 252768, 3 ), # Tier 21 2-piece DPS effect
           ( 261682, 3 ), # Chi Burst Chi generation cap
           ( 285594, 3 ), # Good Karma Healing Spell
-		      ( 290461, 3 ), # Reverse Harm Damage
-		      ( 335913, 3 ), # Empowered Tiger Lightning Damage spell
+		  ( 290461, 3 ), # Reverse Harm Damage
+		  ( 335913, 3 ), # Empowered Tiger Lightning Damage spell
+
           # Azerite Traits
           ( 278710, 3 ), # Swift Roundhouse
           ( 278767, 1 ), # Training of Niuzao buff
@@ -1634,8 +1637,18 @@ class SpellDataGenerator(DataGenerator):
           ( 287837, 2 ), # Secret Infusion Versatility Buff
           ( 288634, 3 ), # Glory of the Dawn trait
           ( 288636, 3 ), # Glory of the Dawn proc
+
+          # Covenant
+          ( 330898, 0 ), # Venthyr Fallen Monk Fists of Fury
+          ( 330901, 0 ), # Venthyr Fallen Monk Spinning Crane Kick
+          ( 330903, 0 ), # Venthyr Fallen Monk Spinning Crane Kick Damage
+          ( 330909, 0 ), # Venthyr Fallen Monk Clash
+          ( 330911, 0 ), # Venthyr Fallen Monk Keg Smash
+          ( 344239, 0 ), # Venthyr Fallen Monk Soothing Mist
+
           # Conduits
           ( 336874, 0 ), # Fortifying Ingredients
+
           # Shadowland Legendaries
           ( 338141, 1 ), # Flaming Kicks Legendary damage
         ),
