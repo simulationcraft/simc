@@ -4871,12 +4871,8 @@ struct festering_strike_t : public death_knight_melee_attack_t
 
 struct frostscythe_t : public death_knight_melee_attack_t
 {
-  double rime_proc_chance;
-
   frostscythe_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_melee_attack_t( "frostscythe", p, p -> talent.frostscythe ),
-    rime_proc_chance( ( p -> spec.rime -> effectN( 2 ).percent() +
-                        p -> legendary.rage_of_the_frozen_champion -> effectN( 1 ).percent() ) / 2.0 )
+    death_knight_melee_attack_t( "frostscythe", p, p -> talent.frostscythe )
   {
     parse_options( options_str );
 
@@ -4905,7 +4901,7 @@ struct frostscythe_t : public death_knight_melee_attack_t
     }
 
     // Frostscythe procs rime at half the chance of Obliterate
-    p() -> buffs.rime -> trigger( 1, buff_t::DEFAULT_VALUE(), rime_proc_chance );
+    p() -> buffs.rime -> trigger( 1, buff_t::DEFAULT_VALUE(), (p() -> buffs.rime->manual_chance / 2.0) );
   }
 
   double composite_crit_chance() const override
