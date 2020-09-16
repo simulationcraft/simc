@@ -499,6 +499,7 @@ void combat_meditation( special_effect_t& effect )
     {
       set_default_value_from_effect_type( A_MOD_MASTERY_PCT );
       add_invalidate( CACHE_MASTERY );
+      set_refresh_behavior( buff_refresh_behavior::EXTEND );
       // TODO: add more faithful simulation of delay/reaction needed from player to walk into the sorrowful memories
       set_tick_callback( [this]( buff_t*, int, timespan_t ) {
         if ( rng().roll( sim->shadowlands_opts.combat_meditation_extend_chance ) )
