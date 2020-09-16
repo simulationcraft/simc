@@ -283,6 +283,7 @@ public:
   double kindred_empowerment_ratio;
   double convoke_the_spirits_heals;
   double convoke_the_spirits_ultimate;
+  double adaptive_swarm_jump_distance;
 
   struct active_actions_t
   {
@@ -840,6 +841,7 @@ public:
       kindred_empowerment_ratio( 1.0 ),
       convoke_the_spirits_heals( 3.5 ),
       convoke_the_spirits_ultimate( 0.2 ),
+      adaptive_swarm_jump_distance( 5.0 ),
       active( active_actions_t() ),
       force_of_nature(),
       caster_form_weapon(),
@@ -7273,8 +7275,9 @@ struct adaptive_swarm_t : public druid_spell_t
 
   public:
     int stacks;
+    bool jump;
 
-    adaptive_swarm_state_t( action_t* a, player_t* t ) : druid_action_state_t( a, t )
+    adaptive_swarm_state_t( action_t* a, player_t* t ) : druid_action_state_t( a, t ), jump( false )
     {
       default_stacks = as<int>( debug_cast<druid_t*>( a->player )->covenant.necrolord->effectN( 1 ).base_value() );
     }
@@ -7292,6 +7295,7 @@ struct adaptive_swarm_t : public druid_spell_t
       const adaptive_swarm_state_t* swarm_s = debug_cast<const adaptive_swarm_state_t*>( s );
 
       stacks = swarm_s->stacks;
+      jump   = swarm_s->jump;
     }
 
     std::ostringstream& debug_str( std::ostringstream& s ) override
@@ -7299,6 +7303,9 @@ struct adaptive_swarm_t : public druid_spell_t
       druid_action_state_t::debug_str( s );
 
       s << " swarm_stacks=" << stacks;
+
+      if ( jump )
+        s << " (jumped)";
 
       return s;
     }
@@ -7317,6 +7324,14 @@ struct adaptive_swarm_t : public druid_spell_t
     }
 
     action_state_t* new_state() override { return new adaptive_swarm_state_t( this, target ); }
+
+    timespan_t travel_time() const override
+    {
+      if ( debug_cast<adaptive_swarm_state_t*>( execute_state )->jump )
+        return timespan_t::from_seconds( p()->adaptive_swarm_jump_distance / travel_speed );
+
+      return druid_spell_t::travel_time();
+    }
 
     player_t* new_swarm_target()
     {
@@ -7417,9 +7432,9 @@ struct adaptive_swarm_t : public druid_spell_t
       sim->print_debug( "adaptive_swarm stacks: jumping {} stacks of {} to {}", stacks, heal ? "damage" : "heal",
                         new_target->name() );
 
-      auto new_state = get_state();
-      debug_cast<adaptive_swarm_state_t*>( new_state )->stacks = stacks;
-
+      auto new_state    = debug_cast<adaptive_swarm_state_t*>( get_state() );
+      new_state->stacks = stacks;
+      new_state->jump   = true;
       new_state->target = new_target;
       other->set_target( new_target );
       other->schedule_execute( new_state );
@@ -9797,6 +9812,7 @@ void druid_t::create_options()
   add_option( opt_float( "kindred_empowerment_ratio", kindred_empowerment_ratio ) );
   add_option( opt_float( "convoke_the_spirits_heals", convoke_the_spirits_heals ) );
   add_option( opt_float( "convoke_the_spirits_ultimate", convoke_the_spirits_ultimate ) );
+  add_option( opt_float( "adaptive_swarm_jump_distance", adaptive_swarm_jump_distance ) );
 }
 
 // druid_t::create_profile ==================================================
@@ -10270,6 +10286,7 @@ void druid_t::copy_from( player_t* source )
   kindred_empowerment_ratio    = p->kindred_empowerment_ratio;
   convoke_the_spirits_heals    = p->convoke_the_spirits_heals;
   convoke_the_spirits_ultimate = p->convoke_the_spirits_ultimate;
+  adaptive_swarm_jump_distance = p->adaptive_swarm_jump_distance;
   thorns_attack_period         = p->thorns_attack_period;
   thorns_hit_chance            = p->thorns_hit_chance;
 }
