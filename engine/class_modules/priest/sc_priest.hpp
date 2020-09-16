@@ -585,7 +585,6 @@ public:
   void trigger_eternal_call_to_the_void( action_state_t* );
   void trigger_shadowy_apparitions( action_state_t* );
   void trigger_psychic_link( action_state_t* );
-  void trigger_mind_flay_dissonant_echoes();
   void trigger_wrathful_faerie();
   void remove_wrathful_faerie();
   pets::fiend::base_fiend_pet_t* get_current_main_pet();

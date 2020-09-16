@@ -297,13 +297,28 @@ struct mind_flay_t final : public priest_spell_t
     spell_power_mod.tick *= 1.0 + p.talents.fortress_of_the_mind->effectN( 3 ).percent();
   }
 
+  void trigger_mind_flay_dissonant_echoes()
+  {
+    if ( !priest().conduits.dissonant_echoes->ok() || priest().buffs.voidform->check() )
+    {
+      return;
+    }
+
+    if ( rng().roll( priest().conduits.dissonant_echoes.percent() ) )
+    {
+      priest().cooldowns.void_bolt->reset( true );
+      priest().buffs.dissonant_echoes->trigger();
+      priest().procs.dissonant_echoes->occur();
+    }
+  }
+
   void tick( dot_t* d ) override
   {
     priest_spell_t::tick( d );
 
     priest().trigger_eternal_call_to_the_void( d->state );
     trigger_dark_thoughts( d->target, priest().procs.dark_thoughts_flay );
-    priest().trigger_mind_flay_dissonant_echoes();
+    trigger_mind_flay_dissonant_echoes();
   }
 
   void execute() override
@@ -312,7 +327,7 @@ struct mind_flay_t final : public priest_spell_t
 
     // Dissonant Echoes can proc on tick or on initial execute
     // since it doesnt have a tick_zero we put it in both places
-    priest().trigger_mind_flay_dissonant_echoes();
+    trigger_mind_flay_dissonant_echoes();
   }
 
   bool ready() override
@@ -2527,20 +2542,4 @@ void priest_t::trigger_psychic_link( action_state_t* s )
     }
   }
 }
-
-void priest_t::trigger_mind_flay_dissonant_echoes()
-{
-  if ( !conduits.dissonant_echoes->ok() || buffs.voidform->check() )
-  {
-    return;
-  }
-
-  if ( rng().roll( conduits.dissonant_echoes.percent() ) )
-  {
-    cooldowns.void_bolt->reset( true );
-    buffs.dissonant_echoes->trigger();
-    procs.dissonant_echoes->occur();
-  }
-}
-
 }  // namespace priestspace
