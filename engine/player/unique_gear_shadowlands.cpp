@@ -367,7 +367,7 @@ void darkmoon_deck_putrescence( special_effect_t& effect )
 
     void impact( action_state_t* s ) override
     {
-      proc_spell_t::impact( s );
+      SL_darkmoon_deck_proc_t::impact( s );
 
       auto td = player->get_target_data( s->target );
       // Crit debuff value uses player level scaling, not item scaling
@@ -397,7 +397,7 @@ void darkmoon_deck_voracity( special_effect_t& effect )
 
     void execute() override
     {
-      proc_spell_t::execute();
+      SL_darkmoon_deck_proc_t::execute();
 
       buff->stats[ 0 ].amount = deck->top->effectN( 1 ).average( player );
       buff->trigger();
