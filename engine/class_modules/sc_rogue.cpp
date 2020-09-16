@@ -2134,7 +2134,7 @@ struct melee_t : public rogue_attack_t
   melee_t( const char* name, rogue_t* p, int sw ) :
     rogue_attack_t( name, p ), sync_weapons( sw ), first( true )
   {
-    background = repeating = true;
+    background = repeating = may_glance = may_crit = true;
     special = false;
     school = SCHOOL_PHYSICAL;
     trigger_gcd = timespan_t::zero();
