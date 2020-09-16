@@ -8780,7 +8780,8 @@ void death_knight_t::create_buffs()
   // Conduits
   buffs.eradicating_blow = make_buff( this, "eradicating_blow", find_spell( 337936 ) )
         -> set_default_value( conduits.eradicating_blow.percent() )
-        -> set_trigger_spell( conduits.eradicating_blow );
+        -> set_trigger_spell( conduits.eradicating_blow )
+        -> set_cooldown( conduits.eradicating_blow -> internal_cooldown() );
 
   buffs.unleashed_frenzy = make_buff( this, "unleashed_frenzy", conduits.unleashed_frenzy->effectN( 1 ).trigger() )
         -> add_invalidate( CACHE_STRENGTH )
