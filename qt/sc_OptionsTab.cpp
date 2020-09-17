@@ -7,35 +7,16 @@
 
 #include "MainWindow.hpp"
 #include "dbc/client_data.hpp"
-#include "util/util.hpp"
 #include "sc_SimulateTab.hpp"
 #include "simulationcraftqt.hpp"
 #include "util/ComboBoxIntegerValidator.hpp"
 #include "util/sc_mainwindowcommandline.hpp"
+#include "util/util.hpp"
 
 #include <QtCore/QDateTime>
 
 namespace
 {  // unnamed namespace
-
-struct OptionEntry
-{
-  const char* label;
-  const char* option;
-  const char* tooltip;
-};
-
-const OptionEntry itemSourceOptions[] = {
-    { "Local Item Database", "local", "Use Simulationcraft item database" },
-    { "Blizzard API", "bcpapi", "Remote Blizzard Community Platform API source" },
-    { "Wowhead.com", "wowhead", "Remote Wowhead.com item data source" },
-#if SC_USE_PTR
-    { "Wowhead.com (PTR)", "ptrhead", "Remote Wowhead.com PTR item data source" },
-#endif
-#if SC_BETA
-    { "Wowhead.com (Beta)", SC_BETA_STR "head", "Remote Wowhead.com Beta item data source" },
-#endif
-};
 
 QComboBox* createChoiceFromRange( int lowerInclusive, int upperInclusive )
 {
@@ -62,7 +43,7 @@ QComboBox* createChoice( int count, ... )
 QComboBox* createChoice( std::initializer_list<const char*> choices )
 {
   QComboBox* choice = new QComboBox();
-  for ( const auto& entry : choices)
+  for ( const auto& entry : choices )
     choice->addItem( entry );
   return choice;
 }
@@ -224,6 +205,19 @@ void load_scaling_groups( QSettings& s, const QString& groupname, QButtonGroup* 
 
 SC_OptionsTab::SC_OptionsTab( SC_MainWindow* parent ) : QTabWidget( parent ), mainWindow( parent )
 {
+  itemSourceOptions.emplace_back( tr( "Local Item Database" ), "local", tr( "Use Simulationcraft item database" ) );
+  itemSourceOptions.emplace_back( tr( "Blizzard API" ), "bcpapi",
+                                  tr( "Remote Blizzard Community Platform API source" ) );
+  itemSourceOptions.emplace_back( tr( "Wowhead.com" ), "wowhead", tr( "Remote Wowhead.com item data source" ) );
+#if SC_USE_PTR
+  itemSourceOptions.emplace_back( tr( "Wowhead.com (PTR)" ), "ptrhead",
+                                  tr( "Remote Wowhead.com PTR item data source" ) );
+#endif
+#if SC_BETA
+  itemSourceOptions.emplace_back( tr( "Wowhead.com (Beta)" ), SC_BETA_STR "head",
+                                  tr( "Remote Wowhead.com Beta item data source" ) );
+#endif
+
   createGlobalsTab();
   createBuffsDebuffsTab();
   createScalingTab();
@@ -540,7 +534,8 @@ void SC_OptionsTab::createScalingTab()
   choice.center_scale_delta = createChoice( 2, "Yes", "No" );
   scalingOptionsGroupBoxLayout->addRow( tr( "Center Scale Delta" ), choice.center_scale_delta );
 
-  choice.scale_over = createChoice( {"Default", "Dps", "PriorityDps", "Dpse", "Hps", "Hpse", "Aps", "Haps", "Dtps", "Dmg_Taken", "Htps", "Tmi", "Etmi", "Deaths" } );
+  choice.scale_over = createChoice( { "Default", "Dps", "PriorityDps", "Dpse", "Hps", "Hpse", "Aps", "Haps", "Dtps",
+                                      "Dmg_Taken", "Htps", "Tmi", "Etmi", "Deaths" } );
   scalingOptionsGroupBoxLayout->addRow( tr( "Scale Over" ), choice.scale_over );
 
   scalingOptionsGroupBox->setLayout( scalingOptionsGroupBoxLayout );
@@ -1098,8 +1093,7 @@ void SC_OptionsTab::createToolTips()
 
   choice.deterministic_rng->setToolTip(
       tr( "Deterministic Random Number Generator creates all random numbers with a given, constant seed.\n"
-          "This allows to better observe marginal changes which aren't influenced by rng, \n"
-          " or check for other influences without having to reduce statistic noise" ) );
+          "This allows for replicating a specific simulation result." ) );
 
   choice.world_lag->setToolTip( tr( "World Lag is the equivalent of the 'world lag' shown in the WoW Client.\n"
                                     "It is currently used to extend the cooldown duration of user executable abilities "
@@ -1502,7 +1496,7 @@ void SC_OptionsTab::createItemDataSourceSelector( QFormLayout* layout )
   }
 
   itemDbOrder->setFixedHeight( ( itemDbOrder->model()->rowCount() + 1 ) * itemDbOrder->sizeHintForRow( 0 ) );
-  layout->addRow( "Item Source Order", itemDbOrder );
+  layout->addRow( tr( "Item Source Order" ), itemDbOrder );
 }
 
 QComboBox* SC_OptionsTab::addValidatorToComboBox( int lowerBound, int upperBound, QComboBox* comboBox )
