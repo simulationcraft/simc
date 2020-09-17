@@ -1,0 +1,23 @@
+# This script is used by the Travis-CI (continuous integration) testing
+language: cpp
+
+sudo: false
+
+dist: focal
+
+arch:
+  - arm64
+
+os:
+  - linux
+
+compiler:
+  - gcc
+  - clang
+
+install:
+  # Build SimulationCraft
+  - make -C engine -j 2 optimized
+
+script:
+  - ./engine/simc CI.simc iterations=5 output=/dev/null html=/dev/null json2=/dev/null cleanup_threads=1
