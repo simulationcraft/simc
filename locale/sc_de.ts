@@ -6,72 +6,72 @@
     <message>
         <location filename="../qt/sc_importWidget.cpp" line="12"/>
         <source>Region</source>
-        <translation type="unfinished"></translation>
+        <translation>Region</translation>
     </message>
     <message>
         <location filename="../qt/sc_importWidget.cpp" line="14"/>
         <source>Realm</source>
-        <translation type="unfinished"></translation>
+        <translation>Realm</translation>
     </message>
     <message>
         <location filename="../qt/sc_importWidget.cpp" line="16"/>
         <source>Character</source>
-        <translation type="unfinished"></translation>
+        <translation>Charakter</translation>
     </message>
     <message>
         <location filename="../qt/sc_importWidget.cpp" line="18"/>
         <source>Specialization</source>
-        <translation type="unfinished"></translation>
+        <translation>Spezialisierung</translation>
     </message>
     <message>
         <location filename="../qt/sc_importWidget.cpp" line="20"/>
         <source>Import</source>
-        <translation type="unfinished">Importieren</translation>
+        <translation>Importieren</translation>
     </message>
     <message>
         <location filename="../qt/sc_importWidget.cpp" line="217"/>
         <source>US</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qt/sc_importWidget.cpp" line="218"/>
         <source>EU</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qt/sc_importWidget.cpp" line="219"/>
         <source>KR</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qt/sc_importWidget.cpp" line="220"/>
         <source>TW</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qt/sc_importWidget.cpp" line="225"/>
         <source>Active</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktiv</translation>
     </message>
     <message>
         <location filename="../qt/sc_importWidget.cpp" line="226"/>
         <source>First</source>
-        <translation type="unfinished"></translation>
+        <translation>Erste</translation>
     </message>
     <message>
         <location filename="../qt/sc_importWidget.cpp" line="227"/>
         <source>Second</source>
-        <translation type="unfinished"></translation>
+        <translation>Zweite</translation>
     </message>
     <message>
         <location filename="../qt/sc_importWidget.cpp" line="228"/>
         <source>Third</source>
-        <translation type="unfinished"></translation>
+        <translation>Dritte</translation>
     </message>
     <message>
         <location filename="../qt/sc_importWidget.cpp" line="229"/>
         <source>Fourth</source>
-        <translation type="unfinished"></translation>
+        <translation>Vierte</translation>
     </message>
 </context>
 <context>
@@ -79,7 +79,7 @@
     <message>
         <location filename="../qt/sc_importWindow.cpp" line="16"/>
         <source>Import a character</source>
-        <translation type="unfinished"></translation>
+        <translation>Charakter importieren</translation>
     </message>
 </context>
 <context>
@@ -88,7 +88,8 @@
         <location filename="../qt/sc_AddonImportTab.cpp" line="10"/>
         <source># Post your Simc Addon Export text here.
 </source>
-        <translation type="unfinished"></translation>
+        <translation># Füge den Text aus dem Simc Addon Export hier ein.
+</translation>
     </message>
 </context>
 <context>
@@ -273,7 +274,7 @@
     <message>
         <location filename="../qt/MainWindow.cpp" line="931"/>
         <source>SimulationCraft encountered an error!</source>
-        <translation type="unfinished"></translation>
+        <translation>SimulationCraft ist auf einen Fehler gestoßen!</translation>
     </message>
     <message>
         <source>Player Class</source>
@@ -307,32 +308,32 @@ Je mehr Leute helfen die BiS-Profile zu verbessern, desto besser erreichen sie d
     <message>
         <location filename="../qt/MainWindow.cpp" line="353"/>
         <source>Simc Addon</source>
-        <translation type="unfinished"></translation>
+        <translation>Simc Addon</translation>
     </message>
     <message>
         <location filename="../qt/MainWindow.cpp" line="98"/>
         <source>GUI settings reset</source>
-        <translation type="unfinished"></translation>
+        <translation>GUI Einstellungen zurückgesetzt</translation>
     </message>
     <message>
         <location filename="../qt/MainWindow.cpp" line="140"/>
         <source>I understand</source>
-        <translation type="unfinished"></translation>
+        <translation>Ich verstehe</translation>
     </message>
     <message>
         <location filename="../qt/MainWindow.cpp" line="141"/>
         <source>Armory API key is now deprecated</source>
-        <translation type="unfinished"></translation>
+        <translation>Der bisherige Blizzard Armory Schlüssel ist abgekündigt</translation>
     </message>
     <message>
         <location filename="../qt/MainWindow.cpp" line="143"/>
         <source>&lt;p&gt;On January 6th 2019, Blizzard is shutting down the old armory API endpoints (see &lt;a target=&quot;_blank&quot; href=&quot;https://dev.battle.net/docs&quot;&gt;here&lt;/a&gt; and &lt;a target=&quot;_blank&quot; href=&quot;https://us.battle.net/forums/en/bnet/topic/20769317376&quot;&gt;here&lt;/a&gt;). You are seeing this notification because you have a custom Armory API key defined in the Simulationcraft GUI options. To continue using the armory import feature, your Armory API key must be updated.&lt;/p&gt;&lt;p&gt;There are brief instructions below on how to create new credentials for Simulationcraft to continue using the armory import feature. Note that if you are also using &lt;b&gt;apikey.txt&lt;/b&gt; or &lt;b&gt;simc_apikey&lt;/b&gt;, you can choose to not update the GUI options, and rather add the client credentials to that file. More information can be found &lt;a target=&quot;_blank&quot; href=&quot;https://github.com/simulationcraft/simc/wiki/BattleArmoryAPI&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Go to &lt;a target=&quot;_blank&quot; href=&quot;https://develop.battle.net&quot;&gt;https://develop.battle.net&lt;/a&gt;&lt;/li&gt;&lt;li&gt;Log in with your Battle.net account. Note that you need two-factor authentication enabled.&lt;/li&gt;&lt;li&gt;Select &quot;API ACCESS&quot; (at top left), and then create a new client&lt;/li&gt;&lt;li&gt;Select a unique name and click create, leave Redirect URIs empty&lt;/li&gt;&lt;li&gt;Under Simulationcraft GUI options, add the client id and secret&lt;/li&gt;&lt;/ul&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../qt/MainWindow.cpp" line="351"/>
         <source>Battle.net</source>
-        <translation type="unfinished"></translation>
+        <translation>Battle.net</translation>
     </message>
     <message>
         <location filename="../qt/MainWindow.cpp" line="380"/>
@@ -371,7 +372,7 @@ Je mehr Leute helfen die BiS-Profile zu verbessern, desto besser erreichen sie d
     <message>
         <location filename="../qt/MainWindow.cpp" line="938"/>
         <source>If you think this is a bug, please open a ticket, copying the detailed text below.&lt;br&gt;It contains all the input options of the last simulation and helps us reproduce the issue.&lt;br&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Wenn du denkst dass dieser Fehler ein Bug ist, öffne Bitte ein Ticket und kopiere den darunterliegenden Text.&lt;br&gt;Dieser beinhaltet alle Eingabe-Optionen der letzten Simulation und hilft uns das Problem nachzustellen.&lt;br&gt;</translation>
     </message>
     <message>
         <source>Glyphs</source>
@@ -467,7 +468,7 @@ Je mehr Leute helfen die BiS-Profile zu verbessern, desto besser erreichen sie d
     <message>
         <location filename="../qt/MainWindow.cpp" line="1226"/>
         <source>SimC Addon Import</source>
-        <translation type="unfinished"></translation>
+        <translation>Simc Addon Import</translation>
     </message>
     <message>
         <location filename="../qt/MainWindow.cpp" line="1361"/>
@@ -482,7 +483,7 @@ Je mehr Leute helfen die BiS-Profile zu verbessern, desto besser erreichen sie d
     <message>
         <location filename="../qt/MainWindow.cpp" line="1363"/>
         <source>Close permanently</source>
-        <translation type="unfinished"></translation>
+        <translation>Permanent schließen</translation>
     </message>
     <message>
         <location filename="../qt/MainWindow.cpp" line="1393"/>
@@ -640,7 +641,7 @@ Je mehr Leute helfen die BiS-Profile zu verbessern, desto besser erreichen sie d
     <message>
         <location filename="../qt/sc_OptionsTab.cpp" line="346"/>
         <source>Update Check</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktualisierung prüfen</translation>
     </message>
     <message>
         <location filename="../qt/sc_OptionsTab.cpp" line="348"/>
@@ -852,22 +853,22 @@ Je mehr Leute helfen die BiS-Profile zu verbessern, desto besser erreichen sie d
     <message>
         <location filename="../qt/sc_OptionsTab.cpp" line="397"/>
         <source>Process Priority</source>
-        <translation type="unfinished"></translation>
+        <translation>Prozess-Priorität</translation>
     </message>
     <message>
         <location filename="../qt/sc_OptionsTab.cpp" line="412"/>
         <source>Change default location for reports.</source>
-        <translation type="unfinished"></translation>
+        <translation>Speicherort für Berichte ändern.</translation>
     </message>
     <message>
         <location filename="../qt/sc_OptionsTab.cpp" line="422"/>
         <source>Armory API Client Id</source>
-        <translation type="unfinished"></translation>
+        <translation>Armory API Client ID</translation>
     </message>
     <message>
         <location filename="../qt/sc_OptionsTab.cpp" line="423"/>
         <source>Armory API Client Secret</source>
-        <translation type="unfinished"></translation>
+        <translation>Armory API Client Geheimniss</translation>
     </message>
     <message>
         <location filename="../qt/sc_OptionsTab.cpp" line="458"/>
@@ -888,17 +889,17 @@ Zeitkrümmung</translation>
     <message>
         <location filename="../qt/sc_OptionsTab.cpp" line="460"/>
         <source>Arcane Intellect</source>
-        <translation type="unfinished"></translation>
+        <translation>Arkane Intelligenz</translation>
     </message>
     <message>
         <location filename="../qt/sc_OptionsTab.cpp" line="462"/>
         <source>Power Word: Fortitude</source>
-        <translation type="unfinished"></translation>
+        <translation>Machtwort: Seelenstärke</translation>
     </message>
     <message>
         <location filename="../qt/sc_OptionsTab.cpp" line="464"/>
         <source>Battle Shout</source>
-        <translation type="unfinished"></translation>
+        <translation>Schlachtruf</translation>
     </message>
     <message>
         <location filename="../qt/sc_OptionsTab.cpp" line="467"/>
@@ -940,24 +941,26 @@ Blutung (Schurke)</translation>
     <message>
         <location filename="../qt/sc_OptionsTab.cpp" line="480"/>
         <source>Chaos Brand</source>
-        <translation type="unfinished"></translation>
+        <translation>Chaosbrandmal</translation>
     </message>
     <message>
         <location filename="../qt/sc_OptionsTab.cpp" line="480"/>
         <source>Chaos Brand
 Magic damage debuff</source>
-        <translation type="unfinished"></translation>
+        <translation>Chaosbrandmal
+Magie-Schaden Debuff</translation>
     </message>
     <message>
         <location filename="../qt/sc_OptionsTab.cpp" line="482"/>
         <source>Mystic Touch</source>
-        <translation type="unfinished"></translation>
+        <translation>Mystische Berührung</translation>
     </message>
     <message>
         <location filename="../qt/sc_OptionsTab.cpp" line="482"/>
         <source>Mystic Touch
 Physical damage debuff</source>
-        <translation type="unfinished"></translation>
+        <translation>Mystische Berührung
+Physischer Schaden Debuff</translation>
     </message>
     <message>
         <location filename="../qt/sc_OptionsTab.cpp" line="486"/>
@@ -1135,12 +1138,13 @@ In anderen Worten, Beweglichkeit und Intelligenz werden für einen Krieger über
         <location filename="../qt/sc_OptionsTab.cpp" line="1035"/>
         <source>In PVP, critical strikes deal 150% damage instead of 200%.
 Enabling this option will set target level to max player level.</source>
-        <translation type="unfinished"></translation>
+        <translation>In PVP bewirken kritische Schläge statt 150% Schaden stattdessen 200% Schaden.
+Aktivieren dieser Option setzt weiter die Gegner-Stufe auf die maximale Spieler-Stufe.</translation>
     </message>
     <message>
         <location filename="../qt/sc_OptionsTab.cpp" line="1625"/>
         <source>Default Save Location</source>
-        <translation type="unfinished"></translation>
+        <translation>Standard Speicherort</translation>
     </message>
     <message>
         <source>Multistrike Rating</source>
@@ -1395,12 +1399,12 @@ Skalierungsplot für:</translation>
     <message>
         <location filename="../qt/sc_OptionsTab.cpp" line="730"/>
         <source>Generate Scaling curve for Leech (tertiary stat)</source>
-        <translation type="unfinished"></translation>
+        <translation>Generiere Skalierungskurve für Lebensraub</translation>
     </message>
     <message>
         <location filename="../qt/sc_OptionsTab.cpp" line="733"/>
         <source>Generate Scaling curve for Movement Speed (tertiary stat)</source>
-        <translation type="unfinished"></translation>
+        <translation>Generiere Skalierungskurve für Bewegungs-Geschwindigkeit</translation>
     </message>
     <message>
         <location filename="../qt/sc_OptionsTab.cpp" line="745"/>
@@ -1421,7 +1425,8 @@ Skalierungsplot für:</translation>
         <location filename="../qt/sc_OptionsTab.cpp" line="761"/>
         <source>A maximum of three stats may be ran at once.
 </source>
-        <translation>Maximal drei Stats können gleichzeitig berechnet werden.</translation>
+        <translation>Maximal drei Stats können gleichzeitig berechnet werden.
+</translation>
     </message>
     <message>
         <location filename="../qt/sc_OptionsTab.cpp" line="767"/>
@@ -1573,7 +1578,8 @@ Skalierungsplot für:</translation>
 runs iterations until that threshold is reached.
 </source>
         <translation>Diese Option gibt einen Sollfehler vor und
-iteriert bis dieser Sollfehler erreicht ist.</translation>
+iteriert bis dieser Sollfehler erreicht ist.
+</translation>
     </message>
     <message>
         <location filename="../qt/sc_OptionsTab.cpp" line="1013"/>
@@ -1587,14 +1593,18 @@ iteriert bis dieser Sollfehler erreicht ist.</translation>
         <source>CastingPatchwerk: Tank-n-Spank
     Boss considered always casting
     (to test interrupt procs on cooldown)</source>
-        <translation type="unfinished"></translation>
+        <translation>Zaubernder Patchwerk: Blindes Draufhauen
+    Gegner ist immer am zaubern
+    (Zum testen von Unterbrechungs-Zaubern)</translation>
     </message>
     <message>
         <location filename="../qt/sc_OptionsTab.cpp" line="1021"/>
         <source>DungeonSlice:
     Multi-segment simulation meant to
     approximate M+ dungeon and boss pulls</source>
-        <translation type="unfinished"></translation>
+        <translation>DungeonSlice:
+    Simulation aus mehreren Kampf-Segmenten,
+    welche versucht, M+ Kämpfe nachzustellen</translation>
     </message>
     <message>
         <location filename="../qt/sc_OptionsTab.cpp" line="1046"/>
@@ -1604,19 +1614,20 @@ iteriert bis dieser Sollfehler erreicht ist.</translation>
     <message>
         <location filename="../qt/sc_OptionsTab.cpp" line="1051"/>
         <source>Controls which Talent specification is used when importing profiles from the Armory.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kontrolliert welche Spezialisierung beim Importieren von Profilen aus dem Battle.net Armory verwendet werden.</translation>
     </message>
     <message>
         <location filename="../qt/sc_OptionsTab.cpp" line="1055"/>
         <source>Check Simulationcraft updates on startup.</source>
-        <translation type="unfinished"></translation>
+        <translation>Prüfe Aktualisierungen von SimulationCraft beim Start.</translation>
     </message>
     <message>
         <location filename="../qt/sc_OptionsTab.cpp" line="1100"/>
         <source>Deterministic Random Number Generator creates all random numbers with a given, constant seed.
 This allows to better observe marginal changes which aren&apos;t influenced by rng, 
  or check for other influences without having to reduce statistic noise</source>
-        <translation type="unfinished"></translation>
+        <translation>Der deterministische Zufallszahlen-Generator erstellt Zufallszahlen aus einem gegebenen, konstanten Samen
+Dies ermöglicht es, einen exakten Simulationsverlauf zu replizieren.</translation>
     </message>
     <message>
         <location filename="../qt/sc_OptionsTab.cpp" line="1132"/>
@@ -1637,15 +1648,17 @@ Iter/10 und Iter/100 skaliert mit der Anzahl an Iterationen,
         <location filename="../qt/sc_OptionsTab.cpp" line="1128"/>
         <source>N/A:  Do not use this feature.
 </source>
-        <translation>Nicht verfügbar. Dieses Feature nicht benutzen.</translation>
+        <translation>Nicht verfügbar. Dieses Feature nicht benutzen.
+</translation>
     </message>
     <message>
         <location filename="../qt/sc_OptionsTab.cpp" line="975"/>
         <source>Auto: use sim defaults based on other options
      (0.2%, 0.05% for scale factors).
 </source>
-        <translation>Auto: Benutze die Standardeinstellung basierend auf anderen Optionen.
-      (0,2%, 0,05% für Skalierungsfaktoren).</translation>
+        <translation>Auto: Benutze die Standardeinstellung basierend auf anderen Optionen
+     (0,2%, 0,05% für Skalierungsfaktoren).
+</translation>
     </message>
     <message>
         <location filename="../qt/sc_OptionsTab.cpp" line="976"/>
@@ -1895,17 +1908,17 @@ It is currently used to extend the cooldown duration of user executable abilitie
 Each setting adds an amount of &apos;lag&apos; with a default standard deviation of 10%:</source>
         <translation>Weltlag ist äquivalent zum &apos;Weltlag&apos;, welches im WoW Client angezeigt wird.
 Es wird verwendet, um die Dauer der Cooldowns von Spielerfähigkeiten zu verlängern.
-Für jeden Wert wird eine Standardabweichung von 10% benutzt.</translation>
+Für jeden Wert wird eine Standardabweichung von 10% benutzt:</translation>
     </message>
     <message>
         <location filename="../qt/sc_OptionsTab.cpp" line="1108"/>
         <source>    &apos;Super Low&apos; : %1ms</source>
-        <translation>   &apos;Super Tief&apos; : %1ms</translation>
+        <translation>    &apos;Super Tief&apos; : %1ms</translation>
     </message>
     <message>
         <location filename="../qt/sc_OptionsTab.cpp" line="1109"/>
         <source>    &apos;Low&apos;   : %1ms</source>
-        <translation>     &apos;Tief&apos;   : %1ms</translation>
+        <translation>    &apos;Tief&apos;   : %1ms</translation>
     </message>
     <message>
         <location filename="../qt/sc_OptionsTab.cpp" line="1109"/>
@@ -1915,12 +1928,12 @@ Für jeden Wert wird eine Standardabweichung von 10% benutzt.</translation>
     <message>
         <location filename="../qt/sc_OptionsTab.cpp" line="1110"/>
         <source>    &apos;High&apos;  : %1ms</source>
-        <translation>     &apos;Hoch&apos;  : %1ms</translation>
+        <translation>    &apos;Hoch&apos;  : %1ms</translation>
     </message>
     <message>
         <location filename="../qt/sc_OptionsTab.cpp" line="1111"/>
         <source>    &apos;Australia&apos; : %1ms</source>
-        <translation>   &apos;Australien&apos; : %1ms</translation>
+        <translation>    &apos;Australien&apos; : %1ms</translation>
     </message>
     <message>
         <location filename="../qt/sc_OptionsTab.cpp" line="1114"/>
@@ -1956,13 +1969,15 @@ Die Abstände auf der Horizontalachse liegen im Intervall [- Anzahl der Punkte/2
         <location filename="../qt/sc_OptionsTab.cpp" line="1128"/>
         <source>Target error for plots.
 </source>
-        <translation>Sollfehler für Plots.</translation>
+        <translation>Sollfehler für Plots.
+</translation>
     </message>
     <message>
         <location filename="../qt/sc_OptionsTab.cpp" line="1129"/>
         <source>Auto: Use simulation defaults (0.5%).
 </source>
-        <translation>Auto: Nutze Simulations-Vorgaben (0.5%).</translation>
+        <translation>Auto: Nutze Simulations-Vorgaben (0.5%).
+</translation>
     </message>
     <message>
         <location filename="../qt/sc_OptionsTab.cpp" line="1130"/>
@@ -2008,7 +2023,8 @@ Dies ist nicht die Anzahl der Schritte. Ein niedrigerer Wert wird mehr Punkte er
         <location filename="../qt/simulationcraftqt.hpp" line="396"/>
         <source># User-specified persistent global and player parameters will be set here.
 </source>
-        <translation># Globale optionen können hier manuell und permanent überschrieben werden.</translation>
+        <translation># Globale optionen können hier manuell und permanent überschrieben werden.
+</translation>
     </message>
 </context>
 <context>
@@ -2159,7 +2175,7 @@ Je mehr Leute helfen die BiS-Profile zu verbessern, desto besser erreichen sie d
         <location filename="../qt/sc_SimulationThread.cpp" line="88"/>
         <location filename="../qt/sc_SimulationThread.cpp" line="102"/>
         <source>Simulation runtime error</source>
-        <translation type="unfinished"></translation>
+        <translation>Laufzeit-Fehler während der Simulation</translation>
     </message>
 </context>
 <context>
@@ -2261,7 +2277,8 @@ Je mehr Leute helfen die BiS-Profile zu verbessern, desto besser erreichen sie d
  == : Gleichheit; ignoriert Unterschiede in Groß- und Kleinschreibung
  != : Ungleichheit; ignoriert Unterschiede in Groß- und Kleinschreibung
  ~~ : Substring im Feld enthalten; ignoriert Unterschiede in Groß- und Kleinschreibung;
- !~ : Substring im Feld nicht enthalten; ignoriert Unterschiede in Groß- und Kleinschreibung;</translation>
+ !~ : Substring im Feld nicht enthalten; ignoriert Unterschiede in Groß- und Kleinschreibung;
+</translation>
     </message>
     <message>
         <location filename="../qt/sc_SpellQueryTab.cpp" line="329"/>
@@ -2946,27 +2963,27 @@ the analysis of trinkets and abilities with long cooldowns.</source>
     <message>
         <location filename="../qt/sc_UpdateCheck.cpp" line="98"/>
         <source>A new version of Simulationcraft has been released</source>
-        <translation type="unfinished"></translation>
+        <translation>Eine neuere Version von SimulationCraft ist veröffentlicht</translation>
     </message>
     <message>
         <location filename="../qt/sc_UpdateCheck.cpp" line="99"/>
         <source>Your current version is</source>
-        <translation type="unfinished"></translation>
+        <translation>Deine Version ist</translation>
     </message>
     <message>
         <location filename="../qt/sc_UpdateCheck.cpp" line="100"/>
         <source>The new version is</source>
-        <translation type="unfinished"></translation>
+        <translation>Die neue Version ist</translation>
     </message>
     <message>
         <location filename="../qt/sc_UpdateCheck.cpp" line="101"/>
         <source>You can download the new release from </source>
-        <translation type="unfinished"></translation>
+        <translation>Du kannst den neuen Release herunterladen unter </translation>
     </message>
     <message>
         <location filename="../qt/sc_UpdateCheck.cpp" line="104"/>
         <source>Release notes</source>
-        <translation type="unfinished"></translation>
+        <translation>Release Notizen</translation>
     </message>
 </context>
 <context>
