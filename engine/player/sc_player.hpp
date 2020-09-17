@@ -518,7 +518,6 @@ struct player_t : public actor_t
     // 9.0 Soulbinds
     buff_t* invigorating_herbs;       // night_fae/niya/tools - proc on direct heal
     buff_t* redirected_anima_stacks;  // night_fae/niya/grove_invigoration - counter procced via rppm
-    buff_t* redirected_anima;         // night_fae/niya/grove_invigoration - buff procced on covenant ability use
     buff_t* field_of_blossoms;        // night_fae/dreamweaver - buff procced on covenant ability use
     buff_t* social_butterfly;         // night_fae/dreamweaver - periodic buff when 2+ allies are nearby
     buff_t* first_strike;             // night_fae/korayn - crit buff when first hitting enemy

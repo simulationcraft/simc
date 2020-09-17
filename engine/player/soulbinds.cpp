@@ -213,24 +213,22 @@ void niyas_tools_herbs( special_effect_t& effect )
 
 void grove_invigoration( special_effect_t& effect )
 {
-  struct redirected_anima_buff_t : public buff_t
+  struct redirected_anima_buff_t : public stat_buff_t
   {
-    redirected_anima_buff_t( player_t* p ) : buff_t( p, "redirected_anima", p->find_spell( 342814 ) )
-    {
-      set_default_value_from_effect_type( A_MOD_MASTERY_PCT );
-      add_invalidate( CACHE_MASTERY );
-    }
+    redirected_anima_buff_t( player_t* p ) : stat_buff_t( p, "redirected_anima", p->find_spell( 342814 ) ) {}
 
     bool trigger( int, double v, double c, timespan_t d ) override
     {
+      // TODO: does this convert ALL stacks or only up to 4 stacks, as per max_stack of the mastery buff
       int anima_stacks = player->buffs.redirected_anima_stacks->check();
 
       if ( !anima_stacks )
         return false;
 
-      player->buffs.redirected_anima_stacks->expire();
+      anima_stacks = std::min( anima_stacks, as<int>( data().max_stacks() ) );
+      player->buffs.redirected_anima_stacks->decrement( anima_stacks );
 
-      return buff_t::trigger( anima_stacks, v, c, d );
+      return stat_buff_t::trigger( anima_stacks, v, c, d );
     }
   };
 
@@ -238,10 +236,11 @@ void grove_invigoration( special_effect_t& effect )
 
   new dbc_proc_callback_t( effect.player, effect );
 
-  if ( !effect.player->buffs.redirected_anima )
-    effect.player->buffs.redirected_anima = make_buff<redirected_anima_buff_t>( effect.player );
+  auto buff = buff_t::find( effect.player, "redirected_anima" );
+  if ( !buff )
+    buff = make_buff<redirected_anima_buff_t>( effect.player );
 
-  add_covenant_cast_callback<covenant_cb_buff_t>( effect.player, effect.player->buffs.redirected_anima );
+  add_covenant_cast_callback<covenant_cb_buff_t>( effect.player, buff );
 }
 
 void field_of_blossoms( special_effect_t& effect )
