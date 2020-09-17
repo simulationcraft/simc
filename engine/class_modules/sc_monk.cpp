@@ -832,14 +832,13 @@ public:
     pets::yulon_pet_t* yulon   = nullptr;
     pets::chiji_pet_t* chiji   = nullptr;
     spawner::pet_spawner_t<pets::fury_of_xuen_pet_t, monk_t> fury_of_xuen;
-//    spawner::pet_spawner_t<pets::fallen_monk_ww_pet_t, monk_t> fallen_monk_ww;
+    spawner::pet_spawner_t<pets::fallen_monk_ww_pet_t, monk_t> fallen_monk_ww;
 //    spawner::pet_spawner_t<pets::fallen_monk_mw_pet_t, monk_t> fallen_monk_mw;
 //    spawner::pet_spawner_t<pets::fallen_monk_brm_pet_t, monk_t> fallen_monk_brm;
 
     pets_t( monk_t* p )
-      : fury_of_xuen( "fury_of_xuen", p )
-//        ,
-//        fallen_monk_ww( "fallen_monk_ww", p ),
+      : fury_of_xuen( "fury_of_xuen", p ),
+        fallen_monk_ww( "fallen_monk_ww", p )
 //        fallen_monk_mw( "fallen_monk_mw", p ),
 //        fallen_monk_brm( "fallen_monk_brm", p )
    {}
@@ -1353,6 +1352,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
       : sef_melee_attack_t( n, player, spell_data_t::nil(), w )
     {
       background = repeating = may_crit = may_glance = true;
+      school                                         = SCHOOL_PHYSICAL;
       weapon_multiplier                              = 1.0;
       base_execute_time                              = w->swing_time;
       trigger_gcd                                    = timespan_t::zero();
@@ -2294,7 +2294,7 @@ private:
   };
 
 public:
-  fury_of_xuen_pet_t( monk_t* owner ) : pet_t( owner->sim, owner, "fury_of_xuen", PET_XUEN,  true, false )
+  fury_of_xuen_pet_t( monk_t* owner ) : pet_t( owner->sim, owner, "fury_of_xuen", PET_XUEN,  true, true )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.min_dmg    = dbc->spell_scaling( o()->type, level() );
@@ -2680,7 +2680,9 @@ struct fallen_monk_ww_pet_t : public pet_t
 private:
   struct melee_t : public melee_attack_t
   {
-    melee_t( const std::string& n, fallen_monk_ww_pet_t* player ) : melee_attack_t( n, player, spell_data_t::nil() )
+    monk_t* owner;
+    melee_t( const std::string& n, fallen_monk_ww_pet_t* player ) : 
+        melee_attack_t( n, player, spell_data_t::nil() )
     {
       background = repeating = may_crit = may_glance = true;
       school                                         = SCHOOL_PHYSICAL;
@@ -2690,13 +2692,43 @@ private:
       base_execute_time = weapon->swing_time;
       trigger_gcd       = timespan_t::zero();
       special           = false;
+      base_hit          -= 0.19;
+      owner             = player->o();
+    }
+
+    // Copy melee code from Storm, Earth and Fire
+    double composite_attack_power() const override
+    {
+      double ap = melee_attack_t::composite_attack_power();
+
+      if ( owner->main_hand_weapon.group() == WEAPON_2H )
+      {
+        ap += owner->main_hand_weapon.dps * 3.5;
+      }
+      else
+      {
+        // 1h/dual wield equation. Note, this formula is slightly off (~3%) for
+        // owner dw/pet dw variation.
+        double total_dps = owner->main_hand_weapon.dps;
+        double dw_mul    = 1.0;
+        if ( owner->off_hand_weapon.group() != WEAPON_NONE )
+        {
+          total_dps += owner->off_hand_weapon.dps * 0.5;
+          dw_mul = 0.898882275;
+        }
+
+        ap += total_dps * 3.5 * dw_mul;
+      }
+
+      return ap;
     }
 
     void execute() override
     {
       if ( time_to_execute > timespan_t::zero() && player->executing )
       {
-        sim->print_debug( "Executing {} during melee ({}).", *player->executing,
+        sim->print_debug( "{} Executing {} during melee ({}).", *player,
+                          player->executing ? *player->executing : *player->channeling,
                           util::slot_type_string( weapon->slot ) );
         schedule_execute();
       }
@@ -2736,7 +2768,7 @@ private:
   };
 
 public:
-  fallen_monk_ww_pet_t( monk_t* owner ) : pet_t( owner->sim, owner, "fallen_monk_windwalker", PET_FALLEN_MONK, true, false )
+  fallen_monk_ww_pet_t( monk_t* owner ) : pet_t( owner->sim, owner, "fallen_monk_windwalker", PET_FALLEN_MONK, true, true )
   {
     main_hand_weapon.type       = WEAPON_1H;
     main_hand_weapon.min_dmg    = dbc->spell_scaling( o()->type, level() );
@@ -2750,10 +2782,20 @@ public:
     off_hand_weapon.damage      = ( off_hand_weapon.min_dmg + off_hand_weapon.max_dmg ) / 2;
     off_hand_weapon.swing_time  = timespan_t::from_seconds( 2.6 );
 
-    if ( owner->specialization() == MONK_MISTWEAVER )
-      owner_coeff.sp_from_ap    = 1.121;
-    else
-      owner_coeff.ap_from_ap    = 1.121;
+    switch ( owner->specialization() )
+    {
+      case MONK_WINDWALKER:
+        owner_coeff.ap_from_ap = 1.121;
+        break;
+      case MONK_BREWMASTER:
+        owner_coeff.ap_from_ap = 0.98;
+        break;
+      case MONK_MISTWEAVER:
+        owner_coeff.sp_from_ap = 0.98;
+        break;
+      default:
+        break;
+    }
   }
 
   monk_t* o()
@@ -2768,11 +2810,11 @@ public:
 
   double composite_player_multiplier( school_e school ) const override
   {
-    double cpm = owner->cache.player_multiplier( school );
+    double cpm = o()->cache.player_multiplier( school );
 
-    if ( o()->conduit.xuens_bond->ok() )
-      cpm *= 1 + o()->conduit.xuens_bond.percent();
-
+    if ( o()->conduit.imbued_reflections->ok() )
+      cpm *= 1 + o()->conduit.imbued_reflections.percent();
+    
     return cpm;
   }
 
@@ -2814,7 +2856,7 @@ public:
   struct fists_of_fury_t : public spell_t
   {
     fists_of_fury_t( fallen_monk_ww_pet_t* p, const std::string& options_str )
-      : spell_t( "fists_of_fury", p, p->find_spell( 330898 ) )
+      : spell_t( "fists_of_fury", p, p->o()->passives.fallen_monk_fists_of_fury )
     {
       parse_options( options_str );
 
@@ -2834,21 +2876,103 @@ public:
     }
   };
 
+  struct spinning_crane_kick_tick_t : public melee_attack_t
+  {
+    monk_t* owner;
+    spinning_crane_kick_tick_t( fallen_monk_ww_pet_t* p )
+      : melee_attack_t( "spinning_crane_kick_tick", p, p->o()->passives.fallen_monk_spinning_crane_kick_tick )
+    {
+      dual = direct_tick = background = may_crit = may_miss = true;
+      aoe                     = 1 + (int)p->o()->spec.fists_of_fury->effectN( 1 ).base_value();
+      ap_type                 = attack_power_type::WEAPON_MAINHAND;
+      dot_duration            = timespan_t::zero();
+      trigger_gcd             = timespan_t::zero();
+      owner                   = p->o();
+      // Logs show they cast this every 3 seconds, instead of back-to-back
+      cooldown->duration      = timespan_t::from_seconds( 3 );
+    }
+
+    void init() override
+    {
+      melee_attack_t::init();
+
+      if ( owner->specialization() == MONK_WINDWALKER )
+        ap_type = attack_power_type::WEAPON_BOTH;
+    }
+
+    double action_multiplier() const override
+    {
+      double am = melee_attack_t::action_multiplier();
+
+      double motc_multiplier = owner->passives.cyclone_strikes->effectN( 1 ).percent();
+
+      if ( owner->conduit.calculated_strikes->ok() )
+        motc_multiplier += 1 + owner->conduit.calculated_strikes.percent();
+
+      am *= 1 + ( owner->mark_of_the_crane_counter() * motc_multiplier );
+
+      if ( owner->buff.dance_of_chiji_hidden->up() )
+        am *= 1 + owner->talent.dance_of_chiji->effectN( 1 ).percent();
+
+      return am;
+    }
+  };
+
+  struct spinning_crane_kick_t : public melee_attack_t
+  {
+    monk_t* owner;
+    spinning_crane_kick_t( fallen_monk_ww_pet_t* p, const std::string& options_str )
+      : melee_attack_t( "spinning_crane_kick", p, p->o()->passives.fallen_monk_spinning_crane_kick )
+    {
+      parse_options( options_str );
+
+      may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
+      tick_zero = hasted_ticks = interrupt_auto_attack = true;
+      owner                                            = p->o();
+
+      spell_power_mod.direct = 0.0;
+      dot_behavior           = DOT_REFRESH;  // Spell uses Pandemic Mechanics.
+
+      tick_action = new spinning_crane_kick_tick_t( p );
+    }
+
+    // N full ticks, but never additional ones.
+    timespan_t composite_dot_duration( const action_state_t* s ) const override
+    {
+      return dot_duration * ( tick_time( s ) / base_tick_time );
+    }
+
+    double cost() const override
+    {
+      double c = melee_attack_t::cost();
+
+      c = 0;
+
+      return c;
+    }
+  };
+
   void init_action_list() override
   {
     action_list_str = "auto_attack";
-    action_list_str += "/fists_of_fury";
+    // Only cast Fists of Fury for Windwalker specialization
+    if ( o()->specialization() == MONK_WINDWALKER )
+        action_list_str += "/fists_of_fury";
+    action_list_str += "/spinning_crane_kick";
 
     pet_t::init_action_list();
   }
 
   action_t* create_action( util::string_view name, const std::string& options_str ) override
   {
+    if ( name == "auto_attack" )
+      return new auto_attack_t( this, options_str );
+
     if ( name == "fists_of_fury" )
       return new fists_of_fury_t( this, options_str );
 
-    if ( name == "auto_attack" )
-      return new auto_attack_t( this, options_str );
+    if ( name == "spinning_crane_kick" )
+      return new spinning_crane_kick_t( this, options_str );
 
     return pet_t::create_action( name, options_str );
   }
@@ -4735,7 +4859,7 @@ struct sck_tick_action_t : public monk_melee_attack_t
     am *= 1 + ( mark_of_the_crane_counter() * motc_multiplier );
 
     if ( p()->buff.dance_of_chiji_hidden->up() )
-      am *= p()->talent.dance_of_chiji->effectN( 1 ).percent();
+      am *= 1 + p()->talent.dance_of_chiji->effectN( 1 ).percent();
 
     return am;
   }
@@ -8277,17 +8401,10 @@ void monk_t::create_pets()
     pets.sef[ SEF_EARTH ] = new pets::storm_earth_and_fire_pet_t( "earth_spirit", p->sim, p, true, WEAPON_MACE );
   }
 
-  /*  if ( find_action( "army_of_the_dead" ) )
-    {
-      pets.army_ghouls.set_creation_callback(
-          []( death_knight_t* p ) { return new pets::army_ghoul_pet_t( p, "army_ghoul" ); } );
-    }
-
-    if ( find_action( "apocalypse" ) )
-    {
-      pets.apoc_ghouls.set_creation_callback(
-          []( death_knight_t* p ) { return new pets::army_ghoul_pet_t( p, "apoc_ghoul" ); } );
-    } */
+  if ( covenant.venthyr->ok() )
+  {
+    pets.fallen_monk_ww.set_creation_callback( []( monk_t* p ) { return new pets::fallen_monk_ww_pet_t( p ); } );
+  }
 }
 
 // monk_t::activate =========================================================
