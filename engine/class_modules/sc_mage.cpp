@@ -4696,34 +4696,46 @@ struct phoenix_flames_splash_t : public fire_mage_spell_t
     // TODO: Verify what happens when Phoenix Flames hits an immune target.
     if ( result_is_hit( s->result ) && s->chain_target == 0 )
     {
-      dot_t* source_ignite = s->target->get_dot( "ignite", p() );
-      if ( source_ignite->is_ticking() )
+      auto source = s->target->get_dot( "ignite", player );
+      if ( source->is_ticking() )
       {
-        int spreads_remaining = max_spread_targets;
-        // TODO: Verify which targets Ignite spreads to when there are more than eight.
+        std::vector<dot_t*> ignites;
+
+        // Collect the Ignite DoT objects of all targets that are in range.
         for ( auto t : target_list() )
+          ignites.push_back( t->get_dot( "ignite", player ) );
+
+        // Sort candidate Ignites by descending bank size.
+        // TODO: Double check what targets the Ignite spread prioritizes.
+        std::stable_sort( ignites.begin(), ignites.end(), [] ( dot_t* a, dot_t* b )
+        { return ignite_bank( a ) > ignite_bank( b ); } );
+
+        auto source_bank = ignite_bank( source );
+        auto targets_remaining = max_spread_targets;
+        for ( auto destination : ignites )
         {
-          if ( t == s->target )
+          // The original spread source doesn't count towards the spread target limit.
+          if ( source == destination )
             continue;
 
-          if ( spreads_remaining <= 0 )
+          // Target cap was reached, stop.
+          if ( targets_remaining-- <= 0 )
             break;
+
+          // Source Ignite cannot spread to targets with higher Ignite bank. It will
+          // still count towards the spread target cap, though.
+          if ( ignite_bank( destination ) >= source_bank )
+            continue;
+
+          if ( destination->is_ticking() )
+            p()->procs.ignite_overwrite->occur();
+          else
+            p()->procs.ignite_new_spread->occur();
 
           // TODO: Exact copies of the Ignite are not spread. Instead, the Ignites can
           // sometimes have partial ticks, but the conditions for this are not known.
-          dot_t* dest_ignite = t->get_dot( "ignite", p() );
-          if ( ignite_bank( dest_ignite ) < ignite_bank( source_ignite ) )
-          {
-            if ( dest_ignite->is_ticking() )
-              p()->procs.ignite_overwrite->occur();
-            else
-              p()->procs.ignite_new_spread->occur();
-            // In game, the existing Ignite is not removed; its
-            // state is updated to closely match the source Ignite.
-            dest_ignite->cancel();
-            source_ignite->copy( t, DOT_COPY_CLONE );
-            spreads_remaining--;
-          }
+          destination->cancel();
+          source->copy( destination->target, DOT_COPY_CLONE );
         }
       }
     }
