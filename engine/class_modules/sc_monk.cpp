@@ -67,7 +67,7 @@ namespace pets
 
   // Covenant
   struct fallen_monk_ww_pet_t;
-  //struct fallen_monk_mw_pet_t;
+  struct fallen_monk_mw_pet_t;
   struct fallen_monk_brm_pet_t;
 }
 namespace orbs
@@ -833,13 +833,13 @@ public:
     pets::chiji_pet_t* chiji   = nullptr;
     spawner::pet_spawner_t<pets::fury_of_xuen_pet_t, monk_t> fury_of_xuen;
     spawner::pet_spawner_t<pets::fallen_monk_ww_pet_t, monk_t> fallen_monk_ww;
-    //    spawner::pet_spawner_t<pets::fallen_monk_mw_pet_t, monk_t> fallen_monk_mw;
+    spawner::pet_spawner_t<pets::fallen_monk_mw_pet_t, monk_t> fallen_monk_mw;
     spawner::pet_spawner_t<pets::fallen_monk_brm_pet_t, monk_t> fallen_monk_brm;
 
     pets_t( monk_t* p )
       : fury_of_xuen( "fury_of_xuen", p ),
         fallen_monk_ww( "fallen_monk_windwalker", p ),
-//        fallen_monk_mw( "fallen_monk_mw", p ),
+        fallen_monk_mw( "fallen_monk_mistweaver", p ),
         fallen_monk_brm( "fallen_monk_brewmaster", p )
    {}
   } pets;
@@ -2774,24 +2774,22 @@ public:
     main_hand_weapon.min_dmg    = dbc->spell_scaling( o()->type, level() );
     main_hand_weapon.max_dmg    = dbc->spell_scaling( o()->type, level() );
     main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
-    main_hand_weapon.swing_time = timespan_t::from_seconds( 2.6 );
+    main_hand_weapon.swing_time = timespan_t::from_seconds( 2 );
 
     off_hand_weapon.type       = WEAPON_1H;
     off_hand_weapon.min_dmg     = dbc->spell_scaling( o()->type, level() );
     off_hand_weapon.max_dmg     = dbc->spell_scaling( o()->type, level() );
     off_hand_weapon.damage      = ( off_hand_weapon.min_dmg + off_hand_weapon.max_dmg ) / 2;
-    off_hand_weapon.swing_time  = timespan_t::from_seconds( 2.6 );
+    off_hand_weapon.swing_time  = timespan_t::from_seconds( 2 );
 
     switch ( owner->specialization() )
     {
       case MONK_WINDWALKER:
-        owner_coeff.ap_from_ap = 1.121;
-        break;
       case MONK_BREWMASTER:
         owner_coeff.ap_from_ap = 0.98;
         break;
       case MONK_MISTWEAVER:
-        owner_coeff.sp_from_ap = 0.98;
+        owner_coeff.ap_from_sp = 0.98;
         break;
       default:
         break;
@@ -2928,6 +2926,12 @@ public:
 
       may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
       tick_zero = hasted_ticks = interrupt_auto_attack = true;
+      // We only want the monk to cast spinning crane kick 2 times during the duration.
+      // Increase the cooldown for non-windwalkers so that it only casts 2 times.
+      if ( p->o()->specialization() == MONK_WINDWALKER )
+        cooldown->duration = timespan_t::from_seconds( 4 );
+      else
+        cooldown->duration = timespan_t::from_seconds( 6 );
       owner                                            = p->o();
 
       spell_power_mod.direct = 0.0;
@@ -3053,18 +3057,16 @@ public:
     main_hand_weapon.min_dmg    = dbc->spell_scaling( o()->type, level() );
     main_hand_weapon.max_dmg    = dbc->spell_scaling( o()->type, level() );
     main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
-    main_hand_weapon.swing_time = timespan_t::from_seconds( 3.5 );
+    main_hand_weapon.swing_time = timespan_t::from_seconds( 1 );
 
     switch ( owner->specialization() )
     {
       case MONK_WINDWALKER:
-        owner_coeff.ap_from_ap = 1.121;
-        break;
       case MONK_BREWMASTER:
         owner_coeff.ap_from_ap = 0.98;
         break;
       case MONK_MISTWEAVER:
-        owner_coeff.sp_from_ap = 0.98;
+        owner_coeff.ap_from_sp = 0.98;
         break;
       default:
         break;
@@ -3102,6 +3104,8 @@ public:
       aoe                     = -1;
       attack_power_mod.direct = p->o()->spec.keg_smash->effectN( 2 ).ap_coeff();
       radius                  = p->o()->spec.keg_smash->effectN( 2 ).radius();
+      cooldown->duration      = timespan_t::from_seconds( 8 );
+      trigger_gcd             = timespan_t::from_seconds( 1.5 );
       owner                   = p->o();
     }
 
@@ -3131,10 +3135,11 @@ public:
 
   struct fallen_monk_breath_of_fire_t : public spell_t
   {
-    struct periodic_t : public spell_t
+    struct fallen_monk_breath_of_fire_tick_t : public spell_t
     {
       monk_t* owner;
-      periodic_t( fallen_monk_brm_pet_t* p ) : 
+      fallen_monk_breath_of_fire_tick_t( fallen_monk_brm_pet_t* p )
+        : 
           spell_t( "breath_of_fire_dot", p, p->o()->passives.breath_of_fire_dot )
       {
         background    = true;
@@ -3144,16 +3149,15 @@ public:
       }
     };
 
-    periodic_t* dot_action;
+    fallen_monk_breath_of_fire_tick_t* dot_action;
     monk_t* owner;
     fallen_monk_breath_of_fire_t( fallen_monk_brm_pet_t* p, const std::string& options_str )
-      : spell_t( "breath_of_fire", p, p->o()->spec.breath_of_fire ), dot_action( new periodic_t( p ) )
+      : spell_t( "breath_of_fire", p, p->o()->passives.fallen_monk_breath_of_fire ),
+        dot_action( new fallen_monk_breath_of_fire_tick_t( p ) )
     {
       parse_options( options_str );
       gcd_type = gcd_haste_type::NONE;
-      owner    = p->o();
-
-      trigger_gcd = timespan_t::from_seconds( 1 );
+      owner              = p->o();
 
       add_child( dot_action );
     }
@@ -3170,13 +3174,28 @@ public:
     }
   };
 
+  struct fallen_monk_clash_t : public spell_t
+  {
+    monk_t* owner;
+    fallen_monk_clash_t( fallen_monk_brm_pet_t* p, const std::string& options_str )
+      : spell_t( "clash", p, p->o()->passives.fallen_monk_clash )
+    {
+      parse_options( options_str );
+      gcd_type           = gcd_haste_type::NONE;
+      cooldown->duration = timespan_t::from_seconds( 6 );
+      owner              = p->o();
+      trigger_gcd        = timespan_t::from_seconds( 2 );
+    }
+  };
+
   void init_action_list() override
   {
     action_list_str = "auto_attack";
+    action_list_str += "/clash";
+    action_list_str += "/keg_smash";
     // Only cast Breath of Fire for Brewmaster specialization
     if ( o()->specialization() == MONK_BREWMASTER )
       action_list_str += "/breath_of_fire";
-    action_list_str += "/keg_smash";
 
     pet_t::init_action_list();
   }
@@ -3191,6 +3210,188 @@ public:
 
     if ( name == "breath_of_fire" )
       return new fallen_monk_breath_of_fire_t( this, options_str );
+
+    return pet_t::create_action( name, options_str );
+  }
+};
+
+// ==========================================================================
+// Fallen Monk - Mistweaver (Venthyr)
+// ==========================================================================
+struct fallen_monk_mw_pet_t : public pet_t
+{
+private:
+  struct melee_t : public melee_attack_t
+  {
+    monk_t* owner;
+    melee_t( const std::string& n, fallen_monk_mw_pet_t* player ) : melee_attack_t( n, player, spell_data_t::nil() )
+    {
+      background = repeating = may_crit = may_glance = true;
+      school                                         = SCHOOL_PHYSICAL;
+      weapon_multiplier                              = 1.0;
+      // Use damage numbers from the level-scaled weapon
+      weapon            = &( player->main_hand_weapon );
+      base_execute_time = weapon->swing_time;
+      trigger_gcd       = timespan_t::zero();
+      special           = false;
+      owner             = player->o();
+    }
+
+    void execute() override
+    {
+      if ( time_to_execute > timespan_t::zero() && player->executing )
+      {
+        sim->print_debug( "{} Executing {} during melee ({}).", *player,
+                          player->executing ? *player->executing : *player->channeling,
+                          util::slot_type_string( weapon->slot ) );
+        schedule_execute();
+      }
+      else
+        attack_t::execute();
+    }
+  };
+
+  struct auto_attack_t : public attack_t
+  {
+    auto_attack_t( fallen_monk_mw_pet_t* player, const std::string& options_str )
+      : attack_t( "auto_attack", player, spell_data_t::nil() )
+    {
+      parse_options( options_str );
+
+      player->main_hand_attack                    = new melee_t( "melee_main_hand", player );
+      player->main_hand_attack->base_execute_time = player->main_hand_weapon.swing_time;
+
+      trigger_gcd = timespan_t::zero();
+    }
+
+    bool ready() override
+    {
+      if ( player->is_moving() )
+        return false;
+
+      return ( player->main_hand_attack->execute_event == nullptr );  // not swinging
+    }
+
+    void execute() override
+    {
+      player->main_hand_attack->schedule_execute();
+
+      if ( player->off_hand_attack )
+        player->off_hand_attack->schedule_execute();
+    }
+  };
+
+public:
+  fallen_monk_mw_pet_t( monk_t* owner )
+    : pet_t( owner->sim, owner, "fallen_monk_mistweaver", PET_FALLEN_MONK, true, true )
+  {
+    main_hand_weapon.type       = WEAPON_1H;
+    main_hand_weapon.min_dmg    = dbc->spell_scaling( o()->type, level() );
+    main_hand_weapon.max_dmg    = dbc->spell_scaling( o()->type, level() );
+    main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
+    main_hand_weapon.swing_time = timespan_t::from_seconds( 1 );
+
+    switch ( owner->specialization() )
+    {
+      case MONK_WINDWALKER:
+      case MONK_BREWMASTER:
+      {
+        owner_coeff.sp_from_ap = 0.98;
+        owner_coeff.ap_from_ap = 0.98;
+        break;
+      }
+      case MONK_MISTWEAVER:
+      {
+        owner_coeff.sp_from_sp = 0.98;
+        owner_coeff.ap_from_sp = 0.98;
+        break;
+      }
+      default:
+        break;
+    }
+  }
+
+  monk_t* o()
+  {
+    return static_cast<monk_t*>( owner );
+  }
+
+  const monk_t* o() const
+  {
+    return static_cast<monk_t*>( owner );
+  }
+
+  double composite_player_multiplier( school_e school ) const override
+  {
+    double cpm = o()->cache.player_multiplier( school );
+
+    if ( o()->conduit.imbued_reflections->ok() )
+      cpm *= 1 + o()->conduit.imbued_reflections.percent();
+
+    return cpm;
+  }
+
+  struct fallen_monk_enveloping_mist_t : public heal_t
+  {
+    fallen_monk_enveloping_mist_t( fallen_monk_mw_pet_t* p, const std::string& options_str )
+      : heal_t( "enveloping_mist", p, p->o()->passives.fallen_monk_enveloping_mist )
+    {
+      parse_options( options_str );
+
+      may_miss = false;
+
+      dot_duration = data().duration();
+      target       = p->o();
+    }
+
+    double cost() const override
+    {
+      double c = heal_t::cost();
+
+      c = 0;
+
+      return c;
+    }
+  };
+
+  struct fallen_monk_soothing_mist_t : public heal_t
+  {
+    fallen_monk_soothing_mist_t( fallen_monk_mw_pet_t* p, const std::string& options_str )
+      : heal_t( "soothing_mist", p, p->o()->passives.fallen_monk_soothing_mist )
+    {
+      parse_options( options_str );
+
+      may_miss = false;
+
+      dot_duration       = data().duration();
+      trigger_gcd        = timespan_t::from_millis( 750 );
+      cooldown->duration = timespan_t::from_seconds( 5 );
+      cooldown->hasted   = true;
+      target             = p->o();
+    }
+  };
+
+  void init_action_list() override
+  {
+    action_list_str = "auto_attack";
+    // Only cast Enveloping Mist for Mistweaver specialization
+    if ( o()->specialization() == MONK_BREWMASTER )
+      action_list_str += "/enveloping_mist";
+    action_list_str += "/soothing_mist";
+
+    pet_t::init_action_list();
+  }
+
+  action_t* create_action( util::string_view name, const std::string& options_str ) override
+  {
+    if ( name == "auto_attack" )
+      return new auto_attack_t( this, options_str );
+
+    if ( name == "enveloping_mist" )
+      return new fallen_monk_enveloping_mist_t( this, options_str );
+
+    if ( name == "soothing_mist" )
+      return new fallen_monk_soothing_mist_t( this, options_str );
 
     return pet_t::create_action( name, options_str );
   }
@@ -8622,6 +8823,7 @@ void monk_t::create_pets()
   if ( covenant.venthyr->ok() )
   {
     pets.fallen_monk_ww.set_creation_callback( []( monk_t* p ) { return new pets::fallen_monk_ww_pet_t( p ); } );
+    pets.fallen_monk_mw.set_creation_callback( []( monk_t* p ) { return new pets::fallen_monk_mw_pet_t( p ); } );
     pets.fallen_monk_brm.set_creation_callback( []( monk_t* p ) { return new pets::fallen_monk_brm_pet_t( p ); } );
   }
 }
@@ -8996,10 +9198,10 @@ void monk_t::init_spells()
   // Covenants
   passives.fallen_monk_breath_of_fire           = find_spell( 330907 );
   passives.fallen_monk_clash                    = find_spell( 330909 );
-  passives.fallen_monk_enveloping_mist          = find_spell( 344240 );
+  passives.fallen_monk_enveloping_mist          = find_spell( 344008 );
   passives.fallen_monk_fists_of_fury            = find_spell( 330898 );
   passives.fallen_monk_keg_smash                = find_spell( 330911 );
-  passives.fallen_monk_soothing_mist            = find_spell( 344239 );
+  passives.fallen_monk_soothing_mist            = find_spell( 328283 );
   passives.fallen_monk_spinning_crane_kick      = find_spell( 330901 );
   passives.fallen_monk_spinning_crane_kick_tick = find_spell( 330903 );
 
