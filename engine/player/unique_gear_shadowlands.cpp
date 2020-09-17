@@ -112,7 +112,7 @@ void surprisingly_palatable_feast( special_effect_t& effect )
 void feast_of_gluttonous_hedonism( special_effect_t& effect )
 {
   init_feast( effect,
-              {{STAT_STRENGTH, 327707}, {STAT_STAMINA, 327707}, {STAT_INTELLECT, 327708}, {STAT_AGILITY, 327709}} );
+              {{STAT_STRENGTH, 327706}, {STAT_STAMINA, 327707}, {STAT_INTELLECT, 327708}, {STAT_AGILITY, 327709}} );
 }
 
 // For things that require check for oils, the effect must be passed as first parameter of the constructor, but this
