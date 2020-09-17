@@ -21,6 +21,18 @@ class QFormLayout;
 class SC_OptionsTab : public QTabWidget
 {
   Q_OBJECT
+
+  struct OptionEntry
+  {
+    OptionEntry( QString label, QString option, QString tooltip )
+      : label( std::move( label ) ), option( std::move( option ) ), tooltip( std::move( tooltip ) )
+    {
+    }
+    QString label;
+    QString option;
+    QString tooltip;
+  };
+
 public:
   SC_OptionsTab( SC_MainWindow* parent );
 
@@ -38,6 +50,8 @@ public:
 
   void createToolTips();
   QListWidget* itemDbOrder;
+  std::vector<OptionEntry> itemSourceOptions;
+
   struct choices_t
   {
     // options
