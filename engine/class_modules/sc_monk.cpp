@@ -3375,7 +3375,7 @@ public:
   {
     action_list_str = "auto_attack";
     // Only cast Enveloping Mist for Mistweaver specialization
-    if ( o()->specialization() == MONK_BREWMASTER )
+    if ( o()->specialization() == MONK_MISTWEAVER )
       action_list_str += "/enveloping_mist";
     action_list_str += "/soothing_mist";
 
