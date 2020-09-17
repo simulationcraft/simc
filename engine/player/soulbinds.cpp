@@ -397,9 +397,43 @@ void wasteland_propriety( special_effect_t& effect )
 {
   if ( !effect.player->buffs.wasteland_propriety )
   {
+    double duration_mod;
+    bool icd_enabled;
+
+    // The duration modifier for each class comes from the description variables of Wasteland Propriety (id=319983)
+    switch ( effect.player->type )
+    {
+      case DEATH_KNIGHT: duration_mod = 1.0; break;
+      case DEMON_HUNTER: duration_mod = 1.0; break;
+      case DRUID: duration_mod = 3.0; break;
+      case HUNTER: duration_mod = 0.5; break;
+      case MAGE: duration_mod = 1.5; break;
+      case MONK: duration_mod = 3.0; break;
+      case PALADIN: duration_mod = 4.0; break;
+      case PRIEST: duration_mod = 0.8; break;
+      case ROGUE: duration_mod = 1.0; break;
+      case SHAMAN: duration_mod = 1.5; break;
+      case WARLOCK: duration_mod = 1.0; break;
+      case WARRIOR: duration_mod = 1.0; break;
+      default: duration_mod = 1.0; break;
+    }
+
+    // The ICD of 60 seconds is enabled for some classes in the description of Wasteland Propriety (id=319983)
+    switch ( effect.player->type )
+    {
+      case ROGUE:
+      case WARRIOR:
+        icd_enabled = true;
+        break;
+      default:
+        icd_enabled = false;
+        break;
+    }
+
     effect.player->buffs.wasteland_propriety =
         make_buff( effect.player, "wasteland_propriety", effect.player->find_spell( 333218 ) )
-            ->set_cooldown( effect.player->find_spell( 333221 )->duration() )
+            ->set_cooldown( icd_enabled ? effect.player->find_spell( 333221 )->duration() : 0_ms )
+            ->set_duration_multiplier( duration_mod )
             ->set_default_value_from_effect_type( A_MOD_VERSATILITY_PCT )
             ->add_invalidate( CACHE_VERSATILITY );
   }
