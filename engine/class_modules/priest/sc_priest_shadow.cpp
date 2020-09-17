@@ -1566,9 +1566,6 @@ struct voidform_t final : public priest_buff_t<buff_t>
     // Using Surrender within Voidform does not reset the duration - might be a bug?
     set_refresh_behavior( buff_refresh_behavior::DISABLED );
 
-    // Spelldata still has 100 stacks for VF, hardcoding to 1
-    set_max_stack( 1 );
-
     if ( priest().talents.legacy_of_the_void->ok() )
     {
       // If LotV is talented, VF ends by Insanity drained, not time

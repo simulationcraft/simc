@@ -1047,9 +1047,6 @@ struct void_lasher_mind_sear_t final : public priest_pet_spell_t
     hasted_ticks = false;
     aoe          = -1;
 
-    // TODO: Not found in spell data, roughly approximating this value
-    spell_power_mod.direct = 0.2;
-
     // Merge the stats object with other instances of the pet
     auto first_pet = p.o().find_pet( p.name_str );
     if ( first_pet )
@@ -2206,9 +2203,9 @@ priest_t::priest_pets_t::priest_pets_t( priest_t& p )
   // Add 1ms to ensure pet is dismissed after last dot tick.
   void_tendril.set_default_duration( void_tendril_spell->duration() + timespan_t::from_millis( 1 ) );
 
-  // The duration is found in the 193470 spell
+  // The duration is found in the 336216 spell
   auto void_lasher_spell = p.find_spell( 344752 );
-  void_lasher.set_default_duration( p.find_spell( 193470 )->duration() + timespan_t::from_millis( 1 ) );
+  void_lasher.set_default_duration( p.find_spell( 336216 )->duration() + timespan_t::from_millis( 1 ) );
 }
 
 buffs::dispersion_t::dispersion_t( priest_t& p )
