@@ -6707,8 +6707,7 @@ void hunter_t::apl_bm()
     st -> add_action( "dire_beast" );
     st -> add_action( "barbed_shot,if=target.time_to_die<9" );
     st -> add_action( "barrage" );
-    st -> add_action( "arcane_shot" );
-    // st -> add_action( "cobra_shot,if=cooldown.kill_command.remains>1+gcd|focus.time_to_max<cooldown.kill_command.remains|buff.bestial_wrath.up|target.time_to_die<5" );
+    st -> add_action( "cobra_shot,if=(focus-cost+focus.regen*(cooldown.kill_command.remains-1)>action.kill_command.cost|cooldown.kill_command.remains>1+gcd&cooldown.bestial_wrath.remains_guess>focus.time_to_max)&cooldown.kill_command.remains>1|target.time_to_die<3" );
   }
   else
   {
@@ -6854,23 +6853,22 @@ void hunter_t::apl_mm()
     st -> add_action( "tar_trap,if=runeforge.soulforge_embers.equipped&tar_trap.remains<gcd&cooldown.flare.remains<gcd" );
     st -> add_action( "flare,if=tar_trap.up" );
     st -> add_action( "wild_spirits" );
-    st -> add_action( "resonating_arrow,if=active_enemies>1&cooldown.trueshot.remains" );
     st -> add_action( "flayed_shot" );
     st -> add_action( "death_chakram,if=focus+cast_regen<focus.max" );
     st -> add_action( "explosive_shot" );
-    st -> add_action( "volley" );
+    st -> add_action( "volley,if=buff.precise_shots.down|!talent.chimaera_shot.enabled" );
     st -> add_action( "a_murder_of_crows" );
-    st -> add_action( "resonating_arrow" );
-    st -> add_action( "trueshot" );
-    st -> add_action( "aimed_shot,if=(full_recharge_time<cast_time+gcd|buff.trueshot.up)&(buff.precise_shots.down|!talent.chimaera_shot.enabled|buff.trick_shots.remains>execute_time&active_enemies>1)" );
+    st -> add_action( "resonating_arrow,if=buff.precise_shots.down|!talent.chimaera_shot.enabled" );
+    st -> add_action( "trueshot,if=buff.precise_shots.down|!talent.chimaera_shot.enabled" );
+    st -> add_action( "aimed_shot,if=(full_recharge_time<cast_time+gcd|buff.trueshot.up)&(buff.precise_shots.down|!talent.chimaera_shot.enabled|ca_active)|buff.trick_shots.remains>execute_time&(active_enemies>1|runeforge.serpentstalkers_trickery.equipped)" );
     st -> add_action( "rapid_fire,if=buff.double_tap.down&focus+cast_regen<focus.max" );
-    st -> add_action( "chimaera_shot,if=buff.precise_shots.up&(buff.trueshot.down|active_enemies>1)" );
+    st -> add_action( "chimaera_shot,if=buff.precise_shots.up&(buff.trueshot.down|active_enemies>1|!ca_active)" );
     st -> add_action( "serpent_sting,target_if=min:remains,if=refreshable&target.time_to_die>duration" );
     st -> add_action( "barrage,if=active_enemies>1" );
-    st -> add_action( "arcane_shot,if=buff.precise_shots.up&buff.trueshot.down" );
+    st -> add_action( "arcane_shot,if=buff.precise_shots.up&(buff.trueshot.down|!ca_active)" );
     st -> add_action( "aimed_shot,if=buff.precise_shots.down" );
-    st -> add_action( "chimaera_shot,if=focus>cost+action.aimed_shot.cost" );
-    st -> add_action( "arcane_shot,if=focus>cost+action.aimed_shot.cost" );
+    st -> add_action( "chimaera_shot,if=focus>cost+action.aimed_shot.cost&(buff.trueshot.down|!ca_active)" );
+    st -> add_action( "arcane_shot,if=focus>cost+action.aimed_shot.cost&(buff.trueshot.down|!ca_active)" );
     st -> add_action( "steady_shot,if=focus+cast_regen<focus.max" );
     st -> add_action( "chimaera_shot" );
     st -> add_action( "arcane_shot" );
@@ -6932,11 +6930,7 @@ void hunter_t::apl_mm()
     st -> add_action( this, "Rapid Fire", "if=buff.trueshot.down|focus<35|focus<60&!talent.lethal_shots.enabled|buff.in_the_rhythm.remains<execute_time");
     st -> add_action( "blood_of_the_enemy,if=buff.trueshot.up&(buff.unerring_vision.stack>4|!azerite.unerring_vision.enabled)|target.time_to_die<11" );
     st -> add_action( "focused_azerite_beam,if=!buff.trueshot.up|target.time_to_die<5" );
-    st -> add_action( this, "Arcane Shot", "if=buff.trueshot.up&!buff.memory_of_lucid_dreams.up" );
-    st -> add_talent( this, "Chimaera Shot", "if=buff.trueshot.up&!buff.memory_of_lucid_dreams.up" );
     st -> add_action( this, "Aimed Shot", "if=buff.trueshot.up|(buff.double_tap.down|ca_active)&buff.precise_shots.down|full_recharge_time<cast_time&cooldown.trueshot.remains" );
-    st -> add_action( this, "Arcane Shot", "if=buff.trueshot.up&buff.memory_of_lucid_dreams.up" );
-    st -> add_talent( this, "Chimaera Shot", "if=buff.trueshot.up&buff.memory_of_lucid_dreams.up" );
     st -> add_action( "purifying_blast,if=!buff.trueshot.up|target.time_to_die<8" );
     st -> add_action( "concentrated_flame,if=focus+focus.regen*gcd<focus.max&buff.trueshot.down&(!dot.concentrated_flame_burn.remains&!action.concentrated_flame.in_flight)|full_recharge_time<gcd|target.time_to_die<5" );
     st -> add_action( "the_unbound_force,if=buff.reckless_force.up|buff.reckless_force_counter.stack<10|target.time_to_die<5" );
