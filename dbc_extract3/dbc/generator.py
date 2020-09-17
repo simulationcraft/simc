@@ -1280,6 +1280,7 @@ class SpellDataGenerator(DataGenerator):
             ( 275483, 0 ),          # Inner Light azerite trait damge
             ( 184689, 0 ),          # Shield of Vengeance damage proc
             ( 286232, 0 ),          # Light's Decree damage proc
+            ( 327225, 2 ),          # First Avenger absorb buff
             ( 339669, 0 ),          # Seal of Command
             ( 339376, 0 ),          # Truth's Wake
             ( 339538, 0 ),          # TV echo
@@ -1714,6 +1715,7 @@ class SpellDataGenerator(DataGenerator):
           ( 339946, 1 ),       # Runecarve #3 Arcane crit buff
           ( 339797, 1 ),       # Oneth's Clear Vision (free starsurge)
           ( 339800, 1 ),       # Oneth's Perception (free starfall)
+          ( 345048, 3 ),       # Ursoc's Fury Remembered absorb buff
 
           # Shadowlands Covenant
           ( 326446, 0, True ), # Kyrian Empower Bond on DPS

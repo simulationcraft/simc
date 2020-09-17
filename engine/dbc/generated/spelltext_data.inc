@@ -1,5 +1,5 @@
 // Spell text, wow build 9.0.2.35938
-static const std::array<spelltext_data_t, 15581> __spelltext_data { {
+static const std::array<spelltext_data_t, 15583> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -14203,6 +14203,7 @@ static const std::array<spelltext_data_t, 15581> __spelltext_data { {
   { 327162, "$@spelldesc326059", 0, "Necrolord" },
   { 327163, "$@spelldesc326059", 0, "Necrolord" },
   { 327193, "Reset the cooldown of Avenger's Shield. Your next $n Avenger's Shields have no cooldown and deal $s2% additional damage.", "Your next $n Avenger's Shields have no cooldown and deal $w2% additional damage.", 0 },
+  { 327225, "$@spelldesc203776", "Absorbing $w1 damage.", 0 },
   { 327264, "$@spelldesc327104", 0, "Night Fae" },
   { 327273, "When you cast your Barrier and while it's active, the next Fire, Frost or Arcane source of damage you take increases your Fire, Frost, and Arcane damage by $327282s1%.", 0, 0 },
   { 327277, "$@spelldesc327273", 0, 0 },
@@ -15573,6 +15574,7 @@ static const std::array<spelltext_data_t, 15581> __spelltext_data { {
   { 344955, "$@spelldesc63560", 0, "Rank 2" },
   { 345019, "Become the Skulking Predator, gaining $s1 speed, decreasing detection radius, and pouncing on the next enemy to come within $s3 yards, dealing $345113s2 Physical damage.", 0, 0 },
   { 345046, "$@spelldesc337638", "Damage of your next Holy Power spender increased by $s1%.", 0 },
+  { 345048, "$@spelldesc339056", "Absorbing $w1 damage.", 0 },
   { 345208, "Mangle and Maul cause an Infected Wound in the target, reducing their movement speed by $345209s1% for $345209d.", 0, 0 },
   { 345209, "$@spelldesc345208", "Movement speed slowed by $w1%.", 0 },
   { 345211, "Activate Soul Igniter, sacrificing up to $345214s1 health over $d to empower Blazing Surge.\r\n\r\nReactivate to cast Blazing Surge, dealing $345214s2 Fire damage to enemies in a 40 yard cone, plus up to $s2% additional damage, based on how long Soul Igniter was active.\r\n\r\nReactivating Soul Igniter begins a one minute cooldown.", 0, 0 },
