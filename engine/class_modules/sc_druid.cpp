@@ -2968,6 +2968,15 @@ struct moonfire_t : public druid_spell_t
         radius = p->talent.twin_moons->effectN( 1 ).base_value();
       }
 
+      if ( p->spec.astral_power->ok() )
+      {
+        energize_resource = RESOURCE_ASTRAL_POWER;
+        energize_amount   = p->spec.astral_power->effectN( 3 ).resource( RESOURCE_ASTRAL_POWER );
+        energize_type     = action_energize::PER_HIT;
+      }
+      else
+        energize_type = action_energize::NONE;
+
       // Always applies when you are a feral druid unless you go into moonkin form
       feral_override_da =
           p->query_aura_effect( p->spec.feral_overrides, A_ADD_PCT_MODIFIER, P_GENERIC, s_data )->percent();
@@ -3130,15 +3139,6 @@ struct moonfire_t : public druid_spell_t
 
     if ( p->active.galactic_guardian )
       stats->add_child( p->active.galactic_guardian->stats );
-
-    if ( p->spec.astral_power->ok() )
-    {
-      energize_resource = RESOURCE_ASTRAL_POWER;
-      energize_amount   = p->spec.astral_power->effectN( 3 ).resource( RESOURCE_ASTRAL_POWER );
-      energize_type     = action_energize::ON_HIT;
-    }
-    else
-      energize_type = action_energize::NONE;
   }
 
   void impact( action_state_t* s ) override
