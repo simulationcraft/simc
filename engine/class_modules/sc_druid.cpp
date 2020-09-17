@@ -724,7 +724,7 @@ public:
     const spell_data_t* guardian_of_elune;
 
     const spell_data_t* rend_and_tear;
-    const spell_data_t* lunar_beam;
+    const spell_data_t* tooth_and_claw;
     const spell_data_t* pulverize;
 
     // PvP Talents
@@ -6076,71 +6076,6 @@ struct ironfur_t : public druid_spell_t
   }
 };
 
-// Lunar Beam ===============================================================
-
-struct lunar_beam_t : public druid_spell_t
-{
-  struct lunar_beam_heal_t : public heals::druid_heal_t
-  {
-    lunar_beam_heal_t( druid_t* p ) : heals::druid_heal_t( "lunar_beam_heal", p, p->find_spell( 204069 ) )
-    {
-      target                  = p;
-      attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
-      background              = true;
-    }
-  };
-
-  struct lunar_beam_damage_t : public druid_spell_t
-  {
-    action_t* heal;
-
-    lunar_beam_damage_t( druid_t* p ) : druid_spell_t( "lunar_beam_damage", p, p->find_spell( 204069 ) )
-    {
-      aoe  = -1;
-      dual = background = ground_aoe = true;
-      attack_power_mod.direct        = data().effectN( 2 ).ap_coeff();
-
-      heal = p->get_secondary_action<lunar_beam_heal_t>( "lunar_beam_heal" );
-    }
-
-    void execute() override
-    {
-      druid_spell_t::execute();
-
-      heal->schedule_execute();
-    }
-  };
-
-  action_t* damage;
-
-  lunar_beam_t( druid_t* p, const std::string& options_str )
-    : druid_spell_t( "lunar_beam", p, p->talent.lunar_beam, options_str )
-  {
-    may_crit = tick_may_crit = may_miss = hasted_ticks = false;
-    base_tick_time = 1_s;  // TODO: Find in spell data... somewhere!
-    dot_duration   = 0_ms;
-
-    damage = p->get_secondary_action<lunar_beam_damage_t>( "lunar_beam_damage" );
-    damage->stats = stats;
-  }
-
-  void execute() override
-  {
-    druid_spell_t::execute();
-
-    make_event<ground_aoe_event_t>( *sim, p(),
-                                    ground_aoe_params_t()
-                                        .target( execute_state->target )
-                                        .x( execute_state->target->x_position )
-                                        .y( execute_state->target->y_position )
-                                        .pulse_time( base_tick_time )
-                                        .duration( data().duration() )
-                                        .start_time( sim->current_time() )
-                                        .action( damage ),
-                                    false );
-  }
-};
-
 // Starfire =============================================================
 
 struct starfire_t : public druid_spell_t
@@ -7798,7 +7733,6 @@ action_t* druid_t::create_action( util::string_view name, const std::string& opt
   if ( name == "frenzied_regeneration"  ) return new  frenzied_regeneration_t( this, options_str );
   if ( name == "growl"                  ) return new                  growl_t( this, options_str );
   if ( name == "ironfur"                ) return new                ironfur_t( this, options_str );
-  if ( name == "lunar_beam"             ) return new             lunar_beam_t( this, options_str );
   if ( name == "mangle"                 ) return new                 mangle_t( this, options_str );
   if ( name == "maul"                   ) return new                   maul_t( this, options_str );
   if ( name == "pulverize"              ) return new              pulverize_t( this, options_str );
@@ -7934,7 +7868,7 @@ void druid_t::init_spells()
   talent.guardian_of_elune          = find_talent_spell( "Guardian of Elune" );
 
   talent.rend_and_tear              = find_talent_spell( "Rend and Tear" );
-  talent.lunar_beam                 = find_talent_spell( "Lunar Beam" );
+  talent.tooth_and_claw             = find_talent_spell( "Tooth and Claw" );
   talent.pulverize                  = find_talent_spell( "Pulverize" );
 
   talent.sharpened_claws            = find_spell( 202110, DRUID_GUARDIAN );
