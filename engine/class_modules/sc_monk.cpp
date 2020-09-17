@@ -2833,10 +2833,12 @@ public:
 
     double composite_aoe_multiplier( const action_state_t* state ) const override
     {
-      if ( state->target != target )
-        return owner->spec.fists_of_fury->effectN( 6 ).percent();
+      double cam = melee_attack_t::composite_aoe_multiplier( state );
 
-      return 1.0;
+      if ( state->target != target )
+        return cam *= owner->spec.fists_of_fury->effectN( 6 ).percent();
+
+      return cam;
     }
 
     double action_multiplier() const override
@@ -5495,10 +5497,12 @@ struct fists_of_fury_tick_t : public monk_melee_attack_t
 
   double composite_aoe_multiplier( const action_state_t* state ) const override
   {
-    if ( state->target != target )
-      return p()->spec.fists_of_fury->effectN( 6 ).percent();
+    double cam = melee_attack_t::composite_aoe_multiplier( state );
 
-    return 1.0;
+    if ( state->target != target )
+      return cam *= p()->spec.fists_of_fury->effectN( 6 ).percent();
+
+    return cam;
   }
 
   double action_multiplier() const override
@@ -7271,7 +7275,6 @@ struct weapons_of_order_t : public monk_spell_t
     : monk_spell_t( "weapons_of_order", &p, p.covenant.kyrian )
   {
     parse_options( options_str );
-    trigger_gcd = timespan_t::zero();
     harmful     = false;
     base_dd_min = 0;
     base_dd_max = 0;
@@ -7281,6 +7284,72 @@ struct weapons_of_order_t : public monk_spell_t
   {
     p()->buff.weapons_of_order->trigger();
     monk_spell_t::execute();
+  }
+};
+
+// ==========================================================================
+// Fallen Order - Venthyr Covenant Ability
+// ==========================================================================
+
+struct fallen_order_t : public monk_spell_t
+{
+  timespan_t summon_interval;
+  timespan_t summon_duration;
+  fallen_order_t( monk_t& p, const std::string& options_str )
+    : monk_spell_t( "fallen_order", &p, p.covenant.venthyr ), 
+      summon_interval( timespan_t::from_seconds( p.covenant.venthyr->effectN( 2 ).base_value() * 2 ) ),
+      summon_duration( timespan_t::from_seconds( p.covenant.venthyr->effectN( 4 ).base_value() ) )
+  {
+    parse_options( options_str );
+    harmful     = false;
+    base_dd_min = 0;
+    base_dd_max = 0;
+  }
+
+  void execute() override
+  {
+    monk_spell_t::execute();
+    timespan_t primary_duration =
+        summon_duration + timespan_t::from_seconds( p()->covenant.venthyr->effectN( 3 ).base_value() );
+/*    for ( int i = 0; i < 11; i++ )
+    {
+      switch ( p()->specialization() )
+      {
+        case MONK_WINDWALKER:
+        {
+          if ( i % 2 )
+            p()->pets.fallen_monk_ww.spawn( primary_duration, 1 );
+          else if ( rng().roll( 0.5 ) )
+            p()->pets.fallen_monk_brm.spawn( summon_duration, 1 );
+          else
+            p()->pets.fallen_monk_mw.spawn( summon_duration, 1 );
+          break;
+        }
+        case MONK_BREWMASTER:
+        {
+          if ( i % 2 )
+            p()->pets.fallen_monk_brm.spawn( primary_duration, 1 );
+          else if ( rng().roll( 0.5 ) )
+            p()->pets.fallen_monk_ww.spawn( summon_duration, 1 );
+          else
+            p()->pets.fallen_monk_mw.spawn( summon_duration, 1 );
+          break;
+        }
+        case MONK_MISTWEAVER:
+        {
+          if ( i % 2 )
+            p()->pets.fallen_monk_mw.spawn( primary_duration, 1 );
+          else if ( rng().roll( 0.5 ) )
+            p()->pets.fallen_monk_ww.spawn( summon_duration, 1 );
+          else
+            p()->pets.fallen_monk_brm.spawn( summon_duration, 1 );
+          break;
+        }
+        default:
+          break;
+      }
+    }
+    */
   }
 };
 }  // namespace spells
@@ -8645,6 +8714,8 @@ action_t* monk_t::create_action( util::string_view name, const std::string& opti
   // Covenant Abilities
   if ( name == "weapons_of_order" )
     return new weapons_of_order_t( *this, options_str );
+  if ( name == "fallen_order" )
+    return new fallen_order_t( *this, options_str );
 
   return base_t::create_action( name, options_str );
 }
