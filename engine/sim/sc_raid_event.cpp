@@ -280,8 +280,14 @@ struct adds_event_t final : public raid_event_t
     double y_offset      = 0;
     bool offset_computed = false;
 
+    // Keep track of each add duration so after summons (and dismissals) are done, we can adjust the saved_duration of
+    // the add event to match the add with the longest lifetime.
+    std::vector<timespan_t> add_lifetimes;
+
     for ( size_t i = 0; i < adds.size(); i++ )
     {
+      timespan_t add_dur = 0_ms;
+
       if ( i < adds.size() )
       {
         if ( std::fabs( spawn_radius_max ) > 0 )
@@ -298,7 +304,8 @@ struct adds_event_t final : public raid_event_t
           }
         }
 
-        adds[ i ]->summon( duration_time() );
+        add_dur = duration_time();
+        adds[ i ]->summon( add_dur );
         adds[ i ]->x_position = x_offset + spawn_x_coord;
         adds[ i ]->y_position = y_offset + spawn_y_coord;
 
@@ -314,7 +321,13 @@ struct adds_event_t final : public raid_event_t
       {
         adds[ i ]->dismiss();
       }
+      else
+        add_lifetimes.push_back( add_dur );
     }
+
+    if ( !add_lifetimes.empty() )
+      saved_duration = *range::max_element( add_lifetimes );
+
     regenerate_cache();
   }
 
