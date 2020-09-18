@@ -3783,6 +3783,8 @@ void sim_t::create_options()
     shadowlands_opts.pointed_courage_nearby, 1, 5 ) );
   add_option( opt_uint( "shadowlands.stone_legionnaires_in_party",
     shadowlands_opts.stone_legionnaires_in_party, 0, 5 ) );
+  add_option( opt_uint( "shadowlands.crimson_choir_in_party",
+    shadowlands_opts.crimson_choir_in_party, 0, 5 ) );
 }
 
 // sim_t::parse_option ======================================================

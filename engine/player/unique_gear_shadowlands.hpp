@@ -35,7 +35,8 @@ namespace items
 void darkmoon_deck_shuffle( special_effect_t& );
 void darkmoon_deck_putrescence( special_effect_t& );
 void darkmoon_deck_voracity( special_effect_t& );
-void nathria_trinket_184027( special_effect_t& );
+void stone_legion_heraldry( special_effect_t& );
+void cabalists_effigy( special_effect_t& );
 }  // namespace items
 
 void register_hotfixes();
