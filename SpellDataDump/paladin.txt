@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.2.35938 shadowlands-BETA (hotfix 2020-09-18/35938, git build shadowlands a3c99b0cc6)
+SimulationCraft 901-01 for World of Warcraft 9.0.2.35938 shadowlands-BETA (git build shadowlands 516068b780)
 
 Name             : Haste (id=65) [Scaling Spell (-1)] 
 Class            : Paladin
@@ -8807,24 +8807,6 @@ Effects          :
 Description      : Reset the cooldown of Avenger's Shield. Your next $n Avenger's Shields have no cooldown and deal $s2% additional damage.
 Tooltip          : Your next $n Avenger's Shields have no cooldown and deal $w2% additional damage.
 
-Name             : First Avenger (id=327225) [Spell Family (10)] 
-Class            : Paladin
-School           : Physical
-Spell Type       : None
-Duration         : 8 seconds
-Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
-                 : ........ ......x. ...x.... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ...x.... ........ .xx..... ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : .....x.. ....x... ........ ........   ........ ...x.... ........ ........ 
-                 : ........ ........ ......x. ........   ........ ........ ........ ..x..... 
-                 : ........ ........ ........ ........   xx...... ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Does not break stealth (37)
-Effects          :
-#1 (id=818622)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
-
 Name             : Judgment (desc=Rank 2) (id=327977) [Spell Family (10), Passive] 
 Class            : Paladin
 School           : Holy
@@ -9348,7 +9330,7 @@ Effects          :
 #1 (id=835774)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 1895 | Target: Self (1)
                    Affected Spells (Category): Hammer of Wrath (24275)
-Description      : Hammer of Wrath has $s1 extra charges.
+Description      : Hammer of Wrath has $s1 extra charges, and increases the damage of your next Holy Power spender by $345046s1%.
 
 Name             : The Magistrate's Judgment (id=337681) [Spell Family (10), Passive] 
 School           : Physical
@@ -9690,7 +9672,7 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=837582)   : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Divine Shield's cooldown is reduced by 5 sec when you take damage. This effect can only trigger once every |cFFFFFFFF${$s1}.1|r sec.
+Description      : Divine Shield's remaining cooldown is reduced by $s2 sec when you take damage. This effect can only occur once every |cFFFFFFFF${$s1}.1 sec|r.
 
 Name             : Shielding Words (id=338787) [Spell Family (10), Passive, Hidden] 
 School           : Physical
@@ -9713,7 +9695,7 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=837643)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Word of Glory applies an absorb shield that lasts $s2 sec for |cFFFFFFFF${$s1}.1|r% of the healing done on the Paladin when used.
+Description      : Casting Word of Glory grants you a shield that prevents damage equal to |cFFFFFFFF${$s1}.1%|r of the healing done by Word of Glory. Lasts $338788d.
 
 Name             : Golden Path (id=339114) [Spell Family (10), Passive, Hidden] 
 School           : Physical
@@ -9731,7 +9713,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=838188)   : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Consecration heals you for |cFFFFFFFF${$s1/100*$81297s1}|r every sec while standing within it.
+Description      : Consecration heals you for |cFFFFFFFF${$s1/100*$81297s1}|r every $26573t1 sec while standing within it.
 
 Name             : Stalwart as a Crusader (id=339124) [Spell Family (10), Passive, Hidden] 
 School           : Physical
@@ -9749,7 +9731,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=838200)   : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Crusader Aura reduces all allies' Fear duration by |cFFFFFFFF${$s1}.1|r%.
+Description      : Crusader Aura reduces the duration of incoming Fear effects on your allies by |cFFFFFFFF${$s1}.1%|r.
 
 Name             : Light's Barding (id=339268) [Spell Family (10), Passive, Hidden] 
 School           : Physical
@@ -9769,7 +9751,7 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Divine Steed (190784), Divine Steed (221883)
                    Family Flags: 36
-Description      : Divine Steed's duration is increased by |cFFFFFFFF${$s1}.1|r%.
+Description      : Divine Steed's duration is increased by |cFFFFFFFF${$s1}.1%|r.
 
 Name             : Wrench Evil (id=339292) [Spell Family (10), Passive, Hidden] 
 School           : Physical
@@ -9793,7 +9775,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 5 | Target: Self (1)
                    Affected Spells: Turn Evil (10326)
                    Family Flags: 96
-Description      : Turn Evil's cast time is reduced by |cFFFFFFFF${$s1}.1|r% and its range is increased by $s2 yds.
+Description      : Turn Evil's cast time is reduced by |cFFFFFFFF${-$s1}.1%|r, and its range is increased by $s2 yds.
 
 Name             : Echoing Blessings (id=339316) [Spell Family (10), Passive, Hidden] 
 School           : Physical
@@ -9846,7 +9828,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=838610)   : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Trigger Spell: 344067 | Target: Self (1)
-Description      : Your Blade of Justice critical hits cause the target to burn for |cFFFFFFFF${$s1}.1%|r of damage dealt every 2 sec over 6 sec.
+Description      : Your Blade of Justice critical hits cause the target to burn for |cFFFFFFFF${$s1}.1%|r of the damage dealt every $344067t1 sec for $344067d.
 
 Name             : Truth's Wake (id=339374) [Spell Family (10), Passive, Hidden] 
 Class            : Paladin
@@ -9867,7 +9849,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=838617)   : Apply Aura (6) | Dummy (4)
                    Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Wake of Ashes burns the target for an additional |cFFFFFFFF${$s1}.1|r% damage over 6 sec.
+Description      : Wake of Ashes burns the target for an additional |cFFFFFFFF${$s1}.1%|r damage over $339376d.
 
 Name             : Truth's Wake (id=339376) [Spell Family (10)] 
 Class            : Paladin
@@ -9887,7 +9869,7 @@ Effects          :
 #1 (id=838619)   : Apply Aura (6) | Periodic Damage (3): holy every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.52500 | PvP Coefficient: 0.75000 | Target: Enemy (6)
 Description      : $@spelldesc339374
-Tooltip          : Suffering $w damage every $t sec.
+Tooltip          : Suffering $w1 Holy damage every $t1 sec.
 
 Name             : Virtuous Command (id=339518) [Spell Family (10), Passive, Hidden] 
 Class            : Paladin
@@ -9911,7 +9893,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=838859)   : Apply Aura (6) | Dummy (4)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Judgment grants you Virtuous Command for $339664d, which gives your Templar's Verdict, Crusader Strike, Blade of Justice, and weapon attack a $s2% chance of dealing |cFFFFFFFF${$s1}.1|r% additional Holy damage.
+Description      : Judgment grants you Virtuous Command for $339664d, which gives your Templar's Verdict, Crusader Strike, Blade of Justice, and auto attacks a $s2% chance to deal |cFFFFFFFF${$s1}.1%|r additional Holy damage.
 
 Name             : Templar's Vindication (id=339531) [Spell Family (10), Passive, Hidden] 
 School           : Physical
@@ -9934,7 +9916,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=838876)   : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Templar's Verdict has a |cFFFFFFFF${$s1}.1|r% chance to strike again for $s2% of its damage.
+Description      : Templar's Verdict has a |cFFFFFFFF${$s1}.1%|r chance to strike again for $s2% of its damage.
 
 Name             : Templar's Verdict (id=339538) [Spell Family (10)] 
 Class            : Paladin
@@ -10065,7 +10047,7 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
                    Affected Spells: Holy Shock (20473), Holy Shock (25912), Holy Shock (25914)
                    Family Flags: 21, 48
-Description      : Holy Shock's critical effect chance is increased by |cFFFFFFFF$s1|r%.
+Description      : Holy Shock's critical effect chance is increased by |cFFFFFFFF${$s1}.1%|r.
 
 Name             : Untempered Dedication (id=339987) [Spell Family (10), Passive, Hidden] 
 School           : Physical
@@ -10086,7 +10068,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=839576)   : Apply Aura (6) | Proc Trigger Spell (42): Untempered Dedication
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Trigger Spell: 339990 | Target: Self (1)
-Description      : Light of the Martyr's damage and healing is increased by |cFFFFFFFF$s1|r% each time it is cast. This effect can stack up to $339990u times and lasts for $339990d.
+Description      : Light of the Martyr's damage and healing is increased by |cFFFFFFFF${$s1}.1%|r each time it is cast. This effect can stack up to $339990u times and lasts for $339990d.
 
 Name             : Untempered Dedication (id=339990) [Spell Family (10)] 
 School           : Holy
@@ -10130,7 +10112,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=839599)   : Apply Aura (6) | Proc Trigger Spell (42): Vengeful Shock
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Trigger Spell: 340007 | Target: Self (1)
-Description      : Avenger's Shield causes your target to take |cFFFFFFFF${$s1}.1|r% more Holy damage for 5 sec.
+Description      : Avenger's Shield causes your target to take |cFFFFFFFF${$s1}.1%|r increased Holy damage from you for $340007d.
 
 Name             : Vengeful Shock (id=340007) [Spell Family (10)] 
 School           : Holy
@@ -10171,7 +10153,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=839606)   : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
-Description      : Shield of the Righteous deals |cFFFFFFFF${$s1}.1|r% more damage to targets affected by Judgment.
+Description      : Shield of the Righteous deals |cFFFFFFFF$s1%|r more damage to targets affected by Judgment.
 
 Name             : Resolute Defender (id=340023) [Spell Family (10), Passive, Hidden] 
 School           : Physical
@@ -10189,7 +10171,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=839622)   : Apply Aura (6) | Dummy (4)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
-Description      : Shield of the Righteous extends Ardent Defender's duration by |cFFFFFFFF${$s1}.1|r%.
+Description      : Shield of the Righteous extends Ardent Defender's duration by |cFFFFFFFF${$s1}.1%|r.
 
 Name             : Royal Decree (id=340030) [Spell Family (10), Passive, Hidden] 
 School           : Physical
@@ -10209,7 +10191,7 @@ Effects          :
                    Base Value: -5000 | Scaled Value: -5000 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Guardian of Ancient Kings (86659), Guardian of Ancient Kings (337851), Reign of Ancient Kings (337852)
                    Family Flags: 81
-Description      : Guardian of Ancient Kings's cooldown is reduced by |cFFFFFFFF${$s1/1000*-1}.1|r sec, and casting it causes your next Word of Glory to cost no Holy Power.
+Description      : Guardian of Ancient Kings's cooldown is reduced by |cFFFFFFFF${$s1/-1000}.1 sec|r, and casting it causes your next Word of Glory to cost no Holy Power.
 
 Name             : The Long Summer (id=340185) [Spell Family (10), Passive, Hidden] 
 School           : Physical
@@ -10228,7 +10210,7 @@ Effects          :
 #1 (id=839911)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Duration (1)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 1 | Misc Value 2: 1079 (Label) | Target: Self (1)
                    Affected Spells (Label): Blessing of Summer (328620)
-Description      : Blessing of Summer lasts |cFFFFFFFF${$s1}.1|r% longer.
+Description      : Blessing of Summer lasts |cFFFFFFFF${$s1}.1%|r longer.
 
 Name             : Righteous Might (id=340192) [Spell Family (10), Passive, Hidden] 
 School           : Physical
@@ -10253,7 +10235,7 @@ Effects          :
                    Family Flags: 123
 #2 (id=839927)   : Apply Aura (6) | Proc Trigger Spell (42)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Vanquisher's Hammer deals |cFFFFFFFF${$s1}.1|r% more damage and heals you for the damage done.
+Description      : Vanquisher's Hammer deals |cFFFFFFFF$s1%|r increased damage, and heals you for the damage done.
 
 Name             : Hallowed Discernment (id=340212) [Spell Family (10), Passive, Hidden] 
 School           : Physical
@@ -10294,7 +10276,7 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=868309)   : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Divine Toll has a |cFFFFFFFF${$s1}.1|r% chance to cast $s2 extra $ltime:times; on the main target.
+Description      : Divine Toll has a |cFFFFFFFF${$s1}.1%|r chance to cast $s2 extra $ltime:times; on the main target.
 
 Name             : Enkindled Spirit (id=341741) [Spell Family (10)] 
 School           : Physical
@@ -10497,7 +10479,7 @@ Effects          :
 #1 (id=868130)   : Apply Aura (6) | Periodic Damage (3): holy every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc273473
-Tooltip          : Deals $w1 damage every $t1 sec.
+Tooltip          : Suffering $w1 Holy damage every $t1 sec.
 
 Name             : Consecration (desc=Rank 2) (id=344172) [Spell Family (10), Passive] 
 Class            : Protection Paladin

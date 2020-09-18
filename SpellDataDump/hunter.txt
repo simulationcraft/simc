@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.2.35938 shadowlands-BETA (hotfix 2020-09-18/35938, git build shadowlands a3c99b0cc6)
+SimulationCraft 901-01 for World of Warcraft 9.0.2.35938 shadowlands-BETA (git build shadowlands 516068b780)
 
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
@@ -4088,6 +4088,7 @@ Effects          :
 #2 (id=870215)   : Apply Aura (6) | Root (455)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Hurls a harpoon at an enemy, rooting them in place for $190927d and pulling you to them.
+Tooltip          : Rooted.
 
 Name             : Harpoon (id=190927) [Spell Family (9)] 
 Class            : Hunter
@@ -12142,7 +12143,7 @@ Effects          :
 #2 (id=837985)   : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 5 (33)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 33 | Misc Value 2: 846 (Label) | Target: Self (1)
                    Affected Spells (Label): Resonating Arrow (308498)
-Description      : Your attacks and abilities deal |cFFFFFFFF ${$s1}.1%|r increased damage to enemies inside Resonating Arrow.
+Description      : Your attacks and abilities deal |cFFFFFFFF${$s1}.1%|r increased damage to enemies inside Resonating Arrow.
 
 Name             : Empowered Release (id=339059) [Spell Family (9), Passive, Hidden] 
 School           : Physical
@@ -12244,7 +12245,7 @@ Effects          :
                    Base Value: -10000 | Scaled Value: -10000 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Aspect of the Turtle (186265)
                    Family Flags: 15
-Description      : Aspect of the Turtle cooldown reduced by|cFFFFFFFF ${$s1/-1000}.1|r sec.
+Description      : Aspect of the Turtle's cooldown is reduced by |cFFFFFFFF${$s1/-1000}.1 sec|r.
 
 Name             : Rejuvenating Wind (id=339399) [Spell Family (9), Passive, Hidden] 
 School           : Physical
@@ -12301,7 +12302,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=838769)   : Apply Aura (6) | Dummy (4)
                    Base Value: -3 | Scaled Value: -3 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : When Feign Death ends the damage you take is reduced by|cFFFFFFFF ${$s1}.1%|r for $339461d.
+Description      : When Feign Death ends, you take |cFFFFFFFF${-$s1}.1%|r reduced damage for $339461d.
 
 Name             : Reversal of Fortune (id=339495) [Spell Family (9), Passive, Hidden] 
 School           : Physical
@@ -12345,7 +12346,7 @@ Effects          :
 #2 (id=838952)   : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Duration (1)
                    Base Value: 3000 | Scaled Value: 3000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Misc Value 2: 1069 (Label) | Target: Self (1)
                    Affected Spells (Label): Aspect of the Cheetah (186258)
-Description      : Aspect of the Cheetah secondary movement speed lasts an addtional ${$s2/1000} sec and the cooldown is reduced by|cFFFFFFFF ${$s1/-1000}.1|r sec.
+Description      : Aspect of the Cheetah's secondary movement speed lasts an addtional ${$s2/1000} sec, and its cooldown is reduced by |cFFFFFFFF${$s1/-1000}.1 sec|r.
 
 Name             : Tactical Retreat (id=339651) [Spell Family (9), Passive, Hidden] 
 School           : Physical
@@ -12406,7 +12407,7 @@ Effects          :
 #3 (id=839273)   : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 1072 (Label) | Target: Self (1)
                    Affected Spells (Label): Bestial Wrath (186254)
-Description      : Bestial Wrath increases all damage you and your pet deal by|cFFFFFFFF ${$s1}.1%|r.
+Description      : Bestial Wrath increases all damage you and your pet deal by an additional |cFFFFFFFF${$s1}.1%|r.
 
 Name             : Sharpshooter's Focus (id=339920) [Spell Family (9), Passive, Hidden] 
 School           : Physical
@@ -12620,7 +12621,7 @@ Effects          :
                    Base Value: 14 | Scaled Value: 14 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Raptor Strike (186270), Mongoose Bite (259387), Raptor Strike (265189), Mongoose Bite (265888)
                    Family Flags: 80, 96
-Description      : $?s259387[Mongoose Bite][Raptor Strike] damage increased by|cFFFFFFFF ${$s1}.1%|r.
+Description      : $?s259387[Mongoose Bite][Raptor Strike]'s damage is increased by |cFFFFFFFF${$s1}.1%|r.
 
 Name             : Deadly Tandem (id=341350) [Spell Family (9), Passive, Hidden] 
 School           : Physical
@@ -12684,7 +12685,7 @@ Effects          :
 #2 (id=841837)   : Apply Aura (6) | Modify Recharge Time (Category) (453)
                    Base Value: -1000 | Scaled Value: -1000 | PvP Coefficient: 1.00000 | Misc Value: 1675 | Target: Self (1)
                    Affected Spells (Category): Barbed Shot (217200)
-Description      : Barbed Shot's recharge time is reduced by ${$s2/1000} sec and the damage is increased by|cFFFFFFFF ${$s1}.1%|r.
+Description      : Barbed Shot's recharge time is reduced by ${-$s2/1000} sec, and its damage is increased by |cFFFFFFFF${$s1}.1%|r.
 
 Name             : Chimaera Shot (id=342049) [Spell Family (9)] 
 Replaces         : Arcane Shot (id=185358)

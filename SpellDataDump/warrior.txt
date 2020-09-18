@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.2.35938 shadowlands-BETA (hotfix 2020-09-18/35938, git build shadowlands a3c99b0cc6)
+SimulationCraft 901-01 for World of Warcraft 9.0.2.35938 shadowlands-BETA (git build shadowlands 516068b780)
 
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
@@ -10999,7 +10999,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=832499)   : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : The first Intercepted attack granst you Ignore Pain and make your next Revenge cost no Rage.
+Description      : The first Intercepted attack grants you Ignore Pain and makes your next Revenge cost no Rage.
 
 Name             : Seismic Reverberation (id=335758) [Spell Family (4), Passive] 
 School           : Physical
@@ -11206,7 +11206,7 @@ Effects          :
                    Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=838467)   : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Brandishing the Conqueror's Banner immediately grants you $<stacks> Glory, and while the banner is planted your Strength is increased by |cFFFFFFFF$s1%|r.
+Description      : Brandishing the Conqueror's Banner immediately grants you $<stacks> Glory, and while the banner is planted your Strength is increased by |cFFFFFFFF${$s1}.1%|r.
 Variables        : $stacks=${5}
 
 Name             : Harrowing Punishment (id=339370) [Spell Family (4), Passive, Hidden] 
@@ -11225,7 +11225,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=838609)   : Apply Aura (6) | Dummy (4)
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Condemn's damage dealt and prevented are increased by |cFFFFFFFF$s1%|r for each nearby enemy, up to |cFFFFFFFF${$s1*5}%|r.
+Description      : Condemn's damage dealt and prevented are increased by |cFFFFFFFF${$s1}.1%|r for each nearby enemy, up to |cFFFFFFFF${$s1*5}%|r.
 
 Name             : Mortal Combo (id=339386) [Spell Family (4), Passive, Hidden] 
 School           : Physical

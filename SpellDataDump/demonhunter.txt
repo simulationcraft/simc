@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.2.35938 shadowlands-BETA (hotfix 2020-09-18/35938, git build shadowlands a3c99b0cc6)
+SimulationCraft 901-01 for World of Warcraft 9.0.2.35938 shadowlands-BETA (git build shadowlands 516068b780)
 
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -3038,8 +3038,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 450 | Trigger Spell: 210153 | Target: Self (1)
 #5 (id=311153)   : Trigger Spell (64): Death Sweep
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 950 | Trigger Spell: 210155 | Target: Self (1)
-Description      : Strike all nearby enemies for ${3*$210153sw2+$210155sw2} Physical damage, and increase your Dodge chance by $s2% for $d.
+Description      : Strike $?a206416[your primary target for $<firstbloodDmg> Physical damage and ][]$199552s1 nearby enemies for $<baseDmg> Physical damage$?s320398[, and increase your chance to dodge by $193311s1% for $193311d.][.]
 Tooltip          : Dodge chance increased by $s3%.
+Variables        : $baseDmg=${3*$210153sw2+$210155sw2} 
+$firstbloodDmg=${(3*$210153sw2+$210155sw2)*(100+$206416s1)/100}
 
 Name             : Death Sweep (id=210153) [Spell Family (107)] 
 Class            : Demon Hunter
@@ -8004,7 +8006,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Value Multiplier: 2 | PvP Coefficient: 1.00000 | Misc Value 2: 0x177ce | Trigger Spell: 323802 | Target: Enemy (6)
 Description      : Charge to your target, striking them for $323802s1 Nature damage, rooting them in place for $323996d and inflicting ${$344325s1*$344325d} Nature damage over $344325d to any enemy in your path. 
 
-Pursuit invogorates your soul, healing you for 323802s2% of the damage you deal to your Hunt target for $323802d.
+Pursuit invigorates your soul, healing you for $323802s2% of the damage you deal to your Hunt target for $323802d.
 
 Name             : The Hunt (desc=Night Fae) (id=323802) [Spell Family (107)] 
 Class            : Demon Hunter
@@ -8521,7 +8523,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
 #2 (id=835629)   : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000
-Description      : Your Fiery Brand now heals you for $s1% of the damage done and each enemy hit by your Sigil of Flame increases the instant damage of your next Fiery Brand by $337542s1%, stacking up to $337542u times.
+Description      : Your Fiery Brand now heals you for $s1% of its initial damage done, and each enemy hit by your Sigil of Flame increases the instant damage of your next Fiery Brand by $337542s1%, stacking up to $337542u times.
 
 Name             : Razelikh's Defilement (id=337544) [Spell Family (107), Passive] 
 School           : Physical
@@ -8807,7 +8809,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=837658)   : Apply Aura (6) | Trigger Spell with Value (231)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Trigger Spell: 338804 | Target: Self (1)
-Description      : Your movement speed is increased by |cFFFFFFFF$s1%|r after casting $?c1[Fel Rush][Infernal Strike].
+Description      : $?c1[Fel Rush][Infernal Strike] increases your movement speed by |cFFFFFFFF$s1%|r for $338804d.
 
 Name             : Felfire Haste (id=338804) [Spell Family (107)] 
 School           : Magic
@@ -8847,7 +8849,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=837703)   : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Consume Magic has a |cFFFFFFFF$s1%|r to dispel a second effect.
+Description      : Consume Magic has a |cFFFFFFFF$s1%|r chance to remove a second beneficial Magic effect from the target.
 
 Name             : Demonic Parole (id=339048) [Spell Family (107), Passive, Hidden] 
 School           : Physical
@@ -8865,7 +8867,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=838026)   : Apply Aura (6) | Dummy (4)
                    Base Value: 5000 | Scaled Value: 5000 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Enemies that leave your Imprison are snared by 50% for |cFFFFFFFF${$s1/1000} sec|r.
+Description      : Enemies that leave your Imprison have their movement speed reduced by $339051s1% for |cFFFFFFFF${$s1/1000}.1 sec|r.
 
 Name             : Lost in Darkness (id=339149) [Spell Family (107), Passive, Hidden] 
 School           : Physical
@@ -8952,7 +8954,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=838409)   : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Blade Dance has a |cFFFFFFFF$s1%|r chance to apply Essence Break.
+Description      : Blade Dance has a |cFFFFFFFF${$s1}.1%|r chance to apply Essence Break.
 
 Name             : Exposed Wound (id=339229) [Spell Family (107)] 
 Class            : Demon Hunter
@@ -8995,7 +8997,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=838411)   : Apply Aura (6) | Trigger Spell with Value (231)
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Trigger Spell: 339229 | Target: Self (1)
-Description      : Targets hit by Throw Glaive take |cFFFFFFFF$s1%|r increased damage from Eye Beam.
+Description      : Enemies hit by Throw Glaive take |cFFFFFFFF${$s1}.1%|r increased damage from Eye Beam.
 
 Name             : Growing Inferno (id=339231) [Spell Family (107), Passive, Hidden] 
 School           : Physical
@@ -9013,7 +9015,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=838412)   : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Immolation Aura's damage is increases by an additional |cFFFFFFFF$s1%|r each time it deals damage.
+Description      : Immolation Aura's damage increases by |cFFFFFFFF${$s1}.1%|r each time it deals damage.
 
 Name             : Soul Furnace (id=339423) [Spell Family (107), Passive, Hidden] 
 School           : Physical
@@ -9034,7 +9036,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=838693)   : Apply Aura (6) | Proc Trigger Spell (42): Soul Furnace
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Trigger Spell: 339424 | Target: Self (1)
-Description      : Every $339424u Soul Fragments you consume increases the damage of your next Soul Cleave  by |cFFFFFFFF$s1%|r.
+Description      : Every $339424u Soul Fragments you consume increases the damage of your next Soul Cleave by |cFFFFFFFF$s1%|r.
 
 Name             : Soul Furnace (id=339424) [Spell Family (107)] 
 School           : Physical
@@ -9078,7 +9080,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=838972)   : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Sigil of Silence reduces magic damage done to you by |cFFFFFFFF$s1%|r when it ends.
+Description      : When Sigil of Silence's effect ends, affected enemies deal |cFFFFFFFF${$s1}.1%|r reduced magic damage to you for $339589d.
 
 Name             : Roaring Fire (id=339644) [Spell Family (107), Passive, Hidden] 
 School           : Physical
@@ -9098,7 +9100,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 2 | Target: Self (1)
                    Affected Spells: Fel Devastation (212106), Fel Devastation (333120)
                    Family Flags: 80, 95
-Description      : Fel Devastation heals for an additional |cFFFFFFFF$s1%|r based on your missing health.
+Description      : Fel Devastation heals you for up to |cFFFFFFFF$s1%|r more, based on your missing health.
 
 Name             : Elysian Decree (desc=Kyrian) (id=339893) [Spell Family (107)] 
 Class            : Demon Hunter
@@ -9204,7 +9206,7 @@ Effects          :
                    Base Value: 5000 | Scaled Value: 5000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Fodder to the Flame (330846)
                    Family Flags: 86
-Description      : Increase the duration of Fodder to the Flame by |cFFFFFFFF${$s1/1000} sec|r.
+Description      : Increases the duration of Fodder to the Flame by |cFFFFFFFF${$s1/1000} sec|r.
 
 Name             : Fodder to the Flame (id=342357) 
 Class            : Demon Hunter
@@ -9544,7 +9546,7 @@ Effects          :
                    Base Value: 5000 | Scaled Value: 5000 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: The Hunt (323639)
                    Family Flags: 82
-Description      : Increase the damage of the Hunt's strike against its primary target by |cFFFFFFFF$s1%|r.
+Description      : Increase the damage of The Hunt's strike against its primary target by |cFFFFFFFF$s1%|r.
 
 Name             : Demon's Bite (id=344859) [Spell Family (107)] 
 Class            : Demon Hunter
@@ -9567,6 +9569,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=869605)   : Trigger Spell (64): Demon's Bite
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 162243 | Target: Enemy (6)
+Description      : $@spelldesc162243
 
 Name             : Chaos Strike (id=344862) [Spell Family (107)] 
 Class            : Demon Hunter
@@ -9590,6 +9593,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=869611)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+Description      : $@spelldesc162794
 
 Name             : Fel Rush (id=344865) [Spell Family (107)] 
 Class            : Demon Hunter
@@ -9611,6 +9615,7 @@ Attributes       : ....x... ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=869616)   : Trigger Spell (64): Fel Rush
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 195072 | Target: Self (1)
+Description      : $@spelldesc195072
 
 Name             : Vengeful Retreat (id=344866) [Spell Family (107)] 
 Class            : Demon Hunter
@@ -9631,6 +9636,7 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=869617)   : Trigger Spell (64): Vengeful Retreat
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 198793 | Target: Self (1)
+Description      : $@spelldesc198793
 
 Name             : Chaos Nova (id=344867) [Spell Family (107)] 
 Class            : Demon Hunter
@@ -9652,5 +9658,7 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=869618)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+Description      : $@spelldesc179057
+Tooltip          : $@spellaura179057
 
 
