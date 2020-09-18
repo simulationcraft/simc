@@ -351,6 +351,13 @@ struct fae_guardians_t final : public priest_spell_t
 
     priest().buffs.fae_guardians->trigger();
   }
+
+  void impact( action_state_t* s ) override
+  {
+    priest_spell_t::impact( s );
+    priest_td_t& td = get_td( s->target );
+    td.buffs.wrathful_faerie->trigger();
+  }
 };
 
 struct wrathful_faerie_t final : public priest_spell_t
@@ -370,7 +377,7 @@ struct wrathful_faerie_t final : public priest_spell_t
 
   void trigger()
   {
-    if ( priest().cooldowns.wrathful_faerie->is_ready() || priest().bugs )
+    if ( priest().cooldowns.wrathful_faerie->is_ready() )
     {
       execute();
       priest().cooldowns.wrathful_faerie->start();
