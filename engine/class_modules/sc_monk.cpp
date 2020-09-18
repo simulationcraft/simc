@@ -3165,7 +3165,8 @@ public:
     {
       spell_t::impact( s );
 
-      if ( owner->get_target_data( s->target )->debuff.keg_smash->up() )
+      if ( owner->get_target_data( s->target )->debuff.keg_smash->up() ||
+           owner->get_target_data( s->target )->debuff.fallen_monk_keg_smash->up() )
       {
         dot_action->target = s->target;
         dot_action->execute();
@@ -6619,7 +6620,7 @@ struct breath_of_fire_t : public monk_spell_t
 
     monk_td_t& td = *this->td( s->target );
 
-    if ( td.debuff.keg_smash->up() )
+    if ( td.debuff.keg_smash->up() || td.debuff.fallen_monk_keg_smash->up() )
     {
       dot_action->target = s->target;
       dot_action->execute();
