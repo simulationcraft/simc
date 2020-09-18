@@ -3054,13 +3054,6 @@ struct chimaera_shot_base_t: public hunter_ranged_attack_t
         parse_effect_data( p -> find_spell( 204304 ) -> effectN( 1 ) );
     }
 
-    void execute() override
-    {
-      hunter_ranged_attack_t::execute();
-
-      p() -> trigger_lethal_shots();
-    }
-
     double action_multiplier() const override
     {
       double am = hunter_ranged_attack_t::action_multiplier();
@@ -3096,6 +3089,7 @@ struct chimaera_shot_base_t: public hunter_ranged_attack_t
     hunter_ranged_attack_t::execute();
 
     p() -> trigger_calling_the_shots();
+    p() -> trigger_lethal_shots();
   }
 
   void schedule_travel( action_state_t* s ) override
