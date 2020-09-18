@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.2.35938 shadowlands-BETA (git build shadowlands 516068b780)
+SimulationCraft 901-01 for World of Warcraft 9.0.2.35938 shadowlands-BETA (hotfix 2020-09-18/35938, git build shadowlands a3c99b0cc6)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
@@ -1395,15 +1395,17 @@ Effects          :
 #7 (id=342505)   : Apply Aura (6) | Mechanic Immunity (77)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
 Description      : Disperse into pure shadow energy, reducing all damage taken by $47585s1% for $d, but you are unable to attack or cast spells.
-$?s322108[
+
 Increases movement speed by $s4% and makes you immune to all movement impairing effects.
+$?s322108[
+Voidform's Insanity drain is temporarily reduced by $s2% while dispersed.
 ][]
 Castable while stunned, feared, or silenced. 
 Tooltip          : Damage taken reduced by $s1%.
+Movement speed increased by $s4%.
 $?s288733[Healing for $288733s3% of maximum health.][]
-Cannot attack or cast spells.
-$?s322108[Movement speed increased by $s4%.
-Immune to all movement impairing effects.][]
+Immune to all movement impairing effects.
+Cannot attack or cast spells.
 
 Name             : Penance (id=47666) [Spell Family (6)] 
 Class            : Priest
@@ -8726,7 +8728,7 @@ Effects          :
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=810232)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 322098 | Target: Self (1)
-Description      : If a target dies within $322098d after being struck by your Shadow Word: Death, you gain ${($321973m1/100)*$321973d} Insanity over $321973d and the cooldown of your Shadow Word: Death is reset.
+Description      : If a target dies within $m1 sec after being struck by your Shadow Word: Death, you gain ${$321973t1*4} insanity over $321973d and the cooldown of your Shadow Word: Death is reset.
 
 Name             : Prayer Circle (id=321377) [Spell Family (6), Passive] 
 Class            : Priest
@@ -8884,7 +8886,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=810249)   : Apply Aura (6) | Dummy (4)
                    Base Value: 500 | Scaled Value: 500 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
-Description      : Dispersion also increases movement speed by $47585s1% and makes you immune to all movement impairing effects.
+Description      : Voidform's Insanity drain is temporarily reduced by $47585s2% while dispersed.
 
 Name             : Vampiric Embrace (desc=Rank 2) (id=322110) [Spell Family (6), Passive] 
 Class            : Shadow Priest
@@ -9014,6 +9016,7 @@ Variables        : $damage=${($SPS*$s2/100)*(1+$@versadmg)}
 $healing=${($SPS*$s3/100)*(1+$@versadmg)}
 
 Name             : Mindgames (id=323701) [Spell Family (6), Hidden] 
+Hotfixed         : Attributes
 Class            : Priest
 School           : Shadow
 Spell Type       : None
@@ -9021,7 +9024,7 @@ Spell Level      : 1
 Range            : 100 yards
 Duration         : 6 seconds
 Triggered by     : Mindgames (323673)
-Attributes       : .......x ........ ........ ........   ........ ........ ........ ....x... 
+Attributes       : .......x ........ ........ ........   ........ ..x..... ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ....x... ......x. 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9036,6 +9039,7 @@ Effects          :
 Description      : $@spelldesc323673
 
 Name             : Mindgames (id=323705) [Spell Family (6), Hidden] 
+Hotfixed         : Attributes
 Class            : Priest
 School           : Shadow
 Spell Type       : None
@@ -9043,7 +9047,7 @@ Spell Level      : 1
 Range            : 100 yards
 Duration         : 6 seconds
 Triggered by     : Mindgames (323673)
-Attributes       : .......x ........ ........ ........   ........ ........ ........ ....x... 
+Attributes       : .......x ........ ........ ........   ........ ..x..... ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ....x... ......x. 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9378,9 +9382,7 @@ Effects          :
                    Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Unknown(25)
                    Affected School(s): All
 Description      : $@spelldesc327661
-Tooltip          : Reduces damage taken by $s1%.
-
-Follows your Power Word: Shield.
+Tooltip          : Reduces damage taken by $s1%.
 
 Name             : Wrathful Faerie (desc=Night Fae) (id=327703) [Spell Family (6)] 
 Class            : Priest
@@ -9434,9 +9436,7 @@ Effects          :
 #5 (id=868656)   : Apply Aura (6) | Unknown(148)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 1614 | Target: Unknown(25)
 Description      : $@spelldesc327661
-Tooltip          : The cooldown of your major ability recovers $s1% faster.
-
-Follows your $?c2[Flash Heal][Shadow Mend].
+Tooltip          : The cooldown of your major ability recovers $s1% faster.
 
 Name             : Shadow Word: Pain (desc=Rank 2) (id=327820) [Spell Family (6), Passive] 
 Class            : Priest
@@ -9631,7 +9631,7 @@ Effects          :
 #2 (id=868892)   : Apply Aura (6) | Modify Recharge Time (Category) (453)
                    Base Value: -8000 | Scaled Value: -8000 | PvP Coefficient: 1.00000 | Misc Value: 1169 | Target: Self (1)
                    Affected Spells (Category): Shadow Word: Death (32379)
-Description      : Reduces Shadow Word: Death's cooldown by ${$s1/-1000} sec and causes its damage to trigger Atonement when used on targets below $32379s2% health.
+Description      : Reduces Shadow Word: Death's cooldown by ${$s1/-1000} sec and causes its damage to trigger Atonement when used on targets below 20% health.
 
 Name             : Shadowflame Prism (id=336142) 
 Class            : Priest
@@ -9674,7 +9674,7 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
 #3 (id=869347)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000
-Description      : Mind Blast and Shadow Word: Death cause your $?s123040[Mindbender][Shadowfiend] to teleport behind your target, slashing up to $s2 nearby enemies for ${.6*$344748s1} Shadowflame damage. Each time a rift is triggered, the duration of $?s123040[Mindbender][Shadowfiend] is increased by ${$s3+0.5}.1 sec.
+Description      : Mind Blast and Shadow Word: Death cause your $?s123040[Mindbender][Shadowfiend] to teleport behind your target, slashing up to $s2 nearby enemies for $344748s1 Shadowflame damage. Each time a rift is triggered, the duration of $?s123040[Mindbender][Shadowfiend] is increased by ${$s3+0.5}.1 sec.
 
 
 Name             : Painbreaker Psalm (id=336165) [Spell Family (6), Passive] 
@@ -9714,7 +9714,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=833320)   : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
-Description      : Mind Flay and Mind Sear have a chance to spawn a Void Tendril or Void Lasher that channels at your target for $336216d, generating $s1 insanity every $344754t1 sec.
+Description      : Mind Flay and Mind Sear have a chance to spawn a Void Tendril that channels at your target for $193470d, generating $s1 insanity when it deals damage.
 
 Name             : Call to the Void (id=336216) [Spell Family (6)] 
 Class            : Priest
@@ -9733,7 +9733,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=833323)   : Summon (28)
                    Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Misc Value: 98167 | Misc Value 2: 0xe67 | Radius: 3 yards | Target: Unknown(73)
-Description      : $@spelldesc336214
 
 Name             : Flash Concentration (id=336266) [Spell Family (6), Passive] 
 School           : Physical
@@ -9946,7 +9945,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=835811)   : Apply Aura (6) | Dummy (4)
                    Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : For the first $337661d of Fade, you take |cFFFFFFFF${-$s1}.1%|r reduced damage.
+Description      : For the first $337661d of Fade, you take |cFFFFFFFF${$s1*-1}.1|r% less damage.
 
 Name             : Move with Grace (id=337678) [Spell Family (6), Passive, Hidden] 
 Class            : Priest
@@ -9985,7 +9984,7 @@ Effects          :
                    Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Purify (527), Dispel Magic (528), Mass Dispel (32375), Mass Dispel (32592), Purify Disease (213634)
                    Family Flags: 25, 32, 39
-Description      : Dispel Magic, Purify, and Mass Dispel cost |cFFFFFFFF${$s1*-1}.1%|r less mana.
+Description      : Dispel Magic, Purify, and Mass Dispel cost |cFFFFFFFF${$s1*-1}.1|r% less mana.
 
 Name             : Charitable Soul (id=337715) [Spell Family (6), Passive, Hidden] 
 School           : Physical
@@ -10003,7 +10002,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=835898)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Casting Power Word: Shield on an ally also shields you for |cFFFFFFFF${$s1}.1%|r of the amount for $337716d.
+Description      : Casting Power Word: Shield on an ally also shields you for |cFFFFFFFF${$s1}.1|r% of the amount for $337716d.
 
 Name             : Light's Inspiration (id=337748) [Spell Family (6), Passive, Hidden] 
 School           : Physical
@@ -10024,7 +10023,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=835939)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Desperate Prayer heals you for an additional |cFFFFFFFF${$s1}.1%|r of your maximum health over $337749d.
+Description      : Desperate Prayer heals you for an additional |cFFFFFFFF${$s1}.1|r% of your maximum health over $337749d.
 
 Name             : Power Unto Others (id=337762) [Spell Family (6), Passive, Hidden] 
 School           : Physical
@@ -10042,7 +10041,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=835966)   : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Power Infusion incurs a |cFFFFFFFF${$s1}.1 sec|r reduced cooldown when you cast it on an ally.
+Description      : Casting Power Infusion on an ally reduces its cooldown by |cFFFFFFFF${$s1}.1|r sec.
 
 Name             : Shining Radiance (id=337778) [Spell Family (6), Passive, Hidden] 
 School           : Physical
@@ -10062,7 +10061,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Power Word: Radiance (194509)
                    Family Flags: 22
-Description      : Power Word: Radiance's healing is increased by |cFFFFFFFF${$s1}.1%|r.
+Description      : Power Word: Radiance healing is increased by |cFFFFFFFF${$s1}.1|r%.
 
 Name             : Pain Transformation (id=337786) [Spell Family (6), Passive, Hidden] 
 School           : Physical
@@ -10080,7 +10079,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=836000)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Pain Suppression also heals your target for |cFFFFFFFF${$s1}.1%|r of their maximum health.
+Description      : Pain Suppression also heals your target for |cFFFFFFFF${$s1}.1|r% of their maximum health.
 
 Name             : Exaltation (id=337790) [Spell Family (6), Passive, Hidden] 
 School           : Physical
@@ -10102,7 +10101,7 @@ Effects          :
                    Base Value: 2000 | Scaled Value: 2000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Rapture (47536), Spirit Shell (109964)
                    Family Flags: 18, 119
-Description      : Rapture's duration is increased by ${$s2/1000}.1 sec, and its Power Word: Shield enhancement is increased by |cFFFFFFFF${$s1}.1%|r.
+Description      : Rapture's duration is increased by ${$s2/1000}.1 sec, and its Power Word: Shield enhancement is increased by |cFFFFFFFF${$s1}.1|r %.
 
 Name             : Lasting Spirit (id=337811) [Spell Family (6), Passive, Hidden] 
 School           : Physical
@@ -10126,7 +10125,7 @@ Effects          :
                    Base Value: 2000 | Scaled Value: 2000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Guardian Spirit (47788)
                    Family Flags: 75
-Description      : Guardian Spirit's duration is increased by ${$s2/1000}.1 sec, and it increases healing received by an additional |cFFFFFFFF${$s1}.1%|r.
+Description      : Guardian Spirit's duration is increased by ${$s2/-1000}.1 sec, and it increases healing received by an additional |cFFFFFFFF${$s1}.1%|r.
 
 Name             : Swift Penitence (id=337891) [Spell Family (6), Passive, Hidden] 
 School           : Physical
@@ -10162,7 +10161,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=836184)   : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
-Description      : Prayer of Mending does |cFFFFFFFF${$s1}.1%|r increased healing to the initial target.
+Description      : Prayer of Mending's first target is healed by an additional |cFFFFFFFF${$s1}.1|r %.
 
 Name             : Resonant Words (id=337947) [Spell Family (6), Passive, Hidden] 
 School           : Physical
@@ -10183,7 +10182,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=836234)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
-Description      : Casting a Holy Word spell increases the healing of your next Heal or Flash Heal by |cFFFFFFFF${$s1}.1%|r.
+Description      : Casting a Holy Word spell increases the healing of your next Heal or Flash Heal by |cFFFFFFFF${$s1}.1|r%.
 
 Name             : Mental Recovery (id=337954) [Spell Family (6), Passive, Hidden] 
 School           : Physical
@@ -10201,7 +10200,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=836247)   : Apply Aura (6) | Dummy (4)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : After $?s205369[Mind Bomb][Psychic Scream] ends, affected targets' movement speed is reduced by |cFFFFFFFF${$s1}.1%|r for $337956d.
+Description      : After $?s205369[Mind Bomb][Psychic Scream] ends, affected targets' movement speed is reduced by |cFFFFFFFF${$s1}.1|r% for $337956d.
 
 Name             : Courageous Ascension (id=337966) [Spell Family (6), Passive, Hidden] 
 School           : Physical
@@ -10222,7 +10221,7 @@ Effects          :
 #2 (id=842371)   : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 5 (33)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 33 | Misc Value 2: 1104 (Label) | Target: Self (1)
                    Affected Spells (Label): Boon of the Ascended (325013)
-Description      : Ascended Blast deals |cFFFFFFFF${$s1}.1%|r increased damage, and Ascended Eruption deals an additional $s2% damage per stack of Boon of the Ascended.
+Description      : Ascended Blast deals an additional |cFFFFFFFF${$s1}.1|r% damage, and Ascended Eruption deals an additional $s2% damage per stack of Boon of the Ascended.
 
 Name             : Festering Transfusion (id=337979) [Spell Family (6), Passive, Hidden] 
 School           : Physical
@@ -10243,7 +10242,7 @@ Effects          :
                    Affected Spells (Label): Unholy Transfusion (325118), Unholy Transfusion (325203)
 #2 (id=836285)   : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Unholy Transfusion lasts $s2 sec longer and deals |cFFFFFFFF${$s1}.1%|r more damage and healing.
+Description      : Unholy Transfusion's duration is increased by $s2 sec and deals |cFFFFFFFF${$s1}.1|r% more damage and healing.
 
 Name             : Fae Fermata (id=338305) [Spell Family (6), Passive, Hidden] 
 School           : Physical
@@ -10263,7 +10262,7 @@ Effects          :
                    Base Value: 5000 | Scaled Value: 5000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Fae Guardians (327661), Guardian Faerie (327694), Benevolent Faerie (327710), Wrathful Faerie (342132)
                    Family Flags: 105
-Description      : The duration of Fae Guardians is increased by |cFFFFFFFF${$s1/1000}.1 sec|r.
+Description      : The duration of Fae Guardians is increased by |cFFFFFFFF${$s1/1000}.1|r sec.
 
 Name             : Shattered Perceptions (id=338315) [Spell Family (6), Passive, Hidden] 
 School           : Physical
@@ -10297,7 +10296,7 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Mindgames (323673)
                    Family Flags: 84
-Description      : Mindgames lasts an additional ${$s3/1000}.1 sec and deals an additional |cFFFFFFFF${$s1}.1%|r damage or healing.
+Description      : Mindgames lasts an additional ${$s2/1000}.1 sec and deals an additional |cFFFFFFFF${$s1}.1|r% damage or healing.
 
 Name             : Haunting Apparitions (id=338319) [Spell Family (6), Passive, Hidden] 
 School           : Physical
@@ -10317,7 +10316,7 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Shadowy Apparition (148859)
                    Family Flags: 90
-Description      : Your Shadowy Apparitions deal |cFFFFFFFF${$s1}.1%|r more damage.
+Description      : Your Shadowy Apparitions deal |cFFFFFFFF${$s1}.1|r% more damage.
 
 Name             : Mind Devourer (id=338332) [Spell Family (6), Passive, Hidden] 
 Class            : Priest
@@ -10340,7 +10339,7 @@ Effects          :
                    Family Flags: 13, 30
 #2 (id=836853)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Mind Blast deals |cFFFFFFFF${$s1}.1%|r increased damage and has a $s2% chance to make your next Devouring Plague cost no insanity.
+Description      : Mind Blast deals an additional |cFFFFFFFF${$s1}.1|r% damage and has a $s2% chance to make your next Devouring Plague cost no insanity.
 
 Name             : Mind Devourer (id=338333) [Spell Family (6)] 
 Class            : Priest
@@ -10383,7 +10382,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=836864)   : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Your $?s200174[Mindbender][Shadowfiend]'s attack speed is increased by $s2%, and it deals |cFFFFFFFF${$s1}.1%|r more damage.
+Description      : Shadowfiend attack speed is increased by $s2%, and it deals |cFFFFFFFF${$s1}.1|r% more damage.
 
 Name             : Dissonant Echoes (id=338342) [Spell Family (6), Passive, Hidden] 
 Class            : Priest
@@ -10405,8 +10404,8 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=836873)   : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : While not in Void Form, Mind Flay has a |cFFFFFFFF${$s1}.1%|r chance to allow you to cast Void Bolt. 
-While in Void Form, Void Bolt has a |cFFFFFFFF${$s1}.1%|r chance to reset the cooldown on Void Bolt.
+Description      : While not in Void Form, Mind Flay has a |cFFFFFFFF${$s1}.1|r% chance to allow you to cast Void Bolt. 
+While in Void Form, Void Bolt has a |cFFFFFFFF${$s1}.1|r% chance to reset the cooldown on Void Bolt.
 
 Name             : Holy Oration (id=338345) [Spell Family (6), Passive, Hidden] 
 School           : Physical
@@ -10424,7 +10423,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=836877)   : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
-Description      : Spells that reduce the cooldowns of your Holy Words reduce them by |cFFFFFFFF${$s1}.1%|r more.
+Description      : Spells that reduce the cooldowns of your Holy Words reduce them by  |cFFFFFFFF${$s1}.1|r% more.
 
 Name             : Dark Thoughts (desc=Passive) (id=341205) [Spell Family (6), Passive] 
 Class            : Shadow Priest
@@ -10686,9 +10685,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc327661
 
-Tooltip          : Direct damage on this target restores ${$327703s1/100}.1% Mana or ${$327703s2/100} Insanity to $@auracaster.
-
-Follows your Shadow Word: Pain.
+Tooltip          : $@auracaster's direct damage on this target restores ${$327703s1/100}.1% Mana or ${$327703s2/100} Insanity.
 
 Name             : Talbadar's Stratagem (id=342415) [Spell Family (6), Passive] 
 School           : Physical
@@ -11057,9 +11054,5 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 344752 | Target: Enemy (6)
 #2 (id=869354)   : Dummy (3)
                    Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000
-Description      : Corrosive shadow energy radiates from the target, dealing ${$49821s2*$s2} Shadow damage over $48045d to all enemies within $49821a2 yards of the target.$?s137033[
-
-|cFFFFFFFFGenerates ${$s2*$208232s1/100} Insanity over the duration per target hit.|r][]
-Tooltip          : Causing Shadow damage to all targets within $49821a2 yards every $t1 sec.
 
 

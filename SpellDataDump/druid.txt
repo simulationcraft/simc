@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.2.35938 shadowlands-BETA (git build shadowlands 516068b780)
+SimulationCraft 901-01 for World of Warcraft 9.0.2.35938 shadowlands-BETA (hotfix 2020-09-18/35938, git build shadowlands a3c99b0cc6)
 
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Guardian Druid
@@ -1821,7 +1821,7 @@ Effects          :
                    Affected Spells: Starfire (194153), Starfire (197628)
                    Family Flags: 2
 Description      : $@spelldesc79577
-Tooltip          : Starfire cast time reduced $w1%$?<$w5>0>[, area effect damage increased $w5%,][] and critical strike chance increased $w2%.
+Tooltip          : Starfire cast time reduced $w1%$?<$w5>0>[, critical strike chance increased $w5%,][] and area effect damage increased $w2%.
 
 Name             : Wild Charge (desc=Talent) (id=49376) [Spell Family (7)] 
 Class            : Druid
@@ -2472,7 +2472,7 @@ $@spellicon48517 $@spellname48517
 Wrath cast time reduced $48517s1% and damage increased $48517s2%.
 
 $@spellicon48518 $@spellname48518
-Starfire cast time reduced $48518s1% and critical strike chance increased $48518s2%.
+Starfire cast time reduced $48518s1% and area effect damage increased $48518s2%.
 
 Name             : Pulverize (id=80313) [Spell Family (7)] 
 Class            : Druid
@@ -2502,7 +2502,7 @@ Effects          :
 #3 (id=327035)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : A devastating blow that consumes $s3 stacks of your Thrash on the target to deal $s1 Physical damage and reduce the damage they deal to you by $s2% for $d.
-Tooltip          : Dealing $w2% reduced damage to $@auracaster.
+Tooltip          : Dealing $w2% reduced damage to the Druid.
 
 Name             : Sabertooth (id=80863) [Spell Family (7)] 
 Class            : Druid
@@ -3730,7 +3730,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 33 | Target: Self (1)
                    Affected Spells: Eclipse (Lunar) (48518)
                    Family Flags: 42
-Description      : Eclipse increases Wrath's Astral power generation $s1%, and increases Starfire's area effect damage by $s2%.
+Description      : Eclipse increases Wrath's Astral power generation $s1%, and increases Starfire's critical strike chance by $s2%.
 
 Name             : Soul of the Forest (id=114108) [Spell Family (7)] 
 Class            : Druid
@@ -4086,8 +4086,6 @@ Effects          :
                    Family Flags: 11
 #2 (id=870292)   : Apply Aura (6) | Proc Trigger Spell (42): Tooth and Claw
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 135601 | Target: Self (1)
-Description      : $@spelldesc135288
-Tooltip          : Your next Maul deals $s1% more damage and reduces the target's damage to you by $135601s1%~ for $135601d.
 
 Name             : Tooth and Claw (id=135288) [Spell Family (7), Passive] 
 Class            : Druid
@@ -4111,9 +4109,6 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Trigger Spell: 135286 | Target: Self (1)
 #2 (id=870290)   : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Trigger Spell: 135286 | Target: Self (1)
-Description      : Autoattacks have a $s1% chance to empower your next Maul, stacking up to $135286u times.
-
-Empowered Maul deals $135286s1% increased damage and reduces the target's damage to you by $135601s2% for $135601d.
 
 Name             : Tooth and Claw (id=135601) [Spell Family (7)] 
 Class            : Druid
@@ -4133,8 +4128,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=177104)   : Apply Aura (6) | Modify Damage Done% to Caster (269)
                    Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Enemy (6)
-Description      : $@spelldesc135288
-Tooltip          : Dealing $w1% reduced damage to $@auracaster.
 
 Name             : Clearcasting (id=135700) [Spell Family (7)] 
 Class            : Druid
@@ -4799,7 +4792,7 @@ Effects          :
                    Affected Spells: Starfire (194153), Starfire (197628)
                    Family Flags: 2
 Description      : $@spelldesc24858
-Tooltip          : Your next Starfire is instant cast.
+Tooltip          : Your next Lunar Strike is instant cast.
 
 Name             : Critical Strikes (desc=Passive) (id=157447) [Passive] 
 Class            : Feral Guardian Druid
@@ -5951,7 +5944,7 @@ Effects          :
                    Family Flags: 68
 Description      : Shapeshift into $?s114301[Astral Form][Moonkin Form], increasing your armor by $m3%, and granting protection from Polymorph effects.
 
-The act of shapeshifting frees you from movement impairing effects.
+The act of shapeshifting frees you from  movement impairing effects.
 Tooltip          : Immune to Polymorph effects.$?$w3>0[
 Armor increased by $w3%.][]
 
@@ -6985,7 +6978,7 @@ Effects          :
                    Base Value: -2 | Scaled Value: -2 | PvP Coefficient: 1.00000 | Misc Value: 32 | Target: Self (1)
                    Affected Spells: Thrash (192090)
                    Family Flags: 40
-Description      : Each stack of Thrash reduces the target's damage to you by $s3% and increases your damage to them by $s1%.
+Description      : Each stack of Thrash reduces the target's damage to you by 2% and increases your damage to them by 2%.
 
 Name             : Force of Nature (desc=Talent) (id=205636) [Spell Family (7)] 
 Class            : Druid
@@ -11751,7 +11744,7 @@ Effects          :
 Description      : For $d, Druid spells you cast increase your damage, healing, and haste by $s1%, stacking.
 
 If you spend ${$s9/10}.1 sec idle, the Frenzy overcomes you, consuming $s3% of your health per stack, stunning you for $323557d, and ending.
-Tooltip          : Damage, healing, and haste increased by $?<$w6<1>[$w1%.
+Tooltip          : Damage, healing, and haste increased by $?<$w5>0>[$w1%.
 
 If you spend ${$s9~/10}.1 sec idle, the Frenzy consumes $w3% of your health and ends.][$w6%.]
 
@@ -12538,7 +12531,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=837452)   : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
-Description      : When Moonfire, Rake, Rip, or Rejuvenation are active on a single target, their effects are increased $s1%.
+Description      : When Moonfire, Rake, Rip, or Rejuvenation are on a single target, their effects are increased $s1%.
 
 Name             : Oneth's Clear Vision (id=338661) [Spell Family (7), Passive] 
 Class            : Druid
@@ -12670,6 +12663,7 @@ Effects          :
 Description      : Rejuvenation healing has a $@switch<$s2>[${$s1/10}%][${$s1/10}.1%] chance to create a new Rejuvenation on a nearby target.
 
 Name             : Ursoc's Fury Remembered (id=339056) [Spell Family (7), Passive] 
+Class            : Druid
 School           : Physical
 Spell Type       : None
 Proc Chance      : 100%
@@ -12689,9 +12683,7 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=869927)   : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : In Bear Form, Thrash has a $s1% chance to trigger an additional Thrash.
-
-Thrash grants you an absorb shield for $s2% of all damage it deals.
+Description      : In Bear Form, Thrash has a $s1% chance to trigger an additional Thrash.
 
 Name             : Luffa-Infused Embrace (id=339060) [Spell Family (7), Passive] 
 School           : Physical
@@ -13132,7 +13124,7 @@ Effects          :
                    Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Barkskin (22812)
                    Family Flags: 50
-Description      : Barkskin's cooldown is reduced by |cFFFFFFFF${-$s1}.1%|r.
+Description      : Barkskin's cooldown is reduced by ${-$s1}.1%.
 
 Name             : Ursine Vigor (id=340540) [Spell Family (7), Passive, Hidden] 
 School           : Physical
@@ -13151,7 +13143,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=840533)   : Apply Aura (6) | Trigger Spell with Value (231)
                    Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000 | Trigger Spell: 340541 | Target: Self (1)
-Description      : For $340541d after shifting into Bear Form, your health and armor are increased by |cFFFFFFFF${$s1}.1%|r.
+Description      : For $340541d after shifting into Bear Form, your health and armor are increased ${$s1}.1%.
 
 Name             : Ursine Vigor (id=340541) [Spell Family (7)] 
 School           : Nature
@@ -13194,7 +13186,7 @@ Effects          :
                    Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Frenzied Regeneration (22842)
                    Family Flags: 62
-Description      : Regrowth and Frenzied Regeneration healing is increased by |cFFFFFFFF${$s1}.1%|r on yourself.
+Description      : Regrowth and Frenzied Regeneration healing is increased by ${$s1}.1% on yourself.
 
 Name             : Tireless Pursuit (id=340545) [Spell Family (7), Passive, Hidden] 
 School           : Physical
@@ -13214,7 +13206,7 @@ Effects          :
                    Base Value: 2000 | Scaled Value: 2000 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
 #2 (id=869800)   : Apply Aura (6) | Dummy (4)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-Description      : For |cFFFFFFFF${$s1/1000}.1 sec|r after leaving Cat Form or Travel Form, you retain up to $s2% movement speed.
+Description      : For ${$s1/1000}.1 sec after leaving Cat Form or Travel Form, you retain their movement speed bonus.
 
 Name             : Unstoppable Growth (id=340549) [Spell Family (7), Passive, Hidden] 
 School           : Physical
@@ -13232,7 +13224,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=840547)   : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-Description      : Wild Growth's healing falls off |cFFFFFFFF$s1%|r less over time.
+Description      : Wild Growth's healing falls off $s1% less over time.
 
 Name             : Ready for Anything (id=340550) [Spell Family (7), Passive, Hidden] 
 School           : Physical
@@ -13252,7 +13244,7 @@ Effects          :
                    Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Nature's Swiftness (132158)
                    Family Flags: 51
-Description      : Nature's Swiftness's cooldown is reduced by |cFFFFFFFF${-$s1}.1%|r.
+Description      : Nature's Swiftness's cooldown is reduced by ${-$s1}.1%.
 
 Name             : Unchecked Aggression (id=340552) [Spell Family (7), Passive, Hidden] 
 Class            : Druid
@@ -13273,7 +13265,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 32 | Target: Self (1)
                    Affected Spells: Berserk (50334), Incarnation: Guardian of Ursoc (102558)
                    Family Flags: 84, 96
-Description      : You gain |cFFFFFFFF${$s1}.1%|r haste during Berserk in Bear Form.
+Description      : You gain ${$s1}.1% haste during Berserk.
 
 Name             : Well-Honed Instincts (id=340553) [Spell Family (7), Passive, Hidden] 
 School           : Physical
@@ -13293,7 +13285,7 @@ Effects          :
                    Base Value: 90 | Scaled Value: 90 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
 #2 (id=840556)   : Apply Aura (6) | Trigger Spell Based on Health% (468)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 1 | Trigger Spell: 340555 | Target: Self (1)
-Description      : When you fall below $s2% health, you cast Frenzied Regeneration, up to once every |cFFFFFFFF$s1 sec|r.
+Description      : When you fall below $s2% health, you cast Frenzied Regeneration, up to once every $s1 sec.
 
 Name             : Well-Honed Instincts (id=340555) [Spell Family (7), Hidden] 
 School           : Nature
@@ -13331,7 +13323,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=840631)   : Apply Aura (6) | Dummy (4)
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
-Description      : Ironfur has an |cFFFFFFFF${$s1}.1%|r chance to apply two stacks.
+Description      : Ironfur has an ${$s1}.1% chance to apply two stacks.
 
 Name             : Savage Combatant (id=340609) [Spell Family (7), Passive, Hidden] 
 Class            : Druid
@@ -13351,7 +13343,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=840636)   : Apply Aura (6) | Trigger Spell with Value (231)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Trigger Spell: 340613 | Target: Self (1)
-Description      : Mangle increases the damage of your next Maul by |cFFFFFFFF${$s1}.1%|r, stacking up to $340613u.
+Description      : Mangle increases the damage of your next Maul by ${$s1}.1%, stacking up to $340613u.
 
 Name             : Savage Combatant (id=340613) [Spell Family (7)] 
 Class            : Druid
@@ -13395,7 +13387,7 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Omen of Clarity (16864), Clearcasting (16870), Clearcasting (135700)
                    Family Flags: 114
-Description      : Clearcast Regrowths heal for an additional |cFFFFFFFF${$s1}.1%|r.
+Description      : Clearcast Regrowths heal for an additional ${$s1}.1%.
 
 Name             : Floral Recycling (id=340621) [Spell Family (7), Passive, Hidden] 
 School           : Physical
@@ -13413,7 +13405,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=840656)   : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
-Description      : Swiftmend's healing is increased by |cFFFFFFFF$s1%|r of the consumed heal over time effect.
+Description      : Swiftmend's healing is increased by $s1% of the consumed heal over time effect.
 
 Name             : Taste for Blood (id=340682) [Spell Family (7), Passive, Hidden] 
 Class            : Druid
@@ -13432,7 +13424,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=840752)   : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
-Description      : Ferocious Bite deals |cFFFFFFFF${$s1}.1%|r increased damage for each of your Bleeds on the target.
+Description      : Ferocious Bite deals ${$s1}.1% increased damage for each of your Bleeds on the target.
 
 Name             : Incessant Hunter (id=340686) [Spell Family (7), Passive, Hidden] 
 Class            : Druid
@@ -13454,7 +13446,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=840757)   : Apply Aura (6) | Proc Trigger Spell (42): Incessant Hunter
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Trigger Spell: 340688 | Target: Self (1)
-Description      : Rip damage has a |cFFFFFFFF${$s1}.1%|r chance to grant $340688s1 Energy.
+Description      : Rip damage has a ${$s1}.1% chance to grant $340688s1 Energy.
 
 Name             : Incessant Hunter (id=340688) [Spell Family (7)] 
 Class            : Druid
@@ -13495,7 +13487,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=840770)   : Apply Aura (6) | Proc Trigger Spell (42): Sudden Ambush
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Trigger Spell: 340698 | Target: Self (1)
-Description      : Finishing moves have a |cFFFFFFFF${$s1}.1%|r chance per combo point spent to make your next Rake or Shred deal damage as though you were stealthed. 
+Description      : Finishing moves have a ${$s1}.1% chance per combo point spent to make your next Rake or Shred deal damage as though you were stealthed. 
 
 Name             : Sudden Ambush (id=340698) [Spell Family (7)] 
 Class            : Druid
@@ -13546,7 +13538,7 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 32 | Target: Self (1)
                    Affected Spells: Tiger's Fury (5217)
                    Family Flags: 75
-Description      : Tiger's Fury's damage bonus is increased by |cFFFFFFFF${$s1}.1%|r.
+Description      : Tiger's Fury's damage bonus is increased by ${$s1}.1%
 
 Name             : Precise Alignment (id=340706) [Spell Family (7), Passive, Hidden] 
 Class            : Druid
@@ -13567,7 +13559,7 @@ Effects          :
                    Base Value: 4000 | Scaled Value: 4000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Celestial Alignment (194223)
                    Family Flags: 113
-Description      : The duration of $?a102560[Incarnation: Chosen of Elune][Celestial Alignment] is increased by |cFFFFFFFF${$s1/1000}.1 sec|r.
+Description      : Duration of $?a102560[Incarnation: Chosen of Elune][Celestial Alignment] increased by ${$s1/1000}.1 sec.
 
 Name             : Fury of the Skies (id=340708) [Spell Family (7), Passive, Hidden] 
 Class            : Druid
@@ -13588,7 +13580,7 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Moonfire (164812), Sunfire (164815)
                    Family Flags: 92, 127
-Description      : Moonfire increases your Arcane damage to the target, and Sunfire increases your Nature damage to the target, by |cFFFFFFFF${$s1}.1%|r.
+Description      : Moonfire increases your Arcane damage to the target, and Sunfire increases your Nature damage to the target, by ${$s1}.1%.
 
 Name             : Umbral Intensity (id=340719) [Spell Family (7), Passive, Hidden] 
 Class            : Druid
@@ -13609,7 +13601,7 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Eclipse (Solar) (48517), Eclipse (Lunar) (48518)
                    Family Flags: 42, 59
-Description      : Eclipse's damage bonus to Wrath and Starfire starts |cFFFFFFFF${$s1}.1%|r stronger.
+Description      : Eclipse's damage bonus to Wrath and Starfire starts ${$s1}.1% stronger.
 
 Name             : Stellar Inspiration (id=340720) [Spell Family (7), Passive, Hidden] 
 Class            : Druid
@@ -13628,7 +13620,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=840817)   : Apply Aura (6) | Dummy (4)
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
-Description      : Starsurge and Starfall have a |cFFFFFFFF${$s1}.1%|r chance to empower Eclipse or extend Moonfire and Sunfire by double the amount.
+Description      : Starsurge and Starfall have a ${$s1}.1% chance to empower Eclipse or extend Moonfire and Sunfire by double the amount.
 
 Name             : Born Anew (id=341280) [Spell Family (7), Passive, Hidden] 
 School           : Physical
@@ -13646,7 +13638,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=841585)   : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-Description      : Rebirth grants the target $341448s1% movement speed for $341448d, and Well Fed, increasing their primary stat by |cFFFFFFFF$s1|r for $341449d.
+Description      : Rebirth grants the target $341448s1% movement speed for $341448d, and Well Fed, increasing their primary stat by $s1 for $341449d.
 
 Name             : Deep Allegiance (id=341378) [Spell Family (7), Passive, Hidden] 
 Class            : Druid
@@ -13667,7 +13659,7 @@ Effects          :
                    Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Kindred Spirits (326434), Empower Bond (326446), Empower Bond (326462), Empower Bond (326647), Lone Empowerment (338142)
                    Family Flags: 103
-Description      : Kindred Spirits's empowerment cooldown is reduced by |cFFFFFFFF${-$s1}.1%|r.
+Description      : Kindred Spirits's empowerment cooldown is reduced by ${-$s1}.1%.
 
 Name             : Endless Thirst (id=341383) [Spell Family (7), Passive, Hidden] 
 Class            : Druid
@@ -13688,7 +13680,7 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 33 | Target: Self (1)
                    Affected Spells: Ravenous Frenzy (323546)
                    Family Flags: 19
-Description      : Ravenous Frenzy increases your critical chance by |cFFFFFFFF${$s1/10}.1%|r per stack.
+Description      : Ravenous Frenzy increases your critical chance by ${$s1/10}.1% per stack.
 
 Name             : Conflux of Elements (id=341446) [Spell Family (7), Passive, Hidden] 
 Class            : Druid
@@ -13713,7 +13705,7 @@ Effects          :
                    Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000 | Misc Value: 32 | Target: Self (1)
                    Affected Spells: Convoke the Spirits (323764)
                    Family Flags: 16
-Description      : While channeling Convoke the Spirits, your damage and healing are increased by |cFFFFFFFF${$s1}.1%|r.
+Description      : While channeling Convoke the Spirits, your damage and healing are increased by ${$s1}.1%.
 
 Name             : Evolved Swarm (id=341447) [Spell Family (7), Passive, Hidden] 
 Class            : Druid
@@ -13734,7 +13726,7 @@ Effects          :
                    Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Adaptive Swarm (325727), Adaptive Swarm (325733), Adaptive Swarm (325748)
                    Family Flags: 22
-Description      : Adaptive Swarm increases periodic effects by an additional |cFFFFFFFF${$s1}.1%|r.
+Description      : Adaptive Swarm increases periodic effects by an additional ${$s1}.1%.
 
 Name             : Front of the Pack (id=341450) [Spell Family (7), Passive, Hidden] 
 School           : Physical
@@ -13758,7 +13750,7 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 6 | Target: Self (1)
                    Affected Spells: Stampeding Roar (77764)
                    Family Flags: 87
-Description      : Stampeding Roar's radius and duration are increased by |cFFFFFFFF${$s1}.1%|r.
+Description      : Stampeding Roar's radius and duration are increased by ${$s1}.1%.
 
 Name             : Born of the Wilds (id=341451) [Spell Family (7), Passive, Hidden] 
 School           : Physical
@@ -13781,7 +13773,7 @@ Effects          :
 #2 (id=841855)   : Apply Aura (6) | Modify Cooldown Time (Category) (341)
                    Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 1383 | Target: Self (1)
                    Affected Spells (Category): Heart of the Wild (108291), Heart of the Wild (108292), Heart of the Wild (108293), Heart of the Wild (108294), Heart of the Wild (319454)
-Description      : The cooldown of Mighty Bash, Mass Entanglement, and Heart of the Wild are reduced by |cFFFFFFFF${-$s1}.1%|r.
+Description      : The cooldown of Mighty Bash, Mass Entanglement, and Heart of the Wild are reduced by ${-$s1}.1%.
 
 Name             : Berserk (id=343216) [Spell Family (7)] 
 Class            : Death Knight, Druid
@@ -13930,6 +13922,23 @@ Effects          :
 Description      : $@spelldesc343647
 Tooltip          : Shooting Stars fall $w1% more often.
 
+Name             : Ursoc's Fury Remembered (id=345048) [Spell Family (7)] 
+Class            : Druid
+School           : Physical
+Spell Type       : None
+Duration         : 15 seconds
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+Effects          :
+#1 (id=869930)   : Apply Aura (6) | Absorb Damage (69)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
+
 Name             : Infected Wounds (id=345208) [Spell Family (7), Passive] 
 Class            : Guardian Druid
 School           : Physical
@@ -13950,7 +13959,6 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=870267)   : Apply Aura (6) | Proc Trigger Spell (42): Infected Wounds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Trigger Spell: 345209 | Target: Self (1)
-Description      : Mangle and Maul cause an Infected Wound in the target, reducing their movement speed by $345209s1% for $345209d.
 
 Name             : Infected Wounds (id=345209) [Spell Family (7)] 
 Class            : Druid
@@ -13973,7 +13981,5 @@ Attributes       : ........ ........ ........ ........   ...x...x ........ .x...
 Effects          :
 #1 (id=870268)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Mechanic: Snare | Target: Enemy (6)
-Description      : $@spelldesc345208
-Tooltip          : Movement speed slowed by $w1%.
 
 
