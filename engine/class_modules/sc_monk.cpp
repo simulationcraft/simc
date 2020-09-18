@@ -1049,6 +1049,140 @@ namespace orbs
 
 namespace pets
 {
+
+// ==========================================================================
+// Base Monk Pet Action
+// ==========================================================================
+
+template <typename T_PET, typename T_ACTION>
+struct pet_action_t : public T_ACTION
+{
+  typedef pet_action_t<T_PET, T_ACTION> super;
+
+  pet_action_t( T_PET* pet, util::string_view name, const spell_data_t* spell = spell_data_t::nil() )
+    : T_ACTION( name, pet, spell )
+  {
+    this->special  = true;
+    this->may_crit = true;
+  }
+
+  T_PET* p() const
+  {
+    return debug_cast<T_PET*>( this->player );
+  }
+
+  void init() override
+  {
+    T_ACTION::init();
+
+    if ( !this->player->sim->report_pets_separately )
+    {
+      auto it = range::find_if( p()->o()->pet_list,
+                                [ this ]( pet_t* pet ) { return this->player->name_str == pet->name_str; } );
+
+      if ( it != p()->o()->pet_list.end() && this->player != *it )
+      {
+        this->stats = ( *it )->get_stats( this->name(), this );
+      }
+    }
+  }
+};
+
+// ==========================================================================
+// Base Monk Pet Melee Attack
+// ==========================================================================
+
+template <typename T_PET>
+struct pet_melee_attack_t : public pet_action_t<T_PET, melee_attack_t>
+{
+  using super = pet_melee_attack_t<T_PET>;
+
+  pet_melee_attack_t( T_PET* pet, util::string_view name, const spell_data_t* spell = spell_data_t::nil() )
+    : pet_action_t<T_PET, melee_attack_t>( pet, name, spell )
+  {
+    if ( this->school == SCHOOL_NONE )
+    {
+      this->school        = SCHOOL_PHYSICAL;
+      this->stats->school = SCHOOL_PHYSICAL;
+    }
+  }
+
+  void init() override
+  {
+    pet_action_t<T_PET, melee_attack_t>::init();
+
+    if ( !this->background && this->trigger_gcd == 0_ms )
+    {
+      this->trigger_gcd = 1.5_s;
+    }
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    pet_action_t<T_PET, melee_attack_t>::impact( state );
+  }
+};
+
+// ==========================================================================
+// Generalized Auto Attack Action
+// ==========================================================================
+
+struct pet_auto_attack_t : public melee_attack_t
+{
+  pet_auto_attack_t( pet_t* player ) : melee_attack_t( "auto_attack", player )
+  {
+    assert( player->main_hand_weapon.type != WEAPON_NONE );
+    player->main_hand_attack = nullptr;
+    trigger_gcd              = 0_ms;
+  }
+
+  void execute() override
+  {
+    player->main_hand_attack->schedule_execute();
+  }
+
+  bool ready() override
+  {
+    if ( player->is_moving() )
+      return false;
+    return ( player->main_hand_attack->execute_event == nullptr );
+  }
+};
+
+// ==========================================================================
+// Base Monk Pet Spell
+// ==========================================================================
+
+template <typename T_PET>
+struct pet_spell_t : public pet_action_t<T_PET, spell_t>
+{
+  using super = pet_spell_t<T_PET>;
+
+  pet_spell_t( T_PET* pet, util::string_view name, const spell_data_t* spell = spell_data_t::nil() )
+    : pet_action_t<T_PET, spell_t>( pet, name, spell )
+  {
+    this->tick_may_crit = true;
+    this->hasted_ticks  = false;
+  }
+};
+
+// ==========================================================================
+// Base Monk Heal Spell
+// ==========================================================================
+
+template <typename T_PET>
+struct pet_heal_t : public pet_action_t<T_PET, heal_t>
+{
+  using super = pet_heal_t<T_PET>;
+
+  pet_heal_t( T_PET* pet, util::string_view name, const spell_data_t* spell = spell_data_t::nil() )
+    : pet_action_t<T_PET, heal_t>( pet, name, spell )
+  {
+    this->tick_may_crit = true;
+    this->hasted_ticks  = false;
+  }
+};
+
 struct statue_t : public pet_t
 {
   statue_t( sim_t* sim, monk_t* owner, const std::string& n, pet_e pt, bool guardian = false )
@@ -2683,7 +2817,7 @@ private:
   {
     monk_t* owner;
     melee_t( const std::string& n, fallen_monk_ww_pet_t* player ) : 
-        melee_attack_t( n, player, spell_data_t::nil() )
+        melee_attack_t( n, player, spell_data_t::nil() ), owner( player->o() )
     {
       background = repeating = may_crit = may_glance = true;
       school                                         = SCHOOL_PHYSICAL;
@@ -2694,7 +2828,22 @@ private:
       trigger_gcd       = timespan_t::zero();
       special           = false;
       base_hit          -= 0.19;
-      owner             = player->o();
+    }
+
+    void init() override
+    {
+      melee_attack_t::init();
+
+      if ( !this->player->sim->report_pets_separately )
+      {
+        auto it = range::find_if( owner->pet_list,
+                                  [ this ]( pet_t* pet ) { return this->player->name_str == pet->name_str; } );
+
+        if ( it != owner->pet_list.end() && this->player != *it )
+        {
+          this->stats = ( *it )->get_stats( this->name(), this );
+        }
+      }
     }
 
     // Copy melee code from Storm, Earth and Fire
@@ -2740,8 +2889,9 @@ private:
 
   struct auto_attack_t : public attack_t
   {
+    monk_t* owner;
     auto_attack_t( fallen_monk_ww_pet_t* player, const std::string& options_str )
-      : attack_t( "auto_attack", player, spell_data_t::nil() )
+      : attack_t( "auto_attack", player, spell_data_t::nil() ), owner( player -> o() )
     {
       parse_options( options_str );
 
@@ -2749,6 +2899,22 @@ private:
       player->main_hand_attack->base_execute_time = player->main_hand_weapon.swing_time;
 
       trigger_gcd = timespan_t::zero();
+    }
+
+    void init() override
+    {
+      attack_t::init();
+
+      if ( !this->player->sim->report_pets_separately )
+      {
+        auto it = range::find_if( owner->pet_list,
+                                  [ this ]( pet_t* pet ) { return this->player->name_str == pet->name_str; } );
+
+        if ( it != owner->pet_list.end() && this->player != *it )
+        {
+          this->stats = ( *it )->get_stats( this->name(), this );
+        }
+      }
     }
 
     bool ready() override
@@ -2826,7 +2992,7 @@ public:
   {
     monk_t* owner;
     fallen_monk_fists_of_fury_tick_t( fallen_monk_ww_pet_t* p )
-      : melee_attack_t( "fists_of_fury_tick", p, p->o()->passives.fists_of_fury_tick )
+      : melee_attack_t( "fists_of_fury_tick", p, p->o()->passives.fists_of_fury_tick ), owner( p->o() )
     {
       dual = direct_tick = background = may_crit = may_miss = true;
       aoe                     = 1 + (int)p->o()->spec.fists_of_fury->effectN( 1 ).base_value();
@@ -2834,7 +3000,22 @@ public:
       ap_type                 = attack_power_type::WEAPON_MAINHAND;
       dot_duration            = timespan_t::zero();
       trigger_gcd             = timespan_t::zero();
-      owner                   = p->o();
+    }
+
+    void init() override
+    {
+      melee_attack_t::init();
+
+      if ( !this->player->sim->report_pets_separately )
+      {
+        auto it = range::find_if( owner->pet_list,
+                                  [ this ]( pet_t* pet ) { return this->player->name_str == pet->name_str; } );
+
+        if ( it != owner->pet_list.end() && this->player != *it )
+        {
+          this->stats = ( *it )->get_stats( this->name(), this );
+        }
+      }
     }
 
     double composite_aoe_multiplier( const action_state_t* state ) const override
@@ -2861,8 +3042,9 @@ public:
 
   struct fallen_monk_fists_of_fury_t : public spell_t
   {
+    monk_t* owner;
     fallen_monk_fists_of_fury_t( fallen_monk_ww_pet_t* p, const std::string& options_str )
-      : spell_t( "fists_of_fury", p, p->o()->passives.fallen_monk_fists_of_fury )
+      : spell_t( "fists_of_fury", p, p->o()->passives.fallen_monk_fists_of_fury ), owner( p->o() )
     {
       parse_options( options_str );
 
@@ -2875,8 +3057,7 @@ public:
       // Effect 2 shows a period of 166 milliseconds which appears to refer to the visual and not the tick period
       base_tick_time = dot_duration / 4;
       may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
-      attack_power_mod.direct                                             = 0.0;
-      attack_power_mod.tick                                               = 0.0;
+      attack_power_mod.direct = attack_power_mod.tick = 0.0;
 
       tick_action = new fallen_monk_fists_of_fury_tick_t( p );
     }
@@ -2886,14 +3067,14 @@ public:
   {
     monk_t* owner;
     fallen_monk_spinning_crane_kick_tick_t( fallen_monk_ww_pet_t* p )
-      : melee_attack_t( "spinning_crane_kick_tick", p, p->o()->passives.fallen_monk_spinning_crane_kick_tick )
+      : melee_attack_t( "spinning_crane_kick_tick", p, p->o()->passives.fallen_monk_spinning_crane_kick_tick ), 
+        owner( p->o() )
     {
       dual = direct_tick = background = may_crit = may_miss = true;
       aoe                     = 1 + (int)p->o()->spec.fists_of_fury->effectN( 1 ).base_value();
       ap_type                 = attack_power_type::WEAPON_MAINHAND;
       dot_duration            = timespan_t::zero();
       trigger_gcd             = timespan_t::zero();
-      owner                   = p->o();
       // Logs show they cast this every 3 seconds, instead of back-to-back
       cooldown->duration      = timespan_t::from_seconds( 3 );
     }
@@ -2904,6 +3085,17 @@ public:
 
       if ( owner->specialization() == MONK_WINDWALKER )
         ap_type = attack_power_type::WEAPON_BOTH;
+
+      if ( !this->player->sim->report_pets_separately )
+      {
+        auto it = range::find_if( owner->pet_list,
+                                  [ this ]( pet_t* pet ) { return this->player->name_str == pet->name_str; } );
+
+        if ( it != owner->pet_list.end() && this->player != *it )
+        {
+          this->stats = ( *it )->get_stats( this->name(), this );
+        }
+      }
     }
 
     double action_multiplier() const override
@@ -2942,7 +3134,7 @@ public:
         cooldown->duration = timespan_t::from_seconds( 6 );
       owner                                            = p->o();
 
-      spell_power_mod.direct = 0.0;
+      attack_power_mod.direct = attack_power_mod.tick =  0.0;
       dot_behavior           = DOT_REFRESH;  // Spell uses Pandemic Mechanics.
 
       tick_action = new fallen_monk_spinning_crane_kick_tick_t( p );
@@ -2995,7 +3187,8 @@ private:
   struct melee_t : public melee_attack_t
   {
     monk_t* owner;
-    melee_t( const std::string& n, fallen_monk_brm_pet_t* player ) : melee_attack_t( n, player, spell_data_t::nil() )
+    melee_t( const std::string& n, fallen_monk_brm_pet_t* player )
+      : melee_attack_t( n, player, spell_data_t::nil() ), owner( player->o() )
     {
       background = repeating = may_crit = may_glance = true;
       school                                         = SCHOOL_PHYSICAL;
@@ -3005,9 +3198,23 @@ private:
       base_execute_time = weapon->swing_time;
       trigger_gcd       = timespan_t::zero();
       special           = false;
-      owner = player->o();
     }
 
+    void init() override
+    {
+      melee_attack_t::init();
+
+      if ( !this->player->sim->report_pets_separately )
+      {
+        auto it = range::find_if( owner->pet_list,
+                                  [ this ]( pet_t* pet ) { return this->player->name_str == pet->name_str; } );
+
+        if ( it != owner->pet_list.end() && this->player != *it )
+        {
+          this->stats = ( *it )->get_stats( this->name(), this );
+        }
+      }
+    }
 
     void execute() override
     {
@@ -3025,8 +3232,9 @@ private:
 
   struct auto_attack_t : public attack_t
   {
+    monk_t* owner;
     auto_attack_t( fallen_monk_brm_pet_t* player, const std::string& options_str )
-      : attack_t( "auto_attack", player, spell_data_t::nil() )
+      : attack_t( "auto_attack", player, spell_data_t::nil() ), owner( player->o() )
     {
       parse_options( options_str );
 
@@ -3034,6 +3242,22 @@ private:
       player->main_hand_attack->base_execute_time = player->main_hand_weapon.swing_time;
 
       trigger_gcd = timespan_t::zero();
+    }
+
+    void init() override
+    {
+      attack_t::init();
+
+      if ( !this->player->sim->report_pets_separately )
+      {
+        auto it = range::find_if( owner->pet_list,
+                                  [ this ]( pet_t* pet ) { return this->player->name_str == pet->name_str; } );
+
+        if ( it != owner->pet_list.end() && this->player != *it )
+        {
+          this->stats = ( *it )->get_stats( this->name(), this );
+        }
+      }
     }
 
     bool ready() override
@@ -3113,6 +3337,22 @@ public:
       owner                   = p->o();
     }
 
+    void init() override
+    {
+      melee_attack_t::init();
+
+      if ( !this->player->sim->report_pets_separately )
+      {
+        auto it = range::find_if( owner->pet_list,
+                                  [ this ]( pet_t* pet ) { return this->player->name_str == pet->name_str; } );
+
+        if ( it != owner->pet_list.end() && this->player != *it )
+        {
+          this->stats = ( *it )->get_stats( this->name(), this );
+        }
+      }
+    }
+
     double action_multiplier() const override
     {
       double am = melee_attack_t::action_multiplier();
@@ -3143,13 +3383,27 @@ public:
     {
       monk_t* owner;
       fallen_monk_breath_of_fire_tick_t( fallen_monk_brm_pet_t* p )
-        : 
-          spell_t( "breath_of_fire_dot", p, p->o()->passives.breath_of_fire_dot )
+        : spell_t( "breath_of_fire_dot", p, p->o()->passives.breath_of_fire_dot ), owner( p->o() )
       {
         background    = true;
         tick_may_crit = may_crit = true;
         hasted_ticks  = false;
-        owner         = p->o();
+      }
+
+      void init() override
+      {
+        spell_t::init();
+
+        if ( !this->player->sim->report_pets_separately )
+        {
+          auto it = range::find_if( owner->pet_list,
+                                    [ this ]( pet_t* pet ) { return this->player->name_str == pet->name_str; } );
+
+          if ( it != owner->pet_list.end() && this->player != *it )
+          {
+            this->stats = ( *it )->get_stats( this->name(), this );
+          }
+        }
       }
     };
 
@@ -3157,13 +3411,29 @@ public:
     monk_t* owner;
     fallen_monk_breath_of_fire_t( fallen_monk_brm_pet_t* p, const std::string& options_str )
       : spell_t( "breath_of_fire", p, p->o()->passives.fallen_monk_breath_of_fire ),
-        dot_action( new fallen_monk_breath_of_fire_tick_t( p ) )
+        dot_action( new fallen_monk_breath_of_fire_tick_t( p ) ),
+        owner( p->o() )
     {
       parse_options( options_str );
       gcd_type = gcd_haste_type::NONE;
-      owner              = p->o();
 
       add_child( dot_action );
+    }
+
+    void init() override
+    {
+      spell_t::init();
+
+      if ( !this->player->sim->report_pets_separately )
+      {
+        auto it = range::find_if( owner->pet_list,
+                                  [ this ]( pet_t* pet ) { return this->player->name_str == pet->name_str; } );
+
+        if ( it != owner->pet_list.end() && this->player != *it )
+        {
+          this->stats = ( *it )->get_stats( this->name(), this );
+        }
+      }
     }
 
     void impact( action_state_t* s ) override
@@ -3183,12 +3453,11 @@ public:
   {
     monk_t* owner;
     fallen_monk_clash_t( fallen_monk_brm_pet_t* p, const std::string& options_str )
-      : spell_t( "clash", p, p->o()->passives.fallen_monk_clash )
+      : spell_t( "clash", p, p->o()->passives.fallen_monk_clash ), owner( p->o() )
     {
       parse_options( options_str );
       gcd_type           = gcd_haste_type::NONE;
       cooldown->duration = timespan_t::from_seconds( 6 );
-      owner              = p->o();
       trigger_gcd        = timespan_t::from_seconds( 2 );
     }
   };
@@ -3245,6 +3514,22 @@ private:
       owner             = player->o();
     }
 
+    void init() override
+    {
+      melee_attack_t::init();
+
+      if ( !this->player->sim->report_pets_separately )
+      {
+        auto it = range::find_if( owner->pet_list,
+                                  [ this ]( pet_t* pet ) { return this->player->name_str == pet->name_str; } );
+
+        if ( it != owner->pet_list.end() && this->player != *it )
+        {
+          this->stats = ( *it )->get_stats( this->name(), this );
+        }
+      }
+    }
+
     void execute() override
     {
       if ( time_to_execute > timespan_t::zero() && player->executing )
@@ -3261,8 +3546,9 @@ private:
 
   struct auto_attack_t : public attack_t
   {
+    monk_t* owner;
     auto_attack_t( fallen_monk_mw_pet_t* player, const std::string& options_str )
-      : attack_t( "auto_attack", player, spell_data_t::nil() )
+      : attack_t( "auto_attack", player, spell_data_t::nil() ), owner( player->o() )
     {
       parse_options( options_str );
 
@@ -3270,6 +3556,22 @@ private:
       player->main_hand_attack->base_execute_time = player->main_hand_weapon.swing_time;
 
       trigger_gcd = timespan_t::zero();
+    }
+
+    void init() override
+    {
+      attack_t::init();
+
+      if ( !this->player->sim->report_pets_separately )
+      {
+        auto it = range::find_if( owner->pet_list,
+                                  [ this ]( pet_t* pet ) { return this->player->name_str == pet->name_str; } );
+
+        if ( it != owner->pet_list.end() && this->player != *it )
+        {
+          this->stats = ( *it )->get_stats( this->name(), this );
+        }
+      }
     }
 
     bool ready() override
@@ -3341,8 +3643,9 @@ public:
 
   struct fallen_monk_enveloping_mist_t : public heal_t
   {
+    monk_t* owner;
     fallen_monk_enveloping_mist_t( fallen_monk_mw_pet_t* p, const std::string& options_str )
-      : heal_t( "enveloping_mist", p, p->o()->passives.fallen_monk_enveloping_mist )
+      : heal_t( "enveloping_mist", p, p->o()->passives.fallen_monk_enveloping_mist ), owner( p->o() )
     {
       parse_options( options_str );
 
@@ -3350,6 +3653,22 @@ public:
 
       dot_duration = data().duration();
       target       = p->o();
+    }
+
+    void init() override
+    {
+      heal_t::init();
+
+      if ( !this->player->sim->report_pets_separately )
+      {
+        auto it = range::find_if( owner->pet_list,
+                                  [ this ]( pet_t* pet ) { return this->player->name_str == pet->name_str; } );
+
+        if ( it != owner->pet_list.end() && this->player != *it )
+        {
+          this->stats = ( *it )->get_stats( this->name(), this );
+        }
+      }
     }
 
     double cost() const override
@@ -3360,8 +3679,9 @@ public:
 
   struct fallen_monk_soothing_mist_t : public heal_t
   {
+    monk_t* owner;
     fallen_monk_soothing_mist_t( fallen_monk_mw_pet_t* p, const std::string& options_str )
-      : heal_t( "soothing_mist", p, p->o()->passives.fallen_monk_soothing_mist )
+      : heal_t( "soothing_mist", p, p->o()->passives.fallen_monk_soothing_mist ), owner( p->o() )
     {
       parse_options( options_str );
 
@@ -3372,6 +3692,22 @@ public:
       cooldown->duration = timespan_t::from_seconds( 5 );
       cooldown->hasted   = true;
       target             = p->o();
+    }
+
+    void init() override
+    {
+      heal_t::init();
+
+      if ( !this->player->sim->report_pets_separately )
+      {
+        auto it = range::find_if( owner->pet_list,
+                                  [ this ]( pet_t* pet ) { return this->player->name_str == pet->name_str; } );
+
+        if ( it != owner->pet_list.end() && this->player != *it )
+        {
+          this->stats = ( *it )->get_stats( this->name(), this );
+        }
+      }
     }
   };
 
