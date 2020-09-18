@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.2.35938 shadowlands-BETA (git build shadowlands 516068b780)
+SimulationCraft 901-01 for World of Warcraft 9.0.2.35938 shadowlands-BETA (hotfix 2020-09-18/35938, git build shadowlands a3c99b0cc6)
 
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Guardian Druid
@@ -12670,6 +12670,7 @@ Effects          :
 Description      : Rejuvenation healing has a $@switch<$s2>[${$s1/10}%][${$s1/10}.1%] chance to create a new Rejuvenation on a nearby target.
 
 Name             : Ursoc's Fury Remembered (id=339056) [Spell Family (7), Passive] 
+Class            : Druid
 School           : Physical
 Spell Type       : None
 Proc Chance      : 100%
@@ -13929,6 +13930,25 @@ Effects          :
                    Family Flags: 124
 Description      : $@spelldesc343647
 Tooltip          : Shooting Stars fall $w1% more often.
+
+Name             : Ursoc's Fury Remembered (id=345048) [Spell Family (7)] 
+Class            : Druid
+School           : Physical
+Spell Type       : None
+Duration         : 15 seconds
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+Effects          :
+#1 (id=869930)   : Apply Aura (6) | Absorb Damage (69)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
+Description      : $@spelldesc339056
+Tooltip          : Absorbing $w1 damage.
 
 Name             : Infected Wounds (id=345208) [Spell Family (7), Passive] 
 Class            : Guardian Druid

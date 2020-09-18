@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.2.35938 shadowlands-BETA (git build shadowlands 516068b780)
+SimulationCraft 901-01 for World of Warcraft 9.0.2.35938 shadowlands-BETA (hotfix 2020-09-18/35938, git build shadowlands a3c99b0cc6)
 
 Name             : Haste (id=65) [Scaling Spell (-1)] 
 Class            : Paladin
@@ -8806,6 +8806,26 @@ Effects          :
                    Family Flags: 14
 Description      : Reset the cooldown of Avenger's Shield. Your next $n Avenger's Shields have no cooldown and deal $s2% additional damage.
 Tooltip          : Your next $n Avenger's Shields have no cooldown and deal $w2% additional damage.
+
+Name             : First Avenger (id=327225) [Spell Family (10)] 
+Class            : Paladin
+School           : Physical
+Spell Type       : None
+Duration         : 8 seconds
+Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
+                 : ........ ......x. ...x.... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ...x.... ........ .xx..... ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : .....x.. ....x... ........ ........   ........ ...x.... ........ ........ 
+                 : ........ ........ ......x. ........   ........ ........ ........ ..x..... 
+                 : ........ ........ ........ ........   xx...... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Does not break stealth (37)
+Effects          :
+#1 (id=818622)   : Apply Aura (6) | Absorb Damage (69)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
+Description      : $@spelldesc203776
+Tooltip          : Absorbing $w1 damage.
 
 Name             : Judgment (desc=Rank 2) (id=327977) [Spell Family (10), Passive] 
 Class            : Paladin
