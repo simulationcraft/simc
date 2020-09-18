@@ -1774,17 +1774,6 @@ struct spitting_cobra_t final : public hunter_pet_t
 
     hunter_pet_t::summon( duration );
   }
-
-  void schedule_ready( timespan_t delta_time, bool waiting ) override
-  {
-    /* nuoHep 2017-02-15 data from a couple krosus logs from wcl
-     *      N           Min           Max        Median           Avg        Stddev
-     *   2146           0.0         805.0         421.0     341.03262     168.89531
-     */
-    if ( last_foreground_action )
-      delta_time += timespan_t::from_millis( rng().gauss( 340, 170 ) );
-    hunter_pet_t::schedule_ready( delta_time, waiting );
-  }
 };
 
 namespace actions
