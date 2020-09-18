@@ -437,6 +437,7 @@ public:
     buff_t* guardian_of_elune;
     buff_t* incarnation_bear;
     buff_t* ironfur;
+    buff_t* tooth_and_claw;
     buff_t* pulverize;
     buff_t* survival_instincts;
     buff_t* guardians_wrath;
@@ -2166,6 +2167,7 @@ public:
       parse_buff_effects<S>( p()->buff.berserk_bear, 5u, 0u, p()->spec.berserk_bear_2 );
       parse_buff_effects<S>( p()->buff.incarnation_bear, 7u, 0u, p()->spec.berserk_bear_2 );
     }
+    parse_buff_effects( p()->buff.tooth_and_claw );
     parse_buff_effects( p()->buff.sharpened_claws );
 
     // Feral
@@ -4674,6 +4676,14 @@ struct bear_melee_t : public bear_attack_t
     energize_amount   = 4;
   }
 
+  void execute() override
+  {
+    bear_attack_t::execute();
+
+    if ( hit_any_target && p()->talent.tooth_and_claw->ok() )
+      p()->buff.tooth_and_claw->trigger();
+  }
+
   timespan_t execute_time() const override
   {
     if ( !player->in_combat )
@@ -4800,6 +4810,9 @@ struct maul_t : public bear_attack_t
   void execute() override
   {
     bear_attack_t::execute();
+
+    if ( p()->buff.tooth_and_claw->up() )
+      p()->buff.tooth_and_claw->decrement();
 
     if ( p()->buff.savage_combatant->up() )
       p()->buff.savage_combatant->decrement();
@@ -8372,6 +8385,9 @@ void druid_t::create_buffs()
     ->apply_affecting_aura( find_rank_spell( "Ironfur", "Rank 2" ) )
     ->add_invalidate( CACHE_AGILITY )
     ->add_invalidate( CACHE_ARMOR );
+
+  buff.tooth_and_claw = make_buff( this, "tooth_and_claw", talent.tooth_and_claw->effectN( 1 ).trigger() )
+    ->set_chance( talent.tooth_and_claw->effectN( 1 ).percent() );
 
   buff.pulverize = make_buff( this, "pulverize", talent.pulverize )
     ->set_cooldown( 0_ms )
