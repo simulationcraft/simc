@@ -107,6 +107,11 @@ struct druid_td_t : public actor_target_data_t
     buff_t* lifebloom;
   } buff;
 
+  struct debuffs_t
+  {
+    buff_t* tooth_and_claw;
+  } debuff;
+
   druid_td_t( player_t& target, druid_t& source );
 
   bool hot_ticking()
@@ -4825,23 +4830,21 @@ struct maul_t : public bear_attack_t
     proc_gore = true;
   }
 
-  void execute() override
-  {
-    bear_attack_t::execute();
-
-    if ( p()->buff.tooth_and_claw->up() )
-      p()->buff.tooth_and_claw->decrement();
-
-    if ( p()->buff.savage_combatant->up() )
-      p()->buff.savage_combatant->decrement();
-  }
-
   void impact( action_state_t* s ) override
   {
     bear_attack_t::impact( s );
 
     if ( result_is_hit( s->result ) )
     {
+      if ( p()->buff.tooth_and_claw->up() )
+      {
+        td( s->target )->debuff.tooth_and_claw->trigger();
+        p()->buff.tooth_and_claw->decrement();
+      }
+
+      if ( p()->buff.savage_combatant->up() )
+        p()->buff.savage_combatant->decrement();
+
       if ( p()->azerite.guardians_wrath.ok() )
       {
         p()->buff.guardians_wrath->up();  // benefit tracking
@@ -10238,7 +10241,9 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
   dots.adaptive_swarm_heal   = target.get_dot( "adaptive_swarm_heal", &source );
   dots.frenzied_assault      = target.get_dot( "frenzied_assault", &source );
 
-  buff.lifebloom = make_buff( *this, "lifebloom", source.find_class_spell( "Lifebloom" ) );
+  buff.lifebloom             = make_buff( *this, "lifebloom", source.find_class_spell( "Lifebloom" ) );
+  debuff.tooth_and_claw      = make_buff( *this, "tooth_and_claw_debuff",
+                                     source.talent.tooth_and_claw->effectN( 1 ).trigger()->effectN( 2 ).trigger() );
 }
 
 // Copypasta for reporting
