@@ -35,7 +35,6 @@ BREWMASTER:
 */
 #include "simulationcraft.hpp"
 #include "player/pet_spawner.hpp"
-#include "queue"
 
 // ==========================================================================
 // Monk
@@ -7295,11 +7294,11 @@ struct fallen_order_t : public monk_spell_t
 
   struct fallen_order_event_t : public event_t
   {
-    std::queue<std::pair<fallen_monk_e, timespan_t>> fallen_monks;
+    std::vector<std::pair<fallen_monk_e, timespan_t>> fallen_monks;
     timespan_t summon_interval;
     monk_t* p;
 
-    fallen_order_event_t( monk_t* monk, std::queue<std::pair<fallen_monk_e, timespan_t>> fm,
+    fallen_order_event_t( monk_t* monk, std::vector<std::pair<fallen_monk_e, timespan_t>> fm,
         timespan_t interval )
       : event_t( *monk, interval ),
         fallen_monks( fm ),
@@ -7336,7 +7335,7 @@ struct fallen_order_t : public monk_spell_t
         default:
           break;
       }
-      fallen_monks.pop();
+      fallen_monks.erase( fallen_monks.begin() );
 
       if ( !fallen_monks.empty() )
         make_event<fallen_order_event_t>( sim(), p, fallen_monks, summon_interval );
@@ -7359,7 +7358,7 @@ struct fallen_order_t : public monk_spell_t
     timespan_t summon_duration = timespan_t::from_seconds( p()->covenant.venthyr->effectN( 4 ).base_value() );
     timespan_t primary_duration =
         summon_duration + timespan_t::from_seconds( p()->covenant.venthyr->effectN( 3 ).base_value() );
-    std::queue<std::pair<fallen_monk_e, timespan_t>> fallen_monks;
+    std::vector<std::pair<fallen_monk_e, timespan_t>> fallen_monks;
 
     // Monks alternate summoning primary spec and non-primary spec
     // 11 summons in total (6 primary and a mix of 5 non-primary)
@@ -7371,31 +7370,31 @@ struct fallen_order_t : public monk_spell_t
         case MONK_WINDWALKER:
         {
           if ( i % 2 )
-            fallen_monks.push( std::make_pair( FALLEN_MONK_WINDWALKER, primary_duration ) );
+            fallen_monks.push_back( std::make_pair( FALLEN_MONK_WINDWALKER, primary_duration ) );
           else if ( rng().roll( 0.5 ) )
-            fallen_monks.push( std::make_pair( FALLEN_MONK_BREWMASTER, summon_duration ) );
+            fallen_monks.push_back( std::make_pair( FALLEN_MONK_BREWMASTER, summon_duration ) );
           else
-            fallen_monks.push( std::make_pair( FALLEN_MONK_MISTWEAVER, summon_duration ) );
+            fallen_monks.push_back( std::make_pair( FALLEN_MONK_MISTWEAVER, summon_duration ) );
           break;
         }
         case MONK_BREWMASTER:
         {
           if ( i % 2 )
-            fallen_monks.push( std::make_pair( FALLEN_MONK_BREWMASTER, primary_duration ) );
+            fallen_monks.push_back( std::make_pair( FALLEN_MONK_BREWMASTER, primary_duration ) );
           else if ( rng().roll( 0.5 ) )
-            fallen_monks.push( std::make_pair( FALLEN_MONK_WINDWALKER, summon_duration ) );
+            fallen_monks.push_back( std::make_pair( FALLEN_MONK_WINDWALKER, summon_duration ) );
           else
-            fallen_monks.push( std::make_pair( FALLEN_MONK_MISTWEAVER, summon_duration ) );
+            fallen_monks.push_back( std::make_pair( FALLEN_MONK_MISTWEAVER, summon_duration ) );
           break;
         }
         case MONK_MISTWEAVER:
         {
           if ( i % 2 )
-            fallen_monks.push( std::make_pair( FALLEN_MONK_MISTWEAVER, primary_duration ) );
+            fallen_monks.push_back( std::make_pair( FALLEN_MONK_MISTWEAVER, primary_duration ) );
           else if ( rng().roll( 0.5 ) )
-            fallen_monks.push( std::make_pair( FALLEN_MONK_WINDWALKER, summon_duration ) );
+            fallen_monks.push_back( std::make_pair( FALLEN_MONK_WINDWALKER, summon_duration ) );
           else
-            fallen_monks.push( std::make_pair( FALLEN_MONK_BREWMASTER, summon_duration ) );
+            fallen_monks.push_back( std::make_pair( FALLEN_MONK_BREWMASTER, summon_duration ) );
           break;
         }
         default:
