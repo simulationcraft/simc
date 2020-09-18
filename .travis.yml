@@ -7,6 +7,9 @@ dist: focal
 
 arch:
   - arm64
+  - arm64-graviton2
+  - ppc64le
+  - s390x
 
 os:
   - linux
@@ -17,7 +20,7 @@ compiler:
 
 install:
   # Build SimulationCraft
-  - make -C engine -j 2 optimized
+  - make -C engine -j 2 release
 
 script:
   - ./engine/simc CI.simc iterations=5 output=/dev/null html=/dev/null json2=/dev/null cleanup_threads=1
