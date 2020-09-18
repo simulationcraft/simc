@@ -35,6 +35,7 @@ BREWMASTER:
 */
 #include "simulationcraft.hpp"
 #include "player/pet_spawner.hpp"
+#include "queue"
 
 // ==========================================================================
 // Monk
@@ -2950,11 +2951,7 @@ public:
 
     double cost() const override
     {
-      double c = melee_attack_t::cost();
-
-      c = 0;
-
-      return c;
+      return 0;
     }
   };
 
@@ -3348,11 +3345,7 @@ public:
 
     double cost() const override
     {
-      double c = heal_t::cost();
-
-      c = 0;
-
-      return c;
+      return 0;
     }
   };
 
@@ -7293,12 +7286,65 @@ struct weapons_of_order_t : public monk_spell_t
 
 struct fallen_order_t : public monk_spell_t
 {
-  timespan_t summon_interval;
-  timespan_t summon_duration;
+  enum fallen_monk_e
+  {
+    FALLEN_MONK_WINDWALKER,
+    FALLEN_MONK_BREWMASTER,
+    FALLEN_MONK_MISTWEAVER
+  };
+
+  struct fallen_order_event_t : public event_t
+  {
+    std::queue<std::pair<fallen_monk_e, timespan_t>> fallen_monks;
+    timespan_t summon_interval;
+    monk_t* p;
+
+    fallen_order_event_t( monk_t* monk, std::queue<std::pair<fallen_monk_e, timespan_t>> fm,
+        timespan_t interval )
+      : event_t( *monk, interval ),
+        fallen_monks( fm ),
+        summon_interval( interval ),
+        p( monk )
+    {
+    }
+
+    virtual const char* name() const override
+    {
+      return "fallen_order_summon";
+    }
+
+    void execute() override
+    {
+      if ( fallen_monks.empty() )
+        return;
+
+      std::pair<fallen_monk_e, timespan_t> fallen_monk_pair;
+
+      fallen_monk_pair = fallen_monks.front();
+
+      switch (fallen_monk_pair.first)
+      {
+        case FALLEN_MONK_WINDWALKER:
+          p->pets.fallen_monk_ww.spawn( fallen_monk_pair.second, 1 );
+          break;
+        case FALLEN_MONK_BREWMASTER:
+          p->pets.fallen_monk_brm.spawn( fallen_monk_pair.second, 1 );
+          break;
+        case FALLEN_MONK_MISTWEAVER:
+          p->pets.fallen_monk_mw.spawn( fallen_monk_pair.second, 1 );
+          break;
+        default:
+          break;
+      }
+      fallen_monks.pop();
+
+      if ( !fallen_monks.empty() )
+        make_event<fallen_order_event_t>( sim(), p, fallen_monks, summon_interval );
+    }
+  };
+
   fallen_order_t( monk_t& p, const std::string& options_str )
-    : monk_spell_t( "fallen_order", &p, p.covenant.venthyr ), 
-      summon_interval( timespan_t::from_seconds( p.covenant.venthyr->effectN( 2 ).base_value() * 2 ) ),
-      summon_duration( timespan_t::from_seconds( p.covenant.venthyr->effectN( 4 ).base_value() ) )
+    : monk_spell_t( "fallen_order", &p, p.covenant.venthyr )
   {
     parse_options( options_str );
     harmful     = false;
@@ -7309,47 +7355,56 @@ struct fallen_order_t : public monk_spell_t
   void execute() override
   {
     monk_spell_t::execute();
+
+    timespan_t summon_duration = timespan_t::from_seconds( p()->covenant.venthyr->effectN( 4 ).base_value() );
     timespan_t primary_duration =
         summon_duration + timespan_t::from_seconds( p()->covenant.venthyr->effectN( 3 ).base_value() );
-/*    for ( int i = 0; i < 11; i++ )
+    std::queue<std::pair<fallen_monk_e, timespan_t>> fallen_monks;
+
+    // Monks alternate summoning primary spec and non-primary spec
+    // 11 summons in total (6 primary and a mix of 5 non-primary)
+    // for non-primary, there is a 50% chance one or the other non-primary is summoned
+    for ( int i = 0; i < 11; i++ )
     {
       switch ( p()->specialization() )
       {
         case MONK_WINDWALKER:
         {
           if ( i % 2 )
-            p()->pets.fallen_monk_ww.spawn( primary_duration, 1 );
+            fallen_monks.push( std::make_pair( FALLEN_MONK_WINDWALKER, primary_duration ) );
           else if ( rng().roll( 0.5 ) )
-            p()->pets.fallen_monk_brm.spawn( summon_duration, 1 );
+            fallen_monks.push( std::make_pair( FALLEN_MONK_BREWMASTER, summon_duration ) );
           else
-            p()->pets.fallen_monk_mw.spawn( summon_duration, 1 );
+            fallen_monks.push( std::make_pair( FALLEN_MONK_MISTWEAVER, summon_duration ) );
           break;
         }
         case MONK_BREWMASTER:
         {
           if ( i % 2 )
-            p()->pets.fallen_monk_brm.spawn( primary_duration, 1 );
+            fallen_monks.push( std::make_pair( FALLEN_MONK_BREWMASTER, primary_duration ) );
           else if ( rng().roll( 0.5 ) )
-            p()->pets.fallen_monk_ww.spawn( summon_duration, 1 );
+            fallen_monks.push( std::make_pair( FALLEN_MONK_WINDWALKER, summon_duration ) );
           else
-            p()->pets.fallen_monk_mw.spawn( summon_duration, 1 );
+            fallen_monks.push( std::make_pair( FALLEN_MONK_MISTWEAVER, summon_duration ) );
           break;
         }
         case MONK_MISTWEAVER:
         {
           if ( i % 2 )
-            p()->pets.fallen_monk_mw.spawn( primary_duration, 1 );
+            fallen_monks.push( std::make_pair( FALLEN_MONK_MISTWEAVER, primary_duration ) );
           else if ( rng().roll( 0.5 ) )
-            p()->pets.fallen_monk_ww.spawn( summon_duration, 1 );
+            fallen_monks.push( std::make_pair( FALLEN_MONK_WINDWALKER, summon_duration ) );
           else
-            p()->pets.fallen_monk_brm.spawn( summon_duration, 1 );
+            fallen_monks.push( std::make_pair( FALLEN_MONK_BREWMASTER, summon_duration ) );
           break;
         }
         default:
           break;
       }
     }
-    */
+
+    make_event<fallen_order_event_t>(
+        *sim, p(), fallen_monks, timespan_t::from_seconds( p()->covenant.venthyr->effectN( 2 ).base_value() * 2 ) );
   }
 };
 }  // namespace spells
