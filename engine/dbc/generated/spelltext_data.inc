@@ -1,5 +1,5 @@
 // Spell text, wow build 9.0.2.35938
-static const std::array<spelltext_data_t, 15583> __spelltext_data { {
+static const std::array<spelltext_data_t, 15584> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -15575,6 +15575,7 @@ static const std::array<spelltext_data_t, 15583> __spelltext_data { {
   { 345019, "Become the Skulking Predator, gaining $s1 speed, decreasing detection radius, and pouncing on the next enemy to come within $s3 yards, dealing $345113s2 Physical damage.", 0, 0 },
   { 345046, "$@spelldesc337638", "Damage of your next Holy Power spender increased by $s1%.", 0 },
   { 345048, "$@spelldesc339056", "Absorbing $w1 damage.", 0 },
+  { 345121, "$@spelldesc185438", 0, 0 },
   { 345208, "Mangle and Maul cause an Infected Wound in the target, reducing their movement speed by $345209s1% for $345209d.", 0, 0 },
   { 345209, "$@spelldesc345208", "Movement speed slowed by $w1%.", 0 },
   { 345211, "Activate Soul Igniter, sacrificing up to $345214s1 health over $d to empower Blazing Surge.\r\n\r\nReactivate to cast Blazing Surge, dealing $345214s2 Fire damage to enemies in a 40 yard cone, plus up to $s2% additional damage, based on how long Soul Igniter was active.\r\n\r\nReactivating Soul Igniter begins a one minute cooldown.", 0, 0 },
@@ -15835,7 +15836,7 @@ static const std::array<spelldesc_vars_data_t, 280> __spelldesc_vars_data { {
   {  319978, "$absorb=${($319978s1/100)*$MHP*(1+$@versadmg)}" },
   {  319983, "$mod=$?a137005[${1.0}]?a212611[${1.0}]?a137009[${3.0}]?a137014[${0.5}.1]?a137018[${1.5}.1]?a137022[${3.0}]?a137026[${4.0}]?a137030[${0.8}.2]?a137034[${1.0}]?a137038[${1.5}.1]?a137042[${1.0}]?a137047[${1.0}][${1.0}]" },
   {  320659, "$points=${$cond($gt($SP,$AP),$SP*0.36,$AP*0.36)*(1+$@versadmg)}" },
-  {  320660, "$pointsA=${$cond($gt($SP,$AP),$SP*1.02,$AP*1.02)*(1+$@versadmg)}\r\n$pointsB=${$cond($gt($SP,$AP),$SP*1.02,$AP*1.02)*(1+$@versadmg)}" },
+  {  320660, "$pointsA=${$cond($gt($SP,$AP),$SP*0.16,$AP*0.16)*(1+$@versadmg)}\r\n$pointsB=${$cond($gt($SP,$AP),$SP*0.16,$AP*0.16)*(1+$@versadmg)}" },
   {  321012, "$absorb=${($319978s1/100)*$MHP*(1+$@versadmg)}" },
   {  321530, "$bmMastery=$?s76657[${1+0.01*$76657m1}][${1}]\r\n$damage=${$ap*($s2/100)*($321538d/$321538t1)*$<bmMastery>*(1+$@versadmg)*(1+($137015s1/100))}" },
   {  321538, "$bmMastery=$?s76657[${1+0.01*$76657m1}][${1}]\r\n$damage=${$ap*($s2/100)*($321538d/$321538t1)*$<bmMastery>*(1+$@versadmg)*(1+($137015s1/100))}" },
@@ -15874,6 +15875,7 @@ static const std::array<spelldesc_vars_data_t, 280> __spelldesc_vars_data { {
 } };
 
 // spelldesc_vars hotfix entries, wow build 9.0.2.35938
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __spelldesc_vars_hotfix_data { {
+  {  320660,  0, "$pointsA=${$cond($gt($SP,$AP),$SP*1.02,$AP*1.02)*(1+$@versadmg)}\r\n$pointsB=${$cond($gt($SP,$AP),$SP*1.02,$AP*1.02)*(1+$@versadmg)}", "$pointsA=${$cond($gt($SP,$AP),$SP*0.16,$AP*0.16)*(1+$@versadmg)}\r\n$pointsB=${$cond($gt($SP,$AP),$SP*0.16,$AP*0.16)*(1+$@versadmg)}" },
 } };
 
