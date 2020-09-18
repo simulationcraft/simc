@@ -1224,6 +1224,8 @@ class SpellDataGenerator(DataGenerator):
          311465, 311466, 311467, 311468, 311469, 311470,
          # Darkmoon Deck Voracity
          311484, 311485, 311486, 311487, 311488, 311489,
+         # Soul Igniter Trinket
+         345215,
          # Soulbinds
          321524, # Niya's Tools: Poison (night fae/niya)
          320130, 320212, # Social Butterfly vers buff (night fae/dreamweaver)
