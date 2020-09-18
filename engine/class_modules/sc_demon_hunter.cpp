@@ -3348,8 +3348,6 @@ struct blade_dance_base_t : public demon_hunter_attack_t
       last_attack( false )
     {
       background = dual = true;
-      // TOCHECK: Based on beta testing, it appears all spells are affected by the 5 target limit
-      //          This includes Death Sweep even though the tooltip does not indicate this
       aoe = as<int>( p->find_spell( 199552 )->effectN( 1 ).base_value() );
     }
 
@@ -3540,10 +3538,10 @@ struct death_sweep_t : public blade_dance_base_t
   {
     if ( attacks.empty() )
     {
-      attacks.push_back( p->get_background_action<blade_dance_damage_t>( "death_sweep1", data().effectN( 4 ) ) );
-      attacks.push_back( p->get_background_action<blade_dance_damage_t>( "death_sweep2", data().effectN( 5 ) ) );
-      attacks.push_back( p->get_background_action<blade_dance_damage_t>( "death_sweep3", data().effectN( 6 ) ) );
-      attacks.push_back( p->get_background_action<blade_dance_damage_t>( "death_sweep4", data().effectN( 7 ) ) );
+      attacks.push_back( p->get_background_action<blade_dance_damage_t>( "death_sweep1", data().effectN( 2 ) ) );
+      attacks.push_back( p->get_background_action<blade_dance_damage_t>( "death_sweep2", data().effectN( 3 ) ) );
+      attacks.push_back( p->get_background_action<blade_dance_damage_t>( "death_sweep3", data().effectN( 4 ) ) );
+      attacks.push_back( p->get_background_action<blade_dance_damage_t>( "death_sweep4", data().effectN( 5 ) ) );
     }
   }
 
