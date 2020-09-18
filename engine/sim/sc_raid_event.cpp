@@ -45,6 +45,7 @@ struct adds_event_t final : public raid_event_t
   race_e race;
   std::string enemy_type_str;
   player_e enemy_type;
+  bool same_duration;
 
   adds_event_t( sim_t* s, util::string_view options_str )
     : raid_event_t( s, "adds" ),
@@ -66,7 +67,8 @@ struct adds_event_t final : public raid_event_t
       race_str(),
       race( RACE_NONE ),
       enemy_type_str(),
-      enemy_type( ENEMY_ADD )
+      enemy_type( ENEMY_ADD ),
+      same_duration( false )
   {
     add_option( opt_string( "name", name_str ) );
     add_option( opt_string( "master", master_str ) );
@@ -83,6 +85,7 @@ struct adds_event_t final : public raid_event_t
     add_option( opt_float( "angle_end", spawn_angle_end ) );
     add_option( opt_string( "race", race_str ) );
     add_option( opt_string( "type", enemy_type_str ) );
+    add_option( opt_bool( "same_duration", same_duration ) );
     parse_options( options_str );
 
     if ( !master_str.empty() )
@@ -279,6 +282,10 @@ struct adds_event_t final : public raid_event_t
     double x_offset      = 0;
     double y_offset      = 0;
     bool offset_computed = false;
+    timespan_t add_dur = 0_ms;
+
+    if ( same_duration )
+      add_dur = saved_duration;
 
     // Keep track of each add duration so after summons (and dismissals) are done, we can adjust the saved_duration of
     // the add event to match the add with the longest lifetime.
@@ -286,7 +293,8 @@ struct adds_event_t final : public raid_event_t
 
     for ( size_t i = 0; i < adds.size(); i++ )
     {
-      timespan_t add_dur = 0_ms;
+      if ( !same_duration )
+        add_dur = duration_time();
 
       if ( i < adds.size() )
       {
@@ -304,7 +312,6 @@ struct adds_event_t final : public raid_event_t
           }
         }
 
-        add_dur = duration_time();
         adds[ i ]->summon( add_dur );
         adds[ i ]->x_position = x_offset + spawn_x_coord;
         adds[ i ]->y_position = y_offset + spawn_y_coord;
@@ -321,7 +328,7 @@ struct adds_event_t final : public raid_event_t
       {
         adds[ i ]->dismiss();
       }
-      else
+      else if ( !same_duration )
         add_lifetimes.push_back( add_dur );
     }
 
