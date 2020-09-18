@@ -1774,9 +1774,12 @@ struct buff_effect_t
 {
   buff_t* buff;
   double value;
+  bool use_stacks;
   bool mastery;
 
-  buff_effect_t( buff_t* b, double v, bool m = false ) : buff( b ), value( v ), mastery( m ) {}
+  buff_effect_t( buff_t* b, double v, bool s = true, bool m = false )
+    : buff( b ), value( v ), use_stacks( s ), mastery( m )
+  {}
 };
 
 struct dot_debuff_t
@@ -2001,7 +2004,7 @@ public:
   // 5: Add Percent Modifier to Spell Resource Cost
   // 6: Add Flat Modifier to Spell Critical Chance
   template <typename... Ts>
-  void parse_buff_effect( buff_t* buff, const spell_data_t* s_data, size_t i, Ts... mods )
+  void parse_buff_effect( buff_t* buff, const spell_data_t* s_data, size_t i, bool use_stacks, Ts... mods )
   {
     auto eff     = &s_data->effectN( i );
     double val   = eff->percent();
@@ -2031,27 +2034,27 @@ public:
       switch ( eff->misc_value1() )
       {
         case P_GENERIC:
-          da_multiplier_buffeffects.push_back( buff_effect_t( buff, val, mastery ) );
+          da_multiplier_buffeffects.push_back( buff_effect_t( buff, val, use_stacks, mastery ) );
           p()->sim->print_debug( "buff-effects: {} ({}) direct damage modified by {}%{} with buff {} ({})", ab::name(),
                                  ab::id, val * 100.0, mastery ? "+mastery" : "", buff->name(), buff->data().id() );
           break;
         case P_TICK_DAMAGE:
-          ta_multiplier_buffeffects.push_back( buff_effect_t( buff, val, mastery ) );
+          ta_multiplier_buffeffects.push_back( buff_effect_t( buff, val, use_stacks, mastery ) );
           p()->sim->print_debug( "buff-effects: {} ({}) tick damage modified by {}%{} with buff {} ({})", ab::name(),
                                  ab::id, val * 100.0, mastery ? "+mastery" : "", buff->name(), buff->data().id() );
           break;
         case P_CAST_TIME:
-          execute_time_buffeffects.push_back( buff_effect_t( buff, val ) );
+          execute_time_buffeffects.push_back( buff_effect_t( buff, val, use_stacks ) );
           p()->sim->print_debug( "buff-effects: {} ({}) cast time modified by {}% with buff {} ({})", ab::name(),
                                  ab::id, val * 100.0, buff->name(), buff->data().id() );
           break;
         case P_COOLDOWN:
-          recharge_multiplier_buffeffects.push_back( buff_effect_t( buff, val ) );
+          recharge_multiplier_buffeffects.push_back( buff_effect_t( buff, val, use_stacks ) );
           p()->sim->print_debug( "buff-effects: {} ({}) cooldown modified by {}% with buff {} ({})", ab::name(),
                                  ab::id, val * 100.0, buff->name(), buff->data().id() );
           break;
         case P_RESOURCE_COST:
-          cost_buffeffects.push_back( buff_effect_t( buff, val ) );
+          cost_buffeffects.push_back( buff_effect_t( buff, val, use_stacks ) );
           p()->sim->print_debug( "buff-effects: {} ({}) cost modified by {}% with buff {} ({})", ab::name(),
                                  ab::id, val * 100.0, buff->name(), buff->data().id() );
           break;
@@ -2061,14 +2064,14 @@ public:
     }
     else if ( eff->subtype() == A_ADD_FLAT_MODIFIER && eff->misc_value1() == P_CRIT )
     {
-      crit_chance_buffeffects.push_back( buff_effect_t( buff, val ) );
+      crit_chance_buffeffects.push_back( buff_effect_t( buff, val, use_stacks ) );
           p()->sim->print_debug( "buff-effects: {} ({}) crit chance modified by {}% with buff {} ({})", ab::name(),
                                  ab::id, val * 100.0, buff->name(), buff->data().id() );
     }
   }
 
   template <typename... Ts>
-  void parse_buff_effects( buff_t* buff, unsigned ignore_start, unsigned ignore_end, Ts... mods )
+  void parse_buff_effects( buff_t* buff, unsigned ignore_start, unsigned ignore_end, bool use_stacks, Ts... mods )
   {
     if ( !buff )
       return;
@@ -2080,24 +2083,36 @@ public:
       if ( ignore_start && i >= as<size_t>( ignore_start ) && ( i <= as<size_t>( ignore_end ) || !ignore_end ) )
         continue;
 
-      parse_buff_effect( buff, s_data, i, mods... );
+      parse_buff_effect( buff, s_data, i, use_stacks, mods... );
     }
+  }
+
+  template <typename... Ts>
+  void parse_buff_effects( buff_t* buff, unsigned ignore_start, unsigned ignore_end, Ts... mods )
+  {
+    parse_buff_effects<Ts...>( buff, ignore_start, ignore_end, true, mods... );
   }
 
   template <typename... Ts>
   void parse_buff_effects( buff_t* buff, unsigned ignore, Ts... mods )
   {
-    parse_buff_effects<Ts...>( buff, ignore, ignore, mods... );
+    parse_buff_effects<Ts...>( buff, ignore, ignore, true, mods... );
+  }
+
+  template <typename... Ts>
+  void parse_buff_effects( buff_t* buff, bool stack, Ts... mods )
+  {
+    parse_buff_effects<Ts...>( buff, 0u, 0u, stack, mods... );
   }
 
   template <typename... Ts>
   void parse_buff_effects( buff_t* buff, Ts... mods )
   {
-    parse_buff_effects<Ts...>( buff, 0u, 0u, mods... );
+    parse_buff_effects<Ts...>( buff, 0u, 0u, true, mods... );
   }
 
-  double get_buff_effects_value( const std::vector<buff_effect_t>& buffeffects, bool flat = false, bool benefit = true,
-                                 bool stack = true ) const
+  double get_buff_effects_value( const std::vector<buff_effect_t>& buffeffects, bool flat = false,
+                                 bool benefit = true ) const
   {
     double return_value = flat ? 0.0 : 1.0;
 
@@ -2117,18 +2132,21 @@ public:
       else if ( ( benefit && i.buff->up() ) || i.buff->check() )
       {
         if ( flat )
-          return_value += eff_val * ( stack ? i.buff->check() : 1 );
+          return_value += eff_val * ( i.use_stacks ? i.buff->check() : 1 );
         else
-          return_value *= 1.0 + eff_val * ( stack ? i.buff->check() : 1 );
+          return_value *= 1.0 + eff_val * ( i.use_stacks ? i.buff->check() : 1 );
       }
     }
 
     return return_value;
   }
 
-  // Syntax: parse_buff_effects[<S|C[,...]>]( buff_t* buff[, unsigned ignore][, spell_data_t* spell|conduit_data_t conduit][,...] )
+  // Syntax: parse_buff_effects[<S|C[,...]>]( buff[, ignore|ignore_start, ignore_end|use_stacks][, spell|conduit][,...] )
   //  buff = buff to be checked for to see if effect applies
   //  ignore = optional effect index of buff to ignore, for effects hard-coded manually elsewhere
+  //  ignore_start = optional start of range of effects to ignore
+  //  ignore_end = optional end of range of effects to ignore
+  //  use_stacks = optional, default true, whether to multiply value by stacks, mutually exclusive with ignore parameters
   //  S/C = optional list of template parameter to indicate spell or conduit with redirect effects
   //  spell/conduit = optional list of spell or conduit with redirect effects that modify the effects on the buff
   virtual void apply_buff_effects()
@@ -2167,7 +2185,7 @@ public:
       parse_buff_effects<S>( p()->buff.berserk_bear, 5u, 0u, p()->spec.berserk_bear_2 );
       parse_buff_effects<S>( p()->buff.incarnation_bear, 7u, 0u, p()->spec.berserk_bear_2 );
     }
-    parse_buff_effects( p()->buff.tooth_and_claw );
+    parse_buff_effects( p()->buff.tooth_and_claw, false );
     parse_buff_effects( p()->buff.sharpened_claws );
 
     // Feral
@@ -3355,10 +3373,10 @@ public:
     using S = const spell_data_t*;
     using C = const conduit_data_t&;
 
-    snapshots.bloodtalons  = parse_persistent_buff_effects( p->buff.bloodtalons );
-    snapshots.tigers_fury  = parse_persistent_buff_effects<C>( p->buff.tigers_fury,
+    snapshots.bloodtalons  = parse_persistent_buff_effects( p->buff.bloodtalons, false );
+    snapshots.tigers_fury  = parse_persistent_buff_effects<C>( p->buff.tigers_fury, true,
                                                                p->conduit.carnivorous_instinct );
-    snapshots.clearcasting = parse_persistent_buff_effects<S>( p->buff.clearcasting,
+    snapshots.clearcasting = parse_persistent_buff_effects<S>( p->buff.clearcasting, true,
                                                                p->talent.moment_of_clarity );
 
     if ( data().affected_by( p->mastery.razor_claws->effectN( 1 ) ) )
@@ -3457,13 +3475,13 @@ public:
   }
 
   template <typename... Ts>
-  bool parse_persistent_buff_effects( buff_t* buff, Ts... mods )
+  bool parse_persistent_buff_effects( buff_t* buff, bool use_stacks, Ts... mods )
   {
     size_t ta_old   = ta_multiplier_buffeffects.size();
     size_t da_old   = da_multiplier_buffeffects.size();
     size_t cost_old = cost_buffeffects.size();
 
-    parse_buff_effects( buff, mods... );
+    parse_buff_effects( buff, use_stacks, mods... );
 
     // If there is a new entry in the ta_mul table, move it to the pers_mul table.
     if ( ta_multiplier_buffeffects.size() > ta_old )
@@ -3501,8 +3519,8 @@ public:
 
   double composite_persistent_multiplier( const action_state_t* s ) const override
   {
-    double pm = base_t::composite_persistent_multiplier( s ) *
-                get_buff_effects_value( persistent_multiplier_buffeffects, false, true, false );
+    double pm =
+        base_t::composite_persistent_multiplier( s ) * get_buff_effects_value( persistent_multiplier_buffeffects );
 
     return pm;
   }
