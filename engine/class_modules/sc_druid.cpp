@@ -1734,7 +1734,7 @@ struct kindred_empowerment_buff_t : public druid_buff_t<buff_t>
     // since kindred_empowerment_ratio is meant to apply to the pool you RECEIVE and not to the pool you send, don't
     // apply it to partner_pool, which is meant to represent the damage the other person does.
     pool += amount;
-    partner_pool += amount;
+    partner_pool += partner_amount;
 
   }
 
@@ -1748,7 +1748,7 @@ struct kindred_empowerment_buff_t : public druid_buff_t<buff_t>
     if ( amount == 0 )
       return;
 
-    sim->print_debug( "Kindred Empowerment: Using {} from pool of {} on {}", amount, pool, s->action->name() );
+    sim->print_debug( "Kindred Empowerment: Using {} from pool of {} ({}) on {}", amount, pool, partner_pool, s->action->name() );
 
     auto damage = p().active.kindred_empowerment;
     damage->set_target( s->target );
