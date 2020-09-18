@@ -2813,6 +2813,11 @@ public:
 
     if ( o()->conduit.imbued_reflections->ok() )
       cpm *= 1 + o()->conduit.imbued_reflections.percent();
+
+    // Fallen Monks benefit from Windwalker Mastery
+    // TODO check if Brewmaster and Mistweaver Fallen Monks benefit
+    if ( o()->buff.combo_strikes->up() )
+      cpm *= 1 + o()->cache.mastery_value();
     
     return cpm;
   }
