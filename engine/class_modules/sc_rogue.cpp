@@ -211,7 +211,7 @@ public:
     actions::rogue_spell_t* poison_bomb = nullptr;
     actions::rogue_spell_t* replicating_shadows = nullptr;
     actions::shadow_blades_attack_t* shadow_blades_attack = nullptr;
-    actions::rogue_attack_t* akaaris_soul_fragment = nullptr;
+    actions::rogue_attack_t* akaaris_shadowstrike = nullptr;
     actions::rogue_attack_t* bloodfang = nullptr;
     actions::rogue_attack_t* triple_threat_mh = nullptr;
     actions::rogue_attack_t* triple_threat_oh = nullptr;
@@ -220,6 +220,7 @@ public:
     {
       actions::rogue_attack_t* backstab = nullptr;
       actions::rogue_attack_t* shadowstrike = nullptr;
+      actions::rogue_attack_t* akaaris_shadowstrike = nullptr;
     } weaponmaster;
   } active;
 
@@ -633,7 +634,7 @@ public:
     // Assassination
     item_runeforge_t dashing_scoundrel;
     item_runeforge_t doomblade;
-    item_runeforge_t dustwalkers_patch;
+    item_runeforge_t duskwalkers_patch;
     item_runeforge_t zoldyck_insignia;
 
     // Outlaw
@@ -650,7 +651,7 @@ public:
 
     // Legendary Values
     double dashing_scoundrel_gain = 0.0;
-    double dustwalkers_patch_counter = 0.0;
+    double duskwalkers_patch_counter = 0.0;
     int guile_charm_counter = 0;
   } legendary;
 
@@ -1593,13 +1594,13 @@ public:
       if ( ab::current_resource() == RESOURCE_ENERGY && ab::last_resource_cost > 0 )
       {
         // Dustwalker's Patch Legendary
-        if ( p()->legendary.dustwalkers_patch.ok() )
+        if ( p()->legendary.duskwalkers_patch.ok() )
         {
-          p()->legendary.dustwalkers_patch_counter += ab::last_resource_cost;
-          if ( p()->legendary.dustwalkers_patch_counter > p()->legendary.dustwalkers_patch->effectN( 2 ).base_value() )
+          p()->legendary.duskwalkers_patch_counter += ab::last_resource_cost;
+          if ( p()->legendary.duskwalkers_patch_counter > p()->legendary.duskwalkers_patch->effectN( 2 ).base_value() )
           {
-            p()->cooldowns.vendetta->adjust( -timespan_t::from_seconds( p()->legendary.dustwalkers_patch->effectN( 1 ).base_value() ) );
-            p()->legendary.dustwalkers_patch_counter -= p()->legendary.dustwalkers_patch->effectN( 2 ).base_value();
+            p()->cooldowns.vendetta->adjust( -timespan_t::from_seconds( p()->legendary.duskwalkers_patch->effectN( 1 ).base_value() ) );
+            p()->legendary.duskwalkers_patch_counter -= p()->legendary.duskwalkers_patch->effectN( 2 ).base_value();
             p()->procs.dustwalker_patch->occur();
           }
         }
@@ -2108,7 +2109,7 @@ void rogue_attack_t::impact( action_state_t* state )
   trigger_combat_potency( state );
   trigger_blade_flurry( state );
   trigger_shadow_blades_attack( state );
-  trigger_bloodfang( state ); // TOCHECK: Is this on impact or execute?
+  trigger_bloodfang( state );
 
   if ( result_is_hit( state->result ) )
   {
@@ -2629,7 +2630,9 @@ struct bloodfang_t : public rogue_attack_t
 {
   bloodfang_t( util::string_view name, rogue_t* p ) :
     rogue_attack_t( name, p, p->legendary.essence_of_bloodfang->effectN( 1 ).trigger() )
-  {}
+  {
+    internal_cooldown->duration = p->legendary.essence_of_bloodfang->internal_cooldown();
+  }
 };
 
 // Crimson Tempest ==========================================================
@@ -2729,7 +2732,6 @@ struct envenom_t : public rogue_attack_t
 
     if ( p()->legendary.doomblade.ok() )
     {
-      // TOCHECK: On beta, this currently doesn't include Crimson Tempest
       rogue_td_t* td = this->td( target );
       int active_dots = td->dots.garrote->is_ticking() + td->dots.rupture->is_ticking() +
         td->dots.crimson_tempest->is_ticking() + td->dots.internal_bleeding->is_ticking() +
@@ -3450,9 +3452,6 @@ struct mutilate_t : public rogue_attack_t
 
       if ( doomblade_dot && result_is_hit( state->result ) )
       {
-        // TOCHECK: This is very, very buggy on beta with the initial DoT lasting up to 4 ticks/12 seconds
-        //          Subsequent DoTs seem correct, but the coefficient and residual behavior is quite odd
-        //          For now, implementing how it "should" work with 20% coefficient and normal ignite behavior
         const double dot_damage = state->result_amount * p()->legendary.doomblade->effectN( 1 ).percent();
         residual_action::trigger( doomblade_dot, state->target, dot_damage );
       }
@@ -3943,6 +3942,21 @@ struct shadowstep_t : public rogue_spell_t
 
 // Shadowstrike =============================================================
 
+struct akaaris_shadowstrike_t : public rogue_attack_t
+{
+  akaaris_shadowstrike_t( util::string_view name, rogue_t* p ) :
+    rogue_attack_t( name, p, p->find_spell( 345121 ) )
+  {
+    base_multiplier *= p->legendary.akaaris_soul_fragment->effectN( 2 ).percent();
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    rogue_attack_t::impact( state );
+    trigger_weaponmaster( state, p()->active.weaponmaster.akaaris_shadowstrike );
+  }
+};
+
 struct shadowstrike_t : public rogue_attack_t
 {
   shadowstrike_t( util::string_view name, rogue_t* p, const std::string& options_str = "" ) :
@@ -3957,13 +3971,11 @@ struct shadowstrike_t : public rogue_attack_t
     if ( !is_secondary_action() )
     {
       if ( p()->active.weaponmaster.shadowstrike )
-      {
         add_child( p()->active.weaponmaster.shadowstrike );
-      }
-      if ( p()->active.akaaris_soul_fragment )
-      {
-        add_child( p()->active.akaaris_soul_fragment );
-      }
+      if ( p()->active.weaponmaster.akaaris_shadowstrike )
+        add_child( p()->active.weaponmaster.akaaris_shadowstrike );
+      if ( p()->active.akaaris_shadowstrike )
+        add_child( p()->active.akaaris_shadowstrike );
     }
   }
 
@@ -4017,10 +4029,10 @@ struct shadowstrike_t : public rogue_attack_t
   double bonus_da( const action_state_t* s ) const override
   {
     double b = rogue_attack_t::bonus_da( s );
-    b += p() -> buffs.blade_in_the_shadows -> stack_value();
+    b += p()->buffs.blade_in_the_shadows->stack_value();
 
-    if ( p() -> azerite.inevitability.ok() )
-      b += p() -> azerite.inevitability.value( 3 );
+    if ( p()->azerite.inevitability.ok() )
+      b += p()->azerite.inevitability.value( 3 );
 
     return b;
   }
@@ -4031,7 +4043,7 @@ struct shadowstrike_t : public rogue_attack_t
 
     if ( p()->stealthed( STEALTH_BASIC ) )
     {
-      m *= 1.0 + p() -> spec.shadowstrike_2 -> effectN( 2 ).percent();
+      m *= 1.0 + p()->spec.shadowstrike_2->effectN( 2 ).percent();
     }
 
     return m;
@@ -4417,7 +4429,6 @@ struct shiv_t : public rogue_attack_t
 
     if ( p()->conduit.well_placed_steel.ok() && td( target )->is_bleeding() )
     {
-      // TOCHECK: Assuming this is a percentage rather than a flat value, tooltip doesn't have % though
       m *= 1.0 + p()->conduit.well_placed_steel.percent();
     }
 
@@ -4718,7 +4729,6 @@ struct sepsis_t : public rogue_attack_t
       rogue_attack_t( name, p, p->find_spell( 328306 ) )
     {
       dual = true;
-      base_multiplier *= p->covenant.sepsis->effectN( 4 ).base_value();
     }
   };
 
@@ -6486,8 +6496,10 @@ void actions::rogue_action_t<Base>::trigger_bloodfang( const action_state_t* sta
   if ( !ab::result_is_hit( state->result ) || !p()->legendary.essence_of_bloodfang->ok() || !p()->active.bloodfang )
     return;
 
-  // TOCHECK: Closer to launch, check for exceptions. Currently doesn't work with Garrote, Gloomblade, FoK, Storm
   if ( ab::energize_type == action_energize::NONE || ab::energize_resource != RESOURCE_COMBO_POINT )
+    return;
+
+  if ( p()->active.bloodfang->internal_cooldown->down() )
     return;
 
   if ( !p()->rng().roll( p()->legendary.essence_of_bloodfang->proc_chance() ) )
@@ -6495,6 +6507,7 @@ void actions::rogue_action_t<Base>::trigger_bloodfang( const action_state_t* sta
 
   p()->active.bloodfang->set_target( state->target );
   p()->active.bloodfang->execute();
+  p()->active.bloodfang->internal_cooldown->start();
 }
 
 template <typename Base>
@@ -6591,7 +6604,7 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
       ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
       ->set_tick_behavior( buff_tick_behavior::REFRESH )
       ->set_tick_callback( [ source, target ]( buff_t*, int, timespan_t ) {
-        source->active.akaaris_soul_fragment->trigger_secondary_action( target );
+        source->active.akaaris_shadowstrike->trigger_secondary_action( target );
       } )
       ->set_partial_tick( true );
   }
@@ -7706,7 +7719,7 @@ void rogue_t::init_spells()
   spec.wound_poison_2       = find_rank_spell( "Wound Poison", "Rank 2" );
 
   // Outlaw
-  spec.adrenaline_rush      = find_spell( 13750 ); // Needs to be generic due to Celerity
+  spec.adrenaline_rush      = find_specialization_spell( "Adrenaline Rush" );
   spec.between_the_eyes     = find_specialization_spell( "Between the Eyes" );
   spec.between_the_eyes_2   = find_rank_spell( "Between the Eyes", "Rank 2" );
   spec.blade_flurry         = find_specialization_spell( "Blade Flurry" );
@@ -7892,7 +7905,7 @@ void rogue_t::init_spells()
   // Assassination
   legendary.dashing_scoundrel         = find_runeforge_legendary( "Dashing Scoundrel" );
   legendary.doomblade                 = find_runeforge_legendary( "Doomblade" );
-  legendary.dustwalkers_patch         = find_runeforge_legendary( "Dustwalker's Patch" );
+  legendary.duskwalkers_patch         = find_runeforge_legendary( "Duskwalker's Patch" );
   legendary.zoldyck_insignia          = find_runeforge_legendary( "Zoldyck Insignia" );
 
   // Outlaw
@@ -7920,8 +7933,7 @@ void rogue_t::init_spells()
 
   if ( legendary.akaaris_soul_fragment->ok() )
   {
-    active.akaaris_soul_fragment = get_secondary_trigger_action<actions::shadowstrike_t>( TRIGGER_AKAARIS_SOUL_FRAGMENT, "shadowstrike_akaaris_soul_fragment" );
-    active.akaaris_soul_fragment->base_multiplier *= legendary.akaaris_soul_fragment->effectN( 2 ).percent();
+    active.akaaris_shadowstrike = get_secondary_trigger_action<actions::akaaris_shadowstrike_t>( TRIGGER_AKAARIS_SOUL_FRAGMENT, "shadowstrike_akaaris" );
   }
 
   if ( legendary.concealed_blunderbuss->ok() )
@@ -7957,6 +7969,7 @@ void rogue_t::init_spells()
   {
     active.weaponmaster.backstab = get_secondary_trigger_action<actions::backstab_t>( TRIGGER_WEAPONMASTER, "backstab_weaponmaster" );
     active.weaponmaster.shadowstrike = get_secondary_trigger_action<actions::shadowstrike_t>( TRIGGER_WEAPONMASTER, "shadowstrike_weaponmaster" );
+    active.weaponmaster.akaaris_shadowstrike = get_secondary_trigger_action<actions::akaaris_shadowstrike_t>( TRIGGER_WEAPONMASTER, "shadowstrike_akaaris_weaponmaster" );
   }
 
   if ( conduit.triple_threat.ok() && specialization() == ROGUE_OUTLAW )
@@ -8121,7 +8134,7 @@ void rogue_t::create_buffs()
     ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
     ->add_invalidate( CACHE_ATTACK_SPEED );
   
-  if ( legendary.celerity.ok() )
+  if ( legendary.celerity.ok() && specialization() == ROGUE_OUTLAW )
   {
     buffs.slice_and_dice->set_period( spell.slice_and_dice->effectN( 2 ).period() );
     buffs.slice_and_dice->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
