@@ -922,7 +922,7 @@ public:
   double composite_armor() const override;
   double composite_armor_multiplier() const override;
   double composite_melee_attack_power() const override;
-  double composite_melee_attack_power( attack_power_type type ) const override;
+  double composite_melee_attack_power_by_type( attack_power_type type ) const override;
   double composite_attack_power_multiplier() const override;
   double composite_attribute( attribute_e attr ) const override;
   double composite_attribute_multiplier( attribute_e attr ) const override;
@@ -9208,7 +9208,7 @@ double druid_t::composite_melee_attack_power() const
   return player_t::composite_melee_attack_power();
 }
 
-double druid_t::composite_melee_attack_power( attack_power_type type ) const
+double druid_t::composite_melee_attack_power_by_type( attack_power_type type ) const
 {
   const spell_data_t* spec_spell = nullptr;
 
@@ -9221,7 +9221,7 @@ double druid_t::composite_melee_attack_power( attack_power_type type ) const
     return query_aura_effect( spec_spell, A_404 )->percent() * cache.spell_power( SCHOOL_MAX ) *
            composite_spell_power_multiplier();
 
-  return player_t::composite_melee_attack_power( type );
+  return player_t::composite_melee_attack_power_by_type( type );
 }
 
 // druid_t::composite_attack_power_multiplier ===============================

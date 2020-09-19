@@ -893,7 +893,7 @@ public:
   virtual double composite_melee_haste() const;
   virtual double composite_melee_speed() const;
   virtual double composite_melee_attack_power() const;
-  virtual double composite_melee_attack_power(attack_power_type type ) const;
+  virtual double composite_melee_attack_power_by_type(attack_power_type type ) const;
   virtual double composite_melee_hit() const;
   virtual double composite_melee_crit_chance() const;
   virtual double composite_melee_crit_chance_multiplier() const

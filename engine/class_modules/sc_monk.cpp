@@ -945,7 +945,7 @@ public:
   double composite_player_heal_multiplier( const action_state_t* s ) const override;
   double composite_melee_expertise( const weapon_t* weapon ) const override;
   double composite_melee_attack_power() const override;
-  double composite_melee_attack_power( attack_power_type ap_type ) const override;
+  double composite_melee_attack_power_by_type( attack_power_type ap_type ) const override;
   double composite_spell_haste() const override;
   double composite_melee_haste() const override;
   double composite_attack_power_multiplier() const override;
@@ -10556,9 +10556,9 @@ double monk_t::composite_melee_attack_power() const
   return player_t::composite_melee_attack_power();
 }
 
-double monk_t::composite_melee_attack_power( attack_power_type ap_type ) const
+double monk_t::composite_melee_attack_power_by_type( attack_power_type ap_type ) const
 {
-  return player_t::composite_melee_attack_power( ap_type );
+  return player_t::composite_melee_attack_power_by_type( ap_type );
 }
 
 // monk_t::composite_attack_power_multiplier() ==========================
