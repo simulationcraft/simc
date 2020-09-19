@@ -488,6 +488,7 @@ public:
 
     // Conduits
     buff_t* eradicating_blow;
+    buff_t* unleashed_frenzy;
   } buffs;
 
   struct runeforge_t {
@@ -576,6 +577,7 @@ public:
     gain_t* koltiras_favor;
     gain_t* murderous_efficiency;
     gain_t* obliteration;
+    gain_t* rage_of_the_frozen_champion;
     gain_t* runic_attenuation;
     gain_t* runic_empowerment;
 
@@ -767,6 +769,7 @@ public:
     const spell_data_t* frost_fever;
     const spell_data_t* inexorable_assault_damage;
     const spell_data_t* murderous_efficiency_gain;
+    const spell_data_t* rage_of_the_frozen_champion;
 
     // Unholy
     const spell_data_t* death_coil_damage;
@@ -886,8 +889,11 @@ public:
 
   struct soulbind_conduits_t
   {
-    conduit_data_t biting_cold;
-    conduit_data_t eradicating_blow;
+                                     // ConduitID for soulbind=
+    conduit_data_t accelerated_cold; // 79
+    conduit_data_t biting_cold;      // 91
+    conduit_data_t eradicating_blow; // 83
+    conduit_data_t unleashed_frenzy; // 122
   } conduits;
 
   struct legendary_t
@@ -896,8 +902,9 @@ public:
 
     // Blood
 
-    // Frost
-    item_runeforge_t koltiras_favor;  // 6944
+    // Frost                                      // bonus_id
+    item_runeforge_t koltiras_favor;              // 6944
+    item_runeforge_t rage_of_the_frozen_champion; // 7160
 
     // Unholy
   } legendary;
@@ -3319,9 +3326,6 @@ struct army_of_the_dead_t : public death_knight_spell_t
       // Simulate rune regeneration for X seconds
       p() -> _runes.regenerate_immediate( timespan_t::from_seconds( precombat_time ) );
 
-      // If every ghoul was summoned, return
-      if ( n_ghoul == 8 ) return;
-
       sim -> print_debug( "{} used Army of the Dead in precombat with precombat time = {}, adjusting pets' duration and remaining cooldown.",
                           player -> name(), precombat_time );
     }
@@ -3329,7 +3333,8 @@ struct army_of_the_dead_t : public death_knight_spell_t
     // If precombat didn't summon every ghoul (due to interval between each spawn)
     // Or if the cast isn't during precombat
     // Summon the rest
-    make_event<summon_army_event_t>( *sim, p(), n_ghoul, timespan_t::from_seconds( summon_interval ), summon_duration );
+    if ( n_ghoul < 8 )
+      make_event<summon_army_event_t>( *sim, p(), n_ghoul, timespan_t::from_seconds( summon_interval ), summon_duration );
 
     if ( p() -> azerite.magus_of_the_dead.enabled() )
     {
@@ -3582,14 +3587,12 @@ struct breath_of_sindragosa_tick_t: public death_knight_spell_t
 
 struct breath_of_sindragosa_buff_t : public buff_t
 {
-  action_t* damage;
   double ticking_cost;
   const timespan_t tick_period;
   int rune_gen;
 
   breath_of_sindragosa_buff_t( death_knight_t* player ) :
     buff_t( player, "breath_of_sindragosa", player -> talent.breath_of_sindragosa ),
-    damage( player -> active_spells.breath_of_sindragosa ),
     tick_period( player -> talent.breath_of_sindragosa -> effectN( 1 ).period() ),
     rune_gen( as<int>( player -> find_spell( 303753 ) -> effectN( 1 ).base_value() ) )
   {
@@ -3618,9 +3621,8 @@ struct breath_of_sindragosa_buff_t : public buff_t
       if ( this -> current_tick == 0 )
       {
         player -> replenish_rune( rune_gen, player -> gains.breath_of_sindragosa );
-
-        this -> damage -> set_target( bos_target );
-        this -> damage -> execute();
+        player -> active_spells.breath_of_sindragosa -> set_target( bos_target );
+        player -> active_spells.breath_of_sindragosa -> execute();
         return;
       }
 
@@ -3637,8 +3639,8 @@ struct breath_of_sindragosa_buff_t : public buff_t
       }
 
       // Else, consume the resource and update the damage tick's resource stats
-      player -> resource_loss( RESOURCE_RUNIC_POWER, this -> ticking_cost, nullptr, this -> damage );
-      this -> damage -> stats -> consume_resource( RESOURCE_RUNIC_POWER, this -> ticking_cost );
+      player -> resource_loss( RESOURCE_RUNIC_POWER, this -> ticking_cost, nullptr, player -> active_spells.breath_of_sindragosa );
+      player -> active_spells.breath_of_sindragosa -> stats -> consume_resource( RESOURCE_RUNIC_POWER, this -> ticking_cost );
 
       // If the player doesn't have enough RP to fuel the next tick, BoS is cancelled
       // after the RP consumption and before the damage event
@@ -3654,8 +3656,8 @@ struct breath_of_sindragosa_buff_t : public buff_t
       }
 
       // If there's enough resources for another tick, deal damage
-      this -> damage -> set_target( bos_target );
-      this -> damage -> execute();
+      player -> active_spells.breath_of_sindragosa -> set_target( bos_target );
+      player -> active_spells.breath_of_sindragosa -> execute();
     } );
   }
 
@@ -4634,7 +4636,7 @@ struct empower_rune_weapon_buff_t : public buff_t
     cooldown -> duration = 0_ms; // Handled in the action
     set_period( p -> spec.empower_rune_weapon -> effectN( 1 ).period() );
     set_trigger_spell( p -> spec.empower_rune_weapon );
-    set_default_value( p -> spec.empower_rune_weapon -> effectN( 3 ).percent() );
+    set_default_value( p -> spec.empower_rune_weapon -> effectN( 3 ).percent() + p -> conduits.accelerated_cold.percent());
     add_invalidate( CACHE_HASTE );
     set_refresh_behavior( buff_refresh_behavior::EXTEND);
     set_tick_behavior( buff_tick_behavior::REFRESH );
@@ -4676,6 +4678,18 @@ struct empower_rune_weapon_t : public death_knight_spell_t
 
     cooldown -> duration *= 1.0 + p -> vision_of_perfection_minor_cdr;
     cooldown -> duration += p -> spec.empower_rune_weapon_2->effectN( 1 ).time_value();
+  }
+
+  double recharge_multiplier( const cooldown_t& cd ) const override
+  {
+    double m = death_knight_spell_t::recharge_multiplier( cd );
+
+    if ( p() -> conduits.accelerated_cold->ok() )
+    {
+      m *= 1.0 + p()->conduits.accelerated_cold->effectN( 2 ).percent();
+    }
+
+    return m;
   }
 
   void execute() override
@@ -4905,7 +4919,7 @@ struct frostscythe_t : public death_knight_melee_attack_t
     }
 
     // Frostscythe procs rime at half the chance of Obliterate
-    p() -> buffs.rime -> trigger( 1, buff_t::DEFAULT_VALUE(), p() -> spec.rime -> effectN( 2 ).percent() / 2.0 );
+    p() -> buffs.rime -> trigger( 1, buff_t::DEFAULT_VALUE(), p() -> buffs.rime->manual_chance / 2.0 );
   }
 
   double composite_crit_chance() const override
@@ -5005,6 +5019,12 @@ struct frost_strike_strike_t : public death_knight_melee_attack_t
     death_knight_melee_attack_t::execute();
 
     trigger_icecap( execute_state );
+
+    if ( p() -> conduits.unleashed_frenzy->ok() )
+    {
+      p() -> buffs.unleashed_frenzy->trigger();
+    }
+
   }
 
   void impact( action_state_t* state ) override
@@ -5388,6 +5408,13 @@ struct howling_blast_t : public death_knight_spell_t
       echoing_howl -> execute();
     }
 
+    if ( p() -> buffs.rime -> check() && p() -> legendary.rage_of_the_frozen_champion->ok() )
+    {
+      p() -> resource_gain( RESOURCE_RUNIC_POWER,
+                            p() -> spell.rage_of_the_frozen_champion -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER ),
+                            p() -> gains.rage_of_the_frozen_champion );
+    }
+
     p() -> buffs.rime -> decrement();
   }
 
@@ -5539,6 +5566,11 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
 
     trigger_icecap( execute_state );
 
+    if ( p() -> conduits.eradicating_blow->ok() )
+    {
+      p() -> buffs.eradicating_blow -> trigger();
+    }
+
     if ( p() -> azerite.icy_citadel.enabled() && p() -> buffs.pillar_of_frost -> up() && execute_state -> result == RESULT_CRIT )
     {
       p() -> buffs.icy_citadel_builder -> trigger();
@@ -5611,7 +5643,6 @@ struct obliterate_t : public death_knight_melee_attack_t
       }
 
       p() -> buffs.rime -> trigger();
-      p() -> buffs.eradicating_blow -> trigger();
     }
 
     consume_killing_machine( execute_state, p() -> procs.killing_machine_oblit );
@@ -7940,6 +7971,7 @@ void death_knight_t::init_spells()
   spell.frost_fever               = find_spell( 55095 );
   spell.inexorable_assault_damage = find_spell( 253597 );
   spell.murderous_efficiency_gain = find_spell( 207062 );
+  spell.rage_of_the_frozen_champion = find_spell( 341725 );
 
   // Unholy
   spell.bursting_sores         = find_spell( 207267 );
@@ -8025,8 +8057,10 @@ void death_knight_t::init_spells()
   // Conduits
   // Blood
   // Frost
+  conduits.accelerated_cold      = find_conduit_spell( "Accelerated Cold" );
   conduits.biting_cold           = find_conduit_spell( "Biting Cold" );
   conduits.eradicating_blow      = find_conduit_spell( "Eradicating Blow" );
+  conduits.unleashed_frenzy      = find_conduit_spell( "Unleashed Frenzy" );
   // Unholy
 
   // Legendary Items
@@ -8034,6 +8068,7 @@ void death_knight_t::init_spells()
   // Blood
   // Frost
   legendary.koltiras_favor       = find_runeforge_legendary( "Koltira's Favor" );
+  legendary.rage_of_the_frozen_champion = find_runeforge_legendary( "Rage of the Frozen Champion" );
   // Unholy
 }
 
@@ -8632,6 +8667,7 @@ void death_knight_t::create_buffs()
   buffs.icy_talons = make_buff( this, "icy_talons", talent.icy_talons -> effectN( 1 ).trigger() )
         -> add_invalidate( CACHE_ATTACK_SPEED )
         -> set_default_value( talent.icy_talons -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
+        -> set_cooldown( talent.icy_talons->internal_cooldown() )
         -> set_trigger_spell( talent.icy_talons );
 
   buffs.inexorable_assault = make_buff( this, "inexorable_assault", find_spell( 253595 ) )
@@ -8649,7 +8685,7 @@ void death_knight_t::create_buffs()
 
   buffs.rime = make_buff( this, "rime", spec.rime -> effectN( 1 ).trigger() )
         -> set_trigger_spell( spec.rime )
-        -> set_chance( spec.rime -> effectN( 2 ).percent() );
+        -> set_chance( spec.rime -> effectN( 2 ).percent() + legendary.rage_of_the_frozen_champion ->effectN( 1 ).percent() );
 
   // Unholy
   buffs.dark_transformation = make_buff( this, "dark_transformation", spec.dark_transformation )
@@ -8709,7 +8745,12 @@ void death_knight_t::create_buffs()
   // Conduits
   buffs.eradicating_blow = make_buff( this, "eradicating_blow", find_spell( 337936 ) )
         -> set_default_value( conduits.eradicating_blow.percent() )
-        -> set_trigger_spell( spec.obliterate );
+        -> set_trigger_spell( conduits.eradicating_blow )
+        -> set_cooldown( conduits.eradicating_blow -> internal_cooldown() );
+
+  buffs.unleashed_frenzy = make_buff( this, "unleashed_frenzy", conduits.unleashed_frenzy->effectN( 1 ).trigger() )
+        -> add_invalidate( CACHE_STRENGTH )
+        -> set_default_value( conduits.unleashed_frenzy.percent() );
 }
 
 // death_knight_t::init_gains ===============================================
@@ -8745,6 +8786,7 @@ void death_knight_t::init_gains()
   gains.horn_of_winter                   = get_gain( "Horn of Winter" );
   gains.murderous_efficiency             = get_gain( "Murderous Efficiency" );
   gains.obliteration                     = get_gain( "Obliteration" );
+  gains.rage_of_the_frozen_champion      = get_gain( "Rage of the Frozen Champion" );
   gains.runic_attenuation                = get_gain( "Runic Attenuation" );
   gains.runic_empowerment                = get_gain( "Runic Empowerment" );
   gains.koltiras_favor                   = get_gain( "Koltira's Favor" );
@@ -9011,6 +9053,8 @@ double death_knight_t::composite_attribute_multiplier( attribute_e attr ) const
     }
 
     m *= 1.0 + buffs.pillar_of_frost -> value() + buffs.pillar_of_frost_bonus -> stack_value();
+
+    m *= 1.0 + buffs.unleashed_frenzy -> stack_value();
   }
 
   else if ( attr == ATTR_STAMINA )

@@ -74,13 +74,6 @@ endif
 # Include build setting from user configuration file
 -include ../build.conf
 
-# Enable SSE2
-DUMPMACHINE =$(shell $(CXX) -dumpmachine)
-# SSE2 is explicitly disabled for 32bit MINGW.
-ifeq ($(findstring i686-w64-mingw32,${DUMPMACHINE}),)
-  OPTS_INTERNAL += -msse2 -mfpmath=sse
-endif
-
 # OSX
 ifeq (${FLAVOR},Darwin)
   # Workaround for XCode 11 issues when using optimized builds. Potentially related to

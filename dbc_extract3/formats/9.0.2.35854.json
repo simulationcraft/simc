@@ -329,8 +329,8 @@
       { "data_type": "H", "field": "unk_1" },
       { "data_type": "i", "field": "garr_talent_tree_type" },
       { "data_type": "i", "field": "unk_2" },
-      { "data_type": "i", "field": "unk_3" },
-      { "data_type": "i", "field": "unk_4" }
+      { "data_type": "i", "field": "feature_type" },
+      { "data_type": "i", "field": "feature_rank" }
     ]
   },
   "GarrTalentRank": {

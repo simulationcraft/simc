@@ -48,6 +48,7 @@ struct actor_target_data_t : public actor_pair_t, private noncopyable
     buff_t* adversary;                   // venthyr/nadjia/dauntless duelist debuff
     buff_t* plagueys_preemptive_strike;  // necro/marileth
     buff_t* sinful_revelation;           // enchant
+    buff_t* putrid_burst;                // darkmoon deck: putrescence
   } debuff;
 
   struct atd_dot_t

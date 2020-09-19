@@ -75,6 +75,7 @@ static constexpr auto spell_data_fields = std::make_tuple(
   data_field( "spell_level",       &spell_data_t::_spell_level ),
   data_field( "max_level",         &spell_data_t::_max_level ),
   data_field( "req_max_level",     &spell_data_t::_req_max_level ),
+  data_field( "max_scaling_level", &spell_data_t::_max_scaling_level ),
   data_field( "min_range",         &spell_data_t::_min_range ),
   data_field( "max_range",         &spell_data_t::_max_range ),
   data_field( "cooldown",          &spell_data_t::_cooldown ),
@@ -91,7 +92,8 @@ static constexpr auto spell_data_fields = std::make_tuple(
   data_field( "cast_time",         &spell_data_t::_cast_time ),
   data_field( "rppm",              &spell_data_t::_rppm ),
   data_field( "dmg_class",         &spell_data_t::_dmg_class ),
-  data_field( "max_targets",       &spell_data_t::_max_targets )
+  data_field( "max_targets",       &spell_data_t::_max_targets ),
+  data_field( "category",          &spell_data_t::_category )
 );
 
 bool spell_data_t::override_field( util::string_view field, double value )

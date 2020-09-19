@@ -1022,7 +1022,7 @@ namespace mirror_image {
 struct mirror_image_pet_t : public mage_pet_t
 {
   mirror_image_pet_t( sim_t* sim, mage_t* owner ) :
-    mage_pet_t( sim, owner, "mirror_image", true )
+    mage_pet_t( sim, owner, "mirror_image", true, true )
   {
     owner_coeff.sp_from_sp = 0.55;
   }
@@ -3384,7 +3384,7 @@ struct ebonbolt_t : public frost_mage_spell_t
 struct fireball_t : public fire_mage_spell_t
 {
   fireball_t( util::string_view n, mage_t* p, util::string_view options_str ) :
-    fire_mage_spell_t( n, p, p->find_class_spell( "Fireball" ) )
+    fire_mage_spell_t( n, p, p->find_specialization_spell( "Fireball" ) )
   {
     parse_options( options_str );
     triggers.hot_streak = triggers.ignite = triggers.kindling = triggers.from_the_ashes = triggers.radiant_spark = true;
@@ -4696,34 +4696,46 @@ struct phoenix_flames_splash_t : public fire_mage_spell_t
     // TODO: Verify what happens when Phoenix Flames hits an immune target.
     if ( result_is_hit( s->result ) && s->chain_target == 0 )
     {
-      dot_t* source_ignite = s->target->get_dot( "ignite", p() );
-      if ( source_ignite->is_ticking() )
+      auto source = s->target->get_dot( "ignite", player );
+      if ( source->is_ticking() )
       {
-        int spreads_remaining = max_spread_targets;
-        // TODO: Verify which targets Ignite spreads to when there are more than eight.
+        std::vector<dot_t*> ignites;
+
+        // Collect the Ignite DoT objects of all targets that are in range.
         for ( auto t : target_list() )
+          ignites.push_back( t->get_dot( "ignite", player ) );
+
+        // Sort candidate Ignites by descending bank size.
+        // TODO: Double check what targets the Ignite spread prioritizes.
+        std::stable_sort( ignites.begin(), ignites.end(), [] ( dot_t* a, dot_t* b )
+        { return ignite_bank( a ) > ignite_bank( b ); } );
+
+        auto source_bank = ignite_bank( source );
+        auto targets_remaining = max_spread_targets;
+        for ( auto destination : ignites )
         {
-          if ( t == s->target )
+          // The original spread source doesn't count towards the spread target limit.
+          if ( source == destination )
             continue;
 
-          if ( spreads_remaining <= 0 )
+          // Target cap was reached, stop.
+          if ( targets_remaining-- <= 0 )
             break;
+
+          // Source Ignite cannot spread to targets with higher Ignite bank. It will
+          // still count towards the spread target cap, though.
+          if ( ignite_bank( destination ) >= source_bank )
+            continue;
+
+          if ( destination->is_ticking() )
+            p()->procs.ignite_overwrite->occur();
+          else
+            p()->procs.ignite_new_spread->occur();
 
           // TODO: Exact copies of the Ignite are not spread. Instead, the Ignites can
           // sometimes have partial ticks, but the conditions for this are not known.
-          dot_t* dest_ignite = t->get_dot( "ignite", p() );
-          if ( ignite_bank( dest_ignite ) < ignite_bank( source_ignite ) )
-          {
-            if ( dest_ignite->is_ticking() )
-              p()->procs.ignite_overwrite->occur();
-            else
-              p()->procs.ignite_new_spread->occur();
-            // In game, the existing Ignite is not removed; its
-            // state is updated to closely match the source Ignite.
-            dest_ignite->cancel();
-            source_ignite->copy( t, DOT_COPY_CLONE );
-            spreads_remaining--;
-          }
+          destination->cancel();
+          source->copy( destination->target, DOT_COPY_CLONE );
         }
       }
     }
@@ -7641,6 +7653,32 @@ std::unique_ptr<expr_t> mage_t::create_expression( util::string_view name )
     { return remaining_winters_chill; } );
   }
 
+  if ( util::str_compare_ci( name, "hot_streak_spells_in_flight" ) )
+  {
+    auto is_hss = [] ( action_t* a )
+    {
+      if ( auto m = dynamic_cast<actions::mage_spell_t*>( a ) )
+        return m->triggers.hot_streak;
+      else
+        return false;
+    };
+
+    std::vector<action_t*> in_flight_list;
+    for ( auto a : action_list )
+    {
+      if ( is_hss( a ) || range::find_if( a->child_action, is_hss ) != a->child_action.end() )
+        in_flight_list.push_back( a );
+    }
+
+    return make_fn_expr( name, [ in_flight_list ]
+    {
+      size_t spells = 0;
+      for ( auto a : in_flight_list )
+        spells += a->num_travel_events();
+      return spells;
+    } );
+  }
+
   auto splits = util::string_split<util::string_view>( name, "." );
 
   if ( splits.size() == 3 && util::str_compare_ci( splits[ 0 ], "ground_aoe" ) )
@@ -8154,7 +8192,7 @@ public:
           "<div class=\"toggle-content\">\n";
 
     auto& d = *p.sample_data.icy_veins_duration;
-    int num_buckets = std::min( 70, as<int>( d.max() - d.min() ) + 1 );
+    int num_buckets = std::min( 70, static_cast<int>( d.max() - d.min() ) + 1 );
     d.create_histogram( num_buckets );
 
     highchart::histogram_chart_t chart( highchart::build_id( p, "icy_veins_duration" ), *p.sim );

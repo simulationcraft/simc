@@ -120,6 +120,11 @@ public:
   {
     priest_spell_t::impact( s );
 
+    if ( priest().legendary.shadowflame_prism->ok() )
+    {
+      priest().trigger_shadowflame_prism( s->target );
+    }
+
     if ( priest().buffs.mind_devourer->trigger() )
     {
       priest().procs.mind_devourer->occur();
@@ -232,7 +237,7 @@ struct mind_sear_tick_t final : public priest_spell_t
     priest_spell_t::impact( s );
 
     priest().trigger_eternal_call_to_the_void( s );
-    
+
     trigger_dark_thoughts( s->target, priest().procs.dark_thoughts_sear );
   }
 };
@@ -292,28 +297,37 @@ struct mind_flay_t final : public priest_spell_t
     spell_power_mod.tick *= 1.0 + p.talents.fortress_of_the_mind->effectN( 3 ).percent();
   }
 
+  void trigger_mind_flay_dissonant_echoes()
+  {
+    if ( !priest().conduits.dissonant_echoes->ok() || priest().buffs.voidform->check() )
+    {
+      return;
+    }
+
+    if ( rng().roll( priest().conduits.dissonant_echoes.percent() ) )
+    {
+      priest().cooldowns.void_bolt->reset( true );
+      priest().buffs.dissonant_echoes->trigger();
+      priest().procs.dissonant_echoes->occur();
+    }
+  }
+
   void tick( dot_t* d ) override
   {
     priest_spell_t::tick( d );
 
     priest().trigger_eternal_call_to_the_void( d->state );
-
     trigger_dark_thoughts( d->target, priest().procs.dark_thoughts_flay );
+    trigger_mind_flay_dissonant_echoes();
   }
 
   void execute() override
   {
     priest_spell_t::execute();
 
-    if ( priest().conduits.dissonant_echoes->ok() && !priest().buffs.voidform->check() )
-    {
-      if ( rng().roll( priest().conduits.dissonant_echoes.percent() ) )
-      {
-        priest().cooldowns.void_bolt->reset( true );
-        priest().buffs.dissonant_echoes->trigger();
-        priest().procs.dissonant_echoes->occur();
-      }
-    }
+    // Dissonant Echoes can proc on tick or on initial execute
+    // since it doesnt have a tick_zero we put it in both places
+    trigger_mind_flay_dissonant_echoes();
   }
 
   bool ready() override
@@ -399,6 +413,11 @@ struct shadow_word_death_t final : public priest_spell_t
   void impact( action_state_t* s ) override
   {
     priest_spell_t::impact( s );
+
+    if ( priest().legendary.shadowflame_prism->ok() )
+    {
+      priest().trigger_shadowflame_prism( s->target );
+    }
 
     if ( result_is_hit( s->result ) )
     {
@@ -821,7 +840,7 @@ struct vampiric_touch_t final : public priest_spell_t
     }
     else
     {
-      if ( !priest().buffs.unfurling_darkness_cd->check() )
+      if ( priest().talents.unfurling_darkness->ok() && !priest().buffs.unfurling_darkness_cd->check() )
       {
         priest().buffs.unfurling_darkness->trigger();
         // The CD Starts as soon as the buff is applied
@@ -1332,7 +1351,13 @@ struct shadow_crash_t final : public priest_spell_t
   // Ensuring that we can't cast on a target that is too close
   bool target_ready( player_t* candidate_target ) override
   {
-    if ( player->get_player_distance( *candidate_target ) < ( data().min_range() - data().effectN( 1 ).radius() ) )
+    auto effective_min_range = data().min_range() - data().effectN( 1 ).radius();
+    if ( sim->debug )
+    {
+      sim->print_debug( "Shadow Crash eval: {} < {}", player->get_player_distance( *candidate_target ),
+                        effective_min_range );
+    }
+    if ( player->get_player_distance( *candidate_target ) < effective_min_range )
     {
       return false;
     }
@@ -1541,9 +1566,6 @@ struct voidform_t final : public priest_buff_t<buff_t>
     // Using Surrender within Voidform does not reset the duration - might be a bug?
     set_refresh_behavior( buff_refresh_behavior::DISABLED );
 
-    // Spelldata still has 100 stacks for VF, hardcoding to 1
-    set_max_stack( 1 );
-
     if ( priest().talents.legacy_of_the_void->ok() )
     {
       // If LotV is talented, VF ends by Insanity drained, not time
@@ -1575,14 +1597,18 @@ struct voidform_t final : public priest_buff_t<buff_t>
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
     /// TODO: Verify if functionality is properly matching how it works in game.
-    sim->print_debug( "{} has {} charges of mind blast as voidform ended", *player,
-                      priest().cooldowns.mind_blast->charges_fractional() );
+    if ( sim->debug )
+    {
+      sim->print_debug( "{} has {} charges of mind blast as voidform ended", *player,
+                        priest().cooldowns.mind_blast->charges_fractional() );
+    }
     // Call new generic function to adjust charges.
     adjust_max_charges( priest().cooldowns.mind_blast, 1 );
-
-    sim->print_debug( "{} has {} charges of mind blast after voidform ended", *player,
-                      priest().cooldowns.mind_blast->charges_fractional() );
-
+    if ( sim->debug )
+    {
+      sim->print_debug( "{} has {} charges of mind blast after voidform ended", *player,
+                        priest().cooldowns.mind_blast->charges_fractional() );
+    }
     priest().buffs.insanity_drain_stacks->expire();
 
     if ( priest().talents.legacy_of_the_void->ok() )
@@ -2169,13 +2195,6 @@ void priest_t::init_spells_shadow()
   azerite.thought_harvester      = find_azerite_spell( "Thought Harvester" );
   azerite.torment_of_torments    = find_azerite_spell( "Torment of Torments" );
   azerite.whispers_of_the_damned = find_azerite_spell( "Whispers of the Damned" );
-
-  // Need to be 8 yards away for Ascended Nova
-  // Need to be 10 yards - SC radius for Shadow Crash
-  if ( specialization() == PRIEST_SHADOW )
-  {
-    base.distance = 8.0;
-  }
 }
 
 action_t* priest_t::create_action_shadow( util::string_view name, util::string_view options_str )
@@ -2321,7 +2340,7 @@ void priest_t::generate_apl_shadow()
 
   // Potions
   default_list->add_action(
-      "potion,if=buff.bloodlust.react|target.time_to_die<=80|"
+      "potion,if=buff.bloodlust.react|(target.time_to_die<=80&target.time_to_die>0)|"
       "target.health.pct<35" );
   default_list->add_action(
       "variable,name=dots_up,op=set,value="
@@ -2358,7 +2377,7 @@ void priest_t::generate_apl_shadow()
   essences->add_action( "purifying_blast,if=spell_targets.mind_sear>=2|raid_event.adds.in>60" );
   essences->add_action(
       "concentrated_flame,line_cd=6,"
-      "if=time<=10|full_recharge_time<gcd|target.time_to_die<5" );
+      "if=time<=10|full_recharge_time<gcd|(target.time_to_die<5&target.time_to_die>0)" );
   essences->add_action( "ripple_in_space" );
   essences->add_action( "reaping_flames" );
   essences->add_action( "worldvein_resonance" );
@@ -2370,12 +2389,16 @@ void priest_t::generate_apl_shadow()
   cds->add_action( this, covenant.mindgames, "Mindgames", "if=insanity<90&!buff.voidform.up" );
   cds->add_action( this, covenant.unholy_nova, "Unholy Nova", "if=raid_event.adds.in>50" );
   cds->add_action( this, covenant.boon_of_the_ascended, "Boon of the Ascended",
-                   "if=!buff.voidform.up&!cooldown.void_eruption.up&spell_targets.mind_sear>1&!talent.searing_nightmare.enabled|(buff.voidform.up&spell_targets.mind_sear<2&!talent.searing_nightmare.enabled)|(buff.voidform.up&talent.searing_nightmare.enabled)" );
+                   "if=!buff.voidform.up&!cooldown.void_eruption.up&spell_targets.mind_sear>1&!talent.searing_"
+                   "nightmare.enabled|(buff.voidform.up&spell_targets.mind_sear<2&!talent.searing_nightmare.enabled)|("
+                   "buff.voidform.up&talent.searing_nightmare.enabled)" );
   cds->add_call_action_list( essences );
   cds->add_action( "use_items", "Default fallback for usable items: Use on cooldown." );
 
   boon->add_action( this, covenant.boon_of_the_ascended, "ascended_blast", "if=spell_targets.mind_sear<=3" );
-  boon->add_action( this, covenant.boon_of_the_ascended, "ascended_nova", "if=(spell_targets.mind_sear>2&talent.searing_nightmare.enabled|(spell_targets.mind_sear>1&!talent.searing_nightmare.enabled))&spell_targets.ascended_nova>1" );
+  boon->add_action( this, covenant.boon_of_the_ascended, "ascended_nova",
+                    "if=(spell_targets.mind_sear>2&talent.searing_nightmare.enabled|(spell_targets.mind_sear>1&!talent."
+                    "searing_nightmare.enabled))&spell_targets.ascended_nova>1" );
 
   // single APL
   main->add_call_action_list( this, covenant.boon_of_the_ascended, boon, "if=buff.boon_of_the_ascended.up" );
@@ -2383,12 +2406,13 @@ void priest_t::generate_apl_shadow()
                     "if=cooldown.power_infusion.up&insanity>=40&(!talent.legacy_of_the_void.enabled|(talent.legacy_of_"
                     "the_void.enabled&dot.devouring_plague.ticking))",
                     "Sync up Voidform and Power Infusion Cooldowns and of using LotV pool insanity before casting." );
-  main->add_action( this, "Shadow Word: Pain", "if=buff.fae_guardians.up&!debuff.wrathful_faerie.up");
+  main->add_action( this, "Shadow Word: Pain", "if=buff.fae_guardians.up&!debuff.wrathful_faerie.up",
+                    "Make sure you put up SW:P ASAP on the target if Wrathful Faerie isn't active." );
   main->add_action( this, "Void Bolt", "if=!dot.devouring_plague.refreshable",
                     "Only use Void Bolt if Devouring Plague doesn't need refreshed." );
   main->add_call_action_list( cds );
   main->add_talent( this, "Damnation", "target_if=!variable.all_dots_up",
-                    "Prefer to use Damnation ASAP if any DoT is not up" );
+                    "Prefer to use Damnation ASAP if any DoT is not up." );
   main->add_action( this, "Devouring Plague",
                     "if=talent.legacy_of_the_void.enabled&cooldown.void_eruption.up&insanity=100",
                     "Use Devouring Plague right before you go into a LotV Voidform." );
@@ -2398,20 +2422,24 @@ void priest_t::generate_apl_shadow()
                     "the_void.enabled|(talent.legacy_of_the_void.enabled&buff.voidform.down))",
                     "Don't use Devouring Plague if you can get into Voidform instead, or if Searing Nightmare is "
                     "talented and will hit enough targets." );
-  main->add_action( this, "Shadow Word: Death", "target_if=target.health.pct<20",
-                    "Use Shadow Word: Death if the target is about to die." );
-  main->add_talent( this, "Surrender to Madness", "target_if=target.time_to_die<25&buff.voidform.down",
+  main->add_action( this, "Shadow Word: Death",
+                    "target_if=target.health.pct<20|(pet.fiend.active&runeforge.shadowflame_prism.equipped)",
+                    "Use Shadow Word: Death if the target is about to die or you have Shadowflame Prism equipped with "
+                    "Mindbender or Shadowfiend active." );
+  main->add_talent( this, "Surrender to Madness", "target_if=target.time_to_die<25&target.time_to_die>0&buff.voidform.down",
                     "Use Surrender to Madness on a target that is going to die at the right time." );
   main->add_talent( this, "Mindbender" );
   main->add_talent( this, "Void Torrent", "target_if=variable.all_dots_up&!buff.voidform.up&target.time_to_die>4",
                     "Use Void Torrent only if all DoTs are active and the target won't die during the channel." );
-  main->add_action( this, "Shadow Word: Death",
-                    "if=runeforge.painbreaker_psalm.equipped&variable.dots_up&target.health.pct>30",
-                    "Use SW:D above 30% HP when Painbreaker Psalm power is active" );
+  main->add_action(
+      this, "Shadow Word: Death",
+      "if=runeforge.painbreaker_psalm.equipped&variable.dots_up&target.time_to_pct_20>(cooldown.shadow_word_death."
+      "duration+gcd)",
+      "Use SW:D with Painbreaker Psalm unless the target will be below 20% before the cooldown comes back" );
   main->add_talent(
       this, "Shadow Crash",
       "if=spell_targets.shadow_crash=1&(cooldown.shadow_crash.charges=3|debuff.shadow_crash_debuff.up|action.shadow_"
-      "crash.in_flight|target.time_to_die<cooldown.shadow_crash.full_recharge_time)&raid_event.adds.in>30",
+      "crash.in_flight|target.time_to_die<cooldown.shadow_crash.full_recharge_time)&target.time_to_die>0&raid_event.adds.in>30",
       "Use all charges of Shadow Crash in a row on Single target, or if the boss is about to die." );
   main->add_talent( this, "Shadow Crash", "if=raid_event.adds.in>30&spell_targets.shadow_crash>1",
                     "Use Shadow Crash on CD unless there are adds incoming." );
@@ -2511,5 +2539,4 @@ void priest_t::trigger_psychic_link( action_state_t* s )
     }
   }
 }
-
 }  // namespace priestspace

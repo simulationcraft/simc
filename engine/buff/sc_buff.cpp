@@ -2145,6 +2145,7 @@ void buff_t::expire( timespan_t delay )
     }
   }
   event_t::cancel( tick_event );
+  current_tick = 0;
 
   assert( as<std::size_t>( current_stack ) < stack_uptime.size() );
   stack_uptime[ current_stack ].update( false, sim->current_time() );

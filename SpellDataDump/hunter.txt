@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.2.35854 shadowlands-BETA (hotfix 2020-09-12/35854, git build shadowlands a3c99b0cc6)
+SimulationCraft 901-01 for World of Warcraft 9.0.2.35938 shadowlands-BETA (hotfix 2020-09-18/35938, git build shadowlands a3c99b0cc6)
 
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
@@ -3595,7 +3595,7 @@ Name             : Arcane Shot (id=185358) [Spell Family (9)]
 Class            : Hunter
 School           : Arcane
 Spell Type       : Ranged
-Resource         : 30 Focus (2) (id=12545)
+Resource         : 40 Focus (2) (id=12545)
 Spell Level      : 2
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -3758,7 +3758,7 @@ Range            : 100 yards
 Proc Chance      : 101%
 Triggered by     : Harpoon (190925)
 Attributes       : ....x... ........ x.x..x.. .....x..   ........ ........ ..x..... ..xx.... 
-                 : x....... ........ ....x... ........   ........ ........ ........ ........ 
+                 : x.x..... ........ ....x... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ x......x ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ....x... ........ ........ 
@@ -4065,6 +4065,7 @@ Spell Type       : Ranged
 Spell Level      : 14
 Range            : 8 - 30 yards
 Velocity         : 90 yards/sec
+Duration         : 3 seconds
 Requires weapon  : Two-handed Axe, Two-handed Mace, Polearm, Two-handed Sword, Staff
 Cooldown         : 1 seconds
 Charges          : 1 (30 seconds cooldown)
@@ -4084,7 +4085,10 @@ Attributes       : ....x... ........ ..x..x.. ........   ........ .x...... .....
 Effects          :
 #1 (id=279987)   : Trigger Missiles (32)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 186260 | Target: Enemy (6)
+#2 (id=870215)   : Apply Aura (6) | Root (455)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Hurls a harpoon at an enemy, rooting them in place for $190927d and pulling you to them.
+Tooltip          : Rooted.
 
 Name             : Harpoon (id=190927) [Spell Family (9)] 
 Class            : Hunter
@@ -4173,7 +4177,7 @@ Effects          :
 #1 (id=283801)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=283802)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.34500 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.70000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=481423)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000
 Description      : A quick shot causing ${$s2*$<mult>} Physical damage.
@@ -4546,8 +4550,8 @@ Class            : Hunter
 School           : Physical
 Spell Type       : None
 Proc Chance      : 100%
-Proc Flags       : ....x.x. x...x... x....... ........ 
-                 : Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
+Proc Flags       : ..x.x.x. x...x... x....... ........ 
+                 : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5062,11 +5066,11 @@ Attributes       : ....x... ........ ........ ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ ........ .......x 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .x...... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Tick on application (169)
+                 : Tick on application (169), Periodic effect can crit (265)
 Effects          :
 #1 (id=323302)   : Apply Aura (6) | Periodic Damage (3): physical every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.21600 | PvP Coefficient: 1.00000 | Target: Enemy (6)
@@ -6101,7 +6105,7 @@ Effects          :
                    Family Flags: 12
 #2 (id=713795)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 75 | Scaled Value: 75 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Resonating Arrow (308491), Resonating Arrow (308495), Resonating Arrow (308498), Chimaera Shot (344120), Chimaera Shot (344121)
+                   Affected Spells: Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Resonating Arrow (308491), Resonating Arrow (308495), Resonating Arrow (308498), Chimaera Shot (342049), Chimaera Shot (344120), Chimaera Shot (344121)
                    Family Flags: 39, 105
 #3 (id=737584)   : Apply Aura (6) | Unknown(408)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Trigger Spell: 185358 | Target: Self (1)
@@ -6462,7 +6466,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=624334)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Cobra Shot (193455)
                    Family Flags: 86
 Description      : Cobra Shot deals $s1% increased damage.
@@ -7512,7 +7516,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Requires main-hand weapon (106)
 Effects          :
 #1 (id=709186)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.70000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.00000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : A vicious slash dealing $s1 Physical damage.
 
 Name             : Mongoose Bite (id=265888) [Spell Family (9)] 
@@ -8509,8 +8513,8 @@ School           : Fire
 Spell Type       : Ranged
 Range            : 50000 yards
 Mechanic         : Bleed
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Guerrilla Tactics (264332 effect#2), Coordinated Assault (266779 effect#1), Flame Infusion (341401 effect#1)
-Family Flags     : 25, 106
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Guerrilla Tactics (264332 effect#2), Coordinated Assault (266779 effect#1), Wildfire Bombs (321290 effect#1), Flame Infusion (341401 effect#1)
+Family Flags     : 22, 25, 106
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -11181,7 +11185,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=808870)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Multi-Shot (2643), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Multi-Shot (257620), Resonating Arrow (308491), Resonating Arrow (308495), Resonating Arrow (308498), Chimaera Shot (344120), Chimaera Shot (344121)
+                   Affected Spells: Multi-Shot (2643), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Multi-Shot (257620), Resonating Arrow (308491), Resonating Arrow (308495), Resonating Arrow (308498), Chimaera Shot (342049), Chimaera Shot (344120), Chimaera Shot (344121)
                    Family Flags: 12, 39, 105
 Description      : $?s342049[Chimaera Shot][Arcane Shot] and Multi-Shot damage increased by $s1%.
 
@@ -11202,11 +11206,11 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=808875)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Violent Reaction (260231), Wildfire Bomb (265157), Wildfire Bomb (269747), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270339), Internal Bleeding (270343), Volatile Bomb (271048), Volatile Bomb (271049)
+                   Affected Spells: Violent Reaction (260231), Wildfire Bomb (265157), Wildfire Bomb (269747), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Internal Bleeding (270343), Volatile Bomb (271048), Volatile Bomb (271049)
                    Family Flags: 22
 #2 (id=808876)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Violent Reaction (260231), Wildfire Bomb (265157), Wildfire Bomb (269747), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270339), Internal Bleeding (270343), Volatile Bomb (271048), Volatile Bomb (271049)
+                   Affected Spells: Violent Reaction (260231), Wildfire Bomb (265157), Wildfire Bomb (269747), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Internal Bleeding (270343), Volatile Bomb (271048), Volatile Bomb (271049)
                    Family Flags: 22
 Description      : Wildfire Bomb deals $s1% additional damage.
 
@@ -11226,7 +11230,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=808879)   : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost (14)
-                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
+                   Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Arcane Shot (185358)
                    Family Flags: 105
 Description      : Arcane Shot Focus cost reduced by $s1.
@@ -12139,7 +12143,7 @@ Effects          :
 #2 (id=837985)   : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 5 (33)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 33 | Misc Value 2: 846 (Label) | Target: Self (1)
                    Affected Spells (Label): Resonating Arrow (308498)
-Description      : Your attacks and abilities deal |cFFFFFFFF ${$s1}.1%|r increased damage to enemies inside Resonating Arrow.
+Description      : Your attacks and abilities deal |cFFFFFFFF${$s1}.1%|r increased damage to enemies inside Resonating Arrow.
 
 Name             : Empowered Release (id=339059) [Spell Family (9), Passive, Hidden] 
 School           : Physical
@@ -12241,7 +12245,7 @@ Effects          :
                    Base Value: -10000 | Scaled Value: -10000 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Aspect of the Turtle (186265)
                    Family Flags: 15
-Description      : Aspect of the Turtle cooldown reduced by|cFFFFFFFF ${$s1/-1000}.1|r sec.
+Description      : Aspect of the Turtle's cooldown is reduced by |cFFFFFFFF${$s1/-1000}.1 sec|r.
 
 Name             : Rejuvenating Wind (id=339399) [Spell Family (9), Passive, Hidden] 
 School           : Physical
@@ -12298,7 +12302,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=838769)   : Apply Aura (6) | Dummy (4)
                    Base Value: -3 | Scaled Value: -3 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : When Feign Death ends the damage you take is reduced by|cFFFFFFFF ${$s1}.1%|r for $339461d.
+Description      : When Feign Death ends, you take |cFFFFFFFF${-$s1}.1%|r reduced damage for $339461d.
 
 Name             : Reversal of Fortune (id=339495) [Spell Family (9), Passive, Hidden] 
 School           : Physical
@@ -12342,7 +12346,7 @@ Effects          :
 #2 (id=838952)   : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Duration (1)
                    Base Value: 3000 | Scaled Value: 3000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Misc Value 2: 1069 (Label) | Target: Self (1)
                    Affected Spells (Label): Aspect of the Cheetah (186258)
-Description      : Aspect of the Cheetah secondary movement speed lasts an addtional ${$s2/1000} sec and the cooldown is reduced by|cFFFFFFFF ${$s1/-1000}.1|r sec.
+Description      : Aspect of the Cheetah's secondary movement speed lasts an addtional ${$s2/1000} sec, and its cooldown is reduced by |cFFFFFFFF${$s1/-1000}.1 sec|r.
 
 Name             : Tactical Retreat (id=339651) [Spell Family (9), Passive, Hidden] 
 School           : Physical
@@ -12403,7 +12407,7 @@ Effects          :
 #3 (id=839273)   : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 1072 (Label) | Target: Self (1)
                    Affected Spells (Label): Bestial Wrath (186254)
-Description      : Bestial Wrath increases all damage you and your pet deal by|cFFFFFFFF ${$s1}.1%|r.
+Description      : Bestial Wrath increases all damage you and your pet deal by an additional |cFFFFFFFF${$s1}.1%|r.
 
 Name             : Sharpshooter's Focus (id=339920) [Spell Family (9), Passive, Hidden] 
 School           : Physical
@@ -12617,7 +12621,7 @@ Effects          :
                    Base Value: 14 | Scaled Value: 14 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Raptor Strike (186270), Mongoose Bite (259387), Raptor Strike (265189), Mongoose Bite (265888)
                    Family Flags: 80, 96
-Description      : $?s259387[Mongoose Bite][Raptor Strike] damage increased by|cFFFFFFFF ${$s1}.1%|r.
+Description      : $?s259387[Mongoose Bite][Raptor Strike]'s damage is increased by |cFFFFFFFF${$s1}.1%|r.
 
 Name             : Deadly Tandem (id=341350) [Spell Family (9), Passive, Hidden] 
 School           : Physical
@@ -12681,7 +12685,7 @@ Effects          :
 #2 (id=841837)   : Apply Aura (6) | Modify Recharge Time (Category) (453)
                    Base Value: -1000 | Scaled Value: -1000 | PvP Coefficient: 1.00000 | Misc Value: 1675 | Target: Self (1)
                    Affected Spells (Category): Barbed Shot (217200)
-Description      : Barbed Shot's recharge time is reduced by ${$s2/1000} sec and the damage is increased by|cFFFFFFFF ${$s1}.1%|r.
+Description      : Barbed Shot's recharge time is reduced by ${-$s2/1000} sec, and its damage is increased by |cFFFFFFFF${$s1}.1%|r.
 
 Name             : Chimaera Shot (id=342049) [Spell Family (9)] 
 Replaces         : Arcane Shot (id=185358)
@@ -12692,9 +12696,9 @@ Resource         : 20 Focus (2) (id=215283)
 Range            : 40 yards
 GCD              : 1.5 seconds
 Requires weapon  : Bow, Gun, Crossbow
-Affecting spells : Hunter (137014 effect#2), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#3)
+Affecting spells : Hunter (137014 effect#2), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#3), Precise Shots (260242 effect#2), True Aim (321287 effect#1)
 Triggered by     : Precise Shots (260242)
-Family Flags     : 1, 2, 121
+Family Flags     : 1, 2, 39, 121
 Attributes       : .x..x... ........ x....... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -12715,7 +12719,6 @@ School           : Physical
 Spell Type       : None
 Spell Level      : 1
 Duration         : 15 seconds
-Stacks           : 1 initial, 1 maximum
 Proc Chance      : 101%
 Proc Flags       : ........ x....... ........ ........ 
                  : Yellow Ranged
@@ -12725,7 +12728,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ....x... ........ ........ 
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=842863)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)

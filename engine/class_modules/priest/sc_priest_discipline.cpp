@@ -328,23 +328,6 @@ void priest_t::init_spells_discipline()
 
   // Azerite
   azerite.death_throes = find_azerite_spell( "Death Throes" );
-
-  // Range Based on Talents
-  if ( base.distance != 5 && specialization() == PRIEST_DISCIPLINE )
-  {
-    if ( talents.divine_star->ok() )
-    {
-      base.distance = 24.0;
-    }
-    else if ( talents.halo->ok() )
-    {
-      base.distance = 27.0;
-    }
-    else
-    {
-      base.distance = 27.0;
-    }
-  }
 }
 
 action_t* priest_t::create_action_discipline( util::string_view name, util::string_view options_str )

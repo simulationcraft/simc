@@ -29,6 +29,17 @@ void lightless_force( special_effect_t& );
 void sinful_revelation( special_effect_t& );
 }
 
+namespace items
+{
+// Trinkets
+void darkmoon_deck_shuffle( special_effect_t& );
+void darkmoon_deck_putrescence( special_effect_t& );
+void darkmoon_deck_voracity( special_effect_t& );
+void stone_legion_heraldry( special_effect_t& );
+void cabalists_effigy( special_effect_t& );
+void dreadfire_vessel( special_effect_t& );
+}  // namespace items
+
 void register_hotfixes();
 void register_special_effects();
 void register_target_data_initializers( sim_t& );

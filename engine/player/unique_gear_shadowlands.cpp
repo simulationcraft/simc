@@ -9,8 +9,10 @@
 
 #include "buff/sc_buff.hpp"
 #include "action/dot.hpp"
+#include "item/item.hpp"
 
 #include "actor_target_data.hpp"
+#include "darkmoon_deck.hpp"
 #include "unique_gear.hpp"
 #include "unique_gear_helper.hpp"
 
@@ -110,7 +112,7 @@ void surprisingly_palatable_feast( special_effect_t& effect )
 void feast_of_gluttonous_hedonism( special_effect_t& effect )
 {
   init_feast( effect,
-              {{STAT_STRENGTH, 327707}, {STAT_STAMINA, 327707}, {STAT_INTELLECT, 327708}, {STAT_AGILITY, 327709}} );
+              {{STAT_STRENGTH, 327706}, {STAT_STAMINA, 327707}, {STAT_INTELLECT, 327708}, {STAT_AGILITY, 327709}} );
 }
 
 // For things that require check for oils, the effect must be passed as first parameter of the constructor, but this
@@ -291,6 +293,179 @@ void sinful_revelation( special_effect_t& effect )
 }
 }  // namespace enchants
 
+namespace items
+{
+void darkmoon_deck_shuffle( special_effect_t& effect )
+{
+  // Disable the effect, as we handle shuffling within the on-use effect
+  effect.type = SPECIAL_EFFECT_NONE;
+}
+
+struct SL_darkmoon_deck_t : public darkmoon_deck_t
+{
+  std::vector<unsigned> card_ids;
+  std::vector<const spell_data_t*> cards;
+  const spell_data_t* top;
+
+  SL_darkmoon_deck_t( const special_effect_t& e, const std::vector<unsigned>& c )
+    : darkmoon_deck_t( e ), card_ids( c ), top( spell_data_t::nil() )
+  {}
+
+  void initialize() override
+  {
+    for ( auto c : card_ids )
+    {
+      auto s = player->find_spell( c );
+      if ( s->ok () )
+        cards.push_back( s );
+    }
+
+    top = cards[ player->rng().range( cards.size() ) ];
+
+    player->register_combat_begin( [this]( player_t* ) {
+      make_event<shuffle_event_t>( *player->sim, this, true );
+    } );
+  }
+
+  void shuffle() override
+  {
+    top = cards[ player->rng().range( cards.size() ) ];
+
+    player->sim->print_debug( "{} top card is now {} ({})", player->name(), top->name_cstr(), top->id() );
+  }
+};
+
+struct SL_darkmoon_deck_proc_t : public proc_spell_t
+{
+  SL_darkmoon_deck_t* deck;
+
+  SL_darkmoon_deck_proc_t( const special_effect_t& e, util::string_view n, unsigned shuffle_id,
+                           std::initializer_list<unsigned> card_list )
+    : proc_spell_t( n, e.player, e.trigger(), e.item )
+  {
+    auto shuffle = unique_gear::find_special_effect( player, shuffle_id );
+    if ( !shuffle )
+      return;
+
+    deck = new SL_darkmoon_deck_t( *shuffle, card_list );
+    deck->initialize();
+  }
+
+  ~SL_darkmoon_deck_proc_t() { delete deck; }
+};
+
+void darkmoon_deck_putrescence( special_effect_t& effect )
+{
+  struct putrid_burst_t : public SL_darkmoon_deck_proc_t
+  {
+    putrid_burst_t( const special_effect_t& e )
+      : SL_darkmoon_deck_proc_t( e, "putrid_burst", 333885,
+                                 {311464, 311465, 311466, 311467, 311468, 311469, 311470, 311471} )
+    {
+      split_aoe_damage = true;
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      SL_darkmoon_deck_proc_t::impact( s );
+
+      auto td = player->get_target_data( s->target );
+      // Crit debuff value uses player level scaling, not item scaling
+      td->debuff.putrid_burst->trigger( 1, deck->top->effectN( 1 ).average( player ) * 0.0001 );
+    }
+  };
+
+  effect.trigger_spell_id = effect.spell_id;
+  effect.execute_action   = new putrid_burst_t( effect );
+}
+
+void darkmoon_deck_voracity( special_effect_t& effect )
+{
+  struct voracious_hunger_t : public SL_darkmoon_deck_proc_t
+  {
+    stat_buff_t* buff;
+
+    voracious_hunger_t( const special_effect_t& e )
+      : SL_darkmoon_deck_proc_t( e, "voracious_hunger", 329446,
+                                 {311483, 311484, 311485, 311486, 311487, 311488, 311489, 311490} )
+    {
+      may_crit = false;
+
+      buff = make_buff<stat_buff_t>( player, "voracious_haste", e.driver()->effectN( 2 ).trigger(), item )
+        ->add_stat( STAT_HASTE_RATING, 0 );
+    }
+
+    void execute() override
+    {
+      SL_darkmoon_deck_proc_t::execute();
+
+      buff->stats[ 0 ].amount = deck->top->effectN( 1 ).average( player );
+      buff->trigger();
+    }
+  };
+
+  effect.trigger_spell_id = effect.spell_id;
+  effect.execute_action   = new voracious_hunger_t( effect );
+}
+
+void stone_legion_heraldry( special_effect_t& effect )
+{
+  double amount   = effect.driver()->effectN( 1 ).average( effect.item );
+  unsigned allies = effect.player->sim->shadowlands_opts.stone_legionnaires_in_party;
+  double mul      = 1.0 + effect.driver()->effectN( 2 ).percent() * allies;
+
+  effect.player->passive.versatility_rating += amount * mul;
+
+  // Disable further effect handling
+  effect.type = SPECIAL_EFFECT_NONE;
+}
+
+void cabalists_effigy( special_effect_t& effect )
+{
+  auto buff = buff_t::find( effect.player, "crimson_chorus" );
+  if ( !buff )
+  {
+    auto mul =
+        1.0 + effect.driver()->effectN( 2 ).percent() * effect.player->sim->shadowlands_opts.crimson_choir_in_party;
+
+    buff = make_buff<stat_buff_t>( effect.player, "crimson_chorus", effect.trigger(), effect.item )
+      ->add_stat( STAT_CRIT_RATING, effect.driver()->effectN( 1 ).average( effect.item ) * mul )
+      ->set_period( effect.trigger()->duration() )
+      ->set_duration( effect.trigger()->duration() * effect.trigger()->max_stacks() );
+  }
+
+  effect.player->register_combat_begin( [ buff ]( player_t* p ) {
+    make_repeating_event( *p->sim, 1_min, [ buff ]() {
+      buff->trigger();
+    } );
+  } );
+}
+
+void dreadfire_vessel( special_effect_t& effect )
+{
+  struct dreadfire_vessel_proc_t : public proc_spell_t
+  {
+    dreadfire_vessel_proc_t( const special_effect_t& e ) : proc_spell_t( e )
+    {
+      // TODO: determine if the damage in the spell_data is for each flame or all 3 combined
+      base_multiplier = 1.0 / 3.0;
+      // TODO: determine actual travel speed of the flames (data has 1.5yd/s)
+      travel_speed = 0.0;
+    }
+
+    void execute() override
+    {
+      // TODO: determine the how the three flames are fired
+      proc_spell_t::execute();
+      proc_spell_t::execute();
+      proc_spell_t::execute();
+    }
+  };
+
+  effect.execute_action = create_proc_action<dreadfire_vessel_proc_t>( "dreadfire_vessel", effect );
+}
+}  // namespace items
+
 void register_hotfixes()
 {
 }
@@ -311,6 +486,15 @@ void register_special_effects()
     unique_gear::register_special_effect( 324747, enchants::celestial_guidance );
     unique_gear::register_special_effect( 323932, enchants::lightless_force );
     unique_gear::register_special_effect( 324250, enchants::sinful_revelation );
+
+    // Trinkets
+    unique_gear::register_special_effect( 333885, items::darkmoon_deck_shuffle );
+    unique_gear::register_special_effect( 334058, items::darkmoon_deck_putrescence );
+    unique_gear::register_special_effect( 329446, items::darkmoon_deck_shuffle );
+    unique_gear::register_special_effect( 331624, items::darkmoon_deck_voracity );
+    unique_gear::register_special_effect( 344686, items::stone_legion_heraldry );
+    unique_gear::register_special_effect( 344806, items::cabalists_effigy );
+    unique_gear::register_special_effect( 344732, items::dreadfire_vessel );
 }
 
 void register_target_data_initializers( sim_t& sim )
@@ -327,6 +511,20 @@ void register_target_data_initializers( sim_t& sim )
     }
     else
       td->debuff.sinful_revelation = make_buff( *td, "sinful_revelation" )->set_quiet( true );
+  } );
+
+  // Darkmoon Deck: Putrescence
+  sim.register_target_data_initializer( []( actor_target_data_t* td ) {
+    if ( unique_gear::find_special_effect( td->source, 334058 ) )
+    {
+      assert( !td->debuff.putrid_burst );
+
+      td->debuff.putrid_burst = make_buff<buff_t>( *td, "putrid_burst", td->source->find_spell( 334058 ) )
+        ->set_cooldown( 0_ms );
+      td->debuff.putrid_burst->reset();
+    }
+    else
+      td->debuff.putrid_burst = make_buff( *td, "putrid_burst" )->set_quiet( true );
   } );
 }
 

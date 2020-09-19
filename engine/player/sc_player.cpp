@@ -57,6 +57,7 @@
 #include "util/util.hpp"
 
 #include <cerrno>
+#include <limits>
 #include <memory>
 #include <sstream>
 #include <cctype>
@@ -1210,8 +1211,8 @@ player_t::player_t( sim_t* s, player_e t, util::string_view n, race_e r )
     passive_modifier( 0 ),
     x_position( 0.0 ),
     y_position( 0.0 ),
-    default_x_position( 0.0 ),
-    default_y_position( 0.0 ),
+    default_x_position( std::numeric_limits<double>::lowest() ),
+    default_y_position( std::numeric_limits<double>::lowest() ),
     consumables(),
     buffs(),
     debuffs(),
@@ -3547,7 +3548,7 @@ double player_t::composite_melee_attack_power() const
   return ap;
 }
 
-double player_t::composite_melee_attack_power( attack_power_type type ) const
+double player_t::composite_melee_attack_power_by_type( attack_power_type type ) const
 {
   double base_ap = cache.attack_power();
   double ap = 0;
@@ -3985,9 +3986,6 @@ double player_t::composite_mastery() const
   double cm =
       current.mastery + apply_combat_rating_dr( RATING_MASTERY, composite_mastery_rating() / current.rating.mastery );
 
-  if ( buffs.redirected_anima )
-    cm += buffs.redirected_anima->check_stack_value();
-
   if ( buffs.combat_meditation )
     cm += buffs.combat_meditation->check_value();
 
@@ -4227,6 +4225,9 @@ double player_t::composite_player_target_crit_chance( player_t* target ) const
 
     // Consumable: Potion of Focused Resolve
     c += td->debuff.focused_resolve->stack_value();
+
+    // Darkmoon Deck: Putrescence
+    c += td->debuff.putrid_burst->stack_value();
   }
 
   return c;
@@ -5258,6 +5259,8 @@ void player_t::reset()
   off_hand_weapon.buff_value = 0;
   off_hand_weapon.bonus_dmg  = 0;
 
+  assert( default_x_position != std::numeric_limits<decltype(default_x_position)>::lowest() );
+  assert( default_y_position != std::numeric_limits<decltype(default_y_position)>::lowest() );
   x_position = default_x_position;
   y_position = default_y_position;
 
@@ -9481,7 +9484,7 @@ const spell_data_t* player_t::find_talent_spell( util::string_view n, specializa
   if ( !spell_id )
   {
     sim->print_debug( "Player {}: Can't find talent with name '{}'.", name(), n );
-    return spell_data_t::nil();
+    return spell_data_t::not_found();
   }
 
   for ( int j = 0; j < MAX_TALENT_ROWS; j++ )
@@ -12964,10 +12967,14 @@ double player_t::get_ground_aoe_distance(const action_state_t& a) const
 
 void player_t::init_distance_targeting()
 {
-  if (!sim->distance_targeting_enabled)
-    return;
-
-  x_position = -1 * base.distance;
+  if (default_x_position == std::numeric_limits<decltype(default_x_position)>::lowest())
+  {
+    default_x_position = -1 * base.distance;
+  }
+  if (default_y_position == std::numeric_limits<decltype(default_y_position)>::lowest())
+  {
+    default_y_position = 0;
+  }
 }
 
 void format_to( const player_t& player, fmt::format_context::iterator out )

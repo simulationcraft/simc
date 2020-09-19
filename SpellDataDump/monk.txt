@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.2.35854 shadowlands-BETA (hotfix 2020-09-12/35854, git build shadowlands a3c99b0cc6)
+SimulationCraft 901-01 for World of Warcraft 9.0.2.35938 shadowlands-BETA (hotfix 2020-09-18/35938, git build shadowlands a3c99b0cc6)
 
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -424,8 +424,7 @@ Name             : Tiger Palm (id=100780) [Spell Family (53)]
 Class            : Monk
 School           : Physical
 Spell Type       : Melee
-Resource         : 50 Energy (3) (id=5167) w/ Brewmaster Monk (id=137023)
-Resource         : 50 Energy (3) (id=10716) w/ Windwalker Monk (id=137025)
+Resource         : 50 Energy (3) (id=5167)
 Spell Level      : 1
 Range            : 5 yards
 GCD              : 1.5 seconds
@@ -999,7 +998,7 @@ Spell Level      : 17
 Range            : 40 yards
 GCD              : 1 seconds
 Duration         : 8 seconds
-Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Extend Life (185158 effect#2), Enveloping Breath (325209 effect#3), Extend Life (337993 effect#2)
+Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Extend Life (185158 effect#2), Enveloping Breath (325209 effect#3), Extend Life (337993 effect#2), Enveloping Mist (344008 effect#2)
 Family Flags     : 24, 48
 Attributes       : ........ ........ ........ ........   ..x...x. ........ ........ .....x.. 
                  : ........ x....... ........ ......x.   ........ ........ ........ ........ 
@@ -1157,7 +1156,7 @@ Resource         : 4.374% Base Mana (0) (id=5718)
 GCD              : 1.5 seconds
 Cooldown         : 180 seconds
 Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2)
-Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Extend Life (185158 effect#2), Enveloping Breath (325209 effect#3), Extend Life (337993 effect#2)
+Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Extend Life (185158 effect#2), Enveloping Breath (325209 effect#3), Extend Life (337993 effect#2), Enveloping Mist (344008 effect#2)
 Family Flags     : 48, 60
 Attributes       : ........ ........ ........ ........   ........ ..x....x ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
@@ -1490,7 +1489,7 @@ Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Labels           : 802: Devout Spirit (297412 effect#1), Devout Spirit (310530 effect#1)
-Affecting spells : Thunder Focus Tea (116680 effect#2), Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Extend Life (185158 effect#2), Lifecycles (Vivify) (197916 effect#1), Infusion of Life (199380 effect#1), Vivify (231602 effect#1), Uplifted Spirits (278576 effect#3), Lunar Glide (281521 effect#1), Celestial Brew (322507 effect#2), Enveloping Breath (325209 effect#3), Soothing Focus (337476 effect#1), Extend Life (337993 effect#2), Escape from Reality (343249 effect#3)
+Affecting spells : Thunder Focus Tea (116680 effect#2), Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Extend Life (185158 effect#2), Lifecycles (Vivify) (197916 effect#1), Infusion of Life (199380 effect#1), Vivify (231602 effect#1), Uplifted Spirits (278576 effect#3), Lunar Glide (281521 effect#1), Celestial Brew (322507 effect#2), Enveloping Breath (325209 effect#3), Clouded Focus (337476 effect#1), Extend Life (337993 effect#2), Enveloping Mist (344008 effect#2)
 Family Flags     : 26, 48
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1784,7 +1783,7 @@ Spell Type       : Melee
 Spell Level      : 1
 Range            : 8 yards
 Affecting spells : Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#2), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), Open Palm Strikes (279918 effect#4), The Wind Blows (281452 effect#1), Inner Fury (336452 effect#1), Extend Life (337993 effect#2)
-Triggered by     : Fists of Fury (113656)
+Triggered by     : Fists of Fury (113656), Fists of Fury (330898)
 Family Flags     : 20, 103
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ......x.   ........ .x...... ........ ........ 
@@ -2045,7 +2044,7 @@ Duration         : 20 seconds
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
-Affecting spells : Thunder Focus Tea (116680 effect#3), Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Extend Life (185158 effect#2), Shelter of Rin (281301 effect#1), Enveloping Breath (325209 effect#3), Extend Life (337993 effect#2)
+Affecting spells : Thunder Focus Tea (116680 effect#3), Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Extend Life (185158 effect#2), Shelter of Rin (281301 effect#1), Enveloping Breath (325209 effect#3), Extend Life (337993 effect#2), Enveloping Mist (344008 effect#2)
 Family Flags     : 23, 48
 Attributes       : ........ ........ ..x..... x..x....   ........ ........ ........ ........ 
                  : ..x..... x....... ........ ........   ........ .x...... ........ ..x...x. 
@@ -2090,7 +2089,7 @@ Range            : 5 yards
 Duration         : 4 seconds
 Mechanic         : Stun
 Affecting spells : Monk (137022 effect#1), Serenity (152173 effect#1), Katsuo's Eclipse (208045 effect#1), Weapons of Order (311054 effect#1)
-Triggered by     : Fists of Fury (113656)
+Triggered by     : Fists of Fury (113656), Fists of Fury (330898)
 Family Flags     : 55
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2242,8 +2241,8 @@ Attributes       : ......xx x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=141408)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
+#1 (id=141408)   : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=-2) | PvP Coefficient: 1.00000 | Target: Self (1)
 
 Name             : Keg Smash (id=121253) [Spell Family (53)] 
 Class            : Brewmaster Monk
@@ -2370,7 +2369,7 @@ School           : Nature
 Spell Type       : Magic
 Charges          : 2 (30 seconds cooldown)
 Category         : 1646
-Affecting spells : Extend Life (185158 effect#2), Extend Life (337993 effect#2)
+Affecting spells : Windwalker Monk (137025 effect#13), Extend Life (185158 effect#2), Extend Life (337993 effect#2)
 Family Flags     : 77, 116
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ .....x.. 
@@ -2548,7 +2547,9 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 63508 | Misc Value 2: 0xcbe | Target: At Enemy (53)
 #2 (id=832829)   : Apply Aura (6) | Periodic Dummy (226): every 4 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Summons an effigy of Xuen, the White Tiger for $d. Xuen attacks your primary target, and strikes 3 enemies within $123996A1 yards every $123999t1 sec with Tiger Lightning for $123996s1 Nature damage.
+Description      : Summons an effigy of Xuen, the White Tiger for $d. Xuen attacks your primary target, and strikes 3 enemies within $123996A1 yards every $123999t1 sec with Tiger Lightning for $123996s1 Nature damage.$?s335913[
+
+Every $323999s1 sec, the effigy of Xuen strikes your enemies with Empowered Tiger Lightning dealing $323999s2% of the damage you have dealt to those targets in the last $323999s1 sec.][]
 
 Name             : Chi Burst (id=123986) [Spell Family (53)] 
 Class            : Monk
@@ -2850,7 +2851,7 @@ Class            : Monk
 School           : Nature
 Spell Type       : Magic
 Range            : 50000 yards
-Affecting spells : Extend Life (185158 effect#2), Extend Life (337993 effect#2)
+Affecting spells : Windwalker Monk (137025 effect#13), Extend Life (185158 effect#2), Extend Life (337993 effect#2)
 Family Flags     : 77, 121
 Attributes       : ........ ........ .......x x..x....   .....x.. ..x..... ........ ........ 
                  : ..x..... ......x. ........ ........   ........ ........ ........ ........ 
@@ -2876,7 +2877,7 @@ Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Duration         : 6 seconds
-Affecting spells : Mistweaver Monk (137024 effect#1), Extend Life (185158 effect#2), Mist Wrap (197900 effect#1), Lifecycles (Enveloping Mist) (197919 effect#1), Soothing Mist (209525 effect#2), Enveloping Mist (231605 effect#1), Surge of Mists (246328 effect#1), Enveloping Breath (325209 effect#3), Soothing Focus (337476 effect#1), Extend Life (337993 effect#2), Invoke Chi-Ji, the Red Crane (343820 effect#1), 
+Affecting spells : Mistweaver Monk (137024 effect#1), Extend Life (185158 effect#2), Mist Wrap (197900 effect#1), Lifecycles (Enveloping Mist) (197919 effect#1), Soothing Mist (209525 effect#2), Enveloping Mist (231605 effect#1), Surge of Mists (246328 effect#1), Enveloping Breath (325209 effect#3), Clouded Focus (337476 effect#1), Extend Life (337993 effect#2), Invoke Chi-Ji, the Red Crane (343820 effect#1), Enveloping Mist (344008 effect#2)
 Family Flags     : 48, 67, 79
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ...x.... x....... ........ ........   ........ ........ ........ ........ 
@@ -2892,7 +2893,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.60000 | PvP Coefficient: 1.00000 | Target: Friend (21)
 #2 (id=290817)   : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Friend (21)
-                   Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Essence Font (191840), Gust of Mists (191894), Soothing Mist (198533), Celestial Breath (199656), Surging Mist (227344), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Gust of Mists (328748), Celestial Breath (337268), Extend Life (337993), Soothing Breath (343737), Gust of Mists (343819)
+                   Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Essence Font (191840), Gust of Mists (191894), Soothing Mist (198533), Celestial Breath (199656), Surging Mist (227344), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Soothing Mist (328283), Gust of Mists (328748), Yu'lon's Whisper (337268), Extend Life (337993), Soothing Breath (343737), Gust of Mists (343819), Enveloping Mist (344008)
                    Family Flags: 48, 102
 Description      : Wraps the target in healing mists, healing for $o1 over $d$?a231605[, and increasing healing received from your other spells by $m2%][].
 Tooltip          : Heals $w1 every $t1 sec.
@@ -3206,6 +3207,7 @@ Class            : Monk
 School           : Physical
 Spell Type       : None
 Spell Level      : 50
+Req. Max Level   : 50
 Attributes       : ......xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3218,7 +3220,7 @@ Attributes       : ......xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=168002)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : You're a Level 90 Monk.  Grats!
+Description      : You're a Level $ctrmin2066 Monk.  Grats!
 
 Name             : Chi Burst (id=130654) [Spell Family (53)] 
 Class            : Monk
@@ -3226,7 +3228,7 @@ School           : Nature
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Enveloping Mist (124682 effect#2), Brewmaster Monk (137023 effect#7), Mistweaver Monk (137024 effect#1), Windwalker Monk (137025 effect#13), Storm, Earth, and Fire (137639 effect#2), Extend Life (185158 effect#2), Enveloping Breath (325209 effect#3), Extend Life (337993 effect#2)
+Affecting spells : Enveloping Mist (124682 effect#2), Brewmaster Monk (137023 effect#7), Mistweaver Monk (137024 effect#1), Windwalker Monk (137025 effect#13), Storm, Earth, and Fire (137639 effect#2), Extend Life (185158 effect#2), Enveloping Breath (325209 effect#3), Extend Life (337993 effect#2), Enveloping Mist (344008 effect#2)
 Family Flags     : 38, 48, 77, 89
 Attributes       : ........ ........ ........ x..x....   ...x.x.x ........ ........ ........ 
                  : ........ ......x. ...x.... ........   ........ .x...... ........ ......x. 
@@ -3248,7 +3250,7 @@ School           : Nature
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 50000 yards
-Affecting spells : Enveloping Mist (124682 effect#2), Brewmaster Monk (137023 effect#19), Mistweaver Monk (137024 effect#1), Storm, Earth, and Fire (137639 effect#1), Extend Life (185158 effect#2), Enveloping Breath (325209 effect#3), Extend Life (337993 effect#2)
+Affecting spells : Enveloping Mist (124682 effect#2), Brewmaster Monk (137023 effect#19), Mistweaver Monk (137024 effect#1), Windwalker Monk (137025 effect#13), Storm, Earth, and Fire (137639 effect#1), Extend Life (185158 effect#2), Enveloping Breath (325209 effect#3), Extend Life (337993 effect#2), Enveloping Mist (344008 effect#2)
 Family Flags     : 48, 58, 77
 Attributes       : ........ ........ ..x....x x..x....   .....x.x ........ ........ ........ 
                  : ..x..... ......x. ........ ......x.   ........ .x...... ..x..... ......x. 
@@ -3378,17 +3380,17 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179707)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 9 | Scaled Value: 9 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Glory of the Dawn (288636), Faeline Stomp (327264)
+                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Glory of the Dawn (288636), Faeline Stomp (327264), Fists of Fury (330898), Spinning Crane Kick (330901), Spinning Crane Kick (330903), Breath of Fire (330907), Keg Smash (330911)
                    Family Flags: 103
 #2 (id=191108)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 9 | Scaled Value: 9 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Glory of the Dawn (288636), Faeline Stomp (327264)
+                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Glory of the Dawn (288636), Faeline Stomp (327264), Fists of Fury (330898), Spinning Crane Kick (330901), Spinning Crane Kick (330903), Breath of Fire (330907), Keg Smash (330911)
                    Family Flags: 103
 #3 (id=191109)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 9 | Scaled Value: 9 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=191110)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1490 | Target: Self (1)
-                   Affected Spells (Category): Keg Smash (121253)
+                   Affected Spells (Category): Keg Smash (121253), Keg Smash (330911)
 #5 (id=191111)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1562 | Target: Self (1)
                    Affected Spells (Category): Ironskin Brew (115308), Purifying Brew (119582)
@@ -3460,11 +3462,11 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179708)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Essence Font (191840), Gust of Mists (191894), Soothing Mist (198533), Celestial Breath (199656), Surging Mist (227344), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Gust of Mists (328748), Celestial Breath (337268), Extend Life (337993), Soothing Breath (343737), Gust of Mists (343819)
+                   Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Essence Font (191840), Gust of Mists (191894), Soothing Mist (198533), Celestial Breath (199656), Surging Mist (227344), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Soothing Mist (328283), Gust of Mists (328748), Yu'lon's Whisper (337268), Extend Life (337993), Soothing Breath (343737), Gust of Mists (343819), Enveloping Mist (344008)
                    Family Flags: 48
 #2 (id=191104)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Essence Font (191840), Gust of Mists (191894), Soothing Mist (198533), Celestial Breath (199656), Surging Mist (227344), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Gust of Mists (328748), Celestial Breath (337268), Extend Life (337993), Soothing Breath (343737), Gust of Mists (343819)
+                   Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Essence Font (191840), Gust of Mists (191894), Soothing Mist (198533), Celestial Breath (199656), Surging Mist (227344), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Soothing Mist (328283), Gust of Mists (328748), Yu'lon's Whisper (337268), Extend Life (337993), Soothing Breath (343737), Gust of Mists (343819), Enveloping Mist (344008)
                    Family Flags: 48
 #3 (id=191105)   : Apply Aura (6) | Unknown(312)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 117 | Target: Self (1)
@@ -3514,6 +3516,10 @@ Effects          :
                    Affected Spells (Label): Pressure Point (278577)
 #17 (id=777114)   : Apply Aura (6) | Modify Ranged Attack Speed% (320)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 640 | Target: Self (1)
+#18 (id=869541)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
+                   Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
+                   Affected Spells: Tiger Palm (100780)
+                   Family Flags: 10
 Description      : Mistweaver Monk core passive
 
 Name             : Windwalker Monk (id=137025) [Spell Family (53), Passive, Hidden] 
@@ -3533,11 +3539,11 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179709)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: -17 | Scaled Value: -17 | PvP Coefficient: 1.23500 | Target: Self (1)
-                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Glory of the Dawn (288636), Faeline Stomp (327264)
+                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Glory of the Dawn (288636), Faeline Stomp (327264), Fists of Fury (330898), Spinning Crane Kick (330901), Spinning Crane Kick (330903), Breath of Fire (330907), Keg Smash (330911)
                    Family Flags: 103
 #2 (id=191100)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: -17 | Scaled Value: -17 | PvP Coefficient: 1.23500 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Glory of the Dawn (288636), Faeline Stomp (327264)
+                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Glory of the Dawn (288636), Faeline Stomp (327264), Fists of Fury (330898), Spinning Crane Kick (330901), Spinning Crane Kick (330903), Breath of Fire (330907), Keg Smash (330911)
                    Family Flags: 103
 #3 (id=191101)   : Apply Aura (6) | Dummy (4)
                    Base Value: -21 | Scaled Value: -21 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -3575,8 +3581,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 115 | Target: Self (1)
 #13 (id=739336)   : Apply Aura (6) | Add Flat Modifier (107): Spell Global Cooldown (21)
                    Base Value: -500 | Scaled Value: -500 | PvP Coefficient: 1.00000 | Misc Value: 21 | Target: Self (1)
-                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (101546), Rising Sun Kick (107428), Paralysis (115078), Chi Wave (115098), Detox (115450), Disable (116095), Tiger's Lust (116841), Ring of Peace (116844), Rushing Jade Wind (116847), Crackling Jade Lightning (117952), Leg Sweep (119381), Chi Burst (123986), Chi Burst (130654), Chi Burst (148135), Rising Sun Kick (185099), Refreshing Jade Wind (196725), Song of Chi-Ji (198898), Blackout Kick (205523), Detox (218164), Blackout Kick (228649), Chi Burst (261682), Sweep the Leg (280184), Expel Harm (322101), Touch of Death (322109), Spinning Crane Kick (322729)
-                   Family Flags: 1, 2, 4, 9, 10, 17, 22, 29, 32, 35, 38, 39, 40, 41, 47, 54, 63, 76, 99, 100
+                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (101546), Rising Sun Kick (107428), Paralysis (115078), Chi Wave (115098), Detox (115450), Disable (116095), Tiger's Lust (116841), Ring of Peace (116844), Rushing Jade Wind (116847), Crackling Jade Lightning (117952), Leg Sweep (119381), Healing Elixir (122281), Chi Burst (123986), Gift of the Ox (124507), Chi Burst (130654), Chi Wave (132463), Chi Burst (148135), Gift of the Ox (178173), Rising Sun Kick (185099), Refreshing Jade Wind (196725), Song of Chi-Ji (198898), Blackout Kick (205523), Detox (218164), Blackout Kick (228649), Chi Burst (261682), Sweep the Leg (280184), Weapons of Order (310454), Expel Harm (322101), Touch of Death (322109), Spinning Crane Kick (322729)
+                   Family Flags: 1, 2, 4, 9, 10, 17, 22, 29, 32, 35, 38, 39, 40, 41, 47, 54, 63, 76, 77, 99, 100
 #14 (id=739337)   : Apply Aura (6) | Override Spell Power per Attack Power% (366)
                    Base Value: 96 | Scaled Value: 96 | PvP Coefficient: 1.00000 | Target: Self (1)
 #15 (id=739777)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Global Cooldown (21)
@@ -3718,7 +3724,7 @@ Effects          :
                    Family Flags: 4, 5, 16, 39, 55, 63, 118
 #2 (id=303755)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Glory of the Dawn (288636), Faeline Stomp (327264)
+                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Glory of the Dawn (288636), Faeline Stomp (327264), Fists of Fury (330898), Spinning Crane Kick (330901), Spinning Crane Kick (330903), Breath of Fire (330907), Keg Smash (330911)
                    Family Flags: 103
 #3 (id=303756)   : Apply Aura (6) | Modify Healing% Done (136)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
@@ -3728,7 +3734,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 359 | Target: Self (1)
 #6 (id=479822)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Glory of the Dawn (288636), Faeline Stomp (327264)
+                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Glory of the Dawn (288636), Faeline Stomp (327264), Fists of Fury (330898), Spinning Crane Kick (330901), Spinning Crane Kick (330903), Breath of Fire (330907), Keg Smash (330911)
                    Family Flags: 103
 #7 (id=739494)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -3874,7 +3880,7 @@ Class            : Monk
 School           : Nature
 Spell Type       : Magic
 Spell Level      : 1
-Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Extend Life (185158 effect#2), Enveloping Breath (325209 effect#3), Extend Life (337993 effect#2)
+Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Extend Life (185158 effect#2), Enveloping Breath (325209 effect#3), Extend Life (337993 effect#2), Enveloping Mist (344008 effect#2)
 Triggered by     : Refreshing Jade Wind (196725)
 Family Flags     : 48, 85
 Attributes       : ........ ........ ........ ...x....   ........ ........ ........ ........ 
@@ -4051,7 +4057,7 @@ Class            : Monk
 School           : Nature
 Spell Type       : Magic
 Range            : 50000 yards
-Affecting spells : Extend Life (185158 effect#2), Extend Life (337993 effect#2)
+Affecting spells : Windwalker Monk (137025 effect#13), Extend Life (185158 effect#2), Extend Life (337993 effect#2)
 Family Flags     : 77, 121
 Attributes       : ........ ........ .......x x..x....   .....x.. ..x..... ........ ........ 
                  : ..x..... ......x. ........ ........   ........ ........ ........ ......x. 
@@ -4123,7 +4129,7 @@ Velocity         : 40 yards/sec
 Duration         : 8 seconds
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Item - Monk T19 Mistweaver 4P Bonus (211423 effect#2), Upwelling (274963 effect#2), Font of Life (279875 effect#2), Enveloping Breath (325209 effect#3)
+Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Item - Monk T19 Mistweaver 4P Bonus (211423 effect#2), Upwelling (274963 effect#2), Font of Life (279875 effect#2), Enveloping Breath (325209 effect#3), Enveloping Mist (344008 effect#2)
 Triggered by     : Essence Font (191837)
 Family Flags     : 48, 108
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4149,7 +4155,7 @@ School           : Nature
 Spell Type       : Magic
 Spell Level      : 4
 Range            : 100 yards
-Affecting spells : Mastery: Gust of Mists (117907 effect#3), Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Enveloping Breath (325209 effect#3)
+Affecting spells : Mastery: Gust of Mists (117907 effect#3), Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Enveloping Breath (325209 effect#3), Enveloping Mist (344008 effect#2)
 Family Flags     : 48, 110
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -4344,7 +4350,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 162530 | Target: Self (1)
 #2 (id=763870)   : Dummy (3)
                    Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Summon a whirling tornado around you, causing ${$162530m1*13} healing over $d to up to $s2 allies within $162530A1 yards.
+Description      : Summon a whirling tornado around you, causing ${$162530s1*13} healing over $d to up to $s2 allies within $162530A1 yards.
 Tooltip          : Healing $s2 nearby allies every $116847t1 sec.
 
 Name             : Special Delivery (id=196730) [Spell Family (53), Passive] 
@@ -4531,11 +4537,11 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=288843)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Glory of the Dawn (288636), Faeline Stomp (327264)
+                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Glory of the Dawn (288636), Faeline Stomp (327264), Fists of Fury (330898), Spinning Crane Kick (330901), Spinning Crane Kick (330903), Breath of Fire (330907), Keg Smash (330911)
                    Family Flags: 103
 #2 (id=479821)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Glory of the Dawn (288636), Faeline Stomp (327264)
+                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Glory of the Dawn (288636), Faeline Stomp (327264), Fists of Fury (330898), Spinning Crane Kick (330901), Spinning Crane Kick (330903), Breath of Fire (330907), Keg Smash (330911)
                    Family Flags: 103
 #3 (id=479888)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -4600,11 +4606,11 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=290815)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
-                   Affected Spells: Enveloping Mist (124682), Enveloping Breath (325209)
+                   Affected Spells: Enveloping Mist (124682), Enveloping Breath (325209), Enveloping Mist (344008)
                    Family Flags: 79
 #2 (id=290816)   : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
                    Base Value: 1000 | Scaled Value: 1000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
-                   Affected Spells: Enveloping Mist (124682), Enveloping Breath (325209)
+                   Affected Spells: Enveloping Mist (124682), Enveloping Breath (325209), Enveloping Mist (344008)
                    Family Flags: 79
 Description      : Increases Enveloping Mist's duration by ${$m2/1000} sec and its healing bonus by $s1%.
 
@@ -4701,7 +4707,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=290846)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: -25 | Scaled Value: -25 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
-                   Affected Spells: Enveloping Mist (124682), Enveloping Breath (325209)
+                   Affected Spells: Enveloping Mist (124682), Enveloping Breath (325209), Enveloping Mist (344008)
                    Family Flags: 79
 Description      : $@spelldesc197915
 Tooltip          : Cost of your next Enveloping Mist reduced by $s1%.
@@ -4713,7 +4719,7 @@ Spell Type       : Magic
 Spell Level      : 10
 Range            : 60 yards
 Duration         : 8 seconds
-Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Enveloping Breath (325209 effect#3)
+Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Enveloping Breath (325209 effect#3), Enveloping Mist (344008 effect#2)
 Family Flags     : 48, 112
 Attributes       : ........ ........ x....... ........   ..x...x. ........ ........ ..x..x.. 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
@@ -4916,7 +4922,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | SP Coefficient: 0.22500 | PvP Coefficient: 1.00000 | Chain Multiplier: 100 | Chain Targets: 1 | Target: Friend (21)
 #2 (id=352117)   : Apply Aura (6) | Cast while Moving (Whitelist) (330)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Enveloping Mist (124682), Surging Mist (227344), Enveloping Breath (325209)
+                   Affected Spells: Enveloping Mist (124682), Surging Mist (227344), Enveloping Breath (325209), Enveloping Mist (344008)
                    Family Flags: 25, 79
 Description      : Heals the target for $o1 over $d.
 
@@ -5243,7 +5249,7 @@ GCD              : 1 seconds
 Duration         : 6 seconds
 Stacks           : 2 maximum
 Proc Chance      : 101%
-Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Extend Life (185158 effect#2), Soothing Mist (209525 effect#2), Enveloping Breath (325209 effect#3), Extend Life (337993 effect#2)
+Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Extend Life (185158 effect#2), Soothing Mist (209525 effect#2), Enveloping Breath (325209 effect#3), Extend Life (337993 effect#2), Enveloping Mist (344008 effect#2)
 Family Flags     : 25, 48
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5406,7 +5412,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=349343)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
-                   Affected Spells: Enveloping Mist (124682), Enveloping Breath (325209)
+                   Affected Spells: Enveloping Mist (124682), Enveloping Breath (325209), Enveloping Mist (344008)
                    Family Flags: 79
 Description      : Enveloping Mist increases healing received from your other spells by $s1%.
 
@@ -6961,7 +6967,7 @@ Class            : Monk
 School           : Nature
 Spell Type       : Magic
 Range            : 40 yards
-Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Enveloping Breath (325209 effect#3)
+Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Enveloping Breath (325209 effect#3), Enveloping Mist (344008 effect#2)
 Family Flags     : 48
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -7043,7 +7049,7 @@ Name             : Rising Mist (id=274912) [Spell Family (53)]
 Class            : Monk
 School           : Nature
 Spell Type       : None
-Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Enveloping Breath (325209 effect#3)
+Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Enveloping Breath (325209 effect#3), Enveloping Mist (344008 effect#2)
 Triggered by     : Rising Mist (274909)
 Family Flags     : 48
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8989,8 +8995,10 @@ Stacks           : 1 maximum
 Proc Chance      : 101%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
+Affecting spells : Windwalker Monk (137025 effect#13), Extend Life (185158 effect#2), Extend Life (337993 effect#2)
+Family Flags     : 77
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
@@ -9042,7 +9050,7 @@ School           : Arcane
 Spell Type       : Magic
 Spell Level      : 4
 Range            : 100 yards
-Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Enveloping Breath (325209 effect#3)
+Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Enveloping Breath (325209 effect#3), Enveloping Mist (344008 effect#2)
 Family Flags     : 48
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -9117,7 +9125,7 @@ Spell Level      : 8
 Range            : 100 yards
 GCD              : 1 seconds
 Cooldown         : 15 seconds
-Affecting spells : Enveloping Mist (124682 effect#2), Brewmaster Monk (137023 effect#14), Mistweaver Monk (137024 effect#1), Windwalker Monk (137025 effect#13), Extend Life (185158 effect#2), Expel Harm (322102 effect#1), Expel Harm (322106 effect#1), Celestial Brew (322507 effect#2), Enveloping Breath (325209 effect#3), Harm Denial (336379 effect#1), Extend Life (337993 effect#2), Reverse Harm (342928 effect#1), 
+Affecting spells : Enveloping Mist (124682 effect#2), Brewmaster Monk (137023 effect#14), Mistweaver Monk (137024 effect#1), Windwalker Monk (137025 effect#13), Extend Life (185158 effect#2), Expel Harm (322102 effect#1), Expel Harm (322106 effect#1), Celestial Brew (322507 effect#2), Enveloping Breath (325209 effect#3), Harm Denial (336379 effect#1), Extend Life (337993 effect#2), Reverse Harm (342928 effect#1), Enveloping Mist (344008 effect#2)
 Family Flags     : 17, 48, 95
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ........ ......x. 
@@ -9215,7 +9223,7 @@ Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... .....
                  : ........ ........ ........ .....x..   ........ ..x..... ........ ........ 
                  : ........ x....... ........ .....x..   ........ ........ .......x .....x.. 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
-                 : ........ ....xx.. ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x......x ........ ........ ........ 
                  : ........ ........ ........ ........   
@@ -9278,6 +9286,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 165374 | Misc Value 2: 0x13bf | Radius: 3 yards | Target: Unknown(50)
 #2 (id=867517)   : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
+#3 (id=869762)   : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Summons an effigy of Yu'lon, the Jade Serpent for $d. Yu'lon will heal injured allies with Soothing Breath, healing the target and up to $s2 allies for $343737o1 over $343737d.
 
 Name             : Shuffle (id=322120) [Spell Family (53), Passive] 
@@ -9375,7 +9385,7 @@ Effects          :
                    Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 1.00000 | Misc Value: 33 | Target: Self (1)
                    Affected Spells: Stagger (115069), Shuffle (322120)
                    Family Flags: 34
-Description      : Delays magical attacks at $115069s5% effectiveness.
+Description      : Delays magical attacks at $s1% effectiveness.
 
 Name             : Spinning Crane Kick (desc=Rank 2) (id=322700) [Spell Family (53), Passive] 
 Class            : Brewmaster Monk
@@ -9484,7 +9494,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=811720)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000
-Description      : Fortifying Brew increases Stagger effectiveness by $s2% while active.
+Description      : Fortifying Brew increases Stagger effectiveness by $s1% while active.
 
 Name             : Invoke Xuen, the White Tiger (desc=Rank 2) (id=323999) [Spell Family (53), Passive] 
 Class            : Windwalker Monk
@@ -9679,7 +9689,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .x...
 Effects          :
 #1 (id=815332)   : Summon (28)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 166949 | Misc Value 2: 0xe95 | Radius: 3 yards | Target: Unknown(50)
-Description      : Invoke Chi-Ji, the Red Crane, and become immune to movement impairing effects for $d. Chi-Ji kicks up Gusts of Mists with your Physical abilities, healing up to $343818s3 allies for $343819s1, and reducing the cost and cast time of your next Enveloping Mist by $343820s1%, stacking $343820u times.
+Description      : Summon an effigy of Chi-Ji that kicks up a Gust of Mist when you Blackout Kick, Rising Sun Kick, or Spinning Crane Kick, healing up to $343818s3 allies for $343819s1, and reducing the cost and cast time of your next Enveloping Mist by $343820s1%, stacking.
+
+Chi-Ji's presence makes you immune to movement impairing effects.
 
 Name             : Dance of Chi-Ji (id=325201) [Scaling Spell (-1), Spell Family (53), Passive, Hidden] 
 Class            : Monk
@@ -9743,7 +9755,7 @@ Effects          :
                    Base Value: -300000 | Scaled Value: -300000 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Fortifying Brew (115203), Fortifying Brew (243435)
                    Family Flags: 52
-Description      : Cooldown reduced by ${$s1/-600} min.
+Description      : Cooldown reduced by ${$s1/-60000} min.
 
 Name             : Enveloping Breath (id=325209) [Spell Family (53)] 
 Class            : Monk
@@ -9751,7 +9763,7 @@ School           : Nature
 Spell Type       : Magic
 Range            : 100 yards
 Duration         : 6 seconds
-Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Extend Life (185158 effect#2), Mist Wrap (197900 effect#1), Lifecycles (Enveloping Mist) (197919 effect#1), Soothing Mist (209525 effect#2), Enveloping Mist (231605 effect#1), Surge of Mists (246328 effect#1), Soothing Focus (337476 effect#1), Extend Life (337993 effect#2), Invoke Chi-Ji, the Red Crane (343820 effect#1), 
+Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Extend Life (185158 effect#2), Mist Wrap (197900 effect#1), Lifecycles (Enveloping Mist) (197919 effect#1), Soothing Mist (209525 effect#2), Enveloping Mist (231605 effect#1), Surge of Mists (246328 effect#1), Clouded Focus (337476 effect#1), Extend Life (337993 effect#2), Invoke Chi-Ji, the Red Crane (343820 effect#1), Enveloping Mist (344008 effect#2)
 Family Flags     : 48, 79
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
@@ -9769,7 +9781,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Friend (21)
 #3 (id=867662)   : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: Unknown(132) -> AOE friendly (31)
-                   Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Essence Font (191840), Gust of Mists (191894), Soothing Mist (198533), Celestial Breath (199656), Surging Mist (227344), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Gust of Mists (328748), Celestial Breath (337268), Extend Life (337993), Soothing Breath (343737), Gust of Mists (343819)
+                   Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Essence Font (191840), Gust of Mists (191894), Soothing Mist (198533), Celestial Breath (199656), Surging Mist (227344), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Soothing Mist (328283), Gust of Mists (328748), Yu'lon's Whisper (337268), Extend Life (337993), Soothing Breath (343737), Gust of Mists (343819), Enveloping Mist (344008)
                    Family Flags: 48, 102
 Description      : $@spelldesc343655
 Tooltip          : Heals $w1 every $t1 sec.
@@ -9933,6 +9945,30 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.91000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc327104
 
+Name             : Soothing Mist (id=328283) [Spell Family (53)] 
+Class            : Monk
+School           : Nature
+Spell Type       : Magic
+Spell Level      : 10
+Range            : 60 yards
+Duration         : 4 seconds
+Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Enveloping Breath (325209 effect#3), Enveloping Mist (344008 effect#2)
+Family Flags     : 48, 112
+Attributes       : ........ ........ x....... ........   ..x...x. ........ ........ ..x..x.. 
+                 : ........ x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ..x..x.. ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .x..x... .x...... x.......   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ....x... ........ 
+                 : ........ ........ ........ ........   
+                 : Channeled (34), Channeled (38), Periodic effect affected by haste (173), Periodic effect can crit (265)
+Effects          :
+#1 (id=820439)   : Apply Aura (6) | Periodic Heal (8): every 1 seconds
+                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | SP Coefficient: 0.26000 | PvP Coefficient: 1.00000 | Target: Unknown(25)
+Description      : $@spelldesc193884
+Tooltip          : Healing for $w1 every $t1 sec.
+
 Name             : Roll (desc=Rank 2) (id=328669) [Spell Family (53), Passive] 
 Class            : Monk
 School           : Physical
@@ -9999,7 +10035,7 @@ Class            : Monk
 School           : Shadow
 Spell Type       : Melee
 Range            : 50000 yards
-Affecting spells : Mastery: Gust of Mists (117907 effect#3), Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Enveloping Breath (325209 effect#3)
+Affecting spells : Mastery: Gust of Mists (117907 effect#3), Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Enveloping Breath (325209 effect#3), Enveloping Mist (344008 effect#2)
 Family Flags     : 48, 110
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ .....x..   ........ ........ ........ ......x. 
@@ -10014,6 +10050,207 @@ Effects          :
 #1 (id=821479)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.42000 | PvP Coefficient: 1.00000 | Target: Friend (21)
 Description      : $@spelldesc325216
+
+Name             : Fists of Fury (id=330898) [Spell Family (53)] 
+Class            : Monk
+School           : Physical
+Spell Type       : Melee
+Spell Level      : 14
+Range            : 8 yards
+GCD              : 1 seconds
+Duration         : 4 seconds
+Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapon
+Cooldown         : 24 seconds
+Affecting spells : Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Serenity (152173 effect#2), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), The Wind Blows (281452 effect#1), Extend Life (337993 effect#2)
+Family Flags     : 103
+Attributes       : ........ ........ ........ ........   ..x...x. .xx..... ........ .....x.. 
+                 : ........ ........ ........ ........   ........ ..x..... ........ x....... 
+                 : ........ ........ ........ ........   ........ .x...x.. ........ ...x.... 
+                 : ........ .......x ...x.... ........   ........ ........ ........ ........ 
+                 : ........ ....x... .x...... ........   ........ ........ ........ ........ 
+                 : ........ ........ ..x..... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ....x... ........ 
+                 : ........ ........ ........ ........   
+                 : Channeled (34), Channeled (38), Requires main-hand weapon (106), Requires off-hand weapon (120), Tick on application (169), Periodic effect affected by haste (173)
+Effects          :
+#1 (id=824785)   : Dummy (3)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+#2 (id=824786)   : Apply Aura (6) | Periodic Dummy (226): every 0.166 seconds
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 120086 | Target: Self (1)
+#3 (id=824787)   : Apply Aura (6) | Periodic Dummy (226): every 0.166 seconds
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Trigger Spell: 117418 | Target: Self (1)
+#4 (id=824788)   : Apply Aura (6) | Modify Parry% (47)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+#5 (id=824789)   : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.20750 | PvP Coefficient: 1.00000
+#6 (id=824790)   : Dummy (3)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Pummels all targets in front of you, dealing ${5*$s5} damage over $113656d to your primary target and ${5*$s5*$s6/100} damage over $113656d to up to $s1 other targets. Can be channeled while moving.
+Tooltip          : $w3 damage every $t3 sec. $?s125671[Parrying all attacks.][]
+Variables        : $stnc=$?a103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]
+$dwm=$?a108561|a115697[${1}][${0.857143}]
+$offm=$?a108561|a115697[${0}][${1}]
+
+$offlow=$?s121278[${$mwb/2/$mws}][${$owb/2/$ows}]
+$offhigh=$?s121278[${$MWB/2/$mws}][${$OWB/2/$ows}]
+
+$low=${$<stnc>*($<dwm>*(($mwb)/($MWS)+$<offm>*$<offlow>)+$AP/3.5-1)}
+$high=${$<stnc>*($<dwm>*(($MWB)/($MWS)+$<offm>*$<offhigh>)+$AP/3.5+1)}
+
+
+Name             : Spinning Crane Kick (id=330901) [Spell Family (53)] 
+Class            : Monk
+School           : Physical
+Spell Type       : Melee
+Resource         : 2 Chi (12) (id=215195) w/ Windwalker Monk (id=137025)
+Resource         : 1% Base Mana (0) (id=215196) w/ Mistweaver Monk (id=137024)
+Resource         : 25 Energy (3) (id=215197) w/ Brewmaster Monk (id=137023)
+Spell Level      : 7
+GCD              : 1.5 seconds
+Duration         : 1.5 seconds
+Affecting spells : Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Serenity (152173 effect#2), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), The Wind Blows (281452 effect#1), Extend Life (337993 effect#2)
+Family Flags     : 103
+Attributes       : ....x... ........ x.x..... .......x   ..x...x. ........ ........ ....xx.. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ .x...x.. ........ ........ 
+                 : ........ ..x..... ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... .x...... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   .x..x... ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ....x... ........ 
+                 : ........ ........ ........ ........   
+                 : Cannot cancel aura (31), Channeled (34), Channeled (38), Tick on application (169), Periodic effect affected by haste (173)
+Effects          :
+#1 (id=824795)   : Apply Aura (6) | Periodic Trigger Spell (23): Spinning Crane Kick every 0.5 seconds
+                   Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Trigger Spell: 330903 | Target: Self (1)
+#2 (id=824796)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+#3 (id=824797)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Spin while kicking in the air, dealing $?s137025[${4*$107270s1*$<CAP>/$AP}][${4*$107270s1}] Physical damage over $d to up to $s1 enemies within $107270A1 yds.$?c3[
+
+Spinning Crane Kick's damage is increased by $220358s1% for each unique target you've struck in the last $220358d with Tiger Palm, Blackout Kick, or Rising Sun Kick.][]
+Tooltip          : Attacking nearby enemies for Physical damage every $101546t1 sec.
+Variables        : $CAP=$?$OWB==0[${$AP*0.98}][${($AP+$OAP)*2/3}]--2H, DW
+
+Name             : Spinning Crane Kick (id=330903) [Spell Family (53)] 
+Class            : Monk
+School           : Physical
+Spell Type       : Melee
+Affecting spells : Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Serenity (152173 effect#2), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), The Wind Blows (281452 effect#1), Extend Life (337993 effect#2)
+Triggered by     : Spinning Crane Kick (330901)
+Family Flags     : 103
+Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ .x...... ........ ........ 
+                 : x....... .......x ........ ........   ........ .......x ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Not a proc (105)
+Effects          :
+#1 (id=824799)   : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.10000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
+Description      : $@spelldesc101546
+Tooltip          : Attacking all nearby enemies for Physical damage every $101546t1 sec.
+
+Movement speed reduced by $s2%.
+
+Name             : Breath of Fire (id=330907) [Spell Family (53)] 
+Class            : Monk
+School           : Fire
+Spell Type       : Magic
+Spell Level      : 19
+GCD              : 1 seconds
+Cooldown         : 15 seconds
+Proc Chance      : 101%
+Affecting spells : Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Serenity (152173 effect#2), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), The Wind Blows (281452 effect#1), Extend Life (337993 effect#2)
+Family Flags     : 103
+Attributes       : ....x... ........ x....... ........   ........ .x...... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+Effects          :
+#1 (id=824803)   : School Damage (2): fire
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.28501 | PvP Coefficient: 1.00000 | Radius: 12 yards | Target: Cone Front (104)
+Description      : Breathe fire on targets in front of you, causing $s1 Fire damage.
+
+Targets affected by Keg Smash will also burn, taking $123725o1 Fire damage and dealing $123725s2% reduced damage to you for $123725d.
+
+Name             : Clash (id=330909) [Spell Family (53)] 
+Class            : Monk
+School           : Physical
+Spell Type       : None
+Range            : 100 yards
+Attributes       : ........ ........ .......x x..x....   .....x.. .x...... ........ ........ 
+                 : ........ ......x. ...x.... ......x.   ........ ........ ....x... ........ 
+                 : .......x ........ ........ ........   ...x.... ........ .xx..... ........ 
+                 : ........ ....x... ........ ........   ........ ........ ..x..... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .x...... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Does not break stealth (37)
+Effects          :
+#1 (id=824805)   : Charge (96)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value 2: 0x625f | Target: Enemy (6)
+Description      : $@spelldesc128845
+
+Name             : Keg Smash (id=330911) [Spell Family (53)] 
+Class            : Monk
+School           : Physical
+Spell Type       : Melee
+Spell Level      : 10
+Range            : 15 yards
+GCD              : 1 seconds
+Velocity         : 30 yards/sec
+Duration         : 15 seconds
+Cooldown         : 1 seconds
+Charges          : 1 (8 seconds cooldown)
+Category         : 1490: Brewmaster Monk (137023 effect#4), Stormstout's Last Gasp (248044 effect#1), Stormstout's Last Keg (337288 effect#2)
+Proc Chance      : 101%
+Affecting spells : Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Serenity (152173 effect#2), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), The Wind Blows (281452 effect#1), Extend Life (337993 effect#2)
+Family Flags     : 103
+Attributes       : ........ ........ ........ ........   ...x...x .x...... ........ ...x.... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+Effects          :
+#1 (id=824807)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+#2 (id=824808)   : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.85995 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+#3 (id=824809)   : Apply Aura (6) | Decrease Movement Speed% (33)
+                   Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Mechanic: Snare | Target: At Enemy (53) -> AOE enemy (instant) (16)
+#4 (id=824810)   : Dummy (3)
+                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Target: Self (1)
+#5 (id=824811)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+#6 (id=824812)   : Dummy (3)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Smash a keg of brew on the target, dealing $s2 damage to all enemies within $A2 yds and reducing their movement speed by $m3% for $d.
+
+Grants Shuffle for $s6 and reduces the remaining cooldown on your Brews by $s4 sec.
+Tooltip          : $?$w3!=0[Movement speed reduced by $w3%.
+][]Drenched in brew, vulnerable to Breath of Fire.
+Variables        : $stnc=$?a103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]
+$dwm=$?a108561|a115697[${1}][${0.857143}]
+$offm=$?a108561|a115697[${0}][${1}]
+
+$offlow=$?s121278[${$mwb/2/$mws}][${$owb/2/$ows}]
+$offhigh=$?s121278[${$MWB/2/$mws}][${$OWB/2/$ows}]
+
+$low=${$<stnc>*($<dwm>*(($mwb)/($MWS)+$<offm>*$<offlow>)+$AP/3.5-1)}
+$high=${$<stnc>*($<dwm>*(($MWB)/($MWS)+$<offm>*$<offhigh>)+$AP/3.5+1)}
+
 
 Name             : Empowered Tiger Lightning (id=335913) [Spell Family (53)] 
 Class            : Monk
@@ -10108,7 +10345,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=834103)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
-Description      : $?s152173[Serenity's damage bonus is increased by |cFFFFFFFF${$s1}.1%|r.][When Storm, Earth, and Fire spirits fixate on the same target, they deal |cFFFFFFFF${$s1}.1%|r additional damage.]
+Description      : $?s152173[Serenity's damage bonus is increased by |cFFFFFFFF${$s1}.1%|r.][When your Storm, Earth, and Fire spirits fixate on the same target, they deal |cFFFFFFFF${$s1}.1%|r increased damage.]
 
 Name             : Xuen's Bond (id=336616) [Spell Family (53), Passive, Hidden] 
 School           : Physical
@@ -10130,7 +10367,7 @@ Effects          :
                    Family Flags: 68
 #2 (id=834129)   : Apply Aura (6) | Dummy (4)
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Abilities that activate Combo Strikes reduce the cooldown of Invoke Xuen, the White Tiger by ${$s1/1000}.1 sec, and Xuen's damage is increased by |cFFFFFFFF${$s1}.1%|r.
+Description      : Abilities that activate Combo Strikes reduce the cooldown of Invoke Xuen, the White Tiger by ${$s2/-1000}.1 sec, and Xuen's damage is increased by |cFFFFFFFF${$s1}.1%|r.
 
 Name             : Grounding Breath (id=336632) [Spell Family (53), Passive, Hidden] 
 School           : Physical
@@ -10152,7 +10389,8 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=834147)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : When casting Vivify on yourself, its heal is increased by |cFFFFFFFF${$s1}.1%|r, and it has a chance to refund its cost.
+Description      : When casting Vivify on yourself, its healing is increased by |cFFFFFFFF${$s1}.1%|r, and it has a $<chance>% chance to refund its cost.
+Variables        : $chance=${30}
 
 Name             : Jade Bond (id=336773) [Spell Family (53), Passive, Hidden] 
 School           : Physical
@@ -10173,7 +10411,7 @@ Effects          :
                    Family Flags: 115
 #2 (id=842459)   : Apply Aura (6) | Dummy (4)
                    Base Value: -500 | Scaled Value: -500 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Abilities that activate Gust of Mist reduce the cooldown on $?s325197[Invoke Chi-Ji, the Red Crane][Invoke Yul'on, the Jade Serpent] by ${$s2/1000}.1 sec, and $?s325197[Chi-Ji's Gusts of Mists][Yu'lon's Celestial Breath] healing is increased by |cFFFFFFFF${$s1}.1%|r.
+Description      : Abilities that activate Gust of Mist reduce the cooldown on $?s325197[Invoke Chi-Ji, the Red Crane][Invoke Yul'on, the Jade Serpent] by ${$s2/-1000}.1 sec, and $?s325197[Chi-Ji's Gusts of Mists][Yu'lon's Celestial Breath] healing is increased by |cFFFFFFFF${$s1}.1%|r.
 
 Name             : Resplendent Mist (id=336812) [Spell Family (53), Passive, Hidden] 
 School           : Physical
@@ -10212,7 +10450,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=834527)   : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Fortifying Brew grants you a shield equal to |cFFFFFFFF${$s1}.1%|r of your health for $336874d.
+Description      : Fortifying Brew grants you a shield equal to |cFFFFFFFF${$s1}.1%|r of your maximum health for $336874d.
 
 Name             : Fortifying Ingredients (id=336874) [Spell Family (53)] 
 Class            : Monk
@@ -10231,7 +10469,7 @@ Effects          :
 #1 (id=834558)   : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
 Description      : $@spelldesc336853
-Tooltip          : Absorbs $w damage.
+Tooltip          : Absorbs $w1 damage.
 
 Name             : Lingering Numbness (id=336884) [Spell Family (53), Passive, Hidden] 
 School           : Physical
@@ -10254,7 +10492,7 @@ Description      : When Paralysis ends, your target's movement speed is reduced 
 Name             : Dizzying Tumble (id=336890) [Spell Family (53), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 37 (values=5.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 15.0, 16.0, 17.0, 18.0, 19.0, 20.0)
+Conduit Id       : 37 (values=-5.0, -7.0, -8.0, -9.0, -10.0, -11.0, -12.0, -13.0, -14.0, -15.0, -16.0, -17.0, -18.0, -19.0, -20.0)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10285,7 +10523,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=834871)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Transcendence: Transfer increases your movement speed by |cFFFFFFFF${$s1}.1%|r.
+Description      : Transcendence: Transfer increases your movement speed by |cFFFFFFFF${$s1}.1%|r for $337079d.
 
 Name             : Tumbling Technique (id=337084) [Spell Family (53), Passive, Hidden] 
 School           : Physical
@@ -10401,7 +10639,7 @@ Attributes       : ......x. ........ ........ .......x   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Passive (6), Cannot cancel aura (31)
 Effects          :
-#1 (id=835131)   : Apply Aura (6) | Proc Trigger Spell (42): Celestial Breath
+#1 (id=835131)   : Apply Aura (6) | Proc Trigger Spell (42): Yu'lon's Whisper
                    Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Trigger Spell: 337267 | Target: Self (1)
 Description      : Activating Thunder Focus Tea causes you to exhale the breath of Yu'lon, healing up to $s1 allies within $199656a1 yards for ${$199656m1*3} over $199641d.
 
@@ -10421,7 +10659,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=835159)   : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Life Cocoon increases healing over time received by an additional |cFFFFFFFF${$s1}.1%|r, and this bonus lingers for an additional $337242d after the shield is broken.
+Description      : Life Cocoon increases healing over time received by an additional |cFFFFFFFF${$s1}.1%|r, and this effect lingers for an additional $337242d after the cocoon is removed.
 
 Name             : Evasive Stride (id=337250) [Spell Family (53), Passive, Hidden] 
 School           : Physical
@@ -10459,9 +10697,9 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=842427)   : Apply Aura (6) | Dummy (4)
                    Base Value: -500 | Scaled Value: -500 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Abilities that grant Shuffle reduce the cooldown on Invoke Niuzao, the Black Ox by ${$s2/1000}.1 sec, and Niuzao's Stomp deals an additional |cFFFFFFFF${$s1}.1%|r damage. 
+Description      : Abilities that grant Shuffle reduce the cooldown on Invoke Niuzao, the Black Ox by ${$s2/-1000}.1 sec, and Niuzao's Stomp deals an additional |cFFFFFFFF${$s1}.1%|r damage. 
 
-Name             : Celestial Breath (id=337267) [Spell Family (53), Hidden] 
+Name             : Yu'lon's Whisper (id=337267) [Spell Family (53), Hidden] 
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
@@ -10477,7 +10715,7 @@ Attributes       : .......x ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Hidden (7), Tick on application (169)
 Effects          :
-#1 (id=835205)   : Apply Aura (6) | Periodic Trigger Spell (23): Celestial Breath every 1 seconds
+#1 (id=835205)   : Apply Aura (6) | Periodic Trigger Spell (23): Yu'lon's Whisper every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 337268 | Target: Self (1)
 Description      : $@spelldesc337225
 Tooltip          : Healing allies within $a1 yards for $o over $t.
@@ -10500,7 +10738,8 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
 #2 (id=835229)   : Apply Aura (6) | Dummy (4)
                    Base Value: 5000 | Scaled Value: 5000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
-Description      : Weapons of Order's duration is increased by ${$s2/-1000}.1 sec, and the Mastery bonus is increased by |cFFFFFFFF${$s1}.1%|r.
+Description      : Weapons of Order's duration is increased by ${$s2/1000}.1 sec, it increases your Mastery by an additional |cFFFFFFFF$<mastery>%|r.
+Variables        : $mastery=$?c1[${$117906bc1*$s1}.1]?c2[${$117907bc1*$s1}.1][${$115636bc1*$s1}.1]
 
 Name             : Stormstout's Last Keg (id=337288) [Spell Family (53), Passive] 
 School           : Physical
@@ -10524,7 +10763,7 @@ Effects          :
                    Family Flags: 57
 #2 (id=835233)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 1490 | Target: Self (1)
-                   Affected Spells (Category): Keg Smash (121253)
+                   Affected Spells (Category): Keg Smash (121253), Keg Smash (330911)
 Description      : Keg Smash deals $m1% additional damage, and has $m2 additional charges.
 
 Name             : Mighty Pour (id=337290) [Spell Family (53), Passive] 
@@ -10636,7 +10875,7 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=835243)   : Apply Aura (6) | Dummy (4)
                    Base Value: -500 | Scaled Value: -500 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
-Description      : Bonedust Brew's Shadow damage or healing is increased by |cFFFFFFFF$s1%|r, and when Bonedust Brew deals Shadow damage or healing, it reduces its cooldown by ${$s2/1000}.1 sec.
+Description      : Bonedust Brew's Shadow damage or healing is increased by |cFFFFFFFF${$s1}.1%|r, and when Bonedust Brew deals Shadow damage or healing, its cooldown is reduced by ${$s2/-1000}.1 sec.
 
 Name             : Fatal Touch (id=337296) [Spell Family (53)] 
 School           : Physical
@@ -10660,6 +10899,26 @@ Effects          :
                    Family Flags: 40
 Description      : Touch of Death cooldown reduced by ${$s1/-1000}.
 Tooltip          : Touch of Death cooldown reduced by ${$s1/-1000}.
+
+Name             : Invoker's Delight (id=337298) [Spell Family (53), Passive] 
+School           : Physical
+Spell Type       : None
+Proc Chance      : 100%
+Proc Flags       : ........ ......x. x....... ........ 
+                 : Magic Heal, Magic Hostile Spell
+Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ..x..... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Cannot cancel aura (31)
+Effects          :
+#1 (id=835246)   : Apply Aura (6) | Proc Trigger Spell (42): Invoker's Delight
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Trigger Spell: 338321 | Target: Self (1)
+Description      : You gain $338321m1% haste for $338321d after summoning your Celestial. 
 
 Name             : Imbued Reflections (id=337301) [Spell Family (53), Passive, Hidden] 
 School           : Physical
@@ -10697,7 +10956,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=835254)   : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Faeline Stomp deals |cFFFFFFFF$s1%|r additional damage per target, up to a maximum of |cFFFFFFFF${$s1*$s2}%|r additional damage.
+Description      : Faeline Stomp deals |cFFFFFFFF${$s1}.1%|r additional damage per target, up to a maximum of |cFFFFFFFF${$s1*$s2}.1%|r additional damage.
 
 Name             : Keefer's Skyreach (id=337334) [Spell Family (53), Passive] 
 School           : Physical
@@ -10742,7 +11001,7 @@ Attributes       : ......x. ........ ........ .......x   ........ ..x..... .....
                  : ........ ........ ........ ........   
                  : Passive (6), Cannot cancel aura (31), Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
 Effects          :
-#1 (id=835312)   : Apply Aura (6) | Proc Trigger Spell (42): Soothing Focus
+#1 (id=835312)   : Apply Aura (6) | Proc Trigger Spell (42): Clouded Focus
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Trigger Spell: 337476 | Target: Self (1)
 Description      : Healing with Enveloping Mists or Vivify while channeling Soothing Mists increases their healing done by $337476m1% and reduces their mana cost by $337476m2%. Stacks up to $337476u times.
 
@@ -10775,7 +11034,7 @@ Description      : Renewing Mists applies Extend Life to the initial target, ins
 When you heal with Enveloping Mist or Vivify, $m1% of the heal is also applied to targets with your Extend Life effect.
 Variables        : $heal=${$337473s3/100*$SPH}
 
-Name             : Soothing Focus (id=337476) [Spell Family (53)] 
+Name             : Clouded Focus (id=337476) [Spell Family (53)] 
 School           : Nature
 Spell Type       : Magic
 Spell Level      : 1
@@ -10794,11 +11053,11 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=835525)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Vivify (116670), Enveloping Mist (124682), Enveloping Breath (325209)
+                   Affected Spells: Vivify (116670), Enveloping Mist (124682), Enveloping Breath (325209), Enveloping Mist (344008)
                    Family Flags: 26, 79
 #2 (id=835526)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
-                   Affected Spells: Vivify (116670), Enveloping Mist (124682), Enveloping Breath (325209)
+                   Affected Spells: Vivify (116670), Enveloping Mist (124682), Enveloping Breath (325209), Enveloping Mist (344008)
                    Family Flags: 26, 79
 Description      : $@spelldesc337343
 Tooltip          : Healing done by your Enveloping Mists and Vivify increased by $w1%, and mana cost reduced by $w2%.
@@ -10979,6 +11238,26 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc338138
 
+Name             : Invoker's Delight (id=338321) [Spell Family (53)] 
+School           : Nature
+Spell Type       : None
+Duration         : 15 seconds
+Triggered by     : Invoker's Delight (337298)
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ xx...... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Disable player procs (112), Disable target procs (113)
+Effects          :
+#1 (id=836835)   : Apply Aura (6) | Modify All Haste% (193)
+                   Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : $@spelldesc337298
+Tooltip          : Haste increased by $w1%.
+
 Name             : Reverse Harm (id=342928) [Spell Family (53), Passive, Hidden] 
 Class            : Monk
 School           : Physical
@@ -11003,25 +11282,6 @@ Effects          :
                    Family Flags: 95
 Description      : Increases the healing done by Expel Harm by $m1%, and your Expel Harm now generates $m2 Chi.
 
-Name             : Escape from Reality (id=343250) [Spell Family (53), Passive] 
-School           : Physical
-Spell Type       : None
-Attributes       : ......x. ........ ........ .......x   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ....x...   ........ ........ xx..x... ........ 
-                 : ........ ........ .......x ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Passive (6), Cannot cancel aura (31), Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
-Effects          :
-#1 (id=844894)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 1365 | Target: Self (1)
-Description      : After you use Transcendence: Transfer, you can use Transcendence: Transfer again within $343249d, ignoring its cooldown.
-
-During this time the healing done to you by your Vivify is increased by $343249m3% and you will refunded for $343249m2% of its cost when cast on yourself.
-
 Name             : Enveloping Breath (id=343655) [Spell Family (53), Passive] 
 Class            : Mistweaver Monk
 School           : Physical
@@ -11041,7 +11301,7 @@ Effects          :
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=845649)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : While active, Yu'lon and Chi'Ji heal nearby targets with Enveloping Breath when you cast Enveloping Mist, healing for $325209s1 over $325209d, and increasing the healing they receive from you by $325209s3%.
+Description      : While active, Yu'lon and Chi'Ji heal nearby targets with Enveloping Breath when you cast Enveloping Mist, healing for $325209o1 over $325209d, and increasing the healing they receive from you by $325209s3%.
 
 Name             : Spinning Crane Kick (desc=Rank 2) (id=343730) [Spell Family (53), Passive] 
 Class            : Windwalker Monk
@@ -11086,7 +11346,7 @@ Spell Type       : Magic
 Spell Level      : 42
 Range            : 60 yards
 Duration         : 4.5 seconds
-Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Enveloping Breath (325209 effect#3)
+Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Enveloping Breath (325209 effect#3), Enveloping Mist (344008 effect#2)
 Family Flags     : 48, 112
 Attributes       : ........ ........ x....... ........   ..x...x. ........ ........ .....x.. 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
@@ -11166,7 +11426,7 @@ Effects          :
 #3 (id=867655)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000
 Description      : $@spelldesc325197
-Tooltip          : Physical abilities cause Chi-ji to heal the $s3 nearest allies with a Gust of Mist for $343819s1.
+Tooltip          : Blackout Kick, Rising Sun Kick, or Spinning Crane Kick cause Chi-ji to heal the $s3 nearest allies with a Gust of Mist for $343819s1.
 
 Immune to movement-impairing effects.
 
@@ -11175,7 +11435,7 @@ Class            : Monk
 School           : Nature
 Spell Type       : Melee
 Range            : 100 yards
-Affecting spells : Mastery: Gust of Mists (117907 effect#3), Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Enveloping Breath (325209 effect#3)
+Affecting spells : Mastery: Gust of Mists (117907 effect#3), Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Enveloping Breath (325209 effect#3), Enveloping Mist (344008 effect#2)
 Family Flags     : 48, 110
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
@@ -11209,14 +11469,83 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=867659)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
                    Base Value: -33 | Scaled Value: -33 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
-                   Affected Spells: Enveloping Mist (124682), Enveloping Breath (325209)
+                   Affected Spells: Enveloping Mist (124682), Enveloping Breath (325209), Enveloping Mist (344008)
                    Family Flags: 79
 #2 (id=867660)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: -33 | Scaled Value: -33 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
-                   Affected Spells: Enveloping Mist (124682), Enveloping Breath (325209)
+                   Affected Spells: Enveloping Mist (124682), Enveloping Breath (325209), Enveloping Mist (344008)
                    Family Flags: 79
 Description      : $@spelldesc325216
 Tooltip          : Cast time and cost of Enveloping Mist reduced by $w2%.
+
+Name             : Enveloping Mist (id=344008) [Spell Family (53)] 
+Class            : Monk
+School           : Nature
+Spell Type       : Magic
+Resource         : 6% Base Mana (0) (id=232041)
+Spell Level      : 12
+Range            : 40 yards
+GCD              : 1.5 seconds
+Duration         : 6 seconds
+Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Extend Life (185158 effect#2), Mist Wrap (197900 effect#1), Lifecycles (Enveloping Mist) (197919 effect#1), Soothing Mist (209525 effect#2), Enveloping Mist (231605 effect#1), Surge of Mists (246328 effect#1), Enveloping Breath (325209 effect#3), Clouded Focus (337476 effect#1), Extend Life (337993 effect#2), Invoke Chi-Ji, the Red Crane (343820 effect#1), 
+Family Flags     : 48, 67, 79
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ...x.... x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ .....x.. ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .x..x... ........ x.......   ........ ........ ....x... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ....x... ........ 
+                 : ........ ........ ........ ........   
+                 : Periodic effect affected by haste (173), Periodic effect can crit (265)
+Effects          :
+#1 (id=868039)   : Apply Aura (6) | Periodic Heal (8): every 1 seconds
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.60000 | PvP Coefficient: 1.00000 | Target: Friend (21)
+#2 (id=868040)   : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Essence Font (191840), Gust of Mists (191894), Soothing Mist (198533), Celestial Breath (199656), Surging Mist (227344), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Soothing Mist (328283), Gust of Mists (328748), Yu'lon's Whisper (337268), Extend Life (337993), Soothing Breath (343737), Gust of Mists (343819), Enveloping Mist (344008)
+                   Family Flags: 48, 102
+Description      : Wraps the target in healing mists, healing for $o1 over $d$?a231605[, and increasing healing received from your other spells by $m2%][].
+Tooltip          : Heals $w1 every $t1 sec.
+Healing received from the Monk increased by $m2%.
+
+Name             : Soothing Mist (id=344239) [Spell Family (53)] 
+Class            : Monk
+School           : Physical
+Spell Type       : Magic
+Spell Level      : 1
+Range            : 40 yards
+Attributes       : ........ ........ ..x..... ........   ........ ........ ...x.... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+Effects          :
+#1 (id=868424)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 40 yards | Target: Custom (18) -> AOE friendly (31)
+Description      : $@spelldesc325197
+
+Name             : Enveloping Mist (id=344240) [Spell Family (53)] 
+Class            : Monk
+School           : Physical
+Spell Type       : Magic
+Spell Level      : 1
+Range            : 40 yards
+Attributes       : ........ ........ ..x..... ........   ........ ........ ...x.... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+Effects          :
+#1 (id=868425)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 40 yards | Target: Custom (18) -> AOE friendly (31)
+Description      : $@spelldesc325197
 
 Name             : Paralysis (desc=Rank 2) (id=344359) [Spell Family (53), Passive] 
 Class            : Monk
