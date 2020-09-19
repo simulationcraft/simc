@@ -658,6 +658,7 @@ public:
     const spell_data_t* dark_transformation;
     const spell_data_t* dark_transformation_2;
     const spell_data_t* death_coil;
+    const spell_data_t* death_coil_2;
     const spell_data_t* festering_strike;
     const spell_data_t* festering_wound;
     const spell_data_t* outbreak;
@@ -3970,7 +3971,7 @@ struct dark_transformation_damage_t : public death_knight_spell_t
   dark_transformation_damage_t( death_knight_t* p ) :
     death_knight_spell_t( "dark_transformation", p, p -> find_spell( 344955 ) )
   {
-    background = true;
+    background = dual = true;
     aoe = as<int>( data().effectN( 2 ).base_value() );
   }
 };
@@ -4360,7 +4361,7 @@ struct death_coil_damage_t : public death_knight_spell_t
   death_coil_damage_t( death_knight_t* p ) :
     death_knight_spell_t( "death_coil", p, p -> spell.death_coil_damage )
   {
-    background = true;
+    background = dual = true;
   }
 };
 
@@ -4399,11 +4400,11 @@ struct death_coil_t : public death_knight_spell_t
   {
     death_knight_spell_t::execute();
 
-    // Reduces the cooldown Dark Transformation by 1s
-    p() -> cooldown.dark_transformation -> adjust( -1.0 * p() -> spec.death_coil -> effectN( 2 ).time_value() );
+    // Rank 2 Reduces the cooldown Dark Transformation by 1s
+    if ( p() -> spec.death_coil_2 -> ok() )
+      p() -> cooldown.dark_transformation -> adjust( -1.0 * p() -> spec.death_coil -> effectN( 2 ).time_value() );
 
     // Reduce the cooldown on Apocalypse and Army of the Dead if Army of the Damned is talented
-
     p() -> cooldown.apocalypse -> adjust( -timespan_t::from_seconds(
       p() -> talent.army_of_the_damned -> effectN( 1 ).base_value() / 10 ) );
 
@@ -7949,6 +7950,7 @@ void death_knight_t::init_spells()
   spec.remorseless_winter_2  = find_specialization_spell( "Remorseless Winter", "Rank 2" );
 
   // Unholy
+  spec.death_coil_2        = find_specialization_spell( "Death Coil", "Rank 2" );
   spec.unholy_death_knight = find_specialization_spell( "Unholy Death Knight" );
   spec.festering_strike    = find_specialization_spell( "Festering Strike" );
   spec.festering_wound     = find_specialization_spell( "Festering Wound" );
