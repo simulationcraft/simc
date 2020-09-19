@@ -20,6 +20,9 @@ GENERAL:
 - Covenant Conduits
 - Change Eye of the Tiger from a dot to an interaction with a buff
 
+- Convert Pet base abilities to somethign more generic
+- Trigger Bonedust Brew from SEF, Xuen, Niuzao, and Chiji
+
 WINDWALKER:
 - Implement Xuen Rank 2 (Enhanced Tiger Lightning)
 - Implement Touch of Death Rank 3
@@ -146,6 +149,7 @@ public:
     buff_t* sunrise_technique;
 
     // Covenant Abilities
+    buff_t* bonedust_brew;
     buff_t* fallen_monk_keg_smash;
     buff_t* weapons_of_order;
 
@@ -197,6 +201,10 @@ public:
 
     // Azerite Traits
     action_t* fit_to_burst;
+
+    // Covenant
+    action_t* bonedust_brew_dmg;
+    action_t* bonedust_brew_heal;
   } active_actions;
 
   std::vector<action_t*> combo_strike_actions;
@@ -332,6 +340,7 @@ public:
     gain_t* lucid_dreams;
 
     // Covenants
+    gain_t* bonedust_brew;
     gain_t* weapons_of_order;
   } gain;
 
@@ -558,6 +567,11 @@ public:
     cooldown_t* thunder_focus_tea;
     cooldown_t* touch_of_death;
     cooldown_t* serenity;
+
+    // Covenants
+    cooldown_t* weapons_of_order;
+    cooldown_t* bonedust_brew;
+    cooldown_t* fallen_order;
   } cooldown;
 
   struct passives_t
@@ -613,6 +627,9 @@ public:
     const spell_data_t* glory_of_the_dawn_dmg;
 
     // Covenants
+    const spell_data_t* bonedust_brew_dmg;
+    const spell_data_t* bonedust_brew_heal;
+    const spell_data_t* bonedust_brew_chi;
     const spell_data_t* fallen_monk_breath_of_fire;
     const spell_data_t* fallen_monk_clash;
     const spell_data_t* fallen_monk_enveloping_mist;
@@ -915,6 +932,11 @@ public:
     cooldown.thunder_focus_tea            = get_cooldown( "thunder_focus_tea" );
     cooldown.touch_of_death               = get_cooldown( "touch_of_death" );
     cooldown.serenity                     = get_cooldown( "serenity" );
+
+    // Covenants
+    cooldown.weapons_of_order             = get_cooldown( "weapnos_of_order" );
+    cooldown.bonedust_brew                = get_cooldown( "bonedust_brew" );
+    cooldown.fallen_order                 = get_cooldown( "fallen_order" );
 
     resource_regeneration = regen_type::DYNAMIC;
     if ( specialization() != MONK_MISTWEAVER )
@@ -4118,6 +4140,18 @@ public:
       }
     }
 
+    if ( p()->covenant.necrolord->ok() )
+    {
+      if ( td( s->target )->debuff.bonedust_brew->up() && p()->rng().roll( p()->covenant.necrolord->proc_chance() ) )
+      {
+        double damage = s->result_total * p()->covenant.necrolord->effectN( 1 ).percent();
+        p()->active_actions.bonedust_brew_dmg->target = s->target;
+        p()->active_actions.bonedust_brew_dmg->base_dd_min = damage;
+        p()->active_actions.bonedust_brew_dmg->base_dd_max = damage;
+        p()->active_actions.bonedust_brew_dmg->execute();
+      }
+    }
+
     ab::impact( s );
   }
 
@@ -4878,6 +4912,10 @@ struct tiger_palm_t : public monk_melee_attack_t
     // Apply Mark of the Crane
     if ( p()->specialization() == MONK_WINDWALKER && result_is_hit( s->result ) && p()->spec.spinning_crane_kick_2_ww->ok() )
       p()->trigger_mark_of_the_crane( s );
+
+    // Bonedust Brew
+    if ( p()->specialization() == MONK_BREWMASTER && td( s->target )->debuff.bonedust_brew->up() )
+      brew_cooldown_reduction( p()->covenant.necrolord->effectN( 3 ).base_value() );
 
     if ( p()->legendary.keefers_skyreach->ok() )
     {
@@ -5656,6 +5694,10 @@ struct sck_tick_action_t : public monk_melee_attack_t
       if ( td( s->target )->dots.breath_of_fire->is_ticking() )
         td( s->target )->dots.breath_of_fire->refresh_duration();
     }
+
+    // Bonedust Brew
+    if ( p()->specialization() == MONK_WINDWALKER && td( s->target )->debuff.bonedust_brew->up() )
+      brew_cooldown_reduction( p()->covenant.necrolord->effectN( 3 ).base_value() );
   }
 };
 
@@ -5762,6 +5804,15 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
 
     if ( p()->buff.celestial_flames->up() )
       breath_of_fire->execute();
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    monk_melee_attack_t::impact( s );
+
+    // Bonedust Brew
+    if ( p()->specialization() == MONK_WINDWALKER && td( s->target )->debuff.bonedust_brew->up() )
+      p()->gain.bonedust_brew->add( RESOURCE_CHI, p()->passives.bonedust_brew_chi->effectN( 1 ).base_value() );
   }
 
   void last_tick( dot_t* dot ) override
@@ -6290,6 +6341,10 @@ struct keg_smash_t : public monk_melee_attack_t
 
     if ( p()->buff.weapons_of_order->up() )
       td( s->target )->debuff.weapons_of_order->trigger();
+
+    // Bonedust Brew
+    if ( td( s->target )->debuff.bonedust_brew->up() )
+      brew_cooldown_reduction( p()->covenant.necrolord->effectN( 3 ).base_value() );
   }
 };
 
@@ -7626,25 +7681,103 @@ struct weapons_of_order_t : public monk_spell_t
 };
 
 // ==========================================================================
+// Bonedust Brew - Necrolord Covenant Ability
+// ==========================================================================
+
+struct bonedust_brew_t : public monk_spell_t
+{
+  bonedust_brew_t( monk_t& p, const std::string& options_str )
+    : monk_spell_t( "bonedust_brew", &p, p.covenant.necrolord )
+  {
+    parse_options( options_str );
+    harmful     = false;
+    base_dd_min = 0;
+    base_dd_max = 0;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    monk_spell_t::impact( s );
+
+    td( s->target )->debuff.bonedust_brew->trigger();
+  }
+};
+
+// ==========================================================================
+// Bonedust Brew - Necrolord Covenant Damage
+// ==========================================================================
+
+struct bonedust_brew_damage_t : public monk_spell_t
+{
+  bonedust_brew_damage_t( monk_t& p )
+    : monk_spell_t( "bonedust_brew_dmg", &p, p.passives.bonedust_brew_dmg )
+  {
+  }
+
+  double action_multiplier() const override
+  {
+    double am = monk_spell_t::action_multiplier();
+
+    if ( p()->conduit.bone_marrow_hops->ok() )
+        am *= 1 + p()->conduit.bone_marrow_hops.percent();
+
+    return am;
+  }
+
+  void execute() override
+  {
+    monk_spell_t::execute();
+
+    if ( p()->conduit.bone_marrow_hops->ok() )
+     // Saved at -500
+     p()->cooldown.bonedust_brew->adjust( p()->conduit.bone_marrow_hops->effectN( 2 ).time_value(), true );
+  }
+};
+
+// ==========================================================================
+// Bonedust Brew - Necrolord Covenant Heal
+// ==========================================================================
+
+struct bonedust_brew_heal_t : public monk_heal_t
+{
+  bonedust_brew_heal_t( monk_t& p ) : 
+      monk_heal_t( "bonedust_brew_dmg", p, p.passives.bonedust_brew_heal )
+  {
+  }
+
+  double action_multiplier() const override
+  {
+    double am = monk_heal_t::action_multiplier();
+
+    if ( p()->conduit.bone_marrow_hops->ok() )
+      am *= 1 + p()->conduit.bone_marrow_hops.percent();
+
+    return am;
+  }
+
+  void execute() override
+  {
+    monk_heal_t::execute();
+
+    if ( p()->conduit.bone_marrow_hops->ok() )
+      // Saved at -500
+      p()->cooldown.bonedust_brew->adjust( p()->conduit.bone_marrow_hops->effectN( 2 ).time_value(), true );
+  }
+};
+
+// ==========================================================================
 // Fallen Order - Venthyr Covenant Ability
 // ==========================================================================
 
 struct fallen_order_t : public monk_spell_t
 {
-  enum fallen_monk_e
-  {
-    FALLEN_MONK_WINDWALKER,
-    FALLEN_MONK_BREWMASTER,
-    FALLEN_MONK_MISTWEAVER
-  };
-
   struct fallen_order_event_t : public event_t
   {
-    std::vector<std::pair<fallen_monk_e, timespan_t>> fallen_monks;
+    std::vector<std::pair<specialization_e, timespan_t>> fallen_monks;
     timespan_t summon_interval;
     monk_t* p;
 
-    fallen_order_event_t( monk_t* monk, std::vector<std::pair<fallen_monk_e, timespan_t>> fm,
+    fallen_order_event_t( monk_t* monk, std::vector<std::pair<specialization_e, timespan_t>> fm,
         timespan_t interval )
       : event_t( *monk, interval ),
         fallen_monks( fm ),
@@ -7663,19 +7796,19 @@ struct fallen_order_t : public monk_spell_t
       if ( fallen_monks.empty() )
         return;
 
-      std::pair<fallen_monk_e, timespan_t> fallen_monk_pair;
+      std::pair<specialization_e, timespan_t> fallen_monk_pair;
 
       fallen_monk_pair = fallen_monks.front();
 
       switch (fallen_monk_pair.first)
       {
-        case FALLEN_MONK_WINDWALKER:
+        case MONK_WINDWALKER:
           p->pets.fallen_monk_ww.spawn( fallen_monk_pair.second, 1 );
           break;
-        case FALLEN_MONK_BREWMASTER:
+        case MONK_BREWMASTER:
           p->pets.fallen_monk_brm.spawn( fallen_monk_pair.second, 1 );
           break;
-        case FALLEN_MONK_MISTWEAVER:
+        case MONK_MISTWEAVER:
           p->pets.fallen_monk_mw.spawn( fallen_monk_pair.second, 1 );
           break;
         default:
@@ -7705,7 +7838,7 @@ struct fallen_order_t : public monk_spell_t
     timespan_t summon_duration = timespan_t::from_seconds( p()->covenant.venthyr->effectN( 4 ).base_value() );
     timespan_t primary_duration =
         summon_duration + timespan_t::from_seconds( p()->covenant.venthyr->effectN( 3 ).base_value() );
-    std::vector<std::pair<fallen_monk_e, timespan_t>> fallen_monks;
+    std::vector<std::pair<specialization_e, timespan_t>> fallen_monks;
 
     // Monks alternate summoning primary spec and non-primary spec
     // 11 summons in total (6 primary and a mix of 5 non-primary)
@@ -7713,13 +7846,13 @@ struct fallen_order_t : public monk_spell_t
     switch ( spec )
     {
       case MONK_WINDWALKER:
-        fallen_monks.push_back( std::make_pair( FALLEN_MONK_WINDWALKER, primary_duration ) );
+        fallen_monks.push_back( std::make_pair( MONK_WINDWALKER, primary_duration ) );
         break;
       case MONK_BREWMASTER:
-        fallen_monks.push_back( std::make_pair( FALLEN_MONK_BREWMASTER, primary_duration ) );
+        fallen_monks.push_back( std::make_pair( MONK_BREWMASTER, primary_duration ) );
         break;
       case MONK_MISTWEAVER:
-        fallen_monks.push_back( std::make_pair( FALLEN_MONK_MISTWEAVER, primary_duration ) );
+        fallen_monks.push_back( std::make_pair( MONK_MISTWEAVER, primary_duration ) );
         break;
       default:
         break;
@@ -7732,31 +7865,31 @@ struct fallen_order_t : public monk_spell_t
         case MONK_WINDWALKER:
         {
           if ( i % 2 )
-            fallen_monks.push_back( std::make_pair( FALLEN_MONK_WINDWALKER, primary_duration ) );
+            fallen_monks.push_back( std::make_pair( MONK_WINDWALKER, primary_duration ) );
           else if ( rng().roll( 0.5 ) )
-            fallen_monks.push_back( std::make_pair( FALLEN_MONK_BREWMASTER, summon_duration ) );
+            fallen_monks.push_back( std::make_pair( MONK_BREWMASTER, summon_duration ) );
           else
-            fallen_monks.push_back( std::make_pair( FALLEN_MONK_MISTWEAVER, summon_duration ) );
+            fallen_monks.push_back( std::make_pair( MONK_MISTWEAVER, summon_duration ) );
           break;
         }
         case MONK_BREWMASTER:
         {
           if ( i % 2 )
-            fallen_monks.push_back( std::make_pair( FALLEN_MONK_BREWMASTER, primary_duration ) );
+            fallen_monks.push_back( std::make_pair( MONK_BREWMASTER, primary_duration ) );
           else if ( rng().roll( 0.5 ) )
-            fallen_monks.push_back( std::make_pair( FALLEN_MONK_WINDWALKER, summon_duration ) );
+            fallen_monks.push_back( std::make_pair( MONK_WINDWALKER, summon_duration ) );
           else
-            fallen_monks.push_back( std::make_pair( FALLEN_MONK_MISTWEAVER, summon_duration ) );
+            fallen_monks.push_back( std::make_pair( MONK_MISTWEAVER, summon_duration ) );
           break;
         }
         case MONK_MISTWEAVER:
         {
           if ( i % 2 )
-            fallen_monks.push_back( std::make_pair( FALLEN_MONK_MISTWEAVER, primary_duration ) );
+            fallen_monks.push_back( std::make_pair( MONK_MISTWEAVER, primary_duration ) );
           else if ( rng().roll( 0.5 ) )
-            fallen_monks.push_back( std::make_pair( FALLEN_MONK_WINDWALKER, summon_duration ) );
+            fallen_monks.push_back( std::make_pair( MONK_WINDWALKER, summon_duration ) );
           else
-            fallen_monks.push_back( std::make_pair( FALLEN_MONK_BREWMASTER, summon_duration ) );
+            fallen_monks.push_back( std::make_pair( MONK_BREWMASTER, summon_duration ) );
           break;
         }
         default:
@@ -8983,6 +9116,10 @@ monk_td_t::monk_td_t( player_t* target, monk_t* p )
   debuff.sunrise_technique = make_buff( *this, "sunrise_technique_debuff", p->find_spell( 273299 ) );
 
   // Covenant Abilities
+  debuff.bonedust_brew = make_buff( *this, "bonedust_brew", p->covenant.necrolord )
+                             ->set_chance( 1.0 )
+                             ->set_default_value_from_effect( 3 );
+
   debuff.fallen_monk_keg_smash = make_buff( *this, "fallen_monk_keg_smash", p->passives.fallen_monk_keg_smash )
                                      ->set_default_value_from_effect( 3 );
 
@@ -9686,6 +9823,9 @@ void monk_t::init_spells()
   passives.fury_of_xuen_haste_buff    = find_spell( 287063 );
 
   // Covenants
+  passives.bonedust_brew_dmg                    = find_spell( 325217 );
+  passives.bonedust_brew_heal                   = find_spell( 325218 );
+  passives.bonedust_brew_chi                    = find_spell( 328296 );
   passives.fallen_monk_breath_of_fire           = find_spell( 330907 );
   passives.fallen_monk_clash                    = find_spell( 330909 );
   passives.fallen_monk_enveloping_mist          = find_spell( 344008 );
@@ -9730,6 +9870,10 @@ void monk_t::init_spells()
 
   // Azerite Traits
   active_actions.fit_to_burst = new actions::heals::fit_to_burst_t( *this );
+
+  // Covenant
+  active_actions.bonedust_brew_dmg  = new actions::spells::bonedust_brew_damage_t( *this );
+  active_actions.bonedust_brew_heal = new actions::spells::bonedust_brew_heal_t( *this );
 }
 
 // monk_t::init_base ========================================================
@@ -10093,11 +10237,12 @@ void monk_t::init_gains()
   gain.tiger_palm               = get_gain( "tiger_palm" );
 
   // Azerite Traits
-  gain.open_palm_strikes      = get_gain( "open_palm_strikes" );
-  gain.memory_of_lucid_dreams = get_gain( "memory_of_lucid_dreams_proc" );
-  gain.lucid_dreams           = get_gain( "lucid_dreams" );
+  gain.open_palm_strikes        = get_gain( "open_palm_strikes" );
+  gain.memory_of_lucid_dreams   = get_gain( "memory_of_lucid_dreams_proc" );
+  gain.lucid_dreams             = get_gain( "lucid_dreams" );
 
   // Covenants
+  gain.bonedust_brew            = get_gain( "bonedust_brew" );
   gain.weapons_of_order         = get_gain( "weapons_of_order" );
 }
 

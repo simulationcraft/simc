@@ -1643,10 +1643,13 @@ class SpellDataGenerator(DataGenerator):
           ( 288636, 3 ), # Glory of the Dawn proc
 
           # Covenant
+          ( 325217, 0 ), # Necrolord Bonedust Brew damage
+          ( 325218, 0 ), # Necrolord Bonedust Brew heal
+          ( 328296, 0 ), # Necrolord Bonedust Chi Refund
           ( 328283, 0 ), # Venthyr Fallen Monk Soothing Mist Heal
           ( 330898, 0 ), # Venthyr Fallen Monk Fists of Fury
           ( 330901, 0 ), # Venthyr Fallen Monk Spinning Crane Kick
-          ( 330903, 0 ), # Venthyr Fallen Monk Spinning Crane Kick Damage
+          ( 330903, 0 ), # Venthyr Fallen Monk Spinning Crane Kick damage
           ( 330907, 0 ), # Venthyr Fallen Monk Breath of Fire
           ( 330909, 0 ), # Venthyr Fallen Monk Clash
           ( 330911, 0 ), # Venthyr Fallen Monk Keg Smash
