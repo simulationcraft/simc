@@ -2340,7 +2340,7 @@ void priest_t::generate_apl_shadow()
 
   // Potions
   default_list->add_action(
-      "potion,if=buff.bloodlust.react|target.time_to_die<=80|"
+      "potion,if=buff.bloodlust.react|(target.time_to_die<=80&target.time_to_die>0)|"
       "target.health.pct<35" );
   default_list->add_action(
       "variable,name=dots_up,op=set,value="
@@ -2377,7 +2377,7 @@ void priest_t::generate_apl_shadow()
   essences->add_action( "purifying_blast,if=spell_targets.mind_sear>=2|raid_event.adds.in>60" );
   essences->add_action(
       "concentrated_flame,line_cd=6,"
-      "if=time<=10|full_recharge_time<gcd|target.time_to_die<5" );
+      "if=time<=10|full_recharge_time<gcd|(target.time_to_die<5&target.time_to_die>0)" );
   essences->add_action( "ripple_in_space" );
   essences->add_action( "reaping_flames" );
   essences->add_action( "worldvein_resonance" );
@@ -2426,7 +2426,7 @@ void priest_t::generate_apl_shadow()
                     "target_if=target.health.pct<20|(pet.fiend.active&runeforge.shadowflame_prism.equipped)",
                     "Use Shadow Word: Death if the target is about to die or you have Shadowflame Prism equipped with "
                     "Mindbender or Shadowfiend active." );
-  main->add_talent( this, "Surrender to Madness", "target_if=target.time_to_die<25&buff.voidform.down",
+  main->add_talent( this, "Surrender to Madness", "target_if=target.time_to_die<25&target.time_to_die>0&buff.voidform.down",
                     "Use Surrender to Madness on a target that is going to die at the right time." );
   main->add_talent( this, "Mindbender" );
   main->add_talent( this, "Void Torrent", "target_if=variable.all_dots_up&!buff.voidform.up&target.time_to_die>4",
@@ -2439,7 +2439,7 @@ void priest_t::generate_apl_shadow()
   main->add_talent(
       this, "Shadow Crash",
       "if=spell_targets.shadow_crash=1&(cooldown.shadow_crash.charges=3|debuff.shadow_crash_debuff.up|action.shadow_"
-      "crash.in_flight|target.time_to_die<cooldown.shadow_crash.full_recharge_time)&raid_event.adds.in>30",
+      "crash.in_flight|target.time_to_die<cooldown.shadow_crash.full_recharge_time)&target.time_to_die>0&raid_event.adds.in>30",
       "Use all charges of Shadow Crash in a row on Single target, or if the boss is about to die." );
   main->add_talent( this, "Shadow Crash", "if=raid_event.adds.in>30&spell_targets.shadow_crash>1",
                     "Use Shadow Crash on CD unless there are adds incoming." );
