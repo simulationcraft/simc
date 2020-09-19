@@ -7672,7 +7672,7 @@ std::unique_ptr<expr_t> mage_t::create_expression( util::string_view name )
 
     return make_fn_expr( name, [ in_flight_list ]
     {
-      int spells = 0;
+      size_t spells = 0;
       for ( auto a : in_flight_list )
         spells += a->num_travel_events();
       return spells;
