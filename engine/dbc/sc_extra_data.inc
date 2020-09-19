@@ -1639,10 +1639,10 @@ static constexpr stat_data_t __gt_race_stats[] =
   {  -3,  1, -1,  3,  0 }, // Goblin
   {  -3,  1,  0,  2,  0 }, // Blood Elf
   {   1, -3,  2,  0,  0 }, // Draenei
-  {   0,  0,  0,  0,  0 }, // Dark Iron Dwarf
-  {   0,  0,  0,  0,  0 }, // 8.3 Vulpera (Was Naga) TODO: Base stats?
-  {   0,  0,  0,  0,  0 }, // Mag'har Orc
-  {   0,  0,  0,  0,  0 }, // 8.3 Mechagnome (Was Skeleton) TODO: Base stats?
+  {   2, -2,  1, -1,  0 }, // Dark Iron Dwarf
+  {  -3,  3, -1,  1,  0 }, // Vulpera
+  {   3, -3,  1, -1,  0 }, // Mag'har Orc
+  {  -2,  1, -1,  2,  0 }, // Mechagnome
   {   0,  0,  0,  0,  0 }, // Vrykul
   {   0,  0,  0,  0,  0 }, // Tuskarr
   {   0,  0,  0,  0,  0 }, // Forest Troll
@@ -1654,12 +1654,12 @@ static constexpr stat_data_t __gt_race_stats[] =
   {   0, -2,  2,  0,  0 }, // Pandaren
   {   0, -2,  2,  0,  0 }, // Pandaren - Alliance
   {   0, -2,  2,  0,  0 }, // Pandaren - Horde
-  {   0, -1,  1,  3,  0 }, // Nightborne
+  {  -2,  1, -1,  2,  0 }, // Nightborne
   {   1, -2,  2, -1,  0 }, // Highmountain Tauren
   {  -3,  1,  0,  2,  0 }, // Void Elf
-  {  -2,  1, -1,  2,  0 }, // Lightforged Draenei
+  {   0, -1,  1,  0,  0 }, // Lightforged Draenei
   {   1,  2,  0, -3,  0 }, // Zandalari Troll
-  {   0,  0,  0,  0,  0 }  // Kul Tiran TODO: Actual stats, these are Human
+  {   1, -2,  2, -1,  0 }  // Kul Tiran
 };
 
 // Avoidance diminishing returns information
