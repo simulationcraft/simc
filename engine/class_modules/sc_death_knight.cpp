@@ -3329,9 +3329,6 @@ struct army_of_the_dead_t : public death_knight_spell_t
       // Simulate rune regeneration for X seconds
       p() -> _runes.regenerate_immediate( timespan_t::from_seconds( precombat_time ) );
 
-      // If every ghoul was summoned, return
-      if ( n_ghoul == 8 ) return;
-
       sim -> print_debug( "{} used Army of the Dead in precombat with precombat time = {}, adjusting pets' duration and remaining cooldown.",
                           player -> name(), precombat_time );
     }
@@ -3339,7 +3336,8 @@ struct army_of_the_dead_t : public death_knight_spell_t
     // If precombat didn't summon every ghoul (due to interval between each spawn)
     // Or if the cast isn't during precombat
     // Summon the rest
-    make_event<summon_army_event_t>( *sim, p(), n_ghoul, timespan_t::from_seconds( summon_interval ), summon_duration );
+    if ( n_ghoul < 8 )
+      make_event<summon_army_event_t>( *sim, p(), n_ghoul, timespan_t::from_seconds( summon_interval ), summon_duration );
 
     if ( p() -> azerite.magus_of_the_dead.enabled() )
     {
