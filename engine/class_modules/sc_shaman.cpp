@@ -4944,7 +4944,7 @@ struct static_discharge_tick_t : public shaman_spell_t
     target_cache.is_valid          = false;
     std::vector<player_t*> targets = target_list();
     auto it                        = std::remove_if( targets.begin(), targets.end(), [ this ]( player_t* target ) {
-      return this->td( target )->dot.flame_shock->is_ticking();
+      return !this->td( target )->dot.flame_shock->is_ticking();
     } );
 
     targets.erase( it, targets.end() );
