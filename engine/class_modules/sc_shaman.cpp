@@ -7134,7 +7134,6 @@ void shaman_t::init_action_list_elemental()
   def->add_talent( this, "Liquid Magma Totem", "if=talent.liquid_magma_totem.enabled" );
   def->add_talent( this, "Ascendance", "if=talent.ascendance.enabled" );
   def->add_talent( this, "Stormkeeper", "if=talent.stormkeeper.enabled" );
-  def->add_talent( this, "Static Discharge", "if=talent.static_discharge.enabled" );
 
   // Racials
   def->add_action( "blood_fury,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50" );
@@ -7161,6 +7160,7 @@ void shaman_t::init_action_list_elemental()
 
   // Single target APL
   single_target->add_action( this, "Flame Shock", "target_if=!ticking|dot.flame_shock.remains<=gcd&!buff.surge_of_power.up" );
+  single_target->add_talent( this, "Static Discharge", "if=talent.static_discharge.enabled" );
   single_target->add_action( "chain_harvest" );
   single_target->add_action( "fae_transfusion" );
   single_target->add_action( "primordial_wave" );
