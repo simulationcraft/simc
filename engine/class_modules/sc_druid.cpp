@@ -6984,9 +6984,12 @@ struct force_of_nature_t : public druid_spell_t
   {
     for ( auto treant : p()->force_of_nature )
     {
-      for ( auto a : treant->action_list )
+      if ( treant )
       {
-        add_child( a );
+        for ( auto a : treant->action_list )
+        {
+          add_child( a );
+        }
       }
     }
 
