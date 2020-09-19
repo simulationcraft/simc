@@ -1588,6 +1588,8 @@ class SpellDataGenerator(DataGenerator):
         # Monk:
         (
           # General
+          ( 138311, 0 ), # Energy Sphere energy refund
+          ( 163272, 0 ), # Chi Sphere chi refund
           # Brewmaster
           ( 195630, 1 ), # Brewmaster Mastery Buff
           ( 115129, 1 ), # Expel Harm Damage
