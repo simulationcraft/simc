@@ -285,6 +285,7 @@ public:
   {
     spell_t* lightning_shield;
     spell_t* earthen_rage;
+    spell_t* static_discharge;
     spell_t* crashing_storm;
     attack_t* crash_lightning_aoe;
     spell_t* molten_weapon;
@@ -344,6 +345,7 @@ public:
     buff_t* earthen_rage;
     buff_t* echoing_shock;
     buff_t* master_of_the_elements;
+    buff_t* static_discharge;
     buff_t* surge_of_power;
     buff_t* icefury;
     buff_t* unlimited_power;
@@ -4905,9 +4907,53 @@ struct static_discharge_t : public shaman_spell_t
 {
   static_discharge_t( shaman_t* player, const std::string& options_str )
     : shaman_spell_t( "static_discharge", player, player->talent.static_discharge, options_str )
+  {
+    affected_by_master_of_the_elements = false;
+  }
+
+  void execute() override
+  {
+    shaman_spell_t::execute();
+
+    p()->buff.static_discharge->trigger();
+  }
+
+  bool ready() override
+  {
+    if ( false) //!p()->buff.lightning_shield->up() )
     {
-      // placeholder
+      return false;
     }
+    else
+    {
+      return shaman_spell_t::ready();
+    }
+  }
+};
+
+struct static_discharge_tick_t : public shaman_spell_t
+{
+  static_discharge_tick_t( shaman_t* player)
+    : shaman_spell_t( "static discharge tick", player, player->find_spell( 342244 ) )
+  {
+    background = true;
+  }
+
+  void execute() override
+  { /*
+    target_cache.is_valid          = false;
+    std::vector<player_t*> targets = target_list();
+    auto it                        = std::remove_if( targets.begin(), targets.end(), [ this ]( player_t* target ) {
+      return this->td( target )->dot.flame_shock->is_ticking();
+    } );
+
+    targets.erase( it, targets.end() );
+    if ( targets.size() == 0 )
+      return;
+    player_t* target = targets[ static_cast<int>( p()->rng().range( 0, static_cast<double>( targets.size() ) ) ) ];
+    this->set_target( target );*/
+    shaman_spell_t::execute();
+  }
 };
 
 // Echoing Shock Spell ======================================================
@@ -6162,6 +6208,11 @@ void shaman_t::create_actions()
     action.earthen_rage = new earthen_rage_spell_t( this );
   }
 
+  if ( talent.static_discharge->ok())
+  {
+    action.static_discharge = new static_discharge_tick_t( this );
+  }
+
   if ( spec.crash_lightning->ok() )
   {
     action.crash_lightning_aoe = new crash_lightning_attack_t( this );
@@ -6240,7 +6291,8 @@ void shaman_t::init_spells()
   talent.elemental_blast = find_talent_spell( "Elemental Blast" );
   talent.spirit_wolf     = find_talent_spell( "Spirit Wolf" );
   talent.earth_shield    = find_talent_spell( "Earth Shield" );
-  talent.static_charge   = find_talent_spell( "Static Charge" );
+  talent.static_charge    = find_talent_spell( "Static Charge" );
+  talent.static_discharge = find_talent_spell( "Static Discharge" );
   talent.stormkeeper     = find_talent_spell( "Stormkeeper" );
 
   // Elemental
@@ -6810,6 +6862,14 @@ void shaman_t::create_buffs()
                             action.earthen_rage->execute();
                           } );
 
+  buff.static_discharge = make_buff( this, "static_discharge", talent.static_discharge )
+                              ->set_tick_time_behavior( buff_tick_time_behavior::HASTED )
+                              ->set_tick_behavior( buff_tick_behavior::REFRESH )
+                              ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
+                                assert( action.static_discharge );
+                                action.static_discharge->execute();
+                              } );
+
   buff.master_of_the_elements = make_buff( this, "master_of_the_elements", find_spell( 260734 ) )
                                     ->set_default_value( find_spell( 260734 )->effectN( 1 ).percent() );
   buff.unlimited_power = make_buff( this, "unlimited_power", find_spell( 272737 ) )
@@ -7053,6 +7113,7 @@ void shaman_t::init_action_list_elemental()
   precombat->add_action( "potion" );
   precombat->add_talent( this, "Elemental Blast", "if=talent.elemental_blast.enabled" );
   precombat->add_action( this, "Lava Burst", "if=!talent.elemental_blast.enabled" );
+  precombat->add_action( this, "Lightning Shield" );
 
   // All Shamans Bloodlust by default
   def->add_action( this, "Bloodlust" );
@@ -7073,6 +7134,7 @@ void shaman_t::init_action_list_elemental()
   def->add_talent( this, "Liquid Magma Totem", "if=talent.liquid_magma_totem.enabled" );
   def->add_talent( this, "Ascendance", "if=talent.ascendance.enabled" );
   def->add_talent( this, "Stormkeeper", "if=talent.stormkeeper.enabled" );
+  def->add_talent( this, "Static Discharge", "if=talent.static_discharge.enabled" );
 
   // Racials
   def->add_action( "blood_fury,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50" );
