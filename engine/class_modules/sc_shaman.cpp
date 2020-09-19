@@ -4919,7 +4919,7 @@ struct static_discharge_t : public shaman_spell_t
   }
 
   bool ready() override
-  {
+  {             //TODO: Implement Lightning Shield
     if ( false) //!p()->buff.lightning_shield->up() )
     {
       return false;
