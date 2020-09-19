@@ -1,5 +1,5 @@
 // Spell text, wow build 9.0.2.35938
-static const std::array<spelltext_data_t, 15584> __spelltext_data { {
+static const std::array<spelltext_data_t, 15590> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -4335,6 +4335,7 @@ static const std::array<spelltext_data_t, 15584> __spelltext_data { {
   { 138170, "Throw one of the coins to the ground, propelling yourself in the opposite direction.", 0, 0 },
   { 138284, "Swiftmend's ground effect can now heal up to $s1 targets each time it heals.", 0, 0 },
   { 138305, "Haste increased by $s1%.", 0, 0 },
+  { 138311, "$@spelldesc327104", 0, 0 },
   { 138430, "Learn the ancient Zandalari secrets of taming Direhorns.", 0, 0 },
   { 138537, "Strike the enemy, causing damage.", 0, 0 },
   { 138646, "Create a Lightning Steel Ingot from Ghost Iron Bars. In the process, you may gain additional knowledge of Ghost Iron, and discover a Blacksmithing plan you have yet to learn. This can only be done once a day.", 0, 0 },
@@ -4984,6 +4985,7 @@ static const std::array<spelltext_data_t, 15584> __spelltext_data { {
   { 163073, "$@spelldesc163063", "Dealing $w1% increased damage.", 0 },
   { 163171, "Piece together ten prismatic scale fragments to create one complete prismatic scale.", 0, 0 },
   { 163201, "Attempts to finish off a foe, causing up to $<damage> Physical damage based on Rage spent. Only usable on enemies that have less than 20% health.$?s231830[\r\n\r\nIf your foe survives, $s2% of the Rage spent is refunded.][]", 0, 0 },
+  { 163272, "$@spelldesc116092", 0, 0 },
   { 163505, "$@spelldesc1822", "Stunned.", 0 },
   { 163558, "$@spelldesc5308", 0, 0 },
   { 163719, "Deals $s1 Nature damage.", 0, 0 },
@@ -14099,6 +14101,8 @@ static const std::array<spelltext_data_t, 15584> __spelltext_data { {
   { 325214, "Expel Harm can be cast during Soothing Mist, and additionally heals the Soothing Mist target.", 0, "Rank 3" },
   { 325215, "Touch of Death spawns $s1 Chi Spheres, granting 1 Chi when you walk through them.", 0, "Rank 3" },
   { 325216, "Hurl a brew created from the bones of your enemies at the ground, coating all targets struck for $d.  Your abilities have a $h% chance to affect the target a second time at $s1% effectiveness as Shadow damage or healing.\r\n\r\n$?s137024[Gust of Mists heals targets with your Bonedust Brew active for an additional $328748s1.]?s137023[Tiger Palm and Keg Smash reduces the cooldown of your brews by an additional $s3 sec when striking enemies with your Bonedust Brew active.]?s137025[Spinning Crane Kick refunds 1 Chi when striking enemies with your Bonedust Brew active.][]", "The Monk's abilities have a $h% chance to affect the target a second time at $s1% effectiveness as Shadow damage or healing.", "Necrolord" },
+  { 325217, "$@spelldesc325216", 0, 0 },
+  { 325218, "$@spelldesc325216", 0, 0 },
   { 325268, 0, "Movement speed increased by $s1%.", 0 },
   { 325270, "$@spelldesc325067", 0, 0 },
   { 325283, "Blasts the enemy with pure Anima, causing $s1 Arcane damage and healing a nearby ally for $s2% of the damage done.\r\n\r\nGrants $s3 $lstack:stacks; of Boon of the Ascended.\r\n\r\n$?c3[|cFFFFFFFFGenerates $/100;s4 Insanity.|r]\r\n][]", 0, 0 },
@@ -14285,6 +14289,7 @@ static const std::array<spelltext_data_t, 15584> __spelltext_data { {
   { 328281, "Bless an ally for $d. Their attacks deal $<points> Frost damage and reduce enemies' movement speed by $328506s4% and attack speed by $328506s3%, stacking $328506u times.\r\n\r\n|cFFFFFFFFBlessing of the Seasons:|r Turns to Spring after use.", "Attacks deal $<points> Frost damage and reduce enemies' movement speed by $328506s4% and attack speed by $328506s3%, stacking $328506u times.", "Night Fae" },
   { 328282, "Bless an ally for $d, increasing their healing done by $s1% and healing received by $s2%.\r\n\r\n|cFFFFFFFFBlessing of the Seasons:|r Turns to Summer after use.", "Healing done increased by $w1% and healing received increased by $w2%.", "Night Fae" },
   { 328283, "$@spelldesc193884", "Healing for $w1 every $t1 sec.", 0 },
+  { 328296, "$@spelldesc325216", 0, 0 },
   { 328301, "Restore $s1 health for each stack of Restorative Residue. ", 0, 0 },
   { 328305, "Infect the target's blood, dealing $o1 Nature damage over $d. If the target survives its full duration, they suffer an additional $328306s1 damage and you Vanish from sight.\r\n\r\nCooldown reduced by $s3 sec if Sepsis does not last its full duration.", "Suffering $w1 Nature damage every $t1 sec, and ${$w1*$s4} when the poison ends.", "Night Fae" },
   { 328306, "$@spelldesc328305", 0, "Night Fae" },
@@ -15580,6 +15585,7 @@ static const std::array<spelltext_data_t, 15584> __spelltext_data { {
   { 345209, "$@spelldesc345208", "Movement speed slowed by $w1%.", 0 },
   { 345211, "Activate Soul Igniter, sacrificing up to $345214s1 health over $d to empower Blazing Surge.\r\n\r\nReactivate to cast Blazing Surge, dealing $345214s2 Fire damage to enemies in a 40 yard cone, plus up to $s2% additional damage, based on how long Soul Igniter was active.\r\n\r\nReactivating Soul Igniter begins a one minute cooldown.", 0, 0 },
   { 345214, "$@spelldesc345211", 0, 0 },
+  { 345215, "$@spelldesc345214", 0, 0 },
   { 345228, "Increases primary stat by $s1 for $d.\r\n", "Primary stat increased by $s1.", 0 },
   { 345229, "Your spells and abilities have a chance to grant $345230s1 primary stat for $345230d.", 0, 0 },
   { 345230, "Increases primary stat by $s1 for $d.", "Increases primary stat by $s1.", 0 },
