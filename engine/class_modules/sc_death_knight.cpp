@@ -542,6 +542,7 @@ public:
 
     // Unholy
     action_t* bursting_sores;
+    action_t* dark_transformation_damage;
     action_t* festering_wound;
     action_t* last_surprise; // Azerite
     action_t* virulent_eruption;
@@ -582,6 +583,7 @@ public:
     gain_t* runic_empowerment;
 
     // Unholy
+    gain_t* apocalypse;
     gain_t* festering_wound;
     gain_t* soul_reaper;
   } gains;
@@ -650,8 +652,11 @@ public:
 
     // Unholy
     const spell_data_t* apocalypse;
+    const spell_data_t* apocalypse_2;
+    const spell_data_t* apocalypse_3;
     const spell_data_t* army_of_the_dead;
     const spell_data_t* dark_transformation;
+    const spell_data_t* dark_transformation_2;
     const spell_data_t* death_coil;
     const spell_data_t* festering_strike;
     const spell_data_t* festering_wound;
@@ -912,6 +917,7 @@ public:
   {
     double lucid_dreams_minor_proc_chance = 0.15;
     bool disable_aotd = false;
+    bool split_ghoul_regen = false;
   } options;
 
   // Runes
@@ -1988,6 +1994,17 @@ struct army_ghoul_pet_t : public base_ghoul_pet_t
     if ( o() -> azerite.last_surprise.enabled() )
     {
       last_surprise = new last_surprise_t( this );
+    }
+  }
+
+  void init_gains() override
+  {
+    base_ghoul_pet_t::init_gains();
+
+    // Group Energy regen for the same pets together to reduce clutter in reporting
+    if ( ! o() -> options.split_ghoul_regen && o() -> find_pet( name_str ) )
+    {
+      this -> gains.resource_regen = o() -> find_pet( name_str ) -> gains.resource_regen;
     }
   }
 
@@ -3172,13 +3189,18 @@ struct apocalypse_t : public death_knight_melee_attack_t
 {
   timespan_t summon_duration;
   timespan_t magus_duration;
+  int rune_generation;
 
   apocalypse_t( death_knight_t* p, const std::string& options_str ) :
     death_knight_melee_attack_t( "apocalypse", p, p -> spec.apocalypse ),
     summon_duration( p -> find_spell( 221180 ) -> duration() ),
-    magus_duration( p -> find_spell( 288544 ) -> duration() )
+    magus_duration( p -> find_spell( 288544 ) -> duration() ),
+    rune_generation( as<int>( p -> find_spell( 343758 ) -> effectN( 1 ).base_value() ) )
   {
     parse_options( options_str );
+
+    cooldown -> duration += p -> spec.apocalypse_2 -> effectN( 1 ).time_value();
+    base_multiplier *= 1.0 + p -> spec.apocalypse_2 -> effectN( 2 ).percent();
 
     cooldown -> duration *= 1.0 + p -> vision_of_perfection_minor_cdr;
   }
@@ -3199,6 +3221,11 @@ struct apocalypse_t : public death_knight_melee_attack_t
     if ( p() -> azerite.magus_of_the_dead.enabled() )
     {
       p() -> pets.magus_of_the_dead.spawn( magus_duration, 1 );
+    }
+
+    if ( p() -> spec.apocalypse_3 -> ok() )
+    {
+      p() -> replenish_rune( rune_generation, p() -> gains.apocalypse );
     }
   }
 
@@ -3938,14 +3965,24 @@ struct helchains_buff_t : public buff_t
   }
 };
 
+struct dark_transformation_damage_t : public death_knight_spell_t
+{
+  dark_transformation_damage_t( death_knight_t* p ) :
+    death_knight_spell_t( "dark_transformation", p, p -> find_spell( 344955 ) )
+  {
+    background = true;
+    aoe = as<int>( data().effectN( 2 ).base_value() );
+  }
+};
+
 struct dark_transformation_t : public death_knight_spell_t
 {
   dark_transformation_t( death_knight_t* p, const std::string& options_str ) :
     death_knight_spell_t( "dark_transformation", p, p -> spec.dark_transformation )
   {
     parse_options( options_str );
-
-    harmful = false;
+    impact_action = p -> active_spells.dark_transformation_damage;
+    add_child( p -> active_spells.dark_transformation_damage );
   }
 
   void execute() override
@@ -4363,8 +4400,7 @@ struct death_coil_t : public death_knight_spell_t
     death_knight_spell_t::execute();
 
     // Reduces the cooldown Dark Transformation by 1s
-    p() -> cooldown.dark_transformation -> adjust( -timespan_t::from_seconds(
-      p() -> spec.death_coil -> effectN( 2 ).base_value() ) );
+    p() -> cooldown.dark_transformation -> adjust( -1.0 * p() -> spec.death_coil -> effectN( 2 ).time_value() );
 
     // Reduce the cooldown on Apocalypse and Army of the Dead if Army of the Damned is talented
 
@@ -6940,6 +6976,7 @@ void death_knight_t::create_options()
 
   add_option( opt_float( "lucid_dreams_rune_proc_chance", options.lucid_dreams_minor_proc_chance, 0.0, 1.0 ) );
   add_option( opt_bool( "disable_aotd", options.disable_aotd ) );
+  add_option( opt_bool( "split_ghoul_regen", options.split_ghoul_regen ) );
 }
 
 void death_knight_t::copy_from( player_t* source )
@@ -7453,6 +7490,11 @@ void death_knight_t::create_actions()
   // Unholy
   else if ( specialization() == DEATH_KNIGHT_UNHOLY )
   {
+    if ( spec.dark_transformation -> ok() )
+    {
+      active_spells.dark_transformation_damage = new dark_transformation_damage_t( this );
+    }
+
     if ( spec.festering_wound -> ok() )
     {
       active_spells.festering_wound = new festering_wound_t( this );
@@ -7917,6 +7959,8 @@ void death_knight_t::init_spells()
   spec.outbreak            = find_specialization_spell( "Outbreak" );
   spec.scourge_strike      = find_specialization_spell( "Scourge Strike" );
   spec.apocalypse          = find_specialization_spell( "Apocalypse" );
+  spec.apocalypse_2        = find_specialization_spell( "Apocalypse", "Rank 2" );
+  spec.apocalypse_3        = find_specialization_spell( "Apocalypse", "Rank 3" );
   spec.raise_dead_2        = find_specialization_spell( "Raise Dead", "Rank 2" );
 
   mastery.blood_shield = find_mastery_spell( DEATH_KNIGHT_BLOOD );
@@ -8838,6 +8882,7 @@ void death_knight_t::init_gains()
   gains.koltiras_favor                   = get_gain( "Koltira's Favor" );
 
   // Unholy
+  gains.apocalypse                       = get_gain( "Apocalypse" );
   gains.festering_wound                  = get_gain( "Festering Wound" );
   gains.soul_reaper                      = get_gain( "Soul Reaper" );
 }
