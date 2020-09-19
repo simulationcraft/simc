@@ -34,6 +34,7 @@ namespace pets {
   struct bloodworm_pet_t;
   struct dancing_rune_weapon_pet_t;
   struct gargoyle_pet_t;
+  struct ghoul_pet_t;
   struct magus_pet_t;
 }
 
@@ -808,7 +809,7 @@ public:
   {
     pets::dancing_rune_weapon_pet_t* dancing_rune_weapon_pet;
     pets::gargoyle_pet_t* gargoyle;
-    pet_t* ghoul_pet;
+    pets::ghoul_pet_t* ghoul_pet;
     pet_t* risen_skulker;
 
     spawner::pet_spawner_t<pets::army_ghoul_pet_t, death_knight_t> army_ghouls;
@@ -1842,6 +1843,7 @@ struct base_ghoul_pet_t : public death_knight_pet_t
 struct ghoul_pet_t : public base_ghoul_pet_t
 {
   cooldown_t* gnaw_cd; // shared cd between gnaw/monstrous_blow
+  gain_t* dark_transformation_gain;
 
   struct claw_t : public dt_melee_ability_t<ghoul_pet_t>
   {
@@ -1911,6 +1913,13 @@ struct ghoul_pet_t : public base_ghoul_pet_t
     base_ghoul_pet_t::init_base_stats();
 
     owner_coeff.ap_from_ap = .6;
+  }
+
+  void init_gains() override
+  {
+    base_ghoul_pet_t::init_gains();
+
+    dark_transformation_gain = get_gain( "Dark Transformation" );
   }
 
   void init_action_list() override
@@ -3991,6 +4000,12 @@ struct dark_transformation_t : public death_knight_spell_t
     death_knight_spell_t::execute();
 
     p() -> buffs.dark_transformation -> trigger();
+
+    if ( p() -> spec.dark_transformation_2 -> ok() )
+    {
+      p() -> pets.ghoul_pet -> resource_gain( RESOURCE_ENERGY, p() -> spec.dark_transformation_2 -> effectN( 1 ).base_value(),
+                                              p() -> pets.ghoul_pet -> dark_transformation_gain, this );
+    }
 
     if ( p() -> azerite.helchains.enabled() )
     {
@@ -7958,6 +7973,7 @@ void death_knight_t::init_spells()
   spec.sudden_doom         = find_specialization_spell( "Sudden Doom" );
   spec.army_of_the_dead    = find_specialization_spell( "Army of the Dead" );
   spec.dark_transformation = find_specialization_spell( "Dark Transformation" );
+  spec.dark_transformation_2 = find_specialization_spell( "Dark Transformation", "Rank 2" );
   spec.outbreak            = find_specialization_spell( "Outbreak" );
   spec.scourge_strike      = find_specialization_spell( "Scourge Strike" );
   spec.apocalypse          = find_specialization_spell( "Apocalypse" );
@@ -8013,7 +8029,7 @@ void death_knight_t::init_spells()
   talent.unholy_pact      = find_talent_spell( "Unholy Frenzy" ); // NYI
   talent.unholy_assault    = find_talent_spell( "Summon Gargoyle" ); // NYI
 
-  // Blood Talents
+                                                                     // Blood Talents
   talent.heartbreaker           = find_talent_spell( "Heartbreaker" );
   talent.blooddrinker           = find_talent_spell( "Blooddrinker" );
   talent.tombstone              = find_talent_spell( "Tombstone" );
