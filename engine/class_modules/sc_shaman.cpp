@@ -285,7 +285,7 @@ public:
   {
     spell_t* lightning_shield;
     spell_t* earthen_rage;
-    spell_t* static_discharge;
+    spell_t* static_discharge_tick;
     spell_t* crashing_storm;
     attack_t* crash_lightning_aoe;
     spell_t* molten_weapon;
@@ -4940,7 +4940,7 @@ struct static_discharge_tick_t : public shaman_spell_t
   }
 
   void execute() override
-  { /*
+  { 
     target_cache.is_valid          = false;
     std::vector<player_t*> targets = target_list();
     auto it                        = std::remove_if( targets.begin(), targets.end(), [ this ]( player_t* target ) {
@@ -4951,7 +4951,7 @@ struct static_discharge_tick_t : public shaman_spell_t
     if ( targets.size() == 0 )
       return;
     player_t* target = targets[ static_cast<int>( p()->rng().range( 0, static_cast<double>( targets.size() ) ) ) ];
-    this->set_target( target );*/
+    this->set_target( target );
     shaman_spell_t::execute();
   }
 };
@@ -6210,7 +6210,7 @@ void shaman_t::create_actions()
 
   if ( talent.static_discharge->ok())
   {
-    action.static_discharge = new static_discharge_tick_t( this );
+    action.static_discharge_tick = new static_discharge_tick_t( this );
   }
 
   if ( spec.crash_lightning->ok() )
@@ -6866,8 +6866,8 @@ void shaman_t::create_buffs()
                               ->set_tick_time_behavior( buff_tick_time_behavior::HASTED )
                               ->set_tick_behavior( buff_tick_behavior::REFRESH )
                               ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
-                                assert( action.static_discharge );
-                                action.static_discharge->execute();
+                                assert( action.static_discharge_tick );
+                                action.static_discharge_tick->execute();
                               } );
 
   buff.master_of_the_elements = make_buff( this, "master_of_the_elements", find_spell( 260734 ) )
