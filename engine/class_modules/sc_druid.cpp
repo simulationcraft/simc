@@ -6970,8 +6970,9 @@ struct wild_charge_t : public druid_spell_t
 struct force_of_nature_t : public druid_spell_t
 {
   timespan_t summon_duration;
+
   force_of_nature_t( druid_t* p, const std::string options )
-    : druid_spell_t( "force_of_nature", p, p->talent.force_of_nature ), summon_duration( timespan_t::zero() )
+    : druid_spell_t( "force_of_nature", p, p->talent.force_of_nature ), summon_duration( 0_ms )
   {
     parse_options( options );
     harmful = may_crit = false;
@@ -6979,14 +6980,27 @@ struct force_of_nature_t : public druid_spell_t
     energize_amount    = p->talent.force_of_nature->effectN( 5 ).resource( RESOURCE_ASTRAL_POWER );
   }
 
+  void init_finished() override
+  {
+    for ( auto treant : p()->force_of_nature )
+    {
+      for ( auto a : treant->action_list )
+      {
+        add_child( a );
+      }
+    }
+
+    druid_spell_t::init_finished();
+  }
+
   void execute() override
   {
     druid_spell_t::execute();
 
-    for ( size_t i = 0; i < p()->force_of_nature.size(); i++ )
+    for ( auto treant : p()->force_of_nature )
     {
-      if ( p()->force_of_nature[ i ]->is_sleeping() )
-        p()->force_of_nature[ i ]->summon( summon_duration );
+      if ( treant->is_sleeping() )
+        treant->summon( summon_duration );
     }
   }
 };
