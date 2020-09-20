@@ -5815,17 +5815,13 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
 
     if ( p()->buff.celestial_flames->up() )
       breath_of_fire->execute();
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    monk_melee_attack_t::impact( s );
 
     // Bonedust Brew
     // Chi refund is triggering once on the trigger spell and not from tick spells.
-    // Since we need the debuff information from the target, have to put this here.
-    if ( p()->specialization() == MONK_WINDWALKER && td( s->target )->debuff.bonedust_brew->up() )
-      p()->gain.bonedust_brew->add( RESOURCE_CHI, p()->passives.bonedust_brew_chi->effectN( 1 ).base_value() );
+    if ( p()->covenant.necrolord->ok() )
+      if ( p()->specialization() == MONK_WINDWALKER && td( execute_state->target )->debuff.bonedust_brew->up() )
+        p()->gain.bonedust_brew->add( RESOURCE_CHI, p()->passives.bonedust_brew_chi->effectN( 1 ).base_value() );
+    
   }
 
   void last_tick( dot_t* dot ) override
