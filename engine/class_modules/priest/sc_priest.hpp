@@ -777,28 +777,28 @@ struct priest_pet_spell_t : public spell_t
     return static_cast<priest_pet_t&>( *player );
   }
 
-  double composite_da_multiplier( const action_state_t* state ) const override
+  double composite_target_da_multiplier( player_t* t ) const override
   {
-    double d = spell_t::composite_da_multiplier( state );
+    double tdm = action_t::composite_target_da_multiplier( t );
 
     if ( affected_by_shadow_weaving )
     {
-      d *= p().o().shadow_weaving_multiplier( state->target );
+      tdm *= p().o().shadow_weaving_multiplier( t );
     }
 
-    return d;
+    return tdm;
   }
 
-  double composite_ta_multiplier( const action_state_t* state ) const override
+  double composite_target_ta_multiplier( player_t* t ) const override
   {
-    double d = spell_t::composite_ta_multiplier( state );
+    double ttm = action_t::composite_target_ta_multiplier( t );
 
     if ( affected_by_shadow_weaving )
     {
-      d *= p().o().shadow_weaving_multiplier( state->target );
+      ttm *= p().o().shadow_weaving_multiplier( t );
     }
 
-    return d;
+    return ttm;
   }
 };
 
@@ -1403,28 +1403,28 @@ struct priest_spell_t : public priest_action_t<spell_t>
     }
   }
 
-  double composite_da_multiplier( const action_state_t* state ) const override
+  double composite_target_da_multiplier( player_t* t ) const override
   {
-    double d = base_t::composite_da_multiplier( state );
+    double tdm = action_t::composite_target_da_multiplier( t );
 
     if ( affected_by_shadow_weaving )
     {
-      d *= priest().shadow_weaving_multiplier( state->target );
+      tdm *= priest().shadow_weaving_multiplier( t );
     }
 
-    return d;
+    return tdm;
   }
 
-  double composite_ta_multiplier( const action_state_t* state ) const override
+  double composite_target_ta_multiplier( player_t* t ) const override
   {
-    double d = base_t::composite_ta_multiplier( state );
+    double ttm = action_t::composite_target_ta_multiplier( t );
 
     if ( affected_by_shadow_weaving )
     {
-      d *= priest().shadow_weaving_multiplier( state->target );
+      ttm *= priest().shadow_weaving_multiplier( t );
     }
 
-    return d;
+    return ttm;
   }
 
   double get_death_throes_bonus() const
