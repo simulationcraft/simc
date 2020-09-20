@@ -158,7 +158,7 @@ void warlock_td_t::target_demise()
     return;
   }
 
-  if ( warlock.specialization() == WARLOCK_AFFLICTION )
+  if ( warlock.spec.unstable_affliction_2->ok() )
   {
     if ( dots_unstable_affliction->is_ticking() )
     {
@@ -167,14 +167,13 @@ void warlock_td_t::target_demise()
 
       warlock.resource_gain( RESOURCE_SOUL_SHARD, 1, warlock.gains.unstable_affliction_refund );
     }
+  }
+  if ( dots_drain_soul->is_ticking() )
+  {
+    warlock.sim->print_log( "Player {} demised. Warlock {} gains a shard from drain soul.", target->name(),
+                            warlock.name() );
 
-    if ( dots_drain_soul->is_ticking() )
-    {
-      warlock.sim->print_log( "Player {} demised. Warlock {} gains a shard from drain soul.", target->name(),
-                              warlock.name() );
-
-      warlock.resource_gain( RESOURCE_SOUL_SHARD, 1, warlock.gains.drain_soul );
-    }
+    warlock.resource_gain( RESOURCE_SOUL_SHARD, 1, warlock.gains.drain_soul );
   }
 
   if ( debuffs_haunt->check() )

@@ -48,8 +48,30 @@ public:
   {
     double pm = warlock_spell_t::action_multiplier();
 
-    if ( this->data().affected_by( p()->mastery_spells.potent_afflictions->effectN( 1 ) ) )
+    return pm;
+  }
+
+  // direct action multiplier
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double pm = warlock_spell_t::composite_da_multiplier( s );
+        
+    if ( this->data().affected_by( p()->mastery_spells.potent_afflictions->effectN( 2 ) ) )
+    {
       pm *= 1.0 + p()->cache.mastery_value();
+    }
+    return pm;
+  }
+
+  // tick action multiplier
+  double composite_ta_multiplier( const action_state_t* s ) const override
+  {
+    double pm = warlock_spell_t::composite_ta_multiplier( s );
+
+    if ( this->data().affected_by( p()->mastery_spells.potent_afflictions->effectN( 1 ) ) )
+    {
+      pm *= 1.0 + p()->cache.mastery_value();
+    }
 
     return pm;
   }
@@ -236,34 +258,8 @@ struct corruption_t : public affliction_spell_t
 {
   bool pandemic_invocation_usable;
 
-
-  struct corruption_oncast_effect_t : public affliction_spell_t
-  {
-    double coef = 0.12;
-    corruption_oncast_effect_t( warlock_t* p )
-      : affliction_spell_t( "corruption_oncast_effect", p, p->find_spell( 334342 ) )
-    {
-      // there doesn't actually appear to be a coef attached to this spell which is annoying.
-      //coef = data().effectN( 1 ).trigger()->effectN( 1 ).sp_coeff();
-      background = true;
-    }
-
-    void execute() override
-    {
-      affliction_spell_t::execute();
-      this->base_dd_min = coef * 
-          this->p()->composite_spell_power( SCHOOL_MAX );
-      this->base_dd_max = base_dd_min;
-    }
-
-
-  };
-
-  corruption_oncast_effect_t* oncast_effect;
-
   corruption_t( warlock_t* p, util::string_view options_str )
-    : affliction_spell_t( "corruption", p, p->find_spell( 172 ) ),   // 172 triggers 146739
-      oncast_effect( new corruption_oncast_effect_t(p)) 
+    : affliction_spell_t( "corruption", p, p->find_spell( 172 ) )   // 172 triggers 146739
   {
     auto otherSP = p->find_spell( 146739 );
     parse_options( options_str );
@@ -287,18 +283,9 @@ struct corruption_t : public affliction_spell_t
       base_multiplier *= 1.0 + p->talents.absolute_corruption->effectN( 2 ).percent();
     }
 
-    //p->spells.corruption_impact_effect = oncast_effect;
-    //add_child( oncast_effect );
-
-    if ( p->spec.corruption_3->ok())
-    {
-      impact_action = oncast_effect;
-      add_child( impact_action );
-    }
-
     if ( p->spec.corruption_2->ok())
     {
-      base_execute_time = p->spec.corruption_2->effectN( 1 ).time_value();
+      base_execute_time *= 1.0 * p->spec.corruption_2->effectN( 1 ).percent();
     }
     
 
@@ -345,6 +332,11 @@ struct unstable_affliction_t : public affliction_spell_t
     : affliction_spell_t( "unstable_affliction", p, p->spec.unstable_affliction )
   {
     parse_options( options_str );
+
+    if ( p->spec.unstable_affliction_3->ok() )
+    {
+      this->dot_duration += p->find_spell( 334315 )->duration();
+    }
   }
 };
 
@@ -501,135 +493,71 @@ struct malefic_rapture_t : public affliction_spell_t
     // this->base_dd_min = formula
     // 
     // try with mage::touch_of_the_magi
-    struct malefic_rapture_aoe_t : public affliction_spell_t
+    struct malefic_rapture_damage_instance_t : public affliction_spell_t
     {
+      double coef = 0.0;
 
-        double coef = 0.0;
-
-      malefic_rapture_aoe_t(warlock_t *p) : 
+      malefic_rapture_damage_instance_t(warlock_t *p) : 
           affliction_spell_t( "malefic_rapture_aoe", p, p->find_spell( 324536 ) )
       {
         aoe = 1;
         background = true;
+        spell_power_mod.direct = data().effectN( 1 ).sp_coeff();
 
         p->spells.malefic_rapture_aoe = this;
-        coef                          = data().effectN( 1 ).sp_coeff();
       }
-
-      /// <summary>
-      /// [0.335000008 * (Spell power) * (1 + Versatility)]
-      /// </summary>
-      void execute() override
-      {
-        affliction_spell_t::execute();
-
-        double base = ( coef * this->p()->composite_spell_power( SCHOOL_MAX ) *
-                        ( 1 + this->p()->composite_damage_versatility() ) );
-
-        double mult = get_dots_ticking( target );
-
-        this->base_dd_min = base * mult;
-
-        this->base_dd_max = this->base_dd_min;
-
-      }
-
-      double get_dots_ticking(player_t *target)
+       
+      double get_dots_ticking(player_t *target) const
       {
         double mult = 0.0;
         auto td = this->td( target );
         if ( td->dots_agony->is_ticking() )
-        {
           mult += 1.0;
-        }
 
         if ( td->dots_corruption->is_ticking() )
-        {
           mult += 1.0;
-        }
 
         if ( td->dots_unstable_affliction->is_ticking() )
-        {
           mult += 1.0;
-        }
 
         if ( td->dots_vile_taint->is_ticking() )
-        {
           mult += 1.0;
-        }
 
         if ( td->dots_siphon_life->is_ticking() )
-        {
           mult += 1.0;
-        }
+
         return mult;
+      }
+
+      double composite_da_multiplier( const action_state_t* s ) const override
+      {
+        double m = affliction_spell_t::composite_da_multiplier( s );
+        m *= get_dots_ticking( s->target );
+        return m;
       }
     };
 
-    malefic_rapture_aoe_t* damageinstance;
+    malefic_rapture_damage_instance_t* damageinstance;
 
     malefic_rapture_t( warlock_t* p, util::string_view options_str )
       : affliction_spell_t( "malefic_rapture", p, p->find_spell( 324536 ) ), 
-        damageinstance( new malefic_rapture_aoe_t(p) )
+        damageinstance( new malefic_rapture_damage_instance_t(p) )
     {
       parse_options( options_str );
       aoe = -1;
+
+      impact_action = damageinstance;
+      add_child( impact_action );
+
     }
 
-    //void init() override
+
+    //void impact( action_state_t* s ) override
     //{
-    //  affliction_spell_t::init();
+    //  damageinstance->target = s->target;
+    //  damageinstance->execute();
     //}
 
-    //void execute() override
-    //{
-    //  affliction_spell_t::execute();
-
-    //}
-
-    void impact( action_state_t* s ) override
-    {
-      damageinstance->target = s->target;
-      damageinstance->schedule_execute();
-    }
-
-  //  double bonus_da(const action_state_t* s) const override
-  //  {
-  //    double da = affliction_spell_t::bonus_da( s );
-  //    std::cout << "Da initially: " << da << std::endl;
-
-  //    //std::cout << "Bonus_DA Called" << std::endl;
-  //    auto tdata = td( s->target );
-
-  //    if ( tdata->dots_agony->is_ticking() )
-  //    {
-  //      //std::cout << "Agony ticking" << std::endl;
-  //      da += 1.0;
-  //    }
-  //    
-  //    //std::cout << std::endl << std::endl;
-  //    std::cout << "Da end: " << da << std::endl;
-  //    return da;
-  //  }
-
-  //double action_multiplier() const override
-  //{
-  //  double am = affliction_spell_t::action_multiplier();
-
-  //  auto target = this->p()->target;
-  //  auto mtd     = td( target );
-
-  //  if ( mtd->dots_agony->is_ticking() )
-  //  {
-  //    // std::cout << "Agony ticking" << std::endl;
-  //    am += 1.0;
-  //  }
-
-  //  // std::cout << std::endl << std::endl;
-  //  std::cout << "Da end: " << am << std::endl;
-  //  return am;
-
-  //}
 };
 
 // Talents
