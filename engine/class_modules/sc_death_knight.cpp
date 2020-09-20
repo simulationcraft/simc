@@ -7927,7 +7927,6 @@ void death_knight_t::init_spells()
   spec.apocalypse_2        = find_specialization_spell( "Apocalypse", "Rank 2" );
   spec.apocalypse_3        = find_specialization_spell( "Apocalypse", "Rank 3" );
   spec.raise_dead_2        = find_specialization_spell( "Raise Dead", "Rank 2" );
-  spec.death_coil_2        = find_specialization_spell( "Death Coil", "Rank 2" );
 
   mastery.blood_shield = find_mastery_spell( DEATH_KNIGHT_BLOOD );
   mastery.frozen_heart = find_mastery_spell( DEATH_KNIGHT_FROST );
