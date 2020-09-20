@@ -8,6 +8,18 @@ namespace warlock
 {
 struct warlock_t;
 
+
+template <typename Action, typename Actor, typename... Args>
+action_t* get_action( util::string_view name, Actor* actor, Args&&... args )
+{
+  action_t* a = actor->find_action( name );
+  if ( !a )
+    a = new Action( name, actor, std::forward<Args>( args )... );
+  assert( dynamic_cast<Action*>( a ) && a->name_str == name && a->background );
+  return a;
+}
+
+
 struct warlock_td_t : public actor_target_data_t
 {
   //TODO: SL Beta - Should Leyshocks triggers be removed from the modules?

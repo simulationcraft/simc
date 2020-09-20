@@ -245,6 +245,7 @@ struct corruption_t : public affliction_spell_t
     {
       // there doesn't actually appear to be a coef attached to this spell which is annoying.
       //coef = data().effectN( 1 ).trigger()->effectN( 1 ).sp_coeff();
+      background = true;
     }
 
     void execute() override
@@ -286,8 +287,20 @@ struct corruption_t : public affliction_spell_t
       base_multiplier *= 1.0 + p->talents.absolute_corruption->effectN( 2 ).percent();
     }
 
-    p->spells.corruption_impact_effect = oncast_effect;
-    add_child( oncast_effect );
+    //p->spells.corruption_impact_effect = oncast_effect;
+    //add_child( oncast_effect );
+
+    if ( p->spec.corruption_3->ok())
+    {
+      impact_action = oncast_effect;
+      add_child( impact_action );
+    }
+
+    if ( p->spec.corruption_2->ok())
+    {
+      base_execute_time = p->spec.corruption_2->effectN( 1 ).time_value();
+    }
+    
 
   }
 
@@ -303,16 +316,6 @@ struct corruption_t : public affliction_spell_t
     }
 
     affliction_spell_t::tick( d );
-  }
-
-  void impact( action_state_t *s ) override
-  {
-    affliction_spell_t::impact( s );
-    if (result_is_hit(s->result))
-    {
-      oncast_effect->set_target( s->target );
-      oncast_effect->execute();
-    }
   }
 
   void execute() override
@@ -900,6 +903,11 @@ void warlock_t::init_spells_affliction()
   spec.agony               = find_specialization_spell( "Agony" );
   spec.agony_2             = find_spell( 231792 );
   spec.summon_darkglare    = find_specialization_spell( "Summon Darkglare" );
+  spec.corruption_2        = find_specialization_spell( "Corruption", "Rank 2" );
+  spec.corruption_3        = find_specialization_spell( "Corruption", "Rank 3" );
+  spec.unstable_affliction_2 = find_specialization_spell( "Unstable Affliction", "Rank 2" );
+  spec.unstable_affliction_3 = find_specialization_spell( "Unstable Affliction", "Rank 3" );
+  spec.shadow_bolt            = find_specialization_spell( "Shadow Bolt" );
 
   // Talents
   talents.nightfall           = find_talent_spell( "Nightfall" );
