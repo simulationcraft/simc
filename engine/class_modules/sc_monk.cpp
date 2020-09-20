@@ -1043,6 +1043,7 @@ public:
   double stagger_pct( int target_level );
   void trigger_celestial_fortune( action_state_t* );
   void trigger_sephuzs_secret( const action_state_t* state, spell_mechanic mechanic, double proc_chance = -1.0 );
+  void trigger_bonedust_brew ( const action_state_t* );
   void trigger_mark_of_the_crane( action_state_t* );
   player_t* next_mark_of_the_crane_target( action_state_t* );
   int mark_of_the_crane_counter();
@@ -4060,14 +4061,6 @@ public:
         }
       }
 
-      // Dance of Chi-Ji talent triggers from spending chi
-      if ( p()->talent.dance_of_chiji->ok() )
-        p()->buff.dance_of_chiji->trigger();
-        
-      // Dance of Chi-Ji azerite trait triggers from spending chi
-      if ( p()->azerite.dance_of_chiji.ok() )
-        p()->buff.dance_of_chiji_azerite->trigger();
-
       if ( p()->legendary.last_emperors_capacitor->ok() )
         p()->buff.the_emperors_capacitor->trigger();
 
@@ -4140,19 +4133,35 @@ public:
       }
     }
 
+    // Don't want to cause the buff to be cast and then used up immediately.
+    if ( current_resource() == RESOURCE_CHI )
+    {
+      // Dance of Chi-Ji talent triggers from spending chi
+      if ( p()->talent.dance_of_chiji->ok() )
+        p()->buff.dance_of_chiji->trigger();
+
+      // Dance of Chi-Ji azerite trait triggers from spending chi
+      if ( p()->azerite.dance_of_chiji.ok() )
+        p()->buff.dance_of_chiji_azerite->trigger();
+    }
+
+    trigger_bonedust_brew ( s );
+
+    ab::impact( s );
+  }
+
+  void trigger_bonedust_brew( action_state_t* s )
+  {
     if ( p()->covenant.necrolord->ok() )
     {
       if ( td( s->target )->debuff.bonedust_brew->up() && p()->rng().roll( p()->covenant.necrolord->proc_chance() ) )
       {
         double damage = s->result_total * p()->covenant.necrolord->effectN( 1 ).percent();
-        p()->active_actions.bonedust_brew_dmg->target = s->target;
         p()->active_actions.bonedust_brew_dmg->base_dd_min = damage;
         p()->active_actions.bonedust_brew_dmg->base_dd_max = damage;
         p()->active_actions.bonedust_brew_dmg->execute();
       }
     }
-
-    ab::impact( s );
   }
 
   void trigger_storm_earth_and_fire( const action_t* a )
@@ -5628,6 +5637,11 @@ struct sck_tick_action_t : public monk_melee_attack_t
       ap_type = attack_power_type::WEAPON_BOTH;
   }
 
+  double cost() const override
+  {
+    return 0;
+  }
+
   int mark_of_the_crane_counter() const
   {
     std::vector<player_t*> targets = target_list();
@@ -5722,9 +5736,6 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
 
     tick_action =
         new sck_tick_action_t( "spinning_crane_kick_tick", p, p->spec.spinning_crane_kick->effectN( 1 ).trigger() );
-
-    if ( p->specialization() == MONK_WINDWALKER )
-      base_costs[ RESOURCE_CHI ] -= p->passives.cyclone_strikes->effectN( 2 ).base_value();
 
     chi_x = new chi_explosion_t( p );
     breath_of_fire = new breath_of_fire_celestial_flames_t( *p );
@@ -7712,6 +7723,7 @@ struct bonedust_brew_damage_t : public monk_spell_t
   bonedust_brew_damage_t( monk_t& p )
     : monk_spell_t( "bonedust_brew_dmg", &p, p.passives.bonedust_brew_dmg )
   {
+    background = true;
   }
 
   double action_multiplier() const override
@@ -7741,8 +7753,9 @@ struct bonedust_brew_damage_t : public monk_spell_t
 struct bonedust_brew_heal_t : public monk_heal_t
 {
   bonedust_brew_heal_t( monk_t& p ) : 
-      monk_heal_t( "bonedust_brew_dmg", p, p.passives.bonedust_brew_heal )
+      monk_heal_t( "bonedust_brew_heal", p, p.passives.bonedust_brew_heal )
   {
+    background = true;
   }
 
   double action_multiplier() const override
@@ -9268,10 +9281,12 @@ action_t* monk_t::create_action( util::string_view name, const std::string& opti
     return new serenity_t( this, options_str );
 
   // Covenant Abilities
-  if ( name == "weapons_of_order" )
-    return new weapons_of_order_t( *this, options_str );
+  if ( name == "bonedust_brew" )
+    return new bonedust_brew_t( *this, options_str );
   if ( name == "fallen_order" )
     return new fallen_order_t( *this, options_str );
+  if ( name == "weapons_of_order" )
+    return new weapons_of_order_t( *this, options_str );
 
   return base_t::create_action( name, options_str );
 }
@@ -9515,13 +9530,13 @@ void monk_t::init_spells()
   talent.song_of_chi_ji         = find_talent_spell( "Song of Chi-Ji" );          // Mistweaver
   talent.ring_of_peace          = find_talent_spell( "Ring of Peace" );
   // Windwalker
-  talent.good_karma = find_talent_spell( "Good Karma" );
+  talent.good_karma             = find_talent_spell( "Good Karma" );
 
   // Tier 40 Talents
   // Windwalker
   talent.inner_strength = find_talent_spell( "Inner Strength" );
   // Mistweaver & Windwalker
-  talent.diffuse_magic = find_talent_spell( "Diffuse Magic" );
+  talent.diffuse_magic  = find_talent_spell( "Diffuse Magic" );
   // Brewmaster
   talent.bob_and_weave  = find_talent_spell( "Bob and Weave" );
   talent.healing_elixir = find_talent_spell( "Healing Elixir" );
@@ -9529,13 +9544,13 @@ void monk_t::init_spells()
 
   // Tier 45 Talents
   // Brewmaster
-  talent.special_delivery = find_talent_spell( "Special Delivery" );
-  talent.exploding_keg    = find_talent_spell( "Exploding Keg" );
+  talent.special_delivery           = find_talent_spell( "Special Delivery" );
+  talent.exploding_keg              = find_talent_spell( "Exploding Keg" );
   // Windwalker
-  talent.hit_combo   = find_talent_spell( "Hit Combo" );
-  talent.dance_of_chiji = find_talent_spell( "Dance of Chi-Ji" );
+  talent.hit_combo                  = find_talent_spell( "Hit Combo" );
+  talent.dance_of_chiji             = find_talent_spell( "Dance of Chi-Ji" );
   // Brewmaster & Windwalker
-  talent.rushing_jade_wind = find_talent_spell( "Rushing Jade Wind" );
+  talent.rushing_jade_wind          = find_talent_spell( "Rushing Jade Wind" );
   // Mistweaver
   talent.summon_jade_serpent_statue = find_talent_spell( "Summon Jade Serpent Statue" );
   talent.refreshing_jade_wind       = find_talent_spell( "Refreshing Jade Wind" );
