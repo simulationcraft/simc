@@ -236,33 +236,8 @@ struct corruption_t : public affliction_spell_t
 {
   bool pandemic_invocation_usable;
 
-
-  struct corruption_oncast_effect_t : public affliction_spell_t
-  {
-    double coef = 0.12;
-    corruption_oncast_effect_t( warlock_t* p )
-      : affliction_spell_t( "corruption_oncast_effect", p, p->find_spell( 334342 ) )
-    {
-      // there doesn't actually appear to be a coef attached to this spell which is annoying.
-      //coef = data().effectN( 1 ).trigger()->effectN( 1 ).sp_coeff();
-    }
-
-    void execute() override
-    {
-      affliction_spell_t::execute();
-      this->base_dd_min = coef * 
-          this->p()->composite_spell_power( SCHOOL_MAX );
-      this->base_dd_max = base_dd_min;
-    }
-
-
-  };
-
-  corruption_oncast_effect_t* oncast_effect;
-
   corruption_t( warlock_t* p, util::string_view options_str )
-    : affliction_spell_t( "corruption", p, p->find_spell( 172 ) ),   // 172 triggers 146739
-      oncast_effect( new corruption_oncast_effect_t(p)) 
+    : affliction_spell_t( "corruption", p, p->find_spell( 172 ) )  // 172 triggers 146739
   {
     auto otherSP = p->find_spell( 146739 );
     parse_options( options_str );
@@ -285,10 +260,6 @@ struct corruption_t : public affliction_spell_t
                          : 2 * sim->max_time * ( 1.0 + sim->vary_combat_length );  // "infinite" duration
       base_multiplier *= 1.0 + p->talents.absolute_corruption->effectN( 2 ).percent();
     }
-
-    p->spells.corruption_impact_effect = oncast_effect;
-    add_child( oncast_effect );
-
   }
 
   void tick( dot_t* d ) override
@@ -303,16 +274,6 @@ struct corruption_t : public affliction_spell_t
     }
 
     affliction_spell_t::tick( d );
-  }
-
-  void impact( action_state_t *s ) override
-  {
-    affliction_spell_t::impact( s );
-    if (result_is_hit(s->result))
-    {
-      oncast_effect->set_target( s->target );
-      oncast_effect->execute();
-    }
   }
 
   void execute() override
@@ -331,8 +292,6 @@ struct corruption_t : public affliction_spell_t
       p()->active.pandemic_invocation->schedule_execute();
       pandemic_invocation_usable = false;
     }
-
-
   }
 };
 
@@ -494,10 +453,14 @@ struct seed_of_corruption_t : public affliction_spell_t
 
 struct malefic_rapture_t : public affliction_spell_t
 {
-    //  add execute here, this will set up the individual damage instances.
-    // this->base_dd_min = formula
-    // 
-    // try with mage::touch_of_the_magi
+
+
+    /// <summary>
+    ///  add execute here, this will set up the individual damage instances.
+    /// this->base_dd_min = formula
+    /// 
+    /// try with mage::touch_of_the_magi
+    /// </summary>
     struct malefic_rapture_aoe_t : public affliction_spell_t
     {
 
