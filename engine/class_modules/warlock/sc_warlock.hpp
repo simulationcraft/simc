@@ -501,6 +501,7 @@ public:
     spell_t* melee;
     spell_t* seed_of_corruption_aoe;
     spell_t* malefic_rapture_aoe;
+    spell_t* corruption_impact_effect;
     spell_t* implosion_aoe;
     const spell_data_t* memory_of_lucid_dreams_base;  // BFA - Essence
   } spells;
