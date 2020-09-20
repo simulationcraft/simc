@@ -4790,22 +4790,12 @@ struct mangle_t : public bear_attack_t
     return bear_attack_t::n_targets();
   }
 
-  void impact( action_state_t* s ) override
-  {
-    bear_attack_t::impact( s );
-
-    if ( result_is_hit( s->result ) )
-    {
-      p()->buff.guardian_of_elune->trigger();
-
-      if ( p()->conduit.savage_combatant->ok() )
-        p()->buff.savage_combatant->trigger();
-    }
-  }
-
   void execute() override
   {
     bear_attack_t::execute();
+
+    if ( !hit_any_target )
+      return;
 
     if ( p()->buff.gore->up() )
     {
@@ -4817,6 +4807,11 @@ struct mangle_t : public bear_attack_t
         trigger_gore();
       }
     }
+
+    p()->buff.guardian_of_elune->trigger();
+
+    if ( p()->conduit.savage_combatant->ok() )
+      p()->buff.savage_combatant->trigger();
   }
 };
 
@@ -4834,28 +4829,28 @@ struct maul_t : public bear_attack_t
   {
     bear_attack_t::impact( s );
 
-    if ( result_is_hit( s->result ) )
+    if ( !result_is_hit( s->result ) )
+      return;
+
+    if ( p()->buff.tooth_and_claw->up() )
     {
-      if ( p()->buff.tooth_and_claw->up() )
-      {
-        td( s->target )->debuff.tooth_and_claw->trigger();
-        p()->buff.tooth_and_claw->decrement();
-      }
+      td( s->target )->debuff.tooth_and_claw->trigger();
+      p()->buff.tooth_and_claw->decrement();
+    }
 
-      if ( p()->buff.savage_combatant->up() )
-        p()->buff.savage_combatant->decrement();
+    if ( p()->buff.savage_combatant->up() )
+      p()->buff.savage_combatant->expire();
 
-      if ( p()->azerite.guardians_wrath.ok() )
-      {
-        p()->buff.guardians_wrath->up();  // benefit tracking
-        p()->buff.guardians_wrath->trigger();
-      }
+    if ( p()->azerite.guardians_wrath.ok() )
+    {
+      p()->buff.guardians_wrath->up();  // benefit tracking
+      p()->buff.guardians_wrath->trigger();
+    }
 
-      if ( p()->azerite.conflict_and_strife.is_major() && p()->talent.sharpened_claws->ok() )
-      {
-        p()->buff.sharpened_claws->up();  // benefit tracking
-        p()->buff.sharpened_claws->trigger();
-      }
+    if ( p()->azerite.conflict_and_strife.is_major() && p()->talent.sharpened_claws->ok() )
+    {
+      p()->buff.sharpened_claws->up();  // benefit tracking
+      p()->buff.sharpened_claws->trigger();
     }
   }
 
