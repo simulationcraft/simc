@@ -579,6 +579,8 @@ struct ascended_eruption_t final : public priest_spell_t
     aoe        = -1;
     background = true;
     radius     = data().effectN( 1 ).radius_max();
+    // Using coeff from Ascended Blast, can't find this anywhere else???
+    spell_power_mod.direct = p.find_spell( 325283 )->effectN( 1 ).sp_coeff();
   }
 
   void trigger_eruption( int stacks )
@@ -596,6 +598,12 @@ struct ascended_eruption_t final : public priest_spell_t
     m *= 1 + base_da_increase * trigger_stacks;
 
     return m;
+  }
+
+  double composite_aoe_multiplier( const action_state_t* state ) const override
+  {
+    double cam = priest_spell_t::composite_aoe_multiplier( state );
+    return cam / std::sqrt( state->n_targets );
   }
 };
 
