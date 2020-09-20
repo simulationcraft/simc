@@ -17,25 +17,27 @@ namespace pets
 {
 struct warlock_pet_t : public pet_t
 {
-  action_t* special_action;
-  action_t* special_action_two;
+  action_t* special_action; //Used for Felguard's Axe Toss
+  action_t* special_action_two; //Does any pet currently need this?
   melee_attack_t* melee_attack;
   stats_t* summon_stats;
-  spell_t* ascendance;
+  spell_t* ascendance; //TODO: SL Beta - Is this outdated?
 
   struct buffs_t
   {
     propagate_const<buff_t*> embers;  // Infernal Shard Generation
-    propagate_const<buff_t*> demonic_strength;
-    propagate_const<buff_t*> demonic_consumption;
-    propagate_const<buff_t*> grimoire_of_service;
+    propagate_const<buff_t*> demonic_strength; //Talent that buffs Felguard(s)
+    propagate_const<buff_t*> demonic_consumption; //Talent that buffs Demonic Tyrant
+    propagate_const<buff_t*> grimoire_of_service; //Buff used by Grimoire: Felguard talent
   } buffs;
 
+  //TODO: SL Beta - this struct and spell_t are unused
   struct active_t
   {
     spell_t* bile_spit;
   } active;
 
+  //TODO: SL Beta - these booleans may be unused
   bool is_demonbolt_enabled = true;
   bool is_lord_of_flames    = false;
   bool is_warlock_pet       = true;
