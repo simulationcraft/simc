@@ -14,7 +14,7 @@ struct warlock_td_t : public actor_target_data_t
 
   // Aff
   propagate_const<dot_t*> dots_agony;
-  propagate_const<dot_t*> dots_corruption;
+  propagate_const<dot_t*> dots_corruption;  // TODO: SL Beta - For bookkeeping purposes this is technically available to all specs
   propagate_const<dot_t*> dots_seed_of_corruption;
   propagate_const<dot_t*> dots_drain_soul;
   propagate_const<dot_t*> dots_siphon_life;
@@ -28,7 +28,7 @@ struct warlock_td_t : public actor_target_data_t
   // Destro
   propagate_const<dot_t*> dots_immolate;
   propagate_const<dot_t*> dots_channel_demonfire;
-  propagate_const<dot_t*> dots_roaring_blaze;
+  propagate_const<dot_t*> dots_roaring_blaze;  // TODO: SL Beta - Deprecated? Roaring blaze (debuff) seems to be the only one needed
 
   propagate_const<buff_t*> debuffs_shadowburn;
   propagate_const<buff_t*> debuffs_eradication;
@@ -45,7 +45,7 @@ struct warlock_td_t : public actor_target_data_t
   propagate_const<buff_t*> debuffs_from_the_shadows;
   propagate_const<buff_t*> debuffs_jaws_of_shadow;  // BFA - Azerite
 
-  double soc_threshold;
+  double soc_threshold;  // Aff - Seed of Corruption counts Drain Life damage
 
   warlock_t& warlock;
   warlock_td_t( player_t* target, warlock_t& p );
@@ -73,7 +73,8 @@ public:
 
   unsigned active_pets;
 
-  // Active Pet
+   // TODO: SL Beta - Are the pet definitions here only for temporary pets? If so, should Grimoire: Felguard be included?
+   // Active Pet
   struct pets_t
   {
     pets::warlock_pet_t* active;
@@ -81,6 +82,7 @@ public:
     static const int INFERNAL_LIMIT  = 1;
     static const int DARKGLARE_LIMIT = 1;
 
+    // TODO: SL Beta - Refactor infernal code including new talent Rain of Chaos
     std::array<pets::destruction::infernal_t*, INFERNAL_LIMIT> infernals;
     spawner::pet_spawner_t<pets::destruction::infernal_t, warlock_t>
         vop_infernals;  // Infernal(s) summoned by Vision of Perfection
@@ -95,6 +97,7 @@ public:
 
     spawner::pet_spawner_t<pets::demonology::wild_imp_pet_t, warlock_t> wild_imps;
 
+    // TODO: SL Beta - confirm Nether Portal demons still same? (minor, only for sanity checking)
     spawner::pet_spawner_t<pets::demonology::random_demons::shivarra_t, warlock_t> shivarra;
     spawner::pet_spawner_t<pets::demonology::random_demons::darkhound_t, warlock_t> darkhounds;
     spawner::pet_spawner_t<pets::demonology::random_demons::bilescourge_t, warlock_t> bilescourges;
@@ -111,6 +114,7 @@ public:
 
   std::vector<std::string> pet_name_list;
 
+  // TODO: SL Beta - what is this struct for/should it be renamed for clarity?
   struct active_t
   {
     action_t* grimoire_of_sacrifice_proc;
@@ -124,6 +128,7 @@ public:
     melee_attack_t* soul_strike;
   } active;
 
+  // TODO: SL Beta - Check all labels here since there was a level squish (EXTREMELY minor, just for clarity)
   // Talents
   struct talents_t
   {
@@ -330,7 +335,8 @@ public:
   // Procs and RNG
   propagate_const<real_ppm_t*> grimoire_of_sacrifice_rppm;  // grimoire of sacrifice
 
-  // Cooldowns
+  // TODO: SL Beta - Cleanup useless ones and add any as needed
+  // Cooldowns - Used for accessing cooldowns outside of their respective actions, such as reductions/resets
   struct cooldowns_t
   {
     propagate_const<cooldown_t*> haunt;
@@ -340,6 +346,8 @@ public:
     propagate_const<cooldown_t*> demonic_tyrant;
   } cooldowns;
 
+  // TODO: SL Beta - this struct is supposedly for passives per the comment here, but that is potentially outdated.
+  // Consider refactoring and reorganizing all of these.
   // Passives
   struct specs_t
   {
@@ -348,14 +356,15 @@ public:
     const spell_data_t* nethermancy;
 
     // Affliction only
-    const spell_data_t* affliction;
-    const spell_data_t* agony;
-    const spell_data_t* agony_2;
+    const spell_data_t* affliction;  // Spec aura
+    const spell_data_t* agony;       // This is the primary active ability
+    const spell_data_t* agony_2;     // Rank 2 passive (increased stacks)
     const spell_data_t* corruption_2;
     const spell_data_t* corruption_3;
-    const spell_data_t* nightfall;  // TOCHECK - Think this doesn't need to be here anymore?
-    const spell_data_t* shadow_bite;
-    const spell_data_t* shadow_bolt;
+    const spell_data_t* nightfall;  // TODO: SL Beta - Think this doesn't need to be here anymore? (Potential duplicate
+                                    // of talents.nightfall)
+    const spell_data_t* shadow_bite;  // TODO: SL Beta - Pet spell?
+    const spell_data_t* shadow_bolt;  // TODO: SL Beta - if Demo is using this Shadow Bolt, consider reorganizing
     const spell_data_t* summon_darkglare;
     const spell_data_t* unstable_affliction;
     const spell_data_t* unstable_affliction_2;
@@ -364,11 +373,13 @@ public:
     // Demonology only
     const spell_data_t* demonology;
     const spell_data_t* call_dreadstalkers_2;
-    const spell_data_t* demonic_core;
+    const spell_data_t* demonic_core;  // Spec passive for the ability. See also: buffs.demonic_core
     const spell_data_t* doom;
-    const spell_data_t* fel_firebolt_2;
+    const spell_data_t* fel_firebolt_2; //Rank 2 passive (reduced energy)
     const spell_data_t* summon_demonic_tyrant_2;
     const spell_data_t* wild_imps;
+    // TODO: SL Beta - Should Implosion be in this list? Currently spells.implosion_aoe
+
 
     // Destruction only
     const spell_data_t* destruction;
