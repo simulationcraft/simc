@@ -4749,9 +4749,9 @@ struct sepsis_t : public rogue_attack_t
     if ( p()->conduit.septic_shock.ok() )
     {
       const dot_t* dot = td( state->target )->dots.sepsis;
-      const double divisor = p()->conduit.septic_shock->effectN( 2 ).percent();
-      const double multiplier = std::max( 1.0 / divisor - dot->current_tick, 0.0 ) * divisor; 
-      m *= 1.0 + p()->conduit.septic_shock.percent() * multiplier;
+      const double reduction = ( dot->current_tick - 1 ) * p()->conduit.septic_shock->effectN( 2 ).percent();
+      const double multiplier = std::max( p()->conduit.septic_shock.percent() - reduction , 0.0 ); 
+      m *= 1.0 + multiplier;
     }
 
     return m;
@@ -6112,11 +6112,6 @@ void actions::rogue_action_t<Base>::trigger_blade_flurry( const action_state_t* 
   else
   {
     multiplier = p()->buffs.blade_flurry->check_value();
-    if ( p()->bugs )
-    {
-      // 3/37/2020 -- Dancing Steel increases Blade Flurry by 10% not 5%
-      multiplier += p()->talent.dancing_steel->effectN( 3 ).percent();
-    }
   }
 
   // Target multipliers do not replicate to secondary targets, need to reverse them out
@@ -7150,7 +7145,7 @@ void rogue_t::init_action_list()
     action_priority_list_t* stealth_cds = get_action_priority_list( "stealth_cds", "Stealth Cooldowns" );
     stealth_cds->add_action( "variable,name=shd_threshold,value=cooldown.shadow_dance.charges_fractional>=1.75", "Helper Variable" );
     stealth_cds->add_action( this, "Vanish", "if=!variable.shd_threshold&combo_points.deficit>1", "Vanish unless we are about to cap on Dance charges." );
-    stealth_cds->add_action( "sepsis,if=!variable.shd_threshold" );
+    stealth_cds->add_action( "sepsis" );
     stealth_cds->add_action( "pool_resource,for_next=1,extra_amount=40", "Pool for Shadowmeld + Shadowstrike unless we are about to cap on Dance charges. Only when Find Weakness is about to run out." );
     stealth_cds->add_action( "shadowmeld,if=energy>=40&energy.deficit>=10&!variable.shd_threshold&combo_points.deficit>1&debuff.find_weakness.remains<1" );
     stealth_cds->add_action( "variable,name=shd_combo_points,value=combo_points.deficit>=4", "CP requirement: Dance at low CP by default." );

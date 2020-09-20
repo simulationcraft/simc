@@ -1988,10 +1988,10 @@ double paladin_t::composite_spell_power( school_e school ) const
   switch ( specialization() )
   {
   case PALADIN_PROTECTION:
-    sp = spec.protection_paladin -> effectN( 8 ).percent() * composite_melee_attack_power( attack_power_type::WEAPON_MAINHAND ) * composite_attack_power_multiplier();
+    sp = spec.protection_paladin -> effectN( 8 ).percent() * composite_melee_attack_power_by_type( attack_power_type::WEAPON_MAINHAND ) * composite_attack_power_multiplier();
     break;
   case PALADIN_RETRIBUTION:
-    sp = spec.retribution_paladin -> effectN( 10 ).percent() * composite_melee_attack_power( attack_power_type::WEAPON_MAINHAND ) * composite_attack_power_multiplier();
+    sp = spec.retribution_paladin -> effectN( 10 ).percent() * composite_melee_attack_power_by_type( attack_power_type::WEAPON_MAINHAND ) * composite_attack_power_multiplier();
     break;
   default:
     break;
@@ -2011,9 +2011,9 @@ double paladin_t::composite_melee_attack_power() const
   return player_t::composite_melee_attack_power();
 }
 
-double paladin_t::composite_melee_attack_power( attack_power_type ap_type) const
+double paladin_t::composite_melee_attack_power_by_type( attack_power_type ap_type) const
 {
-  return player_t::composite_melee_attack_power( ap_type );
+  return player_t::composite_melee_attack_power_by_type( ap_type );
 }
 
 // paladin_t::composite_attack_power_multiplier =============================

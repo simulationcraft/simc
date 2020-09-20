@@ -943,7 +943,7 @@ struct add_t : public pet_t
     if ( duration > timespan_t::zero() )
     {
       if ( duration == expiration->remains() )
-        return duration * ( percent * ( 1.0 / 100 ) );
+        return duration * ( 100.0 - percent ) * 0.01;
 
       const double health_pct = health_percentage();
       const double scale      = ( health_pct - percent ) / ( 100 - health_pct );

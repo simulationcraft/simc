@@ -129,10 +129,12 @@ void add_covenant_cast_callback( player_t* p, S&&... args )
 
 struct niyas_tools_proc_t : public unique_gear::proc_spell_t
 {
-  niyas_tools_proc_t( util::string_view n, player_t* p, const spell_data_t* s, double mod ) : proc_spell_t( n, p, s )
+  niyas_tools_proc_t( util::string_view n, player_t* p, const spell_data_t* s, double mod, bool direct = true ) : proc_spell_t( n, p, s )
   {
-    spell_power_mod.direct = mod;
-    spell_power_mod.tick   = mod;
+    if ( direct )
+      spell_power_mod.direct = mod;
+    else
+      spell_power_mod.tick   = mod;
   }
 
   double composite_spell_power() const override
@@ -145,7 +147,7 @@ void niyas_tools_burrs( special_effect_t& effect )
 {
   auto action = effect.player->find_action( "spiked_burrs" );
   if ( !action )
-    action = new niyas_tools_proc_t( "spiked_burrs", effect.player, effect.player->find_spell( 333526 ), 0.36 );
+    action = new niyas_tools_proc_t( "spiked_burrs", effect.player, effect.player->find_spell( 333526 ), 0.36, false );
 
   effect.execute_action = action;
 
@@ -163,7 +165,7 @@ void niyas_tools_poison( special_effect_t& effect )
     {
       dot = e.player->find_action( "paralytic_poison" );
       if ( !dot )
-        dot = new niyas_tools_proc_t( "paralytic_poison", e.player, e.player->find_spell( 321519 ), 0.16 );
+        dot = new niyas_tools_proc_t( "paralytic_poison", e.player, e.player->find_spell( 321519 ), 0.16, false );
 
       direct = e.player->find_action( "paralytic_poison_interrupt" );
       if ( !direct )

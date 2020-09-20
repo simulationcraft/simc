@@ -3548,7 +3548,7 @@ double player_t::composite_melee_attack_power() const
   return ap;
 }
 
-double player_t::composite_melee_attack_power( attack_power_type type ) const
+double player_t::composite_melee_attack_power_by_type( attack_power_type type ) const
 {
   double base_ap = cache.attack_power();
   double ap = 0;

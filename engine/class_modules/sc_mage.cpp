@@ -7672,7 +7672,7 @@ std::unique_ptr<expr_t> mage_t::create_expression( util::string_view name )
 
     return make_fn_expr( name, [ in_flight_list ]
     {
-      int spells = 0;
+      size_t spells = 0;
       for ( auto a : in_flight_list )
         spells += a->num_travel_events();
       return spells;
@@ -8192,7 +8192,7 @@ public:
           "<div class=\"toggle-content\">\n";
 
     auto& d = *p.sample_data.icy_veins_duration;
-    int num_buckets = std::min( 70, as<int>( d.max() - d.min() ) + 1 );
+    int num_buckets = std::min( 70, static_cast<int>( d.max() - d.min() ) + 1 );
     d.create_histogram( num_buckets );
 
     highchart::histogram_chart_t chart( highchart::build_id( p, "icy_veins_duration" ), *p.sim );

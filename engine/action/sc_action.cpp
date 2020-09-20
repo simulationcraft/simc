@@ -1343,7 +1343,7 @@ result_amount_type action_t::report_amount_type( const action_state_t* state ) c
 
 double action_t::composite_attack_power() const
 {
-  return player->composite_melee_attack_power(get_attack_power_type());
+  return player->composite_melee_attack_power_by_type(get_attack_power_type());
 }
 
 double action_t::composite_spell_power() const
