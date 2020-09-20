@@ -1132,6 +1132,7 @@ bool chart::generate_raid_aps( highchart::bar_chart_t& bc, const sim_t& s, const
 
   // Compute a very naive offset for the X-axis (in the chart Y-axis) labels, and the dataLabels of the chart.
   int n_chars = util::numDigits<int>( static_cast<int>( max_value ) );
+  int margin_left = 300;
 
   // Thousands separator
   if ( n_chars > 3 )
@@ -1142,6 +1143,7 @@ bool chart::generate_raid_aps( highchart::bar_chart_t& bc, const sim_t& s, const
   if ( s.chart_show_relative_difference && has_diff )
   {
     n_chars += 6;
+    margin_left += 40;
   }
 
   if ( precision > 0 )
@@ -1149,7 +1151,7 @@ bool chart::generate_raid_aps( highchart::bar_chart_t& bc, const sim_t& s, const
     n_chars += 2;
   }
 
-  bc.set( "chart.marginLeft", 300 );
+  bc.set( "chart.marginLeft", margin_left );
 
   bc.set( "xAxis.lineWidth", 0 );
   bc.set( "xAxis.offset", 10 * n_chars );
