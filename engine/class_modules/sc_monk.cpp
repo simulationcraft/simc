@@ -5822,6 +5822,8 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
     monk_melee_attack_t::impact( s );
 
     // Bonedust Brew
+    // Chi refund is triggering once on the trigger spell and not from tick spells.
+    // Since we need the debuff information from the target, have to put this here.
     if ( p()->specialization() == MONK_WINDWALKER && td( s->target )->debuff.bonedust_brew->up() )
       p()->gain.bonedust_brew->add( RESOURCE_CHI, p()->passives.bonedust_brew_chi->effectN( 1 ).base_value() );
   }
