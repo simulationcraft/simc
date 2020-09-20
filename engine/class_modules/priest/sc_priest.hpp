@@ -568,10 +568,6 @@ private:
   void generate_apl_holy_h();
   expr_t* create_expression_holy( action_t* a, util::string_view name_str );
   action_t* create_action_holy( util::string_view name, util::string_view options_str );
-
-  int shadow_weaving_active_dots( const player_t* target ) const;
-  double shadow_weaving_multiplier( const player_t* target ) const;
-
   target_specific_t<priest_td_t> _target_data;
 
 public:
@@ -587,6 +583,8 @@ public:
   void trigger_psychic_link( action_state_t* );
   void trigger_wrathful_faerie();
   void remove_wrathful_faerie();
+  int shadow_weaving_active_dots( const player_t* target ) const;
+  double shadow_weaving_multiplier( const player_t* target ) const;
   pets::fiend::base_fiend_pet_t* get_current_main_pet();
   const priest_td_t* find_target_data( const player_t* target ) const
   {
@@ -756,7 +754,10 @@ struct priest_pet_melee_t : public melee_attack_t
 
 struct priest_pet_spell_t : public spell_t
 {
-  priest_pet_spell_t( priest_pet_t& p, util::string_view n ) : spell_t( n, &p, p.find_pet_spell( n ) )
+  bool affected_by_shadow_weaving;
+
+  priest_pet_spell_t( priest_pet_t& p, util::string_view n )
+    : spell_t( n, &p, p.find_pet_spell( n ) ), affected_by_shadow_weaving( false )
   {
     may_crit = true;
   }
@@ -774,6 +775,30 @@ struct priest_pet_spell_t : public spell_t
   const priest_pet_t& p() const
   {
     return static_cast<priest_pet_t&>( *player );
+  }
+
+  double composite_da_multiplier( const action_state_t* state ) const override
+  {
+    double d = spell_t::composite_da_multiplier( state );
+
+    if ( affected_by_shadow_weaving )
+    {
+      d *= p().o().shadow_weaving_multiplier( state->target );
+    }
+
+    return d;
+  }
+
+  double composite_ta_multiplier( const action_state_t* state ) const override
+  {
+    double d = spell_t::composite_ta_multiplier( state );
+
+    if ( affected_by_shadow_weaving )
+    {
+      d *= p().o().shadow_weaving_multiplier( state->target );
+    }
+
+    return d;
   }
 };
 
@@ -1306,8 +1331,10 @@ struct priest_heal_t : public priest_action_t<heal_t>
 
 struct priest_spell_t : public priest_action_t<spell_t>
 {
+  bool affected_by_shadow_weaving;
+
   priest_spell_t( util::string_view name, priest_t& player, const spell_data_t* s = spell_data_t::nil() )
-    : base_t( name, player, s )
+    : base_t( name, player, s ), affected_by_shadow_weaving( false )
   {
     weapon_multiplier = 0.0;
   }
@@ -1374,6 +1401,30 @@ struct priest_spell_t : public priest_action_t<spell_t>
         }
       }
     }
+  }
+
+  double composite_da_multiplier( const action_state_t* state ) const override
+  {
+    double d = base_t::composite_da_multiplier( state );
+
+    if ( affected_by_shadow_weaving )
+    {
+      d *= priest().shadow_weaving_multiplier( state->target );
+    }
+
+    return d;
+  }
+
+  double composite_ta_multiplier( const action_state_t* state ) const override
+  {
+    double d = base_t::composite_ta_multiplier( state );
+
+    if ( affected_by_shadow_weaving )
+    {
+      d *= priest().shadow_weaving_multiplier( state->target );
+    }
+
+    return d;
   }
 
   double get_death_throes_bonus() const

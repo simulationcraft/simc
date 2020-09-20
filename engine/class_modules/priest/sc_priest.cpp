@@ -992,8 +992,9 @@ struct void_tendril_mind_flay_t final : public priest_pet_spell_t
     : priest_pet_spell_t( "mind_flay", &p, p.o().find_spell( 193473 ) ),
       void_tendril_insanity( p.o().find_spell( 336214 ) )
   {
-    channeled    = true;
-    hasted_ticks = false;
+    channeled                  = true;
+    hasted_ticks               = false;
+    affected_by_shadow_weaving = true;
 
     // Merge the stats object with other instances of the pet
     auto first_pet = p.o().find_pet( p.name_str );
@@ -1050,17 +1051,49 @@ action_t* void_tendril_t::create_action( util::string_view name, const std::stri
   return priest_pet_t::create_action( name, options_str );
 }
 
+struct void_lasher_mind_sear_tick_t final : public priest_pet_spell_t
+{
+  const double void_lasher_insanity;
+
+  void_lasher_mind_sear_tick_t( void_lasher_t& p, const spell_data_t* s )
+    : priest_pet_spell_t( "mind_sear_tick", &p, s ),
+      void_lasher_insanity( p.o().find_spell( 336214 )->effectN( 1 ).base_value() )
+  {
+    background = true;
+    dual       = true;
+    aoe        = -1;
+    radius     = data().effectN( 2 ).radius_max();  // base radius is 100yd, actual is stored in effect 2
+    affected_by_shadow_weaving = true;
+  }
+
+  timespan_t composite_dot_duration( const action_state_t* ) const override
+  {
+    // Not hasted
+    return dot_duration;
+  }
+
+  timespan_t tick_time( const action_state_t* ) const override
+  {
+    // Not hasted
+    return base_tick_time;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    priest_pet_spell_t::impact( s );
+
+    p().o().generate_insanity( void_lasher_insanity, p().o().gains.insanity_eternal_call_to_the_void_mind_sear,
+                               s->action );
+  }
+};
+
 struct void_lasher_mind_sear_t final : public priest_pet_spell_t
 {
-  const spell_data_t* void_lasher_insanity;
-
-  void_lasher_mind_sear_t( void_lasher_t& p )
-    : priest_pet_spell_t( "mind_sear", &p, p.o().find_spell( 344752 ) ),
-      void_lasher_insanity( p.o().find_spell( 336214 ) )
+  void_lasher_mind_sear_t( void_lasher_t& p ) : priest_pet_spell_t( "mind_sear", &p, p.o().find_spell( 344754 ) )
   {
     channeled    = true;
     hasted_ticks = false;
-    aoe          = -1;
+    tick_action  = new void_lasher_mind_sear_tick_t( p, data().effectN( 1 ).trigger() );
 
     // Merge the stats object with other instances of the pet
     auto first_pet = p.o().find_pet( p.name_str );
@@ -1084,26 +1117,6 @@ struct void_lasher_mind_sear_t final : public priest_pet_spell_t
         }
       }
     }
-  }
-
-  timespan_t composite_dot_duration( const action_state_t* ) const override
-  {
-    // Not hasted
-    return dot_duration;
-  }
-
-  timespan_t tick_time( const action_state_t* ) const override
-  {
-    // Not hasted
-    return base_tick_time;
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    priest_pet_spell_t::impact( s );
-
-    p().o().generate_insanity( void_lasher_insanity->effectN( 1 ).base_value(),
-                               p().o().gains.insanity_eternal_call_to_the_void_mind_sear, s->action );
   }
 };
 
@@ -1454,8 +1467,6 @@ double priest_t::composite_player_target_multiplier( player_t* t, school_e schoo
   {
     m *= 1.0 + target_data->buffs.schism->data().effectN( 2 ).percent();
   }
-
-  m *= shadow_weaving_multiplier( t );
 
   return m;
 }

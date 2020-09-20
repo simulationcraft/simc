@@ -46,6 +46,8 @@ public:
   {
     parse_options( options_str );
 
+    affected_by_shadow_weaving = true;
+
     // This was removed from the Mind Blast spell and put on the Shadow Priest spell instead
     energize_amount = mind_blast_insanity;
     energize_amount *= 1 + priest().talents.fortress_of_the_mind->effectN( 2 ).percent();
@@ -190,17 +192,18 @@ struct mind_sear_tick_t final : public priest_spell_t
                                          ->effectN( 1 )
                                          .percent() )
   {
-    background          = true;
-    dual                = true;
-    aoe                 = -1;
-    callbacks           = false;
-    direct_tick         = false;
-    use_off_gcd         = true;
-    dynamic_tick_action = true;
-    energize_type       = action_energize::PER_HIT;
-    energize_amount     = insanity_gain;
-    energize_resource   = RESOURCE_INSANITY;
-    radius              = data().effectN( 2 ).radius();  // base radius is 100yd, actual is stored in effect 2
+    affected_by_shadow_weaving = true;
+    background                 = true;
+    dual                       = true;
+    aoe                        = -1;
+    callbacks                  = false;
+    direct_tick                = false;
+    use_off_gcd                = true;
+    dynamic_tick_action        = true;
+    energize_type              = action_energize::PER_HIT;
+    energize_amount            = insanity_gain;
+    energize_resource          = RESOURCE_INSANITY;
+    radius                     = data().effectN( 2 ).radius();  // base radius is 100yd, actual is stored in effect 2
   }
 
   double bonus_da( const action_state_t* state ) const override
@@ -287,10 +290,11 @@ struct mind_flay_t final : public priest_spell_t
   {
     parse_options( options_str );
 
-    may_crit     = false;
-    channeled    = true;
-    hasted_ticks = false;
-    use_off_gcd  = true;
+    affected_by_shadow_weaving = true;
+    may_crit                   = false;
+    channeled                  = true;
+    hasted_ticks               = false;
+    use_off_gcd                = true;
 
     energize_amount *= 1 + p.talents.fortress_of_the_mind->effectN( 1 ).percent();
 
@@ -386,6 +390,8 @@ struct shadow_word_death_t final : public priest_spell_t
     : priest_spell_t( "shadow_word_death", p, p.find_class_spell( "Shadow Word: Death" ) )
   {
     parse_options( options_str );
+
+    affected_by_shadow_weaving = true;
 
     auto rank2 = p.find_rank_spell( "Shadow Word: Death", "Rank 2" );
     if ( rank2->ok() )
@@ -609,11 +615,12 @@ struct shadowy_apparition_damage_t final : public priest_spell_t
       insanity_gain( priest().talents.auspicious_spirits->effectN( 2 ).percent() ),
       spiteful_apparitions_bonus( priest().azerite.spiteful_apparitions.value( 1 ) )
   {
-    background = true;
-    proc       = false;
-    callbacks  = true;
-    may_miss   = false;
-    may_crit   = false;
+    affected_by_shadow_weaving = true;
+    background                 = true;
+    proc                       = false;
+    callbacks                  = true;
+    may_miss                   = false;
+    may_crit                   = false;
 
     base_dd_multiplier *= 1 + priest().talents.auspicious_spirits->effectN( 1 ).percent();
 
@@ -688,9 +695,10 @@ struct shadow_word_pain_t final : public priest_spell_t
   shadow_word_pain_t( priest_t& p, bool _casted = false )
     : priest_spell_t( "shadow_word_pain", p, p.find_class_spell( "Shadow Word: Pain" ) )
   {
-    casted    = _casted;
-    may_crit  = true;
-    tick_zero = false;
+    affected_by_shadow_weaving = true;
+    casted                     = _casted;
+    may_crit                   = true;
+    tick_zero                  = false;
     if ( !casted )
     {
       base_dd_max            = 0.0;
@@ -764,8 +772,9 @@ struct unfurling_darkness_t final : public priest_spell_t
     : priest_spell_t( "unfurling_darkness", p, p.find_talent_spell( "Unfurling Darkness" ) ),
       vampiric_touch_sp( p.find_spell( 34914 )->effectN( 4 ).sp_coeff() )
   {
-    background             = true;
-    spell_power_mod.direct = vampiric_touch_sp;
+    background                 = true;
+    spell_power_mod.direct     = vampiric_touch_sp;
+    affected_by_shadow_weaving = true;
   }
 };
 
@@ -785,8 +794,9 @@ struct vampiric_touch_t final : public priest_spell_t
       child_ud( nullptr ),
       ignore_healing( p.options.priest_ignore_healing )
   {
-    casted   = _casted;
-    may_crit = false;
+    casted                     = _casted;
+    may_crit                   = false;
+    affected_by_shadow_weaving = true;
 
     if ( priest().talents.misery->ok() && casted )
     {
@@ -882,10 +892,11 @@ struct devouring_plague_t final : public priest_spell_t
   devouring_plague_t( priest_t& p, bool _casted = false )
     : priest_spell_t( "devouring_plague", p, p.find_class_spell( "Devouring Plague" ) )
   {
-    casted        = _casted;
-    may_crit      = true;
-    tick_zero     = false;
-    tick_may_crit = true;
+    casted                     = _casted;
+    may_crit                   = true;
+    tick_zero                  = false;
+    tick_may_crit              = true;
+    affected_by_shadow_weaving = true;
   }
 
   devouring_plague_t( priest_t& p, util::string_view options_str ) : devouring_plague_t( p, true )
@@ -985,9 +996,10 @@ struct void_bolt_t final : public priest_spell_t
       mindbender_cooldown( player.get_cooldown( "shadowfiend" ) )
   {
     parse_options( options_str );
-    use_off_gcd      = true;
-    energize_type    = action_energize::ON_CAST;
-    cooldown->hasted = true;
+    use_off_gcd                = true;
+    energize_type              = action_energize::ON_CAST;
+    cooldown->hasted           = true;
+    affected_by_shadow_weaving = true;
 
     auto rank2 = player.find_rank_spell( "Void Bolt", "Rank 2" );
     if ( rank2->ok() )
@@ -1040,8 +1052,9 @@ struct void_eruption_damage_t final : public priest_spell_t
   void_eruption_damage_t( priest_t& p )
     : priest_spell_t( "void_eruption_damage", p, p.find_spell( 228360 ) ), void_bolt( nullptr )
   {
-    may_miss   = false;
-    background = true;
+    may_miss                   = false;
+    background                 = true;
+    affected_by_shadow_weaving = true;
   }
 
   void init() override
@@ -1107,9 +1120,10 @@ struct void_eruption_stm_damage_t final : public priest_spell_t
   void_eruption_stm_damage_t( priest_t& p )
     : priest_spell_t( "void_eruption_stm_damage", p, p.find_spell( 228360 ) ), void_bolt( nullptr )
   {
-    may_miss   = false;
-    background = true;
-    aoe        = -1;
+    may_miss                   = false;
+    background                 = true;
+    aoe                        = -1;
+    affected_by_shadow_weaving = true;
   }
 
   void init() override
@@ -1204,11 +1218,12 @@ struct void_torrent_t final : public priest_spell_t
   {
     parse_options( options_str );
 
-    may_crit     = false;
-    channeled    = true;
-    use_off_gcd  = true;
-    tick_zero    = true;
-    dot_duration = data().duration();
+    may_crit                   = false;
+    channeled                  = true;
+    use_off_gcd                = true;
+    tick_zero                  = true;
+    dot_duration               = data().duration();
+    affected_by_shadow_weaving = true;
 
     // Getting insanity from the trigger spell data, base spell doesn't have it
     energize_type     = action_energize::PER_TICK;
@@ -1289,7 +1304,8 @@ struct shadow_crash_damage_t final : public priest_spell_t
   shadow_crash_damage_t( priest_t& p )
     : priest_spell_t( "shadow_crash_damage", p, p.talents.shadow_crash->effectN( 1 ).trigger() )
   {
-    background = true;
+    background                 = true;
+    affected_by_shadow_weaving = true;
   }
 
   double composite_da_multiplier( const action_state_t* state ) const override
@@ -1382,10 +1398,11 @@ struct searing_nightmare_t final : public priest_spell_t
     parse_options( options_str );
     child_swp->background = true;
 
-    may_miss             = false;
-    aoe                  = -1;
-    radius               = data().effectN( 2 ).radius_max();
-    usable_while_casting = use_while_casting;
+    may_miss                   = false;
+    aoe                        = -1;
+    radius                     = data().effectN( 2 ).radius_max();
+    usable_while_casting       = use_while_casting;
+    affected_by_shadow_weaving = true;
   }
 
   bool usable_during_current_cast() const override
@@ -2426,7 +2443,8 @@ void priest_t::generate_apl_shadow()
                     "target_if=target.health.pct<20|(pet.fiend.active&runeforge.shadowflame_prism.equipped)",
                     "Use Shadow Word: Death if the target is about to die or you have Shadowflame Prism equipped with "
                     "Mindbender or Shadowfiend active." );
-  main->add_talent( this, "Surrender to Madness", "target_if=target.time_to_die<25&target.time_to_die>0&buff.voidform.down",
+  main->add_talent( this, "Surrender to Madness",
+                    "target_if=target.time_to_die<25&target.time_to_die>0&buff.voidform.down",
                     "Use Surrender to Madness on a target that is going to die at the right time." );
   main->add_talent( this, "Mindbender" );
   main->add_talent( this, "Void Torrent", "target_if=variable.all_dots_up&!buff.voidform.up&target.time_to_die>4",
@@ -2439,7 +2457,8 @@ void priest_t::generate_apl_shadow()
   main->add_talent(
       this, "Shadow Crash",
       "if=spell_targets.shadow_crash=1&(cooldown.shadow_crash.charges=3|debuff.shadow_crash_debuff.up|action.shadow_"
-      "crash.in_flight|target.time_to_die<cooldown.shadow_crash.full_recharge_time)&target.time_to_die>0&raid_event.adds.in>30",
+      "crash.in_flight|target.time_to_die<cooldown.shadow_crash.full_recharge_time)&target.time_to_die>0&raid_event."
+      "adds.in>30",
       "Use all charges of Shadow Crash in a row on Single target, or if the boss is about to die." );
   main->add_talent( this, "Shadow Crash", "if=raid_event.adds.in>30&spell_targets.shadow_crash>1",
                     "Use Shadow Crash on CD unless there are adds incoming." );
