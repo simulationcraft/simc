@@ -523,6 +523,7 @@ public:
     spell_t* melee; //Is this necessary?
     spell_t* seed_of_corruption_aoe; //Is this unused?
     spell_t* malefic_rapture_aoe; //Is this unused?
+    spell_t* corruption_impact_effect;
     spell_t* implosion_aoe; //Is this unused?
     const spell_data_t* memory_of_lucid_dreams_base;  // BFA - Essence
   } spells;
