@@ -4415,12 +4415,6 @@ struct death_coil_t : public death_knight_spell_t
     if ( p() -> spec.death_coil_2 -> ok() )
       p() -> cooldown.dark_transformation -> adjust( -1.0 * p() -> spec.death_coil -> effectN( 2 ).time_value() );
 
-    // Reduces the cooldown on Apocalypse by 1.5s
-    if ( p() -> spec.death_coil_2 -> ok() )
-    {
-      p()->cooldown.apocalypse->adjust( -p() -> spec.death_coil -> effectN( 2 ).time_value() );
-    }   
-
     // Reduce the cooldown on Apocalypse and Army of the Dead if Army of the Damned is talented
     p() -> cooldown.apocalypse -> adjust( -timespan_t::from_seconds(
       p() -> talent.army_of_the_damned -> effectN( 1 ).base_value() / 10 ) );
