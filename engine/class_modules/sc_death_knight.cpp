@@ -669,6 +669,7 @@ public:
     const spell_data_t* scourge_strike;
     const spell_data_t* scourge_strike_2;
     const spell_data_t* sudden_doom;
+    const spell_data_t* epidemic;
   } spec;
 
   // Mastery
@@ -718,11 +719,11 @@ public:
     const spell_data_t* spell_eater;
 
     const spell_data_t* pestilence;
-    const spell_data_t* epidemic;
+    const spell_data_t* unholy_pact;  // NYI
     const spell_data_t* defile;
 
     const spell_data_t* army_of_the_damned;
-    const spell_data_t* unholy_pact; // NYI
+    const spell_data_t* summon_gargoyle; // WIP
     const spell_data_t* unholy_assault;
 
     // Blood
@@ -749,9 +750,7 @@ public:
     const spell_data_t* purgatory; // NYI
     const spell_data_t* red_thirst;
     const spell_data_t* bonestorm;
-
-    // WIP
-    const spell_data_t* summon_gargoyle;
+    
   } talent;
 
   // Spells
@@ -2494,7 +2493,6 @@ struct magus_pet_t : public death_knight_pet_t
       super( player, name, spell )
     {
       parse_options( options_str );
-      base_dd_min = base_dd_max = player -> o() -> azerite.magus_of_the_dead.value();
     }
 
     // There's a 1 energy cost in spelldata but it might as well be ignored
@@ -2505,10 +2503,9 @@ struct magus_pet_t : public death_knight_pet_t
   struct frostbolt_magus_t : public magus_spell_t
   {
     frostbolt_magus_t( magus_pet_t* player, const std::string& options_str ) :
-      magus_spell_t( player, "frostbolt", player -> o() -> find_spell( 288548 ), options_str )
+      magus_spell_t( player, "frostbolt", player -> o() -> find_spell( 317792 ), options_str )
     {
-      // TODO: Frostbolt has a 3s cooldown, set in a manual hotfix
-      // cooldown -> duration = 3_s;
+      // Frostbolt has a 3s cooldown, set in a manual hotfix
     }
 
     // Frostbolt applies a slowing debuff on non-boss targets
@@ -2541,7 +2538,7 @@ struct magus_pet_t : public death_knight_pet_t
   struct shadow_bolt_magus_t : public magus_spell_t
   {
     shadow_bolt_magus_t( magus_pet_t* player, const std::string& options_str ) :
-      magus_spell_t( player, "shadow_bolt", player -> o() -> find_spell( 288546 ), options_str )
+      magus_spell_t( player, "shadow_bolt", player -> o() -> find_spell( 317791 ), options_str )
     { }
   };
 
@@ -3200,7 +3197,7 @@ struct apocalypse_t : public death_knight_melee_attack_t
   apocalypse_t( death_knight_t* p, const std::string& options_str ) :
     death_knight_melee_attack_t( "apocalypse", p, p -> spec.apocalypse ),
     summon_duration( p -> find_spell( 221180 ) -> duration() ),
-    magus_duration( p -> find_spell( 288544 ) -> duration() ),
+    magus_duration( p -> find_spell( 317776 ) -> duration() ),
     rune_generation( as<int>( p -> find_spell( 343758 ) -> effectN( 1 ).base_value() ) )
   {
     parse_options( options_str );
@@ -3224,7 +3221,7 @@ struct apocalypse_t : public death_knight_melee_attack_t
       p() -> pets.apoc_ghouls.spawn( summon_duration, n_wounds );
     }
 
-    if ( p() -> azerite.magus_of_the_dead.enabled() )
+    if ( p() -> talent.army_of_the_damned -> ok() )
     {
       p() -> pets.magus_of_the_dead.spawn( magus_duration, 1 );
     }
@@ -3284,7 +3281,7 @@ struct army_of_the_dead_t : public death_knight_spell_t
     death_knight_spell_t( "army_of_the_dead", p, p -> spec.army_of_the_dead ),
     precombat_time( 6.0 ),
     summon_duration( p -> spec.army_of_the_dead -> effectN( 1 ).trigger() -> duration() ),
-    magus_duration( p -> find_spell( 288544 ) -> duration() )
+    magus_duration( p -> find_spell( 317776 ) -> duration() )
   {
     // disable_aotd=1 can be added to the profile to disable aotd usage, for example for specific dungeon simming
 
@@ -3372,7 +3369,7 @@ struct army_of_the_dead_t : public death_knight_spell_t
     if ( n_ghoul < 8 )
       make_event<summon_army_event_t>( *sim, p(), n_ghoul, timespan_t::from_seconds( summon_interval ), summon_duration );
 
-    if ( p() -> azerite.magus_of_the_dead.enabled() )
+    if ( p() -> talent.army_of_the_damned -> ok() )
     {
       p() -> pets.magus_of_the_dead.spawn( magus_duration - timespan_t::from_seconds( precombat_time ), 1 );
     }
@@ -4786,7 +4783,7 @@ struct epidemic_t : public death_knight_spell_t
   epidemic_damage_aoe_t* aoe;
 
   epidemic_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_spell_t( "epidemic", p, p -> talent.epidemic ),
+    death_knight_spell_t( "epidemic", p, p -> spec.epidemic ),
     main( new epidemic_damage_main_t( p ) ),
     aoe( new epidemic_damage_aoe_t( p ) )
   {
@@ -4794,6 +4791,14 @@ struct epidemic_t : public death_knight_spell_t
 
     add_child( main );
     add_child( aoe );
+  }
+
+  double cost() const override
+  {
+    if ( p() -> buffs.sudden_doom -> check() )
+      return 0;
+
+    return death_knight_spell_t::cost();
   }
 
   void execute() override
@@ -4822,6 +4827,8 @@ struct epidemic_t : public death_knight_spell_t
 
     p() -> cooldown.army_of_the_dead -> adjust( -timespan_t::from_seconds(
       p() -> talent.army_of_the_damned -> effectN( 2 ).base_value() / 10 ) );
+
+    p() -> buffs.sudden_doom -> decrement();
   }
 };
 
@@ -7742,7 +7749,7 @@ void death_knight_t::create_pets()
 
     }
 
-    if ( azerite.magus_of_the_dead.enabled() )
+    if ( talent.army_of_the_damned -> ok() )
     {
       pets.magus_of_the_dead.set_creation_callback(
         [] ( death_knight_t* p ) { return new pets::magus_pet_t( p ); } );
@@ -7927,6 +7934,7 @@ void death_knight_t::init_spells()
   spec.apocalypse_2        = find_specialization_spell( "Apocalypse", "Rank 2" );
   spec.apocalypse_3        = find_specialization_spell( "Apocalypse", "Rank 3" );
   spec.raise_dead_2        = find_specialization_spell( "Raise Dead", "Rank 2" );
+  spec.epidemic              = find_specialization_spell( "Epidemic" );
 
   mastery.blood_shield = find_mastery_spell( DEATH_KNIGHT_BLOOD );
   mastery.frozen_heart = find_mastery_spell( DEATH_KNIGHT_FROST );
@@ -7969,11 +7977,11 @@ void death_knight_t::init_spells()
   talent.spell_eater        = find_talent_spell( "Spell Eater" );
 
   talent.pestilence         = find_talent_spell( "Pestilence" );
-  talent.epidemic           = find_talent_spell( "Epidemic" );
+  talent.unholy_pact        = find_talent_spell( "Unholy Pact" );  // NYI
   talent.defile             = find_talent_spell( "Defile" );
 
   talent.army_of_the_damned = find_talent_spell( "Army of the Damned" );
-  talent.unholy_pact      = find_talent_spell( "Unholy Frenzy" ); // NYI
+  talent.summon_gargoyle    = find_talent_spell( "Summon Gargoyle" ); // WIP
   talent.unholy_assault    = find_talent_spell( "Unholy Assault" );
 
                                                                      // Blood Talents
@@ -8001,8 +8009,6 @@ void death_knight_t::init_spells()
   talent.red_thirst             = find_talent_spell( "Red Thirst" );
   talent.bonestorm              = find_talent_spell( "Bonestorm" );
 
-  //WIP
-  talent.summon_gargoyle    = find_talent_spell( "Summon Gargoyle" );
 
   // Generic spells
   // Shared
@@ -8551,11 +8557,11 @@ void death_knight_t::default_apl_unholy()
   // Generic AOE actions to be done
   aoe -> add_action( this, "Death and Decay", "if=cooldown.apocalypse.remains", "AoE rotation" );
   aoe -> add_talent( this, "Defile", "if=cooldown.apocalypse.remains" );
-  aoe -> add_talent( this, "Epidemic", "if=death_and_decay.ticking&runic_power.deficit<14&!talent.bursting_sores.enabled&!variable.pooling_for_gargoyle" );
-  aoe -> add_talent( this, "Epidemic", "if=death_and_decay.ticking&(!death_knight.fwounded_targets&talent.bursting_sores.enabled)&!variable.pooling_for_gargoyle" );
+  aoe -> add_action( this, "Epidemic", "if=death_and_decay.ticking&runic_power.deficit<14&!talent.bursting_sores.enabled&!variable.pooling_for_gargoyle" );
+  aoe -> add_action( this, "Epidemic", "if=death_and_decay.ticking&(!death_knight.fwounded_targets&talent.bursting_sores.enabled)&!variable.pooling_for_gargoyle" );
   aoe -> add_action( this, "Scourge Strike", "if=death_and_decay.ticking&cooldown.apocalypse.remains" );
   aoe -> add_talent( this, "Clawing Shadows", "if=death_and_decay.ticking&cooldown.apocalypse.remains" );
-  aoe -> add_talent( this, "Epidemic", "if=!variable.pooling_for_gargoyle" );
+  aoe -> add_action( this, "Epidemic", "if=!variable.pooling_for_gargoyle" );
   aoe -> add_action( this, "Festering Strike", "target_if=debuff.festering_wound.stack<=2&cooldown.death_and_decay.remains&cooldown.apocalypse.remains>5&(cooldown.army_of_the_dead.remains>5|death_knight.disable_aotd)" );
   aoe -> add_action( this, "Death Coil", "if=buff.sudden_doom.react&rune.time_to_4>gcd" );
   aoe -> add_action( this, "Death Coil", "if=buff.sudden_doom.react&!variable.pooling_for_gargoyle|pet.gargoyle.active" );
@@ -9528,7 +9534,7 @@ struct death_knight_module_t : public module_t {
 
   void register_hotfixes() const override
   {
-    hotfix::register_spell( "Death Knight", "2019-03-12", "Incorrect cooldown for Magus of the Dead's Frostbolt.", 288548 )
+    hotfix::register_spell( "Death Knight", "2020-09-20", "Incorrect cooldown for Magus of the Dead's Frostbolt.", 317792 )
       .field( "cooldown" )
       .operation( hotfix::HOTFIX_SET )
       .modifier( 3000 )
