@@ -909,6 +909,7 @@ public:
     // Frost                                      // bonus_id
     item_runeforge_t koltiras_favor;              // 6944
     item_runeforge_t rage_of_the_frozen_champion; // 7160
+    item_runeforge_t absolute_zero;               // 6946
 
     // Unholy
   } legendary;
@@ -5004,6 +5005,11 @@ struct frostwyrms_fury_t : public death_knight_spell_t
     damage( new frostwyrms_fury_damage_t( p ) )
   {
     parse_options( options_str );
+    if ( p -> legendary.absolute_zero -> ok() )
+    {
+      cooldown -> duration *= 1.0 + p -> legendary.absolute_zero->effectN( 1 ).percent();
+    }
+    // TODO Should we be implementing the stun here from the legendary? Doesn't look like other modules do.
   }
 
   void execute() override
@@ -8127,8 +8133,9 @@ void death_knight_t::init_spells()
   // Generic
   // Blood
   // Frost
-  legendary.koltiras_favor       = find_runeforge_legendary( "Koltira's Favor" );
+  legendary.koltiras_favor              = find_runeforge_legendary( "Koltira's Favor" );
   legendary.rage_of_the_frozen_champion = find_runeforge_legendary( "Rage of the Frozen Champion" );
+  legendary.absolute_zero               = find_runeforge_legendary( "Absolute Zero" );
   // Unholy
 }
 
