@@ -200,7 +200,7 @@ public:
     // tier 25
     const spell_data_t* demonic_calling;
     const spell_data_t* power_siphon;
-    const spell_data_t* doom; //TODO: SL Beta - Doom implementation seems to reference a spell that no longer exists. Fix this!
+    const spell_data_t* doom; //TODO: SL Beta - Doom is now working in the sim and seems to match some tests against beta client, but haste/refresh behavior needs checking still
 
     // tier 35
     const spell_data_t* from_the_shadows; //TODO: SL Beta - From the Shadows uses a spell whitelist, make sure this is handled properly

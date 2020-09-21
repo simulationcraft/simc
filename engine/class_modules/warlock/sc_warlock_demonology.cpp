@@ -689,20 +689,16 @@ struct doom_t : public demonology_spell_t
   {
     parse_options( options_str );
 
-    base_tick_time       = data().duration();
-    dot_duration         = data().duration();
-    spell_power_mod.tick = p->find_spell( 265469 )->effectN( 1 ).sp_coeff();
-
     energize_type     = action_energize::PER_TICK;
     energize_resource = RESOURCE_SOUL_SHARD;
     energize_amount   = 1;
 
-    may_crit = true;
+    //TODO: Verify haste and refresh behaviors with changing stats while dot is already applied 
   }
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
-    return s->action->tick_time( s );
+    return s->action->tick_time( s ); //Doom is a case where dot duration scales with haste so use the tick time to get the current correct value
   }
 
   void tick( dot_t* d ) override
