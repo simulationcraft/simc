@@ -4369,13 +4369,31 @@ struct primal_wrath_t : public cat_attack_t
     // Copy persistent multipliers from the direct attack.
     b_state->persistent_multiplier = s->persistent_multiplier;
 
-    if ( !td( s->target )->dots.rip->state )
-      td( s->target )->dots.rip->state = rip->get_state();
+    auto target_rip = td( s->target )->dots.rip;
+
+    if ( !target_rip->state )
+      target_rip->state = rip->get_state();
 
     // changes stat object to primal wraths for consistency in case of a refresh
-    td( s->target )->dots.rip->current_action = rip;
-    td( s->target )->dots.rip->state->copy_state( b_state );
-    td( s->target )->dots.rip->trigger( rip->dot_duration * 0.5 * ( combo_points + 1 ) );  // this seems to be hardcoded
+    target_rip->current_action = rip;
+    target_rip->state->copy_state( b_state );
+
+    // Manually start bleeding
+    // TODO: possibly refactor Rip application to utilize more existing methods such as action_t::trigger_dot()
+    if ( !target_rip->is_ticking() )
+    {
+      auto bleed = s->target->debuffs.bleeding;
+
+      if ( bleed )
+      {
+        if ( bleed->check_value() )
+          bleed->current_value += 1.0;
+        else
+          bleed->start( 1, 1.0 );
+      }
+    }
+
+    target_rip->trigger( rip->dot_duration * 0.5 * ( combo_points + 1 ) );  // this seems to be hardcoded
 
     action_state_t::release( b_state );
   }
