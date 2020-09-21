@@ -1952,9 +1952,9 @@ public:
     trigger_galactic_guardian( s );
   }
 
-  double mod_spell_effects_percent( const spell_data_t*, const spelleffect_data_t* e ) { return e->percent(); }
+  double mod_spell_effects_percent( const spell_data_t*, const spelleffect_data_t& e ) { return e.percent(); }
 
-  double mod_spell_effects_percent( const conduit_data_t& c, const spelleffect_data_t* )
+  double mod_spell_effects_percent( const conduit_data_t& c, const spelleffect_data_t& )
   {
     // HOTFIX HACK to reflect server-side scripting
     if ( c == p()->conduit.endless_thirst )
@@ -1968,21 +1968,25 @@ public:
   {
     for ( size_t i = 1; i <= mod->effect_count(); i++ )
     {
-      auto eff = &mod->effectN( i );
+      const auto& eff = mod->effectN( i );
 
-      if ( eff->type() != E_APPLY_AURA || !base->affected_by_all( *ab::player->dbc, *eff ) )
+      if ( eff.type() != E_APPLY_AURA )
         continue;
 
-      if ( ( eff->misc_value1() == P_EFFECT_1 && idx == 1 ) || ( eff->misc_value1() == P_EFFECT_2 && idx == 2 ) ||
-           ( eff->misc_value1() == P_EFFECT_3 && idx == 3 ) || ( eff->misc_value1() == P_EFFECT_4 && idx == 4 ) ||
-           ( eff->misc_value1() == P_EFFECT_5 && idx == 5 ) )
+      if ( ( base->affected_by_all( *ab::player->dbc, eff ) &&
+             ( ( eff.misc_value1() == P_EFFECT_1 && idx == 1 ) || ( eff.misc_value1() == P_EFFECT_2 && idx == 2 ) ||
+               ( eff.misc_value1() == P_EFFECT_3 && idx == 3 ) || ( eff.misc_value1() == P_EFFECT_4 && idx == 4 ) ||
+               ( eff.misc_value1() == P_EFFECT_5 && idx == 5 ) ) ) ||
+           ( eff.subtype() == A_PROC_TRIGGER_SPELL_WITH_VALUE && eff.trigger_spell_id() == base->id() && idx == 1 ) )
       {
         double pct = mod_spell_effects_percent( mod, eff );
 
-        if ( eff->subtype() == A_ADD_FLAT_MODIFIER )
+        if ( eff.subtype() == A_ADD_FLAT_MODIFIER )
           val += pct;
-        else if ( eff->subtype() == A_ADD_PCT_MODIFIER )
+        else if ( eff.subtype() == A_ADD_PCT_MODIFIER )
           val *= 1.0 + pct;
+        else if ( eff.subtype() == A_PROC_TRIGGER_SPELL_WITH_VALUE )
+          val = pct;
         else
           continue;
 
@@ -2011,32 +2015,32 @@ public:
   template <typename... Ts>
   void parse_buff_effect( buff_t* buff, const spell_data_t* s_data, size_t i, bool use_stacks, Ts... mods )
   {
-    auto eff     = &s_data->effectN( i );
-    double val   = eff->percent();
-    bool mastery = false;
+    const auto& eff = s_data->effectN( i );
+    double val      = eff.percent();
+    bool mastery    = false;
 
     // TODO: more robust logic around 'party' buffs with radius
-    if ( !( eff->type() == E_APPLY_AURA || eff->type() == E_APPLY_AREA_AURA_PARTY ) || eff->radius() )
+    if ( !( eff.type() == E_APPLY_AURA || eff.type() == E_APPLY_AREA_AURA_PARTY ) || eff.radius() )
       return;
 
     if ( i <= 5 )
       parse_spell_effects_mods( val, mastery, s_data, i, mods... );
 
-    if ( is_auto_attack && eff->subtype() == A_MOD_AUTO_ATTACK_PCT )
+    if ( is_auto_attack && eff.subtype() == A_MOD_AUTO_ATTACK_PCT )
     {
       da_multiplier_buffeffects.push_back( buff_effect_t( buff, val ) );
       return;
     }
 
-    if ( !ab::data().affected_by_all( *ab::player->dbc, *eff ) )
+    if ( !ab::data().affected_by_all( *ab::player->dbc, eff ) )
       return;
 
     if ( !mastery && !val )
       return;
 
-    if ( eff->subtype() == A_ADD_PCT_MODIFIER )
+    if ( eff.subtype() == A_ADD_PCT_MODIFIER )
     {
-      switch ( eff->misc_value1() )
+      switch ( eff.misc_value1() )
       {
         case P_GENERIC:
           da_multiplier_buffeffects.push_back( buff_effect_t( buff, val, use_stacks, mastery ) );
@@ -2067,7 +2071,7 @@ public:
           break;
       }
     }
-    else if ( eff->subtype() == A_ADD_FLAT_MODIFIER && eff->misc_value1() == P_CRIT )
+    else if ( eff.subtype() == A_ADD_FLAT_MODIFIER && eff.misc_value1() == P_CRIT )
     {
       crit_chance_buffeffects.push_back( buff_effect_t( buff, val, use_stacks ) );
           p()->sim->print_debug( "buff-effects: {} ({}) crit chance modified by {}% with buff {} ({})", ab::name(),
@@ -2192,6 +2196,7 @@ public:
     }
     parse_buff_effects( p()->buff.tooth_and_claw, false );
     parse_buff_effects( p()->buff.sharpened_claws );
+    parse_buff_effects<C>( p()->buff.savage_combatant, p()->conduit.savage_combatant );
 
     // Feral
     parse_buff_effects( p()->buff.cat_form );
@@ -2210,11 +2215,11 @@ public:
 
     for ( size_t i = 1; i <= s_data->effect_count(); i++ )
     {
-      auto eff   = &s_data->effectN( i );
-      double val = eff->percent();
+      const auto& eff = s_data->effectN( i );
+      double val      = eff.percent();
       bool mastery;  // dummy
 
-      if ( eff->type() != E_APPLY_AURA )
+      if ( eff.type() != E_APPLY_AURA )
         continue;
 
       if ( i <= 5 )
@@ -2223,8 +2228,8 @@ public:
       if ( !val )
         continue;
 
-      if ( !( eff->subtype() == A_MOD_DAMAGE_FROM_CASTER_SPELLS && ab::data().affected_by_all( *ab::player->dbc, *eff ) ) &&
-           !( eff->subtype() == A_MOD_AUTO_ATTACK_FROM_CASTER && is_auto_attack ) )
+      if ( !( eff.subtype() == A_MOD_DAMAGE_FROM_CASTER_SPELLS && ab::data().affected_by_all( *ab::player->dbc, eff ) ) &&
+           !( eff.subtype() == A_MOD_AUTO_ATTACK_FROM_CASTER && is_auto_attack ) )
         continue;
 
       p()->sim->print_debug( "dot-debuffs: {} ({}) damage modified by {}% on targets with dot {} ({})", ab::name(),
