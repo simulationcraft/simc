@@ -660,6 +660,7 @@ public:
     const spell_data_t* dark_transformation_2;
     const spell_data_t* death_coil;
     const spell_data_t* death_coil_2;
+    const spell_data_t* epidemic;
     const spell_data_t* festering_strike;
     const spell_data_t* festering_strike_2;
     const spell_data_t* festering_wound;
@@ -719,11 +720,11 @@ public:
     const spell_data_t* spell_eater;
 
     const spell_data_t* pestilence;
-    const spell_data_t* unholy_pact;  // NYI
+    const spell_data_t* unholy_pact; // NYI
     const spell_data_t* defile;
 
     const spell_data_t* army_of_the_damned;
-    const spell_data_t* summon_gargoyle; // WIP
+    const spell_data_t* summon_gargoyle;
     const spell_data_t* unholy_assault;
 
     // Blood
@@ -750,7 +751,6 @@ public:
     const spell_data_t* purgatory; // NYI
     const spell_data_t* red_thirst;
     const spell_data_t* bonestorm;
-    
   } talent;
 
   // Spells
@@ -4759,8 +4759,9 @@ struct epidemic_damage_aoe_t : public death_knight_spell_t
     death_knight_spell_t( "epidemic_aoe", p, p -> find_spell( 215969 ) )
   {
     background = true;
-    // Epidemic's aoe component is hard-capped at 6 targets (not in spelldata)
-    aoe = 6;
+    // "Max targets" is '7' in spelldata, but that probably accounts for the main enemy that triggers the aoe
+    // In-game testing shows that it doesn't hit more than 6 enemies
+    aoe = aoe - 1;
   }
 
   size_t available_targets( std::vector< player_t* >& tl ) const override
@@ -4779,18 +4780,24 @@ struct epidemic_damage_aoe_t : public death_knight_spell_t
 
 struct epidemic_t : public death_knight_spell_t
 {
-  epidemic_damage_main_t* main;
-  epidemic_damage_aoe_t* aoe;
+  epidemic_damage_main_t* main_damage;
+  epidemic_damage_aoe_t* aoe_damage;
+  int enemy_cap;
 
   epidemic_t( death_knight_t* p, const std::string& options_str ) :
     death_knight_spell_t( "epidemic", p, p -> spec.epidemic ),
-    main( new epidemic_damage_main_t( p ) ),
-    aoe( new epidemic_damage_aoe_t( p ) )
+    main_damage( new epidemic_damage_main_t( p ) ),
+    aoe_damage( new epidemic_damage_aoe_t( p ) )
   {
     parse_options( options_str );
 
-    add_child( main );
-    add_child( aoe );
+    add_child( main_damage );
+    add_child( aoe_damage );
+
+    // Set the aoe cap somewhere else as targetting is handled directly in execute()
+    // and the rest of the spell doesn't need to worry about aoe components
+    enemy_cap = aoe;
+    aoe = 0;
   }
 
   double cost() const override
@@ -4808,16 +4815,17 @@ struct epidemic_t : public death_knight_spell_t
     int hit_count = 0;
     for ( const auto target : sim -> target_non_sleeping_list )
     {
-      // Epidemic can't hit more than 20 targets at once (not in spelldata)
-      if ( td( target ) -> dot.virulent_plague -> is_ticking() && hit_count < 20 )
+      // Epidemic can't hit more than 20 targets at once
+      if ( td( target ) -> dot.virulent_plague -> is_ticking() && hit_count < enemy_cap )
       {
         hit_count++;
-        main -> set_target( target );
-        main -> execute();
+        main_damage -> set_target( target );
+        main_damage -> execute();
+        // Don't need to flare-up if there's only a single enemy in the simulation
         if ( sim -> target_non_sleeping_list.size() > 1 )
         {
-          aoe -> set_target( target );
-          aoe -> execute();
+          aoe_damage -> set_target( target );
+          aoe_damage -> execute();
         }
       }
     }
@@ -5728,8 +5736,10 @@ struct virulent_eruption_t : public death_knight_spell_t
 struct virulent_plague_t : public death_knight_spell_t
 {
   virulent_plague_t( death_knight_t* p ) :
-    death_knight_spell_t( "virulent_plague", p, p -> spell.virulent_plague )
+    death_knight_spell_t( "virulent_plague", p, p -> spec.outbreak -> effectN( 2 ).trigger() )
   {
+    aoe = -1;
+
     base_tick_time *= 1.0 + p -> talent.ebon_fever -> effectN( 1 ).percent();
     dot_duration *= 1.0 + p -> talent.ebon_fever -> effectN( 2 ).percent();
     base_multiplier *= 1.0 + p -> talent.ebon_fever -> effectN( 3 ).percent();
@@ -6085,7 +6095,7 @@ struct scourge_strike_base_t : public death_knight_melee_attack_t
   scourge_strike_base_t( const std::string& name, death_knight_t* p, const spell_data_t* spell ) :
     death_knight_melee_attack_t( name, p, spell )
   {
-    weapon = &( player -> main_hand_weapon );    
+    weapon = &( player -> main_hand_weapon );
   }
 
   int n_targets() const override
@@ -7927,6 +7937,7 @@ void death_knight_t::init_spells()
   spec.army_of_the_dead    = find_specialization_spell( "Army of the Dead" );
   spec.dark_transformation = find_specialization_spell( "Dark Transformation" );
   spec.dark_transformation_2 = find_specialization_spell( "Dark Transformation", "Rank 2" );
+  spec.epidemic            = find_specialization_spell( "Epidemic" );
   spec.outbreak            = find_specialization_spell( "Outbreak" );
   spec.scourge_strike      = find_specialization_spell( "Scourge Strike" );
   spec.scourge_strike_2    = find_specialization_spell( "Scourge Strike", "Rank 2" );
@@ -7977,11 +7988,11 @@ void death_knight_t::init_spells()
   talent.spell_eater        = find_talent_spell( "Spell Eater" );
 
   talent.pestilence         = find_talent_spell( "Pestilence" );
-  talent.unholy_pact        = find_talent_spell( "Unholy Pact" );  // NYI
+  talent.unholy_pact           = find_talent_spell( "Unholy Pact" );
   talent.defile             = find_talent_spell( "Defile" );
 
   talent.army_of_the_damned = find_talent_spell( "Army of the Damned" );
-  talent.summon_gargoyle    = find_talent_spell( "Summon Gargoyle" ); // WIP
+  talent.summon_gargoyle      = find_talent_spell( "Summon Gargoyle" ); // NYI
   talent.unholy_assault    = find_talent_spell( "Unholy Assault" );
 
                                                                      // Blood Talents
@@ -8008,7 +8019,6 @@ void death_knight_t::init_spells()
   talent.purgatory              = find_talent_spell( "Purgatory" ); // NYI
   talent.red_thirst             = find_talent_spell( "Red Thirst" );
   talent.bonestorm              = find_talent_spell( "Bonestorm" );
-
 
   // Generic spells
   // Shared

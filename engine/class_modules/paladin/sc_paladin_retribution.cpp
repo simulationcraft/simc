@@ -511,50 +511,6 @@ struct wake_of_ashes_t : public paladin_spell_t
   }
 };
 
-struct hammer_of_wrath_t : public paladin_melee_attack_t
-{
-  hammer_of_wrath_t( paladin_t* p, const std::string& options_str ) :
-    paladin_melee_attack_t( "hammer_of_wrath", p, p -> find_spell( "Hammer of Wrath" ) )
-  {
-    parse_options( options_str );
-
-    if ( p -> legendary.badge_of_the_mad_paragon -> ok() )
-      base_multiplier *= 1.0 + p -> legendary.badge_of_the_mad_paragon -> effectN( 2 ).percent();
-
-    if ( p -> legendary.vanguards_momentum -> ok() )
-    {
-      cooldown -> charges += p -> legendary.vanguards_momentum -> effectN( 1 ).base_value();
-    }
-  }
-
-  bool target_ready( player_t* candidate_target ) override
-  {
-    if ( ! p() -> get_how_availability( candidate_target ) )
-    {
-      return false;
-    }
-
-    return paladin_melee_attack_t::target_ready( candidate_target );
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    paladin_melee_attack_t::impact( s );
-
-    if ( p() -> legendary.badge_of_the_mad_paragon -> ok() )
-    {
-      if ( p() -> buffs.avenging_wrath -> up() )
-      {
-        p() -> buffs.avenging_wrath -> extend_duration( p(), timespan_t::from_seconds( p() -> legendary.badge_of_the_mad_paragon -> effectN( 1 ).base_value() ) );
-      }
-      else if ( p() -> buffs.crusade -> up() )
-      {
-        p() -> buffs.crusade -> extend_duration( p(), timespan_t::from_seconds( p() -> legendary.badge_of_the_mad_paragon -> effectN( 1 ).base_value() ) );
-      }
-    }
-  }
-};
-
 struct zeal_t : public paladin_melee_attack_t
 {
   zeal_t( paladin_t* p ) : paladin_melee_attack_t( "zeal", p, p -> find_spell( 269937 ) )
@@ -600,7 +556,6 @@ action_t* paladin_t::create_action_retribution( util::string_view name, const st
   if ( name == "crusade"                   ) return new crusade_t                  ( this, options_str );
   if ( name == "divine_storm"              ) return new divine_storm_t             ( this, options_str );
   if ( name == "execution_sentence"        ) return new execution_sentence_t       ( this, options_str );
-  if ( name == "hammer_of_wrath"           ) return new hammer_of_wrath_t          ( this, options_str );
   if ( name == "templars_verdict"          ) return new templars_verdict_t         ( this, options_str );
   if ( name == "wake_of_ashes"             ) return new wake_of_ashes_t            ( this, options_str );
   if ( name == "justicars_vengeance"       ) return new justicars_vengeance_t      ( this, options_str );

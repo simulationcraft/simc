@@ -269,7 +269,7 @@ struct corruption_t : public affliction_spell_t
     spell_power_mod.tick       = data().effectN( 1 ).trigger()->effectN( 1 ).sp_coeff();
     base_tick_time             = data().effectN( 1 ).trigger()->effectN( 1 ).period();
 
-    // 172 does not have spell ID any more.
+    // 172 does not have spell duration any more.
     // were still lazy though so we aren't making a seperate spell for this.
     dot_duration               = otherSP->duration();
     // TOCHECK see if we can redo corruption in a way that spec aura applies to corruption naturally in init.
@@ -400,7 +400,7 @@ struct seed_of_corruption_t : public affliction_spell_t
 
       if ( result_is_hit( s->result ) )
       {
-        warlock_td_t* tdata = this->td( s->target );
+        auto tdata = this->td( s->target );
         if ( tdata->dots_seed_of_corruption->is_ticking() && tdata->soc_threshold > 0 )
         {
           tdata->soc_threshold = 0;
@@ -489,13 +489,8 @@ struct seed_of_corruption_t : public affliction_spell_t
 
 struct malefic_rapture_t : public affliction_spell_t
 {
-    //  add execute here, this will set up the individual damage instances.
-    // this->base_dd_min = formula
-    // 
-    // try with mage::touch_of_the_magi
     struct malefic_rapture_damage_instance_t : public affliction_spell_t
     {
-      double coef = 0.0;
 
       malefic_rapture_damage_instance_t(warlock_t *p) : 
           affliction_spell_t( "malefic_rapture_aoe", p, p->find_spell( 324536 ) )
@@ -535,28 +530,22 @@ struct malefic_rapture_t : public affliction_spell_t
         m *= get_dots_ticking( s->target );
         return m;
       }
+
     };
 
-    malefic_rapture_damage_instance_t* damageinstance;
+    malefic_rapture_damage_instance_t* damage_instance;
 
     malefic_rapture_t( warlock_t* p, util::string_view options_str )
       : affliction_spell_t( "malefic_rapture", p, p->find_spell( 324536 ) ), 
-        damageinstance( new malefic_rapture_damage_instance_t(p) )
+        damage_instance( new malefic_rapture_damage_instance_t(p) )
     {
       parse_options( options_str );
       aoe = -1;
 
-      impact_action = damageinstance;
+      impact_action = damage_instance;
       add_child( impact_action );
 
     }
-
-
-    //void impact( action_state_t* s ) override
-    //{
-    //  damageinstance->target = s->target;
-    //  damageinstance->execute();
-    //}
 
 };
 
@@ -611,6 +600,7 @@ struct haunt_t : public affliction_spell_t
     }
 
     // TODO - Add Shadow Embrace
+    td( s->target )->debuffs_shadow_embrace->trigger();
   }
 };
 
