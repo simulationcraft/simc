@@ -1120,9 +1120,9 @@ struct void_eruption_stm_damage_t final : public priest_spell_t
   void_eruption_stm_damage_t( priest_t& p )
     : priest_spell_t( "void_eruption_stm_damage", p, p.find_spell( 228360 ) ), void_bolt( nullptr )
   {
+    // This Void Eruption currently only hits a single target
     may_miss                   = false;
     background                 = true;
-    aoe                        = -1;
     affected_by_shadow_weaving = true;
   }
 
