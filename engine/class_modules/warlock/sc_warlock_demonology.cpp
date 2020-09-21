@@ -363,7 +363,7 @@ struct implosion_t : public demonology_spell_t
       dual               = true;
       background         = true;
       callbacks          = false;
-      reduced_aoe_damage = true;
+      reduced_aoe_damage = false;
 
       p->spells.implosion_aoe = this;
     }
