@@ -199,7 +199,7 @@ public:
 
     // tier 25
     const spell_data_t* demonic_calling;
-    const spell_data_t* power_siphon; //TODO: SL Beta - 30% damage buff part of Power Siphon is not implemented. Fix this! (Requires careful treatment of buffed vs unbuffed Demonic Cores)
+    const spell_data_t* power_siphon;
     const spell_data_t* doom; //TODO: SL Beta - Doom implementation seems to reference a spell that no longer exists. Fix this!
 
     // tier 35
