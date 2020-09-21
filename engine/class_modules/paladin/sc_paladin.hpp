@@ -294,6 +294,8 @@ public:
     const spell_data_t* judgment_2;
     const spell_data_t* avenging_wrath_2;
     const spell_data_t* hammer_of_wrath_2;
+
+    const spell_data_t* ashen_hallow_how;
   } spells;
 
   // Talents
@@ -508,6 +510,7 @@ public:
   void    trigger_forbearance( player_t* target );
   int     get_local_enemies( double distance ) const;
   bool    standing_in_consecration() const;
+  bool    standing_in_hallow() const;
   // Returns true if AW/Crusade is up, or if the target is below 20% HP.
   // This isn't in HoW's target_ready() so it can be used in the time_to_hpg expression
   bool    get_how_availability( player_t* t ) const;
@@ -518,6 +521,7 @@ public:
   std::unique_ptr<expr_t> create_consecration_expression( util::string_view expr_str );
 
   ground_aoe_event_t* active_consecration;
+  ground_aoe_event_t* active_hallow;
 
   std::string default_potion() const override;
   std::string default_flask() const override;

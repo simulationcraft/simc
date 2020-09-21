@@ -30,6 +30,7 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r ) :
   lucid_dreams_accumulator( 0.0 )
 {
   active_consecration = nullptr;
+  active_hallow = nullptr;
 
   cooldowns.avenging_wrath          = get_cooldown( "avenging_wrath" );
   cooldowns.hammer_of_justice       = get_cooldown( "hammer_of_justice" );
@@ -1045,6 +1046,98 @@ struct divine_toll_t : public paladin_spell_t
   }
 };
 
+// TODO: fix AoE scaling once the formula is found, implement healing as well
+struct ashen_hallow_tick_t : public paladin_spell_t
+{
+  ashen_hallow_tick_t( paladin_t* p ) :
+    paladin_spell_t( "ashen_hallow_tick", p, p -> find_spell( 317221 ) )
+  {
+    aoe = -1;
+    dual = true;
+    direct_tick = true;
+    background = true;
+    may_crit = true;
+    ground_aoe = true;
+  }
+
+  double composite_aoe_multiplier( const action_state_t* state ) const override
+  {
+    double cam = paladin_spell_t::composite_aoe_multiplier( state );
+
+    // TODO: fix
+    /*
+    if ( state -> n_targets > 5 ) // TODO: where is this in spelldata?
+      cam /= std::sqrt( state -> n_targets - 4 ); // pending formula verification; this is probably wrong!
+    */
+
+    return cam;
+  }
+};
+
+struct ashen_hallow_t : public paladin_spell_t
+{
+  ashen_hallow_tick_t* damage_tick;
+  ground_aoe_params_t hallow_params;
+
+  ashen_hallow_t( paladin_t* p, const std::string& options_str ) :
+    paladin_spell_t( "ashen_hallow", p, p -> covenant.venthyr ),
+    damage_tick( new ashen_hallow_tick_t( p ) )
+  {
+    parse_options( options_str );
+
+    dot_duration = 0_ms; // the periodic event is handled by ground_aoe_event_t
+    may_miss = harmful = false;
+
+    add_child( damage_tick );
+  }
+
+  void init_finished() override
+  {
+    paladin_spell_t::init_finished();
+
+    timespan_t hallow_duration = data().duration();
+
+    hallow_params = ground_aoe_params_t()
+      .duration( hallow_duration )
+      .hasted( ground_aoe_params_t::SPELL_HASTE )
+      .action( damage_tick )
+      .state_callback( [ this ]( ground_aoe_params_t::state_type type, ground_aoe_event_t* event ) {
+      switch ( type )
+      {
+      case ground_aoe_params_t::EVENT_CREATED:
+        p() -> active_hallow = event;
+        break;
+      case ground_aoe_params_t::EVENT_DESTRUCTED:
+        p() -> active_hallow = nullptr;
+        break;
+      default:
+        break;
+      } } );
+  }
+
+  void execute() override
+  {
+    // Cancel the current hallow if it exists (this ... should be impossible)
+    if ( p() -> active_hallow != nullptr )
+      event_t::cancel( p() -> active_hallow );
+
+    paladin_spell_t::execute();
+
+    // Some parameters must be updated on each cast
+    hallow_params.target( execute_state -> target )
+               .start_time( sim -> current_time() );
+
+    if ( sim -> distance_targeting_enabled )
+      hallow_params.x( p() -> x_position )
+                 .y( p() -> y_position );
+
+    make_event<ground_aoe_event_t>( *sim, p(), hallow_params, false /* No immediate pulse */ );
+  }
+};
+
+
+// Hammer of Wrath
+
 struct hammer_of_wrath_t : public paladin_melee_attack_t
 {
   hammer_of_wrath_t( paladin_t* p, const std::string& options_str ) :
@@ -1086,6 +1179,16 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
         p() -> buffs.crusade -> extend_duration( p(), timespan_t::from_seconds( p() -> legendary.badge_of_the_mad_paragon -> effectN( 1 ).base_value() ) );
       }
     }
+  }
+
+  double action_multiplier() const override
+  {
+    double am = paladin_melee_attack_t::action_multiplier();
+
+    if ( p() -> standing_in_hallow() )
+      am *= 1.0 + p() -> spells.ashen_hallow_how -> effectN( 2 ).percent();
+
+    return am;
   }
 };
 
@@ -1267,6 +1370,7 @@ action_t* paladin_t::create_action( util::string_view name, const std::string& o
 
   if ( name == "vanquishers_hammer"        ) return new vanquishers_hammer_t       ( this, options_str );
   if ( name == "divine_toll"               ) return new divine_toll_t              ( this, options_str );
+  if ( name == "ashen_hallow"              ) return new ashen_hallow_t             ( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
@@ -1415,6 +1519,7 @@ void paladin_t::reset()
   player_t::reset();
 
   active_consecration = nullptr;
+  active_hallow = nullptr;
 }
 
 // paladin_t::init_gains ====================================================
@@ -1788,6 +1893,8 @@ void paladin_t::init_spells()
   covenant.venthyr = find_covenant_spell( "Ashen Hollow" );
   covenant.necrolord = find_covenant_spell( "Vanquisher's Hammer" );
   covenant.night_fae = find_covenant_spell( "Blessing of the Seasons" ); // TODO: fix
+
+  spells.ashen_hallow_how = find_spell( 330382 );
 
   // Conduits
   // TODO: non-damage conduits
@@ -2357,13 +2464,39 @@ void paladin_t::combat_begin()
   lucid_dreams_accumulator = 0;
 }
 
+// paladin_t::standing_in_hallow ============================================
+
+bool paladin_t::standing_in_hallow() const
+{
+  if ( ! sim -> distance_targeting_enabled )
+  {
+    return active_hallow != nullptr;
+  }
+
+  // new
+  if ( active_hallow != nullptr )
+  {
+    // calculate current distance to each consecration
+    ground_aoe_event_t* hallow_to_test = active_hallow;
+
+    double distance = get_position_distance( hallow_to_test -> params -> x(), hallow_to_test -> params -> y() );
+
+    // exit with true if we're in range of any one Cons center
+    if ( distance <= covenant.venthyr -> effectN( 1 ).radius() )
+      return true;
+  }
+
+  // if we're not in range of any of them
+  return false;
+}
+
 // paladin_t::get_how_availability ==========================================
 
 bool paladin_t::get_how_availability( player_t* t ) const
 {
   // Health threshold has to be hardcoded :peepocri:
   bool buffs_ok = spells.hammer_of_wrath_2 -> ok() && ( buffs.avenging_wrath -> up() || buffs.crusade -> up() );
-  return ( buffs_ok || t -> health_percentage() <= 20 );
+  return ( buffs_ok || standing_in_hallow() || t -> health_percentage() <= 20 );
 }
 
 // player_t::create_expression ==============================================
