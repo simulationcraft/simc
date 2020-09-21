@@ -5462,7 +5462,7 @@ struct howling_blast_t : public death_knight_spell_t
       echoing_howl -> execute();
     }
 
-    if ( p() -> buffs.rime -> check() && p() -> legendary.rage_of_the_frozen_champion->ok() )
+    if ( p() -> buffs.rime -> check() && p() -> legendary.rage_of_the_frozen_champion.ok() )
     {
       p() -> resource_gain( RESOURCE_RUNIC_POWER,
                             p() -> spell.rage_of_the_frozen_champion -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER ),
@@ -5594,7 +5594,7 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
     {
       base_multiplier *= 1.0 + p -> spec.might_of_the_frozen_wastes -> effectN( 1 ).percent();
     }
-    if ( p -> legendary.koltiras_favor-> ok() )
+    if ( p -> legendary.koltiras_favor.ok() )
     {
       base_multiplier *= 1.0 + p -> legendary.koltiras_favor -> effectN ( 2 ).percent();
     }
@@ -5630,7 +5630,7 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
       p() -> buffs.icy_citadel_builder -> trigger();
     }
 
-    if ( p() -> legendary.koltiras_favor -> ok() )
+    if ( p() -> legendary.koltiras_favor.ok() )
     {
       if ( p() -> rng().roll(p() -> legendary.koltiras_favor->proc_chance()))
       {
