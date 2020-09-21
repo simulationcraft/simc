@@ -279,6 +279,9 @@ struct demonbolt_t : public demonology_spell_t
     p()->buffs.demonic_core->up();  // benefit tracking
     p()->buffs.demonic_core->decrement();
 
+    if ( p()->talents.power_siphon->ok() )
+      p()->buffs.power_siphon->decrement();
+
     if ( p()->talents.demonic_calling->ok() )
       p()->buffs.demonic_calling->trigger();
 
@@ -292,6 +295,11 @@ struct demonbolt_t : public demonology_spell_t
     if ( p()->talents.sacrificed_souls->ok() )
     {
       m *= 1.0 + p()->talents.sacrificed_souls->effectN( 1 ).percent() * p()->active_pets;
+    }
+
+    if ( p()->talents.power_siphon->ok() && p()->buffs.power_siphon->check() )
+    {
+      m *= 1.0 + p()->buffs.power_siphon->default_value;
     }
 
     m *= 1.0 + p()->buffs.balespiders_burning_core->check_stack_value();
@@ -660,6 +668,10 @@ struct power_siphon_t : public demonology_spell_t
     if ( imps.size() > max_imps )
       imps.resize( max_imps );
 
+    //TOCHECK: As of 9/21/2020, Power Siphon is bugged to always provide 2 stacks of the damage buff regardless of imps consumed
+    //Move this inside the while loop (and remove the 2!) if it is ever changed to be based on imp count
+    p()->buffs.power_siphon->trigger(2);
+
     while ( !imps.empty() )
     {
       p()->buffs.demonic_core->trigger();
@@ -992,6 +1004,9 @@ action_t* warlock_t::create_action_demonology( util::string_view action_name, co
 void warlock_t::create_buffs_demonology()
 {
   buffs.demonic_core = make_buff( this, "demonic_core", find_spell( 264173 ) );
+
+  buffs.power_siphon = make_buff( this, "power_siphon", find_spell( 334581 ) )
+                            ->set_default_value( find_spell( 334581 )->effectN( 1 ).percent() );
 
   buffs.demonic_power = make_buff( this, "demonic_power", find_spell( 265273 ) )
                             ->set_default_value( find_spell( 265273 )->effectN( 2 ).percent() )

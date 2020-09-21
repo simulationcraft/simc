@@ -199,7 +199,7 @@ public:
 
     // tier 25
     const spell_data_t* demonic_calling;
-    const spell_data_t* power_siphon; //TODO: SL Beta - 30% damage buff part of Power Siphon is not implemented. Fix this! (Requires careful treatment of buffed vs unbuffed Demonic Cores)
+    const spell_data_t* power_siphon;
     const spell_data_t* doom; //TODO: SL Beta - Doom implementation seems to reference a spell that no longer exists. Fix this!
 
     // tier 35
@@ -213,7 +213,7 @@ public:
     const spell_data_t* grimoire_felguard; //TODO: SL Beta - Check summoning/buff durations and if permanent Felguard is affected by this ability
 
     // tier 50
-    const spell_data_t* sacrificed_souls;
+    const spell_data_t* sacrificed_souls; //TODO: SL Beta - check what pets/guardians count for this talent. Also relevant for demonic consumption
     const spell_data_t* demonic_consumption; //TODO: SL Beta - CAREFULLY test and audit damage buff behavior for this talent
     const spell_data_t* nether_portal;
 
@@ -435,6 +435,7 @@ public:
 
     // Demonology Buffs
     propagate_const<buff_t*> demonic_core;
+    propagate_const<buff_t*> power_siphon; //Hidden buff from Power Siphon that increases damage of successive Demonbolts
     propagate_const<buff_t*> demonic_calling;
     propagate_const<buff_t*> inner_demons;
     propagate_const<buff_t*> nether_portal;
