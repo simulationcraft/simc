@@ -293,6 +293,7 @@ public:
 
     const spell_data_t* judgment_2;
     const spell_data_t* avenging_wrath_2;
+    const spell_data_t* hammer_of_wrath_2;
   } spells;
 
   // Talents

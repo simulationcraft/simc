@@ -1045,6 +1045,50 @@ struct divine_toll_t : public paladin_spell_t
   }
 };
 
+struct hammer_of_wrath_t : public paladin_melee_attack_t
+{
+  hammer_of_wrath_t( paladin_t* p, const std::string& options_str ) :
+    paladin_melee_attack_t( "hammer_of_wrath", p, p -> find_class_spell( "Hammer of Wrath" ) )
+  {
+    parse_options( options_str );
+
+    if ( p -> legendary.badge_of_the_mad_paragon -> ok() )
+      base_multiplier *= 1.0 + p -> legendary.badge_of_the_mad_paragon -> effectN( 2 ).percent();
+
+    if ( p -> legendary.vanguards_momentum -> ok() )
+    {
+      cooldown -> charges += p -> legendary.vanguards_momentum -> effectN( 1 ).base_value();
+    }
+  }
+
+  bool target_ready( player_t* candidate_target ) override
+  {
+    if ( ! p() -> get_how_availability( candidate_target ) )
+    {
+      return false;
+    }
+
+    return paladin_melee_attack_t::target_ready( candidate_target );
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    paladin_melee_attack_t::impact( s );
+
+    if ( p() -> legendary.badge_of_the_mad_paragon -> ok() )
+    {
+      if ( p() -> buffs.avenging_wrath -> up() )
+      {
+        p() -> buffs.avenging_wrath -> extend_duration( p(), timespan_t::from_seconds( p() -> legendary.badge_of_the_mad_paragon -> effectN( 1 ).base_value() ) );
+      }
+      else if ( p() -> buffs.crusade -> up() )
+      {
+        p() -> buffs.crusade -> extend_duration( p(), timespan_t::from_seconds( p() -> legendary.badge_of_the_mad_paragon -> effectN( 1 ).base_value() ) );
+      }
+    }
+  }
+};
+
 // ==========================================================================
 // End Attacks
 // ==========================================================================
@@ -1219,6 +1263,7 @@ action_t* paladin_t::create_action( util::string_view name, const std::string& o
   if ( name == "lay_on_hands"              ) return new lay_on_hands_t             ( this, options_str );
   if ( name == "holy_avenger"              ) return new holy_avenger_t             ( this, options_str );
   if ( name == "seraphim"                  ) return new seraphim_t                 ( this, options_str );
+  if ( name == "hammer_of_wrath"           ) return new hammer_of_wrath_t          ( this, options_str );
 
   if ( name == "vanquishers_hammer"        ) return new vanquishers_hammer_t       ( this, options_str );
   if ( name == "divine_toll"               ) return new divine_toll_t              ( this, options_str );
@@ -1717,8 +1762,9 @@ void paladin_t::init_spells()
   passives.plate_specialization = find_specialization_spell( "Plate Specialization" );
   passives.paladin              = find_spell( 137026 );
   spells.avenging_wrath = find_class_spell( "Avenging Wrath" );
-  spells.judgment_2 = find_spell( 327977 );
-  spells.avenging_wrath_2 = find_spell( 317872 );
+  spells.judgment_2 = find_rank_spell( "Judgment", "Rank 2" ); // 327977
+  spells.avenging_wrath_2 = find_rank_spell( "Avenging Wrath", "Rank 2" ); // 317872
+  spells.hammer_of_wrath_2 = find_rank_spell( "Hammer of Wrath", "Rank 2" ); // 326730
 
   // Shared Azerite traits
   azerite.avengers_might        = find_azerite_spell( "Avenger's Might" );
@@ -2316,7 +2362,8 @@ void paladin_t::combat_begin()
 bool paladin_t::get_how_availability( player_t* t ) const
 {
   // Health threshold has to be hardcoded :peepocri:
-  return ( buffs.avenging_wrath -> up() || buffs.crusade -> up() || t -> health_percentage() <= 20 );
+  bool buffs_ok = spells.hammer_of_wrath_2 -> ok() && ( buffs.avenging_wrath -> up() || buffs.crusade -> up() );
+  return ( buffs_ok || t -> health_percentage() <= 20 );
 }
 
 // player_t::create_expression ==============================================
