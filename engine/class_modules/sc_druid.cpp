@@ -4859,16 +4859,6 @@ struct maul_t : public bear_attack_t
     }
   }
 
-  double composite_da_multiplier( const action_state_t* s ) const override
-  {
-    double da = bear_attack_t::composite_da_multiplier( s );
-
-    if ( p()->buff.savage_combatant->check() )
-      da *= 1.0 + p()->buff.savage_combatant->stack_value();
-
-    return da;
-  }
-
   double bonus_da( const action_state_t* s ) const override
   {
     double da = bear_attack_t::bonus_da( s );
