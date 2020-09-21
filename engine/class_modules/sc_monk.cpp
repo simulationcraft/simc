@@ -2958,7 +2958,13 @@ private:
   };
 
 public:
-  fallen_monk_ww_pet_t( monk_t* owner ) : pet_t( owner->sim, owner, "fallen_monk_windwalker", PET_FALLEN_MONK, true, true )
+  struct buffs_t
+  {
+    buff_t* hit_combo_fm         = nullptr;
+  } buff;
+
+  fallen_monk_ww_pet_t( monk_t* owner ) : 
+      pet_t( owner->sim, owner, "fallen_monk_windwalker", PET_FALLEN_MONK, true, true ), buff( buffs_t() )
   {
     main_hand_weapon.type       = WEAPON_1H;
     main_hand_weapon.min_dmg    = dbc->spell_scaling( o()->type, level() );
@@ -3009,6 +3015,23 @@ public:
       cpm *= 1 + o()->cache.mastery_value();
     
     return cpm;
+  }
+
+  void summon( timespan_t duration = timespan_t::zero() ) override
+  {
+    pet_t::summon( duration );
+
+    if ( o()->buff.hit_combo->up() )
+      buff.hit_combo_fm->trigger( o()->buff.hit_combo->stack() );
+  }
+
+  void create_buffs() override
+  {
+    pet_t::create_buffs();
+
+    buff.hit_combo_fm = make_buff( this, "hit_combo_fm", o()->passives.hit_combo )
+                           ->set_default_value_from_effect( 1 )
+                           ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   }
 
   struct fallen_monk_fists_of_fury_tick_t : public melee_attack_t
@@ -7846,9 +7869,10 @@ struct fallen_order_t : public monk_spell_t
     monk_spell_t::execute();
 
     specialization_e spec      = p()->specialization();
-    timespan_t summon_duration = timespan_t::from_seconds( p()->covenant.venthyr->effectN( 4 ).base_value() );
+    // Tooltips are currently incorrect and hard coding the duration for each
+    timespan_t summon_duration = timespan_t::from_seconds( 8 /*p()->covenant.venthyr->effectN( 4 ).base_value() */ );
     timespan_t primary_duration =
-        summon_duration + timespan_t::from_seconds( p()->covenant.venthyr->effectN( 3 ).base_value() );
+        summon_duration + timespan_t::from_seconds( 4/*p()->covenant.venthyr->effectN( 3 ).base_value()*/ );
     std::vector<std::pair<specialization_e, timespan_t>> fallen_monks;
 
     // Monks alternate summoning primary spec and non-primary spec
