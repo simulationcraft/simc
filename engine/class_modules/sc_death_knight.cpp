@@ -907,9 +907,9 @@ public:
     // Blood
 
     // Frost                                      // bonus_id
+    item_runeforge_t absolute_zero;               // 6946
     item_runeforge_t koltiras_favor;              // 6944
     item_runeforge_t rage_of_the_frozen_champion; // 7160
-    item_runeforge_t absolute_zero;               // 6946
 
     // Unholy
   } legendary;
@@ -8133,9 +8133,9 @@ void death_knight_t::init_spells()
   // Generic
   // Blood
   // Frost
+  legendary.absolute_zero               = find_runeforge_legendary( "Absolute Zero" );
   legendary.koltiras_favor              = find_runeforge_legendary( "Koltira's Favor" );
   legendary.rage_of_the_frozen_champion = find_runeforge_legendary( "Rage of the Frozen Champion" );
-  legendary.absolute_zero               = find_runeforge_legendary( "Absolute Zero" );
   // Unholy
 }
 
