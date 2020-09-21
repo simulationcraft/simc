@@ -1024,9 +1024,11 @@ bool chart::generate_raid_aps( highchart::bar_chart_t& bc, const sim_t& s, const
     precision = 1;
   }
 
-  double max_value  = 0;
-  bool has_diff     = false;
-  size_t series_idx = 0;
+  double max_value    = 0;
+  size_t longest_name = 0;
+  bool has_diff       = false;
+  size_t series_idx   = 0;
+
   // Loop through all metric values we have available
   for ( metric_value_e vm = VALUE_MEAN; vm < VALUE_METRIC_MAX; ++vm )
   {
@@ -1051,11 +1053,16 @@ bool chart::generate_raid_aps( highchart::bar_chart_t& bc, const sim_t& s, const
       const color::rgb c = color::class_color( p->type );
       double value = get_data_value( p->collected_data, chart_metric, vm );
 
-      // Keep track of largest value in all of the outputted charts so we can
-      // adjust maxPadding
+      // Keep track of largest value in all of the outputted charts so we can adjust maxPadding
       if ( value > max_value )
       {
         max_value = value;
+      }
+
+      // Also keep track of longest player name
+      if ( p->name_str.length() > longest_name )
+      {
+        longest_name = p->name_str.length();
       }
 
       sc_js_t e;
@@ -1132,7 +1139,6 @@ bool chart::generate_raid_aps( highchart::bar_chart_t& bc, const sim_t& s, const
 
   // Compute a very naive offset for the X-axis (in the chart Y-axis) labels, and the dataLabels of the chart.
   int n_chars = util::numDigits<int>( static_cast<int>( max_value ) );
-  int margin_left = 300;
 
   // Thousands separator
   if ( n_chars > 3 )
@@ -1142,8 +1148,7 @@ bool chart::generate_raid_aps( highchart::bar_chart_t& bc, const sim_t& s, const
 
   if ( s.chart_show_relative_difference && has_diff )
   {
-    n_chars += 6;
-    margin_left += 40;
+    n_chars += 5;
   }
 
   if ( precision > 0 )
@@ -1151,7 +1156,11 @@ bool chart::generate_raid_aps( highchart::bar_chart_t& bc, const sim_t& s, const
     n_chars += 2;
   }
 
-  bc.set( "chart.marginLeft", margin_left );
+  // Maximum player name length. Longer characters will be cut off and replaced by ... via the formatter function (in
+  // JS) set to xAxis.labels.formatter
+  int max_name_length = 40;
+
+  bc.set( "chart.marginLeft", 7 * std::min( max_name_length + 3, as<int>( longest_name ) ) + 10 * n_chars + 50 );
 
   bc.set( "xAxis.lineWidth", 0 );
   bc.set( "xAxis.offset", 10 * n_chars );
@@ -1162,8 +1171,7 @@ bool chart::generate_raid_aps( highchart::bar_chart_t& bc, const sim_t& s, const
   bc.set( "plotOptions.bar.dataLabels.crop", false );
   bc.set( "plotOptions.bar.dataLabels.overflow", "none" );
   bc.set( "plotOptions.bar.dataLabels.inside", true );
-  bc.set( "plotOptions.bar.dataLabels.x", -10 * n_chars - 3 );
-  bc.set( "plotOptions.bar.dataLabels.y", -1 );
+  bc.set( "plotOptions.bar.dataLabels.x", -10 * n_chars );
   bc.set( "plotOptions.bar.dataLabels.padding", 0 );
   bc.set( "plotOptions.bar.dataLabels.enabled", true );
   bc.set( "plotOptions.bar.dataLabels.align", "left" );
@@ -1186,20 +1194,16 @@ bool chart::generate_raid_aps( highchart::bar_chart_t& bc, const sim_t& s, const
     "Minimum: {point.low}<br/>"
   );
 
-  // X-axis label formatter, fetches colors from a (chart-local) table, instead
-  // of writing out span
-  // tags to the data
+  // X-axis label formatter, fetches colors from a (chart-local) table, instead of writing out span tags to the data
   std::string xaxis_label = "function() {";
   xaxis_label += "var formatted_name = this.value;";
-  xaxis_label += "if ( formatted_name.length > 30 ) {";
-  xaxis_label +=
-      "formatted_name = formatted_name.substring(0, 30).trim() + "
-      "'\xe2\x80\xa6';";
+  xaxis_label += "if ( formatted_name.length > " + util::to_string( max_name_length ) + " ) {";
+  xaxis_label += "formatted_name = formatted_name.substring(0, " + util::to_string( max_name_length ) + ").trim() + "
+                 "'\xe2\x80\xa6';";
   xaxis_label += "}";
-  xaxis_label +=
-      "return '<span style=\"color:' + this.chart.options.__colors['C_' + this.value.replace('.', '_')] "
-      "+ ';\">' + formatted_name + '</span>';";
-  xaxis_label += " }";
+  xaxis_label += "return '<span style=\"color:' + this.chart.options.__colors['C_' + this.value.replace('.', '_')] "
+                 "+ ';\">' + formatted_name + '</span>';";
+  xaxis_label += "}";
 
   bc.set( "xAxis.labels.formatter", xaxis_label );
   bc.value( "xAxis.labels.formatter" ).SetRawOutput( true );
