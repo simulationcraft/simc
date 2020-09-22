@@ -3782,11 +3782,7 @@ struct brutal_slash_t : public cat_attack_t
   brutal_slash_t( druid_t* p, const std::string& options_str )
     : cat_attack_t( "brutal_slash", p, p->talent.brutal_slash, options_str )
   {
-    aoe               = as<int>( data().effectN( 3 ).base_value() );
-    energize_amount   = data().effectN( 1 ).base_value();
-    energize_resource = RESOURCE_COMBO_POINT;
-    energize_type     = action_energize::ON_HIT;
-    cooldown->hasted  = true;
+    aoe = as<int>( data().effectN( 3 ).base_value() );
   }
 
   double cost() const override
@@ -4547,10 +4543,7 @@ struct swipe_cat_t : public cat_attack_t
   swipe_cat_t( druid_t* player, const std::string& options_str )
     : cat_attack_t( "swipe_cat", player, player->spec.swipe_cat, options_str )
   {
-    aoe               = as<int>( data().effectN( 4 ).base_value() );
-    energize_amount   = data().effectN( 1 ).base_value();
-    energize_resource = RESOURCE_COMBO_POINT;
-    energize_type     = action_energize::ON_HIT;
+    aoe = as<int>( data().effectN( 4 ).base_value() );
 
     if ( player->find_rank_spell( "Swipe", "Rank 2" )->ok() )
       bleed_mul = player->spec.swipe_cat->effectN( 2 ).percent();
@@ -6765,11 +6758,9 @@ struct starsurge_t : public druid_spell_t
 
 struct stellar_flare_t : public druid_spell_t
 {
-  stellar_flare_t( druid_t* player, const std::string& options_str )
-    : druid_spell_t( "stellar_flare", player, player->talent.stellar_flare, options_str )
-  {
-    energize_amount = player->talent.stellar_flare->effectN( 3 ).resource( RESOURCE_ASTRAL_POWER );
-  }
+  stellar_flare_t( druid_t* p, const std::string& options_str )
+    : druid_spell_t( "stellar_flare", p, p->talent.stellar_flare, options_str )
+  {}
 
   void impact( action_state_t* s ) override
   {
@@ -6985,7 +6976,6 @@ struct force_of_nature_t : public druid_spell_t
     parse_options( options );
     harmful = may_crit = false;
     summon_duration    = p->talent.force_of_nature->effectN( 2 ).trigger()->duration() + 1_ms;
-    energize_amount    = p->talent.force_of_nature->effectN( 5 ).resource( RESOURCE_ASTRAL_POWER );
   }
 
   void init_finished() override
