@@ -1664,6 +1664,7 @@ class SpellDataGenerator(DataGenerator):
           ( 336874, 0 ), # Fortifying Ingredients
 
           # Shadowland Legendaries
+          ( 337342, 3 ), # Jade Ignition Damage
           ( 338141, 1 ), # Flaming Kicks Legendary damage
         ),
 
