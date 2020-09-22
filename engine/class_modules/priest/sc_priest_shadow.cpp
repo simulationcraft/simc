@@ -977,22 +977,21 @@ struct devouring_plague_dot_t final : public priest_spell_t
   {
     dot_t* dot = get_dot( target );
     assert( dot && dot->state && "Cannot append damage without active dot" );
+    assert( dot->current_action && "Cannot append damage to dot without action" );
     // get remaining full ticks left (not partials, these will be rolled over)
     // calculate total damage
     timespan_t remaining_dot = dot->remains();                                       // 2.5s
     remaining_dot            = remaining_dot - dot->time_to_next_tick();             // 2.5 - .5s = 2s
     int num_full_ticks = as<int>( std::ceil( remaining_dot / dot->time_to_tick ) );  // 2s / ~1.5 = 1.3 = 1 full tick
     auto calculated_tick_amount = dot->current_action->calculate_tick_amount( dot->state, 1.0 );
-
-    double total_damage = num_full_ticks * calculated_tick_amount;
-    double total_ticks  = dot->duration() / dot->time_to_tick;
+    double total_damage         = num_full_ticks * calculated_tick_amount;
+    sim->print_debug( "{} {} old DP dot num_ticks={} tick_amount={} total_full_tick_damage={}", *player, *this,
+                      num_full_ticks, calculated_tick_amount, total_damage );
+    double total_ticks = dot->duration() / dot->time_to_tick;
     if ( dot->time_to_next_tick() > timespan_t::from_seconds( 0 ) )
     {
       total_ticks += 1;
     }
-
-    // TODO: make serge happy later
-    assert( 1 );
 
     auto dot_state = debug_cast<devouring_plague_dot_state_t*>( dot->state );
 
@@ -1000,9 +999,12 @@ struct devouring_plague_dot_t final : public priest_spell_t
                                 dot->time_to_tick;  // 2s - ( 1 * 1.5 ) = .5 / 1.5 =~ 0.33
 
     double new_bonus = total_damage / ( total_ticks + partial_tick_coeff );  // X / (( 1 + ticks_from_new_dp ) + 0.33)
-    dot_state->rolling_dp_bonus += new_bonus;
-    sim->print_debug( "{} {} appended {} bonus damage from previous dot. Bonus damage is now at {}", *player, *this,
-                      new_bonus, dot_state->rolling_dp_bonus );
+
+    sim->print_debug( "{} {} new dot has {} full ticks and {} partial ticks.", *player, *this, total_ticks,
+                      partial_tick_coeff );
+    dot_state->rolling_dp_bonus = new_bonus;
+    sim->print_debug( "{} {} appended {} bonus damage per tick from previous dot. Bonus damage per tick is now at {}",
+                      *player, *this, new_bonus, dot_state->rolling_dp_bonus );
   }
 
   double bonus_ta( const action_state_t* state ) const override
