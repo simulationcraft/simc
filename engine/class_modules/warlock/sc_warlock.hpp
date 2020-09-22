@@ -203,7 +203,7 @@ public:
     const spell_data_t* doom; //TODO: SL Beta - Doom is now working in the sim and seems to match some tests against beta client, but haste/refresh behavior needs checking still
 
     // tier 35
-    const spell_data_t* from_the_shadows; //TODO: SL Beta - From the Shadows uses a spell whitelist, make sure this is handled properly
+    const spell_data_t* from_the_shadows; //TODO: Post Launch - From the Shadows requires hardcoding for HoG (similar issue with HoG and spec aura). Consider rebuilding this.
     const spell_data_t* soul_strike;  //TODO: SL Beta - double check automagic is handling damage correctly
     const spell_data_t* summon_vilefiend;
 
