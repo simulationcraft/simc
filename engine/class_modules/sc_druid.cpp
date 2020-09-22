@@ -3783,7 +3783,7 @@ struct brutal_slash_t : public cat_attack_t
     : cat_attack_t( "brutal_slash", p, p->talent.brutal_slash, options_str )
   {
     aoe               = as<int>( data().effectN( 3 ).base_value() );
-    energize_amount   = data().effectN( 2 ).base_value();
+    energize_amount   = data().effectN( 1 ).base_value();
     energize_resource = RESOURCE_COMBO_POINT;
     energize_type     = action_energize::ON_HIT;
     cooldown->hasted  = true;
