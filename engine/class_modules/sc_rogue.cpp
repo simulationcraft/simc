@@ -5959,7 +5959,7 @@ void rogue_t::trigger_venomous_wounds_death( player_t* target )
 template <typename Base>
 void actions::rogue_action_t<Base>::trigger_auto_attack( const action_state_t* /* state */ )
 {
-  if ( p()->main_hand_attack->execute_event || !p()->off_hand_attack || p()->off_hand_attack->execute_event )
+  if ( !p()->main_hand_attack || p()->main_hand_attack->execute_event || !p()->off_hand_attack || p()->off_hand_attack->execute_event )
     return;
 
   if ( !ab::data().flags( spell_attribute::SX_MELEE_COMBAT_START ) )
