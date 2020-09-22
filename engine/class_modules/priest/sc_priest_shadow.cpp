@@ -976,13 +976,15 @@ struct devouring_plague_dot_t final : public priest_spell_t
   void append_damage( player_t* target )
   {
     dot_t* dot = get_dot( target );
+    assert( dot && dot->state && "Cannot append damage without active dot" );
     // get remaining full ticks left (not partials, these will be rolled over)
     // calculate total damage
     timespan_t remaining_dot = dot->remains();                                       // 2.5s
     remaining_dot            = remaining_dot - dot->time_to_next_tick();             // 2.5 - .5s = 2s
     int num_full_ticks = as<int>( std::ceil( remaining_dot / dot->time_to_tick ) );  // 2s / ~1.5 = 1.3 = 1 full tick
+    auto calculated_tick_amount = dot->current_action->calculate_tick_amount( dot->state, 1.0 );
 
-    double total_damage = priest().tick_damage_over_time( num_full_ticks * dot->time_to_tick, dot );
+    double total_damage = num_full_ticks * calculated_tick_amount;
     double total_ticks  = dot->duration() / dot->time_to_tick;
     if ( dot->time_to_next_tick() > timespan_t::from_seconds( 0 ) )
     {
