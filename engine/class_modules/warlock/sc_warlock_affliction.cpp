@@ -245,9 +245,8 @@ struct agony_t : public affliction_spell_t
     }
 
     // BFA - Azerite
-    if ( result_is_hit( d->state->result ) && !p()->buffs.drain_life->check() )
+    if ( result_is_hit( d->state->result ) && p()->talents.inevitable_demise->ok() && !p()->buffs.drain_life->check() )
     {
-      sim -> out_log.print( "ID trigger reached" );
       p()->buffs.inevitable_demise->trigger();
     }
 
@@ -826,7 +825,7 @@ void warlock_t::init_spells_affliction()
 
   // Talents
   talents.nightfall           = find_talent_spell( "Nightfall" );
-  talents.inevitable_demise   = find_talent_spell( "Ineveitable Demise" );
+  talents.inevitable_demise   = find_talent_spell( "Inevitable Demise" );
   talents.drain_soul          = find_talent_spell( "Drain Soul" );
   talents.haunt               = find_talent_spell( "Haunt" );
   talents.writhe_in_agony     = find_talent_spell( "Writhe in Agony" );
