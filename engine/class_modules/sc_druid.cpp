@@ -8058,7 +8058,7 @@ void druid_t::init_spells()
   spec.cat_form                = check_id( find_class_spell( "Cat Form" )->ok(), 3025 );
   spec.cat_form_speed          = check_id( find_class_spell( "Cat Form" )->ok(), 113636 );
   spec.predatory_swiftness     = find_specialization_spell( "Predatory Swiftness" );
-  spec.primal_fury             = find_affinity_spell( "Primary Fury" )->effectN( 1 ).trigger();
+  spec.primal_fury             = find_affinity_spell( "Primal Fury" )->effectN( 1 ).trigger();
   spec.rip                     = find_affinity_spell( "Rip" );
   spec.sharpened_claws         = find_specialization_spell( "Sharpened Claws" );
   spec.swipe_cat               = check_id( find_affinity_spell( "Swipe" )->ok(), 106785 );
