@@ -3783,7 +3783,7 @@ struct brutal_slash_t : public cat_attack_t
     : cat_attack_t( "brutal_slash", p, p->talent.brutal_slash, options_str )
   {
     aoe               = as<int>( data().effectN( 3 ).base_value() );
-    energize_amount   = data().effectN( 2 ).base_value();
+    energize_amount   = data().effectN( 1 ).base_value();
     energize_resource = RESOURCE_COMBO_POINT;
     energize_type     = action_energize::ON_HIT;
     cooldown->hasted  = true;
@@ -8066,7 +8066,7 @@ void druid_t::init_spells()
   spec.cat_form                = check_id( find_class_spell( "Cat Form" )->ok(), 3025 );
   spec.cat_form_speed          = check_id( find_class_spell( "Cat Form" )->ok(), 113636 );
   spec.predatory_swiftness     = find_specialization_spell( "Predatory Swiftness" );
-  spec.primal_fury             = find_affinity_spell( "Primary Fury" )->effectN( 1 ).trigger();
+  spec.primal_fury             = find_affinity_spell( "Primal Fury" )->effectN( 1 ).trigger();
   spec.rip                     = find_affinity_spell( "Rip" );
   spec.sharpened_claws         = find_specialization_spell( "Sharpened Claws" );
   spec.swipe_cat               = check_id( find_affinity_spell( "Swipe" )->ok(), 106785 );
