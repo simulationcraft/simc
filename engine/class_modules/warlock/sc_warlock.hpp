@@ -168,7 +168,7 @@ public:
     // AFF
     // tier 15
     const spell_data_t* nightfall; //TODO: SL Beta - RNG information is missing from spell data, and data also says buff can potentially stack to 2. Serious testing needed, especially with multiple corruptions out!
-    const spell_data_t* inevitable_demise; //TODO: SL Beta - THIS HAS NOT BEEN IMPLEMENTED AS A TALENT YET AND REMAINS AS AZERITE IN THE MODULE. FIX THIS!
+    const spell_data_t* inevitable_demise;
     const spell_data_t* drain_soul;
 
     // tier 25

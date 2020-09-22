@@ -35,15 +35,6 @@ struct drain_life_t : public warlock_spell_t
     p()->buffs.drain_life->trigger();
   }
 
-  //double bonus_ta( const action_state_t* s ) const override
-  //{
-  //  double ta = warlock_spell_t::bonus_ta( s );
-
-  //  ta += p()->buffs.inevitable_demise->check_stack_value();
-
-  //  return ta;
-  //}
-  
   double action_multiplier() const override
   {
     double m = warlock_spell_t::action_multiplier();
