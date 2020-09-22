@@ -3,6 +3,7 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
+#include "action/sc_action_state.hpp"
 #include "sc_enums.hpp"
 #include "sc_priest.hpp"
 
@@ -429,7 +430,8 @@ struct shadow_word_death_t final : public priest_spell_t
     {
       if ( sim->debug )
       {
-        sim->print_debug( "{} below {}. Increasing Shadow Word: Death damage by {}", state->target->name_str, execute_percent, execute_modifier );
+        sim->print_debug( "{} below {}. Increasing Shadow Word: Death damage by {}", state->target->name_str,
+                          execute_percent, execute_modifier );
       }
       d *= 1 + execute_modifier;
     }
@@ -906,12 +908,40 @@ struct vampiric_touch_t final : public priest_spell_t
 // ==========================================================================
 // Devouring Plague
 // ==========================================================================
-struct devouring_plague_dot_t final : public priest_spell_t
+
+struct devouring_plague_dot_state_t : public action_state_t
 {
   double rolling_dp_bonus;
 
+  devouring_plague_dot_state_t( action_t* a, player_t* t ) : action_state_t( a, t ), rolling_dp_bonus( 0 )
+  {
+  }
+
+  std::ostringstream& debug_str( std::ostringstream& s ) override
+  {
+    action_state_t::debug_str( s );
+    fmt::print( s, " rolling_dp_bonus={}", rolling_dp_bonus );
+    return s;
+  }
+
+  void initialize() override
+  {
+    action_state_t::initialize();
+    rolling_dp_bonus = 0;
+  }
+
+  void copy_state( const action_state_t* o ) override
+  {
+    action_state_t::copy_state( o );
+    auto other_dp_state = debug_cast<const devouring_plague_dot_state_t*>( o );
+    rolling_dp_bonus    = other_dp_state->rolling_dp_bonus;
+  }
+};
+
+struct devouring_plague_dot_t final : public priest_spell_t
+{
   devouring_plague_dot_t( priest_t& p )
-    : priest_spell_t( "devouring_plague", p, p.find_class_spell( "Devouring Plague" ) ), rolling_dp_bonus( 0.0 )
+    : priest_spell_t( "devouring_plague", p, p.find_class_spell( "Devouring Plague" ) )
   {
     may_crit                   = true;
     tick_zero                  = false;
@@ -962,21 +992,30 @@ struct devouring_plague_dot_t final : public priest_spell_t
     // TODO: make serge happy later
     assert( 1 );
 
+    auto dot_state = debug_cast<devouring_plague_dot_state_t*>( dot->state );
+
     double partial_tick_coeff = ( remaining_dot - ( num_full_ticks * dot->time_to_tick ) ) /
-                                dot->time_to_tick;                           // 2s - ( 1 * 1.5 ) = .5 / 1.5 =~ 0.33
-    rolling_dp_bonus = total_damage / ( total_ticks + partial_tick_coeff );  // X / (( 1 + ticks_from_new_dp ) + 0.33)
+                                dot->time_to_tick;  // 2s - ( 1 * 1.5 ) = .5 / 1.5 =~ 0.33
+
+    double new_bonus = total_damage / ( total_ticks + partial_tick_coeff );  // X / (( 1 + ticks_from_new_dp ) + 0.33)
+    dot_state->rolling_dp_bonus += new_bonus;
+    sim->print_debug( "{} {} appended {} bonus damage from previous dot. Bonus damage is now at {}", *player, *this,
+                      new_bonus, dot_state->rolling_dp_bonus );
   }
 
   double bonus_ta( const action_state_t* state ) const override
   {
     double t = priest_spell_t::bonus_ta( state );
 
-    if ( rolling_dp_bonus )
-    {
-      t += rolling_dp_bonus;
-    }
+    auto custom_state = debug_cast<const devouring_plague_dot_state_t*>( state );
+    t += custom_state->rolling_dp_bonus;
 
     return t;
+  }
+
+  virtual action_state_t* new_state() override
+  {
+    return new devouring_plague_dot_state_t( this, target );
   }
 };
 
@@ -1029,8 +1068,6 @@ struct devouring_plague_t final : public priest_spell_t
   void impact( action_state_t* s ) override
   {
     priest_spell_t::impact( s );
-
-    dot_spell->rolling_dp_bonus = 0.0;
 
     // Damnation does not trigger a SA - 2020-08-08
     if ( casted )
