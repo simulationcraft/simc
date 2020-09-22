@@ -1590,7 +1590,7 @@ struct bt_dummy_buff_t : public druid_buff_t<buff_t>
       return false;
 
     if ( p().buff.bt_rake->check() + p().buff.bt_shred->check() + p().buff.bt_swipe->check() +
-         p().buff.bt_thrash->check() + p().buff.bt_moonfire->check() + p().buff.bt_brutal_slash->check() + 1 < count )
+         p().buff.bt_thrash->check() + p().buff.bt_moonfire->check() + p().buff.bt_brutal_slash->check() + !this->check() < count )
     {
       return druid_buff_t<buff_t>::trigger( s, v, c, d );
     }
