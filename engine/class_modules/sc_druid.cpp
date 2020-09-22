@@ -1586,7 +1586,7 @@ struct bt_dummy_buff_t : public druid_buff_t<buff_t>
 
   bool trigger( int s, double v, double c, timespan_t d ) override
   {
-    if ( !p().talent.bloodtalons->ok() || p().buff.bloodtalons->check() )
+    if ( !p().talent.bloodtalons->ok() )
       return false;
 
     if ( p().buff.bt_rake->check() + p().buff.bt_shred->check() + p().buff.bt_swipe->check() +
