@@ -9730,6 +9730,13 @@ std::unique_ptr<expr_t> druid_t::create_expression( util::string_view name_str )
     } );
   }
 
+  if ( util::str_compare_ci( name_str, "active_bt_triggers" ) ) {
+    return make_fn_expr( "active_bt_triggers", [ this ]() {
+      return buff.bt_rake->check() + buff.bt_shred->check() + buff.bt_swipe->check() +
+             buff.bt_thrash->check() + buff.bt_moonfire->check() + buff.bt_brutal_slash->check();
+    } );
+  }
+
   if ( util::str_compare_ci( name_str, "combo_points" ) )
     return make_ref_expr( "combo_points", resources.current[ RESOURCE_COMBO_POINT ] );
 
