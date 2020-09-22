@@ -386,8 +386,13 @@ struct painbreaker_psalm_t final : public priest_spell_t
 
 struct shadow_word_death_t final : public priest_spell_t
 {
+  double execute_percent;
+  double execute_modifier;
+
   shadow_word_death_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "shadow_word_death", p, p.find_class_spell( "Shadow Word: Death" ) )
+    : priest_spell_t( "shadow_word_death", p, p.find_class_spell( "Shadow Word: Death" ) ),
+      execute_percent( data().effectN( 2 ).base_value() ),
+      execute_modifier( data().effectN( 3 ).percent() )
   {
     parse_options( options_str );
 
@@ -414,6 +419,22 @@ struct shadow_word_death_t final : public priest_spell_t
       energize_resource = RESOURCE_INSANITY;
       energize_amount   = 10;
     }
+  }
+
+  double composite_da_multiplier( const action_state_t* state ) const override
+  {
+    double d = priest_spell_t::composite_da_multiplier( state );
+
+    if ( target->health_percentage() < execute_percent )
+    {
+      if ( sim->debug )
+      {
+        sim->print_debug( "{} below {}. Increasing Shadow Word: Death damage by {}", state->target->name_str, execute_percent, execute_modifier );
+      }
+      d *= 1 + execute_modifier;
+    }
+
+    return d;
   }
 
   void impact( action_state_t* s ) override
@@ -885,18 +906,98 @@ struct vampiric_touch_t final : public priest_spell_t
 // ==========================================================================
 // Devouring Plague
 // ==========================================================================
-struct devouring_plague_t final : public priest_spell_t
+struct devouring_plague_dot_t final : public priest_spell_t
 {
-  bool casted;
+  double rolling_dp_bonus;
 
-  devouring_plague_t( priest_t& p, bool _casted = false )
-    : priest_spell_t( "devouring_plague", p, p.find_class_spell( "Devouring Plague" ) )
+  devouring_plague_dot_t( priest_t& p )
+    : priest_spell_t( "devouring_plague", p, p.find_class_spell( "Devouring Plague" ) ), rolling_dp_bonus( 0.0 )
   {
-    casted                     = _casted;
     may_crit                   = true;
     tick_zero                  = false;
     tick_may_crit              = true;
     affected_by_shadow_weaving = true;
+    background                 = true;
+    hasted_ticks               = true;
+
+    base_dd_min = base_dd_max = spell_power_mod.direct = base_td = 0.0;
+  }
+
+  void init() override
+  {
+    priest_spell_t::init();
+
+    snapshot_flags |= STATE_CRIT | STATE_TGT_CRIT | STATE_HASTE;
+    update_flags |= STATE_CRIT | STATE_TGT_CRIT | STATE_HASTE;
+  }
+
+  // Make sure the dot doesn't also consume insanity
+  void consume_resource() override
+  {
+    return;
+  }
+
+  // TODO: see if we need this
+  // timespan_t composite_dot_duration( const action_state_t* s ) const override
+  // {
+  //   return dot_duration * ( tick_time( s ) / base_tick_time );
+  // }
+
+  void append_damage( player_t* target )
+  {
+    dot_t* dot = get_dot( target );
+    // get remaining full ticks left (not partials, these will be rolled over)
+    // calculate total damage
+    timespan_t remaining_dot = dot->remains();                                       // 2.5s
+    remaining_dot            = remaining_dot - dot->time_to_next_tick();             // 2.5 - .5s = 2s
+    int num_full_ticks = as<int>( std::ceil( remaining_dot / dot->time_to_tick ) );  // 2s / ~1.5 = 1.3 = 1 full tick
+
+    double total_damage = priest().tick_damage_over_time( num_full_ticks * dot->time_to_tick, dot );
+    double total_ticks  = dot->duration() / dot->time_to_tick;
+    if ( dot->time_to_next_tick() > timespan_t::from_seconds( 0 ) )
+    {
+      total_ticks += 1;
+    }
+
+    // TODO: make serge happy later
+    assert( 1 );
+
+    double partial_tick_coeff = ( remaining_dot - ( num_full_ticks * dot->time_to_tick ) ) /
+                                dot->time_to_tick;                           // 2s - ( 1 * 1.5 ) = .5 / 1.5 =~ 0.33
+    rolling_dp_bonus = total_damage / ( total_ticks + partial_tick_coeff );  // X / (( 1 + ticks_from_new_dp ) + 0.33)
+  }
+
+  double bonus_ta( const action_state_t* state ) const override
+  {
+    double t = priest_spell_t::bonus_ta( state );
+
+    if ( rolling_dp_bonus )
+    {
+      t += rolling_dp_bonus;
+    }
+
+    return t;
+  }
+};
+
+struct devouring_plague_t final : public priest_spell_t
+{
+  bool casted;
+  devouring_plague_dot_t* dot_spell;
+
+  devouring_plague_t( priest_t& p, bool _casted = false )
+    : priest_spell_t( "devouring_plague", p, p.find_class_spell( "Devouring Plague" ) ),
+      dot_spell( new devouring_plague_dot_t( p ) )
+  {
+    casted                     = _casted;
+    may_crit                   = true;
+    affected_by_shadow_weaving = true;
+
+    add_child( dot_spell );
+
+    // Turn off DoT
+    dot_duration = timespan_t::from_seconds( 0 );
+    base_td = base_td_multiplier = 0;
   }
 
   devouring_plague_t( priest_t& p, util::string_view options_str ) : devouring_plague_t( p, true )
@@ -929,10 +1030,26 @@ struct devouring_plague_t final : public priest_spell_t
   {
     priest_spell_t::impact( s );
 
+    dot_spell->rolling_dp_bonus = 0.0;
+
     // Damnation does not trigger a SA - 2020-08-08
     if ( casted )
     {
       priest().trigger_shadowy_apparitions( s );
+    }
+
+    if ( result_is_hit( s->result ) )
+    {
+      priest_td_t& td = get_td( s->target );
+      auto dp         = td.dots.devouring_plague;
+
+      if ( dp->is_ticking() )
+      {
+        dot_spell->append_damage( s->target );
+      }
+
+      dot_spell->target = s->target;
+      dot_spell->execute();
     }
   }
 };
