@@ -24,7 +24,7 @@ struct drain_life_t : public warlock_spell_t
 
   void execute() override
   {
-    if ( p()->azerite.inevitable_demise.ok() && p()->buffs.inevitable_demise->check() > 0 )
+    if ( p()->talents.inevitable_demise->ok() && p()->buffs.inevitable_demise->check() > 0 )
     {
       if ( p()->buffs.drain_life->check() )
         p()->buffs.inevitable_demise->expire();
@@ -35,13 +35,24 @@ struct drain_life_t : public warlock_spell_t
     p()->buffs.drain_life->trigger();
   }
 
-  double bonus_ta( const action_state_t* s ) const override
+  //double bonus_ta( const action_state_t* s ) const override
+  //{
+  //  double ta = warlock_spell_t::bonus_ta( s );
+
+  //  ta += p()->buffs.inevitable_demise->check_stack_value();
+
+  //  return ta;
+  //}
+  
+  double action_multiplier() const override
   {
-    double ta = warlock_spell_t::bonus_ta( s );
+    double m = warlock_spell_t::action_multiplier();
 
-    ta += p()->buffs.inevitable_demise->check_stack_value();
-
-    return ta;
+    if ( p()->talents.inevitable_demise->ok() && p()->buffs.inevitable_demise->check() )
+    {
+      m *= 1.0 + p()->buffs.inevitable_demise->check_stack_value();
+    }
+    return m;
   }
 
   void last_tick( dot_t* d ) override

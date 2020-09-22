@@ -245,7 +245,7 @@ struct agony_t : public affliction_spell_t
     }
 
     // BFA - Azerite
-    if ( result_is_hit( d->state->result ) && p()->azerite.inevitable_demise.ok() && !p()->buffs.drain_life->check() )
+    if ( result_is_hit( d->state->result ) && p()->talents.inevitable_demise->ok() && !p()->buffs.drain_life->check() )
     {
       p()->buffs.inevitable_demise->trigger();
     }
@@ -786,15 +786,11 @@ void warlock_t::create_buffs_affliction()
                                   ->add_stat( STAT_INTELLECT, azerite.wracking_brilliance.value() )
                                   ->set_duration( find_spell( 272893 )->duration() )
                                   ->set_refresh_behavior( buff_refresh_behavior::DURATION );
-  buffs.inevitable_demise = make_buff( this, "inevitable_demise", azerite.inevitable_demise )
-                                ->set_max_stack( find_spell( 273525 )->max_stacks() )
-                                // Inevitable Demise has a built in 25% reduction to the value of ranks 2 and 3. This is
-                                // applied as a flat multiplier to the total value.
-                                ->set_default_value( azerite.inevitable_demise.value() *
-                                                     ( ( 1.0 + 0.75 * ( azerite.inevitable_demise.n_items() - 1 ) ) /
-                                                       azerite.inevitable_demise.n_items() ) );
+  buffs.inevitable_demise = make_buff( this, "inevitable_demise", talents.inevitable_demise )
+                                ->set_max_stack( find_spell( 334320 )->max_stacks() )
+                                ->set_default_value( talents.inevitable_demise->effectN( 1 ).percent() );
 }
-
+ 
 void warlock_t::vision_of_perfection_proc_aff()
 {
   timespan_t summon_duration = spec.summon_darkglare->duration() * vision_of_perfection_multiplier;
