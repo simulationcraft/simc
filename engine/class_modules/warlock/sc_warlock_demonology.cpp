@@ -69,6 +69,20 @@ public:
   double composite_target_multiplier( player_t* t ) const override
   {
     double m = warlock_spell_t::composite_target_multiplier( t );
+
+    auto td = this->td( t );
+
+    if (td->debuffs_from_the_shadows->check() && data().affected_by( td->debuffs_from_the_shadows->data().effectN( 1 ) ) )
+    {
+      m *= 1.0 + td->debuffs_from_the_shadows->data().effectN(1).percent();
+    }
+    else if (td->debuffs_from_the_shadows->check() && data().id() == 105174)
+    {
+      //Hand of Gul'dan spell data is structured weirdly, so 105174 doesn't contain the affecting spells info (see 86040 for that information)
+      //Hardcoding checks for ID 105174 HoG to automatically go through for now
+      m *= 1.0 + td->debuffs_from_the_shadows->data().effectN( 1 ).percent();
+    }
+
     return m;
   }
 
@@ -150,7 +164,8 @@ struct hand_of_guldan_t : public demonology_spell_t
     }
     parse_effect_data( p->find_spell( 86040 )->effectN( 1 ) );
 
-    // TOCHECK Because of how we structure HoG spelldata we have to manually apply spec aura.
+    //HoG parent spell (105174) is missing affecting spells info (see 86040), so we have to manually apply spec aura.
+    //TODO - potentially rebuild HoG to find a way around this issue, as it also affects From the Shadows
     base_multiplier *= 1.0 + p->spec.demonology->effectN( 3 ).percent();
 
     if ( p->conduit.borne_of_blood->ok() )
@@ -351,6 +366,7 @@ struct call_dreadstalkers_t : public demonology_spell_t
     p()->buffs.demonic_calling->up();  // benefit tracking
     p()->buffs.demonic_calling->decrement();
 
+    //TOCHECK: This should really be applied by the pet(s) and not the Warlock?
     if ( p()->talents.from_the_shadows->ok() )
     {
       td( target )->debuffs_from_the_shadows->trigger();
