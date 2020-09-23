@@ -16,22 +16,48 @@
 // Shadowlands TODO
 //
 // Shared
-// - Update Elemental Blast
 // - Covenants
 //   - Kyrian
+//     - healing? (do we actually care?)
+//     - totem replacement? (see above)
+//   - Necrolord
+//     - apply background flame shock to target
+//     - cast background lava burst to all flame shocked targets
 // - Class Legendaries
+//   - Ancestral Reminder
+//     - extending lust duration is easy, but increasing effect of lust seems trickier
+//   - Deeptremor Stone
+//   - Deeply Rooted Elements
+//     - currently also triggers Ascendance cooldown but likely to be fixed
+//     - will require background lava burst support similar to primordial wave
 // - Covenant Conduits
+//   - Elysian Dirge (Kyrian)
 //
 // Elemental
 // - Implement Static Discharge
 // - Implement Echoing Shock
 // - Spec Legendaries
+//   - Elemental Equilibrium
+//     - There are a number of spell-specific bugs here about which buffs get applied
+//   - Windspeaker's Lava Resurgence
+//     - Implement the bugged behavior, not the tooltip behavior
 // - Spec Conduits
+//   - Earth and Sky
+//     - Still waiting on them to reimplement this on beta for post-Fulmination
+//   - Shake the Foundations
+//     - Background CL cast will be similar to Echoing Shock implementation
+// - PreRaid profile gear
+// - Castle Nathria profile gear
+// - APL
+//   - We intentionally have a very simplified version of the APL in place now to indicate
+//     that we have not done *any* work on developing one for Shadowlands yet.
+//   - From discussions:
+//     - single_target, cleave, and aoe APLs
 //
 // Enhancement
 // whole huge pile of stuff to do
 //
-//
+// Resto DPS?
 
 namespace
 {  // UNNAMED NAMESPACE
