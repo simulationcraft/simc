@@ -2722,12 +2722,25 @@ struct flayed_shot_t : hunter_ranged_attack_t
 
 struct resonating_arrow_t : hunter_spell_t
 {
+  struct damage_t final : hunter_spell_t
+  {
+    damage_t( util::string_view n, hunter_t* p ):
+      hunter_spell_t( n, p, p -> covenants.resonating_arrow -> effectN( 1 ).trigger() )
+    {
+      dual = true;
+      aoe = -1;
+    }
+  };
+
   resonating_arrow_t( hunter_t* p, util::string_view options_str ):
     hunter_spell_t( "resonating_arrow", p, p -> covenants.resonating_arrow )
   {
     parse_options( options_str );
 
-    harmful = may_hit = may_miss = false;
+    travel_speed = 0;
+    impact_action = p -> get_background_action<damage_t>( "resonating_arrow_damage" );
+    impact_action -> stats = stats;
+    stats -> action_list.push_back( impact_action );
   }
 
   void execute()
