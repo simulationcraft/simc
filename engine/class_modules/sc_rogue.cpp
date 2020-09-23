@@ -4813,6 +4813,10 @@ struct serrated_bone_spike_t : public rogue_attack_t
         sudden_fractures->execute();
       }
     }
+
+    // TOCHECK: Nightstalker currently does not affect the Bone Spike DoT on beta
+    bool snapshots_nightstalker() const override
+    { return false; }
   };
 
   serrated_bone_spike_dot_t* serrated_bone_spike_dot;
