@@ -4280,8 +4280,8 @@ double player_t::temporary_movement_modifier() const
 
   if ( !is_enemy() && type != HEALING_ENEMY )
   {
-    if ( buffs.stampeding_roar->check() )
-      temporary = std::max( buffs.stampeding_roar->data().effectN( 1 ).percent(), temporary );
+    if ( buffs.stampeding_roar )
+      temporary = std::max( buffs.stampeding_roar->check_value(), temporary );
   }
 
   if ( !is_enemy() && !is_pet() && type != HEALING_ENEMY )

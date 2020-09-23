@@ -6562,12 +6562,33 @@ struct stampeding_roar_t : public druid_spell_t
     harmful = false;
   }
 
+  void init_finished() override
+  {
+    if ( !p()->conduit.front_of_the_pack->ok() )
+      return;
+
+    for ( auto actor : sim->actor_list )
+    {
+      if ( actor->type == PLAYER_GUARDIAN )
+        continue;
+
+      if ( actor->buffs.stampeding_roar )
+        actor->buffs.stampeding_roar->apply_affecting_conduit( p()->conduit.front_of_the_pack );
+    }
+  }
+
   void execute() override
   {
     druid_spell_t::execute();
 
-    // TODO: implement radius/impact based trigger for players in range. add buff to player_t if necessary
-    p()->buffs.stampeding_roar->trigger();
+    // TODO: add target eligibility via radius
+    for ( auto actor : sim->player_non_sleeping_list )
+    {
+      if ( actor->type == PLAYER_GUARDIAN )
+        continue;
+
+      actor->buffs.stampeding_roar->trigger();
+    }
   }
 };
 
@@ -8308,10 +8329,6 @@ void druid_t::create_buffs()
   buff.innervate = make_buff<innervate_buff_t>( *this );
 
   buff.prowl = make_buff( this, "prowl", find_class_spell( "Prowl" ) );
-
-  buffs.stampeding_roar = make_buff( this, "stampeding_roar", find_spell( 77764 ) )
-    ->set_cooldown( 0_ms )
-    ->apply_affecting_conduit( conduit.front_of_the_pack, -1 );
 
   buff.thorns = make_buff( this, "thorns", find_spell( 305497 ) );
 
@@ -10657,7 +10674,12 @@ struct druid_module_t : public module_t
     return p;
   }
   bool valid() const override { return true; }
-  void init( player_t* p ) const override {}
+  void init( player_t* p ) const override
+  {
+    p->buffs.stampeding_roar = make_buff( p, "stampeding_roar", p->find_spell( 77764 ) )
+      ->set_cooldown( 0_ms )
+      ->set_default_value_from_effect_type( A_MOD_INCREASE_SPEED );
+  }
   void static_init() const override {}
   void register_hotfixes() const override {}
   void combat_begin( sim_t* ) const override {}
