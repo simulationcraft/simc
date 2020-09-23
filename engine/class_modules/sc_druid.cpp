@@ -3433,14 +3433,14 @@ public:
     if ( data().affected_by( p->mastery.razor_claws->effectN( 1 ) ) )
     {
       auto val = p->mastery.razor_claws->effectN( 1 ).percent();
-      da_multiplier_buffeffects.push_back( buff_effect_t( nullptr, val, true ) );
+      da_multiplier_buffeffects.push_back( buff_effect_t( nullptr, val, false, true ) );
       p->sim->print_debug( "buff-effects: {} ({}) direct damage modified by {}%+mastery", name(), id, val * 100.0 );
     }
 
     if ( data().affected_by( p->mastery.razor_claws->effectN( 2 ) ) )
     {
       auto val = p->mastery.razor_claws->effectN( 2 ).percent();
-      ta_multiplier_buffeffects.push_back( buff_effect_t( nullptr, val , true ) );
+      ta_multiplier_buffeffects.push_back( buff_effect_t( nullptr, val , false, true ) );
       p->sim->print_debug( "buff-effects: {} ({}) tick damage modified by {}%+mastery", name(), id, val * 100.0 );
     }
   }
