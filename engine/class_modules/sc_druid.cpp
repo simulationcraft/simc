@@ -383,6 +383,8 @@ public:
     buff_t* heart_of_the_wild;
     // General Legendaries
     buff_t* oath_of_the_elder_druid;
+    // Conduits
+    buff_t* ursine_vigor;
 
     // Covenants
     buff_t* kindred_empowerment;
@@ -786,11 +788,16 @@ public:
 
     conduit_data_t unchecked_aggression;
     conduit_data_t savage_combatant;
+    conduit_data_t layered_mane;
 
     conduit_data_t deep_allegiance;
     conduit_data_t evolved_swarm;
     conduit_data_t conflux_of_elements;
     conduit_data_t endless_thirst;
+
+    conduit_data_t tough_as_bark;
+    conduit_data_t ursine_vigor;
+    conduit_data_t innate_resolve;
   } conduit;
 
   struct uptimes_t
@@ -1429,7 +1436,7 @@ struct tiger_dash_buff_t : public druid_buff_t<buff_t>
   bool freeze_stacks() override { return true; }
 };
 
-//Innervate Buff ============================================================
+// Innervate Buff ===========================================================
 struct innervate_buff_t : public druid_buff_t<buff_t>
 {
   innervate_buff_t( druid_t& p ) : base_t( p, "innervate", p.spec.innervate ) {}
@@ -1444,6 +1451,39 @@ struct innervate_buff_t : public druid_buff_t<buff_t>
     {
       p->buff.lively_spirit->trigger( p->lively_spirit_stacks );
     }
+  }
+};
+
+// Ursine Vigor =============================================================
+struct ursine_vigor_buff_t : public druid_buff_t<buff_t>
+{
+  double hp_mul;
+
+  ursine_vigor_buff_t( druid_t& p )
+    : base_t( p, "ursine_vigor", p.conduit.ursine_vigor->effectN( 1 ).trigger() ), hp_mul( 1.0 )
+  {
+    set_default_value( p.conduit.ursine_vigor.percent() );
+    add_invalidate( CACHE_ARMOR );
+
+    hp_mul += default_value;
+  }
+
+  void start( int s, double v, timespan_t d ) override
+  {
+    base_t::start( s, v, d );
+
+    p().resources.max[ RESOURCE_HEALTH ] *= hp_mul;
+    p().resources.current[ RESOURCE_HEALTH ] *= hp_mul;
+    p().recalculate_resource_max( RESOURCE_HEALTH );
+  }
+
+  void expire_override( int s, timespan_t d ) override
+  {
+    p().resources.max[ RESOURCE_HEALTH ] /= hp_mul;
+    p().resources.current[ RESOURCE_HEALTH ] /= hp_mul;
+    p().recalculate_resource_max( RESOURCE_HEALTH );
+
+    base_t::expire_override( s, d );
   }
 };
 
@@ -1592,7 +1632,7 @@ struct bt_dummy_buff_t : public druid_buff_t<buff_t>
     if ( p().buff.bt_rake->check() + p().buff.bt_shred->check() + p().buff.bt_swipe->check() +
          p().buff.bt_thrash->check() + p().buff.bt_moonfire->check() + p().buff.bt_brutal_slash->check() + !this->check() < count )
     {
-      return druid_buff_t<buff_t>::trigger( s, v, c, d );
+      return base_t::trigger( s, v, c, d );
     }
 
     p().buff.bt_rake->expire();
@@ -1648,7 +1688,7 @@ struct berserk_bear_buff_t : public druid_buff_t<buff_t>
   double hp_mul;
 
   berserk_bear_buff_t( druid_t& p, util::string_view n, const spell_data_t* s, bool b = false )
-    : base_t( p, n, s ), inc( b ), hp_mul( 0.0 )
+    : base_t( p, n, s ), inc( b ), hp_mul( 1.0 )
   {
     set_cooldown( 0_ms );
 
@@ -1659,9 +1699,7 @@ struct berserk_bear_buff_t : public druid_buff_t<buff_t>
       add_invalidate( CACHE_LEECH );
 
     if ( inc )
-    {
-      hp_mul = 1.0 + p.query_aura_effect( s, A_MOD_INCREASE_HEALTH_PERCENT )->percent();
-    }
+      hp_mul += p.query_aura_effect( s, A_MOD_INCREASE_HEALTH_PERCENT )->percent();
   }
 
   void start( int s, double v, timespan_t d ) override
@@ -1670,8 +1708,8 @@ struct berserk_bear_buff_t : public druid_buff_t<buff_t>
 
     if ( inc )
     {
-      player->resources.max[ RESOURCE_HEALTH ] *= hp_mul;
-      player->resources.current[ RESOURCE_HEALTH ] *= hp_mul;
+      p().resources.max[ RESOURCE_HEALTH ] *= hp_mul;
+      p().resources.current[ RESOURCE_HEALTH ] *= hp_mul;
       p().recalculate_resource_max( RESOURCE_HEALTH );
     }
   }
@@ -1680,8 +1718,8 @@ struct berserk_bear_buff_t : public druid_buff_t<buff_t>
   {
     if ( inc )
     {
-      player->resources.max[ RESOURCE_HEALTH ] /= hp_mul;
-      player->resources.current[ RESOURCE_HEALTH ] /= hp_mul;
+      p().resources.max[ RESOURCE_HEALTH ] /= hp_mul;
+      p().resources.current[ RESOURCE_HEALTH ] /= hp_mul;
       p().recalculate_resource_max( RESOURCE_HEALTH );
     }
 
@@ -5079,8 +5117,8 @@ struct frenzied_regeneration_t : public heals::druid_heal_t
     : druid_heal_t( "frenzied_regeneration", p, p->find_affinity_spell( "Frenzied Regeneration" ), options_str )
   {
     /* use_off_gcd = quiet = true; */
-    target           = p;
-    cooldown->hasted = tick_zero = true;
+    target    = p;
+    tick_zero = true;
     may_crit = tick_may_crit = hasted_ticks = false;
   }
 
@@ -5236,6 +5274,8 @@ struct regrowth_t : public druid_heal_t
   double action_multiplier() const override
   {
     double am = druid_heal_t::action_multiplier();
+
+    // TODO: implement innate resolve conduit for regrowth
 
     return am;
   }
@@ -5426,15 +5466,15 @@ struct auto_attack_t : public melee_attack_t
 
 struct barkskin_t : public druid_spell_t
 {
-  barkskin_t( druid_t* player, const std::string& options_str )
-    : druid_spell_t( "barkskin", player, player->find_specialization_spell( "Barkskin" ), options_str )
+  barkskin_t( druid_t* p, const std::string& options_str )
+    : druid_spell_t( "barkskin", p, p->find_class_spell( "Barkskin" ), options_str )
   {
     harmful      = false;
     use_off_gcd  = true;
     dot_duration = 0_ms;
 
-    if ( player->talent.brambles->ok() )
-      add_child( player->active.brambles_pulse );
+    if ( p->talent.brambles->ok() )
+      add_child( p->active.brambles_pulse );
   }
 
   void execute() override
@@ -5473,6 +5513,9 @@ struct bear_form_t : public druid_spell_t
           1, buff_t::DEFAULT_VALUE(), 1.0,
           timespan_t::from_seconds( p()->legendary.oath_of_the_elder_druid->effectN( 2 ).base_value() ) );
     }
+
+    if ( p()->conduit.ursine_vigor->ok() )
+      p()->buff.ursine_vigor->trigger();
   }
 };
 // Brambles =================================================================
@@ -6097,7 +6140,13 @@ struct ironfur_t : public druid_spell_t
   {
     druid_spell_t::execute();
 
-    p()->buff.ironfur->trigger( composite_buff_duration() );
+    int stack = 1;
+
+    // TODO: does guardian of elune also apply to the extra application from layered mane?
+    if ( p()->conduit.layered_mane->ok() && rng().roll( p()->conduit.layered_mane.percent() ) )
+      stack++;
+
+    p()->buff.ironfur->trigger( stack, composite_buff_duration() );
 
     if ( p()->buff.guardian_of_elune->up() )
       p()->buff.guardian_of_elune->expire();
@@ -7977,12 +8026,18 @@ void druid_t::init_spells()
   // Guardian
   conduit.unchecked_aggression = find_conduit_spell( "Unchecked Aggression" );
   conduit.savage_combatant     = find_conduit_spell( "Savage Combatant" );
+  conduit.layered_mane         = find_conduit_spell( "Layered Mane" );
 
   // Covenant
   conduit.deep_allegiance      = find_conduit_spell( "Deep Allegiance" );
   conduit.evolved_swarm        = find_conduit_spell( "Evolved Swarm" );
   conduit.conflux_of_elements  = find_conduit_spell( "Conflux of Elements" );
   conduit.endless_thirst       = find_conduit_spell( "Endless Thirst" );
+
+  // Endurance
+  conduit.tough_as_bark        = find_conduit_spell( "Tough as Bark" );
+  conduit.ursine_vigor         = find_conduit_spell( "Ursine Vigor" );
+  conduit.innate_resolve       = find_conduit_spell( "Innate Resolve" );
 
   // Runeforge Legendaries
 
@@ -8261,6 +8316,9 @@ void druid_t::create_buffs()
   // Generic legendaries
   buff.oath_of_the_elder_druid = make_buff( this, "oath_of_the_elder_druid", find_spell( 338643 ) )
     ->set_quiet( true );
+
+  // Endurance conduits
+  buff.ursine_vigor = make_buff<ursine_vigor_buff_t>( *this );
 
   // Balance buffs
   // Default value is ONLY used for APL expression, so set via base_value() and not percent()
@@ -9259,6 +9317,9 @@ double druid_t::composite_armor_multiplier() const
 
   if ( buff.bear_form->check() )
     a *= 1.0 + buff.bear_form->data().effectN( 4 ).percent();
+
+  if ( buff.ursine_vigor->check() )
+    a *= 1.0 + buff.ursine_vigor->check_value();
 
   return a;
 }
@@ -10400,6 +10461,10 @@ void druid_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( legendary.luffainfused_embrace );
   action.apply_affecting_aura( legendary.legacy_of_the_sleeper );
   action.apply_affecting_aura( legendary.circle_of_life_and_death );
+
+  // Conduits
+  action.apply_affecting_conduit( conduit.tough_as_bark );
+  action.apply_affecting_conduit( conduit.innate_resolve );
 }
 
 //void druid_t::output_json_report(js::JsonOutput& root) const
