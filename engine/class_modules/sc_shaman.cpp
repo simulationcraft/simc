@@ -29,13 +29,9 @@
 // - Spec Conduits
 //
 // Enhancement
-// - Flametongue/Frostbrand
 // - Lightning Shield? Maelstrom gen? Do we proc for sims?
 // - Windfury Totem - Does this need to be implemented as a raid buff?
 // - Feral Spirits Malestrom weapon gen
-// - Stormbringer procs off spells (What spells? What is a "special attack"?)
-// - Stormbringer no longer prevents SS from incurring a cooldown
-// - Stormbringer buffs SS damage by 5%
 // - Do we need to custom code frost/flame shock shared CD?
 // - Spec Legendaries
 // - Spec Conduits
@@ -44,10 +40,10 @@
 // - (15) Lashing Flames, Elemental Blast(shared)
 // - (25) Stormflurry
 // - (35) Elemental Assault, Hailstorm, Fire Nova
-// - (45) Stormkeeper (Ele/Enhance version different - specifically for CL)
+// - (45) Stormkeeper (Ele/Enhance - CL enhance has more bonus damage)
 // - (50) Ascendance (needs to shoot lightning on activate)
-// - Check removed: Boulderfist, Hailstorm, Fury of Air, Landslide, Overcharge, Searing Assault, Stormfury, totem
-// mastery
+// - Make sure fully removed: Boulderfist, Hailstorm, Fury of Air, Landslide, Overcharge, Searing Assault, Stormfury, totem mastery
+
 namespace
 {  // UNNAMED NAMESPACE
 
@@ -505,7 +501,6 @@ public:
     const spell_data_t* feral_spirit_2;  // 7.1 Feral Spirit Maelstrom gain passive
     const spell_data_t* maelstrom_weapon;
     const spell_data_t* stormbringer;
-    const spell_data_t* flametongue;
 
     const spell_data_t* windfury;
 
@@ -610,6 +605,7 @@ public:
     const spell_data_t* feral_spirit;
     const spell_data_t* fire_elemental;
     const spell_data_t* storm_elemental;
+    const spell_data_t* flametongue_weapon;
   } spell;
 
   // Cached pointer for ascendance / normal white melee
@@ -6439,12 +6435,12 @@ void shaman_t::init_spells()
   //
   // Misc spells
   //
-  spell.resurgence       = find_spell( 101033 );
-  spell.maelstrom_weapon = find_spell( 187881 );
-  spell.feral_spirit     = find_spell( 228562 );
-  spell.fire_elemental   = find_spell( 188592 );
-  spell.storm_elemental  = find_spell( 157299 );
-  spec.flametongue       = find_spell( 318038 ); // TODO: move to spell instead of spec
+  spell.resurgence         = find_spell( 101033 );
+  spell.maelstrom_weapon   = find_spell( 187881 );
+  spell.feral_spirit       = find_spell( 228562 );
+  spell.fire_elemental     = find_spell( 188592 );
+  spell.storm_elemental    = find_spell( 157299 );
+  spell.flametongue_weapon = find_spell( 318038 );
 
   player_t::init_spells();
 }
