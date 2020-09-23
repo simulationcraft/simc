@@ -991,6 +991,17 @@ struct devouring_plague_t final : public priest_spell_t
     return priest_spell_t::cost();
   }
 
+  void impact( action_state_t* s ) override
+  {
+    priest_spell_t::impact( s );
+
+    // Damnation does not trigger a SA - 2020-08-08
+    if ( casted )
+    {
+      priest().trigger_shadowy_apparitions( s );
+    }
+  }
+
   // TODO override refresh duration to match in-game refresh
 
   void snapshot_state( action_state_t* s, result_amount_type rt ) override
