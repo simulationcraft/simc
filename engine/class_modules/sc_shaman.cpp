@@ -3646,7 +3646,7 @@ struct chain_lightning_t : public chained_base_t
 
     if ( p()->buff.chains_of_devastation_chain_lightning->up() )
     {
-      return timespan_t::zero();
+      t *= 1 + p()->buff.chains_of_devastation_chain_lightning->data().effectN( 1 ).percent();
     }
 
     return t;
@@ -5048,12 +5048,14 @@ struct chain_heal_t : public shaman_heal_t
 
   timespan_t execute_time() const override
   {
+    timespan_t t = shaman_heal_t::execute_time();
+
     if ( p()->buff.chains_of_devastation_chain_heal->up() )
     {
-      return timespan_t::zero();
+      t *= 1 + p()->buff.chains_of_devastation_chain_heal->data().effectN( 1 ).percent();
     }
 
-    return shaman_heal_t::execute_time();
+    return t;
   }
 
   void execute() override
