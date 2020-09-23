@@ -183,7 +183,7 @@ public:
     const spell_data_t* vile_taint;
 
     // tier 45
-    const spell_data_t* dark_caller; //TODO: SL Beta - THIS HAS NOT BEEN IMPLEMENTED AS A TALENT YET - ONLY VOP ESSENCE REDUCES COOLDOWN CURRENTLY. FIX THIS!
+    const spell_data_t* dark_caller;
     const spell_data_t* haunt; //TODO: SL Beta - Haunt currently is not applying Shadow Embrace in the sim. Fix this!
     // grimoire of sacrifice
 
