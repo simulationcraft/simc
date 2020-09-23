@@ -224,11 +224,6 @@ enum wildfire_infusion_e {
   WILDFIRE_INFUSION_VOLATILE,
 };
 
-// Wild Spirits proc type
-enum class wild_spirits_proc_e : uint8_t {
-  DEFAULT = 0, ST, MT, NONE
-};
-
 struct maybe_bool {
   enum class value_e : uint8_t {
     None, True, False
@@ -620,11 +615,7 @@ public:
 
   struct {
     action_t* master_marksman = nullptr;
-    struct { // Wild Spirits Night Fae Covenant ability
-      action_t* st = nullptr;
-      action_t* mt = nullptr;
-      cooldown_t* icd = nullptr; // XXX: assume the icd is shared
-    } wild_spirits;
+    action_t* wild_spirits = nullptr;
   } actions;
 
   cdwaste::player_data_t cd_waste;
@@ -763,7 +754,7 @@ public:
     return action;
   }
 
-  void trigger_wild_spirits( const action_state_t* s, wild_spirits_proc_e type );
+  void trigger_wild_spirits( const action_state_t* s );
   void trigger_birds_of_prey( player_t* t );
   void trigger_bloodseeker_update();
   void trigger_lethal_shots();
@@ -773,16 +764,15 @@ public:
   void consume_trick_shots();
 };
 
-wild_spirits_proc_e wild_spirits_proc_type( const hunter_t& p, const action_t& a )
+bool check_wild_spirits( const hunter_t& p, const action_t& a )
 {
+  // TODO: check this, also handle pet abilities
   if ( a.proc || a.background )
-    return wild_spirits_proc_e::NONE;
+    return false;
   if ( !( a.callbacks && a.may_hit && a.harmful ) )
-    return wild_spirits_proc_e::NONE;
+    return false;
   auto trigger = p.covenants.wild_spirits -> effectN( 1 ).trigger();
-  if ( ( trigger -> proc_flags() & ( 1 << a.proc_type() ) ) == 0 )
-    return wild_spirits_proc_e::NONE;
-  return ( a.aoe == -1 || a.aoe > 0 ) ? wild_spirits_proc_e::MT : wild_spirits_proc_e::ST;
+  return trigger -> proc_flags() & ( 1 << a.proc_type() );
 }
 
 // Template for common hunter action code.
@@ -795,7 +785,7 @@ public:
 
   bool precombat = false;
   bool track_cd_waste;
-  wild_spirits_proc_e wild_spirits_proc = wild_spirits_proc_e::DEFAULT;
+  maybe_bool triggers_wild_spirits;
 
   struct {
     // bm
@@ -878,16 +868,15 @@ public:
     {
       // By default nothing procs Wild Spirits, if the action did not explicitly set
       // it to non-default try to infer it
-      if ( wild_spirits_proc == wild_spirits_proc_e::DEFAULT )
-        wild_spirits_proc = wild_spirits_proc_type( *p(), *this );
+      if ( triggers_wild_spirits.is_none() )
+        triggers_wild_spirits = check_wild_spirits( *p(), *this );
     }
     else
     {
-      wild_spirits_proc = wild_spirits_proc_e::NONE;
+      triggers_wild_spirits = false;
     }
 
-    assert( wild_spirits_proc != wild_spirits_proc_e::DEFAULT );
-    if ( wild_spirits_proc != wild_spirits_proc_e::NONE )
+    if ( triggers_wild_spirits )
       ab::sim -> print_debug( "{} action {} set to proc Wild Spirits", ab::player -> name(), ab::name() );
   }
 
@@ -925,8 +914,8 @@ public:
   {
     ab::impact( s );
 
-    if ( wild_spirits_proc != wild_spirits_proc_e::NONE )
-      p() -> trigger_wild_spirits( s, wild_spirits_proc );
+    if ( triggers_wild_spirits && s -> chain_target == 0 )
+      p() -> trigger_wild_spirits( s );
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -2350,29 +2339,22 @@ struct tar_trap_aoe_t : public event_t
 
 } // namespace events
 
-void hunter_t::trigger_wild_spirits( const action_state_t* s, wild_spirits_proc_e type )
+void hunter_t::trigger_wild_spirits( const action_state_t* s )
 {
-  assert( type == wild_spirits_proc_e::MT || type == wild_spirits_proc_e::ST );
-
   if ( !buffs.wild_spirits -> check() )
     return;
 
   if ( !action_t::result_is_hit( s -> result ) )
     return;
 
-  if ( actions.wild_spirits.icd -> down() )
-    return;
-
-  action_t* action = type == wild_spirits_proc_e::MT ? actions.wild_spirits.mt : actions.wild_spirits.st;
   if ( sim -> debug )
   {
-    sim -> print_debug( "{} procs {} from {} on {}",
-      name(), action -> name(), s -> action -> name(), s -> target -> name() );
+    sim -> print_debug( "{} procs wild_spirits from {} on {}",
+      name(), s -> action -> name(), s -> target -> name() );
   }
 
-  action -> set_target( s -> target );
-  action -> execute();
-  actions.wild_spirits.icd -> start();
+  actions.wild_spirits -> set_target( s -> target );
+  actions.wild_spirits -> execute();
 }
 
 void hunter_t::trigger_birds_of_prey( player_t* t )
@@ -2753,10 +2735,20 @@ struct resonating_arrow_t : hunter_spell_t
 
 struct wild_spirits_t : hunter_spell_t
 {
-  struct wild_spirits_proc_t final : hunter_spell_t
+  struct damage_t final : hunter_spell_t
   {
-    wild_spirits_proc_t( util::string_view n, hunter_t* p, unsigned spell_id ):
-      hunter_spell_t( n, p, p -> find_spell( spell_id ) )
+    damage_t( util::string_view n, hunter_t* p ):
+      hunter_spell_t( n, p, p -> covenants.wild_spirits -> effectN( 1 ).trigger() )
+    {
+      dual = true;
+      aoe = -1;
+    }
+  };
+
+  struct proc_t final : hunter_spell_t
+  {
+    proc_t( util::string_view n, hunter_t* p ):
+      hunter_spell_t( n, p, p -> find_spell( 328757 ) )
     {
       proc = true;
       callbacks = false;
@@ -2768,20 +2760,20 @@ struct wild_spirits_t : hunter_spell_t
   {
     parse_options( options_str );
 
-    harmful = may_hit = may_miss = false;
+    travel_speed = 0;
+    impact_action = p -> get_background_action<damage_t>( "wild_spirits_damage" );
+    impact_action -> stats = stats;
+    stats -> action_list.push_back( impact_action );
 
-    p -> actions.wild_spirits.st = p -> get_background_action<wild_spirits_proc_t>( "wild_spirits_st_proc", 328523 );
-    p -> actions.wild_spirits.mt = p -> get_background_action<wild_spirits_proc_t>( "wild_spirits_mt_proc", 328757 );
-    p -> actions.wild_spirits.icd = p -> get_cooldown( "wild_spirits_proc" );
-    p -> actions.wild_spirits.icd -> duration = p -> covenants.wild_spirits -> effectN( 1 ).trigger() -> internal_cooldown();
-    add_child( p -> actions.wild_spirits.st );
-    add_child( p -> actions.wild_spirits.mt );
+    p -> actions.wild_spirits = p -> get_background_action<proc_t>( "wild_spirits_proc" );
+    add_child( p -> actions.wild_spirits );
   }
 
   void execute()
   {
     hunter_spell_t::execute();
 
+    // XXX: triggers HM on affected targets now... sigh
     p() -> buffs.wild_spirits -> trigger();
   }
 };
@@ -6706,7 +6698,6 @@ void hunter_t::apl_bm()
     precombat -> add_action( "hunters_mark" );
     precombat -> add_action( "tar_trap,if=runeforge.soulforge_embers.equipped" );
     precombat -> add_action( "aspect_of_the_wild,precast_time=1.3" );
-    precombat -> add_action( "wild_spirits" );
     precombat -> add_action( "bestial_wrath,precast_time=1.5,if=!talent.scent_of_blood.enabled&!runeforge.soulforge_embers.equipped" );
     precombat -> add_action( "potion,dynamic_prepot=1" );
 
@@ -6867,7 +6858,6 @@ void hunter_t::apl_mm()
     precombat -> add_action( "hunters_mark" );
     precombat -> add_action( "tar_trap,if=runeforge.soulforge_embers.equipped" );
     precombat -> add_action( "double_tap,precast_time=10" );
-    precombat -> add_action( "wild_spirits" );
     precombat -> add_action( "potion,dynamic_prepot=1" );
     precombat -> add_action( "aimed_shot,if=active_enemies=1" );
 
@@ -7032,7 +7022,6 @@ void hunter_t::apl_surv()
     precombat -> add_action( "tar_trap,if=runeforge.soulforge_embers.equipped" );
     precombat -> add_action( "steel_trap" );
     precombat -> add_action( "coordinated_assault" );
-    precombat -> add_action( "wild_spirits" );
     precombat -> add_action( "potion,dynamic_prepot=1" );
 
     cds -> add_action( "blood_fury,if=cooldown.coordinated_assault.remains>30" );
