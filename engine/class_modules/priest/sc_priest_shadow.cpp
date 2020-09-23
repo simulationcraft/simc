@@ -911,131 +911,63 @@ struct vampiric_touch_t final : public priest_spell_t
 
 struct devouring_plague_dot_state_t : public action_state_t
 {
-  double rolling_dp_modifier;
+  double rolling_multiplier;
 
-  devouring_plague_dot_state_t( action_t* a, player_t* t ) : action_state_t( a, t ), rolling_dp_modifier( 0 )
+  devouring_plague_dot_state_t( action_t* a, player_t* t ) : action_state_t( a, t ), rolling_multiplier( 1.0 )
   {
   }
 
   std::ostringstream& debug_str( std::ostringstream& s ) override
   {
     action_state_t::debug_str( s );
-    fmt::print( s, " rolling_dp_modifier={}", rolling_dp_modifier );
+    fmt::print( s, " rolling_multiplier={}", rolling_multiplier );
     return s;
   }
 
   void initialize() override
   {
     action_state_t::initialize();
-    rolling_dp_modifier = 0;
+    rolling_multiplier = 1.0;
   }
 
   void copy_state( const action_state_t* o ) override
   {
     action_state_t::copy_state( o );
     auto other_dp_state = debug_cast<const devouring_plague_dot_state_t*>( o );
-    rolling_dp_modifier = other_dp_state->rolling_dp_modifier;
-  }
-};
-
-struct devouring_plague_dot_t final : public priest_spell_t
-{
-  devouring_plague_dot_t( priest_t& p )
-    : priest_spell_t( "devouring_plague", p, p.find_class_spell( "Devouring Plague" ) )
-  {
-    may_crit                   = true;
-    tick_zero                  = false;
-    tick_may_crit              = true;
-    affected_by_shadow_weaving = true;
-    background                 = true;
-    hasted_ticks               = true;
-
-    base_dd_min = base_dd_max = spell_power_mod.direct = base_td = 0.0;
+    rolling_multiplier = other_dp_state->rolling_multiplier;
   }
 
-  void init() override
+  double composite_ta_multiplier() const override
   {
-    priest_spell_t::init();
-
-    snapshot_flags |= STATE_CRIT | STATE_TGT_CRIT | STATE_HASTE;
-    update_flags |= STATE_CRIT | STATE_TGT_CRIT | STATE_HASTE;
-  }
-
-  // Make sure the dot doesn't also consume insanity
-  void consume_resource() override
-  {
-    return;
-  }
-
-  // TODO: see if we need this
-  // timespan_t composite_dot_duration( const action_state_t* s ) const override
-  // {
-  //   return dot_duration * ( tick_time( s ) / base_tick_time );
-  // }
-
-  void trigger_devouring_plague_dot( action_state_t* s )
-  {
-    // Get existing DoT on the target
-    dot_t* dot = get_dot( s->target );
-    assert( dot && dot->state && "Cannot append damage without active dot" );
-
-    // Get the existing duration before triggering the new DoT
-    timespan_t existing_duration = dot->remains();
-    priest_spell_t::trigger_dot( s );
-
-    // Calculate the modifier for the future ticks
-    auto dot_state           = debug_cast<devouring_plague_dot_state_t*>( dot->state );
-    double existing_modifier = dot_state->rolling_dp_modifier;
-    dot_state->rolling_dp_modifier =
-        ( existing_duration * existing_modifier + composite_dot_duration( s ) ) / dot->remains();
-
-    if ( sim->debug )
-    {
-      sim->print_debug( "{} {} updated Devouring Plague bonus modifier per tick from previous dot. Bonus modifier per tick went from {} to {}.",
-                        *player, *this, existing_modifier, dot_state->rolling_dp_modifier );
-    }
-  }
-
-  // TODO: for some reason this is increasing the damage of the 2nd DPs initial hit
-  double composite_ta_multiplier( const action_state_t* state ) const override
-  {
-    double m = priest_spell_t::composite_ta_multiplier( state );
-
-    auto custom_state = debug_cast<const devouring_plague_dot_state_t*>( state );
-    m *= 1.0 + custom_state->rolling_dp_modifier;
-
-    return m;
-  }
-
-  virtual action_state_t* new_state() override
-  {
-    return new devouring_plague_dot_state_t( this, target );
+    return action_state_t::composite_ta_multiplier() * rolling_multiplier;
   }
 };
 
 struct devouring_plague_t final : public priest_spell_t
 {
   bool casted;
-  devouring_plague_dot_t* dot_spell;
 
   devouring_plague_t( priest_t& p, bool _casted = false )
-    : priest_spell_t( "devouring_plague", p, p.find_class_spell( "Devouring Plague" ) ),
-      dot_spell( new devouring_plague_dot_t( p ) )
+    : priest_spell_t( "devouring_plague", p, p.find_class_spell( "Devouring Plague" ) )
   {
     casted                     = _casted;
     may_crit                   = true;
     affected_by_shadow_weaving = true;
-
-    add_child( dot_spell );
-
-    // Turn off DoT
-    dot_duration = timespan_t::from_seconds( 0 );
-    base_td = base_td_multiplier = 0;
   }
 
   devouring_plague_t( priest_t& p, util::string_view options_str ) : devouring_plague_t( p, true )
   {
     parse_options( options_str );
+  }
+
+  action_state_t* new_state()
+  {
+    return new devouring_plague_dot_state_t( this, target );
+  }
+
+  devouring_plague_dot_state_t* cast_state( action_state_t* s )
+  {
+    return debug_cast<devouring_plague_dot_state_t*>( s );
   }
 
   void consume_resource() override
@@ -1059,29 +991,30 @@ struct devouring_plague_t final : public priest_spell_t
     return priest_spell_t::cost();
   }
 
-  void impact( action_state_t* s ) override
+  // TODO override refresh duration to match in-game refresh
+
+  void snapshot_state( action_state_t* s, result_amount_type rt ) override
   {
-    priest_spell_t::impact( s );
+    priest_spell_t::snapshot_state( s, rt );
 
-    // Damnation does not trigger a SA - 2020-08-08
-    if ( casted )
+    double multiplier = 1.0;
+    dot_t* dot = get_dot( s->target );
+    if ( dot->is_ticking() )
     {
-      priest().trigger_shadowy_apparitions( s );
+      action_state_t* old_s = dot->state;
+      action_state_t* new_s = s;
+
+      timespan_t time_to_tick = dot->time_to_next_tick();
+      timespan_t old_remains = dot->remains();
+      timespan_t new_remains = calculate_dot_refresh_duration( dot, composite_dot_duration( new_s ) );
+      timespan_t old_tick = tick_time( old_s );
+      timespan_t new_tick = tick_time( new_s );
+      double old_multiplier = cast_state( old_s )->rolling_multiplier;
+
+      multiplier = 2.0; // TODO Calculate multiplier here
     }
 
-    if ( result_is_hit( s->result ) )
-    {
-      priest_td_t& td = get_td( s->target );
-      auto dp         = td.dots.devouring_plague;
-
-      if ( dp->is_ticking() )
-      {
-        dot_spell->trigger_devouring_plague_dot( s );
-      }
-
-      dot_spell->target = s->target;
-      dot_spell->execute();
-    }
+    cast_state( s )->rolling_multiplier = multiplier;
   }
 };
 
