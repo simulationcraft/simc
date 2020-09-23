@@ -911,30 +911,30 @@ struct vampiric_touch_t final : public priest_spell_t
 
 struct devouring_plague_dot_state_t : public action_state_t
 {
-  double rolling_dp_bonus;
+  double rolling_dp_modifier;
 
-  devouring_plague_dot_state_t( action_t* a, player_t* t ) : action_state_t( a, t ), rolling_dp_bonus( 0 )
+  devouring_plague_dot_state_t( action_t* a, player_t* t ) : action_state_t( a, t ), rolling_dp_modifier( 0 )
   {
   }
 
   std::ostringstream& debug_str( std::ostringstream& s ) override
   {
     action_state_t::debug_str( s );
-    fmt::print( s, " rolling_dp_bonus={}", rolling_dp_bonus );
+    fmt::print( s, " rolling_dp_modifier={}", rolling_dp_modifier );
     return s;
   }
 
   void initialize() override
   {
     action_state_t::initialize();
-    rolling_dp_bonus = 0;
+    rolling_dp_modifier = 0;
   }
 
   void copy_state( const action_state_t* o ) override
   {
     action_state_t::copy_state( o );
     auto other_dp_state = debug_cast<const devouring_plague_dot_state_t*>( o );
-    rolling_dp_bonus    = other_dp_state->rolling_dp_bonus;
+    rolling_dp_modifier = other_dp_state->rolling_dp_modifier;
   }
 };
 
@@ -973,48 +973,38 @@ struct devouring_plague_dot_t final : public priest_spell_t
   //   return dot_duration * ( tick_time( s ) / base_tick_time );
   // }
 
-  void append_damage( player_t* target )
+  void trigger_devouring_plague_dot( action_state_t* s )
   {
-    dot_t* dot = get_dot( target );
+    // Get existing DoT on the target
+    dot_t* dot = get_dot( s->target );
     assert( dot && dot->state && "Cannot append damage without active dot" );
-    assert( dot->current_action && "Cannot append damage to dot without action" );
-    // get remaining full ticks left (not partials, these will be rolled over)
-    // calculate total damage
-    timespan_t remaining_dot = dot->remains();                                       // 2.5s
-    remaining_dot            = remaining_dot - dot->time_to_next_tick();             // 2.5 - .5s = 2s
-    int num_full_ticks = as<int>( std::ceil( remaining_dot / dot->time_to_tick ) );  // 2s / ~1.5 = 1.3 = 1 full tick
-    auto calculated_tick_amount = dot->current_action->calculate_tick_amount( dot->state, 1.0 );
-    double total_damage         = num_full_ticks * calculated_tick_amount;
-    sim->print_debug( "{} {} old DP dot num_ticks={} tick_amount={} total_full_tick_damage={}", *player, *this,
-                      num_full_ticks, calculated_tick_amount, total_damage );
-    double total_ticks = dot->duration() / dot->time_to_tick;
-    if ( dot->time_to_next_tick() > timespan_t::from_seconds( 0 ) )
+
+    // Get the existing duration before triggering the new DoT
+    timespan_t existing_duration = dot->remains();
+    priest_spell_t::trigger_dot( s );
+
+    // Calculate the modifier for the future ticks
+    auto dot_state           = debug_cast<devouring_plague_dot_state_t*>( dot->state );
+    double existing_modifier = dot_state->rolling_dp_modifier;
+    dot_state->rolling_dp_modifier =
+        ( existing_duration * existing_modifier + composite_dot_duration( s ) ) / dot->remains();
+
+    if ( sim->debug )
     {
-      total_ticks += 1;
+      sim->print_debug( "{} {} updated Devouring Plague bonus modifier per tick from previous dot. Bonus modifier per tick went from {} to {}.",
+                        *player, *this, existing_modifier, dot_state->rolling_dp_modifier );
     }
-
-    auto dot_state = debug_cast<devouring_plague_dot_state_t*>( dot->state );
-
-    double partial_tick_coeff = ( remaining_dot - ( num_full_ticks * dot->time_to_tick ) ) /
-                                dot->time_to_tick;  // 2s - ( 1 * 1.5 ) = .5 / 1.5 =~ 0.33
-
-    double new_bonus = total_damage / ( total_ticks + partial_tick_coeff );  // X / (( 1 + ticks_from_new_dp ) + 0.33)
-
-    sim->print_debug( "{} {} new dot has {} full ticks and {} partial ticks.", *player, *this, total_ticks,
-                      partial_tick_coeff );
-    dot_state->rolling_dp_bonus = new_bonus;
-    sim->print_debug( "{} {} appended {} bonus damage per tick from previous dot. Bonus damage per tick is now at {}",
-                      *player, *this, new_bonus, dot_state->rolling_dp_bonus );
   }
 
-  double bonus_ta( const action_state_t* state ) const override
+  // TODO: for some reason this is increasing the damage of the 2nd DPs initial hit
+  double composite_ta_multiplier( const action_state_t* state ) const override
   {
-    double t = priest_spell_t::bonus_ta( state );
+    double m = priest_spell_t::composite_ta_multiplier( state );
 
     auto custom_state = debug_cast<const devouring_plague_dot_state_t*>( state );
-    t += custom_state->rolling_dp_bonus;
+    m *= 1.0 + custom_state->rolling_dp_modifier;
 
-    return t;
+    return m;
   }
 
   virtual action_state_t* new_state() override
@@ -1086,7 +1076,7 @@ struct devouring_plague_t final : public priest_spell_t
 
       if ( dp->is_ticking() )
       {
-        dot_spell->append_damage( s->target );
+        dot_spell->trigger_devouring_plague_dot( s );
       }
 
       dot_spell->target = s->target;
