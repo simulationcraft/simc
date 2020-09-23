@@ -1,4 +1,4 @@
-// Runeforge legendary bonuses, wow build 9.0.2.35938
+// Runeforge legendary bonuses, wow build 9.0.2.35978
 static const std::array<runeforge_legendary_entry_t, 576> __runeforge_legendary_data { {
   { 6823, 64, 327508, 0x000000c0, "Slick Ice" },
   { 6828, 64, 327284, 0x00110020, "Cold Front" },

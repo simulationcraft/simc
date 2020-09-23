@@ -1,4 +1,4 @@
-// Talent tree specialization abilities, wow build 9.0.2.35938
+// Talent tree specialization abilities, wow build 9.0.2.35978
 static const std::array<specialization_spell_entry_t, 924> __specialization_spell_data { {
   {  0,  535, 264656,      0, "Pathfinding"                       , 0 },
   {  0,  535, 264662,      0, "Endurance Training"                , 0 },
@@ -881,7 +881,7 @@ static const std::array<specialization_spell_entry_t, 924> __specialization_spel
   { 12,  577, 343006,      0, "Unrestrained Fury"                 , "Rank 2" },
   { 12,  577, 343017,      0, "Fel Rush"                          , "Rank 3" },
   { 12,  577, 343206,      0, "Chaos Strike"                      , "Rank 3" },
-  { 12,  577, 343311,      0, "Furious Gaze"                      , 0 },
+  { 12,  577, 343311,      0, "Eye Beam"                          , "Rank 3" },
   { 12,  581, 162700,      0, "Stat Negation Aura - Agility Tank" , 0 },
   { 12,  581, 187827, 191427, "Metamorphosis"                     , 0 },
   { 12,  581, 189110, 344865, "Infernal Strike"                   , 0 },

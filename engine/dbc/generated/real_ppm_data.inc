@@ -1,5 +1,5 @@
-// RPPM Modifiers, wow build 9.0.2.35938
-static const std::array<rppm_modifier_t, 1070> __rppm_modifier_data { {
+// RPPM Modifiers, wow build 9.0.2.35978
+static const std::array<rppm_modifier_t, 1076> __rppm_modifier_data { {
   {   5301,    4,  1,  1.0000 },
   {  17495,    4,  1,  1.0000 },
   {  27656,    4,  1,  1.0000 },
@@ -1070,5 +1070,11 @@ static const std::array<rppm_modifier_t, 1070> __rppm_modifier_data { {
   { 343723,    4,  1,  1.0000 },
   { 344063,    4,  1,  1.0000 },
   { 344311,    4,  1,  1.0000 },
+  { 345357,    4,  1,  1.0000 },
+  { 345474,    4,  1,  1.0000 },
+  { 345490,    4,  1,  1.0000 },
+  { 345533,    4,  1,  1.0000 },
+  { 345533, 2012,  3,  0.0050 },
+  { 345545,    4,  1,  1.0000 },
 } };
 
