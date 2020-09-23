@@ -76,6 +76,7 @@ struct warlock_t : public player_t
 {
 public:
   player_t* havoc_target;
+  player_t* ua_target; //Used for handling Unstable Affliction target swaps
   std::vector<action_t*> havoc_spells;  // Used for smarter target cache invalidation.
   bool wracking_brilliance;             // BFA - Azerite
   double agony_accumulator;
@@ -387,7 +388,6 @@ public:
     const spell_data_t* shadow_bolt; //TODO: SL Beta - This is currently unused. Decide on fix or remove.
     const spell_data_t* summon_darkglare; //This is the active summon ability
     const spell_data_t* unstable_affliction;  //This is the primary active ability (should be 316099)
-    //TODO: SL Beta - These passives are not currently implemented in the spell, fix this!
     const spell_data_t* unstable_affliction_2; //Rank 2 passive (soul shard on death)
     const spell_data_t* unstable_affliction_3; //Rank 3 passive (increased duration)
 

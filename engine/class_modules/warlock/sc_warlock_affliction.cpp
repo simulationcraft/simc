@@ -334,8 +334,27 @@ struct unstable_affliction_t : public affliction_spell_t
 
     if ( p->spec.unstable_affliction_3->ok() )
     {
-      this->dot_duration += p->find_spell( 334315 )->duration();
+      dot_duration += timespan_t::from_millis( p->spec.unstable_affliction_3->effectN( 1 ).base_value() );
     }
+  }
+
+  void execute() override
+  {
+    if ( p()->ua_target )
+    {
+      td( p()->ua_target )->dots_unstable_affliction->cancel();
+    }
+
+    p()->ua_target = target;
+
+    affliction_spell_t::execute();
+  }
+
+  void last_tick( dot_t* d) override
+  {
+    affliction_spell_t::last_tick( d );
+
+    p()->ua_target = nullptr;
   }
 };
 

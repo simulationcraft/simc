@@ -164,7 +164,7 @@ void warlock_td_t::target_demise()
   {
     if ( dots_unstable_affliction->is_ticking() )
     {
-      warlock.sim->print_log( "Player {} demised. Warlock {} gains a shard from unstable affliction.", target->name(),
+      warlock.sim->print_log( "Player {} demised. Warlock {} gains a shard from Unstable Affliction.", target->name(),
                               warlock.name() );
 
       warlock.resource_gain( RESOURCE_SOUL_SHARD, 1, warlock.gains.unstable_affliction_refund );
@@ -253,6 +253,7 @@ void warlock_t::trigger_memory_of_lucid_dreams( double cost )
 warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
   : player_t( sim, WARLOCK, name, r ),
     havoc_target( nullptr ),
+    ua_target( nullptr ),
     havoc_spells(),
     wracking_brilliance( false ),  // BFA - Azerite
     agony_accumulator( 0.0 ),
@@ -863,6 +864,7 @@ void warlock_t::reset()
 
   warlock_pet_list.active            = nullptr;
   havoc_target                       = nullptr;
+  ua_target                          = nullptr;
   agony_accumulator                  = rng().range( 0.0, 0.99 );
   memory_of_lucid_dreams_accumulator = 0.0;
   wild_imp_spawns.clear();
