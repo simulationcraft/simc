@@ -782,7 +782,9 @@ public:
 
     // Shared
     conduit_data_t discipline_of_the_grove;
+    conduit_data_t flow_of_time;
     conduit_data_t gift_of_the_lich;
+    conduit_data_t grounding_surge;
     conduit_data_t ire_of_the_ascended;
     conduit_data_t siphoned_malice;
   } conduits;
@@ -2950,6 +2952,7 @@ struct blink_t : public mage_spell_t
     ignore_false_positive = true;
     base_teleport_distance = data().effectN( 1 ).radius_max();
     movement_directionality = movement_direction_type::OMNI;
+    cooldown->duration += p->conduits.flow_of_time.time_value();
 
     background = p->talents.shimmer->ok();
   }
@@ -3242,7 +3245,10 @@ struct counterspell_t : public mage_spell_t
   void impact( action_state_t* s ) override
   {
     mage_spell_t::impact( s );
-    p()->trigger_crowd_control( s, MECHANIC_INTERRUPT );
+
+    bool success = p()->trigger_crowd_control( s, MECHANIC_INTERRUPT );
+    if ( success )
+      make_event( *sim, 0_ms, [ this ] { cooldown->adjust( -100 * p()->conduits.grounding_surge.time_value() ); } );
   }
 
   bool target_ready( player_t* candidate_target ) override
@@ -5026,6 +5032,7 @@ struct shimmer_t : public mage_spell_t
     ignore_false_positive = usable_while_casting = true;
     base_teleport_distance = data().effectN( 1 ).radius_max();
     movement_directionality = movement_direction_type::OMNI;
+    cooldown->duration += p->conduits.flow_of_time.time_value();
   }
 };
 
@@ -5754,7 +5761,7 @@ mage_t::mage_t( sim_t* sim, util::string_view name, race_e r ) :
 bool mage_t::trigger_crowd_control( const action_state_t* s, spell_mechanic type, timespan_t d )
 {
   if ( type == MECHANIC_INTERRUPT )
-    return true;
+    return s->target->debuffs.casting->check() != 0;
 
   if ( action_t::result_is_hit( s->result )
     && ( s->target->is_add() || s->target->level() < sim->max_player_level + 3 ) )
@@ -6271,7 +6278,9 @@ void mage_t::init_spells()
   conduits.unrelenting_cold         = find_conduit_spell( "Unrelenting Cold"         );
 
   conduits.discipline_of_the_grove  = find_conduit_spell( "Discipline of the Grove"  );
+  conduits.flow_of_time             = find_conduit_spell( "Flow of Time"             );
   conduits.gift_of_the_lich         = find_conduit_spell( "Gift of the Lich"         );
+  conduits.grounding_surge          = find_conduit_spell( "Grounding Surge"          );
   conduits.ire_of_the_ascended      = find_conduit_spell( "Ire of the Ascended"      );
   conduits.siphoned_malice          = find_conduit_spell( "Siphoned Malice"          );
 

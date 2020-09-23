@@ -4760,11 +4760,17 @@ struct sepsis_t : public rogue_attack_t
   void last_tick( dot_t* d ) override
   {
     rogue_attack_t::last_tick( d );
-    p()->buffs.vanish->trigger(); // Vanish triggers before final burst damage
-    trigger_master_of_shadows();
     sepsis_expire_damage->set_target( d->target );
     sepsis_expire_damage->execute();
+    // TOCHECK: 09/23/2020 - Vanish triggers before final burst damage in the combat log, 
+    //          but effects such as Master Assassin don't seem to actually register for the final hit
+    p()->buffs.vanish->trigger();
+    trigger_master_of_shadows();
   }
+
+  // TOCHECK: Nightstalker currently does not affect the Sepsis DoT on beta
+  bool snapshots_nightstalker() const override
+  { return false; }
 };
 
 // Serrated Bone Spike ======================================================
@@ -4813,6 +4819,10 @@ struct serrated_bone_spike_t : public rogue_attack_t
         sudden_fractures->execute();
       }
     }
+
+    // TOCHECK: Nightstalker currently does not affect the Bone Spike DoT on beta
+    bool snapshots_nightstalker() const override
+    { return false; }
   };
 
   serrated_bone_spike_dot_t* serrated_bone_spike_dot;
@@ -5959,7 +5969,7 @@ void rogue_t::trigger_venomous_wounds_death( player_t* target )
 template <typename Base>
 void actions::rogue_action_t<Base>::trigger_auto_attack( const action_state_t* /* state */ )
 {
-  if ( p()->main_hand_attack->execute_event || !p()->off_hand_attack || p()->off_hand_attack->execute_event )
+  if ( !p()->main_hand_attack || p()->main_hand_attack->execute_event || !p()->off_hand_attack || p()->off_hand_attack->execute_event )
     return;
 
   if ( !ab::data().flags( spell_attribute::SX_MELEE_COMBAT_START ) )
@@ -6839,9 +6849,6 @@ void rogue_t::init_action_list()
   precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
   // Potions
-  if ( specialization() != ROGUE_SUBTLETY )
-    precombat->add_action( "potion" );
-
   std::string potion_action = "potion,if=buff.bloodlust.react";
   if ( specialization() == ROGUE_ASSASSINATION )
     potion_action += "|debuff.vendetta.up";
@@ -6988,7 +6995,7 @@ void rogue_t::init_action_list()
     // Pre-Combat
     precombat->add_action( this, "Stealth", "if=(!equipped.pocketsized_computation_device|!cooldown.cyclotronic_blast.duration|raid_event.invulnerable.exists)" );
     precombat->add_action( this, "Roll the Bones", "precombat_seconds=1" );
-    precombat->add_action( this, "Slice and Dice", "precombat_seconds=1" );
+    precombat->add_action( this, "Slice and Dice", "precombat_seconds=2" );
     precombat->add_action( "use_item,name=azsharas_font_of_power" );
     precombat->add_action( "use_item,effect_name=cyclotronic_blast,if=!raid_event.invulnerable.exists" );
 
@@ -7074,7 +7081,6 @@ void rogue_t::init_action_list()
     precombat->add_action( this, "Stealth" );
     precombat->add_talent( this, "Marked for Death", "precombat_seconds=15" );
     precombat->add_action( this, "Slice and Dice", "precombat_seconds=1" );
-    precombat->add_action( "potion" );
     precombat->add_action( "use_item,name=azsharas_font_of_power" );
 
     // Main Rotation

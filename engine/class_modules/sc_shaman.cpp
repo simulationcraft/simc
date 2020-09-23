@@ -329,6 +329,8 @@ public:
     buff_t* vesper_totem;
 
     // Legendaries
+    buff_t* chains_of_devastation_chain_heal;
+    buff_t* chains_of_devastation_chain_lightning;
     buff_t* echoes_of_great_sundering;
 
     // Elemental, Restoration
@@ -416,7 +418,7 @@ public:
   {
     // Shared
     item_runeforge_t ancestral_reminder;     // NYI
-    item_runeforge_t chains_of_devastation;  // NYI
+    item_runeforge_t chains_of_devastation;
     item_runeforge_t deeptremor_stone;       // NYI
     item_runeforge_t deeply_rooted_elements; // NYI
 
@@ -3642,6 +3644,11 @@ struct chain_lightning_t : public chained_base_t
       t *= 1 + p()->talent.stormkeeper->effectN( 1 ).percent();
     }
 
+    if ( p()->buff.chains_of_devastation_chain_lightning->up() )
+    {
+      t *= 1 + p()->buff.chains_of_devastation_chain_lightning->data().effectN( 1 ).percent();
+    }
+
     return t;
   }
 
@@ -3680,6 +3687,12 @@ struct chain_lightning_t : public chained_base_t
   void execute() override
   {
     chained_base_t::execute();
+
+    if ( p()->legendary.chains_of_devastation->ok() )
+    {
+      p()->buff.chains_of_devastation_chain_heal->trigger();
+      p()->buff.chains_of_devastation_chain_lightning->expire();
+    }
 
     // Storm Elemental Wind Gust passive buff trigger
     if ( p()->talent.storm_elemental->ok() )
@@ -5031,6 +5044,29 @@ struct chain_heal_t : public shaman_heal_t
       m *= 1.0 + p()->spec.riptide->effectN( 3 ).percent();
 
     return m;
+  }
+
+  timespan_t execute_time() const override
+  {
+    timespan_t t = shaman_heal_t::execute_time();
+
+    if ( p()->buff.chains_of_devastation_chain_heal->up() )
+    {
+      t *= 1 + p()->buff.chains_of_devastation_chain_heal->data().effectN( 1 ).percent();
+    }
+
+    return t;
+  }
+
+  void execute() override
+  {
+    shaman_heal_t::execute();
+
+    if ( p()->legendary.chains_of_devastation->ok() )
+    {
+      p()->buff.chains_of_devastation_chain_lightning->trigger();
+      p()->buff.chains_of_devastation_chain_heal->expire();
+    }
   }
 };
 
@@ -6822,6 +6858,9 @@ void shaman_t::create_buffs()
 
   buff.echoes_of_great_sundering = make_buff( this, "echoes_of_great_sundering", find_spell( 336217 ) )
                                      ->set_default_value( find_spell(336217)->effectN( 2 ).percent() );
+  
+  buff.chains_of_devastation_chain_heal      = make_buff( this, "chains_of_devastation_chain_heal", find_spell( 329772 ) );
+  buff.chains_of_devastation_chain_lightning = make_buff( this, "chains_of_devastation_chain_lightning", find_spell( 329771 ) );
 
   // PvP
   buff.thundercharge = make_buff( this, "thundercharge", find_spell( 204366 ) )
