@@ -798,6 +798,9 @@ public:
     conduit_data_t tough_as_bark;
     conduit_data_t ursine_vigor;
     conduit_data_t innate_resolve;
+
+    conduit_data_t front_of_the_pack;
+    conduit_data_t born_of_the_wilds;
   } conduit;
 
   struct uptimes_t
@@ -6563,15 +6566,8 @@ struct stampeding_roar_t : public druid_spell_t
   {
     druid_spell_t::execute();
 
-    for ( size_t i = 0; i < sim->player_non_sleeping_list.size(); ++i )
-    {
-      player_t* p = sim->player_non_sleeping_list[ i ];
-
-      if ( p->type == PLAYER_GUARDIAN )
-        continue;
-
-      p->buffs.stampeding_roar->trigger();
-    }
+    // TODO: implement radius/impact based trigger for players in range. add buff to player_t if necessary
+    p()->buffs.stampeding_roar->trigger();
   }
 };
 
@@ -8039,6 +8035,10 @@ void druid_t::init_spells()
   conduit.ursine_vigor         = find_conduit_spell( "Ursine Vigor" );
   conduit.innate_resolve       = find_conduit_spell( "Innate Resolve" );
 
+  // Finesse
+  conduit.front_of_the_pack    = find_conduit_spell( "Front of the Pack" );
+  conduit.born_of_the_wilds    = find_conduit_spell( "Born of the Wilds" );
+
   // Runeforge Legendaries
 
   // General
@@ -8308,6 +8308,10 @@ void druid_t::create_buffs()
   buff.innervate = make_buff<innervate_buff_t>( *this );
 
   buff.prowl = make_buff( this, "prowl", find_class_spell( "Prowl" ) );
+
+  buffs.stampeding_roar = make_buff( this, "stampeding_roar", find_spell( 77764 ) )
+    ->set_cooldown( 0_ms )
+    ->apply_affecting_conduit( conduit.front_of_the_pack, -1 );
 
   buff.thorns = make_buff( this, "thorns", find_spell( 305497 ) );
 
@@ -10465,6 +10469,7 @@ void druid_t::apply_affecting_auras( action_t& action )
   // Conduits
   action.apply_affecting_conduit( conduit.tough_as_bark );
   action.apply_affecting_conduit( conduit.innate_resolve );
+  action.apply_affecting_conduit( conduit.born_of_the_wilds, -1 );
 }
 
 //void druid_t::output_json_report(js::JsonOutput& root) const
@@ -10652,13 +10657,7 @@ struct druid_module_t : public module_t
     return p;
   }
   bool valid() const override { return true; }
-  void init( player_t* p ) const override
-  {
-    p->buffs.stampeding_roar = make_buff( p, "stampeding_roar", p->find_spell( 77764 ) )
-      ->set_max_stack( 1 )
-      ->set_duration( timespan_t::from_seconds( 8.0 ) );
-  }
-
+  void init( player_t* p ) const override {}
   void static_init() const override {}
   void register_hotfixes() const override {}
   void combat_begin( sim_t* ) const override {}
