@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.2.35938 shadowlands-BETA (hotfix 2020-09-18/35938, git build shadowlands a3c99b0cc6)
+SimulationCraft 901-01 for World of Warcraft 9.0.2.35978 shadowlands-BETA (, no-networking)
 
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -91,7 +91,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
 Effects          :
 #1 (id=372)      : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Friend (21)
-                   Affected Spells: Earth Shield (379), Chain Heal (1064), Healing Surge (8004), Healing Stream Totem (52042), Riptide (61295), Unleash Life (73685), Healing Rain (73921), Healing Wave (77472), Healing Tide (114942), Wellspring (197997), Downpour (207778), Rainfall (252154), Serene Spirit (274416), Swelling Stream (275499), Overflowing Shores (278095), Pack Spirit (280205), Restorative Mists (294020), Surge of Earth (320747), Chain Harvest (320751), Vesper Totem (324522), Fae Transfusion (328930)
+                   Affected Spells: Earth Shield (379), Chain Heal (1064), Healing Surge (8004), Healing Stream Totem (52042), Riptide (61295), Unleash Life (73685), Healing Rain (73921), Healing Wave (77472), Healing Tide (114942), Wellspring (197997), Downpour (207778), Rainfall (252154), Serene Spirit (274416), Swelling Stream (275499), Overflowing Shores (278095), Pack Spirit (280205), Restorative Mists (294020), Surge of Earth (320747), Chain Harvest (320751), Vesper Totem (324522), Primordial Wave (327163), Fae Transfusion (328930)
                    Family Flags: 41
 #2 (id=756953)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Friend (21)
@@ -519,7 +519,7 @@ Proc Chance      : 100%
 Proc Flags       : ........ ......x. ........ ........ 
                  : Magic Heal
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -955,7 +955,7 @@ Name             : Chain Lightning Overload (id=45297) [Spell Family (11)]
 Class            : Shaman
 School           : Nature
 Spell Type       : Magic
-Spell Level      : 17 (max 37)
+Spell Level      : 17 (max 49)
 Range            : 100 yards
 Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Al'Akir's Acrimony (208699 effect#1), Chain Lightning (231722 effect#1), Lightning Crash (242284 effect#1)
 Family Flags     : 39, 63, 79
@@ -1550,8 +1550,11 @@ Effects          :
                    Affected Spells: Earth Shock (8042), Flametongue Attack (10444), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Earthquake (61882), Earthquake (77478), Lava Beam (114074), Lava Beam Overload (114738), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Item - Shaman T18 Enhancement 4P Bonus (185872), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Shield (192106), Lightning Shield (192109), Liquid Magma (192231), Flametongue (194084), Frost Shock (196840), Lightning Rod (197568), Icefury (210714), Lightning Bolt Overload (214816), Icefury Overload (219271), Lava Burst (285452), Lava Burst Overload (285466), Lightning Lasso (305483), Lightning Lasso (305485), Flametongue Weapon (318038), Flametongue Weapon (319778), Static Discharge (342244)
                    Family Flags: 0, 1, 2, 3, 10, 20, 21, 24, 28, 30, 31, 34, 44, 45, 50, 79, 83, 98, 119, 121, 123
 #2 (id=830842)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Critical Damage (15)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 15 | Misc Value 2: 981 (Label) | Target: Self (1)
-                   Affected Spells (Label): Fae Transfusion (328923)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 15 | Misc Value 2: 1046 (Label) | Target: Self (1)
+                   Affected Spells (Label): Fae Transfusion (328928)
+#3 (id=871488)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Critical Damage (15)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 15 | Misc Value 2: 983 (Label) | Target: Self (1)
+                   Affected Spells (Label): Chain Harvest (320751), Chain Harvest (320752)
 Description      : Your damaging $?a343190[and healing ][]critical strikes deal ${$m1+200}% damage $?a343190[or healing ][]instead of the usual 200%.
 
 Name             : Riptide (id=61295) [Spell Family (11)] 
@@ -1747,7 +1750,7 @@ Proc Flags       : ........ ......x. ........ ........
 Affecting spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#1), 
 Family Flags     : 41, 94
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ......x.   ........ .x...... ........ ......x. 
+                 : ........ ........ ........ ......x.   ........ .x...... ........ ..x...x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
@@ -1927,7 +1930,7 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=68079)    : Apply Aura (6) | Modify Healing% Based on Target Health% (354)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.00000 | PvP Coefficient: 1.00000 | Misc Value: 2 | Target: Self (1)
-                   Affected Spells: Earth Shield (379), Chain Heal (1064), Healing Surge (8004), Healing Stream Totem (52042), Gift of the Naaru (59547), Riptide (61295), Unleash Life (73685), Healing Rain (73921), Healing Wave (77472), Healing Tide (114942), Wellspring (197997), Downpour (207778), Rainfall (252154), Serene Spirit (274416), Swelling Stream (275499), Overflowing Shores (278095), Pack Spirit (280205), Restorative Mists (294020), Surge of Earth (320747), Chain Harvest (320751), Vesper Totem (324522), Fae Transfusion (328930)
+                   Affected Spells: Earth Shield (379), Chain Heal (1064), Healing Surge (8004), Healing Stream Totem (52042), Gift of the Naaru (59547), Riptide (61295), Unleash Life (73685), Healing Rain (73921), Healing Wave (77472), Healing Tide (114942), Wellspring (197997), Downpour (207778), Rainfall (252154), Serene Spirit (274416), Swelling Stream (275499), Overflowing Shores (278095), Pack Spirit (280205), Restorative Mists (294020), Surge of Earth (320747), Chain Harvest (320751), Vesper Totem (324522), Primordial Wave (327163), Fae Transfusion (328930)
                    Family Flags: 41, 95
 #2 (id=92128)    : Apply Aura (6) | Dummy (4)
                    Base Value: 300 | Scaled Value: 300 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -2038,6 +2041,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ........ ........ x....... ........ 
                  : Magic Hostile Spell
+Triggered by     : Windspeaker's Lava Resurgence (336065)
 Family Flags     : 67
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ xx...... ........ 
@@ -2081,7 +2085,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .....
 Effects          :
 #1 (id=68406)    : Apply Aura (6) | Cast while Moving (Whitelist) (330)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
-                   Affected Spells: Earth Shield (379), Chain Heal (1064), Ghost Wolf (2645), Healing Surge (8004), Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Healing Stream Totem (52042), Lava Lash (60103), Riptide (61295), Earthquake (61882), Unleash Life (73685), Healing Rain (73920), Healing Rain (73921), Healing Wave (77472), Earthquake (77478), Lava Beam (114074), Lava Beam Overload (114738), Healing Tide (114942), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Crash Lightning (187874), Earthen Spike (188089), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Stormkeeper (191634), Lightning Shield (192109), Flametongue (193796), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Wellspring (197995), Wellspring (197997), Downpour (207778), Icefury (210714), Crashing Storm (210801), Ancestral Vision (212048), Stormlash (213307), Lightning Bolt Overload (214816), Feral Lunge (215802), Icefury Overload (219271), Rainfall (252154), Icy Edge (271920), Strength of Earth (273466), Serene Spirit (274416), Lightning Conduit (275394), Swelling Stream (275499), Overflowing Shores (278095), Rumbling Tremors (279556), Pack Spirit (280205), Lava Burst (285452), Lava Burst Overload (285466), Restorative Mists (294020), Echoing Shock (320125), Stormkeeper (320137), Surge of Earth (320747), Chain Harvest (320751), Chain Harvest (320752), Vesper Totem (324522), Fae Transfusion (328928), Fae Transfusion (328930), Fire Nova (333974), Fire Nova (333977), Lashing Flames (334046), Hailstorm (334195), Hailstorm (334196), Ice Strike (342240), Static Discharge (342244), Stormflurry (344357), Ascendance (344548)
+                   Affected Spells: Earth Shield (379), Chain Heal (1064), Ghost Wolf (2645), Healing Surge (8004), Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Healing Stream Totem (52042), Lava Lash (60103), Riptide (61295), Earthquake (61882), Unleash Life (73685), Healing Rain (73920), Healing Rain (73921), Healing Wave (77472), Earthquake (77478), Lava Beam (114074), Lava Beam Overload (114738), Healing Tide (114942), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Crash Lightning (187874), Earthen Spike (188089), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Stormkeeper (191634), Lightning Shield (192109), Flametongue (193796), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Wellspring (197995), Wellspring (197997), Downpour (207778), Icefury (210714), Crashing Storm (210801), Ancestral Vision (212048), Stormlash (213307), Lightning Bolt Overload (214816), Feral Lunge (215802), Icefury Overload (219271), Rainfall (252154), Icy Edge (271920), Strength of Earth (273466), Serene Spirit (274416), Lightning Conduit (275394), Swelling Stream (275499), Overflowing Shores (278095), Rumbling Tremors (279556), Pack Spirit (280205), Lava Burst (285452), Lava Burst Overload (285466), Restorative Mists (294020), Echoing Shock (320125), Stormkeeper (320137), Surge of Earth (320747), Chain Harvest (320751), Chain Harvest (320752), Vesper Totem (324522), Primordial Wave (327163), Fae Transfusion (328928), Fae Transfusion (328930), Fire Nova (333974), Fire Nova (333977), Lashing Flames (334046), Hailstorm (334195), Hailstorm (334196), Ice Strike (342240), Static Discharge (342244), Stormflurry (344357), Ascendance (344548)
                    Family Flags: 0, 1, 4, 7, 8, 11, 34, 39, 41, 44, 47, 51, 62, 80, 83, 84, 92, 98, 111
 #2 (id=289427)   : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -2089,6 +2093,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 640 | Target: Self (1)
 #4 (id=816033)   : Apply Aura (6) | Unknown(307)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 888 | Target: Self (1)
+#5 (id=871381)   : Apply Aura (6) | Unknown(307)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 981 | Target: Self (1)
 Description      : Calls upon the guidance of the spirits for $d, permitting movement while casting Shaman spells. Castable while casting.$?a192088[ Increases movement speed by $192088s2%.][]
 Tooltip          : Able to move while casting all Shaman spells.
 
@@ -3048,11 +3054,11 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179723)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Earth Shield (379), Chain Heal (1064), Healing Surge (8004), Healing Stream Totem (52042), Riptide (61295), Unleash Life (73685), Healing Rain (73921), Healing Wave (77472), Healing Tide (114942), Wellspring (197997), Downpour (207778), Rainfall (252154), Serene Spirit (274416), Swelling Stream (275499), Overflowing Shores (278095), Pack Spirit (280205), Restorative Mists (294020), Surge of Earth (320747), Chain Harvest (320751), Vesper Totem (324522), Fae Transfusion (328930)
+                   Affected Spells: Earth Shield (379), Chain Heal (1064), Healing Surge (8004), Healing Stream Totem (52042), Riptide (61295), Unleash Life (73685), Healing Rain (73921), Healing Wave (77472), Healing Tide (114942), Wellspring (197997), Downpour (207778), Rainfall (252154), Serene Spirit (274416), Swelling Stream (275499), Overflowing Shores (278095), Pack Spirit (280205), Restorative Mists (294020), Surge of Earth (320747), Chain Harvest (320751), Vesper Totem (324522), Primordial Wave (327163), Fae Transfusion (328930)
                    Family Flags: 41
 #2 (id=191046)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Earth Shield (379), Chain Heal (1064), Healing Surge (8004), Healing Stream Totem (52042), Riptide (61295), Unleash Life (73685), Healing Rain (73921), Healing Wave (77472), Healing Tide (114942), Wellspring (197997), Downpour (207778), Rainfall (252154), Serene Spirit (274416), Swelling Stream (275499), Overflowing Shores (278095), Pack Spirit (280205), Restorative Mists (294020), Surge of Earth (320747), Chain Harvest (320751), Vesper Totem (324522), Fae Transfusion (328930)
+                   Affected Spells: Earth Shield (379), Chain Heal (1064), Healing Surge (8004), Healing Stream Totem (52042), Riptide (61295), Unleash Life (73685), Healing Rain (73921), Healing Wave (77472), Healing Tide (114942), Wellspring (197997), Downpour (207778), Rainfall (252154), Serene Spirit (274416), Swelling Stream (275499), Overflowing Shores (278095), Pack Spirit (280205), Restorative Mists (294020), Surge of Earth (320747), Chain Harvest (320751), Vesper Totem (324522), Primordial Wave (327163), Fae Transfusion (328930)
                    Family Flags: 41
 #3 (id=191047)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -3960,8 +3966,11 @@ Effects          :
                    Family Flags: 0, 1, 7, 8, 25, 65, 98, 111
 #2 (id=811721)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Chain Heal (1064), Healing Surge (8004), Elemental Blast (117014), Lightning Bolt (188196), Chain Lightning (188443), Stormkeeper (191634), Lightning Bolt Overload (214816), Stormkeeper (320137), Chain Harvest (320674), Primordial Wave (326059)
-                   Family Flags: 0, 1, 7, 8, 25, 65, 98, 111
+                   Affected Spells: Chain Heal (1064), Healing Surge (8004), Elemental Blast (117014), Lightning Bolt (188196), Chain Lightning (188443), Stormkeeper (191634), Lightning Bolt Overload (214816), Stormkeeper (320137), Primordial Wave (326059)
+                   Family Flags: 0, 1, 7, 8, 25, 98, 111
+#3 (id=871486)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value 2: 983 (Label) | Target: Self (1)
+                   Affected Spells (Label): Chain Harvest (320751), Chain Harvest (320752)
 Description      : $@spelldesc187880
 Tooltip          : Your next damage or healing spell has its cast time reduced by $s1% and damage or healing increased by $s2%.
 
@@ -4263,7 +4272,7 @@ Proc Flags       : ........ ........ x....... ........
 Affecting spells : Spiritwalker's Grace (79206 effect#1), Maelstrom Weapon (187881 effect#1), 
 Family Flags     : 111
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4459,7 +4468,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
-                 : ........ ........ ........ ........   
+                 : ..x..... ........ ........ ........   
                  : Disable player procs (112), Disable target procs (113)
 Effects          :
 #1 (id=281802)   : Apply Aura (6) | Proc Trigger Spell (42): Lightning Shield
@@ -5872,7 +5881,7 @@ Name             : Eye of the Twisting Nether (id=207994) [Spell Family (4), Pas
 Class            : Shaman
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 115
+Req. Max Level   : 49
 Proc Chance      : 100%
 Proc Flags       : ....x... x...x... x.x..... ........ 
                  : Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Periodic
@@ -6132,7 +6141,7 @@ Name             : The Deceiver's Blood Pact (id=214131) [Spell Family (11), Pas
 Class            : Shaman
 School           : Nature
 Spell Type       : None
-Req. Max Level   : 115
+Req. Max Level   : 49
 Proc Chance      : 20%
 Proc Flags       : ........ ........ x....... ........ 
                  : Magic Hostile Spell
@@ -10410,8 +10419,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.65000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=807041)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1000 | Scaled Value: 1000 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Shock the target for $s1 Elemental damage and create an ancestral echo, causing your next damage or healing spell to be cast a second time ${$m2/1000}.1 sec later for free.
-Tooltip          : Your next damage or healing spell will be cast a second time ${$m1/1000}.1 sec later for free.
+Description      : Shock the target for $s1 Elemental damage and create an ancestral echo, causing your next damage or healing spell to be cast a second time ${$s2/1000}.1 sec later for free.
+Tooltip          : Your next damage or healing spell will be cast a second time ${$s2/1000}.1 sec later for free.
 
 Name             : Stormkeeper (id=320137) [Spell Family (11)] 
 Class            : Shaman
@@ -10460,14 +10469,14 @@ Cooldown         : 90 seconds
 Affecting spells : Maelstrom Weapon (187881 effect#1), Flash Flood (280615 effect#1)
 Family Flags     : 65
 Attributes       : ........ ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ xx...... ........ 
+                 : ........ ........ ........ ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : x....... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Disable player procs (112), Disable target procs (113)
+                 : Disable target procs (113)
 Effects          :
 #1 (id=807875)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Unknown(25)
@@ -10525,7 +10534,7 @@ Class            : Shaman
 School           : Shadow
 Spell Type       : Magic
 Range            : 100 yards
-Labels           : 983: Lavish Harvest (339185 effect#1)
+Labels           : 983: Elemental Fury (60188 effect#3), Maelstrom Weapon (187881 effect#3), Lavish Harvest (339185 effect#1)
 Affecting spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#1), 
 Family Flags     : 41
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10546,7 +10555,7 @@ Class            : Shaman
 School           : Shadow
 Spell Type       : Magic
 Range            : 100 yards
-Labels           : 983: Lavish Harvest (339185 effect#1)
+Labels           : 983: Elemental Fury (60188 effect#3), Maelstrom Weapon (187881 effect#3), Lavish Harvest (339185 effect#1)
 Affecting spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Lightning Crash (242284 effect#1)
 Family Flags     : 39
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10559,7 +10568,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=808017)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 3.45000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 4.14000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 Description      : $@spelldesc320674
 
 Name             : Mana Tide Totem (id=320763) 
@@ -10662,7 +10671,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : Requires line of sight (186)
 Effects          :
 #1 (id=814143)   : School Damage (2): arcane
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.95000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.81000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
 Description      : $@spelldesc324386
 
 Name             : Vesper Totem (desc=Kyrian) (id=324522) [Spell Family (11)] 
@@ -10684,7 +10693,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : Requires line of sight (186)
 Effects          :
 #1 (id=814146)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.85000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE friendly (31)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.73000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE friendly (31)
 Description      : $@spelldesc324386
 
 Name             : Primordial Wave (desc=Necrolord) (id=326059) [Spell Family (11)] 
@@ -10695,7 +10704,6 @@ Spell Type       : Magic
 Resource         : 3% Base Mana (0) (id=192726)
 Spell Level      : 1
 Range            : 40 yards
-Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Velocity         : 45 yards/sec
 Charges          : 1 (45 seconds cooldown)
@@ -10713,9 +10721,15 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
 Effects          :
 #1 (id=816908)   : Trigger Missiles (32)
                    Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Trigger Spell: 327161 | Target: Unknown(25)
+#2 (id=871499)   : Dummy (3)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Unknown(25)
+#3 (id=871500)   : Dummy (3)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Unknown(25)
+#4 (id=871501)   : Dummy (3)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Unknown(25)
 Description      : Blast your target with a Primordial Wave, dealing $327162s1 Shadow damage and apply Flame Shock to an enemy, or $?a137039[heal an ally for $327163s1 and apply Riptide to them][heal an ally for $327163s1].
 
-Your next $?a137040[Lava Burst]?a137041[Lightning Bolt][Healing Wave] will also hit all targets affected by your $?a137040|a137041[Flame Shock][Riptide].
+Your next $?a137040[Lava Burst]?a137041[Lightning Bolt][Healing Wave] will also hit all targets affected by your $?a137040|a137041[Flame Shock][Riptide] for $?a137039[$s2%]?a137040[$s3%][$s4%] of normal $?a137039[healing][damage].
 
 Name             : Primordial Wave (desc=Necrolord) (id=327161) [Spell Family (11), Hidden] 
 Class            : Shaman
@@ -10725,7 +10739,7 @@ Spell Level      : 1
 Range            : 100 yards
 Triggered by     : Primordial Wave (326059)
 Attributes       : .......x ........ x.x..... ........   ........ ........ ........ ........ 
-                 : ..x..... ........ ........ ........   ........ ........ ........ ........ 
+                 : x.x..... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
@@ -10763,6 +10777,8 @@ School           : Shadow
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
+Affecting spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#1), 
+Family Flags     : 41
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10812,7 +10828,6 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 3 seconds
 Cooldown         : 120 seconds
-Labels           : 981: Elemental Fury (60188 effect#2)
 Affecting spells : Essential Extraction (339183 effect#1), 
 Family Flags     : 125
 Attributes       : ........ ........ ........ ........   ..x...x. ........ ........ .....x.. 
@@ -10831,7 +10846,11 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=821773)   : Trigger Spell (64): Fae Transfusion
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 328933 | Target: Self (1)
-Description      : Transfer the life force of up to $328928I enemies in the targeted area, dealing ${$328928s1*$d/$t2} Nature damage to each enemy over $d. 
+#4 (id=871384)   : Dummy (3)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Transfer the life force of up to $328928I enemies in the targeted area, dealing ${$328928s1*$d/$t2} Nature damage evenly split to each enemy target over $d. $?a137041[
+
+Fully channeling Fae Transfusion generates $s4 $Lstack:stacks; of Maelstrom Weapon.][]
 
 Pressing Fae Transfusion again within $328933d will release $s1% of all damage from Fae Transfusion, healing up to $328930s2 allies near yourself.
 
@@ -10841,6 +10860,7 @@ School           : Nature
 Spell Type       : Magic
 Range            : 100 yards
 Max Targets      : 4
+Labels           : 1046: Elemental Fury (60188 effect#2)
 Affecting spells : Mastery: Enhanced Elements (77223 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Lightning Crash (242284 effect#1), Essential Extraction (339183 effect#1), 
 Family Flags     : 39, 56, 125
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10854,7 +10874,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Requires line of sight (186)
 Effects          :
 #1 (id=821760)   : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.69000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.40000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
 Description      : $@spelldesc328923
 
 Name             : Fae Transfusion (desc=Night Fae) (id=328930) [Spell Family (11)] 
@@ -10878,7 +10898,7 @@ Effects          :
 #1 (id=821765)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 12 yards | Target: At Caster (22) -> AOE friendly (30)
 #2 (id=843695)   : Dummy (3)
-                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000
+                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000
 Description      : $@spelldesc328923
 
 Name             : Fae Transfusion (desc=Night Fae) (id=328933) [Spell Family (11)] 
@@ -11212,8 +11232,8 @@ Name             : Spiritwalker's Tidal Totem (id=335891) [Spell Family (11), Pa
 School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
-Proc Flags       : ........ ......x. ........ ........ 
-                 : Magic Heal
+Proc Flags       : ........ ..x...x. ........ ........ 
+                 : Generic Heal, Magic Heal
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11275,7 +11295,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=832808)   : Apply Aura (6) | Proc Trigger Spell (42): Jonat's Natural Focus
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 335894 | Target: Self (1)
-Description      : Healing Wave and Healing Surge increase the healing done by your next Chain Heal by $s1%, stacking up to $u times.
+Description      : Healing Wave and Healing Surge increase the healing done by your next Chain Heal by $335894s1%, stacking up to $335894u times.
 
 Name             : Jonat's Natural Focus (id=335894) [Spell Family (11)] 
 School           : Physical
@@ -11403,7 +11423,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=832819)   : Apply Aura (6) | Proc Trigger Spell (42): Doom Winds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 335903 | Target: Self (1)
-Description      : Dropping Windfury Totem grants you $335903s1% inceased chance to gain Windfury Weapon for $335903d. 
+Description      : Dropping Windfury Totem grants you $335903s1% chance to gain Windfury Weapon for $335903d. 
 
 This can only occur once every $335904d.
 
@@ -11448,15 +11468,19 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=833063)   : Apply Aura (6) | Proc Trigger Spell (42): Windspeaker's Lava Resurgence
                    Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Trigger Spell: 336065 | Target: Self (1)
-Description      : When you cast Earth Shock$?s117014[ or Elemental Blast][], gain Lava Surge and increase the damage of your next Lava Burst by $336065s1%.
+Description      : When you cast Earth Shock, gain Lava Surge and increase the damage of your next Lava Burst by $336065s1%.
 
 Name             : Windspeaker's Lava Resurgence (id=336065) [Spell Family (11)] 
 School           : Physical
 Spell Type       : None
 Duration         : 15 seconds
+Stacks           : 1 initial, 1 maximum
+Proc Chance      : 101%
+Proc Flags       : ........ ........ x....... ........ 
+                 : Magic Hostile Spell
 Triggered by     : Windspeaker's Lava Resurgence (336063)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
@@ -11468,6 +11492,8 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Lava Burst (51505), Lava Burst (285452)
                    Family Flags: 44
+#2 (id=871506)   : Trigger Spell (64): Lava Surge
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 77762 | Target: Self (1)
 Description      : $@spelldesc336063
 Tooltip          : Lava Burst damage increased by $s1%.
 
@@ -11489,7 +11515,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=833322)   : Apply Aura (6) | Proc Trigger Spell (42): Echoes of Great Sundering
                    Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Trigger Spell: 336217 | Target: Self (1)
-Description      : When you cast Earth Shock$?s117014[ or Elemental Blast][], your next Earthquake will deal $336217s2% additional damage.
+Description      : When you cast Earth Shock, your next Earthquake will deal $336217s2% additional damage.
 
 Name             : Echoes of Great Sundering (id=336217) [Spell Family (11)] 
 School           : Physical
@@ -11546,8 +11572,8 @@ Name             : Skybreaker's Fiery Demise (id=336734) [Spell Family (11), Pas
 School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
-Proc Flags       : ........ ........ x.x..... ........ 
-                 : Magic Hostile Spell, Periodic
+Proc Flags       : ........ ........ ..x..... ........ 
+                 : Periodic
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11568,14 +11594,14 @@ Effects          :
                    Family Flags: 28
 Description      : Flame Shock damage over time critical strikes reduce the cooldown of $?s192249[Storm Elemental][Fire Elemental] by $?s192249[${$m1/1000}.1][${$m2/1000}.1] sec, and Flame Shock has a $s3% increased critical strike chance.
 
-Name             : Chains of Devastation (id=336735) [Spell Family (11)] 
+Name             : Chains of Devastation (id=336735) [Spell Family (11), Hidden] 
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
 Proc Chance      : 101%
 Proc Flags       : ........ ..x.x.x. x....... ........ 
                  : Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
-Attributes       : ........ ........ ........ .......x   ........ ..x..... ........ ........ 
+Attributes       : .......x ........ ........ .......x   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ xx..x... ..x..... 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
@@ -11583,7 +11609,7 @@ Attributes       : ........ ........ ........ .......x   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ .x...... 
                  : ........ ........ ........ ........   
-                 : Cannot cancel aura (31), Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
+                 : Hidden (7), Cannot cancel aura (31), Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
 Effects          :
 #1 (id=834313)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -12224,6 +12250,7 @@ Effects          :
 Description      : Strike your target with an icy blade, dealing $s1 Frost damage and snaring them by $s2% for $d.
 
 Successful Ice Strikes reset the cooldown of your Flame Shock and Frost Shock spells.
+Tooltip          : Movement speed reduced by $s2%.
 
 Name             : Static Discharge (id=342243) [Spell Family (11)] 
 Class            : Shaman
@@ -12245,9 +12272,10 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=843166)   : Apply Aura (6) | Periodic Trigger Spell (23): Static Discharge every 0.5 seconds
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.65000 | PvP Coefficient: 1.00000 | Trigger Spell: 342244 | Target: Self (1)
-Description      : Discharge excess energy from your Lightning Shield, dealing $342244s1 Nature damage to an enemy within $342244A1 every $t1 sec for $d.
+Description      : Discharge excess energy from your Lightning Shield, dealing $342244s1 Nature damage to an enemy within $342244A1 yds every $t1 sec for $d.
 
 Targets with your Flame Shock on them are preferred.
+Tooltip          : Discharging excess Lightning Shield energy at your enemies.
 
 Name             : Static Discharge (id=342244) [Spell Family (11)] 
 Class            : Shaman

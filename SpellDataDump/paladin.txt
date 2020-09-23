@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.2.35938 shadowlands-BETA (hotfix 2020-09-18/35938, git build shadowlands a3c99b0cc6)
+SimulationCraft 901-01 for World of Warcraft 9.0.2.35978 shadowlands-BETA (, no-networking)
 
 Name             : Haste (id=65) [Scaling Spell (-1)] 
 Class            : Paladin
@@ -1027,7 +1027,7 @@ Resource         : 3 Holy Power (9) (id=2444)
 Spell Level      : 23
 GCD              : 1.5 seconds
 Requires weapon  : Two-handed Axe, Two-handed Mace, Polearm, Two-handed Sword, Staff
-Affecting spells : Avenging Wrath (31884 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Holy Paladin (137029 effect#5), Judgment (197277 effect#1), Whisper of the Nathrezim (207635 effect#1), Fires of Justice (209785 effect#1), Divine Purpose (223819 effect#1), Crusade (231895 effect#1), Scarlet Inquisitor's Expurgation (248289 effect#1), Sacred Judgment (253806 effect#1), Wake of Ashes (255937 effect#4), Mastery: Hand of Light (267316 effect#1), Empyrean Power (286393 effect#1), Empyrean Power (326733 effect#1), Tempest of the Lightbringer (337257 effect#2), The Magistrate's Judgment (337682 effect#1), Blessing of Dawn (337747 effect#1), Final Reckoning (343721 effect#3), Reckoning (343724 effect#2), Vanguard's Momentum (345046 effect#1)
+Affecting spells : Avenging Wrath (31884 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Holy Paladin (137029 effect#5), Judgment (197277 effect#1), Whisper of the Nathrezim (207635 effect#1), Fires of Justice (209785 effect#1), Divine Purpose (223819 effect#1), Crusade (231895 effect#1), Scarlet Inquisitor's Expurgation (248289 effect#1), Sacred Judgment (253806 effect#1), Wake of Ashes (255937 effect#4), Mastery: Hand of Light (267316 effect#1), Empyrean Power (286393 effect#1), Empyrean Power (326733 effect#1), Tempest of the Lightbringer (337257 effect#2), The Magistrate's Judgment (337682 effect#1), Blessing of Dawn (337747 effect#1), Final Reckoning (343721 effect#3), Reckoning (343724 effect#2)
 Family Flags     : 27, 49, 65
 Attributes       : ........ ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3238,7 +3238,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   x......x ........ ........ ........ 
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=265274)   : Apply Aura (6) | Decrease Movement Speed% (33)
@@ -3518,8 +3518,8 @@ Range            : 30 yards
 Duration         : 30 seconds
 Stacks           : 25 initial, 25 maximum
 Proc Chance      : 100%
-Proc Flags       : ...x.x.x .x...x.. .x...... ........ 
-                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken
+Proc Flags       : ...x.x.x .x...x.. .x...... x....... 
+                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Death
 Triggered by     : Judgment of Light (183778)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ........ 
@@ -4178,7 +4178,7 @@ Name             : Chain of Thrayn (id=206338) [Spell Family (10), Passive]
 Class            : Paladin, Death Knight
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 115
+Req. Max Level   : 49
 Proc Chance      : 101%
 Proc Flags       : ........ ..x...x. ........ ........ 
                  : Generic Heal, Magic Heal
@@ -4256,7 +4256,7 @@ Name             : Justice Gaze (id=211557) [Spell Family (10), Passive]
 Class            : Paladin
 School           : Holy
 Spell Type       : None
-Req. Max Level   : 115
+Req. Max Level   : 49
 Proc Chance      : 101%
 Proc Flags       : ........ ........ x....... ........ 
                  : Magic Hostile Spell
@@ -4684,7 +4684,7 @@ Spell Type       : Melee
 Range            : 100 yards
 Max Targets      : Unlimited(-1)
 Requires weapon  : Two-handed Axe, Two-handed Mace, Polearm, Two-handed Sword, Staff
-Affecting spells : Avenging Wrath (31884 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Judgment (197277 effect#1), Whisper of the Nathrezim (207635 effect#1), Item - Paladin T19 Retribution 2P Bonus (211444 effect#1), Divine Purpose (223819 effect#2), Crusade (231895 effect#1), Wake of Ashes (255937 effect#4), Mastery: Hand of Light (267316 effect#1), Righteous Verdict (267611 effect#1), Blessing of Dawn (337747 effect#1), Final Reckoning (343721 effect#3), Reckoning (343724 effect#2), Vanguard's Momentum (345046 effect#1)
+Affecting spells : Avenging Wrath (31884 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Judgment (197277 effect#1), Whisper of the Nathrezim (207635 effect#1), Item - Paladin T19 Retribution 2P Bonus (211444 effect#1), Divine Purpose (223819 effect#2), Crusade (231895 effect#1), Wake of Ashes (255937 effect#4), Mastery: Hand of Light (267316 effect#1), Righteous Verdict (267611 effect#1), Blessing of Dawn (337747 effect#1), Final Reckoning (343721 effect#3), Reckoning (343724 effect#2)
 Family Flags     : 27, 44, 65
 Attributes       : ........ ........ x.x..... ........   ....x... .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ .x...... ........ ......x. 
@@ -4957,7 +4957,7 @@ Variables        : $reduction=${$m1/10}
 Name             : Maraad's Dying Breath (id=234848) [Spell Family (10), Passive] 
 School           : Holy
 Spell Type       : None
-Req. Max Level   : 115
+Req. Max Level   : 49
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -7662,7 +7662,7 @@ Name             : Chain of Thrayn (id=281573) [Spell Family (10), Hidden]
 Class            : Paladin, Death Knight
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 115
+Req. Max Level   : 49
 Duration         : 25 seconds
 Proc Chance      : 101%
 Proc Flags       : ........ ..x...x. ........ ........ 
@@ -9350,7 +9350,7 @@ Effects          :
 #1 (id=835774)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 1895 | Target: Self (1)
                    Affected Spells (Category): Hammer of Wrath (24275)
-Description      : Hammer of Wrath has $s1 extra charges, and increases the damage of your next Holy Power spender by $345046s1%.
+Description      : Hammer of Wrath has $s1 extra $Lcharge;charges, and increases Holy damage done by $345046s1% for $345046d, stacking $345046u times.
 
 Name             : The Magistrate's Judgment (id=337681) [Spell Family (10), Passive] 
 School           : Physical
@@ -9945,7 +9945,7 @@ Spell Type       : Melee
 Range            : 100 yards
 Max Targets      : Unlimited(-1)
 Requires weapon  : Two-handed Axe, Two-handed Mace, Polearm, Two-handed Sword, Staff
-Affecting spells : Avenging Wrath (31884 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Judgment (197277 effect#1), Whisper of the Nathrezim (207635 effect#1), Item - Paladin T19 Retribution 2P Bonus (211444 effect#1), Divine Purpose (223819 effect#2), Crusade (231895 effect#1), Wake of Ashes (255937 effect#4), Mastery: Hand of Light (267316 effect#1), Righteous Verdict (267611 effect#1), Blessing of Dawn (337747 effect#1), Final Reckoning (343721 effect#3), Reckoning (343724 effect#2), Vanguard's Momentum (345046 effect#1)
+Affecting spells : Avenging Wrath (31884 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Judgment (197277 effect#1), Whisper of the Nathrezim (207635 effect#1), Item - Paladin T19 Retribution 2P Bonus (211444 effect#1), Divine Purpose (223819 effect#2), Crusade (231895 effect#1), Wake of Ashes (255937 effect#4), Mastery: Hand of Light (267316 effect#1), Righteous Verdict (267611 effect#1), Blessing of Dawn (337747 effect#1), Final Reckoning (343721 effect#3), Reckoning (343724 effect#2)
 Family Flags     : 27, 44, 65
 Attributes       : ........ ........ x.x..... ........   ....x... .x...... ........ ...x.... 
                  : ........ ........ ........ .....x..   ........ ........ ........ ......x. 

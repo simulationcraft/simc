@@ -1,4 +1,4 @@
-SimulationCraft 901-01 for World of Warcraft 9.0.2.35938 shadowlands-BETA (hotfix 2020-09-18/35938, git build shadowlands a3c99b0cc6)
+SimulationCraft 901-01 for World of Warcraft 9.0.2.35978 shadowlands-BETA (, no-networking)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
@@ -2419,21 +2419,25 @@ Spell Type       : Magic
 Resource         : 2% Base Mana (0) (id=215334)
 Duration         : 10 seconds
 Cooldown         : 60 seconds
-Affecting spells : Rapid Healing (24546 effect#2), Healing Trance (37706 effect#1), Surrender to Madness (193223 effect#2), Surrender to Madness (319952 effect#7), Exaltation (337790 effect#2)
+Affecting spells : Rapid Healing (24546 effect#2), Healing Trance (37706 effect#1), Surrender to Madness (193223 effect#2), Surrender to Madness (319952 effect#7), Clarity of Mind (336067 effect#3), Exaltation (337790 effect#1), 
 Family Flags     : 18
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=121670)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
+#2 (id=870569)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
-Description      : For $d, Penance, Power Word: Radiance, and Atonement create absorb shields instead of healing.
-Tooltip          : Penance, Power Word: Radiance, and Atonement create absorb shields.
+                   Affected Spells: Power Word: Radiance (194509)
+                   Family Flags: 22
+Description      : For $d, Penance, Power Word: Radiance, and Atonement create absorb shields for $s1% of their value, instead of healing.
+Tooltip          : Penance, Power Word: Radiance, and Atonement create absorb shields for $w1% of their healing.
 
 Name             : Divine Star (id=110744) [Spell Family (6)] 
 Class            : Priest
@@ -3837,7 +3841,7 @@ GCD              : 1.5 seconds
 Charges          : 1 (20 seconds cooldown)
 Category         : 1690: Item - Priest T21 Discipline 2P Bonus (251843 effect#1), Power Word: Radiance (322115 effect#1)
 Stance Mask      : 0x80000000
-Affecting spells : Renew (139 effect#2), Rapid Healing (24546 effect#2), Spirit of Redemption (27827 effect#2), Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Surrender to Madness (193223 effect#2), Power Word: Shield (211558 effect#1), Twist of Fate (265258 effect#1), Enduring Luminescence (278643 effect#2), Enduring Luminescence (279245 effect#1), Dejahna's Inspiration (281456 effect#1), Kam Xi'raff (281457 effect#1), Surrender to Madness (319952 effect#7), Shining Radiance (337778 effect#1), Shadow Mend (342992 effect#1)
+Affecting spells : Renew (139 effect#2), Rapid Healing (24546 effect#2), Spirit of Redemption (27827 effect#2), Spirit Shell (109964 effect#2), Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Surrender to Madness (193223 effect#2), Power Word: Shield (211558 effect#1), Twist of Fate (265258 effect#1), Enduring Luminescence (278643 effect#2), Enduring Luminescence (279245 effect#1), Dejahna's Inspiration (281456 effect#1), Kam Xi'raff (281457 effect#1), Surrender to Madness (319952 effect#7), Shining Radiance (337778 effect#1), Shadow Mend (342992 effect#1)
 Family Flags     : 22, 126
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -4703,7 +4707,7 @@ Velocity         : 40 yards/sec
 Cooldown         : 4.5 seconds
 Category         : 1660
 Category Cooldown: 4.5 seconds
-Affecting spells : Mastery: Madness (77486 effect#1), Twist of Fate (123254 effect#1), Priest (137030 effect#1), Holy Priest (137031 effect#3), Shadow Priest (137033 effect#1), Surrender to Madness (193223 effect#2), Voidform (194249 effect#1), Void (211657 effect#1), Schism (214621 effect#2), Shadowform (232698 effect#1), Overwhelming Darkness (252909 effect#1), Twist of Fate (265258 effect#1), Sins of the Many (280398 effect#1), Surrender to Madness (319952 effect#7)
+Affecting spells : Mastery: Madness (77486 effect#1), Twist of Fate (123254 effect#1), Priest (137030 effect#1), Holy Priest (137031 effect#3), Shadow Priest (137033 effect#1), Surrender to Madness (193223 effect#2), Voidform (194249 effect#1), Void (211657 effect#1), Schism (214621 effect#2), Shadowform (232698 effect#1), Overwhelming Darkness (252909 effect#1), Twist of Fate (265258 effect#1), Sins of the Many (280398 effect#1), Surrender to Madness (319952 effect#7), Dissonant Echoes (338342 effect#2)
 Family Flags     : 72, 106
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8697,7 +8701,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 342839 | Target: Self (1)
 #9 (id=844202)   : Trigger Spell (64): Surrender to Madness
                    Base Value: 15000 | Scaled Value: 15000 | PvP Coefficient: 1.00000 | Misc Value: 15000 | Trigger Spell: 342840 | Target: Self (1)
-Description      : You instantly cast Void Eruption on the target, dealing ${$228360s1*2} Shadow damage and activating Voidform.
+Description      : Deals ${$228360s1*2} Shadow damage to the target and activates Voidform.
 
 For the next $d, your Insanity-generating abilities generate $s2% more Insanity and you can cast while moving.
 
@@ -9014,7 +9018,6 @@ Variables        : $damage=${($SPS*$s2/100)*(1+$@versadmg)}
 $healing=${($SPS*$s3/100)*(1+$@versadmg)}
 
 Name             : Mindgames (id=323701) [Spell Family (6), Hidden] 
-Hotfixed         : Attributes
 Class            : Priest
 School           : Shadow
 Spell Type       : None
@@ -9037,7 +9040,6 @@ Effects          :
 Description      : $@spelldesc323673
 
 Name             : Mindgames (id=323705) [Spell Family (6), Hidden] 
-Hotfixed         : Attributes
 Class            : Priest
 School           : Shadow
 Spell Type       : None
@@ -9245,8 +9247,8 @@ Duration         : 15 seconds
 Cooldown         : 60 seconds
 Labels           : 1102: Festering Transfusion (337979 effect#1)
 Proc Chance      : 100%
-Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
-                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
+Proc Flags       : ...x.x.x .x...x.. .x.x.... x....... 
+                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken, Death
 Affecting spells : Twist of Fate (123254 effect#1), Holy Priest (137031 effect#3), Shadow Priest (137033 effect#1), Surrender to Madness (193223 effect#2), Voidform (194249 effect#1), Schism (214621 effect#2), Shadowform (232698 effect#1), Twist of Fate (265258 effect#1), Sins of the Many (280398 effect#1), Surrender to Madness (319952 effect#7), Shadow Covenant (322105 effect#3)
 Family Flags     : 72, 114
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9335,10 +9337,10 @@ Stacks           : 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ........ ......x. x....... ........ 
                  : Magic Heal, Magic Hostile Spell
-Affecting spells : Surrender to Madness (193223 effect#2), Surrender to Madness (319952 effect#7), Fae Fermata (338305 effect#1)
+Affecting spells : Surrender to Madness (193223 effect#2), Surrender to Madness (319952 effect#7)
 Family Flags     : 105
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ....x... 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9365,7 +9367,7 @@ Range            : 100 yards
 Max Targets      : 1
 Velocity         : 60 yards/sec
 Duration         : 20 seconds
-Affecting spells : Surrender to Madness (193223 effect#2), Surrender to Madness (319952 effect#7), Fae Fermata (338305 effect#1)
+Affecting spells : Surrender to Madness (193223 effect#2), Surrender to Madness (319952 effect#7)
 Family Flags     : 105
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9414,7 +9416,7 @@ Range            : 100 yards
 Max Targets      : 1
 Velocity         : 60 yards/sec
 Duration         : 20 seconds
-Affecting spells : Surrender to Madness (193223 effect#2), Surrender to Madness (319952 effect#7), Fae Fermata (338305 effect#1)
+Affecting spells : Surrender to Madness (193223 effect#2), Surrender to Madness (319952 effect#7)
 Family Flags     : 105
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9611,7 +9613,13 @@ Effects          :
                    Family Flags: 119
 #2 (id=833069)   : Apply Aura (6) | Dummy (4)
                    Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : During Rapture, Power Word: Shield costs $s1% less mana and applies $s2 second longer Atonements.
+#3 (id=870571)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
+                   Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
+                   Affected Spells: Spirit Shell (109964)
+                   Family Flags: 18
+#4 (id=870608)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : During $?s109964[Spirit Shell, Power Word: Radiance costs $s3% less mana, and applies $s4 second longer Atonements.][Rapture, Power Word: Shield costs $s1% less mana and applies $s2 second longer Atonements.]
 
 Name             : Kiss of Death (id=336133) [Spell Family (6), Passive] 
 School           : Physical
@@ -10049,7 +10057,7 @@ Description      : Power Infusion incurs a |cFFFFFFFF${$s1}.1 sec|r reduced cool
 Name             : Shining Radiance (id=337778) [Spell Family (6), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 75 (values=5.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 15.0, 16.0, 17.0, 18.0, 19.0, 20.0)
+Conduit Id       : 75 (values=33.0, 36.900002, 39.599998, 42.900002, 46.200001, 49.5, 52.799999, 56.099998, 59.400002, 62.700001, 66.0, 69.300003, 72.599998, 75.900002, 79.199997)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10098,13 +10106,15 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ...x.... ........ ........ ........   
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=836004)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
+#1 (id=836004)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
+                   Affected Spells: Spirit Shell (109964)
+                   Family Flags: 18
 #2 (id=836005)   : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
                    Base Value: 2000 | Scaled Value: 2000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Rapture (47536), Spirit Shell (109964)
                    Family Flags: 18, 119
-Description      : Rapture's duration is increased by ${$s2/1000}.1 sec, and its Power Word: Shield enhancement is increased by |cFFFFFFFF${$s1}.1%|r.
+Description      : $?s109964[Spirit Shell's][Rapture's] duration is increased by ${$s2/1000}.1 sec, and its $?s109964[absorption][Power Word: Shield enhancement] is increased by |cFFFFFFFF${$s1}.1%|r.
 
 Name             : Lasting Spirit (id=337811) [Spell Family (6), Passive, Hidden] 
 School           : Physical
@@ -10133,7 +10143,7 @@ Description      : Guardian Spirit's duration is increased by ${$s2/1000}.1 sec,
 Name             : Swift Penitence (id=337891) [Spell Family (6), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 81 (values=15.0, 16.5, 18.0, 19.5, 21.0, 22.5, 24.0, 25.5, 27.0, 28.5, 30.0, 31.5, 33.0, 34.5, 36.0)
+Conduit Id       : 81 (values=25.0, 27.5, 30.0, 32.5, 35.0, 37.5, 40.0, 42.5, 45.0, 47.5, 50.0, 52.5, 55.0, 57.5, 60.0)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10250,7 +10260,7 @@ Description      : Unholy Transfusion lasts $s2 sec longer and deals |cFFFFFFFF$
 Name             : Fae Fermata (id=338305) [Spell Family (6), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 101 (values=5000.0, 7000.0, 8000.0, 9000.0, 10000.0, 11000.0, 12000.0, 13000.0, 14000.0, 15000.0, 16000.0, 17000.0, 18000.0, 19000.0, 20000.0)
+Conduit Id       : 101 (values=3000.0, 3300.0, 3600.0, 3900.0, 4200.0, 4500.0, 4800.0, 5100.0, 5400.0, 5700.0, 6000.0, 6300.0, 6600.0, 6900.0, 7200.0)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10261,11 +10271,11 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ...x.... ........ ........ ........   
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=836807)   : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
-                   Base Value: 5000 | Scaled Value: 5000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
-                   Affected Spells: Fae Guardians (327661), Guardian Faerie (327694), Benevolent Faerie (327710), Wrathful Faerie (342132)
-                   Family Flags: 105
-Description      : The duration of Fae Guardians is increased by |cFFFFFFFF${$s1/1000}.1 sec|r.
+#1 (id=836807)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 3000 | Scaled Value: 3000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
+#2 (id=871353)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
+Description      : Your Fae Guardians leave behind a $s2% effective copy of their benefit, lasting |cFFFFFFFF${$s1/1000}.1|r sec when they jump to a new target.
 
 Name             : Shattered Perceptions (id=338315) [Spell Family (6), Passive, Hidden] 
 School           : Physical
@@ -10304,7 +10314,7 @@ Description      : Mindgames lasts an additional ${$s3/1000}.1 sec and deals an 
 Name             : Haunting Apparitions (id=338319) [Spell Family (6), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Conduit Id       : 107 (values=5.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 15.0, 16.0, 17.0, 18.0, 19.0, 20.0)
+Conduit Id       : 107 (values=25.0, 27.5, 30.0, 32.5, 35.0, 37.5, 40.0, 42.5, 45.0, 47.5, 50.0, 52.5, 55.0, 57.5, 60.0)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10325,7 +10335,7 @@ Name             : Mind Devourer (id=338332) [Spell Family (6), Passive, Hidden]
 Class            : Priest
 School           : Physical
 Spell Type       : None
-Conduit Id       : 113 (values=5.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 15.0, 16.0, 17.0, 18.0, 19.0, 20.0)
+Conduit Id       : 113 (values=7.0, 7.7, 8.4, 9.1, 9.8, 10.5, 11.2, 11.9, 12.6, 13.3, 14.0, 14.7, 15.4, 16.1, 16.799999)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10392,7 +10402,7 @@ Class            : Priest
 School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
-Conduit Id       : 115 (values=5.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 15.0, 16.0, 17.0, 18.0, 19.0, 20.0)
+Conduit Id       : 115 (values=15.0, 16.5, 18.0, 19.5, 21.0, 22.5, 24.0, 25.5, 27.0, 28.5, 30.0, 31.5, 33.0, 34.5, 36.0)
 Proc Flags       : ........ ........ x.x..... ........ 
                  : Magic Hostile Spell, Periodic
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -10407,7 +10417,12 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=836873)   : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : While not in Void Form, Mind Flay has a |cFFFFFFFF${$s1}.1%|r chance to allow you to cast Void Bolt. 
+#2 (id=871431)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Void Bolt (205448), Void Bolt (343355)
+                   Family Flags: 106
+Description      : Void Bolt deals $s2% more damage.
+While not in Void Form, Mind Flay has a |cFFFFFFFF${$s1}.1%|r chance to allow you to cast Void Bolt.
 While in Void Form, Void Bolt has a |cFFFFFFFF${$s1}.1%|r chance to reset the cooldown on Void Bolt.
 
 Name             : Holy Oration (id=338345) [Spell Family (6), Passive, Hidden] 
@@ -10573,7 +10588,7 @@ Affecting spells : Twist of Fate (123254 effect#1), Holy Priest (137031 effect#3
 Family Flags     : 72
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   x....... .x...... ........ ......x. 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ .......x ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
@@ -10673,7 +10688,7 @@ Internal Cooldown: 1.5 seconds
 Proc Chance      : 100%
 Proc Flags       : ........ .....x.. .x...... ........ 
                  : Generic Hostile Spell Taken, Magic Hostile Spell Taken
-Affecting spells : Surrender to Madness (193223 effect#2), Surrender to Madness (319952 effect#7), Fae Fermata (338305 effect#1)
+Affecting spells : Surrender to Madness (193223 effect#2), Surrender to Madness (319952 effect#7)
 Family Flags     : 105
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10681,7 +10696,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=842979)   : Apply Aura (6) | Dummy (4)
@@ -10912,7 +10927,7 @@ Velocity         : 40 yards/sec
 Cooldown         : 4.5 seconds
 Category         : 1660
 Category Cooldown: 4.5 seconds
-Affecting spells : Mastery: Madness (77486 effect#1), Twist of Fate (123254 effect#1), Priest (137030 effect#1), Holy Priest (137031 effect#3), Shadow Priest (137033 effect#1), Surrender to Madness (193223 effect#2), Voidform (194249 effect#1), Void (211657 effect#1), Schism (214621 effect#2), Shadowform (232698 effect#1), Overwhelming Darkness (252909 effect#1), Twist of Fate (265258 effect#1), Sins of the Many (280398 effect#1), Surrender to Madness (319952 effect#7)
+Affecting spells : Mastery: Madness (77486 effect#1), Twist of Fate (123254 effect#1), Priest (137030 effect#1), Holy Priest (137031 effect#3), Shadow Priest (137033 effect#1), Surrender to Madness (193223 effect#2), Voidform (194249 effect#1), Void (211657 effect#1), Schism (214621 effect#2), Shadowform (232698 effect#1), Overwhelming Darkness (252909 effect#1), Twist of Fate (265258 effect#1), Sins of the Many (280398 effect#1), Surrender to Madness (319952 effect#7), Dissonant Echoes (338342 effect#2)
 Family Flags     : 72, 106
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
