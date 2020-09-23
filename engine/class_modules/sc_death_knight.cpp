@@ -5962,6 +5962,7 @@ struct remorseless_winter_damage_t : public death_knight_spell_t
     if ( p -> legendary.biting_cold.ok() )
     {
       biting_cold_target_threshold = p -> legendary.biting_cold->effectN ( 1 ).base_value();
+      base_multiplier *= 1.0 + p -> legendary.biting_cold->effectN( 2 ).percent();
     }
   }
 
@@ -5970,11 +5971,6 @@ struct remorseless_winter_damage_t : public death_knight_spell_t
     double m = death_knight_spell_t::action_multiplier();
 
     m *= 1.0 + p() -> buffs.gathering_storm -> stack_value();
-
-    if ( p() -> legendary.biting_cold.ok() )
-    {
-      m *= 1.0 + p() -> legendary.biting_cold->effectN( 2 ).percent();
-    }
 
     return m;
   }
