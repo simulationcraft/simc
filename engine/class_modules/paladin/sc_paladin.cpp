@@ -1064,13 +1064,25 @@ struct ashen_hallow_tick_t : public paladin_spell_t
   {
     double cam = paladin_spell_t::composite_aoe_multiplier( state );
 
-    // TODO: fix
-    /*
-    if ( state -> n_targets > 5 ) // TODO: where is this in spelldata?
-      cam /= std::sqrt( state -> n_targets - 4 ); // pending formula verification; this is probably wrong!
-    */
-
-    return cam;
+    // Thanks Melekus & pao for this formula
+    // There's gotta be a cleaner way to do this
+    // TODO: confirm this
+    if ( state -> n_targets <= 5 )
+    {
+      return cam;
+    }
+    else if ( state -> n_targets <= 10 )
+    {
+      return cam * (20.0 - state -> n_targets) / 15.0;
+    }
+    else if ( state -> n_targets <= 12 )
+    {
+      return cam * 2.0 / 3;
+    }
+    else // if ( state -> n_targets > 12 )
+    {
+      return cam * ( 8.0 / state -> n_targets );
+    }
   }
 };
 

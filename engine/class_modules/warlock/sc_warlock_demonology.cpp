@@ -69,6 +69,20 @@ public:
   double composite_target_multiplier( player_t* t ) const override
   {
     double m = warlock_spell_t::composite_target_multiplier( t );
+
+    auto td = this->td( t );
+
+    if (td->debuffs_from_the_shadows->check() && data().affected_by( td->debuffs_from_the_shadows->data().effectN( 1 ) ) )
+    {
+      m *= 1.0 + td->debuffs_from_the_shadows->data().effectN(1).percent();
+    }
+    else if (td->debuffs_from_the_shadows->check() && data().id() == 105174)
+    {
+      //Hand of Gul'dan spell data is structured weirdly, so 105174 doesn't contain the affecting spells info (see 86040 for that information)
+      //Hardcoding checks for ID 105174 HoG to automatically go through for now
+      m *= 1.0 + td->debuffs_from_the_shadows->data().effectN( 1 ).percent();
+    }
+
     return m;
   }
 
@@ -150,7 +164,8 @@ struct hand_of_guldan_t : public demonology_spell_t
     }
     parse_effect_data( p->find_spell( 86040 )->effectN( 1 ) );
 
-    // TOCHECK Because of how we structure HoG spelldata we have to manually apply spec aura.
+    //HoG parent spell (105174) is missing affecting spells info (see 86040), so we have to manually apply spec aura.
+    //TODO - potentially rebuild HoG to find a way around this issue, as it also affects From the Shadows
     base_multiplier *= 1.0 + p->spec.demonology->effectN( 3 ).percent();
 
     if ( p->conduit.borne_of_blood->ok() )
@@ -279,6 +294,9 @@ struct demonbolt_t : public demonology_spell_t
     p()->buffs.demonic_core->up();  // benefit tracking
     p()->buffs.demonic_core->decrement();
 
+    if ( p()->talents.power_siphon->ok() )
+      p()->buffs.power_siphon->decrement();
+
     if ( p()->talents.demonic_calling->ok() )
       p()->buffs.demonic_calling->trigger();
 
@@ -292,6 +310,11 @@ struct demonbolt_t : public demonology_spell_t
     if ( p()->talents.sacrificed_souls->ok() )
     {
       m *= 1.0 + p()->talents.sacrificed_souls->effectN( 1 ).percent() * p()->active_pets;
+    }
+
+    if ( p()->talents.power_siphon->ok() && p()->buffs.power_siphon->check() )
+    {
+      m *= 1.0 + p()->buffs.power_siphon->default_value;
     }
 
     m *= 1.0 + p()->buffs.balespiders_burning_core->check_stack_value();
@@ -343,6 +366,7 @@ struct call_dreadstalkers_t : public demonology_spell_t
     p()->buffs.demonic_calling->up();  // benefit tracking
     p()->buffs.demonic_calling->decrement();
 
+    //TOCHECK: This should really be applied by the pet(s) and not the Warlock?
     if ( p()->talents.from_the_shadows->ok() )
     {
       td( target )->debuffs_from_the_shadows->trigger();
@@ -660,6 +684,10 @@ struct power_siphon_t : public demonology_spell_t
     if ( imps.size() > max_imps )
       imps.resize( max_imps );
 
+    //TOCHECK: As of 9/21/2020, Power Siphon is bugged to always provide 2 stacks of the damage buff regardless of imps consumed
+    //Move this inside the while loop (and remove the 2!) if it is ever changed to be based on imp count
+    p()->buffs.power_siphon->trigger(2);
+
     while ( !imps.empty() )
     {
       p()->buffs.demonic_core->trigger();
@@ -677,20 +705,16 @@ struct doom_t : public demonology_spell_t
   {
     parse_options( options_str );
 
-    base_tick_time       = data().duration();
-    dot_duration         = data().duration();
-    spell_power_mod.tick = p->find_spell( 265469 )->effectN( 1 ).sp_coeff();
-
     energize_type     = action_energize::PER_TICK;
     energize_resource = RESOURCE_SOUL_SHARD;
     energize_amount   = 1;
 
-    may_crit = true;
+    //TODO: Verify haste and refresh behaviors with changing stats while dot is already applied 
   }
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
-    return s->action->tick_time( s );
+    return s->action->tick_time( s ); //Doom is a case where dot duration scales with haste so use the tick time to get the current correct value
   }
 
   void tick( dot_t* d ) override
@@ -992,6 +1016,9 @@ action_t* warlock_t::create_action_demonology( util::string_view action_name, co
 void warlock_t::create_buffs_demonology()
 {
   buffs.demonic_core = make_buff( this, "demonic_core", find_spell( 264173 ) );
+
+  buffs.power_siphon = make_buff( this, "power_siphon", find_spell( 334581 ) )
+                            ->set_default_value( find_spell( 334581 )->effectN( 1 ).percent() );
 
   buffs.demonic_power = make_buff( this, "demonic_power", find_spell( 265273 ) )
                             ->set_default_value( find_spell( 265273 )->effectN( 2 ).percent() )

@@ -1586,11 +1586,11 @@ struct bt_dummy_buff_t : public druid_buff_t<buff_t>
 
   bool trigger( int s, double v, double c, timespan_t d ) override
   {
-    if ( !p().talent.bloodtalons->ok() || p().buff.bloodtalons->check() )
+    if ( !p().talent.bloodtalons->ok() )
       return false;
 
     if ( p().buff.bt_rake->check() + p().buff.bt_shred->check() + p().buff.bt_swipe->check() +
-         p().buff.bt_thrash->check() + p().buff.bt_moonfire->check() + p().buff.bt_brutal_slash->check() + 1 < count )
+         p().buff.bt_thrash->check() + p().buff.bt_moonfire->check() + p().buff.bt_brutal_slash->check() + !this->check() < count )
     {
       return druid_buff_t<buff_t>::trigger( s, v, c, d );
     }
@@ -1952,9 +1952,9 @@ public:
     trigger_galactic_guardian( s );
   }
 
-  double mod_spell_effects_percent( const spell_data_t*, const spelleffect_data_t* e ) { return e->percent(); }
+  double mod_spell_effects_percent( const spell_data_t*, const spelleffect_data_t& e ) { return e.percent(); }
 
-  double mod_spell_effects_percent( const conduit_data_t& c, const spelleffect_data_t* )
+  double mod_spell_effects_percent( const conduit_data_t& c, const spelleffect_data_t& )
   {
     // HOTFIX HACK to reflect server-side scripting
     if ( c == p()->conduit.endless_thirst )
@@ -1968,21 +1968,25 @@ public:
   {
     for ( size_t i = 1; i <= mod->effect_count(); i++ )
     {
-      auto eff = &mod->effectN( i );
+      const auto& eff = mod->effectN( i );
 
-      if ( eff->type() != E_APPLY_AURA || !base->affected_by_all( *ab::player->dbc, *eff ) )
+      if ( eff.type() != E_APPLY_AURA )
         continue;
 
-      if ( ( eff->misc_value1() == P_EFFECT_1 && idx == 1 ) || ( eff->misc_value1() == P_EFFECT_2 && idx == 2 ) ||
-           ( eff->misc_value1() == P_EFFECT_3 && idx == 3 ) || ( eff->misc_value1() == P_EFFECT_4 && idx == 4 ) ||
-           ( eff->misc_value1() == P_EFFECT_5 && idx == 5 ) )
+      if ( ( base->affected_by_all( *ab::player->dbc, eff ) &&
+             ( ( eff.misc_value1() == P_EFFECT_1 && idx == 1 ) || ( eff.misc_value1() == P_EFFECT_2 && idx == 2 ) ||
+               ( eff.misc_value1() == P_EFFECT_3 && idx == 3 ) || ( eff.misc_value1() == P_EFFECT_4 && idx == 4 ) ||
+               ( eff.misc_value1() == P_EFFECT_5 && idx == 5 ) ) ) ||
+           ( eff.subtype() == A_PROC_TRIGGER_SPELL_WITH_VALUE && eff.trigger_spell_id() == base->id() && idx == 1 ) )
       {
         double pct = mod_spell_effects_percent( mod, eff );
 
-        if ( eff->subtype() == A_ADD_FLAT_MODIFIER )
+        if ( eff.subtype() == A_ADD_FLAT_MODIFIER )
           val += pct;
-        else if ( eff->subtype() == A_ADD_PCT_MODIFIER )
+        else if ( eff.subtype() == A_ADD_PCT_MODIFIER )
           val *= 1.0 + pct;
+        else if ( eff.subtype() == A_PROC_TRIGGER_SPELL_WITH_VALUE )
+          val = pct;
         else
           continue;
 
@@ -2011,32 +2015,32 @@ public:
   template <typename... Ts>
   void parse_buff_effect( buff_t* buff, const spell_data_t* s_data, size_t i, bool use_stacks, Ts... mods )
   {
-    auto eff     = &s_data->effectN( i );
-    double val   = eff->percent();
-    bool mastery = false;
+    const auto& eff = s_data->effectN( i );
+    double val      = eff.percent();
+    bool mastery    = false;
 
     // TODO: more robust logic around 'party' buffs with radius
-    if ( !( eff->type() == E_APPLY_AURA || eff->type() == E_APPLY_AREA_AURA_PARTY ) || eff->radius() )
+    if ( !( eff.type() == E_APPLY_AURA || eff.type() == E_APPLY_AREA_AURA_PARTY ) || eff.radius() )
       return;
 
     if ( i <= 5 )
       parse_spell_effects_mods( val, mastery, s_data, i, mods... );
 
-    if ( is_auto_attack && eff->subtype() == A_MOD_AUTO_ATTACK_PCT )
+    if ( is_auto_attack && eff.subtype() == A_MOD_AUTO_ATTACK_PCT )
     {
       da_multiplier_buffeffects.push_back( buff_effect_t( buff, val ) );
       return;
     }
 
-    if ( !ab::data().affected_by_all( *ab::player->dbc, *eff ) )
+    if ( !ab::data().affected_by_all( *ab::player->dbc, eff ) )
       return;
 
     if ( !mastery && !val )
       return;
 
-    if ( eff->subtype() == A_ADD_PCT_MODIFIER )
+    if ( eff.subtype() == A_ADD_PCT_MODIFIER )
     {
-      switch ( eff->misc_value1() )
+      switch ( eff.misc_value1() )
       {
         case P_GENERIC:
           da_multiplier_buffeffects.push_back( buff_effect_t( buff, val, use_stacks, mastery ) );
@@ -2067,7 +2071,7 @@ public:
           break;
       }
     }
-    else if ( eff->subtype() == A_ADD_FLAT_MODIFIER && eff->misc_value1() == P_CRIT )
+    else if ( eff.subtype() == A_ADD_FLAT_MODIFIER && eff.misc_value1() == P_CRIT )
     {
       crit_chance_buffeffects.push_back( buff_effect_t( buff, val, use_stacks ) );
           p()->sim->print_debug( "buff-effects: {} ({}) crit chance modified by {}% with buff {} ({})", ab::name(),
@@ -2192,6 +2196,7 @@ public:
     }
     parse_buff_effects( p()->buff.tooth_and_claw, false );
     parse_buff_effects( p()->buff.sharpened_claws );
+    parse_buff_effects<C>( p()->buff.savage_combatant, p()->conduit.savage_combatant );
 
     // Feral
     parse_buff_effects( p()->buff.cat_form );
@@ -2210,11 +2215,11 @@ public:
 
     for ( size_t i = 1; i <= s_data->effect_count(); i++ )
     {
-      auto eff   = &s_data->effectN( i );
-      double val = eff->percent();
+      const auto& eff = s_data->effectN( i );
+      double val      = eff.percent();
       bool mastery;  // dummy
 
-      if ( eff->type() != E_APPLY_AURA )
+      if ( eff.type() != E_APPLY_AURA )
         continue;
 
       if ( i <= 5 )
@@ -2223,8 +2228,8 @@ public:
       if ( !val )
         continue;
 
-      if ( !( eff->subtype() == A_MOD_DAMAGE_FROM_CASTER_SPELLS && ab::data().affected_by_all( *ab::player->dbc, *eff ) ) &&
-           !( eff->subtype() == A_MOD_AUTO_ATTACK_FROM_CASTER && is_auto_attack ) )
+      if ( !( eff.subtype() == A_MOD_DAMAGE_FROM_CASTER_SPELLS && ab::data().affected_by_all( *ab::player->dbc, eff ) ) &&
+           !( eff.subtype() == A_MOD_AUTO_ATTACK_FROM_CASTER && is_auto_attack ) )
         continue;
 
       p()->sim->print_debug( "dot-debuffs: {} ({}) damage modified by {}% on targets with dot {} ({})", ab::name(),
@@ -3777,11 +3782,7 @@ struct brutal_slash_t : public cat_attack_t
   brutal_slash_t( druid_t* p, const std::string& options_str )
     : cat_attack_t( "brutal_slash", p, p->talent.brutal_slash, options_str )
   {
-    aoe               = as<int>( data().effectN( 3 ).base_value() );
-    energize_amount   = data().effectN( 2 ).base_value();
-    energize_resource = RESOURCE_COMBO_POINT;
-    energize_type     = action_energize::ON_HIT;
-    cooldown->hasted  = true;
+    aoe = as<int>( data().effectN( 3 ).base_value() );
   }
 
   double cost() const override
@@ -4364,13 +4365,31 @@ struct primal_wrath_t : public cat_attack_t
     // Copy persistent multipliers from the direct attack.
     b_state->persistent_multiplier = s->persistent_multiplier;
 
-    if ( !td( s->target )->dots.rip->state )
-      td( s->target )->dots.rip->state = rip->get_state();
+    auto target_rip = td( s->target )->dots.rip;
+
+    if ( !target_rip->state )
+      target_rip->state = rip->get_state();
 
     // changes stat object to primal wraths for consistency in case of a refresh
-    td( s->target )->dots.rip->current_action = rip;
-    td( s->target )->dots.rip->state->copy_state( b_state );
-    td( s->target )->dots.rip->trigger( rip->dot_duration * 0.5 * ( combo_points + 1 ) );  // this seems to be hardcoded
+    target_rip->current_action = rip;
+    target_rip->state->copy_state( b_state );
+
+    // Manually start bleeding
+    // TODO: possibly refactor Rip application to utilize more existing methods such as action_t::trigger_dot()
+    if ( !target_rip->is_ticking() )
+    {
+      auto bleed = s->target->debuffs.bleeding;
+
+      if ( bleed )
+      {
+        if ( bleed->check_value() )
+          bleed->current_value += 1.0;
+        else
+          bleed->start( 1, 1.0 );
+      }
+    }
+
+    target_rip->trigger( rip->dot_duration * 0.5 * ( combo_points + 1 ) );  // this seems to be hardcoded
 
     action_state_t::release( b_state );
   }
@@ -4524,10 +4543,7 @@ struct swipe_cat_t : public cat_attack_t
   swipe_cat_t( druid_t* player, const std::string& options_str )
     : cat_attack_t( "swipe_cat", player, player->spec.swipe_cat, options_str )
   {
-    aoe               = as<int>( data().effectN( 4 ).base_value() );
-    energize_amount   = data().effectN( 1 ).base_value();
-    energize_resource = RESOURCE_COMBO_POINT;
-    energize_type     = action_energize::ON_HIT;
+    aoe = as<int>( data().effectN( 4 ).base_value() );
 
     if ( player->find_rank_spell( "Swipe", "Rank 2" )->ok() )
       bleed_mul = player->spec.swipe_cat->effectN( 2 ).percent();
@@ -4852,16 +4868,6 @@ struct maul_t : public bear_attack_t
       p()->buff.sharpened_claws->up();  // benefit tracking
       p()->buff.sharpened_claws->trigger();
     }
-  }
-
-  double composite_da_multiplier( const action_state_t* s ) const override
-  {
-    double da = bear_attack_t::composite_da_multiplier( s );
-
-    if ( p()->buff.savage_combatant->check() )
-      da *= 1.0 + p()->buff.savage_combatant->stack_value();
-
-    return da;
   }
 
   double bonus_da( const action_state_t* s ) const override
@@ -6752,11 +6758,9 @@ struct starsurge_t : public druid_spell_t
 
 struct stellar_flare_t : public druid_spell_t
 {
-  stellar_flare_t( druid_t* player, const std::string& options_str )
-    : druid_spell_t( "stellar_flare", player, player->talent.stellar_flare, options_str )
-  {
-    energize_amount = player->talent.stellar_flare->effectN( 3 ).resource( RESOURCE_ASTRAL_POWER );
-  }
+  stellar_flare_t( druid_t* p, const std::string& options_str )
+    : druid_spell_t( "stellar_flare", p, p->talent.stellar_flare, options_str )
+  {}
 
   void impact( action_state_t* s ) override
   {
@@ -6972,7 +6976,6 @@ struct force_of_nature_t : public druid_spell_t
     parse_options( options );
     harmful = may_crit = false;
     summon_duration    = p->talent.force_of_nature->effectN( 2 ).trigger()->duration() + 1_ms;
-    energize_amount    = p->talent.force_of_nature->effectN( 5 ).resource( RESOURCE_ASTRAL_POWER );
   }
 
   void init_finished() override
@@ -8053,7 +8056,7 @@ void druid_t::init_spells()
   spec.cat_form                = check_id( find_class_spell( "Cat Form" )->ok(), 3025 );
   spec.cat_form_speed          = check_id( find_class_spell( "Cat Form" )->ok(), 113636 );
   spec.predatory_swiftness     = find_specialization_spell( "Predatory Swiftness" );
-  spec.primal_fury             = find_affinity_spell( "Primary Fury" )->effectN( 1 ).trigger();
+  spec.primal_fury             = find_affinity_spell( "Primal Fury" )->effectN( 1 ).trigger();
   spec.rip                     = find_affinity_spell( "Rip" );
   spec.sharpened_claws         = find_specialization_spell( "Sharpened Claws" );
   spec.swipe_cat               = check_id( find_affinity_spell( "Swipe" )->ok(), 106785 );

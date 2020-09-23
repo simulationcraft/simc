@@ -908,6 +908,7 @@ public:
     // Blood
 
     // Frost                                      // bonus_id
+    item_runeforge_t absolute_zero;               // 6946
     item_runeforge_t biting_cold;                 // 6945
     item_runeforge_t koltiras_favor;              // 6944
     item_runeforge_t rage_of_the_frozen_champion; // 7160
@@ -2495,7 +2496,6 @@ struct magus_pet_t : public death_knight_pet_t
       super( player, name, spell )
     {
       parse_options( options_str );
-      base_dd_min = base_dd_max = player -> o() -> azerite.magus_of_the_dead.value();
     }
 
     // There's a 1 energy cost in spelldata but it might as well be ignored
@@ -2506,10 +2506,9 @@ struct magus_pet_t : public death_knight_pet_t
   struct frostbolt_magus_t : public magus_spell_t
   {
     frostbolt_magus_t( magus_pet_t* player, const std::string& options_str ) :
-      magus_spell_t( player, "frostbolt", player -> o() -> find_spell( 288548 ), options_str )
+      magus_spell_t( player, "frostbolt", player -> o() -> find_spell( 317792 ), options_str )
     {
-      // TODO: Frostbolt has a 3s cooldown, set in a manual hotfix
-      // cooldown -> duration = 3_s;
+      // Frostbolt has a 3s cooldown, set in a manual hotfix
     }
 
     // Frostbolt applies a slowing debuff on non-boss targets
@@ -2542,7 +2541,7 @@ struct magus_pet_t : public death_knight_pet_t
   struct shadow_bolt_magus_t : public magus_spell_t
   {
     shadow_bolt_magus_t( magus_pet_t* player, const std::string& options_str ) :
-      magus_spell_t( player, "shadow_bolt", player -> o() -> find_spell( 288546 ), options_str )
+      magus_spell_t( player, "shadow_bolt", player -> o() -> find_spell( 317791 ), options_str )
     { }
   };
 
@@ -3201,7 +3200,7 @@ struct apocalypse_t : public death_knight_melee_attack_t
   apocalypse_t( death_knight_t* p, const std::string& options_str ) :
     death_knight_melee_attack_t( "apocalypse", p, p -> spec.apocalypse ),
     summon_duration( p -> find_spell( 221180 ) -> duration() ),
-    magus_duration( p -> find_spell( 288544 ) -> duration() ),
+    magus_duration( p -> find_spell( 317776 ) -> duration() ),
     rune_generation( as<int>( p -> find_spell( 343758 ) -> effectN( 1 ).base_value() ) )
   {
     parse_options( options_str );
@@ -3225,7 +3224,7 @@ struct apocalypse_t : public death_knight_melee_attack_t
       p() -> pets.apoc_ghouls.spawn( summon_duration, n_wounds );
     }
 
-    if ( p() -> azerite.magus_of_the_dead.enabled() )
+    if ( p() -> talent.army_of_the_damned -> ok() )
     {
       p() -> pets.magus_of_the_dead.spawn( magus_duration, 1 );
     }
@@ -3285,7 +3284,7 @@ struct army_of_the_dead_t : public death_knight_spell_t
     death_knight_spell_t( "army_of_the_dead", p, p -> spec.army_of_the_dead ),
     precombat_time( 6.0 ),
     summon_duration( p -> spec.army_of_the_dead -> effectN( 1 ).trigger() -> duration() ),
-    magus_duration( p -> find_spell( 288544 ) -> duration() )
+    magus_duration( p -> find_spell( 317776 ) -> duration() )
   {
     // disable_aotd=1 can be added to the profile to disable aotd usage, for example for specific dungeon simming
 
@@ -3373,7 +3372,7 @@ struct army_of_the_dead_t : public death_knight_spell_t
     if ( n_ghoul < 8 )
       make_event<summon_army_event_t>( *sim, p(), n_ghoul, timespan_t::from_seconds( summon_interval ), summon_duration );
 
-    if ( p() -> azerite.magus_of_the_dead.enabled() )
+    if ( p() -> talent.army_of_the_damned -> ok() )
     {
       p() -> pets.magus_of_the_dead.spawn( magus_duration - timespan_t::from_seconds( precombat_time ), 1 );
     }
@@ -4804,6 +4803,14 @@ struct epidemic_t : public death_knight_spell_t
     aoe = 0;
   }
 
+  double cost() const override
+  {
+    if ( p() -> buffs.sudden_doom -> check() )
+      return 0;
+
+    return death_knight_spell_t::cost();
+  }
+
   void execute() override
   {
     death_knight_spell_t::execute();
@@ -4831,6 +4838,8 @@ struct epidemic_t : public death_knight_spell_t
 
     p() -> cooldown.army_of_the_dead -> adjust( -timespan_t::from_seconds(
       p() -> talent.army_of_the_damned -> effectN( 2 ).base_value() / 10 ) );
+
+    p() -> buffs.sudden_doom -> decrement();
   }
 };
 
@@ -5007,6 +5016,11 @@ struct frostwyrms_fury_t : public death_knight_spell_t
     damage( new frostwyrms_fury_damage_t( p ) )
   {
     parse_options( options_str );
+    if ( p -> legendary.absolute_zero -> ok() )
+    {
+      cooldown -> duration *= 1.0 + p -> legendary.absolute_zero->effectN( 1 ).percent();
+    }
+    // TODO Should we be implementing the stun here from the legendary? Doesn't look like other modules do.
   }
 
   void execute() override
@@ -7772,7 +7786,7 @@ void death_knight_t::create_pets()
 
     }
 
-    if ( azerite.magus_of_the_dead.enabled() )
+    if ( talent.army_of_the_damned -> ok() )
     {
       pets.magus_of_the_dead.set_creation_callback(
         [] ( death_knight_t* p ) { return new pets::magus_pet_t( p ); } );
@@ -8149,6 +8163,7 @@ void death_knight_t::init_spells()
   // Generic
   // Blood
   // Frost
+  legendary.absolute_zero               = find_runeforge_legendary( "Absolute Zero" );
   legendary.biting_cold                 = find_runeforge_legendary( "Biting Cold" );
   legendary.koltiras_favor              = find_runeforge_legendary( "Koltira's Favor" );
   legendary.rage_of_the_frozen_champion = find_runeforge_legendary( "Rage of the Frozen Champion" );
@@ -9557,7 +9572,7 @@ struct death_knight_module_t : public module_t {
 
   void register_hotfixes() const override
   {
-    hotfix::register_spell( "Death Knight", "2019-03-12", "Incorrect cooldown for Magus of the Dead's Frostbolt.", 288548 )
+    hotfix::register_spell( "Death Knight", "2020-09-20", "Incorrect cooldown for Magus of the Dead's Frostbolt.", 317792 )
       .field( "cooldown" )
       .operation( hotfix::HOTFIX_SET )
       .modifier( 3000 )

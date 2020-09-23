@@ -5959,7 +5959,7 @@ void rogue_t::trigger_venomous_wounds_death( player_t* target )
 template <typename Base>
 void actions::rogue_action_t<Base>::trigger_auto_attack( const action_state_t* /* state */ )
 {
-  if ( p()->main_hand_attack->execute_event || !p()->off_hand_attack || p()->off_hand_attack->execute_event )
+  if ( !p()->main_hand_attack || p()->main_hand_attack->execute_event || !p()->off_hand_attack || p()->off_hand_attack->execute_event )
     return;
 
   if ( !ab::data().flags( spell_attribute::SX_MELEE_COMBAT_START ) )
@@ -6839,9 +6839,6 @@ void rogue_t::init_action_list()
   precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
   // Potions
-  if ( specialization() != ROGUE_SUBTLETY )
-    precombat->add_action( "potion" );
-
   std::string potion_action = "potion,if=buff.bloodlust.react";
   if ( specialization() == ROGUE_ASSASSINATION )
     potion_action += "|debuff.vendetta.up";
@@ -6988,7 +6985,7 @@ void rogue_t::init_action_list()
     // Pre-Combat
     precombat->add_action( this, "Stealth", "if=(!equipped.pocketsized_computation_device|!cooldown.cyclotronic_blast.duration|raid_event.invulnerable.exists)" );
     precombat->add_action( this, "Roll the Bones", "precombat_seconds=1" );
-    precombat->add_action( this, "Slice and Dice", "precombat_seconds=1" );
+    precombat->add_action( this, "Slice and Dice", "precombat_seconds=2" );
     precombat->add_action( "use_item,name=azsharas_font_of_power" );
     precombat->add_action( "use_item,effect_name=cyclotronic_blast,if=!raid_event.invulnerable.exists" );
 
@@ -7074,7 +7071,6 @@ void rogue_t::init_action_list()
     precombat->add_action( this, "Stealth" );
     precombat->add_talent( this, "Marked for Death", "precombat_seconds=15" );
     precombat->add_action( this, "Slice and Dice", "precombat_seconds=1" );
-    precombat->add_action( "potion" );
     precombat->add_action( "use_item,name=azsharas_font_of_power" );
 
     // Main Rotation
@@ -7109,7 +7105,7 @@ void rogue_t::init_action_list()
     cds->add_action( "serrated_bone_spike,cycle_targets=1,if=variable.snd_condition&!dot.serrated_bone_spike_dot.ticking|fight_remains<=5" );
     cds->add_action( this, "Symbols of Death", "if=variable.snd_condition&!cooldown.shadow_blades.up&(talent.enveloping_shadows.enabled|cooldown.shadow_dance.charges>=1)&(!talent.shuriken_tornado.enabled|talent.shadow_focus.enabled|cooldown.shuriken_tornado.remains>2)&(!essence.blood_of_the_enemy.major|cooldown.blood_of_the_enemy.remains>2)", "Use Symbols on cooldown (after first SnD) unless we are going to pop Tornado and do not have Shadow Focus." );
     cds->add_talent( this, "Marked for Death", "target_if=min:target.time_to_die,if=raid_event.adds.up&(target.time_to_die<combo_points.deficit|!stealthed.all&combo_points.deficit>=cp_max_spend)", "If adds are up, snipe the one with lowest TTD. Use when dying faster than CP deficit or not stealthed without any CP." );
-    cds->add_talent( this, "Marked for Death", "if=raid_event.adds.in>30-raid_event.adds.duration&!stealthed.all&combo_points.deficit>=cp_max_spend", "If no adds will die within the next 30s, use MfD on boss without any CP and no stealth." );
+    cds->add_talent( this, "Marked for Death", "if=raid_event.adds.in>30-raid_event.adds.duration&combo_points.deficit>=cp_max_spend", "If no adds will die within the next 30s, use MfD on boss without any CP." );
     cds->add_action( this, "Shadow Blades", "if=!stealthed.all&variable.snd_condition&combo_points.deficit>=2" );
     cds->add_talent( this, "Shuriken Tornado", "if=talent.shadow_focus.enabled&variable.snd_condition&buff.symbols_of_death.up", "With SF, if not already done, use Tornado with SoD up." );
     cds->add_action( this, "Shadow Dance", "if=!buff.shadow_dance.up&fight_remains<=8+talent.subterfuge.enabled" );

@@ -319,11 +319,6 @@ double warlock_t::composite_player_target_multiplier( player_t* target, school_e
       m *= 1.0 + ( td->debuffs_shadow_embrace->data().effectN( 1 ).percent() * td->debuffs_shadow_embrace->check() );
   }
 
-  if ( td->debuffs_from_the_shadows->check() && school == SCHOOL_SHADOWFLAME )
-  {
-    m *= 1.0 + td->debuffs_from_the_shadows->data().effectN( 1 ).percent();
-  }
-
   return m;
 }
 

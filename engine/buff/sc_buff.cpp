@@ -854,7 +854,7 @@ buff_t* buff_t::set_default_value( double value, size_t effect_idx )
 {
   // Ensure we are not errantly overwriting a value that is already set to a given effect
   assert( default_value_effect_idx == 0 || default_value_effect_idx == effect_idx );
-  
+
   default_value = value;
   default_value_effect_idx = effect_idx;
   return this;
@@ -871,7 +871,7 @@ buff_t* buff_t::set_default_value_from_effect( size_t effect_idx, double multipl
   // NOTE: If this does not work as expected, check the function for support. This still needs work!
   if ( multiplier == 0.0 )
     multiplier = s_data->effectN( effect_idx ).default_multiplier();
-  
+
   set_default_value( s_data->effectN( effect_idx ).base_value() * multiplier, effect_idx );
   default_value_effect_multiplier = multiplier;
   return this;
@@ -2174,8 +2174,6 @@ void buff_t::expire( timespan_t delay )
   int old_stack = current_stack;
 
   current_stack = 0;
-  if ( requires_invalidation )
-    invalidate_cache();
 
   if ( last_start >= timespan_t::zero() )
   {
@@ -2208,6 +2206,10 @@ void buff_t::expire( timespan_t delay )
   expire_override( expiration_stacks, remaining_duration );  // virtual expire call
 
   current_value = 0;
+
+  if ( requires_invalidation )
+    invalidate_cache();
+
   aura_loss();
 
   if ( stack_change_callback )

@@ -1420,6 +1420,7 @@ class SpellDataGenerator(DataGenerator):
           ( 287320, 0 ),    # Frostwhelp's Indignation (azerite)
           ( 283499, 0 ), ( 292493, 0 ), # Frost Fever's RP generation spells
           ( 302656, 0 ), # Vision of Perfection's resource generation for Frost DK
+          ( 317791, 5 ), ( 317792, 5) # Magus of the Dead's (army of the damned talent) Frostbolt and Shadow Bolt spells
 
         ),
 
@@ -1664,6 +1665,7 @@ class SpellDataGenerator(DataGenerator):
           ( 336874, 0 ), # Fortifying Ingredients
 
           # Shadowland Legendaries
+          ( 337342, 3 ), # Jade Ignition Damage
           ( 338141, 1 ), # Flaming Kicks Legendary damage
         ),
 
