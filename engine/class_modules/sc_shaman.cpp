@@ -3,11 +3,11 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "simulationcraft.hpp"
-
 #include "player/covenant.hpp"
 #include "player/pet_spawner.hpp"
 #include "sc_enums.hpp"
+
+#include "simulationcraft.hpp"
 
 // ==========================================================================
 // Shaman
@@ -332,6 +332,9 @@ public:
     buff_t* chains_of_devastation_chain_heal;
     buff_t* chains_of_devastation_chain_lightning;
     buff_t* echoes_of_great_sundering;
+    buff_t* elemental_equilibrium_nature;
+    buff_t* elemental_equilibrium_frost;
+    buff_t* elemental_equilibrium_fire;
 
     // Elemental, Restoration
     buff_t* lava_surge;
@@ -388,25 +391,25 @@ public:
   struct
   {
     // Necrolord
-    const spell_data_t* necrolord; // Primordial Wave
+    const spell_data_t* necrolord;  // Primordial Wave
 
     // Night Fae
-    const spell_data_t* night_fae; // Fae Transfusion
+    const spell_data_t* night_fae;  // Fae Transfusion
 
     // Venthyr
-    const spell_data_t* venthyr; // Chain Harvest
+    const spell_data_t* venthyr;  // Chain Harvest
 
     // Kyrian
-    const spell_data_t* kyrian; // Vesper Totem
+    const spell_data_t* kyrian;  // Vesper Totem
   } covenant;
 
   // Conduits
   struct conduit_t
   {
     // Covenant-specific
-    conduit_data_t essential_extraction; // Night Fae
-    conduit_data_t lavish_harvest; // Venthyr
-    conduit_data_t tumbling_waves; // Necrolord
+    conduit_data_t essential_extraction;  // Night Fae
+    conduit_data_t lavish_harvest;        // Venthyr
+    conduit_data_t tumbling_waves;        // Necrolord
 
     // Elemental
     conduit_data_t call_of_flame;
@@ -417,22 +420,22 @@ public:
   struct legendary_t
   {
     // Shared
-    item_runeforge_t ancestral_reminder;     // NYI
+    item_runeforge_t ancestral_reminder;  // NYI
     item_runeforge_t chains_of_devastation;
-    item_runeforge_t deeptremor_stone;       // NYI
-    item_runeforge_t deeply_rooted_elements; // NYI
+    item_runeforge_t deeptremor_stone;        // NYI
+    item_runeforge_t deeply_rooted_elements;  // NYI
 
     // Elemental
     item_runeforge_t skybreakers_fiery_demise;
     item_runeforge_t elemental_equilibrium;
     item_runeforge_t echoes_of_great_sundering;
-    item_runeforge_t windspeakers_lava_resurgence; // NYI
+    item_runeforge_t windspeakers_lava_resurgence;  // NYI
 
     // Enhancement
-    item_runeforge_t doom_winds;                // NYI
-    item_runeforge_t legacy_of_the_frost_witch; // NYI
-    item_runeforge_t primal_lava_actuators;     // NYI
-    item_runeforge_t witch_doctors_wolf_bones;  // NYI
+    item_runeforge_t doom_winds;                 // NYI
+    item_runeforge_t legacy_of_the_frost_witch;  // NYI
+    item_runeforge_t primal_lava_actuators;      // NYI
+    item_runeforge_t witch_doctors_wolf_bones;   // NYI
   } legendary;
 
   // Gains
@@ -1094,7 +1097,7 @@ public:
   {
     ab::execute();
 
-    if (p()->specialization() == SHAMAN_ELEMENTAL)
+    if ( p()->specialization() == SHAMAN_ELEMENTAL )
     {
       trigger_maelstrom_gain( ab::execute_state );
     }
@@ -1423,6 +1426,14 @@ public:
   bool affected_by_master_of_the_elements = false;
   bool affected_by_stormkeeper            = false;
 
+  bool affected_by_elemental_equilibrium_nature = false;
+  bool affected_by_elemental_equilibrium_frost  = false;
+  bool affected_by_elemental_equilibrium_fire   = false;
+
+  bool triggers_elemental_equilibrium_nature = false;
+  bool triggers_elemental_equilibrium_frost  = false;
+  bool triggers_elemental_equilibrium_fire   = false;
+
   shaman_spell_t( util::string_view token, shaman_t* p, const spell_data_t* s = spell_data_t::nil(),
                   const std::string& options = std::string() )
     : base_t( token, p, s ), overload( nullptr ), proc_sb( nullptr )
@@ -1444,6 +1455,24 @@ public:
       affected_by_stormkeeper = true;
     }
 
+    if ( !background )
+    {
+      if ( data().affected_by( p->find_spell( 336731 )->effectN( 1 ) ) )
+      {
+        affected_by_elemental_equilibrium_frost = true;
+      }
+
+      if ( data().affected_by( p->find_spell( 336732 )->effectN( 1 ) ) )
+      {
+        affected_by_elemental_equilibrium_nature = true;
+      }
+
+      if ( data().affected_by( p->find_spell( 336733 )->effectN( 1 ) ) )
+      {
+        affected_by_elemental_equilibrium_fire = true;
+      }
+    }
+
     may_proc_stormbringer = false;
   }
 
@@ -1460,11 +1489,27 @@ public:
   double action_multiplier() const override
   {
     double m = shaman_action_t::action_multiplier();
-    // BfA Elemental talent - Master of the Elements
+
     if ( affected_by_master_of_the_elements )
     {
       m *= 1.0 + p()->buff.master_of_the_elements->value();
     }
+
+    if ( affected_by_elemental_equilibrium_frost )
+    {
+      m *= 1.0 + p()->buff.elemental_equilibrium_frost->value();
+    }
+
+    if ( affected_by_elemental_equilibrium_nature )
+    {
+      m *= 1.0 + p()->buff.elemental_equilibrium_nature->value();
+    }
+
+    if ( affected_by_elemental_equilibrium_fire )
+    {
+      m *= 1.0 + p()->buff.elemental_equilibrium_fire->value();
+    }
+
     return m;
   }
 
@@ -1485,10 +1530,71 @@ public:
       p()->buff.earthen_rage->trigger();
     }
 
-    // BfA Elemental talent - Master of the Elements
     if ( affected_by_master_of_the_elements && !background )
     {
       p()->buff.master_of_the_elements->decrement();
+    }
+
+    if ( p()->legendary.elemental_equilibrium->ok() )
+    {
+      // these are general rules based on the tooltip, and should
+      // be overridden per-spell when necessary
+      // they also appear to work on some enhancement spells and almost certainly restoration too
+      if ( dbc::is_school( this->school, SCHOOL_FROST ) )
+      {
+        triggers_elemental_equilibrium_nature = true;
+      }
+
+      if ( dbc::is_school( this->school, SCHOOL_NATURE ) )
+      {
+        triggers_elemental_equilibrium_fire = true;
+      }
+
+      if ( dbc::is_school( this->school, SCHOOL_FIRE ) )
+      {
+        triggers_elemental_equilibrium_frost = true;
+      }
+
+      // only harmful spells can proc/consume the buff
+      if ( execute_state->action->harmful )
+      {
+        if ( !background )
+        {
+          if ( affected_by_elemental_equilibrium_frost )
+          {
+            p()->buff.elemental_equilibrium_frost->decrement();
+          }
+
+          // The spell data here actually suggests ONLY the nature one
+          // works on background spells, but in testing Earthen Rage and
+          // similar spells did not consume this
+          if ( affected_by_elemental_equilibrium_nature )
+          {
+            p()->buff.elemental_equilibrium_nature->decrement();
+          }
+
+          if ( affected_by_elemental_equilibrium_fire )
+          {
+            p()->buff.elemental_equilibrium_fire->decrement();
+          }
+        }
+
+        // however for some reason background spells are allowed to *generate* buffs, such as Earthen Rage
+        if ( triggers_elemental_equilibrium_fire )
+        {
+          p()->buff.elemental_equilibrium_fire->increment();
+        }
+
+        if ( triggers_elemental_equilibrium_frost )
+        {
+          p()->buff.elemental_equilibrium_frost->increment();
+        }
+
+        if ( triggers_elemental_equilibrium_nature )
+        {
+          p()->buff.elemental_equilibrium_nature->increment();
+        }
+      }
     }
 
     p()->trigger_vesper_totem( execute_state );
@@ -3213,9 +3319,9 @@ struct ice_strike_t : public shaman_spell_t
 {
   ice_strike_t( shaman_t* player, const std::string& options_str )
     : shaman_spell_t( "ice_strike", player, player->talent.ice_strike, options_str )
-    {
-      // placeholder
-    }
+  {
+    // placeholder
+  }
 };
 
 // Sundering Spell =========================================================
@@ -3383,7 +3489,7 @@ struct fire_elemental_t : public shaman_spell_t
 
     if ( p()->conduit.call_of_flame->ok() )
     {
-      fire_elemental_duration *= (1.0 + p()->conduit.call_of_flame.percent());
+      fire_elemental_duration *= ( 1.0 + p()->conduit.call_of_flame.percent() );
     }
 
     p()->summon_fire_elemental( fire_elemental_duration );
@@ -3418,7 +3524,7 @@ struct storm_elemental_t : public shaman_spell_t
 
     if ( p()->conduit.call_of_flame->ok() )
     {
-      storm_elemental_duration *= (1.0 + p()->conduit.call_of_flame.percent());
+      storm_elemental_duration *= ( 1.0 + p()->conduit.call_of_flame.percent() );
     }
 
     p()->summon_storm_elemental( storm_elemental_duration );
@@ -3526,7 +3632,7 @@ struct chained_overload_base_t : public elemental_overload_spell_t
       maelstrom_gain = mg;
       energize_type  = action_energize::NONE;  // disable resource generation from spell data.
     }
-    radius         = 10.0;
+    radius = 10.0;
 
     if ( data().affected_by( p->spec.chain_lightning_2->effectN( 1 ) ) )
     {
@@ -4282,7 +4388,8 @@ struct lightning_bolt_t : public shaman_spell_t
       p()->trigger_maelstrom_gain( 5.0, p()->gain.high_voltage );
     }
 
-    if ( p()->specialization() == SHAMAN_ENHANCEMENT && p()->covenant.necrolord->ok() && p()->buff.primordial_wave->up() )
+    if ( p()->specialization() == SHAMAN_ENHANCEMENT && p()->covenant.necrolord->ok() &&
+         p()->buff.primordial_wave->up() )
     {
       // TODO: trigger a Lightning Bolt on every Flame Shocked target in the future
       p()->buff.primordial_wave->expire();
@@ -4652,7 +4759,6 @@ struct earthquake_t : public shaman_spell_t
 // Earth Shock Spell ========================================================
 struct earth_shock_t : public shaman_spell_t
 {
-
   earth_shock_t( shaman_t* player, const std::string& options_str )
     : shaman_spell_t( "earth_shock", player, player->find_specialization_spell( "Earth Shock" ), options_str )
   {
@@ -4730,7 +4836,7 @@ struct flame_shock_t : public shaman_spell_t
   {
     double m = shaman_spell_t::composite_crit_chance();
 
-    if ( p()->legendary.skybreakers_fiery_demise->ok())
+    if ( p()->legendary.skybreakers_fiery_demise->ok() )
     {
       m += skybreakers_effect->effectN( 3 ).percent();
     }
@@ -4918,9 +5024,9 @@ struct static_discharge_t : public shaman_spell_t
 {
   static_discharge_t( shaman_t* player, const std::string& options_str )
     : shaman_spell_t( "static_discharge", player, player->talent.static_discharge, options_str )
-    {
-      // placeholder
-    }
+  {
+    // placeholder
+  }
 };
 
 // Echoing Shock Spell ======================================================
@@ -4929,9 +5035,9 @@ struct echoing_shock_t : public shaman_spell_t
 {
   echoing_shock_t( shaman_t* player, const std::string& options_str )
     : shaman_spell_t( "echoing_shock", player, player->talent.echoing_shock, options_str )
-    {
-      // placeholder
-    }
+  {
+    // placeholder
+  }
 
   void execute() override
   {
@@ -5536,7 +5642,7 @@ struct fae_transfusion_t : public shaman_spell_t
 struct primordial_wave_t : public shaman_spell_t
 {
   primordial_wave_t( shaman_t* player, const std::string& options_str )
-  : shaman_spell_t( "primordial_wave", player, player->covenant.necrolord, options_str )
+    : shaman_spell_t( "primordial_wave", player, player->covenant.necrolord, options_str )
   {
     if ( !player->covenant.necrolord->ok() )
       return;
@@ -5546,7 +5652,8 @@ struct primordial_wave_t : public shaman_spell_t
     spell_power_mod.direct  = player->find_spell( 327162 )->effectN( 1 ).sp_coeff();
   }
 
-  void execute() override {
+  void execute() override
+  {
     shaman_spell_t::execute();
 
     p()->buff.primordial_wave->trigger();
@@ -5571,7 +5678,7 @@ struct chain_harvest_t : public chained_base_t
     if ( !player->covenant.venthyr->ok() )
       return;
 
-    aoe = 5;
+    aoe                    = 5;
     spell_power_mod.direct = player->find_spell( 320752 )->effectN( 1 ).sp_coeff();
   }
 
@@ -5620,8 +5727,8 @@ struct chain_harvest_t : public chained_base_t
 
 struct vesper_totem_damage_t : public shaman_spell_t
 {
-  vesper_totem_damage_t( shaman_t* player ) :
-    shaman_spell_t( "vesper_totem_damage", player, player->find_spell( 324520 ) )
+  vesper_totem_damage_t( shaman_t* player )
+    : shaman_spell_t( "vesper_totem_damage", player, player->find_spell( 324520 ) )
   {
     background = true;
   }
@@ -5633,7 +5740,7 @@ struct vesper_totem_t : public shaman_spell_t
 
   vesper_totem_t( shaman_t* player, const std::string& options_str )
     : shaman_spell_t( "vesper_totem", player, player->covenant.kyrian, options_str ),
-    damage( new vesper_totem_damage_t( player ) )
+      damage( new vesper_totem_damage_t( player ) )
   {
     add_child( damage );
   }
@@ -5643,30 +5750,31 @@ struct vesper_totem_t : public shaman_spell_t
     shaman_spell_t::execute();
 
     p()->buff.vesper_totem->trigger();
-    make_event<ground_aoe_event_t>( *player->sim, player, ground_aoe_params_t()
-        .target( execute_state->target )
-        .pulse_time( sim->max_time )
-        .n_pulses( data().effectN( 2 ).base_value() )
-        .action( damage )
-        .state_callback (
-          [this]( ground_aoe_params_t::state_type event_type, ground_aoe_event_t* ptr ) {
-            switch ( event_type )
-            {
-              case ground_aoe_params_t::state_type::EVENT_CREATED:
-                assert( this->p()->vesper_totem == nullptr );
-                this->p()->vesper_totem = ptr;
-                break;
-              case ground_aoe_params_t::state_type::EVENT_DESTRUCTED:
-                assert( this->p()->vesper_totem == ptr );
-                this->p()->vesper_totem = nullptr;
-                break;
-              case ground_aoe_params_t::state_type::EVENT_STOPPED:
-                this->p()->buff.vesper_totem->expire();
-                break;
-              default:
-                break;
-            }
-          } ) );
+    make_event<ground_aoe_event_t>(
+        *player->sim, player,
+        ground_aoe_params_t()
+            .target( execute_state->target )
+            .pulse_time( sim->max_time )
+            .n_pulses( data().effectN( 2 ).base_value() )
+            .action( damage )
+            .state_callback( [ this ]( ground_aoe_params_t::state_type event_type, ground_aoe_event_t* ptr ) {
+              switch ( event_type )
+              {
+                case ground_aoe_params_t::state_type::EVENT_CREATED:
+                  assert( this->p()->vesper_totem == nullptr );
+                  this->p()->vesper_totem = ptr;
+                  break;
+                case ground_aoe_params_t::state_type::EVENT_DESTRUCTED:
+                  assert( this->p()->vesper_totem == ptr );
+                  this->p()->vesper_totem = nullptr;
+                  break;
+                case ground_aoe_params_t::state_type::EVENT_STOPPED:
+                  this->p()->buff.vesper_totem->expire();
+                  break;
+                default:
+                  break;
+              }
+            } ) );
   }
 };
 
@@ -6306,7 +6414,7 @@ void shaman_t::init_spells()
   // elemental blast
 
   // stormfury
-  talent.hot_hand = find_talent_spell( "Hot Hand" );
+  talent.hot_hand   = find_talent_spell( "Hot Hand" );
   talent.ice_strike = find_talent_spell( "Ice Strike" );
 
   // cycle of the elements
@@ -6814,14 +6922,15 @@ void shaman_t::create_buffs()
                          ->set_cooldown( timespan_t::zero() );  // Handled by the action
 
   // Covenants
-  buff.primordial_wave = make_buff( this, "primordial_wave", covenant.necrolord )->set_duration( find_spell( 327164 )->duration() );
+  buff.primordial_wave =
+      make_buff( this, "primordial_wave", covenant.necrolord )->set_duration( find_spell( 327164 )->duration() );
   buff.vesper_totem = make_buff( this, "vesper_totem", covenant.kyrian )
-                           ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
-                              if ( new_ == 0 )
-                              {
-                                event_t::cancel( vesper_totem );
-                              }
-                           } );
+                          ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
+                            if ( new_ == 0 )
+                            {
+                              event_t::cancel( vesper_totem );
+                            }
+                          } );
 
   //
   // Elemental
@@ -6857,10 +6966,21 @@ void shaman_t::create_buffs()
                        ->set_default_value( find_spell( 263806 )->effectN( 1 ).percent() );
 
   buff.echoes_of_great_sundering = make_buff( this, "echoes_of_great_sundering", find_spell( 336217 ) )
-                                     ->set_default_value( find_spell(336217)->effectN( 2 ).percent() );
-  
-  buff.chains_of_devastation_chain_heal      = make_buff( this, "chains_of_devastation_chain_heal", find_spell( 329772 ) );
-  buff.chains_of_devastation_chain_lightning = make_buff( this, "chains_of_devastation_chain_lightning", find_spell( 329771 ) );
+                                       ->set_default_value( find_spell( 336217 )->effectN( 2 ).percent() );
+
+  buff.chains_of_devastation_chain_heal = make_buff( this, "chains_of_devastation_chain_heal", find_spell( 329772 ) );
+  buff.chains_of_devastation_chain_lightning =
+      make_buff( this, "chains_of_devastation_chain_lightning", find_spell( 329771 ) );
+
+  buff.elemental_equilibrium_frost = make_buff( this, "elemental_equilibrium_frost", find_spell( 336731 ) )
+                                         ->set_default_value( find_spell( 336731 )->effectN( 1 ).percent() )
+                                         ->set_max_stack( 1 );
+  buff.elemental_equilibrium_nature = make_buff( this, "elemental_equilibrium_nature", find_spell( 336732 ) )
+                                          ->set_default_value( find_spell( 336732 )->effectN( 1 ).percent() )
+                                          ->set_max_stack( 1 );
+  buff.elemental_equilibrium_fire = make_buff( this, "elemental_equilibrium_nature", find_spell( 336733 ) )
+                                        ->set_default_value( find_spell( 336733 )->effectN( 1 ).percent() )
+                                        ->set_max_stack( 1 );
 
   // PvP
   buff.thundercharge = make_buff( this, "thundercharge", find_spell( 204366 ) )
@@ -7105,10 +7225,12 @@ void shaman_t::init_action_list_elemental()
   def->add_action( "use_items" );
 
   // Major cooldowns
-  def->add_action( this, "Fire Elemental",
-    "if=!talent.storm_elemental.enabled&(expected_combat_length-time<32|expected_combat_length-time>155)" );
-  def->add_talent( this, "Storm Elemental",
-    "if=talent.storm_elemental.enabled&(expected_combat_length-time<32|expected_combat_length-time>155)" );
+  def->add_action(
+      this, "Fire Elemental",
+      "if=!talent.storm_elemental.enabled&(expected_combat_length-time<32|expected_combat_length-time>155)" );
+  def->add_talent(
+      this, "Storm Elemental",
+      "if=talent.storm_elemental.enabled&(expected_combat_length-time<32|expected_combat_length-time>155)" );
   def->add_talent( this, "Liquid Magma Totem", "if=talent.liquid_magma_totem.enabled" );
   def->add_talent( this, "Ascendance", "if=talent.ascendance.enabled" );
   def->add_talent( this, "Stormkeeper", "if=talent.stormkeeper.enabled" );
@@ -7122,7 +7244,7 @@ void shaman_t::init_action_list_elemental()
 
   // Pick APL to run
   def->add_action(
-    "run_action_list,name=aoe,if=active_enemies>2&(spell_targets.chain_lightning>2|spell_targets.lava_beam>2)" );
+      "run_action_list,name=aoe,if=active_enemies>2&(spell_targets.chain_lightning>2|spell_targets.lava_beam>2)" );
   def->add_action( "run_action_list,name=single_target,if=active_enemies<=2" );
 
   // Aoe APL
@@ -7137,32 +7259,39 @@ void shaman_t::init_action_list_elemental()
   aoe->add_action( this, "Frost Shock", "moving=1" );
 
   // Single target APL
-  single_target->add_action( this, "Flame Shock", "target_if=!ticking|dot.flame_shock.remains<=gcd&!buff.surge_of_power.up" );
+  single_target->add_action( this, "Flame Shock",
+                             "target_if=!ticking|dot.flame_shock.remains<=gcd&!buff.surge_of_power.up" );
   single_target->add_action( "chain_harvest" );
   single_target->add_action( "fae_transfusion" );
   single_target->add_action( "primordial_wave" );
   single_target->add_talent( this, "Elemental Blast", "if=talent.elemental_blast.enabled" );
-  single_target->add_action( this, "Lightning Bolt",
-    "if=buff.stormkeeper.up&(buff.master_of_the_elements.up&!talent.surge_of_power.enabled|buff.surge_of_power.up)" );
+  single_target->add_action(
+      this, "Lightning Bolt",
+      "if=buff.stormkeeper.up&(buff.master_of_the_elements.up&!talent.surge_of_power.enabled|buff.surge_of_power.up)" );
   single_target->add_action( this, "Earthquake", "if=spell_targets.chain_lightning>1" );
-  single_target->add_action( this, "Earth Shock",
-    "if=!buff.surge_of_power.up&talent.master_of_the_elements.enabled&buff.master_of_the_elements.up" );
+  single_target->add_action(
+      this, "Earth Shock",
+      "if=!buff.surge_of_power.up&talent.master_of_the_elements.enabled&buff.master_of_the_elements.up" );
+  single_target->add_action(
+      this, "Lightning Bolt",
+      "if=cooldown.storm_elemental.remains>(cooldown.storm_elemental.duration-30)&talent.storm_elemental.enabled" );
   single_target->add_action( this, "Lightning Bolt",
-    "if=cooldown.storm_elemental.remains>(cooldown.storm_elemental.duration-30)&talent.storm_elemental.enabled" );
-  single_target->add_action( this, "Lightning Bolt",
-    "if=(buff.stormkeeper.remains<1.1*gcd*buff.stormkeeper.stack|buff.stormkeeper.up&buff.master_of_the_elements.up)" );
+                             "if=(buff.stormkeeper.remains<1.1*gcd*buff.stormkeeper.stack|buff.stormkeeper.up&buff."
+                             "master_of_the_elements.up)" );
   single_target->add_action( this, "Frost Shock",
-    "if=talent.icefury.enabled&talent.master_of_the_elements.enabled&buff.icefury.up&buff.master_of_the_elements.up" );
+                             "if=talent.icefury.enabled&talent.master_of_the_elements.enabled&buff.icefury.up&buff."
+                             "master_of_the_elements.up" );
   single_target->add_action( this, "Lava Burst", "if=buff.ascendance.up" );
   single_target->add_action( this, "Flame Shock", "target_if=refreshable&active_enemies>1&buff.surge_of_power.up",
-    "Utilize Surge of Power to spread Flame Shock if multiple enemies are present." );
+                             "Utilize Surge of Power to spread Flame Shock if multiple enemies are present." );
   single_target->add_action( this, "Lightning Bolt", "if=buff.surge_of_power.up" );
   single_target->add_action( this, "Lava Burst", "if=cooldown_react&!talent.master_of_the_elements.enabled" );
   single_target->add_talent( this, "Icefury",
-    "if=talent.icefury.enabled&!(maelstrom>75&cooldown.lava_burst.remains<=0)" );
+                             "if=talent.icefury.enabled&!(maelstrom>75&cooldown.lava_burst.remains<=0)" );
   single_target->add_action( this, "Lava Burst", "if=cooldown_react&charges>talent.echo_of_the_elements.enabled" );
-  single_target->add_action( this, "Frost Shock",
-    "if=talent.icefury.enabled&buff.icefury.up&buff.icefury.remains<1.1*gcd*buff.icefury.stack" );
+  single_target->add_action(
+      this, "Frost Shock",
+      "if=talent.icefury.enabled&buff.icefury.up&buff.icefury.remains<1.1*gcd*buff.icefury.stack" );
   single_target->add_action( this, "Lava Burst", "if=cooldown_react" );
   single_target->add_action( this, "Flame Shock", "target_if=refreshable&!buff.surge_of_power.up" );
   single_target->add_action( this, "Chain Lightning", "if=!buff.stormkeeper.up&spell_targets.chain_lightning>1" );
