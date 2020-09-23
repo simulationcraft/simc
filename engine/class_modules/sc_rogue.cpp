@@ -4760,11 +4760,17 @@ struct sepsis_t : public rogue_attack_t
   void last_tick( dot_t* d ) override
   {
     rogue_attack_t::last_tick( d );
-    p()->buffs.vanish->trigger(); // Vanish triggers before final burst damage
-    trigger_master_of_shadows();
     sepsis_expire_damage->set_target( d->target );
     sepsis_expire_damage->execute();
+    // TOCHECK: 09/23/2020 - Vanish triggers before final burst damage in the combat log, 
+    //          but effects such as Master Assassin don't seem to actually register for the final hit
+    p()->buffs.vanish->trigger();
+    trigger_master_of_shadows();
   }
+
+  // TOCHECK: Nightstalker currently does not affect the Sepsis DoT on beta
+  bool snapshots_nightstalker() const override
+  { return false; }
 };
 
 // Serrated Bone Spike ======================================================
