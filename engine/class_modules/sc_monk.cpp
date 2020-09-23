@@ -5478,12 +5478,13 @@ struct blackout_kick_t : public monk_melee_attack_t
       {
         if ( p()->spec.blackout_kick_3->ok() )
         {
-          // Reduce the cooldown of Rising Sun Kick, Fists of Fury and Whirling Dragon Punch
+          // Reduce the cooldown of Rising Sun Kick and Fists of Fury
           timespan_t cd_reduction = -1 * p()->spec.blackout_kick->effectN( 3 ).time_value();
+          if ( p()->buff.weapons_of_order->up() )
+            cd_reduction += timespan_t::from_seconds( -1 );
+
           p()->cooldown.rising_sun_kick->adjust( cd_reduction, true );
           p()->cooldown.fists_of_fury->adjust( cd_reduction, true );
-          if ( p()->buff.whirling_dragon_punch->up() )
-            p()->buff.whirling_dragon_punch->extend_duration( p(), cd_reduction );
         }
         break;
       }
