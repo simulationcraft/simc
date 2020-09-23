@@ -572,7 +572,6 @@ void warlock_t::init_spells()
   talents.darkfury                  = find_talent_spell( "Darkfury" );
   talents.mortal_coil               = find_talent_spell( "Mortal Coil" );
   talents.howl_of_terror            = find_talent_spell( "Howl of Terror" );
-  talents.fire_and_brimstone        = find_talent_spell( "Fire and Brimstone" );          // Destro
   talents.grimoire_of_sacrifice     = find_talent_spell( "Grimoire of Sacrifice" );       // Aff/Destro
   active.grimoire_of_sacrifice_proc = new actions::grimoire_of_sacrifice_damage_t( this );// grimoire of sacrifice
   talents.soul_conduit              = find_talent_spell( "Soul Conduit" );
