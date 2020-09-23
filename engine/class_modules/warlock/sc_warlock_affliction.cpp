@@ -149,11 +149,7 @@ struct agony_t : public affliction_spell_t
     pandemic_invocation_usable = false;  // BFA - Azerite
 
     dot_max_stack = as<int>( data().max_stacks() + p->spec.agony_2->effectN( 1 ).base_value() );
-
-    if ( p->conduit.rolling_agony->ok() && p->conduit.rolling_agony.value() > 0 )
-    {
-      dot_duration += timespan_t::from_millis( p->conduit.rolling_agony.value() );
-    }
+    dot_duration += p->conduit.rolling_agony.time_value();
   }
 
   void last_tick( dot_t* d ) override
