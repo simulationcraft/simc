@@ -318,8 +318,10 @@ double warlock_t::composite_player_target_multiplier( player_t* target, school_e
   {
     if ( td->debuffs_haunt->check() )
       m *= 1.0 + td->debuffs_haunt->data().effectN( 2 ).percent();
-    if ( td->debuffs_shadow_embrace->check() )
-      m *= 1.0 + ( td->debuffs_shadow_embrace->data().effectN( 1 ).percent() * td->debuffs_shadow_embrace->check() );
+	  
+	  //TOCHECK 
+	  m *= 1.0 + ( ( td->debuffs_shadow_embrace->data().effectN( 1 ).percent() ) * ( 1 + conduit.cold_embrace.percent() )
+		  * td->debuffs_shadow_embrace->check() );
   }
 
   return m;
