@@ -2977,6 +2977,14 @@ struct kill_shot_t : hunter_ranged_attack_t
       p() -> buffs.dead_eye -> trigger();
   }
 
+  double cost() const override
+  {
+    if ( p() -> buffs.flayers_mark -> check() )
+      return 0;
+
+    return hunter_ranged_attack_t::cost();
+  }
+
   bool target_ready( player_t* candidate_target ) override
   {
     return ( candidate_target -> health_percentage() <= health_threshold_pct ||
