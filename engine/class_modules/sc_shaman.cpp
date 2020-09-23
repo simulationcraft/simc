@@ -424,7 +424,7 @@ public:
 
     // Elemental
     item_runeforge_t skybreakers_fiery_demise;
-    item_runeforge_t elemental_equilibrium;        // NYI
+    item_runeforge_t elemental_equilibrium;
     item_runeforge_t echoes_of_great_sundering;
     item_runeforge_t windspeakers_lava_resurgence; // NYI
 
