@@ -4567,8 +4567,11 @@ struct a_murder_of_crows_t : public hunter_spell_t
   {
     peck_t( util::string_view n, hunter_t* p ) :
       hunter_ranged_attack_t( n, p, p -> find_spell( 131900 ) )
+    { }
+
+    timespan_t travel_time() const override
     {
-      travel_speed = 0;
+      return timespan_t::from_seconds( data().missile_speed() );
     }
   };
 
