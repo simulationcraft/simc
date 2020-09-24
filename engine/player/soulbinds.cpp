@@ -341,13 +341,14 @@ void dauntless_duelist( special_effect_t& effect )
   {
     dauntless_duelist_cb_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e ) {}
 
-    void execute( action_t* a, action_state_t* st ) override
+    void execute( action_t* a, action_state_t* s ) override
     {
-      auto td = a->player->get_target_data( st->target );
+      dbc_proc_callback_t::execute( a, s );
+
+      auto td = a->player->get_target_data( s->target );
       td->debuff.adversary->trigger();
 
       deactivate();
-      st->target->callbacks_on_demise.emplace_back( [this]( player_t* ) { activate(); } );
     }
 
     void reset() override
@@ -358,7 +359,22 @@ void dauntless_duelist( special_effect_t& effect )
     }
   };
 
-  new dauntless_duelist_cb_t( effect );
+  auto cb = new dauntless_duelist_cb_t( effect );
+  auto p  = effect.player;
+
+  range::for_each( p->sim->actor_list, [ p, cb ]( player_t* t ) {
+    if ( !t->is_enemy() )
+      return;
+
+    t->callbacks_on_demise.emplace_back( [ p, cb ]( player_t* t ) {
+      if ( p->sim->event_mgr.canceled )
+        return;
+
+      auto td = p->get_target_data( t );
+      if ( td->debuff.adversary->check() )
+        cb->activate();
+    } );
+  } );
 }
 
 void thrill_seeker( special_effect_t& effect )
