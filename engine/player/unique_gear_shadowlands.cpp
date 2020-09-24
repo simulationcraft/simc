@@ -420,7 +420,7 @@ void stone_legion_heraldry( special_effect_t& effect )
   effect.type = SPECIAL_EFFECT_NONE;
 }
 
-void cabalists_effigy( special_effect_t& effect )
+void cabalists_hymnal( special_effect_t& effect )
 {
   auto buff = buff_t::find( effect.player, "crimson_chorus" );
   if ( !buff )
@@ -464,6 +464,41 @@ void dreadfire_vessel( special_effect_t& effect )
 
   effect.execute_action = create_proc_action<dreadfire_vessel_proc_t>( "dreadfire_vessel", effect );
 }
+
+void macabre_sheet_music( special_effect_t& effect )
+{
+
+}
+
+void glyph_of_assimilation( special_effect_t& effect )
+{
+
+}
+
+void soul_igniter( special_effect_t& effect )
+{
+
+}
+
+void skulkers_wing( special_effect_t& effect )
+{
+
+}
+
+void memory_of_past_sins( special_effect_t& effect )
+{
+
+}
+
+void gluttonous_spike( special_effect_t& effect )
+{
+
+}
+
+void hateful_chain( special_effect_t& effect )
+{
+
+}
 }  // namespace items
 
 void register_hotfixes()
@@ -493,8 +528,15 @@ void register_special_effects()
     unique_gear::register_special_effect( 329446, items::darkmoon_deck_shuffle );
     unique_gear::register_special_effect( 331624, items::darkmoon_deck_voracity );
     unique_gear::register_special_effect( 344686, items::stone_legion_heraldry );
-    unique_gear::register_special_effect( 344806, items::cabalists_effigy );
+    unique_gear::register_special_effect( 344806, items::cabalists_hymnal );
     unique_gear::register_special_effect( 344732, items::dreadfire_vessel );
+    unique_gear::register_special_effect( 345432, items::macabre_sheet_music );
+    unique_gear::register_special_effect( 345319, items::glyph_of_assimilation );
+    unique_gear::register_special_effect( 345251, items::soul_igniter );
+    unique_gear::register_special_effect( 345019, items::skulkers_wing );
+    unique_gear::register_special_effect( 344662, items::memory_of_past_sins );
+    unique_gear::register_special_effect( 344063, items::gluttonous_spike );
+    unique_gear::register_special_effect( 345357, items::hateful_chain );
 }
 
 void register_target_data_initializers( sim_t& sim )

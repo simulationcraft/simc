@@ -36,8 +36,16 @@ void darkmoon_deck_shuffle( special_effect_t& );
 void darkmoon_deck_putrescence( special_effect_t& );
 void darkmoon_deck_voracity( special_effect_t& );
 void stone_legion_heraldry( special_effect_t& );
-void cabalists_effigy( special_effect_t& );
+void cabalists_hymnal( special_effect_t& );
 void dreadfire_vessel( special_effect_t& );
+void macabre_sheet_music( special_effect_t& );
+void glyph_of_assimilation( special_effect_t& );
+void soul_igniter( special_effect_t& );
+void skulkers_wing( special_effect_t& );
+void memory_of_past_sins( special_effect_t& );
+void gluttonous_spike( special_effect_t& );
+void hateful_chain( special_effect_t& );
+
 }  // namespace items
 
 void register_hotfixes();
