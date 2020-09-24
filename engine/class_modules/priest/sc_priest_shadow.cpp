@@ -939,6 +939,8 @@ struct devouring_plague_dot_state_t : public action_state_t
 
   double composite_ta_multiplier() const override
   {
+    // Use the rolling multiplier to get the stored rolling damage of the previous DP (if it exists)
+    // This will dynamically adjust as the actor gains/loses intellect
     return action_state_t::composite_ta_multiplier() * rolling_multiplier;
   }
 };
@@ -1013,6 +1015,9 @@ struct devouring_plague_t final : public priest_spell_t
 
     double multiplier = 1.0;
     dot_t* dot        = get_dot( s->target );
+
+    // Calculate how much damage is left in the remaining Devouring Plague
+    // Convert that into a ratio so we can apply a modifier to every new tick of Devouring Plague
     if ( dot->is_ticking() )
     {
       action_state_t* old_s = dot->state;
@@ -1025,7 +1030,7 @@ struct devouring_plague_t final : public priest_spell_t
       timespan_t new_tick     = tick_time( new_s );
       double old_multiplier   = cast_state( old_s )->rolling_multiplier;
 
-      // old_remains * old_multiplier / new_remains * X
+      // figure out how many old ticks to roll over
       int num_full_ticks      = as<int>( std::floor( ( old_remains - time_to_tick ) / old_tick ) );
       double tick_coefficient = dot->current_action->spell_tick_power_coefficient( old_s ) * old_multiplier;
 
@@ -1033,24 +1038,20 @@ struct devouring_plague_t final : public priest_spell_t
       double new_num_ticks        = new_remains / new_tick;
       double new_tick_coefficient = dot->current_action->spell_tick_power_coefficient( new_s );
 
-      if ( sim->debug )
-      {
-        sim->print_debug(
-            "Devouring Plague calculations - num_full_ticks: {}, tick_coefficient: {}, new_num_ticks: {}, "
-            "new_tick_coefficient: {}",
-            num_full_ticks, tick_coefficient, new_num_ticks, new_tick_coefficient );
-      }
+      sim->print_debug(
+          "{} {} calculations - num_full_ticks: {}, tick_coefficient: {}, new_num_ticks: {}, "
+          "new_tick_coefficient: {}",
+          *player, *this, num_full_ticks, tick_coefficient, new_num_ticks, new_tick_coefficient );
 
       // figure out the increase for each new tick of DP
-      multiplier = 1 + ( ( ( num_full_ticks * tick_coefficient ) / new_num_ticks ) / new_tick_coefficient );
+      double total_coefficient = num_full_ticks * tick_coefficient;
+      double increase_per_new_tick = total_coefficient / new_num_ticks;
+      double increase_ratio = increase_per_new_tick / new_tick_coefficient;
 
-      if ( sim->debug )
-      {
-        sim->print_debug(
-            "{} {} updated Devouring Plague modifier per tick from previous dot. Modifier per tick went "
-            "from {} to {}.",
-            *player, *this, old_multiplier, multiplier );
-      }
+      multiplier = 1 + increase_ratio;
+
+      sim->print_debug( "{} {} modifier updated per tick from previous dot. Modifier per tick went from {} to {}.",
+                        *player, *this, old_multiplier, multiplier );
     }
 
     cast_state( s )->rolling_multiplier = multiplier;
