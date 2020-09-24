@@ -1191,6 +1191,11 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
         p() -> buffs.crusade -> extend_duration( p(), timespan_t::from_seconds( p() -> legendary.badge_of_the_mad_paragon -> effectN( 1 ).base_value() ) );
       }
     }
+
+    if ( p() -> legendary.vanguards_momentum -> ok() )
+    {
+      p() -> buffs.vanguards_momentum -> trigger();
+    }
   }
 
   double action_multiplier() const override
@@ -2010,6 +2015,20 @@ stat_e paladin_t::convert_hybrid_stat( stat_e s ) const
   }
 
   return s;
+}
+
+// paladin_t::composite_player_multiplier ===================================
+
+double paladin_t::composite_player_multiplier( school_e school ) const
+{
+  double m = player_t::composite_player_multiplier( school );
+
+  if ( buffs.vanguards_momentum -> up() )
+  {
+    m *= 1.0 + buffs.vanguards_momentum -> stack_value();
+  }
+
+  return m;
 }
 
 // paladin_t::composite_attribute_multiplier ================================

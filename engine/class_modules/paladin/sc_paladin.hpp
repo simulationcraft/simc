@@ -186,6 +186,9 @@ public:
 
     // Covenants
     buff_t* vanquishers_hammer;
+
+    // Legendaries
+    buff_t* vanguards_momentum;
   } buffs;
 
   // Gains
@@ -466,6 +469,7 @@ public:
   virtual std::unique_ptr<expr_t> create_expression( util::string_view name ) override;
 
   // player stat functions
+  virtual double    composite_player_multiplier( school_e ) const override;
   virtual double    composite_attribute_multiplier( attribute_e attr ) const override;
   virtual double    composite_attack_power_multiplier() const override;
   virtual double    composite_bonus_armor() const override;

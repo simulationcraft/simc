@@ -589,6 +589,11 @@ void paladin_t::create_buffs_retribution()
   buffs.empyrean_power = make_buff( this, "empyrean_power", find_spell( 326733 ) );
   buffs.relentless_inquisitor = make_buff<stat_buff_t>(this, "relentless_inquisitor", find_spell( 279204 ) )
                               -> add_stat( STAT_HASTE_RATING, azerite.relentless_inquisitor.value() );
+
+  // legendaries
+  buffs.vanguards_momentum = make_buff( this, "vanguards_momentum", find_spell( 345046 ) )
+                             -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+                             -> set_default_value( find_spell( 345046 ) -> effectN( 1 ).percent() );
 }
 
 void paladin_t::init_rng_retribution()
