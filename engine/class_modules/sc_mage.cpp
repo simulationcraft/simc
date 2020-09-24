@@ -7300,6 +7300,7 @@ double mage_t::resource_regen_per_second( resource_e rt ) const
 
   if ( specialization() == MAGE_ARCANE && rt == RESOURCE_MANA )
   {
+    reg *= 1.0 + 0.01 * dbc->effect_average( &spec.arcane_mage->effectN( 4 ), level() );
     reg *= 1.0 + cache.mastery() * spec.savant->effectN( 1 ).mastery_value();
     reg *= 1.0 + buffs.enlightened_mana->check_value();
 
