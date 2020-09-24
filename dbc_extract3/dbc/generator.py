@@ -1652,6 +1652,7 @@ class SpellDataGenerator(DataGenerator):
           ( 328296, 0 ), # Necrolord Bonedust Chi Refund
           ( 327257, 0 ), # Ardenweald Faeline Stomp debuff
           ( 327264, 0 ), # Ardenweald Faeline Stomp damage
+          ( 327276, 0 ), # Ardenweald Faeline Stomp reset buff notification
           ( 345727, 0 ), # Ardenweald Faeline Stomp damage 2
           ( 328283, 0 ), # Venthyr Fallen Monk Soothing Mist Heal
           ( 330898, 0 ), # Venthyr Fallen Monk Fists of Fury

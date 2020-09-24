@@ -7869,6 +7869,21 @@ struct faeline_stomp_damage_t : public monk_spell_t
     background = true;
   }
 
+  double composite_aoe_multiplier( const action_state_t* state ) const override
+  {
+    double cam = monk_spell_t::composite_aoe_multiplier( state );
+
+    std::vector<player_t*> targets = state->action->target_list();
+
+    if ( p()->conduit.way_of_the_fae->ok() && !targets.empty() )
+    {
+      cam *= 1 + ( p()->conduit.way_of_the_fae.percent() *
+             std::min( (double)targets.size(), p()->conduit.way_of_the_fae->effectN( 2 ).base_value() ) );
+    }
+
+    return cam;
+  }
+
   void impact( action_state_t* s ) override
   {
     monk_spell_t::impact( s );
@@ -7891,6 +7906,7 @@ struct faeline_stomp_t : public monk_spell_t
       damage( new faeline_stomp_damage_t( p ) )
   {
     parse_options( options_str );
+    aoe = 5; // Currently hard-coded
   }
 
   void execute() override
