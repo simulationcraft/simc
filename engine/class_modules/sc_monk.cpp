@@ -7861,10 +7861,8 @@ struct faeline_stomp_ww_damage_t : public monk_spell_t
 
 struct faeline_stomp_damage_t : public monk_spell_t
 {
-  faeline_stomp_ww_damage_t* ww_damage;
   faeline_stomp_damage_t( monk_t& p )
-    : monk_spell_t( "faeline_stomp_dmg", &p, p.passives.faeline_stomp_damage ),
-      ww_damage( new faeline_stomp_ww_damage_t( p ) )
+    : monk_spell_t( "faeline_stomp_dmg", &p, p.passives.faeline_stomp_damage )
   {
     background = true;
   }
@@ -7873,7 +7871,7 @@ struct faeline_stomp_damage_t : public monk_spell_t
   {
     double cam = monk_spell_t::composite_aoe_multiplier( state );
 
-    std::vector<player_t*> targets = state->action->target_list();
+    const std::vector<player_t*>& targets = state->action->target_list();
 
     if ( p()->conduit.way_of_the_fae->ok() && !targets.empty() )
     {
@@ -7888,12 +7886,6 @@ struct faeline_stomp_damage_t : public monk_spell_t
   {
     monk_spell_t::impact( s );
 
-    if ( p()->specialization() == MONK_WINDWALKER && td( s->target )->debuff.faeline_stomp->up() )
-    {
-      ww_damage->set_target( s->target );
-      ww_damage->execute();
-    }
-
     td( s->target )->debuff.faeline_stomp->trigger();
   }
 };
@@ -7901,9 +7893,11 @@ struct faeline_stomp_damage_t : public monk_spell_t
 struct faeline_stomp_t : public monk_spell_t
 {
   faeline_stomp_damage_t* damage;
+  faeline_stomp_ww_damage_t* ww_damage;
   faeline_stomp_t( monk_t& p, const std::string& options_str )
     : monk_spell_t( "faeline_stomp", &p, p.covenant.night_fae ), 
-      damage( new faeline_stomp_damage_t( p ) )
+      damage( new faeline_stomp_damage_t( p ) ),
+      ww_damage( new faeline_stomp_ww_damage_t( p ) )
   {
     parse_options( options_str );
     aoe = 5; // Currently hard-coded
@@ -7917,6 +7911,12 @@ struct faeline_stomp_t : public monk_spell_t
     damage->execute();
 
     p()->buff.faeline_stomp->trigger();
+
+    if ( p()->specialization() == MONK_WINDWALKER )
+    {
+      ww_damage->set_target( target );
+      ww_damage->execute();
+    }
   }
 };
 
