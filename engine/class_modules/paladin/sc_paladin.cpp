@@ -85,19 +85,29 @@ namespace buffs {
     damage_modifier = data().effectN( 1 ).percent();
 
     // Lengthen duration if Sanctified Wrath is taken
+    bool took_sw = false;
     switch ( p -> specialization() )
     {
     case PALADIN_HOLY:
       if ( p -> talents.holy_sanctified_wrath -> ok() )
+      {
         base_buff_duration *= 1.0 + p -> talents.holy_sanctified_wrath -> effectN( 1 ).percent();
+        took_sw = true;
+      }
       break;
     case PALADIN_RETRIBUTION:
       if ( p -> talents.ret_sanctified_wrath -> ok() )
+      {
         base_buff_duration *= 1.0 + p -> talents.ret_sanctified_wrath -> effectN( 1 ).percent();
+        took_sw = true;
+      }
       break;
     case PALADIN_PROTECTION:
       if ( p -> talents.prot_sanctified_wrath -> ok() )
+      {
         base_buff_duration *= 1.0 + p -> talents.prot_sanctified_wrath -> effectN( 1 ).percent();
+        took_sw = true;
+      }
       break;
     default:
       break;
@@ -105,7 +115,8 @@ namespace buffs {
 
     // ... or if we have Light's Decree
     // TODO(mserrano): is this the right ordering?
-    if ( p -> azerite.lights_decree.ok() )
+    //    apparently currently this just doesn't work at all with SW
+    if ( p -> azerite.lights_decree.ok() && !( p -> bugs && took_sw ) )
       base_buff_duration += p -> spells.lights_decree -> effectN( 2 ).time_value();
 
     // let the ability handle the cooldown
@@ -806,7 +817,14 @@ void holy_power_consumer_t::execute()
   if ( p() -> buffs.crusade -> check() )
   {
     int num_stacks = as<int>( hp_used == 0 ? base_costs[ RESOURCE_HOLY_POWER ] : hp_used );
-    p() -> buffs.crusade -> trigger( num_stacks );
+    if ( p() -> bugs && is_divine_storm && ( p() -> buffs.empyrean_power_azerite -> up() || p() -> buffs.empyrean_power -> up() ) )
+    {
+      num_stacks = 0;
+    }
+    else
+    {
+      p() -> buffs.crusade -> trigger( num_stacks );
+    }
   }
 
   if ( p() -> azerite.relentless_inquisitor.ok() )
@@ -818,23 +836,47 @@ void holy_power_consumer_t::execute()
 
   // Consume Empyrean Power on Divine Storm, handled here for interaction with DP/FoJ
   // Cost reduction is still in divine_storm_t
-  if ( p() -> buffs.empyrean_power_azerite -> up() && is_divine_storm )
+  bool should_continue = true;
+  if ( is_divine_storm && p() -> bugs )
   {
-    p() -> buffs.empyrean_power_azerite -> expire();
+    if ( p() -> buffs.empyrean_power_azerite -> up() )
+    {
+      p() -> buffs.empyrean_power_azerite -> expire();
+      should_continue = false;
+    }
+
+    if ( p() -> buffs.empyrean_power -> up() )
+    {
+      p() -> buffs.empyrean_power -> expire();
+      should_continue = false;
+    }
   }
-  else if ( p() -> buffs.empyrean_power -> up() && is_divine_storm )
+  else if ( is_divine_storm )
   {
-    p() -> buffs.empyrean_power -> expire();
+    if ( p() -> buffs.empyrean_power_azerite -> up() )
+    {
+      p() -> buffs.empyrean_power_azerite -> expire();
+      should_continue = false;
+    }
+    else if ( p() -> buffs.empyrean_power -> up() )
+    {
+      p() -> buffs.empyrean_power -> expire();
+      should_continue = false;
+    }
   }
+
   // Divine Purpose isn't consumed on DS if EP was consumed
-  else if ( p() -> buffs.divine_purpose -> up() )
+  if ( should_continue )
   {
-    p() -> buffs.divine_purpose -> expire();
-  }
-  // FoJ isn't consumed if EP or DP were consumed
-  else if ( p() -> buffs.fires_of_justice -> up() )
-  {
-    p() -> buffs.fires_of_justice -> expire();
+    if ( should_continue && p() -> buffs.divine_purpose -> up() )
+    {
+      p() -> buffs.divine_purpose -> expire();
+    }
+    // FoJ isn't consumed if EP or DP were consumed
+    else if ( p() -> buffs.fires_of_justice -> up() )
+    {
+      p() -> buffs.fires_of_justice -> expire();
+    }
   }
 
   // Roll for Divine Purpose
