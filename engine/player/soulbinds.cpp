@@ -13,6 +13,8 @@
 #include "sim/sc_sim.hpp"
 #include "sim/sc_cooldown.hpp"
 
+#include <regex>
+
 namespace covenant
 {
 namespace soulbinds
@@ -127,6 +129,19 @@ void add_covenant_cast_callback( player_t* p, S&&... args )
   cb->cb_list.push_back( cb_entry );
 }
 
+double get_coefficient_from_desc_vars( special_effect_t& e, bool sp = true )
+{
+  double coef = 0;
+  if ( const char* vars = e.player->dbc->spell_desc_vars( e.spell_id ).desc_vars() )
+  {
+    std::cmatch m;
+    std::regex r( sp ? "\\$SP\\*([0-9]*\\.?[0-9]*)" : "\\$AP\\*([0-9]*\\.?[0-9]*)" );
+    if ( std::regex_search( vars, m, r ) && m.size() >= 2 )
+      coef = std::stod( m.str( 1 ) );
+  }
+  return coef;
+}
+
 struct niyas_tools_proc_t : public unique_gear::proc_spell_t
 {
   niyas_tools_proc_t( util::string_view n, player_t* p, const spell_data_t* s, double mod, bool direct = true ) : proc_spell_t( n, p, s )
@@ -147,7 +162,7 @@ void niyas_tools_burrs( special_effect_t& effect )
 {
   auto action = effect.player->find_action( "spiked_burrs" );
   if ( !action )
-    action = new niyas_tools_proc_t( "spiked_burrs", effect.player, effect.player->find_spell( 333526 ), 0.36, false );
+    action = new niyas_tools_proc_t( "spiked_burrs", effect.player, effect.player->find_spell( 333526 ), get_coefficient_from_desc_vars( effect ), false );
 
   effect.execute_action = action;
 
@@ -165,11 +180,11 @@ void niyas_tools_poison( special_effect_t& effect )
     {
       dot = e.player->find_action( "paralytic_poison" );
       if ( !dot )
-        dot = new niyas_tools_proc_t( "paralytic_poison", e.player, e.player->find_spell( 321519 ), 0.16, false );
+        dot = new niyas_tools_proc_t( "paralytic_poison", e.player, e.player->find_spell( 321519 ), get_coefficient_from_desc_vars( e ), false );
 
       direct = e.player->find_action( "paralytic_poison_interrupt" );
       if ( !direct )
-        direct = new niyas_tools_proc_t( "paralytic_poison_interrupt", e.player, e.player->find_spell( 321524 ), 0.16 );
+        direct = new niyas_tools_proc_t( "paralytic_poison_interrupt", e.player, e.player->find_spell( 321524 ), get_coefficient_from_desc_vars( e ) );
     }
 
     void execute( action_t* a, action_state_t* s ) override
