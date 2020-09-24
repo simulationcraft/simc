@@ -516,6 +516,7 @@ public:
     proc_t* soul_conduit;
     // aff
     proc_t* nightfall;
+    proc_t* corrupting_leer;
     // demo
     proc_t* demonic_calling;
     proc_t* souls_consumed;
@@ -568,6 +569,7 @@ public:
   void vision_of_perfection_proc_aff();
   void vision_of_perfection_proc_demo();
   void darkglare_extension_helper( warlock_t* p, timespan_t darkglare_extension );
+  void malignancy_reduction_helper();
   action_t* create_action( util::string_view name, const std::string& options ) override;
   pet_t* create_pet( util::string_view name, util::string_view type = "" ) override;
   void create_pets() override;

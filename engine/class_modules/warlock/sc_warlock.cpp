@@ -659,6 +659,8 @@ void warlock_t::init_procs()
   procs.portal_summon   = get_proc( "portal_summon" );
   procs.demonic_calling = get_proc( "demonic_calling" );
   procs.soul_conduit    = get_proc( "soul_conduit" );
+  procs.corrupting_leer = get_proc( "corrupting_leer" );
+
 }
 
 void warlock_t::init_base_stats()
@@ -945,6 +947,15 @@ void warlock_t::darkglare_extension_helper( warlock_t* p, timespan_t darkglare_e
     td->dots_phantom_singularity->extend_duration( darkglare_extension );
     td->dots_vile_taint->extend_duration( darkglare_extension );
     td->dots_unstable_affliction->extend_duration( darkglare_extension );
+  }
+}
+
+void warlock_t::malignancy_reduction_helper()
+{
+  if ( rng().roll( conduit.corrupting_leer.percent() ) )
+  {
+    procs.corrupting_leer->occur();
+    cooldowns.darkglare->adjust( -5.0_s );  // Value is in the description so had to hardcode it
   }
 }
 
