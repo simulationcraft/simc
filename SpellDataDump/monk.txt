@@ -10014,6 +10014,26 @@ Description      : Strike the ground fiercely to expose a faeline for $d, dealin
 Your abilities have a $s2% chance of resetting the cooldown of Faeline Stomp while fighting on a faeline.
 Tooltip          : Fighting on a faeline has a $s2% chance of resetting the cooldown of Faeline Stomp.
 
+Name             : Faeline Stomp (desc=Night Fae) (id=327257) [Spell Family (53)] 
+Class            : Monk
+School           : Nature
+Spell Type       : Magic
+Range            : 100 yards
+Duration         : 30 seconds
+Attributes       : ........ ........ ........ x.xx....   ...x.x.x ........ ........ ........ 
+                 : ..x..... ......x. ........ ........   ........ ........ ........ ........ 
+                 : x......x ........ ........ .......x   ...x.... x....... .xxx.... ........ 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
+                 : .....x.x ........ ........ ........   ........ ........ ..x.x... ........ 
+                 : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Does not break stealth (37)
+Effects          :
+#1 (id=818665)   : Unknown(179)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 20280 | Radius: 3.5 yards | Target: Unknown(81)
+Description      : $@spelldesc327104
+
 Name             : Faeline Stomp (desc=Night Fae) (id=327264) [Spell Family (53)] 
 Class            : Monk
 School           : Nature

@@ -1369,6 +1369,7 @@ class SpellDataGenerator(DataGenerator):
             ( 340431, 0 ),          # Doomblade legendary debuff
             ( 343173, 0 ),          # Premeditation buff
             ( 319190, 0 ),          # Shadow Vault shadow damage spell
+            ( 345316, 0 ), ( 345390, 0 ), # Flagellation damage spells
         ),
 
         # Priest:

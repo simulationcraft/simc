@@ -1,5 +1,5 @@
 // Spell text, wow build 9.0.2.35978
-static const std::array<spelltext_data_t, 15609> __spelltext_data { {
+static const std::array<spelltext_data_t, 15612> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -14203,6 +14203,7 @@ static const std::array<spelltext_data_t, 15609> __spelltext_data { {
   { 327163, "$@spelldesc326059", 0, "Necrolord" },
   { 327193, "Reset the cooldown of Avenger's Shield. Your next $n Avenger's Shields have no cooldown and deal $s2% additional damage.", "Your next $n Avenger's Shields have no cooldown and deal $w2% additional damage.", 0 },
   { 327225, "$@spelldesc203776", "Absorbing $w1 damage.", 0 },
+  { 327257, "$@spelldesc327104", 0, "Night Fae" },
   { 327264, "$@spelldesc327104", 0, "Night Fae" },
   { 327273, "When you cast your Barrier and while it's active, the next Fire, Frost or Arcane source of damage you take increases your Fire, Frost, and Arcane damage by $327282s1%.", 0, 0 },
   { 327277, "$@spelldesc327273", 0, 0 },
@@ -15585,9 +15586,11 @@ static const std::array<spelltext_data_t, 15609> __spelltext_data { {
   { 345256, "Conjure a spectral visage of Margrave Krexus.", "You have conjured a spectral visage of Margrave Krexus.", 0 },
   { 345257, "$@spelldesc345256\r\n", "$@spellaura345256", 0 },
   { 345285, "Lash the target with Anima $s2 times, dealing ${$s1*$s2} Shadow damage.  They remain tormented for $d, causing a lash for each Combo Point you spend, dealing $s1 Shadow damage.\r\n\r\nOnce the target has been lashed at least $u times, reactivating Flagellation cleanses their torment, increasing your Mastery by $345569s1% for $345569d.", "$?$W2>0[Nearby Rogue is tormenting the target, dealing $s1 Shadow damage for each Combo Point spent.][Combo points spent deal $s1 Shadow damage to the Rogue's tormented target.]", "Venthyr" },
+  { 345316, "$@spelldesc345285", 0, "Venthyr" },
   { 345319, "Your target suffers $s1 Arcane damage every $t1 sec for $d.\r\n\r\nIf your target dies while afflicted with Glyph of Consumption, your Mastery is increased by $345500s1 for twice the time remaining on the Glyph.", "Suffering $w1 damage every $t1.", 0 },
   { 345335, "$@spelldesc323639", "Suffering $w1 Nature damage every $t1 sec.", 0 },
   { 345357, "While you have a greater health percentage than your target, your abilities have a very high chance to deal ${$s1*(1+$@versadmg)} Physical damage.\r\n\r\nWhile you have a lower health percentage than your target, your abilities have a very high chance to grant ${$s2*(1+$@versadmg)} absorption.", 0, 0 },
+  { 345390, "$@spelldesc345285", 0, "Venthyr" },
   { 345417, "$@spelldesc314793", 0, 0 },
   { 345432, "Four dance partners appear in a random pattern around you. Moving to each grants $345431s1 Haste and $345431s2 Speed for $345439d.", 0, 0 },
   { 345439, 0, "Haste increased by $w1. Speed increased by $w2.", 0 },
