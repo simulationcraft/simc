@@ -948,6 +948,14 @@ void warlock_t::darkglare_extension_helper( warlock_t* p, timespan_t darkglare_e
   }
 }
 
+void warlock_t::malignancy_reduction_helper()
+{
+  if ( rng().roll( conduit.corrupting_leer.percent() ) )
+  {
+    cooldowns.darkglare->adjust( -5.0_s );  // Value is in the description so had to hardcode it
+  }
+}
+
 // Function for returning the the number of imps that will spawn in a specified time period.
 int warlock_t::imps_spawned_during( timespan_t period )
 {

@@ -250,10 +250,7 @@ struct agony_t : public affliction_spell_t
       p()->buffs.inevitable_demise->trigger();
     }
 
-    if (p()->rng().roll( p()->conduit.corrupting_leer.percent() ))
-    {
-      p()->cooldowns.darkglare->adjust( -5.0_s ); // Value is in the description so had to hardcode it
-    }
+    p()->malignancy_reduction_helper();
 
     affliction_spell_t::tick( d );
   }
@@ -362,9 +359,16 @@ struct unstable_affliction_t : public affliction_spell_t
 
     p()->ua_target = nullptr;
   }
+
+  void tick( dot_t* d ) override
+  {
+    p()->malignancy_reduction_helper();
+
+    affliction_spell_t::tick( d );
+  }
 };
 
-struct summon_darkglare_t : public affliction_spell_t
+struct summon_darkglare_t : public affliction_spell_t   
 {
   summon_darkglare_t( warlock_t* p, util::string_view options_str )
     : affliction_spell_t( "summon_darkglare", p, p->spec.summon_darkglare )
