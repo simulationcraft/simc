@@ -896,6 +896,7 @@ private:
         break;
       case random_pet_type::eyes_of_guldan:
       {
+        // TODO - eyes appear to spawn in #s randomly between 1 and 4 in SL beta 09-24-2020.
         // eyes summon in groups of 4. Confirmed by pip 2018-06-23.
         summon_random_pet_helper( p()->warlock_pet_list.eyes_of_guldan, 4 );
         break;
