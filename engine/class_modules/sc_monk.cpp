@@ -150,6 +150,7 @@ public:
 
     // Covenant Abilities
     buff_t* bonedust_brew;
+    buff_t* faeline_stomp;
     buff_t* fallen_monk_keg_smash;
     buff_t* weapons_of_order;
 
@@ -298,6 +299,7 @@ public:
     // Covenant Abilities
     buff_t* weapons_of_order;
     buff_t* weapons_of_order_ww;
+    buff_t* faeline_stomp;
 
     // Covenant Conduits
     absorb_buff_t* fortifying_ingrediences;
@@ -571,6 +573,7 @@ public:
     // Covenants
     cooldown_t* weapons_of_order;
     cooldown_t* bonedust_brew;
+    cooldown_t* faeline_stomp;
     cooldown_t* fallen_order;
   } cooldown;
 
@@ -630,6 +633,8 @@ public:
     const spell_data_t* bonedust_brew_dmg;
     const spell_data_t* bonedust_brew_heal;
     const spell_data_t* bonedust_brew_chi;
+    const spell_data_t* faeline_stomp_damage;
+    const spell_data_t* faeline_stomp_ww_damage;
     const spell_data_t* fallen_monk_breath_of_fire;
     const spell_data_t* fallen_monk_clash;
     const spell_data_t* fallen_monk_enveloping_mist;
@@ -937,6 +942,7 @@ public:
     // Covenants
     cooldown.weapons_of_order             = get_cooldown( "weapnos_of_order" );
     cooldown.bonedust_brew                = get_cooldown( "bonedust_brew" );
+    cooldown.faeline_stomp                = get_cooldown( "faeline_stomp" );
     cooldown.fallen_order                 = get_cooldown( "fallen_order" );
 
     resource_regeneration = regen_type::DYNAMIC;
@@ -4172,6 +4178,10 @@ public:
     ab::execute();
 
     trigger_storm_earth_and_fire( this );
+
+    if ( p()->buff.faeline_stomp->up() && ab::background == false &&
+         p()->rng().roll( p()->buff.faeline_stomp->value() ) )
+      p()->cooldown.faeline_stomp->reset( true, 1 );
   }
 
   void impact( action_state_t* s ) override
@@ -4203,7 +4213,7 @@ public:
         p()->buff.dance_of_chiji_azerite->trigger();
     }
 
-    trigger_bonedust_brew ( s );
+    trigger_bonedust_brew( s );
 
     ab::impact( s );
   }
@@ -7837,6 +7847,64 @@ struct bonedust_brew_heal_t : public monk_heal_t
 };
 
 // ==========================================================================
+// Faeline Stomp - Ardenweald Covenant
+// ==========================================================================
+
+struct faeline_stomp_ww_damage_t : public monk_spell_t
+{
+  faeline_stomp_ww_damage_t( monk_t& p ) : 
+      monk_spell_t( "faeline_stomp_ww_dmg", &p, p.passives.faeline_stomp_ww_damage )
+  {
+    background = true;
+  }
+};
+
+struct faeline_stomp_damage_t : public monk_spell_t
+{
+  faeline_stomp_ww_damage_t* ww_damage;
+  faeline_stomp_damage_t( monk_t& p )
+    : monk_spell_t( "faeline_stomp_dmg", &p, p.passives.faeline_stomp_damage ),
+      ww_damage( new faeline_stomp_ww_damage_t( p ) )
+  {
+    background = true;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    monk_spell_t::impact( s );
+
+    if ( p()->specialization() == MONK_WINDWALKER && td( s->target )->debuff.faeline_stomp->up() )
+    {
+      ww_damage->set_target( s->target );
+      ww_damage->execute();
+    }
+
+    td( s->target )->debuff.faeline_stomp->trigger();
+  }
+};
+
+struct faeline_stomp_t : public monk_spell_t
+{
+  faeline_stomp_damage_t* damage;
+  faeline_stomp_t( monk_t& p, const std::string& options_str )
+    : monk_spell_t( "faeline_stomp", &p, p.covenant.night_fae ), 
+      damage( new faeline_stomp_damage_t( p ) )
+  {
+    parse_options( options_str );
+  }
+
+  void execute() override
+  {
+    monk_spell_t::execute();
+
+    damage->set_target( target );
+    damage->execute();
+
+    p()->buff.faeline_stomp->trigger();
+  }
+};
+
+// ==========================================================================
 // Fallen Order - Venthyr Covenant Ability
 // ==========================================================================
 
@@ -9192,6 +9260,8 @@ monk_td_t::monk_td_t( player_t* target, monk_t* p )
                              ->set_chance( 1.0 )
                              ->set_default_value_from_effect( 3 );
 
+  debuff.faeline_stomp = make_buff( *this, "faeline_stomp", p->find_spell( 327257 ) );
+
   debuff.fallen_monk_keg_smash = make_buff( *this, "fallen_monk_keg_smash", p->passives.fallen_monk_keg_smash )
                                      ->set_default_value_from_effect( 3 );
 
@@ -9900,6 +9970,8 @@ void monk_t::init_spells()
   passives.bonedust_brew_dmg                    = find_spell( 325217 );
   passives.bonedust_brew_heal                   = find_spell( 325218 );
   passives.bonedust_brew_chi                    = find_spell( 328296 );
+  passives.faeline_stomp_damage                 = find_spell( 327264 );
+  passives.faeline_stomp_ww_damage              = find_spell( 345727 );
   passives.fallen_monk_breath_of_fire           = find_spell( 330907 );
   passives.fallen_monk_clash                    = find_spell( 330909 );
   passives.fallen_monk_enveloping_mist          = find_spell( 344008 );
@@ -10260,6 +10332,9 @@ void monk_t::create_buffs()
 
   buff.weapons_of_order_ww = make_buff( this, "weapons_of_order_ww", find_spell( 311054 ) )
                                  ->set_default_value( find_spell( 311054 )->effectN( 1 ).base_value() );
+
+  buff.faeline_stomp = make_buff( this, "faeline_stomp", covenant.night_fae )
+                           ->set_default_value_from_effect( 2 );
 
   // Covenant Conduits
   buff.fortifying_ingrediences = make_buff<absorb_buff_t>( this, "fortifying_ingredients", conduit.fortifying_ingredients );
