@@ -472,7 +472,23 @@ void macabre_sheet_music( special_effect_t& effect )
 
 void glyph_of_assimilation( special_effect_t& effect )
 {
+  auto p    = effect.player;
+  auto buff = make_buff<stat_buff_t>( p, "glyph_of_assimilation", p->find_spell( 345500 ) );
+  buff->add_stat( STAT_MASTERY_RATING, buff->data().effectN( 1 ).average( effect.item ) );
 
+  range::for_each( p->sim->actor_list, [ p, buff ]( player_t* t ) {
+    if ( !t->is_enemy() )
+      return;
+
+    t->callbacks_on_demise.emplace_back( [ p, buff ]( player_t* t ) {
+      if ( p->sim->event_mgr.canceled )
+        return;
+
+      auto d = t->get_dot( "glyph_of_assimilation", p );
+      if ( d->remains() > 0_ms )
+        buff->trigger( d->remains() * 2.0 );
+    } );
+  } );
 }
 
 void soul_igniter( special_effect_t& effect )
