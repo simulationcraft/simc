@@ -567,14 +567,14 @@ void warlock_t::init_spells()
   spec.firebolt         = find_specialization_spell( "Firebolt" );
 
   // Talents
-  talents.demon_skin                = find_talent_spell( "Fire and Brimstone" );
+  talents.demon_skin                = find_talent_spell( "Demon Skin" );
   talents.burning_rush              = find_talent_spell( "Burning Rush" );
   talents.dark_pact                 = find_talent_spell( "Dark Pact" );
   talents.darkfury                  = find_talent_spell( "Darkfury" );
   talents.mortal_coil               = find_talent_spell( "Mortal Coil" );
   talents.howl_of_terror            = find_talent_spell( "Howl of Terror" );
-  talents.grimoire_of_sacrifice     = find_talent_spell( "Grimoire of Sacrifice" );         // aff and destro
-  active.grimoire_of_sacrifice_proc = new actions::grimoire_of_sacrifice_damage_t( this );  // grimoire of sacrifice
+  talents.grimoire_of_sacrifice     = find_talent_spell( "Grimoire of Sacrifice" );       // Aff/Destro
+  active.grimoire_of_sacrifice_proc = new actions::grimoire_of_sacrifice_damage_t( this );// grimoire of sacrifice
   talents.soul_conduit              = find_talent_spell( "Soul Conduit" );
 
   // Legendaries

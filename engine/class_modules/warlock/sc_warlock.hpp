@@ -151,7 +151,7 @@ public:
   {
     // shared
     // tier 30
-    const spell_data_t* demon_skin; //TODO: SL Beta - find_talent_spell() is wrong for this one, fix this!
+    const spell_data_t* demon_skin;
     const spell_data_t* burning_rush;
     const spell_data_t* dark_pact;
 
