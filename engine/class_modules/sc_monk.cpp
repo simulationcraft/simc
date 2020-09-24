@@ -9412,6 +9412,8 @@ action_t* monk_t::create_action( util::string_view name, const std::string& opti
   // Covenant Abilities
   if ( name == "bonedust_brew" )
     return new bonedust_brew_t( *this, options_str );
+  if ( name == "faeline_stomp" )
+    return new faeline_stomp_t( *this, options_str );
   if ( name == "fallen_order" )
     return new fallen_order_t( *this, options_str );
   if ( name == "weapons_of_order" )
