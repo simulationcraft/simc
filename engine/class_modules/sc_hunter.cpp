@@ -2721,6 +2721,14 @@ struct resonating_arrow_t : hunter_spell_t
     {
       dual = true;
       aoe = -1;
+      triggers_master_marksman = false;
+    }
+
+    void execute()
+    {
+      hunter_spell_t::execute();
+
+      p() -> buffs.resonating_arrow -> trigger();
     }
   };
 
@@ -2729,17 +2737,14 @@ struct resonating_arrow_t : hunter_spell_t
   {
     parse_options( options_str );
 
-    travel_speed = 0;
     impact_action = p -> get_background_action<damage_t>( "resonating_arrow_damage" );
     impact_action -> stats = stats;
     stats -> action_list.push_back( impact_action );
   }
 
-  void execute()
+  timespan_t travel_time() const override
   {
-    hunter_spell_t::execute();
-
-    p() -> buffs.resonating_arrow -> trigger();
+    return timespan_t::from_seconds( data().missile_speed() );
   }
 };
 
