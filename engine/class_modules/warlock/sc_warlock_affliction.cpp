@@ -910,6 +910,7 @@ void warlock_t::init_rng_affliction()
 void warlock_t::init_procs_affliction()
 {
   procs.nightfall = get_proc( "nightfall" );
+  procs.corrupting_leer = get_proc( "corrupting_leer" );
 }
 
 void warlock_t::create_apl_affliction()

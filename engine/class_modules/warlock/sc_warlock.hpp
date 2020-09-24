@@ -516,6 +516,7 @@ public:
     proc_t* soul_conduit;
     // aff
     proc_t* nightfall;
+    proc_t* corrupting_leer;
     // demo
     proc_t* demonic_calling;
     proc_t* souls_consumed;

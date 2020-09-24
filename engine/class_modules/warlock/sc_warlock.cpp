@@ -659,6 +659,8 @@ void warlock_t::init_procs()
   procs.portal_summon   = get_proc( "portal_summon" );
   procs.demonic_calling = get_proc( "demonic_calling" );
   procs.soul_conduit    = get_proc( "soul_conduit" );
+  procs.corrupting_leer = get_proc( "corrupting_leer" );
+
 }
 
 void warlock_t::init_base_stats()
@@ -952,6 +954,7 @@ void warlock_t::malignancy_reduction_helper()
 {
   if ( rng().roll( conduit.corrupting_leer.percent() ) )
   {
+    procs.corrupting_leer->occur();
     cooldowns.darkglare->adjust( -5.0_s );  // Value is in the description so had to hardcode it
   }
 }
