@@ -8193,24 +8193,15 @@ struct use_item_t : public action_t
     if ( e && e->type == SPECIAL_EFFECT_USE )
     {
       // Create a buff
-      if ( e->buff_type() != SPECIAL_EFFECT_BUFF_NONE )
-      {
-        buff = buff_t::find( player, e->name() );
-        if ( !buff )
-        {
-          buff = e->create_buff();
-        }
+      buff = e->create_buff();
 
-        // On-use buff cooldowns are unconditionally handled by the action, so as a precaution,
-        // reset any cooldown associated with the buff itself
-        buff->set_cooldown( timespan_t::zero() );
-      }
+      // On-use buff cooldowns are unconditionally handled by the action, so as a precaution, reset any cooldown
+      // associated with the buff itself
+      if ( buff )
+        buff->set_cooldown( 0_ms );
 
       // Create an action
-      if ( e->action_type() != SPECIAL_EFFECT_ACTION_NONE )
-      {
-        action = e->create_action();
-      }
+      action = e->create_action();
 
       stats = player->get_stats( name_str, this );
 
