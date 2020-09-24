@@ -1031,24 +1031,19 @@ struct devouring_plague_t final : public priest_spell_t
       double old_multiplier   = cast_state( old_s )->rolling_multiplier;
 
       // figure out how many old ticks to roll over
-      int num_full_ticks      = as<int>( std::floor( ( old_remains - time_to_tick ) / old_tick ) );
-      double tick_coefficient = dot->current_action->spell_tick_power_coefficient( old_s ) * old_multiplier;
+      int num_full_ticks = as<int>( std::floor( ( old_remains - time_to_tick ) / old_tick ) );
 
       // find number of ticks in new DP
-      double new_num_ticks        = new_remains / new_tick;
-      double new_tick_coefficient = dot->current_action->spell_tick_power_coefficient( new_s );
+      double new_num_ticks = new_remains / new_tick;
 
-      sim->print_debug(
-          "{} {} calculations - num_full_ticks: {}, tick_coefficient: {}, new_num_ticks: {}, "
-          "new_tick_coefficient: {}",
-          *player, *this, num_full_ticks, tick_coefficient, new_num_ticks, new_tick_coefficient );
+      sim->print_debug( "{} {} calculations - num_full_ticks: {}, new_num_ticks: {}", *player, *this, num_full_ticks,
+                        new_num_ticks );
 
       // figure out the increase for each new tick of DP
-      double total_coefficient = num_full_ticks * tick_coefficient;
+      double total_coefficient     = num_full_ticks * old_multiplier;
       double increase_per_new_tick = total_coefficient / new_num_ticks;
-      double increase_ratio = increase_per_new_tick / new_tick_coefficient;
 
-      multiplier = 1 + increase_ratio;
+      multiplier = 1 + increase_per_new_tick;
 
       sim->print_debug( "{} {} modifier updated per tick from previous dot. Modifier per tick went from {} to {}.",
                         *player, *this, old_multiplier, multiplier );
