@@ -53,6 +53,28 @@ struct drain_life_t : public warlock_spell_t
 
     warlock_spell_t::last_tick( d );
   }
+};  
+
+struct scouring_tithe_t : public warlock_spell_t
+{
+  scouring_tithe_t( warlock_t* p, util::string_view options_str )
+    : warlock_spell_t( "scouring_tithe", p, p->covenant.scouring_tithe ) 
+
+  {
+    parse_options( options_str );
+    //can_havoc = true; NYI
+  }
+
+  void last_tick( dot_t* d ) override
+  {
+    warlock_spell_t::last_tick( d );
+
+    if ( !d->target->is_sleeping() )
+    {
+      p()->cooldowns.scouring_tithe->reset( true );
+    }
+    warlock_spell_t::last_tick( d );
+  }
 };
 
 // TOCHECK: Does the damage proc affect Seed of Corruption? If so, this needs to be split into specs as well
@@ -102,6 +124,7 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
   : actor_target_data_t( target, &p ), soc_threshold( 0.0 ), warlock( p )
 {
   dots_drain_life = target->get_dot( "drain_life", &p );
+  dots_scouring_tithe = target->get_dot( "scouring_tithe", &p );
 
   // Aff
   dots_corruption          = target->get_dot( "corruption", &p );
@@ -176,6 +199,14 @@ void warlock_td_t::target_demise()
                             warlock.name() );
 
     warlock.resource_gain( RESOURCE_SOUL_SHARD, 1, warlock.gains.drain_soul );
+  }
+
+  if ( dots_scouring_tithe->is_ticking() )
+  {
+    warlock.sim->print_log( "Player {} demised. Warlock {} gains 5 shards from scouring tithe.", target->name(),
+                            warlock.name() );
+
+    warlock.resource_gain( RESOURCE_SOUL_SHARD, 5, warlock.gains.scouring_tithe );
   }
 
   if ( debuffs_haunt->check() )
@@ -284,6 +315,7 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
   cooldowns.phantom_singularity = get_cooldown( "phantom_singularity" );
   cooldowns.darkglare           = get_cooldown( "summon_darkglare" );
   cooldowns.demonic_tyrant      = get_cooldown( "summon_demonic_tyrant" );
+  cooldowns.scouring_tithe      = get_cooldown( "scouring_tithe" );
 
   resource_regeneration             = regen_type::DYNAMIC;
   regen_caches[ CACHE_HASTE ]       = true;
@@ -483,6 +515,8 @@ action_t* warlock_t::create_action( util::string_view action_name, const std::st
     return new drain_life_t( this, options_str );
   if ( action_name == "grimoire_of_sacrifice" )
     return new grimoire_of_sacrifice_t( this, options_str );  // aff and destro
+  if ( action_name == "scouring_tithe" )
+    return new scouring_tithe_t( this, options_str );
 
   if ( specialization() == WARLOCK_AFFLICTION )
   {

@@ -24,6 +24,7 @@ struct warlock_td_t : public actor_target_data_t
 {
   //TODO: SL Beta - Should Leyshocks triggers be removed from the modules?
 
+  // General
   propagate_const<dot_t*> dots_drain_life;
 
   // Aff
@@ -49,6 +50,9 @@ struct warlock_td_t : public actor_target_data_t
   propagate_const<buff_t*> debuffs_roaring_blaze; 
   propagate_const<buff_t*> debuffs_havoc;
 
+  // SL - Covenant
+  propagate_const<dot_t*> dots_scouring_tithe;
+  
   // SL - Legendary
   propagate_const<buff_t*> debuffs_odr;
 
@@ -364,6 +368,7 @@ public:
     propagate_const<cooldown_t*> phantom_singularity;
     propagate_const<cooldown_t*> darkglare;
     propagate_const<cooldown_t*> demonic_tyrant;
+    propagate_const<cooldown_t*> scouring_tithe;
   } cooldowns;
 
   //TODO: SL Beta - this struct is supposedly for passives per the comment here, but that is potentially outdated. Consider refactoring and reorganizing ALL of this.
@@ -508,6 +513,8 @@ public:
     gain_t* baleful_invocation;  // BFA - Azerite
 
     gain_t* memory_of_lucid_dreams;  // BFA - Essence
+
+    gain_t* scouring_tithe; // SL - Covenant
   } gains;
 
   // Procs

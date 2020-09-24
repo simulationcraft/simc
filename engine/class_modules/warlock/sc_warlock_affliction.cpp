@@ -355,7 +355,7 @@ struct unstable_affliction_t : public affliction_spell_t
 
   void last_tick( dot_t* d) override
   {
-    affliction_spell_t::last_tick( d );
+    affliction_spell_t::last_tick( d ); 
 
     p()->ua_target = nullptr;
   }
