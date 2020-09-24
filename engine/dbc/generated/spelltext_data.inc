@@ -1,5 +1,5 @@
 // Spell text, wow build 9.0.2.35978
-static const std::array<spelltext_data_t, 15607> __spelltext_data { {
+static const std::array<spelltext_data_t, 15608> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -15607,6 +15607,7 @@ static const std::array<spelltext_data_t, 15607> __spelltext_data { {
   { 345546, "$@spelldesc345545", "Taking $w1 Nature damage every $t sec.", 0 },
   { 345548, "Throw at an enemy, rending them and causing them to Bleed $s1 Physical damage every second and reducing their movement $s2%. Lasts $d or until the target is more than $s3yds away.", "Bleeding for $s1 Physical damage every sec as long as you are within $s3yds of the caster.", 0 },
   { 345549, "Store a portion of your soul in the phylactery, reducing your Stamina by $s2. When you heal a target below $s3% health the churning magic amplifies to restore $345551s1 health to the target. Cannot occur more than once every $proccooldown sec.", 0, 0 },
+  { 345714, "$@spelldesc330898", 0, 0 },
 } };
 
 // spelltext hotfix entries, wow build 9.0.2.35978
