@@ -504,6 +504,7 @@ public:
     gain_t* lucid_dreams;
     gain_t* mana_gem;
     gain_t* arcane_barrage;
+    gain_t* mirrors_of_torment;
   } gains;
 
   // Options
@@ -521,9 +522,7 @@ public:
     double focus_magic_stddev = 0.1;
     double focus_magic_crit_chance = 0.85;
     timespan_t from_the_ashes_interval = 2.0_s;
-    // TODO: Determine reasonable default values for Mirrors of Torment options.
-    std::vector<timespan_t> mirrors_of_torment_interval = { 2.0_s };
-    std::vector<double> mirrors_of_torment_stddev = { 0.1 };
+    timespan_t mirrors_of_torment_interval = 1.5_s;
   } options;
 
   // Pets
@@ -550,6 +549,7 @@ public:
     proc_t* ignite_overwrite;  // Spread to target with existing ignite
 
     proc_t* brain_freeze;
+    proc_t* brain_freeze_mirrors;
     proc_t* brain_freeze_used;
     proc_t* fingers_of_frost;
     proc_t* fingers_of_frost_wasted;
@@ -1258,60 +1258,92 @@ struct incanters_flow_t : public buff_t
 
 struct mirrors_of_torment_t : public buff_t
 {
-  unsigned tick_index;
-  timespan_t period;
+  cooldown_t* icd;
+  int successful_triggers;
+
+  double mana_pct;
+  timespan_t reduction;
 
   mirrors_of_torment_t( mage_td_t* td ) :
     buff_t( *td, "mirrors_of_torment", td->source->find_spell( 314793 ) ),
-    tick_index(),
-    period()
+    icd( td->source->get_cooldown( "mirrors_of_torment_icd" ) ),
+    successful_triggers(),
+    mana_pct(),
+    reduction()
   {
     set_cooldown( 0_ms );
     set_reverse( true );
+    icd->duration = data().internal_cooldown();
 
     auto p = debug_cast<mage_t*>( source );
-    if ( p->options.mirrors_of_torment_interval.empty() || p->options.mirrors_of_torment_stddev.empty() )
+    if ( p->options.mirrors_of_torment_interval <= 0_ms )
       return;
 
+    switch ( p->specialization() )
+    {
+      case MAGE_ARCANE:
+        mana_pct = p->find_spell( 345417 )->effectN( 1 ).percent();
+        break;
+      case MAGE_FIRE:
+        reduction = -1000 * data().effectN( 2 ).time_value();
+        break;
+      default:
+        break;
+    }
+
+    set_period( p->options.mirrors_of_torment_interval );
     set_tick_behavior( buff_tick_behavior::REFRESH );
-    set_tick_time_callback( [ this, p ] ( const buff_t*, unsigned current_tick )
+    set_tick_callback( [ this, p ] ( buff_t*, int, timespan_t )
     {
-      if ( tick_index == current_tick && period > 0_ms )
-        return period;
+      if ( icd->down() )
+        return;
 
-      size_t interval_ix = std::min( as<size_t>( current_tick ), p->options.mirrors_of_torment_interval.size() - 1 );
-      size_t stddev_ix   = std::min( as<size_t>( current_tick ), p->options.mirrors_of_torment_stddev.size() - 1 );
+      successful_triggers++;
+      icd->start();
 
-      tick_index = current_tick;
-      period = p->options.mirrors_of_torment_interval[ interval_ix ];
-      period = std::max( 1_ms, p->rng().gauss( period, period * p->options.mirrors_of_torment_stddev[ stddev_ix ] ) );
-
-      return period;
-    } );
-    set_tick_callback( [ p ] ( buff_t* buff, int, timespan_t )
-    {
-      if ( buff->current_tick % buff->max_stack() == 0 )
+      if ( successful_triggers % max_stack() == 0 )
       {
-        p->action.tormenting_backlash->set_target( buff->player );
+        p->action.tormenting_backlash->set_target( player );
         p->action.tormenting_backlash->execute();
       }
       else
       {
-        p->action.agonizing_backlash->set_target( buff->player );
+        p->action.agonizing_backlash->set_target( player );
         p->action.agonizing_backlash->execute();
       }
+
       p->buffs.siphoned_malice->trigger();
+
+      switch ( p->specialization() )
+      {
+        case MAGE_ARCANE:
+          p->resource_gain( RESOURCE_MANA, p->resources.max[ RESOURCE_MANA ] * mana_pct, p->gains.mirrors_of_torment );
+          break;
+        case MAGE_FIRE:
+          p->cooldowns.fire_blast->adjust( reduction );
+          break;
+        case MAGE_FROST:
+          p->trigger_brain_freeze( 1.0, p->procs.brain_freeze_mirrors );
+          break;
+        default:
+          break;
+      }
+
+      decrement();
     } );
     set_stack_change_callback( [ this ] ( buff_t*, int, int cur )
-    { if ( cur == 0 ) period = 0_ms; } );
+    { if ( cur == 0 ) successful_triggers = 0; } );
   }
 
   void reset() override
   {
     buff_t::reset();
+    successful_triggers = 0;
+  }
 
-    tick_index = 0;
-    period = 0_ms;
+  bool freeze_stacks() override
+  {
+    return true;
   }
 };
 
@@ -5936,32 +5968,7 @@ void mage_t::create_options()
   add_option( opt_float( "focus_magic_stddev", options.focus_magic_stddev, 0.0, std::numeric_limits<double>::max() ) );
   add_option( opt_float( "focus_magic_crit_chance", options.focus_magic_crit_chance, 0.0, 1.0 ) );
   add_option( opt_timespan( "from_the_ashes_interval", options.from_the_ashes_interval, 1_ms, timespan_t::max() ) );
-  add_option( opt_func( "mirrors_of_torment_interval", [ this ] ( sim_t*, util::string_view, util::string_view val )
-  {
-    options.mirrors_of_torment_interval.clear();
-    auto splits = util::string_split<util::string_view>( val, "/" );
-    for ( auto split : splits )
-    {
-      double d = util::to_double( split );
-      if ( d < 0.0 )
-        throw std::invalid_argument( "Mirrors of Torment interval can't be negative" );
-      options.mirrors_of_torment_interval.push_back( timespan_t::from_seconds( d ) );
-    }
-    return true;
-  } ) );
-  add_option( opt_func( "mirrors_of_torment_stddev", [ this ] ( sim_t*, util::string_view, util::string_view val )
-  {
-    options.mirrors_of_torment_stddev.clear();
-    auto splits = util::string_split<util::string_view>( val, "/" );
-    for ( auto split : splits )
-    {
-      double d = util::to_double( split );
-      if ( d < 0.0 )
-        throw std::invalid_argument( "Mirrors of Torment stddev can't be negative" );
-      options.mirrors_of_torment_stddev.push_back( d );
-    }
-    return true;
-  } ) );
+  add_option( opt_timespan( "mirrors_of_torment_interval", options.mirrors_of_torment_interval, 1_ms, timespan_t::max() ) );
 
   player_t::create_options();
 }
@@ -6568,10 +6575,11 @@ void mage_t::init_gains()
 {
   player_t::init_gains();
 
-  gains.evocation      = get_gain( "Evocation"      );
-  gains.lucid_dreams   = get_gain( "Lucid Dreams"   );
-  gains.mana_gem       = get_gain( "Mana Gem"       );
-  gains.arcane_barrage = get_gain( "Arcane Barrage" );
+  gains.evocation          = get_gain( "Evocation"          );
+  gains.lucid_dreams       = get_gain( "Lucid Dreams"       );
+  gains.mana_gem           = get_gain( "Mana Gem"           );
+  gains.arcane_barrage     = get_gain( "Arcane Barrage"     );
+  gains.mirrors_of_torment = get_gain( "Mirrors of Torment" );
 }
 
 void mage_t::init_procs()
@@ -6596,6 +6604,7 @@ void mage_t::init_procs()
       break;
     case MAGE_FROST:
       procs.brain_freeze            = get_proc( "Brain Freeze" );
+      procs.brain_freeze_mirrors    = get_proc( "Brain Freeze from Mirrors of Torment" );
       procs.brain_freeze_used       = get_proc( "Brain Freeze used" );
       procs.fingers_of_frost        = get_proc( "Fingers of Frost" );
       procs.fingers_of_frost_wasted = get_proc( "Fingers of Frost wasted due to Winter's Chill" );
