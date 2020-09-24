@@ -6454,7 +6454,6 @@ void mage_t::create_buffs()
   buffs.incanters_flow    = make_buff<buffs::incanters_flow_t>( this );
   buffs.rune_of_power     = make_buff( this, "rune_of_power", find_spell( 116014 ) )
                               ->set_default_value_from_effect( 1 )
-                              ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
                               ->set_chance( talents.rune_of_power->ok() );
   buffs.focus_magic_crit  = make_buff( this, "focus_magic_crit", find_spell( 321363 ) )
                               ->set_default_value_from_effect( 1 )
