@@ -764,17 +764,6 @@ public:
   void consume_trick_shots();
 };
 
-bool check_wild_spirits( const hunter_t& p, const action_t& a )
-{
-  // TODO: check this, also handle pet abilities
-  if ( a.proc || a.background )
-    return false;
-  if ( !( a.callbacks && a.may_hit && a.harmful ) )
-    return false;
-  auto trigger = p.covenants.wild_spirits -> effectN( 1 ).trigger();
-  return trigger -> proc_flags() & ( 1 << a.proc_type() );
-}
-
 // Template for common hunter action code.
 template <class Base>
 struct hunter_action_t: public Base
@@ -869,7 +858,11 @@ public:
       // By default nothing procs Wild Spirits, if the action did not explicitly set
       // it to non-default try to infer it
       if ( triggers_wild_spirits.is_none() )
-        triggers_wild_spirits = check_wild_spirits( *p(), *this );
+      {
+        const spell_data_ptr_t trigger = p() -> covenants.wild_spirits -> effectN( 1 ).trigger();
+        triggers_wild_spirits = ab::harmful && ab::may_hit && ab::callbacks && !ab::proc &&
+                                ( trigger -> proc_flags() & ( 1 << ab::proc_type() ) );
+      }
     }
     else
     {
@@ -2189,6 +2182,14 @@ struct stomp_t : public hunter_pet_action_t<hunter_pet_t, attack_t>
   {
     aoe = -1;
   }
+
+  void impact( action_state_t* s ) override
+  {
+    hunter_pet_action_t::impact( s );
+
+    if ( o() -> covenants.wild_spirits.ok() && s -> chain_target == 0 )
+      o() -> trigger_wild_spirits( s );
+  }
 };
 
 // Bloodshed ===============================================================
@@ -2757,6 +2758,15 @@ struct wild_spirits_t : hunter_spell_t
     {
       dual = true;
       aoe = -1;
+      triggers_wild_spirits = false;
+      triggers_master_marksman = false;
+    }
+
+    void execute()
+    {
+      hunter_spell_t::execute();
+
+      p() -> buffs.wild_spirits -> trigger();
     }
   };
 
@@ -2767,6 +2777,8 @@ struct wild_spirits_t : hunter_spell_t
     {
       proc = true;
       callbacks = false;
+      may_parry = true;
+      triggers_master_marksman = false;
     }
   };
 
@@ -2775,21 +2787,14 @@ struct wild_spirits_t : hunter_spell_t
   {
     parse_options( options_str );
 
-    travel_speed = 0;
+    triggers_wild_spirits = false;
+
     impact_action = p -> get_background_action<damage_t>( "wild_spirits_damage" );
     impact_action -> stats = stats;
     stats -> action_list.push_back( impact_action );
 
     p -> actions.wild_spirits = p -> get_background_action<proc_t>( "wild_spirits_proc" );
     add_child( p -> actions.wild_spirits );
-  }
-
-  void execute()
-  {
-    hunter_spell_t::execute();
-
-    // XXX: triggers HM on affected targets now... sigh
-    p() -> buffs.wild_spirits -> trigger();
   }
 };
 
@@ -2872,9 +2877,7 @@ struct barrage_t: public hunter_spell_t
 
     may_miss = may_crit = false;
     channeled = true;
-
-    tick_zero = true;
-    travel_speed = 0;
+    triggers_wild_spirits = false;
 
     tick_action = p -> get_background_action<barrage_damage_t>( "barrage_damage" );
     starved_proc = p -> get_proc( "starved: barrage" );
@@ -3155,6 +3158,8 @@ struct chimaera_shot_t : chimaera_shot_base_t
     chimaera_shot_base_t( "chimaera_shot", p )
   {
     parse_options( options_str );
+
+    triggers_wild_spirits = false;
   }
 
   double cost() const override
@@ -3739,6 +3744,7 @@ struct rapid_fire_t: public hunter_spell_t
 
     may_miss = may_crit = false;
     channeled = true;
+    triggers_wild_spirits = false;
 
     procs.double_tap = p -> get_proc( "double_tap_rapid_fire" );
   }
@@ -3874,7 +3880,8 @@ struct explosive_shot_t: public hunter_ranged_attack_t
   {
     parse_options( options_str );
 
-    may_miss = false;
+    may_miss = may_crit = false;
+    triggers_wild_spirits = false;
 
     tick_action = p -> get_background_action<explosive_shot_aoe_t>( "explosive_shot_aoe" );
   }
@@ -4167,6 +4174,7 @@ struct flanking_strike_t: hunter_melee_attack_t
 
     base_teleport_distance  = data().max_range();
     movement_directionality = movement_direction_type::OMNI;
+    triggers_wild_spirits = false; // the trigger is on the player damage spell
 
     add_child( damage );
   }
@@ -4584,6 +4592,8 @@ struct a_murder_of_crows_t : public hunter_spell_t
     hunter_spell_t( "a_murder_of_crows", p, p -> talents.a_murder_of_crows )
   {
     parse_options( options_str );
+
+    triggers_wild_spirits = false;
 
     tick_action = p -> get_background_action<peck_t>( "crow_peck" );
     starved_proc = p -> get_proc( "starved: a_murder_of_crows" );
@@ -5044,6 +5054,7 @@ struct stampede_t: public hunter_spell_t
     hasted_ticks = false;
     radius = 8;
     school = SCHOOL_PHYSICAL;
+    triggers_wild_spirits = false;
 
     tick_action = new stampede_tick_t( p );
   }
@@ -5057,6 +5068,8 @@ struct bloodshed_t : hunter_spell_t
     hunter_spell_t( "bloodshed", p, p -> talents.bloodshed )
   {
     parse_options( options_str );
+
+    may_hit = false;
   }
 
   void init_finished() override
@@ -5317,6 +5330,7 @@ struct wildfire_bomb_t: public hunter_spell_t
         hunter_spell_t( n, p, s )
       {
         dual = true;
+        triggers_wild_spirits = false;
       }
 
       // does not pandemic
@@ -5444,6 +5458,7 @@ struct wildfire_bomb_t: public hunter_spell_t
 
     may_miss = false;
     school = SCHOOL_FIRE; // for report coloring
+    triggers_wild_spirits = false;
 
     if ( p -> talents.wildfire_infusion.ok() )
     {
