@@ -897,7 +897,7 @@ public:
   void      update_from_the_ashes();
   action_t* get_icicle();
   bool      trigger_delayed_buff( buff_t* buff, double chance = -1.0, timespan_t delay = 0.15_s );
-  void      trigger_brain_freeze( double chance, proc_t* source );
+  void      trigger_brain_freeze( double chance, proc_t* source, timespan_t delay = 0.15_s );
   void      trigger_fof( double chance, int stacks, proc_t* source );
   void      trigger_icicle( player_t* icicle_target, bool chain = false );
   void      trigger_icicle_gain( player_t* icicle_target, action_t* icicle_action );
@@ -1323,7 +1323,7 @@ struct mirrors_of_torment_t : public buff_t
           p->cooldowns.fire_blast->adjust( reduction );
           break;
         case MAGE_FROST:
-          p->trigger_brain_freeze( 1.0, p->procs.brain_freeze_mirrors );
+          p->trigger_brain_freeze( 1.0, p->procs.brain_freeze_mirrors, 0_ms );
           break;
         default:
           break;
@@ -7950,11 +7950,11 @@ bool mage_t::trigger_delayed_buff( buff_t* buff, double chance, timespan_t delay
   return success;
 }
 
-void mage_t::trigger_brain_freeze( double chance, proc_t* source )
+void mage_t::trigger_brain_freeze( double chance, proc_t* source, timespan_t delay )
 {
   assert( source );
 
-  bool success = trigger_delayed_buff( buffs.brain_freeze, chance );
+  bool success = trigger_delayed_buff( buffs.brain_freeze, chance, delay );
   if ( success )
   {
     source->occur();
