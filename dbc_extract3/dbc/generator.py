@@ -1649,6 +1649,7 @@ class SpellDataGenerator(DataGenerator):
           ( 325217, 0 ), # Necrolord Bonedust Brew damage
           ( 325218, 0 ), # Necrolord Bonedust Brew heal
           ( 328296, 0 ), # Necrolord Bonedust Chi Refund
+          ( 327257, 0 ), # Ardenweald Faeline Stomp debuff
           ( 327264, 0 ), # Ardenweald Faeline Stomp damage
           ( 345727, 0 ), # Ardenweald Faeline Stomp damage 2
           ( 328283, 0 ), # Venthyr Fallen Monk Soothing Mist Heal
