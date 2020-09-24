@@ -235,7 +235,7 @@ public:
     buff_t* blind_fury;
     buff_t* blur;
     buff_t* death_sweep;
-    buff_t* furious_gaze_passive;
+    buff_t* eye_beam_rank_3;
     buff_t* momentum;
     buff_t* out_of_range;
     buff_t* prepared;
@@ -377,11 +377,11 @@ public:
     const spell_data_t* demons_bite;
     const spell_data_t* eye_beam;
     const spell_data_t* eye_beam_rank_2;
+    const spell_data_t* eye_beam_rank_3;
     const spell_data_t* fel_rush;
     const spell_data_t* fel_rush_rank_2;
     const spell_data_t* fel_rush_rank_3;
     const spell_data_t* fel_rush_damage;
-    const spell_data_t* furious_gaze;
     const spell_data_t* unrestrained_fury;
     const spell_data_t* unrestrained_fury_2;
     const spell_data_t* vengeful_retreat;
@@ -678,7 +678,6 @@ public:
   double composite_attribute_multiplier( attribute_e attr ) const override;
   double composite_crit_avoidance() const override;
   double composite_dodge() const override;
-  double composite_melee_speed() const override;
   double composite_melee_haste() const override;
   double composite_spell_haste() const override;
   double composite_leech() const override;
@@ -2034,7 +2033,8 @@ struct eye_beam_t : public demon_hunter_spell_t
     demon_hunter_spell_t::last_tick( d );
 
     p()->buff.furious_gaze->trigger();
-    p()->buff.furious_gaze_passive->trigger();
+    if ( p()->spec.eye_beam_rank_3->ok() )
+      p()->buff.eye_beam_rank_3->trigger();
   }
 
   void execute() override
@@ -2060,7 +2060,7 @@ struct eye_beam_t : public demon_hunter_spell_t
     }
 
     // Darkglare Boon Legendary
-    if ( p()->legendary.darkglare_boon->ok() && p()->rng().roll( p()->legendary.darkglare_boon->proc_chance() ) )
+    if ( p()->legendary.darkglare_boon->ok() && p()->rng().roll( p()->legendary.darkglare_boon->effectN( 1 ).percent() ) )
     {
       cooldown->reset( true );
       p()->proc.darkglare_boon_resets->occur();
@@ -3064,7 +3064,7 @@ struct fodder_to_the_flame_t : public demon_hunter_spell_t
       demon_hunter_spell_t::execute();
       
       p()->buff.fodder_to_the_flame->trigger();
-      p()->spawn_soul_fragment( soul_fragment::GREATER, 1, true );
+      p()->spawn_soul_fragment( soul_fragment::GREATER, 1, true, false );
 
       // Adjust the duration downward if specified by the user input setting
       double buff_duration_percent = p()->rng().range( p()->options.fodder_to_the_flame_min_percent, 1.0 );
@@ -3112,10 +3112,10 @@ struct the_hunt_t : public demon_hunter_spell_t
     struct the_hunt_dot_t : public demon_hunter_spell_t
     {
       the_hunt_dot_t( util::string_view name, demon_hunter_t* p )
-        : demon_hunter_spell_t( name, p, p->find_spell( 344325 ) )
+        : demon_hunter_spell_t( name, p, p->find_spell( 345335 ) )
       {
         dual = true;
-        aoe = -1;
+        aoe = as<int>( p->covenant.the_hunt->effectN( 2 ).trigger()->effectN( 1 ).base_value() );
       }
     };
 
@@ -3130,9 +3130,16 @@ struct the_hunt_t : public demon_hunter_spell_t
   the_hunt_t( demon_hunter_t* p, const std::string& options_str )
     : demon_hunter_spell_t( "the_hunt", p, p->covenant.the_hunt, options_str )
   {
+    movement_directionality = movement_direction_type::TOWARDS;
     execute_action = p->get_background_action<the_hunt_damage_t>( "the_hunt_damage" );
     execute_action->stats = stats;
     execute_action->execute_action->stats = stats;
+  }
+
+  void execute() override
+  {
+    demon_hunter_spell_t::execute();
+    p()->set_out_of_range( timespan_t::zero() ); // Cancel all other movement
   }
 };
 
@@ -3534,7 +3541,7 @@ struct blade_dance_t : public blade_dance_base_t
 struct death_sweep_t : public blade_dance_base_t
 {
   death_sweep_t( demon_hunter_t* p, const std::string& options_str )
-    : blade_dance_base_t( "death_sweep", p, p->spec.death_sweep, options_str, p->buff.death_sweep )
+    : blade_dance_base_t( "death_sweep", p, p->spec.death_sweep, options_str, nullptr )
   {
     if ( attacks.empty() )
     {
@@ -3552,9 +3559,9 @@ struct death_sweep_t : public blade_dance_base_t
     assert( p()->buff.metamorphosis->check() );
 
     // If Metamorphosis has less than 1s remaining, it gets extended so the whole Death Sweep happens during Meta.
-    if ( p()->buff.metamorphosis->remains_lt( p()->buff.death_sweep->buff_duration() ) )
+    if ( p()->buff.metamorphosis->remains_lt( 1_s ) )
     {
-      p()->buff.metamorphosis->extend_duration( p(), p()->buff.death_sweep->buff_duration() - p()->buff.metamorphosis->remains() );
+      p()->buff.metamorphosis->extend_duration( p(), 1_s - p()->buff.metamorphosis->remains() );
     }
   }
 
@@ -3940,9 +3947,7 @@ struct felblade_t : public demon_hunter_attack_t
   void execute() override
   {
     demon_hunter_attack_t::execute();
-
-    // Cancel all other movement
-    p()->set_out_of_range(timespan_t::zero());
+    p()->set_out_of_range( timespan_t::zero() );// Cancel all other movement
   }
 };
 
@@ -4761,11 +4766,6 @@ void demon_hunter_t::create_buffs()
 
   // Havoc ==================================================================
 
-  buff.death_sweep = make_buff( this, "death_sweep", spec.death_sweep )
-    ->set_default_value_from_effect_type( A_MOD_DODGE_PERCENT )
-    ->set_cooldown( timespan_t::zero() )
-    ->add_invalidate( CACHE_DODGE );
-
   buff.blur = make_buff( this, "blur", spec.blur->effectN( 1 ).trigger() )
     ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN )
     ->apply_affecting_aura( talent.desperate_instincts )
@@ -4773,13 +4773,13 @@ void demon_hunter_t::create_buffs()
     ->add_invalidate( CACHE_LEECH )
     ->add_invalidate( CACHE_DODGE );
 
+  buff.eye_beam_rank_3 = make_buff( this, "furious_gaze", find_spell( 343312 ) )
+    ->set_default_value_from_effect_type( A_HASTE_ALL )
+    ->add_invalidate( CACHE_HASTE );
+
   buff.fel_rush_move = new movement_buff_t( this, "fel_rush_movement", spell_data_t::nil() );
   buff.fel_rush_move->set_chance( 1.0 )
     ->set_duration( spec.fel_rush->gcd() );
-
-  buff.furious_gaze_passive = make_buff( this, "furious_gaze_passive", spec.furious_gaze )
-    ->set_default_value_from_effect_type( A_HASTE_ALL )
-    ->add_invalidate( CACHE_HASTE );
 
   buff.momentum = make_buff( this, "momentum", spec.momentum_buff )
     ->set_trigger_spell( talent.momentum )
@@ -4859,10 +4859,10 @@ void demon_hunter_t::create_buffs()
 
   const spell_data_t* fodder_to_the_flame_buff = covenant.fodder_to_the_flame->ok() ? find_spell( 330910 ) : spell_data_t::not_found();
   buff.fodder_to_the_flame = make_buff<buff_t>( this, "fodder_to_the_flame", fodder_to_the_flame_buff )
-    ->set_default_value_from_effect_type( A_MOD_RANGED_AND_MELEE_ATTACK_SPEED )
+    ->set_default_value_from_effect_type( A_HASTE_ALL )
     ->set_duration( find_spell( 330846 )->duration() )
     ->apply_affecting_conduit( conduit.brooding_pool )
-    ->add_invalidate( CACHE_ATTACK_SPEED );
+    ->add_invalidate( CACHE_HASTE );
 
   // Fake Growing Inferno buff for tracking purposes
   buff.growing_inferno = make_buff<buff_t>( this, "growing_inferno", conduit.growing_inferno )
@@ -5279,11 +5279,11 @@ void demon_hunter_t::init_spells()
   spec.demons_bite            = find_class_spell( "Demon's Bite", DEMON_HUNTER_HAVOC );
   spec.eye_beam               = find_class_spell( "Eye Beam", DEMON_HUNTER_HAVOC );
   spec.eye_beam_rank_2        = find_rank_spell( "Eye Beam", "Rank 2" );
+  spec.eye_beam_rank_3        = find_rank_spell( "Eye Beam", "Rank 3" );
   spec.fel_rush               = find_class_spell( "Fel Rush", DEMON_HUNTER_HAVOC );
   spec.fel_rush_rank_2        = find_rank_spell( "Fel Rush", "Rank 2" );
   spec.fel_rush_rank_3        = find_rank_spell( "Fel Rush", "Rank 3" );
   spec.fel_rush_damage        = find_spell( 192611, DEMON_HUNTER_HAVOC );
-  spec.furious_gaze           = find_spell( 343312, DEMON_HUNTER_HAVOC );
   spec.momentum_buff          = find_spell( 208628, DEMON_HUNTER_HAVOC );
   spec.unrestrained_fury      = find_rank_spell( "Unrestrained Fury", "Rank 1" );
   spec.unrestrained_fury_2    = find_rank_spell( "Unrestrained Fury", "Rank 2" );
@@ -5417,7 +5417,7 @@ void demon_hunter_t::init_spells()
   conduit.repeat_decree         = find_conduit_spell( "Repeat Decree" );
   conduit.increased_scrutiny    = find_conduit_spell( "Increased Scrutiny" );
   conduit.brooding_pool         = find_conduit_spell( "Brooding Pool" );
-  conduit.unnatural_malice      = find_conduit_spell( "Unnatural Mailce" ); // typo in name
+  conduit.unnatural_malice      = find_conduit_spell( "Unnatural Malice" );
 
   // Legendary Items ========================================================
 
@@ -5901,25 +5901,9 @@ double demon_hunter_t::composite_dodge() const
 {
   double d = player_t::composite_dodge();
 
-  d += buff.death_sweep->check_value();
-
   d += buff.blur->check() * buff.blur->data().effectN( 2 ).percent();
 
   return d;
-}
-
-// demon_hunter_t::composite_attack_speed  ==================================
-
-double demon_hunter_t::composite_melee_speed() const
-{
-  double h = player_t::composite_melee_speed();
-
-  if ( buff.fodder_to_the_flame->up() )
-  {
-    h *= 1.0 / ( 1.0 + buff.fodder_to_the_flame->check_stack_value() );
-  }
-
-  return h;
 }
 
 // demon_hunter_t::composite_melee_haste  ===================================
@@ -5933,7 +5917,8 @@ double demon_hunter_t::composite_melee_haste() const
     mh /= 1.0 + buff.metamorphosis->check_value();
   }
 
-  mh /= 1.0 + buff.furious_gaze_passive->value();
+  mh /= 1.0 + buff.eye_beam_rank_3->check_value();
+  mh /= 1.0 + buff.fodder_to_the_flame->check_value();
 
   return mh;
 }
@@ -5949,7 +5934,8 @@ double demon_hunter_t::composite_spell_haste() const
     sh /= 1.0 + buff.metamorphosis->check_value();
   }
 
-  sh /= 1.0 + buff.furious_gaze_passive->value();
+  sh /= 1.0 + buff.eye_beam_rank_3->check_value();
+  sh /= 1.0 + buff.fodder_to_the_flame->check_value();
 
   return sh;
 }
