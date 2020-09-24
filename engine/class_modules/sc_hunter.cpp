@@ -4590,7 +4590,7 @@ struct summon_pet_t: public hunter_spell_t
     add_option( opt_obsoleted( "name" ) );
     parse_options( options_str );
 
-    harmful = may_hit = false;
+    harmful = false;
     callbacks = false;
     ignore_false_positive = true;
 
@@ -4704,7 +4704,7 @@ struct flare_t : hunter_spell_t
   {
     parse_options( options_str );
 
-    harmful = may_hit = may_miss = false;
+    harmful = false;
 
     if ( p -> legendary.soulforge_embers.ok() )
       soulforge_embers = p -> get_background_action<soulforge_embers_t>( "soulforge_embers" );
@@ -4885,7 +4885,7 @@ struct dire_beast_t: public hunter_spell_t
   {
     parse_options( options_str );
 
-    harmful = may_hit = false;
+    harmful = false;
   }
 
   void init_finished() override
@@ -4920,7 +4920,8 @@ struct bestial_wrath_t: public hunter_spell_t
   {
     add_option( opt_timespan( "precast_time", precast_time ) );
     parse_options( options_str );
-    harmful = may_hit = false;
+
+    harmful = false;
 
     precast_time = clamp( precast_time, 0_ms, data().duration() );
   }
@@ -4978,7 +4979,7 @@ struct aspect_of_the_wild_t: public hunter_spell_t
     add_option( opt_timespan( "precast_time", precast_time ) );
     parse_options( options_str );
 
-    harmful = may_hit = false;
+    harmful = false;
     dot_duration = 0_ms;
 
     cooldown->duration *= 1 + azerite::vision_of_perfection_cdr( p->azerite_essence.vision_of_perfection );
@@ -5089,8 +5090,8 @@ struct trueshot_t: public hunter_spell_t
   {
     add_option( opt_timespan( "precast_time", precast_time ) );
     parse_options( options_str );
-    harmful = may_hit = false;
 
+    harmful = false;
     cooldown->duration *= 1 + azerite::vision_of_perfection_cdr( p->azerite_essence.vision_of_perfection );
 
     precast_time = clamp( precast_time, 0_ms, data().duration() );
@@ -5118,7 +5119,7 @@ struct hunters_mark_t: public hunter_spell_t
   {
     parse_options( options_str );
 
-    harmful = may_hit = false;
+    harmful = false;
   }
 
   void execute() override
@@ -5145,7 +5146,7 @@ struct double_tap_t: public hunter_spell_t
     add_option( opt_timespan( "precast_time", precast_time ) );
     parse_options( options_str );
 
-    harmful = may_hit = false;
+    harmful = false;
     dot_duration = 0_ms;
 
     precast_time = clamp( precast_time, 0_ms, data().duration() );
@@ -5186,7 +5187,7 @@ struct volley_t : hunter_spell_t
     // disable automatic generation of the dot from spell data
     dot_duration = 0_ms;
 
-    may_miss = may_hit = false;
+    may_hit = false;
     damage -> stats = stats;
   }
 
@@ -5219,7 +5220,7 @@ struct coordinated_assault_t: public hunter_spell_t
   {
     parse_options( options_str );
 
-    harmful = may_hit = false;
+    harmful = false;
 
     cooldown->duration *= 1 + azerite::vision_of_perfection_cdr( p->azerite_essence.vision_of_perfection );
   }
@@ -5260,7 +5261,7 @@ struct steel_trap_t: public hunter_spell_t
   {
     parse_options( options_str );
 
-    harmful = may_hit = false;
+    harmful = false;
 
     impact_action = p -> get_background_action<steel_trap_impact_t>( "steel_trap_impact" );
     add_child( impact_action );
@@ -5491,7 +5492,7 @@ struct aspect_of_the_eagle_t: public hunter_spell_t
   {
     parse_options( options_str );
 
-    harmful = may_hit = false;
+    harmful = false;
   }
 
   void execute() override
