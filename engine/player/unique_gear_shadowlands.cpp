@@ -467,7 +467,18 @@ void dreadfire_vessel( special_effect_t& effect )
 
 void macabre_sheet_music( special_effect_t& effect )
 {
+  auto data_spell = effect.player->find_spell( 345431 );
+  auto stat_buff  = make_buff<stat_buff_t>( effect.player, "blood_waltz", effect.player->find_spell( 345439 ) )
+    ->add_stat( STAT_HASTE_RATING, data_spell->effectN( 1 ).average( effect.item ) )
+    ->add_stat( STAT_SPEED_RATING, data_spell->effectN( 2 ).average( effect.item ) );
 
+  effect.custom_buff = make_buff( effect.player, "blood_waltz_driver", effect.driver() )
+    ->set_quiet( true )
+    ->set_cooldown( 0_ms )
+    ->set_tick_callback( [ stat_buff ]( buff_t*, int, timespan_t ) {
+      // TODO: handle potential delay/movement required to hit the 'dance partners'
+      stat_buff->trigger();
+    } );
 }
 
 void glyph_of_assimilation( special_effect_t& effect )
