@@ -554,10 +554,10 @@ struct malefic_rapture_t : public affliction_spell_t
       {
         double m = affliction_spell_t::composite_da_multiplier( s );
         m *= get_dots_ticking( s->target );
-	if ( td( s->target )->dots_unstable_affliction->is_ticket() ) 
-	{
-	  m *= 1 + p()->conduit.focused_malignancy.percent(); 
-	}
+	    if ( td( s->target )->dots_unstable_affliction->is_ticking() ) 
+	    {
+	      m *= 1 + p()->conduit.focused_malignancy.percent(); 
+	    }
         return m;
       }
 
