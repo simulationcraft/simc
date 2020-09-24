@@ -1112,8 +1112,18 @@ struct hunter_ranged_attack_t: public hunter_action_t < ranged_attack_t >
   {
     hunter_action_t::init();
 
-    if ( triggers_master_marksman.is_none() )
-      triggers_master_marksman = special;
+    if ( p() -> talents.master_marksman.ok() )
+    {
+      if ( triggers_master_marksman.is_none() )
+        triggers_master_marksman = harmful && special && may_crit;
+    }
+    else
+    {
+      triggers_master_marksman = false;
+    }
+
+    if ( triggers_master_marksman )
+      sim -> print_debug( "{} action {} set to proc Master Marksman", player -> name(), name() );
   }
 
   bool usable_moving() const override
@@ -1131,7 +1141,7 @@ struct hunter_ranged_attack_t: public hunter_action_t < ranged_attack_t >
   {
     hunter_action_t::impact( s );
 
-    if ( p() -> talents.master_marksman.ok() && triggers_master_marksman && s -> result == RESULT_CRIT )
+    if ( triggers_master_marksman && s -> result == RESULT_CRIT )
     {
       double amount = s -> result_amount * p() -> talents.master_marksman -> effectN( 1 ).percent();
       if ( amount > 0 )
