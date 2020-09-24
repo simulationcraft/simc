@@ -1650,6 +1650,7 @@ class SpellDataGenerator(DataGenerator):
           ( 325218, 0 ), # Necrolord Bonedust Brew heal
           ( 328296, 0 ), # Necrolord Bonedust Chi Refund
           ( 327264, 0 ), # Ardenweald Faeline Stomp damage
+          ( 345727, 0 ), # Ardenweald Faeline Stomp damage 2
           ( 328283, 0 ), # Venthyr Fallen Monk Soothing Mist Heal
           ( 330898, 0 ), # Venthyr Fallen Monk Fists of Fury
           ( 330901, 0 ), # Venthyr Fallen Monk Spinning Crane Kick
@@ -1660,7 +1661,7 @@ class SpellDataGenerator(DataGenerator):
           ( 344008, 0 ), # Venthyr Fallen Monk Enveloping Mist Heal
           ( 344239, 0 ), # Venthyr Fallen Monk Soothing Mist
           ( 344240, 0 ), # Venthyr Fallen Monk Enveloping Mist
-          ( 345714, 0 ), # Venthyr Fallen Monk Fists of Fury 2
+          ( 345714, 0 ), # Venthyr Fallen Monk Fists of Fury damage
 
           # Conduits
           ( 336874, 0 ), # Fortifying Ingredients

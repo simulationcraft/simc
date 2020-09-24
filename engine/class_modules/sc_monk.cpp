@@ -634,6 +634,7 @@ public:
     const spell_data_t* fallen_monk_clash;
     const spell_data_t* fallen_monk_enveloping_mist;
     const spell_data_t* fallen_monk_fists_of_fury;
+    const spell_data_t* fallen_monk_fists_of_fury_tick;
     const spell_data_t* fallen_monk_keg_smash;
     const spell_data_t* fallen_monk_soothing_mist;
     const spell_data_t* fallen_monk_spinning_crane_kick;
@@ -3072,7 +3073,7 @@ public:
   {
     monk_t* owner;
     fallen_monk_fists_of_fury_tick_t( fallen_monk_ww_pet_t* p )
-      : melee_attack_t( "fists_of_fury_tick", p, p->o()->passives.fists_of_fury_tick ), owner( p->o() )
+      : melee_attack_t( "fists_of_fury_tick", p, p->o()->passives.fallen_monk_fists_of_fury_tick ), owner( p->o() )
     {
       dual = direct_tick = background = may_crit = may_miss = true;
       aoe                     = 1 + (int)p->o()->spec.fists_of_fury->effectN( 1 ).base_value();
@@ -9903,6 +9904,7 @@ void monk_t::init_spells()
   passives.fallen_monk_clash                    = find_spell( 330909 );
   passives.fallen_monk_enveloping_mist          = find_spell( 344008 );
   passives.fallen_monk_fists_of_fury            = find_spell( 330898 );
+  passives.fallen_monk_fists_of_fury_tick       = find_spell( 345714 );
   passives.fallen_monk_keg_smash                = find_spell( 330911 );
   passives.fallen_monk_soothing_mist            = find_spell( 328283 );
   passives.fallen_monk_spinning_crane_kick      = find_spell( 330901 );
