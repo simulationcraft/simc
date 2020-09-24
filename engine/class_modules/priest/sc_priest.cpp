@@ -2182,7 +2182,7 @@ void priest_t::remove_wrathful_faerie()
   }
 }
 
-int priest_t::shadow_weaving_active_dots( const player_t* target ) const
+int priest_t::shadow_weaving_active_dots( const player_t* target, const unsigned int id ) const
 {
   int dots = 0;
 
@@ -2198,21 +2198,30 @@ int priest_t::shadow_weaving_active_dots( const player_t* target ) const
       const dot_t* vt  = td->dots.vampiric_touch;
       const dot_t* dp  = td->dots.devouring_plague;
 
-      dots = swp->is_ticking() + vt->is_ticking() + dp->is_ticking();
+      // You get mastery benefit for a DoT as if it was active, if you are actively putting that DoT up
+      // So to get the mastery benefit you either have that DoT ticking, or you are casting it
+      const spell_data_t* swp_spell = find_class_spell( "Shadow Word: Pain" );
+      const spell_data_t* vt_spell = find_class_spell( "Vampiric Touch" );
+      const spell_data_t* dp_spell = find_class_spell( "Devouring Plague" );
+
+      bool swp_ticking = ( id == swp_spell->id() ) | swp->is_ticking();
+      bool vt_ticking  = ( id == vt_spell->id() ) | vt->is_ticking();
+      bool dp_ticking  = ( id == dp_spell->id() ) | dp->is_ticking();
+
+      dots = swp_ticking + vt_ticking + dp_ticking;
     }
   }
 
   return dots;
 }
 
-double priest_t::shadow_weaving_multiplier( const player_t* target ) const
+double priest_t::shadow_weaving_multiplier( const player_t* target, const unsigned int id ) const
 {
   double multiplier = 1.0;
 
   if ( mastery_spells.shadow_weaving->ok() )
   {
-    // TODO: add logic to auto give mastery benefit if you are casting a DoT
-    auto dots = shadow_weaving_active_dots( target );
+    auto dots = shadow_weaving_active_dots( target, id );
 
     if ( dots > 0 )
     {
